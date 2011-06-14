@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- L'URI ecde passe le test -->
-<sae:archivageUnitaire xmlns:sae="http://www.cirtil.fr/saeService" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.cirtil.fr/saeService ..\SaeService.xsd">
-	<sae:objetNumerique>
-		<sae:url>ecde://ecde.cer69.recouvt/contrat_service/20110524/numTraitement/documents/monFichier.txt</sae:url>
-	</sae:objetNumerique>
-	<sae:metadonnees/>
-</sae:archivageUnitaire>
