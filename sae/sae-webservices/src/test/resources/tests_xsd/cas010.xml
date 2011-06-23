@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- Les deux choix de l'objet numériques sont présents simultanémént : ce n'est pas possible -->
-<sae:archivageUnitaire xmlns:sae="http://www.cirtil.fr/saeService" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.cirtil.fr/saeService ..\SaeService.xsd">
-	<sae:objetNumerique>
-		<sae:url>ecde://ecde.cer69.recouvt/contrat_service/20110525/numTraitement/documents/monFichier.txt"</sae:url>
-		<sae:contenu>TGUgZm9uZCBkZSBsJ2FpciBlc3QgZnJhaXMgIQ==</sae:contenu>
-	</sae:objetNumerique>
-	<sae:metadonnees/>
-</sae:archivageUnitaire>
