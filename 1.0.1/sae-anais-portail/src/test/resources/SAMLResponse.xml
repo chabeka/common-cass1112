@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<SaeJetonAuthentification>
+    <IdentiteUtilisateur>
+        <Nom>AGENT-CTD</Nom>
+        <Prenom>Prenom-90010</Prenom>
+    </IdentiteUtilisateur>
+    <Droits>
+        <Droit>
+            <Code>GESTIONNAIREACCESCOMPLET</Code>
+            <Perimetre>
+                <CodeType>URSSAF - Code organisme</CodeType>
+                <Valeur>CER69</Valeur>
+            </Perimetre>
+        </Droit>
+        <Droit>
+            <Code>GESTIONNAIREACCESCOMPLET</Code>
+            <Perimetre>
+                <CodeType>URSSAF - Code organisme</CodeType>
+                <Valeur>UR030</Valeur>
+            </Perimetre>
+        </Droit>
+        <Droit>
+            <Code>GESTIONNAIRESRVRH</Code>
+            <Perimetre>
+                <CodeType>URSSAF - Code organisme</CodeType>
+                <Valeur>UR710</Valeur>
+            </Perimetre>
+        </Droit>
+        <Droit>
+            <Code>GESTIONNAIRESRVRH</Code>
+            <Perimetre>
+                <CodeType>URSSAF - Code organisme</CodeType>
+                <Valeur>UR730</Valeur>
+            </Perimetre>
+        </Droit>
+    </Droits>
+</SaeJetonAuthentification>

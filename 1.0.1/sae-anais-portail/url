@@ -1,0 +1,15 @@
+### Eclipse Workspace Patch 1.0
+#P sae-anais-portail
+Index: src/main/resources/applicationContext.xml
+===================================================================
+--- src/main/resources/applicationContext.xml	(revision 581)
++++ src/main/resources/applicationContext.xml	(working copy)
+@@ -13,7 +13,7 @@
+ 
+    <bean id="configurationSuccess"
+       class="fr.urssaf.image.sae.anais.portail.configuration.SuccessConfiguration">
+-      <property name="url" value="succes.html" />
++       <property name="url" value="http://localhost:8080/sae-webdemo/" />
+       <property name="service" value="/accueil.html" />
+    </bean>
+ 

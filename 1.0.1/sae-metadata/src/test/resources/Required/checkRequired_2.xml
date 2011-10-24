@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadatas>
+<metadata>
+		<longCode>CodeActivite</longCode>
+		<shortCode>atc</shortCode>
+		<value>1</value>
+	</metadata>
+	<metadata>
+		<longCode>CodeRND</longCode>
+		<shortCode>sm_document_type</shortCode>
+		<value>1.1.1.1.1</value>
+	</metadata>
+	<metadata>
+		<longCode>VersionRND</longCode>
+		<shortCode>vrn</shortCode>
+		<value>11.2</value>
+	</metadata>
+	<metadata>
+		<longCode>ApplicationTraitement</longCode>
+		<shortCode>atr</shortCode>
+	</metadata>
+</metadatas>

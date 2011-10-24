@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+   id="WebApp_ID" version="2.5">
+
+   <display-name>Sae Anais Portail</display-name>
+
+   <welcome-file-list>
+      <welcome-file>connection.html</welcome-file>
+   </welcome-file-list>
+   
+   <!-- context de l'application -->
+   <context-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>classpath:applicationContext.xml</param-value>
+   </context-param>
+   
+   <listener>
+      <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+   </listener>
+
+   <!-- la servlet -->
+   <servlet>
+      <servlet-name>spring</servlet-name>
+      <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+      <load-on-startup>1</load-on-startup>
+   </servlet>
+   <!-- le mapping des url -->
+   <servlet-mapping>
+      <servlet-name>spring</servlet-name>
+      <url-pattern>*.html</url-pattern>
+   </servlet-mapping>
+   <servlet-mapping>
+      <servlet-name>spring</servlet-name>
+      <url-pattern>/connection.html</url-pattern>
+   </servlet-mapping>
+
+   <filter>
+      <filter-name>MaquetteFilter</filter-name>
+      <filter-class>fr.urssaf.image.commons.maquette.MaquetteFilter</filter-class>
+
+      <init-param>
+         <param-name>appTitle</param-name>
+         <param-value>Application test</param-value>
+      </init-param>
+
+      <init-param>
+         <param-name>appCopyright</param-name>
+         <param-value>Copyright CIRTIL 2010</param-value>
+      </init-param>
+
+      <init-param>
+         <param-name>theme</param-name>
+         <param-value>aed</param-value>
+      </init-param>
+      
+      <init-param>
+         <param-name>excludeFiles</param-name>
+         <param-value>/succes.html</param-value>
+      </init-param>
+
+   </filter>
+
+   <filter-mapping>
+      <filter-name>MaquetteFilter</filter-name>
+      <url-pattern>*.do</url-pattern>
+      <url-pattern>*.jsp</url-pattern>
+      <url-pattern>*.html</url-pattern>
+      <url-pattern>*.htm</url-pattern>
+   </filter-mapping>
+
+   <servlet>
+      <description></description>
+      <display-name>MaquetteServlet</display-name>
+      <servlet-name>MaquetteServlet</servlet-name>
+      <servlet-class>fr.urssaf.image.commons.maquette.MaquetteServlet</servlet-class>
+   </servlet>
+
+   <servlet-mapping>
+      <servlet-name>MaquetteServlet</servlet-name>
+      <url-pattern>/getResourceImageMaquette.do</url-pattern>
+   </servlet-mapping>
+
+</web-app>

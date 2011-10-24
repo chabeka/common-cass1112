@@ -1,0 +1,137 @@
+<queries>
+   <query>
+      <queryType>listNonConsult</queryType>
+      <luceneQuery>Titre:"NOTIFICATIONS DE REMBOURSEMENT du
+         41882050200023"</luceneQuery>     
+   </query>
+   <query>
+      <queryType>listEmpty</queryType>
+      <luceneQuery>Titre:"NOTIFICATIONS DE REMBOURSEMENT du
+         41882050200023"</luceneQuery>
+   </query>
+   <query>
+      <queryType>failure_reqEmpty</queryType>
+      <luceneQuery></luceneQuery>
+      <metadata>
+         <code>Titre</code>
+         <value>NOTIFICATIONS</value>
+      </metadata>
+   </query>
+
+   <query>
+      <queryType>failure_reqNonConsult</queryType>
+      <luceneQuery>TailleFichier:98</luceneQuery>
+      <metadata>
+         <code>Titre</code>
+         <value>NOTIFICATIONS</value>
+      </metadata>
+   </query>
+
+   <query>
+      <queryType>failure_noExists</queryType>
+      <luceneQuery>Titres:"NOTIFICATIONS DE REMBOURSEMENT"
+         IdTraitementMasse:41882</luceneQuery>
+      <metadata>
+         <code>Titre</code>
+         <value>NOTIFICATIONS DE REMBOURSEMENT</value>
+      </metadata>
+
+      <metadata>
+         <code>IdTraitementMasse</code>
+         <value>41882</value>
+      </metadata>
+   </query>
+
+   <query>
+      <queryType>failure_separateur2Pts</queryType>
+      <luceneQuery>Titre:"NOTIFICATIONS DE REMBOURSEMENT"
+         IdTraitementMasse:41882:050200023</luceneQuery>
+
+      <metadata>
+         <code>Titre</code>
+         <value>NOTIFICATIONS DE REMBOURSEMENT</value>
+      </metadata>
+
+   </query>
+
+   <query>
+      <queryType>failure_separateur</queryType>
+      <luceneQuery>Titre::"NOTIFICATIONS DE REMBOURSEMENT"</luceneQuery>
+
+      <metadata>
+         <code>Titre</code>
+         <value>NOTIFICATIONS DE REMBOURSEMENT</value>
+      </metadata>
+
+   </query>
+   <query>
+      <queryType>failure_item</queryType>
+      <luceneQuery>Titre:"NOTIFICATIONS DE REMBOURSEMENT"</luceneQuery>
+      <metadata>
+         <code>Titr</code>
+         <value>NOTIFICATIONS DE REMBOURSEMENT</value>
+      </metadata>
+
+   </query>
+
+   <query>
+      <queryType>success</queryType>
+      <luceneQuery>CodeRND:2.3.1.1.12 AND
+         (NumeroCompteExterne:030000000111995101 OR NumeroCompteExterne:030000000111995102)</luceneQuery>
+      <metadata>
+         <code>CodeRND</code>
+         <value>2.3.1.1.12</value>
+      </metadata>
+
+   </query>
+
+   <query>
+      <queryType>success_OR</queryType>
+      <luceneQuery>CodeRND:2.3.1.1.12 OR
+         NumeroCompteExterne:30148032541101600</luceneQuery>
+      <metadata>
+         <code>CodeRND</code>
+         <value>2.3.1.1.12</value>
+      </metadata>
+   </query>
+
+   <query>
+      <queryType>success_date</queryType>
+      <luceneQuery>DateDebutConservation:[20111101 TO 20112101]</luceneQuery>
+   </query>
+
+   <query>
+      <queryType>success_AND_OR</queryType>
+      <luceneQuery>CodeRND:2.2.3.2.2 AND
+         NumeroCompteExterne:30148032541101600</luceneQuery>
+
+      <metadata>
+         <code>CodeRND</code>
+         <value>2.2.3.2.2</value>
+      </metadata>
+      <metadata>
+         <code>NumeroCompteExterne</code>
+         <value>30148032541101600</value>
+      </metadata>
+   </query>
+
+   <query>
+      <queryType>MetadonneesNonAutoriser</queryType>
+      <luceneQuery>VersionRND:12</luceneQuery>
+
+      <metadata>
+         <code>NumeroCompteExterne</code>
+         <value>30148032541101600</value>
+      </metadata>
+
+   </query>
+
+   <query>
+      <queryType>AvecTextRange</queryType>
+      <luceneQuery>Titre:{A TO Z}</luceneQuery>
+      <metadata>
+         <code>NumeroCompteExterne</code>
+         <value>30148032541101600</value>
+      </metadata>
+   </query>
+</queries>

@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+   <soapenv:Body>
+      <ns1:PingResponse xmlns:ns1="http://www.cirtil.fr/saeService">
+         <ns1:pingString>Les services SAE sont en ligne</ns1:pingString>
+      </ns1:PingResponse>
+   </soapenv:Body>
+</soapenv:Envelope>

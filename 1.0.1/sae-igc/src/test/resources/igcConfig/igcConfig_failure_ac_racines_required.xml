@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<IgcConfig>
+
+   <repertoireCRL>
+       src/test/resources/certificats/CRL/
+   </repertoireCRL>
+
+   <URLTelechargementCRL>
+      <url>http://cer69idxpkival1.cer69.recouv/*.crl</url>
+   </URLTelechargementCRL>
+
+
+</IgcConfig> 

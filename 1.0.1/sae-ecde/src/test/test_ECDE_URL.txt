@@ -1,0 +1,32 @@
+//-------------------------- URI To FILE -------------------------------------------------
+
+convertUrlToFile_success()=URL en concordance avec la liste ECDESource donnee en paramètre
+convertUrlToFile_failure_UriNotExist()=exception levée si l'URI est absente de la liste des ECDESources donnee en param
+convertUrlToFile_failure_BadURLFormat()=URL qui ne respecte pas le format, le scheme ne vaut pas 'ecde'
+convertUrlToFile_failure_BadURLFormatPath_Document()=valeur n'est pas égal à la constante 'documents'
+convertUrlToFile_failure_BadURLFormat_PathDate()=date traitement ne respecte pas le format AAAAMMJJ erreur sur le mois
+convertUrlToFile_failure_BadURLFormat_PathDate2()=date traitement ne respecte pas le format AAAAMMJJ erreur sur le jour 00
+//---------------------- VALIDATION ---------------
+convertUrlToFileTestUrlNotExist ()=test avec url null
+convertUrlToFileTestUrlNull ()=test avec ECDESOURCE null ou vide
+convertFileToURI_failure_attributHostVide()=L'attribut host n'est pas renseigné à savoir ""
+convertFileToURI_failure_attributHostNull()=L'attribut host n'est pas renseigné à savoir null
+convertFileToURI_failure_attributHostEspace()=L'attribut host n'est pas renseigné à savoir " "
+
+
+
+
+//-------------------------- FILE TO URI -------------------------------------------------
+convertFileToURITest()=conversion OK
+convertFileToURI_failure_EcdeNotExist()=Chemin de fichier non présent dans ECDE sources donne en param
+convertFileToURI_success_2Test=Conversion OK avec /mnt/ai/ecde/ecde_lyon
+convertFileToURI_success_SlashTest()=Test avec un nom de fichier avec des \ et des /
+convertFileToURI_success()=nom fichier : /temp/text.txt  ECDESOURCE.BasePath = /temp
+convertFileToURI_failure()=Test failure -- nom fichier : archive/temp/text.txt ECDESOURCE.BasePath = /temp
+convertFileToURI_failure_badURLFormat()=nom fichier : archive/temp/text.txt  ECDESOURCE.BasePath = /temp
+
+convertFileToURI_failure_URIFormat()=Generation d'une runtimeException car format de host ne respecte pas RFC3986
+//---------------------- VALIDATION ---------------
+convertFileToURIEcdeFileNonRenseingeTest()=EcdeFile n'est pas renseigné
+convertFileToURIEcdeNonRenseigneTest()=Aucun ECDE n'est renseigne
+convertFileToURIAttributEcdeNonRenseigneTest()=L'attribut d'un ECDE n'est pas renseigne
