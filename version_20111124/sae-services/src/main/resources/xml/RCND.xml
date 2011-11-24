@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RCND>
+   <TypeDocument>
+      <CodeRND>2.3.1.1.12</CodeRND>
+      <CodeFonction>2</CodeFonction>
+      <CodeActivite>3</CodeActivite>
+      <LibelleRND>ATTESTATION DE VIGILANCE</LibelleRND>
+      <DureeConservation>1825</DureeConservation>
+      <VersionRND>11.1</VersionRND>
+   </TypeDocument>
+   <TypeDocument>
+      <CodeRND>2.3.1.1.8</CodeRND>
+      <CodeFonction>2</CodeFonction>
+      <CodeActivite>3</CodeActivite>
+      <LibelleRND>ATTESTATION DE MARCHE PUBLIC</LibelleRND>
+      <DureeConservation>1825</DureeConservation>
+      <VersionRND>11.1</VersionRND>
+   </TypeDocument>
+   <TypeDocument>
+      <CodeRND>2.3.1.1.3</CodeRND>
+      <CodeFonction>2</CodeFonction>
+      <CodeActivite>3</CodeActivite>
+      <LibelleRND>DEMANDE D'ATTESTATION DE MARCHE PUBLIC</LibelleRND>
+      <DureeConservation>1825</DureeConservation>
+      <VersionRND>11.1</VersionRND>
+   </TypeDocument>
+   <TypeDocument>
+      <CodeRND>3.1.3.1.1</CodeRND>
+      <CodeFonction>3</CodeFonction>
+      <CodeActivite>1</CodeActivite>
+      <LibelleRND>DEMANDE DE DELAI DU COTISANT</LibelleRND>
+      <DureeConservation>1643</DureeConservation>
+      <VersionRND>11.1</VersionRND>
+   </TypeDocument>
+</RCND>

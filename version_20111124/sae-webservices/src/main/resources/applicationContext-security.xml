@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/beans"
+   xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns:context="http://www.springframework.org/schema/context"
+   xmlns:jee="http://www.springframework.org/schema/jee" xmlns:aop="http://www.springframework.org/schema/aop"
+   xsi:schemaLocation="
+      http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+      http://www.springframework.org/schema/context 
+      http://www.springframework.org/schema/context/spring-context-3.0.xsd
+      http://www.springframework.org/schema/jee 
+      http://www.springframework.org/schema/jee/spring-jee-3.0.xsd
+      http://www.springframework.org/schema/aop
+      http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+
+
+   <context:component-scan base-package="fr.urssaf.image.sae.webservices.security" />
+
+
+   <bean id="igcConfigResource" class="org.springframework.core.io.FileSystemResource">
+      <constructor-arg>
+         <jee:jndi-lookup id="IGC_Config"
+            jndi-name="java:comp/env/SAE_Fichier_Configuration_IGC" />
+      </constructor-arg>
+   </bean>
+
+   <!--
+      le bean est de type fr.urssaf.image.sae.igc.modele.IgcConfig
+   -->
+   <bean id="igcConfig"
+      class="fr.urssaf.image.sae.webservices.security.igc.IgcFactory"
+      factory-method="createIgcConfig">
+
+      <constructor-arg ref="igcConfigResource" />
+
+   </bean>
+
+   <aop:config>
+      <aop:pointcut id="serviceSecurePointcut"
+         expression="execution(public * fr.urssaf.image.sae.webservices.skeleton.*SkeletonInterface.*Secure(..))" />
+      <aop:pointcut id="servicePointcut"
+         expression="execution(public * fr.urssaf.image.sae.webservices.skeleton.*SkeletonInterface.*(..))" />
+      <aop:aspect id="securityAspect" ref="authenticateHandler">
+         <aop:before method="authenticate" pointcut-ref="serviceSecurePointcut" />
+         <aop:after-throwing method="deniedAccess"
+            throwing="exception" pointcut-ref="servicePointcut" />
+      </aop:aspect>
+   </aop:config>
+
+
+</beans:beans>

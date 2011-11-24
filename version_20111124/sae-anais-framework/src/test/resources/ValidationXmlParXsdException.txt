@@ -1,0 +1,3 @@
+Le document XML VECTEUR IDENTIFICATION n'est pas conforme au schéma XSD VECTEUR IDENTIFICATION
+	- [severity=FATAL_ERROR,message=cvc-complex-type.2.4.b: The content of element 'IdentiteUtilisateur' is not complete. One of '{Nom}' is expected.,locator=[url=null,line=-1,column=-1,node=null,object=fr.urssaf.image.sae.vi.schema.SaeJetonAuthentificationType
+	- [severity=FATAL_ERROR,message=cvc-complex-type.2.4.b: The content of element 'SaeJetonAuthentification' is not complete. One of '{Droits}' is expected.,locator=[url=null,line=-1,column=-1,node=null,object=javax.xml.bind.JAXBElement
