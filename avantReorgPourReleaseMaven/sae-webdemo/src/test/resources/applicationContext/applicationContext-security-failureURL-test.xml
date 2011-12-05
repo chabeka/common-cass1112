@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+   xmlns:context="http://www.springframework.org/schema/context"
+   xsi:schemaLocation="
+            http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+   <bean id="authenticationEntryPoint"
+      class="fr.urssaf.image.sae.webdemo.security.SecurityEntryPoint">
+      <property name="loginFormUrl" value="/authentication.html" />
+      <property name="useForward" value="true" />
+      <property name="failureURL" value="authenticationFailure.html" />
+      <property name="authenticateURL" value="/applicationDemo.html" />
+   </bean>
+
+</beans>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<SaeJetonAuthentification>
+    <IdentiteUtilisateur>
+        <Nom>AGENT-CTD</Nom>
+        <Prenom>Prenom</Prenom>
+    </IdentiteUtilisateur>
+    <Droits>
+        <Droit>
+            <Code>GESTIONNAIREACCESCOMPLET</Code>
+            <Perimetre>
+                <CodeType>URSSAF - Code organisme</CodeType>
+                <Valeur>CER69</Valeur>
+            </Perimetre>
+        </Droit>
+    </Droits>
+</SaeJetonAuthentification>

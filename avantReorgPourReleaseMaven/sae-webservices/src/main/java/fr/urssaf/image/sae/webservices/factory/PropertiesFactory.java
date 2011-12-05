@@ -1,0 +1,61 @@
+package fr.urssaf.image.sae.webservices.factory;
+
+import java.io.IOException;
+import java.util.Properties;
+
+import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+
+/**
+ * Factory de création de l'objet de type PropertyPlaceholderConfigurer
+ * à mettre dans le conteneur IOC avec l'ensemble de toutes les paires
+ * clé/valeur des fichiers properties
+ */
+public class PropertiesFactory {
+
+   
+   /**
+    * Méthode à utiliser en tant que "factory-method" Spring pour mettre dans
+    * le conteneur IOC l'objet PropertyPlaceholderConfigurer contenant
+    * l'ensemble des paires clé/valeur des fichiers Properties du SAE.
+    * 
+    * @param saeConfigResource le fichier de configuration générale
+    * @return l'objet PropertyPlaceholderConfigurer à mettre dans le conteneur IOC
+    * @throws IOException en cas de problème de lecture du fichier de configuration générale
+    */
+   public PropertyPlaceholderConfigurer load(FileSystemResource saeConfigResource) throws IOException  {
+      
+      // Deux fichiers properties : 
+      //  - Fichier de configuration générale
+      //  - Fichier de configuration DFCE
+      Resource[] tabResource = new Resource[2];
+      
+      // Fichier de configuration générale
+      tabResource[0] = saeConfigResource;
+      
+      // Fichier de configuration DFCE
+      String dfceConfigPath = getCheminFichierConfigDfce(saeConfigResource);
+      FileSystemResource dfceConfigResource = new FileSystemResource(dfceConfigPath); 
+      tabResource[1] = dfceConfigResource;
+      
+      // Création du PropertyPlaceholderConfigurer
+      PropertyPlaceholderConfigurer property = new PropertyPlaceholderConfigurer();
+      property.setLocations(tabResource);
+      return property;
+      
+   }
+   
+   
+   
+   private String getCheminFichierConfigDfce(FileSystemResource saeConfigResource) throws IOException {
+      
+      Properties props = new Properties();
+      
+      props.load(saeConfigResource.getInputStream());
+      
+      return props.getProperty("sae.dfce.cheminFichierConfig");
+      
+   }
+   
+}

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?><saml2:Assertion xmlns:saml2="urn:oasis:names:tc:SAML:2.0:assertion" ID="f81d4fae-7dec-11d0-a765-00a0c91e6bf6" IssueInstant="2011-03-24T16:31:34.700Z" Version="2.0">
+   <saml2:Issuer>service_failure
+   </saml2:Issuer>
+   <saml2:Subject>
+      <saml2:NameID Format="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent">subjectId2</saml2:NameID>
+      <saml2:SubjectConfirmation Method="urn:oasis:names:tc:SAML:2.0:cm:bearer">
+         <saml2:SubjectConfirmationData NotOnOrAfter="2011-03-24T16:31:34.700Z" Recipient="urn:interops:sp:73282932000074:test"/>
+      </saml2:SubjectConfirmation>
+   </saml2:Subject>
+   <saml2:Conditions NotBefore="1998-12-01T01:00:00" NotOnOrAfter="1999-12-31T01:00:00">
+      <saml2:AudienceRestriction>
+         <saml2:Audience>http://sae.urssaf.fr</saml2:Audience>
+      </saml2:AudienceRestriction>
+   </saml2:Conditions>
+   <saml2:AuthnStatement AuthnInstant="2011-03-24T16:31:34.700Z" SessionIndex="f81d4fae-7dec-11d0-a765-00a0c91e6bf6">
+      <saml2:AuthnContext>
+         <saml2:AuthnContextClassRef>urn:oasis:names:tc:SAML:2.0:ac:classes:Password
+         </saml2:AuthnContextClassRef>
+      </saml2:AuthnContext>
+   </saml2:AuthnStatement>
+   <saml2:AttributeStatement>
+      <saml2:Attribute Name="PAGM">
+         <saml2:AttributeValue>ROLE_USER</saml2:AttributeValue>
+         <saml2:AttributeValue>ROLE_ADMIN</saml2:AttributeValue>
+      </saml2:Attribute>
+   </saml2:AttributeStatement>
+<Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><DigestValue>Mr7PZzvhpWFcBe7n9uEwkzWFyDk=</DigestValue></Reference></SignedInfo><SignatureValue>hbdCtCzvvI7MWwOEXwa64dNxiSnetbEzOY9Vi2I9/vjw3rAAx5gcvbYPnPilqeSrEp+61+1rKWiM
+ctTh/tqQn2e4HQn3DKT6igHandhciGoMKBvIWDUzotPz58gbnmQYWgllYU5jOtLM3li91uwFa7YG
+qGMp6BUbK0kcnT84JyKsfgLy8d3JoufXZvRoEP02ptlouUYrxTlOQb94P37e3rc+1vyEmAVZlGfq
+KptDY1uZ4kQGNLe1GfJdKMwrmoatkceuuEBZ4U0gqCKLolcmXpsF7aPWQUjYhYMoavbID7bDhlTG
+84GCBIRuw2ScprA7Q3U7jcjVSChvw1ICiLhiqHvOQG0FMWypCcX+DJ6sT2FoP7yIkRl94K4NjpHd
+xpXdcq6RN0oP2CdrrFTX37qF4AvI/Moe3GbscOAlpKoCEBKLm5aiCyx1mcBylXYbXaiZ2e9dlZ1V
+O7NcUbAXmGDV/FE4MVehFryos65ORG8SVuW+48K4T8hHI93sVScUdtsEeisBqizCOqsbVS6PKXny
+Ob0J5GqWaBOVxwy1y1M3rQM65p+QzMX0JkAI0Bb8FB2ctVYkEFWbI/iHHpTRJjwoHzk5aYWF46MO
+mArOfEzof2ztLi4R7mj6Q2YUjyLqQmxTVoUsR0IU/q6cWxQcxyTl0dGW8RZNr4Attux9nH/vP6Q=</SignatureValue><KeyInfo><X509Data><X509Certificate>MIIE6TCCA9GgAwIBAgIBJjANBgkqhkiG9w0BAQUFADBYMQswCQYDVQQGEwJGUjEPMA0GA1UECAwG
+RnJhbmNlMQ4wDAYDVQQHDAVQYXJpczEOMAwGA1UECgwFQUNPU1MxGDAWBgNVBAMMD0FDIEFwcGxp
+Y2F0aW9uczAeFw0xMTAyMjEwODE1NTlaFw0yMDA0MTIxNTU5MjJaMG0xCzAJBgNVBAYTAkZSMQ8w
+DQYDVQQIDAZGcmFuY2UxDjAMBgNVBAcMBVBhcmlzMQ4wDAYDVQQKDAVBQ09TUzEVMBMGA1UECwwM
+QXBwbGljYXRpb25zMRYwFAYDVQQDDA1Qb3J0YWlsIEltYWdlMIICIjANBgkqhkiG9w0BAQEFAAOC
+Ag8AMIICCgKCAgEA7SNRQAcbHZ/0njf4lfrUinuFzye2BEAkzYLygYM00t4A5nq7XCLby94Ix2G6
+UEXPrk80sWi2eABq85YydfIrd75n85R4p075O9SwaH6b2EvxLmawuN3rsc3ppckZ7o/2Qy2oQWHI
+YlB+jkTFpT8olMprZDZkxhbRtosZGwUUEq3KsMfJ3R7rIE8WKhY1koO4onla12fANOJzrYxa5rNo
+kmigshsmqa8coReT/dndzdO4P4J/dormNxaUSz/zfLThELji+YeQ5aOcjBL81Gv3yOBS40/Y9/lr
+qL3nHzN52A+hDN6gDGrU9OwWgPC5SG1lYyqoYEEBpBsZuDyAdY2PxbdfAQ9THBEaXKgNKeqdimvp
+uyHmaJez8WFAwDyKJYNWQcrM3a8EKj6Q5lSZSP2xQUq7CgYrl5WrI8Pio4OdpgXxCZEJngHrA8FR
+/rvTZTnbFKlxMHvLQz/8BuS8Ml+f+VrNkBG/pucAfKBbPR0wliz7aeGpbmR8hwb/eSkdBM/B86El
+OR5s0wsNSIzdlGY9UThNyAYtMvolabBnHdLKoKnRupoXlZUOz3EGt1UkzCrMwzkUx3+/M1XxD9zg
+0JUaT6PXv+Zaf9nv1k166aBCmIf9eGYLPL+8kyvRPYkOp2KBNv88I4WXHzyJbYuMzoY3Bo6cYt7R
+hkEqpoUTTyUTK5sCAwEAAaOBqDCBpTAdBgNVHQ4EFgQUS4SJ/SXAEAA3GYlT+Vjh8FiCGnswHwYD
+VR0jBBgwFoAU9PcH/3852zWmAmtzDPRCjmLLmcwwEQYJYIZIAYb4QgEBBAQDAgbAMB0GA1UdJQQW
+MBQGCCsGAQUFBwMCBggrBgEFBQcDATALBgNVHQ8EBAMCBaAwJAYDVR0RBB0wG4EZcGF1bC5tYXJl
+Y2hlQGNlcjY5LnJlY291djANBgkqhkiG9w0BAQUFAAOCAQEAsYUAMW3Dt5kczcST6k/hj79ZDIhH
+3LRQs7Nf4U8cbuCBzb1Aa5GrojkDHaW18cX4Ez3o2HFI5trEd3xzHXtnyzRyp+EWW+H4huh2DHEL
+uvSvCpxYE/DxynK8sVg41NVFG5TZvf9bz8P9qC7IiXfh1M2E/RvGoH4m1X7cXjsWw7m5HKqihh91
+7QfXpiOwF2DgzO1kaj76pFq6OI2X21lFvWYlHGRmV+sOhsUbWi1yEEOnYSq6uJvGNhDbhb6wNO9/
+c7gb6t90gt3e6T3AaEcM2MKsuIl1gO5EAIpeyIEW4VB8+sq2SF3RvNcf+Z5semVft+JgBPE1yZNv
+rzn8vssffQ==</X509Certificate></X509Data></KeyInfo></Signature></saml2:Assertion>

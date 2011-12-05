@@ -1,0 +1,755 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<referentiel>
+  <metaDataReference>
+    <shortCode>sm_title</shortCode>
+    <longCode>Titre</longCode>
+    <type>String</type>
+    <requiredForArchival>true</requiredForArchival>
+    <requiredForStorage>true</requiredForStorage>
+    <length>100</length>
+    <pattern>   </pattern>
+    <consultable>true</consultable>
+    <defaultConsultable>true</defaultConsultable>
+    <searchable>true</searchable>
+    <internal>true</internal>
+    <archivable>true</archivable>
+    <label>Titre du document </label>
+    <description>Titre du document</description>
+  </metaDataReference>
+  <metaDataReference>
+    <shortCode>per</shortCode>
+    <longCode>Periode</longCode>
+    <type>String</type>
+    <requiredForArchival>false</requiredForArchival>
+    <requiredForStorage>false</requiredForStorage>
+    <length>4</length>
+    <pattern>   </pattern>
+    <consultable>true</consultable>
+    <defaultConsultable>false</defaultConsultable>
+    <searchable>true</searchable>
+    <internal>false</internal>
+    <archivable>true</archivable>
+    <label>Période</label>
+    <description>Correspond à la période V2</description>
+  </metaDataReference>
+  <metaDataReference>
+    <shortCode>srn</shortCode>
+    <longCode>Siren</longCode>
+    <type>String</type>
+    <requiredForArchival>false</requiredForArchival>
+    <requiredForStorage>false</requiredForStorage>
+    <length>10</length>
+    <pattern>   </pattern>
+    <consultable>true</consultable>
+    <defaultConsultable>false</defaultConsultable>
+    <searchable>true</searchable>
+    <internal>false</internal>
+    <archivable>true</archivable>
+    <label>Siren</label>
+    <description>Numéro de SIREN V2</description>
+  </metaDataReference>
+  <metaDataReference>
+    <shortCode>nne</shortCode>
+    <longCode>NniEmployeur</longCode>
+    <type>String</type>
+    <requiredForArchival>false</requiredForArchival>
+    <requiredForStorage>false</requiredForStorage>
+    <length>15</length>
+    <pattern>   </pattern>
+    <consultable>true</consultable>
+    <defaultConsultable>false</defaultConsultable>
+    <searchable>true</searchable>
+    <internal>false</internal>
+    <archivable>true</archivable>
+    <label>NNI employeur</label>
+    <description>Numéro National d'Identification ou Numéro de sécurité sociale de l'Employeur</description>
+  </metaDataReference>
+  <metaDataReference>
+    <shortCode>npe</shortCode>
+    <longCode>NumeroPersonne</longCode>
+    <type>String</type>
+    <requiredForArchival>false</requiredForArchival>
+    <requiredForStorage>false</requiredForStorage>
+    <length>7</length>
+    <pattern>   </pattern>
+    <consultable>true</consultable>
+    <defaultConsultable>false</defaultConsultable>
+    <searchable>true</searchable>
+    <internal>false</internal>
+    <archivable>true</archivable>
+    <label>Numéro de personne</label>
+    <description>Numéro de personne (V2)</description>
+  </metaDataReference>
+  <metaDataReference>
+    <shortCode>den</shortCode>
+    <longCode>Denomination</longCode>
+    <type>String</type>
+    <requiredForArchival>false</requiredForArchival>
+    <requiredForStorage>false</requiredForStorage>
+    <length>-1</length>
+    <pattern>   </pattern>
+    <consultable>true</consultable>
+    <defaultConsultable>false</defaultConsultable>
+    <searchable>true</searchable>
+    <internal>false</internal>
+    <archivable>true</archivable>
+    <label>Dénomination du compte</label>
+    <description>Dénomination du compte (provient de la raison sociale V2)</description>
+  </metaDataReference>
+  <metaDataReference>
+    <shortCode>cv2</shortCode>
+    <longCode>CodeCategorieV2</longCode>
+    <type>String</type>
+    <requiredForArchival>false</requiredForArchival>
+    <requiredForStorage>false</requiredForStorage>
+    <length>1</length>
+    <pattern>   </pattern>
+    <consultable>true</consultable>
+    <defaultConsultable>false</defaultConsultable>
+    <searchable>false</searchable>
+    <internal>false</internal>
+    <archivable>true</archivable>
+    <label>Code catégorie V2</label>
+    <description>Code catégorie V2</description>
+  </metaDataReference>
+  <metaDataReference>
+    <shortCode>scv</shortCode>
+    <longCode>CodeSousCategorieV2</longCode>
+    <type>String</type>
+    <requiredForArchival>false</requiredForArchival>
+    <requiredForStorage>false</requiredForStorage>
+    <length>2</length>
+    <pattern>   </pattern>
+    <consultable>true</consultable>
+    <defaultConsultable>false</defaultConsultable>
+    <searchable>false</searchable>
+    <internal>false</internal>
+    <archivable>true</archivable>
+    <label>Code sous catégorie V2</label>
+    <description>Code sous catégorie V2</description>
+  </metaDataReference>
+  <metaDataReference>
+    <shortCode>nci</shortCode>
+    <longCode>NumeroCompteInterne</longCode>
+    <type>String</type>
+    <requiredForArchival>false</requiredForArchival>
+    <requiredForStorage>false</requiredForStorage>
+    <length>7</length>
+    <pattern>   </pattern>
+    <consultable>true</consultable>
+    <defaultConsultable>false</defaultConsultable>
+    <searchable>false</searchable>
+    <internal>false</internal>
+    <archivable>true</archivable>
+    <label>Numéro de compte interne</label>
+    <description>Numéro de compte interne V2</description>
+  </metaDataReference>
+  <metaDataReference>
+    <shortCode>nce</shortCode>
+    <longCode>NumeroCompteExterne</longCode>
+    <type>String</type>
+    <requiredForArchival>false</requiredForArchival>
+    <requiredForStorage>false</requiredForStorage>
+    <length>18</length>
+    <pattern>   </pattern>
+    <consultable>true</consultable>
+    <defaultConsultable>false</defaultConsultable>
+    <searchable>true</searchable>
+    <internal>false</internal>
+    <archivable>true</archivable>
+    <label>Numéro de compte externe</label>
+    <description>Numéro de compte externe V2</description>
+  </metaDataReference>
+  <metaDataReference>
+    <shortCode>srt</shortCode>
+    <longCode>Siret</longCode>
+    <type>String</type>
+    <requiredForArchival>false</requiredForArchival>
+    <requiredForStorage>false</requiredForStorage>
+    <length>14</length>
+    <pattern>   </pattern>
+    <consultable>true</consultable>
+    <defaultConsultable>false</defaultConsultable>
+    <searchable>true</searchable>
+    <internal>false</internal>
+    <archivable>true</archivable>
+    <label>Numéro de siret</label>
+    <description>Numéro de Siret V2</description>
+  </metaDataReference>
+  <metaDataReference>
+    <shortCode>psi</shortCode>
+    <longCode>PseudoSiret</longCode>
+    <type>String</type>
+    <requiredForArchival>false</requiredForArchival>
+    <requiredForStorage>false</requiredForStorage>
+    <length>14</length>
+    <pattern>   </pattern>
+    <consultable>true</consultable>
+    <defaultConsultable>false</defaultConsultable>
+    <searchable>true</searchable>
+    <internal>false</internal>
+    <archivable>true</archivable>
+    <label>Numéro de pseudosiret</label>
+    <description>Numéro de Pseudo Siret V2</description>
+  </metaDataReference>
+  <metaDataReference>
+    <shortCode>nst</shortCode>
+    <longCode>NumeroStructure</longCode>
+    <type>String</type>
+    <requiredForArchival>false</requiredForArchival>
+    <requiredForStorage>false</requiredForStorage>
+    <length>10</length>
+    <pattern>   </pattern>
+    <consultable>true</consultable>
+    <defaultConsultable>false</defaultConsultable>
+    <searchable>true</searchable>
+    <internal>false</internal>
+    <archivable>true</archivable>
+    <label>Numéro de structure</label>
+    <description>Numéro de structure V2</description>
+  </metaDataReference>
+  <metaDataReference>
+    <shortCode>nre</shortCode>
+    <longCode>NumeroRecours</longCode>
+    <type>String</type>
+    <requiredForArchival>false</requiredForArchival>
+    <requiredForStorage>false</requiredForStorage>
+    <length>15</length>
+    <pattern>   </pattern>
+    <consultable>true</consultable>
+    <defaultConsultable>false</defaultConsultable>
+    <searchable>true</searchable>
+    <internal>false</internal>
+    <archivable>true</archivable>
+    <label>Numéro de recours</label>
+    <description>Numéro de recours</description>
+  </metaDataReference>
+  <metaDataReference>
+    <shortCode>nic</shortCode>
+    <longCode>NumeroIntControle</longCode>
+    <type>String</type>
+    <requiredForArchival>false</requiredForArchival>
+    <requiredForStorage>false</requiredForStorage>
+    <length>6</length>
+    <pattern>   </pattern>
+    <consultable>true</consultable>
+    <defaultConsultable>false</defaultConsultable>
+    <searchable>true</searchable>
+    <internal>false</internal>
+    <archivable>true</archivable>
+    <label>Numéro interne contrôle</label>
+    <description>Numéro interne contrôle</description>
+  </metaDataReference>
+  <metaDataReference>
+    <shortCode>sm_creation_date</shortCode>
+    <longCode>DateCreation</longCode>
+    <type>Date</type>
+    <requiredForArchival>true</requiredForArchival>
+    <requiredForStorage>true</requiredForStorage>
+    <length>10</length>
+    <pattern>   </pattern>
+    <consultable>true</consultable>
+    <defaultConsultable>true</defaultConsultable>
+    <searchable>true</searchable>
+    <internal>true</internal>
+    <archivable>true</archivable>
+    <label>Date création</label>
+    <description>Date de création du document au niveau de l'application émettrice</description>
+  </metaDataReference>
+  <metaDataReference>
+    <shortCode>dre</shortCode>
+    <longCode>DateReception</longCode>
+    <type>Date</type>
+    <requiredForArchival>false</requiredForArchival>
+    <requiredForStorage>false</requiredForStorage>
+    <length>10</length>
+    <pattern>   </pattern>
+    <consultable>true</consultable>
+    <defaultConsultable>true</defaultConsultable>
+    <searchable>true</searchable>
+    <internal>false</internal>
+    <archivable>true</archivable>
+    <label>Date réception</label>
+    <description>Date à laquelle le document a été reçu pour un courrier par exemple</description>
+  </metaDataReference>
+  <metaDataReference>
+    <shortCode>apr</shortCode>
+    <longCode>ApplicationProductrice</longCode>
+    <type>String</type>
+    <requiredForArchival>true</requiredForArchival>
+    <requiredForStorage>true</requiredForStorage>
+    <length>15</length>
+    <pattern>   </pattern>
+    <consultable>true</consultable>
+    <defaultConsultable>false</defaultConsultable>
+    <searchable>true</searchable>
+    <internal>false</internal>
+    <archivable>true</archivable>
+    <label>Application Productrice du document</label>
+    <description>Code de l'application qui a produit le document (pour un document WATT issu du scan, ce sera la chaine d'acquisition)</description>
+  </metaDataReference>
+  <metaDataReference>
+    <shortCode>atr</shortCode>
+    <longCode>ApplicationTraitement</longCode>
+    <type>String</type>
+    <requiredForArchival>false</requiredForArchival>
+    <requiredForStorage>false</requiredForStorage>
+    <length>15</length>
+    <pattern>   </pattern>
+    <consultable>true</consultable>
+    <defaultConsultable>false</defaultConsultable>
+    <searchable>true</searchable>
+    <internal>false</internal>
+    <archivable>true</archivable>
+    <label>Application traitant le document</label>
+    <description>Code de la dernière application qui a fait des traitements sur le document avant archivage c'est-à-dire celle qui a versé le document</description>
+  </metaDataReference>
+  <metaDataReference>
+    <shortCode>cop</shortCode>
+    <longCode>CodeOrganismeProprietaire</longCode>
+    <type>String</type>
+    <requiredForArchival>true</requiredForArchival>
+    <requiredForStorage>true</requiredForStorage>
+    <length>5</length>
+    <pattern>   </pattern>
+    <consultable>true</consultable>
+    <defaultConsultable>true</defaultConsultable>
+    <searchable>true</searchable>
+    <internal>false</internal>
+    <archivable>true</archivable>
+    <label>Code organisme propriétaire</label>
+    <description>Code organisme propriétaire du document Cf. Liste des organismes</description>
+  </metaDataReference>
+  <metaDataReference>
+    <shortCode>cog</shortCode>
+    <longCode>CodeOrganismeGestionnaire</longCode>
+    <type>String</type>
+    <requiredForArchival>true</requiredForArchival>
+    <requiredForStorage>true</requiredForStorage>
+    <length>5</length>
+    <pattern>   </pattern>
+    <consultable>true</consultable>
+    <defaultConsultable>true</defaultConsultable>
+    <searchable>true</searchable>
+    <internal>false</internal>
+    <archivable>true</archivable>
+    <label>Code organisme gestionnaire</label>
+    <description>Code organisme gestionnaire de la pièce Cf. Liste des organismes</description>
+  </metaDataReference>
+  <metaDataReference>
+    <shortCode>sac</shortCode>
+    <longCode>SiteAcquisition</longCode>
+    <type>String</type>
+    <requiredForArchival>false</requiredForArchival>
+    <requiredForStorage>false</requiredForStorage>
+    <length>5</length>
+    <pattern>   </pattern>
+    <consultable>true</consultable>
+    <defaultConsultable>false</defaultConsultable>
+    <searchable>true</searchable>
+    <internal>false</internal>
+    <archivable>true</archivable>
+    <label>Site acquisition</label>
+    <description>Code site du lieu d'acquisition dans le cas d'une numérisation Cf. Liste des organismes</description>
+  </metaDataReference>
+  <metaDataReference>
+    <shortCode>sm_document_type</shortCode>
+    <longCode>CodeRND</longCode>
+    <type>String</type>
+    <requiredForArchival>true</requiredForArchival>
+    <requiredForStorage>true</requiredForStorage>
+    <length>14</length>
+    <pattern>   </pattern>
+    <consultable>true</consultable>
+    <defaultConsultable>true</defaultConsultable>
+    <searchable>true</searchable>
+    <internal>false</internal>
+    <archivable>true</archivable>
+    <label>Code référentiel nationale de document</label>
+    <description>Code issu d'un référentiel permettant de typer nationalement un document</description>
+  </metaDataReference>
+  <metaDataReference>
+    <shortCode>vrn</shortCode>
+    <longCode>VersionRND</longCode>
+    <type>String</type>
+    <requiredForArchival>false</requiredForArchival>
+    <requiredForStorage>true</requiredForStorage>
+    <length>10</length>
+    <pattern>   </pattern>
+    <consultable>true</consultable>
+    <defaultConsultable>false</defaultConsultable>
+    <searchable>false</searchable>
+    <internal>false</internal>
+    <archivable>true</archivable>
+    <label>Version de Code RND</label>
+    <description>Numéro permettant d'identifier la version de provenance du code RND renseigné précédemment</description>
+  </metaDataReference>
+  <metaDataReference>
+    <shortCode>dom</shortCode>
+    <longCode>CodeFonction</longCode>
+    <type>String</type>
+    <requiredForArchival>false</requiredForArchival>
+    <requiredForStorage>true</requiredForStorage>
+    <length>2</length>
+    <pattern>   </pattern>
+    <consultable>true</consultable>
+    <defaultConsultable>false</defaultConsultable>
+    <searchable>true</searchable>
+    <internal>false</internal>
+    <archivable>false</archivable>
+    <label>Code fonction RFP</label>
+    <description>Code de la fonction/domaine RFP</description>
+  </metaDataReference>
+  <metaDataReference>
+    <shortCode>act</shortCode>
+    <longCode>CodeActivite</longCode>
+    <type>String</type>
+    <requiredForArchival>false</requiredForArchival>
+    <requiredForStorage>true</requiredForStorage>
+    <length>2</length>
+    <pattern>   </pattern>
+    <consultable>true</consultable>
+    <defaultConsultable>false</defaultConsultable>
+    <searchable>true</searchable>
+    <internal>false</internal>
+    <archivable>false</archivable>
+    <label>Code Activité RFP</label>
+    <description>Code de l'activité RFP</description>
+  </metaDataReference>
+  <metaDataReference>
+    <shortCode>dco</shortCode>
+    <longCode>DureeConservation</longCode>
+    <type>Integer</type>
+    <requiredForArchival>false</requiredForArchival>
+    <requiredForStorage>false</requiredForStorage>
+    <length>-1</length>
+    <pattern>   </pattern>
+    <consultable>true</consultable>
+    <defaultConsultable>false</defaultConsultable>
+    <searchable>true</searchable>
+    <internal>true</internal>
+    <archivable>false</archivable>
+    <label>Durée de conservation</label>
+    <description>Durée de conservation de l'archive au terme duquel l'archive n'est plus accessible en jours</description>
+  </metaDataReference>
+  <metaDataReference>
+    <shortCode>sm_life_cycle_reference_date</shortCode>
+    <longCode>DateDebutConservation</longCode>
+    <type>Date</type>
+    <requiredForArchival>false</requiredForArchival>
+    <requiredForStorage>true</requiredForStorage>
+    <length>10</length>
+    <pattern></pattern>
+    <consultable>true</consultable>
+    <defaultConsultable>false</defaultConsultable>
+    <searchable>true</searchable>
+    <internal>false</internal>
+    <archivable>true</archivable>
+    <label>Date début conservation</label>
+    <description>Date de début de la durée de conservation.</description>
+  </metaDataReference>
+  <metaDataReference>
+    <shortCode>dfc</shortCode>
+    <longCode>DateFinConservation</longCode>
+    <type>Date</type>
+    <requiredForArchival>false</requiredForArchival>
+    <requiredForStorage>false</requiredForStorage>
+    <length>10</length>
+    <pattern></pattern>
+    <consultable>true</consultable>
+    <defaultConsultable>false</defaultConsultable>
+    <searchable>true</searchable>
+    <internal>false</internal>
+    <archivable>false</archivable>
+    <label>Date fin conservation</label>
+    <description>Date de fin de la durée de conservation</description>
+  </metaDataReference>
+  <metaDataReference>
+    <shortCode>gel</shortCode>
+    <longCode>Gel</longCode>
+    <type>Boolean</type>
+    <requiredForArchival>false</requiredForArchival>
+    <requiredForStorage>false</requiredForStorage>
+    <length>-1</length>
+    <pattern>true|false</pattern>
+    <consultable>true</consultable>
+    <defaultConsultable>false</defaultConsultable>
+    <searchable>true</searchable>
+    <internal>true</internal>
+    <archivable>false</archivable>
+    <label>Gel</label>
+    <description>Gel de l'archive permettant de ne pas détruire l'archive </description>
+  </metaDataReference>
+  <metaDataReference>
+    <shortCode>tpa</shortCode>
+    <longCode>TracabilitrePreArchivage</longCode>
+    <type>String</type>
+    <requiredForArchival>false</requiredForArchival>
+    <requiredForStorage>false</requiredForStorage>
+    <length>-1</length>
+    <pattern>   </pattern>
+    <consultable>true</consultable>
+    <defaultConsultable>false</defaultConsultable>
+    <searchable>false</searchable>
+    <internal>false</internal>
+    <archivable>true</archivable>
+    <label>Traçabilité pré archivage</label>
+    <description>Traçabilité en amont du SAE, surtout utilisée dans le cas de la chaine d'acquisition</description>
+  </metaDataReference>
+  <metaDataReference>
+    <shortCode>toa</shortCode>
+    <longCode>TracabilitePostArchivage</longCode>
+    <type>String</type>
+    <requiredForArchival>false</requiredForArchival>
+    <requiredForStorage>false</requiredForStorage>
+    <length>-1</length>
+    <pattern>   </pattern>
+    <consultable>true</consultable>
+    <defaultConsultable>false</defaultConsultable>
+    <searchable>false</searchable>
+    <internal>true</internal>
+    <archivable>false</archivable>
+    <label>Tracabilite post archivage</label>
+    <description>Traçabilité contenue dans le système d'archive, lié à la vie de l'archive</description>
+  </metaDataReference>
+  <metaDataReference>
+    <shortCode>sm_digest</shortCode>
+    <longCode>Hash</longCode>
+    <type>String</type>
+    <requiredForArchival>true</requiredForArchival>
+    <requiredForStorage>true</requiredForStorage>
+    <length>-1</length>
+    <pattern>   </pattern>
+    <consultable>true</consultable>
+    <defaultConsultable>true</defaultConsultable>
+    <searchable>false</searchable>
+    <internal>true</internal>
+    <archivable>true</archivable>
+    <label>Hash du fichier</label>
+    <description>Hash du fichier</description>
+  </metaDataReference>
+  <metaDataReference>
+    <shortCode>sm_digest_algorithm</shortCode>
+    <longCode>TypeHash</longCode>
+    <type>String</type>
+    <requiredForArchival>true</requiredForArchival>
+    <requiredForStorage>true</requiredForStorage>
+    <length>15</length>
+    <pattern>   </pattern>
+    <consultable>true</consultable>
+    <defaultConsultable>false</defaultConsultable>
+    <searchable>false</searchable>
+    <internal>true</internal>
+    <archivable>true</archivable>
+    <label>Type de hash utilisé</label>
+    <description>Identifiant de l'algorithme de hachage utilisé pour calculer le Hash du fichier</description>
+  </metaDataReference>
+  <metaDataReference>
+    <shortCode>nbp</shortCode>
+    <longCode>NbPages</longCode>
+    <type>Integer</type>
+    <requiredForArchival>true</requiredForArchival>
+    <requiredForStorage>true</requiredForStorage>
+    <length>-1</length>
+    <pattern>   </pattern>
+    <consultable>true</consultable>
+    <defaultConsultable>false</defaultConsultable>
+    <searchable>false</searchable>
+    <internal>false</internal>
+    <archivable>true</archivable>
+    <label>Nombre de pages</label>
+    <description>Nombre de pages du document</description>
+  </metaDataReference>
+   <metaDataReference>
+    <shortCode>nfi</shortCode>
+    <longCode>NomFichier</longCode>
+    <type>String</type>
+    <requiredForArchival>false</requiredForArchival>
+    <requiredForStorage>false</requiredForStorage>
+    <length>30</length>
+    <pattern>   </pattern>
+    <consultable>true</consultable>
+    <defaultConsultable>true</defaultConsultable>
+    <searchable>false</searchable>
+    <internal>true</internal>
+    <archivable>false</archivable>
+    <label>Nom du fichier</label>
+    <description>Nom du fichier physique avec extension lié au document</description>
+  </metaDataReference>
+  <metaDataReference>
+    <shortCode>ffi</shortCode>
+    <longCode>FormatFichier</longCode>
+    <type>String</type>
+    <requiredForArchival>true</requiredForArchival>
+    <requiredForStorage>true</requiredForStorage>
+    <length>15</length>
+    <pattern>   </pattern>
+    <consultable>true</consultable>
+    <defaultConsultable>true</defaultConsultable>
+    <searchable>false</searchable>
+    <internal>false</internal>
+    <archivable>true</archivable>
+    <label>Format de fichier</label>
+    <description>Identifiant PRONOM (Cf. Référentiel PRONOM)</description>
+  </metaDataReference>
+  <metaDataReference>
+    <shortCode>sm_size</shortCode>
+    <longCode>TailleFichier</longCode>
+    <type>Long</type>
+    <requiredForArchival>false</requiredForArchival>
+    <requiredForStorage>false</requiredForStorage>
+    <length>-1</length>
+    <pattern>   </pattern>
+    <consultable>true</consultable>
+    <defaultConsultable>true</defaultConsultable>
+    <searchable>false</searchable>
+    <internal>true</internal>
+    <archivable>false</archivable>
+    <label>Taille du fichier</label>
+    <description>Taille du fichier en ko</description>
+  </metaDataReference>
+  <metaDataReference>
+    <shortCode>iti</shortCode>
+    <longCode>IdTraitementMasseInterne</longCode>
+    <type>String</type>
+    <requiredForArchival>false</requiredForArchival>
+    <requiredForStorage>false</requiredForStorage>
+    <length>20</length>
+    <pattern>   </pattern>
+    <consultable>true</consultable>
+    <defaultConsultable>false</defaultConsultable>
+    <searchable>true</searchable>
+    <internal>false</internal>
+    <archivable>false</archivable>
+    <label>Identifiant interne du traitement de masse</label>
+    <description>Identifiant permettant de gérer le rollback sur les traitements de masse</description>
+  </metaDataReference>
+  <metaDataReference>
+    <shortCode>itm</shortCode>
+    <longCode>IdTraitementMasse</longCode>
+    <type>String</type>
+    <requiredForArchival>false</requiredForArchival>
+    <requiredForStorage>false</requiredForStorage>
+    <length>20</length>
+    <pattern>   </pattern>
+    <consultable>true</consultable>
+    <defaultConsultable>false</defaultConsultable>
+    <searchable>true</searchable>
+    <internal>false</internal>
+    <archivable>true</archivable>
+    <label>Identifiant client du traitement de masse</label>
+    <description>Identifiant permettant de gérer les traitements de masse pour l'application cliente</description>
+  </metaDataReference>
+  <metaDataReference>
+    <shortCode>sm_virtual</shortCode>
+    <longCode>DocumentVirtuel</longCode>
+    <type>Boolean</type>
+    <requiredForArchival>false</requiredForArchival>
+    <requiredForStorage>true</requiredForStorage>
+    <length>-1</length>
+    <pattern>   </pattern>
+    <consultable>false</consultable>
+    <defaultConsultable>false</defaultConsultable>
+    <searchable>false</searchable>
+    <internal>true</internal>
+    <archivable>false</archivable>
+    <label>Type de l'objet numérique archivé</label>
+    <description>Information permettant de savoir si le document est autonome container ou reference</description>
+  </metaDataReference>
+  <metaDataReference>
+    <shortCode>sm_start_page</shortCode>
+    <longCode>StartPage</longCode>
+    <type>Integer</type>
+    <requiredForArchival>false</requiredForArchival>
+    <requiredForStorage>false</requiredForStorage>
+    <length>-1</length>
+    <pattern>   </pattern>
+    <consultable>false</consultable>
+    <defaultConsultable>false</defaultConsultable>
+    <searchable>false</searchable>
+    <internal>true</internal>
+    <archivable>false</archivable>
+    <label>Page de début</label>
+    <description>Pour un document virtuel, il s'agit de la page de départ dans le document container</description>
+  </metaDataReference>
+  <metaDataReference>
+    <shortCode>sm_end_page</shortCode>
+    <longCode>EndPage</longCode>
+    <type>Integer</type>
+    <requiredForArchival>false</requiredForArchival>
+    <requiredForStorage>false</requiredForStorage>
+    <length>-1</length>
+    <pattern>   </pattern>
+    <consultable>false</consultable>
+    <defaultConsultable>false</defaultConsultable>
+    <searchable>false</searchable>
+    <internal>true</internal>
+    <archivable>false</archivable>
+    <label>Page de fin</label>
+    <description>Pour un document virtuel, il s'agit de la page de fin dans le document container</description>
+  </metaDataReference>
+  <metaDataReference>
+    <shortCode>cse</shortCode>
+    <longCode>ContratDeService</longCode>
+    <type>String</type>
+    <requiredForArchival>false</requiredForArchival>
+    <requiredForStorage>true</requiredForStorage>
+    <length>-1</length>
+    <pattern>   </pattern>
+    <consultable>true</consultable>
+    <defaultConsultable>true</defaultConsultable>
+    <searchable>false</searchable>
+    <internal>false</internal>
+    <archivable>false</archivable>
+    <label>Contrat de Service</label>
+    <description>Identifiant du contrat de service utilisé pour archiver le document</description>
+  </metaDataReference>
+  <metaDataReference>
+    <shortCode>sm_archivage_date</shortCode>
+    <longCode>DateArchivage</longCode>
+    <type>Date</type>
+    <requiredForArchival>false</requiredForArchival>
+    <requiredForStorage>true</requiredForStorage>
+    <length>10</length>
+    <pattern>   </pattern>
+    <consultable>true</consultable>
+    <defaultConsultable>true</defaultConsultable>
+    <searchable>true</searchable>
+    <internal>true</internal>
+    <archivable>false</archivable>
+    <label>Date archivage</label>
+    <description>Date à laquelle le document a été archivé dans le SAE</description>
+  </metaDataReference>
+  <metaDataReference>
+    <shortCode>sm_version</shortCode>
+    <longCode>VersionNumber</longCode>
+    <type>String</type>
+    <requiredForArchival>false</requiredForArchival>
+    <requiredForStorage>false</requiredForStorage>
+    <length>-1</length>
+    <pattern>   </pattern>
+    <consultable>false</consultable>
+    <defaultConsultable>false</defaultConsultable>
+    <searchable>false</searchable>
+    <internal>true</internal>
+    <archivable>false</archivable>
+    <label>Numéro de la version consultée</label>
+    <description>Numéro de la version consultée du document</description>
+  </metaDataReference>
+ <metaDataReference>
+    <shortCode>sm_modification_date</shortCode>
+    <longCode>DateModification</longCode>
+    <type>Date</type>
+    <requiredForArchival>false</requiredForArchival>
+    <requiredForStorage>false</requiredForStorage>
+    <length>10</length>
+    <pattern>   </pattern>
+    <consultable>false</consultable>
+    <defaultConsultable>false</defaultConsultable>
+    <searchable>false</searchable>
+    <internal>true</internal>
+    <archivable>false</archivable>
+    <label>Date modification (DFCE)</label>
+    <description>Date modification (DFCE)</description>
+  </metaDataReference>
+  </referentiel>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema
+   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+   targetNamespace="http://www.cirtil.fr/sae/sommaireXml"
+   xmlns:som="http://www.cirtil.fr/sae/sommaireXml"
+   xmlns:somres="http://www.cirtil.fr/sae/commun_sommaire_et_resultat"
+   elementFormDefault="qualified"
+   attributeFormDefault="unqualified">
+   
+   
+   <!-- Import des types communs entre sommaire.xsd et resultat.xsd -->
+   <xsd:import 
+      namespace="http://www.cirtil.fr/sae/commun_sommaire_et_resultat"
+      schemaLocation="commun_sommaire_et_resultat.xsd" />
+   
+   
+   <!-- 
+   =======================================
+   L'unique élément autorisé dans sommaire.xml
+   =======================================
+   -->
+   <xsd:element name="sommaire" type="som:sommaireType">
+      <xsd:annotation>
+         <xsd:documentation>L'élément sommaire est l'élément racine d'un fichier sommaire.xml</xsd:documentation>
+      </xsd:annotation>
+   </xsd:element>
+   
+   
+   
+   <!-- 
+   =======================================
+   Définition du sommaire
+   =======================================
+   -->
+   <xsd:complexType name="sommaireType">
+      <xsd:sequence>
+         
+         <!-- Le type du traitement de masse (tout ou rien, partiel) -->
+         <xsd:element name="batchMode" type="somres:batchModeType" minOccurs="1" maxOccurs="1">
+            <xsd:annotation>
+               <xsd:documentation>Le type du traitement de masse</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+
+         <!-- Date de création du sommaire.xml -->
+         <xsd:element name="dateCreation" type="xsd:date" minOccurs="0" maxOccurs="1">
+            <xsd:annotation>
+               <xsd:documentation>Date de création du fichier sommaire.xml (non obligatoire)</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         
+         <!-- Description du traitement -->
+         <xsd:element name="description" type="xsd:string" minOccurs="0" maxOccurs="1">
+            <xsd:annotation>
+               <xsd:documentation>Description du traitement (non obligatoire)</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         
+         <!-- Liste des documents à archiver -->
+         <xsd:element name="documents" type="somres:listeDocumentsType" minOccurs="1" maxOccurs="1">
+            <xsd:annotation>
+               <xsd:documentation>La liste des documents à archiver</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         
+         <!-- Liste des documents virtuels à archiver -->
+         <xsd:element name="documentsVirtuels" type="somres:listeDocumentsVirtuelsType" minOccurs="1" maxOccurs="1">
+            <xsd:annotation>
+               <xsd:documentation>La liste des documents virtuels à archiver</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         
+      </xsd:sequence>
+   </xsd:complexType>   
+   
+
+</xsd:schema>

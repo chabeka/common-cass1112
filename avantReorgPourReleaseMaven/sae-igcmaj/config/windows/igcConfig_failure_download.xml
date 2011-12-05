@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<IgcConfig>
+
+   <repertoireACRacines>
+     c:\sae\certificats\ACRacine
+   </repertoireACRacines>
+
+   <repertoireCRL>
+       c:\sae\certificats\CRL
+   </repertoireCRL>
+
+   <URLTelechargementCRL>
+      <url>http://download.oracle.com/javase/6/docs/api/</url>
+   </URLTelechargementCRL>
+
+
+
+</IgcConfig> 
