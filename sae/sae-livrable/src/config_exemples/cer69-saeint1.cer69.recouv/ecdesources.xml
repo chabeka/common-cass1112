@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-<sources xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
-	<source>
-		<host>ecde.cer69.recouv</host>
-		<basePath>/appl/sae/ecde/ecde_integration/</basePath>
-	</source>
-</sources>
