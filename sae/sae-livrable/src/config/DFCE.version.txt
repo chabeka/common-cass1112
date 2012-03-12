@@ -1,6 +1,0 @@
-La version DFCE compatible avec les applications SAE :
-1.0.0 beta 1
-
-SHA-1 du fichier dfce-webapp.war correspondant :
-3cb4000a0aceab41dc5f9ac61f1483f2fac6e808
-
