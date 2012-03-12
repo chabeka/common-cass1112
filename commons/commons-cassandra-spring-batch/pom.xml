@@ -35,7 +35,7 @@
       <dependency>
          <groupId>fr.urssaf.image.commons</groupId>
          <artifactId>commons-cassandra</artifactId>
-         <version>0.0.1-SNAPSHOT</version>
+         <version>0.0.1</version>
       </dependency>
 
 
