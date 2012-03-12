@@ -5,12 +5,12 @@
    <parent>
       <groupId>fr.urssaf.image.sae</groupId>
       <artifactId>sae</artifactId>
-      <version>12.5.10.2</version>
+      <version>12.5.10.3-SNAPSHOT</version>
    </parent>
 
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-services</artifactId>
-   <version>12.5.10.2</version>
+   <version>12.5.10.3-SNAPSHOT</version>
 
    <name>sae-services</name>
 
@@ -96,7 +96,7 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-bo</artifactId>
-         <version>12.5.10.2</version>
+         <version>12.5.10.3-SNAPSHOT</version>
          <exclusions>
             <exclusion>
                <groupId>log4j</groupId>
@@ -118,7 +118,7 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-mapping</artifactId>
-         <version>12.5.10.2</version>
+         <version>12.5.10.3-SNAPSHOT</version>
          <exclusions>
             <exclusion>
                <groupId>log4j</groupId>
@@ -140,7 +140,7 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-storage</artifactId>
-         <version>12.5.10.2</version>
+         <version>12.5.10.3-SNAPSHOT</version>
          <exclusions>
             <exclusion>
                <groupId>org.slf4j</groupId>
@@ -157,7 +157,7 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-storage-dfce</artifactId>
-         <version>12.5.10.2</version>
+         <version>12.5.10.3-SNAPSHOT</version>
          <exclusions>
             <exclusion>
                <groupId>org.slf4j</groupId>
@@ -174,7 +174,7 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-metadata</artifactId>
-         <version>12.5.10.2</version>
+         <version>12.5.10.3-SNAPSHOT</version>
          <exclusions>
             <exclusion>
                <groupId>log4j</groupId>
@@ -196,7 +196,7 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-ecde</artifactId>
-         <version>12.5.10.2</version>
+         <version>12.5.10.3-SNAPSHOT</version>
          <exclusions>
             <exclusion>
                <groupId>log4j</groupId>
