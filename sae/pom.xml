@@ -19,6 +19,49 @@
       
       <!-- 
       =========================================================
+      Version des dépendances des librairies réutilisables Image
+      =========================================================
+      -->
+      
+      
+      
+      <!-- 
+      ==========================================
+      commons-cassandra
+      ==========================================
+      -->
+      <commons.cassandra>0.0.1</commons.cassandra>
+      
+      <!-- Modèle de dépendance :
+      <dependency>
+         <groupId>fr.urssaf.image.commons</groupId>
+         <artifactId>commons-cassandra</artifactId>
+         <version>${commons.cassandra}</version>
+      </dependency> 
+      -->
+      
+      
+      
+      <!-- 
+      ==========================================
+      commons-cassandra-spring-batch
+      ==========================================
+      -->
+      <commons.cassandra.spring.batch>0.0.1</commons.cassandra.spring.batch>
+      
+      <!-- Modèle de dépendance :
+      <dependency>
+         <groupId>fr.urssaf.image.commons</groupId>
+         <artifactId>commons-cassandra-spring-batch</artifactId>
+         <version>${commons.cassandra.spring.batch}</version>
+      </dependency> 
+      -->
+      
+      
+
+      
+      <!-- 
+      =========================================================
       Version des framework/dépendances
       =========================================================
       -->
@@ -488,8 +531,8 @@
       <module>sae-pile-travaux</module>
             
       <!-- Les applications finales -->
-      <module>sae-igcmaj</module> <!-- dépendance sur sae-igc -->
-      <module>sae-services-executable</module> <!-- dépendance sur sae-services -->
+      <module>sae-igcmaj</module>
+      <module>sae-services-executable</module>
       <module>sae-webservices</module>
       <module>sae-dfce-admin-exploit</module>
       <module>sae-ordonnanceur</module>
