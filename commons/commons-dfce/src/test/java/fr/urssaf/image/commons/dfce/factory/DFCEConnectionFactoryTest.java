@@ -25,7 +25,7 @@ public class DFCEConnectionFactoryTest {
    public void createDFCEConnectionBySAEConfiguration_success() {
 
       File dfceConfiguration = new File(
-            "src\\test\\resources\\config\\sae-config-test.properties");
+            "src/test/resources/config/sae-config-test.properties");
 
       DFCEConnection dfceConnection = DFCEConnectionFactory
             .createDFCEConnectionBySAEConfiguration(dfceConfiguration);
@@ -44,7 +44,7 @@ public class DFCEConnectionFactoryTest {
    public void createDFCEConnectionBySAEConfiguration_failure() {
 
       File saeConfiguration = new File(
-            "src\\test\\resources\\config\\notfound.properties");
+            "src/test/resources/config/notfound.properties");
 
       try {
          DFCEConnectionFactory
@@ -88,7 +88,7 @@ public class DFCEConnectionFactoryTest {
    public void createDFCEConnectionByDFCEConfiguration_success() {
 
       File dfceConfiguration = new File(
-            "src\\test\\resources\\config\\dfce-config-test.properties");
+            "src/test/resources/config/dfce-config-test.properties");
 
       DFCEConnection dfceConnection = DFCEConnectionFactory
             .createDFCEConnectionByDFCEConfiguration(dfceConfiguration);
@@ -107,7 +107,7 @@ public class DFCEConnectionFactoryTest {
    public void createDFCEConnectionByDFCEConfiguration_failure_fileNotFound() {
 
       File dfceConfiguration = new File(
-            "src\\test\\resources\\config\\notfound.properties");
+            "src/test/resources/config/notfound.properties");
 
       try {
          DFCEConnectionFactory
