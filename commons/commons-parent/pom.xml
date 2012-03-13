@@ -21,8 +21,6 @@
       <module>../commons-webservice-parent</module>
       <module>../commons-web</module>
       <module>../commons-signature</module>
-      <module>../commons-cassandra</module>
-      <module>../commons-cassandra-spring-batch</module>
    </modules>
 
    <build>
