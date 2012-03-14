@@ -36,6 +36,10 @@
    <!-- configuration ECDE -->
    <import resource="applicationContext-sae-ordonnanceur-ecde.xml" />
 
+   <!-- configuration DFCE -->
+   <import resource="applicationContext-sae-ordonnanceur-dfce.xml" />
+
+
    <!-- configuration de l'ordonnanceur -->
    <bean id="ordonnanceurConfiguration"
       class="fr.urssaf.image.sae.ordonnanceur.model.OrdonnanceurConfiguration">

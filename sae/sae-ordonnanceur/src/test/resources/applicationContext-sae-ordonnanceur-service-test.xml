@@ -52,4 +52,7 @@
       <qualifier value="captureMasseLauncher" />
    </bean>
 
+   <bean id="DFCESupportImpl" factory-bean="serviceMockFactory"
+      factory-method="createDFCESupport" />
+
 </beans>

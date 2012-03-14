@@ -7,6 +7,8 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobInstance;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 import fr.urssaf.image.sae.ordonnanceur.exception.AucunJobALancerException;
 import fr.urssaf.image.sae.ordonnanceur.service.DecisionService;
 import fr.urssaf.image.sae.ordonnanceur.support.CaptureMasseSupport;
+import fr.urssaf.image.sae.ordonnanceur.support.DFCESupport;
 
 /**
  * Implémentation du sevice {@link DecisionService}
@@ -24,8 +27,29 @@ import fr.urssaf.image.sae.ordonnanceur.support.CaptureMasseSupport;
 @Service
 public class DecisionServiceImpl implements DecisionService {
 
+   private final CaptureMasseSupport captureMasseSupport;
+
+   private final DFCESupport dfceSuppport;
+
+   private static final Logger LOG = LoggerFactory
+         .getLogger(DecisionServiceImpl.class);
+
+   private static final String PREFIX_LOG = "ordonnanceur()";
+
+   /**
+    * 
+    * @param captureMasseSupport
+    *           support pour les traitements de capture en masse
+    * @param dfceSuppport
+    *           service de DFCE
+    */
    @Autowired
-   private CaptureMasseSupport captureMasseSupport;
+   public DecisionServiceImpl(CaptureMasseSupport captureMasseSupport,
+         DFCESupport dfceSuppport) {
+
+      this.captureMasseSupport = captureMasseSupport;
+      this.dfceSuppport = dfceSuppport;
+   }
 
    /**
     * {@inheritDoc}
@@ -67,7 +91,14 @@ public class DecisionServiceImpl implements DecisionService {
 
       }
 
-      // on renvoie la capture en masse enn attente avec le plus petit
+      // vérification que le serveur DFCE est Up!
+      if (!dfceSuppport.isDfceUp()) {
+         LOG.debug("{} - DFCE n'est pas accessible avec la configuration",
+               PREFIX_LOG);
+         throw new AucunJobALancerException();
+      }
+
+      // on renvoie la capture en masse en attente avec le plus petit
       // identifiant
       // on trie les traitements en attente en fonction de leur identifiant
       Collections.sort(jobInstances, new JobInstanceComparator());

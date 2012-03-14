@@ -10,6 +10,8 @@ import java.util.UUID;
 import junit.framework.Assert;
 
 import org.apache.commons.lang.exception.NestableRuntimeException;
+import org.easymock.EasyMock;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.batch.core.JobExecution;
@@ -21,12 +23,13 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.ordonnanceur.exception.AucunJobALancerException;
+import fr.urssaf.image.sae.ordonnanceur.support.DFCESupport;
 import fr.urssaf.image.sae.ordonnanceur.util.HostUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
       "/applicationContext-sae-ordonnanceur-service-test.xml",
-      "/applicationContext-sae-ordonnanceur-mock-test.xml"})
+      "/applicationContext-sae-ordonnanceur-mock-test.xml" })
 @SuppressWarnings("PMD.MethodNamingConventions")
 public class DecisionServiceTest {
 
@@ -52,8 +55,21 @@ public class DecisionServiceTest {
    @Autowired
    private DecisionService decisionService;
 
+   @Autowired
+   private DFCESupport dfceSuppport;
+
+   @After
+   public void after() {
+
+      EasyMock.reset(dfceSuppport);
+   }
+
    @Test
    public void decisionService_success() throws AucunJobALancerException {
+
+      EasyMock.expect(dfceSuppport.isDfceUp()).andReturn(true);
+
+      EasyMock.replay(dfceSuppport);
 
       List<JobExecution> jobsEnCours = new ArrayList<JobExecution>();
 
@@ -78,6 +94,31 @@ public class DecisionServiceTest {
 
       Assert.assertEquals("l'identifiant du job à lancer est inattendu", Long
             .valueOf(256), job.getId());
+
+      EasyMock.verify(dfceSuppport);
+
+   }
+
+   /**
+    * DFCE est down
+    * 
+    */
+   @Test(expected = AucunJobALancerException.class)
+   public void decisionService_failure_dfceIsDown()
+         throws AucunJobALancerException {
+
+      EasyMock.expect(dfceSuppport.isDfceUp()).andReturn(false);
+
+      EasyMock.replay(dfceSuppport);
+
+      List<JobExecution> jobsEnCours = new ArrayList<JobExecution>();
+
+      List<JobInstance> jobsEnAttente = new ArrayList<JobInstance>();
+
+      jobsEnAttente.add(createJobCaptureMasse(458, CAPTURE_MASSE_JN,
+            CER69_SOMMAIRE));
+
+      decisionService.trouverJobALancer(jobsEnAttente, jobsEnCours);
 
    }
 

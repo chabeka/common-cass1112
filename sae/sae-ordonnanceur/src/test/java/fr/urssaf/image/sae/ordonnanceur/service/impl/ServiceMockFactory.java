@@ -3,9 +3,11 @@ package fr.urssaf.image.sae.ordonnanceur.service.impl;
 import org.easymock.EasyMock;
 import org.springframework.stereotype.Component;
 
+import fr.urssaf.image.commons.dfce.service.DFCEConnectionService;
 import fr.urssaf.image.sae.ordonnanceur.service.CoordinationService;
 import fr.urssaf.image.sae.ordonnanceur.service.DecisionService;
 import fr.urssaf.image.sae.ordonnanceur.service.JobService;
+import fr.urssaf.image.sae.ordonnanceur.support.DFCESupport;
 import fr.urssaf.image.sae.ordonnanceur.support.TraitementLauncherSupport;
 
 /**
@@ -60,6 +62,25 @@ public class ServiceMockFactory {
 
       CoordinationService service = EasyMock
             .createMock(CoordinationService.class);
+
+      return service;
+   }
+
+   /**
+    * 
+    * @return instance de {@link DFCEConnectionService}
+    */
+   public final DFCEConnectionService createDFCEConnectionService() {
+
+      DFCEConnectionService service = EasyMock
+            .createMock(DFCEConnectionService.class);
+
+      return service;
+   }
+
+   public final DFCESupport createDFCESupport() {
+
+      DFCESupport service = EasyMock.createMock(DFCESupport.class);
 
       return service;
    }
