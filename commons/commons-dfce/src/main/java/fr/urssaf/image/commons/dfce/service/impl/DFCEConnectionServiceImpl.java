@@ -1,5 +1,6 @@
 package fr.urssaf.image.commons.dfce.service.impl;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.Validate;
 
 import net.docubase.toolkit.service.ServiceProvider;
@@ -34,7 +35,8 @@ public class DFCEConnectionServiceImpl implements DFCEConnectionService {
       ServiceProvider dfceService = ServiceProvider.newServiceProvider();
 
       dfceService.connect(this.dfceConnection.getLogin(), this.dfceConnection
-            .getPassword(), this.dfceConnection.getServerUrl());
+            .getPassword(), ObjectUtils.toString(this.dfceConnection
+            .getServerUrl()));
 
       return dfceService;
    }

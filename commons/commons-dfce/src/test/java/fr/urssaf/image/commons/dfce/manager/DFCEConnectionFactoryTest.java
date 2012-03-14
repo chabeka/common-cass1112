@@ -1,13 +1,15 @@
-package fr.urssaf.image.commons.dfce.factory;
+package fr.urssaf.image.commons.dfce.manager;
 
 import java.io.File;
 import java.util.Properties;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
 import fr.urssaf.image.commons.dfce.exception.DFCEConfigurationFileRuntimeException;
-import fr.urssaf.image.commons.dfce.exception.DFCEConfigurationParameterRuntimeException;
+import fr.urssaf.image.commons.dfce.exception.DFCEConfigurationParameterBadFormatRuntimeException;
+import fr.urssaf.image.commons.dfce.exception.DFCEConfigurationParameterNotFoundRuntimeException;
 import fr.urssaf.image.commons.dfce.model.DFCEConnection;
 
 @SuppressWarnings("PMD.MethodNamingConventions")
@@ -18,6 +20,8 @@ public class DFCEConnectionFactoryTest {
    private static final String PASSWORD_VALUE = "DOCUBASE";
 
    private static final String URL_VALUE = "http://cer69-ds4int:8080/dfce-webapp/toolkit/";
+
+   private static final String URL_SECURE_VALUE = "https://cer69-ds4int:8080/dfce-webapp/toolkit/";
 
    private static final String EXPECTED_MESSAGE = "le message de l'exception est inattendu";
 
@@ -37,7 +41,7 @@ public class DFCEConnectionFactoryTest {
             PASSWORD_VALUE, dfceConnection.getPassword());
 
       Assert.assertEquals("la valeur de l'url est inattendue", URL_VALUE,
-            dfceConnection.getServerUrl());
+            ObjectUtils.toString(dfceConnection.getServerUrl()));
    }
 
    @Test
@@ -66,7 +70,7 @@ public class DFCEConnectionFactoryTest {
    public void createDFCEConnectionBySAEConfiguration_failure_dfceconfig() {
 
       Properties saeProperties = new Properties();
-      saeProperties.setProperty(DFCEConnectionFactory.DFCE_CONFIG, " ");
+      saeProperties.setProperty(DFCEConnectionParameter.DFCE_CONFIG, " ");
 
       try {
          DFCEConnectionFactory
@@ -75,10 +79,10 @@ public class DFCEConnectionFactoryTest {
          Assert
                .fail("Une exception DFCEConfigurationFileRuntimeException doit être levée");
 
-      } catch (DFCEConfigurationParameterRuntimeException e) {
+      } catch (DFCEConfigurationParameterNotFoundRuntimeException e) {
 
          Assert.assertEquals(EXPECTED_MESSAGE, "Le paramètre '"
-               + DFCEConnectionFactory.DFCE_CONFIG
+               + DFCEConnectionParameter.DFCE_CONFIG
                + "' doit être obligatoirement renseigné.", e.getMessage());
       }
 
@@ -100,7 +104,38 @@ public class DFCEConnectionFactoryTest {
             PASSWORD_VALUE, dfceConnection.getPassword());
 
       Assert.assertEquals("la valeur de l'url est inattendue", URL_VALUE,
-            dfceConnection.getServerUrl());
+            ObjectUtils.toString(dfceConnection.getServerUrl()));
+   }
+
+   @Test
+   public void createDFCEConnectionByDFCEConfiguration_success_secure() {
+
+      File dfceConfiguration = new File(
+            "src/test/resources/config/dfce-config-secure-test.properties");
+
+      DFCEConnection dfceConnection = DFCEConnectionFactory
+            .createDFCEConnectionByDFCEConfiguration(dfceConfiguration);
+
+      Assert.assertEquals("la valeur du login est inattendue", LOGIN_VALUE,
+            dfceConnection.getLogin());
+
+      Assert.assertEquals("la valeur du password est inattendue",
+            PASSWORD_VALUE, dfceConnection.getPassword());
+
+      Assert.assertEquals("la valeur de l'url est inattendue",
+            URL_SECURE_VALUE, ObjectUtils.toString(dfceConnection
+                  .getServerUrl()));
+   }
+
+   @Test(expected = DFCEConfigurationParameterBadFormatRuntimeException.class)
+   public void createDFCEConnectionByDFCEConfiguration_failure() {
+
+      File dfceConfiguration = new File(
+            "src/test/resources/config/dfce-config-failure-test.properties");
+
+      DFCEConnectionFactory
+            .createDFCEConnectionByDFCEConfiguration(dfceConfiguration);
+
    }
 
    @Test
@@ -125,59 +160,4 @@ public class DFCEConnectionFactoryTest {
 
    }
 
-   @Test
-   public void createDFCEConnectionByDFCEConfiguration_failure_login() {
-
-      Properties dfceProperties = new Properties();
-      dfceProperties.setProperty(DFCEConnectionFactory.DFCE_LOGIN, " ");
-      dfceProperties.setProperty(DFCEConnectionFactory.DFCE_PASSWORD,
-            PASSWORD_VALUE);
-      dfceProperties.setProperty(DFCEConnectionFactory.DFCE_SERVER_URL,
-            URL_VALUE);
-
-      assertParameter(dfceProperties, DFCEConnectionFactory.DFCE_LOGIN);
-
-   }
-
-   @Test
-   public void createDFCEConnectionByDFCEConfiguration_failure_password() {
-
-      Properties dfceProperties = new Properties();
-      dfceProperties.setProperty(DFCEConnectionFactory.DFCE_LOGIN, LOGIN_VALUE);
-      dfceProperties.setProperty(DFCEConnectionFactory.DFCE_PASSWORD, " ");
-      dfceProperties.setProperty(DFCEConnectionFactory.DFCE_SERVER_URL,
-            URL_VALUE);
-
-      assertParameter(dfceProperties, DFCEConnectionFactory.DFCE_PASSWORD);
-
-   }
-
-   @Test
-   public void createDFCEConnectionByDFCEConfiguration_failure_url() {
-
-      Properties dfceProperties = new Properties();
-      dfceProperties.setProperty(DFCEConnectionFactory.DFCE_LOGIN, LOGIN_VALUE);
-      dfceProperties.setProperty(DFCEConnectionFactory.DFCE_PASSWORD,
-            PASSWORD_VALUE);
-      dfceProperties.setProperty(DFCEConnectionFactory.DFCE_SERVER_URL, " ");
-
-      assertParameter(dfceProperties, DFCEConnectionFactory.DFCE_SERVER_URL);
-
-   }
-
-   private void assertParameter(Properties dfceProperties, String property) {
-
-      try {
-         DFCEConnectionFactory
-               .createDFCEConnectionByDFCEConfiguration(dfceProperties);
-
-         Assert
-               .fail("Une exception DFCEConfigurationParameterRuntimeException doit être levée");
-
-      } catch (DFCEConfigurationParameterRuntimeException e) {
-
-         Assert.assertEquals(EXPECTED_MESSAGE, "Le paramètre '" + property
-               + "' doit être obligatoirement renseigné.", e.getMessage());
-      }
-   }
 }

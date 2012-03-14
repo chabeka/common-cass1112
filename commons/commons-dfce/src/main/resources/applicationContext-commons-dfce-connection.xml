@@ -11,7 +11,7 @@
 
    <!--Instantiation du bean de connexion à la base DFCE -->
    <bean id="dfceConnection"
-      class="fr.urssaf.image.commons.dfce.factory.DFCEConnectionFactory"
+      class="fr.urssaf.image.commons.dfce.manager.DFCEConnectionFactory"
       factory-method="createDFCEConnectionBySAEConfiguration">
       <constructor-arg ref="saeConfigResource" />
    </bean>

@@ -3,11 +3,12 @@ package fr.urssaf.image.commons.dfce.exception;
 import java.text.MessageFormat;
 
 /**
- * Exception levée lorsqu'un paramètre est introuvable dans la configuration
+ * Exception levée lorsqu'un paramètre est introuvable ou que aucune valeur
+ * n'est renseignée dans la configuration
  * 
  * 
  */
-public class DFCEConfigurationParameterRuntimeException extends
+public class DFCEConfigurationParameterNotFoundRuntimeException extends
       RuntimeException {
 
    private static final long serialVersionUID = 1L;
@@ -21,7 +22,7 @@ public class DFCEConfigurationParameterRuntimeException extends
     * @param parameter
     *           paramètre non trouvé dans la configuration
     */
-   public DFCEConfigurationParameterRuntimeException(String parameter) {
+   public DFCEConfigurationParameterNotFoundRuntimeException(String parameter) {
       super();
       this.parameter = parameter;
 

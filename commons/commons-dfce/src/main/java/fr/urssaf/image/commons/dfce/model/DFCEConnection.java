@@ -1,5 +1,7 @@
 package fr.urssaf.image.commons.dfce.model;
 
+import java.net.URL;
+
 /**
  * Paramètre de connexion à DFCE<br>
  * . Ces parmètres sont utilisés lors de l'appel de la méthode
@@ -20,7 +22,7 @@ public class DFCEConnection {
 
    private String password;
 
-   private String serverUrl;
+   private URL serverUrl;
 
    /**
     * @return the login
@@ -55,7 +57,7 @@ public class DFCEConnection {
    /**
     * @return the serverUrl
     */
-   public final String getServerUrl() {
+   public final URL getServerUrl() {
       return serverUrl;
    }
 
@@ -63,7 +65,7 @@ public class DFCEConnection {
     * @param serverUrl
     *           the serverUrl to set
     */
-   public final void setServerUrl(String serverUrl) {
+   public final void setServerUrl(URL serverUrl) {
       this.serverUrl = serverUrl;
    }
 

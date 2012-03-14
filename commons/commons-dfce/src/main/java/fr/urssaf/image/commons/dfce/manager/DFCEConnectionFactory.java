@@ -1,16 +1,20 @@
-package fr.urssaf.image.commons.dfce.factory;
+package fr.urssaf.image.commons.dfce.manager;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 
 import fr.urssaf.image.commons.dfce.exception.DFCEConfigurationFileRuntimeException;
-import fr.urssaf.image.commons.dfce.exception.DFCEConfigurationParameterRuntimeException;
+import fr.urssaf.image.commons.dfce.exception.DFCEConfigurationParameterNotFoundRuntimeException;
+import fr.urssaf.image.commons.dfce.exception.DFCEConfigurationRuntimeException;
 import fr.urssaf.image.commons.dfce.model.DFCEConnection;
 import fr.urssaf.image.commons.dfce.util.PropertiesUtils;
+import fr.urssaf.image.commons.dfce.util.UrlUtils;
 
 /**
  * Classe d'instanciation d'objet de type {@link DFCEConnection}
@@ -22,30 +26,6 @@ public final class DFCEConnectionFactory {
    private DFCEConnectionFactory() {
 
    }
-
-   /**
-    * Paramètre indiquant le paramètre de configuration du chemin complet du
-    * fichier de configuration de DFCE
-    */
-   public static final String DFCE_CONFIG = "sae.dfce.cheminFichierConfig";
-
-   /**
-    * Paramètre indiquant le paramètre de configuration du login de connexion à
-    * DFCE
-    */
-   public static final String DFCE_LOGIN = "db.login";
-
-   /**
-    * Paramètre indiquant le paramètre de configuration du mot de passe de
-    * connexion à DFCE
-    */
-   public static final String DFCE_PASSWORD = "db.password";
-
-   /**
-    * Paramètre indiquant le paramètre de configuration l'URL de connexion à
-    * DFCE
-    */
-   public static final String DFCE_SERVER_URL = "db.serverUrl";
 
    /**
     * 
@@ -80,10 +60,12 @@ public final class DFCEConnectionFactory {
          Properties saeProperties) {
 
       // récupération de la valeur du chemin complet du fichier de configuration
-      String dfceConfigResource = saeProperties.getProperty(DFCE_CONFIG);
+      String dfceConfigResource = saeProperties
+            .getProperty(DFCEConnectionParameter.DFCE_CONFIG);
 
       if (StringUtils.isBlank(dfceConfigResource)) {
-         throw new DFCEConfigurationParameterRuntimeException(DFCE_CONFIG);
+         throw new DFCEConfigurationParameterNotFoundRuntimeException(
+               DFCEConnectionParameter.DFCE_CONFIG);
       }
 
       DFCEConnection dfceConnection = createDFCEConnectionByDFCEConfiguration(new File(
@@ -125,34 +107,48 @@ public final class DFCEConnectionFactory {
    public static DFCEConnection createDFCEConnectionByDFCEConfiguration(
          Properties dfceProperties) {
 
+      // validation de la configuration
+      DFCEConnectionValidation.validate(dfceProperties);
+
       DFCEConnection dfceConnection = new DFCEConnection();
 
       // récupération de la valeur du login
-      String loginValue = dfceProperties.getProperty(DFCE_LOGIN);
-
-      if (StringUtils.isBlank(loginValue)) {
-         throw new DFCEConfigurationParameterRuntimeException(DFCE_LOGIN);
-      }
-
+      String loginValue = dfceProperties
+            .getProperty(DFCEConnectionParameter.DFCE_LOGIN);
       dfceConnection.setLogin(loginValue);
 
       // récupération de la valeur du password
-      String passwordValue = dfceProperties.getProperty(DFCE_PASSWORD);
-
-      if (StringUtils.isBlank(passwordValue)) {
-         throw new DFCEConfigurationParameterRuntimeException(DFCE_PASSWORD);
-      }
-
+      String passwordValue = dfceProperties
+            .getProperty(DFCEConnectionParameter.DFCE_PASSWORD);
       dfceConnection.setPassword(passwordValue);
 
       // récupération de la valeur de l'URL
-      String serverUrlValue = dfceProperties.getProperty(DFCE_SERVER_URL);
 
-      if (StringUtils.isBlank(serverUrlValue)) {
-         throw new DFCEConfigurationParameterRuntimeException(DFCE_SERVER_URL);
+      // HOSTNAME
+      String hostName = dfceProperties
+            .getProperty(DFCEConnectionParameter.DFCE_HOSTNAME);
+
+      // HOSTPORT
+      int hostPort = Integer.parseInt(dfceProperties
+            .getProperty(DFCEConnectionParameter.DFCE_HOSTPORT));
+
+      // CONTEXTROOT
+      String contextRoot = dfceProperties
+            .getProperty(DFCEConnectionParameter.DFCE_CONTEXTROOT);
+
+      // SECURE
+      boolean secure = Boolean.parseBoolean(dfceProperties
+            .getProperty(DFCEConnectionParameter.DFCE_SECURE));
+
+      URL serverUrl;
+      try {
+         serverUrl = UrlUtils
+               .createURL(hostName, hostPort, contextRoot, secure);
+      } catch (MalformedURLException e) {
+         throw new DFCEConfigurationRuntimeException(e);
       }
 
-      dfceConnection.setServerUrl(serverUrlValue);
+      dfceConnection.setServerUrl(serverUrl);
 
       return dfceConnection;
 
