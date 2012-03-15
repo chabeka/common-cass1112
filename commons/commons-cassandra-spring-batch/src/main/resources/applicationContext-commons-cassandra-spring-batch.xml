@@ -49,61 +49,7 @@
       <constructor-arg ref="keyspace" />
    </bean>
 
-   <!-- Client de connexion à zookeeper -->
-   <bean id="zkClient" depends-on="localZookeeperServer"
-      class="fr.urssaf.image.commons.zookeeper.ZookeeperClientFactory"
-      factory-method="getClient">
-      <constructor-arg value="${zookeeper.hosts}" />
-      <constructor-arg value="${zookeeper.namespace}" />
-   </bean>
-
-   <!--
-      le keyspace cassandra à utiliser pour stocker les méta-data des
-      jobs
-   -->
-   <bean id="keyspace" class="me.prettyprint.hector.api.factory.HFactory" depends-on="localCassandraServer"
-      factory-method="createKeyspace">
-      <constructor-arg value="${cassandra.keyspace}" />
-      <constructor-arg ref="cluster" />
-      <constructor-arg ref="consistencyLevelPolicy" />
-      <constructor-arg type="me.prettyprint.cassandra.service.FailoverPolicy" value="ON_FAIL_TRY_ALL_AVAILABLE" />
-      <constructor-arg ref="cassandraCredentials" />
-   </bean>
-   
-   <bean id="cluster" class="me.prettyprint.cassandra.service.ThriftCluster">
-      <!-- Le nom du cluster n'est pas important -->
-      <constructor-arg value="SpringBatchCluster" />
-      <constructor-arg ref="cassandraHostConfigurator" />
-   </bean>
-   <bean id="cassandraHostConfigurator"
-      class="me.prettyprint.cassandra.service.CassandraHostConfigurator">
-      <constructor-arg value="${cassandra.hosts}" />
-   </bean>
-   <bean id="consistencyLevelPolicy"
-      class="me.prettyprint.cassandra.model.ConfigurableConsistencyLevel">
-      <property name="defaultReadConsistencyLevel" value="QUORUM" />
-      <property name="defaultWriteConsistencyLevel" value="QUORUM" />
-   </bean>
-   <bean id="cassandraCredentials"
-      class="org.springframework.beans.factory.config.MapFactoryBean">
-      <property name="targetMapClass">
-         <value>java.util.HashMap</value>
-      </property>
-      <property name="sourceMap">
-         <map>
-            <entry key="username" value="${cassandra.username}" />
-            <entry key="password" value="${cassandra.password}" />
-         </map>
-      </property>
-   </bean>
-
-   <bean id="localZookeeperServer" class="fr.urssaf.image.commons.cassandra.spring.batch.helper.LocalZookeeperServerBean">
-      <property name="shouldInit" value="${zookeeper.local}"/>
-      <property name="port" value="${zookeeper.port}"/>
-   </bean>
-   <bean id="localCassandraServer" class="fr.urssaf.image.commons.cassandra.spring.batch.helper.LocalCassandraServerBean">
-      <property name="shouldInit" value="${cassandra.local}"/>
-      <property name="dataSet" value="dataSet-commons-cassandra-spring-batch.xml"/>
-   </bean>
+   <!-- Importation de la définition du keyspace et de zkClient -->
+   <import resource="classpath*:/applicationContext-commons-cassandra.xml" />
 
 </beans>

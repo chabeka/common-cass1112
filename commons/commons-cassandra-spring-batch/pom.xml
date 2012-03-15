@@ -34,7 +34,7 @@
       <dependency>
          <groupId>fr.urssaf.image.commons</groupId>
          <artifactId>commons-cassandra</artifactId>
-         <version>0.0.1</version>
+         <version>0.0.2-SNAPSHOT</version>
       </dependency>
 
 
@@ -123,25 +123,13 @@
       </dependency>
 
 
-      <!-- JUNIT et Cassandra-Unit -->
+      <!-- JUNIT -->
 
       <dependency>
          <groupId>junit</groupId>
          <artifactId>junit</artifactId>
          <version>${junit.version}</version>
          <scope>test</scope>
-      </dependency>
-      <dependency>
-         <groupId>org.cassandraunit</groupId>
-         <artifactId>cassandra-unit</artifactId>
-         <version>1.0.3.1</version>
-         <scope>compile</scope>
-         <exclusions>
-            <exclusion>
-               <groupId>org.slf4j</groupId>
-               <artifactId>slf4j-log4j12</artifactId>
-            </exclusion>
-         </exclusions>
       </dependency>
 
       <!--  Loggers -->

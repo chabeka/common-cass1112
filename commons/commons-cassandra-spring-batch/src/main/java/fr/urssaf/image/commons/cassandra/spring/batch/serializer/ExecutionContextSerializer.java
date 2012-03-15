@@ -7,7 +7,6 @@ import java.util.Map.Entry;
 
 import org.springframework.batch.item.ExecutionContext;
 
-import fr.urssaf.image.commons.cassandra.serializer.JettisonSerializer;
 import fr.urssaf.image.commons.cassandra.serializer.XMLSerializer;
 
 import me.prettyprint.cassandra.serializers.AbstractSerializer;

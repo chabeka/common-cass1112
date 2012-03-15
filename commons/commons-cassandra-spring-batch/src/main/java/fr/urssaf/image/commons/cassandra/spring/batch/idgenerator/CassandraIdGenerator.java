@@ -6,10 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.netflix.curator.framework.CuratorFramework;
-import com.netflix.curator.framework.recipes.locks.InterProcessMutex;
-import com.netflix.curator.framework.state.ConnectionState;
-import com.netflix.curator.framework.state.ConnectionStateListener;
-
 import fr.urssaf.image.commons.zookeeper.ZookeeperMutex;
 
 import me.prettyprint.cassandra.serializers.LongSerializer;
@@ -123,16 +119,6 @@ public class CassandraIdGenerator implements IdGenerator {
     */
    public final int getLockTimeOut() {
       return lockTimeOut;
-   }
-
-   /**
-    * Juste une feinte pour pouvoir modifier le booléen depuis une classe anonyme
-    * (java doesn't support true closures)
-    */
-   private static class LockInfo {
-      // CHECKSTYLE:OFF : c'est une classe privée
-      public boolean lockOk = true;
-      // CHECKSTYLE:ON
    }
 
 }
