@@ -1,10 +1,9 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <modelVersion>4.0.0</modelVersion>
    <groupId>fr.urssaf.image.commons</groupId>
    <artifactId>commons-dfce</artifactId>
    <name>commons-dfce</name>
-   <version>1.0.1-CRTL-1-SNAPSHOT</version>
+   <version>1.0.1-CRTL-1</version>
    <description>module pour l'intégration de DFCE</description>
 
    <properties>
@@ -159,13 +158,13 @@
    <!-- Configuration SVN pour le plug-in maven-release -->
    <scm>
       <url>
-        scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/sae/
+        scm:svn:svn://cer69-svn.cer69.recouv/image/java/tags/commons-dfce-1.0.1-CRTL-1
       </url>
       <developerConnection>
-         scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/sae/
+         scm:svn:svn://cer69-svn.cer69.recouv/image/java/tags/commons-dfce-1.0.1-CRTL-1
       </developerConnection>
       <connection>
-         scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/sae/
+         scm:svn:svn://cer69-svn.cer69.recouv/image/java/tags/commons-dfce-1.0.1-CRTL-1
       </connection>
    </scm>
 
