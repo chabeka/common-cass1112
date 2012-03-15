@@ -105,12 +105,7 @@ create column family IndexCounter
     and rows_cached = 0
     and keys_cached = 0;
 
-create column family SystemEventLog
-    with comparator = BytesType
-    and rows_cached = 0
-    and keys_cached = 0;
-    
-create column family SystemEventLogByTime
+create column family SystemEventLogByTimeSerialized
     with comparator = 'CompositeType(DateType,UUIDType)'
     and rows_cached = 0
     and keys_cached = 0;
@@ -126,10 +121,11 @@ create column family DocEventLog
     {column_name : 646f6355554944,validation_class : UUIDType, index_name: DocEventLog_docUUID_index,index_type : KEYS}
     ];
 
-create column family DocEventLogByTime
+
+create column family DocEventLogByTimeSerialized
     with comparator = 'CompositeType(DateType,UUIDType)'
-     and rows_cached = 0
-     and keys_cached = 0;
+    and rows_cached = 0
+    and keys_cached = 0;
 
 create column family User
     with comparator = BytesType
@@ -141,19 +137,20 @@ create column family UserGroup
     with comparator = BytesType;
     
 /* ADMIN group creation */
-set UserGroup[ascii('ADMIN')][ascii('groupName')] = 'ADMIN';
-set UserGroup[ascii('ADMIN')][ascii('TYPE_ATTRIBUTE_NAME')] = 'com.docubase.dfce.core.impl.UserGroupModel';
+set UserGroup[ascii('ADMIN')][ascii('groupName')] = ascii('ADMIN'); 
+set UserGroup[ascii('ADMIN')][ascii('TYPE_ATTRIBUTE_NAME')] = ascii('com.docubase.dfce.core.impl.UserGroupModel'); 
 
-set User[ascii('_ADMIN')][ascii('login')] = '_ADMIN';
-set User[ascii('_ADMIN')][ascii('hashedPassword')] = '7b0c998547fb9ec2fd0544b49b5ef994cf3ed2b16522a1c99ef30f7cae4a82a5';
-set User[ascii('_ADMIN')][ascii('TYPE_ATTRIBUTE_NAME')] = 'com.docubase.dfce.core.impl.UserModel';
-set User[ascii('_ADMIN')][ascii('enabled')] = bytes(1);
-set User[ascii('_ADMIN')][ascii('accountNonExpired')] = bytes(1);
-set User[ascii('_ADMIN')][ascii('credentialsNonExpired')] = bytes(1);
-set User[ascii('_ADMIN')][ascii('accountNonLocked')] = bytes(1);
-set User[ascii('_ADMIN')][ascii('groups.size')] = integer(1);
-set User[ascii('_ADMIN')][ascii('groups.type')] = 'SET';
-set User[ascii('_ADMIN')][ascii('groups.0')] = 'ADMIN';
+set User[ascii('_ADMIN')][ascii('login')] = ascii('_ADMIN'); 
+set User[ascii('_ADMIN')][ascii('hashedPassword')] = ascii('7b0c998547fb9ec2fd0544b49b5ef994cf3ed2b16522a1c99ef30f7cae4a82a5'); 
+set User[ascii('_ADMIN')][ascii('TYPE_ATTRIBUTE_NAME')] = ascii('com.docubase.dfce.core.impl.UserModel'); 
+set User[ascii('_ADMIN')][ascii('enabled')] = bytes(1); 
+set User[ascii('_ADMIN')][ascii('accountNonExpired')] = bytes(1); 
+set User[ascii('_ADMIN')][ascii('credentialsNonExpired')] = bytes(1); 
+set User[ascii('_ADMIN')][ascii('accountNonLocked')] = bytes(1); 
+set User[ascii('_ADMIN')][ascii('groups.size')] = integer(1); 
+set User[ascii('_ADMIN')][ascii('groups.type')] = ascii('SET'); 
+set User[ascii('_ADMIN')][ascii('groups.0')] = ascii('ADMIN'); 
+
 
 create column family Versions 
 	with comparator = BytesType;
@@ -174,3 +171,21 @@ create column family Annotations
 create column family Jobs
     with comparator = BytesType;
 
+CREATE COLUMN FAMILY JobInstance
+    WITH comparator=UTF8Type
+    AND column_metadata=[{column_name: jobInstanceId, validation_class: LongType, index_type: KEYS},{column_name: jobInstanceName, validation_class: UTF8Type, index_type: KEYS}];
+    
+CREATE COLUMN FAMILY JobExecution
+    WITH comparator=UTF8Type
+    AND column_metadata=[{column_name: jobInstanceId, validation_class: LongType, index_type: KEYS},{column_name: jobInstanceName, validation_class: UTF8Type, index_type: KEYS}];
+
+CREATE COLUMN FAMILY StepExecution
+    WITH comparator=UTF8Type
+    AND column_metadata=[{column_name: jobExecutionId, validation_class: LongType, index_type: KEYS},{column_name: stepName, validation_class: UTF8Type, index_type: KEYS},{column_name: jobInstanceName, validation_class: UTF8Type, index_type: KEYS}];
+    
+CREATE COLUMN FAMILY BatchCounter
+	WITH default_validation_class=CounterColumnType
+	AND comparator=UTF8Type;
+	
+CREATE COLUMN FAMILY Locker
+	AND comparator=UTF8Type;

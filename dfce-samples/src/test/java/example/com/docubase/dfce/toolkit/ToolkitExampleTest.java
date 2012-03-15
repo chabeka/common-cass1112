@@ -1,12 +1,16 @@
 package example.com.docubase.dfce.toolkit;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import net.docubase.toolkit.model.ToolkitFactory;
@@ -17,7 +21,9 @@ import net.docubase.toolkit.model.document.Document;
 import net.docubase.toolkit.model.reference.Category;
 import net.docubase.toolkit.model.reference.FileReference;
 import net.docubase.toolkit.model.search.ChainedFilter;
+import net.docubase.toolkit.model.search.SearchQuery;
 import net.docubase.toolkit.model.search.SearchResult;
+import net.docubase.toolkit.model.search.SortedSearchQuery;
 import net.docubase.toolkit.model.user.User;
 import net.docubase.toolkit.model.user.UserPermission;
 import net.docubase.toolkit.service.ServiceProvider;
@@ -101,7 +107,7 @@ public class ToolkitExampleTest {
 		.getUserAdministrationService();
 
 	if (userAdminService.loadUser("MyUser") != null) {
-	    // ce test ne passe qu'une fois, la seconde fois le user existe dï¿½jï¿½
+	    // ce test ne passe qu'une fois, la seconde fois le user existe déjà
 	    return;
 	}
 
@@ -152,11 +158,11 @@ public class ToolkitExampleTest {
 	documentCamus = storeService.storeDocument(documentCamus, "camus",
 		"pdf", new FileInputStream(fileCamus));
 
-	// crï¿½ating document for Andrï¿½ Breton's file
+	// creating document for André Breton's file
 	Document documentBreton = toolkitFactory.createDocumentTag(testBase);
 
 	// adding metadata to document
-	documentBreton.addCriterion(NAME, "Andrï¿½ Breton");
+	documentBreton.addCriterion(NAME, "André Breton");
 	documentBreton.addCriterion(CIVILITY, "MR");
 	documentBreton.addCriterion(NB_NOVELS, 28);
 	documentBreton.addCriterion(BIRTHDATE, new GregorianCalendar(19, 1,
@@ -168,7 +174,7 @@ public class ToolkitExampleTest {
 		"pdf", new FileInputStream(fileBreton));
 
 	// WRONG DICTIONNARY
-	// crï¿½ating document for Andrï¿½ Breton's file
+	// créating document for André Breton's file
 	Document documentBeauvoir = toolkitFactory.createDocumentTag(testBase);
 
 	// adding metadata to document
@@ -204,37 +210,129 @@ public class ToolkitExampleTest {
 	assertNotNull(documentByUUID);
 
 	// NAME Search
-	searchResult = searchService
-		.search("name:Albert\\ Camus", 10, testBase);
+	SearchQuery searchQuery = toolkitFactory.createMonobasePagedQuery(
+		"name:Albert\\ Camus", 10, testBase);
+	searchResult = searchService.search(searchQuery);
 	assertEquals(1, searchResult.getTotalHits());
 	Document onlyDocument = searchResult.getDocuments().get(0);
 	assertEquals(18, onlyDocument.getCriterions(NB_NOVELS).get(0).getWord());
 
 	// AND Search
-	searchResult = searchService.search(
+	searchQuery = toolkitFactory.createMonobasePagedQuery(
 		"name:Albert\\ Camus AND nb_novels:18", 10, testBase);
+	searchResult = searchService.search(searchQuery);
 	assertEquals(1, searchResult.getTotalHits());
 
 	// OR Search
-	searchResult = searchService.search(
+	searchQuery = toolkitFactory.createMonobasePagedQuery(
 		"name:Albert\\ Camus OR nb_novels:28", 10, testBase);
+	searchResult = searchService.search(searchQuery);
 	assertEquals(2, searchResult.getTotalHits());
 
 	// Joker Search
-	searchResult = searchService.search("name:a*", 10, testBase);
+	searchQuery = toolkitFactory.createMonobasePagedQuery("name:a*", 10,
+		testBase);
+	searchResult = searchService.search(searchQuery);
 	assertEquals(2, searchResult.getTotalHits());
 
 	// Range Search
-	searchResult = searchService
-		.search("nb_novels:[1 TO 40]", 10, testBase);
+	searchQuery = toolkitFactory.createMonobasePagedQuery(
+		"nb_novels:[1 TO 40]", 10, testBase);
+	searchResult = searchService.search(searchQuery);
 	assertEquals(2, searchResult.getTotalHits());
 
 	// Range Search and Filter
+	searchQuery = toolkitFactory.createMonobasePagedQuery(
+		"nb_novels:[1 TO 40]", 10, testBase);
 	ChainedFilter filter = toolkitFactory.createChainedFilter();
 	filter.addTermFilter("name", "Albert Camus");
-	searchResult = searchService.search("nb_novels:[1 TO 40]", 10,
-		testBase, filter);
+	searchQuery.setChainedFilter(filter);
+	searchResult = searchService.search(searchQuery);
 	assertEquals(1, searchResult.getTotalHits());
+
+	// Iterator on name:a* query
+	searchQuery = toolkitFactory.createMonobaseQuery("name:a*", testBase);
+	Iterator<Document> documentIterator = searchService
+		.createDocumentIterator(searchQuery);
+	int count = 0;
+	while (documentIterator.hasNext()) {
+	    Document document = documentIterator.next();
+	    String nameValue = document.getSingleCriterion(NAME).getWord()
+		    .toString().toLowerCase();
+	    assertTrue(nameValue.startsWith("a"));
+	    count++;
+	}
+	assertEquals(2, count);
+
+    }
+
+    @Test
+    public void testSortAndPagination() throws FileNotFoundException,
+	    TagControlException, ExceededSearchLimitException,
+	    SearchQueryParseException {
+	StoreService storeService = serviceProvider.getStoreService();
+	SearchService searchService = serviceProvider.getSearchService();
+
+	for (int i = 1; i <= 18; i++) {
+	    Document document = toolkitFactory.createDocumentTag(testBase);
+	    String stringNumber = Integer.toString(i);
+	    if (i < 10) {
+		stringNumber = "0" + stringNumber;
+	    }
+
+	    document.addCriterion(NAME, "Louis " + stringNumber);
+	    document.addCriterion(CIVILITY, "MR");
+	    document.addCriterion(NB_NOVELS, 0);
+	    document.addCriterion(BIRTHDATE,
+		    new GregorianCalendar(7, 10, 1913).getTime());
+
+	    // storing Camus' file
+	    File fileCamus = TestUtils.getFile("example/camus.pdf");
+	    document = storeService.storeDocument(document, "camus", "pdf",
+		    new FileInputStream(fileCamus));
+	}
+
+	// sorting
+	SortedSearchQuery sortedQuery = toolkitFactory
+		.createMonobaseSortedQuery("name:louis*", testBase);
+	sortedQuery.setSortCategoryName(NAME);
+
+	SearchResult searchResult = searchService.search(sortedQuery);
+	assertEquals(18, searchResult.getDocuments().size());
+	assertEquals("Louis 01", searchResult.getDocuments().get(0)
+		.getSingleCriterion(NAME).getWord().toString());
+	assertEquals("Louis 18", searchResult.getDocuments().get(17)
+		.getSingleCriterion(NAME).getWord().toString());
+
+	// reverse sorting and page size
+	sortedQuery = toolkitFactory.createMonobaseSortedQuery("name:louis*",
+		testBase);
+	sortedQuery.setSortCategoryName(NAME);
+	sortedQuery.setReversedSort(true);
+	sortedQuery.setOffset(0);
+	sortedQuery.setPageSize(10);
+
+	searchResult = searchService.search(sortedQuery);
+	assertEquals(10, searchResult.getDocuments().size());
+	assertEquals("Louis 18", searchResult.getDocuments().get(0)
+		.getSingleCriterion(NAME).getWord().toString());
+	assertEquals("Louis 09", searchResult.getDocuments().get(9)
+		.getSingleCriterion(NAME).getWord().toString());
+
+	// pagination
+	sortedQuery = toolkitFactory.createMonobaseSortedQuery("name:louis*",
+		testBase);
+	sortedQuery.setSortCategoryName(NAME);
+	sortedQuery.setOffset(10);
+	sortedQuery.setPageSize(10);
+
+	searchResult = searchService.search(sortedQuery);
+	assertEquals(8, searchResult.getDocuments().size());
+	assertEquals("Louis 11", searchResult.getDocuments().get(0)
+		.getSingleCriterion(NAME).getWord().toString());
+	assertEquals("Louis 18", searchResult.getDocuments().get(7)
+		.getSingleCriterion(NAME).getWord().toString());
+
     }
 
     @Test
@@ -242,7 +340,7 @@ public class ToolkitExampleTest {
 	// connecting to DFCE
 	ServiceProvider serviceProvider = ServiceProvider.newServiceProvider();
 	serviceProvider.connect("User", "Password",
-		"http://cer69imageint9.cer69.recouv:8080/dfce-webapp/toolkit/");
+		"http://localhost:9090/dfce-webapp/toolkit/");
 
 	// testing if server up
 	assertTrue(serviceProvider.isServerUp());
@@ -263,7 +361,7 @@ public class ToolkitExampleTest {
 	FileReference fileReference = adminService.createFileReference(
 		"XXthCentury", "pdf", new FileInputStream(fileSand));
 
-	// crï¿½ating Beauvoir document
+	// créating Beauvoir document
 	Document documentBeauvoir = toolkitFactory.createDocumentTag(testBase);
 	documentBeauvoir.addCriterion(NAME, "Simone de Beauvoir");
 	documentBeauvoir.addCriterion(CIVILITY, "MRS");
@@ -275,7 +373,7 @@ public class ToolkitExampleTest {
 	documentBeauvoir = storeService.storeVirtualDocument(documentBeauvoir,
 		fileReference, 1, 3);
 
-	// crï¿½ating Sartre Document document
+	// créating Sartre Document document
 	Document documentSartre = toolkitFactory.createDocumentTag(testBase);
 	documentSartre.addCriterion(NAME, "Jean-Paul Sartre");
 	documentSartre.addCriterion(CIVILITY, "MS");

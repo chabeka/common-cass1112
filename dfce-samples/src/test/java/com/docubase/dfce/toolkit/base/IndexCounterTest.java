@@ -17,6 +17,13 @@ import net.docubase.toolkit.model.reference.Category;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.batch.core.JobParametersInvalidException;
+import org.springframework.batch.core.UnexpectedJobExecutionException;
+import org.springframework.batch.core.launch.JobParametersNotFoundException;
+import org.springframework.batch.core.launch.NoSuchJobException;
+import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
+import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.repository.JobRestartException;
 
 import com.docubase.dfce.exception.TagControlException;
 import com.docubase.dfce.toolkit.TestUtils;
@@ -24,13 +31,19 @@ import com.docubase.dfce.toolkit.TestUtils;
 public class IndexCounterTest extends AbstractTestCaseCreateAndPrepareBase {
 
     @Before
-    public void setupEach() {
+    public void setupEach() throws NoSuchJobException,
+	    JobExecutionAlreadyRunningException, JobRestartException,
+	    JobInstanceAlreadyCompleteException, JobParametersInvalidException,
+	    JobParametersNotFoundException, UnexpectedJobExecutionException {
 	serviceProvider.getStorageAdministrationService()
 		.updateAllIndexesUsageCount();
     }
 
     private List<Document> storeNDocumentsAndUpdateIndexCounts(int nbDocuments)
-	    throws TagControlException {
+	    throws TagControlException, NoSuchJobException,
+	    JobExecutionAlreadyRunningException, JobRestartException,
+	    JobInstanceAlreadyCompleteException, JobParametersInvalidException,
+	    JobParametersNotFoundException, UnexpectedJobExecutionException {
 	java.util.List<Document> storedDocuments = new ArrayList<Document>();
 	assertTrue("La base " + BASEID + " n'est pas démarrée.",
 		base.isStarted());
@@ -78,7 +91,11 @@ public class IndexCounterTest extends AbstractTestCaseCreateAndPrepareBase {
     }
 
     @Test
-    public void testDocInsertionCounts() throws TagControlException {
+    public void testDocInsertionCounts() throws TagControlException,
+	    NoSuchJobException, JobExecutionAlreadyRunningException,
+	    JobRestartException, JobInstanceAlreadyCompleteException,
+	    JobParametersInvalidException, JobParametersNotFoundException,
+	    UnexpectedJobExecutionException {
 	Category category0Reference = serviceProvider
 		.getStorageAdministrationService().getCategory(catNames[0]);
 	Category category1Reference = serviceProvider

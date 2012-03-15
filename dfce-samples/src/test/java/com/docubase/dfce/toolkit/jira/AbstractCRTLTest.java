@@ -33,7 +33,7 @@ public abstract class AbstractCRTLTest extends AbstractTestBase {
 	}
 
 	base = ToolkitFactory.getInstance().createBase(
-		CTRL64Test.class.getSimpleName());
+		CRTL64Test.class.getSimpleName());
 
 	Category categoryNCE = serviceProvider
 		.getStorageAdministrationService().findOrCreateCategory(NCE,

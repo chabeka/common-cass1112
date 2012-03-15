@@ -6,6 +6,7 @@ import net.docubase.toolkit.model.base.BaseCategory;
 import net.docubase.toolkit.model.document.Criterion;
 import net.docubase.toolkit.model.document.Document;
 import net.docubase.toolkit.model.search.SearchResult;
+import net.docubase.toolkit.model.search.SortedSearchQuery;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -23,7 +24,7 @@ import com.docubase.dfce.exception.SearchQueryParseException;
 import com.docubase.dfce.toolkit.TestUtils;
 import com.docubase.dfce.toolkit.base.AbstractTestCaseCreateAndPrepareBase;
 
-public class RichQueriesTestWithSort extends
+public class SearchQueryRichQueriesTestWithSort extends
 	AbstractTestCaseCreateAndPrepareBase {
     private static BaseCategory c0;
     private static BaseCategory c1;
@@ -75,8 +76,17 @@ public class RichQueriesTestWithSort extends
     public void testSimpleQuerySortByC0() throws ExceededSearchLimitException,
 	    SearchQueryParseException {
 	String query = c1.getName() + ":enfant";
-	SearchResult search = serviceProvider.getSearchService().search(query,
-		1000, 0, base, null, 1000, c0.getName(), false);
+
+	SortedSearchQuery sortedQuery = ToolkitFactory.getInstance()
+		.createMonobaseSortedQuery(query, base);
+	sortedQuery.setSortCategoryName(c0.getName());
+	sortedQuery.setReversedSort(false);
+	sortedQuery.setOffset(0);
+	sortedQuery.setPageSize(1000);
+	sortedQuery.setSearchLimit(1000);
+
+	SearchResult search = serviceProvider.getSearchService().search(
+		sortedQuery);
 	Document document = search.getDocuments().get(0);
 	Criterion criterion = document.getSingleCriterion(c0.getName());
 	assertEquals("testfilter0", criterion.getWord());
@@ -86,9 +96,18 @@ public class RichQueriesTestWithSort extends
     public void testMutlibaseQuerySortByC0()
 	    throws ExceededSearchLimitException, SearchQueryParseException {
 	String query = c1.getName() + ":enfant";
-	SearchResult search = serviceProvider.getSearchService()
-		.multiBaseSearch(query, 1000, null, 1000, 0, c0.getName(),
-			false);
+
+	SortedSearchQuery sortedQuery = ToolkitFactory.getInstance()
+		.createMonobaseSortedQuery(query, base);
+	sortedQuery.setSortCategoryName(c0.getName());
+	sortedQuery.setReversedSort(false);
+	sortedQuery.setOffset(0);
+	sortedQuery.setPageSize(1000);
+	sortedQuery.setSearchLimit(1000);
+
+	SearchResult search = serviceProvider.getSearchService().search(
+		sortedQuery);
+
 	Document document = search.getDocuments().get(0);
 	Criterion criterion = document.getSingleCriterion(c0.getName());
 	assertEquals("testfilter0", criterion.getWord());
@@ -98,8 +117,18 @@ public class RichQueriesTestWithSort extends
     public void testSimpleQuerySortByC0Reverse()
 	    throws ExceededSearchLimitException, SearchQueryParseException {
 	String query = c1.getName() + ":enfant";
-	SearchResult search = serviceProvider.getSearchService().search(query,
-		1000, 0, base, null, 1000, c0.getName(), true);
+
+	SortedSearchQuery sortedQuery = ToolkitFactory.getInstance()
+		.createMonobaseSortedQuery(query, base);
+	sortedQuery.setSortCategoryName(c0.getName());
+	sortedQuery.setReversedSort(true);
+	sortedQuery.setOffset(0);
+	sortedQuery.setPageSize(1000);
+	sortedQuery.setSearchLimit(1000);
+
+	SearchResult search = serviceProvider.getSearchService().search(
+		sortedQuery);
+
 	Document document = search.getDocuments().get(0);
 	Criterion criterion = document.getSingleCriterion(c0.getName());
 	assertEquals("testfilter9", criterion.getWord());
@@ -109,9 +138,19 @@ public class RichQueriesTestWithSort extends
     public void testSimpleQuerySortByArchivageDate()
 	    throws ExceededSearchLimitException, SearchQueryParseException {
 	String query = c1.getName() + ":enfant";
-	SearchResult search = serviceProvider.getSearchService().search(query,
-		1000, 0, base, null, 1000,
-		SystemFieldName.SM_ARCHIVAGE_DATE.getName(), false);
+
+	SortedSearchQuery sortedQuery = ToolkitFactory.getInstance()
+		.createMonobaseSortedQuery(query, base);
+	sortedQuery.setSortCategoryName(SystemFieldName.SM_ARCHIVAGE_DATE
+		.getName());
+	sortedQuery.setReversedSort(false);
+	sortedQuery.setOffset(0);
+	sortedQuery.setPageSize(1000);
+	sortedQuery.setSearchLimit(1000);
+
+	SearchResult search = serviceProvider.getSearchService().search(
+		sortedQuery);
+
 	Document document = search.getDocuments().get(0);
 	Criterion criterion = document.getSingleCriterion(c0.getName());
 	assertEquals("testfilter0", criterion.getWord());

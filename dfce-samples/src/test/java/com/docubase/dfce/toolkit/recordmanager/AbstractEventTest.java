@@ -77,6 +77,7 @@ public abstract class AbstractEventTest extends
 	RMDocEvent evtLog = ToolkitFactory.getInstance().createRMDocEvent();
 	evtLog.setDocUUID(KEY_DOC);
 	evtLog.setUsername("_ADMIN");
+	evtLog.setDocVersion("0.0.0");
 	evtLog.setEventType(DocEventLogType.CREATE_DOCUMENT);
 	return evtLog;
     }

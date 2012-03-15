@@ -3,15 +3,15 @@
    <modelVersion>4.0.0</modelVersion>
    <groupId>net.docubase</groupId>
    <artifactId>dfce-samples</artifactId>
-   <version>1.0.0-alpha-04</version>
+   <version>1.1.0</version>
    <name>Tests unitaires fournis par Docubase</name>
 
    <properties>
       <dfce.serialization>1.0.1</dfce.serialization>
-      <dfce.toolkit.client>1.0.1</dfce.toolkit.client>
-      <dfce.toolkit.pojo>1.0.1</dfce.toolkit.pojo>
-      <dfce.toolkit.service>1.0.1</dfce.toolkit.service>
-      <dfce.commons>1.0.1</dfce.commons>
+      <dfce.toolkit.client>1.1.0</dfce.toolkit.client>
+      <dfce.toolkit.pojo>1.1.0</dfce.toolkit.pojo>
+      <dfce.toolkit.service>1.1.0</dfce.toolkit.service>
+      <dfce.commons>1.1.0</dfce.commons>
    </properties>
 
    <build>
@@ -38,24 +38,28 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
-               <argLine>-da</argLine>
+               <argLine>-ea</argLine>
             </configuration>
          </plugin>
       </plugins>
    </build>
 
-	<dependencies>
-		<dependency>
-			<groupId>com.docubase</groupId>
-			<artifactId>dfce-pojo</artifactId>
-			<version>${dfce.toolkit.pojo}</version>
-		</dependency>
-		<dependency>
-			<groupId>commons-configuration</groupId>
-			<artifactId>commons-configuration</artifactId>
-			<version>1.6</version>
-		</dependency>
-	<dependency>
+   <dependencies>
+
+      <dependency>
+         <groupId>org.springframework.batch</groupId>
+         <artifactId>spring-batch-core</artifactId>
+         <version>2.1.8.RELEASE</version>
+      </dependency>
+
+      <!-- <dependency> <groupId>com.docubase</groupId> <artifactId>dfce-pojo</artifactId> 
+         <version>${dfce.toolkit.pojo}</version> </dependency> -->
+      <dependency>
+         <groupId>commons-configuration</groupId>
+         <artifactId>commons-configuration</artifactId>
+         <version>1.6</version>
+      </dependency>
+      <dependency>
          <groupId>net.docubase</groupId>
          <artifactId>dfce-serialization</artifactId>
          <version>${dfce.serialization}</version>

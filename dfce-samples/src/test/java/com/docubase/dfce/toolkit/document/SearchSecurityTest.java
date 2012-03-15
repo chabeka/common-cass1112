@@ -14,6 +14,13 @@ import net.docubase.toolkit.model.user.UserSearchFilter;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.springframework.batch.core.JobParametersInvalidException;
+import org.springframework.batch.core.UnexpectedJobExecutionException;
+import org.springframework.batch.core.launch.JobParametersNotFoundException;
+import org.springframework.batch.core.launch.NoSuchJobException;
+import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
+import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.repository.JobRestartException;
 
 import com.docubase.dfce.exception.ExceededSearchLimitException;
 import com.docubase.dfce.exception.ObjectAlreadyExistsException;
@@ -34,7 +41,10 @@ public class SearchSecurityTest extends AbstractTestCaseCreateAndPrepareBase {
     private static String MALE_ADULT_AND_ADO_RESTRICTED_USER_PASSWORD = "MALE_ADULT_AND_ADO_RESTRICTED_USER_PASSWORD";
 
     @BeforeClass
-    public static void setupAll() {
+    public static void setupAll() throws NoSuchJobException,
+	    JobExecutionAlreadyRunningException, JobRestartException,
+	    JobInstanceAlreadyCompleteException, JobParametersInvalidException,
+	    JobParametersNotFoundException, UnexpectedJobExecutionException {
 	System.out.println("****** testCompleteQueryScenarii ******");
 	Document tag;
 
@@ -143,9 +153,8 @@ public class SearchSecurityTest extends AbstractTestCaseCreateAndPrepareBase {
     @Test
     public void testCompositeQuery() throws ExceededSearchLimitException,
 	    SearchQueryParseException {
-	String query = "(" + c1.getName() + ":adulte" + " AND "
-		+ c2.getName() + ":masculin" + ") OR ("
-		+ c1.getName() + ":enfant" + " AND "
+	String query = "(" + c1.getName() + ":adulte" + " AND " + c2.getName()
+		+ ":masculin" + ") OR (" + c1.getName() + ":enfant" + " AND "
 		+ c2.getName() + ":feminin)";
 	assertEquals(20, searchLucene(query, 1000, null));
 
@@ -163,8 +172,8 @@ public class SearchSecurityTest extends AbstractTestCaseCreateAndPrepareBase {
     @Test
     public void testRange() throws ExceededSearchLimitException,
 	    SearchQueryParseException {
-	String query = c2.getName() + ":masculin" + " AND "
-		+ c1.getName() + ":[adulte TO enfant]";
+	String query = c2.getName() + ":masculin" + " AND " + c1.getName()
+		+ ":[adulte TO enfant]";
 	assertEquals(20, searchLucene(query, 1000, null));
 
 	serviceProvider.connect(ADULT_RESTRICTED_USERNAME,
@@ -181,8 +190,8 @@ public class SearchSecurityTest extends AbstractTestCaseCreateAndPrepareBase {
     @Test
     public void testAnd() throws ExceededSearchLimitException,
 	    SearchQueryParseException {
-	String query = c1.getName() + ":adulte" + " AND "
-		+ c4.getName() + ":10";
+	String query = c1.getName() + ":adulte" + " AND " + c4.getName()
+		+ ":10";
 	assertEquals(30, searchLucene(query, 1000, null));
 
 	serviceProvider.connect(ADULT_RESTRICTED_USERNAME,

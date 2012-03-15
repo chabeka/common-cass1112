@@ -14,7 +14,7 @@ import com.docubase.dfce.exception.SearchQueryParseException;
 import com.docubase.dfce.exception.TagControlException;
 import com.docubase.dfce.toolkit.TestUtils;
 
-public class CTRL64Test extends AbstractCRTLTest {
+public class CRTL64Test extends AbstractCRTLTest {
     private void storeDocuments() {
 	Document document = ToolkitFactory.getInstance()
 		.createDocumentTag(base);

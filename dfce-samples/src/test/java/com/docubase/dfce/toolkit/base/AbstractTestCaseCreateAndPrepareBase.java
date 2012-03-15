@@ -19,6 +19,7 @@ import net.docubase.toolkit.model.base.CategoryDataType;
 import net.docubase.toolkit.model.document.Document;
 import net.docubase.toolkit.model.reference.FileReference;
 import net.docubase.toolkit.model.search.ChainedFilter;
+import net.docubase.toolkit.model.search.SearchQuery;
 import net.docubase.toolkit.model.search.SearchResult;
 import net.docubase.toolkit.model.user.User;
 import net.docubase.toolkit.model.user.UserGroup;
@@ -119,8 +120,13 @@ public abstract class AbstractTestCaseCreateAndPrepareBase extends
 	    ChainedFilter chainedFilter) throws ExceededSearchLimitException,
 	    SearchQueryParseException {
 
-	SearchResult search = serviceProvider.getSearchService().search(query,
-		searchLimit, base, chainedFilter);
+	SearchQuery searchQuery = ToolkitFactory.getInstance()
+		.createMonobaseQuery(query, base);
+	searchQuery.setChainedFilter(chainedFilter);
+	searchQuery.setSearchLimit(searchLimit);
+
+	SearchResult search = serviceProvider.getSearchService().search(
+		searchQuery);
 	if (search == null) {
 	    return 0;
 	}

@@ -11,7 +11,7 @@ import org.junit.runners.JUnit4;
 import com.docubase.dfce.toolkit.AbstractTestBase;
 
 @RunWith(JUnit4.class)
-public class CTRL37Test {
+public class CRTL37Test {
     public static final String BASE_ID = "RICHGED";
 
     private static final String ADM_LOGIN = "_ADMIN";

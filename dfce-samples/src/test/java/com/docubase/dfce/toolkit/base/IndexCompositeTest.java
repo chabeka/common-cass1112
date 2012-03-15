@@ -12,6 +12,13 @@ import net.docubase.toolkit.model.reference.CompositeIndex;
 import net.docubase.toolkit.model.search.SearchResult;
 
 import org.junit.Test;
+import org.springframework.batch.core.JobParametersInvalidException;
+import org.springframework.batch.core.UnexpectedJobExecutionException;
+import org.springframework.batch.core.launch.JobParametersNotFoundException;
+import org.springframework.batch.core.launch.NoSuchJobException;
+import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
+import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.repository.JobRestartException;
 
 import com.docubase.dfce.exception.ExceededSearchLimitException;
 import com.docubase.dfce.exception.SearchQueryParseException;
@@ -61,7 +68,11 @@ public class IndexCompositeTest extends AbstractTestCaseCreateAndPrepareBase {
 
     @Test
     public void testCompositeSearch() throws ExceededSearchLimitException,
-	    SearchQueryParseException, InterruptedException {
+	    SearchQueryParseException, InterruptedException,
+	    NoSuchJobException, JobExecutionAlreadyRunningException,
+	    JobRestartException, JobInstanceAlreadyCompleteException,
+	    JobParametersInvalidException, JobParametersNotFoundException,
+	    UnexpectedJobExecutionException {
 
 	ToolkitFactory toolkitFactory = ToolkitFactory.getInstance();
 	BaseCategory baseCategory0 = base.getBaseCategory(catNames[0]);

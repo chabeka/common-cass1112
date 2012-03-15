@@ -27,6 +27,13 @@ import net.docubase.toolkit.service.ged.StoreService;
 
 import org.joda.time.DateTime;
 import org.junit.Test;
+import org.springframework.batch.core.JobParametersInvalidException;
+import org.springframework.batch.core.UnexpectedJobExecutionException;
+import org.springframework.batch.core.launch.JobParametersNotFoundException;
+import org.springframework.batch.core.launch.NoSuchJobException;
+import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
+import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.repository.JobRestartException;
 
 import com.docubase.dfce.toolkit.TestUtils;
 import com.docubase.dfce.toolkit.base.AbstractTestCaseCreateAndPrepareBase;
@@ -43,12 +50,17 @@ public class ArchiveClientTest extends AbstractTestCaseCreateAndPrepareBase {
     private final StoreService storeService = serviceProvider.getStoreService();
 
     @Test
-    public void runDocumentLogsArchiveJob() throws IOException {
+    public void runDocumentLogsArchiveJob() throws IOException,
+	    NoSuchJobException, JobExecutionAlreadyRunningException,
+	    JobRestartException, JobInstanceAlreadyCompleteException,
+	    JobParametersInvalidException, JobParametersNotFoundException,
+	    UnexpectedJobExecutionException {
 	assertFalse(archiveService.isDocumentLogsArchiveRunning());
 
 	RMDocEvent rmDocEvent = ToolkitFactory.getInstance().createRMDocEvent();
 	UUID randomUUID = UUID.randomUUID();
 	rmDocEvent.setDocUUID(randomUUID);
+	rmDocEvent.setDocVersion("0.0.0");
 	rmDocEvent.setEventDescription("eventDescription");
 	rmDocEvent.setEventType(DocEventLogType.CREATE_DOCUMENT);
 	rmDocEvent.setUsername("username");
@@ -70,6 +82,8 @@ public class ArchiveClientTest extends AbstractTestCaseCreateAndPrepareBase {
 		lastDocumentLogsArchiveUUID);
 
 	InputStream documentFile = storeService.getDocumentFile(archive);
+	//
+	// System.out.println(IOUtils.readLines(documentFile));
 
 	BufferedReader bufferedReader = new BufferedReader(
 		new InputStreamReader(documentFile));
@@ -89,7 +103,11 @@ public class ArchiveClientTest extends AbstractTestCaseCreateAndPrepareBase {
     }
 
     @Test
-    public void runDocumentLogsArchiveJobChaining() throws IOException {
+    public void runDocumentLogsArchiveJobChaining() throws IOException,
+	    NoSuchJobException, JobExecutionAlreadyRunningException,
+	    JobRestartException, JobInstanceAlreadyCompleteException,
+	    JobParametersInvalidException, JobParametersNotFoundException,
+	    UnexpectedJobExecutionException {
 	assertFalse(archiveService.isDocumentLogsArchiveRunning());
 
 	archiveService.createNextDocumentLogsArchive();
@@ -150,7 +168,11 @@ public class ArchiveClientTest extends AbstractTestCaseCreateAndPrepareBase {
     }
 
     @Test
-    public void runSystemLogsArchiveJob() throws IOException {
+    public void runSystemLogsArchiveJob() throws IOException,
+	    NoSuchJobException, JobExecutionAlreadyRunningException,
+	    JobRestartException, JobInstanceAlreadyCompleteException,
+	    JobParametersInvalidException, JobParametersNotFoundException,
+	    UnexpectedJobExecutionException {
 	assertFalse(archiveService.isDocumentLogsArchiveRunning());
 
 	RMSystemEvent rmSystemEvent = ToolkitFactory.getInstance()
@@ -185,7 +207,10 @@ public class ArchiveClientTest extends AbstractTestCaseCreateAndPrepareBase {
     }
 
     @Test
-    public void runArchiveLogChainingReport() {
+    public void runArchiveLogChainingReport() throws NoSuchJobException,
+	    JobExecutionAlreadyRunningException, JobRestartException,
+	    JobInstanceAlreadyCompleteException, JobParametersInvalidException,
+	    JobParametersNotFoundException, UnexpectedJobExecutionException {
 	Date lastSucessfullRunDate = archiveService
 		.getLastSucessfulDocumentLogsArchiveRunDate();
 	if (lastSucessfullRunDate == null) {

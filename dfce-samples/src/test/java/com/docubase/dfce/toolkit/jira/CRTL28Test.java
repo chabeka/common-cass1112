@@ -36,7 +36,7 @@ import com.docubase.dfce.toolkit.base.AbstractTestCaseCreateAndPrepareBase;
  * 
  */
 @RunWith(Parameterized.class)
-public class CTRL28Test extends AbstractTestCaseCreateAndPrepareBase {
+public class CRTL28Test extends AbstractTestCaseCreateAndPrepareBase {
 
     private final int nbThread;
 
@@ -46,7 +46,7 @@ public class CTRL28Test extends AbstractTestCaseCreateAndPrepareBase {
 		{ 10, 0 }, { 50, 0 }, { 200, 0 }, });
     }
 
-    public CTRL28Test(int input, int expected) {
+    public CRTL28Test(int input, int expected) {
 	this.nbThread = input;
 	// pas besoin d'expected dans cette classe
     }

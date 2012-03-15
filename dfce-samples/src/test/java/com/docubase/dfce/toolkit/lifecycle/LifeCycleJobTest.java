@@ -14,6 +14,13 @@ import net.docubase.toolkit.model.reference.LifeCycleRule;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.springframework.batch.core.JobParametersInvalidException;
+import org.springframework.batch.core.UnexpectedJobExecutionException;
+import org.springframework.batch.core.launch.JobParametersNotFoundException;
+import org.springframework.batch.core.launch.NoSuchJobException;
+import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
+import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.repository.JobRestartException;
 
 import com.docubase.dfce.exception.FrozenDocumentException;
 import com.docubase.dfce.exception.ObjectAlreadyExistsException;
@@ -83,7 +90,11 @@ public class LifeCycleJobTest extends AbstractTestCaseCreateAndPrepareBase {
     }
 
     @Test
-    public void testRunJob1Year() throws FrozenDocumentException {
+    public void testRunJob1Year() throws FrozenDocumentException,
+	    NoSuchJobException, JobParametersNotFoundException,
+	    JobRestartException, JobExecutionAlreadyRunningException,
+	    JobInstanceAlreadyCompleteException,
+	    UnexpectedJobExecutionException, JobParametersInvalidException {
 	calendar.setTime(new Date());
 	calendar.add(Calendar.YEAR, -1);
 	Document document = storeDocumentWithRuleAndDate(
@@ -100,7 +111,11 @@ public class LifeCycleJobTest extends AbstractTestCaseCreateAndPrepareBase {
     }
 
     @Test
-    public void testRunJob2YearsAfterOneYear() throws FrozenDocumentException {
+    public void testRunJob2YearsAfterOneYear() throws FrozenDocumentException,
+	    NoSuchJobException, JobParametersNotFoundException,
+	    JobRestartException, JobExecutionAlreadyRunningException,
+	    JobInstanceAlreadyCompleteException,
+	    UnexpectedJobExecutionException, JobParametersInvalidException {
 	calendar.setTime(new Date());
 	calendar.add(Calendar.YEAR, -1);
 	Document document = storeDocumentWithRuleAndDate(
@@ -117,7 +132,11 @@ public class LifeCycleJobTest extends AbstractTestCaseCreateAndPrepareBase {
 
     @Test
     public void testRunJobOnOverloadedFinalDate()
-	    throws FrozenDocumentException {
+	    throws FrozenDocumentException, NoSuchJobException,
+	    JobParametersNotFoundException, JobRestartException,
+	    JobExecutionAlreadyRunningException,
+	    JobInstanceAlreadyCompleteException,
+	    UnexpectedJobExecutionException, JobParametersInvalidException {
 	Document document = storeDocumentWithRuleAndDate(
 		lifeCycleRule2Years.getDocumentType(), new Date(), new Date());
 	UUID documentUUID = document.getUuid();

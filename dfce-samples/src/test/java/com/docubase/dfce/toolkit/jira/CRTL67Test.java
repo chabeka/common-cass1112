@@ -19,7 +19,7 @@ import com.docubase.dfce.exception.SearchQueryParseException;
 import com.docubase.dfce.exception.TagControlException;
 import com.docubase.dfce.toolkit.TestUtils;
 
-public class CTRL67Test extends AbstractCRTLTest {
+public class CRTL67Test extends AbstractCRTLTest {
     private static final String SRN_VALUE = "SRN_VALUE";
     private static final Date CREATION_DATE;
     private static final Date LIFE_CYCLE_REFERENCE_DATE;

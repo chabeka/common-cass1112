@@ -21,7 +21,7 @@ import com.docubase.dfce.exception.TagControlException;
 import com.docubase.dfce.toolkit.TestUtils;
 import com.docubase.dfce.toolkit.base.AbstractTestCaseCreateAndPrepareBase;
 
-public class CTRL54Test extends AbstractTestCaseCreateAndPrepareBase {
+public class CRTL54Test extends AbstractTestCaseCreateAndPrepareBase {
 
     private final ToolkitFactory toolkitFactory = ToolkitFactory.getInstance();
     private final SearchService searchService = serviceProvider

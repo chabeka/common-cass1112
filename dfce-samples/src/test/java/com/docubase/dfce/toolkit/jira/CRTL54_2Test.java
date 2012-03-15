@@ -25,9 +25,9 @@ import com.docubase.dfce.exception.TagControlException;
 import com.docubase.dfce.toolkit.AbstractTestBase;
 import com.docubase.dfce.toolkit.TestUtils;
 
-public class CTRL54_2Test extends AbstractTestBase {
+public class CRTL54_2Test extends AbstractTestBase {
 
-    private static Logger logger = Logger.getLogger(CTRL54_2Test.class);
+    private static Logger logger = Logger.getLogger(CRTL54_2Test.class);
 
     private static BaseCategory key;
     private static BaseCategory id;
@@ -41,7 +41,7 @@ public class CTRL54_2Test extends AbstractTestBase {
 
     @BeforeClass
     public static void setUp() {
-	logger.info("setUp " + CTRL54_2Test.class.getCanonicalName());
+	logger.info("setUp " + CRTL54_2Test.class.getCanonicalName());
 	connect();
 	key = createBaseCategory("key", CategoryDataType.STRING, true, false,
 		(short) 1, (short) 1, true);
@@ -63,7 +63,7 @@ public class CTRL54_2Test extends AbstractTestBase {
 	serviceProvider.getBaseAdministrationService().deleteBase(base1);
 	serviceProvider.getBaseAdministrationService().deleteBase(base2);
 	disconnect();
-	logger.info("tearDown " + CTRL54_2Test.class.getCanonicalName());
+	logger.info("tearDown " + CRTL54_2Test.class.getCanonicalName());
     }
 
     private static void storeDocuments(int nb, Base base, boolean virtual) {

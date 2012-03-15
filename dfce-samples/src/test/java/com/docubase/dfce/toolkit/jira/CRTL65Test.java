@@ -21,7 +21,7 @@ import com.docubase.dfce.exception.SearchQueryParseException;
 import com.docubase.dfce.exception.TagControlException;
 import com.docubase.dfce.toolkit.TestUtils;
 
-public class CTRL65Test extends AbstractCRTLTest {
+public class CRTL65Test extends AbstractCRTLTest {
     private static final String NCE_VALUE = "169996144948345571";
 
     private void storeDocuments() {

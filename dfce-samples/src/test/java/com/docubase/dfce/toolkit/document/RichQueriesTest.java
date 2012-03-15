@@ -7,6 +7,13 @@ import net.docubase.toolkit.model.document.Document;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.springframework.batch.core.JobParametersInvalidException;
+import org.springframework.batch.core.UnexpectedJobExecutionException;
+import org.springframework.batch.core.launch.JobParametersNotFoundException;
+import org.springframework.batch.core.launch.NoSuchJobException;
+import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
+import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.repository.JobRestartException;
 
 import com.docubase.dfce.exception.ExceededSearchLimitException;
 import com.docubase.dfce.exception.SearchQueryParseException;
@@ -20,7 +27,10 @@ public class RichQueriesTest extends AbstractTestCaseCreateAndPrepareBase {
     private static BaseCategory c4;
 
     @BeforeClass
-    public static void setupAll() {
+    public static void setupAll() throws NoSuchJobException,
+	    JobExecutionAlreadyRunningException, JobRestartException,
+	    JobInstanceAlreadyCompleteException, JobParametersInvalidException,
+	    JobParametersNotFoundException, UnexpectedJobExecutionException {
 	System.out.println("****** testCompleteQueryScenarii ******");
 	Document tag;
 
@@ -81,9 +91,8 @@ public class RichQueriesTest extends AbstractTestCaseCreateAndPrepareBase {
     @Test
     public void testCompositeQuery() throws ExceededSearchLimitException,
 	    SearchQueryParseException {
-	String query = "(" + c1.getName() + ":adulte" + " AND "
-		+ c2.getName() + ":masculin" + ") OR ("
-		+ c1.getName() + ":enfant" + " AND "
+	String query = "(" + c1.getName() + ":adulte" + " AND " + c2.getName()
+		+ ":masculin" + ") OR (" + c1.getName() + ":enfant" + " AND "
 		+ c2.getName() + ":feminin)";
 	assertEquals(25, searchLucene(query, 1000, null));
     }
@@ -91,8 +100,8 @@ public class RichQueriesTest extends AbstractTestCaseCreateAndPrepareBase {
     @Test
     public void testRange() throws ExceededSearchLimitException,
 	    SearchQueryParseException {
-	String query = c1.getName() + ":adulte" + " AND "
-		+ c2.getName() + ":[feminin TO masculin]";
+	String query = c1.getName() + ":adulte" + " AND " + c2.getName()
+		+ ":[feminin TO masculin]";
 	assertEquals(40, searchLucene(query, 1000, null));
     }
 
@@ -106,8 +115,8 @@ public class RichQueriesTest extends AbstractTestCaseCreateAndPrepareBase {
     @Test
     public void testAnd() throws ExceededSearchLimitException,
 	    SearchQueryParseException {
-	String query = c1.getName() + ":adulte" + " AND "
-		+ c4.getName() + ":10";
+	String query = c1.getName() + ":adulte" + " AND " + c4.getName()
+		+ ":10";
 	assertEquals(40, searchLucene(query, 1000, null));
     }
 }
