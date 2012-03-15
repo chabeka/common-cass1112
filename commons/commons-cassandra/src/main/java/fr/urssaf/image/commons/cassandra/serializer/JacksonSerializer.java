@@ -46,4 +46,13 @@ public class JacksonSerializer<T> extends AbstractSerializer<T> {
       }
    }
 
+   public final String toString(Object obj) {
+      try {
+         String str = mapper.writeValueAsString(obj);
+         return str;
+      } catch (Exception e) {
+         throw new SerializationException(e);  
+      }
+   }
+   
 }
