@@ -1,9 +1,10 @@
 package fr.urssaf.image.sae.pile.travaux.exception;
 
 import java.text.MessageFormat;
+import java.util.UUID;
 
 /**
- * Erreur levée lorsqu'on essaie de lancer un job qui n'existe pas
+ * Erreur levée lorsqu'on essaie de lancer ou de réserver un jobRequest qui n'existe pas
  * 
  * 
  */
@@ -11,26 +12,26 @@ public class JobInexistantException extends Exception {
 
    private static final long serialVersionUID = 1L;
 
-   private static final String EXCEPTION_MESSAGE = "Impossible de lancer le traitement n°{0} car il n''existe pas.";
+   private static final String EXCEPTION_MESSAGE = "Impossible de lancer ou de réserver le traitement n°{0} car il n''existe pas.";
 
-   private final long instanceId;
+   private final UUID jobRequestId;
 
    /**
     * 
-    * @param instanceId
-    *           identifiant du job qui n'existe pas
+    * @param jobRequestId
+    *           identifiant du jobRequest qui n'existe pas
     */
-   public JobInexistantException(long instanceId) {
+   public JobInexistantException(UUID jobRequestId) {
       super();
-      this.instanceId = instanceId;
+      this.jobRequestId = jobRequestId;
    }
 
    /**
     * 
     * @return identifiant du job qui n'existe pas
     */
-   public final long getInstanceId() {
-      return this.instanceId;
+   public final UUID getInstanceId() {
+      return this.jobRequestId;
    }
 
    /**
@@ -47,7 +48,7 @@ public class JobInexistantException extends Exception {
    @Override
    public final String getMessage() {
 
-      String message = MessageFormat.format(EXCEPTION_MESSAGE, instanceId);
+      String message = MessageFormat.format(EXCEPTION_MESSAGE, jobRequestId);
 
       return message;
    }

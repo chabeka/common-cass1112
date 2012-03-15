@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
+import fr.urssaf.image.sae.pile.travaux.exception.LockTimeoutException;
 
 /**
  * Service de la pile des travaux
@@ -40,9 +41,11 @@ public interface JobQueueService {
     *            le traitement est déjà réservé
     * @throws JobInexistantException
     *            le traitement n'existe pas
+    * @throws LockTimeoutException 
+    *            timeout lors du lock
     */
    void reserveJob(UUID idJob, String hostname, Date dateReservation)
-         throws JobDejaReserveException, JobInexistantException;
+         throws JobDejaReserveException, JobInexistantException, LockTimeoutException;
 
    /**
     * Met à jour un traitement avant de l'exécuter.<br>
@@ -51,8 +54,10 @@ public interface JobQueueService {
     *           identifiant du traitement
     * @param dateDebutTraitement
     *           date d'exécution du traitement
+    * @throws JobInexistantException 
     */
-   void startingJob(UUID idJob, Date dateDebutTraitement);
+   @SuppressWarnings("PMD.LongVariable")
+   void startingJob(UUID idJob, Date dateDebutTraitement) throws JobInexistantException;
 
    /**
     * Met à jour le traitement après son exécution.<br>

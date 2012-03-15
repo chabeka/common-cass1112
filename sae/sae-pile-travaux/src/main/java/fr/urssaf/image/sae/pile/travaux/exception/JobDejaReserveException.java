@@ -1,6 +1,7 @@
 package fr.urssaf.image.sae.pile.travaux.exception;
 
 import java.text.MessageFormat;
+import java.util.UUID;
 
 /**
  * Erreur levée lorsqu'on essaie de réserver un traitement qui l'est déjà.
@@ -13,22 +14,22 @@ public class JobDejaReserveException extends Exception {
 
    private static final String EXCEPTION_MESSAGE = "Le traitement n°{0} est déjà réservé par le serveur ''{1}''.";
 
-   private final long instanceId;
+   private final UUID jobRequestId;
 
    private final String server;
 
    /**
     * 
-    * @param instanceId
+    * @param jobRequestId
     *           identifiant du job déjà réservé
     * @param server
     *           nom du serveur qui a réservé le job
     */
-   public JobDejaReserveException(long instanceId, String server) {
+   public JobDejaReserveException(UUID jobRequestId, String server) {
 
       super();
 
-      this.instanceId = instanceId;
+      this.jobRequestId = jobRequestId;
       this.server = server;
    }
 
@@ -36,8 +37,8 @@ public class JobDejaReserveException extends Exception {
     * 
     * @return identifiant du job déjà réservé
     */
-   public final long getInstanceId() {
-      return this.instanceId;
+   public final UUID getInstanceId() {
+      return this.jobRequestId;
    }
 
    /**
@@ -63,7 +64,7 @@ public class JobDejaReserveException extends Exception {
    @Override
    public final String getMessage() {
 
-      String message = MessageFormat.format(EXCEPTION_MESSAGE, instanceId,
+      String message = MessageFormat.format(EXCEPTION_MESSAGE, jobRequestId,
             server);
 
       return message;

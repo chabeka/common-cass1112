@@ -28,6 +28,20 @@
          <scope>test</scope>
       </dependency>
 
+      <!-- Cassandra -->
+      <dependency>
+         <groupId>fr.urssaf.image.commons</groupId>
+         <artifactId>commons-cassandra</artifactId>
+         <version>${commons.cassandra}</version>
+      </dependency> 
+
+      <!-- JUNIT -->
+      <dependency>
+         <groupId>junit</groupId>
+         <artifactId>junit</artifactId>
+         <version>${junit.version}</version>
+      </dependency>
+      
    </dependencies>
 
 </project>

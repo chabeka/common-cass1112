@@ -14,6 +14,6 @@ package fr.urssaf.image.sae.pile.travaux.model;
  */
 public enum JobState {
 
-   RESERVED, STARTING, SUCCESS, FAILURE, CREATED;
+   CREATED, RESERVED, STARTING, SUCCESS, FAILURE;
 
 }

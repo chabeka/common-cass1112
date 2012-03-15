@@ -1,7 +1,6 @@
 package fr.urssaf.image.sae.pile.travaux.model;
 
 import java.util.Date;
-import java.util.UUID;
 
 /**
  * Traitement dans la pile des travaux. Les propriétés sont.
@@ -9,7 +8,7 @@ import java.util.UUID;
  * <li><code>idJob</code>: identifiant unique du traitement</li>
  * <li><code>type</code>: type de traitement</li>
  * <li><code>parameters</code>: paramètres du traitement</li>
- * <li><code>etat</code>: état du traitement</li>
+ * <li><code>state</code>: état du traitement</li>
  * <li><code>reservedBy</code>: hostname du serveur ayant réservé la demande</li>
  * <li><code>creationDate</code>: date/heure d'arrivée de la demande</li>
  * <li><code>reservationDate</code>: date/heure de réservation</li>
@@ -20,15 +19,9 @@ import java.util.UUID;
  * 
  * 
  */
-public class JobRequest {
+public class JobRequest extends SimpleJobRequest {
 
-   private UUID idJob;
-
-   private String type;
-
-   private String parameters;
-
-   private JobState etat;
+   private JobState state;
 
    private String reservedBy;
 
@@ -41,63 +34,37 @@ public class JobRequest {
    private Date endingDate;
 
    /**
-    * @return the idJob
+    * Constructeur qui instancie un jobRequest vide
     */
-   public final UUID getIdJob() {
-      return idJob;
+   public JobRequest() {
+      super();
    }
 
    /**
-    * @param idJob
-    *           the idJob to set
+    * Construit un JobRequest à partir d'un SimpleJobRequest 
+    * @param simpleJobRequest Le SimpleJobRequest
     */
-   public final void setIdJob(UUID idJob) {
-      this.idJob = idJob;
+   public JobRequest(SimpleJobRequest simpleJobRequest) {
+      super();
+      setIdJob(simpleJobRequest.getIdJob());
+      setType(simpleJobRequest.getType());
+      setParameters(simpleJobRequest.getParameters());
+   }
+
+
+   /**
+    * @return the state of the jobRequest
+    */
+   public final JobState getState() {
+      return state;
    }
 
    /**
-    * @return the type
+    * @param state
+    *           the state to set
     */
-   public final String getType() {
-      return type;
-   }
-
-   /**
-    * @param type
-    *           the type to set
-    */
-   public final void setType(String type) {
-      this.type = type;
-   }
-
-   /**
-    * @return the parameters
-    */
-   public final String getParameters() {
-      return parameters;
-   }
-
-   /**
-    * @param parameters
-    *           the parameters to set
-    */
-   public final void setParameters(String parameters) {
-      this.parameters = parameters;
-   }
-
-   /**
-    * @return the etat
-    */
-   public final JobState getEtat() {
-      return etat;
-   }
-
-   /**
-    * @param etat
-    *           the etat to set
-    */
-   public final void setEtat(JobState etat) {
-      this.etat = etat;
+   public final void setState(JobState state) {
+      this.state = state;
    }
 
    /**
@@ -174,4 +141,17 @@ public class JobRequest {
    public final void setEndingDate(Date endingDate) {
       this.endingDate = endingDate;
    }
+   
+   /**
+    * Renvoie un SimpleJob contenant les propriétés de base du jobRequest
+    * @return Un SimpleJob
+    */
+   public final SimpleJobRequest getSimpleJob() {
+      SimpleJobRequest simpleJobRequest = new SimpleJobRequest();
+      simpleJobRequest.setIdJob(getIdJob());
+      simpleJobRequest.setType(getType());
+      simpleJobRequest.setParameters(getParameters());
+      return simpleJobRequest;
+   }
+   
 }
