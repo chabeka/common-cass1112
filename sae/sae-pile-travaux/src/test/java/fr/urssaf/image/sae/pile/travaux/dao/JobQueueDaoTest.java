@@ -100,13 +100,7 @@ public class JobQueueDaoTest {
       jobQueueDao.reserveJobRequest(map.get(5), "myHostname", new Date());
       
       // On ne devrait avoir plus que 4 jobs réservés
-      compteur = 0;
-      iterator = jobQueueDao.getUnreservedJobRequestIterator();
-      while (iterator.hasNext()) {
-         compteur++;
-         iterator.next();
-      }
-      Assert.assertEquals(4, compteur);      
+      Assert.assertEquals(4, getJobCount(jobQueueDao.getUnreservedJobRequestIterator()));      
    }
 
    @Test
@@ -142,6 +136,36 @@ public class JobQueueDaoTest {
       
    }
 
+   @Test
+   public void delete() {
+      // On crée 6 jobs
+      Map<Integer, JobRequest> jobRequests = createCreatedJobRequestsForTest(6);
+      // On en réserve 1
+      jobQueueDao.reserveJobRequest(jobRequests.get(0), "myHostname", new Date());
+      // On en passe un en terminé
+      jobRequests.get(1).setEndingDate(new Date());
+      jobRequests.get(1).setState(JobState.SUCCESS);
+      jobRequests.get(1).setReservedBy("myHostname");
+      // On en supprime 3
+      for (int i = 0; i< 3; i++) {
+         jobQueueDao.deleteJobRequest(jobRequests.get(i));
+         Assert.assertNull(jobQueueDao.getJobRequest(jobRequests.get(i).getIdJob()));
+      }
+      // On vérifie qu'aucun job n'est en cours
+      Assert.assertEquals(0,jobQueueDao.getNonTerminatedJobs("myHostname").size());
+      // On vérifie qu'il n'y a plus que 3 job en attente
+      Assert.assertEquals(3, getJobCount(jobQueueDao.getUnreservedJobRequestIterator()));      
+   }
+
+   private int getJobCount(Iterator<SimpleJobRequest> iterator) {
+      int compteur = 0;
+      while (iterator.hasNext()) {
+         compteur++;
+         iterator.next();
+      }
+      return compteur;
+   }
+   
    private void assertEquals(JobRequest jobRequest1, JobRequest jobRequest2) {
       JacksonSerializer<JobRequest> jSlz = new JacksonSerializer<JobRequest>(JobRequest.class);
       Assert.assertEquals(jSlz.toString(jobRequest1) , jSlz.toString(jobRequest2));

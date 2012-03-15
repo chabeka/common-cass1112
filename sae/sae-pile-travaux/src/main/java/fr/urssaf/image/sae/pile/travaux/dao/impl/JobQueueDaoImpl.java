@@ -305,4 +305,26 @@ public class JobQueueDaoImpl implements JobQueueDao {
       saveJobRequest(jobRequest);
    }
 
+   @Override
+   public final void deleteJobRequest(JobRequest jobRequest) {
+      // Suppression dans JobRequest
+      Mutator<UUID> mutator = HFactory.createMutator(keyspace, UUIDSerializer
+            .get());
+      mutator.addDeletion(jobRequest.getIdJob(), JOBREQUEST_CFNAME);
+      mutator.execute();
+
+      // Suppression dans JobsQueue
+      Mutator<String> mutator2 = HFactory.createMutator(keyspace,
+            StringSerializer.get());
+      mutator2.addDeletion(JOBS_WAITING_KEY, JOBSQUEUE_CFNAME, jobRequest
+            .getIdJob(), UUIDSerializer.get());
+      String hostname = jobRequest.getReservedBy();
+      if (hostname != null && !hostname.isEmpty()) {
+         mutator2.addDeletion(hostname, JOBSQUEUE_CFNAME,
+               jobRequest.getIdJob(), UUIDSerializer.get());
+      }
+      mutator2.execute();
+
+   }
+
 }

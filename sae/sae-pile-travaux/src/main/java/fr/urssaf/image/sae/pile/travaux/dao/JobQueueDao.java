@@ -65,4 +65,13 @@ public interface JobQueueDao {
     * @param reservationDate  La date de réservation (normalement : maintenant)
     */
    void reserveJobRequest(JobRequest jobRequest, String hostname, Date reservationDate);
+   
+   /**
+    * Supprime un jobRequest
+    * 
+    * @param jobRequest
+    *           jobRequest à supprimer
+    */
+   void deleteJobRequest(JobRequest jobRequest);
+   
 }
