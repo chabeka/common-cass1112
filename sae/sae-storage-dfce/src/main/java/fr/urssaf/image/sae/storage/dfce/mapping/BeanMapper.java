@@ -18,6 +18,7 @@ import net.docubase.toolkit.service.ServiceProvider;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 
 import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
 import fr.urssaf.image.sae.storage.dfce.utils.Utils;
@@ -265,6 +266,11 @@ public final class BeanMapper {
          } else if (technical.getShortCode().equals(
                StorageTechnicalMetadatas.HASH.getShortCode())) {
             // On ne fait rien
+
+            // FIXME on force le passage en minuscule le HASH
+            storageMetadata.setValue(StringUtils
+                  .lowerCase((String) storageMetadata.getValue()));
+
          } else if (technical.getShortCode().equals(
                StorageTechnicalMetadatas.TYPE_HASH.getShortCode())) {
             // On ne fait rien

@@ -22,6 +22,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.log4j.Logger;
@@ -152,7 +153,7 @@ public class SAECaptureServiceTest {
       metadatas.add(new UntypedMetadata("DateCreation", "2012-01-01"));
       metadatas.add(new UntypedMetadata("TypeHash", "SHA-1"));
       String hash = DigestUtils.shaHex(new FileInputStream(srcFile));
-      metadatas.add(new UntypedMetadata("Hash", hash));
+      metadatas.add(new UntypedMetadata("Hash", StringUtils.upperCase(hash)));
       metadatas.add(new UntypedMetadata("CodeRND", "2.3.1.1.12"));
       metadatas.add(new UntypedMetadata("Titre", "Attestation de vigilance"));
 

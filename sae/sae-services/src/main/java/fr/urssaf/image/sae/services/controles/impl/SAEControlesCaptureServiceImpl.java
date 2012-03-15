@@ -204,8 +204,9 @@ public class SAEControlesCaptureServiceImpl implements
                   "{} - Début de la vérification : "
                         + "Equivalence entre le hash fourni en métadonnée et le hash recalculé à partir du fichier",
                   prefixeTrc);
-      if (!DigestUtils.shaHex(content)
-            .equals(hashCodeValue.trim())) {
+      if (!StringUtils
+            .equalsIgnoreCase(DigestUtils.shaHex(content),
+            hashCodeValue.trim())) {
          LOGGER
                .debug(
                      "{} - Hash du document {} est différent que celui recalculé {}",
