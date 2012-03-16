@@ -75,6 +75,16 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 103-CaptureUnitaire-OK-ToutesMetasSpecifiables"</luceneExemple>
          </CasTest>
+         
+         <CasTest>
+            <id>104</id>
+            <code>104-CaptureUnitaire-OK-Sans-Code-Activite</code>
+            <description>
+               On vérifie que le SAE stocke correctement un document dont le type n'est rattaché à aucune activité
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 104-CaptureUnitaire-OK-Sans-Code-Activite"</luceneExemple>
+         </CasTest>
 
          <CasTest>
             <id>150</id>
@@ -204,7 +214,7 @@
 
          <CasTest>
             <id>165</id>
-            <code>165-captureunitaire-KO-url-ecde-incorrecte</code>
+            <code>165-CaptureUnitaire-KO-URL-ECDE-incorrecte</code>
             <description>
                On vérifie que la bonne erreur est renvoyée lorsque l'URL ECDE est erronée
             </description>

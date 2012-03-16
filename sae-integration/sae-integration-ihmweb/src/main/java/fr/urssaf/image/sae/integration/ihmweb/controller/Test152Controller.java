@@ -8,11 +8,8 @@ import fr.urssaf.image.sae.integration.ihmweb.formulaire.TestWsCaptureUnitaireFo
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeurList;
 import fr.urssaf.image.sae.integration.ihmweb.utils.ViUtils;
 
-
 /**
- * Test 152<br>
- * <br>
- * On vérifie que la bonne erreur est renvoyée lorsque la liste des métadonnées fournie est vide.
+ * 152-CaptureUnitaire-KO-MetadonneeVide
  */
 @Controller
 @RequestMapping(value = "test152")
@@ -39,8 +36,9 @@ public class Test152Controller extends AbstractTestWsController<TestWsCaptureUni
       CaptureUnitaireFormulaire formCapture = formulaire.getCaptureUnitaire();
       
       
-      // URL ECDE
+      // URL ECDE et nom du fichier
       formCapture.setUrlEcde(getEcdeService().construitUrlEcde("SAE_INTEGRATION/20110822/CaptureUnitaire-152-CaptureUnitaire-KO-MetadonneeVide/documents/doc1.PDF"));
+      formCapture.setNomFichier("doc1.PDF");
       
       
       // Métadonnées

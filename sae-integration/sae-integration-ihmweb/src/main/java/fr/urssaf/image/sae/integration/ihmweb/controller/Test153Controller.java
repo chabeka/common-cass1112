@@ -10,10 +10,7 @@ import fr.urssaf.image.sae.integration.ihmweb.utils.ViUtils;
 
 
 /**
- * Test 153<br>
- * <br>
- * On vérifie que la bonne erreur est renvoyée lorsqu'une métadonnée 
- * obligatoire est omise de la liste des métadonnées.
+ * 153-CaptureUnitaire-KO-MetadonneeObligatoireOmise
  */
 @Controller
 @RequestMapping(value = "test153")
@@ -40,23 +37,23 @@ public class Test153Controller extends AbstractTestWsController<TestWsCaptureUni
       CaptureUnitaireFormulaire formCapture = formulaire.getCaptureUnitaire();
       
       
-      // URL ECDE
+      // URL ECDE et nom du fichier
       formCapture.setUrlEcde(getEcdeService().construitUrlEcde("SAE_INTEGRATION/20110822/CaptureUnitaire-153-CaptureUnitaire-KO-MetadonneeObligatoireOmise/documents/doc1.PDF"));
-      
+      formCapture.setNomFichier("doc1.PDF");
       
       // Métadonnées
       // Note : absence des métadonnées obligatoires CodeOrganismeProprietaire et CodeRND
       MetadonneeValeurList metadonnees = new MetadonneeValeurList();
       formCapture.setMetadonnees(metadonnees);
-      metadonnees.add("Titre","Attestation de vigilance");
-      metadonnees.add("DateCreation","2011-09-01");
       metadonnees.add("ApplicationProductrice","ADELAIDE");
       metadonnees.add("CodeOrganismeGestionnaire","CER69");
-      metadonnees.add("Hash","a2f93f1f121ebba0faef2c0596f2f126eacae77b");
-      metadonnees.add("TypeHash","SHA-1");
-      metadonnees.add("NbPages","2");
-      metadonnees.add("FormatFichier","fmt/354");
+      metadonnees.add("DateCreation","2011-09-01");
       metadonnees.add("Denomination","Test 153-CaptureUnitaire-KO-MetadonneeObligatoireOmise");
+      metadonnees.add("FormatFichier","fmt/354");
+      metadonnees.add("Hash","a2f93f1f121ebba0faef2c0596f2f126eacae77b");
+      metadonnees.add("NbPages","2");
+      metadonnees.add("Titre","Attestation de vigilance");
+      metadonnees.add("TypeHash","SHA-1");
       
       
       return formulaire;

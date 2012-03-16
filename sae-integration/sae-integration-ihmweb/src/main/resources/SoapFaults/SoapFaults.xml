@@ -184,6 +184,14 @@
    </SoapFault>
    
    <SoapFault>
+      <id>sae_CaptureFichierVide_2</id>
+      <namespace>urn:sae:faultcodes</namespace>
+      <prefixe>sae</prefixe>
+      <localPart>CaptureFichierVide</localPart>
+      <message>Le contenu du fichier à archiver est vide.</message>
+   </SoapFault>
+   
+   <SoapFault>
       <id>sae_CaptureMetadonneesInconnu</id>
       <namespace>urn:sae:faultcodes</namespace>
       <prefixe>sae</prefixe>

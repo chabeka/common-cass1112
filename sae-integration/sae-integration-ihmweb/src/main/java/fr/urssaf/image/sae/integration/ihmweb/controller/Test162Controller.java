@@ -10,11 +10,7 @@ import fr.urssaf.image.sae.integration.ihmweb.utils.ViUtils;
 
 
 /**
- * Test 162<br>
- * <br>
- * On vérifie que la bonne erreur est renvoyée lorsque le code RND 
- * spécifié dans la métadonnée adéquat ne fait pas partie de la 
- * liste des codes définis pour le palier 1.
+ * 162-CaptureUnitaire-KO-CodeRNDincorrect
  */
 @Controller
 @RequestMapping(value = "test162")
@@ -41,25 +37,26 @@ public class Test162Controller extends AbstractTestWsController<TestWsCaptureUni
       CaptureUnitaireFormulaire formCapture = formulaire.getCaptureUnitaire();
       
       
-      // URL ECDE
+      // URL ECDE et nom du fichier
       formCapture.setUrlEcde(getEcdeService().construitUrlEcde("SAE_INTEGRATION/20110822/CaptureUnitaire-162-CaptureUnitaire-KO-CodeRNDincorrect/documents/doc1.PDF"));
+      formCapture.setNomFichier("doc1.PDF");
       
       
       // Métadonnées
       MetadonneeValeurList metadonnees = new MetadonneeValeurList();
       formCapture.setMetadonnees(metadonnees);
-      metadonnees.add("Titre","Attestation de vigilance");
-      metadonnees.add("DateCreation","2011-09-01");
       metadonnees.add("ApplicationProductrice","ADELAIDE");
-      metadonnees.add("CodeOrganismeProprietaire","AC750");
       metadonnees.add("CodeOrganismeGestionnaire","CER69");
-      metadonnees.add("CodeRND","2.3.1.1.9"); // CodeRND non reconnu par le SAE pour le lot 110950
-      metadonnees.add("Hash","a2f93f1f121ebba0faef2c0596f2f126eacae77b");
-      metadonnees.add("TypeHash","SHA-1");
-      metadonnees.add("NbPages","2");
-      metadonnees.add("FormatFichier","fmt/354");
+      metadonnees.add("CodeOrganismeProprietaire","AC750");
+      metadonnees.add("CodeRND","1.1.1.1.3"); // CodeRND non reconnu par le SAE pour le lot 120510
+      metadonnees.add("DateCreation","2011-09-01");
       metadonnees.add("Denomination","Test 162-CaptureUnitaire-KO-CodeRNDincorrect");
-            
+      metadonnees.add("FormatFichier","fmt/354");
+      metadonnees.add("Hash","a2f93f1f121ebba0faef2c0596f2f126eacae77b");
+      metadonnees.add("NbPages","2");
+      metadonnees.add("Titre","Attestation de vigilance");
+      metadonnees.add("TypeHash","SHA-1");
+      
       
       return formulaire;
       
@@ -89,7 +86,7 @@ public class Test162Controller extends AbstractTestWsController<TestWsCaptureUni
             formulaire,
             ViUtils.FIC_VI_OK,
             "sae_CaptureCodeRndInterdit",
-            new String[] {"2.3.1.1.9"});
+            new String[] {"1.1.1.1.3"});
       
    }
    

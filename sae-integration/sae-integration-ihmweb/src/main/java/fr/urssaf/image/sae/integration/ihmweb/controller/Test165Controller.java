@@ -10,12 +10,7 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeurList;
 import fr.urssaf.image.sae.integration.ihmweb.utils.ViUtils;
 
 /**
- * Test 165<br>
- * <br>
- * Ce test vérifie que la bonne erreur est renvoyée lorsque transmet une URL
- * ECDE incorrecte au SAE. Pour cela, on invoque l'opération "archivageUnitaire"
- * en fournissant une URL erronée (mapping inexistant URL - point de montage)
- * SOAP.
+ * 165-CaptureUnitaire-KO-URL-ECDE-incorrecte
  */
 @Controller
 @RequestMapping(value = "test165")
@@ -50,23 +45,17 @@ public class Test165Controller extends
       formCapture.setUrlEcde(getUrlEcde());
 
       MetadonneeValeurList metadonnees = new MetadonneeValeurList();
-      metadonnees
-            .add(new MetadonneeValeur("ApplicationProductrice", "ADELAIDE"));
-      metadonnees
-            .add(new MetadonneeValeur("CodeOrganismeGestionnaire", "CER69"));
-      metadonnees
-            .add(new MetadonneeValeur("CodeOrganismeProprietaire", "AC750"));
+      metadonnees.add(new MetadonneeValeur("ApplicationProductrice", "ADELAIDE"));
+      metadonnees.add(new MetadonneeValeur("CodeOrganismeGestionnaire", "CER69"));
+      metadonnees.add(new MetadonneeValeur("CodeOrganismeProprietaire", "AC750"));
       metadonnees.add(new MetadonneeValeur("CodeRND", "2.3.1.1.12"));
       metadonnees.add(new MetadonneeValeur("DateCreation", "2011-09-01"));
-      metadonnees.add(new MetadonneeValeur("Denomination",
-            "165-CaptureUnitaire-KO-URL-ECDE-incorrecte"));
+      metadonnees.add(new MetadonneeValeur("Denomination","165-CaptureUnitaire-KO-URL-ECDE-incorrecte"));
       metadonnees.add(new MetadonneeValeur("FormatFichier", "fmt/354"));
-      metadonnees.add(new MetadonneeValeur("Hash",
-            "a2f93f1f121ebba0faef2c0596f2f126eacae77b"));
+      metadonnees.add(new MetadonneeValeur("Hash","a2f93f1f121ebba0faef2c0596f2f126eacae77b"));
       metadonnees.add(new MetadonneeValeur("NbPages", "2"));
       metadonnees.add(new MetadonneeValeur("Siret", "12345678912345"));
-      metadonnees
-            .add(new MetadonneeValeur("Titre", "Attestation de vigilance"));
+      metadonnees.add(new MetadonneeValeur("Titre", "Attestation de vigilance"));
       metadonnees.add(new MetadonneeValeur("TypeHash", "SHA-1"));
       formCapture.setMetadonnees(metadonnees);
 

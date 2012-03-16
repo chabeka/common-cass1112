@@ -10,10 +10,7 @@ import fr.urssaf.image.sae.integration.ihmweb.utils.ViUtils;
 
 
 /**
- * Test 155<br>
- * <br>
- * On vérifie que la bonne erreur est renvoyée lorsque la liste des 
- * métadonnées contient une métadonnée inconnue du SAE
+ * 155-CaptureUnitaire-KO-MetadonneeInconnue
  */
 @Controller
 @RequestMapping(value = "test155")
@@ -40,27 +37,28 @@ public class Test155Controller extends AbstractTestWsController<TestWsCaptureUni
       CaptureUnitaireFormulaire formCapture = formulaire.getCaptureUnitaire();
       
       
-      // URL ECDE
+      // URL ECDE et nom du fichier
       formCapture.setUrlEcde(getEcdeService().construitUrlEcde("SAE_INTEGRATION/20110822/CaptureUnitaire-155-CaptureUnitaire-KO-MetadonneeInconnue/documents/doc1.PDF"));
+      formCapture.setNomFichier("doc1.PDF");
       
       
       // Métadonnées
       MetadonneeValeurList metadonnees = new MetadonneeValeurList();
       formCapture.setMetadonnees(metadonnees);
-      metadonnees.add("Titre","Attestation de vigilance");
-      metadonnees.add("DateCreation","2011-09-01");
       metadonnees.add("ApplicationProductrice","ADELAIDE");
-      metadonnees.add("CodeOrganismeProprietaire","AC750");
       metadonnees.add("CodeOrganismeGestionnaire","CER69");
+      metadonnees.add("CodeOrganismeProprietaire","AC750");
       metadonnees.add("CodeRND","2.3.1.1.12");
-      metadonnees.add("Hash","a2f93f1f121ebba0faef2c0596f2f126eacae77b");
-      metadonnees.add("TypeHash","SHA-1");
-      metadonnees.add("NbPages","2");
-      metadonnees.add("FormatFichier","fmt/354");
+      metadonnees.add("DateCreation","2011-09-01");
       metadonnees.add("Denomination","Test 155-CaptureUnitaire-KO-MetadonneeInconnue");
-      metadonnees.add("Titi","ValeurDeTiti");
+      metadonnees.add("FormatFichier","fmt/354");
+      metadonnees.add("Hash","a2f93f1f121ebba0faef2c0596f2f126eacae77b");
+      metadonnees.add("NbPages","2");
       metadonnees.add("Tata","ValeurDeTata");
-
+      metadonnees.add("Titi","ValeurDeTiti");
+      metadonnees.add("Titre","Attestation de vigilance");
+      metadonnees.add("TypeHash","SHA-1");
+      
       
       return formulaire;
       

@@ -11,12 +11,7 @@ import fr.urssaf.image.sae.integration.ihmweb.utils.ViUtils;
 
 
 /**
- * Test 150<br>
- * <br>
- * Ce test vérifie que l'authentification applicative est activée 
- * sur l'opération "archivageUnitaire" du service web SaeService. 
- * Pour cela, on invoque l'opération "archivageUnitaire" en omettant 
- * le VI dans le message SOAP.
+ * 150-CaptureUnitaire-KO-SansAuthentification
  */
 @Controller
 @RequestMapping(value = "test150")

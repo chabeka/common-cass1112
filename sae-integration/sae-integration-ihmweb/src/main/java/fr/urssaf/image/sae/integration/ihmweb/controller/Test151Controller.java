@@ -10,11 +10,7 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeurList;
 import fr.urssaf.image.sae.integration.ihmweb.utils.ViUtils;
 
 /**
- * Test 151<br>
- * <br>
- * Ce test vérifie que la bonne erreur est renvoyée lorsque le fichier dans
- * l’ecde n’existe pas. pour cela, on envoie un chemin vers un fichier
- * inexistant
+ * 151-CaptureUnitaire-KO-EcdeFichierInexistant
  */
 @Controller
 @RequestMapping(value = "test151")

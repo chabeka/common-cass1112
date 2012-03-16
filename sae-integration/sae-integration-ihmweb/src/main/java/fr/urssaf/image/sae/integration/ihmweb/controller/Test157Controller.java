@@ -10,11 +10,7 @@ import fr.urssaf.image.sae.integration.ihmweb.utils.ViUtils;
 
 
 /**
- * Test 157<br>
- * <br>
- * On vérifie que la bonne erreur est renvoyée lorsque la liste 
- * des métadonnées contient une métadonnée dont la valeur n'est 
- * pas conforme au format attendu
+ * 157-CaptureUnitaire-KO-MetadonneeFormatIncorrect
  */
 @Controller
 @RequestMapping(value = "test157")
@@ -41,27 +37,28 @@ public class Test157Controller extends AbstractTestWsController<TestWsCaptureUni
       CaptureUnitaireFormulaire formCapture = formulaire.getCaptureUnitaire();
       
       
-      // URL ECDE
+      // URL ECDE et nom du fichier
       formCapture.setUrlEcde(getEcdeService().construitUrlEcde("SAE_INTEGRATION/20110822/CaptureUnitaire-157-CaptureUnitaire-KO-MetadonneeFormatIncorrect/documents/doc1.PDF"));
+      formCapture.setNomFichier("doc1.PDF");
       
       
       // Métadonnées
       MetadonneeValeurList metadonnees = new MetadonneeValeurList();
       formCapture.setMetadonnees(metadonnees);
-      metadonnees.add("Titre","Attestation de vigilance");
-      metadonnees.add("DateCreation","MauvaiseDate"); // Date incorrecte
       metadonnees.add("ApplicationProductrice","ADELAIDE");
-      metadonnees.add("CodeOrganismeProprietaire","AC750");
       metadonnees.add("CodeOrganismeGestionnaire","CER69");
+      metadonnees.add("CodeOrganismeProprietaire","AC750");
       metadonnees.add("CodeRND","2.3.1.1.12");
-      metadonnees.add("Hash","a2f93f1f121ebba0faef2c0596f2f126eacae77b");
-      metadonnees.add("TypeHash","SHA-1");
-      metadonnees.add("FormatFichier","fmt/354");
-      metadonnees.add("Denomination","Test 157-CaptureUnitaire-KO-MetadonneeFormatIncorrect");
-      metadonnees.add("NbPages","NbPagesIncorrect"); // incorrect car format "numérique"
       metadonnees.add("CodeSousCategorieV2","12345"); // incorrect car taille max = 2
+      metadonnees.add("DateCreation","MauvaiseDate"); // Date incorrecte
       metadonnees.add("DateReception","2011-15-01"); // incorrect car formatage attendu yyyy-mm-dd
-            
+      metadonnees.add("Denomination","Test 157-CaptureUnitaire-KO-MetadonneeFormatIncorrect");
+      metadonnees.add("FormatFichier","fmt/354");
+      metadonnees.add("Hash","a2f93f1f121ebba0faef2c0596f2f126eacae77b");
+      metadonnees.add("NbPages","NbPagesIncorrect"); // incorrect car format "numérique"
+      metadonnees.add("Titre","Attestation de vigilance");
+      metadonnees.add("TypeHash","SHA-1");
+      
       
       return formulaire;
       

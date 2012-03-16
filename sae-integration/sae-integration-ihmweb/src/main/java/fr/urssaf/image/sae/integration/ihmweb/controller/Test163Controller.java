@@ -10,10 +10,7 @@ import fr.urssaf.image.sae.integration.ihmweb.utils.ViUtils;
 
 
 /**
- * Test 163<br>
- * <br>
- * On vérifie que l'algorithme de hash fourni dans la métadonnée 
- * obligatoire 'TypeHash' est 'SHA-1'
+ * 163-CaptureUnitaire-KO-TypeHash
  */
 @Controller
 @RequestMapping(value = "test163")
@@ -40,24 +37,26 @@ public class Test163Controller extends AbstractTestWsController<TestWsCaptureUni
       CaptureUnitaireFormulaire formCapture = formulaire.getCaptureUnitaire();
       
       
-      // URL ECDE
+      // URL ECDE et nom du fichier
       formCapture.setUrlEcde(getEcdeService().construitUrlEcde("SAE_INTEGRATION/20110822/CaptureUnitaire-163-CaptureUnitaire-KO-TypeHash/documents/doc1.PDF"));
+      formCapture.setNomFichier("doc1.PDF");
       
       
       // Métadonnées
       MetadonneeValeurList metadonnees = new MetadonneeValeurList();
       formCapture.setMetadonnees(metadonnees);
-      metadonnees.add("Titre","Attestation de vigilance");
-      metadonnees.add("DateCreation","2011-09-01");
       metadonnees.add("ApplicationProductrice","ADELAIDE");
-      metadonnees.add("CodeOrganismeProprietaire","AC750");
       metadonnees.add("CodeOrganismeGestionnaire","CER69");
+      metadonnees.add("CodeOrganismeProprietaire","AC750");
       metadonnees.add("CodeRND","2.3.1.1.12");
-      metadonnees.add("Hash","a2f93f1f121ebba0faef2c0596f2f126eacae77b "); 
-      metadonnees.add("TypeHash","SHA-2"); // Seul l'algorithme SHA-1 est autorisé
-      metadonnees.add("NbPages","2");
-      metadonnees.add("FormatFichier","fmt/354");
+      metadonnees.add("DateCreation","2011-09-01");
       metadonnees.add("Denomination","Test 163-CaptureUnitaire-KO-TailleZero");
+      metadonnees.add("FormatFichier","fmt/354");
+      metadonnees.add("Hash","a2f93f1f121ebba0faef2c0596f2f126eacae77b ");
+      metadonnees.add("NbPages","2");
+      metadonnees.add("Titre","Attestation de vigilance");
+      metadonnees.add("TypeHash","SHA-2"); // Seul l'algorithme SHA-1 est autorisé
+      
       
       return formulaire;
       
