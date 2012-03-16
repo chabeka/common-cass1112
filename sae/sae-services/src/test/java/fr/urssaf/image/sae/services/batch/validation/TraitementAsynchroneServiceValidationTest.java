@@ -11,8 +11,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.services.batch.TraitementAsynchroneService;
+import fr.urssaf.image.sae.services.batch.exception.JobInattenduException;
 import fr.urssaf.image.sae.services.batch.exception.JobNonReserveException;
-
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })
@@ -97,7 +97,7 @@ public class TraitementAsynchroneServiceValidationTest {
 
    @Test
    public void lancerJob_failure_empty_idJob() throws JobInexistantException,
-         JobNonReserveException {
+         JobNonReserveException, JobInattenduException {
 
       try {
          service.lancerJob(null);
