@@ -542,9 +542,9 @@
       <module>sae-ecde</module>
       <module>sae-metadata</module>
       <module>sae-mapping</module>
-      <module>sae-services</module>
       <module>sae-pile-travaux</module>
-            
+      <module>sae-services</module>
+      
       <!-- Les applications finales -->
       <module>sae-igcmaj</module>
       <module>sae-services-executable</module>
