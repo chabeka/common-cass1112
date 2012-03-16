@@ -2,18 +2,26 @@ package fr.urssaf.image.sae.integration.ihmweb.service.tests;
 
 import java.rmi.RemoteException;
 
+import javax.activation.DataHandler;
+import javax.activation.FileDataSource;
+
 import org.apache.axis2.AxisFault;
+import org.apache.axis2.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import fr.urssaf.image.sae.integration.ihmweb.exception.IntegrationRuntimeException;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureUnitaireFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CaptureUnitaireResultat;
+import fr.urssaf.image.sae.integration.ihmweb.modele.ModeArchivageUnitaireEnum;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTest;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTestLog;
 import fr.urssaf.image.sae.integration.ihmweb.modele.SoapFault;
 import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ArchivageUnitaire;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ArchivageUnitairePJ;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ArchivageUnitairePJResponse;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ArchivageUnitaireResponse;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.utils.SaeServiceLogUtils;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.utils.SaeServiceObjectFactory;
@@ -62,30 +70,78 @@ public class CaptureUnitaireTestService {
       // Appel du service web et gestion de erreurs
       try {
 
-         // Construction du paramètre d'entrée de l'opération
-         ArchivageUnitaire paramsService = SaeServiceObjectFactory
-               .buildArchivageUnitaireRequest(formulaire.getUrlEcde(),
-                     formulaire.getMetadonnees());
+         // La valeur de retour d'une capture unitaire
+         String idArchivage;
 
-         // Appel du service web
-         ArchivageUnitaireResponse response = service
-               .archivageUnitaire(paramsService);
+         // Selon le mode d'appel à la capture unitaire
+         // Opération "archivageUnitaire" ou "archivageUnitairePJ"
+         // Si "archivageUnitairePJ", avec URL ECDE ou contenu sans MTOM
+         // ou contenu avec MTOM
+         if (ModeArchivageUnitaireEnum.archivageUnitaire.equals(formulaire
+               .getModeCapture())) {
 
-         // Appel du listener
-         wsListener.onRetourWsSansErreur(resultatTest, service
-               ._getServiceClient().getServiceContext()
-               .getConfigurationContext(), formulaire.getParent());
+            // Mode d'appel à la capture unitaire :
+            // => Opération "archivageUnitaire"
 
-         // Récupère l'identifiant d'archivage renvoyé
-         String idArchivage = SaeServiceTypeUtils.extractUuid(response
-               .getArchivageUnitaireResponse().getIdArchive());
+            // Construction du paramètre d'entrée de l'opération
+            ArchivageUnitaire paramsService = SaeServiceObjectFactory
+                  .buildArchivageUnitaireRequest(formulaire.getUrlEcde(),
+                        formulaire.getMetadonnees());
+
+            // Appel du service web
+            ArchivageUnitaireResponse response = service
+                  .archivageUnitaire(paramsService);
+
+            // Appel du listener
+            wsListener.onRetourWsSansErreur(resultatTest, service
+                  ._getServiceClient().getServiceContext()
+                  .getConfigurationContext(), formulaire.getParent());
+
+            // Récupère l'identifiant d'archivage renvoyé
+            idArchivage = SaeServiceTypeUtils.extractUuid(response
+                  .getArchivageUnitaireResponse().getIdArchive());
+
+         } else if (ModeArchivageUnitaireEnum.archivageUnitairePJUrlEcde
+               .equals(formulaire.getModeCapture())) {
+
+            // Mode d'appel à la capture unitaire :
+            // => Opération "archivageUnitairePJ" avec URL ECDE
+
+            idArchivage = appelArchivageUnitairePJavecUrlEcde(service,
+                  wsListener, resultatTest, formulaire);
+
+         } else if (ModeArchivageUnitaireEnum.archivageUnitairePJContenuSansMtom
+               .equals(formulaire.getModeCapture())) {
+
+            // Mode d'appel à la capture unitaire :
+            // => Opération "archivageUnitairePJ" avec contenu sans MTOM
+
+            idArchivage = appelArchivageUnitairePJavecContenu(service,
+                  wsListener, resultatTest, formulaire);
+
+         } else if (ModeArchivageUnitaireEnum.archivageUnitairePJContenuAvecMtom
+               .equals(formulaire.getModeCapture())) {
+
+            // Mode d'appel à la capture unitaire :
+            // => Opération "archivageUnitairePJ" avec contenu avec MTOM
+
+            activeMtom(service);
+
+            idArchivage = appelArchivageUnitairePJavecContenu(service,
+                  wsListener, resultatTest, formulaire);
+
+         } else {
+            throw new IntegrationRuntimeException(
+                  "Le mode de capture unitaire '" + formulaire.getModeCapture()
+                        + "' est inconnu");
+         }
 
          // Log de la réponse obtenue
          log.appendLogNewLine();
          log
                .appendLogLn("Détails de la réponse obtenue de l'opération \"archivageUnitaire\" :");
-         SaeServiceLogUtils.logResultatCaptureUnitaire(resultatTest, response
-               .getArchivageUnitaireResponse());
+         SaeServiceLogUtils.logResultatCaptureUnitaire(resultatTest,
+               idArchivage);
 
          // Affecte l'identifiant d'archivage à l'objet de réponse de la méthode
          result.setIdArchivage(idArchivage);
@@ -210,6 +266,79 @@ public class CaptureUnitaireTestService {
 
       // Renvoie le résultat
       return resultat;
+
+   }
+
+   private DataHandler buildDataHandler(String urlEcde) {
+
+      String cheminFichier = ecdeService.convertUrlEcdeToPath(urlEcde);
+
+      FileDataSource fileDataSource = new FileDataSource(cheminFichier);
+
+      DataHandler dataHandler = new DataHandler(fileDataSource);
+
+      return dataHandler;
+
+   }
+
+   private String appelArchivageUnitairePJ(SaeServiceStub service,
+         ArchivageUnitairePJ paramsService, WsTestListener wsListener,
+         ResultatTest resultatTest, CaptureUnitaireFormulaire formulaire)
+         throws RemoteException {
+
+      // Appel du service web
+      ArchivageUnitairePJResponse response = service
+            .archivageUnitairePJ(paramsService);
+
+      // Appel du listener
+      wsListener.onRetourWsSansErreur(resultatTest, service._getServiceClient()
+            .getServiceContext().getConfigurationContext(), formulaire
+            .getParent());
+
+      // Récupère l'identifiant d'archivage renvoyé
+      String idArchivage = SaeServiceTypeUtils.extractUuid(response
+            .getArchivageUnitairePJResponse().getIdArchive());
+      return idArchivage;
+
+   }
+
+   private String appelArchivageUnitairePJavecUrlEcde(SaeServiceStub service,
+         WsTestListener wsListener, ResultatTest resultatTest,
+         CaptureUnitaireFormulaire formulaire) throws RemoteException {
+
+      // Construction du paramètre d'entrée de l'opération
+      ArchivageUnitairePJ paramsService = SaeServiceObjectFactory
+            .buildArchivageUnitairePJRequestAvecUrlEcde(
+                  formulaire.getUrlEcde(), formulaire.getMetadonnees());
+
+      // Appel du service web
+      String idArchivage = appelArchivageUnitairePJ(service, paramsService,
+            wsListener, resultatTest, formulaire);
+      return idArchivage;
+
+   }
+
+   private String appelArchivageUnitairePJavecContenu(SaeServiceStub service,
+         WsTestListener wsListener, ResultatTest resultatTest,
+         CaptureUnitaireFormulaire formulaire) throws RemoteException {
+
+      // Construction du paramètre d'entrée de l'opération
+      ArchivageUnitairePJ paramsService = SaeServiceObjectFactory
+            .buildArchivageUnitairePJRequestAvecContenu(
+                  buildDataHandler(formulaire.getUrlEcde()), formulaire
+                        .getNomFichier(), formulaire.getMetadonnees());
+
+      // Appel du service web
+      String idArchivage = appelArchivageUnitairePJ(service, paramsService,
+            wsListener, resultatTest, formulaire);
+      return idArchivage;
+
+   }
+
+   private void activeMtom(SaeServiceStub service) {
+
+      service._getServiceClient().getOptions().setProperty(
+            Constants.Configuration.ENABLE_MTOM, Constants.VALUE_TRUE);
 
    }
 

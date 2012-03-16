@@ -33,7 +33,6 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.SoapFault;
 import fr.urssaf.image.sae.integration.ihmweb.modele.somres.resultats.ResultatsType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.comparator.ResultatRechercheComparator;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.comparator.ResultatRechercheComparator.TypeComparaison;
-import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ArchivageUnitaireResponseType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ListeMetadonneeType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.MetadonneeType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheResponseType;
@@ -124,7 +123,6 @@ public final class SaeServiceLogUtils {
       }
    }
 
-   
    /**
     * Ajoute, dans le log du résultat du test, un résultat de l'opération
     * "consultation" ou "consultationMTOM"
@@ -134,38 +132,31 @@ public final class SaeServiceLogUtils {
     * @param resultat
     *           la réponse de l'opération "consultation"
     */
-   public static void logResultatConsultation(ResultatTest resultatTest,ConsultationResultat resultat) {
-      
+   public static void logResultatConsultation(ResultatTest resultatTest,
+         ConsultationResultat resultat) {
+
       // Le contenu
-      logConsultationDataHandler(resultatTest,resultat.getContenu());
-      
+      logConsultationDataHandler(resultatTest, resultat.getContenu());
+
       // Les métadonnées
       resultatTest.getLog().appendLogNewLine();
-      resultatTest.getLog().appendLogLn(
-            "Métadonnées :");
-      logMetadonnees(resultatTest.getLog(),resultat.getMetadonnees());
-      
-   }
-   
+      resultatTest.getLog().appendLogLn("Métadonnées :");
+      logMetadonnees(resultatTest.getLog(), resultat.getMetadonnees());
 
-   
-   
-   
-   private static void logConsultationDataHandler(
-         ResultatTest resultatTest,
+   }
+
+   private static void logConsultationDataHandler(ResultatTest resultatTest,
          DataHandler contenu) {
-      
-      
+
       ResultatTestLog log = resultatTest.getLog();
       if (contenu == null) {
 
-         log
-               .appendLogLn("Le contenu est null");
-         
+         log.appendLogLn("Le contenu est null");
+
       } else {
-      
+
          log.appendLog("Le contenu est renseigné : ");
-         
+
          // Création d'un fichier temporaire
          File file;
          try {
@@ -204,14 +195,13 @@ public final class SaeServiceLogUtils {
             throw new IntegrationRuntimeException(e);
          }
          log.appendLogLn("SHA-1 = " + sha1);
-         
+
          // Type MIME
          log.appendLogLn("Type MIME = " + contenu.getContentType());
-         
+
       }
-      
+
    }
-   
 
    /**
     * Ajoute, dans le log du résultat du test, une réponse de l'opération
@@ -305,8 +295,10 @@ public final class SaeServiceLogUtils {
    public static void logAppelArchivageUnitaire(ResultatTestLog log,
          CaptureUnitaireFormulaire formulaire) {
       log.appendLogLn("Appel de l'opération archivageUnitaire");
+      log.appendLogLn("Mode d'appel : " + formulaire.getModeCapture());
       log.appendLogLn("Paramètres :");
-      log.appendLogLn("URL ECDE :" + formulaire.getUrlEcde());
+      log.appendLogLn("URL ECDE : " + formulaire.getUrlEcde());
+      log.appendLogLn("Nom du fichier : " + formulaire.getNomFichier());
       log.appendLogLn("Métadonnées :");
       logMetadonnees(log, formulaire.getMetadonnees());
       log.appendLogNewLine();
@@ -422,30 +414,21 @@ public final class SaeServiceLogUtils {
     * 
     * @param resultatTest
     *           les résultats du test à mettre à jour
-    * @param captUnitResponse
-    *           la réponse de l'opération "archivageUnitaire"
+    * @param idArchivage
+    *           l'identifiant unique d'archivage renvoyé par la capture unitaire
     */
    public static void logResultatCaptureUnitaire(ResultatTest resultatTest,
-         ArchivageUnitaireResponseType captUnitResponse) {
+         String idArchivage) {
 
       // Initialise
       ResultatTestLog log = resultatTest.getLog();
 
-      // Vérifie le null
-      if (captUnitResponse == null) {
-         log.appendLogLn("Le résultat de la capture unitaire est null");
-      } else {
-
-         // L'identifiant d'archivage
-         String uuid = SaeServiceTypeUtils.extractUuid(captUnitResponse
-               .getIdArchive());
-         log.appendLog("Identifiant d'archivage : ");
-         log.appendLog(uuid);
-         log.appendLog(" (en minuscule pour Cassandra : ");
-         log.appendLog(uuid.toLowerCase());
-         log.appendLogLn(")");
-
-      }
+      // L'identifiant d'archivage
+      log.appendLog("Identifiant d'archivage : ");
+      log.appendLog(idArchivage);
+      log.appendLog(" (en minuscule pour Cassandra : ");
+      log.appendLog(StringUtils.lowerCase(idArchivage));
+      log.appendLogLn(")");
 
    }
 

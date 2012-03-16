@@ -1,6 +1,7 @@
 package fr.urssaf.image.sae.integration.ihmweb.formulaire;
 
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeurList;
+import fr.urssaf.image.sae.integration.ihmweb.modele.ModeArchivageUnitaireEnum;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTest;
 
 /**
@@ -14,19 +15,24 @@ public class CaptureUnitaireFormulaire extends GenericForm {
 
    private ResultatTest resultats = new ResultatTest();
 
+   private MetadonneeValeurList metadonnees = new MetadonneeValeurList();
+
    private String urlEcde;
 
-   private MetadonneeValeurList metadonnees = new MetadonneeValeurList();
+   private ModeArchivageUnitaireEnum modeCapture = ModeArchivageUnitaireEnum.archivageUnitaire;
+
+   private String nomFichier;
 
    /**
     * constructeur
     * 
-    * @param parent formulaire pere
+    * @param parent
+    *           formulaire pere
     */
    public CaptureUnitaireFormulaire(TestWsParentFormulaire parent) {
       super(parent);
    }
-   
+
    /**
     * Les résultats de l'appel à l'opération
     * 
@@ -84,6 +90,48 @@ public class CaptureUnitaireFormulaire extends GenericForm {
     */
    public final void setMetadonnees(MetadonneeValeurList metadonnees) {
       this.metadonnees = metadonnees;
+   }
+
+   /**
+    * Le mode d'appel à la capture unitaire
+    * 
+    * @return Le mode d'appel à la capture unitaire
+    */
+   public final ModeArchivageUnitaireEnum getModeCapture() {
+      return modeCapture;
+   }
+
+   /**
+    * Le mode d'appel à la capture unitaire
+    * 
+    * @param modeCapture
+    *           Le mode d'appel à la capture unitaire
+    */
+   public final void setModeCapture(ModeArchivageUnitaireEnum modeCapture) {
+      this.modeCapture = modeCapture;
+   }
+
+   /**
+    * Le nom du fichier dans le cas où le mode d'appel à la capture unitaire est
+    * "envoi du contenu"
+    * 
+    * @return Le nom du fichier dans le cas où le mode d'appel à la capture
+    *         unitaire est "envoi du contenu"
+    */
+   public final String getNomFichier() {
+      return nomFichier;
+   }
+
+   /**
+    * Le nom du fichier dans le cas où le mode d'appel à la capture unitaire est
+    * "envoi du contenu"
+    * 
+    * @param nomFichier
+    *           Le nom du fichier dans le cas où le mode d'appel à la capture
+    *           unitaire est "envoi du contenu"
+    */
+   public final void setNomFichier(String nomFichier) {
+      this.nomFichier = nomFichier;
    }
 
 }

@@ -61,20 +61,21 @@ public class VIHandler extends AbstractHandler {
          Document doc = Axis2Util.getDocumentFromSOAPEnvelope(msgCtx
                .getEnvelope(), true);
 
-         msgCtx.setEnvelope((SOAPEnvelope) doc.getDocumentElement());
+         SOAPEnvelope soapEnv = (SOAPEnvelope) doc.getDocumentElement();
+         msgCtx.setEnvelope(soapEnv);
+         soapEnv.build();
 
          SOAPHeader soapHeader = msgCtx.getEnvelope().getHeader();
-
          soapHeader.addChild(org.apache.axis2.util.XMLUtils
                .toOM(new ClassPathResource(ficRessourceVi).getInputStream()));
-
-         soapHeader.build();
+         soapEnv.build();
 
          StringWriter sWriter = new StringWriter();
-         msgCtx.getEnvelope().serialize(sWriter);
+         soapEnv.serialize(sWriter);
          LOG.debug(sWriter.toString());
 
-         msgCtx.getConfigurationContext().setProperty(PROP_MESSAGE_OUT, sWriter.toString());
+         msgCtx.getConfigurationContext().setProperty(PROP_MESSAGE_OUT,
+               sWriter.toString());
 
       } catch (Exception e) {
          throw new IllegalStateException(e);

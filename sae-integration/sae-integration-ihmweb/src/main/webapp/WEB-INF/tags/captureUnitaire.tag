@@ -17,9 +17,27 @@ Etape <c:out value="${numeroEtape}"/> : Appel du service web de capture unitaire
       <td style="width:50%;">
          <table border=0 cellspacing=3 cellpadding=3 style="width:100%;">
             <tr>
-               <td style="width:20%;">URL ECDE:</td>
-               <td style="width:80%;">
+               <td style="width:20%;vertical-align:top;">Service à appeler:</td>
+               <td style="width:80%;" >
+                  <form:radiobutton path="${pathFormulaire}.modeCapture" value="archivageUnitaire" title="archivageUnitaire (avec URL ECDE)" label="archivageUnitaire (avec URL ECDE)" />
+                  <br />
+                  <form:radiobutton path="${pathFormulaire}.modeCapture" value="archivageUnitairePJUrlEcde" title="archivageUnitairePJ avec URL ECDE" label="archivageUnitairePJ avec URL ECDE" />
+                  <br />
+                  <form:radiobutton path="${pathFormulaire}.modeCapture" value="archivageUnitairePJContenuSansMtom" title="archivageUnitairePJ avec contenu sans MTOM" label="archivageUnitairePJ avec contenu sans MTOM" />
+                  <br />
+                  <form:radiobutton path="${pathFormulaire}.modeCapture" value="archivageUnitairePJContenuAvecMtom" title="archivageUnitairePJ avec contenu avec MTOM" label="archivageUnitairePJ avec contenu avec MTOM" />
+               </td>
+            </tr>
+            <tr>
+               <td>URL ECDE:</td>
+               <td>
                   <form:input path="${pathFormulaire}.urlEcde" cssStyle="width:100%;" readonly="${readonly}" />
+               </td>
+            </tr>
+            <tr>
+               <td>Nom du fichier:</td>
+               <td>
+                  <form:input path="${pathFormulaire}.nomFichier" cssStyle="width:100%;" readonly="${readonly}" />
                </td>
             </tr>
             <tr style="vertical-align:top;">
@@ -33,7 +51,8 @@ Etape <c:out value="${numeroEtape}"/> : Appel du service web de capture unitaire
       <td style="width:50%;border-left-width:2px;border-left-color:black;border-left-style:solid;">
          <sae:resultatTest
             objetResultats="${objetFormulaire.resultats}"
-            pathResultats="${pathFormulaire}.resultats" />
+            pathResultats="${pathFormulaire}.resultats"
+            height="280pt" />
       </td>
    </tr>
 </table>
