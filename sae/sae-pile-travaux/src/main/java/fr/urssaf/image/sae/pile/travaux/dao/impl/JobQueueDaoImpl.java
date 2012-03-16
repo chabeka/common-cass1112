@@ -139,6 +139,22 @@ public class JobQueueDaoImpl implements JobQueueDao {
    }
 
    /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final List<SimpleJobRequest> getNonTerminatedSimpleJobs(String hostname) {
+      ColumnFamilyResult<String, UUID> result = jobsQueueTmpl.queryColumns(hostname);
+      Collection<UUID> colNames = result.getColumnNames();
+      List<SimpleJobRequest> list = new ArrayList<SimpleJobRequest>(colNames.size());
+      SimpleJobRequestSerializer slz = SimpleJobRequestSerializer.get();
+      for (UUID uuid : colNames) {
+         SimpleJobRequest simpleJobRequest = slz.fromBytes(result.getByteArray(uuid));
+         list.add(simpleJobRequest);
+      }
+      return list;
+   }
+
+   /**
     * Récupère une liste de JobRequest à partir d'une liste d'id On fait en
     * sorte de renvoyer les jobRequest dans le même ordre que la liste des id
     * 

@@ -134,6 +134,13 @@ public class JobQueueDaoTest {
       }
       Assert.assertEquals(2, runningJobs.size());
       
+      // Pareil, mais on récupère seulement les infos principales des jobs (plus rapide)
+      List<SimpleJobRequest> runningSimpleJobs = jobQueueDao.getNonTerminatedSimpleJobs("myHostname");
+      System.out.println("Running simpleJobs : ");
+      for (SimpleJobRequest simpleJobRequest : runningSimpleJobs) {
+         System.out.println(SimpleJobRequestSerializer.get().toString(simpleJobRequest));
+      }
+      Assert.assertEquals(2, runningSimpleJobs.size());
    }
 
    @Test

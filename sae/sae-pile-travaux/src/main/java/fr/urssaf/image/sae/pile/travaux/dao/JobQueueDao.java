@@ -58,6 +58,18 @@ public interface JobQueueDao {
    List<JobRequest> getNonTerminatedJobs(String hostname);
 
    /**
+    * Récupère la liste des traitements réservés ou en cours d'exécution 
+    * sur un serveur donné. Cette méthode est (beaucoup) plus rapide
+    * que {@link getNonTerminatedJobs}, mais renvoie des SimpleJobRequest
+    * au lieu de JobRequest.
+    * 
+    * @param hostname
+    *           nom du serveur concerné
+    * @return liste des traitements réservés ou en cours d'exécution
+    */
+   List<SimpleJobRequest> getNonTerminatedSimpleJobs(String hostname);
+
+   /**
     * Réserve un job. Attention, aucun lock n'est fait. Le lock
     * doit être fait en amont.
     * @param jobRequest       Le jobRequest à réserver
