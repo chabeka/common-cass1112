@@ -24,93 +24,88 @@ import org.springframework.batch.core.repository.JobRestartException;
 import com.docubase.dfce.toolkit.TestUtils;
 import com.docubase.dfce.toolkit.base.AbstractTestCaseCreateAndPrepareBase;
 
-public class DocumentQueryIteratorTest extends
-	AbstractTestCaseCreateAndPrepareBase {
-    private static BaseCategory c0;
-    private static BaseCategory c1;
-    private static BaseCategory c2;
-    private static BaseCategory c4;
+public class DocumentQueryIteratorTest extends AbstractTestCaseCreateAndPrepareBase {
+   private static BaseCategory c0;
+   private static BaseCategory c1;
+   private static BaseCategory c2;
+   private static BaseCategory c4;
 
-    @BeforeClass
-    public static void setupAll() throws NoSuchJobException,
-	    JobExecutionAlreadyRunningException, JobRestartException,
-	    JobInstanceAlreadyCompleteException, JobParametersInvalidException,
-	    JobParametersNotFoundException, UnexpectedJobExecutionException {
-	Document document;
+   @BeforeClass
+   public static void setupAll() throws NoSuchJobException, JobExecutionAlreadyRunningException,
+         JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException,
+         JobParametersNotFoundException, UnexpectedJobExecutionException {
+      Document document;
 
-	c0 = base.getBaseCategory(catNames[0]);
-	c1 = base.getBaseCategory(catNames[1]);
-	c2 = base.getBaseCategory(catNames[2]);
-	c4 = base.getBaseCategory(catNames[4]);
+      c0 = base.getBaseCategory(catNames[0]);
+      c1 = base.getBaseCategory(catNames[1]);
+      c2 = base.getBaseCategory(catNames[2]);
+      c4 = base.getBaseCategory(catNames[4]);
 
-	for (int i = 0; i < 50; i++) {
-	    document = ToolkitFactory.getInstance().createDocumentTag(base);
+      for (int i = 0; i < 50; i++) {
+         document = ToolkitFactory.getInstance().createDocumentTag(base);
 
-	    // C0 unique
-	    document.addCriterion(c0, "testfilter" + i);
+         // C0 unique
+         document.addCriterion(c0, "testfilter" + i);
 
-	    // C1 soit Enfant, soit Adulte
-	    String c1Val = null;
-	    if (i < 10) { // Les enfants d'abord
-		c1Val = "enfant";
-	    } else {
-		c1Val = "adulte";
-	    }
-	    document.addCriterion(c1, c1Val);
+         // C1 soit Enfant, soit Adulte
+         String c1Val = null;
+         if (i < 10) { // Les enfants d'abord
+            c1Val = "enfant";
+         } else {
+            c1Val = "adulte";
+         }
+         document.addCriterion(c1, c1Val);
 
-	    // C2. 2 valeurs, une qui varie très peu, une qui est unique.
-	    document.addCriterion(c2, "personne" + i);
-	    document.addCriterion(c2, i % 2 == 0 ? "masculin" : "feminin");
-	    document.addCriterion(c4, 10);
+         // C2. 2 valeurs, une qui varie trï¿½s peu, une qui est unique.
+         document.addCriterion(c2, "personne" + i);
+         document.addCriterion(c2, i % 2 == 0 ? "masculin" : "feminin");
+         document.addCriterion(c4, 10);
 
-	    // stockage
-	    storeDocument(document, TestUtils.getFile("doc1.pdf"), true);
-	}
+         // stockage
+         storeDocument(document, TestUtils.getFile("doc1.pdf"), true);
+      }
 
-	serviceProvider.getStorageAdministrationService()
-		.updateAllIndexesUsageCount();
-    }
+      serviceProvider.getStorageAdministrationService().updateAllIndexesUsageCount();
+   }
 
-    @Test
-    public void testCreateDocumentIterator_Monobase_C0_Joker() {
-	SearchQuery query = ToolkitFactory.getInstance().createMonobaseQuery(
-		c0.getName() + ":testfilter*", base);
-	query.setSearchLimit(7);
-	Iterator<Document> iterator = serviceProvider.getSearchService()
-		.createDocumentIterator(query);
+   @Test
+   public void testCreateDocumentIterator_Monobase_C0_Joker() {
+      SearchQuery query = ToolkitFactory.getInstance().createMonobaseQuery(
+            c0.getName() + ":testfilter*", base);
+      query.setSearchLimit(7);
+      Iterator<Document> iterator = serviceProvider.getSearchService()
+            .createDocumentIterator(query);
 
-	Set<String> c0Values = new HashSet<String>();
+      Set<String> c0Values = new HashSet<String>();
 
-	int count = 0;
-	while (iterator.hasNext()) {
-	    Document document = iterator.next();
-	    c0Values.add(document.getSingleCriterion(c0.getName()).getWord()
-		    .toString());
-	    count++;
-	}
+      int count = 0;
+      while (iterator.hasNext()) {
+         Document document = iterator.next();
+         c0Values.add(document.getSingleCriterion(c0.getName()).getWord().toString());
+         count++;
+      }
 
-	assertEquals(50, c0Values.size());
-    }
+      assertEquals(50, c0Values.size());
+   }
 
-    @Test
-    public void testCreateDocumentIterator_Monobase_C1() {
-	SearchQuery query = ToolkitFactory.getInstance().createMonobaseQuery(
-		c1.getName() + ":adulte", base);
-	query.setSearchLimit(7);
-	Iterator<Document> iterator = serviceProvider.getSearchService()
-		.createDocumentIterator(query);
+   @Test
+   public void testCreateDocumentIterator_Monobase_C1() {
+      SearchQuery query = ToolkitFactory.getInstance().createMonobaseQuery(
+            c1.getName() + ":adulte", base);
+      query.setSearchLimit(7);
+      Iterator<Document> iterator = serviceProvider.getSearchService()
+            .createDocumentIterator(query);
 
-	Set<String> c0Values = new HashSet<String>();
+      Set<String> c0Values = new HashSet<String>();
 
-	int count = 0;
-	while (iterator.hasNext()) {
-	    Document document = iterator.next();
-	    c0Values.add(document.getSingleCriterion(c0.getName()).getWord()
-		    .toString());
-	    count++;
-	}
+      int count = 0;
+      while (iterator.hasNext()) {
+         Document document = iterator.next();
+         c0Values.add(document.getSingleCriterion(c0.getName()).getWord().toString());
+         count++;
+      }
 
-	assertEquals(40, c0Values.size());
-    }
+      assertEquals(40, c0Values.size());
+   }
 
 }

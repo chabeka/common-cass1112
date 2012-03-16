@@ -22,43 +22,39 @@ import com.docubase.dfce.exception.TagControlException;
 import com.docubase.dfce.toolkit.AbstractTestBase;
 
 public class StoreClientTest extends AbstractTestBase {
-    private final StoreService storeService = serviceProvider.getStoreService();
-    private final BaseAdministrationService baseAdministrationService = serviceProvider
-	    .getBaseAdministrationService();
+   private final StoreService storeService = serviceProvider.getStoreService();
+   private final BaseAdministrationService baseAdministrationService = serviceProvider
+         .getBaseAdministrationService();
 
-    @BeforeClass
-    public static void setUp() {
-	connect();
-    }
+   @BeforeClass
+   public static void setUp() {
+      connect();
+   }
 
-    @AfterClass
-    public static void tearDown() {
-	disconnect();
-    }
+   @AfterClass
+   public static void tearDown() {
+      disconnect();
+   }
 
-    @Test
-    public void testStoreDocument() throws IOException, TagControlException {
-	Base base = baseAdministrationService.getBase("baseId");
-	if (base == null) {
-	    base = ToolkitFactory.getInstance().createBase("baseId");
-	    try {
-		baseAdministrationService.createBase(base);
-	    } catch (ObjectAlreadyExistsException e) {
-		e.printStackTrace();
-		fail("base : " + base.getBaseId() + " already exists");
-	    }
-	    base = serviceProvider.getBaseAdministrationService().getBase(
-		    "baseId");
-	}
+   @Test
+   public void testStoreDocument() throws IOException, TagControlException {
+      Base base = baseAdministrationService.getBase("baseId");
+      if (base == null) {
+         base = ToolkitFactory.getInstance().createBase("baseId");
+         try {
+            baseAdministrationService.createBase(base);
+         } catch (ObjectAlreadyExistsException e) {
+            e.printStackTrace();
+            fail("base : " + base.getBaseId() + " already exists");
+         }
+         base = serviceProvider.getBaseAdministrationService().getBase("baseId");
+      }
 
-	Document document = ToolkitFactory.getInstance()
-		.createDocumentTag(base);
-	File file = new File(ClassLoader.getSystemResource("doc1.pdf")
-		.getPath());
-	Document storeDocument = storeService.storeDocument(document,
-		FilenameUtils.getBaseName(file.getName()),
-		FilenameUtils.getExtension(file.getName()),
-		new FileInputStream(file));
-	assertNotNull(storeDocument);
-    }
+      Document document = ToolkitFactory.getInstance().createDocumentTag(base);
+      File file = new File(ClassLoader.getSystemResource("doc1.pdf").getPath());
+      Document storeDocument = storeService.storeDocument(document,
+            FilenameUtils.getBaseName(file.getName()), FilenameUtils.getExtension(file.getName()),
+            new FileInputStream(file));
+      assertNotNull(storeDocument);
+   }
 }

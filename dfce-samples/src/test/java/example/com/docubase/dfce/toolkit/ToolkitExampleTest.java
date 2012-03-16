@@ -51,426 +51,396 @@ import com.docubase.dfce.toolkit.TestUtils;
 
 @RunWith(JUnit4.class)
 public class ToolkitExampleTest {
-    private static final String TEST_BASE_ID = "TestBase";
-
-    /** The logger. */
-    private static Logger logger = Logger.getLogger(ToolkitExampleTest.class);
-
-    private ServiceProvider serviceProvider;
-
-    private Base testBase;
-
-    public static final String CIVILITY = "civility";
-    public static final String NAME = "name";
-    public static final String NB_NOVELS = "nb_novels";
-    public static final String BIRTHDATE = "birthdate";
-
-    private final ToolkitFactory toolkitFactory = ToolkitFactory.getInstance();
-
-    @Before
-    public void before() throws ObjectAlreadyExistsException {
-
-	String url = "";
-	// Load test configuration.
-	Configuration config;
-	try {
-	    config = new PropertiesConfiguration("test.properties");
-	    url = config.getString("test.server.1.url");
-	} catch (ConfigurationException e) {
-	    logger.error("Fail to load configuration from test.properties", e);
-	    fail();
-	}
-	logger.info("Configuration loaded from test.properties");
-
-	serviceProvider = ServiceProvider.newServiceProvider();
-	serviceProvider.connect("_ADMIN", "DOCUBASE", url);
-
-	createUser();
-	createCategories();
-	createTestBase();
-	creatingCiviltiesDictionnary();
-    }
-
-    private void createUser() throws ObjectAlreadyExistsException {
-	User user = serviceProvider.getUserAdministrationService().loadUser(
-		"User");
-	if (user == null) {
-	    serviceProvider.getUserAdministrationService().createUser("User",
-		    "Password", "ADMIN");
-	}
-    }
-
-    @Test
-    public void testCreateUserGroupAndUser()
-	    throws ObjectAlreadyExistsException {
-	UserAdministrationService userAdminService = serviceProvider
-		.getUserAdministrationService();
-
-	if (userAdminService.loadUser("MyUser") != null) {
-	    // ce test ne passe qu'une fois, la seconde fois le user existe déjà
-	    return;
-	}
-
-	// creating permissions GET_BASE AND BASE_SEARCH
-	Set<UserPermission> permissions = new HashSet<UserPermission>();
-	permissions.add(UserPermission.GET_BASE);
-	permissions.add(UserPermission.BASE_SEARCH);
-
-	// creating bases set
-	Set<String> restrictedBaseIds = new HashSet<String>();
-	restrictedBaseIds.add("TestBase");
-
-	// creating group "MyGroup" with permissions and restricted bases
-	userAdminService.createUserGroup("MyGroup", permissions,
-		restrictedBaseIds);
-
-	// creating user "MyUser" belonging to the group "MyGroup"
-	userAdminService.createUser("MyUser", "myPassword", "MyGroup");
-
-    }
-
-    @After
-    public void after() {
-	if (serviceProvider != null) {
-	    serviceProvider.disconnect();
-	}
-    }
-
-    @Test
-    public void testArchivageAndSearch() throws FileNotFoundException,
-	    TagControlException, ExceededSearchLimitException,
-	    SearchQueryParseException {
-	StoreService storeService = serviceProvider.getStoreService();
-	SearchService searchService = serviceProvider.getSearchService();
-
-	// creating document for Albert Camus' file
-	Document documentCamus = toolkitFactory.createDocumentTag(testBase);
-
-	// adding metadata
-	documentCamus.addCriterion(NAME, "Albert Camus");
-	documentCamus.addCriterion(CIVILITY, "MR");
-	documentCamus.addCriterion(NB_NOVELS, 18);
-	documentCamus.addCriterion(BIRTHDATE,
-		new GregorianCalendar(7, 10, 1913).getTime());
-
-	// storing Camus' file
-	File fileCamus = TestUtils.getFile("example/camus.pdf");
-	documentCamus = storeService.storeDocument(documentCamus, "camus",
-		"pdf", new FileInputStream(fileCamus));
-
-	// creating document for André Breton's file
-	Document documentBreton = toolkitFactory.createDocumentTag(testBase);
-
-	// adding metadata to document
-	documentBreton.addCriterion(NAME, "André Breton");
-	documentBreton.addCriterion(CIVILITY, "MR");
-	documentBreton.addCriterion(NB_NOVELS, 28);
-	documentBreton.addCriterion(BIRTHDATE, new GregorianCalendar(19, 1,
-		1896).getTime());
-
-	// storing Breton's file
-	File fileBreton = TestUtils.getFile("example/breton.pdf");
-	documentBreton = storeService.storeDocument(documentBreton, "breton",
-		"pdf", new FileInputStream(fileBreton));
-
-	// WRONG DICTIONNARY
-	// créating document for André Breton's file
-	Document documentBeauvoir = toolkitFactory.createDocumentTag(testBase);
-
-	// adding metadata to document
-	documentBeauvoir.addCriterion(NAME, "Simone de Beauvoir");
-	documentBeauvoir.addCriterion(CIVILITY, "Mlle");
-	documentBeauvoir.addCriterion(NB_NOVELS, 50);
-	documentBeauvoir.addCriterion(BIRTHDATE, new GregorianCalendar(1, 6,
-		1804).getTime());
-
-	// storing Beauvoir's file
-	File fileBeauvoir = TestUtils.getFile("example/beauvoir.pdf");
-	boolean tagControlException = false;
-	try {
-	    storeService.storeDocument(documentBeauvoir, "beauvoir", "pdf",
-		    new FileInputStream(fileBeauvoir));
-	} catch (TagControlException e) {
-	    tagControlException = true;
-	}
-	assertTrue(tagControlException);
-
-	Document documentByUUID;
-	SearchResult searchResult;
-	// SEARCH
-
-	// UUID Search
-	documentByUUID = searchService.getDocumentByUUID(testBase,
-		documentBreton.getUuid());
-	assertNotNull(documentByUUID);
-
-	// UUID Search multi-bases
-	documentByUUID = searchService.getDocumentByUUIDMultiBase(documentCamus
-		.getUuid());
-	assertNotNull(documentByUUID);
-
-	// NAME Search
-	SearchQuery searchQuery = toolkitFactory.createMonobasePagedQuery(
-		"name:Albert\\ Camus", 10, testBase);
-	searchResult = searchService.search(searchQuery);
-	assertEquals(1, searchResult.getTotalHits());
-	Document onlyDocument = searchResult.getDocuments().get(0);
-	assertEquals(18, onlyDocument.getCriterions(NB_NOVELS).get(0).getWord());
-
-	// AND Search
-	searchQuery = toolkitFactory.createMonobasePagedQuery(
-		"name:Albert\\ Camus AND nb_novels:18", 10, testBase);
-	searchResult = searchService.search(searchQuery);
-	assertEquals(1, searchResult.getTotalHits());
-
-	// OR Search
-	searchQuery = toolkitFactory.createMonobasePagedQuery(
-		"name:Albert\\ Camus OR nb_novels:28", 10, testBase);
-	searchResult = searchService.search(searchQuery);
-	assertEquals(2, searchResult.getTotalHits());
-
-	// Joker Search
-	searchQuery = toolkitFactory.createMonobasePagedQuery("name:a*", 10,
-		testBase);
-	searchResult = searchService.search(searchQuery);
-	assertEquals(2, searchResult.getTotalHits());
-
-	// Range Search
-	searchQuery = toolkitFactory.createMonobasePagedQuery(
-		"nb_novels:[1 TO 40]", 10, testBase);
-	searchResult = searchService.search(searchQuery);
-	assertEquals(2, searchResult.getTotalHits());
-
-	// Range Search and Filter
-	searchQuery = toolkitFactory.createMonobasePagedQuery(
-		"nb_novels:[1 TO 40]", 10, testBase);
-	ChainedFilter filter = toolkitFactory.createChainedFilter();
-	filter.addTermFilter("name", "Albert Camus");
-	searchQuery.setChainedFilter(filter);
-	searchResult = searchService.search(searchQuery);
-	assertEquals(1, searchResult.getTotalHits());
-
-	// Iterator on name:a* query
-	searchQuery = toolkitFactory.createMonobaseQuery("name:a*", testBase);
-	Iterator<Document> documentIterator = searchService
-		.createDocumentIterator(searchQuery);
-	int count = 0;
-	while (documentIterator.hasNext()) {
-	    Document document = documentIterator.next();
-	    String nameValue = document.getSingleCriterion(NAME).getWord()
-		    .toString().toLowerCase();
-	    assertTrue(nameValue.startsWith("a"));
-	    count++;
-	}
-	assertEquals(2, count);
-
-    }
-
-    @Test
-    public void testSortAndPagination() throws FileNotFoundException,
-	    TagControlException, ExceededSearchLimitException,
-	    SearchQueryParseException {
-	StoreService storeService = serviceProvider.getStoreService();
-	SearchService searchService = serviceProvider.getSearchService();
-
-	for (int i = 1; i <= 18; i++) {
-	    Document document = toolkitFactory.createDocumentTag(testBase);
-	    String stringNumber = Integer.toString(i);
-	    if (i < 10) {
-		stringNumber = "0" + stringNumber;
-	    }
-
-	    document.addCriterion(NAME, "Louis " + stringNumber);
-	    document.addCriterion(CIVILITY, "MR");
-	    document.addCriterion(NB_NOVELS, 0);
-	    document.addCriterion(BIRTHDATE,
-		    new GregorianCalendar(7, 10, 1913).getTime());
-
-	    // storing Camus' file
-	    File fileCamus = TestUtils.getFile("example/camus.pdf");
-	    document = storeService.storeDocument(document, "camus", "pdf",
-		    new FileInputStream(fileCamus));
-	}
-
-	// sorting
-	SortedSearchQuery sortedQuery = toolkitFactory
-		.createMonobaseSortedQuery("name:louis*", testBase);
-	sortedQuery.setSortCategoryName(NAME);
-
-	SearchResult searchResult = searchService.search(sortedQuery);
-	assertEquals(18, searchResult.getDocuments().size());
-	assertEquals("Louis 01", searchResult.getDocuments().get(0)
-		.getSingleCriterion(NAME).getWord().toString());
-	assertEquals("Louis 18", searchResult.getDocuments().get(17)
-		.getSingleCriterion(NAME).getWord().toString());
-
-	// reverse sorting and page size
-	sortedQuery = toolkitFactory.createMonobaseSortedQuery("name:louis*",
-		testBase);
-	sortedQuery.setSortCategoryName(NAME);
-	sortedQuery.setReversedSort(true);
-	sortedQuery.setOffset(0);
-	sortedQuery.setPageSize(10);
-
-	searchResult = searchService.search(sortedQuery);
-	assertEquals(10, searchResult.getDocuments().size());
-	assertEquals("Louis 18", searchResult.getDocuments().get(0)
-		.getSingleCriterion(NAME).getWord().toString());
-	assertEquals("Louis 09", searchResult.getDocuments().get(9)
-		.getSingleCriterion(NAME).getWord().toString());
-
-	// pagination
-	sortedQuery = toolkitFactory.createMonobaseSortedQuery("name:louis*",
-		testBase);
-	sortedQuery.setSortCategoryName(NAME);
-	sortedQuery.setOffset(10);
-	sortedQuery.setPageSize(10);
-
-	searchResult = searchService.search(sortedQuery);
-	assertEquals(8, searchResult.getDocuments().size());
-	assertEquals("Louis 11", searchResult.getDocuments().get(0)
-		.getSingleCriterion(NAME).getWord().toString());
-	assertEquals("Louis 18", searchResult.getDocuments().get(7)
-		.getSingleCriterion(NAME).getWord().toString());
-
-    }
-
-    @Test
-    public void testConnectIsServerUpDisconnect() {
-	// connecting to DFCE
-	ServiceProvider serviceProvider = ServiceProvider.newServiceProvider();
-	serviceProvider.connect("User", "Password",
-		"http://localhost:9090/dfce-webapp/toolkit/");
-
-	// testing if server up
-	assertTrue(serviceProvider.isServerUp());
-
-	// disconnecting from DFCE
-	serviceProvider.disconnect();
-    }
-
-    @Test
-    public void testVirtualDocument() throws FileNotFoundException,
-	    TagControlException {
-	StoreService storeService = serviceProvider.getStoreService();
-	StorageAdministrationService adminService = serviceProvider
-		.getStorageAdministrationService();
-
-	// creating XXthCentury file reference
-	File fileSand = TestUtils.getFile("example/XXthCentury.pdf");
-	FileReference fileReference = adminService.createFileReference(
-		"XXthCentury", "pdf", new FileInputStream(fileSand));
-
-	// créating Beauvoir document
-	Document documentBeauvoir = toolkitFactory.createDocumentTag(testBase);
-	documentBeauvoir.addCriterion(NAME, "Simone de Beauvoir");
-	documentBeauvoir.addCriterion(CIVILITY, "MRS");
-	documentBeauvoir.addCriterion(NB_NOVELS, 25);
-	documentBeauvoir.addCriterion(BIRTHDATE, new GregorianCalendar(9, 0,
-		1908).getTime());
-
-	// storing virtual document, Beauvoir's page 4 to 7
-	documentBeauvoir = storeService.storeVirtualDocument(documentBeauvoir,
-		fileReference, 1, 3);
-
-	// créating Sartre Document document
-	Document documentSartre = toolkitFactory.createDocumentTag(testBase);
-	documentSartre.addCriterion(NAME, "Jean-Paul Sartre");
-	documentSartre.addCriterion(CIVILITY, "MS");
-	documentSartre.addCriterion(NB_NOVELS, 10);
-	documentSartre.addCriterion(BIRTHDATE, new GregorianCalendar(21, 5,
-		1905).getTime());
-
-	// storing virtual document, Sartre's page 4 to 7
-	documentSartre = storeService.storeVirtualDocument(documentSartre,
-		fileReference, 4, 7);
-    }
-
-    private void createCategories() throws ObjectAlreadyExistsException {
-	StorageAdministrationService admService = serviceProvider
-		.getStorageAdministrationService();
-	// testing if 'NAME' category exists
-	if (admService.getCategory(NAME) == null) {
-	    // creating 'NAME' category
-	    admService.createCategory(NAME, CategoryDataType.STRING);
-	}
-	// fetching or creating 'CIVILITY' category
-	admService.findOrCreateCategory(CIVILITY, CategoryDataType.STRING);
-	// fetching or creating 'NB_NOVELS' category
-	admService.findOrCreateCategory(NB_NOVELS, CategoryDataType.INTEGER);
-	// fetching or creating 'BIRTHDATE' category
-	admService.findOrCreateCategory(BIRTHDATE, CategoryDataType.DATE);
-    }
-
-    private void createTestBase() throws ObjectAlreadyExistsException {
-	StorageAdministrationService adminService = serviceProvider
-		.getStorageAdministrationService();
-	BaseAdministrationService baseAdminService = serviceProvider
-		.getBaseAdministrationService();
-
-	Base base = baseAdminService.getBase(TEST_BASE_ID);
-	if (base != null) {
-	    baseAdminService.deleteBase(base);
-	}
-
-	Category categoryCivility = adminService.getCategory(CIVILITY);
-	Category categoryName = adminService.getCategory(NAME);
-	Category categoryNbNovels = adminService.getCategory(NB_NOVELS);
-	Category categoryBirthdate = adminService.getCategory(BIRTHDATE);
-
-	// "CIVILITY", not indexed, 0-1, dictionnary and not single
-	BaseCategory baseCategoryCivility = toolkitFactory.createBaseCategory(
-		categoryCivility, false);
-	baseCategoryCivility.setMinimumValues(0);
-	baseCategoryCivility.setMaximumValues(1);
-	baseCategoryCivility.setEnableDictionary(true);
-	baseCategoryCivility.setSingle(false);
-
-	// "NAME", indexed, 1-2, no dictionnary and single
-	BaseCategory baseCategoryName = toolkitFactory.createBaseCategory(
-		categoryName, true);
-	baseCategoryName.setEnableDictionary(false);
-	baseCategoryName.setMinimumValues(1);
-	baseCategoryName.setMaximumValues(2);
-	baseCategoryName.setSingle(false);
-
-	// "NB_NOVELS", indexed, 1, no dictionnary and not single
-	BaseCategory baseCategoryNbNovels = toolkitFactory.createBaseCategory(
-		categoryNbNovels, true);
-	baseCategoryNbNovels.setEnableDictionary(false);
-	baseCategoryNbNovels.setMinimumValues(1);
-	baseCategoryNbNovels.setMaximumValues(1);
-	baseCategoryNbNovels.setSingle(false);
-
-	// "BIRTHDATE", not indexed, 0-1, no dictionnary and not single
-	BaseCategory baseCategoryBirthdate = toolkitFactory.createBaseCategory(
-		categoryBirthdate, false);
-	baseCategoryBirthdate.setEnableDictionary(false);
-	baseCategoryBirthdate.setMinimumValues(0);
-	baseCategoryBirthdate.setMaximumValues(1);
-	baseCategoryBirthdate.setSingle(false);
-
-	// creating base instance
-	base = toolkitFactory.createBase(TEST_BASE_ID);
-
-	// adding baseCategories to the created Base
-	base.addBaseCategory(baseCategoryCivility);
-	base.addBaseCategory(baseCategoryName);
-	base.addBaseCategory(baseCategoryNbNovels);
-	base.addBaseCategory(baseCategoryBirthdate);
-
-	// creating "TestBase" in the system
-	testBase = baseAdminService.createBase(base);
-    }
-
-    private void creatingCiviltiesDictionnary() {
-	BaseCategory baseCategoryCivility = testBase.getBaseCategory(CIVILITY);
-	StorageAdministrationService adminService = serviceProvider
-		.getStorageAdministrationService();
-
-	// adding "MR", "MS" et "MRS" to CIVILITY's dictionnary
-	adminService.addDictionaryTerm(baseCategoryCivility, "MR");
-	adminService.addDictionaryTerm(baseCategoryCivility, "MS");
-	adminService.addDictionaryTerm(baseCategoryCivility, "MRS");
-    }
+   private static final String TEST_BASE_ID = "TestBase";
+
+   /** The logger. */
+   private static Logger logger = Logger.getLogger(ToolkitExampleTest.class);
+
+   private ServiceProvider serviceProvider;
+
+   private Base testBase;
+
+   public static final String CIVILITY = "civility";
+   public static final String NAME = "name";
+   public static final String NB_NOVELS = "nb_novels";
+   public static final String BIRTHDATE = "birthdate";
+   String url;
+
+   private final ToolkitFactory toolkitFactory = ToolkitFactory.getInstance();
+
+   @Before
+   public void before() throws ObjectAlreadyExistsException {
+
+      url = "";
+      // Load test configuration.
+      Configuration config;
+      try {
+         config = new PropertiesConfiguration("test.properties");
+         url = config.getString("test.server.1.url");
+      } catch (ConfigurationException e) {
+         logger.error("Fail to load configuration from test.properties", e);
+         fail();
+      }
+      logger.info("Configuration loaded from test.properties");
+
+      serviceProvider = ServiceProvider.newServiceProvider();
+      serviceProvider.connect("_ADMIN", "DOCUBASE", url);
+
+      createUser();
+      createCategories();
+      createTestBase();
+      creatingCiviltiesDictionnary();
+   }
+
+   private void createUser() throws ObjectAlreadyExistsException {
+      User user = serviceProvider.getUserAdministrationService().loadUser("User");
+      if (user == null) {
+         serviceProvider.getUserAdministrationService().createUser("User", "Password", "ADMIN");
+      }
+   }
+
+   @Test
+   public void testCreateUserGroupAndUser() throws ObjectAlreadyExistsException {
+      UserAdministrationService userAdminService = serviceProvider.getUserAdministrationService();
+
+      if (userAdminService.loadUser("MyUser") != null) {
+         // ce test ne passe qu'une fois, la seconde fois le user existe dï¿½jï¿½
+         return;
+      }
+
+      // creating permissions GET_BASE AND BASE_SEARCH
+      Set<UserPermission> permissions = new HashSet<UserPermission>();
+      permissions.add(UserPermission.GET_BASE);
+      permissions.add(UserPermission.BASE_SEARCH);
+
+      // creating bases set
+      Set<String> restrictedBaseIds = new HashSet<String>();
+      restrictedBaseIds.add("TestBase");
+
+      // creating group "MyGroup" with permissions and restricted bases
+      userAdminService.createUserGroup("MyGroup", permissions, restrictedBaseIds);
+
+      // creating user "MyUser" belonging to the group "MyGroup"
+      userAdminService.createUser("MyUser", "myPassword", "MyGroup");
+
+   }
+
+   @After
+   public void after() {
+      if (serviceProvider != null) {
+         serviceProvider.disconnect();
+      }
+   }
+
+   @Test
+   public void testArchivageAndSearch() throws FileNotFoundException, TagControlException,
+         ExceededSearchLimitException, SearchQueryParseException {
+      StoreService storeService = serviceProvider.getStoreService();
+      SearchService searchService = serviceProvider.getSearchService();
+
+      // creating document for Albert Camus' file
+      Document documentCamus = toolkitFactory.createDocumentTag(testBase);
+
+      // adding metadata
+      documentCamus.addCriterion(NAME, "Albert Camus");
+      documentCamus.addCriterion(CIVILITY, "MR");
+      documentCamus.addCriterion(NB_NOVELS, 18);
+      documentCamus.addCriterion(BIRTHDATE, new GregorianCalendar(7, 10, 1913).getTime());
+
+      // storing Camus' file
+      File fileCamus = TestUtils.getFile("example/camus.pdf");
+      documentCamus = storeService.storeDocument(documentCamus, "camus", "pdf",
+            new FileInputStream(fileCamus));
+
+      // creating document for Andrï¿½ Breton's file
+      Document documentBreton = toolkitFactory.createDocumentTag(testBase);
+
+      // adding metadata to document
+      documentBreton.addCriterion(NAME, "Andrï¿½ Breton");
+      documentBreton.addCriterion(CIVILITY, "MR");
+      documentBreton.addCriterion(NB_NOVELS, 28);
+      documentBreton.addCriterion(BIRTHDATE, new GregorianCalendar(19, 1, 1896).getTime());
+
+      // storing Breton's file
+      File fileBreton = TestUtils.getFile("example/breton.pdf");
+      documentBreton = storeService.storeDocument(documentBreton, "breton", "pdf",
+            new FileInputStream(fileBreton));
+
+      // WRONG DICTIONNARY
+      // crï¿½ating document for Andrï¿½ Breton's file
+      Document documentBeauvoir = toolkitFactory.createDocumentTag(testBase);
+
+      // adding metadata to document
+      documentBeauvoir.addCriterion(NAME, "Simone de Beauvoir");
+      documentBeauvoir.addCriterion(CIVILITY, "Mlle");
+      documentBeauvoir.addCriterion(NB_NOVELS, 50);
+      documentBeauvoir.addCriterion(BIRTHDATE, new GregorianCalendar(1, 6, 1804).getTime());
+
+      // storing Beauvoir's file
+      File fileBeauvoir = TestUtils.getFile("example/beauvoir.pdf");
+      boolean tagControlException = false;
+      try {
+         storeService.storeDocument(documentBeauvoir, "beauvoir", "pdf", new FileInputStream(
+               fileBeauvoir));
+      } catch (TagControlException e) {
+         tagControlException = true;
+      }
+      assertTrue(tagControlException);
+
+      Document documentByUUID;
+      SearchResult searchResult;
+      // SEARCH
+
+      // UUID Search
+      documentByUUID = searchService.getDocumentByUUID(testBase, documentBreton.getUuid());
+      assertNotNull(documentByUUID);
+
+      // UUID Search multi-bases
+      documentByUUID = searchService.getDocumentByUUIDMultiBase(documentCamus.getUuid());
+      assertNotNull(documentByUUID);
+
+      // NAME Search
+      SearchQuery searchQuery = toolkitFactory.createMonobasePagedQuery("name:Albert\\ Camus", 10,
+            testBase);
+      searchResult = searchService.search(searchQuery);
+      assertEquals(1, searchResult.getTotalHits());
+      Document onlyDocument = searchResult.getDocuments().get(0);
+      assertEquals(18, onlyDocument.getCriterions(NB_NOVELS).get(0).getWord());
+
+      // AND Search
+      searchQuery = toolkitFactory.createMonobasePagedQuery("name:Albert\\ Camus AND nb_novels:18",
+            10, testBase);
+      searchResult = searchService.search(searchQuery);
+      assertEquals(1, searchResult.getTotalHits());
+
+      // OR Search
+      searchQuery = toolkitFactory.createMonobasePagedQuery("name:Albert\\ Camus OR nb_novels:28",
+            10, testBase);
+      searchResult = searchService.search(searchQuery);
+      assertEquals(2, searchResult.getTotalHits());
+
+      // Joker Search
+      searchQuery = toolkitFactory.createMonobasePagedQuery("name:a*", 10, testBase);
+      searchResult = searchService.search(searchQuery);
+      assertEquals(2, searchResult.getTotalHits());
+
+      // Range Search
+      searchQuery = toolkitFactory.createMonobasePagedQuery("nb_novels:[1 TO 40]", 10, testBase);
+      searchResult = searchService.search(searchQuery);
+      assertEquals(2, searchResult.getTotalHits());
+
+      // Range Search and Filter
+      searchQuery = toolkitFactory.createMonobasePagedQuery("nb_novels:[1 TO 40]", 10, testBase);
+      ChainedFilter filter = toolkitFactory.createChainedFilter();
+      filter.addTermFilter("name", "Albert Camus");
+      searchQuery.setChainedFilter(filter);
+      searchResult = searchService.search(searchQuery);
+      assertEquals(1, searchResult.getTotalHits());
+
+      // Iterator on name:a* query
+      searchQuery = toolkitFactory.createMonobaseQuery("name:a*", testBase);
+      Iterator<Document> documentIterator = searchService.createDocumentIterator(searchQuery);
+      int count = 0;
+      while (documentIterator.hasNext()) {
+         Document document = documentIterator.next();
+         String nameValue = document.getSingleCriterion(NAME).getWord().toString().toLowerCase();
+         assertTrue(nameValue.startsWith("a"));
+         count++;
+      }
+      assertEquals(2, count);
+
+   }
+
+   @Test
+   public void testSortAndPagination() throws FileNotFoundException, TagControlException,
+         ExceededSearchLimitException, SearchQueryParseException {
+      StoreService storeService = serviceProvider.getStoreService();
+      SearchService searchService = serviceProvider.getSearchService();
+
+      for (int i = 1; i <= 18; i++) {
+         Document document = toolkitFactory.createDocumentTag(testBase);
+         String stringNumber = Integer.toString(i);
+         if (i < 10) {
+            stringNumber = "0" + stringNumber;
+         }
+
+         document.addCriterion(NAME, "Louis " + stringNumber);
+         document.addCriterion(CIVILITY, "MR");
+         document.addCriterion(NB_NOVELS, 0);
+         document.addCriterion(BIRTHDATE, new GregorianCalendar(7, 10, 1913).getTime());
+
+         // storing Camus' file
+         File fileCamus = TestUtils.getFile("example/camus.pdf");
+         document = storeService.storeDocument(document, "camus", "pdf", new FileInputStream(
+               fileCamus));
+      }
+
+      // sorting
+      SortedSearchQuery sortedQuery = toolkitFactory.createMonobaseSortedQuery("name:louis*",
+            testBase);
+      sortedQuery.setSortCategoryName(NAME);
+
+      SearchResult searchResult = searchService.search(sortedQuery);
+      assertEquals(18, searchResult.getDocuments().size());
+      assertEquals("Louis 01", searchResult.getDocuments().get(0).getSingleCriterion(NAME)
+            .getWord().toString());
+      assertEquals("Louis 18", searchResult.getDocuments().get(17).getSingleCriterion(NAME)
+            .getWord().toString());
+
+      // reverse sorting and page size
+      sortedQuery = toolkitFactory.createMonobaseSortedQuery("name:louis*", testBase);
+      sortedQuery.setSortCategoryName(NAME);
+      sortedQuery.setReversedSort(true);
+      sortedQuery.setOffset(0);
+      sortedQuery.setPageSize(10);
+
+      searchResult = searchService.search(sortedQuery);
+      assertEquals(10, searchResult.getDocuments().size());
+      assertEquals("Louis 18", searchResult.getDocuments().get(0).getSingleCriterion(NAME)
+            .getWord().toString());
+      assertEquals("Louis 09", searchResult.getDocuments().get(9).getSingleCriterion(NAME)
+            .getWord().toString());
+
+      // pagination
+      sortedQuery = toolkitFactory.createMonobaseSortedQuery("name:louis*", testBase);
+      sortedQuery.setSortCategoryName(NAME);
+      sortedQuery.setOffset(10);
+      sortedQuery.setPageSize(10);
+
+      searchResult = searchService.search(sortedQuery);
+      assertEquals(8, searchResult.getDocuments().size());
+      assertEquals("Louis 11", searchResult.getDocuments().get(0).getSingleCriterion(NAME)
+            .getWord().toString());
+      assertEquals("Louis 18", searchResult.getDocuments().get(7).getSingleCriterion(NAME)
+            .getWord().toString());
+
+   }
+
+   @Test
+   public void testConnectIsServerUpDisconnect() {
+      // connecting to DFCE
+      ServiceProvider serviceProvider = ServiceProvider.newServiceProvider();
+      // serviceProvider.connect("User", "Password",
+      // "http://localhost:9090/dfce-webapp/toolkit/");
+      serviceProvider.connect("User", "Password", url);
+
+      // testing if server up
+      assertTrue(serviceProvider.isServerUp());
+
+      // disconnecting from DFCE
+      serviceProvider.disconnect();
+   }
+
+   @Test
+   public void testVirtualDocument() throws FileNotFoundException, TagControlException {
+      StoreService storeService = serviceProvider.getStoreService();
+      StorageAdministrationService adminService = serviceProvider.getStorageAdministrationService();
+
+      // creating XXthCentury file reference
+      File fileSand = TestUtils.getFile("example/XXthCentury.pdf");
+      FileReference fileReference = adminService.createFileReference("XXthCentury", "pdf",
+            new FileInputStream(fileSand));
+
+      // crï¿½ating Beauvoir document
+      Document documentBeauvoir = toolkitFactory.createDocumentTag(testBase);
+      documentBeauvoir.addCriterion(NAME, "Simone de Beauvoir");
+      documentBeauvoir.addCriterion(CIVILITY, "MRS");
+      documentBeauvoir.addCriterion(NB_NOVELS, 25);
+      documentBeauvoir.addCriterion(BIRTHDATE, new GregorianCalendar(9, 0, 1908).getTime());
+
+      // storing virtual document, Beauvoir's page 4 to 7
+      documentBeauvoir = storeService.storeVirtualDocument(documentBeauvoir, fileReference, 1, 3);
+
+      // crï¿½ating Sartre Document document
+      Document documentSartre = toolkitFactory.createDocumentTag(testBase);
+      documentSartre.addCriterion(NAME, "Jean-Paul Sartre");
+      documentSartre.addCriterion(CIVILITY, "MS");
+      documentSartre.addCriterion(NB_NOVELS, 10);
+      documentSartre.addCriterion(BIRTHDATE, new GregorianCalendar(21, 5, 1905).getTime());
+
+      // storing virtual document, Sartre's page 4 to 7
+      documentSartre = storeService.storeVirtualDocument(documentSartre, fileReference, 4, 7);
+   }
+
+   private void createCategories() throws ObjectAlreadyExistsException {
+      StorageAdministrationService admService = serviceProvider.getStorageAdministrationService();
+      // testing if 'NAME' category exists
+      if (admService.getCategory(NAME) == null) {
+         // creating 'NAME' category
+         admService.createCategory(NAME, CategoryDataType.STRING);
+      }
+      // fetching or creating 'CIVILITY' category
+      admService.findOrCreateCategory(CIVILITY, CategoryDataType.STRING);
+      // fetching or creating 'NB_NOVELS' category
+      admService.findOrCreateCategory(NB_NOVELS, CategoryDataType.INTEGER);
+      // fetching or creating 'BIRTHDATE' category
+      admService.findOrCreateCategory(BIRTHDATE, CategoryDataType.DATE);
+   }
+
+   private void createTestBase() throws ObjectAlreadyExistsException {
+      StorageAdministrationService adminService = serviceProvider.getStorageAdministrationService();
+      BaseAdministrationService baseAdminService = serviceProvider.getBaseAdministrationService();
+
+      Base base = baseAdminService.getBase(TEST_BASE_ID);
+      if (base != null) {
+         baseAdminService.deleteBase(base);
+      }
+
+      Category categoryCivility = adminService.getCategory(CIVILITY);
+      Category categoryName = adminService.getCategory(NAME);
+      Category categoryNbNovels = adminService.getCategory(NB_NOVELS);
+      Category categoryBirthdate = adminService.getCategory(BIRTHDATE);
+
+      // "CIVILITY", not indexed, 0-1, dictionnary and not single
+      BaseCategory baseCategoryCivility = toolkitFactory
+            .createBaseCategory(categoryCivility, false);
+      baseCategoryCivility.setMinimumValues(0);
+      baseCategoryCivility.setMaximumValues(1);
+      baseCategoryCivility.setEnableDictionary(true);
+      baseCategoryCivility.setSingle(false);
+
+      // "NAME", indexed, 1-2, no dictionnary and single
+      BaseCategory baseCategoryName = toolkitFactory.createBaseCategory(categoryName, true);
+      baseCategoryName.setEnableDictionary(false);
+      baseCategoryName.setMinimumValues(1);
+      baseCategoryName.setMaximumValues(2);
+      baseCategoryName.setSingle(false);
+
+      // "NB_NOVELS", indexed, 1, no dictionnary and not single
+      BaseCategory baseCategoryNbNovels = toolkitFactory.createBaseCategory(categoryNbNovels, true);
+      baseCategoryNbNovels.setEnableDictionary(false);
+      baseCategoryNbNovels.setMinimumValues(1);
+      baseCategoryNbNovels.setMaximumValues(1);
+      baseCategoryNbNovels.setSingle(false);
+
+      // "BIRTHDATE", not indexed, 0-1, no dictionnary and not single
+      BaseCategory baseCategoryBirthdate = toolkitFactory.createBaseCategory(categoryBirthdate,
+            false);
+      baseCategoryBirthdate.setEnableDictionary(false);
+      baseCategoryBirthdate.setMinimumValues(0);
+      baseCategoryBirthdate.setMaximumValues(1);
+      baseCategoryBirthdate.setSingle(false);
+
+      // creating base instance
+      base = toolkitFactory.createBase(TEST_BASE_ID);
+
+      // adding baseCategories to the created Base
+      base.addBaseCategory(baseCategoryCivility);
+      base.addBaseCategory(baseCategoryName);
+      base.addBaseCategory(baseCategoryNbNovels);
+      base.addBaseCategory(baseCategoryBirthdate);
+
+      // creating "TestBase" in the system
+      testBase = baseAdminService.createBase(base);
+   }
+
+   private void creatingCiviltiesDictionnary() {
+      BaseCategory baseCategoryCivility = testBase.getBaseCategory(CIVILITY);
+      StorageAdministrationService adminService = serviceProvider.getStorageAdministrationService();
+
+      // adding "MR", "MS" et "MRS" to CIVILITY's dictionnary
+      adminService.addDictionaryTerm(baseCategoryCivility, "MR");
+      adminService.addDictionaryTerm(baseCategoryCivility, "MS");
+      adminService.addDictionaryTerm(baseCategoryCivility, "MRS");
+   }
 }

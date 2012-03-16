@@ -9,22 +9,22 @@ import org.junit.Test;
 import com.docubase.dfce.toolkit.AbstractTestBase;
 
 public class StorageAdministrationServiceTest extends AbstractTestBase {
-    private final StorageAdministrationService storageAdministrationService = serviceProvider
-	    .getStorageAdministrationService();
+   private final StorageAdministrationService storageAdministrationService = serviceProvider
+         .getStorageAdministrationService();
 
-    @BeforeClass
-    public static void setUp() {
-	connect();
-    }
+   @BeforeClass
+   public static void setUp() {
+      connect();
+   }
 
-    @AfterClass
-    public static void tearDown() {
-	disconnect();
-    }
+   @AfterClass
+   public static void tearDown() {
+      disconnect();
+   }
 
-    @Test
-    public void testGetAllCategories() {
-	storageAdministrationService.getAllCategories();
-    }
+   @Test
+   public void testGetAllCategories() {
+      storageAdministrationService.getAllCategories();
+   }
 
 }

@@ -38,7 +38,7 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
-               <argLine>-ea</argLine>
+               <argLine>-da</argLine>
             </configuration>
          </plugin>
       </plugins>

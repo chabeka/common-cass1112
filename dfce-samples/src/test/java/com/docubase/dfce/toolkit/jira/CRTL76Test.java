@@ -21,111 +21,98 @@ import com.docubase.dfce.exception.TagControlException;
 import com.docubase.dfce.toolkit.TestUtils;
 
 public class CRTL76Test extends AbstractCRTLTest {
-    private static final String SRN_VALUE = "39";
-    private static final Date CREATION_DATE;
-    private Date ARCHIVAGE_DATE;
+   private static final String SRN_VALUE = "39";
+   private static final Date CREATION_DATE;
+   private Date ARCHIVAGE_DATE;
 
-    static {
-	CREATION_DATE = new Date();
-    }
+   static {
+      CREATION_DATE = new Date();
+   }
 
-    @Override
-    public void before() {
-	super.before();
-	storeDocument();
-    }
+   @Override
+   public void before() {
+      super.before();
+      storeDocument();
+   }
 
-    private void storeDocument() {
-	Document document = ToolkitFactory.getInstance()
-		.createDocumentTag(base);
-	document.addCriterion(SRN, SRN_VALUE);
+   private void storeDocument() {
+      Document document = ToolkitFactory.getInstance().createDocumentTag(base);
+      document.addCriterion(SRN, SRN_VALUE);
 
-	document.setCreationDate(CREATION_DATE);
+      document.setCreationDate(CREATION_DATE);
 
-	InputStream inputStream = TestUtils.getInputStream("doc1.pdf");
-	try {
-	    document = serviceProvider.getStoreService().storeDocument(
-		    document, "doc1", "pdf", inputStream);
-	} catch (TagControlException e) {
-	    throw new RuntimeException(e);
-	}
+      InputStream inputStream = TestUtils.getInputStream("doc1.pdf");
+      try {
+         document = serviceProvider.getStoreService().storeDocument(document, "doc1", "pdf",
+               inputStream);
+      } catch (TagControlException e) {
+         throw new RuntimeException(e);
+      }
 
-	ARCHIVAGE_DATE = document.getArchivageDate();
-    }
+      ARCHIVAGE_DATE = document.getArchivageDate();
+   }
 
-    @Test
-    public void testQueryDatetime_Day() throws ExceededSearchLimitException,
-	    SearchQueryParseException {
-	SearchService searchService = serviceProvider.getSearchService();
-	String archivageDateAsString = searchService.formatDate(ARCHIVAGE_DATE,
-		DateFormat.DATE);
-	assertEquals(8, archivageDateAsString.length());
+   @Test
+   public void testQueryDatetime_Day() throws ExceededSearchLimitException,
+         SearchQueryParseException {
+      SearchService searchService = serviceProvider.getSearchService();
+      String archivageDateAsString = searchService.formatDate(ARCHIVAGE_DATE, DateFormat.DATE);
+      assertEquals(8, archivageDateAsString.length());
 
-	SearchQuery searchQuery = ToolkitFactory.getInstance()
-		.createMonobaseQuery(
-			SystemFieldName.SM_ARCHIVAGE_DATE + ":"
-				+ archivageDateAsString, base);
+      SearchQuery searchQuery = ToolkitFactory.getInstance().createMonobaseQuery(
+            SystemFieldName.SM_ARCHIVAGE_DATE + ":" + archivageDateAsString, base);
 
-	SearchResult searchResult = searchService.search(searchQuery);
+      SearchResult searchResult = searchService.search(searchQuery);
 
-	assertEquals(1, searchResult.getDocuments().size());
-    }
+      assertEquals(1, searchResult.getDocuments().size());
+   }
 
-    @Test
-    public void testQueryDatetime_Millisecond()
-	    throws ExceededSearchLimitException, SearchQueryParseException {
-	SearchService searchService = serviceProvider.getSearchService();
-	String archivageDateAsString = searchService.formatDate(ARCHIVAGE_DATE,
-		DateFormat.DATETIME);
-	assertEquals(17, archivageDateAsString.length());
+   @Test
+   public void testQueryDatetime_Millisecond() throws ExceededSearchLimitException,
+         SearchQueryParseException {
+      SearchService searchService = serviceProvider.getSearchService();
+      String archivageDateAsString = searchService.formatDate(ARCHIVAGE_DATE, DateFormat.DATETIME);
+      assertEquals(17, archivageDateAsString.length());
 
-	SearchQuery searchQuery = ToolkitFactory.getInstance()
-		.createMonobaseQuery(
-			SystemFieldName.SM_ARCHIVAGE_DATE + ":"
-				+ archivageDateAsString, base);
+      SearchQuery searchQuery = ToolkitFactory.getInstance().createMonobaseQuery(
+            SystemFieldName.SM_ARCHIVAGE_DATE + ":" + archivageDateAsString, base);
 
-	SearchResult searchResult = searchService.search(searchQuery);
+      SearchResult searchResult = searchService.search(searchQuery);
 
-	assertEquals(1, searchResult.getDocuments().size());
-    }
+      assertEquals(1, searchResult.getDocuments().size());
+   }
 
-    @Test
-    public void testQueryDatetime_Datetime_Minute()
-	    throws ExceededSearchLimitException, SearchQueryParseException {
-	SearchService searchService = serviceProvider.getSearchService();
-	String archivageDateAsString = searchService.formatDate(ARCHIVAGE_DATE,
-		DateFormat.DATETIME);
-	assertEquals(17, archivageDateAsString.length());
-	archivageDateAsString = archivageDateAsString.substring(0, 12);
-	assertEquals(12, archivageDateAsString.length());
+   @Test
+   public void testQueryDatetime_Datetime_Minute() throws ExceededSearchLimitException,
+         SearchQueryParseException {
+      SearchService searchService = serviceProvider.getSearchService();
+      String archivageDateAsString = searchService.formatDate(ARCHIVAGE_DATE, DateFormat.DATETIME);
+      assertEquals(17, archivageDateAsString.length());
+      archivageDateAsString = archivageDateAsString.substring(0, 12);
+      assertEquals(12, archivageDateAsString.length());
 
-	SearchQuery searchQuery = ToolkitFactory.getInstance()
-		.createMonobaseQuery(
-			SystemFieldName.SM_ARCHIVAGE_DATE + ":"
-				+ archivageDateAsString, base);
+      SearchQuery searchQuery = ToolkitFactory.getInstance().createMonobaseQuery(
+            SystemFieldName.SM_ARCHIVAGE_DATE + ":" + archivageDateAsString, base);
 
-	SearchResult searchResult = searchService.search(searchQuery);
+      SearchResult searchResult = searchService.search(searchQuery);
 
-	assertEquals(1, searchResult.getDocuments().size());
-    }
+      assertEquals(1, searchResult.getDocuments().size());
+   }
 
-    @Test
-    public void testQueryDatetime_Datetime_13Characters()
-	    throws ExceededSearchLimitException, SearchQueryParseException {
-	SearchService searchService = serviceProvider.getSearchService();
-	String archivageDateAsString = searchService.formatDate(ARCHIVAGE_DATE,
-		DateFormat.DATETIME);
-	assertEquals(17, archivageDateAsString.length());
-	archivageDateAsString = archivageDateAsString.substring(0, 13);
-	assertEquals(13, archivageDateAsString.length());
+   @Test
+   public void testQueryDatetime_Datetime_13Characters() throws ExceededSearchLimitException,
+         SearchQueryParseException {
+      SearchService searchService = serviceProvider.getSearchService();
+      String archivageDateAsString = searchService.formatDate(ARCHIVAGE_DATE, DateFormat.DATETIME);
+      assertEquals(17, archivageDateAsString.length());
+      archivageDateAsString = archivageDateAsString.substring(0, 13);
+      assertEquals(13, archivageDateAsString.length());
 
-	SearchQuery searchQuery = ToolkitFactory.getInstance()
-		.createMonobaseQuery(
-			SystemFieldName.SM_ARCHIVAGE_DATE + ":"
-				+ archivageDateAsString, base);
+      SearchQuery searchQuery = ToolkitFactory.getInstance().createMonobaseQuery(
+            SystemFieldName.SM_ARCHIVAGE_DATE + ":" + archivageDateAsString, base);
 
-	SearchResult searchResult = searchService.search(searchQuery);
+      SearchResult searchResult = searchService.search(searchQuery);
 
-	assertEquals(1, searchResult.getDocuments().size());
-    }
+      assertEquals(1, searchResult.getDocuments().size());
+   }
 }

@@ -24,39 +24,34 @@ import com.docubase.dfce.toolkit.base.AbstractTestCaseCreateAndPrepareBase;
 
 public class CompositeIndexJobTest extends AbstractTestCaseCreateAndPrepareBase {
 
-    @Before
-    public void beforeTest() throws TagControlException {
+   @Before
+   public void beforeTest() throws TagControlException {
 
-	for (int i = 0; i < 10; i++) {
-	    Document document = toolkitFactory.createDocumentTag(base);
-	    document.addCriterion(category0, "value1" + i);
-	    document.addCriterion(category1, "value2" + i);
-	    storeDocument(document, TestUtils.getDefaultFile());
-	}
+      for (int i = 0; i < 10; i++) {
+         Document document = toolkitFactory.createDocumentTag(base);
+         document.addCriterion(category0, "value1" + i);
+         document.addCriterion(category1, "value2" + i);
+         storeDocument(document, TestUtils.getDefaultFile());
+      }
 
-	CompositeIndex compositIndex = serviceProvider
-		.getStorageAdministrationService().findOrCreateCompositeIndex(
-			category0.getCategory(), category1.getCategory());
-    }
+      CompositeIndex compositIndex = serviceProvider.getStorageAdministrationService()
+            .findOrCreateCompositeIndex(category0.getCategory(), category1.getCategory());
+   }
 
-    @Test
-    public void testCompositeIndexJob() throws NoSuchJobException,
-	    JobInstanceAlreadyExistsException, JobParametersInvalidException,
-	    NoSuchJobExecutionException, JobInstanceAlreadyCompleteException,
-	    JobRestartException, NoSuchJobInstanceException,
-	    JobParametersNotFoundException,
-	    JobExecutionAlreadyRunningException,
-	    UnexpectedJobExecutionException {
+   @Test
+   public void testCompositeIndexJob() throws NoSuchJobException,
+         JobInstanceAlreadyExistsException, JobParametersInvalidException,
+         NoSuchJobExecutionException, JobInstanceAlreadyCompleteException, JobRestartException,
+         NoSuchJobInstanceException, JobParametersNotFoundException,
+         JobExecutionAlreadyRunningException, UnexpectedJobExecutionException {
 
-	JobAdministrationService jobService = serviceProvider
-		.getJobAdministrationService();
+      JobAdministrationService jobService = serviceProvider.getJobAdministrationService();
 
-	String parameters = "composite.names=" + catNames[0] + catNames[1]
-		+ ",timestamp=" + System.currentTimeMillis();
+      String parameters = "composite.names=" + catNames[0] + catNames[1] + ",timestamp="
+            + System.currentTimeMillis();
 
-	Long jobExecutionId = jobService.start(JobUtils.INDEX_COMPOSITES_JOB,
-		parameters);
+      Long jobExecutionId = jobService.start(JobUtils.INDEX_COMPOSITES_JOB, parameters);
 
-    }
+   }
 
 }

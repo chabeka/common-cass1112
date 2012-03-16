@@ -30,155 +30,131 @@ import com.docubase.dfce.toolkit.TestUtils;
 
 public class IndexCounterTest extends AbstractTestCaseCreateAndPrepareBase {
 
-    @Before
-    public void setupEach() throws NoSuchJobException,
-	    JobExecutionAlreadyRunningException, JobRestartException,
-	    JobInstanceAlreadyCompleteException, JobParametersInvalidException,
-	    JobParametersNotFoundException, UnexpectedJobExecutionException {
-	serviceProvider.getStorageAdministrationService()
-		.updateAllIndexesUsageCount();
-    }
+   @Before
+   public void setupEach() throws NoSuchJobException, JobExecutionAlreadyRunningException,
+         JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException,
+         JobParametersNotFoundException, UnexpectedJobExecutionException {
+      serviceProvider.getStorageAdministrationService().updateAllIndexesUsageCount();
+   }
 
-    private List<Document> storeNDocumentsAndUpdateIndexCounts(int nbDocuments)
-	    throws TagControlException, NoSuchJobException,
-	    JobExecutionAlreadyRunningException, JobRestartException,
-	    JobInstanceAlreadyCompleteException, JobParametersInvalidException,
-	    JobParametersNotFoundException, UnexpectedJobExecutionException {
-	java.util.List<Document> storedDocuments = new ArrayList<Document>();
-	assertTrue("La base " + BASEID + " n'est pas démarrée.",
-		base.isStarted());
+   private List<Document> storeNDocumentsAndUpdateIndexCounts(int nbDocuments)
+         throws TagControlException, NoSuchJobException, JobExecutionAlreadyRunningException,
+         JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException,
+         JobParametersNotFoundException, UnexpectedJobExecutionException {
+      java.util.List<Document> storedDocuments = new ArrayList<Document>();
+      assertTrue("La base " + BASEID + " n'est pas dï¿½marrï¿½e.", base.isStarted());
 
-	BaseCategory baseCategory0 = base.getBaseCategory(catNames[0]);
-	BaseCategory baseCategory1 = base.getBaseCategory(catNames[1]);
+      BaseCategory baseCategory0 = base.getBaseCategory(catNames[0]);
+      BaseCategory baseCategory1 = base.getBaseCategory(catNames[1]);
 
-	long deb = System.currentTimeMillis();
-	for (int x = 0; x < nbDocuments; x++) {
-	    File newDoc = TestUtils.getFile("doc1.pdf");
+      long deb = System.currentTimeMillis();
+      for (int x = 0; x < nbDocuments; x++) {
+         File newDoc = TestUtils.getFile("doc1.pdf");
 
-	    assertTrue(newDoc.exists());
+         assertTrue(newDoc.exists());
 
-	    // On définit le Tag du futur document, lié à la base uBase.
-	    Document document = ToolkitFactory.getInstance().createDocumentTag(
-		    base);
+         // On dï¿½finit le Tag du futur document, liï¿½ ï¿½ la base uBase.
+         Document document = ToolkitFactory.getInstance().createDocumentTag(base);
 
-	    // On dit que l'on veut mettre "Identifier" en valeur d'identifiant
-	    // de la 1ère catégorie (d'indice 0)
-	    String c0 = "Identifier" + UUID.randomUUID();
-	    document.addCriterion(baseCategory0, c0);
+         // On dit que l'on veut mettre "Identifier" en valeur d'identifiant
+         // de la 1ï¿½re catï¿½gorie (d'indice 0)
+         String c0 = "Identifier" + UUID.randomUUID();
+         document.addCriterion(baseCategory0, c0);
 
-	    // C1
-	    document.addCriterion(baseCategory1, "C1val");
+         // C1
+         document.addCriterion(baseCategory1, "C1val");
 
-	    // Date de création du document (à priori avant son entrée dans la
-	    // GED, on retranche une heure)
-	    Calendar cal = Calendar.getInstance();
-	    cal.setTimeInMillis(System.currentTimeMillis());
-	    cal.add(Calendar.HOUR, -1);
-	    document.setCreationDate(cal.getTime());
+         // Date de crï¿½ation du document (ï¿½ priori avant son entrï¿½e dans la
+         // GED, on retranche une heure)
+         Calendar cal = Calendar.getInstance();
+         cal.setTimeInMillis(System.currentTimeMillis());
+         cal.add(Calendar.HOUR, -1);
+         document.setCreationDate(cal.getTime());
 
-	    document = storeDocument(document, newDoc);
+         document = storeDocument(document, newDoc);
 
-	    storedDocuments.add(document);
+         storedDocuments.add(document);
 
-	    // On vérifie que le document a passé le controle.
-	    assertNotNull(document);
-	}
-	System.out
-		.println("TPS = " + (System.currentTimeMillis() - deb) + "ms");
-	serviceProvider.getStorageAdministrationService()
-		.updateAllIndexesUsageCount();
-	return storedDocuments;
-    }
+         // On vï¿½rifie que le document a passï¿½ le controle.
+         assertNotNull(document);
+      }
+      System.out.println("TPS = " + (System.currentTimeMillis() - deb) + "ms");
+      serviceProvider.getStorageAdministrationService().updateAllIndexesUsageCount();
+      return storedDocuments;
+   }
 
-    @Test
-    public void testDocInsertionCounts() throws TagControlException,
-	    NoSuchJobException, JobExecutionAlreadyRunningException,
-	    JobRestartException, JobInstanceAlreadyCompleteException,
-	    JobParametersInvalidException, JobParametersNotFoundException,
-	    UnexpectedJobExecutionException {
-	Category category0Reference = serviceProvider
-		.getStorageAdministrationService().getCategory(catNames[0]);
-	Category category1Reference = serviceProvider
-		.getStorageAdministrationService().getCategory(catNames[1]);
+   @Test
+   public void testDocInsertionCounts() throws TagControlException, NoSuchJobException,
+         JobExecutionAlreadyRunningException, JobRestartException,
+         JobInstanceAlreadyCompleteException, JobParametersInvalidException,
+         JobParametersNotFoundException, UnexpectedJobExecutionException {
+      Category category0Reference = serviceProvider.getStorageAdministrationService().getCategory(
+            catNames[0]);
+      Category category1Reference = serviceProvider.getStorageAdministrationService().getCategory(
+            catNames[1]);
 
-	Integer c0TotalIndexUseCount = category0Reference
-		.getTotalIndexUseCount();
-	Integer c0DistinctIndexUseCount = category0Reference
-		.getDistinctIndexUseCount();
+      Integer c0TotalIndexUseCount = category0Reference.getTotalIndexUseCount();
+      Integer c0DistinctIndexUseCount = category0Reference.getDistinctIndexUseCount();
 
-	Integer c1TotalIndexUseCount = category1Reference
-		.getTotalIndexUseCount();
-	Integer c1DistinctIndexUseCount = category1Reference
-		.getDistinctIndexUseCount();
+      Integer c1TotalIndexUseCount = category1Reference.getTotalIndexUseCount();
+      Integer c1DistinctIndexUseCount = category1Reference.getDistinctIndexUseCount();
 
-	int nbDocuments = 1;
-	storeNDocumentsAndUpdateIndexCounts(nbDocuments);
+      int nbDocuments = 1;
+      storeNDocumentsAndUpdateIndexCounts(nbDocuments);
 
-	category0Reference = serviceProvider.getStorageAdministrationService()
-		.getCategory(catNames[0]);
-	category1Reference = serviceProvider.getStorageAdministrationService()
-		.getCategory(catNames[1]);
+      category0Reference = serviceProvider.getStorageAdministrationService().getCategory(
+            catNames[0]);
+      category1Reference = serviceProvider.getStorageAdministrationService().getCategory(
+            catNames[1]);
 
-	Assert.assertEquals(
-		Integer.valueOf(c0TotalIndexUseCount + nbDocuments),
-		category0Reference.getTotalIndexUseCount());
-	Assert.assertEquals(
-		Integer.valueOf(c0DistinctIndexUseCount + nbDocuments),
-		category0Reference.getDistinctIndexUseCount());
-	Assert.assertEquals(
-		Integer.valueOf(c1TotalIndexUseCount + nbDocuments),
-		category1Reference.getTotalIndexUseCount());
-	Assert.assertEquals(Integer.valueOf(c1DistinctIndexUseCount + 1),
-		category1Reference.getDistinctIndexUseCount());
-    }
+      Assert.assertEquals(Integer.valueOf(c0TotalIndexUseCount + nbDocuments),
+            category0Reference.getTotalIndexUseCount());
+      Assert.assertEquals(Integer.valueOf(c0DistinctIndexUseCount + nbDocuments),
+            category0Reference.getDistinctIndexUseCount());
+      Assert.assertEquals(Integer.valueOf(c1TotalIndexUseCount + nbDocuments),
+            category1Reference.getTotalIndexUseCount());
+      Assert.assertEquals(Integer.valueOf(c1DistinctIndexUseCount + 1),
+            category1Reference.getDistinctIndexUseCount());
+   }
 
-    @Test
-    public void testDocDeleteCounts() throws Exception {
-	Category category0Reference = serviceProvider
-		.getStorageAdministrationService().getCategory(catNames[0]);
-	Category category1Reference = serviceProvider
-		.getStorageAdministrationService().getCategory(catNames[1]);
+   @Test
+   public void testDocDeleteCounts() throws Exception {
+      Category category0Reference = serviceProvider.getStorageAdministrationService().getCategory(
+            catNames[0]);
+      Category category1Reference = serviceProvider.getStorageAdministrationService().getCategory(
+            catNames[1]);
 
-	int nbDocuments = 1;
-	Collection<Document> storedDocuments = storeNDocumentsAndUpdateIndexCounts(nbDocuments);
+      int nbDocuments = 1;
+      Collection<Document> storedDocuments = storeNDocumentsAndUpdateIndexCounts(nbDocuments);
 
-	category0Reference = serviceProvider.getStorageAdministrationService()
-		.getCategory(catNames[0]);
-	category1Reference = serviceProvider.getStorageAdministrationService()
-		.getCategory(catNames[1]);
+      category0Reference = serviceProvider.getStorageAdministrationService().getCategory(
+            catNames[0]);
+      category1Reference = serviceProvider.getStorageAdministrationService().getCategory(
+            catNames[1]);
 
-	Integer c0TotalIndexUseCount = category0Reference
-		.getTotalIndexUseCount();
-	Integer c0DistinctIndexUseCount = category0Reference
-		.getDistinctIndexUseCount();
+      Integer c0TotalIndexUseCount = category0Reference.getTotalIndexUseCount();
+      Integer c0DistinctIndexUseCount = category0Reference.getDistinctIndexUseCount();
 
-	Integer c1TotalIndexUseCount = category1Reference
-		.getTotalIndexUseCount();
-	Integer c1DistinctIndexUseCount = category1Reference
-		.getDistinctIndexUseCount();
+      Integer c1TotalIndexUseCount = category1Reference.getTotalIndexUseCount();
+      Integer c1DistinctIndexUseCount = category1Reference.getDistinctIndexUseCount();
 
-	for (Document document : storedDocuments) {
-	    serviceProvider.getStoreService()
-		    .deleteDocument(document.getUuid());
-	}
+      for (Document document : storedDocuments) {
+         serviceProvider.getStoreService().deleteDocument(document.getUuid());
+      }
 
-	serviceProvider.getStorageAdministrationService()
-		.updateAllIndexesUsageCount();
-	category0Reference = serviceProvider.getStorageAdministrationService()
-		.getCategory(catNames[0]);
-	category1Reference = serviceProvider.getStorageAdministrationService()
-		.getCategory(catNames[1]);
+      serviceProvider.getStorageAdministrationService().updateAllIndexesUsageCount();
+      category0Reference = serviceProvider.getStorageAdministrationService().getCategory(
+            catNames[0]);
+      category1Reference = serviceProvider.getStorageAdministrationService().getCategory(
+            catNames[1]);
 
-	Assert.assertEquals(
-		Integer.valueOf(c0TotalIndexUseCount - nbDocuments),
-		category0Reference.getTotalIndexUseCount());
-	Assert.assertEquals(
-		Integer.valueOf(c0DistinctIndexUseCount - nbDocuments),
-		category0Reference.getDistinctIndexUseCount());
-	Assert.assertEquals(
-		Integer.valueOf(c1TotalIndexUseCount - nbDocuments),
-		category1Reference.getTotalIndexUseCount());
-	Assert.assertEquals(Integer.valueOf(c1DistinctIndexUseCount - 1),
-		category1Reference.getDistinctIndexUseCount());
-    }
+      Assert.assertEquals(Integer.valueOf(c0TotalIndexUseCount - nbDocuments),
+            category0Reference.getTotalIndexUseCount());
+      Assert.assertEquals(Integer.valueOf(c0DistinctIndexUseCount - nbDocuments),
+            category0Reference.getDistinctIndexUseCount());
+      Assert.assertEquals(Integer.valueOf(c1TotalIndexUseCount - nbDocuments),
+            category1Reference.getTotalIndexUseCount());
+      Assert.assertEquals(Integer.valueOf(c1DistinctIndexUseCount - 1),
+            category1Reference.getDistinctIndexUseCount());
+   }
 }
