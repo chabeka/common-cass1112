@@ -11,7 +11,7 @@ src/config/modele_schema_cassandra.txt
 Les place-holders utilisés par les fichiers spring sont les suivants :
 
 cassandra.startlocal				: mettre "true" pour utiliser un serveur cassandra local lancé à la volée (utile pour les tests unitaires)
-cassandra.hosts						: listes des serveurs cassandra, avec le port(9160), séparés par des virgules
+cassandra.hosts						: listes des serveurs cassandra, avec le port(9160), séparés par des virgules (peut être vide dans la cas d'un serveur démarré localement)
 cassandra.username					: username pour la connexion à cassandra 
 cassandra.password					: mot de passe pour la connexion à cassandra
 cassandra.keyspace					: nom du keyspace cassandra à utiliser (normalement "SAE", sauf si vous voulez vous créer un keyspace personnel)
@@ -35,7 +35,7 @@ zookeeper.namespace=SAE
 Exemple 2 : serveurs cassandra et zookeeper locaux et temporaires, pour tests unitaires
 
 cassandra.startlocal=true
-cassandra.hosts=localhost:9171
+cassandra.hosts=
 cassandra.username=
 cassandra.password=
 cassandra.keyspace=Batch
