@@ -30,7 +30,7 @@ public class ZookeeperMutex {
    
    /**
     * Constructeur
-    * @param client client curator
+    * @param curatorClient client curator
     * @param mutexPath the path to lock
     */
    public ZookeeperMutex(final CuratorFramework curatorClient, final String mutexPath) {
@@ -89,7 +89,7 @@ public class ZookeeperMutex {
     * @param timeOutUnit   time unit
     * @return boolean      vrai si on a encore le lock
     */
-   synchronized public final boolean isObjectStillLocked(long timeOut, TimeUnit timeOutUnit) {
+   public final synchronized boolean isObjectStillLocked(long timeOut, TimeUnit timeOutUnit) {
       if (connectionState == ConnectionState.SUSPENDED) {
          try {
             this.wait(timeOutUnit.toMillis(timeOut));
@@ -103,10 +103,6 @@ public class ZookeeperMutex {
    /**
     * Lâche le lock
     * 
-    * @param curatorClient
-    *           client Zookeeper.
-    * @param sequenceName
-    *           nom de la séquence.
     */
    public final void release() {
       try {
@@ -133,6 +129,8 @@ public class ZookeeperMutex {
     * (java doesn't support true closures)
     */
    private static class LockInfo {
+      // CHECKSTYLE:OFF    Pas d'accesseurs : c'est une classe privée interne
       public volatile boolean lockOk = true;
+      // CHECKSTYLE:ON
    }
 }

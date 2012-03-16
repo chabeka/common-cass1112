@@ -17,8 +17,9 @@ import org.springframework.beans.factory.InitializingBean;
 public class CassandraServerBean implements InitializingBean, DisposableBean  {
 
    private static final Logger LOG = LoggerFactory.getLogger(CassandraServerBean.class);
-   private String dataSet; 
+   private String dataSet;
    private boolean startLocal= false;
+   private String hosts = null;
 
    /**
     * Indique quel jeu de données cassandraUnit doit être utilisé lors
@@ -35,6 +36,13 @@ public class CassandraServerBean implements InitializingBean, DisposableBean  {
     */
    public final void setStartLocal(boolean startLocal) {
       this.startLocal = startLocal;
+   }
+   
+   /**
+    * @return vrai si le serveur cassandra est lancé localement
+    */
+   public final boolean getStartLocal() {
+      return this.startLocal;
    }
    
    @Override
@@ -81,5 +89,29 @@ public class CassandraServerBean implements InitializingBean, DisposableBean  {
          }
       }
    }
-   
+
+   /**
+    * Dans le cas d'un cassandra zookeeper non local, il s'agit de la chaîne de connexion
+    * @param hosts    Chaîne de connexion (ex : "toto.toto.com:9160,titi.titi.com:9160")
+    */
+   public final void setHosts(String hosts) {
+      this.hosts = hosts;
+   }
+
+   /**
+    * Renvoie la chaîne de connexion au serveur cassandra
+    * @return chaîne de connexion
+    */
+   public final String getHosts() {
+      if (startLocal) {
+         // Petite bidouille : on met le serveur localhost 3 fois : ça permet de tenter 3 fois
+         // l'opération si elle échoue la 1ere fois (ça arrive lorsque le serveur cassandra local
+         // ne se lance pas assez rapidement)
+         return "localhost:9171,localhost:9171,localhost:9171"; 
+      }
+      else {
+         return hosts;
+      }
+   }
+
 }

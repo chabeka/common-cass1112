@@ -13,48 +13,21 @@
    </bean>
 
    <!-- le keyspace cassandra à utiliser -->
-   <bean id="keyspace" class="me.prettyprint.hector.api.factory.HFactory" depends-on="cassandraServer"
-      factory-method="createKeyspace">
+   <bean id="keyspace" class="fr.urssaf.image.commons.cassandra.helper.CassandraClientFactory"
+      factory-method="getClient">
+      <constructor-arg ref="cassandraServer" />
       <constructor-arg value="${cassandra.keyspace}" />
-      <constructor-arg ref="cluster" />
-      <constructor-arg ref="consistencyLevelPolicy" />
-      <constructor-arg type="me.prettyprint.cassandra.service.FailoverPolicy" value="ON_FAIL_TRY_ALL_AVAILABLE" />
-      <constructor-arg ref="cassandraCredentials" />
+      <constructor-arg value="${cassandra.username}" />
+      <constructor-arg value="${cassandra.password}" />
    </bean>
    
-   <bean id="cluster" class="me.prettyprint.cassandra.service.ThriftCluster">
-      <!-- Le nom du cluster n'est pas important -->
-      <constructor-arg value="ClusterName" />
-      <constructor-arg ref="cassandraHostConfigurator" />
-   </bean>
-   <bean id="cassandraHostConfigurator"
-      class="me.prettyprint.cassandra.service.CassandraHostConfigurator">
-      <constructor-arg value="${cassandra.hosts}" />
-   </bean>
-   <bean id="consistencyLevelPolicy"
-      class="me.prettyprint.cassandra.model.ConfigurableConsistencyLevel">
-      <property name="defaultReadConsistencyLevel" value="QUORUM" />
-      <property name="defaultWriteConsistencyLevel" value="QUORUM" />
-   </bean>
-   <bean id="cassandraCredentials"
-      class="org.springframework.beans.factory.config.MapFactoryBean">
-      <property name="targetMapClass">
-         <value>java.util.HashMap</value>
-      </property>
-      <property name="sourceMap">
-         <map>
-            <entry key="username" value="${cassandra.username}" />
-            <entry key="password" value="${cassandra.password}" />
-         </map>
-      </property>
-   </bean>
-
    <bean id="zookeeperServer" class="fr.urssaf.image.commons.cassandra.helper.ZookeeperServerBean">
       <property name="startLocal" value="${zookeeper.startlocal}"/>
       <property name="hosts" value="${zookeeper.hosts}" />
    </bean>
    <bean id="cassandraServer" class="fr.urssaf.image.commons.cassandra.helper.CassandraServerBean">
       <property name="startLocal" value="${cassandra.startlocal}"/>
+      <property name="hosts" value="${cassandra.hosts}" />
       <property name="dataSet" value="${cassandra.dataset}"/>
    </bean>
 

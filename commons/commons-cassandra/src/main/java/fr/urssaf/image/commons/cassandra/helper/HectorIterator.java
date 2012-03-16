@@ -10,8 +10,8 @@ import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
  * En effet, ColumnFamilyResultWrapper se positionne automatiquement sur le 1er élément,
  * ce qui empêche de parcourir l'itérateur de manière standard.
  * 
- *    <K>  type de la clé
- *    <N>  type de la valeur de la colonne
+ * @param <K>  type de la clé
+ * @param <N>  type de la valeur de la colonne
  */
 public class HectorIterator<K,N> implements Iterator<ColumnFamilyResult<K,N>>, Iterable<ColumnFamilyResult<K,N>> {
 

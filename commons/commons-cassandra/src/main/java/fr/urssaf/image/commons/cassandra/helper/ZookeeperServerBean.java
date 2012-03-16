@@ -46,10 +46,10 @@ public class ZookeeperServerBean implements InitializingBean, DisposableBean  {
    }
 
    /**
-    * Dans le cas d'un serveur zookeeper non local, il s'agit de la chaine de connexion
-    * @param hosts
+    * Dans le cas d'un serveur zookeeper non local, il s'agit de la chaîne de connexion
+    * @param hosts    Chaîne de connexion (ex : "toto.toto.com:2181,titi.titi.com:2181")
     */
-   public void setHosts(String hosts) {
+   public final void setHosts(String hosts) {
       this.hosts = hosts;
    }
 
@@ -57,7 +57,7 @@ public class ZookeeperServerBean implements InitializingBean, DisposableBean  {
     * Renvoie la chaîne de connexion au serveur zookeeper
     * @return chaîne de connexion
     */
-   public String getHosts() {
+   public final String getHosts() {
       if (testingServer != null) {
          return testingServer.getConnectString();
       }
