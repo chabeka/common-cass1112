@@ -220,6 +220,15 @@
             </description>
             <implemente>true</implemente>
          </CasTest>
+         
+         <CasTest>
+            <id>167</id>
+            <code>167-CaptureUnitaire-KO-NomFichierVide</code>
+            <description>
+               On vérifie qu'une SoapFault spécifique est renvoyée lorsque l'application cliente envoie directement un contenu de fichier associé à un nom de fichier vide.
+            </description>
+            <implemente>true</implemente>
+         </CasTest>
 
       </CasTests>
 

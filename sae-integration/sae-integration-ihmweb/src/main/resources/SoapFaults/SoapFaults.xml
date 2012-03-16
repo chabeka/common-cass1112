@@ -303,4 +303,12 @@
       <message>La ou les métadonnées suivantes, demandées dans les critères de consultation, ne sont pas consultables : %s</message>
    </SoapFault>
    
+   <SoapFault>
+      <id>sae_NomFichierVide</id>
+      <namespace>urn:sae:faultcodes</namespace>
+      <prefixe>sae</prefixe>
+      <localPart>NomFichierVide</localPart>
+      <message>Le nom du fichier est vide.</message>
+   </SoapFault>
+   
 </SoapFaults>
