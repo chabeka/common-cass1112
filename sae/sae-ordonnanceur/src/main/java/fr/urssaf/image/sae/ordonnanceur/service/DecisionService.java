@@ -1,12 +1,9 @@
 package fr.urssaf.image.sae.ordonnanceur.service;
 
-import java.util.Collection;
 import java.util.List;
 
-import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.JobInstance;
-
 import fr.urssaf.image.sae.ordonnanceur.exception.AucunJobALancerException;
+import fr.urssaf.image.sae.pile.travaux.model.SimpleJobRequest;
 
 /**
  * Service de décision pour sélectionner les traitements en masse à exécuter
@@ -28,6 +25,6 @@ public interface DecisionService {
     * @throws AucunJobALancerException
     *            Exception levée si aucun job n'est à lancer
     */
-   JobInstance trouverJobALancer(List<JobInstance> jobsEnAttente,
-         Collection<JobExecution> jobsEnCours) throws AucunJobALancerException;
+   SimpleJobRequest trouverJobALancer(List<SimpleJobRequest> jobsEnAttente,
+         List<SimpleJobRequest> jobsEnCours) throws AucunJobALancerException;
 }

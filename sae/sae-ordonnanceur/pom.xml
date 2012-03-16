@@ -71,21 +71,53 @@
          </exclusions>
       </dependency>
 
-      <!-- CASSANDRA -->
+      <!-- SAE-PILE-TRAVAUX -->
 
       <dependency>
-         <groupId>fr.urssaf.image.commons</groupId>
-         <artifactId>commons-cassandra-spring-batch</artifactId>
-         <version>${commons.cassandra.spring.batch}</version>
+         <groupId>fr.urssaf.image.sae</groupId>
+         <artifactId>sae-pile-travaux</artifactId>
+         <version>12.5.10.3-SNAPSHOT</version>
       </dependency>
 
       <!-- SPRING -->
 
       <dependency>
          <groupId>org.springframework</groupId>
+         <artifactId>spring-core</artifactId>
+         <version>${spring.framework.version}</version>
+      </dependency>
+
+      <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-context</artifactId>
+         <version>${spring.framework.version}</version>
+      </dependency>
+
+      <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-beans</artifactId>
+         <version>${spring.framework.version}</version>
+      </dependency>
+
+      <dependency>
+         <groupId>org.springframework</groupId>
          <artifactId>spring-test</artifactId>
          <version>${spring.framework.version}</version>
          <scope>test</scope>
+      </dependency>
+
+      <!-- COMMONS APACHE -->
+
+      <dependency>
+         <groupId>commons-lang</groupId>
+         <artifactId>commons-lang</artifactId>
+         <version>${apache.commons-lang.version}</version>
+      </dependency>
+
+      <dependency>
+         <groupId>commons-collections</groupId>
+         <artifactId>commons-collections</artifactId>
+         <version>${apache.commons-collections.version}</version>
       </dependency>
 
       <!-- EASYMOCK -->
@@ -102,7 +134,7 @@
       <dependency>
          <groupId>fr.urssaf.image.commons</groupId>
          <artifactId>commons-dfce</artifactId>
-         <version>1.0.1-CRTL-1</version>
+         <version>${commons.dfce}</version>
       </dependency>
 
    </dependencies>

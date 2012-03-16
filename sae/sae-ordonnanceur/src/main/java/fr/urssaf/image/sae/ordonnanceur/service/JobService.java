@@ -1,13 +1,11 @@
 package fr.urssaf.image.sae.ordonnanceur.service;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
-import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.JobInstance;
-
-import fr.urssaf.image.sae.ordonnanceur.exception.JobDejaReserveException;
-import fr.urssaf.image.sae.ordonnanceur.exception.JobInexistantException;
+import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
+import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
+import fr.urssaf.image.sae.pile.travaux.model.SimpleJobRequest;
 
 /**
  * Service des traitements de masse contenus dans la pile des travaux
@@ -17,19 +15,19 @@ import fr.urssaf.image.sae.ordonnanceur.exception.JobInexistantException;
 public interface JobService {
 
    /**
-    * Renvoie une liste des travaux actuellement en cours sur l'ensemble des
-    * plateformes SAE
+    * Renvoie une liste des travaux actuellement en cours ou réservés sur le
+    * serveur courant
     * 
     * @return liste des travaux en cours d'exécution
     */
-   Collection<JobExecution> recupJobEnCours();
+   List<SimpleJobRequest> recupJobEnCours();
 
    /**
     * Renvoie une liste des travaux qui n'ont pas été lancés
     * 
     * @return liste des travaux en attente d'exécution
     */
-   List<JobInstance> recupJobsALancer();
+   List<SimpleJobRequest> recupJobsALancer();
 
    /**
     * Met à jour le nom de la machine dans la table des jobs à lancer afin de
@@ -44,6 +42,6 @@ public interface JobService {
     *            Exception levée en cas d'exception technique d'accès à la base
     *            de données
     */
-   void reserveJob(long idJob) throws JobInexistantException,
-         JobDejaReserveException;
+   void reserveJob(UUID idJob) throws JobDejaReserveException,
+         JobInexistantException;
 }

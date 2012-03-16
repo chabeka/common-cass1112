@@ -1,30 +1,24 @@
 package fr.urssaf.image.sae.ordonnanceur.service;
 
-import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import junit.framework.Assert;
 
-import org.apache.commons.lang.exception.NestableRuntimeException;
 import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.JobInstance;
-import org.springframework.batch.core.JobParameter;
-import org.springframework.batch.core.JobParameters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.ordonnanceur.exception.AucunJobALancerException;
 import fr.urssaf.image.sae.ordonnanceur.support.DFCESupport;
-import fr.urssaf.image.sae.ordonnanceur.util.HostUtils;
+import fr.urssaf.image.sae.pile.travaux.model.SimpleJobRequest;
+
+//import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
@@ -38,19 +32,6 @@ public class DecisionServiceTest {
    private static final String CER69_SOMMAIRE = "ecde://ecde.cer69.recouv/sommaire.xml";
 
    private static final String CER44_SOMMAIRE = "ecde://ecde.cer44.recouv/sommaire.xml";
-
-   private static final String CONTEXT_HOST = "serveur";
-
-   private static final String HOST_VALUE;
-
-   static {
-
-      try {
-         HOST_VALUE = HostUtils.getLocalHostName();
-      } catch (UnknownHostException e) {
-         throw new NestableRuntimeException(e);
-      }
-   }
 
    @Autowired
    private DecisionService decisionService;
@@ -71,29 +52,28 @@ public class DecisionServiceTest {
 
       EasyMock.replay(dfceSuppport);
 
-      List<JobExecution> jobsEnCours = new ArrayList<JobExecution>();
+      List<SimpleJobRequest> jobsEnCours = new ArrayList<SimpleJobRequest>();
 
-      jobsEnCours.add(createJobExecutionCaptureMasse(528, CAPTURE_MASSE_JN,
-            CONTEXT_HOST, "ecde.cer44.recouv"));
-      jobsEnCours.add(createJobExecutionCaptureMasse(435, "autre_traitement",
-            CONTEXT_HOST, "ecde.cer69.recouv"));
+      jobsEnCours.add(createJob("OTHER_JN1"));
+      jobsEnCours.add(createJob("OTHER_JN2"));
 
-      List<JobInstance> jobsEnAttente = new ArrayList<JobInstance>();
+      List<SimpleJobRequest> jobsEnAttente = new ArrayList<SimpleJobRequest>();
 
-      jobsEnAttente.add(createJobCaptureMasse(458, CAPTURE_MASSE_JN,
-            CER69_SOMMAIRE));
-      jobsEnAttente.add(createJobCaptureMasse(202, CAPTURE_MASSE_JN,
-            CER44_SOMMAIRE));
-      jobsEnAttente.add(createJobCaptureMasse(256, CAPTURE_MASSE_JN,
-            CER69_SOMMAIRE));
-      jobsEnAttente.add(createJobCaptureMasse(607, CAPTURE_MASSE_JN,
-            CER44_SOMMAIRE));
+      SimpleJobRequest job1 = createJob(CAPTURE_MASSE_JN, CER44_SOMMAIRE);
+      SimpleJobRequest job2 = createJob(CAPTURE_MASSE_JN, CER69_SOMMAIRE);
+      SimpleJobRequest job3 = createJob(CAPTURE_MASSE_JN, CER69_SOMMAIRE);
+      SimpleJobRequest job4 = createJob(CAPTURE_MASSE_JN, CER44_SOMMAIRE);
 
-      JobInstance job = decisionService.trouverJobALancer(jobsEnAttente,
+      jobsEnAttente.add(job1);
+      jobsEnAttente.add(job2);
+      jobsEnAttente.add(job3);
+      jobsEnAttente.add(job4);
+
+      SimpleJobRequest job = decisionService.trouverJobALancer(jobsEnAttente,
             jobsEnCours);
 
-      Assert.assertEquals("l'identifiant du job à lancer est inattendu", Long
-            .valueOf(256), job.getId());
+      Assert.assertEquals("le traitement attendu est le job2", job2.getIdJob(),
+            job.getIdJob());
 
       EasyMock.verify(dfceSuppport);
 
@@ -111,12 +91,11 @@ public class DecisionServiceTest {
 
       EasyMock.replay(dfceSuppport);
 
-      List<JobExecution> jobsEnCours = new ArrayList<JobExecution>();
+      List<SimpleJobRequest> jobsEnCours = new ArrayList<SimpleJobRequest>();
 
-      List<JobInstance> jobsEnAttente = new ArrayList<JobInstance>();
+      List<SimpleJobRequest> jobsEnAttente = new ArrayList<SimpleJobRequest>();
 
-      jobsEnAttente.add(createJobCaptureMasse(458, CAPTURE_MASSE_JN,
-            CER69_SOMMAIRE));
+      jobsEnAttente.add(createJob(CAPTURE_MASSE_JN, CER69_SOMMAIRE));
 
       decisionService.trouverJobALancer(jobsEnAttente, jobsEnCours);
 
@@ -129,7 +108,7 @@ public class DecisionServiceTest {
    @Test
    public void decisionService_failure_noJobEnAttente_noJob() {
 
-      List<JobExecution> jobsEnCours = new ArrayList<JobExecution>();
+      List<SimpleJobRequest> jobsEnCours = new ArrayList<SimpleJobRequest>();
 
       try {
 
@@ -154,11 +133,10 @@ public class DecisionServiceTest {
    public void decisionService_failure_noJobEnAttente_nojobCaptureMasse()
          throws AucunJobALancerException {
 
-      List<JobExecution> jobsEnCours = new ArrayList<JobExecution>();
-      List<JobInstance> jobsEnAttente = new ArrayList<JobInstance>();
+      List<SimpleJobRequest> jobsEnCours = new ArrayList<SimpleJobRequest>();
+      List<SimpleJobRequest> jobsEnAttente = new ArrayList<SimpleJobRequest>();
 
-      JobInstance job = new JobInstance(Long.valueOf(100), new JobParameters(),
-            "OTHER_TRAITEMENT");
+      SimpleJobRequest job = createJob("OTHER_JN1");
 
       jobsEnAttente.add(job);
 
@@ -174,62 +152,51 @@ public class DecisionServiceTest {
    public void decisionService_failure_noJobEnAttente_nojobCaptureMasseLocal()
          throws AucunJobALancerException {
 
-      List<JobExecution> jobsEnCours = new ArrayList<JobExecution>();
-      List<JobInstance> jobsEnAttente = new ArrayList<JobInstance>();
+      List<SimpleJobRequest> jobsEnCours = new ArrayList<SimpleJobRequest>();
+      List<SimpleJobRequest> jobsEnAttente = new ArrayList<SimpleJobRequest>();
 
-      jobsEnAttente.add(createJobCaptureMasse(202, CAPTURE_MASSE_JN,
-            CER44_SOMMAIRE));
+      jobsEnAttente.add(createJob(CAPTURE_MASSE_JN, CER44_SOMMAIRE));
 
       decisionService.trouverJobALancer(jobsEnAttente, jobsEnCours);
 
    }
 
    /**
-    * traitement de capture en masse en local en cours
+    * traitement de capture en masse en cours
     */
    @Test(expected = AucunJobALancerException.class)
    public void decisionService_failure_noJobEnAttente_executionJobCaptureMasse()
          throws AucunJobALancerException {
 
-      List<JobExecution> jobsEnCours = new ArrayList<JobExecution>();
-      jobsEnCours.add(createJobExecutionCaptureMasse(202, CAPTURE_MASSE_JN,
-            CONTEXT_HOST, HOST_VALUE));
+      List<SimpleJobRequest> jobsEnCours = new ArrayList<SimpleJobRequest>();
+      jobsEnCours.add(createJob(CAPTURE_MASSE_JN));
 
-      List<JobInstance> jobsEnAttente = new ArrayList<JobInstance>();
+      List<SimpleJobRequest> jobsEnAttente = new ArrayList<SimpleJobRequest>();
 
-      jobsEnAttente.add(createJobCaptureMasse(458, CAPTURE_MASSE_JN,
-            CER69_SOMMAIRE));
+      jobsEnAttente.add(createJob(CAPTURE_MASSE_JN, CER69_SOMMAIRE));
 
       decisionService.trouverJobALancer(jobsEnAttente, jobsEnCours);
 
    }
 
-   private JobInstance createJobCaptureMasse(long instanceId, String jobName,
-         String urlECDE) {
+   private SimpleJobRequest createJob(String type, String parameters) {
 
-      Map<String, JobParameter> parameters = new HashMap<String, JobParameter>();
-      parameters.put("capture.masse.sommaire", new JobParameter(urlECDE));
-      parameters.put("id", new JobParameter(UUID.randomUUID().toString()));
-
-      JobParameters jobParameters = new JobParameters(parameters);
-
-      JobInstance job = new JobInstance(instanceId, jobParameters, jobName);
+      SimpleJobRequest job = createJob(type);
+      job.setParameters(parameters);
 
       return job;
    }
 
-   private JobExecution createJobExecutionCaptureMasse(long instanceId,
-         String jobName, String contextName, String contextValue) {
+   private SimpleJobRequest createJob(String type) {
 
-      Map<String, JobParameter> parameters = new HashMap<String, JobParameter>();
-      parameters.put("id", new JobParameter(UUID.randomUUID().toString()));
-      JobParameters jobParameters = new JobParameters(parameters);
+      UUID idJob = UUID.randomUUID();
 
-      JobInstance job = new JobInstance(instanceId, jobParameters, jobName);
+      SimpleJobRequest job = new SimpleJobRequest();
 
-      JobExecution execution = new JobExecution(job);
-      execution.getExecutionContext().put(contextName, contextValue);
+      job.setType(type);
+      job.setIdJob(idJob);
 
-      return execution;
+      return job;
    }
+
 }

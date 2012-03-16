@@ -1,20 +1,15 @@
 package fr.urssaf.image.sae.ordonnanceur.support;
 
 import java.net.URI;
-import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
-import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.JobInstance;
-import org.springframework.batch.item.ExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fr.urssaf.image.sae.ordonnanceur.exception.OrdonnanceurRuntimeException;
-import fr.urssaf.image.sae.ordonnanceur.util.HostUtils;
+import fr.urssaf.image.sae.pile.travaux.model.SimpleJobRequest;
 
 /**
  * Support pour les traitements de capture en masse
@@ -25,26 +20,9 @@ import fr.urssaf.image.sae.ordonnanceur.util.HostUtils;
 public class CaptureMasseSupport {
 
    /**
-    * Paramètre indiquant l'URL ECDE du sommaire.xml pour un traitement de
-    * capture en masse
-    */
-   public static final String CAPTURE_MASSE_ECDE = "capture.masse.sommaire";
-
-   /**
-    * Paramètre indiquant l'identifiant du traitement de la capture en masse
-    */
-   public static final String CAPTURE_MASSE_ID = "capture.masse.idtraitement";
-
-   /**
     * Nom du job d'un traitement de capture en masse
     */
    public static final String CAPTURE_MASSE_JN = "capture_masse";
-
-   /**
-    * Clé indiquant dans le contexte d'exécution du job le DNS du serveur où est
-    * exécuté le traitement
-    */
-   public static final String CONTEXT_SERVEUR = "serveur";
 
    private final EcdeSupport ecdeSupport;
 
@@ -61,8 +39,8 @@ public class CaptureMasseSupport {
    }
 
    /**
-    * Filtre les instances des traitements de masse pour ne récupérer que ceux
-    * concernant les capture en masse pour l'ECDE local.<br>
+    * Filtre les traitements de masse pour ne récupérer que ceux concernant les
+    * capture en masse pour l'ECDE local.<br>
     * <br>
     * Les traitements de capture en masse sont indiqués par la propriété
     * <code>jobName</code> de l'instance {@link JobInstance}.<br>
@@ -75,25 +53,25 @@ public class CaptureMasseSupport {
     * on s'appuie sur {@link EcdeSupport#isLocal(URI)} pour savoir si il s'agit
     * d'une URL ECDE local ou non.
     * 
-    * @param jobInstances
+    * @param jobRequests
     *           traitements de masse
     * @return traitements de capture en masse filtrés
     */
-   public final List<JobInstance> filtrerJobInstanceLocal(
-         List<JobInstance> jobInstances) {
+   public final List<SimpleJobRequest> filtrerCaptureMasseLocal(
+         List<SimpleJobRequest> jobRequests) {
 
       @SuppressWarnings("unchecked")
-      List<JobInstance> jobCaptureMasse = (List<JobInstance>) CollectionUtils
-            .select(jobInstances, new Predicate() {
+      List<SimpleJobRequest> jobCaptureMasse = (List<SimpleJobRequest>) CollectionUtils
+            .select(jobRequests, new Predicate() {
 
                @Override
                public boolean evaluate(Object object) {
 
-                  JobInstance jobInstance = (JobInstance) object;
+                  SimpleJobRequest jobRequest = (SimpleJobRequest) object;
 
-                  boolean isCaptureMasse = isCaptureMasse(jobInstance);
+                  boolean isCaptureMasse = isCaptureMasse(jobRequest);
 
-                  boolean isLocal = isLocal(jobInstance);
+                  boolean isLocal = isLocal(jobRequest);
 
                   return isCaptureMasse && isLocal;
                }
@@ -104,44 +82,34 @@ public class CaptureMasseSupport {
    }
 
    /**
-    * Filtre les exécutions de traitements de masse pour ne récupérer que ceux
-    * concernant les capture en masse sur le serveur courant.<br>
+    * Filtre les traitements de masse pour ne récupérer que ceux concernant les
+    * capture en masse.<br>
     * <br>
     * Les traitements de capture en masse sont indiqués par la propriété
     * <code>jobName</code> de l'instance {@link JobInstance}.<br>
     * Si il indique '{@value #CAPTURE_MASSE_JN}' alors il s'agit d'une capture
     * en masse.<br>
     * <br>
-    * Pour filtrer les traitements de capture en masse sur le serveur courant,
-    * on récupère dans l'instance {@link ExecutionContext} de l'instance
-    * {@link JobExecution} le DNS du serveur courant indiqué par '
-    * {@value #CONTEXT_SERVEUR}'.<br>
-    * Si la valeur est indique au hostname du serveur courant alors il s'agit
-    * d'un traitement local.
     * 
-    * @param jobExecutions
+    * @param jobRequests
     *           traitements de masse
     * @return traitements de capture en masse filtrés
     */
-   public final List<JobExecution> filtrerJobExecutionLocal(
-         Collection<JobExecution> jobExecutions) {
+   public final List<SimpleJobRequest> filtrerCaptureMasse(
+         Collection<SimpleJobRequest> jobRequests) {
 
       @SuppressWarnings("unchecked")
-      List<JobExecution> jobCaptureMasse = (List<JobExecution>) CollectionUtils
-            .select(jobExecutions, new Predicate() {
+      List<SimpleJobRequest> jobCaptureMasse = (List<SimpleJobRequest>) CollectionUtils
+            .select(jobRequests, new Predicate() {
 
                @Override
                public boolean evaluate(Object object) {
 
-                  JobExecution jobExecution = (JobExecution) object;
+                  SimpleJobRequest jobRequest = (SimpleJobRequest) object;
 
-                  JobInstance jobInstance = jobExecution.getJobInstance();
+                  boolean isCaptureMasse = isCaptureMasse(jobRequest);
 
-                  boolean isCaptureMasse = isCaptureMasse(jobInstance);
-
-                  boolean isLocal = isLocal(jobExecution);
-
-                  return isCaptureMasse && isLocal;
+                  return isCaptureMasse;
                }
 
             });
@@ -149,39 +117,18 @@ public class CaptureMasseSupport {
       return jobCaptureMasse;
    }
 
-   private boolean isLocal(JobExecution jobExecution) {
+   private boolean isCaptureMasse(SimpleJobRequest jobRequest) {
 
-      ExecutionContext executionContext = jobExecution.getExecutionContext();
-
-      String hostname = executionContext.getString(CONTEXT_SERVEUR, null);
-
-      String serverName;
-      try {
-
-         serverName = HostUtils.getLocalHostName();
-
-      } catch (UnknownHostException e) {
-
-         throw new OrdonnanceurRuntimeException(e);
-      }
-
-      boolean isLocal = serverName.equals(hostname);
-
-      return isLocal;
-   }
-
-   private boolean isCaptureMasse(JobInstance jobInstance) {
-
-      boolean isCaptureMasse = CAPTURE_MASSE_JN
-            .equals(jobInstance.getJobName());
+      boolean isCaptureMasse = CAPTURE_MASSE_JN.equals(jobRequest.getType());
 
       return isCaptureMasse;
    }
 
-   private boolean isLocal(JobInstance jobInstance) {
+   private boolean isLocal(SimpleJobRequest jobRequest) {
 
-      String ecdeUrl = jobInstance.getJobParameters().getString(
-            CAPTURE_MASSE_ECDE);
+      // Dans le cadre d'une capture de masse seule l'url ECDE du sommaire est
+      // sérializée dans les paramètres
+      String ecdeUrl = jobRequest.getParameters();
 
       boolean isLocal = false;
 

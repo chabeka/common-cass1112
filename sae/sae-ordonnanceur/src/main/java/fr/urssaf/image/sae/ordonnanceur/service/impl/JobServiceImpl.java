@@ -1,21 +1,22 @@
 package fr.urssaf.image.sae.ordonnanceur.service.impl;
 
 import java.net.UnknownHostException;
-import java.util.Collection;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
-import org.apache.commons.lang.StringUtils;
-import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.JobInstance;
+import org.apache.commons.collections.IteratorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import fr.urssaf.image.commons.cassandra.spring.batch.dao.CassandraJobExecutionDao;
-import fr.urssaf.image.commons.cassandra.spring.batch.dao.CassandraJobInstanceDao;
-import fr.urssaf.image.sae.ordonnanceur.exception.JobDejaReserveException;
-import fr.urssaf.image.sae.ordonnanceur.exception.JobInexistantException;
 import fr.urssaf.image.sae.ordonnanceur.exception.OrdonnanceurRuntimeException;
 import fr.urssaf.image.sae.ordonnanceur.service.JobService;
 import fr.urssaf.image.sae.ordonnanceur.util.HostUtils;
+import fr.urssaf.image.sae.pile.travaux.dao.JobQueueDao;
+import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
+import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
+import fr.urssaf.image.sae.pile.travaux.exception.LockTimeoutException;
+import fr.urssaf.image.sae.pile.travaux.model.SimpleJobRequest;
+import fr.urssaf.image.sae.pile.travaux.service.JobQueueService;
 
 /**
  * Implémentation du service {@link JobService}.<br>
@@ -28,36 +29,23 @@ import fr.urssaf.image.sae.ordonnanceur.util.HostUtils;
  */
 public class JobServiceImpl implements JobService {
 
-   private final CassandraJobExecutionDao jobExecutionDao;
+   private final JobQueueDao jobQueueDao;
 
-   private final CassandraJobInstanceDao jobInstanceDao;
+   private final JobQueueService jobQueueService;
 
    /**
     * 
-    * @param jobExecutionDao
-    *           dao d'exécution des job
-    * @param jobInstanceDao
-    *           dao d'instanciation des job
+    * @param jobQueueDao
+    *           dao de la pile des jobs
+    * @param jobQueueService
+    *           service de la pile des jobs
     */
    @Autowired
-   public JobServiceImpl(CassandraJobExecutionDao jobExecutionDao,
-         CassandraJobInstanceDao jobInstanceDao) {
+   public JobServiceImpl(JobQueueDao jobQueueDao,
+         JobQueueService jobQueueService) {
 
-      this.jobExecutionDao = jobExecutionDao;
-      this.jobInstanceDao = jobInstanceDao;
-
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final Collection<JobExecution> recupJobEnCours() {
-
-      Collection<JobExecution> jobExecutions = jobExecutionDao
-            .getRunningJobExecutions();
-
-      return jobExecutions;
+      this.jobQueueDao = jobQueueDao;
+      this.jobQueueService = jobQueueService;
 
    }
 
@@ -65,48 +53,54 @@ public class JobServiceImpl implements JobService {
     * {@inheritDoc}
     */
    @Override
-   public final List<JobInstance> recupJobsALancer() {
+   public final List<SimpleJobRequest> recupJobEnCours() {
 
-      List<JobInstance> jobInstances = jobInstanceDao
-            .getUnreservedJobInstances();
+      String hostname;
+      try {
+         hostname = HostUtils.getLocalHostName();
+      } catch (UnknownHostException e) {
+         throw new OrdonnanceurRuntimeException(e);
+      }
+      List<SimpleJobRequest> jobRequests = jobQueueDao
+            .getNonTerminatedSimpleJobs(hostname);
 
-      return jobInstances;
+      return jobRequests;
+
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public final List<SimpleJobRequest> recupJobsALancer() {
+
+      @SuppressWarnings("unchecked")
+      List<SimpleJobRequest> jobRequests = IteratorUtils.toList(jobQueueDao
+            .getUnreservedJobRequestIterator());
+
+      return jobRequests;
    }
 
    /**
     * {@inheritDoc}
     */
    @Override
-   public final void reserveJob(long idJob) throws JobInexistantException,
-         JobDejaReserveException {
+   public final void reserveJob(UUID idJob) throws JobDejaReserveException,
+         JobInexistantException {
 
       // récupération du nom de la machine
-      String serverName;
+      String hostname;
       try {
-         serverName = HostUtils.getLocalHostName();
+         hostname = HostUtils.getLocalHostName();
       } catch (UnknownHostException e) {
          throw new OrdonnanceurRuntimeException(e);
       }
 
-      // vérification que le job existe bien dans la table JobInstance
-      JobInstance jobInstance = jobInstanceDao.getJobInstance(idJob);
-      if (jobInstance == null) {
-
-         throw new JobInexistantException(idJob);
-      }
-
-      // vérification que le job n'est pas déjà réservé
-      String reservingServer = jobInstanceDao.getReservingServer(idJob);
-      if (StringUtils.isBlank(reservingServer)) {
-
-         // réservation du job
-         jobInstanceDao.reserveJob(idJob, serverName);
-
-      } else {
-
-         // le job est déjà réservé
-         throw new JobDejaReserveException(idJob, reservingServer);
-
+      try {
+         jobQueueService.reserveJob(idJob, hostname, new Date());
+      } catch (LockTimeoutException e) {
+         throw new OrdonnanceurRuntimeException(e);
       }
 
    }

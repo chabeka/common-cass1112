@@ -19,8 +19,11 @@ public class TraitementAsynchroneServiceValidation {
 
    private static final String CLASS = "fr.urssaf.image.sae.services.batch.TraitementAsynchroneService.";
 
-   private static final String METHOD_1 = "execution(long " + CLASS
+   private static final String METHOD_1 = "execution(void " + CLASS
          + "ajouterJobCaptureMasse(*,*))" + "&& args(urlEcde,uuid)";
+
+   private static final String METHOD_2 = "execution(String " + CLASS
+         + "lancerJob(*))" + "&& args(idJob)";
 
    private static final String ARG_EMPTY = "L''argument ''{0}'' doit être renseigné.";
 
@@ -48,6 +51,23 @@ public class TraitementAsynchroneServiceValidation {
                "uuid"));
       }
 
+   }
+
+   /**
+    * Validation des arguments d'entrée de la méthode
+    * {@link fr.urssaf.image.sae.services.batch.TraitementAsynchroneService#lancerJob(UUID)}
+    * 
+    * @param idJob
+    *           doit être renseigné
+    */
+   @Before(METHOD_2)
+   public final void lancerJob(UUID idJob) {
+
+      if (idJob == null) {
+
+         throw new IllegalArgumentException(MessageFormat.format(ARG_EMPTY,
+               "idJob"));
+      }
    }
 
 }

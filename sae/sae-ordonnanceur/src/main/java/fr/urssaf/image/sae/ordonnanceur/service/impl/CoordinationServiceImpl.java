@@ -1,24 +1,23 @@
 package fr.urssaf.image.sae.ordonnanceur.service.impl;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.JobInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.sae.ordonnanceur.exception.AucunJobALancerException;
-import fr.urssaf.image.sae.ordonnanceur.exception.JobDejaReserveException;
-import fr.urssaf.image.sae.ordonnanceur.exception.JobInexistantException;
 import fr.urssaf.image.sae.ordonnanceur.service.CoordinationService;
 import fr.urssaf.image.sae.ordonnanceur.service.DecisionService;
 import fr.urssaf.image.sae.ordonnanceur.service.JobService;
 import fr.urssaf.image.sae.ordonnanceur.support.TraitementLauncherSupport;
+import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
+import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
+import fr.urssaf.image.sae.pile.travaux.model.SimpleJobRequest;
 
 /**
  * implémentation du service {@link CoordinationService}
@@ -65,10 +64,10 @@ public class CoordinationServiceImpl implements CoordinationService {
     * 
     */
    @Override
-   public final long lancerTraitement() throws AucunJobALancerException {
+   public final UUID lancerTraitement() throws AucunJobALancerException {
 
       // Récupération d'un traitement à lancer
-      JobInstance traitement = trouverJobALancer();
+      SimpleJobRequest traitement = trouverJobALancer();
 
       // Récupération de l'identifiant du traitement de capture en masse
       LOG.debug("{} - lancement du traitement {}", PREFIX_LOG,
@@ -76,25 +75,25 @@ public class CoordinationServiceImpl implements CoordinationService {
       this.captureMasseLauncher.lancerTraitement(traitement);
 
       // renvoie l'identifiant du traitement lancé
-      return traitement.getId();
+      return traitement.getIdJob();
 
    }
 
-   private JobInstance trouverJobALancer() throws AucunJobALancerException {
+   private SimpleJobRequest trouverJobALancer() throws AucunJobALancerException {
 
       // etape 1 : Récupération de la liste des traitements
 
-      Collection<JobExecution> jobsEnCours = this.jobService.recupJobEnCours();
-      LOG.debug("{} - nombre de traitements en cours: {}", PREFIX_LOG,
-            CollectionUtils.size(jobsEnCours));
+      List<SimpleJobRequest> jobsEnCours = this.jobService.recupJobEnCours();
+      LOG.debug("{} - nombre de traitements en cours ou réservés: {}",
+            PREFIX_LOG, CollectionUtils.size(jobsEnCours));
 
-      List<JobInstance> jobsEnAttente = this.jobService.recupJobsALancer();
+      List<SimpleJobRequest> jobsEnAttente = this.jobService.recupJobsALancer();
       LOG.debug("{} - nombre de traitements en attente: {}", PREFIX_LOG,
             CollectionUtils.size(jobsEnAttente));
 
       // Etape 2: Décision du traitement à lancer
 
-      JobInstance traitement = this.decisionService.trouverJobALancer(
+      SimpleJobRequest traitement = this.decisionService.trouverJobALancer(
             jobsEnAttente, jobsEnCours);
       LOG
             .debug("{} - traitement à lancer {}", PREFIX_LOG,
@@ -104,10 +103,9 @@ public class CoordinationServiceImpl implements CoordinationService {
 
       try {
 
-         // TODO locker la table JobInstance avec Zookeeper
          LOG.debug("{} - réservation du traitement {}", PREFIX_LOG,
                toString(traitement));
-         this.jobService.reserveJob(traitement.getId());
+         this.jobService.reserveJob(traitement.getIdJob());
 
       } catch (JobInexistantException e) {
 
@@ -125,18 +123,15 @@ public class CoordinationServiceImpl implements CoordinationService {
                new Object[] { PREFIX_LOG, toString(traitement) }, e);
          traitement = trouverJobALancer();
 
-      } finally {
-
-         // TODO libérer le lock la table JobInstance avec Zookeeper
       }
 
       // renvoie le traitement
-
       return traitement;
    }
 
-   private String toString(JobInstance traitement) {
-      return "'" + traitement.getJobName() + "' n°" + traitement.getId();
+   private String toString(SimpleJobRequest traitement) {
+      return "'" + traitement.getType() + "' identifiant:"
+            + traitement.getIdJob();
    }
 
 }

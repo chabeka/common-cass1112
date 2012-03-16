@@ -14,6 +14,6 @@
       </property>
    </bean>
    
-    <import resource="applicationContext-sae-ordonnanceur-cassandra.xml" />
+    <import resource="applicationContext-sae-ordonnanceur-job.xml" />
 
 </beans>

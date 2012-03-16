@@ -1,37 +1,33 @@
 package fr.urssaf.image.sae.ordonnanceur.service;
 
 import java.net.UnknownHostException;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
+
+import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.JobInstance;
-import org.springframework.batch.core.JobParameter;
-import org.springframework.batch.core.JobParameters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.commons.cassandra.spring.batch.dao.CassandraJobExecutionDao;
-import fr.urssaf.image.commons.cassandra.spring.batch.dao.CassandraJobInstanceDao;
-import fr.urssaf.image.commons.cassandra.spring.batch.dao.CassandraStepExecutionDao;
-import fr.urssaf.image.sae.ordonnanceur.exception.JobDejaReserveException;
-import fr.urssaf.image.sae.ordonnanceur.exception.JobInexistantException;
 import fr.urssaf.image.sae.ordonnanceur.util.HostUtils;
+import fr.urssaf.image.sae.pile.travaux.dao.JobQueueDao;
+import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
+import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
+import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
+import fr.urssaf.image.sae.pile.travaux.model.JobState;
+import fr.urssaf.image.sae.pile.travaux.model.SimpleJobRequest;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
       "/applicationContext-sae-ordonnanceur-service-test.xml",
-      "/applicationContext-sae-ordonnanceur-cassandra-test.xml" })
+      "/applicationContext-sae-ordonnanceur-job-test.xml" })
 @SuppressWarnings("PMD.MethodNamingConventions")
 @DirtiesContext
 public class JobServiceTest {
@@ -40,47 +36,43 @@ public class JobServiceTest {
    private JobService jobService;
 
    @Autowired
-   private CassandraJobInstanceDao jobInstanceDao;
+   private JobQueueDao jobQueueDao;
 
-   @Autowired
-   private CassandraJobExecutionDao jobExecutionDao;
-
-   @Autowired
-   private CassandraStepExecutionDao stepExecutionDao;
-
-   private JobInstance jobInstance;
+   private JobRequest job;
 
    @Before
    public void before() {
 
-      // création d'un traitement
+      UUID idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
 
-      Map<String, JobParameter> parameters = new HashMap<String, JobParameter>();
-      parameters.put("id", new JobParameter(UUID.randomUUID().toString()));
-      JobParameters jobParameters = new JobParameters(parameters);
-      jobInstance = jobInstanceDao.createJobInstance("jobTest", jobParameters);
+      job = new JobRequest();
+      job.setIdJob(idJob);
+      job.setType("jobTest");
+      job.setParameters("");
+      job.setState(JobState.CREATED);
+
+      jobQueueDao.saveJobRequest(job);
    }
 
    @After
    public void after() {
 
       // suppression du traitement
-      if (jobInstance != null
-            && jobInstanceDao.getJobInstance(jobInstance.getId()) != null) {
+      if (job != null) {
 
-         jobInstanceDao.deleteJobInstance(jobInstance.getId(), jobExecutionDao,
-               stepExecutionDao);
+         jobQueueDao.deleteJobRequest(job);
       }
    }
 
    @Test
-   public void recupJobEnCours_success() {
+   public void recupJobEnCours_success() throws UnknownHostException {
 
-      JobExecution jobExecution = new JobExecution(jobInstance);
-      jobExecutionDao.saveJobExecution(jobExecution);
+      job.setReservedBy(HostUtils.getLocalHostName());
+      job.setState(JobState.STARTING);
+      jobQueueDao.updateJobRequest(job);
 
       // récupération des traitements en cours
-      Collection<JobExecution> jobEnCours = jobService.recupJobEnCours();
+      List<SimpleJobRequest> jobEnCours = jobService.recupJobEnCours();
 
       Assert.assertTrue("la liste des job en cours doit être non vide",
             !jobEnCours.isEmpty());
@@ -91,7 +83,7 @@ public class JobServiceTest {
    public void recupJobsALancer_success() {
 
       // récupération des traitements à lancer
-      List<JobInstance> jobsAlancer = jobService.recupJobsALancer();
+      List<SimpleJobRequest> jobsAlancer = jobService.recupJobsALancer();
 
       Assert.assertTrue("la liste des job à lancer doit être non vide",
             !jobsAlancer.isEmpty());
@@ -99,18 +91,24 @@ public class JobServiceTest {
    }
 
    @Test
-   public void reserveJob_success() throws JobInexistantException,
-         JobDejaReserveException, UnknownHostException {
+   public void reserveJob_success() throws JobDejaReserveException,
+         JobInexistantException, UnknownHostException {
 
-      long idJob = jobInstance.getId();
+      UUID idJob = job.getIdJob();
       jobService.reserveJob(idJob);
 
-      String reservingServer = jobInstanceDao.getReservingServer(idJob);
+      job = jobQueueDao.getJobRequest(idJob);
+
+      String reservingServer = job.getReservedBy();
 
       String serverName = HostUtils.getLocalHostName();
 
       Assert.assertEquals("le traitement doit être réservé", serverName,
             reservingServer);
+
+      Assert.assertEquals(
+            "l'état du job dans la pile des travaux est incorrect",
+            JobState.RESERVED, job.getState());
 
    }
 
@@ -118,11 +116,10 @@ public class JobServiceTest {
    public void reserveJob_failure_jobInexistantException()
          throws JobDejaReserveException {
 
-      long idJob = jobInstance.getId();
+      UUID idJob = job.getIdJob();
 
       // on s'assure que le traitement n'existe pas!
-      jobInstanceDao.deleteJobInstance(jobInstance.getId(), jobExecutionDao,
-            stepExecutionDao);
+      jobQueueDao.deleteJobRequest(job);
 
       try {
          jobService.reserveJob(idJob);
@@ -133,7 +130,7 @@ public class JobServiceTest {
       } catch (JobInexistantException e) {
 
          Assert.assertEquals("le message de l'exception est inattendu",
-               "Impossible de lancer le traitement n°" + idJob
+               "Impossible de lancer ou de réserver le traitement n°" + idJob
                      + " car il n'existe pas.", e.getMessage());
 
          Assert.assertEquals("l'instance du job est incorrect", idJob, e
@@ -148,7 +145,7 @@ public class JobServiceTest {
          throws JobDejaReserveException, UnknownHostException,
          JobInexistantException {
 
-      long idJob = jobInstance.getId();
+      UUID idJob = job.getIdJob();
 
       // réserve une premiere fois le traitement
       jobService.reserveJob(idJob);
@@ -162,7 +159,8 @@ public class JobServiceTest {
 
       } catch (JobDejaReserveException e) {
 
-         String reservingServer = jobInstanceDao.getReservingServer(idJob);
+         String reservingServer = jobQueueDao.getJobRequest(idJob)
+               .getReservedBy();
 
          Assert.assertEquals("le message de l'exception est inattendu",
                "Le traitement n°" + idJob

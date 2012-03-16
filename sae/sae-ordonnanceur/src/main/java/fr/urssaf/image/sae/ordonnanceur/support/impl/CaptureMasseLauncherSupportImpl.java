@@ -3,18 +3,18 @@ package fr.urssaf.image.sae.ordonnanceur.support.impl;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.batch.core.JobInstance;
 import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
 
 import fr.urssaf.image.sae.ordonnanceur.exception.OrdonnanceurRuntimeException;
-import fr.urssaf.image.sae.ordonnanceur.support.CaptureMasseSupport;
 import fr.urssaf.image.sae.ordonnanceur.support.TraitementLauncherSupport;
 import fr.urssaf.image.sae.ordonnanceur.util.LauncherUtils;
+import fr.urssaf.image.sae.pile.travaux.model.SimpleJobRequest;
 
 /**
  * Support pour le lancement d'un traitement de capture en masse
@@ -63,7 +63,7 @@ public class CaptureMasseLauncherSupportImpl implements
    }
 
    @Override
-   public final void lancerTraitement(JobInstance captureMasse) {
+   public final void lancerTraitement(SimpleJobRequest captureMasse) {
 
       String command = this.createCommand(captureMasse);
 
@@ -76,19 +76,9 @@ public class CaptureMasseLauncherSupportImpl implements
       }
    }
 
-   protected final String createCommand(JobInstance captureMasse) {
+   protected final String createCommand(SimpleJobRequest captureMasse) {
 
-      String idTraitement = captureMasse.getJobParameters().getString(
-            CaptureMasseSupport.CAPTURE_MASSE_ID);
-
-      // vérification que le paramètre 'capture.masse.idtraitement' est bien
-      // renseigné
-      if (StringUtils.isBlank(idTraitement)) {
-
-         throw new IllegalArgumentException("Le paramètre '"
-               + CaptureMasseSupport.CAPTURE_MASSE_ID
-               + "' du traitement de capture en masse doit être renseigné");
-      }
+      String idTraitement = ObjectUtils.toString(captureMasse.getIdJob());
 
       // remplacement de _UUID_TO_REPLACE
       String command = StringUtils.replace(this.executable, "_UUID_TO_REPLACE",
@@ -109,7 +99,7 @@ public class CaptureMasseLauncherSupportImpl implements
       StrBuilder builder = new StrBuilder();
 
       builder.appendWithSeparators(new Object[] { command, "captureMasse",
-            captureMasse.getId(), saeConfigResource.getAbsolutePath(),
+            captureMasse.getIdJob(), saeConfigResource.getAbsolutePath(),
             idTraitement }, " ");
 
       return builder.toString();

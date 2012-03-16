@@ -1,26 +1,25 @@
 package fr.urssaf.image.sae.services.batch;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
+
+import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.batch.core.JobInstance;
-import org.springframework.batch.core.JobParameter;
-import org.springframework.batch.core.JobParameters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.commons.cassandra.spring.batch.dao.CassandraJobExecutionDao;
-import fr.urssaf.image.commons.cassandra.spring.batch.dao.CassandraJobInstanceDao;
-import fr.urssaf.image.commons.cassandra.spring.batch.dao.CassandraStepExecutionDao;
-import fr.urssaf.image.sae.services.batch.exception.JobInexistantException;
+import fr.urssaf.image.sae.pile.travaux.dao.JobQueueDao;
+import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
+import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
+import fr.urssaf.image.sae.pile.travaux.model.JobState;
+import fr.urssaf.image.sae.services.batch.exception.JobInattenduException;
+import fr.urssaf.image.sae.services.batch.exception.JobNonReserveException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-batch-test.xml" })
@@ -32,30 +31,27 @@ public class TraitementAsynchroneServiceTest {
    private TraitementAsynchroneService service;
 
    @Autowired
-   private CassandraJobInstanceDao jobInstanceDao;
+   private JobQueueDao jobQueueDao;
 
-   @Autowired
-   private CassandraJobExecutionDao jobExecutionDao;
+   private JobRequest job;
 
-   @Autowired
-   private CassandraStepExecutionDao stepExecutionDao;
-
-   private long idJob;
+   private void setJob(JobRequest job) {
+      this.job = job;
+   }
 
    @Before
    public void before() {
 
-      idJob = 0;
+      setJob(null);
    }
 
    @After
    public void after() {
 
       // suppression du traitement dde masse
-      if (jobInstanceDao.getJobInstance(idJob) != null) {
+      if (job != null) {
 
-         jobInstanceDao.deleteJobInstance(idJob, jobExecutionDao,
-               stepExecutionDao);
+         jobQueueDao.deleteJobRequest(job);
 
       }
    }
@@ -63,62 +59,142 @@ public class TraitementAsynchroneServiceTest {
    @Test
    public void ajouterJobCaptureMasse_success() {
 
-      UUID uuid = UUID.randomUUID();
-      idJob = service.ajouterJobCaptureMasse("url_ecde", uuid);
+      UUID idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
 
-      JobInstance jobInstance = jobInstanceDao.getJobInstance(idJob);
+      service.ajouterJobCaptureMasse("url_ecde", idJob);
 
-      Assert.assertNotNull("le traitement " + idJob + " doit être créé",
-            jobInstance);
+      job = jobQueueDao.getJobRequest(idJob);
 
-      JobParameters jobParameters = jobInstance.getJobParameters();
+      Assert.assertNotNull("le traitement " + idJob + " doit être créé", job);
 
       Assert
             .assertEquals(
-                  "le nombre de paramètres du traitement de la capture en masse est incorrect",
-                  2, jobParameters.getParameters().size());
+                  "L'identifiant unique du traitement doit correspondre à l'identifiant du traitement de capture en masse",
+                  idJob, job.getIdJob());
 
-      String parameter1 = "capture.masse.sommaire";
-
-      Assert.assertEquals("la valeur du paramètre " + parameter1, "url_ecde",
-            jobParameters.getString(parameter1));
-
-      String parameter2 = "capture.masse.idtraitement";
-
-      Assert.assertEquals("la valeur du paramètre " + parameter2, uuid
-            .toString(), jobParameters.getString(parameter2));
+      Assert.assertEquals(
+            "La paramètre de la capture en masse doit être une URL ECDE",
+            "url_ecde", job.getParameters());
 
    }
 
    @Test
-   public void lancerJob_success() throws JobInexistantException {
+   public void lancerJob_success() throws JobInexistantException,
+         JobNonReserveException, JobInattenduException {
 
       // création d'un traitement de capture en masse
-      Map<String, JobParameter> parameters = new HashMap<String, JobParameter>();
-      parameters.put("id", new JobParameter(UUID.randomUUID().toString()));
-      JobParameters jobParameters = new JobParameters(parameters);
-      JobInstance jobInstance = jobInstanceDao.createJobInstance(
-            "capture_masse", jobParameters);
+      UUID idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
 
-      idJob = jobInstance.getId();
+      job = new JobRequest();
+      job.setIdJob(idJob);
+      job.setType("capture_masse");
+      job.setParameters("");
+      job.setState(JobState.RESERVED);
+      jobQueueDao.saveJobRequest(job);
 
-      String exitCode = service.lancerJob(jobInstance.getId());
+      String exitCode = service.lancerJob(idJob);
       Assert.assertEquals("le code de sortie du traitement est inattendu",
             "COMPLETED", exitCode);
+
+      job = jobQueueDao.getJobRequest(idJob);
+      Assert.assertEquals(
+            "l'état du job dans la pile des travaux est incorrect",
+            JobState.SUCCESS, job.getState());
+
+   }
+
+   @Test
+   public void lancerJob_failure_JobNonReserveException()
+         throws JobInexistantException, JobNonReserveException,
+         JobInattenduException {
+
+      // création d'un traitement de capture en masse
+      UUID idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+
+      job = new JobRequest();
+      job.setIdJob(idJob);
+      job.setType("capture_masse");
+      job.setParameters("");
+      job.setState(JobState.CREATED);
+      jobQueueDao.saveJobRequest(job);
+
+      try {
+
+         service.lancerJob(idJob);
+
+         Assert
+               .fail("Une exception JobNonReserveException doit être levée pour le traitement "
+                     + idJob);
+
+      } catch (JobNonReserveException e) {
+
+         Assert.assertEquals("le message de l'exception est inattendu",
+               "Impossible d'exécuter le traitement n°" + idJob
+                     + " car il n'a pas été réservé.", e.getMessage());
+
+         Assert.assertEquals("l'instance du job est incorrect", idJob, e
+               .getJobId());
+
+      }
+
+   }
+
+   @Test
+   public void lancerJob_failure_JobInattenduException()
+         throws JobInexistantException, JobNonReserveException,
+         JobInattenduException {
+
+      // création d'un traitement de capture en masse
+      UUID idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+
+      job = new JobRequest();
+      job.setIdJob(idJob);
+      job.setType("other_masse");
+      job.setParameters("");
+      job.setState(JobState.CREATED);
+      jobQueueDao.saveJobRequest(job);
+
+      try {
+
+         service.lancerJob(idJob);
+
+         Assert
+               .fail("Une exception JobInattenduException doit être levée pour le traitement "
+                     + idJob);
+
+      } catch (JobInattenduException e) {
+
+         Assert
+               .assertEquals(
+                     "le message de l'exception est inattendu",
+                     "Le traitement n°"
+                           + idJob
+                           + " est inattendu. On attend un traitement de type 'capture_masse' et le type est 'other_masse'.",
+                     e.getMessage());
+
+         Assert.assertEquals("Le job est incorrect", idJob, e.getJob()
+               .getIdJob());
+
+         Assert.assertEquals("le type attendu du job est incorrect",
+               "capture_masse", e.getExpectedType());
+
+      }
 
    }
 
    @Test
    public void lancerJob_failure_jobInexistantException()
-         throws JobInexistantException {
+         throws JobInexistantException, JobNonReserveException,
+         JobInattenduException {
 
-      idJob = 1;
+      UUID idJob = UUID.randomUUID();
+
+      job = jobQueueDao.getJobRequest(idJob);
 
       // on s'assure que le traitement n'existe pas!
-      if (jobInstanceDao.getJobInstance(idJob) != null) {
+      if (job != null) {
 
-         jobInstanceDao.deleteJobInstance(idJob, jobExecutionDao,
-               stepExecutionDao);
+         jobQueueDao.deleteJobRequest(job);
 
       }
 
@@ -133,7 +209,7 @@ public class TraitementAsynchroneServiceTest {
       } catch (JobInexistantException e) {
 
          Assert.assertEquals("le message de l'exception est inattendu",
-               "Impossible de lancer le traitement n°" + idJob
+               "Impossible de lancer ou de réserver le traitement n°" + idJob
                      + " car il n'existe pas.", e.getMessage());
 
          Assert.assertEquals("l'instance du job est incorrect", idJob, e

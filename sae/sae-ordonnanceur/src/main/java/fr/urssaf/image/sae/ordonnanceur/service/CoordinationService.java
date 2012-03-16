@@ -1,5 +1,7 @@
 package fr.urssaf.image.sae.ordonnanceur.service;
 
+import java.util.UUID;
+
 import fr.urssaf.image.sae.ordonnanceur.exception.AucunJobALancerException;
 
 /**
@@ -21,5 +23,5 @@ public interface CoordinationService {
     * @throws AucunJobALancerException
     *            aucun traitement n'est à lancer
     */
-   long lancerTraitement() throws AucunJobALancerException;
+   UUID lancerTraitement() throws AucunJobALancerException;
 }

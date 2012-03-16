@@ -12,6 +12,14 @@
    <import resource="jobs/job-capture-masse-test.xml" />
 
    <!--
+      les tests unitaires se font sans persistance dans cassandra spring
+      batch
+   -->
+   <bean id="jobRepository"
+      class="org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean" />
+
+
+   <!--
       le scan devra être modifié une fois que les classes dépréciées
       seront supprimées
    -->

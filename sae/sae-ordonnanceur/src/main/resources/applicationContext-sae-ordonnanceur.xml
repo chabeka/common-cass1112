@@ -28,7 +28,7 @@
    </bean>
 
    <!-- configuration des traitements -->
-   <import resource="applicationContext-sae-ordonnanceur-cassandra.xml" />
+   <import resource="applicationContext-sae-ordonnanceur-job.xml" />
 
    <!-- configuration des traitements -->
    <import resource="applicationContext-sae-ordonnanceur-service.xml" />

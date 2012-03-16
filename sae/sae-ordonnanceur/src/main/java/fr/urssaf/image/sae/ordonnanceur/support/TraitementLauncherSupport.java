@@ -1,6 +1,6 @@
 package fr.urssaf.image.sae.ordonnanceur.support;
 
-import org.springframework.batch.core.JobInstance;
+import fr.urssaf.image.sae.pile.travaux.model.SimpleJobRequest;
 
 /**
  * Support pour lancer les processus des traitements de masse
@@ -16,6 +16,6 @@ public interface TraitementLauncherSupport {
     * @param traitement
     *           traitement à lancer
     */
-   void lancerTraitement(JobInstance traitement);
+   void lancerTraitement(SimpleJobRequest traitement);
 
 }
