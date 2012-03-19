@@ -296,7 +296,7 @@
 
          <CasTest>
             <id>204</id>
-            <code>204-CAPTUREMASSE-OK-TOR-10-REPERTOIRE-ANTI-SLASH</code>
+            <code>204-CaptureMasse-OK-Tor-10-repertoire-anti-slash</code>
             <description>
                Capture de masse de 10 documents à archiver dans une arborescence de 10 niveaux précisés par des anti-slash
             </description>
@@ -306,7 +306,7 @@
 
          <CasTest>
             <id>205</id>
-            <code>205-CAPTUREMASSE-OK-TOR-3-REPERTOIRE-ANTI-SLASH-MEME-DOC</code>
+            <code>205-CaptureMasse-OK-Tor-3-repertoire-anti-slash-meme-doc</code>
             <description>
                Capture de masse du même document 3 fois dans une arborescence d’un seul niveau spécifié par des anti-slash
             </description>
@@ -316,7 +316,7 @@
 
          <CasTest>
             <id>206</id>
-            <code>206-capturemasse-OK-toutes-metadonnees-specifiables</code>
+            <code>206-CaptureMasse-OK-Toutes-metadonnees-specifiables</code>
             <description>
               Capture de masse d’un document dont on précise toutes les métadonnées en archivage
             </description>
@@ -326,7 +326,7 @@
 
          <CasTest>
             <id>207</id>
-            <code>207-capturemasse-OK-idtraitementmasse</code>
+            <code>207-CaptureMasse-OK-IdTraitementMasse</code>
             <description>
                Capture de masse d’un document dont on précise  la métadonnée IdTraitementMasse en archivage
             </description>
@@ -336,12 +336,32 @@
 
          <CasTest>
             <id>208</id>
-            <code>208-capturemasse-OK-jarlancearret</code>
+            <code>208-CaptureMasse-OK-JarLanceArret</code>
             <description>
                Capture de masse de 5000 documents, démarrage et arrêt du processus "application console d’exécution de la capture de masse"
             </description>
             <implemente>true</implemente>
             <luceneExemple>Denomination:"208-CaptureMasse-OK-JarLanceArret"</luceneExemple>
+         </CasTest>
+         
+         <CasTest>
+            <id>210</id>
+            <code>210-CaptureMasse-OK-Sans-Code-Activite</code>
+            <description>
+               La capture de masse doit fonctionner si un type de document est rattaché directement à une fonction (pas de code activité)
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 210-CaptureMasse-OK-Sans-Code-Activite"</luceneExemple>
+         </CasTest>
+         
+         <CasTest>
+            <id>214</id>
+            <code>214-CaptureMasse-OK-HashMajMin</code>
+            <description>
+               La capture de masse fonctionne si un hash SHA-1 associé à un document comporte une combinaison de minuscules et de majuscules
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 214-CaptureMasse-OK-HashMajMin"</luceneExemple>
          </CasTest>
 
          <CasTest>
@@ -360,6 +380,7 @@
                On vérifie que la capture de masse en mode "tout ou rien" a échoué (aucun document mis en archive, erreur présente dans resultats.xml) si, pour un document, sa liste de métadonnées est vide
             </description>
             <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 252-CaptureMasse-KO-Tor-MetadonneeVide"</luceneExemple>
          </CasTest>
 
          <CasTest>
@@ -369,6 +390,7 @@
                On vérifie que la capture de masse en mode "tout ou rien" a échoué (aucun document mis en archive, erreur présente dans resultats.xml) si, pour un document, une métadonnée obligatoire est omise
             </description>
             <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 253-CaptureMasse-KO-Tor-MetadonneeObligatoireOmise"</luceneExemple>
          </CasTest>
 
          <CasTest>
@@ -378,6 +400,7 @@
                On vérifie que la capture de masse en mode "tout ou rien" a échoué (aucun document mis en archive, erreur présente dans resultats.xml) si, pour un document, une métadonnée obligatoire a une valeur vide
             </description>
             <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 254-CaptureMasse-KO-Tor-MetadonneeObligatoireVide"</luceneExemple>
          </CasTest>
 
          <CasTest>
@@ -387,6 +410,7 @@
                On vérifie que la capture de masse en mode "tout ou rien" a échoué (aucun document mis en archive, erreur présente dans resultats.xml) si, pour un document, sa liste des métadonnées contient une métadonnée inconnue du SAE
             </description>
             <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 255-CaptureMasse-KO-Tor-MetadonneeInconnue"</luceneExemple>
          </CasTest>
 
          <CasTest>
@@ -396,6 +420,7 @@
                On vérifie que la capture de masse en mode "tout ou rien" a échoué (aucun document mis en archive, erreur présente dans resultats.xml) si, pour un document, il y a plusieurs occurrences de la même métadonnée dans sa liste des métadonnées
             </description>
             <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 256-CaptureMasse-KO-Tor-MetadonneeDoublon"</luceneExemple>
          </CasTest>
 
          <CasTest>
@@ -405,6 +430,7 @@
                On vérifie que la capture de masse en mode "tout ou rien" a échoué (aucun document mis en archive, erreur présente dans resultats.xml) si, pour un document, sa liste des métadonnées contient une métadonnée dont la valeur n'est pas conforme au format attendu.
             </description>
             <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 257-CaptureMasse-KO-Tor-MetadonneeFormatIncorrect"</luceneExemple>
          </CasTest>
 
          <CasTest>
@@ -414,6 +440,7 @@
                On vérifie que la capture de masse en mode "tout ou rien" a échoué (aucun document mis en archive, erreur présente dans resultats.xml) si, pour un document, la liste des métadonnées contient une métadonnée qui n’est pas spécifiable lors de l’archivage
             </description>
             <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 258-CaptureMasse-KO-Tor-MetadonneeNonArchivable"</luceneExemple>
          </CasTest>
 
          <CasTest>
@@ -423,6 +450,7 @@
                On vérifie que la capture de masse en mode "tout ou rien" a échoué (aucun document mis en archive, erreur présente dans resultats.xml) si, pour un document, le hash du fichier est différent du hash spécifié dans le sommaire.xml
             </description>
             <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 259-CaptureMasse-KO-Tor-HashIncorrect"</luceneExemple>
          </CasTest>
 
          <CasTest>
@@ -432,6 +460,7 @@
                On vérifie que la capture de masse en mode "tout ou rien" a échoué (aucun document mis en archive, erreur présente dans resultats.xml) si, pour un document, le chemin de fichier pointe sur un fichier inexistant
             </description>
             <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 262-CaptureMasse-KO-Tor-FichierInexistant"</luceneExemple>
          </CasTest>
 
          <CasTest>
@@ -441,6 +470,7 @@
                On vérifie que la bonne erreur est renvoyée lorsqu'un des fichiers à archiver possède une taille à 0 octet.
             </description>
             <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 264-CaptureMasse-KO-Tor-TailleZero"</luceneExemple>
          </CasTest>
 
          <CasTest>
@@ -450,38 +480,42 @@
                On vérifie que la bonne erreur est renvoyée lorsque le fichier sommaire.xml est syntaxiquement incorrect.
             </description>
             <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 265-CaptureMasse-KO-FichierSommaireIncorrect"</luceneExemple>
          </CasTest>
 
          <CasTest>
             <id>266</id>
-            <code>266-capturemasse-KO-autremodetoutourien</code>
+            <code>266-CaptureMasse-KO-AutreModeToutOuRien</code>
             <description>
                La Capture de masse échoue car le fichier sommaire.xml précise un mode d’intégration "partiel"
             </description>
             <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 266-CaptureMasse-KO-AutreModeToutOuRien"</luceneExemple>
          </CasTest>
 
          <CasTest>
             <id>267</id>
-            <code>267-capturemasse-KO-TOR-plusieursfichiersintrouvables</code>
+            <code>267-CaptureMasse-KO-Tor-PlusieursFichiersIntrouvables</code>
             <description>
                La Capture de masse échoue car le fichier sommaire.xml précise un mode d’intégration "partiel"
             </description>
             <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 267-CaptureMasse-KO-Tor-PlusieursFichiersIntrouvables"</luceneExemple>
          </CasTest>
 
          <CasTest>
             <id>268</id>
-            <code>268-capturemasse-KO-TOR-3-meme-doc-avec-premier-en-erreur-arbo</code>
+            <code>268-CaptureMasse-KO-Tor-3-meme-doc-avec-premier-en-erreur-arbo</code>
             <description>
                La Capture de masse échoue et on a une seule erreur sur une arborescence
             </description>
             <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 268-CaptureMasse-KO-Tor-3-meme-doc-avec-premier-en-erreur-arbo"</luceneExemple>
          </CasTest>
 
          <CasTest>
             <id>269</id>
-            <code>269-capturemasse-KO-deux-lancements</code>
+            <code>269-CaptureMasse-KO-Deux-Lancements</code>
             <description>
                La Capture de masse échoue sur le deuxième lancement si on a un seul serveur d’application
             </description>
@@ -490,16 +524,17 @@
 
          <CasTest>
             <id>270</id>
-            <code>270-capturemasse-KO-TOR-3000-rollback</code>
+            <code>270-CaptureMasse-KO-Tor-3000-Rollback</code>
             <description>
                La Capture de masse échoue suite à la suppression d’un fichier image après l’analyse
             </description>
             <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 270-CaptureMasse-KO-Tor-3000-Rollback"</luceneExemple>
          </CasTest>
 
          <CasTest>
             <id>271</id>
-            <code>271-capturemasse-KO-URL-ecde-incorrecte</code>
+            <code>271-CaptureMasse-KO-URL-ECDE-incorrecte</code>
             <description>
                La Capture de masse échoue car URL ECDE incorrecte
             </description>
@@ -508,20 +543,32 @@
 
          <CasTest>
             <id>272</id>
-            <code>272-capturemasse-KO-url-ecde-repertoire-sans-droits-ecriture</code>
+            <code>272-CaptureMasse-KO-URL-ECDE-Repertoire-Sans-Droits-Ecriture</code>
             <description>
                La Capture de masse échoue car l’URL ECDE en lecture seul
             </description>
             <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 272-CaptureMasse-KO-URL-ECDE-Repertoire-Sans-Droits-Ecriture"</luceneExemple>
          </CasTest>
 
          <CasTest>
             <id>273</id>
-            <code>273-capturemasse-KO-jararrettomcatsansrepriseavecstockage</code>
+            <code>273-CaptureMasse-KO-JarArretTomCatSansRepriseAvecStockage</code>
             <description>
                Capture de masse est interrompue et pas de redémarrage de dfce après la pause
             </description>
             <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 273-CaptureMasse-KO-JarArretTomCatSansRepriseAvecStockage"</luceneExemple>
+         </CasTest>
+         
+         <CasTest>
+            <id>275</id>
+            <code>275-CaptureMasse-KO-AutreModeToutOuRien-Inconnu</code>
+            <description>
+               La capture de masse échoue car le batchMode possède une valeur non reconnue par le SAE et non autorisée par le XSD
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 275-CaptureMasse-KO-AutreModeToutOuRien-Inconnu"</luceneExemple>
          </CasTest>
 
       </CasTests>
@@ -611,7 +658,7 @@
 
          <CasTest>
             <id>307</id>
-            <code>307-recherche-OK-META-I-META-NI</code>
+            <code>307-Recherche-OK-Meta-I-Meta-NI</code>
             <description>
                Recherche sur des métadonnées non indexée et indexée
             </description>
@@ -621,7 +668,7 @@
 
          <CasTest>
             <id>308</id>
-            <code>308-RECHERCHE-OK-avec-espace-et-joker</code>
+            <code>308-Recherche-OK-avec-espace-et-joker</code>
             <description>
                Recherche avec dans la requête des espaces et des caractères joker
             </description>
@@ -631,7 +678,7 @@
 
          <CasTest>
             <id>309</id>
-            <code>309-recherche-OK-projetattestations</code>
+            <code>309-Recherche-OK-ProjetAttestations</code>
             <description>
                Recherche classique des utilisateurs pour le projet attestation
             </description>
@@ -641,7 +688,7 @@
 
          <CasTest>
             <id>311</id>
-            <code>311-recherche-OK-datecreation</code>
+            <code>311-Recherche-OK-Date-Creation</code>
             <description>
                Recherche sur la date de création
             </description>
@@ -651,7 +698,7 @@
          
          <CasTest>
             <id>312</id>
-            <code>312-recherche-OK-datereception</code>
+            <code>312-Recherche-OK-Date-Reception</code>
             <description>
                Recherche sur la date de réception
             </description>
@@ -661,7 +708,7 @@
          
          <CasTest>
             <id>313</id>
-            <code>313-recherche-OK-datedebutconservation</code>
+            <code>313-Recherche-OK-Date-Debut-Conservation</code>
             <description>
                Recherche sur la date de début de conservation
             </description>
@@ -741,7 +788,7 @@
          
          <CasTest>
             <id>357</id>
-            <code>357-recherche-KO-saesyntaxeluceneincorrecte</code>
+            <code>357-Recherche-KO-SAESyntaxeLuceneIncorrecte</code>
             <description>
                Envoie d’une SoapFault suite à l’envoie d’une requête syntaxiquement incorrecte
             </description>

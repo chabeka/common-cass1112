@@ -18,10 +18,7 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.R
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ResultatRechercheType;
 
 /**
- * Test 206<br>
- * <br>
- * Capture de masse d’un document dont on précise toutes les métadonnées en
- * archivage
+ * 206-CaptureMasse-OK-Toutes-metadonnees-specifiables
  */
 @Controller
 @RequestMapping(value = "test206")
@@ -62,7 +59,7 @@ public class Test206Controller extends
 
       RechercheFormulaire rechFormulaire = formulaire.getRechFormulaire();
       rechFormulaire
-            .setRequeteLucene("Denomination:\"Test 206-CaptureMasse-OK-Toutes-metadonnees-specifiables\"");
+            .setRequeteLucene(getCasTest().getLuceneExemple());
       CodeMetadonneeList codeMetadonneeList = new CodeMetadonneeList();
 
       String[] tabElement = new String[] { "ApplicationProductrice",

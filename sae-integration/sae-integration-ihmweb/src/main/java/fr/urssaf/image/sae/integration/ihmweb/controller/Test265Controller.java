@@ -12,10 +12,7 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
 import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.ErreurType;
 
 /**
- * Test 265<br>
- * <br>
- * On vérifie que la bonne erreur est renvoyée lorsque le fichier sommaire.xml
- * est syntaxiquement incorrect.
+ * 265-CaptureMasse-KO-FichierSommaireIncorrect
  */
 @Controller
 @RequestMapping(value = "test265")
@@ -56,7 +53,7 @@ public class Test265Controller extends
 
       RechercheFormulaire rechFormulaire = formulaire.getRechFormulaire();
       rechFormulaire
-            .setRequeteLucene("Denomination:\"Test 265-CaptureMasse-KO-FichierSommaireIncorrect\"");
+            .setRequeteLucene(getCasTest().getLuceneExemple());
 
       return formulaire;
 

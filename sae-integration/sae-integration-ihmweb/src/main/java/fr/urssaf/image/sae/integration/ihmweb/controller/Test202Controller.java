@@ -19,9 +19,7 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.R
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ResultatRechercheType;
 
 /**
- * Test 202<br>
- * <br>
- * Capture de masse de 1000 documents
+ * 202-CaptureMasse-OK-Tor-1000
  */
 @Controller
 @RequestMapping(value = "test202")
@@ -66,7 +64,7 @@ public class Test202Controller extends
 
       RechercheFormulaire rechFormulaire = formulaire.getRechFormulaire();
       rechFormulaire
-            .setRequeteLucene("Denomination:\"Test 202-CaptureMasse-OK-Tor-1000\"");
+            .setRequeteLucene(getCasTest().getLuceneExemple());
       CodeMetadonneeList codeMetadonneeList = new CodeMetadonneeList();
 
       String[] tabElement = new String[] { "CodeRND", "DateArchivage", "Hash",

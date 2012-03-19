@@ -15,10 +15,7 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_r
 import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.NonIntegratedDocumentType;
 
 /**
- * Test 270<br>
- * <br>
- * La Capture de masse échoue suite à la suppression d’un fichier image après
- * l’analyse
+ * 270-CaptureMasse-KO-Tor-3000-rollback
  */
 @Controller
 @RequestMapping(value = "test270")
@@ -68,7 +65,7 @@ public class Test270Controller extends
 
       RechercheFormulaire rechFormulaire = formulaire.getRechFormulaire();
       rechFormulaire
-            .setRequeteLucene("Denomination:\"Test 270-CaptureMasse-KO-Tor-3000-Rollback\"");
+            .setRequeteLucene(getCasTest().getLuceneExemple());
 
       return formulaire;
 

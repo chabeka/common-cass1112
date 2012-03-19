@@ -10,34 +10,27 @@ import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.TestStockageMasseAllFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
 import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.ErreurType;
-import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.ListeErreurType;
-import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.NonIntegratedDocumentType;
 
 /**
- * 273-CaptureMasse-OK-JarArretTomCatSansReprise
+ * 275-CaptureMasse-KO-AutreModeToutOuRien-Inconnu
  */
 @Controller
-@RequestMapping(value = "test273")
-public class Test273Controller extends
+@RequestMapping(value = "test275")
+public class Test275Controller extends
       AbstractTestWsController<TestStockageMasseAllFormulaire> {
-
-   /**
-    * 
-    */
-   private static final int WAITED_COUNT = 5000;
-
 
    /**
     * {@inheritDoc}
     */
    @Override
    protected final String getNumeroTest() {
-      return "273";
+      return "275";
    }
-   
-   
+
    private String getDebutUrlEcde() {
-      return getEcdeService().construitUrlEcde("SAE_INTEGRATION/20110822/CaptureMasse-273-CaptureMasse-KO-JarArretTomCatSansRepriseAvecStockage/");
+      return getEcdeService()
+            .construitUrlEcde(
+                  "SAE_INTEGRATION/20110822/CaptureMasse-275-CaptureMasse-KO-AutreModeToutOuRien-Inconnu/");
    }
 
    /**
@@ -59,8 +52,7 @@ public class Test273Controller extends
       formResultat.getResultats().setStatus(TestStatusEnum.SansStatus);
 
       RechercheFormulaire rechFormulaire = formulaire.getRechFormulaire();
-      rechFormulaire
-            .setRequeteLucene(getCasTest().getLuceneExemple());
+      rechFormulaire.setRequeteLucene(getCasTest().getLuceneExemple());
 
       return formulaire;
 
@@ -79,13 +71,11 @@ public class Test273Controller extends
 
       } else if ("2".equals(etape)) {
 
-         etape2LectureResultat(getDebutUrlEcde() + "sommaire.xml", formulaire
-               .getCaptureMasseResultat());
+         etape2captureMasseResultats(formulaire.getCaptureMasseResultat());
 
       } else if ("3".equals(etape)) {
 
-         etape3Recherche(formulaire.getRechFormulaire(), formulaire
-               .getUrlServiceWeb());
+         etape3Recherche(formulaire);
 
       } else {
 
@@ -112,38 +102,24 @@ public class Test273Controller extends
 
    }
 
-   /**
-    * @param urlServiceWeb
-    * @param captureMasseResultat
-    */
-   private void etape2LectureResultat(String urlEcde,
-         CaptureMasseResultatFormulaire captureMasseResultat) {
+   private void etape2captureMasseResultats(
+         CaptureMasseResultatFormulaire formulaire) {
 
-      ErreurType error = new ErreurType();
-      error.setCode("SAE-CA-BUL003");
-      error.setLibelle("La capture de masse en mode 'Tout ou rien' "
-            + "a été interrompue. " + "Une procédure d'exploitation "
-            + "a été initialisée pour supprimer les données qui "
-            + "auraient pu être stockées.");
-
-      ListeErreurType errorList = new ListeErreurType();
-      errorList.getErreur().add(error);
-
-      NonIntegratedDocumentType documentType = new NonIntegratedDocumentType();
-      documentType.setErreurs(errorList);
+      ErreurType erreurType = new ErreurType();
+      erreurType.setCode("SAE-EC-SOM001");
+      erreurType.setLibelle("Le fichier sommaire n'est pas valide. Détails : "
+            + "Aucun document du sommaire ne sera intégré dans le SAE.");
 
       getCaptureMasseTestService().testResultatsTdmReponseKOAttendue(
-            captureMasseResultat, WAITED_COUNT, documentType);
+            formulaire, erreurType);
 
    }
 
-   private void etape3Recherche(RechercheFormulaire formulaire,
-         String urlWebService) {
+   private void etape3Recherche(TestStockageMasseAllFormulaire formulaire) {
 
-      getRechercheTestService().appelWsOpRechercheTestLibre(urlWebService,
-            formulaire);
-      formulaire.getResultats().setStatus(TestStatusEnum.AControler);
+      getRechercheTestService().appelWsOpRechercheReponseCorrecteAttendue(
+            formulaire.getUrlServiceWeb(), formulaire.getRechFormulaire(), 0,
+            false, null);
 
    }
-
 }

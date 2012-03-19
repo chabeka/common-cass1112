@@ -18,10 +18,7 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.R
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ResultatRechercheType;
 
 /**
- * Test 207<br>
- * <br>
- * Capture de masse d’un document dont on précise la métadonnée
- * IdTraitementMasse en archivage
+ * 207-CaptureMasse-OK-IdTraitementMasse
  */
 @Controller
 @RequestMapping(value = "test207")
@@ -62,7 +59,7 @@ public class Test207Controller extends
 
       RechercheFormulaire rechFormulaire = formulaire.getRechFormulaire();
       rechFormulaire
-            .setRequeteLucene("Denomination:\"Test 207-CaptureMasse-OK-IdTraitementMasse\"");
+            .setRequeteLucene(getCasTest().getLuceneExemple());
       CodeMetadonneeList codeMetadonneeList = new CodeMetadonneeList();
 
       String[] tabElement = new String[] { "CodeRND", "DateArchivage",

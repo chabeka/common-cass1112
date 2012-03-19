@@ -15,9 +15,7 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_r
 import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.NonIntegratedDocumentType;
 
 /**
- * Test 268<br>
- * <br>
- * La Capture de masse échoue et on a une seule erreur sur une arborescence
+ * 268-CaptureMasse-KO-Tor-3-meme-doc-en-erreur-arbo
  */
 @Controller
 @RequestMapping(value = "test268")
@@ -63,7 +61,7 @@ public class Test268Controller extends
 
       RechercheFormulaire rechFormulaire = formulaire.getRechFormulaire();
       rechFormulaire
-            .setRequeteLucene("Denomination:\"Test 268-CaptureMasse-KO-Tor-3-meme-doc-avec-premier-en-erreur-arbo\"");
+            .setRequeteLucene(getCasTest().getLuceneExemple());
 
       return formulaire;
 

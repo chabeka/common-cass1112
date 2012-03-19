@@ -19,10 +19,7 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.R
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ResultatRechercheType;
 
 /**
- * Test 203<br>
- * <br>
- * Capture de masse de 10 documents à archiver dans une arborescence de 10
- * niveaux précisés par des slash
+ * 203-CaptureMasse-OK-Tor-10-repertoire-slash
  */
 @Controller
 @RequestMapping(value = "test203")
@@ -68,7 +65,7 @@ public class Test203Controller extends
 
       RechercheFormulaire rechFormulaire = formulaire.getRechFormulaire();
       rechFormulaire
-            .setRequeteLucene("Denomination:\"Test 203-CaptureMasse-OK-Tor-10-repertoire-slash\"");
+            .setRequeteLucene(getCasTest().getLuceneExemple());
       CodeMetadonneeList codeMetadonneeList = new CodeMetadonneeList();
 
       String[] tabElement = new String[] { "CodeRND", "DateArchivage", "Hash",

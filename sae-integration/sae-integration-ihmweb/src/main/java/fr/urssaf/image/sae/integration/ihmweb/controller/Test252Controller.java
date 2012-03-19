@@ -15,9 +15,7 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_r
 import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.NonIntegratedDocumentType;
 
 /**
- * Test 252<br>
- * <br>
- * La Capture de masse échoue car pas de métadonnée pour un document
+ * 252-CaptureMasse-KO-Tor-MetadonneeVide
  */
 @Controller
 @RequestMapping(value = "test252")
@@ -63,7 +61,7 @@ public class Test252Controller extends
 
       RechercheFormulaire rechFormulaire = formulaire.getRechFormulaire();
       rechFormulaire
-            .setRequeteLucene("Denomination:\"Test 252-CaptureMasse-KO-Tor-MetadonneeVide\"");
+            .setRequeteLucene(getCasTest().getLuceneExemple());
 
       return formulaire;
 

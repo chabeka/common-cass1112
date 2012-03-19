@@ -15,12 +15,7 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_r
 import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.NonIntegratedDocumentType;
 
 /**
- * Test 259<br>
- * <br>
- * On vérifie que la capture de masse en mode "tout ou rien" a échoué (aucun
- * document mis en archive, erreur présente dans resultats.xml) si, pour un
- * document, le hash du fichier est différent du hash spécifié dans le
- * sommaire.xml
+ * 259-CaptureMasse-KO-Tor-HashIncorrect
  */
 @Controller
 @RequestMapping(value = "test259")
@@ -66,7 +61,7 @@ public class Test259Controller extends
 
       RechercheFormulaire rechFormulaire = formulaire.getRechFormulaire();
       rechFormulaire
-            .setRequeteLucene("Denomination:\"Test 259-CaptureMasse-KO-Tor-HashIncorrect\"");
+            .setRequeteLucene(getCasTest().getLuceneExemple());
 
       return formulaire;
 

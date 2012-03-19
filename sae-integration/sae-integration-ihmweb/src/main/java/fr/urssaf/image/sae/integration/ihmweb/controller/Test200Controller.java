@@ -11,9 +11,7 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
 
 
 /**
- * Test 200<br>
- * <br>
- * Test libre de la capture de masse => pas de résultat attendu
+ * 200-CaptureMasse-TestLibre
  */
 @Controller
 @RequestMapping(value = "test200")

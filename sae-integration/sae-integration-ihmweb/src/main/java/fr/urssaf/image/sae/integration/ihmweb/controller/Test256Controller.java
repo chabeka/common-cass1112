@@ -15,12 +15,7 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_r
 import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.NonIntegratedDocumentType;
 
 /**
- * Test 256<br>
- * <br>
- * On vérifie que la capture de masse en mode "tout ou rien" a échoué (aucun
- * document mis en archive, erreur présente dans resultats.xml) si, pour un
- * document, il y a plusieurs occurrences de la même métadonnée dans sa liste
- * des métadonnées
+ * 256-CaptureMasse-KO-Tor-MetadonneeDoublon
  */
 @Controller
 @RequestMapping(value = "test256")
@@ -65,7 +60,7 @@ public class Test256Controller extends
 
       RechercheFormulaire rechFormulaire = formulaire.getRechFormulaire();
       rechFormulaire
-            .setRequeteLucene("Denomination:\"Test 256-CaptureMasse-KO-Tor-MetadonneeDoublon\"");
+            .setRequeteLucene(getCasTest().getLuceneExemple());
 
       return formulaire;
 

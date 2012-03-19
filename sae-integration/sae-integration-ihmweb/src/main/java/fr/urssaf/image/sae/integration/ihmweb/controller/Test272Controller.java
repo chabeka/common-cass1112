@@ -11,9 +11,7 @@ import fr.urssaf.image.sae.integration.ihmweb.formulaire.TestStockageMasseAllFor
 import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
 
 /**
- * Test 272<br>
- * <br>
- * La Capture de masse échoue car l’URL ECDE en lecture seul
+ * 272-CaptureMasse-KO-URL-ECDE-Repertoire-Sans-Droits-Ecriture
  */
 @Controller
 @RequestMapping(value = "test272")
@@ -54,7 +52,7 @@ public class Test272Controller extends
 
       RechercheFormulaire rechFormulaire = formulaire.getRechFormulaire();
       rechFormulaire
-            .setRequeteLucene("Denomination:\"Test 272-CaptureMasse-KO-URL-ECDE-Repertoire-Sans-Droits-Ecriture\"");
+            .setRequeteLucene(getCasTest().getLuceneExemple());
 
       return formulaire;
 

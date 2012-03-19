@@ -18,10 +18,7 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.R
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ResultatRechercheType;
 
 /**
- * Test 205<br>
- * <br>
- * Capture de masse du même document 3 fois dans une arborescence d’un seul
- * niveau spécifiée par des anti-slash
+ * 205-CaptureMasse-OK-Tor-3-repertoire-anti-slash-meme-doc
  */
 @Controller
 @RequestMapping(value = "test205")
@@ -66,7 +63,7 @@ public class Test205Controller extends
 
       RechercheFormulaire rechFormulaire = formulaire.getRechFormulaire();
       rechFormulaire
-            .setRequeteLucene("Denomination:\"Test 205-CaptureMasse-OK-Tor-3-repertoire-anti-slash-meme-doc\"");
+            .setRequeteLucene(getCasTest().getLuceneExemple());
       CodeMetadonneeList codeMetadonneeList = new CodeMetadonneeList();
 
       String[] tabElement = new String[] { "CodeRND", "DateArchivage", "Hash",

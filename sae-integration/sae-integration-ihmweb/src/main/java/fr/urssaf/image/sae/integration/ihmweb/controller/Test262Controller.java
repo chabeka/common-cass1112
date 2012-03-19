@@ -15,11 +15,7 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_r
 import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.NonIntegratedDocumentType;
 
 /**
- * Test 262<br>
- * <br>
- * On vérifie que la capture de masse en mode "tout ou rien" a échoué (aucun
- * document mis en archive, erreur présente dans resultats.xml) si, pour un
- * document, le chemin de fichier pointe sur un fichier inexistant
+ * 262-CaptureMasse-KO-Tor-FichierInexistant
  */
 @Controller
 @RequestMapping(value = "test262")
@@ -64,7 +60,7 @@ public class Test262Controller extends
 
       RechercheFormulaire rechFormulaire = formulaire.getRechFormulaire();
       rechFormulaire
-            .setRequeteLucene("Denomination:\"Test 262-CaptureMasse-KO-Tor-FichierInexistant\"");
+            .setRequeteLucene(getCasTest().getLuceneExemple());
 
       return formulaire;
 

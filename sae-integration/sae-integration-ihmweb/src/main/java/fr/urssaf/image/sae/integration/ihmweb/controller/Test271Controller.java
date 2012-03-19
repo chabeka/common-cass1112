@@ -10,10 +10,7 @@ import fr.urssaf.image.sae.integration.ihmweb.formulaire.TestStockageMasseAllFor
 import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
 
 /**
- * Test 271<br>
- * <br>
- * La Capture de masse échoue suite à la suppression d’un fichier image après
- * l’analyse
+ * 271-CaptureMasse-KO-URL-ECDE-incorrecte
  */
 @Controller
 @RequestMapping(value = "test271")

@@ -19,10 +19,7 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.R
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ResultatRechercheType;
 
 /**
- * Test 201<br>
- * <br>
- * On vérifie que la capture de masse en mode "tout ou rien" fonctionne
- * correctement pour 10 documents à archiver
+ * 201-CaptureMasse-OK-Tor-10
  */
 @Controller
 @RequestMapping(value = "test201")
@@ -68,7 +65,7 @@ public class Test201Controller extends
 
       RechercheFormulaire rechFormulaire = formulaire.getRechFormulaire();
       rechFormulaire
-            .setRequeteLucene("Denomination:\"Test 201-CaptureMasse-OK-Tor-10\"");
+            .setRequeteLucene(getCasTest().getLuceneExemple());
       CodeMetadonneeList codeMetadonneeList = new CodeMetadonneeList();
 
       String[] tabElement = new String[] { "CodeActivite", "CodeFonction",

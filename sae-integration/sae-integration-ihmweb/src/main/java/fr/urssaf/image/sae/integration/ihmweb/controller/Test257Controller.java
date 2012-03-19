@@ -15,12 +15,7 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_r
 import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.NonIntegratedDocumentType;
 
 /**
- * Test 257<br>
- * <br>
- * On vérifie que la capture de masse en mode "tout ou rien" a échoué (aucun
- * document mis en archive, erreur présente dans resultats.xml) si, pour un
- * document, sa liste des métadonnées contient une métadonnée dont la valeur
- * n'est pas conforme au format attendu.
+ * 257-CaptureMasse-KO-Tor-MetadonneeFormatIncorrect
  */
 @Controller
 @RequestMapping(value = "test257")
@@ -66,7 +61,7 @@ public class Test257Controller extends
 
       RechercheFormulaire rechFormulaire = formulaire.getRechFormulaire();
       rechFormulaire
-            .setRequeteLucene("Denomination:\"Test 257-CaptureMasse-KO-Tor-MetadonneeFormatIncorrect\"");
+            .setRequeteLucene(getCasTest().getLuceneExemple());
 
       return formulaire;
 

@@ -15,9 +15,7 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_r
 import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.NonIntegratedDocumentType;
 
 /**
- * Test 254<br>
- * <br>
- * La Capture de masse échoue avec il y a des métadonnées obligatoires vides
+ * 254-CaptureMasse-KO-Tor-MetadonneeObligatoireVide
  */
 @Controller
 @RequestMapping(value = "test254")
@@ -63,7 +61,7 @@ public class Test254Controller extends
 
       RechercheFormulaire rechFormulaire = formulaire.getRechFormulaire();
       rechFormulaire
-            .setRequeteLucene("Denomination:\"Test 254-CaptureMasse-KO-Tor-MetadonneeObligatoireVide\"");
+            .setRequeteLucene(getCasTest().getLuceneExemple());
 
       return formulaire;
 

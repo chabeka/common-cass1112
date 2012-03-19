@@ -8,12 +8,7 @@ import fr.urssaf.image.sae.integration.ihmweb.formulaire.TestWsCaptureMasseFormu
 
 
 /**
- * Test 250<br>
- * <br>
- * On vérifie que l'authentification applicative est activée sur 
- * l'opération "archivageMasse" du service web SaeService. Pour 
- * cela, on invoque l'opération "archivageMasse" en omettant le 
- * VI dans le message SOAP.
+ * 250-CaptureMasse-KO-SansAuthentification
  */
 @Controller
 @RequestMapping(value = "test250")

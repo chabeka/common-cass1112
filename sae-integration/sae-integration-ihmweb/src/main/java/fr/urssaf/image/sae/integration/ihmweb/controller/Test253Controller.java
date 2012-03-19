@@ -15,11 +15,7 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_r
 import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.NonIntegratedDocumentType;
 
 /**
- * Test 253<br>
- * <br>
- * On vérifie que la capture de masse en mode "tout ou rien" a échoué (aucun
- * document mis en archive, erreur présente dans resultats.xml) si, pour un
- * document, une métadonnée obligatoire est omise
+ * 253-CaptureMasse-KO-Tor-MetadonneeObligatoireOmise
  */
 @Controller
 @RequestMapping(value = "test253")
@@ -65,7 +61,7 @@ public class Test253Controller extends
 
       RechercheFormulaire rechFormulaire = formulaire.getRechFormulaire();
       rechFormulaire
-            .setRequeteLucene("Denomination:\"Test 253-CaptureMasse-KO-Tor-MetadonneeObligatoireOmise\"");
+            .setRequeteLucene(getCasTest().getLuceneExemple());
 
       return formulaire;
 

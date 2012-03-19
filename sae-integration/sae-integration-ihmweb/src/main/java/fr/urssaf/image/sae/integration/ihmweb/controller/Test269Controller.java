@@ -11,10 +11,7 @@ import fr.urssaf.image.sae.integration.ihmweb.formulaire.Test269Formulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
 
 /**
- * Test 269<br>
- * <br>
- * La Capture de masse échoue sur le deuxième lancement si on a un seul serveur
- * d’application
+ * 269-CaptureMasse-KO-Deux-Lancements
  */
 @Controller
 @RequestMapping(value = "test269")
@@ -141,7 +138,7 @@ public class Test269Controller extends
 
       // Vide le résultat du test précédent de l'étape 2
       formCaptMassRes.getResultats().clear();
-      formCaptMassRes.setUrlSommaire(captureMasseFormulaire.getUrlSommaire());
+      // formCaptMassRes.setUrlSommaire(captureMasseFormulaire.getUrlSommaire());
 
       // Appel de la méthode de test
       getCaptureMasseTestService().appelWsOpArchiMasseSoapFaultAttendue(

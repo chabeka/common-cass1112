@@ -15,10 +15,7 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_r
 import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.NonIntegratedDocumentType;
 
 /**
- * Test 264<br>
- * <br>
- * On vérifie que la bonne erreur est renvoyée lorsqu'un des fichiers à archiver
- * possède une taille à 0 octet.
+ * 264-CaptureMasse-KO-Tor-TailleZero
  */
 @Controller
 @RequestMapping(value = "test264")
@@ -64,7 +61,7 @@ public class Test264Controller extends
 
       RechercheFormulaire rechFormulaire = formulaire.getRechFormulaire();
       rechFormulaire
-            .setRequeteLucene("Denomination:\"Test 264-CaptureMasse-KO-Tor-TailleZero\"");
+            .setRequeteLucene(getCasTest().getLuceneExemple());
 
       return formulaire;
 

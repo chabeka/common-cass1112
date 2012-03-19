@@ -1,5 +1,8 @@
 package fr.urssaf.image.sae.integration.ihmweb.controller;
 
+import java.util.Arrays;
+
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -8,34 +11,39 @@ import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseResultatFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.TestStockageMasseAllFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.modele.CodeMetadonneeList;
+import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeurList;
+import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTest;
 import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.comparator.ResultatRechercheComparator.TypeComparaison;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheResponse;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ResultatRechercheType;
 
 /**
- * 208-CaptureMasse-OK-JarLanceArret
+ * 210-CaptureMasse-OK-Sans-Code-Activite
  */
 @Controller
-@RequestMapping(value = "test208")
-public class Test208Controller extends
+@RequestMapping(value = "test210")
+public class Test210Controller extends
       AbstractTestWsController<TestStockageMasseAllFormulaire> {
 
    /**
     * Nombre d'occurence attendu
     */
-   private static final int COUNT_WAITED = 200;
+   private static final int COUNT_WAITED = 1;
 
    /**
     * {@inheritDoc}
     */
    @Override
    protected final String getNumeroTest() {
-      return "208";
+      return "210";
    }
-   
-   
+
    private String getDebutUrlEcde() {
-      return getEcdeService().construitUrlEcde("SAE_INTEGRATION/20110822/CaptureMasse-208-CaptureMasse-OK-JarLanceArret/");
+      return getEcdeService()
+            .construitUrlEcde(
+                  "SAE_INTEGRATION/20110822/CaptureMasse-210-CaptureMasse-OK-Sans-Code-Activite/");
    }
 
    /**
@@ -57,8 +65,13 @@ public class Test208Controller extends
       formResultat.getResultats().setStatus(TestStatusEnum.SansStatus);
 
       RechercheFormulaire rechFormulaire = formulaire.getRechFormulaire();
-      rechFormulaire
-            .setRequeteLucene(getCasTest().getLuceneExemple());
+      rechFormulaire.setRequeteLucene(getCasTest().getLuceneExemple());
+      CodeMetadonneeList codeMetadonneeList = new CodeMetadonneeList();
+
+      String[] tabElement = new String[] { "CodeRND", "CodeActivite" };
+      codeMetadonneeList.addAll(Arrays.asList(tabElement));
+
+      rechFormulaire.setCodeMetadonnees(codeMetadonneeList);
 
       return formulaire;
 
@@ -124,20 +137,37 @@ public class Test208Controller extends
       RechercheResponse response = getRechercheTestService()
             .appelWsOpRechercheReponseCorrecteAttendue(
                   formulaire.getUrlServiceWeb(),
-                  formulaire.getRechFormulaire(), COUNT_WAITED, true, null);
+                  formulaire.getRechFormulaire(), COUNT_WAITED, false,
+                  TypeComparaison.NumeroRecours);
 
-      if (!TestStatusEnum.Echec.equals(formulaire.getRechFormulaire()
+      ResultatTest resultatTest = formulaire.getRechFormulaire().getResultats();
+
+      if (TestStatusEnum.Succes.equals(formulaire.getRechFormulaire()
             .getResultats().getStatus())) {
 
-         ResultatRechercheType results[] = response.getRechercheResponse()
-               .getResultats().getResultat();
+         // Récupère l'unique résultat
+         ResultatRechercheType resultatRecherche = response
+               .getRechercheResponse().getResultats().getResultat()[0];
 
-         formulaire.getConsultFormulaire().setIdArchivage(
-               results[0].getIdArchive().getUuidType());
+         // Le vérifie
+         verifieResultatRecherche(resultatRecherche, resultatTest);
 
-         formulaire.getRechFormulaire().getResultats().setStatus(
-               TestStatusEnum.AControler);
       }
+
+   }
+
+   private void verifieResultatRecherche(
+         ResultatRechercheType resultatRecherche, ResultatTest resultatTest) {
+
+      String numeroResultatRecherche = "1";
+
+      MetadonneeValeurList valeursAttendues = new MetadonneeValeurList();
+
+      valeursAttendues.add("CodeRND", "1.A.X.X.X");
+      valeursAttendues.add("CodeActivite", StringUtils.EMPTY);
+
+      getRechercheTestService().verifieResultatRecherche(resultatRecherche,
+            numeroResultatRecherche, resultatTest, valeursAttendues);
 
    }
 

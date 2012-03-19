@@ -15,12 +15,7 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_r
 import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.NonIntegratedDocumentType;
 
 /**
- * Test 258<br>
- * <br>
- * On vérifie que la capture de masse en mode "tout ou rien" a échoué (aucun
- * document mis en archive, erreur présente dans resultats.xml) si, pour un
- * document, la liste des métadonnées contient une métadonnée qui n’est pas
- * spécifiable lors de l’archivage
+ * 258-CaptureMasse-KO-Tor-MetadonneeNonArchivable
  */
 @Controller
 @RequestMapping(value = "test258")
@@ -66,7 +61,7 @@ public class Test258Controller extends
 
       RechercheFormulaire rechFormulaire = formulaire.getRechFormulaire();
       rechFormulaire
-            .setRequeteLucene("Denomination:\"Test 258-CaptureMasse-KO-Tor-MetadonneeNonArchivable\"");
+            .setRequeteLucene(getCasTest().getLuceneExemple());
 
       return formulaire;
 

@@ -15,11 +15,7 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_r
 import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.NonIntegratedDocumentType;
 
 /**
- * Test 255<br>
- * <br>
- * On vérifie que la capture de masse en mode "tout ou rien" a échoué (aucun
- * document mis en archive, erreur présente dans resultats.xml) si, pour un
- * document, sa liste des métadonnées contient une métadonnée inconnue du SAE
+ * 255-CaptureMasse-KO-Tor-MetadonneeInconnue
  */
 @Controller
 @RequestMapping(value = "test255")
@@ -65,7 +61,7 @@ public class Test255Controller extends
 
       RechercheFormulaire rechFormulaire = formulaire.getRechFormulaire();
       rechFormulaire
-            .setRequeteLucene("Denomination:\"Test 255-CaptureMasse-KO-Tor-MetadonneeInconnue\"");
+            .setRequeteLucene(getCasTest().getLuceneExemple());
 
       return formulaire;
 

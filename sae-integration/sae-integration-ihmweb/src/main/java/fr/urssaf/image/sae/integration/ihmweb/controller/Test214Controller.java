@@ -1,5 +1,7 @@
 package fr.urssaf.image.sae.integration.ihmweb.controller;
 
+import java.util.Arrays;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -8,39 +10,40 @@ import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseResultatFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.TestStockageMasseAllFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.modele.CodeMetadonneeList;
+import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeurList;
+import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTest;
 import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
-import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.ErreurType;
-import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.FichierType;
-import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.ListeErreurType;
-import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.NonIntegratedDocumentType;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.comparator.ResultatRechercheComparator.TypeComparaison;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheResponse;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ResultatRechercheType;
 
 /**
- * 267-CaptureMasse-KO-Tor-PlusieursFichiersIntrouvables
+ * 214-CaptureMasse-OK-HashMajMin
  */
 @Controller
-@RequestMapping(value = "test267")
-public class Test267Controller extends
+@RequestMapping(value = "test214")
+public class Test214Controller extends
       AbstractTestWsController<TestStockageMasseAllFormulaire> {
 
    /**
-    * 
+    * Nombre d'occurence attendu
     */
-   private static final int WAITED_COUNT = 3;
-   
+   private static final int COUNT_WAITED = 1;
 
    /**
     * {@inheritDoc}
     */
    @Override
    protected final String getNumeroTest() {
-      return "267";
+      return "214";
    }
-   
-   
+
    private String getDebutUrlEcde() {
-      return getEcdeService().construitUrlEcde("SAE_INTEGRATION/20110822/CaptureMasse-267-CaptureMasse-KO-Tor-PlusieursFichiersIntrouvables/");
+      return getEcdeService()
+            .construitUrlEcde(
+                  "SAE_INTEGRATION/20110822/CaptureMasse-214-CaptureMasse-OK-HashMajMin/");
    }
-   
 
    /**
     * {@inheritDoc}
@@ -61,8 +64,13 @@ public class Test267Controller extends
       formResultat.getResultats().setStatus(TestStatusEnum.SansStatus);
 
       RechercheFormulaire rechFormulaire = formulaire.getRechFormulaire();
-      rechFormulaire
-            .setRequeteLucene(getCasTest().getLuceneExemple());
+      rechFormulaire.setRequeteLucene(getCasTest().getLuceneExemple());
+      CodeMetadonneeList codeMetadonneeList = new CodeMetadonneeList();
+
+      String[] tabElement = new String[] { "Hash" };
+      codeMetadonneeList.addAll(Arrays.asList(tabElement));
+
+      rechFormulaire.setCodeMetadonnees(codeMetadonneeList);
 
       return formulaire;
 
@@ -86,6 +94,10 @@ public class Test267Controller extends
       } else if ("3".equals(etape)) {
 
          etape3Recherche(formulaire);
+
+      } else if ("4".equals(etape)) {
+
+         etape4Consultation(formulaire);
 
       } else {
 
@@ -115,32 +127,52 @@ public class Test267Controller extends
    private void etape2captureMasseResultats(
          CaptureMasseResultatFormulaire formulaire) {
 
-      FichierType fichierType = new FichierType();
-      fichierType.setCheminEtNomDuFichier("attestation1.pdf");
-
-      ErreurType erreurType = new ErreurType();
-      erreurType.setCode("SAE-EC-SOM002");
-      erreurType
-            .setLibelle("Impossible d'accéder au document attestation1.pdf. Détails : "
-                  + "L'objet numérique : attestation1.pdf ne représente pas un fichier existant.");
-
-      ListeErreurType listeErreurType = new ListeErreurType();
-      listeErreurType.getErreur().add(erreurType);
-
-      NonIntegratedDocumentType documentType = new NonIntegratedDocumentType();
-      documentType.setErreurs(listeErreurType);
-      documentType.setObjetNumerique(fichierType);
-
-      getCaptureMasseTestService().testResultatsTdmReponseKOAttendue(
-            formulaire, WAITED_COUNT, documentType, 1);
+      getCaptureMasseTestService()
+            .testResultatsTdmReponseOKAttendue(formulaire);
 
    }
 
    private void etape3Recherche(TestStockageMasseAllFormulaire formulaire) {
+      RechercheResponse response = getRechercheTestService()
+            .appelWsOpRechercheReponseCorrecteAttendue(
+                  formulaire.getUrlServiceWeb(),
+                  formulaire.getRechFormulaire(), COUNT_WAITED, false,
+                  TypeComparaison.NumeroRecours);
 
-      getRechercheTestService().appelWsOpRechercheReponseCorrecteAttendue(
-            formulaire.getUrlServiceWeb(), formulaire.getRechFormulaire(), 0,
-            false, null);
+      ResultatTest resultatTest = formulaire.getRechFormulaire().getResultats();
 
+      if (TestStatusEnum.Succes.equals(formulaire.getRechFormulaire()
+            .getResultats().getStatus())) {
+
+         // Récupère l'unique résultat
+         ResultatRechercheType resultatRecherche = response
+               .getRechercheResponse().getResultats().getResultat()[0];
+
+         // Le vérifie
+         verifieResultatRecherche(resultatRecherche, resultatTest);
+
+      }
+
+   }
+
+   private void verifieResultatRecherche(
+         ResultatRechercheType resultatRecherche, ResultatTest resultatTest) {
+
+      String numeroResultatRecherche = "1";
+
+      MetadonneeValeurList valeursAttendues = new MetadonneeValeurList();
+
+      valeursAttendues.add("Hash", "a2f93f1f121ebba0faef2c0596f2f126eacae77b");
+
+      getRechercheTestService().verifieResultatRecherche(resultatRecherche,
+            numeroResultatRecherche, resultatTest, valeursAttendues);
+
+   }
+
+   private void etape4Consultation(TestStockageMasseAllFormulaire formulaire) {
+      getConsultationTestService()
+            .appelWsOpConsultationReponseCorrecteAttendue(
+                  formulaire.getUrlServiceWeb(),
+                  formulaire.getConsultFormulaire(), null);
    }
 }

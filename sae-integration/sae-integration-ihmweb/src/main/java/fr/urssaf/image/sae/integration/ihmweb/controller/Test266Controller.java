@@ -12,10 +12,7 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
 import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.ErreurType;
 
 /**
- * Test 266<br>
- * <br>
- * La Capture de masse échoue car le fichier sommaire.xml précise un mode
- * d’intégration "partiel"
+ * 266-CaptureMasse-KO-AutreModeToutOuRien
  */
 @Controller
 @RequestMapping(value = "test266")
@@ -56,7 +53,7 @@ public class Test266Controller extends
 
       RechercheFormulaire rechFormulaire = formulaire.getRechFormulaire();
       rechFormulaire
-            .setRequeteLucene("Denomination:\"Test 266-CaptureMasse-KO-AutreModeToutOuRien\"");
+            .setRequeteLucene(getCasTest().getLuceneExemple());
 
       return formulaire;
 
