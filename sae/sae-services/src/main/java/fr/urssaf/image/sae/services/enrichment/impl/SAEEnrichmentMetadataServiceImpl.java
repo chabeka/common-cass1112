@@ -201,13 +201,20 @@ public class SAEEnrichmentMetadataServiceImpl implements
             saeMetadata.setShortCode(metadataReferenceDAO.getByLongCode(
                   SAEArchivalMetadatas.CODE_ACTIVITE.getLongCode())
                   .getShortCode());
-            saeMetadata.setValue(rndReferenceDAO.getActivityCodeByRnd(rndCode));
-            saeDocument.getMetadatas().add(saeMetadata);
-            LOGGER
-                  .debug(
-                        "{} - Enrichissement des métadonnées : ajout de la métadonnée CodeActivite  valeur : {}",
-                        prefixeTrc, rndReferenceDAO
-                              .getActivityCodeByRnd(rndCode));
+            String codeActiviteValue = rndReferenceDAO.getActivityCodeByRnd(rndCode);
+            
+            if (StringUtils.isNotBlank(codeActiviteValue)) {
+
+               saeMetadata.setValue(codeActiviteValue);
+               saeDocument.getMetadatas().add(saeMetadata);
+               LOGGER
+                     .debug(
+                           "{} - Enrichissement des métadonnées : ajout de la métadonnée CodeActivite  valeur : {}",
+                           prefixeTrc, rndReferenceDAO
+                                 .getActivityCodeByRnd(rndCode));
+            }
+            
+           
          } else if (metadata.getLongCode().equals(
                SAEArchivalMetadatas.CODE_FONCTION.getLongCode())) {
             saeMetadata.setShortCode(metadataReferenceDAO.getByLongCode(
