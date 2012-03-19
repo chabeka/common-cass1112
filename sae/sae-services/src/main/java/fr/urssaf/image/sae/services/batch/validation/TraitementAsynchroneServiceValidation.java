@@ -22,7 +22,7 @@ public class TraitementAsynchroneServiceValidation {
    private static final String METHOD_1 = "execution(void " + CLASS
          + "ajouterJobCaptureMasse(*,*))" + "&& args(urlEcde,uuid)";
 
-   private static final String METHOD_2 = "execution(String " + CLASS
+   private static final String METHOD_2 = "execution(void " + CLASS
          + "lancerJob(*))" + "&& args(idJob)";
 
    private static final String ARG_EMPTY = "L''argument ''{0}'' doit être renseigné.";

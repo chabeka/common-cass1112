@@ -55,6 +55,7 @@ import fr.urssaf.image.sae.storage.util.StorageMetadataUtils;
  */
 @Component
 @Qualifier("bulkCaptureHelper")
+@Deprecated
 public class BulkCaptureHelper extends CommonIndicator {
    private static final Logger LOGGER = LoggerFactory
          .getLogger(BulkCaptureHelper.class);

@@ -80,7 +80,7 @@ public class TraitementAsynchroneServiceTest {
 
    @Test
    public void lancerJob_success() throws JobInexistantException,
-         JobNonReserveException, JobInattenduException {
+         JobNonReserveException {
 
       // création d'un traitement de capture en masse
       UUID idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
@@ -88,13 +88,11 @@ public class TraitementAsynchroneServiceTest {
       job = new JobRequest();
       job.setIdJob(idJob);
       job.setType("capture_masse");
-      job.setParameters("");
+      job.setParameters("ecde://ecde.cer69.recouv/sommaire.xml");
       job.setState(JobState.RESERVED);
       jobQueueDao.saveJobRequest(job);
 
-      String exitCode = service.lancerJob(idJob);
-      Assert.assertEquals("le code de sortie du traitement est inattendu",
-            "COMPLETED", exitCode);
+      service.lancerJob(idJob);
 
       job = jobQueueDao.getJobRequest(idJob);
       Assert.assertEquals(
@@ -104,9 +102,31 @@ public class TraitementAsynchroneServiceTest {
    }
 
    @Test
+   public void lancerJob_failure_JobParameterTypeException()
+         throws JobInexistantException, JobNonReserveException {
+
+      // création d'un traitement de capture en masse
+      UUID idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+
+      job = new JobRequest();
+      job.setIdJob(idJob);
+      job.setType("capture_masse");
+      job.setParameters("ecde://azaz^^/sommaire.xml");
+      job.setState(JobState.RESERVED);
+      jobQueueDao.saveJobRequest(job);
+
+      service.lancerJob(idJob);
+
+      job = jobQueueDao.getJobRequest(idJob);
+      Assert.assertEquals(
+            "l'état du job dans la pile des travaux est incorrect",
+            JobState.FAILURE, job.getState());
+
+   }
+
+   @Test
    public void lancerJob_failure_JobNonReserveException()
-         throws JobInexistantException, JobNonReserveException,
-         JobInattenduException {
+         throws JobInexistantException, JobNonReserveException {
 
       // création d'un traitement de capture en masse
       UUID idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
@@ -141,8 +161,7 @@ public class TraitementAsynchroneServiceTest {
 
    @Test
    public void lancerJob_failure_JobInattenduException()
-         throws JobInexistantException, JobNonReserveException,
-         JobInattenduException {
+         throws JobInexistantException, JobNonReserveException {
 
       // création d'un traitement de capture en masse
       UUID idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
@@ -184,8 +203,7 @@ public class TraitementAsynchroneServiceTest {
 
    @Test
    public void lancerJob_failure_jobInexistantException()
-         throws JobInexistantException, JobNonReserveException,
-         JobInattenduException {
+         throws JobInexistantException, JobNonReserveException {
 
       UUID idJob = UUID.randomUUID();
 

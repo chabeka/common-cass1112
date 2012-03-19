@@ -31,6 +31,7 @@ import fr.urssaf.image.sae.storage.model.jmx.JmxIndicator;
  * 
  * @author Rhofir
  */
+@Deprecated
 public class BulkCaptureJobWrapper extends CommonIndicator {
    private static final Logger LOGGER = LoggerFactory
          .getLogger(BulkCaptureJobWrapper.class);

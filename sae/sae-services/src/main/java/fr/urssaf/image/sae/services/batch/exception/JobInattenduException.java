@@ -9,7 +9,7 @@ import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
  * 
  * 
  */
-public class JobInattenduException extends Exception {
+public class JobInattenduException extends RuntimeException {
 
    private static final long serialVersionUID = 1L;
 

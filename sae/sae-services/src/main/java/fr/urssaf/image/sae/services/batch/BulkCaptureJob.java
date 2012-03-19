@@ -32,6 +32,7 @@ import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentServi
 @Component
 @Qualifier("bulkCaptureJob")
 @SuppressWarnings( { "PMD.LongVariable" })
+@Deprecated
 public class BulkCaptureJob extends CommonIndicator {
    private static final Logger LOGGER = LoggerFactory
          .getLogger(BulkCaptureJob.class);
