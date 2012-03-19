@@ -85,6 +85,15 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 104-CaptureUnitaire-OK-Sans-Code-Activite"</luceneExemple>
          </CasTest>
+         
+         <CasTest>
+            <id>105</id>
+            <code>105-CaptureUnitaire-OK-HashMajMin</code>
+            <description>
+               On vérifie que la capture unitaire fonctionne correctement lorsque le hash SHA-1 associé au document comporte des minuscules et des majuscules
+            </description>
+            <implemente>true</implemente>
+         </CasTest>
 
          <CasTest>
             <id>150</id>
