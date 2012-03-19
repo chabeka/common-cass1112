@@ -113,7 +113,7 @@ public class MetadataReferenceDAOImplTest extends AbstractService {
 	public void getRequiredForStorageMetadataReferences() throws IOException,
 			ReferentialException {
 		Assert.assertTrue(getMetadataReferenceDAO()
-				.getRequiredForStorageMetadataReferences().size() == 17);
+				.getRequiredForStorageMetadataReferences().size() == 16);
 		
 		for (Map.Entry<String, MetadataReference> metaData : Utils.nullSafeMap(
 				getMetadataReferenceDAO()

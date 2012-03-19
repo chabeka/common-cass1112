@@ -405,7 +405,7 @@
     <longCode>CodeActivite</longCode>
     <type>String</type>
     <requiredForArchival>false</requiredForArchival>
-    <requiredForStorage>true</requiredForStorage>
+    <requiredForStorage>false</requiredForStorage>
     <length>2</length>
     <pattern>   </pattern>
     <consultable>true</consultable>
