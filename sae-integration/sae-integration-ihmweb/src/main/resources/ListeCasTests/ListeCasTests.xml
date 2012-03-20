@@ -703,7 +703,7 @@
                Recherche sur la date de réception
             </description>
             <implemente>true</implemente>
-            <luceneExemple>Denomination: "Test 312-Recherche-OK-Date-Reception" AND DateReception:[20111103 TO 20111105]</luceneExemple>
+            <luceneExemple>Denomination:"Test 312-Recherche-OK-Date-Reception" AND DateReception:[20111103 TO 20111105]</luceneExemple>
          </CasTest>
          
          <CasTest>
@@ -713,7 +713,37 @@
                Recherche sur la date de début de conservation
             </description>
             <implemente>true</implemente>
-            <luceneExemple>Denomination: "Test 313-Recherche-OK-DateDebutConservation" AND DateDebutConservation:[20101003 TO 20101006]</luceneExemple>
+            <luceneExemple>Denomination:"Test 313-Recherche-OK-Date-Debut-Conservation" AND DateDebutConservation:[20090903000000000 TO 20090905000000000]</luceneExemple>
+         </CasTest>
+         
+         <CasTest>
+            <id>314</id>
+            <code>314-Recherche-OK-ConsultationPresenceMetadonneeVide</code>
+            <description>
+               Recherche avec dans les résultats une métadonnée dont la valeur est vide
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 314-Recherche-OK-ConsultationPresenceMetadonneeVide"</luceneExemple>
+         </CasTest>
+         
+         <CasTest>
+            <id>315</id>
+            <code>315-Recherche-OK-ConsultationMetadonneeEnDouble</code>
+            <description>
+               Recherche avec dans les résultats une métadonnée en double
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 315-Recherche-OK-ConsultationMetadonneeEnDouble"</luceneExemple>
+         </CasTest>
+         
+         <CasTest>
+            <id>316</id>
+            <code>316-Recherche-OK-ValeurMetaIdentiqueNomMeta-DateCreation</code>
+            <description>
+               Recherche avec, dans la requête de recherche, une valeur de métadonnée qui est la même qu'un code de métadonnée
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 316-Recherche-OK-ValeurMetaIdentiqueNomMeta-DateCreation"</luceneExemple>
          </CasTest>
 
          <CasTest>

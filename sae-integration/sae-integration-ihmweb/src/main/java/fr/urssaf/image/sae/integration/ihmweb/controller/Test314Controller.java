@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -19,24 +20,24 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.R
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ResultatRechercheType;
 
 /**
- * 313-Recherche-OK-Date-Debut-Conservation
+ * 314-Recherche-OK-ConsultationPresenceMetadonneeVide
  */
 @Controller
-@RequestMapping(value = "test313")
-public class Test313Controller extends
+@RequestMapping(value = "test314")
+public class Test314Controller extends
       AbstractTestWsController<TestWsRechercheFormulaire> {
 
    /**
     * 
     */
-   private static final int WAITED_COUNT = 3;
+   private static final int WAITED_COUNT = 1;
 
    /**
     * {@inheritDoc}
     */
    @Override
    protected final String getNumeroTest() {
-      return "313";
+      return "314";
    }
 
    /**
@@ -56,11 +57,11 @@ public class Test313Controller extends
       CodeMetadonneeList codesMeta = new CodeMetadonneeList();
       formRecherche.setCodeMetadonnees(codesMeta);
       codesMeta.add("ApplicationProductrice");
+      codesMeta.add("ApplicationTraitement");
       codesMeta.add("CodeRND");
-      codesMeta.add("DateDebutConservation");
       codesMeta.add("Denomination");
       codesMeta.add("NumeroRecours");
-      codesMeta.add("Siren");
+      
 
       return formulaire;
 
@@ -101,8 +102,6 @@ public class Test313Controller extends
 
          // Vérifie chaque résultat
          verifieResultat1(resultatsTries.get(0), resultatTest);
-         verifieResultat2(resultatsTries.get(1), resultatTest);
-         verifieResultat3(resultatsTries.get(2), resultatTest);
 
          // Passe le test en succès si aucune erreur détectée
          if (!TestStatusEnum.Echec.equals(resultatTest.getStatus())) {
@@ -124,11 +123,10 @@ public class Test313Controller extends
       MetadonneeValeurList valeursAttendues = new MetadonneeValeurList();
 
       valeursAttendues.add("ApplicationProductrice", "ADELAIDE");
+      valeursAttendues.add("ApplicationTraitement", StringUtils.EMPTY);
       valeursAttendues.add("CodeRND", "2.3.1.1.12");
-      valeursAttendues.add("DateDebutConservation", "2009-09-03");
-      valeursAttendues.add("Denomination", "Test 313-Recherche-OK-Date-Debut-Conservation");
-      valeursAttendues.add("NumeroRecours", "3");
-      valeursAttendues.add("Siren", "123456789");
+      valeursAttendues.add("Denomination", "Test 314-Recherche-OK-ConsultationPresenceMetadonneeVide");
+      valeursAttendues.add("NumeroRecours", "1");
 
       getRechercheTestService().verifieResultatRecherche(resultatRecherche,
             numeroResultatRecherche, resultatTest, valeursAttendues);
@@ -136,43 +134,5 @@ public class Test313Controller extends
    }
    
    
-   private void verifieResultat2(ResultatRechercheType resultatRecherche,
-         ResultatTest resultatTest) {
-
-      String numeroResultatRecherche = "2";
-
-      MetadonneeValeurList valeursAttendues = new MetadonneeValeurList();
-
-      valeursAttendues.add("ApplicationProductrice", "ADELAIDE");
-      valeursAttendues.add("CodeRND", "2.3.1.1.12");
-      valeursAttendues.add("DateDebutConservation", "2009-09-04");
-      valeursAttendues.add("Denomination", "Test 313-Recherche-OK-Date-Debut-Conservation");
-      valeursAttendues.add("NumeroRecours", "4");
-      valeursAttendues.add("Siren", "123456789");
-
-      getRechercheTestService().verifieResultatRecherche(resultatRecherche,
-            numeroResultatRecherche, resultatTest, valeursAttendues);
-
-   }
-   
-   
-   private void verifieResultat3(ResultatRechercheType resultatRecherche,
-         ResultatTest resultatTest) {
-
-      String numeroResultatRecherche = "3";
-
-      MetadonneeValeurList valeursAttendues = new MetadonneeValeurList();
-
-      valeursAttendues.add("ApplicationProductrice", "ADELAIDE");
-      valeursAttendues.add("CodeRND", "2.3.1.1.8");
-      valeursAttendues.add("DateDebutConservation", "2009-09-05");
-      valeursAttendues.add("Denomination", "Test 313-Recherche-OK-Date-Debut-Conservation");
-      valeursAttendues.add("NumeroRecours", "5");
-      valeursAttendues.add("Siren", "123456789");
-
-      getRechercheTestService().verifieResultatRecherche(resultatRecherche,
-            numeroResultatRecherche, resultatTest, valeursAttendues);
-
-   }
 
 }
