@@ -345,6 +345,16 @@
          </CasTest>
          
          <CasTest>
+            <id>209</id>
+            <code>209-CaptureMasse-OK-JarArretTomCat</code>
+            <description>
+               Capture de masse de 5000 documents, vérification de la mise en pause de la capture de masse
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 209-CaptureMasse-OK-JarArretTomCat"</luceneExemple>
+         </CasTest>
+         
+         <CasTest>
             <id>210</id>
             <code>210-CaptureMasse-OK-Sans-Code-Activite</code>
             <description>
