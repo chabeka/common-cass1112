@@ -62,17 +62,27 @@ public class JobQueueServiceImpl implements JobQueueService {
     */
    @Override
    public final void endingJob(UUID idJob, boolean succes,
-         Date dateFinTraitement) {
+         Date dateFinTraitement, String message) {
       // Récupération du jobRequest
       JobRequest jobRequest = jobQueueDao.getJobRequest(idJob);
       Assert.notNull(jobRequest, "JobRequest d'id " + idJob + " non trouvé");
       // On modifie la date de fin de traitement, et l'état
       jobRequest.setEndingDate(dateFinTraitement);
       jobRequest.setState(succes?JobState.SUCCESS:JobState.FAILURE);
+      jobRequest.setMessage(message);
       // On persiste
       jobQueueDao.updateJobRequest(jobRequest);
    }
 
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final void endingJob(UUID idJob, boolean succes,
+         Date dateFinTraitement) {
+      endingJob(idJob, succes, dateFinTraitement, null);
+   }
+   
    /**
     * {@inheritDoc}
     */
@@ -133,12 +143,12 @@ public class JobQueueServiceImpl implements JobQueueService {
          // On regarde si le job a été réservé par un autre serveur
          JobRequest jobRequest = jobQueueDao.getJobRequest(idJob);
          String currentHostname = jobRequest.getReservedBy();
-         if (currentHostname.equals(hostname)) {
+         if (currentHostname != null && currentHostname.equals(hostname)) {
             // On a été déconnecté de zookeeper, mais pour autant, le job nous a
             // été attribué.
             return;
-         } else if (currentHostname != null && !currentHostname.isEmpty()
-               && !currentHostname.equals(hostname)) {
+         }
+         else {
             throw new JobDejaReserveException(idJob, currentHostname);
          }
       }

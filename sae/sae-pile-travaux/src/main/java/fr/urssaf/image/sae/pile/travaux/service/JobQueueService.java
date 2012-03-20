@@ -71,4 +71,18 @@ public interface JobQueueService {
     */
    void endingJob(UUID idJob, boolean succes, Date dateFinTraitement);
 
+   /**
+    * Met à jour le traitement après son exécution.<br>
+    * 
+    * @param idJob
+    *           identifiant du traitement
+    * @param succes
+    *           valeur de retour de l'exécution du traitement
+    * @param dateFinTraitement
+    *           date de fin du traitement
+    * @param message
+    *           message de compte-rendu du traitement (ex : message d'erreur)
+    */
+   void endingJob(UUID idJob, boolean succes, Date dateFinTraitement, String message);
+
 }

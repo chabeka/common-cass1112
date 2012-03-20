@@ -56,6 +56,7 @@ public class JobQueueDaoImpl implements JobQueueDao {
    private static final String JR_RESERVATION_DATE_COLUMN = "reservationDate";
    private static final String JR_STARTING_DATE_COLUMN = "startingDate";
    private static final String JR_ENDING_DATE_COLUMN = "endingDate";
+   private static final String JR_MESSAGE = "message";
 
    // Clés constantes
    private static final String JOBS_WAITING_KEY = "jobsWaiting";
@@ -123,6 +124,7 @@ public class JobQueueDaoImpl implements JobQueueDao {
       Date endingDate = dSlz.fromBytes(result
             .getByteArray(JR_ENDING_DATE_COLUMN));
       jobRequest.setEndingDate(endingDate);
+      jobRequest.setMessage(result.getString(JR_MESSAGE));
       return jobRequest;
    }
 
@@ -229,6 +231,9 @@ public class JobQueueDaoImpl implements JobQueueDao {
       addColumn(updater, JR_RESERVATION_DATE_COLUMN, dSlz.toBytes(jobRequest.getReservationDate()), bSlz);
       addColumn(updater, JR_STARTING_DATE_COLUMN, dSlz.toBytes(jobRequest.getStartingDate()), bSlz);
       addColumn(updater, JR_ENDING_DATE_COLUMN, dSlz.toBytes(jobRequest.getEndingDate()), bSlz);
+      if (jobRequest.getMessage() != null) {
+         addColumn(updater, JR_MESSAGE, jobRequest.getMessage(), sSlz);
+      }
       jobRequestTmpl.update(updater);
 
       Mutator<String> mutator = HFactory.createMutator(keyspace,
@@ -260,7 +265,7 @@ public class JobQueueDaoImpl implements JobQueueDao {
                SimpleJobRequestSerializer.get());
          col.setTtl(TTL);
          mutator.addInsertion(JOBS_WAITING_KEY, JOBSQUEUE_CFNAME, col);
-      } else {
+      //} else {
          // NOPDM : TODO : virer la règle EmptyIfStmt
          // On ne fait rien ici : on dé-indexe seulement dans la méthode de réservation
       }

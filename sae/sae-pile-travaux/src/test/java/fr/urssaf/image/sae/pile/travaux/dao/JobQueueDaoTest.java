@@ -153,6 +153,7 @@ public class JobQueueDaoTest {
       jobRequests.get(1).setEndingDate(new Date());
       jobRequests.get(1).setState(JobState.SUCCESS);
       jobRequests.get(1).setReservedBy("myHostname");
+      jobQueueDao.updateJobRequest(jobRequests.get(1));
       // On en supprime 3
       for (int i = 0; i< 3; i++) {
          jobQueueDao.deleteJobRequest(jobRequests.get(i));
@@ -164,6 +165,24 @@ public class JobQueueDaoTest {
       Assert.assertEquals(3, getJobCount(jobQueueDao.getUnreservedJobRequestIterator()));      
    }
 
+   @Test
+   public void setAndGetMessage() {
+      // On crée 1 jobs
+      Map<Integer, JobRequest> jobRequests = createCreatedJobRequestsForTest(1);
+      // On le passe en terminé avec erreur
+      JobRequest jobRequest = jobRequests.get(0); 
+      jobRequest.setEndingDate(new Date());
+      jobRequest.setState(JobState.FAILURE);
+      jobRequest.setReservedBy("myHostname");
+      jobRequest.setMessage("Une erreur est survenue");
+      jobQueueDao.updateJobRequest(jobRequest);
+      // On lit le jobRequest      
+      JobRequest jobRequest2 = jobQueueDao.getJobRequest(jobRequest.getIdJob());
+      // On vérifie le message
+      Assert.assertEquals("Une erreur est survenue", jobRequest2.getMessage());
+   }
+   
+   
    private int getJobCount(Iterator<SimpleJobRequest> iterator) {
       int compteur = 0;
       while (iterator.hasNext()) {

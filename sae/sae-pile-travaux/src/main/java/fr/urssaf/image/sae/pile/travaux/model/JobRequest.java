@@ -2,6 +2,7 @@ package fr.urssaf.image.sae.pile.travaux.model;
 
 import java.util.Date;
 
+
 /**
  * Traitement dans la pile des travaux. Les propriétés sont.
  * <ul>
@@ -14,6 +15,7 @@ import java.util.Date;
  * <li><code>reservationDate</code>: date/heure de réservation</li>
  * <li><code>startingDate</code>: date/heure de début de traitement</li>
  * <li><code>endingDate</code>: date/heure de fin de traitement</li>
+ * <li><code>message</code>: message de compte-rendu du traitement. Exemple : message d'erreur</li>
  * </ul>
  * 
  * 
@@ -32,6 +34,8 @@ public class JobRequest extends SimpleJobRequest {
    private Date startingDate;
 
    private Date endingDate;
+   
+   private String message;
 
    /**
     * Constructeur qui instancie un jobRequest vide
@@ -86,7 +90,8 @@ public class JobRequest extends SimpleJobRequest {
     * @return the creationDate
     */
    public final Date getCreationDate() {
-      return creationDate;
+      // On ne renvoie pas la date directement, car c'est un objet mutable
+      return creationDate == null ? null : new Date(creationDate.getTime());
    }
 
    /**
@@ -101,7 +106,8 @@ public class JobRequest extends SimpleJobRequest {
     * @return the reservationDate
     */
    public final Date getReservationDate() {
-      return reservationDate;
+      // On ne renvoie pas la date directement, car c'est un objet mutable
+      return reservationDate == null ? null : new Date(reservationDate.getTime());
    }
 
    /**
@@ -116,7 +122,8 @@ public class JobRequest extends SimpleJobRequest {
     * @return the startingDate
     */
    public final Date getStartingDate() {
-      return startingDate;
+      // On ne renvoie pas la date directement, car c'est un objet mutable
+      return startingDate == null ? null : new Date(startingDate.getTime());
    }
 
    /**
@@ -131,7 +138,8 @@ public class JobRequest extends SimpleJobRequest {
     * @return the endingDate
     */
    public final Date getEndingDate() {
-      return endingDate;
+      // On ne renvoie pas la date directement, car c'est un objet mutable
+      return endingDate == null ? null : new Date(endingDate.getTime());
    }
 
    /**
@@ -152,6 +160,21 @@ public class JobRequest extends SimpleJobRequest {
       simpleJobRequest.setType(getType());
       simpleJobRequest.setParameters(getParameters());
       return simpleJobRequest;
+   }
+
+   /**
+    * @param message : message de compte-rendu du traitement
+    */
+   public final void setMessage(String message) {
+      this.message = message;
+   }
+
+   /**
+    * 
+    * @return message de compte-rendu du traitement
+    */
+   public final String getMessage() {
+      return message;
    }
    
 }
