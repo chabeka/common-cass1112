@@ -11,9 +11,7 @@ import fr.urssaf.image.sae.integration.ihmweb.service.referentiels.ReferentielMe
 
 
 /**
- * Test 300<br>
- * <br>
- * Test libre de la recherche => pas de résultat attendu
+ * 300-Recherche-TestLibre
  */
 @Controller
 @RequestMapping(value = "test300")

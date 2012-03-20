@@ -12,9 +12,7 @@ import fr.urssaf.image.sae.integration.ihmweb.service.referentiels.ReferentielMe
 
 
 /**
- * Test 100<br>
- * <br>
- * Test libre de la capture unitaire => pas de résultat attendu
+ * 100-CaptureUnitaire-TestLibre
  */
 @Controller
 @RequestMapping(value = "test100")

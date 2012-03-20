@@ -9,7 +9,7 @@ import fr.urssaf.image.sae.integration.ihmweb.utils.ViUtils;
 
 
 /**
- * Test 452-Consultation-KO-MetadonneeConsultInexistante
+ * 453-Consultation-KO-MetadonneeConsultNonAutorisee
  */
 @Controller
 @RequestMapping(value = "test453")

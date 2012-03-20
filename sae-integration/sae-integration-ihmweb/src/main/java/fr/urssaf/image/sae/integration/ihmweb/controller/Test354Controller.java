@@ -11,11 +11,7 @@ import fr.urssaf.image.sae.integration.ihmweb.utils.ViUtils;
 
 
 /**
- * Test 354-Recherche-KO-MetadonneeConsultNonAutorisee<br>
- * <br>
- * On vérifie que la recherche renvoie la bonne erreur lorsque la liste des 
- * métadonnées souhaitées en retour de la recherche contient un code de 
- * métadonnées qui n’est pas consultable
+ * 354-Recherche-KO-MetadonneeConsultNonAutorisee
  */
 @Controller
 @RequestMapping(value = "test354")

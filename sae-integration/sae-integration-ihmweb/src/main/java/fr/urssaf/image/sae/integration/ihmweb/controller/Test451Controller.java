@@ -9,10 +9,7 @@ import fr.urssaf.image.sae.integration.ihmweb.utils.ViUtils;
 
 
 /**
- * Test 451-Consultation-KO-IdArchivageInconnu<br>
- * <br>
- * On vérifie que la bonne erreur est renvoyée lorsque l'identifiant 
- * d'archivage ne correspond à aucune archive du SAE. 
+ * 451-Consultation-KO-IdArchivageInconnu
  */
 @Controller
 @RequestMapping(value = "test451")

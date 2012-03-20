@@ -15,10 +15,7 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.R
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ResultatRechercheType;
 
 /**
- * Test 103<br>
- * <br>
- * On vérifie que le SAE stocke correctement l'ensemble des métadonnées qu'une
- * application puisse fournir lors de la capture
+ * 103-CaptureUnitaire-OK-ToutesMetasSpecifiables
  */
 @Controller
 @RequestMapping(value = "test103")

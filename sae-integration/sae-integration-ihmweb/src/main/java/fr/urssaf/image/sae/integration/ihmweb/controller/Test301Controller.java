@@ -19,11 +19,7 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.R
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ResultatRechercheType;
 
 /**
- * Test 301-Recherche-OK-Standard<br>
- * <br>
- * On vérifie que la recherche fonctionne dans des conditions "standard"
- * d'utilisation.
- * 
+ * 301-Recherche-OK-Standard
  */
 @Controller
 @RequestMapping(value = "test301")

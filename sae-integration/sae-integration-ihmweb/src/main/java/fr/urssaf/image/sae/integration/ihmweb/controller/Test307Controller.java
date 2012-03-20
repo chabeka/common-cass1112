@@ -20,9 +20,7 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.R
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ResultatRechercheType;
 
 /**
- * Test 307-RECHERCHE-OK-META-I-META-NI<br>
- * <br>
- * Recherche sur des métadonnées non indexée et indexée
+ * 307-Recherche-OK-Meta-I-Meta-NI
  */
 @Controller
 @RequestMapping(value = "test307")

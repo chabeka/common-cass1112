@@ -683,7 +683,7 @@
                Recherche classique des utilisateurs pour le projet attestation
             </description>
             <implemente>true</implemente>
-            <luceneExemple>CodeRND: 2.3.1.1.12 AND Siren:3090000001 AND DateCreation:20070401</luceneExemple>
+            <luceneExemple>CodeRND:2.3.1.1.12 AND Siren:3090000001 AND DateCreation:20070401</luceneExemple>
          </CasTest>
 
          <CasTest>
@@ -693,7 +693,7 @@
                Recherche sur la date de création
             </description>
             <implemente>true</implemente>
-            <luceneExemple>Denomination: "Test 311-Recherche-OK-DateCreation" AND DateCreation:[20101003 TO 20101005]</luceneExemple>
+            <luceneExemple>Denomination: "Test 311-Recherche-OK-Date-Creation" AND DateCreation:[20101003 TO 20101005]</luceneExemple>
          </CasTest>
          
          <CasTest>
@@ -703,7 +703,7 @@
                Recherche sur la date de réception
             </description>
             <implemente>true</implemente>
-            <luceneExemple>Denomination: "Test 312-Recherche-OK-DateReception" AND DateReception:[20111103 TO 20111105]</luceneExemple>
+            <luceneExemple>Denomination: "Test 312-Recherche-OK-Date-Reception" AND DateReception:[20111103 TO 20111105]</luceneExemple>
          </CasTest>
          
          <CasTest>

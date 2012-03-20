@@ -11,9 +11,7 @@ import fr.urssaf.image.sae.integration.ihmweb.utils.ViUtils;
 
 
 /**
- * Test 351-Recherche-KO-RequeteVide<br>
- * <br>
- * On vérifie que la recherche renvoie la bonne erreur lorsque la requête de recherche est vide
+ * 351-Recherche-KO-RequeteVide
  */
 @Controller
 @RequestMapping(value = "test351")

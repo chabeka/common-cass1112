@@ -11,12 +11,7 @@ import fr.urssaf.image.sae.integration.ihmweb.utils.ViUtils;
 
 
 /**
- * Test 353-Recherche-KO-MetadonneeConsultInexistante
- * <br>
- * On vérifie que la recherche renvoie la bonne erreur 
- * lorsque la liste des métadonnées souhaitées en retour 
- * de la recherche contient un code de métadonnées non 
- * reconnu par le SAE
+ * 353-Recherche-KO-MetadonneeConsultInexistante
  */
 @Controller
 @RequestMapping(value = "test353")

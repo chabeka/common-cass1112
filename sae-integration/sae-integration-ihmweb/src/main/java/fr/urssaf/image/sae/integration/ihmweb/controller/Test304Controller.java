@@ -20,11 +20,7 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.R
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ResultatRechercheType;
 
 /**
- * Test 304-Recherche-OK-Complexe-Dates<br>
- * <br>
- * On vérifie que la recherche fonctionne avec une requête de recherche complexe
- * manipulant des dates
- * 
+ * 304-Recherche-OK-Complexe-Dates
  */
 @Controller
 @RequestMapping(value = "test304")

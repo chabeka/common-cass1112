@@ -19,9 +19,7 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.R
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ResultatRechercheType;
 
 /**
- * Test 309-RECHERCHE-OK-PROJETATTESTATIONS<br>
- * <br>
- * Recherche classique des utilisateurs pour le projet attestation
+ * 309-Recherche-OK-ProjetAttestations
  */
 @Controller
 @RequestMapping(value = "test309")

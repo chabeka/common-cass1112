@@ -19,11 +19,7 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.R
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ResultatRechercheType;
 
 /**
- * Test 303-Recherche-OK-EnSpecifiantMetadonnees<br>
- * <br>
- * On vérifie que la recherche fonctionne lorsqu'on spécifie les métadonnées que
- * l'on souhaite dans les résultats de recherche
- * 
+ * 303-Recherche-OK-SansSpecifierMetadonnees
  */
 @Controller
 @RequestMapping(value = "test303")
@@ -109,11 +105,9 @@ public class Test303Controller extends
 
       }
 
-      // Au mieux, si le test est OK, on le passe "A contrôler", pour la
-      // vérification
-      // de la date d'archivage
+      // Si pas en échec, alors test en OK (tout a été vérifié)
       if (!TestStatusEnum.Echec.equals(resultatTest.getStatus())) {
-         resultatTest.setStatus(TestStatusEnum.AControler);
+         resultatTest.setStatus(TestStatusEnum.Succes);
       }
 
    }

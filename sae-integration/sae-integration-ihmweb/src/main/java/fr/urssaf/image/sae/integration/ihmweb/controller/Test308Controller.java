@@ -20,9 +20,7 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.R
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ResultatRechercheType;
 
 /**
- * Test 308-RECHERCHE-OK-AVEC-ESPACE-ET-JOKER<br>
- * <br>
- * Recherche avec dans la requête des espaces et des caractères joker
+ * 308-Recherche-OK-avec-espace-et-joker
  */
 @Controller
 @RequestMapping(value = "test308")

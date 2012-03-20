@@ -19,9 +19,7 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.R
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ResultatRechercheType;
 
 /**
- * Test 311-RECHERCHE-OK-DATECREATION<br>
- * <br>
- * Recherche sur la date de création
+ * 311-Recherche-OK-Date-Creation
  */
 @Controller
 @RequestMapping(value = "test311")
@@ -102,14 +100,10 @@ public class Test311Controller extends
                TypeComparaison.NumeroRecours));
 
          // Vérifie chaque résultat
-         for (int i = 0; i < WAITED_COUNT; i++) {
-
-            getRechercheTestService().verifieResultatRecherche(
-                  resultatsTries.get(i), Integer.toString(i + 1), resultatTest,
-                  getValeursAttendues(i + 1));
-
-         }
-
+         verifieResultat1(resultatsTries.get(0), resultatTest);
+         verifieResultat2(resultatsTries.get(1), resultatTest);
+         verifieResultat3(resultatsTries.get(2), resultatTest);
+         
          // Passe le test en succès si aucune erreur détectée
          if (!TestStatusEnum.Echec.equals(resultatTest.getStatus())) {
             resultatTest.setStatus(TestStatusEnum.Succes);
@@ -119,20 +113,65 @@ public class Test311Controller extends
 
    }
 
-   private MetadonneeValeurList getValeursAttendues(int numeroResultat) {
+   
+   
+   
+   private void verifieResultat1(ResultatRechercheType resultatRecherche,
+         ResultatTest resultatTest) {
+
+      String numeroResultatRecherche = "1";
 
       MetadonneeValeurList valeursAttendues = new MetadonneeValeurList();
 
       valeursAttendues.add("ApplicationProductrice", "ADELAIDE");
       valeursAttendues.add("CodeRND", "2.3.1.1.12");
       valeursAttendues.add("DateCreation", "2010-10-03");
-      valeursAttendues
-            .add("Denomination", "Test 311-Recherche-OK-DateCreation");
-      valeursAttendues.add("numeroRecours", String.valueOf(numeroResultat + 2));
+      valeursAttendues.add("Denomination", "Test 311-Recherche-OK-Date-Creation");
+      valeursAttendues.add("NumeroRecours", "3");
       valeursAttendues.add("Siren", "123456789");
 
-      // Renvoi du résultat
-      return valeursAttendues;
+      getRechercheTestService().verifieResultatRecherche(resultatRecherche,
+            numeroResultatRecherche, resultatTest, valeursAttendues);
+
+   }
+   
+   
+   private void verifieResultat2(ResultatRechercheType resultatRecherche,
+         ResultatTest resultatTest) {
+
+      String numeroResultatRecherche = "2";
+
+      MetadonneeValeurList valeursAttendues = new MetadonneeValeurList();
+
+      valeursAttendues.add("ApplicationProductrice", "ADELAIDE");
+      valeursAttendues.add("CodeRND", "2.3.1.1.12");
+      valeursAttendues.add("DateCreation", "2010-10-04");
+      valeursAttendues.add("Denomination", "Test 311-Recherche-OK-Date-Creation");
+      valeursAttendues.add("NumeroRecours", "4");
+      valeursAttendues.add("Siren", "123456789");
+
+      getRechercheTestService().verifieResultatRecherche(resultatRecherche,
+            numeroResultatRecherche, resultatTest, valeursAttendues);
+
+   }
+   
+   
+   private void verifieResultat3(ResultatRechercheType resultatRecherche,
+         ResultatTest resultatTest) {
+
+      String numeroResultatRecherche = "3";
+
+      MetadonneeValeurList valeursAttendues = new MetadonneeValeurList();
+
+      valeursAttendues.add("ApplicationProductrice", "ADELAIDE");
+      valeursAttendues.add("CodeRND", "2.3.1.1.8");
+      valeursAttendues.add("DateCreation", "2010-10-05");
+      valeursAttendues.add("Denomination", "Test 311-Recherche-OK-Date-Creation");
+      valeursAttendues.add("NumeroRecours", "5");
+      valeursAttendues.add("Siren", "123456789");
+
+      getRechercheTestService().verifieResultatRecherche(resultatRecherche,
+            numeroResultatRecherche, resultatTest, valeursAttendues);
 
    }
 

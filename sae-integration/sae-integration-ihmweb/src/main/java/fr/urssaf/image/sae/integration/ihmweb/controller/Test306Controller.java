@@ -21,10 +21,7 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.R
 
 
 /**
- * Test 306-Recherche-OK-RequeteLuceneAvecJokerDansValeurRecherchee<br>
- * <br>
- * On vérifie que la recherche fonctionne lorsque l'une des valeurs recherchées
- * dans la requête LUCENE contient le caractère joker (*).
+ * 306-Recherche-OK-RequeteLuceneAvecJokerDansValeurRecherchee
  */
 @Controller
 @RequestMapping(value = "test306")

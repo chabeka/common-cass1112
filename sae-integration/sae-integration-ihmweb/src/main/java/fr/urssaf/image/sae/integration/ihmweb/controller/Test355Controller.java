@@ -11,11 +11,7 @@ import fr.urssaf.image.sae.integration.ihmweb.utils.ViUtils;
 
 
 /**
- * Test 355-Recherche-KO-MetadonneeRechercheInexistante
- * <br>
- * On vérifie que la recherche renvoie la bonne erreur lorsque 
- * la requête de recherche contient un code de métadonnées non 
- * reconnu par le SAE
+ * 355-Recherche-KO-MetadonneeRechercheInexistante
  */
 @Controller
 @RequestMapping(value = "test355")

@@ -19,7 +19,7 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
 
 
 /**
- * Test 402-Consultation-OK-version-120150
+ * 402-Consultation-OK-version-120150
  */
 @Controller
 @RequestMapping(value = "test402")

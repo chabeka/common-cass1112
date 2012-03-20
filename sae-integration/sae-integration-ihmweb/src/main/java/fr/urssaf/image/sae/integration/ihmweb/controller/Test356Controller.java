@@ -11,10 +11,7 @@ import fr.urssaf.image.sae.integration.ihmweb.utils.ViUtils;
 
 
 /**
- * Test 356<br>
- * <br>
- * On vérifie que la recherche renvoie la bonne erreur lorsqu'une des métadonnées 
- * utilisées dans la requête de recherche n'est pas utilisable comme critère de recherche.
+ * 356-Recherche-KO-MetadonneeRechercheNonAutorisee
  */
 @Controller
 @RequestMapping(value = "test356")

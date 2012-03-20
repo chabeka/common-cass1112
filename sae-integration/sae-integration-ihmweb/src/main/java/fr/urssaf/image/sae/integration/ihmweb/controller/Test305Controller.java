@@ -12,11 +12,7 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheResponse;
 
 /**
- * Test 305-Recherche-OK-RequeteLuceneAvecDeuxPointsDansValeurRecherchee<br>
- * <br>
- * On vérifie que la recherche fonctionne correctement si la valeur recherchée
- * contient un caractère deux-points (:)
- * 
+ * 305-Recherche-OK-RequeteLuceneAvecDeuxPointsDansValeurRecherchee
  */
 @Controller
 @RequestMapping(value = "test305")
@@ -90,11 +86,9 @@ public class Test305Controller extends
 
       }
 
-      // Au mieux, si le test est OK, on le passe "A contrôler", pour la
-      // vérification
-      // de la date d'archivage
+      // Si pas en échec, alors test en OK (tout a été vérifié)
       if (!TestStatusEnum.Echec.equals(resultatTest.getStatus())) {
-         resultatTest.setStatus(TestStatusEnum.AControler);
+         resultatTest.setStatus(TestStatusEnum.Succes);
       }
 
    }

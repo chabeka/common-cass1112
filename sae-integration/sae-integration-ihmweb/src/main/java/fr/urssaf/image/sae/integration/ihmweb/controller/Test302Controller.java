@@ -9,12 +9,7 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.CodeMetadonneeList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
 
 /**
- * Test 302-Recherche-OK-Tronquee<br>
- * <br>
- * On vérifie que la recherche fonctionne avec une requête de recherche simple
- * et peu restrictive, de sorte à provoquer la troncature du résultat de
- * recherche.
- * 
+ * 302-Recherche-OK-Tronquee
  */
 @Controller
 @RequestMapping(value = "test302")

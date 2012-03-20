@@ -19,9 +19,7 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.R
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ResultatRechercheType;
 
 /**
- * Test 313-RECHERCHE-OK-DATEDEBUTCONSERVATION<br>
- * <br>
- * Recherche sur la date de début de conservation
+ * 313-Recherche-OK-Date-Debut-Conservation
  */
 @Controller
 @RequestMapping(value = "test313")

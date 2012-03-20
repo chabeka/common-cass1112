@@ -11,9 +11,7 @@ import fr.urssaf.image.sae.integration.ihmweb.utils.ViUtils;
 
 
 /**
- * 352-Recherche-KO-MauvaiseRequeteLucene<br>
- * <br>
- * On vérifie que la recherche renvoie la bonne erreur lorsque la requête LUCENE est incorrecte
+ * 352-Recherche-KO-MauvaiseRequeteLucene
  */
 @Controller
 @RequestMapping(value = "test352")

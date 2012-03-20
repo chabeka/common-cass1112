@@ -15,10 +15,7 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.R
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ResultatRechercheType;
 
 /**
- * Test 102<br>
- * <br>
- * On vérifie que le SAE n'écrase pas, lors de l'enrichissement, les valeurs des
- * métadonnées qui ont été spécifiées par l'application cliente
+ * 102-CaptureUnitaire-OK-EnrichissementEcrasement
  */
 @Controller
 @RequestMapping(value = "test102")

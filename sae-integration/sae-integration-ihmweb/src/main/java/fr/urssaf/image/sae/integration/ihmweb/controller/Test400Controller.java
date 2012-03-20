@@ -10,9 +10,7 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.service.SaeServiceTestS
 
 
 /**
- * Test 400<br>
- * <br>
- * Test libre de la consultation => pas de résultat attendu
+ * 400-Consultation-TestLibre
  */
 @Controller
 @RequestMapping(value = "test400")

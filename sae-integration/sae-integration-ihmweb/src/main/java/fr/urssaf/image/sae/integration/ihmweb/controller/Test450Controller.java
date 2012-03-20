@@ -10,10 +10,7 @@ import fr.urssaf.image.sae.integration.ihmweb.utils.ViUtils;
 
 
 /**
- * Test 450<br>
- * <br>
- * Ce test vérifie que l'authentification applicative est activée sur 
- * l'opération "consultation" du service web SaeService.
+ * 450-Consultation-KO-SansAuthentification
  */
 @Controller
 @RequestMapping(value = "test450")

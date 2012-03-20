@@ -10,10 +10,7 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
 import fr.urssaf.image.sae.integration.ihmweb.utils.ViUtils;
 
 /**
- * Test 357<br>
- * <br>
- * Envoie d’une SoapFault suite à l’envoie d’une requête syntaxiquement
- * incorrecte
+ * 357-Recherche-KO-SAESyntaxeLuceneIncorrecte
  */
 @Controller
 @RequestMapping(value = "test357")

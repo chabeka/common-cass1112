@@ -10,12 +10,7 @@ import fr.urssaf.image.sae.integration.ihmweb.utils.ViUtils;
 
 
 /**
- * Test 350<br>
- * <br>
- * On vérifie que l'authentification est activée sur l'opération "recherche"
- * du service web SaeService<br>
- * <br>
- * Pour cela, on invoque l'opération "recherche" en omettant le VI dans le message SOAP.
+ * 350-Recherche-KO-SansAuthentification
  */
 @Controller
 @RequestMapping(value = "test350")

@@ -20,10 +20,7 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.R
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.utils.SaeServiceObjectExtractor;
 
 /**
- * Test 101<br>
- * <br>
- * On vérifie que la capture unitaire fonctionne dans des conditions "standards"
- * d'utilisation.
+ * 101-CaptureUnitaire-OK-Standard
  */
 @Controller
 @RequestMapping(value = "test101")

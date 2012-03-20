@@ -16,25 +16,7 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.utils.SaeServiceObjectE
 
 
 /**
- * Test 401<br>
- * <br>
- * On vérifie que la consultation fonctionne correctement 
- * lorsque le retour demandé est le contenu du document 
- * (réception du contenu et des métadonnées).<br>
- * <br>
- * Pour réaliser ce test, il faut :
- * <ul>
- *    <li>
- *       archiver un document, et récupérer en retour son identifiant d'archivage
- *       (à l'aide de l'opération "archivageUnitaire" du service web SaeService)
- *    </li>
- *    <li>
- *       puis consulter l'archive (avec l'opération "consultation" du service
- *       web SaeService)
- *    </li>
- * </ul>
- * On peut aussi consulter des archives déjà présentes dans le SAE,
- * sous réserve de connaître leur identifiant d'archivage.
+ * 401-Consultation-OK-RetourContenu
  */
 @Controller
 @RequestMapping(value = "test401")
