@@ -1,5 +1,11 @@
 package fr.urssaf.image.commons.cassandra.helper;
 
+import java.util.Date;
+
+import me.prettyprint.cassandra.service.CassandraHostConfigurator;
+import me.prettyprint.hector.api.Cluster;
+import me.prettyprint.hector.api.factory.HFactory;
+
 import org.cassandraunit.DataLoader;
 import org.cassandraunit.dataset.xml.ClassPathXmlDataSet;
 import org.cassandraunit.utils.EmbeddedCassandraServerHelper;
@@ -17,6 +23,8 @@ import org.springframework.beans.factory.InitializingBean;
 public class CassandraServerBean implements InitializingBean, DisposableBean  {
 
    private static final Logger LOG = LoggerFactory.getLogger(CassandraServerBean.class);
+   private static final int WAIT_MAX_TRY = 5;
+   private static final long WAIT_MS = 1000;
    private String dataSet;
    private boolean startLocal= false;
    private String hosts = null;
@@ -53,14 +61,7 @@ public class CassandraServerBean implements InitializingBean, DisposableBean  {
    @Override
    public final void afterPropertiesSet() throws Exception {
       LOG.debug("CassandraServerBean : startLocal={} - dataSet={}", startLocal, dataSet);
-      if (!startLocal) return;
-      EmbeddedCassandraServerHelper.startEmbeddedCassandra();
-      if (dataSet!=null && !dataSet.isEmpty()) {
-         DataLoader dataLoader = new DataLoader("TestCluster", "localhost:9171");
-         ClassPathXmlDataSet set = new ClassPathXmlDataSet(dataSet);
-         LOG.debug("CassandraServerBean : keyspace={}", set.getKeyspace().getName());
-         dataLoader.load(set);
-      }
+      resetData(dataSet);
    }
 
    /**
@@ -78,9 +79,12 @@ public class CassandraServerBean implements InitializingBean, DisposableBean  {
     * @throws Exception    Une erreur est survenue
     */
    public final void resetData(String... newDataSets) throws Exception {
-      LOG.debug("CassandraServerBean : reseting data...");
       if (!startLocal) return;
+      LOG.debug("CassandraServerBean : reseting data...");
       EmbeddedCassandraServerHelper.startEmbeddedCassandra();
+      // On attend que le serveur soit prêt
+      waitForServer();
+      
       for (String newDataSet : newDataSets) {
          if (newDataSet!=null && !newDataSet.isEmpty()) {
             DataLoader dataLoader = new DataLoader("TestCluster", "localhost:9171");
@@ -90,6 +94,28 @@ public class CassandraServerBean implements InitializingBean, DisposableBean  {
       }
    }
 
+   /**
+    * Il arrive que le serveur cassandra local mette du temps avant d'être opérationnel.
+    * Cette méthode fait en sorte d'attendre jusqu'à ce qu'il soit opérationnel
+    * @throws InterruptedException : on a été interrompu
+    * 
+    */
+   private void waitForServer() throws InterruptedException {
+      CassandraHostConfigurator hostConfigurator = new CassandraHostConfigurator(getHosts());
+      Cluster cluster = HFactory.getOrCreateCluster("ClusterName-" + new Date().getTime(),
+            hostConfigurator);
+      for (int i=0; i < WAIT_MAX_TRY; i++) {
+         try {
+            cluster.describeKeyspaces();
+            break;
+         }
+         catch (Exception e) {
+            LOG.debug("CassandraServerBean : waiting for server (" + i + ")...");            
+            Thread.sleep(WAIT_MS);
+         }
+      }
+   }
+   
    /**
     * Dans le cas d'un cassandra zookeeper non local, il s'agit de la chaîne de connexion
     * @param hosts    Chaîne de connexion (ex : "toto.toto.com:9160,titi.titi.com:9160")

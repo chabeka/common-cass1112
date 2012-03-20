@@ -2,8 +2,6 @@ package fr.urssaf.image.commons.cassandra.helper;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +13,6 @@ import me.prettyprint.cassandra.service.FailoverPolicy;
 import me.prettyprint.hector.api.Cluster;
 import me.prettyprint.hector.api.HConsistencyLevel;
 import me.prettyprint.hector.api.Keyspace;
-import me.prettyprint.hector.api.ddl.KeyspaceDefinition;
 import me.prettyprint.hector.api.factory.HFactory;
 
 /**
@@ -28,8 +25,6 @@ public final class CassandraClientFactory {
 
    // En mode "cassandra local" uniquement. Unité : milli-secondes
    private static final int DELAY_BETWEEN_RETRIES = 1000;
-   // En mode "cassandra local" uniquement.
-   private static final int MAX_TRIES = 3;
 
    /**
     * Constructeur privé

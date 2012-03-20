@@ -30,9 +30,14 @@ public class ZookeeperServerBean implements InitializingBean, DisposableBean  {
    @Override
    public final void destroy() throws Exception {
       if (testingServer != null) {
-         LOG.debug("ZookeeperServerBean : closing server...");
-         testingServer.close();
-         testingServer = null;
+         try {
+            LOG.debug("ZookeeperServerBean : closing server...");
+            testingServer.close();
+            testingServer = null;
+         }
+         catch (Exception e) {
+            LOG.error("ZookeeperServerBean : error while closing server", e);
+         }
       }
    }
 
