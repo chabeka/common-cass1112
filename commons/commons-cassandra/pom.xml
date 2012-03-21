@@ -3,7 +3,7 @@
    <modelVersion>4.0.0</modelVersion>
    <groupId>fr.urssaf.image.commons</groupId>
    <artifactId>commons-cassandra</artifactId>
-   <version>0.0.2</version>
+   <version>0.0.3-SNAPSHOT</version>
    <name>commons-cassandra</name>
 
    <properties>
@@ -20,13 +20,13 @@
    <!-- Configuration SVN pour le plug-in maven-release -->
    <scm>
       <url>
-        scm:svn:svn://cer69-svn.cer69.recouv/image/java/tags/commons-cassandra-0.0.2
+        scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/commons/commons-cassandra
       </url>
       <developerConnection>
-        scm:svn:svn://cer69-svn.cer69.recouv/image/java/tags/commons-cassandra-0.0.2
+        scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/commons/commons-cassandra
       </developerConnection>
       <connection>
-        scm:svn:svn://cer69-svn.cer69.recouv/image/java/tags/commons-cassandra-0.0.2
+        scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/commons/commons-cassandra
       </connection>
    </scm>
    
