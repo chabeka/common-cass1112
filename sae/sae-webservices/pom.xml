@@ -5,12 +5,12 @@
    <parent>
       <groupId>fr.urssaf.image.sae</groupId>
       <artifactId>sae</artifactId>
-      <version>12.5.10.3-SNAPSHOT</version>
+      <version>12.5.10.3</version>
    </parent>
 
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-webservices</artifactId>
-   <version>12.5.10.3-SNAPSHOT</version>
+   <version>12.5.10.3</version>
    
    <name>sae-webservices</name>
    
@@ -114,7 +114,7 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-vi</artifactId>
-         <version>12.5.10.3-SNAPSHOT</version>
+         <version>12.5.10.3</version>
          <exclusions>
             <exclusion>
                <groupId>log4j</groupId>
@@ -131,7 +131,7 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-igc</artifactId>
-         <version>12.5.10.3-SNAPSHOT</version>
+         <version>12.5.10.3</version>
          <exclusions>
             <exclusion>
                <groupId>log4j</groupId>
@@ -144,7 +144,7 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-services</artifactId>
-         <version>12.5.10.3-SNAPSHOT</version>
+         <version>12.5.10.3</version>
          <exclusions>
             <exclusion>
                <groupId>log4j</groupId>

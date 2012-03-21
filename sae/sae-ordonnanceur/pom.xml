@@ -1,15 +1,14 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <parent>
       <artifactId>sae</artifactId>
       <groupId>fr.urssaf.image.sae</groupId>
-      <version>12.5.10.3-SNAPSHOT</version>
+      <version>12.5.10.3</version>
    </parent>
    <modelVersion>4.0.0</modelVersion>
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-ordonnanceur</artifactId>
    <name>sae-ordonnanceur</name>
-   <version>12.5.10.3-SNAPSHOT</version>
+   <version>12.5.10.3</version>
    <description>Gestion de la pile d'exécution des traitements asynchrones</description>
 
    <build>
@@ -32,16 +31,13 @@
                         </excludes>
                      </artifactSet>
                      <transformers>
-                        <transformer
-                           implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                            <mainClass>fr.urssaf.image.sae.ordonnanceur.OrdonnanceurMain</mainClass>
                         </transformer>
-                        <transformer
-                           implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                            <resource>META-INF/spring.handlers</resource>
                         </transformer>
-                        <transformer
-                           implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                            <resource>META-INF/spring.schemas</resource>
                         </transformer>
                      </transformers>
@@ -62,7 +58,7 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-ecde</artifactId>
-         <version>12.5.10.3-SNAPSHOT</version>
+         <version>12.5.10.3</version>
          <exclusions>
             <exclusion>
                <groupId>com.thoughtworks.xstream</groupId>
@@ -76,7 +72,7 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-pile-travaux</artifactId>
-         <version>12.5.10.3-SNAPSHOT</version>
+         <version>12.5.10.3</version>
       </dependency>
 
       <!-- SPRING -->
