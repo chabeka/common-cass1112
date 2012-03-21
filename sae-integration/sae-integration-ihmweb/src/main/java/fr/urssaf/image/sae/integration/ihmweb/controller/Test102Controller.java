@@ -47,6 +47,7 @@ public class Test102Controller extends
       // L'URL ECDE
       formCapture
             .setUrlEcde(getEcdeService().construitUrlEcde("SAE_INTEGRATION/20110822/CaptureUnitaire-102-CaptureUnitaire-OK-EnrichissementEcrasement/documents/doc1.PDF"));
+      formCapture.setNomFichier("doc1.PDF");
 
       // Les métadonnées
       MetadonneeValeurList metadonnees = new MetadonneeValeurList();
@@ -159,11 +160,10 @@ public class Test102Controller extends
 
       }
 
-      // Au mieux, le test est "à contrôler" (certaines métadonnées doivent être
-      // vérifiées
-      // "à la main")
+      // Si le test n'est pas en échec, alors on peut le passer en succès,
+      // car tout a pu être vérifié
       if (!TestStatusEnum.Echec.equals(resultatTest.getStatus())) {
-         resultatTest.setStatus(TestStatusEnum.AControler);
+         resultatTest.setStatus(TestStatusEnum.Succes);
       }
 
    }

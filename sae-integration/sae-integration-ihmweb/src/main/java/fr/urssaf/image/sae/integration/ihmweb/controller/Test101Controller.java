@@ -54,6 +54,7 @@ public class Test101Controller extends
             .setUrlEcde(getEcdeService()
                   .construitUrlEcde(
                         "SAE_INTEGRATION/20110822/CaptureUnitaire-101-CaptureUnitaire-OK-Standard/documents/doc1.PDF"));
+      formCapture.setNomFichier("doc1.PDF");
 
       // Les métadonnées
       MetadonneeValeurList metadonnees = new MetadonneeValeurList();
