@@ -30,7 +30,7 @@ public class RollbackSupportValidation {
     *           identifiant du document
     */
    @Before(ROLLBACK_METHOD)
-   public final void checkRollback(UUID identifiant) {
+   public final void checkRollback(final UUID identifiant) {
 
       if (identifiant == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(

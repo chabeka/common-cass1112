@@ -26,6 +26,4 @@
             name="fr.urssaf.image.sae.services.capturemasse.modele.resultats" />
       </jaxb:schemaBindings>
    </jaxb:bindings>
-
-
 </jaxb:bindings>

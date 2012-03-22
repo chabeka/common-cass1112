@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+   targetNamespace="http://www.cirtil.fr/sae/commun_sommaire_et_resultat"
+   xmlns:somres="http://www.cirtil.fr/sae/commun_sommaire_et_resultat"
+   elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+   <xsd:include schemaLocation="commun_sommaire_et_resultat.xsd" />
+
+   <xsd:element name="document" type="somres:documentType" />
+
+</xsd:schema>

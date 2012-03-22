@@ -19,7 +19,7 @@ import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
 @Aspect
 public class FinTraitementFlagSupportValidation {
 
-   private static final String CHECK_WRITE_METHOD = "execution(void fr.urssaf.image.sae.services.capturemasse.support.flag.FinTraitementFlagSupport.writeFinTraitementFlag(*))"
+   private static final String WRITE_METHOD = "execution(void fr.urssaf.image.sae.services.capturemasse.support.flag.FinTraitementFlagSupport.writeFinTraitementFlag(*))"
       + " && args(ecdeDirectory)";
 
 /**
@@ -30,8 +30,8 @@ public class FinTraitementFlagSupportValidation {
  *           chemin absolu du fichier sommaire.xml pour un traitement de
  *           masse
  */
-@Before(CHECK_WRITE_METHOD)
-public final void checkWrite(File ecdeDirectory) {
+@Before(WRITE_METHOD)
+public final void checkWrite(final File ecdeDirectory) {
 
    if (ecdeDirectory == null) {
       throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(

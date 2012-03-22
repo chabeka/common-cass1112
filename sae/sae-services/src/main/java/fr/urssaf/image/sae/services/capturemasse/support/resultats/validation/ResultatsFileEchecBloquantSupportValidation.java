@@ -20,7 +20,7 @@ import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
 @Aspect
 public class ResultatsFileEchecBloquantSupportValidation {
 
-   private static final String WRITE_CONTROLES_METHOD = "execution(void fr.urssaf.image.sae.services.capturemasse.support.resultats.ResultatsFileEchecBloquantSupport.writeResultatsFile(*,*))"
+   private static final String CHECK_METHOD = "execution(void fr.urssaf.image.sae.services.capturemasse.support.resultats.ResultatsFileEchecBloquantSupport.writeResultatsFile(*,*))"
          + " && args(ecdeDirectory,erreur)";
 
    /**
@@ -32,9 +32,9 @@ public class ResultatsFileEchecBloquantSupportValidation {
     * @param erreur
     *           erreur bloquante mère
     */
-   @Before(WRITE_CONTROLES_METHOD)
-   public final void checkWriteResultatsFile(File ecdeDirectory,
-         CaptureMasseSommaireFormatValidationException erreur) {
+   @Before(CHECK_METHOD)
+   public final void checkWriteResultatsFile(final File ecdeDirectory,
+         final CaptureMasseSommaireFormatValidationException erreur) {
 
       if (ecdeDirectory == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(

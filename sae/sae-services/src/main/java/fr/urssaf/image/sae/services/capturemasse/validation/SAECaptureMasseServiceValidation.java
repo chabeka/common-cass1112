@@ -20,7 +20,7 @@ import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
 @Aspect
 public class SAECaptureMasseServiceValidation {
 
-   private static final String CAPTURE_CONTROLES_METHOD = "execution(void fr.urssaf.image.sae.services.capturemasse.SAECaptureMasseService.captureMasse(*,*))"
+   private static final String CAPTURE_METHOD = "execution(void fr.urssaf.image.sae.services.capturemasse.SAECaptureMasseService.captureMasse(*,*))"
          + " && args(sommaireURL, idTraitement)";
 
    /**
@@ -33,8 +33,8 @@ public class SAECaptureMasseServiceValidation {
     * @param idTraitement
     *           identifiant du traitement
     */
-   @Before(CAPTURE_CONTROLES_METHOD)
-   public final void checkCaptureMasse(URI sommaireURL, UUID idTraitement) {
+   @Before(CAPTURE_METHOD)
+   public final void checkCaptureMasse(final URI sommaireURL, final UUID idTraitement) {
 
       if (sommaireURL == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(

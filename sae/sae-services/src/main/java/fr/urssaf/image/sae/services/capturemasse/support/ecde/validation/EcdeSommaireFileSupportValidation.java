@@ -19,7 +19,7 @@ import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
 @Aspect
 public class EcdeSommaireFileSupportValidation {
 
-   private static final String CONVERT_CONTROLES_METHOD = "execution(java.io.File fr.urssaf.image.sae.services.capturemasse.support.ecde.EcdeSommaireFileSupport.convertURLtoFile(*))"
+   private static final String CONVERT_METHOD = "execution(java.io.File fr.urssaf.image.sae.services.capturemasse.support.ecde.EcdeSommaireFileSupport.convertURLtoFile(*))"
          + " && args(sommaireURL)";
 
    /**
@@ -29,8 +29,8 @@ public class EcdeSommaireFileSupportValidation {
     * @param sommaireURL
     *           URL du fichier sommaire.xml
     */
-   @Before(CONVERT_CONTROLES_METHOD)
-   public final void checkConvertURLtoFile(URI sommaireURL) {
+   @Before(CONVERT_METHOD)
+   public final void checkConvertURLtoFile(final URI sommaireURL) {
 
       if (sommaireURL == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(

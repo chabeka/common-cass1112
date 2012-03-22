@@ -20,8 +20,8 @@ import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
 @Aspect
 public class ResultatsFileEchecSupportValidation {
 
-   private static final String WRITE_CONTROLES_METHOD = "execution(void fr.urssaf.image.sae.services.capturemasse.support.resultats.ResultatsFileEchecSupport.writeResultatsFile(*,*,*))"
-         + " && args(ecdeDirectory,sommaireFile,erreur)";
+   private static final String WRITE_METHOD = "execution(void fr.urssaf.image.sae.services.capturemasse.support.resultats.ResultatsFileEchecSupport.writeResultatsFile(*,*,*,*))"
+         + " && args(ecdeDirectory,sommaireFile,erreur, nombreDocsTotal)";
 
    /**
     * Vérifie que tous les arguments de la méthodes sont bien présents pour la
@@ -33,10 +33,14 @@ public class ResultatsFileEchecSupportValidation {
     *           chemin absolu du fichier sommaire.xml d'une capture de masse
     * @param erreur
     *           erreur mère
+    * @param nombreDocsTotal
+    *           nombre total de documents
     */
-   @Before(WRITE_CONTROLES_METHOD)
-   public final void checkWriteResultats(File ecdeDirectory, File sommaireFile,
-         CaptureMasseSommaireDocumentException erreur) {
+   @Before(WRITE_METHOD)
+   public final void checkWriteResultats(final File ecdeDirectory,
+         final File sommaireFile,
+         final CaptureMasseSommaireDocumentException erreur,
+         final int nombreDocsTotal) {
 
       if (ecdeDirectory == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(

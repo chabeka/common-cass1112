@@ -24,8 +24,10 @@ public interface ResultatsFileEchecSupport {
     *           chemin absolu du fichier sommaire.xml de la capture de masse
     * @param erreur
     *           exception sur un des documents du sommaire à archiver
+    * @param totalDocuments
+    *           nombre de documents traités au total
     */
    void writeResultatsFile(File ecdeDirectory, File sommaireFile,
-         CaptureMasseSommaireDocumentException erreur);
+         CaptureMasseSommaireDocumentException erreur, int totalDocuments);
 
 }

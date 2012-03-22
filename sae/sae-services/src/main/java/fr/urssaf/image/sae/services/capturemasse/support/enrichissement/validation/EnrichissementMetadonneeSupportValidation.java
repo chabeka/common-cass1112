@@ -18,7 +18,7 @@ import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
 @Aspect
 public class EnrichissementMetadonneeSupportValidation {
 
-   private static final String CHECK_ENRICHMENT_METHOD = "execution(void fr.urssaf.image.sae.services.capturemasse.support.enrichissement.EnrichissementMetadonneeSupport.enrichirMetadonnee(*))"
+   private static final String ENRICHMENT = "execution(void fr.urssaf.image.sae.services.capturemasse.support.enrichissement.EnrichissementMetadonneeSupport.enrichirMetadonnee(*))"
          + " && args(document)";
 
    /**
@@ -28,8 +28,8 @@ public class EnrichissementMetadonneeSupportValidation {
     * @param document
     *           modèle métier du document
     */
-   @Before(CHECK_ENRICHMENT_METHOD)
-   public final void checkWrite(SAEDocument document) {
+   @Before(ENRICHMENT)
+   public final void checkWrite(final SAEDocument document) {
 
       if (document == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(

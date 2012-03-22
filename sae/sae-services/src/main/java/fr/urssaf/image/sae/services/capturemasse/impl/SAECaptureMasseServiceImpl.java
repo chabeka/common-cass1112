@@ -6,10 +6,6 @@ package fr.urssaf.image.sae.services.capturemasse.impl;
 import java.net.URI;
 import java.util.UUID;
 
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.launch.JobLauncher;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.sae.services.capturemasse.SAECaptureMasseService;
@@ -41,7 +37,7 @@ public class SAECaptureMasseServiceImpl implements SAECaptureMasseService {
     * {@inheritDoc}
     */
    @Override
-   public void captureMasse(URI sommaireURL, UUID idTraitement)
+   public void captureMasse(final URI sommaireURL, final UUID idTraitement)
          throws CaptureMasseSommaireEcdeURLException,
          CaptureMasseSommaireFileNotFoundException,
          CaptureMasseEcdeWriteFileException {

@@ -31,7 +31,7 @@ public class SommaireFormatValidationSupportValidation {
  *           chemin absolu du fichier sommaire.xml
  */
 @Before(CONTROLES_METHOD)
-public final void checkValidationSommaire(File sommaireFile) {
+public final void checkValidationSommaire(final File sommaireFile) {
 
    if (sommaireFile == null) {
       throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(

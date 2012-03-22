@@ -3,21 +3,50 @@
  */
 package fr.urssaf.image.sae.services.capturemasse.support.sommaire;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import org.apache.commons.io.IOUtils;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
+import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireFormatValidationException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-services-capture-masse-test.xml" })
+@ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })
 public class SommaireFormatValidationSupportTest {
 
    @Autowired
    private SommaireFormatValidationSupport support;
+
+   @Autowired
+   private EcdeTestTools ecdeTestTools;
+
+   private EcdeTestSommaire ecdeTestSommaire;
+
+   @Before
+   public void init() {
+      ecdeTestSommaire = ecdeTestTools.buildEcdeTestSommaire();
+   }
+
+   @After
+   public void end() {
+      try {
+         ecdeTestTools.cleanEcdeTestSommaire(ecdeTestSommaire);
+      } catch (IOException e) {
+         // rien à faire
+      }
+   }
 
    @Test(expected = IllegalArgumentException.class)
    public void testEcdeObligatoire()
@@ -25,6 +54,43 @@ public class SommaireFormatValidationSupportTest {
 
       support.validationSommaire(null);
       Assert.fail("sortie aspect attendue");
+
+   }
+
+   @Test(expected = CaptureMasseSommaireFormatValidationException.class)
+   public void testSommaireErrone() throws IOException,
+         CaptureMasseSommaireFormatValidationException {
+
+      File ecdeDirectory = ecdeTestSommaire.getRepEcde();
+      File sommaire = new File(ecdeDirectory, "sommaire.xml");
+
+      ClassPathResource resSommaire = new ClassPathResource(
+            "sommaire/sommaire_format_failure.xml");
+      FileOutputStream fos = new FileOutputStream(sommaire);
+      IOUtils.copy(resSommaire.getInputStream(), fos);
+
+      support.validationSommaire(sommaire);
+
+   }
+
+   @Test
+   public void testSommaireValide() {
+
+      try {
+
+         File ecdeDirectory = ecdeTestSommaire.getRepEcde();
+         File sommaire = new File(ecdeDirectory, "sommaire.xml");
+
+         ClassPathResource resSommaire = new ClassPathResource("sommaire.xml");
+         FileOutputStream fos = new FileOutputStream(sommaire);
+         IOUtils.copy(resSommaire.getInputStream(), fos);
+
+         support.validationSommaire(sommaire);
+      } catch (IOException e) {
+         Assert.fail("le fichier sommaire.xml doit être valide");
+      } catch (CaptureMasseSommaireFormatValidationException e) {
+         Assert.fail("le fichier sommaire.xml doit être valide");
+      }
 
    }
 

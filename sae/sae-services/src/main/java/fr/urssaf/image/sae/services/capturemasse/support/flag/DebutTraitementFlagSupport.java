@@ -18,12 +18,12 @@ public interface DebutTraitementFlagSupport {
     * Ecriture d'un fichier debut_traitement.flag créé au commencement d'un
     * traitement de capture de masse
     * 
-    * @param debutTraitementFlag
+    * @param flag
     *           propriétés sur le début du traitement de capture de masse
     * @param ecdeDirectory
     *           chemin absolu du répertoire de traitement de l'ECDE
     */
-   void writeDebutTraitementFlag(DebutTraitementFlag debutTraitementFlag,
+   void writeDebutTraitementFlag(DebutTraitementFlag flag,
          File ecdeDirectory);
 
 }

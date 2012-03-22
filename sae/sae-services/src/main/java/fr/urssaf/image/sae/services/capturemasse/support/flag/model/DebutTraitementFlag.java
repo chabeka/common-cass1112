@@ -39,7 +39,7 @@ public class DebutTraitementFlag {
     * @param idTraitement
     *           identifiant du traitement de capture de masse
     */
-   public final void setIdTraitement(UUID idTraitement) {
+   public final void setIdTraitement(final UUID idTraitement) {
       this.idTraitement = idTraitement;
    }
 
@@ -54,7 +54,7 @@ public class DebutTraitementFlag {
     * @param startDate
     *           Date de début du traitement de capture de masse
     */
-   public final void setStartDate(Date startDate) {
+   public final void setStartDate(final Date startDate) {
       this.startDate = startDate;
    }
 
@@ -69,7 +69,7 @@ public class DebutTraitementFlag {
     * @param hostInfo
     *           Infos sur le serveur où à lieu le traitement de capture de masse
     */
-   public final void setHostInfo(InetAddress hostInfo) {
+   public final void setHostInfo(final InetAddress hostInfo) {
       this.hostInfo = hostInfo;
    }
 

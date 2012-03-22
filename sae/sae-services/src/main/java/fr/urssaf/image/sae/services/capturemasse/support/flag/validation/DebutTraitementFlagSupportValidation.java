@@ -20,45 +20,49 @@ import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
 @Aspect
 public class DebutTraitementFlagSupportValidation {
 
-   private static final String CHECK_WRITE_METHOD = "execution(void fr.urssaf.image.sae.services.capturemasse.support.flag.DebutTraitementFlagSupport.writeDebutTraitementFlag(*,*))"
-         + " && args(debutTraitementFlag,ecdeDirectory)";
+   /**
+    * 
+    */
+   private static final String ARGUMENT_REQUIRED = "argument.required";
+   private static final String WRITE_METHOD = "execution(void fr.urssaf.image.sae.services.capturemasse.support.flag.DebutTraitementFlagSupport.writeDebutTraitementFlag(*,*))"
+         + " && args(flag,ecdeDirectory)";
 
    /**
     * permet de vérifier que l'ensemble des paramètres de la méthode
     * checkEcdeWrite possède tous les arguments renseignés
     * 
-    * @param debutTraitementFlag
+    * @param flag
     *           modèle du fichier debut_traitement.flag
     * @param ecdeDirectory
     *           chemin ECDE
     */
-   @Before(CHECK_WRITE_METHOD)
-   public final void checkWrite(DebutTraitementFlag debutTraitementFlag,
-         File ecdeDirectory) {
+   @Before(WRITE_METHOD)
+   public final void checkWrite(final DebutTraitementFlag flag,
+         final File ecdeDirectory) {
 
-      if (debutTraitementFlag == null) {
+      if (flag == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "debutTraitement"));
+               ARGUMENT_REQUIRED, "debutTraitement"));
       }
 
-      if (debutTraitementFlag.getHostInfo() == null) {
+      if (flag.getHostInfo() == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "debutTraitement.hostInfo"));
+               ARGUMENT_REQUIRED, "debutTraitement.hostInfo"));
       }
 
-      if (debutTraitementFlag.getIdTraitement() == null) {
+      if (flag.getIdTraitement() == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "debutTraitement.idTraitement"));
+               ARGUMENT_REQUIRED, "debutTraitement.idTraitement"));
       }
 
-      if (debutTraitementFlag.getStartDate() == null) {
+      if (flag.getStartDate() == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "debutTraitement.startDate"));
+               ARGUMENT_REQUIRED, "debutTraitement.startDate"));
       }
 
       if (ecdeDirectory == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "ecdeDirectory"));
+               ARGUMENT_REQUIRED, "ecdeDirectory"));
       }
 
    }

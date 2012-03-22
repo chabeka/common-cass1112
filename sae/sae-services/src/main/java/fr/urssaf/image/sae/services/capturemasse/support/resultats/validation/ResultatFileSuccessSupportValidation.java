@@ -21,8 +21,8 @@ import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
 @Aspect
 public class ResultatFileSuccessSupportValidation {
 
-   private static final String WRITE_CONTROLES_METHOD = "execution(void fr.urssaf.image.sae.services.capturemasse.support.resultats.ResultatFileSuccessSupport.writeResultatsFile(*,*,*))"
-         + " && args(ecdeDirectory,integratedDocuments,documentsCount)";
+   private static final String CHECK_METHOD = "execution(void fr.urssaf.image.sae.services.capturemasse.support.resultats.ResultatFileSuccessSupport.writeResultatsFile(*,*,*))"
+         + " && args(ecdeDirectory,integDocs,documentsCount)";
 
    /**
     * permet de vérifier que les éléments suivants sont présents :<br>
@@ -33,15 +33,15 @@ public class ResultatFileSuccessSupportValidation {
     * 
     * @param ecdeDirectory
     *           répertoire de traitement du traitement de masse
-    * @param integratedDocuments
+    * @param integDocs
     *           liste des documents intégrés
     * @param documentsCount
     *           nombre de documents intégrés
     */
-   @Before(WRITE_CONTROLES_METHOD)
-   public final void checkWriteResultats(File ecdeDirectory,
-         List<CaptureMasseIntegratedDocument> integratedDocuments,
-         int documentsCount) {
+   @Before(CHECK_METHOD)
+   public final void checkWriteResultats(final File ecdeDirectory,
+         final List<CaptureMasseIntegratedDocument> integDocs,
+         final int documentsCount) {
 
       if (ecdeDirectory == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(

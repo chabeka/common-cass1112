@@ -15,6 +15,11 @@
 
    <import resource="storageConnectionParameter.xml" />
 
+
+   <import resource="applicationContext-sae-capture-masse-item.xml" />
+   <import resource="jobs/job-sae-capture-masse-binaire.xml" />
+   <import resource="applicationContext-sae-services-capture-masse-test.xml" />
+   
    <!-- configuration de ECDE -->
 
    <bean id="ecdeSource_basePath" class="fr.urssaf.image.sae.utils.TempFileUtils"

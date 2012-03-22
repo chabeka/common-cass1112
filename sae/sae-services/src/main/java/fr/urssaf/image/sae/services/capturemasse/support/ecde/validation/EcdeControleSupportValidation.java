@@ -19,7 +19,7 @@ import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
 @Aspect
 public class EcdeControleSupportValidation {
 
-   private static final String CHECK_CONTROLES_METHOD = "execution(void fr.urssaf.image.sae.services.capturemasse.support.ecde.EcdeControleSupport.checkEcdeWrite(*))"
+   private static final String CHECK_METHOD = "execution(void fr.urssaf.image.sae.services.capturemasse.support.ecde.EcdeControleSupport.checkEcdeWrite(*))"
          + " && args(sommaireFile)";
 
    /**
@@ -30,8 +30,8 @@ public class EcdeControleSupportValidation {
     *           chemin absolu du fichier sommaire.xml pour un traitement de
     *           masse
     */
-   @Before(CHECK_CONTROLES_METHOD)
-   public final void checkEcdeWrite(File sommaireFile) {
+   @Before(CHECK_METHOD)
+   public final void checkEcdeWrite(final File sommaireFile) {
 
       if (sommaireFile == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(

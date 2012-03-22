@@ -21,10 +21,10 @@ import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
 @Aspect
 public class CaptureMasseControleSupportValidation {
 
-   private static final String CONTROLES_DOCUMENT_METHOD = "execution(void fr.urssaf.image.sae.services.capturemasse.support.controle.CaptureMasseControleSupport.controleSAEDocument(*,*))"
+   private static final String CONTROLE = "execution(void fr.urssaf.image.sae.services.capturemasse.support.controle.CaptureMasseControleSupport.controleSAEDocument(*,*))"
          + " && args(document,ecdeDirectory)";
 
-   private static final String CONTROLES_DOCUMENT_STOCK_METHOD = "execution(void fr.urssaf.image.sae.services.capturemasse.support.controle.CaptureMasseControleSupport.controleSAEDocumentStockage(*))"
+   private static final String CONTROLE_STCK = "execution(void fr.urssaf.image.sae.services.capturemasse.support.controle.CaptureMasseControleSupport.controleSAEDocumentStockage(*))"
          + " && args(document)";
 
    /**
@@ -36,9 +36,9 @@ public class CaptureMasseControleSupportValidation {
     * @param ecdeDirectory
     *           chemin absolu du répertoire de traitement de l'ECDE
     */
-   @Before(CONTROLES_DOCUMENT_METHOD)
-   public final void checkControleDocument(UntypedDocument document,
-         File ecdeDirectory) {
+   @Before(CONTROLE)
+   public final void checkControleDocument(final UntypedDocument document,
+         final File ecdeDirectory) {
 
       if (document == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
@@ -59,8 +59,8 @@ public class CaptureMasseControleSupportValidation {
     * @param document
     *           modèle métier du document
     */
-   @Before(CONTROLES_DOCUMENT_STOCK_METHOD)
-   public final void checkControleDocumentStorage(SAEDocument document) {
+   @Before(CONTROLE_STCK)
+   public final void checkControleDocumentStorage(final SAEDocument document) {
 
       if (document == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
