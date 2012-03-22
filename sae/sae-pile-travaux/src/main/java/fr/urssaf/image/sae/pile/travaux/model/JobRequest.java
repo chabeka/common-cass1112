@@ -99,7 +99,7 @@ public class JobRequest extends SimpleJobRequest {
     *           the creationDate to set
     */
    public final void setCreationDate(Date creationDate) {
-      this.creationDate = creationDate;
+      this.creationDate = creationDate == null ? null : new Date(creationDate.getTime());
    }
 
    /**
@@ -115,7 +115,7 @@ public class JobRequest extends SimpleJobRequest {
     *           the reservationDate to set
     */
    public final void setReservationDate(Date reservationDate) {
-      this.reservationDate = reservationDate;
+      this.reservationDate = reservationDate == null ? null : new Date(reservationDate.getTime());
    }
 
    /**
@@ -131,7 +131,7 @@ public class JobRequest extends SimpleJobRequest {
     *           the startingDate to set
     */
    public final void setStartingDate(Date startingDate) {
-      this.startingDate = startingDate;
+      this.startingDate = startingDate == null ? null : new Date(startingDate.getTime());
    }
 
    /**
@@ -147,7 +147,7 @@ public class JobRequest extends SimpleJobRequest {
     *           the endingDate to set
     */
    public final void setEndingDate(Date endingDate) {
-      this.endingDate = endingDate;
+      this.endingDate = endingDate == null ? null : new Date(endingDate.getTime());
    }
    
    /**

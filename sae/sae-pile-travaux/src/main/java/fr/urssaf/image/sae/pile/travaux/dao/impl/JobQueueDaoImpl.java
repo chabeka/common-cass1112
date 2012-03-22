@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.springframework.util.Assert;
+
 import me.prettyprint.cassandra.serializers.BytesArraySerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.serializers.UUIDSerializer;
@@ -22,8 +24,6 @@ import me.prettyprint.hector.api.beans.HColumn;
 import me.prettyprint.hector.api.factory.HFactory;
 import me.prettyprint.hector.api.mutation.Mutator;
 import me.prettyprint.hector.api.query.SliceQuery;
-
-import org.junit.Assert;
 
 import fr.urssaf.image.commons.cassandra.helper.HectorIterator;
 import fr.urssaf.image.commons.cassandra.serializer.NullableDateSerializer;
@@ -309,12 +309,11 @@ public class JobQueueDaoImpl implements JobQueueDao {
     * @param jobRequest    Le jobRequest à valider
     */
    private void validateJobRequest(JobRequest jobRequest) {
-      Assert.assertNotNull("jobRequest should not be null", jobRequest);
-      Assert.assertNotNull("Id should not be null", jobRequest.getIdJob());
-      Assert.assertNotNull("Type should not be null", jobRequest.getType());
-      Assert.assertNotNull("Parameters should not be null", jobRequest
-            .getParameters());
-      Assert.assertNotNull("State should not be null", jobRequest.getState());
+      Assert.notNull(jobRequest, "jobRequest should not be null");
+      Assert.notNull(jobRequest.getIdJob(), "Id should not be null");
+      Assert.notNull(jobRequest.getType(), "Type should not be null");
+      Assert.notNull(jobRequest.getParameters(), "Parameters should not be null");
+      Assert.notNull(jobRequest.getState(), "State should not be null");
    }
 
    /**
