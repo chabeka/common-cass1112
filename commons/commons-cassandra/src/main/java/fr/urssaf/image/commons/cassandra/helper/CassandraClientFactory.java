@@ -59,7 +59,7 @@ public final class CassandraClientFactory {
       CassandraHostConfigurator hostConfigurator = new CassandraHostConfigurator(
             cassandraServer.getHosts());
       hostConfigurator.setLoadBalancingPolicy(new DynamicLoadBalancingPolicy());
-      Cluster cluster = HFactory.getOrCreateCluster("ClusterName-" + new Date(),
+      Cluster cluster = HFactory.getOrCreateCluster("ClusterName-" + new Date().getTime(),
             hostConfigurator);
       FailoverPolicy failoverPolicy;
       if (cassandraServer.getStartLocal()) {

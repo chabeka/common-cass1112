@@ -2,10 +2,9 @@ package fr.urssaf.image.commons.zookeeper;
 
 import java.util.concurrent.TimeUnit;
 
-import junit.framework.Assert;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.Assert;
 
 import com.netflix.curator.framework.CuratorFramework;
 import com.netflix.curator.framework.recipes.locks.InterProcessMutex;
@@ -34,8 +33,8 @@ public class ZookeeperMutex {
     * @param mutexPath the path to lock
     */
    public ZookeeperMutex(final CuratorFramework curatorClient, final String mutexPath) {
-      Assert.assertNotNull(curatorClient);
-      Assert.assertNotNull(mutexPath);
+      Assert.notNull(curatorClient);
+      Assert.notNull(mutexPath);
       this.curatorClient = curatorClient;
       this.mutexPath = mutexPath;
       stateListener = new ConnectionStateListener() {
