@@ -88,7 +88,7 @@ public class EcdeSource {
     *           true indique que l'ECDE est local pour le CNP courant, false
     *           sinon.
     */
-   public void setLocal(boolean local) {
+   public final void setLocal(boolean local) {
       this.local = local;
    }
 
@@ -96,7 +96,7 @@ public class EcdeSource {
     * 
     * @return true si l'ECDE est local pour le CNP courant, false sinon.
     */
-   public boolean isLocal() {
+   public final boolean isLocal() {
       return local;
    }
 }
