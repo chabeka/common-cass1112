@@ -9,23 +9,28 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.springframework.util.Assert;
-
 import me.prettyprint.cassandra.serializers.BytesArraySerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.serializers.UUIDSerializer;
 import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
+import me.prettyprint.cassandra.service.template.ColumnFamilyResultWrapper;
 import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
 import me.prettyprint.cassandra.service.template.ThriftColumnFamilyTemplate;
 import me.prettyprint.hector.api.Keyspace;
 import me.prettyprint.hector.api.Serializer;
 import me.prettyprint.hector.api.beans.HColumn;
+import me.prettyprint.hector.api.beans.OrderedRows;
 import me.prettyprint.hector.api.factory.HFactory;
 import me.prettyprint.hector.api.mutation.Mutator;
+import me.prettyprint.hector.api.query.QueryResult;
+import me.prettyprint.hector.api.query.RangeSlicesQuery;
 import me.prettyprint.hector.api.query.SliceQuery;
 
+import org.springframework.util.Assert;
+
 import fr.urssaf.image.commons.cassandra.helper.HectorIterator;
+import fr.urssaf.image.commons.cassandra.helper.QueryResultConverter;
 import fr.urssaf.image.commons.cassandra.serializer.NullableDateSerializer;
 import fr.urssaf.image.sae.pile.travaux.dao.JobQueueDao;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
@@ -62,6 +67,7 @@ public class JobQueueDaoImpl implements JobQueueDao {
    private static final String JOBS_WAITING_KEY = "jobsWaiting";
    // Autres constantes
    private static final int MAX_NON_TERMINATED_JOBS = 500;
+   private static final int MAX_JOB_ATTIBUTS = 100;
 
    // Durée de vie des colonnes
    private static final int TTL = 2592000;      // 2592000 secondes, soit 30 jours
@@ -77,6 +83,7 @@ public class JobQueueDaoImpl implements JobQueueDao {
 
       jobRequestTmpl = new ThriftColumnFamilyTemplate<UUID, String>(keyspace,
             JOBREQUEST_CFNAME, UUIDSerializer.get(), StringSerializer.get());
+      jobRequestTmpl.setCount(MAX_JOB_ATTIBUTS);
       jobsQueueTmpl = new ThriftColumnFamilyTemplate<String, UUID>(keyspace,
             JOBSQUEUE_CFNAME, StringSerializer.get(), UUIDSerializer.get());
       jobsQueueTmpl.setCount(MAX_NON_TERMINATED_JOBS);
@@ -345,6 +352,42 @@ public class JobQueueDaoImpl implements JobQueueDao {
       }
       mutator2.execute();
 
+   }
+
+   /**
+    * {@inheritDoc}.
+    * Attention : méthode "lente". A n'utiliser que pour les IHM de test.
+    */
+   @Override
+   public final List<JobRequest> getAllJobs(int maxKeysToRead) {
+      
+      // On n'utilise pas d'index. On récupère tous les jobs sans distinction,
+      // en requêtant directement dans la CF JobRequest
+      BytesArraySerializer  bytesSerializer = BytesArraySerializer.get();
+      RangeSlicesQuery<UUID, String, byte[]> rangeSlicesQuery = HFactory
+            .createRangeSlicesQuery(keyspace, UUIDSerializer.get(),
+                  StringSerializer.get(), bytesSerializer);
+      rangeSlicesQuery.setColumnFamily(JOBREQUEST_CFNAME);
+      rangeSlicesQuery.setRange("", "", false, MAX_JOB_ATTIBUTS);
+      rangeSlicesQuery.setRowCount(maxKeysToRead);
+      QueryResult<OrderedRows<UUID, String, byte[]>> queryResult = rangeSlicesQuery
+            .execute();
+      
+      // On convertit le résultat en ColumnFamilyResultWrapper pour faciliter son utilisation 
+      QueryResultConverter<UUID, String, byte[]> converter = new QueryResultConverter<UUID, String, byte[]>();
+      ColumnFamilyResultWrapper<UUID, String> result = converter.getColumnFamilyResultWrapper
+         (queryResult, UUIDSerializer.get(), StringSerializer.get(), bytesSerializer);
+      
+      // On itère sur le résultat
+      HectorIterator<UUID, String> resultIterator = new HectorIterator<UUID, String>(
+            result);
+      List<JobRequest> list= new ArrayList<JobRequest>();
+      for (ColumnFamilyResult<UUID, String> row : resultIterator) {
+         JobRequest jobRequest = getJobRequestFromResult(row);
+         // On peut obtenir un jobRequest null dans le cas d'un jobRequest effacé
+         if (jobRequest != null) list.add(jobRequest);
+      }
+      return list;
    }
 
 }

@@ -85,5 +85,13 @@ public interface JobQueueDao {
     *           jobRequest à supprimer
     */
    void deleteJobRequest(JobRequest jobRequest);
+
+   /**
+    * Retourne l'ensemble des jobs, quelque soit leur état, dans un ordre indéfini.
+    * @param maxKeysToRead   : Nombre max de clés à parcourir
+    *    (attention : ça comprend les clés des jobs récemment supprimés) 
+    * @return  Les jobs trouvés
+    */
+   List<JobRequest> getAllJobs(int maxKeysToRead);
    
 }

@@ -182,6 +182,21 @@ public class JobQueueDaoTest {
       Assert.assertEquals("Une erreur est survenue", jobRequest2.getMessage());
    }
    
+   @Test
+   public void getAllJobs() {
+      // On crée 6 jobs
+      Map<Integer, JobRequest> jobRequests = createCreatedJobRequestsForTest(6);
+      // On en supprime 1
+      jobQueueDao.deleteJobRequest(jobRequests.get(3));
+      
+      List<JobRequest> list = jobQueueDao.getAllJobs(500);
+      JacksonSerializer<JobRequest> jSlz = new JacksonSerializer<JobRequest>(JobRequest.class);
+      System.out.println("All jobs :");
+      for (JobRequest jobRequest : list) {
+         System.out.println(jSlz.toString(jobRequest));
+      }
+      Assert.assertEquals(5, list.size());
+   }
    
    private int getJobCount(Iterator<SimpleJobRequest> iterator) {
       int compteur = 0;
