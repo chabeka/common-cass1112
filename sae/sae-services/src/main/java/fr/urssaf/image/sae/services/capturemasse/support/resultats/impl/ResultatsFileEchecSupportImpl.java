@@ -115,7 +115,7 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
     * @return
     */
    private XMLEventReader openSommaire(final InputStream stream) {
-      final XMLInputFactory xmlInputFactory = XMLInputFactory.newFactory();
+      final XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
 
       try {
          return xmlInputFactory.createXMLEventReader(stream);
@@ -133,7 +133,7 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
     */
    private XMLEventWriter loadWriter(final FileOutputStream resultatsStream) {
 
-      final XMLOutputFactory outputFactory = XMLOutputFactory.newFactory();
+      final XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
 
       try {
          final XMLEventWriter writer = outputFactory
@@ -157,7 +157,7 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
          final CaptureMasseSommaireDocumentException erreur)
          throws XMLStreamException {
 
-      final XMLEventFactory eventFactory = XMLEventFactory.newFactory();
+      final XMLEventFactory eventFactory = XMLEventFactory.newInstance();
 
       StaxUtils staxUtils = new StaxUtils(eventFactory, writer);
 
