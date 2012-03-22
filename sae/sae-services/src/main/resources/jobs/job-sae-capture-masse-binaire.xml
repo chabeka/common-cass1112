@@ -5,7 +5,7 @@
 		http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch-2.1.xsd">
 
 
-   <job id="traitement_masse">
+   <job id="capture_masse">
 
       <!-- Controle du fichier sommaire.xml -->
       <step id="controleSommaireStep">

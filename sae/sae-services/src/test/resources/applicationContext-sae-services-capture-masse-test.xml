@@ -63,6 +63,6 @@
    </bean>
 
    <bean id="launcher" class="org.springframework.batch.test.JobLauncherTestUtils">
-      <property name="job" ref="traitement_masse" />
+      <property name="job" ref="capture_masse" />
    </bean>
 </beans>

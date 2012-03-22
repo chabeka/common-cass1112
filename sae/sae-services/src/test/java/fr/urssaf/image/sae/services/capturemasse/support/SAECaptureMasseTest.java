@@ -12,7 +12,6 @@ import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +21,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
+import fr.urssaf.image.sae.services.batch.model.ExitTraitement;
 import fr.urssaf.image.sae.services.capturemasse.SAECaptureMasseService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -51,7 +51,6 @@ public class SAECaptureMasseTest {
    }
 
    @Test
-   @Ignore
    public void testLancementService() {
 
       try {
@@ -60,7 +59,12 @@ public class SAECaptureMasseTest {
          FileOutputStream fos = new FileOutputStream(sommaire);
          IOUtils.copy(resSommaire.getInputStream(), fos);
 
-         service.captureMasse(testSommaire.getUrlEcde(), UUID.randomUUID());
+         ExitTraitement exitTraitement = service.captureMasse(testSommaire
+               .getUrlEcde(), UUID.randomUUID());
+
+         Assert.assertFalse("l'opération doit etre en erreur", exitTraitement
+               .isSucces());
+
       } catch (Exception e) {
          Assert.fail("pas d'erreur attendue");
       }

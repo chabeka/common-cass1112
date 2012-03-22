@@ -4,28 +4,25 @@
 package fr.urssaf.image.sae.services.capturemasse.impl;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameter;
 import org.springframework.batch.core.JobParameters;
-import org.springframework.batch.core.JobParametersInvalidException;
+import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.launch.JobLauncher;
-import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
-import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
-import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import fr.urssaf.image.sae.services.batch.model.ExitTraitement;
 import fr.urssaf.image.sae.services.capturemasse.SAECaptureMasseService;
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
-import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseEcdeWriteFileException;
-import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
-import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireEcdeURLException;
-import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireFileNotFoundException;
 
 /**
  * Implémentation du service de capture de masse du SAE
@@ -44,17 +41,15 @@ public class SAECaptureMasseServiceImpl implements SAECaptureMasseService {
     * Job de la capture de masse
     */
    @Autowired
-   @Qualifier("traitement_masse")
+   @Qualifier("capture_masse")
    private Job job;
 
    /**
     * {@inheritDoc}
     */
    @Override
-   public void captureMasse(final URI sommaireURL, final UUID idTraitement)
-         throws CaptureMasseSommaireEcdeURLException,
-         CaptureMasseSommaireFileNotFoundException,
-         CaptureMasseEcdeWriteFileException {
+   public ExitTraitement captureMasse(final URI sommaireURL,
+         final UUID idTraitement) {
 
       Map<String, JobParameter> mapParam = new HashMap<String, JobParameter>();
       mapParam.put(Constantes.SOMMAIRE,
@@ -63,20 +58,37 @@ public class SAECaptureMasseServiceImpl implements SAECaptureMasseService {
             .toString()));
 
       JobParameters parameters = new JobParameters(mapParam);
+      ExitTraitement exitTraitement = new ExitTraitement();
+      JobExecution jobExecution = null;
 
       try {
-         jobLauncher.run(job, parameters);
+         jobExecution = jobLauncher.run(job, parameters);
 
-      } catch (JobExecutionAlreadyRunningException e) {
-         throw new CaptureMasseRuntimeException(e);
-      } catch (JobRestartException e) {
-         throw new CaptureMasseRuntimeException(e);
-      } catch (JobInstanceAlreadyCompleteException e) {
-         throw new CaptureMasseRuntimeException(e);
-      } catch (JobParametersInvalidException e) {
-         throw new CaptureMasseRuntimeException(e);
+         List<StepExecution> list = new ArrayList<StepExecution>(jobExecution
+               .getStepExecutions());
+         boolean traitementOK = true;
+         int i = 0;
+         if (traitementOK && i < list.size()) {
+            if ("finBloquant".equalsIgnoreCase(list.get(i).getStepName())
+                  || "finErreur".equalsIgnoreCase(list.get(i).getStepName())) {
+               traitementOK = false;
+            }
+         }
+
+         if (traitementOK) {
+            exitTraitement.setExitMessage("Traitement réalisé avec succès");
+            exitTraitement.setSucces(true);
+         } else {
+            exitTraitement.setExitMessage("Traitement en erreur");
+            exitTraitement.setSucces(false);
+         }
+
+      } catch (Exception e) {
+         exitTraitement.setExitMessage(e.toString());
+         exitTraitement.setSucces(false);
       }
+      
+      return exitTraitement;
 
    }
-
 }
