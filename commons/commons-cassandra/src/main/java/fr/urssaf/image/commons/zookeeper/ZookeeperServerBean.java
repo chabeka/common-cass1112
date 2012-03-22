@@ -1,4 +1,4 @@
-package fr.urssaf.image.commons.cassandra.helper;
+package fr.urssaf.image.commons.zookeeper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +15,7 @@ import com.netflix.curator.test.TestingServer;
 public class ZookeeperServerBean implements InitializingBean, DisposableBean  {
 
    private static final Logger LOG = LoggerFactory.getLogger(ZookeeperServerBean.class);
+   private static final long WAIT_BEFORE_CLOSE = 300;    // en ms
    private boolean startLocal= false;
    private TestingServer testingServer = null;
    private String hosts = null;
@@ -32,6 +33,9 @@ public class ZookeeperServerBean implements InitializingBean, DisposableBean  {
       if (testingServer != null) {
          try {
             LOG.debug("ZookeeperServerBean : closing server...");
+            // Pour éviter les erreurs [SyncThread:0] FATAL zookeeper.server.SyncRequestProcessor - Severe unrecoverable error, exiting
+            // on attend un peu pour être sur que le serveur ait tout commité avant de détruire ses fichiers
+            Thread.sleep(WAIT_BEFORE_CLOSE);
             testingServer.close();
             testingServer = null;
          }

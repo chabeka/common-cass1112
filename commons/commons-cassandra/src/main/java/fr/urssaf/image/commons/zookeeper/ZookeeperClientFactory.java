@@ -7,7 +7,6 @@ import com.netflix.curator.framework.CuratorFrameworkFactory;
 import com.netflix.curator.framework.CuratorFrameworkFactory.Builder;
 import com.netflix.curator.retry.ExponentialBackoffRetry;
 
-import fr.urssaf.image.commons.cassandra.helper.ZookeeperServerBean;
 
 /**
  * Factory pour récupérer une connexion à zookeeper

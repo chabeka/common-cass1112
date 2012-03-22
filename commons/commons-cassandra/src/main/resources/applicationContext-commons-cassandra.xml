@@ -21,7 +21,7 @@
       <constructor-arg value="${cassandra.password}" />
    </bean>
    
-   <bean id="zookeeperServer" class="fr.urssaf.image.commons.cassandra.helper.ZookeeperServerBean">
+   <bean id="zookeeperServer" class="fr.urssaf.image.commons.zookeeper.ZookeeperServerBean">
       <property name="startLocal" value="${zookeeper.startlocal}"/>
       <property name="hosts" value="${zookeeper.hosts}" />
    </bean>
