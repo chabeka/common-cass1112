@@ -286,7 +286,7 @@
 
          <CasTest>
             <id>203</id>
-            <code>203-capturemasse-OK-TOR-10-repertoire-slash</code>
+            <code>203-CaptureMasse-OK-Tor-10-repertoire-slash</code>
             <description>
                Capture de masse de 10 documents à archiver dans une arborescence de 10 niveaux précisés par des slash
             </description>
@@ -301,7 +301,7 @@
                Capture de masse de 10 documents à archiver dans une arborescence de 10 niveaux précisés par des anti-slash
             </description>
             <implemente>true</implemente>
-            <luceneExemple>Denomination:"204-CAPTUREMASSE-OK-TOR-10-repertoire-anti-slash"</luceneExemple>
+            <luceneExemple>Denomination:"Test 204-CaptureMasse-OK-Tor-10-repertoire-anti-slash"</luceneExemple>
          </CasTest>
 
          <CasTest>
@@ -341,7 +341,7 @@
                Capture de masse de 5000 documents, démarrage et arrêt du processus "application console d’exécution de la capture de masse"
             </description>
             <implemente>true</implemente>
-            <luceneExemple>Denomination:"208-CaptureMasse-OK-JarLanceArret"</luceneExemple>
+            <luceneExemple>Denomination:"Test 208-CaptureMasse-OK-JarLanceArret"</luceneExemple>
          </CasTest>
          
          <CasTest>
@@ -883,6 +883,24 @@
             <code>403-Consultation-OK-TouteMetadonneeConsultable</code>
             <description>
                On vérifie que la consultation fonctionne correctement lorsqu'on demande toutes les métadonnées consultables
+            </description>
+            <implemente>true</implemente>
+         </CasTest>
+         
+         <CasTest>
+            <id>404</id>
+            <code>404-Consultation-OK-TypeMime-MTOM-pdf</code>
+            <description>
+               On vérifie que le type MIME de la pièce jointe en consultationMTOM est correct dans le cas d'un PDF.
+            </description>
+            <implemente>true</implemente>
+         </CasTest>
+         
+         <CasTest>
+            <id>405</id>
+            <code>405-Consultation-OK-TypeMime-MTOM-autre-pdf</code>
+            <description>
+               On vérifie que le type MIME de la pièce jointe en consultationMTOM est correct dans le cas d'un type non connu.
             </description>
             <implemente>true</implemente>
          </CasTest>

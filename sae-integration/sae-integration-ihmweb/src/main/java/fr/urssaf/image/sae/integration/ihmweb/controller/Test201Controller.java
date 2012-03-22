@@ -1,19 +1,26 @@
 package fr.urssaf.image.sae.integration.ihmweb.controller;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import fr.urssaf.image.sae.integration.ihmweb.exception.IntegrationRuntimeException;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseResultatFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.formulaire.ConsultationFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.TestStockageMasseAllFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CodeMetadonneeList;
+import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeur;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeurList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTest;
 import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.comparator.ResultatRechercheComparator;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.comparator.ResultatRechercheComparator.TypeComparaison;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheResponse;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ResultatRechercheType;
@@ -53,6 +60,8 @@ public class Test201Controller extends
 
       TestStockageMasseAllFormulaire formulaire = new TestStockageMasseAllFormulaire();
 
+      // Initialise le formulaire de capture de masse
+      
       CaptureMasseFormulaire formCapture = formulaire
             .getCaptureMasseDeclenchement();
       formCapture.setUrlSommaire(getDebutUrlEcde() + "sommaire.xml");
@@ -63,21 +72,34 @@ public class Test201Controller extends
       formResultat.setUrlSommaire(getDebutUrlEcde() + "resultat.xml");
       formResultat.getResultats().setStatus(TestStatusEnum.SansStatus);
 
+      
+      // Initialise le formulaire de recherche
+      
       RechercheFormulaire rechFormulaire = formulaire.getRechFormulaire();
       rechFormulaire
             .setRequeteLucene(getCasTest().getLuceneExemple());
+      
       CodeMetadonneeList codeMetadonneeList = new CodeMetadonneeList();
-
+      rechFormulaire.setCodeMetadonnees(codeMetadonneeList);
       String[] tabElement = new String[] { "CodeActivite", "CodeFonction",
             "CodeOrganismeGestionnaire", "CodeOrganismeProprietaire",
             "CodeRND", "ContratDeService", "DateArchivage", "DateCreation",
             "DateDebutConservation", "DateFinConservation", "DateReception",
             "Denomination", "DureeConservation", "FormatFichier", "Gel",
             "Hash", "NomFichier", "NumeroRecours", "Titre", "TypeHash" };
-
       codeMetadonneeList.addAll(Arrays.asList(tabElement));
 
-      rechFormulaire.setCodeMetadonnees(codeMetadonneeList);
+      
+            
+      // Initialise le formulaire de consultation
+      
+      ConsultationFormulaire formConsult = formulaire.getConsultFormulaire();
+      
+      CodeMetadonneeList codeMetaConsult = new CodeMetadonneeList();
+      formConsult.setCodeMetadonnees(codeMetaConsult);
+      codeMetaConsult.add("Denomination");
+      codeMetaConsult.add("Hash");
+      
 
       return formulaire;
 
@@ -140,29 +162,36 @@ public class Test201Controller extends
    }
 
    private void etape3Recherche(TestStockageMasseAllFormulaire formulaire) {
+      
+      
+      // Appel le service de test de la recherche
       RechercheResponse response = getRechercheTestService()
             .appelWsOpRechercheReponseCorrecteAttendue(
                   formulaire.getUrlServiceWeb(),
                   formulaire.getRechFormulaire(), COUNT_WAITED, false,
                   TypeComparaison.NumeroRecours);
 
-      if (TestStatusEnum.Succes.equals(formulaire.getRechFormulaire()
-            .getResultats().getStatus())) {
+      ResultatTest resultatTest = formulaire.getRechFormulaire().getResultats();
+      
+      if (!TestStatusEnum.Echec.equals(resultatTest.getStatus())) {
 
          ResultatRechercheType results[] = response.getRechercheResponse()
                .getResultats().getResultat();
 
-         int i = 0;
-         while (i < results.length
-               && !TestStatusEnum.Echec.equals(formulaire.getRechFormulaire()
-                     .getResultats().getStatus())) {
-
-            testMetaDonnees(formulaire.getRechFormulaire().getResultats(),
-                  results[i], i + 1);
-
-            i++;
+         // Tri les résultats par ordre croissant de NumeroRecours
+         List<ResultatRechercheType> resultatsTries = Arrays.asList(response
+               .getRechercheResponse().getResultats().getResultat());
+         Collections.sort(resultatsTries, new ResultatRechercheComparator(
+               TypeComparaison.NumeroRecours));
+         
+         // Vérifie chaque résultat
+         for (int i=0;i<COUNT_WAITED;i++) {
+            verifieResultat(resultatsTries.get(i), resultatTest, i+1);
          }
-
+         
+         
+         // Au mieux, si le test est OK, on le passe "A contrôler", car
+         // certaines métadonnées doivent être vérifiées à la main
          if (!TestStatusEnum.Echec.equals(formulaire.getRechFormulaire()
                .getResultats().getStatus())) {
 
@@ -177,11 +206,14 @@ public class Test201Controller extends
 
    }
 
-   private void testMetaDonnees(ResultatTest resultatTest,
-         ResultatRechercheType resultatRecherche, int index) {
+   private void verifieResultat(
+         ResultatRechercheType resultatRecherche,
+         ResultatTest resultatTest,
+         int numeroRecours) {
+      
       MetadonneeValeurList valeursAttendues = new MetadonneeValeurList();
 
-      String numeroResultatRecherche = "1";
+      String numeroResultatRecherche = Integer.toString(numeroRecours);
 
       valeursAttendues.add("CodeActivite", "3");
       valeursAttendues.add("CodeFonction", "2");
@@ -189,28 +221,54 @@ public class Test201Controller extends
       valeursAttendues.add("CodeOrganismeProprietaire", "UR750");
       valeursAttendues.add("CodeRND", "2.3.1.1.12");
       valeursAttendues.add("ContratDeService", "ATT_PROD_001");
+      // valeursAttendues.add("DateArchivage", ""); // non prédictible
       valeursAttendues.add("DateCreation", "2011-09-08");
-      valeursAttendues.add("DateReception", "");
+      // valeursAttendues.add("DateDebutConservation", ""); // non prédictible
+      // valeursAttendues.add("DateFinConservation", ""); // non prédictible
+      valeursAttendues.add("DateReception", StringUtils.EMPTY);
       valeursAttendues.add("Denomination", "Test 201-CaptureMasse-OK-Tor-10");
       valeursAttendues.add("DureeConservation", "1825");
       valeursAttendues.add("FormatFichier", "fmt/354");
       valeursAttendues.add("Gel", "false");
       valeursAttendues.add("Hash", "a2f93f1f121ebba0faef2c0596f2f126eacae77b");
       valeursAttendues.add("NomFichier", "doc1.PDF");
-      // valeursAttendues.add("NumeroRecours", String.valueOf(index)); <= voir
-      // comment on peut vérifier un nombre entre 1 et 10
+      valeursAttendues.add("NumeroRecours", Integer.toString(numeroRecours));
       valeursAttendues.add("Titre", "Attestation de vigilance");
       valeursAttendues.add("TypeHash", "SHA-1");
-      // valeursAttendues.add("DateArchivage",); // <= à vérifier manuellement
 
       getRechercheTestService().verifieResultatRecherche(resultatRecherche,
             numeroResultatRecherche, resultatTest, valeursAttendues);
    }
+   
+   
 
    private void etape4Consultation(TestStockageMasseAllFormulaire formulaire) {
+      
+      // Les codes des métadonnées attendues
+      CodeMetadonneeList codeMetaAttendues = new CodeMetadonneeList();
+      codeMetaAttendues.add("Denomination");
+      codeMetaAttendues.add("Hash");
+      
+      // Valeurs des métadonnées attendues
+      List<MetadonneeValeur> valeursMetaAttendus = new ArrayList<MetadonneeValeur>();
+      valeursMetaAttendus.add(new MetadonneeValeur("Denomination","Test 201-CaptureMasse-OK-Tor-10"));
+      valeursMetaAttendus.add(new MetadonneeValeur("Hash","a2f93f1f121ebba0faef2c0596f2f126eacae77b"));
+      
+      // Appel du service de vérification
       getConsultationTestService()
             .appelWsOpConsultationReponseCorrecteAttendue(
                   formulaire.getUrlServiceWeb(),
-                  formulaire.getConsultFormulaire(), null);
+                  formulaire.getConsultFormulaire(),
+                  "a2f93f1f121ebba0faef2c0596f2f126eacae77b",
+                  codeMetaAttendues,
+                  valeursMetaAttendus);
+      
+      // Si le test n'est pas en échec, alors on peut le passer en succès,
+      // car tout a pu être vérifié
+      ResultatTest resultatTest = formulaire.getConsultFormulaire().getResultats();
+      if (!TestStatusEnum.Echec.equals(resultatTest.getStatus())) {
+         resultatTest.setStatus(TestStatusEnum.Succes);
+      }
+      
    }
 }

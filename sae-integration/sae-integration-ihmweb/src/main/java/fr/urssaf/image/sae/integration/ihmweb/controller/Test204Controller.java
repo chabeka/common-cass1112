@@ -1,6 +1,7 @@
 package fr.urssaf.image.sae.integration.ihmweb.controller;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,9 +9,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import fr.urssaf.image.sae.integration.ihmweb.exception.IntegrationRuntimeException;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseResultatFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.formulaire.ConsultationFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.TestStockageMasseAllFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CodeMetadonneeList;
+import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeur;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeurList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTest;
 import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
@@ -52,6 +55,8 @@ public class Test204Controller extends
 
       TestStockageMasseAllFormulaire formulaire = new TestStockageMasseAllFormulaire();
 
+      // Initialise le formulaire de capture de masse
+      
       CaptureMasseFormulaire formCapture = formulaire
             .getCaptureMasseDeclenchement();
       formCapture.setUrlSommaire(getDebutUrlEcde() + "sommaire.xml");
@@ -62,17 +67,31 @@ public class Test204Controller extends
       formResultat.setUrlSommaire(getDebutUrlEcde() + "resultat.xml");
       formResultat.getResultats().setStatus(TestStatusEnum.SansStatus);
 
+      
+      // Initialise le formulaire de recherche
+      
       RechercheFormulaire rechFormulaire = formulaire.getRechFormulaire();
       rechFormulaire
             .setRequeteLucene(getCasTest().getLuceneExemple());
+      
       CodeMetadonneeList codeMetadonneeList = new CodeMetadonneeList();
-
-      String[] tabElement = new String[] { "CodeRND", "DateArchivage", "Hash",
-            "NomFichier", "NumeroRecours" };
-
-      codeMetadonneeList.addAll(Arrays.asList(tabElement));
-
       rechFormulaire.setCodeMetadonnees(codeMetadonneeList);
+      codeMetadonneeList.add("CodeRND");
+      codeMetadonneeList.add("DateArchivage");
+      codeMetadonneeList.add("Hash");
+      codeMetadonneeList.add("NomFichier");
+      codeMetadonneeList.add("NumeroRecours");
+      
+      
+      // Initialise le formulaire de consultation
+      
+      ConsultationFormulaire formConsult = formulaire.getConsultFormulaire();
+      
+      CodeMetadonneeList codeMetaConsult = new CodeMetadonneeList();
+      formConsult.setCodeMetadonnees(codeMetaConsult);
+      codeMetaConsult.add("Denomination");
+      codeMetaConsult.add("Hash");
+      
 
       return formulaire;
 
@@ -186,9 +205,32 @@ public class Test204Controller extends
    }
 
    private void etape4Consultation(TestStockageMasseAllFormulaire formulaire) {
+      
+      // Les codes des métadonnées attendues
+      CodeMetadonneeList codeMetaAttendues = new CodeMetadonneeList();
+      codeMetaAttendues.add("Denomination");
+      codeMetaAttendues.add("Hash");
+      
+      // Valeurs des métadonnées attendues
+      List<MetadonneeValeur> valeursMetaAttendus = new ArrayList<MetadonneeValeur>();
+      valeursMetaAttendus.add(new MetadonneeValeur("Denomination","Test 204-CaptureMasse-OK-Tor-10-repertoire-anti-slash"));
+      valeursMetaAttendus.add(new MetadonneeValeur("Hash","a2f93f1f121ebba0faef2c0596f2f126eacae77b"));
+      
+      // Appel du service de vérification
       getConsultationTestService()
             .appelWsOpConsultationReponseCorrecteAttendue(
                   formulaire.getUrlServiceWeb(),
-                  formulaire.getConsultFormulaire(), null);
+                  formulaire.getConsultFormulaire(),
+                  "a2f93f1f121ebba0faef2c0596f2f126eacae77b",
+                  codeMetaAttendues,
+                  valeursMetaAttendus);
+      
+      // Si le test n'est pas en échec, alors on peut le passer en succès,
+      // car tout a pu être vérifié
+      ResultatTest resultatTest = formulaire.getConsultFormulaire().getResultats();
+      if (!TestStatusEnum.Echec.equals(resultatTest.getStatus())) {
+         resultatTest.setStatus(TestStatusEnum.Succes);
+      }
+      
    }
 }

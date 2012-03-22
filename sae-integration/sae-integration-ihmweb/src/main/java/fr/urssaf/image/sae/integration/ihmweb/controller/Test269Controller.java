@@ -8,7 +8,12 @@ import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseResultatFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.Test269Formulaire;
+import fr.urssaf.image.sae.integration.ihmweb.modele.CodeMetadonneeList;
+import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeurList;
+import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTest;
 import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheResponse;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ResultatRechercheType;
 
 /**
  * 269-CaptureMasse-KO-Deux-Lancements
@@ -50,6 +55,8 @@ public class Test269Controller extends
 
       Test269Formulaire formulaire = new Test269Formulaire();
 
+      // Initialise le formulaire de capture de masse
+      
       CaptureMasseFormulaire formCapture = formulaire
             .getCaptureMasseDeclenchement();
       formCapture.setUrlSommaire(getDebutUrlEcde1() + "sommaire.xml");
@@ -65,15 +72,25 @@ public class Test269Controller extends
       formResultat.setUrlSommaire(getDebutUrlEcde1() + "resultat.xml");
       formResultat.getResultats().setStatus(TestStatusEnum.SansStatus);
 
+      
+      // Initialise les formulaires de recherche
+      
       RechercheFormulaire rechercheFormulaire = formulaire.getRechFormulaire();
       rechercheFormulaire
             .setRequeteLucene("Denomination:\"Test 269-CaptureMasse-KO-Deux-Lancements-1\"");
+      CodeMetadonneeList codeMetadonneeList1 = new CodeMetadonneeList();
+      rechercheFormulaire.setCodeMetadonnees(codeMetadonneeList1);
+      codeMetadonneeList1.add("Denomination");
 
       RechercheFormulaire rechercheFormulaireParallele = formulaire
             .getRechFormulaireParallele();
       rechercheFormulaireParallele
             .setRequeteLucene("Denomination:\"Test 269-CaptureMasse-KO-Deux-Lancements-2\"");
+      CodeMetadonneeList codeMetadonneeList2 = new CodeMetadonneeList();
+      rechercheFormulaireParallele.setCodeMetadonnees(codeMetadonneeList2);
+      codeMetadonneeList2.add("Denomination");
 
+      
       return formulaire;
 
    }
@@ -156,10 +173,48 @@ public class Test269Controller extends
 
    private void etape4Recherche(Test269Formulaire formulaire) {
 
-      getRechercheTestService().appelWsOpRechercheReponseCorrecteAttendue(
+      RechercheResponse response = getRechercheTestService().appelWsOpRechercheReponseCorrecteAttendue(
             formulaire.getUrlServiceWeb(), formulaire.getRechFormulaire(),
             WAITED_COUNT,
             true, null);
+      
+      if (!TestStatusEnum.Echec.equals(formulaire.getRechFormulaire()
+            .getResultats().getStatus())) {
+
+         ResultatRechercheType results[] = response.getRechercheResponse()
+               .getResultats().getResultat();
+
+         ResultatTest resultatTest = formulaire.getRechFormulaire().getResultats();
+
+         for (int i=0;i<WAITED_COUNT;i++) {
+            verifieResultat(results[i],resultatTest,i);
+         }
+         
+         
+         if (!TestStatusEnum.Echec.equals(resultatTest.getStatus())) {
+
+            resultatTest.setStatus(TestStatusEnum.Succes);
+            
+         }
+         
+      }
+   }
+   
+   
+   private void verifieResultat(
+         ResultatRechercheType resultatRecherche,
+         ResultatTest resultatTest,
+         int index) {
+      
+      MetadonneeValeurList valeursAttendues = new MetadonneeValeurList();
+
+      String numeroResultatRecherche = Integer.toString(index+1);
+
+      valeursAttendues.add("Denomination", "Test 269-CaptureMasse-KO-Deux-Lancements-1");
+
+      getRechercheTestService().verifieResultatRecherche(resultatRecherche,
+            numeroResultatRecherche, resultatTest, valeursAttendues);
+      
    }
 
    private void etape5Recherche(Test269Formulaire formulaire) {

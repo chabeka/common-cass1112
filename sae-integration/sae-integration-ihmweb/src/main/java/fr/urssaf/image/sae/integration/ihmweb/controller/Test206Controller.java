@@ -1,6 +1,8 @@
 package fr.urssaf.image.sae.integration.ihmweb.controller;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,9 +10,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import fr.urssaf.image.sae.integration.ihmweb.exception.IntegrationRuntimeException;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseResultatFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.formulaire.ConsultationFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.TestStockageMasseAllFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CodeMetadonneeList;
+import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeur;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeurList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTest;
 import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
@@ -47,6 +51,8 @@ public class Test206Controller extends
 
       TestStockageMasseAllFormulaire formulaire = new TestStockageMasseAllFormulaire();
 
+      // Initialise le formulaire de capture de masse
+      
       CaptureMasseFormulaire formCapture = formulaire
             .getCaptureMasseDeclenchement();
       formCapture.setUrlSommaire(getDebutUrlEcde() + "sommaire.xml");
@@ -57,11 +63,15 @@ public class Test206Controller extends
       formResultat.setUrlSommaire(getDebutUrlEcde() + "resultat.xml");
       formResultat.getResultats().setStatus(TestStatusEnum.SansStatus);
 
+      
+      // Initialise le formulaire de recherche
+      
       RechercheFormulaire rechFormulaire = formulaire.getRechFormulaire();
       rechFormulaire
             .setRequeteLucene(getCasTest().getLuceneExemple());
+      
       CodeMetadonneeList codeMetadonneeList = new CodeMetadonneeList();
-
+      rechFormulaire.setCodeMetadonnees(codeMetadonneeList);
       String[] tabElement = new String[] { "ApplicationProductrice",
             "ApplicationTraitement", "CodeCategorieV2",
             "CodeOrganismeGestionnaire", "CodeOrganismeProprietaire",
@@ -73,10 +83,18 @@ public class Test206Controller extends
             "NumeroRecours", "NumeroStructure", "Periode", "PseudoSiret",
             "Siren", "Siret", "SiteAcquisition", "TailleFichier", "Titre",
             "TracabilitrePreArchivage", "TypeHash", "VersionRND" };
-
       codeMetadonneeList.addAll(Arrays.asList(tabElement));
 
-      rechFormulaire.setCodeMetadonnees(codeMetadonneeList);
+      
+      // Initialise le formulaire de consultation
+      
+      ConsultationFormulaire formConsult = formulaire.getConsultFormulaire();
+      
+      CodeMetadonneeList codeMetaConsult = new CodeMetadonneeList();
+      formConsult.setCodeMetadonnees(codeMetaConsult);
+      codeMetaConsult.add("Denomination");
+      codeMetaConsult.add("Hash");
+      
 
       return formulaire;
 
@@ -139,47 +157,45 @@ public class Test206Controller extends
    }
 
    private void etape3Recherche(TestStockageMasseAllFormulaire formulaire) {
+      
+      // Appel le service de test de la recherche
       RechercheResponse response = getRechercheTestService()
             .appelWsOpRechercheReponseCorrecteAttendue(
                   formulaire.getUrlServiceWeb(),
                   formulaire.getRechFormulaire(), 1, false, null);
 
-      if (!TestStatusEnum.Echec.equals(formulaire.getRechFormulaire()
-            .getResultats().getStatus())) {
+      ResultatTest resultatTest = formulaire.getRechFormulaire().getResultats();
+      
+      if (!TestStatusEnum.Echec.equals(resultatTest.getStatus())) {
 
-         ResultatRechercheType results[] = response.getRechercheResponse()
-               .getResultats().getResultat();
+         // Récupère l'unique résultat
+         ResultatRechercheType resultatRecherche = response
+               .getRechercheResponse().getResultats().getResultat()[0];
 
-         int i = 0;
-         while (i < results.length
-               && !TestStatusEnum.Echec.equals(formulaire.getRechFormulaire()
-                     .getResultats().getStatus())) {
-
-            testMetaDonnees(formulaire.getRechFormulaire().getResultats(),
-                  results[i], i + 1);
-
-            i++;
+         // Le vérifie
+         verifieResultatRecherche(resultatRecherche, resultatTest);
+         
+         // Si le test n'est pas en échec, alors on peut le passer en succès,
+         // car tout a pu être vérifié
+         if (!TestStatusEnum.Echec.equals(resultatTest.getStatus())) {
+            resultatTest.setStatus(TestStatusEnum.Succes);
          }
 
-         if (!TestStatusEnum.Echec.equals(formulaire.getRechFormulaire()
-               .getResultats().getStatus())) {
-
-            formulaire.getConsultFormulaire().setIdArchivage(
-                  results[0].getIdArchive().getUuidType());
-
-            formulaire.getRechFormulaire().getResultats().setStatus(
-                  TestStatusEnum.AControler);
-         }
+         // Initialise le formulaire de consultation
+         formulaire.getConsultFormulaire().setIdArchivage(
+               resultatRecherche.getIdArchive().toString());
 
       }
 
    }
 
-   private void testMetaDonnees(ResultatTest resultatTest,
-         ResultatRechercheType resultatRecherche, int index) {
-      MetadonneeValeurList valeursAttendues = new MetadonneeValeurList();
-
+   private void verifieResultatRecherche(
+         ResultatRechercheType resultatRecherche,ResultatTest resultatTest) {
+      
       String numeroResultatRecherche = "1";
+      
+      MetadonneeValeurList valeursAttendues = new MetadonneeValeurList();
+      
       valeursAttendues.add("ApplicationProductrice", "ADELAIDE");
       valeursAttendues.add("ApplicationTraitement", "ATTESTATIONS");
       valeursAttendues.add("CodeCategorieV2", "4");
@@ -187,9 +203,9 @@ public class Test206Controller extends
       valeursAttendues.add("CodeOrganismeProprietaire", "UR750");
       valeursAttendues.add("CodeRND", "2.3.1.1.12");
       valeursAttendues.add("CodeSousCategorieV2", "11");
-      // valeursAttendues.add("DateCreation", "2011-09-05");
-      // valeursAttendues.add("DateDebutConservation", "2011-09-02");
-      // valeursAttendues.add("DateReception", "2011-09-01");
+      valeursAttendues.add("DateCreation", "2011-09-05");
+      valeursAttendues.add("DateDebutConservation", "2011-09-02");
+      valeursAttendues.add("DateReception", "2011-09-01");
       valeursAttendues.add("Denomination",
             "Test 206-CaptureMasse-OK-Toutes-metadonnees-specifiables");
       valeursAttendues.add("FormatFichier", "fmt/354");
@@ -221,9 +237,32 @@ public class Test206Controller extends
    }
 
    private void etape4Consultation(TestStockageMasseAllFormulaire formulaire) {
+      
+      // Les codes des métadonnées attendues
+      CodeMetadonneeList codeMetaAttendues = new CodeMetadonneeList();
+      codeMetaAttendues.add("Denomination");
+      codeMetaAttendues.add("Hash");
+      
+      // Valeurs des métadonnées attendues
+      List<MetadonneeValeur> valeursMetaAttendus = new ArrayList<MetadonneeValeur>();
+      valeursMetaAttendus.add(new MetadonneeValeur("Denomination","Test 206-CaptureMasse-OK-Toutes-metadonnees-specifiables"));
+      valeursMetaAttendus.add(new MetadonneeValeur("Hash","a2f93f1f121ebba0faef2c0596f2f126eacae77b"));
+      
+      // Appel du service de vérification
       getConsultationTestService()
             .appelWsOpConsultationReponseCorrecteAttendue(
                   formulaire.getUrlServiceWeb(),
-                  formulaire.getConsultFormulaire(), null);
+                  formulaire.getConsultFormulaire(),
+                  "a2f93f1f121ebba0faef2c0596f2f126eacae77b",
+                  codeMetaAttendues,
+                  valeursMetaAttendus);
+      
+      // Si le test n'est pas en échec, alors on peut le passer en succès,
+      // car tout a pu être vérifié
+      ResultatTest resultatTest = formulaire.getConsultFormulaire().getResultats();
+      if (!TestStatusEnum.Echec.equals(resultatTest.getStatus())) {
+         resultatTest.setStatus(TestStatusEnum.Succes);
+      }
+      
    }
 }
