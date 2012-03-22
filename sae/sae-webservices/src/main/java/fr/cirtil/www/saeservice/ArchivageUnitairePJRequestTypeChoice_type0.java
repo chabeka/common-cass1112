@@ -13,7 +13,8 @@
             /**
             *  ArchivageUnitairePJRequestTypeChoice_type0 bean class
             */
-            @SuppressWarnings({"unchecked","unused"})
+// CHECKSTYLE:OFF
+@SuppressWarnings("all")
         
         public  class ArchivageUnitairePJRequestTypeChoice_type0
         implements org.apache.axis2.databinding.ADBBean{

@@ -13,7 +13,8 @@
             /**
             *  MetadonneeValeurType bean class
             */
-            @SuppressWarnings({"unchecked","unused"})
+// CHECKSTYLE:OFF
+@SuppressWarnings("all")
         
         public  class MetadonneeValeurType
         implements org.apache.axis2.databinding.ADBBean{

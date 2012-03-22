@@ -13,7 +13,8 @@
             /**
             *  PingResponse bean class
             */
-            @SuppressWarnings({"unchecked","unused"})
+// CHECKSTYLE:OFF
+@SuppressWarnings("all")
         
         public  class PingResponse
         implements org.apache.axis2.databinding.ADBBean{

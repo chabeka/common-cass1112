@@ -13,7 +13,8 @@
             /**
             *  ObjetNumeriqueConsultationType bean class
             */
-            @SuppressWarnings({"unchecked","unused"})
+// CHECKSTYLE:OFF
+@SuppressWarnings("all")
         
         public  class ObjetNumeriqueConsultationType
         implements org.apache.axis2.databinding.ADBBean{

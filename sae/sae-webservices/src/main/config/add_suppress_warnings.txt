@@ -1,3 +1,2 @@
 // CHECKSTYLE:OFF
 @SuppressWarnings("all")
-public class

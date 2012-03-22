@@ -13,7 +13,8 @@
             /**
             *  ConsultationResponse bean class
             */
-            @SuppressWarnings({"unchecked","unused"})
+// CHECKSTYLE:OFF
+@SuppressWarnings("all")
         
         public  class ConsultationResponse
         implements org.apache.axis2.databinding.ADBBean{

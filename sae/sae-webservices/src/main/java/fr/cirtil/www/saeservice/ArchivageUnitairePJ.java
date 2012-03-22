@@ -13,7 +13,8 @@
             /**
             *  ArchivageUnitairePJ bean class
             */
-            @SuppressWarnings({"unchecked","unused"})
+// CHECKSTYLE:OFF
+@SuppressWarnings("all")
         
         public  class ArchivageUnitairePJ
         implements org.apache.axis2.databinding.ADBBean{

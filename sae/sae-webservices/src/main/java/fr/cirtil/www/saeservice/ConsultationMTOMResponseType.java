@@ -13,7 +13,8 @@
             /**
             *  ConsultationMTOMResponseType bean class
             */
-            @SuppressWarnings({"unchecked","unused"})
+// CHECKSTYLE:OFF
+@SuppressWarnings("all")
         
         public  class ConsultationMTOMResponseType
         implements org.apache.axis2.databinding.ADBBean{

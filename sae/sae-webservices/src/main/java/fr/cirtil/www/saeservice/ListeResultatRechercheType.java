@@ -13,7 +13,8 @@
             /**
             *  ListeResultatRechercheType bean class
             */
-            @SuppressWarnings({"unchecked","unused"})
+// CHECKSTYLE:OFF
+@SuppressWarnings("all")
         
         public  class ListeResultatRechercheType
         implements org.apache.axis2.databinding.ADBBean{

@@ -69,15 +69,11 @@
                   <configuration>
                      <basedir>src/main/java</basedir>
                      <includes>
-                        <include>**/skeleton/*.java</include>
                         <include>**/cirtil/www/saeservice/*.java</include>
                      </includes>
-                     <excludes>
-                        <exclude>**/skeleton/*Skeleton.java</exclude>
-                     </excludes>
                      <replacements>
                         <replacement>
-                           <token>[ ]*public[ ]*class</token>
+                           <token>[ ]*@SuppressWarnings\(\{"unchecked","unused"\}\)</token>
                            <valueFile>src/main/config/add_suppress_warnings.txt</valueFile>
                         </replacement>
                      </replacements>

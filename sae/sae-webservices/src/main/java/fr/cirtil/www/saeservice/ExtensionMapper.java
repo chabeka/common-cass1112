@@ -12,7 +12,8 @@
             /**
             *  ExtensionMapper class
             */
-            @SuppressWarnings({"unchecked","unused"})
+// CHECKSTYLE:OFF
+@SuppressWarnings("all")
         
         public  class ExtensionMapper{
 

@@ -13,7 +13,8 @@
             /**
             *  DataFileType bean class
             */
-            @SuppressWarnings({"unchecked","unused"})
+// CHECKSTYLE:OFF
+@SuppressWarnings("all")
         
         public  class DataFileType
         implements org.apache.axis2.databinding.ADBBean{
