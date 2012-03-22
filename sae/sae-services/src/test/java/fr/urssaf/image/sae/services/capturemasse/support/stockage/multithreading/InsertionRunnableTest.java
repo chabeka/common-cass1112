@@ -4,6 +4,9 @@
 package fr.urssaf.image.sae.services.capturemasse.support.stockage.multithreading;
 
 import org.easymock.EasyMock;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -18,11 +21,21 @@ import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 @ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })
 public class InsertionRunnableTest {
 
-   @Test(expected = InsertionMasseRuntimeException.class)
-   public void testRunRetourErreur() {
+   private StorageDocumentWriter writer;
 
-      StorageDocumentWriter writer = EasyMock
-            .createMock(StorageDocumentWriter.class);
+   @Before
+   public void init() {
+      writer = EasyMock.createMock(StorageDocumentWriter.class);
+   }
+
+   @After
+   public void end() {
+      EasyMock.reset(writer);
+   }
+
+   @Test(expected = InsertionMasseRuntimeException.class)
+   @Ignore
+   public void testRunRetourErreur() {
 
       try {
          EasyMock.expect(
