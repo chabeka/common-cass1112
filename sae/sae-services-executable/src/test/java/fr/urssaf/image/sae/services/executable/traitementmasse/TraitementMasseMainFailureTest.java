@@ -64,7 +64,7 @@ public class TraitementMasseMainFailureTest {
    }
 
    @Test
-   public void captureMasseMain_failure_JobInexistantException() {
+   public void traitementMasseMain_failure_JobInexistantException() {
 
       UUID uuid = UUID.randomUUID();
 
@@ -86,7 +86,7 @@ public class TraitementMasseMainFailureTest {
    }
 
    @Test
-   public void captureMasseMain_failure_JobNonReserveException() {
+   public void traitementMasseMain_failure_JobNonReserveException() {
 
       UUID uuid = UUID.randomUUID();
 

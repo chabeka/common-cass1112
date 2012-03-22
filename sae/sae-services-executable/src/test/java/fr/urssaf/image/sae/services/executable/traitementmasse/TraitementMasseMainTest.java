@@ -40,7 +40,7 @@ public class TraitementMasseMainTest {
    }
 
    @Test
-   public void captureMasseMain_success() {
+   public void traitementMasseMain_success() {
 
       String[] args = new String[] { UUID.randomUUID().toString(),
             "src/test/resources/config_sae.properties", "context_log" };
@@ -50,7 +50,7 @@ public class TraitementMasseMainTest {
    }
 
    @Test
-   public void captureMasseMain_failure_empty_sommaire() {
+   public void traitementMasseMain_failure_empty_sommaire() {
 
       String[] args = new String[0];
 
@@ -71,7 +71,7 @@ public class TraitementMasseMainTest {
    }
 
    @Test
-   public void captureMasseMain_failure_empty_configSAE() {
+   public void traitementMasseMain_failure_empty_configSAE() {
 
       String[] args = new String[] { "sommaire.xml" };
 
@@ -93,7 +93,7 @@ public class TraitementMasseMainTest {
    }
 
    @Test
-   public void captureMasseMain_failure_empty_uuidLogBack() {
+   public void traitementMasseMain_failure_empty_uuidLogBack() {
 
       String[] args = new String[] { "sommaire.xml", "configSAE" };
 

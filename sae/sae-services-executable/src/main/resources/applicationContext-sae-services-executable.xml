@@ -42,8 +42,8 @@
    <!-- configuration provisoire d'un job de capture en masse -->
 
    <bean id="capture_masse" class="org.springframework.batch.core.job.SimpleJob">
-      <property name="name" value="capture_masse"/>
-      <property name="jobRepository" ref="jobRepository"/>
+      <property name="name" value="capture_masse" />
+      <property name="jobRepository" ref="jobRepository" />
    </bean>
 
    <!-- configuration DFCE -->
@@ -69,9 +69,19 @@
    <!-- configuration JMX -->
    <import resource="applicationContext-sae-services-jmx.xml" />
 
-   <!--  -->
-   <bean id="captureMasseConfig"
+   <!-- configuration obsolète de l'interruption du traitement -->
+   <bean id="captureMasseConfigSpring"
       class="fr.urssaf.image.sae.storage.dfce.services.support.model.InterruptionTraitementConfig">
+      <qualifier value="interruption_capture_masse" />
+      <property name="start" value="${sae.archivagemasse.interruption.heure}" />
+      <property name="delay" value="${sae.archivagemasse.interruption.delai}" />
+      <property name="tentatives"
+         value="${sae.archivagemasse.interruption.tentatives}" />
+   </bean>
+
+   <!-- configuration de l'interruption du traitement -->
+   <bean id="captureMasseConfig"
+      class="fr.urssaf.image.sae.services.capturemasse.support.stockage.interruption.model.InterruptionTraitementConfig">
       <qualifier value="interruption_capture_masse" />
       <property name="start" value="${sae.archivagemasse.interruption.heure}" />
       <property name="delay" value="${sae.archivagemasse.interruption.delai}" />
