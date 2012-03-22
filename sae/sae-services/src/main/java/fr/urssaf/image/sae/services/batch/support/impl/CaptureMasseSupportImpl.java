@@ -22,6 +22,7 @@ import org.springframework.util.Assert;
 
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 import fr.urssaf.image.sae.services.batch.exception.JobParameterTypeException;
+import fr.urssaf.image.sae.services.batch.model.ExitTraitement;
 import fr.urssaf.image.sae.services.batch.support.TraitementExecutionSupport;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
 
@@ -59,7 +60,7 @@ public class CaptureMasseSupportImpl implements TraitementExecutionSupport {
     * {@inheritDoc}
     */
    @Override
-   public final boolean execute(JobRequest job) {
+   public final ExitTraitement execute(JobRequest job) {
 
       Assert.notNull(job, "'job' is required");
 
@@ -84,16 +85,25 @@ public class CaptureMasseSupportImpl implements TraitementExecutionSupport {
       }
 
       // exécution du job avec spring batch
-      boolean succes = run(idTraitement, sommaire);
 
-      return succes;
+      JobExecution jobExecution = run(idTraitement, sommaire);
+
+      boolean succes = ExitStatus.COMPLETED
+            .equals(jobExecution.getExitStatus()) ? true : false;
+      String exitMessage = jobExecution.getExitStatus().getExitDescription();
+
+      ExitTraitement exitTraitement = new ExitTraitement();
+      exitTraitement.setSucces(succes);
+      exitTraitement.setExitMessage(exitMessage);
+
+      return exitTraitement;
 
    }
 
    // il s'agit d'un code provisoire
    // l'implémentation du lancement du traitement de capture en masse via spring
    // batch se fera dans le composant services.capturemasse
-   protected final boolean run(UUID idTraitement, URI sommaire) {
+   protected final JobExecution run(UUID idTraitement, URI sommaire) {
 
       Map<String, JobParameter> parameters = new HashMap<String, JobParameter>();
       parameters.put("capture.masse.idtraitement", new JobParameter(
@@ -115,9 +125,6 @@ public class CaptureMasseSupportImpl implements TraitementExecutionSupport {
          throw new CaptureMasseRuntimeException(e);
       }
 
-      boolean success = ExitStatus.COMPLETED.equals(jobExecution
-            .getExitStatus()) ? true : false;
-
-      return success;
+      return jobExecution;
    }
 }

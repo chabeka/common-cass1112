@@ -17,6 +17,7 @@ import fr.urssaf.image.sae.pile.travaux.service.JobQueueService;
 import fr.urssaf.image.sae.services.batch.TraitementAsynchroneService;
 import fr.urssaf.image.sae.services.batch.exception.JobInattenduException;
 import fr.urssaf.image.sae.services.batch.exception.JobNonReserveException;
+import fr.urssaf.image.sae.services.batch.model.ExitTraitement;
 import fr.urssaf.image.sae.services.batch.support.TraitementExecutionSupport;
 
 /**
@@ -121,26 +122,27 @@ public class TraitementAsynchroneServiceImpl implements
       // démarrage du job et mise à jour de la pile des travaux
       jobQueueService.startingJob(idJob, new Date());
 
-      boolean succes = false;
+      ExitTraitement exitTraitement;
       try {
 
          // appel de l'implémentation de l'exécution du traitement de capture en
          // masse
-         succes = captureMasse.execute(job);
+         exitTraitement = captureMasse.execute(job);
 
       } catch (Exception e) {
 
          LOG.warn("Erreur grave lors de l'exécution  du traitement.", e);
 
-         succes = false;
+         exitTraitement = new ExitTraitement();
+         exitTraitement.setSucces(false);
+         exitTraitement.setExitMessage(e.getMessage());
 
-      } finally {
-
-         // le traitement est terminé
-         // on met à jour la pile des travaux
-
-         jobQueueService.endingJob(idJob, succes, new Date());
       }
+
+      // le traitement est terminé
+      // on met à jour la pile des travaux
+      jobQueueService.endingJob(idJob, exitTraitement.isSucces(), new Date(),
+            exitTraitement.getExitMessage());
 
    }
 }

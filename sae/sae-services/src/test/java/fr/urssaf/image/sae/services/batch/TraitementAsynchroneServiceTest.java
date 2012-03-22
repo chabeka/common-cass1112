@@ -22,7 +22,7 @@ import fr.urssaf.image.sae.services.batch.exception.JobInattenduException;
 import fr.urssaf.image.sae.services.batch.exception.JobNonReserveException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-batch-test.xml" })
+@ContextConfiguration(locations = { "/applicationContext-sae-traitement-masse-test.xml" })
 @SuppressWarnings("PMD.MethodNamingConventions")
 @DirtiesContext
 public class TraitementAsynchroneServiceTest {
@@ -121,6 +121,12 @@ public class TraitementAsynchroneServiceTest {
       Assert.assertEquals(
             "l'état du job dans la pile des travaux est incorrect",
             JobState.FAILURE, job.getState());
+      Assert
+            .assertEquals(
+                  "le message de sortie du job dans la pile des travaux est inattendu",
+                  "Le traitement n°" + idJob
+                        + " a des paramètres inattendu : '"
+                        + job.getParameters() + "'.", job.getMessage());
 
    }
 

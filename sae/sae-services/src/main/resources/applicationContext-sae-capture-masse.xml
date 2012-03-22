@@ -7,10 +7,6 @@
         http://www.springframework.org/schema/context 
         http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-
-   <!-- importation du contexte de la pile des travaux  -->
-   <import resource="applicationContext-sae-pile-travaux.xml" />
-
    <!-- importation du contexte de spring batch admin  -->
    <import resource="applicationContext-commons-cassandra-spring-batch.xml" />
 
