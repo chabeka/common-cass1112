@@ -5,6 +5,7 @@ package fr.urssaf.image.sae.services.executable.capturemasse.exception;
  * 
  * 
  */
+@Deprecated
 public class CaptureMasseMainException extends RuntimeException {
 
    private static final long serialVersionUID = 1L;

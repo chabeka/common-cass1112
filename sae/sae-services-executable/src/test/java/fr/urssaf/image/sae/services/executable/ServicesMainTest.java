@@ -53,4 +53,12 @@ public class ServicesMainTest {
 
       ServicesMain.main(args);
    }
+
+   @Test
+   public void ServicesMain_traitementMasse() {
+
+      String[] args = new String[] { "traitementMasse"};
+
+      ServicesMain.main(args);
+   }
 }

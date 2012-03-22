@@ -91,14 +91,14 @@ public class CaptureMasseLauncherSupportImpl implements
       command = StringUtils.replace(command, "_XMS_TO_REPLACE_", XMS);
 
       // les trois arguments sont dans l'ordre
-      // 1 - le nom du traitement : captureMasse
+      // 1 - le nom de l'opération : traitementMasse
       // 2 - identifiant du traitement de capture en masse
       // 3 - Le chemin complet du fichier de configuration globale du SAE
       // 4 - UUID du contexte LOGBACK en cours
 
       StrBuilder builder = new StrBuilder();
 
-      builder.appendWithSeparators(new Object[] { command, "captureMasse",
+      builder.appendWithSeparators(new Object[] { command, "traitementMasse",
             captureMasse.getIdJob(), saeConfigResource.getAbsolutePath(),
             idTraitement }, " ");
 

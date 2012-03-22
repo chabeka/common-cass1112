@@ -17,4 +17,9 @@
       <qualifier value="saeBulkCaptureService" />
    </bean>
 
+   <bean id="traitementAsynchroneServiceImpl"
+      class="fr.urssaf.image.sae.services.executable.service.SAEServiceProvider"
+      factory-method="getInstanceTraitementAsynchroneService">
+   </bean>
+
 </beans>

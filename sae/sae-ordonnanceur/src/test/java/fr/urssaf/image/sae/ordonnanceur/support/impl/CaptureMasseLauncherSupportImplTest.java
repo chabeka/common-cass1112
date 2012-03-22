@@ -73,7 +73,7 @@ public class CaptureMasseLauncherSupportImplTest {
       expectedCommand.append("logback-sae-services-executable.xml");
       expectedCommand.append(" -Dfile.encoding=UTF-8");
       expectedCommand.append(" sae-services-executable.jar");
-      expectedCommand.append(" captureMasse");
+      expectedCommand.append(" traitementMasse");
       expectedCommand.append(" " + idJob);
       expectedCommand.append(" "
             + saeConfigResource.getFile().getAbsolutePath());

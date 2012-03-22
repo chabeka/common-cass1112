@@ -33,7 +33,6 @@
                   <configuration>
                      <artifactSet>
                         <excludes>
-                           <exclude>log4j:log4j:jar:</exclude>
                            <exclude>commons-logging:commons-logging:jar:</exclude>
                         </excludes>
                      </artifactSet>

@@ -3,6 +3,7 @@ package fr.urssaf.image.sae.services.executable;
 import org.apache.commons.lang.ArrayUtils;
 
 import fr.urssaf.image.sae.services.executable.capturemasse.CaptureMasseMain;
+import fr.urssaf.image.sae.services.executable.traitementmasse.TraitementMasseMain;
 import fr.urssaf.image.sae.services.executable.util.ValidateUtils;
 
 /**
@@ -18,7 +19,7 @@ import fr.urssaf.image.sae.services.executable.util.ValidateUtils;
  * <br>
  * Liste des opérations de traitement <br>
  * <ul>
- * <li>captureMasse</li>
+ * <li>traitementMasse</li>
  * </ul>
  * 
  */
@@ -47,7 +48,14 @@ public final class ServicesMain {
 
          CaptureMasseMain.main(newArgs);
 
-      }else {
+      }
+      else if ("traitementMasse".equals(args[0])) {
+
+         TraitementMasseMain.main(newArgs);
+
+      }
+
+      else {
          throw new IllegalArgumentException("L'opération du traitement '"
                + args[0] + "' est inconnu.");
       }

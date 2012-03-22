@@ -18,6 +18,8 @@ public class SAEConfigResourceLoader implements InitializingBean {
 
    private static final String DFCE_CONFIG = "sae.dfce.cheminFichierConfig";
 
+   private static final String CASSANDRA_CONFIG = "sae.cassandra.cheminFichierConfig";
+
    private final Properties saeProperties;
 
    /**
@@ -41,6 +43,7 @@ public class SAEConfigResourceLoader implements InitializingBean {
     * Le fichier de configuration doit contenir les propriétés :
     * <ul>
     * <li><code>{@value #DFCE_CONFIG}</code></li>
+    * <li><code>{@value #CASSANDRA_CONFIG}</code></li>
     * </ul>
     */
    @Override
@@ -49,6 +52,10 @@ public class SAEConfigResourceLoader implements InitializingBean {
       Assert.isTrue(saeProperties.containsKey(DFCE_CONFIG),
             "le fichier de configuration du SAE doit contenir la propriété "
                   + DFCE_CONFIG);
+
+      Assert.isTrue(saeProperties.containsKey(CASSANDRA_CONFIG),
+            "le fichier de configuration du SAE doit contenir la propriété "
+                  + CASSANDRA_CONFIG);
 
    }
 
@@ -66,6 +73,22 @@ public class SAEConfigResourceLoader implements InitializingBean {
             .getProperty(DFCE_CONFIG));
 
       return dfceResource;
+   }
+
+   /**
+    * Retourne le fichier de configuration de Cassandra contenu dans la
+    * configuration générale du SAE.<br>
+    * <br>
+    * Le propriété est {@value #CASSANDRA_CONFIG}
+    * 
+    * @return fichier de configuration de Cassandra
+    */
+   public final FileSystemResource loadCassandraConfigResource() {
+
+      FileSystemResource cassandraResource = new FileSystemResource(
+            saeProperties.getProperty(CASSANDRA_CONFIG));
+
+      return cassandraResource;
    }
 
 }

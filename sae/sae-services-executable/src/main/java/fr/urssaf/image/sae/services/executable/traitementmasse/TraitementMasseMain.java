@@ -1,22 +1,23 @@
-package fr.urssaf.image.sae.services.executable.capturemasse;
+package fr.urssaf.image.sae.services.executable.traitementmasse;
+
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.context.ApplicationContext;
 
-import fr.urssaf.image.sae.services.document.SAEBulkCaptureService;
-import fr.urssaf.image.sae.services.exception.capture.CaptureBadEcdeUrlEx;
-import fr.urssaf.image.sae.services.exception.capture.CaptureEcdeUrlFileNotFoundEx;
-import fr.urssaf.image.sae.services.exception.capture.CaptureEcdeWriteFileEx;
-import fr.urssaf.image.sae.services.executable.capturemasse.exception.CaptureMasseMainException;
+import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
+import fr.urssaf.image.sae.services.batch.TraitementAsynchroneService;
+import fr.urssaf.image.sae.services.batch.exception.JobNonReserveException;
 import fr.urssaf.image.sae.services.executable.factory.SAEApplicationContextFactory;
+import fr.urssaf.image.sae.services.executable.traitementmasse.exception.TraitementMasseMainException;
 import fr.urssaf.image.sae.services.executable.util.ValidateUtils;
 
 /**
- * Exécutable d'un traitement de capture en masse pour les arguments suivants :
+ * Exécutable d'un traitement de masse pour les arguments suivants :
  * <ul>
- * <li><code>{0} : URL ECDE du sommaire.xml</code></li>
+ * <li><code>{0} : identifiant du traitement de masse</code></li>
  * <li>
  * <code>{1} : chemin absolu du fichier de configuration globale du SAE</code></li>
  * <li><code>{2} : UUID du contexte LOGBACK</code></li>
@@ -24,25 +25,24 @@ import fr.urssaf.image.sae.services.executable.util.ValidateUtils;
  * Tous les arguments sont obligatoires.<br>
  * 
  */
-@Deprecated
-public final class CaptureMasseMain {
+public class TraitementMasseMain {
 
    private static final Logger LOG = LoggerFactory
-         .getLogger(CaptureMasseMain.class);
+         .getLogger(TraitementMasseMain.class);
 
    private final String configLocation;
 
-   protected CaptureMasseMain(String configLocation) {
+   protected TraitementMasseMain(String configLocation) {
 
       this.configLocation = configLocation;
    }
 
-   protected void captureMasse(String args[]) {
+   protected final void execute(String args[]) {
 
       // Vérification des paramètres d'entrée
       if (!ValidateUtils.isNotBlank(args, 0)) {
          throw new IllegalArgumentException(
-               "L'URL ECDE du fichier sommaire.xml décrivant le traitement de capture en masse doit être renseigné.");
+               "L'identifiant du traitement de masse doit être renseigné.");
       }
 
       if (!ValidateUtils.isNotBlank(args, 1)) {
@@ -55,7 +55,7 @@ public final class CaptureMasseMain {
                "L'identifiant du contexte de log doit être renseigné.");
       }
 
-      String sommaire = args[0];
+      UUID idJob = UUID.fromString(args[0]);
       String saeConfiguration = args[1];
       String contexteLog = args[2];
 
@@ -66,26 +66,21 @@ public final class CaptureMasseMain {
       ApplicationContext context = SAEApplicationContextFactory
             .createSAEApplicationContext(configLocation, saeConfiguration);
 
-      // appel du service de capture en masse
-      SAEBulkCaptureService bulkCapture = context
-            .getBean(SAEBulkCaptureService.class);
+      // appel du service de traitement de masse
+      TraitementAsynchroneService traitementService = context
+            .getBean(TraitementAsynchroneService.class);
 
       try {
 
-         bulkCapture.bulkCapture(sommaire);
+         traitementService.lancerJob(idJob);
 
-      } catch (CaptureBadEcdeUrlEx e) {
+      } catch (JobInexistantException e) {
 
-         throw new CaptureMasseMainException(e);
+         throw new TraitementMasseMainException(e);
 
-      } catch (CaptureEcdeUrlFileNotFoundEx e) {
+      } catch (JobNonReserveException e) {
 
-         throw new CaptureMasseMainException(e);
-
-      } catch (CaptureEcdeWriteFileEx e) {
-
-         throw new CaptureMasseMainException(e);
-
+         throw new TraitementMasseMainException(e);
       }
 
    }
@@ -98,17 +93,16 @@ public final class CaptureMasseMain {
     */
    public static void main(String[] args) {
 
-      CaptureMasseMain instance = new CaptureMasseMain(
+      TraitementMasseMain instance = new TraitementMasseMain(
             "/applicationContext-sae-services-executable.xml");
 
       try {
-         instance.captureMasse(args);
+         instance.execute(args);
       } catch (Exception e) {
          LOG
                .error(
-                     "Une erreur a eu lieu dans le processus du traitement de capture en masse.",
+                     "Une erreur a eu lieu dans le processus du traitement de masse.",
                      e);
       }
    }
-
 }
