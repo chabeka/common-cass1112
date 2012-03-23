@@ -3,6 +3,7 @@ package fr.urssaf.image.sae.services.batch.impl;
 import java.util.Date;
 import java.util.UUID;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -138,6 +139,15 @@ public class TraitementAsynchroneServiceImpl implements
          exitTraitement.setExitMessage(e.getMessage());
 
       }
+
+      LOG.debug(
+            "{} - le traitement n°{} est terminé {}. Message de sortie : {}.",
+            new Object[] {
+                  "ajouterJobCaptureMasse()",
+                  job.getIdJob(),
+                  BooleanUtils.toString(exitTraitement.isSucces(),
+                        "avec succès", "sur un échec"),
+                  exitTraitement.getExitMessage() });
 
       // le traitement est terminé
       // on met à jour la pile des travaux

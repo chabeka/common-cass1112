@@ -1,9 +1,11 @@
 package fr.urssaf.image.sae.services.batch;
 
+import java.net.URI;
 import java.util.UUID;
 
 import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 
+import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -20,6 +22,8 @@ import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 import fr.urssaf.image.sae.pile.travaux.model.JobState;
 import fr.urssaf.image.sae.services.batch.exception.JobInattenduException;
 import fr.urssaf.image.sae.services.batch.exception.JobNonReserveException;
+import fr.urssaf.image.sae.services.batch.model.ExitTraitement;
+import fr.urssaf.image.sae.services.capturemasse.SAECaptureMasseService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-traitement-masse-test.xml" })
@@ -27,11 +31,16 @@ import fr.urssaf.image.sae.services.batch.exception.JobNonReserveException;
 @DirtiesContext
 public class TraitementAsynchroneServiceTest {
 
+   private static final String TRAITEMENT_TYPE = "capture_masse";
+
    @Autowired
    private TraitementAsynchroneService service;
 
    @Autowired
    private JobQueueDao jobQueueDao;
+
+   @Autowired
+   private SAECaptureMasseService captureMasseService;
 
    private JobRequest job;
 
@@ -47,6 +56,8 @@ public class TraitementAsynchroneServiceTest {
 
    @After
    public void after() {
+
+      EasyMock.reset(captureMasseService);
 
       // suppression du traitement dde masse
       if (job != null) {
@@ -87,10 +98,19 @@ public class TraitementAsynchroneServiceTest {
 
       job = new JobRequest();
       job.setIdJob(idJob);
-      job.setType("capture_masse");
+      job.setType(TRAITEMENT_TYPE);
       job.setParameters("ecde://ecde.cer69.recouv/sommaire.xml");
       job.setState(JobState.RESERVED);
       jobQueueDao.saveJobRequest(job);
+
+      ExitTraitement exitTraitement = new ExitTraitement();
+      exitTraitement.setSucces(true);
+      exitTraitement.setExitMessage("message de sortie en succès");
+      EasyMock.expect(
+            captureMasseService.captureMasse(URI.create(job.getParameters()),
+                  idJob)).andReturn(exitTraitement);
+
+      EasyMock.replay(captureMasseService);
 
       service.lancerJob(idJob);
 
@@ -98,6 +118,50 @@ public class TraitementAsynchroneServiceTest {
       Assert.assertEquals(
             "l'état du job dans la pile des travaux est incorrect",
             JobState.SUCCESS, job.getState());
+      Assert
+            .assertEquals(
+                  "le message de sortie du job dans la pile des travaux est inattendu",
+                  exitTraitement.getExitMessage(), job.getMessage());
+
+      EasyMock.verify(captureMasseService);
+
+   }
+
+   @Test
+   public void lancerJob_failure_capturemasse() throws JobInexistantException,
+         JobNonReserveException {
+
+      // création d'un traitement de capture en masse
+      UUID idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+
+      job = new JobRequest();
+      job.setIdJob(idJob);
+      job.setType(TRAITEMENT_TYPE);
+      job.setParameters("ecde://ecde.cer69.recouv/sommaire.xml");
+      job.setState(JobState.RESERVED);
+      jobQueueDao.saveJobRequest(job);
+
+      ExitTraitement exitTraitement = new ExitTraitement();
+      exitTraitement.setSucces(false);
+      exitTraitement.setExitMessage("message de sortie en échec");
+      EasyMock.expect(
+            captureMasseService.captureMasse(URI.create(job.getParameters()),
+                  idJob)).andReturn(exitTraitement);
+
+      EasyMock.replay(captureMasseService);
+
+      service.lancerJob(idJob);
+
+      job = jobQueueDao.getJobRequest(idJob);
+      Assert.assertEquals(
+            "l'état du job dans la pile des travaux est incorrect",
+            JobState.FAILURE, job.getState());
+      Assert
+            .assertEquals(
+                  "le message de sortie du job dans la pile des travaux est inattendu",
+                  exitTraitement.getExitMessage(), job.getMessage());
+
+      EasyMock.verify(captureMasseService);
 
    }
 
@@ -110,7 +174,7 @@ public class TraitementAsynchroneServiceTest {
 
       job = new JobRequest();
       job.setIdJob(idJob);
-      job.setType("capture_masse");
+      job.setType(TRAITEMENT_TYPE);
       job.setParameters("ecde://azaz^^/sommaire.xml");
       job.setState(JobState.RESERVED);
       jobQueueDao.saveJobRequest(job);
@@ -139,7 +203,7 @@ public class TraitementAsynchroneServiceTest {
 
       job = new JobRequest();
       job.setIdJob(idJob);
-      job.setType("capture_masse");
+      job.setType(TRAITEMENT_TYPE);
       job.setParameters("");
       job.setState(JobState.CREATED);
       jobQueueDao.saveJobRequest(job);

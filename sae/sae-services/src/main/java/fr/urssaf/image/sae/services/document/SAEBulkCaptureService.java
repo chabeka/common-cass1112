@@ -11,6 +11,7 @@ import fr.urssaf.image.sae.storage.model.jmx.JmxIndicator;
  * 
  * @author rhofir.
  */
+@Deprecated
 public interface SAEBulkCaptureService {
 
    /**

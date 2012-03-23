@@ -2,6 +2,7 @@ package fr.urssaf.image.sae.services.manager;
 
 import org.easymock.EasyMock;
 
+import fr.urssaf.image.sae.services.capturemasse.SAECaptureMasseService;
 import fr.urssaf.image.sae.services.document.SAEBulkCaptureService;
 
 /**
@@ -23,6 +24,18 @@ public final class ServiceMockManager {
 
       SAEBulkCaptureService service = EasyMock
             .createMock(SAEBulkCaptureService.class);
+
+      return service;
+   }
+
+   /**
+    * 
+    * @return instance de {@link SAECaptureMasseService}
+    */
+   public static SAECaptureMasseService createSAECaptureMasseService() {
+
+      SAECaptureMasseService service = EasyMock
+            .createMock(SAECaptureMasseService.class);
 
       return service;
    }

@@ -17,6 +17,8 @@
          expression="fr.urssaf.image.sae.services.batch.impl.*" />
       <context:exclude-filter type="regex"
          expression="fr.urssaf.image.sae.services.batch.support.*" />
+      <context:exclude-filter type="regex"
+         expression="fr.urssaf.image.sae.services.capturemasse.*" />
    </context:component-scan>
 
    <import resource="applicationContext-sae-storage-dfce.xml" />

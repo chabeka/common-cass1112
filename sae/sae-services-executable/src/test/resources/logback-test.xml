@@ -6,12 +6,12 @@
       </encoder>
    </appender>
 
-   <logger name="org">
-      <level value="WARN" />
+   <logger name="fr.urssaf.image">
+      <level value="DEBUG" />
    </logger>
    
    <!-- Niveau general pour l'application -->
-   <root level="DEBUG">
+   <root level="WARN">
       <appender-ref ref="console" />
    </root>
 

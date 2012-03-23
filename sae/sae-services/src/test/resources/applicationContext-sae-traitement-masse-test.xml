@@ -16,12 +16,11 @@
       </property>
    </bean>
 
-   <!--
-      creation d'un job de test pour la capture en masse en attendant de
-      pouvoir faire un mock du service de capture en masse
-   -->
-   <import resource="applicationContext-sae-batch-test.xml" />
-   <import resource="jobs/job-capture-masse-test.xml" />
+   <!-- mock du service de capture en masse-->
+   <bean id="captureMasseService"
+      class="fr.urssaf.image.sae.services.manager.ServiceMockManager"
+      factory-method="createSAECaptureMasseService">
+   </bean>
 
 
 </beans>

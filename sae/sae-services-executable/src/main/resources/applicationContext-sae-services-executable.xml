@@ -36,15 +36,10 @@
 
    <!-- service des traitements de masse  -->
    <import resource="applicationContext-sae-traitement-masse.xml" />
+   <import resource="applicationContext-sae-capture-masse-item.xml" />
 
    <!-- configuration de la capture en masse  -->
    <import resource="applicationContext-sae-capture-masse.xml" />
-   <!-- configuration provisoire d'un job de capture en masse -->
-
-   <bean id="capture_masse" class="org.springframework.batch.core.job.SimpleJob">
-      <property name="name" value="capture_masse" />
-      <property name="jobRepository" ref="jobRepository" />
-   </bean>
 
    <!-- configuration DFCE -->
    <import resource="applicationContext-storageConnectionParameter.xml" />
