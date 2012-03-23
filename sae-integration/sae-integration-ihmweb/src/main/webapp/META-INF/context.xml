@@ -14,6 +14,11 @@
       name="SAE_Fichier_Referentiel_Test"
       type="java.lang.String"
       value="C:\sae\integration\ecdetests.xml" />
+      
+   <Environment
+      name="IHM_TEST_CONFIG_CASSANDRA"
+      type="java.lang.String"
+      value="C:\sae\integration\ihmtests-cassandra-config.properties" />
    
    <!-- -->
    
@@ -31,6 +36,11 @@
       name="SAE_Fichier_Referentiel_Test"
       type="java.lang.String"
       value="/appl/sae_integration/ecdetests.xml" />
+      
+   <Environment
+      name="IHM_TEST_CONFIG_CASSANDRA"
+      type="java.lang.String"
+      value="/appl/sae_integration/ihmtests-cassandra-config.properties" />
       
    -->
       

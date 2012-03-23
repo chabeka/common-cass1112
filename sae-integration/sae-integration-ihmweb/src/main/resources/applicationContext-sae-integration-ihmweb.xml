@@ -15,6 +15,8 @@
          http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd">
 
    <task:annotation-driven />
+   
+   <import resource="classpath*:/applicationContext-commons-cassandra.xml" />
 
    <context:component-scan base-package="fr.urssaf.image.sae.integration.ihmweb">
       <context:exclude-filter type="regex"
@@ -57,8 +59,23 @@
    <bean
       class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
       <property name="locations">
-         <value>classpath:config.properties</value>
+         <list>
+            
+            <value>classpath:config.properties</value>
+            
+            <bean class="org.springframework.core.io.FileSystemResource">
+               <constructor-arg>
+                  <bean class="org.springframework.jndi.JndiObjectFactoryBean">
+                     <property name="jndiName" value="java:comp/env/IHM_TEST_CONFIG_CASSANDRA" />
+                     <property name="resourceRef" value="false" />
+                  </bean>
+               </constructor-arg>
+            </bean>
+            
+         </list>
       </property>
+      
+      
    </bean>
 
    <bean id="testConfig"
