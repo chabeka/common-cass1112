@@ -70,6 +70,14 @@
          <outputDirectory>sae-ordonnanceur</outputDirectory>
       </fileSet>
       
+      <fileSet>
+         <directory>src/config/</directory>
+         <includes>
+            <include>sae-cassandra-config.properties</include>
+         </includes>
+         <outputDirectory />
+      </fileSet>
+      
    </fileSets>
       
    <files>
@@ -108,5 +116,4 @@
     
    </files>
   
-  </assembly>
-
+</assembly>
