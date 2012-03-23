@@ -3,13 +3,16 @@
    <source>
       <host>@@ECDE_NFS_IP1@@</host>
       <basePath>@@ECDE_NFS_CHEMIN1@@</basePath>
+      <local>@@ECDE_LOCAL_1@@</local>
    </source>
    <source>
       <host>@@ECDE_NFS_IP2@@</host>
       <basePath>@@ECDE_NFS_CHEMIN2@@</basePath>
+      <local>@@ECDE_LOCAL_2@@</local>
    </source>
    <source>
       <host>@@ECDE_NFS_IP3@@</host>
       <basePath>@@ECDE_NFS_CHEMIN3@@</basePath>
+      <local>@@ECDE_LOCAL_3@@</local>
    </source>
 </sources>

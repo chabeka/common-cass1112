@@ -63,6 +63,8 @@ Les répertoires suivants doivent être créés :
   @@SAE_HOME@@/sae-igcmaj/
   @@SAE_HOME@@/sae-services-executable/
   @@SAE_HOME@@/sae-dfce-admin-exploit/
+  @@SAE_HOME@@/sae-ordonnanceur/
+  @@SAE_HOME@@/sae-lotinstallmaj/
   
 
 
@@ -94,6 +96,7 @@ Les fichiers ci-dessous sont installés dans @@SAE_HOME@@/sae-lotinstallmaj/
 Les fichiers ci-dessous sont installés dans @@SAE_HOME@@/sae-ordonnanceur/
  sae-ordonnanceur.jar
  logback-sae-ordonnanceur.xml
+ sae-ordonnanceur.sh
 
 
 

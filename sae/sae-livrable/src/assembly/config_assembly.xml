@@ -14,8 +14,6 @@
    
    <fileSets>
       
-      
-      <!-- Fichiers de configuration -->      
       <fileSet>
          <directory>src/config/</directory>
          <includes>
@@ -29,7 +27,7 @@
          <includes>
             <include>logback-sae-lotinstallmaj.xml</include>
          </includes>
-         <outputDirectory />
+         <outputDirectory>sae-lotinstallmaj</outputDirectory>
       </fileSet>
       
       <fileSet>
@@ -37,7 +35,7 @@
          <includes>
             <include>logback-sae-ordonnanceur.xml</include>
          </includes>
-         <outputDirectory />
+         <outputDirectory>sae-ordonnanceur</outputDirectory>
       </fileSet>
       
       <fileSet>
@@ -64,80 +62,27 @@
          <outputDirectory />
       </fileSet>
       
-      
-      <!-- Application finale console de téléchargement des CRL -->
-      <!--<fileSet>
-         <directory>${project.parent.basedir}/sae-igcmaj/target/</directory>
+      <fileSet>
+         <directory>src/scripts/</directory>
          <includes>
-            <include>sae-igcmaj-exe.jar</include>
+            <include>sae-ordonnanceur.sh</include>
          </includes>
-         <outputDirectory />
+         <outputDirectory>sae-ordonnanceur</outputDirectory>
       </fileSet>
-      
-       
-      
-      --><!-- Application finale console de lancement des services 
-      <fileSet>
-         <directory>${project.parent.basedir}/sae-services-executable/target/</directory>
-         <includes>
-            <include>sae-services-executable-${version}.jar</include>
-         </includes>
-         <outputDirectory />
-      </fileSet>
-      
-      
-       Application finale console des services d'exploitation 
-      <fileSet>
-         <directory>${project.parent.basedir}/sae-dfce-admin-exploit/target/</directory>
-         <includes>
-            <include>sae-dfce-admin-exploit-${version}.jar</include>
-         </includes>
-         <outputDirectory />
-      </fileSet>
-      
-      -->
-      
-      <!-- Fichiers de configuration -->
-      <!-- Modèles pour Hawai -->
-      <!--<fileSet>
-         <directory>src/config/</directory>
-         <outputDirectory />
-      </fileSet>
-       Exemples 
-      <fileSet>
-         <directory>src/config_exemples/</directory>
-         <outputDirectory>config_exemples</outputDirectory>
-      </fileSet>
-      
-      
-       Concernant la PKI utilisée par le SAE 
-      <fileSet>
-         <directory>src/pki/</directory>
-         <outputDirectory />
-      </fileSet>
-      
-      
-       De la documentation 
-      <fileSet>
-         <directory>src/manuels/</directory>
-         <outputDirectory>manuels</outputDirectory>
-      </fileSet>-->
-      
-      
       
    </fileSets>
-   <!-- Application finale web contenant le service web SaeService -->   
+      
    <files>
       
        <file>
          <source>${project.parent.basedir}/sae-ordonnanceur/target/sae-ordonnanceur-${version}.jar</source>
-         <outputDirectory/>
+         <outputDirectory>sae-ordonnanceur</outputDirectory>
          <destName>sae-ordonnanceur.jar</destName>
        </file>
        
        <file>
          <source>${project.parent.basedir}/sae-lotinstallmaj/target/sae-lotinstallmaj-${version}.jar</source>
-         <outputDirectory/>
+         <outputDirectory>sae-lotinstallmaj</outputDirectory>
          <destName>sae-lotinstallmaj.jar</destName>
        </file>
    
