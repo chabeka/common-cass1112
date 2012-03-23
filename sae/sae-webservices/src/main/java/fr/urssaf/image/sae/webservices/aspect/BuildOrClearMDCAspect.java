@@ -1,6 +1,6 @@
 package fr.urssaf.image.sae.webservices.aspect;
 
-import java.util.UUID;
+import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
@@ -20,7 +20,7 @@ public class BuildOrClearMDCAspect {
     * Mise en place du Log contexte.
     */
    public final void buildLogContext() {
-      String contexteLog = UUID.randomUUID().toString();
+      String contexteLog = TimeUUIDUtils.getUniqueTimeUUIDinMillis().toString();
       MDC.put(LOG_CONTEXTE, contexteLog);
    }
 

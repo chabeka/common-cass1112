@@ -3,6 +3,7 @@ package fr.urssaf.image.sae.webservices.service;
 import org.easymock.EasyMock;
 import org.springframework.stereotype.Component;
 
+import fr.urssaf.image.sae.services.batch.TraitementAsynchroneService;
 import fr.urssaf.image.sae.services.capture.SAECaptureService;
 import fr.urssaf.image.sae.services.controles.SAEControlesCaptureService;
 import fr.urssaf.image.sae.services.document.SAEBulkCaptureService;
@@ -60,5 +61,17 @@ public class SAEServiceFactory {
       LauncherSupport support = EasyMock.createMock(LauncherSupport.class);
 
       return support;
+   }
+
+   /**
+    * 
+    * @return instance de {@link TraitementAsynchroneService}
+    */
+   public final TraitementAsynchroneService createTraitementAsynchroneService() {
+
+      TraitementAsynchroneService service = EasyMock
+            .createMock(TraitementAsynchroneService.class);
+
+      return service;
    }
 }

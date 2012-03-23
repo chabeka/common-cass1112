@@ -27,7 +27,7 @@
          </list>
       </property>
       <property name="cacheSeconds" value="0" />
-   </bean>
+   </bean> 
 
    <!-- Chargement de la configuration ECDE -->
    
@@ -53,5 +53,7 @@
    <import resource="applicationContext-sae-mapping.xml" />
    <import resource="applicationContext-sae-servlet.xml" />
    <import resource="applicationContext-logwarn-aspect.xml" />
+   <import resource="applicationContext-sae-traitement-masse.xml" />
+   
 
 </beans>

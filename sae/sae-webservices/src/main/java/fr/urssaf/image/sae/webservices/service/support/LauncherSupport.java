@@ -5,6 +5,7 @@ package fr.urssaf.image.sae.webservices.service.support;
  * 
  * 
  */
+@Deprecated
 public interface LauncherSupport {
 
    /**

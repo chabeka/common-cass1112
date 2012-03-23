@@ -29,15 +29,20 @@ public class PropertiesFactory {
       // Deux fichiers properties : 
       //  - Fichier de configuration générale
       //  - Fichier de configuration DFCE
-      Resource[] tabResource = new Resource[2];
+      Resource[] tabResource = new Resource[3];
       
       // Fichier de configuration générale
       tabResource[0] = saeConfigResource;
       
       // Fichier de configuration DFCE
-      String dfceConfigPath = getCheminFichierConfigDfce(saeConfigResource);
+      String dfceConfigPath = getCheminFichierConfigDfce(saeConfigResource,"sae.dfce.cheminFichierConfig");
       FileSystemResource dfceConfigResource = new FileSystemResource(dfceConfigPath); 
       tabResource[1] = dfceConfigResource;
+      
+      // Fichier de configuration Cassandra
+      String cassandraConfigPath = getCheminFichierConfigDfce(saeConfigResource,"sae.cassandra.cheminFichierConfig");
+      FileSystemResource cassandraConfigResource = new FileSystemResource(cassandraConfigPath); 
+      tabResource[2] = cassandraConfigResource;
       
       // Création du PropertyPlaceholderConfigurer
       PropertyPlaceholderConfigurer property = new PropertyPlaceholderConfigurer();
@@ -48,13 +53,13 @@ public class PropertiesFactory {
    
    
    
-   private String getCheminFichierConfigDfce(FileSystemResource saeConfigResource) throws IOException {
+   private String getCheminFichierConfigDfce(FileSystemResource saeConfigResource,String property) throws IOException {
       
       Properties props = new Properties();
       
       props.load(saeConfigResource.getInputStream());
       
-      return props.getProperty("sae.dfce.cheminFichierConfig");
+      return props.getProperty(property);
       
    }
    

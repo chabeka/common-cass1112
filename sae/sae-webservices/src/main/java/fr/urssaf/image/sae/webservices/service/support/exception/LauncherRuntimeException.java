@@ -9,6 +9,7 @@ package fr.urssaf.image.sae.webservices.service.support.exception;
  * 
  * 
  */
+@Deprecated
 public class LauncherRuntimeException extends RuntimeException {
 
    private static final long serialVersionUID = 1L;

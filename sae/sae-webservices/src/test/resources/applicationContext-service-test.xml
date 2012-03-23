@@ -44,7 +44,12 @@
    <bean id="captureMasseLauncher" factory-bean="SAEServiceFactory"
       factory-method="createLauncherSupport" />
 
+   <!-- mock pour le lancement des traitements de masse -->
+   <bean id="traitementAsynchroneService" factory-bean="SAEServiceFactory"
+      factory-method="createTraitementAsynchroneService" />
+
    <!-- Services necessaires à la consultation des etats des services  -->
-   <context:component-scan base-package="fr.urssaf.image.sae.webservices.dfceservice.test" />
+   <context:component-scan
+      base-package="fr.urssaf.image.sae.webservices.dfceservice.test" />
 
 </beans>
