@@ -5,12 +5,6 @@
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/test/resources"/>
-        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/commons-cassandra-spring-batch/commons-cassandra-spring-batch">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/commons-cassandra/commons-cassandra">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
         <property name="context-root" value="sae-spring-batch-admin-sample"/>
         <property name="java-output-path" value="/sae-spring-batch-admin-sample/target/classes"/>
     </wb-module>

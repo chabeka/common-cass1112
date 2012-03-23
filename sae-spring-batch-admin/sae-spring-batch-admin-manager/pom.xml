@@ -27,7 +27,7 @@ visualization of Batch meta data, and also launching and stopping jobs inside th
       <dependency>
          <groupId>fr.urssaf.image.commons</groupId>
          <artifactId>commons-cassandra-spring-batch</artifactId>
-         <version>0.0.1-SNAPSHOT</version>
+         <version>0.0.1</version>
          <exclusions>
             <exclusion>
                <groupId>org.springframework.batch</groupId>
