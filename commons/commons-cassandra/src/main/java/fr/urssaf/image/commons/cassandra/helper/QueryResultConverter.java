@@ -47,18 +47,21 @@ public class QueryResultConverter<K, N, V> {
          K key = row.getKey();
          ColumnSlice<N, V> columnSlice = row.getColumnSlice();
          List<HColumn<N, V>> cols = columnSlice.getColumns();
-         List<ColumnOrSuperColumn> list = new ArrayList<ColumnOrSuperColumn>(cols.size());
-         for (HColumn<N, V> hColumn : cols) {
-            ColumnOrSuperColumn cosp = new ColumnOrSuperColumn();
-            Column c = new Column();
-            c.name = columnNameSerializer.toByteBuffer(hColumn.getName());
-            c.value = valueSerializer.toByteBuffer(hColumn.getValue());
-            c.timestamp = hColumn.getClock();
-            c.ttl = hColumn.getTtl();
-            cosp.setColumn(c);
-            list.add(cosp);
+         // On ne garde pas les lignes sans colonnes, qui correspondent à des lignes supprimées 
+         if (cols.size() > 0) {
+            List<ColumnOrSuperColumn> list = new ArrayList<ColumnOrSuperColumn>(cols.size());
+            for (HColumn<N, V> hColumn : cols) {
+               ColumnOrSuperColumn cosp = new ColumnOrSuperColumn();
+               Column c = new Column();
+               c.name = columnNameSerializer.toByteBuffer(hColumn.getName());
+               c.value = valueSerializer.toByteBuffer(hColumn.getValue());
+               c.timestamp = hColumn.getClock();
+               c.ttl = hColumn.getTtl();
+               cosp.setColumn(c);
+               list.add(cosp);
+            }
+            map.put(keySerializer.toByteBuffer(key), list);
          }
-         map.put(keySerializer.toByteBuffer(key), list);
       }
       ExecutionResult<Map<ByteBuffer, List<ColumnOrSuperColumn>>> executionResult = new ExecutionResult<Map<ByteBuffer, List<ColumnOrSuperColumn>>>(
             map, queryResult.getExecutionTimeMicro(), queryResult.getHostUsed());
