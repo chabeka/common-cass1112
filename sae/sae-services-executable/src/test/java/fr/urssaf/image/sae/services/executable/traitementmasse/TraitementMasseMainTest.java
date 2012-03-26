@@ -92,24 +92,4 @@ public class TraitementMasseMainTest {
 
    }
 
-   @Test
-   public void traitementMasseMain_failure_empty_uuidLogBack() {
-
-      String[] args = new String[] { "sommaire.xml", "configSAE" };
-
-      try {
-
-         instance.execute(args);
-
-         Assert
-               .fail("le test doit échouer car l'identifiant du contexte de LOGBACK n'est pas renseigné");
-
-      } catch (IllegalArgumentException e) {
-
-         Assert.assertEquals(
-               "L'identifiant du contexte de log doit être renseigné.", e
-                     .getMessage());
-      }
-
-   }
 }

@@ -20,7 +20,6 @@ import fr.urssaf.image.sae.services.executable.util.ValidateUtils;
  * <li><code>{0} : identifiant du traitement de masse</code></li>
  * <li>
  * <code>{1} : chemin absolu du fichier de configuration globale du SAE</code></li>
- * <li><code>{2} : UUID du contexte LOGBACK</code></li>
  * </ul>
  * Tous les arguments sont obligatoires.<br>
  * 
@@ -50,14 +49,9 @@ public class TraitementMasseMain {
                "Le chemin complet du fichier de configuration générale du SAE doit être renseigné.");
       }
 
-      if (!ValidateUtils.isNotBlank(args, 2)) {
-         throw new IllegalArgumentException(
-               "L'identifiant du contexte de log doit être renseigné.");
-      }
-
       UUID idJob = UUID.fromString(args[0]);
       String saeConfiguration = args[1];
-      String contexteLog = args[2];
+      String contexteLog = args[0];
 
       // initialisation du contexte du LOGBACK
       MDC.put("log_contexte_uuid", contexteLog);

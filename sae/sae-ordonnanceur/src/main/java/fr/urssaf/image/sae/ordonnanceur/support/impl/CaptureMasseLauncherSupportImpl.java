@@ -94,13 +94,11 @@ public class CaptureMasseLauncherSupportImpl implements
       // 1 - le nom de l'opération : traitementMasse
       // 2 - identifiant du traitement de capture en masse
       // 3 - Le chemin complet du fichier de configuration globale du SAE
-      // 4 - UUID du contexte LOGBACK en cours
 
       StrBuilder builder = new StrBuilder();
 
       builder.appendWithSeparators(new Object[] { command, "traitementMasse",
-            captureMasse.getIdJob(), saeConfigResource.getAbsolutePath(),
-            idTraitement }, " ");
+            idTraitement, saeConfigResource.getAbsolutePath() }, " ");
 
       return builder.toString();
    }

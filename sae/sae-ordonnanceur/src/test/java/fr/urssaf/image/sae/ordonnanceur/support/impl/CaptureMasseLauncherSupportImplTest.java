@@ -77,7 +77,6 @@ public class CaptureMasseLauncherSupportImplTest {
       expectedCommand.append(" " + idJob);
       expectedCommand.append(" "
             + saeConfigResource.getFile().getAbsolutePath());
-      expectedCommand.append(" " + idJob);
 
       Assert.assertEquals("l'exécutable du traitement de masse est inattendu",
             expectedCommand.toString(), commande);
