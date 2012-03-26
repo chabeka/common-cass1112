@@ -68,11 +68,12 @@ public class SAECaptureMasseServiceImpl implements SAECaptureMasseService {
                .getStepExecutions());
          boolean traitementOK = true;
          int i = 0;
-         if (traitementOK && i < list.size()) {
+         while (traitementOK && i < list.size()) {
             if ("finBloquant".equalsIgnoreCase(list.get(i).getStepName())
                   || "finErreur".equalsIgnoreCase(list.get(i).getStepName())) {
                traitementOK = false;
             }
+            i++;
          }
 
          if (traitementOK) {
@@ -84,10 +85,10 @@ public class SAECaptureMasseServiceImpl implements SAECaptureMasseService {
          }
 
       } catch (Exception e) {
-         exitTraitement.setExitMessage(e.toString());
+         exitTraitement.setExitMessage(e.getMessage());
          exitTraitement.setSucces(false);
       }
-      
+
       return exitTraitement;
 
    }

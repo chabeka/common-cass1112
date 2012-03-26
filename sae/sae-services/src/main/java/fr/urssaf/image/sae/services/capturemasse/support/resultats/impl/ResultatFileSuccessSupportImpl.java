@@ -115,29 +115,41 @@ public class ResultatFileSuccessSupportImpl implements
 
       try {
          output = new FileOutputStream(resultats);
-         final Resource classPath = getContext().getResource(
-               "classpath:xsd_som_res/resultats.xsd");
-         URL xsdSchema;
+      } catch (FileNotFoundException e) {
+         throw new CaptureMasseRuntimeException(e);
+      }
+
+      final Resource classPath = getContext().getResource(
+            "classpath:xsd_som_res/resultats.xsd");
+      URL xsdSchema;
+
+      try {
          xsdSchema = classPath.getURL();
+      } catch (IOException ioException) {
+         throw new CaptureMasseRuntimeException(ioException);
+      } finally {
+         try {
+            output.close();
+         } catch (IOException e) {
+            LOGGER.debug("{} - Erreur de fermeture du flux de "
+                  + resultats.getAbsolutePath(), PREFIX_TRC);
+         }
+      }
+
+      try {
          JAXBUtils.marshal(resultat, output, xsdSchema);
+
       } catch (JAXBException e) {
          throw new CaptureMasseRuntimeException(e);
       } catch (SAXException e) {
          throw new CaptureMasseRuntimeException(e);
-      } catch (FileNotFoundException e) {
-         throw new CaptureMasseRuntimeException(e);
-      } catch (IOException e) {
-         throw new CaptureMasseRuntimeException(e);
       } finally {
-         if (output != null) {
-            try {
-               output.close();
-            } catch (IOException e) {
-               LOGGER.debug("{} - Erreur de fermeture du flux de "
-                     + resultats.getAbsolutePath(), PREFIX_TRC);
-            }
+         try {
+            output.close();
+         } catch (IOException e) {
+            LOGGER.debug("{} - Erreur de fermeture du flux de "
+                  + resultats.getAbsolutePath(), PREFIX_TRC);
          }
       }
-
    }
 }
