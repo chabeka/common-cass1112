@@ -1,7 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context>
 
-  <Environment name="SAE_Fichier_Configuration" type="java.lang.String"
+   <!-- 
+   Configuration Linux (exemple pour les serveurs d'integration sae-int1 et sae-int2)
+   -->
+
+  
+   
+   <Environment name="SAE_Fichier_Configuration" type="java.lang.String"
+      value="/appl/sae/sae-config.properties" />
+
+     
+   
+      
+   <!-- 
+   Configuration Windows (poste de developpeur) (exemple)
+   -->
+   
+   
+ <!--  
+   <Environment name="SAE_Fichier_Configuration" type="java.lang.String"
       value="c:/appl/sae/sae-config.properties" />
+-->
+    
 
 </Context>
