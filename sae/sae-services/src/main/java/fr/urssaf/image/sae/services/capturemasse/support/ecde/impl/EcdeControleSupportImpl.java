@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseEcdeWriteFileException;
+import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
 import fr.urssaf.image.sae.services.capturemasse.support.ecde.EcdeControleSupport;
 
 /**
@@ -22,9 +23,9 @@ public class EcdeControleSupportImpl implements EcdeControleSupport {
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(EcdeControleSupportImpl.class);
-   
+
    private static final String PREFIXE_TRC = "checkEcdeWrite()";
-   
+
    /**
     * {@inheritDoc}
     */
@@ -48,8 +49,7 @@ public class EcdeControleSupportImpl implements EcdeControleSupport {
             }
 
          } catch (IOException e) {
-            LOGGER.debug("{} - Erreur IO sur le répertoire "
-                  + parentFile.getAbsolutePath(), PREFIXE_TRC);
+            throw new CaptureMasseRuntimeException(e);
          }
       }
 

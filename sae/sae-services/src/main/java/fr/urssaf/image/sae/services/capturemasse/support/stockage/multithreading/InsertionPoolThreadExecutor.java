@@ -271,7 +271,7 @@ public class InsertionPoolThreadExecutor extends ThreadPoolExecutor implements
          // 2 - sinon on stocke l'exception la plus récente dans l'ordre du
          // lancement des insertions soit dans l'ordre où sont les documents
          // dans le sommaire
-         if (exception == null) {
+         if (this.exception == null) {
             this.exception = exception;
          } else if (this.exception.getIndex() > exception.getIndex()) {
             this.exception = exception;
