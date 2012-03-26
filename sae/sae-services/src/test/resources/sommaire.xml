@@ -16,8 +16,7 @@
       <!-- Document n°1 -->
       <somres:document>
          <somres:objetNumerique>
-            <somres:cheminEtNomDuFichier>doc1.PDF
-            </somres:cheminEtNomDuFichier>
+            <somres:cheminEtNomDuFichier>doc1.PDF</somres:cheminEtNomDuFichier>
          </somres:objetNumerique>
          <somres:metadonnees>
             <somres:metadonnee>
@@ -68,8 +67,7 @@
       <!-- Document n°2 -->
       <somres:document>
          <somres:objetNumerique>
-            <somres:cheminEtNomDuFichier>doc1.PDF
-            </somres:cheminEtNomDuFichier>
+            <somres:cheminEtNomDuFichier>doc1.PDF</somres:cheminEtNomDuFichier>
          </somres:objetNumerique>
          <somres:metadonnees>
             <somres:metadonnee>
@@ -120,8 +118,7 @@
        <!-- Document n°3 -->
       <somres:document>
          <somres:objetNumerique>
-            <somres:cheminEtNomDuFichier>doc1.PDF
-            </somres:cheminEtNomDuFichier>
+            <somres:cheminEtNomDuFichier>doc1.PDF</somres:cheminEtNomDuFichier>
          </somres:objetNumerique>
          <somres:metadonnees>
             <somres:metadonnee>
@@ -172,8 +169,7 @@
        <!-- Document n°4 -->
       <somres:document>
          <somres:objetNumerique>
-            <somres:cheminEtNomDuFichier>doc1.PDF
-            </somres:cheminEtNomDuFichier>
+            <somres:cheminEtNomDuFichier>doc1.PDF</somres:cheminEtNomDuFichier>
          </somres:objetNumerique>
          <somres:metadonnees>
             <somres:metadonnee>
@@ -224,8 +220,7 @@
        <!-- Document n°2 -->
       <somres:document>
          <somres:objetNumerique>
-            <somres:cheminEtNomDuFichier>doc1.PDF
-            </somres:cheminEtNomDuFichier>
+            <somres:cheminEtNomDuFichier>doc1.PDF</somres:cheminEtNomDuFichier>
          </somres:objetNumerique>
          <somres:metadonnees>
             <somres:metadonnee>
@@ -276,8 +271,7 @@
        <!-- Document n°2 -->
       <somres:document>
          <somres:objetNumerique>
-            <somres:cheminEtNomDuFichier>doc1.PDF
-            </somres:cheminEtNomDuFichier>
+            <somres:cheminEtNomDuFichier>doc1.PDF</somres:cheminEtNomDuFichier>
          </somres:objetNumerique>
          <somres:metadonnees>
             <somres:metadonnee>
@@ -328,8 +322,7 @@
        <!-- Document n°2 -->
       <somres:document>
          <somres:objetNumerique>
-            <somres:cheminEtNomDuFichier>doc1.PDF
-            </somres:cheminEtNomDuFichier>
+            <somres:cheminEtNomDuFichier>doc1.PDF</somres:cheminEtNomDuFichier>
          </somres:objetNumerique>
          <somres:metadonnees>
             <somres:metadonnee>
@@ -380,8 +373,7 @@
        <!-- Document n°2 -->
       <somres:document>
          <somres:objetNumerique>
-            <somres:cheminEtNomDuFichier>doc1.PDF
-            </somres:cheminEtNomDuFichier>
+            <somres:cheminEtNomDuFichier>doc1.PDF</somres:cheminEtNomDuFichier>
          </somres:objetNumerique>
          <somres:metadonnees>
             <somres:metadonnee>
@@ -432,8 +424,7 @@
        <!-- Document n°2 -->
       <somres:document>
          <somres:objetNumerique>
-            <somres:cheminEtNomDuFichier>doc1.PDF
-            </somres:cheminEtNomDuFichier>
+            <somres:cheminEtNomDuFichier>doc1.PDF</somres:cheminEtNomDuFichier>
          </somres:objetNumerique>
          <somres:metadonnees>
             <somres:metadonnee>
@@ -484,8 +475,7 @@
        <!-- Document n°2 -->
       <somres:document>
          <somres:objetNumerique>
-            <somres:cheminEtNomDuFichier>doc1.PDF
-            </somres:cheminEtNomDuFichier>
+            <somres:cheminEtNomDuFichier>doc1.PDF</somres:cheminEtNomDuFichier>
          </somres:objetNumerique>
          <somres:metadonnees>
             <somres:metadonnee>
@@ -536,8 +526,7 @@
        <!-- Document n°2 -->
       <somres:document>
          <somres:objetNumerique>
-            <somres:cheminEtNomDuFichier>doc1.PDF
-            </somres:cheminEtNomDuFichier>
+            <somres:cheminEtNomDuFichier>doc1.PDF</somres:cheminEtNomDuFichier>
          </somres:objetNumerique>
          <somres:metadonnees>
             <somres:metadonnee>
@@ -588,8 +577,7 @@
        <!-- Document n°2 -->
       <somres:document>
          <somres:objetNumerique>
-            <somres:cheminEtNomDuFichier>doc1.PDF
-            </somres:cheminEtNomDuFichier>
+            <somres:cheminEtNomDuFichier>doc1.PDF</somres:cheminEtNomDuFichier>
          </somres:objetNumerique>
          <somres:metadonnees>
             <somres:metadonnee>
@@ -640,8 +628,7 @@
        <!-- Document n°2 -->
       <somres:document>
          <somres:objetNumerique>
-            <somres:cheminEtNomDuFichier>doc1.PDF
-            </somres:cheminEtNomDuFichier>
+            <somres:cheminEtNomDuFichier>doc1.PDF</somres:cheminEtNomDuFichier>
          </somres:objetNumerique>
          <somres:metadonnees>
             <somres:metadonnee>
@@ -692,8 +679,7 @@
        <!-- Document n°2 -->
       <somres:document>
          <somres:objetNumerique>
-            <somres:cheminEtNomDuFichier>doc1.PDF
-            </somres:cheminEtNomDuFichier>
+            <somres:cheminEtNomDuFichier>doc1.PDF</somres:cheminEtNomDuFichier>
          </somres:objetNumerique>
          <somres:metadonnees>
             <somres:metadonnee>
@@ -744,8 +730,7 @@
        <!-- Document n°2 -->
       <somres:document>
          <somres:objetNumerique>
-            <somres:cheminEtNomDuFichier>doc1.PDF
-            </somres:cheminEtNomDuFichier>
+            <somres:cheminEtNomDuFichier>doc1.PDF</somres:cheminEtNomDuFichier>
          </somres:objetNumerique>
          <somres:metadonnees>
             <somres:metadonnee>
@@ -796,8 +781,7 @@
        <!-- Document n°2 -->
       <somres:document>
          <somres:objetNumerique>
-            <somres:cheminEtNomDuFichier>doc1.PDF
-            </somres:cheminEtNomDuFichier>
+            <somres:cheminEtNomDuFichier>doc1.PDF</somres:cheminEtNomDuFichier>
          </somres:objetNumerique>
          <somres:metadonnees>
             <somres:metadonnee>
@@ -848,8 +832,7 @@
        <!-- Document n°2 -->
       <somres:document>
          <somres:objetNumerique>
-            <somres:cheminEtNomDuFichier>doc1.PDF
-            </somres:cheminEtNomDuFichier>
+            <somres:cheminEtNomDuFichier>doc1.PDF</somres:cheminEtNomDuFichier>
          </somres:objetNumerique>
          <somres:metadonnees>
             <somres:metadonnee>
@@ -900,8 +883,7 @@
        <!-- Document n°2 -->
       <somres:document>
          <somres:objetNumerique>
-            <somres:cheminEtNomDuFichier>doc1.PDF
-            </somres:cheminEtNomDuFichier>
+            <somres:cheminEtNomDuFichier>doc1.PDF</somres:cheminEtNomDuFichier>
          </somres:objetNumerique>
          <somres:metadonnees>
             <somres:metadonnee>
@@ -952,8 +934,7 @@
        <!-- Document n°2 -->
       <somres:document>
          <somres:objetNumerique>
-            <somres:cheminEtNomDuFichier>doc1.PDF
-            </somres:cheminEtNomDuFichier>
+            <somres:cheminEtNomDuFichier>doc1.PDF</somres:cheminEtNomDuFichier>
          </somres:objetNumerique>
          <somres:metadonnees>
             <somres:metadonnee>
@@ -1004,8 +985,7 @@
        <!-- Document n°2 -->
       <somres:document>
          <somres:objetNumerique>
-            <somres:cheminEtNomDuFichier>doc1.PDF
-            </somres:cheminEtNomDuFichier>
+            <somres:cheminEtNomDuFichier>doc1.PDF</somres:cheminEtNomDuFichier>
          </somres:objetNumerique>
          <somres:metadonnees>
             <somres:metadonnee>
@@ -1056,8 +1036,7 @@
       <!-- Document n°2 -->
       <somres:document>
          <somres:objetNumerique>
-            <somres:cheminEtNomDuFichier>doc1.PDF
-            </somres:cheminEtNomDuFichier>
+            <somres:cheminEtNomDuFichier>doc1.PDF</somres:cheminEtNomDuFichier>
          </somres:objetNumerique>
          <somres:metadonnees>
             <somres:metadonnee>
@@ -1073,7 +1052,7 @@
                <somres:valeur>SHA-1</somres:valeur>
             </somres:metadonnee>
             <somres:metadonnee>
-               <somres:code>Hashd</somres:code>
+               <somres:code>Hash</somres:code>
                <somres:valeur>a2f93f1f121ebba0faef2c0596f2f126eacae77b
                </somres:valeur>
             </somres:metadonnee>

@@ -26,10 +26,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import fr.urssaf.image.sae.services.capturemasse.common.StaxUtils;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireDocumentException;
 import fr.urssaf.image.sae.services.capturemasse.support.resultats.ResultatsFileEchecSupport;
+import fr.urssaf.image.sae.services.util.StaxUtils;
 
 /**
  * Implémentation du support {@link ResultatsFileEchecSupport}

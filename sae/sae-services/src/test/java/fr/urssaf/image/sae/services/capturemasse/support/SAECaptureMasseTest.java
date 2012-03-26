@@ -12,7 +12,6 @@ import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +51,6 @@ public class SAECaptureMasseTest {
    }
 
    @Test
-   @Ignore
    public void testLancementService() {
 
       try {
@@ -60,6 +58,13 @@ public class SAECaptureMasseTest {
          ClassPathResource resSommaire = new ClassPathResource("sommaire.xml");
          FileOutputStream fos = new FileOutputStream(sommaire);
          IOUtils.copy(resSommaire.getInputStream(), fos);
+
+         File repertoireEcdeDocuments = new File(testSommaire.getRepEcde(),
+               "documents");
+         ClassPathResource resAttestation1 = new ClassPathResource("doc1.PDF");
+         File fileAttestation1 = new File(repertoireEcdeDocuments, "doc1.PDF");
+         fos = new FileOutputStream(fileAttestation1);
+         IOUtils.copy(resAttestation1.getInputStream(), fos);
 
          ExitTraitement exitTraitement = service.captureMasse(testSommaire
                .getUrlEcde(), UUID.randomUUID());
