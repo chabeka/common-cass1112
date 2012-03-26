@@ -17,7 +17,19 @@
          </tasklet>
 
          <next on="FAILED" to="finBloquant" />
+         <next on="*" to="debutTraitement" />
+      </step>
+
+      <step id="debutTraitement">
+         <tasklet ref="debutTraitementFlagTasklet">
+            <listeners>
+               <listener ref="debutTraitementFlagListener" />
+            </listeners>
+         </tasklet>
+
+         <next on="FAILED" to="finBloquant" />
          <next on="*" to="controleFormatSommaireStep" />
+
       </step>
 
       <step id="controleFormatSommaireStep">
