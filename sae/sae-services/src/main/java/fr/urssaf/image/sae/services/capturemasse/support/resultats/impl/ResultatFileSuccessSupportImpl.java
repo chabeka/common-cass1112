@@ -42,8 +42,6 @@ public class ResultatFileSuccessSupportImpl implements
    private static final Logger LOGGER = LoggerFactory
          .getLogger(ResultatFileSuccessSupportImpl.class);
 
-   private static final String PREFIX_TRC = "writeResultatsFile()";
-
    @Autowired
    private ApplicationContext context;
 
@@ -111,45 +109,35 @@ public class ResultatFileSuccessSupportImpl implements
       final String pathResultats = ecdeDirectory.getAbsolutePath()
             + File.separator + "resultats.xml";
       final File resultats = new File(pathResultats);
-      FileOutputStream output = null;
 
       try {
-         output = new FileOutputStream(resultats);
+         FileOutputStream output = new FileOutputStream(resultats);
+
+         final Resource classPath = getContext().getResource(
+               "classpath:xsd_som_res/resultats.xsd");
+         URL xsdSchema;
+
+         try {
+            xsdSchema = classPath.getURL();
+            JAXBUtils.marshal(resultat, output, xsdSchema);
+         } catch (IOException e) {
+            throw new CaptureMasseRuntimeException(e);
+         } catch (JAXBException e) {
+            throw new CaptureMasseRuntimeException(e);
+         } catch (SAXException e) {
+            throw new CaptureMasseRuntimeException(e);
+         } finally {
+            try {
+               output.close();
+            } catch (IOException e) {
+               LOGGER.info("erreur de fermeture de flux", e);
+            }
+         }
+
       } catch (FileNotFoundException e) {
          throw new CaptureMasseRuntimeException(e);
+
       }
 
-      final Resource classPath = getContext().getResource(
-            "classpath:xsd_som_res/resultats.xsd");
-      URL xsdSchema;
-
-      try {
-         xsdSchema = classPath.getURL();
-      } catch (IOException ioException) {
-         throw new CaptureMasseRuntimeException(ioException);
-      } finally {
-         try {
-            output.close();
-         } catch (IOException e) {
-            LOGGER.debug("{} - Erreur de fermeture du flux de "
-                  + resultats.getAbsolutePath(), PREFIX_TRC);
-         }
-      }
-
-      try {
-         JAXBUtils.marshal(resultat, output, xsdSchema);
-
-      } catch (JAXBException e) {
-         throw new CaptureMasseRuntimeException(e);
-      } catch (SAXException e) {
-         throw new CaptureMasseRuntimeException(e);
-      } finally {
-         try {
-            output.close();
-         } catch (IOException e) {
-            LOGGER.debug("{} - Erreur de fermeture du flux de "
-                  + resultats.getAbsolutePath(), PREFIX_TRC);
-         }
-      }
    }
 }
