@@ -106,6 +106,24 @@
    </logger>
    -->
    
+   
+   <!-- Pour les librairies communes -->
+   <!--
+   <logger name="fr.urssaf.image.commons" level="DEBUG" additivity="false">
+      <appender-ref ref="log-file" />
+      <appender-ref ref="debug-file" />
+   </logger>
+   -->
+   
+   
+   <!-- Pour Hector -->
+   <!--
+   <logger name="me.prettyprint" level="DEBUG" additivity="false">
+      <appender-ref ref="log-file" />
+      <appender-ref ref="debug-file" />
+   </logger>
+   -->
+   
 
    <!-- Pour sae-services -->
    <!--

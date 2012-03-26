@@ -100,8 +100,28 @@
    <!-- 
    Exemples d'activation des traces DEBUG
    -->
+   
+   <!-- Pour tout le SAE, ou plus precisement pour le package de plus haut niveau -->
    <!--
-   <logger name="fr.urssaf.image.sae.admin.dfce.exploit" level="DEBUG" additivity="false">
+   <logger name="fr.urssaf.image.sae" level="DEBUG" additivity="false">
+      <appender-ref ref="log-file" />
+      <appender-ref ref="debug-file" />
+   </logger>
+   -->
+   
+   
+   <!-- Pour les librairies communes -->
+   <!--
+   <logger name="fr.urssaf.image.commons" level="DEBUG" additivity="false">
+      <appender-ref ref="log-file" />
+      <appender-ref ref="debug-file" />
+   </logger>
+   -->
+   
+   
+   <!-- Pour Hector -->
+   <!--
+   <logger name="me.prettyprint" level="DEBUG" additivity="false">
       <appender-ref ref="log-file" />
       <appender-ref ref="debug-file" />
    </logger>
