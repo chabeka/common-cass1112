@@ -86,10 +86,26 @@
 
    <function>
       <name>booleanToOuiNon</name>
-      <function-class>fr.urssaf.image.sae.integration.ihmweb.jstl.Functions
-      </function-class>
-      <function-signature>java.lang.String booleanToOuiNon(boolean)
-      </function-signature>
+      <function-class>fr.urssaf.image.sae.integration.ihmweb.jstl.Functions</function-class>
+      <function-signature>java.lang.String booleanToOuiNon(boolean)</function-signature>
+   </function>
+   
+   <function>
+      <name>formateDateTime</name>
+      <function-class>fr.urssaf.image.sae.integration.ihmweb.jstl.Functions</function-class>
+      <function-signature>java.lang.String formateDateTime(java.util.Date)</function-signature>
+   </function>
+   
+   <function>
+      <name>ajouteProprietaireDuPC</name>
+      <function-class>fr.urssaf.image.sae.integration.ihmweb.jstl.Functions</function-class>
+      <function-signature>java.lang.String ajouteProprietaireDuPC(java.lang.String)</function-signature>
+   </function>
+   
+   <function>
+      <name>nl2br</name>
+      <function-class>fr.urssaf.image.sae.integration.ihmweb.jstl.Functions</function-class>
+      <function-signature>java.lang.String nl2br(java.lang.String)</function-signature>
    </function>
 
 </taglib>

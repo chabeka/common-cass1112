@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@ taglib uri="/WEB-INF/tld/sae_integration.tld" prefix="sae"%>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -23,11 +24,11 @@
    <table border=1>
       <tr>
          <td>Serveur(s) Zookeeper :</td>
-         <td><form:label path="serveursZookeeper" /></td>
+         <td><c:out value="${formulaire.serveursZookeeper}"/></td>
       </tr>
       <tr>
          <td>Serveur(s) Cassandra :</td>
-         <td><form:label path="serveursCassandra" /></td>
+         <td><c:out value="${formulaire.serveursCassandra}"/></td>
       </tr>
    </table>
    
@@ -57,12 +58,12 @@
          <td><c:out value="${travail.type}"/></td>
          <td><c:out value="${travail.parameters}"/></td>
          <td><c:out value="${travail.state}"/></td>
-         <td><c:out value="${travail.reservedBy}"/></td>
-         <td><c:out value="${travail.creationDate}"/></td>
-         <td><c:out value="${travail.reservationDate}"/></td>
-         <td><c:out value="${travail.startingDate}"/></td>
-         <td><c:out value="${travail.endingDate}"/></td>
-         <td><c:out value="${travail.message}"/></td>
+         <td>${sae:ajouteProprietaireDuPC(travail.reservedBy)}</td>
+         <td>${sae:formateDateTime(travail.creationDate)}</td>
+         <td>${sae:formateDateTime(travail.reservationDate)}</td>
+         <td>${sae:formateDateTime(travail.startingDate)}</td>
+         <td>${sae:formateDateTime(travail.endingDate)}</td>
+         <td>${sae:nl2br(travail.message)}</td>
       </tr>
       
       </c:forEach>

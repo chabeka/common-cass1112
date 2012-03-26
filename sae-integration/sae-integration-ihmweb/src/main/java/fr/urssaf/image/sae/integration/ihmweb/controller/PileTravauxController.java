@@ -3,6 +3,9 @@
  */
 package fr.urssaf.image.sae.integration.ihmweb.controller;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.PileTravauxFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.modele.CassandraConfig;
+import fr.urssaf.image.sae.integration.ihmweb.modele.piletravaux.JobRequest;
+import fr.urssaf.image.sae.integration.ihmweb.modele.piletravaux.JobRequestComparator;
 import fr.urssaf.image.sae.integration.ihmweb.service.piletravaux.PileTravauxService;
 
 /**
@@ -23,6 +29,10 @@ public class PileTravauxController {
    
    @Autowired
    private PileTravauxService pileService;
+   
+   
+   @Autowired
+   private CassandraConfig cassandraConfig;
    
    
    /**
@@ -40,18 +50,22 @@ public class PileTravauxController {
       PileTravauxFormulaire form = new PileTravauxFormulaire();
       model.addAttribute("formulaire",form);
       
-      // TODO : Serveurs Zookeeper et Cassandra
-      // form.setServeursZookeeper(zookeeperBean.getHosts());
-      // form.setServeursCassandra(cassandraBean.getHosts());
+      // Serveurs Zookeeper et Cassandra
+      form.setServeursZookeeper(cassandraConfig.getZookeeperHosts());
+      form.setServeursCassandra(cassandraConfig.getCassandraHosts());
 
       // Lecture de la pile des travaux
-      form.setTravaux(pileService.getAllJobs(100));
+      List<JobRequest> jobs = pileService.getAllJobs(100);
+      Collections.sort(jobs, new JobRequestComparator());
+      form.setTravaux(jobs);
       
       // Renvoie le nom de la vue
       return "piletravaux";
       
    }
 
+   
+   
    
    
 }

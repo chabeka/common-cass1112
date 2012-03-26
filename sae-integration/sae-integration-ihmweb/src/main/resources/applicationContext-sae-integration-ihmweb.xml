@@ -114,5 +114,16 @@
    <bean id="ecdeTests" factory-bean="ecdeTestConfig"
       factory-method="load">
    </bean>
+   
+   
+   <bean id="cassandraConfig"
+      class="fr.urssaf.image.sae.integration.ihmweb.modele.CassandraConfig">
+      <property name="cassandraHosts">
+         <value>${cassandra.hosts}</value>
+      </property>
+      <property name="zookeeperHosts">
+         <value>${zookeeper.hosts}</value>
+      </property>
+   </bean>
 
 </beans>
