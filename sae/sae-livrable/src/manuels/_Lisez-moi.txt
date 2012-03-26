@@ -104,7 +104,7 @@ Les fichiers ci-dessous sont installés dans @@SAE_HOME@@/sae-ordonnanceur/
 // Commande de lancement de sae-igcmaj-exe.jar
 // --------------------------------------------------------------------
 
-java -jar @@SAE_HOME@@/sae-igcmaj/sae-igcmaj-exe.jar  @@SAE_HOME@@/sae-igc-config.xml
+java -jar @@SAE_HOME@@/sae-igcmaj/sae-igcmaj-exe.jar @@SAE_HOME@@/sae-igc-config.xml
 
 
 
@@ -113,7 +113,21 @@ java -jar @@SAE_HOME@@/sae-igcmaj/sae-igcmaj-exe.jar  @@SAE_HOME@@/sae-igc-confi
 // Commande de lancement de sae-services-executable.jar
 // --------------------------------------------------------------------
 
-Ce programme est lancé par le service web SaeService lors d'une capture de masse.
+Ce programme est lancé par l'ordonnanceur (sae-ordonnanceur.jar).
+
+Le début de la ligne de commande pour l'appel à sae-services-executable.jar est
+lu depuis le fichier de configuration général sae-config.properties, dans la clé
+sae.archivagemasse.executable
+
+L'ordonnanceur complète la ligne de commande avec les actions suivantes :
+- remplace le marqueur _XMS_TO_REPLACE_ par la valeur par défaut 500m
+- remplace le marqueur _XMX_TO_REPLACE_ par la valeur par défaut 500m
+- remplace le marqueur _UUID_TO_REPLACE par l'identifiant unique du traitement de masse
+- ajoute à la fin de la ligne de commande :
+   traitementMasse [IdentifiantDuTraitementDeMasse] [CheminFichierConfigurationSAE]
+  avec :
+    [IdentifiantDuTraitementDeMasse] l'identifiant unique du traitement de masse
+    [CheminFichierConfigurationSAE] le chemin complet du fichier de configuration général
 
 
 
