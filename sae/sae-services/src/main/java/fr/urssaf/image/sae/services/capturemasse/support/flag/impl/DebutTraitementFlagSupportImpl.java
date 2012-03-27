@@ -8,13 +8,13 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
 import fr.urssaf.image.sae.services.capturemasse.support.flag.DebutTraitementFlagSupport;
 import fr.urssaf.image.sae.services.capturemasse.support.flag.model.DebutTraitementFlag;
 import fr.urssaf.image.sae.services.util.FormatUtils;
@@ -38,8 +38,8 @@ public class DebutTraitementFlagSupportImpl implements
     * {@inheritDoc}
     */
    @Override
-   public final void writeDebutTraitementFlag(
-         final DebutTraitementFlag flag, final File ecdeDirectory) {
+   public final void writeDebutTraitementFlag(final DebutTraitementFlag flag,
+         final File ecdeDirectory) {
 
       try {
 
@@ -61,9 +61,10 @@ public class DebutTraitementFlagSupportImpl implements
 
          final File bulkStartFile = new File(urlFlag.toString());
          final Collection<String> bulkCaptureInfos = new ArrayList<String>();
-         final InetAddress hostInfo = InetAddress.getLocalHost();
+         final InetAddress hostInfo = flag.getHostInfo();
+         bulkCaptureInfos.add("idTraitement=" + flag.getIdTraitement());
          bulkCaptureInfos.add("heureDebutTraitementEnMasse="
-               + FormatUtils.dateToString(new Date()));
+               + FormatUtils.dateToString(flag.getStartDate()));
          bulkCaptureInfos.add("hostnameServeurAppli=" + hostInfo.getHostName());
          bulkCaptureInfos.add("hostIP=" + hostInfo.getHostAddress());
          FileUtils.writeLines(bulkStartFile, bulkCaptureInfos, "\r");
@@ -74,7 +75,7 @@ public class DebutTraitementFlagSupportImpl implements
          // Fin des traces debug - sortie méthode
 
       } catch (IOException except) {
-         LOGGER.error(except.getMessage());
+         throw new CaptureMasseRuntimeException(except);
       }
 
    }

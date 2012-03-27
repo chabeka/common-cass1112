@@ -5,11 +5,15 @@ package fr.urssaf.image.sae.services.capturemasse.support.flag;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Date;
+import java.util.Properties;
 import java.util.UUID;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -110,7 +114,7 @@ public class DebutTraitementFlagSupportTest {
    }
 
    @Test
-   public void testRepertoireInexistant() throws UnknownHostException {
+   public void testSuccess() throws IOException {
 
       File ecdeDirectory = ecdeTestSommaire.getRepEcde();
 
@@ -121,6 +125,47 @@ public class DebutTraitementFlagSupportTest {
 
       support.writeDebutTraitementFlag(flag, ecdeDirectory);
 
-   }
+      File fileFlag = new File(ecdeDirectory, "debut_traitement.flag");
 
+      Assert.assertTrue("le fichier debut_traitement.flag doit exister",
+            fileFlag.exists());
+
+      Properties properties = new Properties();
+      InputStream stream = null;
+      
+      try {
+         stream = FileUtils.openInputStream(fileFlag);
+         properties.load(stream);
+
+         Assert.assertTrue("idTraitement doit exister", properties
+               .containsKey("idTraitement"));
+         Assert.assertTrue("heureDebutTraitementEnMasse doit exister",
+               properties.containsKey("heureDebutTraitementEnMasse"));
+         Assert.assertTrue("hostnameServeurAppli doit exister", properties
+               .containsKey("hostnameServeurAppli"));
+         Assert.assertTrue("hostIP doit exister", properties
+               .containsKey("hostIP"));
+
+         Assert.assertTrue("la valeur idTraitement doit exister", StringUtils
+               .isNotBlank(properties.getProperty("idTraitement")));
+         Assert.assertTrue(
+               "la valeur heureDebutTraitementEnMasse doit exister",
+               StringUtils.isNotBlank(properties
+                     .getProperty("heureDebutTraitementEnMasse")));
+         Assert.assertTrue("la valeur hostnameServeurAppli doit exister",
+               StringUtils.isNotBlank(properties
+                     .getProperty("hostnameServeurAppli")));
+         Assert.assertTrue("la valeur hostIP doit exister", StringUtils
+               .isNotBlank(properties.getProperty("hostIP")));
+      
+      } finally {
+         if (stream != null) {
+            try {
+               stream.close();
+            } catch (IOException e1) {
+               // nothing to do
+            }
+         }
+      }
+   }
 }
