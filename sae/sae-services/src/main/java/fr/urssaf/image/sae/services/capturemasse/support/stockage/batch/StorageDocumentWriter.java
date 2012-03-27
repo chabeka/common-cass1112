@@ -101,7 +101,7 @@ public class StorageDocumentWriter implements ItemWriter<StorageDocument> {
       int index = 0;
 
       for (StorageDocument storageDocument : Utils.nullSafeIterable(items)) {
-
+         
          command = new InsertionRunnable(this.stepExecution.getReadCount()
                + index, storageDocument, this);
 
@@ -129,9 +129,6 @@ public class StorageDocumentWriter implements ItemWriter<StorageDocument> {
          final StorageDocument retour = serviceProvider
                .getStorageDocumentService().insertStorageDocument(storageDocument);
 
-         // final StorageDocument retour = insertDocumentInStorage(docDfce,
-         // docContentByte, docContent, file, storageDocument.getMetadatas());
-
          return retour;
       } catch (Exception except) {
 
@@ -141,115 +138,4 @@ public class StorageDocumentWriter implements ItemWriter<StorageDocument> {
       }
 
    }
-
-   // private StorageDocument insertDocumentInStorage(final Document docDfce,
-   // final byte[] docContentByte, final InputStream documentContent,
-   // final String[] file, final List<StorageMetadata> datas)
-   // throws InsertionServiceEx {
-   //
-   // // Traces debug - entrée méthode
-   //
-   // LOGGER.debug("{} - Début", TRC_INSERT);
-   // // Fin des traces debug - entrée méthode
-   // try {
-   //
-   // Document createdDoc;
-   //
-   // if (cnxParameters.isCheckHash()) {
-   //
-   // // on récupère le paramètre général de l'algorithme de hachage des
-   // // documents dans DFCE
-   //
-   // String digest = null;
-   //
-   // // on récupère l'algorithme de hachage passé dans les métadonnées
-   // final String typeHash = StorageMetadataUtils.valueMetadataFinder(
-   // datas, StorageTechnicalMetadatas.TYPE_HASH.getShortCode());
-   //
-   // final String digestAlgo = cnxParameters.getDigestAlgo();
-   //
-   // LOGGER.debug("{} - Vérification du hash '" + digestAlgo
-   // + "' du document dans DFCE", TRC_INSERT);
-   //
-   // if (StringUtils.isNotEmpty(digestAlgo)
-   // && StringUtils.isNotEmpty(typeHash)
-   // && digestAlgo.equals(typeHash)) {
-   //
-   // // on récupère la valeur du hash contenu dans les métadonnées
-   // digest = StringUtils.trim(StorageMetadataUtils
-   // .valueMetadataFinder(datas, StorageTechnicalMetadatas.HASH
-   // .getShortCode()));
-   //
-   // LOGGER.debug("{} - Récupération du hash '" + digest
-   // + "' des métadonnées", TRC_INSERT);
-   //
-   // } else {
-   //
-   // // on recalcule le hash
-   // digest = HashUtils.hashHex(docContentByte, digestAlgo);
-   // LOGGER
-   // .debug("{} - Calcule du hash '" + digest + "'", TRC_INSERT);
-   // }
-   //
-   // createdDoc = insertStorageDocument(docDfce, file[0], file[1],
-   // digest, documentContent);
-   // } else {
-   //
-   // createdDoc = insertStorageDocument(docDfce, file[0], file[1], null,
-   // documentContent);
-   // }
-   //
-   // LOGGER.debug("{} - Document inséré dans DFCE (UUID: {})", TRC_INSERT,
-   // createdDoc.getUuid());
-   // LOGGER.debug("{} - Fin insertion du document dans DFCE", TRC_INSERT);
-   // LOGGER.debug("{} - Sortie", TRC_INSERT);
-   //
-   // return BeanMapper.dfceDocumentToStorageDocument(createdDoc, null,
-   // getDfceService(), false);
-   // } catch (TagControlException tagCtrlEx) {
-   //
-   // throw new InsertionServiceEx(StorageMessageHandler
-   // .getMessage(Constants.INS_CODE_ERROR), tagCtrlEx.getMessage(),
-   // tagCtrlEx);
-   // } catch (Exception except) {
-   //
-   // throw new InsertionServiceEx(StorageMessageHandler
-   // .getMessage(Constants.INS_CODE_ERROR), except.getMessage(),
-   // except);
-   // }
-   //
-   // }
-
-   // protected final Document insertStorageDocument(final Document document,
-   // final String originalFilename, final String extension,
-   // final String digest, final InputStream inputStream)
-   // throws TagControlException {
-   //
-   // Document doc;
-   //
-   // if (StringUtils.isEmpty(digest)) {
-   //
-   // doc = getDfceService().getStoreService().storeDocument(document,O
-   // originalFilename, extension, inputStream);
-   //
-   // } else {
-   //
-   // doc = getDfceService().getStoreService().storeDocument(document,
-   // originalFilename, extension, digest, inputStream);
-   // }
-   //
-   // return doc;
-   // }
-
-   // /**
-   // * @return
-   // */
-   // private ServiceProvider getDfceService() {
-   // return dfceManager.getDFCEService();
-   // }
-   //
-   // private Base getBase() {
-   // return getDfceService().getBaseAdministrationService().getBase(
-   // cnxParameters.getStorageBase().getBaseName());
-   // }
 }
