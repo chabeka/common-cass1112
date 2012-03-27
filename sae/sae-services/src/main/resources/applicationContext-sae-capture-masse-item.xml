@@ -47,6 +47,7 @@
             <ref bean="enrichissementMetadonneeProcessor" />
             <ref bean="controleStorageDocumentProcessor" />
             <ref bean="processorConvertMetier" />
+            <ref bean="enrichissementStorageDocumentProcessor" />
          </list>
       </property>
    </bean>

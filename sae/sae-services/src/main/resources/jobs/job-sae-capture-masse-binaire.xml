@@ -69,6 +69,7 @@
                <listener ref="storageDocumentWriter" />
                <listener ref="controleStorageDocumentProcessor" />
                <listener ref="stockageListener" />
+               <listener ref="enrichissementStorageDocumentProcessor" />
             </listeners>
          </tasklet>
 
