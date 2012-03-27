@@ -3,9 +3,12 @@
  */
 package fr.urssaf.image.sae.services.capturemasse.support.stockage.multithreading;
 
+import java.util.Date;
+import java.util.UUID;
+
 import org.easymock.EasyMock;
 import org.junit.After;
-import org.junit.Before;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +23,9 @@ import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })
+@ContextConfiguration(locations = {
+      "/applicationContext-sae-services-mock-storagedocument.xml",
+      "/applicationContext-sae-services-test.xml" })
 public class InsertionRunnableTest {
 
    @Autowired
@@ -30,12 +35,6 @@ public class InsertionRunnableTest {
    @Autowired
    private StorageDocumentWriter writer;
 
-   @Before
-   public void init() {
-      storageDocumentService = EasyMock
-            .createMock(StorageDocumentService.class);
-   }
-
    @After
    public void end() {
       EasyMock.reset(storageDocumentService);
@@ -44,11 +43,10 @@ public class InsertionRunnableTest {
    @Test(expected = InsertionMasseRuntimeException.class)
    public void testRunRetourErreur() throws InsertionServiceEx {
 
-      EasyMock
-            .expect(
-                  storageDocumentService
-                        .insertStorageDocument(new StorageDocument()))
-            .andThrow(new InsertionServiceEx());
+      EasyMock.expect(
+            storageDocumentService.insertStorageDocument(EasyMock
+                  .anyObject(StorageDocument.class))).andThrow(
+            new InsertionServiceEx());
 
       EasyMock.replay(storageDocumentService);
 
@@ -57,6 +55,30 @@ public class InsertionRunnableTest {
 
       insertionRunnable.run();
    }
-   
-   
+
+   @Test
+   public void testRunSuccess() throws InsertionServiceEx {
+
+      StorageDocument storageDocument = new StorageDocument();
+      storageDocument.setUuid(UUID.randomUUID());
+
+      StorageDocument aIntegrer = new StorageDocument();
+      aIntegrer.setCreationDate(new Date());
+      aIntegrer.setFilePath("/home");
+
+      EasyMock.expect(
+            storageDocumentService.insertStorageDocument(EasyMock
+                  .anyObject(StorageDocument.class)))
+            .andReturn(storageDocument);
+
+      EasyMock.replay(storageDocumentService);
+
+      InsertionRunnable insertionRunnable = new InsertionRunnable(0, aIntegrer,
+            writer);
+      insertionRunnable.run();
+
+      Assert.assertNotNull("l'uuid du document doit être renseigné",
+            insertionRunnable.getStorageDocument().getUuid());
+   }
+
 }
