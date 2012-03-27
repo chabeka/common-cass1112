@@ -81,16 +81,30 @@ public class Test201Controller extends
       
       CodeMetadonneeList codeMetadonneeList = new CodeMetadonneeList();
       rechFormulaire.setCodeMetadonnees(codeMetadonneeList);
-      String[] tabElement = new String[] { "CodeActivite", "CodeFonction",
-            "CodeOrganismeGestionnaire", "CodeOrganismeProprietaire",
-            "CodeRND", "ContratDeService", "DateArchivage", "DateCreation",
-            "DateDebutConservation", "DateFinConservation", "DateReception",
-            "Denomination", "DureeConservation", "FormatFichier", "Gel",
-            "Hash", "NomFichier", "NumeroRecours", "Titre", "TypeHash" };
-      codeMetadonneeList.addAll(Arrays.asList(tabElement));
-
+      codeMetadonneeList.add("CodeActivite");
+      codeMetadonneeList.add("CodeFonction");
+      codeMetadonneeList.add("CodeOrganismeGestionnaire");
+      codeMetadonneeList.add("CodeOrganismeProprietaire");
+      codeMetadonneeList.add("CodeRND");
+      codeMetadonneeList.add("ContratDeService");
+      codeMetadonneeList.add("DateArchivage");
+      codeMetadonneeList.add("DateCreation");
+      codeMetadonneeList.add("DateDebutConservation");
+      codeMetadonneeList.add("DateFinConservation");
+      codeMetadonneeList.add("DateReception");
+      codeMetadonneeList.add("Denomination");
+      codeMetadonneeList.add("DureeConservation");
+      codeMetadonneeList.add("FormatFichier");
+      codeMetadonneeList.add("Gel");
+      codeMetadonneeList.add("Hash");
+      codeMetadonneeList.add("IdTraitementMasseInterne");
+      codeMetadonneeList.add("NomFichier");
+      codeMetadonneeList.add("NumeroRecours");
+      codeMetadonneeList.add("Titre");
+      codeMetadonneeList.add("TypeHash");
+      codeMetadonneeList.add("VersionRND");
       
-            
+      
       // Initialise le formulaire de consultation
       
       ConsultationFormulaire formConsult = formulaire.getConsultFormulaire();
@@ -231,10 +245,12 @@ public class Test201Controller extends
       valeursAttendues.add("FormatFichier", "fmt/354");
       valeursAttendues.add("Gel", "false");
       valeursAttendues.add("Hash", "a2f93f1f121ebba0faef2c0596f2f126eacae77b");
+      // valeursAttendues.add("IdTraitementMasseInterne", ""); // Non prédictible
       valeursAttendues.add("NomFichier", "doc1.PDF");
       valeursAttendues.add("NumeroRecours", Integer.toString(numeroRecours));
       valeursAttendues.add("Titre", "Attestation de vigilance");
       valeursAttendues.add("TypeHash", "SHA-1");
+      valeursAttendues.add("VersionRND", getTestConfig().getVersionRND());
 
       getRechercheTestService().verifieResultatRecherche(resultatRecherche,
             numeroResultatRecherche, resultatTest, valeursAttendues);

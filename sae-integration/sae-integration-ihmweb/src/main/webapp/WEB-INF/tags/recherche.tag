@@ -3,14 +3,30 @@
 <%@ attribute name="objetFormulaire" required="true" type="fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire" %>
 <%@ attribute name="pathFormulaire" required="true" type="java.lang.String" %>
 <%@ attribute name="readonly" required="false" type="java.lang.String" %>
+<%@ attribute name="notesSpecifiques" required="false" type="java.lang.String" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="/WEB-INF/tld/sae_integration.tld" prefix="sae" %>
 
 <p style="font-weight:bold;text-decoration:underline;">
 Etape <c:out value="${numeroEtape}"/> : Appel du service web de recherche
 </p>
 
+
+
+<c:if test="${fn:length(notesSpecifiques) > 0}" >
+
+   <table border=0 cellpadding=0 cellspacing=0>
+      <tr>
+         <td style="width:10pt;">&nbsp;</td>
+         <td>
+            <p><b><u>Notes</u></b> : <c:out value="${notesSpecifiques}" /></p>
+         </td>
+      </tr>
+   </table>
+   
+</c:if>
 
 <table border=0 cellspacing=3 cellpadding=3 style="width:100%;">
    <tr style="vertical-align:top;">

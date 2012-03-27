@@ -15,6 +15,7 @@ import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.context.ConfigurationContextFactory;
 import org.apache.axis2.databinding.types.URI;
 import org.apache.axis2.databinding.types.URI.MalformedURIException;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub;
@@ -59,7 +60,7 @@ public class PnrExemplesTest {
    //  fr.urssaf.image.sae.integration.ihmweb.saeservice.modele
    
    
-   
+   @Ignore
    @Test
    public void archivageUnitaireExemple() throws Exception {
       
@@ -205,7 +206,7 @@ public class PnrExemplesTest {
    }
    
 
-
+   @Ignore
    @Test
    public void rechercheExemple() throws Exception {
       
@@ -383,6 +384,7 @@ public class PnrExemplesTest {
    }
    
    
+   @Ignore
    @Test
    public void consultationExemple() throws Exception {
       
@@ -489,6 +491,7 @@ public class PnrExemplesTest {
    }
    
    
+   @Ignore
    @Test
    public void archivageMasseExemple() throws Exception {
       

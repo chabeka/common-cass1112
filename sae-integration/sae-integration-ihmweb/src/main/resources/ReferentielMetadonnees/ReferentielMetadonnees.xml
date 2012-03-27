@@ -309,12 +309,12 @@
         <consultable>true</consultable>
         <critereRecherche>true</critereRecherche>
         <client>true</client>
-        <obligatoireAuStockage>true</obligatoireAuStockage>
+        <obligatoireAuStockage>false</obligatoireAuStockage>
         <typeDfce>string</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>DureeConservation</codeLong>
-        <codeCourt>???</codeCourt>
+        <codeCourt>Dans la CF LifeCycleRules</codeCourt>
         <archivablePossible>false</archivablePossible>
         <archivableObligatoire>false</archivableObligatoire>
         <consulteeParDefaut>false</consulteeParDefaut>
@@ -462,7 +462,7 @@
         <archivablePossible>false</archivablePossible>
         <archivableObligatoire>false</archivableObligatoire>
         <consulteeParDefaut>false</consulteeParDefaut>
-        <consultable>false</consultable>
+        <consultable>true</consultable>
         <critereRecherche>true</critereRecherche>
         <client>false</client>
         <obligatoireAuStockage>false</obligatoireAuStockage>
@@ -492,20 +492,6 @@
         <obligatoireAuStockage>true</obligatoireAuStockage>
         <typeDfce>bool</typeDfce>
     </Metadonnee>
-    <!--
-    <Metadonnee>
-        <codeLong>ReferenceUUID</codeLong>
-        <codeCourt>???</codeCourt>
-        <archivablePossible>true</archivablePossible>
-        <archivableObligatoire>false</archivableObligatoire>
-        <consulteeParDefaut>false</consulteeParDefaut>
-        <consultable>true</consultable>
-        <critereRecherche>true</critereRecherche>
-        <client>false</client>
-        <obligatoireAuStockage>false</obligatoireAuStockage>
-        <typeDfce>string</typeDfce>
-    </Metadonnee>
-    -->
     <Metadonnee>
         <codeLong>StartPage</codeLong>
         <codeCourt>sm_start_page</codeCourt>

@@ -31,8 +31,12 @@
 		objetFormulaire="${formulaire.captureMasseResultat}"
 		pathFormulaire="captureMasseResultat" />
 
-	<sae:recherche numeroEtape="3" pathFormulaire="rechFormulaire"
-		objetFormulaire="${formulaire.rechFormulaire}" />
+	<sae:recherche
+	   numeroEtape="3"
+	   pathFormulaire="rechFormulaire"
+		objetFormulaire="${formulaire.rechFormulaire}"
+		notesSpecifiques="En cas d'un résultat \"A contrôler\", il faut vérifier manuellement les métadonnées suivantes : DateArchivage, DateDebutConservation, DateFinConservation, IdTraitementMasseInterne."
+   />
 
 	<sae:consultation numeroEtape="4" pathFormulaire="consultFormulaire"
 		objetFormulaire="${formulaire.consultFormulaire}" />

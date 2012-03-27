@@ -49,7 +49,7 @@ public class RefMetaTest {
          JAXBException, SAXException {
 
       ClassPathResource csv = new ClassPathResource(
-            "referentiel_metadonnees/Metadonnees_1_4.csv");
+            "referentiel_metadonnees/Metadonnees_1_5.csv");
 
       String repTempOs = SystemUtils.getJavaIoTmpDir().getAbsolutePath();
       String fichierXmlSortie = FilenameUtils.concat(repTempOs,
