@@ -40,6 +40,7 @@ public class CassandraJobInstanceDoaTest extends
    private static final String MY_JOB_NAME = "my_job_name";
    private JobParameters myJobParameters;
    private TestingServer zkServer;
+   private CuratorFramework zkClient;
    
    @Override
    public DataSet getDataSet() {
@@ -51,7 +52,7 @@ public class CassandraJobInstanceDoaTest extends
       
       // Connexion à un serveur zookeeper local
       initZookeeperServer();
-      CuratorFramework zkClient = ZookeeperClientFactory.getClient(zkServer.getConnectString(), "Batch");
+      zkClient = ZookeeperClientFactory.getClient(zkServer.getConnectString(), "Batch");
       
       // Récupération du keyspace de cassandra-unit et création des dao
       Keyspace keyspace = getKeyspace();
@@ -67,6 +68,7 @@ public class CassandraJobInstanceDoaTest extends
 
    @After
    public void clean() {
+      zkClient.close();
       zkServer.close();
    }
    

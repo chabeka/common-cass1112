@@ -35,6 +35,7 @@ public class CassandraExecutionContextDAOTest extends
    private static final String MY_JOB_NAME = "job_test_execution";
    private static final String INDEX = "index";
    private TestingServer zkServer;
+   private CuratorFramework zkClient;
 
    @Override
    public DataSet getDataSet() {
@@ -45,7 +46,7 @@ public class CassandraExecutionContextDAOTest extends
    public void init() throws Exception {
       // Connexion à un serveur zookeeper local
       initZookeeperServer();
-      CuratorFramework zkClient = ZookeeperClientFactory.getClient(zkServer.getConnectString(), "Batch");
+      zkClient = ZookeeperClientFactory.getClient(zkServer.getConnectString(), "Batch");
       
       // Récupération du keyspace de cassandra-unit, et création des dao
       Keyspace keyspace = getKeyspace();
@@ -56,6 +57,7 @@ public class CassandraExecutionContextDAOTest extends
    
    @After
    public void clean() {
+      zkClient.close();
       zkServer.close();
    }
    
