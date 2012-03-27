@@ -1,7 +1,5 @@
 package fr.urssaf.image.commons.cassandra.helper;
 
-import java.util.Date;
-
 import me.prettyprint.cassandra.service.CassandraHostConfigurator;
 import me.prettyprint.hector.api.Cluster;
 import me.prettyprint.hector.api.factory.HFactory;
@@ -25,10 +23,12 @@ public class CassandraServerBean implements InitializingBean, DisposableBean  {
    private static final Logger LOG = LoggerFactory.getLogger(CassandraServerBean.class);
    private static final int WAIT_MAX_TRY = 5;
    private static final long WAIT_MS = 1000;
+   private static final String TEST_CLUSTER_NAME = "TestCluster";
    private String dataSet;
    private boolean startLocal= false;
    private String hosts = null;
-
+   private Cluster testCluster = null;
+   
    /**
     * Indique quel jeu de données cassandraUnit doit être utilisé lors
     * de l'initialisation du serveur cassandra
@@ -87,7 +87,7 @@ public class CassandraServerBean implements InitializingBean, DisposableBean  {
       
       for (String newDataSet : newDataSets) {
          if (newDataSet!=null && !newDataSet.isEmpty()) {
-            DataLoader dataLoader = new DataLoader("TestCluster", "localhost:9171");
+            DataLoader dataLoader = new DataLoader(TEST_CLUSTER_NAME, "localhost:9171");
             ClassPathXmlDataSet set = new ClassPathXmlDataSet(newDataSet);
             dataLoader.load(set);
          }
@@ -102,8 +102,8 @@ public class CassandraServerBean implements InitializingBean, DisposableBean  {
     */
    private void waitForServer() throws InterruptedException {
       CassandraHostConfigurator hostConfigurator = new CassandraHostConfigurator(getHosts());
-      Cluster cluster = HFactory.getOrCreateCluster("ClusterName-" + new Date().getTime(),
-            hostConfigurator);
+      hostConfigurator.setMaxActive(1);
+      Cluster cluster = getTestCluster();
       for (int i=0; i < WAIT_MAX_TRY; i++) {
          try {
             cluster.describeKeyspaces();
@@ -115,6 +115,23 @@ public class CassandraServerBean implements InitializingBean, DisposableBean  {
          }
       }
    }
+   
+   private Cluster getTestCluster() {
+      if (testCluster == null) {
+         CassandraHostConfigurator hostConfigurator = new CassandraHostConfigurator(getHosts());
+         hostConfigurator.setMaxActive(1);
+         testCluster = HFactory.getOrCreateCluster(TEST_CLUSTER_NAME, hostConfigurator);
+      }
+      return testCluster;
+   }
+   
+   /**
+    * Arrête le cluster (partie cliente) de test
+    */
+   public final void shutdownTestCluster() {
+      if (testCluster != null) HFactory.shutdownCluster(testCluster);
+   }
+   
    
    /**
     * Dans le cas d'un cassandra zookeeper non local, il s'agit de la chaîne de connexion

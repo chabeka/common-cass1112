@@ -2,6 +2,8 @@ package fr.urssaf.image.commons.zookeeper;
 
 import java.io.IOException;
 
+import org.springframework.beans.factory.DisposableBean;
+
 import com.netflix.curator.framework.CuratorFramework;
 import com.netflix.curator.framework.CuratorFrameworkFactory;
 import com.netflix.curator.framework.CuratorFrameworkFactory.Builder;
@@ -12,30 +14,34 @@ import com.netflix.curator.retry.ExponentialBackoffRetry;
  * Factory pour récupérer une connexion à zookeeper
  *
  */
-public final class ZookeeperClientFactory {
+public final class ZookeeperClientFactory implements DisposableBean {
 
    private static final int BASE_SLEEP_TIME = 100;    // En milli-secondes
    private static final int MAX_RETRIES = 10;
+   private CuratorFramework zkClient;
+
    /**
-    * Constructeur privé
+    * Constructeur
+    * @param zookeeperServer  correspond au serveur zookeeper qu'il faut joindre
+    * @param namespace        namespace de l'application
+    * @throws IOException     quand on n'arrive pas à joindre le serveur zookeeper 
     */
-   private ZookeeperClientFactory() {
+   public ZookeeperClientFactory(ZookeeperServerBean zookeeperServer,
+         String namespace) throws IOException {
+      zkClient = getClient(zookeeperServer.getHosts(), namespace);
    }
 
    /**
-    * Renvoie une connexion à zookeeper
-    * @param zookeeperServer  correspond au serveur zookeeper qu'il faut joindre
-    * @param namespace        namespace de l'application
-    * @return                 connexion
-    * @throws IOException     quand on n'arrive pas à joindre zookeeper
+    * @return le client de connexion à zookeeper
     */
-   public static CuratorFramework getClient(ZookeeperServerBean zookeeperServer,
-         String namespace) throws IOException {
-      return getClient(zookeeperServer.getHosts(), namespace);
+   public CuratorFramework getClient() {
+      return zkClient;
    }
    
    /**
-    * Renvoie une connexion à zookeeper
+    * Renvoie une connexion à zookeeper.
+    * Attention, il est de la responsabilité de l'appelant de détruire l'objet (appel de
+    * la méthode close) lorsque celui-ci n'est plus utilisé.
     * @param connexionString  correspond à la chaîne de connexion vers le serveur zookeeper
     * @param namespace        namespace de l'application
     * @return                 connexion
@@ -49,6 +55,14 @@ public final class ZookeeperClientFactory {
       CuratorFramework zkClient = builder.build();
       zkClient.start();
       return zkClient;
+   }
+
+   @Override
+   public void destroy() throws Exception {
+      if (zkClient != null) {
+         zkClient.close();
+         zkClient = null;
+      }
    }
    
 }

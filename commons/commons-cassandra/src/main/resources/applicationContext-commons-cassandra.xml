@@ -5,16 +5,16 @@
       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
    <!-- Client de connexion à zookeeper -->
-   <bean id="zkClient"
-      class="fr.urssaf.image.commons.zookeeper.ZookeeperClientFactory"
-      factory-method="getClient">
+   <bean id="zkClient" factory-method="getClient" factory-bean="zookeeperClientFactory"/>
+   <bean id="zookeeperClientFactory"
+      class="fr.urssaf.image.commons.zookeeper.ZookeeperClientFactory">
       <constructor-arg ref="zookeeperServer" />
       <constructor-arg value="${zookeeper.namespace}" />
    </bean>
 
    <!-- le keyspace cassandra à utiliser -->
-   <bean id="keyspace" class="fr.urssaf.image.commons.cassandra.helper.CassandraClientFactory"
-      factory-method="getClient">
+   <bean id="keyspace" factory-method="getKeyspace" factory-bean="cassandraClientFactory"/>
+   <bean id="cassandraClientFactory" class="fr.urssaf.image.commons.cassandra.helper.CassandraClientFactory">
       <constructor-arg ref="cassandraServer" />
       <constructor-arg value="${cassandra.keyspace}" />
       <constructor-arg value="${cassandra.username}" />
