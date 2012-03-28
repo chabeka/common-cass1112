@@ -6,9 +6,6 @@ package fr.urssaf.image.sae.services.capturemasse.support.resultats.batch;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.After;
@@ -31,7 +28,7 @@ import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireF
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })
-public class ResultatsFileFailureErrorTaskletTes {
+public class ResultatsFileFailureErrorTaskletTest {
    @Autowired
    private JobLauncherTestUtils launcher;
 
@@ -67,14 +64,14 @@ public class ResultatsFileFailureErrorTaskletTes {
 
       CaptureMasseSommaireDocumentException exception = new CaptureMasseSommaireDocumentException(
             3, new CaptureMasseSommaireFormatValidationException(testSommaire
-                  .getUrlEcde().toString(), new NullPointerException(
+                  .getUrlEcde().toString(), new Exception(
                   "erreur enregistrement null")));
       context.put(Constantes.DOC_EXCEPTION, exception);
 
       launcher.launchStep("finBloquant", context);
 
       File resultats = new File(testSommaire.getRepEcde(), "resultats.xml");
-
+      
       Assert.assertTrue("le fichier resultats.xml doit exister", resultats
             .exists());
       Assert.assertTrue("le fichier resultats.xml doit etre non vide",

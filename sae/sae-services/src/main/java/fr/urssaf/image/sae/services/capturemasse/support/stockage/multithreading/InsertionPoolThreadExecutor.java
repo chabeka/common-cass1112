@@ -228,9 +228,9 @@ public class InsertionPoolThreadExecutor extends ThreadPoolExecutor implements
 
                // levée d'une exception pour le document chargé de la
                // reconnexion
-               final InsertionMasseRuntimeException exception = new InsertionMasseRuntimeException(
+               final InsertionMasseRuntimeException except = new InsertionMasseRuntimeException(
                      indexDocument, storageDocument, e);
-               this.setInsertionException(exception);
+               this.setInsertionException(except);
 
                // les autres Threads en attente sont interrompus définitivement
                this.shutdownNow();

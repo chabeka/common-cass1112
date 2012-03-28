@@ -20,7 +20,7 @@ public class EnrichissementStorageDocumentSupportImpl implements
     * {@inheritDoc}
     */
    @Override
-   public StorageDocument enrichirDocument(StorageDocument document, String uuid) {
+   public final StorageDocument enrichirDocument(StorageDocument document, String uuid) {
 
       document.getMetadatas().add(new StorageMetadata("iti", uuid));
       document.setProcessId(uuid);

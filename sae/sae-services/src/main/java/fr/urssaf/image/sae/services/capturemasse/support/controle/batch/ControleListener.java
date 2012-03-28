@@ -47,6 +47,7 @@ public class ControleListener {
     * 
     * @param stepExecution
     *           le StepExecution
+    * @return le status de sortie
     */
    @AfterStep
    public final ExitStatus end(final StepExecution stepExecution) {

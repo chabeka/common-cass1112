@@ -27,6 +27,7 @@ public class ResultatsFileFailureListener {
     * 
     * @param stepExecution
     *           le stepExecution
+    * @return le status de sortie
     */
    @AfterStep
    public final ExitStatus end(StepExecution stepExecution) {

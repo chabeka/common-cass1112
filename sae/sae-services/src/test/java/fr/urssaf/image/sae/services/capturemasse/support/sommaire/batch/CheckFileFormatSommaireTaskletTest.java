@@ -17,7 +17,6 @@ import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.batch.core.ExitStatus;
@@ -118,7 +117,6 @@ public class CheckFileFormatSommaireTaskletTest {
     * @throws Exception
     */
    @Test
-   @Ignore
    public void testFichierSommaireFormatIncorrect() throws Exception {
 
       File sommaire = new File(ecdeTestSommaire.getRepEcde(), "sommaire.xml");

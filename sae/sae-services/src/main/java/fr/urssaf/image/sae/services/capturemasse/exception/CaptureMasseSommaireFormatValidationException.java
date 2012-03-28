@@ -14,14 +14,18 @@ public class CaptureMasseSommaireFormatValidationException extends Exception {
    /**
     * Constructeur
     * 
-    * @param url
-    *           url du fichier sommaire.xml
+    * @param causeTechnique
+    *           résumé succint de la cause de l'erreur
     * @param cause
     *           cause mère
     */
-   public CaptureMasseSommaireFormatValidationException(final String url,
-         Throwable cause) {
-      super("Le format du fichier sommaire.xml " + url + " est invalide", cause);
+   public CaptureMasseSommaireFormatValidationException(
+         final String causeTehnique, Throwable cause) {
+      super(
+            "Le fichier sommaire n'est pas valide ( "
+                  + causeTehnique
+                  + " ). Détails : Aucun document du sommaire ne sera intégré dans le SAE.",
+            cause);
    }
 
 }

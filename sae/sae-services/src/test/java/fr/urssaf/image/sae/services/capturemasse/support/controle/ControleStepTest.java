@@ -10,6 +10,7 @@ import java.util.UUID;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.batch.core.JobExecution;
@@ -26,7 +27,7 @@ import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(value = { "/applicationContext-sae-services-test.xml" })
-public class ControleStep {
+public class ControleStepTest {
 
    @Autowired
    private JobLauncherTestUtils launcher;
@@ -37,12 +38,12 @@ public class ControleStep {
    private EcdeTestSommaire ecdeTestSommaire;
 
    @Before
-   public void init() {
+   public final void init() {
       ecdeTestSommaire = ecdeTestTools.buildEcdeTestSommaire();
    }
 
    @After
-   public void end() {
+   public final void end() {
       try {
          ecdeTestTools.cleanEcdeTestSommaire(ecdeTestSommaire);
       } catch (IOException e) {
@@ -51,7 +52,8 @@ public class ControleStep {
    }
 
    @Test
-   public void testLancement() throws Exception {
+   @Ignore
+   public final void testLancement() throws Exception {
 
       Map<String, JobParameter> parameters = new HashMap<String, JobParameter>();
       parameters.put(Constantes.SOMMAIRE, new JobParameter(ecdeTestSommaire

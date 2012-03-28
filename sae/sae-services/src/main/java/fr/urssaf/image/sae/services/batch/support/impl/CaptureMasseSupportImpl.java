@@ -32,7 +32,7 @@ public class CaptureMasseSupportImpl implements TraitementExecutionSupport {
     *           service de capture en masse
     */
    @Autowired(required = false)
-   public void setSAECaptureMasseService(
+   public final void setSAECaptureMasseService(
          SAECaptureMasseService captureMasseService) {
       this.captureMasseService = captureMasseService;
    }

@@ -74,16 +74,16 @@ public class CaptureMasseControleSupportTest {
       FileOutputStream fos = new FileOutputStream(fileSommaire);
 
       IOUtils.copy(resSommaire.getInputStream(), fos);
-      File repertoireEcdeDocuments = new File(repertoireEcdeTraitement,
+      File repEcde = new File(repertoireEcdeTraitement,
             "documents");
       ClassPathResource resAttestation1 = new ClassPathResource("docVide.pdf");
-      File fileAttestation1 = new File(repertoireEcdeDocuments, "docVide.pdf");
+      File fileAttestation1 = new File(repEcde, "docVide.pdf");
       fos = new FileOutputStream(fileAttestation1);
       IOUtils.copy(resAttestation1.getInputStream(), fos);
 
       UntypedDocument document = new UntypedDocument();
       document.setFilePath("docVide.pdf");
-      support.controleSAEDocument(document, repertoireEcdeDocuments
+      support.controleSAEDocument(document, repEcde
             .getParentFile());
 
       Assert.fail();
@@ -96,16 +96,16 @@ public class CaptureMasseControleSupportTest {
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx {
 
-      File repertoireEcdeTraitement = ecdeTestSommaire.getRepEcde();
-      File fileSommaire = new File(repertoireEcdeTraitement, "sommaire.xml");
+      File repEcde = ecdeTestSommaire.getRepEcde();
+      File fileSommaire = new File(repEcde, "sommaire.xml");
       ClassPathResource resSommaire = new ClassPathResource("sommaire.xml");
       FileOutputStream fos = new FileOutputStream(fileSommaire);
 
       IOUtils.copy(resSommaire.getInputStream(), fos);
-      File repertoireEcdeDocuments = new File(repertoireEcdeTraitement,
+      File repDocuments = new File(repEcde,
             "documents");
       ClassPathResource resAttestation1 = new ClassPathResource("doc1.PDF");
-      File fileAttestation1 = new File(repertoireEcdeDocuments, "doc1.PDF");
+      File fileAttestation1 = new File(repDocuments, "doc1.PDF");
       fos = new FileOutputStream(fileAttestation1);
       IOUtils.copy(resAttestation1.getInputStream(), fos);
 
@@ -115,7 +115,7 @@ public class CaptureMasseControleSupportTest {
       document.getUMetadatas().add(
             new UntypedMetadata("CodeInconnu", "ValeurInconnue"));
 
-      support.controleSAEDocument(document, repertoireEcdeDocuments
+      support.controleSAEDocument(document, repDocuments
             .getParentFile());
 
       Assert.fail();
@@ -128,13 +128,13 @@ public class CaptureMasseControleSupportTest {
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx {
 
-      File repertoireEcdeTraitement = ecdeTestSommaire.getRepEcde();
-      File fileSommaire = new File(repertoireEcdeTraitement, "sommaire.xml");
+      File repEcde = ecdeTestSommaire.getRepEcde();
+      File fileSommaire = new File(repEcde, "sommaire.xml");
       ClassPathResource resSommaire = new ClassPathResource("sommaire.xml");
       FileOutputStream fos = new FileOutputStream(fileSommaire);
 
       IOUtils.copy(resSommaire.getInputStream(), fos);
-      File repertoireEcdeDocuments = new File(repertoireEcdeTraitement,
+      File repertoireEcdeDocuments = new File(repEcde,
             "documents");
       ClassPathResource resAttestation1 = new ClassPathResource("doc1.PDF");
       File fileAttestation1 = new File(repertoireEcdeDocuments, "doc1.PDF");

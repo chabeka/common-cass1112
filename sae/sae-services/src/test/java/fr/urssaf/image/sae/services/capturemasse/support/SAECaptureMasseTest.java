@@ -79,4 +79,34 @@ public class SAECaptureMasseTest {
       }
 
    }
+
+   @Test
+   @Ignore
+   public void testLancementSommaireErrone() {
+
+      try {
+         File sommaire = new File(testSommaire.getRepEcde(), "sommaire.xml");
+         ClassPathResource resSommaire = new ClassPathResource(
+               "sommaire/sommaire_format_failure.xml");
+         FileOutputStream fos = new FileOutputStream(sommaire);
+         IOUtils.copy(resSommaire.getInputStream(), fos);
+
+         File repDocuments = new File(testSommaire.getRepEcde(),
+               "documents");
+         ClassPathResource resAttestation1 = new ClassPathResource("doc1.PDF");
+         File fileAttestation1 = new File(repDocuments, "doc1.PDF");
+         fos = new FileOutputStream(fileAttestation1);
+         IOUtils.copy(resAttestation1.getInputStream(), fos);
+
+         ExitTraitement exitTraitement = service.captureMasse(testSommaire
+               .getUrlEcde(), UUID.randomUUID());
+
+         Assert.assertFalse("l'opération doit etre en erreur", exitTraitement
+               .isSucces());
+
+      } catch (Exception e) {
+         Assert.fail("pas d'erreur attendue");
+      }
+
+   }
 }

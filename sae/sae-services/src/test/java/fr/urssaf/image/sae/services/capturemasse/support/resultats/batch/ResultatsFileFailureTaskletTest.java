@@ -66,7 +66,7 @@ public class ResultatsFileFailureTaskletTest {
       context.put(Constantes.SOMMAIRE_FILE, sommaire.getAbsolutePath());
 
       CaptureMasseSommaireDocumentException exception = new CaptureMasseSommaireDocumentException(
-            3, new NullPointerException("erreur sur l'enregistrement en cours"));
+            3, new Exception("erreur sur l'enregistrement en cours"));
       context.put(Constantes.DOC_EXCEPTION, exception);
 
       List<UUID> list = new ArrayList<UUID>();

@@ -69,8 +69,8 @@ public class EcdeControleSupportTest {
    public void testRepertoireNonInscriptible() {
 
       try {
-         File repertoireEcdeTraitement = ecdeTestSommaire.getRepEcde();
-         File fileSommaire = new File(repertoireEcdeTraitement, "sommaire.xml");
+         File repEcde = ecdeTestSommaire.getRepEcde();
+         File fileSommaire = new File(repEcde, "sommaire.xml");
          ClassPathResource resSommaire = new ClassPathResource("sommaire.xml");
          FileOutputStream fos = new FileOutputStream(fileSommaire);
          IOUtils.copy(resSommaire.getInputStream(), fos);

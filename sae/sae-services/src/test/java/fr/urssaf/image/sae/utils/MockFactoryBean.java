@@ -13,7 +13,12 @@ import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentServi
  */
 public class MockFactoryBean {
 
-   public StorageDocumentService createStorageServiceProvider() {
+   /**
+    * Création d'un mock de storageDocumentService
+    * 
+    * @return un mock StorageDocumentService
+    */
+   public final StorageDocumentService createStorageServiceProvider() {
       System.out.println("CREATION BEAN StorageDocumentService");
       return EasyMock.createMock(StorageDocumentService.class);
    }

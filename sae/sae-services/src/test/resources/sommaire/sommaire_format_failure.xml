@@ -5,7 +5,7 @@
    xsi:schemaLocation="http://www.cirtil.fr/sae/sommaireXml ..\sommaire.xsd">
 
    <!-- Type de traitement de masse -->
-   <som:batchMode>rien</som:batchMode>
+   <som:batchMode>PARTIEL</som:batchMode>
    <!-- Date de création du sommaire.xml -->
    <som:dateCreation>2011-07-12</som:dateCreation>
    <!-- Description du traitement -->

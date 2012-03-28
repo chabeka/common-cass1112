@@ -39,4 +39,10 @@ public final class Constantes {
     * Chemin complet du fichier sommaire.xml
     */
    public static final String SOMMAIRE_FILE = "SOMMAIRE_FILE";
+
+   /**
+    * Constructeur
+    */
+   private Constantes() {
+   }
 }

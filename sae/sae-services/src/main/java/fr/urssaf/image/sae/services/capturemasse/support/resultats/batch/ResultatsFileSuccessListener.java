@@ -22,15 +22,15 @@ public class ResultatsFileSuccessListener {
    private static final Logger LOGGER = LoggerFactory
          .getLogger(ResultatsFileSuccessListener.class);
 
-
    /**
     * méthode executée parès le step
     * 
     * @param stepExecution
     *           le step execution
+    * @return le status de sortie
     */
    @AfterStep
-   public ExitStatus end(StepExecution stepExecution) {
+   public final ExitStatus end(StepExecution stepExecution) {
       if (CollectionUtils.isNotEmpty(stepExecution.getFailureExceptions())) {
 
          for (Throwable throwable : stepExecution.getFailureExceptions()) {

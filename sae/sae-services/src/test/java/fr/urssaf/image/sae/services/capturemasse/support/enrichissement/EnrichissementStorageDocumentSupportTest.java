@@ -62,14 +62,14 @@ public class EnrichissementStorageDocumentSupportTest {
       Assert.assertNotNull("la liste des metadonnées ne doit pas etre nulle", result.getMetadatas());
       
       boolean metaExist = false;
-      int i = 0;
-      while (!metaExist && i < result.getMetadatas().size()) {
+      int index = 0;
+      while (!metaExist && index < result.getMetadatas().size()) {
          
-         if ("iti".equalsIgnoreCase(result.getMetadatas().get(i).getShortCode())) {
+         if ("iti".equalsIgnoreCase(result.getMetadatas().get(index).getShortCode())) {
             metaExist = true;
          }
          
-         i++;
+         index++;
       }
       
       Assert.assertTrue("la metadata iti doit exister", metaExist);

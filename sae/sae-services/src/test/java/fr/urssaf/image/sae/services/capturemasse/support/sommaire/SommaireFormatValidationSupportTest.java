@@ -94,4 +94,47 @@ public class SommaireFormatValidationSupportTest {
 
    }
 
+   @Test(expected = IllegalArgumentException.class)
+   public void testFichierSommaireBatchFichierNull()
+         throws CaptureMasseSommaireFormatValidationException {
+
+      support.validerModeBatch(null, "RR");
+
+      Assert.fail("exception attendue");
+   }
+
+   @Test(expected = IllegalArgumentException.class)
+   public void testFichierSommaireBatchModeBatchVide()
+         throws CaptureMasseSommaireFormatValidationException {
+
+      support.validerModeBatch(new File(""), "");
+
+      Assert.fail("exception attendue");
+   }
+
+   @Test(expected = CaptureMasseSommaireFormatValidationException.class)
+   public void testBatchModeNonAttendu()
+         throws CaptureMasseSommaireFormatValidationException {
+
+      File sommaire = new File(
+            "src/test/resources/sommaire/sommaire_success.xml");
+
+      support.validerModeBatch(sommaire, "RR");
+
+   }
+
+   @Test
+   public void testBatchModeValide() {
+
+      File sommaire = new File(
+            "src/test/resources/sommaire/sommaire_success.xml");
+
+      try {
+         support.validerModeBatch(sommaire, "TOUT_OU_RIEN");
+      } catch (CaptureMasseSommaireFormatValidationException e) {
+         Assert.fail("on attend un retour valide");
+      }
+
+   }
+
 }

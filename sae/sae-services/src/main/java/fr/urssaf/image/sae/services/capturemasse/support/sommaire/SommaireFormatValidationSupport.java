@@ -20,8 +20,22 @@ public interface SommaireFormatValidationSupport {
     * @param sommaireFile
     *           chemin absolu du fichier sommaire.xml
     * @throws CaptureMasseSommaireFormatValidationException
-    *            Le fichier sommaire.xml
+    *            Le fichier sommaire.xml est invalide
     */
    void validationSommaire(File sommaireFile)
+         throws CaptureMasseSommaireFormatValidationException;
+
+   /**
+    * validation que le mode de saisi est compatible avec celui passé en
+    * paramètre
+    * 
+    * @param sommaireFile
+    *           le fichier soammire.xml
+    * @param batchMode
+    *           mode de capture attendue
+    * @throws CaptureMasseSommaireFormatValidationException
+    *            Le fichier sommaire.xml est invalide
+    */
+   void validerModeBatch(File sommaireFile, String batchMode)
          throws CaptureMasseSommaireFormatValidationException;
 }

@@ -29,26 +29,26 @@ import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentServi
 public class InsertionRunnableTest {
 
    @Autowired
-   @Qualifier("storageDocumentService")
-   private StorageDocumentService storageDocumentService;
+   @Qualifier("service")
+   private StorageDocumentService service;
 
    @Autowired
    private StorageDocumentWriter writer;
 
    @After
    public void end() {
-      EasyMock.reset(storageDocumentService);
+      EasyMock.reset(service);
    }
 
    @Test(expected = InsertionMasseRuntimeException.class)
    public void testRunRetourErreur() throws InsertionServiceEx {
 
       EasyMock.expect(
-            storageDocumentService.insertStorageDocument(EasyMock
+            service.insertStorageDocument(EasyMock
                   .anyObject(StorageDocument.class))).andThrow(
             new InsertionServiceEx());
 
-      EasyMock.replay(storageDocumentService);
+      EasyMock.replay(service);
 
       InsertionRunnable insertionRunnable = new InsertionRunnable(0,
             new StorageDocument(), writer);
@@ -67,11 +67,11 @@ public class InsertionRunnableTest {
       aIntegrer.setFilePath("/home");
 
       EasyMock.expect(
-            storageDocumentService.insertStorageDocument(EasyMock
+            service.insertStorageDocument(EasyMock
                   .anyObject(StorageDocument.class)))
             .andReturn(storageDocument);
 
-      EasyMock.replay(storageDocumentService);
+      EasyMock.replay(service);
 
       InsertionRunnable insertionRunnable = new InsertionRunnable(0, aIntegrer,
             writer);

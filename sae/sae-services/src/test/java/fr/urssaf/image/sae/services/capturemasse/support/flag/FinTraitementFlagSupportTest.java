@@ -6,6 +6,8 @@ package fr.urssaf.image.sae.services.capturemasse.support.flag;
 import java.io.File;
 import java.io.IOException;
 
+import junit.framework.Assert;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,6 +57,11 @@ public class FinTraitementFlagSupportTest {
       File ecdeDirectory = ecdeTestSommaire.getRepEcde();
 
       support.writeFinTraitementFlag(ecdeDirectory);
+
+      File file = new File(ecdeDirectory, "fin_traitement.flag");
+
+      Assert.assertTrue("le fichier fin_traitement.flag doit exister", file
+            .exists());
    }
 
 }

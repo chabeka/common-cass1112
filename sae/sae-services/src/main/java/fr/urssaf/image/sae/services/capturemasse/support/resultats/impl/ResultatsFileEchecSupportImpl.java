@@ -88,6 +88,15 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
             }
          }
 
+         if (reader != null) {
+            try {
+               reader.close();
+            } catch (XMLStreamException e) {
+               LOGGER.debug("erreur de fermeture du flux "
+                     + sommaireFile.getAbsolutePath());
+            }
+         }
+
          if (resultatsStream != null) {
             try {
                resultatsStream.close();

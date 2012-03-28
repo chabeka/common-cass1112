@@ -41,7 +41,8 @@ public class StaxUtils {
     * @throws XMLStreamException
     *            exception levée si erreur d'écriture
     */
-   public void addPrefix(String prefix, String uri) throws XMLStreamException {
+   public final void addPrefix(String prefix, String uri)
+         throws XMLStreamException {
       writer.add(eventFactory.createNamespace(prefix, uri));
    }
 
@@ -52,27 +53,40 @@ public class StaxUtils {
     *           nom de la balise
     * @param prefix
     *           préfixe
-    * @param URL
+    * @param url
     *           namespace
     * @throws XMLStreamException
     *            exception levée si erreur d'écriture
     */
-   public void addStartElement(String name, String prefix, String URL)
+   public final void addStartElement(String name, String prefix, String url)
          throws XMLStreamException {
-      writer.add(eventFactory.createStartElement(prefix, URL, name));
+      writer.add(eventFactory.createStartElement(prefix, url, name));
    }
 
-   public void addEndElement(String name, String prefix, String URL)
+   /**
+    * Ajout d'un élément de fin
+    * 
+    * @param name
+    *           nom de la balise
+    * @param prefix
+    *           préfixe
+    * @param url
+    *           namespace
+    * @throws XMLStreamException
+    *            exception levée si erreur d'écriture
+    */
+   public final void addEndElement(String name, String prefix, String url)
          throws XMLStreamException {
-      writer.add(eventFactory.createEndElement(prefix, URL, name));
+      writer.add(eventFactory.createEndElement(prefix, url, name));
    }
 
    /**
     * Ecriture du début du document
     * 
     * @throws XMLStreamException
+    *            exception levée si erreur d'écriture
     */
-   public void startDocument() throws XMLStreamException {
+   public final void startDocument() throws XMLStreamException {
       writer.add(eventFactory.createStartDocument());
    }
 
@@ -81,10 +95,14 @@ public class StaxUtils {
     * 
     * @param name
     *           Nom de la balise
+    * @param prefix
+    *           préfixe
+    * @param url
+    *           namespace
     * @throws XMLStreamException
     *            exception levée s'il est impossible de créer le tag
     */
-   public void addStartTag(String name, String prefix, String URL)
+   public final void addStartTag(String name, String prefix, String url)
          throws XMLStreamException {
       writer.add(eventFactory.createStartElement(prefix,
             "http://www.cirtil.fr/sae/commun_sommaire_et_resultat", name));
@@ -95,10 +113,14 @@ public class StaxUtils {
     * 
     * @param name
     *           nom de la balise
+    * @param prefix
+    *           préfixe
+    * @param url
+    *           namespace
     * @throws XMLStreamException
     *            exception levée s'il est impossible de créer le tag
     */
-   public void addEndTag(String name, String prefix, String url)
+   public final void addEndTag(String name, String prefix, String url)
          throws XMLStreamException {
       writer.add(eventFactory.createEndElement(prefix, url, name));
    }
@@ -111,7 +133,7 @@ public class StaxUtils {
     * @throws XMLStreamException
     *            exception levée s'il est impossible de créer le tag
     */
-   public void addValue(String value) throws XMLStreamException {
+   public final void addValue(String value) throws XMLStreamException {
       writer.add(eventFactory.createCharacters(value));
    }
 
@@ -127,11 +149,15 @@ public class StaxUtils {
     *           nom de la balise
     * @param value
     *           valeur
+    * @param prefix
+    *           préfixe
+    * @param url
+    *           namespace
     * @throws XMLStreamException
     *            exception levée s'il est impossible de créer le tag
     */
-   public void createTag(String name, String value, String prefix, String url)
-         throws XMLStreamException {
+   public final void createTag(String name, String value, String prefix,
+         String url) throws XMLStreamException {
       // BatchMode
       addStartTag(name, prefix, url);
       addValue(value);

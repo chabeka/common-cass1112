@@ -76,14 +76,14 @@ public class ResultatsFileEchecSupportTest {
       FileOutputStream fos = new FileOutputStream(sommaire);
 
       IOUtils.copy(resSommaire.getInputStream(), fos);
-      File repertoireEcdeDocuments = new File(ecdeDirectory, "documents");
+      File repEcde = new File(ecdeDirectory, "documents");
       ClassPathResource resAttestation1 = new ClassPathResource("doc1.PDF");
-      File fileAttestation1 = new File(repertoireEcdeDocuments, "doc1.PDF");
+      File fileAttestation1 = new File(repEcde, "doc1.PDF");
       fos = new FileOutputStream(fileAttestation1);
       IOUtils.copy(resAttestation1.getInputStream(), fos);
 
       CaptureMasseSommaireDocumentException erreur = new CaptureMasseSommaireDocumentException(
-            3, new NullPointerException("la valeur x est erronée"));
+            3, new Exception("la valeur x est erronée"));
       support.writeResultatsFile(ecdeDirectory, sommaire, erreur, 21);
 
       File resultats = new File(ecdeDirectory, "resultats.xml");

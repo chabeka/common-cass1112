@@ -105,9 +105,8 @@ public class ResultatsFileEchecBloquantSupportImpl implements
 
       final ErreurType erreurType = new ErreurType();
       erreurType.setCode("SAE-EC-SOM001");
-      erreurType
-            .setLibelle("Le fichier sommaire n'est pas valide. Détails : \n"
-                  + erreur.getCause().toString());
+      erreurType.setLibelle("Le fichier sommaire n'est pas valide. Détails : "
+            + erreur.getMessage());
 
       ResultatsType resultats = objFactory.createResultatsType();
 
