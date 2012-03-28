@@ -21,11 +21,8 @@ public class CaptureMasseSommaireFormatValidationException extends Exception {
     */
    public CaptureMasseSommaireFormatValidationException(
          final String causeTehnique, Throwable cause) {
-      super(
-            "Le fichier sommaire n'est pas valide ( "
-                  + causeTehnique
-                  + " ). Détails : Aucun document du sommaire ne sera intégré dans le SAE.",
-            cause);
+      super("Aucun document du sommaire ne sera intégré dans le SAE ("
+            + causeTehnique + ").", cause);
    }
 
 }
