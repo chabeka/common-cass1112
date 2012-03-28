@@ -76,7 +76,6 @@ public class SommaireFormatValidationSupportTest {
    }
 
    @Test
-   @Ignore
    public void testSommaireValide() {
 
       try {

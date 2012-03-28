@@ -34,7 +34,7 @@ public class CheckFormatFileSommaireTasklet implements Tasklet {
     */
    @Override
    public final RepeatStatus execute(final StepContribution contribution,
-         final ChunkContext chunkContext) throws Exception {
+         final ChunkContext chunkContext) {
 
       final StepExecution stepExecution = chunkContext.getStepContext()
             .getStepExecution();
@@ -43,15 +43,13 @@ public class CheckFormatFileSommaireTasklet implements Tasklet {
       final String sommairePath = context.getString(Constantes.SOMMAIRE_FILE);
       final File sommaireFile = new File(sommairePath);
 
-      // FIXME FBON - Rebrancher la validation
-      // try {
-      // validationSupport.validationSommaire(sommaireFile);
-      // } catch (CaptureMasseSommaireFormatValidationException e) {
-      // final CaptureMasseSommaireDocumentException exception = new
-      // CaptureMasseSommaireDocumentException(
-      // 0, e);
-      // context.put(Constantes.DOC_EXCEPTION, exception);
-      // }
+      try {
+         validationSupport.validationSommaire(sommaireFile);
+      } catch (CaptureMasseSommaireFormatValidationException e) {
+         CaptureMasseSommaireDocumentException exception = new CaptureMasseSommaireDocumentException(
+               0, e);
+         context.put(Constantes.DOC_EXCEPTION, exception);
+      }
 
       try {
          validationSupport.validerModeBatch(sommaireFile, "TOUT_OU_RIEN");

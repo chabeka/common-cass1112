@@ -1,6 +1,3 @@
-/**
- * 
- */
 package fr.urssaf.image.sae.services.capturemasse.support.sommaire.impl;
 
 import java.io.File;
@@ -8,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLEventReader;
@@ -18,6 +16,9 @@ import javax.xml.stream.events.XMLEvent;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import org.xml.sax.SAXException;
 
@@ -37,7 +38,10 @@ public class SommaireFormatValidationSupportImpl implements
    private static final Logger LOGGER = LoggerFactory
          .getLogger(SommaireFormatValidationSupportImpl.class);
 
-   private static final String XSD_SOMMAIRE = "xsd_som_res/sommaire.xsd";
+   private static final String SOMMAIRE_XSD = "xsd_som_res/sommaire.xsd";
+
+   @Autowired
+   private ApplicationContext context;
 
    /**
     * {@inheritDoc}
@@ -46,19 +50,27 @@ public class SommaireFormatValidationSupportImpl implements
    public final void validationSommaire(final File sommaireFile)
          throws CaptureMasseSommaireFormatValidationException {
 
+      Resource sommaireXSD = context.getResource(SOMMAIRE_XSD);
+      URL xsdSchema;
       try {
-         XmlValidationUtils.parse(sommaireFile, XSD_SOMMAIRE);
+         xsdSchema = sommaireXSD.getURL();
+      } catch (IOException e) {
+         throw new CaptureMasseRuntimeException(e);
+      }
+
+      try {
+         XmlValidationUtils.parse(sommaireFile, xsdSchema);
 
       } catch (IOException e) {
          throw new CaptureMasseRuntimeException(e);
 
       } catch (ParserConfigurationException e) {
-         throw new CaptureMasseSommaireFormatValidationException(
-               "erreur de lecture", e);
+         throw new CaptureMasseSommaireFormatValidationException(sommaireFile
+               .getAbsolutePath(), e);
 
       } catch (SAXException e) {
-         throw new CaptureMasseSommaireFormatValidationException(
-               "erreur de format", e);
+         throw new CaptureMasseSommaireFormatValidationException(sommaireFile
+               .getAbsolutePath(), e);
       }
 
    }
@@ -69,7 +81,7 @@ public class SommaireFormatValidationSupportImpl implements
    @Override
    public final void validerModeBatch(File sommaireFile, String batchMode)
          throws CaptureMasseSommaireFormatValidationException {
-      
+
       FileInputStream sommaireStream = null;
       XMLEventReader reader = null;
 
