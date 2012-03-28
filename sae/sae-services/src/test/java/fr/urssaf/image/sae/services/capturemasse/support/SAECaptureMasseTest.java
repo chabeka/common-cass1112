@@ -81,18 +81,16 @@ public class SAECaptureMasseTest {
    }
 
    @Test
-   @Ignore
-   public void testLancementSommaireErrone() {
+   public void testLancementSommaireErroneHashCodeErrone() {
 
       try {
          File sommaire = new File(testSommaire.getRepEcde(), "sommaire.xml");
          ClassPathResource resSommaire = new ClassPathResource(
-               "sommaire/sommaire_format_failure.xml");
+               "sommaire/sommaire_failure_HashIncorrect.xml");
          FileOutputStream fos = new FileOutputStream(sommaire);
          IOUtils.copy(resSommaire.getInputStream(), fos);
 
-         File repDocuments = new File(testSommaire.getRepEcde(),
-               "documents");
+         File repDocuments = new File(testSommaire.getRepEcde(), "documents");
          ClassPathResource resAttestation1 = new ClassPathResource("doc1.PDF");
          File fileAttestation1 = new File(repDocuments, "doc1.PDF");
          fos = new FileOutputStream(fileAttestation1);

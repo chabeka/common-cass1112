@@ -41,6 +41,11 @@ public final class Constantes {
    public static final String SOMMAIRE_FILE = "SOMMAIRE_FILE";
 
    /**
+    * Index utilisé pour le contrôler le document courant
+    */
+   public static final String CTRL_INDEX = "CTRL_INDEX";
+
+   /**
     * Constructeur
     */
    private Constantes() {

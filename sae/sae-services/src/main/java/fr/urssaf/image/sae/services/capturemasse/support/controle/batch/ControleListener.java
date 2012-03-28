@@ -10,9 +10,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.AfterStep;
+import org.springframework.batch.core.annotation.BeforeProcess;
 import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.core.annotation.OnProcessError;
 import org.springframework.batch.core.annotation.OnReadError;
+import org.springframework.batch.item.ExecutionContext;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
@@ -40,6 +42,7 @@ public class ControleListener {
    @BeforeStep
    public final void init(final StepExecution stepExecution) {
       this.stepExecution = stepExecution;
+      this.stepExecution.getExecutionContext().put(Constantes.CTRL_INDEX, -1);
    }
 
    /**
@@ -94,9 +97,23 @@ public class ControleListener {
          final Exception exception) {
 
       final CaptureMasseSommaireDocumentException documentException = new CaptureMasseSommaireDocumentException(
-            stepExecution.getReadCount(), exception);
+            stepExecution.getExecutionContext().getInt(Constantes.CTRL_INDEX),
+            exception);
+
       stepExecution.getJobExecution().getExecutionContext().put(
             Constantes.DOC_EXCEPTION, documentException);
+
+   }
+
+   @BeforeProcess
+   public void beforeProcess(final JAXBElement<UntypedDocument> untypedType) {
+
+      ExecutionContext context = stepExecution.getExecutionContext();
+
+      int valeur = context.getInt(Constantes.CTRL_INDEX);
+      valeur++;
+
+      context.put(Constantes.CTRL_INDEX, valeur);
 
    }
 }
