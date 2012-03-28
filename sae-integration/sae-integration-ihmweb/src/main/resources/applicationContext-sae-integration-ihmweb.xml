@@ -66,12 +66,12 @@
             <bean class="org.springframework.core.io.FileSystemResource">
                <constructor-arg>
                   <bean class="org.springframework.jndi.JndiObjectFactoryBean">
-                     <property name="jndiName" value="java:comp/env/IHM_TEST_CONFIG_CASSANDRA" />
+                     <property name="jndiName" value="java:comp/env/IHM_TEST_CONFIG" />
                      <property name="resourceRef" value="false" />
                   </bean>
                </constructor-arg>
             </bean>
-            
+
          </list>
       </property>
       
@@ -88,6 +88,12 @@
       </property>
       <property name="versionRND">
          <value>${config.versionRND}</value>
+      </property>
+      <property name="cmCompareRepRef">
+         <value>${cmcompare.repRef}</value>
+      </property>
+      <property name="cmCompareRepPasse">
+         <value>${cmcompare.repPasse}</value>
       </property>
    </bean>
 

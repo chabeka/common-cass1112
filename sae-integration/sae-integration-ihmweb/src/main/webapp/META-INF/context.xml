@@ -16,9 +16,9 @@
       value="C:\sae\integration\ecdetests.xml" />
       
    <Environment
-      name="IHM_TEST_CONFIG_CASSANDRA"
+      name="IHM_TEST_CONFIG"
       type="java.lang.String"
-      value="C:\sae\integration\ihmtests-cassandra-config.properties" />
+      value="C:\sae\integration\ihmtests-config.properties" />
    
    <!-- -->
    
@@ -38,9 +38,9 @@
       value="/appl/sae_integration/ecdetests.xml" />
       
    <Environment
-      name="IHM_TEST_CONFIG_CASSANDRA"
+      name="IHM_TEST_CONFIG"
       type="java.lang.String"
-      value="/appl/sae_integration/ihmtests-cassandra-config.properties" />
+      value="/appl/sae_integration/ihmtests-config.properties" />
       
    -->
       

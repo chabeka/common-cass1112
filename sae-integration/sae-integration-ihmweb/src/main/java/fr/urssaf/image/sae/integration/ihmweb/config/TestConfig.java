@@ -9,6 +9,8 @@ public class TestConfig {
    private String urlSaeService;
    private String dnsEcde;
    private String versionRND;
+   private String cmCompareRepRef;
+   private String cmCompareRepPasse;
    
    /**
     * L'URL du service web SaeService
@@ -63,6 +65,26 @@ public class TestConfig {
     */
    public final void setVersionRND(String versionRND) {
       this.versionRND = versionRND;
+   }
+
+
+   public final String getCmCompareRepRef() {
+      return cmCompareRepRef;
+   }
+
+
+   public final void setCmCompareRepRef(String cmCompareRepRef) {
+      this.cmCompareRepRef = cmCompareRepRef;
+   }
+
+
+   public final String getCmCompareRepPasse() {
+      return cmCompareRepPasse;
+   }
+
+
+   public final void setCmCompareRepPasse(String cmCompareRepPasse) {
+      this.cmCompareRepPasse = cmCompareRepPasse;
    }
    
    

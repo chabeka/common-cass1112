@@ -11,7 +11,15 @@ public class JobRequestComparator implements Comparator<JobRequest> {
          
          return o1.getCreationDate().compareTo(o2.getCreationDate()) * -1;
          
-      } else {
+      } else if ((o1.getCreationDate()==null) && (o2.getCreationDate()!=null)) {
+         
+         return 1;
+      
+      }  else if ((o1.getCreationDate()!=null) && (o2.getCreationDate()==null)) {
+         
+         return -1;
+      }
+      else {
          
          return 0;
          
