@@ -316,11 +316,11 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
       if (erreur.getCause() instanceof CaptureMasseRuntimeException) {
          code = "SAE-CA-BUL001";
          message = "Une erreur interne à l'application est survenue lors de la capture du document "
-               + chemin + ". Détails : " + erreur.getCause().toString();
+               + chemin + ". Détails : " + erreur.getCause().getMessage();
       } else {
          code = "SAE-CA-BUL002";
          message = "Le document " + chemin + " n'a pas été archivé. Détails : "
-               + erreur.getCause().toString();
+               + erreur.getCause().getMessage();
       }
 
       staxUtils.createTag("code", code, PX_SOMRES, NS_SOMRES);

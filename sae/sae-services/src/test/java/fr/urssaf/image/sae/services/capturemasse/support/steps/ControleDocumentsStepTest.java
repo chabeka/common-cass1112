@@ -92,18 +92,30 @@ public class ControleDocumentsStepTest {
          ParseException, Exception {
 
       File sommaire = new File(ecdeTestSommaire.getRepEcde(), "sommaire.xml");
-      ClassPathResource resSommaire = new ClassPathResource(
-            "sommaire.xml");
+      ClassPathResource resSommaire = new ClassPathResource("sommaire/sommaire_failure_HashIncorrect.xml");
       FileOutputStream fos = new FileOutputStream(sommaire);
 
       IOUtils.copy(resSommaire.getInputStream(), fos);
+
+      File repDocuments = new File(ecdeTestSommaire.getRepEcde(), "documents");
+      File pdf = new File(repDocuments, "doc1.PDF");
+
+      ClassPathResource resPdf = new ClassPathResource("doc1.PDF");
+      FileOutputStream fosPdf = new FileOutputStream(pdf);
+
+      IOUtils.copy(resPdf.getInputStream(), fosPdf);
+
+      ExecutionContext contextParam = new ExecutionContext();
+      contextParam.put(Constantes.SOMMAIRE, ecdeTestSommaire.getUrlEcde()
+            .toString());
+      contextParam.put(Constantes.SOMMAIRE_FILE, sommaire.getAbsolutePath());
 
       Map<String, JobParameter> map = new HashMap<String, JobParameter>();
       map.put(Constantes.SOMMAIRE, new JobParameter(ecdeTestSommaire
             .getUrlEcde().toString()));
       JobParameters jobParameters = new JobParameters(map);
       JobExecution execution = launcher.launchStep("controleDocuments",
-            jobParameters);
+            jobParameters, contextParam);
       ExecutionContext context = execution.getExecutionContext();
 
       Assert.assertNotNull("Une exception doit etre presente dans le context",
@@ -114,4 +126,5 @@ public class ControleDocumentsStepTest {
             .getCause());
 
    }
+
 }
