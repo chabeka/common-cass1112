@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import javax.xml.bind.JAXBElement;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,11 +17,14 @@ import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.AfterChunk;
 import org.springframework.batch.core.annotation.AfterStep;
+import org.springframework.batch.core.annotation.BeforeProcess;
 import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.core.annotation.OnProcessError;
 import org.springframework.batch.core.annotation.OnReadError;
+import org.springframework.batch.item.ExecutionContext;
 import org.springframework.stereotype.Component;
 
+import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireDocumentException;
 import fr.urssaf.image.sae.services.capturemasse.model.CaptureMasseIntegratedDocument;
@@ -48,6 +53,7 @@ public class StockageListener {
    @BeforeStep
    public final void init(final StepExecution stepExecution) {
       this.stepExecution = stepExecution;
+      this.stepExecution.getExecutionContext().put(Constantes.CTRL_INDEX, -1);
    }
 
    /**
@@ -74,7 +80,8 @@ public class StockageListener {
    public final void logProcessError(final DocumentType documentType,
          final Exception exception) {
       final CaptureMasseSommaireDocumentException documentException = new CaptureMasseSommaireDocumentException(
-            stepExecution.getReadCount(), exception);
+            stepExecution.getExecutionContext().getInt(Constantes.CTRL_INDEX),
+            exception);
       stepExecution.getJobExecution().getExecutionContext().put(
             Constantes.DOC_EXCEPTION, documentException);
    }
@@ -141,6 +148,24 @@ public class StockageListener {
       }
 
       return status;
+   }
+
+   /**
+    * Action exécutée avant chaque process
+    * 
+    * @param untypedType
+    *           le document
+    */
+   @BeforeProcess
+   public void beforeProcess(final JAXBElement<UntypedDocument> untypedType) {
+
+      ExecutionContext context = stepExecution.getExecutionContext();
+
+      int valeur = context.getInt(Constantes.CTRL_INDEX);
+      valeur++;
+
+      context.put(Constantes.CTRL_INDEX, valeur);
+
    }
 
    private List<UUID> getIntegratedDocuments() {

@@ -13,7 +13,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
-import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseDocumentFileNotFoundException;
+import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireDocumentNotFoundException;
 import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.EmptyDocumentEx;
 import fr.urssaf.image.sae.services.exception.capture.InvalidValueTypeAndFormatMetadataEx;
@@ -36,7 +36,7 @@ public class CaptureMasseControleSupportValidationTest {
          throws UnknownCodeRndEx, EmptyDocumentEx, UnknownMetadataEx,
          DuplicatedMetadataEx, InvalidValueTypeAndFormatMetadataEx,
          NotSpecifiableMetadataEx, RequiredArchivableMetadataEx,
-         UnknownHashCodeEx, CaptureMasseDocumentFileNotFoundException {
+         UnknownHashCodeEx, CaptureMasseSommaireDocumentNotFoundException {
 
       support.controleSAEDocument(null, new File(""));
       Assert.fail("sortie aspect attendue");
@@ -47,7 +47,7 @@ public class CaptureMasseControleSupportValidationTest {
          throws UnknownCodeRndEx, EmptyDocumentEx, UnknownMetadataEx,
          DuplicatedMetadataEx, InvalidValueTypeAndFormatMetadataEx,
          NotSpecifiableMetadataEx, RequiredArchivableMetadataEx,
-         UnknownHashCodeEx, CaptureMasseDocumentFileNotFoundException {
+         UnknownHashCodeEx, CaptureMasseSommaireDocumentNotFoundException {
       support.controleSAEDocument(new UntypedDocument(), null);
       Assert.fail("sortie aspect attendue");
 

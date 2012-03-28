@@ -25,7 +25,7 @@ import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
-import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseDocumentFileNotFoundException;
+import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireDocumentNotFoundException;
 import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.EmptyDocumentEx;
 import fr.urssaf.image.sae.services.exception.capture.InvalidValueTypeAndFormatMetadataEx;
@@ -63,7 +63,7 @@ public class CaptureMasseControleSupportTest {
 
    @Test(expected = EmptyDocumentEx.class)
    public void testControleSAEDocumentFileEmpty() throws IOException,
-         UnknownCodeRndEx, CaptureMasseDocumentFileNotFoundException,
+         UnknownCodeRndEx, CaptureMasseSommaireDocumentNotFoundException,
          EmptyDocumentEx, UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx {
@@ -91,7 +91,7 @@ public class CaptureMasseControleSupportTest {
 
    @Test(expected = UnknownMetadataEx.class)
    public void testControleSAEDocumentUnknownMetaData() throws IOException,
-         UnknownCodeRndEx, CaptureMasseDocumentFileNotFoundException,
+         UnknownCodeRndEx, CaptureMasseSommaireDocumentNotFoundException,
          EmptyDocumentEx, UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx {
@@ -123,7 +123,7 @@ public class CaptureMasseControleSupportTest {
 
    @Test(expected = DuplicatedMetadataEx.class)
    public void testControleSAEDocumentDuplicateMetaData() throws IOException,
-         UnknownCodeRndEx, CaptureMasseDocumentFileNotFoundException,
+         UnknownCodeRndEx, CaptureMasseSommaireDocumentNotFoundException,
          EmptyDocumentEx, UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx {
@@ -154,7 +154,7 @@ public class CaptureMasseControleSupportTest {
 
    @Test(expected = RequiredArchivableMetadataEx.class)
    public void testControleSAEDocumentRequiredMetaData() throws IOException,
-         UnknownCodeRndEx, CaptureMasseDocumentFileNotFoundException,
+         UnknownCodeRndEx, CaptureMasseSommaireDocumentNotFoundException,
          EmptyDocumentEx, UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx {
@@ -184,9 +184,9 @@ public class CaptureMasseControleSupportTest {
    }
    
    
-   @Test(expected = CaptureMasseDocumentFileNotFoundException.class)
+   @Test(expected = CaptureMasseSommaireDocumentNotFoundException.class)
    public void testControleSAEDocumentDocumentNotFound() throws IOException,
-         UnknownCodeRndEx, CaptureMasseDocumentFileNotFoundException,
+         UnknownCodeRndEx, CaptureMasseSommaireDocumentNotFoundException,
          EmptyDocumentEx, UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx {
@@ -218,7 +218,7 @@ public class CaptureMasseControleSupportTest {
    @Test(expected = InvalidValueTypeAndFormatMetadataEx.class)
    public void testControleSAEDocumentTypeAndFormatMetaData()
          throws IOException, UnknownCodeRndEx,
-         CaptureMasseDocumentFileNotFoundException, EmptyDocumentEx,
+         CaptureMasseSommaireDocumentNotFoundException, EmptyDocumentEx,
          UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx {
@@ -250,7 +250,7 @@ public class CaptureMasseControleSupportTest {
    @Test(expected = NotSpecifiableMetadataEx.class)
    public void testControleSAEDocumentNotSpecifiableMetadata()
          throws IOException, UnknownCodeRndEx,
-         CaptureMasseDocumentFileNotFoundException, EmptyDocumentEx,
+         CaptureMasseSommaireDocumentNotFoundException, EmptyDocumentEx,
          UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx {
@@ -282,7 +282,7 @@ public class CaptureMasseControleSupportTest {
 
    @Test(expected = UnknownCodeRndEx.class)
    public void testControleSAEDocumentUnknownCodeRnd() throws IOException,
-         UnknownCodeRndEx, CaptureMasseDocumentFileNotFoundException,
+         UnknownCodeRndEx, CaptureMasseSommaireDocumentNotFoundException,
          EmptyDocumentEx, UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx {
@@ -313,7 +313,7 @@ public class CaptureMasseControleSupportTest {
 
    @Test(expected = UnknownHashCodeEx.class)
    public void testControleSAEDocumentUnknownHashCode() throws IOException,
-         UnknownCodeRndEx, CaptureMasseDocumentFileNotFoundException,
+         UnknownCodeRndEx, CaptureMasseSommaireDocumentNotFoundException,
          EmptyDocumentEx, UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx {
@@ -373,7 +373,7 @@ public class CaptureMasseControleSupportTest {
          Assert.fail("traitement complet attendu sans erreur");
       } catch (IOException e) {
          Assert.fail("traitement complet attendu sans erreur");
-      } catch (CaptureMasseDocumentFileNotFoundException e) {
+      } catch (CaptureMasseSommaireDocumentNotFoundException e) {
          Assert.fail("traitement complet attendu sans erreur");
       } catch (EmptyDocumentEx e) {
          Assert.fail("traitement complet attendu sans erreur");

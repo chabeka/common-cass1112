@@ -105,6 +105,12 @@ public class ControleListener {
 
    }
 
+   /**
+    * Action exécutée avant chaque process
+    * 
+    * @param untypedType
+    *           le document
+    */
    @BeforeProcess
    public void beforeProcess(final JAXBElement<UntypedDocument> untypedType) {
 

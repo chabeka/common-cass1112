@@ -15,8 +15,8 @@ import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.mapping.exception.InvalidSAETypeException;
 import fr.urssaf.image.sae.mapping.exception.MappingFromReferentialException;
 import fr.urssaf.image.sae.mapping.services.MappingDocumentService;
-import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseDocumentFileNotFoundException;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
+import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireDocumentNotFoundException;
 import fr.urssaf.image.sae.services.capturemasse.support.controle.CaptureMasseControleSupport;
 import fr.urssaf.image.sae.services.controles.SAEControlesCaptureService;
 import fr.urssaf.image.sae.services.enrichment.dao.RNDReferenceDAO;
@@ -62,7 +62,7 @@ public class CaptureMasseControleSupportImpl implements
    @Override
    public final void controleSAEDocument(final UntypedDocument document,
          final File ecdeDirectory)
-         throws CaptureMasseDocumentFileNotFoundException, EmptyDocumentEx,
+         throws CaptureMasseSommaireDocumentNotFoundException, EmptyDocumentEx,
          UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx, UnknownCodeRndEx {
@@ -124,12 +124,12 @@ public class CaptureMasseControleSupportImpl implements
     *           document dont il faut vérifier l'existence
     * @param ecdeDirectory
     *           répertoire de traitement
-    * @throws CaptureMasseDocumentFileNotFoundException
+    * @throws CaptureMasseSommaireDocumentNotFoundException
     *            exception si le fichier n'existe pas
     */
    private File getFichierSiExiste(final UntypedDocument document,
          final File ecdeDirectory)
-         throws CaptureMasseDocumentFileNotFoundException {
+         throws CaptureMasseSommaireDocumentNotFoundException {
 
       final String path = ecdeDirectory.getAbsolutePath() + File.separator
             + "documents" + File.separator + document.getFilePath();
@@ -137,7 +137,8 @@ public class CaptureMasseControleSupportImpl implements
       final File documentFile = new File(path);
 
       if (!documentFile.exists()) {
-         throw new CaptureMasseDocumentFileNotFoundException(path);
+         throw new CaptureMasseSommaireDocumentNotFoundException(document
+               .getFilePath());
       }
 
       return documentFile;

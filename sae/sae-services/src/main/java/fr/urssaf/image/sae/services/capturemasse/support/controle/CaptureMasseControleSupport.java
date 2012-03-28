@@ -7,7 +7,7 @@ import java.io.File;
 
 import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
-import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseDocumentFileNotFoundException;
+import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireDocumentNotFoundException;
 import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.EmptyDocumentEx;
 import fr.urssaf.image.sae.services.exception.capture.InvalidValueTypeAndFormatMetadataEx;
@@ -52,7 +52,7 @@ public interface CaptureMasseControleSupport {
     *           Modèle métier du document
     * @param ecdeDirectory
     *           chemin absolu du répertoire de traitement de l'ECDE
-    * @throws CaptureMasseDocumentFileNotFoundException
+    * @throws CaptureMasseSommaireDocumentNotFoundException
     *            Le fichier du document n'existe pas dans l'ECDE
     * @throws EmptyDocumentEx
     *            Le fichier du document est vide
@@ -76,7 +76,7 @@ public interface CaptureMasseControleSupport {
     *            La métadonnée codeRND n'existe pas
     */
    void controleSAEDocument(UntypedDocument document, File ecdeDirectory)
-         throws CaptureMasseDocumentFileNotFoundException, EmptyDocumentEx,
+         throws CaptureMasseSommaireDocumentNotFoundException, EmptyDocumentEx,
          UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx, UnknownCodeRndEx;
