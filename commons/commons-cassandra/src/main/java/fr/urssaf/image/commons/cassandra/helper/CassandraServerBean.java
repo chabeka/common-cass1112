@@ -21,7 +21,7 @@ import org.springframework.beans.factory.InitializingBean;
 public class CassandraServerBean implements InitializingBean, DisposableBean  {
 
    private static final Logger LOG = LoggerFactory.getLogger(CassandraServerBean.class);
-   private static final int WAIT_MAX_TRY = 5;
+   private static final int WAIT_MAX_TRY = 12;
    private static final long WAIT_MS = 1000;
    private static final String TEST_CLUSTER_NAME = "TestCluster";
    private String dataSet;
@@ -101,8 +101,6 @@ public class CassandraServerBean implements InitializingBean, DisposableBean  {
     * 
     */
    private void waitForServer() throws InterruptedException {
-      CassandraHostConfigurator hostConfigurator = new CassandraHostConfigurator(getHosts());
-      hostConfigurator.setMaxActive(1);
       Cluster cluster = getTestCluster();
       for (int i=0; i < WAIT_MAX_TRY; i++) {
          try {
@@ -112,6 +110,14 @@ public class CassandraServerBean implements InitializingBean, DisposableBean  {
          catch (Exception e) {
             LOG.debug("CassandraServerBean : waiting for server (" + i + ")...");            
             Thread.sleep(WAIT_MS);
+            LOG.debug("CassandraServerBean : reseting cluster (" + i + ")...");            
+            try {
+               HFactory.shutdownCluster(testCluster);
+            }
+            catch (Exception ex) {
+               LOG.debug("CassandraServerBean : error while shutdowning cluster", ex);            
+            }
+            cluster = getTestCluster();
          }
       }
    }
