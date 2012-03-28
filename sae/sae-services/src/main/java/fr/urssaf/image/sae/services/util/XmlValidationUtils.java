@@ -7,45 +7,33 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import javax.xml.XMLConstants;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import javax.xml.transform.Source;
-import javax.xml.transform.sax.SAXSource;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-import javax.xml.validation.Validator;
 
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xml.sax.InputSource;
+import org.springframework.core.io.ClassPathResource;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.helpers.DefaultHandler;
+
+import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
 
 /**
  * Classe utilitaire de validation des fichiers XML
  * 
  */
-public final class XmlValidationUtils {
+public class XmlValidationUtils {
 
-   // private static final String SCHEMA_LANGUAGE =
-   // "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
-   //
-   // private static final String W3C_XML_SCHEMA =
-   // "http://www.w3.org/2001/XMLSchema";
-   //
-   // private static final String SCHEMA_SOURCE =
-   // "http://java.sun.com/xml/jaxp/properties/schemaSource";
+   private static final String SCHEMA_LANGUAGE = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
+
+   private static final String W3C_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema";
+
+   private static final String SCHEMA_SOURCE = "http://java.sun.com/xml/jaxp/properties/schemaSource";
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(XmlValidationUtils.class);
-
-   /**
-    * Constructeur
-    */
-   private XmlValidationUtils() {
-   }
 
    /**
     * Validation de fichier XML par rapport au fichier XSD fourni
@@ -67,13 +55,10 @@ public final class XmlValidationUtils {
       FileInputStream stream = null;
 
       try {
-         final Schema schema = factorySAXParser(xsdFile);
 
-         stream = FileUtils.openInputStream(xmlFile);
-         InputSource inputSource = new InputSource(stream);
-
-         Validator validator = schema.newValidator();
-         validator.validate(new SAXSource(inputSource));
+         final SAXParser saxParser = factorySAXParser(xsdFile);
+         stream = new FileInputStream(xmlFile);
+         saxParser.parse(stream, new SaxErrorHandler());
 
       } finally {
          if (stream != null) {
@@ -86,7 +71,7 @@ public final class XmlValidationUtils {
       }
    }
 
-   private static Schema factorySAXParser(final String xsdFile)
+   private static SAXParser factorySAXParser(final String xsdFile)
          throws ParserConfigurationException, SAXException {
 
       final SAXParserFactory spf = SAXParserFactory.newInstance();
@@ -94,15 +79,40 @@ public final class XmlValidationUtils {
       spf.setNamespaceAware(true);
       spf.setValidating(true);
 
-      SchemaFactory factory = SchemaFactory
-            .newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+      ClassPathResource resource = new ClassPathResource(xsdFile);
+      final SAXParser saxParser = spf.newSAXParser();
+      try {
+         saxParser.setProperty(SCHEMA_LANGUAGE, W3C_XML_SCHEMA);
+         saxParser.setProperty(SCHEMA_SOURCE, resource.getFile()
+               .getAbsolutePath());
+      } catch (IOException e) {
+         throw new CaptureMasseRuntimeException(e);
+      }
 
-      // factory.setResourceResolver(new XsdResourceresolver());
-      Source schemaFile = new StreamSource(XmlValidationUtils.class
-            .getClassLoader().getResourceAsStream(xsdFile));
-      Schema schema = factory.newSchema(schemaFile);
-
-      return schema;
+      return saxParser;
    }
 
+   private static class SaxErrorHandler extends DefaultHandler {
+
+      @Override
+      public void warning(final SAXParseException exception)
+            throws SAXParseException {
+         throw exception;
+      }
+
+      @Override
+      public void error(final SAXParseException exception)
+            throws SAXParseException {
+         throw exception;
+      }
+
+      @Override
+      public void fatalError(final SAXParseException exception)
+            throws SAXParseException {
+
+         throw exception;
+
+      }
+
+   }
 }

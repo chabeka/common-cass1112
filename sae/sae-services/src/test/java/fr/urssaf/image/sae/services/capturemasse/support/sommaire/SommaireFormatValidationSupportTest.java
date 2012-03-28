@@ -11,6 +11,7 @@ import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +59,7 @@ public class SommaireFormatValidationSupportTest {
    }
 
    @Test(expected = CaptureMasseSommaireFormatValidationException.class)
+   @Ignore
    public void testSommaireErrone() throws IOException,
          CaptureMasseSommaireFormatValidationException {
 
@@ -74,6 +76,7 @@ public class SommaireFormatValidationSupportTest {
    }
 
    @Test
+   @Ignore
    public void testSommaireValide() {
 
       try {
