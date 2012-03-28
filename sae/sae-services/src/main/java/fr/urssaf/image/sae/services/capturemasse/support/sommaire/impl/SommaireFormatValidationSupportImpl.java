@@ -65,12 +65,12 @@ public class SommaireFormatValidationSupportImpl implements
          throw new CaptureMasseRuntimeException(e);
 
       } catch (ParserConfigurationException e) {
-         throw new CaptureMasseSommaireFormatValidationException(sommaireFile
-               .getAbsolutePath(), e);
+         throw new CaptureMasseSommaireFormatValidationException(
+               "erreur de lecture", e);
 
       } catch (SAXException e) {
-         throw new CaptureMasseSommaireFormatValidationException(sommaireFile
-               .getAbsolutePath(), e);
+         throw new CaptureMasseSommaireFormatValidationException(
+               "erreur de format", e);
       }
 
    }

@@ -11,7 +11,6 @@ import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,8 +57,7 @@ public class SommaireFormatValidationSupportTest {
 
    }
 
-   @Test(expected = CaptureMasseSommaireFormatValidationException.class)
-   @Ignore
+   @Test
    public void testSommaireErrone() throws IOException,
          CaptureMasseSommaireFormatValidationException {
 
@@ -71,7 +69,21 @@ public class SommaireFormatValidationSupportTest {
       FileOutputStream fos = new FileOutputStream(sommaire);
       IOUtils.copy(resSommaire.getInputStream(), fos);
 
-      support.validationSommaire(sommaire);
+      try {
+
+         support.validationSommaire(sommaire);
+
+         Assert
+               .fail("la validation doit lever une exception de type CaptureMasseSommaireFormatValidationException");
+
+      } catch (CaptureMasseSommaireFormatValidationException e) {
+
+         Assert
+               .assertEquals(
+                     "le message de l'exception est inattendu",
+                     "Aucun document du sommaire ne sera intégré dans le SAE (erreur de format).",
+                     e.getMessage());
+      }
 
    }
 
