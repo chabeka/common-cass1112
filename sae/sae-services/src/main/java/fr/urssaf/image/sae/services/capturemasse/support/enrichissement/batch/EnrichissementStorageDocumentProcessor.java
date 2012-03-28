@@ -35,9 +35,8 @@ public class EnrichissementStorageDocumentProcessor implements
     */
    @BeforeStep
    public final void init(StepExecution stepExecution) {
-      ExecutionContext context = stepExecution.getJobExecution()
-            .getExecutionContext();
-      this.uuid = context.getString(Constantes.ID_TRAITEMENT);
+      this.uuid = stepExecution.getJobParameters().getString(
+            Constantes.ID_TRAITEMENT);
    }
 
    /**

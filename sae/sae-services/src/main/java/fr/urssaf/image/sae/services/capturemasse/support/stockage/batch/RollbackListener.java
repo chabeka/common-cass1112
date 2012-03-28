@@ -40,7 +40,8 @@ public class RollbackListener {
       final ExecutionContext mapJob = stepExecution.getJobExecution()
             .getExecutionContext();
 
-      final String idTraitement = (String) mapJob.get(Constantes.ID_TRAITEMENT);
+      final String idTraitement = stepExecution.getJobParameters().getString(
+            Constantes.ID_TRAITEMENT);
 
       final String errorMessage = MessageFormat.format(
             "{0} - Une exception a été levée lors du rollback : {1}",
