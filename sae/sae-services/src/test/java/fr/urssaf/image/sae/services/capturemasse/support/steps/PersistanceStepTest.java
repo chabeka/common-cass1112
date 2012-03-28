@@ -55,7 +55,7 @@ public class PersistanceStepTest {
 
    @Autowired
    @Qualifier("service")
-   private StorageDocumentService service;
+   private StorageDocumentService storageDocumentService;
 
    @Before
    public void init() {
@@ -70,7 +70,7 @@ public class PersistanceStepTest {
          // rien a faire
       }
 
-      EasyMock.reset(service);
+      EasyMock.reset(storageDocumentService);
    }
 
    @Test
@@ -82,16 +82,16 @@ public class PersistanceStepTest {
 
       // Mock du service de stockage
       EasyMock.expect(
-            service.insertStorageDocument(EasyMock
+            storageDocumentService.insertStorageDocument(EasyMock
                   .anyObject(StorageDocument.class)))
             .andReturn(storageDocument);
 
-      service.setStorageDocumentServiceParameter(EasyMock
+      storageDocumentService.setStorageDocumentServiceParameter(EasyMock
             .anyObject(ServiceProvider.class));
 
       EasyMock.expectLastCall();
 
-      EasyMock.replay(service);
+      EasyMock.replay(storageDocumentService);
 
       // création de l'arbo
       File sommaire = new File(ecdeTestSommaire.getRepEcde(), "sommaire.xml");
