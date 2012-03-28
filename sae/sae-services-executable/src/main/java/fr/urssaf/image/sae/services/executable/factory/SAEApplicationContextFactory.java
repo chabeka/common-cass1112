@@ -1,14 +1,13 @@
 package fr.urssaf.image.sae.services.executable.factory;
 
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.FileSystemResource;
 
 /**
- * Classe d'instanciation de {@link ApplicationContext} pour les services
- * nécessitant un contexte SPRING
+ * Classe d'instanciation de {@link ClassPathXmlApplicationContext} pour les
+ * services nécessitant un contexte SPRING
  * 
  * 
  */
@@ -19,14 +18,15 @@ public final class SAEApplicationContextFactory {
    }
 
    /**
-    * Cette méthode permet d'instancier des objets {@link ApplicationContext} à
-    * partir de :
+    * Cette méthode permet d'instancier des objets
+    * {@link ClassPathXmlApplicationContext} à partir de :
     * <ul>
     * <li>fichier de type ApplicationContext.xml</li>
     * <li>chemin pour un fichier dynamique de configuration</li>
     * </ul>
     * Ici le fichier de configuration du contexte doit contenir des références
-    * vers le bean du fichier dynamque de configuration avec la balise : <br><br>
+    * vers le bean du fichier dynamque de configuration avec la balise : <br>
+    * <br>
     * <code>&lt;ref bean="saeConfigResource" /></code> <br>
     * <br>
     * 
@@ -37,7 +37,7 @@ public final class SAEApplicationContextFactory {
     *           chemin complet du fichier de configuration générale du SAE
     * @return contexte d'application
     */
-   public static ApplicationContext createSAEApplicationContext(
+   public static ClassPathXmlApplicationContext createSAEApplicationContext(
          String contextConfig, String saeConfig) {
 
       GenericApplicationContext genericContext = new GenericApplicationContext();

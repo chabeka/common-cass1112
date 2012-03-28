@@ -5,7 +5,7 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
-import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.services.batch.TraitementAsynchroneService;
@@ -57,24 +57,35 @@ public class TraitementMasseMain {
       MDC.put("log_contexte_uuid", contexteLog);
 
       // instanciation du contexte de SPRING
-      ApplicationContext context = SAEApplicationContextFactory
+      ClassPathXmlApplicationContext context = SAEApplicationContextFactory
             .createSAEApplicationContext(configLocation, saeConfiguration);
-
-      // appel du service de traitement de masse
-      TraitementAsynchroneService traitementService = context
-            .getBean(TraitementAsynchroneService.class);
 
       try {
 
-         traitementService.lancerJob(idJob);
+         // appel du service de traitement de masse
+         TraitementAsynchroneService traitementService = context
+               .getBean(TraitementAsynchroneService.class);
 
-      } catch (JobInexistantException e) {
+         try {
 
-         throw new TraitementMasseMainException(e);
+            traitementService.lancerJob(idJob);
 
-      } catch (JobNonReserveException e) {
+         } catch (JobInexistantException e) {
 
-         throw new TraitementMasseMainException(e);
+            throw new TraitementMasseMainException(e);
+
+         } catch (JobNonReserveException e) {
+
+            throw new TraitementMasseMainException(e);
+         }
+
+      } finally {
+
+         // on force ici la fermeture du contexte de Spring
+         // ceci a pour but de forcer la déconnexion avec Cassandra, la SGBD
+         // chargé de la persistance de la pile des travaux
+         context.close();
+
       }
 
    }

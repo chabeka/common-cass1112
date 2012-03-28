@@ -9,8 +9,6 @@
 		http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
 
-   <import resource="applicationContext-sae-services-executable.xml" />
-
    <bean id="SAEBulkCaptureServiceImpl"
       class="fr.urssaf.image.sae.services.executable.service.SAEServiceProvider"
       factory-method="getInstanceSAEBulkCaptureService">
