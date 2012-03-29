@@ -43,7 +43,7 @@ public class DeletionServiceTest extends StorageServices {
 		final UUIDCriteria uuidCriteria = new UUIDCriteria(
 				storageDoc.getUuid(), new ArrayList<StorageMetadata>());
 		try {
-			getDeletionService().deleteStorageDocument(uuidCriteria);
+			getDeletionService().deleteStorageDocument(uuidCriteria.getUuid());
 		} catch (DeletionServiceEx e) {
 			Assert.assertTrue("La suppression a échoué " + e.getMessage(), true);
 		}

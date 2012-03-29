@@ -1,11 +1,12 @@
 package fr.urssaf.image.sae.storage.dfce.validation;
 
+import java.util.UUID;
+
 import org.apache.commons.lang.Validate;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 
 import fr.urssaf.image.sae.storage.dfce.messages.StorageMessageHandler;
-import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.UUIDCriteria;
 
 /**
  * Fournit des méthodes de validation des arguments des services de suppression
@@ -22,22 +23,21 @@ public class DeletionServiceValidation {
 
    /**
     * Valide l'argument de la méthode
-    * {@link fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument.DeletionServiceImpl#deleteStorageDocument(UUIDCriteria)
-    * deleteStorageDocument}. <br>
+    * {@link fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument.DeletionServiceImpl#deleteStorageDocument(java.util.UUID)
+    * ) deleteStorageDocument}. <br>
     * 
-    * @param uuidCriteria
+    * @param uuid
     *           : le critère de recherche
     */
-   @Before(value = "execution(void fr.urssaf.image.sae.storage.services.storagedocument..DeletionService.deleteStorageDocument(..)) && @annotation(fr.urssaf.image.sae.storage.dfce.annotations.ServiceChecked) && args(uuidCriteria)")
-   public final void deleteStorageDocumentValidation(
-         final UUIDCriteria uuidCriteria) {
+   @Before(value = "execution(void fr.urssaf.image.sae.storage.services.storagedocument..DeletionService.deleteStorageDocument(..)) && @annotation(fr.urssaf.image.sae.storage.dfce.annotations.ServiceChecked) && args(uuid)")
+   public final void deleteStorageDocumentValidation(final UUID uuid) {
 
-      Validate.notNull(uuidCriteria, StorageMessageHandler.getMessage(CODE_ERROR,
+      Validate.notNull(uuid, StorageMessageHandler.getMessage(CODE_ERROR,
             "deletion.from.uuid.criteria.required", "delete.impact",
             "delete.action"));
-      Validate.notNull(uuidCriteria.getUuid(), StorageMessageHandler.getMessage(
-            CODE_ERROR, "deletion.from.uuid.criteria.required",
-            "delete.action", "delete.action"));
+      Validate.notNull(uuid, StorageMessageHandler.getMessage(CODE_ERROR,
+            "deletion.from.uuid.criteria.required", "delete.action",
+            "delete.action"));
 
    }
 
@@ -55,7 +55,8 @@ public class DeletionServiceValidation {
             "rollback.processId.required", "rollback.processId.impact",
             "rollback.processId.action"));
       try {
-         Integer.parseInt(StorageMessageHandler.getMessage("max.lucene.results"));
+         Integer.parseInt(StorageMessageHandler
+               .getMessage("max.lucene.results"));
       } catch (NumberFormatException e) {
          Validate.isTrue(true, StorageMessageHandler.getMessage(CODE_ERROR,
                "max.lucene.results.required", "max.lucene.results.impact",

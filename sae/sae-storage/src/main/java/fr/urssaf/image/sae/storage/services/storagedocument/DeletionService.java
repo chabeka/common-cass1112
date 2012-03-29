@@ -1,7 +1,8 @@
 package fr.urssaf.image.sae.storage.services.storagedocument;
 
+import java.util.UUID;
+
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
-import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.UUIDCriteria;
 
 /**
  * Fournit les services de suppression document.<BR />
@@ -13,44 +14,43 @@ import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.UUIDCrit
  */
 public interface DeletionService {
 
-	/**
-	 * Permet de supprimer un StorageDocument à partir du critère « UUIDCriteria
-	 * ».
-	 * 
-	 * @param uuidCriteria
-	 *            : L'identifiant unique du document
-	 * 
-	 * 
-	 * 
-	 * @throws DeletionServiceEx
-	 *             Runtime exception
-	 */
+   /**
+    * Permet de supprimer un StorageDocument à partir du critère « UUIDCriteria
+    * ».
+    * 
+    * @param uuid
+    *           : L'identifiant unique du document
+    * 
+    * 
+    * 
+    * @throws DeletionServiceEx
+    *            Runtime exception
+    */
 
-	void deleteStorageDocument(final UUIDCriteria uuidCriteria)
-			throws DeletionServiceEx;
+   void deleteStorageDocument(final UUID uuid) throws DeletionServiceEx;
 
-		
+   /**
+    * Permet de faire un rollback à partir d'un identifiant de traitement.
+    * 
+    * 
+    * @param processId
+    *           : L'identifiant du traitement
+    * 
+    * 
+    * 
+    * @throws DeletionServiceEx
+    *            Runtime exception
+    */
 
-	/**
-	 * Permet de faire un rollback à partir d'un identifiant de traitement. 
-	 * 
-	 * 
-	 * @param processId
-	 *            : L'identifiant du traitement
-	 * 
-	 * 
-	 * 
-	 * @throws DeletionServiceEx
-	 *             Runtime exception
-	 */
+   void rollBack(final String processId) throws DeletionServiceEx;
 
-	void rollBack(final String processId)
-			throws DeletionServiceEx;
-	/**
-	 * 
-	 * @param <T> : Le type générique.
-	 * @param parameter : Le paramètre du service {@link DeletionService}
-	 */
-	 <T> void setDeletionServiceParameter(T parameter);
+   /**
+    * 
+    * @param <T>
+    *           : Le type générique.
+    * @param parameter
+    *           : Le paramètre du service {@link DeletionService}
+    */
+   <T> void setDeletionServiceParameter(T parameter);
 
 }

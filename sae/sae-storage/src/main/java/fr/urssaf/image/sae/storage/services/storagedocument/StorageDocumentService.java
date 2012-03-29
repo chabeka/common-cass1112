@@ -1,6 +1,7 @@
 package fr.urssaf.image.sae.storage.services.storagedocument;
 
 import java.util.List;
+import java.util.UUID;
 
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
@@ -172,7 +173,7 @@ public interface StorageDocumentService {
 	 * Permet de supprimer un StorageDocument à partir du critère « UUIDCriteria
 	 * 
 	 * 
-	 * @param uuidCriteria
+	 * @param uuid
 	 *            : L'identifiant unique du document
 	 * 
 	 * 
@@ -181,7 +182,7 @@ public interface StorageDocumentService {
 	 *             Exception lévée lorsque la suppression ne se réalise pas
 	 *             correctement
 	 */
-	void deleteStorageDocument(final UUIDCriteria uuidCriteria)
+	void deleteStorageDocument(final UUID uuid)
 			throws DeletionServiceEx;
 
 	/**

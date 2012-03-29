@@ -1,6 +1,6 @@
 package fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument;
 
-import java.util.ArrayList;
+import java.util.UUID;
 
 import net.docubase.toolkit.service.ServiceProvider;
 
@@ -23,9 +23,7 @@ import fr.urssaf.image.sae.storage.exception.QueryParseServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocuments;
-import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.LuceneCriteria;
-import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.UUIDCriteria;
 import fr.urssaf.image.sae.storage.services.storagedocument.DeletionService;
 import fr.urssaf.image.sae.storage.services.storagedocument.SearchingService;
 
@@ -66,7 +64,7 @@ public class DeletionServiceImpl extends AbstractServices implements
 	 */
 	@Loggable(LogLevel.TRACE)
 	@ServiceChecked
-	public final void deleteStorageDocument(final UUIDCriteria uuidCriteria)
+	public final void deleteStorageDocument(final UUID uuid)
 			throws DeletionServiceEx {
       // Traces debug - entrée méthode
       String prefixeTrc = "deleteStorageDocument()";
@@ -74,9 +72,9 @@ public class DeletionServiceImpl extends AbstractServices implements
       // Fin des traces debug - entrée méthode
 		try {
 	      LOGGER.debug("{} - UUID à supprimer : {}",
-               prefixeTrc, uuidCriteria.getUuid());
+               prefixeTrc, uuid);
 			getDfceService().getStoreService().deleteDocument(
-					uuidCriteria.getUuid());
+					uuid);
 	      LOGGER.debug("{} - Sortie", prefixeTrc);
 		} catch (FrozenDocumentException frozenExcept) {
 		   LOGGER.debug("{} - Une exception a été levée lors de la suppression du document : {}",
@@ -103,9 +101,7 @@ public class DeletionServiceImpl extends AbstractServices implements
 									.getMessage("max.lucene.results")), null));
 			for (StorageDocument storageDocument : storageDocuments
 					.getAllStorageDocuments()) {
-				deleteStorageDocument(new UUIDCriteria(
-						storageDocument.getUuid(),
-						new ArrayList<StorageMetadata>()));
+				deleteStorageDocument(storageDocument.getUuid());
 			}
 		} catch (NumberFormatException numberExcept) {
 			throw new DeletionServiceEx(

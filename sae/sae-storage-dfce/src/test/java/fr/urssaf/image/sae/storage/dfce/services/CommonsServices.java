@@ -32,68 +32,72 @@ import fr.urssaf.image.sae.storage.services.storagedocument.InsertionService;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/appliContext-sae-storage-dfce-test.xml" })
-@SuppressWarnings({ "PMD.ExcessiveImports", "PMD.LongVariable",
-		"AbstractClassWithoutAbstractMethod" })
+@SuppressWarnings( { "PMD.ExcessiveImports", "PMD.LongVariable",
+      "AbstractClassWithoutAbstractMethod" })
 public class CommonsServices {
-	@Autowired
-	@Qualifier("xmlDataService")
-	private XmlDataService xmlDataService;
-	
-	@Autowired
-	@Qualifier("dfceServicesManager")
-	private DFCEServicesManager dfceServicesManager;
-	/**
-	 * 
-	 * @param dfceServices
-	 *            : Les services DFCE
-	 */
-	public final void setDfceServicesManager(final DFCEServicesManager dfceServices) {
-		this.dfceServicesManager = dfceServices;
-	}
+   @Autowired
+   @Qualifier("xmlDataService")
+   private XmlDataService xmlDataService;
 
-	/**
-	 * 
-	 * @return Les services DFCE
-	 */
-	public final DFCEServicesManager getDfceServicesManager() {
-		return dfceServicesManager;
-	}
-	/**
-	 * @return Le service de gestion du fichier xml.
-	 */
-	public final XmlDataService getXmlDataService() {
-		return xmlDataService;
-	}
+   @Autowired
+   @Qualifier("dfceServicesManager")
+   private DFCEServicesManager dfceServicesManager;
 
-	/**
-	 * @param xmlDataService
-	 *            : Le service de gestion du fichier xml.
-	 */
-	public final void setXmlDataService(final XmlDataService xmlDataService) {
-		this.xmlDataService = xmlDataService;
-	}
+   /**
+    * 
+    * @param dfceServices
+    *           : Les services DFCE
+    */
+   public final void setDfceServicesManager(
+         final DFCEServicesManager dfceServices) {
+      this.dfceServicesManager = dfceServices;
+   }
 
-	/**
-	 * Initialisation des tests. <br>{@inheritDoc}
-	 */
-	public final StorageDocument getMockData(
-			final InsertionService insertionService) throws IOException,
-			ParseException, InsertionServiceEx {
-		// Injection de jeu de donnée.
-		final SaeDocument saeDocument = getXmlDataService().saeDocumentReader(
-				new File(Constants.XML_PATH_DOC_WITHOUT_ERROR[0]));
-		final StorageDocument storageDocument = DocumentForTestMapper
-				.saeDocumentXmlToStorageDocument(saeDocument);
-		return insertionService.insertStorageDocument(storageDocument);
-	}
-	/**
-	 * Suppression du jeu de donnée.<br>{@inheritDoc}
-	 */
-	public final void destroyMockTest(final UUID uuid,
-			final DeletionService deletionService) throws DeletionServiceEx {
-		final List<StorageMetadata> desiredStorageMetadatas = new ArrayList<StorageMetadata>();
-		final UUIDCriteria uuidCriteria = new UUIDCriteria(uuid,
-				desiredStorageMetadatas);
-		deletionService.deleteStorageDocument(uuidCriteria);
-	}
+   /**
+    * 
+    * @return Les services DFCE
+    */
+   public final DFCEServicesManager getDfceServicesManager() {
+      return dfceServicesManager;
+   }
+
+   /**
+    * @return Le service de gestion du fichier xml.
+    */
+   public final XmlDataService getXmlDataService() {
+      return xmlDataService;
+   }
+
+   /**
+    * @param xmlDataService
+    *           : Le service de gestion du fichier xml.
+    */
+   public final void setXmlDataService(final XmlDataService xmlDataService) {
+      this.xmlDataService = xmlDataService;
+   }
+
+   /**
+    * Initialisation des tests. <br>{@inheritDoc}
+    */
+   public final StorageDocument getMockData(
+         final InsertionService insertionService) throws IOException,
+         ParseException, InsertionServiceEx {
+      // Injection de jeu de donnée.
+      final SaeDocument saeDocument = getXmlDataService().saeDocumentReader(
+            new File(Constants.XML_PATH_DOC_WITHOUT_ERROR[0]));
+      final StorageDocument storageDocument = DocumentForTestMapper
+            .saeDocumentXmlToStorageDocument(saeDocument);
+      return insertionService.insertStorageDocument(storageDocument);
+   }
+
+   /**
+    * Suppression du jeu de donnée.<br>{@inheritDoc}
+    */
+   public final void destroyMockTest(final UUID uuid,
+         final DeletionService deletionService) throws DeletionServiceEx {
+      final List<StorageMetadata> desiredStorageMetadatas = new ArrayList<StorageMetadata>();
+      final UUIDCriteria uuidCriteria = new UUIDCriteria(uuid,
+            desiredStorageMetadatas);
+      deletionService.deleteStorageDocument(uuidCriteria.getUuid());
+   }
 }
