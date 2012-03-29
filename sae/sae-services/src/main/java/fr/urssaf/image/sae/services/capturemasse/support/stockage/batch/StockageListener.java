@@ -22,6 +22,7 @@ import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.core.annotation.OnProcessError;
 import org.springframework.batch.core.annotation.OnReadError;
 import org.springframework.batch.item.ExecutionContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
@@ -43,6 +44,9 @@ public class StockageListener {
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(StockageListener.class);
+
+   @Autowired
+   private InsertionPoolThreadExecutor executor;
 
    /**
     * réalisé avant le step
@@ -91,10 +95,6 @@ public class StockageListener {
     */
    @AfterChunk
    public final void logAfterChunk() {
-      final JobExecution jobExecution = stepExecution.getJobExecution();
-
-      final InsertionPoolThreadExecutor executor = (InsertionPoolThreadExecutor) jobExecution
-            .getExecutionContext().get(Constantes.THREAD_POOL);
 
       final InsertionMasseRuntimeException exception = executor
             .getInsertionMasseException();
@@ -115,9 +115,6 @@ public class StockageListener {
    public final ExitStatus afterStep(final StepExecution stepExecution) {
 
       final JobExecution jobExecution = stepExecution.getJobExecution();
-
-      final InsertionPoolThreadExecutor executor = (InsertionPoolThreadExecutor) jobExecution
-            .getExecutionContext().get(Constantes.THREAD_POOL);
 
       executor.shutdown();
 
@@ -169,10 +166,7 @@ public class StockageListener {
    }
 
    private List<UUID> getIntegratedDocuments() {
-      final JobExecution jobExecution = stepExecution.getJobExecution();
 
-      final InsertionPoolThreadExecutor executor = (InsertionPoolThreadExecutor) jobExecution
-            .getExecutionContext().get(Constantes.THREAD_POOL);
       final List<CaptureMasseIntegratedDocument> list = executor
             .getIntegratedDocuments();
 

@@ -16,6 +16,9 @@ import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
@@ -31,8 +34,12 @@ import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
  * Pool de thread pour l'insertion en masse dans DFCE
  * 
  */
+@Component
 public class InsertionPoolThreadExecutor extends ThreadPoolExecutor implements
       Serializable {
+
+   // FIXME - Trouver une solution plus propre afin de ne pas partager les
+   // ressources
 
    private static final long serialVersionUID = 1L;
 
@@ -50,9 +57,12 @@ public class InsertionPoolThreadExecutor extends ThreadPoolExecutor implements
 
    private Boolean isInterrupted = null;
 
-   private final InterruptionTraitementMasseSupport support;
+   @Autowired
+   private InterruptionTraitementMasseSupport support;
 
-   private final InterruptionTraitementConfig config;
+   @Autowired
+   @Qualifier("interruption_capture_masse")
+   private InterruptionTraitementConfig config;
 
    /**
     * instanciation d'un {@link ThreadPoolExecutor} avec comme arguments : <br>
@@ -81,6 +91,7 @@ public class InsertionPoolThreadExecutor extends ThreadPoolExecutor implements
     * @param config
     *           configuration pour l'arrêt du traitement de la capture en masse
     */
+   @Autowired
    public InsertionPoolThreadExecutor(
          final InterruptionTraitementMasseSupport support,
          final InterruptionTraitementConfig config) {

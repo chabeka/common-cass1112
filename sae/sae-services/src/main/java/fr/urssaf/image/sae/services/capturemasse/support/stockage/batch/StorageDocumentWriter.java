@@ -15,9 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
-import fr.urssaf.image.sae.services.capturemasse.support.stockage.interruption.InterruptionTraitementMasseSupport;
-import fr.urssaf.image.sae.services.capturemasse.support.stockage.interruption.model.InterruptionTraitementConfig;
 import fr.urssaf.image.sae.services.capturemasse.support.stockage.multithreading.InsertionPoolThreadExecutor;
 import fr.urssaf.image.sae.services.capturemasse.support.stockage.multithreading.InsertionRunnable;
 import fr.urssaf.image.sae.storage.dfce.constants.Constants;
@@ -38,18 +35,12 @@ public class StorageDocumentWriter implements ItemWriter<StorageDocument> {
    private static final Logger LOGGER = LoggerFactory
          .getLogger(StorageDocumentWriter.class);
 
+   @Autowired
    private InsertionPoolThreadExecutor poolExecutor;
 
    @Autowired
    @Qualifier("storageServiceProvider")
    private StorageServiceProvider serviceProvider;
-
-   @Autowired
-   private InterruptionTraitementMasseSupport support;
-
-   @Autowired
-   @Qualifier("interruption_capture_masse")
-   private InterruptionTraitementConfig config;
 
    private StepExecution stepExecution;
 
@@ -66,11 +57,6 @@ public class StorageDocumentWriter implements ItemWriter<StorageDocument> {
    @BeforeStep
    public final void init(StepExecution stepExecution)
          throws ConnectionServiceEx {
-
-      poolExecutor = new InsertionPoolThreadExecutor(support, config);
-
-      stepExecution.getJobExecution().getExecutionContext().put(
-            Constantes.THREAD_POOL, poolExecutor);
 
       this.stepExecution = stepExecution;
 
@@ -101,7 +87,7 @@ public class StorageDocumentWriter implements ItemWriter<StorageDocument> {
       int index = 0;
 
       for (StorageDocument storageDocument : Utils.nullSafeIterable(items)) {
-         
+
          command = new InsertionRunnable(this.stepExecution.getReadCount()
                + index, storageDocument, this);
 
@@ -127,7 +113,8 @@ public class StorageDocumentWriter implements ItemWriter<StorageDocument> {
 
       try {
          final StorageDocument retour = serviceProvider
-               .getStorageDocumentService().insertStorageDocument(storageDocument);
+               .getStorageDocumentService().insertStorageDocument(
+                     storageDocument);
 
          return retour;
       } catch (Exception except) {
