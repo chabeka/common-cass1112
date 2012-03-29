@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.UUID;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Assert;
@@ -98,6 +99,9 @@ public class SAECaptureMasseTest {
 
          ExitTraitement exitTraitement = service.captureMasse(testSommaire
                .getUrlEcde(), UUID.randomUUID());
+
+         System.out.println(FileUtils.readFileToString(new File(testSommaire
+               .getRepEcde(), "resultats.xml")));
 
          Assert.assertFalse("l'opération doit etre en erreur", exitTraitement
                .isSucces());

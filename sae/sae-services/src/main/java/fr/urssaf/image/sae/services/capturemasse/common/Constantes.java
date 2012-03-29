@@ -46,6 +46,11 @@ public final class Constantes {
    public static final String CTRL_INDEX = "CTRL_INDEX";
 
    /**
+    * Nombre de documents total dans un fichier sommaire.xml
+    */
+   public static final String DOC_COUNT = "DOC_COUNT";
+
+   /**
     * Constructeur
     */
    private Constantes() {

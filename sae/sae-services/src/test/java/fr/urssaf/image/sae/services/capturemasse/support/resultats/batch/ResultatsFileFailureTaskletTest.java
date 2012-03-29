@@ -6,9 +6,6 @@ package fr.urssaf.image.sae.services.capturemasse.support.resultats.batch;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.After;
@@ -69,11 +66,7 @@ public class ResultatsFileFailureTaskletTest {
             3, new Exception("erreur sur l'enregistrement en cours"));
       context.put(Constantes.DOC_EXCEPTION, exception);
 
-      List<UUID> list = new ArrayList<UUID>();
-      for (int i = 0; i < 21; i++) {
-         list.add(UUID.randomUUID());
-      }
-      context.put(Constantes.INTEG_DOCS, list);
+      context.put(Constantes.DOC_COUNT, 21);
 
       launcher.launchStep("finErreur", context);
 

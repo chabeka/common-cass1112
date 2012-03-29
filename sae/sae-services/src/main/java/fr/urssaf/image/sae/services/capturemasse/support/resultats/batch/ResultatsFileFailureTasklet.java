@@ -4,10 +4,7 @@
 package fr.urssaf.image.sae.services.capturemasse.support.resultats.batch;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
@@ -50,13 +47,10 @@ public class ResultatsFileFailureTasklet implements Tasklet {
 
       final File ecdeDirectory = sommaireFile.getParentFile();
 
-      List<UUID> integDocs = (List<UUID>) map.get(Constantes.INTEG_DOCS);
-      if (integDocs == null) {
-         integDocs = new ArrayList<UUID>();
-      }
-      
+      int nbreDocs = (Integer) map.get(Constantes.DOC_COUNT);
+
       support.writeResultatsFile(ecdeDirectory, sommaireFile, exception,
-            integDocs.size());
+            nbreDocs);
 
       return RepeatStatus.FINISHED;
    }
