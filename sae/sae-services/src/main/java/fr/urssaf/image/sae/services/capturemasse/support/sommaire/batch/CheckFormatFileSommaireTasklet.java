@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
+import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireDocumentException;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireFormatValidationException;
 import fr.urssaf.image.sae.services.capturemasse.support.sommaire.SommaireFormatValidationSupport;
@@ -45,7 +46,13 @@ public class CheckFormatFileSommaireTasklet implements Tasklet {
 
       try {
          validationSupport.validationSommaire(sommaireFile);
+
       } catch (CaptureMasseSommaireFormatValidationException e) {
+         CaptureMasseSommaireDocumentException exception = new CaptureMasseSommaireDocumentException(
+               0, e);
+         context.put(Constantes.DOC_EXCEPTION, exception);
+      
+      } catch (CaptureMasseRuntimeException e) {
          CaptureMasseSommaireDocumentException exception = new CaptureMasseSommaireDocumentException(
                0, e);
          context.put(Constantes.DOC_EXCEPTION, exception);
@@ -59,6 +66,11 @@ public class CheckFormatFileSommaireTasklet implements Tasklet {
                0, e);
          context.put(Constantes.DOC_EXCEPTION, exception);
 
+      
+      } catch (CaptureMasseRuntimeException e) {
+         CaptureMasseSommaireDocumentException exception = new CaptureMasseSommaireDocumentException(
+               0, e);
+         context.put(Constantes.DOC_EXCEPTION, exception);
       }
 
       return RepeatStatus.FINISHED;

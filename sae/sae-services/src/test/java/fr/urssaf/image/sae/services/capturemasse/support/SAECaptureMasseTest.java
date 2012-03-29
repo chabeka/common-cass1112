@@ -72,7 +72,7 @@ public class SAECaptureMasseTest {
          ExitTraitement exitTraitement = service.captureMasse(testSommaire
                .getUrlEcde(), UUID.randomUUID());
 
-         Assert.assertFalse("l'opération doit etre en erreur", exitTraitement
+         Assert.assertTrue("l'opération doit etre en erreur", exitTraitement
                .isSucces());
 
       } catch (Exception e) {

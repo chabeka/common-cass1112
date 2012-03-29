@@ -35,6 +35,7 @@ import fr.urssaf.image.sae.ecde.service.EcdeServices;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
+import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireDocumentException;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireFormatValidationException;
 
@@ -154,4 +155,47 @@ public class CheckFileFormatSommaireTaskletTest {
                   "type d'exception attendue CaptureMasseSommaireFormatValidationException",
                   (exception.getCause() instanceof CaptureMasseSommaireFormatValidationException));
    }
+   
+   
+   /**
+    * Lancer un test avec une URI dont le nom de domaine n'est pas connu
+    * 
+    * @throws Exception
+    */
+   @Test
+   public void testFichierSommaireInexistant() throws Exception {
+
+      File sommaire = new File(ecdeTestSommaire.getRepEcde(), "sommaire.xml");
+
+      context
+            .put(Constantes.SOMMAIRE, ecdeTestSommaire.getUrlEcde().toString());
+      context.put(Constantes.SOMMAIRE_FILE, sommaire.getAbsolutePath());
+
+      Map<String, JobParameter> mapParameter = new HashMap<String, JobParameter>();
+
+      mapParameter.put(Constantes.ID_TRAITEMENT, new JobParameter(UUID
+            .randomUUID().toString()));
+
+      JobParameters parameters = new JobParameters(mapParameter);
+
+      JobExecution execution = launcher.launchStep(
+            "controleFormatSommaireStep", parameters, this.context);
+
+      Collection<StepExecution> steps = execution.getStepExecutions();
+      List<StepExecution> list = new ArrayList<StepExecution>(steps);
+
+      StepExecution step = list.get(0);
+      Assert.assertEquals("status FAILED attendu", ExitStatus.FAILED, step
+            .getExitStatus());
+
+      ExecutionContext executionContext = execution.getExecutionContext();
+      CaptureMasseSommaireDocumentException exception = (CaptureMasseSommaireDocumentException) executionContext
+            .get(Constantes.DOC_EXCEPTION);
+      Assert
+            .assertTrue(
+                  "type d'exception attendue CaptureMasseSommaireFormatValidationException",
+                  (exception.getCause() instanceof CaptureMasseRuntimeException));
+   }
+   
+   
 }

@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
+import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
+import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireDocumentException;
 import fr.urssaf.image.sae.services.capturemasse.support.stockage.rollback.RollbackSupport;
 
 /**
@@ -52,17 +54,26 @@ public class RollbackTasklet implements Tasklet {
       }
 
       RepeatStatus status;
-      support
-            .rollback(listIntegDocs.get(countRead.intValue()));
 
-      countRead = countRead + 1;
+      try {
+         support.rollback(listIntegDocs.get(countRead.intValue()));
 
-      mapStep.put(COUNT_READ, countRead);
+         countRead = countRead + 1;
 
-      if (countRead.intValue() == listIntegDocs.size()) {
+         mapStep.put(COUNT_READ, countRead);
+
+         if (countRead.intValue() == listIntegDocs.size()) {
+            status = RepeatStatus.FINISHED;
+         } else {
+            status = RepeatStatus.CONTINUABLE;
+         }
+      
+      } catch (CaptureMasseRuntimeException e) {
+         CaptureMasseSommaireDocumentException exception = new CaptureMasseSommaireDocumentException(
+               0, e);
+         mapStep.put(Constantes.DOC_EXCEPTION, exception);
+
          status = RepeatStatus.FINISHED;
-      } else {
-         status = RepeatStatus.CONTINUABLE;
       }
 
       return status;
