@@ -19,7 +19,6 @@ public class MockFactoryBean {
     * @return un mock StorageDocumentService
     */
    public final StorageDocumentService createStorageServiceProvider() {
-      System.out.println("CREATION BEAN StorageDocumentService");
       return EasyMock.createMock(StorageDocumentService.class);
    }
 
