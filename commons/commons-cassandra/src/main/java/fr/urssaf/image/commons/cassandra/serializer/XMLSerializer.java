@@ -8,6 +8,7 @@ import me.prettyprint.cassandra.serializers.StringSerializer;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.xml.DomDriver;
+import com.thoughtworks.xstream.io.xml.StaxDriver;
 
 /**
  * Classe de sérialisation d'un objet en XML, qui utilise
@@ -24,7 +25,7 @@ public class XMLSerializer extends AbstractSerializer<Object> {
     */
    public XMLSerializer() {
       super();
-      HierarchicalStreamDriver driver = new DomDriver();
+      HierarchicalStreamDriver driver = new StaxDriver();
       xstream = new XStream(driver);
    }
 
