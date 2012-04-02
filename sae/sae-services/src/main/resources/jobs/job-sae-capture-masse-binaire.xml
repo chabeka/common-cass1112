@@ -91,11 +91,7 @@
       </step>
 
       <step id="rollback">
-         <tasklet ref="rollbackTasklet">
-            <listeners>
-               <listener ref="rollbackListener" />
-            </listeners>
-         </tasklet>
+         <tasklet ref="rollbackTasklet" />
 
          <next on="*" to="finErreur" />
       </step>

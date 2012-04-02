@@ -3,10 +3,13 @@
  */
 package fr.urssaf.image.sae.services.capturemasse.support.stockage.batch;
 
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
@@ -16,8 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
-import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
-import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireDocumentException;
 import fr.urssaf.image.sae.services.capturemasse.support.stockage.rollback.RollbackSupport;
 
 /**
@@ -27,7 +28,12 @@ import fr.urssaf.image.sae.services.capturemasse.support.stockage.rollback.Rollb
 @Component
 public class RollbackTasklet implements Tasklet {
 
+   private static final Logger LOGGER = LoggerFactory
+         .getLogger(RollbackTasklet.class);
+
    private static final String COUNT_READ = "countRead";
+
+   private static final String TRC_ROLLBACK = "rollbacktasklet()";
 
    @Autowired
    private RollbackSupport support;
@@ -38,7 +44,7 @@ public class RollbackTasklet implements Tasklet {
    @SuppressWarnings("unchecked")
    @Override
    public final RepeatStatus execute(final StepContribution contribution,
-         final ChunkContext chunkContext) throws Exception {
+         final ChunkContext chunkContext) {
 
       final ExecutionContext mapStep = chunkContext.getStepContext()
             .getStepExecution().getExecutionContext();
@@ -56,9 +62,15 @@ public class RollbackTasklet implements Tasklet {
       RepeatStatus status;
 
       try {
-         support.rollback(listIntegDocs.get(countRead.intValue()));
+
+         UUID strDocumentID = listIntegDocs.get(countRead.intValue());
+
+         support.rollback(strDocumentID);
 
          countRead = countRead + 1;
+
+         LOGGER.debug("{} - Rollback du document #{}/{} ({})", new Object[] {
+               TRC_ROLLBACK, countRead, listIntegDocs.size(), strDocumentID });
 
          mapStep.put(COUNT_READ, countRead);
 
@@ -67,11 +79,23 @@ public class RollbackTasklet implements Tasklet {
          } else {
             status = RepeatStatus.CONTINUABLE;
          }
-      
-      } catch (CaptureMasseRuntimeException e) {
-         CaptureMasseSommaireDocumentException exception = new CaptureMasseSommaireDocumentException(
-               0, e);
-         mapStep.put(Constantes.DOC_EXCEPTION, exception);
+
+      } catch (Exception e) {
+
+         String idTraitement = (String) chunkContext.getStepContext()
+               .getJobParameters().get(Constantes.ID_TRAITEMENT);
+
+         String errorMessage = MessageFormat.format(
+               "{0} - Une exception a été levée lors du rollback : {1}",
+               TRC_ROLLBACK, idTraitement);
+
+         LOGGER.error(errorMessage, e.getCause());
+
+         LOGGER
+               .error(
+
+                     "Le traitement de masse n°{} doit être rollbacké par une procédure d'exploitation",
+                     idTraitement);
 
          status = RepeatStatus.FINISHED;
       }
