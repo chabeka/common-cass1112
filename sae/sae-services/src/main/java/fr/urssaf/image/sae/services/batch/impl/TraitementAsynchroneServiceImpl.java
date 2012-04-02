@@ -143,7 +143,7 @@ public class TraitementAsynchroneServiceImpl implements
       LOG.debug(
             "{} - le traitement n°{} est terminé {}. Message de sortie : {}.",
             new Object[] {
-                  "ajouterJobCaptureMasse()",
+                  "lancerJob()",
                   job.getIdJob(),
                   BooleanUtils.toString(exitTraitement.isSucces(),
                         "avec succès", "sur un échec"),
