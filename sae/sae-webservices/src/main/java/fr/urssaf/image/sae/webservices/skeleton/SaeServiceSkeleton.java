@@ -230,26 +230,17 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
          LOG.debug("{} - Début", prefixeTrc);
          // Fin des traces debug - entrée méthode
 
-         boolean dfceUp = dfceInfoService.isDfceUp();
-         if (dfceUp) {
+         // l'opération web service n'interagit pas avec DFCE
+         // il n'est pas nécessaire de vérifier si DFCE est Up
+         ArchivageMasseResponse response = captureMasse
+               .archivageEnMasse(request);
 
-            ArchivageMasseResponse response = captureMasse
-                  .archivageEnMasse(request);
+         // Traces debug - sortie méthode
+         LOG.debug("{} - Sortie", prefixeTrc);
+         // Fin des traces debug - sortie méthode
 
-            // Traces debug - sortie méthode
-            LOG.debug("{} - Sortie", prefixeTrc);
-            // Fin des traces debug - sortie méthode
+         return response;
 
-            return response;
-
-         } else {
-
-            LOG.debug("{} - Sortie", prefixeTrc);
-            setCodeHttp412();
-            throw new CaptureAxisFault(STOCKAGE_INDISPO, MessageRessourcesUtils
-                  .recupererMessage(MES_STOCKAGE, null));
-
-         }
       } catch (CaptureAxisFault ex) {
          logSoapFault(ex);
          throw ex;
