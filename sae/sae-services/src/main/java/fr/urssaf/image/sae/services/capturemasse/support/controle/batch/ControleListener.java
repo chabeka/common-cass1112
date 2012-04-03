@@ -53,12 +53,15 @@ public class ControleListener {
     *           le StepExecution
     * @return le status de sortie
     */
+   @SuppressWarnings("unchecked")
    @AfterStep
    public final ExitStatus end(final StepExecution stepExecution) {
       ExitStatus exitStatus = ExitStatus.FAILED;
 
-      if (stepExecution.getJobExecution().getExecutionContext().get(
-            Constantes.DOC_EXCEPTION) == null) {
+      List<Exception> exceptions = (List<Exception>) stepExecution
+            .getJobExecution().getExecutionContext().get(
+                  Constantes.DOC_EXCEPTION);
+      if (exceptions.isEmpty()) {
          exitStatus = ExitStatus.COMPLETED;
       }
 
@@ -72,7 +75,7 @@ public class ControleListener {
     *           exception levée
     */
    @OnReadError
-   @SuppressWarnings({"unchecked", "PMD.AvoidThrowingRawExceptionTypes"})
+   @SuppressWarnings( { "unchecked", "PMD.AvoidThrowingRawExceptionTypes" })
    public final void logReadError(final Exception exception) {
       LOGGER.error("une erreur interne à l'application est survenue "
             + "lors du traitement de la capture de masse", exception);
@@ -101,7 +104,7 @@ public class ControleListener {
     *           exception levée
     */
    @OnProcessError
-   @SuppressWarnings({"unchecked", "PMD.AvoidThrowingRawExceptionTypes"})
+   @SuppressWarnings( { "unchecked", "PMD.AvoidThrowingRawExceptionTypes" })
    public final void logProcessError(
          final JAXBElement<UntypedDocument> untypedType,
          final Exception exception) {
