@@ -99,8 +99,7 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
             try {
                reader.close();
             } catch (XMLStreamException e) {
-               LOGGER.debug(ERREUR_FLUX
-                     + sommaireFile.getAbsolutePath());
+               LOGGER.debug(ERREUR_FLUX + sommaireFile.getAbsolutePath());
             }
          }
 
@@ -116,8 +115,7 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
             try {
                sommaireStream.close();
             } catch (IOException e) {
-               LOGGER.debug(ERREUR_FLUX
-                     + sommaireFile.getAbsolutePath());
+               LOGGER.debug(ERREUR_FLUX + sommaireFile.getAbsolutePath());
             }
          }
       }
@@ -273,6 +271,9 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
     */
    private void ecrireEntete(StaxUtils staxUtils, int nombreDocs)
          throws XMLStreamException {
+
+      // entete XML
+      staxUtils.startDocument();
 
       // debut de document
       staxUtils.addStartElement("resultats", PX_RES, NS_RES);
