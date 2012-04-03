@@ -109,7 +109,7 @@ public class Test266Controller extends
       ErreurType erreurType = new ErreurType();
       erreurType.setCode("SAE-EC-SOM001");
       erreurType.setLibelle("Le fichier sommaire n'est pas valide. Détails : "
-            + "Aucun document du sommaire ne sera intégré dans le SAE.");
+            + "Aucun document du sommaire ne sera intégré dans le SAE (mode PARTIEL non accepté).");
 
       getCaptureMasseTestService().testResultatsTdmReponseKOAttendue(
             formulaire, erreurType);

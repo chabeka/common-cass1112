@@ -169,7 +169,7 @@ public class ResultatsCMComparateurController {
       }
       
       if (liste2!=null) {
-         for(File file: liste1) {
+         for(File file: liste2) {
             
             if (resultat.indexOf(file.getName())==-1) {
                
