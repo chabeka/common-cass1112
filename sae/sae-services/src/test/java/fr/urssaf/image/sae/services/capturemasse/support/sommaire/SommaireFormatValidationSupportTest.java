@@ -81,7 +81,7 @@ public class SommaireFormatValidationSupportTest {
          Assert
                .assertEquals(
                      "le message de l'exception est inattendu",
-                     "Aucun document du sommaire ne sera intégré dans le SAE (erreur de format).",
+                     "Aucun document du sommaire ne sera intégré dans le SAE.",
                      e.getMessage());
       }
 

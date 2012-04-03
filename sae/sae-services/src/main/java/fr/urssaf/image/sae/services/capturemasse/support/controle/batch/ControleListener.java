@@ -3,6 +3,8 @@
  */
 package fr.urssaf.image.sae.services.capturemasse.support.controle.batch;
 
+import java.util.List;
+
 import javax.xml.bind.JAXBElement;
 
 import org.slf4j.Logger;
@@ -19,7 +21,6 @@ import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
-import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireDocumentException;
 
 /**
  * Ecouteur pour la partie contrôle des documents du fichier sommaire.xml
@@ -71,15 +72,23 @@ public class ControleListener {
     *           exception levée
     */
    @OnReadError
+   @SuppressWarnings({"unchecked", "PMD.AvoidThrowingRawExceptionTypes"})
    public final void logReadError(final Exception exception) {
       LOGGER.error("une erreur interne à l'application est survenue "
             + "lors du traitement de la capture de masse", exception);
 
-      final CaptureMasseSommaireDocumentException documentException = new CaptureMasseSommaireDocumentException(
-            0, exception);
+      ExecutionContext context = stepExecution.getJobExecution()
+            .getExecutionContext();
+      List<String> listCodes = (List<String>) context
+            .get(Constantes.CODE_EXCEPTION);
+      List<Integer> listIndex = (List<Integer>) context
+            .get(Constantes.INDEX_EXCEPTION);
+      List<Exception> listExceptions = (List<Exception>) context
+            .get(Constantes.DOC_EXCEPTION);
 
-      stepExecution.getJobExecution().getExecutionContext().put(
-            Constantes.DOC_EXCEPTION, documentException);
+      listCodes.add(Constantes.ERR_BUL001);
+      listIndex.add(0);
+      listExceptions.add(new Exception(exception.getMessage()));
 
    }
 
@@ -92,16 +101,25 @@ public class ControleListener {
     *           exception levée
     */
    @OnProcessError
+   @SuppressWarnings({"unchecked", "PMD.AvoidThrowingRawExceptionTypes"})
    public final void logProcessError(
          final JAXBElement<UntypedDocument> untypedType,
          final Exception exception) {
 
-      final CaptureMasseSommaireDocumentException documentException = new CaptureMasseSommaireDocumentException(
-            stepExecution.getExecutionContext().getInt(Constantes.CTRL_INDEX),
-            exception);
+      ExecutionContext context = stepExecution.getJobExecution()
+            .getExecutionContext();
 
-      stepExecution.getJobExecution().getExecutionContext().put(
-            Constantes.DOC_EXCEPTION, documentException);
+      List<String> listCodes = (List<String>) context
+            .get(Constantes.CODE_EXCEPTION);
+      List<Integer> listIndex = (List<Integer>) context
+            .get(Constantes.INDEX_EXCEPTION);
+      List<Exception> listExceptions = (List<Exception>) context
+            .get(Constantes.DOC_EXCEPTION);
+
+      listCodes.add(Constantes.ERR_BUL001);
+      listIndex.add(stepExecution.getExecutionContext().getInt(
+            Constantes.CTRL_INDEX));
+      listExceptions.add(new Exception(exception.getMessage()));
 
    }
 

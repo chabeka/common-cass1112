@@ -47,6 +47,20 @@ public class StaxUtils {
    }
 
    /**
+    * Ajout d'un prefixe dans le document
+    * 
+    * @param prefix
+    *           préfixe à utiliser
+    * @param uri
+    *           uri à utiliser
+    * @throws XMLStreamException
+    *            exception levée si erreur d'écriture
+    */
+   public final void addDefaultPrefix(String uri) throws XMLStreamException {
+      writer.add(eventFactory.createNamespace(uri));
+   }
+
+   /**
     * Création du tag de départ
     * 
     * @param name

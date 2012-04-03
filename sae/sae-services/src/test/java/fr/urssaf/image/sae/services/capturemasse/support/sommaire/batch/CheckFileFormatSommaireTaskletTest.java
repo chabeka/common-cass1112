@@ -35,9 +35,6 @@ import fr.urssaf.image.sae.ecde.service.EcdeServices;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
-import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
-import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireDocumentException;
-import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireFormatValidationException;
 
 /**
  * 
@@ -73,6 +70,7 @@ public class CheckFileFormatSommaireTaskletTest {
    public void init() {
       context = new ExecutionContext();
       context.put(Constantes.ID_TRAITEMENT, UUID.randomUUID().toString());
+      context.put(Constantes.DOC_EXCEPTION, new ArrayList<Exception>());
       ecdeTestSommaire = ecdeTestTools.buildEcdeTestSommaire();
    }
 
@@ -94,6 +92,10 @@ public class CheckFileFormatSommaireTaskletTest {
       context.put(Constantes.SOMMAIRE_FILE, sommaire.getAbsolutePath());
 
       Map<String, JobParameter> mapParameter = new HashMap<String, JobParameter>();
+
+      context.put(Constantes.CODE_EXCEPTION, new ArrayList<String>());
+      context.put(Constantes.INDEX_EXCEPTION, new ArrayList<Integer>());
+      context.put(Constantes.DOC_EXCEPTION, new ArrayList<Exception>());
 
       mapParameter.put(Constantes.ID_TRAITEMENT, new JobParameter(UUID
             .randomUUID().toString()));
@@ -148,15 +150,14 @@ public class CheckFileFormatSommaireTaskletTest {
             .getExitStatus());
 
       ExecutionContext executionContext = execution.getExecutionContext();
-      CaptureMasseSommaireDocumentException exception = (CaptureMasseSommaireDocumentException) executionContext
+      @SuppressWarnings("unchecked")
+      List<Exception> exceptions = (List<Exception>) executionContext
             .get(Constantes.DOC_EXCEPTION);
-      Assert
-            .assertTrue(
-                  "type d'exception attendue CaptureMasseSommaireFormatValidationException",
-                  (exception.getCause() instanceof CaptureMasseSommaireFormatValidationException));
+
+      Assert.assertEquals("la liste des exceptions doit contenir un élément",
+            1, (exceptions.size()));
    }
-   
-   
+
    /**
     * Lancer un test avec une URI dont le nom de domaine n'est pas connu
     * 
@@ -189,13 +190,12 @@ public class CheckFileFormatSommaireTaskletTest {
             .getExitStatus());
 
       ExecutionContext executionContext = execution.getExecutionContext();
-      CaptureMasseSommaireDocumentException exception = (CaptureMasseSommaireDocumentException) executionContext
+      @SuppressWarnings("unchecked")
+      List<Exception> exceptions = (List<Exception>) executionContext
             .get(Constantes.DOC_EXCEPTION);
-      Assert
-            .assertTrue(
-                  "type d'exception attendue CaptureMasseSommaireFormatValidationException",
-                  (exception.getCause() instanceof CaptureMasseRuntimeException));
+
+      Assert.assertEquals("la liste des exceptions doit contenir un élément",
+            1, (exceptions.size()));
    }
-   
-   
+
 }

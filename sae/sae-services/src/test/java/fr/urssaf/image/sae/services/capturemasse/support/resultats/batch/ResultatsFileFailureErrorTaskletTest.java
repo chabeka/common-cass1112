@@ -6,6 +6,11 @@ package fr.urssaf.image.sae.services.capturemasse.support.resultats.batch;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.After;
@@ -16,21 +21,26 @@ import org.junit.runner.RunWith;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.xml.sax.SAXException;
 
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
-import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireDocumentException;
-import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireFormatValidationException;
+import fr.urssaf.image.sae.services.util.XmlValidationUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })
 public class ResultatsFileFailureErrorTaskletTest {
    @Autowired
    private JobLauncherTestUtils launcher;
+
+   @Autowired
+   private ApplicationContext applicationContext;
 
    @Autowired
    private EcdeTestTools tools;
@@ -62,19 +72,38 @@ public class ResultatsFileFailureErrorTaskletTest {
       ExecutionContext context = new ExecutionContext();
       context.put(Constantes.SOMMAIRE_FILE, sommaire.getAbsolutePath());
 
-      CaptureMasseSommaireDocumentException exception = new CaptureMasseSommaireDocumentException(
-            3, new CaptureMasseSommaireFormatValidationException(testSommaire
-                  .getUrlEcde().toString(), new Exception(
-                  "erreur enregistrement null")));
-      context.put(Constantes.DOC_EXCEPTION, exception);
+      List<String> codes = new ArrayList<String>();
+      codes.add(Constantes.ERR_BUL002);
+      List<Integer> index = new ArrayList<Integer>();
+      index.add(3);
+      List<Exception> exceptions = new ArrayList<Exception>();
+      exceptions.add(new Exception("la valeur x est erronée"));
+
+      context.put(Constantes.DOC_EXCEPTION, exceptions);
+      context.put(Constantes.INDEX_EXCEPTION, index);
+      context.put(Constantes.CODE_EXCEPTION, codes);
 
       launcher.launchStep("finBloquant", context);
 
       File resultats = new File(testSommaire.getRepEcde(), "resultats.xml");
-      
+
       Assert.assertTrue("le fichier resultats.xml doit exister", resultats
             .exists());
       Assert.assertTrue("le fichier resultats.xml doit etre non vide",
             resultats.length() > 0);
+
+      Resource sommaireXSD = applicationContext
+            .getResource("xsd_som_res/resultats.xsd");
+      URL xsdSchema = sommaireXSD.getURL();
+
+      try {
+         XmlValidationUtils.parse(resultats, xsdSchema);
+      } catch (ParserConfigurationException e) {
+         e.printStackTrace();
+         Assert.fail("le fichier resultats.xml doit etre valide");
+      } catch (SAXException e) {
+         e.printStackTrace();
+         Assert.fail("le fichier resultats.xml doit etre valide");
+      }
    }
 }

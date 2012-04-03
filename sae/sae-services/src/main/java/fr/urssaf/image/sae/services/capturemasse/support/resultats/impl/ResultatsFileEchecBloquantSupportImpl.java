@@ -21,7 +21,6 @@ import org.springframework.stereotype.Component;
 import org.xml.sax.SAXException;
 
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
-import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireFormatValidationException;
 import fr.urssaf.image.sae.services.capturemasse.modele.commun_sommaire_et_resultat.ErreurType;
 import fr.urssaf.image.sae.services.capturemasse.modele.resultats.ObjectFactory;
 import fr.urssaf.image.sae.services.capturemasse.modele.resultats.ResultatsType;
@@ -51,7 +50,7 @@ public class ResultatsFileEchecBloquantSupportImpl implements
     */
    @Override
    public final void writeResultatsFile(final File ecdeDirectory,
-         final CaptureMasseSommaireFormatValidationException erreur) {
+         final Exception erreur) {
 
       final String pathResultats = ecdeDirectory.getAbsolutePath()
             + File.separator + "resultats.xml";
@@ -100,8 +99,7 @@ public class ResultatsFileEchecBloquantSupportImpl implements
     * 
     * @return ResultatsType correspondant au resultats.xml
     */
-   private ResultatsType affectResultatsOnError(
-         final CaptureMasseSommaireFormatValidationException erreur) {
+   private ResultatsType affectResultatsOnError(final Exception erreur) {
 
       final ErreurType erreurType = new ErreurType();
       erreurType.setCode("SAE-EC-SOM001");

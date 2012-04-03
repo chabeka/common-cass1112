@@ -4,6 +4,7 @@
 package fr.urssaf.image.sae.services.capturemasse.support.sommaire.batch;
 
 import java.io.File;
+import java.util.List;
 
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.StepExecution;
@@ -16,7 +17,6 @@ import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
-import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireDocumentException;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireFormatValidationException;
 import fr.urssaf.image.sae.services.capturemasse.support.sommaire.SommaireFormatValidationSupport;
 
@@ -46,31 +46,23 @@ public class CheckFormatFileSommaireTasklet implements Tasklet {
 
       try {
          validationSupport.validationSommaire(sommaireFile);
-
-      } catch (CaptureMasseSommaireFormatValidationException e) {
-         CaptureMasseSommaireDocumentException exception = new CaptureMasseSommaireDocumentException(
-               0, e);
-         context.put(Constantes.DOC_EXCEPTION, exception);
-      
-      } catch (CaptureMasseRuntimeException e) {
-         CaptureMasseSommaireDocumentException exception = new CaptureMasseSommaireDocumentException(
-               0, e);
-         context.put(Constantes.DOC_EXCEPTION, exception);
-      }
-
-      try {
          validationSupport.validerModeBatch(sommaireFile, "TOUT_OU_RIEN");
 
       } catch (CaptureMasseSommaireFormatValidationException e) {
-         final CaptureMasseSommaireDocumentException exception = new CaptureMasseSommaireDocumentException(
-               0, e);
-         context.put(Constantes.DOC_EXCEPTION, exception);
+         final Exception exception = new Exception(e.getMessage());
+         @SuppressWarnings("unchecked")
+         List<Exception> exceptions = (List<Exception>) chunkContext
+               .getStepContext().getStepExecution().getJobExecution()
+               .getExecutionContext().get(Constantes.DOC_EXCEPTION);
+         exceptions.add(exception);
 
-      
       } catch (CaptureMasseRuntimeException e) {
-         CaptureMasseSommaireDocumentException exception = new CaptureMasseSommaireDocumentException(
-               0, e);
-         context.put(Constantes.DOC_EXCEPTION, exception);
+         final Exception exception = new Exception(e.getMessage());
+         @SuppressWarnings("unchecked")
+         List<Exception> exceptions = (List<Exception>) chunkContext
+               .getStepContext().getStepExecution().getJobExecution()
+               .getExecutionContext().get(Constantes.DOC_EXCEPTION);
+         exceptions.add(exception);
       }
 
       return RepeatStatus.FINISHED;

@@ -3,6 +3,7 @@
  */
 package fr.urssaf.image.sae.services.capturemasse.common;
 
+
 /**
  * Classe contenant les constantes utilisées dans le reste de la capture de
  * masse
@@ -26,9 +27,19 @@ public final class Constantes {
    public static final String THREAD_POOL = "INSERTION_POOL_THREAD";
 
    /**
-    * Document en erreur
+    * Liste des Document en erreur
     */
    public static final String DOC_EXCEPTION = "DOCUMENT_EXCEPTION";
+
+   /**
+    * Liste des indexs des documents en erreur
+    */
+   public static final String INDEX_EXCEPTION = "INDEX_EXCEPTION";
+
+   /**
+    * Liste des codes erreur
+    */
+   public static final String CODE_EXCEPTION = "CODE_EXCEPTION";
 
    /**
     * Documents intégrés
@@ -50,6 +61,18 @@ public final class Constantes {
     */
    public static final String DOC_COUNT = "DOC_COUNT";
 
+   
+   /**
+    * Code Erreur technique
+    */
+   public static final String ERR_BUL001 = "SAE-CA-BUL001";
+   
+   /**
+    * Code Erreur fonctionnelle
+    */
+   public static final String ERR_BUL002 = "SAE-CA-BUL002";
+   
+   
    /**
     * Constructeur
     */

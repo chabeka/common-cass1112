@@ -8,6 +8,7 @@ import java.io.File;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 
+import fr.urssaf.image.sae.services.capturemasse.common.CaptureMasseErreur;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireDocumentException;
 import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
 
@@ -39,7 +40,7 @@ public class ResultatsFileEchecSupportValidation {
    @Before(WRITE_METHOD)
    public final void checkWriteResultats(final File ecdeDirectory,
          final File sommaireFile,
-         final CaptureMasseSommaireDocumentException erreur,
+         final CaptureMasseErreur erreur,
          final int nombreDocsTotal) {
 
       if (ecdeDirectory == null) {

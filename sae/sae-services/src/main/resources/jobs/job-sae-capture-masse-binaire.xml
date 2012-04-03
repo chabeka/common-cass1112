@@ -7,6 +7,10 @@
 
    <job id="capture_masse">
 
+      <listeners>
+         <listener ref="captureMasseJobListener" />
+      </listeners>
+
       <!-- Controle du fichier sommaire.xml -->
       <step id="controleSommaireStep">
 

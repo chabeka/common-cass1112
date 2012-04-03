@@ -11,4 +11,8 @@
       <qualifier value="storageDocumentService" />
    </bean>
 
+   <bean id="cmControleSupport" factory-bean="mockFactory"
+      factory-method="createCaptureMasseControleSupport" primary="true">
+   </bean>
+
 </beans>

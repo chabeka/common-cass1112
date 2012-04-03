@@ -14,15 +14,25 @@ public class CaptureMasseSommaireFormatValidationException extends Exception {
    /**
     * Constructeur
     * 
-    * @param causeTechnique
+    * @param cause
+    *           cause mère
+    */
+   public CaptureMasseSommaireFormatValidationException(Throwable cause) {
+      super("Aucun document du sommaire ne sera intégré dans le SAE.", cause);
+   }
+
+   /**
+    * Constructeur
+    * 
+    * @param message
     *           résumé succint de la cause de l'erreur
     * @param cause
     *           cause mère
     */
-   public CaptureMasseSommaireFormatValidationException(
-         final String causeTehnique, Throwable cause) {
+   public CaptureMasseSommaireFormatValidationException(String message,
+         Throwable cause) {
       super("Aucun document du sommaire ne sera intégré dans le SAE ("
-            + causeTehnique + ").", cause);
+            + message + ").", cause);
    }
 
 }

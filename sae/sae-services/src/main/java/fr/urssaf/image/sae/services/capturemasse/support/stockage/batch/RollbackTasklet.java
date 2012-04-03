@@ -41,7 +41,7 @@ public class RollbackTasklet implements Tasklet {
    /**
     * {@inheritDoc}
     */
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings( { "unchecked", "PMD.AvoidThrowingRawExceptionTypes" })
    @Override
    public final RepeatStatus execute(final StepContribution contribution,
          final ChunkContext chunkContext) {

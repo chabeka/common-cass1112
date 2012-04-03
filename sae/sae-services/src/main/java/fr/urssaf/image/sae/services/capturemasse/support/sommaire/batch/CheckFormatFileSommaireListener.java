@@ -3,6 +3,9 @@
  */
 package fr.urssaf.image.sae.services.capturemasse.support.sommaire.batch;
 
+import java.util.List;
+
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.AfterStep;
@@ -33,7 +36,11 @@ public class CheckFormatFileSommaireListener {
       final ExecutionContext context = execution.getJobExecution()
             .getExecutionContext();
 
-      if (context.get(Constantes.DOC_EXCEPTION) != null) {
+      @SuppressWarnings("unchecked")
+      List<Exception> exceptions = (List<Exception>) context
+            .get(Constantes.DOC_EXCEPTION);
+
+      if (CollectionUtils.isNotEmpty(exceptions)) {
          exitStatus = ExitStatus.FAILED;
       }
 

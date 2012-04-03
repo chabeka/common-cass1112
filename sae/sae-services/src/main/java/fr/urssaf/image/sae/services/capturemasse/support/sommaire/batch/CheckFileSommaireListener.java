@@ -3,6 +3,9 @@
  */
 package fr.urssaf.image.sae.services.capturemasse.support.sommaire.batch;
 
+import java.util.List;
+
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.AfterStep;
@@ -10,7 +13,6 @@ import org.springframework.batch.item.ExecutionContext;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
-import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireDocumentException;
 
 /**
  * Listener de la tasklet de vérification du fichier sommaire.xml
@@ -33,11 +35,12 @@ public class CheckFileSommaireListener {
 
       final ExecutionContext context = stepExecution.getJobExecution()
             .getExecutionContext();
-
-      final CaptureMasseSommaireDocumentException exception = (CaptureMasseSommaireDocumentException) context
+      
+      @SuppressWarnings("unchecked")
+      List<Exception> exceptions = (List<Exception>) context
             .get(Constantes.DOC_EXCEPTION);
 
-      if (exception != null) {
+      if (CollectionUtils.isNotEmpty(exceptions)) {
 
          exitStatus = ExitStatus.FAILED;
       }

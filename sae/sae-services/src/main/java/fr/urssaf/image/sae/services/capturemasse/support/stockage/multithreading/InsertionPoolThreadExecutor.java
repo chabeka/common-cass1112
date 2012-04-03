@@ -58,11 +58,11 @@ public class InsertionPoolThreadExecutor extends ThreadPoolExecutor implements
    private Boolean isInterrupted = null;
 
    @Autowired
-   private InterruptionTraitementMasseSupport support;
+   private final InterruptionTraitementMasseSupport support;
 
    @Autowired
    @Qualifier("interruption_capture_masse")
-   private InterruptionTraitementConfig config;
+   private final InterruptionTraitementConfig config;
 
    /**
     * instanciation d'un {@link ThreadPoolExecutor} avec comme arguments : <br>

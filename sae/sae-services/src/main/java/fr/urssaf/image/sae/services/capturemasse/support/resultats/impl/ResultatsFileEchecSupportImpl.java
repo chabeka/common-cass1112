@@ -26,8 +26,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import fr.urssaf.image.sae.services.capturemasse.common.CaptureMasseErreur;
+import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
-import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireDocumentException;
 import fr.urssaf.image.sae.services.capturemasse.support.resultats.ResultatsFileEchecSupport;
 import fr.urssaf.image.sae.services.util.StaxUtils;
 
@@ -38,13 +39,20 @@ import fr.urssaf.image.sae.services.util.StaxUtils;
 @Component
 public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport {
 
+   /**
+    * 
+    */
+   private static final String ERREUR_FLUX = "erreur de fermeture du flux ";
+
+   private static final String INDENTATION = "    ";
+
    private static final String CHEMIN_FICHIER = "cheminEtNomDuFichier";
    private static final String OBJET_NUMERIQUE = "objetNumerique";
 
    private static final String NS_RES = "http://www.cirtil.fr/sae/resultatsXml";
-   private static final String PX_RES = "res";
+   private static final String PX_RES = "";
    private static final String NS_SOMRES = "http://www.cirtil.fr/sae/commun_sommaire_et_resultat";
-   private static final String PX_SOMRES = "somres";
+   private static final String PX_SOMRES = "ns2";
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(ResultatsFileEchecSupportImpl.class);
@@ -54,8 +62,7 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
     */
    @Override
    public final void writeResultatsFile(final File ecdeDirectory,
-         final File sommaireFile,
-         final CaptureMasseSommaireDocumentException erreur,
+         final File sommaireFile, final CaptureMasseErreur erreur,
          final int nombreDocsTotal) {
 
       FileInputStream sommaireStream = null;
@@ -84,7 +91,7 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
             try {
                writer.close();
             } catch (XMLStreamException e) {
-               LOGGER.debug("erreur de fermeture du flux " + resultatPath);
+               LOGGER.debug(ERREUR_FLUX + resultatPath);
             }
          }
 
@@ -92,7 +99,7 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
             try {
                reader.close();
             } catch (XMLStreamException e) {
-               LOGGER.debug("erreur de fermeture du flux "
+               LOGGER.debug(ERREUR_FLUX
                      + sommaireFile.getAbsolutePath());
             }
          }
@@ -101,7 +108,7 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
             try {
                resultatsStream.close();
             } catch (IOException e) {
-               LOGGER.debug("erreur de fermeture du flux " + resultatPath);
+               LOGGER.debug(ERREUR_FLUX + resultatPath);
             }
          }
 
@@ -109,7 +116,7 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
             try {
                sommaireStream.close();
             } catch (IOException e) {
-               LOGGER.debug("erreur de fermeture du flux "
+               LOGGER.debug(ERREUR_FLUX
                      + sommaireFile.getAbsolutePath());
             }
          }
@@ -147,7 +154,10 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
       try {
          final XMLEventWriter writer = outputFactory
                .createXMLEventWriter(resultatsStream);
-         return new IndentingXMLEventWriter(writer);
+         IndentingXMLEventWriter iWriter = new IndentingXMLEventWriter(writer);
+         iWriter.setIndent(INDENTATION);
+         return iWriter;
+
       } catch (XMLStreamException e) {
          throw new CaptureMasseRuntimeException(e);
       }
@@ -163,8 +173,7 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
     */
    private void ecrireFichierResultat(final XMLEventReader reader,
          final XMLEventWriter writer, final int nombreDocs,
-         final CaptureMasseSommaireDocumentException erreur)
-         throws XMLStreamException {
+         final CaptureMasseErreur erreur) throws XMLStreamException {
 
       final XMLEventFactory eventFactory = XMLEventFactory.newInstance();
 
@@ -197,6 +206,9 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
 
       }
 
+      staxUtils.addStartTag("nonIntegratedVirtualDocuments", PX_RES, PX_SOMRES);
+      staxUtils
+            .addEndTag("nonIntegratedVirtualDocuments", PX_SOMRES, NS_SOMRES);
       staxUtils.addEndTag("resultats", PX_RES, NS_RES);
 
    }
@@ -227,9 +239,8 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
     * @throws XMLStreamException
     */
    private int startTag(final String name, final StaxUtils staxUtils,
-         final XMLEventReader reader,
-         final CaptureMasseSommaireDocumentException erreur, final int index)
-         throws XMLStreamException {
+         final XMLEventReader reader, final CaptureMasseErreur erreur,
+         final int index) throws XMLStreamException {
 
       int value = index;
 
@@ -248,9 +259,7 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
          gestionValeur(xmlEvent, staxUtils);
          staxUtils.addEndElement(CHEMIN_FICHIER, PX_SOMRES, NS_SOMRES);
          staxUtils.addEndElement(OBJET_NUMERIQUE, PX_SOMRES, NS_SOMRES);
-         if (erreur.getIndex() == index) {
-            addErreur(erreur, staxUtils, xmlEvent);
-         }
+         addErreur(erreur, index, staxUtils, xmlEvent);
 
          value++;
       }
@@ -267,8 +276,8 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
 
       // debut de document
       staxUtils.addStartElement("resultats", PX_RES, NS_RES);
+      staxUtils.addDefaultPrefix(NS_RES);
       staxUtils.addPrefix(PX_SOMRES, NS_SOMRES);
-      staxUtils.addPrefix(PX_RES, NS_RES);
 
       // balises d'entete
       staxUtils.createTag("batchMode", "TOUT_OU_RIEN", PX_RES, NS_RES);
@@ -304,28 +313,38 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
     * @param xmlEvent
     * @throws XMLStreamException
     */
-   private void addErreur(final CaptureMasseSommaireDocumentException erreur,
+   private void addErreur(final CaptureMasseErreur erreur, int index,
          final StaxUtils staxUtils, final XMLEvent xmlEvent)
          throws XMLStreamException {
+
       staxUtils.addStartTag("erreurs", PX_SOMRES, NS_SOMRES);
-      staxUtils.addStartTag("erreur", PX_SOMRES, NS_SOMRES);
 
-      final String chemin = xmlEvent.asCharacters().getData();
+      if (erreur.getListIndex().contains(index)) {
 
-      String code, message;
-      if (erreur.getCause() instanceof CaptureMasseRuntimeException) {
-         code = "SAE-CA-BUL001";
-         message = "Une erreur interne à l'application est survenue lors de la capture du document "
-               + chemin + ". Détails : " + erreur.getCause().getMessage();
-      } else {
-         code = "SAE-CA-BUL002";
-         message = "Le document " + chemin + " n'a pas été archivé. Détails : "
-               + erreur.getCause().getMessage();
+         staxUtils.addStartTag("erreur", PX_SOMRES, NS_SOMRES);
+
+         final String chemin = xmlEvent.asCharacters().getData();
+
+         int indexList = erreur.getListIndex().indexOf(index);
+
+         String code = erreur.getListCodes().get(indexList);
+         String messageErreur = erreur.getListException().get(indexList)
+               .getMessage();
+         String message;
+
+         if (Constantes.ERR_BUL002.equalsIgnoreCase(code)) {
+            message = "Le document " + chemin
+                  + " n'a pas été archivé. Détails : " + messageErreur;
+         } else {
+            message = "Une erreur interne à l'application est survenue lors de la capture du document "
+                  + chemin + ". Détails : " + messageErreur;
+         }
+
+         staxUtils.createTag("code", code, PX_SOMRES, NS_SOMRES);
+         staxUtils.createTag("libelle", message, PX_SOMRES, NS_SOMRES);
+         staxUtils.addEndTag("erreur", PX_SOMRES, NS_SOMRES);
       }
 
-      staxUtils.createTag("code", code, PX_SOMRES, NS_SOMRES);
-      staxUtils.createTag("libelle", message, PX_SOMRES, NS_SOMRES);
-      staxUtils.addEndTag("erreur", PX_SOMRES, NS_SOMRES);
       staxUtils.addEndTag("erreurs", PX_SOMRES, NS_SOMRES);
    }
 

@@ -67,13 +67,13 @@ public class SAECaptureMasseServiceImpl implements SAECaptureMasseService {
          List<StepExecution> list = new ArrayList<StepExecution>(jobExecution
                .getStepExecutions());
          boolean traitementOK = true;
-         int i = 0;
-         while (traitementOK && i < list.size()) {
-            if ("finBloquant".equalsIgnoreCase(list.get(i).getStepName())
-                  || "finErreur".equalsIgnoreCase(list.get(i).getStepName())) {
+         int index = 0;
+         while (traitementOK && index < list.size()) {
+            if ("finBloquant".equalsIgnoreCase(list.get(index).getStepName())
+                  || "finErreur".equalsIgnoreCase(list.get(index).getStepName())) {
                traitementOK = false;
             }
-            i++;
+            index++;
          }
 
          if (traitementOK) {

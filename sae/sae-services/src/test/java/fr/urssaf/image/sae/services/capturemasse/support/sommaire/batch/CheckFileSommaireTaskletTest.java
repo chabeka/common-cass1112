@@ -35,10 +35,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
-import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseEcdeWriteFileException;
-import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireDocumentException;
-import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireEcdeURLException;
-import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireFileNotFoundException;
 
 /**
  * 
@@ -84,9 +80,13 @@ public class CheckFileSommaireTaskletTest {
             .randomUUID().toString()));
 
       JobParameters jobParameters = new JobParameters(parameters);
+      ExecutionContext context = new ExecutionContext();
+      context.put(Constantes.CODE_EXCEPTION, new ArrayList<String>());
+      context.put(Constantes.INDEX_EXCEPTION, new ArrayList<Integer>());
+      context.put(Constantes.DOC_EXCEPTION, new ArrayList<Exception>());
 
       JobExecution execution = launcher.launchStep("controleSommaireStep",
-            jobParameters);
+            jobParameters, context);
       Collection<StepExecution> steps = execution.getStepExecutions();
       List<StepExecution> list = new ArrayList<StepExecution>(steps);
 
@@ -94,13 +94,13 @@ public class CheckFileSommaireTaskletTest {
       Assert.assertEquals("status FAILED attendu", ExitStatus.FAILED, step
             .getExitStatus());
 
-      ExecutionContext context = execution.getExecutionContext();
-
-      CaptureMasseSommaireDocumentException erreur = (CaptureMasseSommaireDocumentException) context
+      context = execution.getExecutionContext();
+      @SuppressWarnings("unchecked")
+      List<Exception> exceptions = (List<Exception>) context
             .get(Constantes.DOC_EXCEPTION);
 
-      Assert.assertTrue("exception format incorrect attendue", (erreur
-            .getCause() instanceof CaptureMasseSommaireEcdeURLException));
+      Assert.assertEquals("la liste des exceptions doit contenir un élément",
+            1, (exceptions.size()));
    }
 
    /**
@@ -124,8 +124,13 @@ public class CheckFileSommaireTaskletTest {
 
       JobParameters jobParameters = new JobParameters(parameters);
 
+      ExecutionContext contextParam = new ExecutionContext();
+      contextParam.put(Constantes.CODE_EXCEPTION, new ArrayList<String>());
+      contextParam.put(Constantes.INDEX_EXCEPTION, new ArrayList<Integer>());
+      contextParam.put(Constantes.DOC_EXCEPTION, new ArrayList<Exception>());
+
       JobExecution execution = launcher.launchStep("controleSommaireStep",
-            jobParameters);
+            jobParameters, contextParam);
       Collection<StepExecution> steps = execution.getStepExecutions();
       List<StepExecution> list = new ArrayList<StepExecution>(steps);
 
@@ -134,14 +139,12 @@ public class CheckFileSommaireTaskletTest {
             .getExitStatus());
 
       ExecutionContext context = execution.getExecutionContext();
-
-      CaptureMasseSommaireDocumentException erreur = (CaptureMasseSommaireDocumentException) context
+      @SuppressWarnings("unchecked")
+      List<Exception> exceptions = (List<Exception>) context
             .get(Constantes.DOC_EXCEPTION);
 
-      Assert
-            .assertTrue(
-                  "exception URI incorrecte attendue",
-                  (erreur.getCause() instanceof CaptureMasseSommaireEcdeURLException));
+      Assert.assertEquals("la liste des exceptions doit contenir un élément",
+            1, (exceptions.size()));
    }
 
    /**
@@ -160,8 +163,13 @@ public class CheckFileSommaireTaskletTest {
 
       JobParameters jobParameters = new JobParameters(parameters);
 
+      ExecutionContext contextParam = new ExecutionContext();
+      contextParam.put(Constantes.CODE_EXCEPTION, new ArrayList<String>());
+      contextParam.put(Constantes.INDEX_EXCEPTION, new ArrayList<Integer>());
+      contextParam.put(Constantes.DOC_EXCEPTION, new ArrayList<Exception>());
+
       JobExecution execution = launcher.launchStep("controleSommaireStep",
-            jobParameters);
+            jobParameters, contextParam);
       Collection<StepExecution> steps = execution.getStepExecutions();
       List<StepExecution> list = new ArrayList<StepExecution>(steps);
 
@@ -170,12 +178,12 @@ public class CheckFileSommaireTaskletTest {
             .getExitStatus());
 
       ExecutionContext context = execution.getExecutionContext();
-
-      CaptureMasseSommaireDocumentException erreur = (CaptureMasseSommaireDocumentException) context
+      @SuppressWarnings("unchecked")
+      List<Exception> exceptions = (List<Exception>) context
             .get(Constantes.DOC_EXCEPTION);
 
-      Assert.assertTrue("exception fichier inexistant attendue", (erreur
-            .getCause() instanceof CaptureMasseSommaireFileNotFoundException));
+      Assert.assertEquals("la liste des exceptions doit contenir un élément",
+            1, (exceptions.size()));
    }
 
    /**
@@ -207,12 +215,12 @@ public class CheckFileSommaireTaskletTest {
             .getExitStatus());
 
       ExecutionContext context = execution.getExecutionContext();
-
-      CaptureMasseSommaireDocumentException erreur = (CaptureMasseSommaireDocumentException) context
+      @SuppressWarnings("unchecked")
+      List<Exception> exceptions = (List<Exception>) context
             .get(Constantes.DOC_EXCEPTION);
 
-      Assert.assertTrue("exception ecriture impossible attendue", (erreur
-            .getCause() instanceof CaptureMasseEcdeWriteFileException));
+      Assert.assertEquals("la liste des exceptions doit contenir un élément",
+            1, (exceptions.size()));
    }
 
    /**
@@ -227,10 +235,10 @@ public class CheckFileSommaireTaskletTest {
       ClassPathResource resSommaire = new ClassPathResource("sommaire.xml");
       FileOutputStream fos = new FileOutputStream(sommaire);
       IOUtils.copy(resSommaire.getInputStream(), fos);
-      
+
       Map<String, JobParameter> parameters = new HashMap<String, JobParameter>();
-      parameters.put(Constantes.SOMMAIRE, new JobParameter(
-            ecdeTestSommaire.getUrlEcde().toString()));
+      parameters.put(Constantes.SOMMAIRE, new JobParameter(ecdeTestSommaire
+            .getUrlEcde().toString()));
       parameters.put(Constantes.ID_TRAITEMENT, new JobParameter(UUID
             .randomUUID().toString()));
 

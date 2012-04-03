@@ -8,13 +8,12 @@ import java.io.File;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 
-import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireFormatValidationException;
 import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
 
 /**
  * Validation des arguments passés en entrée de l'implémentation du service
- * {@link fr.urssaf.image.sae.services.capturemasse.support.resultats.ResultatsFileEchecBloquantSupport}. La validation est basée sur la
- * programmation Aspect
+ * {@link fr.urssaf.image.sae.services.capturemasse.support.resultats.ResultatsFileEchecBloquantSupport}
+ * . La validation est basée sur la programmation Aspect
  * 
  */
 @Aspect
@@ -34,7 +33,7 @@ public class ResultatsFileEchecBloquantSupportValidation {
     */
    @Before(CHECK_METHOD)
    public final void checkWriteResultatsFile(final File ecdeDirectory,
-         final CaptureMasseSommaireFormatValidationException erreur) {
+         final Exception erreur) {
 
       if (ecdeDirectory == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(

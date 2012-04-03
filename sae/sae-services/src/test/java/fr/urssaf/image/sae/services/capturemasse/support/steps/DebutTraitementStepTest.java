@@ -6,7 +6,9 @@ package fr.urssaf.image.sae.services.capturemasse.support.steps;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -32,7 +34,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
-import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireDocumentException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(value = { "/applicationContext-sae-services-test.xml" })
@@ -63,13 +64,12 @@ public class DebutTraitementStepTest {
    @Test
    public void testDebutTraitement() throws UnexpectedInputException,
          ParseException, Exception {
-      
+
       String valeurUuid = UUID.randomUUID().toString();
       MDC.put("log_contexte_uuid", valeurUuid);
-      
+
       File sommaire = new File(ecdeTestSommaire.getRepEcde(), "sommaire.xml");
-      ClassPathResource resSommaire = new ClassPathResource(
-            "sommaire.xml");
+      ClassPathResource resSommaire = new ClassPathResource("sommaire.xml");
       FileOutputStream fos = new FileOutputStream(sommaire);
 
       IOUtils.copy(resSommaire.getInputStream(), fos);
@@ -78,16 +78,25 @@ public class DebutTraitementStepTest {
       map.put(Constantes.SOMMAIRE, new JobParameter(ecdeTestSommaire
             .getUrlEcde().toString()));
       JobParameters jobParameters = new JobParameters(map);
+
+      ExecutionContext contextParam = new ExecutionContext();
+      contextParam.put(Constantes.CODE_EXCEPTION, new ArrayList<String>());
+      contextParam.put(Constantes.INDEX_EXCEPTION, new ArrayList<Integer>());
+      contextParam.put(Constantes.DOC_EXCEPTION, new ArrayList<Exception>());
+
       JobExecution execution = launcher.launchStep("controleDocuments",
-            jobParameters);
+            jobParameters, contextParam);
       ExecutionContext context = execution.getExecutionContext();
 
       Assert.assertNotNull("Une exception doit etre presente dans le context",
             context.get(Constantes.DOC_EXCEPTION));
-      CaptureMasseSommaireDocumentException exception = (CaptureMasseSommaireDocumentException) context
+
+      @SuppressWarnings("unchecked")
+      List<Exception> exceptions = (List<Exception>) context
             .get(Constantes.DOC_EXCEPTION);
-      Assert.assertNotNull("l'erreur doit contenir l'erreur source", exception
-            .getCause());
+
+      Assert.assertEquals("la liste des exceptions doit contenir un élément",
+            1, (exceptions.size()));
 
    }
 }

@@ -5,6 +5,7 @@ package fr.urssaf.image.sae.services.capturemasse.support.sommaire.batch;
 
 import java.io.File;
 import java.net.URI;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.batch.core.StepContribution;
@@ -19,7 +20,6 @@ import org.springframework.stereotype.Component;
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseEcdeWriteFileException;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
-import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireDocumentException;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireEcdeURLException;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireFileNotFoundException;
 import fr.urssaf.image.sae.services.capturemasse.support.ecde.EcdeControleSupport;
@@ -42,6 +42,7 @@ public class CheckFileSommaireTasklet implements Tasklet {
     * {@inheritDoc}
     */
    @Override
+   @SuppressWarnings("unchecked")
    public final RepeatStatus execute(final StepContribution contribution,
          final ChunkContext chunkContext) throws Exception {
 
@@ -67,24 +68,33 @@ public class CheckFileSommaireTasklet implements Tasklet {
          context.put(Constantes.SOMMAIRE_FILE, sommaire.getAbsolutePath());
 
       } catch (CaptureMasseSommaireEcdeURLException e) {
-         final CaptureMasseSommaireDocumentException exception = new CaptureMasseSommaireDocumentException(
-               0, e);
-         chunkContext.getStepContext().getStepExecution().getJobExecution()
-               .getExecutionContext().put(Constantes.DOC_EXCEPTION, exception);
+         final Exception exception = new Exception(e.getMessage());
+
+         List<Exception> exceptions = (List<Exception>) chunkContext
+               .getStepContext().getStepExecution().getJobExecution()
+               .getExecutionContext().get(Constantes.DOC_EXCEPTION);
+         exceptions.add(exception);
+
       } catch (CaptureMasseSommaireFileNotFoundException e) {
-         final CaptureMasseSommaireDocumentException exception = new CaptureMasseSommaireDocumentException(
-               0, e);
-         chunkContext.getStepContext().getStepExecution().getJobExecution()
-               .getExecutionContext().put(Constantes.DOC_EXCEPTION, exception);
+         final Exception exception = new Exception(e.getMessage());
+         List<Exception> exceptions = (List<Exception>) chunkContext
+               .getStepContext().getStepExecution().getJobExecution()
+               .getExecutionContext().get(Constantes.DOC_EXCEPTION);
+         exceptions.add(exception);
+
       } catch (CaptureMasseEcdeWriteFileException e) {
-         final CaptureMasseSommaireDocumentException exception = new CaptureMasseSommaireDocumentException(
-               0, e);
-         chunkContext.getStepContext().getStepExecution().getJobExecution()
-               .getExecutionContext().put(Constantes.DOC_EXCEPTION, exception);
+         final Exception exception = new Exception(e.getMessage());
+         List<Exception> exceptions = (List<Exception>) chunkContext
+               .getStepContext().getStepExecution().getJobExecution()
+               .getExecutionContext().get(Constantes.DOC_EXCEPTION);
+         exceptions.add(exception);
+
       } catch (CaptureMasseRuntimeException e) {
-         CaptureMasseSommaireDocumentException exception = new CaptureMasseSommaireDocumentException(
-               0, e);
-         context.put(Constantes.DOC_EXCEPTION, exception);
+         final Exception exception = new Exception(e.getMessage());
+         List<Exception> exceptions = (List<Exception>) chunkContext
+               .getStepContext().getStepExecution().getJobExecution()
+               .getExecutionContext().get(Constantes.DOC_EXCEPTION);
+         exceptions.add(exception);
       }
 
       return RepeatStatus.FINISHED;

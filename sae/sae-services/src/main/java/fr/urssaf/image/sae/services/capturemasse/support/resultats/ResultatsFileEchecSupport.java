@@ -5,7 +5,7 @@ package fr.urssaf.image.sae.services.capturemasse.support.resultats;
 
 import java.io.File;
 
-import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireDocumentException;
+import fr.urssaf.image.sae.services.capturemasse.common.CaptureMasseErreur;
 
 /**
  * Suppoprt pour l'écriture des fichiers resultats.xml en cs d'échec lors du
@@ -23,11 +23,11 @@ public interface ResultatsFileEchecSupport {
     * @param sommaireFile
     *           chemin absolu du fichier sommaire.xml de la capture de masse
     * @param erreur
-    *           exception sur un des documents du sommaire à archiver
+    *           objet contenant toutes les erreurs
     * @param totalDocuments
     *           nombre de documents traités au total
     */
    void writeResultatsFile(File ecdeDirectory, File sommaireFile,
-         CaptureMasseSommaireDocumentException erreur, int totalDocuments);
+         CaptureMasseErreur erreur, int totalDocuments);
 
 }

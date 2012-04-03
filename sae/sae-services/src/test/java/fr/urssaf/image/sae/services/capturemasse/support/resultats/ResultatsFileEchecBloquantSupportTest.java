@@ -50,7 +50,7 @@ public class ResultatsFileEchecBloquantSupportTest {
    @Test(expected = IllegalArgumentException.class)
    public void testEcdeDirectoryObligatoire() {
       support.writeResultatsFile(null,
-            new CaptureMasseSommaireFormatValidationException("", null));
+            new CaptureMasseSommaireFormatValidationException(null));
    }
 
    @Test(expected = IllegalArgumentException.class)
@@ -62,10 +62,9 @@ public class ResultatsFileEchecBloquantSupportTest {
    public void testErreurBloquante() {
 
       File ecdeDirectory = ecdeTestSommaire.getRepEcde();
-      File sommaire = new File(ecdeDirectory, "sommaire.xml");
 
       CaptureMasseSommaireFormatValidationException erreur = new CaptureMasseSommaireFormatValidationException(
-            sommaire.getAbsolutePath(), new ParserConfigurationException(
+            new ParserConfigurationException(
                   "erreur lors de la configuration du parser"));
 
       support.writeResultatsFile(ecdeDirectory, erreur);

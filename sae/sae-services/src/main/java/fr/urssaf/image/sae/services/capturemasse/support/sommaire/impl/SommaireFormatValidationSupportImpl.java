@@ -65,12 +65,10 @@ public class SommaireFormatValidationSupportImpl implements
          throw new CaptureMasseRuntimeException(e);
 
       } catch (ParserConfigurationException e) {
-         throw new CaptureMasseSommaireFormatValidationException(
-               "erreur de lecture", e);
+         throw new CaptureMasseSommaireFormatValidationException(e);
 
       } catch (SAXException e) {
-         throw new CaptureMasseSommaireFormatValidationException(
-               "erreur de format", e);
+         throw new CaptureMasseSommaireFormatValidationException(e);
       }
 
    }

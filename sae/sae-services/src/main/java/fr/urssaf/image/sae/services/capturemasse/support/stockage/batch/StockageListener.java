@@ -27,7 +27,6 @@ import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
-import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireDocumentException;
 import fr.urssaf.image.sae.services.capturemasse.model.CaptureMasseIntegratedDocument;
 import fr.urssaf.image.sae.services.capturemasse.modele.commun_sommaire_et_resultat.DocumentType;
 import fr.urssaf.image.sae.services.capturemasse.support.stockage.multithreading.InsertionPoolThreadExecutor;
@@ -67,9 +66,22 @@ public class StockageListener {
     *           exception levée par la lecture
     */
    @OnReadError
+   @SuppressWarnings("unchecked")
    public final void logReadError(final Exception exception) {
-      LOGGER.error("Une erreur interne à l'application est survenue "
-            + "lors du traitement de la capture de masse", exception);
+      ExecutionContext jobExecution = stepExecution.getJobExecution()
+            .getExecutionContext();
+      List<String> codes = (List<String>) jobExecution
+            .get(Constantes.CODE_EXCEPTION);
+      List<Integer> index = (List<Integer>) jobExecution
+            .get(Constantes.INDEX_EXCEPTION);
+      List<Exception> exceptions = (List<Exception>) jobExecution
+            .get(Constantes.DOC_EXCEPTION);
+
+      codes.add(Constantes.ERR_BUL001);
+      index.add(0);
+      exceptions.add(new Exception(exception.getMessage()));
+
+      LOGGER.warn("erreur lors de la lecture du fichier", exception);
    }
 
    /**
@@ -81,13 +93,25 @@ public class StockageListener {
     *           exception levée
     */
    @OnProcessError
+   @SuppressWarnings("unchecked")
    public final void logProcessError(final DocumentType documentType,
          final Exception exception) {
-      final CaptureMasseSommaireDocumentException documentException = new CaptureMasseSommaireDocumentException(
-            stepExecution.getExecutionContext().getInt(Constantes.CTRL_INDEX),
-            exception);
-      stepExecution.getJobExecution().getExecutionContext().put(
-            Constantes.DOC_EXCEPTION, documentException);
+
+      ExecutionContext jobExecution = stepExecution.getJobExecution()
+            .getExecutionContext();
+      List<String> codes = (List<String>) jobExecution
+            .get(Constantes.CODE_EXCEPTION);
+      List<Integer> index = (List<Integer>) jobExecution
+            .get(Constantes.INDEX_EXCEPTION);
+      List<Exception> exceptions = (List<Exception>) jobExecution
+            .get(Constantes.DOC_EXCEPTION);
+
+      codes.add(Constantes.ERR_BUL002);
+      index.add(stepExecution.getExecutionContext().getInt(
+            Constantes.CTRL_INDEX));
+      exceptions.add(new Exception(exception.getMessage()));
+
+      LOGGER.warn("erreur lors du traitement de persistance", exception);
    }
 
    /**
@@ -112,6 +136,7 @@ public class StockageListener {
     * @return un status de sortie
     */
    @AfterStep
+   @SuppressWarnings("unchecked")
    public final ExitStatus afterStep(final StepExecution stepExecution) {
 
       final JobExecution jobExecution = stepExecution.getJobExecution();
@@ -134,12 +159,16 @@ public class StockageListener {
       ExitStatus status = ExitStatus.COMPLETED;
 
       if (exception != null) {
+         List<String> codes = (List<String>) jobExecution.getExecutionContext()
+               .get(Constantes.CODE_EXCEPTION);
+         List<Integer> index = (List<Integer>) jobExecution
+               .getExecutionContext().get(Constantes.INDEX_EXCEPTION);
+         List<Exception> exceptions = (List<Exception>) jobExecution
+               .getExecutionContext().get(Constantes.DOC_EXCEPTION);
 
-         final CaptureMasseSommaireDocumentException erreur = new CaptureMasseSommaireDocumentException(
-               exception.getIndex(), exception.getCause());
-
-         stepExecution.getJobExecution().getExecutionContext().put(
-               Constantes.DOC_EXCEPTION, erreur);
+         codes.add(Constantes.ERR_BUL002);
+         index.add(exception.getIndex());
+         exceptions.add(new Exception(exception.getMessage()));
 
          status = ExitStatus.FAILED;
       }
