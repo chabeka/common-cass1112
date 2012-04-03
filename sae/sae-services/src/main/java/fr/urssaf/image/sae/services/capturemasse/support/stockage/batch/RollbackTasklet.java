@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
-import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -31,8 +31,6 @@ public class RollbackTasklet implements Tasklet {
    private static final Logger LOGGER = LoggerFactory
          .getLogger(RollbackTasklet.class);
 
-   private static final String COUNT_READ = "countRead";
-
    private static final String TRC_ROLLBACK = "rollbacktasklet()";
 
    @Autowired
@@ -46,38 +44,49 @@ public class RollbackTasklet implements Tasklet {
    public final RepeatStatus execute(final StepContribution contribution,
          final ChunkContext chunkContext) {
 
-      final ExecutionContext mapStep = chunkContext.getStepContext()
-            .getStepExecution().getExecutionContext();
-      final Map<String, Object> mapJob = chunkContext.getStepContext()
+      Map<String, Object> mapJob = chunkContext.getStepContext()
             .getJobExecutionContext();
 
-      Integer countRead = (Integer) mapStep.get(COUNT_READ);
-      final List<UUID> listIntegDocs = (List<UUID>) mapJob
-            .get(Constantes.INTEG_DOCS);
+      int countRead = chunkContext.getStepContext().getStepExecution()
+            .getReadCount();
 
-      if (countRead == null) {
-         countRead = Integer.valueOf(0);
-      }
+      int countWrite = chunkContext.getStepContext().getStepExecution()
+            .getWriteCount();
+
+      List<UUID> listIntegDocs = (List<UUID>) mapJob.get(Constantes.INTEG_DOCS);
 
       RepeatStatus status;
 
       try {
 
-         UUID strDocumentID = listIntegDocs.get(countRead.intValue());
+         if (CollectionUtils.isNotEmpty(listIntegDocs)) {
 
-         support.rollback(strDocumentID);
+            UUID strDocumentID = listIntegDocs.get(countRead);
 
-         countRead = countRead + 1;
+            support.rollback(strDocumentID);
 
-         LOGGER.debug("{} - Rollback du document #{}/{} ({})", new Object[] {
-               TRC_ROLLBACK, countRead, listIntegDocs.size(), strDocumentID });
+            chunkContext.getStepContext().getStepExecution().setReadCount(
+                  ++countRead);
 
-         mapStep.put(COUNT_READ, countRead);
+            LOGGER.debug("{} - Rollback du document #{}/{} ({})",
+                  new Object[] { TRC_ROLLBACK, countRead, listIntegDocs.size(),
+                        strDocumentID });
 
-         if (countRead.intValue() == listIntegDocs.size()) {
-            status = RepeatStatus.FINISHED;
+            chunkContext.getStepContext().getStepExecution().setWriteCount(
+                  ++countWrite);
+
+            if (countRead == listIntegDocs.size()) {
+               status = RepeatStatus.FINISHED;
+            } else {
+               status = RepeatStatus.CONTINUABLE;
+            }
+
          } else {
-            status = RepeatStatus.CONTINUABLE;
+
+            LOGGER.debug("{} - Aucun document à supprimer",
+                  new Object[] { TRC_ROLLBACK });
+
+            status = RepeatStatus.FINISHED;
          }
 
       } catch (Exception e) {
@@ -89,7 +98,7 @@ public class RollbackTasklet implements Tasklet {
                "{0} - Une exception a été levée lors du rollback : {1}",
                TRC_ROLLBACK, idTraitement);
 
-         LOGGER.error(errorMessage, e.getCause());
+         LOGGER.error(errorMessage, e);
 
          LOGGER
                .error(
