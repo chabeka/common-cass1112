@@ -119,7 +119,7 @@ public class ControleListener {
       List<Exception> listExceptions = (List<Exception>) context
             .get(Constantes.DOC_EXCEPTION);
 
-      listCodes.add(Constantes.ERR_BUL001);
+      listCodes.add(Constantes.ERR_BUL002);
       listIndex.add(stepExecution.getExecutionContext().getInt(
             Constantes.CTRL_INDEX));
       listExceptions.add(new Exception(exception.getMessage()));
