@@ -137,8 +137,8 @@ public class DebutTraitementFlagSupportTest {
          stream = FileUtils.openInputStream(fileFlag);
          properties.load(stream);
 
-         Assert.assertTrue("idTraitement doit exister", properties
-               .containsKey("idTraitement"));
+         Assert.assertTrue("idTraitementMasse doit exister", properties
+               .containsKey("idTraitementMasse"));
          Assert.assertTrue("heureDebutTraitementEnMasse doit exister",
                properties.containsKey("heureDebutTraitementEnMasse"));
          Assert.assertTrue("hostnameServeurAppli doit exister", properties
@@ -147,7 +147,7 @@ public class DebutTraitementFlagSupportTest {
                .containsKey("hostIP"));
 
          Assert.assertTrue("la valeur idTraitement doit exister", StringUtils
-               .isNotBlank(properties.getProperty("idTraitement")));
+               .isNotBlank(properties.getProperty("idTraitementMasse")));
          Assert.assertTrue(
                "la valeur heureDebutTraitementEnMasse doit exister",
                StringUtils.isNotBlank(properties

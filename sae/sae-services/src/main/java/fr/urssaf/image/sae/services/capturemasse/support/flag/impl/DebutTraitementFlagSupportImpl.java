@@ -62,7 +62,7 @@ public class DebutTraitementFlagSupportImpl implements
          final File bulkStartFile = new File(urlFlag.toString());
          final Collection<String> bulkCaptureInfos = new ArrayList<String>();
          final InetAddress hostInfo = flag.getHostInfo();
-         bulkCaptureInfos.add("idTraitement=" + flag.getIdTraitement());
+         bulkCaptureInfos.add("idTraitementMasse=" + flag.getIdTraitement());
          bulkCaptureInfos.add("heureDebutTraitementEnMasse="
                + FormatUtils.dateToString(flag.getStartDate()));
          bulkCaptureInfos.add("hostnameServeurAppli=" + hostInfo.getHostName());
