@@ -10,17 +10,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.AfterStep;
 import org.springframework.batch.core.annotation.BeforeStep;
+import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
+import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
 import fr.urssaf.image.sae.services.capturemasse.support.stockage.multithreading.InsertionPoolThreadExecutor;
 import fr.urssaf.image.sae.services.capturemasse.support.stockage.multithreading.InsertionRunnable;
 import fr.urssaf.image.sae.storage.dfce.constants.Constants;
 import fr.urssaf.image.sae.storage.dfce.messages.StorageMessageHandler;
 import fr.urssaf.image.sae.storage.dfce.utils.Utils;
-import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
@@ -51,16 +53,32 @@ public class StorageDocumentWriter implements ItemWriter<StorageDocument> {
     * 
     * @param stepExecution
     *           context de l'étape
-    * @throws ConnectionServiceEx
-    *            erreur de connection
     */
+   @SuppressWarnings("unchecked")
    @BeforeStep
-   public final void init(StepExecution stepExecution)
-         throws ConnectionServiceEx {
+   public final void init(StepExecution stepExecution) {
 
       this.stepExecution = stepExecution;
 
-      serviceProvider.openConnexion();
+      try {
+         serviceProvider.openConnexion();
+
+      } catch (Exception e) {
+         ExecutionContext jobExecution = stepExecution.getJobExecution()
+               .getExecutionContext();
+         List<String> codes = (List<String>) jobExecution
+               .get(Constantes.CODE_EXCEPTION);
+         List<Integer> index = (List<Integer>) jobExecution
+               .get(Constantes.INDEX_EXCEPTION);
+         List<Exception> exceptions = (List<Exception>) jobExecution
+               .get(Constantes.DOC_EXCEPTION);
+
+         codes.add(Constantes.ERR_BUL001);
+         index.add(0);
+         exceptions.add(new Exception(e.getMessage()));
+
+         throw new CaptureMasseRuntimeException(e);
+      }
 
       LOGGER.debug("{} - ouverture de la connexion DFCE", TRC_INSERT);
    }

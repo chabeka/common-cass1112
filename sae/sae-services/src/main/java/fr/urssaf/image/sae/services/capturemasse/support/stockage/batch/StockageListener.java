@@ -78,7 +78,7 @@ public class StockageListener {
             .get(Constantes.DOC_EXCEPTION);
 
       codes.add(Constantes.ERR_BUL001);
-      index.add(0);
+      index.add(stepExecution.getReadCount());
       exceptions.add(new Exception(exception.getMessage()));
 
       LOGGER.warn("erreur lors de la lecture du fichier", exception);
@@ -118,7 +118,7 @@ public class StockageListener {
     * @see réalisé après le chunk
     */
    @AfterChunk
-   public final void logAfterChunk() {
+   public final void afterChunk() {
 
       final InsertionMasseRuntimeException exception = executor
             .getInsertionMasseException();
@@ -139,38 +139,45 @@ public class StockageListener {
    @SuppressWarnings("unchecked")
    public final ExitStatus afterStep(final StepExecution stepExecution) {
 
-      final JobExecution jobExecution = stepExecution.getJobExecution();
-
-      executor.shutdown();
-
-      executor.waitFinishInsertion();
-
-      final List<UUID> list = getIntegratedDocuments();
-
-      jobExecution.getExecutionContext().put(Constantes.INTEG_DOCS, list);
-
-      jobExecution.getExecutionContext().remove(Constantes.THREAD_POOL);
-
-      stepExecution.setWriteCount(list.size());
-
-      final InsertionMasseRuntimeException exception = executor
-            .getInsertionMasseException();
-
       ExitStatus status = ExitStatus.COMPLETED;
 
-      if (exception != null) {
-         List<String> codes = (List<String>) jobExecution.getExecutionContext()
-               .get(Constantes.CODE_EXCEPTION);
-         List<Integer> index = (List<Integer>) jobExecution
-               .getExecutionContext().get(Constantes.INDEX_EXCEPTION);
-         List<Exception> exceptions = (List<Exception>) jobExecution
-               .getExecutionContext().get(Constantes.DOC_EXCEPTION);
+      final JobExecution jobExecution = stepExecution.getJobExecution();
+      List<String> codes = (List<String>) jobExecution.getExecutionContext()
+            .get(Constantes.CODE_EXCEPTION);
+      List<Integer> index = (List<Integer>) jobExecution.getExecutionContext()
+            .get(Constantes.INDEX_EXCEPTION);
+      List<Exception> exceptions = (List<Exception>) jobExecution
+            .getExecutionContext().get(Constantes.DOC_EXCEPTION);
 
-         codes.add(Constantes.ERR_BUL002);
-         index.add(exception.getIndex());
-         exceptions.add(new Exception(exception.getMessage()));
+      if (CollectionUtils.isNotEmpty(exceptions)) {
 
          status = ExitStatus.FAILED;
+
+      } else {
+
+         executor.shutdown();
+
+         executor.waitFinishInsertion();
+
+         final List<UUID> list = getIntegratedDocuments();
+
+         jobExecution.getExecutionContext().put(Constantes.INTEG_DOCS, list);
+
+         jobExecution.getExecutionContext().remove(Constantes.THREAD_POOL);
+
+         stepExecution.setWriteCount(list.size());
+
+         final InsertionMasseRuntimeException exception = executor
+               .getInsertionMasseException();
+
+         if (exception != null) {
+
+            codes.add(Constantes.ERR_BUL002);
+            index.add(exception.getIndex());
+            exceptions.add(new Exception(exception.getMessage()));
+
+            status = ExitStatus.FAILED;
+         }
       }
 
       return status;
@@ -183,7 +190,7 @@ public class StockageListener {
     *           le document
     */
    @BeforeProcess
-   public void beforeProcess(final JAXBElement<UntypedDocument> untypedType) {
+   public final void beforeProcess(final JAXBElement<UntypedDocument> untypedType) {
 
       ExecutionContext context = stepExecution.getExecutionContext();
 
