@@ -41,17 +41,83 @@
    <table border=1>
       
       <tr style="font-weight:bold;">
-         <td>Nom du fichier</td>
-         <td>Référence</td>
-         <td>Passe comparée</td>
+         <td style="width:120pt;">Nom du fichier</td>
+         <td style="width:150pt;">Référence</td>
+         <td style="width:150pt;">Passe comparée</td>
       </tr>
       
       <c:forEach items="${formulaire.listeFichiers}" var="fichier">
       
+      
+         <c:choose>
+               
+            <c:when test="${fichier.etatReference == 'REFERENCE'}">
+               <c:set var="texteEtatRef" value="" />
+               <c:set var="couleurFondEtatRef" value="white" />
+            </c:when>
+            
+            <c:when test="${fichier.etatReference == 'MANQUANT'}">
+               <c:set var="texteEtatRef" value="Non présent" />
+               <c:set var="couleurFondEtatRef" value="orange" />
+            </c:when>
+               
+            <c:otherwise>
+               <c:set var="texteEtatRef" value="${fichier.etatReference}" />
+               <c:set var="couleurFondEtatRef" value="orange" />
+            </c:otherwise>
+               
+         </c:choose>
+         
+         
+         <c:choose>
+               
+            <c:when test="${fichier.etatPasse == 'IDENTIQUE_REFERENCE'}">
+               <c:set var="texteEtatPasse" value="OK" />
+               <c:set var="couleurFondEtatPasse" value="green" />
+               <c:set var="couleurPoliceEtatPasse" value="white" />
+            </c:when>
+            
+            <c:when test="${fichier.etatPasse == 'DIFFERENT_REFERENCE'}">
+               <c:set var="texteEtatPasse" value="différent" />
+               <c:set var="couleurFondEtatPasse" value="red" />
+               <c:set var="couleurPoliceEtatPasse" value="black" />
+            </c:when>
+            
+            <c:when test="${fichier.etatPasse == 'EN_PLUS'}">
+               <c:set var="texteEtatPasse" value="En +" />
+               <c:set var="couleurFondEtatPasse" value="orange" />
+               <c:set var="couleurPoliceEtatPasse" value="black" />
+            </c:when>
+            
+            <c:when test="${fichier.etatPasse == 'EN_MOINS'}">
+               <c:set var="texteEtatPasse" value="En -" />
+               <c:set var="couleurFondEtatPasse" value="orange" />
+               <c:set var="couleurPoliceEtatPasse" value="black" />
+            </c:when>
+               
+            <c:otherwise>
+               <c:set var="texteEtatPasse" value="${fichier.etatPasse}" />
+               <c:set var="couleurFondEtatPasse" value="blue" />
+               <c:set var="couleurPoliceEtatPasse" value="white" />
+            </c:otherwise>
+               
+         </c:choose>
+      
+      
+      
       <tr>
-         <td><c:out value="${fichier.nomFichier}"/></td>
-         <td><c:out value="${fichier.etatReference}"/></td>
-         <td><c:out value="${fichier.etatPasse}"/></td>
+         
+         <td style="background-color:${couleurFondEtatPasse};color:${couleurPoliceEtatPasse};">
+            <c:out value="${fichier.nomFichier}"/>
+         </td>
+         
+         <td style="background-color:${couleurFondEtatRef}">
+            <c:out value="${texteEtatRef}"/>
+         </td>
+         
+         <td style="background-color:${couleurFondEtatPasse};color:${couleurPoliceEtatPasse};">
+            <c:out value="${texteEtatPasse}"/>
+         </td>
       </tr>
    
       </c:forEach>
