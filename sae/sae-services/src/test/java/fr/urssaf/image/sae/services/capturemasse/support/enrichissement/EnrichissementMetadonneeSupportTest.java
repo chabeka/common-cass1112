@@ -6,6 +6,8 @@ package fr.urssaf.image.sae.services.capturemasse.support.enrichissement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.easymock.EasyMock;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,13 +18,27 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
 import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
+import fr.urssaf.image.sae.services.enrichment.SAEEnrichmentMetadataService;
+import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException;
+import fr.urssaf.image.sae.services.exception.enrichment.SAEEnrichmentEx;
+import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })
+@ContextConfiguration(locations = {
+      "/applicationContext-sae-services-test.xml",
+      "/applicationContext-sae-services-mock-storagedocument.xml" })
 public class EnrichissementMetadonneeSupportTest {
 
    @Autowired
    private EnrichissementMetadonneeSupport support;
+
+   @Autowired
+   private SAEEnrichmentMetadataService enrichmentService;
+
+   @After
+   public void reset() {
+      EasyMock.reset(enrichmentService);
+   }
 
    @Test(expected = IllegalArgumentException.class)
    public void checkDocumentObligatoire() {
@@ -33,50 +49,51 @@ public class EnrichissementMetadonneeSupportTest {
    }
 
    @Test(expected = CaptureMasseRuntimeException.class)
-   public void testCodeRndErrone() {
+   public void testCodeRndErrone() throws SAEEnrichmentEx,
+         ReferentialRndException, UnknownCodeRndEx {
+
+      enrichmentService.enrichmentMetadata(EasyMock
+            .anyObject(SAEDocument.class));
+      EasyMock.expectLastCall().andThrow(
+            new UnknownCodeRndEx("code RND incorrect"));
+      EasyMock.replay(enrichmentService);
 
       SAEDocument document = new SAEDocument();
-
-      document.setFilePath(null);
-      document.setMetadatas(getSaeMetadatas());
-
-      document.getMetadatas().get(3).setValue("0.1.1.12");
 
       support.enrichirMetadonnee(document);
 
    }
-   
-   @Test
-   public void testEnrichissementSucces() {
+
+   @Test(expected = CaptureMasseRuntimeException.class)
+   public void testEnrichissementErreur() throws SAEEnrichmentEx,
+         ReferentialRndException, UnknownCodeRndEx {
+
+      enrichmentService.enrichmentMetadata(EasyMock
+            .anyObject(SAEDocument.class));
+      EasyMock.expectLastCall().andThrow(
+            new SAEEnrichmentEx("enrichissement en erreur"));
+      EasyMock.replay(enrichmentService);
+
       SAEDocument document = new SAEDocument();
 
-      document.setFilePath("doc1.PDF");
-      document.setMetadatas(getSaeMetadatas());
-
       support.enrichirMetadonnee(document);
+
    }
 
-   /**
-    * @return
-    */
-   private List<SAEMetadata> getSaeMetadatas() {
-      List<SAEMetadata> list = new ArrayList<SAEMetadata>();
+   @Test(expected = CaptureMasseRuntimeException.class)
+   public void testReferentialRndException() throws SAEEnrichmentEx,
+         ReferentialRndException, UnknownCodeRndEx {
 
-      list.add(new SAEMetadata("SiteAcquisition", "CER69"));
-      list.add(new SAEMetadata("Titre",
-            "NOTIFICATIONS DE REMBOURSEMENT du 41882050200023"));
-      list.add(new SAEMetadata("DateCreation", "2012-01-01"));
-      list.add(new SAEMetadata("CodeRND", "2.3.1.1.12"));
-      list.add(new SAEMetadata("Hash",
-            "a2f93f1f121ebba0faef2c0596f2f126eacae77b"));
-      list.add(new SAEMetadata("TypeHash", "SHA-1"));
-      list.add(new SAEMetadata("TracabilitrePreArchivage", "P"));
-      list.add(new SAEMetadata("ApplicationProductrice", "GED"));
-      list.add(new SAEMetadata("FormatFichier", "fmt/18"));
-      list.add(new SAEMetadata("NbPages", "2"));
-      list.add(new SAEMetadata("CodeOrganismeProprietaire", "UR030"));
-      list.add(new SAEMetadata("CodeOrganismeGestionnaire", "UR030"));
-      return list;
+      enrichmentService.enrichmentMetadata(EasyMock
+            .anyObject(SAEDocument.class));
+      EasyMock.expectLastCall().andThrow(
+            new ReferentialRndException("référentiel RND en erreur"));
+      EasyMock.replay(enrichmentService);
+
+      SAEDocument document = new SAEDocument();
+
+      support.enrichirMetadonnee(document);
+
    }
 
 }

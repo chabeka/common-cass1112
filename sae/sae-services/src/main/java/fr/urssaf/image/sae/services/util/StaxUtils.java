@@ -6,6 +6,7 @@ package fr.urssaf.image.sae.services.util;
 import javax.xml.stream.XMLEventFactory;
 import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.StartDocument;
 
 /**
  * 
@@ -101,7 +102,9 @@ public class StaxUtils {
     *            exception levée si erreur d'écriture
     */
    public final void startDocument() throws XMLStreamException {
-      writer.add(eventFactory.createStartDocument());
+
+      StartDocument startDoc = eventFactory.createStartDocument("UTF-8", "1.0");
+      writer.add(startDoc);
    }
 
    /**

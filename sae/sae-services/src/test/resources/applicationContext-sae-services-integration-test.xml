@@ -11,10 +11,10 @@
       <qualifier value="storageDocumentService" />
    </bean>
 
-   <bean id="cmControleSupport" factory-bean="mockFactory"
-      factory-method="createCaptureMasseControleSupport" primary="true">
+   <bean id="provider" factory-bean="mockFactory" factory-method="createStorageServiceProvider"
+      primary="true">
+      <qualifier value="storageServiceProvider" />
    </bean>
 
-   <bean id="enrichmentService" factory-bean="mockFactory"
-      factory-method="createEnrichmentMetaDataService" primary="true" />
+
 </beans>

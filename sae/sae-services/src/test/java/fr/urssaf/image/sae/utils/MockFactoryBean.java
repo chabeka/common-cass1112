@@ -6,6 +6,8 @@ package fr.urssaf.image.sae.utils;
 import org.easymock.EasyMock;
 
 import fr.urssaf.image.sae.services.capturemasse.support.controle.CaptureMasseControleSupport;
+import fr.urssaf.image.sae.services.enrichment.SAEEnrichmentMetadataService;
+import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 import fr.urssaf.image.sae.storage.services.storagedocument.DeletionService;
 import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentService;
 
@@ -20,7 +22,7 @@ public class MockFactoryBean {
     * 
     * @return un mock StorageDocumentService
     */
-   public final StorageDocumentService createStorageServiceProvider() {
+   public final StorageDocumentService createStorageDocumentService() {
       return EasyMock.createMock(StorageDocumentService.class);
    }
 
@@ -42,5 +44,25 @@ public class MockFactoryBean {
       DeletionService service = EasyMock.createMock(DeletionService.class);
 
       return service;
+   }
+
+   /**
+    * création d'un mock de {@link SAEEnrichmentMetadataService}
+    * 
+    * @return un mock SAEEnrichmentMetadataService
+    */
+   public final SAEEnrichmentMetadataService createEnrichmentMetaDataService() {
+
+      return EasyMock.createMock(SAEEnrichmentMetadataService.class);
+   }
+   
+   /**
+    * création d'un mock de {@link StorageServiceProvider}
+    * 
+    * @return un mock StorageServiceProvider
+    */
+   public final StorageServiceProvider createStorageServiceProvider() {
+
+      return EasyMock.createMock(StorageServiceProvider.class);
    }
 }
