@@ -3,7 +3,6 @@
  */
 package fr.urssaf.image.sae.services.capturemasse.common;
 
-
 /**
  * Classe contenant les constantes utilisées dans le reste de la capture de
  * masse
@@ -61,18 +60,22 @@ public final class Constantes {
     */
    public static final String DOC_COUNT = "DOC_COUNT";
 
-   
    /**
     * Code Erreur technique
     */
    public static final String ERR_BUL001 = "SAE-CA-BUL001";
-   
+
    /**
     * Code Erreur fonctionnelle
     */
    public static final String ERR_BUL002 = "SAE-CA-BUL002";
-   
-   
+
+   /**
+    * Code Erreur pour la capture en masse en mode tout ou rien qui a été
+    * interrompue
+    */
+   public static final String ERR_BUL003 = "SAE-CA-BUL003";
+
    /**
     * Constructeur
     */
