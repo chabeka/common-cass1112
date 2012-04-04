@@ -16,7 +16,6 @@ import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +61,16 @@ public class SAECaptureMasseTest {
       }
    }
 
+   @Test(expected = IllegalArgumentException.class)
+   public void testURLObligatoire() {
+      service.captureMasse(null, UUID.randomUUID());
+   }
+
+   @Test(expected = IllegalArgumentException.class)
+   public void testUUIDObligatoire() {
+      service.captureMasse(testSommaire.getUrlEcde(), null);
+   }
+
    @Test
    @Ignore
    public void testLancementService() {
@@ -82,7 +91,7 @@ public class SAECaptureMasseTest {
          ExitTraitement exitTraitement = service.captureMasse(testSommaire
                .getUrlEcde(), UUID.randomUUID());
 
-         Assert.assertTrue("l'opération doit etre en erreur", exitTraitement
+         Assert.assertTrue("l'opération doit etre ok", exitTraitement
                .isSucces());
 
       } catch (Exception e) {
@@ -98,42 +107,43 @@ public class SAECaptureMasseTest {
          File sommaire = new File(testSommaire.getRepEcde(), "sommaire.xml");
          ClassPathResource resSommaire = new ClassPathResource(
                "sommaire/sommaire_failure_HashIncorrect.xml");
-         FileOutputStream fos = new FileOutputStream(sommaire);
-         IOUtils.copy(resSommaire.getInputStream(), fos);
+         FileUtils.copyURLToFile(resSommaire.getURL(), sommaire);
 
          File repDocuments = new File(testSommaire.getRepEcde(), "documents");
          ClassPathResource resAttestation1 = new ClassPathResource("doc1.PDF");
          File fileAttestation1 = new File(repDocuments, "doc1.PDF");
-         fos = new FileOutputStream(fileAttestation1);
-         IOUtils.copy(resAttestation1.getInputStream(), fos);
-
-         ExitTraitement exitTraitement = service.captureMasse(testSommaire
-               .getUrlEcde(), UUID.randomUUID());
-
-         Assert.assertFalse("l'opération doit etre en erreur", exitTraitement
-               .isSucces());
-
-         File resultats = new File(testSommaire.getRepEcde(), "resultats.xml");
-
-         Assert.assertTrue("le fichier résultats.xml doit exister", resultats
-               .exists());
-
-         Resource sommaireXSD = applicationContext
-               .getResource("xsd_som_res/resultats.xsd");
-         URL xsdSchema = sommaireXSD.getURL();
-
-         try {
-            XmlValidationUtils.parse(resultats, xsdSchema);
-         } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-            Assert.fail("le fichier resultats.xml doit etre valide");
-         } catch (SAXException e) {
-            e.printStackTrace();
-            Assert.fail("le fichier resultats.xml doit etre valide");
-         }
+         FileUtils.copyURLToFile(resAttestation1.getURL(), fileAttestation1);
 
       } catch (Exception e) {
          Assert.fail("pas d'erreur attendue");
+      }
+
+      ExitTraitement exitTraitement = service.captureMasse(testSommaire
+            .getUrlEcde(), UUID.randomUUID());
+
+      Assert.assertFalse("l'opération doit etre en erreur", exitTraitement
+            .isSucces());
+
+      File resultats = new File(testSommaire.getRepEcde(), "resultats.xml");
+
+      Assert.assertTrue("le fichier résultats.xml doit exister", resultats
+            .exists());
+
+      Resource sommaireXSD = applicationContext
+            .getResource("xsd_som_res/resultats.xsd");
+
+      try {
+         URL xsdSchema = sommaireXSD.getURL();
+         XmlValidationUtils.parse(resultats, xsdSchema);
+      } catch (ParserConfigurationException e) {
+         e.printStackTrace();
+         Assert.fail("le fichier resultats.xml doit etre valide");
+      } catch (SAXException e) {
+         e.printStackTrace();
+         Assert.fail("le fichier resultats.xml doit etre valide");
+      } catch (IOException e) {
+         e.printStackTrace();
+         Assert.fail("le fichier resultats.xml doit etre valide");
       }
 
    }
@@ -181,7 +191,7 @@ public class SAECaptureMasseTest {
 
          Assert.assertTrue("le fichier résultats.xml doit exister", resultats
                .exists());
-         
+
          System.out.println(FileUtils.readFileToString(resultats));
 
          Resource sommaireXSD = applicationContext

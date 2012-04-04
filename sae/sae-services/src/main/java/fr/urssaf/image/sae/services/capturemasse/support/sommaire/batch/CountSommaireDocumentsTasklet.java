@@ -25,10 +25,10 @@ import fr.urssaf.image.sae.services.util.XmlReadUtils;
 public class CountSommaireDocumentsTasklet implements Tasklet {
 
    /**
-    * 
+    * {@inheritDoc}
     */
    @Override
-   public RepeatStatus execute(StepContribution contribution,
+   public final RepeatStatus execute(StepContribution contribution,
          ChunkContext chunkContext) throws Exception {
 
       StepExecution stepExecution = chunkContext.getStepContext()

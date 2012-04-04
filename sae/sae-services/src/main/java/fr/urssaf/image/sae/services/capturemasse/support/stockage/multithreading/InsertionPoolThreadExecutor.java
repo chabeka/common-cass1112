@@ -139,8 +139,6 @@ public class InsertionPoolThreadExecutor extends ThreadPoolExecutor implements
             .getStorageDocument();
       final int indexDocument = insertionRunnable.getIndexDocument();
 
-      // renseignement de l'index du document inséré pour l'indicateur JMX
-
       if (throwable == null) {
 
          if (StringUtils.isBlank(storageDocument.getFilePath())) {

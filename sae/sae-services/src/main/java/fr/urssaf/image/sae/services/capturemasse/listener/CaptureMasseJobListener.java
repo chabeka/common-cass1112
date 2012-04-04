@@ -27,7 +27,7 @@ public class CaptureMasseJobListener {
     *           le jobExecution
     */
    @BeforeJob
-   public void init(JobExecution jobExecution) {
+   public final void init(JobExecution jobExecution) {
 
       ExecutionContext context = jobExecution.getExecutionContext();
 

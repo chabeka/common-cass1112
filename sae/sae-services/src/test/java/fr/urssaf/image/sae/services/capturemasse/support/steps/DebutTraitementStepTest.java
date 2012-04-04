@@ -36,7 +36,8 @@ import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(value = { "/applicationContext-sae-services-test.xml" })
+@ContextConfiguration(value = { "/applicationContext-sae-services-test.xml",
+      "/applicationContext-sae-services-test.xml" })
 public class DebutTraitementStepTest {
 
    @Autowired

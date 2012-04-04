@@ -133,7 +133,7 @@ public class ControleListener {
     *           le document
     */
    @BeforeProcess
-   public void beforeProcess(final JAXBElement<UntypedDocument> untypedType) {
+   public final void beforeProcess(final JAXBElement<UntypedDocument> untypedType) {
 
       ExecutionContext context = stepExecution.getExecutionContext();
 

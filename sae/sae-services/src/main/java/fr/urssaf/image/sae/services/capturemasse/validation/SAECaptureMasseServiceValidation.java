@@ -13,14 +13,14 @@ import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
 
 /**
  * Classe de validation des arguments en entrée des implémentations du service
- * {@link fr.urssaf.image.sae.services.capturemasse.SAECaptureMasseService}. La validation est basée sur la programmation
- * Aspect
+ * {@link fr.urssaf.image.sae.services.capturemasse.SAECaptureMasseService}. La
+ * validation est basée sur la programmation Aspect
  * 
  */
 @Aspect
 public class SAECaptureMasseServiceValidation {
 
-   private static final String CAPTURE_METHOD = "execution(void fr.urssaf.image.sae.services.capturemasse.SAECaptureMasseService.captureMasse(*,*))"
+   private static final String CAPTURE_METHOD = "execution(fr.urssaf.image.sae.services.batch.model.ExitTraitement fr.urssaf.image.sae.services.capturemasse.SAECaptureMasseService.captureMasse(*,*))"
          + " && args(sommaireURL, idTraitement)";
 
    /**
@@ -34,7 +34,7 @@ public class SAECaptureMasseServiceValidation {
     *           identifiant du traitement
     */
    @Before(CAPTURE_METHOD)
-   public final void checkCaptureMasse(final URI sommaireURL, final UUID idTraitement) {
+   public final void captureMasse(final URI sommaireURL, final UUID idTraitement) {
 
       if (sommaireURL == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
