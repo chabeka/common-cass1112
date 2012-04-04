@@ -29,6 +29,7 @@ import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
 import fr.urssaf.image.sae.services.capturemasse.model.CaptureMasseIntegratedDocument;
 import fr.urssaf.image.sae.services.capturemasse.modele.commun_sommaire_et_resultat.DocumentType;
+import fr.urssaf.image.sae.services.capturemasse.support.stockage.interruption.exception.InterruptionTraitementException;
 import fr.urssaf.image.sae.services.capturemasse.support.stockage.multithreading.InsertionPoolThreadExecutor;
 import fr.urssaf.image.sae.storage.dfce.services.support.exception.InsertionMasseRuntimeException;
 
@@ -136,16 +137,13 @@ public class StockageListener {
     * @return un status de sortie
     */
    @AfterStep
-   @SuppressWarnings("unchecked")
    public final ExitStatus afterStep(final StepExecution stepExecution) {
 
       ExitStatus status = ExitStatus.COMPLETED;
 
       final JobExecution jobExecution = stepExecution.getJobExecution();
-      List<String> codes = (List<String>) jobExecution.getExecutionContext()
-            .get(Constantes.CODE_EXCEPTION);
-      List<Integer> index = (List<Integer>) jobExecution.getExecutionContext()
-            .get(Constantes.INDEX_EXCEPTION);
+     
+      @SuppressWarnings("unchecked")
       List<Exception> exceptions = (List<Exception>) jobExecution
             .getExecutionContext().get(Constantes.DOC_EXCEPTION);
 
@@ -172,15 +170,57 @@ public class StockageListener {
 
          if (exception != null) {
 
-            codes.add(Constantes.ERR_BUL001);
-            index.add(exception.getIndex());
-            exceptions.add(new Exception(exception.getMessage()));
+            status = stockageListener(exception, jobExecution);
 
-            status = ExitStatus.FAILED;
          }
       }
 
       return status;
+   }
+
+   private ExitStatus stockageListener(
+         InsertionMasseRuntimeException exception, JobExecution jobExecution) {
+
+      @SuppressWarnings("unchecked")
+      List<String> codes = (List<String>) jobExecution.getExecutionContext()
+            .get(Constantes.CODE_EXCEPTION);
+
+      @SuppressWarnings("unchecked")
+      List<Integer> index = (List<Integer>) jobExecution.getExecutionContext()
+            .get(Constantes.INDEX_EXCEPTION);
+
+      @SuppressWarnings("unchecked")
+      List<Exception> exceptions = (List<Exception>) jobExecution
+            .getExecutionContext().get(Constantes.DOC_EXCEPTION);
+
+      ExitStatus status;
+
+      try {
+
+         throw exception.getCause();
+
+      } catch (InterruptionTraitementException e) {
+
+         String messageError = "La capture de masse en mode 'Tout ou rien' a été interrompue. Une procédure d'exploitation a été initialisée pour supprimer les données qui auraient pu être stockées.";
+
+         codes.add(Constantes.ERR_BUL003);
+         index.add(exception.getIndex());
+         exceptions.add(new Exception(messageError));
+
+         status = new ExitStatus("FAILED_NO_ROLLBACK");
+
+      } catch (Exception e) {
+
+         codes.add(Constantes.ERR_BUL001);
+         index.add(exception.getIndex());
+         exceptions.add(new Exception(exception.getMessage()));
+
+         status = ExitStatus.FAILED;
+
+      }
+
+      return status;
+
    }
 
    /**
@@ -190,7 +230,8 @@ public class StockageListener {
     *           le document
     */
    @BeforeProcess
-   public final void beforeProcess(final JAXBElement<UntypedDocument> untypedType) {
+   public final void beforeProcess(
+         final JAXBElement<UntypedDocument> untypedType) {
 
       ExecutionContext context = stepExecution.getExecutionContext();
 
