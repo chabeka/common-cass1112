@@ -7,7 +7,6 @@ import java.util.UUID;
 
 import org.easymock.EasyMock;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +14,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
-import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireFormatValidationException;
+import fr.urssaf.image.sae.services.capturemasse.support.stockage.interruption.exception.InterruptionTraitementException;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentService;
 
@@ -40,16 +38,16 @@ public class RollbackSupportTest {
    }
 
    @Test(expected = IllegalArgumentException.class)
-   public void testIdentifiantObligatoire()
-         throws CaptureMasseSommaireFormatValidationException {
+   public void testIdentifiantObligatoire() throws DeletionServiceEx,
+         InterruptionTraitementException {
 
       support.rollback(null);
-      Assert.fail("sortie aspect attendue");
 
    }
 
-   @Test(expected = CaptureMasseRuntimeException.class)
-   public void testFailureRollBack() throws DeletionServiceEx {
+   @Test(expected = DeletionServiceEx.class)
+   public void testFailureRollBack() throws DeletionServiceEx,
+         InterruptionTraitementException {
       storageDocumentService.deleteStorageDocument(EasyMock
             .anyObject(UUID.class));
 
@@ -62,20 +60,17 @@ public class RollbackSupportTest {
    }
 
    @Test
-   public void testSuccessRollBack() {
+   public void testSuccessRollBack() throws DeletionServiceEx,
+         InterruptionTraitementException {
 
-      try {
-         storageDocumentService.deleteStorageDocument(EasyMock
-               .anyObject(UUID.class));
+      storageDocumentService.deleteStorageDocument(EasyMock
+            .anyObject(UUID.class));
 
-         EasyMock.expectLastCall().anyTimes();
+      EasyMock.expectLastCall().anyTimes();
 
-         EasyMock.replay(storageDocumentService);
+      EasyMock.replay(storageDocumentService);
 
-         support.rollback(UUID.randomUUID());
+      support.rollback(UUID.randomUUID());
 
-      } catch (DeletionServiceEx e) {
-         Assert.fail("attente d'un succès");
-      }
    }
 }
