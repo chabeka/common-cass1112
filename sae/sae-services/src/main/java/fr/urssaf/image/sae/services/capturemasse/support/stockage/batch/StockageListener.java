@@ -172,7 +172,7 @@ public class StockageListener {
 
          if (exception != null) {
 
-            codes.add(Constantes.ERR_BUL002);
+            codes.add(Constantes.ERR_BUL001);
             index.add(exception.getIndex());
             exceptions.add(new Exception(exception.getMessage()));
 
