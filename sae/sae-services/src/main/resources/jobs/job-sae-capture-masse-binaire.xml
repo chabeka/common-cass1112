@@ -91,6 +91,7 @@
 
 
          <next on="FAILED" to="rollback" />
+         <next on="FAILED_NO_ROLLBACK" to="finErreur" />
          <next on="*" to="finSucces" />
       </step>
 
