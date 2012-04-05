@@ -120,7 +120,7 @@ public class Test268Controller extends
       ErreurType erreurType = new ErreurType();
       erreurType.setCode("SAE-CA-BUL002");
       erreurType
-            .setLibelle("Le document doc1.PDF n'a pas été archivé. Détails : "
+            .setLibelle("Le document 1/doc1.PDF n'a pas été archivé. Détails : "
                   + "La ou les métadonnées suivantes, obligatoires lors de l'archivage, ne sont pas renseignées : ApplicationProductrice");
 
       ListeErreurType listeErreurType = new ListeErreurType();

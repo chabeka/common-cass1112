@@ -117,10 +117,10 @@ public class Test262Controller extends
       fichierType.setCheminEtNomDuFichier("doc_inexistant.pdf");
 
       ErreurType erreurType = new ErreurType();
-      erreurType.setCode("SAE-EC-SOM002");
+      erreurType.setCode("SAE-CA-BUL002");
       erreurType
-            .setLibelle("Impossible d'accéder au document doc_inexistant.pdf. Détails : "
-                  + "L'objet numérique : doc_inexistant.pdf ne représente pas un fichier existant.");
+            .setLibelle("Le document doc_inexistant.pdf n'a pas été archivé. Détails : "
+                  + "Le fichier document doc_inexistant.pdf est introuvable");
 
       ListeErreurType listeErreurType = new ListeErreurType();
       listeErreurType.getErreur().add(erreurType);

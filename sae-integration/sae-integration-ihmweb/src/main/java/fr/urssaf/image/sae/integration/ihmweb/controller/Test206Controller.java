@@ -1,7 +1,6 @@
 package fr.urssaf.image.sae.integration.ihmweb.controller;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
@@ -67,24 +66,49 @@ public class Test206Controller extends
       // Initialise le formulaire de recherche
       
       RechercheFormulaire rechFormulaire = formulaire.getRechFormulaire();
+      
+      // Requête LUCENE
       rechFormulaire
             .setRequeteLucene(getCasTest().getLuceneExemple());
       
-      CodeMetadonneeList codeMetadonneeList = new CodeMetadonneeList();
-      rechFormulaire.setCodeMetadonnees(codeMetadonneeList);
-      String[] tabElement = new String[] { "ApplicationProductrice",
-            "ApplicationTraitement", "CodeCategorieV2",
-            "CodeOrganismeGestionnaire", "CodeOrganismeProprietaire",
-            "CodeRND", "CodeSousCategorieV2", "DateCreation",
-            "DateDebutConservation", "DateReception", "Denomination",
-            "FormatFichier", "Hash", "IdTraitementMasse", "NbPages",
-            "NniEmployeur", "NomFichier", "NumeroCompteExterne",
-            "NumeroCompteInterne", "NumeroIntControle", "NumeroPersonne",
-            "NumeroRecours", "NumeroStructure", "Periode", "PseudoSiret",
-            "Siren", "Siret", "SiteAcquisition", "TailleFichier", "Titre",
-            "TracabilitrePreArchivage", "TypeHash", "VersionRND" };
-      codeMetadonneeList.addAll(Arrays.asList(tabElement));
-
+      // Métadonnées souhaitées
+      CodeMetadonneeList codesMeta = new CodeMetadonneeList();
+      rechFormulaire.setCodeMetadonnees(codesMeta);
+      codesMeta.add("ApplicationProductrice");
+      codesMeta.add("ApplicationTraitement");
+      codesMeta.add("CodeCategorieV2");
+      codesMeta.add("CodeOrganismeGestionnaire");
+      codesMeta.add("CodeOrganismeProprietaire");
+      codesMeta.add("CodeRND");
+      codesMeta.add("CodeSousCategorieV2");
+      codesMeta.add("DateCreation");
+      codesMeta.add("DateDebutConservation");
+      codesMeta.add("DateFinConservation");
+      codesMeta.add("DateReception");
+      codesMeta.add("Denomination");
+      codesMeta.add("FormatFichier");
+      codesMeta.add("Hash");
+      codesMeta.add("IdTraitementMasse");
+      codesMeta.add("NbPages");
+      codesMeta.add("NniEmployeur");
+      codesMeta.add("NomFichier");
+      codesMeta.add("NumeroCompteExterne");
+      codesMeta.add("NumeroCompteInterne");
+      codesMeta.add("NumeroIntControle");
+      codesMeta.add("NumeroPersonne");
+      codesMeta.add("NumeroRecours");
+      codesMeta.add("NumeroStructure");
+      codesMeta.add("Periode");
+      codesMeta.add("PseudoSiret");
+      codesMeta.add("Siren");
+      codesMeta.add("Siret");
+      codesMeta.add("SiteAcquisition");
+      codesMeta.add("TailleFichier");
+      codesMeta.add("Titre");
+      codesMeta.add("TracabilitrePreArchivage");
+      codesMeta.add("TypeHash");
+      codesMeta.add("VersionRND");
+      
       
       // Initialise le formulaire de consultation
       
@@ -205,6 +229,7 @@ public class Test206Controller extends
       valeursAttendues.add("CodeSousCategorieV2", "11");
       valeursAttendues.add("DateCreation", "2011-09-05");
       valeursAttendues.add("DateDebutConservation", "2011-09-02");
+      valeursAttendues.add("DateFinConservation", "2016-08-31");
       valeursAttendues.add("DateReception", "2011-09-01");
       valeursAttendues.add("Denomination",
             "Test 206-CaptureMasse-OK-Toutes-metadonnees-specifiables");

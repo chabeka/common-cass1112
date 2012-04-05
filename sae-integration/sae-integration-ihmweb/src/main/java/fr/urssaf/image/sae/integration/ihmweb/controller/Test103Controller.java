@@ -106,6 +106,7 @@ public class Test103Controller extends
       codesMeta.add("CodeSousCategorieV2");
       codesMeta.add("DateCreation");
       codesMeta.add("DateDebutConservation");
+      codesMeta.add("DateFinConservation");
       codesMeta.add("DateReception");
       codesMeta.add("Denomination");
       codesMeta.add("FormatFichier");
@@ -230,6 +231,7 @@ public class Test103Controller extends
       valeursAttendues.add("CodeSousCategorieV2", "11");
       valeursAttendues.add("DateCreation", "2011-09-05");
       valeursAttendues.add("DateDebutConservation", "2011-09-02");
+      valeursAttendues.add("DateFinConservation", "2016-08-31");
       valeursAttendues.add("DateReception", "2011-09-01");
       valeursAttendues.add("Denomination",
             "Test 103-CaptureUnitaire-OK-ToutesMetasSpecifiables");

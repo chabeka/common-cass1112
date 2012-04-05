@@ -119,10 +119,10 @@ public class Test267Controller extends
       fichierType.setCheminEtNomDuFichier("attestation1.pdf");
 
       ErreurType erreurType = new ErreurType();
-      erreurType.setCode("SAE-EC-SOM002");
+      erreurType.setCode("SAE-CA-BUL002");
       erreurType
-            .setLibelle("Impossible d'accéder au document attestation1.pdf. Détails : "
-                  + "L'objet numérique : attestation1.pdf ne représente pas un fichier existant.");
+            .setLibelle("Le document attestation1.pdf n'a pas été archivé. Détails : "
+                  + "Le fichier document attestation1.pdf est introuvable");
 
       ListeErreurType listeErreurType = new ListeErreurType();
       listeErreurType.getErreur().add(erreurType);
