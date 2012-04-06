@@ -3,7 +3,7 @@
  */
 package fr.urssaf.image.sae.services.capturemasse.support.controle.batch;
 
-import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.xml.bind.JAXBElement;
 
@@ -58,7 +58,7 @@ public class ControleListener {
    public final ExitStatus end(final StepExecution stepExecution) {
       ExitStatus exitStatus = ExitStatus.FAILED;
 
-      List<Exception> exceptions = (List<Exception>) stepExecution
+      ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) stepExecution
             .getJobExecution().getExecutionContext().get(
                   Constantes.DOC_EXCEPTION);
       if (exceptions.isEmpty()) {
@@ -82,11 +82,11 @@ public class ControleListener {
 
       ExecutionContext context = stepExecution.getJobExecution()
             .getExecutionContext();
-      List<String> listCodes = (List<String>) context
+      ConcurrentLinkedQueue<String> listCodes = (ConcurrentLinkedQueue<String>) context
             .get(Constantes.CODE_EXCEPTION);
-      List<Integer> listIndex = (List<Integer>) context
+      ConcurrentLinkedQueue<Integer> listIndex = (ConcurrentLinkedQueue<Integer>) context
             .get(Constantes.INDEX_EXCEPTION);
-      List<Exception> listExceptions = (List<Exception>) context
+      ConcurrentLinkedQueue<Exception> listExceptions = (ConcurrentLinkedQueue<Exception>) context
             .get(Constantes.DOC_EXCEPTION);
 
       listCodes.add(Constantes.ERR_BUL001);
@@ -112,11 +112,11 @@ public class ControleListener {
       ExecutionContext context = stepExecution.getJobExecution()
             .getExecutionContext();
 
-      List<String> listCodes = (List<String>) context
+      ConcurrentLinkedQueue<String> listCodes = (ConcurrentLinkedQueue<String>) context
             .get(Constantes.CODE_EXCEPTION);
-      List<Integer> listIndex = (List<Integer>) context
+      ConcurrentLinkedQueue<Integer> listIndex = (ConcurrentLinkedQueue<Integer>) context
             .get(Constantes.INDEX_EXCEPTION);
-      List<Exception> listExceptions = (List<Exception>) context
+      ConcurrentLinkedQueue<Exception> listExceptions = (ConcurrentLinkedQueue<Exception>) context
             .get(Constantes.DOC_EXCEPTION);
 
       listCodes.add(Constantes.ERR_BUL002);
@@ -133,7 +133,8 @@ public class ControleListener {
     *           le document
     */
    @BeforeProcess
-   public final void beforeProcess(final JAXBElement<UntypedDocument> untypedType) {
+   public final void beforeProcess(
+         final JAXBElement<UntypedDocument> untypedType) {
 
       ExecutionContext context = stepExecution.getExecutionContext();
 

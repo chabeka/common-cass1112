@@ -6,9 +6,8 @@ package fr.urssaf.image.sae.services.capturemasse.support.resultats.batch;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -66,7 +65,7 @@ public class ResultatsFileSuccessTaskletTest {
    public void testLancement() throws Exception {
 
       ExecutionContext context = new ExecutionContext();
-      List<UUID> listUuids = new ArrayList<UUID>();
+      ConcurrentLinkedQueue<UUID> listUuids = new ConcurrentLinkedQueue<UUID>();
       listUuids.add(UUID.randomUUID());
       listUuids.add(UUID.randomUUID());
       listUuids.add(UUID.randomUUID());

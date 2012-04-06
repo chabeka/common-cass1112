@@ -4,6 +4,7 @@
 package fr.urssaf.image.sae.services.capturemasse.support.sommaire.batch;
 
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.batch.core.ExitStatus;
@@ -35,9 +36,9 @@ public class CheckFileSommaireListener {
 
       final ExecutionContext context = stepExecution.getJobExecution()
             .getExecutionContext();
-      
+
       @SuppressWarnings("unchecked")
-      List<Exception> exceptions = (List<Exception>) context
+      ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) context
             .get(Constantes.DOC_EXCEPTION);
 
       if (CollectionUtils.isNotEmpty(exceptions)) {

@@ -3,11 +3,10 @@
  */
 package fr.urssaf.image.sae.services.capturemasse.support.steps;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import net.docubase.toolkit.service.ServiceProvider;
 
@@ -71,7 +70,7 @@ public class RollbackStepTest {
    @Test
    public void rollback_success() throws DeletionServiceEx {
 
-      List<UUID> listIntegDocs = new ArrayList<UUID>();
+      ConcurrentLinkedQueue<UUID> listIntegDocs = new ConcurrentLinkedQueue<UUID>();
 
       listIntegDocs.add(UUID.randomUUID());
       listIntegDocs.add(UUID.randomUUID());
@@ -117,7 +116,7 @@ public class RollbackStepTest {
    public void rollback_success_integrated_documents_empty()
          throws DeletionServiceEx {
 
-      List<UUID> listIntegDocs = new ArrayList<UUID>();
+      ConcurrentLinkedQueue<UUID> listIntegDocs = new ConcurrentLinkedQueue<UUID>();
 
       ExecutionContext executionContext = new ExecutionContext();
       executionContext.put(Constantes.INTEG_DOCS, listIntegDocs);
@@ -145,7 +144,7 @@ public class RollbackStepTest {
    @Test
    public void rollback_failure() throws DeletionServiceEx {
 
-      List<UUID> listIntegDocs = new ArrayList<UUID>();
+      ConcurrentLinkedQueue<UUID> listIntegDocs = new ConcurrentLinkedQueue<UUID>();
 
       listIntegDocs.add(UUID.randomUUID());
       listIntegDocs.add(UUID.randomUUID());

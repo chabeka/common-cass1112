@@ -6,10 +6,10 @@ package fr.urssaf.image.sae.services.capturemasse.support.steps;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import net.docubase.toolkit.service.ServiceProvider;
 
@@ -125,9 +125,9 @@ public class PersistanceStepTest {
                .toString());
          context.put(Constantes.SOMMAIRE_FILE, sommaire.getAbsolutePath());
          context.put(Constantes.ID_TRAITEMENT, uuid);
-         context.put(Constantes.CODE_EXCEPTION, new ArrayList<String>());
-         context.put(Constantes.INDEX_EXCEPTION, new ArrayList<Integer>());
-         context.put(Constantes.DOC_EXCEPTION, new ArrayList<Exception>());
+         context.put(Constantes.CODE_EXCEPTION, new ConcurrentLinkedQueue<String>());
+         context.put(Constantes.INDEX_EXCEPTION, new ConcurrentLinkedQueue<Integer>());
+         context.put(Constantes.DOC_EXCEPTION, new ConcurrentLinkedQueue<Exception>());
 
          
          JobExecution execution = launcher.launchStep("persistanceDocuments",

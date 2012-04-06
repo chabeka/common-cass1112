@@ -7,8 +7,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -73,11 +72,11 @@ public class ResultatsFileFailureTaskletTest {
       ExecutionContext context = new ExecutionContext();
       context.put(Constantes.SOMMAIRE_FILE, sommaire.getAbsolutePath());
 
-      List<String> codes = new ArrayList<String>();
+      ConcurrentLinkedQueue<String> codes = new ConcurrentLinkedQueue<String>();
       codes.add(Constantes.ERR_BUL002);
-      List<Integer> index = new ArrayList<Integer>();
+      ConcurrentLinkedQueue<Integer> index = new ConcurrentLinkedQueue<Integer>();
       index.add(3);
-      List<Exception> exceptions = new ArrayList<Exception>();
+      ConcurrentLinkedQueue<Exception> exceptions = new ConcurrentLinkedQueue<Exception>();
       exceptions.add(new Exception("la valeur x est erronée"));
 
       context.put(Constantes.DOC_EXCEPTION, exceptions);

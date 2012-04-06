@@ -7,9 +7,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -65,7 +65,7 @@ public class ResultatsFileSuccessTasklet implements Tasklet {
       final File sommaireFile = new File(path);
       final File ecdeDirectory = sommaireFile.getParentFile();
 
-      final List<UUID> listIntDocs = (List<UUID>) chunkContext.getStepContext()
+      final ConcurrentLinkedQueue<UUID> listIntDocs = (ConcurrentLinkedQueue<UUID>) chunkContext.getStepContext()
             .getStepExecution().getJobExecution().getExecutionContext().get(
                   Constantes.INTEG_DOCS);
 

@@ -3,9 +3,8 @@
  */
 package fr.urssaf.image.sae.services.capturemasse.support.stockage.batch;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.xml.bind.JAXBElement;
 
@@ -71,11 +70,11 @@ public class StockageListener {
    public final void logReadError(final Exception exception) {
       ExecutionContext jobExecution = stepExecution.getJobExecution()
             .getExecutionContext();
-      List<String> codes = (List<String>) jobExecution
+      ConcurrentLinkedQueue<String> codes = (ConcurrentLinkedQueue<String>) jobExecution
             .get(Constantes.CODE_EXCEPTION);
-      List<Integer> index = (List<Integer>) jobExecution
+      ConcurrentLinkedQueue<Integer> index = (ConcurrentLinkedQueue<Integer>) jobExecution
             .get(Constantes.INDEX_EXCEPTION);
-      List<Exception> exceptions = (List<Exception>) jobExecution
+      ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) jobExecution
             .get(Constantes.DOC_EXCEPTION);
 
       codes.add(Constantes.ERR_BUL001);
@@ -100,11 +99,11 @@ public class StockageListener {
 
       ExecutionContext jobExecution = stepExecution.getJobExecution()
             .getExecutionContext();
-      List<String> codes = (List<String>) jobExecution
+      ConcurrentLinkedQueue<String> codes = (ConcurrentLinkedQueue<String>) jobExecution
             .get(Constantes.CODE_EXCEPTION);
-      List<Integer> index = (List<Integer>) jobExecution
+      ConcurrentLinkedQueue<Integer> index = (ConcurrentLinkedQueue<Integer>) jobExecution
             .get(Constantes.INDEX_EXCEPTION);
-      List<Exception> exceptions = (List<Exception>) jobExecution
+      ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) jobExecution
             .get(Constantes.DOC_EXCEPTION);
 
       codes.add(Constantes.ERR_BUL002);
@@ -144,7 +143,7 @@ public class StockageListener {
       final JobExecution jobExecution = stepExecution.getJobExecution();
 
       @SuppressWarnings("unchecked")
-      List<Exception> exceptions = (List<Exception>) jobExecution
+      ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) jobExecution
             .getExecutionContext().get(Constantes.DOC_EXCEPTION);
 
       if (CollectionUtils.isNotEmpty(exceptions)) {
@@ -157,7 +156,7 @@ public class StockageListener {
 
          executor.waitFinishInsertion();
 
-         final List<UUID> list = getIntegratedDocuments();
+         final ConcurrentLinkedQueue<UUID> list = getIntegratedDocuments();
 
          jobExecution.getExecutionContext().put(Constantes.INTEG_DOCS, list);
 
@@ -182,15 +181,15 @@ public class StockageListener {
          InsertionMasseRuntimeException exception, JobExecution jobExecution) {
 
       @SuppressWarnings("unchecked")
-      List<String> codes = (List<String>) jobExecution.getExecutionContext()
-            .get(Constantes.CODE_EXCEPTION);
+      ConcurrentLinkedQueue<String> codes = (ConcurrentLinkedQueue<String>) jobExecution
+            .getExecutionContext().get(Constantes.CODE_EXCEPTION);
 
       @SuppressWarnings("unchecked")
-      List<Integer> index = (List<Integer>) jobExecution.getExecutionContext()
-            .get(Constantes.INDEX_EXCEPTION);
+      ConcurrentLinkedQueue<Integer> index = (ConcurrentLinkedQueue<Integer>) jobExecution
+            .getExecutionContext().get(Constantes.INDEX_EXCEPTION);
 
       @SuppressWarnings("unchecked")
-      List<Exception> exceptions = (List<Exception>) jobExecution
+      ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) jobExecution
             .getExecutionContext().get(Constantes.DOC_EXCEPTION);
 
       ExitStatus status;
@@ -249,12 +248,12 @@ public class StockageListener {
 
    }
 
-   private List<UUID> getIntegratedDocuments() {
+   private ConcurrentLinkedQueue<UUID> getIntegratedDocuments() {
 
-      final List<CaptureMasseIntegratedDocument> list = executor
+      final ConcurrentLinkedQueue<CaptureMasseIntegratedDocument> list = executor
             .getIntegratedDocuments();
 
-      final List<UUID> listUuid = new ArrayList<UUID>();
+      final ConcurrentLinkedQueue<UUID> listUuid = new ConcurrentLinkedQueue<UUID>();
       if (CollectionUtils.isNotEmpty(list)) {
          for (CaptureMasseIntegratedDocument document : list) {
             listUuid.add(document.getIdentifiant());

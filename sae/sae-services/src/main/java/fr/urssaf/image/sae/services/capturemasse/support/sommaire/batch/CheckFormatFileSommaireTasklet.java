@@ -4,7 +4,7 @@
 package fr.urssaf.image.sae.services.capturemasse.support.sommaire.batch;
 
 import java.io.File;
-import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.StepExecution;
@@ -51,7 +51,7 @@ public class CheckFormatFileSommaireTasklet implements Tasklet {
       } catch (CaptureMasseSommaireFormatValidationException e) {
          final Exception exception = new Exception(e.getMessage());
          @SuppressWarnings("unchecked")
-         List<Exception> exceptions = (List<Exception>) chunkContext
+         ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) chunkContext
                .getStepContext().getStepExecution().getJobExecution()
                .getExecutionContext().get(Constantes.DOC_EXCEPTION);
          exceptions.add(exception);
@@ -59,7 +59,7 @@ public class CheckFormatFileSommaireTasklet implements Tasklet {
       } catch (CaptureMasseRuntimeException e) {
          final Exception exception = new Exception(e.getMessage());
          @SuppressWarnings("unchecked")
-         List<Exception> exceptions = (List<Exception>) chunkContext
+         ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) chunkContext
                .getStepContext().getStepExecution().getJobExecution()
                .getExecutionContext().get(Constantes.DOC_EXCEPTION);
          exceptions.add(exception);

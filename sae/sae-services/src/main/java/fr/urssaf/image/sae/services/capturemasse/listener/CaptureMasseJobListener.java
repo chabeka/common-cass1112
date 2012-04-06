@@ -3,8 +3,7 @@
  */
 package fr.urssaf.image.sae.services.capturemasse.listener;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.annotation.BeforeJob;
@@ -31,13 +30,13 @@ public class CaptureMasseJobListener {
 
       ExecutionContext context = jobExecution.getExecutionContext();
 
-      List<Integer> listIndex = new ArrayList<Integer>();
+      ConcurrentLinkedQueue<Integer> listIndex = new ConcurrentLinkedQueue<Integer>();
       context.put(Constantes.INDEX_EXCEPTION, listIndex);
 
-      List<String> listCodes = new ArrayList<String>();
+      ConcurrentLinkedQueue<String> listCodes = new ConcurrentLinkedQueue<String>();
       context.put(Constantes.CODE_EXCEPTION, listCodes);
 
-      List<Exception> listExceptions = new ArrayList<Exception>();
+      ConcurrentLinkedQueue<Exception> listExceptions = new ConcurrentLinkedQueue<Exception>();
       context.put(Constantes.DOC_EXCEPTION, listExceptions);
    }
 

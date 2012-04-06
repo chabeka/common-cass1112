@@ -5,8 +5,8 @@ package fr.urssaf.image.sae.services.capturemasse.support.sommaire.batch;
 
 import java.io.File;
 import java.net.URI;
-import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.StepExecution;
@@ -70,28 +70,28 @@ public class CheckFileSommaireTasklet implements Tasklet {
       } catch (CaptureMasseSommaireEcdeURLException e) {
          final Exception exception = new Exception(e.getMessage());
 
-         List<Exception> exceptions = (List<Exception>) chunkContext
+         ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) chunkContext
                .getStepContext().getStepExecution().getJobExecution()
                .getExecutionContext().get(Constantes.DOC_EXCEPTION);
          exceptions.add(exception);
 
       } catch (CaptureMasseSommaireFileNotFoundException e) {
          final Exception exception = new Exception(e.getMessage());
-         List<Exception> exceptions = (List<Exception>) chunkContext
+         ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) chunkContext
                .getStepContext().getStepExecution().getJobExecution()
                .getExecutionContext().get(Constantes.DOC_EXCEPTION);
          exceptions.add(exception);
 
       } catch (CaptureMasseEcdeWriteFileException e) {
          final Exception exception = new Exception(e.getMessage());
-         List<Exception> exceptions = (List<Exception>) chunkContext
+         ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) chunkContext
                .getStepContext().getStepExecution().getJobExecution()
                .getExecutionContext().get(Constantes.DOC_EXCEPTION);
          exceptions.add(exception);
 
       } catch (CaptureMasseRuntimeException e) {
          final Exception exception = new Exception(e.getMessage());
-         List<Exception> exceptions = (List<Exception>) chunkContext
+         ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) chunkContext
                .getStepContext().getStepExecution().getJobExecution()
                .getExecutionContext().get(Constantes.DOC_EXCEPTION);
          exceptions.add(exception);

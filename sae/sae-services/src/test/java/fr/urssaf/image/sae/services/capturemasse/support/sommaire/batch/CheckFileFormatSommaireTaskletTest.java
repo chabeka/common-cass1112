@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.After;
@@ -70,7 +71,8 @@ public class CheckFileFormatSommaireTaskletTest {
    public void init() {
       context = new ExecutionContext();
       context.put(Constantes.ID_TRAITEMENT, UUID.randomUUID().toString());
-      context.put(Constantes.DOC_EXCEPTION, new ArrayList<Exception>());
+      context.put(Constantes.DOC_EXCEPTION,
+            new ConcurrentLinkedQueue<Exception>());
       ecdeTestSommaire = ecdeTestTools.buildEcdeTestSommaire();
    }
 
@@ -93,9 +95,10 @@ public class CheckFileFormatSommaireTaskletTest {
 
       Map<String, JobParameter> mapParameter = new HashMap<String, JobParameter>();
 
-      context.put(Constantes.CODE_EXCEPTION, new ArrayList<String>());
-      context.put(Constantes.INDEX_EXCEPTION, new ArrayList<Integer>());
-      context.put(Constantes.DOC_EXCEPTION, new ArrayList<Exception>());
+      context.put(Constantes.CODE_EXCEPTION, new ConcurrentLinkedQueue<String>());
+      context.put(Constantes.INDEX_EXCEPTION, new ConcurrentLinkedQueue<Integer>());
+      context.put(Constantes.DOC_EXCEPTION,
+            new ConcurrentLinkedQueue<Exception>());
 
       mapParameter.put(Constantes.ID_TRAITEMENT, new JobParameter(UUID
             .randomUUID().toString()));
@@ -151,7 +154,7 @@ public class CheckFileFormatSommaireTaskletTest {
 
       ExecutionContext executionContext = execution.getExecutionContext();
       @SuppressWarnings("unchecked")
-      List<Exception> exceptions = (List<Exception>) executionContext
+      ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) executionContext
             .get(Constantes.DOC_EXCEPTION);
 
       Assert.assertEquals("la liste des exceptions doit contenir un élément",
@@ -191,7 +194,7 @@ public class CheckFileFormatSommaireTaskletTest {
 
       ExecutionContext executionContext = execution.getExecutionContext();
       @SuppressWarnings("unchecked")
-      List<Exception> exceptions = (List<Exception>) executionContext
+      ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) executionContext
             .get(Constantes.DOC_EXCEPTION);
 
       Assert.assertEquals("la liste des exceptions doit contenir un élément",

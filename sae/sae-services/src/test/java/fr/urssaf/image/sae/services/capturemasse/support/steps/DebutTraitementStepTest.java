@@ -6,11 +6,10 @@ package fr.urssaf.image.sae.services.capturemasse.support.steps;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.After;
@@ -81,9 +80,9 @@ public class DebutTraitementStepTest {
       JobParameters jobParameters = new JobParameters(map);
 
       ExecutionContext contextParam = new ExecutionContext();
-      contextParam.put(Constantes.CODE_EXCEPTION, new ArrayList<String>());
-      contextParam.put(Constantes.INDEX_EXCEPTION, new ArrayList<Integer>());
-      contextParam.put(Constantes.DOC_EXCEPTION, new ArrayList<Exception>());
+      contextParam.put(Constantes.CODE_EXCEPTION, new ConcurrentLinkedQueue<String>());
+      contextParam.put(Constantes.INDEX_EXCEPTION, new ConcurrentLinkedQueue<Integer>());
+      contextParam.put(Constantes.DOC_EXCEPTION, new ConcurrentLinkedQueue<Exception>());
 
       JobExecution execution = launcher.launchStep("controleDocuments",
             jobParameters, contextParam);
@@ -93,7 +92,7 @@ public class DebutTraitementStepTest {
             context.get(Constantes.DOC_EXCEPTION));
 
       @SuppressWarnings("unchecked")
-      List<Exception> exceptions = (List<Exception>) context
+      ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) context
             .get(Constantes.DOC_EXCEPTION);
 
       Assert.assertEquals("la liste des exceptions doit contenir un élément",

@@ -4,6 +4,7 @@
 package fr.urssaf.image.sae.services.capturemasse.support.stockage.batch;
 
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,11 +67,11 @@ public class StorageDocumentWriter implements ItemWriter<StorageDocument> {
       } catch (Exception e) {
          ExecutionContext jobExecution = stepExecution.getJobExecution()
                .getExecutionContext();
-         List<String> codes = (List<String>) jobExecution
+         ConcurrentLinkedQueue<String> codes = (ConcurrentLinkedQueue<String>) jobExecution
                .get(Constantes.CODE_EXCEPTION);
-         List<Integer> index = (List<Integer>) jobExecution
+         ConcurrentLinkedQueue<Integer> index = (ConcurrentLinkedQueue<Integer>) jobExecution
                .get(Constantes.INDEX_EXCEPTION);
-         List<Exception> exceptions = (List<Exception>) jobExecution
+         ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) jobExecution
                .get(Constantes.DOC_EXCEPTION);
 
          codes.add(Constantes.ERR_BUL001);

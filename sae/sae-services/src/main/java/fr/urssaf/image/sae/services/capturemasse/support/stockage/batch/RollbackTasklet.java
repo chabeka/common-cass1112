@@ -4,9 +4,9 @@
 package fr.urssaf.image.sae.services.capturemasse.support.stockage.batch;
 
 import java.text.MessageFormat;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -58,7 +58,8 @@ public class RollbackTasklet implements Tasklet {
       int countWrite = chunkContext.getStepContext().getStepExecution()
             .getWriteCount();
 
-      List<UUID> listIntegDocs = (List<UUID>) mapJob.get(Constantes.INTEG_DOCS);
+      ConcurrentLinkedQueue<UUID> listIntegDocs = (ConcurrentLinkedQueue<UUID>) mapJob
+            .get(Constantes.INTEG_DOCS);
 
       RepeatStatus status;
 
@@ -73,7 +74,7 @@ public class RollbackTasklet implements Tasklet {
              * liste.
              */
 
-            UUID strDocumentID = listIntegDocs.get(0);
+            UUID strDocumentID = listIntegDocs.toArray(new UUID[0])[0];
 
             support.rollback(strDocumentID);
 

@@ -6,9 +6,10 @@ package fr.urssaf.image.sae.services.capturemasse.support.resultats.batch;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -67,17 +68,20 @@ public class ResultatsFileFailureTasklet implements Tasklet {
       final Map<String, Object> map = chunkContext.getStepContext()
             .getJobExecutionContext();
       @SuppressWarnings("unchecked")
-      List<String> codes = (List<String>) map.get(Constantes.CODE_EXCEPTION);
+      ConcurrentLinkedQueue<String> codes = (ConcurrentLinkedQueue<String>) map
+            .get(Constantes.CODE_EXCEPTION);
       @SuppressWarnings("unchecked")
-      List<Integer> index = (List<Integer>) map.get(Constantes.INDEX_EXCEPTION);
+      ConcurrentLinkedQueue<Integer> index = (ConcurrentLinkedQueue<Integer>) map
+            .get(Constantes.INDEX_EXCEPTION);
       @SuppressWarnings("unchecked")
-      List<Exception> exceptions = (List<Exception>) map
+      ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) map
             .get(Constantes.DOC_EXCEPTION);
 
       CaptureMasseErreur erreur = new CaptureMasseErreur();
-      erreur.setListCodes(codes);
-      erreur.setListException(exceptions);
-      erreur.setListIndex(index);
+      erreur.setListCodes(Arrays.asList(codes.toArray(new String[0])));
+      erreur.setListException(Arrays.asList(exceptions
+            .toArray(new Exception[0])));
+      erreur.setListIndex(Arrays.asList(index.toArray(new Integer[0])));
 
       final String pathSommaire = (String) map.get(Constantes.SOMMAIRE_FILE);
       File sommaireFile = new File(pathSommaire);
@@ -95,11 +99,11 @@ public class ResultatsFileFailureTasklet implements Tasklet {
       }
 
       @SuppressWarnings("unchecked")
-      List<UUID> listUUID = (List<UUID>) map.get(Constantes.INTEG_DOCS);
-      
+      ConcurrentLinkedQueue<UUID> listUUID = (ConcurrentLinkedQueue<UUID>) map.get(Constantes.INTEG_DOCS);
+
       if (isModeToutOuRien && CollectionUtils.isNotEmpty(listUUID)) {
-         codes.set(0, Constantes.ERR_BUL003);
-         exceptions.set(0, new Exception(LIBELLE_BUL003));
+         erreur.getListCodes().set(0, Constantes.ERR_BUL003);
+         erreur.getListException().set(0, new Exception(LIBELLE_BUL003));
       }
 
       final File ecdeDirectory = sommaireFile.getParentFile();

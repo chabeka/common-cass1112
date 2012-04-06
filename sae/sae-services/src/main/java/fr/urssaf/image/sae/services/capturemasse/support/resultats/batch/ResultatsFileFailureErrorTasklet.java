@@ -6,7 +6,7 @@ package fr.urssaf.image.sae.services.capturemasse.support.resultats.batch;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -59,10 +59,10 @@ public class ResultatsFileFailureErrorTasklet implements Tasklet {
             .getJobExecution().getExecutionContext();
 
       @SuppressWarnings("unchecked")
-      final List<Exception> erreurs = (List<Exception>) context
+      final ConcurrentLinkedQueue<Exception> erreurs = (ConcurrentLinkedQueue<Exception>) context
             .get(Constantes.DOC_EXCEPTION);
 
-      Exception erreur = erreurs.get(0);
+      Exception erreur = erreurs.toArray(new Exception[0])[0];
 
       LOGGER.error(erreur.getMessage());
 

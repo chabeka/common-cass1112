@@ -8,8 +8,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.After;
@@ -76,9 +76,10 @@ public class ControleDocumentsStepTest {
       JobParameters jobParameters = new JobParameters(map);
 
       ExecutionContext context = new ExecutionContext();
-      context.put(Constantes.CODE_EXCEPTION, new ArrayList<String>());
-      context.put(Constantes.INDEX_EXCEPTION, new ArrayList<Integer>());
-      context.put(Constantes.DOC_EXCEPTION, new ArrayList<Exception>());
+      context.put(Constantes.CODE_EXCEPTION, new ConcurrentLinkedQueue<String>());
+      context.put(Constantes.INDEX_EXCEPTION, new ConcurrentLinkedQueue<Integer>());
+      context.put(Constantes.DOC_EXCEPTION,
+            new ConcurrentLinkedQueue<Exception>());
 
       JobExecution execution = launcher.launchStep("controleDocuments",
             jobParameters, context);
@@ -89,7 +90,7 @@ public class ControleDocumentsStepTest {
             context.get(Constantes.DOC_EXCEPTION));
 
       @SuppressWarnings("unchecked")
-      List<Exception> exceptions = (List<Exception>) context
+      ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) context
             .get(Constantes.DOC_EXCEPTION);
 
       Assert.assertEquals("la liste des exceptions doit contenir un élément",
@@ -120,9 +121,10 @@ public class ControleDocumentsStepTest {
       contextParam.put(Constantes.SOMMAIRE, ecdeTestSommaire.getUrlEcde()
             .toString());
       contextParam.put(Constantes.SOMMAIRE_FILE, sommaire.getAbsolutePath());
-      contextParam.put(Constantes.CODE_EXCEPTION, new ArrayList<String>());
-      contextParam.put(Constantes.INDEX_EXCEPTION, new ArrayList<Integer>());
-      contextParam.put(Constantes.DOC_EXCEPTION, new ArrayList<Exception>());
+      contextParam.put(Constantes.CODE_EXCEPTION, new ConcurrentLinkedQueue<String>());
+      contextParam.put(Constantes.INDEX_EXCEPTION, new ConcurrentLinkedQueue<Integer>());
+      contextParam.put(Constantes.DOC_EXCEPTION,
+            new ConcurrentLinkedQueue<Exception>());
 
       Map<String, JobParameter> map = new HashMap<String, JobParameter>();
       map.put(Constantes.SOMMAIRE, new JobParameter(ecdeTestSommaire
@@ -133,7 +135,7 @@ public class ControleDocumentsStepTest {
       ExecutionContext context = execution.getExecutionContext();
 
       @SuppressWarnings("unchecked")
-      List<Exception> exceptions = (List<Exception>) context
+      ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) context
             .get(Constantes.DOC_EXCEPTION);
 
       Assert.assertEquals("la liste des exceptions doit contenir un élément",

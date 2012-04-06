@@ -5,9 +5,7 @@ package fr.urssaf.image.sae.services.capturemasse.support.stockage.multithreadin
 
 import java.io.File;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -46,7 +44,7 @@ public class InsertionPoolThreadExecutor extends ThreadPoolExecutor implements
    private static final Logger LOGGER = LoggerFactory
          .getLogger(InsertionThreadPoolExecutor.class);
 
-   private List<CaptureMasseIntegratedDocument> integDocs;
+   private ConcurrentLinkedQueue<CaptureMasseIntegratedDocument> integDocs;
 
    private InsertionMasseRuntimeException exception;
 
@@ -99,8 +97,7 @@ public class InsertionPoolThreadExecutor extends ThreadPoolExecutor implements
       super(CORE_POOL_SIZE, CORE_POOL_SIZE, 1, TimeUnit.MILLISECONDS,
             new LinkedBlockingQueue<Runnable>(), new DiscardPolicy());
 
-      this.integDocs = Collections
-            .synchronizedList(new ArrayList<CaptureMasseIntegratedDocument>());
+      this.integDocs = new ConcurrentLinkedQueue<CaptureMasseIntegratedDocument>();
 
       Assert.notNull(support, "'support' is required");
 
@@ -299,7 +296,7 @@ public class InsertionPoolThreadExecutor extends ThreadPoolExecutor implements
     * 
     * @return liste des documents persistés dans DFCE
     */
-   public final List<CaptureMasseIntegratedDocument> getIntegratedDocuments() {
+   public final ConcurrentLinkedQueue<CaptureMasseIntegratedDocument> getIntegratedDocuments() {
       return this.integDocs;
    }
 
@@ -312,7 +309,7 @@ public class InsertionPoolThreadExecutor extends ThreadPoolExecutor implements
     */
    public final void clearStorageDocDone() {
 
-      this.integDocs = Collections.emptyList();
+      this.integDocs = new ConcurrentLinkedQueue<CaptureMasseIntegratedDocument>();
    }
 
    /**
