@@ -34,6 +34,7 @@
                      <artifactSet>
                         <excludes>
                            <exclude>commons-logging:commons-logging:jar:</exclude>
+                           <exclude>log4j:log4j:jar:</exclude>
                         </excludes>
                      </artifactSet>
                      <transformers>
@@ -81,6 +82,13 @@
          <artifactId>jcl-over-slf4j</artifactId>
          <version>1.6.1</version>
          <scope>runtime</scope>
+      </dependency>
+      
+       <dependency>
+         <groupId>org.slf4j</groupId>
+         <artifactId>log4j-over-slf4j</artifactId>
+         <version>1.6.1</version>
+         <scope>runtime</scope>   
       </dependency>
 
       <!-- APACHE COMMONS -->

@@ -35,6 +35,8 @@ public final class OrdonnanceurMain {
 
    private static final long INTERVAL = 1000;
 
+   private static boolean stop = false;
+
    protected OrdonnanceurMain(String configLocation) {
 
       this.configLocation = configLocation;
@@ -113,6 +115,8 @@ public final class OrdonnanceurMain {
     */
    public static void main(String[] args) {
 
+      LOG.info("Démarrage de l'ordonnanceur");
+
       OrdonnanceurMain instance = new OrdonnanceurMain(
             "/applicationContext-sae-ordonnanceur.xml");
 
@@ -122,7 +126,14 @@ public final class OrdonnanceurMain {
 
          instance.launchTraitement();
 
+         // TODO commande d'arrêt propre de l'ordonnanceur
+         if (stop) {
+            break;
+         }
+
       }
+
+      LOG.info("Arrêt de l'ordonnanceur");
 
    }
 

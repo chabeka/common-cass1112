@@ -28,6 +28,7 @@
                      <artifactSet>
                         <excludes>
                            <exclude>commons-logging:commons-logging:jar:</exclude>
+                           <exclude>log4j:log4j:jar:</exclude>
                         </excludes>
                      </artifactSet>
                      <transformers>
@@ -73,6 +74,15 @@
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-pile-travaux</artifactId>
          <version>12.5.10.4-SNAPSHOT</version>
+      </dependency>
+      
+       <!-- SLF4J -->
+      
+       <dependency>
+         <groupId>org.slf4j</groupId>
+         <artifactId>log4j-over-slf4j</artifactId>
+         <version>1.6.1</version>
+         <scope>runtime</scope>   
       </dependency>
 
       <!-- SPRING -->
