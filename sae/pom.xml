@@ -30,7 +30,7 @@
       commons-cassandra
       ==========================================
       -->
-      <commons.cassandra>0.0.3-SNAPSHOT</commons.cassandra>
+      <commons.cassandra>0.0.3</commons.cassandra>
       
       <!-- Modèle de dépendance :
       <dependency>
@@ -47,7 +47,7 @@
       commons-cassandra-spring-batch
       ==========================================
       -->
-      <commons.cassandra.spring.batch>0.0.3-SNAPSHOT</commons.cassandra.spring.batch>
+      <commons.cassandra.spring.batch>0.0.3</commons.cassandra.spring.batch>
       
       <!-- Modèle de dépendance :
       <dependency>
