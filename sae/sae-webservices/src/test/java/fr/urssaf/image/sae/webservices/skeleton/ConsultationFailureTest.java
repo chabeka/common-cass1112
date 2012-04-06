@@ -107,8 +107,9 @@ public class ConsultationFailureTest {
       ConsultParams consultParams = new ConsultParams(UUID
             .fromString("cc4a5ec1-788d-4b41-baa8-d349947865bf"), null);
 
-      EasyMock.expect(documentService.consultation(checkConsult(consultParams))).andThrow(
-            new SAEConsultationServiceException(new Exception()));
+      EasyMock
+            .expect(documentService.consultation(checkConsult(consultParams)))
+            .andThrow(new SAEConsultationServiceException(new Exception()));
 
       EasyMock.replay(documentService);
 
@@ -126,6 +127,39 @@ public class ConsultationFailureTest {
          assertAxisFault(fault,
                "Une erreur s'est produite lors de la consultation",
                "ConsultationErreur", "sae");
+
+      }
+   }
+
+   @Test
+   public void consultation_failure_RuntimeException()
+         throws SAEConsultationServiceException, UnknownDesiredMetadataEx,
+         MetaDataUnauthorizedToConsultEx {
+
+      ConsultParams consultParams = new ConsultParams(UUID
+            .fromString("cc4a5ec1-788d-4b41-baa8-d349947865bf"), null);
+
+      EasyMock
+            .expect(documentService.consultation(checkConsult(consultParams)))
+            .andThrow(new RuntimeException("une runtime exception est levée"));
+
+      EasyMock.replay(documentService);
+
+      try {
+         Consultation request = createConsultationResponseType("src/test/resources/request/consultation_success.xml");
+
+         skeleton.consultationSecure(request).getConsultationResponse();
+
+         Assert
+               .fail("le test doit échouer à cause de la levée d'une exception de type "
+                     + SAEConsultationServiceException.class);
+
+      } catch (ConsultationAxisFault fault) {
+
+         assertAxisFault(
+               fault,
+               "Une erreur interne à l'application est survenue lors de la consultation.",
+               "ErreurInterneConsultation", "sae");
 
       }
    }

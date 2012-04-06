@@ -166,7 +166,10 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
          throw ex;
       } catch (RuntimeException ex) {
          logRuntimeException(ex);
-         throw ex;
+         throw new CaptureAxisFault(
+               "ErreurInterneCapture",
+               "Une erreur interne à l'application est survenue lors de la capture.",
+               ex);
       }
 
    }
@@ -211,7 +214,10 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
          throw ex;
       } catch (RuntimeException ex) {
          logRuntimeException(ex);
-         throw ex;
+         throw new CaptureAxisFault(
+               "ErreurInterneCapture",
+               "Une erreur interne à l'application est survenue lors de la capture.",
+               ex);
       }
    }
 
@@ -246,7 +252,10 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
          throw ex;
       } catch (RuntimeException ex) {
          logRuntimeException(ex);
-         throw ex;
+         throw new CaptureAxisFault(
+               "ErreurInterneCapture",
+               "Une erreur interne à l'application est survenue lors de la capture.",
+               ex);
       }
    }
 
@@ -289,7 +298,9 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
          throw ex;
       } catch (RuntimeException ex) {
          logRuntimeException(ex);
-         throw ex;
+         throw new RechercheAxis2Fault(
+               "Une erreur interne à l'application est survenue lors de la recherche.",
+               "ErreurInterneRecherche", ex);
       }
    }
 
@@ -330,7 +341,9 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
          throw ex;
       } catch (RuntimeException ex) {
          logRuntimeException(ex);
-         throw ex;
+         throw new ConsultationAxisFault(
+               "Une erreur interne à l'application est survenue lors de la consultation.",
+               "ErreurInterneConsultation", ex);
       }
    }
 
@@ -372,7 +385,9 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
          throw ex;
       } catch (RuntimeException ex) {
          logRuntimeException(ex);
-         throw ex;
+         throw new ConsultationAxisFault(
+               "Une erreur interne à l'application est survenue lors de la consultation.",
+               "ErreurInterneConsultation", ex);
       }
    }
 

@@ -3,6 +3,8 @@
  */
 package fr.urssaf.image.sae.webservices.comparator;
 
+import java.util.Collection;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.easymock.IArgumentMatcher;
 
@@ -58,10 +60,17 @@ public class ConsultParamComparator implements IArgumentMatcher {
             } else if (expected.getMetadonnees() == null
                   || consultCurrent.getMetadonnees() == null) {
                match = false;
-            } else if (CollectionUtils.isEmpty(CollectionUtils.disjunction(
-                  expected.getMetadonnees(), consultCurrent.getMetadonnees()))) {
+            } else {
 
-               match = true;
+               @SuppressWarnings("unchecked")
+               Collection<String> coll = CollectionUtils.disjunction(
+
+               expected.getMetadonnees(), consultCurrent.getMetadonnees());
+
+               if (CollectionUtils.isEmpty(coll)) {
+
+                  match = true;
+               }
 
             }
          }

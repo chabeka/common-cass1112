@@ -37,8 +37,7 @@ import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.webservices.util.XMLStreamUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-service-test.xml"
-                                  })
+@ContextConfiguration(locations = { "/applicationContext-service-test.xml" })
 @SuppressWarnings( { "PMD.MethodNamingConventions", "PMD.TooManyMethods" })
 public class ArchivageUnitaireFailureTest {
 
@@ -361,6 +360,24 @@ public class ArchivageUnitaireFailureTest {
       } catch (AxisFault axisFault) {
 
          assertAxisFault(axisFault, "CaptureUrlEcdeFichierIntrouvable");
+      }
+   }
+
+   @Test
+   public void archivageUnitaire_failure_RuntimeException() throws AxisFault {
+
+      mockThrowable(new RuntimeException("une runtime exception est levée"));
+
+      try {
+
+         callService();
+
+         Assert.fail(FAIL_MSG);
+
+      } catch (AxisFault axisFault) {
+
+         assertAxisFault(axisFault, "ErreurInterneCapture",
+               "Une erreur interne à l'application est survenue lors de la capture.");
       }
    }
 
