@@ -142,7 +142,7 @@ public class StockageListener {
       ExitStatus status = ExitStatus.COMPLETED;
 
       final JobExecution jobExecution = stepExecution.getJobExecution();
-     
+
       @SuppressWarnings("unchecked")
       List<Exception> exceptions = (List<Exception>) jobExecution
             .getExecutionContext().get(Constantes.DOC_EXCEPTION);
@@ -211,9 +211,16 @@ public class StockageListener {
 
       } catch (Exception e) {
 
+         String message;
+         if (exception.getCause() != null) {
+            message = exception.getCause().getMessage();
+         } else {
+            message = exception.getMessage();
+         }
+
          codes.add(Constantes.ERR_BUL001);
          index.add(exception.getIndex());
-         exceptions.add(new Exception(exception.getMessage()));
+         exceptions.add(new Exception(message));
 
          status = ExitStatus.FAILED;
 

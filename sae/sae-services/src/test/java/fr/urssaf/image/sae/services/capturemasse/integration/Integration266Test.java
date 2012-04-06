@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -39,6 +40,7 @@ import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentServi
 @ContextConfiguration(locations = {
       "/applicationContext-sae-services-test.xml",
       "/applicationContext-sae-services-integration-test.xml" })
+@DirtiesContext
 public class Integration266Test {
 
    @Autowired

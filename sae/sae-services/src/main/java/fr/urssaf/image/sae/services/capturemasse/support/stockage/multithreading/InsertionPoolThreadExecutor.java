@@ -162,7 +162,6 @@ public class InsertionPoolThreadExecutor extends ThreadPoolExecutor implements
       } else {
 
          setInsertionException((InsertionMasseRuntimeException) throwable);
-
          // dès le premier échec les autres Threads en exécution ou pas sont
          // interrompus définitivement
          this.shutdownNow();
