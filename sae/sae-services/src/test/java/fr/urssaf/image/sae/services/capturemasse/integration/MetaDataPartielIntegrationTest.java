@@ -68,11 +68,11 @@ public class MetaDataPartielIntegrationTest {
 
    @After
    public void end() {
-      // try {
-      // ecdeTestTools.cleanEcdeTestSommaire(ecdeTestSommaire);
-      // } catch (IOException e) {
-      // // rien a faire
-      // }
+      try {
+         ecdeTestTools.cleanEcdeTestSommaire(ecdeTestSommaire);
+      } catch (IOException e) {
+         // rien a faire
+      }
 
    }
 

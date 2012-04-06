@@ -47,6 +47,11 @@ public class RollbackTasklet implements Tasklet {
       Map<String, Object> mapJob = chunkContext.getStepContext()
             .getJobExecutionContext();
 
+      /*
+       * on va incrémenter le nombre d'enregistrements lus et écrits. ces
+       * nombres sont décorrélés du nombre lus et écrits dans le step précédent.
+       */
+
       int countRead = chunkContext.getStepContext().getStepExecution()
             .getReadCount();
 
@@ -61,7 +66,14 @@ public class RollbackTasklet implements Tasklet {
 
          if (CollectionUtils.isNotEmpty(listIntegDocs)) {
 
-            UUID strDocumentID = listIntegDocs.get(countRead);
+            /*
+             * Afin de savoir si il y a eu un problème de rollback dans l'étape
+             * de fin, nous supprimons les enregistrements de la liste au fur et
+             * à mesure. Il faut donc toujours récupérer le 1er élément de la
+             * liste.
+             */
+
+            UUID strDocumentID = listIntegDocs.get(0);
 
             support.rollback(strDocumentID);
 

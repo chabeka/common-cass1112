@@ -41,7 +41,6 @@ import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.services.batch.model.ExitTraitement;
 import fr.urssaf.image.sae.services.capturemasse.SAECaptureMasseService;
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
-import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
 import fr.urssaf.image.sae.services.capturemasse.modele.commun_sommaire_et_resultat.ErreurType;
 import fr.urssaf.image.sae.services.capturemasse.modele.commun_sommaire_et_resultat.NonIntegratedDocumentType;
 import fr.urssaf.image.sae.services.capturemasse.modele.resultats.ObjectFactory;
@@ -58,7 +57,11 @@ import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentServi
       "/applicationContext-sae-services-test.xml",
       "/applicationContext-sae-services-integration-test.xml" })
 @DirtiesContext
-public class IntegrationRuntimeTest {
+public class IntegrationBUL003Test {
+
+   private static final String ERREUR_ATTENDUE = "La capture de masse en mode "
+         + "\"Tout ou rien\" a été interrompue. Une procédure d'exploitation a été "
+         + "initialisée pour supprimer les données qui auraient pu être stockées.";
 
    @Autowired
    private ApplicationContext applicationContext;
@@ -80,11 +83,7 @@ public class IntegrationRuntimeTest {
    private EcdeTestSommaire ecdeTestSommaire;
 
    private static final Logger LOGGER = LoggerFactory
-         .getLogger(IntegrationRuntimeTest.class);
-
-   private static final String ERREUR_ATTENDUE = "La capture de masse en mode "
-         + "\"Tout ou rien\" a été interrompue. Une procédure d'exploitation a été "
-         + "initialisée pour supprimer les données qui auraient pu être stockées.";
+         .getLogger(IntegrationBUL003Test.class);
 
    @Before
    public void init() {
@@ -137,7 +136,8 @@ public class IntegrationRuntimeTest {
       // règlage storageDocumentService
       storageDocumentService.deleteStorageDocument(EasyMock
             .anyObject(UUID.class));
-      EasyMock.expectLastCall().anyTimes();
+      EasyMock.expectLastCall().andThrow(
+            new DeletionServiceEx("erreur insertion document")).anyTimes();
 
       StorageDocument storageDocument = new StorageDocument();
       storageDocument.setUuid(UUID.randomUUID());
@@ -145,13 +145,11 @@ public class IntegrationRuntimeTest {
       EasyMock.expect(
             storageDocumentService.insertStorageDocument(EasyMock
                   .anyObject(StorageDocument.class)))
-            .andReturn(storageDocument).times(4);
-
+            .andReturn(storageDocument).once();
       EasyMock.expect(
             storageDocumentService.insertStorageDocument(EasyMock
                   .anyObject(StorageDocument.class))).andThrow(
-            new CaptureMasseRuntimeException("erreur runtime créé par mock"))
-            .anyTimes();
+            new InsertionServiceEx("erreur insertion")).anyTimes();
 
       EasyMock.replay(provider, storageDocumentService);
    }
@@ -159,12 +157,12 @@ public class IntegrationRuntimeTest {
    private void initDatas() throws IOException {
       File sommaire = new File(ecdeTestSommaire.getRepEcde(), "sommaire.xml");
       ClassPathResource resSommaire = new ClassPathResource(
-            "testhautniveau/runtime/sommaire.xml");
+            "testhautniveau/BUL003/sommaire.xml");
       FileUtils.copyURLToFile(resSommaire.getURL(), sommaire);
 
       File repEcde = new File(ecdeTestSommaire.getRepEcde(), "documents");
       ClassPathResource resAttestation1 = new ClassPathResource(
-            "testhautniveau/runtime/documents/doc1.PDF");
+            "testhautniveau/BUL003/documents/doc1.PDF");
       File fileAttestation1 = new File(repEcde, "doc1.PDF");
       FileUtils.copyURLToFile(resAttestation1.getURL(), fileAttestation1);
 
@@ -268,4 +266,5 @@ public class IntegrationRuntimeTest {
       return doc.getValue();
 
    }
+
 }

@@ -8,9 +8,11 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepContribution;
@@ -26,6 +28,7 @@ import org.xml.sax.SAXException;
 import fr.urssaf.image.sae.services.capturemasse.common.CaptureMasseErreur;
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
 import fr.urssaf.image.sae.services.capturemasse.support.resultats.ResultatsFileEchecSupport;
+import fr.urssaf.image.sae.services.capturemasse.support.sommaire.SommaireFormatValidationSupport;
 import fr.urssaf.image.sae.services.util.XmlValidationUtils;
 
 /**
@@ -36,10 +39,17 @@ import fr.urssaf.image.sae.services.util.XmlValidationUtils;
 @Component
 public class ResultatsFileFailureTasklet implements Tasklet {
 
+   private static final String LIBELLE_BUL003 = "La capture de masse en mode "
+         + "\"Tout ou rien\" a été interrompue. Une procédure d'exploitation a été "
+         + "initialisée pour supprimer les données qui auraient pu être stockées.";
+
    @Autowired
    private ResultatsFileEchecSupport support;
 
    private static final String RESULTATS_XSD = "xsd_som_res/resultats.xsd";
+
+   @Autowired
+   private SommaireFormatValidationSupport validationSupport;
 
    @Autowired
    private ApplicationContext applContext;
@@ -72,6 +82,26 @@ public class ResultatsFileFailureTasklet implements Tasklet {
       final String pathSommaire = (String) map.get(Constantes.SOMMAIRE_FILE);
       File sommaireFile = new File(pathSommaire);
 
+      /*
+       * On vérifie qu'on est mode tout ou rien et qu'il reste des rollback à
+       * effectuer. Si c'est le cas on change le code possible fonctionnel en
+       * code technique et le message correspondant
+       */
+      boolean isModeToutOuRien = true;
+      try {
+         validationSupport.validerModeBatch(sommaireFile, "TOUT_OU_RIEN");
+      } catch (Exception e) {
+         isModeToutOuRien = false;
+      }
+
+      @SuppressWarnings("unchecked")
+      List<UUID> listUUID = (List<UUID>) map.get(Constantes.INTEG_DOCS);
+      
+      if (isModeToutOuRien && CollectionUtils.isNotEmpty(listUUID)) {
+         codes.set(0, Constantes.ERR_BUL003);
+         exceptions.set(0, new Exception(LIBELLE_BUL003));
+      }
+
       final File ecdeDirectory = sommaireFile.getParentFile();
 
       int nbreDocs = (Integer) map.get(Constantes.DOC_COUNT);
@@ -95,5 +125,4 @@ public class ResultatsFileFailureTasklet implements Tasklet {
 
       return RepeatStatus.FINISHED;
    }
-
 }
