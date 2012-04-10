@@ -336,9 +336,11 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
          if (Constantes.ERR_BUL002.equalsIgnoreCase(code)) {
             message = "Le document " + chemin
                   + " n'a pas été archivé. Détails : " + messageErreur;
-         } else {
+         } else if (Constantes.ERR_BUL001.equalsIgnoreCase(code)) {
             message = "Une erreur interne à l'application est survenue lors de la capture du document "
                   + chemin + ". Détails : " + messageErreur;
+         } else {
+            message = messageErreur;
          }
 
          staxUtils.createTag("code", code, PX_SOMRES, NS_SOMRES);

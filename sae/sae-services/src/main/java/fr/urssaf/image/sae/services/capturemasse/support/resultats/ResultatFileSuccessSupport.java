@@ -23,11 +23,11 @@ public interface ResultatFileSuccessSupport {
     *           répertoire ECDE de traitement pour une capture de masse
     * @param integDocs
     *           liste des documents persistés dans DFCE
-    * @param documentsCount
-    *           nombre de documents intégrés
+    * @param initDocCount
+    *           nombre de documents initial
     */
    void writeResultatsFile(File ecdeDirectory,
          List<CaptureMasseIntegratedDocument> integDocs,
-         int documentsCount);
+         int initDocCount);
 
 }

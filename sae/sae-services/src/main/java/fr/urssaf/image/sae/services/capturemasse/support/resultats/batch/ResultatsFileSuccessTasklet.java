@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -65,20 +66,26 @@ public class ResultatsFileSuccessTasklet implements Tasklet {
       final File sommaireFile = new File(path);
       final File ecdeDirectory = sommaireFile.getParentFile();
 
-      final ConcurrentLinkedQueue<UUID> listIntDocs = (ConcurrentLinkedQueue<UUID>) chunkContext.getStepContext()
-            .getStepExecution().getJobExecution().getExecutionContext().get(
-                  Constantes.INTEG_DOCS);
+      final ConcurrentLinkedQueue<UUID> listIntDocs = (ConcurrentLinkedQueue<UUID>) chunkContext
+            .getStepContext().getStepExecution().getJobExecution()
+            .getExecutionContext().get(Constantes.INTEG_DOCS);
 
-      successSupport
-            .writeResultatsFile(ecdeDirectory,
-                  new ArrayList<CaptureMasseIntegratedDocument>(), listIntDocs
-                        .size());
+      int initCount = (Integer) map.get(Constantes.DOC_COUNT);
+
+      List<CaptureMasseIntegratedDocument> integDocs = new ArrayList<CaptureMasseIntegratedDocument>();
+      CaptureMasseIntegratedDocument doc;
+      for (UUID uuid : listIntDocs) {
+         doc = new CaptureMasseIntegratedDocument();
+         doc.setIdentifiant(uuid);
+         integDocs.add(doc);
+      }
+
+      successSupport.writeResultatsFile(ecdeDirectory, integDocs, initCount);
 
       File resultats = new File(ecdeDirectory, "resultats.xml");
 
       try {
-         Resource sommaireXSD = context
-               .getResource(RESULTATS_XSD);
+         Resource sommaireXSD = context.getResource(RESULTATS_XSD);
          URL xsdSchema = sommaireXSD.getURL();
 
          XmlValidationUtils.parse(resultats, xsdSchema);

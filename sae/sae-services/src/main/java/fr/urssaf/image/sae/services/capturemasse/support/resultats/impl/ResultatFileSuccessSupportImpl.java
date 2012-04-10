@@ -60,7 +60,8 @@ public class ResultatFileSuccessSupportImpl implements
          final List<CaptureMasseIntegratedDocument> intDocuments,
          final int documentsCount) {
 
-      final ResultatsType resultatsType = creerResultat(documentsCount);
+      final ResultatsType resultatsType = creerResultat(documentsCount,
+            intDocuments.size());
 
       final ObjectFactory factory = new ObjectFactory();
       final JAXBElement<ResultatsType> resultat = factory
@@ -73,16 +74,19 @@ public class ResultatFileSuccessSupportImpl implements
     * Création du résultat
     * 
     * @param documentsCount
-    *           nombre de documents
+    *           nombre de documents initial
+    * @param intDocCount
+    *           nombre de documents intégrés
     * @return le résultat sous forme d'objet
     */
-   private ResultatsType creerResultat(final int documentsCount) {
+   private ResultatsType creerResultat(final int documentsCount,
+         final int intDocCount) {
 
       final ResultatsType resultatsType = new ResultatsType();
       resultatsType.setBatchMode(BatchModeType.TOUT_OU_RIEN);
       resultatsType.setInitialDocumentsCount(documentsCount);
       resultatsType.setInitialVirtualDocumentsCount(0);
-      resultatsType.setIntegratedDocumentsCount(documentsCount);
+      resultatsType.setIntegratedDocumentsCount(intDocCount);
       resultatsType.setNonIntegratedDocumentsCount(0);
       resultatsType.setIntegratedVirtualDocumentsCount(0);
       resultatsType.setNonIntegratedVirtualDocumentsCount(0);

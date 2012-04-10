@@ -81,14 +81,15 @@ public class RollbackTasklet implements Tasklet {
             chunkContext.getStepContext().getStepExecution().setReadCount(
                   ++countRead);
 
-            LOGGER.debug("{} - Rollback du document #{}/{} ({})",
-                  new Object[] { TRC_ROLLBACK, countRead, listIntegDocs.size(),
-                        strDocumentID });
+            LOGGER.debug("{} - Rollback du document #{} ({})", new Object[] {
+                  TRC_ROLLBACK, countRead, strDocumentID });
 
             chunkContext.getStepContext().getStepExecution().setWriteCount(
                   ++countWrite);
 
-            if (countRead == listIntegDocs.size()) {
+            listIntegDocs.remove(strDocumentID);
+
+            if (CollectionUtils.isEmpty(listIntegDocs)) {
                status = RepeatStatus.FINISHED;
             } else {
                status = RepeatStatus.CONTINUABLE;

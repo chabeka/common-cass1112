@@ -141,6 +141,12 @@ public class StorageDocumentWriter implements ItemWriter<StorageDocument> {
          throw new InsertionServiceEx(StorageMessageHandler
                .getMessage(Constants.INS_CODE_ERROR), except.getMessage(),
                except);
+      } catch (Throwable except) {
+
+         throw new InsertionServiceEx(StorageMessageHandler
+               .getMessage(Constants.INS_CODE_ERROR), except.getMessage(),
+               except);
+
       }
 
    }
