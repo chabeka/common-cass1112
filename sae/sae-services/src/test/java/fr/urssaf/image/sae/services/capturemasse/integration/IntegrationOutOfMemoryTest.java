@@ -149,7 +149,7 @@ public class IntegrationOutOfMemoryTest {
       EasyMock.expect(
             storageDocumentService.insertStorageDocument(EasyMock
                   .anyObject(StorageDocument.class))).andThrow(
-            new OutOfMemoryError("erreur mémoire")).once();
+            new Error("erreur mémoire")).once();
 
       EasyMock.expect(
             storageDocumentService.insertStorageDocument(EasyMock

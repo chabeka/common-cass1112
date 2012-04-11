@@ -299,19 +299,8 @@ public class InsertionPoolThreadExecutor extends ThreadPoolExecutor implements
    public final ConcurrentLinkedQueue<CaptureMasseIntegratedDocument> getIntegratedDocuments() {
       return this.integDocs;
    }
-
-   /**
-    * vide la liste des documents persistés dans DFCE <br>
-    * <br>
-    * Attention : clear() ne garantit pas que les la liste soit vide à cause de
-    * la synchronization on préfère donc instancier une liste vide
-    * 
-    */
-   public final void clearStorageDocDone() {
-
-      this.integDocs = new ConcurrentLinkedQueue<CaptureMasseIntegratedDocument>();
-   }
-
+   
+   
    /**
     * Attend que l'ensemble des threads aient bien terminé leur travail
     */

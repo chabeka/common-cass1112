@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<som:sommaire
+   xmlns:som="http://www.cirtil.fr/sae/sommaireXml"
+   xmlns:somres="http://www.cirtil.fr/sae/commun_sommaire_et_resultat"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+   <!-- Type de traitement de masse -->
+   <som:batchMode>TOUT_OU_RIEN</som:batchMode>
+   
+   <!-- Date de création du sommaire.xml -->
+   <som:dateCreation>2011-09-08</som:dateCreation>
+   
+   <!-- Description du traitement -->
+   <som:description>La description du traitement</som:description>
+   
+   <!-- Liste des documents à archiver -->
+   <som:documents>
+      
+      <somres:document>
+         <somres:objetNumerique>
+            <somres:cheminEtNomDuFichier>doc1.PDF</somres:cheminEtNomDuFichier>
+         </somres:objetNumerique>
+         <somres:metadonnees>
+            <somres:metadonnee>
+         	   <somres:code>ApplicationProductrice</somres:code>
+	            <somres:valeur>ADELAIDE</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+	            <somres:code>ApplicationTraitement</somres:code>
+	            <somres:valeur>ATTESTATIONS</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+	            <somres:code>CodeCategorieV2</somres:code>
+	            <somres:valeur>4</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+	            <somres:code>CodeOrganismeGestionnaire</somres:code>
+	            <somres:valeur>CER69</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+	            <somres:code>CodeOrganismeProprietaire</somres:code>
+	            <somres:valeur>UR750</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+	            <somres:code>CodeRND</somres:code>
+	            <somres:valeur>2.3.1.1.12</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+	            <somres:code>CodeSousCategorieV2</somres:code>
+	            <somres:valeur>11</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+	            <somres:code>DateCreation</somres:code>
+	            <somres:valeur>2011-09-05</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+               <somres:code>DateDebutConservation</somres:code>
+               <somres:valeur>2011-09-02</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+               <somres:code>DateReception</somres:code>
+               <somres:valeur>2011-09-01</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+               <somres:code>Denomination</somres:code>
+               <somres:valeur>Test 206-CaptureMasse-OK-Toutes-metadonnees-specifiables</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+               <somres:code>IdTraitementMasse</somres:code>
+               <somres:valeur>123654</somres:valeur>
+            </somres:metadonnee>         
+            <somres:metadonnee>
+               <somres:code>FormatFichier</somres:code>
+               <somres:valeur>fmt/354</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+               <somres:code>Hash</somres:code>
+               <somres:valeur>a2f93f1f121ebba0faef2c0596f2f126eacae77b</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+               <somres:code>NbPages</somres:code>
+               <somres:valeur>2</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+               <somres:code>NniEmployeur</somres:code>
+               <somres:valeur>148032541101648</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+               <somres:code>NumeroCompteExterne</somres:code>
+               <somres:valeur>30148032541101600</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+               <somres:code>NumeroCompteInterne</somres:code>
+               <somres:valeur>719900</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+               <somres:code>NumeroIntControle</somres:code>
+               <somres:valeur>57377</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+                <somres:code>NumeroPersonne</somres:code>
+                <somres:valeur>123854</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+               <somres:code>NumeroRecours</somres:code>
+               <somres:valeur>1</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+               <somres:code>NumeroStructure</somres:code>
+               <somres:valeur>000050221</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+               <somres:code>Periode</somres:code>
+               <somres:valeur>PERI</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+               <somres:code>PseudoSiret</somres:code>
+               <somres:valeur>4914736610005</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+               <somres:code>Siren</somres:code>
+               <somres:valeur>0123456789</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+               <somres:code>Siret</somres:code>
+               <somres:valeur>12345678912345</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+               <somres:code>SiteAcquisition</somres:code>
+               <somres:valeur>CER44</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+               <somres:code>Titre</somres:code>
+               <somres:valeur>Attestation de vigilance</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+               <somres:code>TracabilitrePreArchivage</somres:code>
+               <somres:valeur>Tracabilite pre archivage</somres:valeur>
+            </somres:metadonnee>
+              <somres:metadonnee>
+               <somres:code>TypeHash</somres:code>
+               <somres:valeur>SHA-1</somres:valeur>
+            </somres:metadonnee>
+              <somres:metadonnee>
+               <somres:code>VersionRND</somres:code>
+               <somres:valeur>5.3</somres:valeur>
+            </somres:metadonnee>
+
+         </somres:metadonnees>
+         <somres:numeroPageDebut>1</somres:numeroPageDebut>
+         <somres:nombreDePages>1</somres:nombreDePages>
+      </somres:document>
+      
+   </som:documents>
+   
+   
+   <!-- Liste des documents virtuels à archiver -->
+   <som:documentsVirtuels />
+
+     
+</som:sommaire>

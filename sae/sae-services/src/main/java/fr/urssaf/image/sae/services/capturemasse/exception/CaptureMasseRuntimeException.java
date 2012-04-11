@@ -17,13 +17,6 @@ public class CaptureMasseRuntimeException extends RuntimeException {
 
    /**
     * Constructeur
-    */
-   public CaptureMasseRuntimeException() {
-      super(MESSAGE);
-   }
-
-   /**
-    * Constructeur
     * 
     * @param cause
     *           cause de l'exception

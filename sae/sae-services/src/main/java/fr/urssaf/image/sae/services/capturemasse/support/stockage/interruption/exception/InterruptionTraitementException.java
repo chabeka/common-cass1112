@@ -35,29 +35,4 @@ public class InterruptionTraitementException extends Exception {
       this.interruption = interruption;
 
    }
-
-   /**
-    * 
-    * {@inheritDoc} <br>
-    * <br>
-    * Le message est formaté sur le modèle {@value #EXCEPTION_MESSAGE}
-    * <ul>
-    * <li>{0} : <code>{@link InterruptionTraitementConfig#getStart()}</code></li>
-    * <li>{1} : <code>{@link InterruptionTraitementConfig#getDelay()}</code></li>
-    * <li>{2} :
-    * <code>{@link InterruptionTraitementConfig#getTentatives()}</code></li>
-    * </ul>
-    * 
-    * 
-    */
-   @Override
-   public final String getMessage() {
-
-      final String message = MessageFormat.format(EXCEPTION_MESSAGE,
-            this.interruption.getStart(), this.interruption.getDelay(),
-            this.interruption.getTentatives());
-
-      return message;
-   }
-
 }
