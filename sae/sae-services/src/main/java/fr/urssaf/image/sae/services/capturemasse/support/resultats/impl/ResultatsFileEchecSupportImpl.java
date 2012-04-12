@@ -57,6 +57,8 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(ResultatsFileEchecSupportImpl.class);
 
+   private static final String PREFIX_TRC = "writeResultatsFile()";
+
    /**
     * {@inheritDoc}
     */
@@ -64,6 +66,9 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
    public final void writeResultatsFile(final File ecdeDirectory,
          final File sommaireFile, final CaptureMasseErreur erreur,
          final int nombreDocsTotal) {
+
+      LOGGER.debug("{} - Début de création du fichier (resultats.xml en erreur)",
+            PREFIX_TRC);
 
       FileInputStream sommaireStream = null;
       FileOutputStream resultatsStream = null;
@@ -119,6 +124,9 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
             }
          }
       }
+
+      LOGGER.debug("{} - Fin de création du fichier (resultats.xml en erreur)",
+            PREFIX_TRC);
 
    }
 

@@ -52,6 +52,10 @@ public class ResultatsFileEchecBloquantSupportImpl implements
    public final void writeResultatsFile(final File ecdeDirectory,
          final Exception erreur) {
 
+      LOGGER.debug(
+            "{} - Début de création du fichier (resultats.xml en erreur bloquante)",
+            PREFIX_TRC);
+
       final String pathResultats = ecdeDirectory.getAbsolutePath()
             + File.separator + "resultats.xml";
 
@@ -87,6 +91,9 @@ public class ResultatsFileEchecBloquantSupportImpl implements
             }
          }
       }
+
+      LOGGER.debug("{} - Fin de création du fichier (resultats.xml en erreur bloquante)",
+            PREFIX_TRC);
    }
 
    /**

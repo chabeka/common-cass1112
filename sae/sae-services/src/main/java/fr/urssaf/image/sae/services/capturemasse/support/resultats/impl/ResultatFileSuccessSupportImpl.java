@@ -42,6 +42,8 @@ public class ResultatFileSuccessSupportImpl implements
    private static final Logger LOGGER = LoggerFactory
          .getLogger(ResultatFileSuccessSupportImpl.class);
 
+   private static final String PREFIX_TRC = "writeResultatsFile()";
+
    @Autowired
    private ApplicationContext context;
 
@@ -60,6 +62,10 @@ public class ResultatFileSuccessSupportImpl implements
          final List<CaptureMasseIntegratedDocument> intDocuments,
          final int documentsCount) {
 
+      LOGGER.debug(
+            "{} - Début de création du fichier (resultats.xml en réussite)",
+            PREFIX_TRC);
+
       final ResultatsType resultatsType = creerResultat(documentsCount,
             intDocuments.size());
 
@@ -68,6 +74,10 @@ public class ResultatFileSuccessSupportImpl implements
             .createResultats(resultatsType);
 
       ecrireResultat(resultat, ecdeDirectory);
+
+      LOGGER.debug(
+            "{} - Fin de création du fichier (resultats.xml en réussite)",
+            PREFIX_TRC);
    }
 
    /**
