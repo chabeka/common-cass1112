@@ -11,6 +11,7 @@ import fr.urssaf.image.sae.ordonnanceur.exception.OrdonnanceurRuntimeException;
 import fr.urssaf.image.sae.ordonnanceur.factory.OrdonnanceurContexteFactory;
 import fr.urssaf.image.sae.ordonnanceur.model.OrdonnanceurConfiguration;
 import fr.urssaf.image.sae.ordonnanceur.service.CoordinationService;
+import fr.urssaf.image.sae.ordonnanceur.service.JobFailureService;
 import fr.urssaf.image.sae.ordonnanceur.util.RandomUtils;
 import fr.urssaf.image.sae.ordonnanceur.util.ValidateUtils;
 
@@ -31,6 +32,8 @@ public final class OrdonnanceurMain {
    private final String configLocation;
 
    private CoordinationService coordination;
+
+   private JobFailureService jobFailureService;
 
    private int intervalle;
 
@@ -60,6 +63,7 @@ public final class OrdonnanceurMain {
 
       try {
          coordination = context.getBean(CoordinationService.class);
+         jobFailureService = context.getBean(JobFailureService.class);
 
          OrdonnanceurConfiguration configuration = context
                .getBean(OrdonnanceurConfiguration.class);
@@ -91,9 +95,12 @@ public final class OrdonnanceurMain {
 
          LOG.debug("{} - il n'y a aucun traitement à lancer", PREFIX_LOG);
 
+         // on mémorise l'échec du traitement
+         jobFailureService.ajouterEchec(e.getJob().getIdJob(), e);
+
       } catch (Exception e) {
 
-         LOG.warn("Erreur grave lors du traitement de l'ordonnanceur.", e);
+         LOG.error("Erreur grave lors du traitement de l'ordonnanceur.", e);
       }
 
       int min = intervalle;

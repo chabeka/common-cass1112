@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import junit.framework.Assert;
 
+import org.apache.commons.lang.exception.NestableException;
 import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Test;
@@ -39,6 +40,9 @@ public class DecisionServiceTest {
    @Autowired
    private DFCESupport dfceSuppport;
 
+   @Autowired
+   private JobFailureService jobFailureService;
+
    @After
    public void after() {
 
@@ -63,6 +67,12 @@ public class DecisionServiceTest {
       SimpleJobRequest job2 = createJob(CAPTURE_MASSE_JN, CER69_SOMMAIRE);
       SimpleJobRequest job3 = createJob(CAPTURE_MASSE_JN, CER69_SOMMAIRE);
       SimpleJobRequest job4 = createJob(CAPTURE_MASSE_JN, CER44_SOMMAIRE);
+
+      // ajout de deux échecs pour le job 2
+      jobFailureService.ajouterEchec(job2.getIdJob(), new NestableException(
+            "echec n°1"));
+      jobFailureService.ajouterEchec(job2.getIdJob(), new NestableException(
+            "echec n°2"));
 
       jobsEnAttente.add(job1);
       jobsEnAttente.add(job2);
@@ -174,6 +184,31 @@ public class DecisionServiceTest {
       List<SimpleJobRequest> jobsEnAttente = new ArrayList<SimpleJobRequest>();
 
       jobsEnAttente.add(createJob(CAPTURE_MASSE_JN, CER69_SOMMAIRE));
+
+      decisionService.trouverJobALancer(jobsEnAttente, jobsEnCours);
+
+   }
+
+   /**
+    * traitement en masse a trop d'anomalies
+    */
+   @Test(expected = AucunJobALancerException.class)
+   public void decisionService_failure_noJobEnAttente_maxAnomalie()
+         throws AucunJobALancerException {
+
+      SimpleJobRequest job = createJob(CAPTURE_MASSE_JN, CER69_SOMMAIRE);
+
+      jobFailureService.ajouterEchec(job.getIdJob(), new NestableException(
+            "echec n°1"));
+      jobFailureService.ajouterEchec(job.getIdJob(), new NestableException(
+            "echec n°2"));
+      jobFailureService.ajouterEchec(job.getIdJob(), new NestableException(
+            "echec n°3"));
+
+      List<SimpleJobRequest> jobsEnCours = new ArrayList<SimpleJobRequest>();
+      List<SimpleJobRequest> jobsEnAttente = new ArrayList<SimpleJobRequest>();
+
+      jobsEnAttente.add(job);
 
       decisionService.trouverJobALancer(jobsEnAttente, jobsEnCours);
 
