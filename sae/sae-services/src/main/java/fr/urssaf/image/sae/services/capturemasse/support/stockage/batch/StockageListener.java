@@ -16,6 +16,7 @@ import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.AfterChunk;
 import org.springframework.batch.core.annotation.AfterStep;
+import org.springframework.batch.core.annotation.BeforeChunk;
 import org.springframework.batch.core.annotation.BeforeProcess;
 import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.core.annotation.OnProcessError;
@@ -27,7 +28,6 @@ import org.springframework.stereotype.Component;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
 import fr.urssaf.image.sae.services.capturemasse.model.CaptureMasseIntegratedDocument;
-import fr.urssaf.image.sae.services.capturemasse.modele.commun_sommaire_et_resultat.DocumentType;
 import fr.urssaf.image.sae.services.capturemasse.support.stockage.interruption.exception.InterruptionTraitementException;
 import fr.urssaf.image.sae.services.capturemasse.support.stockage.multithreading.InsertionPoolThreadExecutor;
 import fr.urssaf.image.sae.storage.dfce.services.support.exception.InsertionMasseRuntimeException;
@@ -85,6 +85,24 @@ public class StockageListener {
    }
 
    /**
+    * Action executée avant le chunk pour vérifier que l'on peut continuer le
+    * traitement
+    */
+   @BeforeChunk
+   public void beforeChunk() {
+
+      while (Boolean.TRUE.equals(executor.getIsInterrupted())) {
+         try {
+            LOGGER.debug("en attente de reprise de travail");
+            Thread.sleep(30000);
+         } catch (InterruptedException e) {
+            LOGGER.info("Impossible de traiter l'interruption", e);
+         }
+      }
+
+   }
+
+   /**
     * réalisé sur erreur de transformation
     * 
     * @param documentType
@@ -94,7 +112,7 @@ public class StockageListener {
     */
    @OnProcessError
    @SuppressWarnings("unchecked")
-   public final void logProcessError(final DocumentType documentType,
+   public final void logProcessError(final Object documentType,
          final Exception exception) {
 
       ExecutionContext jobExecution = stepExecution.getJobExecution()

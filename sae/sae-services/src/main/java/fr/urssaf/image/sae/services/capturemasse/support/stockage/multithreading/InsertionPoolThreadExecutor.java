@@ -322,4 +322,11 @@ public class InsertionPoolThreadExecutor extends ThreadPoolExecutor implements
       }
    }
 
+   /**
+    * @return the isInterrupted
+    */
+   public final Boolean getIsInterrupted() {
+      return isInterrupted;
+   }
+
 }
