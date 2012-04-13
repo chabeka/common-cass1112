@@ -4,8 +4,8 @@
 package fr.urssaf.image.sae.services.capturemasse.support.stockage.batch;
 
 import java.text.MessageFormat;
-import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -55,8 +55,9 @@ public class RollbackListener {
       } catch (ConnectionServiceEx e) {
 
          @SuppressWarnings("unchecked")
-         List<UUID> integDocs = (List<UUID>) stepExecution.getJobExecution()
-               .getExecutionContext().get(Constantes.INTEG_DOCS);
+         ConcurrentLinkedQueue<UUID> integDocs = (ConcurrentLinkedQueue<UUID>) stepExecution
+               .getJobExecution().getExecutionContext().get(
+                     Constantes.INTEG_DOCS);
 
          if (CollectionUtils.isNotEmpty(integDocs)) {
             String idTraitement = (String) stepExecution.getJobParameters()
