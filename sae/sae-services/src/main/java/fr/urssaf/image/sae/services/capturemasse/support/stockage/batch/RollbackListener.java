@@ -4,7 +4,10 @@
 package fr.urssaf.image.sae.services.capturemasse.support.stockage.batch;
 
 import java.text.MessageFormat;
+import java.util.List;
+import java.util.UUID;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepExecution;
@@ -51,20 +54,27 @@ public class RollbackListener {
 
       } catch (ConnectionServiceEx e) {
 
-         String idTraitement = (String) stepExecution.getJobParameters()
-               .getString(Constantes.ID_TRAITEMENT);
+         @SuppressWarnings("unchecked")
+         List<UUID> integDocs = (List<UUID>) stepExecution.getJobExecution()
+               .getExecutionContext().get(Constantes.INTEG_DOCS);
 
-         String errorMessage = MessageFormat.format(
-               "{0} - Une exception a été levée lors du rollback : {1}",
-               TRC_ROLLBACK, idTraitement);
+         if (CollectionUtils.isNotEmpty(integDocs)) {
+            String idTraitement = (String) stepExecution.getJobParameters()
+                  .getString(Constantes.ID_TRAITEMENT);
 
-         LOGGER.error(errorMessage, e);
+            String errorMessage = MessageFormat.format(
+                  "{0} - Une exception a été levée lors du rollback : {1}",
+                  TRC_ROLLBACK, idTraitement);
 
-         LOGGER
-               .error(
+            LOGGER.error(errorMessage, e);
 
-                     "Le traitement de masse n°{} doit être rollbacké par une procédure d'exploitation",
-                     idTraitement);
+            LOGGER
+                  .error(
+
+                        "Le traitement de masse n°{} doit être rollbacké par une procédure d'exploitation",
+                        idTraitement);
+         }
+
          throw e;
       }
 
