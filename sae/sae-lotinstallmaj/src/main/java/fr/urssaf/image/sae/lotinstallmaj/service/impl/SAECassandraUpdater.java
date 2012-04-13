@@ -185,6 +185,7 @@ public class SAECassandraUpdater {
    }
 
    private void connectToKeyspace() {
+      if (keyspace != null) return;
       ConfigurableConsistencyLevel ccl = new ConfigurableConsistencyLevel();
       ccl.setDefaultReadConsistencyLevel(HConsistencyLevel.QUORUM);
       ccl.setDefaultWriteConsistencyLevel(HConsistencyLevel.QUORUM);
@@ -217,6 +218,7 @@ public class SAECassandraUpdater {
       if (!cfExists(keyspaceDef, "Parameters")) return 0;
       
       // On lit la version dans la base de données
+      connectToKeyspace();
       ColumnFamilyTemplate<String, String> template = getParametersTemplate();
       String key = "parameters";
       return template.querySingleColumn(key, "versionBDD", LongSerializer.get()).getValue();
