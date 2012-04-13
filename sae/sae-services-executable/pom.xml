@@ -5,12 +5,12 @@
    <parent>
       <groupId>fr.urssaf.image.sae</groupId>
       <artifactId>sae</artifactId>
-      <version>12.5.10.5-SNAPSHOT</version>
+      <version>12.5.11.1</version>
    </parent>
 
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-services-executable</artifactId>
-   <version>12.5.10.5-SNAPSHOT</version>
+   <version>12.5.11.1</version>
    
    <name>sae-services-executable</name>
    
@@ -63,7 +63,7 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-services</artifactId>
-         <version>12.5.10.5-SNAPSHOT</version>
+         <version>12.5.11.1</version>
       </dependency>
       
 
