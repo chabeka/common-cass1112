@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.sae.lotinstallmaj.exception.MajLotRuntimeException;
+import fr.urssaf.image.sae.lotinstallmaj.modele.CassandraConfig;
 import fr.urssaf.image.sae.lotinstallmaj.modele.DfceConfig;
 import fr.urssaf.image.sae.lotinstallmaj.service.MajLotService;
 
@@ -27,6 +28,7 @@ public final class MajLotServiceImpl implements MajLotService {
 
    public static final String CODE_ACTIVITE = "CODEACTIVITENONOBLIGATOIRE";
    public static final String DUREE_CONSERVATION = "DUREECONSERVATIONDEMANDEDELAICOTISANT";
+   public static final String CASSANDRA_120510 = "CASSANDRA_120510";
    
    public static final int DUREE_1825 = 1825;
    public static final int DUREE_1643 = 1643;
@@ -39,7 +41,10 @@ public final class MajLotServiceImpl implements MajLotService {
    
    @Autowired
    private DfceConfig dfceConfig;
-   
+
+   @Autowired
+   private CassandraConfig cassandraConfig;
+
    /**
     * {@inheritDoc}
     */
@@ -57,6 +62,10 @@ public final class MajLotServiceImpl implements MajLotService {
       } else if (DUREE_CONSERVATION.equalsIgnoreCase(nomOperation) ) {
          
          updateDureeConservation();
+         
+      } else if (CASSANDRA_120510.equalsIgnoreCase(nomOperation) ) {
+         
+         updateCassandra120510();
          
       } else {
          
@@ -143,6 +152,17 @@ public final class MajLotServiceImpl implements MajLotService {
          
       }
       
+   }
+
+   /**
+    * Pour lot 120510 du SAE : création du keyspace "SAE" dans cassandra, en version 1
+    */
+   private void updateCassandra120510() {
+      LOG.info("Début de l'opération : création du keyspace SAE");
+      // Récupération de la chaîne de connexion au cluster cassandra
+      SAECassandraUpdater updater = new SAECassandraUpdater(cassandraConfig);
+      updater.updateToVersion1();
+      LOG.info("Fin de l'opération : création du keyspace SAE");
    }
 
 }

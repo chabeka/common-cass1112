@@ -116,6 +116,12 @@
          <version>${commons.dfce}</version>
       </dependency>
 
+      <!-- COMMONS CASSANDRA -->
+      <dependency>
+         <groupId>fr.urssaf.image.commons</groupId>
+         <artifactId>commons-cassandra</artifactId>
+         <version>${commons.cassandra}</version>         
+      </dependency>
 
    </dependencies>
 </project>

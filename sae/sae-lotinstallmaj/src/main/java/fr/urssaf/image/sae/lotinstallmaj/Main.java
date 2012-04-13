@@ -21,7 +21,7 @@ public final class Main {
    }
    
    /**
-    * Méthode mainn du JAR Executable
+    * Méthode main du JAR Executable
     * 
     * @param args 
     *           arguments de la ligne de commande du JAR Executable

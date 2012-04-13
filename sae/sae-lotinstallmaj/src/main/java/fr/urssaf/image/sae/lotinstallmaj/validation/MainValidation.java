@@ -113,21 +113,17 @@ public class MainValidation {
    private void checkOperationName(String nomOperation)
          throws MajLotGeneralException {
 
-      // Pour l'instant, on ne connait qu'une seule opération
+      if (MajLotServiceImpl.CODE_ACTIVITE.equalsIgnoreCase(nomOperation)) return;
+      if (MajLotServiceImpl.CASSANDRA_120510.equalsIgnoreCase(nomOperation)) return;
 
       // TODO : Traiter le cas de la mise à jour de la durée de conservation de
       // 3.1.3.1.1 (en attente du JIRA CRTL-81)
-      if (!MajLotServiceImpl.CODE_ACTIVITE.equalsIgnoreCase(nomOperation)) {
-
-         String message = String.format("Erreur : Opération inconnue : %s",
-               nomOperation);
-
-         LOG.warn(message);
-
-         throw new MajLotGeneralException(message);
-
-      }
-
+      
+      // Opération non trouvée
+      String message = String.format("Erreur : Opération inconnue : %s",
+            nomOperation);
+      LOG.warn(message);
+      throw new MajLotGeneralException(message);
    }
 
 }

@@ -19,6 +19,13 @@
       <constructor-arg ref="saeConfigResource" />
       
    </bean>
+
+   <bean
+      id="cassandraConfig"
+      factory-bean="cassandraConfigFactory"
+      factory-method="createCassandraConfig">
+      <constructor-arg ref="saeConfigResource" />
+   </bean>
    
    <!--Gestion de message à partir d'un fichier -->
    <bean id="messageSource_sae_lotservice"
