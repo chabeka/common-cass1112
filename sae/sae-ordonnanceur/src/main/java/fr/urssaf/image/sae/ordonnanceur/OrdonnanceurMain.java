@@ -6,6 +6,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.util.Assert;
 
 import fr.urssaf.image.sae.ordonnanceur.exception.AucunJobALancerException;
+import fr.urssaf.image.sae.ordonnanceur.exception.JobRuntimeException;
 import fr.urssaf.image.sae.ordonnanceur.exception.OrdonnanceurRuntimeException;
 import fr.urssaf.image.sae.ordonnanceur.factory.OrdonnanceurContexteFactory;
 import fr.urssaf.image.sae.ordonnanceur.model.OrdonnanceurConfiguration;
@@ -83,6 +84,10 @@ public final class OrdonnanceurMain {
          coordination.lancerTraitement();
 
       } catch (AucunJobALancerException e) {
+
+         LOG.debug("{} - il n'y a aucun traitement à lancer", PREFIX_LOG);
+
+      } catch (JobRuntimeException e) {
 
          LOG.debug("{} - il n'y a aucun traitement à lancer", PREFIX_LOG);
 

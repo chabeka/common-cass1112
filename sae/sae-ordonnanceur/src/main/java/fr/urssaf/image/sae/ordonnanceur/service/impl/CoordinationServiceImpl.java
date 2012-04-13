@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.sae.ordonnanceur.exception.AucunJobALancerException;
+import fr.urssaf.image.sae.ordonnanceur.exception.JobRuntimeException;
 import fr.urssaf.image.sae.ordonnanceur.service.CoordinationService;
 import fr.urssaf.image.sae.ordonnanceur.service.DecisionService;
 import fr.urssaf.image.sae.ordonnanceur.service.JobService;
@@ -111,17 +112,24 @@ public class CoordinationServiceImpl implements CoordinationService {
 
          // le traitement n'existe plus, on chercher un nouveau traitement à
          // lancer
-         LOG.error("{} - échec de la réservation du traitement {}",
-               new Object[] { PREFIX_LOG, toString(traitement) }, e);
-         traitement = trouverJobALancer();
+         LOG
+               .warn(
+                     "{} - échec de la réservation du traitement {} - il n'existe plus",
+                     new Object[] { PREFIX_LOG, toString(traitement) });
+         // traitement = trouverJobALancer();
+         throw new JobRuntimeException(traitement, e);
 
       } catch (JobDejaReserveException e) {
 
          // le traitement est déjà réservé, on chercher un nouveau traitement à
          // lancer
-         LOG.error("{} - échec de la réservation du traitement {}",
-               new Object[] { PREFIX_LOG, toString(traitement) }, e);
-         traitement = trouverJobALancer();
+         LOG
+               .warn(
+                     "{} - échec de la réservation du traitement {} - il est déjà réservé par {}",
+                     new Object[] { PREFIX_LOG, toString(traitement),
+                           e.getServer() });
+         // traitement = trouverJobALancer();
+         throw new JobRuntimeException(traitement, e);
 
       }
 

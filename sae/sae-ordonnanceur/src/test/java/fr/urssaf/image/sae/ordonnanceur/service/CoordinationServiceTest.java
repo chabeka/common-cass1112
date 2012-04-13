@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.ordonnanceur.exception.AucunJobALancerException;
+import fr.urssaf.image.sae.ordonnanceur.exception.JobRuntimeException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.model.SimpleJobRequest;
@@ -34,6 +36,19 @@ public class CoordinationServiceTest {
    @Autowired
    private DecisionService decisionService;
 
+   private SimpleJobRequest traitement;
+
+   @Before
+   public void before() {
+
+      UUID idTraitement = UUID.randomUUID();
+
+      traitement = new SimpleJobRequest();
+
+      traitement.setType("traitement");
+      traitement.setIdJob(idTraitement);
+   }
+
    @After
    public void after() {
       EasyMock.reset(jobService);
@@ -47,35 +62,132 @@ public class CoordinationServiceTest {
       List<SimpleJobRequest> jobsEnAttente = new ArrayList<SimpleJobRequest>();
 
       EasyMock.expect(jobService.recupJobsALancer()).andReturn(jobsEnAttente)
-            .times(3);
+            .once();
 
       List<SimpleJobRequest> jobsEnCours = new ArrayList<SimpleJobRequest>();
 
       EasyMock.expect(jobService.recupJobEnCours()).andReturn(jobsEnCours)
-            .times(3);
+            .once();
 
-      UUID idTraitement = UUID.randomUUID();
-      jobService.reserveJob(idTraitement);
-
-      EasyMock.expectLastCall().andThrow(
-            new JobDejaReserveException(idTraitement, "serveur")).andThrow(
-            new JobInexistantException(idTraitement)).once().once();
-
-      SimpleJobRequest traitement = new SimpleJobRequest();
-
-      traitement.setType("traitement");
-      traitement.setIdJob(idTraitement);
+      jobService.reserveJob(traitement.getIdJob());
 
       EasyMock.expect(
             decisionService.trouverJobALancer(jobsEnAttente, jobsEnCours))
-            .andReturn(traitement).times(3);
+            .andReturn(traitement).once();
 
       EasyMock.replay(jobService, decisionService);
 
       Assert.assertEquals("identifiant du traitement lancé inattendu",
-            idTraitement, coordinationService.lancerTraitement());
+            traitement.getIdJob(), coordinationService.lancerTraitement());
 
       EasyMock.verify(jobService, decisionService);
+
+   }
+
+   @Test
+   public void lancerTraitement_failure_JobDejaReserveException()
+         throws AucunJobALancerException, JobInexistantException,
+         JobDejaReserveException {
+
+      List<SimpleJobRequest> jobsEnAttente = new ArrayList<SimpleJobRequest>();
+
+      EasyMock.expect(jobService.recupJobsALancer()).andReturn(jobsEnAttente)
+            .once();
+
+      List<SimpleJobRequest> jobsEnCours = new ArrayList<SimpleJobRequest>();
+
+      EasyMock.expect(jobService.recupJobEnCours()).andReturn(jobsEnCours)
+            .once();
+
+      jobService.reserveJob(traitement.getIdJob());
+
+      EasyMock.expectLastCall().andThrow(
+            new JobDejaReserveException(traitement.getIdJob(), "serveur"));
+
+      EasyMock.expect(
+            decisionService.trouverJobALancer(jobsEnAttente, jobsEnCours))
+            .andReturn(traitement).once();
+
+      EasyMock.replay(jobService, decisionService);
+
+      try {
+         coordinationService.lancerTraitement();
+
+         EasyMock.verify(jobService, decisionService);
+
+         Assert.fail("Une exception JobRuntimeException doit être levée");
+
+      } catch (JobRuntimeException e) {
+
+         Assert.assertEquals(
+               "identifiant du traitement levant l'exception est inattendu",
+               traitement.getIdJob(), e.getJob().getIdJob());
+
+         Assert.assertTrue("Le traitement doit être déjà réservé",
+               e.getCause() instanceof JobDejaReserveException);
+
+         JobDejaReserveException cause = (JobDejaReserveException) e.getCause();
+
+         Assert.assertEquals(
+               "identifiant du traitement déjà réservé est inattendu",
+               traitement.getIdJob(), cause.getInstanceId());
+
+         Assert.assertEquals("Le traitement doit être déjà réservé", "serveur",
+               cause.getServer());
+
+      }
+
+   }
+
+   @Test
+   public void lancerTraitement_failure_JobInexistantException()
+         throws AucunJobALancerException, JobInexistantException,
+         JobDejaReserveException {
+
+      List<SimpleJobRequest> jobsEnAttente = new ArrayList<SimpleJobRequest>();
+
+      EasyMock.expect(jobService.recupJobsALancer()).andReturn(jobsEnAttente)
+            .once();
+
+      List<SimpleJobRequest> jobsEnCours = new ArrayList<SimpleJobRequest>();
+
+      EasyMock.expect(jobService.recupJobEnCours()).andReturn(jobsEnCours)
+            .once();
+
+      jobService.reserveJob(traitement.getIdJob());
+
+      EasyMock.expectLastCall().andThrow(
+            new JobInexistantException(traitement.getIdJob()));
+
+      EasyMock.expect(
+            decisionService.trouverJobALancer(jobsEnAttente, jobsEnCours))
+            .andReturn(traitement).once();
+
+      EasyMock.replay(jobService, decisionService);
+
+      try {
+         coordinationService.lancerTraitement();
+
+         EasyMock.verify(jobService, decisionService);
+
+         Assert.fail("Une exception JobRuntimeException doit être levée");
+
+      } catch (JobRuntimeException e) {
+
+         Assert.assertEquals(
+               "identifiant du traitement levant l'exception est inattendu",
+               traitement.getIdJob(), e.getJob().getIdJob());
+
+         Assert.assertTrue("Le traitement doit être déjà réservé",
+               e.getCause() instanceof JobInexistantException);
+
+         JobInexistantException cause = (JobInexistantException) e.getCause();
+
+         Assert.assertEquals(
+               "identifiant du traitement inexistant est inattendu", traitement
+                     .getIdJob(), cause.getInstanceId());
+
+      }
 
    }
 
