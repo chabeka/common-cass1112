@@ -111,9 +111,9 @@ public class StorageDocumentWriter implements ItemWriter<StorageDocument> {
                + index, storageDocument, this);
 
          poolExecutor.execute(command);
-         
+
          LOGGER.debug("{} - nombre de documents en attente dans le pool : {}",
-               TRC_INSERT, poolExecutor.getTaskCount());
+               TRC_INSERT, poolExecutor.getQueue().size());
 
          index++;
 
