@@ -35,7 +35,7 @@ public class FinTraitementFlagListener {
 
          for (Throwable throwable : stepExecution.getFailureExceptions()) {
             LOGGER
-                  .debug(
+                  .warn(
                         "Erreur lors de l'étape d'écriture du fichier fin_traitement.flag",
                         throwable);
          }

@@ -39,6 +39,11 @@ import fr.urssaf.image.sae.storage.dfce.services.support.exception.InsertionMass
 @Component
 public class StockageListener {
 
+   /**
+    * 
+    */
+   private static final int THREAD_SLEEP = 30000;
+
    private StepExecution stepExecution;
 
    private static final Logger LOGGER = LoggerFactory
@@ -89,12 +94,12 @@ public class StockageListener {
     * traitement
     */
    @BeforeChunk
-   public void beforeChunk() {
+   public final void beforeChunk() {
 
       while (Boolean.TRUE.equals(executor.getIsInterrupted())) {
          try {
             LOGGER.debug("en attente de reprise de travail");
-            Thread.sleep(30000);
+            Thread.sleep(THREAD_SLEEP);
          } catch (InterruptedException e) {
             LOGGER.info("Impossible de traiter l'interruption", e);
          }
@@ -115,6 +120,8 @@ public class StockageListener {
    public final void logProcessError(final Object documentType,
          final Exception exception) {
 
+      LOGGER.warn("erreur lors du traitement de persistance", exception);
+
       ExecutionContext jobExecution = stepExecution.getJobExecution()
             .getExecutionContext();
       ConcurrentLinkedQueue<String> codes = (ConcurrentLinkedQueue<String>) jobExecution
@@ -128,8 +135,6 @@ public class StockageListener {
       index.add(stepExecution.getExecutionContext().getInt(
             Constantes.CTRL_INDEX));
       exceptions.add(new Exception(exception.getMessage()));
-
-      LOGGER.warn("erreur lors du traitement de persistance", exception);
    }
 
    /**

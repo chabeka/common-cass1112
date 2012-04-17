@@ -77,7 +77,7 @@ public class ControleListener {
    @OnReadError
    @SuppressWarnings( { "unchecked", "PMD.AvoidThrowingRawExceptionTypes" })
    public final void logReadError(final Exception exception) {
-      LOGGER.error("une erreur interne à l'application est survenue "
+      LOGGER.warn("une erreur interne à l'application est survenue "
             + "lors du traitement de la capture de masse", exception);
 
       ExecutionContext context = stepExecution.getJobExecution()
@@ -123,6 +123,9 @@ public class ControleListener {
       listIndex.add(stepExecution.getExecutionContext().getInt(
             Constantes.CTRL_INDEX));
       listExceptions.add(new Exception(exception.getMessage()));
+
+      LOGGER.warn("une erreur est survenue lors des controles des documents",
+            exception);
 
    }
 

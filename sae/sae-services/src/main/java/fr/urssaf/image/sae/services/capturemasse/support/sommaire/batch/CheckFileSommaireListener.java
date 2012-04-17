@@ -3,7 +3,6 @@
  */
 package fr.urssaf.image.sae.services.capturemasse.support.sommaire.batch;
 
-import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.commons.collections.CollectionUtils;

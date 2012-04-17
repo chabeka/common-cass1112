@@ -35,8 +35,8 @@ public class ResultatsFileFailureErrorListener {
 
          for (Throwable throwable : stepExecution.getFailureExceptions()) {
             LOGGER
-                  .debug(
-                        "Erreur lors de l'étape d'écriture du fichier fin_traitement.flag",
+                  .warn(
+                        "Erreur lors de l'étape d'écriture du fichier resultats.xml",
                         throwable);
          }
       }

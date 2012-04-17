@@ -64,7 +64,7 @@ public class ResultatsFileFailureErrorTasklet implements Tasklet {
 
       Exception erreur = erreurs.toArray(new Exception[0])[0];
 
-      LOGGER.error(erreur.getMessage());
+      LOGGER.warn(erreur.getMessage());
 
       final String sommairePath = context.getString(Constantes.SOMMAIRE_FILE);
 

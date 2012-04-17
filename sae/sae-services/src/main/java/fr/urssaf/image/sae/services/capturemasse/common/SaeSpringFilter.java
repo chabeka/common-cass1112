@@ -17,7 +17,7 @@ public class SaeSpringFilter extends Filter<ILoggingEvent> {
     * {@inheritDoc}
     */
    @Override
-   public FilterReply decide(ILoggingEvent event) {
+   public final FilterReply decide(ILoggingEvent event) {
 
       if (event.getLoggerName().contains("org.springframework.batch")) {
          return FilterReply.DENY;

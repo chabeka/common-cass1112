@@ -120,11 +120,11 @@ public class ResultatsFileFailureTasklet implements Tasklet {
 
          XmlValidationUtils.parse(resultats, xsdSchema);
       } catch (IOException ioExcept) {
-         LOGGER.error("Erreur lors de la validation XSD", ioExcept);
+         LOGGER.warn("Erreur lors de la validation XSD", ioExcept);
       } catch (ParserConfigurationException parseExcept) {
-         LOGGER.error("Erreur lors de la validation XSD", parseExcept);
+         LOGGER.warn("Erreur lors de la validation XSD", parseExcept);
       } catch (SAXException saxExcept) {
-         LOGGER.error("Erreur lors de la validation XSD", saxExcept);
+         LOGGER.warn("Erreur lors de la validation XSD", saxExcept);
       }
 
       return RepeatStatus.FINISHED;
