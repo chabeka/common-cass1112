@@ -4,6 +4,8 @@
 package fr.urssaf.image.sae.services.capturemasse.support.stockage.batch;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -18,8 +20,16 @@ import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
 import fr.urssaf.image.sae.services.capturemasse.support.stockage.rollback.RollbackSupport;
+import fr.urssaf.image.sae.services.document.SAEDocumentService;
+import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
+import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedToConsultEx;
+import fr.urssaf.image.sae.services.exception.search.MetaDataUnauthorizedToSearchEx;
+import fr.urssaf.image.sae.services.exception.search.SAESearchServiceEx;
+import fr.urssaf.image.sae.services.exception.search.SyntaxLuceneEx;
+import fr.urssaf.image.sae.services.exception.search.UnknownLuceneMetadataEx;
 
 /**
  * Tasklet pour le rollback
@@ -33,8 +43,18 @@ public class RollbackTasklet implements Tasklet {
 
    private static final String TRC_ROLLBACK = "rollbacktasklet()";
 
+   private static final String TRC_FIND = "trouverDocumentsRestants()";
+
+   /**
+    * Nombre max d'éléments renvoyés
+    */
+   private static final int MAX_RESULT = 10;
+
    @Autowired
    private RollbackSupport support;
+
+   @Autowired
+   private SAEDocumentService documentService;
 
    /**
     * {@inheritDoc}
@@ -90,7 +110,7 @@ public class RollbackTasklet implements Tasklet {
             listIntegDocs.remove(strDocumentID);
 
             if (CollectionUtils.isEmpty(listIntegDocs)) {
-               status = RepeatStatus.FINISHED;
+               status = realiserRecherche(chunkContext);
             } else {
                status = RepeatStatus.CONTINUABLE;
             }
@@ -100,7 +120,7 @@ public class RollbackTasklet implements Tasklet {
             LOGGER.debug("{} - Aucun document à supprimer",
                   new Object[] { TRC_ROLLBACK });
 
-            status = RepeatStatus.FINISHED;
+            status = realiserRecherche(chunkContext);
          }
 
       } catch (Exception e) {
@@ -126,4 +146,120 @@ public class RollbackTasklet implements Tasklet {
       return status;
    }
 
+   /**
+    * @param chunkContext
+    */
+   private RepeatStatus realiserRecherche(ChunkContext chunkContext) {
+
+      RepeatStatus repeatStatus;
+
+      ConcurrentLinkedQueue<UUID> listUUID = new ConcurrentLinkedQueue<UUID>();
+
+      if (!chunkContext.getStepContext().getStepExecution()
+            .getExecutionContext().containsKey(Constantes.SEARCH_ROLLBACK)) {
+
+         LOGGER
+               .debug(
+                     "{} - On recherche les potentiels documents restants à supprimer",
+                     new Object[] { TRC_ROLLBACK });
+
+         String idTraitement = (String) chunkContext.getStepContext()
+               .getJobParameters().get(Constantes.ID_TRAITEMENT);
+
+         List<UntypedDocument> listDocs = trouverDocumentsRestants(idTraitement);
+
+         if (CollectionUtils.isNotEmpty(listDocs)) {
+            listUUID = transformerListeDocEnUuid(listDocs);
+         }
+      }
+
+      if (CollectionUtils.isEmpty(listUUID)) {
+         repeatStatus = RepeatStatus.FINISHED;
+
+      } else if (MAX_RESULT == listUUID.size()) {
+
+         repeatStatus = RepeatStatus.CONTINUABLE;
+
+         chunkContext.getStepContext().getStepExecution().getJobExecution()
+               .getExecutionContext().put(Constantes.INTEG_DOCS, listUUID);
+      } else {
+         repeatStatus = RepeatStatus.CONTINUABLE;
+
+         chunkContext.getStepContext().getStepExecution().getJobExecution()
+               .getExecutionContext().put(Constantes.INTEG_DOCS, listUUID);
+
+         chunkContext.getStepContext().getStepExecution().getExecutionContext()
+               .put(Constantes.SEARCH_ROLLBACK, Boolean.TRUE.toString());
+      }
+
+      return repeatStatus;
+
+   }
+
+   /**
+    * @param idTraitement
+    */
+   private List<UntypedDocument> trouverDocumentsRestants(String idTraitement) {
+
+      String requete = "IdTraitementMasseInterne:" + idTraitement;
+      List<String> metadata = new ArrayList<String>();
+
+      List<UntypedDocument> listDocs = null;
+
+      try {
+         listDocs = documentService.search(requete, metadata, MAX_RESULT);
+      } catch (MetaDataUnauthorizedToSearchEx e) {
+         LOGGER
+               .info(
+                     "{} - Erreur lors de la recherche des documents restants à rollbacker",
+                     TRC_FIND, e);
+      } catch (MetaDataUnauthorizedToConsultEx e) {
+         LOGGER
+               .info(
+                     "{} - Erreur lors de la recherche des documents restants à rollbacker",
+                     TRC_FIND, e);
+      } catch (UnknownDesiredMetadataEx e) {
+         LOGGER
+               .info(
+                     "{} - Erreur lors de la recherche des documents restants à rollbacker",
+                     TRC_FIND, e);
+      } catch (UnknownLuceneMetadataEx e) {
+         LOGGER
+               .info(
+                     "{} - Erreur lors de la recherche des documents restants à rollbacker",
+                     TRC_FIND, e);
+      } catch (SyntaxLuceneEx e) {
+         LOGGER
+               .info(
+                     "{} - Erreur lors de la recherche des documents restants à rollbacker",
+                     TRC_FIND, e);
+      } catch (SAESearchServiceEx e) {
+         LOGGER
+               .info(
+                     "{} - Erreur lors de la recherche des documents restants à rollbacker",
+                     TRC_FIND, e);
+      }
+
+      return listDocs;
+
+   }
+
+   /**
+    * @param listDocs
+    * @return
+    */
+   private ConcurrentLinkedQueue<UUID> transformerListeDocEnUuid(
+         List<UntypedDocument> listDocs) {
+
+      ConcurrentLinkedQueue<UUID> list = new ConcurrentLinkedQueue<UUID>();
+
+      if (CollectionUtils.isNotEmpty(listDocs)) {
+
+         for (UntypedDocument document : listDocs) {
+            list.add(document.getUuid());
+         }
+      }
+
+      return list;
+   }
 }

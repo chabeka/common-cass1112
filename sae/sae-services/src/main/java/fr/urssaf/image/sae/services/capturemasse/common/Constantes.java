@@ -77,6 +77,11 @@ public final class Constantes {
    public static final String ERR_BUL003 = "SAE-CA-BUL003";
 
    /**
+    * Recherche réalisée pour le rollback
+    */
+   public static final String SEARCH_ROLLBACK = "SEARCH_ROLLBACK";
+
+   /**
     * Constructeur
     */
    private Constantes() {

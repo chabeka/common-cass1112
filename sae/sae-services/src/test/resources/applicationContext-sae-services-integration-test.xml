@@ -15,6 +15,9 @@
       primary="true">
       <qualifier value="storageServiceProvider" />
    </bean>
-
+   
+   
+   <bean id="saeDocumentService" factory-bean="mockFactory" factory-method="createSaeDocumentService"
+      primary="true" />
 
 </beans>

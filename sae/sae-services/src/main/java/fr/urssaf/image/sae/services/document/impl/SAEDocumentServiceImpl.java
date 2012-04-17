@@ -79,4 +79,16 @@ public class SAEDocumentServiceImpl implements SAEDocumentService {
          MetaDataUnauthorizedToConsultEx {
       return saeConsultationService.consultation(consultParams);
    }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public List<UntypedDocument> search(String requete,
+         List<String> listMetaDesired, int maxResult)
+         throws MetaDataUnauthorizedToSearchEx,
+         MetaDataUnauthorizedToConsultEx, UnknownDesiredMetadataEx,
+         UnknownLuceneMetadataEx, SyntaxLuceneEx, SAESearchServiceEx {
+      return saeSearchService.search(requete, listMetaDesired, maxResult);
+   }
 }

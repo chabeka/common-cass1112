@@ -3,10 +3,19 @@
  */
 package fr.urssaf.image.sae.utils;
 
-import org.easymock.EasyMock;
+import javax.xml.bind.JAXBElement;
 
+import org.easymock.EasyMock;
+import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.item.ItemReader;
+
+import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
+import fr.urssaf.image.sae.services.capturemasse.modele.commun_sommaire_et_resultat.DocumentType;
 import fr.urssaf.image.sae.services.capturemasse.support.controle.CaptureMasseControleSupport;
+import fr.urssaf.image.sae.services.capturemasse.support.sommaire.batch.ConvertSommaireDocumentProcessor;
+import fr.urssaf.image.sae.services.document.SAEDocumentService;
 import fr.urssaf.image.sae.services.enrichment.SAEEnrichmentMetadataService;
+import fr.urssaf.image.sae.storage.dfce.manager.DFCEServicesManager;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 import fr.urssaf.image.sae.storage.services.storagedocument.DeletionService;
 import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentService;
@@ -55,7 +64,7 @@ public class MockFactoryBean {
 
       return EasyMock.createMock(SAEEnrichmentMetadataService.class);
    }
-   
+
    /**
     * création d'un mock de {@link StorageServiceProvider}
     * 
@@ -64,5 +73,32 @@ public class MockFactoryBean {
    public final StorageServiceProvider createStorageServiceProvider() {
 
       return EasyMock.createMock(StorageServiceProvider.class);
+   }
+
+   /**
+    * création d'un mock de {@link DFCEServicesManager}
+    * 
+    * @return un mock DFCEServicesManager
+    */
+   public final DFCEServicesManager createServicesManager() {
+      return EasyMock.createMock(DFCEServicesManager.class);
+   }
+
+   /**
+    * création d'un mock {@link ConvertSommaireDocumentProcessor}
+    * 
+    * @return un mock ConvertSommaireDocumentProcessor
+    */
+   public final ItemProcessor<JAXBElement<DocumentType>, UntypedDocument> createConvertSommaireProcessor() {
+      return EasyMock.createMock(ItemProcessor.class);
+   }
+
+   /**
+    * création d'un mock {@link SAEDocumentService}
+    * 
+    * @return un mock SAEDocumentService
+    */
+   public final SAEDocumentService createSaeDocumentService() {
+      return EasyMock.createMock(SAEDocumentService.class);
    }
 }

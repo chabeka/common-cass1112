@@ -94,104 +94,12 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
          List<String> listMetaDesired) throws SAESearchServiceEx,
          MetaDataUnauthorizedToSearchEx, MetaDataUnauthorizedToConsultEx,
          UnknownDesiredMetadataEx, UnknownLuceneMetadataEx, SyntaxLuceneEx {
-      // Traces debug - entrée méthode
-      String prefixeTrc = "search()";
-      LOG.debug("{} - Début", prefixeTrc);
-      // Fin des traces debug - entrée méthode
-      LOG.debug(
-            "{} - Requête de recherche envoyée par l'application cliente : {}",
-            prefixeTrc, requete);
-      LOG
-            .debug(
-                  "{} - Liste des métadonnées souhaiteés envoyée par l'application cliente : {}",
-                  prefixeTrc,
-                  StringUtils.isEmpty(buildMessageFromList(listMetaDesired)) ? "Vide"
-                        : buildMessageFromList(listMetaDesired));
-      boolean isFromRefrentiel = false;
-      // liste de résultats à envoyer
-      List<UntypedDocument> listUntypedDocument = new ArrayList<UntypedDocument>();
-      // conversion code court
-      List<SAEMetadata> listCodCourt = new ArrayList<SAEMetadata>();
-      List<SAEMetadata> listCodCourtConsult = new ArrayList<SAEMetadata>();
-      try {
-         List<String> longCodesReq = extractLongCodeFromQuery(requete);
-         checkExistingLuceneMetadata(longCodesReq);
-         String requeteFinal = requete;
-         // Map pour l'association codeCourt codeLong - Remplacement des codes
-         // long par les codes court.
-         Map<String, String> map = longCodeToShortCode(longCodesReq);
-         for (Map.Entry<String, String> e : map.entrySet()) {
-            requeteFinal = requeteFinal.replace(e.getValue(), e.getKey());
-         }
-         LOG
-               .debug(
-                     "{} - Requête de recherche après remplacement des codes longs par les codes courts : {}",
-                     prefixeTrc, requeteFinal);
-         String requeteVerif = requeteFinal;
-         // parcours de la map et remplissement d'une liste afin de verifier
-         // plus tard si la liste
-         // des codes courts est rechercheable : map <codeCourt, codeLong>
-         SAEMetadata saeM = null;
-         for (Map.Entry<String, String> e : map.entrySet()) {
-            saeM = new SAEMetadata();
-            requeteVerif = requeteVerif.replace(e.getKey(), e.getValue());
-            saeM.setLongCode(e.getValue());
-            saeM.setShortCode(e.getKey());
-            // listCodCourt.add(new SAEMetadata(e.getValue(), e.getKey()));
-            listCodCourt.add(saeM);
-         }
-         if (checkConversion(requete, requeteVerif)) {
-            checkExistingMetadataDesired(listMetaDesired);
-            checkSearchableLuceneMetadata(listCodCourt);
-            if (listMetaDesired.isEmpty()) {
-               listCodCourtConsult = recupererListDefaultMetadatas();
-               isFromRefrentiel = true;
-            } else {
-               listCodCourtConsult = recupererListCodCourtByLongCode(listMetaDesired);
-            }
-            checkConsultableDesiredMetadata(listCodCourtConsult,
-                  isFromRefrentiel);
-            LOG
-                  .debug(
-                        "{} - Début de la vérification DFCE: La requête de recherche est syntaxiquement correcte",
-                        prefixeTrc);
-            List<StorageDocument> listStorageDocument = searchStorageDocuments(
-                  requeteFinal, Integer.parseInt(ServiceMessageHandler
-                        .getMessage("max.lucene.results")) + 1,
-                  listCodCourtConsult);
-            LOG
-                  .debug(
-                        "{} - Fin de la vérification DFCE: La requête de recherche est syntaxiquement correcte",
-                        prefixeTrc);
-            LOG
-                  .debug(
-                        "{} - Le nombre de résultats de recherche renvoyé par le moteur de recherche est {}",
-                        prefixeTrc, listStorageDocument == null ? 0
-                              : listStorageDocument.size());
-            for (StorageDocument storageDocument : Utils
-                  .nullSafeIterable(listStorageDocument)) {
-               listUntypedDocument.add(mappingDocumentService
-                     .storageDocumentToUntypedDocument(storageDocument));
-            }
-            // A activer si besoin pour afficher la liste des résultats
-            // LOG.debug("{} - Liste des résultats : \"{}\"",
-            // prefixeTrc,buildMessageFromList(listUntypedDocument));
-         }
 
-      } catch (NumberFormatException except) {
-         throw new SAESearchServiceEx(ResourceMessagesUtils
-               .loadMessage("max.lucene.results.required"), except);
-      } catch (InvalidSAETypeException except) {
-         throw new SAESearchServiceEx(except.getMessage(), except);
-      } catch (MappingFromReferentialException except) {
-         throw new SAESearchServiceEx(ResourceMessagesUtils
-               .loadMessage("search.mapping.error"), except);
-      } catch (QueryParseServiceEx except) {
-         throw new SyntaxLuceneEx(ResourceMessagesUtils
-               .loadMessage("search.syntax.lucene.error"), except);
-      }
-      LOG.debug("{} - Sortie", prefixeTrc);
-      return listUntypedDocument;
+      int maxResult = Integer.parseInt(ServiceMessageHandler
+            .getMessage("max.lucene.results")) + 1;
+
+      return search(requete, listMetaDesired, maxResult);
+
    }
 
    /**
@@ -389,7 +297,7 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
 
       try {
          return convertService.longCodeToShortCode(listCodeReq);
-      
+
       } catch (LongCodeNotFoundException e) {
          throw new SAESearchServiceEx(ResourceMessagesUtils
                .loadMessage("search.referentiel.error"), e);
@@ -575,5 +483,118 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
          toStrBuilder.append(o.toString());
       }
       return toStrBuilder.toString();
+   }
+
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * fr.urssaf.image.sae.services.document.SAESearchService#search(java.lang
+    * .String, java.util.List, int)
+    */
+   @Override
+   public List<UntypedDocument> search(String requete,
+         List<String> listMetaDesired, int maxResult)
+         throws MetaDataUnauthorizedToSearchEx,
+         MetaDataUnauthorizedToConsultEx, UnknownDesiredMetadataEx,
+         UnknownLuceneMetadataEx, SyntaxLuceneEx, SAESearchServiceEx {
+
+      // Traces debug - entrée méthode
+      String prefixeTrc = "search()";
+      LOG.debug("{} - Début", prefixeTrc);
+      // Fin des traces debug - entrée méthode
+      LOG.debug(
+            "{} - Requête de recherche envoyée par l'application cliente : {}",
+            prefixeTrc, requete);
+      LOG
+            .debug(
+                  "{} - Liste des métadonnées souhaiteés envoyée par l'application cliente : {}",
+                  prefixeTrc,
+                  StringUtils.isEmpty(buildMessageFromList(listMetaDesired)) ? "Vide"
+                        : buildMessageFromList(listMetaDesired));
+      boolean isFromRefrentiel = false;
+      // liste de résultats à envoyer
+      List<UntypedDocument> listUntypedDocument = new ArrayList<UntypedDocument>();
+      // conversion code court
+      List<SAEMetadata> listCodCourt = new ArrayList<SAEMetadata>();
+      List<SAEMetadata> listCodCourtConsult = new ArrayList<SAEMetadata>();
+      try {
+         List<String> longCodesReq = extractLongCodeFromQuery(requete);
+         checkExistingLuceneMetadata(longCodesReq);
+         String requeteFinal = requete;
+         // Map pour l'association codeCourt codeLong - Remplacement des codes
+         // long par les codes court.
+         Map<String, String> map = longCodeToShortCode(longCodesReq);
+         for (Map.Entry<String, String> e : map.entrySet()) {
+            requeteFinal = requeteFinal.replace(e.getValue(), e.getKey());
+         }
+         LOG
+               .debug(
+                     "{} - Requête de recherche après remplacement des codes longs par les codes courts : {}",
+                     prefixeTrc, requeteFinal);
+         String requeteVerif = requeteFinal;
+         // parcours de la map et remplissement d'une liste afin de verifier
+         // plus tard si la liste
+         // des codes courts est rechercheable : map <codeCourt, codeLong>
+         SAEMetadata saeM = null;
+         for (Map.Entry<String, String> e : map.entrySet()) {
+            saeM = new SAEMetadata();
+            requeteVerif = requeteVerif.replace(e.getKey(), e.getValue());
+            saeM.setLongCode(e.getValue());
+            saeM.setShortCode(e.getKey());
+            // listCodCourt.add(new SAEMetadata(e.getValue(), e.getKey()));
+            listCodCourt.add(saeM);
+         }
+         if (checkConversion(requete, requeteVerif)) {
+            checkExistingMetadataDesired(listMetaDesired);
+            checkSearchableLuceneMetadata(listCodCourt);
+            if (listMetaDesired.isEmpty()) {
+               listCodCourtConsult = recupererListDefaultMetadatas();
+               isFromRefrentiel = true;
+            } else {
+               listCodCourtConsult = recupererListCodCourtByLongCode(listMetaDesired);
+            }
+            checkConsultableDesiredMetadata(listCodCourtConsult,
+                  isFromRefrentiel);
+            LOG
+                  .debug(
+                        "{} - Début de la vérification DFCE: La requête de recherche est syntaxiquement correcte",
+                        prefixeTrc);
+            List<StorageDocument> listStorageDocument = searchStorageDocuments(
+                  requeteFinal, maxResult, listCodCourtConsult);
+            LOG
+                  .debug(
+                        "{} - Fin de la vérification DFCE: La requête de recherche est syntaxiquement correcte",
+                        prefixeTrc);
+            LOG
+                  .debug(
+                        "{} - Le nombre de résultats de recherche renvoyé par le moteur de recherche est {}",
+                        prefixeTrc, listStorageDocument == null ? 0
+                              : listStorageDocument.size());
+            for (StorageDocument storageDocument : Utils
+                  .nullSafeIterable(listStorageDocument)) {
+               listUntypedDocument.add(mappingDocumentService
+                     .storageDocumentToUntypedDocument(storageDocument));
+            }
+            // A activer si besoin pour afficher la liste des résultats
+            // LOG.debug("{} - Liste des résultats : \"{}\"",
+            // prefixeTrc,buildMessageFromList(listUntypedDocument));
+         }
+
+      } catch (NumberFormatException except) {
+         throw new SAESearchServiceEx(ResourceMessagesUtils
+               .loadMessage("max.lucene.results.required"), except);
+      } catch (InvalidSAETypeException except) {
+         throw new SAESearchServiceEx(except.getMessage(), except);
+      } catch (MappingFromReferentialException except) {
+         throw new SAESearchServiceEx(ResourceMessagesUtils
+               .loadMessage("search.mapping.error"), except);
+      } catch (QueryParseServiceEx except) {
+         throw new SyntaxLuceneEx(ResourceMessagesUtils
+               .loadMessage("search.syntax.lucene.error"), except);
+      }
+      LOG.debug("{} - Sortie", prefixeTrc);
+      return listUntypedDocument;
+
    }
 }
