@@ -56,6 +56,9 @@
          <level>WARN</level>
       </filter>
       
+      <filter
+         class="fr.urssaf.image.sae.services.capturemasse.common.SaeSpringFilter" />
+      
       <encoder>
          <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger
             [%X{log_contexte_uuid}] - %msg%n</pattern>
@@ -106,6 +109,14 @@
    </logger>
    -->
    
+   <!-- Pour SpringBatch -->
+   
+   <!--
+   <logger name="org.springframework.batch" level="DEBUG" additivity="false">
+      <appender-ref ref="debug-file" />
+   </logger>
+
+   -->
    
    <!-- Pour les librairies communes -->
    <!--
