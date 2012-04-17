@@ -1,0 +1,208 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+   <modelVersion>4.0.0</modelVersion>
+
+   <groupId>fr.urssaf.image</groupId>
+   <artifactId>sae-pile-travaux-ihmweb</artifactId>
+   <version>0.0.1-SNAPSHOT</version>
+
+   <packaging>war</packaging>
+
+   <name>sae-pile-travaux-ihmweb</name>
+
+   <properties>
+
+      <!-- Encodage de caractères -->
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+      <!-- Version des librairies partagées -->
+      <commons.cassandra>0.0.3</commons.cassandra>
+
+      <!-- Version des framework -->
+      <spring.framework.version>3.0.5.RELEASE</spring.framework.version>
+      <jsr303.api.version>1.0.0.GA</jsr303.api.version>
+      <jsr303.impl.hibernate.version>4.0.2.GA</jsr303.impl.hibernate.version>
+      <joda-time.version>1.6</joda-time.version>
+      <joda-time.jsptags.version>1.1</joda-time.jsptags.version>
+      <javax.servlet.version>2.5</javax.servlet.version>
+      <jstl.version>1.2</jstl.version>
+      <jackson-json.version>1.6.0</jackson-json.version>
+
+      <org.slf4j.version>1.6.4</org.slf4j.version>
+
+      <junit.version>4.8.2</junit.version>
+
+      <logback.version>1.0.0</logback.version>
+
+   </properties>
+
+
+   <build>
+
+      <finalName>sae-pile-travaux-ihmweb</finalName>
+
+      <plugins>
+
+         <!--
+            On spécifie la version du JDK et l'encodage de caractères
+            des sources
+         -->
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+               <source>1.6</source>
+               <target>1.6</target>
+               <encoding>${project.build.sourceEncoding}</encoding>
+            </configuration>
+         </plugin>
+
+         <!--
+            On spécifie l'encodage de caractères des ressources
+         -->
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-resources-plugin</artifactId>
+            <configuration>
+               <encoding>${project.build.sourceEncoding}</encoding>
+            </configuration>
+         </plugin>
+
+         <!-- Désactivation des tests unitaires -->
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>2.5</version>
+            <configuration>
+               <skipTests>true</skipTests>
+            </configuration>
+         </plugin>
+
+      </plugins>
+
+   </build>
+
+
+   
+
+   <dependencies>
+   
+      <!-- Librairies mutualisées -->
+      <dependency>
+         <groupId>fr.urssaf.image.commons</groupId>
+         <artifactId>commons-cassandra</artifactId>
+         <version>${commons.cassandra}</version>
+         <exclusions>
+            <exclusion>
+               <groupId>org.mortbay.jetty</groupId>
+               <artifactId>servlet-api</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>javax.servlet</groupId>
+               <artifactId>servlet-api</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+   
+
+      <!-- JUnit -->
+      <dependency>
+         <groupId>junit</groupId>
+         <artifactId>junit</artifactId>
+         <version>${junit.version}</version>
+         <scope>test</scope>
+      </dependency>
+
+      
+      <!-- SPRING -->
+
+      <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-beans</artifactId>
+         <version>${spring.framework.version}</version>
+      </dependency>
+
+      <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-context</artifactId>
+         <version>${spring.framework.version}</version>
+      </dependency>
+
+      <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-test</artifactId>
+         <version>${spring.framework.version}</version>
+         <scope>test</scope>
+      </dependency>
+
+      <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-webmvc</artifactId>
+         <version>${spring.framework.version}</version>
+      </dependency>
+
+
+      <!-- Validation JSR 303 -->
+      <dependency>
+         <groupId>javax.validation</groupId>
+         <artifactId>validation-api</artifactId>
+         <version>${jsr303.api.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.hibernate</groupId>
+         <artifactId>hibernate-validator</artifactId>
+         <version>${jsr303.impl.hibernate.version}</version>
+         <exclusions>
+            <exclusion>
+               <groupId>org.slf4j</groupId>
+               <artifactId>slf4j-api</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+      
+
+      <!-- Joda time -->
+      <dependency>
+         <groupId>joda-time</groupId>
+         <artifactId>joda-time</artifactId>
+         <version>${joda-time.version}</version>
+         <scope>runtime</scope>
+      </dependency>
+      <dependency>
+         <groupId>joda-time</groupId>
+         <artifactId>joda-time-jsptags</artifactId>
+         <version>${joda-time.jsptags.version}</version>
+         <scope>runtime</scope>
+      </dependency>
+
+
+      <!-- Servlet et JSTL -->
+      <dependency>
+         <groupId>javax.servlet</groupId>
+         <artifactId>servlet-api</artifactId>
+         <version>${javax.servlet.version}</version>
+         <scope>provided</scope>
+      </dependency>
+      <dependency>
+         <groupId>jstl</groupId>
+         <artifactId>jstl</artifactId>
+         <version>${jstl.version}</version>
+      </dependency>
+
+
+      <!-- Logback -->
+      <dependency>
+         <groupId>org.slf4j</groupId>
+         <artifactId>slf4j-api</artifactId>
+         <version>${org.slf4j.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>ch.qos.logback</groupId>
+         <artifactId>logback-classic</artifactId>
+         <version>${logback.version}</version>
+      </dependency>
+
+   </dependencies>
+
+</project>
