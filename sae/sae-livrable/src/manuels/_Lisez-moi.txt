@@ -171,6 +171,10 @@ java -jar -Dlogback.configurationFile=@@SAE_HOME@@/sae-dfce-admin-exploit/logbac
 // Installation du lot SAE-120510 - Pour rendre le code activité non obligatoire
 java -Dlogback.configurationFile=@@SAE_HOME@@/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar @@SAE_HOME@@/sae-lotinstallmaj/sae-lotinstallmaj.jar @@SAE_HOME@@/sae-config.properties CODEACTIVITENONOBLIGATOIRE 
 
+// Installation du lot SAE-120511 - Création de la base Cassandra "SAE"
+// La base "SAE" contient la pile des travaux et la persistance d'état des travaux Spring Batch   
+java -Dlogback.configurationFile=@@SAE_HOME@@/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar @@SAE_HOME@@/sae-lotinstallmaj/sae-lotinstallmaj.jar @@SAE_HOME@@/sae-config.properties CASSANDRA_120510
+
 
 
 // --------------------------------------------------------------------
