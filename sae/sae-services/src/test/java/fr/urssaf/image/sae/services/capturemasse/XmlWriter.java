@@ -36,6 +36,12 @@ public class XmlWriter implements ItemWriter<StorageDocument> {
    @Autowired
    private MetadataReferenceDAO dao;
 
+   /**
+    * executé avant le step
+    * 
+    * @param stepExecution
+    *           le stepExecution
+    */
    @BeforeStep
    public final void init(StepExecution stepExecution) {
 
@@ -49,13 +55,13 @@ public class XmlWriter implements ItemWriter<StorageDocument> {
 
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.springframework.batch.item.ItemWriter#write(java.util.List)
+   /**
+    * {@inheritDoc}
     */
    @Override
-   public void write(List<? extends StorageDocument> items) throws Exception {
+   @SuppressWarnings("PMD.AvoidThrowingRawExceptionTypes")
+   public final void write(List<? extends StorageDocument> items)
+         throws Exception {
 
       if (items.size() > 1) {
          throw new RuntimeException(

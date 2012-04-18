@@ -7,12 +7,10 @@ import javax.xml.bind.JAXBElement;
 
 import org.easymock.EasyMock;
 import org.springframework.batch.item.ItemProcessor;
-import org.springframework.batch.item.ItemReader;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.services.capturemasse.modele.commun_sommaire_et_resultat.DocumentType;
 import fr.urssaf.image.sae.services.capturemasse.support.controle.CaptureMasseControleSupport;
-import fr.urssaf.image.sae.services.capturemasse.support.sommaire.batch.ConvertSommaireDocumentProcessor;
 import fr.urssaf.image.sae.services.document.SAEDocumentService;
 import fr.urssaf.image.sae.services.enrichment.SAEEnrichmentMetadataService;
 import fr.urssaf.image.sae.storage.dfce.manager.DFCEServicesManager;
@@ -85,9 +83,9 @@ public class MockFactoryBean {
    }
 
    /**
-    * création d'un mock {@link ConvertSommaireDocumentProcessor}
+    * création d'un mock {@link ItemProcessor}
     * 
-    * @return un mock ConvertSommaireDocumentProcessor
+    * @return un mock ItemProcessor
     */
    public final ItemProcessor<JAXBElement<DocumentType>, UntypedDocument> createConvertSommaireProcessor() {
       return EasyMock.createMock(ItemProcessor.class);

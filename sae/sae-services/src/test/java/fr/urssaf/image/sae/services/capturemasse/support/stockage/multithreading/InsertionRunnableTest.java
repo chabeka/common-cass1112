@@ -30,6 +30,7 @@ public class InsertionRunnableTest {
 
    @Autowired
    @Qualifier("storageDocumentService")
+   @SuppressWarnings("PMD.LongVariable")
    private StorageDocumentService storageDocumentService;
 
    @Autowired

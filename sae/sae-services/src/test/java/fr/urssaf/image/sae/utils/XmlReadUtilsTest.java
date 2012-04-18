@@ -16,7 +16,7 @@ import fr.urssaf.image.sae.services.util.XmlReadUtils;
 public class XmlReadUtilsTest {
 
    @Test
-   public void validate_success() throws ParserConfigurationException,
+   public void validateSuccess() throws ParserConfigurationException,
          SAXException, IOException {
 
       File xmlFile = new File(
@@ -29,7 +29,7 @@ public class XmlReadUtilsTest {
    }
    
    @Test(expected=CaptureMasseRuntimeException.class)
-   public void validate_fichier_inexistant() throws ParserConfigurationException,
+   public void validateFichierInexistant() throws ParserConfigurationException,
          SAXException, IOException {
 
       File xmlFile = new File(

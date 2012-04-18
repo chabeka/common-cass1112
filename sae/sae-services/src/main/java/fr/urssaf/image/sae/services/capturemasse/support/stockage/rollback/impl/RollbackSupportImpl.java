@@ -26,29 +26,29 @@ public class RollbackSupportImpl implements RollbackSupport {
 
    private final StorageServiceProvider serviceProvider;
 
-   private final InterruptionTraitementConfig interruptionConfig;
+   private final InterruptionTraitementConfig config;
 
-   private final InterruptionTraitementMasseSupport interruptionSupport;
+   private final InterruptionTraitementMasseSupport support;
 
    /**
     * 
     * @param serviceProvider
     *           ensemble des services de DFCE
-    * @param interruptionConfig
+    * @param config
     *           configuration de l'interruption programmée du traitement de
     *           capture en masse
-    * @param interruptionSupport
+    * @param support
     *           service d'interruption programmée des traitements
     */
    @Autowired
    public RollbackSupportImpl(
          @Qualifier("storageServiceProvider") StorageServiceProvider serviceProvider,
-         @Qualifier("interruption_capture_masse") InterruptionTraitementConfig interruptionConfig,
-         InterruptionTraitementMasseSupport interruptionSupport) {
+         @Qualifier("interruption_capture_masse") InterruptionTraitementConfig config,
+         InterruptionTraitementMasseSupport support) {
 
       this.serviceProvider = serviceProvider;
-      this.interruptionConfig = interruptionConfig;
-      this.interruptionSupport = interruptionSupport;
+      this.config = config;
+      this.support = support;
    }
 
    /**
@@ -68,7 +68,7 @@ public class RollbackSupportImpl implements RollbackSupport {
 
       DateTime currentDate = new DateTime();
 
-      interruptionSupport.interruption(currentDate, interruptionConfig);
+      support.interruption(currentDate, config);
 
    }
 

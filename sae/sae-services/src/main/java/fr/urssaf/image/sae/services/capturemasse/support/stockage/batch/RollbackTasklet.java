@@ -38,6 +38,11 @@ import fr.urssaf.image.sae.services.exception.search.UnknownLuceneMetadataEx;
 @Component
 public class RollbackTasklet implements Tasklet {
 
+   /**
+    * 
+    */
+   private static final String ERREUR_RECHERCHE = "{} - Erreur lors de la recherche des documents restants à rollbacker";
+
    private static final Logger LOGGER = LoggerFactory
          .getLogger(RollbackTasklet.class);
 
@@ -95,7 +100,7 @@ public class RollbackTasklet implements Tasklet {
              */
 
             UUID strDocumentID = listIntegDocs.toArray(new UUID[0])[0];
-
+            
             support.rollback(strDocumentID);
 
             chunkContext.getStepContext().getStepExecution().setReadCount(
@@ -155,6 +160,13 @@ public class RollbackTasklet implements Tasklet {
 
       ConcurrentLinkedQueue<UUID> listUUID = new ConcurrentLinkedQueue<UUID>();
 
+      int nbreDocsTotal = (Integer) chunkContext.getStepContext()
+            .getJobExecutionContext().get(Constantes.DOC_COUNT);
+
+      int rollbackCount = chunkContext.getStepContext().getStepExecution()
+            .getExecutionContext().getInt(Constantes.COUNT_ROLLBACK);
+      int countRecherche = 0;
+
       if (!chunkContext.getStepContext().getStepExecution()
             .getExecutionContext().containsKey(Constantes.SEARCH_ROLLBACK)) {
 
@@ -169,11 +181,29 @@ public class RollbackTasklet implements Tasklet {
          List<UntypedDocument> listDocs = trouverDocumentsRestants(idTraitement);
 
          if (CollectionUtils.isNotEmpty(listDocs)) {
+
             listUUID = transformerListeDocEnUuid(listDocs);
+
+            countRecherche = listDocs.size();
+
          }
       }
 
-      if (CollectionUtils.isEmpty(listUUID)) {
+      rollbackCount = rollbackCount + countRecherche;
+      chunkContext.getStepContext().getStepExecution().getExecutionContext()
+            .putInt(Constantes.COUNT_ROLLBACK, rollbackCount);
+
+      if (nbreDocsTotal < rollbackCount) {
+         repeatStatus = RepeatStatus.FINISHED;
+         LOGGER
+               .warn(
+                     "{} - Une erreur est survenue lors du rollback. " +
+                     "Le nombre maximal de documents à supprimer est de {}, et {} ont été comptabilisés.",
+                     new Object[] { TRC_ROLLBACK,
+                           String.valueOf(nbreDocsTotal),
+                           String.valueOf(rollbackCount) });
+
+      } else if (CollectionUtils.isEmpty(listUUID)) {
          repeatStatus = RepeatStatus.FINISHED;
 
       } else if (MAX_RESULT == listUUID.size()) {
@@ -211,32 +241,32 @@ public class RollbackTasklet implements Tasklet {
       } catch (MetaDataUnauthorizedToSearchEx e) {
          LOGGER
                .info(
-                     "{} - Erreur lors de la recherche des documents restants à rollbacker",
+                     ERREUR_RECHERCHE,
                      TRC_FIND, e);
       } catch (MetaDataUnauthorizedToConsultEx e) {
          LOGGER
                .info(
-                     "{} - Erreur lors de la recherche des documents restants à rollbacker",
+                     ERREUR_RECHERCHE,
                      TRC_FIND, e);
       } catch (UnknownDesiredMetadataEx e) {
          LOGGER
                .info(
-                     "{} - Erreur lors de la recherche des documents restants à rollbacker",
+                     ERREUR_RECHERCHE,
                      TRC_FIND, e);
       } catch (UnknownLuceneMetadataEx e) {
          LOGGER
                .info(
-                     "{} - Erreur lors de la recherche des documents restants à rollbacker",
+                     ERREUR_RECHERCHE,
                      TRC_FIND, e);
       } catch (SyntaxLuceneEx e) {
          LOGGER
                .info(
-                     "{} - Erreur lors de la recherche des documents restants à rollbacker",
+                     ERREUR_RECHERCHE,
                      TRC_FIND, e);
       } catch (SAESearchServiceEx e) {
          LOGGER
                .info(
-                     "{} - Erreur lors de la recherche des documents restants à rollbacker",
+                     ERREUR_RECHERCHE,
                      TRC_FIND, e);
       }
 

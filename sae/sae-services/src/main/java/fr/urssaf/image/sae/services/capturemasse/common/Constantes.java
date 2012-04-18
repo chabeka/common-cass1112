@@ -82,6 +82,11 @@ public final class Constantes {
    public static final String SEARCH_ROLLBACK = "SEARCH_ROLLBACK";
 
    /**
+    * Nombre total d'élément à supprimer
+    */
+   public static final String COUNT_ROLLBACK = "COUNT_ROLLBACK";
+
+   /**
     * Constructeur
     */
    private Constantes() {

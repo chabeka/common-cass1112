@@ -331,21 +331,10 @@ public class IntegrationRollBackSearchFailureTest {
       FileUtils.copyURLToFile(resSommaire.getURL(), sommaire);
 
       File origine = new File(ecdeTestSommaire.getRepEcde(), "documents");
-      int i = 1;
-      File dest, attestation;
-      String resourceString = "testhautniveau/rollBack0DocRechercheSucces/documents/";
-      ClassPathResource resource;
-      while (i < 11) {
-
-         dest = new File(origine, String.valueOf(i));
-         resourceString = resourceString + i + File.separator;
-         resource = new ClassPathResource(resourceString + "doc" + i + ".PDF");
-         attestation = new File(dest, "doc" + i + ".PDF");
-         FileUtils.copyURLToFile(resource.getURL(), attestation);
-
-         origine = dest;
-         i++;
-      }
+      File attestation = new File(origine, "doc1.PDF");
+      String resourceString = "testhautniveau/rollBack0DocRechercheSucces/documents/doc1.PDF";
+      ClassPathResource resource = new ClassPathResource(resourceString);
+      FileUtils.copyURLToFile(resource.getURL(), attestation);
    }
 
    private void checkFiles() throws IOException, JAXBException, SAXException {

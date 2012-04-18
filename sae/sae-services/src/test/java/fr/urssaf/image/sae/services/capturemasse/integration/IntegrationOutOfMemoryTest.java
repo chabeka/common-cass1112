@@ -122,6 +122,7 @@ public class IntegrationOutOfMemoryTest {
 
    }
 
+   @SuppressWarnings("PMD.AvoidThrowingRawExceptionTypes")
    private void initComposants() throws ConnectionServiceEx, DeletionServiceEx,
          InsertionServiceEx {
 

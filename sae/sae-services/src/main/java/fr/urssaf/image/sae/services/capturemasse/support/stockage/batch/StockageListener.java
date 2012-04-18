@@ -244,10 +244,10 @@ public class StockageListener {
       } catch (Exception e) {
 
          String message;
-         if (exception.getCause() != null) {
-            message = exception.getCause().getMessage();
-         } else {
+         if (exception.getCause() == null) {
             message = exception.getMessage();
+         } else {
+            message = exception.getCause().getMessage();
          }
 
          codes.add(Constantes.ERR_BUL001);

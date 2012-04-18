@@ -50,8 +50,6 @@ public class StaxUtils {
    /**
     * Ajout d'un prefixe dans le document
     * 
-    * @param prefix
-    *           préfixe à utiliser
     * @param uri
     *           uri à utiliser
     * @throws XMLStreamException

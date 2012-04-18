@@ -173,7 +173,7 @@ public class IntegrationRollBack1DocRechercheRollFailureTest {
       EasyMock.expect(
             storageDocumentService.insertStorageDocument(EasyMock
                   .anyObject(StorageDocument.class))).andThrow(
-            new InsertionServiceEx(ERREUR_ATTENDUE)).once();
+            new InsertionServiceEx(ERREUR_ATTENDUE)).anyTimes();
 
       // la recherche va retourner 1 éléments
       UntypedDocument untypedDocument = new UntypedDocument();
@@ -196,21 +196,11 @@ public class IntegrationRollBack1DocRechercheRollFailureTest {
       FileUtils.copyURLToFile(resSommaire.getURL(), sommaire);
 
       File origine = new File(ecdeTestSommaire.getRepEcde(), "documents");
-      int i = 1;
-      File dest, attestation;
-      String resourceString = "testhautniveau/rollBack1DocRechercheSucces/documents/";
-      ClassPathResource resource;
-      while (i < 11) {
+      String resourceString = "testhautniveau/rollBack1DocRechercheSucces/documents/doc1.PDF";
+      ClassPathResource resource = new ClassPathResource(resourceString);
+      File attestation = new File(origine, "doc1.PDF");
+      FileUtils.copyURLToFile(resource.getURL(), attestation);
 
-         dest = new File(origine, String.valueOf(i));
-         resourceString = resourceString + i + File.separator;
-         resource = new ClassPathResource(resourceString + "doc" + i + ".PDF");
-         attestation = new File(dest, "doc" + i + ".PDF");
-         FileUtils.copyURLToFile(resource.getURL(), attestation);
-
-         origine = dest;
-         i++;
-      }
    }
 
    private void checkFiles() throws IOException, JAXBException, SAXException {
@@ -229,10 +219,10 @@ public class IntegrationRollBack1DocRechercheRollFailureTest {
 
       ResultatsType res = getResultats(resultats);
 
-      Assert.assertEquals("10 documents doivent être initialement présents",
-            Integer.valueOf(10), res.getInitialDocumentsCount());
-      Assert.assertEquals("10 documents doivent être rejetés", Integer
-            .valueOf(10), res.getNonIntegratedDocumentsCount());
+      Assert.assertEquals("11 documents doivent être initialement présents",
+            Integer.valueOf(11), res.getInitialDocumentsCount());
+      Assert.assertEquals("11 documents doivent être rejetés", Integer
+            .valueOf(11), res.getNonIntegratedDocumentsCount());
       Assert.assertEquals("0 documents doivent être intégrés", Integer
             .valueOf(0), res.getIntegratedDocumentsCount());
       Assert.assertEquals(

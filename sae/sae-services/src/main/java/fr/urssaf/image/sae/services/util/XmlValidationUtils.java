@@ -40,7 +40,7 @@ public final class XmlValidationUtils {
     * @throws IOException
     *            erreur de récupération du fichier XML
     */
-   public final static void parse(File xmlFile, URL xsdURL)
+   public static void parse(File xmlFile, URL xsdURL)
          throws ParserConfigurationException, SAXException, IOException {
 
       SAXParser saxParser = factorySAXParser(xsdURL);

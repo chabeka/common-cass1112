@@ -66,7 +66,7 @@ import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentServi
       "/applicationContext-sae-services-test.xml",
       "/applicationContext-sae-services-integration-test.xml" })
 @DirtiesContext
-public class IntegrationRollBack1DocRechercheSuccesTest {
+public class IntegrationRollBackTropDocRechercheSuccesTest {
 
    /**
     * 
@@ -96,7 +96,7 @@ public class IntegrationRollBack1DocRechercheSuccesTest {
    private EcdeTestSommaire ecdeTestSommaire;
 
    private static final Logger LOGGER = LoggerFactory
-         .getLogger(IntegrationRollBack1DocRechercheSuccesTest.class);
+         .getLogger(IntegrationRollBackTropDocRechercheSuccesTest.class);
 
    @Before
    public void init() {
@@ -155,7 +155,7 @@ public class IntegrationRollBack1DocRechercheSuccesTest {
       // règlage storageDocumentService
       storageDocumentService.deleteStorageDocument(EasyMock
             .anyObject(UUID.class));
-      EasyMock.expectLastCall().anyTimes();
+      EasyMock.expectLastCall().times(9);
 
       StorageDocument storageDocument = new StorageDocument();
       storageDocument.setUuid(UUID.randomUUID());
@@ -169,12 +169,13 @@ public class IntegrationRollBack1DocRechercheSuccesTest {
       EasyMock.expect(
             storageDocumentService.insertStorageDocument(EasyMock
                   .anyObject(StorageDocument.class))).andThrow(
-            new InsertionServiceEx(ERREUR_ATTENDUE)).anyTimes();
+            new InsertionServiceEx(ERREUR_ATTENDUE)).once();
 
       // la recherche va retourner 1 éléments
       UntypedDocument untypedDocument = new UntypedDocument();
       untypedDocument.setUuid(UUID.randomUUID());
       List<UntypedDocument> list = new ArrayList<UntypedDocument>();
+      list.add(untypedDocument);
       list.add(untypedDocument);
 
       EasyMock.expect(
@@ -188,11 +189,11 @@ public class IntegrationRollBack1DocRechercheSuccesTest {
    private void initDatas() throws IOException {
       File sommaire = new File(ecdeTestSommaire.getRepEcde(), "sommaire.xml");
       ClassPathResource resSommaire = new ClassPathResource(
-            "testhautniveau/rollBack1DocRechercheSucces/sommaire.xml");
+            "testhautniveau/rollbackTropDocRechercheTest/sommaire.xml");
       FileUtils.copyURLToFile(resSommaire.getURL(), sommaire);
 
       File origine = new File(ecdeTestSommaire.getRepEcde(), "documents");
-      String resourceString = "testhautniveau/rollBack1DocRechercheSucces/documents/doc1.PDF";
+      String resourceString = "testhautniveau/rollbackTropDocRechercheTest/documents/doc1.PDF";
       ClassPathResource resource = new ClassPathResource(resourceString);
       File attestation = new File(origine, "doc1.PDF");
       FileUtils.copyURLToFile(resource.getURL(), attestation);
@@ -214,10 +215,10 @@ public class IntegrationRollBack1DocRechercheSuccesTest {
 
       ResultatsType res = getResultats(resultats);
 
-      Assert.assertEquals("11 documents doivent être initialement présents",
-            Integer.valueOf(11), res.getInitialDocumentsCount());
-      Assert.assertEquals("11 documents doivent être rejetés", Integer
-            .valueOf(11), res.getNonIntegratedDocumentsCount());
+      Assert.assertEquals("10 documents doivent être initialement présents",
+            Integer.valueOf(10), res.getInitialDocumentsCount());
+      Assert.assertEquals("10 documents doivent être rejetés", Integer
+            .valueOf(10), res.getNonIntegratedDocumentsCount());
       Assert.assertEquals("0 documents doivent être intégrés", Integer
             .valueOf(0), res.getIntegratedDocumentsCount());
       Assert.assertEquals(

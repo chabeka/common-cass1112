@@ -49,15 +49,14 @@ public class RollbackListener {
    public final void beforeRollback(StepExecution stepExecution)
          throws ConnectionServiceEx {
 
+      @SuppressWarnings("unchecked")
+      ConcurrentLinkedQueue<UUID> integDocs = (ConcurrentLinkedQueue<UUID>) stepExecution
+            .getJobExecution().getExecutionContext().get(Constantes.INTEG_DOCS);
+
       try {
          serviceProvider.openConnexion();
 
       } catch (ConnectionServiceEx e) {
-
-         @SuppressWarnings("unchecked")
-         ConcurrentLinkedQueue<UUID> integDocs = (ConcurrentLinkedQueue<UUID>) stepExecution
-               .getJobExecution().getExecutionContext().get(
-                     Constantes.INTEG_DOCS);
 
          if (CollectionUtils.isNotEmpty(integDocs)) {
             String idTraitement = (String) stepExecution.getJobParameters()
@@ -80,6 +79,16 @@ public class RollbackListener {
       }
 
       LOGGER.debug("{} - ouverture de la connexion DFCE", TRC_ROLLBACK);
+
+      // insertion du nombre d'éléments à supprimer dans une variable de step
+      int countRollback = 0;
+
+      if (CollectionUtils.isNotEmpty(integDocs)) {
+         countRollback = integDocs.size();
+      }
+
+      stepExecution.getExecutionContext().putInt(Constantes.COUNT_ROLLBACK,
+            countRollback);
    }
 
    /**

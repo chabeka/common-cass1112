@@ -26,6 +26,7 @@ public class RollbackSupportTest {
 
    @Autowired
    @Qualifier("storageDocumentService")
+   @SuppressWarnings("PMD.LongVariable")
    private StorageDocumentService storageDocumentService;
 
    @Autowired
