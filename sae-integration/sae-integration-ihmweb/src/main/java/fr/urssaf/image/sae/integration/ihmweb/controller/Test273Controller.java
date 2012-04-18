@@ -121,7 +121,7 @@ public class Test273Controller extends
 
       ErreurType error = new ErreurType();
       error.setCode("SAE-CA-BUL003");
-      error.setLibelle("La capture de masse en mode 'Tout ou rien' "
+      error.setLibelle("La capture de masse en mode \"Tout ou rien\" "
             + "a été interrompue. " + "Une procédure d'exploitation "
             + "a été initialisée pour supprimer les données qui "
             + "auraient pu être stockées.");

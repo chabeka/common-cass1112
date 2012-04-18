@@ -16,7 +16,9 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.R
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ResultatRechercheType;
 
 /**
- * 269-CaptureMasse-KO-Deux-Lancements
+ * 269-CaptureMasse-KO-Deux-Lancements<br>
+ * <br>
+ * OBSOLETE depuis le lot 120511
  */
 @Controller
 @RequestMapping(value = "test269")

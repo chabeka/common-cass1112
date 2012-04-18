@@ -1,15 +1,9 @@
 package fr.urssaf.image.sae.integration.ihmweb.service.tests;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
 
 import org.apache.axis2.AxisFault;
 import org.apache.commons.io.FilenameUtils;
@@ -21,7 +15,6 @@ import org.springframework.stereotype.Service;
 import fr.urssaf.image.sae.integration.ihmweb.constantes.SaeIntegrationConstantes;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseResultatFormulaire;
-import fr.urssaf.image.sae.integration.ihmweb.formulaire.TestStockageMasseAllFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTest;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTestLog;
 import fr.urssaf.image.sae.integration.ihmweb.modele.SoapFault;
@@ -38,7 +31,6 @@ import fr.urssaf.image.sae.integration.ihmweb.service.ecde.EcdeService;
 import fr.urssaf.image.sae.integration.ihmweb.service.referentiels.ReferentielSoapFaultService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.listeners.WsTestListener;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.listeners.impl.WsTestListenerImplLibre;
-import fr.urssaf.image.sae.integration.ihmweb.service.tests.listeners.impl.WsTestListenerImplSansSoapFault;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.listeners.impl.WsTestListenerImplSoapFault;
 import fr.urssaf.image.sae.integration.ihmweb.utils.ViUtils;
 
@@ -59,16 +51,6 @@ import fr.urssaf.image.sae.integration.ihmweb.utils.ViUtils;
  */
 @Service
 public class CaptureMasseTestService {
-
-   /**
-    * 
-    */
-   private static final int WAITING_TIME = 1001;
-
-   /**
-    * 
-    */
-   private static final int MAX_LOOP = 10;
 
    @Autowired
    private ReferentielSoapFaultService refSoapFault;
@@ -212,78 +194,8 @@ public class CaptureMasseTestService {
    public final void appelWsOpArchiMasseOKAttendu(String urlWebService,
          CaptureMasseFormulaire formulaire) {
 
-      // Création de l'objet qui implémente l'interface WsTestListener
-      // et qui ne s'attend pas à un quelconque résultat (test libre)
-      WsTestListener testLibre = new WsTestListenerImplSansSoapFault();
-
-      // Appel de la méthode "générique" de test
-      appelWsOpArchiMasse(urlWebService, ViUtils.FIC_VI_OK, formulaire,
-            testLibre);
-
-      File file = new File(getCheminFichierDebutFlag(formulaire
-            .getUrlSommaire()));
-
-      TestStockageMasseAllFormulaire parentForm = (TestStockageMasseAllFormulaire) formulaire
-            .getParent();
-
-      try {
-         int i = 0;
-         while (!file.exists() && i < MAX_LOOP) {
-            Thread.sleep(WAITING_TIME);
-            i++;
-         }
-      } catch (InterruptedException e) {
-         formulaire.getResultats().getLog().appendLog(e.toString());
-      }
-
-      try {
-         if (file.exists()) {
-            Properties properties = new Properties();
-            FileInputStream fileInputStream = new FileInputStream(file);
-            properties.load(fileInputStream);
-
-            String host = properties.getProperty("hostIP");
-            host = "http://" + host + ":8080/sae/SAETest.do";
-
-            parentForm.setLinkToMonitoring(host);
-
-            FileReader fileReader = null;
-            BufferedReader bufferedReader = null;
-            try {
-               fileReader = new FileReader(file);
-               bufferedReader = new BufferedReader(fileReader);
-               String line;
-               formulaire.getResultats().getLog().appendLogLn(
-                     "Contenu du fichier debut_traitement.flag :");
-               while ((line = bufferedReader.readLine()) != null) {
-                  formulaire.getResultats().getLog().appendLogLn(line);
-               }
-            } catch (Exception e) {
-               // nothing to do
-            } finally {
-               try {
-                  if (bufferedReader != null) {
-                     bufferedReader.close();
-                  }
-               } catch (Exception e) {
-                  // nothing to do
-               }
-
-               try {
-                  if (fileReader != null) {
-                     fileReader.close();
-                  }
-               } catch (Exception e) {
-                  // nothing to do
-               }
-            }
-
-         }
-      } catch (FileNotFoundException e) {
-         formulaire.getResultats().getLog().appendLog(e.toString());
-      } catch (IOException e) {
-         formulaire.getResultats().getLog().appendLog(e.toString());
-      }
+      // Fait la même chose que le test libre
+      appelWsOpArchiMasseTestLibre(urlWebService,formulaire);
 
    }
 

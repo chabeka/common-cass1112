@@ -22,14 +22,14 @@
 <form:form method="post" modelAttribute="formulaire">
 
    
-   <table border=0>
+   <table border=0 style="width:100%;">
       <tr>
-         <td>Répertoire de référence : </td>
-         <td><form:input path="repRef" cssStyle="width:400pt;"/></td>
+         <td style="width:15%;">Répertoire de référence : </td>
+         <td style="width:85%;"><form:input path="repRef" cssStyle="width:100%;"/></td>
       </tr>
       <tr>
          <td>Répertoire de la passe :</td>
-         <td><form:input path="repPasse" cssStyle="width:400pt;"/></td>
+         <td><form:input path="repPasse" cssStyle="width:100%;"/></td>
       </tr>
       <tr>
          <td colspan="2"><input type="submit" value="Rafraîchir" /></td>

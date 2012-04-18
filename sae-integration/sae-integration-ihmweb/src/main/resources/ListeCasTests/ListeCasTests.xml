@@ -523,6 +523,8 @@
             <luceneExemple>Denomination:"Test 268-CaptureMasse-KO-Tor-3-meme-doc-avec-premier-en-erreur-arbo"</luceneExemple>
          </CasTest>
 
+         <!--
+         OBSOLETE depuis le lot 120511
          <CasTest>
             <id>269</id>
             <code>269-CaptureMasse-KO-Deux-Lancements</code>
@@ -531,6 +533,7 @@
             </description>
             <implemente>true</implemente>
          </CasTest>
+         -->
 
          <CasTest>
             <id>270</id>

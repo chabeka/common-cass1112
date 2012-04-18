@@ -13,8 +13,6 @@ public class TestStockageMasseAllFormulaire extends TestWsParentFormulaire {
 
    private final ConsultationFormulaire consultFormulaire = new ConsultationFormulaire(this);
 
-   private String linkToMonitoring;
-
    /**
     * Le sous-formulaire pour l'appel à l'opération "archivageMasse"
     * 
@@ -54,18 +52,5 @@ public class TestStockageMasseAllFormulaire extends TestWsParentFormulaire {
       return this.consultFormulaire;
    }
 
-   /**
-    * @return the linkToMonitoring
-    */
-   public final String getLinkToMonitoring() {
-      return linkToMonitoring;
-   }
-
-   /**
-    * @param linkToMonitoring the linkToMonitoring to set
-    */
-   public final void setLinkToMonitoring(String linkToMonitoring) {
-      this.linkToMonitoring = linkToMonitoring;
-   }
 
 }

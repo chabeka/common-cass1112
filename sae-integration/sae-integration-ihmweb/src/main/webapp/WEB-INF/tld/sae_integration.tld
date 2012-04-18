@@ -73,12 +73,6 @@
    </tag-file>
    
    <tag-file>
-      <name>lienMonitoring</name>
-      <description>Affichage du lien vers le monitoring du traitement de masse</description>
-      <path>/WEB-INF/tags/lienMonitoring.tag</path>
-   </tag-file>
-   
-   <tag-file>
       <name>envoiSoap</name>
       <description>Envoi d'un message SOAP brut</description>
       <path>/WEB-INF/tags/envoiSoap.tag</path>
