@@ -13,6 +13,7 @@ import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
 import me.prettyprint.cassandra.service.template.ThriftColumnFamilyTemplate;
+import me.prettyprint.hector.api.ClockResolution;
 import me.prettyprint.hector.api.Keyspace;
 import me.prettyprint.hector.api.beans.HColumn;
 
@@ -31,7 +32,19 @@ public class CassandraIdGenerator implements IdGenerator {
    private final String sequenceName;
    private final ColumnFamilyTemplate<String, String> template;
    private final CuratorFramework curatorClient;
+   private final Keyspace keyspace;
    private static final int DEFAULT_TIME_OUT = 20;
+   private static final long ONE_THOUSAND = 1000L;
+   private ClockResolution clockResolution;
+
+   /**
+    * Temps maximum de décalage d'horloge qu'il nous parait acceptable, en micro-secondes 
+    */
+   private static final int MAX_TIME_SYNCHRO_ERROR = 10 * 1000 * 1000;
+   /**
+    * Temps maximum de décalage d'horloge, en micro-secondes. Au delà, on logue une warning. 
+    */
+   private static final int MAX_TIME_SYNCHRO_WARN = 2 * 1000 * 1000;
    private int lockTimeOut = DEFAULT_TIME_OUT;
 
    /**
@@ -42,13 +55,31 @@ public class CassandraIdGenerator implements IdGenerator {
     */
    public CassandraIdGenerator(Keyspace keyspace,
          CuratorFramework curatorClient, String sequenceName) {
+      this.keyspace = keyspace;      
       this.sequenceName = sequenceName;
       this.curatorClient = curatorClient;
       template = new ThriftColumnFamilyTemplate<String, String>(keyspace,
             SEQUENCE_CF, StringSerializer.get(), StringSerializer.get());
-
    }
 
+   /**
+    * Indique le fournisseur d'heure à utiliser.
+    * Utile à des fin de test uniquement.
+    * @param clockResolution  : le fournisseur d'heure à utiliser
+    * @return 
+    */
+   public final void setClockResolution(ClockResolution clockResolution) {
+      this.clockResolution = clockResolution;
+   }
+   
+   /**
+    * @return renvoie le timestamp courant
+    */
+   private long getCurrentClock() {
+      if (clockResolution != null) return clockResolution.createClock();
+      return keyspace.createClock();
+   }
+   
    @Override
    public final long getNextId() {
 
@@ -63,16 +94,16 @@ public class CassandraIdGenerator implements IdGenerator {
          }
          // On a le lock.
          // On lit la valeur courante de la séquence
-         long currentId = readCurrentSequenceValue();
+         HColumn<String, Long> currentSequence = readCurrentSequence();
 
          // On écrit dans cassandra la valeur incrémentée
-         writeSequenceValue(currentId + 1);
+         long newValue = incrementSequenceValue(currentSequence);
 
          // On vérifie qu'on a toujours le lock. Si oui, on peut utiliser la
-         // séquence. Pour cela, on force un événement ZK
+         // séquence.
          if (mutex.isObjectStillLocked(lockTimeOut, TimeUnit.SECONDS)) {
             // On peut utiliser la valeur incrémentée
-            return currentId + 1;
+            return newValue;
          } else {
             throw new IdGeneratorException(
                   "Erreur lors de la tentative d'acquisition du lock pour la séquence "
@@ -86,23 +117,54 @@ public class CassandraIdGenerator implements IdGenerator {
 
    /**
     * Lit la valeur de la séquence dans cassandra
-    * @return  valeur lue
+    * @return  colonne lue
     */
-   private long readCurrentSequenceValue() {
-      HColumn<String, Long> col = template.querySingleColumn(SEQUENCE_KEY,
+   private HColumn<String, Long> readCurrentSequence() {
+      return template.querySingleColumn(SEQUENCE_KEY,
             sequenceName, LongSerializer.get());
-      return col == null ? 0 : col.getValue();
    }
 
    /**
-    * Écrit la valeur de la séquence dans cassandra 
-    * @param value   nouvelle valeur à écrire
+    * Incrémente la séquence, et la fait persister dans cassandra 
+    * @param currentSequence   colonne cassandra contenant la valeur courante de la séquence
+    * @return nouvelle valeur de la séquence
     */
-   private void writeSequenceValue(long value) {
+   private long incrementSequenceValue(HColumn<String, Long> currentSequence) {
+      long currentValue;
+      long currentClock;
+      if (currentSequence == null) {
+         currentValue = 0;
+         currentClock = 0;
+      }
+      else {
+         currentValue = currentSequence.getValue();
+         currentClock = currentSequence.getClock();
+      }
+      // On s'assure que le nouveau timestamp est supérieur à l'ancien
+      long newClock = getCurrentClock();      
+      if (newClock <= currentClock) {
+         // On s'assure que le décalage n'est pas trop important
+         // Les clocks sont exprimés en micro-secondes
+         if ((currentClock - newClock) > MAX_TIME_SYNCHRO_ERROR) {
+            throw new IdGeneratorException(
+                  "Erreur lors de la tentative d'acquisition du lock pour la séquence "
+                  + sequenceName + ". Vérifier la sychronisation des horloges des serveurs. "
+                  + " Ancien timestamp :" + currentClock + " - Nouveau timestamp : " + newClock);
+         }
+         if ((currentClock - newClock) > MAX_TIME_SYNCHRO_WARN) {
+            LOG.warn("Attention, les horloges des serveurs semblent désynchronisées. Le décalage est au moins de " 
+                  + (currentClock - newClock) / ONE_THOUSAND + " ms");
+         }
+         // Sinon, on positionne le nouveau timestamp juste au dessus de l'ancien
+         newClock = currentClock + 1;
+      }
       ColumnFamilyUpdater<String, String> updater = template
             .createUpdater(SEQUENCE_KEY);
-      updater.setLong(sequenceName, value);
+      long newValue = currentValue + 1;
+      updater.setLong(sequenceName, newValue);
+      updater.setClock(newClock);
       template.update(updater);
+      return newValue;
    }
 
    /**
