@@ -18,6 +18,7 @@
 
       <!-- Version des librairies partagées -->
       <commons.cassandra>0.0.3</commons.cassandra>
+      <commons.dfce.version>1.0.1-CRTL-1</commons.dfce.version>
 
       <!-- Version des framework -->
       <spring.framework.version>3.0.5.RELEASE</spring.framework.version>
@@ -431,6 +432,7 @@
    <dependencies>
    
       <!-- Librairies mutualisées -->
+      
       <dependency>
          <groupId>fr.urssaf.image.commons</groupId>
          <artifactId>commons-cassandra</artifactId>
@@ -445,6 +447,13 @@
                <artifactId>servlet-api</artifactId>
             </exclusion>
          </exclusions>
+      </dependency>
+      
+      
+      <dependency>
+         <groupId>fr.urssaf.image.commons</groupId>
+         <artifactId>commons-dfce</artifactId>
+         <version>${commons.dfce.version}</version>
       </dependency>
    
 

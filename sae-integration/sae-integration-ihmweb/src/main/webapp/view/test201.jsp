@@ -37,6 +37,9 @@
 
 	<sae:consultation numeroEtape="4" pathFormulaire="consultFormulaire"
 		objetFormulaire="${formulaire.consultFormulaire}" />
+		
+   <sae:comptagesTdm numeroEtape="5" pathFormulaire="comptagesFormulaire"
+      objetFormulaire="${formulaire.comptagesFormulaire}" />
 
 	<sae:soapMessages objetFormulaire="${formulaire.soapFormulaire}" />
 

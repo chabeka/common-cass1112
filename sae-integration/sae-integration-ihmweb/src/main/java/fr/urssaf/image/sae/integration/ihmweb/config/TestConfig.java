@@ -12,6 +12,12 @@ public class TestConfig {
    private String cmCompareRepRef;
    private String cmCompareRepPasse;
    
+   private String dfceServeurUrl;
+   private String dfceLogin;
+   private String dfcePassword;
+   private String dfceBase;
+   
+   
    /**
     * L'URL du service web SaeService
     * 
@@ -68,26 +74,112 @@ public class TestConfig {
    }
 
 
+   /**
+    * Comparateur de resultats.xml : Répertoire de la passe de référence 
+    * @return Comparateur de resultats.xml : Répertoire de la passe de référence
+    */
    public final String getCmCompareRepRef() {
       return cmCompareRepRef;
    }
 
 
+   /**
+    * Comparateur de resultats.xml : Répertoire de la passe de référence
+    * @param cmCompareRepRef Comparateur de resultats.xml : Répertoire de la passe de référence
+    */
    public final void setCmCompareRepRef(String cmCompareRepRef) {
       this.cmCompareRepRef = cmCompareRepRef;
    }
 
 
+   /**
+    * Comparateur de resultats.xml : Répertoire de la passe à comparer à la référence
+    * @return Comparateur de resultats.xml : Répertoire de la passe à comparer à la référence
+    */
    public final String getCmCompareRepPasse() {
       return cmCompareRepPasse;
    }
 
 
+   /**
+    * Comparateur de resultats.xml : Répertoire de la passe à comparer à la référence
+    * @param cmCompareRepPasse Comparateur de resultats.xml : Répertoire de la passe à comparer à la référence
+    */
    public final void setCmCompareRepPasse(String cmCompareRepPasse) {
       this.cmCompareRepPasse = cmCompareRepPasse;
    }
-   
-   
+
+
+   /**
+    * DFCE : URL du Toolkit
+    * @return DFCE : URL du Toolkit
+    */
+   public final String getDfceServeurUrl() {
+      return dfceServeurUrl;
+   }
+
+
+   /**
+    * DFCE : URL du Toolkit
+    * @param dfceServeurUrl DFCE : URL du Toolkit
+    */
+   public final void setDfceServeurUrl(String dfceServeurUrl) {
+      this.dfceServeurUrl = dfceServeurUrl;
+   }
+
+
+   /**
+    * DFCE : Login de connexion au Toolkit
+    * @return DFCE : Login de connexion au Toolkit
+    */
+   public final String getDfceLogin() {
+      return dfceLogin;
+   }
+
+
+   /**
+    * DFCE : Login de connexion au Toolkit
+    * @param dfceLogin DFCE : Login de connexion au Toolkit
+    */
+   public final void setDfceLogin(String dfceLogin) {
+      this.dfceLogin = dfceLogin;
+   }
+
+
+   /**
+    * DFCE : Password de connexion au Toolkit
+    * @return DFCE : Password de connexion au Toolkit
+    */
+   public final String getDfcePassword() {
+      return dfcePassword;
+   }
+
+
+   /**
+    * DFCE : Password de connexion au Toolkit
+    * @param dfcePassword DFCE : Password de connexion au Toolkit
+    */
+   public final void setDfcePassword(String dfcePassword) {
+      this.dfcePassword = dfcePassword;
+   }
+
+
+   /**
+    * DFCE : Nom de la base
+    * @return DFCE : Nom de la base
+    */
+   public final String getDfceBase() {
+      return dfceBase;
+   }
+
+
+   /**
+    * DFCE : Nom de la base
+    * @param dfceBase DFCE : Nom de la base
+    */
+   public final void setDfceBase(String dfceBase) {
+      this.dfceBase = dfceBase;
+   }
    
    
 }

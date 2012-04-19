@@ -116,6 +116,10 @@ public class Test209Controller extends
 
          etape4Consultation(formulaire);
 
+      } else if ("5".equals(etape)) {
+
+         etape5Comptages(formulaire);
+
       } else {
 
          throw new IntegrationRuntimeException("L'étape " + etape
@@ -226,4 +230,26 @@ public class Test209Controller extends
       }
       
    }
+   
+   private void etape5Comptages(TestStockageMasseAllFormulaire formulaire) {
+
+      // Récupération de l'objet ResultatTest
+      ResultatTest resultatTest = formulaire.getComptagesFormulaire()
+            .getResultats();
+      resultatTest.clear();
+
+      // Lecture de l'identifiant du traitement de masse
+      String idTdm = formulaire.getComptagesFormulaire().getIdTdm();
+
+      // Appel du service de comptages
+      getCaptureMasseTestService().comptages(idTdm, resultatTest,
+            new Long(5000));
+
+      // Passe le test en OK si pas KO
+      if (!TestStatusEnum.Echec.equals(resultatTest.getStatus())) {
+         resultatTest.setStatus(TestStatusEnum.Succes);
+      }
+
+   }
+   
 }

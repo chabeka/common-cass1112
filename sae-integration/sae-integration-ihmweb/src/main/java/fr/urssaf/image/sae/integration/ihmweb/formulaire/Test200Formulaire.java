@@ -9,6 +9,8 @@ public class Test200Formulaire extends TestWsParentFormulaire {
          this);
 
    private final CaptureMasseResultatFormulaire captMasseResult = new CaptureMasseResultatFormulaire();
+   
+   private final ComptagesTdmFormulaire comptagesFormulaire = new ComptagesTdmFormulaire(this);
 
    /**
     * Le sous-formulaire pour l'appel à l'opération "archivageMasse"
@@ -28,6 +30,15 @@ public class Test200Formulaire extends TestWsParentFormulaire {
     */
    public final CaptureMasseResultatFormulaire getCaptureMasseResultat() {
       return this.captMasseResult;
+   }
+
+   
+   /**
+    * Le sous-formulaire pour les comptages
+    * @return Le sous-formulaire pour les comptages
+    */
+   public final ComptagesTdmFormulaire getComptagesFormulaire() {
+      return comptagesFormulaire;
    }
 
 }

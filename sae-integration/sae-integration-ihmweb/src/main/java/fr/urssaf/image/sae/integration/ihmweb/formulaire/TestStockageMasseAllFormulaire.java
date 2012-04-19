@@ -12,6 +12,8 @@ public class TestStockageMasseAllFormulaire extends TestWsParentFormulaire {
    private final RechercheFormulaire rechFormulaire = new RechercheFormulaire(this);
 
    private final ConsultationFormulaire consultFormulaire = new ConsultationFormulaire(this);
+   
+   private final ComptagesTdmFormulaire comptagesFormulaire = new ComptagesTdmFormulaire(this);
 
    /**
     * Le sous-formulaire pour l'appel à l'opération "archivageMasse"
@@ -50,6 +52,16 @@ public class TestStockageMasseAllFormulaire extends TestWsParentFormulaire {
     */
    public final ConsultationFormulaire getConsultFormulaire() {
       return this.consultFormulaire;
+   }
+
+   
+   /**
+    * Le sous-formulaire de comptages
+    * 
+    * @return le sous-formulaire de comptages
+    */
+   public final ComptagesTdmFormulaire getComptagesFormulaire() {
+      return comptagesFormulaire;
    }
 
 

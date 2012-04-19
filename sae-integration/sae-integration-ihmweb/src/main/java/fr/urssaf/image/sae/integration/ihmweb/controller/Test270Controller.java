@@ -8,6 +8,7 @@ import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseResultatFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.TestStockageMasseAllFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTest;
 import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
 import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.ErreurType;
 import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.FichierType;
@@ -15,21 +16,18 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_r
 import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.NonIntegratedDocumentType;
 
 /**
- * 270-CaptureMasse-KO-Tor-3000-rollback
+ * 270-CaptureMasse-KO-Tor-5000-Rollback
  */
 @Controller
 @RequestMapping(value = "test270")
 public class Test270Controller extends
       AbstractTestWsController<TestStockageMasseAllFormulaire> {
 
-   /**
-    * 
-    */
-   private static final int ERROR_NUMBER = 2001;
-   /**
-    * 
-    */
-   private static final int WAITED_COUNT = 3000;
+   
+   private static final int ERROR_NUMBER = 4999;
+   
+   
+   private static final int WAITED_COUNT = 5000;
    
 
    /**
@@ -42,7 +40,7 @@ public class Test270Controller extends
    
    
    private String getDebutUrlEcde() {
-      return getEcdeService().construitUrlEcde("SAE_INTEGRATION/20110822/CaptureMasse-270-CaptureMasse-KO-Tor-3000-Rollback/");
+      return getEcdeService().construitUrlEcde("SAE_INTEGRATION/20110822/CaptureMasse-270-CaptureMasse-KO-Tor-5000-Rollback/");
    }
 
    /**
@@ -90,6 +88,10 @@ public class Test270Controller extends
 
          etape3Recherche(formulaire);
 
+      } else if ("4".equals(etape)) {
+
+         etape4Comptages(formulaire);
+
       } else {
 
          throw new IntegrationRuntimeException("L'étape " + etape
@@ -122,10 +124,13 @@ public class Test270Controller extends
       fichierType.setCheminEtNomDuFichier("doc0.PDF");
 
       ErreurType erreurType = new ErreurType();
-      erreurType.setCode("SAE-EC-SOM002");
+      erreurType.setCode("SAE-CA-BUL001");
+//      erreurType
+//            .setLibelle("Une erreur interne à l'application est survenue lors de la capture du document doc0.PDF. Détails : "
+//                  + "File 'Y:\\SAE_INTEGRATION\\20110822\\CaptureMasse-270-CaptureMasse-KO-Tor-5000-Rollback\\documents\\doc0.PDF' does not exist");
       erreurType
-            .setLibelle("Impossible d'accéder au document doc0.PDF. Détails : "
-                  + "L'objet numérique : doc0.PDF ne représente pas un fichier existant.");
+            .setLibelle("Une erreur interne à l'application est survenue lors de la capture du document doc0.PDF. Détails : "
+                  + "File '/hawai/data/ecde_cnp69dev/SAE_INTEGRATION/20110822/CaptureMasse-270-CaptureMasse-KO-Tor-5000-Rollback/documents/doc0.PDF' does not exist");
 
       ListeErreurType listeErreurType = new ListeErreurType();
       listeErreurType.getErreur().add(erreurType);
@@ -144,6 +149,27 @@ public class Test270Controller extends
       getRechercheTestService().appelWsOpRechercheReponseCorrecteAttendue(
             formulaire.getUrlServiceWeb(), formulaire.getRechFormulaire(), 0,
             false, null);
+
+   }
+   
+   private void etape4Comptages(TestStockageMasseAllFormulaire formulaire) {
+
+      // Récupération de l'objet ResultatTest
+      ResultatTest resultatTest = formulaire.getComptagesFormulaire()
+            .getResultats();
+      resultatTest.clear();
+
+      // Lecture de l'identifiant du traitement de masse
+      String idTdm = formulaire.getComptagesFormulaire().getIdTdm();
+
+      // Appel du service de comptages
+      getCaptureMasseTestService().comptages(idTdm, resultatTest,
+            new Long(0));
+
+      // Passe le test en OK si pas KO
+      if (!TestStatusEnum.Echec.equals(resultatTest.getStatus())) {
+         resultatTest.setStatus(TestStatusEnum.Succes);
+      }
 
    }
 }

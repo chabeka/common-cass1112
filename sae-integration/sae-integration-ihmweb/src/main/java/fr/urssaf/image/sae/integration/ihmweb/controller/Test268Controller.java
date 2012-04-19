@@ -8,6 +8,7 @@ import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseResultatFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.TestStockageMasseAllFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTest;
 import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
 import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.ErreurType;
 import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.FichierType;
@@ -86,6 +87,10 @@ public class Test268Controller extends
 
          etape3Recherche(formulaire);
 
+      } else if ("4".equals(etape)) {
+
+         etape4Comptages(formulaire);
+
       } else {
 
          throw new IntegrationRuntimeException("L'étape " + etape
@@ -140,6 +145,27 @@ public class Test268Controller extends
       getRechercheTestService().appelWsOpRechercheReponseCorrecteAttendue(
             formulaire.getUrlServiceWeb(), formulaire.getRechFormulaire(), 0,
             false, null);
+
+   }
+   
+   private void etape4Comptages(TestStockageMasseAllFormulaire formulaire) {
+
+      // Récupération de l'objet ResultatTest
+      ResultatTest resultatTest = formulaire.getComptagesFormulaire()
+            .getResultats();
+      resultatTest.clear();
+
+      // Lecture de l'identifiant du traitement de masse
+      String idTdm = formulaire.getComptagesFormulaire().getIdTdm();
+
+      // Appel du service de comptages
+      getCaptureMasseTestService().comptages(idTdm, resultatTest,
+            new Long(0));
+
+      // Passe le test en OK si pas KO
+      if (!TestStatusEnum.Echec.equals(resultatTest.getStatus())) {
+         resultatTest.setStatus(TestStatusEnum.Succes);
+      }
 
    }
 }

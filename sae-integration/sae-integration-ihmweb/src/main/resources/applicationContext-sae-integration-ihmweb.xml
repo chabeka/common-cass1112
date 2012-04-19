@@ -60,9 +60,6 @@
       class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
       <property name="locations">
          <list>
-            
-            <value>classpath:config.properties</value>
-            
             <bean class="org.springframework.core.io.FileSystemResource">
                <constructor-arg>
                   <bean class="org.springframework.jndi.JndiObjectFactoryBean">
@@ -71,12 +68,10 @@
                   </bean>
                </constructor-arg>
             </bean>
-
          </list>
       </property>
-      
-      
    </bean>
+
 
    <bean id="testConfig"
       class="fr.urssaf.image.sae.integration.ihmweb.config.TestConfig">
@@ -95,6 +90,20 @@
       <property name="cmCompareRepPasse">
          <value>${cmcompare.repPasse}</value>
       </property>
+      <property name="dfceServeurUrl">
+         <value>${dfce.serverUrl}</value>
+      </property>
+      <property name="dfceLogin">
+         <value>${dfce.login}</value>
+      </property>
+      <property name="dfcePassword">
+         <value>${dfce.password}</value>
+      </property>
+      <property name="dfceBase">
+         <value>${dfce.base}</value>
+      </property>
+      
+      
    </bean>
 
 

@@ -30,6 +30,9 @@
 
 	<sae:recherche numeroEtape="3" pathFormulaire="rechFormulaire"
 		objetFormulaire="${formulaire.rechFormulaire}" />
+	
+	<sae:comptagesTdm numeroEtape="4" pathFormulaire="comptagesFormulaire"
+      objetFormulaire="${formulaire.comptagesFormulaire}" />
 
 	<sae:soapMessages objetFormulaire="${formulaire.soapFormulaire}" />
 

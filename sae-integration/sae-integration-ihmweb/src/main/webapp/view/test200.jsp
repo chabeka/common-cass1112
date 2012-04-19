@@ -27,6 +27,9 @@
 	<sae:captureMasseResultat numeroEtape="2"
 		objetFormulaire="${formulaire.captureMasseResultat}"
 		pathFormulaire="captureMasseResultat" />
+	
+	<sae:comptagesTdm numeroEtape="3" pathFormulaire="comptagesFormulaire"
+      objetFormulaire="${formulaire.comptagesFormulaire}" />
 
 	<sae:soapMessages objetFormulaire="${formulaire.soapFormulaire}" />
 

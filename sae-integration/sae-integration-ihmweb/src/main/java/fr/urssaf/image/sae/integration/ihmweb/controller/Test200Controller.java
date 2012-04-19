@@ -6,7 +6,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import fr.urssaf.image.sae.integration.ihmweb.exception.IntegrationRuntimeException;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseResultatFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.formulaire.ComptagesTdmFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.Test200Formulaire;
+import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTest;
 import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
 
 
@@ -43,6 +45,9 @@ public class Test200Controller extends AbstractTestWsController<Test200Formulair
       formResultat.setUrlSommaire(formCapture.getUrlSommaire());
       formResultat.getResultats().setStatus(TestStatusEnum.SansStatus);
       
+      ComptagesTdmFormulaire comptageFormulaire = formulaire.getComptagesFormulaire();
+      comptageFormulaire.getResultats().setStatus(TestStatusEnum.SansStatus);
+      
       return formulaire;
       
    }
@@ -66,7 +71,11 @@ public class Test200Controller extends AbstractTestWsController<Test200Formulair
          etape2captureMasseResultats(
                formulaire.getCaptureMasseResultat());
          
-      } else{
+      } else if ("3".equals(etape)) {
+
+         etape3Comptages(formulaire.getComptagesFormulaire());
+
+      } else {
          
          throw new IntegrationRuntimeException("L'étape " + etape + " est inconnue !");
          
@@ -102,6 +111,22 @@ public class Test200Controller extends AbstractTestWsController<Test200Formulair
       
       getCaptureMasseTestService().regardeResultatsTdm(formulaire);
       
+   }
+   
+   
+   private void etape3Comptages(ComptagesTdmFormulaire formulaire) {
+
+      // Initialisation de l'objet ResultatTest
+      ResultatTest resultatTest = formulaire.getResultats();
+      resultatTest.clear();
+      
+      // Lecture de l'identifiant du traitement de masse
+      String idTdm = formulaire.getIdTdm();
+
+      // Appel du service de comptages
+      getCaptureMasseTestService().comptages(idTdm, resultatTest,
+            null);
+
    }
    
  

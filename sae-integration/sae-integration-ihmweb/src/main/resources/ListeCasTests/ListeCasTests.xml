@@ -537,12 +537,12 @@
 
          <CasTest>
             <id>270</id>
-            <code>270-CaptureMasse-KO-Tor-3000-Rollback</code>
+            <code>270-CaptureMasse-KO-Tor-5000-Rollback</code>
             <description>
-               La Capture de masse échoue suite à la suppression d’un fichier image après l’analyse
+               La capture de masse échoue suite à la suppression d'un fichier image après l'analyse
             </description>
             <implemente>true</implemente>
-            <luceneExemple>Denomination:"Test 270-CaptureMasse-KO-Tor-3000-Rollback"</luceneExemple>
+            <luceneExemple>Denomination:"Test 270-CaptureMasse-KO-Tor-5000-Rollback"</luceneExemple>
          </CasTest>
 
          <CasTest>

@@ -2,8 +2,10 @@ package fr.urssaf.image.sae.integration.ihmweb.service.tests;
 
 import java.io.File;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.axis2.AxisFault;
 import org.apache.commons.io.FilenameUtils;
@@ -13,8 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.sae.integration.ihmweb.constantes.SaeIntegrationConstantes;
+import fr.urssaf.image.sae.integration.ihmweb.exception.IntegrationException;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseResultatFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.modele.Comptage;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTest;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTestLog;
 import fr.urssaf.image.sae.integration.ihmweb.modele.SoapFault;
@@ -27,11 +31,13 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.A
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.utils.SaeServiceLogUtils;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.utils.SaeServiceObjectFactory;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.utils.SaeServiceStubUtils;
+import fr.urssaf.image.sae.integration.ihmweb.service.dfce.DfceService;
 import fr.urssaf.image.sae.integration.ihmweb.service.ecde.EcdeService;
 import fr.urssaf.image.sae.integration.ihmweb.service.referentiels.ReferentielSoapFaultService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.listeners.WsTestListener;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.listeners.impl.WsTestListenerImplLibre;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.listeners.impl.WsTestListenerImplSoapFault;
+import fr.urssaf.image.sae.integration.ihmweb.utils.ExceptionUtils;
 import fr.urssaf.image.sae.integration.ihmweb.utils.ViUtils;
 
 /**
@@ -57,6 +63,9 @@ public class CaptureMasseTestService {
 
    @Autowired
    private EcdeService ecdeService;
+
+   @Autowired
+   private DfceService dfceService;
 
    private void appelWsOpArchiMasse(String urlServiceWeb,
          String ficRessourceVi, CaptureMasseFormulaire formulaire,
@@ -195,7 +204,7 @@ public class CaptureMasseTestService {
          CaptureMasseFormulaire formulaire) {
 
       // Fait la même chose que le test libre
-      appelWsOpArchiMasseTestLibre(urlWebService,formulaire);
+      appelWsOpArchiMasseTestLibre(urlWebService, formulaire);
 
    }
 
@@ -873,6 +882,107 @@ public class CaptureMasseTestService {
       value = value.replace("day", "jour");
 
       return value;
+
+   }
+
+   /**
+    * Comptages par rapport à l'id du traitement de masse
+    * 
+    * @param idTdm
+    *           l'identifiant du traitement de masse
+    * @param resultatTest
+    *           l'objet de résultat du test en cours
+    * @param comptageDfceAttendu
+    *           : le comptage DFCE attendu. Mettre null si pas de comptage
+    *           attendu
+    * @return <ol>
+    *         <li>Premier élément : comptage dans DFCE</li>
+    *         </ol>
+    */
+   public List<Comptage> comptages(String idTdm, ResultatTest resultatTest,
+         Long comptageDfceAttendu) {
+
+      // Création de l'objet résultat
+      List<Comptage> result = new ArrayList<Comptage>();
+
+      // 1) Comptage dans DFCE
+      Comptage objComptageDfce = comptageDfce(idTdm, resultatTest,
+            comptageDfceAttendu);
+      result.add(objComptageDfce);
+
+      // 2) Comptage dans Cassandra
+      // TODO: Comptage dans Cassandra
+
+      // Renvoie le résultat
+      return result;
+
+   }
+
+   private Comptage comptageDfce(String idTdm, ResultatTest resultatTest,
+         Long comptageDfceAttendu) {
+
+      ResultatTestLog resultatLog = resultatTest.getLog();
+
+      resultatLog.appendLogLn("Comptage DFCE");
+      Comptage comptageDfce = new Comptage();
+      try {
+
+         Long comptageDfceObtenu = dfceService.compteNbDocsTdm(UUID
+               .fromString(idTdm));
+
+         comptagesTraiteResultat(resultatTest, comptageDfce,
+               comptageDfceObtenu, comptageDfceAttendu);
+
+      } catch (IntegrationException e) {
+
+         comptagesTraiteException(resultatTest, comptageDfce, e,
+               comptageDfceAttendu);
+
+      }
+      resultatLog.appendLogNewLine();
+
+      return comptageDfce;
+
+   }
+
+   private void comptagesTraiteResultat(ResultatTest resultatTest,
+         Comptage objetComptage, Long comptageObtenu, Long comptageAttendu) {
+
+      // Mémorise le comptage dans l'objet renvoyé en retour de la méthode
+      objetComptage.setComptage(comptageObtenu);
+
+      // Ajoute simplement le comptage dans les logs
+      resultatTest.getLog().appendLogLn(Long.toString(comptageObtenu));
+
+      // Si un comptage est attendu, on fait la comparaison
+      if ((comptageAttendu != null)
+            && (!comptageObtenu.equals(comptageAttendu))) {
+
+         resultatTest.setStatus(TestStatusEnum.Echec);
+
+         resultatTest.getLog().appendLogLn(
+               "Erreur: on attendait " + comptageAttendu);
+
+      }
+
+   }
+
+   private void comptagesTraiteException(ResultatTest resultatTest,
+         Comptage objetComptage, Exception exception, Long comptageAttendu) {
+
+      // Récupère l'exception sous forme de String
+      String erreur = ExceptionUtils.exceptionToString(exception);
+
+      // Mémorise l'erreur dans l'objet renvoyé en retour de la méthode
+      objetComptage.setErreur(erreur);
+
+      // Ajoute l'erreur dans les logs
+      resultatTest.getLog().appendLogLn(erreur);
+
+      // Si un comptage était attendu, on met le test en erreur
+      if (comptageAttendu != null) {
+         resultatTest.setStatus(TestStatusEnum.Echec);
+      }
 
    }
 

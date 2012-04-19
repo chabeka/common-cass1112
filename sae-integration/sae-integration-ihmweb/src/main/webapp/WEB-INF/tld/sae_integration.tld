@@ -77,6 +77,12 @@
       <description>Envoi d'un message SOAP brut</description>
       <path>/WEB-INF/tags/envoiSoap.tag</path>
    </tag-file>
+   
+   <tag-file>
+      <name>comptagesTdm</name>
+      <description>Comptage du nombre de documents pour un traitement de masse</description>
+      <path>/WEB-INF/tags/comptagesTdm.tag</path>
+   </tag-file>
 
    <function>
       <name>booleanToOuiNon</name>
