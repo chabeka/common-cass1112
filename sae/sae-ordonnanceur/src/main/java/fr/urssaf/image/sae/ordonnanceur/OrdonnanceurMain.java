@@ -1,18 +1,14 @@
 package fr.urssaf.image.sae.ordonnanceur;
 
+import java.util.concurrent.TimeUnit;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
-import org.springframework.util.Assert;
 
-import fr.urssaf.image.sae.ordonnanceur.exception.AucunJobALancerException;
-import fr.urssaf.image.sae.ordonnanceur.exception.JobRuntimeException;
-import fr.urssaf.image.sae.ordonnanceur.exception.OrdonnanceurRuntimeException;
+import fr.urssaf.image.sae.ordonnanceur.commande.LancementTraitement;
+import fr.urssaf.image.sae.ordonnanceur.commande.support.CommandeThreadPoolExecutor;
 import fr.urssaf.image.sae.ordonnanceur.factory.OrdonnanceurContexteFactory;
-import fr.urssaf.image.sae.ordonnanceur.model.OrdonnanceurConfiguration;
-import fr.urssaf.image.sae.ordonnanceur.service.CoordinationService;
-import fr.urssaf.image.sae.ordonnanceur.service.JobFailureService;
-import fr.urssaf.image.sae.ordonnanceur.util.RandomUtils;
 import fr.urssaf.image.sae.ordonnanceur.util.ValidateUtils;
 
 /**
@@ -27,19 +23,11 @@ public final class OrdonnanceurMain {
    private static final Logger LOG = LoggerFactory
          .getLogger(OrdonnanceurMain.class);
 
-   private static final String PREFIX_LOG = "ordonnanceur()";
-
    private final String configLocation;
 
-   private CoordinationService coordination;
+   private CommandeThreadPoolExecutor commandePool;
 
-   private JobFailureService jobFailureService;
-
-   private int intervalle;
-
-   private static final long INTERVAL = 1000;
-
-   private static boolean stop = false;
+   private ApplicationContext context;
 
    protected OrdonnanceurMain(String configLocation) {
 
@@ -58,63 +46,24 @@ public final class OrdonnanceurMain {
       String saeConfiguration = args[0];
 
       // instanciation du contexte de SPRING
-      ApplicationContext context = OrdonnanceurContexteFactory.creerContext(
-            configLocation, saeConfiguration);
+      context = OrdonnanceurContexteFactory.creerContext(configLocation,
+            saeConfiguration);
 
-      try {
-         coordination = context.getBean(CoordinationService.class);
-         jobFailureService = context.getBean(JobFailureService.class);
-
-         OrdonnanceurConfiguration configuration = context
-               .getBean(OrdonnanceurConfiguration.class);
-         intervalle = configuration.getIntervalle();
-
-      } catch (Exception e) {
-
-         LOG.warn("Erreur grave lors du traitement de l'ordonnanceur.", e);
-         throw new OrdonnanceurRuntimeException(e);
-      }
+      commandePool = context.getBean(CommandeThreadPoolExecutor.class);
 
    }
 
    protected void launchTraitement() {
 
-      Assert.notNull(coordination, "'coordination' is required");
-      Assert.state(intervalle >= 1,
-            "'intervalle' must be greater than or equal to 1.");
+      LancementTraitement traitement = new LancementTraitement(context);
 
       try {
 
-         coordination.lancerTraitement();
-
-      } catch (AucunJobALancerException e) {
-
-         LOG.debug("{} - il n'y a aucun traitement à lancer", PREFIX_LOG);
-
-      } catch (JobRuntimeException e) {
-
-         LOG.debug("{} - il n'y a aucun traitement à lancer", PREFIX_LOG);
-
-         // on mémorise l'échec du traitement
-         jobFailureService.ajouterEchec(e.getJob().getIdJob(), e);
+         commandePool.schedule(traitement, 0, TimeUnit.SECONDS);
 
       } catch (Exception e) {
 
          LOG.error("Erreur grave lors du traitement de l'ordonnanceur.", e);
-      }
-
-      int min = intervalle;
-      int max = min * 2;
-      int waitTime = RandomUtils.random(min, max);
-
-      LOG
-            .debug(
-                  "{} - prochaine tentative de lancement d'un traitement dans {} secondes",
-                  PREFIX_LOG, waitTime);
-      try {
-         Thread.sleep(waitTime * INTERVAL);
-      } catch (InterruptedException e) {
-         throw new OrdonnanceurRuntimeException(e);
       }
 
    }
@@ -129,23 +78,31 @@ public final class OrdonnanceurMain {
 
       LOG.info("Démarrage de l'ordonnanceur");
 
-      OrdonnanceurMain instance = new OrdonnanceurMain(
+      final OrdonnanceurMain instance = new OrdonnanceurMain(
             "/applicationContext-sae-ordonnanceur.xml");
 
       instance.loadOrdonnanceurApplicationContext(args);
 
-      while (true) {
+      Runtime.getRuntime().addShutdownHook(new Thread() {
+         @Override
+         public void run() {
+            LOG
+                  .info("Une demande d'arrêt de l'ordonnanceur a été prise en compte");
 
-         instance.launchTraitement();
+            // on appel les différents Pool de Threads pour les arrêter
 
-         // TODO commande d'arrêt propre de l'ordonnanceur
-         if (stop) {
-            break;
+            // ici on appelle l'instance de ScheduledThreadPoolExecutor
+
+            instance.commandePool.shutdown();
+
+            instance.commandePool.waitFinish();
+
+            LOG.info("L'ordonnanceur est arrêté.");
+
          }
+      });
 
-      }
-
-      LOG.info("Arrêt de l'ordonnanceur");
+      instance.launchTraitement();
 
    }
 

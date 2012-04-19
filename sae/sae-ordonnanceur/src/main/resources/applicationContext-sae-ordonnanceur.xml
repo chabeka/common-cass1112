@@ -33,6 +33,9 @@
    <!-- configuration des traitements -->
    <import resource="applicationContext-sae-ordonnanceur-service.xml" />
 
+   <!-- configuration des commandes -->
+   <import resource="applicationContext-sae-ordonnanceur-commande.xml" />
+
    <!-- configuration ECDE -->
    <import resource="applicationContext-sae-ordonnanceur-ecde.xml" />
 

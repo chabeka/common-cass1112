@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.ordonnanceur.service.CoordinationService;
 import fr.urssaf.image.sae.ordonnanceur.service.DecisionService;
+import fr.urssaf.image.sae.ordonnanceur.service.JobFailureService;
 import fr.urssaf.image.sae.ordonnanceur.service.JobService;
 import fr.urssaf.image.sae.ordonnanceur.support.DFCESupport;
 import fr.urssaf.image.sae.ordonnanceur.support.TraitementLauncherSupport;
@@ -72,6 +73,17 @@ public class ServiceMockFactory {
    public final DFCESupport createDFCESupport() {
 
       DFCESupport service = EasyMock.createMock(DFCESupport.class);
+
+      return service;
+   }
+
+   /**
+    * 
+    * @return instance de {@link JobFailureService}
+    */
+   public final JobFailureService createJobFailureService() {
+
+      JobFailureService service = EasyMock.createMock(JobFailureService.class);
 
       return service;
    }
