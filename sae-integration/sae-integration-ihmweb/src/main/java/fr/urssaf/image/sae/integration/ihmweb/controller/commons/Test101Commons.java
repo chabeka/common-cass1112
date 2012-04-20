@@ -1,8 +1,8 @@
-package fr.urssaf.image.sae.integration.ihmweb.controller;
+package fr.urssaf.image.sae.integration.ihmweb.controller.commons;
 
 import org.apache.commons.lang.StringUtils;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.integration.ihmweb.exception.IntegrationRuntimeException;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureUnitaireFormulaire;
@@ -13,6 +13,7 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.CaptureUnitaireResultat;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CodeMetadonneeList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ConsultationResultat;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeurList;
+import fr.urssaf.image.sae.integration.ihmweb.modele.ModeArchivageUnitaireEnum;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTest;
 import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheResponse;
@@ -20,26 +21,45 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.R
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.utils.SaeServiceObjectExtractor;
 
 /**
- * 101-CaptureUnitaire-OK-Standard
+ * Méthodes communes pour les tests 101a, 101b, 101c, 101d
  */
-@Controller
-@RequestMapping(value = "test101")
-public class Test101Controller extends
-      AbstractTestWsController<Test101Formulaire> {
+@Component
+public class Test101Commons {
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   protected final String getNumeroTest() {
-      return "101";
+   @Autowired
+   private TestsControllerCommons testCommons;
+
+   private String getDenomination(String numeroTest) {
+      if ("101a".equals(numeroTest)) {
+         return "Test 101-CaptureUnitaire-OK-Standard";
+      } else if ("101b".equals(numeroTest)) {
+         return "Test 101-CaptureUnitaire-OK-Standard-PJ-URL";
+      } else if ("101c".equals(numeroTest)) {
+         return "Test 101-CaptureUnitaire-OK-Standard-PJ-sans-MTOM";
+      } else if ("101d".equals(numeroTest)) {
+         return "Test 101-CaptureUnitaire-OK-Standard-PJ-avec-MTOM";
+      } else {
+         throw new IntegrationRuntimeException("Le numéro de test "
+               + numeroTest + " est inconnu");
+      }
    }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   protected final Test101Formulaire getFormulairePourGet() {
+   private ModeArchivageUnitaireEnum getModeArchivage(String numeroTest) {
+      if ("101a".equals(numeroTest)) {
+         return ModeArchivageUnitaireEnum.archivageUnitaire;
+      } else if ("101b".equals(numeroTest)) {
+         return ModeArchivageUnitaireEnum.archivageUnitairePJUrlEcde;
+      } else if ("101c".equals(numeroTest)) {
+         return ModeArchivageUnitaireEnum.archivageUnitairePJContenuSansMtom;
+      } else if ("101d".equals(numeroTest)) {
+         return ModeArchivageUnitaireEnum.archivageUnitairePJContenuAvecMtom;
+      } else {
+         throw new IntegrationRuntimeException("Le numéro de test "
+               + numeroTest + " est inconnu");
+      }
+   }
+
+   public final Test101Formulaire getFormulairePourGet(String numeroTest) {
 
       Test101Formulaire formulaire = new Test101Formulaire();
 
@@ -51,10 +71,16 @@ public class Test101Controller extends
 
       // L'URL ECDE
       formCapture
-            .setUrlEcde(getEcdeService()
+            .setUrlEcde(testCommons
+                  .getEcdeService()
                   .construitUrlEcde(
                         "SAE_INTEGRATION/20110822/CaptureUnitaire-101-CaptureUnitaire-OK-Standard/documents/doc1.PDF"));
+
+      // Le nom du fichier
       formCapture.setNomFichier("doc1.PDF");
+
+      // Le mode d'utilisation de la capture
+      formCapture.setModeCapture(getModeArchivage(numeroTest));
 
       // Les métadonnées
       MetadonneeValeurList metadonnees = new MetadonneeValeurList();
@@ -64,7 +90,7 @@ public class Test101Controller extends
       metadonnees.add("CodeOrganismeProprietaire", "AC750");
       metadonnees.add("CodeRND", "2.3.1.1.12");
       metadonnees.add("DateCreation", "2011-09-01");
-      metadonnees.add("Denomination", "Test 101-CaptureUnitaire-OK-Standard");
+      metadonnees.add("Denomination", getDenomination(numeroTest));
       metadonnees.add("FormatFichier", "fmt/354");
       metadonnees.add("Hash", "a2f93f1f121ebba0faef2c0596f2f126eacae77b");
       metadonnees.add("NbPages", "2");
@@ -78,11 +104,12 @@ public class Test101Controller extends
       RechercheFormulaire formRecherche = formulaire.getRecherche();
 
       // Requête LUCENE
-      formRecherche.setRequeteLucene(getCasTest().getLuceneExemple());
+      formRecherche.setRequeteLucene(testCommons.getCasTest(numeroTest)
+            .getLuceneExemple());
 
       // Métadonnées souhaitées
       // => La liste des métadonnées consultables
-      CodeMetadonneeList codesMeta = getRefMetas()
+      CodeMetadonneeList codesMeta = testCommons.getRefMetas()
             .listeMetadonneesConsultables();
       formRecherche.setCodeMetadonnees(codesMeta);
 
@@ -91,11 +118,7 @@ public class Test101Controller extends
 
    }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   protected final void doPost(Test101Formulaire formulaire) {
+   public final void doPost(Test101Formulaire formulaire, String numeroTest) {
 
       String etape = formulaire.getEtape();
       if ("1".equals(etape)) {
@@ -104,7 +127,7 @@ public class Test101Controller extends
 
       } else if ("2".equals(etape)) {
 
-         etape2recherche(formulaire);
+         etape2recherche(formulaire, getDenomination(numeroTest));
 
       } else if ("3".equals(etape)) {
 
@@ -139,7 +162,8 @@ public class Test101Controller extends
       formulaire.setDernierSha1(null);
 
       // Lance le test
-      CaptureUnitaireResultat consultResult = getCaptureUnitaireTestService()
+      CaptureUnitaireResultat consultResult = testCommons
+            .getCaptureUnitaireTestService()
             .appelWsOpCaptureUnitaireReponseAttendue(
                   formulaire.getUrlServiceWeb(), formCaptureEtp1);
 
@@ -158,7 +182,8 @@ public class Test101Controller extends
 
    }
 
-   private void etape2recherche(Test101Formulaire formulaireTest101) {
+   private void etape2recherche(Test101Formulaire formulaireTest101,
+         String denomination) {
 
       // Initialise
       RechercheFormulaire formulaire = formulaireTest101.getRecherche();
@@ -170,7 +195,7 @@ public class Test101Controller extends
       boolean flagResultatsTronquesAttendu = false;
 
       // Appel de la méthode de test
-      RechercheResponse response = getRechercheTestService()
+      RechercheResponse response = testCommons.getRechercheTestService()
             .appelWsOpRechercheReponseCorrecteAttendue(urlServiceWeb,
                   formulaire, nbResultatsAttendus,
                   flagResultatsTronquesAttendu, null);
@@ -184,7 +209,7 @@ public class Test101Controller extends
                .getRechercheResponse().getResultats().getResultat()[0];
 
          // Le vérifie
-         verifieResultatRecherche(resultatRecherche, resultatTest);
+         verifieResultatRecherche(resultatRecherche, resultatTest, denomination);
 
       }
 
@@ -198,7 +223,8 @@ public class Test101Controller extends
    }
 
    private void verifieResultatRecherche(
-         ResultatRechercheType resultatRecherche, ResultatTest resultatTest) {
+         ResultatRechercheType resultatRecherche, ResultatTest resultatTest,
+         String denomination) {
 
       String numeroResultatRecherche = "1";
 
@@ -209,8 +235,7 @@ public class Test101Controller extends
       valeursAttendues.add("Siren", StringUtils.EMPTY);
       valeursAttendues.add("NniEmployeur", StringUtils.EMPTY);
       valeursAttendues.add("NumeroPersonne", StringUtils.EMPTY);
-      valeursAttendues.add("Denomination",
-            "Test 101-CaptureUnitaire-OK-Standard");
+      valeursAttendues.add("Denomination", denomination);
       valeursAttendues.add("CodeCategorieV2", StringUtils.EMPTY);
       valeursAttendues.add("CodeSousCategorieV2", StringUtils.EMPTY);
       valeursAttendues.add("NumeroCompteInterne", StringUtils.EMPTY);
@@ -228,7 +253,8 @@ public class Test101Controller extends
       valeursAttendues.add("CodeOrganismeGestionnaire", "CER69");
       valeursAttendues.add("SiteAcquisition", StringUtils.EMPTY);
       valeursAttendues.add("CodeRND", "2.3.1.1.12");
-      valeursAttendues.add("VersionRND", getTestConfig().getVersionRND());
+      valeursAttendues.add("VersionRND", testCommons.getTestConfig()
+            .getVersionRND());
       valeursAttendues.add("CodeFonction", "2");
       valeursAttendues.add("CodeActivite", "3");
       valeursAttendues.add("DureeConservation", "1825");
@@ -249,8 +275,9 @@ public class Test101Controller extends
       valeursAttendues.add("ContratDeService", "ATT_PROD_001");
       // valeursAttendues.add("DateArchivage",); // <= à vérifier "à la main"
 
-      getRechercheTestService().verifieResultatRecherche(resultatRecherche,
-            numeroResultatRecherche, resultatTest, valeursAttendues);
+      testCommons.getRechercheTestService().verifieResultatRecherche(
+            resultatRecherche, numeroResultatRecherche, resultatTest,
+            valeursAttendues);
 
    }
 
@@ -272,7 +299,7 @@ public class Test101Controller extends
       }
 
       // Lance le test
-      ConsultationResultat response = getConsultationTestService()
+      ConsultationResultat response = testCommons.getConsultationTestService()
             .appelWsOpConsultationReponseCorrecteAttendue(
                   formulaire.getUrlServiceWeb(), formConsult, sha1attendu);
 
@@ -282,32 +309,32 @@ public class Test101Controller extends
 
          MetadonneeValeurList metas = SaeServiceObjectExtractor
                .extraitMetadonnees(response.getMetadonnees());
-         getTestsMetasService().verifiePresenceEtValeurAvecLog(
+         testCommons.getTestsMetasService().verifiePresenceEtValeurAvecLog(
                formConsult.getResultats(), metas, "Titre",
                "Attestation de vigilance");
-         getTestsMetasService().verifiePresenceEtValeurAvecLog(
+         testCommons.getTestsMetasService().verifiePresenceEtValeurAvecLog(
                formConsult.getResultats(), metas, "DateCreation", "2011-09-01");
-         getTestsMetasService().verifiePresenceEtValeurAvecLog(
+         testCommons.getTestsMetasService().verifiePresenceEtValeurAvecLog(
                formConsult.getResultats(), metas, "DateReception",
                StringUtils.EMPTY);
-         getTestsMetasService().verifiePresenceEtValeurAvecLog(
+         testCommons.getTestsMetasService().verifiePresenceEtValeurAvecLog(
                formConsult.getResultats(), metas, "CodeOrganismeProprietaire",
                "AC750");
-         getTestsMetasService().verifiePresenceEtValeurAvecLog(
+         testCommons.getTestsMetasService().verifiePresenceEtValeurAvecLog(
                formConsult.getResultats(), metas, "CodeOrganismeGestionnaire",
                "CER69");
-         getTestsMetasService().verifiePresenceEtValeurAvecLog(
+         testCommons.getTestsMetasService().verifiePresenceEtValeurAvecLog(
                formConsult.getResultats(), metas, "CodeRND", "2.3.1.1.12");
-         getTestsMetasService().verifiePresenceEtValeurAvecLog(
+         testCommons.getTestsMetasService().verifiePresenceEtValeurAvecLog(
                formConsult.getResultats(), metas, "Hash",
                "a2f93f1f121ebba0faef2c0596f2f126eacae77b");
-         getTestsMetasService().verifiePresenceEtValeurAvecLog(
+         testCommons.getTestsMetasService().verifiePresenceEtValeurAvecLog(
                formConsult.getResultats(), metas, "NomFichier", "doc1.PDF");
-         getTestsMetasService().verifiePresenceEtValeurAvecLog(
+         testCommons.getTestsMetasService().verifiePresenceEtValeurAvecLog(
                formConsult.getResultats(), metas, "FormatFichier", "fmt/354");
-         getTestsMetasService().verifiePresenceEtValeurAvecLog(
+         testCommons.getTestsMetasService().verifiePresenceEtValeurAvecLog(
                formConsult.getResultats(), metas, "TailleFichier", "56587");
-         getTestsMetasService().verifiePresenceEtValeurAvecLog(
+         testCommons.getTestsMetasService().verifiePresenceEtValeurAvecLog(
                formConsult.getResultats(), metas, "ContratDeService",
                "ATT_PROD_001");
 

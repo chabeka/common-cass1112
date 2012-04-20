@@ -1,7 +1,7 @@
-package fr.urssaf.image.sae.integration.ihmweb.controller;
+package fr.urssaf.image.sae.integration.ihmweb.controller.commons;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.integration.ihmweb.exception.IntegrationRuntimeException;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureUnitaireFormulaire;
@@ -9,32 +9,52 @@ import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.Test103Formulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CodeMetadonneeList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeurList;
+import fr.urssaf.image.sae.integration.ihmweb.modele.ModeArchivageUnitaireEnum;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTest;
 import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheResponse;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ResultatRechercheType;
 
 /**
- * 103-CaptureUnitaire-OK-ToutesMetasSpecifiables
+ * Méthodes communes pour les tests 103a, 103b, 103c, 103d
  */
-@Controller
-@RequestMapping(value = "test103")
-public class Test103Controller extends
-      AbstractTestWsController<Test103Formulaire> {
+@Component
+public class Test103Commons {
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   protected final String getNumeroTest() {
-      return "103";
+   @Autowired
+   private TestsControllerCommons testCommons;
+
+   private String getDenomination(String numeroTest) {
+      if ("103a".equals(numeroTest)) {
+         return "Test 103-CaptureUnitaire-OK-ToutesMetasSpecifiables";
+      } else if ("103b".equals(numeroTest)) {
+         return "Test 103-CaptureUnitaire-OK-ToutesMetasSpecifiables-PJ-URL";
+      } else if ("103c".equals(numeroTest)) {
+         return "Test 103-CaptureUnitaire-OK-ToutesMetasSpecifiables-PJ-sans-MTOM";
+      } else if ("103d".equals(numeroTest)) {
+         return "Test 103-CaptureUnitaire-OK-ToutesMetasSpecifiables-PJ-avec-MTOM";
+      } else {
+         throw new IntegrationRuntimeException("Le numéro de test "
+               + numeroTest + " est inconnu");
+      }
    }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   protected final Test103Formulaire getFormulairePourGet() {
+   private ModeArchivageUnitaireEnum getModeArchivage(String numeroTest) {
+      if ("103a".equals(numeroTest)) {
+         return ModeArchivageUnitaireEnum.archivageUnitaire;
+      } else if ("103b".equals(numeroTest)) {
+         return ModeArchivageUnitaireEnum.archivageUnitairePJUrlEcde;
+      } else if ("103c".equals(numeroTest)) {
+         return ModeArchivageUnitaireEnum.archivageUnitairePJContenuSansMtom;
+      } else if ("103d".equals(numeroTest)) {
+         return ModeArchivageUnitaireEnum.archivageUnitairePJContenuAvecMtom;
+      } else {
+         throw new IntegrationRuntimeException("Le numéro de test "
+               + numeroTest + " est inconnu");
+      }
+   }
+
+   public final Test103Formulaire getFormulairePourGet(String numeroTest) {
 
       Test103Formulaire formulaire = new Test103Formulaire();
 
@@ -46,8 +66,13 @@ public class Test103Controller extends
 
       // L'URL ECDE
       formCapture
-            .setUrlEcde(getEcdeService().construitUrlEcde("SAE_INTEGRATION/20110822/CaptureUnitaire-103-CaptureUnitaire-OK-ToutesMetasSpecifiables/documents/doc1.PDF"));
+            .setUrlEcde(testCommons.getEcdeService().construitUrlEcde("SAE_INTEGRATION/20110822/CaptureUnitaire-103-CaptureUnitaire-OK-ToutesMetasSpecifiables/documents/doc1.PDF"));
+
+      // Le nom du fichier
       formCapture.setNomFichier("doc1.PDF");
+
+      // Le mode d'utilisation de la capture
+      formCapture.setModeCapture(getModeArchivage(numeroTest));
 
       // Les métadonnées
       MetadonneeValeurList metadonnees = new MetadonneeValeurList();
@@ -62,8 +87,7 @@ public class Test103Controller extends
       metadonnees.add("DateCreation", "2011-09-05");
       metadonnees.add("DateDebutConservation", "2011-09-02");
       metadonnees.add("DateReception", "2011-09-01");
-      metadonnees.add("Denomination",
-            "Test 103-CaptureUnitaire-OK-ToutesMetasSpecifiables");
+      metadonnees.add("Denomination",getDenomination(numeroTest));
       metadonnees.add("FormatFichier", "fmt/354");
       metadonnees.add("Hash", "a2f93f1f121ebba0faef2c0596f2f126eacae77b");
       metadonnees.add("IdTraitementMasse", "123654");
@@ -92,7 +116,7 @@ public class Test103Controller extends
       RechercheFormulaire formRecherche = formulaire.getRecherche();
 
       // Requête LUCENE
-      formRecherche.setRequeteLucene(getCasTest().getLuceneExemple());
+      formRecherche.setRequeteLucene(testCommons.getCasTest(numeroTest).getLuceneExemple());
 
       // Métadonnées souhaitées
       CodeMetadonneeList codesMeta = new CodeMetadonneeList();
@@ -137,11 +161,7 @@ public class Test103Controller extends
 
    }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   protected final void doPost(Test103Formulaire formulaire) {
+   public final void doPost(Test103Formulaire formulaire, String numeroTest) {
 
       String etape = formulaire.getEtape();
       if ("1".equals(etape)) {
@@ -150,7 +170,7 @@ public class Test103Controller extends
 
       } else if ("2".equals(etape)) {
 
-         etape2recherche(formulaire);
+         etape2recherche(formulaire, getDenomination(numeroTest));
 
       } else {
 
@@ -172,12 +192,13 @@ public class Test103Controller extends
       formRecherche.getResultats().clear();
 
       // Lance le test
-      getCaptureUnitaireTestService().appelWsOpCaptureUnitaireReponseAttendue(
+      testCommons.getCaptureUnitaireTestService().appelWsOpCaptureUnitaireReponseAttendue(
             formulaire.getUrlServiceWeb(), formCaptureEtp1);
 
    }
 
-   private void etape2recherche(Test103Formulaire formulaireTest103) {
+   private void etape2recherche(Test103Formulaire formulaireTest103,
+         String denomination) {
 
       // Initialise
       RechercheFormulaire formulaire = formulaireTest103.getRecherche();
@@ -189,7 +210,7 @@ public class Test103Controller extends
       boolean flagResultatsTronquesAttendu = false;
 
       // Appel de la méthode de test
-      RechercheResponse response = getRechercheTestService()
+      RechercheResponse response = testCommons.getRechercheTestService()
             .appelWsOpRechercheReponseCorrecteAttendue(urlServiceWeb,
                   formulaire, nbResultatsAttendus,
                   flagResultatsTronquesAttendu, null);
@@ -203,7 +224,7 @@ public class Test103Controller extends
                .getRechercheResponse().getResultats().getResultat()[0];
 
          // Le vérifie
-         verifieResultatRecherche(resultatRecherche, resultatTest);
+         verifieResultatRecherche(resultatRecherche, resultatTest, denomination);
 
       }
 
@@ -216,7 +237,8 @@ public class Test103Controller extends
    }
 
    private void verifieResultatRecherche(
-         ResultatRechercheType resultatRecherche, ResultatTest resultatTest) {
+         ResultatRechercheType resultatRecherche, ResultatTest resultatTest,
+         String denomination) {
 
       String numeroResultatRecherche = "1";
 
@@ -233,8 +255,7 @@ public class Test103Controller extends
       valeursAttendues.add("DateDebutConservation", "2011-09-02");
       valeursAttendues.add("DateFinConservation", "2016-08-31");
       valeursAttendues.add("DateReception", "2011-09-01");
-      valeursAttendues.add("Denomination",
-            "Test 103-CaptureUnitaire-OK-ToutesMetasSpecifiables");
+      valeursAttendues.add("Denomination", denomination);
       valeursAttendues.add("FormatFichier", "fmt/354");
       valeursAttendues.add("Hash", "a2f93f1f121ebba0faef2c0596f2f126eacae77b");
       valeursAttendues.add("IdTraitementMasse", "123654");
@@ -259,7 +280,7 @@ public class Test103Controller extends
       valeursAttendues.add("TypeHash", "SHA-1");
       valeursAttendues.add("VersionRND", "5.3");
 
-      getRechercheTestService().verifieResultatRecherche(resultatRecherche,
+      testCommons.getRechercheTestService().verifieResultatRecherche(resultatRecherche,
             numeroResultatRecherche, resultatTest, valeursAttendues);
 
    }

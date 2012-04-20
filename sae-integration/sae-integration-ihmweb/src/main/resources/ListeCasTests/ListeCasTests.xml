@@ -47,7 +47,7 @@
          </CasTest>
 
          <CasTest>
-            <id>101</id>
+            <id>101a</id>
             <code>101-CaptureUnitaire-OK-Standard</code>
             <description>
                On vérifie que la capture unitaire fonctionne dans des conditions "standards" d'utilisation.
@@ -55,9 +55,39 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 101-CaptureUnitaire-OK-Standard"</luceneExemple>
          </CasTest>
+         
+         <CasTest>
+            <id>101b</id>
+            <code>101-CaptureUnitaire-OK-Standard-PJ-URL</code>
+            <description>
+               On vérifie que la capture unitaire fonctionne dans des conditions "standards" d'utilisation.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 101-CaptureUnitaire-OK-Standard-PJ-URL"</luceneExemple>
+         </CasTest>
+         
+         <CasTest>
+            <id>101c</id>
+            <code>101-CaptureUnitaire-OK-Standard-PJ-sans-MTOM</code>
+            <description>
+               On vérifie que la capture unitaire fonctionne dans des conditions "standards" d'utilisation.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 101-CaptureUnitaire-OK-Standard-PJ-sans-MTOM"</luceneExemple>
+         </CasTest>
+         
+         <CasTest>
+            <id>101d</id>
+            <code>101-CaptureUnitaire-OK-Standard-PJ-avec-MTOM</code>
+            <description>
+               On vérifie que la capture unitaire fonctionne dans des conditions "standards" d'utilisation.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 101-CaptureUnitaire-OK-Standard-PJ-avec-MTOM"</luceneExemple>
+         </CasTest>
 
          <CasTest>
-            <id>102</id>
+            <id>102a</id>
             <code>102-CaptureUnitaire-OK-EnrichissementEcrasement</code>
             <description>
                On vérifie que le SAE n'écrase pas, lors de l'enrichissement, les valeurs des métadonnées qui ont été spécifiées par l'application cliente
@@ -65,9 +95,39 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 102-CaptureUnitaire-OK-EnrichissementEcrasement"</luceneExemple>
          </CasTest>
+         
+         <CasTest>
+            <id>102b</id>
+            <code>102-CaptureUnitaire-OK-EnrichissementEcrasement-PJ-URL</code>
+            <description>
+               On vérifie que le SAE n'écrase pas, lors de l'enrichissement, les valeurs des métadonnées qui ont été spécifiées par l'application cliente
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 102-CaptureUnitaire-OK-EnrichissementEcrasement-PJ-URL"</luceneExemple>
+         </CasTest>
+         
+         <CasTest>
+            <id>102c</id>
+            <code>102-CaptureUnitaire-OK-EnrichissementEcrasement-PJ-sans-MTOM</code>
+            <description>
+               On vérifie que le SAE n'écrase pas, lors de l'enrichissement, les valeurs des métadonnées qui ont été spécifiées par l'application cliente
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 102-CaptureUnitaire-OK-EnrichissementEcrasement-PJ-sans-MTOM"</luceneExemple>
+         </CasTest>
+         
+         <CasTest>
+            <id>102d</id>
+            <code>102-CaptureUnitaire-OK-EnrichissementEcrasement-PJ-avec-MTOM</code>
+            <description>
+               On vérifie que le SAE n'écrase pas, lors de l'enrichissement, les valeurs des métadonnées qui ont été spécifiées par l'application cliente
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 102-CaptureUnitaire-OK-EnrichissementEcrasement-PJ-avec-MTOM"</luceneExemple>
+         </CasTest>
 
          <CasTest>
-            <id>103</id>
+            <id>103a</id>
             <code>103-CaptureUnitaire-OK-ToutesMetasSpecifiables</code>
             <description>
                On vérifie que le SAE stocke correctement l'ensemble des métadonnées qu'une application puisse fournir lors de la capture
@@ -77,7 +137,37 @@
          </CasTest>
          
          <CasTest>
-            <id>104</id>
+            <id>103b</id>
+            <code>103-CaptureUnitaire-OK-ToutesMetasSpecifiables-PJ-URL</code>
+            <description>
+               On vérifie que le SAE stocke correctement l'ensemble des métadonnées qu'une application puisse fournir lors de la capture
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 103-CaptureUnitaire-OK-ToutesMetasSpecifiables-PJ-URL"</luceneExemple>
+         </CasTest>
+         
+         <CasTest>
+            <id>103c</id>
+            <code>103-CaptureUnitaire-OK-ToutesMetasSpecifiables-PJ-sans-MTOM</code>
+            <description>
+               On vérifie que le SAE stocke correctement l'ensemble des métadonnées qu'une application puisse fournir lors de la capture
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 103-CaptureUnitaire-OK-ToutesMetasSpecifiables-PJ-sans-MTOM"</luceneExemple>
+         </CasTest>
+         
+         <CasTest>
+            <id>103d</id>
+            <code>103-CaptureUnitaire-OK-ToutesMetasSpecifiables-PJ-avec-MTOM</code>
+            <description>
+               On vérifie que le SAE stocke correctement l'ensemble des métadonnées qu'une application puisse fournir lors de la capture
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 103-CaptureUnitaire-OK-ToutesMetasSpecifiables-PJ-avec-MTOM"</luceneExemple>
+         </CasTest>
+         
+         <CasTest>
+            <id>104a</id>
             <code>104-CaptureUnitaire-OK-Sans-Code-Activite</code>
             <description>
                On vérifie que le SAE stocke correctement un document dont le type n'est rattaché à aucune activité
@@ -87,8 +177,65 @@
          </CasTest>
          
          <CasTest>
-            <id>105</id>
+            <id>104b</id>
+            <code>104-CaptureUnitaire-OK-Sans-Code-Activite-PJ-URL</code>
+            <description>
+               On vérifie que le SAE stocke correctement un document dont le type n'est rattaché à aucune activité
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 104-CaptureUnitaire-OK-Sans-Code-Activite-PJ-URL"</luceneExemple>
+         </CasTest>
+         
+         <CasTest>
+            <id>104c</id>
+            <code>104-CaptureUnitaire-OK-Sans-Code-Activite-PJ-sans-MTOM</code>
+            <description>
+               On vérifie que le SAE stocke correctement un document dont le type n'est rattaché à aucune activité
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 104-CaptureUnitaire-OK-Sans-Code-Activite-PJ-sans-MTOM"</luceneExemple>
+         </CasTest>
+         
+         <CasTest>
+            <id>104d</id>
+            <code>104-CaptureUnitaire-OK-Sans-Code-Activite-PJ-avec-MTOM</code>
+            <description>
+               On vérifie que le SAE stocke correctement un document dont le type n'est rattaché à aucune activité
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 104-CaptureUnitaire-OK-Sans-Code-Activite-PJ-avec-MTOM"</luceneExemple>
+         </CasTest>
+         
+         <CasTest>
+            <id>105a</id>
             <code>105-CaptureUnitaire-OK-HashMajMin</code>
+            <description>
+               On vérifie que la capture unitaire fonctionne correctement lorsque le hash SHA-1 associé au document comporte des minuscules et des majuscules
+            </description>
+            <implemente>true</implemente>
+         </CasTest>
+         
+         <CasTest>
+            <id>105b</id>
+            <code>105-CaptureUnitaire-OK-HashMajMin-PJ-URL</code>
+            <description>
+               On vérifie que la capture unitaire fonctionne correctement lorsque le hash SHA-1 associé au document comporte des minuscules et des majuscules
+            </description>
+            <implemente>true</implemente>
+         </CasTest>
+         
+         <CasTest>
+            <id>105c</id>
+            <code>105-CaptureUnitaire-OK-HashMajMin-PJ-sans-MTOM</code>
+            <description>
+               On vérifie que la capture unitaire fonctionne correctement lorsque le hash SHA-1 associé au document comporte des minuscules et des majuscules
+            </description>
+            <implemente>true</implemente>
+         </CasTest>
+         
+         <CasTest>
+            <id>105d</id>
+            <code>105-CaptureUnitaire-OK-HashMajMin-PJ-avec-MTOM</code>
             <description>
                On vérifie que la capture unitaire fonctionne correctement lorsque le hash SHA-1 associé au document comporte des minuscules et des majuscules
             </description>

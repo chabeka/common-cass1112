@@ -167,7 +167,7 @@ public abstract class AbstractTestWsController<T extends TestWsParentFormulaire>
     */
    protected abstract T getFormulairePourGet();
 
-   private String getNomVue() {
+   protected String getNomVue() {
       return "test" + getNumeroTest();
    }
 

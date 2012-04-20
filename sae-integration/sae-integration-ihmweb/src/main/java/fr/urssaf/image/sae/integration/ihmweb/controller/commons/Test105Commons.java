@@ -1,11 +1,11 @@
-package fr.urssaf.image.sae.integration.ihmweb.controller;
+package fr.urssaf.image.sae.integration.ihmweb.controller.commons;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.integration.ihmweb.exception.IntegrationRuntimeException;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureUnitaireFormulaire;
@@ -15,31 +15,51 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.CaptureUnitaireResultat;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CodeMetadonneeList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeur;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeurList;
+import fr.urssaf.image.sae.integration.ihmweb.modele.ModeArchivageUnitaireEnum;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ModeConsultationEnum;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTest;
 import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
 
 /**
- * 105-CaptureUnitaire-OK-HashMajMin
+ * Méthodes communes pour les tests 105a, 105b, 105c, 105d
  */
-@Controller
-@RequestMapping(value = "test105")
-public class Test105Controller extends
-      AbstractTestWsController<Test105Formulaire> {
+@Component
+public class Test105Commons {
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   protected final String getNumeroTest() {
-      return "105";
+   @Autowired
+   private TestsControllerCommons testCommons;
+
+   private String getDenomination(String numeroTest) {
+      if ("105a".equals(numeroTest)) {
+         return "Test 105-CaptureUnitaire-OK-HashMajMin";
+      } else if ("105b".equals(numeroTest)) {
+         return "Test 105-CaptureUnitaire-OK-HashMajMin-PJ-URL";
+      } else if ("105c".equals(numeroTest)) {
+         return "Test 105-CaptureUnitaire-OK-HashMajMin-PJ-sans-MTOM";
+      } else if ("105d".equals(numeroTest)) {
+         return "Test 105-CaptureUnitaire-OK-HashMajMin-PJ-avec-MTOM";
+      } else {
+         throw new IntegrationRuntimeException("Le numéro de test "
+               + numeroTest + " est inconnu");
+      }
    }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   protected final Test105Formulaire getFormulairePourGet() {
+   private ModeArchivageUnitaireEnum getModeArchivage(String numeroTest) {
+      if ("105a".equals(numeroTest)) {
+         return ModeArchivageUnitaireEnum.archivageUnitaire;
+      } else if ("105b".equals(numeroTest)) {
+         return ModeArchivageUnitaireEnum.archivageUnitairePJUrlEcde;
+      } else if ("105c".equals(numeroTest)) {
+         return ModeArchivageUnitaireEnum.archivageUnitairePJContenuSansMtom;
+      } else if ("105d".equals(numeroTest)) {
+         return ModeArchivageUnitaireEnum.archivageUnitairePJContenuAvecMtom;
+      } else {
+         throw new IntegrationRuntimeException("Le numéro de test "
+               + numeroTest + " est inconnu");
+      }
+   }
+
+   public final Test105Formulaire getFormulairePourGet(String numeroTest) {
 
       Test105Formulaire formulaire = new Test105Formulaire();
 
@@ -51,10 +71,15 @@ public class Test105Controller extends
 
       // L'URL ECDE
       formCapture
-            .setUrlEcde(getEcdeService()
+            .setUrlEcde(testCommons.getEcdeService()
                   .construitUrlEcde(
                         "SAE_INTEGRATION/20110822/CaptureUnitaire-105-CaptureUnitaire-OK-HashMajMin/documents/doc1.pdf"));
-      formCapture.setNomFichier("doc1.pdf");
+      
+      // Le nom du fichier
+      formCapture.setNomFichier("doc1.PDF");
+
+      // Le mode d'utilisation de la capture
+      formCapture.setModeCapture(getModeArchivage(numeroTest));
 
       // Les métadonnées
       MetadonneeValeurList metadonnees = new MetadonneeValeurList();
@@ -64,7 +89,7 @@ public class Test105Controller extends
       metadonnees.add("CodeOrganismeProprietaire", "AC750");
       metadonnees.add("CodeRND", "2.3.1.1.12");
       metadonnees.add("DateCreation", "2011-09-05");
-      metadonnees.add("Denomination", "Test 105-CaptureUnitaire-OK-HashMajMin");
+      metadonnees.add("Denomination", getDenomination(numeroTest));
       metadonnees.add("FormatFichier", "fmt/354");
       // Hash avec un A majuscule au début
       metadonnees.add("Hash", "A2f93f1f121ebba0faef2c0596f2f126eacae77b");
@@ -88,11 +113,7 @@ public class Test105Controller extends
 
    }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   protected final void doPost(Test105Formulaire formulaire) {
+   public final void doPost(Test105Formulaire formulaire) {
 
       String etape = formulaire.getEtape();
       if ("1".equals(etape)) {
@@ -128,7 +149,7 @@ public class Test105Controller extends
       formulaire.setDernierSha1(null);
 
       // Lance le test
-      CaptureUnitaireResultat consultResult = getCaptureUnitaireTestService()
+      CaptureUnitaireResultat consultResult = testCommons.getCaptureUnitaireTestService()
             .appelWsOpCaptureUnitaireReponseAttendue(
                   formulaire.getUrlServiceWeb(), formCaptureEtp1);
 
@@ -174,7 +195,7 @@ public class Test105Controller extends
             "a2f93f1f121ebba0faef2c0596f2f126eacae77b"));
 
       // Lance le test
-      getConsultationTestService()
+      testCommons.getConsultationTestService()
             .appelWsOpConsultationReponseCorrecteAttendue(
                   formulaire.getUrlServiceWeb(), formConsult, sha1attendu,
                   codesMetasAttendus, metaAttendues);

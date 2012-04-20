@@ -1,42 +1,63 @@
-package fr.urssaf.image.sae.integration.ihmweb.controller;
+package fr.urssaf.image.sae.integration.ihmweb.controller.commons;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.integration.ihmweb.exception.IntegrationRuntimeException;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureUnitaireFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
-import fr.urssaf.image.sae.integration.ihmweb.formulaire.Test102Formulaire;
+import fr.urssaf.image.sae.integration.ihmweb.formulaire.Test104Formulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CodeMetadonneeList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeurList;
+import fr.urssaf.image.sae.integration.ihmweb.modele.ModeArchivageUnitaireEnum;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTest;
 import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheResponse;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ResultatRechercheType;
 
 /**
- * 102-CaptureUnitaire-OK-EnrichissementEcrasement
+ * Méthodes communes pour les tests 104a, 104b, 104c, 104d
  */
-@Controller
-@RequestMapping(value = "test102")
-public class Test102Controller extends
-      AbstractTestWsController<Test102Formulaire> {
+@Component
+public class Test104Commons {
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   protected final String getNumeroTest() {
-      return "102";
+   @Autowired
+   private TestsControllerCommons testCommons;
+
+   private String getDenomination(String numeroTest) {
+      if ("104a".equals(numeroTest)) {
+         return "Test 104-CaptureUnitaire-OK-Sans-Code-Activite";
+      } else if ("104b".equals(numeroTest)) {
+         return "Test 104-CaptureUnitaire-OK-Sans-Code-Activite-PJ-URL";
+      } else if ("104c".equals(numeroTest)) {
+         return "Test 104-CaptureUnitaire-OK-Sans-Code-Activite-PJ-sans-MTOM";
+      } else if ("104d".equals(numeroTest)) {
+         return "Test 104-CaptureUnitaire-OK-Sans-Code-Activite-PJ-avec-MTOM";
+      } else {
+         throw new IntegrationRuntimeException("Le numéro de test "
+               + numeroTest + " est inconnu");
+      }
    }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   protected final Test102Formulaire getFormulairePourGet() {
+   private ModeArchivageUnitaireEnum getModeArchivage(String numeroTest) {
+      if ("104a".equals(numeroTest)) {
+         return ModeArchivageUnitaireEnum.archivageUnitaire;
+      } else if ("104b".equals(numeroTest)) {
+         return ModeArchivageUnitaireEnum.archivageUnitairePJUrlEcde;
+      } else if ("104c".equals(numeroTest)) {
+         return ModeArchivageUnitaireEnum.archivageUnitairePJContenuSansMtom;
+      } else if ("104d".equals(numeroTest)) {
+         return ModeArchivageUnitaireEnum.archivageUnitairePJContenuAvecMtom;
+      } else {
+         throw new IntegrationRuntimeException("Le numéro de test "
+               + numeroTest + " est inconnu");
+      }
+   }
 
-      Test102Formulaire formulaire = new Test102Formulaire();
+   public final Test104Formulaire getFormulairePourGet(String numeroTest) {
+
+      Test104Formulaire formulaire = new Test104Formulaire();
 
       // -----------------------------------------------------------------------------
       // Initialisation du formulaire de l'étape de capture unitaire
@@ -46,26 +67,32 @@ public class Test102Controller extends
 
       // L'URL ECDE
       formCapture
-            .setUrlEcde(getEcdeService().construitUrlEcde("SAE_INTEGRATION/20110822/CaptureUnitaire-102-CaptureUnitaire-OK-EnrichissementEcrasement/documents/doc1.PDF"));
+            .setUrlEcde(testCommons.getEcdeService()
+                  .construitUrlEcde(
+                        "SAE_INTEGRATION/20110822/CaptureUnitaire-104-CaptureUnitaire-OK-Sans-Code-Activite/documents/doc1.PDF"));
+      
+      // Le nom du fichier
       formCapture.setNomFichier("doc1.PDF");
+
+      // Le mode d'utilisation de la capture
+      formCapture.setModeCapture(getModeArchivage(numeroTest));
 
       // Les métadonnées
       MetadonneeValeurList metadonnees = new MetadonneeValeurList();
       formCapture.setMetadonnees(metadonnees);
       metadonnees.add("ApplicationProductrice", "ADELAIDE");
       metadonnees.add("CodeOrganismeGestionnaire", "CER69");
-      metadonnees.add("CodeOrganismeProprietaire", "AC750");
-      metadonnees.add("CodeRND", "2.3.1.1.12");
-      metadonnees.add("DateCreation", "2011-09-23");
-      metadonnees.add("DateDebutConservation", "2011-09-01");
-      metadonnees.add("Denomination",
-            "Test 102-CaptureUnitaire-OK-EnrichissementEcrasement");
+      metadonnees.add("CodeOrganismeProprietaire", "UR750");
+      metadonnees.add("CodeRND", "1.A.X.X.X");
+      metadonnees.add("DateCreation", "2011-09-05");
+      metadonnees.add("Denomination",getDenomination(numeroTest));
       metadonnees.add("FormatFichier", "fmt/354");
       metadonnees.add("Hash", "a2f93f1f121ebba0faef2c0596f2f126eacae77b");
       metadonnees.add("NbPages", "2");
-      metadonnees.add("Titre", "Attestation de vigilance");
+      metadonnees
+            .add("Titre",
+                  "AUTRE COURRIER ENTRANT RELATIF A LA GESTION DES DONNEES ADMINISTRATIVES");
       metadonnees.add("TypeHash", "SHA-1");
-      metadonnees.add("VersionRND", "5.3");
 
       // -----------------------------------------------------------------------------
       // Initialisation du formulaire de l'étape de recherche
@@ -74,27 +101,22 @@ public class Test102Controller extends
       RechercheFormulaire formRecherche = formulaire.getRecherche();
 
       // Requête LUCENE
-      formRecherche.setRequeteLucene(getCasTest().getLuceneExemple());
+      formRecherche.setRequeteLucene(testCommons.getCasTest(numeroTest).getLuceneExemple());
 
       // Métadonnées souhaitées
       CodeMetadonneeList codesMeta = new CodeMetadonneeList();
       formRecherche.setCodeMetadonnees(codesMeta);
-      codesMeta.add("DateDebutConservation");
-      codesMeta.add("DateFinConservation");
-      codesMeta.add("Denomination");
-      codesMeta.add("DureeConservation");
-      codesMeta.add("VersionRND");
+      codesMeta.add("CodeActivite");
+      codesMeta.add("CodeFonction");
+      codesMeta.add("CodeRND");
+      codesMeta.add("Titre");
 
       // Renvoie le formulaire
       return formulaire;
 
    }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   protected final void doPost(Test102Formulaire formulaire) {
+   public final void doPost(Test104Formulaire formulaire) {
 
       String etape = formulaire.getEtape();
       if ("1".equals(etape)) {
@@ -114,7 +136,7 @@ public class Test102Controller extends
 
    }
 
-   private void etape1captureUnitaire(Test102Formulaire formulaire) {
+   private void etape1captureUnitaire(Test104Formulaire formulaire) {
 
       // Initialise
       CaptureUnitaireFormulaire formCaptureEtp1 = formulaire
@@ -125,24 +147,24 @@ public class Test102Controller extends
       formRecherche.getResultats().clear();
 
       // Lance le test
-      getCaptureUnitaireTestService().appelWsOpCaptureUnitaireReponseAttendue(
+      testCommons.getCaptureUnitaireTestService().appelWsOpCaptureUnitaireReponseAttendue(
             formulaire.getUrlServiceWeb(), formCaptureEtp1);
 
    }
 
-   private void etape2recherche(Test102Formulaire formulaireTest102) {
+   private void etape2recherche(Test104Formulaire formulaireTest104) {
 
       // Initialise
-      RechercheFormulaire formulaire = formulaireTest102.getRecherche();
+      RechercheFormulaire formulaire = formulaireTest104.getRecherche();
       ResultatTest resultatTest = formulaire.getResultats();
-      String urlServiceWeb = formulaireTest102.getUrlServiceWeb();
+      String urlServiceWeb = formulaireTest104.getUrlServiceWeb();
 
       // Résultats attendus
       int nbResultatsAttendus = 1;
       boolean flagResultatsTronquesAttendu = false;
 
       // Appel de la méthode de test
-      RechercheResponse response = getRechercheTestService()
+      RechercheResponse response = testCommons.getRechercheTestService()
             .appelWsOpRechercheReponseCorrecteAttendue(urlServiceWeb,
                   formulaire, nbResultatsAttendus,
                   flagResultatsTronquesAttendu, null);
@@ -174,14 +196,15 @@ public class Test102Controller extends
       String numeroResultatRecherche = "1";
 
       MetadonneeValeurList valeursAttendues = new MetadonneeValeurList();
-      valeursAttendues.add("DateDebutConservation", "2011-09-01");
-      valeursAttendues.add("DateFinConservation", "2016-08-30");
-      valeursAttendues.add("Denomination",
-            "Test 102-CaptureUnitaire-OK-EnrichissementEcrasement");
-      valeursAttendues.add("DureeConservation", "1825");
-      valeursAttendues.add("VersionRND", "5.3");
 
-      getRechercheTestService().verifieResultatRecherche(resultatRecherche,
+      valeursAttendues.add("CodeActivite", StringUtils.EMPTY);
+      valeursAttendues.add("CodeFonction", "1");
+      valeursAttendues.add("CodeRND", "1.A.X.X.X");
+      valeursAttendues
+            .add("Titre",
+                  "AUTRE COURRIER ENTRANT RELATIF A LA GESTION DES DONNEES ADMINISTRATIVES");
+
+      testCommons.getRechercheTestService().verifieResultatRecherche(resultatRecherche,
             numeroResultatRecherche, resultatTest, valeursAttendues);
 
    }
