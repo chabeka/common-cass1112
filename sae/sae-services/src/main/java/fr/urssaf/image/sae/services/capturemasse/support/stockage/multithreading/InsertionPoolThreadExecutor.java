@@ -44,12 +44,9 @@ public class InsertionPoolThreadExecutor extends ThreadPoolExecutor implements
    private static final Logger LOGGER = LoggerFactory
          .getLogger(InsertionThreadPoolExecutor.class);
 
-   private ConcurrentLinkedQueue<CaptureMasseIntegratedDocument> integDocs;
+   private final ConcurrentLinkedQueue<CaptureMasseIntegratedDocument> integDocs;
 
    private InsertionMasseRuntimeException exception;
-
-   // on limite le nombre simultané de Thread à 20
-   private static final int CORE_POOL_SIZE = 20;
 
    private static final String PREFIX_TRACE = "InsertionPoolThreadExecutor()";
 
@@ -66,9 +63,11 @@ public class InsertionPoolThreadExecutor extends ThreadPoolExecutor implements
     * instanciation d'un {@link ThreadPoolExecutor} avec comme arguments : <br>
     * <ul>
     * <li>
-    * <code>corePoolSize</code> : {@value #CORE_POOL_SIZE}</li>
+    * <code>corePoolSize</code> :
+    * {@link InsertionPoolConfiguration#getCorePoolSize()}</li>
     * <li>
-    * <code>maximumPoolSize</code> : {@value #CORE_POOL_SIZE}</li>
+    * <code>maximumPoolSize</code> :
+    * {@value InsertionPoolConfiguration#getCorePoolSize()}</li>
     * <li>
     * <code>keepAliveTime</code> : 0L</li>
     * <li>
@@ -83,7 +82,8 @@ public class InsertionPoolThreadExecutor extends ThreadPoolExecutor implements
     * Les threads en plus sont stockés dans une liste non bornée<br>
     * Le temps de vie d'un thread n'est pas prise en compte ici
     * 
-    * 
+    * @param poolConfiguration
+    *           configuration du pool d'insertion des documents dans DFCE
     * @param support
     *           support pour l'arrêt du traitement de la capture en masse
     * @param config
@@ -91,11 +91,18 @@ public class InsertionPoolThreadExecutor extends ThreadPoolExecutor implements
     */
    @Autowired
    public InsertionPoolThreadExecutor(
+         InsertionPoolConfiguration poolConfiguration,
          final InterruptionTraitementMasseSupport support,
          final InterruptionTraitementConfig config) {
 
-      super(CORE_POOL_SIZE, CORE_POOL_SIZE, 1, TimeUnit.MILLISECONDS,
+      super(poolConfiguration.getCorePoolSize(), poolConfiguration
+            .getCorePoolSize(), 1, TimeUnit.MILLISECONDS,
             new LinkedBlockingQueue<Runnable>(), new DiscardPolicy());
+
+      LOGGER
+            .debug(
+                  "{} - Taille du pool de threads pour l'insertion en masse dans DFCE: {}",
+                  new Object[] { PREFIX_TRACE, this.getCorePoolSize() });
 
       this.integDocs = new ConcurrentLinkedQueue<CaptureMasseIntegratedDocument>();
 
@@ -299,8 +306,7 @@ public class InsertionPoolThreadExecutor extends ThreadPoolExecutor implements
    public final ConcurrentLinkedQueue<CaptureMasseIntegratedDocument> getIntegratedDocuments() {
       return this.integDocs;
    }
-   
-   
+
    /**
     * Attend que l'ensemble des threads aient bien terminé leur travail
     */

@@ -56,6 +56,11 @@
       <property name="delay" value="60" />
       <property name="tentatives" value="2" />
    </bean>
+   
+   <bean id="insertionPoolConfiguration"
+      class="fr.urssaf.image.sae.services.capturemasse.support.stockage.multithreading.InsertionPoolConfiguration">
+      <property name="corePoolSize" value="20" />
+   </bean>
 
    <bean id="jobLauncher"
       class="org.springframework.batch.core.launch.support.SimpleJobLauncher">

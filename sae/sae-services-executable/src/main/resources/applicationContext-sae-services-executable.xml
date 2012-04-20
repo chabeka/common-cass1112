@@ -84,4 +84,10 @@
          value="${sae.archivagemasse.interruption.tentatives}" />
    </bean>
 
+   <!-- configuration du pool d'insertion des documents dans DFCE -->
+   <bean id="insertionPoolConfiguration"
+      class="fr.urssaf.image.sae.services.capturemasse.support.stockage.multithreading.InsertionPoolConfiguration">
+      <property name="corePoolSize" value="${sae.archivagemasse.pool.size}" />
+   </bean>
+
 </beans>
