@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.exception.NestableRuntimeException;
 import org.slf4j.Logger;
@@ -114,13 +115,17 @@ public final class LauncherUtils {
          try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(
                   process.getErrorStream()));
+            StringBuffer buffer = new StringBuffer();
             String line = "";
             try {
                // ce code permet d'éviter les boucles infinies!
                while ((line = reader.readLine()) != null) {
 
-                  LOG.error(line);
+                  buffer.append(line);
+                  buffer.append(SystemUtils.LINE_SEPARATOR);
                }
+               LOG.error(buffer.toString());
+               
             } finally {
                reader.close();
             }

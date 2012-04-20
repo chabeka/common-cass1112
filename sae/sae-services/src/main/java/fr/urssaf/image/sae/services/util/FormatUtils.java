@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import fr.urssaf.image.sae.metadata.utils.Utils;
 
@@ -20,8 +18,7 @@ import fr.urssaf.image.sae.metadata.utils.Utils;
  * 
  */
 public final class FormatUtils {
-   private static final Logger LOGGER = LoggerFactory
-         .getLogger(FormatUtils.class);
+   
    public static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss";
    public static final Locale DEFAULT_LOCAL = Locale.FRENCH;
 
@@ -63,15 +60,11 @@ public final class FormatUtils {
    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
    public static String dateToString(final Date date) {
       String newDate = StringUtils.EMPTY;
-      try {
          if (date != null) {
             final SimpleDateFormat formatter = new SimpleDateFormat(
                   DATE_PATTERN, DEFAULT_LOCAL);
             newDate = formatter.format(date);
          }
-      } catch (Exception e) {
-         LOGGER.error("Erreur de parsing. Détail : {}", e.getMessage());
-      }
       return newDate;
    }
 }

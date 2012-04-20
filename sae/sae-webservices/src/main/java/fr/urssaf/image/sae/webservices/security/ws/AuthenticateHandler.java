@@ -136,7 +136,7 @@ public class AuthenticateHandler {
       SOAPHeader header = msgCtx.getEnvelope().getHeader();
 
       if (header == null) {
-         LOG.error(prefixeLog
+         LOG.warn(prefixeLog
                + "Erreur : pas d'en-tête SOAP dans le message SOAP");
          throw new VIEmptyAxisFault();
       }
@@ -145,7 +145,7 @@ public class AuthenticateHandler {
             WSConstants.WSSE_NS, WSConstants.WSSE_LN));
 
       if (security == null) {
-         LOG.error(prefixeLog
+         LOG.warn(prefixeLog
                + "Erreur : pas de WS-Security dans l'en-tête SOAP");
          throw new VIEmptyAxisFault();
       }
@@ -156,7 +156,7 @@ public class AuthenticateHandler {
       Element identification = null;
       if (saml == null) {
          LOG
-               .error(prefixeLog
+               .warn(prefixeLog
                      + "Erreur : pas d'assertion SAML dans la partie WS-Security du message SOAP");
          throw new VIEmptyAxisFault();
 
@@ -173,12 +173,12 @@ public class AuthenticateHandler {
          try {
             securityService.authentification(identification);
          } catch (VIVerificationException e) {
-            LOG.error(prefixeLog
+            LOG.warn(prefixeLog
                   + "Erreur lors de la mise en place de l'authentification : "
                   + e.toString(), e);
             throw new VIVerificationAxisFault(e);
          } catch (LoadCertifsAndCrlException e) {
-            LOG.error(prefixeLog
+            LOG.warn(prefixeLog
                   + "Erreur lors de la mise en place de l'authentification : "
                   + e.toString(), e);
 

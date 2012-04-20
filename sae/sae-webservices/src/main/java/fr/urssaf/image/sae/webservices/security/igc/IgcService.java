@@ -123,7 +123,7 @@ public class IgcService implements InitializingBean {
 
             } catch (CertificateException e) {
 
-               LOG.error("error loading certificat: " + crt.getFilename());
+               LOG.error("erreur lors du chargement du certificat : " + crt.getFilename());
                throw new IllegalArgumentException(AC_RACINE_ERROR, e);
             }
 
@@ -259,7 +259,7 @@ public class IgcService implements InitializingBean {
             try {
                crls.add(SecurityUtils.loadCRL(input));
             } catch (GeneralSecurityException e) {
-               LOG.error("error loading CRL: " + crl.getURI(), e);
+               LOG.error("erreur de chargement du fichier CRL: " + crl.getURI(), e);
                throw new LoadCertifsAndCrlException(CRL_ERROR, e);
             } finally {
 
@@ -267,7 +267,7 @@ public class IgcService implements InitializingBean {
             }
          } catch (IOException e) {
 
-            LOG.error("error loading CRL: " + crl.getFilename(), e);
+            LOG.error("erreur de chargement du fichier CRL: " + crl.getFilename(), e);
             throw new LoadCertifsAndCrlException(CRL_ERROR, e);
          }
 
