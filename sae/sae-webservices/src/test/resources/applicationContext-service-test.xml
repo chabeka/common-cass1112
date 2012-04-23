@@ -35,6 +35,9 @@
    <!-- mock pour capture de masse -->
    <bean id="saeBulkCaptureService" factory-bean="SAEServiceFactory"
       factory-method="createSAEBulkCaptureService" />
+      
+   <bean id="ecdeServices" factory-bean="SAEServiceFactory"
+      factory-method="createEcdeServices" />
 
    <!-- mock pour le controle de la capture -->
    <bean id="saeControlesCaptureService" factory-bean="SAEServiceFactory"

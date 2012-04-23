@@ -2,6 +2,8 @@ package fr.urssaf.image.sae.webservices.skeleton;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.io.File;
+import java.net.URI;
 import java.util.UUID;
 
 import javax.xml.stream.XMLStreamReader;
@@ -23,6 +25,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.cirtil.www.saeservice.ArchivageMasse;
 import fr.cirtil.www.saeservice.ArchivageMasseResponse;
+import fr.urssaf.image.sae.ecde.exception.EcdeBadURLException;
+import fr.urssaf.image.sae.ecde.exception.EcdeBadURLFormatException;
+import fr.urssaf.image.sae.ecde.service.EcdeServices;
 import fr.urssaf.image.sae.services.controles.SAEControlesCaptureService;
 import fr.urssaf.image.sae.webservices.aspect.BuildOrClearMDCAspect;
 import fr.urssaf.image.sae.webservices.util.XMLStreamUtils;
@@ -37,6 +42,9 @@ public class ArchivageMasseTest {
 
    @Autowired
    private SAEControlesCaptureService controlesService;
+
+   @Autowired
+   private EcdeServices ecdeServices;
 
    @Before
    public void before() {
@@ -57,10 +65,27 @@ public class ArchivageMasseTest {
    @After
    public void after() {
 
-      EasyMock.reset(controlesService);
+      EasyMock.reset(controlesService, ecdeServices);
    }
 
    private ArchivageMasse createArchivageMasse(String filePath) {
+
+      try {
+         EasyMock
+               .expect(
+                     ecdeServices.convertSommaireToFile(EasyMock
+                           .anyObject(URI.class)))
+               .andReturn(
+                     new File(
+                           "C:/appl/sae/ecde_local/SAE_INTEGRATION/"
+                                 + "20110822/CaptureMasse-201-CaptureMasse-OK-Tor-10/sommaire.xml"));
+      } catch (EcdeBadURLException e) {
+         throw new NestableRuntimeException(e);
+      } catch (EcdeBadURLFormatException e) {
+         throw new NestableRuntimeException(e);
+      }
+
+      EasyMock.replay(ecdeServices);
 
       try {
 
@@ -79,7 +104,8 @@ public class ArchivageMasseTest {
 
       ArchivageMasse request = createArchivageMasse("src/test/resources/request/archivageMasse_success.xml");
 
-      ArchivageMasseResponse response = skeleton.archivageMasseSecure(request);
+      ArchivageMasseResponse response = skeleton.archivageMasseSecure(request,
+            "127.0.0.1");
 
       assertNotNull("Test de l'archivage masse", response
             .getArchivageMasseResponse());

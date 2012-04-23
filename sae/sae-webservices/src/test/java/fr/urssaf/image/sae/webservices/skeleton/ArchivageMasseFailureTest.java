@@ -1,5 +1,8 @@
 package fr.urssaf.image.sae.webservices.skeleton;
 
+import java.io.File;
+import java.net.URI;
+
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.axis2.AxisFault;
@@ -14,6 +17,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.cirtil.www.saeservice.ArchivageMasse;
+import fr.urssaf.image.sae.ecde.exception.EcdeBadURLException;
+import fr.urssaf.image.sae.ecde.exception.EcdeBadURLFormatException;
+import fr.urssaf.image.sae.ecde.service.EcdeServices;
 import fr.urssaf.image.sae.services.controles.SAEControlesCaptureService;
 import fr.urssaf.image.sae.services.exception.capture.CaptureBadEcdeUrlEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureEcdeUrlFileNotFoundEx;
@@ -33,10 +39,13 @@ public class ArchivageMasseFailureTest {
    @Autowired
    private SAEControlesCaptureService controlesService;
 
+   @Autowired
+   private EcdeServices ecdeServices;
+   
    @After
    public void after() {
 
-      EasyMock.reset(controlesService);
+      EasyMock.reset(controlesService, ecdeServices);
    }
 
    private ArchivageMasse createArchivageMasse(String filePath) {
@@ -57,7 +66,7 @@ public class ArchivageMasseFailureTest {
 
       ArchivageMasse request = createArchivageMasse("src/test/resources/request/archivageMasse_success.xml");
 
-      skeleton.archivageMasseSecure(request);
+      skeleton.archivageMasseSecure(request, "127.0.0.1");
    }
 
    private static final String AXIS_FAULT = "SOAP FAULT non attendu";
@@ -89,8 +98,16 @@ public class ArchivageMasseFailureTest {
       } catch (Exception e) {
          throw new NestableRuntimeException(e);
       }
-
-      EasyMock.replay(controlesService);
+      
+      try {
+         EasyMock.expect(ecdeServices.convertSommaireToFile(EasyMock.anyObject(URI.class))).andReturn(new File(""));
+      } catch (EcdeBadURLException e) {
+         throw new NestableRuntimeException(e);
+      } catch (EcdeBadURLFormatException e) {
+         throw new NestableRuntimeException(e);
+      }
+      
+      EasyMock.replay(controlesService, ecdeServices);
    }
 
    @Test
