@@ -36,7 +36,7 @@
    <br />
    
    
-   <table border=1>
+   <table border="1px">
       
 	   <tr style="font-weight:bold;">
 	      <td>idJob</td>
@@ -49,11 +49,15 @@
 	      <td>startingDate</td>
 	      <td>endingDate</td>
 	      <td>message</td>
+	      <td>saeHost</td>
+	      <td>clientHost</td>
+	      <td>docCount</td>
+	      <td>pid</td>
 	   </tr>
       
-      <c:forEach items="${formulaire.travaux}" var="travail">
+      <c:forEach items="${formulaire.travaux}" var="travail" varStatus="status">
       
-      <tr>
+      <tr class="ligne${status.count % 2}">
          <td><c:out value="${travail.idJob}"/></td>
          <td><c:out value="${travail.type}"/></td>
          <td><c:out value="${travail.parameters}"/></td>
@@ -64,6 +68,10 @@
          <td>${sae:formateDateTime(travail.startingDate)}</td>
          <td>${sae:formateDateTime(travail.endingDate)}</td>
          <td>${sae:nl2br(travail.message)}</td>
+         <td><c:out value="${travail.saeHost}"/></td>
+         <td><c:out value="${travail.clientHost}"/></td>
+         <td><c:out value="${travail.docCount}"/></td>
+         <td><c:out value="${travail.pid}"/></td>
       </tr>
       
       </c:forEach>

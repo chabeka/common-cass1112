@@ -45,6 +45,10 @@ public class PileTravauxService {
    private static final String JR_STARTING_DATE_COLUMN = "startingDate";
    private static final String JR_ENDING_DATE_COLUMN = "endingDate";
    private static final String JR_MESSAGE = "message";
+   private static final String JR_SAE_HOST = "saeHost";
+   private static final String JR_CLIENT_HOST = "clientHost";
+   private static final String JR_DOC_COUNT = "docCount";
+   private static final String JR_PID = "pid";
    
    
    // Autres constantes
@@ -136,6 +140,10 @@ public class PileTravauxService {
             .getByteArray(JR_ENDING_DATE_COLUMN));
       jobRequest.setEndingDate(endingDate);
       jobRequest.setMessage(result.getString(JR_MESSAGE));
+      jobRequest.setSaeHost(result.getString(JR_SAE_HOST));
+      jobRequest.setClientHost(result.getString(JR_CLIENT_HOST));
+      jobRequest.setPid(result.getInteger(JR_PID));
+      jobRequest.setDocCount(result.getInteger(JR_DOC_COUNT));
       return jobRequest;
    }
    

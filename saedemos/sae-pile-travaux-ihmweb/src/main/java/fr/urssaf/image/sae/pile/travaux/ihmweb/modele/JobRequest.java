@@ -36,6 +36,14 @@ public class JobRequest extends SimpleJobRequest {
    private Date endingDate;
    
    private String message;
+   
+   private String saeHost;
+
+   private String clientHost;
+
+   private Integer docCount;
+
+   private Integer pid;
 
    /**
     * Constructeur qui instancie un jobRequest vide
@@ -175,6 +183,62 @@ public class JobRequest extends SimpleJobRequest {
     */
    public final String getMessage() {
       return message;
+   }
+
+   /**
+    * @return the saeHost
+    */
+   public final String getSaeHost() {
+      return saeHost;
+   }
+
+   /**
+    * @param saeHost the saeHost to set
+    */
+   public final void setSaeHost(String saeHost) {
+      this.saeHost = saeHost;
+   }
+
+   /**
+    * @return the clientHost
+    */
+   public final String getClientHost() {
+      return clientHost;
+   }
+
+   /**
+    * @param clientHost the clientHost to set
+    */
+   public final void setClientHost(String clientHost) {
+      this.clientHost = clientHost;
+   }
+
+   /**
+    * @return the docCount
+    */
+   public final Integer getDocCount() {
+      return docCount;
+   }
+
+   /**
+    * @param docCount the docCount to set
+    */
+   public final void setDocCount(Integer docCount) {
+      this.docCount = docCount;
+   }
+
+   /**
+    * @return the pid
+    */
+   public final Integer getPid() {
+      return pid;
+   }
+
+   /**
+    * @param pid the pid to set
+    */
+   public final void setPid(Integer pid) {
+      this.pid = pid;
    }
    
 }
