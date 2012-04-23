@@ -83,4 +83,16 @@ public interface JobQueueService {
    void endingJob(UUID idJob, boolean succes, Date dateFinTraitement,
          String message);
 
+   /**
+    * Ajoute une trace d'execution dans l'historique du job
+    * 
+    * @param jobUuid
+    *           identifiant du job
+    * @param timeUuid
+    *           représentation du temps en uuid
+    * @param description
+    *           description de l'événement
+    */
+   void addHistory(UUID jobUuid, UUID timeUuid, String description);
+
 }

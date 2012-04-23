@@ -14,5 +14,9 @@
          <name>JobsQueue</name>
          <comparatorType>TimeUUIDType</comparatorType>
       </columnFamily>
+      <columnFamily>
+         <name>JobHistory</name>
+         <comparatorType>TimeUUIDType</comparatorType>
+      </columnFamily>
    </columnFamilies>
 </keyspace>

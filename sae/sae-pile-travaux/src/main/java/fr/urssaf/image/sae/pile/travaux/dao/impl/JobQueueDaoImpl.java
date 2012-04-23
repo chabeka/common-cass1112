@@ -18,6 +18,7 @@ import me.prettyprint.cassandra.service.template.ColumnFamilyResultWrapper;
 import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
 import me.prettyprint.cassandra.service.template.ThriftColumnFamilyTemplate;
+import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 import me.prettyprint.hector.api.Keyspace;
 import me.prettyprint.hector.api.Serializer;
 import me.prettyprint.hector.api.beans.HColumn;
@@ -52,7 +53,7 @@ public class JobQueueDaoImpl implements JobQueueDao {
    private static final String JOBHISTORY_CFNAME = "JobHistory";
 
    private final ColumnFamilyTemplate<UUID, String> jobRequestTmpl;
-   private final ColumnFamilyTemplate<UUID, String> jobHistoryTmpl;
+   private final ColumnFamilyTemplate<UUID, UUID> jobHistoryTmpl;
    private final ThriftColumnFamilyTemplate<String, UUID> jobsQueueTmpl;
 
    // Colonnes de JobRequest
@@ -94,8 +95,8 @@ public class JobQueueDaoImpl implements JobQueueDao {
       jobsQueueTmpl = new ThriftColumnFamilyTemplate<String, UUID>(keyspace,
             JOBSQUEUE_CFNAME, StringSerializer.get(), UUIDSerializer.get());
       jobsQueueTmpl.setCount(MAX_NON_TERMINATED_JOBS);
-      jobHistoryTmpl = new ThriftColumnFamilyTemplate<UUID, String>(keyspace,
-            JOBHISTORY_CFNAME, UUIDSerializer.get(), StringSerializer.get());
+      jobHistoryTmpl = new ThriftColumnFamilyTemplate<UUID, UUID>(keyspace,
+            JOBHISTORY_CFNAME, UUIDSerializer.get(), UUIDSerializer.get());
       jobHistoryTmpl.setCount(MAX_JOB_ATTIBUTS);
    }
 
@@ -230,6 +231,15 @@ public class JobQueueDaoImpl implements JobQueueDao {
          String colName, Object value, Serializer slz) {
       HColumn<String, Object> column = HFactory.createColumn(colName, value,
             StringSerializer.get(), slz);
+      column.setTtl(TTL);
+      updater.setColumn(column);
+   }
+
+   @SuppressWarnings("unchecked")
+   private void addTimeColumn(ColumnFamilyUpdater<UUID, UUID> updater,
+         UUID colName, Object value, Serializer slz) {
+      HColumn<UUID, Object> column = HFactory.createColumn(colName, value,
+            UUIDSerializer.get(), slz);
       column.setTtl(TTL);
       updater.setColumn(column);
    }
@@ -465,10 +475,15 @@ public class JobQueueDaoImpl implements JobQueueDao {
     */
    @Override
    public void addJobHistory(UUID jobUuid, UUID timeUuid, String description) {
-     
 
-      // StringSerializer sSlz = StringSerializer.get();
-      
+      ColumnFamilyUpdater<UUID, UUID> updater = jobHistoryTmpl
+            .createUpdater(jobUuid);
+
+      UUID idHistory = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+
+      addTimeColumn(updater, idHistory, description, StringSerializer.get());
+
+      jobHistoryTmpl.update(updater);
+
    }
-
 }

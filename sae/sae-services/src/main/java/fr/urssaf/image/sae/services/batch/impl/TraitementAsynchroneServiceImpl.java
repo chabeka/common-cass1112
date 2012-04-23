@@ -3,6 +3,8 @@ package fr.urssaf.image.sae.services.batch.impl;
 import java.util.Date;
 import java.util.UUID;
 
+import me.prettyprint.cassandra.utils.TimeUUIDUtils;
+
 import org.apache.commons.lang.BooleanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,8 +91,6 @@ public class TraitementAsynchroneServiceImpl implements
 
       String type = CAPTURE_MASSE_JN;
 
-      // FIXME Vérifier la création
-
       String parametres = parameters.getEcdeURL();
       Date dateDemande = new Date();
       UUID idJob = parameters.getUuid();
@@ -106,6 +106,10 @@ public class TraitementAsynchroneServiceImpl implements
       jobRequest.setDocCount(parameters.getNbreDocs());
 
       jobQueueService.addJob(jobRequest);
+
+      UUID timeUuid = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+      LOG.debug("ajout d'une trace historique");
+      jobQueueService.addHistory(idJob, timeUuid, "CREATION DU JOB");
 
    }
 
@@ -123,8 +127,8 @@ public class TraitementAsynchroneServiceImpl implements
       if (job == null) {
          throw new JobInexistantException(idJob);
       }
-      
-   // récupération du PID
+
+      // récupération du PID
       String processName = java.lang.management.ManagementFactory
             .getRuntimeMXBean().getName();
       String pid = null;
@@ -153,6 +157,10 @@ public class TraitementAsynchroneServiceImpl implements
 
       // démarrage du job et mise à jour de la pile des travaux
       jobQueueService.startingJob(idJob, new Date());
+
+      // Ajout d'une trace
+      UUID timeUuid = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+      jobQueueService.addHistory(idJob, timeUuid, "LANCEMENT DU JOB.");
 
       ExitTraitement exitTraitement;
       try {

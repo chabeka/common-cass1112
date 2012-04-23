@@ -35,8 +35,9 @@ public class JobQueueServiceImpl implements JobQueueService {
    @Autowired
    private JobQueueDao jobQueueDao;
 
-   private static final Logger LOG = LoggerFactory.getLogger(JobQueueServiceImpl.class);
-   
+   private static final Logger LOG = LoggerFactory
+         .getLogger(JobQueueServiceImpl.class);
+
    /**
     * Time-out du lock, en secondes
     */
@@ -47,7 +48,7 @@ public class JobQueueServiceImpl implements JobQueueService {
     */
    @Override
    public final void addJob(JobRequest jobRequest) {
-      
+
       jobQueueDao.saveJobRequest(jobRequest);
    }
 
@@ -62,7 +63,7 @@ public class JobQueueServiceImpl implements JobQueueService {
       Assert.notNull(jobRequest, "JobRequest d'id " + idJob + " non trouvé");
       // On modifie la date de fin de traitement, et l'état
       jobRequest.setEndingDate(dateFinTraitement);
-      jobRequest.setState(succes?JobState.SUCCESS:JobState.FAILURE);
+      jobRequest.setState(succes ? JobState.SUCCESS : JobState.FAILURE);
       jobRequest.setMessage(message);
       // On persiste
       jobQueueDao.updateJobRequest(jobRequest);
@@ -76,7 +77,7 @@ public class JobQueueServiceImpl implements JobQueueService {
          Date dateFinTraitement) {
       endingJob(idJob, succes, dateFinTraitement, null);
    }
-   
+
    /**
     * {@inheritDoc}
     */
@@ -84,29 +85,34 @@ public class JobQueueServiceImpl implements JobQueueService {
    public final void reserveJob(UUID idJob, String hostname,
          Date dateReservation) throws JobDejaReserveException,
          JobInexistantException, LockTimeoutException {
-      
+
       Assert.notNull(idJob, "L'id du job ne doit pas être null");
-      
-      ZookeeperMutex mutex = new ZookeeperMutex(curatorClient, "/JobRequest/" + idJob);
+
+      ZookeeperMutex mutex = new ZookeeperMutex(curatorClient, "/JobRequest/"
+            + idJob);
       try {
          if (!mutex.acquire(LOCK_TIME_OUT, TimeUnit.SECONDS)) {
             throw new LockTimeoutException(
-                  "Erreur lors de la tentative d'acquisition du lock pour le jobRequest " + idJob
-                        + " : on n'a pas obtenu le lock au bout de " + LOCK_TIME_OUT + " secondes.");
+                  "Erreur lors de la tentative d'acquisition du lock pour le jobRequest "
+                        + idJob + " : on n'a pas obtenu le lock au bout de "
+                        + LOCK_TIME_OUT + " secondes.");
          }
          // On a le lock.
          // Récupération du jobRequest
          JobRequest jobRequest = jobQueueDao.getJobRequest(idJob);
-         if (jobRequest == null) throw new JobInexistantException(idJob);
+         if (jobRequest == null)
+            throw new JobInexistantException(idJob);
 
-         if (jobRequest.getReservedBy() != null && !jobRequest.getReservedBy().isEmpty()) {
+         if (jobRequest.getReservedBy() != null
+               && !jobRequest.getReservedBy().isEmpty()) {
             throw new JobDejaReserveException(idJob, jobRequest.getReservedBy());
          }
-         
+
          // On écrit la réservation dans cassandra
          jobQueueDao.reserveJobRequest(jobRequest, hostname, dateReservation);
 
-         // On vérifie qu'on a toujours le lock. Si oui, la réservation a réellement fonctionné
+         // On vérifie qu'on a toujours le lock. Si oui, la réservation a
+         // réellement fonctionné
          checkLock(mutex, idJob, hostname);
 
       } finally {
@@ -116,12 +122,19 @@ public class JobQueueServiceImpl implements JobQueueService {
 
    /**
     * Après la réservation d'un job, on vérifie que le lock est encore valide
-    * @param mutex      Le mutex utilisé pour le lock
-    * @param idJob      Id du job réservé
-    * @param hostname   Nom du serveur qui tente la réservation
-    * @throws JobDejaReserveException  Si le lock n'est plus valide et qu'on s'est fait subtilisé le job 
+    * 
+    * @param mutex
+    *           Le mutex utilisé pour le lock
+    * @param idJob
+    *           Id du job réservé
+    * @param hostname
+    *           Nom du serveur qui tente la réservation
+    * @throws JobDejaReserveException
+    *            Si le lock n'est plus valide et qu'on s'est fait subtilisé le
+    *            job
     */
-   private void checkLock(ZookeeperMutex mutex, UUID idJob, String hostname) throws JobDejaReserveException {
+   private void checkLock(ZookeeperMutex mutex, UUID idJob, String hostname)
+         throws JobDejaReserveException {
       // On vérifie qu'on a toujours le lock. Si oui, la réservation a
       // réellement fonctionné
       if (mutex.isObjectStillLocked(LOCK_TIME_OUT, TimeUnit.SECONDS)) {
@@ -141,28 +154,37 @@ public class JobQueueServiceImpl implements JobQueueService {
             // On a été déconnecté de zookeeper, mais pour autant, le job nous a
             // été attribué.
             return;
-         }
-         else {
+         } else {
             throw new JobDejaReserveException(idJob, currentHostname);
          }
       }
    }
-   
+
    /**
     * {@inheritDoc}
     */
    @Override
    @SuppressWarnings("PMD.LongVariable")
-   public final void startingJob(UUID idJob, Date dateDebutTraitement) throws JobInexistantException {
+   public final void startingJob(UUID idJob, Date dateDebutTraitement)
+         throws JobInexistantException {
       // Récupération du jobRequest
       JobRequest jobRequest = jobQueueDao.getJobRequest(idJob);
-      if (jobRequest == null) throw new JobInexistantException(idJob);
-      
+      if (jobRequest == null)
+         throw new JobInexistantException(idJob);
+
       // On modifie la date de début de traitement, et l'état
       jobRequest.setStartingDate(dateDebutTraitement);
       jobRequest.setState(JobState.STARTING);
       // On persiste
       jobQueueDao.updateJobRequest(jobRequest);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final void addHistory(UUID jobUuid, UUID timeUuid, String description) {
+      jobQueueDao.addJobHistory(jobUuid, timeUuid, description);
    }
 
 }
