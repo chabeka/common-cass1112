@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.services.batch.exception.JobNonReserveException;
+import fr.urssaf.image.sae.services.batch.model.CaptureMasseParametres;
 
 /**
  * Service des traitements de masse.<br>
@@ -20,13 +21,12 @@ public interface TraitementAsynchroneService {
     * Ajoute un traitement de capture en masse dans la pile des traitements de
     * masse en attente
     * 
-    * @param urlECDE
-    *           URL Ecde du fichier sommaire.xml
-    * @param uuid
-    *           identifiant unique
+    * @param parametres
+    *           ensemble des paramètres nécessaires à l'enregistrement d'une
+    *           capture de masse
     * 
     */
-   void ajouterJobCaptureMasse(String urlECDE, UUID uuid);
+   void ajouterJobCaptureMasse(CaptureMasseParametres parametres);
 
    /**
     * Exécute un traitement de masse stocké dans la pile des traitements en

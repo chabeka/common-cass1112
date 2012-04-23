@@ -6,6 +6,7 @@ import java.util.UUID;
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.exception.LockTimeoutException;
+import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 
 /**
  * Service de la pile des travaux
@@ -17,16 +18,10 @@ public interface JobQueueService {
    /**
     * Ajoute un traitement dans la pile des travaux
     * 
-    * @param idJob
-    *           identifiant du traitement
-    * @param type
-    *           type de traitement
-    * @param parametres
-    *           paramètres du traitement
-    * @param dateDemande
-    *           date d'ajout dans la pile des travaux
+    * @param jobRequest
+    *           ensemble des données nécessaires à la création du job
     */
-   void addJob(UUID idJob, String type, String parametres, Date dateDemande);
+   void addJob(JobRequest jobRequest);
 
    /**
     * Réserve un traitement dans la pile des travaux
@@ -41,11 +36,12 @@ public interface JobQueueService {
     *            le traitement est déjà réservé
     * @throws JobInexistantException
     *            le traitement n'existe pas
-    * @throws LockTimeoutException 
+    * @throws LockTimeoutException
     *            timeout lors du lock
     */
    void reserveJob(UUID idJob, String hostname, Date dateReservation)
-         throws JobDejaReserveException, JobInexistantException, LockTimeoutException;
+         throws JobDejaReserveException, JobInexistantException,
+         LockTimeoutException;
 
    /**
     * Met à jour un traitement avant de l'exécuter.<br>
@@ -54,10 +50,11 @@ public interface JobQueueService {
     *           identifiant du traitement
     * @param dateDebutTraitement
     *           date d'exécution du traitement
-    * @throws JobInexistantException 
+    * @throws JobInexistantException
     */
    @SuppressWarnings("PMD.LongVariable")
-   void startingJob(UUID idJob, Date dateDebutTraitement) throws JobInexistantException;
+   void startingJob(UUID idJob, Date dateDebutTraitement)
+         throws JobInexistantException;
 
    /**
     * Met à jour le traitement après son exécution.<br>
@@ -83,6 +80,7 @@ public interface JobQueueService {
     * @param message
     *           message de compte-rendu du traitement (ex : message d'erreur)
     */
-   void endingJob(UUID idJob, boolean succes, Date dateFinTraitement, String message);
+   void endingJob(UUID idJob, boolean succes, Date dateFinTraitement,
+         String message);
 
 }

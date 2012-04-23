@@ -18,6 +18,7 @@ import fr.urssaf.image.sae.pile.travaux.service.JobQueueService;
 import fr.urssaf.image.sae.services.batch.TraitementAsynchroneService;
 import fr.urssaf.image.sae.services.batch.exception.JobInattenduException;
 import fr.urssaf.image.sae.services.batch.exception.JobNonReserveException;
+import fr.urssaf.image.sae.services.batch.model.CaptureMasseParametres;
 import fr.urssaf.image.sae.services.batch.model.ExitTraitement;
 import fr.urssaf.image.sae.services.batch.support.TraitementExecutionSupport;
 
@@ -79,18 +80,32 @@ public class TraitementAsynchroneServiceImpl implements
     * 
     */
    @Override
-   public final void ajouterJobCaptureMasse(String urlECDE, UUID uuid) {
-
+   public final void ajouterJobCaptureMasse(CaptureMasseParametres parameters) {
       LOG
             .debug(
                   "{} - ajout d'un traitement de capture en masse avec le sommaire : {} pour  l'identifiant: {}",
-                  new Object[] { "ajouterJobCaptureMasse()", urlECDE, uuid });
+                  new Object[] { "ajouterJobCaptureMasse()",
+                        parameters.getEcdeURL(), parameters.getUuid() });
 
       String type = CAPTURE_MASSE_JN;
-      String parametres = urlECDE;
+
+      // FIXME Vérifier la création
+
+      String parametres = parameters.getEcdeURL();
       Date dateDemande = new Date();
-      UUID idJob = uuid;
-      jobQueueService.addJob(idJob, type, parametres, dateDemande);
+      UUID idJob = parameters.getUuid();
+
+      JobRequest jobRequest = new JobRequest();
+      jobRequest.setIdJob(idJob);
+      jobRequest.setType(type);
+      jobRequest.setParameters(parametres);
+      jobRequest.setCreationDate(dateDemande);
+      jobRequest.setState(JobState.CREATED);
+      jobRequest.setClientHost(parameters.getClientHost());
+      jobRequest.setSaeHost(parameters.getSaeHost());
+      jobRequest.setDocCount(parameters.getNbreDocs());
+
+      jobQueueService.addJob(jobRequest);
 
    }
 
@@ -107,6 +122,22 @@ public class TraitementAsynchroneServiceImpl implements
       // vérification que le traitement existe bien dans la pile des travaux
       if (job == null) {
          throw new JobInexistantException(idJob);
+      }
+      
+   // récupération du PID
+      String processName = java.lang.management.ManagementFactory
+            .getRuntimeMXBean().getName();
+      String pid = null;
+
+      if (processName.contains("@")) {
+         pid = processName.split("@")[0];
+
+         LOG.debug("PID = " + pid);
+
+         jobQueueDao.setJobPid(idJob, Integer.valueOf(pid));
+
+      } else {
+         LOG.info("impossible de récupérer le pid");
       }
 
       // vérification que le type de traitement existe bien

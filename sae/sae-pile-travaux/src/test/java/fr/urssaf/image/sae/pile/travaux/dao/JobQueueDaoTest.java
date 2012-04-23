@@ -28,7 +28,8 @@ import fr.urssaf.image.sae.pile.travaux.model.SimpleJobRequest;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-pile-travaux-test.xml" })
-@DirtiesContext(classMode=ClassMode.AFTER_CLASS)      // Pour fermer le serveur zookeeper à la fin de la classe 
+@DirtiesContext(classMode = ClassMode.AFTER_CLASS)
+// Pour fermer le serveur zookeeper à la fin de la classe
 public class JobQueueDaoTest {
 
    @Autowired
@@ -36,7 +37,7 @@ public class JobQueueDaoTest {
 
    @Autowired
    private CassandraServerBean cassandraServer;
-   
+
    @After
    public final void init() throws Exception {
       // Après chaque test, on reset les données de cassandra
@@ -47,18 +48,18 @@ public class JobQueueDaoTest {
    public void getJobRequest_notExistant() {
       JobRequest jobRequest = jobQueueDao.getJobRequest(UUID.randomUUID());
       Assert.assertNull(jobRequest);
-      
+
    }
-   
+
    @Test
    public void getJobRequest_OK() throws Exception {
       Map<Integer, JobRequest> map = createCreatedJobRequestsForTest(1);
       JobRequest jobRequest1 = map.get(0);
-      JobRequest jobRequest2 = jobQueueDao.getJobRequest(jobRequest1.getIdJob());
+      JobRequest jobRequest2 = jobQueueDao
+            .getJobRequest(jobRequest1.getIdJob());
       assertEquals(jobRequest1, jobRequest2);
    }
 
-  
    @Test
    public void saveJobRequest() {
       Map<Integer, JobRequest> map = createCreatedJobRequestsForTest(1);
@@ -73,9 +74,10 @@ public class JobQueueDaoTest {
       jobRequest1.setState(JobState.FAILURE);
       Date endingDate = new Date();
       jobRequest1.setEndingDate(endingDate);
-      
+
       jobQueueDao.updateJobRequest(jobRequest1);
-      JobRequest jobRequest2 = jobQueueDao.getJobRequest(jobRequest1.getIdJob());
+      JobRequest jobRequest2 = jobQueueDao
+            .getJobRequest(jobRequest1.getIdJob());
       Assert.assertEquals(JobState.FAILURE, jobRequest2.getState());
       Assert.assertEquals(endingDate, jobRequest2.getEndingDate());
    }
@@ -84,23 +86,26 @@ public class JobQueueDaoTest {
    public void getUnreservedJobRequestIterator() {
       // On crée 6 jobs
       Map<Integer, JobRequest> map = createCreatedJobRequestsForTest(6);
-      Iterator<SimpleJobRequest> iterator = jobQueueDao.getUnreservedJobRequestIterator();
+      Iterator<SimpleJobRequest> iterator = jobQueueDao
+            .getUnreservedJobRequestIterator();
       int compteur = 0;
       while (iterator.hasNext()) {
          compteur++;
          SimpleJobRequest simpleJobRequest = iterator.next();
-         String parameters = simpleJobRequest.getParameters(); 
-         int index = Integer.parseInt(parameters.substring(parameters.length() - 1));
+         String parameters = simpleJobRequest.getParameters();
+         int index = Integer.parseInt(parameters
+               .substring(parameters.length() - 1));
          assertEquals(map.get(index).getSimpleJob(), simpleJobRequest);
       }
       Assert.assertEquals(6, compteur);
-      
+
       // On réserve 2 jobs
       jobQueueDao.reserveJobRequest(map.get(0), "myHostname", new Date());
       jobQueueDao.reserveJobRequest(map.get(5), "myHostname", new Date());
-      
+
       // On ne devrait avoir plus que 4 jobs réservés
-      Assert.assertEquals(4, getJobCount(jobQueueDao.getUnreservedJobRequestIterator()));      
+      Assert.assertEquals(4, getJobCount(jobQueueDao
+            .getUnreservedJobRequestIterator()));
    }
 
    @Test
@@ -108,7 +113,8 @@ public class JobQueueDaoTest {
       // On crée 6 jobs
       Map<Integer, JobRequest> jobRequests = createCreatedJobRequestsForTest(6);
       // On en réserve 1
-      jobQueueDao.reserveJobRequest(jobRequests.get(0), "myHostname", new Date());
+      jobQueueDao.reserveJobRequest(jobRequests.get(0), "myHostname",
+            new Date());
       // On en passe un en terminé
       jobRequests.get(1).setEndingDate(new Date());
       jobRequests.get(1).setState(JobState.SUCCESS);
@@ -126,19 +132,24 @@ public class JobQueueDaoTest {
       jobQueueDao.updateJobRequest(jobRequests.get(3));
 
       // On récupère les jobs non terminés
-      List<JobRequest> runningJobs = jobQueueDao.getNonTerminatedJobs("myHostname");
-      JacksonSerializer<JobRequest> jSlz = new JacksonSerializer<JobRequest>(JobRequest.class);      
+      List<JobRequest> runningJobs = jobQueueDao
+            .getNonTerminatedJobs("myHostname");
+      JacksonSerializer<JobRequest> jSlz = new JacksonSerializer<JobRequest>(
+            JobRequest.class);
       System.out.println("Running jobs : ");
       for (JobRequest jobRequest : runningJobs) {
          System.out.println(jSlz.toString(jobRequest));
       }
       Assert.assertEquals(2, runningJobs.size());
-      
-      // Pareil, mais on récupère seulement les infos principales des jobs (plus rapide)
-      List<SimpleJobRequest> runningSimpleJobs = jobQueueDao.getNonTerminatedSimpleJobs("myHostname");
+
+      // Pareil, mais on récupère seulement les infos principales des jobs (plus
+      // rapide)
+      List<SimpleJobRequest> runningSimpleJobs = jobQueueDao
+            .getNonTerminatedSimpleJobs("myHostname");
       System.out.println("Running simpleJobs : ");
       for (SimpleJobRequest simpleJobRequest : runningSimpleJobs) {
-         System.out.println(SimpleJobRequestSerializer.get().toString(simpleJobRequest));
+         System.out.println(SimpleJobRequestSerializer.get().toString(
+               simpleJobRequest));
       }
       Assert.assertEquals(2, runningSimpleJobs.size());
    }
@@ -148,21 +159,25 @@ public class JobQueueDaoTest {
       // On crée 6 jobs
       Map<Integer, JobRequest> jobRequests = createCreatedJobRequestsForTest(6);
       // On en réserve 1
-      jobQueueDao.reserveJobRequest(jobRequests.get(0), "myHostname", new Date());
+      jobQueueDao.reserveJobRequest(jobRequests.get(0), "myHostname",
+            new Date());
       // On en passe un en terminé
       jobRequests.get(1).setEndingDate(new Date());
       jobRequests.get(1).setState(JobState.SUCCESS);
       jobRequests.get(1).setReservedBy("myHostname");
       jobQueueDao.updateJobRequest(jobRequests.get(1));
       // On en supprime 3
-      for (int i = 0; i< 3; i++) {
+      for (int i = 0; i < 3; i++) {
          jobQueueDao.deleteJobRequest(jobRequests.get(i));
-         Assert.assertNull(jobQueueDao.getJobRequest(jobRequests.get(i).getIdJob()));
+         Assert.assertNull(jobQueueDao.getJobRequest(jobRequests.get(i)
+               .getIdJob()));
       }
       // On vérifie qu'aucun job n'est en cours
-      Assert.assertEquals(0,jobQueueDao.getNonTerminatedJobs("myHostname").size());
+      Assert.assertEquals(0, jobQueueDao.getNonTerminatedJobs("myHostname")
+            .size());
       // On vérifie qu'il n'y a plus que 3 job en attente
-      Assert.assertEquals(3, getJobCount(jobQueueDao.getUnreservedJobRequestIterator()));      
+      Assert.assertEquals(3, getJobCount(jobQueueDao
+            .getUnreservedJobRequestIterator()));
    }
 
    @Test
@@ -170,34 +185,49 @@ public class JobQueueDaoTest {
       // On crée 1 jobs
       Map<Integer, JobRequest> jobRequests = createCreatedJobRequestsForTest(1);
       // On le passe en terminé avec erreur
-      JobRequest jobRequest = jobRequests.get(0); 
+      JobRequest jobRequest = jobRequests.get(0);
       jobRequest.setEndingDate(new Date());
       jobRequest.setState(JobState.FAILURE);
       jobRequest.setReservedBy("myHostname");
       jobRequest.setMessage("Une erreur est survenue");
       jobQueueDao.updateJobRequest(jobRequest);
-      // On lit le jobRequest      
+      // On lit le jobRequest
       JobRequest jobRequest2 = jobQueueDao.getJobRequest(jobRequest.getIdJob());
       // On vérifie le message
       Assert.assertEquals("Une erreur est survenue", jobRequest2.getMessage());
    }
-   
+
    @Test
    public void getAllJobs() {
       // On crée 6 jobs
       Map<Integer, JobRequest> jobRequests = createCreatedJobRequestsForTest(6);
       // On en supprime 1
       jobQueueDao.deleteJobRequest(jobRequests.get(3));
-      
+
       List<JobRequest> list = jobQueueDao.getAllJobs(500);
-      JacksonSerializer<JobRequest> jSlz = new JacksonSerializer<JobRequest>(JobRequest.class);
+      JacksonSerializer<JobRequest> jSlz = new JacksonSerializer<JobRequest>(
+            JobRequest.class);
       System.out.println("All jobs :");
       for (JobRequest jobRequest : list) {
          System.out.println(jSlz.toString(jobRequest));
       }
       Assert.assertEquals(5, list.size());
    }
-   
+
+   @Test
+   public void updatePid() {
+      Map<Integer, JobRequest> map = createCreatedJobRequestsForTest(1);
+      JobRequest jobRequest1 = map.get(0);
+
+      jobQueueDao.setJobPid(jobRequest1.getIdJob(), 2236);
+
+      JobRequest saved = jobQueueDao.getJobRequest(jobRequest1.getIdJob());
+
+      Assert.assertEquals("le numéro de processus attendu doit etre correct",
+            Integer.valueOf(2236), saved.getPid());
+
+   }
+
    private int getJobCount(Iterator<SimpleJobRequest> iterator) {
       int compteur = 0;
       while (iterator.hasNext()) {
@@ -206,19 +236,27 @@ public class JobQueueDaoTest {
       }
       return compteur;
    }
-   
+
    private void assertEquals(JobRequest jobRequest1, JobRequest jobRequest2) {
-      JacksonSerializer<JobRequest> jSlz = new JacksonSerializer<JobRequest>(JobRequest.class);
-      Assert.assertEquals(jSlz.toString(jobRequest1) , jSlz.toString(jobRequest2));
+      JacksonSerializer<JobRequest> jSlz = new JacksonSerializer<JobRequest>(
+            JobRequest.class);
+      Assert.assertEquals(jSlz.toString(jobRequest1), jSlz
+            .toString(jobRequest2));
    }
-   private void assertEquals(SimpleJobRequest jobRequest1, SimpleJobRequest jobRequest2) {
-      JacksonSerializer<SimpleJobRequest> jSlz = SimpleJobRequestSerializer.get();
-      Assert.assertEquals(jSlz.toString(jobRequest1) , jSlz.toString(jobRequest2));
+
+   private void assertEquals(SimpleJobRequest jobRequest1,
+         SimpleJobRequest jobRequest2) {
+      JacksonSerializer<SimpleJobRequest> jSlz = SimpleJobRequestSerializer
+            .get();
+      Assert.assertEquals(jSlz.toString(jobRequest1), jSlz
+            .toString(jobRequest2));
    }
-   
+
    /**
     * Crée un certain nombre jobRequest, à l'état "CREATED", et les persiste
-    * @param count      nombre de job à créer
+    * 
+    * @param count
+    *           nombre de job à créer
     * @return Les jobRequest créés
     */
    private Map<Integer, JobRequest> createCreatedJobRequestsForTest(int count) {
@@ -231,7 +269,9 @@ public class JobQueueDaoTest {
 
    /**
     * Crée un certain nombre jobRequest, à l'état "CREATED", sans les persister
-    * @param count      nombre de job à créer
+    * 
+    * @param count
+    *           nombre de job à créer
     * @return Les jobRequest créés
     */
    private Map<Integer, JobRequest> getCreatedJobRequestsForTest(int count) {
@@ -245,7 +285,9 @@ public class JobQueueDaoTest {
 
    /**
     * Crée un jobRequest, à l'état "CREATED", sans le persister
-    * @param index      Un n° permettant de différencier les différents jobRequest
+    * 
+    * @param index
+    *           Un n° permettant de différencier les différents jobRequest
     * @return Le jobRequest créé
     */
    private JobRequest getCreatedJobRequestForTest(int index) {
@@ -254,10 +296,11 @@ public class JobQueueDaoTest {
       jobRequest.setIdJob(idJob);
       jobRequest.setType("ArchivageMasse");
       jobRequest.setCreationDate(new Date());
-      jobRequest.setParameters("sommaire=ecde:/toto.toto.com/sommaire.xml&idTraitement=" + index);
+      jobRequest
+            .setParameters("sommaire=ecde:/toto.toto.com/sommaire.xml&idTraitement="
+                  + index);
       jobRequest.setState(JobState.CREATED);
-      return jobRequest;      
+      return jobRequest;
    }
 
-   
 }

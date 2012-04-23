@@ -2,7 +2,6 @@ package fr.urssaf.image.sae.pile.travaux.model;
 
 import java.util.Date;
 
-
 /**
  * Traitement dans la pile des travaux. Les propriétés sont.
  * <ul>
@@ -15,7 +14,8 @@ import java.util.Date;
  * <li><code>reservationDate</code>: date/heure de réservation</li>
  * <li><code>startingDate</code>: date/heure de début de traitement</li>
  * <li><code>endingDate</code>: date/heure de fin de traitement</li>
- * <li><code>message</code>: message de compte-rendu du traitement. Exemple : message d'erreur</li>
+ * <li><code>message</code>: message de compte-rendu du traitement. Exemple :
+ * message d'erreur</li>
  * </ul>
  * 
  * 
@@ -34,8 +34,16 @@ public class JobRequest extends SimpleJobRequest {
    private Date startingDate;
 
    private Date endingDate;
-   
+
    private String message;
+
+   private String saeHost;
+
+   private String clientHost;
+
+   private Integer docCount;
+
+   private Integer pid;
 
    /**
     * Constructeur qui instancie un jobRequest vide
@@ -45,8 +53,10 @@ public class JobRequest extends SimpleJobRequest {
    }
 
    /**
-    * Construit un JobRequest à partir d'un SimpleJobRequest 
-    * @param simpleJobRequest Le SimpleJobRequest
+    * Construit un JobRequest à partir d'un SimpleJobRequest
+    * 
+    * @param simpleJobRequest
+    *           Le SimpleJobRequest
     */
    public JobRequest(SimpleJobRequest simpleJobRequest) {
       super();
@@ -54,7 +64,6 @@ public class JobRequest extends SimpleJobRequest {
       setType(simpleJobRequest.getType());
       setParameters(simpleJobRequest.getParameters());
    }
-
 
    /**
     * @return the state of the jobRequest
@@ -99,7 +108,8 @@ public class JobRequest extends SimpleJobRequest {
     *           the creationDate to set
     */
    public final void setCreationDate(Date creationDate) {
-      this.creationDate = creationDate == null ? null : new Date(creationDate.getTime());
+      this.creationDate = creationDate == null ? null : new Date(creationDate
+            .getTime());
    }
 
    /**
@@ -107,7 +117,8 @@ public class JobRequest extends SimpleJobRequest {
     */
    public final Date getReservationDate() {
       // On ne renvoie pas la date directement, car c'est un objet mutable
-      return reservationDate == null ? null : new Date(reservationDate.getTime());
+      return reservationDate == null ? null : new Date(reservationDate
+            .getTime());
    }
 
    /**
@@ -115,7 +126,8 @@ public class JobRequest extends SimpleJobRequest {
     *           the reservationDate to set
     */
    public final void setReservationDate(Date reservationDate) {
-      this.reservationDate = reservationDate == null ? null : new Date(reservationDate.getTime());
+      this.reservationDate = reservationDate == null ? null : new Date(
+            reservationDate.getTime());
    }
 
    /**
@@ -131,7 +143,8 @@ public class JobRequest extends SimpleJobRequest {
     *           the startingDate to set
     */
    public final void setStartingDate(Date startingDate) {
-      this.startingDate = startingDate == null ? null : new Date(startingDate.getTime());
+      this.startingDate = startingDate == null ? null : new Date(startingDate
+            .getTime());
    }
 
    /**
@@ -147,11 +160,13 @@ public class JobRequest extends SimpleJobRequest {
     *           the endingDate to set
     */
    public final void setEndingDate(Date endingDate) {
-      this.endingDate = endingDate == null ? null : new Date(endingDate.getTime());
+      this.endingDate = endingDate == null ? null : new Date(endingDate
+            .getTime());
    }
-   
+
    /**
     * Renvoie un SimpleJob contenant les propriétés de base du jobRequest
+    * 
     * @return Un SimpleJob
     */
    public final SimpleJobRequest getSimpleJob() {
@@ -163,7 +178,8 @@ public class JobRequest extends SimpleJobRequest {
    }
 
    /**
-    * @param message : message de compte-rendu du traitement
+    * @param message
+    *           : message de compte-rendu du traitement
     */
    public final void setMessage(String message) {
       this.message = message;
@@ -176,5 +192,70 @@ public class JobRequest extends SimpleJobRequest {
    public final String getMessage() {
       return message;
    }
-   
+
+   /**
+    * @return le nom de machine ou l'IP de la machine SAE ayant traité la
+    *         demande
+    */
+   public final String getSaeHost() {
+      return saeHost;
+   }
+
+   /**
+    * @param saeHost
+    *           le nom de machine ou l'IP de la machine SAE ayant traité la
+    *           demande
+    * 
+    */
+   public final void setSaeHost(String saeHost) {
+      this.saeHost = saeHost;
+   }
+
+   /**
+    * @return le nom de machine ou l'IP de la machine cliente ayant traité la
+    *         demande
+    */
+   public final String getClientHost() {
+      return clientHost;
+   }
+
+   /**
+    * @param clientHost
+    *           le nom de machine ou l'IP de la machine cliente ayant traité la
+    *           demande
+    */
+   public final void setClientHost(String clientHost) {
+      this.clientHost = clientHost;
+   }
+
+   /**
+    * @return le nombre de documents présents dans le fichier sommaire
+    */
+   public final Integer getDocCount() {
+      return docCount;
+   }
+
+   /**
+    * @param docCount
+    *           le nombre de documents présents dans le fichier sommaire
+    */
+   public final void setDocCount(Integer docCount) {
+      this.docCount = docCount;
+   }
+
+   /**
+    * @return le process ID du traitement
+    */
+   public final Integer getPid() {
+      return pid;
+   }
+
+   /**
+    * @param pid
+    *           le process ID du traitement
+    */
+   public final void setPid(Integer pid) {
+      this.pid = pid;
+   }
+
 }

@@ -22,6 +22,7 @@ import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 import fr.urssaf.image.sae.pile.travaux.model.JobState;
 import fr.urssaf.image.sae.services.batch.exception.JobInattenduException;
 import fr.urssaf.image.sae.services.batch.exception.JobNonReserveException;
+import fr.urssaf.image.sae.services.batch.model.CaptureMasseParametres;
 import fr.urssaf.image.sae.services.batch.model.ExitTraitement;
 import fr.urssaf.image.sae.services.capturemasse.SAECaptureMasseService;
 
@@ -72,7 +73,10 @@ public class TraitementAsynchroneServiceTest {
 
       UUID idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
 
-      service.ajouterJobCaptureMasse("url_ecde", idJob);
+      CaptureMasseParametres parametres = new CaptureMasseParametres(
+            "url_ecde", idJob, null, null, null);
+
+      service.ajouterJobCaptureMasse(parametres);
 
       job = jobQueueDao.getJobRequest(idJob);
 

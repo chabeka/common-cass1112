@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import me.prettyprint.cassandra.serializers.BytesArraySerializer;
+import me.prettyprint.cassandra.serializers.IntegerSerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.serializers.UUIDSerializer;
 import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
@@ -41,15 +42,17 @@ import fr.urssaf.image.sae.pile.travaux.model.SimpleJobRequest;
  * Implémentation du Service DAO {@link JobQueueDao}
  * 
  */
-@SuppressWarnings({"PMD.LongVariable" })
+@SuppressWarnings( { "PMD.LongVariable" })
 public class JobQueueDaoImpl implements JobQueueDao {
 
    private final Keyspace keyspace;
 
    private static final String JOBREQUEST_CFNAME = "JobRequest";
    private static final String JOBSQUEUE_CFNAME = "JobsQueue";
+   private static final String JOBHISTORY_CFNAME = "JobHistory";
 
    private final ColumnFamilyTemplate<UUID, String> jobRequestTmpl;
+   private final ColumnFamilyTemplate<UUID, String> jobHistoryTmpl;
    private final ThriftColumnFamilyTemplate<String, UUID> jobsQueueTmpl;
 
    // Colonnes de JobRequest
@@ -62,6 +65,10 @@ public class JobQueueDaoImpl implements JobQueueDao {
    private static final String JR_STARTING_DATE_COLUMN = "startingDate";
    private static final String JR_ENDING_DATE_COLUMN = "endingDate";
    private static final String JR_MESSAGE = "message";
+   private static final String JR_SAE_HOST = "saeHost";
+   private static final String JR_CLIENT_HOST = "clientHost";
+   private static final String JR_DOC_COUNT = "docCount";
+   private static final String JR_PID = "pid";
 
    // Clés constantes
    private static final String JOBS_WAITING_KEY = "jobsWaiting";
@@ -70,7 +77,7 @@ public class JobQueueDaoImpl implements JobQueueDao {
    private static final int MAX_JOB_ATTIBUTS = 100;
 
    // Durée de vie des colonnes
-   private static final int TTL = 2592000;      // 2592000 secondes, soit 30 jours
+   private static final int TTL = 2592000; // 2592000 secondes, soit 30 jours
 
    /**
     * Constructeur de la DAO
@@ -87,6 +94,9 @@ public class JobQueueDaoImpl implements JobQueueDao {
       jobsQueueTmpl = new ThriftColumnFamilyTemplate<String, UUID>(keyspace,
             JOBSQUEUE_CFNAME, StringSerializer.get(), UUIDSerializer.get());
       jobsQueueTmpl.setCount(MAX_NON_TERMINATED_JOBS);
+      jobHistoryTmpl = new ThriftColumnFamilyTemplate<UUID, String>(keyspace,
+            JOBHISTORY_CFNAME, UUIDSerializer.get(), StringSerializer.get());
+      jobHistoryTmpl.setCount(MAX_JOB_ATTIBUTS);
    }
 
    /**
@@ -132,6 +142,11 @@ public class JobQueueDaoImpl implements JobQueueDao {
             .getByteArray(JR_ENDING_DATE_COLUMN));
       jobRequest.setEndingDate(endingDate);
       jobRequest.setMessage(result.getString(JR_MESSAGE));
+      jobRequest.setSaeHost(result.getString(JR_SAE_HOST));
+      jobRequest.setClientHost(result.getString(JR_CLIENT_HOST));
+      jobRequest.setPid(result.getInteger(JR_PID));
+      jobRequest.setDocCount(result.getInteger(JR_DOC_COUNT));
+
       return jobRequest;
    }
 
@@ -151,13 +166,17 @@ public class JobQueueDaoImpl implements JobQueueDao {
     * {@inheritDoc}
     */
    @Override
-   public final List<SimpleJobRequest> getNonTerminatedSimpleJobs(String hostname) {
-      ColumnFamilyResult<String, UUID> result = jobsQueueTmpl.queryColumns(hostname);
+   public final List<SimpleJobRequest> getNonTerminatedSimpleJobs(
+         String hostname) {
+      ColumnFamilyResult<String, UUID> result = jobsQueueTmpl
+            .queryColumns(hostname);
       Collection<UUID> colNames = result.getColumnNames();
-      List<SimpleJobRequest> list = new ArrayList<SimpleJobRequest>(colNames.size());
+      List<SimpleJobRequest> list = new ArrayList<SimpleJobRequest>(colNames
+            .size());
       SimpleJobRequestSerializer slz = SimpleJobRequestSerializer.get();
       for (UUID uuid : colNames) {
-         SimpleJobRequest simpleJobRequest = slz.fromBytes(result.getByteArray(uuid));
+         SimpleJobRequest simpleJobRequest = slz.fromBytes(result
+               .getByteArray(uuid));
          list.add(simpleJobRequest);
       }
       return list;
@@ -207,12 +226,14 @@ public class JobQueueDaoImpl implements JobQueueDao {
    }
 
    @SuppressWarnings("unchecked")
-   private void addColumn(ColumnFamilyUpdater<UUID, String> updater, String colName, Object value, Serializer slz) {
-      HColumn<String, Object> column = HFactory.createColumn(colName, value, StringSerializer.get(), slz);
+   private void addColumn(ColumnFamilyUpdater<UUID, String> updater,
+         String colName, Object value, Serializer slz) {
+      HColumn<String, Object> column = HFactory.createColumn(colName, value,
+            StringSerializer.get(), slz);
       column.setTtl(TTL);
       updater.setColumn(column);
    }
-   
+
    /**
     * {@inheritDoc} Attention : la modification de reservedBy n'est pas
     * supportée
@@ -225,6 +246,8 @@ public class JobQueueDaoImpl implements JobQueueDao {
       NullableDateSerializer dSlz = NullableDateSerializer.get();
       StringSerializer sSlz = StringSerializer.get();
       BytesArraySerializer bSlz = BytesArraySerializer.get();
+      IntegerSerializer iSlz = IntegerSerializer.get();
+
       // On enregistre la demande dans JobRequest
       ColumnFamilyUpdater<UUID, String> updater = jobRequestTmpl
             .createUpdater(jobRequest.getIdJob());
@@ -232,12 +255,32 @@ public class JobQueueDaoImpl implements JobQueueDao {
       addColumn(updater, JR_PARAMETERS_COLUMN, jobRequest.getParameters(), sSlz);
       addColumn(updater, JR_STATE_COLUMN, jobRequest.getState().name(), sSlz);
       if (jobRequest.getReservedBy() != null) {
-         addColumn(updater, JR_RESERVED_BY_COLUMN, jobRequest.getReservedBy(), sSlz);
+         addColumn(updater, JR_RESERVED_BY_COLUMN, jobRequest.getReservedBy(),
+               sSlz);
       }
-      addColumn(updater, JR_CREATION_DATE_COLUMN, dSlz.toBytes(jobRequest.getCreationDate()), bSlz);
-      addColumn(updater, JR_RESERVATION_DATE_COLUMN, dSlz.toBytes(jobRequest.getReservationDate()), bSlz);
-      addColumn(updater, JR_STARTING_DATE_COLUMN, dSlz.toBytes(jobRequest.getStartingDate()), bSlz);
-      addColumn(updater, JR_ENDING_DATE_COLUMN, dSlz.toBytes(jobRequest.getEndingDate()), bSlz);
+      addColumn(updater, JR_CREATION_DATE_COLUMN, dSlz.toBytes(jobRequest
+            .getCreationDate()), bSlz);
+      addColumn(updater, JR_RESERVATION_DATE_COLUMN, dSlz.toBytes(jobRequest
+            .getReservationDate()), bSlz);
+      addColumn(updater, JR_STARTING_DATE_COLUMN, dSlz.toBytes(jobRequest
+            .getStartingDate()), bSlz);
+      addColumn(updater, JR_ENDING_DATE_COLUMN, dSlz.toBytes(jobRequest
+            .getEndingDate()), bSlz);
+      if (jobRequest.getSaeHost() != null) {
+         addColumn(updater, JR_SAE_HOST, jobRequest.getSaeHost(), sSlz);
+      }
+
+      if (jobRequest.getClientHost() != null) {
+         addColumn(updater, JR_CLIENT_HOST, jobRequest.getClientHost(), sSlz);
+      }
+
+      if (jobRequest.getDocCount() != null) {
+         addColumn(updater, JR_DOC_COUNT, jobRequest.getDocCount(), iSlz);
+      }
+
+      if (jobRequest.getPid() != null) {
+         addColumn(updater, JR_PID, jobRequest.getPid(), iSlz);
+      }
       if (jobRequest.getMessage() != null) {
          addColumn(updater, JR_MESSAGE, jobRequest.getMessage(), sSlz);
       }
@@ -272,9 +315,10 @@ public class JobQueueDaoImpl implements JobQueueDao {
                SimpleJobRequestSerializer.get());
          col.setTtl(TTL);
          mutator.addInsertion(JOBS_WAITING_KEY, JOBSQUEUE_CFNAME, col);
-      //} else {
+         // } else {
          // NOPDM : TODO : virer la règle EmptyIfStmt
-         // On ne fait rien ici : on dé-indexe seulement dans la méthode de réservation
+         // On ne fait rien ici : on dé-indexe seulement dans la méthode de
+         // réservation
       }
       mutator.execute();
    }
@@ -283,43 +327,52 @@ public class JobQueueDaoImpl implements JobQueueDao {
     * {@inheritDoc}
     */
    @Override
-   public final void reserveJobRequest(JobRequest jobRequest, String hostname, Date reservationDate) {
+   public final void reserveJobRequest(JobRequest jobRequest, String hostname,
+         Date reservationDate) {
       // On vérifie que le jobRequest est suffisamment complet
       validateJobRequest(jobRequest);
       UUID jobId = jobRequest.getIdJob();
       StringSerializer sSlz = StringSerializer.get();
       NullableDateSerializer dSlz = NullableDateSerializer.get();
       BytesArraySerializer bSlz = BytesArraySerializer.get();
-      
+
       // On enregistre la demande dans JobRequest
-      ColumnFamilyUpdater<UUID, String> updater = jobRequestTmpl.createUpdater(jobId);
+      ColumnFamilyUpdater<UUID, String> updater = jobRequestTmpl
+            .createUpdater(jobId);
       addColumn(updater, JR_STATE_COLUMN, JobState.RESERVED.name(), sSlz);
       addColumn(updater, JR_RESERVED_BY_COLUMN, hostname, sSlz);
-      addColumn(updater, JR_RESERVATION_DATE_COLUMN, dSlz.toBytes(reservationDate), bSlz);
+      addColumn(updater, JR_RESERVATION_DATE_COLUMN, dSlz
+            .toBytes(reservationDate), bSlz);
       jobRequestTmpl.update(updater);
 
       Mutator<String> mutator = HFactory.createMutator(keyspace,
             StringSerializer.get());
-      // On indexe la demande dans JobsQueue pour indiquer que le job est "en cours" sur le serveur
-      HColumn<UUID, SimpleJobRequest> col = HFactory.createColumn(
-            jobId, jobRequest.getSimpleJob(),
-            UUIDSerializer.get(), SimpleJobRequestSerializer.get());
+      // On indexe la demande dans JobsQueue pour indiquer que le job est
+      // "en cours" sur le serveur
+      HColumn<UUID, SimpleJobRequest> col = HFactory.createColumn(jobId,
+            jobRequest.getSimpleJob(), UUIDSerializer.get(),
+            SimpleJobRequestSerializer.get());
       col.setTtl(TTL);
       mutator.addInsertion(hostname, JOBSQUEUE_CFNAME, col);
-      // On indexe la demande dans JobsQueue pour indiquer que le job est réservé
-      mutator.addDeletion(JOBS_WAITING_KEY, JOBSQUEUE_CFNAME, jobId, UUIDSerializer.get());
+      // On indexe la demande dans JobsQueue pour indiquer que le job est
+      // réservé
+      mutator.addDeletion(JOBS_WAITING_KEY, JOBSQUEUE_CFNAME, jobId,
+            UUIDSerializer.get());
       mutator.execute();
    }
-   
+
    /**
     * Valide qu'un objet jobRequest est suffisamment complet pour être persisté
-    * @param jobRequest    Le jobRequest à valider
+    * 
+    * @param jobRequest
+    *           Le jobRequest à valider
     */
    private void validateJobRequest(JobRequest jobRequest) {
       Assert.notNull(jobRequest, "jobRequest should not be null");
       Assert.notNull(jobRequest.getIdJob(), "Id should not be null");
       Assert.notNull(jobRequest.getType(), "Type should not be null");
-      Assert.notNull(jobRequest.getParameters(), "Parameters should not be null");
+      Assert.notNull(jobRequest.getParameters(),
+            "Parameters should not be null");
       Assert.notNull(jobRequest.getState(), "State should not be null");
    }
 
@@ -355,15 +408,15 @@ public class JobQueueDaoImpl implements JobQueueDao {
    }
 
    /**
-    * {@inheritDoc}.
-    * Attention : méthode "lente". A n'utiliser que pour les IHM de test.
+    * {@inheritDoc}. Attention : méthode "lente". A n'utiliser que pour les IHM
+    * de test.
     */
    @Override
    public final List<JobRequest> getAllJobs(int maxKeysToRead) {
-      
+
       // On n'utilise pas d'index. On récupère tous les jobs sans distinction,
       // en requêtant directement dans la CF JobRequest
-      BytesArraySerializer  bytesSerializer = BytesArraySerializer.get();
+      BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
       RangeSlicesQuery<UUID, String, byte[]> rangeSlicesQuery = HFactory
             .createRangeSlicesQuery(keyspace, UUIDSerializer.get(),
                   StringSerializer.get(), bytesSerializer);
@@ -372,22 +425,50 @@ public class JobQueueDaoImpl implements JobQueueDao {
       rangeSlicesQuery.setRowCount(maxKeysToRead);
       QueryResult<OrderedRows<UUID, String, byte[]>> queryResult = rangeSlicesQuery
             .execute();
-      
-      // On convertit le résultat en ColumnFamilyResultWrapper pour faciliter son utilisation 
+
+      // On convertit le résultat en ColumnFamilyResultWrapper pour faciliter
+      // son utilisation
       QueryResultConverter<UUID, String, byte[]> converter = new QueryResultConverter<UUID, String, byte[]>();
-      ColumnFamilyResultWrapper<UUID, String> result = converter.getColumnFamilyResultWrapper
-         (queryResult, UUIDSerializer.get(), StringSerializer.get(), bytesSerializer);
-      
+      ColumnFamilyResultWrapper<UUID, String> result = converter
+            .getColumnFamilyResultWrapper(queryResult, UUIDSerializer.get(),
+                  StringSerializer.get(), bytesSerializer);
+
       // On itère sur le résultat
       HectorIterator<UUID, String> resultIterator = new HectorIterator<UUID, String>(
             result);
-      List<JobRequest> list= new ArrayList<JobRequest>();
+      List<JobRequest> list = new ArrayList<JobRequest>();
       for (ColumnFamilyResult<UUID, String> row : resultIterator) {
          JobRequest jobRequest = getJobRequestFromResult(row);
-         // On peut obtenir un jobRequest null dans le cas d'un jobRequest effacé
-         if (jobRequest != null) list.add(jobRequest);
+         // On peut obtenir un jobRequest null dans le cas d'un jobRequest
+         // effacé
+         if (jobRequest != null)
+            list.add(jobRequest);
       }
       return list;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void setJobPid(UUID jobUuid, Integer pid) {
+      ColumnFamilyUpdater<UUID, String> updater = jobRequestTmpl
+            .createUpdater(jobUuid);
+      IntegerSerializer iSlz = IntegerSerializer.get();
+      addColumn(updater, JR_PID, pid, iSlz);
+
+      jobRequestTmpl.update(updater);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void addJobHistory(UUID jobUuid, UUID timeUuid, String description) {
+     
+
+      // StringSerializer sSlz = StringSerializer.get();
+      
    }
 
 }

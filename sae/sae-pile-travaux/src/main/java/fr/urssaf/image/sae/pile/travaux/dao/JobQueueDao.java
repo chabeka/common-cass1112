@@ -48,8 +48,8 @@ public interface JobQueueDao {
    Iterator<SimpleJobRequest> getUnreservedJobRequestIterator();
 
    /**
-    * Récupère la liste des traitements réservés ou en cours d'exécution 
-    * sur un serveur donné
+    * Récupère la liste des traitements réservés ou en cours d'exécution sur un
+    * serveur donné
     * 
     * @param hostname
     *           nom du serveur concerné
@@ -58,10 +58,10 @@ public interface JobQueueDao {
    List<JobRequest> getNonTerminatedJobs(String hostname);
 
    /**
-    * Récupère la liste des traitements réservés ou en cours d'exécution 
-    * sur un serveur donné. Cette méthode est (beaucoup) plus rapide
-    * que {@link getNonTerminatedJobs}, mais renvoie des SimpleJobRequest
-    * au lieu de JobRequest.
+    * Récupère la liste des traitements réservés ou en cours d'exécution sur un
+    * serveur donné. Cette méthode est (beaucoup) plus rapide que
+    * {@link getNonTerminatedJobs}, mais renvoie des SimpleJobRequest au lieu de
+    * JobRequest.
     * 
     * @param hostname
     *           nom du serveur concerné
@@ -70,14 +70,19 @@ public interface JobQueueDao {
    List<SimpleJobRequest> getNonTerminatedSimpleJobs(String hostname);
 
    /**
-    * Réserve un job. Attention, aucun lock n'est fait. Le lock
-    * doit être fait en amont.
-    * @param jobRequest       Le jobRequest à réserver
-    * @param hostname         Le hostname du serveur qui fait la réservation
-    * @param reservationDate  La date de réservation (normalement : maintenant)
+    * Réserve un job. Attention, aucun lock n'est fait. Le lock doit être fait
+    * en amont.
+    * 
+    * @param jobRequest
+    *           Le jobRequest à réserver
+    * @param hostname
+    *           Le hostname du serveur qui fait la réservation
+    * @param reservationDate
+    *           La date de réservation (normalement : maintenant)
     */
-   void reserveJobRequest(JobRequest jobRequest, String hostname, Date reservationDate);
-   
+   void reserveJobRequest(JobRequest jobRequest, String hostname,
+         Date reservationDate);
+
    /**
     * Supprime un jobRequest
     * 
@@ -87,11 +92,36 @@ public interface JobQueueDao {
    void deleteJobRequest(JobRequest jobRequest);
 
    /**
-    * Retourne l'ensemble des jobs, quelque soit leur état, dans un ordre indéfini.
-    * @param maxKeysToRead   : Nombre max de clés à parcourir
-    *    (attention : ça comprend les clés des jobs récemment supprimés) 
-    * @return  Les jobs trouvés
+    * Retourne l'ensemble des jobs, quelque soit leur état, dans un ordre
+    * indéfini.
+    * 
+    * @param maxKeysToRead
+    *           : Nombre max de clés à parcourir (attention : ça comprend les
+    *           clés des jobs récemment supprimés)
+    * @return Les jobs trouvés
     */
    List<JobRequest> getAllJobs(int maxKeysToRead);
-   
+
+   /**
+    * Insère le pid pour le job dont l'uuid est passé en paramètre
+    * 
+    * @param jobUuid
+    *           identifiant du job
+    * @param pid
+    *           processus ID
+    */
+   void setJobPid(UUID jobUuid, Integer pid);
+
+   /**
+    * Ajoute un enregistrement d'historique pour le job donné
+    * 
+    * @param jobUuid
+    *           uuid du job
+    * @param timeUuid
+    *           uuid correspondant à la date/heure
+    * @param description
+    *           description de l'historique
+    */
+   void addJobHistory(UUID jobUuid, UUID timeUuid, String description);
+
 }

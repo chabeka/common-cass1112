@@ -46,14 +46,8 @@ public class JobQueueServiceImpl implements JobQueueService {
     * {@inheritDoc}
     */
    @Override
-   public final void addJob(UUID idJob, String type, String parametres,
-         Date dateDemande) {
-      JobRequest jobRequest = new JobRequest();
-      jobRequest.setIdJob(idJob);
-      jobRequest.setType(type);
-      jobRequest.setParameters(parametres);
-      jobRequest.setCreationDate(dateDemande);
-      jobRequest.setState(JobState.CREATED);
+   public final void addJob(JobRequest jobRequest) {
+      
       jobQueueDao.saveJobRequest(jobRequest);
    }
 

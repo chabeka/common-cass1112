@@ -190,7 +190,15 @@ public class JobQueueServiceTest {
    private UUID addJobForTest(int index) {
       UUID idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
       String parameters = "sommaire=ecde:/toto.toto.com/sommaire.xml&idTraitement=" + index;
-      jobQueueService.addJob(idJob, "ArchivageMasse", parameters, new Date());
+      
+      JobRequest jobRequest = new JobRequest();
+      jobRequest.setIdJob(idJob);
+      jobRequest.setType("ArchivageMasse");
+      jobRequest.setParameters(parameters);
+      jobRequest.setCreationDate(new Date());
+      jobRequest.setState(JobState.CREATED);
+      
+      jobQueueService.addJob(jobRequest);
       return idJob;      
    }
    
