@@ -228,7 +228,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
     */
    @Override
    public final ArchivageMasseResponse archivageMasseSecure(
-         ArchivageMasse request) throws CaptureAxisFault {
+         ArchivageMasse request, String callerIP) throws CaptureAxisFault {
       try {
 
          // Traces debug - entrée méthode
@@ -239,7 +239,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
          // l'opération web service n'interagit pas avec DFCE
          // il n'est pas nécessaire de vérifier si DFCE est Up
          ArchivageMasseResponse response = captureMasse
-               .archivageEnMasse(request);
+               .archivageEnMasse(request, callerIP);
 
          // Traces debug - sortie méthode
          LOG.debug("{} - Sortie", prefixeTrc);

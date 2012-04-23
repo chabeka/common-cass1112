@@ -90,11 +90,13 @@ public interface SaeServiceSkeletonInterface {
     * 
     * @param request
     *           request du web service
+    * @param callerIP
+    *          adresse IP de l'appelant 
     * @return reponse du web service
     * @throws AxisFault
     *            exception levée dans la consommation du web service
     */
-   ArchivageMasseResponse archivageMasseSecure(ArchivageMasse request)
+   ArchivageMasseResponse archivageMasseSecure(ArchivageMasse request, String callerIP)
          throws AxisFault;
 
    /**

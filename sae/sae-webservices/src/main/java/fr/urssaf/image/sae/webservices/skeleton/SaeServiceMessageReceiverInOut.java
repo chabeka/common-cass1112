@@ -7,6 +7,9 @@
  */
         package fr.urssaf.image.sae.webservices.skeleton;
 
+import org.apache.axis2.context.MessageContext;
+
+
         /**
         *  SaeServiceMessageReceiverInOut message receiver
         */
@@ -180,12 +183,14 @@ public class SaeServiceMessageReceiverInOut extends org.apache.axis2.receivers.A
                                     msgContext.getEnvelope().getBody().getFirstElement(),
                                     fr.cirtil.www.saeservice.ArchivageMasse.class,
                                     getEnvelopeNamespaces(msgContext.getEnvelope()));
-                                                
+	                        
+	                        String callerIP = (String) msgContext.getProperty(MessageContext.REMOTE_ADDR);
+                                    
+	                        
                                                archivageMasseResponse31 =
                                                    
                                                    
-                                                         skel.archivageMasseSecure(wrappedParam)
-                                                    ;
+                                                         skel.archivageMasseSecure(wrappedParam, callerIP);
                                             
                                         envelope = toEnvelope(getSOAPFactory(msgContext), archivageMasseResponse31, false, new javax.xml.namespace.QName("http://www.cirtil.fr/saeService",
                                                     "archivageMasse"));

@@ -1,5 +1,10 @@
 package fr.urssaf.image.sae.webservices.service.impl;
 
+import java.io.File;
+import java.net.InetAddress;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.UnknownHostException;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -12,11 +17,17 @@ import org.springframework.stereotype.Service;
 import fr.cirtil.www.saeservice.ArchivageMasse;
 import fr.cirtil.www.saeservice.ArchivageMasseResponse;
 import fr.cirtil.www.saeservice.EcdeUrlSommaireType;
+import fr.urssaf.image.sae.ecde.exception.EcdeBadURLException;
+import fr.urssaf.image.sae.ecde.exception.EcdeBadURLFormatException;
+import fr.urssaf.image.sae.ecde.service.EcdeServices;
 import fr.urssaf.image.sae.services.batch.TraitementAsynchroneService;
+import fr.urssaf.image.sae.services.batch.model.CaptureMasseParametres;
+import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
 import fr.urssaf.image.sae.services.controles.SAEControlesCaptureService;
 import fr.urssaf.image.sae.services.exception.capture.CaptureBadEcdeUrlEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureEcdeUrlFileNotFoundEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureEcdeWriteFileEx;
+import fr.urssaf.image.sae.services.util.XmlReadUtils;
 import fr.urssaf.image.sae.webservices.aspect.BuildOrClearMDCAspect;
 import fr.urssaf.image.sae.webservices.exception.CaptureAxisFault;
 import fr.urssaf.image.sae.webservices.impl.factory.ObjectStorageResponseFactory;
@@ -40,12 +51,15 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
    @Autowired
    private TraitementAsynchroneService traitementService;
 
+   @Autowired
+   private EcdeServices ecdeServices;
+
    /**
     * {@inheritDoc}
     */
    @Override
-   public final ArchivageMasseResponse archivageEnMasse(ArchivageMasse request)
-         throws CaptureAxisFault {
+   public final ArchivageMasseResponse archivageEnMasse(ArchivageMasse request,
+         String callerIP) throws CaptureAxisFault {
 
       String prefixeTrc = "archivageEnMasse()";
 
@@ -72,14 +86,54 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
                e);
       }
 
+      String hostName = null;
+
+      try {
+         InetAddress address = InetAddress.getLocalHost();
+         hostName = address.getHostName();
+
+      } catch (UnknownHostException e) {
+         LOG
+               .warn(
+                     "Impossible de récupérer les informations relatives à la machine locale",
+                     e);
+      }
+
       // Appel du service, celui-ci doit rendre la main rapidement d'un
       // processus
       String contextLog = MDC.get(BuildOrClearMDCAspect.LOG_CONTEXTE);
       // récupération de l'UUID du traitement
       UUID uuid = UUID.fromString(contextLog);
 
+      File sommaire;
+      try {
+         URI uri = new URI(ecdeUrl);
+         sommaire = ecdeServices.convertSommaireToFile(uri);
+      } catch (EcdeBadURLException e) {
+         throw new CaptureAxisFault("CaptureUrlEcdeIncorrecte", e.getMessage(),
+               e);
+      } catch (EcdeBadURLFormatException e) {
+         throw new CaptureAxisFault("CaptureUrlEcdeIncorrecte", e.getMessage(),
+               e);
+      } catch (URISyntaxException e) {
+         throw new CaptureAxisFault("CaptureUrlEcdeIncorrecte", e.getMessage(),
+               e);
+      }
+
+      Integer nombreDoc = null;
+
+      try {
+         nombreDoc = XmlReadUtils.compterElements(sommaire, "document");
+         
+      } catch (CaptureMasseRuntimeException e) {
+         LOG.warn("impossible d'ouvrir le fichier attendu", e);
+      }
+
+      CaptureMasseParametres parametres = new CaptureMasseParametres(ecdeUrl,
+            uuid, hostName, callerIP, nombreDoc);
+
       // appel de la méthode d'insertion du job dans la pile des travaux
-      traitementService.ajouterJobCaptureMasse(ecdeUrl, uuid);
+      traitementService.ajouterJobCaptureMasse(parametres);
 
       // On prend acte de la demande,
       // le retour se fera via le fichier resultats.xml de l'ECDE

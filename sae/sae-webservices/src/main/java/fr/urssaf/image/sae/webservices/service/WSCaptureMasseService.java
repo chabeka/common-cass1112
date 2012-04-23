@@ -16,10 +16,12 @@ public interface WSCaptureMasseService {
     * 
     * @param request
     *           Un objet qui contient l'URI du sommaire.xml
+    * @param callerIP
+    *            adresse IP de l'appelant
     * @return une objet de type {@link ArchivageMasseResponse}.
     * @throws CaptureAxisFault
     *            Une exception est levée lors de l'archivage en masse.
     */
-   ArchivageMasseResponse archivageEnMasse(ArchivageMasse request)
+   ArchivageMasseResponse archivageEnMasse(ArchivageMasse request, String callerIP)
          throws CaptureAxisFault;
 }
