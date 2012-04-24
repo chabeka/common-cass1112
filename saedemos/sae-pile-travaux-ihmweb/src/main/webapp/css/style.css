@@ -41,3 +41,11 @@
 	background-color: #FFCC99;
 }
 
+.tabPile {
+	border: medium solid #000000;
+}
+
+.tabPile td {
+	border: thin solid #000000;
+}
+

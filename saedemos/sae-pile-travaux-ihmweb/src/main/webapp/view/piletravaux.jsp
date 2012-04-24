@@ -21,7 +21,7 @@
 
 <form:form method="post" modelAttribute="formulaire">
 
-   <table border=1>
+   <table class="tabPile">
       <tr>
          <td>Serveur(s) Zookeeper :</td>
          <td><c:out value="${formulaire.serveursZookeeper}"/></td>
@@ -36,7 +36,7 @@
    <br />
    
    
-   <table border="1px">
+   <table class="tabPile">
       
 	   <tr style="font-weight:bold;">
 	      <td>idJob</td>
