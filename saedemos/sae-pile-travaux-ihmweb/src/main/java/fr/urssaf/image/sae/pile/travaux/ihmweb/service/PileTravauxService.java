@@ -47,6 +47,7 @@ public class PileTravauxService {
    private static final String JR_RESERVATION_DATE_COLUMN = "reservationDate";
    private static final String JR_STARTING_DATE_COLUMN = "startingDate";
    private static final String JR_ENDING_DATE_COLUMN = "endingDate";
+   private static final String JR_MESSAGE = "message";
    private static final String JR_SAE_HOST = "saeHost";
    private static final String JR_CLIENT_HOST = "clientHost";
    private static final String JR_DOC_COUNT = "docCount";
@@ -111,43 +112,55 @@ public class PileTravauxService {
     */
    private JobRequest getJobRequestFromResult(
          ColumnFamilyResult<UUID, String> result) {
+      
       if (result == null || !result.hasResults()) {
          return null;
       }
       Serializer<Date> dSlz = NullableDateSerializer.get();
+      
       JobRequest jobRequest = new JobRequest();
+      
       jobRequest.setIdJob(result.getKey());
+      
       jobRequest.setType(result.getString(JR_TYPE_COLUMN));
+      
       jobRequest.setParameters(result.getString(JR_PARAMETERS_COLUMN));
+      
       String state = result.getString(JR_STATE_COLUMN);
       jobRequest.setState(JobState.valueOf(state));
+      
       jobRequest.setReservedBy(result.getString(JR_RESERVED_BY_COLUMN));
-
+      
       Date creationDate = dSlz.fromBytes(result
             .getByteArray(JR_CREATION_DATE_COLUMN));
       jobRequest.setCreationDate(creationDate);
-
-      if (result.getByteArray(JR_RESERVATION_DATE_COLUMN) != null) {
+      
+      if (result.getByteArray(JR_RESERVATION_DATE_COLUMN)!=null) {
          Date reservationDate = dSlz.fromBytes(result
                .getByteArray(JR_RESERVATION_DATE_COLUMN));
          jobRequest.setReservationDate(reservationDate);
       }
-
-      if (result.getByteArray(JR_STARTING_DATE_COLUMN) != null) {
+      
+      if (result.getByteArray(JR_STARTING_DATE_COLUMN)!=null) {
          Date startingDate = dSlz.fromBytes(result
                .getByteArray(JR_STARTING_DATE_COLUMN));
          jobRequest.setStartingDate(startingDate);
       }
-
-      if (result.getByteArray(JR_ENDING_DATE_COLUMN) != null) {
+      
+      if (result.getByteArray(JR_ENDING_DATE_COLUMN)!=null) {
          Date endingDate = dSlz.fromBytes(result
                .getByteArray(JR_ENDING_DATE_COLUMN));
          jobRequest.setEndingDate(endingDate);
       }
-
+      
+      jobRequest.setMessage(result.getString(JR_MESSAGE));
+      
       jobRequest.setSaeHost(result.getString(JR_SAE_HOST));
+      
       jobRequest.setClientHost(result.getString(JR_CLIENT_HOST));
+      
       jobRequest.setPid(result.getInteger(JR_PID));
+      
       jobRequest.setDocCount(result.getInteger(JR_DOC_COUNT));
 
       return jobRequest;
