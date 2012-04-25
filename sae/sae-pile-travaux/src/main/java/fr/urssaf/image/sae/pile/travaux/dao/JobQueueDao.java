@@ -13,6 +13,7 @@ import fr.urssaf.image.sae.pile.travaux.model.SimpleJobRequest;
  * 
  * 
  */
+@Deprecated
 public interface JobQueueDao {
 
    /**

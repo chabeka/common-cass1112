@@ -1,6 +1,7 @@
 package fr.urssaf.image.sae.pile.travaux.model;
 
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * Traitement dans la pile des travaux. Les propriétés sont.
@@ -21,8 +22,14 @@ import java.util.Date;
  * 
  * 
  */
-public class JobRequest extends SimpleJobRequest {
+public class JobRequest {
 
+   private UUID idJob;
+
+   private String type;
+
+   private String parameters;
+   
    private JobState state;
 
    private String reservedBy;
@@ -46,24 +53,50 @@ public class JobRequest extends SimpleJobRequest {
    private Integer pid;
 
    /**
-    * Constructeur qui instancie un jobRequest vide
+    * @return the idJob
     */
-   public JobRequest() {
-      super();
+   public final UUID getIdJob() {
+      return idJob;
    }
 
    /**
-    * Construit un JobRequest à partir d'un SimpleJobRequest
-    * 
-    * @param simpleJobRequest
-    *           Le SimpleJobRequest
+    * @param idJob
+    *           the idJob to set
     */
-   public JobRequest(SimpleJobRequest simpleJobRequest) {
-      super();
-      setIdJob(simpleJobRequest.getIdJob());
-      setType(simpleJobRequest.getType());
-      setParameters(simpleJobRequest.getParameters());
+   public final void setIdJob(UUID idJob) {
+      this.idJob = idJob;
    }
+
+   /**
+    * @return the type
+    */
+   public final String getType() {
+      return type;
+   }
+
+   /**
+    * @param type
+    *           the type to set
+    */
+   public final void setType(String type) {
+      this.type = type;
+   }
+
+   /**
+    * @return the parameters
+    */
+   public final String getParameters() {
+      return parameters;
+   }
+
+   /**
+    * @param parameters
+    *           the parameters to set
+    */
+   public final void setParameters(String parameters) {
+      this.parameters = parameters;
+   }
+   
 
    /**
     * @return the state of the jobRequest
@@ -164,18 +197,6 @@ public class JobRequest extends SimpleJobRequest {
             .getTime());
    }
 
-   /**
-    * Renvoie un SimpleJob contenant les propriétés de base du jobRequest
-    * 
-    * @return Un SimpleJob
-    */
-   public final SimpleJobRequest getSimpleJob() {
-      SimpleJobRequest simpleJobRequest = new SimpleJobRequest();
-      simpleJobRequest.setIdJob(getIdJob());
-      simpleJobRequest.setType(getType());
-      simpleJobRequest.setParameters(getParameters());
-      return simpleJobRequest;
-   }
 
    /**
     * @param message
@@ -256,6 +277,19 @@ public class JobRequest extends SimpleJobRequest {
     */
    public final void setPid(Integer pid) {
       this.pid = pid;
+   }
+   
+   /**
+    * Renvoie un SimpleJob contenant les propriétés de base du jobRequest
+    * 
+    * @return Un SimpleJob
+    */
+   public final SimpleJobRequest getSimpleJob() {
+      SimpleJobRequest simpleJobRequest = new SimpleJobRequest();
+      simpleJobRequest.setIdJob(getIdJob());
+      simpleJobRequest.setType(getType());
+      simpleJobRequest.setParameters(getParameters());
+      return simpleJobRequest;
    }
 
 }

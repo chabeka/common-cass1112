@@ -12,10 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import fr.urssaf.image.sae.pile.travaux.dao.JobQueueDao;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 import fr.urssaf.image.sae.pile.travaux.model.JobState;
+import fr.urssaf.image.sae.pile.travaux.model.JobToCreate;
+import fr.urssaf.image.sae.pile.travaux.service.JobLectureService;
 import fr.urssaf.image.sae.pile.travaux.service.JobQueueService;
 import fr.urssaf.image.sae.services.batch.TraitementAsynchroneService;
 import fr.urssaf.image.sae.services.batch.exception.JobInattenduException;
@@ -41,7 +42,7 @@ public class TraitementAsynchroneServiceImpl implements
     */
    public static final String CAPTURE_MASSE_JN = "capture_masse";
 
-   private final JobQueueDao jobQueueDao;
+   private final JobLectureService jobLectureService;
 
    private final JobQueueService jobQueueService;
 
@@ -49,16 +50,16 @@ public class TraitementAsynchroneServiceImpl implements
 
    /**
     * 
-    * @param jobQueueDao
-    *           dao des instances de {@link JobRequest} pour cassandra
+    * @param jobLectureService
+    *           service de lecture de la pile des travaux
     * @param jobQueueService
     *           service de la pile des travaux
     */
    @Autowired
-   public TraitementAsynchroneServiceImpl(JobQueueDao jobQueueDao,
+   public TraitementAsynchroneServiceImpl(JobLectureService jobLectureService,
          JobQueueService jobQueueService) {
 
-      this.jobQueueDao = jobQueueDao;
+      this.jobLectureService = jobLectureService;
       this.jobQueueService = jobQueueService;
 
    }
@@ -95,17 +96,16 @@ public class TraitementAsynchroneServiceImpl implements
       Date dateDemande = new Date();
       UUID idJob = parameters.getUuid();
 
-      JobRequest jobRequest = new JobRequest();
-      jobRequest.setIdJob(idJob);
-      jobRequest.setType(type);
-      jobRequest.setParameters(parametres);
-      jobRequest.setCreationDate(dateDemande);
-      jobRequest.setState(JobState.CREATED);
-      jobRequest.setClientHost(parameters.getClientHost());
-      jobRequest.setSaeHost(parameters.getSaeHost());
-      jobRequest.setDocCount(parameters.getNbreDocs());
+      JobToCreate job = new JobToCreate();
+      job.setIdJob(idJob);
+      job.setType(type);
+      job.setParameters(parametres);
+      job.setCreationDate(dateDemande);
+      job.setClientHost(parameters.getClientHost());
+      job.setSaeHost(parameters.getSaeHost());
+      job.setDocCount(parameters.getNbreDocs());
 
-      jobQueueService.addJob(jobRequest);
+      jobQueueService.addJob(job);
 
       UUID timeUuid = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
       LOG.debug("ajout d'une trace historique");
@@ -121,7 +121,7 @@ public class TraitementAsynchroneServiceImpl implements
    public final void lancerJob(UUID idJob) throws JobInexistantException,
          JobNonReserveException {
 
-      JobRequest job = jobQueueDao.getJobRequest(idJob);
+      JobRequest job = jobLectureService.getJobRequest(idJob);
 
       // vérification que le traitement existe bien dans la pile des travaux
       if (job == null) {
@@ -138,7 +138,7 @@ public class TraitementAsynchroneServiceImpl implements
 
          LOG.debug("PID = " + pid);
 
-         jobQueueDao.setJobPid(idJob, Integer.valueOf(pid));
+         jobQueueService.renseignerPidJob(idJob, Integer.valueOf(pid));
 
       } else {
          LOG.info("impossible de récupérer le pid");

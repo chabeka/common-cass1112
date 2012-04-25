@@ -1,6 +1,7 @@
 package fr.urssaf.image.sae.ordonnanceur.service;
 
 import java.net.UnknownHostException;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,9 +21,13 @@ import fr.urssaf.image.sae.ordonnanceur.util.HostUtils;
 import fr.urssaf.image.sae.pile.travaux.dao.JobQueueDao;
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
+import fr.urssaf.image.sae.pile.travaux.exception.LockTimeoutException;
+import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 import fr.urssaf.image.sae.pile.travaux.model.JobState;
-import fr.urssaf.image.sae.pile.travaux.model.SimpleJobRequest;
+import fr.urssaf.image.sae.pile.travaux.model.JobToCreate;
+import fr.urssaf.image.sae.pile.travaux.service.JobLectureService;
+import fr.urssaf.image.sae.pile.travaux.service.JobQueueService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
@@ -36,22 +41,31 @@ public class JobServiceTest {
    private JobService jobService;
 
    @Autowired
+   private JobQueueService jobQueueService;
+
+   @Autowired
+   private JobLectureService jobLectureService;
+
+   @Autowired
    private JobQueueDao jobQueueDao;
 
-   private JobRequest job;
+   private JobToCreate job;
+
+   private String serverName;
 
    @Before
-   public void before() {
+   public void before() throws UnknownHostException {
 
       UUID idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
 
-      job = new JobRequest();
+      job = new JobToCreate();
       job.setIdJob(idJob);
       job.setType("jobTest");
       job.setParameters("");
-      job.setState(JobState.CREATED);
 
-      jobQueueDao.saveJobRequest(job);
+      jobQueueService.addJob(job);
+
+      serverName = HostUtils.getLocalHostName();
    }
 
    @After
@@ -60,19 +74,28 @@ public class JobServiceTest {
       // suppression du traitement
       if (job != null) {
 
-         jobQueueDao.deleteJobRequest(job);
+         deleteJob();
       }
    }
 
-   @Test
-   public void recupJobEnCours_success() throws UnknownHostException {
+   private void deleteJob() {
 
-      job.setReservedBy(HostUtils.getLocalHostName());
-      job.setState(JobState.STARTING);
-      jobQueueDao.updateJobRequest(job);
+      JobRequest jobRequest = new JobRequest();
+      jobRequest.setIdJob(job.getIdJob());
+      jobRequest.setReservedBy(serverName);
+
+      jobQueueDao.deleteJobRequest(jobRequest);
+   }
+
+   @Test
+   public void recupJobEnCours_success() throws UnknownHostException,
+         JobDejaReserveException, JobInexistantException, LockTimeoutException {
+
+      jobQueueService.reserveJob(job.getIdJob(), HostUtils.getLocalHostName(),
+            new Date());
 
       // récupération des traitements en cours
-      List<SimpleJobRequest> jobEnCours = jobService.recupJobEnCours();
+      List<JobQueue> jobEnCours = jobService.recupJobEnCours();
 
       Assert.assertTrue("la liste des job en cours doit être non vide",
             !jobEnCours.isEmpty());
@@ -83,7 +106,7 @@ public class JobServiceTest {
    public void recupJobsALancer_success() {
 
       // récupération des traitements à lancer
-      List<SimpleJobRequest> jobsAlancer = jobService.recupJobsALancer();
+      List<JobQueue> jobsAlancer = jobService.recupJobsALancer();
 
       Assert.assertTrue("la liste des job à lancer doit être non vide",
             !jobsAlancer.isEmpty());
@@ -97,9 +120,9 @@ public class JobServiceTest {
       UUID idJob = job.getIdJob();
       jobService.reserveJob(idJob);
 
-      job = jobQueueDao.getJobRequest(idJob);
+      JobRequest jobRequest = jobLectureService.getJobRequest(idJob);
 
-      String reservingServer = job.getReservedBy();
+      String reservingServer = jobRequest.getReservedBy();
 
       String serverName = HostUtils.getLocalHostName();
 
@@ -108,7 +131,7 @@ public class JobServiceTest {
 
       Assert.assertEquals(
             "l'état du job dans la pile des travaux est incorrect",
-            JobState.RESERVED, job.getState());
+            JobState.RESERVED, jobRequest.getState());
 
    }
 
@@ -119,7 +142,7 @@ public class JobServiceTest {
       UUID idJob = job.getIdJob();
 
       // on s'assure que le traitement n'existe pas!
-      jobQueueDao.deleteJobRequest(job);
+      deleteJob();
 
       try {
          jobService.reserveJob(idJob);
@@ -159,7 +182,7 @@ public class JobServiceTest {
 
       } catch (JobDejaReserveException e) {
 
-         String reservingServer = jobQueueDao.getJobRequest(idJob)
+         String reservingServer = jobLectureService.getJobRequest(idJob)
                .getReservedBy();
 
          Assert.assertEquals("le message de l'exception est inattendu",

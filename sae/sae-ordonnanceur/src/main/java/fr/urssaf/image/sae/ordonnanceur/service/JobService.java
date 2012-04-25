@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
-import fr.urssaf.image.sae.pile.travaux.model.SimpleJobRequest;
+import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
 
 /**
  * Service des traitements de masse contenus dans la pile des travaux
@@ -20,14 +20,14 @@ public interface JobService {
     * 
     * @return liste des travaux en cours d'exécution
     */
-   List<SimpleJobRequest> recupJobEnCours();
+   List<JobQueue> recupJobEnCours();
 
    /**
     * Renvoie une liste des travaux qui n'ont pas été lancés
     * 
     * @return liste des travaux en attente d'exécution
     */
-   List<SimpleJobRequest> recupJobsALancer();
+   List<JobQueue> recupJobsALancer();
 
    /**
     * Met à jour le nom de la machine dans la table des jobs à lancer afin de

@@ -3,7 +3,7 @@ package fr.urssaf.image.sae.ordonnanceur.service;
 import java.util.List;
 
 import fr.urssaf.image.sae.ordonnanceur.exception.AucunJobALancerException;
-import fr.urssaf.image.sae.pile.travaux.model.SimpleJobRequest;
+import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
 
 /**
  * Service de décision pour sélectionner les traitements en masse à exécuter
@@ -25,6 +25,6 @@ public interface DecisionService {
     * @throws AucunJobALancerException
     *            Exception levée si aucun job n'est à lancer
     */
-   SimpleJobRequest trouverJobALancer(List<SimpleJobRequest> jobsEnAttente,
-         List<SimpleJobRequest> jobsEnCours) throws AucunJobALancerException;
+   JobQueue trouverJobALancer(List<JobQueue> jobsEnAttente,
+         List<JobQueue> jobsEnCours) throws AucunJobALancerException;
 }

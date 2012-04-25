@@ -3,7 +3,8 @@ package fr.urssaf.image.sae.pile.travaux.model;
 import java.util.UUID;
 
 /**
- * Propriétés principales des traitements dans la pile des travaux. Les propriétés sont :
+ * Propriétés principales des traitements dans la pile des travaux. Les
+ * propriétés sont :
  * <ul>
  * <li><code>idJob</code>: identifiant unique du traitement</li>
  * <li><code>type</code>: type de traitement</li>
@@ -12,15 +13,13 @@ import java.util.UUID;
  * 
  * 
  */
-@Deprecated
-public class SimpleJobRequest {
+public class JobQueue {
 
    private UUID idJob;
 
    private String type;
 
    private String parameters;
-
 
    /**
     * @return the idJob

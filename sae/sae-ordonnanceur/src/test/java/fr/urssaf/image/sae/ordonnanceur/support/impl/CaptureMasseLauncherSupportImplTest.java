@@ -13,7 +13,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
 import fr.urssaf.image.sae.ordonnanceur.exception.OrdonnanceurRuntimeException;
-import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
+import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
 
 @SuppressWarnings("PMD.MethodNamingConventions")
 public class CaptureMasseLauncherSupportImplTest {
@@ -56,7 +56,7 @@ public class CaptureMasseLauncherSupportImplTest {
       String parameters = "ecde://ecde.cer69.recouv/sommaire.xml";
       UUID idJob = UUID.randomUUID();
 
-      JobRequest captureMasse = new JobRequest();
+      JobQueue captureMasse = new JobQueue();
 
       captureMasse.setType("jobTest");
       captureMasse.setIdJob(idJob);

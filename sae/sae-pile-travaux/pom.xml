@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <parent>
       <artifactId>sae</artifactId>
       <groupId>fr.urssaf.image.sae</groupId>
@@ -13,7 +14,10 @@
 
    <build>
       <plugins>
-         <!-- exclusion du test mainTest qui n'est compris comme un test unitaire par JUnit -->
+         <!--
+            exclusion du test mainTest qui n'est compris comme un test
+            unitaire par JUnit
+         -->
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
@@ -49,6 +53,15 @@
          <groupId>fr.urssaf.image.commons</groupId>
          <artifactId>commons-cassandra</artifactId>
          <version>${commons.cassandra}</version>
+      </dependency>
+
+      <!-- EASYMOCK -->
+
+      <dependency>
+         <groupId>org.easymock</groupId>
+         <artifactId>easymock</artifactId>
+         <version>3.0</version>
+         <scope>test</scope>
       </dependency>
 
    </dependencies>

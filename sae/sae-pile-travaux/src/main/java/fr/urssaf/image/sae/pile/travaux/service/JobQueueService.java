@@ -6,7 +6,7 @@ import java.util.UUID;
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.exception.LockTimeoutException;
-import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
+import fr.urssaf.image.sae.pile.travaux.model.JobToCreate;
 
 /**
  * Service de la pile des travaux
@@ -18,10 +18,10 @@ public interface JobQueueService {
    /**
     * Ajoute un traitement dans la pile des travaux
     * 
-    * @param jobRequest
+    * @param jobToCreate
     *           ensemble des données nécessaires à la création du job
     */
-   void addJob(JobRequest jobRequest);
+   void addJob(JobToCreate jobToCreate);
 
    /**
     * Réserve un traitement dans la pile des travaux
@@ -51,8 +51,8 @@ public interface JobQueueService {
     * @param dateDebutTraitement
     *           date d'exécution du traitement
     * @throws JobInexistantException
+    *            le traitement n'existe pas
     */
-   @SuppressWarnings("PMD.LongVariable")
    void startingJob(UUID idJob, Date dateDebutTraitement)
          throws JobInexistantException;
 
@@ -65,8 +65,11 @@ public interface JobQueueService {
     *           valeur de retour de l'exécution du traitement
     * @param dateFinTraitement
     *           date de fin du traitement
+    * @throws JobInexistantException
+    *            le traitement n'existe pas
     */
-   void endingJob(UUID idJob, boolean succes, Date dateFinTraitement);
+   void endingJob(UUID idJob, boolean succes, Date dateFinTraitement)
+         throws JobInexistantException;
 
    /**
     * Met à jour le traitement après son exécution.<br>
@@ -79,9 +82,11 @@ public interface JobQueueService {
     *           date de fin du traitement
     * @param message
     *           message de compte-rendu du traitement (ex : message d'erreur)
+    * @throws JobInexistantException
+    *            le traitement n'existe pas
     */
    void endingJob(UUID idJob, boolean succes, Date dateFinTraitement,
-         String message);
+         String message) throws JobInexistantException;
 
    /**
     * Ajoute une trace d'execution dans l'historique du job
@@ -94,5 +99,18 @@ public interface JobQueueService {
     *           description de l'événement
     */
    void addHistory(UUID jobUuid, UUID timeUuid, String description);
+
+   /**
+    * Renseigne le PID du processus du traitement de masse dans la pile des
+    * travaux
+    * 
+    * @param idJob
+    *           identifiant du job
+    * @param pid
+    *           PID du processus
+    * @throws JobInexistantException
+    *            le traitement n'existe pas
+    */
+   void renseignerPidJob(UUID idJob, Integer pid) throws JobInexistantException;
 
 }

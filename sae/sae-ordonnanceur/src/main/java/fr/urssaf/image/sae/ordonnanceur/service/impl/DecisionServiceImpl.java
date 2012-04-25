@@ -17,7 +17,7 @@ import fr.urssaf.image.sae.ordonnanceur.service.DecisionService;
 import fr.urssaf.image.sae.ordonnanceur.service.JobFailureService;
 import fr.urssaf.image.sae.ordonnanceur.support.CaptureMasseSupport;
 import fr.urssaf.image.sae.ordonnanceur.support.DFCESupport;
-import fr.urssaf.image.sae.pile.travaux.model.SimpleJobRequest;
+import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
 
 /**
  * Implémentation du sevice {@link DecisionService}
@@ -62,9 +62,9 @@ public class DecisionServiceImpl implements DecisionService {
     * {@inheritDoc}
     */
    @Override
-   public final SimpleJobRequest trouverJobALancer(
-         List<SimpleJobRequest> jobsEnAttente,
-         List<SimpleJobRequest> jobsEnCours) throws AucunJobALancerException {
+   public final JobQueue trouverJobALancer(
+         List<JobQueue> jobsEnAttente,
+         List<JobQueue> jobsEnCours) throws AucunJobALancerException {
 
       // pour l'instant la partie décisionnelle ne prend actuellement en compte
       // que les traitements d'archivage de masse.
@@ -76,7 +76,7 @@ public class DecisionServiceImpl implements DecisionService {
       }
 
       // filtrage des capture en masse sur l'ECDE local
-      List<SimpleJobRequest> jobInstances = captureMasseSupport
+      List<JobQueue> jobInstances = captureMasseSupport
             .filtrerCaptureMasseLocal(jobsEnAttente);
 
       // vérification que des traitements de capture en masse sur l'ECDE local
@@ -87,7 +87,7 @@ public class DecisionServiceImpl implements DecisionService {
 
       // filtrage des traitements en cours sur les capture en masse
       if (!CollectionUtils.isEmpty(jobsEnCours)) {
-         Collection<SimpleJobRequest> traitementsEnCours = captureMasseSupport
+         Collection<JobQueue> traitementsEnCours = captureMasseSupport
                .filtrerCaptureMasse(jobsEnCours);
 
          // si un traitement de capture en masse est en cours alors aucun
@@ -119,20 +119,20 @@ public class DecisionServiceImpl implements DecisionService {
       return jobInstances.get(0);
    }
 
-   private List<SimpleJobRequest> filtrerTraitementMasseFailure(
-         Collection<SimpleJobRequest> jobRequests) {
+   private List<JobQueue> filtrerTraitementMasseFailure(
+         Collection<JobQueue> jobRequests) {
 
       final Set<UUID> jobsFailure = jobFailureService
             .findJobEchec();
 
       @SuppressWarnings("unchecked")
-      List<SimpleJobRequest> jobMasse = (List<SimpleJobRequest>) CollectionUtils
+      List<JobQueue> jobMasse = (List<JobQueue>) CollectionUtils
             .select(jobRequests, new Predicate() {
 
                @Override
                public boolean evaluate(Object object) {
 
-                  SimpleJobRequest jobRequest = (SimpleJobRequest) object;
+                  JobQueue jobRequest = (JobQueue) object;
 
                   // on filtre les traitements ayant trop d'échec
                   boolean isJobFailure = !jobsFailure.contains(jobRequest

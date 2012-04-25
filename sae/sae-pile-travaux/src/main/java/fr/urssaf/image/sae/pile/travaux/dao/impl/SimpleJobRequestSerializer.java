@@ -8,6 +8,7 @@ import fr.urssaf.image.sae.pile.travaux.model.SimpleJobRequest;
  * Utilise un sérialiseur jackson (json)
  *
  */
+@Deprecated
 public final class SimpleJobRequestSerializer extends JacksonSerializer<SimpleJobRequest> {
 
    private static final SimpleJobRequestSerializer INSTANCE = new SimpleJobRequestSerializer(SimpleJobRequest.class);

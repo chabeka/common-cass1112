@@ -23,7 +23,7 @@ import fr.urssaf.image.sae.ordonnanceur.exception.AucunJobALancerException;
 import fr.urssaf.image.sae.ordonnanceur.exception.JobRuntimeException;
 import fr.urssaf.image.sae.ordonnanceur.service.CoordinationService;
 import fr.urssaf.image.sae.ordonnanceur.service.JobFailureService;
-import fr.urssaf.image.sae.pile.travaux.model.SimpleJobRequest;
+import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-ordonnanceur-commande-test.xml" })
@@ -111,7 +111,7 @@ public class LancementTraitementTest {
 
       Throwable cause = new NestableRuntimeException(
             "le lancement du job a échoué");
-      SimpleJobRequest job = new SimpleJobRequest();
+      JobQueue job = new JobQueue();
       job.setIdJob(UUID.randomUUID());
       EasyMock.expect(coordinationService.lancerTraitement()).andThrow(
             new JobRuntimeException(job, cause));

@@ -17,7 +17,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.ordonnanceur.exception.AucunJobALancerException;
 import fr.urssaf.image.sae.ordonnanceur.support.DFCESupport;
-import fr.urssaf.image.sae.pile.travaux.model.SimpleJobRequest;
+import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
 
 //import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 
@@ -56,17 +56,17 @@ public class DecisionServiceTest {
 
       EasyMock.replay(dfceSuppport);
 
-      List<SimpleJobRequest> jobsEnCours = new ArrayList<SimpleJobRequest>();
+      List<JobQueue> jobsEnCours = new ArrayList<JobQueue>();
 
       jobsEnCours.add(createJob("OTHER_JN1"));
       jobsEnCours.add(createJob("OTHER_JN2"));
 
-      List<SimpleJobRequest> jobsEnAttente = new ArrayList<SimpleJobRequest>();
+      List<JobQueue> jobsEnAttente = new ArrayList<JobQueue>();
 
-      SimpleJobRequest job1 = createJob(CAPTURE_MASSE_JN, CER44_SOMMAIRE);
-      SimpleJobRequest job2 = createJob(CAPTURE_MASSE_JN, CER69_SOMMAIRE);
-      SimpleJobRequest job3 = createJob(CAPTURE_MASSE_JN, CER69_SOMMAIRE);
-      SimpleJobRequest job4 = createJob(CAPTURE_MASSE_JN, CER44_SOMMAIRE);
+      JobQueue job1 = createJob(CAPTURE_MASSE_JN, CER44_SOMMAIRE);
+      JobQueue job2 = createJob(CAPTURE_MASSE_JN, CER69_SOMMAIRE);
+      JobQueue job3 = createJob(CAPTURE_MASSE_JN, CER69_SOMMAIRE);
+      JobQueue job4 = createJob(CAPTURE_MASSE_JN, CER44_SOMMAIRE);
 
       // ajout de deux échecs pour le job 2
       jobFailureService.ajouterEchec(job2.getIdJob(), new NestableException(
@@ -79,7 +79,7 @@ public class DecisionServiceTest {
       jobsEnAttente.add(job3);
       jobsEnAttente.add(job4);
 
-      SimpleJobRequest job = decisionService.trouverJobALancer(jobsEnAttente,
+      JobQueue job = decisionService.trouverJobALancer(jobsEnAttente,
             jobsEnCours);
 
       Assert.assertEquals("le traitement attendu est le job2", job2.getIdJob(),
@@ -101,9 +101,9 @@ public class DecisionServiceTest {
 
       EasyMock.replay(dfceSuppport);
 
-      List<SimpleJobRequest> jobsEnCours = new ArrayList<SimpleJobRequest>();
+      List<JobQueue> jobsEnCours = new ArrayList<JobQueue>();
 
-      List<SimpleJobRequest> jobsEnAttente = new ArrayList<SimpleJobRequest>();
+      List<JobQueue> jobsEnAttente = new ArrayList<JobQueue>();
 
       jobsEnAttente.add(createJob(CAPTURE_MASSE_JN, CER69_SOMMAIRE));
 
@@ -118,7 +118,7 @@ public class DecisionServiceTest {
    @Test
    public void decisionService_failure_noJobEnAttente_noJob() {
 
-      List<SimpleJobRequest> jobsEnCours = new ArrayList<SimpleJobRequest>();
+      List<JobQueue> jobsEnCours = new ArrayList<JobQueue>();
 
       try {
 
@@ -143,10 +143,10 @@ public class DecisionServiceTest {
    public void decisionService_failure_noJobEnAttente_nojobCaptureMasse()
          throws AucunJobALancerException {
 
-      List<SimpleJobRequest> jobsEnCours = new ArrayList<SimpleJobRequest>();
-      List<SimpleJobRequest> jobsEnAttente = new ArrayList<SimpleJobRequest>();
+      List<JobQueue> jobsEnCours = new ArrayList<JobQueue>();
+      List<JobQueue> jobsEnAttente = new ArrayList<JobQueue>();
 
-      SimpleJobRequest job = createJob("OTHER_JN1");
+      JobQueue job = createJob("OTHER_JN1");
 
       jobsEnAttente.add(job);
 
@@ -162,8 +162,8 @@ public class DecisionServiceTest {
    public void decisionService_failure_noJobEnAttente_nojobCaptureMasseLocal()
          throws AucunJobALancerException {
 
-      List<SimpleJobRequest> jobsEnCours = new ArrayList<SimpleJobRequest>();
-      List<SimpleJobRequest> jobsEnAttente = new ArrayList<SimpleJobRequest>();
+      List<JobQueue> jobsEnCours = new ArrayList<JobQueue>();
+      List<JobQueue> jobsEnAttente = new ArrayList<JobQueue>();
 
       jobsEnAttente.add(createJob(CAPTURE_MASSE_JN, CER44_SOMMAIRE));
 
@@ -178,10 +178,10 @@ public class DecisionServiceTest {
    public void decisionService_failure_noJobEnAttente_executionJobCaptureMasse()
          throws AucunJobALancerException {
 
-      List<SimpleJobRequest> jobsEnCours = new ArrayList<SimpleJobRequest>();
+      List<JobQueue> jobsEnCours = new ArrayList<JobQueue>();
       jobsEnCours.add(createJob(CAPTURE_MASSE_JN));
 
-      List<SimpleJobRequest> jobsEnAttente = new ArrayList<SimpleJobRequest>();
+      List<JobQueue> jobsEnAttente = new ArrayList<JobQueue>();
 
       jobsEnAttente.add(createJob(CAPTURE_MASSE_JN, CER69_SOMMAIRE));
 
@@ -196,7 +196,7 @@ public class DecisionServiceTest {
    public void decisionService_failure_noJobEnAttente_maxAnomalie()
          throws AucunJobALancerException {
 
-      SimpleJobRequest job = createJob(CAPTURE_MASSE_JN, CER69_SOMMAIRE);
+      JobQueue job = createJob(CAPTURE_MASSE_JN, CER69_SOMMAIRE);
 
       jobFailureService.ajouterEchec(job.getIdJob(), new NestableException(
             "echec n°1"));
@@ -205,8 +205,8 @@ public class DecisionServiceTest {
       jobFailureService.ajouterEchec(job.getIdJob(), new NestableException(
             "echec n°3"));
 
-      List<SimpleJobRequest> jobsEnCours = new ArrayList<SimpleJobRequest>();
-      List<SimpleJobRequest> jobsEnAttente = new ArrayList<SimpleJobRequest>();
+      List<JobQueue> jobsEnCours = new ArrayList<JobQueue>();
+      List<JobQueue> jobsEnAttente = new ArrayList<JobQueue>();
 
       jobsEnAttente.add(job);
 
@@ -214,19 +214,19 @@ public class DecisionServiceTest {
 
    }
 
-   private SimpleJobRequest createJob(String type, String parameters) {
+   private JobQueue createJob(String type, String parameters) {
 
-      SimpleJobRequest job = createJob(type);
+      JobQueue job = createJob(type);
       job.setParameters(parameters);
 
       return job;
    }
 
-   private SimpleJobRequest createJob(String type) {
+   private JobQueue createJob(String type) {
 
       UUID idJob = UUID.randomUUID();
 
-      SimpleJobRequest job = new SimpleJobRequest();
+      JobQueue job = new JobQueue();
 
       job.setType(type);
       job.setIdJob(idJob);

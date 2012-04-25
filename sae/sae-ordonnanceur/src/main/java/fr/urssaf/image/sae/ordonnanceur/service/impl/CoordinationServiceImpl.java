@@ -18,7 +18,7 @@ import fr.urssaf.image.sae.ordonnanceur.service.JobService;
 import fr.urssaf.image.sae.ordonnanceur.support.TraitementLauncherSupport;
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
-import fr.urssaf.image.sae.pile.travaux.model.SimpleJobRequest;
+import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
 
 /**
  * implémentation du service {@link CoordinationService}
@@ -68,7 +68,7 @@ public class CoordinationServiceImpl implements CoordinationService {
    public final UUID lancerTraitement() throws AucunJobALancerException {
 
       // Récupération d'un traitement à lancer
-      SimpleJobRequest traitement = trouverJobALancer();
+      JobQueue traitement = trouverJobALancer();
 
       // Récupération de l'identifiant du traitement de capture en masse
       LOG.debug("{} - lancement du traitement {}", PREFIX_LOG,
@@ -80,21 +80,21 @@ public class CoordinationServiceImpl implements CoordinationService {
 
    }
 
-   private SimpleJobRequest trouverJobALancer() throws AucunJobALancerException {
+   private JobQueue trouverJobALancer() throws AucunJobALancerException {
 
       // etape 1 : Récupération de la liste des traitements
 
-      List<SimpleJobRequest> jobsEnCours = this.jobService.recupJobEnCours();
+      List<JobQueue> jobsEnCours = this.jobService.recupJobEnCours();
       LOG.debug("{} - nombre de traitements en cours ou réservés: {}",
             PREFIX_LOG, CollectionUtils.size(jobsEnCours));
 
-      List<SimpleJobRequest> jobsEnAttente = this.jobService.recupJobsALancer();
+      List<JobQueue> jobsEnAttente = this.jobService.recupJobsALancer();
       LOG.debug("{} - nombre de traitements en attente: {}", PREFIX_LOG,
             CollectionUtils.size(jobsEnAttente));
 
       // Etape 2: Décision du traitement à lancer
 
-      SimpleJobRequest traitement = this.decisionService.trouverJobALancer(
+      JobQueue traitement = this.decisionService.trouverJobALancer(
             jobsEnAttente, jobsEnCours);
       LOG
             .debug("{} - traitement à lancer {}", PREFIX_LOG,
@@ -131,13 +131,22 @@ public class CoordinationServiceImpl implements CoordinationService {
          // traitement = trouverJobALancer();
          throw new JobRuntimeException(traitement, e);
 
+      } catch (RuntimeException e) {
+
+         // le traitement n'a pas pu être réservé pour une raison inconnue
+         LOG
+               .warn("{} - échec de la réservation du traitement {} - {}",
+                     new Object[] { PREFIX_LOG, toString(traitement),
+                           e.getMessage() });
+
+         throw new JobRuntimeException(traitement, e);
       }
 
       // renvoie le traitement
       return traitement;
    }
 
-   private String toString(SimpleJobRequest traitement) {
+   private String toString(JobQueue traitement) {
       return "'" + traitement.getType() + "' identifiant:"
             + traitement.getIdJob();
    }

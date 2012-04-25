@@ -14,7 +14,7 @@ import org.springframework.util.Assert;
 import fr.urssaf.image.sae.ordonnanceur.exception.OrdonnanceurRuntimeException;
 import fr.urssaf.image.sae.ordonnanceur.support.TraitementLauncherSupport;
 import fr.urssaf.image.sae.ordonnanceur.util.LauncherUtils;
-import fr.urssaf.image.sae.pile.travaux.model.SimpleJobRequest;
+import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
 
 /**
  * Support pour le lancement d'un traitement de capture en masse
@@ -63,7 +63,7 @@ public class CaptureMasseLauncherSupportImpl implements
    }
 
    @Override
-   public final void lancerTraitement(SimpleJobRequest captureMasse) {
+   public final void lancerTraitement(JobQueue captureMasse) {
 
       String command = this.createCommand(captureMasse);
 
@@ -76,7 +76,7 @@ public class CaptureMasseLauncherSupportImpl implements
       }
    }
 
-   protected final String createCommand(SimpleJobRequest captureMasse) {
+   protected final String createCommand(JobQueue captureMasse) {
 
       String idTraitement = ObjectUtils.toString(captureMasse.getIdJob());
 

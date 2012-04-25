@@ -16,12 +16,12 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.sae.pile.travaux.dao.JobQueueDao;
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.exception.LockTimeoutException;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 import fr.urssaf.image.sae.pile.travaux.model.JobState;
+import fr.urssaf.image.sae.pile.travaux.model.JobToCreate;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-pile-travaux-test.xml" })
@@ -30,11 +30,13 @@ public class JobQueueServiceTest {
 
    @Autowired
    private JobQueueService jobQueueService;
-   @Autowired
-   private JobQueueDao jobQueueDao;
+
    @Autowired
    private CassandraServerBean cassandraServer;
-   
+
+   @Autowired
+   private JobLectureService jobLectureService;
+
    @After
    public final void init() throws Exception {
       // Après chaque test, on reset les données de cassandra
@@ -46,7 +48,7 @@ public class JobQueueServiceTest {
       // On crée un job
       UUID id = addJobForTest(1);
       // On vérifie qu'on le retrouve
-      JobRequest jobRequest = jobQueueDao.getJobRequest(id);
+      JobRequest jobRequest = jobLectureService.getJobRequest(id);
       Assert.assertNotNull(jobRequest);
    }
 
@@ -58,15 +60,14 @@ public class JobQueueServiceTest {
       jobQueueService.reserveJob(id, "hostname", new Date());
 
       // On vérifie qu'il est bien réservé
-      JobRequest jobRequest = jobQueueDao.getJobRequest(id);
+      JobRequest jobRequest = jobLectureService.getJobRequest(id);
       Assert.assertEquals("hostname", jobRequest.getReservedBy());
       Assert.assertNotNull(jobRequest.getReservationDate());
 
       // On vérifie qu'on ne peut plus le réserver
       try {
          jobQueueService.reserveJob(id, "hostname2", new Date());
-      }
-      catch (JobDejaReserveException e) {
+      } catch (JobDejaReserveException e) {
          // Normal
          return;
       }
@@ -76,13 +77,13 @@ public class JobQueueServiceTest {
    @Test
    public void concurrentReservation() throws Exception {
       // On crée 5 jobs
-      UUID[] uuids = new UUID[5]; 
+      UUID[] uuids = new UUID[5];
       for (int i = 0; i < 5; i++) {
          uuids[i] = addJobForTest(i);
       }
       // On crée 10 threads
       Map<UUID, UUID> resevationMap = new ConcurrentHashMap<UUID, UUID>();
-      SimpleThread[] threads = new SimpleThread[10]; 
+      SimpleThread[] threads = new SimpleThread[10];
       for (int i = 0; i < 10; i++) {
          threads[i] = new SimpleThread(uuids, resevationMap);
          threads[i].start();
@@ -96,10 +97,10 @@ public class JobQueueServiceTest {
    }
 
    private class SimpleThread extends Thread {
-      
+
       Map<UUID, UUID> map;
       UUID[] uuids;
-      
+
       public SimpleThread(UUID[] uuids, Map<UUID, UUID> reservationMap) {
          super();
          this.map = reservationMap;
@@ -109,9 +110,9 @@ public class JobQueueServiceTest {
       public void run() {
          for (int i = 0; i < 5; i++) {
             try {
-               jobQueueService.reserveJob(uuids[i], "hostname" + this.getId(), new Date());
-            }
-            catch (JobDejaReserveException e) {
+               jobQueueService.reserveJob(uuids[i], "hostname" + this.getId(),
+                     new Date());
+            } catch (JobDejaReserveException e) {
                // rien
             } catch (JobInexistantException e) {
                e.printStackTrace();
@@ -127,8 +128,7 @@ public class JobQueueServiceTest {
       }
    }
 
-   
-   @Test(expected=JobInexistantException.class)
+   @Test(expected = JobInexistantException.class)
    public void reserveJob_failure_jobInexistantException() throws Exception {
       jobQueueService.reserveJob(UUID.randomUUID(), "hostname", new Date());
    }
@@ -142,7 +142,7 @@ public class JobQueueServiceTest {
       // On le lance
       jobQueueService.startingJob(id, new Date());
       // On vérifie qu'il est bien lancé
-      JobRequest jobRequest = jobQueueDao.getJobRequest(id);
+      JobRequest jobRequest = jobLectureService.getJobRequest(id);
       Assert.assertEquals("hostname", jobRequest.getReservedBy());
       Assert.assertNotNull(jobRequest.getStartingDate());
       Assert.assertEquals(JobState.STARTING, jobRequest.getState());
@@ -159,7 +159,7 @@ public class JobQueueServiceTest {
       // On le termine
       jobQueueService.endingJob(id, true, new Date());
       // On vérifie qu'il est bien terminé
-      JobRequest jobRequest = jobQueueDao.getJobRequest(id);
+      JobRequest jobRequest = jobLectureService.getJobRequest(id);
       Assert.assertEquals("hostname", jobRequest.getReservedBy());
       Assert.assertNotNull(jobRequest.getEndingDate());
       Assert.assertEquals(JobState.SUCCESS, jobRequest.getState());
@@ -176,30 +176,32 @@ public class JobQueueServiceTest {
       // On le termine
       jobQueueService.endingJob(id, false, new Date());
       // On vérifie qu'il est bien terminé, mais en erreur
-      JobRequest jobRequest = jobQueueDao.getJobRequest(id);
+      JobRequest jobRequest = jobLectureService.getJobRequest(id);
       Assert.assertEquals("hostname", jobRequest.getReservedBy());
       Assert.assertNotNull(jobRequest.getEndingDate());
       Assert.assertEquals(JobState.FAILURE, jobRequest.getState());
    }
-   
+
    /**
     * Crée un job
-    * @param index      Un n° permettant de différencier les différents jobs
+    * 
+    * @param index
+    *           Un n° permettant de différencier les différents jobs
     * @return L'id du job créé
     */
    private UUID addJobForTest(int index) {
       UUID idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
-      String parameters = "sommaire=ecde:/toto.toto.com/sommaire.xml&idTraitement=" + index;
-      
-      JobRequest jobRequest = new JobRequest();
-      jobRequest.setIdJob(idJob);
-      jobRequest.setType("ArchivageMasse");
-      jobRequest.setParameters(parameters);
-      jobRequest.setCreationDate(new Date());
-      jobRequest.setState(JobState.CREATED);
-      
-      jobQueueService.addJob(jobRequest);
-      return idJob;      
+      String parameters = "sommaire=ecde:/toto.toto.com/sommaire.xml&idTraitement="
+            + index;
+
+      JobToCreate job = new JobToCreate();
+      job.setIdJob(idJob);
+      job.setType("ArchivageMasse");
+      job.setParameters(parameters);
+      job.setCreationDate(new Date());
+
+      jobQueueService.addJob(job);
+      return idJob;
    }
-   
+
 }

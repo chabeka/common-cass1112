@@ -12,8 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
-import fr.urssaf.image.sae.pile.travaux.model.SimpleJobRequest;
+import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
@@ -30,7 +29,7 @@ public class CaptureMasseSupportTest {
    @Test
    public void filtrerCaptureMasseLocal() {
 
-      List<SimpleJobRequest> jobs = new ArrayList<SimpleJobRequest>();
+      List<JobQueue> jobs = new ArrayList<JobQueue>();
 
       // traitement de capture en masse local
       jobs.add(createJob(CAPTURE_MASSE_JN,
@@ -50,7 +49,7 @@ public class CaptureMasseSupportTest {
       // traitement de capture en masse avec paramètre pour URL ECDE erroné
       jobs.add(createJob(CAPTURE_MASSE_JN, "ecde://azaz^^/sommaire.xml"));
 
-      List<SimpleJobRequest> traitements = captureMasseSupport
+      List<JobQueue> traitements = captureMasseSupport
             .filtrerCaptureMasseLocal(jobs);
 
       Assert.assertEquals("le nombre de traitements filtrés est inattendu", 2,
@@ -65,7 +64,7 @@ public class CaptureMasseSupportTest {
    @Test
    public void filtrerJobExecutionLocal() {
 
-      List<SimpleJobRequest> jobs = new ArrayList<SimpleJobRequest>();
+      List<JobQueue> jobs = new ArrayList<JobQueue>();
 
       // traitement de capture en masse
       jobs.add(createJob(CAPTURE_MASSE_JN));
@@ -75,7 +74,7 @@ public class CaptureMasseSupportTest {
       jobs.add(createJob("OTHER_JN1"));
       jobs.add(createJob("OTHER_JN2"));
 
-      List<SimpleJobRequest> traitements = captureMasseSupport
+      List<JobQueue> traitements = captureMasseSupport
             .filtrerCaptureMasse(jobs);
 
       Assert.assertEquals("le nombre de traitements filtrés est inattendu", 2,
@@ -87,19 +86,19 @@ public class CaptureMasseSupportTest {
             .get(1), traitements.get(1));
    }
 
-   private SimpleJobRequest createJob(String type, String parameters) {
+   private JobQueue createJob(String type, String parameters) {
 
-      SimpleJobRequest job = createJob(type);
+      JobQueue job = createJob(type);
       job.setParameters(parameters);
 
       return job;
    }
 
-   private SimpleJobRequest createJob(String type) {
+   private JobQueue createJob(String type) {
 
       UUID idJob = UUID.randomUUID();
 
-      SimpleJobRequest job = new JobRequest();
+      JobQueue job = new JobQueue();
 
       job.setType(type);
       job.setIdJob(idJob);

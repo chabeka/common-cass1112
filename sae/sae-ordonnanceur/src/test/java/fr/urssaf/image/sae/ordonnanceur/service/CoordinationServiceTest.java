@@ -18,7 +18,7 @@ import fr.urssaf.image.sae.ordonnanceur.exception.AucunJobALancerException;
 import fr.urssaf.image.sae.ordonnanceur.exception.JobRuntimeException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
-import fr.urssaf.image.sae.pile.travaux.model.SimpleJobRequest;
+import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
@@ -36,14 +36,14 @@ public class CoordinationServiceTest {
    @Autowired
    private DecisionService decisionService;
 
-   private SimpleJobRequest traitement;
+   private JobQueue traitement;
 
    @Before
    public void before() {
 
       UUID idTraitement = UUID.randomUUID();
 
-      traitement = new SimpleJobRequest();
+      traitement = new JobQueue();
 
       traitement.setType("traitement");
       traitement.setIdJob(idTraitement);
@@ -59,12 +59,12 @@ public class CoordinationServiceTest {
    public void lancerTraitement_success() throws AucunJobALancerException,
          JobInexistantException, JobDejaReserveException {
 
-      List<SimpleJobRequest> jobsEnAttente = new ArrayList<SimpleJobRequest>();
+      List<JobQueue> jobsEnAttente = new ArrayList<JobQueue>();
 
       EasyMock.expect(jobService.recupJobsALancer()).andReturn(jobsEnAttente)
             .once();
 
-      List<SimpleJobRequest> jobsEnCours = new ArrayList<SimpleJobRequest>();
+      List<JobQueue> jobsEnCours = new ArrayList<JobQueue>();
 
       EasyMock.expect(jobService.recupJobEnCours()).andReturn(jobsEnCours)
             .once();
@@ -89,12 +89,12 @@ public class CoordinationServiceTest {
          throws AucunJobALancerException, JobInexistantException,
          JobDejaReserveException {
 
-      List<SimpleJobRequest> jobsEnAttente = new ArrayList<SimpleJobRequest>();
+      List<JobQueue> jobsEnAttente = new ArrayList<JobQueue>();
 
       EasyMock.expect(jobService.recupJobsALancer()).andReturn(jobsEnAttente)
             .once();
 
-      List<SimpleJobRequest> jobsEnCours = new ArrayList<SimpleJobRequest>();
+      List<JobQueue> jobsEnCours = new ArrayList<JobQueue>();
 
       EasyMock.expect(jobService.recupJobEnCours()).andReturn(jobsEnCours)
             .once();
@@ -144,12 +144,12 @@ public class CoordinationServiceTest {
          throws AucunJobALancerException, JobInexistantException,
          JobDejaReserveException {
 
-      List<SimpleJobRequest> jobsEnAttente = new ArrayList<SimpleJobRequest>();
+      List<JobQueue> jobsEnAttente = new ArrayList<JobQueue>();
 
       EasyMock.expect(jobService.recupJobsALancer()).andReturn(jobsEnAttente)
             .once();
 
-      List<SimpleJobRequest> jobsEnCours = new ArrayList<SimpleJobRequest>();
+      List<JobQueue> jobsEnCours = new ArrayList<JobQueue>();
 
       EasyMock.expect(jobService.recupJobEnCours()).andReturn(jobsEnCours)
             .once();

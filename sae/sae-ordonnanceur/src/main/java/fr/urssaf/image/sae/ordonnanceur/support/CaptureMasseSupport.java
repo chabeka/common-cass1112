@@ -9,7 +9,7 @@ import org.apache.commons.collections.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fr.urssaf.image.sae.pile.travaux.model.SimpleJobRequest;
+import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
 
 /**
  * Support pour les traitements de capture en masse
@@ -57,17 +57,17 @@ public class CaptureMasseSupport {
     *           traitements de masse
     * @return traitements de capture en masse filtrés
     */
-   public final List<SimpleJobRequest> filtrerCaptureMasseLocal(
-         List<SimpleJobRequest> jobRequests) {
+   public final List<JobQueue> filtrerCaptureMasseLocal(
+         List<JobQueue> jobRequests) {
 
       @SuppressWarnings("unchecked")
-      List<SimpleJobRequest> jobCaptureMasse = (List<SimpleJobRequest>) CollectionUtils
+      List<JobQueue> jobCaptureMasse = (List<JobQueue>) CollectionUtils
             .select(jobRequests, new Predicate() {
 
                @Override
                public boolean evaluate(Object object) {
 
-                  SimpleJobRequest jobRequest = (SimpleJobRequest) object;
+                  JobQueue jobRequest = (JobQueue) object;
 
                   boolean isCaptureMasse = isCaptureMasse(jobRequest);
 
@@ -95,17 +95,17 @@ public class CaptureMasseSupport {
     *           traitements de masse
     * @return traitements de capture en masse filtrés
     */
-   public final List<SimpleJobRequest> filtrerCaptureMasse(
-         Collection<SimpleJobRequest> jobRequests) {
+   public final List<JobQueue> filtrerCaptureMasse(
+         Collection<JobQueue> jobRequests) {
 
       @SuppressWarnings("unchecked")
-      List<SimpleJobRequest> jobCaptureMasse = (List<SimpleJobRequest>) CollectionUtils
+      List<JobQueue> jobCaptureMasse = (List<JobQueue>) CollectionUtils
             .select(jobRequests, new Predicate() {
 
                @Override
                public boolean evaluate(Object object) {
 
-                  SimpleJobRequest jobRequest = (SimpleJobRequest) object;
+                  JobQueue jobRequest = (JobQueue) object;
 
                   boolean isCaptureMasse = isCaptureMasse(jobRequest);
 
@@ -117,14 +117,14 @@ public class CaptureMasseSupport {
       return jobCaptureMasse;
    }
 
-   private boolean isCaptureMasse(SimpleJobRequest jobRequest) {
+   private boolean isCaptureMasse(JobQueue jobRequest) {
 
       boolean isCaptureMasse = CAPTURE_MASSE_JN.equals(jobRequest.getType());
 
       return isCaptureMasse;
    }
 
-   private boolean isLocal(SimpleJobRequest jobRequest) {
+   private boolean isLocal(JobQueue jobRequest) {
 
       // Dans le cadre d'une capture de masse seule l'url ECDE du sommaire est
       // sérializée dans les paramètres

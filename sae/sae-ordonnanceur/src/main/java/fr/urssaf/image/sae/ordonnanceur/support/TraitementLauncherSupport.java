@@ -1,6 +1,6 @@
 package fr.urssaf.image.sae.ordonnanceur.support;
 
-import fr.urssaf.image.sae.pile.travaux.model.SimpleJobRequest;
+import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
 
 /**
  * Support pour lancer les processus des traitements de masse
@@ -16,6 +16,6 @@ public interface TraitementLauncherSupport {
     * @param traitement
     *           traitement à lancer
     */
-   void lancerTraitement(SimpleJobRequest traitement);
+   void lancerTraitement(JobQueue traitement);
 
 }
