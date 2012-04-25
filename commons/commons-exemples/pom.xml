@@ -51,6 +51,7 @@
       <module>../commons-junit-spring3-exemple</module>
       <module>../commons-spring-batch-exemple</module>
       <module>../commons-logback-exemple</module>
+      <module>../commons-cassandra-exemple</module>
    </modules>
 
    <build>
