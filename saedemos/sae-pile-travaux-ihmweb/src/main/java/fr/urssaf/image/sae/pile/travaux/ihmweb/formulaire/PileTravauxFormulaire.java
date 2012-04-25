@@ -1,42 +1,21 @@
 package fr.urssaf.image.sae.pile.travaux.ihmweb.formulaire;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import fr.urssaf.image.sae.pile.travaux.ihmweb.modele.JobRequest;
+import fr.urssaf.image.sae.pile.travaux.ihmweb.modele.CassandraEtZookeeperConfig;
 
 /**
  * Classe de formulaire pour l'affichage de la pile des travaux
  */
 public class PileTravauxFormulaire {
 
-   private String serveursZookeeper;
-   private String serveursCassandra;
-   
-   private List<JobRequest> travaux = new ArrayList<JobRequest>();
+   private CassandraEtZookeeperConfig connexionConfig = new CassandraEtZookeeperConfig();
 
-   public final String getServeursZookeeper() {
-      return serveursZookeeper;
+   public final CassandraEtZookeeperConfig getConnexionConfig() {
+      return connexionConfig;
    }
 
-   public final void setServeursZookeeper(String serveursZookeeper) {
-      this.serveursZookeeper = serveursZookeeper;
-   }
-
-   public final String getServeursCassandra() {
-      return serveursCassandra;
-   }
-
-   public final void setServeursCassandra(String serveursCassandra) {
-      this.serveursCassandra = serveursCassandra;
-   }
-
-   public final List<JobRequest> getTravaux() {
-      return travaux;
-   }
-
-   public final void setTravaux(List<JobRequest> travaux) {
-      this.travaux = travaux;
+   public final void setConnexionConfig(
+         CassandraEtZookeeperConfig connexionConfig) {
+      this.connexionConfig = connexionConfig;
    }
 
 }
