@@ -126,6 +126,9 @@ public class Test200Controller extends AbstractTestWsController<Test200Formulair
       // Appel du service de comptages
       getCaptureMasseTestService().comptages(idTdm, resultatTest,
             null);
+      
+      // Test sans status de résultat
+      resultatTest.setStatus(TestStatusEnum.SansStatus);
 
    }
    

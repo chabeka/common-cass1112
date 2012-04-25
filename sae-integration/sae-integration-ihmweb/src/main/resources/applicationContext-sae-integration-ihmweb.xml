@@ -16,7 +16,9 @@
 
    <task:annotation-driven />
    
+   <!--
    <import resource="classpath*:/applicationContext-commons-cassandra.xml" />
+   -->
 
    <context:component-scan base-package="fr.urssaf.image.sae.integration.ihmweb">
       <context:exclude-filter type="regex"

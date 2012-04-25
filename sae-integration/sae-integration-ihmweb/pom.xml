@@ -432,7 +432,7 @@
    <dependencies>
    
       <!-- Librairies mutualisées -->
-      
+      <!--
       <dependency>
          <groupId>fr.urssaf.image.commons</groupId>
          <artifactId>commons-cassandra</artifactId>
@@ -448,7 +448,7 @@
             </exclusion>
          </exclusions>
       </dependency>
-      
+      -->
       
       <dependency>
          <groupId>fr.urssaf.image.commons</groupId>

@@ -31,9 +31,6 @@
 <p><a href="calcTemp.do">calcultarice temporelle</a></p>
 
 <p><br /></p>
-<p><a href="piletravaux.do">Pile des travaux</a></p>
-
-<p><br /></p>
 <p><a href="cmcompare.do">Comparaison de resultats.xml</a></p>
 
 <p><br /><br /><br /><br /></p>
