@@ -157,12 +157,14 @@ public class CassandraIdGenerator implements IdGenerator {
          }
          // Sinon, on positionne le nouveau timestamp juste au dessus de l'ancien
          newClock = currentClock + 1;
+         LOG.info("Nouvelle position du timestamp " 
+               + (newClock) / ONE_THOUSAND + " ms");
       }
       ColumnFamilyUpdater<String, String> updater = template
             .createUpdater(SEQUENCE_KEY);
       long newValue = currentValue + 1;
-      updater.setLong(sequenceName, newValue);
       updater.setClock(newClock);
+      updater.setLong(sequenceName, newValue);
       template.update(updater);
       return newValue;
    }
