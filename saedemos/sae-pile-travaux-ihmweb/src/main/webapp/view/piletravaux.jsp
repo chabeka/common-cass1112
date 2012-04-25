@@ -22,18 +22,22 @@
 					"cer69imageint9.cer69.recouv:9160", "root", "regina4932",
 					"SAE");
 		} else if (idxModele == 2) {
+         setValues("cer69-saeint1.cer69.recouv", "SAE",
+               "cer69-saeint1.cer69.recouv:9160", "root", "regina4932",
+               "SAE");
+		} else if (idxModele == 3) {
 			setValues(
 					"hwi69devsaeapp1.cer69.recouv,hwi69devsaeapp2.cer69.recouv",
 					"SAE",
 					"hwi69devsaecas1.cer69.recouv:9160,hwi69devsaecas2.cer69.recouv:9160",
 					"root", "regina4932", "SAE");
-		} else if (idxModele == 3) {
+		} else if (idxModele == 4) {
 			setValues(
 					"hwi69ginsaeappli1.cer69.recouv,hwi69ginsaeappli2.cer69.recouv",
 					"SAE",
 					"hwi69ginsaecas1.cer69.recouv:9160,hwi69ginsaecas2.cer69.recouv:9160",
 					"root", "regina4932", "SAE");
-		} else if (idxModele == 4) {
+		} else if (idxModele == 5) {
 			setValues(
 					"hwi69givnsaeappli.cer69.recouv",
 					"SAE",
@@ -75,7 +79,8 @@
 			<td style="width: 75%;"><form:select path="connexionConfig.name"
 				onchange="javascript:majConf(this);">
 				<option value="libre">Saisie libre</option>
-				<option value="dev">Développement (ds4/int9)</option>
+				<option value="dev1">Développement #1 (ds4/int9)</option>
+				<option value="dev2">Développement #2 (saeint1)</option>
 				<option value="integ">Intégration interne (hwi69devsae*)</option>
 				<option value="integNat">Intégration nationale (GIN)</option>
 				<option value="valid">Validation nationale (GIVN)</option>
@@ -128,16 +133,16 @@
 			<td>type</td>
 			<td>parameters</td>
 			<td>state</td>
-			<td>reservedBy</td>
 			<td>creationDate</td>
-			<td>reservationDate</td>
-			<td>startingDate</td>
+			<td>saeHost</td>
+         <td>clientHost</td>
+         <td>docCount</td>
+         <td>reservationDate</td>
+         <td>reservedBy</td>
+         <td>startingDate</td>
+         <td>pid</td>
 			<td>endingDate</td>
 			<td>message</td>
-			<td>saeHost</td>
-			<td>clientHost</td>
-			<td>docCount</td>
-			<td>pid</td>
 		</tr>
 
 
@@ -145,20 +150,20 @@
 			varStatus="loopStatus">
 
 			<tr class="ligne${loopStatus.count % 2}">
-				<td><c:out value="${travail.idJob}" /></td>
+				<td style="font-size:8pt;"><c:out value="${travail.idJob}" /></td>
 				<td><c:out value="${travail.type}" /></td>
-				<td><c:out value="${travail.parameters}" /></td>
+				<td style="font-size:8pt;"><c:out value="${travail.parameters}" /></td>
 				<td><c:out value="${travail.state}" /></td>
-				<td>${sae:ajouteProprietaireDuPC(travail.reservedBy)}</td>
 				<td>${sae:formateDateTime(travail.creationDate)}</td>
+				<td><c:out value="${travail.saeHost}" /></td>
+            <td><c:out value="${travail.clientHost}" /></td>
+            <td><c:out value="${travail.docCount}" /></td>
 				<td>${sae:formateDateTime(travail.reservationDate)}</td>
+				<td>${sae:ajouteProprietaireDuPC(travail.reservedBy)}</td>
 				<td>${sae:formateDateTime(travail.startingDate)}</td>
+				<td><c:out value="${travail.pid}" /></td>
 				<td>${sae:formateDateTime(travail.endingDate)}</td>
 				<td>${sae:nl2br(travail.message)}</td>
-				<td><c:out value="${travail.saeHost}" /></td>
-				<td><c:out value="${travail.clientHost}" /></td>
-				<td><c:out value="${travail.docCount}" /></td>
-				<td><c:out value="${travail.pid}" /></td>
 			</tr>
 
 		</c:forEach>

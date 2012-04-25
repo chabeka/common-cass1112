@@ -62,12 +62,10 @@ public class PileTravauxController {
       
       CassandraEtZookeeperConfig config = new CassandraEtZookeeperConfig();
       
-      // config.setZookeeperHosts("cer69-ds4int.cer69.recouv:2181");
-      config.setZookeeperHosts("hwi69devsaeapp1.cer69.recouv,hwi69devsaeapp2.cer69.recouv");
+      config.setZookeeperHosts("cer69-ds4int.cer69.recouv:2181");
       config.setZookeeperNamespace("SAE");
       
-      // config.setCassandraHosts("cer69imageint9.cer69.recouv:9160");
-      config.setCassandraHosts("hwi69devsaecas1.cer69.recouv:9160,hwi69devsaecas2.cer69.recouv:9160");
+      config.setCassandraHosts("cer69imageint9.cer69.recouv:9160");
       config.setCassandraUserName("root");
       config.setCassandraPassword("regina4932");
       config.setCassandraKeySpace("SAE");
