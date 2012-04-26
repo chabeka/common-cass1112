@@ -18,6 +18,7 @@ import me.prettyprint.hector.api.factory.HFactory;
 import me.prettyprint.hector.api.query.QueryResult;
 import me.prettyprint.hector.api.query.RangeSlicesQuery;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.netflix.curator.framework.CuratorFramework;
@@ -30,6 +31,7 @@ import fr.urssaf.image.commons.cassandra.serializer.NullableDateSerializer;
 import fr.urssaf.image.commons.zookeeper.ZookeeperClientFactory;
 import fr.urssaf.image.sae.pile.travaux.ihmweb.exception.PileTravauxRuntimeException;
 import fr.urssaf.image.sae.pile.travaux.ihmweb.modele.CassandraEtZookeeperConfig;
+import fr.urssaf.image.sae.pile.travaux.ihmweb.modele.ConfigEtClients;
 import fr.urssaf.image.sae.pile.travaux.ihmweb.modele.JobRequest;
 import fr.urssaf.image.sae.pile.travaux.ihmweb.modele.JobState;
 
@@ -55,6 +57,8 @@ public class PileTravauxService {
 
    // Autres constantes
    private static final int MAX_JOB_ATTIBUTS = 100;
+
+   private List<ConfigEtClients> clients = new ArrayList<ConfigEtClients>();
 
    /**
     * Constructeur de la DAO
@@ -112,55 +116,55 @@ public class PileTravauxService {
     */
    private JobRequest getJobRequestFromResult(
          ColumnFamilyResult<UUID, String> result) {
-      
+
       if (result == null || !result.hasResults()) {
          return null;
       }
       Serializer<Date> dSlz = NullableDateSerializer.get();
-      
+
       JobRequest jobRequest = new JobRequest();
-      
+
       jobRequest.setIdJob(result.getKey());
-      
+
       jobRequest.setType(result.getString(JR_TYPE_COLUMN));
-      
+
       jobRequest.setParameters(result.getString(JR_PARAMETERS_COLUMN));
-      
+
       String state = result.getString(JR_STATE_COLUMN);
       jobRequest.setState(JobState.valueOf(state));
-      
+
       jobRequest.setReservedBy(result.getString(JR_RESERVED_BY_COLUMN));
-      
+
       Date creationDate = dSlz.fromBytes(result
             .getByteArray(JR_CREATION_DATE_COLUMN));
       jobRequest.setCreationDate(creationDate);
-      
-      if (result.getByteArray(JR_RESERVATION_DATE_COLUMN)!=null) {
+
+      if (result.getByteArray(JR_RESERVATION_DATE_COLUMN) != null) {
          Date reservationDate = dSlz.fromBytes(result
                .getByteArray(JR_RESERVATION_DATE_COLUMN));
          jobRequest.setReservationDate(reservationDate);
       }
-      
-      if (result.getByteArray(JR_STARTING_DATE_COLUMN)!=null) {
+
+      if (result.getByteArray(JR_STARTING_DATE_COLUMN) != null) {
          Date startingDate = dSlz.fromBytes(result
                .getByteArray(JR_STARTING_DATE_COLUMN));
          jobRequest.setStartingDate(startingDate);
       }
-      
-      if (result.getByteArray(JR_ENDING_DATE_COLUMN)!=null) {
+
+      if (result.getByteArray(JR_ENDING_DATE_COLUMN) != null) {
          Date endingDate = dSlz.fromBytes(result
                .getByteArray(JR_ENDING_DATE_COLUMN));
          jobRequest.setEndingDate(endingDate);
       }
-      
+
       jobRequest.setMessage(result.getString(JR_MESSAGE));
-      
+
       jobRequest.setSaeHost(result.getString(JR_SAE_HOST));
-      
+
       jobRequest.setClientHost(result.getString(JR_CLIENT_HOST));
-      
+
       jobRequest.setPid(result.getInteger(JR_PID));
-      
+
       jobRequest.setDocCount(result.getInteger(JR_DOC_COUNT));
 
       return jobRequest;
@@ -180,41 +184,86 @@ public class PileTravauxService {
    public final List<JobRequest> getAllJobs(
          CassandraEtZookeeperConfig connexionConfig, int maxKeysToRead) {
 
-      // Connexion à Zookeeper
-      CuratorFramework zkClient;
-      try {
-         zkClient = ZookeeperClientFactory.getClient(connexionConfig
-               .getZookeeperHosts(), connexionConfig.getZookeeperNamespace());
-      } catch (IOException e) {
-         throw new PileTravauxRuntimeException(e);
+      // Connexion à Zookeeper/Cassandra
+      ConfigEtClients confEtClients = findConfigEtClient(connexionConfig);
+
+      // Appel de la méthode de récupération des jobs
+      return getAllJobsInternal(maxKeysToRead, confEtClients.getCassClient()
+            .getKeyspace());
+
+   }
+
+   private ConfigEtClients findConfigEtClient(CassandraEtZookeeperConfig config) {
+
+      ConfigEtClients result = null;
+
+      // Recherche une configuration équivalente
+      for (ConfigEtClients confEtCli : clients) {
+         if (configEquals(confEtCli.getConfig(), config)) {
+            result = confEtCli;
+            break;
+         }
       }
-      try {
+
+      // On n'a pas trouvé de configuration équivalente
+      if (result == null) {
+
+         // Nouvelle configuration
+         ConfigEtClients newConf = new ConfigEtClients();
+         newConf.setConfig(config);
+
+         // Connexion à Zookeeper
+         CuratorFramework zkClient;
+         try {
+            zkClient = ZookeeperClientFactory.getClient(config
+                  .getZookeeperHosts(), config.getZookeeperNamespace());
+         } catch (IOException e) {
+            throw new PileTravauxRuntimeException(e);
+         }
+         newConf.setZkClient(zkClient);
 
          // Connexion à Cassandra
          CassandraServerBean cassandraServer = new CassandraServerBean();
-         cassandraServer.setHosts(connexionConfig.getCassandraHosts());
+         cassandraServer.setHosts(config.getCassandraHosts());
          cassandraServer.setStartLocal(false);
          cassandraServer.setDataSet(null);
          CassandraClientFactory cassandraClientFactory;
          try {
             cassandraClientFactory = new CassandraClientFactory(
-                  cassandraServer, connexionConfig.getCassandraKeySpace(),
-                  connexionConfig.getCassandraUserName(), connexionConfig
-                        .getCassandraPassword());
+                  cassandraServer, config.getCassandraKeySpace(), config
+                        .getCassandraUserName(), config.getCassandraPassword());
          } catch (InterruptedException e) {
             throw new PileTravauxRuntimeException(e);
          }
+         newConf.setCassClient(cassandraClientFactory);
 
-         // Appel de la méthode de récupération des jobs
-         return getAllJobsInternal(maxKeysToRead, cassandraClientFactory
-               .getKeyspace());
+         // Ajoute la configuration à la liste des conf
+         clients.add(newConf);
+         
+         // Mémorise le résultat de la méthode
+         result = newConf; 
 
-      } finally {
-         // Fermeture de la connexion à Zookeeper
-         if (zkClient != null) {
-            zkClient.close();
-         }
       }
+
+      // On renvoie le client Zookeeper
+      return result;
+
+   }
+
+   private boolean configEquals(CassandraEtZookeeperConfig conf1,
+         CassandraEtZookeeperConfig conf2) {
+
+      return (StringUtils.equals(conf1.getCassandraHosts(), conf2
+            .getCassandraHosts())
+            && StringUtils.equals(conf1.getCassandraKeySpace(), conf2
+                  .getCassandraKeySpace())
+            && StringUtils.equals(conf1.getCassandraPassword(), conf2
+                  .getCassandraPassword())
+            && StringUtils.equals(conf1.getCassandraUserName(), conf2
+                  .getCassandraUserName())
+            && StringUtils.equals(conf1.getZookeeperHosts(), conf2
+                  .getZookeeperHosts()) && StringUtils.equals(conf1
+            .getZookeeperNamespace(), conf2.getZookeeperNamespace()));
 
    }
 

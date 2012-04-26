@@ -17,8 +17,10 @@
 
 		var idxModele = select.selectedIndex;
 
-		if (idxModele == 1) {
-			setValues("cer69-ds4int.cer69.recouv", "SAE",
+		if (idxModele == 0) {
+         // Ne rien faire : saisie libre.
+		} else if (idxModele == 1) {
+			setValues("cer69-ds4int.cer69.recouv:2181", "SAE",
 					"cer69imageint9.cer69.recouv:9160", "root", "regina4932",
 					"SAE");
 		} else if (idxModele == 2) {
@@ -76,15 +78,16 @@
 		</tr>
 		<tr>
 			<td style="width: 25%;">Charger un modèle de configuration :</td>
-			<td style="width: 75%;"><form:select path="connexionConfig.name"
-				onchange="javascript:majConf(this);">
-				<option value="libre">Saisie libre</option>
-				<option value="dev1">Développement #1 (ds4/int9)</option>
-				<option value="dev2">Développement #2 (saeint1)</option>
-				<option value="integ">Intégration interne (hwi69devsae*)</option>
-				<option value="integNat">Intégration nationale (GIN)</option>
-				<option value="valid">Validation nationale (GIVN)</option>
-			</form:select></td>
+			<td style="width: 75%;">
+            <select onchange="javascript:majConf(this);">
+            	<option value="libre">Saisie libre</option>
+   				<option value="dev1">Développement #1 (ds4/int9)</option>
+   				<option value="dev2">Développement #2 (saeint1)</option>
+   				<option value="integ">Intégration interne (hwi69devsae*)</option>
+   				<option value="integNat">Intégration nationale (GIN)</option>
+   				<option value="valid">Validation nationale (GIVN)</option>
+   			</select>
+         </td>
 		</tr>
 		<tr>
 			<td>Zookeeper Hosts :</td>

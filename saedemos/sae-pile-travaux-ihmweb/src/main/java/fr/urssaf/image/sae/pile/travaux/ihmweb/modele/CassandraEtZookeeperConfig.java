@@ -5,8 +5,6 @@ package fr.urssaf.image.sae.pile.travaux.ihmweb.modele;
  */
 public class CassandraEtZookeeperConfig {
 
-   private String name;
-
    private String zookeeperHosts;
    private String zookeeperNamespace;
 
@@ -14,14 +12,6 @@ public class CassandraEtZookeeperConfig {
    private String cassandraUserName;
    private String cassandraPassword;
    private String cassandraKeySpace;
-
-   public final String getName() {
-      return name;
-   }
-
-   public final void setName(String name) {
-      this.name = name;
-   }
 
    public final String getZookeeperHosts() {
       return zookeeperHosts;
