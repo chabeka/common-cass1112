@@ -16,6 +16,7 @@ import org.springframework.util.Assert;
 
 import com.netflix.curator.framework.CuratorFramework;
 
+import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.commons.zookeeper.ZookeeperMutex;
 import fr.urssaf.image.sae.pile.travaux.dao.JobHistoryDao;
 import fr.urssaf.image.sae.pile.travaux.dao.JobRequestDao;
@@ -28,7 +29,6 @@ import fr.urssaf.image.sae.pile.travaux.model.JobState;
 import fr.urssaf.image.sae.pile.travaux.model.JobToCreate;
 import fr.urssaf.image.sae.pile.travaux.service.JobLectureService;
 import fr.urssaf.image.sae.pile.travaux.service.JobQueueService;
-import fr.urssaf.image.sae.pile.travaux.support.JobClockSupport;
 import fr.urssaf.image.sae.pile.travaux.support.JobHistorySupport;
 import fr.urssaf.image.sae.pile.travaux.support.JobRequestSupport;
 import fr.urssaf.image.sae.pile.travaux.support.JobsQueueSupport;

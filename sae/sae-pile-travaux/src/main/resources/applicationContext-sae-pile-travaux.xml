@@ -10,12 +10,16 @@
 
    <context:component-scan base-package="fr.urssaf.image.sae.pile.travaux" />
 
-   <!-- Importation de la définition du keyspace cassandra et du client zookeeper (zkClient) -->
+   <!--
+      Importation de la définition du keyspace cassandra et du client
+      zookeeper (zkClient)
+   -->
    <import resource="classpath*:/applicationContext-commons-cassandra.xml" />
 
+   <!-- déprécié -->
    <bean id="jobQueueDao"
       class="fr.urssaf.image.sae.pile.travaux.dao.impl.JobQueueDaoImpl">
-         <constructor-arg ref="keyspace" />
+      <constructor-arg ref="keyspace" />
    </bean>
 
 </beans>

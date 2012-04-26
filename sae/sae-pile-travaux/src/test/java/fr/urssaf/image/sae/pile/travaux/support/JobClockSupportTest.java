@@ -21,10 +21,13 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.sae.pile.travaux.exception.ClockSynchronizationException;
+import fr.urssaf.image.commons.cassandra.exception.ClockSynchronizationException;
+import fr.urssaf.image.commons.cassandra.support.clock.JobClockConfiguration;
+import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.pile.travaux.model.JobToCreate;
 import fr.urssaf.image.sae.pile.travaux.service.JobQueueService;
 
+//TODO  à transporter dans commons-cassandra
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-pile-travaux-test.xml" })
 @DirtiesContext(classMode = ClassMode.AFTER_CLASS)
@@ -33,6 +36,9 @@ public class JobClockSupportTest {
 
    @Autowired
    private JobClockSupport support;
+
+   @Autowired
+   private JobClockConfiguration configuration;
 
    @Autowired
    private JobQueueService jobQueueService;
@@ -83,10 +89,10 @@ public class JobClockSupportTest {
    @Test
    public void synchronisation_warning() {
 
-      long decalage = JobClockSupport.MAX_TIME_SYNCHRO_WARN + 100;
+      long decalage = configuration.getMaxTimeSynchroWarn() + 100;
 
       Assert.assertTrue("Il n'y a aucun problème de synchronisation",
-            decalage < JobClockSupport.MAX_TIME_SYNCHRO_ERROR);
+            decalage < configuration.getMaxTimeSynchroError());
 
       HColumn<?, ?> column = addJob();
       column.setClock(keyspace.createClock() + decalage);
@@ -100,7 +106,7 @@ public class JobClockSupportTest {
    @Test(expected = ClockSynchronizationException.class)
    public void synchronisation_failure() {
 
-      long decalage = JobClockSupport.MAX_TIME_SYNCHRO_ERROR + 100;
+      long decalage = configuration.getMaxTimeSynchroError() + 100;
 
       HColumn<?, ?> column = addJob();
       column.setClock(keyspace.createClock() + decalage);
