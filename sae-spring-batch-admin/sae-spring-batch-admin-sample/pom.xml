@@ -27,7 +27,7 @@
       <dependency>
          <groupId>fr.urssaf.image.commons</groupId>
          <artifactId>commons-cassandra-spring-batch</artifactId>
-         <version>0.0.1</version>
+         <version>0.0.4-SNAPSHOT</version>
          <exclusions>
             <exclusion>
                <groupId>org.springframework.batch</groupId>
@@ -230,6 +230,8 @@
          <artifactId>sae-spring-batch-admin-resources</artifactId>
          <version>${project.parent.version}</version>
       </dependency>
+      
+    
 
    </dependencies>
    <build>
