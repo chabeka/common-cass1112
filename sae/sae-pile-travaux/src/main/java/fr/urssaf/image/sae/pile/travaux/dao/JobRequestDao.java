@@ -16,6 +16,7 @@ import me.prettyprint.hector.api.Keyspace;
 import me.prettyprint.hector.api.Serializer;
 import me.prettyprint.hector.api.beans.HColumn;
 import me.prettyprint.hector.api.factory.HFactory;
+import me.prettyprint.hector.api.mutation.Mutator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -115,6 +116,8 @@ public class JobRequestDao {
 
    private final ColumnFamilyTemplate<UUID, String> jobRequestTmpl;
 
+   private final Keyspace keyspace;
+
    /**
     * 
     * @param keyspace
@@ -122,6 +125,8 @@ public class JobRequestDao {
     */
    @Autowired
    public JobRequestDao(Keyspace keyspace) {
+
+      this.keyspace = keyspace;
 
       // Propriété de clé:
       // - Type de la valeur : UUID
@@ -155,6 +160,19 @@ public class JobRequestDao {
    public final ColumnFamilyTemplate<UUID, String> getJobRequestTmpl() {
 
       return this.jobRequestTmpl;
+   }
+
+   /**
+    * 
+    * @return Mutator de <code>JobRequest</code>
+    */
+   public final Mutator<UUID> createMutator() {
+
+      Mutator<UUID> mutator = HFactory.createMutator(keyspace, UUIDSerializer
+            .get());
+
+      return mutator;
+
    }
 
    /**
@@ -443,6 +461,23 @@ public class JobRequestDao {
 
       addColumn(updater, JR_TO_CHECK_FLAG_RAISON, toCheckFlagRaison,
             StringSerializer.get(), StringSerializer.get(), clock);
+
+   }
+
+   /**
+    * Suppression d'un JobRequest
+    * 
+    * @param mutator
+    *           Mutator de <code>JobRequest</code>
+    * @param idJob
+    *           nom de la ligne
+    * @param clock
+    *           horloge de la suppression
+    */
+   public final void mutatorSuppressionJobRequest(Mutator<UUID> mutator,
+         UUID idJob, long clock) {
+
+      mutator.addDeletion(idJob, JOBREQUEST_CFNAME, clock);
 
    }
 

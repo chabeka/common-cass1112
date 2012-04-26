@@ -11,6 +11,7 @@ import me.prettyprint.hector.api.Keyspace;
 import me.prettyprint.hector.api.Serializer;
 import me.prettyprint.hector.api.beans.HColumn;
 import me.prettyprint.hector.api.factory.HFactory;
+import me.prettyprint.hector.api.mutation.Mutator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -31,6 +32,8 @@ public class JobHistoryDao {
 
    private final ColumnFamilyTemplate<UUID, String> jobHistoryTmpl;
 
+   private final Keyspace keyspace;
+
    /**
     * 
     * @param keyspace
@@ -38,6 +41,8 @@ public class JobHistoryDao {
     */
    @Autowired
    public JobHistoryDao(Keyspace keyspace) {
+
+      this.keyspace = keyspace;
 
       // Propriété de clé:
       // - Type de la valeur : UUID
@@ -57,6 +62,19 @@ public class JobHistoryDao {
    public final ColumnFamilyTemplate<UUID, String> getJobHistoryTmpl() {
 
       return this.jobHistoryTmpl;
+   }
+
+   /**
+    * 
+    * @return Mutator de <code>JobHistory</code>
+    */
+   public final Mutator<UUID> createMutator() {
+
+      Mutator<UUID> mutator = HFactory.createMutator(keyspace, UUIDSerializer
+            .get());
+
+      return mutator;
+
    }
 
    @SuppressWarnings("unchecked")
@@ -91,6 +109,23 @@ public class JobHistoryDao {
 
       addColumn(updater, timestampTrace, messageTrace, UUIDSerializer.get(),
             StringSerializer.get(), clock);
+
+   }
+
+   /**
+    * Suppression d'un JobHistory
+    * 
+    * @param mutator
+    *           Mutator de <code>JobHistory</code>
+    * @param idJob
+    *           nom de la ligne
+    * @param clock
+    *           horloge de la suppression
+    */
+   public final void mutatorSuppressionJobHistory(Mutator<UUID> mutator,
+         UUID idJob, long clock) {
+
+      mutator.addDeletion(idJob, JOBHISTORY_CFNAME, clock);
 
    }
 

@@ -17,7 +17,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.sae.pile.travaux.dao.JobQueueDao;
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.exception.LockTimeoutException;
@@ -44,9 +43,6 @@ public class TraitementAsynchroneServiceTest {
    private TraitementAsynchroneService service;
 
    @Autowired
-   private JobQueueDao jobQueueDao;
-
-   @Autowired
    private JobLectureService jobLectureService;
 
    @Autowired
@@ -55,10 +51,10 @@ public class TraitementAsynchroneServiceTest {
    @Autowired
    private SAECaptureMasseService captureMasseService;
 
-   private JobRequest job;
+   private UUID idJob;
 
-   private void setJob(JobRequest job) {
-      this.job = job;
+   private void setJob(UUID idJob) {
+      this.idJob = idJob;
    }
 
    @Before
@@ -73,9 +69,9 @@ public class TraitementAsynchroneServiceTest {
       EasyMock.reset(captureMasseService);
 
       // suppression du traitement dde masse
-      if (job != null) {
+      if (idJob != null) {
 
-         jobQueueDao.deleteJobRequest(job);
+         jobQueueService.deleteJob(idJob);
 
       }
    }
@@ -83,14 +79,14 @@ public class TraitementAsynchroneServiceTest {
    @Test
    public void ajouterJobCaptureMasse_success() {
 
-      UUID idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+      idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
 
       CaptureMasseParametres parametres = new CaptureMasseParametres(
             "url_ecde", idJob, null, null, null);
 
       service.ajouterJobCaptureMasse(parametres);
 
-      job = jobLectureService.getJobRequest(idJob);
+      JobRequest job = jobLectureService.getJobRequest(idJob);
 
       Assert.assertNotNull("le traitement " + idJob + " doit être créé", job);
 
@@ -110,7 +106,7 @@ public class TraitementAsynchroneServiceTest {
          JobNonReserveException, JobDejaReserveException, LockTimeoutException {
 
       // création d'un traitement de capture en masse
-      UUID idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+      idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
 
       JobToCreate jobToCreate = new JobToCreate();
       jobToCreate.setIdJob(idJob);
@@ -149,7 +145,7 @@ public class TraitementAsynchroneServiceTest {
          JobNonReserveException, JobDejaReserveException, LockTimeoutException {
 
       // création d'un traitement de capture en masse
-      UUID idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+      idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
 
       JobToCreate jobToCreate = new JobToCreate();
       jobToCreate.setIdJob(idJob);
@@ -170,7 +166,7 @@ public class TraitementAsynchroneServiceTest {
 
       service.lancerJob(idJob);
 
-      job = jobLectureService.getJobRequest(idJob);
+      JobRequest job = jobLectureService.getJobRequest(idJob);
       Assert.assertEquals(
             "l'état du job dans la pile des travaux est incorrect",
             JobState.FAILURE, job.getState());
@@ -189,7 +185,7 @@ public class TraitementAsynchroneServiceTest {
          JobDejaReserveException, LockTimeoutException {
 
       // création d'un traitement de capture en masse
-      UUID idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+      idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
 
       JobToCreate jobToCreate = new JobToCreate();
       jobToCreate.setIdJob(idJob);
@@ -201,7 +197,7 @@ public class TraitementAsynchroneServiceTest {
 
       service.lancerJob(idJob);
 
-      job = jobLectureService.getJobRequest(idJob);
+      JobRequest job = jobLectureService.getJobRequest(idJob);
       Assert.assertEquals(
             "l'état du job dans la pile des travaux est incorrect",
             JobState.FAILURE, job.getState());
@@ -219,14 +215,13 @@ public class TraitementAsynchroneServiceTest {
          throws JobInexistantException, JobNonReserveException {
 
       // création d'un traitement de capture en masse
-      UUID idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+      idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
 
-      job = new JobRequest();
+      JobToCreate job = new JobToCreate();
       job.setIdJob(idJob);
       job.setType(TRAITEMENT_TYPE);
       job.setParameters("");
-      job.setState(JobState.CREATED);
-      jobQueueDao.saveJobRequest(job);
+      jobQueueService.addJob(job);
 
       try {
 
@@ -254,14 +249,14 @@ public class TraitementAsynchroneServiceTest {
          throws JobInexistantException, JobNonReserveException {
 
       // création d'un traitement de capture en masse
-      UUID idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+      idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
 
-      job = new JobRequest();
+      JobToCreate job = new JobToCreate();
       job.setIdJob(idJob);
       job.setType("other_masse");
       job.setParameters("");
-      job.setState(JobState.CREATED);
-      jobQueueDao.saveJobRequest(job);
+
+      jobQueueService.addJob(job);
 
       try {
 
@@ -295,14 +290,14 @@ public class TraitementAsynchroneServiceTest {
    public void lancerJob_failure_jobInexistantException()
          throws JobInexistantException, JobNonReserveException {
 
-      UUID idJob = UUID.randomUUID();
+      idJob = UUID.randomUUID();
 
-      job = jobLectureService.getJobRequest(idJob);
+      JobRequest job = jobLectureService.getJobRequest(idJob);
 
       // on s'assure que le traitement n'existe pas!
       if (job != null) {
 
-         jobQueueDao.deleteJobRequest(job);
+         jobQueueService.deleteJob(job.getIdJob());
 
       }
 

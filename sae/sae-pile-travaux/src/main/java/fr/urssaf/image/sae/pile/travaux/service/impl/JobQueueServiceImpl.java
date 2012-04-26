@@ -9,6 +9,7 @@ import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
 import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 import me.prettyprint.hector.api.beans.HColumn;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -408,7 +409,6 @@ public class JobQueueServiceImpl implements JobQueueService {
    @Override
    public final void updateToCheckFlag(UUID idJob, Boolean toCheckFlag,
          String raison) throws JobInexistantException {
-      // TODO Auto-generated method stub
 
       JobRequest jobRequest = this.jobLectureService.getJobRequest(idJob);
       // Vérifier que le job existe
@@ -448,11 +448,50 @@ public class JobQueueServiceImpl implements JobQueueService {
       // rien à écrire
 
       // Ecriture dans la CF "JobHistory"
-      String message = "TOCHECKFLAG POSITIONNE A {0} AVEC LA RAISON (1)";
+      String message = "TOCHECKFLAG POSITIONNE A {0} AVEC LA RAISON {1}";
       String messageTrace = MessageFormat.format(message, toCheckFlag, raison);
       UUID timestampTrace = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
       this.jobHistorySupport.ajouterTrace(idJob, timestampTrace, messageTrace,
             clock);
+
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final void deleteJob(UUID idJob) {
+
+      JobRequest jobRequest = this.jobLectureService.getJobRequest(idJob);
+      // Vérifier que le job existe
+      if (jobRequest == null) {
+         return;
+      }
+
+      // Lecture du job
+      ColumnFamilyResult<UUID, String> result = this.jobRequestDao
+            .getJobRequestTmpl().queryColumns(idJob);
+
+      // Récupération de la colonne "state"
+      HColumn<?, ?> columnState = result
+            .getColumn(JobRequestDao.JR_STATE_COLUMN);
+
+      // Timestamp de l'opération
+      // Il faut vérifier le décalage de temps
+      long clock = jobClockSupport.currentCLock(columnState);
+
+      // Suppression de la CF "JobRequest"
+      this.jobRequestSupport.deleteJobRequest(idJob, clock);
+
+      // Suppression de la CF "JobQueues"
+      String reservedBy = jobRequest.getReservedBy();
+      if (StringUtils.isNotEmpty(reservedBy)) {
+         this.jobsQueueSupport.supprimerJobDeJobsQueues(idJob, reservedBy,
+               clock);
+      }
+
+      // Suppression de la CF "JobHistory"
+      this.jobHistorySupport.supprimerHistorique(idJob, clock);
 
    }
 

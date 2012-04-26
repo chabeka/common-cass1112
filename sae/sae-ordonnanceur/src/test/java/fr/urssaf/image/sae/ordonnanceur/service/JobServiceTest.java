@@ -18,7 +18,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.ordonnanceur.util.HostUtils;
-import fr.urssaf.image.sae.pile.travaux.dao.JobQueueDao;
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.exception.LockTimeoutException;
@@ -46,12 +45,7 @@ public class JobServiceTest {
    @Autowired
    private JobLectureService jobLectureService;
 
-   @Autowired
-   private JobQueueDao jobQueueDao;
-
    private JobToCreate job;
-
-   private String serverName;
 
    @Before
    public void before() throws UnknownHostException {
@@ -65,7 +59,6 @@ public class JobServiceTest {
 
       jobQueueService.addJob(job);
 
-      serverName = HostUtils.getLocalHostName();
    }
 
    @After
@@ -74,17 +67,8 @@ public class JobServiceTest {
       // suppression du traitement
       if (job != null) {
 
-         deleteJob();
+         jobQueueService.deleteJob(job.getIdJob());
       }
-   }
-
-   private void deleteJob() {
-
-      JobRequest jobRequest = new JobRequest();
-      jobRequest.setIdJob(job.getIdJob());
-      jobRequest.setReservedBy(serverName);
-
-      jobQueueDao.deleteJobRequest(jobRequest);
    }
 
    @Test
@@ -142,7 +126,7 @@ public class JobServiceTest {
       UUID idJob = job.getIdJob();
 
       // on s'assure que le traitement n'existe pas!
-      deleteJob();
+      jobQueueService.deleteJob(idJob);
 
       try {
          jobService.reserveJob(idJob);

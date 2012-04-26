@@ -3,6 +3,7 @@ package fr.urssaf.image.sae.pile.travaux.support;
 import java.util.UUID;
 
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
+import me.prettyprint.hector.api.mutation.Mutator;
 import fr.urssaf.image.sae.pile.travaux.dao.JobHistoryDao;
 
 /**
@@ -51,6 +52,27 @@ public class JobHistorySupport {
 
       // Ecrit en base
       this.jobHistoryDao.getJobHistoryTmpl().update(updaterJobHistory);
+
+   }
+
+   /**
+    * Suppression de l'historique d'un job
+    * 
+    * @param idJob
+    *           identifiant du job
+    * @param clock
+    *           horloge de suppression du job
+    */
+   public final void supprimerHistorique(UUID idJob, long clock) {
+      
+      // Création du Mutator
+      Mutator<UUID> mutator = this.jobHistoryDao.createMutator();
+
+      // suppression du JobHistory
+      this.jobHistoryDao.mutatorSuppressionJobHistory(mutator, idJob, clock);
+
+      // Execution de la commande
+      mutator.execute();
 
    }
 }

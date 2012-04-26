@@ -128,4 +128,12 @@ public interface JobQueueService {
    void updateToCheckFlag(UUID idJob, Boolean toCheckFlag, String raison)
          throws JobInexistantException;
 
+   /**
+    * Supprime un traitement de la pile des travaux
+    * 
+    * @param idJob
+    *           identifiant du job
+    */
+   void deleteJob(UUID idJob);
+
 }

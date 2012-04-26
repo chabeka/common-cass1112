@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.UUID;
 
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
+import me.prettyprint.hector.api.mutation.Mutator;
 import fr.urssaf.image.sae.pile.travaux.dao.JobRequestDao;
 import fr.urssaf.image.sae.pile.travaux.model.JobState;
 import fr.urssaf.image.sae.pile.travaux.model.JobToCreate;
@@ -237,6 +238,27 @@ public class JobRequestSupport {
 
       // Ecrit en base
       jobRequestDao.getJobRequestTmpl().update(updater);
+
+   }
+
+   /**
+    * Suppression de JobRequest
+    * 
+    * @param idJob
+    *           identifiant du Job
+    * @param clock
+    *           horloge de la suppression
+    */
+   public final void deleteJobRequest(UUID idJob, long clock) {
+
+      // Création du Mutator
+      Mutator<UUID> mutator = this.jobRequestDao.createMutator();
+
+      // suppression du JobRequest
+      this.jobRequestDao.mutatorSuppressionJobRequest(mutator, idJob, clock);
+
+      // Execution de la commande
+      mutator.execute();
 
    }
 }

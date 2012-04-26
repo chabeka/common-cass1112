@@ -107,10 +107,6 @@ public class TraitementAsynchroneServiceImpl implements
 
       jobQueueService.addJob(job);
 
-      UUID timeUuid = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
-      LOG.debug("ajout d'une trace historique");
-      jobQueueService.addHistory(idJob, timeUuid, "CREATION DU JOB");
-
    }
 
    /**
