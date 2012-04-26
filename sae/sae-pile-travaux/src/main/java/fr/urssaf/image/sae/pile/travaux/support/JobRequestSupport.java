@@ -209,4 +209,34 @@ public class JobRequestSupport {
       jobRequestDao.getJobRequestTmpl().update(updaterJobRequest);
 
    }
+
+   /**
+    * Ajoute un flag de vérification du job dans la pile des travaux.
+    * 
+    * @param idJob
+    *           identifiant du job
+    * @param toCheckFlag
+    *           <code>true</code> si le job doit être vérifier
+    * @param raison
+    *           message pour indiquer la raison pour laquelle le job doit être
+    *           vérifier
+    * @param clock
+    *           horloge de l'ajout du flag
+    */
+   public final void renseignerCheckFlagDansJobRequest(UUID idJob,
+         Boolean toCheckFlag, String raison, long clock) {
+
+      // On utilise un ColumnFamilyUpdater, et on renseigne
+      // la valeur de la clé dans la construction de l'updater
+      ColumnFamilyUpdater<UUID, String> updater = jobRequestDao
+            .getJobRequestTmpl().createUpdater(idJob);
+
+      // Ecriture des colonnes
+      jobRequestDao.ecritColonneToCheckFlag(updater, toCheckFlag, clock);
+      jobRequestDao.ecritColonneToCheckFlagRaison(updater, raison, clock);
+
+      // Ecrit en base
+      jobRequestDao.getJobRequestTmpl().update(updater);
+
+   }
 }

@@ -17,6 +17,10 @@ import java.util.UUID;
  * <li><code>endingDate</code>: date/heure de fin de traitement</li>
  * <li><code>message</code>: message de compte-rendu du traitement. Exemple :
  * message d'erreur</li>
+ * <li><code>toCheckFlag</code>: flag pour indiquer que le traitement est à
+ * vérifier</li>
+ * <li><code>toCheckFlagRaison</code>: raison pour laquelle le traitement est à
+ * vérifier</li>
  * </ul>
  * 
  * 
@@ -29,7 +33,7 @@ public class JobRequest {
    private String type;
 
    private String parameters;
-   
+
    private JobState state;
 
    private String reservedBy;
@@ -51,6 +55,10 @@ public class JobRequest {
    private Integer docCount;
 
    private Integer pid;
+   
+   private Boolean toCheckFlag;
+   
+   private String toCheckFlagRaison;
 
    /**
     * @return the idJob
@@ -96,7 +104,6 @@ public class JobRequest {
    public final void setParameters(String parameters) {
       this.parameters = parameters;
    }
-   
 
    /**
     * @return the state of the jobRequest
@@ -197,7 +204,6 @@ public class JobRequest {
             .getTime());
    }
 
-
    /**
     * @param message
     *           : message de compte-rendu du traitement
@@ -280,6 +286,34 @@ public class JobRequest {
    }
    
    /**
+    * @return the toCheckFlag
+    */
+   public Boolean getToCheckFlag() {
+      return toCheckFlag;
+   }
+
+   /**
+    * @param toCheckFlag the toCheckFlag to set
+    */
+   public void setToCheckFlag(Boolean toCheckFlag) {
+      this.toCheckFlag = toCheckFlag;
+   }
+
+   /**
+    * @return the toCheckFlagRaison
+    */
+   public String getToCheckFlagRaison() {
+      return toCheckFlagRaison;
+   }
+
+   /**
+    * @param toCheckFlagRaison the toCheckFlagRaison to set
+    */
+   public void setToCheckFlagRaison(String toCheckFlagRaison) {
+      this.toCheckFlagRaison = toCheckFlagRaison;
+   }
+
+   /**
     * Renvoie un SimpleJob contenant les propriétés de base du jobRequest
     * 
     * @return Un SimpleJob
@@ -291,5 +325,7 @@ public class JobRequest {
       simpleJobRequest.setParameters(getParameters());
       return simpleJobRequest;
    }
+
+   
 
 }

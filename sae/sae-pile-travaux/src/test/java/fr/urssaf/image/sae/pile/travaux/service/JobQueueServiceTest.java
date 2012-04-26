@@ -182,6 +182,26 @@ public class JobQueueServiceTest {
       Assert.assertEquals(JobState.FAILURE, jobRequest.getState());
    }
 
+   @Test
+   public void updateToCheckFlag_success() throws JobInexistantException {
+
+      String raison = "raison de la vérification";
+
+      // On crée un job
+      UUID idJob = addJobForTest(1);
+
+      // on renseigne son checkFlag
+      jobQueueService.updateToCheckFlag(idJob, true,
+            "raison de la vérification");
+
+      JobRequest jobRequest = jobLectureService.getJobRequest(idJob);
+      Assert.assertEquals("la propriété toCheckFlag est inattendu", true,
+            jobRequest.getToCheckFlag());
+      Assert.assertEquals("la propriété toCheckFlagRaison devrait être à true",
+            raison, jobRequest.getToCheckFlagRaison());
+
+   }
+
    /**
     * Crée un job
     * 

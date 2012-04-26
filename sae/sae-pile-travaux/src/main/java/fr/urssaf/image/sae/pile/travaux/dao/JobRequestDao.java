@@ -3,6 +3,7 @@ package fr.urssaf.image.sae.pile.travaux.dao;
 import java.util.Date;
 import java.util.UUID;
 
+import me.prettyprint.cassandra.serializers.BooleanSerializer;
 import me.prettyprint.cassandra.serializers.BytesArraySerializer;
 import me.prettyprint.cassandra.serializers.IntegerSerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
@@ -97,6 +98,16 @@ public class JobRequestDao {
     * Colonne {@value #JR_PID}
     */
    public static final String JR_PID = "pid";
+
+   /**
+    * Colonne {@value #JR_TO_CHECK_FLAG}
+    */
+   public static final String JR_TO_CHECK_FLAG = "toCheckFlag";
+
+   /**
+    * Colonne {@value #JR_TO_CHECK_FLAG_RAISON}
+    */
+   public static final String JR_TO_CHECK_FLAG_RAISON = "toCheckFlagRaison";
 
    private static final int MAX_JOB_ATTIBUTS = 100;
 
@@ -398,6 +409,44 @@ public class JobRequestDao {
    }
 
    /**
+    * Ajoute une colonne {@value #JR_TO_CHECK_FLAG}
+    * 
+    * @param updater
+    *           Updater de <code>JobRequest</code>
+    * @param toCheckFlag
+    *           valeur de la colonne
+    * @param clock
+    *           horloge de la colonne
+    */
+   public final void ecritColonneToCheckFlag(
+         ColumnFamilyUpdater<UUID, String> updater, Boolean toCheckFlag,
+         long clock) {
+
+      addColumn(updater, JR_TO_CHECK_FLAG, toCheckFlag, StringSerializer.get(),
+            BooleanSerializer.get(), clock);
+
+   }
+
+   /**
+    * Ajoute une colonne {@value #JR_TO_CHECK_FLAG_RAISON}
+    * 
+    * @param updater
+    *           Updater de <code>JobRequest</code>
+    * @param toCheckFlagRaison
+    *           valeur de la colonne
+    * @param clock
+    *           horloge de la colonne
+    */
+   public final void ecritColonneToCheckFlagRaison(
+         ColumnFamilyUpdater<UUID, String> updater, String toCheckFlagRaison,
+         long clock) {
+
+      addColumn(updater, JR_TO_CHECK_FLAG_RAISON, toCheckFlagRaison,
+            StringSerializer.get(), StringSerializer.get(), clock);
+
+   }
+
+   /**
     * 
     * @param result
     *           données d'un job
@@ -455,6 +504,11 @@ public class JobRequestDao {
       jobRequest.setPid(result.getInteger(JR_PID));
 
       jobRequest.setDocCount(result.getInteger(JR_DOC_COUNT));
+
+      jobRequest.setToCheckFlag(result.getBoolean(JR_TO_CHECK_FLAG));
+
+      jobRequest
+            .setToCheckFlagRaison(result.getString(JR_TO_CHECK_FLAG_RAISON));
 
       return jobRequest;
    }

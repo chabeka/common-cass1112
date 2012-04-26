@@ -1,5 +1,6 @@
 package fr.urssaf.image.sae.pile.travaux.service.impl;
 
+import java.text.MessageFormat;
 import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -395,6 +396,60 @@ public class JobQueueServiceImpl implements JobQueueService {
 
       // Ecriture dans la CF "JobHistory"
       String messageTrace = "PID RENSEIGNE";
+      UUID timestampTrace = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+      this.jobHistorySupport.ajouterTrace(idJob, timestampTrace, messageTrace,
+            clock);
+
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final void updateToCheckFlag(UUID idJob, Boolean toCheckFlag,
+         String raison) throws JobInexistantException {
+      // TODO Auto-generated method stub
+
+      JobRequest jobRequest = this.jobLectureService.getJobRequest(idJob);
+      // Vérifier que le job existe
+      if (jobRequest == null) {
+         throw new JobInexistantException(idJob);
+      }
+
+      // Lecture du job
+      ColumnFamilyResult<UUID, String> result = this.jobRequestDao
+            .getJobRequestTmpl().queryColumns(idJob);
+
+      // Récupération du timestamp courant de la colonne "toCheckFlag", si elle
+      // est
+      // présente
+
+      // Récupération de la colonne "toCheckFlag"
+      HColumn<?, ?> columnToCheckFlag = result
+            .getColumn(JobRequestDao.JR_TO_CHECK_FLAG);
+
+      long clock;
+
+      if (columnToCheckFlag == null) {
+
+         clock = jobClockSupport.currentCLock();
+
+      } else {
+
+         clock = jobClockSupport.currentCLock(columnToCheckFlag);
+
+      }
+
+      // Ecriture dans la CF "JobRequest"
+      this.jobRequestSupport.renseignerCheckFlagDansJobRequest(idJob,
+            toCheckFlag, raison, clock);
+
+      // Ecriture dans la CF "JobQueues"
+      // rien à écrire
+
+      // Ecriture dans la CF "JobHistory"
+      String message = "TOCHECKFLAG POSITIONNE A {0} AVEC LA RAISON (1)";
+      String messageTrace = MessageFormat.format(message, toCheckFlag, raison);
       UUID timestampTrace = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
       this.jobHistorySupport.ajouterTrace(idJob, timestampTrace, messageTrace,
             clock);

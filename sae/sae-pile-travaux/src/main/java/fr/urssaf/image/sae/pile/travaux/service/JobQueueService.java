@@ -113,4 +113,19 @@ public interface JobQueueService {
     */
    void renseignerPidJob(UUID idJob, Integer pid) throws JobInexistantException;
 
+   /**
+    * Renseigne le flag de vérification du traitement de masse.<br>
+    * 
+    * @param idJob
+    *           identifiant du job
+    * @param toCheckFlag
+    *           <code>true</code> le traitement doit être vérifié
+    * @param raison
+    *           message pour indiquer la raison de la vérification
+    * @throws JobInexistantException
+    *            le traitement n'existe pas
+    */
+   void updateToCheckFlag(UUID idJob, Boolean toCheckFlag, String raison)
+         throws JobInexistantException;
+
 }
