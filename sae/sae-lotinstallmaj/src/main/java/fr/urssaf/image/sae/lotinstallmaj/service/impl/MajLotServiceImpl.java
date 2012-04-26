@@ -29,6 +29,7 @@ public final class MajLotServiceImpl implements MajLotService {
    public static final String CODE_ACTIVITE = "CODEACTIVITENONOBLIGATOIRE";
    public static final String DUREE_CONSERVATION = "DUREECONSERVATIONDEMANDEDELAICOTISANT";
    public static final String CASSANDRA_120510 = "CASSANDRA_120510";
+   public static final String CASSANDRA_120511 = "CASSANDRA_120511";
    
    public static final int DUREE_1825 = 1825;
    public static final int DUREE_1643 = 1643;
@@ -66,6 +67,10 @@ public final class MajLotServiceImpl implements MajLotService {
       } else if (CASSANDRA_120510.equalsIgnoreCase(nomOperation) ) {
          
          updateCassandra120510();
+         
+      } else if (CASSANDRA_120511.equalsIgnoreCase(nomOperation) ) {
+         
+         updateCassandra120511();
          
       } else {
          
@@ -163,6 +168,17 @@ public final class MajLotServiceImpl implements MajLotService {
       SAECassandraUpdater updater = new SAECassandraUpdater(cassandraConfig);
       updater.updateToVersion1();
       LOG.info("Fin de l'opération : création du keyspace SAE");
+   }
+   
+   /**
+    * Pour lot 120511 du SAE : mise à jour du keyspace "SAE" dans cassandra, en version 1.1
+    */
+   private void updateCassandra120511() {
+      LOG.info("Début de l'opération : mise à jour du keyspace SAE");
+      // Récupération de la chaîne de connexion au cluster cassandra
+      SAECassandraUpdater updater = new SAECassandraUpdater(cassandraConfig);
+      updater.updateToVersion2();
+      LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
    }
 
 }
