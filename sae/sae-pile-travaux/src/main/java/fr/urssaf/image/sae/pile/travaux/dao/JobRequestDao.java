@@ -33,18 +33,69 @@ public class JobRequestDao {
 
    private static final String JOBREQUEST_CFNAME = "JobRequest";
 
-   private static final String JR_TYPE_COLUMN = "type";
-   private static final String JR_PARAMETERS_COLUMN = "parameters";
+   /**
+    * Colonne {@value #JR_TYPE_COLUMN}
+    */
+   public static final String JR_TYPE_COLUMN = "type";
+
+   /**
+    * Colonne {@value #JR_PARAMETERS_COLUMN}
+    */
+   public static final String JR_PARAMETERS_COLUMN = "parameters";
+
+   /**
+    * Colonne {@value #JR_STATE_COLUMN}
+    */
    public static final String JR_STATE_COLUMN = "state";
-   private static final String JR_RESERVED_BY_COLUMN = "reservedBy";
-   private static final String JR_CREATION_DATE_COLUMN = "creationDate";
-   private static final String JR_RESERVATION_DATE_COLUMN = "reservationDate";
-   private static final String JR_STARTING_DATE_COLUMN = "startingDate";
-   private static final String JR_ENDING_DATE_COLUMN = "endingDate";
-   private static final String JR_MESSAGE = "message";
-   private static final String JR_SAE_HOST = "saeHost";
-   private static final String JR_CLIENT_HOST = "clientHost";
-   private static final String JR_DOC_COUNT = "docCount";
+
+   /**
+    * Colonne {@value #JR_RESERVED_BY_COLUMN}
+    */
+   public static final String JR_RESERVED_BY_COLUMN = "reservedBy";
+
+   /**
+    * Colonne {@value #JR_CREATION_DATE_COLUMN}
+    */
+   public static final String JR_CREATION_DATE_COLUMN = "creationDate";
+
+   /**
+    * Colonne {@value #JR_TYPE_COLUMN}
+    */
+   public static final String JR_RESERVATION_DATE_COLUMN = "reservationDate";
+
+   /**
+    * Colonne {@value #JR_STARTING_DATE_COLUMN}
+    */
+   public static final String JR_STARTING_DATE_COLUMN = "startingDate";
+
+   /**
+    * Colonne {@value #JR_ENDING_DATE_COLUMN}
+    */
+   public static final String JR_ENDING_DATE_COLUMN = "endingDate";
+
+   /**
+    * Colonne {@value #JR_MESSAGE}
+    */
+   public static final String JR_MESSAGE = "message";
+
+   /**
+    * Colonne {@value #JR_SAE_HOST}
+    */
+   public static final String JR_SAE_HOST = "saeHost";
+
+   /**
+    * Colonne {@value #JR_CLIENT_HOST}
+    */
+   public static final String JR_CLIENT_HOST = "clientHost";
+
+   /**
+    * Colonne {@value #JR_DOC_COUNT}
+    */
+   public static final String JR_DOC_COUNT = "docCount";
+
+   /**
+    * Colonne {@value #JR_PID}
+    */
    public static final String JR_PID = "pid";
 
    private static final int MAX_JOB_ATTIBUTS = 100;
@@ -53,6 +104,11 @@ public class JobRequestDao {
 
    private final ColumnFamilyTemplate<UUID, String> jobRequestTmpl;
 
+   /**
+    * 
+    * @param keyspace
+    *           Keyspace utilisé par la pile des travaux
+    */
    @Autowired
    public JobRequestDao(Keyspace keyspace) {
 
@@ -81,11 +137,25 @@ public class JobRequestDao {
 
    }
 
+   /**
+    * 
+    * @return CassandraTemplate de <code>JobRequest</code>
+    */
    public final ColumnFamilyTemplate<UUID, String> getJobRequestTmpl() {
 
       return this.jobRequestTmpl;
    }
 
+   /**
+    * Ajoute une colonne {@value #JR_TYPE_COLUMN}
+    * 
+    * @param updater
+    *           Updater de <code>JobRequest</code>
+    * @param valeur
+    *           valeur de la colonne
+    * @param clock
+    *           horloge de la colonne
+    */
    public final void ecritColonneType(
          ColumnFamilyUpdater<UUID, String> updater, String valeur, long clock) {
 
@@ -94,6 +164,16 @@ public class JobRequestDao {
 
    }
 
+   /**
+    * Ajoute une colonne {@value #JR_PARAMETERS_COLUMN}
+    * 
+    * @param updater
+    *           Updater de <code>JobRequest</code>
+    * @param valeur
+    *           valeur de la colonne
+    * @param clock
+    *           horloge de la colonne
+    */
    public final void ecritColonneParameters(
          ColumnFamilyUpdater<UUID, String> updater, String valeur, long clock) {
 
@@ -102,6 +182,16 @@ public class JobRequestDao {
 
    }
 
+   /**
+    * Ajoute une colonne {@value #JR_STATE_COLUMN}
+    * 
+    * @param updater
+    *           Updater de <code>JobRequest</code>
+    * @param state
+    *           valeur de la colonne
+    * @param clock
+    *           horloge de la colonne
+    */
    public final void ecritColonneState(
          ColumnFamilyUpdater<UUID, String> updater, String state, long clock) {
 
@@ -110,6 +200,16 @@ public class JobRequestDao {
 
    }
 
+   /**
+    * Ajoute une colonne {@value #JR_RESERVED_BY_COLUMN}
+    * 
+    * @param updater
+    *           Updater de <code>JobRequest</code>
+    * @param reservedBy
+    *           valeur de la colonne
+    * @param clock
+    *           horloge de la colonne
+    */
    public final void ecritColonneReservedBy(
          ColumnFamilyUpdater<UUID, String> updater, String reservedBy,
          long clock) {
@@ -119,6 +219,16 @@ public class JobRequestDao {
 
    }
 
+   /**
+    * Ajoute une colonne {@value #JR_CREATION_DATE_COLUMN}
+    * 
+    * @param updater
+    *           Updater de <code>JobRequest</code>
+    * @param creationDate
+    *           valeur de la colonne
+    * @param clock
+    *           horloge de la colonne
+    */
    public final void ecritColonneCreationDate(
          ColumnFamilyUpdater<UUID, String> updater, Date creationDate,
          long clock) {
@@ -131,6 +241,16 @@ public class JobRequestDao {
 
    }
 
+   /**
+    * Ajoute une colonne {@value #JR_RESERVATION_DATE_COLUMN}
+    * 
+    * @param updater
+    *           Updater de <code>JobRequest</code>
+    * @param reservationDate
+    *           valeur de la colonne
+    * @param clock
+    *           horloge de la colonne
+    */
    public final void ecritColonneReservationDate(
          ColumnFamilyUpdater<UUID, String> updater, Date reservationDate,
          long clock) {
@@ -143,6 +263,16 @@ public class JobRequestDao {
 
    }
 
+   /**
+    * Ajoute une colonne {@value #JR_STARTING_DATE_COLUMN}
+    * 
+    * @param updater
+    *           Updater de <code>JobRequest</code>
+    * @param startingDate
+    *           valeur de la colonne
+    * @param clock
+    *           horloge de la colonne
+    */
    public final void ecritColonneStartingDate(
          ColumnFamilyUpdater<UUID, String> updater, Date startingDate,
          long clock) {
@@ -155,6 +285,16 @@ public class JobRequestDao {
 
    }
 
+   /**
+    * Ajoute une colonne {@value #JR_ENDING_DATE_COLUMN}
+    * 
+    * @param updater
+    *           Updater de <code>JobRequest</code>
+    * @param endingDate
+    *           valeur de la colonne
+    * @param clock
+    *           horloge de la colonne
+    */
    public final void ecritColonneEndingDate(
          ColumnFamilyUpdater<UUID, String> updater, Date endingDate, long clock) {
 
@@ -166,6 +306,16 @@ public class JobRequestDao {
 
    }
 
+   /**
+    * Ajoute une colonne {@value #JR_MESSAGE}
+    * 
+    * @param updater
+    *           Updater de <code>JobRequest</code>
+    * @param message
+    *           valeur de la colonne
+    * @param clock
+    *           horloge de la colonne
+    */
    public final void ecritColonneMessage(
          ColumnFamilyUpdater<UUID, String> updater, String message, long clock) {
 
@@ -174,6 +324,16 @@ public class JobRequestDao {
 
    }
 
+   /**
+    * Ajoute une colonne {@value #JR_SAE_HOST}
+    * 
+    * @param updater
+    *           Updater de <code>JobRequest</code>
+    * @param saeHost
+    *           valeur de la colonne
+    * @param clock
+    *           horloge de la colonne
+    */
    public final void ecritColonneSaeHost(
          ColumnFamilyUpdater<UUID, String> updater, String saeHost, long clock) {
 
@@ -182,6 +342,16 @@ public class JobRequestDao {
 
    }
 
+   /**
+    * Ajoute une colonne {@value #JR_CLIENT_HOST}
+    * 
+    * @param updater
+    *           Updater de <code>JobRequest</code>
+    * @param clientHost
+    *           valeur de la colonne
+    * @param clock
+    *           horloge de la colonne
+    */
    public final void ecritColonneClientHost(
          ColumnFamilyUpdater<UUID, String> updater, String clientHost,
          long clock) {
@@ -191,6 +361,16 @@ public class JobRequestDao {
 
    }
 
+   /**
+    * Ajoute une colonne {@value #JR_DOC_COUNT}
+    * 
+    * @param updater
+    *           Updater de <code>JobRequest</code>
+    * @param docCount
+    *           valeur de la colonne
+    * @param clock
+    *           horloge de la colonne
+    */
    public final void ecritColonneDocCount(
          ColumnFamilyUpdater<UUID, String> updater, Integer docCount, long clock) {
 
@@ -199,6 +379,16 @@ public class JobRequestDao {
 
    }
 
+   /**
+    * Ajoute une colonne {@value #JR_PID}
+    * 
+    * @param updater
+    *           Updater de <code>JobRequest</code>
+    * @param pid
+    *           valeur de la colonne
+    * @param clock
+    *           horloge de la colonne
+    */
    public final void ecritColonnePid(ColumnFamilyUpdater<UUID, String> updater,
          Integer pid, long clock) {
 
@@ -207,6 +397,13 @@ public class JobRequestDao {
 
    }
 
+   /**
+    * 
+    * @param result
+    *           données d'un job
+    * 
+    * @return instance de {@link JobRequest}
+    */
    public final JobRequest createJobRequestFromResult(
          ColumnFamilyResult<UUID, String> result) {
       if (result == null || !result.hasResults()) {
@@ -260,18 +457,6 @@ public class JobRequestDao {
       jobRequest.setDocCount(result.getInteger(JR_DOC_COUNT));
 
       return jobRequest;
-   }
-
-   public final long getClockColonnePid(ColumnFamilyResult<UUID, String> result) {
-
-      // Attention : result.getColumn(JR_PID) peut être null
-      // Appeler avant existeColonnePid
-      return result.getColumn(JR_PID).getClock();
-
-   }
-
-   public final boolean existeColonnePid(ColumnFamilyResult<UUID, String> result) {
-      return result.getColumn(JR_PID) != null;
    }
 
 }

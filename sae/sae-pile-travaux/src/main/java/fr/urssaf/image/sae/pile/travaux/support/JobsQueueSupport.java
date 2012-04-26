@@ -21,13 +21,30 @@ public class JobsQueueSupport {
 
    private final JobsQueueDao jobsQueueDao;
 
+   /**
+    * 
+    * @param jobsQueueDao
+    *           DAO de la colonne famille JobsQueue
+    */
    public JobsQueueSupport(JobsQueueDao jobsQueueDao) {
 
       this.jobsQueueDao = jobsQueueDao;
 
    }
 
-   public void ajouterJobDansJobQueuesEnWaiting(UUID idJob, String type,
+   /**
+    * Ajoute un job en attente.
+    * 
+    * @param idJob
+    *           identifiant du job
+    * @param type
+    *           type de job
+    * @param parameters
+    *           paramètres du job
+    * @param clock
+    *           horloge de l'ajout du job en attente
+    */
+   public final void ajouterJobDansJobQueuesEnWaiting(UUID idJob, String type,
          String parameters, long clock) {
 
       // On utilise un ColumnFamilyUpdater, et on renseigne
@@ -48,7 +65,22 @@ public class JobsQueueSupport {
 
    }
 
-   public void reserverJobDansJobQueues(UUID idJob, String reservedBy,
+   /**
+    * Réservation du job : suppression de la file d'attente et ajout dans la
+    * file du serveur qui a réservé le job.
+    * 
+    * @param idJob
+    *           identifiant du job
+    * @param reservedBy
+    *           Hostname ou IP du serveur qui réservé le job
+    * @param type
+    *           type du job
+    * @param parameters
+    *           paramètres du job
+    * @param clock
+    *           horloge de réservation du job
+    */
+   public final void reserverJobDansJobQueues(UUID idJob, String reservedBy,
          String type, String parameters, long clock) {
 
       // Dans la CF JobQueues, on "switch" le job entre :
@@ -78,7 +110,17 @@ public class JobsQueueSupport {
 
    }
 
-   public void supprimerJobDeJobsQueues(UUID idJob, String reservedBy,
+   /**
+    * Suppression du job de la file d'exécution/réservation du job.
+    * 
+    * @param idJob
+    *           identifiant du job
+    * @param reservedBy
+    *           Hostname ou IP du serveur qui a réservé/exécuté le job
+    * @param clock
+    *           horloge de suppression du job de la file d'exécution/réservation
+    */
+   public final void supprimerJobDeJobsQueues(UUID idJob, String reservedBy,
          long clock) {
 
       // Création du Mutator

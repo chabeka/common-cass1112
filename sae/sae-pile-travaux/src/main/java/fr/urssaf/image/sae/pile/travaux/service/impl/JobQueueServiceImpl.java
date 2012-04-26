@@ -58,6 +58,21 @@ public class JobQueueServiceImpl implements JobQueueService {
    private static final Logger LOG = LoggerFactory
          .getLogger(JobQueueServiceImpl.class);
 
+   /**
+    * 
+    * @param jobRequestDao
+    *           DAO de la colonne famille JobRequest
+    * @param jobsQueueDao
+    *           DAO de la colonne famille JobsQueue
+    * @param jobClockSupport
+    *           Support pour le calcul de l'horloge sur Cassandra
+    * @param jobHistoryDao
+    *           DAO de la colonne famille JobHistory
+    * @param jobLectureService
+    *           service de lecture de la pile des travaux
+    * @param curatorClient
+    *           support pour l'utilisation de {@link ZookeeperMutex}
+    */
    @Autowired
    public JobQueueServiceImpl(JobRequestDao jobRequestDao,
          JobsQueueDao jobsQueueDao, JobClockSupport jobClockSupport,
@@ -362,13 +377,14 @@ public class JobQueueServiceImpl implements JobQueueService {
 
       long clock;
 
-      if (columnPid != null) {
+      if (columnPid == null) {
 
-         clock = jobClockSupport.currentCLock(columnPid);
+         clock = jobClockSupport.currentCLock();
 
       } else {
 
-         clock = jobClockSupport.currentCLock();
+         clock = jobClockSupport.currentCLock(columnPid);
+
       }
 
       // Ecriture dans la CF "JobRequest"

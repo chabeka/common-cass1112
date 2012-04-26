@@ -2,6 +2,11 @@ package fr.urssaf.image.sae.pile.travaux.support;
 
 import me.prettyprint.hector.api.beans.HColumn;
 
+/**
+ * Support pour le calcul de l'horloge sur Cassandra.<br>
+ * 
+ * 
+ */
 public interface JobClockSupport {
 
    /**

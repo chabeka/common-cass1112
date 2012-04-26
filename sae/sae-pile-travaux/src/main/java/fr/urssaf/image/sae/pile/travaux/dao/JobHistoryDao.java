@@ -34,7 +34,7 @@ public class JobHistoryDao {
    /**
     * 
     * @param keyspace
-    *           Keyspace cassandra à utiliser
+    *           Keyspace utilisé par la pile des travaux
     */
    @Autowired
    public JobHistoryDao(Keyspace keyspace) {
@@ -50,6 +50,10 @@ public class JobHistoryDao {
 
    }
 
+   /**
+    * 
+    * @return CassandraTemplate de <code>JobHistory</code>
+    */
    public final ColumnFamilyTemplate<UUID, String> getJobHistoryTmpl() {
 
       return this.jobHistoryTmpl;
@@ -69,6 +73,18 @@ public class JobHistoryDao {
 
    }
 
+   /**
+    * Ajoute d'une nouvelle colonne.
+    * 
+    * @param updater
+    *           Updater de <code>JobHistory</code>
+    * @param timestampTrace
+    *           clé de la colonne
+    * @param messageTrace
+    *           valeur de la colonne
+    * @param clock
+    *           horloge de la colonne
+    */
    public final void ecritColonneTrace(
          ColumnFamilyUpdater<UUID, String> updater, UUID timestampTrace,
          String messageTrace, long clock) {

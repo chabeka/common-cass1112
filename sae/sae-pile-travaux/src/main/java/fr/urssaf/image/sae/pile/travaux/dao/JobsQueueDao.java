@@ -21,7 +21,7 @@ import fr.urssaf.image.sae.pile.travaux.dao.serializer.JobQueueSerializer;
 import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
 
 /**
- * DAO de la colonne famille <code>JobsQueueDao</code>
+ * DAO de la colonne famille <code>JobsQueue</code>
  * 
  * 
  */
@@ -38,6 +38,11 @@ public class JobsQueueDao {
 
    private final Keyspace keyspace;
 
+   /**
+    * 
+    * @param keyspace
+    *           Keyspace utilisé par la pile des travaux
+    */
    @Autowired
    public JobsQueueDao(Keyspace keyspace) {
 
@@ -54,12 +59,20 @@ public class JobsQueueDao {
 
    }
 
+   /**
+    * 
+    * @return CassandraTemplate de <code>JobsQueue</code>
+    */
    public final ColumnFamilyTemplate<String, UUID> getJobsQueueTmpl() {
 
       return this.jobsQueueTmpl;
    }
 
-   public SliceQuery<String, UUID, String> createSliceQuery() {
+   /**
+    * 
+    * @return SliceQuery de <code>JobsQueue</code>
+    */
+   public final SliceQuery<String, UUID, String> createSliceQuery() {
 
       SliceQuery<String, UUID, String> sliceQuery = HFactory.createSliceQuery(
             keyspace, StringSerializer.get(), UUIDSerializer.get(),
@@ -69,6 +82,10 @@ public class JobsQueueDao {
       return sliceQuery;
    }
 
+   /**
+    * 
+    * @return Mutator de <code>JobsQueue</code>
+    */
    public final Mutator<String> createMutator() {
 
       Mutator<String> mutator = HFactory.createMutator(keyspace,
@@ -92,6 +109,18 @@ public class JobsQueueDao {
 
    }
 
+   /**
+    * Ajout d'une colonne.
+    * 
+    * @param updater
+    *           Updater de <code>JobsQueue</code>
+    * @param idJob
+    *           clé de la colonne
+    * @param jobQueue
+    *           valeur de la colonne
+    * @param clock
+    *           horloge de la colonne
+    */
    public final void ecritColonneJobQueue(
          ColumnFamilyUpdater<String, UUID> updater, UUID idJob,
          JobQueue jobQueue, long clock) {
@@ -101,6 +130,18 @@ public class JobsQueueDao {
 
    }
 
+   /**
+    * Ajoute une nouvelle ligne
+    * 
+    * @param mutator
+    *           Mutator de <code>JobsQueue</code>
+    * @param hostnameOuJobsWaiting
+    *           clé de la ligne
+    * @param jobQueue
+    *           valeur de la colonne
+    * @param clock
+    *           horloge de la colonne
+    */
    public final void mutatorAjouterInsertionJobQueue(Mutator<String> mutator,
          String hostnameOuJobsWaiting, JobQueue jobQueue, long clock) {
 
@@ -114,6 +155,18 @@ public class JobsQueueDao {
 
    }
 
+   /**
+    * Suppression d'une colonne dans une file
+    * 
+    * @param mutator
+    *           Mutator de <code>JobsQueue</code>
+    * @param hostnameOuJobsWaiting
+    *           clé de la ligne
+    * @param idJob
+    *           nom de la colonne
+    * @param clock
+    *           horloge de la suppression
+    */
    public final void mutatorAjouterSuppressionJobQueue(Mutator<String> mutator,
          String hostnameOuJobsWaiting, UUID idJob, long clock) {
 

@@ -17,12 +17,26 @@ public class JobRequestSupport {
 
    private final JobRequestDao jobRequestDao;
 
+   /**
+    * 
+    * @param jobRequestDao
+    *           DAO de la colonne famille JobRequest
+    */
    public JobRequestSupport(JobRequestDao jobRequestDao) {
 
       this.jobRequestDao = jobRequestDao;
    }
 
-   public void ajouterJobDansJobRequest(JobToCreate jobToCreate, long clock) {
+   /**
+    * Création d'un nouveau traitement.
+    * 
+    * @param jobToCreate
+    *           propriété du nouveau job à créer
+    * @param clock
+    *           horloge de la création du nouveau job
+    */
+   public final void ajouterJobDansJobRequest(JobToCreate jobToCreate,
+         long clock) {
 
       // Valeur définie "en dur" par la méthode
       String state = JobState.CREATED.name();
@@ -58,7 +72,19 @@ public class JobRequestSupport {
 
    }
 
-   public void reserverJobDansJobRequest(UUID idJob, String reservedBy,
+   /**
+    * Réservation d'un job existant.
+    * 
+    * @param idJob
+    *           identifiant du job existant
+    * @param reservedBy
+    *           Hostname ou IP du serveur qui réserve le job
+    * @param reservationDate
+    *           date de la réservation
+    * @param clock
+    *           horloge de la réservation du job
+    */
+   public final void reserverJobDansJobRequest(UUID idJob, String reservedBy,
          Date reservationDate, long clock) {
 
       // Valeur définie "en dur" par la méthode
@@ -81,7 +107,17 @@ public class JobRequestSupport {
 
    }
 
-   public void passerEtatEnCoursJobRequest(UUID idJob, Date startingDate,
+   /**
+    * Démarre un job.
+    * 
+    * @param idJob
+    *           identifiant du job
+    * @param startingDate
+    *           date de démarrage
+    * @param clock
+    *           horloge du démarrage du job
+    */
+   public final void passerEtatEnCoursJobRequest(UUID idJob, Date startingDate,
          long clock) {
 
       // Valeur définie "en dur" par la méthode
@@ -102,7 +138,21 @@ public class JobRequestSupport {
 
    }
 
-   public void passerEtatTermineJobRequest(UUID idJob, Date endingDate,
+   /**
+    * Conclusion du job.
+    * 
+    * @param idJob
+    *           identifiant du job
+    * @param endingDate
+    *           date de fin du job
+    * @param success
+    *           <code>true</code> si le job a réussi, <code>false</false> sinon
+    * @param message
+    *           message de conclusion du job
+    * @param clock
+    *           horloge de conclusion du job
+    */
+   public final void passerEtatTermineJobRequest(UUID idJob, Date endingDate,
          boolean success, String message, long clock) {
 
       // Valeur définie "en dur" par la méthode
@@ -134,7 +184,18 @@ public class JobRequestSupport {
 
    }
 
-   public void renseignerPidDansJobRequest(UUID idJob, Integer pid, long clock) {
+   /**
+    * Ajoute le PID du processus du job dans la pile des travaux.
+    * 
+    * @param idJob
+    *           identifiant du job
+    * @param pid
+    *           PID du processus
+    * @param clock
+    *           horloge de l'ajout du PID
+    */
+   public final void renseignerPidDansJobRequest(UUID idJob, Integer pid,
+         long clock) {
 
       // On utilise un ColumnFamilyUpdater, et on renseigne
       // la valeur de la clé dans la construction de l'updater

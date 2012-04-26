@@ -27,6 +27,11 @@ public class JobClockSupportImpl implements JobClockSupport {
 
    private final Keyspace keyspace;
 
+   /**
+    * 
+    * @param keyspace
+    *           Keyspace utilisé par la pile des travaux
+    */
    @Autowired
    public JobClockSupportImpl(Keyspace keyspace) {
 
@@ -39,7 +44,7 @@ public class JobClockSupportImpl implements JobClockSupport {
     * {@inheritDoc}
     */
    @Override
-   public long currentCLock() {
+   public final long currentCLock() {
 
       return keyspace.createClock();
    }
@@ -48,7 +53,7 @@ public class JobClockSupportImpl implements JobClockSupport {
     * {@inheritDoc}
     */
    @Override
-   public long currentCLock(HColumn<?, ?> column) {
+   public final long currentCLock(HColumn<?, ?> column) {
       Assert.notNull(column, "'column' is required");
 
       long actualClock = keyspace.createClock();

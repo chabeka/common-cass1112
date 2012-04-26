@@ -85,7 +85,7 @@ public class JobLectureImpl implements JobLectureService {
     * {@inheritDoc}
     */
    @Override
-   public List<JobQueue> getNonTerminatedSimpleJobs(String hostname) {
+   public final List<JobQueue> getNonTerminatedSimpleJobs(String hostname) {
 
       ColumnFamilyResult<String, UUID> result = jobsQueueDao.getJobsQueueTmpl()
             .queryColumns(hostname);
