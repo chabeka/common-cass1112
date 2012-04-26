@@ -2,6 +2,8 @@ package fr.urssaf.image.commons.cassandra.spring.batch.idgenerator;
 
 import com.netflix.curator.framework.CuratorFramework;
 
+import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
+
 import me.prettyprint.hector.api.Keyspace;
 
 /**
@@ -16,9 +18,10 @@ public class JobInstanceIdGenerator implements IdGenerator {
     * Constructeur 
     * @param keyspace   Keyspace cassandra
     * @param curatorClient Connexion à zookeeper
+    * @param jobClockSupport support de l'horloge
     */
-   public JobInstanceIdGenerator(Keyspace keyspace, CuratorFramework curatorClient) {
-      generator = new CassandraIdGenerator(keyspace, curatorClient, "jobInstanceId");
+   public JobInstanceIdGenerator(Keyspace keyspace, CuratorFramework curatorClient,JobClockSupport jobClockSupport) {
+      generator = new CassandraIdGenerator(keyspace, curatorClient, "jobInstanceId",jobClockSupport);
    }
 
    @Override

@@ -23,6 +23,7 @@
       class="fr.urssaf.image.commons.cassandra.spring.batch.idgenerator.JobInstanceIdGenerator">
       <constructor-arg ref="keyspace" />
       <constructor-arg ref="zkClient" />
+      <constructor-arg ref="jobClockSupport"/>
    </bean>
    <bean id="cassandraJobExecutionDao"
       class="fr.urssaf.image.commons.cassandra.spring.batch.dao.CassandraJobExecutionDao">
@@ -33,6 +34,7 @@
       class="fr.urssaf.image.commons.cassandra.spring.batch.idgenerator.JobExecutionIdGenerator">
       <constructor-arg ref="keyspace" />
       <constructor-arg ref="zkClient" />
+      <constructor-arg ref="jobClockSupport"/>
    </bean>
    <bean id="cassandraStepExecutionDao"
       class="fr.urssaf.image.commons.cassandra.spring.batch.dao.CassandraStepExecutionDao">
@@ -43,6 +45,7 @@
       class="fr.urssaf.image.commons.cassandra.spring.batch.idgenerator.StepExecutionIdGenerator">
       <constructor-arg ref="keyspace" />
       <constructor-arg ref="zkClient" />
+      <constructor-arg ref="jobClockSupport"/>
    </bean>
    <bean id="cassandraExecutionContextDao"
       class="fr.urssaf.image.commons.cassandra.spring.batch.dao.CassandraExecutionContextDao">

@@ -30,6 +30,8 @@ import com.netflix.curator.test.TestingServer;
 import fr.urssaf.image.commons.cassandra.spring.batch.idgenerator.JobExecutionIdGenerator;
 import fr.urssaf.image.commons.cassandra.spring.batch.idgenerator.JobInstanceIdGenerator;
 import fr.urssaf.image.commons.cassandra.spring.batch.idgenerator.StepExecutionIdGenerator;
+import fr.urssaf.image.commons.cassandra.spring.batch.support.JobClockSupportFactory;
+import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.commons.zookeeper.ZookeeperClientFactory;
 
 public class CassandraStepExecutionDAOTest extends
@@ -54,9 +56,10 @@ public class CassandraStepExecutionDAOTest extends
 
       // Récupération du keyspace de cassandra-unit, et création des dao
       Keyspace keyspace = getKeyspace();
-      jobExecutionDao = new CassandraJobExecutionDao(keyspace, new JobExecutionIdGenerator(keyspace, zkClient));
-      jobInstanceDao = new CassandraJobInstanceDao(keyspace, new JobInstanceIdGenerator(keyspace, zkClient));
-      stepExecutionDao = new CassandraStepExecutionDao(keyspace, new StepExecutionIdGenerator(keyspace, zkClient));
+      JobClockSupport clockSupport =  JobClockSupportFactory.createJobClockSupport(keyspace);
+      jobExecutionDao = new CassandraJobExecutionDao(keyspace, new JobExecutionIdGenerator(keyspace, zkClient,clockSupport));
+      jobInstanceDao = new CassandraJobInstanceDao(keyspace, new JobInstanceIdGenerator(keyspace, zkClient,clockSupport));
+      stepExecutionDao = new CassandraStepExecutionDao(keyspace, new StepExecutionIdGenerator(keyspace, zkClient,clockSupport));
    }
 
    @After

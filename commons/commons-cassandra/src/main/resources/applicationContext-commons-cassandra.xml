@@ -30,5 +30,18 @@
       <property name="hosts" value="${cassandra.hosts}" />
       <property name="dataSet" value="${cassandra.dataset}"/>
    </bean>
+   
+   <!-- configuration du clock -->
+   <bean id="jobClockConfiguration"
+      class="fr.urssaf.image.commons.cassandra.support.clock.JobClockConfiguration">
+      <property name="maxTimeSynchroError" value="${cassandra.clock.error}" />
+      <property name="maxTimeSynchroWarn" value="${cassandra.clock.warn}" />
+   </bean>
+
+   <bean id="jobClockSupport"
+      class="fr.urssaf.image.commons.cassandra.support.clock.impl.JobClockSupportImpl">
+      <constructor-arg ref="keyspace" />
+      <constructor-arg ref="jobClockConfiguration" />
+   </bean>
 
 </beans>

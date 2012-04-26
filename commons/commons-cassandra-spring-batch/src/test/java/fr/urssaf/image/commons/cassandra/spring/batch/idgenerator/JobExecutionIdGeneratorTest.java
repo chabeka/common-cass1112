@@ -4,9 +4,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
-import me.prettyprint.cassandra.service.clock.AbstractClockResolution;
-import me.prettyprint.hector.api.ClockResolution;
-
 import org.cassandraunit.AbstractCassandraUnit4TestCase;
 import org.cassandraunit.dataset.DataSet;
 import org.cassandraunit.dataset.xml.ClassPathXmlDataSet;
@@ -18,6 +15,8 @@ import org.junit.Test;
 import com.netflix.curator.framework.CuratorFramework;
 import com.netflix.curator.test.TestingServer;
 
+import fr.urssaf.image.commons.cassandra.spring.batch.support.JobClockSupportFactory;
+import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.commons.zookeeper.ZookeeperClientFactory;
 
 public class JobExecutionIdGeneratorTest extends AbstractCassandraUnit4TestCase {
@@ -49,8 +48,11 @@ public class JobExecutionIdGeneratorTest extends AbstractCassandraUnit4TestCase 
 
    @Test
    public void testMonoThread() {
+      
+      JobClockSupport clockSupport =  JobClockSupportFactory.createJobClockSupport(getKeyspace());
+      
       IdGenerator generator = new JobExecutionIdGenerator(getKeyspace(),
-            zkClient);
+            zkClient,clockSupport);
       for (int i = 1; i < 5; i++) {
          Assert.assertEquals(i, generator.getNextId());
       }
@@ -58,8 +60,11 @@ public class JobExecutionIdGeneratorTest extends AbstractCassandraUnit4TestCase 
 
    @Test
    public void testMultiThread() throws InterruptedException {
+      
+      JobClockSupport clockSupport =  JobClockSupportFactory.createJobClockSupport(getKeyspace());
+      
       IdGenerator generator = new JobExecutionIdGenerator(getKeyspace(),
-            zkClient);
+            zkClient,clockSupport);
       Map<Long, Long> map = new ConcurrentHashMap<Long, Long>();
       SimpleThread[] threads = new SimpleThread[10]; 
       for (int i = 0; i < 10; i++) {
@@ -72,34 +77,6 @@ public class JobExecutionIdGeneratorTest extends AbstractCassandraUnit4TestCase 
       Assert.assertEquals(50, map.size());
       for (Entry<Long, Long> entry : map.entrySet()) {
          System.out.print(entry.getKey() + " ");
-      }
-   }
-   
-   @Test
-   public void testDistordedClock() throws InterruptedException {
-
-      // 1er appel avec la "vrai" heure
-      CassandraIdGenerator generator1 = new CassandraIdGenerator(getKeyspace(),
-            zkClient, "sequenceId");
-      Assert.assertEquals(1, generator1.getNextId());
-      
-      // 2eme appel avec une heure décalée de 5 seconde. Ca devrait passer.
-      CassandraIdGenerator generator2 = new CassandraIdGenerator(getKeyspace(),
-            zkClient, "sequenceId");
-      generator2.setClockResolution(new DistordedMicrosecondsClockResolution(-5000L));
-      Assert.assertEquals(2, generator2.getNextId());
-      
-      // 3eme appel avec une heure décalée de 120 secondes (supérieur au décalage autorisé).
-      // Ca ne devrait pas passer.
-      CassandraIdGenerator generator3 = new CassandraIdGenerator(getKeyspace(),
-            zkClient, "sequenceId");
-      generator3.setClockResolution(new DistordedMicrosecondsClockResolution(-120000L));
-      try {
-         generator3.getNextId();
-         Assert.fail("Le décalage de 120 secondes ne devrait pas être autorisé");
-      }
-      catch (IdGeneratorException exception) {
-         // ok
       }
    }
 
@@ -122,29 +99,4 @@ public class JobExecutionIdGeneratorTest extends AbstractCassandraUnit4TestCase 
       }
    }
 
-   /**
-    * Permet de simuler des horloges pas bien synchronisées
-    *
-    */
-   private class DistordedMicrosecondsClockResolution extends AbstractClockResolution implements ClockResolution {
-
-      private static final long serialVersionUID = 98435468424165L;
-      private static final long ONE_THOUSAND = 1000L;
-      private final long timeLag;
-
-      /**
-       * Constructeur
-       * @param timeLag : décalage d'horloge, en ms
-       */
-      public DistordedMicrosecondsClockResolution(long timeLag) {
-         this.timeLag = timeLag;
-      }
-      
-      @Override
-      public long createClock() {
-        return (getSystemMilliseconds() + timeLag) * ONE_THOUSAND;
-      }
-
-    }
-   
 }
