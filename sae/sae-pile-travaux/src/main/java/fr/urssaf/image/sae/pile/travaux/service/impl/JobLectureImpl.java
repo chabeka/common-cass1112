@@ -77,7 +77,7 @@ public class JobLectureImpl implements JobLectureService {
       SliceQuery<String, UUID, String> sliceQuery = jobsQueueDao
             .createSliceQuery();
       sliceQuery.setKey(JOBS_WAITING_KEY);
-      
+
       return new JobQueueIterator(sliceQuery);
    }
 
@@ -97,6 +97,25 @@ public class JobLectureImpl implements JobLectureService {
          list.add(jobQueue);
       }
       return list;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final List<JobRequest> getNonTerminatedJobs(String hostname) {
+
+      List<JobQueue> jobQueues = this.getNonTerminatedSimpleJobs(hostname);
+
+      List<JobRequest> jobRequests = new ArrayList<JobRequest>();
+
+      for (JobQueue jobQueue : jobQueues) {
+
+         JobRequest jobRequest = this.getJobRequest(jobQueue.getIdJob());
+         jobRequests.add(jobRequest);
+      }
+
+      return jobRequests;
    }
 
 }
