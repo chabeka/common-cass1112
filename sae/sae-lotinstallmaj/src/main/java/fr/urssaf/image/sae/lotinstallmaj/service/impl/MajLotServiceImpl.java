@@ -29,7 +29,7 @@ public final class MajLotServiceImpl implements MajLotService {
    public static final String CODE_ACTIVITE = "CODEACTIVITENONOBLIGATOIRE";
    public static final String DUREE_CONSERVATION = "DUREECONSERVATIONDEMANDEDELAICOTISANT";
    public static final String CASSANDRA_120510 = "CASSANDRA_120510";
-   public static final String CASSANDRA_120511 = "CASSANDRA_120511";
+   public static final String CASSANDRA_120512 = "CASSANDRA_120512";
    
    public static final int DUREE_1825 = 1825;
    public static final int DUREE_1643 = 1643;
@@ -52,9 +52,6 @@ public final class MajLotServiceImpl implements MajLotService {
    @Override
    public void demarre(String nomOperation, String[] argSpecifiques) {
       
-      // Connection à DFCE
-      connectDfce();
-      
       // Selon l'opération à lancer
       if (CODE_ACTIVITE.equalsIgnoreCase(nomOperation) ) {
          
@@ -68,9 +65,9 @@ public final class MajLotServiceImpl implements MajLotService {
          
          updateCassandra120510();
          
-      } else if (CASSANDRA_120511.equalsIgnoreCase(nomOperation) ) {
+      } else if (CASSANDRA_120512.equalsIgnoreCase(nomOperation) ) {
          
-         updateCassandra120511();
+         updateCassandra120512();
          
       } else {
          
@@ -103,6 +100,9 @@ public final class MajLotServiceImpl implements MajLotService {
       
       // Log
       LOG.info("Début de l'opération : Modification de la structure de la base DFCE pour rendre la métadonnée CodeActivite non obligatoire");
+      
+      // Connection à DFCE
+      connectDfce();
       
       // recupération de la metadonnee CodeActivite et verification qu'elle est bien dans l'état
       // attendu, à savoir qu'elle est obligatoire.
@@ -139,6 +139,9 @@ public final class MajLotServiceImpl implements MajLotService {
       // Log
       LOG.info("Début de l'opération : Modification de la durée de conservation du type de document 3.1.3.1.1 (1643 -> 1825)");
       
+      // Connection à DFCE
+      connectDfce();
+      
       // Récupération de la durée de conservation existante
       StorageAdministrationService storageAdmin = serviceProvider.getStorageAdministrationService();
       LifeCycleRule lifeCycleRule = storageAdmin.getLifeCycleRule("3.1.3.1.1");
@@ -171,9 +174,9 @@ public final class MajLotServiceImpl implements MajLotService {
    }
    
    /**
-    * Pour lot 120511 du SAE : mise à jour du keyspace "SAE" dans cassandra, en version 1.1
+    * Pour lot 120512 du SAE : mise à jour du keyspace "SAE" dans cassandra, en version 2
     */
-   private void updateCassandra120511() {
+   private void updateCassandra120512() {
       LOG.info("Début de l'opération : mise à jour du keyspace SAE");
       // Récupération de la chaîne de connexion au cluster cassandra
       SAECassandraUpdater updater = new SAECassandraUpdater(cassandraConfig);

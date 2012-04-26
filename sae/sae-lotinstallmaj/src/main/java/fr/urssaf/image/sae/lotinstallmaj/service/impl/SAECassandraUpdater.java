@@ -28,6 +28,7 @@ import me.prettyprint.hector.api.factory.HFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.urssaf.image.sae.lotinstallmaj.exception.MajLotRuntimeException;
 import fr.urssaf.image.sae.lotinstallmaj.modele.CassandraConfig;
 
 /**
@@ -190,7 +191,7 @@ public class SAECassandraUpdater {
    }
 
    /**
-    * Version 1 : création du keyspace SAE
+    * Version 2 : Ajout d'une column family dans le Keyspace "SAE"
     */
    public final void updateToVersion2() {
 
@@ -202,56 +203,40 @@ public class SAECassandraUpdater {
 
       LOG.info("Mise à jour du keyspace SAE en version 2");
 
-      // On crée le keyspace "SAE" n'existe pas déjà.
+      // Si le KeySpace SAE n'existe pas, on quitte
+      // En effet, il aurait du être créé lors de l'install du lot SAE-120511 
       KeyspaceDefinition keyspaceDef = cluster.describeKeyspace(ksName);
       if (keyspaceDef == null) {
-         // Create the keyspace definition
-         // Le facteur de réplication utilisé est le même que celui utilisé pour
-         // le keyspace "Docubase", soit
-         // 3 pour l'environnement de production, et de 1 à 3 pour les autres.
-         int replicationFactor = getDocubaseReplicationFactor(cluster);
-
-         KeyspaceDefinition newKeyspace = HFactory.createKeyspaceDefinition(
-               ksName, ThriftKsDef.DEF_STRATEGY_CLASS, replicationFactor,
-               new ArrayList<ColumnFamilyDefinition>());
-         // Add the schema to the cluster.
-         // "true" as the second param means that Hector will block until all
-         // nodes see the change.
-         cluster.addKeyspace(newKeyspace, true);
+         throw new MajLotRuntimeException("Le Keyspace " + ksName + " n'existe pas !");
       }
 
-      // On se connecte au keyspace maintenant qu'il existe
+      // On se connecte au keyspace
       connectToKeyspace();
 
-      ColumnFamilyDefinition param = HFactory.createColumnFamilyDefinition(
-            ksName, "Parameters", ComparatorType.BYTESTYPE);
-
-      // Historique des jobs
-      ColumnFamilyDefinition cfDef = HFactory.createColumnFamilyDefinition(
-            ksName, "JobHistory", ComparatorType.TIMEUUIDTYPE);
-
+      // Liste contenant la définition des column families à créer
+      List<ColumnFamilyDefinition> cfDefs = new ArrayList<ColumnFamilyDefinition>();
+      
+      // JobHistory
+      cfDefs.add(HFactory.createColumnFamilyDefinition(
+            ksName, "JobHistory", ComparatorType.TIMEUUIDTYPE));
+      
       // Ajoute les options les plus courantes à chacune des CF
-      addDefaultCFAttributs(cfDef);
-      addDefaultCFAttributs(param);
-
-      if (cfExists(keyspaceDef, param.getName())) {
-         LOG.info("La famille de colonnes " + param.getName()
-               + " est déjà existante");
-      } else {
-         LOG.info("Création de la famille de colonnes " + param.getName());
-         cluster.addColumnFamily(param, true);
+      for (ColumnFamilyDefinition c : cfDefs) {
+         addDefaultCFAttributs(c);
       }
-
+      
       // Création des CF
-      if (cfExists(keyspaceDef, cfDef.getName())) {
-         LOG.info("La famille de colonnes " + cfDef.getName()
-               + " est déjà existante");
-      } else {
-         LOG.info("Création de la famille de colonnes " + cfDef.getName());
-         cluster.addColumnFamily(cfDef, true);
+      for (ColumnFamilyDefinition c : cfDefs) {
+         if (cfExists(keyspaceDef, c.getName())) {
+            LOG.info("La famille de colonnes " + c.getName()
+                  + " est déjà existante");
+         } else {
+            LOG.info("Création de la famille de colonnes " + c.getName());
+            cluster.addColumnFamily(c, true);
+         }
       }
 
-      // On positionne la version à 1
+      // On positionne la version à 2
       setDatabaseVersion(2L);
 
    }

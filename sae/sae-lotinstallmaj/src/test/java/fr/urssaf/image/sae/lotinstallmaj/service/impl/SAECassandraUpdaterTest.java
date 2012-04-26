@@ -37,7 +37,6 @@ public class SAECassandraUpdaterTest {
       config.setHosts(CassandraUnit.host);
       config.setKeyspaceName("SAE");
       SAECassandraUpdater updater = new SAECassandraUpdater(config);
-      // updater.updateToVersion1();
       updater.updateToVersion2();
       Assert.assertEquals(2, updater.getDatabaseVersion());
    }
