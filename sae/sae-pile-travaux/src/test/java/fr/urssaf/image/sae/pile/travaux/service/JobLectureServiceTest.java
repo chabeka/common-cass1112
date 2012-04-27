@@ -3,13 +3,17 @@ package fr.urssaf.image.sae.pile.travaux.service;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 
 import org.apache.commons.lang.time.DateUtils;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +24,7 @@ import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.exception.LockTimeoutException;
 import fr.urssaf.image.sae.pile.travaux.model.JobHistory;
+import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 import fr.urssaf.image.sae.pile.travaux.model.JobToCreate;
 
@@ -34,6 +39,54 @@ public class JobLectureServiceTest {
    @Autowired
    private JobLectureService jobLectureService;
 
+   private UUID idJob;
+
+   private UUID otherJob;
+
+   private void setJob(UUID idJob) {
+      this.idJob = idJob;
+      this.otherJob = idJob;
+   }
+
+   @Before
+   public void before() {
+
+      setJob(null);
+   }
+
+   @After
+   public void after() {
+
+      // suppression du traitement de masse
+      if (idJob != null) {
+
+         jobQueueService.deleteJob(idJob);
+
+      }
+
+      if (otherJob != null) {
+
+         jobQueueService.deleteJob(otherJob);
+
+      }
+   }
+
+   @Test
+   public void getUnreservedJobRequestIterator() {
+
+      // création d'un job
+      idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+      createJob(idJob);
+
+      Iterator<JobQueue> jobs = jobLectureService
+            .getUnreservedJobRequestIterator();
+
+      Assert.assertTrue(
+            "il doit exister au moins un traitement en cours ou réservé", jobs
+                  .hasNext());
+
+   }
+
    @Test
    public void getNonTerminatedJobs() throws JobDejaReserveException,
          JobInexistantException, LockTimeoutException {
@@ -41,7 +94,7 @@ public class JobLectureServiceTest {
       String hostname = "myHostname";
 
       // création d'un job
-      UUID idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+      idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
       createJob(idJob);
 
       // réservation d'un job
@@ -59,11 +112,11 @@ public class JobLectureServiceTest {
    public void getJobHistoryByUUID() {
 
       // création d'un job
-      UUID idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+      idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
       createJob(idJob);
 
       // création d'un autre job
-      UUID otherJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+      otherJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
       createJob(otherJob);
 
       // ajout des traces dans le premier job
@@ -122,7 +175,7 @@ public class JobLectureServiceTest {
             .getTrace());
 
       String pattern = "dd/MM/yyyy HH:mm:ss.SSS";
-      DateFormat dateFormat = new SimpleDateFormat(pattern);
+      DateFormat dateFormat = new SimpleDateFormat(pattern, Locale.getDefault());
 
       Assert.assertEquals("la date est inattendue", dateFormat.format(DateUtils
             .addMilliseconds(expectedDate, decalage)), dateFormat
