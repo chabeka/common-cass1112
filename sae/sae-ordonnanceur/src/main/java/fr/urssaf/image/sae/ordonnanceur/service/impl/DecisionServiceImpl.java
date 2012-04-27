@@ -18,6 +18,7 @@ import fr.urssaf.image.sae.ordonnanceur.service.JobFailureService;
 import fr.urssaf.image.sae.ordonnanceur.support.CaptureMasseSupport;
 import fr.urssaf.image.sae.ordonnanceur.support.DFCESupport;
 import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
+import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 
 /**
  * Implémentation du sevice {@link DecisionService}
@@ -37,8 +38,6 @@ public class DecisionServiceImpl implements DecisionService {
          .getLogger(DecisionServiceImpl.class);
 
    private static final String PREFIX_LOG = "ordonnanceur()";
-
-  
 
    /**
     * 
@@ -62,9 +61,8 @@ public class DecisionServiceImpl implements DecisionService {
     * {@inheritDoc}
     */
    @Override
-   public final JobQueue trouverJobALancer(
-         List<JobQueue> jobsEnAttente,
-         List<JobQueue> jobsEnCours) throws AucunJobALancerException {
+   public final JobQueue trouverJobALancer(List<JobQueue> jobsEnAttente,
+         List<JobRequest> jobsEnCours) throws AucunJobALancerException {
 
       // pour l'instant la partie décisionnelle ne prend actuellement en compte
       // que les traitements d'archivage de masse.
@@ -87,12 +85,12 @@ public class DecisionServiceImpl implements DecisionService {
 
       // filtrage des traitements en cours sur les capture en masse
       if (!CollectionUtils.isEmpty(jobsEnCours)) {
-         Collection<JobQueue> traitementsEnCours = captureMasseSupport
+         Collection<JobRequest> enCours = captureMasseSupport
                .filtrerCaptureMasse(jobsEnCours);
 
          // si un traitement de capture en masse est en cours alors aucun
          // traitement n'est à lancer sur le serveur
-         if (!traitementsEnCours.isEmpty()) {
+         if (!enCours.isEmpty()) {
             throw new AucunJobALancerException();
          }
 
@@ -122,12 +120,11 @@ public class DecisionServiceImpl implements DecisionService {
    private List<JobQueue> filtrerTraitementMasseFailure(
          Collection<JobQueue> jobRequests) {
 
-      final Set<UUID> jobsFailure = jobFailureService
-            .findJobEchec();
+      final Set<UUID> jobsFailure = jobFailureService.findJobEchec();
 
       @SuppressWarnings("unchecked")
-      List<JobQueue> jobMasse = (List<JobQueue>) CollectionUtils
-            .select(jobRequests, new Predicate() {
+      List<JobQueue> jobMasse = (List<JobQueue>) CollectionUtils.select(
+            jobRequests, new Predicate() {
 
                @Override
                public boolean evaluate(Object object) {

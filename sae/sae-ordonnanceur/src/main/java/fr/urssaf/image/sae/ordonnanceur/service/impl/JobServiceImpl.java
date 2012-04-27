@@ -15,6 +15,7 @@ import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.exception.LockTimeoutException;
 import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
+import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 import fr.urssaf.image.sae.pile.travaux.service.JobLectureService;
 import fr.urssaf.image.sae.pile.travaux.service.JobQueueService;
 
@@ -53,7 +54,7 @@ public class JobServiceImpl implements JobService {
     * {@inheritDoc}
     */
    @Override
-   public final List<JobQueue> recupJobEnCours() {
+   public final List<JobRequest> recupJobEnCours() {
 
       String hostname;
       try {
@@ -61,8 +62,8 @@ public class JobServiceImpl implements JobService {
       } catch (UnknownHostException e) {
          throw new OrdonnanceurRuntimeException(e);
       }
-      List<JobQueue> jobRequests = jobLectureService
-            .getNonTerminatedSimpleJobs(hostname);
+      List<JobRequest> jobRequests = jobLectureService
+            .getNonTerminatedJobs(hostname);
 
       return jobRequests;
 
@@ -103,6 +104,15 @@ public class JobServiceImpl implements JobService {
          throw new OrdonnanceurRuntimeException(e);
       }
 
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final void updateToCheckFlag(UUID idJob, Boolean flag, String description)
+         throws JobInexistantException {
+      jobQueueService.updateToCheckFlag(idJob, flag, description);
    }
 
 }

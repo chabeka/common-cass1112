@@ -6,6 +6,7 @@ import java.util.UUID;
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
+import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 
 /**
  * Service des traitements de masse contenus dans la pile des travaux
@@ -20,7 +21,7 @@ public interface JobService {
     * 
     * @return liste des travaux en cours d'exécution
     */
-   List<JobQueue> recupJobEnCours();
+   List<JobRequest> recupJobEnCours();
 
    /**
     * Renvoie une liste des travaux qui n'ont pas été lancés
@@ -44,4 +45,20 @@ public interface JobService {
     */
    void reserveJob(UUID idJob) throws JobDejaReserveException,
          JobInexistantException;
+
+   /**
+    * Met à jour le job en mettant à jour le flag signifiant une erreur et la
+    * description du problème.
+    * 
+    * @param idJob
+    *           identifiant du job
+    * @param flag
+    *           valeur du flag (true/false)
+    * @param description
+    *           description du problème rencontré
+    * @throws JobInexistantException
+    *            le job à mettre à jour n'existe pas
+    */
+   void updateToCheckFlag(UUID idJob, Boolean flag, String description)
+         throws JobInexistantException;
 }

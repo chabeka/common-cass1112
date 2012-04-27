@@ -1,9 +1,11 @@
 package fr.urssaf.image.sae.ordonnanceur.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Assert;
@@ -16,9 +18,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.ordonnanceur.exception.AucunJobALancerException;
 import fr.urssaf.image.sae.ordonnanceur.exception.JobRuntimeException;
+import fr.urssaf.image.sae.ordonnanceur.model.OrdonnanceurConfiguration;
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
+import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
+import fr.urssaf.image.sae.pile.travaux.model.JobState;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
@@ -37,6 +42,9 @@ public class CoordinationServiceTest {
    private DecisionService decisionService;
 
    private JobQueue traitement;
+
+   @Autowired
+   private OrdonnanceurConfiguration configuration;
 
    @Before
    public void before() {
@@ -64,7 +72,7 @@ public class CoordinationServiceTest {
       EasyMock.expect(jobService.recupJobsALancer()).andReturn(jobsEnAttente)
             .once();
 
-      List<JobQueue> jobsEnCours = new ArrayList<JobQueue>();
+      List<JobRequest> jobsEnCours = new ArrayList<JobRequest>();
 
       EasyMock.expect(jobService.recupJobEnCours()).andReturn(jobsEnCours)
             .once();
@@ -94,7 +102,7 @@ public class CoordinationServiceTest {
       EasyMock.expect(jobService.recupJobsALancer()).andReturn(jobsEnAttente)
             .once();
 
-      List<JobQueue> jobsEnCours = new ArrayList<JobQueue>();
+      List<JobRequest> jobsEnCours = new ArrayList<JobRequest>();
 
       EasyMock.expect(jobService.recupJobEnCours()).andReturn(jobsEnCours)
             .once();
@@ -149,7 +157,7 @@ public class CoordinationServiceTest {
       EasyMock.expect(jobService.recupJobsALancer()).andReturn(jobsEnAttente)
             .once();
 
-      List<JobQueue> jobsEnCours = new ArrayList<JobQueue>();
+      List<JobRequest> jobsEnCours = new ArrayList<JobRequest>();
 
       EasyMock.expect(jobService.recupJobEnCours()).andReturn(jobsEnCours)
             .once();
@@ -186,6 +194,101 @@ public class CoordinationServiceTest {
          Assert.assertEquals(
                "identifiant du traitement inexistant est inattendu", traitement
                      .getIdJob(), cause.getInstanceId());
+
+      }
+
+   }
+
+   @Test
+   public void lancerTraitement_failure_deja_reserve_et_bloque()
+         throws AucunJobALancerException, JobInexistantException,
+         JobDejaReserveException, InterruptedException {
+
+      // on set le temps max de réservation à 1 minute
+      configuration.setTpsMaxReservation(1);
+
+      List<JobQueue> jobsEnAttente = new ArrayList<JobQueue>();
+
+      EasyMock.expect(jobService.recupJobsALancer()).andReturn(jobsEnAttente)
+            .once();
+
+      List<JobRequest> jobsEnCours = new ArrayList<JobRequest>();
+      UUID idJob = UUID.randomUUID();
+
+      JobRequest jobRequest = new JobRequest();
+      jobRequest.setIdJob(idJob);
+      jobRequest.setReservationDate(DateUtils.addMinutes(new Date(), -2));
+      jobRequest.setState(JobState.RESERVED);
+      jobsEnCours.add(jobRequest);
+
+      EasyMock.expect(jobService.recupJobEnCours()).andReturn(jobsEnCours)
+            .once();
+
+      jobService.updateToCheckFlag(EasyMock.anyObject(UUID.class), EasyMock
+            .anyBoolean(), EasyMock.anyObject(String.class));
+      EasyMock.expectLastCall();
+
+      EasyMock.expect(
+            decisionService.trouverJobALancer(jobsEnAttente, jobsEnCours))
+            .andThrow(new AucunJobALancerException()).once();
+
+      EasyMock.replay(jobService, decisionService);
+
+      try {
+         coordinationService.lancerTraitement();
+
+         Assert.fail("erreur attendue");
+      } catch (Exception e) {
+
+         EasyMock.verify(jobService, decisionService);
+
+      }
+
+   }
+   
+   
+   @Test
+   public void lancerTraitement_failure_deja_lance_et_bloque()
+         throws AucunJobALancerException, JobInexistantException,
+         JobDejaReserveException, InterruptedException {
+
+      // on set le temps max de réservation à 1 minute
+      configuration.setTpsMaxTraitement(1);
+
+      List<JobQueue> jobsEnAttente = new ArrayList<JobQueue>();
+
+      EasyMock.expect(jobService.recupJobsALancer()).andReturn(jobsEnAttente)
+            .once();
+
+      List<JobRequest> jobsEnCours = new ArrayList<JobRequest>();
+      UUID idJob = UUID.randomUUID();
+
+      JobRequest jobRequest = new JobRequest();
+      jobRequest.setIdJob(idJob);
+      jobRequest.setStartingDate(DateUtils.addMinutes(new Date(), -2));
+      jobRequest.setState(JobState.STARTING);
+      jobsEnCours.add(jobRequest);
+
+      EasyMock.expect(jobService.recupJobEnCours()).andReturn(jobsEnCours)
+            .once();
+
+      jobService.updateToCheckFlag(EasyMock.anyObject(UUID.class), EasyMock
+            .anyBoolean(), EasyMock.anyObject(String.class));
+      EasyMock.expectLastCall();
+
+      EasyMock.expect(
+            decisionService.trouverJobALancer(jobsEnAttente, jobsEnCours))
+            .andThrow(new AucunJobALancerException()).once();
+
+      EasyMock.replay(jobService, decisionService);
+
+      try {
+         coordinationService.lancerTraitement();
+
+         Assert.fail("erreur attendue");
+      } catch (Exception e) {
+
+         EasyMock.verify(jobService, decisionService);
 
       }
 

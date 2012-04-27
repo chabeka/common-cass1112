@@ -4,6 +4,7 @@ import java.util.List;
 
 import fr.urssaf.image.sae.ordonnanceur.exception.AucunJobALancerException;
 import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
+import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 
 /**
  * Service de décision pour sélectionner les traitements en masse à exécuter
@@ -26,5 +27,5 @@ public interface DecisionService {
     *            Exception levée si aucun job n'est à lancer
     */
    JobQueue trouverJobALancer(List<JobQueue> jobsEnAttente,
-         List<JobQueue> jobsEnCours) throws AucunJobALancerException;
+         List<JobRequest> jobsEnCours) throws AucunJobALancerException;
 }

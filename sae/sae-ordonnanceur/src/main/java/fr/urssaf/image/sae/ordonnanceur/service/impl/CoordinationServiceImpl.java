@@ -1,9 +1,13 @@
 package fr.urssaf.image.sae.ordonnanceur.service.impl;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.sae.ordonnanceur.exception.AucunJobALancerException;
 import fr.urssaf.image.sae.ordonnanceur.exception.JobRuntimeException;
+import fr.urssaf.image.sae.ordonnanceur.model.OrdonnanceurConfiguration;
 import fr.urssaf.image.sae.ordonnanceur.service.CoordinationService;
 import fr.urssaf.image.sae.ordonnanceur.service.DecisionService;
 import fr.urssaf.image.sae.ordonnanceur.service.JobService;
@@ -19,6 +24,8 @@ import fr.urssaf.image.sae.ordonnanceur.support.TraitementLauncherSupport;
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
+import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
+import fr.urssaf.image.sae.pile.travaux.model.JobState;
 
 /**
  * implémentation du service {@link CoordinationService}
@@ -34,24 +41,32 @@ public class CoordinationServiceImpl implements CoordinationService {
 
    private final TraitementLauncherSupport captureMasseLauncher;
 
+   private final OrdonnanceurConfiguration ordonnanceurConfiguration;
+
+   private static final SimpleDateFormat FORMAT = new SimpleDateFormat(
+         "dd/MM/yyyy HH'h'mm sss's' SSS'ms'", Locale.FRENCH);
+
    /**
     * 
     * @param decisionService
     *           service de décision pour les traitements à lancer
     * @param jobService
     *           service de la pile des travaux
-    * @param captureMasseLauncher
+    * @param launcher
     *           service de lancement du traitement de la capture en masse
+    * @param config
+    *           configuration des traitements
     */
    @Autowired
-   public CoordinationServiceImpl(
-         DecisionService decisionService,
+   public CoordinationServiceImpl(DecisionService decisionService,
          JobService jobService,
-         @Qualifier("captureMasseLauncher") TraitementLauncherSupport captureMasseLauncher) {
+         @Qualifier("captureMasseLauncher") TraitementLauncherSupport launcher,
+         OrdonnanceurConfiguration config) {
 
       this.decisionService = decisionService;
       this.jobService = jobService;
-      this.captureMasseLauncher = captureMasseLauncher;
+      this.captureMasseLauncher = launcher;
+      this.ordonnanceurConfiguration = config;
 
    }
 
@@ -84,7 +99,7 @@ public class CoordinationServiceImpl implements CoordinationService {
 
       // etape 1 : Récupération de la liste des traitements
 
-      List<JobQueue> jobsEnCours = this.jobService.recupJobEnCours();
+      List<JobRequest> jobsEnCours = this.jobService.recupJobEnCours();
       LOG.debug("{} - nombre de traitements en cours ou réservés: {}",
             PREFIX_LOG, CollectionUtils.size(jobsEnCours));
 
@@ -92,7 +107,10 @@ public class CoordinationServiceImpl implements CoordinationService {
       LOG.debug("{} - nombre de traitements en attente: {}", PREFIX_LOG,
             CollectionUtils.size(jobsEnAttente));
 
-      // Etape 2: Décision du traitement à lancer
+      // Etape 2 : Contrôle de la pile des travaux
+      controlePile(jobsEnCours);
+
+      // Etape 3: Décision du traitement à lancer
 
       JobQueue traitement = this.decisionService.trouverJobALancer(
             jobsEnAttente, jobsEnCours);
@@ -100,7 +118,7 @@ public class CoordinationServiceImpl implements CoordinationService {
             .debug("{} - traitement à lancer {}", PREFIX_LOG,
                   toString(traitement));
 
-      // Etape3 : Réservation du traitement
+      // Etape 4 : Réservation du traitement
 
       try {
 
@@ -144,6 +162,85 @@ public class CoordinationServiceImpl implements CoordinationService {
 
       // renvoie le traitement
       return traitement;
+   }
+
+   /**
+    * Vérifie que les traitements en cours ne sont pas bloqués. Si c'est le cas,
+    * ajout d'un historique et d'un LOG en erreur à destination de
+    * l'exploitation
+    * 
+    * @param jobsEnCours
+    */
+   private void controlePile(List<JobRequest> jobsEnCours) {
+      Date currentDate;
+      for (JobRequest jobCourant : jobsEnCours) {
+
+         currentDate = new Date();
+
+         boolean isJobReserveBloque = JobState.RESERVED.equals(jobCourant
+               .getState())
+               && currentDate.after(DateUtils.addMinutes(jobCourant
+                     .getReservationDate(), ordonnanceurConfiguration
+                     .getTpsMaxReservation()))
+               && !Boolean.TRUE.equals(jobCourant.getToCheckFlag());
+
+         boolean isJobLanceBloque = JobState.STARTING.equals(jobCourant
+               .getState())
+               && currentDate.after(DateUtils.addMinutes(jobCourant
+                     .getStartingDate(), ordonnanceurConfiguration
+                     .getTpsMaxTraitement()))
+               && !Boolean.TRUE.equals(jobCourant.getToCheckFlag());
+
+         if (isJobReserveBloque) {
+            LOG
+                  .error(
+                        "Contrôler le traitement n°{}. Raison : Etat \"réservé\" "
+                              + "depuis plus de {} minutes (date de réservation : {}, date de contrôle : {})",
+                        new Object[] {
+                              jobCourant.getIdJob(),
+                              ordonnanceurConfiguration
+                                    .getTpsMaxReservation(),
+                              FORMAT.format(jobCourant.getReservationDate()),
+                              FORMAT.format(currentDate) });
+            try {
+               jobService.updateToCheckFlag(jobCourant.getIdJob(), true,
+                     "Job réservé depuis plus de "
+                           + ordonnanceurConfiguration.getTpsMaxReservation()
+                           + " minutes (date de réservation : "
+                           + FORMAT.format(jobCourant.getReservationDate())
+                           + ", date de contrôle : "
+                           + FORMAT.format(currentDate));
+
+            } catch (JobInexistantException e) {
+               LOG.warn("Impossible de modifier le Job, il n'existe pas", e);
+            }
+
+         } else if (isJobLanceBloque) {
+            LOG
+                  .error(
+                        "Contrôler le traitement n°{}. Raison : Etat \"en cours\" "
+                              + "depuis plus de {} minutes (date de démarrage du traitement : {}, "
+                              + "date de contrôle : {})",
+                        new Object[] {
+                              jobCourant.getIdJob(),
+                              ordonnanceurConfiguration.getTpsMaxTraitement(),
+                              FORMAT.format(jobCourant.getStartingDate()),
+                              FORMAT.format(currentDate) });
+            try {
+               jobService.updateToCheckFlag(jobCourant.getIdJob(), true,
+                     "Job en cours depuis plus de "
+                           + ordonnanceurConfiguration.getTpsMaxReservation()
+                           + " minutes (date de réservation : "
+                           + FORMAT.format(jobCourant.getStartingDate())
+                           + ", date de contrôle : "
+                           + FORMAT.format(currentDate));
+
+            } catch (JobInexistantException e) {
+               LOG.warn("Impossible de modifier le Job, il n'existe pas", e);
+            }
+         }
+      }
+
    }
 
    private String toString(JobQueue traitement) {

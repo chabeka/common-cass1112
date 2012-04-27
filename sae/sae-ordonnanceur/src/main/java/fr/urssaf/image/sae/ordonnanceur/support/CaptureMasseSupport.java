@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
+import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 
 /**
  * Support pour les traitements de capture en masse
@@ -61,8 +62,8 @@ public class CaptureMasseSupport {
          List<JobQueue> jobRequests) {
 
       @SuppressWarnings("unchecked")
-      List<JobQueue> jobCaptureMasse = (List<JobQueue>) CollectionUtils
-            .select(jobRequests, new Predicate() {
+      List<JobQueue> jobCaptureMasse = (List<JobQueue>) CollectionUtils.select(
+            jobRequests, new Predicate() {
 
                @Override
                public boolean evaluate(Object object) {
@@ -95,19 +96,19 @@ public class CaptureMasseSupport {
     *           traitements de masse
     * @return traitements de capture en masse filtrés
     */
-   public final List<JobQueue> filtrerCaptureMasse(
-         Collection<JobQueue> jobRequests) {
+   public final List<JobRequest> filtrerCaptureMasse(
+         Collection<JobRequest> jobRequests) {
 
       @SuppressWarnings("unchecked")
-      List<JobQueue> jobCaptureMasse = (List<JobQueue>) CollectionUtils
+      List<JobRequest> jobCaptureMasse = (List<JobRequest>) CollectionUtils
             .select(jobRequests, new Predicate() {
 
                @Override
                public boolean evaluate(Object object) {
 
-                  JobQueue jobRequest = (JobQueue) object;
+                  JobRequest jobRequest = (JobRequest) object;
 
-                  boolean isCaptureMasse = isCaptureMasse(jobRequest);
+                  boolean isCaptureMasse = isCaptureMasseJobRequest(jobRequest);
 
                   return isCaptureMasse;
                }
@@ -118,6 +119,13 @@ public class CaptureMasseSupport {
    }
 
    private boolean isCaptureMasse(JobQueue jobRequest) {
+
+      boolean isCaptureMasse = CAPTURE_MASSE_JN.equals(jobRequest.getType());
+
+      return isCaptureMasse;
+   }
+
+   private boolean isCaptureMasseJobRequest(JobRequest jobRequest) {
 
       boolean isCaptureMasse = CAPTURE_MASSE_JN.equals(jobRequest.getType());
 

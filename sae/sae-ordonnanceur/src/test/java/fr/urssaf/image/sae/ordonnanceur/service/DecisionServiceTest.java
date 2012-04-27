@@ -18,6 +18,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import fr.urssaf.image.sae.ordonnanceur.exception.AucunJobALancerException;
 import fr.urssaf.image.sae.ordonnanceur.support.DFCESupport;
 import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
+import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 
 //import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 
@@ -56,10 +57,10 @@ public class DecisionServiceTest {
 
       EasyMock.replay(dfceSuppport);
 
-      List<JobQueue> jobsEnCours = new ArrayList<JobQueue>();
+      List<JobRequest> jobsEnCours = new ArrayList<JobRequest>();
 
-      jobsEnCours.add(createJob("OTHER_JN1"));
-      jobsEnCours.add(createJob("OTHER_JN2"));
+      jobsEnCours.add(createJobRequest("OTHER_JN1"));
+      jobsEnCours.add(createJobRequest("OTHER_JN2"));
 
       List<JobQueue> jobsEnAttente = new ArrayList<JobQueue>();
 
@@ -101,7 +102,7 @@ public class DecisionServiceTest {
 
       EasyMock.replay(dfceSuppport);
 
-      List<JobQueue> jobsEnCours = new ArrayList<JobQueue>();
+      List<JobRequest> jobsEnCours = new ArrayList<JobRequest>();
 
       List<JobQueue> jobsEnAttente = new ArrayList<JobQueue>();
 
@@ -118,7 +119,7 @@ public class DecisionServiceTest {
    @Test
    public void decisionService_failure_noJobEnAttente_noJob() {
 
-      List<JobQueue> jobsEnCours = new ArrayList<JobQueue>();
+      List<JobRequest> jobsEnCours = new ArrayList<JobRequest>();
 
       try {
 
@@ -143,7 +144,7 @@ public class DecisionServiceTest {
    public void decisionService_failure_noJobEnAttente_nojobCaptureMasse()
          throws AucunJobALancerException {
 
-      List<JobQueue> jobsEnCours = new ArrayList<JobQueue>();
+      List<JobRequest> jobsEnCours = new ArrayList<JobRequest>();
       List<JobQueue> jobsEnAttente = new ArrayList<JobQueue>();
 
       JobQueue job = createJob("OTHER_JN1");
@@ -162,7 +163,7 @@ public class DecisionServiceTest {
    public void decisionService_failure_noJobEnAttente_nojobCaptureMasseLocal()
          throws AucunJobALancerException {
 
-      List<JobQueue> jobsEnCours = new ArrayList<JobQueue>();
+      List<JobRequest> jobsEnCours = new ArrayList<JobRequest>();
       List<JobQueue> jobsEnAttente = new ArrayList<JobQueue>();
 
       jobsEnAttente.add(createJob(CAPTURE_MASSE_JN, CER44_SOMMAIRE));
@@ -178,8 +179,8 @@ public class DecisionServiceTest {
    public void decisionService_failure_noJobEnAttente_executionJobCaptureMasse()
          throws AucunJobALancerException {
 
-      List<JobQueue> jobsEnCours = new ArrayList<JobQueue>();
-      jobsEnCours.add(createJob(CAPTURE_MASSE_JN));
+      List<JobRequest> jobsEnCours = new ArrayList<JobRequest>();
+      jobsEnCours.add(createJobRequest(CAPTURE_MASSE_JN));
 
       List<JobQueue> jobsEnAttente = new ArrayList<JobQueue>();
 
@@ -205,7 +206,7 @@ public class DecisionServiceTest {
       jobFailureService.ajouterEchec(job.getIdJob(), new NestableException(
             "echec n°3"));
 
-      List<JobQueue> jobsEnCours = new ArrayList<JobQueue>();
+      List<JobRequest> jobsEnCours = new ArrayList<JobRequest>();
       List<JobQueue> jobsEnAttente = new ArrayList<JobQueue>();
 
       jobsEnAttente.add(job);
@@ -218,6 +219,17 @@ public class DecisionServiceTest {
 
       JobQueue job = createJob(type);
       job.setParameters(parameters);
+
+      return job;
+   }
+
+   private JobRequest createJobRequest(String type) {
+      UUID idJob = UUID.randomUUID();
+
+      JobRequest job = new JobRequest();
+
+      job.setType(type);
+      job.setIdJob(idJob);
 
       return job;
    }

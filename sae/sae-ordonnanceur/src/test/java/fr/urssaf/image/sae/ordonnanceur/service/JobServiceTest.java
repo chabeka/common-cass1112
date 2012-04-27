@@ -79,7 +79,7 @@ public class JobServiceTest {
             new Date());
 
       // récupération des traitements en cours
-      List<JobQueue> jobEnCours = jobService.recupJobEnCours();
+      List<JobRequest> jobEnCours = jobService.recupJobEnCours();
 
       Assert.assertTrue("la liste des job en cours doit être non vide",
             !jobEnCours.isEmpty());
@@ -182,5 +182,20 @@ public class JobServiceTest {
 
       }
 
+   }
+
+   @Test
+   public void testFlag() throws JobInexistantException {
+
+      jobService.updateToCheckFlag(job.getIdJob(), true, "test");
+
+      JobRequest jobRequest = jobLectureService.getJobRequest(job.getIdJob());
+
+      Assert.assertTrue("le flag d'erreur doit être à vrai", jobRequest
+            .getToCheckFlag());
+
+      Assert.assertEquals(
+            "le champ description doit être rensigné correctement", "test",
+            jobRequest.getToCheckFlagRaison());
    }
 }

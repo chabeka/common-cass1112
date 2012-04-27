@@ -47,6 +47,8 @@
    <bean id="ordonnanceurConfiguration"
       class="fr.urssaf.image.sae.ordonnanceur.model.OrdonnanceurConfiguration">
       <property name="intervalle" value="${sae.ordonnanceur.intervalle}" />
+      <property name="tpsMaxReservation" value="${sae.piletravaux.seuilCheckReservation}" />
+      <property name="tpsMaxTraitement" value="${sae.piletravaux.seuilCheckEncours}" />
    </bean>
 
 </beans>

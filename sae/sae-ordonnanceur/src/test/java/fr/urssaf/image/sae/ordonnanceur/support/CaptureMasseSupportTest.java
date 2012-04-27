@@ -13,6 +13,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
+import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
@@ -64,17 +65,17 @@ public class CaptureMasseSupportTest {
    @Test
    public void filtrerJobExecutionLocal() {
 
-      List<JobQueue> jobs = new ArrayList<JobQueue>();
+      List<JobRequest> jobs = new ArrayList<JobRequest>();
 
       // traitement de capture en masse
-      jobs.add(createJob(CAPTURE_MASSE_JN));
-      jobs.add(createJob(CAPTURE_MASSE_JN));
+      jobs.add(createJobRequest(CAPTURE_MASSE_JN));
+      jobs.add(createJobRequest(CAPTURE_MASSE_JN));
 
       // autre traitement de masse
-      jobs.add(createJob("OTHER_JN1"));
-      jobs.add(createJob("OTHER_JN2"));
+      jobs.add(createJobRequest("OTHER_JN1"));
+      jobs.add(createJobRequest("OTHER_JN2"));
 
-      List<JobQueue> traitements = captureMasseSupport
+      List<JobRequest> traitements = captureMasseSupport
             .filtrerCaptureMasse(jobs);
 
       Assert.assertEquals("le nombre de traitements filtrés est inattendu", 2,
@@ -99,6 +100,18 @@ public class CaptureMasseSupportTest {
       UUID idJob = UUID.randomUUID();
 
       JobQueue job = new JobQueue();
+
+      job.setType(type);
+      job.setIdJob(idJob);
+
+      return job;
+   }
+
+   private JobRequest createJobRequest(String type) {
+
+      UUID idJob = UUID.randomUUID();
+
+      JobRequest job = new JobRequest();
 
       job.setType(type);
       job.setIdJob(idJob);

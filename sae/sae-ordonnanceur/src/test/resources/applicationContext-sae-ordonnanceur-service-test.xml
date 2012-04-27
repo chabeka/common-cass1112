@@ -9,6 +9,20 @@
 
    <import resource="applicationContext-sae-ordonnanceur-service.xml" />
 
+   <bean id="applicationProperties"
+      class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+      <property name="location"
+         value="config/commons-cassandra-local.properties" />
+   </bean>
+
+   <!-- configuration de l'ordonnanceur -->
+   <bean id="ordonnanceurConfiguration"
+      class="fr.urssaf.image.sae.ordonnanceur.model.OrdonnanceurConfiguration">
+      <property name="intervalle" value="${sae.ordonnanceur.intervalle}" />
+      <property name="tpsMaxReservation" value="${sae.piletravaux.seuilCheckReservation}" />
+      <property name="tpsMaxTraitement" value="${sae.piletravaux.seuilCheckEncours}" />
+   </bean>
+
    <!-- configuration de ECDE -->
 
    <bean id="ecdeSource1" class="fr.urssaf.image.sae.ecde.modele.source.EcdeSource">
