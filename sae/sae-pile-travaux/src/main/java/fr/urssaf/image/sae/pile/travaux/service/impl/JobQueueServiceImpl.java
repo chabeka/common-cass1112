@@ -27,7 +27,6 @@ import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.exception.LockTimeoutException;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
-import fr.urssaf.image.sae.pile.travaux.model.JobState;
 import fr.urssaf.image.sae.pile.travaux.model.JobToCreate;
 import fr.urssaf.image.sae.pile.travaux.service.JobLectureService;
 import fr.urssaf.image.sae.pile.travaux.service.JobQueueService;
@@ -204,8 +203,9 @@ public class JobQueueServiceImpl implements JobQueueService {
             throw new JobInexistantException(idJob);
          }
 
-         // Vérifier que le job n'est pas déjà RESERVED
-         if (JobState.RESERVED.equals(jobRequest.getState())) {
+         // Vérifier que le job n'est pas déjà réservé
+         //on s'appuie sur la date de réservation qui dans ce cas est renseigné
+         if (jobRequest.getReservationDate() != null) {
             throw new JobDejaReserveException(idJob, jobRequest.getReservedBy());
          }
 
@@ -349,8 +349,8 @@ public class JobQueueServiceImpl implements JobQueueService {
       // rien à écrire
 
       // Ecriture dans la CF "JobHistory"
-      this.jobHistorySupport.ajouterTrace(jobUuid, timeUuid, description,
-            clock);
+      this.jobHistorySupport
+            .ajouterTrace(jobUuid, timeUuid, description, clock);
    }
 
    /**

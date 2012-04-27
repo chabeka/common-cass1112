@@ -143,6 +143,23 @@ public class JobQueueServiceReserveJobTest {
             "RESERVATION DU JOB", histories.get(1).getTrace());
    }
 
+   @Test(expected = JobDejaReserveException.class)
+   public void reserveJob_failure_reservation() throws JobDejaReserveException,
+         JobInexistantException, LockTimeoutException {
+
+      idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+      createJob(idJob);
+
+      // réservation du job
+      jobQueueService.reserveJob(idJob, "serveur", new Date());
+
+      // on démarre le job
+      jobQueueService.startingJob(idJob, new Date());
+
+      // seconde tentative de résevation du job
+      jobQueueService.reserveJob(idJob, "other_serveur", new Date());
+   }
+
    private void createJob(UUID idJob) {
 
       Date dateCreation = new Date();
