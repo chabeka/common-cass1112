@@ -6,7 +6,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>Configuration Cas de Tests</title>
+<title>Jeux de test à injecter : Configuration</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link href="css/style.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript">
@@ -25,7 +25,7 @@
 <table width="100%">
 	<tr>
 		<td style="width: 75%;">
-		<p class="titre1">Configuration Cas de Tests</p>
+		<p class="titre1">Jeux de test à injecter : Configuration</p>
 		</td>
 		<td align="right" style="width: 25%;"><a href="index.do">&lt;&lt;&nbsp;Retour
 		à l&apos;accueil </a></td>
@@ -47,7 +47,7 @@
 	<input type="hidden" name="action" id="action" />
 	<input type="hidden" name="idSup" id="idSup" />
 
-	<table border="1px" width="50%">
+	<table border="1px" width="100%">
 		<thead>
 			<tr>
 				<th>Sup.</th>
@@ -58,24 +58,24 @@
 		<tbody>
 			<tr>
 				<td colspan="3">
-				<h3>Modification des cas de test existants</h3>
+				<h3>Supression</h3>
 				</td>
 			</tr>
 			<c:forEach items="${formulaire.ecdeTests.listTests}"
 				var="currentCas" varStatus="status">
 				<tr>
-					<td><input type="submit"
+					<td style="text-align:center;"><input type="submit"
 						onclick="return validateDelete('<c:out value="${status.index}" />')"
 						value="supprimer" /></td>
 					<td><form:input
-						path="ecdeTests.listTests[${status.index}].name" size="50" /></td>
+						path="ecdeTests.listTests[${status.index}].name" cssStyle="width:95%;" /></td>
 					<td><form:input
-						path="ecdeTests.listTests[${status.index}].url" size="50" /></td>
+						path="ecdeTests.listTests[${status.index}].url" cssStyle="width:95%;" size="50" /></td>
 				</tr>
 			</c:forEach>
 			<tr>
 				<td colspan="3">
-				<h3>Ajout de cas de test</h3>
+				<h3>Ajout</h3>
 				</td>
 			</tr>
 			<tr>
@@ -101,6 +101,9 @@
 			</tr>
 		</tbody>
 	</table>
+   
+   <br /><br /><br /><br />
+   
 </form:form>
 </body>
 </html>

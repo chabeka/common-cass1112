@@ -1,6 +1,3 @@
-/**
- * 
- */
 package fr.urssaf.image.sae.integration.ihmweb.controller;
 
 import java.util.List;
@@ -13,20 +10,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import fr.urssaf.image.sae.integration.ihmweb.config.TestConfig;
-import fr.urssaf.image.sae.integration.ihmweb.formulaire.ListeEcdeSourcesFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.formulaire.ConfigFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ecde.EcdeSource;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ecde.EcdeSources;
 import fr.urssaf.image.sae.integration.ihmweb.service.ecde.file.EcdeSourceManager;
 
 /**
- * Controller permettant l'affichage, la modification, la création et la
- * suppression des mappings
- * 
+ * Contrôleur pour la configuration générale de l'application
  */
 @Controller
-@RequestMapping(value = "listeEcdeSources")
-public class ListeEcdeSourcesController {
+@RequestMapping(value = "config")
+public class ConfigController {
 
+   private static final String NOM_VUE = "config";
+   
    @Autowired
    private TestConfig testConfig;
 
@@ -46,7 +43,7 @@ public class ListeEcdeSourcesController {
    @RequestMapping(method = RequestMethod.GET)
    public final String viewListeEcdeSources(Model model) {
 
-      ListeEcdeSourcesFormulaire form = new ListeEcdeSourcesFormulaire();
+      ConfigFormulaire form = new ConfigFormulaire();
       // try {
       // EcdeSources ecdeSources = ecdeSourceManager.load();
       form.setEcdeSources(ecdeSources);
@@ -59,7 +56,7 @@ public class ListeEcdeSourcesController {
 
       model.addAttribute("formulaire", form);
 
-      return "listeEcdeSources";
+      return NOM_VUE;
 
    }
 
@@ -74,7 +71,7 @@ public class ListeEcdeSourcesController {
     */
    @RequestMapping(method = RequestMethod.POST, params = { "action=add" })
    public final String saveListeEcdeSources(Model model,
-         ListeEcdeSourcesFormulaire form) {
+         ConfigFormulaire form) {
 
       List<EcdeSource> listEcde = form.getEcdeSources().getSources();
       listEcde.add(form.getSource());
@@ -82,7 +79,7 @@ public class ListeEcdeSourcesController {
       form.setSource(new EcdeSource());
 
       model.addAttribute("formulaire", form);
-      return "listeEcdeSources";
+      return NOM_VUE;
    }
 
    /**
@@ -98,14 +95,14 @@ public class ListeEcdeSourcesController {
     */
    @RequestMapping(method = RequestMethod.POST, params = { "action=delete" })
    public final String deleteListeEcdeSources(Model model,
-         ListeEcdeSourcesFormulaire form, Integer idSup) {
+         ConfigFormulaire form, Integer idSup) {
 
       List<EcdeSource> listEcde = form.getEcdeSources().getSources();
       listEcde.remove(idSup.intValue());
 
       model.addAttribute("formulaire", form);
 
-      return "listeEcdeSources";
+      return NOM_VUE;
    }
 
    /**
@@ -123,7 +120,7 @@ public class ListeEcdeSourcesController {
     */
    @RequestMapping(method = RequestMethod.POST, params = { "action=generate" })
    public final String generateListeEcdeSources(Model model,
-         ListeEcdeSourcesFormulaire form, BindingResult errors)
+         ConfigFormulaire form, BindingResult errors)
          throws Exception {
 
       ecdeSourceManager.generate(form.getEcdeSources().getSources());
@@ -132,7 +129,7 @@ public class ListeEcdeSourcesController {
 
       model.addAttribute("formulaire", form);
 
-      return "listeEcdeSources";
+      return NOM_VUE;
    }
 
    /**
@@ -149,12 +146,12 @@ public class ListeEcdeSourcesController {
     *            erreur lors du traitement
     */
    @RequestMapping(method = RequestMethod.POST, params = { "action=saveURL" })
-   public final String saveURL(Model model, ListeEcdeSourcesFormulaire form)
+   public final String saveURL(Model model, ConfigFormulaire form)
          throws Exception {
 
       testConfig.setUrlSaeService(form.getUrlWS());
       model.addAttribute("formulaire", form);
 
-      return "listeEcdeSources";
+      return NOM_VUE;
    }
 }

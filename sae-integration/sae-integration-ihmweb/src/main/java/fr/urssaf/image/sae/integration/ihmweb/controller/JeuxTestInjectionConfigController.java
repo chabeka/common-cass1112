@@ -22,13 +22,14 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.ecde.EcdeTests;
 import fr.urssaf.image.sae.integration.ihmweb.service.ecde.file.EcdeTestInterface;
 
 /**
- * 
- * Controller permettant la gestion des cas de test
+ * Jeux de tests à injecter : Configuration
  */
 @Controller
-@RequestMapping(value = "listeCasDeTest")
-public class ListeCasDeTestController {
+@RequestMapping(value = "jeuxTestInjectionConfig")
+public class JeuxTestInjectionConfigController {
 
+   private static final String NOM_VUE = "jeuxTestInjectionConfig";
+   
    private static final String ECDE_LIST = "ecdeListe";
 
    @Autowired
@@ -53,7 +54,7 @@ public class ListeCasDeTestController {
 
       model.addAttribute("formulaire", testFormulaire);
 
-      return "listeCasDeTest";
+      return NOM_VUE;
    }
 
    /**
@@ -75,7 +76,7 @@ public class ListeCasDeTestController {
       form.setEcdeTest(new EcdeTest());
 
       model.addAttribute("formulaire", form);
-      return "listeCasDeTest";
+      return NOM_VUE;
    }
 
    /**
@@ -98,7 +99,7 @@ public class ListeCasDeTestController {
 
       model.addAttribute("formulaire", form);
 
-      return "listeCasDeTest";
+      return NOM_VUE;
    }
 
    /**
@@ -136,6 +137,6 @@ public class ListeCasDeTestController {
 
       model.addAttribute("formulaire", form);
 
-      return "listeCasDeTest";
+      return NOM_VUE;
    }
 }

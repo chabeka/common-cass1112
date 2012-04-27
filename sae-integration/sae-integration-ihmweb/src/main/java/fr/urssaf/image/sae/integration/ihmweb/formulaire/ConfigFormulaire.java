@@ -7,10 +7,9 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.ecde.EcdeSource;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ecde.EcdeSources;
 
 /**
- * 
- * 
+ * Classe de formulaire pour le contrôleur ConfigController 
  */
-public class ListeEcdeSourcesFormulaire {
+public class ConfigFormulaire {
 
    private EcdeSources ecdeSources = new EcdeSources();
 

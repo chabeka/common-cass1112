@@ -1,7 +1,7 @@
 function initTable() {
 
 	var proxyInjection = new Ext.data.HttpProxy( {
-		url : 'testInjectionCtrl.do?action=getList'
+		url : 'jeuxTestInjectionLancement.do?action=getList'
 	});
 
 	var store = new Ext.data.Store( {
@@ -107,7 +107,7 @@ function initTable() {
 function initForm(gridTable) {
 
 	var monFormulaire = new Ext.FormPanel( {
-		url : 'testInjectionCtrl.do?action=launch',
+		url : 'jeuxTestInjectionLancement.do?action=launch',
 		renderTo : 'dataTableForm',
 		frame : true,
 		id : 'formPanel',
@@ -178,7 +178,7 @@ function initForm(gridTable) {
 	});
 
 	Ext.Ajax.request( {
-		url : 'testInjectionCtrl.do',
+		url : 'jeuxTestInjectionLancement.do',
 		params : {
 			action : 'getUrl'
 		},
@@ -213,7 +213,7 @@ function initTasks(gridTable) {
 	taskLookStatus = {
 		run : function() {
 			Ext.Ajax.request( {
-				url : 'testInjectionCtrl.do',
+				url : 'jeuxTestInjectionLancement.do',
 				params : {
 					action : 'checkStatus'
 				},

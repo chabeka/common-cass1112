@@ -21,14 +21,14 @@
 <p><a href="refCasTest.do">Référentiel des cas de test</a></p>
 
 <p><br /></p>
-<p><a href="listeEcdeSources.do">Configuration ECDE</a></p>
+<p><a href="config.do">Configuration de l'application</a></p>
 
 <p><br /></p>
-<p><a href="listeCasDeTest.do">Configuration des jeux de test</a></p>
-<p><a href="testInjectionCtrl.do">Injection des jeux de test</a></p>
+<p><a href="jeuxTestInjectionConfig.do">Jeux de test à injecter : Configuration</a></p>
+<p><a href="jeuxTestInjectionLancement.do">Jeux de test à injecter : Lancement</a></p>
 
 <p><br /></p>
-<p><a href="calcTemp.do">calcultarice temporelle</a></p>
+<p><a href="calcTemp.do">Calculatrice temporelle</a></p>
 
 <p><br /></p>
 <p><a href="cmcompare.do">Comparaison de resultats.xml</a></p>

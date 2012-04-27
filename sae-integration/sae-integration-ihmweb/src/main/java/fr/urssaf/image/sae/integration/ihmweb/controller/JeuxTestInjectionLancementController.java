@@ -1,6 +1,3 @@
-/**
- * 
- */
 package fr.urssaf.image.sae.integration.ihmweb.controller;
 
 import java.util.ArrayList;
@@ -23,15 +20,15 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.ecde.EcdeTest;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ecde.EcdeTests;
 
 /**
- * 
- * Controller contenant les actions pour l'injection et la gestion des cas de
- * test
+ * Jeux de tests à injecter : Lancement de l'injection
  */
 @Controller
-@RequestMapping(value = "testInjectionCtrl")
-public class TestInjectionController {
+@RequestMapping(value = "jeuxTestInjectionLancement")
+public class JeuxTestInjectionLancementController {
 
    private static final String ECDE_LIST = "ecdeListe";
+   
+   private static final String NOM_VUE = "jeuxTestInjectionLancement";
 
    @Autowired
    private TestConfig testConfig;
@@ -66,7 +63,7 @@ public class TestInjectionController {
          session.getServletContext().setAttribute(ECDE_LIST, testDisplayeds);
       }
 
-      return "testInjectionLancement";
+      return NOM_VUE;
    }
 
    /**
