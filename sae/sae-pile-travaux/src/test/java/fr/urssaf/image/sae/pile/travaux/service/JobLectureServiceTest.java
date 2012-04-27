@@ -1,11 +1,14 @@
 package fr.urssaf.image.sae.pile.travaux.service;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -68,20 +71,20 @@ public class JobLectureServiceTest {
       Date date = new Date();
       long timestamp = date.getTime();
 
-      jobQueueService.addHistory(idJob, TimeUUIDUtils.getTimeUUID(timestamp),
-            "message n°1");
-      jobQueueService.addHistory(idJob, TimeUUIDUtils.getTimeUUID(timestamp),
-            "message n°2");
-      jobQueueService.addHistory(idJob, TimeUUIDUtils.getTimeUUID(timestamp),
-            "message n°3");
-      jobQueueService.addHistory(idJob, TimeUUIDUtils.getTimeUUID(timestamp),
-            "message n°4");
+      jobQueueService.addHistory(idJob, TimeUUIDUtils
+            .getTimeUUID(timestamp + 1), "message n°1");
+      jobQueueService.addHistory(idJob, TimeUUIDUtils
+            .getTimeUUID(timestamp + 2), "message n°2");
+      jobQueueService.addHistory(idJob, TimeUUIDUtils
+            .getTimeUUID(timestamp + 3), "message n°3");
+      jobQueueService.addHistory(idJob, TimeUUIDUtils
+            .getTimeUUID(timestamp + 4), "message n°4");
 
       // ajout des traces dans le second job
-      jobQueueService.addHistory(otherJob,
-            TimeUUIDUtils.getTimeUUID(timestamp), "message n°5");
-      jobQueueService.addHistory(otherJob,
-            TimeUUIDUtils.getTimeUUID(timestamp), "message n°6");
+      jobQueueService.addHistory(otherJob, TimeUUIDUtils
+            .getTimeUUID(timestamp + 1), "message n°5");
+      jobQueueService.addHistory(otherJob, TimeUUIDUtils
+            .getTimeUUID(timestamp + 2), "message n°6");
 
       // test sur le premier job
       List<JobHistory> histories = jobLectureService.getJobHistory(idJob);
@@ -92,10 +95,10 @@ public class JobLectureServiceTest {
 
       // Assert.assertEquals(TRACE_MESSAGE, "CREATION DU JOB",
       // histories.get(0));
-      assertHistory(histories.get(1), "message n°1", date);
-      assertHistory(histories.get(2), "message n°2", date);
-      assertHistory(histories.get(3), "message n°3", date);
-      assertHistory(histories.get(4), "message n°4", date);
+      assertHistory(histories.get(1), "message n°1", date, 1);
+      assertHistory(histories.get(2), "message n°2", date, 2);
+      assertHistory(histories.get(3), "message n°3", date, 3);
+      assertHistory(histories.get(4), "message n°4", date, 4);
 
       // test sur le second job
       List<JobHistory> otherhistories = jobLectureService
@@ -107,18 +110,23 @@ public class JobLectureServiceTest {
 
       // Assert.assertEquals(TRACE_MESSAGE, "CREATION DU JOB",
       // histories.get(0));
-      assertHistory(otherhistories.get(1), "message n°5", date);
-      assertHistory(otherhistories.get(2), "message n°6", date);
+      assertHistory(otherhistories.get(1), "message n°5", date, 1);
+      assertHistory(otherhistories.get(2), "message n°6", date, 2);
 
    }
 
    private void assertHistory(JobHistory history, String expectedTrace,
-         Date expectedDate) {
+         Date expectedDate, int decalage) {
 
       Assert.assertEquals("la trace est inattendue", expectedTrace, history
             .getTrace());
-      Assert.assertEquals("la date est inattendue", expectedDate, history
-            .getDate());
+
+      String pattern = "dd/MM/yyyy HH:mm:ss.SSS";
+      DateFormat dateFormat = new SimpleDateFormat(pattern);
+
+      Assert.assertEquals("la date est inattendue", dateFormat.format(DateUtils
+            .addMilliseconds(expectedDate, decalage)), dateFormat
+            .format(history.getDate()));
    }
 
    private void createJob(UUID idJob) {

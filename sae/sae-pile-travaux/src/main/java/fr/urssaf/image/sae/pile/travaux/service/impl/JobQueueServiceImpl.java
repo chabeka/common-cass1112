@@ -349,8 +349,7 @@ public class JobQueueServiceImpl implements JobQueueService {
       // rien à écrire
 
       // Ecriture dans la CF "JobHistory"
-      UUID timestampTrace = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
-      this.jobHistorySupport.ajouterTrace(jobUuid, timestampTrace, description,
+      this.jobHistorySupport.ajouterTrace(jobUuid, timeUuid, description,
             clock);
    }
 
