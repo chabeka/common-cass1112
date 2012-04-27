@@ -2,12 +2,14 @@ package fr.urssaf.image.sae.pile.travaux.service.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
 import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
+import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 import me.prettyprint.hector.api.query.SliceQuery;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ import fr.urssaf.image.sae.pile.travaux.dao.JobRequestDao;
 import fr.urssaf.image.sae.pile.travaux.dao.JobsQueueDao;
 import fr.urssaf.image.sae.pile.travaux.dao.iterator.JobQueueIterator;
 import fr.urssaf.image.sae.pile.travaux.dao.serializer.JobQueueSerializer;
+import fr.urssaf.image.sae.pile.travaux.model.JobHistory;
 import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 import fr.urssaf.image.sae.pile.travaux.service.JobLectureService;
@@ -130,18 +133,26 @@ public class JobLectureImpl implements JobLectureService {
     * {@inheritDoc}
     */
    @Override
-   public final List<String> getJobHistory(UUID idJob) {
+   public final List<JobHistory> getJobHistory(UUID idJob) {
 
-      ColumnFamilyResult<UUID, String> result = jobHistoryDao
-            .getJobHistoryTmpl().queryColumns(idJob);
-      Collection<String> traces = result.getColumnNames();
-      List<String> list = new ArrayList<String>(traces.size());
+      ColumnFamilyResult<UUID, UUID> result = jobHistoryDao.getJobHistoryTmpl()
+            .queryColumns(idJob);
+
+      Collection<UUID> colNames = result.getColumnNames();
+      List<JobHistory> histories = new ArrayList<JobHistory>(colNames.size());
       StringSerializer serializer = StringSerializer.get();
-      for (String trace : traces) {
-        
-         list.add(serializer.fromBytes(result.getByteArray(trace)));
+      for (UUID timeUUID : colNames) {
+
+         JobHistory jobHistory = new JobHistory();
+
+         jobHistory.setTrace(serializer
+               .fromBytes(result.getByteArray(timeUUID)));
+         jobHistory.setDate(new Date(TimeUUIDUtils.getTimeFromUUID(timeUUID)));
+
+         histories.add(jobHistory);
+
       }
-      return list;
+      return histories;
 
    }
 

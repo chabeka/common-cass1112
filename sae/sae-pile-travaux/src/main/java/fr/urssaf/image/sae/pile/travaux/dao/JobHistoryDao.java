@@ -30,7 +30,7 @@ public class JobHistoryDao {
 
    private static final int TTL = 2592000; // 2592000 secondes, soit 30 jours
 
-   private final ColumnFamilyTemplate<UUID, String> jobHistoryTmpl;
+   private final ColumnFamilyTemplate<UUID, UUID> jobHistoryTmpl;
 
    private final Keyspace keyspace;
 
@@ -48,8 +48,8 @@ public class JobHistoryDao {
       // - Type de la valeur : UUID
       // - Serializer de la valeur : UUIDSerializer
 
-      jobHistoryTmpl = new ThriftColumnFamilyTemplate<UUID, String>(keyspace,
-            JOBHISTORY_CFNAME, UUIDSerializer.get(), StringSerializer.get());
+      jobHistoryTmpl = new ThriftColumnFamilyTemplate<UUID, UUID>(keyspace,
+            JOBHISTORY_CFNAME, UUIDSerializer.get(), UUIDSerializer.get());
 
       jobHistoryTmpl.setCount(MAX_JOB_ATTIBUTS);
 
@@ -59,7 +59,7 @@ public class JobHistoryDao {
     * 
     * @return CassandraTemplate de <code>JobHistory</code>
     */
-   public final ColumnFamilyTemplate<UUID, String> getJobHistoryTmpl() {
+   public final ColumnFamilyTemplate<UUID, UUID> getJobHistoryTmpl() {
 
       return this.jobHistoryTmpl;
    }
@@ -77,12 +77,12 @@ public class JobHistoryDao {
 
    }
 
-   @SuppressWarnings("unchecked")
-   private void addColumn(ColumnFamilyUpdater<UUID, String> updater,
-         Object colName, Object value, Serializer nameSerializer,
-         Serializer valueSerializer, long clock) {
+  
+   private void addColumn(ColumnFamilyUpdater<UUID, UUID> updater,
+         UUID colName, String value, Serializer<UUID> nameSerializer,
+         Serializer<String> valueSerializer, long clock) {
 
-      HColumn<String, Object> column = HFactory.createColumn(colName, value,
+      HColumn<UUID, String> column = HFactory.createColumn(colName, value,
             nameSerializer, valueSerializer);
 
       column.setTtl(TTL);
@@ -103,9 +103,8 @@ public class JobHistoryDao {
     * @param clock
     *           horloge de la colonne
     */
-   public final void ecritColonneTrace(
-         ColumnFamilyUpdater<UUID, String> updater, UUID timestampTrace,
-         String messageTrace, long clock) {
+   public final void ecritColonneTrace(ColumnFamilyUpdater<UUID, UUID> updater,
+         UUID timestampTrace, String messageTrace, long clock) {
 
       addColumn(updater, timestampTrace, messageTrace, UUIDSerializer.get(),
             StringSerializer.get(), clock);

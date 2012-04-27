@@ -43,7 +43,7 @@ public class JobHistorySupport {
 
       // On utilise un ColumnFamilyUpdater, et on renseigne
       // la valeur de la clé dans la construction de l'updater
-      ColumnFamilyUpdater<UUID, String> updaterJobHistory = this.jobHistoryDao
+      ColumnFamilyUpdater<UUID, UUID> updaterJobHistory = this.jobHistoryDao
             .getJobHistoryTmpl().createUpdater(idJob);
 
       // Ecriture des colonnes

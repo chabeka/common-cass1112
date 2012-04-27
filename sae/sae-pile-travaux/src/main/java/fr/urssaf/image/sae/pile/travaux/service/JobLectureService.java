@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
+import fr.urssaf.image.sae.pile.travaux.model.JobHistory;
 import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 
@@ -57,5 +58,5 @@ public interface JobLectureService {
     *           identifiant du traitement
     * @return liste trié de l'historique du traitement
     */
-   List<String> getJobHistory(UUID idJob);
+   List<JobHistory> getJobHistory(UUID idJob);
 }
