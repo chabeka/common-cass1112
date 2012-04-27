@@ -51,6 +51,63 @@ public class JobLectureServiceTest {
 
    }
 
+   private static final String TRACE_MESSAGE = "la trace est inattendue";
+
+   @Test
+   public void getJobHistoryByUUID() {
+
+      // création d'un job
+      UUID idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+      createJob(idJob);
+
+      // création d'un autre job
+      UUID otherJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+      createJob(otherJob);
+
+      // ajout des traces dans le premier job
+      jobQueueService.addHistory(idJob, TimeUUIDUtils
+            .getUniqueTimeUUIDinMillis(), "message n°1");
+      jobQueueService.addHistory(idJob, TimeUUIDUtils
+            .getUniqueTimeUUIDinMillis(), "message n°2");
+      jobQueueService.addHistory(idJob, TimeUUIDUtils
+            .getUniqueTimeUUIDinMillis(), "message n°3");
+      jobQueueService.addHistory(idJob, TimeUUIDUtils
+            .getUniqueTimeUUIDinMillis(), "message n°4");
+
+      // ajout des traces dans le second job
+      jobQueueService.addHistory(otherJob, TimeUUIDUtils
+            .getUniqueTimeUUIDinMillis(), "message n°5");
+      jobQueueService.addHistory(otherJob, TimeUUIDUtils
+            .getUniqueTimeUUIDinMillis(), "message n°6");
+
+      // test sur le premier job
+      List<String> histories = jobLectureService.getJobHistory(idJob);
+
+      // 5 à cause de la trace laissée par la création du job
+      Assert.assertEquals("la taille de l'historique est inattendue", 5,
+            histories.size());
+
+      // Assert.assertEquals(TRACE_MESSAGE, "CREATION DU JOB",
+      // histories.get(0));
+      Assert.assertEquals(TRACE_MESSAGE, "message n°1", histories.get(1));
+      Assert.assertEquals(TRACE_MESSAGE, "message n°2", histories.get(2));
+      Assert.assertEquals(TRACE_MESSAGE, "message n°3", histories.get(3));
+      Assert.assertEquals(TRACE_MESSAGE, "message n°4", histories.get(4));
+
+      // test sur le second job
+      List<String> otherhistories = jobLectureService.getJobHistory(otherJob);
+
+      // 3 à cause de la trace laissée par la création du job
+      Assert.assertEquals("la taille de l'historique est inattendue", 3,
+            otherhistories.size());
+
+      // Assert.assertEquals(TRACE_MESSAGE, "CREATION DU JOB",
+      // histories.get(0));
+      Assert.assertEquals(TRACE_MESSAGE, "message n°5", otherhistories.get(1));
+      Assert.assertEquals(TRACE_MESSAGE, "message n°6", otherhistories.get(2));
+
+   }
+
    private void createJob(UUID idJob) {
 
       JobToCreate job = new JobToCreate();

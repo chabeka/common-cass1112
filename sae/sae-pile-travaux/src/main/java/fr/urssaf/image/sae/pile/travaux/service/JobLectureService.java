@@ -39,7 +39,7 @@ public interface JobLectureService {
     * @return liste des traitements réservés ou en cours d'exécution
     */
    List<JobQueue> getNonTerminatedSimpleJobs(String hostname);
-   
+
    /**
     * Récupère la liste des traitements réservés ou en cours d'exécution sur un
     * serveur donné.
@@ -49,4 +49,13 @@ public interface JobLectureService {
     * @return liste des traitements réservés ou en cours d'exécution
     */
    List<JobRequest> getNonTerminatedJobs(String hostname);
+
+   /**
+    * Récupère l'historique d'un traitement
+    * 
+    * @param idJob
+    *           identifiant du traitement
+    * @return liste trié de l'historique du traitement
+    */
+   List<String> getJobHistory(UUID idJob);
 }
