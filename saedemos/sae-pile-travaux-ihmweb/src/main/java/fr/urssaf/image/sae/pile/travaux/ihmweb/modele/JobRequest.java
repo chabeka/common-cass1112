@@ -1,7 +1,8 @@
 package fr.urssaf.image.sae.pile.travaux.ihmweb.modele;
 
-import java.util.Date;
 
+import java.util.Date;
+import java.util.UUID;
 
 /**
  * Traitement dans la pile des travaux. Les propriétés sont.
@@ -15,13 +16,24 @@ import java.util.Date;
  * <li><code>reservationDate</code>: date/heure de réservation</li>
  * <li><code>startingDate</code>: date/heure de début de traitement</li>
  * <li><code>endingDate</code>: date/heure de fin de traitement</li>
- * <li><code>message</code>: message de compte-rendu du traitement. Exemple : message d'erreur</li>
+ * <li><code>message</code>: message de compte-rendu du traitement. Exemple :
+ * message d'erreur</li>
+ * <li><code>toCheckFlag</code>: flag pour indiquer que le traitement est à
+ * vérifier</li>
+ * <li><code>toCheckFlagRaison</code>: raison pour laquelle le traitement est à
+ * vérifier</li>
  * </ul>
  * 
  * 
  * 
  */
-public class JobRequest extends SimpleJobRequest {
+public class JobRequest {
+
+   private UUID idJob;
+
+   private String type;
+
+   private String parameters;
 
    private JobState state;
 
@@ -34,9 +46,9 @@ public class JobRequest extends SimpleJobRequest {
    private Date startingDate;
 
    private Date endingDate;
-   
+
    private String message;
-   
+
    private String saeHost;
 
    private String clientHost;
@@ -44,25 +56,55 @@ public class JobRequest extends SimpleJobRequest {
    private Integer docCount;
 
    private Integer pid;
+   
+   private Boolean toCheckFlag;
+   
+   private String toCheckFlagRaison;
 
    /**
-    * Constructeur qui instancie un jobRequest vide
+    * @return the idJob
     */
-   public JobRequest() {
-      super();
+   public final UUID getIdJob() {
+      return idJob;
    }
 
    /**
-    * Construit un JobRequest à partir d'un SimpleJobRequest 
-    * @param simpleJobRequest Le SimpleJobRequest
+    * @param idJob
+    *           the idJob to set
     */
-   public JobRequest(SimpleJobRequest simpleJobRequest) {
-      super();
-      setIdJob(simpleJobRequest.getIdJob());
-      setType(simpleJobRequest.getType());
-      setParameters(simpleJobRequest.getParameters());
+   public final void setIdJob(UUID idJob) {
+      this.idJob = idJob;
    }
 
+   /**
+    * @return the type
+    */
+   public final String getType() {
+      return type;
+   }
+
+   /**
+    * @param type
+    *           the type to set
+    */
+   public final void setType(String type) {
+      this.type = type;
+   }
+
+   /**
+    * @return the parameters
+    */
+   public final String getParameters() {
+      return parameters;
+   }
+
+   /**
+    * @param parameters
+    *           the parameters to set
+    */
+   public final void setParameters(String parameters) {
+      this.parameters = parameters;
+   }
 
    /**
     * @return the state of the jobRequest
@@ -107,7 +149,8 @@ public class JobRequest extends SimpleJobRequest {
     *           the creationDate to set
     */
    public final void setCreationDate(Date creationDate) {
-      this.creationDate = creationDate == null ? null : new Date(creationDate.getTime());
+      this.creationDate = creationDate == null ? null : new Date(creationDate
+            .getTime());
    }
 
    /**
@@ -115,7 +158,8 @@ public class JobRequest extends SimpleJobRequest {
     */
    public final Date getReservationDate() {
       // On ne renvoie pas la date directement, car c'est un objet mutable
-      return reservationDate == null ? null : new Date(reservationDate.getTime());
+      return reservationDate == null ? null : new Date(reservationDate
+            .getTime());
    }
 
    /**
@@ -123,7 +167,8 @@ public class JobRequest extends SimpleJobRequest {
     *           the reservationDate to set
     */
    public final void setReservationDate(Date reservationDate) {
-      this.reservationDate = reservationDate == null ? null : new Date(reservationDate.getTime());
+      this.reservationDate = reservationDate == null ? null : new Date(
+            reservationDate.getTime());
    }
 
    /**
@@ -139,7 +184,8 @@ public class JobRequest extends SimpleJobRequest {
     *           the startingDate to set
     */
    public final void setStartingDate(Date startingDate) {
-      this.startingDate = startingDate == null ? null : new Date(startingDate.getTime());
+      this.startingDate = startingDate == null ? null : new Date(startingDate
+            .getTime());
    }
 
    /**
@@ -155,23 +201,13 @@ public class JobRequest extends SimpleJobRequest {
     *           the endingDate to set
     */
    public final void setEndingDate(Date endingDate) {
-      this.endingDate = endingDate == null ? null : new Date(endingDate.getTime());
-   }
-   
-   /**
-    * Renvoie un SimpleJob contenant les propriétés de base du jobRequest
-    * @return Un SimpleJob
-    */
-   public final SimpleJobRequest getSimpleJob() {
-      SimpleJobRequest simpleJobRequest = new SimpleJobRequest();
-      simpleJobRequest.setIdJob(getIdJob());
-      simpleJobRequest.setType(getType());
-      simpleJobRequest.setParameters(getParameters());
-      return simpleJobRequest;
+      this.endingDate = endingDate == null ? null : new Date(endingDate
+            .getTime());
    }
 
    /**
-    * @param message : message de compte-rendu du traitement
+    * @param message
+    *           : message de compte-rendu du traitement
     */
    public final void setMessage(String message) {
       this.message = message;
@@ -186,59 +222,97 @@ public class JobRequest extends SimpleJobRequest {
    }
 
    /**
-    * @return the saeHost
+    * @return le nom de machine ou l'IP de la machine SAE ayant traité la
+    *         demande
     */
    public final String getSaeHost() {
       return saeHost;
    }
 
    /**
-    * @param saeHost the saeHost to set
+    * @param saeHost
+    *           le nom de machine ou l'IP de la machine SAE ayant traité la
+    *           demande
+    * 
     */
    public final void setSaeHost(String saeHost) {
       this.saeHost = saeHost;
    }
 
    /**
-    * @return the clientHost
+    * @return le nom de machine ou l'IP de la machine cliente ayant traité la
+    *         demande
     */
    public final String getClientHost() {
       return clientHost;
    }
 
    /**
-    * @param clientHost the clientHost to set
+    * @param clientHost
+    *           le nom de machine ou l'IP de la machine cliente ayant traité la
+    *           demande
     */
    public final void setClientHost(String clientHost) {
       this.clientHost = clientHost;
    }
 
    /**
-    * @return the docCount
+    * @return le nombre de documents présents dans le fichier sommaire
     */
    public final Integer getDocCount() {
       return docCount;
    }
 
    /**
-    * @param docCount the docCount to set
+    * @param docCount
+    *           le nombre de documents présents dans le fichier sommaire
     */
    public final void setDocCount(Integer docCount) {
       this.docCount = docCount;
    }
 
    /**
-    * @return the pid
+    * @return le process ID du traitement
     */
    public final Integer getPid() {
       return pid;
    }
 
    /**
-    * @param pid the pid to set
+    * @param pid
+    *           le process ID du traitement
     */
    public final void setPid(Integer pid) {
       this.pid = pid;
    }
    
+   /**
+    * @return the toCheckFlag
+    */
+   public Boolean getToCheckFlag() {
+      return toCheckFlag;
+   }
+
+   /**
+    * @param toCheckFlag the toCheckFlag to set
+    */
+   public void setToCheckFlag(Boolean toCheckFlag) {
+      this.toCheckFlag = toCheckFlag;
+   }
+
+   /**
+    * @return the toCheckFlagRaison
+    */
+   public String getToCheckFlagRaison() {
+      return toCheckFlagRaison;
+   }
+
+   /**
+    * @param toCheckFlagRaison the toCheckFlagRaison to set
+    */
+   public void setToCheckFlagRaison(String toCheckFlagRaison) {
+      this.toCheckFlagRaison = toCheckFlagRaison;
+   }
+
+
 }

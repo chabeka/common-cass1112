@@ -2,6 +2,7 @@ package fr.urssaf.image.sae.pile.travaux.ihmweb.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -11,6 +12,9 @@ import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.serializers.UUIDSerializer;
 import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
 import me.prettyprint.cassandra.service.template.ColumnFamilyResultWrapper;
+import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
+import me.prettyprint.cassandra.service.template.ThriftColumnFamilyTemplate;
+import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 import me.prettyprint.hector.api.Keyspace;
 import me.prettyprint.hector.api.Serializer;
 import me.prettyprint.hector.api.beans.OrderedRows;
@@ -32,15 +36,15 @@ import fr.urssaf.image.commons.zookeeper.ZookeeperClientFactory;
 import fr.urssaf.image.sae.pile.travaux.ihmweb.exception.PileTravauxRuntimeException;
 import fr.urssaf.image.sae.pile.travaux.ihmweb.modele.CassandraEtZookeeperConfig;
 import fr.urssaf.image.sae.pile.travaux.ihmweb.modele.ConfigEtClients;
+import fr.urssaf.image.sae.pile.travaux.ihmweb.modele.JobHistory;
 import fr.urssaf.image.sae.pile.travaux.ihmweb.modele.JobRequest;
 import fr.urssaf.image.sae.pile.travaux.ihmweb.modele.JobState;
 
 @Service
 public class PileTravauxService {
 
+   // Column Family JobRequest
    private static final String JOBREQUEST_CFNAME = "JobRequest";
-
-   // Colonnes de JobRequest
    private static final String JR_TYPE_COLUMN = "type";
    private static final String JR_PARAMETERS_COLUMN = "parameters";
    private static final String JR_STATE_COLUMN = "state";
@@ -54,7 +58,15 @@ public class PileTravauxService {
    private static final String JR_CLIENT_HOST = "clientHost";
    private static final String JR_DOC_COUNT = "docCount";
    private static final String JR_PID = "pid";
+   public static final String JR_TO_CHECK_FLAG = "toCheckFlag";
+   public static final String JR_TO_CHECK_FLAG_RAISON = "toCheckFlagRaison";
 
+   
+   // Column Family JobHistory
+   private static final String JOBHISTORY_CFNAME = "JobHistory";
+   
+   
+   
    // Autres constantes
    private static final int MAX_JOB_ATTIBUTS = 100;
 
@@ -167,7 +179,13 @@ public class PileTravauxService {
 
       jobRequest.setDocCount(result.getInteger(JR_DOC_COUNT));
 
+      jobRequest.setToCheckFlag(result.getBoolean(JR_TO_CHECK_FLAG));
+
+      jobRequest
+            .setToCheckFlagRaison(result.getString(JR_TO_CHECK_FLAG_RAISON));
+
       return jobRequest;
+      
    }
 
    /**
@@ -265,6 +283,45 @@ public class PileTravauxService {
                   .getZookeeperHosts()) && StringUtils.equals(conf1
             .getZookeeperNamespace(), conf2.getZookeeperNamespace()));
 
+   }
+   
+   
+   public List<JobHistory> getJobHistory(
+         CassandraEtZookeeperConfig connexionConfig,
+         UUID idJob) {
+      
+      // Connexion à Zookeeper/Cassandra
+      ConfigEtClients confEtClients = findConfigEtClient(connexionConfig);
+      
+      // Récupération de l'objet Keyspace
+      Keyspace keyspace = confEtClients.getCassClient().getKeyspace();
+      
+      // Template pour requêter
+      ColumnFamilyTemplate<UUID, UUID> jobHistoryTmpl = new ThriftColumnFamilyTemplate<UUID, UUID>(keyspace,
+            JOBHISTORY_CFNAME, UUIDSerializer.get(), UUIDSerializer.get());
+      
+      // Requête
+      ColumnFamilyResult<UUID, UUID> result = jobHistoryTmpl.queryColumns(idJob);
+
+      // Mapping en objets
+      Collection<UUID> colNames = result.getColumnNames();
+      List<JobHistory> histories = new ArrayList<JobHistory>(colNames.size());
+      StringSerializer serializer = StringSerializer.get();
+      for (UUID timeUUID : colNames) {
+      
+         JobHistory jobHistory = new JobHistory();
+      
+         jobHistory.setTrace(serializer
+               .fromBytes(result.getByteArray(timeUUID)));
+         jobHistory.setDate(new Date(TimeUUIDUtils.getTimeFromUUID(timeUUID)));
+      
+         histories.add(jobHistory);
+      
+      }
+      
+      // Valeur de retour
+      return histories;
+      
    }
 
 }

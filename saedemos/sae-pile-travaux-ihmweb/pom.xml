@@ -17,7 +17,7 @@
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
       <!-- Version des librairies partagées -->
-      <commons.cassandra>0.0.3</commons.cassandra>
+      <commons.cassandra>0.0.4</commons.cassandra>
 
       <!-- Version des framework -->
       <spring.framework.version>3.0.5.RELEASE</spring.framework.version>

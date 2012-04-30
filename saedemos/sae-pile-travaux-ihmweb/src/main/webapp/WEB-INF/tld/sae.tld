@@ -7,6 +7,12 @@
    <jsp-version>2.0</jsp-version>
 
    <description>Bibliothèque de taglibs</description>
+   
+   <tag-file>
+      <name>configPile</name>
+      <description>Tag de configuration d'acces a la pile des travaux</description>
+      <path>/WEB-INF/tags/configPile.tag</path>
+   </tag-file>
 
    <function>
       <name>formateDateTime</name>
