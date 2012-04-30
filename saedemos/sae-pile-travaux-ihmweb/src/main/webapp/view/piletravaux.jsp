@@ -48,6 +48,8 @@
          <td>pid</td>
 			<td>endingDate</td>
 			<td>message</td>
+         <td>toCheckFlag</td>
+         <td>toCheckFlagRaison</td>
 		</tr>
 
 
@@ -73,6 +75,8 @@
 				<td><c:out value="${travail.pid}" /></td>
 				<td>${sae:formateDateTime(travail.endingDate)}</td>
 				<td>${sae:nl2br(travail.message)}</td>
+            <td><c:out value="${travail.toCheckFlag}" /></td>
+            <td style="font-size:8pt;"><c:out value="${travail.toCheckFlagRaison}" /></td>
 			</tr>
 
 		</c:forEach>
