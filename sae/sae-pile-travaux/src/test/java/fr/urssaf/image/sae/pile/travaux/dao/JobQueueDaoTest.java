@@ -11,6 +11,7 @@ import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,7 @@ import fr.urssaf.image.sae.pile.travaux.model.SimpleJobRequest;
 @ContextConfiguration(locations = { "/applicationContext-sae-pile-travaux-test.xml" })
 @DirtiesContext(classMode = ClassMode.AFTER_CLASS)
 // Pour fermer le serveur zookeeper à la fin de la classe
+@Ignore("la classe testée est devenue dépréciée")
 public class JobQueueDaoTest {
 
    @Autowired
