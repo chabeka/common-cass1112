@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.exception.NestableRuntimeException;
@@ -124,8 +125,10 @@ public final class LauncherUtils {
                   buffer.append(line);
                   buffer.append(SystemUtils.LINE_SEPARATOR);
                }
-               LOG.error(buffer.toString());
-               
+               if (StringUtils.isNotBlank(buffer.toString())) {
+                  LOG.error(buffer.toString());
+               }
+
             } finally {
                reader.close();
             }

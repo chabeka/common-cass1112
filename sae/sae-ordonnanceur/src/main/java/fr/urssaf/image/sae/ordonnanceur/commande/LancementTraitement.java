@@ -72,6 +72,9 @@ public class LancementTraitement implements Callable<UUID> {
          // on mémorise l'échec du traitement
          jobFailureService.ajouterEchec(e.getJob().getIdJob(), e);
 
+      } catch(RuntimeException e){
+         
+         LOG.error(PREFIX_LOG+" - Une erreur a eu lieu lors du lancement du traitement",e);
       }
 
       LOG.debug(
