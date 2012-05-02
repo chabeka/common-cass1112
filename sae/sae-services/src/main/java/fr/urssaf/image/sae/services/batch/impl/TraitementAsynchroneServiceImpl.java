@@ -124,6 +124,17 @@ public class TraitementAsynchroneServiceImpl implements
          throw new JobInexistantException(idJob);
       }
 
+      // vérification que le type de traitement existe bien
+      // pour l'instant seul la capture en masse existe
+      if (!CAPTURE_MASSE_JN.equals(job.getType())) {
+         throw new JobInattenduException(job, CAPTURE_MASSE_JN);
+      }
+
+      // vérification que le job est bien réservé
+      if (!JobState.RESERVED.equals(job.getState())) {
+         throw new JobNonReserveException(idJob);
+      }
+
       // récupération du PID
       String processName = java.lang.management.ManagementFactory
             .getRuntimeMXBean().getName();
@@ -138,17 +149,6 @@ public class TraitementAsynchroneServiceImpl implements
 
       } else {
          LOG.info("impossible de récupérer le pid");
-      }
-
-      // vérification que le type de traitement existe bien
-      // pour l'instant seul la capture en masse existe
-      if (!CAPTURE_MASSE_JN.equals(job.getType())) {
-         throw new JobInattenduException(job, CAPTURE_MASSE_JN);
-      }
-
-      // vérification que le job est bien réservé
-      if (!JobState.RESERVED.equals(job.getState())) {
-         throw new JobNonReserveException(idJob);
       }
 
       // démarrage du job et mise à jour de la pile des travaux
