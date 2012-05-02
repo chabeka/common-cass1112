@@ -229,8 +229,8 @@ public class CoordinationServiceImpl implements CoordinationService {
             try {
                jobService.updateToCheckFlag(jobCourant.getIdJob(), true,
                      "Job en cours depuis plus de "
-                           + ordonnanceurConfiguration.getTpsMaxReservation()
-                           + " minutes (date de réservation : "
+                           + ordonnanceurConfiguration.getTpsMaxTraitement()
+                           + " minutes (date de démarrage : "
                            + FORMAT.format(jobCourant.getStartingDate())
                            + ", date de contrôle : "
                            + FORMAT.format(currentDate));
