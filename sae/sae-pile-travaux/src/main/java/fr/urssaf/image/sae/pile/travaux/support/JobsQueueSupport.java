@@ -2,6 +2,8 @@ package fr.urssaf.image.sae.pile.travaux.support;
 
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
+
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
 import me.prettyprint.hector.api.mutation.Mutator;
 import fr.urssaf.image.sae.pile.travaux.dao.JobsQueueDao;
@@ -126,9 +128,44 @@ public class JobsQueueSupport {
       // Création du Mutator
       Mutator<String> mutator = this.jobsQueueDao.createMutator();
 
-      // Opération unique : on supprime le job
+      // Opération 1: Suppression du job de la liste de la file d'attente
       this.jobsQueueDao.mutatorAjouterSuppressionJobQueue(mutator, reservedBy,
             idJob, clock);
+
+      // Opération 2: Suppression du job de la liste des jobs non réservé
+      this.jobsQueueDao.mutatorAjouterSuppressionJobQueue(mutator,
+            JOBS_WAITING_KEY, idJob, clock);
+
+      // Exécution de l'opération
+      mutator.execute();
+
+   }
+
+   /**
+    * Suppression du job de toutes les files
+    * 
+    * @param idJob
+    *           identifiant du job
+    * @param reservedBy
+    *           Hostname ou IP du serveur qui a réservé/exécuté le job, peut-être null
+    * @param clock
+    *           horloge de suppression du job de la file d'exécution/réservation
+    */
+   public final void supprimerJobDeJobsAllQueues(UUID idJob, String reservedBy,
+         long clock) {
+
+      // Création du Mutator
+      Mutator<String> mutator = this.jobsQueueDao.createMutator();
+
+      // Opération 1: Suppression du job de la liste de la file d'attente
+      if (StringUtils.isNotEmpty(reservedBy)) {
+         this.jobsQueueDao.mutatorAjouterSuppressionJobQueue(mutator,
+               reservedBy, idJob, clock);
+      }
+
+      // Opération 2: Suppression du job de la liste des jobs non réservé
+      this.jobsQueueDao.mutatorAjouterSuppressionJobQueue(mutator,
+            JOBS_WAITING_KEY, idJob, clock);
 
       // Exécution de l'opération
       mutator.execute();

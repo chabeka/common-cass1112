@@ -21,6 +21,13 @@ import java.util.UUID;
  * vérifier</li>
  * <li><code>toCheckFlagRaison</code>: raison pour laquelle le traitement est à
  * vérifier</li>
+ * <li><code>clientHost</code>: host du client qui demande le traitement de
+ * masse</li>
+ * <li><code>saeHost</code>: host du serveur de l'ordonnanceur qui exécute le
+ * traitement de masse</li>
+ * <li><code>docCount</code>: nombre de documents à traiter pour une capture en
+ * masse uniquement</li>
+ * <li><code>pid</code>: PID du processus qui exécute le traitement de masse</li>
  * </ul>
  * 
  * 
@@ -55,9 +62,9 @@ public class JobRequest {
    private Integer docCount;
 
    private Integer pid;
-   
+
    private Boolean toCheckFlag;
-   
+
    private String toCheckFlagRaison;
 
    /**
@@ -284,7 +291,7 @@ public class JobRequest {
    public final void setPid(Integer pid) {
       this.pid = pid;
    }
-   
+
    /**
     * @return the toCheckFlag
     */
@@ -293,7 +300,8 @@ public class JobRequest {
    }
 
    /**
-    * @param toCheckFlag the toCheckFlag to set
+    * @param toCheckFlag
+    *           the toCheckFlag to set
     */
    public void setToCheckFlag(Boolean toCheckFlag) {
       this.toCheckFlag = toCheckFlag;
@@ -307,7 +315,8 @@ public class JobRequest {
    }
 
    /**
-    * @param toCheckFlagRaison the toCheckFlagRaison to set
+    * @param toCheckFlagRaison
+    *           the toCheckFlagRaison to set
     */
    public void setToCheckFlagRaison(String toCheckFlagRaison) {
       this.toCheckFlagRaison = toCheckFlagRaison;
@@ -325,7 +334,5 @@ public class JobRequest {
       simpleJobRequest.setParameters(getParameters());
       return simpleJobRequest;
    }
-
-   
 
 }

@@ -1,6 +1,8 @@
 package fr.urssaf.image.sae.pile.travaux.service;
 
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -20,8 +22,9 @@ import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.exception.LockTimeoutException;
+import fr.urssaf.image.sae.pile.travaux.model.JobHistory;
+import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
-import fr.urssaf.image.sae.pile.travaux.model.JobState;
 import fr.urssaf.image.sae.pile.travaux.model.JobToCreate;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -34,46 +37,15 @@ public class JobQueueServiceTest {
    private JobQueueService jobQueueService;
 
    @Autowired
-   private CassandraServerBean cassandraServer;
+   private JobLectureService jobLectureService;
 
    @Autowired
-   private JobLectureService jobLectureService;
+   private CassandraServerBean cassandraServer;
 
    @After
    public final void init() throws Exception {
       // Après chaque test, on reset les données de cassandra
       cassandraServer.resetData();
-   }
-
-   @Test
-   public void addJob_success() {
-      // On crée un job
-      UUID id = addJobForTest(1);
-      // On vérifie qu'on le retrouve
-      JobRequest jobRequest = jobLectureService.getJobRequest(id);
-      Assert.assertNotNull(jobRequest);
-   }
-
-   @Test
-   public void reserveJob() throws Exception {
-      // On crée un job
-      UUID id = addJobForTest(1);
-      // On le réserve
-      jobQueueService.reserveJob(id, "hostname", new Date());
-
-      // On vérifie qu'il est bien réservé
-      JobRequest jobRequest = jobLectureService.getJobRequest(id);
-      Assert.assertEquals("hostname", jobRequest.getReservedBy());
-      Assert.assertNotNull(jobRequest.getReservationDate());
-
-      // On vérifie qu'on ne peut plus le réserver
-      try {
-         jobQueueService.reserveJob(id, "hostname2", new Date());
-      } catch (JobDejaReserveException e) {
-         // Normal
-         return;
-      }
-      Assert.fail("On ne devrait pas pouvoir réserver 2 fois le même job");
    }
 
    @Test
@@ -130,78 +102,102 @@ public class JobQueueServiceTest {
       }
    }
 
-   @Test(expected = JobInexistantException.class)
-   public void reserveJob_failure_jobInexistantException() throws Exception {
-      jobQueueService.reserveJob(UUID.randomUUID(), "hostname", new Date());
+   @Test
+   public void delete_success_en_attente() {
+
+      UUID idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+      // création d'un job en attente
+      createJob(idJob);
+
+      // suppression du job
+      jobQueueService.deleteJob(idJob);
+
+      // vérification
+
+      assertJobDelete(idJob);
+
+      // vérification de JobsQueues
+
+      Iterator<JobQueue> jobQueuesEnAttente = jobLectureService
+            .getUnreservedJobRequestIterator();
+
+      JobQueue jobQueueEnAttente = null;
+      while (jobQueuesEnAttente.hasNext() && jobQueueEnAttente == null) {
+         JobQueue jobQueueElement = jobQueuesEnAttente.next();
+         if (jobQueueElement.getIdJob().equals(idJob)) {
+            jobQueueEnAttente = jobQueueElement;
+         }
+      }
+
+      Assert.assertNull("le job ne doit plus exister dans la file d'attente",
+            jobQueueEnAttente);
+
    }
 
    @Test
-   public void startingJob_success() throws Exception {
-      // On crée un job
-      UUID id = addJobForTest(1);
-      // On le réserve
-      jobQueueService.reserveJob(id, "hostname", new Date());
-      // On le lance
-      jobQueueService.startingJob(id, new Date());
-      // On vérifie qu'il est bien lancé
-      JobRequest jobRequest = jobLectureService.getJobRequest(id);
-      Assert.assertEquals("hostname", jobRequest.getReservedBy());
-      Assert.assertNotNull(jobRequest.getStartingDate());
-      Assert.assertEquals(JobState.STARTING, jobRequest.getState());
+   public void delete_success_en_reservation() throws JobDejaReserveException,
+         JobInexistantException, LockTimeoutException {
+
+      UUID idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+      // création + réservation d'un job
+      createJob(idJob);
+      String reservedBy = "hostname";
+      jobQueueService.reserveJob(idJob, reservedBy, new Date());
+
+      // suppression du job
+      jobQueueService.deleteJob(idJob);
+
+      // vérification
+
+      assertJobDelete(idJob);
+
+      // vérification de JobsQueues
+
+      Iterator<JobQueue> jobQueues = jobLectureService
+            .getNonTerminatedSimpleJobs(reservedBy).iterator();
+
+      JobQueue jobQueue = null;
+      while (jobQueues.hasNext() && jobQueue == null) {
+         JobQueue jobQueueElement = jobQueues.next();
+         if (jobQueueElement.getIdJob().equals(idJob)) {
+            jobQueue = jobQueueElement;
+         }
+      }
+
+      Assert.assertNull(
+            "le job ne doit plus exister dans la file d'execution de "
+                  + reservedBy, jobQueue);
    }
 
-   @Test
-   public void endingJob_success() throws Exception {
-      // On crée un job
-      UUID id = addJobForTest(1);
-      // On le réserve
-      jobQueueService.reserveJob(id, "hostname", new Date());
-      // On le lance
-      jobQueueService.startingJob(id, new Date());
-      // On le termine
-      jobQueueService.endingJob(id, true, new Date());
-      // On vérifie qu'il est bien terminé
-      JobRequest jobRequest = jobLectureService.getJobRequest(id);
-      Assert.assertEquals("hostname", jobRequest.getReservedBy());
-      Assert.assertNotNull(jobRequest.getEndingDate());
-      Assert.assertEquals(JobState.SUCCESS, jobRequest.getState());
+   private void assertJobDelete(UUID idJob) {
+
+      // vérification de JobRequest
+
+      JobRequest job = jobLectureService.getJobRequest(idJob);
+      Assert.assertNull("le job ne doit plus exister", job);
+
+      // vérification de JobHistory
+      List<JobHistory> jobHistory = jobLectureService.getJobHistory(idJob);
+
+      Assert.assertTrue("le job ne doit plus avoir d'historique", jobHistory
+            .isEmpty());
+
    }
 
-   @Test
-   public void endingJob_failure() throws Exception {
-      // On crée un job
-      UUID id = addJobForTest(1);
-      // On le réserve
-      jobQueueService.reserveJob(id, "hostname", new Date());
-      // On le lance
-      jobQueueService.startingJob(id, new Date());
-      // On le termine
-      jobQueueService.endingJob(id, false, new Date());
-      // On vérifie qu'il est bien terminé, mais en erreur
-      JobRequest jobRequest = jobLectureService.getJobRequest(id);
-      Assert.assertEquals("hostname", jobRequest.getReservedBy());
-      Assert.assertNotNull(jobRequest.getEndingDate());
-      Assert.assertEquals(JobState.FAILURE, jobRequest.getState());
-   }
+   private void createJob(UUID idJob) {
 
-   @Test
-   public void updateToCheckFlag_success() throws JobInexistantException {
+      Date dateCreation = new Date();
 
-      String raison = "raison de la vérification";
+      JobToCreate job = new JobToCreate();
+      job.setIdJob(idJob);
+      job.setType("ArchivageMasse");
+      job.setParameters("parameters");
+      job.setClientHost("clientHost");
+      job.setDocCount(100);
+      job.setSaeHost("saeHost");
+      job.setCreationDate(dateCreation);
 
-      // On crée un job
-      UUID idJob = addJobForTest(1);
-
-      // on renseigne son checkFlag
-      jobQueueService.updateToCheckFlag(idJob, true,
-            "raison de la vérification");
-
-      JobRequest jobRequest = jobLectureService.getJobRequest(idJob);
-      Assert.assertEquals("la propriété toCheckFlag est inattendu", true,
-            jobRequest.getToCheckFlag());
-      Assert.assertEquals("la propriété toCheckFlagRaison devrait être à true",
-            raison, jobRequest.getToCheckFlagRaison());
-
+      jobQueueService.addJob(job);
    }
 
    /**

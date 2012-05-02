@@ -9,7 +9,6 @@ import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
 import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 import me.prettyprint.hector.api.beans.HColumn;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -204,7 +203,7 @@ public class JobQueueServiceImpl implements JobQueueService {
          }
 
          // Vérifier que le job n'est pas déjà réservé
-         //on s'appuie sur la date de réservation qui dans ce cas est renseigné
+         // on s'appuie sur la date de réservation qui dans ce cas est renseigné
          if (jobRequest.getReservationDate() != null) {
             throw new JobDejaReserveException(idJob, jobRequest.getReservedBy());
          }
@@ -484,10 +483,9 @@ public class JobQueueServiceImpl implements JobQueueService {
 
       // Suppression de la CF "JobQueues"
       String reservedBy = jobRequest.getReservedBy();
-      if (StringUtils.isNotEmpty(reservedBy)) {
-         this.jobsQueueSupport.supprimerJobDeJobsQueues(idJob, reservedBy,
-               clock);
-      }
+
+      this.jobsQueueSupport.supprimerJobDeJobsAllQueues(idJob, reservedBy,
+            clock);
 
       // Suppression de la CF "JobHistory"
       this.jobHistorySupport.supprimerHistorique(idJob, clock);
