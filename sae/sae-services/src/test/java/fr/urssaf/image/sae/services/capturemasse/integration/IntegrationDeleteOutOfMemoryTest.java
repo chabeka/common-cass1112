@@ -136,8 +136,6 @@ public class IntegrationDeleteOutOfMemoryTest {
       // règlage storageDocumentService
       storageDocumentService.deleteStorageDocument(EasyMock
             .anyObject(UUID.class));
-      EasyMock.expectLastCall().times(2);
-
       EasyMock.expectLastCall().andThrow(new Error("exception de suppression"))
             .once();
 
@@ -147,12 +145,12 @@ public class IntegrationDeleteOutOfMemoryTest {
       EasyMock.expect(
             storageDocumentService.insertStorageDocument(EasyMock
                   .anyObject(StorageDocument.class)))
-            .andReturn(storageDocument).times(6);
+            .andReturn(storageDocument).times(9);
 
       EasyMock.expect(
             storageDocumentService.insertStorageDocument(EasyMock
                   .anyObject(StorageDocument.class))).andThrow(
-            new Error("erreur mémoire")).times(4);
+            new Error("erreur mémoire")).once();
 
       EasyMock.replay(provider, storageDocumentService);
    }
