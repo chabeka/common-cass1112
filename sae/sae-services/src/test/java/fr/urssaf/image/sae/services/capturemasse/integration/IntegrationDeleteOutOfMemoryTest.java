@@ -138,7 +138,7 @@ public class IntegrationDeleteOutOfMemoryTest {
             .anyObject(UUID.class));
       EasyMock.expectLastCall().times(2);
 
-      EasyMock.expectLastCall().andThrow(new OutOfMemoryError("exception de suppression"))
+      EasyMock.expectLastCall().andThrow(new Error("exception de suppression"))
             .once();
 
       StorageDocument storageDocument = new StorageDocument();
