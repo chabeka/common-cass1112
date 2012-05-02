@@ -67,7 +67,7 @@ public class CaptureMasseLauncherSupportImpl implements
 
       String command = this.createCommand(captureMasse);
 
-      LOG.debug("{} - lancement du processus: {}", PREFIX_LOG, command);
+      LOG.info("{} - lancement du processus: {}", PREFIX_LOG, command);
 
       try {
          LauncherUtils.launch(command);
