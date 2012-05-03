@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
+import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 
@@ -33,6 +34,8 @@ public class RollbackListener {
 
    private static final String TRC_ROLLBACK = "rollbacktasklet()";
 
+   private static final String TRC_AFTER = "afterRollback()";
+
    @Autowired
    @Qualifier("storageServiceProvider")
    private StorageServiceProvider serviceProvider;
@@ -46,8 +49,7 @@ public class RollbackListener {
     *            exception levée si la connexion échoue
     */
    @BeforeStep
-   public final void beforeRollback(StepExecution stepExecution)
-         throws ConnectionServiceEx {
+   public final void beforeRollback(StepExecution stepExecution) {
 
       @SuppressWarnings("unchecked")
       ConcurrentLinkedQueue<UUID> integDocs = (ConcurrentLinkedQueue<UUID>) stepExecution
@@ -56,7 +58,7 @@ public class RollbackListener {
       try {
          serviceProvider.openConnexion();
 
-      } catch (ConnectionServiceEx e) {
+      } catch (Throwable e) {
 
          if (CollectionUtils.isNotEmpty(integDocs)) {
             String idTraitement = (String) stepExecution.getJobParameters()
@@ -75,7 +77,7 @@ public class RollbackListener {
                         idTraitement);
          }
 
-         throw e;
+         throw new CaptureMasseRuntimeException(e);
       }
 
       LOGGER.debug("{} - ouverture de la connexion DFCE", TRC_ROLLBACK);
@@ -100,7 +102,18 @@ public class RollbackListener {
    @AfterStep
    public final void afterRollback(StepExecution stepExecution) {
 
-      serviceProvider.closeConnexion();
+      // pour l'instant nous avons fait le choix de propager l'erreur
+      // pour ne pas la cacher et attérir dans un état en erreur
+
+      try {
+         serviceProvider.closeConnexion();
+
+      } catch (Throwable e) {
+
+         LOGGER.warn("{} - Fermeture de la base impossible", TRC_AFTER, e);
+         throw new CaptureMasseRuntimeException(e);
+      }
+
       LOGGER.debug("{} - fermeture de la connexion DFCE", TRC_ROLLBACK);
 
    }

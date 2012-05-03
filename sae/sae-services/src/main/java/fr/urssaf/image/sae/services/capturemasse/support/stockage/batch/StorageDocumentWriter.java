@@ -49,6 +49,8 @@ public class StorageDocumentWriter implements ItemWriter<StorageDocument> {
 
    private static final String TRC_INSERT = "StorageDocumentWriter()";
 
+   private static final String TRC_END = "end()";
+
    /**
     * initialisation du context
     * 
@@ -64,7 +66,7 @@ public class StorageDocumentWriter implements ItemWriter<StorageDocument> {
       try {
          serviceProvider.openConnexion();
 
-      } catch (Exception e) {
+      } catch (Throwable e) {
          ExecutionContext jobExecution = stepExecution.getJobExecution()
                .getExecutionContext();
          ConcurrentLinkedQueue<String> codes = (ConcurrentLinkedQueue<String>) jobExecution
@@ -92,7 +94,21 @@ public class StorageDocumentWriter implements ItemWriter<StorageDocument> {
     */
    @AfterStep
    public final void end(final StepExecution stepExecution) {
-      serviceProvider.closeConnexion();
+
+      // pour l'instant nous avons fait le choix de propager l'erreur
+      // pour ne pas la cacher et attérir dans un état en erreur
+
+      try {
+         serviceProvider.closeConnexion();
+
+      } catch (Throwable e) {
+
+         LOGGER.warn("{} - erreur lors de la fermeture de la base de données",
+               TRC_END, e);
+
+         throw new CaptureMasseRuntimeException(e);
+      }
+
    }
 
    /**

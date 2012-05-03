@@ -243,6 +243,8 @@ public class StockageListener {
 
       } catch (Exception e) {
 
+         LOGGER.warn("{} - " + e.getMessage(), "stockageListener()", e);
+
          String message;
          if (exception.getCause() == null) {
             message = exception.getMessage();

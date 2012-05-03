@@ -19,6 +19,7 @@ import fr.urssaf.image.sae.services.capturemasse.support.stockage.interruption.m
 import fr.urssaf.image.sae.services.capturemasse.support.stockage.interruption.util.InterruptionTraitementUtils;
 import fr.urssaf.image.sae.storage.dfce.constants.Constants;
 import fr.urssaf.image.sae.storage.dfce.manager.DFCEServicesManager;
+import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 
 /**
  * 
@@ -96,9 +97,8 @@ public class InterruptionTraitementMasseSupportImpl implements
 
          ConnectionResult connectionResult;
          try {
-            connectionResult = pause(diffTime, null, config
-                  .getTentatives(), config.getTentatives(),
-                  dfceManager);
+            connectionResult = pause(diffTime, null, config.getTentatives(),
+                  config.getTentatives(), dfceManager);
          } catch (InterruptedException e) {
             // Interruption lors de la mise en pause du traitement
             throw new InterruptionTraitementException(config, e);
@@ -161,6 +161,17 @@ public class InterruptionTraitementMasseSupportImpl implements
 
             connectionResult = pause(this.defaultDelay, e, newTentatives,
                   total, dfceManager);
+         } catch (Throwable throwable) {
+
+            final int newTentatives = tentatives - 1;
+
+            LOG.debug(
+                  "{} - Echec de la tentative n°{}/{} de reconnexion à DFCE ",
+                  new Object[] { LOG_PREFIX, step, total });
+
+            connectionResult = pause(this.defaultDelay,
+                  new ConnectionServiceEx("erreur de reconnexion", throwable),
+                  newTentatives, total, dfceManager);
          }
 
       }
@@ -171,7 +182,6 @@ public class InterruptionTraitementMasseSupportImpl implements
 
    private static final class ConnectionResult {
 
-      
       private Exception exception;
 
       private int step;
@@ -190,8 +200,7 @@ public class InterruptionTraitementMasseSupportImpl implements
    public final boolean hasInterrupted(final DateTime currentDate,
          final InterruptionTraitementConfig config) {
 
-      return InterruptionTraitementUtils.waitTime(currentDate,
-            config) > 0;
+      return InterruptionTraitementUtils.waitTime(currentDate, config) > 0;
    }
 
 }
