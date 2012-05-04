@@ -20,7 +20,7 @@
    <properties>
       <logback.version>0.9.30</logback.version>
       <org.slf4j.version>1.6.1</org.slf4j.version>
-      <commons.cassandra.version>0.0.4-SNAPSHOT</commons.cassandra.version>
+      <commons.cassandra.version>0.0.4</commons.cassandra.version>
    </properties>
 
 
