@@ -36,6 +36,8 @@ public class RollbackListener {
 
    private static final String TRC_AFTER = "afterRollback()";
 
+   private static final String TRC_BEFORE = "beforeRollback()";
+
    @Autowired
    @Qualifier("storageServiceProvider")
    private StorageServiceProvider serviceProvider;
@@ -60,15 +62,16 @@ public class RollbackListener {
 
       } catch (Throwable e) {
 
+         String idTraitement = (String) stepExecution.getJobParameters()
+               .getString(Constantes.ID_TRAITEMENT);
+
+         String errorMessage = MessageFormat.format(
+               "{0} - Une exception a été levée lors du rollback : {1}",
+               TRC_BEFORE, idTraitement);
+
+         LOGGER.warn(errorMessage, e);
+
          if (CollectionUtils.isNotEmpty(integDocs)) {
-            String idTraitement = (String) stepExecution.getJobParameters()
-                  .getString(Constantes.ID_TRAITEMENT);
-
-            String errorMessage = MessageFormat.format(
-                  "{0} - Une exception a été levée lors du rollback : {1}",
-                  TRC_ROLLBACK, idTraitement);
-
-            LOGGER.error(errorMessage, e);
 
             LOGGER
                   .error(

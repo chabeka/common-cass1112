@@ -223,7 +223,7 @@ public class StockageListener {
 
       } catch (InterruptionTraitementException e) {
 
-         LOGGER.error("{} - " + e.getMessage(), "stockageListener()");
+         LOGGER.warn("{} - " + e.getMessage(), "stockageListener()");
 
          String idTraitement = (String) stepExecution.getJobParameters()
                .getString(Constantes.ID_TRAITEMENT);

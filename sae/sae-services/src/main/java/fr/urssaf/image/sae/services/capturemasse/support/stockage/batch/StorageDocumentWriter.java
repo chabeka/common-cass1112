@@ -51,6 +51,8 @@ public class StorageDocumentWriter implements ItemWriter<StorageDocument> {
 
    private static final String TRC_END = "end()";
 
+   private static final String TRC_INIT = "init()";
+
    /**
     * initialisation du context
     * 
@@ -67,6 +69,9 @@ public class StorageDocumentWriter implements ItemWriter<StorageDocument> {
          serviceProvider.openConnexion();
 
       } catch (Throwable e) {
+
+         LOGGER.warn("{} - erreur de connexion à DFCE", TRC_INIT, e);
+
          ExecutionContext jobExecution = stepExecution.getJobExecution()
                .getExecutionContext();
          ConcurrentLinkedQueue<String> codes = (ConcurrentLinkedQueue<String>) jobExecution

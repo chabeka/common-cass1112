@@ -100,7 +100,7 @@ public class RollbackTasklet implements Tasklet {
              */
 
             UUID strDocumentID = listIntegDocs.toArray(new UUID[0])[0];
-            
+
             support.rollback(strDocumentID);
 
             chunkContext.getStepContext().getStepExecution().setReadCount(
@@ -137,7 +137,7 @@ public class RollbackTasklet implements Tasklet {
                "{0} - Une exception a été levée lors du rollback : {1}",
                TRC_ROLLBACK, idTraitement);
 
-         LOGGER.error(errorMessage, e);
+         LOGGER.warn(errorMessage, e);
 
          LOGGER
                .error(
@@ -197,8 +197,8 @@ public class RollbackTasklet implements Tasklet {
          repeatStatus = RepeatStatus.FINISHED;
          LOGGER
                .warn(
-                     "{} - Une erreur est survenue lors du rollback. " +
-                     "Le nombre maximal de documents à supprimer est de {}, et {} ont été comptabilisés.",
+                     "{} - Une erreur est survenue lors du rollback. "
+                           + "Le nombre maximal de documents à supprimer est de {}, et {} ont été comptabilisés.",
                      new Object[] { TRC_ROLLBACK,
                            String.valueOf(nbreDocsTotal),
                            String.valueOf(rollbackCount) });
@@ -239,35 +239,17 @@ public class RollbackTasklet implements Tasklet {
       try {
          listDocs = documentService.search(requete, metadata, MAX_RESULT);
       } catch (MetaDataUnauthorizedToSearchEx e) {
-         LOGGER
-               .info(
-                     ERREUR_RECHERCHE,
-                     TRC_FIND, e);
+         LOGGER.info(ERREUR_RECHERCHE, TRC_FIND, e);
       } catch (MetaDataUnauthorizedToConsultEx e) {
-         LOGGER
-               .info(
-                     ERREUR_RECHERCHE,
-                     TRC_FIND, e);
+         LOGGER.info(ERREUR_RECHERCHE, TRC_FIND, e);
       } catch (UnknownDesiredMetadataEx e) {
-         LOGGER
-               .info(
-                     ERREUR_RECHERCHE,
-                     TRC_FIND, e);
+         LOGGER.info(ERREUR_RECHERCHE, TRC_FIND, e);
       } catch (UnknownLuceneMetadataEx e) {
-         LOGGER
-               .info(
-                     ERREUR_RECHERCHE,
-                     TRC_FIND, e);
+         LOGGER.info(ERREUR_RECHERCHE, TRC_FIND, e);
       } catch (SyntaxLuceneEx e) {
-         LOGGER
-               .info(
-                     ERREUR_RECHERCHE,
-                     TRC_FIND, e);
+         LOGGER.info(ERREUR_RECHERCHE, TRC_FIND, e);
       } catch (SAESearchServiceEx e) {
-         LOGGER
-               .info(
-                     ERREUR_RECHERCHE,
-                     TRC_FIND, e);
+         LOGGER.info(ERREUR_RECHERCHE, TRC_FIND, e);
       }
 
       return listDocs;
