@@ -22,19 +22,23 @@
          setValues("cer69-saeint1.cer69.recouv", "SAE",
                "cer69-saeint1.cer69.recouv:9160", "root", "regina4932",
                "SAE");
-      } else if (idxModele == 3) {
+      }  else if (idxModele == 3) {
+         setValues("cer69-saeint3.cer69.recouv", "SAE",
+               "cer69-saeint3.cer69.recouv:9160", "root", "regina4932",
+               "SAE");
+      } else if (idxModele == 4) {
          setValues(
                "hwi69devsaeapp1.cer69.recouv,hwi69devsaeapp2.cer69.recouv",
                "SAE",
                "hwi69devsaecas1.cer69.recouv:9160,hwi69devsaecas2.cer69.recouv:9160",
                "root", "regina4932", "SAE");
-      } else if (idxModele == 4) {
+      } else if (idxModele == 5) {
          setValues(
                "hwi69ginsaeappli1.cer69.recouv,hwi69ginsaeappli2.cer69.recouv",
                "SAE",
                "hwi69ginsaecas1.cer69.recouv:9160,hwi69ginsaecas2.cer69.recouv:9160",
                "root", "regina4932", "SAE");
-      } else if (idxModele == 5) {
+      } else if (idxModele == 6) {
          setValues(
                "hwi69givnsaeappli.cer69.recouv",
                "SAE",
@@ -69,6 +73,7 @@
             <option value="libre">Saisie libre</option>
             <option value="dev1">Développement #1 (ds4/int9)</option>
             <option value="dev2">Développement #2 (saeint1)</option>
+            <option value="intMoe">Intégration commune (saeint3)</option>
             <option value="integ">Intégration interne (hwi69devsae*)</option>
             <option value="integNat">Intégration nationale (GIN)</option>
             <option value="valid">Validation nationale (GIVN)</option>
