@@ -16,6 +16,7 @@ import fr.urssaf.image.sae.integration.jeuxtests.modele.NomFichierEtSha1;
 public final class SommaireService {
    
    
+   
    public void genereSommaireMonoPdf(
          int nbDocs,
          String cheminEcritureFichierSommaire,
@@ -24,6 +25,38 @@ public final class SommaireService {
          String denomination,
          String siren,
          boolean sirenAleatoire) throws IOException {
+      
+      String applicationTraitement = "ATTESTATIONS";
+      boolean avecNumeroRecours = false;
+      String dateCreation = "2011-10-22";
+      
+      genereSommaireMonoPdf(
+            nbDocs,
+            cheminEcritureFichierSommaire,
+            objNumCheminEtNomFichier,
+            hash,
+            denomination,
+            siren,
+            sirenAleatoire,
+            applicationTraitement,
+            avecNumeroRecours,
+            dateCreation);
+      
+   }
+   
+   
+   
+   public void genereSommaireMonoPdf(
+         int nbDocs,
+         String cheminEcritureFichierSommaire,
+         String objNumCheminEtNomFichier,
+         String hash,
+         String denomination,
+         String siren,
+         boolean sirenAleatoire,
+         String applicationTraitement,
+         boolean avecNumeroRecours,
+         String dateCreation) throws IOException {
       
       File file = new File(cheminEcritureFichierSommaire);
       
@@ -48,7 +81,11 @@ public final class SommaireService {
                   hash,
                   denomination,
                   siren,
-                  sirenAleatoire);
+                  sirenAleatoire,
+                  i,
+                  applicationTraitement,
+                  avecNumeroRecours,
+                  dateCreation);
             
          }
          
@@ -64,6 +101,7 @@ public final class SommaireService {
    
    
    
+   
    public void genereSommairePluriPdf(
          int nbDocs,
          String cheminEcritureFichierSommaire,
@@ -71,6 +109,36 @@ public final class SommaireService {
          String denomination,
          String siren,
          boolean sirenAleatoire) throws IOException {
+      
+      String applicationTraitement = "ATTESTATIONS";
+      boolean avecNumeroRecours = false;
+      String dateCreation = "2011-10-22";
+      
+      genereSommairePluriPdf(
+            nbDocs,
+            cheminEcritureFichierSommaire,
+            cheminFichierDesSha1,
+            denomination,
+            siren,
+            sirenAleatoire,
+            applicationTraitement,
+            avecNumeroRecours,
+            dateCreation);
+      
+   }
+   
+   
+   
+   public void genereSommairePluriPdf(
+         int nbDocs,
+         String cheminEcritureFichierSommaire,
+         String cheminFichierDesSha1,
+         String denomination,
+         String siren,
+         boolean sirenAleatoire,
+         String applicationTraitement,
+         boolean avecNumeroRecours,
+         String dateCreation) throws IOException {
       
       File fileSommaire = new File(cheminEcritureFichierSommaire);
       
@@ -110,7 +178,11 @@ public final class SommaireService {
                   listeSha1.get(compteurFichierDansListeSha1).getSha1(),
                   denomination,
                   siren,
-                  sirenAleatoire);
+                  sirenAleatoire,
+                  i,
+                  applicationTraitement,
+                  avecNumeroRecours,
+                  dateCreation);
             
             
             compteurFichierDansListeSha1++;
@@ -142,8 +214,8 @@ public final class SommaireService {
       writer.write("   xmlns:somres=\"http://www.cirtil.fr/sae/commun_sommaire_et_resultat\""); writer.write("\r\n");
       writer.write("   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"); writer.write("\r\n");
       writer.write("   <som:batchMode>TOUT_OU_RIEN</som:batchMode>"); writer.write("\r\n");
-      writer.write("   <som:dateCreation>2011-10-15</som:dateCreation>"); writer.write("\r\n");
-      writer.write("   <som:description>La description du traitement</som:description>"); writer.write("\r\n");
+      // writer.write("   <som:dateCreation>2011-10-15</som:dateCreation>"); writer.write("\r\n");
+      // writer.write("   <som:description>La description du traitement</som:description>"); writer.write("\r\n");
       writer.write("   <som:documents>"); writer.write("\r\n");
       
    }
@@ -166,7 +238,11 @@ public final class SommaireService {
          String hash,
          String denomination,
          String siren,
-         boolean sirenAleatoire) throws IOException {
+         boolean sirenAleatoire,
+         int indiceDoc,
+         String applicationTraitement,
+         boolean avecNumeroRecours,
+         String dateCreation) throws IOException {
       
       writer.write("      <somres:document>"); writer.write("\r\n");
       
@@ -191,7 +267,7 @@ public final class SommaireService {
       
       writer.write("            <somres:metadonnee>"); writer.write("\r\n");
       writer.write("               <somres:code>DateCreation</somres:code>"); writer.write("\r\n");
-      writer.write("               <somres:valeur>2011-10-22</somres:valeur>"); writer.write("\r\n");
+      writer.write("               <somres:valeur>" + dateCreation + "</somres:valeur>"); writer.write("\r\n");
       writer.write("            </somres:metadonnee>"); writer.write("\r\n");
       
       writer.write("            <somres:metadonnee>"); writer.write("\r\n");
@@ -234,6 +310,8 @@ public final class SommaireService {
       writer.write("               <somres:valeur>fmt/354</somres:valeur>"); writer.write("\r\n");
       writer.write("            </somres:metadonnee>"); writer.write("\r\n");
       
+      // Siren, en option
+      // Peut être une valeur fixe, ou généré aléatoirement
       if (sirenAleatoire) {
          writer.write("            <somres:metadonnee>"); writer.write("\r\n");
          writer.write("               <somres:code>Siren</somres:code>"); writer.write("\r\n");
@@ -246,15 +324,29 @@ public final class SommaireService {
          writer.write("            </somres:metadonnee>"); writer.write("\r\n");
       }
       
-      writer.write("            <somres:metadonnee>"); writer.write("\r\n");
-      writer.write("               <somres:code>ApplicationTraitement</somres:code>"); writer.write("\r\n");
-      writer.write("               <somres:valeur>ATTESTATIONS</somres:valeur>"); writer.write("\r\n");
-      writer.write("            </somres:metadonnee>"); writer.write("\r\n");
+      // ApplicationTraitement, en option
+      if (StringUtils.isNotBlank(applicationTraitement)) {
+         writer.write("            <somres:metadonnee>"); writer.write("\r\n");
+         writer.write("               <somres:code>ApplicationTraitement</somres:code>"); writer.write("\r\n");
+         writer.write("               <somres:valeur>" + applicationTraitement + "</somres:valeur>"); writer.write("\r\n");
+         writer.write("            </somres:metadonnee>"); writer.write("\r\n");
+      }
       
+      // Denomination, en option
+      // Surtout utilisé pour les tests d'intégration interne
       if (StringUtils.isNotBlank(denomination)) {
          writer.write("            <somres:metadonnee>"); writer.write("\r\n");
          writer.write("               <somres:code>Denomination</somres:code>"); writer.write("\r\n");
          writer.write("               <somres:valeur>" + denomination + "</somres:valeur>"); writer.write("\r\n");
+         writer.write("            </somres:metadonnee>"); writer.write("\r\n");
+      }
+      
+      // NumeroRecours, en option
+      // Surtout utilisé pour les tests d'intégration interne
+      if (avecNumeroRecours) {
+         writer.write("            <somres:metadonnee>"); writer.write("\r\n");
+         writer.write("               <somres:code>NumeroRecours</somres:code>"); writer.write("\r\n");
+         writer.write("               <somres:valeur>" + indiceDoc + "</somres:valeur>"); writer.write("\r\n");
          writer.write("            </somres:metadonnee>"); writer.write("\r\n");
       }
       
