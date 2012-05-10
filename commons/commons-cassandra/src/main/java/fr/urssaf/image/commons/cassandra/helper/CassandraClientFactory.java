@@ -64,7 +64,14 @@ public final class CassandraClientFactory implements DisposableBean  {
       }
       else {
          // Mode réel : on active le DynamicLoadBalancingPolicy
-         hostConfigurator.setLoadBalancingPolicy(new DynamicLoadBalancingPolicy());
+         
+         // Désactivation du DynamicLoadBalancingPolicy suite à la détection d'un 
+         //  bug Hector rencontré en intégration interne.
+         // Cf. Mantis 8022, pièce jointe sae_services_executable-logs.zip 
+         // Ce commentaire et la ligne de code sont laissés pour éviter
+         //  une réactivation de cette option.
+         // hostConfigurator.setLoadBalancingPolicy(new DynamicLoadBalancingPolicy());
+         
       }
       cluster = HFactory.getOrCreateCluster("ClusterName-" + new Date().getTime(),
             hostConfigurator);
