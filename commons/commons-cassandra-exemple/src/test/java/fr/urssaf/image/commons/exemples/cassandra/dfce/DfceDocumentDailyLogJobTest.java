@@ -15,9 +15,9 @@ import com.netflix.curator.framework.CuratorFramework;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraClientFactory;
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.exemples.cassandra.config.CassandraEtZookeeperConfig;
 import fr.urssaf.image.commons.exemples.cassandra.dfce.dao.JobsDao;
 import fr.urssaf.image.commons.exemples.cassandra.dfce.modele.Job;
-import fr.urssaf.image.commons.exemples.cassandra.piletravaux.CassandraEtZookeeperConfig;
 import fr.urssaf.image.commons.zookeeper.ZookeeperClientFactory;
 
 /**

@@ -1,0 +1,263 @@
+// ---------------------------------------------------------
+// fr.urssaf.image.commons.exemples.cassandra.grossecolonne
+// ---------------------------------------------------------
+
+Ce package a servi à réaliser un test pour reproduire un problème survenu
+en intégration interne du SAE-120512, dans la capture de masse, sur des volumes
+de sommaire.xml supérieur à 300 000 documents (notamment sur le test à 500 000
+documents).
+
+Lors de la persistance d'état des travaux Spring Batch, à la fin de la step
+de stockage des documents dans DFCE, le framework SB persiste automatiquement
+l'état du job, et notamment son contexte d'exécution.
+
+Ce contexte d'exécution, qui est sérialisé en XML, contient la liste des UUID
+des documents stockés.
+
+Dans le cas du sommaire.xml de 500 000 documents, le contexte d'exécution du job
+contient donc une liste de 500 000 UUID.
+
+Un problème systématique se produit à ce moment là, dont les traces donnent :
+
+2012-05-09 11:44:36.105 ERROR me.prettyprint.cassandra.connection.HConnectionManager
+            [3a12ccf0-99b0-11e1-b758-005056bf4d42] - MARK HOST AS DOWN TRIGGERED for host hwi69devsaecas1.cer69.recouv(10.3.94.35):9160
+2012-05-09 11:44:36.114 ERROR me.prettyprint.cassandra.connection.HConnectionManager
+            [3a12ccf0-99b0-11e1-b758-005056bf4d42] - Pool state on shutdown: <ConcurrentCassandraClientPoolByHost>:{hwi69devsaecas1.cer69.recouv(10.3.94.35):9160}; IsActive?: true; Active: 1; Blocked: 0; Idle: 15; NumBeforeExhausted: 49
+2012-05-09 11:44:36.124 WARN  me.prettyprint.cassandra.connection.HConnectionManager
+            [3a12ccf0-99b0-11e1-b758-005056bf4d42] - Could not fullfill request on this host CassandraClient<hwi69devsaecas1.cer69.recouv:9160-13>
+2012-05-09 11:44:36.207 WARN  me.prettyprint.cassandra.connection.HConnectionManager
+            [3a12ccf0-99b0-11e1-b758-005056bf4d42] - Exception: 
+me.prettyprint.hector.api.exceptions.HectorTransportException: org.apache.thrift.transport.TTransportException
+   at me.prettyprint.cassandra.service.ExceptionsTranslatorImpl.translate(ExceptionsTranslatorImpl.java:39) ~[sae-services-executable.jar:na]
+   at me.prettyprint.cassandra.connection.HConnectionManager.operateWithFailover(HConnectionManager.java:252) ~[sae-services-executable.jar:na]
+   at me.prettyprint.cassandra.model.ExecutingKeyspace.doExecuteOperation(ExecutingKeyspace.java:97) [sae-services-executable.jar:na]
+   at me.prettyprint.cassandra.model.MutatorImpl.execute(MutatorImpl.java:243) [sae-services-executable.jar:na]
+   at me.prettyprint.cassandra.service.template.AbstractColumnFamilyTemplate.executeBatch(AbstractColumnFamilyTemplate.java:115) [sae-services-executable.jar:na]
+   at me.prettyprint.cassandra.service.template.AbstractColumnFamilyTemplate.executeIfNotBatched(AbstractColumnFamilyTemplate.java:163) [sae-services-executable.jar:na]
+   at me.prettyprint.cassandra.service.template.ColumnFamilyTemplate.update(ColumnFamilyTemplate.java:69) [sae-services-executable.jar:na]
+   at fr.urssaf.image.commons.cassandra.spring.batch.dao.CassandraExecutionContextDao.updateExecutionContext(CassandraExecutionContextDao.java:79) [sae-services-executable.jar:na]
+   at org.springframework.batch.core.repository.support.SimpleJobRepository.updateExecutionContext(SimpleJobRepository.java:188) [sae-services-executable.jar:na]
+   at org.springframework.batch.core.job.SimpleStepHandler.handleStep(SimpleStepHandler.java:145) [sae-services-executable.jar:na]
+   at org.springframework.batch.core.job.flow.JobFlowExecutor.executeStep(JobFlowExecutor.java:61) [sae-services-executable.jar:na]
+   at org.springframework.batch.core.job.flow.support.state.StepState.handle(StepState.java:60) [sae-services-executable.jar:na]
+   at org.springframework.batch.core.job.flow.support.SimpleFlow.resume(SimpleFlow.java:144) [sae-services-executable.jar:na]
+   at org.springframework.batch.core.job.flow.support.SimpleFlow.start(SimpleFlow.java:124) [sae-services-executable.jar:na]
+   at org.springframework.batch.core.job.flow.FlowJob.doExecute(FlowJob.java:135) [sae-services-executable.jar:na]
+   at org.springframework.batch.core.job.AbstractJob.execute(AbstractJob.java:281) [sae-services-executable.jar:na]
+   at org.springframework.batch.core.launch.support.SimpleJobLauncher$1.run(SimpleJobLauncher.java:120) [sae-services-executable.jar:na]
+   at org.springframework.core.task.SyncTaskExecutor.execute(SyncTaskExecutor.java:48) [sae-services-executable.jar:na]
+   at org.springframework.batch.core.launch.support.SimpleJobLauncher.run(SimpleJobLauncher.java:114) [sae-services-executable.jar:na]
+   at fr.urssaf.image.sae.services.capturemasse.impl.SAECaptureMasseServiceImpl.captureMasse(SAECaptureMasseServiceImpl.java:65) [sae-services-executable.jar:na]
+   at fr.urssaf.image.sae.services.batch.support.impl.CaptureMasseSupportImpl.execute(CaptureMasseSupportImpl.java:73) [sae-services-executable.jar:na]
+   at fr.urssaf.image.sae.services.batch.impl.TraitementAsynchroneServiceImpl.lancerJob(TraitementAsynchroneServiceImpl.java:166) [sae-services-executable.jar:na]
+   at fr.urssaf.image.sae.services.executable.traitementmasse.TraitementMasseMain.execute(TraitementMasseMain.java:71) [sae-services-executable.jar:na]
+   at fr.urssaf.image.sae.services.executable.traitementmasse.TraitementMasseMain.main(TraitementMasseMain.java:105) [sae-services-executable.jar:na]
+   at fr.urssaf.image.sae.services.executable.ServicesMain.main(ServicesMain.java:54) [sae-services-executable.jar:na]
+Caused by: org.apache.thrift.transport.TTransportException: null
+   at org.apache.thrift.transport.TIOStreamTransport.read(TIOStreamTransport.java:132) ~[sae-services-executable.jar:na]
+   at org.apache.thrift.transport.TTransport.readAll(TTransport.java:84) ~[sae-services-executable.jar:na]
+   at org.apache.thrift.transport.TFramedTransport.readFrame(TFramedTransport.java:129) ~[sae-services-executable.jar:na]
+   at org.apache.thrift.transport.TFramedTransport.read(TFramedTransport.java:101) ~[sae-services-executable.jar:na]
+   at org.apache.thrift.transport.TTransport.readAll(TTransport.java:84) ~[sae-services-executable.jar:na]
+   at org.apache.thrift.protocol.TBinaryProtocol.readAll(TBinaryProtocol.java:378) ~[sae-services-executable.jar:na]
+   at org.apache.thrift.protocol.TBinaryProtocol.readI32(TBinaryProtocol.java:297) ~[sae-services-executable.jar:na]
+   at org.apache.thrift.protocol.TBinaryProtocol.readMessageBegin(TBinaryProtocol.java:204) ~[sae-services-executable.jar:na]
+   at org.apache.cassandra.thrift.Cassandra$Client.recv_batch_mutate(Cassandra.java:1025) ~[sae-services-executable.jar:na]
+   at org.apache.cassandra.thrift.Cassandra$Client.batch_mutate(Cassandra.java:1009) ~[sae-services-executable.jar:na]
+   at me.prettyprint.cassandra.model.MutatorImpl$3.execute(MutatorImpl.java:246) ~[sae-services-executable.jar:na]
+   at me.prettyprint.cassandra.model.MutatorImpl$3.execute(MutatorImpl.java:243) ~[sae-services-executable.jar:na]
+   at me.prettyprint.cassandra.service.Operation.executeAndSetResult(Operation.java:103) ~[sae-services-executable.jar:na]
+   at me.prettyprint.cassandra.connection.HConnectionManager.operateWithFailover(HConnectionManager.java:246) ~[sae-services-executable.jar:na]
+   ... 23 common frames omitted
+2012-05-09 11:44:36.949 ERROR me.prettyprint.cassandra.connection.HConnectionManager
+            [3a12ccf0-99b0-11e1-b758-005056bf4d42] - MARK HOST AS DOWN TRIGGERED for host hwi69devsaecas2.cer69.recouv(10.3.94.36):9160
+2012-05-09 11:44:36.949 ERROR me.prettyprint.cassandra.connection.HConnectionManager
+            [3a12ccf0-99b0-11e1-b758-005056bf4d42] - Pool state on shutdown: <ConcurrentCassandraClientPoolByHost>:{hwi69devsaecas2.cer69.recouv(10.3.94.36):9160}; IsActive?: true; Active: 1; Blocked: 0; Idle: 15; NumBeforeExhausted: 49
+2012-05-09 11:44:36.950 WARN  me.prettyprint.cassandra.connection.HConnectionManager
+            [3a12ccf0-99b0-11e1-b758-005056bf4d42] - Could not fullfill request on this host CassandraClient<hwi69devsaecas2.cer69.recouv:9160-28>
+2012-05-09 11:44:36.951 WARN  me.prettyprint.cassandra.connection.HConnectionManager
+            [3a12ccf0-99b0-11e1-b758-005056bf4d42] - Exception: 
+me.prettyprint.hector.api.exceptions.HectorTransportException: org.apache.thrift.transport.TTransportException
+   at me.prettyprint.cassandra.service.ExceptionsTranslatorImpl.translate(ExceptionsTranslatorImpl.java:39) ~[sae-services-executable.jar:na]
+   at me.prettyprint.cassandra.connection.HConnectionManager.operateWithFailover(HConnectionManager.java:252) ~[sae-services-executable.jar:na]
+   at me.prettyprint.cassandra.model.ExecutingKeyspace.doExecuteOperation(ExecutingKeyspace.java:97) [sae-services-executable.jar:na]
+   at me.prettyprint.cassandra.model.MutatorImpl.execute(MutatorImpl.java:243) [sae-services-executable.jar:na]
+   at me.prettyprint.cassandra.service.template.AbstractColumnFamilyTemplate.executeBatch(AbstractColumnFamilyTemplate.java:115) [sae-services-executable.jar:na]
+   at me.prettyprint.cassandra.service.template.AbstractColumnFamilyTemplate.executeIfNotBatched(AbstractColumnFamilyTemplate.java:163) [sae-services-executable.jar:na]
+   at me.prettyprint.cassandra.service.template.ColumnFamilyTemplate.update(ColumnFamilyTemplate.java:69) [sae-services-executable.jar:na]
+   at fr.urssaf.image.commons.cassandra.spring.batch.dao.CassandraExecutionContextDao.updateExecutionContext(CassandraExecutionContextDao.java:79) [sae-services-executable.jar:na]
+   at org.springframework.batch.core.repository.support.SimpleJobRepository.updateExecutionContext(SimpleJobRepository.java:188) [sae-services-executable.jar:na]
+   at org.springframework.batch.core.job.SimpleStepHandler.handleStep(SimpleStepHandler.java:145) [sae-services-executable.jar:na]
+   at org.springframework.batch.core.job.flow.JobFlowExecutor.executeStep(JobFlowExecutor.java:61) [sae-services-executable.jar:na]
+   at org.springframework.batch.core.job.flow.support.state.StepState.handle(StepState.java:60) [sae-services-executable.jar:na]
+   at org.springframework.batch.core.job.flow.support.SimpleFlow.resume(SimpleFlow.java:144) [sae-services-executable.jar:na]
+   at org.springframework.batch.core.job.flow.support.SimpleFlow.start(SimpleFlow.java:124) [sae-services-executable.jar:na]
+   at org.springframework.batch.core.job.flow.FlowJob.doExecute(FlowJob.java:135) [sae-services-executable.jar:na]
+   at org.springframework.batch.core.job.AbstractJob.execute(AbstractJob.java:281) [sae-services-executable.jar:na]
+   at org.springframework.batch.core.launch.support.SimpleJobLauncher$1.run(SimpleJobLauncher.java:120) [sae-services-executable.jar:na]
+   at org.springframework.core.task.SyncTaskExecutor.execute(SyncTaskExecutor.java:48) [sae-services-executable.jar:na]
+   at org.springframework.batch.core.launch.support.SimpleJobLauncher.run(SimpleJobLauncher.java:114) [sae-services-executable.jar:na]
+   at fr.urssaf.image.sae.services.capturemasse.impl.SAECaptureMasseServiceImpl.captureMasse(SAECaptureMasseServiceImpl.java:65) [sae-services-executable.jar:na]
+   at fr.urssaf.image.sae.services.batch.support.impl.CaptureMasseSupportImpl.execute(CaptureMasseSupportImpl.java:73) [sae-services-executable.jar:na]
+   at fr.urssaf.image.sae.services.batch.impl.TraitementAsynchroneServiceImpl.lancerJob(TraitementAsynchroneServiceImpl.java:166) [sae-services-executable.jar:na]
+   at fr.urssaf.image.sae.services.executable.traitementmasse.TraitementMasseMain.execute(TraitementMasseMain.java:71) [sae-services-executable.jar:na]
+   at fr.urssaf.image.sae.services.executable.traitementmasse.TraitementMasseMain.main(TraitementMasseMain.java:105) [sae-services-executable.jar:na]
+   at fr.urssaf.image.sae.services.executable.ServicesMain.main(ServicesMain.java:54) [sae-services-executable.jar:na]
+Caused by: org.apache.thrift.transport.TTransportException: null
+   at org.apache.thrift.transport.TIOStreamTransport.read(TIOStreamTransport.java:132) ~[sae-services-executable.jar:na]
+   at org.apache.thrift.transport.TTransport.readAll(TTransport.java:84) ~[sae-services-executable.jar:na]
+   at org.apache.thrift.transport.TFramedTransport.readFrame(TFramedTransport.java:129) ~[sae-services-executable.jar:na]
+   at org.apache.thrift.transport.TFramedTransport.read(TFramedTransport.java:101) ~[sae-services-executable.jar:na]
+   at org.apache.thrift.transport.TTransport.readAll(TTransport.java:84) ~[sae-services-executable.jar:na]
+   at org.apache.thrift.protocol.TBinaryProtocol.readAll(TBinaryProtocol.java:378) ~[sae-services-executable.jar:na]
+   at org.apache.thrift.protocol.TBinaryProtocol.readI32(TBinaryProtocol.java:297) ~[sae-services-executable.jar:na]
+   at org.apache.thrift.protocol.TBinaryProtocol.readMessageBegin(TBinaryProtocol.java:204) ~[sae-services-executable.jar:na]
+   at org.apache.cassandra.thrift.Cassandra$Client.recv_batch_mutate(Cassandra.java:1025) ~[sae-services-executable.jar:na]
+   at org.apache.cassandra.thrift.Cassandra$Client.batch_mutate(Cassandra.java:1009) ~[sae-services-executable.jar:na]
+   at me.prettyprint.cassandra.model.MutatorImpl$3.execute(MutatorImpl.java:246) ~[sae-services-executable.jar:na]
+   at me.prettyprint.cassandra.model.MutatorImpl$3.execute(MutatorImpl.java:243) ~[sae-services-executable.jar:na]
+   at me.prettyprint.cassandra.service.Operation.executeAndSetResult(Operation.java:103) ~[sae-services-executable.jar:na]
+   at me.prettyprint.cassandra.connection.HConnectionManager.operateWithFailover(HConnectionManager.java:246) ~[sae-services-executable.jar:na]
+   ... 23 common frames omitted
+
+
+Pour reproduire ce problème, la partie persistance du contexte d'exécution du job a été isolé
+dans le package "fr.urssaf.image.commons.exemples.cassandra.grossecolonne".
+
+On aurait pu testé, d'une manière générale, l'écriture d'une colonne dont la valeur est volumineuse.
+
+Néanmoins, pour rester au plus proche du problème, on reste sur la persistance du contexte
+d'exécution d'un job Spring Batch.
+
+
+Le TU GrosseColonneServiceTest.insererGrosseColonne() avec un volume de 500 000 UUID
+provoque le même problème que celui rencontré en intégration interne du SAE.
+
+Les traces sont :
+
+
+2012-05-11 14:52:22.712 DEBUG [fr.urssaf.image.commons.cassandra.helper.CassandraClientFactory] - Creation d'un client cassandra utilisant les serveurs suivants : hwi69devsaecas1.cer69.recouv:9160,hwi69devsaecas2.cer69.recouv:9160
+2012-05-11 14:52:22.744 WARN  [com.netflix.curator.framework.state.ConnectionStateManager] - There are no ConnectionStateListeners registered.
+2012-05-11 14:52:22.962 DEBUG [fr.urssaf.image.commons.exemples.cassandra.grossecolonne.GrosseColonneServiceTest] - Début
+2012-05-11 14:52:39.322 WARN  [com.netflix.curator.framework.state.ConnectionStateManager] - There are no ConnectionStateListeners registered.
+2012-05-11 14:52:39.447 WARN  [com.netflix.curator.framework.state.ConnectionStateManager] - There are no ConnectionStateListeners registered.
+2012-05-11 14:52:44.509 ERROR [me.prettyprint.cassandra.connection.HConnectionManager] - MARK HOST AS DOWN TRIGGERED for host hwi69devsaecas1.cer69.recouv(10.3.94.35):9160
+2012-05-11 14:52:44.572 ERROR [me.prettyprint.cassandra.connection.HConnectionManager] - Pool state on shutdown: <ConcurrentCassandraClientPoolByHost>:{hwi69devsaecas1.cer69.recouv(10.3.94.35):9160}; IsActive?: true; Active: 1; Blocked: 0; Idle: 15; NumBeforeExhausted: 49
+2012-05-11 14:52:44.588 WARN  [me.prettyprint.cassandra.connection.HConnectionManager] - Could not fullfill request on this host CassandraClient<hwi69devsaecas1.cer69.recouv:9160-1>
+2012-05-11 14:52:44.791 WARN  [me.prettyprint.cassandra.connection.HConnectionManager] - Exception: 
+me.prettyprint.hector.api.exceptions.HectorTransportException: org.apache.thrift.transport.TTransportException
+   at me.prettyprint.cassandra.service.ExceptionsTranslatorImpl.translate(ExceptionsTranslatorImpl.java:39) ~[hector-core-1.0-3.jar:na]
+   at me.prettyprint.cassandra.connection.HConnectionManager.operateWithFailover(HConnectionManager.java:252) ~[hector-core-1.0-3.jar:na]
+   at me.prettyprint.cassandra.model.ExecutingKeyspace.doExecuteOperation(ExecutingKeyspace.java:97) [hector-core-1.0-3.jar:na]
+   at me.prettyprint.cassandra.model.MutatorImpl.execute(MutatorImpl.java:243) [hector-core-1.0-3.jar:na]
+   at me.prettyprint.cassandra.service.template.AbstractColumnFamilyTemplate.executeBatch(AbstractColumnFamilyTemplate.java:115) [hector-core-1.0-3.jar:na]
+   at me.prettyprint.cassandra.service.template.AbstractColumnFamilyTemplate.executeIfNotBatched(AbstractColumnFamilyTemplate.java:163) [hector-core-1.0-3.jar:na]
+   at me.prettyprint.cassandra.service.template.ColumnFamilyTemplate.update(ColumnFamilyTemplate.java:69) [hector-core-1.0-3.jar:na]
+   at fr.urssaf.image.commons.exemples.cassandra.grossecolonne.service.GrosseColonneService.ecrireExecutionContext(GrosseColonneService.java:176) [classes/:na]
+   at fr.urssaf.image.commons.exemples.cassandra.grossecolonne.GrosseColonneServiceTest.insererGrosseColonne(GrosseColonneServiceTest.java:130) [test-classes/:na]
+   at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.6.0_18]
+   at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39) ~[na:1.6.0_18]
+   at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25) ~[na:1.6.0_18]
+   at java.lang.reflect.Method.invoke(Method.java:597) ~[na:1.6.0_18]
+   at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44) [junit-4.8.1.jar:na]
+   at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:15) [junit-4.8.1.jar:na]
+   at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:41) [junit-4.8.1.jar:na]
+   at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:20) [junit-4.8.1.jar:na]
+   at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:76) [junit-4.8.1.jar:na]
+   at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50) [junit-4.8.1.jar:na]
+   at org.junit.runners.ParentRunner$3.run(ParentRunner.java:193) [junit-4.8.1.jar:na]
+   at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:52) [junit-4.8.1.jar:na]
+   at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:191) [junit-4.8.1.jar:na]
+   at org.junit.runners.ParentRunner.access$000(ParentRunner.java:42) [junit-4.8.1.jar:na]
+   at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:184) [junit-4.8.1.jar:na]
+   at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:28) [junit-4.8.1.jar:na]
+   at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:31) [junit-4.8.1.jar:na]
+   at org.junit.runners.ParentRunner.run(ParentRunner.java:236) [junit-4.8.1.jar:na]
+   at org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:46) [.cp/:na]
+   at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38) [.cp/:na]
+   at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:467) [.cp/:na]
+   at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:683) [.cp/:na]
+   at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:390) [.cp/:na]
+   at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:197) [.cp/:na]
+Caused by: org.apache.thrift.transport.TTransportException: null
+   at org.apache.thrift.transport.TIOStreamTransport.read(TIOStreamTransport.java:132) ~[libthrift-0.6.1.jar:0.6.1]
+   at org.apache.thrift.transport.TTransport.readAll(TTransport.java:84) ~[libthrift-0.6.1.jar:0.6.1]
+   at org.apache.thrift.transport.TFramedTransport.readFrame(TFramedTransport.java:129) ~[libthrift-0.6.1.jar:0.6.1]
+   at org.apache.thrift.transport.TFramedTransport.read(TFramedTransport.java:101) ~[libthrift-0.6.1.jar:0.6.1]
+   at org.apache.thrift.transport.TTransport.readAll(TTransport.java:84) ~[libthrift-0.6.1.jar:0.6.1]
+   at org.apache.thrift.protocol.TBinaryProtocol.readAll(TBinaryProtocol.java:378) ~[libthrift-0.6.1.jar:0.6.1]
+   at org.apache.thrift.protocol.TBinaryProtocol.readI32(TBinaryProtocol.java:297) ~[libthrift-0.6.1.jar:0.6.1]
+   at org.apache.thrift.protocol.TBinaryProtocol.readMessageBegin(TBinaryProtocol.java:204) ~[libthrift-0.6.1.jar:0.6.1]
+   at org.apache.cassandra.thrift.Cassandra$Client.recv_batch_mutate(Cassandra.java:1025) ~[cassandra-thrift-1.0.6.jar:1.0.6]
+   at org.apache.cassandra.thrift.Cassandra$Client.batch_mutate(Cassandra.java:1009) ~[cassandra-thrift-1.0.6.jar:1.0.6]
+   at me.prettyprint.cassandra.model.MutatorImpl$3.execute(MutatorImpl.java:246) ~[hector-core-1.0-3.jar:na]
+   at me.prettyprint.cassandra.model.MutatorImpl$3.execute(MutatorImpl.java:243) ~[hector-core-1.0-3.jar:na]
+   at me.prettyprint.cassandra.service.Operation.executeAndSetResult(Operation.java:103) ~[hector-core-1.0-3.jar:na]
+   at me.prettyprint.cassandra.connection.HConnectionManager.operateWithFailover(HConnectionManager.java:246) ~[hector-core-1.0-3.jar:na]
+   ... 31 common frames omitted
+2012-05-11 14:52:45.259 ERROR [me.prettyprint.cassandra.connection.HConnectionManager] - MARK HOST AS DOWN TRIGGERED for host hwi69devsaecas2.cer69.recouv(10.3.94.36):9160
+2012-05-11 14:52:45.259 ERROR [me.prettyprint.cassandra.connection.HConnectionManager] - Pool state on shutdown: <ConcurrentCassandraClientPoolByHost>:{hwi69devsaecas2.cer69.recouv(10.3.94.36):9160}; IsActive?: true; Active: 1; Blocked: 0; Idle: 15; NumBeforeExhausted: 49
+2012-05-11 14:52:45.259 WARN  [me.prettyprint.cassandra.connection.HConnectionManager] - Could not fullfill request on this host CassandraClient<hwi69devsaecas2.cer69.recouv:9160-17>
+2012-05-11 14:52:45.275 WARN  [me.prettyprint.cassandra.connection.HConnectionManager] - Exception: 
+me.prettyprint.hector.api.exceptions.HectorTransportException: org.apache.thrift.transport.TTransportException
+   at me.prettyprint.cassandra.service.ExceptionsTranslatorImpl.translate(ExceptionsTranslatorImpl.java:39) ~[hector-core-1.0-3.jar:na]
+   at me.prettyprint.cassandra.connection.HConnectionManager.operateWithFailover(HConnectionManager.java:252) ~[hector-core-1.0-3.jar:na]
+   at me.prettyprint.cassandra.model.ExecutingKeyspace.doExecuteOperation(ExecutingKeyspace.java:97) [hector-core-1.0-3.jar:na]
+   at me.prettyprint.cassandra.model.MutatorImpl.execute(MutatorImpl.java:243) [hector-core-1.0-3.jar:na]
+   at me.prettyprint.cassandra.service.template.AbstractColumnFamilyTemplate.executeBatch(AbstractColumnFamilyTemplate.java:115) [hector-core-1.0-3.jar:na]
+   at me.prettyprint.cassandra.service.template.AbstractColumnFamilyTemplate.executeIfNotBatched(AbstractColumnFamilyTemplate.java:163) [hector-core-1.0-3.jar:na]
+   at me.prettyprint.cassandra.service.template.ColumnFamilyTemplate.update(ColumnFamilyTemplate.java:69) [hector-core-1.0-3.jar:na]
+   at fr.urssaf.image.commons.exemples.cassandra.grossecolonne.service.GrosseColonneService.ecrireExecutionContext(GrosseColonneService.java:176) [classes/:na]
+   at fr.urssaf.image.commons.exemples.cassandra.grossecolonne.GrosseColonneServiceTest.insererGrosseColonne(GrosseColonneServiceTest.java:130) [test-classes/:na]
+   at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.6.0_18]
+   at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39) ~[na:1.6.0_18]
+   at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25) ~[na:1.6.0_18]
+   at java.lang.reflect.Method.invoke(Method.java:597) ~[na:1.6.0_18]
+   at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44) [junit-4.8.1.jar:na]
+   at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:15) [junit-4.8.1.jar:na]
+   at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:41) [junit-4.8.1.jar:na]
+   at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:20) [junit-4.8.1.jar:na]
+   at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:76) [junit-4.8.1.jar:na]
+   at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50) [junit-4.8.1.jar:na]
+   at org.junit.runners.ParentRunner$3.run(ParentRunner.java:193) [junit-4.8.1.jar:na]
+   at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:52) [junit-4.8.1.jar:na]
+   at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:191) [junit-4.8.1.jar:na]
+   at org.junit.runners.ParentRunner.access$000(ParentRunner.java:42) [junit-4.8.1.jar:na]
+   at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:184) [junit-4.8.1.jar:na]
+   at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:28) [junit-4.8.1.jar:na]
+   at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:31) [junit-4.8.1.jar:na]
+   at org.junit.runners.ParentRunner.run(ParentRunner.java:236) [junit-4.8.1.jar:na]
+   at org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:46) [.cp/:na]
+   at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38) [.cp/:na]
+   at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:467) [.cp/:na]
+   at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:683) [.cp/:na]
+   at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:390) [.cp/:na]
+   at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:197) [.cp/:na]
+Caused by: org.apache.thrift.transport.TTransportException: null
+   at org.apache.thrift.transport.TIOStreamTransport.read(TIOStreamTransport.java:132) ~[libthrift-0.6.1.jar:0.6.1]
+   at org.apache.thrift.transport.TTransport.readAll(TTransport.java:84) ~[libthrift-0.6.1.jar:0.6.1]
+   at org.apache.thrift.transport.TFramedTransport.readFrame(TFramedTransport.java:129) ~[libthrift-0.6.1.jar:0.6.1]
+   at org.apache.thrift.transport.TFramedTransport.read(TFramedTransport.java:101) ~[libthrift-0.6.1.jar:0.6.1]
+   at org.apache.thrift.transport.TTransport.readAll(TTransport.java:84) ~[libthrift-0.6.1.jar:0.6.1]
+   at org.apache.thrift.protocol.TBinaryProtocol.readAll(TBinaryProtocol.java:378) ~[libthrift-0.6.1.jar:0.6.1]
+   at org.apache.thrift.protocol.TBinaryProtocol.readI32(TBinaryProtocol.java:297) ~[libthrift-0.6.1.jar:0.6.1]
+   at org.apache.thrift.protocol.TBinaryProtocol.readMessageBegin(TBinaryProtocol.java:204) ~[libthrift-0.6.1.jar:0.6.1]
+   at org.apache.cassandra.thrift.Cassandra$Client.recv_batch_mutate(Cassandra.java:1025) ~[cassandra-thrift-1.0.6.jar:1.0.6]
+   at org.apache.cassandra.thrift.Cassandra$Client.batch_mutate(Cassandra.java:1009) ~[cassandra-thrift-1.0.6.jar:1.0.6]
+   at me.prettyprint.cassandra.model.MutatorImpl$3.execute(MutatorImpl.java:246) ~[hector-core-1.0-3.jar:na]
+   at me.prettyprint.cassandra.model.MutatorImpl$3.execute(MutatorImpl.java:243) ~[hector-core-1.0-3.jar:na]
+   at me.prettyprint.cassandra.service.Operation.executeAndSetResult(Operation.java:103) ~[hector-core-1.0-3.jar:na]
+   at me.prettyprint.cassandra.connection.HConnectionManager.operateWithFailover(HConnectionManager.java:246) ~[hector-core-1.0-3.jar:na]
+   ... 31 common frames omitted
+2012-05-11 14:52:45.275 DEBUG [fr.urssaf.image.commons.exemples.cassandra.grossecolonne.GrosseColonneServiceTest] - Fin avec erreur
+
+
+
+
+
+ 
+
+
+
+
+

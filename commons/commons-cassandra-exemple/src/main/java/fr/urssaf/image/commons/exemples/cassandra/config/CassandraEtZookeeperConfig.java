@@ -1,4 +1,4 @@
-package fr.urssaf.image.commons.exemples.cassandra.piletravaux;
+package fr.urssaf.image.commons.exemples.cassandra.config;
 
 /**
  * Configuration de connexion à Zookeeper et Cassandra
