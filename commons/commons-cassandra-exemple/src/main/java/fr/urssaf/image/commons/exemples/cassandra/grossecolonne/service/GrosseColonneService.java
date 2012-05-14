@@ -11,6 +11,7 @@ import me.prettyprint.cassandra.model.ConfigurableConsistencyLevel;
 import me.prettyprint.cassandra.service.CassandraHostConfigurator;
 import me.prettyprint.cassandra.service.FailoverPolicy;
 import me.prettyprint.cassandra.service.ThriftKsDef;
+import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
 import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
 import me.prettyprint.hector.api.Cluster;
@@ -205,6 +206,28 @@ public class GrosseColonneService {
       }
       
       return listUuid;
+      
+   }
+   
+   
+   @SuppressWarnings("unchecked")
+   public ConcurrentLinkedQueue<UUID> lireExecutionContexte(
+         Keyspace keyspace,
+         long idJob) {
+      
+      ColumnFamilyTemplate<Long, String> template = dao.createCFTemplate(keyspace);
+      
+      ColumnFamilyResult<Long, String> result = template.queryColumns(idJob);
+      
+      ExecutionContext execCtx = dao.createExecutionContextFromResult(result);
+      
+      if (execCtx==null) {
+         return null;
+      }
+      
+      ConcurrentLinkedQueue<UUID> list = (ConcurrentLinkedQueue<UUID>)execCtx.get("INTEGRATED_DOCUMENTS");
+      
+      return list;
       
    }
    

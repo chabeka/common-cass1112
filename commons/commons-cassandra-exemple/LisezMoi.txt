@@ -253,6 +253,33 @@ Caused by: org.apache.thrift.transport.TTransportException: null
 
 
 
+// Diagnostic du problème :
+
+Avec 500 000 UUID, la taille du message envoyé à Cassandra est d'environ 24 Mo.
+Or la taille maximum d'un message, configuré côté serveur Cassandra, est de 16 Mo.
+
+Dans le cassandra.yaml :
+
+# Frame size for thrift (maximum field length).
+# 0 disables TFramedTransport in favor of TSocket. This option
+# is deprecated; we strongly recommend using Framed mode.
+thrift_framed_transport_size_in_mb: 15
+
+# The max length of a thrift message, including all fields and
+# internal thrift overhead.
+thrift_max_message_length_in_mb: 16
+
+
+// Résolution
+
+Pour résoudre le problème, on peut modifier la configuration serveur pour augmenter
+la taille des messages thrift. Après test, l'écriture et la lecture de 500 000 UUID
+ont fonctionné avec un paramétrage des tailles à 50 Mo.
+
+Néanmoins, il ne s'agit pas d'une résolution à appliquer. Il faut plutôt revoir le procédé
+de mémorisation des UUID, de sorte à ne pas produire un contexte de job de taille trop 
+importante.
+  
 
 
  

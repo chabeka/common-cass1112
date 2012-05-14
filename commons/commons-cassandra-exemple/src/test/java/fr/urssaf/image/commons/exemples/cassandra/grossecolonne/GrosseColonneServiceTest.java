@@ -1,6 +1,8 @@
 package fr.urssaf.image.commons.exemples.cassandra.grossecolonne;
 
 import java.io.IOException;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -132,7 +134,7 @@ public class GrosseColonneServiceTest {
       
       LOGGER.debug("Début");
       
-      Long idJob = 14L;
+      Long idJob = 15L;
       
       int nbUUID = 500000;
       
@@ -142,6 +144,48 @@ public class GrosseColonneServiceTest {
                cassandraClientFactory.getKeyspace(), 
                idJob, 
                nbUUID);
+         
+         LOGGER.debug("Fin sans erreur");
+         
+      } catch (Throwable throwable) {
+         
+         LOGGER.debug("Fin avec erreur");
+         throw throwable;
+         
+      }
+      
+   }
+   
+   
+   /**
+    * Pour pouvoir exécuter ce test sur un volume de 500 000 UUID, il faut
+    * penser à augmenter la mémoire de la JVM dans le lancement du JUnit<br>
+    * <br>
+    * Modèle : <br>
+    * <br>
+    * -Xms500m -Xmx500m
+    * 
+    * @throws Throwable
+    */
+   @Test
+   @Ignore
+   public void lireGrosseColonne() throws Throwable {
+      
+      LOGGER.debug("Début");
+      
+      Long idJob = 15L;
+      
+      try {
+         
+         ConcurrentLinkedQueue<UUID> listUuid = leService.lireExecutionContexte(
+               cassandraClientFactory.getKeyspace(), 
+               idJob);
+         
+         if (listUuid==null) {
+            LOGGER.debug("La liste des UUID est null");
+         } else {
+            LOGGER.debug("Nombre de UUID : " + listUuid.size());
+         }
          
          LOGGER.debug("Fin sans erreur");
          

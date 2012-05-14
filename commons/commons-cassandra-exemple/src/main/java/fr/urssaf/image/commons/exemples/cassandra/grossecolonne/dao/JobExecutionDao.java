@@ -1,7 +1,10 @@
 package fr.urssaf.image.commons.exemples.cassandra.grossecolonne.dao;
 
+import java.util.UUID;
+
 import me.prettyprint.cassandra.serializers.LongSerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
+import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
 import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
 import me.prettyprint.cassandra.service.template.ThriftColumnFamilyTemplate;
@@ -52,6 +55,21 @@ public class JobExecutionDao {
    }
    
    
+   public ExecutionContext createExecutionContextFromResult(
+         ColumnFamilyResult<Long, String> result) {
+      
+      if (result == null || !result.hasResults()) {
+         return null;
+      }
+      
+      Serializer<ExecutionContext> oSlz = ExecutionContextSerializer.get();
+      
+      ExecutionContext executionContext = oSlz.fromBytes(result
+            .getByteArray(COL_EXECUTION_CONTEXT));
+      
+      return executionContext;
+      
+   }
    
    
    
