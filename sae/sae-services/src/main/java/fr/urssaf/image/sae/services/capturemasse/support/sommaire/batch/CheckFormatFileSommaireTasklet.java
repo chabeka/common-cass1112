@@ -6,6 +6,8 @@ package fr.urssaf.image.sae.services.capturemasse.support.sommaire.batch;
 import java.io.File;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.scope.context.ChunkContext;
@@ -30,6 +32,11 @@ public class CheckFormatFileSommaireTasklet implements Tasklet {
    @Autowired
    private SommaireFormatValidationSupport validationSupport;
 
+   private static final Logger LOGGER = LoggerFactory
+         .getLogger(CheckFileFormatSommaireTaskletTest.class);
+   
+   private static final String TRC_EXEC = "execute()";
+
    /**
     * {@inheritDoc}
     */
@@ -37,6 +44,8 @@ public class CheckFormatFileSommaireTasklet implements Tasklet {
    public final RepeatStatus execute(final StepContribution contribution,
          final ChunkContext chunkContext) {
 
+      LOGGER.debug("{} - Début de méthode", TRC_EXEC);
+      
       final StepExecution stepExecution = chunkContext.getStepContext()
             .getStepExecution();
       final ExecutionContext context = stepExecution.getJobExecution()
@@ -45,9 +54,17 @@ public class CheckFormatFileSommaireTasklet implements Tasklet {
       final File sommaireFile = new File(sommairePath);
 
       try {
+         
+         LOGGER.debug("{} - Début de validation du fichier sommaire.xml", TRC_EXEC);
+         
          validationSupport.validationSommaire(sommaireFile);
+         
+         LOGGER.debug("{} - Fin de validation du fichier sommaire.xml", TRC_EXEC);
+         LOGGER.debug("{} - Début de validation du BATCH_MODE du sommaire.xml", TRC_EXEC);
+         
          validationSupport.validerModeBatch(sommaireFile, "TOUT_OU_RIEN");
-
+         
+         LOGGER.debug("{} - Fin de validation du BATCH_MODE du sommaire.xml", TRC_EXEC);
       } catch (CaptureMasseSommaireFormatValidationException e) {
          final Exception exception = new Exception(e.getMessage());
          @SuppressWarnings("unchecked")
@@ -64,6 +81,8 @@ public class CheckFormatFileSommaireTasklet implements Tasklet {
                .getExecutionContext().get(Constantes.DOC_EXCEPTION);
          exceptions.add(exception);
       }
+      
+      LOGGER.debug("{} - Fin de méthode", TRC_EXEC);
 
       return RepeatStatus.FINISHED;
    }

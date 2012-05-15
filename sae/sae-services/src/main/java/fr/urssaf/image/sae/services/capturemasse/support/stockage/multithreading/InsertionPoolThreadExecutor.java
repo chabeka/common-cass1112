@@ -159,7 +159,7 @@ public class InsertionPoolThreadExecutor extends ThreadPoolExecutor implements
 
          LOGGER
                .debug("{} - Stockage du document #{} ({}) uuid:{}",
-                     new Object[] { PREFIX_TRACE, indexDocument,
+                     new Object[] { PREFIX_TRACE, (indexDocument +1),
                            storageDocument.getFilePath(),
                            storageDocument.getUuid() });
 

@@ -5,6 +5,8 @@ package fr.urssaf.image.sae.services.capturemasse.support.sommaire.batch;
 
 import java.io.File;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.scope.context.ChunkContext;
@@ -24,12 +26,19 @@ import fr.urssaf.image.sae.services.util.XmlReadUtils;
 @Component
 public class CountSommaireDocumentsTasklet implements Tasklet {
 
+   private static final Logger LOGGER = LoggerFactory
+         .getLogger(CountSommaireDocumentsTasklet.class);
+
+   private static final String TRC_EXEC = "execute()";
+
    /**
     * {@inheritDoc}
     */
    @Override
    public final RepeatStatus execute(StepContribution contribution,
          ChunkContext chunkContext) throws Exception {
+
+      LOGGER.debug("{} - Debut de méthode", TRC_EXEC);
 
       StepExecution stepExecution = chunkContext.getStepContext()
             .getStepExecution();
@@ -41,9 +50,18 @@ public class CountSommaireDocumentsTasklet implements Tasklet {
 
       File file = new File(path);
 
+      LOGGER.debug("{} - Début du dénombrement des documents présents dans "
+            + "le fichier sommaire.xml", TRC_EXEC);
+
       int nbreElements = XmlReadUtils.compterElements(file, "document");
+      
+      LOGGER.debug("{} - Fin du dénombrement", TRC_EXEC);
+      
+      LOGGER.debug("{0} - {1} documents présents dans le fichier sommaire.xml", TRC_EXEC, nbreElements);
 
       context.put(Constantes.DOC_COUNT, nbreElements);
+
+      LOGGER.debug("{} - Fin de méthode", TRC_EXEC);
 
       return RepeatStatus.FINISHED;
    }
