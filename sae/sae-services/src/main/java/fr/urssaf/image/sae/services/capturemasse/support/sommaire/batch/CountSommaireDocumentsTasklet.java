@@ -57,7 +57,7 @@ public class CountSommaireDocumentsTasklet implements Tasklet {
       
       LOGGER.debug("{} - Fin du dénombrement", TRC_EXEC);
       
-      LOGGER.debug("{0} - {1} documents présents dans le fichier sommaire.xml", TRC_EXEC, nbreElements);
+      LOGGER.debug("{} - {} documents présents dans le fichier sommaire.xml", TRC_EXEC, nbreElements);
 
       context.put(Constantes.DOC_COUNT, nbreElements);
 
