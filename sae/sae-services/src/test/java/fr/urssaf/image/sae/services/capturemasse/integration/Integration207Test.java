@@ -6,6 +6,7 @@ package fr.urssaf.image.sae.services.capturemasse.integration;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -16,7 +17,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -25,6 +25,9 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.services.batch.model.ExitTraitement;
@@ -35,12 +38,12 @@ import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentService;
+import fr.urssaf.image.sae.utils.SaeLogAppender;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
       "/applicationContext-sae-services-test.xml",
       "/applicationContext-sae-services-integration-test.xml" })
-@DirtiesContext
 public class Integration207Test {
 
    @Autowired
@@ -59,14 +62,20 @@ public class Integration207Test {
 
    private EcdeTestSommaire ecdeTestSommaire;
 
-   private static final Logger LOGGER = LoggerFactory
-         .getLogger(Integration207Test.class);
+   private Logger logger;
+
+   private SaeLogAppender logAppender;
 
    @Before
    public void init() {
+      logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+
+      logAppender = new SaeLogAppender(Level.WARN, "fr.urssaf.image.sae");
+      logger.addAppender(logAppender);
+
       ecdeTestSommaire = ecdeTestTools.buildEcdeTestSommaire();
 
-      LOGGER.debug("initialisation du répertoire de traitetement :"
+      logger.debug("initialisation du répertoire de traitetement :"
             + ecdeTestSommaire.getRepEcde());
    }
 
@@ -79,9 +88,12 @@ public class Integration207Test {
       }
 
       EasyMock.reset(provider, storageDocumentService);
+
+      logger.detachAppender(logAppender);
    }
 
    @Test
+   @DirtiesContext
    public void testLancement() throws ConnectionServiceEx, DeletionServiceEx,
          InsertionServiceEx, IOException {
       initComposants();
@@ -96,6 +108,8 @@ public class Integration207Test {
             .isSucces());
 
       checkFiles();
+
+      checkLogs();
 
    }
 
@@ -175,6 +189,14 @@ public class Integration207Test {
             fis.close();
          }
       }
+
+   }
+   
+   private void checkLogs() {
+      List<ILoggingEvent> loggingEvents = logAppender.getLoggingEvents();
+
+      Assert.assertTrue("aucun message d'erreur ou warn attendu",
+            loggingEvents == null || loggingEvents.isEmpty());
 
    }
 

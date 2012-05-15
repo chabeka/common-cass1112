@@ -24,7 +24,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -36,6 +35,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.xml.sax.SAXException;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.services.batch.model.ExitTraitement;
@@ -51,16 +53,17 @@ import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentService;
+import fr.urssaf.image.sae.utils.SaeLogAppender;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
       "/applicationContext-sae-services-test.xml",
       "/applicationContext-sae-services-integration-test.xml" })
-public class IntegrationBUL003Test {
+public class IntegrationRollbackSuccessTest {
 
-   private static final String ERREUR_ATTENDUE = "La capture de masse en mode "
-         + "\"Tout ou rien\" a été interrompue. Une procédure d'exploitation a été "
-         + "initialisée pour supprimer les données qui auraient pu être stockées.";
+   private static final String ERREUR_ATTENDUE = "Une erreur interne à l'application est "
+         + "survenue lors de la capture du "
+         + "document doc1.PDF. Détails : erreur mémoire";
 
    @Autowired
    private ApplicationContext applicationContext;
@@ -81,14 +84,20 @@ public class IntegrationBUL003Test {
 
    private EcdeTestSommaire ecdeTestSommaire;
 
-   private static final Logger LOGGER = LoggerFactory
-         .getLogger(IntegrationBUL003Test.class);
+   private Logger logger;
+
+   private SaeLogAppender logAppender;
 
    @Before
    public void init() {
+      logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+
+      logAppender = new SaeLogAppender(Level.WARN, "fr.urssaf.image.sae");
+      logger.addAppender(logAppender);
+
       ecdeTestSommaire = ecdeTestTools.buildEcdeTestSommaire();
 
-      LOGGER.debug("initialisation du répertoire de traitetement :"
+      logger.debug("initialisation du répertoire de traitetement :"
             + ecdeTestSommaire.getRepEcde());
    }
 
@@ -101,17 +110,22 @@ public class IntegrationBUL003Test {
       }
 
       EasyMock.reset(provider, storageDocumentService);
+
+      logger.detachAppender(logAppender);
    }
 
    @Test
    @DirtiesContext
-   public void testLancement() throws ConnectionServiceEx, DeletionServiceEx,
+   public void testLancementThrowable() throws ConnectionServiceEx, DeletionServiceEx,
          InsertionServiceEx, IOException, JAXBException, SAXException {
-      initComposants();
+      initThrowable();
+      initGeneral();
       initDatas();
 
+      UUID uuid = UUID.randomUUID();
+
       ExitTraitement exitStatus = service.captureMasse(ecdeTestSommaire
-            .getUrlEcde(), UUID.randomUUID());
+            .getUrlEcde(), uuid);
 
       EasyMock.verify(provider, storageDocumentService);
 
@@ -120,12 +134,37 @@ public class IntegrationBUL003Test {
 
       checkFiles();
 
+      checkLogs(uuid.toString());
+
    }
+   
+   @Test
+   @DirtiesContext
+   public void testLancementRuntime() throws ConnectionServiceEx, DeletionServiceEx,
+         InsertionServiceEx, IOException, JAXBException, SAXException {
+      initRuntime();
+      initGeneral();
+      initDatas();
 
-   private void initComposants() throws ConnectionServiceEx, DeletionServiceEx,
-         InsertionServiceEx {
+      UUID uuid = UUID.randomUUID();
 
-      // règlage provider
+      ExitTraitement exitStatus = service.captureMasse(ecdeTestSommaire
+            .getUrlEcde(), uuid);
+
+      EasyMock.verify(provider, storageDocumentService);
+
+      Assert.assertFalse("le traitement doit etre en erreur", exitStatus
+            .isSucces());
+
+      checkFiles();
+
+      checkLogs(uuid.toString());
+
+   }
+   
+   @SuppressWarnings("PMD.AvoidThrowingRawExceptionTypes")
+   private void initGeneral() throws ConnectionServiceEx, DeletionServiceEx {
+   // règlage provider
       provider.openConnexion();
       EasyMock.expectLastCall().anyTimes();
       provider.closeConnexion();
@@ -136,33 +175,63 @@ public class IntegrationBUL003Test {
       // règlage storageDocumentService
       storageDocumentService.deleteStorageDocument(EasyMock
             .anyObject(UUID.class));
-      EasyMock.expectLastCall().andThrow(
-            new DeletionServiceEx("erreur insertion document")).anyTimes();
+      EasyMock.expectLastCall().anyTimes();
 
+      EasyMock.replay(provider, storageDocumentService);
+      
+   }
+
+   @SuppressWarnings("PMD.AvoidThrowingRawExceptionTypes")
+   private void initThrowable() throws ConnectionServiceEx, DeletionServiceEx,
+         InsertionServiceEx {
       StorageDocument storageDocument = new StorageDocument();
       storageDocument.setUuid(UUID.randomUUID());
+      EasyMock.expect(
+            storageDocumentService.insertStorageDocument(EasyMock
+                  .anyObject(StorageDocument.class)))
+            .andReturn(storageDocument).times(2);
+
+      EasyMock.expect(
+            storageDocumentService.insertStorageDocument(EasyMock
+                  .anyObject(StorageDocument.class))).andThrow(
+            new Error("erreur mémoire")).once();
 
       EasyMock.expect(
             storageDocumentService.insertStorageDocument(EasyMock
                   .anyObject(StorageDocument.class)))
-            .andReturn(storageDocument).once();
+            .andReturn(storageDocument).anyTimes();
+   }
+   
+   @SuppressWarnings("PMD.AvoidThrowingRawExceptionTypes")
+   private void initRuntime() throws ConnectionServiceEx, DeletionServiceEx,
+         InsertionServiceEx {
+      StorageDocument storageDocument = new StorageDocument();
+      storageDocument.setUuid(UUID.randomUUID());
+      EasyMock.expect(
+            storageDocumentService.insertStorageDocument(EasyMock
+                  .anyObject(StorageDocument.class)))
+            .andReturn(storageDocument).times(2);
+
       EasyMock.expect(
             storageDocumentService.insertStorageDocument(EasyMock
                   .anyObject(StorageDocument.class))).andThrow(
-            new InsertionServiceEx("erreur insertion")).anyTimes();
+            new RuntimeException("erreur mémoire")).once();
 
-      EasyMock.replay(provider, storageDocumentService);
+      EasyMock.expect(
+            storageDocumentService.insertStorageDocument(EasyMock
+                  .anyObject(StorageDocument.class)))
+            .andReturn(storageDocument).anyTimes();
    }
 
    private void initDatas() throws IOException {
       File sommaire = new File(ecdeTestSommaire.getRepEcde(), "sommaire.xml");
       ClassPathResource resSommaire = new ClassPathResource(
-            "testhautniveau/BUL003/sommaire.xml");
+            "testhautniveau/rollbackSuccess/sommaire.xml");
       FileUtils.copyURLToFile(resSommaire.getURL(), sommaire);
 
       File repEcde = new File(ecdeTestSommaire.getRepEcde(), "documents");
       ClassPathResource resAttestation1 = new ClassPathResource(
-            "testhautniveau/BUL003/documents/doc1.PDF");
+            "testhautniveau/rollbackSuccess/documents/doc1.PDF");
       File fileAttestation1 = new File(repEcde, "doc1.PDF");
       FileUtils.copyURLToFile(resAttestation1.getURL(), fileAttestation1);
 
@@ -215,8 +284,9 @@ public class IntegrationBUL003Test {
             while (!erreurFound && indexErreur < listeErreurs.size()) {
                erreurType = listeErreurs.get(indexErreur);
 
-               if (Constantes.ERR_BUL003.equals(erreurType.getCode())
-                     && ERREUR_ATTENDUE.equalsIgnoreCase(erreurType.getLibelle())) {
+               if (Constantes.ERR_BUL001.equals(erreurType.getCode())
+                     && ERREUR_ATTENDUE.equalsIgnoreCase(erreurType
+                           .getLibelle())) {
                   erreurFound = true;
                }
                indexErreur++;
@@ -229,7 +299,6 @@ public class IntegrationBUL003Test {
       }
 
       Assert.assertTrue("le message d'erreur doit être trouvé", erreurFound);
-
    }
 
    /**
@@ -264,6 +333,37 @@ public class IntegrationBUL003Test {
             .unmarshal(resultats);
 
       return doc.getValue();
+
+   }
+
+   private void checkLogs(String uuid) {
+      List<ILoggingEvent> loggingEvents = logAppender.getLoggingEvents();
+
+      Assert.assertNotNull("liste des messages non null", loggingEvents);
+
+      Assert
+            .assertTrue("Au moins un message présent", loggingEvents.size() > 0);
+
+      int nbreErreur = 0;
+      for (ILoggingEvent iLoggingEvent : loggingEvents) {
+         if (Level.ERROR.equals(iLoggingEvent.getLevel())) {
+            nbreErreur++;
+         }
+      }
+
+      Assert.assertEquals("aucun message de niveau error", 0, nbreErreur);
+
+      boolean warnFound = false;
+      int index = 0;
+      ILoggingEvent event = null;
+      while (!warnFound && index < loggingEvents.size()) {
+         event = loggingEvents.get(index);
+         if (event.getMessage().contains("erreur mémoire")) {
+            warnFound = true;
+         }
+         index++;
+      }
+      Assert.assertTrue("le message d'erreur doit être trouvé", warnFound);
 
    }
 

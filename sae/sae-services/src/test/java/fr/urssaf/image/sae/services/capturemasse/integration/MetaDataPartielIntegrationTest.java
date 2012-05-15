@@ -43,7 +43,6 @@ import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
       "/applicationContext-sae-services-test.xml",
       "/applicationContext-sae-services-integration-test.xml",
       "/applicationContext-sae-traitement-masse-writer-test.xml" })
-@DirtiesContext
 public class MetaDataPartielIntegrationTest {
 
    private static final SimpleDateFormat FORMAT = new SimpleDateFormat(
@@ -79,6 +78,7 @@ public class MetaDataPartielIntegrationTest {
    }
 
    @Test
+   @DirtiesContext
    public void testLancement() throws ConnectionServiceEx, DeletionServiceEx,
          InsertionServiceEx, IOException, JAXBException, SAXException {
 

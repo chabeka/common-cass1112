@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
-import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 
 /**
@@ -47,8 +46,6 @@ public class RollbackListener {
     * 
     * @param stepExecution
     *           étape de rollback
-    * @throws ConnectionServiceEx
-    *            exception levée si la connexion échoue
     */
    @BeforeStep
    public final void beforeRollback(StepExecution stepExecution) {

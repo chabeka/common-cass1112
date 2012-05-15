@@ -65,7 +65,6 @@ import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentServi
 @ContextConfiguration(locations = {
       "/applicationContext-sae-services-test.xml",
       "/applicationContext-sae-services-integration-test.xml" })
-@DirtiesContext
 public class IntegrationRollBack11DocRechercheRollFailureTest {
 
    /**
@@ -120,6 +119,7 @@ public class IntegrationRollBack11DocRechercheRollFailureTest {
    }
 
    @Test
+   @DirtiesContext
    public void testLancement() throws ConnectionServiceEx, DeletionServiceEx,
          InsertionServiceEx, IOException, MetaDataUnauthorizedToSearchEx,
          MetaDataUnauthorizedToConsultEx, UnknownDesiredMetadataEx,

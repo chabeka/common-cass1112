@@ -49,6 +49,8 @@ public class StockageListener {
    private static final Logger LOGGER = LoggerFactory
          .getLogger(StockageListener.class);
 
+   private static final String FAILED_NO_RB = "FAILED_NO_ROLLBACK";
+
    @Autowired
    private InsertionPoolThreadExecutor executor;
 
@@ -161,7 +163,7 @@ public class StockageListener {
    @AfterStep
    public final ExitStatus afterStep(final StepExecution stepExecution) {
 
-      ExitStatus status = ExitStatus.COMPLETED;
+      ExitStatus status = stepExecution.getExitStatus();
 
       final JobExecution jobExecution = stepExecution.getJobExecution();
 
@@ -170,10 +172,15 @@ public class StockageListener {
             .getExecutionContext().get(Constantes.DOC_EXCEPTION);
 
       if (CollectionUtils.isNotEmpty(exceptions)) {
-
-         status = ExitStatus.FAILED;
+         // on peut être en cas d'erreur sans rollback : exemple erreur de
+         // connexion à la base
+         if (!FAILED_NO_RB.equals(status.getExitCode())) {
+            status = ExitStatus.FAILED;
+         }
 
       } else {
+
+         status = ExitStatus.COMPLETED;
 
          executor.shutdown();
 

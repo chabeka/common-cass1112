@@ -56,7 +56,6 @@ import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentServi
 @ContextConfiguration(locations = {
       "/applicationContext-sae-services-test.xml",
       "/applicationContext-sae-services-integration-test.xml" })
-@DirtiesContext
 public class IntegrationDeleteOutOfMemoryTest {
 
    private static final String ERREUR_ATTENDUE = "La capture de masse en mode \"Tout ou rien\" a été interrompue. "
@@ -104,6 +103,7 @@ public class IntegrationDeleteOutOfMemoryTest {
    }
 
    @Test
+   @DirtiesContext
    public void testLancement() throws ConnectionServiceEx, DeletionServiceEx,
          InsertionServiceEx, IOException, JAXBException, SAXException {
       initComposants();
@@ -175,8 +175,6 @@ public class IntegrationDeleteOutOfMemoryTest {
       File debut = new File(repTraitement, "debut_traitement.flag");
       File fin = new File(repTraitement, "fin_traitement.flag");
       File resultats = new File(repTraitement, "resultats.xml");
-
-      FileUtils.copyFile(resultats, new File("c:/res.xml"));
 
       Assert.assertTrue("le fichier debut_traitement.flag doit exister", debut
             .exists());

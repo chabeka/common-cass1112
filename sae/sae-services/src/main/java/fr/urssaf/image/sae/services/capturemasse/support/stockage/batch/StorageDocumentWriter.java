@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.AfterStep;
 import org.springframework.batch.core.annotation.BeforeStep;
@@ -85,6 +86,8 @@ public class StorageDocumentWriter implements ItemWriter<StorageDocument> {
          index.add(0);
          exceptions.add(new Exception(e.getMessage()));
 
+         stepExecution.setExitStatus(new ExitStatus("FAILED_NO_ROLLBACK"));
+
          throw new CaptureMasseRuntimeException(e);
       }
 
@@ -96,12 +99,15 @@ public class StorageDocumentWriter implements ItemWriter<StorageDocument> {
     * 
     * @param stepExecution
     *           le stepExecution
+    * @return un status de sortie
     */
    @AfterStep
-   public final void end(final StepExecution stepExecution) {
+   public final ExitStatus end(final StepExecution stepExecution) {
 
       // pour l'instant nous avons fait le choix de propager l'erreur
       // pour ne pas la cacher et attérir dans un état en erreur
+
+      ExitStatus exitStatus = stepExecution.getExitStatus();
 
       try {
          serviceProvider.closeConnexion();
@@ -111,8 +117,29 @@ public class StorageDocumentWriter implements ItemWriter<StorageDocument> {
          LOGGER.warn("{} - erreur lors de la fermeture de la base de données",
                TRC_END, e);
 
-         throw new CaptureMasseRuntimeException(e);
+         @SuppressWarnings("unchecked")
+         ConcurrentLinkedQueue<String> codes = (ConcurrentLinkedQueue<String>) stepExecution
+               .getJobExecution().getExecutionContext().get(
+                     Constantes.CODE_EXCEPTION);
+
+         @SuppressWarnings("unchecked")
+         ConcurrentLinkedQueue<Integer> index = (ConcurrentLinkedQueue<Integer>) stepExecution
+               .getJobExecution().getExecutionContext().get(
+                     Constantes.INDEX_EXCEPTION);
+
+         @SuppressWarnings("unchecked")
+         ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) stepExecution
+               .getJobExecution().getExecutionContext().get(
+                     Constantes.DOC_EXCEPTION);
+
+         codes.add(Constantes.ERR_BUL001);
+         index.add(0);
+         exceptions.add(new Exception(e.getMessage()));
+
+         exitStatus = ExitStatus.FAILED;
       }
+
+      return exitStatus;
 
    }
 

@@ -65,14 +65,17 @@ import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentServi
 @ContextConfiguration(locations = {
       "/applicationContext-sae-services-test.xml",
       "/applicationContext-sae-services-integration-test.xml" })
-@DirtiesContext
 public class IntegrationRollBack11DocRechercheSuccesTest {
 
    /**
     * 
     */
-   private static final String ERREUR_ATTENDUE = "insertion impossible";
+   private static final String LIBELLE_ATTENDU = "insertion impossible";
 
+   private static final String ERREUR_ATTENDUE = "Une erreur interne à l'application " +
+   		"est survenue lors de la capture du document doc1.PDF. " +
+   		"Détails : " + LIBELLE_ATTENDU; 
+   
    @Autowired
    private ApplicationContext applicationContext;
 
@@ -118,6 +121,7 @@ public class IntegrationRollBack11DocRechercheSuccesTest {
    }
 
    @Test
+   @DirtiesContext
    public void testLancement() throws ConnectionServiceEx, DeletionServiceEx,
          InsertionServiceEx, IOException, MetaDataUnauthorizedToSearchEx,
          MetaDataUnauthorizedToConsultEx, UnknownDesiredMetadataEx,
@@ -155,7 +159,7 @@ public class IntegrationRollBack11DocRechercheSuccesTest {
       // règlage storageDocumentService
       storageDocumentService.deleteStorageDocument(EasyMock
             .anyObject(UUID.class));
-      EasyMock.expectLastCall().anyTimes();
+      EasyMock.expectLastCall().times(20);
 
       StorageDocument storageDocument = new StorageDocument();
       storageDocument.setUuid(UUID.randomUUID());
@@ -169,7 +173,7 @@ public class IntegrationRollBack11DocRechercheSuccesTest {
       EasyMock.expect(
             storageDocumentService.insertStorageDocument(EasyMock
                   .anyObject(StorageDocument.class))).andThrow(
-            new InsertionServiceEx(ERREUR_ATTENDUE)).anyTimes();
+            new InsertionServiceEx(LIBELLE_ATTENDU)).anyTimes();
 
       // la recherche va retourner 10 éléments
       UntypedDocument untypedDocument = new UntypedDocument();

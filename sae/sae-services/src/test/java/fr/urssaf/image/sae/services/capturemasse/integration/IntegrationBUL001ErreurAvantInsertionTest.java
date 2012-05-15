@@ -24,7 +24,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -36,12 +35,14 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.xml.sax.SAXException;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.services.batch.model.ExitTraitement;
 import fr.urssaf.image.sae.services.capturemasse.SAECaptureMasseService;
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
-import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
 import fr.urssaf.image.sae.services.capturemasse.modele.commun_sommaire_et_resultat.ErreurType;
 import fr.urssaf.image.sae.services.capturemasse.modele.commun_sommaire_et_resultat.NonIntegratedDocumentType;
 import fr.urssaf.image.sae.services.capturemasse.modele.resultats.ObjectFactory;
@@ -49,16 +50,22 @@ import fr.urssaf.image.sae.services.capturemasse.modele.resultats.ResultatsType;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
-import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentService;
+import fr.urssaf.image.sae.utils.SaeLogAppender;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
       "/applicationContext-sae-services-test.xml",
       "/applicationContext-sae-services-integration-test.xml" })
-@DirtiesContext
-public class IntegrationRuntimeTest {
+public class IntegrationBUL001ErreurAvantInsertionTest {
+
+   private static final String MESSAGE_ERREUR = "erreur ouverture base";
+
+   private static final String ERREUR_ATTENDUE = "Une erreur interne à l'application est "
+         + "survenue lors de la capture du "
+         + "document doc1.PDF. Détails : "
+         + MESSAGE_ERREUR;
 
    @Autowired
    private ApplicationContext applicationContext;
@@ -79,18 +86,21 @@ public class IntegrationRuntimeTest {
 
    private EcdeTestSommaire ecdeTestSommaire;
 
-   private static final Logger LOGGER = LoggerFactory
-         .getLogger(IntegrationRuntimeTest.class);
+   private Logger logger;
 
-   private static final String ERREUR_ATTENDUE = "La capture de masse en mode "
-         + "\"Tout ou rien\" a été interrompue. Une procédure d'exploitation a été "
-         + "initialisée pour supprimer les données qui auraient pu être stockées.";
+   private SaeLogAppender logAppenderSae;
 
    @Before
    public void init() {
+      logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+
+      logAppenderSae = new SaeLogAppender(Level.WARN,
+            "fr.urssaf.image.sae.services");
+      logger.addAppender(logAppenderSae);
+
       ecdeTestSommaire = ecdeTestTools.buildEcdeTestSommaire();
 
-      LOGGER.debug("initialisation du répertoire de traitetement :"
+      logger.debug("initialisation du répertoire de traitetement :"
             + ecdeTestSommaire.getRepEcde());
    }
 
@@ -103,12 +113,16 @@ public class IntegrationRuntimeTest {
       }
 
       EasyMock.reset(provider, storageDocumentService);
+
+      logger.detachAppender(logAppenderSae);
    }
 
    @Test
-   public void testLancement() throws ConnectionServiceEx, DeletionServiceEx,
-         InsertionServiceEx, IOException, JAXBException, SAXException {
-      initComposants();
+   @DirtiesContext
+   public void testLancementRuntime() throws ConnectionServiceEx,
+         DeletionServiceEx, InsertionServiceEx, IOException, JAXBException,
+         SAXException {
+      initComposantsRuntime();
       initDatas();
 
       ExitTraitement exitStatus = service.captureMasse(ecdeTestSommaire
@@ -121,40 +135,54 @@ public class IntegrationRuntimeTest {
 
       checkFiles();
 
+      checkLogs();
+
    }
 
-   private void initComposants() throws ConnectionServiceEx, DeletionServiceEx,
+   @Test
+   @DirtiesContext
+   public void testLancementThrowable() throws ConnectionServiceEx,
+         DeletionServiceEx, InsertionServiceEx, IOException, JAXBException,
+         SAXException {
+      initComposantsThrowable();
+      initDatas();
+
+      ExitTraitement exitStatus = service.captureMasse(ecdeTestSommaire
+            .getUrlEcde(), UUID.randomUUID());
+
+      EasyMock.verify(provider, storageDocumentService);
+
+      Assert.assertFalse("le traitement doit etre en erreur", exitStatus
+            .isSucces());
+
+      checkFiles();
+
+      checkLogs();
+
+   }
+
+   private void initComposantsThrowable() throws ConnectionServiceEx, DeletionServiceEx,
          InsertionServiceEx {
 
       // règlage provider
       provider.openConnexion();
-      EasyMock.expectLastCall().anyTimes();
+      EasyMock.expectLastCall().andThrow(new Error(MESSAGE_ERREUR))
+            .anyTimes();
       provider.closeConnexion();
       EasyMock.expectLastCall().anyTimes();
-      EasyMock.expect(provider.getStorageDocumentService()).andReturn(
-            storageDocumentService).anyTimes();
 
-      // règlage storageDocumentService
-      storageDocumentService.deleteStorageDocument(EasyMock
-            .anyObject(UUID.class));
-      EasyMock.expectLastCall().once();
-      EasyMock.expectLastCall().andThrow(
-            new DeletionServiceEx("erreur rollback")).once();
-      EasyMock.expectLastCall().anyTimes();
+      EasyMock.replay(provider, storageDocumentService);
+   }
 
-      StorageDocument storageDocument = new StorageDocument();
-      storageDocument.setUuid(UUID.randomUUID());
+   private void initComposantsRuntime() throws ConnectionServiceEx,
+         DeletionServiceEx, InsertionServiceEx {
 
-      EasyMock.expect(
-            storageDocumentService.insertStorageDocument(EasyMock
-                  .anyObject(StorageDocument.class)))
-            .andReturn(storageDocument).times(4);
-
-      EasyMock.expect(
-            storageDocumentService.insertStorageDocument(EasyMock
-                  .anyObject(StorageDocument.class))).andThrow(
-            new CaptureMasseRuntimeException("erreur runtime créé par mock"))
+      // règlage provider
+      provider.openConnexion();
+      EasyMock.expectLastCall().andThrow(new RuntimeException(MESSAGE_ERREUR))
             .anyTimes();
+      provider.closeConnexion();
+      EasyMock.expectLastCall().anyTimes();
 
       EasyMock.replay(provider, storageDocumentService);
    }
@@ -162,12 +190,12 @@ public class IntegrationRuntimeTest {
    private void initDatas() throws IOException {
       File sommaire = new File(ecdeTestSommaire.getRepEcde(), "sommaire.xml");
       ClassPathResource resSommaire = new ClassPathResource(
-            "testhautniveau/runtime/sommaire.xml");
+            "testhautniveau/BUL001ErreurAvantInsertion/sommaire.xml");
       FileUtils.copyURLToFile(resSommaire.getURL(), sommaire);
 
       File repEcde = new File(ecdeTestSommaire.getRepEcde(), "documents");
       ClassPathResource resAttestation1 = new ClassPathResource(
-            "testhautniveau/runtime/documents/doc1.PDF");
+            "testhautniveau/BUL001ErreurAvantInsertion/documents/doc1.PDF");
       File fileAttestation1 = new File(repEcde, "doc1.PDF");
       FileUtils.copyURLToFile(resAttestation1.getURL(), fileAttestation1);
 
@@ -220,8 +248,9 @@ public class IntegrationRuntimeTest {
             while (!erreurFound && indexErreur < listeErreurs.size()) {
                erreurType = listeErreurs.get(indexErreur);
 
-               if (Constantes.ERR_BUL003.equals(erreurType.getCode())
-                     && ERREUR_ATTENDUE.equalsIgnoreCase(erreurType.getLibelle())) {
+               if (Constantes.ERR_BUL001.equals(erreurType.getCode())
+                     && ERREUR_ATTENDUE.equalsIgnoreCase(erreurType
+                           .getLibelle())) {
                   erreurFound = true;
                }
                indexErreur++;
@@ -271,4 +300,20 @@ public class IntegrationRuntimeTest {
       return doc.getValue();
 
    }
+
+   private void checkLogs() {
+      List<ILoggingEvent> loggingEvents = logAppenderSae.getLoggingEvents();
+
+      Assert.assertNotNull("liste des messages non null", loggingEvents);
+
+      Assert.assertEquals("une seule trace SAE", 1, loggingEvents.size());
+
+      Assert.assertEquals("l'erreur doit etre de niveau WARN", Level.WARN,
+            loggingEvents.get(0).getLevel());
+
+      Assert.assertEquals("le message d'exception doit etre valide",
+            MESSAGE_ERREUR, loggingEvents.get(0).getThrowableProxy()
+                  .getMessage());
+   }
+
 }
