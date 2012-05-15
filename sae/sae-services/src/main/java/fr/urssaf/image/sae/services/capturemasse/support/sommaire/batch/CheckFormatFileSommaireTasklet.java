@@ -33,7 +33,7 @@ public class CheckFormatFileSommaireTasklet implements Tasklet {
    private SommaireFormatValidationSupport validationSupport;
 
    private static final Logger LOGGER = LoggerFactory
-         .getLogger(CheckFileFormatSommaireTaskletTest.class);
+         .getLogger(CheckFormatFileSommaireTasklet.class);
    
    private static final String TRC_EXEC = "execute()";
 
