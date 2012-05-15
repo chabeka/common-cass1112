@@ -10,8 +10,8 @@ import org.springframework.mock.web.MockFilterConfig;
 import fr.urssaf.image.commons.maquette.constantes.ConstantesConfigFiltre;
 import fr.urssaf.image.commons.maquette.exception.MaquetteThemeException;
 import fr.urssaf.image.commons.maquette.tool.MaquetteConstant;
-import fr.urssaf.image.commons.util.exceptions.TestConstructeurPriveException;
-import fr.urssaf.image.commons.util.tests.TestsUtils;
+import fr.urssaf.image.commons.maquette.util.TestConstructeurPriveException;
+import fr.urssaf.image.commons.maquette.util.TestsUtils;
 
 /**
  * Tests unitaires de la classe {@link MaquetteThemeTools} 

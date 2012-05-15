@@ -9,8 +9,8 @@ import org.junit.Test;
 
 import fr.urssaf.image.commons.maquette.fixture.UriPatternTestItem;
 import fr.urssaf.image.commons.maquette.fixture.UriPatternTestListe;
-import fr.urssaf.image.commons.util.exceptions.TestConstructeurPriveException;
-import fr.urssaf.image.commons.util.tests.TestsUtils;
+import fr.urssaf.image.commons.maquette.util.TestConstructeurPriveException;
+import fr.urssaf.image.commons.maquette.util.TestsUtils;
 
 /**
  * Tests unitaires de la classe {@link UrlPatternMatcher}

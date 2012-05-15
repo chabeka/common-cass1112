@@ -11,8 +11,8 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import fr.urssaf.image.commons.maquette.config.MaquetteFilterConfig;
 import fr.urssaf.image.commons.maquette.exception.MaquetteThemeException;
 import fr.urssaf.image.commons.maquette.tool.MenuItem;
-import fr.urssaf.image.commons.util.exceptions.TestConstructeurPriveException;
-import fr.urssaf.image.commons.util.tests.TestsUtils;
+import fr.urssaf.image.commons.maquette.util.TestConstructeurPriveException;
+import fr.urssaf.image.commons.maquette.util.TestsUtils;
 
 
 /**

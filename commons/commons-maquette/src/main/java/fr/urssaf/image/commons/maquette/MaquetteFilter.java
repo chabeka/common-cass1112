@@ -13,7 +13,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.urssaf.image.commons.maquette.config.MaquetteFilterConfig;
 import fr.urssaf.image.commons.maquette.constantes.ConstantesConfigFiltre;
@@ -46,7 +47,7 @@ import fr.urssaf.image.commons.maquette.tool.UrlPatternMatcher;
  */
 public final class MaquetteFilter implements Filter {
 	
-	private static final Logger LOGGER = Logger.getLogger(MaquetteFilter.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(MaquetteFilter.class);
 	
 	private FilterConfig filterConfig;
 

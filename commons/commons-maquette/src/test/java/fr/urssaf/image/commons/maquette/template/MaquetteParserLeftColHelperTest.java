@@ -17,8 +17,8 @@ import fr.urssaf.image.commons.maquette.exception.MissingHtmlElementInTemplatePa
 import fr.urssaf.image.commons.maquette.exception.MissingInfoBoxPropertyException;
 import fr.urssaf.image.commons.maquette.exception.MissingSourceParserException;
 import fr.urssaf.image.commons.maquette.fixture.FixtureBoitesDeGauche;
-import fr.urssaf.image.commons.util.exceptions.TestConstructeurPriveException;
-import fr.urssaf.image.commons.util.tests.TestsUtils;
+import fr.urssaf.image.commons.maquette.util.TestConstructeurPriveException;
+import fr.urssaf.image.commons.maquette.util.TestsUtils;
 
 
 /**

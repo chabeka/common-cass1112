@@ -15,7 +15,8 @@ import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.StartTagType;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.urssaf.image.commons.maquette.definition.IMenu;
 import fr.urssaf.image.commons.maquette.exception.MenuException;
@@ -36,7 +37,7 @@ import fr.urssaf.image.commons.maquette.template.parser.internal.PageReminderPar
  */
 public final class MaquetteParser {
 
-   private static final Logger LOGGER = Logger.getLogger(MaquetteParser.class);
+   private static final Logger LOGGER = LoggerFactory.getLogger(MaquetteParser.class);
 
    private final OutputDocument outDoc ;
    private Source htmlSrcFromTmpl ;

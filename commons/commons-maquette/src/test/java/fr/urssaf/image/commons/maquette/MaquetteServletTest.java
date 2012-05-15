@@ -29,7 +29,7 @@ import fr.urssaf.image.commons.maquette.session.SessionTools;
 import fr.urssaf.image.commons.maquette.theme.AbstractMaquetteTheme;
 import fr.urssaf.image.commons.maquette.theme.MaquetteThemeTools;
 import fr.urssaf.image.commons.maquette.tool.MaquetteConstant;
-import fr.urssaf.image.commons.util.resource.ResourceUtil;
+import fr.urssaf.image.commons.maquette.util.ResourceUtil;
 
 
 

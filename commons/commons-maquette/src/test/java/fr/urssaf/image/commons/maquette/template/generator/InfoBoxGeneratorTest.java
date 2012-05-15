@@ -9,8 +9,8 @@ import org.junit.Test;
 import fr.urssaf.image.commons.maquette.exception.MissingInfoBoxPropertyException;
 import fr.urssaf.image.commons.maquette.tool.InfoBoxItem;
 import fr.urssaf.image.commons.maquette.tool.MaquetteConstant;
-import fr.urssaf.image.commons.util.exceptions.TestConstructeurPriveException;
-import fr.urssaf.image.commons.util.tests.TestsUtils;
+import fr.urssaf.image.commons.maquette.util.TestConstructeurPriveException;
+import fr.urssaf.image.commons.maquette.util.TestsUtils;
 
 
 /**

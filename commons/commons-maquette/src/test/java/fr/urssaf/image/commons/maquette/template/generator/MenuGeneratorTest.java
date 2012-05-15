@@ -13,8 +13,8 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import fr.urssaf.image.commons.maquette.exception.ReferentialIntegrityException;
 import fr.urssaf.image.commons.maquette.session.SessionTools;
 import fr.urssaf.image.commons.maquette.tool.MenuItem;
-import fr.urssaf.image.commons.util.exceptions.TestConstructeurPriveException;
-import fr.urssaf.image.commons.util.tests.TestsUtils;
+import fr.urssaf.image.commons.maquette.util.TestConstructeurPriveException;
+import fr.urssaf.image.commons.maquette.util.TestsUtils;
 
 /**
  * Tests unitaires de la classe {@link MenuGenerator}

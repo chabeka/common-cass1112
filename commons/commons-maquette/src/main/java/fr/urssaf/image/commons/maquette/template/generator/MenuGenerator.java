@@ -6,7 +6,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.urssaf.image.commons.maquette.session.SessionTools;
 import fr.urssaf.image.commons.maquette.tool.MenuItem;
@@ -21,7 +22,7 @@ import fr.urssaf.image.commons.maquette.tool.MenuItem;
  */
 public final class MenuGenerator {
 
-   private static final Logger LOGGER = Logger.getLogger(MenuGenerator.class);
+   private static final Logger LOGGER = LoggerFactory.getLogger(MenuGenerator.class);
 
    private MenuGenerator() {
 

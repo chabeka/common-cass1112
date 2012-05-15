@@ -1,78 +1,148 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>fr.urssaf.image.commons</groupId>
-  <artifactId>commons-maquette-exemple</artifactId>
-  <packaging>war</packaging>
-  <version>0.0.1-SNAPSHOT</version>
-  <name>commons-maquette-exemple</name>
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
-  
-  <build>
-  	<finalName>${artifactId}-${version}</finalName>
-	<plugins>
-		<plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-surefire-plugin</artifactId>
-			<version>2.5</version>
-		</plugin>
-		<plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-compiler-plugin</artifactId>
-			<configuration>
-				<source>1.6</source>
-				<target>1.6</target>
-			</configuration>
-		</plugin>
-		<plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-source-plugin</artifactId>
-			<executions>
-				<execution>
-					<id>bind-sources</id>
-					<goals>
-						<goal>jar</goal>
-					</goals>
-				</execution>
-			</executions>
-		</plugin>
+<project
+   xmlns="http://maven.apache.org/POM/4.0.0"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	</plugins>
-  </build>
-  
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.4</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <version>2.5</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>fr.urssaf.image.commons</groupId>
-      <artifactId>commons-maquette</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
-    </dependency>    
-  </dependencies>
+   <modelVersion>4.0.0</modelVersion>
+   
+   <groupId>fr.urssaf.image.commons</groupId>
+   <artifactId>commons-maquette-exemple</artifactId>
+   <version>0.0.2-SNAPSHOT</version>
+   
+   <packaging>war</packaging>
+   
+   <name>commons-maquette-exemple</name>
+   
+   <properties>
+      
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+      
+      <maven.source.plugin.version>2.1.2</maven.source.plugin.version>
+      <maven.javadoc.plugin.version>2.7</maven.javadoc.plugin.version>
+      <maven.surefire.plugin.version>2.12</maven.surefire.plugin.version>
+      
+      <junit.version>4.8.2</junit.version>
+      
+      <commons.maquette.version>0.0.2-SNAPSHOT</commons.maquette.version>
+      
+   </properties>
 
-	<distributionManagement>
-		<repository>
-			<id>nexus</id>
-			<name>Releases</name>
-			<url>http://cer69-nexus.cer69.recouv:8081/nexus/content/repositories/releases</url>
-		</repository>
-		<snapshotRepository>
-			<id>nexus</id>
-			<name>Snapshots</name>
-			<url>http://cer69-nexus.cer69.recouv:8081/nexus/content/repositories/snapshots</url>
-		</snapshotRepository>
-	</distributionManagement>
+   <build>
+      
+      <finalName>${artifactId}-${version}</finalName>
+      
+      <plugins>
+      
+         <!-- 
+         On spécifie la version du JDK et l'encodage de caractères des sources
+         -->
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+               <source>1.6</source>
+               <target>1.6</target>
+               <encoding>${project.build.sourceEncoding}</encoding>
+            </configuration>
+         </plugin>
+
+
+         <!-- 
+         Dans le cas d'un packaging JAR, on demande que le JAR des sources
+         soit également généré
+         -->
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>${maven.source.plugin.version}</version>
+            <executions>
+               <execution>
+                  <id>bind-sources</id>
+                  <goals>
+                     <goal>jar</goal>
+                  </goals>
+               </execution>
+            </executions>
+         </plugin>
+            
+         
+         <!-- 
+         On spécifie l'encodage de caractères des ressources
+         -->
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-resources-plugin</artifactId>
+            <configuration>
+               <encoding>${project.build.sourceEncoding}</encoding>
+            </configuration>
+         </plugin>
+         
+
+         <!--
+         On demande la génération de la Javadoc         
+         -->
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>${maven.javadoc.plugin.version}</version>
+            <executions>
+               <execution>
+                  <id>attach-javadocs</id>
+                  <goals>
+                     <goal>jar</goal>
+                  </goals>
+               </execution>
+            </executions>
+         </plugin>
+         
+         
+         <!-- Configuration du plug-in pour les tests unitaires -->
+         <!-- Exclusion de certaines classes -->
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>${maven.surefire.plugin.version}</version>
+         </plugin>
+
+      </plugins>
+   </build>
+
+   <dependencies>
+   
+      <!-- JUnit -->
+      <dependency>
+         <groupId>junit</groupId>
+         <artifactId>junit</artifactId>
+         <version>${junit.version}</version>
+         <scope>test</scope>
+      </dependency>
+      
+      <dependency>
+         <groupId>javax.servlet</groupId>
+         <artifactId>servlet-api</artifactId>
+         <version>2.5</version>
+         <scope>provided</scope>
+      </dependency>
+      
+      <dependency>
+         <groupId>fr.urssaf.image.commons</groupId>
+         <artifactId>commons-maquette</artifactId>
+         <version>${commons.maquette.version}</version>
+      </dependency>
+      
+   </dependencies>
+
+   <distributionManagement>
+      <repository>
+         <id>nexus</id>
+         <name>Releases</name>
+         <url>http://cer69-nexus.cer69.recouv:8081/nexus/content/repositories/releases</url>
+      </repository>
+      <snapshotRepository>
+         <id>nexus</id>
+         <name>Snapshots</name>
+         <url>http://cer69-nexus.cer69.recouv:8081/nexus/content/repositories/snapshots</url>
+      </snapshotRepository>
+   </distributionManagement>
 
 </project>
