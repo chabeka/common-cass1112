@@ -9,7 +9,6 @@ import org.easymock.EasyMock;
 import org.springframework.batch.core.repository.dao.MapStepExecutionDao;
 import org.springframework.batch.item.ItemProcessor;
 
-import fr.urssaf.image.commons.cassandra.spring.batch.dao.CassandraStepExecutionDao;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.services.capturemasse.modele.commun_sommaire_et_resultat.DocumentType;
 import fr.urssaf.image.sae.services.capturemasse.support.controle.CaptureMasseControleSupport;

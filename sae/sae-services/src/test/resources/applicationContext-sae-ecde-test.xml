@@ -17,5 +17,7 @@
    
    <bean id="ecdeTestTools"
       class="fr.urssaf.image.sae.ecde.util.test.EcdeTestTools" />
-    
+   
+   <bean id="mockFactory" class="fr.urssaf.image.sae.utils.MockFactoryBean" />
+   
 </beans>

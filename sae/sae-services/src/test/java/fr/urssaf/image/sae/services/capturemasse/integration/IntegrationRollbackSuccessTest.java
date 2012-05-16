@@ -53,6 +53,7 @@ import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentService;
+import fr.urssaf.image.sae.utils.LogUtils;
 import fr.urssaf.image.sae.utils.SaeLogAppender;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -116,8 +117,9 @@ public class IntegrationRollbackSuccessTest {
 
    @Test
    @DirtiesContext
-   public void testLancementThrowable() throws ConnectionServiceEx, DeletionServiceEx,
-         InsertionServiceEx, IOException, JAXBException, SAXException {
+   public void testLancementThrowable() throws ConnectionServiceEx,
+         DeletionServiceEx, InsertionServiceEx, IOException, JAXBException,
+         SAXException {
       initThrowable();
       initGeneral();
       initDatas();
@@ -137,11 +139,12 @@ public class IntegrationRollbackSuccessTest {
       checkLogs(uuid.toString());
 
    }
-   
+
    @Test
    @DirtiesContext
-   public void testLancementRuntime() throws ConnectionServiceEx, DeletionServiceEx,
-         InsertionServiceEx, IOException, JAXBException, SAXException {
+   public void testLancementRuntime() throws ConnectionServiceEx,
+         DeletionServiceEx, InsertionServiceEx, IOException, JAXBException,
+         SAXException {
       initRuntime();
       initGeneral();
       initDatas();
@@ -161,10 +164,10 @@ public class IntegrationRollbackSuccessTest {
       checkLogs(uuid.toString());
 
    }
-   
+
    @SuppressWarnings("PMD.AvoidThrowingRawExceptionTypes")
    private void initGeneral() throws ConnectionServiceEx, DeletionServiceEx {
-   // règlage provider
+      // règlage provider
       provider.openConnexion();
       EasyMock.expectLastCall().anyTimes();
       provider.closeConnexion();
@@ -178,7 +181,7 @@ public class IntegrationRollbackSuccessTest {
       EasyMock.expectLastCall().anyTimes();
 
       EasyMock.replay(provider, storageDocumentService);
-      
+
    }
 
    @SuppressWarnings("PMD.AvoidThrowingRawExceptionTypes")
@@ -201,7 +204,7 @@ public class IntegrationRollbackSuccessTest {
                   .anyObject(StorageDocument.class)))
             .andReturn(storageDocument).anyTimes();
    }
-   
+
    @SuppressWarnings("PMD.AvoidThrowingRawExceptionTypes")
    private void initRuntime() throws ConnectionServiceEx, DeletionServiceEx,
          InsertionServiceEx {
@@ -344,26 +347,13 @@ public class IntegrationRollbackSuccessTest {
       Assert
             .assertTrue("Au moins un message présent", loggingEvents.size() > 0);
 
-      int nbreErreur = 0;
-      for (ILoggingEvent iLoggingEvent : loggingEvents) {
-         if (Level.ERROR.equals(iLoggingEvent.getLevel())) {
-            nbreErreur++;
-         }
-      }
+      int nbreErreur = LogUtils.countLogsWithLevel(loggingEvents, Level.ERROR);
 
       Assert.assertEquals("aucun message de niveau error", 0, nbreErreur);
 
-      boolean warnFound = false;
-      int index = 0;
-      ILoggingEvent event = null;
-      while (!warnFound && index < loggingEvents.size()) {
-         event = loggingEvents.get(index);
-         if (event.getMessage().contains("erreur mémoire")) {
-            warnFound = true;
-         }
-         index++;
-      }
-      Assert.assertTrue("le message d'erreur doit être trouvé", warnFound);
+       boolean messageFound = LogUtils.logExists(loggingEvents, Level.WARN, "erreur mémoire");
+      
+      Assert.assertTrue("le message d'erreur doit être trouvé", messageFound);
 
    }
 

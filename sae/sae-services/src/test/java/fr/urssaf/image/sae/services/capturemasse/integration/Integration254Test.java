@@ -38,6 +38,7 @@ import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentService;
+import fr.urssaf.image.sae.utils.LogUtils;
 import fr.urssaf.image.sae.utils.SaeLogAppender;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -218,8 +219,9 @@ public class Integration254Test {
       Assert.assertEquals("le log doit être de niveau WARN", Level.WARN, event
             .getLevel());
 
-      Assert.assertEquals("le message d'erreur attendu doit être correct",
-            LOG_WARN, event.getThrowableProxy().getMessage());
+      boolean messageFound = LogUtils.logContainsMessage(event, LOG_WARN);
+      Assert.assertTrue("le message d'erreur attendu doit être correct",
+            messageFound);
    }
 
 }

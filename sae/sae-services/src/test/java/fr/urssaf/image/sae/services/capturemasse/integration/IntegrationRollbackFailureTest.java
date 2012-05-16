@@ -54,6 +54,7 @@ import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentService;
+import fr.urssaf.image.sae.utils.LogUtils;
 import fr.urssaf.image.sae.utils.SaeLogAppender;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -412,11 +413,11 @@ public class IntegrationRollbackFailureTest {
             storageDocumentService.insertStorageDocument(EasyMock
                   .anyObject(StorageDocument.class)))
             .andReturn(storageDocument).anyTimes();
-      
+
       storageDocumentService.deleteStorageDocument(EasyMock
             .anyObject(UUID.class));
-      EasyMock.expectLastCall().andThrow(new DeletionServiceEx("erreur rollback"))
-            .anyTimes();
+      EasyMock.expectLastCall().andThrow(
+            new DeletionServiceEx("erreur rollback")).anyTimes();
 
       EasyMock.replay(provider, storageDocumentService);
    }
@@ -560,19 +561,11 @@ public class IntegrationRollbackFailureTest {
       Assert.assertTrue("au moins deux messages attendus",
             loggingEvents.size() > 1);
 
-      ILoggingEvent errorEvent = null;
-      int nbreErreur = 0;
-      for (ILoggingEvent iLoggingEvent : loggingEvents) {
-         if (Level.ERROR.equals(iLoggingEvent.getLevel())) {
-            nbreErreur++;
-            errorEvent = iLoggingEvent;
-         }
-      }
+      List<ILoggingEvent> events = LogUtils.getLogsByLevel(loggingEvents,
+            Level.ERROR);
+      Assert.assertEquals("un et un seul message d'erreur", 1, events.size());
 
-      Assert.assertEquals("un et un seul message d'erreur", 1, nbreErreur);
-
-      Assert.assertEquals("le message d'erreur doit être correct", LOG_ERROR
-            .replace("{}", uuid), errorEvent.getFormattedMessage());
+      LogUtils.logContainsMessage(events.get(0), LOG_ERROR.replace("{}", uuid));
 
    }
 }
