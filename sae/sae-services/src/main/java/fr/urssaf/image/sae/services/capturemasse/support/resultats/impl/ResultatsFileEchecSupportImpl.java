@@ -67,7 +67,8 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
          final File sommaireFile, final CaptureMasseErreur erreur,
          final int nombreDocsTotal) {
 
-      LOGGER.debug("{} - Début de création du fichier (resultats.xml en erreur)",
+      LOGGER.debug(
+            "{} - Début de création du fichier (resultats.xml en erreur)",
             PREFIX_TRC);
 
       FileInputStream sommaireStream = null;
@@ -330,30 +331,34 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
 
       if (erreur.getListIndex().contains(index)) {
 
-         staxUtils.addStartTag("erreur", PX_SOMRES, NS_SOMRES);
-
          final String chemin = xmlEvent.asCharacters().getData();
 
-         int indexList = erreur.getListIndex().indexOf(index);
+         Integer currIndex;
+         for (int i = 0; i < erreur.getListIndex().size(); i++) {
+            currIndex = erreur.getListIndex().get(i);
+            if (index == currIndex.intValue()) {
+               staxUtils.addStartTag("erreur", PX_SOMRES, NS_SOMRES);
 
-         String code = erreur.getListCodes().get(indexList);
-         String messageErreur = erreur.getListException().get(indexList)
-               .getMessage();
-         String message;
+               String code = erreur.getListCodes().get(i);
+               String messageErreur = erreur.getListException().get(i)
+                     .getMessage();
+               String message;
 
-         if (Constantes.ERR_BUL002.equalsIgnoreCase(code)) {
-            message = "Le document " + chemin
-                  + " n'a pas été archivé. Détails : " + messageErreur;
-         } else if (Constantes.ERR_BUL001.equalsIgnoreCase(code)) {
-            message = "Une erreur interne à l'application est survenue lors de la capture du document "
-                  + chemin + ". Détails : " + messageErreur;
-         } else {
-            message = messageErreur;
+               if (Constantes.ERR_BUL002.equalsIgnoreCase(code)) {
+                  message = "Le document " + chemin
+                        + " n'a pas été archivé. Détails : " + messageErreur;
+               } else if (Constantes.ERR_BUL001.equalsIgnoreCase(code)) {
+                  message = "Une erreur interne à l'application est survenue lors de la capture du document "
+                        + chemin + ". Détails : " + messageErreur;
+               } else {
+                  message = messageErreur;
+               }
+
+               staxUtils.createTag("code", code, PX_SOMRES, NS_SOMRES);
+               staxUtils.createTag("libelle", message, PX_SOMRES, NS_SOMRES);
+               staxUtils.addEndTag("erreur", PX_SOMRES, NS_SOMRES);
+            }
          }
-
-         staxUtils.createTag("code", code, PX_SOMRES, NS_SOMRES);
-         staxUtils.createTag("libelle", message, PX_SOMRES, NS_SOMRES);
-         staxUtils.addEndTag("erreur", PX_SOMRES, NS_SOMRES);
       }
 
       staxUtils.addEndTag("erreurs", PX_SOMRES, NS_SOMRES);

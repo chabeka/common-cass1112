@@ -6,7 +6,6 @@ package fr.urssaf.image.sae.utils;
 import javax.xml.bind.JAXBElement;
 
 import org.easymock.EasyMock;
-import org.springframework.batch.core.repository.dao.MapStepExecutionDao;
 import org.springframework.batch.item.ItemProcessor;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
@@ -99,14 +98,5 @@ public class MockFactoryBean {
     */
    public final SAEDocumentService createSaeDocumentService() {
       return EasyMock.createMock(SAEDocumentService.class);
-   }
-
-   /**
-    * création d'un mock {@link MapStepExecutionDao}
-    * 
-    * @return un mock StepExecutionDao
-    */
-   public final MapStepExecutionDao createStepExecutionDao() {
-      return EasyMock.createMock(MapStepExecutionDao.class);
    }
 }

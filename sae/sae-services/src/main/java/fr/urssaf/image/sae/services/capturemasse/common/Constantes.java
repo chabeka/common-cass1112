@@ -87,6 +87,11 @@ public final class Constantes {
    public static final String COUNT_ROLLBACK = "COUNT_ROLLBACK";
 
    /**
+    * Flag indiquant qu'un trace pour le systeme a été générée
+    */
+   public static final String FLAG_BUL003 = "FLAG_BUL003";
+
+   /**
     * Constructeur
     */
    private Constantes() {

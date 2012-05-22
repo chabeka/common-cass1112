@@ -19,5 +19,8 @@
 
    <bean id="stepExecutionDao" class="fr.urssaf.image.sae.utils.SaeStepExecutionDao"
       primary="true" />
+      
+   <bean id="executionDao" class="fr.urssaf.image.sae.utils.SaeJobExecutionDao"
+      primary="true" />
 
 </beans>

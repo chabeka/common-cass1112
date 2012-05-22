@@ -172,8 +172,6 @@ public class IntegrationRollBack0DocRechercheSuccesTest {
             new InsertionServiceEx(ERREUR_ATTENDUE)).once();
 
       // la recherche va retourner 0 éléments
-      UntypedDocument untypedDocument = new UntypedDocument();
-      untypedDocument.setUuid(UUID.randomUUID());
       List<UntypedDocument> list = new ArrayList<UntypedDocument>();
 
       EasyMock.expect(

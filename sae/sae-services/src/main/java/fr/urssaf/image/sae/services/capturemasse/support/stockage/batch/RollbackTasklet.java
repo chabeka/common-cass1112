@@ -144,6 +144,9 @@ public class RollbackTasklet implements Tasklet {
 
                      "Le traitement de masse n°{} doit être rollbacké par une procédure d'exploitation",
                      idTraitement);
+         chunkContext.getStepContext().getStepExecution().getJobExecution()
+               .getExecutionContext().put(Constantes.FLAG_BUL003,
+                     new Boolean(true));
 
          status = RepeatStatus.FINISHED;
       }

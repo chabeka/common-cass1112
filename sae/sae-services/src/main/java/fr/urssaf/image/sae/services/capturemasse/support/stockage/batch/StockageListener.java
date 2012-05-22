@@ -240,6 +240,9 @@ public class StockageListener {
                      "Le traitement de masse n°{} doit être rollbacké par une procédure d'exploitation",
                      idTraitement);
 
+         stepExecution.getJobExecution().getExecutionContext().put(
+               Constantes.FLAG_BUL003, new Boolean(true));
+
          String messageError = "La capture de masse en mode 'Tout ou rien' a été interrompue. Une procédure d'exploitation a été initialisée pour supprimer les données qui auraient pu être stockées.";
 
          codes.add(Constantes.ERR_BUL003);
