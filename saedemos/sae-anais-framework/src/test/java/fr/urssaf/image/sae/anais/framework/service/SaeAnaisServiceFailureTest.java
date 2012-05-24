@@ -7,8 +7,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import anaisJavaApi.AnaisExceptionAuthFailure;
-import anaisJavaApi.AnaisExceptionServerAuthentication;
+import recouv.cirti.anais.api.source.AnaisExceptionAuthFailure;
+import recouv.cirti.anais.api.source.AnaisExceptionServerAuthentication;
+
 import fr.urssaf.image.sae.anais.framework.modele.SaeAnaisAdresseServeur;
 import fr.urssaf.image.sae.anais.framework.modele.SaeAnaisEnumCodesEnvironnement;
 import fr.urssaf.image.sae.anais.framework.modele.SaeAnaisEnumCompteApplicatif;

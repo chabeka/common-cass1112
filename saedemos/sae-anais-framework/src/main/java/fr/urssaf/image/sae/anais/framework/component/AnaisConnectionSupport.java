@@ -1,35 +1,25 @@
 package fr.urssaf.image.sae.anais.framework.component;
 
-import anaisJavaApi.AnaisConnection_Application;
-import anaisJavaApi.AnaisExceptionAuthAccountLocked;
-import anaisJavaApi.AnaisExceptionAuthFailure;
-import anaisJavaApi.AnaisExceptionAuthMultiUid;
-import anaisJavaApi.AnaisExceptionFailure;
-import anaisJavaApi.AnaisExceptionNoObject;
-import anaisJavaApi.AnaisExceptionPwdExpired;
-import anaisJavaApi.AnaisExceptionPwdExpiring;
-import anaisJavaApi.AnaisExceptionServerCommunication;
-import anaisJavaApi.AnaisHabilitationList;
-import anaisJavaApi.AnaisUserInfo;
-import anaisJavaApi.AnaisUserResult;
+import java.util.ArrayList;
+
+import recouv.cirti.anais.api.source.AnaisExceptionAuthAccountLocked;
+import recouv.cirti.anais.api.source.AnaisExceptionAuthFailure;
+import recouv.cirti.anais.api.source.AnaisExceptionAuthMultiUid;
+import recouv.cirti.anais.api.source.AnaisExceptionFailure;
+import recouv.cirti.anais.api.source.AnaisExceptionNoObject;
+import recouv.cirti.anais.api.source.AnaisExceptionServerCommunication;
+import recouv.cirti.anais.api.source.AnaisHabilitationInstance;
+import recouv.cirti.anais.api.source.AnaisLdap;
+import recouv.cirti.anais.api.source.AnaisUser;
 import fr.urssaf.image.sae.anais.framework.service.exception.SaeAnaisApiException;
 
 /**
- * La classe encapsule les méthode de la classe
- * {@link AnaisConnection_Application} <br>
- * Les méthodes concernées sont
- * <ul>
- * <li>{@link AnaisConnection_Application#checkUserCredential(String, String)}</li>
- * <li>{@link AnaisConnection_Application#close()}</li>
- * <li>{@link AnaisConnection_Application#getUserInfo(String)}</li>
- * <li>
- * {@link AnaisConnection_Application#getUserHabilitations(String, String, String)}
- * </li>
- * </ul>
+ * La classe encapsule les méthodes de l'API ANAIS.<br>
+ * <br>
  * L'instianciation de cette classe a recours à un objet de type
  * {@ConnectionFactory}<br>
  * La classe est la classe mère des classe DAO<br>
- * Voici un exemple<br>
+ * Voici un exemple :<br>
  * <code>
     <br>
     public class AuthentificationDAO extends AnaisConnectionSupport {<br>
@@ -39,24 +29,13 @@ import fr.urssaf.image.sae.anais.framework.service.exception.SaeAnaisApiExceptio
     &nbsp;}<br>
  
  * </code><br>
- * Les exceptions levées par ANAIS sont encapsulées dans
- * {@link SaeAnaisApiException} :
- * <ul>
- * <li>{@link AnaisExceptionServerCommunication}</li>
- * <li>{@link AnaisExceptionAuthFailure}</li>
- * <li>{@link AnaisExceptionPwdExpired}</li>
- * <li>{@link AnaisExceptionPwdExpiring}</li>
- * <li>{@link AnaisExceptionAuthAccountLocked}</li>
- * <li>{@link AnaisExceptionAuthMultiUid}</li>
- * <li>{@link AnaisExceptionFailure}</li>
- * <li>{@link AnaisExceptionNoObject}</li>
- * </ul>
+ * Les exceptions levées par l'API ANAIS sont encapsulées dans {@link SaeAnaisApiException}.
  * 
  */
 public class AnaisConnectionSupport {
 
-   private final AnaisConnection_Application connection;
-   
+   private final AnaisLdap connection;
+
    public static final String ANAIS_CONNECTION = "sae-anais-framework.properties";
 
    /**
@@ -75,8 +54,7 @@ public class AnaisConnectionSupport {
    }
 
    /**
-    * Encapsule
-    * {@link anaisJavaApi.AnaisConnection_Application#checkUserCredential(String, String)}
+    * Vérification de l'authentification de l'utilisateur
     * 
     * @param userLogin
     *           param login
@@ -85,18 +63,16 @@ public class AnaisConnectionSupport {
     * @return {@link AnaisUserResult}
     * @throws SaeAnaisApiException
     */
-   public final AnaisUserResult checkUserCredential(String userLogin,
+   public final AnaisUser checkUserCredential(String userLogin,
          String userPassword) {
 
+      AnaisUser user = new AnaisUser(connection);
+
       try {
-         return connection.checkUserCredential(userLogin, userPassword);
+         return user.checkUserCredential(userLogin, userPassword);
       } catch (AnaisExceptionServerCommunication e) {
          throw new SaeAnaisApiException(e);
       } catch (AnaisExceptionAuthFailure e) {
-         throw new SaeAnaisApiException(e);
-      } catch (AnaisExceptionPwdExpired e) {
-         throw new SaeAnaisApiException(e);
-      } catch (AnaisExceptionPwdExpiring e) {
          throw new SaeAnaisApiException(e);
       } catch (AnaisExceptionAuthAccountLocked e) {
          throw new SaeAnaisApiException(e);
@@ -104,11 +80,14 @@ public class AnaisConnectionSupport {
          throw new SaeAnaisApiException(e);
       } catch (AnaisExceptionFailure e) {
          throw new SaeAnaisApiException(e);
+      } catch (AnaisExceptionNoObject e) {
+         throw new SaeAnaisApiException(e);
       }
+
    }
 
    /**
-    * Encapsule {@link anaisJavaApi.AnaisConnection_Application#close()}
+    * Fermeture de la connexion à ANAIS
     * 
     * @throws SaeAnaisApiException
     */
@@ -121,20 +100,25 @@ public class AnaisConnectionSupport {
    }
 
    /**
-    * Encapsule
-    * {@link anaisJavaApi.AnaisConnection_Application#getUserInfo(String)}
+    * Renvoie des informations sur un utilisateur à partir de son dn
     * 
     * @param userDn
-    *           param userdn
-    * @return {@link AnaisUserInfo}
+    *           userdn
+    * @return les informations sur l'utilisateur
     * @throws SaeAnaisApiException
     */
-   public final AnaisUserInfo getUserInfo(String userDn) {
+   public final AnaisUser getUserInfo(String userDn) {
+
+      AnaisUser user = new AnaisUser(connection);
+
       try {
-         return connection.getUserInfo(userDn);
+         return user.GetUserInfoFromUserDN(userDn);
       } catch (AnaisExceptionNoObject e) {
          throw new SaeAnaisApiException(e);
+      } catch (AnaisExceptionFailure e) {
+         throw new SaeAnaisApiException(e);
       }
+
    }
 
    /**
@@ -150,16 +134,18 @@ public class AnaisConnectionSupport {
     * @return {@link AnaisHabilitationList}
     * @throws SaeAnaisApiException
     */
-   public final AnaisHabilitationList getUserHabilitations(String userDn,
-         String codeInterRegion, String codeOrganisme) {
+   public final ArrayList<AnaisHabilitationInstance> getUserHabilitations(
+         String userDn, String codeInterRegion, String codeOrganisme) {
+
+      AnaisUser user = new AnaisUser(connection);
+
       try {
-         return connection.getUserHabilitations(userDn, codeInterRegion,
+         return user.GetAllUserHabilitations(userDn, codeInterRegion,
                codeOrganisme);
       } catch (AnaisExceptionNoObject e) {
          throw new SaeAnaisApiException(e);
       }
+
    }
-   
-   
 
 }

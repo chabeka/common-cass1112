@@ -1,4 +1,7 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project
+   xmlns="http://maven.apache.org/POM/4.0.0"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
    <modelVersion>4.0.0</modelVersion>
    
@@ -10,9 +13,19 @@
 
    <groupId>fr.urssaf.image.saedemos</groupId>
    <artifactId>sae-anais-framework</artifactId>
-   <version>0.0.1-SNAPSHOT</version>
+   <version>0.0.2-SNAPSHOT</version>
    
    <name>sae-anais-framework</name>
+   
+   
+   <properties>
+      
+      <anais.api.version>1.5.5</anais.api.version>
+      
+      <sae.version>12.5.12.3-SNAPSHOT</sae.version>
+      
+   </properties>
+   
 
    <build>
       <plugins>
@@ -29,7 +42,7 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-vi</artifactId>
-         <version>0.0.1-SNAPSHOT</version>
+         <version>${sae.version}</version>
       </dependency>
 
       <dependency>
@@ -38,11 +51,13 @@
          <version>${aspectj.version}</version>
       </dependency>
 
+      <!--
       <dependency>
-         <groupId>anaisJavaApi</groupId>
-         <artifactId>anaisJavaApi</artifactId>
-         <version>1.4</version>
+         <groupId>recouv.cirti.anais.api</groupId>
+         <artifactId>anais-api-java</artifactId>
+         <version>${anais.api.version}</version>
       </dependency>
+      -->
 
       <dependency>
          <groupId>commons-lang</groupId>

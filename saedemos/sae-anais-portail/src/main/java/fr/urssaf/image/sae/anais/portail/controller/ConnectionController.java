@@ -10,12 +10,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import fr.urssaf.image.commons.util.base64.Base64Encode;
 import fr.urssaf.image.sae.anais.framework.service.exception.AucunDroitException;
 import fr.urssaf.image.sae.anais.framework.service.exception.SaeAnaisApiException;
 import fr.urssaf.image.sae.anais.portail.configuration.SuccessConfiguration;
 import fr.urssaf.image.sae.anais.portail.form.ConnectionForm;
 import fr.urssaf.image.sae.anais.portail.service.ConnectionService;
+import fr.urssaf.image.sae.anais.portail.util.Base64Utils;
 
 /**
  * Classe de manipulation de la servlet <code>/connection.html</code>
@@ -127,9 +127,12 @@ public class ConnectionController {
 
          try {
 
-            model.addAttribute("SAMLResponse", Base64Encode
-                  .encode(connectionService.connect(connectionForm
-                        .getUserLogin(), connectionForm.getUserPassword())));
+            String jetonAuth = connectionService.connect(connectionForm
+                  .getUserLogin(), connectionForm.getUserPassword());
+            
+            String jetonAuthB64 = Base64Utils.encode(jetonAuth);
+            
+            model.addAttribute("SAMLResponse", jetonAuthB64);
             model.addAttribute("RelayState", configuration.getService());
             model.addAttribute("action", configuration.getUrl());
             view = successServlet();
@@ -146,7 +149,8 @@ public class ConnectionController {
       return view;
 
    }
-
+   
+   
    /**
     * Vue par défaut de la connexion
     * 

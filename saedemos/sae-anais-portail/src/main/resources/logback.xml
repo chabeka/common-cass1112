@@ -1,0 +1,19 @@
+<configuration scan="true" scanPeriod="30 seconds">
+
+   <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+      <encoder>
+         <pattern>%d{yyyy-MM-dd HH:mm:ss.SSSk} %-5level %logger - %msg%n</pattern>
+      </encoder>
+   </appender>
+
+   
+   <logger name="org.springframework" level="WARN" />
+   
+   <logger name="fr.urssaf.image.sae.anais.framework" level="DEBUG" />
+   <logger name="recouv.cirti.anais.api.source" level="DEBUG" />
+   
+   <root level="INFO">
+      <appender-ref ref="console" />
+   </root>
+
+</configuration>

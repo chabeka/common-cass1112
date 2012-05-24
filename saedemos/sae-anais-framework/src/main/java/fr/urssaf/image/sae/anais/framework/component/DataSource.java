@@ -16,7 +16,7 @@ package fr.urssaf.image.sae.anais.framework.component;
  * <code>
       DataSource dataSource = new DataSource();<br>
       <br>
-      dataSource.setCodeapp("APPLIQUATION-1");<br>
+      dataSource.setCodeapp("APPLICATION-1");<br>
       dataSource.setPasswd("password");<br>
       dataSource.setCodeenv("PROD");<br>
       dataSource.setAppdn("cn=APPLIS,OU=APPLI-1,OU=appli");<br>
@@ -39,6 +39,8 @@ public class DataSource {
    private String codeapp;
    private String codeenv;
    private String timeout;
+   private String comptePortail;
+   private boolean droitsDirect;
 
    /**
     * @return adresse IP du serveur ANAIS
@@ -173,6 +175,38 @@ public class DataSource {
     */
    public final void setTimeout(String timeout) {
       this.timeout = timeout;
+   }
+
+   /**
+    * Si l'API ANAIS est utilisée pour un portail, le nom du portail, sinon null.
+    * @return Si l'API ANAIS est utilisée pour un portail, le nom du portail, sinon null.
+    */
+   public final String getComptePortail() {
+      return comptePortail;
+   }
+
+   /**
+    * Si l'API ANAIS est utilisée pour un portail, le nom du portail, sinon null.
+    * @param comptePortail Si l'API ANAIS est utilisée pour un portail, le nom du portail, sinon null.
+    */
+   public final void setComptePortail(String comptePortail) {
+      this.comptePortail = comptePortail;
+   }
+
+   /**
+    * Activation ou pas des droits directs
+    * @return Activation ou pas des droits directs
+    */
+   public final boolean isDroitsDirect() {
+      return droitsDirect;
+   }
+
+   /**
+    * Activation ou pas des droits directs
+    * @param droitsDirect Activation ou pas des droits directs
+    */
+   public final void setDroitsDirect(boolean droitsDirect) {
+      this.droitsDirect = droitsDirect;
    }
 
 }

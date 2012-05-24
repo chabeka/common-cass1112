@@ -36,6 +36,7 @@
       <url-pattern>/connection.html</url-pattern>
    </servlet-mapping>
 
+   <!-- Le filtre du décorateur maquette -->
    <filter>
       <filter-name>MaquetteFilter</filter-name>
       <filter-class>fr.urssaf.image.commons.maquette.MaquetteFilter</filter-class>

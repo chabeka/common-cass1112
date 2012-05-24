@@ -5,12 +5,13 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
-import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import anaisJavaApi.AnaisExceptionAuthFailure;
+import recouv.cirti.anais.api.source.AnaisExceptionAuthFailure;
 import fr.urssaf.image.sae.anais.framework.component.ConnectionFactory;
 import fr.urssaf.image.sae.anais.framework.component.DataSource;
 import fr.urssaf.image.sae.anais.framework.service.exception.AucunDroitException;
@@ -23,7 +24,7 @@ import fr.urssaf.image.sae.vi.exception.VIException;
 @SuppressWarnings("PMD")
 public class AuthentificationDAOTest {
 
-   private static final Logger LOG = Logger
+   private static final Logger LOG = LoggerFactory
          .getLogger(AuthentificationDAOTest.class);
 
    private static ConnectionFactory factory;
@@ -51,7 +52,7 @@ public class AuthentificationDAOTest {
 
       String xml = dao.createXMLToken(ctd.getUserLogin(),
             ctd.getUserPassword(), ctd.getCodeir(), ctd.getCodeorg());
-
+      
       LOG.debug(xml);
       TokenAssert.assertCTD_rights(xml);
 

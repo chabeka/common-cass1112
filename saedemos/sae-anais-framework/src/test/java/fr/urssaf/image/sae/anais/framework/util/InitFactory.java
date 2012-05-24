@@ -102,6 +102,9 @@ public final class InitFactory {
          dataSource.setHostname(config.getStringArray("anais.host.Developpement")[0]);
          dataSource.setTimeout(config.getString("anais.timeout"));
          dataSource.setUsetls(config.getBoolean("anais.tls"));
+         
+         dataSource.setComptePortail(config.getString("anais.comptePortail"));
+         dataSource.setDroitsDirect(config.getBoolean("anais.activerDroitsDirects"));
 
       } catch (ConfigurationException configException) {
          throw new IllegalStateException(configException);

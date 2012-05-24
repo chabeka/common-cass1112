@@ -1,6 +1,7 @@
 package fr.urssaf.image.sae.anais.portail.form;
 
-import fr.urssaf.image.commons.web.validator.NotEmpty;
+import fr.urssaf.image.sae.anais.portail.validator.NotEmpty;
+
 
 /**
  * Classe de formulaire correspondant à l'authentification auprès d'ANAIS :

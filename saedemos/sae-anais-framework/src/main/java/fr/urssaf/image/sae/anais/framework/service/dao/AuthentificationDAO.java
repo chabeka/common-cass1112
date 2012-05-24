@@ -3,12 +3,12 @@ package fr.urssaf.image.sae.anais.framework.service.dao;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import anaisJavaApi.AnaisHabilitation;
-import anaisJavaApi.AnaisHabilitationList;
-import anaisJavaApi.AnaisUserInfo;
-import anaisJavaApi.AnaisUserResult;
+import recouv.cirti.anais.api.source.AnaisHabilitationInstance;
+import recouv.cirti.anais.api.source.AnaisUser;
+
 import fr.urssaf.image.sae.anais.framework.component.AnaisConnectionSupport;
 import fr.urssaf.image.sae.anais.framework.component.ConnectionFactory;
 import fr.urssaf.image.sae.anais.framework.service.exception.AucunDroitException;
@@ -34,7 +34,7 @@ import fr.urssaf.image.sae.vi.service.VIService;
  */
 public class AuthentificationDAO extends AnaisConnectionSupport {
 
-   private static final Logger LOG = Logger
+   private static final Logger LOG = LoggerFactory
          .getLogger(AnaisConnectionSupport.class);
 
    private static final String TYPE_PERIMETRE = "URSSAF - Code organisme";
@@ -54,7 +54,7 @@ public class AuthentificationDAO extends AnaisConnectionSupport {
    }
 
    /**
-    * Création d’un jeton d’authentification à partir d’un couple login/mot de
+    * Création d'un jeton d'authentification à partir d'un couple login/mot de
     * passe<br>
     * <br>
     * La création s'effectue en appelant la méthode
@@ -77,15 +77,15 @@ public class AuthentificationDAO extends AnaisConnectionSupport {
     * </ul>
     * 
     * @param userLogin
-    *           Le login de l’utilisateur
+    *           Le login de l'utilisateur
     * @param userPassword
-    *           Le mot de passe de l’utilisateur
+    *           Le mot de passe de l'utilisateur
     * @param codeInterRegion
-    *           Le code de l’inter-région où chercher les habilitations
+    *           Le code de l'inter-région où chercher les habilitations
     * @param codeOrganisme
-    *           Le code de l’organisme où chercher les habilitations
+    *           Le code de l'organisme où chercher les habilitations
     * 
-    * @return Le jeton d’authentification sous la forme d’un flux XML
+    * @return Le jeton d'authentification sous la forme d'un flux XML
     * @throws VIException
     *            exception lors de la création du jeton
     * @throws AucunDroitException le CTD ne possède aucun droit
@@ -95,31 +95,45 @@ public class AuthentificationDAO extends AnaisConnectionSupport {
          String codeInterRegion, String codeOrganisme) throws VIException, AucunDroitException {
 
       try {
-         AnaisUserResult userResult = this.checkUserCredential(userLogin,
+         AnaisUser userResult = this.checkUserCredential(userLogin,
                userPassword);
 
-         AnaisUserInfo userInfo = this.getUserInfo(userResult.getUserDn());
+         AnaisUser user = this.getUserInfo(userResult.getDn());
 
-         AnaisHabilitationList hablist = this.getUserHabilitations(userResult
-               .getUserDn(), codeInterRegion, codeOrganisme);
+         ArrayList<AnaisHabilitationInstance> hablist = this.getUserHabilitations(
+               user.getDn(), codeInterRegion, codeOrganisme);
 
-         String lastname = userInfo.getInfo("sn");
-         String firstname = userInfo.getInfo("givenName");
+         String lastname = user.getSn();
+         String firstname = user.getGivenname() ;
 
-         LOG.debug("INFO CONNECTION");
-         LOG.debug(userInfo);
-         LOG.debug("sn:" + lastname);
-         LOG.debug("givenName:" + firstname);
+         LOG.debug(
+               "Info connexion : Nom={}, Prenom={}",
+               new Object[] {
+                     lastname,
+                     firstname
+               });
+         
+         LOG.debug("Nombre d'habilitations : {}", hablist.size());
 
          List<DroitApplicatif> droits = new ArrayList<DroitApplicatif>();
-         for (AnaisHabilitation hab : hablist.getHabilitationsList()) {
-            LOG.debug("habilitation:" + hab.getHabilitation());
-            LOG.debug(hab.getOrganisme());
-
+         
+         for (AnaisHabilitationInstance hab : hablist) {
+            
+            LOG.debug(
+                  "Droit {} sur {}_{} déployé en {}",
+                  new Object[] {
+                        hab.getCn(),
+                        hab.getCodeapp(),
+                        hab.getCodeenv(),
+                        hab.getOrgcode() 
+                  });
+            
             DroitApplicatif droit = ObjectFactory.createDroitAplicatif();
 
-            droit.setCode(hab.getHabilitation());
-            droit.setPerimetreValue(hab.getOrganisme());
+            droit.setCode(hab.getCn());
+            droit.setPerimetreValue(hab.getOrgcode());
+            
+            //TODO: Gestion des différents périmètres de droit : Organisme, Inter-région, National
             droit.setPerimetreType(TYPE_PERIMETRE);
 
             droits.add(droit);

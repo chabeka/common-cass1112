@@ -1,4 +1,7 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project
+   xmlns="http://maven.apache.org/POM/4.0.0"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
    <modelVersion>4.0.0</modelVersion>
    
@@ -16,39 +19,65 @@
    
    <name>sae-anais-portail</name>
    
+   <properties>
+      
+      <sae.anais.framework.version>0.0.2-SNAPSHOT</sae.anais.framework.version>
+      <commons.maquette.version>0.0.2-SNAPSHOT</commons.maquette.version>
+      
+   </properties>
+   
 
    <dependencies>
 
-      <!-- SAE -->
+      <!-- JUnit -->
+      <dependency>
+         <groupId>junit</groupId>
+         <artifactId>junit</artifactId>
+         <version>${junit.version}</version>
+         <scope>test</scope>
+      </dependency>
+      
+      <!-- SLF4J et Logback -->
+      <dependency>
+         <groupId>org.slf4j</groupId>
+         <artifactId>slf4j-api</artifactId>
+         <version>${org.slf4j.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>ch.qos.logback</groupId>
+         <artifactId>logback-classic</artifactId>
+         <version>${logback.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>ch.qos.logback</groupId>
+         <artifactId>logback-core</artifactId>
+         <version>${logback.version}</version>
+      </dependency>
+      <!-- Ponts vers SLF4J -->
+      <dependency>
+         <groupId>org.slf4j</groupId>
+         <artifactId>jcl-over-slf4j</artifactId>
+         <version>${org.slf4j.version}</version>
+         <scope>runtime</scope>
+      </dependency>
+      
 
+      <!-- sae-anais-framework -->
       <dependency>
          <groupId>fr.urssaf.image.saedemos</groupId>
          <artifactId>sae-anais-framework</artifactId>
-         <version>0.0.1-SNAPSHOT</version>
+         <version>${sae.anais.framework.version}</version>
       </dependency>
       
       
-      <!-- R&D -->
-
-      <dependency>
-         <groupId>fr.urssaf.image.commons</groupId>
-         <artifactId>commons-web</artifactId>
-         <version>0.0.1-SNAPSHOT</version>
-      </dependency>
-
-      <dependency>
-         <groupId>fr.urssaf.image.commons</groupId>
-         <artifactId>commons-util</artifactId>
-         <version>0.0.1-SNAPSHOT</version>
-      </dependency>
-      
+      <!-- Librairies partagées -->
       <dependency>
          <groupId>fr.urssaf.image.commons</groupId>
          <artifactId>commons-maquette</artifactId>
-         <version>0.0.1-SNAPSHOT</version>
+         <version>${commons.maquette.version}</version>
       </dependency>
-
-
+      
+      
       <!-- JSR 303 -->
 
       <dependency>
@@ -64,27 +93,6 @@
          <scope>runtime</scope>
       </dependency>
 
-      <dependency>
-         <groupId>org.slf4j</groupId>
-         <artifactId>slf4j-api</artifactId>
-         <version>${org.slf4j.version}</version>
-         <scope>runtime</scope>
-      </dependency>
-
-      <dependency>
-         <groupId>org.slf4j</groupId>
-         <artifactId>jcl-over-slf4j</artifactId>
-         <version>${org.slf4j.version}</version>
-         <scope>runtime</scope>
-      </dependency>
-
-      <dependency>
-         <groupId>org.slf4j</groupId>
-         <artifactId>slf4j-log4j12</artifactId>
-         <version>${org.slf4j.version}</version>
-         <scope>runtime</scope>
-      </dependency>
-
       
       <!--  SPRING -->
 
@@ -92,6 +100,13 @@
          <groupId>org.springframework</groupId>
          <artifactId>spring-webmvc</artifactId>
          <version>${spring.framework.version}</version>
+      </dependency>
+      
+      <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-test</artifactId>
+         <version>${spring.framework.version}</version>
+         <scope>test</scope>
       </dependency>
 
       <!--  JSTL -->
@@ -102,6 +117,8 @@
          <version>${jstl.version}</version>
       </dependency>
 
+
+      <!-- Servlet API -->
       <dependency>
          <groupId>javax.servlet</groupId>
          <artifactId>servlet-api</artifactId>
@@ -109,14 +126,6 @@
          <scope>provided</scope>
       </dependency>
 
-      <!--  TEST -->
-
-      <dependency>
-         <groupId>org.springframework</groupId>
-         <artifactId>spring-test</artifactId>
-         <version>${spring.framework.version}</version>
-         <scope>test</scope>
-      </dependency>
-
    </dependencies>
+   
 </project>
