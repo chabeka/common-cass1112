@@ -31,13 +31,15 @@ public class VIException extends Exception {
     *           liste des erreurs du XML
     */
    public VIException(List<ValidationEvent> validationEvents) {
-      super();
+      
+      super("Erreur de validation XSD du VI");
+      
       this.xsd = VIConfiguration.name();
 
       for (ValidationEvent validationEvent : validationEvents) {
          errors.add(validationEvent.toString());
       }
-
+      
    }
 
    /**
