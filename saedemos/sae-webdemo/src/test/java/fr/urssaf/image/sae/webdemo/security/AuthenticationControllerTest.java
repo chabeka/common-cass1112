@@ -5,8 +5,12 @@ import static org.junit.Assert.assertNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.CharSet;
+import org.apache.commons.lang.CharSetUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -87,6 +91,20 @@ public class AuthenticationControllerTest extends
 
       assertEquals(200, this.getStatut());
       assertEquals("redirect:authenticate_check.html", view.getViewName());
+   }
+   
+   
+   @Test
+   public void encodeBase64() throws IOException {
+      
+      String jeton = FileUtils.readFileToString(new File(
+         "src/test/resources/saml/ctd_0_right.xml"), "UTF-8");
+      
+      String jetonBase64 = Base64.encodeBase64String(jeton.getBytes());
+      
+      System.out.println(jetonBase64);
+      
+      
    }
 
 }

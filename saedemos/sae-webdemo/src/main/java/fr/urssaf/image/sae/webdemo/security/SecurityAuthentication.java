@@ -2,9 +2,7 @@ package fr.urssaf.image.sae.webdemo.security;
 
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 
-import fr.urssaf.image.sae.vi.schema.DroitsType;
-import fr.urssaf.image.sae.vi.schema.IdentiteUtilisateurType;
-import fr.urssaf.image.sae.vi.schema.SaeJetonAuthentificationType;
+import fr.urssaf.image.sae.vi.modele.VIPortailContenuExtrait;
 
 /**
  * Classe du jeton d'identification de l'application<br>
@@ -19,7 +17,7 @@ public class SecurityAuthentication extends AbstractAuthenticationToken {
 
    private static final long serialVersionUID = 1L;
 
-   private final SaeJetonAuthentificationType jeton;
+   private final VIPortailContenuExtrait jeton;
 
    /**
     * initialise les valeurs du jeton d'identification<br>
@@ -32,7 +30,7 @@ public class SecurityAuthentication extends AbstractAuthenticationToken {
     * @param jeton
     *           jeton VI
     */
-   public SecurityAuthentication(SaeJetonAuthentificationType jeton) {
+   public SecurityAuthentication(VIPortailContenuExtrait jeton) {
       super(null);
       this.setDetails(jeton);
       this.jeton = jeton;
@@ -43,8 +41,8 @@ public class SecurityAuthentication extends AbstractAuthenticationToken {
     * <br> {@inheritDoc}
     */
    @Override
-   public final DroitsType getCredentials() {
-      return jeton.getDroits();
+   public final String getCredentials() {
+      return jeton.getHabAnais() ;
    }
 
    /**
@@ -53,8 +51,8 @@ public class SecurityAuthentication extends AbstractAuthenticationToken {
     * 
     */
    @Override
-   public final IdentiteUtilisateurType getPrincipal() {
-      return jeton.getIdentiteUtilisateur();
+   public final String getPrincipal() {
+      return jeton.getNameId();
    }
 
 }

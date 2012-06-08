@@ -28,7 +28,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter;
 
 import fr.urssaf.image.commons.maquette.MaquetteFilter;
-import fr.urssaf.image.sae.vi.service.VIService;
+import fr.urssaf.image.sae.vi.service.PortailVIService;
 import fr.urssaf.image.sae.webdemo.TestController;
 import fr.urssaf.image.sae.webdemo.security.SecurityAuthentication;
 
@@ -96,8 +96,8 @@ public class BoitesGauchesTest {
 
       assertLeftCol();
 
-      assertElement(source, "Prenom AGENT-CTD", "user-name");
-      assertElement(source, "GESTIONNAIREACCESCOMPLET", "user-rights");
+      assertElement(source, "AGENT-CTD-SAE-90040 Prenom-90040", "user-name");
+      assertElement(source, "ADMINISTRATION TECHNIQUE", "user-rights");
 
       assertEquals("javascript:document.location.href='logout'", source
             .getElementById("logout-user").getAttributeValue("onclick"));
@@ -113,13 +113,13 @@ public class BoitesGauchesTest {
 
    private void authenticate() throws Exception {
 
-      VIService viService = new VIService();
+      PortailVIService saePortailViService = new PortailVIService();
 
       File file = new File("src/test/resources/saml/ctd_rights.xml");
       String xml = FileUtils.readFileToString(file, "UTF-8");
 
-      Authentication authentication = new SecurityAuthentication(viService
-            .readVI(xml));
+      Authentication authentication = new SecurityAuthentication(
+            saePortailViService.lireVI(xml));
 
       SecurityContextHolder.getContext().setAuthentication(authentication);
 

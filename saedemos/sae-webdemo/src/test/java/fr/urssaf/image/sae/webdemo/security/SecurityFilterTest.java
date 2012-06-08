@@ -25,8 +25,6 @@ import org.springframework.security.web.context.HttpSessionSecurityContextReposi
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.sae.vi.schema.DroitType;
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/applicationContext/applicationContext-security-test.xml")
 @SuppressWarnings("PMD")
@@ -86,29 +84,12 @@ public class SecurityFilterTest {
       SecurityAuthentication authenticate = (SecurityAuthentication) SecurityContextHolder
             .getContext().getAuthentication();
 
-      assertEquals("AGENT-CTD", authenticate.getPrincipal().getNom());
-      assertEquals("Prenom", authenticate.getPrincipal().getPrenom());
-
-      assertDroit(authenticate.getCredentials().getDroit().get(0),
-            "GESTIONNAIREACCESCOMPLET", "URSSAF - Code organisme", "CER69");
-      assertDroit(authenticate.getCredentials().getDroit().get(1),
-            "GESTIONNAIREACCESCOMPLET", "URSSAF - Code organisme", "UR030");
-      assertDroit(authenticate.getCredentials().getDroit().get(2),
-            "GESTIONNAIRESRVRH", "URSSAF - Code organisme", "UR710");
-      assertDroit(authenticate.getCredentials().getDroit().get(3),
-            "GESTIONNAIRESRVRH", "URSSAF - Code organisme", "UR730");
-
-      assertEquals(4, authenticate.getCredentials().getDroit().size());
+      assertEquals("AGENT-CTD-SAE-90040 Prenom-90040", authenticate.getPrincipal());
+      
+      assertEquals("ADMINISTRATION TECHNIQUE", authenticate.getCredentials());
       
       assertNotSame("le session doit être invalidée",idSession,request.getSession().getId());
 
-   }
-
-   private void assertDroit(DroitType droit, String code, String type,
-         String value) {
-      assertEquals(code, droit.getCode());
-      assertEquals(type, droit.getPerimetre().getCodeType());
-      assertEquals(value, droit.getPerimetre().getValeur());
    }
 
    @Test

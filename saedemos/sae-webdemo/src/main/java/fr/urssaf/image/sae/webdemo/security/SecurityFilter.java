@@ -17,8 +17,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.util.WebUtils;
 
 import fr.urssaf.image.sae.vi.exception.VIException;
-import fr.urssaf.image.sae.vi.schema.SaeJetonAuthentificationType;
-import fr.urssaf.image.sae.vi.service.VIService;
+import fr.urssaf.image.sae.vi.modele.VIPortailContenuExtrait;
+import fr.urssaf.image.sae.vi.service.PortailVIService;
 import fr.urssaf.image.sae.webdemo.service.ConnectionService;
 
 /**
@@ -56,11 +56,13 @@ public class SecurityFilter extends AbstractAuthenticationProcessingFilter {
 
    private final ConnectionService connection;
 
-   private final VIService viService;
+   private final PortailVIService saePortailViService;
 
    protected SecurityFilter(ConnectionService connection) {
       super("/" + SECURITY_URL);
-      this.viService = new VIService();
+
+      this.saePortailViService = new PortailVIService();
+
       this.connection = connection;
 
       this.setAuthenticationSuccessHandler(new SecuritySuccess());
@@ -117,8 +119,10 @@ public class SecurityFilter extends AbstractAuthenticationProcessingFilter {
 
             try {
 
-               SaeJetonAuthentificationType jeton = viService
-                     .readVI(samlResponse);
+               System.out.println(samlResponse);
+               
+               VIPortailContenuExtrait jeton = saePortailViService
+                     .lireVI(samlResponse);
 
                authentification = this.getAuthenticationManager().authenticate(
                      new SecurityAuthentication(jeton));
@@ -167,7 +171,7 @@ public class SecurityFilter extends AbstractAuthenticationProcessingFilter {
 
          String service = (String) request.getAttribute(SERVICE_FIELD);
          this.setDefaultTargetUrl(service);
-         
+
          super.onAuthenticationSuccess(request, response, authentication);
 
       }

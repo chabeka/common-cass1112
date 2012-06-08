@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import fr.urssaf.image.commons.maquette.definition.ILeftCol;
@@ -70,10 +69,7 @@ public class BoitesGauches implements ILeftCol {
                .getContext().getAuthentication();
 
          if (jeton != null) {
-
-            nomUtilisateur = StringUtils.capitalize(jeton.getPrincipal()
-                  .getPrenom())
-                  + " " + StringUtils.upperCase(jeton.getPrincipal().getNom());
+            nomUtilisateur = jeton.getPrincipal();
          }
 
       }
@@ -93,8 +89,7 @@ public class BoitesGauches implements ILeftCol {
 
          if (jeton != null) {
 
-            roleUtilisateur = jeton.getCredentials().getDroit().get(0)
-                  .getCode();
+            roleUtilisateur = jeton.getCredentials();
          }
 
       }
