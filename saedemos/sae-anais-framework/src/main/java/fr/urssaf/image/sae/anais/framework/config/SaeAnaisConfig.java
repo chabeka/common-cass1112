@@ -1,35 +1,9 @@
-package fr.urssaf.image.sae.anais.framework.component;
+package fr.urssaf.image.sae.anais.framework.config;
 
 /**
- * Classe de paramétrage pour la connexion à ANAIS<br>
- * Il est d'indispensable d'instancier cet objet pour utiliser les
- * fonctionnalités d'ANAIS<br>
- * Les attributs reprennent les arguments de
- * {@link anaisJavaApi.AnaisConnection_Application#init(String, Integer, boolean, String, String, String, String, String)}
- * <br>
- * L'objet est utilisé en argument dans {@link ConnectionFactory} pour
- * configurer la connexion<br>
- * <br>
- * <br>
- * Voici un exemple de paramétrage<br>
- * <br>
- * <code>
-      DataSource dataSource = new DataSource();<br>
-      <br>
-      dataSource.setCodeapp("APPLICATION-1");<br>
-      dataSource.setPasswd("password");<br>
-      dataSource.setCodeenv("PROD");<br>
-      dataSource.setAppdn("cn=APPLIS,OU=APPLI-1,OU=appli");<br>
-      dataSource.setPort(1532);<br>
-      dataSource.setHostname("cer98applis.cer98.appli");<br>
-      dataSource.setTimeout("5000");<br>
-      dataSource.setUsetls(false);</code>
- * 
- * @see {@link ConnectionFactory}
- * @see {@link anaisJavaApi.AnaisConnection_Application#init(String, Integer, boolean, String, String, String, String, String)}
- * 
+ * Eléments de configuration pour l'utilisation d'ANAIS
  */
-public class DataSource {
+public class SaeAnaisConfig {
 
    private String hostname;
    private Integer port;
@@ -43,7 +17,7 @@ public class DataSource {
    private boolean droitsDirect;
 
    /**
-    * @return adresse IP du serveur ANAIS
+    * @return DNS ou adresse IP du serveur ANAIS
     */
    public final String getHostname() {
       return hostname;
@@ -52,7 +26,7 @@ public class DataSource {
    /**
     * 
     * @param hostname
-    *           adresse IP du serveur ANAIS
+    *           DNS ou adresse IP du serveur ANAIS
     */
    public final void setHostname(String hostname) {
       this.hostname = hostname;
@@ -60,7 +34,7 @@ public class DataSource {
 
    /**
     * 
-    * @return port TCP du serveur ANAIS
+    * @return Port TCP du serveur ANAIS
     */
    public final Integer getPort() {
       return port;
@@ -69,7 +43,7 @@ public class DataSource {
    /**
     * 
     * @param port
-    *           port TCP du serveur ANAIS
+    *           Port TCP du serveur ANAIS
     */
    public final void setPort(Integer port) {
       this.port = port;
@@ -77,7 +51,7 @@ public class DataSource {
 
    /**
     * 
-    * @return activation de TLS pour la connexion au serveur ANAIS
+    * @return Activation de TLS pour la connexion au serveur ANAIS
     */
    public final boolean isUsetls() {
       return usetls;
@@ -86,7 +60,7 @@ public class DataSource {
    /**
     * 
     * @param usetls
-    *           activation de TLS pour la connexion au serveur ANAIS
+    *           Activation de TLS pour la connexion au serveur ANAIS
     */
    public final void setUsetls(boolean usetls) {
       this.usetls = usetls;
@@ -111,7 +85,7 @@ public class DataSource {
 
    /**
     * 
-    * @return mot de passe du compte applicatif
+    * @return Mot de passe du compte applicatif
     */
    public final String getPasswd() {
       return passwd;
@@ -120,7 +94,7 @@ public class DataSource {
    /**
     * 
     * @param passwd
-    *           mot de passe du compte applicatif
+    *           Mot de passe du compte applicatif
     */
    public final void setPasswd(String passwd) {
       this.passwd = passwd;
@@ -128,7 +102,7 @@ public class DataSource {
 
    /**
     * 
-    * @return code de l'application
+    * @return Code de l'application
     */
    public final String getCodeapp() {
       return codeapp;
@@ -137,7 +111,7 @@ public class DataSource {
    /**
     * 
     * @param codeapp
-    *           code de l'application
+    *           Code de l'application
     */
    public final void setCodeapp(String codeapp) {
       this.codeapp = codeapp;
@@ -162,7 +136,7 @@ public class DataSource {
 
    /**
     * 
-    * @return délai de la connexion
+    * @return Timeout de la connexion à ANAIS
     */
    public final String getTimeout() {
       return timeout;
@@ -171,23 +145,30 @@ public class DataSource {
    /**
     * 
     * @param timeout
-    *           délai de la connexion
+    *           Timeout de la connexion à ANAIS
     */
    public final void setTimeout(String timeout) {
       this.timeout = timeout;
    }
 
    /**
-    * Si l'API ANAIS est utilisée pour un portail, le nom du portail, sinon null.
-    * @return Si l'API ANAIS est utilisée pour un portail, le nom du portail, sinon null.
+    * Si l'API ANAIS est utilisée pour un portail, le nom du portail, sinon
+    * null.
+    * 
+    * @return Si l'API ANAIS est utilisée pour un portail, le nom du portail,
+    *         sinon null.
     */
    public final String getComptePortail() {
       return comptePortail;
    }
 
    /**
-    * Si l'API ANAIS est utilisée pour un portail, le nom du portail, sinon null.
-    * @param comptePortail Si l'API ANAIS est utilisée pour un portail, le nom du portail, sinon null.
+    * Si l'API ANAIS est utilisée pour un portail, le nom du portail, sinon
+    * null.
+    * 
+    * @param comptePortail
+    *           Si l'API ANAIS est utilisée pour un portail, le nom du portail,
+    *           sinon null.
     */
    public final void setComptePortail(String comptePortail) {
       this.comptePortail = comptePortail;
@@ -195,6 +176,7 @@ public class DataSource {
 
    /**
     * Activation ou pas des droits directs
+    * 
     * @return Activation ou pas des droits directs
     */
    public final boolean isDroitsDirect() {
@@ -203,7 +185,9 @@ public class DataSource {
 
    /**
     * Activation ou pas des droits directs
-    * @param droitsDirect Activation ou pas des droits directs
+    * 
+    * @param droitsDirect
+    *           Activation ou pas des droits directs
     */
    public final void setDroitsDirect(boolean droitsDirect) {
       this.droitsDirect = droitsDirect;

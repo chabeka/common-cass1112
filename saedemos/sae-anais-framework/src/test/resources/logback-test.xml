@@ -8,8 +8,6 @@
 
    <logger name="recouv.cirti.anais" level="debug"/>
    
-   <logger name="fr.urssaf.image.sae.anais.framework.PblHioTest" level="debug"/>
-
    <root level="debug">
       <appender-ref ref="console" />
    </root>

@@ -190,16 +190,12 @@
          <artifactId>logback-core</artifactId>
          <version>${logback.version}</version>
       </dependency>
-
-      
-      <!-- SAE -->
       <dependency>
-         <groupId>fr.urssaf.image.sae</groupId>
-         <artifactId>sae-vi</artifactId>
-         <version>${sae.version}</version>
+         <groupId>org.slf4j</groupId>
+         <artifactId>jcl-over-slf4j</artifactId>
+         <version>${org.slf4j.version}</version>
       </dependency>
 
-      
       <!-- AspectJ -->
       <dependency>
          <groupId>org.aspectj</groupId>

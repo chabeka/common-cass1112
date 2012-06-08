@@ -1,144 +1,210 @@
 package fr.urssaf.image.sae.anais.framework.service;
 
-import fr.urssaf.image.sae.anais.framework.component.ConnectionFactory;
-import fr.urssaf.image.sae.anais.framework.component.DataSource;
-import fr.urssaf.image.sae.anais.framework.component.ProfilAppliFactory;
-import fr.urssaf.image.sae.anais.framework.component.ProfilServeurFactory;
-import fr.urssaf.image.sae.anais.framework.modele.SaeAnaisAdresseServeur;
-import fr.urssaf.image.sae.anais.framework.modele.SaeAnaisEnumCodesEnvironnement;
-import fr.urssaf.image.sae.anais.framework.modele.SaeAnaisEnumCompteApplicatif;
-import fr.urssaf.image.sae.anais.framework.modele.SaeAnaisProfilCompteApplicatif;
-import fr.urssaf.image.sae.anais.framework.modele.SaeAnaisProfilServeur;
-import fr.urssaf.image.sae.anais.framework.service.dao.AuthentificationDAO;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import recouv.cirti.anais.api.source.AnaisExceptionAuthAccountLocked;
+import recouv.cirti.anais.api.source.AnaisExceptionAuthFailure;
+import recouv.cirti.anais.api.source.AnaisExceptionAuthMultiUid;
+import recouv.cirti.anais.api.source.AnaisExceptionFailure;
+import recouv.cirti.anais.api.source.AnaisExceptionNoObject;
+import recouv.cirti.anais.api.source.AnaisExceptionServerAuthentication;
+import recouv.cirti.anais.api.source.AnaisExceptionServerCommunication;
+import recouv.cirti.anais.api.source.AnaisHabilitationInstance;
+import recouv.cirti.anais.api.source.AnaisLdap;
+import recouv.cirti.anais.api.source.AnaisLdapProvider;
+import recouv.cirti.anais.api.source.AnaisUser;
+import fr.urssaf.image.sae.anais.framework.config.SaeAnaisConfig;
+import fr.urssaf.image.sae.anais.framework.modele.SaeAnaisAuth;
+import fr.urssaf.image.sae.anais.framework.modele.SaeAnaisAuthHabilitation;
 import fr.urssaf.image.sae.anais.framework.service.exception.AucunDroitException;
-import fr.urssaf.image.sae.anais.framework.service.exception.ValidationXmlParXsdException;
-import fr.urssaf.image.sae.vi.exception.VIException;
+import fr.urssaf.image.sae.anais.framework.service.exception.SaeAnaisApiException;
 
 /**
- * Classe principale de services sur le serveur ANAIS<br>
- * 
- * @see ConnectionFactory
+ * Classe principale de services ANAIS.<br>
+ * <br>
+ * Encapsule l'API ANAIS et ses exceptions.
  */
 public class SaeAnaisService {
 
+   private static final Logger LOG = LoggerFactory
+         .getLogger(SaeAnaisService.class);
+
+   private final SaeAnaisConfig anaisConfig;
+
    /**
-    * Création d’un jeton d’authentification à partir d’un couple login/mot de
-    * passe <br>
-    * <br>
-    * A partir de <code>environnement</code> et <code>serveur</code> on
-    * instancie {@link SaeAnaisProfilserveur}<br>
-    * <br>
-    * Si <code>serveur</code> n'est pas renseigné <code>environnement</code>
-    * paramètre l'adressage du serveur ANAIS avec la classe
-    * {@link ProfilServeurFactory}<br>
-    * Sinon <code>serveur</code> paramètre l'adressage au serveur ANAIS<br>
-    * <br>
-    * A partir de <code>profilCptAppli</code> et <code>compteApplicatif</code>
-    * on instancie {@link SaeAnaisProfilCompteApplicatif} avec la classe
-    * {@link ProfilAppliFactory} <br>
-    * <br>
-    * L'appel de la méthode instancie dans l'ordre
-    * <ol>
-    * <li>{@link DataSource}</li>
-    * <li>{@link ConnectionFactory}</li>
-    * <li>{@link AuthentificationDAO}</li>
-    * </ol>
-    * Enfin elle appelle la méthode
-    * {@link AuthentificationDAO#createXMLToken(String, String, String, String)}<br>
-    * <br>
-    * La méthode est soumise à une vérification par la méthode
-    * {@link SaeAnaisServiceCheck#authentifierPourSaeParLoginPasswordCheck} par
-    * une approche Aspect <br>
-    * <br>
+    * Constructeur
     * 
+    * @param anaisConfig
+    *           la configuration d'accès à ANAIS
+    */
+   public SaeAnaisService(SaeAnaisConfig anaisConfig) {
+      this.anaisConfig = anaisConfig;
+   }
+
+   /**
+    * Récupère les habilitations ANAIS d'un agent.<br>
+    * S'appuie sur la configuration d'accès à ANAIS transmise au constructeur du
+    * service<br>
     * 
-    * @param environnement
-    *           L’environnement (Développement / Validation / Production)
-    * @param serveur
-    *           Les paramètres de connexion au serveur ANAIS
-    * @param profilCptAppli
-    *           Profil du compte applicatif(Sae/Autre)
-    * @param compteApplicatif
-    *           Les paramètres du compte applicatif
     * @param userLogin
-    *           Le login de l’utilisateur
+    *           le code agent
     * @param userPassword
-    *           Le mot de passe de l’utilisateur
+    *           le mot de passe ANAIS
     * @param codeInterRegion
-    *           Le code de l’inter-région où chercher les habilitations (peut
+    *           le code de l'inter-région où chercher les habilitations (peut
     *           être vide)
     * @param codeOrganisme
-    *           Le code de l’organisme où chercher les habilitations (peut être
-    *           vide)
-    * @throws EnvironnementNonRenseigneException
-    * @throws ProfilCompteApplicatifNonRenseigneException
-    * @throws UserLoginNonRenseigneException
-    * @throws UserPasswordNonRenseigneException
-    * @throws HoteNonRenseigneException
-    * @throws PortNonRenseigneException
-    * @throws SaeAnaisApiException
-    * @throws ParametresApplicatifsNonRenseigneException
-    * @throws ValidationXmlParXsdException
-    * @return Le jeton d’authentification sous la forme d’un flux XML
-    * @throws AucunDroitException Le CTD n'a aucun droit
+    *           le code organimse où chercher les habilitations (peut être vide)
+    * @return les habilitations de l'agent
+    * @throws AucunDroitException
+    *            si l'agent n'a aucun droit sur l'application/orga/interIr
     */
-   public final String authentifierPourSaeParLoginPassword(
-         SaeAnaisEnumCodesEnvironnement environnement,
-         SaeAnaisAdresseServeur serveur,
-         SaeAnaisEnumCompteApplicatif profilCptAppli,
-         SaeAnaisProfilCompteApplicatif compteApplicatif, String userLogin,
-         String userPassword, String codeInterRegion, String codeOrganisme) throws AucunDroitException {
+   @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
+   public final SaeAnaisAuth habilitationsAnais(String userLogin,
+         String userPassword, String codeInterRegion, String codeOrganisme)
+         throws AucunDroitException {
 
-      ProfilAppliFactory appliFactory = new ProfilAppliFactory();
-      SaeAnaisProfilCompteApplicatif profilAppli = appliFactory.createProfil(
-            profilCptAppli, compteApplicatif);
-
-      // initialisation du data source
-      DataSource dataSource = new DataSource();
-      dataSource.setAppdn(profilAppli.getDn());
-      dataSource.setCodeapp(profilAppli.getCodeApplication());
-      dataSource.setPasswd(profilAppli.getPassword());
-
-      if (serveur == null) {
-
-         ProfilServeurFactory serveurFactory = new ProfilServeurFactory();
-
-         SaeAnaisProfilServeur serveurProfil = serveurFactory
-               .createProfil(environnement);
-
-         dataSource.setCodeenv(serveurProfil.getCodeEnvironnement().code());
-         initAdresseServeur(dataSource, serveurProfil.getServeurs().get(0));
-
-      }
-
-      else {
-
-         dataSource.setCodeenv(environnement.code());
-         initAdresseServeur(dataSource, serveur);
-
-      }
-
-      // initialisation du connection factory
-      ConnectionFactory connection = new ConnectionFactory(dataSource);
-      // initialisation du dao authentification
-      AuthentificationDAO authDAO = new AuthentificationDAO(connection);
+      AnaisLdap connection = createConnection();
 
       try {
-         return authDAO.createXMLToken(userLogin, userPassword, codeInterRegion,
-               codeOrganisme);
-      } catch (VIException e) {
-         throw new ValidationXmlParXsdException(e);
+
+         SaeAnaisAuth saeAnaisAuth = new SaeAnaisAuth();
+
+         AnaisUser userResult = this.checkUserCredential(connection, userLogin,
+               userPassword);
+
+         AnaisUser user = this.getUserInfo(connection, userResult.getDn());
+
+         List<AnaisHabilitationInstance> hablist = this.getUserHabilitations(
+               connection, user.getDn(), codeInterRegion, codeOrganisme);
+
+         saeAnaisAuth.setNom(user.getSn());
+         saeAnaisAuth.setPrenom(user.getGivenname());
+
+         LOG.debug("Info connexion : Nom={}, Prenom={}", new Object[] {
+               saeAnaisAuth.getNom(), saeAnaisAuth.getPrenom() });
+
+         LOG.debug("Nombre d'habilitations : {}", hablist.size());
+
+         for (AnaisHabilitationInstance hab : hablist) {
+
+            LOG.debug("Droit {} sur {}_{} déployé en {}", new Object[] {
+                  hab.getCn(), hab.getCodeapp(), hab.getCodeenv(),
+                  hab.getOrgcode() });
+
+            SaeAnaisAuthHabilitation saeAnaisHab = new SaeAnaisAuthHabilitation();
+            saeAnaisAuth.getHabilitations().add(saeAnaisHab);
+
+            saeAnaisHab.setCode(hab.getCn());
+
+            saeAnaisHab.setTypeHab(hab.getType());
+
+            saeAnaisHab.setCodeOrga(hab.getOrgcode());
+
+            saeAnaisHab.setCodeIr(hab.getIrcode());
+
+         }
+
+         if (saeAnaisAuth.getHabilitations().isEmpty()) {
+            throw new AucunDroitException();
+         }
+
+         return saeAnaisAuth;
+
+      } finally {
+         this.closeConnection(connection);
       }
 
    }
 
-   private void initAdresseServeur(DataSource dataSource,
-         SaeAnaisAdresseServeur serveur) {
+   private AnaisLdap createConnection() {
 
-      dataSource.setHostname(serveur.getHote());
-      dataSource.setPort(serveur.getPort());
-      dataSource.setTimeout(Integer.toString(serveur.getTimeout()));
-      dataSource.setUsetls(serveur.isTls());
+      AnaisLdap connection = AnaisLdapProvider.getUniqueInstance();
+
+      try {
+         connection.init(anaisConfig.getHostname(), anaisConfig.getPort(),
+               anaisConfig.isUsetls(), anaisConfig.getAppdn(), anaisConfig
+                     .getPasswd(), anaisConfig.getCodeapp(), anaisConfig
+                     .getCodeenv(), anaisConfig.getTimeout(), anaisConfig
+                     .getComptePortail(), anaisConfig.isDroitsDirect());
+
+      } catch (AnaisExceptionServerAuthentication e) {
+         throw new SaeAnaisApiException(e);
+      } catch (AnaisExceptionFailure e) {
+         throw new SaeAnaisApiException(e);
+      } catch (AnaisExceptionServerCommunication e) {
+         throw new SaeAnaisApiException(e);
+      }
+
+      return connection;
+
+   }
+
+   private AnaisUser checkUserCredential(AnaisLdap connection,
+         String userLogin, String userPassword) {
+
+      AnaisUser user = new AnaisUser(connection);
+
+      try {
+
+         return user.checkUserCredential(userLogin, userPassword);
+
+      } catch (AnaisExceptionServerCommunication e) {
+         throw new SaeAnaisApiException(e);
+      } catch (AnaisExceptionAuthFailure e) {
+         throw new SaeAnaisApiException(e);
+      } catch (AnaisExceptionAuthAccountLocked e) {
+         throw new SaeAnaisApiException(e);
+      } catch (AnaisExceptionAuthMultiUid e) {
+         throw new SaeAnaisApiException(e);
+      } catch (AnaisExceptionFailure e) {
+         throw new SaeAnaisApiException(e);
+      } catch (AnaisExceptionNoObject e) {
+         throw new SaeAnaisApiException(e);
+      }
+
+   }
+
+   private void closeConnection(AnaisLdap connection) {
+      try {
+         connection.close();
+      } catch (AnaisExceptionServerCommunication e) {
+         throw new SaeAnaisApiException(e);
+      }
+   }
+
+   private AnaisUser getUserInfo(AnaisLdap connection, String userDn) {
+
+      AnaisUser user = new AnaisUser(connection);
+
+      try {
+         return user.GetUserInfoFromUserDN(userDn);
+      } catch (AnaisExceptionNoObject e) {
+         throw new SaeAnaisApiException(e);
+      } catch (AnaisExceptionFailure e) {
+         throw new SaeAnaisApiException(e);
+      }
+
+   }
+
+   private List<AnaisHabilitationInstance> getUserHabilitations(
+         AnaisLdap connection, String userDn, String codeInterRegion,
+         String codeOrganisme) {
+
+      AnaisUser user = new AnaisUser(connection);
+
+      try {
+
+         return user.GetAllUserHabilitations(userDn, codeInterRegion,
+               codeOrganisme);
+
+      } catch (AnaisExceptionNoObject e) {
+         throw new SaeAnaisApiException(e);
+      }
+
    }
 
 }
