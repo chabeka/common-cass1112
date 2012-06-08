@@ -7,7 +7,7 @@
    
    <groupId>fr.urssaf.image.saedemos</groupId>
    <artifactId>sae-anais-portail</artifactId>
-   <version>0.0.1-SNAPSHOT</version>
+   <version>0.0.2-SNAPSHOT</version>
    
    <packaging>war</packaging>
    
@@ -33,6 +33,8 @@
       
       <sae.anais.framework.version>0.0.2-SNAPSHOT</sae.anais.framework.version>
       <commons.maquette.version>0.0.2-SNAPSHOT</commons.maquette.version>
+      
+      <sae.version>12.5.12.3-SNAPSHOT</sae.version>
       
    </properties>
    
@@ -171,7 +173,6 @@
          <groupId>org.slf4j</groupId>
          <artifactId>jcl-over-slf4j</artifactId>
          <version>${org.slf4j.version}</version>
-         <scope>runtime</scope>
       </dependency>
       
 
@@ -183,11 +184,25 @@
       </dependency>
       
       
-      <!-- Librairies partagées -->
+      <!-- commons-maquette -->
       <dependency>
          <groupId>fr.urssaf.image.commons</groupId>
          <artifactId>commons-maquette</artifactId>
          <version>${commons.maquette.version}</version>
+      </dependency>
+      
+      
+      <!-- sae-vi -->
+      <dependency>
+         <groupId>fr.urssaf.image.sae</groupId>
+         <artifactId>sae-vi</artifactId>
+         <version>${sae.version}</version>
+         <exclusions>
+            <exclusion>
+               <groupId>log4j</groupId>
+               <artifactId>log4j</artifactId>
+            </exclusion>
+         </exclusions>
       </dependency>
       
       

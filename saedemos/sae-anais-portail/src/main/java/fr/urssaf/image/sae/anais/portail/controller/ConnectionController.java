@@ -3,7 +3,6 @@ package fr.urssaf.image.sae.anais.portail.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -12,15 +11,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import fr.urssaf.image.sae.anais.framework.service.exception.AucunDroitException;
 import fr.urssaf.image.sae.anais.framework.service.exception.SaeAnaisApiException;
-import fr.urssaf.image.sae.anais.portail.configuration.SuccessConfiguration;
+import fr.urssaf.image.sae.anais.portail.configuration.AppliSaeConfig;
+import fr.urssaf.image.sae.anais.portail.exception.VIBuildException;
 import fr.urssaf.image.sae.anais.portail.form.ConnectionForm;
 import fr.urssaf.image.sae.anais.portail.service.ConnectionService;
 import fr.urssaf.image.sae.anais.portail.util.Base64Utils;
 
 /**
  * Classe de manipulation de la servlet <code>/connection.html</code>
- * 
- * 
  */
 @Controller
 @RequestMapping(value = "/connection")
@@ -28,46 +26,25 @@ public class ConnectionController {
 
    private final ConnectionService connectionService;
 
-   private final SuccessConfiguration configuration;
+   private final AppliSaeConfig appliSaeConfig;
 
    /**
-    * Initialisation de la configuration de l'application web du SAE<br>
-    * <br>
-    * <code>SuccessConfiguration</code> doit être non null<br>
-    * <br>
-    * Cette configuration correspond à <br>
-    * <br>
-    * <code>
-    * &lt;bean id="configurationSuccess" class=
-    *    "fr.urssaf.image.sae.anais.portail.configuration.SuccessConfiguration"><br>
-    * &nbsp;&nbsp;&nbsp;&lt;property name="url" value="..." /><br>
-    * &nbsp;&nbsp;&nbsp;&lt;property name="service" value="..." /><br> 
-    * &lt;/bean>
-    * </code><br>
-    * Initialisation <code>connectionService</code><br>
-    * <br>
-    * <code>connectionService</code> doit être non null<br>
-    * <br>
+    * Constructeur
     * 
-    * @see ConnectionService
     * @param configuration
-    *           configuration d'une application web
+    *           Configuration de l'application SAE sur laquelle le portail est
+    *           branchée
     * @param connectionService
-    *           service de connection
+    *           Service de connection
     */
    @Autowired
-   public ConnectionController(
-         @Qualifier("configurationSuccess") SuccessConfiguration configuration,
-         @Qualifier("connectionService") ConnectionService connectionService) {
-      if (configuration == null) {
-         throw new IllegalStateException("'successConfiguration' is required");
-      }
+   public ConnectionController(AppliSaeConfig appliSaeConfig,
+         ConnectionService connectionService) {
 
-      if (connectionService == null) {
-         throw new IllegalStateException("'connectionService' is required");
-      }
-      this.configuration = configuration;
+      this.appliSaeConfig = appliSaeConfig;
+
       this.connectionService = connectionService;
+
    }
 
    /**
@@ -129,18 +106,21 @@ public class ConnectionController {
 
             String jetonAuth = connectionService.connect(connectionForm
                   .getUserLogin(), connectionForm.getUserPassword());
-            
+
             String jetonAuthB64 = Base64Utils.encode(jetonAuth);
-            
+
             model.addAttribute("SAMLResponse", jetonAuthB64);
-            model.addAttribute("RelayState", configuration.getService());
-            model.addAttribute("action", configuration.getUrl());
+            model.addAttribute("RelayState", appliSaeConfig.getRelayState());
+            model.addAttribute("action", appliSaeConfig.getUrlPost());
             view = successServlet();
          } catch (SaeAnaisApiException e) {
             model.addAttribute("failure", e.getMessage());
             view = failureView();
          } catch (AucunDroitException e) {
             model.addAttribute("failure", e.getMessage());
+            view = failureView();
+         } catch (VIBuildException e) {
+            model.addAttribute("failure", e);
             view = failureView();
          }
 
@@ -149,8 +129,7 @@ public class ConnectionController {
       return view;
 
    }
-   
-   
+
    /**
     * Vue par défaut de la connexion
     * 

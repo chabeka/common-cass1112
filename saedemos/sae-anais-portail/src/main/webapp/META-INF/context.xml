@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+
+   <!-- Chemin complet du fichier de configuration de l'application -->
+   <Environment
+      name="SAE_ANAIS_PORTAIL_CONFIG"
+      type="java.lang.String"
+      value="c:/sae/ihmexploit/sae-anais-portail-ihmexploit.properties" />
+
+</Context>

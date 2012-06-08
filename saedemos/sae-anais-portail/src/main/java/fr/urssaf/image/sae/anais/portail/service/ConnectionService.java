@@ -4,95 +4,84 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import fr.urssaf.image.sae.anais.framework.config.SaeAnaisConfig;
+import fr.urssaf.image.sae.anais.framework.modele.SaeAnaisAuth;
 import fr.urssaf.image.sae.anais.framework.service.SaeAnaisService;
 import fr.urssaf.image.sae.anais.framework.service.exception.AucunDroitException;
-import fr.urssaf.image.sae.anais.portail.configuration.AnaisConfiguration;
+import fr.urssaf.image.sae.anais.portail.configuration.AppliSaeConfig;
+import fr.urssaf.image.sae.anais.portail.exception.PortailRuntimeException;
+import fr.urssaf.image.sae.anais.portail.exception.VIBuildException;
 
 /**
- * Classe de service pour la connexion à ANAIS<br>
- * L'implémentation s'appuie sur {@link SaeAnaisService}<br>
- * <br>
- * Ce service est accessible par 'Inversion of Control' (IOC)<br>
- * <br>
- * <code>@Autowired</code><br>
- * <code>private ConnectionService connectionService;</code><br>
- * 
+ * Classe de service pour la connexion à ANAIS
  */
 @Service
 public class ConnectionService {
 
-   private final AnaisConfiguration configuration;
-
    private final SaeAnaisService service;
 
+   @Autowired
+   private AppliSaeConfig appliSaeConfig;
+
+   @Autowired
+   @Qualifier("SAE_IHM_EXPLOIT")
+   private VIService viServicePourIhmExploit;
+
    /**
-    * Initialisation de la configuration à ANAIS<br>
-    * <br>
-    * <code>Configuration</code> est doit être non null<br>
-    * <br>
-    * Cette configuration correspond à <br>
-    * <br>
-    * <code>
-    * &lt;bean id="configuration" class=
-    *    "fr.urssaf.image.sae.anais.portail.configuration.AnaisConfiguration"><br>
-    * &nbsp;&nbsp;&nbsp;&lt;property name="environnement" value="..." /><br>
-    * &nbsp;&nbsp;&nbsp;&lt;property name="compteApplicatif" value="..." /><br> 
-    * &lt;/bean>
-    * </code>
+    * Initialisation de la configuration à ANAIS
     * 
     * @param configuration
     *           configuration à ANAIS
     */
    @Autowired
-   public ConnectionService(@Qualifier("configuration") AnaisConfiguration configuration) {
-      
-      if(configuration == null){
-         throw new IllegalStateException("'anaisConfiguration' is required");
-      }
-      
-      this.configuration = configuration;
-      this.service = new SaeAnaisService();
+   public ConnectionService(
+         @Qualifier("saeAnaisConfig") SaeAnaisConfig anaisConfig) {
+
+      this.service = new SaeAnaisService(anaisConfig);
+
    }
 
    /**
-    * La connection appelle la méthode
-    * {@link SaeAnaisService#authentifierPourSaeParLoginPassword}<br>
-    * <br>
-    * Les arguments sont:<br>
-    * <ul>
-    * <li>environnement : le code de l'environnement récupéré dans la
-    * configuration du portail</li>
-    * <li>serveur : vide</li>
-    * <li>profilCompteApplicatif : le code du profil applicatif récupéré dans la
-    * configuration du portail</li>
-    * <li>compteApplicatif : vide</li>
-    * <li>userLogin : l'identifiant renseigné dans le champ du formulaire «
-    * identifiant »</li>
-    * <li>userPassword : le mot de passe renseigné dans le champ du formulaire «
-    * mot de passe »</li>
-    * <li>codeInterRegion : vide</li>
-    * <li>codeOrganisme : vide</li>
-    * </ul>
-    * <br>
-    * La méthode renvoie le résultat de
-    * {@link SaeAnaisService#authentifierPourSaeParLoginPassword}<br>
+    * Récupération des habilitations de l'agent
     * 
     * @param userLogin
-    *           login de l'utilisateur
+    *           login de l'agent
     * @param userPassword
-    *           mot de passe de l'utilisateur
+    *           mot de passe de l'agent
     * @return Vecteur d'identification au format XML
     * @throws AucunDroitException
-    *            le CTD ne possède aucun droit
-    * @throws fr.urssaf.image.sae.anais.framework.service.exception.SaeAnaisApiException
+    *            l'agent ne possède aucun droit
+    * @throws VIBuildException
+    *            si un problème se produit pendant la création du VI
     */
    public final String connect(String userLogin, String userPassword)
-         throws AucunDroitException {
+         throws AucunDroitException, VIBuildException {
 
-      String token = service.authentifierPourSaeParLoginPassword(configuration
-            .getEnvironnement(), null, configuration.getCompteApplicatif(),
-            null, userLogin, userPassword, null, null);
+      // Récupération des habilitations de l'agent depuis ANAIS
+      SaeAnaisAuth auth = service.habilitationsAnais(userLogin, userPassword,
+            null, null);
 
-      return token;
+      // Récupération du bean de génération du VI
+      // Ce bean est fonction de l'application sur laquelle est branchée le
+      // portail
+      // Cette application est spécifiée sous la forme d'un code dans le fichier
+      // properties
+      // du portail, dans la clé codeAppliRedirection
+      String codeAppli = appliSaeConfig.getCodeAppli();
+      VIService viService;
+      if ("SAE_IHM_EXPLOIT".equals(codeAppli)) {
+         viService = viServicePourIhmExploit;
+      } else {
+         throw new PortailRuntimeException("Le code application " + codeAppli
+               + " est inconnu du portail");
+      }
+
+      // Génération du VI
+      String vi = viService.buildVI(auth);
+
+      // Renvoie le VI
+      return vi;
+
    }
+
 }

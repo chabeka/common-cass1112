@@ -6,13 +6,7 @@
       </encoder>
    </appender>
 
-   
-   <logger name="org.springframework" level="WARN" />
-   
-   <logger name="fr.urssaf.image.sae.anais.framework" level="DEBUG" />
-   <logger name="recouv.cirti.anais.api.source" level="DEBUG" />
-   
-   <root level="INFO">
+   <root level="WARN">
       <appender-ref ref="console" />
    </root>
 

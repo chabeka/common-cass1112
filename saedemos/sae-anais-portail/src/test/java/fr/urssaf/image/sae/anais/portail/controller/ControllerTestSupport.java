@@ -1,7 +1,8 @@
 package fr.urssaf.image.sae.anais.portail.controller;
 
-import org.apache.log4j.Logger;
 import org.junit.Before;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -18,7 +19,7 @@ import org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAda
  */
 public class ControllerTestSupport<C> {
 
-   protected static final Logger LOG = Logger
+   protected static final Logger LOG = LoggerFactory
          .getLogger(ControllerTestSupport.class);
 
    @Autowired
