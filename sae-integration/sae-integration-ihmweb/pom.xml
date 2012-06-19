@@ -634,13 +634,11 @@
          <groupId>joda-time</groupId>
          <artifactId>joda-time</artifactId>
          <version>${joda-time.version}</version>
-         <scope>runtime</scope>
       </dependency>
       <dependency>
          <groupId>joda-time</groupId>
          <artifactId>joda-time-jsptags</artifactId>
          <version>${joda-time.jsptags.version}</version>
-         <scope>runtime</scope>
       </dependency>
 
       <!-- Servlet et JSTL -->
