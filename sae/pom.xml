@@ -544,6 +544,7 @@
       <module>sae-mapping</module>
       <module>sae-pile-travaux</module>
       <module>sae-services</module>
+      <module>sae-droit</module>
       
       <!-- Les applications finales -->
       <module>sae-igcmaj</module>
