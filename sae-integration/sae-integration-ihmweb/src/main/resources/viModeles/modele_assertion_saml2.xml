@@ -28,8 +28,7 @@
       AuthnInstant="[AuthnInstant]"
       SessionIndex="[AssertionID]">
       <saml2:AuthnContext>
-         <saml2:AuthnContextClassRef>urn:oasis:names:tc:SAML:2.0:ac:classes:unspecified
-         </saml2:AuthnContextClassRef>
+         <saml2:AuthnContextClassRef>[MethodAuthn2]</saml2:AuthnContextClassRef>
       </saml2:AuthnContext>
    </saml2:AuthnStatement>
    

@@ -30,6 +30,7 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.C
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ConsultationMTOMResponse;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ConsultationResponse;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ListeMetadonneeType;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.security.ViStyle;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.utils.SaeServiceLogUtils;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.utils.SaeServiceObjectExtractor;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.utils.SaeServiceObjectFactory;
@@ -43,7 +44,6 @@ import fr.urssaf.image.sae.integration.ihmweb.service.tests.listeners.impl.WsTes
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.utils.TestsMetadonneesService;
 import fr.urssaf.image.sae.integration.ihmweb.utils.ChecksumUtils;
 import fr.urssaf.image.sae.integration.ihmweb.utils.TestUtils;
-import fr.urssaf.image.sae.integration.ihmweb.utils.ViUtils;
 
 /**
  * Service de test de l'opération "consultation" du service web SaeService
@@ -61,9 +61,12 @@ public class ConsultationTestService {
 
    @Autowired
    private ReferentielMetadonneesService referentielMetadonneesService;
+   
+   @Autowired
+   private SaeServiceStubUtils saeServiceStubUtils;
 
    private ConsultationResultat appelWsOpConsultation(String urlServiceWeb,
-         String ficRessourceVi, ConsultationFormulaire formulaire,
+         ViStyle viStyle, ConsultationFormulaire formulaire,
          WsTestListener wsListener) {
 
       // Initialise le résultat
@@ -79,8 +82,8 @@ public class ConsultationTestService {
       SaeServiceLogUtils.logAppelConsultation(log, formulaire);
 
       // Récupération du stub du service web
-      SaeServiceStub service = SaeServiceStubUtils.getServiceStub(
-            urlServiceWeb, ficRessourceVi);
+      SaeServiceStub service = saeServiceStubUtils.getServiceStub(
+            urlServiceWeb, viStyle);
 
       // Appel du service web et gestion de erreurs
       try {
@@ -170,7 +173,7 @@ public class ConsultationTestService {
       WsTestListener testLibre = new WsTestListenerImplLibre();
 
       // Appel de la méthode "générique" de test
-      appelWsOpConsultation(urlServiceWeb, ViUtils.FIC_VI_OK, formulaire,
+      appelWsOpConsultation(urlServiceWeb, ViStyle.VI_OK, formulaire,
             testLibre);
 
    }
@@ -183,8 +186,8 @@ public class ConsultationTestService {
     *           l'URL du service web SaeService
     * @param formulaire
     *           le formulaire
-    * @param ficVi
-    *           le fichier de VI à utiliser parmi les constantes des ViUtils
+    * @param viStyle
+    *           le type de VI à générer
     * @param idSoapFaultAttendu
     *           l'identifiant de la SoapFault attendu dans le référentiel des
     *           SoapFault
@@ -193,7 +196,7 @@ public class ConsultationTestService {
     *           attendue
     */
    public final void appelWsOpConsultationSoapFault(String urlServiceWeb,
-         ConsultationFormulaire formulaire, String ficVi,
+         ConsultationFormulaire formulaire, ViStyle viStyle,
          String idSoapFaultAttendu, final Object[] argsMsgSoapFault) {
 
       // Création de l'objet qui implémente l'interface WsTestListener
@@ -203,7 +206,7 @@ public class ConsultationTestService {
             argsMsgSoapFault);
 
       // Appel de la méthode "générique" de test
-      appelWsOpConsultation(urlServiceWeb, ficVi, formulaire, testAuth);
+      appelWsOpConsultation(urlServiceWeb, viStyle, formulaire, testAuth);
 
    }
 
@@ -295,7 +298,7 @@ public class ConsultationTestService {
 
       // Appel de la méthode "générique" de test
       ConsultationResultat response = appelWsOpConsultation(urlServiceWeb,
-            ViUtils.FIC_VI_OK, formulaire, testAvecReponse);
+            ViStyle.VI_OK, formulaire, testAvecReponse);
 
       // On vérifie le résultat obtenu (si le test n'a pas échoué dans les
       // étapes préalables)

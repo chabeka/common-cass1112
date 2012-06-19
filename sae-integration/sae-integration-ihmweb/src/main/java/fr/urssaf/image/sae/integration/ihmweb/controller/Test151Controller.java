@@ -7,7 +7,7 @@ import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureUnitaireFormulai
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.TestWsCaptureUnitaireFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeur;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeurList;
-import fr.urssaf.image.sae.integration.ihmweb.utils.ViUtils;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.security.ViStyle;
 
 /**
  * 151-CaptureUnitaire-KO-EcdeFichierInexistant
@@ -83,7 +83,7 @@ public class Test151Controller extends
 
       // Appel de la méthode de test
       getCaptureUnitaireTestService().appelWsOpCaptureUnitaireSoapFault(
-            urlServiceWeb, formulaire, ViUtils.FIC_VI_OK,
+            urlServiceWeb, formulaire, ViStyle.VI_OK,
             "sae_CaptureEcdeFichierInexistant", new String[] { getUrlEcde() });
 
    }

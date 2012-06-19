@@ -23,6 +23,7 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.Recherche;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheResponse;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ResultatRechercheType;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.security.ViStyle;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.utils.SaeServiceLogUtils;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.utils.SaeServiceObjectExtractor;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.utils.SaeServiceObjectFactory;
@@ -35,7 +36,6 @@ import fr.urssaf.image.sae.integration.ihmweb.service.tests.listeners.impl.WsTes
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.listeners.impl.WsTestListenerImplSoapFault;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.utils.TestsMetadonneesService;
 import fr.urssaf.image.sae.integration.ihmweb.utils.TestUtils;
-import fr.urssaf.image.sae.integration.ihmweb.utils.ViUtils;
 
 /**
  * Service de test de l'opération "recherche" du service web SaeService
@@ -52,9 +52,12 @@ public class RechercheTestService {
 
    @Autowired
    private ReferentielMetadonneesService referentielMetadonneesService;
+   
+   @Autowired
+   private SaeServiceStubUtils saeServiceStubUtils;
 
    private RechercheResponse appelWsOpRecherche(String urlServiceWeb,
-         String ficRessourceVi, RechercheFormulaire formulaire,
+         ViStyle viStyle, RechercheFormulaire formulaire,
          WsTestListener wsListener,
          TypeComparaison triDesResultatsDansAffichageLog) {
 
@@ -71,8 +74,8 @@ public class RechercheTestService {
       SaeServiceLogUtils.logAppelRecherche(log, formulaire);
 
       // Récupération du stub du service web
-      SaeServiceStub service = SaeServiceStubUtils.getServiceStub(
-            urlServiceWeb, ficRessourceVi);
+      SaeServiceStub service = saeServiceStubUtils.getServiceStub(
+            urlServiceWeb, viStyle);
 
       // Appel du service web et gestion de erreurs
       try {
@@ -137,7 +140,7 @@ public class RechercheTestService {
       WsTestListener testLibre = new WsTestListenerImplLibre();
 
       // Appel de la méthode "générique" de test
-      appelWsOpRecherche(urlServiceWeb, ViUtils.FIC_VI_OK, formulaire,
+      appelWsOpRecherche(urlServiceWeb, ViStyle.VI_OK, formulaire,
             testLibre, null);
 
    }
@@ -170,7 +173,7 @@ public class RechercheTestService {
 
       // Appel de la méthode "générique" de test
       RechercheResponse response = appelWsOpRecherche(urlServiceWeb,
-            ViUtils.FIC_VI_OK, formulaire, testAvecReponse,
+            ViStyle.VI_OK, formulaire, testAvecReponse,
             triDesResultatsDansAffichageLog);
 
       // On vérifie le résultat obtenu (si le test n'a pas échoué dans les
@@ -382,8 +385,8 @@ public class RechercheTestService {
     *           l'URL du service web SaeService
     * @param formulaire
     *           le formulaire
-    * @param ficVi
-    *           le fichier de VI à utiliser parmi les constantes des ViUtils
+    * @param viStyle
+    *           le type de VI à générer
     * @param idSoapFaultAttendu
     *           l'identifiant de la SoapFault attendu dans le référentiel des
     *           SoapFault
@@ -392,7 +395,7 @@ public class RechercheTestService {
     *           attendue
     */
    public final void appelWsOpRechercheSoapFault(String urlServiceWeb,
-         RechercheFormulaire formulaire, String ficVi,
+         RechercheFormulaire formulaire, ViStyle viStyle,
          String idSoapFaultAttendu, final Object[] argsMsgSoapFault) {
 
       // Création de l'objet qui implémente l'interface WsTestListener
@@ -402,7 +405,7 @@ public class RechercheTestService {
             argsMsgSoapFault);
 
       // Appel de la méthode "générique" de test
-      appelWsOpRecherche(urlServiceWeb, ficVi, formulaire, listener, null);
+      appelWsOpRecherche(urlServiceWeb, viStyle, formulaire, listener, null);
 
    }
 

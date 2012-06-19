@@ -7,7 +7,7 @@ import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureUnitaireFormulai
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.TestWsCaptureUnitaireFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeurList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ModeArchivageUnitaireEnum;
-import fr.urssaf.image.sae.integration.ihmweb.utils.ViUtils;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.security.ViStyle;
 
 
 /**
@@ -90,7 +90,7 @@ public class Test161Controller extends AbstractTestWsController<TestWsCaptureUni
          getCaptureUnitaireTestService().appelWsOpCaptureUnitaireSoapFault(
                urlServiceWeb, 
                formulaire,
-               ViUtils.FIC_VI_OK,
+               ViStyle.VI_OK,
                "sae_CaptureFichierVide_2",
                null);
          
@@ -99,7 +99,7 @@ public class Test161Controller extends AbstractTestWsController<TestWsCaptureUni
          getCaptureUnitaireTestService().appelWsOpCaptureUnitaireSoapFault(
                urlServiceWeb, 
                formulaire,
-               ViUtils.FIC_VI_OK,
+               ViStyle.VI_OK,
                "sae_CaptureFichierVide",
                new String[] {"fichier_vide.txt"});
          

@@ -15,6 +15,7 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.P
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.PingResponse;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.PingSecureRequest;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.PingSecureResponse;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.security.ViStyle;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.utils.SaeServiceStubUtils;
 import fr.urssaf.image.sae.integration.ihmweb.service.referentiels.ReferentielSoapFaultService;
 import fr.urssaf.image.sae.integration.ihmweb.utils.LogUtils;
@@ -33,6 +34,8 @@ public class TestsTechniquesService {
    @Autowired
    private ReferentielSoapFaultService refSoapFault;
    
+   @Autowired
+   private SaeServiceStubUtils saeServiceStubUtils;
    
    private void echecSoapFault(
          TestTechnique leTest,
@@ -97,7 +100,7 @@ public class TestsTechniquesService {
       if (leTest.isaLancer()) {
       
          // Récupération du stub du service web avec le VI adéquat
-         SaeServiceStub service = SaeServiceStubUtils.getServiceStubSansVi(urlServiceWeb);
+         SaeServiceStub service = saeServiceStubUtils.getServiceStubSansVi(urlServiceWeb);
          
          // Construction des paramètres d'appel à l'opération
          PingRequest request = new PingRequest();
@@ -145,7 +148,7 @@ public class TestsTechniquesService {
       if (leTest.isaLancer()) {
          
          // Récupération du stub du service web avec le VI adéquat
-         SaeServiceStub service = SaeServiceStubUtils.getServiceStubAvecViOk(urlServiceWeb);
+         SaeServiceStub service = saeServiceStubUtils.getServiceStubAvecViOk(urlServiceWeb);
          
          // Construction des paramètres d'appel à l'opération
          PingSecureRequest request = new PingSecureRequest();
@@ -193,7 +196,7 @@ public class TestsTechniquesService {
          pingSecureTestSoapfault(
                urlServiceWeb,
                leTest,
-               "vi/vi_SoapFault_wsse_SecurityTokenUnavailable.xml",
+               ViStyle.VI_SF_wsse_SecurityTokenUnavailable,
                refSoapFault.findSoapFault("wsse_SecurityTokenUnavailable"));
          
       }
@@ -204,10 +207,10 @@ public class TestsTechniquesService {
    private void pingSecureTestSoapfault(
          String urlServiceWeb,
          TestTechnique leTest,
-         String ficRessVi,
+         ViStyle viStyle,
          SoapFault soapFaultAttendu) {
     
-      SaeServiceStub service = SaeServiceStubUtils.getServiceStub(urlServiceWeb, ficRessVi);
+      SaeServiceStub service = saeServiceStubUtils.getServiceStub(urlServiceWeb, viStyle);
       
       PingSecureRequest request = new PingSecureRequest();
 
@@ -286,7 +289,7 @@ public class TestsTechniquesService {
          pingSecureTestSoapfault(
                urlServiceWeb,
                leTest,
-               "vi/vi_SoapFault_wsse_InvalidSecurityToken.xml",
+               ViStyle.VI_SF_wsse_InvalidSecurityToken,
                refSoapFault.findSoapFault("wsse_InvalidSecurityToken"));
          
       }
@@ -309,7 +312,7 @@ public class TestsTechniquesService {
          pingSecureTestSoapfault(
                urlServiceWeb,
                leTest,
-               "vi/vi_SoapFault_wsse_FailedCheck.xml",
+               ViStyle.VI_SF_wsse_FailedCheck,
                refSoapFault.findSoapFault("wsse_FailedCheck"));
          
       }
@@ -332,7 +335,7 @@ public class TestsTechniquesService {
          pingSecureTestSoapfault(
                urlServiceWeb,
                leTest,
-               "vi/vi_SoapFault_vi_InvalidVI.xml",
+               ViStyle.VI_SF_vi_InvalidVI,
                refSoapFault.findSoapFault("vi_InvalidVI"));
          
       }
@@ -355,7 +358,7 @@ public class TestsTechniquesService {
          pingSecureTestSoapfault(
                urlServiceWeb,
                leTest,
-               "vi/vi_SoapFault_vi_InvalidService.xml",
+               ViStyle.VI_SF_vi_InvalidService,
                refSoapFault.findSoapFault("vi_InvalidService"));
          
       }
@@ -378,7 +381,7 @@ public class TestsTechniquesService {
          pingSecureTestSoapfault(
                urlServiceWeb,
                leTest,
-               "vi/vi_SoapFault_vi_InvalidAuthLevel.xml",
+               ViStyle.VI_SF_vi_InvalidAuthLevel,
                refSoapFault.findSoapFault("vi_InvalidAuthLevel"));
          
       }
@@ -401,7 +404,7 @@ public class TestsTechniquesService {
          pingSecureTestSoapfault(
                urlServiceWeb,
                leTest,
-               "vi/vi_SoapFault_sae_DroitsInsuffisants.xml",
+               ViStyle.VI_SF_sae_DroitsInsuffisants,
                refSoapFault.findSoapFault("sae_DroitsInsuffisants"));
          
       }

@@ -28,6 +28,7 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_r
 import fr.urssaf.image.sae.integration.ihmweb.modele.somres.resultats.ResultatsType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ArchivageMasse;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.security.ViStyle;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.utils.SaeServiceLogUtils;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.utils.SaeServiceObjectFactory;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.utils.SaeServiceStubUtils;
@@ -38,7 +39,6 @@ import fr.urssaf.image.sae.integration.ihmweb.service.tests.listeners.WsTestList
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.listeners.impl.WsTestListenerImplLibre;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.listeners.impl.WsTestListenerImplSoapFault;
 import fr.urssaf.image.sae.integration.ihmweb.utils.ExceptionUtils;
-import fr.urssaf.image.sae.integration.ihmweb.utils.ViUtils;
 
 /**
  * Service pour les tests de la fonctionnalité "Capture de masse".<br>
@@ -66,9 +66,12 @@ public class CaptureMasseTestService {
 
    @Autowired
    private DfceService dfceService;
+   
+   @Autowired
+   private SaeServiceStubUtils saeServiceStubUtils;
 
    private void appelWsOpArchiMasse(String urlServiceWeb,
-         String ficRessourceVi, CaptureMasseFormulaire formulaire,
+         ViStyle viStyle, CaptureMasseFormulaire formulaire,
          WsTestListener wsListener) {
 
       // on supprime les fichiers de traitement précédents
@@ -101,8 +104,8 @@ public class CaptureMasseTestService {
       SaeServiceLogUtils.logAppelArchivageMasse(log, formulaire);
 
       // Récupération du stub du service web
-      SaeServiceStub service = SaeServiceStubUtils.getServiceStub(
-            urlServiceWeb, ficRessourceVi);
+      SaeServiceStub service = saeServiceStubUtils.getServiceStub(
+            urlServiceWeb, viStyle);
 
       // Appel du service web et gestion de erreurs
       try {
@@ -162,7 +165,7 @@ public class CaptureMasseTestService {
       WsTestListener testLibre = new WsTestListenerImplLibre();
 
       // Appel de la méthode "générique" de test
-      appelWsOpArchiMasse(urlServiceWeb, ViUtils.FIC_VI_OK, formulaire,
+      appelWsOpArchiMasse(urlServiceWeb, ViStyle.VI_OK, formulaire,
             testLibre);
 
    }
@@ -187,7 +190,7 @@ public class CaptureMasseTestService {
             null);
 
       // Appel de la méthode "générique" de test
-      appelWsOpArchiMasse(urlServiceWeb, ViUtils.FIC_VI_SANS_VI, formulaire,
+      appelWsOpArchiMasse(urlServiceWeb, ViStyle.VI_SF_wsse_SecurityTokenUnavailable, formulaire,
             testAuth);
 
    }
@@ -233,7 +236,7 @@ public class CaptureMasseTestService {
             args);
 
       // Appel de la méthode "générique" de test
-      appelWsOpArchiMasse(urlWebService, ViUtils.FIC_VI_OK, formulaire,
+      appelWsOpArchiMasse(urlWebService, ViStyle.VI_OK, formulaire,
             testLibre);
 
    }

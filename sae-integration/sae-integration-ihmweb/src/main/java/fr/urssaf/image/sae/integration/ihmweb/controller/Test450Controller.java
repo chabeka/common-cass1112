@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ConsultationFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.TestWsConsultationFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.security.ViStyle;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.service.SaeServiceTestService;
-import fr.urssaf.image.sae.integration.ihmweb.utils.ViUtils;
 
 
 /**
@@ -61,7 +61,7 @@ public class Test450Controller extends AbstractTestWsController<TestWsConsultati
       getConsultationTestService().appelWsOpConsultationSoapFault(
             urlServiceWeb, 
             formulaire,
-            ViUtils.FIC_VI_SANS_VI,
+            ViStyle.VI_SF_wsse_SecurityTokenUnavailable,
             "wsse_SecurityTokenUnavailable",
             null);
       

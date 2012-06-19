@@ -23,6 +23,7 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.A
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ArchivageUnitairePJ;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ArchivageUnitairePJResponse;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ArchivageUnitaireResponse;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.security.ViStyle;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.utils.SaeServiceLogUtils;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.utils.SaeServiceObjectFactory;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.utils.SaeServiceStubUtils;
@@ -33,7 +34,6 @@ import fr.urssaf.image.sae.integration.ihmweb.service.tests.listeners.WsTestList
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.listeners.impl.WsTestListenerImplLibre;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.listeners.impl.WsTestListenerImplReponseAttendue;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.listeners.impl.WsTestListenerImplSoapFault;
-import fr.urssaf.image.sae.integration.ihmweb.utils.ViUtils;
 
 /**
  * Service de tests de l'opération "archivageUnitaire" du service SaeService
@@ -46,9 +46,12 @@ public class CaptureUnitaireTestService {
 
    @Autowired
    private ReferentielSoapFaultService refSoapFault;
+   
+   @Autowired
+   private SaeServiceStubUtils saeServiceStubUtils;
 
    private CaptureUnitaireResultat appelWsOpCaptureUnitaire(
-         String urlServiceWeb, String ficRessourceVi,
+         String urlServiceWeb, ViStyle viStyle,
          CaptureUnitaireFormulaire formulaire, WsTestListener wsListener) {
 
       // Initialise la valeur de retour
@@ -64,8 +67,8 @@ public class CaptureUnitaireTestService {
       SaeServiceLogUtils.logAppelArchivageUnitaire(log, formulaire);
 
       // Récupération du stub du service web
-      SaeServiceStub service = SaeServiceStubUtils.getServiceStub(
-            urlServiceWeb, ficRessourceVi);
+      SaeServiceStub service = saeServiceStubUtils.getServiceStub(
+            urlServiceWeb, viStyle);
 
       // Appel du service web et gestion de erreurs
       try {
@@ -196,7 +199,7 @@ public class CaptureUnitaireTestService {
       WsTestListener testLibre = new WsTestListenerImplLibre();
 
       // Appel de la méthode "générique" de test
-      appelWsOpCaptureUnitaire(urlServiceWeb, ViUtils.FIC_VI_OK, formulaire,
+      appelWsOpCaptureUnitaire(urlServiceWeb, ViStyle.VI_OK, formulaire,
             testLibre);
 
    }
@@ -210,8 +213,8 @@ public class CaptureUnitaireTestService {
     *           l'URL du service web SaeService
     * @param formulaire
     *           le formulaire
-    * @param ficVi
-    *           le fichier de VI à utiliser parmi les constantes des ViUtils
+    * @param viStyle
+    *           le type de VI à générer
     * @param idSoapFaultAttendu
     *           l'identifiant de la SoapFault attendu dans le référentiel des
     *           SoapFault
@@ -220,7 +223,7 @@ public class CaptureUnitaireTestService {
     *           attendue
     */
    public final void appelWsOpCaptureUnitaireSoapFault(String urlServiceWeb,
-         CaptureUnitaireFormulaire formulaire, String ficVi,
+         CaptureUnitaireFormulaire formulaire, ViStyle viStyle,
          String idSoapFaultAttendu, final Object[] argsMsgSoapFault) {
 
       // Création de l'objet qui implémente l'interface WsTestListener
@@ -230,7 +233,7 @@ public class CaptureUnitaireTestService {
             argsMsgSoapFault);
 
       // Appel de la méthode "générique" de test
-      appelWsOpCaptureUnitaire(urlServiceWeb, ficVi, formulaire, listener);
+      appelWsOpCaptureUnitaire(urlServiceWeb, viStyle, formulaire, listener);
 
    }
 
@@ -253,7 +256,7 @@ public class CaptureUnitaireTestService {
 
       // Appel de la méthode "générique" de test
       CaptureUnitaireResultat resultat = appelWsOpCaptureUnitaire(
-            urlServiceWeb, ViUtils.FIC_VI_OK, formulaire, testAvecReponse);
+            urlServiceWeb, ViStyle.VI_OK, formulaire, testAvecReponse);
 
       // On considère que le test est en succès si aucune erreur renvoyé
       ResultatTest resultatTest = formulaire.getResultats();

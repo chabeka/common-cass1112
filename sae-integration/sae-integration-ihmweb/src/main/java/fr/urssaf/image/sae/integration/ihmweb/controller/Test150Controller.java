@@ -7,7 +7,7 @@ import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureUnitaireFormulai
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.TestWsCaptureUnitaireFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeur;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeurList;
-import fr.urssaf.image.sae.integration.ihmweb.utils.ViUtils;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.security.ViStyle;
 
 
 /**
@@ -68,7 +68,7 @@ public class Test150Controller extends AbstractTestWsController<TestWsCaptureUni
       getCaptureUnitaireTestService().appelWsOpCaptureUnitaireSoapFault(
             urlServiceWeb, 
             formulaire,
-            ViUtils.FIC_VI_SANS_VI,
+            ViStyle.VI_SF_wsse_SecurityTokenUnavailable,
             "wsse_SecurityTokenUnavailable",
             null);
       

@@ -6,21 +6,24 @@ import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.context.ConfigurationContextFactory;
 import org.apache.axis2.engine.AxisConfiguration;
 import org.apache.axis2.engine.Phase;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.integration.ihmweb.exception.IntegrationRuntimeException;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.security.LogInMessageHandler;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.security.VIHandler;
-import fr.urssaf.image.sae.integration.ihmweb.utils.ViUtils;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.security.ViService;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.security.ViStyle;
 
 /**
  * Méthodes utilitaires pour l'instanciation du Stub du service web SaeService
  */
+@Component
 public final class SaeServiceStubUtils {
 
-   private SaeServiceStubUtils() {
-
-   }
+   @Autowired
+   private ViService viService;
 
    
    /**
@@ -30,13 +33,12 @@ public final class SaeServiceStubUtils {
     * 
     * @param urlServiceWeb
     *           l'URL du service web SaeService
-    * @param ficRessourceVi
-    *           le VI à intégrer au message SOAP, sous la forme de l'emplacement
-    *           du fichier de ressource contenant ce VI.
+    * @param viStyle
+    *           le VI à intégrer au message SOAP
     * @return le stub
     */
-   public static SaeServiceStub getServiceStub(String urlServiceWeb,
-         String ficRessourceVi) {
+   public SaeServiceStub getServiceStub(String urlServiceWeb,
+         ViStyle viStyle) {
 
       try {
 
@@ -50,13 +52,13 @@ public final class SaeServiceStubUtils {
          
          // 1) Ajout d'une propriété dans laquelle on met le nom du fichier de VI
          //    à inclure dans le message SOAP. L'inclusion sera faite dans un handler
-         configContext.setProperty(VIHandler.PROP_FICHIER_VI, ficRessourceVi);
+         configContext.setProperty(VIHandler.PROP_STYLE_VI, viStyle);
          
          // 2) Ajout d'un Handler lors de la phase "MessageOut" pour insérer le VI
          AxisConfiguration axisConfig = configContext.getAxisConfiguration();
          List<Phase> outFlowPhases = axisConfig.getOutFlowPhases();
          Phase messageOut = findPhaseByName(outFlowPhases,"MessageOut");
-         messageOut.addHandler(new VIHandler());
+         messageOut.addHandler(new VIHandler(viService));
          
          
          // ----------------------------------------------
@@ -94,8 +96,8 @@ public final class SaeServiceStubUtils {
     *           l'URL du service web SaeService
     * @return le stub
     */
-   public static SaeServiceStub getServiceStubSansVi(String urlServiceWeb) {
-      return getServiceStub(urlServiceWeb, ViUtils.FIC_VI_SANS_VI);
+   public SaeServiceStub getServiceStubSansVi(String urlServiceWeb) {
+      return getServiceStub(urlServiceWeb, ViStyle.VI_SANS);
    }
 
    /**
@@ -107,8 +109,8 @@ public final class SaeServiceStubUtils {
     *           l'URL du service web SaeService
     * @return le stub
     */
-   public static SaeServiceStub getServiceStubAvecViOk(String urlServiceWeb) {
-      return getServiceStub(urlServiceWeb, ViUtils.FIC_VI_OK);
+   public SaeServiceStub getServiceStubAvecViOk(String urlServiceWeb) {
+      return getServiceStub(urlServiceWeb, ViStyle.VI_OK);
    }
    
    

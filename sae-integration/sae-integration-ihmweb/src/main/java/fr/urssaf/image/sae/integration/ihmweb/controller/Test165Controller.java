@@ -7,7 +7,7 @@ import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureUnitaireFormulai
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.TestWsCaptureUnitaireFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeur;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeurList;
-import fr.urssaf.image.sae.integration.ihmweb.utils.ViUtils;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.security.ViStyle;
 
 /**
  * 165-CaptureUnitaire-KO-URL-ECDE-incorrecte
@@ -78,7 +78,7 @@ public class Test165Controller extends
 
       // Appel de la méthode de test
       getCaptureUnitaireTestService().appelWsOpCaptureUnitaireSoapFault(
-            urlServiceWeb, formulaire, ViUtils.FIC_VI_OK,
+            urlServiceWeb, formulaire, ViStyle.VI_OK,
             "sae_CaptureUrlEcdeIncorrecte", new String[] { getUrlEcde() });
 
    }

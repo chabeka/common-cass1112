@@ -7,7 +7,7 @@ import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.TestWsRechercheFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CodeMetadonneeList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
-import fr.urssaf.image.sae.integration.ihmweb.utils.ViUtils;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.security.ViStyle;
 
 
 /**
@@ -72,7 +72,7 @@ public class Test354Controller extends AbstractTestWsController<TestWsRechercheF
       this.getRechercheTestService().appelWsOpRechercheSoapFault(
             urlServiceWeb, 
             formulaire,
-            ViUtils.FIC_VI_OK,
+            ViStyle.VI_OK,
             "sae_ConsultationMetadonneesInterdite",
             new Object[] {"StartPage, VersionNumber"});
     

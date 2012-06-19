@@ -20,10 +20,10 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_r
 import fr.urssaf.image.sae.integration.ihmweb.modele.somres.resultats.ResultatsType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ArchivageMasse;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.security.ViStyle;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.utils.SaeServiceObjectFactory;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.utils.SaeServiceStubUtils;
 import fr.urssaf.image.sae.integration.ihmweb.service.ecde.EcdeService;
-import fr.urssaf.image.sae.integration.ihmweb.utils.ViUtils;
 
 /**
  * 
@@ -51,6 +51,9 @@ public class ThreadInitCasDeTest {
 
    @Autowired
    private EcdeService ecdeService;
+   
+   @Autowired
+   private SaeServiceStubUtils saeServiceStubUtils;
 
    /**
     * Cette méthode parcours la liste des cas de tests à lancer, appel le WS de
@@ -163,8 +166,8 @@ public class ThreadInitCasDeTest {
          throws IntegrationException {
 
       // Récupération du stub du service web
-      SaeServiceStub service = SaeServiceStubUtils.getServiceStub(
-            urlServiceWeb, ViUtils.FIC_VI_OK);
+      SaeServiceStub service = saeServiceStubUtils.getServiceStub(
+            urlServiceWeb, ViStyle.VI_OK);
 
       // Appel du service web et gestion de erreurs
       try {

@@ -7,7 +7,7 @@ import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.TestWsRechercheFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CodeMetadonneeList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
-import fr.urssaf.image.sae.integration.ihmweb.utils.ViUtils;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.security.ViStyle;
 
 /**
  * 357-Recherche-KO-SAESyntaxeLuceneIncorrecte
@@ -64,7 +64,7 @@ public class Test357Controller extends
 
       // Appel de la méthode de test
       this.getRechercheTestService().appelWsOpRechercheSoapFault(urlServiceWeb,
-            formulaire, ViUtils.FIC_VI_OK, "sae_SyntaxeLuceneNonValide", null);
+            formulaire, ViStyle.VI_OK, "sae_SyntaxeLuceneNonValide", null);
 
    }
 

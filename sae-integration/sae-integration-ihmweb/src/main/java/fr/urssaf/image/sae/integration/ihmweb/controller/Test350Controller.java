@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.TestWsRechercheFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CodeMetadonneeList;
-import fr.urssaf.image.sae.integration.ihmweb.utils.ViUtils;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.security.ViStyle;
 
 
 /**
@@ -69,7 +69,7 @@ public class Test350Controller extends AbstractTestWsController<TestWsRechercheF
       getRechercheTestService().appelWsOpRechercheSoapFault(
             urlWebService, 
             formulaire,
-            ViUtils.FIC_VI_SANS_VI,
+            ViStyle.VI_SF_wsse_SecurityTokenUnavailable,
             "wsse_SecurityTokenUnavailable",
             null);
       

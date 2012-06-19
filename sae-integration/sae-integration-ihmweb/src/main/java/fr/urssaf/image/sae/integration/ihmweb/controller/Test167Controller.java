@@ -8,7 +8,7 @@ import fr.urssaf.image.sae.integration.ihmweb.formulaire.TestWsCaptureUnitaireFo
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeur;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeurList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ModeArchivageUnitaireEnum;
-import fr.urssaf.image.sae.integration.ihmweb.utils.ViUtils;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.security.ViStyle;
 
 /**
  * 167-CaptureUnitaire-KO-NomFichierVide
@@ -76,7 +76,7 @@ public class Test167Controller extends
 
       // Appel de la méthode de test
       getCaptureUnitaireTestService().appelWsOpCaptureUnitaireSoapFault(
-            urlServiceWeb, formulaire, ViUtils.FIC_VI_OK,
+            urlServiceWeb, formulaire, ViStyle.VI_OK,
             "sae_NomFichierVide", null);
 
    }
