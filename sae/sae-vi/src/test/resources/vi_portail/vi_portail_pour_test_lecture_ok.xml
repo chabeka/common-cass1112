@@ -6,7 +6,7 @@
    <!-- Identifiant du contrat de service -->
    <issuer>id_du_contrat_de_service</issuer>
    
-   <!-- Service visé -->
+   <!-- Service vise -->
    <audience>http://sae.urssaf.fr</audience>
    
    <!-- Identifiant de l'utilisateur -->

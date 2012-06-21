@@ -2,7 +2,8 @@ package fr.urssaf.image.sae.igcmaj;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.urssaf.image.sae.igc.IgcServiceFactory;
 import fr.urssaf.image.sae.igc.exception.IgcConfigException;
@@ -23,7 +24,7 @@ public final class IgcMain {
 
    }
 
-   private static final Logger LOG = Logger.getLogger(IgcMain.class);
+   private static final Logger LOG = LoggerFactory.getLogger(IgcMain.class);
 
    private static final String MESSAGE = "Mise a jour des CRL : ${0} CRL telechargees";
 

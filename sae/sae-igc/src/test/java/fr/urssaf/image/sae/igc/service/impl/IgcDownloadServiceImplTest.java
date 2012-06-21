@@ -16,10 +16,11 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.SystemUtils;
-import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.urssaf.image.sae.igc.exception.IgcDownloadException;
 import fr.urssaf.image.sae.igc.modele.IgcConfig;
@@ -28,7 +29,7 @@ import fr.urssaf.image.sae.igc.modele.IgcConfig;
       "PMD.VariableNamingConventions" })
 public class IgcDownloadServiceImplTest {
 
-   private static final Logger LOG = Logger
+   private static final Logger LOG = LoggerFactory
          .getLogger(IgcDownloadServiceImplTest.class);
 
    private IgcDownloadServiceImpl service;

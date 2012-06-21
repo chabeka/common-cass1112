@@ -18,9 +18,9 @@ import javax.xml.transform.Transformer;
 
 import org.apache.commons.codec.CharEncoding;
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
 import org.opensaml.saml2.core.Assertion;
 import org.opensaml.xml.signature.Signature;
+import org.slf4j.Logger;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 

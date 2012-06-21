@@ -65,15 +65,6 @@ Le programme peut par exemple être exécuté sous forme de tâche planifiée, a
          <version>12.5.12.3-SNAPSHOT</version>
       </dependency>
       
-      
-      <!-- Log4j extras pour avoir le RollingFileAppender -->
-      
-      <dependency>
-         <groupId>log4j</groupId>
-         <artifactId>apache-log4j-extras</artifactId>
-         <version>1.1</version>
-      </dependency>
-
    </dependencies>
 
 </project>

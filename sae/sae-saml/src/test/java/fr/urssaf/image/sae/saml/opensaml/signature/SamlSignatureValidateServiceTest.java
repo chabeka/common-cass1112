@@ -19,11 +19,12 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.opensaml.saml2.core.Assertion;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 import fr.urssaf.image.sae.saml.exception.signature.validate.SamlAutoSignedCertificateException;
@@ -68,7 +69,7 @@ import fr.urssaf.image.sae.saml.testutils.TuUtils;
 public class SamlSignatureValidateServiceTest {
 
    
-   private static final Logger LOG = Logger.getLogger(SamlSignatureValidateServiceTest.class);
+   private static final Logger LOG = LoggerFactory.getLogger(SamlSignatureValidateServiceTest.class);
    
    /**
     * Classe de génération des fichiers de tests 
@@ -76,7 +77,7 @@ public class SamlSignatureValidateServiceTest {
    @SuppressWarnings("PMD.AvoidThrowingRawExceptionTypes")
    static class GenerateurDesAssertionsDeTest {
       
-      private static final Logger LOG = Logger.getLogger(GenerateurDesAssertionsDeTest.class);
+      private static final Logger LOG = LoggerFactory.getLogger(GenerateurDesAssertionsDeTest.class);
       
       
       private GenerateurDesAssertionsDeTest() {
