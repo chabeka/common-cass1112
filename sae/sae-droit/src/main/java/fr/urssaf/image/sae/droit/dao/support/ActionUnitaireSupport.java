@@ -41,13 +41,13 @@ public class ActionUnitaireSupport {
     * @param actionUnitaire
     *           propriétés de l'action unitaire à créer
     * @param clock
-    *           horloge de la création du nouveau job
+    *           horloge de la création
     */
    public final void create(ActionUnitaire actionUnitaire, long clock) {
 
       // On utilise un ColumnFamilyUpdater, et on renseigne
       // la valeur de la clé dans la construction de l'updater
-      ColumnFamilyUpdater<String, String> updaterJobRequest = this.dao
+      ColumnFamilyUpdater<String, String> updaterJobRequest = dao
             .getActionUnitaireTmpl().createUpdater(actionUnitaire.getCode());
 
       // Ecriture des colonnes
@@ -55,11 +55,11 @@ public class ActionUnitaireSupport {
             clock);
 
       // Ecrit en base
-      this.dao.getActionUnitaireTmpl().update(updaterJobRequest);
+      dao.getActionUnitaireTmpl().update(updaterJobRequest);
    }
 
    /**
-    * Suppression de ActionUnitaire
+    * Méthode de suppression d'une ligne
     * 
     * @param code
     *           identifiant de l'actionUnitaire
@@ -69,10 +69,10 @@ public class ActionUnitaireSupport {
    public final void delete(String code, long clock) {
 
       // Création du Mutator
-      Mutator<String> mutator = this.dao.createMutator();
+      Mutator<String> mutator = dao.createMutator();
 
       // suppression du JobRequest
-      this.dao.mutatorSuppressionActionUnitaire(mutator, code, clock);
+      dao.mutatorSuppressionActionUnitaire(mutator, code, clock);
 
       // Execution de la commande
       mutator.execute();
@@ -97,7 +97,7 @@ public class ActionUnitaireSupport {
    }
 
    /**
-    * Lecture de toutes les lignes
+    * Lecture de toutes les lignes (attention aux performances)
     * 
     * @param maxKeysToRead
     *           nombre maximum d'enregistrements à récupérer
@@ -132,8 +132,7 @@ public class ActionUnitaireSupport {
       List<ActionUnitaire> list = new ArrayList<ActionUnitaire>();
       for (ColumnFamilyResult<String, String> row : resultIterator) {
          ActionUnitaire actionUnitaire = getActionUnitaireFromResult(row);
-         // On peut obtenir un jobRequest null dans le cas d'un jobRequest
-         // effacé
+         
          if (actionUnitaire != null)
             list.add(actionUnitaire);
       }

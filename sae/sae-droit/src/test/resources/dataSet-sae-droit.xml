@@ -10,5 +10,9 @@
          <name>DroitActionUnitaire</name>
          <comparatorType>BytesType</comparatorType>
       </columnFamily>
+      <columnFamily>
+         <name>DroitContratService</name>
+         <comparatorType>BytesType</comparatorType>
+      </columnFamily>
    </columnFamilies>
 </keyspace>

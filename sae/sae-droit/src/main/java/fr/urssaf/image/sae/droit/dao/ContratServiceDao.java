@@ -24,9 +24,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class ContratServiceDao {
 
-   private static final String CS_CFNAME = "DroitContratService";
+   public static final String CS_CFNAME = "DroitContratService";
 
-   private static final int MAX_JOB_ATTIBUTS = 100;
+   public static final int MAX_CS_ATTIBUTS = 100;
 
    private final ColumnFamilyTemplate<String, String> cfTmpl;
 
@@ -55,7 +55,7 @@ public class ContratServiceDao {
             keyspace, CS_CFNAME, StringSerializer.get(),
             StringSerializer.get());
 
-      cfTmpl.setCount(MAX_JOB_ATTIBUTS);
+      cfTmpl.setCount(MAX_CS_ATTIBUTS);
 
    }
 
@@ -63,7 +63,7 @@ public class ContratServiceDao {
     * 
     * @return CassandraTemplate de <code>DroitContratService</code>
     */
-   public final ColumnFamilyTemplate<String, String> geContratServiceTmpl() {
+   public final ColumnFamilyTemplate<String, String> getContratServiceTmpl() {
 
       return this.cfTmpl;
    }
@@ -174,5 +174,12 @@ public class ContratServiceDao {
 
       mutator.addDeletion(code, CS_CFNAME, clock);
 
+   }
+
+   /**
+    * @return the keyspace
+    */
+   public final Keyspace getKeyspace() {
+      return keyspace;
    }
 }
