@@ -10,7 +10,7 @@ import fr.urssaf.image.sae.droit.dao.model.Pagm;
  * Sérialiseur / Désérialiseur de {@link Pagm}. Utilise un sérialiseur JSON.
  * 
  */
-public class PagmSerializer extends JacksonSerializer<Pagm> {
+public final class PagmSerializer extends JacksonSerializer<Pagm> {
 
    private static final PagmSerializer INSTANCE = new PagmSerializer(Pagm.class);
 

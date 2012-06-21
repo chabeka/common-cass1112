@@ -22,7 +22,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
     * {@inheritDoc}
     */
    @Override
-   public SaeDroits loadSaeDroits(String idClient, List<String> pagms) {
+   public final SaeDroits loadSaeDroits(String idClient, List<String> pagms) {
       // TODO Auto-generated method stub
       return null;
    }
@@ -31,7 +31,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
     * {@inheritDoc}
     */
    @Override
-   public void createContratService(ServiceContract serviceContract,
+   public final void createContratService(ServiceContract serviceContract,
          List<Pagm> pagms) {
       // TODO Auto-generated method stub
 

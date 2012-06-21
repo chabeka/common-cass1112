@@ -7,14 +7,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import fr.urssaf.image.sae.droit.dao.model.Prmd;
-
 /**
  * 
  * 
  */
 public class SaeDroits extends HashMap<String, List<SaePrmd>> implements
       Map<String, List<SaePrmd>> {
+
+   private static final long serialVersionUID = -5913141404840013369L;
 
    /** code de l'action unitaire d'un droit du SAE */
    private String key;
