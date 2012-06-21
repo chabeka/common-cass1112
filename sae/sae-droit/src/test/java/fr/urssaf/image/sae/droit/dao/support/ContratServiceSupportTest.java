@@ -31,7 +31,7 @@ public class ContratServiceSupportTest {
 
    private static final String LIBELLE1 = "libelle1";
 
-   private static final Long VI_DUREE = new Long(61);
+   private static final Long VI_DUREE = Long.valueOf(61);
 
    @Autowired
    private CassandraServerBean cassandraServer;
@@ -101,7 +101,7 @@ public class ContratServiceSupportTest {
       contract.setCodeClient("codeClient2");
       contract.setDescription("description2");
       contract.setLibelle("libelle2");
-      contract.setViDuree(new Long(62));
+      contract.setViDuree(Long.valueOf(62));
 
       support.create(contract, new Date().getTime());
 
@@ -109,7 +109,7 @@ public class ContratServiceSupportTest {
       contract.setCodeClient("codeClient3");
       contract.setDescription("description3");
       contract.setLibelle("libelle3");
-      contract.setViDuree(new Long(63));
+      contract.setViDuree(Long.valueOf(63));
 
       support.create(contract, new Date().getTime());
 
@@ -122,7 +122,7 @@ public class ContratServiceSupportTest {
          String codeClient = "codeClient" + i;
          String description = "description" + i;
          String libelle = "libelle" + i;
-         Long duree = new Long(60 + i);
+         Long duree = Long.valueOf(60 + i);
 
          boolean found = false;
          int index = 0;

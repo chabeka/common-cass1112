@@ -21,22 +21,22 @@ import org.springframework.stereotype.Repository;
 import fr.urssaf.image.sae.droit.dao.serializer.ListStringSerializer;
 
 /**
- * Service DAO de la famille de colonnes "DroitPagma" 
+ * Service DAO de la famille de colonnes "DroitPagma"
  * 
  */
 @Repository
 public class PagmaDao {
-   
+
    public static final String PAGMA_AU = "actionsUnitaires";
 
-   private static final String PAGMA_CFNAME = "DroitPagma";
+   public static final String PAGMA_CFNAME = "DroitPagma";
 
-   private static final int MAX_JOB_ATTIBUTS = 100;
+   public static final int MAX_ATTRIBUTS = 100;
 
    private final ColumnFamilyTemplate<String, String> pagmaTmpl;
 
    private final Keyspace keyspace;
-   
+
    /**
     * 
     * @param keyspace
@@ -47,11 +47,10 @@ public class PagmaDao {
 
       this.keyspace = keyspace;
 
-      pagmaTmpl = new ThriftColumnFamilyTemplate<String, String>(
-            keyspace, PAGMA_CFNAME, StringSerializer.get(),
-            StringSerializer.get());
+      pagmaTmpl = new ThriftColumnFamilyTemplate<String, String>(keyspace,
+            PAGMA_CFNAME, StringSerializer.get(), StringSerializer.get());
 
-      pagmaTmpl.setCount(MAX_JOB_ATTIBUTS);
+      pagmaTmpl.setCount(MAX_ATTRIBUTS);
 
    }
 
@@ -59,7 +58,7 @@ public class PagmaDao {
     * 
     * @return CassandraTemplate de <code>DroitPagma</code>
     */
-   public final ColumnFamilyTemplate<String, String> gePagmaTmpl() {
+   public final ColumnFamilyTemplate<String, String> getPagmaTmpl() {
 
       return this.pagmaTmpl;
    }
@@ -79,17 +78,16 @@ public class PagmaDao {
 
    private void addListColumn(ColumnFamilyUpdater<String, String> updater,
          String colName, List<String> value, Serializer<String> nameSerializer,
-         ListStringSerializer valueSerializer, long clock) {
+         Serializer<List<String>> valueSerializer, long clock) {
 
-      HColumn<String, List<String>> column = HFactory.createColumn(colName, value,
-            nameSerializer, valueSerializer);
+      HColumn<String, List<String>> column = HFactory.createColumn(colName,
+            value, nameSerializer, valueSerializer);
 
       column.setClock(clock);
       updater.setColumn(column);
 
    }
-   
-   
+
    /**
     * ajoute une colonne {@value #PAGMA_AU}
     * 
@@ -101,13 +99,14 @@ public class PagmaDao {
     *           horloge de la colonne
     */
    public final void ecritActionsUnitaires(
-         ColumnFamilyUpdater<String, String> updater, List<String> value, long clock) {
+         ColumnFamilyUpdater<String, String> updater, List<String> value,
+         long clock) {
 
       addListColumn(updater, PAGMA_AU, value, StringSerializer.get(),
             ListStringSerializer.get(), clock);
 
    }
-   
+
    /**
     * Suppression d'un Pagma
     * 
@@ -124,5 +123,12 @@ public class PagmaDao {
       mutator.addDeletion(code, PAGMA_CFNAME, clock);
 
    }
-   
+
+   /**
+    * @return the keyspace
+    */
+   public final Keyspace getKeyspace() {
+      return keyspace;
+   }
+
 }

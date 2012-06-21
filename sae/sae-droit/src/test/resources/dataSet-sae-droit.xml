@@ -14,5 +14,9 @@
          <name>DroitContratService</name>
          <comparatorType>BytesType</comparatorType>
       </columnFamily>
+      <columnFamily>
+         <name>DroitPagma</name>
+         <comparatorType>BytesType</comparatorType>
+      </columnFamily>
    </columnFamilies>
 </keyspace>
