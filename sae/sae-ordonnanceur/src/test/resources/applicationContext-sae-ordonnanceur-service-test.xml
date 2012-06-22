@@ -29,7 +29,7 @@
 
       <constructor-arg value="ecde.cer69.recouv" />
       <constructor-arg value="base" />
-      <constructor-arg value="true" />
+      <property name="local" value="true" />
 
    </bean>
 
@@ -37,7 +37,7 @@
 
       <constructor-arg value="ecde.cer44.recouv" />
       <constructor-arg value="base" />
-      <constructor-arg value="false" />
+      <property name="local" value="false" />
 
    </bean>
 
@@ -45,7 +45,7 @@
 
       <constructor-arg value="ecde.cer34.recouv" />
       <constructor-arg value="base" />
-      <constructor-arg value="true" />
+      <property name="local" value="true" />
 
    </bean>
 
