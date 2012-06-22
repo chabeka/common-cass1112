@@ -23,10 +23,11 @@ import javax.xml.transform.Transformer;
 import org.apache.commons.codec.CharEncoding;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 import fr.urssaf.image.sae.saml.params.SamlAssertionParams;
@@ -44,7 +45,7 @@ import fr.urssaf.image.sae.vi.testutils.signature.XmlSignature;
 public class TuGenererVi {
    
    
-   private static Logger LOG = Logger.getLogger(TuGenererVi.class);
+   private static Logger LOG = LoggerFactory.getLogger(TuGenererVi.class);
    
    private static final String KEYSTORE_PASSWORD = "hiUnk6O3QnRN";
    

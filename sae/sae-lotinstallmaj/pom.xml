@@ -14,11 +14,6 @@
 
    <name>sae-lotinstallmaj</name>
 
-   <properties>
-      <slf4j-api.version>1.6.4</slf4j-api.version>
-      <logback.version>1.0.0</logback.version>
-   </properties>
-
    <build>
 
       <plugins>
@@ -79,20 +74,6 @@
          <groupId>org.springframework</groupId>
          <artifactId>spring-beans</artifactId>
          <version>${spring.framework.version}</version>
-      </dependency>
-
-      <!-- SLF4J -->
-      <dependency>
-         <groupId>org.slf4j</groupId>
-         <artifactId>slf4j-api</artifactId>
-         <version>${slf4j-api.version}</version>
-      </dependency>
-
-      <!-- LOGBACK -->
-      <dependency>
-         <groupId>ch.qos.logback</groupId>
-         <artifactId>logback-classic</artifactId>
-         <version>${logback.version}</version>
       </dependency>
 
       <!-- JASPECT -->

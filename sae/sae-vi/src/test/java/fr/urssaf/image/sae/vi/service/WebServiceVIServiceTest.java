@@ -13,11 +13,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
@@ -42,7 +44,7 @@ import fr.urssaf.image.sae.vi.util.XMLUtils;
    })
 public class WebServiceVIServiceTest {
 
-   private static final Logger LOG = Logger
+   private static final Logger LOG = LoggerFactory
          .getLogger(WebServiceVIServiceTest.class);
 
    private static WebServiceVIService service;
@@ -280,7 +282,7 @@ public class WebServiceVIServiceTest {
       try {
          service.extraitPagm(pagmStr);
       } catch (VIPagmIncorrectException ex) {
-         LOG.debug(ex);
+         LOG.debug(StringUtils.EMPTY,ex);
          return;
       }
       
@@ -306,7 +308,7 @@ public class WebServiceVIServiceTest {
       try {
          service.extraitPagm(pagmStr);
       } catch (VIPagmIncorrectException ex) {
-         LOG.debug(ex);
+         LOG.debug(StringUtils.EMPTY, ex);
          return;
       }
       
@@ -332,7 +334,7 @@ public class WebServiceVIServiceTest {
       try {
          service.extraitPagm(pagmStr);
       } catch (VIPagmIncorrectException ex) {
-         LOG.debug(ex);
+         LOG.debug(StringUtils.EMPTY, ex);
          return;
       }
       

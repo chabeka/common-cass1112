@@ -113,6 +113,38 @@
       
       <!-- 
       ==========================================
+      Ponts entre SLF4J et d'autres frameworks de log
+      
+      http://www.slf4j.org/legacy.html
+      ==========================================
+      -->
+      
+      <!-- JCL (Jakarta Commons Logging) vers SLF4J -->
+      <jcl-over-slf4j.version>1.6.1</jcl-over-slf4j.version>
+      
+      <!-- Log4J vers SLF4J -->
+      <log4j-over-slf4j.version>1.6.1</log4j-over-slf4j.version>
+      
+      
+      <!-- Modèle de dépendance :
+      <dependency>
+         <groupId>org.slf4j</groupId>
+         <artifactId>jcl-over-slf4j</artifactId>
+         <version>${jcl-over-slf4j.version}</version>
+         <scope>runtime</scope>
+      </dependency>
+      
+      <dependency>
+         <groupId>org.slf4j</groupId>
+         <artifactId>log4j-over-slf4j</artifactId>
+         <version>${log4j-over-slf4j.version}</version>
+         <scope>runtime</scope>   
+      </dependency>
+      -->
+      
+      
+      <!-- 
+      ==========================================
       Logback
       
       http://logback.qos.ch/
@@ -288,7 +320,7 @@
       http://joda-time.sourceforge.net/
       ==========================================
       -->
-      <joda-time.version>1.6</joda-time.version>
+      <joda-time.version>2.0</joda-time.version>
       <joda-time.jsptags.version>1.0.2</joda-time.jsptags.version>
       
       <!-- Modèles de dépendance :
@@ -387,9 +419,7 @@
       http://ws.apache.org/axis/
       ==========================================
       -->
-      <!--<axis2.version>1.5.4</axis2.version>-->
       <axis2.version>1.6.1</axis2.version>
-      <axis-wsdl4j.version>1.5.1</axis-wsdl4j.version>
       
       <!-- Modèles de dépendance :
       <dependency>
@@ -431,6 +461,44 @@
          <version>${xstream.version}</version>
          <scope>test</scope>
       </dependency>
+      -->
+      
+      
+      <!-- 
+      ==========================================
+      EasyMock
+      
+      http://www.easymock.org/
+      ==========================================
+      -->
+      <easymock.version>3.0</easymock.version>
+      
+      <!-- Modèles de dépendance :
+      <dependency>
+         <groupId>org.easymock</groupId>
+         <artifactId>easymock</artifactId>
+         <version>${easymock.version}</version>
+         <scope>test</scope>
+      </dependency>
+      -->
+      
+      
+      <!-- 
+      ==========================================
+      JUnitPerf 
+      
+      http://www.clarkware.com/software/JUnitPerf.html
+      ==========================================
+      -->
+      <junitperf.version>1.9.1</junitperf.version>
+      
+      <!-- Modèles de dépendance :
+      <dependency>
+			   <groupId>junitperf</groupId>
+			   <artifactId>junitperf</artifactId>
+			   <version>${junitperf.version}</version>
+			   <scope>test</scope>
+		   </dependency>
       -->
       
       
@@ -529,26 +597,7 @@
             </configuration>
          </plugin>
          
-         
-         <!--
-         On demande la génération des rapports PMD
-         => Obsolète car on utilise Sonar
-         -->
-         <!--
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-pmd-plugin</artifactId>
-            <version>2.5</version>
-            <configuration>
-               <linkXref>false</linkXref>
-               <sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
-               <minimumTokens>100</minimumTokens>
-               <targetJdk>1.6</targetJdk>
-            </configuration>
-         </plugin>
-         -->
-         
-         
+
          <!--
          On demande la génération de la Javadoc         
          -->

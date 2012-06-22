@@ -75,19 +75,17 @@
          <version>${spring.framework.version}</version>
       </dependency>
       
-      <!-- SLF4J -->
-
+      <!-- Ponts vers SLF4J -->
       <dependency>
          <groupId>org.slf4j</groupId>
          <artifactId>jcl-over-slf4j</artifactId>
-         <version>1.6.1</version>
+         <version>${jcl-over-slf4j.version}</version>
          <scope>runtime</scope>
       </dependency>
-      
-       <dependency>
+      <dependency>
          <groupId>org.slf4j</groupId>
          <artifactId>log4j-over-slf4j</artifactId>
-         <version>1.6.1</version>
+         <version>${log4j-over-slf4j.version}</version>
          <scope>runtime</scope>   
       </dependency>
 
@@ -104,7 +102,7 @@
       <dependency>
          <groupId>org.easymock</groupId>
          <artifactId>easymock</artifactId>
-         <version>3.0</version>
+         <version>${easymock.version}</version>
          <scope>test</scope>
       </dependency>
 

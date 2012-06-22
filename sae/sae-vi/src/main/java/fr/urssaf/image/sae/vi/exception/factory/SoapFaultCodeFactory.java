@@ -2,14 +2,16 @@ package fr.urssaf.image.sae.vi.exception.factory;
 
 import javax.xml.namespace.QName;
 
-import org.apache.ws.security.WSConstants;
-
 /**
  * Factory des SoapFaultCode dans les messages SOAP
  * 
  * 
  */
 public final class SoapFaultCodeFactory {
+   
+   private static final String WSSE_NS = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd";
+   private static final String WSSE_PREFIX = "wsse";
+   
    
    private SoapFaultCodeFactory(){
       
@@ -24,8 +26,7 @@ public final class SoapFaultCodeFactory {
     */
    public static QName createWsseSoapFaultCode(String localPart) {
 
-      return createSoapFaultCode(WSConstants.WSSE_NS, localPart,
-            WSConstants.WSSE_PREFIX);
+      return createSoapFaultCode(WSSE_NS, localPart, WSSE_PREFIX);
    }
 
    /**

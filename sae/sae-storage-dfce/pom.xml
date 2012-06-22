@@ -107,11 +107,10 @@
       </dependency>
 
       <!-- JUNITPERF -->
-
       <dependency>
          <groupId>junitperf</groupId>
          <artifactId>junitperf</artifactId>
-         <version>1.9.1</version>
+         <version>${junitperf.version}</version>
          <scope>test</scope>
       </dependency>
 
@@ -120,7 +119,7 @@
       <dependency>
          <groupId>org.easymock</groupId>
          <artifactId>easymock</artifactId>
-         <version>3.0</version>
+         <version>${easymock.version}</version>
          <scope>test</scope>
       </dependency>
 
@@ -129,7 +128,7 @@
       <dependency>
          <groupId>joda-time</groupId>
          <artifactId>joda-time</artifactId>
-         <version>2.0</version>
+         <version>${joda-time.version}</version>
       </dependency>
 
       <!-- COMMONS DFCE -->

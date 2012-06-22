@@ -76,12 +76,12 @@
          <version>12.5.12.3-SNAPSHOT</version>
       </dependency>
       
-       <!-- SLF4J -->
+       <!-- Pont entre Log4J et SLF4J -->
       
        <dependency>
          <groupId>org.slf4j</groupId>
          <artifactId>log4j-over-slf4j</artifactId>
-         <version>1.6.1</version>
+         <version>${log4j-over-slf4j.version}</version>
          <scope>runtime</scope>   
       </dependency>
 
@@ -131,7 +131,7 @@
       <dependency>
          <groupId>org.easymock</groupId>
          <artifactId>easymock</artifactId>
-         <version>3.0</version>
+         <version>${easymock.version}</version>
          <scope>test</scope>
       </dependency>
 
