@@ -21,11 +21,12 @@ import java.util.UUID;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.time.DateUtils;
-import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
@@ -45,7 +46,7 @@ import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 @SuppressWarnings("PMD.MethodNamingConventions")
 public class SAEConsultationServiceTest {
 
-   private static final Logger LOG = Logger
+   private static final Logger LOG = LoggerFactory
          .getLogger(SAEConsultationServiceTest.class);
 
    @Autowired

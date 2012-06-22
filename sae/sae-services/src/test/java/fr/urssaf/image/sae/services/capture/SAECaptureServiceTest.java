@@ -25,7 +25,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
-import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -34,6 +33,8 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
@@ -67,7 +68,7 @@ import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 public class SAECaptureServiceTest {
    @Autowired
    private EcdeTestTools ecdeTestTools;
-   private static final Logger LOG = Logger
+   private static final Logger LOG = LoggerFactory
          .getLogger(SAECaptureServiceTest.class);
 
    @Autowired

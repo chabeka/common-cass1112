@@ -128,7 +128,7 @@ public class SamlAssertionService {
    }
 
    /**
-    * Chargement d'un jeton SAML dans une structure {@link amlAssertionData}
+    * Chargement d'un jeton SAML dans une structure {@link SamlAssertionData}
     * 
     * <pre>
     * exemple d'utilisation

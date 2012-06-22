@@ -25,10 +25,10 @@ import fr.urssaf.image.sae.storage.dfce.annotations.FacadePattern;
 
 /**
  * Fournit la façade des implementations des services :<br>
- * <lu><br>
- * <li>{@link SAECaptureServiceImpl Capture}</li> <br>
- * <li>{@link SAESearchServiceImplOld Recherche}</li><li>
- * {@link SAEConsultationServiceImpl Consultation}</li>
+ * <lu>
+ * <li>{@link fr.urssaf.image.sae.services.capture.impl.SAECaptureServiceImpl}</li>
+ * <li>{@link fr.urssaf.image.sae.services.document.impl.SAESearchServiceImpl}</li>
+ * <li>{@link fr.urssaf.image.sae.services.consultation.impl.SAEConsultationServiceImpl}</li>
  * <ul>
  * 
  * @author akenore,rhofir, lbaadj.

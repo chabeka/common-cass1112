@@ -13,14 +13,14 @@ public class SAEServiceException extends Exception {
    private static final long serialVersionUID = -6505532287814387009L;
 
    /**
-    * Construit une nouvelle {@link RetrievalServiceEx }.
+    * Construit une nouvelle {@link SAEServiceException}.
     */
    public SAEServiceException() {
       super();
    }
 
    /**
-    * Construit une nouvelle {@link SAEServiceException } avec un message.
+    * Construit une nouvelle {@link SAEServiceException} avec un message.
     * 
     * @param message
     *           Le message de l'erreur
@@ -30,7 +30,7 @@ public class SAEServiceException extends Exception {
    }
 
    /**
-    * Construit une nouvelle {@link SAEServiceException } avec un message et une
+    * Construit une nouvelle {@link SAEServiceException} avec un message et une
     * cause données.
     * 
     * @param message
@@ -43,7 +43,7 @@ public class SAEServiceException extends Exception {
    }
 
    /**
-    * Construit une nouvelle {@link SAEServiceException } avec un message ,une
+    * Construit une nouvelle {@link SAEServiceException} avec un message ,une
     * cause données et un code erreur donné .
     * 
     * @param message

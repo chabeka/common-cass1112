@@ -49,11 +49,11 @@ public interface MappingDocumentService {
 
 	/**
 	 * Service de conversion d’un objet de type {@link SAEDocument} vers un
-	 * objet de type {@UntypedDocument}.
+	 * objet de type {@link fr.urssaf.image.sae.bo.model.untyped.UntypedDocument}.
 	 * 
 	 * @param saeDoc
 	 *            : Le document métier.
-	 * @return un objet de type {@link UntypedDocument}
+	 * @return un objet de type {@link fr.urssaf.image.sae.bo.model.untyped.UntypedDocument}
 	 * @throws InvalidSAETypeException
 	 *             Exception levée lorsque la conversion ne se passe pas bien.
 	 * @throws MappingFromReferentialException
@@ -69,7 +69,7 @@ public interface MappingDocumentService {
 	 * }vers un objet de type{@link SAEDocument}.
 	 * 
 	 * @param untyped
-	 *            : un document de type {@UntypedDocument.
+	 *            : un document de type {@link fr.urssaf.image.sae.bo.model.untyped.UntypedDocument}
 	 * @return un objet de type {@link SAEDocument}
 	 * @throws InvalidSAETypeException
 	 *             Exception levée lorsque la conversion ne se passe pas bien.

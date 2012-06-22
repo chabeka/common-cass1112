@@ -23,7 +23,7 @@ import fr.urssaf.image.sae.saml.opensaml.SamlXML;
  * Classe de service pour la signature des assertions SAML 2.0<br>
  * <br>
  * Le recours à cette classe nécessite une instanciation au préalable de
- * {@link SamlConfiguration}
+ * {@link fr.urssaf.image.sae.saml.opensaml.SamlConfiguration}
  * 
  * 
  */

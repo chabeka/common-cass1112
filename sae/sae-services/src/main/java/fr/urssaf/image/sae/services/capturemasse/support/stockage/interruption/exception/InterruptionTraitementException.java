@@ -16,7 +16,10 @@ public class InterruptionTraitementException extends Exception {
 
    private static final long serialVersionUID = 1L;
 
-   private static final String EXCEPTION_MESSAGE = "Après une déconnexion DFCE programmée à {0} il est impossible de reprendre le traitement après {1} secondes et {2} tentatives.";
+   /**
+    * Le format du message de l'exception
+    */
+   protected static final String EXCEPTION_MESSAGE = "Après une déconnexion DFCE programmée à {0} il est impossible de reprendre le traitement après {1} secondes et {2} tentatives.";
 
    private final InterruptionTraitementConfig interruption;
 

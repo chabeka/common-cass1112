@@ -26,12 +26,17 @@ import fr.urssaf.image.sae.ecde.util.MessageRessourcesUtils;
 @Service
 public class EcdeFileServiceImpl implements EcdeFileService {
 
-   /**
-    * Recupération des Constantes
-    */
    private static final String ECDE = "ecde";
-   private static final String EXPR_REG = "ecde://.*/.*/(19|20)[0-9]{2}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])/.*/documents/.+";
-   private static final String EXPR_REG_SOM = "ecde://.*/.*/(19|20)[0-9]{2}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])/.*/sommaire.xml";
+   
+   /**
+    * Expression régulière pour contrôler le format d'une URL ECDE d'un document
+    */
+   protected static final String EXPR_REG = "ecde://.*/.*/(19|20)[0-9]{2}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])/.*/documents/.+";
+   
+   /**
+    * Expression régulière pour contrôler le format d'une URL ECDE d'un fichier sommaire.xml
+    */
+   protected static final String EXPR_REG_SOM = "ecde://.*/.*/(19|20)[0-9]{2}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])/.*/sommaire.xml";
    
    /**
     * Implémentation de la méthode convertFileToURI

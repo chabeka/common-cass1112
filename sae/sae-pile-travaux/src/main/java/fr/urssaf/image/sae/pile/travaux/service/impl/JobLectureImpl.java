@@ -49,9 +49,9 @@ public class JobLectureImpl implements JobLectureService {
     * @param jobRequestDao
     *           DAO de {@link JobRequest}
     * @param jobsQueueDao
-    *           DAO de {@link jobQueue}
+    *           DAO de {@link JobQueue}
     * @param jobHistoryDao
-    *           DAO de {@link jobHistory}
+    *           DAO de {@link JobHistory}
     */
    @Autowired
    public JobLectureImpl(JobRequestDao jobRequestDao,

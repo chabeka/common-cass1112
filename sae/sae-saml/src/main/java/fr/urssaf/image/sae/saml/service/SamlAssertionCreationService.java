@@ -47,8 +47,8 @@ public class SamlAssertionCreationService {
    private final SamlAssertionService assertionService;
 
    /**
-    * Configuration de la libraire OpenSAML {@link SAMLConfiguration#init()}<br>
-    * initialisation de {@link SamlAssertionService} pour la validation des
+    * Constructeur<br>
+    * Initialisation de {@link SamlAssertionService} pour la validation des
     * jetons SAML<br>
     */
    public SamlAssertionCreationService() {

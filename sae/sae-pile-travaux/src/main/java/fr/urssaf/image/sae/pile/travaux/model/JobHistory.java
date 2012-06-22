@@ -40,7 +40,7 @@ public class JobHistory {
    }
 
    /**
-    * @param timestamp
+    * @param date
     *           the date to set
     */
    public final void setDate(Date date) {

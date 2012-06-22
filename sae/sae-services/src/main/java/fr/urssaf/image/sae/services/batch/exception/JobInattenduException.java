@@ -13,7 +13,10 @@ public class JobInattenduException extends RuntimeException {
 
    private static final long serialVersionUID = 1L;
 
-   private static final String EXCEPTION_MESSAGE = "Le traitement n°{0} est inattendu. On attend un traitement de type ''{1}'' et le type est ''{2}''.";
+   /**
+    * Le format du message de l'exception
+    */
+   protected static final String EXCEPTION_MESSAGE = "Le traitement n°{0} est inattendu. On attend un traitement de type ''{1}'' et le type est ''{2}''.";
 
    private final JobRequest job;
 

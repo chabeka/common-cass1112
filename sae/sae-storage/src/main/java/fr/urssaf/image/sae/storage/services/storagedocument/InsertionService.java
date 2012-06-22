@@ -73,7 +73,7 @@ public interface InsertionService {
 	/**
 	 * Permet d'insérer en base un document unique fourni sous forme de contenu binaire
 	 * 
-	 * @param le storageDocument a persister
+	 * @param storageDoc le storageDocument a persister
 	 * 
 	 * @return le document persisté
 	 * @throws InsertionServiceEx levée lorsque l'insertion d'un document ne se déroule pas bien

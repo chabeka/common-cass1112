@@ -10,7 +10,6 @@ package fr.urssaf.image.sae.services.dispatchers;
  * Exemple de handlers concrets participant à la chaine de responsabilité :
  * {@link fr.urssaf.image.sae.services.dispatchers.handlers.LoggerExceptionHandler}
  * {@link fr.urssaf.image.sae.services.dispatchers.handlers.ThrowerExceptionHandler}
- * {@link fr.urssaf.image.sae.services.dispatchers.handlers.SpyHandler}
  * </p>
  */
 public class ExceptionDispatcher {

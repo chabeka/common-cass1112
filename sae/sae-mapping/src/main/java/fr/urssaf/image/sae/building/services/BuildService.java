@@ -26,7 +26,7 @@ public interface BuildService {
 	 *            métadonnées.
 	 *@param limit : Le nombre d'occurrence à retourner.
 	 * @param metadatas
-	 *            : La liste des objets de type {@link SAEMetadata)(chaque objet contient un code court et code long).
+	 *            : La liste des objets de type {@link SAEMetadata}(chaque objet contient un code court et code long).
 	 * @return un objet de type {@link LuceneCriteria}
 	 */
 	LuceneCriteria buildStorageLuceneCriteria(final String luceneQuery,int limit,
@@ -40,8 +40,8 @@ public interface BuildService {
 	 *            : identifiant unique du document UUID.
 	 * 
 	 * @param metadatas
-	 *            : La liste des objets de type {@link SAEMetadata)(chaque objet contient un code court et code long).
-	 * @return un objet de type {@link SAEUuidCriteria}
+	 *            : La liste des objets de type {@link SAEMetadata}(chaque objet contient un code court et code long).
+	 * @return un objet de type {@link UUIDCriteria}
 	 */
 	UUIDCriteria buildStorageUuidCriteria(final UUID uuid,
 			final List<SAEMetadata> metadatas);

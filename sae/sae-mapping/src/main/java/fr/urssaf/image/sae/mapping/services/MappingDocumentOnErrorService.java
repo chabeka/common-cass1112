@@ -18,11 +18,11 @@ public interface MappingDocumentOnErrorService {
 
 	/**
 	 * Service de conversion d’un objet de type {@link SAEDocumentOnError} vers
-	 * un objet de type {@UntypedDocumentOnError}.
+	 * un objet de type {@link fr.urssaf.image.sae.bo.model.untyped.UntypedDocumentOnError}.
 	 * 
 	 * @param saeDocOnError
 	 *            : Le document métier.
-	 * @return un objet de type {@link UntypedDocumentOnError}
+	 * @return un objet de type {@link fr.urssaf.image.sae.bo.model.untyped.UntypedDocumentOnError}
 	 * @throws InvalidSAETypeException
 	 *             Exception levée lorsque la conversion ne se passe pas bien.
 	 * @throws MappingFromReferentialException
@@ -34,12 +34,12 @@ public interface MappingDocumentOnErrorService {
 			throws InvalidSAETypeException, MappingFromReferentialException;
 
 	/**
-	 * Service de conversion d’un objet de type {@linkStorageDocumentOnError}
-	 * vers un objet de type {@link SAEDocumentOnError} .
+	 * Service de conversion d’un objet de type {@link fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentOnError}
+	 * vers un objet de type {@link fr.urssaf.image.sae.bo.model.bo.SAEDocumentOnError} .
 	 * 
 	 * @param storageDocOnError
 	 *            : Le document technique en erreur
-	 * @return Un objet de type {@link SAEDocumentOnError}.
+	 * @return Un objet de type {@link fr.urssaf.image.sae.bo.model.bo.SAEDocumentOnError}.
 	 * @throws InvalidSAETypeException
 	 *             Exception levée lorsque la conversion n’aboutit pas.
 	 * @throws MappingFromReferentialException
@@ -51,12 +51,12 @@ public interface MappingDocumentOnErrorService {
 			throws InvalidSAETypeException, MappingFromReferentialException;
 
 	/**
-	 * Service de conversion d’un objet de type {@link StorageDocumentOnError}
-	 * vers un objet de type {@UntypedDocumentOnError}.
+	 * Service de conversion d’un objet de type {@link fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentOnError}
+	 * vers un objet de type {{@link fr.urssaf.image.sae.bo.model.untyped.UntypedDocumentOnError}.
 	 * 
 	 * @param storageDocOnError
 	 *            : Le document métier.
-	 * @return un objet de type {@link UntypedDocumentOnError}
+	 * @return un objet de type {@link fr.urssaf.image.sae.bo.model.untyped.UntypedDocumentOnError}
 	 * @throws InvalidSAETypeException
 	 *             Exception levée lorsque la conversion ne se passe pas bien.
 	 */

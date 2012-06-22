@@ -61,7 +61,7 @@ public interface JobQueueDao {
    /**
     * Récupère la liste des traitements réservés ou en cours d'exécution sur un
     * serveur donné. Cette méthode est (beaucoup) plus rapide que
-    * {@link getNonTerminatedJobs}, mais renvoie des SimpleJobRequest au lieu de
+    * {@link #getNonTerminatedJobs}, mais renvoie des SimpleJobRequest au lieu de
     * JobRequest.
     * 
     * @param hostname

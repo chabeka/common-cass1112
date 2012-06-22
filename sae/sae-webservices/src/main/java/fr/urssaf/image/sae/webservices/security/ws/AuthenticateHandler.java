@@ -95,7 +95,7 @@ public class AuthenticateHandler {
     * <br>
     * Extraction du jeton SAML et récupération des PAGM contenues dans la balise
     * <code>&lt;PAGM></code> <br>
-    * Appel de {@link SecurityService#authentification(Element)) pour créer d'un
+    * Appel de {@link SecurityService#authentification(Element)} pour créer d'un
     * contexte de sécurity<br>
     * <br>
     * Seules les méthodes finissant par Secure sont concernées

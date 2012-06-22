@@ -9,7 +9,7 @@ public class UnknownDesiredMetadataEx extends Exception {
    private static final long serialVersionUID = 5812830110677764248L;
 
    /**
-    * Construit une nouvelle {@link MetaDataUnauthorizedToSearchEx } avec un
+    * Construit une nouvelle {@link UnknownDesiredMetadataEx} avec un
     * message et une cause données.
     * 
     * @param message
@@ -22,7 +22,7 @@ public class UnknownDesiredMetadataEx extends Exception {
    }
 
    /**
-    * Construit une nouvelle {@link MetaDataUnauthorizedToSearchEx }avec un
+    * Construit une nouvelle {@link UnknownDesiredMetadataEx}avec un
     * message.
     * 
     * @param message
@@ -33,7 +33,7 @@ public class UnknownDesiredMetadataEx extends Exception {
    }
 
    /**
-    * Construit une nouvelle {@link MetaDataUnauthorizedToSearchEx }avec une
+    * Construit une nouvelle {@link UnknownDesiredMetadataEx}avec une
     * erreur.
     * 
     * @param cause

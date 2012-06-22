@@ -19,8 +19,8 @@ public class SamlAssertionExtractionService {
    private final SamlAssertionService assertionService;
 
    /**
-    * Configuration de la libraire OpenSAML {@link SAMLConfiguration#init()}<br>
-    * initialisation de {@link SamlAssertionService}
+    * Constructeur<br>
+    * Initialisation de {@link SamlAssertionService}
     */
    public SamlAssertionExtractionService() {
 

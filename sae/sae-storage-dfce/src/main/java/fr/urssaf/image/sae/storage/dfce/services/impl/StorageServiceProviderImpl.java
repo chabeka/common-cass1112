@@ -10,19 +10,8 @@ import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentService;
 
 /**
- * Fournit la façade des implementations des services :
- * {@link StorageDocumentServiceImpl } , {@link StorageConnectionServiceImpl}.<BR />
- * Elle contient les attributs :
- * <ul>
- * <li>
- * StorageDocumentService : l’ensemble des services d’insertion, de recherche,
- * de récupération.</li>
- * <li>storageConnectionService : le service de connexion à la base de stockage</li>
- * </li>
- * </ul>
- * 
- * @author akenore,rhofir.
- * 
+ * Fournit la façade des implementations des services 
+ * {@link fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument.StorageDocumentServiceImpl}
  */
 @Service
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")

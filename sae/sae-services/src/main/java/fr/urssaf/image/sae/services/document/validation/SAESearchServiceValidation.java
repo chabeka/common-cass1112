@@ -23,7 +23,7 @@ public class SAESearchServiceValidation {
                                                   "&& args(requete,listMetaDesired)";
    
    /**
-    * Vérifie les paramètres d'entrée de la méthode recherche de l'interface {@link SAESearchService} sont bien corrects.
+    * Vérifie les paramètres d'entrée de la méthode recherche de l'interface {@link fr.urssaf.image.sae.services.document.SAESearchService} sont bien corrects.
     * 
     * @param requete : Lucene requête.
     * @param listMetaDesired : Liste métadonnée souhaitée

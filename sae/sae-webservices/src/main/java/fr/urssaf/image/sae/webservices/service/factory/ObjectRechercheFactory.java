@@ -99,15 +99,15 @@ public final class ObjectRechercheFactory {
 
    /**
     * instanciation d'une liste de {@link MetadonneeType} à partir des
-    * {@link StorageMetadata} contenu dans une instance de
-    * {@link StorageDocument}
+    * {@link fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata} contenu dans une instance de
+    * {@link fr.urssaf.image.sae.bo.model.untyped.UntypedDocument}
     * <ul>
-    * <li>{@link MetadonneeType#setCode} : {@link StorageMetadata#getCode()}</li>
-    * <li>{@link MetadonneeType#setValeur} : {@link StorageMetadata#getValue()}</li>
+    * <li>{@link MetadonneeType#setCode} : {@link fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata#getLongCode()}</li>
+    * <li>{@link MetadonneeType#setValeur} : {@link fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata#getValue()}</li>
     * </ul>
     * 
     * @param untypedDocument
-    *           instance de {@link StorageDocument} doit être non null
+    *           instance de {@link fr.urssaf.image.sae.bo.model.untyped.UntypedDocument} doit être non null
     * @return collection d'instance de {@link MetadonneeType}
     */
    public static List<MetadonneeType> createListMetadonneeType(

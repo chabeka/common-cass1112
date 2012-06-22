@@ -13,7 +13,10 @@ public class JobNonReserveException extends Exception {
 
    private static final long serialVersionUID = 1L;
 
-   private static final String EXCEPTION_MESSAGE = "Impossible d''exécuter le traitement n°{0} car il n''a pas été réservé.";
+   /**
+    * Le format du message de l'exception
+    */
+   protected static final String EXCEPTION_MESSAGE = "Impossible d''exécuter le traitement n°{0} car il n''a pas été réservé.";
 
    private final UUID jobId;
 

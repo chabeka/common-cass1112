@@ -35,13 +35,6 @@ public class SamlAssertionVerificationService {
 
    /**
     * Méthode de vérification du corps et de la signature d'un jeton SAML
-    * <ol>
-    * <li>vérification du corps :
-    * {@link SamlAssertionService#validate(Assertion)}</li>
-    * <li>vérification de la signature :
-    * {@link SamlAssertionService#validate(Assertion, X509Certificate)}</li>
-    * </ol>
-    * 
     * @param assertionSaml
     *           L'assertion SAML à vérifier
     * @param signVerifParams

@@ -75,7 +75,7 @@ public class IgcConfigServiceValidate {
     * <li>{@link IgcConfig#getRepertoireACRacines()} doit être renseigné</li>
     * <li>{@link IgcConfig#getRepertoireACRacines()} le chemin du répertoire
     * doit exister</li>
-    * <li>{@link IgcConfig##getRepertoireCRLs()} doit être renseigné</li>
+    * <li>{@link IgcConfig#getRepertoireCRLs()} doit être renseigné</li>
     * <li>{@link IgcConfig#getRepertoireCRLs()} le chemin du répertoire doit
     * exister</li>
     * <li>{@link IgcConfig#getUrlsTelechargementCRLs()} doit contenir au moins

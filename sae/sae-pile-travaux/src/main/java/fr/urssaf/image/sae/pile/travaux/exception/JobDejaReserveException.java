@@ -12,7 +12,10 @@ public class JobDejaReserveException extends Exception {
 
    private static final long serialVersionUID = 1L;
 
-   private static final String EXCEPTION_MESSAGE = "Le traitement n°{0} est déjà réservé par le serveur ''{1}''.";
+   /**
+    * Format du message de l'exception
+    */
+   protected static final String EXCEPTION_MESSAGE = "Le traitement n°{0} est déjà réservé par le serveur ''{1}''.";
 
    private final UUID jobRequestId;
 

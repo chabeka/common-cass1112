@@ -39,7 +39,10 @@ import fr.urssaf.image.sae.ordonnanceur.util.RandomUtils;
 @Component
 public class CommandeThreadPoolExecutor extends ScheduledThreadPoolExecutor {
 
-   private static final int CORE_POOL_SIZE = 10;
+   /**
+    * Le nombre de commandes exécutables en parallèle
+    */
+   protected static final int CORE_POOL_SIZE = 10;
 
    private static final Logger LOG = LoggerFactory
          .getLogger(CommandeThreadPoolExecutor.class);
@@ -134,7 +137,7 @@ public class CommandeThreadPoolExecutor extends ScheduledThreadPoolExecutor {
 
    /**
     * Surcharge de la méthode
-    * {@link ScheduledThreadPoolExecutor#decorateTask(Runnable, RunnableScheduledFutur)}
+    * {@link ScheduledThreadPoolExecutor#decorateTask(Runnable, RunnableScheduledFuture)}
     * <br>
     * Il s'agit de vérifier que seules des traitements de type
     * {@link LancementTraitement} sont exécutés dans la pool de Threads
@@ -156,7 +159,7 @@ public class CommandeThreadPoolExecutor extends ScheduledThreadPoolExecutor {
 
    /**
     * Surcharge de la méthode
-    * {@link ScheduledThreadPoolExecutor#decorateTask(Callable, RunnableScheduledFutur)}
+    * {@link ScheduledThreadPoolExecutor#decorateTask(Callable, RunnableScheduledFuture)}
     * <br>
     * Il s'agit de vérifier que seules des traitements de type
     * {@link LancementTraitement} sont exécutés dans la pool de Threads

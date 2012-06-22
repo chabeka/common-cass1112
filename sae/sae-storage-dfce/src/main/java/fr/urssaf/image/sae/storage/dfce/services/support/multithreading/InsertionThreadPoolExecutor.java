@@ -33,8 +33,10 @@ public class InsertionThreadPoolExecutor extends ThreadPoolExecutor {
 
    private InsertionMasseRuntimeException insertionException;
 
-   // on limite le nombre simultané de Thread à 20
-   private static final int CORE_POOL_SIZE = 20;
+   /**
+    * Nombre de threads simultanés
+    */
+   protected static final int CORE_POOL_SIZE = 20;
 
    private static final String PREFIX_TRACE = "bulkInsertStorageDocument()";
 
@@ -59,7 +61,7 @@ public class InsertionThreadPoolExecutor extends ThreadPoolExecutor {
     * <code>TimeUnit</code> : TimeUnit.MILLISECONDS</li>
     * <li>
     * <code>workQueue</code> : {@link LinkedBlockingQueue}</li>
-    * <li><code>policy</code> : {@link DiscardPolicy}</li>
+    * <li><code>policy</code> : {@link java.util.concurrent.ThreadPoolExecutor.DiscardPolicy}</li>
     * </ul>
     * 
     * le pool accepte un nombre fixe de threads de {@value #CORE_POOL_SIZE}

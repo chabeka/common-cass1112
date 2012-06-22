@@ -25,7 +25,7 @@ public class VIException extends Exception {
    /**
     * initialise l'attribut <code>xsd</code> avec {@link VIConfiguration#name()}<br>
     * initialise l'attribut <code>errors</code> avec la liste des
-    * {@link ValidationEvent#toString()}
+    * {@link ValidationEvent}
     * 
     * @param validationEvents
     *           liste des erreurs du XML

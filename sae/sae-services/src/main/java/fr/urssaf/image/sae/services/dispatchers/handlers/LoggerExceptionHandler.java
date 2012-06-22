@@ -1,6 +1,7 @@
 package fr.urssaf.image.sae.services.dispatchers.handlers;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.urssaf.image.sae.services.dispatchers.AbstractExceptionHandler;
 
@@ -11,13 +12,15 @@ import fr.urssaf.image.sae.services.dispatchers.AbstractExceptionHandler;
  */
 public class LoggerExceptionHandler extends AbstractExceptionHandler {
 
-   private static final Logger LOGGER = Logger.getLogger(LoggerExceptionHandler.class);
+   private static final Logger LOGGER = LoggerFactory.getLogger(LoggerExceptionHandler.class);
 
    /**
     * Log l'exception reçue en paramètre
     */
    @Override
    public final <T extends Exception> void handleException(T exception) throws T {
-      LOGGER.error(exception);
+      if (exception!=null) {
+         LOGGER.error(exception.getMessage(),exception);
+      }
    }
 }

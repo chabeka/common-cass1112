@@ -130,16 +130,6 @@ public class WebServiceVIService {
    /**
     * Vérification d'un Vecteur d'Identification (VI) généré pour s'authentifier
     * auprès d'un service web du SAE<br>
-    * <br>
-    * Les vérification sont faites dans
-    * <ul>
-    * <li>
-    * {@link WebServiceVIValidateService#validate(SamlAssertionData, URI, String, Date)}
-    * </li>
-    * <li>
-    * {@link WebServiceVIValidateService#validate(Element, KeyStore, String, String, List)}
-    * </li>
-    * </ul>
     * 
     * @param identification
     *           Le Vecteur d'Identification à vérifier

@@ -45,18 +45,9 @@
                </plugin>
 
                <plugin>
-                  <inherited>true</inherited>
-                  <groupId>org.apache.maven.plugins</groupId>
-                  <artifactId>maven-compiler-plugin</artifactId>
-                  <configuration>
-                     <encoding>${file.encoding}</encoding>
-                  </configuration>
-               </plugin>
-
-               <plugin>
                   <groupId>org.apache.maven.plugins</groupId>
                   <artifactId>maven-antrun-plugin</artifactId>
-                  <version>1.6</version>
+                  <version>${maven-antrun-plugin.version}</version>
                   <executions>
                      <execution>
                         <phase>generate-sources</phase>

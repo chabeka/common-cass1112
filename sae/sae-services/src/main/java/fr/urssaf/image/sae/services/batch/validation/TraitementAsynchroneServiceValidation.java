@@ -31,7 +31,7 @@ public class TraitementAsynchroneServiceValidation {
 
    /**
     * Validation des arguments d'entrée de la méthode
-    * {@link fr.urssaf.image.sae.services.batch.TraitementAsynchroneService#ajouterJobCaptureMasse(String, UUID)}
+    * {@link fr.urssaf.image.sae.services.batch.TraitementAsynchroneService#ajouterJobCaptureMasse}
     * 
     * @param parametres
     *           ensemble des paramètres nécessaires à la création de

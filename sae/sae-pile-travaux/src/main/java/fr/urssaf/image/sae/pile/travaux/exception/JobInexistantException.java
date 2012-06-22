@@ -12,7 +12,10 @@ public class JobInexistantException extends Exception {
 
    private static final long serialVersionUID = 1L;
 
-   private static final String EXCEPTION_MESSAGE = "Impossible de lancer ou de réserver le traitement n°{0} car il n''existe pas.";
+   /**
+    * Format du message de l'exception
+    */
+   protected static final String EXCEPTION_MESSAGE = "Impossible de lancer ou de réserver le traitement n°{0} car il n''existe pas.";
 
    private final UUID jobRequestId;
 

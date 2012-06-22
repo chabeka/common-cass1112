@@ -50,7 +50,7 @@ public class BulkCaptureJob extends CommonIndicator {
     *           Un objet de type {@link Sommaire}.
     * @param treatementId
     *           : UUID du traitement en masse
-    * @return Résultats Un objet résultat de type {@link Résultats}.
+    * @return Résultats Un objet résultat de type {@link Resultats}.
     */
    public final Resultats bulkCapture(Sommaire sommaire, String treatementId) {
       String prefixeTrc = "bulkCapture()";

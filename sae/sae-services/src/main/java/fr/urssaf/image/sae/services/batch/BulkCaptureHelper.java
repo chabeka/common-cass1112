@@ -113,7 +113,7 @@ public class BulkCaptureHelper extends CommonIndicator {
     * 
     * @param untypedDocs
     *           : Une liste de type {@link UntypedDocument}
-    * @return Une liste de type {@linkStorageDocument}
+    * @return Une liste de type {@link StorageDocument}
     */
    // CHECKSTYLE:OFF
    public final List<StorageDocument> buildStorageDocuments(
@@ -396,7 +396,7 @@ public class BulkCaptureHelper extends CommonIndicator {
     * @param sommaire
     *           : Chemin de fichier sommaire.
     * @param untypedDocumentsOnError
-    *           : Une liste d'objet de type {@link UntypedDocumentsOnError}<br>
+    *           : Une liste d'objet de type {@link UntypedDocumentOnError}<br>
     *           les cas d'erreur sont :
     *           <ul>
     *           <li>Enrichissement</li>
@@ -435,7 +435,7 @@ public class BulkCaptureHelper extends CommonIndicator {
    }
 
    /**
-    * @return Liste de type {@link UntypedDocumentsOnError}.
+    * @return Liste de type {@link UntypedDocumentOnError}.
     */
    public final List<UntypedDocumentOnError> getUntypedDocumentsOnError() {
       return untypedDocumentsOnError;
@@ -443,7 +443,7 @@ public class BulkCaptureHelper extends CommonIndicator {
 
    /**
     * @param untypedDocumentsOnError
-    *           : Liste de type {@link UntypedDocumentsOnError}.
+    *           : Liste de type {@link UntypedDocumentOnError}.
     */
    public final void setUntypedDocumentsOnError(
          List<UntypedDocumentOnError> untypedDocumentsOnError) {

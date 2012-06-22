@@ -15,7 +15,10 @@ public class JobParameterTypeException extends RuntimeException {
 
    private static final long serialVersionUID = 1L;
 
-   private static final String EXCEPTION_MESSAGE = "Le traitement n°{0} a des paramètres inattendu : ''{1}''.";
+   /**
+    * Le format du message de l'exception
+    */
+   protected static final String EXCEPTION_MESSAGE = "Le traitement n°{0} a des paramètres inattendu : ''{1}''.";
 
    private final JobRequest job;
 

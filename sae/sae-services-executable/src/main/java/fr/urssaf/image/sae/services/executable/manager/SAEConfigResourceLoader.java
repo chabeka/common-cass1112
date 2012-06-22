@@ -16,9 +16,17 @@ import org.springframework.util.Assert;
  */
 public class SAEConfigResourceLoader implements InitializingBean {
 
-   private static final String DFCE_CONFIG = "sae.dfce.cheminFichierConfig";
+   /**
+    * Clé du fichier Properties dans laquelle se trouve le chemin complet
+    * du fichier de configuration DFCE
+    */
+   protected static final String DFCE_CONFIG = "sae.dfce.cheminFichierConfig";
 
-   private static final String CASSANDRA_CONFIG = "sae.cassandra.cheminFichierConfig";
+   /**
+    * Clé du fichier Properties dans laquelle se trouve le chemin complet
+    * du fichier de configuration Cassandra
+    */
+   protected static final String CASSANDRA_CONFIG = "sae.cassandra.cheminFichierConfig";
 
    private final Properties saeProperties;
 

@@ -51,7 +51,7 @@ public class MetadataControlServiceValidation {
 
    /**
     * Valide l'argument de la méthode
-    * {@link fr.urssaf.image.sae.metadata.control.services.MetadataControlServices#checkRequiredMetadata(fr.urssaf.image.sae.bo.model.bo.SAEDocument)}
+    * {@link fr.urssaf.image.sae.metadata.control.services.MetadataControlServices#checkRequiredForArchivalMetadata(fr.urssaf.image.sae.bo.model.bo.SAEDocument)}
     * checkRequiredMetadata}. <br>
     * 
     * @param saeDocument
@@ -66,7 +66,7 @@ public class MetadataControlServiceValidation {
 
    /**
     * Valide l'argument de la méthode
-    * {@link fr.urssaf.image.sae.metadata.control.services.MetadataControlServices#checkRequiredMetadata(fr.urssaf.image.sae.bo.model.bo.SAEDocument)}
+    * {@link fr.urssaf.image.sae.metadata.control.services.MetadataControlServices#checkRequiredForStorageMetadata(fr.urssaf.image.sae.bo.model.bo.SAEDocument)}
     * checkRequiredMetadata}. <br>
     * 
     * @param saeDocument
@@ -81,7 +81,7 @@ public class MetadataControlServiceValidation {
 
    /**
     * Valide l'argument de la méthode
-    * {@link fr.urssaf.image.sae.metadata.control.services.MetadataControlServices#checkExistingMetadata(fr.urssaf.image.sae.bo.model.bo.untyped.UntypedDocument)}
+    * {@link fr.urssaf.image.sae.metadata.control.services.MetadataControlServices#checkExistingMetadata(fr.urssaf.image.sae.bo.model.untyped.UntypedDocument)}
     * checkExistingMetadata}. <br>
     * 
     * @param untypedDoc
@@ -122,7 +122,7 @@ public class MetadataControlServiceValidation {
 
    /**
     * Valide l'argument de la méthode
-    * {@link fr.urssaf.image.sae.metadata.control.services.MetadataControlServices#checkMetadataValueTypeAndFormat(fr.urssaf.image.sae.bo.model.bo.untyped.UntypedDocument)}
+    * {@link fr.urssaf.image.sae.metadata.control.services.MetadataControlServices#checkMetadataValueTypeAndFormat(fr.urssaf.image.sae.bo.model.untyped.UntypedDocument)}
     * checkMetadataValueTypeAndFormat}. <br>
     * 
     * @param untypedDoc
@@ -137,7 +137,7 @@ public class MetadataControlServiceValidation {
 
    /**
     * Valide l'argument de la méthode
-    * {@link fr.urssaf.image.sae.metadata.control.services.MetadataControlServices#checkMetadataRequiredValue(fr.urssaf.image.sae.bo.model.bo.untyped.UntypedDocument)}
+    * {@link fr.urssaf.image.sae.metadata.control.services.MetadataControlServices#checkMetadataRequiredValue(fr.urssaf.image.sae.bo.model.untyped.UntypedDocument)}
     * checkMetadataValueTypeAndFormat}. <br>
     * 
     * @param untypedDoc

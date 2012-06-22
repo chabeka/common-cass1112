@@ -77,7 +77,7 @@ public interface RNDReferenceDAO {
     * 
     * @param codeRnd
     *           Code RND
-    * @return {@TypeDocument}
+    * @return {@link TypeDocument}
     * @throws ReferentialRndException
     *            {@link ReferentialRndException}
     * @throws UnknownCodeRndEx

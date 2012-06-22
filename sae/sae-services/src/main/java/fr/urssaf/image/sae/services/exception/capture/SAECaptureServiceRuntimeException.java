@@ -11,7 +11,7 @@ public class SAECaptureServiceRuntimeException extends RuntimeException {
    private static final long serialVersionUID = 1L;
 
    /**
-    * le message de l'exception est {@value #MSG_EXCEPTION}
+    * Constructeur
     * 
     * @param cause
     *           cause de l'exception

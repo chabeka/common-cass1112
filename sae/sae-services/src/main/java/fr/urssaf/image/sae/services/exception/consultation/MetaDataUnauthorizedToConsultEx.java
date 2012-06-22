@@ -8,7 +8,7 @@ public class MetaDataUnauthorizedToConsultEx extends Exception {
    private static final long serialVersionUID = 5812830110677764248L;
 
    /**
-    * Construit une nouvelle {@link MetaDataUnauthorizedToSearchEx } avec un
+    * Construit une nouvelle {@link MetaDataUnauthorizedToConsultEx} avec un
     * message et une cause données.
     * 
     * @param message
@@ -22,7 +22,7 @@ public class MetaDataUnauthorizedToConsultEx extends Exception {
    }
 
    /**
-    * Construit une nouvelle {@link MetaDataUnauthorizedToSearchEx }avec un
+    * Construit une nouvelle {@link MetaDataUnauthorizedToConsultEx} avec un
     * message.
     * 
     * @param message
@@ -33,7 +33,7 @@ public class MetaDataUnauthorizedToConsultEx extends Exception {
    }
 
    /**
-    * Construit une nouvelle {@link MetaDataUnauthorizedToSearchEx } avec
+    * Construit une nouvelle {@link MetaDataUnauthorizedToConsultEx} avec
     * l'erreur source
     * 
     * @param cause

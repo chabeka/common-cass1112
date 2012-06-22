@@ -1,9 +1,9 @@
 /**
  * Ce package contient les interfaces associées dans les réalisations des services :
- * <lu><br>
- * <li>{@link fr.urssaf.image.sae.services.services.capture.SAECaptureService Capture}</li> <br>
- * <li>{@link fr.urssaf.image.sae.services.document.impl.SAESearchService Recherche}</li><br>
- * <li>{@link fr.urssaf.image.sae.services.services.consultation.SAEConsultationService Consultation}</li>
+ * <lu>
+ * <li>{@link fr.urssaf.image.sae.services.capture.SAECaptureService}</li>
+ * <li>{@link fr.urssaf.image.sae.services.document.SAESearchService}</li>
+ * <li>{@link fr.urssaf.image.sae.services.consultation.SAEConsultationService}</li>
  * <ul>
  */
 package fr.urssaf.image.sae.services;

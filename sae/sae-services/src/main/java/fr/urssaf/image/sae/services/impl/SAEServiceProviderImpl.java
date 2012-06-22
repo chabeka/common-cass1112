@@ -10,10 +10,10 @@ import fr.urssaf.image.sae.storage.dfce.annotations.FacadePattern;
 
 /**
  * Fournit la façade des implementations des services :<br>
- * <lu><br>
- * <li>{@link SAECaptureServiceImpl Capture}</li> <br>
- * <li>{@link SAESearchServiceImplOld Recherche}</li><li>
- * {@link SAEConsultationServiceImpl Consultation}</li>
+ * <lu>
+ * <li>{@link fr.urssaf.image.sae.services.capture.impl.SAECaptureServiceImpl}</li>
+ * <li>{@link fr.urssaf.image.sae.services.document.impl.SAESearchServiceImpl}</li>
+ * <li>{@link fr.urssaf.image.sae.services.consultation.impl.SAEConsultationServiceImpl}</li>
  * <ul>
  * 
  * @author akenore,rhofir.
@@ -29,14 +29,9 @@ public class SAEServiceProviderImpl implements SAEServiceProvider {
 
    /**
     * @return La façade des services : <lu><br>
-    *         <li>
-    *         {@link fr.urssaf.image.sae.services.document.impl.SAECaptureServiceImpl
-    *         Capture}</li> <br>
-    *         <li>
-    *         {@link fr.urssaf.image.sae.services.document.impl.SAESearchServiceImplOld
-    *         Recherche}</li><li>
-    *         {@link fr.urssaf.image.sae.services.consultation.impl.SAEConsultationServiceImpl
-    *         Consultation}</li>
+    *         <li>{@link fr.urssaf.image.sae.services.capture.impl.SAECaptureServiceImpl}</li>
+    *         <li>{@link fr.urssaf.image.sae.services.document.impl.SAESearchServiceImpl}</li>
+    *         <li>{@link fr.urssaf.image.sae.services.consultation.impl.SAEConsultationServiceImpl}</li>
     *         <ul>
     */
    public final SAEDocumentService getSaeDocumentService() {
@@ -45,11 +40,11 @@ public class SAEServiceProviderImpl implements SAEServiceProvider {
 
    /**
     * @param saeDocumentService
-    *           : La façade des services :<lu><br>
-    *           <li>{@link SAECaptureServiceImpl Capture}</li> <br>
-    *           <li>{@link SAESearchServiceImplOld Recherche}</li><li>
-    *           {@link SAEConsultationServiceImpl Consultation}</li>
-    *           <ul>
+    *           : La façade des services : <lu><br>
+    *         <li>{@link fr.urssaf.image.sae.services.capture.impl.SAECaptureServiceImpl}</li>
+    *         <li>{@link fr.urssaf.image.sae.services.document.impl.SAESearchServiceImpl}</li>
+    *         <li>{@link fr.urssaf.image.sae.services.consultation.impl.SAEConsultationServiceImpl}</li>
+    *         <ul>
     */
    public final void setSaeDocumentService(SAEDocumentService saeDocumentService) {
       this.saeDocumentService = saeDocumentService;

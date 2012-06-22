@@ -31,7 +31,7 @@ public class BuildServiceValidation {
 	 * @param limit
 	 *            : Le nombre d'occurrence à retourner.
 	 * @param metadatas
-	 *            : La liste des objets de type {@link SAEMetadata)(chaque objet
+	 *            : La liste des objets de type {@link SAEMetadata}(chaque objet
 	 *            contient un code court et code long).
 	 */
 	@Before(value = "execution(fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.LuceneCriteria  fr.urssaf.image.sae.building.services.BuildService.buildStorageLuceneCriteria(..)) && args(luceneQuery,limit,metadatas)")

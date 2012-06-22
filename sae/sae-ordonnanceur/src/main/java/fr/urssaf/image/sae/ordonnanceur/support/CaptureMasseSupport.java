@@ -44,13 +44,12 @@ public class CaptureMasseSupport {
     * capture en masse pour l'ECDE local.<br>
     * <br>
     * Les traitements de capture en masse sont indiqués par la propriété
-    * <code>jobName</code> de l'instance {@link JobInstance}.<br>
+    * <code>jobName</code> de l'instance {@link JobRequest}.<br>
     * Si il indique '{@value #CAPTURE_MASSE_JN}' alors il s'agit d'une capture
     * en masse.<br>
     * <br>
-    * Un traitement de capture en masse indique dans ses
-    * {@link JobInstance#getJobParameters()} le paramètre '
-    * {@value #CAPTURE_MASSE_ECDE}' pour l'URL ECDE du fichier sommaire.xml.<br>
+    * Un traitement de capture en masse indique dans ses paramètres l'URL ECDE
+    * du fichier sommaire.xml.<br>
     * on s'appuie sur {@link EcdeSupport#isLocal(URI)} pour savoir si il s'agit
     * d'une URL ECDE local ou non.
     * 
@@ -87,7 +86,7 @@ public class CaptureMasseSupport {
     * capture en masse.<br>
     * <br>
     * Les traitements de capture en masse sont indiqués par la propriété
-    * <code>jobName</code> de l'instance {@link JobInstance}.<br>
+    * <code>jobName</code> de l'instance {@link JobRequest}.<br>
     * Si il indique '{@value #CAPTURE_MASSE_JN}' alors il s'agit d'une capture
     * en masse.<br>
     * <br>

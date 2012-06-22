@@ -48,7 +48,11 @@ public class InterruptionTraitementMasseSupportImpl implements
       this.dfceManager = dfceManager;
    }
 
-   private static final long DEFAULT_DELAY = 120000;
+   /**
+    * Délai par défaut d'attente entre chaque tentative de reconnexion après
+    * une interruption
+    */
+   protected static final long DEFAULT_DELAY = 120000;
 
    private long defaultDelay = DEFAULT_DELAY;
 
@@ -67,8 +71,8 @@ public class InterruptionTraitementMasseSupportImpl implements
    /**
     * {@inheritDoc} <br>
     * Après la première tentative le delai d'attente entre chaque tentative est
-    * fixé par {@value #setDelay(int)} en secondes.<br>
-    * Par défaut cette valeur est fixé à {@value #DELAY}
+    * fixé par {@link #setDelay(long)} en secondes.<br>
+    * Par défaut cette valeur est fixé à {@value #DEFAULT_DELAY}
     * 
     * 
     */

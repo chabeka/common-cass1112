@@ -64,7 +64,11 @@ public class ProcessusLauncherSupportImpl implements LauncherSupport {
    private static final Logger LOG = LoggerFactory
          .getLogger(ProcessusLauncherSupportImpl.class);
 
-   private static final String JMX_PATTERN = "service:jmx:rmi:///jndi/rmi://:{0,number,#}/jmxrmi";
+   /**
+    * Le modèle d'url JMX pour se connecter au serveur JMX de la JVM qui exécute
+    * la capture de masse
+    */
+   protected static final String JMX_PATTERN = "service:jmx:rmi:///jndi/rmi://:{0,number,#}/jmxrmi";
 
    private static final String SEPARATOR = " ";
 

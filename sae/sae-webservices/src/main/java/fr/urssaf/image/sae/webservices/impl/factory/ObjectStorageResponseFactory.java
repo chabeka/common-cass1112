@@ -5,7 +5,7 @@ import fr.cirtil.www.saeservice.ArchivageMasseResponseType;
 
 /**
  * Classe d'instanciation des réponses pour l'implémentation
- * {@link fr.urssaf.image.sae.webservices.impl.SaeStorageServiceImpl}
+ * {@link fr.urssaf.image.sae.webservices.service.impl.WSCaptureMasseServiceImpl}
  * 
  * 
  */

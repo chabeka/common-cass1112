@@ -7,8 +7,7 @@ import fr.urssaf.image.sae.storage.dfce.manager.DFCEServicesManager;
 
 /**
  * Classe abstraite contient les attributs communs à toutes les implementations
- * des interfaces {@link StorageConnectionServiceImpl } et
- * {@link StorageServiceProviderImpl }.
+ * de l'interface {@link fr.urssaf.image.sae.storage.services.StorageServiceProvider}.
  * <ul>
  * <li>
  * storageConnectionParameter : Classe concrète contenant les paramètres de

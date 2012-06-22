@@ -67,18 +67,17 @@ public class InsertionPoolThreadExecutor extends ThreadPoolExecutor implements
     * {@link InsertionPoolConfiguration#getCorePoolSize()}</li>
     * <li>
     * <code>maximumPoolSize</code> :
-    * {@value InsertionPoolConfiguration#getCorePoolSize()}</li>
+    * {@link InsertionPoolConfiguration#getCorePoolSize()}</li>
     * <li>
     * <code>keepAliveTime</code> : 0L</li>
     * <li>
     * <code>TimeUnit</code> : TimeUnit.MILLISECONDS</li>
     * <li>
     * <code>workQueue</code> : {@link LinkedBlockingQueue}</li>
-    * <li><code>policy</code> : {@link DiscardPolicy}</li>
+    * <li><code>policy</code> : {@link java.util.concurrent.ThreadPoolExecutor.DiscardPolicy}</li>
     * </ul>
     * 
-    * le pool accepte un nombre fixe de threads de {@value #CORE_POOL_SIZE}
-    * maximum.<br>
+    * Le pool accepte un nombre fixe de threads configurable<br>
     * Les threads en plus sont stockés dans une liste non bornée<br>
     * Le temps de vie d'un thread n'est pas prise en compte ici
     * 

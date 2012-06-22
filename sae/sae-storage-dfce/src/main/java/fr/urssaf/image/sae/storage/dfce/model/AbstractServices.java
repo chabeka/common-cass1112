@@ -9,11 +9,11 @@ import fr.urssaf.image.sae.storage.model.connection.StorageConnectionParameter;
  * Classe abstraite contenant les attributs communs de toutes les
  * implementations:
  * <ul>
- * <li>{@link InsertionServiceImpl } : Implementation de l'interface
- * InsertionServiceI.</li>
- * <li>{@link SearchingServiceImpl } : Implementation de l'interface
+ * <li>{@link fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument.InsertionServiceImpl} : Implementation de l'interface
+ * InsertionService.</li>
+ * <li>{@link fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument.SearchingServiceImpl} : Implementation de l'interface
  * SearchingService</li>
- * <li>{@link RetrievalServiceImpl }</li> : Implementation de l'interface
+ * <li>{@link fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument.RetrievalServiceImpl}</li> : Implementation de l'interface
  * RetrievalService
  * </ul>
  * Elle contient également l'attribut :

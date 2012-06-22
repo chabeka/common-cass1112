@@ -37,7 +37,7 @@ import fr.urssaf.image.sae.saml.util.ListUtils;
  * </ul>
  * 
  * Le recours à cette classe nécessite une instanciation au préalable de
- * {@link SamlConfiguration}
+ * {@link fr.urssaf.image.sae.saml.opensaml.SamlConfiguration}
  * 
  * 
  */

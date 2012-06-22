@@ -165,7 +165,7 @@ public final class Utils {
    }
 
    /**
-    * Permet de convertir les valeur des metadonnées {@link UntypedMetadata} en
+    * Permet de convertir les valeur des metadonnées {@link fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata} en
     * objet.
     * 
     * @param untypedValue

@@ -57,7 +57,7 @@ public final class ResourceUtils {
     * 
     * @param file
     *           a File handle
-    * @return instance de {@link FileSystemResource
+    * @return instance de {@link FileSystemResource}
     */
    public static FileSystemResource createFileSystemResource(File file) {
       return new FileSystemResource(file);

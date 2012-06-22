@@ -40,7 +40,7 @@ public class MetadataRuleFactory {
 	private UntypedMetadataValueLengthRule valueLengthRule;
 
 	/**
-	 * @return Une instance de la règle {@link UntypedMetadataExistingRule}
+	 * @return Une instance de la règle {@link MetadataExistingRule}
 	 */
 	public final MetadataExistingRule getExistingRule() {
 		return existingRule;
@@ -48,7 +48,7 @@ public class MetadataRuleFactory {
 
 	/**
 	 * @param existingRule
-	 *            : Une instance de la règle {@link UntypedMetadataExistingRule}
+	 *            : Une instance de la règle {@link MetadataExistingRule}
 	 */
 	public final void setExistingRule(
 			final MetadataExistingRule existingRule) {
@@ -56,7 +56,7 @@ public class MetadataRuleFactory {
 	}
 
 	/**
-	 * @return Une instance de la règle {@link UntypedMetadataExistingRule}
+	 * @return Une instance de la règle {@link MetadataIsArchivableRule}
 	 */
 	public final MetadataIsArchivableRule getArchivableRule() {
 		return archivableRule;
@@ -106,7 +106,7 @@ public class MetadataRuleFactory {
 	}
 
 	/**
-	 * @return Une instance de la règle {@link MetadataValueLengthRule}
+	 * @return Une instance de la règle {@link UntypedMetadataValueLengthRule}
 	 */
 	public final UntypedMetadataValueLengthRule getValueLengthRule() {
 		return valueLengthRule;

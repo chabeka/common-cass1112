@@ -10,7 +10,10 @@ public class AucunJobALancerException extends Exception {
 
    private static final long serialVersionUID = 1L;
 
-   private static final String EXCEPTION_MESSAGE = "Il n'y a aucun traitement à lancer";
+   /**
+    * Message de l'exception
+    */
+   protected static final String EXCEPTION_MESSAGE = "Il n'y a aucun traitement à lancer";
 
    /**
     * 

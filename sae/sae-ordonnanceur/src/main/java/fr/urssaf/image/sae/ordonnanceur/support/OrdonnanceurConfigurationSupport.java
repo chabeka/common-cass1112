@@ -16,7 +16,11 @@ import org.springframework.util.Assert;
  */
 public class OrdonnanceurConfigurationSupport implements InitializingBean {
 
-   private static final String CASSANDRA_CONFIG = "sae.cassandra.cheminFichierConfig";
+   /**
+    * La clé dans le fichier Properties indiquant le chemin complet
+    * du fichier de configuration Cassandra
+    */
+   protected static final String CASSANDRA_CONFIG = "sae.cassandra.cheminFichierConfig";
 
    private final Properties saeProperties;
 

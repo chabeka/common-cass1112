@@ -19,7 +19,10 @@ public final class LocalTimeUtils {
 
    }
 
-   private static final String TIME_PATTERN = "HH:mm:ss";
+   /**
+    * Format des heures/minutes
+    */
+   protected static final String TIME_PATTERN = "HH:mm:ss";
 
    private static final DateTimeFormatter TIME_FORMATTER;
 

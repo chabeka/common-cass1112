@@ -29,6 +29,7 @@ Le programme peut par exemple être exécuté sous forme de tâche planifiée, a
 
          <plugin>
             <artifactId>maven-assembly-plugin</artifactId>
+            <version>${maven-assembly-plugin.version}</version>
             <configuration>
                <archive>
                   <manifest>
