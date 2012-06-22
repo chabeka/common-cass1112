@@ -9,7 +9,6 @@ package fr.urssaf.image.sae.ecde.modele.source;
  * <br> à savoir EcdeSource[]
  *
  */
-@SuppressWarnings({"PMD.MethodReturnsInternalArray", "PMD.ArrayIsStoredDirectly"})
 public class EcdeSources {
    
    /*

@@ -32,21 +32,6 @@ public class EcdeSource {
       this.basePath = basePath;
    }
 
-   /**
-    * 
-    * @param host
-    *           DNS de l'ECDE
-    * @param basePath
-    *           chemin absolu de l'ECDE
-    * @param local
-    *           indique si l'ECDE est local pour le CNP courant
-    */
-   public EcdeSource(String host, File basePath, boolean local) {
-
-      this(host, basePath);
-      this.local = local;
-   }
-
    // Attributs
    private String host;
    private File basePath;

@@ -1,16 +1,12 @@
 package fr.urssaf.image.sae.ecde.service;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URI;
 
 import fr.urssaf.image.sae.ecde.exception.EcdeBadFileException;
 import fr.urssaf.image.sae.ecde.exception.EcdeBadURLException;
 import fr.urssaf.image.sae.ecde.exception.EcdeBadURLFormatException;
-import fr.urssaf.image.sae.ecde.exception.EcdeGeneralException;
-import fr.urssaf.image.sae.ecde.exception.EcdeXsdException;
-import fr.urssaf.image.sae.ecde.modele.resultats.Resultats;
-import fr.urssaf.image.sae.ecde.modele.sommaire.Sommaire;
+
 
 /**
  * EcdeServices représente la façade regroupant les différents services de l'ECDE.
@@ -109,24 +105,5 @@ public interface EcdeServices {
      */
     File convertSommaireToFile(URI sommaireURL) throws EcdeBadURLException, EcdeBadURLFormatException;
     
-    /**
-     * Service permettant de recuperer un objet Sommaire à partir d'un fichier sommaire.xml
-     * 
-     * @param uri : à fetcher
-     * @return Sommaire : objet a retourner a partir du fichier 
-     * @throws EcdeGeneralException erreur avec le fichier sommaire.xml
-     */
-    Sommaire fetchSommaireByUri(URI uri) throws EcdeGeneralException;
     
-    /**
-     * Methodes permettant de persister les objets Resultats dans un fichier resultats.xml
-     * 
-     * @param resultats : objet a persister
-     * @throws IOException erreur lors de la creation du fichier flag
-     * @throws EcdeXsdException non respect du format XSD
-     */
-    void persistResultat(Resultats resultats) throws EcdeXsdException, IOException;
-   
-   
-   
 }
