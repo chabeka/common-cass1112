@@ -6,7 +6,10 @@
       </encoder>
    </appender>
 
-   <root level="INFO">
+   <logger name="org.apache.cassandra" level="WARN" />
+   <logger name="me.prettyprint" level="WARN" />
+
+   <root level="DEBUG">
       <appender-ref ref="console" />
    </root>
 

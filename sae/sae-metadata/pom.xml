@@ -83,13 +83,6 @@
          <version>${spring.framework.version}</version>
       </dependency>
       <dependency>
-         <groupId>org.slf4j</groupId>
-         <artifactId>slf4j-log4j12</artifactId>
-         <version>1.6.1</version>
-         <type>jar</type>
-         <scope>compile</scope>
-      </dependency>
-      <dependency>
          <groupId>junitperf</groupId>
          <artifactId>junitperf</artifactId>
          <version>${junitperf.version}</version>
