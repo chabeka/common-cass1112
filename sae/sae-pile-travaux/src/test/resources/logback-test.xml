@@ -6,16 +6,17 @@
       </encoder>
    </appender>
 
-   <logger name="fr.urssaf.image.sae">
-      <level value="DEBUG"/>
-   </logger>
    
-   <logger name="fr.urssaf.image.commons">
-      <level value="DEBUG"/>
-   </logger>
-
-   <!-- Niveau general pour l'application -->
-   <root level="WARN">
+   <logger name="org.springframework" level="WARN" />
+   <logger name="org.apache.cassandra" level="WARN" />
+   <logger name="me.prettyprint.cassandra" level="WARN" />
+   <logger name="org.cassandraunit" level="WARN" />
+   <logger name="com.netflix.curator" level="WARN" />
+   
+   <logger name="fr.urssaf.image.commons" level="WARN" />
+   
+   
+   <root level="DEBUG">
       <appender-ref ref="console" />
    </root>
 
