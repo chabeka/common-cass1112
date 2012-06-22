@@ -27,9 +27,9 @@ public class PagmpDao {
    
    public static final String PAGMP_PRMD = "prmd";
    
-   private static final String PAGMP_CFNAME = "DroitPagmp";
+   public static final String PAGMP_CFNAME = "DroitPagmp";
 
-   private static final int MAX_JOB_ATTIBUTS = 100;
+   public static final int MAX_ATTRIBUTS = 100;
 
    private final ColumnFamilyTemplate<String, String> pagmpTmpl;
 
@@ -48,7 +48,7 @@ public class PagmpDao {
       pagmpTmpl = new ThriftColumnFamilyTemplate<String, String>(keyspace,
             PAGMP_CFNAME, StringSerializer.get(), StringSerializer.get());
 
-      pagmpTmpl.setCount(MAX_JOB_ATTIBUTS);
+      pagmpTmpl.setCount(MAX_ATTRIBUTS);
 
    }
 
@@ -56,7 +56,7 @@ public class PagmpDao {
     * 
     * @return CassandraTemplate de <code>DroitPagmp</code>
     */
-   public final ColumnFamilyTemplate<String, String> gePagmaTmpl() {
+   public final ColumnFamilyTemplate<String, String> getPagmpTmpl() {
 
       return this.pagmpTmpl;
    }
@@ -138,5 +138,12 @@ public class PagmpDao {
 
       mutator.addDeletion(code, PAGMP_CFNAME, clock);
 
+   }
+
+   /**
+    * @return the keyspace
+    */
+   public final Keyspace getKeyspace() {
+      return keyspace;
    }
 }

@@ -27,9 +27,9 @@ public class PrmdDao {
    
    public static final String PRMD_LUCENE = "lucene";
    
-   private static final String PRMD_CFNAME = "DroitPrmd";
+   public static final String PRMD_CFNAME = "DroitPrmd";
 
-   private static final int MAX_JOB_ATTIBUTS = 100;
+   public static final int MAX_ATTRIBUTS = 100;
 
    private final ColumnFamilyTemplate<String, String> prmdTmpl;
 
@@ -48,7 +48,7 @@ public class PrmdDao {
       prmdTmpl = new ThriftColumnFamilyTemplate<String, String>(keyspace,
             PRMD_CFNAME, StringSerializer.get(), StringSerializer.get());
 
-      prmdTmpl.setCount(MAX_JOB_ATTIBUTS);
+      prmdTmpl.setCount(MAX_ATTRIBUTS);
 
    }
 
@@ -56,7 +56,7 @@ public class PrmdDao {
     * 
     * @return CassandraTemplate de <code>DroitPagmp</code>
     */
-   public final ColumnFamilyTemplate<String, String> gePagmaTmpl() {
+   public final ColumnFamilyTemplate<String, String> getPrmdTmpl() {
 
       return this.prmdTmpl;
    }
@@ -137,5 +137,12 @@ public class PrmdDao {
 
       mutator.addDeletion(code, PRMD_CFNAME, clock);
 
+   }
+
+   /**
+    * @return the keyspace
+    */
+   public final Keyspace getKeyspace() {
+      return keyspace;
    }
 }

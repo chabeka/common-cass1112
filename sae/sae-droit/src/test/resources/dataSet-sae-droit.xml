@@ -18,5 +18,17 @@
          <name>DroitPagma</name>
          <comparatorType>BytesType</comparatorType>
       </columnFamily>
+      <columnFamily>
+         <name>DroitPagmp</name>
+         <comparatorType>BytesType</comparatorType>
+      </columnFamily>
+      <columnFamily>
+         <name>DroitPagm</name>
+         <comparatorType>BytesType</comparatorType>
+      </columnFamily>
+      <columnFamily>
+         <name>DroitPrmd</name>
+         <comparatorType>BytesType</comparatorType>
+      </columnFamily>
    </columnFamilies>
 </keyspace>
