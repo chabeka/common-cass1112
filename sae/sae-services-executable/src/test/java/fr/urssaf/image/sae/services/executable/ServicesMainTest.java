@@ -47,14 +47,6 @@ public class ServicesMainTest {
    }
 
    @Test
-   public void ServicesMain_captureMasse() {
-
-      String[] args = new String[] { "captureMasse" };
-
-      ServicesMain.main(args);
-   }
-
-   @Test
    public void ServicesMain_traitementMasse() {
 
       String[] args = new String[] { "traitementMasse"};

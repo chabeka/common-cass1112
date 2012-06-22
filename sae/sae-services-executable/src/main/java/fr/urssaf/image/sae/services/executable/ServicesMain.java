@@ -2,7 +2,6 @@ package fr.urssaf.image.sae.services.executable;
 
 import org.apache.commons.lang.ArrayUtils;
 
-import fr.urssaf.image.sae.services.executable.capturemasse.CaptureMasseMain;
 import fr.urssaf.image.sae.services.executable.traitementmasse.TraitementMasseMain;
 import fr.urssaf.image.sae.services.executable.util.ValidateUtils;
 
@@ -44,12 +43,7 @@ public final class ServicesMain {
 
       String[] newArgs = (String[]) ArrayUtils.subarray(args, 1, args.length);
 
-      if ("captureMasse".equals(args[0])) {
-
-         CaptureMasseMain.main(newArgs);
-
-      }
-      else if ("traitementMasse".equals(args[0])) {
+      if ("traitementMasse".equals(args[0])) {
 
          TraitementMasseMain.main(newArgs);
 

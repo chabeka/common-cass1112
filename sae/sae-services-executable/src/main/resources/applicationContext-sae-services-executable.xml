@@ -61,19 +61,6 @@
    <import resource="applicationContext-sae-ecde.xml" />
    <import resource="applicationContext-sae-mapping.xml" />
 
-   <!-- configuration JMX -->
-   <import resource="applicationContext-sae-services-jmx.xml" />
-
-   <!-- configuration obsolète de l'interruption du traitement -->
-   <bean id="captureMasseConfigSpring"
-      class="fr.urssaf.image.sae.storage.dfce.services.support.model.InterruptionTraitementConfig">
-      <qualifier value="interruption_capture_masse" />
-      <property name="start" value="${sae.archivagemasse.interruption.heure}" />
-      <property name="delay" value="${sae.archivagemasse.interruption.delai}" />
-      <property name="tentatives"
-         value="${sae.archivagemasse.interruption.tentatives}" />
-   </bean>
-
    <!-- configuration de l'interruption du traitement -->
    <bean id="captureMasseConfig"
       class="fr.urssaf.image.sae.services.capturemasse.support.stockage.interruption.model.InterruptionTraitementConfig">
