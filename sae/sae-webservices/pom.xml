@@ -304,6 +304,13 @@
          <scope>provided</scope>
       </dependency>
       
+       <!-- jdom -->
+      <dependency>
+         <groupId>org.jdom</groupId>
+         <artifactId>jdom</artifactId>
+         <version>${org.jdom.version}</version>
+      </dependency>
+      
 
    </dependencies>
 </project>
