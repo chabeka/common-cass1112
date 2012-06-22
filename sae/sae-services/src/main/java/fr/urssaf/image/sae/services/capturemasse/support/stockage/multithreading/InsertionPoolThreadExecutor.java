@@ -21,11 +21,10 @@ import org.springframework.util.Assert;
 
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
 import fr.urssaf.image.sae.services.capturemasse.model.CaptureMasseIntegratedDocument;
+import fr.urssaf.image.sae.services.capturemasse.support.stockage.exception.InsertionMasseRuntimeException;
 import fr.urssaf.image.sae.services.capturemasse.support.stockage.interruption.InterruptionTraitementMasseSupport;
 import fr.urssaf.image.sae.services.capturemasse.support.stockage.interruption.exception.InterruptionTraitementException;
 import fr.urssaf.image.sae.services.capturemasse.support.stockage.interruption.model.InterruptionTraitementConfig;
-import fr.urssaf.image.sae.storage.dfce.services.support.exception.InsertionMasseRuntimeException;
-import fr.urssaf.image.sae.storage.dfce.services.support.multithreading.InsertionThreadPoolExecutor;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 
 /**
@@ -42,7 +41,7 @@ public class InsertionPoolThreadExecutor extends ThreadPoolExecutor implements
    private static final long serialVersionUID = 1L;
 
    private static final Logger LOGGER = LoggerFactory
-         .getLogger(InsertionThreadPoolExecutor.class);
+         .getLogger(InsertionPoolThreadExecutor.class);
 
    private final ConcurrentLinkedQueue<CaptureMasseIntegratedDocument> integDocs;
 
@@ -158,7 +157,7 @@ public class InsertionPoolThreadExecutor extends ThreadPoolExecutor implements
 
          LOGGER
                .debug("{} - Stockage du document #{} ({}) uuid:{}",
-                     new Object[] { PREFIX_TRACE, (indexDocument +1),
+                     new Object[] { PREFIX_TRACE, (indexDocument + 1),
                            storageDocument.getFilePath(),
                            storageDocument.getUuid() });
 

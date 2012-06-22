@@ -8,7 +8,7 @@ import org.joda.time.DateTime;
  * @author akenore
  * 
  */
-
+@Deprecated
 public class JmxIndicator {
 
    private int jmxStorageIndex;

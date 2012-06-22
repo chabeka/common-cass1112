@@ -6,6 +6,7 @@ package fr.urssaf.image.sae.storage.model.jmx;
  * @author akenore
  * 
  */
+@Deprecated
 public enum BulkProgress {
    // Début de l'archivage en masse.
    BEGIN_OF_ARCHIVE("Début de l'archivage en masse."),

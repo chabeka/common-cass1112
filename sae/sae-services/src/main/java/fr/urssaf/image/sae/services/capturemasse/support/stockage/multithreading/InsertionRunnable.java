@@ -4,7 +4,7 @@
 package fr.urssaf.image.sae.services.capturemasse.support.stockage.multithreading;
 
 import fr.urssaf.image.sae.services.capturemasse.support.stockage.batch.StorageDocumentWriter;
-import fr.urssaf.image.sae.storage.dfce.services.support.exception.InsertionMasseRuntimeException;
+import fr.urssaf.image.sae.services.capturemasse.support.stockage.exception.InsertionMasseRuntimeException;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 
 /**

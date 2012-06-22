@@ -12,6 +12,7 @@ import fr.urssaf.image.sae.storage.dfce.utils.LocalTimeUtils;
  * 
  * 
  */
+@Deprecated
 public final class InterruptionTraitementUtils {
 
    private InterruptionTraitementUtils() {

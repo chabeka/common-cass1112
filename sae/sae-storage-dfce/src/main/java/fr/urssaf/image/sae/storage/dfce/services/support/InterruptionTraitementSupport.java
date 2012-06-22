@@ -11,6 +11,7 @@ import fr.urssaf.image.sae.storage.model.jmx.JmxIndicator;
  * 
  * 
  */
+@Deprecated
 public interface InterruptionTraitementSupport {
 
    // TODO voir comment ne pas passer indicateur JMX dans les arguments

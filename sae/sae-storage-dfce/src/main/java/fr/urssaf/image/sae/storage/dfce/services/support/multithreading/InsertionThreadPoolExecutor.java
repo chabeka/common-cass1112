@@ -24,6 +24,7 @@ import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
  * 
  * 
  */
+@Deprecated
 public class InsertionThreadPoolExecutor extends ThreadPoolExecutor {
 
    private static final Logger LOGGER = LoggerFactory

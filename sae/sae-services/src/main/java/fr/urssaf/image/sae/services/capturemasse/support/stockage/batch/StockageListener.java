@@ -28,9 +28,9 @@ import org.springframework.stereotype.Component;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
 import fr.urssaf.image.sae.services.capturemasse.model.CaptureMasseIntegratedDocument;
+import fr.urssaf.image.sae.services.capturemasse.support.stockage.exception.InsertionMasseRuntimeException;
 import fr.urssaf.image.sae.services.capturemasse.support.stockage.interruption.exception.InterruptionTraitementException;
 import fr.urssaf.image.sae.services.capturemasse.support.stockage.multithreading.InsertionPoolThreadExecutor;
-import fr.urssaf.image.sae.storage.dfce.services.support.exception.InsertionMasseRuntimeException;
 
 /**
  * Ecouteur pour la partie persistance des documents du fichier sommaire.xml

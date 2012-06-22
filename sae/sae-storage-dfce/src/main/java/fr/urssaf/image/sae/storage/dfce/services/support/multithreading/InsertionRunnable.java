@@ -10,6 +10,7 @@ import fr.urssaf.image.sae.storage.services.storagedocument.InsertionService;
  * 
  * 
  */
+@Deprecated
 public class InsertionRunnable implements Runnable {
 
    private final int indexDocument;

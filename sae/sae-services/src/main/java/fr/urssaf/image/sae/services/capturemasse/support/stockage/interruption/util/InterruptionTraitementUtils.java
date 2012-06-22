@@ -5,7 +5,8 @@ import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
 
 import fr.urssaf.image.sae.services.capturemasse.support.stockage.interruption.model.InterruptionTraitementConfig;
-import fr.urssaf.image.sae.storage.dfce.utils.LocalTimeUtils;
+import fr.urssaf.image.sae.services.util.LocalTimeUtils;
+
 
 
 /**

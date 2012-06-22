@@ -9,7 +9,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
-import fr.urssaf.image.sae.storage.model.jmx.JmxIndicator;
 import fr.urssaf.image.sae.storage.services.storagedocument.DeletionService;
 import fr.urssaf.image.sae.storage.services.storagedocument.InsertionService;
 import fr.urssaf.image.sae.storage.services.storagedocument.RetrievalService;
@@ -25,7 +24,6 @@ import fr.urssaf.image.sae.storage.services.storagedocument.SearchingService;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/appliContext-sae-storage-dfce-test.xml" })
-@SuppressWarnings({ "PMD.ExcessiveImports", "PMD.LongVariable" })
 public class StorageServices extends CommonsServices {
 	@Autowired
 	@Qualifier("insertionService")
@@ -125,7 +123,6 @@ public class StorageServices extends CommonsServices {
 		getSearchingService().setSearchingServiceParameter(
 				getDfceServicesManager().getDFCEService());
 		
-		getInsertionService().setJmxIndicator(new JmxIndicator());
 	}
 
 	/**

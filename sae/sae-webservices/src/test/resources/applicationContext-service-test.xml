@@ -31,21 +31,13 @@
    <!-- mock pour capture unitaire -->
    <bean id="saeCaptureService" factory-bean="SAEServiceFactory"
       factory-method="createSAECaptureService" />
-
-   <!-- mock pour capture de masse -->
-   <bean id="saeBulkCaptureService" factory-bean="SAEServiceFactory"
-      factory-method="createSAEBulkCaptureService" />
-      
+ 
    <bean id="ecdeServices" factory-bean="SAEServiceFactory"
       factory-method="createEcdeServices" />
 
    <!-- mock pour le controle de la capture -->
    <bean id="saeControlesCaptureService" factory-bean="SAEServiceFactory"
       factory-method="createSAEControlesCaptureService" />
-
-   <!-- mock pour le lancement d'un traitement de l'archivage en masse -->
-   <bean id="captureMasseLauncher" factory-bean="SAEServiceFactory"
-      factory-method="createLauncherSupport" />
 
    <!-- mock pour le lancement des traitements de masse -->
    <bean id="traitementAsynchroneService" factory-bean="SAEServiceFactory"

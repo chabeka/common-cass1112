@@ -24,6 +24,7 @@ import fr.urssaf.image.sae.storage.model.jmx.JmxIndicator;
  * 
  * 
  */
+@Deprecated
 @Component
 public class InterruptionTraitementSupportImpl implements
       InterruptionTraitementSupport {

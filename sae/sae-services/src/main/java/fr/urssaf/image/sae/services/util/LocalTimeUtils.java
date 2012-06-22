@@ -1,4 +1,4 @@
-package fr.urssaf.image.sae.storage.dfce.utils;
+package fr.urssaf.image.sae.services.util;
 
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
@@ -13,17 +13,13 @@ import org.springframework.util.Assert;
  * 
  * 
  */
-@Deprecated
 public final class LocalTimeUtils {
 
    private LocalTimeUtils() {
 
    }
 
-   /**
-    * Format des heures/minutes
-    */
-   protected static final String TIME_PATTERN = "HH:mm:ss";
+   private static final String TIME_PATTERN = "HH:mm:ss";
 
    private static final DateTimeFormatter TIME_FORMATTER;
 

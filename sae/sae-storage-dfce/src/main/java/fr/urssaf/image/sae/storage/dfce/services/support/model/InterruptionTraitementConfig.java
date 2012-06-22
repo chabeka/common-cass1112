@@ -12,6 +12,7 @@ package fr.urssaf.image.sae.storage.dfce.services.support.model;
  * 
  * 
  */
+@Deprecated
 public class InterruptionTraitementConfig {
 
    private String start;

@@ -7,8 +7,6 @@ import fr.urssaf.image.sae.ecde.service.EcdeServices;
 import fr.urssaf.image.sae.services.batch.TraitementAsynchroneService;
 import fr.urssaf.image.sae.services.capture.SAECaptureService;
 import fr.urssaf.image.sae.services.controles.SAEControlesCaptureService;
-import fr.urssaf.image.sae.services.document.SAEBulkCaptureService;
-import fr.urssaf.image.sae.webservices.service.support.LauncherSupport;
 
 /**
  * Implémentation des Mocks des services SAE
@@ -31,18 +29,6 @@ public class SAEServiceFactory {
 
    /**
     * 
-    * @return instance de {@link SAEBulkCaptureService}
-    */
-   public final SAEBulkCaptureService createSAEBulkCaptureService() {
-
-      SAEBulkCaptureService service = EasyMock
-            .createMock(SAEBulkCaptureService.class);
-
-      return service;
-   }
-
-   /**
-    * 
     * @return instance de {@link SAEControlesCaptureService}
     */
    public final SAEControlesCaptureService createSAEControlesCaptureService() {
@@ -53,16 +39,6 @@ public class SAEServiceFactory {
       return service;
    }
 
-   /**
-    * 
-    * @return instance de {@link LauncherSupport}
-    */
-   public final LauncherSupport createLauncherSupport() {
-
-      LauncherSupport support = EasyMock.createMock(LauncherSupport.class);
-
-      return support;
-   }
 
    /**
     * 

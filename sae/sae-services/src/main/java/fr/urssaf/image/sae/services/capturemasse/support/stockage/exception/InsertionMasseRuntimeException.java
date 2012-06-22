@@ -1,4 +1,4 @@
-package fr.urssaf.image.sae.storage.dfce.services.support.exception;
+package fr.urssaf.image.sae.services.capturemasse.support.stockage.exception;
 
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 
@@ -8,7 +8,6 @@ import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
  * 
  * 
  */
-@Deprecated
 public class InsertionMasseRuntimeException extends RuntimeException {
 
    private static final long serialVersionUID = 1L;

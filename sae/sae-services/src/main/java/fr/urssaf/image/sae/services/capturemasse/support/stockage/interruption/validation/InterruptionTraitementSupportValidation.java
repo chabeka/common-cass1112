@@ -1,4 +1,4 @@
-package fr.urssaf.image.sae.storage.dfce.services.support.validation;
+package fr.urssaf.image.sae.services.capturemasse.support.stockage.interruption.validation;
 
 import java.text.MessageFormat;
 
@@ -7,27 +7,24 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.joda.time.DateTime;
 
-import fr.urssaf.image.sae.storage.dfce.services.support.model.InterruptionTraitementConfig;
-import fr.urssaf.image.sae.storage.dfce.utils.LocalTimeUtils;
-import fr.urssaf.image.sae.storage.model.jmx.JmxIndicator;
+import fr.urssaf.image.sae.services.capturemasse.support.stockage.interruption.model.InterruptionTraitementConfig;
+import fr.urssaf.image.sae.services.util.LocalTimeUtils;
 
 /**
  * Classe de validation des arguments en entrée des implémentations du service
- * {@link fr.urssaf.image.sae.storage.dfce.services.support.InterruptionTraitementSupport}
+ * {@link fr.urssaf.image.sae.services.capturemasse.support.stockage.interruption.InterruptionTraitementMasseSupport}
  * .<br>
  * La validation est basée sur la programmation aspect
  * 
  * 
  */
-@Deprecated
 @Aspect
 public class InterruptionTraitementSupportValidation {
 
-   private static final String CLASS = "fr.urssaf.image.sae.storage.dfce.services.support.InterruptionTraitementSupport";
+   private static final String CLASS = "fr.urssaf.image.sae.services.capturemasse.support.stockage.interruption.InterruptionTraitementMasseSupport";
 
-   private static final String METHOD_INTERRUPTION = "execution(void "
-         + CLASS
-         + ".interruption(*,*,*)) && args(currentDate,interruptionConfig,jmxIndicator)";
+   private static final String METHOD_INTERRUPTION = "execution(void " + CLASS
+         + ".interruption(*,*)) && args(currentDate,interruptionConfig)";
 
    private static final String METHOD_HAS_INTERRUPTED = "execution(boolean "
          + CLASS
@@ -99,23 +96,14 @@ public class InterruptionTraitementSupportValidation {
     *           <li>{@link InterruptionTraitementConfig#getTentatives()} doit
     *           être supérieure à 0</li>
     *           </ul>
-    * @param jmxIndicator
-    *           doit être renseigné
     */
    @Before(METHOD_INTERRUPTION)
    public final void interruption(DateTime currentDate,
-         InterruptionTraitementConfig interruptionConfig,
-         JmxIndicator jmxIndicator) {
+         InterruptionTraitementConfig interruptionConfig) {
 
       this.validate(currentDate);
 
       this.validate(interruptionConfig);
-
-      if (jmxIndicator == null) {
-
-         throw new IllegalArgumentException(MessageFormat.format(ARG_EMPTY,
-               "jmxIndicator"));
-      }
 
    }
 
