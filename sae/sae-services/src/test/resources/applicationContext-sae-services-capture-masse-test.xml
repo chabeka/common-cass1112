@@ -48,14 +48,6 @@
       <property name="delay" value="60" />
       <property name="tentatives" value="2" />
    </bean>
-
-   <bean id="captureMasseConfig"
-      class="fr.urssaf.image.sae.storage.dfce.services.support.model.InterruptionTraitementConfig">
-      <qualifier value="interruption_capture_masse" />
-      <property name="start" value="02:00:00" />
-      <property name="delay" value="60" />
-      <property name="tentatives" value="2" />
-   </bean>
    
    <bean id="insertionPoolConfiguration"
       class="fr.urssaf.image.sae.services.capturemasse.support.stockage.multithreading.InsertionPoolConfiguration">
