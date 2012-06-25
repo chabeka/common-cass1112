@@ -5,6 +5,8 @@ package fr.urssaf.image.sae.droit.service.impl;
 
 import java.util.List;
 
+import org.springframework.stereotype.Component;
+
 import fr.urssaf.image.sae.droit.dao.model.Pagm;
 import fr.urssaf.image.sae.droit.dao.model.ServiceContract;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
@@ -16,6 +18,7 @@ import fr.urssaf.image.sae.droit.service.SaeDroitService;
  * d'injection IOC avec l'annotation @Autowired
  * 
  */
+@Component
 public class SaeDroitServiceImpl implements SaeDroitService {
 
    /**

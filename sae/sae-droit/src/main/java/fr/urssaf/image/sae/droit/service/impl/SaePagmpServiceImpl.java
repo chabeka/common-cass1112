@@ -3,6 +3,8 @@
  */
 package fr.urssaf.image.sae.droit.service.impl;
 
+import org.springframework.stereotype.Component;
+
 import fr.urssaf.image.sae.droit.dao.model.Pagmp;
 import fr.urssaf.image.sae.droit.service.SaePagmpService;
 
@@ -12,13 +14,14 @@ import fr.urssaf.image.sae.droit.service.SaePagmpService;
  * d'injection IOC avec l'annotation @Autowired
  * 
  */
+@Component
 public class SaePagmpServiceImpl implements SaePagmpService {
 
    /**
     * {@inheritDoc}
     */
    @Override
-   public void createPagmp(Pagmp pagma) {
+   public void createPagmp(Pagmp pagmp) {
       // TODO Auto-generated method stub
 
    }

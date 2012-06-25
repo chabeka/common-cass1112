@@ -3,6 +3,8 @@
  */
 package fr.urssaf.image.sae.droit.service.impl;
 
+import org.springframework.stereotype.Component;
+
 import fr.urssaf.image.sae.droit.dao.model.ActionUnitaire;
 import fr.urssaf.image.sae.droit.service.SaeActionUnitaireService;
 
@@ -12,6 +14,7 @@ import fr.urssaf.image.sae.droit.service.SaeActionUnitaireService;
  * d'injection IOC avec l'annotation @Autowired
  * 
  */
+@Component
 public class SaeActionUnitaireServiceImpl implements SaeActionUnitaireService {
 
    /**
