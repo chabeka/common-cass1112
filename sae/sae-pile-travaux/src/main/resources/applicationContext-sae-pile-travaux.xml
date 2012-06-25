@@ -16,10 +16,4 @@
    -->
    <import resource="classpath*:/applicationContext-commons-cassandra.xml" />
 
-   <!-- déprécié -->
-   <bean id="jobQueueDao"
-      class="fr.urssaf.image.sae.pile.travaux.dao.impl.JobQueueDaoImpl">
-      <constructor-arg ref="keyspace" />
-   </bean>
-
 </beans>

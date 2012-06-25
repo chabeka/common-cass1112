@@ -71,6 +71,9 @@ public class JobQueueServiceUpdateToCheckFlagTest {
       Assert.assertTrue("le toCheckFlag de traitement est inattendu",
             jobRequest.getToCheckFlag());
 
+      Assert.assertEquals("le toCheckFlagRaison de traitement est inattendu",
+            "raison de mettre à vrai", jobRequest.getToCheckFlagRaison());
+
       // vérification de JobsQueues
 
       // rien à vérifier
@@ -97,6 +100,9 @@ public class JobQueueServiceUpdateToCheckFlagTest {
 
       Assert.assertFalse("le toCheckFlag de traitement est inattendu",
             jobRequest.getToCheckFlag());
+
+      Assert.assertEquals("le toCheckFlagRaison de traitement est inattendu",
+            "raison de mettre à false", jobRequest.getToCheckFlagRaison());
 
       // vérification de JobsQueues
 

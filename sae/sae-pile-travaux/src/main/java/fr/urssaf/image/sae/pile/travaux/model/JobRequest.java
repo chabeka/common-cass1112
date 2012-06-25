@@ -322,17 +322,4 @@ public class JobRequest {
       this.toCheckFlagRaison = toCheckFlagRaison;
    }
 
-   /**
-    * Renvoie un SimpleJob contenant les propriétés de base du jobRequest
-    * 
-    * @return Un SimpleJob
-    */
-   public final SimpleJobRequest getSimpleJob() {
-      SimpleJobRequest simpleJobRequest = new SimpleJobRequest();
-      simpleJobRequest.setIdJob(getIdJob());
-      simpleJobRequest.setType(getType());
-      simpleJobRequest.setParameters(getParameters());
-      return simpleJobRequest;
-   }
-
 }
