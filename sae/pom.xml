@@ -77,7 +77,7 @@
       commons-dfce
       ==========================================
       -->
-      <commons.dfce>1.0.1-CRTL-1</commons.dfce>
+      <commons.dfce>1.0.1-CRTL-2-SNAPSHOT</commons.dfce>
       
       <!-- Modèle de dépendance :
       <dependency>
