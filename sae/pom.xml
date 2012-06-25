@@ -540,7 +540,16 @@
          <scope>test</scope>
       </dependency>
       -->
-
+      
+      <!-- GUAVA 
+      <dependency>
+         <groupId>com.google.guava</groupId>
+         <artifactId>guava</artifactId>
+         <version>12.0</version>
+      </dependency>
+   -->
+   <guava.version>12.0</guava.version>
+      
    </properties>
 
 
