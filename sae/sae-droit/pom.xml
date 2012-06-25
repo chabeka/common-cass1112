@@ -15,6 +15,27 @@
 
    <name>sae-droit</name>
 
+
+   <build>
+      <plugins>
+         <!-- COMPILATION ASPECT -->
+         <plugin>
+            <inherited>true</inherited>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>aspectj-maven-plugin</artifactId>
+            <executions>
+               <execution>
+                  <goals>
+                     <goal>compile</goal>
+                  </goals>
+               </execution>
+            </executions>
+
+         </plugin>
+
+      </plugins>
+   </build>
+
    <dependencies>
       <!-- COMMONS-CASSANDRA -->
       <dependency>
@@ -22,7 +43,7 @@
          <artifactId>commons-cassandra</artifactId>
          <version>${commons.cassandra}</version>
       </dependency>
-      
+
       <!-- SPRING -->
       <dependency>
          <groupId>org.springframework</groupId>
@@ -42,5 +63,29 @@
          <version>${spring.framework.version}</version>
          <scope>test</scope>
       </dependency>
+
+      <!-- GUAVA -->
+      <dependency>
+         <groupId>com.google.guava</groupId>
+         <artifactId>guava</artifactId>
+         <version>${guava.version}</version>
+      </dependency>
+
+
+      <!-- JASPECT -->
+      <dependency>
+         <groupId>org.aspectj</groupId>
+         <artifactId>aspectjrt</artifactId>
+         <version>${aspectj.version}</version>
+      </dependency>
+
+      <!-- APACHE COMMONS -->
+      <dependency>
+         <groupId>commons-collections</groupId>
+         <artifactId>commons-collections</artifactId>
+         <version>${apache.commons-collections.version}</version>
+      </dependency>
    </dependencies>
+
+
 </project>
