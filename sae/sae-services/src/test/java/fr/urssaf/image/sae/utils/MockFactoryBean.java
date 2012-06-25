@@ -11,6 +11,7 @@ import org.springframework.batch.item.ItemProcessor;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.services.capturemasse.modele.commun_sommaire_et_resultat.DocumentType;
 import fr.urssaf.image.sae.services.capturemasse.support.controle.CaptureMasseControleSupport;
+import fr.urssaf.image.sae.services.capturemasse.support.stockage.interruption.InterruptionTraitementMasseSupport;
 import fr.urssaf.image.sae.services.document.SAEDocumentService;
 import fr.urssaf.image.sae.services.enrichment.SAEEnrichmentMetadataService;
 import fr.urssaf.image.sae.storage.dfce.manager.DFCEServicesManager;
@@ -87,6 +88,7 @@ public class MockFactoryBean {
     * 
     * @return un mock ItemProcessor
     */
+   @SuppressWarnings("unchecked")
    public final ItemProcessor<JAXBElement<DocumentType>, UntypedDocument> createConvertSommaireProcessor() {
       return EasyMock.createMock(ItemProcessor.class);
    }
@@ -99,4 +101,13 @@ public class MockFactoryBean {
    public final SAEDocumentService createSaeDocumentService() {
       return EasyMock.createMock(SAEDocumentService.class);
    }
+   
+   /**
+    * 
+    * @return instance de {@link InterruptionTraitementMasseSupport}
+    */
+   public final InterruptionTraitementMasseSupport createInterruptionTraitementMasseSupport(){
+      return EasyMock.createMock(InterruptionTraitementMasseSupport.class);
+   }
+   
 }

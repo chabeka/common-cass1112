@@ -15,4 +15,8 @@
 
    <bean id="enrichmentService" factory-bean="mockFactory"
       factory-method="createEnrichmentMetaDataService" primary="true" />
+
+   <bean id="interruptionTraitementMasseSupport" factory-bean="mockFactory"
+      factory-method="createInterruptionTraitementMasseSupport" primary="true" />
+      
 </beans>
