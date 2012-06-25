@@ -9,7 +9,6 @@ import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.util.XMLUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.apache.ws.security.WSConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Component;
@@ -46,6 +45,12 @@ public class AuthenticateHandler {
    // private static final String METHODE = "execution(public * " + SKELETON +
    // ")";
 
+   private static final String WSSE_NS = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd";
+   
+   private static final String WSSE_LN = "Security";
+   
+   private static final String ASSERTION_LN = "Assertion";
+   
    private final SecurityService securityService;
 
   
@@ -142,7 +147,7 @@ public class AuthenticateHandler {
       }
 
       OMElement security = header.getFirstChildWithName(new QName(
-            WSConstants.WSSE_NS, WSConstants.WSSE_LN));
+            WSSE_NS, WSSE_LN));
 
       if (security == null) {
          LOG.warn(prefixeLog
@@ -151,7 +156,7 @@ public class AuthenticateHandler {
       }
 
       OMElement saml = security.getFirstChildWithName(new QName(
-            "urn:oasis:names:tc:SAML:2.0:assertion", WSConstants.ASSERTION_LN));
+            "urn:oasis:names:tc:SAML:2.0:assertion", ASSERTION_LN));
 
       Element identification = null;
       if (saml == null) {

@@ -26,12 +26,6 @@
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-storage</artifactId>
          <version>12.5.12.3-SNAPSHOT</version>
-         <exclusions>
-            <exclusion>
-               <groupId>log4j</groupId>
-               <artifactId>log4j</artifactId>
-            </exclusion>
-         </exclusions>
       </dependency>
 
       <!-- XSTREAM -->
