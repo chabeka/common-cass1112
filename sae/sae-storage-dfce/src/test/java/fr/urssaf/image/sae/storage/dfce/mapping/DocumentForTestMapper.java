@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.junit.Assert;
@@ -13,8 +12,6 @@ import com.google.common.io.Files;
 
 import fr.urssaf.image.sae.storage.dfce.data.constants.Constants;
 import fr.urssaf.image.sae.storage.dfce.data.model.DesiredMetaData;
-import fr.urssaf.image.sae.storage.dfce.data.model.SaeBase;
-import fr.urssaf.image.sae.storage.dfce.data.model.SaeCategories;
 import fr.urssaf.image.sae.storage.dfce.data.model.SaeCategory;
 import fr.urssaf.image.sae.storage.dfce.data.model.SaeDocument;
 import fr.urssaf.image.sae.storage.dfce.utils.Utils;
@@ -41,7 +38,6 @@ public final class DocumentForTestMapper {
     *            Exception lorsque le parsing de la chaîne ne se déroule pas
     *            bien.
     */
-   @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
    public static StorageDocument saeDocumentXmlToStorageDocument(
          SaeDocument saeDocument) throws IOException, ParseException {
 
@@ -79,52 +75,6 @@ public final class DocumentForTestMapper {
    }
 
    /**
-    * Permet de convertir les données StorageDocument en SaeDocument.<br/>
-    * 
-    * @param storageDocument
-    *           : StorageDocuement.
-    * @return SaeDocument {@link SaeDocument}
-    * @throws IOException
-    *            lorsque le fichier n'existe pas.
-    * @throws ParseException
-    *            Exception lorsque le parsing de la chaîne ne se déroule pas
-    *            bien.
-    */
-
-   @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
-   public static SaeDocument storageDocumentToSaeDocument(
-         StorageDocument storageDocument) throws IOException, ParseException {
-      // Construction de l'objet SaeDocument
-      SaeBase seaBase = new SaeBase();
-      SaeCategories saeCategories = new SaeCategories();
-      SaeDocument saeDocument = new SaeDocument();
-      List<SaeCategory> listOfCategory = new ArrayList<SaeCategory>();
-
-      List<StorageMetadata> listeMetaData = storageDocument.getMetadatas();
-      for (StorageMetadata storageMetadata : listeMetaData) {
-         final SaeCategory saeCategory = new SaeCategory();
-         final Object value = storageMetadata.getValue();
-         final String codeMetaData = storageMetadata.getShortCode();
-         saeCategory.setName(codeMetaData);
-
-         if (Constants.TEC_METADATAS[0].equals(codeMetaData)) {
-            saeCategory.setValue(Utils.formatDateToString((Date) value));
-         } else {
-            saeCategory.setValue(value.toString());
-         }
-         listOfCategory.add(saeCategory);
-      }
-      // Set les éléments pour la construction de l'objet SaeDocument
-      saeCategories.setCategories(listOfCategory);
-      seaBase.setSaeCategories(saeCategories);
-      seaBase.setFilePath(storageDocument.getFilePath());
-      seaBase.setTypeDoc(storageDocument.getTypeDoc());
-      saeDocument.setBase(seaBase);
-
-      return saeDocument;
-   }
-
-   /**
     * Permet de convertir les données du document métadonnées XML vers un
     * StorageDocument.<br/>
     * 
@@ -137,8 +87,6 @@ public final class DocumentForTestMapper {
     *            Exception lorsque le parsing de la chaîne ne se déroule pas
     *            bien.
     */
-
-   @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
    public static StorageDocument saeMetaDataXmlToStorageMetaData(
          DesiredMetaData saeMetadata) throws IOException, ParseException {
       Assert

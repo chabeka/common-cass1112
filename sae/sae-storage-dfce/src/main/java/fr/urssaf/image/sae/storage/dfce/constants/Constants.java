@@ -25,8 +25,6 @@ public final class Constants {
    public static final String HTTP = "http";
    // format de date iso 8601
    public static final String DATE_PATTERN = "yyyy-MM-dd";
-   // format de date avec heure
-   public static final String DATE_TIME_PATTERN = "dd/MM/yyyy HH:mm:ss";
    // le local
    public static final Locale DEFAULT_LOCAL = Locale.FRENCH;
    /** encoding de lecture **/

@@ -49,8 +49,8 @@ public class InterruptionTraitementMasseSupportImpl implements
    }
 
    /**
-    * Délai par défaut d'attente entre chaque tentative de reconnexion après
-    * une interruption
+    * Délai par défaut d'attente entre chaque tentative de reconnexion après une
+    * interruption
     */
    protected static final long DEFAULT_DELAY = 120000;
 
@@ -67,6 +67,9 @@ public class InterruptionTraitementMasseSupportImpl implements
    }
 
    private static final String LOG_PREFIX = "Interruption programmée d'un traitement";
+
+   // format de date avec heure
+   private static final String DATE_TIME_PATTERN = "dd/MM/yyyy HH:mm:ss";
 
    /**
     * {@inheritDoc} <br>
@@ -89,7 +92,7 @@ public class InterruptionTraitementMasseSupportImpl implements
          final DateTime endDate = currentDate.plus(diffTime);
 
          final DateTimeFormatter formatter = DateTimeFormat
-               .forPattern(Constants.DATE_TIME_PATTERN);
+               .forPattern(DATE_TIME_PATTERN);
 
          LOG.debug("{} - Reprise prévue à {}", LOG_PREFIX, formatter
                .print(endDate));
