@@ -123,5 +123,24 @@ public class LancementTraitementTest {
       EasyMock.verify(coordinationService);
 
    }
+   
+   @Test
+   public void execute_failure_RuntimeException()
+         throws AucunJobALancerException {
+
+      Throwable cause = new NestableRuntimeException(
+            "le lancement du job a échoué");
+      JobQueue job = new JobQueue();
+      job.setIdJob(UUID.randomUUID());
+      EasyMock.expect(coordinationService.lancerTraitement()).andThrow(
+            new RuntimeException(cause));
+
+      EasyMock.replay(coordinationService);
+
+      assertExecute(null);
+
+      EasyMock.verify(coordinationService);
+
+   }
 
 }
