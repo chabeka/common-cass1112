@@ -13,7 +13,10 @@ public class DFCEConfigurationParameterNotFoundRuntimeException extends
 
    private static final long serialVersionUID = 1L;
 
-   private static final String EXCEPTION_MESSAGE = "Le paramètre ''{0}'' doit être obligatoirement renseigné.";
+   /**
+    * Le format du message de l'exception
+    */
+   protected static final String EXCEPTION_MESSAGE = "Le paramètre ''{0}'' doit être obligatoirement renseigné.";
 
    private final String parameter;
 

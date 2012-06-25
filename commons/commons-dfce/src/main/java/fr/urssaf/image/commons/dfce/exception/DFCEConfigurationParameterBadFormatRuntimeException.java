@@ -13,7 +13,10 @@ public class DFCEConfigurationParameterBadFormatRuntimeException extends
 
    private static final long serialVersionUID = 1L;
 
-   private static final String EXCEPTION_MESSAGE = "Le paramètre ''{0}'' n''est pas au bon format.";
+   /**
+    * Le format du message de l'exception
+    */
+   protected static final String EXCEPTION_MESSAGE = "Le paramètre ''{0}'' n''est pas au bon format.";
 
    private final String parameter;
 

@@ -12,7 +12,10 @@ public class DFCEConfigurationFileRuntimeException extends RuntimeException {
 
    private static final long serialVersionUID = 1L;
 
-   private static final String EXCEPTION_MESSAGE = "Il est impossible de charger la configuration ''{0}''.";
+   /**
+    * Le format du message de l'exception
+    */
+   protected static final String EXCEPTION_MESSAGE = "Il est impossible de charger la configuration ''{0}''.";
 
    private final File configuration;
 
