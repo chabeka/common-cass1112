@@ -13,8 +13,6 @@
    <!-- Services necessaires à la consultation des etats des services  -->
    <context:component-scan base-package="fr.urssaf.image.sae.exploitation" />  
    
-   <bean id="portJmx" class="java.lang.Integer">
-      <constructor-arg value="${sae.archivagemasse.jmx.port}" />
-   </bean>
+   
    
 </beans>

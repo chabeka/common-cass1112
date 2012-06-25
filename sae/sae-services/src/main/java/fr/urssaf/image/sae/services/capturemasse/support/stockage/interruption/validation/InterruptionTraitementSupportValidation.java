@@ -81,7 +81,7 @@ public class InterruptionTraitementSupportValidation {
 
    /**
     * Validation des méthodes de
-    * {@link fr.urssaf.image.sae.storage.dfce.services.support.InterruptionTraitementSupport#interruption(DateTime,InterruptionTraitementConfig, JmxIndicator)}
+    * {@link fr.urssaf.image.sae.storage.dfce.services.support.InterruptionTraitementSupport#interruption(DateTime,InterruptionTraitementConfig)}
     * <br>
     * 
     * @param currentDate

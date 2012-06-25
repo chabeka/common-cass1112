@@ -43,8 +43,4 @@
       <property name="storageUser" ref="storageUser" />
    </bean>
    
-   <bean id="portJmx" class="java.lang.Integer">
-      <constructor-arg value="${sae.archivagemasse.jmx.port}" />
-   </bean> 
-      
 </beans>
