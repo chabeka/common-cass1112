@@ -1,19 +1,42 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
    <modelVersion>4.0.0</modelVersion>
+   
    <groupId>fr.urssaf.image.commons</groupId>
    <artifactId>commons-cassandra-spring-batch</artifactId>
    <version>0.0.5-SNAPSHOT</version>
+   
    <name>commons-cassandra-spring-batch</name>
 
    <properties>
+      
+      <!-- Encodage de caractères -->
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+      
+      <!-- Version des plug-ins Maven -->
+      <maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
+      <maven-source-plugin.version>2.1.2</maven-source-plugin.version>
+      <maven-resources-plugin.version>2.5</maven-resources-plugin.version>
+      <maven-javadoc-plugin.version>2.8.1</maven-javadoc-plugin.version>
+      <sonar-maven-plugin.version>1.0-beta-2</sonar-maven-plugin.version>
+      <maven-release-plugin.version>2.2.1</maven-release-plugin.version>
+      <maven-pmd-plugin.version>2.5</maven-pmd-plugin.version>
+      
+      <!-- Version de commons-cassandra -->
+      <commons-cassandra.version>0.0.5-SNAPSHOT</commons-cassandra.version>
+      
+      <!-- Version des framework -->
+      <junit.version>4.8.2</junit.version>
+      <slf4j-api.version>1.6.1</slf4j-api.version>
+      <logback.version>0.9.30</logback.version>
+      <apache.commons-lang.version>2.6</apache.commons-lang.version>
+      <spring.framework.version>3.0.5.RELEASE</spring.framework.version>
       <spring.batch.version>2.1.8.RELEASE</spring.batch.version>
+      
+      <spring-batch-admin-manager.version>1.2.1.RELEASE</spring-batch-admin-manager.version>
+      <spring-batch-integration.version>1.2.1.RELEASE</spring-batch-integration.version>
       <hector.version>1.0-3</hector.version>
-      <slf4j-api.version>1.6.4</slf4j-api.version>
-      <logback.version>1.0.0</logback.version>
-      <org.springframework.version>3.0.5.RELEASE</org.springframework.version>
-      <junit.version>4.8.1</junit.version>            
+      
    </properties>
    
    <!-- Configuration SVN pour le plug-in maven-release -->
@@ -35,7 +58,7 @@
       <dependency>
          <groupId>fr.urssaf.image.commons</groupId>
          <artifactId>commons-cassandra</artifactId>
-         <version>0.0.5-SNAPSHOT</version>
+         <version>${commons-cassandra.version}</version>
       </dependency>
 
 
@@ -44,19 +67,19 @@
       <dependency>
          <groupId>org.springframework</groupId>
          <artifactId>spring-tx</artifactId>
-         <version>${org.springframework.version}</version>
+         <version>${spring.framework.version}</version>
       </dependency>
 
       <dependency>
          <groupId>org.springframework</groupId>
          <artifactId>spring-oxm</artifactId>
-         <version>${org.springframework.version}</version>
+         <version>${spring.framework.version}</version>
       </dependency>
 
       <dependency>
          <groupId>org.springframework</groupId>
          <artifactId>spring-test</artifactId>
-         <version>${org.springframework.version}</version>
+         <version>${spring.framework.version}</version>
          <scope>test</scope>
       </dependency>
 
@@ -76,7 +99,7 @@
       <dependency>
          <groupId>org.springframework.batch</groupId>
          <artifactId>spring-batch-admin-manager</artifactId>
-         <version>1.2.1.RELEASE</version>
+         <version>${spring-batch-admin-manager.version}</version>
          <exclusions>
             <exclusion>
                <groupId>org.slf4j</groupId>
@@ -95,7 +118,7 @@
       <dependency>
          <groupId>org.springframework.batch</groupId>
          <artifactId>spring-batch-integration</artifactId>
-         <version>1.2.1.RELEASE</version>
+         <version>${spring-batch-integration.version}</version>
          <exclusions>
             <exclusion>
                <groupId>org.slf4j</groupId>
@@ -114,7 +137,7 @@
       <dependency>
          <groupId>org.springframework</groupId>
          <artifactId>spring-core</artifactId>
-         <version>${org.springframework.version}</version>
+         <version>${spring.framework.version}</version>
          <exclusions>
             <exclusion>
                <groupId>commons-logging</groupId>
@@ -154,7 +177,7 @@
       <dependency>
          <groupId>commons-lang</groupId>
          <artifactId>commons-lang</artifactId>
-         <version>2.6</version>
+         <version>${apache.commons-lang.version}</version>
       </dependency>
       
    </dependencies>
@@ -165,6 +188,7 @@
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-compiler-plugin</artifactId>
+            <version>${maven-compiler-plugin.version}</version>
             <configuration>
                <source>1.6</source>
                <target>1.6</target>
@@ -175,6 +199,7 @@
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-source-plugin</artifactId>
+            <version>${maven-source-plugin.version}</version>
             <executions>
                <execution>
                   <id>bind-sources</id>
@@ -188,6 +213,7 @@
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-resources-plugin</artifactId>
+            <version>${maven-resources-plugin.version}</version>
             <configuration>
                <encoding>UTF-8</encoding>
             </configuration>
@@ -195,28 +221,17 @@
 
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-pmd-plugin</artifactId>
-            <version>2.5</version>
-            <configuration>
-               <linkXref>false</linkXref>
-               <sourceEncoding>UTF-8</sourceEncoding>
-               <minimumTokens>100</minimumTokens>
-               <targetJdk>1.6</targetJdk>
-            </configuration>
-         </plugin>
-
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
-            <version>2.7</version>
+            <version>${maven-javadoc-plugin.version}</version>
             <configuration>
+              <quiet>true</quiet>            
             </configuration>
          </plugin>
 
          <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>sonar-maven-plugin</artifactId>
-            <version>1.0-beta-2</version>
+            <version>${sonar-maven-plugin.version}</version>
          </plugin>
          
          <!--
@@ -225,7 +240,7 @@
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-release-plugin</artifactId>
-            <version>2.2.1</version>
+            <version>${maven-release-plugin.version}</version>
             <configuration>
                <preparationGoals>clean javadoc:jar install</preparationGoals>
                <autoVersionSubmodules>true</autoVersionSubmodules>
@@ -241,7 +256,7 @@
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-pmd-plugin</artifactId>
-            <version>2.5</version>
+            <version>${maven-pmd-plugin.version}</version>
             <configuration>
                <linkXref>false</linkXref>
                <sourceEncoding>utf-8</sourceEncoding>
