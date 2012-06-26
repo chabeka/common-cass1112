@@ -16,6 +16,14 @@ import fr.urssaf.image.sae.droit.dao.model.Pagmp;
 @ContextConfiguration(locations = { "/applicationContext-sae-droit-test.xml" })
 public class SaePagmpServiceTest {
 
+   /**
+    * 
+    */
+   private static final String TYPE_CORRECT = "type de l'exception correcte";
+   /**
+    * 
+    */
+   private static final String ERREUR_ATTENDUE = "erreur attendue";
    @Autowired
    private SaePagmpService service;
 
@@ -24,9 +32,9 @@ public class SaePagmpServiceTest {
 
       try {
          service.createPagmp(null);
-         Assert.fail("erreur attendue");
+         Assert.fail(ERREUR_ATTENDUE);
       } catch (Exception e) {
-         Assert.assertEquals("type de l'exception correcte",
+         Assert.assertEquals(TYPE_CORRECT,
                IllegalArgumentException.class, e.getClass());
          Assert.assertTrue("message de l'exception contient pagm", e
                .getMessage().contains("pagmp"));
@@ -43,9 +51,9 @@ public class SaePagmpServiceTest {
          pagmp.setPrmd("prmd");
 
          service.createPagmp(pagmp);
-         Assert.fail("erreur attendue");
+         Assert.fail(ERREUR_ATTENDUE);
       } catch (Exception e) {
-         Assert.assertEquals("type de l'exception correcte",
+         Assert.assertEquals(TYPE_CORRECT,
                IllegalArgumentException.class, e.getClass());
          Assert.assertTrue("message de l'exception contient code", e
                .getMessage().contains("code"));
@@ -62,9 +70,9 @@ public class SaePagmpServiceTest {
          pagmp.setPrmd("prmd");
 
          service.createPagmp(pagmp);
-         Assert.fail("erreur attendue");
+         Assert.fail(ERREUR_ATTENDUE);
       } catch (Exception e) {
-         Assert.assertEquals("type de l'exception correcte",
+         Assert.assertEquals(TYPE_CORRECT,
                IllegalArgumentException.class, e.getClass());
          Assert.assertTrue("message de l'exception contient description", e
                .getMessage().contains("description"));
@@ -81,9 +89,9 @@ public class SaePagmpServiceTest {
          pagmp.setCode("code");
 
          service.createPagmp(pagmp);
-         Assert.fail("erreur attendue");
+         Assert.fail(ERREUR_ATTENDUE);
       } catch (Exception e) {
-         Assert.assertEquals("type de l'exception correcte",
+         Assert.assertEquals(TYPE_CORRECT,
                IllegalArgumentException.class, e.getClass());
          Assert.assertTrue("message de l'exception contient prmd", e
                .getMessage().contains("prmd"));

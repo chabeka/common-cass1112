@@ -33,11 +33,11 @@ public class ContratServiceDao {
    private final Keyspace keyspace;
 
    /** code de l'organisme client lié au contrat de service */
-   public static final String CS_CODE_CLIENT = "codeClient";
-   
+   public static final String CS_LIBELLE = "libelle";
+
    /** durée maximum de l'habilitation exprimée en secondes */
    public static final String CS_VI_DUREE = "viDuree";
-   
+
    /** description du contrat de service */
    public static final String CS_DESCRIPTION = "description";
 
@@ -51,9 +51,8 @@ public class ContratServiceDao {
 
       this.keyspace = keyspace;
 
-      cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
-            keyspace, CS_CFNAME, StringSerializer.get(),
-            StringSerializer.get());
+      cfTmpl = new ThriftColumnFamilyTemplate<String, String>(keyspace,
+            CS_CFNAME, StringSerializer.get(), StringSerializer.get());
 
       cfTmpl.setCount(MAX_CS_ATTIBUTS);
 
@@ -92,7 +91,7 @@ public class ContratServiceDao {
       updater.setColumn(column);
 
    }
-   
+
    private void addLongColumn(ColumnFamilyUpdater<String, String> updater,
          String colName, Long value, Serializer<String> nameSerializer,
          Serializer<Long> valueSerializer, long clock) {
@@ -115,14 +114,14 @@ public class ContratServiceDao {
     * @param clock
     *           horloge de la colonne
     */
-   public final void ecritCodeClient(
-         ColumnFamilyUpdater<String, String> updater, String value, long clock) {
+   public final void ecritLibelle(ColumnFamilyUpdater<String, String> updater,
+         String value, long clock) {
 
-      addColumn(updater, CS_CODE_CLIENT, value, StringSerializer.get(),
+      addColumn(updater, CS_LIBELLE, value, StringSerializer.get(),
             StringSerializer.get(), clock);
 
    }
-   
+
    /**
     * ajoute une colonne {@value #CS_VI_DUREE}
     * 
@@ -133,14 +132,14 @@ public class ContratServiceDao {
     * @param clock
     *           horloge de la colonne
     */
-   public final void ecritViDuree(
-         ColumnFamilyUpdater<String, String> updater, Long value, long clock) {
+   public final void ecritViDuree(ColumnFamilyUpdater<String, String> updater,
+         Long value, long clock) {
 
       addLongColumn(updater, CS_VI_DUREE, value, StringSerializer.get(),
             LongSerializer.get(), clock);
 
    }
-   
+
    /**
     * ajoute une colonne {@value #CS_DESCRIPTION}
     * 

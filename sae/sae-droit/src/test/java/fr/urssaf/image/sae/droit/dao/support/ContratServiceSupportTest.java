@@ -55,7 +55,7 @@ public class ContratServiceSupportTest {
 
       support.create(contract, new Date().getTime());
 
-      ServiceContract res = support.find(LIBELLE1);
+      ServiceContract res = support.find(CODE_CLIENT1);
 
       Assert.assertNotNull("le contrat de service ne doit pas être null", res);
       Assert.assertEquals("l'identifiant (libelle) doit être correct",
@@ -127,11 +127,11 @@ public class ContratServiceSupportTest {
          boolean found = false;
          int index = 0;
          while (!found && index < list.size()) {
-            if (libelle.equals(list.get(index).getLibelle())) {
+            if (codeClient.equals(list.get(index).getCodeClient())) {
                Assert.assertEquals("la description doit etre valide",
                      description, list.get(index).getDescription());
-               Assert.assertEquals("le code client doit etre valide",
-                     codeClient, list.get(index).getCodeClient());
+               Assert.assertEquals("le libellé doit etre valide", libelle, list
+                     .get(index).getLibelle());
                Assert.assertEquals("la durée doit etre valide", duree, list
                      .get(index).getViDuree());
                found = true;

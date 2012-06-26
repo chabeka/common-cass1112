@@ -18,30 +18,40 @@ import fr.urssaf.image.sae.droit.utils.ResourceMessagesUtils;
 @Aspect
 public class SaePrmdServiceValidation {
 
+   /**
+    * 
+    */
+   private static final String ARG_REQUIRED = "argument.required";
    private static final String CREATE_METHOD = "execution(void fr.urssaf.image.sae.droit.service.SaePrmdService.createPrmd(*))"
          + "&& args(prmd)";
 
+   /**
+    * Méthode de validation de la méthode SaePrmdService#createPrmd(Prmd)
+    * 
+    * @param prmd
+    *           prmd à créer
+    */
    @Before(CREATE_METHOD)
    public final void checkCreate(Prmd prmd) {
 
       if (prmd == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "prmd"));
+               ARG_REQUIRED, "prmd"));
       }
 
       if (StringUtils.isEmpty(prmd.getCode())) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "code prmd"));
+               ARG_REQUIRED, "code prmd"));
       }
 
       if (StringUtils.isEmpty(prmd.getDescription())) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "description prmd"));
+               ARG_REQUIRED, "description prmd"));
       }
 
       if (StringUtils.isEmpty(prmd.getLucene())) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "lucène pagmp"));
+               ARG_REQUIRED, "lucène pagmp"));
       }
 
    }

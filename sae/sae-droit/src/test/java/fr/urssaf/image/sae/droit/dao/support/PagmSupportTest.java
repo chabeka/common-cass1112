@@ -27,6 +27,8 @@ import fr.urssaf.image.sae.droit.dao.model.Pagm;
 @DirtiesContext(classMode = ClassMode.AFTER_CLASS)
 public class PagmSupportTest {
 
+   private static final String ID_CLIENT = "idClient";
+
    private static final String CODE1 = "code1";
 
    private static final String DESCRIPTION1 = "description1";
@@ -62,9 +64,13 @@ public class PagmSupportTest {
       pagm.setPagmp(PAGMP1);
       pagm.setParametres(PARAMETRES1);
 
-      support.create(pagm, new Date().getTime());
+      support.create(ID_CLIENT, pagm, new Date().getTime());
 
-      Pagm res = support.find(CODE1);
+      List<Pagm> list = support.find(ID_CLIENT);
+
+      Assert.assertEquals("longueur de liste correcte", 1, list.size());
+
+      Pagm res = list.get(0);
 
       Assert.assertNotNull("le pagm ne doit pas être null", res);
       Assert.assertEquals("l'identifiant (code) doit être correct", CODE1, res
@@ -95,14 +101,14 @@ public class PagmSupportTest {
       pagm.setPagmp(PAGMP1);
       pagm.setParametres(PARAMETRES1);
 
-      support.create(pagm, new Date().getTime());
+      support.create(ID_CLIENT, pagm, new Date().getTime());
 
       support.delete(CODE1, new Date().getTime());
 
-      Pagm res = support.find(CODE1);
+      List<Pagm> res = support.find(CODE1);
 
-      Assert.assertNull(
-            "aucune référence de l'action unitaire ne doit être trouvée", res);
+      Assert.assertTrue("aucune référence pagm ne doit être trouvée",
+            res == null || res.isEmpty());
    }
 
    @Test
@@ -115,7 +121,7 @@ public class PagmSupportTest {
       pagm.setPagmp(PAGMP1);
       pagm.setParametres(PARAMETRES1);
 
-      support.create(pagm, new Date().getTime());
+      support.create(ID_CLIENT, pagm, new Date().getTime());
 
       pagm = new Pagm();
       pagm.setCode("code2");
@@ -128,7 +134,7 @@ public class PagmSupportTest {
       param.put("cle4", "valeur4");
       pagm.setParametres(param);
 
-      support.create(pagm, new Date().getTime());
+      support.create(ID_CLIENT, pagm, new Date().getTime());
 
       pagm = new Pagm();
       pagm.setCode("code3");
@@ -141,9 +147,9 @@ public class PagmSupportTest {
       param.put("cle6", "valeur6");
       pagm.setParametres(param);
 
-      support.create(pagm, new Date().getTime());
+      support.create(ID_CLIENT, pagm, new Date().getTime());
 
-      List<Pagm> list = support.findAll(10);
+      List<Pagm> list = support.find(ID_CLIENT);
 
       Assert.assertEquals("vérification du nombre d'enregistrements", 3, list
             .size());
@@ -183,10 +189,10 @@ public class PagmSupportTest {
                   found = true;
                }
             }
-            
+
             index++;
          }
-         
+
          Assert.assertTrue("le code " + code + " doit etre trouvé", found);
       }
 

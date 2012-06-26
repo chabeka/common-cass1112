@@ -16,6 +16,14 @@ import fr.urssaf.image.sae.droit.dao.model.Prmd;
 @ContextConfiguration(locations = { "/applicationContext-sae-droit-test.xml" })
 public class SaePrmdServiceTest {
 
+   /**
+    * 
+    */
+   private static final String TYPE_CORRECTE = "type de l'exception correcte";
+   /**
+    * 
+    */
+   private static final String ERREUR_ATTENDUE = "erreur attendue";
    @Autowired
    private SaePrmdService service;
 
@@ -23,9 +31,9 @@ public class SaePrmdServiceTest {
    public void testCreatePrmdObligatoire() {
       try {
          service.createPrmd(null);
-         Assert.fail("erreur attendue");
+         Assert.fail(ERREUR_ATTENDUE);
       } catch (Exception e) {
-         Assert.assertEquals("type de l'exception correcte",
+         Assert.assertEquals(TYPE_CORRECTE,
                IllegalArgumentException.class, e.getClass());
          Assert.assertTrue("message de l'exception contient prmd", e
                .getMessage().contains("prmd"));
@@ -42,9 +50,9 @@ public class SaePrmdServiceTest {
          prmd.setLucene("lucène");
 
          service.createPrmd(prmd);
-         Assert.fail("erreur attendue");
+         Assert.fail(ERREUR_ATTENDUE);
       } catch (Exception e) {
-         Assert.assertEquals("type de l'exception correcte",
+         Assert.assertEquals(TYPE_CORRECTE,
                IllegalArgumentException.class, e.getClass());
          Assert.assertTrue("message de l'exception contient code", e
                .getMessage().contains("code"));
@@ -61,9 +69,9 @@ public class SaePrmdServiceTest {
          prmd.setLucene("lucène");
 
          service.createPrmd(prmd);
-         Assert.fail("erreur attendue");
+         Assert.fail(ERREUR_ATTENDUE);
       } catch (Exception e) {
-         Assert.assertEquals("type de l'exception correcte",
+         Assert.assertEquals(TYPE_CORRECTE,
                IllegalArgumentException.class, e.getClass());
          Assert.assertTrue("message de l'exception contient description", e
                .getMessage().contains("description"));
@@ -79,9 +87,9 @@ public class SaePrmdServiceTest {
          prmd.setDescription("description");
 
          service.createPrmd(prmd);
-         Assert.fail("erreur attendue");
+         Assert.fail(ERREUR_ATTENDUE);
       } catch (Exception e) {
-         Assert.assertEquals("type de l'exception correcte",
+         Assert.assertEquals(TYPE_CORRECTE,
                IllegalArgumentException.class, e.getClass());
          Assert.assertTrue("message de l'exception contient lucène", e
                .getMessage().contains("lucène"));

@@ -18,32 +18,42 @@ import fr.urssaf.image.sae.droit.utils.ResourceMessagesUtils;
 @Aspect
 public class SaePagmpServiceValidation {
 
+   /**
+    * 
+    */
+   private static final String ARG_REQUIRED = "argument.required";
    private static final String CREATE_METHOD = "execution(void fr.urssaf.image.sae.droit.service.SaePagmpService.createPagmp(*))"
          + "&& args(pagmp)";
 
+   /**
+    * Méthode de validation de la méthode SaePagmpService#createPagmp(Pagmp)
+    * 
+    * @param pagmp
+    *           pagmp à créer
+    */
    @Before(CREATE_METHOD)
    public final void checkCreate(Pagmp pagmp) {
-      
+
       if (pagmp == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "pagmp"));
+               ARG_REQUIRED, "pagmp"));
       }
-      
+
       if (StringUtils.isEmpty(pagmp.getCode())) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "code pagmp"));
+               ARG_REQUIRED, "code pagmp"));
       }
-      
+
       if (StringUtils.isEmpty(pagmp.getDescription())) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "description pagmp"));
+               ARG_REQUIRED, "description pagmp"));
       }
-      
+
       if (StringUtils.isEmpty(pagmp.getPrmd())) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "prmd pagmp"));
+               ARG_REQUIRED, "prmd pagmp"));
       }
-      
+
    }
 
 }

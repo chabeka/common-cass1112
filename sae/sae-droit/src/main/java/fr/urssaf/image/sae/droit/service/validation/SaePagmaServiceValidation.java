@@ -22,6 +22,12 @@ public class SaePagmaServiceValidation {
    private static final String CREATE_METHOD = "execution(void fr.urssaf.image.sae.droit.service.SaePagmaService.createPagma(*))"
          + "&& args(pagma)";
 
+   /**
+    * Méthode de validation de la méthode SaePagmaService#createPagma(Pagma)
+    * 
+    * @param pagma
+    *           pagma à créer
+    */
    @Before(CREATE_METHOD)
    public final void checkCreate(Pagma pagma) {
 

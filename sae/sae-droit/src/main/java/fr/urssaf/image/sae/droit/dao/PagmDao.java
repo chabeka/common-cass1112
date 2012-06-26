@@ -3,8 +3,6 @@
  */
 package fr.urssaf.image.sae.droit.dao;
 
-import java.util.Map;
-
 import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
@@ -18,7 +16,8 @@ import me.prettyprint.hector.api.mutation.Mutator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import fr.urssaf.image.sae.droit.dao.serializer.MapStringSerializer;
+import fr.urssaf.image.sae.droit.dao.model.Pagm;
+import fr.urssaf.image.sae.droit.dao.serializer.PagmSerializer;
 
 /**
  * Service DAO de la famille de colonnes "DroitPagm"
@@ -83,24 +82,11 @@ public class PagmDao {
    }
 
    private void addColumn(ColumnFamilyUpdater<String, String> updater,
-         String colName, String value, Serializer<String> nameSerializer,
-         Serializer<String> valueSerializer, long clock) {
+         String colName, Pagm value, Serializer<String> nameSerializer,
+         Serializer<Pagm> pagmSerializer, long clock) {
 
-      HColumn<String, String> column = HFactory.createColumn(colName, value,
-            nameSerializer, valueSerializer);
-
-      column.setClock(clock);
-      updater.setColumn(column);
-
-   }
-
-   private void addMapColumn(ColumnFamilyUpdater<String, String> updater,
-         String colName, Map<String, String> value,
-         Serializer<String> nameSerializer,
-         Serializer<Map<String, String>> valueSerializer, long clock) {
-
-      HColumn<String, Map<String, String>> column = HFactory.createColumn(
-            colName, value, nameSerializer, valueSerializer);
+      HColumn<String, Pagm> column = HFactory.createColumn(colName, value,
+            nameSerializer, pagmSerializer);
 
       column.setClock(clock);
       updater.setColumn(column);
@@ -108,7 +94,7 @@ public class PagmDao {
    }
 
    /**
-    * ajoute une colonne {@value #PAGM_PAGMA}
+    * ajoute une colonne de PAGM
     * 
     * @param updater
     *           updater de <code>DroitActionUnitaire</code>
@@ -117,69 +103,14 @@ public class PagmDao {
     * @param clock
     *           horloge de la colonne
     */
-   public final void ecritPagma(ColumnFamilyUpdater<String, String> updater,
-         String value, long clock) {
+   public final void ecritPagm(ColumnFamilyUpdater<String, String> updater,
+         Pagm value, long clock) {
 
-      addColumn(updater, PAGM_PAGMA, value, StringSerializer.get(),
-            StringSerializer.get(), clock);
-
-   }
-
-   /**
-    * ajoute une colonne {@value #PAGM_PAGMP}
-    * 
-    * @param updater
-    *           updater de <code>DroitActionUnitaire</code>
-    * @param value
-    *           valeur de la colonne
-    * @param clock
-    *           horloge de la colonne
-    */
-   public final void ecritPagmp(ColumnFamilyUpdater<String, String> updater,
-         String value, long clock) {
-
-      addColumn(updater, PAGM_PAGMP, value, StringSerializer.get(),
-            StringSerializer.get(), clock);
+      addColumn(updater, value.getCode(), value, StringSerializer.get(),
+            PagmSerializer.get(), clock);
 
    }
 
-   /**
-    * ajoute une colonne {@value #PAGM_DESCRIPTION}
-    * 
-    * @param updater
-    *           updater de <code>DroitActionUnitaire</code>
-    * @param value
-    *           valeur de la colonne
-    * @param clock
-    *           horloge de la colonne
-    */
-   public final void ecritDescription(
-         ColumnFamilyUpdater<String, String> updater, String value, long clock) {
-
-      addColumn(updater, PAGM_DESCRIPTION, value, StringSerializer.get(),
-            StringSerializer.get(), clock);
-
-   }
-
-   /**
-    * ajoute une colonne {@value #PAGM_PARAMETRES}
-    * 
-    * @param updater
-    *           updater de <code>DroitActionUnitaire</code>
-    * @param value
-    *           valeur de la colonne
-    * @param clock
-    *           horloge de la colonne
-    */
-   public final void ecritParametres(
-         ColumnFamilyUpdater<String, String> updater,
-         Map<String, String> value, long clock) {
-
-      addMapColumn(updater, PAGM_PARAMETRES, value, StringSerializer.get(),
-            MapStringSerializer.get(), clock);
-
-   }
-   
    /**
     * Suppression d'un PAGM
     * 

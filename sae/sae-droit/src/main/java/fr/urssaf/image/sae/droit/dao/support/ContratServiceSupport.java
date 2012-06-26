@@ -48,11 +48,11 @@ public class ContratServiceSupport {
       // On utilise un ColumnFamilyUpdater, et on renseigne
       // la valeur de la clé dans la construction de l'updater
       ColumnFamilyUpdater<String, String> updaterJobRequest = dao
-            .getContratServiceTmpl().createUpdater(contratService.getLibelle());
+            .getContratServiceTmpl().createUpdater(
+                  contratService.getCodeClient());
 
       // écriture des colonnes
-      dao.ecritCodeClient(updaterJobRequest, contratService.getCodeClient(),
-            clock);
+      dao.ecritLibelle(updaterJobRequest, contratService.getLibelle(), clock);
       dao.ecritDescription(updaterJobRequest, contratService.getDescription(),
             clock);
       dao.ecritViDuree(updaterJobRequest, contratService.getViDuree(), clock);
@@ -104,9 +104,8 @@ public class ContratServiceSupport {
 
       if (result != null && result.hasResults()) {
          contract = new ServiceContract();
-         contract.setLibelle(result.getKey());
-         contract.setCodeClient(result
-               .getString(ContratServiceDao.CS_CODE_CLIENT));
+         contract.setCodeClient(result.getKey());
+         contract.setLibelle(result.getString(ContratServiceDao.CS_LIBELLE));
          contract.setDescription(result
                .getString(ContratServiceDao.CS_DESCRIPTION));
          contract.setViDuree(result.getLong(ContratServiceDao.CS_VI_DUREE));
@@ -149,7 +148,7 @@ public class ContratServiceSupport {
       List<ServiceContract> list = new ArrayList<ServiceContract>();
       for (ColumnFamilyResult<String, String> row : resultIterator) {
          ServiceContract contract = getContratServiceFromResult(row);
-         
+
          if (contract != null)
             list.add(contract);
       }

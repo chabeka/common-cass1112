@@ -21,6 +21,14 @@ import fr.urssaf.image.sae.droit.dao.model.ServiceContract;
 @ContextConfiguration(locations = { "/applicationContext-sae-droit-test.xml" })
 public class SaeDroitServiceTest {
 
+   /**
+    * 
+    */
+   private static final String EXCEPTION_ATTENDUE = "exception attendue";
+   /**
+    * 
+    */
+   private static final String TYPE_CORRECT = "type de l'exception correcte";
    @Autowired
    private SaeDroitService service;
 
@@ -29,10 +37,10 @@ public class SaeDroitServiceTest {
 
       try {
          service.loadSaeDroits(null, Arrays.asList(new String[] { "pagm1" }));
-         Assert.fail("exception attendue");
+         Assert.fail(EXCEPTION_ATTENDUE);
 
       } catch (Exception e) {
-         Assert.assertEquals("type de l'exception correcte",
+         Assert.assertEquals(TYPE_CORRECT,
                IllegalArgumentException.class, e.getClass());
          Assert.assertTrue("message de l'exception contient identifiant", e
                .getMessage().contains("identifiant"));
@@ -45,10 +53,10 @@ public class SaeDroitServiceTest {
 
       try {
          service.loadSaeDroits("id", null);
-         Assert.fail("exception attendue");
+         Assert.fail(EXCEPTION_ATTENDUE);
 
       } catch (Exception e) {
-         Assert.assertEquals("type de l'exception correcte",
+         Assert.assertEquals(TYPE_CORRECT,
                IllegalArgumentException.class, e.getClass());
          Assert.assertTrue("message de l'exception contient liste des pagms", e
                .getMessage().contains("liste des pagms"));
@@ -65,10 +73,10 @@ public class SaeDroitServiceTest {
          list.add(new Pagm());
 
          service.createContratService(null, list);
-         Assert.fail("exception attendue");
+         Assert.fail(EXCEPTION_ATTENDUE);
 
       } catch (Exception e) {
-         Assert.assertEquals("type de l'exception correcte",
+         Assert.assertEquals(TYPE_CORRECT,
                IllegalArgumentException.class, e.getClass());
          Assert.assertTrue("message de l'exception contient contrat", e
                .getMessage().contains("contrat"));
@@ -88,10 +96,10 @@ public class SaeDroitServiceTest {
          list.add(new Pagm());
 
          service.createContratService(contract, list);
-         Assert.fail("exception attendue");
+         Assert.fail(EXCEPTION_ATTENDUE);
 
       } catch (Exception e) {
-         Assert.assertEquals("type de l'exception correcte",
+         Assert.assertEquals(TYPE_CORRECT,
                IllegalArgumentException.class, e.getClass());
          Assert.assertTrue("message de l'exception contient code client", e
                .getMessage().contains("code client"));
@@ -111,10 +119,10 @@ public class SaeDroitServiceTest {
          list.add(new Pagm());
 
          service.createContratService(contract, list);
-         Assert.fail("exception attendue");
+         Assert.fail(EXCEPTION_ATTENDUE);
 
       } catch (Exception e) {
-         Assert.assertEquals("type de l'exception correcte",
+         Assert.assertEquals(TYPE_CORRECT,
                IllegalArgumentException.class, e.getClass());
          Assert.assertTrue("message de l'exception contient description", e
                .getMessage().contains("description"));
@@ -134,10 +142,10 @@ public class SaeDroitServiceTest {
          list.add(new Pagm());
 
          service.createContratService(contract, list);
-         Assert.fail("exception attendue");
+         Assert.fail(EXCEPTION_ATTENDUE);
 
       } catch (Exception e) {
-         Assert.assertEquals("type de l'exception correcte",
+         Assert.assertEquals(TYPE_CORRECT,
                IllegalArgumentException.class, e.getClass());
          Assert.assertTrue("message de l'exception contient libellé", e
                .getMessage().contains("libellé"));
@@ -157,10 +165,10 @@ public class SaeDroitServiceTest {
          list.add(new Pagm());
 
          service.createContratService(contract, list);
-         Assert.fail("exception attendue");
+         Assert.fail(EXCEPTION_ATTENDUE);
 
       } catch (Exception e) {
-         Assert.assertEquals("type de l'exception correcte",
+         Assert.assertEquals(TYPE_CORRECT,
                IllegalArgumentException.class, e.getClass());
          Assert.assertTrue("message de l'exception contient durée", e
                .getMessage().contains("durée"));
@@ -179,10 +187,10 @@ public class SaeDroitServiceTest {
          contract.setViDuree(Long.valueOf(12));
 
          service.createContratService(contract, null);
-         Assert.fail("exception attendue");
+         Assert.fail(EXCEPTION_ATTENDUE);
 
       } catch (Exception e) {
-         Assert.assertEquals("type de l'exception correcte",
+         Assert.assertEquals(TYPE_CORRECT,
                IllegalArgumentException.class, e.getClass());
          Assert.assertTrue("message de l'exception contient pagms", e
                .getMessage().contains("pagms"));

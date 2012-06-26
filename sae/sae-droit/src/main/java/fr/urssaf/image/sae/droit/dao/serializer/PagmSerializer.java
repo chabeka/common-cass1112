@@ -29,4 +29,6 @@ public final class PagmSerializer extends JacksonSerializer<Pagm> {
    public static PagmSerializer get() {
       return INSTANCE;
    }
+   
+   
 }
