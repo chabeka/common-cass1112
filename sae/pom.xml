@@ -235,9 +235,7 @@
       http://commons.apache.org/
       ==========================================
       -->
-      <apache.commons-dbcp.version>1.2.2</apache.commons-dbcp.version>
-      <apache.commons-logging.version>1.1.1</apache.commons-logging.version>
-      <apache.commons-discovery.version>(2,)</apache.commons-discovery.version>
+      
       <apache.commons-configuration.version>1.6</apache.commons-configuration.version>
       <apache.commons-collections.version>3.2.1</apache.commons-collections.version>
       <apache.commons-io.version>2.0.1</apache.commons-io.version>
@@ -245,24 +243,6 @@
       <apache.commons-codec.version>1.4</apache.commons-codec.version>
 
       <!-- Modèles de dépendance :
-      
-      <dependency>
-         <groupId>commons-dbcp</groupId>
-         <artifactId>commons-dbcp</artifactId>
-         <version>${apache.commons-dbcp.version}</version>
-      </dependency>
-      
-      <dependency>
-         <groupId>commons-logging</groupId>
-         <artifactId>commons-logging</artifactId>
-         <version>${apache.commons-logging.version}</version>
-      </dependency>
-      
-      <dependency>
-         <groupId>commons-discovery</groupId>
-         <artifactId>commons-discovery</artifactId>
-         <version>${apache.commons-discovery.version}</version>
-      </dependency>
       
       <dependency>
          <groupId>commons-configuration</groupId>
@@ -318,77 +298,18 @@
 
       <!--
       ==========================================
-      JAXB
-
-      https://jaxb.dev.java.net/
-      ==========================================
-      -->
-      <jaxb.api.version>2.2.1</jaxb.api.version>
-      <jaxb.impl.version>2.2.1.1</jaxb.impl.version>
-
-      <!-- Modèles de dépendance :
-      
-      <dependency>
-         <groupId>javax.xml.bind</groupId>
-         <artifactId>jaxb-api</artifactId>
-         <version>${jaxb.api.version}</version>
-      </dependency>
-      
-      <dependency>
-         <groupId>com.sun.xml.bind</groupId>
-         <artifactId>jaxb-impl</artifactId>
-         <version>${jaxb.impl.version}</version>
-      </dependency>
-      -->
-
-
-      <!--
-      ==========================================
-      Validation JSR 303
-      ==========================================
-      -->
-      <jsr303.api.version>1.0.0.GA</jsr303.api.version>
-      <jsr303.impl.hibernate.version>4.0.2.GA</jsr303.impl.hibernate.version>
-
-      <!-- Modèles de dépendance :
-      
-      <dependency>
-         <groupId>javax.validation</groupId>
-         <artifactId>validation-api</artifactId>
-         <version>${jsr303.api.version}</version>
-      </dependency>
-      
-      <dependency>
-         <groupId>org.hibernate</groupId>
-         <artifactId>hibernate-validator</artifactId>
-         <version>${jsr303.impl.hibernate.version}</version>
-      </dependency>
-      -->
-
-
-      <!--
-      ==========================================
       Joda Time (Java date and time API)
       
       http://joda-time.sourceforge.net/
       ==========================================
       -->
       <joda-time.version>2.0</joda-time.version>
-      <joda-time.jsptags.version>1.0.2</joda-time.jsptags.version>
 
       <!-- Modèles de dépendance :
-      
       <dependency>
          <groupId>joda-time</groupId>
          <artifactId>joda-time</artifactId>
          <version>${joda-time.version}</version>
-         <scope>runtime</scope>
-      </dependency>
-      
-      <dependency>
-         <groupId>joda-time</groupId>
-         <artifactId>joda-time-jsptags</artifactId>
-         <version>${joda-time.jsptags.version}</version>
          <scope>runtime</scope>
       </dependency>
       -->
@@ -411,40 +332,6 @@
          <artifactId>servlet-api</artifactId>
          <version>${javax.servlet.version}</version>
          <scope>provided</scope>
-      </dependency>
-      -->
-
-
-      <!--
-      ==========================================
-      JSTL (Java Server Pages Standard Tag Library)
-      ==========================================
-      -->
-      <jstl.version>1.2</jstl.version>
-
-      <!-- Modèles de dépendance :
-      <dependency>
-         <groupId>jstl</groupId>
-         <artifactId>jstl</artifactId>
-         <version>${jstl.version}</version>
-      </dependency>
-      -->
-
-
-      <!--
-      ==========================================
-      Jackson JSON Processor
-      
-      http://jackson.codehaus.org/
-      ==========================================
-      -->
-      <jackson-json.version>1.6.0</jackson-json.version>
-
-      <!-- Modèles de dépendance :
-      <dependency>
-         <groupId>org.codehaus.jackson</groupId>
-         <artifactId>jackson-mapper-asl</artifactId>
-         <version>${jackson-json.version}</version>
       </dependency>
       -->
 
@@ -560,14 +447,25 @@
       </dependency>
       -->
       
-      <!-- GUAVA 
+      
+      <!--
+      ==========================================
+      Google Guava
+      
+      http://code.google.com/p/guava-libraries/
+      ==========================================
+      -->
+      
+      <guava.version>12.0</guava.version>
+      
+      <!-- Modèles de dépendance :
       <dependency>
          <groupId>com.google.guava</groupId>
          <artifactId>guava</artifactId>
-         <version>12.0</version>
+         <version>${guava.version}</version>
       </dependency>
-   -->
-   <guava.version>12.0</guava.version>
+      -->
+   
       
    </properties>
 

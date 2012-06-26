@@ -61,13 +61,6 @@
          <version>${apache.commons-lang.version}</version>
       </dependency>
 
-      <!--  JSR 303 -->
-      <dependency>
-         <groupId>javax.validation</groupId>
-         <artifactId>validation-api</artifactId>
-         <version>${jsr303.api.version}</version>
-      </dependency>
-
       <!-- PROGRAMMATION ORIENTEE ASPECT -->
       <dependency>
          <groupId>org.aspectj</groupId>
