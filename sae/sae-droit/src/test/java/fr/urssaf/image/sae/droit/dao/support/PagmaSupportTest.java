@@ -107,40 +107,26 @@ public class PagmaSupportTest {
          support.create(pagma, new Date().getTime());
       }
 
-      List<Pagma> list = support.findAll(10);
-
-      Assert.assertEquals("vérification du nombre d'enregistrements", 3, list
-            .size());
-
       for (int i = 1; i < 4; i++) {
+         Pagma pagma = support.find(CODE + i);
+
+         Assert.assertNotNull("le PAGMa avec le code " + CODE + i
+               + " doit être trouvé", pagma);
+
          List<String> listAu = new ArrayList<String>();
          int max = i * 2;
          listAu.add(ACTION + (max - 1));
          listAu.add(ACTION + max);
-         String code = CODE + i;
 
-         boolean found = false;
-         int index = 0;
-         while (!found && index < list.size()) {
-            if (code.equals(list.get(index).getCode())) {
-               Assert
-                     .assertTrue(
-                           "la liste d'origine doit contenir toute la liste récupérée",
-                           listAu.containsAll(list.get(index)
-                                 .getActionUnitaires()));
+         Assert.assertTrue(
+               "la liste d'origine doit contenir toute la liste récupérée",
+               listAu.containsAll(pagma.getActionUnitaires()));
 
-               Assert
-                     .assertTrue(
-                           "la liste récupérée doit contenir toute la liste d'origine",
-                           list.get(index).getActionUnitaires().containsAll(
-                                 listAu));
-               found = true;
-            }
-            index++;
-         }
-
-         Assert.assertTrue("le code " + code + " doit etre trouvé", found);
+         Assert.assertTrue(
+               "la liste récupérée doit contenir toute la liste d'origine",
+               pagma.getActionUnitaires().containsAll(listAu));
       }
+
    }
 
 }

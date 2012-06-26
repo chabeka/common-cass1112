@@ -8,6 +8,7 @@ import java.util.List;
 import fr.urssaf.image.sae.droit.dao.model.Pagm;
 import fr.urssaf.image.sae.droit.dao.model.ServiceContract;
 import fr.urssaf.image.sae.droit.exception.ContractNotFoundException;
+import fr.urssaf.image.sae.droit.exception.PagmNotFoundException;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 
 /**
@@ -27,9 +28,12 @@ public interface SaeDroitService {
     *         PAGM passés en paramètre
     * @throws ContractNotFoundException
     *            exception levée si le contrat de service n'est pas trouvé
+    * @throws PagmNotFoundException
+    *            exception levée si un PAGM fourni n'est pas rattaché au contrat
+    *            de service
     */
    SaeDroits loadSaeDroits(String idClient, List<String> pagms)
-         throws ContractNotFoundException;
+         throws ContractNotFoundException, PagmNotFoundException;
 
    /**
     * Création d'un nouveau contrat de service

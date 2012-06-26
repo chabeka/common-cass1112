@@ -11,5 +11,16 @@ package fr.urssaf.image.sae.droit.dao.serializer.exception;
 public class PagmaReferenceException extends RuntimeException {
 
    private static final long serialVersionUID = 2296714377786678967L;
+   
+   /**
+    * Constructeur
+    * 
+    * @param message
+    *           message de l'exception
+    */
+   public PagmaReferenceException(String message) {
+      super(message);
+   }
+
 
 }

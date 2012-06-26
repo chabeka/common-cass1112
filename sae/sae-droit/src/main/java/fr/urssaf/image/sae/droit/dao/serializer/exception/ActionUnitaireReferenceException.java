@@ -12,4 +12,14 @@ public class ActionUnitaireReferenceException extends RuntimeException {
 
    private static final long serialVersionUID = 3833620672412920774L;
 
+   /**
+    * Constructeur
+    * 
+    * @param message
+    *           message de l'exception
+    */
+   public ActionUnitaireReferenceException(String message) {
+      super(message);
+   }
+
 }

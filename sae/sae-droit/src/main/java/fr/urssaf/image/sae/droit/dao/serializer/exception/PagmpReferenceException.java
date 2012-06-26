@@ -12,4 +12,14 @@ public class PagmpReferenceException extends RuntimeException {
 
    private static final long serialVersionUID = 4855685465214197899L;
 
+   /**
+    * constructeur
+    * 
+    * @param message
+    *           message de l'exception
+    */
+   public PagmpReferenceException(String message) {
+      super(message);
+   }
+
 }
