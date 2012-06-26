@@ -34,7 +34,7 @@
       <junit.version>4.8.2</junit.version>
       <apache.commons-io.version>1.4</apache.commons-io.version>
       <apache.commons-lang.version>2.5</apache.commons-lang.version>
-      <google.guava.version>10.0.1</google.guava.version>
+      <google.guava.version>12.0</google.guava.version>
       <lucene.version>2.9.1</lucene.version>
       <hector.version>1.0-3</hector.version>
       <spring.framework.version>3.0.5.RELEASE</spring.framework.version>
