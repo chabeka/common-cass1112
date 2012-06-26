@@ -295,7 +295,7 @@ public class JobRequest {
    /**
     * @return the toCheckFlag
     */
-   public Boolean getToCheckFlag() {
+   public final Boolean getToCheckFlag() {
       return toCheckFlag;
    }
 
@@ -303,14 +303,14 @@ public class JobRequest {
     * @param toCheckFlag
     *           the toCheckFlag to set
     */
-   public void setToCheckFlag(Boolean toCheckFlag) {
+   public final void setToCheckFlag(Boolean toCheckFlag) {
       this.toCheckFlag = toCheckFlag;
    }
 
    /**
     * @return the toCheckFlagRaison
     */
-   public String getToCheckFlagRaison() {
+   public final String getToCheckFlagRaison() {
       return toCheckFlagRaison;
    }
 
@@ -318,7 +318,7 @@ public class JobRequest {
     * @param toCheckFlagRaison
     *           the toCheckFlagRaison to set
     */
-   public void setToCheckFlagRaison(String toCheckFlagRaison) {
+   public final void setToCheckFlagRaison(String toCheckFlagRaison) {
       this.toCheckFlagRaison = toCheckFlagRaison;
    }
 
