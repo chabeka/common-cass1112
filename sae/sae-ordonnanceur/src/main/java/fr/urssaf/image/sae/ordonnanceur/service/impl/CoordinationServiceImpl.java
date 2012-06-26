@@ -1,12 +1,11 @@
 package fr.urssaf.image.sae.ordonnanceur.service.impl;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.UUID;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,8 +42,7 @@ public class CoordinationServiceImpl implements CoordinationService {
 
    private final OrdonnanceurConfiguration ordonnanceurConfiguration;
 
-   private static final SimpleDateFormat FORMAT = new SimpleDateFormat(
-         "dd/MM/yyyy HH'h'mm sss's' SSS'ms'", Locale.FRENCH);
+   private static final String FORMAT = "dd/MM/yyyy HH'h'mm ss's' SSS'ms'";
 
    /**
     * 
@@ -198,18 +196,19 @@ public class CoordinationServiceImpl implements CoordinationService {
                               + "depuis plus de {} minutes (date de réservation : {}, date de contrôle : {})",
                         new Object[] {
                               jobCourant.getIdJob(),
-                              ordonnanceurConfiguration
-                                    .getTpsMaxReservation(),
-                              FORMAT.format(jobCourant.getReservationDate()),
-                              FORMAT.format(currentDate) });
+                              ordonnanceurConfiguration.getTpsMaxReservation(),
+                              DateFormatUtils.format(jobCourant
+                                    .getReservationDate(), FORMAT),
+                              DateFormatUtils.format(currentDate, FORMAT) });
             try {
                jobService.updateToCheckFlag(jobCourant.getIdJob(), true,
                      "Job réservé depuis plus de "
                            + ordonnanceurConfiguration.getTpsMaxReservation()
                            + " minutes (date de réservation : "
-                           + FORMAT.format(jobCourant.getReservationDate())
+                           + DateFormatUtils.format(jobCourant
+                                 .getReservationDate(), FORMAT)
                            + ", date de contrôle : "
-                           + FORMAT.format(currentDate));
+                           + DateFormatUtils.format(currentDate, FORMAT));
 
             } catch (JobInexistantException e) {
                LOG.warn("Impossible de modifier le Job, il n'existe pas", e);
@@ -220,20 +219,21 @@ public class CoordinationServiceImpl implements CoordinationService {
                   .error(
                         "Contrôler le traitement n°{}. Raison : Etat \"en cours\" "
                               + "depuis plus de {} minutes (date de démarrage du traitement : {}, "
-                              + "date de contrôle : {})",
-                        new Object[] {
+                              + "date de contrôle : {})", new Object[] {
                               jobCourant.getIdJob(),
                               ordonnanceurConfiguration.getTpsMaxTraitement(),
-                              FORMAT.format(jobCourant.getStartingDate()),
-                              FORMAT.format(currentDate) });
+                              DateFormatUtils.format(jobCourant
+                                    .getStartingDate(), FORMAT),
+                              DateFormatUtils.format(currentDate, FORMAT) });
             try {
                jobService.updateToCheckFlag(jobCourant.getIdJob(), true,
                      "Job en cours depuis plus de "
                            + ordonnanceurConfiguration.getTpsMaxTraitement()
                            + " minutes (date de démarrage : "
-                           + FORMAT.format(jobCourant.getStartingDate())
+                           + DateFormatUtils.format(jobCourant
+                                 .getStartingDate(), FORMAT)
                            + ", date de contrôle : "
-                           + FORMAT.format(currentDate));
+                           + DateFormatUtils.format(currentDate, FORMAT));
 
             } catch (JobInexistantException e) {
                LOG.warn("Impossible de modifier le Job, il n'existe pas", e);
