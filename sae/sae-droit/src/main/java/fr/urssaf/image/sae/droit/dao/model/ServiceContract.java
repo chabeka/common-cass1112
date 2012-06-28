@@ -81,4 +81,43 @@ public class ServiceContract {
       this.description = description;
    }
 
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final boolean equals(Object obj) {
+      boolean areEquals = false;
+
+      if (obj instanceof ServiceContract) {
+         ServiceContract contract = (ServiceContract) obj;
+
+         areEquals = codeClient.equals(contract.getCodeClient())
+               && description.equals(contract.getDescription())
+               && libelle.equals(contract.getLibelle())
+               && viDuree.equals(contract.getViDuree());
+
+      }
+
+      return areEquals;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final int hashCode() {
+      return super.hashCode();
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final String toString() {
+
+      return "code client : " + codeClient + "\n" + "description : "
+            + description + "\n" + "libellé : " + libelle + "\n"
+            + "durée vi : " + viDuree.toString() + "\n";
+   }
+
 }

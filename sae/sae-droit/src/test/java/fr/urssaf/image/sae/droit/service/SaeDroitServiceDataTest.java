@@ -34,7 +34,7 @@ import fr.urssaf.image.sae.droit.dao.support.PagmSupport;
 import fr.urssaf.image.sae.droit.dao.support.PagmaSupport;
 import fr.urssaf.image.sae.droit.dao.support.PagmpSupport;
 import fr.urssaf.image.sae.droit.dao.support.PrmdSupport;
-import fr.urssaf.image.sae.droit.exception.ContractNotFoundException;
+import fr.urssaf.image.sae.droit.exception.ContratServiceNotFoundException;
 import fr.urssaf.image.sae.droit.exception.PagmNotFoundException;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
@@ -127,8 +127,8 @@ public class SaeDroitServiceDataTest {
       cassandraServer.resetData();
    }
 
-   @Test(expected = ContractNotFoundException.class)
-   public void testContratServiceInexistant() throws ContractNotFoundException,
+   @Test(expected = ContratServiceNotFoundException.class)
+   public void testContratServiceInexistant() throws ContratServiceNotFoundException,
          PagmNotFoundException {
 
       service.loadSaeDroits("test1", Arrays.asList(new String[] { "pagm1" }));
@@ -136,7 +136,7 @@ public class SaeDroitServiceDataTest {
    }
 
    @Test(expected = PagmNotFoundException.class)
-   public void testPagmInexistant() throws ContractNotFoundException,
+   public void testPagmInexistant() throws ContratServiceNotFoundException,
          PagmNotFoundException {
       creationContrat();
 
@@ -145,7 +145,7 @@ public class SaeDroitServiceDataTest {
    }
 
    @Test(expected = PagmaReferenceException.class)
-   public void testPagmaInexistant() throws ContractNotFoundException,
+   public void testPagmaInexistant() throws ContratServiceNotFoundException,
          PagmNotFoundException {
       creationContrat();
       creationPagm();
@@ -155,7 +155,7 @@ public class SaeDroitServiceDataTest {
    }
 
    @Test(expected = PagmpReferenceException.class)
-   public void testPagmpInexistant() throws ContractNotFoundException,
+   public void testPagmpInexistant() throws ContratServiceNotFoundException,
          PagmNotFoundException {
       creationContrat();
       creationPagm();
@@ -166,7 +166,7 @@ public class SaeDroitServiceDataTest {
    }
 
    @Test(expected = PrmdReferenceException.class)
-   public void testPrmdInexistant() throws ContractNotFoundException,
+   public void testPrmdInexistant() throws ContratServiceNotFoundException,
          PagmNotFoundException {
       creationContrat();
       creationPagm();
@@ -178,7 +178,7 @@ public class SaeDroitServiceDataTest {
    }
 
    @Test(expected = ActionUnitaireReferenceException.class)
-   public void testActionInexistant() throws ContractNotFoundException,
+   public void testActionInexistant() throws ContratServiceNotFoundException,
          PagmNotFoundException {
       creationContrat();
       creationPagm();
@@ -191,7 +191,7 @@ public class SaeDroitServiceDataTest {
    }
 
    @Test
-   public void testSucces() throws ContractNotFoundException,
+   public void testSucces() throws ContratServiceNotFoundException,
          PagmNotFoundException {
       creationContrat();
       creationPagm();
@@ -228,7 +228,7 @@ public class SaeDroitServiceDataTest {
    }
 
    @Test
-   public void testSuccesPlusieursPagm() throws ContractNotFoundException,
+   public void testSuccesPlusieursPagm() throws ContratServiceNotFoundException,
          PagmNotFoundException {
       creationContrat();
       creationPagm();

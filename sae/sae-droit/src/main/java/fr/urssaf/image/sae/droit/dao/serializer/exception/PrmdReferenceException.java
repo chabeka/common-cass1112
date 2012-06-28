@@ -13,13 +13,15 @@ public class PrmdReferenceException extends RuntimeException {
    private static final long serialVersionUID = -5354435074010883178L;
 
    /**
-    * Constructeur
+    * constructeur
     * 
     * @param message
     *           message de l'exception
+    * @param cause
+    *           cause mère
     */
-   public PrmdReferenceException(String message) {
-      super(message);
+   public PrmdReferenceException(String message, Throwable cause) {
+      super(message, cause);
    }
 
 }

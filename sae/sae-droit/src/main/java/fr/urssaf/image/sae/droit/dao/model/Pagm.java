@@ -101,4 +101,52 @@ public class Pagm {
       this.parametres = parametres;
    }
 
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final boolean equals(Object obj) {
+      boolean areEquals = false;
+
+      if (obj instanceof Pagm) {
+         Pagm pagm = (Pagm) obj;
+         areEquals = code.equals(pagm.getCode())
+               && description.equals(pagm.getDescription())
+               && pagma.equals(pagm.getPagma())
+               && pagmp.equals(pagm.getPagmp())
+               && parametres.keySet().size() == pagm.getParametres().keySet()
+                     .size()
+               && parametres.keySet()
+                     .containsAll(pagm.getParametres().keySet());
+
+      }
+
+      return areEquals;
+   }
+
+   /*
+    * (non-Javadoc)
+    * 
+    * @see java.lang.Object#toString()
+    */
+   @Override
+   public final String toString() {
+      StringBuffer buffer = new StringBuffer();
+      for (String key : parametres.keySet()) {
+         buffer.append(key + " = " + parametres.get(key) + "\n");
+      }
+
+      return "code : " + code + "\n" + "description : " + description + "\n"
+            + "pagma : " + pagma + "\n" + "pagmp : " + pagmp + "\n"
+            + "liste des parametres :\n" + buffer.toString();
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final int hashCode() {
+      return super.hashCode();
+   }
+
 }

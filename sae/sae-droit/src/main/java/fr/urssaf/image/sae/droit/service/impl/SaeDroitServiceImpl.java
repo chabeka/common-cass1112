@@ -6,6 +6,8 @@ package fr.urssaf.image.sae.droit.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +15,10 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.cache.CacheLoader.InvalidCacheLoadException;
+import com.netflix.curator.framework.CuratorFramework;
 
+import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
+import fr.urssaf.image.commons.zookeeper.ZookeeperMutex;
 import fr.urssaf.image.sae.droit.dao.model.ActionUnitaire;
 import fr.urssaf.image.sae.droit.dao.model.Pagm;
 import fr.urssaf.image.sae.droit.dao.model.Pagma;
@@ -30,11 +35,15 @@ import fr.urssaf.image.sae.droit.dao.support.PagmSupport;
 import fr.urssaf.image.sae.droit.dao.support.PagmaSupport;
 import fr.urssaf.image.sae.droit.dao.support.PagmpSupport;
 import fr.urssaf.image.sae.droit.dao.support.PrmdSupport;
-import fr.urssaf.image.sae.droit.exception.ContractNotFoundException;
+import fr.urssaf.image.sae.droit.exception.ContratServiceNotFoundException;
+import fr.urssaf.image.sae.droit.exception.ContratServiceReferenceException;
+import fr.urssaf.image.sae.droit.exception.LockTimeoutException;
 import fr.urssaf.image.sae.droit.exception.PagmNotFoundException;
+import fr.urssaf.image.sae.droit.exception.PagmReferenceException;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.droit.service.SaeDroitService;
+import fr.urssaf.image.sae.droit.utils.ZookeeperUtils;
 
 /**
  * Classe d'implémentation du service {@link SaeDroitService}.<br>
@@ -45,12 +54,32 @@ import fr.urssaf.image.sae.droit.service.SaeDroitService;
 @Component
 public class SaeDroitServiceImpl implements SaeDroitService {
 
+   /**
+    * 
+    */
+   private static final String MESSAGE_CONTRAT = "Le contrat de service ";
+
+   private static final Logger LOGGER = LoggerFactory
+         .getLogger(SaeDroitServiceImpl.class);
+
+   /**
+    * préfixe utilisé pour les locks zookeeper
+    */
+   private static final String PREFIXE_CONTRAT = "/DroitContratService/";
+
    private final LoadingCache<String, ServiceContract> contratsCache;
    private final LoadingCache<String, List<Pagm>> pagmsCache;
    private final LoadingCache<String, Pagma> pagmasCache;
    private final LoadingCache<String, Pagmp> pagmpsCache;
    private final LoadingCache<String, Prmd> prmdsCache;
    private final LoadingCache<String, ActionUnitaire> actionsCache;
+
+   private final ContratServiceSupport contratSupport;
+   private final PagmSupport pagmSupport;
+
+   private final CuratorFramework curatorClient;
+
+   private final JobClockSupport clockSupport;
 
    /**
     * Constructeur
@@ -67,13 +96,18 @@ public class SaeDroitServiceImpl implements SaeDroitService {
     *           support pour les actions unitaires
     * @param prmdSupport
     *           support pour les prmd
+    * @param curatorClient
+    *           connexion à Zookeeper
+    * @param clockSupport
+    *           support pour la gestion de l'horloge CASSANDRA
     */
    @Autowired
    public SaeDroitServiceImpl(final ContratServiceSupport contratSupport,
          final PagmSupport pagmSupport, final PagmaSupport pagmaSupport,
          final PagmpSupport pagmpSupport,
          final ActionUnitaireSupport actionSupport,
-         final PrmdSupport prmdSupport) {
+         final PrmdSupport prmdSupport, final CuratorFramework curatorClient,
+         final JobClockSupport clockSupport) {
       contratsCache = CacheBuilder.newBuilder().build(
             new CacheLoader<String, ServiceContract>() {
 
@@ -134,6 +168,11 @@ public class SaeDroitServiceImpl implements SaeDroitService {
 
             });
 
+      this.contratSupport = contratSupport;
+      this.pagmSupport = pagmSupport;
+      this.curatorClient = curatorClient;
+      this.clockSupport = clockSupport;
+
    }
 
    /**
@@ -141,14 +180,14 @@ public class SaeDroitServiceImpl implements SaeDroitService {
     */
    @Override
    public final SaeDroits loadSaeDroits(String idClient, List<String> pagms)
-         throws ContractNotFoundException, PagmNotFoundException {
+         throws ContratServiceNotFoundException, PagmNotFoundException {
 
       try {
          contratsCache.getUnchecked(idClient);
       } catch (InvalidCacheLoadException e) {
-         throw new ContractNotFoundException(
+         throw new ContratServiceNotFoundException(
                "Aucun contrat de service n'a été trouvé "
-                     + " pour l'identifiant " + idClient);
+                     + " pour l'identifiant " + idClient, e);
       }
 
       List<Pagm> listPagm;
@@ -169,8 +208,11 @@ public class SaeDroitServiceImpl implements SaeDroitService {
          try {
             pagma = pagmasCache.getUnchecked(pagm.getPagma());
          } catch (InvalidCacheLoadException e) {
-            throw new PagmaReferenceException("Le PAGMa " + pagm.getPagma()
-                  + " n'a pas été trouvé dans la famille de colonne DroitPagma");
+            throw new PagmaReferenceException(
+                  "Le PAGMa "
+                        + pagm.getPagma()
+                        + " n'a pas été trouvé dans la famille de colonne DroitPagma",
+                  e);
          }
 
          Prmd prmd = getPrmd(pagm.getPagmp());
@@ -181,7 +223,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
             } catch (InvalidCacheLoadException e) {
                throw new ActionUnitaireReferenceException("L'action unitaire "
                      + codeAction + " n'a pas été trouvée "
-                     + "dans la famille de colonne DroitActionUnitaire");
+                     + "dans la famille de colonne DroitActionUnitaire", e);
             }
 
             gererPrmd(saeDroits, codeAction, prmd, pagm);
@@ -195,11 +237,78 @@ public class SaeDroitServiceImpl implements SaeDroitService {
 
    /**
     * {@inheritDoc}
+    * 
+    * @throws LockTimeoutException
     */
    @Override
    public final void createContratService(ServiceContract serviceContract,
+         List<Pagm> pagms) throws LockTimeoutException {
+
+      String lockName = PREFIXE_CONTRAT + serviceContract.getCodeClient();
+
+      ZookeeperMutex mutex = ZookeeperUtils
+            .createMutex(curatorClient, lockName);
+
+      try {
+
+         ZookeeperUtils.acquire(mutex, lockName);
+
+         checkContratServiceInexistant(serviceContract);
+         checkPagmInexistant(serviceContract);
+         checkPagmsExist(pagms);
+
+         contratSupport.create(serviceContract, clockSupport.currentCLock());
+         for (Pagm currentPagm : pagms) {
+            pagmSupport.create(serviceContract.getCodeClient(), currentPagm,
+                  clockSupport.currentCLock());
+         }
+
+         checkLock(mutex, serviceContract, pagms);
+
+      } finally {
+         mutex.release();
+      }
+
+   }
+
+   /**
+    * @param mutex
+    */
+   private void checkLock(ZookeeperMutex mutex, ServiceContract contrat,
          List<Pagm> pagms) {
-      // TODO Auto-generated method stub
+      if (!ZookeeperUtils.isLock(mutex)) {
+
+         String codeContrat = contrat.getCodeClient();
+
+         ServiceContract storedContract;
+         try {
+            storedContract = contratsCache.getUnchecked(codeContrat);
+
+         } catch (InvalidCacheLoadException e) {
+            throw new ContratServiceReferenceException(MESSAGE_CONTRAT
+                  + codeContrat + "n'a pas été créé", e);
+         }
+
+         List<Pagm> pagmList;
+         try {
+            pagmList = pagmsCache.getUnchecked(codeContrat);
+         } catch (InvalidCacheLoadException e) {
+            throw new PagmReferenceException("les pagm du contrat de service "
+                  + codeContrat + "n'ont pas été créé", e);
+         }
+
+         if (!storedContract.equals(contrat)) {
+            throw new ContratServiceReferenceException(MESSAGE_CONTRAT
+                  + codeContrat + " a déjà été créé");
+         }
+
+         if (pagmList.size() != pagms.size() || !pagmList.containsAll(pagms)) {
+            throw new PagmReferenceException(
+                  "Les pagms rattachés au contrat de service " + codeContrat
+                        + " ont déjà été créés");
+         }
+
+      }
 
    }
 
@@ -233,7 +342,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
          pagmp = pagmpsCache.getUnchecked(codePagmp);
       } catch (InvalidCacheLoadException e) {
          throw new PagmpReferenceException("Le PAGMp " + codePagmp
-               + " n'a pas été trouvé dans la famille de colonne DroitPagma");
+               + " n'a pas été trouvé dans la famille de colonne DroitPagma", e);
       }
 
       Prmd prmd;
@@ -241,7 +350,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
          prmd = prmdsCache.getUnchecked(pagmp.getPrmd());
       } catch (InvalidCacheLoadException e) {
          throw new PrmdReferenceException("Le PRMD " + pagmp.getPrmd()
-               + " n'a pas été trouvé dans la famille de colonne DroitPagma");
+               + " n'a pas été trouvé dans la famille de colonne DroitPagma", e);
       }
 
       return prmd;
@@ -262,4 +371,83 @@ public class SaeDroitServiceImpl implements SaeDroitService {
 
    }
 
+   /**
+    * vérifie si le contrat de service est pré existant. Si c'est le cas, levée
+    * d'une {@link RuntimeException}
+    * 
+    * @param serviceContract
+    *           le contrat de service
+    */
+   private void checkContratServiceInexistant(ServiceContract serviceContract) {
+      try {
+         contratsCache.getUnchecked(serviceContract.getCodeClient());
+         LOGGER.warn(MESSAGE_CONTRAT + serviceContract.getCodeClient()
+               + " existe déjà dans la famille de colonne DroitContratService");
+         // FIXME FBON - Vérifier que la levée d'exception est correcte
+         throw new ContratServiceReferenceException(MESSAGE_CONTRAT
+               + serviceContract.getCodeClient()
+               + " existe déjà dans la famille de colonne DroitContratService");
+      } catch (InvalidCacheLoadException e) {
+         LOGGER.debug("aucune référence au contrat de service "
+               + serviceContract.getCodeClient()
+               + " trouvéedans la famille de colonne DroitContratService."
+               + " On continue le traitement");
+      }
+
+   }
+
+   /**
+    * vérifie si le contrat de service est pré existant pour le Pagm. Si c'est
+    * le cas, levée d'une {@link RuntimeException}
+    * 
+    * @param serviceContract
+    *           le contrat de service
+    */
+   private void checkPagmInexistant(ServiceContract serviceContract) {
+      try {
+         pagmsCache.getUnchecked(serviceContract.getCodeClient());
+         LOGGER.warn(MESSAGE_CONTRAT + serviceContract.getCodeClient()
+               + " existe déjà dans la famille de colonne DroitPagm");
+         // FIXME FBON - Vérifier que la levée d'exception est correcte
+         throw new PagmReferenceException(MESSAGE_CONTRAT
+               + serviceContract.getCodeClient()
+               + " existe déjà dans la famille de colonne DroitPagm");
+      } catch (InvalidCacheLoadException e) {
+         LOGGER.debug("aucune référence au contrat de service "
+               + serviceContract.getCodeClient()
+               + " trouvée dans la famille de colonne DroitPagm."
+               + " On continue le traitement");
+      }
+
+   }
+
+   /**
+    * vérifie si tous les PAGMa et PAGMp d'une {@link RuntimeException}
+    * 
+    * @param serviceContract
+    *           le contrat de service
+    */
+   private void checkPagmsExist(List<Pagm> pagms) {
+
+      for (Pagm pagm : pagms) {
+
+         try {
+            pagmasCache.getUnchecked(pagm.getPagma());
+
+         } catch (InvalidCacheLoadException e) {
+            throw new PagmaReferenceException("Le pagma " + pagm.getPagma()
+                  + " n'a pas été trouvé "
+                  + "dans la famille de colonne DroitPagma", e);
+         }
+
+         try {
+            pagmpsCache.getUnchecked(pagm.getPagmp());
+
+         } catch (InvalidCacheLoadException e) {
+            throw new PagmpReferenceException("Le pagmp " + pagm.getPagmp()
+                  + " n'a pas été trouvé "
+                  + "dans la famille de colonne DroitPagmp", e);
+         }
+      }
+   }
 }

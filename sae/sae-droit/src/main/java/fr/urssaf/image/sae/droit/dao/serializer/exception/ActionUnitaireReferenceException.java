@@ -16,10 +16,12 @@ public class ActionUnitaireReferenceException extends RuntimeException {
     * Constructeur
     * 
     * @param message
-    *           message de l'exception
+    *           message de l'erreur
+    * @param cause
+    *           cause mère
     */
-   public ActionUnitaireReferenceException(String message) {
-      super(message);
+   public ActionUnitaireReferenceException(String message, Throwable cause) {
+      super(message, cause);
    }
 
 }

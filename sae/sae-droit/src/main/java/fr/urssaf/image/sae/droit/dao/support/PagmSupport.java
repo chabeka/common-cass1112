@@ -11,6 +11,7 @@ import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
 import me.prettyprint.hector.api.mutation.Mutator;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -44,7 +45,7 @@ public class PagmSupport {
 
       ColumnFamilyUpdater<String, String> updater = dao.getPagmTmpl()
             .createUpdater(idClient);
-      
+
       dao.ecritPagm(updater, pagm, clock);
 
       dao.getPagmTmpl().update(updater);
@@ -82,8 +83,12 @@ public class PagmSupport {
 
       Collection<String> colNames = result.getColumnNames();
 
-      List<Pagm> pagms = new ArrayList<Pagm>(colNames.size());
-
+      List<Pagm> pagms = null;
+      
+      if (CollectionUtils.isNotEmpty(colNames)) {
+         pagms = new ArrayList<Pagm>(colNames.size());
+      }
+      
       for (String name : colNames) {
 
          byte[] bResult = result.getByteArray(name);
