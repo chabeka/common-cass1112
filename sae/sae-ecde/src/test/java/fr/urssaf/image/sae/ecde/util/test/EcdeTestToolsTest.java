@@ -12,7 +12,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
- * Classe Test de cette factory bean. 
+ * Classe Test de cette factory bean.
  * 
  */
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -21,31 +21,44 @@ public class EcdeTestToolsTest {
 
    @Autowired
    public EcdeTestTools ecdeTestTools;
-   
-   
+
    @Test
    public void getUrlEcdeSuccess() throws IOException, URISyntaxException {
-      
+
       EcdeTestSommaire ecdeTestSommaire = ecdeTestTools.buildEcdeTestSommaire();
-      
-      assertEquals(
-            "Erreur lors de la mise en place des TU pour l'ECDE", 
-            true, 
-            ecdeTestSommaire.getRepEcde().exists());
-      
+
+      try {
+
+         assertEquals("Erreur lors de la mise en place des TU pour l'ECDE",
+               true, ecdeTestSommaire.getRepEcde().exists());
+
+      } finally {
+
+         ecdeTestTools.cleanEcdeTestSommaire(ecdeTestSommaire);
+
+      }
+
    }
-   
+
    @Test
-   public void getUrlEcdeDocumentSuccess() throws IOException, URISyntaxException {
-      
+   public void getUrlEcdeDocumentSuccess() throws IOException,
+         URISyntaxException {
+
       String nomDuFichierDoc = "attestation.pdf";
-      EcdeTestDocument ecdeTestDocument = ecdeTestTools.buildEcdeTestDocument(nomDuFichierDoc);
+      EcdeTestDocument ecdeTestDocument = ecdeTestTools
+            .buildEcdeTestDocument(nomDuFichierDoc);
+
+      try {
       
-      assertEquals(
-            "Erreur lors de la mise en place des TU pour l'ECDE", 
-            true, 
+      assertEquals("Erreur lors de la mise en place des TU pour l'ECDE", true,
             ecdeTestDocument.getRepEcdeDocuments().exists());
       
+      } finally {
+
+         ecdeTestTools.cleanEcdeTestDocument(ecdeTestDocument);
+
+      }
+
    }
-   
+
 }
