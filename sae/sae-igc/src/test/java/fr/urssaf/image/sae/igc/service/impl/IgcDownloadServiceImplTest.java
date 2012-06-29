@@ -14,8 +14,8 @@ import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.SystemUtils;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -34,17 +34,19 @@ public class IgcDownloadServiceImplTest {
 
    private IgcDownloadServiceImpl service;
 
-   private final static String DIRECTORY;
+   private final static File DIRECTORY;
 
-   private final static String CRL;
+   private final static File CRL;
 
    private static URL download_exist;
 
    static {
-      DIRECTORY = FilenameUtils.concat(SystemUtils.getJavaIoTmpDir()
-            .getAbsolutePath(), "certificats.download");
 
-      CRL = DIRECTORY + "/CRL/";
+      DIRECTORY = new File(SystemUtils.getJavaIoTmpDir().getAbsolutePath(),
+            "certificats.download");
+
+      CRL = new File(DIRECTORY, "CRL");
+
    }
 
    @BeforeClass
@@ -54,10 +56,15 @@ public class IgcDownloadServiceImplTest {
 
       download_exist = new URL(config.getString("url.download"));
 
-      File directory = new File(FilenameUtils.concat(DIRECTORY, "CRL"));
-      FileUtils.forceMkdir(directory);
-      // FileUtils.cleanDirectory(directory);
+      FileUtils.forceMkdir(CRL);
 
+   }
+
+   @AfterClass
+   public static void afterClass() throws IOException {
+        
+      FileUtils.deleteDirectory(DIRECTORY);
+      
    }
 
    @Before
@@ -70,7 +77,7 @@ public class IgcDownloadServiceImplTest {
    public void telechargeCRLs_success() throws IgcDownloadException {
 
       IgcConfig igcConfig = new IgcConfig();
-      igcConfig.setRepertoireCRLs(CRL);
+      igcConfig.setRepertoireCRLs(CRL.getAbsolutePath());
 
       List<URL> urls = new ArrayList<URL>();
       urls.add(download_exist);
@@ -82,8 +89,8 @@ public class IgcDownloadServiceImplTest {
       assertEquals("erreur sur le nombre d'urls à télécharger", Integer
             .valueOf(15), crlsNumber);
 
-      Collection<File> files = FileUtils.listFiles(new File(CRL), null, true);
- 
+      Collection<File> files = FileUtils.listFiles(CRL, null, true);
+
       for (File file : files) {
 
          LOG.debug(file.getName());
@@ -96,7 +103,7 @@ public class IgcDownloadServiceImplTest {
          MalformedURLException {
 
       IgcConfig igcConfig = new IgcConfig();
-      igcConfig.setRepertoireCRLs(CRL);
+      igcConfig.setRepertoireCRLs(CRL.getAbsolutePath());
 
       List<URL> urls = new ArrayList<URL>();
       urls.add(new URL("http://download.oracle.com/javase/6/docs/api/"));

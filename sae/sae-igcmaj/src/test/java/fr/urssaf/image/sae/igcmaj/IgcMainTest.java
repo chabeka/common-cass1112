@@ -10,8 +10,8 @@ import java.util.Collection;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.SystemUtils;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -24,28 +24,35 @@ public class IgcMainTest {
 
    private static final String FAIL_MESSAGE = "le test doit échouer";
 
-   private final static String DIRECTORY;
+   private final static File DIRECTORY;
 
-   private final static String CRL;
+   private final static File CRL;
 
    // private static final String IGC_CONFIG = "src/test/resources/igcConfig/";
 
    static {
-      DIRECTORY = FilenameUtils.concat(SystemUtils.getJavaIoTmpDir()
-            .getAbsolutePath(), "igcmaj");
 
-      CRL = DIRECTORY + "/CRL/";
+      DIRECTORY = new File(SystemUtils.getJavaIoTmpDir().getAbsolutePath(),
+            "igcmaj");
+
+      CRL = new File(DIRECTORY, "CRL");
+
    }
 
    @BeforeClass
    public static void beforeClass() throws IOException {
 
-      File directory = new File(DIRECTORY);
-      FileUtils.forceMkdir(directory);
-      FileUtils.cleanDirectory(directory);
+      FileUtils.forceMkdir(DIRECTORY);
+      FileUtils.cleanDirectory(DIRECTORY);
 
-      File crl = new File(CRL);
-      FileUtils.forceMkdir(crl);
+      FileUtils.forceMkdir(CRL);
+
+   }
+
+   @AfterClass
+   public static void afterClass() throws IOException {
+
+      FileUtils.deleteDirectory(DIRECTORY);
 
    }
 
@@ -85,12 +92,13 @@ public class IgcMainTest {
    public void igcMain_success() {
 
       String pathConfigFile = loadConfig("igcConfig_success_temp.xml",
-            getAbsolute("src/test/resources/certificats/ACRacine"), CRL,
+            getAbsolute("src/test/resources/certificats/ACRacine"), CRL
+                  .getAbsolutePath(),
             "http://cer69idxpkival1.cer69.recouv/*.crl");
 
       IgcMain.main(new String[] { pathConfigFile });
 
-      Collection<File> files = FileUtils.listFiles(new File(CRL), null, true);
+      Collection<File> files = FileUtils.listFiles(CRL, null, true);
 
       assertEquals("le nombre de téléchargements est incorrect", 15, files
             .size());
@@ -122,7 +130,8 @@ public class IgcMainTest {
    public void igcMain_failure_igcConfigException() {
 
       String pathConfigFile = loadConfig("igcConfig_success_temp.xml",
-            getAbsolute("/notExist/certificats/ACRacine"), CRL,
+            getAbsolute("/notExist/certificats/ACRacine"), CRL
+                  .getAbsolutePath(),
             "http://cer69idxpkival1.cer69.recouv/*.crl");
 
       try {
@@ -140,7 +149,8 @@ public class IgcMainTest {
    public void igcMain_failure_igcDownloadException() {
 
       String pathConfigFile = loadConfig("igcConfig_success_temp.xml",
-            getAbsolute("src/test/resources/certificats/ACRacine"), CRL,
+            getAbsolute("src/test/resources/certificats/ACRacine"), CRL
+                  .getAbsolutePath(),
             "http://download.oracle.com/javase/6/docs/api/");
 
       try {
