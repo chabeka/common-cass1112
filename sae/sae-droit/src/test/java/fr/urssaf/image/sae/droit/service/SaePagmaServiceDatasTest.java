@@ -7,6 +7,7 @@ import java.util.Arrays;
 
 import junit.framework.Assert;
 
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.droit.dao.model.ActionUnitaire;
 import fr.urssaf.image.sae.droit.dao.model.Pagma;
@@ -40,6 +42,14 @@ public class SaePagmaServiceDatasTest {
    @Autowired
    private JobClockSupport clockSupport;
 
+   @Autowired
+   private CassandraServerBean cassandraServer;
+   
+   @After
+   public void end() throws Exception {
+      cassandraServer.resetData();
+   }
+   
    @Test(expected = PagmaReferenceException.class)
    public void testPagmaDejaExistant() {
 

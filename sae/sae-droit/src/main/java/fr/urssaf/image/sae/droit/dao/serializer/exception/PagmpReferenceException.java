@@ -24,4 +24,14 @@ public class PagmpReferenceException extends RuntimeException {
       super(message, cause);
    }
 
+   /**
+    * constructeur
+    * 
+    * @param message
+    *           message de l'exception
+    */
+   public PagmpReferenceException(String message) {
+      super(message);
+   }
+
 }

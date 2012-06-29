@@ -45,8 +45,6 @@ public final class ZookeeperUtils {
     *           mutex Zookeeper
     * @param name
     *           nom a locker
-    * @throws LockTimeoutException
-    *            exception levée lorsqu'il est impossible de récupérer le lock
     */
    public static void acquire(ZookeeperMutex mutex, String name) {
       if (!mutex.acquire(LOCK_TIME_OUT, TimeUnit.SECONDS)) {

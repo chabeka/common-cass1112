@@ -298,12 +298,12 @@ public class SaeDroitServiceImpl implements SaeDroitService {
          }
 
          if (!storedContract.equals(contrat)) {
-            throw new ContratServiceReferenceException(MESSAGE_CONTRAT
-                  + codeContrat + " a déjà été créé");
+            throw new DroitRuntimeException(MESSAGE_CONTRAT + codeContrat
+                  + " a déjà été créé");
          }
 
          if (pagmList.size() != pagms.size() || !pagmList.containsAll(pagms)) {
-            throw new PagmReferenceException(
+            throw new DroitRuntimeException(
                   "Les pagms rattachés au contrat de service " + codeContrat
                         + " ont déjà été créés");
          }

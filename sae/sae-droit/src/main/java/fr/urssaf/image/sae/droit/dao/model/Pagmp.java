@@ -63,4 +63,38 @@ public class Pagmp {
       this.description = description;
    }
 
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final boolean equals(Object obj) {
+      boolean areEquals = false;
+
+      if (obj instanceof Pagmp) {
+         Pagmp pagmp = (Pagmp) obj;
+         areEquals = code.equals(pagmp.getCode())
+               && description.equals(pagmp.getDescription())
+               && prmd.equals(pagmp.getPrmd());
+      }
+
+      return areEquals;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final int hashCode() {
+      return super.hashCode();
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final String toString() {
+      return "code : " + code + "\ndescription : " + description + "\nprmd : "
+            + prmd;
+   }
+
 }

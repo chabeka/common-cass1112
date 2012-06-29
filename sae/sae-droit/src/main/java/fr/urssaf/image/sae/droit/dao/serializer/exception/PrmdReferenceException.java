@@ -24,4 +24,14 @@ public class PrmdReferenceException extends RuntimeException {
       super(message, cause);
    }
 
+   /**
+    * constructeur
+    * 
+    * @param message
+    *           message de l'exception
+    */
+   public PrmdReferenceException(String message) {
+      super(message);
+   }
+
 }

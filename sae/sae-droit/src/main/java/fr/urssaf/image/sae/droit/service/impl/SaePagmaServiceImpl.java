@@ -17,6 +17,7 @@ import fr.urssaf.image.sae.droit.dao.serializer.exception.ActionUnitaireReferenc
 import fr.urssaf.image.sae.droit.dao.serializer.exception.PagmaReferenceException;
 import fr.urssaf.image.sae.droit.dao.support.ActionUnitaireSupport;
 import fr.urssaf.image.sae.droit.dao.support.PagmaSupport;
+import fr.urssaf.image.sae.droit.exception.DroitRuntimeException;
 import fr.urssaf.image.sae.droit.service.SaePagmaService;
 import fr.urssaf.image.sae.droit.utils.ZookeeperUtils;
 
@@ -56,8 +57,6 @@ public class SaePagmaServiceImpl implements SaePagmaService {
 
       ZookeeperMutex mutex = ZookeeperUtils.createMutex(curatorClient,
             resourceName);
-      // FIXME FBON - Vérifier comment arrêter le traitement et pouvoir avertir
-      // sans exception
       try {
          ZookeeperUtils.acquire(mutex, resourceName);
 
@@ -74,10 +73,6 @@ public class SaePagmaServiceImpl implements SaePagmaService {
 
    }
 
-   /**
-    * @param mutex
-    * @param pagma
-    */
    private void checkLock(ZookeeperMutex mutex, Pagma pagma) {
       if (!ZookeeperUtils.isLock(mutex)) {
 
@@ -90,7 +85,7 @@ public class SaePagmaServiceImpl implements SaePagmaService {
          }
 
          if (!storedPagma.equals(pagma)) {
-            throw new PagmaReferenceException("le PAGMa " + code
+            throw new DroitRuntimeException("le PAGMa " + code
                   + " a déjà été créé");
          }
 
