@@ -61,6 +61,6 @@ Etape <c:out value="${numeroEtape}"/> : Appel du service web de capture unitaire
    style="width:100%;"
    type="submit"
    value="Appel du service web de capture unitaire"
-   onclick="javascript:document.getElementById('etape').value=<c:out value="${numeroEtape}"/>"  />
+   onclick="javascript:document.getElementById('etape').value='<c:out value="${numeroEtape}"/>'"  />
 
 <hr />

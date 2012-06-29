@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.formulaire.ViFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CodeMetadonneeList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeDefinition;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeur;
@@ -52,13 +53,13 @@ public class RechercheTestService {
 
    @Autowired
    private ReferentielMetadonneesService referentielMetadonneesService;
-   
+
    @Autowired
    private SaeServiceStubUtils saeServiceStubUtils;
 
    private RechercheResponse appelWsOpRecherche(String urlServiceWeb,
-         ViStyle viStyle, RechercheFormulaire formulaire,
-         WsTestListener wsListener,
+         ViStyle viStyle, ViFormulaire viParams,
+         RechercheFormulaire formulaire, WsTestListener wsListener,
          TypeComparaison triDesResultatsDansAffichageLog) {
 
       // Initialise le résultat
@@ -75,7 +76,7 @@ public class RechercheTestService {
 
       // Récupération du stub du service web
       SaeServiceStub service = saeServiceStubUtils.getServiceStub(
-            urlServiceWeb, viStyle);
+            urlServiceWeb, viStyle, viParams);
 
       // Appel du service web et gestion de erreurs
       try {
@@ -135,12 +136,29 @@ public class RechercheTestService {
    public final void appelWsOpRechercheTestLibre(String urlServiceWeb,
          RechercheFormulaire formulaire) {
 
+      appelWsOpRechercheTestLibre(urlServiceWeb, formulaire, null);
+
+   }
+
+   /**
+    * Test libre de l'appel à l'opération "recherche" du service web SaeService.<br>
+    * 
+    * @param urlServiceWeb
+    *           l'URL du service web SaeService
+    * @param formulaire
+    *           le formulaire
+    * @param viParams
+    *           les paramètres du VI
+    */
+   public final void appelWsOpRechercheTestLibre(String urlServiceWeb,
+         RechercheFormulaire formulaire, ViFormulaire viParams) {
+
       // Création de l'objet qui implémente l'interface WsTestListener
       // et qui ne s'attend pas à un quelconque résultat (test libre)
       WsTestListener testLibre = new WsTestListenerImplLibre();
 
       // Appel de la méthode "générique" de test
-      appelWsOpRecherche(urlServiceWeb, ViStyle.VI_OK, formulaire,
+      appelWsOpRecherche(urlServiceWeb, ViStyle.VI_OK, viParams, formulaire,
             testLibre, null);
 
    }
@@ -157,7 +175,7 @@ public class RechercheTestService {
     *           le nombre de résultats attendus, ou null si pas de vérif
     * @param flagResultatsTronquesAttendu
     *           le flag attendu, ou null si pas de verif
-    * @param tri
+    * @param triDesResultatsDansAffichageLog
     *           à effectuer sur la recherche
     * @return la réponse de l'opération "recherche", ou null si une exception
     *         s'est produite
@@ -167,13 +185,43 @@ public class RechercheTestService {
          Integer nbResultatsAttendus, Boolean flagResultatsTronquesAttendu,
          TypeComparaison triDesResultatsDansAffichageLog) {
 
+      return appelWsOpRechercheReponseCorrecteAttendue(urlServiceWeb,
+            formulaire, nbResultatsAttendus, flagResultatsTronquesAttendu,
+            triDesResultatsDansAffichageLog, null);
+
+   }
+
+   /**
+    * Test d'appel à l'opération "recherche" du service web SaeService.<br>
+    * On s'attend à récupérer une réponse correcte
+    * 
+    * @param urlServiceWeb
+    *           l'URL du service web SaeService
+    * @param formulaire
+    *           le formulaire
+    * @param nbResultatsAttendus
+    *           le nombre de résultats attendus, ou null si pas de vérif
+    * @param flagResultatsTronquesAttendu
+    *           le flag attendu, ou null si pas de verif
+    * @param triDesResultatsDansAffichageLog
+    *           à effectuer sur la recherche
+    * @param viParams
+    *           les paramètres du VI
+    * @return la réponse de l'opération "recherche", ou null si une exception
+    *         s'est produite
+    */
+   public final RechercheResponse appelWsOpRechercheReponseCorrecteAttendue(
+         String urlServiceWeb, RechercheFormulaire formulaire,
+         Integer nbResultatsAttendus, Boolean flagResultatsTronquesAttendu,
+         TypeComparaison triDesResultatsDansAffichageLog, ViFormulaire viParams) {
+
       // Création de l'objet qui implémente l'interface WsTestListener
       // et qui s'attend à recevoir une réponse
       WsTestListener testAvecReponse = new WsTestListenerImplReponseAttendue();
 
       // Appel de la méthode "générique" de test
       RechercheResponse response = appelWsOpRecherche(urlServiceWeb,
-            ViStyle.VI_OK, formulaire, testAvecReponse,
+            ViStyle.VI_OK, viParams, formulaire, testAvecReponse,
             triDesResultatsDansAffichageLog);
 
       // On vérifie le résultat obtenu (si le test n'a pas échoué dans les
@@ -405,7 +453,8 @@ public class RechercheTestService {
             argsMsgSoapFault);
 
       // Appel de la méthode "générique" de test
-      appelWsOpRecherche(urlServiceWeb, viStyle, formulaire, listener, null);
+      appelWsOpRecherche(urlServiceWeb, viStyle, null, formulaire, listener,
+            null);
 
    }
 

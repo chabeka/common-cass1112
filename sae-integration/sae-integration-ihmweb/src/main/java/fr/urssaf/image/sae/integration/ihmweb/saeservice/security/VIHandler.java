@@ -9,12 +9,15 @@ import org.apache.axiom.soap.SOAPHeader;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.handlers.AbstractHandler;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.rampart.util.Axis2Util;
 import org.apache.ws.security.WSSecurityException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
+
+import fr.urssaf.image.sae.integration.ihmweb.formulaire.ViFormulaire;
 
 /**
  * Handler pour ajouter le jeton SAML 2.0 dans la la balise WS-security du web
@@ -33,6 +36,12 @@ public class VIHandler extends AbstractHandler {
     * le type du VI à générer
     */
    public static final String PROP_STYLE_VI = "ViStyle";
+   
+   /**
+    * Le nom de la propriété du MessageContext dans laquelle il faut renseigner
+    * les paramètres du VI à générer
+    */
+   public static final String PROP_PARAMS_VI = "ViParams";
    
    /**
     * Le nom de la propriété du MessageContext dans laquelle on renseigne le
@@ -86,9 +95,26 @@ public class VIHandler extends AbstractHandler {
          ViStyle viStyle = (ViStyle)msgCtx.getProperty(PROP_STYLE_VI);
          LOG.debug("Type demandé : {}", viStyle);
          
+         // Lecture des paramètres du VI demandé pour le cas de test
+         LOG.debug("Lecture des paramètres de VI demandé pour le cas de test");
+         Object obj = msgCtx.getProperty(PROP_PARAMS_VI);
+         ViFormulaire viParams;
+         if (obj == null) {
+            viParams = null;
+            LOG.debug("Paramètres demandés pour le VI : aucun");
+         } else {
+            viParams = (ViFormulaire) obj;
+            LOG
+                  .debug(
+                        "Paramètres demandés pour le VI : Issuer={}, Recipient={}, Audience={}, PAGMs={}",
+                        new String[] { viParams.getIssuer(),
+                              viParams.getRecipient(), viParams.getAudience(),
+                              ArrayUtils.toString(viParams.getPagms()) });
+         }
+         
          // Appel du service adéquat pour générer le VI
          LOG.debug("Génération du VI");
-         String viEtWsse = viService.generationVi(viStyle);
+         String viEtWsse = viService.generationVi(viStyle, viParams);
          LOG.debug("VI généré : {}", viEtWsse);
          
          // Sauce technique pour insérer le VI dans le message SOAP

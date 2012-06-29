@@ -11,6 +11,8 @@ public class TestWsParentFormulaire {
    private String etape;
 
    private SoapFormulaire soapFormulaire = new SoapFormulaire();
+   
+   private ViFormulaire viFormulaire = new ViFormulaire(); 
 
    /**
     * URL du service web SaeService
@@ -67,6 +69,22 @@ public class TestWsParentFormulaire {
     */
    public void setSoapFormulaire(SoapFormulaire soapFormulaire) {
       this.soapFormulaire = soapFormulaire;
+   }
+
+   /**
+    * Formulaire contenant les paramètres du VI
+    * @return Formulaire contenant les paramètres du VI
+    */
+   public final ViFormulaire getViFormulaire() {
+      return viFormulaire;
+   }
+
+   /**
+    * Formulaire contenant les paramètres du VI
+    * @param viFormulaire Formulaire contenant les paramètres du VI
+    */
+   public final void setViFormulaire(ViFormulaire viFormulaire) {
+      this.viFormulaire = viFormulaire;
    }
 
 }

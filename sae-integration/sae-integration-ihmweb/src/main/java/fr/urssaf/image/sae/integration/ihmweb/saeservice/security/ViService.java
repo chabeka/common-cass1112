@@ -15,6 +15,8 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.sae.integration.ihmweb.exception.IntegrationRuntimeException;
+import fr.urssaf.image.sae.integration.ihmweb.formulaire.ViFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.modele.PagmList;
 import fr.urssaf.image.sae.integration.ihmweb.signature.XmlSignature;
 
 /**
@@ -52,13 +54,22 @@ public class ViService {
       
    }
    
-   
    /**
-    * Génération d'un VI de type tel que demandé en paramètre d'entrée
+    * Génération d'un VI de type tel que demandé en paramètres d'entrée
     * @param viStyle le type de VI requis
     * @return le VI généré
     */
    public String generationVi(ViStyle viStyle) {
+      return generationVi(viStyle, null);
+   }
+   
+   /**
+    * Génération d'un VI de type tel que demandé en paramètres d'entrée
+    * @param viStyle le type de VI requis
+    * @param viParams les paramètres éventuels du VI
+    * @return le VI généré
+    */
+   public String generationVi(ViStyle viStyle, ViFormulaire viParams) {
       
       
       // Sans VI
@@ -68,7 +79,7 @@ public class ViService {
       
       // VI OK
       else if (ViStyle.VI_OK.equals(viStyle)) {
-         return generationVi_Ok(); 
+         return generationVi_Ok(viParams); 
       }
       
       // VI provoquant la Soap Fault wsse:SecurityTokenUnavailable
@@ -113,19 +124,40 @@ public class ViService {
    }
    
    
-   private String generationVi_Ok() {
+   private String generationVi_Ok(ViFormulaire viParams) {
       
       DateTime systemDate = new DateTime();
       
       String assertionId = UUID.randomUUID().toString();
-      String issuer = DEFAULT_ISSUER;
-      String recipient = DEFAULT_RECIPIENT;
-      String audience = DEFAULT_AUDIENCE;
       String authnInstant = defaultAuthnInstant(systemDate);
       String notOnOrAfter = defaultNotOnOrAfter(systemDate);
       String notBefore = defaultNotBefore(systemDate);
-      String[] pagm = DEFAULT_PAGM ;
       String methodAuthn2 = DEFAULT_METHODAUTHN2;
+      
+      String issuer;
+      String recipient;
+      String audience;
+      String[] pagm;
+      
+      if ((viParams==null) || (StringUtils.isBlank(viParams.getIssuer()))) {
+         
+         issuer = DEFAULT_ISSUER;
+         recipient = DEFAULT_RECIPIENT;
+         audience = DEFAULT_AUDIENCE;
+
+         pagm = DEFAULT_PAGM ;
+         
+      } else {
+         
+         issuer = viParams.getIssuer();
+         recipient = viParams.getRecipient();
+         audience = viParams.getAudience();
+         
+         PagmList pagmList = viParams.getPagms();
+         pagm = (String[])viParams.getPagms().toArray(new String[pagmList.size()]);
+         
+      }
+      
       
       return generationVi(
             assertionId,
@@ -429,7 +461,7 @@ public class ViService {
       LOGGER.debug("Début de la génération d'un VI wsse:FailedCheck");
       
       // Appel de la méthode générant un VI OK
-      String vi = generationVi_Ok();
+      String vi = generationVi_Ok(null);
       
       // Effectue un rechercher/remplacer
       // On remplace

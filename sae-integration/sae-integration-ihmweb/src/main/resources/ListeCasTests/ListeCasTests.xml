@@ -1094,5 +1094,39 @@
       </CasTests>
 
    </Categorie>
+   
+   <!-- ======================================================== -->
+   <!-- Droits -->
+   <!-- ======================================================== -->
+
+   <Categorie>
+
+      <Nom>Droits</Nom>
+      <Id>5</Id>
+      <CasTests>
+
+         <CasTest>
+            <id>1100</id>
+            <code>1100-Droits-TestLibre</code>
+            <description>
+               Test libre des droits => pas de résultat attendu 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1100-Droits-TestLibre"</luceneExemple>
+         </CasTest>
+         
+         <CasTest>
+            <id>1101</id>
+            <code>1101-Droits-Conformite-Recherche-Attestation</code>
+            <description>
+               Non-régression pour "Attestations de vigilance" sur la recherche 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>CodeRND:2.3.1.1.12 AND Siren:3090000001 AND DateCreation:20070401</luceneExemple>
+         </CasTest>
+
+      </CasTests>
+
+   </Categorie>
 
 </Tests>

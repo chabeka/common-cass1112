@@ -40,5 +40,25 @@ public final class SaeIntegrationConstantes {
     * Le code long de la métadonnée "Hash"
     */
    public static final String META_HASH = "Hash";
+      
+   /**
+    * Pour les VI : recipient par défaut
+    */
+   public static final String VI_DEFAULT_RECIPIENT = "urn:URSSAF";
+   
+   /**
+    * Pour les VI : audience par défaut
+    */
+   public static final String VI_DEFAULT_AUDIENCE = "http://sae.urssaf.fr";
+   
+   /**
+    * Pour les VI : issuer par défaut
+    */
+   public static final String VI_DEFAULT_ISSUER = "SaeIntegration";
+   
+   /**
+    * Pour les VI : PAGM par défaut
+    */
+   public static final String VI_DEFAULT_PAGM = "ROLE_TOUS;FULL";
    
 }

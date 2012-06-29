@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.sae.integration.ihmweb.exception.IntegrationRuntimeException;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ConsultationFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.formulaire.ViFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CodeMetadonneeList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ConsultationResultat;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeDefinition;
@@ -61,13 +62,13 @@ public class ConsultationTestService {
 
    @Autowired
    private ReferentielMetadonneesService referentielMetadonneesService;
-   
+
    @Autowired
    private SaeServiceStubUtils saeServiceStubUtils;
 
    private ConsultationResultat appelWsOpConsultation(String urlServiceWeb,
-         ViStyle viStyle, ConsultationFormulaire formulaire,
-         WsTestListener wsListener) {
+         ViStyle viStyle, ViFormulaire viParams,
+         ConsultationFormulaire formulaire, WsTestListener wsListener) {
 
       // Initialise le résultat
       ConsultationResultat result = null;
@@ -83,45 +84,46 @@ public class ConsultationTestService {
 
       // Récupération du stub du service web
       SaeServiceStub service = saeServiceStubUtils.getServiceStub(
-            urlServiceWeb, viStyle);
+            urlServiceWeb, viStyle, viParams);
 
       // Appel du service web et gestion de erreurs
       try {
 
          // Selon s'il faut appeler le service avec ou sans MTOM
-         if (ModeConsultationEnum.AncienServiceSansMtom.equals(formulaire.getModeConsult())) {
-            
+         if (ModeConsultationEnum.AncienServiceSansMtom.equals(formulaire
+               .getModeConsult())) {
+
             // Ancien service sans MTOM
-            
+
             // Construction du paramètre d'entrée de l'opération
             Consultation paramsService = SaeServiceObjectFactory
                   .buildConsultationRequest(formulaire.getIdArchivage(),
                         formulaire.getCodeMetadonnees());
-            
+
             // Appel du service web
             ConsultationResponse response = service.consultation(paramsService);
-            
+
             // Transtypage de l'objet de la couche ws vers l'objet du modèle
             result = fromConsultationAncienService(response);
-            
-            
+
          } else {
-          
+
             // Nouveau service sans MTOM
-            
+
             // Construction du paramètre d'entrée de l'opération
             ConsultationMTOM paramsService = SaeServiceObjectFactory
                   .buildConsultationMTOMRequest(formulaire.getIdArchivage(),
                         formulaire.getCodeMetadonnees());
 
             // Appel du service web
-            ConsultationMTOMResponse response = service.consultationMTOM(paramsService);
-            
+            ConsultationMTOMResponse response = service
+                  .consultationMTOM(paramsService);
+
             // Transtypage de l'objet de la couche ws vers l'objet du modèle
             result = fromConsultationNouveauService(response);
-            
+
          }
-         
+
          // Appel du listener
          wsListener.onRetourWsSansErreur(resultatTest, service
                ._getServiceClient().getServiceContext()
@@ -168,12 +170,30 @@ public class ConsultationTestService {
    public final void appelWsOpConsultationTestLibre(String urlServiceWeb,
          ConsultationFormulaire formulaire) {
 
+      appelWsOpConsultationTestLibre(urlServiceWeb, formulaire, null);
+
+   }
+
+   /**
+    * Test libre de l'appel à l'opération "consultation" du service web
+    * SaeService.<br>
+    * 
+    * @param urlServiceWeb
+    *           l'URL du service web SaeService
+    * @param formulaire
+    *           le formulaire
+    * @param viParams
+    *           les paramètres du VI
+    */
+   public final void appelWsOpConsultationTestLibre(String urlServiceWeb,
+         ConsultationFormulaire formulaire, ViFormulaire viParams) {
+
       // Création de l'objet qui implémente l'interface WsTestListener
       // et qui ne s'attend pas à un quelconque résultat (test libre)
       WsTestListener testLibre = new WsTestListenerImplLibre();
 
       // Appel de la méthode "générique" de test
-      appelWsOpConsultation(urlServiceWeb, ViStyle.VI_OK, formulaire,
+      appelWsOpConsultation(urlServiceWeb, ViStyle.VI_OK, viParams, formulaire,
             testLibre);
 
    }
@@ -206,7 +226,7 @@ public class ConsultationTestService {
             argsMsgSoapFault);
 
       // Appel de la méthode "générique" de test
-      appelWsOpConsultation(urlServiceWeb, viStyle, formulaire, testAuth);
+      appelWsOpConsultation(urlServiceWeb, viStyle, null, formulaire, testAuth);
 
    }
 
@@ -225,15 +245,15 @@ public class ConsultationTestService {
       // Vérification du contenu (SHA-1) si fourni en paramètre + contenu base
       // 64
       if (sha1attendu != null) {
-         boolean testKoTemp = wsVerifSha1(response.getContenu(), sha1attendu, log);
+         boolean testKoTemp = wsVerifSha1(response.getContenu(), sha1attendu,
+               log);
          if (testKoTemp) {
             testKo = true;
          }
       }
 
       // Vérification des métadonnes
-      testKo = wsVerifieRetourMetaDemandees(
-            resultatTest, codesMetasAttendues,
+      testKo = wsVerifieRetourMetaDemandees(resultatTest, codesMetasAttendues,
             metaAttendues, response.getMetadonnees());
 
       // Etat du test
@@ -244,7 +264,6 @@ public class ConsultationTestService {
       }
 
    }
-
 
    /**
     * Test d'appel à l'opération "consultation" du service web SaeService.<br>
@@ -298,7 +317,7 @@ public class ConsultationTestService {
 
       // Appel de la méthode "générique" de test
       ConsultationResultat response = appelWsOpConsultation(urlServiceWeb,
-            ViStyle.VI_OK, formulaire, testAvecReponse);
+            ViStyle.VI_OK, null, formulaire, testAvecReponse);
 
       // On vérifie le résultat obtenu (si le test n'a pas échoué dans les
       // étapes préalables)
@@ -329,46 +348,49 @@ public class ConsultationTestService {
       return response;
 
    }
-   
-   
-   private ConsultationResultat fromConsultationAncienService(ConsultationResponse response) {
-      
+
+   private ConsultationResultat fromConsultationAncienService(
+         ConsultationResponse response) {
+
       // Création de l'objet résultat
       ConsultationResultat result = new ConsultationResultat();
-      
+
       // Extrait le contenu (DataHandler)
-      DataHandler contenu = response.getConsultationResponse().getObjetNumerique().getObjetNumeriqueConsultationTypeChoice_type0().getContenu(); 
+      DataHandler contenu = response.getConsultationResponse()
+            .getObjetNumerique()
+            .getObjetNumeriqueConsultationTypeChoice_type0().getContenu();
       result.setContenu(contenu);
-      
+
       // Extrait les métadonnées
-      ListeMetadonneeType metadonnees = response.getConsultationResponse().getMetadonnees();
+      ListeMetadonneeType metadonnees = response.getConsultationResponse()
+            .getMetadonnees();
       result.setMetadonnees(metadonnees);
-      
+
       // Renvoie du résultat
       return result;
-      
+
    }
-   
-   
-   private ConsultationResultat fromConsultationNouveauService(ConsultationMTOMResponse response) {
-      
+
+   private ConsultationResultat fromConsultationNouveauService(
+         ConsultationMTOMResponse response) {
+
       // Création de l'objet résultat
       ConsultationResultat result = new ConsultationResultat();
-      
+
       // Extrait le contenu (DataHandler)
       DataHandler contenu = response.getConsultationMTOMResponse().getContenu();
       result.setContenu(contenu);
-      
+
       // Extrait les métadonnées
-      ListeMetadonneeType metadonnees = response.getConsultationMTOMResponse().getMetadonnees();
+      ListeMetadonneeType metadonnees = response.getConsultationMTOMResponse()
+            .getMetadonnees();
       result.setMetadonnees(metadonnees);
-      
+
       // Renvoie du résultat
       return result;
-      
+
    }
-   
-   
+
    private boolean wsVerifieRetourMetaDemandees(ResultatTest resultatTest,
          CodeMetadonneeList codesMetaAttendues,
          List<MetadonneeValeur> metaAttendues, ListeMetadonneeType metaObtenues) {
@@ -461,15 +483,12 @@ public class ConsultationTestService {
       return testKo;
 
    }
-   
-   
-   private boolean wsVerifSha1(
-         DataHandler contenu,
-         String sha1attendu,
+
+   private boolean wsVerifSha1(DataHandler contenu, String sha1attendu,
          ResultatTestLog log) {
-      
+
       boolean testKo = false;
-      
+
       // Calcul du SHA-1
       String sha1obtenu = null;
       try {
@@ -487,9 +506,9 @@ public class ConsultationTestService {
                      + ") n'est pas identique au SHA-1 du document que l'on attendait ("
                      + sha1attendu + ")");
       }
-      
+
       return testKo;
-      
+
    }
 
 }

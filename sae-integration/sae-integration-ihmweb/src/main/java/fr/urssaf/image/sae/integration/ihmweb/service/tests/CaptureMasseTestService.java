@@ -18,6 +18,7 @@ import fr.urssaf.image.sae.integration.ihmweb.constantes.SaeIntegrationConstante
 import fr.urssaf.image.sae.integration.ihmweb.exception.IntegrationException;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseResultatFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.formulaire.ViFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.Comptage;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTest;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTestLog;
@@ -66,12 +67,12 @@ public class CaptureMasseTestService {
 
    @Autowired
    private DfceService dfceService;
-   
+
    @Autowired
    private SaeServiceStubUtils saeServiceStubUtils;
 
-   private void appelWsOpArchiMasse(String urlServiceWeb,
-         ViStyle viStyle, CaptureMasseFormulaire formulaire,
+   private void appelWsOpArchiMasse(String urlServiceWeb, ViStyle viStyle,
+         ViFormulaire viParams, CaptureMasseFormulaire formulaire,
          WsTestListener wsListener) {
 
       // on supprime les fichiers de traitement précédents
@@ -105,7 +106,7 @@ public class CaptureMasseTestService {
 
       // Récupération du stub du service web
       SaeServiceStub service = saeServiceStubUtils.getServiceStub(
-            urlServiceWeb, viStyle);
+            urlServiceWeb, viStyle, viParams);
 
       // Appel du service web et gestion de erreurs
       try {
@@ -160,12 +161,30 @@ public class CaptureMasseTestService {
    public final void appelWsOpArchiMasseTestLibre(String urlServiceWeb,
          CaptureMasseFormulaire formulaire) {
 
+      appelWsOpArchiMasseTestLibre(urlServiceWeb, formulaire, null);
+
+   }
+
+   /**
+    * Test libre de l'appel à l'opération "archivageMasse" du service web
+    * SaeService.<br>
+    * 
+    * @param urlServiceWeb
+    *           l'URL du service web SaeService
+    * @param formulaire
+    *           le formulaire
+    * @param viParams
+    *           les paramètres du VI
+    */
+   public final void appelWsOpArchiMasseTestLibre(String urlServiceWeb,
+         CaptureMasseFormulaire formulaire, ViFormulaire viParams) {
+
       // Création de l'objet qui implémente l'interface WsTestListener
       // et qui ne s'attend pas à un quelconque résultat (test libre)
       WsTestListener testLibre = new WsTestListenerImplLibre();
 
       // Appel de la méthode "générique" de test
-      appelWsOpArchiMasse(urlServiceWeb, ViStyle.VI_OK, formulaire,
+      appelWsOpArchiMasse(urlServiceWeb, ViStyle.VI_OK, viParams, formulaire,
             testLibre);
 
    }
@@ -190,7 +209,8 @@ public class CaptureMasseTestService {
             null);
 
       // Appel de la méthode "générique" de test
-      appelWsOpArchiMasse(urlServiceWeb, ViStyle.VI_SF_wsse_SecurityTokenUnavailable, formulaire,
+      appelWsOpArchiMasse(urlServiceWeb,
+            ViStyle.VI_SF_wsse_SecurityTokenUnavailable, null, formulaire,
             testAuth);
 
    }
@@ -200,8 +220,6 @@ public class CaptureMasseTestService {
     * 
     * @param urlWebService
     *           adresse du WS
-    * @param formulaire
-    *           formulaire affiché
     */
    public final void appelWsOpArchiMasseOKAttendu(String urlWebService,
          CaptureMasseFormulaire formulaire) {
@@ -236,7 +254,7 @@ public class CaptureMasseTestService {
             args);
 
       // Appel de la méthode "générique" de test
-      appelWsOpArchiMasse(urlWebService, ViStyle.VI_OK, formulaire,
+      appelWsOpArchiMasse(urlWebService, ViStyle.VI_OK, null, formulaire,
             testLibre);
 
    }
@@ -908,13 +926,10 @@ public class CaptureMasseTestService {
       // Création de l'objet résultat
       List<Comptage> result = new ArrayList<Comptage>();
 
-      // 1) Comptage dans DFCE
+      // Comptage dans DFCE
       Comptage objComptageDfce = comptageDfce(idTdm, resultatTest,
             comptageDfceAttendu);
       result.add(objComptageDfce);
-
-      // 2) Comptage dans Cassandra
-      // TODO: Comptage dans Cassandra
 
       // Renvoie le résultat
       return result;

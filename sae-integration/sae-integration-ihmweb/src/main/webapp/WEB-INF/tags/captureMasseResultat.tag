@@ -30,6 +30,6 @@ Etape <c:out value="${numeroEtape}"/> : Lecture du résultat d'un traitement de m
    style="width:100%;"
    type="submit"
    value="Lecture du résultats du traitement de masse"
-   onclick="javascript:document.getElementById('etape').value=<c:out value="${numeroEtape}"/>" />
+   onclick="javascript:document.getElementById('etape').value='<c:out value="${numeroEtape}"/>'" />
 
 <hr />

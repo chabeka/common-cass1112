@@ -36,6 +36,6 @@ Etape <c:out value="${numeroEtape}"/> : Comptages du nombre de documents pour le
    style="width:100%;"
    type="submit"
    value="Comptages"
-   onclick="javascript:document.getElementById('etape').value=<c:out value="${numeroEtape}"/>"  />
+   onclick="javascript:document.getElementById('etape').value='<c:out value="${numeroEtape}"/>'"  />
 
 <hr />

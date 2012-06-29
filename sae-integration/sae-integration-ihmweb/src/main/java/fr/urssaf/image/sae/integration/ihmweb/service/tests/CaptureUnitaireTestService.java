@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.sae.integration.ihmweb.exception.IntegrationRuntimeException;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureUnitaireFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.formulaire.ViFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CaptureUnitaireResultat;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ModeArchivageUnitaireEnum;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTest;
@@ -46,12 +47,12 @@ public class CaptureUnitaireTestService {
 
    @Autowired
    private ReferentielSoapFaultService refSoapFault;
-   
+
    @Autowired
    private SaeServiceStubUtils saeServiceStubUtils;
 
    private CaptureUnitaireResultat appelWsOpCaptureUnitaire(
-         String urlServiceWeb, ViStyle viStyle,
+         String urlServiceWeb, ViStyle viStyle, ViFormulaire viParams,
          CaptureUnitaireFormulaire formulaire, WsTestListener wsListener) {
 
       // Initialise la valeur de retour
@@ -68,7 +69,7 @@ public class CaptureUnitaireTestService {
 
       // Récupération du stub du service web
       SaeServiceStub service = saeServiceStubUtils.getServiceStub(
-            urlServiceWeb, viStyle);
+            urlServiceWeb, viStyle, viParams);
 
       // Appel du service web et gestion de erreurs
       try {
@@ -194,13 +195,32 @@ public class CaptureUnitaireTestService {
    public final void appelWsOpCaptureUnitaireUrlEcdeTestLibre(
          String urlServiceWeb, CaptureUnitaireFormulaire formulaire) {
 
+      appelWsOpCaptureUnitaireUrlEcdeTestLibre(urlServiceWeb, formulaire, null);
+
+   }
+
+   /**
+    * Test libre de l'appel à l'opération "archivageUnitaire" du service web
+    * SaeService.<br>
+    * 
+    * @param urlServiceWeb
+    *           l'URL du service web SaeService
+    * @param formulaire
+    *           le formulaire
+    * @param viParams
+    *           les paramètres du VI
+    */
+   public final void appelWsOpCaptureUnitaireUrlEcdeTestLibre(
+         String urlServiceWeb, CaptureUnitaireFormulaire formulaire,
+         ViFormulaire viParams) {
+
       // Création de l'objet qui implémente l'interface WsTestListener
       // et qui ne s'attend pas à un quelconque résultat (test libre)
       WsTestListener testLibre = new WsTestListenerImplLibre();
 
       // Appel de la méthode "générique" de test
-      appelWsOpCaptureUnitaire(urlServiceWeb, ViStyle.VI_OK, formulaire,
-            testLibre);
+      appelWsOpCaptureUnitaire(urlServiceWeb, ViStyle.VI_OK, viParams,
+            formulaire, testLibre);
 
    }
 
@@ -233,7 +253,8 @@ public class CaptureUnitaireTestService {
             argsMsgSoapFault);
 
       // Appel de la méthode "générique" de test
-      appelWsOpCaptureUnitaire(urlServiceWeb, viStyle, formulaire, listener);
+      appelWsOpCaptureUnitaire(urlServiceWeb, viStyle, null, formulaire,
+            listener);
 
    }
 
@@ -256,7 +277,7 @@ public class CaptureUnitaireTestService {
 
       // Appel de la méthode "générique" de test
       CaptureUnitaireResultat resultat = appelWsOpCaptureUnitaire(
-            urlServiceWeb, ViStyle.VI_OK, formulaire, testAvecReponse);
+            urlServiceWeb, ViStyle.VI_OK, null, formulaire, testAvecReponse);
 
       // On considère que le test est en succès si aucune erreur renvoyé
       ResultatTest resultatTest = formulaire.getResultats();

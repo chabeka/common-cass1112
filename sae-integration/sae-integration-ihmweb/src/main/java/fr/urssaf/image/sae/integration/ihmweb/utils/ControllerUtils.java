@@ -5,11 +5,13 @@ import org.springframework.web.bind.WebDataBinder;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CodeMetadonneeList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.LienHttpList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeurList;
+import fr.urssaf.image.sae.integration.ihmweb.modele.PagmList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTestLog;
 import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
 import fr.urssaf.image.sae.integration.ihmweb.propertyeditor.CodeMetadonneeListEditor;
 import fr.urssaf.image.sae.integration.ihmweb.propertyeditor.LienHttpListEditor;
 import fr.urssaf.image.sae.integration.ihmweb.propertyeditor.MetadonneeListEditor;
+import fr.urssaf.image.sae.integration.ihmweb.propertyeditor.PagmListEditor;
 import fr.urssaf.image.sae.integration.ihmweb.propertyeditor.ResultatTestLogEditor;
 import fr.urssaf.image.sae.integration.ihmweb.propertyeditor.TestStatusEnumEditor;
 
@@ -50,6 +52,10 @@ public final class ControllerUtils {
       binder.registerCustomEditor(
             CodeMetadonneeList.class,
             new CodeMetadonneeListEditor());
+      
+      binder.registerCustomEditor(
+            PagmList.class,
+            new PagmListEditor());
       
    }
    

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.integration.ihmweb.exception.IntegrationRuntimeException;
+import fr.urssaf.image.sae.integration.ihmweb.formulaire.ViFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.security.LogInMessageHandler;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.security.VIHandler;
@@ -25,20 +26,37 @@ public final class SaeServiceStubUtils {
    @Autowired
    private ViService viService;
 
-   
    /**
     * Renvoie le stub du service web, branché sur l'URL fournie en argument, et
-    * configuré pour ajouter à l'en-tête SOAP le VI contenu dans le fichier de
-    * ressource spécifié en paramètre.
+    * configuré pour ajouter à l'en-tête SOAP le VI
     * 
     * @param urlServiceWeb
     *           l'URL du service web SaeService
     * @param viStyle
-    *           le VI à intégrer au message SOAP
+    *           le style de VI à intégrer au message SOAP
     * @return le stub
     */
    public SaeServiceStub getServiceStub(String urlServiceWeb,
          ViStyle viStyle) {
+      
+      return getServiceStub(urlServiceWeb, viStyle, null);
+      
+   }
+   
+   /**
+    * Renvoie le stub du service web, branché sur l'URL fournie en argument, et
+    * configuré pour ajouter à l'en-tête SOAP le VI
+    * 
+    * @param urlServiceWeb
+    *           l'URL du service web SaeService
+    * @param viStyle
+    *           le style de VI à intégrer au message SOAP
+    * @param viParams
+    *           les paramètres du VI. Si null, alors on construit un VI par défaut. Peut dépendre de viStyle
+    * @return le stub
+    */
+   public SaeServiceStub getServiceStub(String urlServiceWeb,
+         ViStyle viStyle, ViFormulaire viParams) {
 
       try {
 
@@ -50,9 +68,11 @@ public final class SaeServiceStubUtils {
          // Gestion du VI + Log du message SOAP de request
          // ----------------------------------------------
          
-         // 1) Ajout d'une propriété dans laquelle on met le nom du fichier de VI
-         //    à inclure dans le message SOAP. L'inclusion sera faite dans un handler
+         // 1) Ajout de 2 propriétés dans lesquelles on met le style du fichier de VI
+         //    à inclure dans le message SOAP ainsi que les propriétés éventuelles.
+         //    L'inclusion sera faite dans un handler
          configContext.setProperty(VIHandler.PROP_STYLE_VI, viStyle);
+         configContext.setProperty(VIHandler.PROP_PARAMS_VI, viParams);
          
          // 2) Ajout d'un Handler lors de la phase "MessageOut" pour insérer le VI
          AxisConfiguration axisConfig = configContext.getAxisConfiguration();
