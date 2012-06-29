@@ -10,12 +10,14 @@ import java.net.URL;
 import java.security.cert.CRLException;
 import java.security.cert.CertificateException;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.urssaf.image.sae.igc.exception.IgcDownloadException;
 import fr.urssaf.image.sae.igc.modele.IgcConfig;
@@ -29,19 +31,24 @@ public class IgcServiceTest {
 
    private static final URL CERTIFICAT;
 
-   private static final Logger LOG = LoggerFactory.getLogger(IgcServiceTest.class);
+   private static final Logger LOG = LoggerFactory
+         .getLogger(IgcServiceTest.class);
+
+   private static final File TMP_DIR;
 
    private static final File CRL;
 
    private static final File AC_RACINE;
 
+   private IgcConfig igcConfig;
+
    static {
 
-      File repertory = IgcConfigUtils
+      TMP_DIR = IgcConfigUtils
             .createTempRepertory("sae_webservices_igcservice");
 
-      CRL = new File(repertory.getAbsolutePath() + "/CRL/");
-      AC_RACINE = new File(repertory.getAbsolutePath() + "/ACRacine/");
+      CRL = new File(TMP_DIR, "CRL");
+      AC_RACINE = new File(TMP_DIR, "ACRacine");
 
       IgcConfigUtils.createRepertory(CRL);
       IgcConfigUtils.createRepertory(AC_RACINE);
@@ -51,7 +58,12 @@ public class IgcServiceTest {
 
    }
 
-   private IgcConfig igcConfig;
+   @AfterClass
+   public static void afterClass() throws IOException {
+
+      FileUtils.deleteDirectory(TMP_DIR);
+
+   }
 
    @Before
    public void before() {
@@ -82,8 +94,8 @@ public class IgcServiceTest {
    public void IgcService_success() throws IgcDownloadException {
 
       // téléchargement d'une AC racine
-      IgcConfigUtils.download(CERTIFICAT, new File(AC_RACINE.getAbsolutePath()
-            + "/" + CERTIFICAT.getFile()));
+      IgcConfigUtils.download(CERTIFICAT, new File(AC_RACINE, CERTIFICAT
+            .getFile()));
 
       assertNotNull("exception dans le constructeur", createIgcService());
 
@@ -96,8 +108,7 @@ public class IgcServiceTest {
       URL pem = IgcConfigUtils
             .createURL("http://cer69idxpkival1.cer69.recouv/Pseudo_ACOSS.pem");
 
-      IgcConfigUtils.download(pem, new File(AC_RACINE.getAbsolutePath() + "/"
-            + "certificat.crt"));
+      IgcConfigUtils.download(pem, new File(AC_RACINE, "certificat.crt"));
 
       try {
          createIgcService();
@@ -135,41 +146,37 @@ public class IgcServiceTest {
          throws LoadCertifsAndCrlException, IgcDownloadException {
 
       // téléchargement d'une AC racine
-      IgcConfigUtils.download(CERTIFICAT, new File(AC_RACINE.getAbsolutePath()
-            + "/" + CERTIFICAT.getFile()));
+      IgcConfigUtils.download(CERTIFICAT, new File(AC_RACINE, CERTIFICAT
+            .getFile()));
 
       // téléchargement d'une CRL
       URL crl = IgcConfigUtils
             .createURL("http://cer69idxpkival1.cer69.recouv/Pseudo_ACOSS.crl");
-      IgcConfigUtils.download(crl, new File(CRL.getAbsolutePath() + "/"
-            + crl.getFile()));
+      IgcConfigUtils.download(crl, new File(CRL, crl.getFile()));
 
       IgcService igcService = createIgcService();
       assertNotNull("une instance de CertifsAndCrl est attendue", igcService
             .getInstanceCertifsAndCrl());
    }
 
-   
    @Test
    public void getInstanceCertifsAndCrl_failure() throws IgcDownloadException {
 
       // téléchargement d'une AC racine
-      IgcConfigUtils.download(CERTIFICAT, new File(AC_RACINE.getAbsolutePath()
-            + "/" + CERTIFICAT.getFile()));
+      IgcConfigUtils.download(CERTIFICAT, new File(AC_RACINE, CERTIFICAT
+            .getFile()));
 
-      // Téléchargement d'un certificat X509 dans le répertoire des CRL, 
+      // Téléchargement d'un certificat X509 dans le répertoire des CRL,
       // pour ensuite faire planter le chargement des CRL
       URL crl = CERTIFICAT;
-      File destinationCrt = new File(CRL.getAbsolutePath() + "/" + crl.getFile());
+      File destinationCrt = new File(CRL, crl.getFile());
       IgcConfigUtils.download(crl, destinationCrt);
-      
+
       // Renommage du fichier .crt en fichier .crl pour faire planter
       // le chargement des CRL
-      File destinationCrl = new File(
-            CRL.getAbsolutePath() + 
-            "/" + 
-            FilenameUtils.getBaseName(crl.getFile()) + 
-            ".crl");
+      File destinationCrl = new File(CRL, FilenameUtils.getBaseName(crl
+            .getFile())
+            + ".crl");
       destinationCrt.renameTo(destinationCrl);
 
       IgcService igcService = createIgcService();
