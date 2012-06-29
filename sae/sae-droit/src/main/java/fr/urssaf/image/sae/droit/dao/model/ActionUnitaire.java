@@ -45,4 +45,36 @@ public class ActionUnitaire {
       this.description = description;
    }
 
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final boolean equals(Object obj) {
+      boolean areEquals = false;
+
+      if (obj instanceof ActionUnitaire) {
+         ActionUnitaire actionUnitaire = (ActionUnitaire) obj;
+         areEquals = code.equals(actionUnitaire.getCode())
+               && description.equals(actionUnitaire.getDescription());
+      }
+
+      return areEquals;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final int hashCode() {
+      return super.hashCode();
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final String toString() {
+      return "code : " + code + "\ndescription : " + description;
+   }
+
 }

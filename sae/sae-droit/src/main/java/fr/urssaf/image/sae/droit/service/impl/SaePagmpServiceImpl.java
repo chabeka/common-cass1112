@@ -31,9 +31,8 @@ import fr.urssaf.image.sae.droit.utils.ZookeeperUtils;
 @Component
 public class SaePagmpServiceImpl implements SaePagmpService {
 
-   /**
-    * 
-    */
+   private static final String CHECK = "checkPagmpInexistant";
+
    private static final String PAGMP = "Le PAGMp ";
 
    private static final Logger LOGGER = LoggerFactory
@@ -89,8 +88,10 @@ public class SaePagmpServiceImpl implements SaePagmpService {
       Pagmp storedPagmp = pagmpSupport.find(pagmp.getCode());
 
       if (storedPagmp != null) {
-         LOGGER.warn(PAGMP + pagmp.getCode()
-               + " existe déjà dans la famille de colonne DroitPagmp");
+         LOGGER
+               .warn(
+                     "{} - Le PAGMp {} existe déjà dans la famille de colonne DroitPagmp",
+                     CHECK, pagmp.getCode());
          throw new DroitRuntimeException(PAGMP + pagmp.getCode()
                + " existe déjà dans la famille de colonne DroitPagmp");
       }

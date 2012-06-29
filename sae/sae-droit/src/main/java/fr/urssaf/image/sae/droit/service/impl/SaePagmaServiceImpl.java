@@ -30,6 +30,8 @@ import fr.urssaf.image.sae.droit.utils.ZookeeperUtils;
 @Component
 public class SaePagmaServiceImpl implements SaePagmaService {
 
+   private static final String CHECK = "checkPagmaNotExists";
+
    private static final Logger LOGGER = LoggerFactory
          .getLogger(SaePagmaServiceImpl.class);
 
@@ -119,8 +121,10 @@ public class SaePagmaServiceImpl implements SaePagmaService {
     */
    private void checkPagmaNotExists(Pagma pagma) {
       if (pagmaSupport.find(pagma.getCode()) != null) {
-         LOGGER.warn("Le PAGMa " + pagma.getCode()
-               + " existe déjà dans la famille de colonne DroitPagma");
+         LOGGER
+               .warn(
+                     "{} - Le PAGMa {} existe déjà dans la famille de colonne DroitPagma",
+                     CHECK, pagma.getCode());
          throw new PagmaReferenceException("Le PAGMa " + pagma.getCode()
                + " existe déjà dans la famille de colonne DroitPagma");
       }

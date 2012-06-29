@@ -54,9 +54,9 @@ import fr.urssaf.image.sae.droit.utils.ZookeeperUtils;
 @Component
 public class SaeDroitServiceImpl implements SaeDroitService {
 
-   /**
-    * 
-    */
+   private static final String CHECK_CONTRAT = "checkContratServiceInexistant";
+   private static final String CHECK_PAGM = "checkPagmInexistant";
+
    private static final String MESSAGE_CONTRAT = "Le contrat de service ";
 
    private static final Logger LOGGER = LoggerFactory
@@ -381,16 +381,17 @@ public class SaeDroitServiceImpl implements SaeDroitService {
    private void checkContratServiceInexistant(ServiceContract serviceContract) {
       try {
          contratsCache.getUnchecked(serviceContract.getCodeClient());
-         LOGGER.warn(MESSAGE_CONTRAT + serviceContract.getCodeClient()
-               + " existe déjà dans la famille de colonne DroitContratService");
+         LOGGER.warn("{} - Le contrat de service {} existe déjà dans "
+               + "la famille de colonne DroitContratService", CHECK_CONTRAT,
+               serviceContract.getCodeClient());
          throw new DroitRuntimeException(MESSAGE_CONTRAT
                + serviceContract.getCodeClient()
                + " existe déjà dans la famille de colonne DroitContratService");
       } catch (InvalidCacheLoadException e) {
-         LOGGER.debug("aucune référence au contrat de service "
-               + serviceContract.getCodeClient()
-               + " trouvéedans la famille de colonne DroitContratService."
-               + " On continue le traitement");
+         LOGGER.debug("{} - aucune référence au contrat de service {} "
+               + " trouvée dans la famille de colonne DroitContratService."
+               + " On continue le traitement", CHECK_CONTRAT, serviceContract
+               .getCodeClient());
       }
 
    }
@@ -405,16 +406,17 @@ public class SaeDroitServiceImpl implements SaeDroitService {
    private void checkPagmInexistant(ServiceContract serviceContract) {
       try {
          pagmsCache.getUnchecked(serviceContract.getCodeClient());
-         LOGGER.warn(MESSAGE_CONTRAT + serviceContract.getCodeClient()
-               + " existe déjà dans la famille de colonne DroitPagm");
+         LOGGER.warn("{} - Le Pagm du contrat de service {} existe déjà dans "
+               + "la famille de colonne DroitPagm", CHECK_PAGM, serviceContract
+               .getCodeClient());
          throw new DroitRuntimeException(MESSAGE_CONTRAT
                + serviceContract.getCodeClient()
                + " existe déjà dans la famille de colonne DroitPagm");
       } catch (InvalidCacheLoadException e) {
-         LOGGER.debug("aucune référence au contrat de service "
-               + serviceContract.getCodeClient()
+         LOGGER.debug("{} - aucune référence au pagm du contrat de service "
                + " trouvée dans la famille de colonne DroitPagm."
-               + " On continue le traitement");
+               + " On continue le traitement", CHECK_PAGM, serviceContract
+               .getCodeClient());
       }
 
    }

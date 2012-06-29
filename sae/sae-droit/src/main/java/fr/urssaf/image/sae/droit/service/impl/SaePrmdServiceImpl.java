@@ -28,13 +28,12 @@ import fr.urssaf.image.sae.droit.utils.ZookeeperUtils;
 @Component
 public class SaePrmdServiceImpl implements SaePrmdService {
 
-   /**
-    * 
-    */
+   private static final String CHECK = "checkPrmdInexistant";
+
    private static final String PRMD = "Le PRMD ";
 
    private static final Logger LOGGER = LoggerFactory
-         .getLogger(SaePagmpServiceImpl.class);
+         .getLogger(SaePrmdServiceImpl.class);
 
    private static final String PREFIXE_PRMD = "/DroitPrmd/";
 
@@ -83,8 +82,9 @@ public class SaePrmdServiceImpl implements SaePrmdService {
       Prmd storedPrmd = prmdSupport.find(prmd.getCode());
 
       if (storedPrmd != null) {
-         LOGGER.warn(PRMD + prmd.getCode() + " existe déjà dans la "
-               + "famille de colonnes DroitPRMD");
+
+         LOGGER.warn("{} - Le PRMD {} existe déjà dans la "
+               + "famille de colonnes DroitPRMD", CHECK, prmd.getCode());
          throw new DroitRuntimeException(PRMD + prmd.getCode()
                + " existe déjà dans la " + "famille de colonnes DroitPRMD");
       }
