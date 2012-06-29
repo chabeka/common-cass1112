@@ -47,4 +47,42 @@ public class Pagma {
       this.actionUnitaires = actionUnitaires;
    }
 
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final boolean equals(Object obj) {
+      boolean areEquals = false;
+
+      if (obj instanceof Pagma) {
+         Pagma pagma = (Pagma) obj;
+         areEquals = code.equals(pagma.getCode())
+               && actionUnitaires.size() == pagma.getActionUnitaires().size()
+               && actionUnitaires.containsAll(pagma.getActionUnitaires());
+      }
+
+      return areEquals;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final int hashCode() {
+      return super.hashCode();
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final String toString() {
+      StringBuffer buffer = new StringBuffer();
+      for (String action : actionUnitaires) {
+         buffer.append("action = " + action + "\n");
+      }
+
+      return "code : " + code + "\nactions :\n" + buffer.toString();
+   }
+
 }

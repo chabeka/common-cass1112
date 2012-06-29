@@ -3,10 +3,22 @@
  */
 package fr.urssaf.image.sae.droit.service.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.netflix.curator.framework.CuratorFramework;
+
+import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
+import fr.urssaf.image.commons.zookeeper.ZookeeperMutex;
 import fr.urssaf.image.sae.droit.dao.model.Pagma;
+import fr.urssaf.image.sae.droit.dao.serializer.exception.ActionUnitaireReferenceException;
+import fr.urssaf.image.sae.droit.dao.serializer.exception.PagmaReferenceException;
+import fr.urssaf.image.sae.droit.dao.support.ActionUnitaireSupport;
+import fr.urssaf.image.sae.droit.dao.support.PagmaSupport;
 import fr.urssaf.image.sae.droit.service.SaePagmaService;
+import fr.urssaf.image.sae.droit.utils.ZookeeperUtils;
 
 /**
  * Classe d'implémentation du service {@link SaePagmaService}.<br>
@@ -17,12 +29,106 @@ import fr.urssaf.image.sae.droit.service.SaePagmaService;
 @Component
 public class SaePagmaServiceImpl implements SaePagmaService {
 
+   private static final Logger LOGGER = LoggerFactory
+         .getLogger(SaePagmaServiceImpl.class);
+
+   private static final String PREFIXE_PAGMA = "/DroitPagma/";
+
+   @Autowired
+   private CuratorFramework curatorClient;
+
+   @Autowired
+   private PagmaSupport pagmaSupport;
+
+   @Autowired
+   private ActionUnitaireSupport actionSupport;
+
+   @Autowired
+   private JobClockSupport clockSupport;
+
    /**
     * {@inheritDoc}
     */
    @Override
-   public void createPagma(Pagma pagma) {
-      // TODO Auto-generated method stub
+   public final void createPagma(Pagma pagma) {
+
+      String resourceName = PREFIXE_PAGMA + pagma.getCode();
+
+      ZookeeperMutex mutex = ZookeeperUtils.createMutex(curatorClient,
+            resourceName);
+      // FIXME FBON - Vérifier comment arrêter le traitement et pouvoir avertir
+      // sans exception
+      try {
+         ZookeeperUtils.acquire(mutex, resourceName);
+
+         checkPagmaNotExists(pagma);
+         checkActionsUnitairesExist(pagma);
+
+         pagmaSupport.create(pagma, clockSupport.currentCLock());
+
+         checkLock(mutex, pagma);
+
+      } finally {
+         mutex.release();
+      }
+
+   }
+
+   /**
+    * @param mutex
+    * @param pagma
+    */
+   private void checkLock(ZookeeperMutex mutex, Pagma pagma) {
+      if (!ZookeeperUtils.isLock(mutex)) {
+
+         String code = pagma.getCode();
+
+         Pagma storedPagma = pagmaSupport.find(code);
+         if (storedPagma == null) {
+            throw new PagmaReferenceException("le PAGMa " + code
+                  + "n'a pas été créé");
+         }
+
+         if (!storedPagma.equals(pagma)) {
+            throw new PagmaReferenceException("le PAGMa " + code
+                  + " a déjà été créé");
+         }
+
+      }
+
+   }
+
+   /**
+    * Vérifie si les actions unitaires existent en base CASSANDRA. Si ce n'est
+    * pas le cas soulève une {@link ActionUnitaireReferenceException}
+    * 
+    * @param pagma
+    */
+   private void checkActionsUnitairesExist(Pagma pagma) {
+      for (String action : pagma.getActionUnitaires()) {
+         if (actionSupport.find(action) == null) {
+            throw new ActionUnitaireReferenceException("L'action unitaire "
+                  + action + "n'a pas été trouvée dans la "
+                  + "famille de colonne DroitActionUnitaire");
+         }
+      }
+
+   }
+
+   /**
+    * Vérifie si le PAGMa existe en base CASSANDRA. Si c'est le cas soulève une
+    * {@link PagmaReferenceException}
+    * 
+    * @param pagma
+    *           la pagma qui doit être créée
+    */
+   private void checkPagmaNotExists(Pagma pagma) {
+      if (pagmaSupport.find(pagma.getCode()) != null) {
+         LOGGER.warn("Le PAGMa " + pagma.getCode()
+               + " existe déjà dans la famille de colonne DroitPagma");
+         throw new PagmaReferenceException("Le PAGMa " + pagma.getCode()
+               + " existe déjà dans la famille de colonne DroitPagma");
+      }
 
    }
 

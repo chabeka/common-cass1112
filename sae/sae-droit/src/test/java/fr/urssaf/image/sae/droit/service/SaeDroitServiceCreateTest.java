@@ -19,11 +19,8 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.netflix.curator.framework.CuratorFramework;
-
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
-import fr.urssaf.image.commons.zookeeper.ZookeeperMutex;
 import fr.urssaf.image.sae.droit.dao.model.Pagm;
 import fr.urssaf.image.sae.droit.dao.model.Pagma;
 import fr.urssaf.image.sae.droit.dao.model.Pagmp;
@@ -34,10 +31,7 @@ import fr.urssaf.image.sae.droit.dao.support.ContratServiceSupport;
 import fr.urssaf.image.sae.droit.dao.support.PagmSupport;
 import fr.urssaf.image.sae.droit.dao.support.PagmaSupport;
 import fr.urssaf.image.sae.droit.dao.support.PagmpSupport;
-import fr.urssaf.image.sae.droit.exception.ContratServiceReferenceException;
-import fr.urssaf.image.sae.droit.exception.LockTimeoutException;
-import fr.urssaf.image.sae.droit.exception.PagmReferenceException;
-import fr.urssaf.image.sae.droit.utils.ZookeeperUtils;
+import fr.urssaf.image.sae.droit.exception.DroitRuntimeException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-droit-test.xml" })
@@ -65,51 +59,13 @@ public class SaeDroitServiceCreateTest {
    @Autowired
    private JobClockSupport clockSupport;
 
-   @Autowired
-   private CuratorFramework curatorClient;
-
    @After
    public void end() throws Exception {
       cassandraServer.resetData();
    }
 
-   @Test
-   public void testCreateServiceDejaLocke() {
-      ZookeeperMutex mutex = ZookeeperUtils.createMutex(curatorClient,
-            "/DroitContratService/codeClient");
-      try {
-         ZookeeperUtils.acquire(mutex, "/DroitContratService/codeClient");
-      } catch (LockTimeoutException e) {
-         Assert.fail("pas d'exception de lock attendue");
-      }
-
-      ServiceContract serviceContract = new ServiceContract();
-      serviceContract.setCodeClient("codeClient");
-      serviceContract.setDescription("description");
-      serviceContract.setLibelle("libellé");
-      serviceContract.setViDuree(Long.valueOf(60));
-
-      List<Pagm> pagms = new ArrayList<Pagm>();
-      Pagm pagm = new Pagm();
-      pagm.setCode("codePagm");
-      pagm.setDescription("description pagm");
-      pagm.setPagma("pagma");
-      pagm.setPagmp("pagmp");
-      pagm.setParametres(new HashMap<String, String>());
-      pagms.add(pagm);
-
-      try {
-         service.createContratService(serviceContract, pagms);
-         Assert.fail("erreur LockTimeoutException attendue");
-      } catch (LockTimeoutException e) {
-
-      } finally {
-         mutex.release();
-      }
-   }
-
-   @Test(expected = ContratServiceReferenceException.class)
-   public void testCreateContratDejaExistant() throws LockTimeoutException {
+   @Test(expected = DroitRuntimeException.class)
+   public void testCreateContratDejaExistant() {
 
       ServiceContract serviceContract = new ServiceContract();
       serviceContract.setCodeClient("codeClient");
@@ -132,8 +88,8 @@ public class SaeDroitServiceCreateTest {
 
    }
 
-   @Test(expected = PagmReferenceException.class)
-   public void testCreatePagmDejaExistant() throws LockTimeoutException {
+   @Test(expected = DroitRuntimeException.class)
+   public void testCreatePagmDejaExistant() {
       ServiceContract serviceContract = new ServiceContract();
       serviceContract.setCodeClient("codeClient");
       serviceContract.setDescription("description");
@@ -155,7 +111,7 @@ public class SaeDroitServiceCreateTest {
    }
 
    @Test(expected = PagmaReferenceException.class)
-   public void testCreatePagmaInexistant() throws LockTimeoutException {
+   public void testCreatePagmaInexistant() {
       ServiceContract serviceContract = new ServiceContract();
       serviceContract.setCodeClient("codeClient");
       serviceContract.setDescription("description");
@@ -175,7 +131,7 @@ public class SaeDroitServiceCreateTest {
    }
 
    @Test(expected = PagmpReferenceException.class)
-   public void testCreatePagmpInexistant() throws LockTimeoutException {
+   public void testCreatePagmpInexistant() {
       ServiceContract serviceContract = new ServiceContract();
       serviceContract.setCodeClient("codeClient");
       serviceContract.setDescription("description");
@@ -200,7 +156,7 @@ public class SaeDroitServiceCreateTest {
    }
 
    @Test
-   public void testCreateSucces() throws LockTimeoutException {
+   public void testCreateSucces() {
       ServiceContract serviceContract = new ServiceContract();
       serviceContract.setCodeClient("codeClient");
       serviceContract.setDescription("description");

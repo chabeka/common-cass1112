@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 import com.netflix.curator.framework.CuratorFramework;
 
 import fr.urssaf.image.commons.zookeeper.ZookeeperMutex;
-import fr.urssaf.image.sae.droit.exception.LockTimeoutException;
+import fr.urssaf.image.sae.droit.exception.DroitRuntimeException;
 
 /**
  * 
@@ -33,8 +33,8 @@ public final class ZookeeperUtils {
     *           nom à réserver
     * @return le mutex zookeeper
     */
-   public static ZookeeperMutex createMutex(
-         CuratorFramework curatorClient, String name) {
+   public static ZookeeperMutex createMutex(CuratorFramework curatorClient,
+         String name) {
       return new ZookeeperMutex(curatorClient, name);
    }
 
@@ -48,12 +48,11 @@ public final class ZookeeperUtils {
     * @throws LockTimeoutException
     *            exception levée lorsqu'il est impossible de récupérer le lock
     */
-   public static void acquire(ZookeeperMutex mutex, String name)
-         throws LockTimeoutException {
+   public static void acquire(ZookeeperMutex mutex, String name) {
       if (!mutex.acquire(LOCK_TIME_OUT, TimeUnit.SECONDS)) {
-         throw new LockTimeoutException(
+         throw new DroitRuntimeException(
                "Erreur lors de la tentative d'acquisition du lock pour le contrat "
-                     + name + " : on n'a pas obtenu le lock au bout de "
+                     + name + " : impossible d'obtenir le lock au bout de "
                      + LOCK_TIME_OUT + " secondes.");
       }
 

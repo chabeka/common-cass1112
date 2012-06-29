@@ -24,4 +24,14 @@ public class ActionUnitaireReferenceException extends RuntimeException {
       super(message, cause);
    }
 
+   /**
+    * constructeur
+    * 
+    * @param message
+    *           message de l'exception
+    */
+   public ActionUnitaireReferenceException(String message) {
+      super(message);
+   }
+
 }

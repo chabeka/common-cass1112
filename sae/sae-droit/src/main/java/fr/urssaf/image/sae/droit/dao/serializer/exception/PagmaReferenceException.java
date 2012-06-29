@@ -23,8 +23,15 @@ public class PagmaReferenceException extends RuntimeException {
    public PagmaReferenceException(String message, Throwable cause) {
       super(message, cause);
    }
-   
-   
 
+   /**
+    * constructeur
+    * 
+    * @param message
+    *           message de l'exception
+    */
+   public PagmaReferenceException(String message) {
+      super(message);
+   }
 
 }

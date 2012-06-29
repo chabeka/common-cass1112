@@ -37,7 +37,7 @@ import fr.urssaf.image.sae.droit.dao.support.PagmpSupport;
 import fr.urssaf.image.sae.droit.dao.support.PrmdSupport;
 import fr.urssaf.image.sae.droit.exception.ContratServiceNotFoundException;
 import fr.urssaf.image.sae.droit.exception.ContratServiceReferenceException;
-import fr.urssaf.image.sae.droit.exception.LockTimeoutException;
+import fr.urssaf.image.sae.droit.exception.DroitRuntimeException;
 import fr.urssaf.image.sae.droit.exception.PagmNotFoundException;
 import fr.urssaf.image.sae.droit.exception.PagmReferenceException;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
@@ -242,7 +242,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
     */
    @Override
    public final void createContratService(ServiceContract serviceContract,
-         List<Pagm> pagms) throws LockTimeoutException {
+         List<Pagm> pagms) {
 
       String lockName = PREFIXE_CONTRAT + serviceContract.getCodeClient();
 
@@ -383,8 +383,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
          contratsCache.getUnchecked(serviceContract.getCodeClient());
          LOGGER.warn(MESSAGE_CONTRAT + serviceContract.getCodeClient()
                + " existe déjà dans la famille de colonne DroitContratService");
-         // FIXME FBON - Vérifier que la levée d'exception est correcte
-         throw new ContratServiceReferenceException(MESSAGE_CONTRAT
+         throw new DroitRuntimeException(MESSAGE_CONTRAT
                + serviceContract.getCodeClient()
                + " existe déjà dans la famille de colonne DroitContratService");
       } catch (InvalidCacheLoadException e) {
@@ -408,8 +407,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
          pagmsCache.getUnchecked(serviceContract.getCodeClient());
          LOGGER.warn(MESSAGE_CONTRAT + serviceContract.getCodeClient()
                + " existe déjà dans la famille de colonne DroitPagm");
-         // FIXME FBON - Vérifier que la levée d'exception est correcte
-         throw new PagmReferenceException(MESSAGE_CONTRAT
+         throw new DroitRuntimeException(MESSAGE_CONTRAT
                + serviceContract.getCodeClient()
                + " existe déjà dans la famille de colonne DroitPagm");
       } catch (InvalidCacheLoadException e) {
