@@ -63,4 +63,40 @@ public class Prmd {
       this.lucene = lucene;
    }
 
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final boolean equals(Object obj) {
+
+      boolean areEquals = false;
+
+      if (obj instanceof Prmd) {
+         Prmd prmd = (Prmd) obj;
+
+         areEquals = code.equals(prmd.getCode())
+               && description.equals(prmd.getDescription())
+               && lucene.equals(prmd.getLucene());
+      }
+
+      return areEquals;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final int hashCode() {
+      return super.hashCode();
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final String toString() {
+      return "code : " + code + "\ndescription : " + description
+            + "\nlucene : " + lucene;
+   }
+
 }
