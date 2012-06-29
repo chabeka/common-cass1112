@@ -204,10 +204,11 @@ public class SAECassandraUpdater {
       LOG.info("Mise à jour du keyspace SAE en version 2");
 
       // Si le KeySpace SAE n'existe pas, on quitte
-      // En effet, il aurait du être créé lors de l'install du lot SAE-120511 
+      // En effet, il aurait du être créé lors de l'install du lot SAE-120511
       KeyspaceDefinition keyspaceDef = cluster.describeKeyspace(ksName);
       if (keyspaceDef == null) {
-         throw new MajLotRuntimeException("Le Keyspace " + ksName + " n'existe pas !");
+         throw new MajLotRuntimeException("Le Keyspace " + ksName
+               + " n'existe pas !");
       }
 
       // On se connecte au keyspace
@@ -215,16 +216,16 @@ public class SAECassandraUpdater {
 
       // Liste contenant la définition des column families à créer
       List<ColumnFamilyDefinition> cfDefs = new ArrayList<ColumnFamilyDefinition>();
-      
+
       // JobHistory
-      cfDefs.add(HFactory.createColumnFamilyDefinition(
-            ksName, "JobHistory", ComparatorType.TIMEUUIDTYPE));
-      
+      cfDefs.add(HFactory.createColumnFamilyDefinition(ksName, "JobHistory",
+            ComparatorType.TIMEUUIDTYPE));
+
       // Ajoute les options les plus courantes à chacune des CF
       for (ColumnFamilyDefinition c : cfDefs) {
          addDefaultCFAttributs(c);
       }
-      
+
       // Création des CF
       for (ColumnFamilyDefinition c : cfDefs) {
          if (cfExists(keyspaceDef, c.getName())) {
@@ -238,6 +239,78 @@ public class SAECassandraUpdater {
 
       // On positionne la version à 2
       setDatabaseVersion(2L);
+
+   }
+
+   /**
+    * Version 3 : Ajout d'une column family dans le Keyspace "SAE"
+    */
+   public final void updateToVersion3() {
+
+      long version = getDatabaseVersion();
+      if (version >= 3) {
+         LOG.info("La base de données est déja en version " + version);
+         return;
+      }
+
+      LOG.info("Mise à jour du keyspace SAE en version 3");
+
+      // Si le KeySpace SAE n'existe pas, on quitte
+      // En effet, il aurait du être créé lors de l'install du lot SAE-120511
+      KeyspaceDefinition keyspaceDef = cluster.describeKeyspace(ksName);
+      if (keyspaceDef == null) {
+         throw new MajLotRuntimeException("Le Keyspace " + ksName
+               + " n'existe pas !");
+      }
+
+      // On se connecte au keyspace
+      connectToKeyspace();
+
+      // Liste contenant la définition des column families à créer
+      List<ColumnFamilyDefinition> cfDefs = new ArrayList<ColumnFamilyDefinition>();
+
+      // DroitContratService
+      cfDefs.add(HFactory.createColumnFamilyDefinition(ksName,
+            "DroitContratService", ComparatorType.UTF8TYPE));
+
+      // DroitPagm
+      cfDefs.add(HFactory.createColumnFamilyDefinition(ksName, "DroitPagm",
+            ComparatorType.UTF8TYPE));
+
+      // DroitPagma
+      cfDefs.add(HFactory.createColumnFamilyDefinition(ksName, "DroitPagma",
+            ComparatorType.UTF8TYPE));
+
+      // DroitPagmp
+      cfDefs.add(HFactory.createColumnFamilyDefinition(ksName, "DroitPagmp",
+            ComparatorType.UTF8TYPE));
+
+      // DroitActionUnitaire
+      cfDefs.add(HFactory.createColumnFamilyDefinition(ksName,
+            "DroitActionUnitaire", ComparatorType.UTF8TYPE));
+
+      // DroitPrmd
+      cfDefs.add(HFactory.createColumnFamilyDefinition(ksName, "DroitPrmd",
+            ComparatorType.UTF8TYPE));
+
+      // Ajoute les options les plus courantes à chacune des CF
+      for (ColumnFamilyDefinition c : cfDefs) {
+         addDefaultCFAttributs(c);
+      }
+
+      // Création des CF
+      for (ColumnFamilyDefinition c : cfDefs) {
+         if (cfExists(keyspaceDef, c.getName())) {
+            LOG.info("La famille de colonnes " + c.getName()
+                  + " est déjà existante");
+         } else {
+            LOG.info("Création de la famille de colonnes " + c.getName());
+            cluster.addColumnFamily(c, true);
+         }
+      }
+
+      // On positionne la version à 3
+      setDatabaseVersion(3L);
 
    }
 

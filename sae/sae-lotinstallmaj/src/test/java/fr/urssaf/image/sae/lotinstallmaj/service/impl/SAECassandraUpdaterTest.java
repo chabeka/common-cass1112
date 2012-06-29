@@ -40,5 +40,15 @@ public class SAECassandraUpdaterTest {
       updater.updateToVersion2();
       Assert.assertEquals(2, updater.getDatabaseVersion());
    }
+   
+   @Test
+   public void updateToVersion3() {
+      CassandraConfig config = new CassandraConfig();
+      config.setHosts(CassandraUnit.host);
+      config.setKeyspaceName("SAE");
+      SAECassandraUpdater updater = new SAECassandraUpdater(config);
+      updater.updateToVersion3();
+      Assert.assertEquals(3, updater.getDatabaseVersion());
+   }
 
 }
