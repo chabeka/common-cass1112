@@ -24,6 +24,7 @@ import fr.urssaf.image.commons.cassandra.helper.HectorIterator;
 import fr.urssaf.image.commons.cassandra.helper.QueryResultConverter;
 import fr.urssaf.image.sae.droit.dao.PrmdDao;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
+import fr.urssaf.image.sae.droit.dao.serializer.MapSerializer;
 
 /**
  * Classe de support de la classe {@link PrmdDao}
@@ -49,11 +50,12 @@ public class PrmdSupport {
 
       dao.ecritDescription(updater, prmd.getDescription(), clock);
       dao.ecritLucene(updater, prmd.getLucene(), clock);
+      dao.ecritBean(updater, prmd.getBean(), clock);
+      dao.ecritMetaData(updater, prmd.getMetadata(), clock);
 
       dao.getPrmdTmpl().update(updater);
    }
 
-   
    /**
     * Méthode de suppression d'une ligne
     * 
@@ -70,8 +72,7 @@ public class PrmdSupport {
 
       mutator.execute();
    }
-   
-   
+
    /**
     * Méthode de lecture d'une ligne
     * 
@@ -129,7 +130,6 @@ public class PrmdSupport {
       }
       return list;
    }
-   
 
    private Prmd getPrmdFromResult(ColumnFamilyResult<String, String> result) {
       Prmd prmd = null;
@@ -139,6 +139,11 @@ public class PrmdSupport {
          prmd.setCode(result.getKey());
          prmd.setDescription(result.getString(PrmdDao.PRMD_DESCRIPTION));
          prmd.setLucene(result.getString(PrmdDao.PRMD_LUCENE));
+
+         byte[] bMetadata = result.getByteArray(PrmdDao.PRMD_METADATA);
+         prmd.setMetadata(MapSerializer.get().fromBytes(bMetadata));
+
+         prmd.setBean(result.getString(PrmdDao.PRMD_BEAN));
       }
 
       return prmd;

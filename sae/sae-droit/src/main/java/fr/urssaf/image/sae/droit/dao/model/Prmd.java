@@ -3,6 +3,8 @@
  */
 package fr.urssaf.image.sae.droit.dao.model;
 
+import java.util.Map;
+
 /**
  * Classe de modèle d'un PRMD
  * 
@@ -17,6 +19,15 @@ public class Prmd {
 
    /** requête LUCENE pour le filtrage de la recherche */
    private String lucene;
+
+   /** liste de clé/valeur pour un PRMD */
+   private Map<String, String> metadata;
+
+   /**
+    * Nom du qualifier de la classe d'implémentation du bean de vérification de
+    * l'appartenance à un PRMD
+    */
+   private String bean;
 
    /**
     * @return l'identifiant unique du PRMD
@@ -76,7 +87,11 @@ public class Prmd {
 
          areEquals = code.equals(prmd.getCode())
                && description.equals(prmd.getDescription())
-               && lucene.equals(prmd.getLucene());
+               && lucene.equals(prmd.getLucene())
+               && bean.equals(prmd.getBean())
+               && metadata.keySet().size() == prmd.getMetadata().keySet()
+                     .size()
+               && metadata.keySet().containsAll(prmd.getMetadata().keySet());
       }
 
       return areEquals;
@@ -95,8 +110,46 @@ public class Prmd {
     */
    @Override
    public final String toString() {
+
+      StringBuffer buffer = new StringBuffer("\nliste des metadonnees :");
+      for (String key : metadata.keySet()) {
+         buffer.append("\nclé = " + key + " / valeur = " + metadata.get(key));
+      }
+
       return "code : " + code + "\ndescription : " + description
-            + "\nlucene : " + lucene;
+            + "\nlucene : " + lucene + "\nbean : " + bean + buffer.toString();
+   }
+
+   /**
+    * @return la liste de clé/valeur pour un PRMD
+    */
+   public final Map<String, String> getMetadata() {
+      return metadata;
+   }
+
+   /**
+    * @param metadata
+    *           liste de clé/valeur pour un PRMD
+    */
+   public final void setMetadata(Map<String, String> metadata) {
+      this.metadata = metadata;
+   }
+
+   /**
+    * @return le Nom du qualifier de la classe d'implémentation du bean de
+    *         vérification de l'appartenance à un PRMD
+    */
+   public final String getBean() {
+      return bean;
+   }
+
+   /**
+    * @param bean
+    *           Nom du qualifier de la classe d'implémentation du bean de
+    *           vérification de l'appartenance à un PRMD
+    */
+   public final void setBean(String bean) {
+      this.bean = bean;
    }
 
 }

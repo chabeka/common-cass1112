@@ -5,6 +5,7 @@ package fr.urssaf.image.sae.droit.service;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import org.junit.After;
@@ -44,14 +45,10 @@ import fr.urssaf.image.sae.droit.model.SaePrmd;
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class SaeDroitServiceDataTest {
 
-   /**
-    * 
-    */
+   private static final String BEAN1 = "bean1";
+
    private static final String DESCRIPTION_ACTION_2 = "description action unitaire 2";
 
-   /**
-    * 
-    */
    private static final String DESCRIPTION_ACTION_1 = "description action unitaire 1";
 
    private static final String DESCRIPTION_PAGMP = "description pagmp";
@@ -128,8 +125,8 @@ public class SaeDroitServiceDataTest {
    }
 
    @Test(expected = ContratServiceNotFoundException.class)
-   public void testContratServiceInexistant() throws ContratServiceNotFoundException,
-         PagmNotFoundException {
+   public void testContratServiceInexistant()
+         throws ContratServiceNotFoundException, PagmNotFoundException {
 
       service.loadSaeDroits("test1", Arrays.asList(new String[] { "pagm1" }));
 
@@ -228,8 +225,8 @@ public class SaeDroitServiceDataTest {
    }
 
    @Test
-   public void testSuccesPlusieursPagm() throws ContratServiceNotFoundException,
-         PagmNotFoundException {
+   public void testSuccesPlusieursPagm()
+         throws ContratServiceNotFoundException, PagmNotFoundException {
       creationContrat();
       creationPagm();
       creationPagm2();
@@ -362,6 +359,8 @@ public class SaeDroitServiceDataTest {
       prmd.setCode(CODE_PRMD);
       prmd.setDescription(DESCRIPTION_PRMD);
       prmd.setLucene(LUCENE_PRMD);
+      prmd.setBean(BEAN1);
+      prmd.setMetadata(new HashMap<String, String>());
 
       prmdSupport.create(prmd, new Date().getTime());
 
@@ -373,7 +372,9 @@ public class SaeDroitServiceDataTest {
       prmd.setCode(CODE_PRMD_2);
       prmd.setDescription(DESCRIPTION_PRMD_2);
       prmd.setLucene(LUCENE_PRMD_2);
-
+      prmd.setBean(BEAN1);
+      prmd.setMetadata(new HashMap<String, String>());
+      
       prmdSupport.create(prmd, new Date().getTime());
 
       return prmd;

@@ -3,6 +3,8 @@
  */
 package fr.urssaf.image.sae.droit.dao;
 
+import java.util.Map;
+
 import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
@@ -16,17 +18,23 @@ import me.prettyprint.hector.api.mutation.Mutator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import fr.urssaf.image.sae.droit.dao.serializer.MapSerializer;
+
 /**
- * Service DAO de la famille de colonnes "DroitPrmd" 
+ * Service DAO de la famille de colonnes "DroitPrmd"
  * 
  */
 @Repository
 public class PrmdDao {
 
    public static final String PRMD_DESCRIPTION = "description";
-   
+
    public static final String PRMD_LUCENE = "lucene";
-   
+
+   public static final String PRMD_METADATA = "metadata";
+
+   public static final String PRMD_BEAN = "bean";
+
    public static final String PRMD_CFNAME = "DroitPrmd";
 
    public static final int MAX_ATTRIBUTS = 100;
@@ -85,7 +93,20 @@ public class PrmdDao {
       updater.setColumn(column);
 
    }
-   
+
+   private void addMapColumn(ColumnFamilyUpdater<String, String> updater,
+         String colName, Map<String, String> value,
+         Serializer<String> nameSerializer,
+         Serializer<Map<String, String>> valueSerializer, long clock) {
+
+      HColumn<String, Map<String, String>> column = HFactory.createColumn(
+            colName, value, nameSerializer, valueSerializer);
+
+      column.setClock(clock);
+      updater.setColumn(column);
+
+   }
+
    /**
     * ajoute une colonne {@value #PRMD_DESCRIPTION}
     * 
@@ -103,7 +124,7 @@ public class PrmdDao {
             StringSerializer.get(), clock);
 
    }
-   
+
    /**
     * ajoute une colonne {@value #PRMD_LUCENE}
     * 
@@ -114,14 +135,50 @@ public class PrmdDao {
     * @param clock
     *           horloge de la colonne
     */
-   public final void ecritLucene(
-         ColumnFamilyUpdater<String, String> updater, String value, long clock) {
+   public final void ecritLucene(ColumnFamilyUpdater<String, String> updater,
+         String value, long clock) {
 
       addColumn(updater, PRMD_LUCENE, value, StringSerializer.get(),
             StringSerializer.get(), clock);
 
    }
-   
+
+   /**
+    * ajoute une colonne {@value #PRMD_METADATA}
+    * 
+    * @param updater
+    *           updater de <code>DroitActionUnitaire</code>
+    * @param value
+    *           valeur de la colonne
+    * @param clock
+    *           horloge de la colonne
+    */
+   public final void ecritMetaData(ColumnFamilyUpdater<String, String> updater,
+         Map<String, String> value, long clock) {
+
+      addMapColumn(updater, PRMD_METADATA, value, StringSerializer.get(),
+            MapSerializer.get(), clock);
+
+   }
+
+   /**
+    * ajoute une colonne {@value #PRMD_BEAN}
+    * 
+    * @param updater
+    *           updater de <code>DroitActionUnitaire</code>
+    * @param value
+    *           valeur de la colonne
+    * @param clock
+    *           horloge de la colonne
+    */
+   public final void ecritBean(ColumnFamilyUpdater<String, String> updater,
+         String value, long clock) {
+
+      addColumn(updater, PRMD_BEAN, value, StringSerializer.get(),
+            StringSerializer.get(), clock);
+
+   }
+
    /**
     * Suppression d'un Prmd
     * 
