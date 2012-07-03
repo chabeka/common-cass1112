@@ -272,6 +272,25 @@ public class SaeDroitServiceImpl implements SaeDroitService {
    }
 
    /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final boolean contratServiceExists(String idClient) {
+      boolean exists;
+
+      try {
+         contratsCache.getUnchecked(idClient);
+         exists = true;
+
+      } catch (InvalidCacheLoadException e) {
+         exists = false;
+      }
+
+      return exists;
+
+   }
+
+   /**
     * @param mutex
     */
    private void checkLock(ZookeeperMutex mutex, ServiceContract contrat,
@@ -379,15 +398,15 @@ public class SaeDroitServiceImpl implements SaeDroitService {
     *           le contrat de service
     */
    private void checkContratServiceInexistant(ServiceContract serviceContract) {
-      try {
-         contratsCache.getUnchecked(serviceContract.getCodeClient());
+
+      if (contratServiceExists(serviceContract.getCodeClient())) {
          LOGGER.warn("{} - Le contrat de service {} existe déjà dans "
                + "la famille de colonne DroitContratService", CHECK_CONTRAT,
                serviceContract.getCodeClient());
          throw new DroitRuntimeException(MESSAGE_CONTRAT
                + serviceContract.getCodeClient()
                + " existe déjà dans la famille de colonne DroitContratService");
-      } catch (InvalidCacheLoadException e) {
+      } else {
          LOGGER.debug("{} - aucune référence au contrat de service {} "
                + " trouvée dans la famille de colonne DroitContratService."
                + " On continue le traitement", CHECK_CONTRAT, serviceContract

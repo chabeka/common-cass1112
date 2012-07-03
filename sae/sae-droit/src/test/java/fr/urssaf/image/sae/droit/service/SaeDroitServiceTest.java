@@ -40,8 +40,8 @@ public class SaeDroitServiceTest {
          Assert.fail(EXCEPTION_ATTENDUE);
 
       } catch (Exception e) {
-         Assert.assertEquals(TYPE_CORRECT,
-               IllegalArgumentException.class, e.getClass());
+         Assert.assertEquals(TYPE_CORRECT, IllegalArgumentException.class, e
+               .getClass());
          Assert.assertTrue("message de l'exception contient identifiant", e
                .getMessage().contains("identifiant"));
       }
@@ -56,8 +56,8 @@ public class SaeDroitServiceTest {
          Assert.fail(EXCEPTION_ATTENDUE);
 
       } catch (Exception e) {
-         Assert.assertEquals(TYPE_CORRECT,
-               IllegalArgumentException.class, e.getClass());
+         Assert.assertEquals(TYPE_CORRECT, IllegalArgumentException.class, e
+               .getClass());
          Assert.assertTrue("message de l'exception contient liste des pagms", e
                .getMessage().contains("liste des pagms"));
       }
@@ -76,8 +76,8 @@ public class SaeDroitServiceTest {
          Assert.fail(EXCEPTION_ATTENDUE);
 
       } catch (Exception e) {
-         Assert.assertEquals(TYPE_CORRECT,
-               IllegalArgumentException.class, e.getClass());
+         Assert.assertEquals(TYPE_CORRECT, IllegalArgumentException.class, e
+               .getClass());
          Assert.assertTrue("message de l'exception contient contrat", e
                .getMessage().contains("contrat"));
       }
@@ -99,8 +99,8 @@ public class SaeDroitServiceTest {
          Assert.fail(EXCEPTION_ATTENDUE);
 
       } catch (Exception e) {
-         Assert.assertEquals(TYPE_CORRECT,
-               IllegalArgumentException.class, e.getClass());
+         Assert.assertEquals(TYPE_CORRECT, IllegalArgumentException.class, e
+               .getClass());
          Assert.assertTrue("message de l'exception contient code client", e
                .getMessage().contains("code client"));
       }
@@ -122,8 +122,8 @@ public class SaeDroitServiceTest {
          Assert.fail(EXCEPTION_ATTENDUE);
 
       } catch (Exception e) {
-         Assert.assertEquals(TYPE_CORRECT,
-               IllegalArgumentException.class, e.getClass());
+         Assert.assertEquals(TYPE_CORRECT, IllegalArgumentException.class, e
+               .getClass());
          Assert.assertTrue("message de l'exception contient description", e
                .getMessage().contains("description"));
       }
@@ -145,8 +145,8 @@ public class SaeDroitServiceTest {
          Assert.fail(EXCEPTION_ATTENDUE);
 
       } catch (Exception e) {
-         Assert.assertEquals(TYPE_CORRECT,
-               IllegalArgumentException.class, e.getClass());
+         Assert.assertEquals(TYPE_CORRECT, IllegalArgumentException.class, e
+               .getClass());
          Assert.assertTrue("message de l'exception contient libellé", e
                .getMessage().contains("libellé"));
       }
@@ -168,8 +168,8 @@ public class SaeDroitServiceTest {
          Assert.fail(EXCEPTION_ATTENDUE);
 
       } catch (Exception e) {
-         Assert.assertEquals(TYPE_CORRECT,
-               IllegalArgumentException.class, e.getClass());
+         Assert.assertEquals(TYPE_CORRECT, IllegalArgumentException.class, e
+               .getClass());
          Assert.assertTrue("message de l'exception contient durée", e
                .getMessage().contains("durée"));
       }
@@ -190,12 +190,28 @@ public class SaeDroitServiceTest {
          Assert.fail(EXCEPTION_ATTENDUE);
 
       } catch (Exception e) {
-         Assert.assertEquals(TYPE_CORRECT,
-               IllegalArgumentException.class, e.getClass());
+         Assert.assertEquals(TYPE_CORRECT, IllegalArgumentException.class, e
+               .getClass());
          Assert.assertTrue("message de l'exception contient pagms", e
                .getMessage().contains("pagms"));
       }
 
    }
 
+   @Test
+   public void testExistsContratObligatoire() {
+
+      try {
+
+         service.contratServiceExists(null);
+         Assert.fail(EXCEPTION_ATTENDUE);
+
+      } catch (Exception e) {
+         Assert.assertEquals(TYPE_CORRECT, IllegalArgumentException.class, e
+               .getClass());
+         Assert.assertTrue("message de l'exception contient code client", e
+               .getMessage().contains("code client"));
+      }
+
+   }
 }

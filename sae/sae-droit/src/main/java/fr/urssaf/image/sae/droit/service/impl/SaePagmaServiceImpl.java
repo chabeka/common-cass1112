@@ -105,7 +105,7 @@ public class SaePagmaServiceImpl implements SaePagmaService {
       for (String action : pagma.getActionUnitaires()) {
          if (actionSupport.find(action) == null) {
             throw new ActionUnitaireReferenceException("L'action unitaire "
-                  + action + "n'a pas été trouvée dans la "
+                  + action + " n'a pas été trouvée dans la "
                   + "famille de colonne DroitActionUnitaire");
          }
       }

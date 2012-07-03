@@ -24,6 +24,8 @@ public class SaePrmdServiceValidation {
    private static final String ARG_REQUIRED = "argument.required";
    private static final String CREATE_METHOD = "execution(void fr.urssaf.image.sae.droit.service.SaePrmdService.createPrmd(*))"
          + "&& args(prmd)";
+   private static final String CHECK_METHOD = "execution(boolean fr.urssaf.image.sae.droit.service.SaePrmdService.prmdExists(*))"
+      + "&& args(code)";
 
    /**
     * Méthode de validation de la méthode SaePrmdService#createPrmd(Prmd)
@@ -54,6 +56,19 @@ public class SaePrmdServiceValidation {
                ARG_REQUIRED, "lucène pagmp"));
       }
 
+   }
+   
+   /**
+    * Méthode de validation de la méthode SaePrmdService#prmdExists(idClient)
+    * 
+    * @param code code PRMD
+    */
+   @Before(CHECK_METHOD)
+   public final void checkCreate(String code) {
+      if (StringUtils.isEmpty(code)) {
+         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
+               ARG_REQUIRED, "code"));
+      }
    }
 
 }

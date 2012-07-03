@@ -42,6 +42,31 @@ public class SaePrmdServiceDatasTest {
       cassandraServer.resetData();
    }
 
+   @Test
+   public void testServicePrmdNotExists() {
+      boolean value = service.prmdExists("code");
+      
+      Assert.assertFalse("le prmd n'existe pas", value);
+   }
+
+   @Test
+   public void testServicePrmdExists() {
+      
+      Prmd prmd = new Prmd();
+
+      prmd.setCode("codePrmd");
+      prmd.setDescription("description Prmd");
+      prmd.setLucene("lucene Prmd");
+      prmd.setBean("bean1");
+      prmd.setMetadata(new HashMap<String, String>());
+
+      prmdSupport.create(prmd, clockSupport.currentCLock());
+      
+      boolean value = service.prmdExists("codePrmd");
+      
+      Assert.assertTrue("le prmd existe", value);
+   }
+   
    @Test(expected = DroitRuntimeException.class)
    public void testPrmdExiste() {
 

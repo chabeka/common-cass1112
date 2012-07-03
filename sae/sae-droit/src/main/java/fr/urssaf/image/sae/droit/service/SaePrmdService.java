@@ -19,4 +19,12 @@ public interface SaePrmdService {
     */
    void createPrmd(Prmd prmd);
 
+   /**
+    * Vérifie si le prmd existe ou non
+    * 
+    * @param code
+    *           code du PRMD
+    * @return <b>true</b> si le PRMD existe, <b>false</b> sinon
+    */
+   boolean prmdExists(String code);
 }

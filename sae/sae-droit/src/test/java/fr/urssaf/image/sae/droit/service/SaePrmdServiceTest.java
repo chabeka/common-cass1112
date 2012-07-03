@@ -33,8 +33,8 @@ public class SaePrmdServiceTest {
          service.createPrmd(null);
          Assert.fail(ERREUR_ATTENDUE);
       } catch (Exception e) {
-         Assert.assertEquals(TYPE_CORRECTE,
-               IllegalArgumentException.class, e.getClass());
+         Assert.assertEquals(TYPE_CORRECTE, IllegalArgumentException.class, e
+               .getClass());
          Assert.assertTrue("message de l'exception contient prmd", e
                .getMessage().contains("prmd"));
       }
@@ -52,8 +52,8 @@ public class SaePrmdServiceTest {
          service.createPrmd(prmd);
          Assert.fail(ERREUR_ATTENDUE);
       } catch (Exception e) {
-         Assert.assertEquals(TYPE_CORRECTE,
-               IllegalArgumentException.class, e.getClass());
+         Assert.assertEquals(TYPE_CORRECTE, IllegalArgumentException.class, e
+               .getClass());
          Assert.assertTrue("message de l'exception contient code", e
                .getMessage().contains("code"));
       }
@@ -71,8 +71,8 @@ public class SaePrmdServiceTest {
          service.createPrmd(prmd);
          Assert.fail(ERREUR_ATTENDUE);
       } catch (Exception e) {
-         Assert.assertEquals(TYPE_CORRECTE,
-               IllegalArgumentException.class, e.getClass());
+         Assert.assertEquals(TYPE_CORRECTE, IllegalArgumentException.class, e
+               .getClass());
          Assert.assertTrue("message de l'exception contient description", e
                .getMessage().contains("description"));
       }
@@ -89,10 +89,24 @@ public class SaePrmdServiceTest {
          service.createPrmd(prmd);
          Assert.fail(ERREUR_ATTENDUE);
       } catch (Exception e) {
-         Assert.assertEquals(TYPE_CORRECTE,
-               IllegalArgumentException.class, e.getClass());
+         Assert.assertEquals(TYPE_CORRECTE, IllegalArgumentException.class, e
+               .getClass());
          Assert.assertTrue("message de l'exception contient lucène", e
                .getMessage().contains("lucène"));
+      }
+   }
+
+   @Test
+   public void testCheckCodeObligatoire() {
+      try {
+
+         service.prmdExists(null);
+         Assert.fail(ERREUR_ATTENDUE);
+      } catch (Exception e) {
+         Assert.assertEquals(TYPE_CORRECTE, IllegalArgumentException.class, e
+               .getClass());
+         Assert.assertTrue("message de l'exception contient code", e
+               .getMessage().contains("code"));
       }
    }
 }

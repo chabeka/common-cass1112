@@ -45,4 +45,11 @@ public interface SaeDroitService {
     */
    void createContratService(ServiceContract serviceContract, List<Pagm> pagms);
 
+   
+   /**
+    * Vérifie si le contrat de service existe ou non
+    * @param idClient code Application cliente du service
+    * @return <b>true</b> si le contrat existe, <b>false</b> sinon
+    */
+   boolean contratServiceExists(String idClient);
 }

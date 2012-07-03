@@ -124,6 +124,22 @@ public class SaeDroitServiceDataTest {
       cassandraServer.resetData();
    }
 
+   
+   @Test
+   public void testServiceContratServiceInexistant() {
+      boolean exists = service.contratServiceExists(CODE_CLIENT);
+      
+      Assert.assertFalse("le contrat de service n'existe pas", exists);
+   }
+   
+   @Test
+   public void testServiceContratServiceExistant() {
+      creationContrat();
+      boolean exists = service.contratServiceExists(CODE_CLIENT);
+      Assert.assertTrue("le contrat de service existe", exists);
+   }
+   
+   
    @Test(expected = ContratServiceNotFoundException.class)
    public void testContratServiceInexistant()
          throws ContratServiceNotFoundException, PagmNotFoundException {

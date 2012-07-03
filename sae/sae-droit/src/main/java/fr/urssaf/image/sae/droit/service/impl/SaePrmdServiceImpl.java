@@ -71,6 +71,24 @@ public class SaePrmdServiceImpl implements SaePrmdService {
    }
 
    /**
+    * {@inheritDoc}
+    */
+   @Override
+   public boolean prmdExists(String code) {
+
+      boolean exists;
+      Prmd storedPrmd = prmdSupport.find(code);
+
+      if (storedPrmd != null) {
+         exists = true;
+      } else {
+         exists = false;
+      }
+
+      return exists;
+   }
+
+   /**
     * Vérifie si le PRMD existe. Si c'est le cas renvoie une exception
     * {@link DroitRuntimeException}
     * 
@@ -79,9 +97,7 @@ public class SaePrmdServiceImpl implements SaePrmdService {
     */
    private void checkPrmdInexistant(Prmd prmd) {
 
-      Prmd storedPrmd = prmdSupport.find(prmd.getCode());
-
-      if (storedPrmd != null) {
+      if (prmdExists(prmd.getCode())) {
 
          LOGGER.warn("{} - Le PRMD {} existe déjà dans la "
                + "famille de colonnes DroitPRMD", CHECK, prmd.getCode());

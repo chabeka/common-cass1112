@@ -33,6 +33,9 @@ public class SaeDroitServiceValidation {
    private static final String CREATE_METHOD = "execution(void fr.urssaf.image.sae.droit.service.SaeDroitService.createContratService(*,*))"
          + "&& args(contrat, pagms)";
 
+   private static final String CHECK_METHOD = "execution(boolean fr.urssaf.image.sae.droit.service.SaeDroitService.contratServiceExists(*))"
+         + "&& args(idClient)";
+
    /**
     * Validation de la méthode loadSaeDroits(String, List)
     * 
@@ -98,6 +101,24 @@ public class SaeDroitServiceValidation {
                ARG_REQUIRED, "liste des pagms"));
       }
 
+   }
+
+   /**
+    * Validation de la méthode
+    * SaeDroitService#createContratService(ServiceContract, List)
+    * 
+    * @param contrat
+    *           contrat de service
+    * @param pagms
+    *           liste des pagms
+    */
+   @Before(CHECK_METHOD)
+   public final void checkExists(String idClient) {
+
+      if (StringUtils.isEmpty(idClient)) {
+         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
+               ARG_REQUIRED, "le code client"));
+      }
    }
 
 }
