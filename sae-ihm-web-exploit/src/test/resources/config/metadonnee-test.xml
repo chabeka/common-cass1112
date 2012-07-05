@@ -1,0 +1,12 @@
+<metadonnees>
+   <metadonnee>
+      <code>ApplicationProductrice</code>
+      <libelle>Application Productrice du document</libelle>
+      <indexee>Non</indexee>
+   </metadonnee>
+   <metadonnee>
+      <code>ApplicationTraitement</code>
+      <libelle>Application traitant le document</libelle>
+      <indexee>Non</indexee>
+   </metadonnee>
+</metadonnees>
