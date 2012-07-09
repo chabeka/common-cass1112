@@ -16,10 +16,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -28,9 +24,9 @@ import fr.urssaf.image.sae.vi.modele.VISignVerifParams;
 import fr.urssaf.image.sae.vi.service.WebServiceVIService;
 import fr.urssaf.image.sae.vi.testutils.TuGenererVi;
 
-@SuppressWarnings( { "PMD.TooManyMethods", "PMD.MethodNamingConventions" })
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-vi-test.xml" })
+@SuppressWarnings({
+   "PMD.TooManyMethods",
+   "PMD.MethodNamingConventions"})
 public class WebServiceVIServiceValidateTest {
 
    private static final String FAIL_MESSAGE = "le test doit échouer";
@@ -47,11 +43,12 @@ public class WebServiceVIServiceValidateTest {
 
    private static final String PASSWORD = "password";
 
-   @Autowired
-   private WebServiceVIService service;
+   private static WebServiceVIService service;
 
    @BeforeClass
    public static void beforeClass() throws ParserConfigurationException {
+
+      service = new WebServiceVIService();
 
       DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 
@@ -90,7 +87,8 @@ public class WebServiceVIServiceValidateTest {
 
          assertEquals(
                "Vérification de la levée d'exception si aucun PAGM n'est spécifié",
-               "Il faut spécifier au moins un PAGM", e.getMessage());
+               "Il faut spécifier au moins un PAGM", 
+               e.getMessage());
       }
 
    }
@@ -139,9 +137,8 @@ public class WebServiceVIServiceValidateTest {
 
          assertEquals(
                "Vérification de la levée d'une exception IllegalArgumentException avec le bon message",
-               "Le paramètre [" + param
-                     + "] n'est pas renseigné alors qu'il est obligatoire", e
-                     .getMessage());
+               "Le paramètre [" + param + "] n'est pas renseigné alors qu'il est obligatoire", 
+               e.getMessage());
       }
 
    }
@@ -150,8 +147,12 @@ public class WebServiceVIServiceValidateTest {
    public void verifierVIdeServiceWebFailure_identification()
          throws VIVerificationException {
 
-      assertVerifierVIdeServiceWeb("identification", null,
-            TuGenererVi.SERVICE_VISE, ID_APPLI, new VISignVerifParams());
+      assertVerifierVIdeServiceWeb(
+            "identification", 
+            null, 
+            TuGenererVi.SERVICE_VISE,
+            ID_APPLI, 
+            new VISignVerifParams());
 
    }
 
@@ -165,32 +166,56 @@ public class WebServiceVIServiceValidateTest {
    }
 
    @Test
-   public void verifierVIdeServiceWebFailure_signVerifParams()
+   public void verifierVIdeServiceWebFailure_application()
          throws VIVerificationException {
 
-      assertVerifierVIdeServiceWeb("signVerifParams", identification,
-            TuGenererVi.SERVICE_VISE, ID_APPLI, null);
+      assertVerifierVIdeServiceWeb(
+            "idAppliClient", 
+            identification,
+            TuGenererVi.SERVICE_VISE, 
+            null, 
+            new VISignVerifParams());
 
    }
 
-   private void assertVerifierVIdeServiceWeb(String param,
-         Element identification, URI serviceVise, String idAppliClient,
-         VISignVerifParams signVerifParams) throws VIVerificationException {
+   @Test
+   public void verifierVIdeServiceWebFailure_signVerifParams()
+         throws VIVerificationException {
+
+      assertVerifierVIdeServiceWeb(
+            "signVerifParams", 
+            identification, 
+            TuGenererVi.SERVICE_VISE,
+            ID_APPLI, 
+            null);
+
+   }
+
+   private void assertVerifierVIdeServiceWeb(
+         String param,
+         Element identification, 
+         URI serviceVise, 
+         String idAppliClient,
+         VISignVerifParams signVerifParams)
+      throws 
+         VIVerificationException {
 
       try {
-
-         service.verifierVIdeServiceWeb(identification, serviceVise,
+         
+         service.verifierVIdeServiceWeb(
+               identification, 
+               serviceVise,
+               idAppliClient, 
                signVerifParams);
-
+         
          fail(FAIL_MESSAGE);
-
+         
       } catch (IllegalArgumentException e) {
 
          assertEquals(
                "Vérification de la levée d'une exception IllegalArgumentException avec le bon message",
-               "Le paramètre [" + param
-                     + "] n'est pas renseigné alors qu'il est obligatoire", e
-                     .getMessage());
+               "Le paramètre [" + param + "] n'est pas renseigné alors qu'il est obligatoire", 
+               e.getMessage());
       }
 
    }

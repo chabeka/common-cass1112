@@ -7,7 +7,7 @@ public final class VIConfiguration {
 
    private static final String NAME_VALUE = "vi-portail-a-portail.xsd";
 
-   private static final String PATH_VALUE = "xsd/vi_portail_a_portail/" + NAME_VALUE;
+   private static final String PATH_VALUE = "/xsd/vi_portail_a_portail/" + NAME_VALUE;
 
    private VIConfiguration() {
 

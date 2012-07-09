@@ -12,26 +12,18 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.vi.exception.VIException;
 import fr.urssaf.image.sae.vi.modele.VIPortailContenuExtrait;
 import fr.urssaf.image.sae.vi.modele.VIPortailCreateParams;
-import fr.urssaf.image.sae.vi.service.impl.PortailVIServiceImpl;
 
 /**
- * TU de la classe PortailVIServiceImpl
+ * TU de la classe PortailVIService
  */
 @SuppressWarnings("PMD")
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-vi-test.xml" })
 public class PortailVIServiceTest {
 
-   @Autowired
-   private PortailViService service;
+   private PortailVIService service;
 
    private static final String FAIL_MESSAGE = "Une exception aurait dû être levée";
 
@@ -39,6 +31,11 @@ public class PortailVIServiceTest {
 
    private static final String XSD = "vi-portail-a-portail.xsd";
 
+   @Before
+   public void before() {
+
+      service = new PortailVIService();
+   }
 
    @Test
    public void createVI_success() throws IOException, VIException {

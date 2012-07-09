@@ -11,10 +11,6 @@ import org.apache.commons.lang.time.DateUtils;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
@@ -35,12 +31,9 @@ import fr.urssaf.image.sae.vi.util.XMLUtils;
 
 @SuppressWarnings( { "PMD.TooManyMethods", "PMD.MethodNamingConventions",
       "PMD.VariableNamingConventions", "PMD.AvoidDuplicateLiterals" })
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-vi-test.xml" })
 public class WebServiceVIValidateServiceTest {
 
-   @Autowired
-   private WebServiceVIValidateService service;
+   private static WebServiceVIValidateService service;
 
    private static SamlAssertionExtractionService extraction;
 
@@ -51,6 +44,7 @@ public class WebServiceVIValidateServiceTest {
    @BeforeClass
    public static void beforeClass() {
 
+      service = new WebServiceVIValidateService();
       extraction = new SamlAssertionExtractionService();
 
       try {
@@ -101,17 +95,22 @@ public class WebServiceVIValidateServiceTest {
       SamlAssertionData data = extraction.extraitDonnees(identification);
 
       try {
-
-         service.validate(data, TuGenererVi.SERVICE_VISE, TuGenererVi.ISSUER,
+         
+         service.validate(
+               data, 
+               TuGenererVi.SERVICE_VISE, 
+               TuGenererVi.ISSUER, 
                system_date);
-
+         
          fail(FAIL_MESSAGE);
       } catch (VIInvalideException exception) {
          assertEquals(
                "L'assertion n'est pas encore valable: elle ne sera active qu'à partir de 31/12/1999 02:00:00 alors que nous sommes le 12/12/1999 01:00:00",
                exception.getMessage());
 
-         assertVIVerificationException_vi("InvalidVI", "Le VI est invalide",
+         assertVIVerificationException_vi(
+               "InvalidVI",
+               "Le VI est invalide",
                exception);
       }
 
@@ -129,18 +128,23 @@ public class WebServiceVIValidateServiceTest {
       SamlAssertionData data = extraction.extraitDonnees(identification);
 
       try {
-
-         service.validate(data, TuGenererVi.SERVICE_VISE, TuGenererVi.ISSUER,
+         
+         service.validate(
+               data, 
+               TuGenererVi.SERVICE_VISE, 
+               TuGenererVi.ISSUER, 
                system_date);
-
+         
          fail(FAIL_MESSAGE);
-
+         
       } catch (VIInvalideException exception) {
          assertEquals(
                "L'assertion a expirée : elle n'était valable que jusqu’au 01/12/1999 02:00:00, hors nous sommes le 12/12/1999 01:00:00",
                exception.getMessage());
 
-         assertVIVerificationException_vi("InvalidVI", "Le VI est invalide",
+         assertVIVerificationException_vi(
+               "InvalidVI",
+               "Le VI est invalide",
                exception);
       }
 
@@ -158,12 +162,15 @@ public class WebServiceVIValidateServiceTest {
       SamlAssertionData data = extraction.extraitDonnees(identification);
 
       try {
-
-         service.validate(data, TuGenererVi.SERVICE_VISE, TuGenererVi.ISSUER,
+         
+         service.validate(
+               data, 
+               TuGenererVi.SERVICE_VISE, 
+               TuGenererVi.ISSUER, 
                system_date);
-
+         
          fail(FAIL_MESSAGE);
-
+         
       } catch (VIServiceIncorrectException exception) {
          assertEquals(
                "Le service visé '"
@@ -190,12 +197,15 @@ public class WebServiceVIValidateServiceTest {
       SamlAssertionData data = extraction.extraitDonnees(identification);
 
       try {
-
-         service.validate(data, TuGenererVi.SERVICE_VISE, TuGenererVi.ISSUER,
+         
+         service.validate(
+               data, 
+               TuGenererVi.SERVICE_VISE, 
+               TuGenererVi.ISSUER, 
                system_date);
-
+         
          fail(FAIL_MESSAGE);
-
+         
       } catch (VIAppliClientException exception) {
          assertEquals(
                "L'identifiant de l'organisme client présent dans le VI (service_failure) est invalide ou inconnu",
@@ -220,12 +230,15 @@ public class WebServiceVIValidateServiceTest {
       SamlAssertionData data = extraction.extraitDonnees(identification);
 
       try {
-
-         service.validate(data, TuGenererVi.SERVICE_VISE, TuGenererVi.ISSUER,
+         
+         service.validate(
+               data, 
+               TuGenererVi.SERVICE_VISE, 
+               TuGenererVi.ISSUER, 
                system_date);
-
+         
          fail(FAIL_MESSAGE);
-
+         
       } catch (VINivAuthException exception) {
          assertEquals(
                "Le niveau d'authentification 'method_failure' est incorrect",
@@ -238,7 +251,8 @@ public class WebServiceVIValidateServiceTest {
       }
 
    }
-
+   
+   
    @Test
    public void verifierVIdeServiceWeb_failure_methodauth_vide()
          throws VIPagmIncorrectException, IOException, VIInvalideException,
@@ -249,16 +263,20 @@ public class WebServiceVIValidateServiceTest {
       SamlAssertionData data = extraction.extraitDonnees(identification);
 
       try {
-
-         service.validate(data, TuGenererVi.SERVICE_VISE, TuGenererVi.ISSUER,
+         
+         service.validate(
+               data, 
+               TuGenererVi.SERVICE_VISE, 
+               TuGenererVi.ISSUER, 
                system_date);
-
+         
          fail(FAIL_MESSAGE);
-
+         
       } catch (VINivAuthException exception) {
-         assertEquals("Vérification du message de l'exception",
-               "Le niveau d'authentification n'est pas renseigné", exception
-                     .getMessage());
+         assertEquals(
+               "Vérification du message de l'exception",
+               "Le niveau d'authentification n'est pas renseigné",
+               exception.getMessage());
 
          assertVIVerificationException_vi(
                "InvalidAuthLevel",
@@ -279,42 +297,18 @@ public class WebServiceVIValidateServiceTest {
       SamlAssertionData data = extraction.extraitDonnees(identification);
 
       try {
-
-         service.validate(data, TuGenererVi.SERVICE_VISE, TuGenererVi.ISSUER,
+         
+         service.validate(
+               data, 
+               TuGenererVi.SERVICE_VISE, 
+               TuGenererVi.ISSUER, 
                system_date);
-
+         
          fail(FAIL_MESSAGE);
-
+         
       } catch (VIPagmIncorrectException exception) {
          assertVIVerificationException_vi("InvalidPagm",
                "Le ou les PAGM présents dans le VI sont invalides", exception);
-      }
-
-   }
-
-   @Test
-   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-   public void verifierVIdeServiceWeb_applicationInexistante()
-         throws IOException, SAXException, VIFormatTechniqueException,
-         VISignatureException, VIInvalideException, VINivAuthException,
-         VIServiceIncorrectException, VIPagmIncorrectException {
-
-      Element identification = XMLUtils
-            .parse("src/test/resources/webservice/vi_success.xml");
-
-      SamlAssertionData data = extraction.extraitDonnees(identification);
-
-      try {
-
-         service.validate(data, TuGenererVi.SERVICE_VISE, "SaeIntegration",
-               new Date());
-
-         fail(FAIL_MESSAGE);
-
-      } catch (VIAppliClientException exception) {
-         assertVIVerificationException_vi("InvalidIssuer",
-               "L'identifiant de l'organisme client présent dans le VI est invalide ou inconnu",
-               exception);
       }
 
    }
