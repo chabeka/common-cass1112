@@ -10,6 +10,7 @@ package fr.urssaf.image.sae.vi.modele;
  *    <li>d'un périmètre de données : il s'agit également d'un code sous forme d'une chaîne de caractères</li>
  * </ul>
  */
+@Deprecated
 public class VIPagm {
    
    

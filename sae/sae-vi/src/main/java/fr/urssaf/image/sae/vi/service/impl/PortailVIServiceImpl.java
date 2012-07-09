@@ -1,4 +1,4 @@
-package fr.urssaf.image.sae.vi.service;
+package fr.urssaf.image.sae.vi.service.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -21,6 +21,7 @@ import javax.xml.validation.SchemaFactory;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import org.xml.sax.SAXException;
 
 import fr.urssaf.image.sae.vi.configuration.VIConfiguration;
@@ -30,43 +31,33 @@ import fr.urssaf.image.sae.vi.modele.VIPortailCreateParams;
 import fr.urssaf.image.sae.vi.modele.jaxb.viportail.ObjectFactory;
 import fr.urssaf.image.sae.vi.modele.jaxb.viportail.PagmsType;
 import fr.urssaf.image.sae.vi.modele.jaxb.viportail.ViType;
+import fr.urssaf.image.sae.vi.service.PortailViService;
 
 /**
  * Classe de lecture et d'écriture du VI pour le mode portail à portail
  */
-public final class PortailVIService {
+@Component
+public final class PortailVIServiceImpl implements PortailViService {
 
-   private static final Logger LOGGER = LoggerFactory.getLogger(PortailVIService.class);
-   
-   private final Schema schema;
-   
+   private static final Logger LOGGER = LoggerFactory
+         .getLogger(PortailVIServiceImpl.class);
 
-   /**
-    * Constructeur
-    */
-   public PortailVIService() {
-
+   private static final Schema schema;
+   static {
       // Construction de l'objet Schema permettant la validation XSD des VI
       // générés dans la méthode creerVIpourPortailAPortail
       SchemaFactory schemaFactory = SchemaFactory
             .newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
       try {
-         schema = schemaFactory.newSchema(this.getClass().getResource(
-               VIConfiguration.path()));
+         schema = schemaFactory.newSchema(PortailVIServiceImpl.class
+               .getClassLoader().getResource(VIConfiguration.path()));
       } catch (SAXException e) {
          throw new IllegalStateException(e);
       }
-
    }
 
    /**
-    * Création d'un VI de type portail à portail
-    * 
-    * @param viParams
-    *           les informations permettant de construire le VI
-    * @return le VI sous la forme d'une chaîne de caractères (XML)
-    * @throws VIException
-    *            si un problème survient pendant la génération du VI
+    * {@inheritDoc}
     */
    public String creerVI(VIPortailCreateParams viParams) throws VIException {
 
@@ -100,7 +91,7 @@ public final class PortailVIService {
 
       // nameID
       viType.setNameID(viParams.getNameId());
-      
+
       // habilitationAnais
       viType.setHabilitationAnais(viParams.getHabAnais());
 
@@ -167,16 +158,7 @@ public final class PortailVIService {
    }
 
    /**
-    * Lecture d'un VI de type "portail à portail" et extraction des données
-    * "intéressantes" de son contenu dans un objet du modèle facilement
-    * utilisable
-    * 
-    * @param viXml
-    *           le VI "portail à portail" au format XML (tel que généré par la
-    *           méthode creerVIpourPortailAPortail
-    * @return les informations extraites du VI
-    * @throws VIException
-    *            si une erreur se produit pendant la lecture du VI
+    * {@inheritDoc}
     */
    public VIPortailContenuExtrait lireVI(String viXml) throws VIException {
 
