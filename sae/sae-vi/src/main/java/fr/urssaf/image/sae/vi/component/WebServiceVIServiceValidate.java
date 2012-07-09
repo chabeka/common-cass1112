@@ -19,7 +19,7 @@ import fr.urssaf.image.sae.vi.modele.VISignVerifParams;
 
 /**
  * La classe implémenté en AOP permet de vérifier les arguments des méthodes
- * dans {@link fr.urssaf.image.sae.vi.service.impl.WebServiceVIServiceImpl}<br>
+ * dans {@link fr.urssaf.image.sae.vi.service.WebServiceVIService}<br>
  * 
  * 
  */
@@ -88,7 +88,7 @@ public class WebServiceVIServiceValidate {
 
    /**
     * Vérification des paramètres d'entrée de la méthode
-    * {@link fr.urssaf.image.sae.vi.service.impl.WebServiceVIServiceImpl#verifierVIdeServiceWeb}
+    * {@link fr.urssaf.image.sae.vi.service.WebServiceVIService#verifierVIdeServiceWeb}
     * <br>
     * <ul>
     * <li>identification : doit être renseigné</li>
@@ -109,13 +109,17 @@ public class WebServiceVIServiceValidate {
       // récupération des paramétres
       Element identification = (Element) joinPoint.getArgs()[0];
       URI serviceVise = (URI) joinPoint.getArgs()[1];
-      VISignVerifParams signVerifParams = (VISignVerifParams) joinPoint.getArgs()[2];
+      String idAppliClient = (String) joinPoint.getArgs()[2];
+      VISignVerifParams signVerifParams = (VISignVerifParams) joinPoint.getArgs()[INDEX_3];
       
       // identification not null
       notNullValidate(identification, "identification");
 
       // serviceVise not null
       notNullValidate(serviceVise, "serviceVise");
+
+      // idAppliClient not null
+      notNullValidate(idAppliClient, "idAppliClient");
 
       // signVerifParams not null
       notNullValidate(signVerifParams, "signVerifParams");
