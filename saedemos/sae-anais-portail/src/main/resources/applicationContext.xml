@@ -11,7 +11,6 @@
    <!-- Configuration ANAIS -->
    <import resource="applicationContext-anais.xml"/>
 
-   <import resource="applicationContext-sae-vi.xml"/>
    
    <bean id="appliSaeConfig"
       class="fr.urssaf.image.sae.anais.portail.configuration.AppliSaeConfig">
