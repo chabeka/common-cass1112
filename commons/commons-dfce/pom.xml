@@ -5,7 +5,7 @@
 
    <groupId>fr.urssaf.image.commons</groupId>
    <artifactId>commons-dfce</artifactId>
-   <version>1.1.0-CRTL-1</version>
+   <version>1.1.0-CRTL-1-SNAPSHOT</version>
 
    <name>commons-dfce</name>
 
