@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.docubase.toolkit.model.document.Document;
+import net.docubase.toolkit.model.search.SearchQuery;
 import net.docubase.toolkit.model.search.SearchResult;
+import net.docubase.toolkit.model.search.impl.QueryImpl;
 import net.docubase.toolkit.service.ServiceProvider;
 
 import org.slf4j.Logger;
@@ -36,7 +38,6 @@ import fr.urssaf.image.sae.storage.services.storagedocument.SearchingService;
 /**
  * Implémente les services de l'interface {@link SearchingService} .
  * 
- * @author akenore, rhofir.
  * 
  */
 @Service
@@ -56,9 +57,12 @@ public class SearchingServiceImpl extends AbstractServices implements
          QueryParseServiceEx {
       final List<StorageDocument> storageDocuments = new ArrayList<StorageDocument>();
       try {
-         final SearchResult searchResult = getDfceService().getSearchService()
-               .search(luceneCriteria.getLuceneQuery(),
-                     luceneCriteria.getLimit(), getBaseDFCE());
+         
+         SearchQuery paramSearchQuery = new QueryImpl(luceneCriteria.getLuceneQuery(),getBaseDFCE());
+         paramSearchQuery.setSearchLimit(luceneCriteria.getLimit());
+         SearchResult searchResult = getDfceService().getSearchService().search(paramSearchQuery );
+         
+         
          for (Document document : Utils.nullSafeIterable(searchResult
                .getDocuments())) {
 
