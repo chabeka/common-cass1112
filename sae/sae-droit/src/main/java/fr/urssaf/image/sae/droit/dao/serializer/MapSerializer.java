@@ -4,6 +4,7 @@
 package fr.urssaf.image.sae.droit.dao.serializer;
 
 import java.nio.ByteBuffer;
+import java.util.List;
 import java.util.Map;
 
 import me.prettyprint.cassandra.serializers.AbstractSerializer;
@@ -13,7 +14,8 @@ import fr.urssaf.image.commons.cassandra.serializer.XMLSerializer;
  * 
  * 
  */
-public class MapSerializer extends AbstractSerializer<Map<String, String>> {
+public class MapSerializer extends
+      AbstractSerializer<Map<String, List<String>>> {
 
    private static final MapSerializer INSTANCE = new MapSerializer();
 
@@ -21,10 +23,10 @@ public class MapSerializer extends AbstractSerializer<Map<String, String>> {
     * {@inheritDoc}
     */
    @Override
-   public Map<String, String> fromByteBuffer(ByteBuffer byteBuffer) {
+   public Map<String, List<String>> fromByteBuffer(ByteBuffer byteBuffer) {
       @SuppressWarnings("unchecked")
-      Map<String, String> map = (Map<String, String>) XMLSerializer.get()
-            .fromByteBuffer(byteBuffer);
+      Map<String, List<String>> map = (Map<String, List<String>>) XMLSerializer
+            .get().fromByteBuffer(byteBuffer);
 
       return map;
    }
@@ -33,7 +35,7 @@ public class MapSerializer extends AbstractSerializer<Map<String, String>> {
     * {@inheritDoc}
     */
    @Override
-   public ByteBuffer toByteBuffer(Map<String, String> map) {
+   public ByteBuffer toByteBuffer(Map<String, List<String>> map) {
       return XMLSerializer.get().toByteBuffer(map);
    }
 

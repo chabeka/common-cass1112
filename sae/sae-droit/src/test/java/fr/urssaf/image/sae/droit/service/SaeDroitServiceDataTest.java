@@ -376,7 +376,7 @@ public class SaeDroitServiceDataTest {
       prmd.setDescription(DESCRIPTION_PRMD);
       prmd.setLucene(LUCENE_PRMD);
       prmd.setBean(BEAN1);
-      prmd.setMetadata(new HashMap<String, String>());
+      prmd.setMetadata(new HashMap<String, List<String>>());
 
       prmdSupport.create(prmd, new Date().getTime());
 
@@ -389,7 +389,7 @@ public class SaeDroitServiceDataTest {
       prmd.setDescription(DESCRIPTION_PRMD_2);
       prmd.setLucene(LUCENE_PRMD_2);
       prmd.setBean(BEAN1);
-      prmd.setMetadata(new HashMap<String, String>());
+      prmd.setMetadata(new HashMap<String, List<String>>());
       
       prmdSupport.create(prmd, new Date().getTime());
 

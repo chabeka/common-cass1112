@@ -3,6 +3,7 @@
  */
 package fr.urssaf.image.sae.droit.dao;
 
+import java.util.List;
 import java.util.Map;
 
 import me.prettyprint.cassandra.serializers.StringSerializer;
@@ -95,11 +96,11 @@ public class PrmdDao {
    }
 
    private void addMapColumn(ColumnFamilyUpdater<String, String> updater,
-         String colName, Map<String, String> value,
+         String colName, Map<String, List<String>> value,
          Serializer<String> nameSerializer,
-         Serializer<Map<String, String>> valueSerializer, long clock) {
+         Serializer<Map<String, List<String>>> valueSerializer, long clock) {
 
-      HColumn<String, Map<String, String>> column = HFactory.createColumn(
+      HColumn<String, Map<String, List<String>>> column = HFactory.createColumn(
             colName, value, nameSerializer, valueSerializer);
 
       column.setClock(clock);
@@ -154,7 +155,7 @@ public class PrmdDao {
     *           horloge de la colonne
     */
    public final void ecritMetaData(ColumnFamilyUpdater<String, String> updater,
-         Map<String, String> value, long clock) {
+         Map<String, List<String>> value, long clock) {
 
       addMapColumn(updater, PRMD_METADATA, value, StringSerializer.get(),
             MapSerializer.get(), clock);

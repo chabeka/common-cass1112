@@ -3,7 +3,9 @@
  */
 package fr.urssaf.image.sae.droit.service;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import junit.framework.Assert;
@@ -58,7 +60,7 @@ public class SaePrmdServiceDatasTest {
       prmd.setDescription("description Prmd");
       prmd.setLucene("lucene Prmd");
       prmd.setBean("bean1");
-      prmd.setMetadata(new HashMap<String, String>());
+      prmd.setMetadata(new HashMap<String, List<String>>());
 
       prmdSupport.create(prmd, clockSupport.currentCLock());
       
@@ -76,7 +78,7 @@ public class SaePrmdServiceDatasTest {
       prmd.setDescription("description Prmd");
       prmd.setLucene("lucene Prmd");
       prmd.setBean("bean1");
-      prmd.setMetadata(new HashMap<String, String>());
+      prmd.setMetadata(new HashMap<String, List<String>>());
 
       prmdSupport.create(prmd, clockSupport.currentCLock());
 
@@ -92,8 +94,8 @@ public class SaePrmdServiceDatasTest {
       prmd.setDescription("description Prmd");
       prmd.setLucene("lucene Prmd");
       prmd.setBean("bean1");
-      Map<String, String> map = new HashMap<String, String>();
-      map.put("cle1", "valeur1");
+      Map<String, List<String>> map = new HashMap<String, List<String>>();
+      map.put("cle1", Arrays.asList(new String[]{"valeur1"}));
       prmd.setMetadata(map);
 
       service.createPrmd(prmd);

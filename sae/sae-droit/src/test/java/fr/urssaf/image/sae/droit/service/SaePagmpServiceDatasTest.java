@@ -4,6 +4,7 @@
 package fr.urssaf.image.sae.droit.service;
 
 import java.util.HashMap;
+import java.util.List;
 
 import junit.framework.Assert;
 
@@ -80,7 +81,7 @@ public class SaePagmpServiceDatasTest {
       prmd.setDescription("description");
       prmd.setLucene("lucene");
       prmd.setBean("bean1");
-      prmd.setMetadata(new HashMap<String, String>());
+      prmd.setMetadata(new HashMap<String, List<String>>());
 
       prmdSupport.create(prmd, clockSupport.currentCLock());
 

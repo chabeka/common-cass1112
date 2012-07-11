@@ -3,6 +3,7 @@
  */
 package fr.urssaf.image.sae.droit.dao.model;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -21,7 +22,7 @@ public class Prmd {
    private String lucene;
 
    /** liste de clé/valeur pour un PRMD */
-   private Map<String, String> metadata;
+   private Map<String, List<String>> metadata;
 
    /**
     * Nom du qualifier de la classe d'implémentation du bean de vérification de
@@ -123,7 +124,7 @@ public class Prmd {
    /**
     * @return la liste de clé/valeur pour un PRMD
     */
-   public final Map<String, String> getMetadata() {
+   public final Map<String, List<String>> getMetadata() {
       return metadata;
    }
 
@@ -131,7 +132,7 @@ public class Prmd {
     * @param metadata
     *           liste de clé/valeur pour un PRMD
     */
-   public final void setMetadata(Map<String, String> metadata) {
+   public final void setMetadata(Map<String, List<String>> metadata) {
       this.metadata = metadata;
    }
 

@@ -20,7 +20,7 @@ import org.springframework.util.Assert;
  * 
  */
 @Component
-public final class ServicesApplicationContext {
+public final class DroitsApplicationContext {
 
    private static ApplicationContext ctx;
 

@@ -3,6 +3,7 @@
  */
 package fr.urssaf.image.sae.droit.dao.support;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -35,10 +36,10 @@ public class PrmdSupportTest {
 
    private static final String BEAN1 = "bean1";
 
-   private static final Map<String, String> MAP1;
+   private static final Map<String, List<String>> MAP1;
    static {
-      MAP1 = new HashMap<String, String>();
-      MAP1.put("cle1", "valeur1");
+      MAP1 = new HashMap<String, List<String>>();
+      MAP1.put("cle1", Arrays.asList(new String[]{"valeur1"}));
    }
 
    @Autowired
@@ -79,7 +80,7 @@ public class PrmdSupportTest {
       Assert.assertTrue("l'élément cle1 doit être présent", res.getMetadata()
             .keySet().contains("cle1"));
       Assert.assertEquals("la valeur de cle1 doit être correcte", "valeur1",
-            res.getMetadata().get("cle1"));
+            res.getMetadata().get("cle1").get(0));
    }
 
    @Test
@@ -90,7 +91,7 @@ public class PrmdSupportTest {
       prmd.setDescription(DESCRIPTION1);
       prmd.setLucene(LUCENE1);
       prmd.setBean(BEAN1);
-      prmd.setMetadata(new HashMap<String, String>());
+      prmd.setMetadata(new HashMap<String, List<String>>());
 
       support.create(prmd, new Date().getTime());
 
@@ -119,8 +120,8 @@ public class PrmdSupportTest {
       prmd.setDescription("description2");
       prmd.setLucene("lucene2");
       prmd.setBean("bean2");
-      Map<String, String> map = new HashMap<String, String>();
-      map.put("cle2", "valeur2");
+      Map<String, List<String>> map = new HashMap<String, List<String>>();
+      map.put("cle2", Arrays.asList(new String[]{"valeur2"}));
       prmd.setMetadata(map);
 
       support.create(prmd, new Date().getTime());
@@ -130,8 +131,8 @@ public class PrmdSupportTest {
       prmd.setDescription("description3");
       prmd.setLucene("lucene3");
       prmd.setBean("bean3");
-      map = new HashMap<String, String>();
-      map.put("cle3", "valeur3");
+      map = new HashMap<String, List<String>>();
+      map.put("cle3", Arrays.asList(new String[]{"valeur3"}));
       prmd.setMetadata(map);
 
       support.create(prmd, new Date().getTime());
@@ -166,7 +167,7 @@ public class PrmdSupportTest {
                      .getMetadata().keySet().contains(cle));
                Assert.assertEquals("la valeur de la clé " + cle
                      + " doit être correcte", valeur, list.get(index).getMetadata()
-                     .get(cle));
+                     .get(cle).get(0));
                found = true;
 
             }

@@ -7,7 +7,7 @@ import java.util.Locale;
 
 import org.springframework.context.MessageSource;
 
-import fr.urssaf.image.sae.droit.context.ServicesApplicationContext;
+import fr.urssaf.image.sae.droit.context.DroitsApplicationContext;
 
 /**
  * Classe utilitaire pour formater les messages.<br>
@@ -30,8 +30,8 @@ public final class ResourceMessagesUtils {
 
       static {
 
-         messageSource = ServicesApplicationContext.getApplicationContext()
-               .getBean("messageSource_sae_services", MessageSource.class);
+         messageSource = DroitsApplicationContext.getApplicationContext()
+               .getBean("messageSource_sae_droits", MessageSource.class);
       }
 
       /**
