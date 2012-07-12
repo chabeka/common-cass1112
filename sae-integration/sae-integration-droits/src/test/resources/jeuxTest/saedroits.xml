@@ -16,11 +16,16 @@
          <metadonnees>
             <metadonnee>
                <code>Meta1</code>
-               <valeur>Valeur1</valeur>
+               <valeurs>
+                  <valeur>Valeur1</valeur>
+               </valeurs>
             </metadonnee>
             <metadonnee>
                <code>Meta2</code>
-               <valeur>Valeur2</valeur>
+               <valeurs>
+                  <valeur>Valeur2.1</valeur>
+                  <valeur>Valeur2.2</valeur>
+               </valeurs>
             </metadonnee>
          </metadonnees>
          <bean />
@@ -34,7 +39,9 @@
          <metadonnees>
             <metadonnee>
                <code>Meta3</code>
-               <valeur>Valeur3</valeur>
+               <valeurs>
+                  <valeur>Valeur3</valeur>
+               </valeurs>
             </metadonnee>
          </metadonnees>
          <bean />
@@ -47,11 +54,15 @@
          <metadonnees>
             <metadonnee>
                <code>MetaDyna1</code>
-               <valeur>&lt;%MARQUEUR1%&gt;</valeur>
+               <valeurs>
+                  <valeur>&lt;%MARQUEUR1%&gt;</valeur>
+               </valeurs>
             </metadonnee>
             <metadonnee>
                <code>MetaDyna2</code>
-               <valeur>&lt;%MARQUEUR2%&gt;</valeur>
+               <valeurs>
+                  <valeur>&lt;%MARQUEUR2%&gt;</valeur>
+               </valeurs>
             </metadonnee>
          </metadonnees>
          <bean />

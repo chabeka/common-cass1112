@@ -253,7 +253,7 @@ public final class DroitService {
       LOG.debug("Information sur le PRMD \"{}\"", prmd.getCode());
       LOG.debug("Description : {}", prmd.getDescription());
       LOG.debug("Requête LUCENE : {}", prmd.getLucene());
-      LOG.debug("Métadonnées : {}", LogUtils.mapToString(prmd.getMetadata()));
+      LOG.debug("Métadonnées : {}", LogUtils.prmdMetaToString(prmd.getMetadata()));
       LOG.debug("Bean : {}", prmd.getBean());
       
    }

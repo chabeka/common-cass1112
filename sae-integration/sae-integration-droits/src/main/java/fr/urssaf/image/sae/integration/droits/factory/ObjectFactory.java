@@ -43,15 +43,33 @@ public final class ObjectFactory {
       prmd.setLucene(prmdType.getLucene());
       prmd.setBean(prmdType.getBean());
       
-      // FIXME Gestion du plusieurs valeurs possibles par métadonnée
-      
-      Map<String,String> metadonnees = new HashMap<String,String>();
-      prmd.setMetadata(metadonnees);
-      for(MetadonneeType metadonnee: prmdType.getMetadonnees().getMetadonnee()) {
-         metadonnees.put(metadonnee.getCode(), metadonnee.getValeur());
-      }
+      prmd.setMetadata(createPrmdMetadatas(prmdType.getMetadonnees().getMetadonnee()));
       
       return prmd;
+      
+   }
+   
+   
+   private static Map<String,List<String>> createPrmdMetadatas(List<MetadonneeType> listeMetaType) {
+      
+      Map<String,List<String>> metadonnees = new HashMap<String,List<String>>();
+      
+      String codeMeta;
+      List<String> listeValeurs;
+      for(MetadonneeType metadonnee: listeMetaType) {
+         
+         codeMeta = metadonnee.getCode();
+         
+         listeValeurs = new ArrayList<String>();
+         for(String valeur: metadonnee.getValeurs().getValeur()) {
+            listeValeurs.add(valeur);
+         }
+         
+         metadonnees.put(codeMeta, listeValeurs);
+         
+      }
+      
+      return metadonnees;
       
    }
    

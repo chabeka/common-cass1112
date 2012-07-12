@@ -39,7 +39,13 @@
    <xsd:complexType name="MetadonneeType">
       <xsd:sequence>
          <xsd:element name="code" type="xsd:string" />
-         <xsd:element name="valeur" type="xsd:string" />
+         <xsd:element name="valeurs" type="this:ListeValeursType" />
+      </xsd:sequence>
+   </xsd:complexType>
+   
+   <xsd:complexType name="ListeValeursType">
+      <xsd:sequence>
+         <xsd:element name="valeur" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
       </xsd:sequence>
    </xsd:complexType>
    

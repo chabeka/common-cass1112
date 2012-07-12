@@ -59,4 +59,52 @@ public final class LogUtils {
 
    }
    
+   /**
+    * Convertit les métadonnées d'un PRMD en une chaîne de caractères pour l'écriture d'une trace
+    * @param prmdMetas les métadonnées d'un PRMD
+    * @return la chaîne de caractères pour la trace
+    */
+   public static String prmdMetaToString(Map<String, List<String>> prmdMetas) {
+      
+      if (prmdMetas.isEmpty()) {
+
+         return "vide";
+
+      } else {
+
+         StringBuffer sBuffer = new StringBuffer();
+
+         String codeMeta;
+         List<String> valeurs;
+         for (Map.Entry<String, List<String>> entry : prmdMetas.entrySet()) {
+            
+            codeMeta = entry.getKey();
+            valeurs = entry.getValue();
+            
+            sBuffer.append(codeMeta);
+            sBuffer.append("=[");
+            for (String valeur: valeurs) {
+               sBuffer.append(valeur);
+               sBuffer.append(';');
+            }
+            if (valeurs.size()>0) {
+               sBuffer.deleteCharAt(sBuffer.length()-1);
+            }
+            
+            sBuffer.append(']');
+            
+            sBuffer.append(';');
+            
+         }
+         
+         if (prmdMetas.size()>0) {
+            sBuffer.deleteCharAt(sBuffer.length()-1);
+         }
+
+         return sBuffer.toString();
+
+      }
+      
+   }
+   
 }
