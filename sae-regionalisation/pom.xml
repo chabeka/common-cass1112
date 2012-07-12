@@ -1,0 +1,133 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>fr.urssaf.image.sae</groupId>
+   <artifactId>sae-regionalisation</artifactId>
+   <name>sae-regionalisation</name>
+   <version>0.0.1-SNAPSHOT</version>
+   <description>Opération de mise à jour de métadonnées en masse dans la cadre de la régionalisation</description>
+
+   <properties>
+
+      <!-- Encodage de caractères -->
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+      <!-- Version des plug-ins Maven -->
+      <maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
+      <maven-source-plugin.version>2.1.2</maven-source-plugin.version>
+      <maven-resources-plugin.version>2.5</maven-resources-plugin.version>
+      <maven-javadoc-plugin.version>2.8.1</maven-javadoc-plugin.version>
+
+      <!-- Version des dépendances -->
+      <commons.dfce.version>1.1.0-CRTL-1-SNAPSHOT</commons.dfce.version>
+      <postgresql.version>9.1-901.jdbc4</postgresql.version>
+
+   </properties>
+
+   <build>
+
+      <plugins>
+
+         <!--
+            On spécifie la version du JDK et l'encodage de caractères
+            des sources
+         -->
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>${maven-compiler-plugin.version}</version>
+            <configuration>
+               <source>1.6</source>
+               <target>1.6</target>
+               <encoding>${project.build.sourceEncoding}</encoding>
+            </configuration>
+         </plugin>
+
+         <!--
+            Dans le cas d'un packaging JAR, on demande que le JAR des
+            sources soit également généré
+         -->
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>${maven-source-plugin.version}</version>
+            <executions>
+               <execution>
+                  <id>bind-sources</id>
+                  <goals>
+                     <goal>jar</goal>
+                  </goals>
+               </execution>
+            </executions>
+         </plugin>
+
+         <!--
+            On spécifie l'encodage de caractères des ressources
+         -->
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-resources-plugin</artifactId>
+            <version>${maven-resources-plugin.version}</version>
+            <configuration>
+               <encoding>${project.build.sourceEncoding}</encoding>
+            </configuration>
+         </plugin>
+
+         <!--
+         On demande la génération de la Javadoc
+         -->
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>${maven-javadoc-plugin.version}</version>
+            <executions>
+               <execution>
+                  <id>attach-javadocs</id>
+                  <goals>
+                     <goal>jar</goal>
+                  </goals>
+               </execution>
+            </executions>
+            <configuration>
+               <quiet>true</quiet>
+            </configuration>
+         </plugin>
+
+
+      </plugins>
+
+
+   </build>
+
+
+   <dependencies>
+
+      <!-- COMMONS DFCE -->
+
+      <dependency>
+         <groupId>fr.urssaf.image.commons</groupId>
+         <artifactId>commons-dfce</artifactId>
+         <version>${commons.dfce.version}</version>
+      </dependency>
+
+      <!-- COMMONS DBCP -->
+
+      <dependency>
+         <groupId>commons-dbcp</groupId>
+         <artifactId>commons-dbcp</artifactId>
+         <version>1.4</version>
+      </dependency>
+
+      <!-- POSTGRESQL -->
+
+      <dependency>
+         <groupId>postgresql</groupId>
+         <artifactId>postgresql</artifactId>
+         <version>${postgresql.version}</version>
+      </dependency>
+
+
+   </dependencies>
+
+</project>
