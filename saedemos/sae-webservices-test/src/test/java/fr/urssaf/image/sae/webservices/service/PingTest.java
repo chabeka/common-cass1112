@@ -15,6 +15,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.PingResponse;
 import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.PingSecureResponse;
 import fr.urssaf.image.sae.webservices.util.AuthenticateUtils;
+import fr.urssaf.image.sae.webservices.util.Constantes;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-webservices.xml" })
@@ -40,7 +41,7 @@ public class PingTest {
    @Test
    public void pingSecure_success() throws RemoteException {
 
-      AuthenticateUtils.authenticate("ROLE_TOUS");
+      AuthenticateUtils.authenticate(Constantes.ROLE_TOUS);
 
       PingSecureResponse response = service.pingSecure();
 

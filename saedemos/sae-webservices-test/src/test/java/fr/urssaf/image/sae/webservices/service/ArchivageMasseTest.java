@@ -2,7 +2,6 @@ package fr.urssaf.image.sae.webservices.service;
 
 import static org.junit.Assert.assertNotNull;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -47,15 +46,16 @@ public class ArchivageMasseTest {
       AuthenticateUtils.authenticate("ROLE_TOUS");
 
       // enregistrement du sommaire dans l'ECDE
-      File sommaire = new File("src/test/resources/storage/sommaire.xml");
-      EcdeManager.copyFile(sommaire, "DCL001/19991231/3/sommaire.xml");
+      // File sommaire = new File("src/test/resources/storage/sommaire.xml");
+      // EcdeManager.copyFile(sommaire, "DCL001/19991231/3/sommaire.xml");
 
       URI urlSommaireEcde = new URI(
-            "ecde://ecde.cer69.recouv/DCL001/19991231/3/sommaire.xml");
+            "ecde://cnp69devecde.cer69.recouv/SAE_INTEGRATION/20110822/CaptureMasse-273-CaptureMasse-KO-JarArretTomCatSansRepriseAvecStockage/sommaire.xml");
 
-      File attestation = new File("src/test/resources/storage/attestation.pdf");
-      EcdeManager.copyFile(attestation,
-            "DCL001/19991231/3/documents/attestation.pdf");
+      // File attestation = new
+      // File("src/test/resources/storage/attestation.pdf");
+      // EcdeManager.copyFile(attestation,
+      // "DCL001/19991231/3/documents/attestation.pdf");
 
       ArchivageMasseResponseType response = service
             .archivageMasse(urlSommaireEcde);

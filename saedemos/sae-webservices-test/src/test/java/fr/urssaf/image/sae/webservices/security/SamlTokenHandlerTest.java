@@ -17,18 +17,28 @@ import org.apache.axis2.engine.Handler.InvocationResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.sae.vi.service.WebServiceVICreateService;
 import fr.urssaf.image.sae.webservices.util.AuthenticateUtils;
 
 @SuppressWarnings("PMD.MethodNamingConventions")
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "/applicationContext-sae-webservices-test.xml" })
 public class SamlTokenHandlerTest {
+
+   @Autowired
+   private WebServiceVICreateService createService;
 
    private SamlTokenHandler handler;
 
    @Before
    public void before() {
-      handler = new SamlTokenHandler();
+      handler = new SamlTokenHandler(createService);
    }
 
    @After

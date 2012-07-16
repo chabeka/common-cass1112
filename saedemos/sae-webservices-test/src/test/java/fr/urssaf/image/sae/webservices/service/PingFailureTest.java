@@ -46,45 +46,6 @@ public class PingFailureTest {
    }
 
    /**
-    * Test unitaire de la SoapFault sae:DroitsInsuffisants<br>
-    * <br>
-    * Cas de test : On consomme le service pingSecure avec un droit applicatif
-    * qui n'est pas suffisant<br>
-    * <br>
-    * Résultat attendu : levée d'une SoapFault avec les données suivantes :<br>
-    * <ul>
-    * <li>FaultCode : sae:DroitsInsuffisants</li>
-    * <li>FaultString : Les droits présents dans le vecteur d'identification
-    * sont insuffisants pour effectuer l'action demandée</li>
-    * </ul>
-    * 
-    * @throws RemoteException
-    */
-   @Test
-   public void pingSecure_failure_DroitsInsuffisants() throws RemoteException {
-
-      AuthenticateUtils.authenticate("OTHER_ROLE");
-
-      try {
-         service.pingSecure();
-         fail("le test doit échouer");
-      } catch (AxisFault fault) {
-
-         // On trace
-         LOG.debug(getSoapFaultInfos(fault));
-
-         SoapTestUtils
-               .assertAxisFault(
-                     fault,
-                     "Les droits présents dans le vecteur d'identification sont insuffisants pour effectuer l'action demandée",
-                     "DroitsInsuffisants", SoapTestUtils.SAE_NAMESPACE,
-                     SoapTestUtils.SAE_PREFIX);
-
-      }
-
-   }
-
-   /**
     * Test unitaire de la SoapFault wsse:SecurityTokenUnavailable<br>
     * <br>
     * Cas de test : On consomme le service pingSecure sans mettre de VI dans le

@@ -8,15 +8,21 @@
 		http://www.springframework.org/schema/context 
 		http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
+   <import resource="applicationContext-sae-vi.xml" />
 
    <context:component-scan base-package="fr.urssaf.image.sae.webservices" />
 
-   <bean id="secureStub"
+   <bean id="securityConfigurationStub"
       class="fr.urssaf.image.sae.webservices.security.SecurityConfiguration"
-      factory-method="createSaeServiceStub" />
+      autowire="constructor" />
+
+   <bean id="secureStub" factory-bean="securityConfigurationStub"
+      factory-method="createSaeServiceStub">
+   </bean>
 
    <bean id="serviceStub"
       class="fr.urssaf.image.sae.webservices.util.SaeServiceStubUtils"
       factory-method="getServiceStub" />
+
 
 </beans>

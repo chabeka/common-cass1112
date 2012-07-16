@@ -25,8 +25,10 @@ import org.apache.ws.security.message.WSSecHeader;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import fr.urssaf.image.sae.vi.service.WebServiceVICreateService;
 import fr.urssaf.image.sae.vi.service.WebServiceVIService;
 import fr.urssaf.image.sae.webservices.util.AuthenticateUtils;
+import fr.urssaf.image.sae.webservices.util.Constantes;
 
 /**
  * Handler pour ajouter le jeton SAML 2.0 dans la la balise WS-security du web
@@ -50,7 +52,7 @@ import fr.urssaf.image.sae.webservices.util.AuthenticateUtils;
  */
 public class SamlTokenHandler extends AbstractHandler {
 
-   private final WebServiceVIService viService;
+   private final WebServiceVICreateService viService;
 
    private static KeyStore keystore;
 
@@ -58,7 +60,7 @@ public class SamlTokenHandler extends AbstractHandler {
 
    private static String password;
 
-   private static final String ISSUER = "TEST_SERVICES_WEB_SAE";
+   private static final String ISSUER = Constantes.CONTRAT;
 
    static {
       password = "hiUnk6O3QnRN";
@@ -87,11 +89,11 @@ public class SamlTokenHandler extends AbstractHandler {
    }
 
    /**
-    * instanciation de {@link WebServiceVIService}
+    * instanciation de {@link WebServiceVICreateService}
     */
-   public SamlTokenHandler() {
+   public SamlTokenHandler(WebServiceVICreateService viService) {
       super();
-      this.viService = new WebServiceVIService();
+      this.viService = viService;
    }
 
    /**
@@ -123,13 +125,13 @@ public class SamlTokenHandler extends AbstractHandler {
       }
 
       List<String> roles = AuthenticateUtils.getRoles();
-      
+
       // TODO : améliorer le test pour les périmètres de données
-      if (roles!=null) {
-         for (int i=0;i<roles.size();i++) {
-            roles.set(i, roles.get(i) + ";FULL");
-         }
-      }
+      // if (roles != null) {
+      // for (int i = 0; i < roles.size(); i++) {
+      // roles.set(i, roles.get(i) + ";FULL");
+      // }
+      // }
 
       // création du jeton SAML 2.0
       if (CollectionUtils.isNotEmpty(roles)) {

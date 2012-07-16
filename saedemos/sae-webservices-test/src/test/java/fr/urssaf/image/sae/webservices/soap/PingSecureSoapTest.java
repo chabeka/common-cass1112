@@ -90,30 +90,6 @@ public class PingSecureSoapTest {
 
    
    @Test
-   public void pingSecure_failure_sae_droitsInsuffisants() {
-
-      try {
-
-         SoapTestUtils.execute(
-               "src/test/resources/soap/request/pingSecure_SoapFault_sae_DroitsInsuffisants.xml",
-               msgctx,
-               opClient);
-
-         fail(SoapTestUtils.FAIL_MSG);
-         
-      } catch (AxisFault fault) {
-
-         SoapTestUtils.assertAxisFault(
-            fault,
-            "Les droits présents dans le vecteur d'identification sont insuffisants pour effectuer l'action demandée",
-            "DroitsInsuffisants", 
-            SoapTestUtils.SAE_NAMESPACE, 
-            SoapTestUtils.SAE_PREFIX);
-
-      }
-   }
-
-   @Test
    public void pingSecure_failure_vi_invalidAuthLevel() {
 
       try {
