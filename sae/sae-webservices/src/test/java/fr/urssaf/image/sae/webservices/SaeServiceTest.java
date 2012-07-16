@@ -12,6 +12,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.sae.droit.model.SaeDroits;
+import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-service-test.xml" })
 @SuppressWarnings("PMD.MethodNamingConventions")
@@ -37,18 +40,16 @@ public class SaeServiceTest {
             service.pingSecure());
    }
 
-   @Test(expected = AccessDeniedException.class)
-   public void pingSecure_failure() {
-
-      authenticate("ROLE_OTHER");
-
-      service.pingSecure();
-   }
-
    private static void authenticate(String... roles) {
 
-      Authentication authentication = new TestingAuthenticationToken(
-            "login_test", "password_test", roles);
+      VIContenuExtrait extrait = new VIContenuExtrait();
+      extrait.setCodeAppli("TU");
+      extrait.setIdUtilisateur("login_test");
+      SaeDroits droits = new SaeDroits();
+      extrait.setSaeDroits(droits);
+
+      Authentication authentication = new TestingAuthenticationToken(extrait,
+            "password_test", roles);
 
       SecurityContextHolder.getContext().setAuthentication(authentication);
 

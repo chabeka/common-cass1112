@@ -14,6 +14,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.w3c.dom.Element;
 
 import fr.urssaf.image.sae.vi.exception.VIVerificationException;
+import fr.urssaf.image.sae.vi.service.WebServiceVIService;
+import fr.urssaf.image.sae.webservices.modele.WebServiceConfiguration;
 import fr.urssaf.image.sae.webservices.security.SecurityService;
 import fr.urssaf.image.sae.webservices.security.igc.IgcService;
 import fr.urssaf.image.sae.webservices.security.igc.exception.LoadCertifsAndCrlException;
@@ -21,7 +23,8 @@ import fr.urssaf.image.sae.webservices.util.Axis2Utils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-service-test.xml",
-      "/applicationContext-security-test.xml" })
+      "/applicationContext-security-test.xml",
+      "/applicationContext-sae-vi-test.xml" })
 public class AuthenticateHandlerTest {
 
    private static final String FAIL_MSG = "le test doit échouer";
@@ -31,7 +34,13 @@ public class AuthenticateHandlerTest {
    private MessageContext ctx;
 
    @Autowired
+   private WebServiceVIService service;
+
+   @Autowired
    private IgcService igcService;
+
+   @Autowired
+   private WebServiceConfiguration configuration;
 
    @Before
    public void before() {
@@ -42,7 +51,8 @@ public class AuthenticateHandlerTest {
    @Test
    public void loadCertifsAndCrlException() throws AxisFault {
 
-      SecurityService security = new SecurityService(igcService) {
+      SecurityService security = new SecurityService(igcService, service,
+            configuration) {
 
          @Override
          public void authentification(Element identification)

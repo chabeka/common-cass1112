@@ -1,6 +1,7 @@
-package fr.urssaf.image.sae.webservices.security.spring;
+package fr.urssaf.image.sae.vi.spring;
 
 import org.springframework.security.core.context.SecurityContextHolder;
+
 
 /**
  * Classe du Contexte de sécurité de Spring<br>

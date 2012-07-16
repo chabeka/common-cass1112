@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import fr.cirtil.www.saeservice.ArchivageMasse;
@@ -28,6 +29,7 @@ import fr.urssaf.image.sae.services.exception.capture.CaptureBadEcdeUrlEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureEcdeUrlFileNotFoundEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureEcdeWriteFileEx;
 import fr.urssaf.image.sae.services.util.XmlReadUtils;
+import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.webservices.aspect.BuildOrClearMDCAspect;
 import fr.urssaf.image.sae.webservices.exception.CaptureAxisFault;
 import fr.urssaf.image.sae.webservices.impl.factory.ObjectStorageResponseFactory;
@@ -128,9 +130,12 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
       } catch (CaptureMasseRuntimeException e) {
          LOG.warn("impossible d'ouvrir le fichier attendu", e);
       }
+      
+      VIContenuExtrait extrait = (VIContenuExtrait) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+      
 
       CaptureMasseParametres parametres = new CaptureMasseParametres(ecdeUrl,
-            uuid, hostName, callerIP, nombreDoc);
+            uuid, hostName, callerIP, nombreDoc, extrait);
 
       // appel de la méthode d'insertion du job dans la pile des travaux
       traitementService.ajouterJobCaptureMasse(parametres);

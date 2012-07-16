@@ -1,11 +1,11 @@
-package fr.urssaf.image.sae.webservices.security.spring;
+package fr.urssaf.image.sae.vi.spring;
 
 import java.util.List;
 
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 
-import fr.urssaf.image.sae.webservices.security.ActionsUnitaires;
+import fr.urssaf.image.sae.droit.model.SaeDroits;
 
 /**
  * Classe modèle du jeton d'authentification héritant de
@@ -28,10 +28,10 @@ public class AuthenticationToken extends AnonymousAuthenticationToken {
     *           the authorities granted to the principal
     * 
     * @param details
-    *           information supplémentaires sur l'authentification coutante
+    *           information supplémentaires sur l'authentification courante
     */
    public AuthenticationToken(String key, Object principal,
-         List<GrantedAuthority> authorities, ActionsUnitaires details) {
+         List<GrantedAuthority> authorities, SaeDroits details) {
       super(key, principal, authorities);
       this.setDetails(details);
    }
@@ -44,8 +44,8 @@ public class AuthenticationToken extends AnonymousAuthenticationToken {
     * {@inheritDoc}
     */
    @Override
-   public final ActionsUnitaires getDetails() {
-      return (ActionsUnitaires) super.getDetails();
+   public final SaeDroits getDetails() {
+      return (SaeDroits) super.getDetails();
    }
 
 }

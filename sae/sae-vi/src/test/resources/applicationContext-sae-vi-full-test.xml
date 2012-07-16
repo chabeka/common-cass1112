@@ -9,6 +9,17 @@
 		http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
 
-   <import resource="applicationContext-sae-vi.xml"/>
+   <bean
+      class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+      <property name="locations">
+         <value>classpath:config/cassandra-local.properties</value>
+      </property>
+   </bean>
+
+   <!--
+      le scan devra être modifié une fois que les classes dépréciées
+      seront supprimées
+   -->
+   <import resource="applicationContext-sae-vi-full.xml"/>
 
 </beans>

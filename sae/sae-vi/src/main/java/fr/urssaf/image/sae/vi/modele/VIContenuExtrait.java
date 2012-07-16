@@ -1,6 +1,6 @@
 package fr.urssaf.image.sae.vi.modele;
 
-import java.util.List;
+import fr.urssaf.image.sae.droit.model.SaeDroits;
 
 /**
  * Résultats de la vérification d'un vecteur d’identification.<br>
@@ -12,28 +12,11 @@ import java.util.List;
  */
 public class VIContenuExtrait {
 
-   private List<VIPagm> pagm;
-
    private String codeAppli;
 
    private String idUtilisateur;
 
-   /**
-    * 
-    * @return La liste des PAGM
-    */
-   public final List<VIPagm> getPagm() {
-      return pagm;
-   }
-
-   /**
-    * 
-    * @param pagm
-    *           La liste des PAGM
-    */
-   public final void setPagm(List<VIPagm> pagm) {
-      this.pagm = pagm;
-   }
+   private SaeDroits saeDroits;
 
    /**
     * 
@@ -69,6 +52,21 @@ public class VIContenuExtrait {
     */
    public final void setIdUtilisateur(String idUtilisateur) {
       this.idUtilisateur = idUtilisateur;
+   }
+
+   /**
+    * @return la liste des droits du SAE
+    */
+   public final SaeDroits getSaeDroits() {
+      return saeDroits;
+   }
+
+   /**
+    * @param saeDroits
+    *           la liste des droits du SAE
+    */
+   public final void setSaeDroits(SaeDroits saeDroits) {
+      this.saeDroits = saeDroits;
    }
 
 }

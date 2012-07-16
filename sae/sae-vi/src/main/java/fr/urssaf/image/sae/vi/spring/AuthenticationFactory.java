@@ -1,11 +1,11 @@
-package fr.urssaf.image.sae.webservices.security.spring;
+package fr.urssaf.image.sae.vi.spring;
 
 import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 
-import fr.urssaf.image.sae.webservices.security.ActionsUnitaires;
+import fr.urssaf.image.sae.droit.model.SaeDroits;
 
 /**
  * Factory d'objet de type {@link AuthenticationToken}
@@ -32,12 +32,12 @@ public final class AuthenticationFactory {
     * @return instance de {@link AuthenticationToken}
     */
    public static AuthenticationToken createAuthentication(String key,
-         Object principal, String[] roles, ActionsUnitaires actionsUnitaires) {
+         Object principal, String[] roles, SaeDroits saeDroits) {
 
       List<GrantedAuthority> authorities = AuthorityUtils
             .createAuthorityList(roles);
 
       return new AuthenticationToken(key, principal, authorities,
-            actionsUnitaires);
+            saeDroits);
    }
 }

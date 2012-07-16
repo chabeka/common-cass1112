@@ -20,15 +20,20 @@ import org.junit.runner.RunWith;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.cirtil.www.saeservice.ArchivageMasse;
 import fr.cirtil.www.saeservice.ArchivageMasseResponse;
+import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.ecde.exception.EcdeBadURLException;
 import fr.urssaf.image.sae.ecde.exception.EcdeBadURLFormatException;
 import fr.urssaf.image.sae.ecde.service.EcdeServices;
 import fr.urssaf.image.sae.services.controles.SAEControlesCaptureService;
+import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.webservices.aspect.BuildOrClearMDCAspect;
 import fr.urssaf.image.sae.webservices.util.XMLStreamUtils;
 
@@ -60,12 +65,26 @@ public class ArchivageMasseTest {
       // indispensable car c'est ainsi que l'identifiant du traitement est
       // calculé
       MDC.put(BuildOrClearMDCAspect.LOG_CONTEXTE, UUID.randomUUID().toString());
+
+      VIContenuExtrait extrait = new VIContenuExtrait();
+      extrait.setCodeAppli("TU");
+      extrait.setIdUtilisateur("login_test");
+      SaeDroits droits = new SaeDroits();
+      extrait.setSaeDroits(droits);
+
+      Authentication authentication = new TestingAuthenticationToken(extrait,
+            "password_test", new String[] { "ROLE_TOUS" });
+
+      SecurityContextHolder.getContext().setAuthentication(authentication);
+
    }
 
    @After
    public void after() {
 
       EasyMock.reset(controlesService, ecdeServices);
+
+      SecurityContextHolder.getContext().setAuthentication(null);
    }
 
    private ArchivageMasse createArchivageMasse(String filePath) {

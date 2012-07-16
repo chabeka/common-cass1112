@@ -12,11 +12,18 @@
       <constructor-arg value="config/sae-services-test.properties" />
    </bean>
 
+   <bean
+      class="fr.urssaf.image.sae.webservices.modele.WebServiceConfiguration"
+      id="webServiceConfiguration">
+      <constructor-arg value="${sae.webservice.ancien.service.actif}" />
+   </bean>
+
    <bean id="applicationProperties"
       class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
       <property name="locations">
          <array value-type="org.springframework.core.io.Resource">
             <ref bean="saeConfigResource" />
+            <value>classpath:config/cassandra-local.properties</value>
          </array>
       </property>
    </bean>
@@ -31,7 +38,7 @@
    <!-- mock pour capture unitaire -->
    <bean id="saeCaptureService" factory-bean="SAEServiceFactory"
       factory-method="createSAECaptureService" />
- 
+
    <bean id="ecdeServices" factory-bean="SAEServiceFactory"
       factory-method="createEcdeServices" />
 

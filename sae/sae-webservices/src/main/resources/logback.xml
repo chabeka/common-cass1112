@@ -31,7 +31,7 @@
    <!--
    <property name="LOGS_FOLDER" value="${catalina.base}/logs" />
    -->
-   <property name="LOGS_FOLDER" value="@@LOGS_PATH@@" />
+   <property name="LOGS_FOLDER" value="C:/appl/sae/logs" />
    
    <property name="LOGS_FILENAME_PREFIXE" value="sae_webservices" />
    
@@ -107,12 +107,10 @@
    
    
    <!-- Pour tout le SAE, ou plus precisement pour le package de plus haut niveau -->
-   <!--
    <logger name="fr.urssaf.image.sae" level="DEBUG" additivity="false">
       <appender-ref ref="log-file" />
       <appender-ref ref="debug-file" />
    </logger>
-   -->
    
    
    <!-- Pour sae-webservices -->

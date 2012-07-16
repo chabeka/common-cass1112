@@ -8,7 +8,9 @@
 		http://www.springframework.org/schema/context 
 		http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-
-   <import resource="applicationContext-sae-vi.xml"/>
+   <context:component-scan base-package="fr.urssaf.image.sae.vi">
+      <context:exclude-filter type="assignable"
+         expression="fr.urssaf.image.sae.vi.service.WebServiceVIService" />
+   </context:component-scan>
 
 </beans>

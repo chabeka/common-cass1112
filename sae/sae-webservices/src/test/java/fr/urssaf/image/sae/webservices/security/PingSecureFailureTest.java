@@ -20,7 +20,7 @@ import fr.urssaf.image.sae.webservices.util.Axis2Utils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-service-test.xml",
-      "/applicationContext-security-test.xml" })
+      "/applicationContext-security-test.xml", "/applicationContext-sae-vi-test.xml" })
 @SuppressWarnings( { "PMD.MethodNamingConventions" })
 public class PingSecureFailureTest {
 
@@ -130,30 +130,6 @@ public class PingSecureFailureTest {
 
          assertAxisFault(e, "La signature ou le chiffrement n'est pas valide",
                "FailedCheck", "wsse");
-
-      }
-
-   }
-
-   @Test
-   public void pingSecure_failure_accessDenied() throws AxisFault {
-
-      try {
-         this
-               .pingSecure_failure("src/test/resources/request/pingsecure_failure_accessDenied.xml");
-         fail(FAIL_MSG);
-      } catch (AxisFault e) {
-
-         assertEquals(
-               FAULT_CODE,
-               "Les droits présents dans le vecteur d'identification sont insuffisants pour effectuer l'action demandée",
-               e.getMessage());
-         assertEquals(FAULT_CODE, "DroitsInsuffisants", e.getFaultCode()
-               .getLocalPart());
-         assertEquals(FAULT_CODE, "sae", e.getFaultCode().getPrefix());
-
-         assertEquals(FAULT_CODE, "urn:sae:faultcodes", e.getFaultCode()
-               .getNamespaceURI());
 
       }
 

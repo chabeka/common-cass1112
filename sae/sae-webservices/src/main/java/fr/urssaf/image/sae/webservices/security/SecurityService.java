@@ -11,17 +11,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.w3c.dom.Element;
 
+import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.vi.exception.VIVerificationException;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
-import fr.urssaf.image.sae.vi.modele.VIPagm;
 import fr.urssaf.image.sae.vi.modele.VISignVerifParams;
 import fr.urssaf.image.sae.vi.service.WebServiceVIService;
+import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
+import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
+import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
+import fr.urssaf.image.sae.webservices.modele.WebServiceConfiguration;
 import fr.urssaf.image.sae.webservices.security.igc.IgcService;
 import fr.urssaf.image.sae.webservices.security.igc.exception.LoadCertifsAndCrlException;
 import fr.urssaf.image.sae.webservices.security.igc.modele.CertifsAndCrl;
-import fr.urssaf.image.sae.webservices.security.spring.AuthenticationContext;
-import fr.urssaf.image.sae.webservices.security.spring.AuthenticationFactory;
-import fr.urssaf.image.sae.webservices.security.spring.AuthenticationToken;
 
 /**
  * Service de sécurisation du service web par authentification
@@ -31,18 +32,19 @@ import fr.urssaf.image.sae.webservices.security.spring.AuthenticationToken;
 @Service
 public class SecurityService {
 
-   private static final Logger LOG = LoggerFactory.getLogger(SecurityService.class);
+   private static final Logger LOG = LoggerFactory
+         .getLogger(SecurityService.class);
 
    private final WebServiceVIService service;
 
    private final URI serviceVise;
 
-   private final String idAppliClient;
-
    private final IgcService igcService;
 
    private final List<String> patterns;
 
+   private final boolean acceptOldWs;
+   
    // private final VISignVerifParams signVerifParams;
 
    /**
@@ -52,11 +54,12 @@ public class SecurityService {
     *           instance IgcService
     */
    @Autowired
-   public SecurityService(IgcService igcService) {
+   public SecurityService(IgcService igcService, WebServiceVIService service,
+         WebServiceConfiguration configuration) {
 
       Assert.notNull(igcService);
 
-      this.service = new WebServiceVIService();
+      this.service = service;
       this.igcService = igcService;
 
       try {
@@ -65,8 +68,9 @@ public class SecurityService {
          throw new IllegalStateException(e);
       }
 
-      this.idAppliClient = "urn:ISSUER_NON_RENSEIGNE";
       this.patterns = SecurityUtils.loadIssuerPatterns();
+      
+      this.acceptOldWs = configuration.isAncienWsActif();
 
    }
 
@@ -106,15 +110,15 @@ public class SecurityService {
       signVerifParams.setCrls(certifsAndCrl.getCrl());
 
       viExtrait = this.service.verifierVIdeServiceWeb(identification,
-            serviceVise, idAppliClient, signVerifParams);
+            serviceVise, signVerifParams, acceptOldWs);
 
       logVI(viExtrait);
 
-      String[] roles = loadDroitsApplicatifs(viExtrait.getPagm());
+      String[] roles = viExtrait.getSaeDroits().keySet().toArray(new String[0]);
 
       AuthenticationToken authentication = AuthenticationFactory
-            .createAuthentication(viExtrait.getIdUtilisateur(), "nc", roles,
-                  loadActionsUnitaires(viExtrait.getPagm()));
+            .createAuthentication(viExtrait.getIdUtilisateur(), viExtrait,
+                  roles, viExtrait.getSaeDroits());
 
       AuthenticationContext.setAuthenticationToken(authentication);
    }
@@ -124,15 +128,17 @@ public class SecurityService {
       String prefixeLog = "Informations extraites du VI : ";
 
       // LOG des PAGM
-      if ((viExtrait != null) && (viExtrait.getPagm() != null)) {
+      if ((viExtrait != null) && (viExtrait.getSaeDroits() != null)) {
          StringBuffer sBufferMsgLog = new StringBuffer();
          sBufferMsgLog.append(prefixeLog);
          sBufferMsgLog.append("PAGM(s) : ");
-         for (VIPagm pagm : viExtrait.getPagm()) {
-            sBufferMsgLog.append(pagm.getDroitApplicatif());
-            sBufferMsgLog.append(';');
-            sBufferMsgLog.append(pagm.getPerimetreDonnees());
-            sBufferMsgLog.append(' ');
+         for (String key : viExtrait.getSaeDroits().keySet()) {
+            for (SaePrmd prmd : viExtrait.getSaeDroits().get(key)) {
+               sBufferMsgLog.append(key);
+               sBufferMsgLog.append(';');
+               sBufferMsgLog.append(prmd.getPrmd().getCode());
+               sBufferMsgLog.append(' ');
+            }
          }
          LOG.info(sBufferMsgLog.toString());
       }
@@ -144,26 +150,6 @@ public class SecurityService {
       LOG.info(prefixeLog + "Identifiant utilisateur : "
             + viExtrait.getIdUtilisateur());
 
-   }
-
-   private String[] loadDroitsApplicatifs(List<VIPagm> pagms) {
-      String[] roles = new String[pagms.size()];
-      for (int i = 0; i < pagms.size(); i++) {
-         roles[i] = pagms.get(i).getDroitApplicatif();
-      }
-      return roles;
-   }
-
-   private ActionsUnitaires loadActionsUnitaires(List<VIPagm> pagms) {
-
-      ActionsUnitaires actionsUnitaires = new ActionsUnitaires();
-
-      for (VIPagm viPagm : pagms) {
-
-         actionsUnitaires.addAction(viPagm.getDroitApplicatif(), viPagm
-               .getPerimetreDonnees());
-      }
-      return actionsUnitaires;
    }
 
 }

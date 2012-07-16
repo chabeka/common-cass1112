@@ -19,7 +19,7 @@ import fr.urssaf.image.sae.vi.modele.VISignVerifParams;
 
 /**
  * La classe implémenté en AOP permet de vérifier les arguments des méthodes
- * dans {@link fr.urssaf.image.sae.vi.service.WebServiceVIService}<br>
+ * dans {@link fr.urssaf.image.sae.vi.service.impl.WebServiceVIServiceImpl}<br>
  * 
  * 
  */
@@ -28,8 +28,10 @@ public class WebServiceVIServiceValidate {
 
    private static final String SERVICE_PACKAGE = "fr.urssaf.image.sae.vi.service.WebServiceVIService";
 
+   private static final String CREATE_PACKAGE = "fr.urssaf.image.sae.vi.service.WebServiceVICreateService";
+
    private static final String WRITE_METHODE = "execution(public final * "
-         + SERVICE_PACKAGE + ".creerVIpourServiceWeb(..))";
+         + CREATE_PACKAGE + ".creerVIpourServiceWeb(..))";
 
    private static final String CHECK_METHODE = "execution(public final * "
          + SERVICE_PACKAGE + ".verifierVIdeServiceWeb(..))";
@@ -88,7 +90,7 @@ public class WebServiceVIServiceValidate {
 
    /**
     * Vérification des paramètres d'entrée de la méthode
-    * {@link fr.urssaf.image.sae.vi.service.WebServiceVIService#verifierVIdeServiceWeb}
+    * {@link fr.urssaf.image.sae.vi.service.impl.WebServiceVIServiceImpl#verifierVIdeServiceWeb}
     * <br>
     * <ul>
     * <li>identification : doit être renseigné</li>
@@ -109,17 +111,14 @@ public class WebServiceVIServiceValidate {
       // récupération des paramétres
       Element identification = (Element) joinPoint.getArgs()[0];
       URI serviceVise = (URI) joinPoint.getArgs()[1];
-      String idAppliClient = (String) joinPoint.getArgs()[2];
-      VISignVerifParams signVerifParams = (VISignVerifParams) joinPoint.getArgs()[INDEX_3];
-      
+      VISignVerifParams signVerifParams = (VISignVerifParams) joinPoint
+            .getArgs()[2];
+
       // identification not null
       notNullValidate(identification, "identification");
 
       // serviceVise not null
       notNullValidate(serviceVise, "serviceVise");
-
-      // idAppliClient not null
-      notNullValidate(idAppliClient, "idAppliClient");
 
       // signVerifParams not null
       notNullValidate(signVerifParams, "signVerifParams");
@@ -133,8 +132,8 @@ public class WebServiceVIServiceValidate {
          Map<String, String> args = new HashMap<String, String>();
          args.put("0", name);
 
-         throw new IllegalArgumentException(StrSubstitutor
-               .replace(ARG_EMPTY, args));
+         throw new IllegalArgumentException(StrSubstitutor.replace(ARG_EMPTY,
+               args));
       }
 
    }
@@ -146,8 +145,8 @@ public class WebServiceVIServiceValidate {
          Map<String, String> args = new HashMap<String, String>();
          args.put("0", name);
 
-         throw new IllegalArgumentException(StrSubstitutor
-               .replace(ARG_EMPTY, args));
+         throw new IllegalArgumentException(StrSubstitutor.replace(ARG_EMPTY,
+               args));
       }
 
    }

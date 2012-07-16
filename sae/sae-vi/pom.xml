@@ -1,7 +1,8 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
    <modelVersion>4.0.0</modelVersion>
-   
+
    <parent>
       <groupId>fr.urssaf.image.sae</groupId>
       <artifactId>sae</artifactId>
@@ -11,7 +12,7 @@
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-vi</artifactId>
    <version>12.5.12.3-SNAPSHOT</version>
-   
+
    <name>sae-vi</name>
 
    <build>
@@ -26,18 +27,17 @@
 
    <profiles>
       <profile>
-         
+
          <!--
-         Pour la génération du code modèle à partir du fichier XSD vi-portail-a-portail.
-         Commande Maven : mvn generate-sources -PgenerateJaxbViPortailAPortail
-         
-         Après la génération du code modèle, ajouter l'annotation suivante 
-         sur la classe fr.urssaf.image.sae.vi.modele.jaxb.viportail.ViType :
-         
-         @XmlRootElement(name="vi")
-         
+            Pour la génération du code modèle à partir du fichier XSD
+            vi-portail-a-portail. Commande Maven : mvn generate-sources
+            -PgenerateJaxbViPortailAPortail Après la génération du code
+            modèle, ajouter l'annotation suivante sur la classe
+            fr.urssaf.image.sae.vi.modele.jaxb.viportail.ViType :
+
+            @XmlRootElement(name="vi")
          -->
-         
+
          <id>generateJaxbViPortailAPortail</id>
 
          <build>
@@ -59,11 +59,11 @@
                      <generateDirectory>${basedir}/src/main/java</generateDirectory>
                   </configuration>
                </plugin>
-               
-               
+
+
                <!--
-               Plug-in pour ajouter des SuppressWarnings sur le code généré
-               par Jaxb
+                  Plug-in pour ajouter des SuppressWarnings sur le code
+                  généré par Jaxb
                -->
                <plugin>
                   <groupId>com.google.code.maven-replacer-plugin</groupId>
@@ -105,7 +105,14 @@
          <artifactId>sae-saml</artifactId>
          <version>12.5.12.3-SNAPSHOT</version>
       </dependency>
-      
+
+      <!-- SAE-DROIT -->
+      <dependency>
+         <groupId>fr.urssaf.image.sae</groupId>
+         <artifactId>sae-droit</artifactId>
+         <version>12.5.12.3-SNAPSHOT</version>
+      </dependency>
+
 
       <!-- JASPECT -->
 
@@ -121,6 +128,19 @@
          <groupId>commons-io</groupId>
          <artifactId>commons-io</artifactId>
          <version>${apache.commons-io.version}</version>
+         <scope>test</scope>
+      </dependency>
+
+      <dependency>
+         <groupId>org.springframework.security</groupId>
+         <artifactId>spring-security-config</artifactId>
+         <version>${spring.security.version}</version>
+      </dependency>
+
+      <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-test</artifactId>
+         <version>${spring.framework.version}</version>
          <scope>test</scope>
       </dependency>
 

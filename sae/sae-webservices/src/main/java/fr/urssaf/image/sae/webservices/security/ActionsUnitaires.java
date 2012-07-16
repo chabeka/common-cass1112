@@ -22,6 +22,7 @@ import org.springframework.util.Assert;
  * 
  * 
  */
+@Deprecated
 public class ActionsUnitaires extends HashMap<String, List<String>> {
 
    private static final long serialVersionUID = 1L;
