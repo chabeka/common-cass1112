@@ -309,6 +309,10 @@ public class SAECassandraUpdater {
          }
       }
 
+      // ajout des actions unitaires de base
+      InsertionDonnees donnees = new InsertionDonnees(keyspace);
+      donnees.addDroits();
+
       // On positionne la version à 3
       setDatabaseVersion(3L);
 
@@ -414,9 +418,13 @@ public class SAECassandraUpdater {
       Map<String, String> compressOptions = new HashMap<String, String>();
       compressOptions.put("sstable_compression", "SnappyCompressor");
       cfDef.setCompressionOptions(compressOptions);
+      // FIXME FBON - Vérifier
+      Map<String, String> compactionOptions = new HashMap<String, String>();
+      compactionOptions.put("sstable_size_in_mb", "200");
 
       // Leveled compaction.
       cfDef.setCompactionStrategy("LeveledCompactionStrategy");
+      cfDef.setCompactionStrategyOptions(compactionOptions);
    }
 
 }
