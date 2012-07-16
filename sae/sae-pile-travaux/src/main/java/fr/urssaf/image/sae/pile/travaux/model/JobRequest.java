@@ -3,6 +3,8 @@ package fr.urssaf.image.sae.pile.travaux.model;
 import java.util.Date;
 import java.util.UUID;
 
+import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
+
 /**
  * Traitement dans la pile des travaux. Les propriétés sont.
  * <ul>
@@ -66,6 +68,8 @@ public class JobRequest {
    private Boolean toCheckFlag;
 
    private String toCheckFlagRaison;
+
+   private VIContenuExtrait vi;
 
    /**
     * @return the idJob
@@ -320,6 +324,21 @@ public class JobRequest {
     */
    public final void setToCheckFlagRaison(String toCheckFlagRaison) {
       this.toCheckFlagRaison = toCheckFlagRaison;
+   }
+
+   /**
+    * @return le contenu du VI
+    */
+   public final VIContenuExtrait getVi() {
+      return vi;
+   }
+
+   /**
+    * @param vi
+    *           le contenu du VI
+    */
+   public final void setVi(VIContenuExtrait vi) {
+      this.vi = vi;
    }
 
 }

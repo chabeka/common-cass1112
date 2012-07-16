@@ -22,8 +22,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import fr.urssaf.image.commons.cassandra.serializer.NullableDateSerializer;
+import fr.urssaf.image.sae.pile.travaux.dao.serializer.VISerializer;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 import fr.urssaf.image.sae.pile.travaux.model.JobState;
+import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 
 /**
  * DAO de la colonne famille <code>JobRequest</code>
@@ -109,6 +111,11 @@ public class JobRequestDao {
     * Colonne {@value #JR_TO_CHECK_FLAG_RAISON}
     */
    public static final String JR_TO_CHECK_FLAG_RAISON = "toCheckFlagRaison";
+
+   /**
+    * Colonne {@value #JR_VI}
+    */
+   public static final String JR_VI = "vi";
 
    private static final int MAX_JOB_ATTIBUTS = 100;
 
@@ -465,6 +472,24 @@ public class JobRequestDao {
    }
 
    /**
+    * Ajoute une colonne {@value #JR_VI}
+    * 
+    * @param updater
+    *           Updater de <code>JobRequest</code>
+    * @param valeur
+    *           valeur de la colonne
+    * @param clock
+    *           horloge de la colonne
+    */
+   public final void ecritColonneVi(ColumnFamilyUpdater<UUID, String> updater,
+         VIContenuExtrait valeur, long clock) {
+
+      addColumn(updater, JR_VI, valeur, StringSerializer.get(),
+            VISerializer.get(), clock);
+
+   }
+
+   /**
     * Suppression d'un JobRequest
     * 
     * @param mutator
@@ -544,6 +569,12 @@ public class JobRequestDao {
 
       jobRequest
             .setToCheckFlagRaison(result.getString(JR_TO_CHECK_FLAG_RAISON));
+
+      if (result.getByteArray(JR_VI) != null) {
+         VIContenuExtrait contenuExtrait = VISerializer.get().fromBytes(
+               result.getByteArray(JR_VI));
+         jobRequest.setVi(contenuExtrait);
+      }
 
       return jobRequest;
    }

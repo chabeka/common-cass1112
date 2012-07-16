@@ -3,6 +3,8 @@ package fr.urssaf.image.sae.pile.travaux.model;
 import java.util.Date;
 import java.util.UUID;
 
+import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
+
 /**
  * Un nouveau travail à ajouter à la pile des travaux
  */
@@ -21,6 +23,8 @@ public class JobToCreate {
    private String clientHost;
 
    private Integer docCount;
+   
+   private VIContenuExtrait vi;
 
    /**
     * @return the idJob
@@ -132,6 +136,20 @@ public class JobToCreate {
     */
    public final void setDocCount(Integer docCount) {
       this.docCount = docCount;
+   }
+
+   /**
+    * @return le contenu du VI
+    */
+   public final VIContenuExtrait getVi() {
+      return vi;
+   }
+
+   /**
+    * @param vi le contenu du VI
+    */
+   public final void setVi(VIContenuExtrait vi) {
+      this.vi = vi;
    }
 
 }
