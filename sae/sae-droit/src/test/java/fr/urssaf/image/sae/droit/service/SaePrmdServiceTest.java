@@ -78,25 +78,7 @@ public class SaePrmdServiceTest {
       }
    }
 
-   @Test
-   public void testCreateLuceneObligatoire() {
-      try {
-
-         Prmd prmd = new Prmd();
-         prmd.setCode("code");
-         prmd.setDescription("description");
-
-         service.createPrmd(prmd);
-         Assert.fail(ERREUR_ATTENDUE);
-      } catch (Exception e) {
-         Assert.assertEquals(TYPE_CORRECTE, IllegalArgumentException.class, e
-               .getClass());
-         Assert.assertTrue("message de l'exception contient lucène", e
-               .getMessage().contains("lucène"));
-      }
-   }
-
-   @Test
+  @Test
    public void testCheckCodeObligatoire() {
       try {
 

@@ -51,11 +51,6 @@ public class SaePrmdServiceValidation {
                ARG_REQUIRED, "description prmd"));
       }
 
-      if (StringUtils.isEmpty(prmd.getLucene())) {
-         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               ARG_REQUIRED, "lucène pagmp"));
-      }
-
    }
    
    /**

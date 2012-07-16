@@ -49,9 +49,16 @@ public class PrmdSupport {
             .createUpdater(prmd.getCode());
 
       dao.ecritDescription(updater, prmd.getDescription(), clock);
-      dao.ecritLucene(updater, prmd.getLucene(), clock);
-      dao.ecritBean(updater, prmd.getBean(), clock);
-      dao.ecritMetaData(updater, prmd.getMetadata(), clock);
+
+      if (prmd.getLucene() != null) {
+         dao.ecritLucene(updater, prmd.getLucene(), clock);
+      }
+      if (prmd.getBean() != null) {
+         dao.ecritBean(updater, prmd.getBean(), clock);
+      }
+      if (prmd.getMetadata() != null) {
+         dao.ecritMetaData(updater, prmd.getMetadata(), clock);
+      }
 
       dao.getPrmdTmpl().update(updater);
    }
@@ -140,8 +147,10 @@ public class PrmdSupport {
          prmd.setDescription(result.getString(PrmdDao.PRMD_DESCRIPTION));
          prmd.setLucene(result.getString(PrmdDao.PRMD_LUCENE));
 
-         byte[] bMetadata = result.getByteArray(PrmdDao.PRMD_METADATA);
-         prmd.setMetadata(MapSerializer.get().fromBytes(bMetadata));
+         if (result.getByteArray(PrmdDao.PRMD_METADATA) != null) {
+            byte[] bMetadata = result.getByteArray(PrmdDao.PRMD_METADATA);
+            prmd.setMetadata(MapSerializer.get().fromBytes(bMetadata));
+         }
 
          prmd.setBean(result.getString(PrmdDao.PRMD_BEAN));
       }
