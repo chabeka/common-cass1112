@@ -82,7 +82,7 @@ public class TraitementAsynchroneServiceTest {
       idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
 
       CaptureMasseParametres parametres = new CaptureMasseParametres(
-            "url_ecde", idJob, null, null, null);
+            "url_ecde", idJob, null, null, null, null);
 
       service.ajouterJobCaptureMasse(parametres);
 

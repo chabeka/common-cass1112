@@ -55,7 +55,7 @@ public class TraitementAsynchroneServiceValidationTest {
    public void ajouterJobCaptureMasse_success() {
 
       CaptureMasseParametres parametres = new CaptureMasseParametres(URL_ECDE,
-            UUID_CAPTURE, null, null, null);
+            UUID_CAPTURE, null, null, null, null);
 
       service.ajouterJobCaptureMasse(parametres);
    }
@@ -71,7 +71,7 @@ public class TraitementAsynchroneServiceValidationTest {
    private void assertAjouterJobCaptureMasse_urlEcde(String urlECDE) {
 
       CaptureMasseParametres parametres = new CaptureMasseParametres(urlECDE,
-            UUID_CAPTURE, null, null, null);
+            UUID_CAPTURE, null, null, null, null);
 
       try {
          service.ajouterJobCaptureMasse(parametres);
@@ -89,7 +89,7 @@ public class TraitementAsynchroneServiceValidationTest {
    public void ajouterJobCaptureMasse_failure_empty_uuid() {
 
       CaptureMasseParametres parametres = new CaptureMasseParametres(URL_ECDE,
-            null, null, null, null);
+            null, null, null, null, null);
 
       try {
          service.ajouterJobCaptureMasse(parametres);

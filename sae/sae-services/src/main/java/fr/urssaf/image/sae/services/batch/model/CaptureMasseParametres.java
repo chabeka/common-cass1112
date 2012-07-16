@@ -5,6 +5,8 @@ package fr.urssaf.image.sae.services.batch.model;
 
 import java.util.UUID;
 
+import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
+
 /**
  * Objet représentant l'ensemble des paramètres de la capture en masse
  * 
@@ -21,6 +23,8 @@ public class CaptureMasseParametres {
 
    private String clientHost;
 
+   private VIContenuExtrait vi;
+
    /**
     * @param ecdeURL
     *           l'url ecde
@@ -32,15 +36,18 @@ public class CaptureMasseParametres {
     *           l'adresse de la machine demandant le traitement
     * @param nbreDocs
     *           nombre de documents contenus dans le fichier sommaire.xml
+    * @param vi
+    *           contenu du VI
     */
    public CaptureMasseParametres(String ecdeURL, UUID uuid, String saeHost,
-         String clientHost, Integer nbreDocs) {
+         String clientHost, Integer nbreDocs, VIContenuExtrait vi) {
       super();
       this.ecdeURL = ecdeURL;
       this.uuid = uuid;
       this.saeHost = saeHost;
       this.clientHost = clientHost;
       this.nbreDocs = nbreDocs;
+      this.vi = vi;
    }
 
    /**
@@ -78,6 +85,13 @@ public class CaptureMasseParametres {
     */
    public final String getClientHost() {
       return clientHost;
+   }
+
+   /**
+    * @return le contenu du VI
+    */
+   public final VIContenuExtrait getVi() {
+      return vi;
    }
 
 }
