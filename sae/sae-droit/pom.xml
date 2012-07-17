@@ -44,6 +44,13 @@
          <version>${commons.cassandra}</version>
       </dependency>
 
+      <!-- SAE METADATA -->
+      <dependency>
+         <groupId>fr.urssaf.image.sae</groupId>
+         <artifactId>sae-bo</artifactId>
+         <version>12.5.12.3-SNAPSHOT</version>
+      </dependency>
+
 
       <!-- SPRING -->
       <dependency>
@@ -86,7 +93,14 @@
          <artifactId>commons-collections</artifactId>
          <version>${apache.commons-collections.version}</version>
       </dependency>
+
+      <!-- EASY MOCK -->
+      <dependency>
+         <groupId>org.easymock</groupId>
+         <artifactId>easymock</artifactId>
+         <version>${easymock.version}</version>
+         <scope>test</scope>
+      </dependency>
+
    </dependencies>
-
-
 </project>

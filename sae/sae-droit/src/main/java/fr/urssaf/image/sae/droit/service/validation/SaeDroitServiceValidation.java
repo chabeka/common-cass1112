@@ -107,10 +107,8 @@ public class SaeDroitServiceValidation {
     * Validation de la méthode
     * SaeDroitService#createContratService(ServiceContract, List)
     * 
-    * @param contrat
+    * @param idClient
     *           contrat de service
-    * @param pagms
-    *           liste des pagms
     */
    @Before(CHECK_METHOD)
    public final void checkExists(String idClient) {

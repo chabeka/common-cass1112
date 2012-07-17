@@ -16,4 +16,6 @@
 
    <import resource="applicationContext-sae-droit.xml" />
 
+   <bean id="prmdControleTest" class="fr.urssaf.image.sae.droit.controle.PrmdControleTestImpl" />
+   
 </beans>

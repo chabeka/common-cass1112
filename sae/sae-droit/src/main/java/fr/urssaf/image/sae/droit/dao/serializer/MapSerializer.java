@@ -23,7 +23,7 @@ public class MapSerializer extends
     * {@inheritDoc}
     */
    @Override
-   public Map<String, List<String>> fromByteBuffer(ByteBuffer byteBuffer) {
+   public final Map<String, List<String>> fromByteBuffer(ByteBuffer byteBuffer) {
       @SuppressWarnings("unchecked")
       Map<String, List<String>> map = (Map<String, List<String>>) XMLSerializer
             .get().fromByteBuffer(byteBuffer);
@@ -35,10 +35,15 @@ public class MapSerializer extends
     * {@inheritDoc}
     */
    @Override
-   public ByteBuffer toByteBuffer(Map<String, List<String>> map) {
+   public final ByteBuffer toByteBuffer(Map<String, List<String>> map) {
       return XMLSerializer.get().toByteBuffer(map);
    }
 
+   /**
+    * Retourne une instance de {@link MapSerializer}
+    * 
+    * @return une instance de {@link MapSerializer}
+    */
    public static MapSerializer get() {
       return INSTANCE;
    }

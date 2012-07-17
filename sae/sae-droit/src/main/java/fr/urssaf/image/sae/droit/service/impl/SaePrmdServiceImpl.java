@@ -74,15 +74,13 @@ public class SaePrmdServiceImpl implements SaePrmdService {
     * {@inheritDoc}
     */
    @Override
-   public boolean prmdExists(String code) {
+   public final boolean prmdExists(String code) {
 
-      boolean exists;
+      boolean exists = false;
       Prmd storedPrmd = prmdSupport.find(code);
 
       if (storedPrmd != null) {
          exists = true;
-      } else {
-         exists = false;
       }
 
       return exists;
