@@ -4,7 +4,7 @@
 
 -- Dumped from database version 9.0.4
 -- Dumped by pg_dump version 9.0.4
--- Started on 2012-07-17 13:33:09
+-- Started on 2012-07-17 16:12:49
 
 SET statement_timeout = 0;
 SET client_encoding = 'SQL_ASCII';
@@ -81,6 +81,9 @@ INSERT INTO metadonnees (id, id_critere, nne, nne_flag, npe, npe_flag, den, den_
 -- Data for Name: trace_maj; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
+INSERT INTO trace_maj (id, id_critere, id_document, nom_metadata, ancienne_valeur, nouvelle_valeur) VALUES (0, 0, '59fba7b7-63bd-4543-8638-11e620c127df', 'nne', '123854', '123856');
+INSERT INTO trace_maj (id, id_critere, id_document, nom_metadata, ancienne_valeur, nouvelle_valeur) VALUES (1, 0, '48276db0-63c1-4201-a46f-e06b608bd624', 'nne', '123852', '123856');
+INSERT INTO trace_maj (id, id_critere, id_document, nom_metadata, ancienne_valeur, nouvelle_valeur) VALUES (2, 1, '2577a9e1-5592-4883-bebf-623ac52b3731', 'dre', '2007-05-12', '2009-12-31');
 
 
 --
@@ -89,9 +92,11 @@ INSERT INTO metadonnees (id, id_critere, nne, nne_flag, npe, npe_flag, den, den_
 -- Data for Name: trace_rec; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
+INSERT INTO trace_rec (id, id_critere, nbre_doc) VALUES (0, 0, 2);
+INSERT INTO trace_rec (id, id_critere, nbre_doc) VALUES (1, 1, 1);
 
 
--- Completed on 2012-07-17 13:33:10
+-- Completed on 2012-07-17 16:12:49
 
 --
 -- PostgreSQL database dump complete

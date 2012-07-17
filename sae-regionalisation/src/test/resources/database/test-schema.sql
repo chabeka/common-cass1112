@@ -1,11 +1,11 @@
 CREATE TABLE criteres (
-    id integer NOT NULL,
+    id serial NOT NULL,
     lucene character varying(500) NOT NULL,
     traite boolean DEFAULT false NOT NULL
 );
 
 CREATE TABLE metadonnees (
-    id integer NOT NULL,
+    id serial NOT NULL,
     id_critere integer,
     nne character varying(15),
     nne_flag boolean,
@@ -48,7 +48,7 @@ CREATE TABLE metadonnees (
 );
 
 CREATE TABLE trace_maj (
-    id integer NOT NULL,
+    id serial NOT NULL,
     id_critere integer NOT NULL,
     id_document character varying(36) NOT NULL,
     nom_metadata character varying(30) NOT NULL,
@@ -57,7 +57,7 @@ CREATE TABLE trace_maj (
 );
 
 CREATE TABLE trace_rec (
-    id integer NOT NULL,
+    id serial NOT NULL,
     id_critere integer NOT NULL,
     nbre_doc integer DEFAULT 0 NOT NULL
 );
