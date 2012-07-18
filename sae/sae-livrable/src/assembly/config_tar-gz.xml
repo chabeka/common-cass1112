@@ -60,7 +60,7 @@
    
     <file>
       <source>
-         ${project.basedir}/sae-dfce-admin-exploit/target/sae-dfce-admin-exploit-${version}.jar
+         ${project.parent.parent.basedir}/sae-dfce-admin-exploit/target/sae-dfce-admin-exploit-${version}.jar
       </source>
       <outputDirectory>sae-dfce-admin-exploit</outputDirectory>
       <destName>sae-dfce-admin-exploit.jar</destName>
@@ -68,7 +68,7 @@
     
     <file>
       <source>
-         ${project.basedir}/sae-services-executable/target/sae-services-executable-${version}.jar
+         ${project.parent.parent.basedir}/sae-services-executable/target/sae-services-executable-${version}.jar
       </source>
       <outputDirectory>sae-services-executable</outputDirectory>
       <destName>sae-services-executable.jar</destName>
