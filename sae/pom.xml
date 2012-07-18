@@ -495,9 +495,6 @@
       <module>sae-ordonnanceur</module>
       <module>sae-lotinstallmaj</module>
 
-      <!-- Le module du livrable -->
-      <module>sae-livrable</module>
-
    </modules>
 
 
