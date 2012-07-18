@@ -34,5 +34,5 @@ public interface PrmdControle {
     *           valeurs des paramètres dynamiques
     * @return la requête lucène
     */
-   String createLucene(Map<String, List<String>> parametres);
+   String createLucene(Map<String, String> parametres);
 }

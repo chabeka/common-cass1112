@@ -14,25 +14,16 @@ import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
  */
 public class PrmdControleTestImpl implements PrmdControle {
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see
-    * fr.urssaf.image.sae.droit.controle.PrmdControle#createLucene(java.util
-    * .Map)
+   /**
+    * {@inheritDoc}
     */
    @Override
-   public final String createLucene(Map<String, List<String>> parametres) {
-      // TODO Auto-generated method stub
-      return null;
+   public final String createLucene(Map<String, String> parametres) {
+      return "prmd1:valeur1";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see
-    * fr.urssaf.image.sae.droit.controle.PrmdControle#isPermitted(java.util.
-    * List, java.util.Map)
+   /**
+    * {@inheritDoc}
     */
    @Override
    public final boolean isPermitted(List<UntypedMetadata> metadatas,

@@ -60,7 +60,7 @@ public class PrmdControleValidation {
     *           valeurs des paramètres dynamiques
     */
    @Before(CREATE)
-   public final void checkCreateLucene(Map<String, List<String>> parametres) {
+   public final void checkCreateLucene(Map<String, String> parametres) {
       if (parametres == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
                "argument.required", "paramètres"));

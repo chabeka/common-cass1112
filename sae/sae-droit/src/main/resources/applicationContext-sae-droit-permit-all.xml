@@ -21,5 +21,10 @@
    -->
    <import resource="classpath*:/applicationContext-commons-cassandra.xml" />
 
+   <bean id="saeDroitService"
+      class="fr.urssaf.image.sae.droit.service.impl.skip.SaeDroitServiceSkipImpl"
+      primary="true" />
+
    <import resource="applicationContext-sae-droit-controles.xml" />
+
 </beans>

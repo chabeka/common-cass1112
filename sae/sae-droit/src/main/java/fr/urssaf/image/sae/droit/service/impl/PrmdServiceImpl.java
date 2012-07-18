@@ -3,6 +3,7 @@
  */
 package fr.urssaf.image.sae.droit.service.impl;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -46,8 +47,60 @@ public class PrmdServiceImpl implements PrmdService {
     */
    @Override
    public final String createLucene(String lucene, List<SaePrmd> prmds) {
-      // TODO Auto-generated method stub
-      return null;
+
+      String currentRequete;
+      Prmd prmd;
+      SaePrmd saePrmd;
+
+      List<String> sousRequetes = new ArrayList<String>();
+
+      for (int index = 0; index < prmds.size(); index++) {
+         saePrmd = prmds.get(index);
+         currentRequete = StringUtils.EMPTY;
+         prmd = saePrmd.getPrmd();
+
+         if (StringUtils.isNotEmpty(prmd.getLucene())) {
+            currentRequete = createLucene(prmd, saePrmd.getValues());
+
+         } else if (StringUtils.isNotEmpty(prmd.getBean())) {
+            currentRequete = createBean(prmd, saePrmd.getValues());
+
+         } else {
+            LOGGER.info("pas de définition de requête pour le PRMD "
+                  + prmd.getCode());
+         }
+
+         if (StringUtils.isNotEmpty(currentRequete)) {
+            sousRequetes.add(currentRequete);
+         }
+
+      }
+      
+      String sousRequete = createSousRequete(sousRequetes);
+      
+      String requete = lucene;
+      if (StringUtils.isNotEmpty(sousRequete)) {
+         requete = "(" + requete + ")AND(" + sousRequete + ")";
+      }
+      
+      return requete;
+   }
+
+   /**
+    * @param currentRequete
+    * @return
+    */
+   private String createSousRequete(List<String> sousRequetes) {
+
+      StringBuffer buffer = new StringBuffer();
+      for (int index = 0; index < sousRequetes.size(); index++) {
+         if (index != 0) {
+            buffer.append("OR");
+         }
+         buffer.append("(" + sousRequetes.get(index) + ")");
+      }
+      
+      return buffer.toString();
    }
 
    /**
@@ -163,8 +216,7 @@ public class PrmdServiceImpl implements PrmdService {
                && containsIgnoreCase(parametres.get(key), metaValues.get(key));
 
          boolean metaDynamic = containsIgnoreCase(dynamicParam.keySet(), key)
-               && containsIgnoreCase(parametres.get(key), dynamicParam
-                     .get(key));
+               && containsIgnoreCase(parametres.get(key), dynamicParam.get(key));
 
          if (!metaStatic && !metaDynamic) {
             match = false;
@@ -190,5 +242,33 @@ public class PrmdServiceImpl implements PrmdService {
       }
 
       return found;
+   }
+
+   private String createBean(Prmd prmd, Map<String, String> parametres) {
+      String requete;
+
+      try {
+         PrmdControle controle = context.getBean(prmd.getBean(),
+               PrmdControle.class);
+         requete = controle.createLucene(parametres);
+
+      } catch (BeansException e) {
+         requete = null;
+      }
+
+      return requete;
+   }
+
+   private String createLucene(Prmd prmd, Map<String, String> values) {
+
+      String requete = prmd.getLucene();
+      if (MapUtils.isNotEmpty(values)) {
+
+         for (String key : values.keySet()) {
+            requete = requete.replace("<%" + key + "%>", values.get(key));
+         }
+      }
+
+      return requete;
    }
 }

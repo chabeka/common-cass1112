@@ -28,6 +28,7 @@ public class PrmdServiceDatasTest {
    private static final String PRMD_1 = "PRMD_1";
    private static final String META_1 = "META_1";
    private static final String META_2 = "META_2";
+   private static final String META_3 = "META_3";
    private static final String VALEUR_1 = "VALEUR_1";
    private static final String VALEUR_2 = "VALEUR_2";
    private static final String VALEUR_3 = "VALEUR_3";
@@ -195,5 +196,69 @@ public class PrmdServiceDatasTest {
       boolean permitted = prmdService.isPermitted(metadatas, saePrmds);
 
       Assert.assertTrue("l'autorisation doit etre acceptée", permitted);
+   }
+
+   @Test
+   public void luceneFromPrmd() {
+      List<SaePrmd> prmds = new ArrayList<SaePrmd>();
+
+      SaePrmd saePrmd = new SaePrmd();
+      Map<String, String> values = new HashMap<String, String>();
+      values.put(META_1, VALEUR_1);
+      values.put(META_2, VALEUR_2);
+      saePrmd.setValues(values);
+
+      Prmd prmd = new Prmd();
+      prmd.setCode(PRMD_1);
+      prmd.setLucene(META_1 + ":<%" + META_1 + "%> AND " + META_2 + ":<%"
+            + META_2 + "%>");
+      saePrmd.setPrmd(prmd);
+
+      prmds.add(saePrmd);
+
+      saePrmd = new SaePrmd();
+      values = new HashMap<String, String>();
+      values.put(META_1, VALEUR_3);
+      values.put(META_2, VALEUR_4);
+      values.put(META_3, VALEUR_5);
+      saePrmd.setValues(values);
+
+      prmd = new Prmd();
+      prmd.setCode(PRMD_2);
+      prmd.setLucene(META_1 + ":<%" + META_1 + "%> AND " + META_2 + ":<%"
+            + META_2 + "%> AND " + META_3 + ":<%" + META_3 + "%>");
+      saePrmd.setPrmd(prmd);
+
+      prmds.add(saePrmd);
+
+      String requete = prmdService.createLucene("meta:valeur", prmds);
+      String attendue = "(meta:valeur)AND((META_1:VALEUR_1 AND META_2:VALEUR_2)"
+            + "OR(META_1:VALEUR_3 AND META_2:VALEUR_4 AND META_3:VALEUR_5))";
+      Assert.assertEquals("la requete fournie doit etre correcte", attendue,
+            requete);
+
+   }
+
+   @Test
+   public void luceneFromBean() {
+      List<SaePrmd> prmds = new ArrayList<SaePrmd>();
+
+      SaePrmd saePrmd = new SaePrmd();
+      Map<String, String> values = new HashMap<String, String>();
+      values.put(META_1, VALEUR_1);
+      saePrmd.setValues(values);
+
+      Prmd prmd = new Prmd();
+      prmd.setCode(PRMD_1);
+      prmd.setBean(BEAN_NAME);
+      saePrmd.setPrmd(prmd);
+
+      prmds.add(saePrmd);
+
+      String requete = prmdService.createLucene("meta:valeur", prmds);
+      String attendue = "(meta:valeur)AND((prmd1:valeur1))";
+
+      Assert.assertEquals("la requete fournie doit etre correcte", attendue,
+            requete);
    }
 }
