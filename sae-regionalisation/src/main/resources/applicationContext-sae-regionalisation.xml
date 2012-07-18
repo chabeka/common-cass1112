@@ -18,6 +18,7 @@
    </bean>
 
    <import resource="applicationContext-sae-regionalisation-datasource.xml"/>
+   <import resource="applicationContext-sae-regionalisation-dfce.xml"/>
    <import resource="applicationContext-sae-regionalisation-service.xml" />
 
 </beans>

@@ -7,8 +7,15 @@
         http://www.springframework.org/schema/context 
         http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
+   <bean id="applicationProperties"
+      class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+      <property name="location"
+         value="classpath:config/sae-config-test.properties" />
+   </bean>
+
 
    <import resource="applicationContext-sae-regionalisation-service.xml" />
    <import resource="applicationContext-sae-regionalisation-datasource-test.xml" />
+   <import resource="applicationContext-sae-regionalisation-dfce-test.xml" />
 
 </beans>
