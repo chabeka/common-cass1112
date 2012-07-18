@@ -1,7 +1,7 @@
 CREATE TABLE criteres (
     id serial NOT NULL,
     lucene character varying(500) NOT NULL,
-    traite boolean DEFAULT false NOT NULL
+    traite boolean
 );
 
 CREATE TABLE metadonnees (
@@ -44,7 +44,8 @@ CREATE TABLE metadonnees (
     sac character varying(5),
     sac_flag boolean,
     nbp integer,
-    nbp_flag boolean
+    nbp_flag boolean,
+    CONSTRAINT metadonnees_id_critere_key UNIQUE (id_critere)
 );
 
 CREATE TABLE trace_maj (
@@ -59,5 +60,6 @@ CREATE TABLE trace_maj (
 CREATE TABLE trace_rec (
     id serial NOT NULL,
     id_critere integer NOT NULL,
-    nbre_doc integer DEFAULT 0 NOT NULL
+    nbre_doc integer DEFAULT 0 NOT NULL,
+    CONSTRAINT trace_rec_id_critere_key UNIQUE (id_critere)
 );
