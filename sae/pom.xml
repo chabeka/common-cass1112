@@ -413,38 +413,16 @@
       <module>sae-ordonnanceur</module>
       <module>sae-lotinstallmaj</module>
 
-      <!-- Le module du livrable -->
-      <module>sae-livrable</module>
-
    </modules>
 
    <profiles>
 
       <profile>
-         <id>hudson</id>
-         <!-- tous les modules sans sae-livrable -->
-         <modules>
-            <!-- Les composants techniques -->
-            <module>sae-bo</module>
-            <module>sae-igc</module>
-            <module>sae-saml</module>
-            <module>sae-vi</module>
-            <module>sae-storage</module>
-            <module>sae-storage-dfce</module>
-            <module>sae-ecde</module>
-            <module>sae-metadata</module>
-            <module>sae-mapping</module>
-            <module>sae-pile-travaux</module>
-            <module>sae-services</module>
-            <module>sae-droit</module>
+         <id>full</id>
 
-            <!-- Les applications finales -->
-            <module>sae-igcmaj</module>
-            <module>sae-services-executable</module>
-            <module>sae-webservices</module>
-            <module>sae-dfce-admin-exploit</module>
-            <module>sae-ordonnanceur</module>
-            <module>sae-lotinstallmaj</module>
+         <modules>
+            <!-- Le module du livrable -->
+            <module>sae-livrable</module>
          </modules>
       </profile>
 
