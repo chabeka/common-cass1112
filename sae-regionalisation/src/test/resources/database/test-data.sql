@@ -12,5 +12,5 @@ INSERT INTO trace_maj (id, id_critere, id_document, nom_metadata, ancienne_valeu
 INSERT INTO trace_maj (id, id_critere, id_document, nom_metadata, ancienne_valeur, nouvelle_valeur) VALUES (1, 0, '48276db0-63c1-4201-a46f-e06b608bd624', 'nne', '123852', '123856');
 INSERT INTO trace_maj (id, id_critere, id_document, nom_metadata, ancienne_valeur, nouvelle_valeur) VALUES (2, 1, '2577a9e1-5592-4883-bebf-623ac52b3731', 'dre', '2007-05-12', '2009-12-31');
 
-INSERT INTO trace_rec (id, id_critere, nbre_doc) VALUES (0, 0, 2);
-INSERT INTO trace_rec (id, id_critere, nbre_doc) VALUES (1, 1, 1);
+INSERT INTO trace_rec (id, id_critere, nbre_doc) VALUES (0, 0, 5);
+INSERT INTO trace_rec (id, id_critere, nbre_doc) VALUES (1, 2, 8);

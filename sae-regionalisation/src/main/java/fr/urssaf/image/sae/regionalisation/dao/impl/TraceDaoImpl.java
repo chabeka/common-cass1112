@@ -83,7 +83,9 @@ public class TraceDaoImpl implements TraceDao {
       StrBuilder sql = new StrBuilder();
       sql.append("select nbre_doc ");
       sql.append("from trace_rec ");
-      sql.append("where id_critere= ? ");
+      sql.append("where id =  ");
+      sql
+            .append("select max(trace.id) from trace_rec trace where id_critere= ?  ");
 
       int result = jdbcTemplate.queryForInt(sql.toString(),
             new Object[] { idCriterion });

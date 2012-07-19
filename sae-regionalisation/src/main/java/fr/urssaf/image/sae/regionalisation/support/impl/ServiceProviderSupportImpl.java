@@ -1,11 +1,14 @@
 package fr.urssaf.image.sae.regionalisation.support.impl;
 
+import net.docubase.toolkit.model.base.Base;
+import net.docubase.toolkit.model.base.BaseCategory;
+import net.docubase.toolkit.model.document.Document;
 import net.docubase.toolkit.service.ServiceProvider;
-import net.docubase.toolkit.service.administration.BaseAdministrationService;
 import net.docubase.toolkit.service.ged.SearchService;
 import net.docubase.toolkit.service.ged.StoreService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.commons.dfce.service.DFCEConnectionService;
@@ -23,15 +26,22 @@ public class ServiceProviderSupportImpl implements ServiceProviderSupport {
 
    private final DFCEConnectionService dfceConnectionService;
 
+   private final String baseName;
+
    /**
     * 
     * @param dfceConnectionService
     *           service de connexion à DFCE
+    * @param baseName
+    *           nom de la base
     */
    @Autowired
-   public ServiceProviderSupportImpl(DFCEConnectionService dfceConnectionService) {
+   public ServiceProviderSupportImpl(
+         DFCEConnectionService dfceConnectionService,
+         @Qualifier("base_regionalisation") String baseName) {
 
       this.dfceConnectionService = dfceConnectionService;
+      this.baseName = baseName;
 
    }
 
@@ -76,9 +86,22 @@ public class ServiceProviderSupportImpl implements ServiceProviderSupport {
     * {@inheritDoc}
     */
    @Override
-   public final BaseAdministrationService getBaseAdministrationService() {
+   public final Base getBase() {
 
-      return serviceProvider.getBaseAdministrationService();
+      return serviceProvider.getBaseAdministrationService().getBase(baseName);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final void updateCriterion(Document document, String key, Object value) {
+
+      Base base = this.getBase();
+
+      BaseCategory baseCategory = base.getBaseCategory(key);
+      document.addCriterion(baseCategory, value);
+
    }
 
 }

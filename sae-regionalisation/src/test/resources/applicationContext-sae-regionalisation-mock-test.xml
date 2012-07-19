@@ -19,8 +19,13 @@
    <bean id="serviceProviderSupportImpl" factory-bean="daoMock"
       factory-method="createServiceProviderSupport" />
 
-   <import resource="applicationContext-sae-regionalisation-datasource-test.xml" />
+   <bean id="searchCriterionDaoImpl" factory-bean="daoMock"
+      factory-method="createSearchCriterionDao" />
+
+   <bean id="metadataDaoImpl" factory-bean="daoMock" factory-method="createMetadataDao" />
+
+   <bean id="traceDaoImpl" factory-bean="daoMock" factory-method="createTraceDao" />
+
    <import resource="applicationContext-sae-regionalisation-service.xml" />
-   <import resource="applicationContext-sae-regionalisation-transaction.xml" />
    
 </beans>

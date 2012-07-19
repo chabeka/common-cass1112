@@ -53,13 +53,12 @@ CREATE TABLE trace_maj (
     id_critere integer NOT NULL,
     id_document character varying(36) NOT NULL,
     nom_metadata character varying(30) NOT NULL,
-    ancienne_valeur character varying(50) NOT NULL,
-    nouvelle_valeur character varying(50) NOT NULL
+    ancienne_valeur character varying(50),
+    nouvelle_valeur character varying(50)
 );
 
 CREATE TABLE trace_rec (
     id serial NOT NULL,
     id_critere integer NOT NULL,
-    nbre_doc integer DEFAULT 0 NOT NULL,
-    CONSTRAINT trace_rec_id_critere_key UNIQUE (id_critere)
+    nbre_doc integer DEFAULT 0 NOT NULL
 );

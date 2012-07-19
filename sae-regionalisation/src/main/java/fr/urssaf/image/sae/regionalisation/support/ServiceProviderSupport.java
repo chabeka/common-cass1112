@@ -1,11 +1,12 @@
 package fr.urssaf.image.sae.regionalisation.support;
 
-import net.docubase.toolkit.service.administration.BaseAdministrationService;
+import net.docubase.toolkit.model.base.Base;
+import net.docubase.toolkit.model.document.Document;
 import net.docubase.toolkit.service.ged.SearchService;
 import net.docubase.toolkit.service.ged.StoreService;
 
 /**
- * Service contenant les opérations concernant les critères de recherche.
+ * Service contenant les opérations DFCE.
  * 
  * 
  */
@@ -36,9 +37,21 @@ public interface ServiceProviderSupport {
    SearchService getSearchService();
 
    /**
-    * Retourne le service d'administration
+    * Retourne la base de la régionalisation
     * 
-    * @return service d'administration
+    * @return base DFCE
     */
-   BaseAdministrationService getBaseAdministrationService();
+   Base getBase();
+
+   /**
+    * Modifie la métadonnée d'un document
+    * 
+    * @param document
+    *           document SAE
+    * @param key
+    *           code court de la métadonnée
+    * @param value
+    *           valeur de la métadonnée
+    */
+   void updateCriterion(Document document, String key, Object value);
 }

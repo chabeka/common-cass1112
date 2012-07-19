@@ -5,8 +5,12 @@
          <pattern>%d %p %m%n</pattern>
       </encoder>
    </appender>
-   
+
    <logger name="fr.urssaf.image.sae">
+      <level value="DEBUG" />
+   </logger>
+
+   <logger name="org.springframework.jdbc.core.JdbcTemplate">
       <level value="DEBUG" />
    </logger>
 

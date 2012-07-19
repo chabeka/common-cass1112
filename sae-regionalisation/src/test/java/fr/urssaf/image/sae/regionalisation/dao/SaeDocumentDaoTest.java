@@ -23,17 +23,18 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.docubase.dfce.exception.FrozenDocumentException;
+import com.docubase.dfce.exception.SearchQueryParseException;
 import com.docubase.dfce.exception.TagControlException;
 
+import fr.urssaf.image.sae.regionalisation.exception.ErreurTechniqueException;
 import fr.urssaf.image.sae.regionalisation.support.ServiceProviderSupport;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-regionalisation-service-test.xml" })
+@ContextConfiguration(locations = { "/applicationContext-sae-regionalisation-dfce-test.xml" })
 @SuppressWarnings("PMD.MethodNamingConventions")
 public class SaeDocumentDaoTest {
 
@@ -42,10 +43,6 @@ public class SaeDocumentDaoTest {
 
    @Autowired
    private ServiceProviderSupport serviceProvider;
-
-   @Autowired
-   @Qualifier("base_regionalisation")
-   private String baseName;
 
    private Base base;
 
@@ -109,7 +106,7 @@ public class SaeDocumentDaoTest {
 
       serviceProvider.connect();
 
-      base = serviceProvider.getBaseAdministrationService().getBase(baseName);
+      base = serviceProvider.getBase();
 
       uuids = new ArrayList<UUID>();
 
@@ -185,6 +182,27 @@ public class SaeDocumentDaoTest {
       for (UUID uuid : uuids) {
          assertDocument(documents, uuid);
       }
+   }
+
+   @Test
+   public void getDocuments_failure() {
+
+      String lucene = "badlucene";
+
+      try {
+         dao.getDocuments(lucene);
+
+         Assert
+               .fail("la méthode doit lever une exception de type ErreurTechniqueException");
+
+      } catch (ErreurTechniqueException e) {
+
+         Assert
+               .assertTrue(
+                     "la cause de l'exception doit de type SearchQueryParseException",
+                     e.getCause() instanceof SearchQueryParseException);
+      }
+
    }
 
 }

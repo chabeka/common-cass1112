@@ -37,15 +37,32 @@ public class SearchCriterionDaoTest {
    }
 
    @Test
-   public void getSearchCriteria() {
+   public void getSearchCriteria_partiel() {
 
       List<SearchCriterion> searchCriterions = dao.getSearchCriteria(1, 2);
 
       Assert.assertEquals("le nombre de resultats de la requête est inattendu",
             2, searchCriterions.size());
 
-      assertSearchCriterion(searchCriterions.get(0), 1, "lucene1", true);
-      assertSearchCriterion(searchCriterions.get(1), 2, "lucene2", false);
+      assertSearchCriterion(searchCriterions.get(0), 2, "lucene2", false);
+      assertSearchCriterion(searchCriterions.get(1), 3, "lucene3", false);
+
+   }
+
+   @Test
+   public void getSearchCriteria_total() {
+
+      List<SearchCriterion> searchCriterions = dao.getSearchCriteria(0,
+            Integer.MAX_VALUE);
+
+      for (SearchCriterion searchCriterion : searchCriterions) {
+
+         if (searchCriterion.isUpdated()) {
+            Assert.fail("la recherche id:" + searchCriterion.getId()
+                  + " lucene:" + searchCriterion.getLucene()
+                  + " ne devrait pas récupérée");
+         }
+      }
 
    }
 

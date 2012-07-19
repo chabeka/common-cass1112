@@ -9,7 +9,6 @@ import net.docubase.toolkit.model.search.SearchResult;
 import net.docubase.toolkit.model.search.impl.QueryImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import com.docubase.dfce.exception.ExceededSearchLimitException;
@@ -31,20 +30,14 @@ public class SaeDocumentDaoImpl implements SaeDocumentDao {
 
    private final ServiceProviderSupport serviceSupport;
 
-   private final String baseName;
-
    /**
     * 
     * @param serviceSupport
     *           service DFCE
-    * @param baseName
-    *           nom de la base
     */
    @Autowired
-   public SaeDocumentDaoImpl(ServiceProviderSupport serviceSupport,
-         @Qualifier("base_regionalisation") String baseName) {
+   public SaeDocumentDaoImpl(ServiceProviderSupport serviceSupport) {
       this.serviceSupport = serviceSupport;
-      this.baseName = baseName;
 
    }
 
@@ -54,8 +47,7 @@ public class SaeDocumentDaoImpl implements SaeDocumentDao {
    @Override
    public final List<Document> getDocuments(String lucene) {
 
-      Base base = this.serviceSupport.getBaseAdministrationService().getBase(
-            this.baseName);
+      Base base = this.serviceSupport.getBase();
 
       SearchQuery paramSearchQuery = new QueryImpl(lucene, base);
       SearchResult searchResult;

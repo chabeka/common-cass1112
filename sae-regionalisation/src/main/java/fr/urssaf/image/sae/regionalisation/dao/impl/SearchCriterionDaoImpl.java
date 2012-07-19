@@ -47,8 +47,11 @@ public class SearchCriterionDaoImpl implements SearchCriterionDao {
       StrBuilder sql = new StrBuilder();
       sql.append("select lucene,traite,id ");
       sql.append("from criteres ");
+      sql.append("where traite = ? ");
+      sql.append("order by id asc ");
       sql.append("limit ? ");
       sql.append("offset ? ");
+      
 
       RowMapper<SearchCriterion> mapper = new RowMapper<SearchCriterion>() {
          public SearchCriterion mapRow(ResultSet resultSet, int rowNum)
@@ -64,7 +67,7 @@ public class SearchCriterionDaoImpl implements SearchCriterionDao {
       };
 
       List<SearchCriterion> results = jdbcTemplate.query(sql.toString(),
-            new Object[] { recordCount, firstRecord }, mapper);
+            new Object[] {false, recordCount, firstRecord }, mapper);
 
       return results;
    }
