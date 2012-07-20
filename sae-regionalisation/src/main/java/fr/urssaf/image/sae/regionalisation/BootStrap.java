@@ -138,8 +138,16 @@ public class BootStrap {
       // appel du service ProcessingService
       ProcessingService service = context.getBean(ProcessingService.class);
 
+      LOGGER
+            .info(
+                  "lancement de la régionalisation en mode {} avec l'index de départ {} et avec un nombre d'enregistrements à traiter de {}",
+                  new Object[] { args[MODE_ARG_INDEX], args[FIRST_ARG_INDEX],
+                        args[COUNT_ARG_INDEX] });
+
       // lancement de la régionalisation
       service.launch(updateDatas, firstRecord, processingCount);
+
+      LOGGER.info("la régionalisation est terminée");
    }
 
    /**

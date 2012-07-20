@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import net.docubase.toolkit.model.document.Document;
 import net.docubase.toolkit.model.document.impl.DocumentImpl;
@@ -60,58 +61,9 @@ public class ProcessingServiceTest {
    }
 
    @Test
-   public void launch() {
+   public void launch_mise_a_jour() {
 
-      // connexion à DFCE
-
-      providerSupport.connect();
-
-      EasyMock.expectLastCall().once();
-
-      // récupération des critères
-
-      List<SearchCriterion> searchCriterions = new ArrayList<SearchCriterion>();
-
-      searchCriterions.add(createSearchCriterion());
-      searchCriterions.add(createSearchCriterion());
-      searchCriterions.add(createSearchCriterion());
-
-      EasyMock.expect(
-            searchCriterionDao.getSearchCriteria(EasyMock.anyInt(), EasyMock
-                  .anyInt())).andReturn(searchCriterions).andReturn(
-            new ArrayList<SearchCriterion>());
-
-      // récupération des métadonnées
-
-      Map<String, Object> metadatas = new HashMap<String, Object>();
-      metadatas.put("nne", "value1");
-      metadatas.put("nbp", null);
-      metadatas.put("metadataUnknown", "valueUnknown");
-
-      EasyMock.expect(
-            metadataDao.getMetadatas(EasyMock.anyObject(BigDecimal.class)))
-            .andReturn(metadatas).times(3);
-
-      // récupération des documents
-
-      List<Document> docs0 = new ArrayList<Document>();
-
-      Document doc0 = new DocumentImpl();
-      doc0.addCriterion("nne", "oldValue");
-      doc0.addCriterion("nbp", "oldValue");
-      doc0.addCriterion("zzz", "oldValue");
-
-      docs0.add(doc0);
-      docs0.add(new DocumentImpl());
-
-      List<Document> docs1 = new ArrayList<Document>();
-      docs1.add(new DocumentImpl());
-
-      List<Document> docs2 = new ArrayList<Document>();
-
-      EasyMock.expect(
-            saeDocumentDao.getDocuments(EasyMock.anyObject(String.class)))
-            .andReturn(docs0).andReturn(docs1).andReturn(docs2);
+      launchCommun();
 
       // trace dans trace rec
 
@@ -163,13 +115,117 @@ public class ProcessingServiceTest {
 
    }
 
+   @Test
+   public void launch_tir_a_blanc() {
+
+      launchCommun();
+
+      // trace dans trace rec
+
+      // aucune trace
+
+      // persistance des modifications
+
+      // aucune persistance
+
+      // trace dans trace Maj
+
+      // aucune trace
+
+      // mise à jour des critères de recherche
+
+      // aucune mise à jour
+
+      // déconnexion à DFCE
+
+      providerSupport.disconnect();
+
+      EasyMock.expectLastCall().once();
+
+      EasyMock.replay(saeDocumentDao);
+      EasyMock.replay(providerSupport);
+      EasyMock.replay(searchCriterionDao);
+      EasyMock.replay(metadataDao);
+      EasyMock.replay(traceDao);
+
+      service.launch(false, 0, 3);
+
+      // vérification des services
+      assertSaeDocumentDao();
+
+   }
+
+   private void launchCommun() {
+
+      // connexion à DFCE
+
+      providerSupport.connect();
+
+      EasyMock.expectLastCall().once();
+
+      // récupération des critères
+
+      List<SearchCriterion> searchCriterions = new ArrayList<SearchCriterion>();
+
+      searchCriterions.add(createSearchCriterion());
+      searchCriterions.add(createSearchCriterion());
+      searchCriterions.add(createSearchCriterion());
+
+      EasyMock.expect(
+            searchCriterionDao.getSearchCriteria(EasyMock.anyInt(), EasyMock
+                  .anyInt())).andReturn(searchCriterions).andReturn(
+            new ArrayList<SearchCriterion>());
+
+      // récupération des métadonnées
+
+      Map<String, Object> metadatas = new HashMap<String, Object>();
+      metadatas.put("nne", "value1");
+      metadatas.put("nbp", null);
+      metadatas.put("metadataUnknown", "valueUnknown");
+
+      EasyMock.expect(
+            metadataDao.getMetadatas(EasyMock.anyObject(BigDecimal.class)))
+            .andReturn(metadatas).times(3);
+
+      // récupération des documents
+
+      List<Document> docs0 = new ArrayList<Document>();
+
+      Document doc0 = createDocument();
+      doc0.addCriterion("nne", "oldValue");
+      doc0.addCriterion("nbp", "oldValue");
+      doc0.addCriterion("zzz", "oldValue");
+
+      docs0.add(doc0);
+      docs0.add(createDocument());
+
+      List<Document> docs1 = new ArrayList<Document>();
+      docs1.add(createDocument());
+
+      List<Document> docs2 = new ArrayList<Document>();
+
+      EasyMock.expect(
+            saeDocumentDao.getDocuments(EasyMock.anyObject(String.class)))
+            .andReturn(docs0).andReturn(docs1).andReturn(docs2);
+   }
+
    private SearchCriterion createSearchCriterion() {
 
       SearchCriterion criterion = new SearchCriterion();
 
       criterion.setId(new BigDecimal(RandomUtils.nextInt()));
+      criterion.setLucene("lucene request n°" + criterion.getId().intValue());
 
       return criterion;
+   }
+
+   private Document createDocument() {
+
+      Document document = new DocumentImpl();
+
+      document.setUuid(UUID.randomUUID());
+
+      return document;
    }
 
    private void assertSaeDocumentDao() {

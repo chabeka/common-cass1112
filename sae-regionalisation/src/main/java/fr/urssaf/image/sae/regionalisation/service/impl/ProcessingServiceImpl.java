@@ -100,10 +100,20 @@ public class ProcessingServiceImpl implements ProcessingService {
             searchCriterions = this.searchCriterionDao.getSearchCriteria(
                   indexRecord, Math.min(SIZE_BLOCK, processingCount));
 
+            LOGGER.debug("nombre de critères de recherche à traiter: {}",
+                  searchCriterions.size());
+
             for (SearchCriterion searchCriterion : searchCriterions) {
+
+               LOGGER.debug(
+                     "critère de recherche {} avec la requête lucène: {}",
+                     searchCriterion.getId(), searchCriterion.getLucene());
 
                Map<String, Object> metadatas = this.metadataDao
                      .getMetadatas(searchCriterion.getId());
+
+               LOGGER.debug("nombre de métadonnées à mettre à jour: {}",
+                     metadatas.size());
 
                List<Document> documents = this.saeDocumentDao
                      .getDocuments(searchCriterion.getLucene());
@@ -111,50 +121,21 @@ public class ProcessingServiceImpl implements ProcessingService {
                // on incrémente de 1 si aucun document n'est retourné
                if (documents.isEmpty()) {
                   nbRecordSansDocument++;
-               }
 
-               // on trace le nombre de documents pour un critère de recherche
-               this.traceDao.addTraceRec(searchCriterion.getId(), documents
-                     .size());
+                  LOGGER.debug("aucune document n'a été récupéré");
+               }
 
                // si le flag est positionné à MISE_A_JOUR
                if (updateDatas) {
 
-                  for (Document document : documents) {
+                  nbRecordDocumentTraites += update(searchCriterion, documents,
+                        metadatas);
 
-                     List<Trace> traces = new ArrayList<Trace>();
-
-                     // mettre à jour les métadonnées
-                     for (Entry<String, Object> metadata : metadatas.entrySet()) {
-
-                        Trace trace = this.update(document, metadata);
-
-                        if (trace != null) {
-                           traces.add(trace);
-                        }
-                     }
-
-                     // persistance des modifications
-                     this.saeDocumentDao.update(document);
-
-                     // ajout des traces de modifications des données
-                     for (Trace trace : traces) {
-
-                        trace.setIdDocument(document.getUuid());
-                        trace.setIdSearch(searchCriterion.getId());
-
-                        this.traceDao.addTraceMaj(trace);
-                     }
-
-                     // on incrémente de 1 le nombre de documents traités
-                     nbRecordDocumentTraites++;
-
-                  }
-
-                  // mise à jour flag traite du critères de recherche
-                  this.searchCriterionDao.updateSearchCriterion(searchCriterion
-                        .getId());
-
+               } else {
+                  LOGGER.debug("nombre de documents à mettre à jour: {}",
+                        documents.size());
+                  // en prévision du nombre de documents à traiter
+                  nbRecordDocumentTraites += documents.size();
                }
 
             }
@@ -163,10 +144,10 @@ public class ProcessingServiceImpl implements ProcessingService {
 
          } while (!searchCriterions.isEmpty());
 
-         LOGGER.debug("nombre de recherche sans documents associés: {}",
+         LOGGER.info("nombre de recherche sans documents associés: {}",
                nbRecordSansDocument);
-         LOGGER.debug("nombre de documents traités: {}",
-               nbRecordDocumentTraites);
+         LOGGER
+               .info("nombre de documents traités: {}", nbRecordDocumentTraites);
 
       } finally {
 
@@ -174,6 +155,66 @@ public class ProcessingServiceImpl implements ProcessingService {
          this.serviceSupport.disconnect();
       }
 
+   }
+
+   private int update(SearchCriterion searchCriterion,
+         List<Document> documents, Map<String, Object> metadatas) {
+
+      // on trace le nombre de documents pour un critère de
+      // recherche
+      this.traceDao.addTraceRec(searchCriterion.getId(), documents.size());
+
+      LOGGER.debug("nombre de documents à mettre à jour: {}", documents.size());
+
+      int nbRecordDocumentTraites = 0;
+
+      for (Document document : documents) {
+
+         List<Trace> traces = new ArrayList<Trace>();
+
+         // mettre à jour les métadonnées
+         for (Entry<String, Object> metadata : metadatas.entrySet()) {
+
+            Trace trace = this.update(document, metadata);
+
+            if (trace != null) {
+               traces.add(trace);
+            }
+         }
+
+         // persistance des modifications
+         this.saeDocumentDao.update(document);
+
+         LOGGER.debug("document n°{} a été mise à jour", document.getUuid());
+
+         // ajout des traces de modifications des données
+         for (Trace trace : traces) {
+
+            LOGGER
+                  .debug(
+                        "document n°{} a mis à jour la métadonnée '{}' avec une nouvelle valeur '{}' pour remplacer l'ancienne '{}'",
+                        new Object[] { document.getUuid(), trace.getMetaName(),
+                              trace.getNewValue(), trace.getOldValue() });
+
+            trace.setIdDocument(document.getUuid());
+            trace.setIdSearch(searchCriterion.getId());
+
+            this.traceDao.addTraceMaj(trace);
+         }
+
+         // on incrémente de 1 le nombre de documents traités
+         nbRecordDocumentTraites++;
+
+      }
+
+      // mise à jour flag traite du critères de recherche
+      this.searchCriterionDao.updateSearchCriterion(searchCriterion.getId());
+
+      LOGGER.debug(
+            "critère de recherche {} avec la requête lucène: {} a été traitée",
+            searchCriterion.getId(), searchCriterion.getLucene());
+
+      return nbRecordDocumentTraites;
    }
 
    protected final Trace update(Document document,
@@ -185,7 +226,7 @@ public class ProcessingServiceImpl implements ProcessingService {
 
          trace = new Trace();
          trace.setMetaName(metadata.getKey());
-         
+
          if (document.getSingleCriterion(metadata.getKey()) != null) {
 
             trace.setOldValue(ObjectUtils.toString(document.getSingleCriterion(
@@ -200,7 +241,7 @@ public class ProcessingServiceImpl implements ProcessingService {
       } else {
 
          LOGGER.warn("la métadonnée " + metadata.getKey()
-               + " ne peut être modifié");
+               + " ne peut être modifiée");
       }
 
       return trace;
