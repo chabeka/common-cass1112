@@ -7,12 +7,6 @@
         http://www.springframework.org/schema/context 
         http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-   <bean id="applicationProperties"
-      class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-      <property name="location"
-         value="classpath:config/sae-config-test.properties" />
-   </bean>
-
    <bean id="saeDocumentDaoImpl" factory-bean="daoMock"
       factory-method="createSaeDocumentDao" />
 
