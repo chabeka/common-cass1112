@@ -1,5 +1,7 @@
 package fr.urssaf.image.sae.regionalisation.support.impl;
 
+import java.io.Serializable;
+
 import net.docubase.toolkit.model.base.Base;
 import net.docubase.toolkit.model.base.BaseCategory;
 import net.docubase.toolkit.model.document.Document;
@@ -100,7 +102,20 @@ public class ServiceProviderSupportImpl implements ServiceProviderSupport {
       Base base = this.getBase();
 
       BaseCategory baseCategory = base.getBaseCategory(key);
-      document.addCriterion(baseCategory, value);
+
+      if (document.getSingleCriterion(key) == null) {
+
+         document.addCriterion(baseCategory, value);
+
+      } else {
+
+         document.getSingleCriterion(key).setWord((Serializable) value);
+
+         // la méthode document.updateCriterion(baseCategory,value) ne
+         // fonctionne pas sur la version 1.1.0
+         // document.updateCriterion(baseCategory, (Serializable) value);
+
+      }
 
    }
 

@@ -90,15 +90,14 @@ public class ProcessingServiceImpl implements ProcessingService {
          // nombre de documents traités
          int nbRecordDocumentTraites = 0;
 
-         List<SearchCriterion> searchCriterions;
-
-         int indexRecord = firstRecord;
+         int count = 0;
 
          do {
 
             // on récupère des blocs de recherches
-            searchCriterions = this.searchCriterionDao.getSearchCriteria(
-                  indexRecord, Math.min(SIZE_BLOCK, processingCount));
+            List<SearchCriterion> searchCriterions = this.searchCriterionDao
+                  .getSearchCriteria(firstRecord, Math.min(SIZE_BLOCK,
+                        processingCount - count));
 
             LOGGER.debug("nombre de critères de recherche à traiter: {}",
                   searchCriterions.size());
@@ -128,21 +127,21 @@ public class ProcessingServiceImpl implements ProcessingService {
                // si le flag est positionné à MISE_A_JOUR
                if (updateDatas) {
 
-                  nbRecordDocumentTraites += update(searchCriterion, documents,
-                        metadatas);
+                  update(searchCriterion, documents, metadatas);
 
                } else {
                   LOGGER.debug("nombre de documents à mettre à jour: {}",
                         documents.size());
-                  // en prévision du nombre de documents à traiter
-                  nbRecordDocumentTraites += documents.size();
+
                }
+
+               nbRecordDocumentTraites += documents.size();
 
             }
 
-            indexRecord += SIZE_BLOCK;
+            count += SIZE_BLOCK;
 
-         } while (!searchCriterions.isEmpty());
+         } while (count < processingCount);
 
          LOGGER.info("nombre de recherche sans documents associés: {}",
                nbRecordSansDocument);
@@ -157,7 +156,7 @@ public class ProcessingServiceImpl implements ProcessingService {
 
    }
 
-   private int update(SearchCriterion searchCriterion,
+   private void update(SearchCriterion searchCriterion,
          List<Document> documents, Map<String, Object> metadatas) {
 
       // on trace le nombre de documents pour un critère de
@@ -166,7 +165,7 @@ public class ProcessingServiceImpl implements ProcessingService {
 
       LOGGER.debug("nombre de documents à mettre à jour: {}", documents.size());
 
-      int nbRecordDocumentTraites = 0;
+      // int nbRecordDocumentTraites = 0;
 
       for (Document document : documents) {
 
@@ -203,7 +202,7 @@ public class ProcessingServiceImpl implements ProcessingService {
          }
 
          // on incrémente de 1 le nombre de documents traités
-         nbRecordDocumentTraites++;
+         // nbRecordDocumentTraites++;
 
       }
 
@@ -214,11 +213,10 @@ public class ProcessingServiceImpl implements ProcessingService {
             "critère de recherche {} avec la requête lucène: {} a été traitée",
             searchCriterion.getId(), searchCriterion.getLucene());
 
-      return nbRecordDocumentTraites;
+      // return nbRecordDocumentTraites;
    }
 
-   protected final Trace update(Document document,
-         Entry<String, Object> metadata) {
+   private Trace update(Document document, Entry<String, Object> metadata) {
 
       Trace trace = null;
 

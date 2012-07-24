@@ -139,14 +139,22 @@ public class SaeDocumentDaoTest {
 
    }
 
+   private static final String METADATA = "nne";
+
+   @Autowired
+   private ServiceProviderSupport support;
+
    @Test
    public void update() {
 
       Document document = serviceProvider.getSearchService().getDocumentByUUID(
             base, uuids.get(0));
 
+      // mise à jour du titre
       document.setTitle("new title");
 
+      // mise à jour d'une métadonnée
+      support.updateCriterion(document, METADATA, "new value");
       dao.update(document);
 
       document = serviceProvider.getSearchService().getDocumentByUUID(base,
@@ -154,6 +162,19 @@ public class SaeDocumentDaoTest {
 
       Assert.assertEquals("le titre du document est inattendu", "new title",
             document.getTitle());
+
+      Assert.assertEquals("la métadonnée 'nne' du document est inattendue",
+            "new value", document.getSingleCriterion(METADATA).getWord());
+
+      // nouvelle mise à jour de la métadonnée
+      support.updateCriterion(document, METADATA, "second value");
+      dao.update(document);
+
+      document = serviceProvider.getSearchService().getDocumentByUUID(base,
+            uuids.get(0));
+
+      Assert.assertEquals("la métadonnée 'nne' du document est inattendue",
+            "second value", document.getSingleCriterion(METADATA).getWord());
 
    }
 

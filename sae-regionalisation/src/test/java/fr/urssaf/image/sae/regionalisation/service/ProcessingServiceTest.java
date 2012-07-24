@@ -173,8 +173,7 @@ public class ProcessingServiceTest {
 
       EasyMock.expect(
             searchCriterionDao.getSearchCriteria(EasyMock.anyInt(), EasyMock
-                  .anyInt())).andReturn(searchCriterions).andReturn(
-            new ArrayList<SearchCriterion>());
+                  .anyInt())).andReturn(searchCriterions);
 
       // récupération des métadonnées
 

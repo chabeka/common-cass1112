@@ -90,4 +90,27 @@ public class ServiceProviderSupportTest {
       }
 
    }
+
+   private static final String METADATA = "nne";
+
+   @Test
+   public void updateCriterion_updateMetadonnee() {
+
+      Document document = ToolkitFactory.getInstance().createDocumentTag(
+            support.getBase());
+
+      support.updateCriterion(document, METADATA, "first value");
+
+      Assert.assertEquals("la métadonnée '" + METADATA
+            + "' du document est inattendu", "first value", document
+            .getSingleCriterion(METADATA).getWord());
+
+      support.updateCriterion(document, METADATA, "second value");
+
+      Assert.assertEquals("la métadonnée '" + METADATA
+            + "' du document est inattendu", "second value", document
+            .getSingleCriterion(METADATA).getWord());
+
+   }
+
 }
