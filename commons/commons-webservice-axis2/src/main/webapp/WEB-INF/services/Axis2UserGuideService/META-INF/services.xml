@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This file was auto-generated from WSDL -->
+<!-- by the Apache Axis2 version: 1.6.1  Built on : Aug 31, 2011 (12:22:40 CEST) -->
+<serviceGroup>
+   <service name="Axis2UserGuideService_SpringInit"
+      class="fr.urssaf.image.commons.webservice.axis2.component.Axis2SpringContext">
+      <description>This web service initializes Spring.</description>
+      <parameter name="ServiceClass">fr.urssaf.image.commons.webservice.axis2.component.Axis2SpringContext
+      </parameter>
+      <parameter name="ServiceTCCL">composite</parameter>
+      <parameter name="load-on-startup">true</parameter>
+      <operation name="springInit">
+         <messageReceiver
+            class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver" />
+      </operation>
+    </service>
+    <service name="Axis2UserGuideService">
+        <messageReceivers>
+            <messageReceiver mep="http://www.w3.org/ns/wsdl/in-out" class="fr.urssaf.image.commons.webservice.axis2.skeleton.Axis2UserGuideServiceMessageReceiverInOut"/>
+            <messageReceiver mep="http://www.w3.org/ns/wsdl/in-only" class="fr.urssaf.image.commons.webservice.axis2.skeleton.Axis2UserGuideServiceMessageReceiverInOnly"/>
+        </messageReceivers>
+        <parameter name="ServiceClass">fr.urssaf.image.commons.webservice.axis2.skeleton.Axis2UserGuideServiceSkeleton</parameter>
+        <parameter name="useOriginalwsdl">true</parameter>
+        <parameter name="modifyUserWSDLPortAddress">true</parameter>
+        <operation name="DoInOnly" mep="http://www.w3.org/ns/wsdl/in-only" namespace="http://apache.org/axis2/Axis2UserGuide">
+            <actionMapping>DoInOnly</actionMapping>
+        </operation>
+        <operation name="TwoWayOneParameterEcho" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://apache.org/axis2/Axis2UserGuide">
+            <actionMapping>TwoWayOneParameterEcho</actionMapping>
+            <outputActionMapping>http://apache.org/axis2/Axis2UserGuide/Axis2UserGuidePortType/TwoWayOneParameterEchoResponseMessage</outputActionMapping>
+        </operation>
+        <operation name="NoParameters" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://apache.org/axis2/Axis2UserGuide">
+            <actionMapping>NoParameters</actionMapping>
+            <outputActionMapping>http://apache.org/axis2/Axis2UserGuide/Axis2UserGuidePortType/NoParametersResponseMessage</outputActionMapping>
+        </operation>
+        <operation name="MultipleParametersAddItem" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://apache.org/axis2/Axis2UserGuide">
+            <actionMapping>MultipleParametersAddItem</actionMapping>
+            <outputActionMapping>http://apache.org/axis2/Axis2UserGuide/Axis2UserGuidePortType/MultipleParametersAddItemResponseMessage</outputActionMapping>
+        </operation>
+    </service>
+</serviceGroup>
