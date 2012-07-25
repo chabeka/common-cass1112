@@ -49,11 +49,15 @@ public class TraceDaoTest {
    @Transactional
    public void addTraceRec() {
 
+      int oldRec = dao.findNbreDocs(BigDecimal.valueOf(2));
+
+      Assert.assertNotSame("le nombre de traces est inattendu", 10, oldRec);
+
       dao.addTraceRec(BigDecimal.valueOf(2), 10);
 
-      int rec = dao.findNbreDocs(BigDecimal.valueOf(2));
+      int newRec = dao.findNbreDocs(BigDecimal.valueOf(2));
 
-      Assert.assertEquals("les traces sont différentes", 10, rec);
+      Assert.assertEquals("le nombre de traces est inattendu", 10, newRec);
 
    }
 

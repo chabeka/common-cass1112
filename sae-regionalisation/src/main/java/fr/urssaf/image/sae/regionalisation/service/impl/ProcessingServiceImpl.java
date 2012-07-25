@@ -135,6 +135,7 @@ public class ProcessingServiceImpl implements ProcessingService {
 
                }
 
+               // on incrémente de 1 le nombre de documents traités
                nbRecordDocumentTraites += documents.size();
 
             }
@@ -201,9 +202,6 @@ public class ProcessingServiceImpl implements ProcessingService {
             this.traceDao.addTraceMaj(trace);
          }
 
-         // on incrémente de 1 le nombre de documents traités
-         // nbRecordDocumentTraites++;
-
       }
 
       // mise à jour flag traite du critères de recherche
@@ -213,7 +211,6 @@ public class ProcessingServiceImpl implements ProcessingService {
             "critère de recherche {} avec la requête lucène: {} a été traitée",
             searchCriterion.getId(), searchCriterion.getLucene());
 
-      // return nbRecordDocumentTraites;
    }
 
    private Trace update(Document document, Entry<String, Object> metadata) {

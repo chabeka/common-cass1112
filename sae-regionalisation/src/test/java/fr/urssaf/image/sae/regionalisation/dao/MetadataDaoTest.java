@@ -48,7 +48,7 @@ public class MetadataDaoTest {
    @Test
    public void getMetadatas_total() {
 
-      Map<String, Object> values = dao.getMetadatas(BigDecimal.valueOf(3));
+      Map<String, Object> values = dao.getMetadatas(BigDecimal.valueOf(2));
 
       Assert.assertEquals("le nombre de resultats de la requête est inattendu",
             19, values.size());
@@ -78,7 +78,7 @@ public class MetadataDaoTest {
    @Test
    public void getMetadatas_aucun() {
 
-      Map<String, Object> values = dao.getMetadatas(BigDecimal.ONE);
+      Map<String, Object> values = dao.getMetadatas(BigDecimal.valueOf(6));
 
       Assert.assertEquals("le nombre de resultats de la requête est inattendu",
             0, values.size());

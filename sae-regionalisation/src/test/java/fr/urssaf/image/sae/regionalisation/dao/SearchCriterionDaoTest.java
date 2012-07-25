@@ -39,13 +39,16 @@ public class SearchCriterionDaoTest {
    @Test
    public void getSearchCriteria_partiel() {
 
-      List<SearchCriterion> searchCriterions = dao.getSearchCriteria(1, 2);
+      List<SearchCriterion> searchCriterions = dao.getSearchCriteria(1, 5);
 
       Assert.assertEquals("le nombre de resultats de la requête est inattendu",
-            2, searchCriterions.size());
+            5, searchCriterions.size());
 
       assertSearchCriterion(searchCriterions.get(0), 2, "lucene2", false);
-      assertSearchCriterion(searchCriterions.get(1), 3, "lucene3", false);
+      assertSearchCriterion(searchCriterions.get(1), 4, "lucene4", false);
+      assertSearchCriterion(searchCriterions.get(2), 5, "lucene5", false);
+      assertSearchCriterion(searchCriterions.get(3), 6, "lucene6", false);
+      assertSearchCriterion(searchCriterions.get(4), 8, "lucene8", false);
 
    }
 
