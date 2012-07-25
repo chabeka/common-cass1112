@@ -10,6 +10,7 @@
    
    <!-- Configuration ANAIS -->
    <import resource="applicationContext-anais.xml"/>
+   <import resource="applicationContext-sae-vi.xml"/>
 
    
    <bean id="appliSaeConfig"
