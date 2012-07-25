@@ -52,6 +52,7 @@
       <module>../commons-spring-batch-exemple</module>
       <module>../commons-logback-exemple</module>
       <module>../commons-cassandra-exemple</module>
+      <module>../commons-webservice-axis2</module>
    </modules>
 
    <build>
