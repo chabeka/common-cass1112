@@ -8,7 +8,6 @@ import java.rmi.RemoteException;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.context.ConfigurationContextFactory;
-import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,9 +23,6 @@ public class Axis2UserGuideServiceTest {
    public final static String HTTP = "http://localhost:8080/commons-webservice-axis2/services/Axis2UserGuideService/";
 
    private Axis2UserGuideServiceStub service;
-
-   private static final Logger LOG = Logger
-         .getLogger(Axis2UserGuideServiceTest.class);
 
    private static final String META_INF_PATH = "src/main/resources/META-INF";
 
@@ -65,7 +61,6 @@ public class Axis2UserGuideServiceTest {
       TwoWayOneParameterEchoResponse response = service
             .twoWayOneParameterEcho(request);
 
-      LOG.debug(response.getEchoString());
       assertEquals(echo, response.getEchoString());
    }
 
@@ -92,9 +87,6 @@ public class Axis2UserGuideServiceTest {
 
       MultipleParametersAddItemResponse response = service
             .multipleParametersAddItem(request);
-
-      LOG.debug(response.getItemId());
-      LOG.debug(response.getSuccessfulAdd());
 
       assertEquals(itemId, response.getItemId());
       assertEquals(true, response.getSuccessfulAdd());
