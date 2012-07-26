@@ -53,6 +53,7 @@
       <module>../commons-logback-exemple</module>
       <module>../commons-cassandra-exemple</module>
       <module>../commons-webservice-axis2</module>
+      <module>../commons-webservice-axis2-client</module>
    </modules>
 
    <build>
