@@ -444,6 +444,8 @@
                      class="org.apache.axis2.jaxws.dispatchers.GenericProviderDispatcher"/>
             <handler name="MustUnderstandValidationDispatcher"
                      class="org.apache.axis2.jaxws.dispatchers.MustUnderstandValidationDispatcher"/>
+            <handler name="LogRequestHandler"
+                     class="fr.urssaf.image.commons.webservice.axis2.handler.LogRequestHandler" />
         </phase>
         <phase name="RMPhase"/>
         <!--  System predefined phases       -->

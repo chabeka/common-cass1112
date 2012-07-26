@@ -14,7 +14,7 @@
 
    <properties>
       <axis2.version>1.6.1</axis2.version>
-      <axiom.version>1.2.9</axiom.version>
+      <axiom.version>1.2.13</axiom.version>
       <org.springframework.version>3.0.5.RELEASE</org.springframework.version>
    </properties>
 
@@ -65,15 +65,16 @@
                   <configuration>
                      <basedir>src/main/java</basedir>
                      <includes>
-                         <include>**/apache/axis2/axis2userguide/*.java</include>
+                        <include>**/apache/axis2/axis2userguide/*.java</include>
                      </includes>
                      <replacements>
-                        
+
                         <replacement>
-                           <token>[ ]*@SuppressWarnings\(\{"unchecked","unused"\}\)</token>
+                           <token>[
+                              ]*@SuppressWarnings\(\{"unchecked","unused"\}\)</token>
                            <valueFile>src/main/config/add_suppress_warnings.txt</valueFile>
                         </replacement>
-                     
+
                      </replacements>
                   </configuration>
                </plugin>
@@ -95,7 +96,7 @@
          <artifactId>axis2</artifactId>
          <version>${axis2.version}</version>
       </dependency>
-      
+
       <dependency>
          <groupId>org.apache.axis2</groupId>
          <artifactId>axis2-transport-local</artifactId>
@@ -147,6 +148,20 @@
          </exclusions>
       </dependency>
 
+      <!--  AXIOM  -->
+
+      <dependency>
+         <groupId>org.apache.ws.commons.axiom</groupId>
+         <artifactId>axiom-api</artifactId>
+         <version>${axiom.version}</version>
+      </dependency>
+
+      <dependency>
+         <groupId>org.apache.ws.commons.axiom</groupId>
+         <artifactId>axiom-impl</artifactId>
+         <version>${axiom.version}</version>
+      </dependency>
+
       <!-- SPRING -->
 
       <dependency>
@@ -155,11 +170,12 @@
          <version>${org.springframework.version}</version>
       </dependency>
 
+      <!-- COMMONS APACHE -->
+
       <dependency>
-         <groupId>org.springframework</groupId>
-         <artifactId>spring-test</artifactId>
-         <version>${org.springframework.version}</version>
-         <scope>test</scope>
+         <groupId>commons-io</groupId>
+         <artifactId>commons-io</artifactId>
+         <version>2.4</version>
       </dependency>
 
    </dependencies>
