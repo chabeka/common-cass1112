@@ -2,17 +2,15 @@
 <!-- This file was auto-generated from WSDL -->
 <!-- by the Apache Axis2 version: 1.6.1  Built on : Aug 31, 2011 (12:22:40 CEST) -->
 <serviceGroup>
-   <service name="Axis2UserGuideService_SpringInit"
-      class="fr.urssaf.image.commons.webservice.axis2.component.Axis2SpringContext">
-      <description>This web service initializes Spring.</description>
-      <parameter name="ServiceClass">fr.urssaf.image.commons.webservice.axis2.component.Axis2SpringContext
+    <service name="Axis2UserGuideService_SpringInit" class="fr.urssaf.image.commons.webservice.axis2.component.Axis2SpringContext">
+        <description>This web service initializes Spring.</description>
+        <parameter name="ServiceClass">fr.urssaf.image.commons.webservice.axis2.component.Axis2SpringContext
       </parameter>
-      <parameter name="ServiceTCCL">composite</parameter>
-      <parameter name="load-on-startup">true</parameter>
-      <operation name="springInit">
-         <messageReceiver
-            class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver" />
-      </operation>
+        <parameter name="ServiceTCCL">composite</parameter>
+        <parameter name="load-on-startup">true</parameter>
+        <operation name="springInit">
+            <messageReceiver class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver"/>
+        </operation>
     </service>
     <service name="Axis2UserGuideService">
         <messageReceivers>
