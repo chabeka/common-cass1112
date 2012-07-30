@@ -7,10 +7,18 @@
         http://www.springframework.org/schema/jdbc
         http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd">
 
+   <import resource="applicationContext-sae-regionalisation-datasource.xml" />
 
    <jdbc:embedded-database id="dataSource" type="H2">
       <jdbc:script location="classpath:database/test-schema.sql" />
       <jdbc:script location="classpath:database/test-data.sql" />
    </jdbc:embedded-database>
-
+    
+   <!--
+   <bean id="applicationProperties"
+      class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+      <property name="location" value="database/test-postgresql.properties" />
+   </bean>
+   -->
+  
 </beans>

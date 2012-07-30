@@ -51,7 +51,6 @@ public class SearchCriterionDaoImpl implements SearchCriterionDao {
       sql.append("order by id asc ");
       sql.append("limit ? ");
       sql.append("offset ? ");
-      
 
       RowMapper<SearchCriterion> mapper = new RowMapper<SearchCriterion>() {
          public SearchCriterion mapRow(ResultSet resultSet, int rowNum)
@@ -67,7 +66,7 @@ public class SearchCriterionDaoImpl implements SearchCriterionDao {
       };
 
       List<SearchCriterion> results = jdbcTemplate.query(sql.toString(),
-            new Object[] {false, recordCount, firstRecord }, mapper);
+            new Object[] { false, recordCount, firstRecord }, mapper);
 
       return results;
    }
@@ -118,6 +117,25 @@ public class SearchCriterionDaoImpl implements SearchCriterionDao {
             new Object[] { identifiant }, mapper);
 
       return result;
+
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final void save(SearchCriterion searchCriterion) {
+
+      StrBuilder sql = new StrBuilder();
+      sql.append("insert into criteres ");
+      sql.append("(lucene,traite) ");
+      sql.append("values (?, ?) ");
+
+      this.jdbcTemplate.update(sql.toString(), new Object[] {
+            searchCriterion.getLucene(), searchCriterion.isUpdated() });
+
+      int idcritere = this.jdbcTemplate.queryForInt("select lastval()");
+      searchCriterion.setId(new BigDecimal(idcritere));
 
    }
 }

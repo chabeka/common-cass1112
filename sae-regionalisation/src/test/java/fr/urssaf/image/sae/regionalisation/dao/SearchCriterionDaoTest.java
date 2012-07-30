@@ -85,4 +85,21 @@ public class SearchCriterionDaoTest {
 
    }
 
+   @Test
+   @Transactional
+   public void save() {
+
+      SearchCriterion searchCriterion = new SearchCriterion();
+      searchCriterion.setLucene("new lucene");
+      searchCriterion.setUpdated(true);
+
+      dao.save(searchCriterion);
+
+      SearchCriterion newCriterion = dao.find(searchCriterion.getId());
+
+      assertSearchCriterion(newCriterion, searchCriterion.getId().intValue(),
+            searchCriterion.getLucene(), searchCriterion.isUpdated());
+
+   }
+
 }

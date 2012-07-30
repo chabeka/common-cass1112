@@ -39,4 +39,12 @@ public interface SearchCriterionDao {
     * @return critère de recherche
     */
    SearchCriterion find(BigDecimal identifiant);
+
+   /**
+    * Persistance d'un critère de recherche
+    * 
+    * @param searchCriterion
+    *           critère de recherche à créer
+    */
+   void save(SearchCriterion searchCriterion);
 }

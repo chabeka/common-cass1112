@@ -1,7 +1,10 @@
 package fr.urssaf.image.sae.regionalisation.dao;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
+
+import fr.urssaf.image.sae.regionalisation.bean.Metadata;
 
 /**
  * Service contenant les opérations concernant les métadonnées à modifier
@@ -36,4 +39,24 @@ public interface MetadataDao {
     * @return liste des métadonnées
     */
    Map<String, Object> find(BigDecimal identifiant);
+
+   /**
+    * Persistance des métadonnées associées à un critère de recherche
+    * 
+    * @param idCritere
+    *           critère de recherche
+    * @param metadatas
+    *           liste des métadonnées associées
+    */
+   void save(BigDecimal idCritere, List<Metadata> metadatas);
+
+   /**
+    * Renvoie la liste de toutes les métadonnées associées à un critère de
+    * recherche
+    * 
+    * @param identifiant
+    *           critere de recherche
+    * @return liste de toutes les métadonnées associées au critère de recherche
+    */
+   List<Metadata> getAllMetadatas(BigDecimal identifiant);
 }
