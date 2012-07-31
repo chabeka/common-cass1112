@@ -4,7 +4,7 @@
 
 -- Dumped from database version 9.0.4
 -- Dumped by pg_dump version 9.0.4
--- Started on 2012-07-19 16:27:39
+-- Started on 2012-07-30 15:58:12
 
 SET statement_timeout = 0;
 SET client_encoding = 'SQL_ASCII';
@@ -50,7 +50,7 @@ SET default_with_oids = false;
 
 --
 -- TOC entry 1512 (class 1259 OID 36518)
--- Dependencies: 5
+-- Dependencies: 6
 -- Name: criteres; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -101,7 +101,7 @@ COMMENT ON COLUMN criteres.traite IS 'indicateur permettant de déterminer si l'
 
 --
 -- TOC entry 1511 (class 1259 OID 36516)
--- Dependencies: 5 1512
+-- Dependencies: 6 1512
 -- Name: CRITERES_ID_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -126,7 +126,7 @@ ALTER SEQUENCE "CRITERES_ID_seq" OWNED BY criteres.id;
 
 --
 -- TOC entry 1514 (class 1259 OID 36530)
--- Dependencies: 5
+-- Dependencies: 6
 -- Name: metadonnees; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -547,7 +547,7 @@ COMMENT ON COLUMN metadonnees.nbp_flag IS 'indicateur permettant de déterminer 
 
 --
 -- TOC entry 1513 (class 1259 OID 36528)
--- Dependencies: 1514 5
+-- Dependencies: 6 1514
 -- Name: METADONNEES_ID_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -572,7 +572,7 @@ ALTER SEQUENCE "METADONNEES_ID_seq" OWNED BY metadonnees.id;
 
 --
 -- TOC entry 1516 (class 1259 OID 36556)
--- Dependencies: 5
+-- Dependencies: 6
 -- Name: trace_maj; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -653,7 +653,7 @@ COMMENT ON COLUMN trace_maj.nouvelle_valeur IS 'nouvelle valeur de la métadonn�
 
 --
 -- TOC entry 1515 (class 1259 OID 36554)
--- Dependencies: 5 1516
+-- Dependencies: 6 1516
 -- Name: TRACE_MAJ_ID_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -678,14 +678,15 @@ ALTER SEQUENCE "TRACE_MAJ_ID_seq" OWNED BY trace_maj.id;
 
 --
 -- TOC entry 1518 (class 1259 OID 36569)
--- Dependencies: 1800 5
+-- Dependencies: 1799 6
 -- Name: trace_rec; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE trace_rec (
     id integer NOT NULL,
     id_critere integer NOT NULL,
-    nbre_doc integer DEFAULT 0 NOT NULL
+    nbre_doc integer DEFAULT 0 NOT NULL,
+    maj boolean NOT NULL
 );
 
 
@@ -729,7 +730,7 @@ COMMENT ON COLUMN trace_rec.nbre_doc IS 'nombre de documents associés à la rec
 
 --
 -- TOC entry 1517 (class 1259 OID 36567)
--- Dependencies: 5 1518
+-- Dependencies: 6 1518
 -- Name: TRACE_REC_ID_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -753,7 +754,7 @@ ALTER SEQUENCE "TRACE_REC_ID_seq" OWNED BY trace_rec.id;
 
 
 --
--- TOC entry 1796 (class 2604 OID 36521)
+-- TOC entry 1796 (class 2604 OID 36588)
 -- Dependencies: 1512 1511 1512
 -- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
 --
@@ -762,8 +763,8 @@ ALTER TABLE criteres ALTER COLUMN id SET DEFAULT nextval('"CRITERES_ID_seq"'::re
 
 
 --
--- TOC entry 1797 (class 2604 OID 36533)
--- Dependencies: 1514 1513 1514
+-- TOC entry 1797 (class 2604 OID 36589)
+-- Dependencies: 1513 1514 1514
 -- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -771,8 +772,8 @@ ALTER TABLE metadonnees ALTER COLUMN id SET DEFAULT nextval('"METADONNEES_ID_seq
 
 
 --
--- TOC entry 1798 (class 2604 OID 36559)
--- Dependencies: 1516 1515 1516
+-- TOC entry 1798 (class 2604 OID 36590)
+-- Dependencies: 1515 1516 1516
 -- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -780,8 +781,8 @@ ALTER TABLE trace_maj ALTER COLUMN id SET DEFAULT nextval('"TRACE_MAJ_ID_seq"'::
 
 
 --
--- TOC entry 1799 (class 2604 OID 36572)
--- Dependencies: 1518 1517 1518
+-- TOC entry 1800 (class 2604 OID 36591)
+-- Dependencies: 1517 1518 1518
 -- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -840,7 +841,7 @@ ALTER TABLE ONLY metadonnees
 
 --
 -- TOC entry 1811 (class 2606 OID 36541)
--- Dependencies: 1512 1514 1801
+-- Dependencies: 1514 1512 1801
 -- Name: METADONNEES_ID_CRITERE_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -860,7 +861,7 @@ ALTER TABLE ONLY trace_maj
 
 --
 -- TOC entry 1813 (class 2606 OID 36576)
--- Dependencies: 1801 1512 1518
+-- Dependencies: 1801 1518 1512
 -- Name: TRACE_REC_ID_CRITERE_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -870,7 +871,7 @@ ALTER TABLE ONLY trace_rec
 
 --
 -- TOC entry 1818 (class 0 OID 0)
--- Dependencies: 5
+-- Dependencies: 6
 -- Name: public; Type: ACL; Schema: -; Owner: postgres
 --
 
@@ -880,7 +881,7 @@ GRANT ALL ON SCHEMA public TO postgres;
 GRANT ALL ON SCHEMA public TO PUBLIC;
 
 
--- Completed on 2012-07-19 16:27:42
+-- Completed on 2012-07-30 15:58:13
 
 --
 -- PostgreSQL database dump complete

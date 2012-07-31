@@ -130,6 +130,12 @@ public class ProcessingServiceImpl implements ProcessingService {
                   update(searchCriterion, documents, metadatas);
 
                } else {
+
+                  // on trace le nombre de documents pour un critère de
+                  // recherche pour le mode TIR_A_BLANC
+                  this.traceDao.addTraceRec(searchCriterion.getId(), documents
+                        .size(), false);
+
                   LOGGER.debug("nombre de documents à mettre à jour: {}",
                         documents.size());
 
@@ -161,8 +167,9 @@ public class ProcessingServiceImpl implements ProcessingService {
          List<Document> documents, Map<String, Object> metadatas) {
 
       // on trace le nombre de documents pour un critère de
-      // recherche
-      this.traceDao.addTraceRec(searchCriterion.getId(), documents.size());
+      // recherche pour le mode MISE_A_JOUR
+      this.traceDao
+            .addTraceRec(searchCriterion.getId(), documents.size(), true);
 
       LOGGER.debug("nombre de documents à mettre à jour: {}", documents.size());
 

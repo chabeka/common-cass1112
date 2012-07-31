@@ -53,7 +53,7 @@ public class TraceDaoTest {
 
       Assert.assertNotSame("le nombre de traces est inattendu", 10, oldRec);
 
-      dao.addTraceRec(BigDecimal.valueOf(2), 10);
+      dao.addTraceRec(BigDecimal.valueOf(2), 10, true);
 
       int newRec = dao.findNbreDocs(BigDecimal.valueOf(2));
 

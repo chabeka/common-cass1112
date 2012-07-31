@@ -62,15 +62,16 @@ public class TraceDaoImpl implements TraceDao {
     * {@inheritDoc}
     */
    @Override
-   public final void addTraceRec(BigDecimal idCriterion, int documentCount) {
+   public final void addTraceRec(BigDecimal idCriterion, int documentCount,
+         boolean maj) {
 
       StrBuilder sql = new StrBuilder();
       sql.append("insert into trace_rec ");
-      sql.append("(id_critere, nbre_doc) ");
-      sql.append("values (?, ?) ");
+      sql.append("(id_critere, nbre_doc, maj) ");
+      sql.append("values (?, ?, ?) ");
 
       this.jdbcTemplate.update(sql.toString(), new Object[] { idCriterion,
-            documentCount });
+            documentCount, maj });
 
    }
 
@@ -85,7 +86,7 @@ public class TraceDaoImpl implements TraceDao {
       sql.append("from trace_rec ");
       sql.append("where id =  ");
       sql
-            .append("select max(trace.id) from trace_rec trace where id_critere= ?  ");
+            .append("(select max (trace.id) from trace_rec trace where id_critere= ?  )");
 
       int result = jdbcTemplate.queryForInt(sql.toString(),
             new Object[] { idCriterion });

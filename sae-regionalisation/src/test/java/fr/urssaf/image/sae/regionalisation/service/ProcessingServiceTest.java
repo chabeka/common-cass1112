@@ -68,7 +68,7 @@ public class ProcessingServiceTest {
       // trace dans trace rec
 
       traceDao.addTraceRec(EasyMock.anyObject(BigDecimal.class), EasyMock
-            .anyInt());
+            .anyInt(), EasyMock.eq(true));
 
       EasyMock.expectLastCall().times(3);
 
@@ -122,6 +122,11 @@ public class ProcessingServiceTest {
 
       // trace dans trace rec
 
+      traceDao.addTraceRec(EasyMock.anyObject(BigDecimal.class), EasyMock
+            .anyInt(), EasyMock.eq(false));
+
+      EasyMock.expectLastCall().times(3);
+
       // aucune trace
 
       // persistance des modifications
@@ -172,8 +177,9 @@ public class ProcessingServiceTest {
       searchCriterions.add(createSearchCriterion());
 
       EasyMock.expect(
-            searchCriterionDao.getSearchCriteria(EasyMock.anyInt(), EasyMock
-                  .anyInt())).andReturn(searchCriterions);
+            searchCriterionDao
+                  .getSearchCriteria(EasyMock.eq(0), EasyMock.eq(3)))
+            .andReturn(searchCriterions);
 
       // récupération des métadonnées
 

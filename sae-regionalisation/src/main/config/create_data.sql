@@ -43,7 +43,8 @@ INSERT INTO trace_maj (id, id_critere, id_document, nom_metadata, ancienne_valeu
 -- Data for Name: trace_rec; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO trace_rec (id, id_critere, nbre_doc) VALUES (0, 0, 2);
-INSERT INTO trace_rec (id, id_critere, nbre_doc) VALUES (1, 1, 15);
-INSERT INTO trace_rec (id, id_critere, nbre_doc) VALUES (2, 2, 3);
-INSERT INTO trace_rec (id, id_critere, nbre_doc) VALUES (3, 6, 8);
+INSERT INTO trace_rec (id, id_critere, nbre_doc, maj) VALUES (0, 0, 2, false);
+INSERT INTO trace_rec (id, id_critere, nbre_doc, maj) VALUES (1, 1, 15, true);
+INSERT INTO trace_rec (id, id_critere, nbre_doc, maj) VALUES (2, 2, 3, false);
+INSERT INTO trace_rec (id, id_critere, nbre_doc, maj) VALUES (3, 6, 8, true);
+

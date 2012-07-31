@@ -60,5 +60,6 @@ CREATE TABLE trace_maj (
 CREATE TABLE trace_rec (
     id serial NOT NULL,
     id_critere integer NOT NULL,
-    nbre_doc integer DEFAULT 0 NOT NULL
+    nbre_doc integer DEFAULT 0 NOT NULL,
+    maj boolean NOT NULL
 );

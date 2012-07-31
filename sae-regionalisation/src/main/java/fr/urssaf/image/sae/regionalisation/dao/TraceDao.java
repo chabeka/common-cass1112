@@ -28,8 +28,11 @@ public interface TraceDao {
     *           identifiant du critère de recherche
     * @param documentCount
     *           nombre de documents associés au critère de recherche
+    * @param maj
+    *           <code>true</code> si le mode est MISE_A_JOUR, <code>false</code>
+    *           si le mode est TIR_A_BLANC
     */
-   void addTraceRec(BigDecimal idCriterion, int documentCount);
+   void addTraceRec(BigDecimal idCriterion, int documentCount, boolean maj);
 
    /**
     * Renvoie la liste des traces de mise àn jour pour un critère de recherche
