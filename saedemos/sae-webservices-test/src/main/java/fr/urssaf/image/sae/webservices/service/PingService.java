@@ -4,6 +4,7 @@ import java.rmi.RemoteException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -55,6 +56,7 @@ public class PingService {
     * @throws RemoteException
     *            levée par le service web
     */
+   @PreAuthorize("hasRole('consultation')")
    public final PingSecureResponse pingSecure() throws RemoteException {
 
       PingSecureRequest request = new PingSecureRequest();

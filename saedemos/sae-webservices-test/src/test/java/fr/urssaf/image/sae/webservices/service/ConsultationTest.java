@@ -83,7 +83,7 @@ public class ConsultationTest {
    @Ignore
    public final void consultation_success_ListMetaNull() throws RemoteException {
 
-      AuthenticateUtils.authenticate("ROLE_TOUS");
+      AuthenticateUtils.authenticate("ACCES_FULL_PAGM");
 
       ConsultationResponseType responseType = consultationService
             .consultation(UUID_EXISTANT);

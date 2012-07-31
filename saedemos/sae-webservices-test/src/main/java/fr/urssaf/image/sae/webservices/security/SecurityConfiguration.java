@@ -9,7 +9,6 @@ import org.apache.axis2.engine.Phase;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import fr.urssaf.image.sae.vi.service.WebServiceVICreateService;
 import fr.urssaf.image.sae.webservices.modele.SaeServiceStub;
