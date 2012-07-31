@@ -1,11 +1,19 @@
 package fr.urssaf.image.sae.regionalisation;
 
+import java.io.IOException;
+
+import javax.security.auth.callback.CallbackHandler;
+import javax.security.auth.callback.PasswordCallback;
+
 import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import fr.urssaf.image.sae.regionalisation.mock.ServiceMock;
+import fr.urssaf.image.sae.regionalisation.security.AuthenticateSupport;
+import fr.urssaf.image.sae.regionalisation.security.RegionalisationCallbackHandler;
+import fr.urssaf.image.sae.regionalisation.security.RegionalisationLoginModule;
 import fr.urssaf.image.sae.regionalisation.service.ProcessingService;
 
 @SuppressWarnings("PMD.MethodNamingConventions")
@@ -22,8 +30,23 @@ public class BootStrapTest {
    @Before
    public void before() {
 
+      CallbackHandler callbackHandler = new RegionalisationCallbackHandler() {
+
+         protected String loadPassword(PasswordCallback passwordCallback)
+               throws IOException {
+
+            return "toto";
+
+         }
+
+      };
+
+      AuthenticateSupport authenticateSupport = new AuthenticateSupport(
+            callbackHandler, RegionalisationLoginModule.class);
+
       bootStrap = new BootStrap(
-            "/applicationContext-sae-regionalisation-test.xml");
+            "/applicationContext-sae-regionalisation-test.xml",
+            authenticateSupport);
 
       processingService = ServiceMock.createProcessingService();
    }

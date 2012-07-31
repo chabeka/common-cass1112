@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 import fr.urssaf.image.sae.regionalisation.factory.SAEApplicationContextFactory;
+import fr.urssaf.image.sae.regionalisation.security.AuthenticateSupport;
 import fr.urssaf.image.sae.regionalisation.service.ProcessingService;
 import fr.urssaf.image.sae.regionalisation.util.ValidateUtils;
 
@@ -27,9 +28,13 @@ public class BootStrap {
 
    private final String configLocation;
 
-   protected BootStrap(String configLocation) {
+   private final AuthenticateSupport authenticationSupport;
+
+   protected BootStrap(String configLocation,
+         AuthenticateSupport authenticationSupport) {
 
       this.configLocation = configLocation;
+      this.authenticationSupport = authenticationSupport;
 
    }
 
@@ -124,11 +129,24 @@ public class BootStrap {
 
       try {
 
+         authenticationSupport.authenticate();
+
+      } catch (Exception e) {
+
+         LOGGER.error(e.getMessage());
+
+         return;
+      }
+
+      try {
+
          this.validate(args);
 
       } catch (IllegalArgumentException e) {
 
          LOGGER.warn(e.getMessage());
+
+         return;
       }
 
       // instanciation du contexte de SPRING
@@ -159,7 +177,8 @@ public class BootStrap {
    public static void main(String[] args) {
 
       BootStrap booStrap = new BootStrap(
-            "/applicationContext-sae-regionalisation.xml");
+            "/applicationContext-sae-regionalisation.xml",
+            new AuthenticateSupport());
 
       try {
 
