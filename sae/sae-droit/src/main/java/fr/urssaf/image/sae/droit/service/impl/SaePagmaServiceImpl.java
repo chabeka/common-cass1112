@@ -31,6 +31,7 @@ import fr.urssaf.image.sae.droit.utils.ZookeeperUtils;
 public class SaePagmaServiceImpl implements SaePagmaService {
 
    private static final String CHECK = "checkPagmaNotExists";
+   private static final String TRC_CREATE = "createPagma";
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(SaePagmaServiceImpl.class);
@@ -55,6 +56,8 @@ public class SaePagmaServiceImpl implements SaePagmaService {
    @Override
    public final void createPagma(Pagma pagma) {
 
+      LOGGER.debug("{} - Début de la création du pagma {}", TRC_CREATE, pagma.getCode());
+      
       String resourceName = PREFIXE_PAGMA + pagma.getCode();
 
       ZookeeperMutex mutex = ZookeeperUtils.createMutex(curatorClient,
@@ -62,13 +65,17 @@ public class SaePagmaServiceImpl implements SaePagmaService {
       try {
          ZookeeperUtils.acquire(mutex, resourceName);
 
+         LOGGER.debug("{} - Vérification que le pagma {} n'existe pas", TRC_CREATE, pagma.getCode());
          checkPagmaNotExists(pagma);
+         LOGGER.debug("{} - vérification que les actions unitaires rattachées au pagma {} existent", TRC_CREATE, pagma.getCode());
          checkActionsUnitairesExist(pagma);
 
          pagmaSupport.create(pagma, clockSupport.currentCLock());
 
          checkLock(mutex, pagma);
 
+         LOGGER.debug("{} - Fin de la création du pagma {}", TRC_CREATE, pagma.getCode());
+         
       } finally {
          mutex.release();
       }

@@ -32,7 +32,9 @@ import fr.urssaf.image.sae.droit.utils.ZookeeperUtils;
 public class SaePagmpServiceImpl implements SaePagmpService {
 
    private static final String CHECK = "checkPagmpInexistant";
-
+   
+   private static final String TRC_CREATE = "createPagmp()";
+   
    private static final String PAGMP = "Le PAGMp ";
 
    private static final Logger LOGGER = LoggerFactory
@@ -58,6 +60,7 @@ public class SaePagmpServiceImpl implements SaePagmpService {
    @Override
    public final void createPagmp(Pagmp pagmp) {
 
+      LOGGER.debug("{} - Début de la création du pagmp {}", TRC_CREATE, pagmp.getCode());
       String resourceName = PREFIXE_PAGMP + pagmp.getCode();
 
       ZookeeperMutex mutex = ZookeeperUtils.createMutex(curatorClient,
@@ -65,13 +68,17 @@ public class SaePagmpServiceImpl implements SaePagmpService {
       try {
          ZookeeperUtils.acquire(mutex, resourceName);
 
+         LOGGER.debug("{} - Vérification que le pagmp {} n'existe pas", TRC_CREATE, pagmp.getCode());
          checkPagmpInexistant(pagmp);
+         LOGGER.debug("{} - Vérification que le prmd rattaché au pagmp {} existe", TRC_CREATE, pagmp.getCode());
          checkPrmdExiste(pagmp);
 
          pagmpSupport.create(pagmp, clockSupport.currentCLock());
 
          checkLock(mutex, pagmp);
-
+         
+         LOGGER.debug("{} - Fin de la création du pagmp {}", TRC_CREATE, pagmp.getCode());
+      
       } finally {
          mutex.release();
       }

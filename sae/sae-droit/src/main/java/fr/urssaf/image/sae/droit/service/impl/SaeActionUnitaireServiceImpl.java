@@ -30,6 +30,8 @@ public class SaeActionUnitaireServiceImpl implements SaeActionUnitaireService {
 
    private static final String CHECK = "checkActionUnitaireExiste";
 
+   private static final String TRC_CREATE = "createActionUnitaire()";
+
    private static final String ACTION_UNITAIRE = "L'action unitaire ";
 
    private static final Logger LOGGER = LoggerFactory
@@ -54,6 +56,8 @@ public class SaeActionUnitaireServiceImpl implements SaeActionUnitaireService {
 
       String resourceName = PREFIXE_AU + actionUnitaire.getCode();
 
+      LOGGER
+            .debug("{} - Debut de la création de l'action unitaire", TRC_CREATE);
       ZookeeperMutex mutex = ZookeeperUtils.createMutex(curatorClient,
             resourceName);
       try {
@@ -64,7 +68,9 @@ public class SaeActionUnitaireServiceImpl implements SaeActionUnitaireService {
          actionSupport.create(actionUnitaire, clockSupport.currentCLock());
 
          checkLock(mutex, actionUnitaire);
-
+         
+         LOGGER.debug("{} - Fin de la création de l'action unitaire",
+               TRC_CREATE);
       } finally {
          mutex.release();
       }

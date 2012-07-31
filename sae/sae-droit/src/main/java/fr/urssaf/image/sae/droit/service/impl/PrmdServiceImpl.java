@@ -41,13 +41,17 @@ public class PrmdServiceImpl implements PrmdService {
          .getLogger(PrmdServiceImpl.class);
 
    private static final String TRC_CHECK = "checkBean()";
+   private static final String TRC_LUCENE = "createLucene()";
 
    /**
     * {@inheritDoc}
     */
    @Override
    public final String createLucene(String lucene, List<SaePrmd> prmds) {
-
+      
+      
+      LOGGER.debug("{} - Debut de la creation de la requete", TRC_LUCENE);
+      
       String currentRequete;
       Prmd prmd;
       SaePrmd saePrmd;
@@ -60,9 +64,11 @@ public class PrmdServiceImpl implements PrmdService {
          prmd = saePrmd.getPrmd();
 
          if (StringUtils.isNotEmpty(prmd.getLucene())) {
+            LOGGER.debug("{} - Concaténation avec la requete lucène du PRMD", TRC_LUCENE);
             currentRequete = createLucene(prmd, saePrmd.getValues());
 
          } else if (StringUtils.isNotEmpty(prmd.getBean())) {
+            LOGGER.debug("{} - Concaténation avec la requête du bean", TRC_LUCENE);
             currentRequete = createBean(prmd, saePrmd.getValues());
 
          } else {
@@ -76,10 +82,12 @@ public class PrmdServiceImpl implements PrmdService {
 
       }
       
+      LOGGER.debug("{} - Assemblage de la sous requête", TRC_LUCENE);
       String sousRequete = createSousRequete(sousRequetes);
       
       String requete = lucene;
       if (StringUtils.isNotEmpty(sousRequete)) {
+         LOGGER.debug("{} - Assemblage de la requête définitive", TRC_LUCENE);
          requete = "(" + requete + ")AND(" + sousRequete + ")";
       }
       
@@ -213,7 +221,7 @@ public class PrmdServiceImpl implements PrmdService {
          key = keyIterator.next();
 
          boolean metaStatic = containsIgnoreCase(metaValues.keySet(), key)
-               && containsIgnoreCase(parametres.get(key), metaValues.get(key));
+               && containsIgnoreCase(parametres.get(key), metaValues.get(key.toUpperCase()));
 
          boolean metaDynamic = containsIgnoreCase(dynamicParam.keySet(), key)
                && containsIgnoreCase(parametres.get(key), dynamicParam.get(key));

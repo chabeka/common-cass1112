@@ -35,6 +35,9 @@ public class SaePrmdServiceImpl implements SaePrmdService {
    private static final Logger LOGGER = LoggerFactory
          .getLogger(SaePrmdServiceImpl.class);
 
+   private static final String TRC_CREATE = "createPrmd()";
+   private static final String TRC_EXISTS= "prmdExists()";
+   
    private static final String PREFIXE_PRMD = "/DroitPrmd/";
 
    @Autowired
@@ -57,10 +60,13 @@ public class SaePrmdServiceImpl implements SaePrmdService {
       ZookeeperMutex mutex = ZookeeperUtils.createMutex(curatorClient,
             resourceName);
       try {
+         LOGGER.debug("{} - Lock Zookeeper", TRC_CREATE);
          ZookeeperUtils.acquire(mutex, resourceName);
 
+         LOGGER.debug("{} - Vérification PRMD inexistant", TRC_CREATE);
          checkPrmdInexistant(prmd);
 
+         LOGGER.debug("{} - Création PRMD", TRC_CREATE);
          prmdSupport.create(prmd, clockSupport.currentCLock());
 
          checkLock(mutex, prmd);
@@ -76,12 +82,15 @@ public class SaePrmdServiceImpl implements SaePrmdService {
    @Override
    public final boolean prmdExists(String code) {
 
+      LOGGER.debug("{} - Début de recherche du PRMD", TRC_EXISTS);
       boolean exists = false;
       Prmd storedPrmd = prmdSupport.find(code);
 
       if (storedPrmd != null) {
          exists = true;
       }
+      
+      LOGGER.debug("{} - Fin de recherche du PRMD", TRC_EXISTS);
 
       return exists;
    }

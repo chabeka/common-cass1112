@@ -56,6 +56,8 @@ public class SaeDroitServiceImpl implements SaeDroitService {
 
    private static final String CHECK_CONTRAT = "checkContratServiceInexistant";
    private static final String CHECK_PAGM = "checkPagmInexistant";
+   private static final String TRC_LOAD = "loadSaeDroits()";
+   private static final String TRC_CREATE = "createContratService()";
 
    private static final String MESSAGE_CONTRAT = "Le contrat de service ";
 
@@ -182,6 +184,9 @@ public class SaeDroitServiceImpl implements SaeDroitService {
    public final SaeDroits loadSaeDroits(String idClient, List<String> pagms)
          throws ContratServiceNotFoundException, PagmNotFoundException {
 
+      LOGGER.debug("{} - Vérification de l'existence du contrat de service {}",
+            TRC_LOAD, idClient);
+
       try {
          contratsCache.getUnchecked(idClient);
       } catch (InvalidCacheLoadException e) {
@@ -191,6 +196,10 @@ public class SaeDroitServiceImpl implements SaeDroitService {
       }
 
       List<Pagm> listPagm;
+      LOGGER
+            .debug(
+                  "{} - Vérification ques des pagms sont associés au contrat de service {}",
+                  TRC_LOAD, idClient);
       try {
          listPagm = pagmsCache.getUnchecked(idClient);
       } catch (InvalidCacheLoadException e) {
@@ -201,6 +210,10 @@ public class SaeDroitServiceImpl implements SaeDroitService {
 
       SaeDroits saeDroits = new SaeDroits();
 
+      LOGGER
+            .debug(
+                  "{} - Pour chaque pagm, on vérifie que les pagma et pagmp associés existent",
+                  TRC_LOAD);
       for (String codePagm : pagms) {
          Pagm pagm = checkPagmExists(codePagm, listPagm, idClient);
 
@@ -244,6 +257,9 @@ public class SaeDroitServiceImpl implements SaeDroitService {
    public final void createContratService(ServiceContract serviceContract,
          List<Pagm> pagms) {
 
+      LOGGER.debug("{} - Debut de la création du contrat de service",
+            TRC_CREATE);
+
       String lockName = PREFIXE_CONTRAT + serviceContract.getCodeClient();
 
       ZookeeperMutex mutex = ZookeeperUtils
@@ -253,8 +269,14 @@ public class SaeDroitServiceImpl implements SaeDroitService {
 
          ZookeeperUtils.acquire(mutex, lockName);
 
+         LOGGER
+               .debug(
+                     "{} - Vérification que le contrat de service {} n'est pas préexistant",
+                     TRC_CREATE, serviceContract.getCodeClient());
          checkContratServiceInexistant(serviceContract);
+         LOGGER.debug("{} - Vérification que le Pagm est inexistant", TRC_CREATE);
          checkPagmInexistant(serviceContract);
+         LOGGER.debug("{} - vérification que les pagmas et pagmps existent", TRC_CREATE);
          checkPagmsExist(pagms);
 
          contratSupport.create(serviceContract, clockSupport.currentCLock());
@@ -265,6 +287,8 @@ public class SaeDroitServiceImpl implements SaeDroitService {
 
          checkLock(mutex, serviceContract, pagms);
 
+         LOGGER.debug("{} - Fin de la création du contrat de service",
+               TRC_CREATE);
       } finally {
          mutex.release();
       }
