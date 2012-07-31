@@ -73,6 +73,8 @@ public class InsertionDonnees {
             .createUpdater("ACCES_FULL_PRMD");
       addColumn("description", "acces total", StringSerializer.get(),
             StringSerializer.get(), updater);
+      addColumn("bean", "permitAll", StringSerializer.get(), StringSerializer
+            .get(), updater);
       cfTmpl.update(updater);
    }
 

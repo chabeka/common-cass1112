@@ -418,7 +418,7 @@ public class SAECassandraUpdater {
       Map<String, String> compressOptions = new HashMap<String, String>();
       compressOptions.put("sstable_compression", "SnappyCompressor");
       cfDef.setCompressionOptions(compressOptions);
-      // FIXME FBON - Vérifier
+      // FIXME FBON - A Vérifier
       Map<String, String> compactionOptions = new HashMap<String, String>();
       compactionOptions.put("sstable_size_in_mb", "200");
 
