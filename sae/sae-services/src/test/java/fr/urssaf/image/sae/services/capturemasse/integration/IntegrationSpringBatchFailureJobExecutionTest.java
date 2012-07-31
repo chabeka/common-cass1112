@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -41,6 +42,9 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
+import fr.urssaf.image.sae.droit.dao.model.Prmd;
+import fr.urssaf.image.sae.droit.model.SaeDroits;
+import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.services.batch.model.ExitTraitement;
@@ -66,6 +70,10 @@ import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentServi
 import fr.urssaf.image.sae.utils.LogUtils;
 import fr.urssaf.image.sae.utils.SaeJobExecutionDao;
 import fr.urssaf.image.sae.utils.SaeLogAppender;
+import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
+import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
+import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
+import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
@@ -74,8 +82,7 @@ import fr.urssaf.image.sae.utils.SaeLogAppender;
 public class IntegrationSpringBatchFailureJobExecutionTest {
 
    private static final String ERREUR_ATTENDUE = "Une erreur interne à l'application est "
-         + "survenue lors de la capture du "
-         + "document doc1.PDF. Détails : ";
+         + "survenue lors de la capture du " + "document doc1.PDF. Détails : ";
 
    @Autowired
    private ApplicationContext applicationContext;
@@ -97,9 +104,6 @@ public class IntegrationSpringBatchFailureJobExecutionTest {
    private EcdeTestSommaire ecdeTestSommaire;
 
    @Autowired
-   private SAEDocumentService saeDocumentService;
-
-   @Autowired
    private JobExecutionDao executionDao;
 
    private Logger logger;
@@ -118,6 +122,29 @@ public class IntegrationSpringBatchFailureJobExecutionTest {
 
       logger.debug("initialisation du répertoire de traitetement :"
             + ecdeTestSommaire.getRepEcde());
+
+      // initialisation du contexte de sécurité
+      VIContenuExtrait viExtrait = new VIContenuExtrait();
+      viExtrait.setCodeAppli("TESTS_UNITAIRES");
+      viExtrait.setIdUtilisateur("UTILISATEUR TEST");
+
+      SaeDroits saeDroits = new SaeDroits();
+      List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
+      SaePrmd saePrmd = new SaePrmd();
+      saePrmd.setValues(new HashMap<String, String>());
+      Prmd prmd = new Prmd();
+      prmd.setBean("permitAll");
+      prmd.setCode("default");
+      saePrmd.setPrmd(prmd);
+      String[] roles = new String[] { "archivage_masse" };
+      saePrmds.add(saePrmd);
+
+      saeDroits.put("archivage_masse", saePrmds);
+      viExtrait.setSaeDroits(saeDroits);
+      AuthenticationToken token = AuthenticationFactory.createAuthentication(
+            viExtrait.getIdUtilisateur(), viExtrait, roles, viExtrait
+                  .getSaeDroits());
+      AuthenticationContext.setAuthenticationToken(token);
    }
 
    @After
@@ -128,7 +155,9 @@ public class IntegrationSpringBatchFailureJobExecutionTest {
          // rien a faire
       }
 
-      EasyMock.reset(provider, storageDocumentService, saeDocumentService);
+      EasyMock.reset(provider, storageDocumentService);
+
+      AuthenticationContext.setAuthenticationToken(null);
 
       logger.detachAppender(logAppenderSae);
    }
@@ -172,7 +201,7 @@ public class IntegrationSpringBatchFailureJobExecutionTest {
       ExitTraitement exitStatus = service.captureMasse(ecdeTestSommaire
             .getUrlEcde(), UUID.randomUUID());
 
-      EasyMock.verify(provider, storageDocumentService, saeDocumentService);
+      EasyMock.verify(provider, storageDocumentService);
 
       Assert.assertFalse("le traitement doit etre en erreur", exitStatus
             .isSucces());
@@ -218,7 +247,7 @@ public class IntegrationSpringBatchFailureJobExecutionTest {
                   .anyObject(StorageDocument.class)))
             .andReturn(storageDocument).anyTimes();
 
-      EasyMock.replay(provider, storageDocumentService, saeDocumentService);
+      EasyMock.replay(provider, storageDocumentService);
    }
 
    private void initDatas() throws IOException {

@@ -14,12 +14,13 @@
       <qualifier value="storageServiceProvider" />
    </bean>
 
-   <bean id="saeDocumentService" factory-bean="mockFactory"
-      factory-method="createSaeDocumentService" primary="true" />
+   <bean id="saeDocumentService"
+      class="fr.urssaf.image.sae.services.consultation.impl.SAEDocumentTestImpl"
+      primary="true" />
 
    <bean id="stepExecutionDao" class="fr.urssaf.image.sae.utils.SaeStepExecutionDao"
       primary="true" />
-      
+
    <bean id="executionDao" class="fr.urssaf.image.sae.utils.SaeJobExecutionDao"
       primary="true" />
 

@@ -6,6 +6,8 @@ package fr.urssaf.image.sae.services.capturemasse.integration;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,6 +38,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.xml.sax.SAXException;
 
+import fr.urssaf.image.sae.droit.dao.model.Prmd;
+import fr.urssaf.image.sae.droit.model.SaeDroits;
+import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.services.batch.model.ExitTraitement;
@@ -51,6 +56,10 @@ import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentService;
+import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
+import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
+import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
+import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
@@ -90,6 +99,29 @@ public class IntegrationBUL003Test {
 
       LOGGER.debug("initialisation du répertoire de traitetement :"
             + ecdeTestSommaire.getRepEcde());
+
+      // initialisation du contexte de sécurité
+      VIContenuExtrait viExtrait = new VIContenuExtrait();
+      viExtrait.setCodeAppli("TESTS_UNITAIRES");
+      viExtrait.setIdUtilisateur("UTILISATEUR TEST");
+
+      SaeDroits saeDroits = new SaeDroits();
+      List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
+      SaePrmd saePrmd = new SaePrmd();
+      saePrmd.setValues(new HashMap<String, String>());
+      Prmd prmd = new Prmd();
+      prmd.setBean("permitAll");
+      prmd.setCode("default");
+      saePrmd.setPrmd(prmd);
+      String[] roles = new String[] { "archivage_masse" };
+      saePrmds.add(saePrmd);
+
+      saeDroits.put("archivage_masse", saePrmds);
+      viExtrait.setSaeDroits(saeDroits);
+      AuthenticationToken token = AuthenticationFactory.createAuthentication(
+            viExtrait.getIdUtilisateur(), viExtrait, roles, viExtrait
+                  .getSaeDroits());
+      AuthenticationContext.setAuthenticationToken(token);
    }
 
    @After
@@ -99,6 +131,8 @@ public class IntegrationBUL003Test {
       } catch (IOException e) {
          // rien a faire
       }
+
+      AuthenticationContext.setAuthenticationToken(null);
 
       EasyMock.reset(provider, storageDocumentService);
    }
@@ -216,7 +250,8 @@ public class IntegrationBUL003Test {
                erreurType = listeErreurs.get(indexErreur);
 
                if (Constantes.ERR_BUL003.equals(erreurType.getCode())
-                     && ERREUR_ATTENDUE.equalsIgnoreCase(erreurType.getLibelle())) {
+                     && ERREUR_ATTENDUE.equalsIgnoreCase(erreurType
+                           .getLibelle())) {
                   erreurFound = true;
                }
                indexErreur++;

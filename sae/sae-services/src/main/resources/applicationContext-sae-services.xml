@@ -28,7 +28,11 @@
       class="org.springframework.context.support.ResourceBundleMessageSource">
       <property name="basename" value="i18n.sae_services_messages" />
    </bean>
+
    <import resource="applicationContext-sae-mapping.xml" />
    <import resource="applicationContext-sae-ecde.xml" />
+
+   <import resource="applicationContext-sae-droit.xml" />
+   <import resource="applicationContext-sae-services-security.xml" />
 
 </beans>

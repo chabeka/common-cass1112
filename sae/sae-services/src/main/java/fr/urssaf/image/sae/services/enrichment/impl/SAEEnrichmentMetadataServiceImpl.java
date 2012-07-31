@@ -25,6 +25,9 @@ import fr.urssaf.image.sae.services.enrichment.xml.model.SAEArchivalMetadatas;
 import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException;
 import fr.urssaf.image.sae.services.exception.enrichment.SAEEnrichmentEx;
 import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
+import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
+import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
+import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 /**
  * Classe concrète pour l’enrichissement des métadonnées.
@@ -89,10 +92,10 @@ public class SAEEnrichmentMetadataServiceImpl implements
 
       String rndValue = SAEMetatadaFinderUtils.codeMetadataFinder(saeMetadatas,
             SAEArchivalMetadatas.CODE_RND.getLongCode());
-      
+
       String fileName = SAEMetatadaFinderUtils.codeMetadataFinder(saeMetadatas,
             SAEArchivalMetadatas.NOM_FICHIER.getLongCode());
-      
+
       try {
          if (!StringUtils.isEmpty(rndValue)) {
             LOGGER
@@ -111,7 +114,7 @@ public class SAEEnrichmentMetadataServiceImpl implements
                   prefixeTrc, saeDoc.getMetadatas().toString());
          }
          if (!StringUtils.isBlank(fileName)) {
-            
+
             LOGGER.debug("{} - Métadonnées avant enrichissement : {}",
                   prefixeTrc, saeDoc.getMetadatas().toString());
             completedMetadatas(saeDoc, fileName);
@@ -201,8 +204,9 @@ public class SAEEnrichmentMetadataServiceImpl implements
             saeMetadata.setShortCode(metadataReferenceDAO.getByLongCode(
                   SAEArchivalMetadatas.CODE_ACTIVITE.getLongCode())
                   .getShortCode());
-            String codeActiviteValue = rndReferenceDAO.getActivityCodeByRnd(rndCode);
-            
+            String codeActiviteValue = rndReferenceDAO
+                  .getActivityCodeByRnd(rndCode);
+
             if (StringUtils.isNotBlank(codeActiviteValue)) {
 
                saeMetadata.setValue(codeActiviteValue);
@@ -213,8 +217,7 @@ public class SAEEnrichmentMetadataServiceImpl implements
                            prefixeTrc, rndReferenceDAO
                                  .getActivityCodeByRnd(rndCode));
             }
-            
-           
+
          } else if (metadata.getLongCode().equals(
                SAEArchivalMetadatas.CODE_FONCTION.getLongCode())) {
             saeMetadata.setShortCode(metadataReferenceDAO.getByLongCode(
@@ -269,7 +272,7 @@ public class SAEEnrichmentMetadataServiceImpl implements
                   .getShortCode());
             if (saeDocument.getFilePath() != null) {
                saeMetadata.setValue(FilenameUtils.getName(FilenameUtils
-                  .separatorsToSystem(saeDocument.getFilePath())));
+                     .separatorsToSystem(saeDocument.getFilePath())));
             } else {
                saeMetadata.setValue(saeDocument.getFileName());
             }
@@ -315,8 +318,13 @@ public class SAEEnrichmentMetadataServiceImpl implements
             saeMetadata.setShortCode(metadataReferenceDAO.getByLongCode(
                   SAEArchivalMetadatas.CONTRAT_DE_SERVICE.getLongCode())
                   .getShortCode());
-            // FIXME attente de spécification.
-            saeMetadata.setValue("ATT_PROD_001");
+
+            // FIXME FBON - Vérifier
+            AuthenticationToken token = AuthenticationContext
+                  .getAuthenticationToken();
+            VIContenuExtrait extrait = (VIContenuExtrait) token.getPrincipal();
+            String codeContrat = extrait.getCodeAppli();
+            saeMetadata.setValue(codeContrat);
             saeDocument.getMetadatas().add(saeMetadata);
             LOGGER
                   .debug(
@@ -368,7 +376,7 @@ public class SAEEnrichmentMetadataServiceImpl implements
                            prefixeTrc, name);
             }
          }
-         
+
       }
       // Traces debug - sortie méthode
       LOGGER.debug("{} - Sortie", prefixeTrc);

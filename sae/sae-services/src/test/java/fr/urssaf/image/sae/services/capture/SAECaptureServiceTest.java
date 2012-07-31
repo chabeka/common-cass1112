@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -41,6 +42,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
+import fr.urssaf.image.sae.droit.dao.model.Prmd;
+import fr.urssaf.image.sae.droit.model.SaeDroits;
+import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestDocument;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.services.SAEServiceTestProvider;
@@ -61,6 +65,10 @@ import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException
 import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
+import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
+import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
+import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
+import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })
@@ -107,6 +115,29 @@ public class SAECaptureServiceTest {
 
       // initialisation de l'uuid de l'archive
       uuid = null;
+      
+   // initialisation du contexte de sécurité
+      VIContenuExtrait viExtrait = new VIContenuExtrait();
+      viExtrait.setCodeAppli("TESTS_UNITAIRES");
+      viExtrait.setIdUtilisateur("UTILISATEUR TEST");
+
+      SaeDroits saeDroits = new SaeDroits();
+      List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
+      SaePrmd saePrmd = new SaePrmd();
+      saePrmd.setValues(new HashMap<String, String>());
+      Prmd prmd = new Prmd();
+      prmd.setBean("permitAll");
+      prmd.setCode("default");
+      saePrmd.setPrmd(prmd);
+      String[] roles = new String[] { "archivage_unitaire" };
+      saePrmds.add(saePrmd);
+
+      saeDroits.put("archivage_unitaire", saePrmds);
+      viExtrait.setSaeDroits(saeDroits);
+      AuthenticationToken token = AuthenticationFactory.createAuthentication(
+            viExtrait.getIdUtilisateur(), viExtrait, roles, viExtrait
+                  .getSaeDroits());
+      AuthenticationContext.setAuthenticationToken(token);
    }
 
    @After
@@ -115,6 +146,8 @@ public class SAECaptureServiceTest {
       if (uuid != null) {
          testProvider.deleteDocument(uuid);
       }
+      
+      AuthenticationContext.setAuthenticationToken(null);
    }
 
    @Test
@@ -277,7 +310,7 @@ public class SAECaptureServiceTest {
       assertMetadata(criterions.get(3), "cop", "CER69");
 
       // TEST sur métadonnée : ContratDeService
-      assertMetadata(criterions.get(4), "cse", "ATT_PROD_001");
+      assertMetadata(criterions.get(4), "cse", "TESTS_UNITAIRES");
 
       // TEST sur métadonnée : DateFinConservation
       Assert.assertEquals(

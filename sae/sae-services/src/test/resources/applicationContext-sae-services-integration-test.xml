@@ -16,6 +16,10 @@
    
    
    <bean id="saeDocumentService" factory-bean="mockFactory" factory-method="createSaeDocumentService"
+      primary="true" /><!--
+      
+       <bean id="saeDocumentService" name="saeDocumentService"
+      class="fr.urssaf.image.sae.services.consultation.impl.SAEDocumentTestImpl"
       primary="true" />
 
-</beans>
+--></beans>

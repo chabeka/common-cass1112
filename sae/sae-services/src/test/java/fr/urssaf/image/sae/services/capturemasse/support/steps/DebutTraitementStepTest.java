@@ -35,8 +35,7 @@ import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(value = { "/applicationContext-sae-services-test.xml",
-      "/applicationContext-sae-services-test.xml" })
+@ContextConfiguration(value = { "/applicationContext-sae-services-test.xml" })
 public class DebutTraitementStepTest {
 
    @Autowired
@@ -80,9 +79,12 @@ public class DebutTraitementStepTest {
       JobParameters jobParameters = new JobParameters(map);
 
       ExecutionContext contextParam = new ExecutionContext();
-      contextParam.put(Constantes.CODE_EXCEPTION, new ConcurrentLinkedQueue<String>());
-      contextParam.put(Constantes.INDEX_EXCEPTION, new ConcurrentLinkedQueue<Integer>());
-      contextParam.put(Constantes.DOC_EXCEPTION, new ConcurrentLinkedQueue<Exception>());
+      contextParam.put(Constantes.CODE_EXCEPTION,
+            new ConcurrentLinkedQueue<String>());
+      contextParam.put(Constantes.INDEX_EXCEPTION,
+            new ConcurrentLinkedQueue<Integer>());
+      contextParam.put(Constantes.DOC_EXCEPTION,
+            new ConcurrentLinkedQueue<Exception>());
 
       JobExecution execution = launcher.launchStep("controleDocuments",
             jobParameters, contextParam);

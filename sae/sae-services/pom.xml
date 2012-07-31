@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
    <modelVersion>4.0.0</modelVersion>
 
@@ -53,7 +54,10 @@
                         <phase>generate-sources</phase>
                         <configuration>
                            <target name="suppressWarnings('PMD')">
-                              <replace dir="${basedir}/src/main/java" includes="fr/urssaf/image/sae/services/capturemasse/modele/*/*.java" token="public class" value="@SuppressWarnings(&quot;PMD&quot;)&#xA;public class" />
+                              <replace dir="${basedir}/src/main/java"
+                                 includes="fr/urssaf/image/sae/services/capturemasse/modele/*/*.java"
+                                 token="public class"
+                                 value="@SuppressWarnings(&quot;PMD&quot;)&#xA;public class" />
                            </target>
                         </configuration>
                         <goals>
@@ -191,7 +195,7 @@
          <artifactId>spring-oxm</artifactId>
          <version>${spring.framework.version}</version>
       </dependency>
-      
+
       <dependency>
          <groupId>org.springframework.security</groupId>
          <artifactId>spring-security-core</artifactId>
@@ -237,6 +241,13 @@
             </exclusion>
          </exclusions>
       </dependency>
+
+      <dependency>
+         <groupId>javax.annotation</groupId>
+         <artifactId>jsr250-api</artifactId>
+         <version>1.0</version>
+      </dependency>
+
 
       <!-- WOODSTOX -->
    </dependencies>

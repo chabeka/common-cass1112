@@ -6,7 +6,11 @@ package fr.urssaf.image.sae.services.controles;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +20,9 @@ import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
 import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
+import fr.urssaf.image.sae.droit.dao.model.Prmd;
+import fr.urssaf.image.sae.droit.model.SaeDroits;
+import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.services.CommonsServices;
 import fr.urssaf.image.sae.services.enrichment.SAEEnrichmentMetadataService;
 import fr.urssaf.image.sae.services.enrichment.xml.model.SAEArchivalMetadatas;
@@ -32,6 +39,10 @@ import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException
 import fr.urssaf.image.sae.services.exception.enrichment.SAEEnrichmentEx;
 import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
+import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
+import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
+import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
+import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 /**
  * Classe permettant de tester le service de contrôle.
@@ -216,6 +227,9 @@ public class SAEControlesCaptureServiceImplTest extends CommonsServices {
          throws RequiredStorageMetadataEx, SAECaptureServiceEx, IOException,
          ParseException, SAEEnrichmentEx, ReferentialRndException,
          UnknownCodeRndEx {
+
+      initDroits();
+
       SAEDocument saeDocument = getSAEDocumentMockData();
       saeEnrichmentMetadataService.enrichmentMetadata(saeDocument);
       saeControlesCaptureService.checkSaeMetadataForStorage(saeDocument);
@@ -307,6 +321,9 @@ public class SAEControlesCaptureServiceImplTest extends CommonsServices {
          throws RequiredStorageMetadataEx, SAECaptureServiceEx, IOException,
          ParseException, SAEEnrichmentEx, ReferentialRndException,
          UnknownCodeRndEx {
+      
+      initDroits();
+      
       SAEDocument saeDocument = getSAEDocumentMockData();
       SAEMetadata saeMetadataToRemove = null;
       saeEnrichmentMetadataService.enrichmentMetadata(saeDocument);
@@ -333,6 +350,9 @@ public class SAEControlesCaptureServiceImplTest extends CommonsServices {
          throws RequiredStorageMetadataEx, SAECaptureServiceEx, IOException,
          ParseException, SAEEnrichmentEx, ReferentialRndException,
          UnknownCodeRndEx {
+      
+      initDroits();
+      
       SAEDocument saeDocument = getSAEDocumentMockData();
       SAEMetadata saeMetadataToRemove = null;
       saeEnrichmentMetadataService.enrichmentMetadata(saeDocument);
@@ -345,5 +365,34 @@ public class SAEControlesCaptureServiceImplTest extends CommonsServices {
          }
       }
       saeControlesCaptureService.checkSaeMetadataForStorage(saeDocument);
+   }
+
+   @After
+   public void end() {
+      AuthenticationContext.setAuthenticationToken(null);
+   }
+   
+   private void initDroits() {
+      VIContenuExtrait viExtrait = new VIContenuExtrait();
+      viExtrait.setCodeAppli("TESTS_UNITAIRES");
+      viExtrait.setIdUtilisateur("UTILISATEUR TEST");
+
+      SaeDroits saeDroits = new SaeDroits();
+      List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
+      SaePrmd saePrmd = new SaePrmd();
+      saePrmd.setValues(new HashMap<String, String>());
+      Prmd prmd = new Prmd();
+      prmd.setBean("permitAll");
+      prmd.setCode("default");
+      saePrmd.setPrmd(prmd);
+      String[] roles = new String[] { "capture_masse" };
+      saePrmds.add(saePrmd);
+
+      saeDroits.put("capture_masse", saePrmds);
+      viExtrait.setSaeDroits(saeDroits);
+      AuthenticationToken token = AuthenticationFactory.createAuthentication(
+            viExtrait.getIdUtilisateur(), viExtrait, roles, viExtrait
+                  .getSaeDroits());
+      AuthenticationContext.setAuthenticationToken(token);
    }
 }

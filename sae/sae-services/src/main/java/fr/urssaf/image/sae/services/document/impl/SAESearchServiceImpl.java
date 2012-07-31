@@ -26,6 +26,8 @@ import fr.urssaf.image.sae.bo.model.MetadataError;
 import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.building.services.BuildService;
+import fr.urssaf.image.sae.droit.model.SaePrmd;
+import fr.urssaf.image.sae.droit.service.PrmdService;
 import fr.urssaf.image.sae.mapping.exception.InvalidSAETypeException;
 import fr.urssaf.image.sae.mapping.exception.MappingFromReferentialException;
 import fr.urssaf.image.sae.mapping.services.MappingDocumentService;
@@ -52,6 +54,8 @@ import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocuments;
 import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.LuceneCriteria;
+import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
+import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 /**
  * Fournit l'implémentation des services pour la recherche.<BR />
@@ -83,6 +87,9 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
 
    @Autowired
    private SAEConvertMetadataService convertService;
+
+   @Autowired
+   private PrmdService prmdService;
 
    // du referentiel
    private static final String SPLIT = "(\\w+)\\s*[:>]";
@@ -485,12 +492,8 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
       return toStrBuilder.toString();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see
-    * fr.urssaf.image.sae.services.document.SAESearchService#search(java.lang
-    * .String, java.util.List, int)
+   /**
+    * {@inheritDoc}
     */
    @Override
    public List<UntypedDocument> search(String requete,
@@ -515,10 +518,18 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
       boolean isFromRefrentiel = false;
       // liste de résultats à envoyer
       List<UntypedDocument> listUntypedDocument = new ArrayList<UntypedDocument>();
+
+      // gestion des droits
+      AuthenticationToken token = (AuthenticationToken) AuthenticationContext
+            .getAuthenticationToken();
+      List<SaePrmd> prmds = token.getDetails().get("recherche");
+      requete = prmdService.createLucene(requete, prmds);
+
       // conversion code court
       List<SAEMetadata> listCodCourt = new ArrayList<SAEMetadata>();
       List<SAEMetadata> listCodCourtConsult = new ArrayList<SAEMetadata>();
       try {
+
          List<String> longCodesReq = extractLongCodeFromQuery(requete);
          checkExistingLuceneMetadata(longCodesReq);
          String requeteFinal = requete;

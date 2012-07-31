@@ -1,6 +1,8 @@
 package fr.urssaf.image.sae.services.batch.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import me.prettyprint.cassandra.utils.TimeUUIDUtils;
@@ -12,6 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import fr.urssaf.image.sae.droit.exception.ContratServiceNotFoundException;
+import fr.urssaf.image.sae.droit.exception.PagmNotFoundException;
+import fr.urssaf.image.sae.droit.model.SaeDroits;
+import fr.urssaf.image.sae.droit.service.impl.skip.SaeDroitServiceSkipImpl;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 import fr.urssaf.image.sae.pile.travaux.model.JobState;
@@ -24,6 +30,10 @@ import fr.urssaf.image.sae.services.batch.exception.JobNonReserveException;
 import fr.urssaf.image.sae.services.batch.model.CaptureMasseParametres;
 import fr.urssaf.image.sae.services.batch.model.ExitTraitement;
 import fr.urssaf.image.sae.services.batch.support.TraitementExecutionSupport;
+import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
+import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
+import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
+import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 /**
  * Implémentation du service {@link TraitementAsynchroneService}
@@ -124,6 +134,33 @@ public class TraitementAsynchroneServiceImpl implements
       if (job == null) {
          throw new JobInexistantException(idJob);
       }
+      
+      VIContenuExtrait viExtrait = job.getVi();
+      AuthenticationToken token;
+
+      if (viExtrait == null) {
+         List<String> pagms = new ArrayList<String>();
+         pagms.add("ROLE_TOUS");
+         SaeDroitServiceSkipImpl impl = new SaeDroitServiceSkipImpl();
+         SaeDroits saeDroits = new SaeDroits();
+         try {
+            saeDroits = impl.loadSaeDroits("CS_TOUS", pagms);
+         } catch (ContratServiceNotFoundException e) {
+            LOG.warn("impossible de créer un accès total");
+         } catch (PagmNotFoundException e) {
+            LOG.warn("impossible de créer un accès total");
+         }
+         viExtrait = new VIContenuExtrait();
+         viExtrait.setCodeAppli("aucun contrat de service");
+         viExtrait.setIdUtilisateur("aucun contrat de service");
+         viExtrait.setSaeDroits(saeDroits);
+
+      }
+
+      String[] roles = viExtrait.getSaeDroits().keySet().toArray(new String[0]);
+      token = AuthenticationFactory.createAuthentication(viExtrait
+            .getIdUtilisateur(), viExtrait, roles, viExtrait.getSaeDroits());
+      AuthenticationContext.setAuthenticationToken(token);
 
       // vérification que le type de traitement existe bien
       // pour l'instant seul la capture en masse existe

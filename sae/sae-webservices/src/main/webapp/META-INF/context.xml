@@ -6,10 +6,10 @@
    -->
 
   
-   
+   <!-- 
    <Environment name="SAE_Fichier_Configuration" type="java.lang.String"
       value="/appl/sae/sae-config.properties" />
-
+ -->
      
    
       
@@ -18,10 +18,8 @@
    -->
    
    
- <!--  
    <Environment name="SAE_Fichier_Configuration" type="java.lang.String"
       value="c:/appl/sae/sae-config.properties" />
--->
     
 
 </Context>

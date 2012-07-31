@@ -6,6 +6,8 @@ package fr.urssaf.image.sae.services.capturemasse.integration;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,6 +28,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.aop.framework.Advised;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
@@ -36,6 +39,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.xml.sax.SAXException;
 
+import fr.urssaf.image.sae.droit.dao.model.Prmd;
+import fr.urssaf.image.sae.droit.model.SaeDroits;
+import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.services.batch.model.ExitTraitement;
@@ -58,6 +64,10 @@ import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentService;
+import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
+import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
+import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
+import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
@@ -101,27 +111,51 @@ public class IntegrationRollBackSearchFailureTest {
 
       LOGGER.debug("initialisation du répertoire de traitetement :"
             + ecdeTestSommaire.getRepEcde());
+      // initialisation du contexte de sécurité
+      VIContenuExtrait viExtrait = new VIContenuExtrait();
+      viExtrait.setCodeAppli("TESTS_UNITAIRES");
+      viExtrait.setIdUtilisateur("UTILISATEUR TEST");
+
+      SaeDroits saeDroits = new SaeDroits();
+      List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
+      SaePrmd saePrmd = new SaePrmd();
+      saePrmd.setValues(new HashMap<String, String>());
+      Prmd prmd = new Prmd();
+      prmd.setBean("permitAll");
+      prmd.setCode("default");
+      saePrmd.setPrmd(prmd);
+      String[] roles = new String[] { "archivage_masse", "recherche" };
+      saePrmds.add(saePrmd);
+
+      saeDroits.put("archivage_masse", saePrmds);
+      saeDroits.put("recherche", saePrmds);
+      viExtrait.setSaeDroits(saeDroits);
+      AuthenticationToken token = AuthenticationFactory.createAuthentication(
+            viExtrait.getIdUtilisateur(), viExtrait, roles, viExtrait
+                  .getSaeDroits());
+      AuthenticationContext.setAuthenticationToken(token);
    }
 
    @After
-   public void end() {
+   public void end() throws Exception {
       try {
          ecdeTestTools.cleanEcdeTestSommaire(ecdeTestSommaire);
       } catch (IOException e) {
          // rien a faire
       }
 
-      EasyMock.reset(provider, storageDocumentService, saeDocumentService);
+      AuthenticationContext.setAuthenticationToken(null);
+
+      Advised advised = (Advised) saeDocumentService;
+      SAEDocumentService impl = (SAEDocumentService) advised.getTargetSource()
+            .getTarget();
+
+      EasyMock.reset(provider, storageDocumentService, impl);
    }
 
    @Test
    @DirtiesContext
-   public void testLancementUnknownLuceneMetadataEx()
-         throws ConnectionServiceEx, DeletionServiceEx, InsertionServiceEx,
-         IOException, MetaDataUnauthorizedToSearchEx,
-         MetaDataUnauthorizedToConsultEx, UnknownDesiredMetadataEx,
-         UnknownLuceneMetadataEx, SyntaxLuceneEx, SAESearchServiceEx,
-         JAXBException, SAXException {
+   public void testLancementUnknownLuceneMetadataEx() throws Exception {
 
       initSearchUnknownLuceneMetadataEx();
 
@@ -130,11 +164,7 @@ public class IntegrationRollBackSearchFailureTest {
 
    @Test
    @DirtiesContext
-   public void testLancementSyntaxLuceneEx() throws ConnectionServiceEx,
-         DeletionServiceEx, InsertionServiceEx, IOException,
-         MetaDataUnauthorizedToSearchEx, MetaDataUnauthorizedToConsultEx,
-         UnknownDesiredMetadataEx, UnknownLuceneMetadataEx, SyntaxLuceneEx,
-         SAESearchServiceEx, JAXBException, SAXException {
+   public void testLancementSyntaxLuceneEx() throws Exception {
 
       initSearchSyntaxLuceneEx();
 
@@ -143,12 +173,7 @@ public class IntegrationRollBackSearchFailureTest {
 
    @Test
    @DirtiesContext
-   public void testLancementMetaDataUnauthorizedToSearchEx()
-         throws ConnectionServiceEx, DeletionServiceEx, InsertionServiceEx,
-         IOException, MetaDataUnauthorizedToSearchEx,
-         MetaDataUnauthorizedToConsultEx, UnknownDesiredMetadataEx,
-         UnknownLuceneMetadataEx, SyntaxLuceneEx, SAESearchServiceEx,
-         JAXBException, SAXException {
+   public void testLancementMetaDataUnauthorizedToSearchEx() throws Exception {
 
       initSearchMetaDataUnauthorizedToSearchEx();
 
@@ -157,12 +182,7 @@ public class IntegrationRollBackSearchFailureTest {
 
    @Test
    @DirtiesContext
-   public void testLancementUnknownDesiredMetadataEx()
-         throws ConnectionServiceEx, DeletionServiceEx, InsertionServiceEx,
-         IOException, MetaDataUnauthorizedToSearchEx,
-         MetaDataUnauthorizedToConsultEx, UnknownDesiredMetadataEx,
-         UnknownLuceneMetadataEx, SyntaxLuceneEx, SAESearchServiceEx,
-         JAXBException, SAXException {
+   public void testLancementUnknownDesiredMetadataEx() throws Exception {
 
       initSearchUnknownDesiredMetadataEx();
 
@@ -171,12 +191,7 @@ public class IntegrationRollBackSearchFailureTest {
 
    @Test
    @DirtiesContext
-   public void testLancementMetaDataUnauthorizedToConsultEx()
-         throws ConnectionServiceEx, DeletionServiceEx, InsertionServiceEx,
-         IOException, MetaDataUnauthorizedToSearchEx,
-         MetaDataUnauthorizedToConsultEx, UnknownDesiredMetadataEx,
-         UnknownLuceneMetadataEx, SyntaxLuceneEx, SAESearchServiceEx,
-         JAXBException, SAXException {
+   public void testLancementMetaDataUnauthorizedToConsultEx() throws Exception {
 
       initSearchMetaDataUnauthorizedToConsultEx();
 
@@ -185,33 +200,29 @@ public class IntegrationRollBackSearchFailureTest {
 
    @Test
    @DirtiesContext
-   public void testLancementSAESearchServiceEx() throws ConnectionServiceEx,
-         DeletionServiceEx, InsertionServiceEx, IOException,
-         MetaDataUnauthorizedToSearchEx, MetaDataUnauthorizedToConsultEx,
-         UnknownDesiredMetadataEx, UnknownLuceneMetadataEx, SyntaxLuceneEx,
-         SAESearchServiceEx, JAXBException, SAXException {
+   public void testLancementSAESearchServiceEx() throws Exception {
 
       initSearchSAESearchServiceEx();
 
       launch();
    }
 
-   private void launch() throws IOException, JAXBException, SAXException,
-         ConnectionServiceEx, DeletionServiceEx, InsertionServiceEx,
-         MetaDataUnauthorizedToSearchEx, MetaDataUnauthorizedToConsultEx,
-         UnknownDesiredMetadataEx, UnknownLuceneMetadataEx, SyntaxLuceneEx,
-         SAESearchServiceEx {
+   private void launch() throws Exception {
 
       initComposantsHorsSearch();
 
-      EasyMock.replay(provider, storageDocumentService, saeDocumentService);
+      Advised advised = (Advised) saeDocumentService;
+      SAEDocumentService impl = (SAEDocumentService) advised.getTargetSource()
+            .getTarget();
+
+      EasyMock.replay(provider, storageDocumentService, impl);
 
       initDatas();
 
       ExitTraitement exitStatus = service.captureMasse(ecdeTestSommaire
             .getUrlEcde(), UUID.randomUUID());
 
-      EasyMock.verify(provider, storageDocumentService, saeDocumentService);
+      EasyMock.verify(provider, storageDocumentService, impl);
 
       Assert.assertFalse("le traitement doit etre en erreur", exitStatus
             .isSucces());

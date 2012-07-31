@@ -10,8 +10,8 @@
       http://www.springframework.org/schema/security
       http://www.springframework.org/schema/security/spring-security-3.0.4.xsd">
 
-   <security:global-method-security
-      jsr250-annotations="enabled" />
+<!--   <security:global-method-security-->
+<!--      jsr250-annotations="enabled" />-->
 
    <context:component-scan base-package="fr.urssaf.image.sae.webservices">
       <context:exclude-filter type="regex"

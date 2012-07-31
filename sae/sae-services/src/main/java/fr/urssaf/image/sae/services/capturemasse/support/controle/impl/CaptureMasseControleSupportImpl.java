@@ -4,14 +4,19 @@
 package fr.urssaf.image.sae.services.capturemasse.support.controle.impl;
 
 import java.io.File;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
+import fr.urssaf.image.sae.droit.model.SaePrmd;
+import fr.urssaf.image.sae.droit.service.PrmdService;
 import fr.urssaf.image.sae.mapping.exception.InvalidSAETypeException;
 import fr.urssaf.image.sae.mapping.exception.MappingFromReferentialException;
 import fr.urssaf.image.sae.mapping.services.MappingDocumentService;
@@ -33,6 +38,7 @@ import fr.urssaf.image.sae.services.exception.capture.UnknownMetadataEx;
 import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException;
 import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
+import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 /**
  * Implémentation du support {@link CaptureMasseControleSupport}
@@ -52,6 +58,9 @@ public class CaptureMasseControleSupportImpl implements
 
    @Autowired
    private MappingDocumentService mappingService;
+
+   @Autowired
+   private PrmdService prmdService;
 
    @Autowired
    private RNDReferenceDAO rndReferenceDAO;
@@ -101,6 +110,18 @@ public class CaptureMasseControleSupportImpl implements
          rndReferenceDAO.getTypeDocument(valeurMetadata);
       } catch (ReferentialRndException e) {
          throw new CaptureMasseRuntimeException(e);
+      }
+
+      AuthenticationToken token = (AuthenticationToken) SecurityContextHolder
+            .getContext().getAuthentication();
+      List<SaePrmd> prmds = token.getDetails().get("archivage_masse");
+
+      boolean isPermitted = prmdService.isPermitted(document.getUMetadatas(),
+            prmds);
+
+      if (!isPermitted) {
+         throw new AccessDeniedException(
+               "Le document est refusé à l'archivage car les droits sont insuffisants");
       }
 
    }

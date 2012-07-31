@@ -11,8 +11,12 @@
    <!--Chargement du fichier de properties de l'application -->
    <bean id="applicationProperties"
       class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-      <property name="location"
-         value="classpath:config/sae-services.properties" />
+      <property name="locations">
+         <array>
+            <value>classpath:config/sae-services.properties</value>
+            <value>classpath:config/commons-cassandra.properties</value>
+         </array>
+      </property>
    </bean>
    <!--Instantiation du bean de connexion à la base DFCE -->
    <bean id="storageBase"
@@ -28,7 +32,7 @@
       <property name="secure" value="${db.secure}" />
    </bean>
    <bean id="storageUser"
-		class="fr.urssaf.image.sae.storage.model.connection.StorageUser">
+      class="fr.urssaf.image.sae.storage.model.connection.StorageUser">
       <property name="login" value="${db.login}" />
       <property name="password" value="${db.password}" />
    </bean>

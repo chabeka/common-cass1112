@@ -7,8 +7,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
@@ -31,6 +33,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.xml.sax.SAXException;
 
+import fr.urssaf.image.sae.droit.dao.model.Prmd;
+import fr.urssaf.image.sae.droit.model.SaeDroits;
+import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.services.batch.model.ExitTraitement;
@@ -38,6 +43,10 @@ import fr.urssaf.image.sae.services.capturemasse.SAECaptureMasseService;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
+import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
+import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
+import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
+import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
@@ -66,6 +75,29 @@ public class MetaDataCompletIntegrationTest {
 
       LOGGER.debug("initialisation du répertoire de traitetement :"
             + ecdeTestSommaire.getRepEcde());
+
+      // initialisation du contexte de sécurité
+      VIContenuExtrait viExtrait = new VIContenuExtrait();
+      viExtrait.setCodeAppli("TESTS_UNITAIRES");
+      viExtrait.setIdUtilisateur("UTILISATEUR TEST");
+
+      SaeDroits saeDroits = new SaeDroits();
+      List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
+      SaePrmd saePrmd = new SaePrmd();
+      saePrmd.setValues(new HashMap<String, String>());
+      Prmd prmd = new Prmd();
+      prmd.setBean("permitAll");
+      prmd.setCode("default");
+      saePrmd.setPrmd(prmd);
+      String[] roles = new String[] { "archivage_masse" };
+      saePrmds.add(saePrmd);
+
+      saeDroits.put("archivage_masse", saePrmds);
+      viExtrait.setSaeDroits(saeDroits);
+      AuthenticationToken token = AuthenticationFactory.createAuthentication(
+            viExtrait.getIdUtilisateur(), viExtrait, roles, viExtrait
+                  .getSaeDroits());
+      AuthenticationContext.setAuthenticationToken(token);
    }
 
    @After
@@ -75,6 +107,8 @@ public class MetaDataCompletIntegrationTest {
       } catch (IOException e) {
          // rien a faire
       }
+
+      AuthenticationContext.setAuthenticationToken(null);
 
    }
 
@@ -176,7 +210,7 @@ public class MetaDataCompletIntegrationTest {
       datas.put("CodeOrganismeGestionnaire", "CER69");
       datas.put("CodeOrganismeProprietaire", "UR750");
       datas.put("CodeRND", "2.3.1.1.12");
-      datas.put("ContratDeService", "ATT_PROD_001");
+      datas.put("ContratDeService", "TESTS_UNITAIRES");
       datas.put("DateArchivage", FORMAT.format(startDate));
       datas.put("DateCreation", "2011-09-08");
       datas.put("DateDebutConservation", FORMAT.format(startDate));

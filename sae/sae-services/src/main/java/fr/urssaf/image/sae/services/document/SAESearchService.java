@@ -2,6 +2,8 @@ package fr.urssaf.image.sae.services.document;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
 import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedToConsultEx;
@@ -43,6 +45,7 @@ public interface SAESearchService {
     * @throws SyntaxLuceneEx
     *            {@link SyntaxLuceneEx}
     */
+   @PreAuthorize("hasRole('recherche')")
    List<UntypedDocument> search(String requete, List<String> listMetaDesired)
          throws MetaDataUnauthorizedToSearchEx,
          MetaDataUnauthorizedToConsultEx, UnknownDesiredMetadataEx,
@@ -77,6 +80,7 @@ public interface SAESearchService {
     * @throws SyntaxLuceneEx
     *            {@link SyntaxLuceneEx}
     */
+   @PreAuthorize("hasRole('recherche')")
    List<UntypedDocument> search(String requete, List<String> listMetaDesired,
          int maxResult) throws MetaDataUnauthorizedToSearchEx,
          MetaDataUnauthorizedToConsultEx, UnknownDesiredMetadataEx,

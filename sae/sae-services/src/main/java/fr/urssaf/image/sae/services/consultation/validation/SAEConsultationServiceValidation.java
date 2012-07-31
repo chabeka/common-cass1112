@@ -10,7 +10,7 @@ import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
 
 /**
  * Classe de validation des arguments en entrée des implémentations du service
- * {@link fr.urssaf.image.sae.services.consultation.SAEConsultationService}.<br>
+ * fr.urssaf.image.sae.services.consultation.SAEConsultationService.<br>
  * * La validation est basée sur la programmation aspect
  * 
  * 

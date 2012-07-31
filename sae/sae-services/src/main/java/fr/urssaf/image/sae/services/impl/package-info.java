@@ -3,7 +3,7 @@
  * <lu>
  * <li>{@link fr.urssaf.image.sae.services.capture.SAECaptureService}</li>
  * <li>{@link fr.urssaf.image.sae.services.document.SAESearchService}</li>
- * <li>{@link fr.urssaf.image.sae.services.consultation.SAEConsultationService}</li>
+ * <li>{@link fr.urssaf.image.sae.services.consultation.impl}</li>
  * <ul>
  */
 package fr.urssaf.image.sae.services.impl;

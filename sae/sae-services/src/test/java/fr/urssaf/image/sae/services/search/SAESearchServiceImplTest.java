@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -18,6 +19,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import fr.urssaf.image.sae.bo.model.bo.SAELuceneCriteria;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
+import fr.urssaf.image.sae.droit.dao.model.Prmd;
+import fr.urssaf.image.sae.droit.model.SaeDroits;
+import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.model.SAEMockMetadata;
 import fr.urssaf.image.sae.services.QueriesReferenceDAO;
 import fr.urssaf.image.sae.services.document.SAESearchService;
@@ -28,6 +32,10 @@ import fr.urssaf.image.sae.services.exception.search.SAESearchServiceEx;
 import fr.urssaf.image.sae.services.exception.search.SyntaxLuceneEx;
 import fr.urssaf.image.sae.services.exception.search.UnknownLuceneMetadataEx;
 import fr.urssaf.image.sae.storage.dfce.utils.Utils;
+import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
+import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
+import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
+import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })
@@ -42,6 +50,36 @@ public class SAESearchServiceImplTest {
    @Qualifier("queriesReferenceDAO")
    private QueriesReferenceDAO queriesReferenceDAO;
 
+   
+   @After
+   public void end() {
+      AuthenticationContext.setAuthenticationToken(null);
+   }
+   
+   private void initDroits() {
+      VIContenuExtrait viExtrait = new VIContenuExtrait();
+      viExtrait.setCodeAppli("TESTS_UNITAIRES");
+      viExtrait.setIdUtilisateur("UTILISATEUR TEST");
+
+      SaeDroits saeDroits = new SaeDroits();
+      List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
+      SaePrmd saePrmd = new SaePrmd();
+      saePrmd.setValues(new HashMap<String, String>());
+      Prmd prmd = new Prmd();
+      prmd.setBean("permitAll");
+      prmd.setCode("default");
+      saePrmd.setPrmd(prmd);
+      String[] roles = new String[] { "recherche" };
+      saePrmds.add(saePrmd);
+
+      saeDroits.put("recherche", saePrmds);
+      viExtrait.setSaeDroits(saeDroits);
+      AuthenticationToken token = AuthenticationFactory.createAuthentication(
+            viExtrait.getIdUtilisateur(), viExtrait, roles, viExtrait
+                  .getSaeDroits());
+      AuthenticationContext.setAuthenticationToken(token);
+   }
+   
    /**
     * Test du service :
     * {@link fr.urssaf.image.sae.services.document.SAESearchService#search(SAELuceneCriteria)
@@ -172,6 +210,9 @@ public class SAESearchServiceImplTest {
    public final void searchFailureReqEmpty() throws SAESearchServiceEx,
          MetaDataUnauthorizedToSearchEx, MetaDataUnauthorizedToConsultEx,
          UnknownDesiredMetadataEx, UnknownLuceneMetadataEx, SyntaxLuceneEx {
+      
+      initDroits();
+      
       Map<String, String> mockMetadata = new HashMap<String, String>();
       String typeTest = "failure_reqEmpty";
       String requete = queriesReferenceDAO.getQueryByType(typeTest)
@@ -216,6 +257,9 @@ public class SAESearchServiceImplTest {
    public final void searchFailureSeparateur() throws SAESearchServiceEx,
          MetaDataUnauthorizedToSearchEx, MetaDataUnauthorizedToConsultEx,
          UnknownDesiredMetadataEx, UnknownLuceneMetadataEx, SyntaxLuceneEx {
+      
+      initDroits();
+      
       Map<String, String> mockMetadata = new HashMap<String, String>();
       String typeTest = "failure_separateur";
       String requete = queriesReferenceDAO.getQueryByType(typeTest)
@@ -281,6 +325,9 @@ public class SAESearchServiceImplTest {
    public final void searchFailureItem() throws SAESearchServiceEx,
          MetaDataUnauthorizedToSearchEx, MetaDataUnauthorizedToConsultEx,
          UnknownDesiredMetadataEx, UnknownLuceneMetadataEx, SyntaxLuceneEx {
+      
+      initDroits();
+      
       Map<String, String> mockMetadata = new HashMap<String, String>();
       String typeTest = "failure_item";
       String requete = queriesReferenceDAO.getQueryByType(typeTest)

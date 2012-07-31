@@ -1,13 +1,18 @@
 package fr.urssaf.image.sae.services.document.commons.impl;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
+import fr.urssaf.image.sae.droit.model.SaePrmd;
+import fr.urssaf.image.sae.droit.service.PrmdService;
 import fr.urssaf.image.sae.mapping.exception.InvalidSAETypeException;
 import fr.urssaf.image.sae.mapping.exception.MappingFromReferentialException;
 import fr.urssaf.image.sae.mapping.services.MappingDocumentService;
@@ -29,6 +34,8 @@ import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException
 import fr.urssaf.image.sae.services.exception.enrichment.SAEEnrichmentEx;
 import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
+import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
+import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 /**
  * Classe concrète pour le service commun pour les services de Capture unitaire
@@ -52,6 +59,9 @@ public class SAECommonCaptureServiceImpl implements SAECommonCaptureService {
    @Qualifier("saeEnrichmentMetadataService")
    private SAEEnrichmentMetadataService enrichmentService;
 
+   @Autowired
+   private PrmdService prmdService;
+
    /**
     * {@inheritDoc}
     */
@@ -67,16 +77,17 @@ public class SAECommonCaptureServiceImpl implements SAECommonCaptureService {
       String prefixeTrc = "buildStorageDocumentForCapture()";
       LOGGER.debug("{} - Début", prefixeTrc);
       // Fin des traces debug - entrée méthode
-      
+
       // on ne contrôle pas la taille du document
-         LOGGER
-               .debug(
-                     "{} - Début des contrôles sur (UntypedDocument et UntypedMetadata)",
-                     prefixeTrc);
-         controlesService.checkUntypedDocument(untypedDocument);
-       
-      StorageDocument storageDocument = buildStorageDocument(untypedDocument, prefixeTrc);
-         
+      LOGGER
+            .debug(
+                  "{} - Début des contrôles sur (UntypedDocument et UntypedMetadata)",
+                  prefixeTrc);
+      controlesService.checkUntypedDocument(untypedDocument);
+
+      StorageDocument storageDocument = buildStorageDocument(untypedDocument,
+            prefixeTrc);
+
       return storageDocument;
 
    }
@@ -92,43 +103,56 @@ public class SAECommonCaptureServiceImpl implements SAECommonCaptureService {
          EmptyDocumentEx, RequiredArchivableMetadataEx, SAEEnrichmentEx,
          UnknownHashCodeEx, ReferentialRndException, UnknownCodeRndEx,
          NotSpecifiableMetadataEx, SAECaptureServiceEx {
-      
-      
+
       // Traces debug - entrée méthode
       String prefixeTrc = "buildBinaryStorageDocumentForCapture()";
       LOGGER.debug("{} - Début", prefixeTrc);
       // Fin des traces debug - entrée méthode
-      
+
       // on ne contrôle pas la taille du document
-         LOGGER
-               .debug(
-                     "{} - Début des contrôles sur (UntypedDocument)",
-                     prefixeTrc);
-         controlesService.checkUntypedBinaryDocument(untypedDocument);
-       
-      StorageDocument storageDocument = buildStorageDocument(untypedDocument, prefixeTrc);
-         
+      LOGGER
+            .debug("{} - Début des contrôles sur (UntypedDocument)", prefixeTrc);
+      controlesService.checkUntypedBinaryDocument(untypedDocument);
+
+      StorageDocument storageDocument = buildStorageDocument(untypedDocument,
+            prefixeTrc);
+
       return storageDocument;
    }
-   
-   
+
    // Construction du StorageDocument pour la capture
-   private StorageDocument buildStorageDocument(UntypedDocument untypedDocument, String prefixeTrc) 
-                  throws NotSpecifiableMetadataEx, RequiredArchivableMetadataEx, UnknownMetadataEx, 
-                         DuplicatedMetadataEx, InvalidValueTypeAndFormatMetadataEx, SAEEnrichmentEx, 
-                         ReferentialRndException, UnknownCodeRndEx, UnknownHashCodeEx, 
-                         RequiredStorageMetadataEx, SAECaptureServiceEx {
-      
+   private StorageDocument buildStorageDocument(
+         UntypedDocument untypedDocument, String prefixeTrc)
+         throws NotSpecifiableMetadataEx, RequiredArchivableMetadataEx,
+         UnknownMetadataEx, DuplicatedMetadataEx,
+         InvalidValueTypeAndFormatMetadataEx, SAEEnrichmentEx,
+         ReferentialRndException, UnknownCodeRndEx, UnknownHashCodeEx,
+         RequiredStorageMetadataEx, SAECaptureServiceEx {
+
       SAEDocument saeDocument = null;
       StorageDocument storageDocument = null;
-      
-      try{
-         
+
+      try {
+
          controlesService.checkUntypedMetadata(untypedDocument);
          LOGGER
                .debug(
                      "{} - Fin des contrôles sur (UntypedDocument et UntypedMetadata)",
                      prefixeTrc);
+
+         LOGGER.debug("{} - Début de vérification des droits", prefixeTrc);
+         AuthenticationToken token = (AuthenticationToken) AuthenticationContext
+               .getAuthenticationToken();
+         List<SaePrmd> prmds = token.getDetails().get("archivage_unitaire");
+         boolean isPermitted = prmdService.isPermitted(untypedDocument
+               .getUMetadatas(), prmds);
+
+         if (!isPermitted) {
+            throw new AccessDeniedException(
+                  "Le document est refusé à l'arhivage car les droits sont insuffisants");
+         }
+
+         LOGGER.debug("{} - Fin de vérification des droits", prefixeTrc);
          LOGGER
                .debug(
                      "{} - Début de la conversion de UntypedDocument vers SaeDocument",

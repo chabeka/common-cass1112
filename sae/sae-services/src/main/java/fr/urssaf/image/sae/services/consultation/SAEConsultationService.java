@@ -2,6 +2,8 @@ package fr.urssaf.image.sae.services.consultation;
 
 import java.util.UUID;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.services.consultation.model.ConsultParams;
 import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
@@ -50,6 +52,7 @@ public interface SAEConsultationService {
     * @throws UnknownDesiredMetadataEx
     *            une exception est levée lorsque la metadata est inconnue
     */
+   @PreAuthorize("hasRole('consultation')")
    UntypedDocument consultation(ConsultParams consultParams)
          throws SAEConsultationServiceException, UnknownDesiredMetadataEx,
          MetaDataUnauthorizedToConsultEx;

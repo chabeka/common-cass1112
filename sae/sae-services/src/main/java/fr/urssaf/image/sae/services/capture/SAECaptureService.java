@@ -4,6 +4,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.services.exception.capture.CaptureBadEcdeUrlEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureEcdeUrlFileNotFoundEx;
@@ -70,6 +72,7 @@ public interface SAECaptureService {
     * @throws CaptureBadEcdeUrlEx
     *            @link CaptureBadEcdeUrlEx}
     */
+   @PreAuthorize("hasRole('archivage_unitaire')")
    UUID capture(List<UntypedMetadata> metadatas, URI ecdeURL)
          throws SAECaptureServiceEx, RequiredStorageMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
@@ -123,6 +126,7 @@ public interface SAECaptureService {
     * @throws EmptyFileNameEx
     *            @link EmptyFileNameEx}
     */
+   @PreAuthorize("hasRole('archivage_unitaire')")
    UUID captureBinaire(List<UntypedMetadata> metadatas, byte[] content, String fileName)
          throws SAECaptureServiceEx, RequiredStorageMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,

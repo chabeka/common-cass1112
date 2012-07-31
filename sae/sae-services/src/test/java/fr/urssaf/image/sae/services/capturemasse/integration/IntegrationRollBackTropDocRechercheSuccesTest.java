@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,6 +28,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.aop.framework.Advised;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
@@ -38,6 +40,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.xml.sax.SAXException;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
+import fr.urssaf.image.sae.droit.dao.model.Prmd;
+import fr.urssaf.image.sae.droit.model.SaeDroits;
+import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.services.batch.model.ExitTraitement;
@@ -47,6 +52,7 @@ import fr.urssaf.image.sae.services.capturemasse.modele.commun_sommaire_et_resul
 import fr.urssaf.image.sae.services.capturemasse.modele.commun_sommaire_et_resultat.NonIntegratedDocumentType;
 import fr.urssaf.image.sae.services.capturemasse.modele.resultats.ObjectFactory;
 import fr.urssaf.image.sae.services.capturemasse.modele.resultats.ResultatsType;
+import fr.urssaf.image.sae.services.consultation.impl.SAEDocumentTestImpl;
 import fr.urssaf.image.sae.services.document.SAEDocumentService;
 import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
 import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedToConsultEx;
@@ -60,6 +66,10 @@ import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentService;
+import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
+import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
+import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
+import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
@@ -103,33 +113,59 @@ public class IntegrationRollBackTropDocRechercheSuccesTest {
 
       LOGGER.debug("initialisation du répertoire de traitetement :"
             + ecdeTestSommaire.getRepEcde());
+
+      // initialisation du contexte de sécurité
+      VIContenuExtrait viExtrait = new VIContenuExtrait();
+      viExtrait.setCodeAppli("TESTS_UNITAIRES");
+      viExtrait.setIdUtilisateur("UTILISATEUR TEST");
+
+      SaeDroits saeDroits = new SaeDroits();
+      List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
+      SaePrmd saePrmd = new SaePrmd();
+      saePrmd.setValues(new HashMap<String, String>());
+      Prmd prmd = new Prmd();
+      prmd.setBean("permitAll");
+      prmd.setCode("default");
+      saePrmd.setPrmd(prmd);
+      String[] roles = new String[] { "archivage_masse" };
+      saePrmds.add(saePrmd);
+
+      saeDroits.put("archivage_masse", saePrmds);
+      viExtrait.setSaeDroits(saeDroits);
+      AuthenticationToken token = AuthenticationFactory.createAuthentication(
+            viExtrait.getIdUtilisateur(), viExtrait, roles, viExtrait
+                  .getSaeDroits());
+      AuthenticationContext.setAuthenticationToken(token);
    }
 
    @After
-   public void end() {
+   public void end() throws Exception {
       try {
          ecdeTestTools.cleanEcdeTestSommaire(ecdeTestSommaire);
       } catch (IOException e) {
          // rien a faire
       }
+      Advised advised = (Advised) saeDocumentService;
+      SAEDocumentService impl = (SAEDocumentService) advised.getTargetSource()
+            .getTarget();
+      EasyMock.reset(provider, storageDocumentService, impl);
 
-      EasyMock.reset(provider, storageDocumentService, saeDocumentService);
+      AuthenticationContext.setAuthenticationToken(null);
    }
 
    @Test
    @DirtiesContext
-   public void testLancement() throws ConnectionServiceEx, DeletionServiceEx,
-         InsertionServiceEx, IOException, MetaDataUnauthorizedToSearchEx,
-         MetaDataUnauthorizedToConsultEx, UnknownDesiredMetadataEx,
-         UnknownLuceneMetadataEx, SyntaxLuceneEx, SAESearchServiceEx,
-         JAXBException, SAXException {
+   public void testLancement() throws Exception {
       initComposants();
       initDatas();
 
       ExitTraitement exitStatus = service.captureMasse(ecdeTestSommaire
             .getUrlEcde(), UUID.randomUUID());
 
-      EasyMock.verify(provider, storageDocumentService, saeDocumentService);
+      Advised advised = (Advised) saeDocumentService;
+      SAEDocumentService impl = (SAEDocumentService) advised.getTargetSource()
+            .getTarget();
+      EasyMock.verify(provider, storageDocumentService, impl);
 
       Assert.assertFalse("le traitement doit etre en erreur", exitStatus
             .isSucces());
@@ -139,10 +175,7 @@ public class IntegrationRollBackTropDocRechercheSuccesTest {
    }
 
    @SuppressWarnings("unchecked")
-   private void initComposants() throws ConnectionServiceEx, DeletionServiceEx,
-         InsertionServiceEx, MetaDataUnauthorizedToSearchEx,
-         MetaDataUnauthorizedToConsultEx, UnknownDesiredMetadataEx,
-         UnknownLuceneMetadataEx, SyntaxLuceneEx, SAESearchServiceEx {
+   private void initComposants() throws Exception {
 
       // règlage provider
       provider.openConnexion();
@@ -178,12 +211,13 @@ public class IntegrationRollBackTropDocRechercheSuccesTest {
       list.add(untypedDocument);
       list.add(untypedDocument);
 
-      EasyMock.expect(
-            saeDocumentService.search(EasyMock.anyObject(String.class),
-                  EasyMock.anyObject(List.class), EasyMock.anyInt()))
-            .andReturn(list);
+      Advised advised = (Advised) saeDocumentService;
+      SAEDocumentService impl = (SAEDocumentService) advised.getTargetSource()
+            .getTarget();
 
-      EasyMock.replay(provider, storageDocumentService, saeDocumentService);
+      EasyMock.replay(provider);
+      EasyMock.replay(storageDocumentService);
+      EasyMock.replay(impl);
    }
 
    private void initDatas() throws IOException {

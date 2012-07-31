@@ -6,6 +6,8 @@ package fr.urssaf.image.sae.services.capturemasse.integration;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,6 +40,9 @@ import org.xml.sax.SAXException;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import fr.urssaf.image.sae.droit.dao.model.Prmd;
+import fr.urssaf.image.sae.droit.model.SaeDroits;
+import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.services.batch.model.ExitTraitement;
@@ -55,6 +60,10 @@ import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentService;
 import fr.urssaf.image.sae.utils.LogUtils;
 import fr.urssaf.image.sae.utils.SaeLogAppender;
+import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
+import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
+import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
+import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
@@ -100,6 +109,30 @@ public class IntegrationRollbackSuccessTest {
 
       logger.debug("initialisation du répertoire de traitetement :"
             + ecdeTestSommaire.getRepEcde());
+
+      // initialisation du contexte de sécurité
+      VIContenuExtrait viExtrait = new VIContenuExtrait();
+      viExtrait.setCodeAppli("TESTS_UNITAIRES");
+      viExtrait.setIdUtilisateur("UTILISATEUR TEST");
+
+      SaeDroits saeDroits = new SaeDroits();
+      List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
+      SaePrmd saePrmd = new SaePrmd();
+      saePrmd.setValues(new HashMap<String, String>());
+      Prmd prmd = new Prmd();
+      prmd.setBean("permitAll");
+      prmd.setCode("default");
+      saePrmd.setPrmd(prmd);
+      String[] roles = new String[] { "archivage_masse", "recherche" };
+      saePrmds.add(saePrmd);
+
+      saeDroits.put("archivage_masse", saePrmds);
+      saeDroits.put("recherche", saePrmds);
+      viExtrait.setSaeDroits(saeDroits);
+      AuthenticationToken token = AuthenticationFactory.createAuthentication(
+            viExtrait.getIdUtilisateur(), viExtrait, roles, viExtrait
+                  .getSaeDroits());
+      AuthenticationContext.setAuthenticationToken(token);
    }
 
    @After
@@ -111,6 +144,8 @@ public class IntegrationRollbackSuccessTest {
       }
 
       EasyMock.reset(provider, storageDocumentService);
+
+      AuthenticationContext.setAuthenticationToken(null);
 
       logger.detachAppender(logAppender);
    }
@@ -351,8 +386,9 @@ public class IntegrationRollbackSuccessTest {
 
       Assert.assertEquals("aucun message de niveau error", 0, nbreErreur);
 
-       boolean messageFound = LogUtils.logExists(loggingEvents, Level.WARN, "erreur mémoire");
-      
+      boolean messageFound = LogUtils.logExists(loggingEvents, Level.WARN,
+            "erreur mémoire");
+
       Assert.assertTrue("le message d'erreur doit être trouvé", messageFound);
 
    }
