@@ -147,7 +147,7 @@ public class WebServiceVIServiceImpl implements WebServiceVIService {
       VIContenuExtrait extrait = new VIContenuExtrait();
       extrait.setSaeDroits(saeDroits);
       extrait.setIdUtilisateur(data.getAssertionParams().getSubjectId2());
-      extrait.setCodeAppli(idAppliCliente);
+      extrait.setCodeAppli(issuer);
 
       // Renvoie du résultat
       return extrait;

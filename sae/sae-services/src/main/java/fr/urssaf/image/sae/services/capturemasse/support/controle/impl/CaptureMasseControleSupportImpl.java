@@ -53,6 +53,8 @@ public class CaptureMasseControleSupportImpl implements
 
    private static final String PREFIXE_TRC = "controleFichierNonVide()";
 
+   private static final String TRC_CONTROLE = "controleSAEDocument";
+
    @Autowired
    private SAEControlesCaptureService controleService;
 
@@ -112,10 +114,12 @@ public class CaptureMasseControleSupportImpl implements
          throw new CaptureMasseRuntimeException(e);
       }
 
+      LOGGER.debug("{} - récupération du Vi", TRC_CONTROLE);
       AuthenticationToken token = (AuthenticationToken) SecurityContextHolder
             .getContext().getAuthentication();
       List<SaePrmd> prmds = token.getDetails().get("archivage_masse");
 
+      LOGGER.debug("{} - vérification des droits", TRC_CONTROLE);
       boolean isPermitted = prmdService.isPermitted(document.getUMetadatas(),
             prmds);
 

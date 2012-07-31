@@ -319,10 +319,11 @@ public class SAEEnrichmentMetadataServiceImpl implements
                   SAEArchivalMetadatas.CONTRAT_DE_SERVICE.getLongCode())
                   .getShortCode());
 
-            // FIXME FBON - Vérifier
+            LOGGER.debug("{} - Récupération des droits", prefixeTrc);
             AuthenticationToken token = AuthenticationContext
                   .getAuthenticationToken();
             VIContenuExtrait extrait = (VIContenuExtrait) token.getPrincipal();
+            LOGGER.debug("{} - Mise a jour du code application", prefixeTrc);
             String codeContrat = extrait.getCodeAppli();
             saeMetadata.setValue(codeContrat);
             saeDocument.getMetadatas().add(saeMetadata);

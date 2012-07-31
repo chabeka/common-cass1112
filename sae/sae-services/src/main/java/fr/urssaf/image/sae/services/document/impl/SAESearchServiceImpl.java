@@ -520,9 +520,11 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
       List<UntypedDocument> listUntypedDocument = new ArrayList<UntypedDocument>();
 
       // gestion des droits
+      LOG.debug("{} - Récupération des droits", prefixeTrc);
       AuthenticationToken token = (AuthenticationToken) AuthenticationContext
             .getAuthenticationToken();
       List<SaePrmd> prmds = token.getDetails().get("recherche");
+      LOG.debug("{} - Ajustage de la requete avec les éléments des droits", prefixeTrc);
       requete = prmdService.createLucene(requete, prmds);
 
       // conversion code court

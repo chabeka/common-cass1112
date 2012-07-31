@@ -52,6 +52,8 @@ public class TraitementAsynchroneServiceImpl implements
     */
    public static final String CAPTURE_MASSE_JN = "capture_masse";
 
+   private static final String TRC_LANCER = "lancerJob";
+
    private final JobLectureService jobLectureService;
 
    private final JobQueueService jobQueueService;
@@ -135,10 +137,14 @@ public class TraitementAsynchroneServiceImpl implements
          throw new JobInexistantException(idJob);
       }
       
+      LOG.debug("{} - récupération du VI", TRC_LANCER);
       VIContenuExtrait viExtrait = job.getVi();
       AuthenticationToken token;
 
       if (viExtrait == null) {
+         
+         LOG.debug("{} - le Vi est null, on met toutes les autorisations", TRC_LANCER);
+         
          List<String> pagms = new ArrayList<String>();
          pagms.add("ROLE_TOUS");
          SaeDroitServiceSkipImpl impl = new SaeDroitServiceSkipImpl();
@@ -160,6 +166,7 @@ public class TraitementAsynchroneServiceImpl implements
       String[] roles = viExtrait.getSaeDroits().keySet().toArray(new String[0]);
       token = AuthenticationFactory.createAuthentication(viExtrait
             .getIdUtilisateur(), viExtrait, roles, viExtrait.getSaeDroits());
+      LOG.debug("{} - initialisation du contexte de sécurité", TRC_LANCER);
       AuthenticationContext.setAuthenticationToken(token);
 
       // vérification que le type de traitement existe bien

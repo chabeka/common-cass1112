@@ -8,6 +8,8 @@ import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.text.StrSubstitutor;
 import org.apache.commons.lang.time.DateFormatUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Element;
 
@@ -37,6 +39,8 @@ public class WebServiceVIValidateServiceImpl implements
       WebServiceVIValidateService {
 
    private static final String DATE_PATTERN = "dd/MM/yyyy HH:mm:ss";
+   private static final Logger LOGGER = LoggerFactory
+         .getLogger(WebServiceVIValidateServiceImpl.class);
 
    private final SamlAssertionVerificationService checkService = new SamlAssertionVerificationService();
 
@@ -81,7 +85,9 @@ public class WebServiceVIValidateServiceImpl implements
          String idAppliClient, Date systemDate) throws VIInvalideException,
          VIAppliClientException, VINivAuthException, VIPagmIncorrectException,
          VIServiceIncorrectException {
-
+      
+      String prefixeTrc = "validate()";
+      
       // la date systeme doit être postérieure à NotOnBefore
       Date notOnBefore = data.getAssertionParams().getCommonsParams()
             .getNotOnBefore();
@@ -131,6 +137,7 @@ public class WebServiceVIValidateServiceImpl implements
       }
 
       // Au moins 1 PAGM
+      LOGGER.debug("{} -Vérification qu'au moins un PAGM est présent dans le VI", prefixeTrc);
       if (CollectionUtils.isEmpty(data.getAssertionParams().getCommonsParams()
             .getPagm())) {
          throw new VIPagmIncorrectException(

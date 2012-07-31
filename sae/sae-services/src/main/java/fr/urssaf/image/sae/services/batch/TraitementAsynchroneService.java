@@ -2,6 +2,8 @@ package fr.urssaf.image.sae.services.batch;
 
 import java.util.UUID;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.services.batch.exception.JobNonReserveException;
 import fr.urssaf.image.sae.services.batch.model.CaptureMasseParametres;
@@ -26,6 +28,7 @@ public interface TraitementAsynchroneService {
     *           capture de masse
     * 
     */
+   @PreAuthorize("hasRole('archivage_masse')")
    void ajouterJobCaptureMasse(CaptureMasseParametres parametres);
 
    /**
