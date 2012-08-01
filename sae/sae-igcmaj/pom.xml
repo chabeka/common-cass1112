@@ -26,30 +26,35 @@ Le programme peut par exemple être exécuté sous forme de tâche planifiée, a
    <build>
 
       <plugins>
-
+       
          <plugin>
-            <artifactId>maven-assembly-plugin</artifactId>
-            <version>${maven-assembly-plugin.version}</version>
-            <configuration>
-               <archive>
-                  <manifest>
-                     <mainClass>fr.urssaf.image.sae.igcmaj.IgcMain</mainClass>
-                  </manifest>
-               </archive>
-               <descriptors>
-                  <descriptor>src/assembly/jar-executable.xml</descriptor>
-               </descriptors>
-            </configuration>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <version>${maven-shade-plugin.version}</version>
             <executions>
                <execution>
-                  <id>make-assembly</id>
                   <phase>package</phase>
                   <goals>
-                     <goal>single</goal>
+                     <goal>shade</goal>
                   </goals>
+                  <configuration>
+                     <transformers>
+                        <transformer
+                           implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                           <mainClass>fr.urssaf.image.sae.igcmaj.IgcMain</mainClass>
+                        </transformer>
+                        <transformer
+                           implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                           <resource>META-INF/spring.handlers</resource>
+                        </transformer>
+                        <transformer
+                           implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                           <resource>META-INF/spring.schemas</resource>
+                        </transformer>
+                     </transformers>
+                  </configuration>
                </execution>
             </executions>
-
          </plugin>
 
       </plugins>
