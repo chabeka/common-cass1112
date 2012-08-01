@@ -110,38 +110,38 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-webservices</artifactId>
-         <version>${project.version}</version>
+         <version>12.5.11.2-SNAPSHOT</version>
          <type>war</type>
       </dependency>
 
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-ordonnanceur</artifactId>
-         <version>${project.version}</version>
+         <version>12.5.11.2-SNAPSHOT</version>
       </dependency>
 
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-lotinstallmaj</artifactId>
-         <version>${project.version}</version>
+         <version>12.5.11.2-SNAPSHOT</version>
       </dependency>
 
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-services-executable</artifactId>
-         <version>${project.version}</version>
+         <version>12.5.11.2-SNAPSHOT</version>
       </dependency>
 
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-dfce-admin-exploit</artifactId>
-         <version>${project.version}</version>
+         <version>12.5.11.2-SNAPSHOT</version>
       </dependency>
 
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-igcmaj</artifactId>
-         <version>${project.version}</version>
+         <version>12.5.11.2-SNAPSHOT</version>
       </dependency>
 
    </dependencies>
