@@ -48,10 +48,9 @@ public class PrmdServiceImpl implements PrmdService {
     */
    @Override
    public final String createLucene(String lucene, List<SaePrmd> prmds) {
-      
-      
+
       LOGGER.debug("{} - Debut de la creation de la requete", TRC_LUCENE);
-      
+
       String currentRequete;
       Prmd prmd;
       SaePrmd saePrmd;
@@ -64,11 +63,13 @@ public class PrmdServiceImpl implements PrmdService {
          prmd = saePrmd.getPrmd();
 
          if (StringUtils.isNotEmpty(prmd.getLucene())) {
-            LOGGER.debug("{} - Concaténation avec la requete lucène du PRMD", TRC_LUCENE);
+            LOGGER.debug("{} - Concaténation avec la requete lucène du PRMD",
+                  TRC_LUCENE);
             currentRequete = createLucene(prmd, saePrmd.getValues());
 
          } else if (StringUtils.isNotEmpty(prmd.getBean())) {
-            LOGGER.debug("{} - Concaténation avec la requête du bean", TRC_LUCENE);
+            LOGGER.debug("{} - Concaténation avec la requête du bean",
+                  TRC_LUCENE);
             currentRequete = createBean(prmd, saePrmd.getValues());
 
          } else {
@@ -81,16 +82,16 @@ public class PrmdServiceImpl implements PrmdService {
          }
 
       }
-      
+
       LOGGER.debug("{} - Assemblage de la sous requête", TRC_LUCENE);
       String sousRequete = createSousRequete(sousRequetes);
-      
+
       String requete = lucene;
       if (StringUtils.isNotEmpty(sousRequete)) {
          LOGGER.debug("{} - Assemblage de la requête définitive", TRC_LUCENE);
          requete = "(" + requete + ")AND(" + sousRequete + ")";
       }
-      
+
       return requete;
    }
 
@@ -107,7 +108,7 @@ public class PrmdServiceImpl implements PrmdService {
          }
          buffer.append("(" + sousRequetes.get(index) + ")");
       }
-      
+
       return buffer.toString();
    }
 
@@ -164,6 +165,10 @@ public class PrmdServiceImpl implements PrmdService {
       try {
          controle = context.getBean(prmd.getBean(), PrmdControle.class);
 
+         if (values == null) {
+            values = new HashMap<String, String>();
+         }
+
          match = controle.isPermitted(metadatas, values);
 
       } catch (BeansException e) {
@@ -199,7 +204,11 @@ public class PrmdServiceImpl implements PrmdService {
     */
    private boolean checkPrmd(Prmd prmd, Map<String, String> dynamicValues,
          Map<String, String> metaValues) {
-
+      
+      if (metaValues == null) {
+         metaValues = new HashMap<String, String>();
+      }
+      
       boolean match = true;
       Map<String, List<String>> parametres = prmd.getMetadata();
 
@@ -221,7 +230,8 @@ public class PrmdServiceImpl implements PrmdService {
          key = keyIterator.next();
 
          boolean metaStatic = containsIgnoreCase(metaValues.keySet(), key)
-               && containsIgnoreCase(parametres.get(key), metaValues.get(key.toUpperCase()));
+               && containsIgnoreCase(parametres.get(key), metaValues.get(key
+                     .toUpperCase()));
 
          boolean metaDynamic = containsIgnoreCase(dynamicParam.keySet(), key)
                && containsIgnoreCase(parametres.get(key), dynamicParam.get(key));
@@ -258,6 +268,10 @@ public class PrmdServiceImpl implements PrmdService {
       try {
          PrmdControle controle = context.getBean(prmd.getBean(),
                PrmdControle.class);
+
+         if (parametres == null) {
+            parametres = new HashMap<String, String>();
+         }
          requete = controle.createLucene(parametres);
 
       } catch (BeansException e) {
