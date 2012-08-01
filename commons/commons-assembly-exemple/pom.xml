@@ -1,0 +1,149 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>fr.urssaf.image.commons</groupId>
+   <artifactId>commons-assembly-exemple</artifactId>
+   <packaging>pom</packaging>
+   <name>commons-assembly-exemple</name>
+   <version>12.5.11.2-SNAPSHOT</version>
+
+
+   <properties>
+
+
+      <!-- Version des plug-ins Maven -->
+
+      <maven-release-plugin.version>2.2.1</maven-release-plugin.version>
+      <maven-assembly-plugin.version>2.2.2</maven-assembly-plugin.version>
+
+   </properties>
+
+
+   <build>
+      <plugins>
+
+         <plugin>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <version>${maven-assembly-plugin.version}</version>
+            <executions>
+               <execution>
+                  <id>make-assembly-targ-z</id>
+                  <phase>package</phase>
+                  <goals>
+                     <goal>attached</goal>
+                  </goals>
+                  <configuration>
+                     <descriptors>
+                        <descriptor>src/assembly/config_tar-gz.xml</descriptor>
+                     </descriptors>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+
+         <plugin>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <version>${maven-assembly-plugin.version}</version>
+            <executions>
+               <execution>
+                  <id>make-assembly</id>
+                  <phase>package</phase>
+                  <goals>
+                     <goal>attached</goal>
+                  </goals>
+                  <configuration>
+                     <descriptors>
+                        <descriptor>src/assembly/config_assembly.xml</descriptor>
+                     </descriptors>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+
+
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-release-plugin</artifactId>
+            <version>${maven-release-plugin.version}</version>
+            <configuration>
+               <preparationGoals>clean javadoc:jar install</preparationGoals>
+            </configuration>
+         </plugin>
+
+
+      </plugins>
+
+   </build>
+
+   <scm>
+      <url>
+        scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/sae/sae-livrable
+      </url>
+      <developerConnection>
+         scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/sae/sae-livrable
+      </developerConnection>
+      <connection>
+         scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/sae/sae-livrable
+      </connection>
+   </scm>
+
+   <!--
+      On indique l'URL des repository Nexus, pour les versions Snapshots
+      et Releases des artéfacts
+   -->
+   <distributionManagement>
+      <repository>
+         <id>nexus</id>
+         <name>Releases</name>
+         <url>http://cer69-nexus.cer69.recouv:8081/nexus/content/repositories/releases</url>
+      </repository>
+      <snapshotRepository>
+         <id>nexus</id>
+         <name>Snapshots</name>
+         <url>http://cer69-nexus.cer69.recouv:8081/nexus/content/repositories/snapshots</url>
+         <uniqueVersion>false</uniqueVersion>
+      </snapshotRepository>
+   </distributionManagement>
+
+   <dependencies>
+      <dependency>
+         <groupId>fr.urssaf.image.sae</groupId>
+         <artifactId>sae-webservices</artifactId>
+         <version>${project.version}</version>
+         <type>war</type>
+      </dependency>
+
+      <dependency>
+         <groupId>fr.urssaf.image.sae</groupId>
+         <artifactId>sae-ordonnanceur</artifactId>
+         <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+         <groupId>fr.urssaf.image.sae</groupId>
+         <artifactId>sae-lotinstallmaj</artifactId>
+         <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+         <groupId>fr.urssaf.image.sae</groupId>
+         <artifactId>sae-services-executable</artifactId>
+         <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+         <groupId>fr.urssaf.image.sae</groupId>
+         <artifactId>sae-dfce-admin-exploit</artifactId>
+         <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+         <groupId>fr.urssaf.image.sae</groupId>
+         <artifactId>sae-igcmaj</artifactId>
+         <version>${project.version}</version>
+      </dependency>
+
+   </dependencies>
+
+</project>
