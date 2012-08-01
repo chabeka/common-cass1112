@@ -2,6 +2,7 @@ package fr.urssaf.image.sae.vi.service.impl;
 
 import java.net.URI;
 import java.security.cert.CertificateEncodingException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -43,7 +44,7 @@ public class WebServiceVIServiceImpl implements WebServiceVIService {
 
    private static final String OLD_CS = "CS_ANCIEN_SYSTEME";
 
-   private static final String OLD_PAGM = "ACCES_FULL_PAGM";
+   private static final String OLD_PAGM = "ROLE_TOUS;FULL";
 
    private static final String TRC_CHECK = "verifierVIdeServiceWeb";
 
@@ -98,13 +99,22 @@ public class WebServiceVIServiceImpl implements WebServiceVIService {
             && data.getAssertionParams().getCommonsParams().getPagm().contains(
                   OLD_PAGM);
 
+      LOGGER.debug("{} - Appel du service avec l'ancien role : "
+            + (isOldRole ? "oui" : "non"), TRC_CHECK);
+
+      LOGGER.debug("{} - Connexion avec ancien mode d'appel accepté "
+            + (acceptOldWs ? "oui" : "non"), TRC_CHECK);
+
       if (isOldRole && !acceptOldWs) {
          throw new VIInvalideException(
                "le webservice n'accepte pas le mode d'appel sans autorisations");
       }
 
       if (isOldRole) {
-         LOGGER.info("{} - Utilisation du contrat de service " + OLD_CS, TRC_CHECK);
+         LOGGER.info("{} - Utilisation du contrat de service " + OLD_CS,
+               TRC_CHECK);
+         data.getAssertionParams().getCommonsParams().setPagm(
+               Arrays.asList(new String[] { "ACCES_FULL_PAGM" }));
          issuer = OLD_CS;
       }
 
