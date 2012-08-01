@@ -139,7 +139,7 @@ public class ArchivageUnitaireTest {
       expectedMetadatas.put("CodeRND", "2.3.1.1.12");
       expectedMetadatas.put("NomFichier", "attestation.pdf");
       expectedMetadatas.put("FormatFichier", "fmt/354");
-      expectedMetadatas.put("ContratDeService", "ATT_PROD_001");
+      expectedMetadatas.put("ContratDeService", "TESTS_UNITAIRES");
       expectedMetadatas.put("Hash", hash);
       expectedMetadatas.put("TailleFichier", Long.toString(FileUtils
             .sizeOf(srcFile)));
