@@ -1,17 +1,10 @@
 package fr.urssaf.image.sae.regionalisation;
 
-import java.io.IOException;
-
-import javax.security.auth.callback.CallbackHandler;
-import javax.security.auth.callback.PasswordCallback;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import fr.urssaf.image.sae.regionalisation.security.AuthenticateSupport;
-import fr.urssaf.image.sae.regionalisation.security.RegionalisationCallbackHandler;
-import fr.urssaf.image.sae.regionalisation.security.RegionalisationLoginModule;
 
 @SuppressWarnings("PMD.MethodNamingConventions")
 public class BootStrapValidationTest {
@@ -29,23 +22,9 @@ public class BootStrapValidationTest {
    @Before
    public void before() {
 
-      CallbackHandler callbackHandler = new RegionalisationCallbackHandler() {
-
-         protected String loadPassword(PasswordCallback passwordCallback)
-               throws IOException {
-
-            return "toto";
-
-         }
-
-      };
-
-      AuthenticateSupport authenticateSupport = new AuthenticateSupport(
-            callbackHandler, RegionalisationLoginModule.class);
-
       bootStrap = new BootStrap(
             "/applicationContext-sae-regionalisation-test.xml",
-            authenticateSupport);
+            new AuthenticateSupport());
    }
 
    private void assertExecute(String[] args, String message) {

@@ -1,10 +1,5 @@
 package fr.urssaf.image.sae.regionalisation;
 
-import java.io.IOException;
-
-import javax.security.auth.callback.CallbackHandler;
-import javax.security.auth.callback.PasswordCallback;
-
 import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
@@ -12,9 +7,8 @@ import org.junit.Test;
 
 import fr.urssaf.image.sae.regionalisation.mock.ServiceMock;
 import fr.urssaf.image.sae.regionalisation.security.AuthenticateSupport;
-import fr.urssaf.image.sae.regionalisation.security.RegionalisationCallbackHandler;
-import fr.urssaf.image.sae.regionalisation.security.RegionalisationLoginModule;
 import fr.urssaf.image.sae.regionalisation.service.ProcessingService;
+import fr.urssaf.image.sae.regionalisation.util.AuthentificationUtils;
 
 @SuppressWarnings("PMD.MethodNamingConventions")
 public class BootStrapTest {
@@ -30,19 +24,8 @@ public class BootStrapTest {
    @Before
    public void before() {
 
-      CallbackHandler callbackHandler = new RegionalisationCallbackHandler() {
-
-         protected String loadPassword(PasswordCallback passwordCallback)
-               throws IOException {
-
-            return "toto";
-
-         }
-
-      };
-
-      AuthenticateSupport authenticateSupport = new AuthenticateSupport(
-            callbackHandler, RegionalisationLoginModule.class);
+      AuthenticateSupport authenticateSupport = AuthentificationUtils
+            .createAuthenticateSupport("regionalisation");
 
       bootStrap = new BootStrap(
             "/applicationContext-sae-regionalisation-test.xml",
@@ -80,6 +63,36 @@ public class BootStrapTest {
    public void execute_success_MISE_A_JOUR() {
 
       processingService.launch(true, 12, 50);
+
+      EasyMock.replay(processingService);
+
+      String[] args = new String[] { DFCE_CONFIG, POSTGRESQL_CONFIG, "12",
+            "50", "MISE_A_JOUR" };
+      bootStrap.execute(args);
+
+      assertService();
+   }
+
+   @Test
+   public void execute_validate_failure() {
+
+      EasyMock.replay(processingService);
+
+      String[] args = new String[] { DFCE_CONFIG, POSTGRESQL_CONFIG };
+      bootStrap.execute(args);
+
+      assertService();
+   }
+
+   @Test
+   public void execute_authentification_failure() {
+
+      AuthenticateSupport authenticateSupport = AuthentificationUtils
+            .createAuthenticateSupport("tata");
+
+      bootStrap = new BootStrap(
+            "/applicationContext-sae-regionalisation-test.xml",
+            authenticateSupport);
 
       EasyMock.replay(processingService);
 

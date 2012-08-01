@@ -1,5 +1,8 @@
 package fr.urssaf.image.sae.regionalisation.security;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,8 +14,12 @@ import javax.security.auth.login.LoginException;
 import javax.security.auth.login.AppConfigurationEntry.LoginModuleControlFlag;
 import javax.security.auth.spi.LoginModule;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
+
+import fr.urssaf.image.sae.regionalisation.exception.ErreurTechniqueException;
 
 /***
  * Support pour l'authentification sur le service de régionalisation.
@@ -28,13 +35,16 @@ public final class AuthenticateSupport {
 
    private final Class<? extends LoginModule> loginModule;
 
+   private final String authentificationPassword;
+
    /**
     * constructeur par défaut
     */
    public AuthenticateSupport() {
 
-      this.callbackHandler = new RegionalisationCallbackHandler();
-      this.loginModule = RegionalisationLoginModule.class;
+      this(new RegionalisationCallbackHandler(),
+            RegionalisationLoginModule.class);
+
    }
 
    /**
@@ -49,6 +59,30 @@ public final class AuthenticateSupport {
 
       this.callbackHandler = callbackHandler;
       this.loginModule = loginModule;
+
+      ClassPathResource resource = new ClassPathResource("password.txt");
+
+      try {
+
+         InputStreamReader inputStream = new InputStreamReader(resource
+               .getInputStream());
+
+         BufferedReader input = new BufferedReader(inputStream);
+
+         try {
+
+            authentificationPassword = StringUtils.trim(input.readLine());
+
+         } finally {
+
+            input.close();
+         }
+
+      } catch (IOException e) {
+
+         throw new ErreurTechniqueException(e);
+
+      }
    }
 
    // l'implémentation s'appuie en grande partie sur
@@ -69,6 +103,7 @@ public final class AuthenticateSupport {
             AppConfigurationEntry[] config = new AppConfigurationEntry[1];
 
             Map<String, Object> options = new HashMap<String, Object>();
+            options.put("password", authentificationPassword);
 
             config[0] = new AppConfigurationEntry(loginModule
                   .getCanonicalName(), LoginModuleControlFlag.SUFFICIENT,
@@ -82,9 +117,14 @@ public final class AuthenticateSupport {
       LoginContext loginContext = new LoginContext("regionalisation", null,
             callbackHandler, configuration);
 
+      // on se connecte pour s'authentifier
       loginContext.login();
 
       LOGGER.debug("L'authentification a réussi");
+
+      // on se déconnecte car aucun contexte d'authentification n'est utilisé
+      // ici dans la régionalisation
+      loginContext.logout();
 
    }
 

@@ -12,6 +12,7 @@ import javax.security.auth.login.FailedLoginException;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.util.Assert;
 
 import fr.urssaf.image.sae.regionalisation.exception.ErreurTechniqueException;
@@ -43,6 +44,8 @@ public class RegionalisationLoginModule implements LoginModule {
 
    private CallbackHandler callbackHandler;
 
+   private String regionalisationPassword;
+
    /**
     * {@inheritDoc}
     */
@@ -54,6 +57,11 @@ public class RegionalisationLoginModule implements LoginModule {
       Assert.notNull(callbackHandler, "'callbackHandler' is required");
 
       this.callbackHandler = callbackHandler;
+
+      Assert.isTrue(options.containsKey("password"),
+            "les options doivent contenir l'option 'password'");
+
+      this.regionalisationPassword = (String) options.get("password");
 
    }
 
@@ -82,7 +90,7 @@ public class RegionalisationLoginModule implements LoginModule {
 
       boolean succeeded = false;
 
-      if ("toto".equals(password)) {
+      if (this.regionalisationPassword.equals(DigestUtils.shaHex(password))) {
 
          succeeded = true;
 
@@ -101,7 +109,7 @@ public class RegionalisationLoginModule implements LoginModule {
    @Override
    public final boolean logout() throws LoginException {
 
-      return false;
+      return true;
    }
 
 }

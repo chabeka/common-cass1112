@@ -26,8 +26,16 @@
       <org.springframework.version>3.0.5.RELEASE</org.springframework.version>
       <junit.version>4.8.2</junit.version>
       <logback.version>1.0.0</logback.version>
+      <org.slf4j.version>1.6.4</org.slf4j.version>
       <jcl-over-slf4j.version>1.6.4</jcl-over-slf4j.version>
       <log4j-over-slf4j.version>1.6.4</log4j-over-slf4j.version>
+      <easymock.version>3.1</easymock.version>
+
+      <!-- commons apache -->
+      <apache.commons-collections.version>3.2.1</apache.commons-collections.version>
+      <apache.commons-io.version>2.0.1</apache.commons-io.version>
+      <apache.commons-lang.version>2.6</apache.commons-lang.version>
+      <apache.commons-codec.version>1.4</apache.commons-codec.version>
 
    </properties>
 
@@ -148,6 +156,12 @@
       <!-- LOGBACK -->
 
       <dependency>
+         <groupId>org.slf4j</groupId>
+         <artifactId>slf4j-api</artifactId>
+         <version>${org.slf4j.version}</version>
+      </dependency>
+
+      <dependency>
          <groupId>ch.qos.logback</groupId>
          <artifactId>logback-classic</artifactId>
          <version>${logback.version}</version>
@@ -180,6 +194,12 @@
       <dependency>
          <groupId>org.springframework</groupId>
          <artifactId>spring-jdbc</artifactId>
+         <version>${org.springframework.version}</version>
+      </dependency>
+
+      <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-core</artifactId>
          <version>${org.springframework.version}</version>
       </dependency>
 
@@ -230,13 +250,25 @@
       <dependency>
          <groupId>commons-lang</groupId>
          <artifactId>commons-lang</artifactId>
-         <version>2.6</version>
+         <version>${apache.commons-lang.version}</version>
+      </dependency>
+
+      <dependency>
+         <groupId>commons-io</groupId>
+         <artifactId>commons-io</artifactId>
+         <version>${apache.commons-io.version}</version>
       </dependency>
 
       <dependency>
          <groupId>commons-collections</groupId>
          <artifactId>commons-collections</artifactId>
-         <version>3.2.1</version>
+         <version>${apache.commons-collections.version}</version>
+      </dependency>
+
+      <dependency>
+         <groupId>commons-codec</groupId>
+         <artifactId>commons-codec</artifactId>
+         <version>${apache.commons-codec.version}</version>
       </dependency>
 
       <!-- POSTGRESQL -->
@@ -268,7 +300,7 @@
       <dependency>
          <groupId>org.easymock</groupId>
          <artifactId>easymock</artifactId>
-         <version>3.1</version>
+         <version>${easymock.version}</version>
          <scope>test</scope>
       </dependency>
 
