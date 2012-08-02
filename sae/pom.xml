@@ -412,22 +412,11 @@
       <module>sae-dfce-admin-exploit</module>
       <module>sae-ordonnanceur</module>
       <module>sae-lotinstallmaj</module>
+      
+       <!-- Le module du livrable -->
+       <module>sae-livrable</module>
 
    </modules>
-
-   <profiles>
-
-      <profile>
-         <id>full</id>
-
-         <modules>
-            <!-- Le module du livrable -->
-            <module>sae-livrable</module>
-         </modules>
-      </profile>
-
-   </profiles>
-
 
    <!-- Configuration SVN pour le plug-in maven-release -->
    <scm>
