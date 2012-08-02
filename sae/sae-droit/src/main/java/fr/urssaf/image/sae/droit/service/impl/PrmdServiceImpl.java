@@ -187,8 +187,12 @@ public class PrmdServiceImpl implements PrmdService {
 
       Map<String, String> map = new HashMap<String, String>();
       for (UntypedMetadata untypedMetadata : metadatas) {
-         map.put(untypedMetadata.getLongCode().toUpperCase(), untypedMetadata
-               .getValue().toUpperCase());
+
+         if (StringUtils.isNotBlank(untypedMetadata.getLongCode())
+               && StringUtils.isNotBlank(untypedMetadata.getValue())) {
+            map.put(untypedMetadata.getLongCode().toUpperCase(),
+                  untypedMetadata.getValue().toUpperCase());
+         }
       }
 
       return map;
@@ -204,11 +208,11 @@ public class PrmdServiceImpl implements PrmdService {
     */
    private boolean checkPrmd(Prmd prmd, Map<String, String> dynamicValues,
          Map<String, String> metaValues) {
-      
+
       if (metaValues == null) {
          metaValues = new HashMap<String, String>();
       }
-      
+
       boolean match = true;
       Map<String, List<String>> parametres = prmd.getMetadata();
 
