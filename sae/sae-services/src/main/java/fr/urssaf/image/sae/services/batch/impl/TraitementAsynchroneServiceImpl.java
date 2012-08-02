@@ -146,11 +146,11 @@ public class TraitementAsynchroneServiceImpl implements
          LOG.debug("{} - le Vi est null, on met toutes les autorisations", TRC_LANCER);
          
          List<String> pagms = new ArrayList<String>();
-         pagms.add("ROLE_TOUS");
+         pagms.add("ACCES_FULL_PAGM");
          SaeDroitServiceSkipImpl impl = new SaeDroitServiceSkipImpl();
          SaeDroits saeDroits = new SaeDroits();
          try {
-            saeDroits = impl.loadSaeDroits("CS_TOUS", pagms);
+            saeDroits = impl.loadSaeDroits("CS_ANCIEN_SYSTEME", pagms);
          } catch (ContratServiceNotFoundException e) {
             LOG.warn("impossible de créer un accès total");
          } catch (PagmNotFoundException e) {
