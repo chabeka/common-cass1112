@@ -19,6 +19,7 @@ import org.apache.axis2.transport.http.HTTPConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
@@ -43,6 +44,7 @@ import fr.urssaf.image.sae.webservices.SaeService;
 import fr.urssaf.image.sae.webservices.exception.CaptureAxisFault;
 import fr.urssaf.image.sae.webservices.exception.ConsultationAxisFault;
 import fr.urssaf.image.sae.webservices.exception.RechercheAxis2Fault;
+import fr.urssaf.image.sae.webservices.security.exception.SaeAccessDeniedAxisFault;
 import fr.urssaf.image.sae.webservices.service.WSCaptureMasseService;
 import fr.urssaf.image.sae.webservices.service.WSCaptureService;
 import fr.urssaf.image.sae.webservices.service.WSConsultationService;
@@ -130,10 +132,12 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
     * {@inheritDoc}
     * 
     * @throws CaptureAxisFault
+    * @throws SaeAccessDeniedAxisFault
     */
    @Override
    public final ArchivageUnitaireResponse archivageUnitaireSecure(
-         ArchivageUnitaire request) throws CaptureAxisFault {
+         ArchivageUnitaire request) throws CaptureAxisFault,
+         SaeAccessDeniedAxisFault {
       try {
 
          // Traces debug - entrée méthode
@@ -164,6 +168,8 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
       } catch (CaptureAxisFault ex) {
          logSoapFault(ex);
          throw ex;
+      } catch (AccessDeniedException exception) {
+         throw new SaeAccessDeniedAxisFault(exception);
       } catch (RuntimeException ex) {
          logRuntimeException(ex);
          throw new CaptureAxisFault(
@@ -212,6 +218,8 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
       } catch (CaptureAxisFault ex) {
          logSoapFault(ex);
          throw ex;
+      } catch (AccessDeniedException exception) {
+         throw new SaeAccessDeniedAxisFault(exception);
       } catch (RuntimeException ex) {
          logRuntimeException(ex);
          throw new CaptureAxisFault(
@@ -225,10 +233,12 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
     * {@inheritDoc}
     * 
     * @throws CaptureAxisFault
+    * @throws SaeAccessDeniedAxisFault
     */
    @Override
    public final ArchivageMasseResponse archivageMasseSecure(
-         ArchivageMasse request, String callerIP) throws CaptureAxisFault {
+         ArchivageMasse request, String callerIP) throws CaptureAxisFault,
+         SaeAccessDeniedAxisFault {
       try {
 
          // Traces debug - entrée méthode
@@ -238,8 +248,8 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
 
          // l'opération web service n'interagit pas avec DFCE
          // il n'est pas nécessaire de vérifier si DFCE est Up
-         ArchivageMasseResponse response = captureMasse
-               .archivageEnMasse(request, callerIP);
+         ArchivageMasseResponse response = captureMasse.archivageEnMasse(
+               request, callerIP);
 
          // Traces debug - sortie méthode
          LOG.debug("{} - Sortie", prefixeTrc);
@@ -250,6 +260,8 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
       } catch (CaptureAxisFault ex) {
          logSoapFault(ex);
          throw ex;
+      } catch (AccessDeniedException exception) {
+         throw new SaeAccessDeniedAxisFault(exception);
       } catch (RuntimeException ex) {
          logRuntimeException(ex);
          throw new CaptureAxisFault(
@@ -263,10 +275,11 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
     * {@inheritDoc}
     * 
     * @throws RechercheAxis2Fault
+    * @throws SaeAccessDeniedAxisFault
     */
    @Override
    public final RechercheResponse rechercheSecure(Recherche request)
-         throws RechercheAxis2Fault {
+         throws RechercheAxis2Fault, SaeAccessDeniedAxisFault {
       try {
 
          // Traces debug - entrée méthode
@@ -296,6 +309,8 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
       } catch (RechercheAxis2Fault ex) {
          logSoapFault(ex);
          throw ex;
+      } catch (AccessDeniedException exception) {
+         throw new SaeAccessDeniedAxisFault(exception);
       } catch (RuntimeException ex) {
          logRuntimeException(ex);
          throw new RechercheAxis2Fault(
@@ -306,10 +321,12 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
 
    /**
     * {@inheritDoc}
+    * 
+    * @throws SaeAccessDeniedAxisFault
     */
    @Override
    public final ConsultationResponse consultationSecure(Consultation request)
-         throws ConsultationAxisFault {
+         throws ConsultationAxisFault, SaeAccessDeniedAxisFault {
       try {
 
          // Traces debug - entrée méthode
@@ -339,6 +356,8 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
       } catch (ConsultationAxisFault ex) {
          logSoapFault(ex);
          throw ex;
+      } catch (AccessDeniedException exception) {
+         throw new SaeAccessDeniedAxisFault(exception);
       } catch (RuntimeException ex) {
          logRuntimeException(ex);
          throw new ConsultationAxisFault(
@@ -349,10 +368,13 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
 
    /**
     * {@inheritDoc}
+    * 
+    * @throws SaeAccessDeniedAxisFault
     */
    @Override
    public final ConsultationMTOMResponse consultationMTOMSecure(
-         ConsultationMTOM request) throws ConsultationAxisFault {
+         ConsultationMTOM request) throws ConsultationAxisFault,
+         SaeAccessDeniedAxisFault {
       try {
 
          // Traces debug - entrée méthode
@@ -383,6 +405,8 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
       } catch (ConsultationAxisFault ex) {
          logSoapFault(ex);
          throw ex;
+      } catch (AccessDeniedException exception) {
+         throw new SaeAccessDeniedAxisFault(exception);
       } catch (RuntimeException ex) {
          logRuntimeException(ex);
          throw new ConsultationAxisFault(

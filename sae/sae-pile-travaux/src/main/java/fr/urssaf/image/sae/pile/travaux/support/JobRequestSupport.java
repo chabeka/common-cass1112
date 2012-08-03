@@ -68,13 +68,15 @@ public class JobRequestSupport {
                .getDocCount(), clock);
       }
 
-      // Ecrit en base
-      this.jobRequestDao.getJobRequestTmpl().update(updaterJobRequest);
-
       if (jobToCreate.getVi() != null) {
          jobRequestDao.ecritColonneVi(updaterJobRequest, jobToCreate.getVi(),
                clock);
       }
+      
+      
+      // Ecrit en base
+      this.jobRequestDao.getJobRequestTmpl().update(updaterJobRequest);
+
 
    }
 

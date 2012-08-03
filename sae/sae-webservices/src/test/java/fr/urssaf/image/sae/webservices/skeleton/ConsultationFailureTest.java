@@ -23,6 +23,7 @@ import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedT
 import fr.urssaf.image.sae.services.exception.consultation.SAEConsultationServiceException;
 import fr.urssaf.image.sae.webservices.comparator.ConsultParamComparator;
 import fr.urssaf.image.sae.webservices.exception.ConsultationAxisFault;
+import fr.urssaf.image.sae.webservices.security.exception.SaeAccessDeniedAxisFault;
 import fr.urssaf.image.sae.webservices.util.XMLStreamUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -70,7 +71,7 @@ public class ConsultationFailureTest {
    @Test
    public void consultation_failure_uuidNotFound()
          throws SAEConsultationServiceException, UnknownDesiredMetadataEx,
-         MetaDataUnauthorizedToConsultEx {
+         MetaDataUnauthorizedToConsultEx, SaeAccessDeniedAxisFault {
 
       ConsultParams consultParams = new ConsultParams(UUID
             .fromString("cc26f62e-fd52-42ff-ad83-afc26f96ea91"), null);
@@ -102,7 +103,7 @@ public class ConsultationFailureTest {
    @Test
    public void consultation_failure_SAEConsultationServiceException()
          throws SAEConsultationServiceException, UnknownDesiredMetadataEx,
-         MetaDataUnauthorizedToConsultEx {
+         MetaDataUnauthorizedToConsultEx, SaeAccessDeniedAxisFault {
 
       ConsultParams consultParams = new ConsultParams(UUID
             .fromString("cc4a5ec1-788d-4b41-baa8-d349947865bf"), null);
@@ -134,7 +135,7 @@ public class ConsultationFailureTest {
    @Test
    public void consultation_failure_RuntimeException()
          throws SAEConsultationServiceException, UnknownDesiredMetadataEx,
-         MetaDataUnauthorizedToConsultEx {
+         MetaDataUnauthorizedToConsultEx, SaeAccessDeniedAxisFault {
 
       ConsultParams consultParams = new ConsultParams(UUID
             .fromString("cc4a5ec1-788d-4b41-baa8-d349947865bf"), null);

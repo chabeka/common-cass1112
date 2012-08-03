@@ -56,7 +56,7 @@ public class SaeDroitServiceSkipImpl implements SaeDroitService {
       prmd.setDescription("PRMD par défaut");
       prmd.setLucene(null);
       prmd.setMetadata(null);
-      prmd.setBean("isPermitAll");
+      prmd.setBean("permitAll");
       saePrmd.setPrmd(prmd);
       
       List<SaePrmd> prmds = new ArrayList<SaePrmd>();

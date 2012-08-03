@@ -18,6 +18,7 @@ import fr.cirtil.www.saeservice.PingSecureRequest;
 import fr.cirtil.www.saeservice.PingSecureResponse;
 import fr.cirtil.www.saeservice.Recherche;
 import fr.cirtil.www.saeservice.RechercheResponse;
+import fr.urssaf.image.sae.webservices.security.exception.SaeAccessDeniedAxisFault;
 
 /**
  * interface des services web du SAE
@@ -34,9 +35,11 @@ public interface SaeServiceSkeletonInterface {
     * @return reponse du web service
     * @throws AxisFault
     *            exception levée lors de la consultation
+    * @throws SaeAccessDeniedAxisFault
+    *             exception levée si droits insuffisants
     */
    ConsultationResponse consultationSecure(Consultation request)
-         throws AxisFault;
+         throws AxisFault, SaeAccessDeniedAxisFault;
    
    /**
     * endpoint de consultation avec MTOM
@@ -46,6 +49,8 @@ public interface SaeServiceSkeletonInterface {
     * @return reponse du web service
     * @throws AxisFault
     *            exception levée lors de la consultation
+    * @throws SaeAccessDeniedAxisFault
+    *             exception levée si droits insuffisants
     */
    ConsultationMTOMResponse consultationMTOMSecure(ConsultationMTOM request)
          throws AxisFault;
@@ -58,6 +63,8 @@ public interface SaeServiceSkeletonInterface {
     * @return reponse du web service
     * @throws AxisFault
     *            exception levée dans la consommation du web service
+    * @throws SaeAccessDeniedAxisFault
+    *             exception levée si droits insuffisants
     */
    RechercheResponse rechercheSecure(Recherche request) throws AxisFault;
 
@@ -69,6 +76,8 @@ public interface SaeServiceSkeletonInterface {
     * @return reponse du web service
     * @throws AxisFault
     *            exception levée dans la consommation du web service
+    * @throws SaeAccessDeniedAxisFault
+    *             exception levée si droits insuffisants
     */
    ArchivageUnitaireResponse archivageUnitaireSecure(ArchivageUnitaire request)
          throws AxisFault;
@@ -81,6 +90,8 @@ public interface SaeServiceSkeletonInterface {
     * @return reponse du web service
     * @throws AxisFault
     *            exception levée dans la consommation du web service
+    * @throws SaeAccessDeniedAxisFault
+    *             exception levée si droits insuffisants
     */
    ArchivageUnitairePJResponse archivageUnitairePJSecure(ArchivageUnitairePJ request)
          throws AxisFault;
@@ -95,6 +106,8 @@ public interface SaeServiceSkeletonInterface {
     * @return reponse du web service
     * @throws AxisFault
     *            exception levée dans la consommation du web service
+    * @throws SaeAccessDeniedAxisFault
+    *             exception levée si droits insuffisants
     */
    ArchivageMasseResponse archivageMasseSecure(ArchivageMasse request, String callerIP)
          throws AxisFault;

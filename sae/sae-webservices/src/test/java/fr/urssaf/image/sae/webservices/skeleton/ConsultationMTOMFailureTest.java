@@ -24,6 +24,7 @@ import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
 import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedToConsultEx;
 import fr.urssaf.image.sae.services.exception.consultation.SAEConsultationServiceException;
 import fr.urssaf.image.sae.webservices.exception.ConsultationAxisFault;
+import fr.urssaf.image.sae.webservices.security.exception.SaeAccessDeniedAxisFault;
 import fr.urssaf.image.sae.webservices.util.XMLStreamUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -71,7 +72,7 @@ public class ConsultationMTOMFailureTest {
    @Test
    public void consultation_failure_RuntimeException()
          throws SAEConsultationServiceException, UnknownDesiredMetadataEx,
-         MetaDataUnauthorizedToConsultEx {
+         MetaDataUnauthorizedToConsultEx, SaeAccessDeniedAxisFault {
 
       List<String> metadonnees = new ArrayList<String>();
       metadonnees.add("TypeHash");

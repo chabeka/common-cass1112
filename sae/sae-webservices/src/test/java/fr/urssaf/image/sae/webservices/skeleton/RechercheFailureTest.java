@@ -26,6 +26,7 @@ import fr.urssaf.image.sae.services.exception.search.SAESearchServiceEx;
 import fr.urssaf.image.sae.services.exception.search.SyntaxLuceneEx;
 import fr.urssaf.image.sae.services.exception.search.UnknownLuceneMetadataEx;
 import fr.urssaf.image.sae.webservices.exception.RechercheAxis2Fault;
+import fr.urssaf.image.sae.webservices.security.exception.SaeAccessDeniedAxisFault;
 import fr.urssaf.image.sae.webservices.util.XMLStreamUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -80,11 +81,12 @@ public class RechercheFailureTest {
     * @throws UnknownDesiredMetadataEx
     * @throws MetaDataUnauthorizedToConsultEx
     * @throws MetaDataUnauthorizedToSearchEx
+    * @throws SaeAccessDeniedAxisFault 
     */
    @Test
    public void searchFailureSAESearchServiceEx() throws SAESearchServiceEx,
          MetaDataUnauthorizedToSearchEx, MetaDataUnauthorizedToConsultEx,
-         UnknownDesiredMetadataEx, UnknownLuceneMetadataEx, SyntaxLuceneEx {
+         UnknownDesiredMetadataEx, UnknownLuceneMetadataEx, SyntaxLuceneEx, SaeAccessDeniedAxisFault {
 
       String requete = TITRE + ":NOTIFICATIONS";
       List<String> listMetaDesired = new ArrayList<String>();
@@ -129,12 +131,13 @@ public class RechercheFailureTest {
     * @throws UnknownDesiredMetadataEx
     * @throws MetaDataUnauthorizedToConsultEx
     * @throws MetaDataUnauthorizedToSearchEx
+    * @throws SaeAccessDeniedAxisFault 
     */
    @Test
    @Ignore
    public void searchFailureReqVide() throws SAESearchServiceEx,
          MetaDataUnauthorizedToSearchEx, MetaDataUnauthorizedToConsultEx,
-         UnknownDesiredMetadataEx, UnknownLuceneMetadataEx, SyntaxLuceneEx {
+         UnknownDesiredMetadataEx, UnknownLuceneMetadataEx, SyntaxLuceneEx, SaeAccessDeniedAxisFault {
 
       String requete = VIDE;
       List<String> listMetaDesired = new ArrayList<String>();
@@ -172,11 +175,12 @@ public class RechercheFailureTest {
     * @throws UnknownDesiredMetadataEx
     * @throws MetaDataUnauthorizedToConsultEx
     * @throws MetaDataUnauthorizedToSearchEx
+    * @throws SaeAccessDeniedAxisFault 
     */
    @Test
    public void searchFailureReqIncorrecte() throws SAESearchServiceEx,
          MetaDataUnauthorizedToSearchEx, MetaDataUnauthorizedToConsultEx,
-         UnknownDesiredMetadataEx, UnknownLuceneMetadataEx, SyntaxLuceneEx {
+         UnknownDesiredMetadataEx, UnknownLuceneMetadataEx, SyntaxLuceneEx, SaeAccessDeniedAxisFault {
 
       String requete = TITRE + ":NOTIFICATION DateCreation:01-012011";
       List<String> listMetaDesired = new ArrayList<String>();
@@ -216,11 +220,12 @@ public class RechercheFailureTest {
     * @throws UnknownDesiredMetadataEx
     * @throws MetaDataUnauthorizedToConsultEx
     * @throws MetaDataUnauthorizedToSearchEx
+    * @throws SaeAccessDeniedAxisFault 
     */
    @Test
    public void searchFailureMetaDataNotExist() throws SAESearchServiceEx,
          MetaDataUnauthorizedToSearchEx, MetaDataUnauthorizedToConsultEx,
-         UnknownDesiredMetadataEx, UnknownLuceneMetadataEx, SyntaxLuceneEx {
+         UnknownDesiredMetadataEx, UnknownLuceneMetadataEx, SyntaxLuceneEx, SaeAccessDeniedAxisFault {
 
       String requete = TITRE + ":NOTIFICATIONS";
       List<String> listMetaDesired = new ArrayList<String>();
@@ -261,7 +266,7 @@ public class RechercheFailureTest {
    @Test
    public void search_Failure_RuntimeException() throws SAESearchServiceEx,
          MetaDataUnauthorizedToSearchEx, MetaDataUnauthorizedToConsultEx,
-         UnknownDesiredMetadataEx, UnknownLuceneMetadataEx, SyntaxLuceneEx {
+         UnknownDesiredMetadataEx, UnknownLuceneMetadataEx, SyntaxLuceneEx, SaeAccessDeniedAxisFault {
 
       List<String> listMetaDesired = new ArrayList<String>();
       listMetaDesired.add(EasyMock.anyObject(String.class));

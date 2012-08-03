@@ -23,6 +23,7 @@ import fr.cirtil.www.saeservice.ArchivageUnitaireResponseType;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.services.capture.SAECaptureService;
 import fr.urssaf.image.sae.webservices.exception.CaptureAxisFault;
+import fr.urssaf.image.sae.webservices.security.exception.SaeAccessDeniedAxisFault;
 import fr.urssaf.image.sae.webservices.util.XMLStreamUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -79,7 +80,7 @@ public class ArchivageUnitaireTest {
    }
 
    @Test
-   public void archivageUnitaire_success() throws CaptureAxisFault {
+   public void archivageUnitaire_success() throws CaptureAxisFault, SaeAccessDeniedAxisFault {
 
       createMock();
 
