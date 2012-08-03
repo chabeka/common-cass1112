@@ -60,4 +60,16 @@ public class SearchCriterion {
       this.updated = updated;
    }
 
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final String toString() {
+      StringBuilder builder = new StringBuilder();
+      builder.append("SearchCriterion [identifiant=").append(identifiant)
+            .append(", lucene=").append(lucene).append(", updated=").append(
+                  updated).append("]");
+      return builder.toString();
+   }
+
 }

@@ -3,9 +3,6 @@ package fr.urssaf.image.sae.regionalisation.bean;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-
 /**
  * Classe représentant un objet de trace de mise à jour
  * 
@@ -102,30 +99,13 @@ public class Trace {
     * {@inheritDoc}
     */
    @Override
-   public final int hashCode() {
-      return new HashCodeBuilder().append(this.idDocument)
-            .append(this.idSearch).append(this.metaName).append(this.newValue)
-            .append(this.oldValue).hashCode();
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final boolean equals(Object obj) {
-      if (this == obj)
-         return true;
-      if (obj == null)
-         return false;
-      if (!(obj instanceof Trace))
-         return false;
-
-      Trace other = (Trace) obj;
-
-      return new EqualsBuilder().append(this.idDocument, other.idDocument)
-            .append(this.idSearch, other.idSearch).append(this.metaName,
-                  other.metaName).append(this.newValue, other.newValue).append(
-                  this.oldValue, other.oldValue).isEquals();
+   public final String toString() {
+      StringBuilder builder = new StringBuilder();
+      builder.append("Trace [idDocument=").append(idDocument).append(
+            ", idSearch=").append(idSearch).append(", metaName=").append(
+            metaName).append(", newValue=").append(newValue).append(
+            ", oldValue=").append(oldValue).append("]");
+      return builder.toString();
    }
 
 }

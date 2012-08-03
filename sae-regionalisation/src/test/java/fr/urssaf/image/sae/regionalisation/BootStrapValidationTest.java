@@ -83,6 +83,17 @@ public class BootStrapValidationTest {
    }
 
    @Test
+   public void execute_failure_false_first_negatif() {
+
+      String[] args = new String[] { DFCE_CONFIG, POSTGRESQL_CONFIG, "-1" };
+
+      assertExecute(
+            args,
+            "L'index de l'enregistrement de départ doit être un nombre supérieur ou égal à 0.");
+
+   }
+
+   @Test
    public void execute_failure_required_count_record() {
 
       String[] args = new String[] { DFCE_CONFIG, POSTGRESQL_CONFIG,
@@ -101,6 +112,17 @@ public class BootStrapValidationTest {
 
       assertExecute(args,
             "Le nombre d'enregistrement à traiter doit être un nombre.");
+
+   }
+
+   @Test
+   public void execute_failure_false_count_negatif() {
+
+      String[] args = new String[] { DFCE_CONFIG, POSTGRESQL_CONFIG,
+            FIRST_INDEX, "0" };
+
+      assertExecute(args,
+            "Le nombre d'enregistrement à traiter doit être un nombre supérieur à 0.");
 
    }
 

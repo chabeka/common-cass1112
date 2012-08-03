@@ -91,13 +91,13 @@ public class ProcessingServiceImpl implements ProcessingService {
          int nbRecordDocumentTraites = 0;
 
          int count = 0;
-
+         int indexRecord = firstRecord;
+         List<SearchCriterion> searchCriterions;
          do {
 
             // on récupère des blocs de recherches
-            List<SearchCriterion> searchCriterions = this.searchCriterionDao
-                  .getSearchCriteria(firstRecord, Math.min(SIZE_BLOCK,
-                        processingCount - count));
+            searchCriterions = this.searchCriterionDao.getSearchCriteria(
+                  indexRecord, Math.min(SIZE_BLOCK, processingCount - count));
 
             LOGGER.debug("nombre de critères de recherche à traiter: {}",
                   searchCriterions.size());
@@ -146,9 +146,15 @@ public class ProcessingServiceImpl implements ProcessingService {
 
             }
 
+            // dans le cas du tir à blanc on continue la pagination
+            if (!updateDatas) {
+               indexRecord += SIZE_BLOCK;
+            }
+
             count += SIZE_BLOCK;
 
-         } while (count < processingCount);
+         } while (count < processingCount
+               && searchCriterions.size() == SIZE_BLOCK);
 
          LOGGER.info("nombre de recherche sans documents associés: {}",
                nbRecordSansDocument);

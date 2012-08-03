@@ -60,4 +60,15 @@ public class Metadata {
       this.flag = flag;
    }
 
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final String toString() {
+      StringBuilder builder = new StringBuilder();
+      builder.append("Metadata [code=").append(code).append(", flag=").append(
+            flag).append(", value=").append(value).append("]");
+      return builder.toString();
+   }
+
 }

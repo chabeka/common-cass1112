@@ -41,7 +41,8 @@ public class TraceDaoTest {
 
       Assert
             .assertEquals("le nombre de traces est inattendu", 1, traces.size());
-      Assert.assertEquals("les traces sont différentes", trace, traces.get(0));
+      Assert.assertEquals("les traces sont différentes", trace.toString(),
+            traces.get(0).toString());
 
    }
 

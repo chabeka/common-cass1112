@@ -85,6 +85,12 @@ public class BootStrap {
                "L'index de l'enregistrement de départ doit être un nombre.", e);
       }
 
+      if (firstRecord < 0) {
+
+         throw new IllegalArgumentException(
+               "L'index de l'enregistrement de départ doit être un nombre supérieur ou égal à 0.");
+      }
+
       // nombre d'enregistrement à traiter
       validate(args, COUNT_ARG_INDEX,
             "Le nombre d'enregistrement à traiter doit être renseigné.");
@@ -97,6 +103,12 @@ public class BootStrap {
 
          throw new IllegalArgumentException(
                "Le nombre d'enregistrement à traiter doit être un nombre.", e);
+      }
+
+      if (processingCount < 1) {
+
+         throw new IllegalArgumentException(
+               "Le nombre d'enregistrement à traiter doit être un nombre supérieur à 0.");
       }
 
       // mode TIR_A_BLANC/MISE_A_JOUR

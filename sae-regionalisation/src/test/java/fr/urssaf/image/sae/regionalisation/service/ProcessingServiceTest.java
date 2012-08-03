@@ -63,6 +63,24 @@ public class ProcessingServiceTest {
    @Test
    public void launch_mise_a_jour() {
 
+      // connexion à DFCE
+
+      providerSupport.connect();
+
+      EasyMock.expectLastCall().once();
+
+      // récupération des critères
+
+      EasyMock.expect(
+            searchCriterionDao
+                  .getSearchCriteria(EasyMock.eq(0), EasyMock.eq(5)))
+            .andReturn(createSearchCriterions(5));
+
+      EasyMock.expect(
+            searchCriterionDao
+                  .getSearchCriteria(EasyMock.eq(0), EasyMock.eq(2)))
+            .andReturn(createSearchCriterions(2));
+
       launchCommun();
 
       // trace dans trace rec
@@ -70,7 +88,7 @@ public class ProcessingServiceTest {
       traceDao.addTraceRec(EasyMock.anyObject(BigDecimal.class), EasyMock
             .anyInt(), EasyMock.eq(true));
 
-      EasyMock.expectLastCall().times(3);
+      EasyMock.expectLastCall().times(7);
 
       // persistance des modifications
 
@@ -94,7 +112,7 @@ public class ProcessingServiceTest {
       searchCriterionDao.updateSearchCriterion(EasyMock
             .anyObject(BigDecimal.class));
 
-      EasyMock.expectLastCall().times(3);
+      EasyMock.expectLastCall().times(7);
 
       // déconnexion à DFCE
 
@@ -108,7 +126,7 @@ public class ProcessingServiceTest {
       EasyMock.replay(metadataDao);
       EasyMock.replay(traceDao);
 
-      service.launch(true, 0, 3);
+      service.launch(true, 0, 7);
 
       // vérification des services
       assertSaeDocumentDao();
@@ -118,6 +136,24 @@ public class ProcessingServiceTest {
    @Test
    public void launch_tir_a_blanc() {
 
+      // connexion à DFCE
+
+      providerSupport.connect();
+
+      EasyMock.expectLastCall().once();
+
+      // récupération des critères
+
+      EasyMock.expect(
+            searchCriterionDao
+                  .getSearchCriteria(EasyMock.eq(0), EasyMock.eq(5)))
+            .andReturn(createSearchCriterions(5));
+
+      EasyMock.expect(
+            searchCriterionDao
+                  .getSearchCriteria(EasyMock.eq(5), EasyMock.eq(2)))
+            .andReturn(createSearchCriterions(2));
+
       launchCommun();
 
       // trace dans trace rec
@@ -125,7 +161,7 @@ public class ProcessingServiceTest {
       traceDao.addTraceRec(EasyMock.anyObject(BigDecimal.class), EasyMock
             .anyInt(), EasyMock.eq(false));
 
-      EasyMock.expectLastCall().times(3);
+      EasyMock.expectLastCall().times(7);
 
       // aucune trace
 
@@ -153,7 +189,7 @@ public class ProcessingServiceTest {
       EasyMock.replay(metadataDao);
       EasyMock.replay(traceDao);
 
-      service.launch(false, 0, 3);
+      service.launch(false, 0, 7);
 
       // vérification des services
       assertSaeDocumentDao();
@@ -161,25 +197,6 @@ public class ProcessingServiceTest {
    }
 
    private void launchCommun() {
-
-      // connexion à DFCE
-
-      providerSupport.connect();
-
-      EasyMock.expectLastCall().once();
-
-      // récupération des critères
-
-      List<SearchCriterion> searchCriterions = new ArrayList<SearchCriterion>();
-
-      searchCriterions.add(createSearchCriterion());
-      searchCriterions.add(createSearchCriterion());
-      searchCriterions.add(createSearchCriterion());
-
-      EasyMock.expect(
-            searchCriterionDao
-                  .getSearchCriteria(EasyMock.eq(0), EasyMock.eq(3)))
-            .andReturn(searchCriterions);
 
       // récupération des métadonnées
 
@@ -190,7 +207,7 @@ public class ProcessingServiceTest {
 
       EasyMock.expect(
             metadataDao.getMetadatas(EasyMock.anyObject(BigDecimal.class)))
-            .andReturn(metadatas).times(3);
+            .andReturn(metadatas).times(7);
 
       // récupération des documents
 
@@ -211,17 +228,26 @@ public class ProcessingServiceTest {
 
       EasyMock.expect(
             saeDocumentDao.getDocuments(EasyMock.anyObject(String.class)))
-            .andReturn(docs0).andReturn(docs1).andReturn(docs2);
+            .andReturn(docs0).andReturn(docs1).andReturn(docs2).times(5);
    }
 
-   private SearchCriterion createSearchCriterion() {
+   private List<SearchCriterion> createSearchCriterions(int nbCriterion) {
 
-      SearchCriterion criterion = new SearchCriterion();
+      List<SearchCriterion> criterions = new ArrayList<SearchCriterion>();
 
-      criterion.setId(new BigDecimal(RandomUtils.nextInt()));
-      criterion.setLucene("lucene request n°" + criterion.getId().intValue());
+      for (int i = 0; i < nbCriterion; i++) {
 
-      return criterion;
+         SearchCriterion criterion = new SearchCriterion();
+
+         criterion.setId(new BigDecimal(RandomUtils.nextInt()));
+         criterion
+               .setLucene("lucene request n°" + criterion.getId().intValue());
+
+         criterions.add(criterion);
+
+      }
+
+      return criterions;
    }
 
    private Document createDocument() {
