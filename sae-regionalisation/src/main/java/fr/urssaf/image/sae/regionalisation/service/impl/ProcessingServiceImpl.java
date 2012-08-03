@@ -105,14 +105,16 @@ public class ProcessingServiceImpl implements ProcessingService {
             for (SearchCriterion searchCriterion : searchCriterions) {
 
                LOGGER.debug(
-                     "critère de recherche {} avec la requête lucène: {}",
+                     "critère de recherche {} avec la requête lucène '{}'",
                      searchCriterion.getId(), searchCriterion.getLucene());
 
                Map<String, Object> metadatas = this.metadataDao
                      .getMetadatas(searchCriterion.getId());
 
-               LOGGER.debug("nombre de métadonnées à mettre à jour: {}",
-                     metadatas.size());
+               LOGGER
+                     .debug(
+                           "nombre de métadonnées à mettre à jour pour la requête lucène '{}': {}",
+                           searchCriterion.getLucene(), metadatas.size());
 
                List<Document> documents = this.saeDocumentDao
                      .getDocuments(searchCriterion.getLucene());
@@ -121,7 +123,10 @@ public class ProcessingServiceImpl implements ProcessingService {
                if (documents.isEmpty()) {
                   nbRecordSansDocument++;
 
-                  LOGGER.debug("aucune document n'a été récupéré");
+                  LOGGER
+                        .debug(
+                              "aucune document n'a été récupéré pour la requête lucène '{}'",
+                              searchCriterion.getLucene());
                }
 
                // si le flag est positionné à MISE_A_JOUR
@@ -136,8 +141,10 @@ public class ProcessingServiceImpl implements ProcessingService {
                   this.traceDao.addTraceRec(searchCriterion.getId(), documents
                         .size(), false);
 
-                  LOGGER.debug("nombre de documents à mettre à jour: {}",
-                        documents.size());
+                  LOGGER
+                        .debug(
+                              "nombre de documents à mettre à jour pour la requête lucène '{}': {}",
+                              searchCriterion.getLucene(), documents.size());
 
                }
 
@@ -177,7 +184,10 @@ public class ProcessingServiceImpl implements ProcessingService {
       this.traceDao
             .addTraceRec(searchCriterion.getId(), documents.size(), true);
 
-      LOGGER.debug("nombre de documents à mettre à jour: {}", documents.size());
+      LOGGER
+            .debug(
+                  "nombre de documents à mettre à jour pour la requête lucène '{}': {}",
+                  searchCriterion.getLucene(), documents.size());
 
       // int nbRecordDocumentTraites = 0;
 
@@ -220,9 +230,10 @@ public class ProcessingServiceImpl implements ProcessingService {
       // mise à jour flag traite du critères de recherche
       this.searchCriterionDao.updateSearchCriterion(searchCriterion.getId());
 
-      LOGGER.debug(
-            "critère de recherche {} avec la requête lucène: {} a été traitée",
-            searchCriterion.getId(), searchCriterion.getLucene());
+      LOGGER
+            .debug(
+                  "critère de recherche {} avec la requête lucène '{}' a été traitée",
+                  searchCriterion.getId(), searchCriterion.getLucene());
 
    }
 
