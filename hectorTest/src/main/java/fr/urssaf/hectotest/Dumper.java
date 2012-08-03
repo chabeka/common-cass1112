@@ -4,7 +4,10 @@ import java.io.ByteArrayInputStream;
 import java.io.ObjectInputStream;
 import java.io.PrintStream;
 import java.nio.ByteBuffer;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import me.prettyprint.cassandra.model.CqlRows;
@@ -297,6 +300,9 @@ public class Dumper {
 				else if (value.length <=8) {
 					long longValue = ConvertHelper.byteArrayToLong(value);
 					s += " - longValue : " + longValue;
+					Date date = new java.util.Date(longValue);
+					DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+               s += " - dateValue : '" + dateFormat.format(date) + "'";
 				}
 				String hexValue = ConvertHelper.getHexString(value);
 				s += " - hexValue : " + hexValue;

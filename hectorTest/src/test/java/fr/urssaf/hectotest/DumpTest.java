@@ -20,8 +20,10 @@ import me.prettyprint.cassandra.model.thrift.ThriftCountQuery;
 import me.prettyprint.cassandra.serializers.BytesArraySerializer;
 import me.prettyprint.cassandra.serializers.CompositeSerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
+import me.prettyprint.cassandra.serializers.UUIDSerializer;
 import me.prettyprint.cassandra.service.CassandraHostConfigurator;
 import me.prettyprint.cassandra.service.FailoverPolicy;
+import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
 import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
 import me.prettyprint.cassandra.service.template.ThriftColumnFamilyTemplate;
@@ -101,6 +103,7 @@ public class DumpTest
 	@After
 	public void close() {
 		//cluster.getConnectionManager().shutdown();
+		HFactory.shutdownCluster(cluster);
 	}
 	
 	@Test
@@ -117,13 +120,27 @@ public class DumpTest
 
 	@Test
 	public void testExtractOneDocInfo() throws Exception {
-		//extractOneDocInfo  ("32100f97-5d05-4d6c-b2e3-6e9cc8f2bf86");
-		extractOneDocInfo  ("05A5CB97-196B-423C-9A3C-F438F160DD03");
-		extractOneDocInfo  ("3E915A0A-3878-47B4-8225-666F1ECAB779");
+		extractOneDocInfo  ("d62ce6b6-9133-42bd-bac8-484de4d0c552");
+		//extractOneDocInfo  ("05A5CB97-196B-423C-9A3C-F438F160DD03");
+		//extractOneDocInfo  ("3E915A0A-3878-47B4-8225-666F1ECAB779");
 		//extractOneDocInfo("1c577d7e-19bf-45b0-ae51-456b3ba084f8");
 		//extractOneDocInfo("6fd809ec-8fd7-44f3-9d6f-ee655fa7e54a");		
 	}
 
+   @Test
+   public void testGetArchiveUUID() throws Exception {
+      // Récupère récursivement la liste des journaux des événements
+      //String uuid = "af135566-f8b8-44dd-aaaa-f5074302efc5";
+      String uuid = "2326c0ff-3f13-4ae5-a860-5e494471a5f0";
+      while (true) {
+         byte[] previousUUID = dumper.getColumnValue("DocInfo", uuidToDocInfoKey(uuid), ConvertHelper
+               .stringToBytes("PREVIOUS_LOG_ARCHIVE_UUID"));
+         uuid = new String(previousUUID);
+         sysout.println("UUID : " + uuid);
+         if (previousUUID == null) break;
+      }
+   }
+	
 	private void extractOneDocInfo(String uuid) throws Exception {
 		/*
 		// Version qui fonctionne avec DFCE 0.9
@@ -277,7 +294,23 @@ public class DumpTest
 
 	@Test
 	public void testExtractOneDocument() throws Exception {
-	   ExtractOneDocument("97CB2F0E-7330-4A5D-B24E-EF5B49FF0BE6", "c:\\temp\\test.pdf");	   
+	   
+        ExtractOneDocument("2326c0ff-3f13-4ae5-a860-5e494471a5f0", "c:\\temp\\archive_2326c0ff-3f13-4ae5-a860-5e494471a5f0.txt");
+        ExtractOneDocument("74c366f8-39d2-431c-9798-2c1cf64a7f42", "c:\\temp\\archive_74c366f8-39d2-431c-9798-2c1cf64a7f42.txt");
+        ExtractOneDocument("2c2b26b3-f855-4f8c-83d0-29bc02e0b221", "c:\\temp\\archive_2c2b26b3-f855-4f8c-83d0-29bc02e0b221.txt");
+        ExtractOneDocument("cdc7a928-f182-4284-9699-7c670b10aecb", "c:\\temp\\archive_cdc7a928-f182-4284-9699-7c670b10aecb.txt");
+        ExtractOneDocument("74c366f8-39d2-431c-9798-2c1cf64a7f42", "c:\\temp\\archive_74c366f8-39d2-431c-9798-2c1cf64a7f42.txt");
+        ExtractOneDocument("a5cea082-e6c2-487b-95c3-ca20f833cbc8", "c:\\temp\\archive_a5cea082-e6c2-487b-95c3-ca20f833cbc8.txt");
+        ExtractOneDocument("79f7e469-5efd-468e-b8dc-e06daeb27659", "c:\\temp\\archive_79f7e469-5efd-468e-b8dc-e06daeb27659.txt");
+        ExtractOneDocument("720ddb05-da41-496b-aade-1a06c1b47725", "c:\\temp\\archive_720ddb05-da41-496b-aade-1a06c1b47725.txt");
+      //ExtractOneDocument("10a3173c-b742-4edb-b77d-3ffdb8f45321", "c:\\temp\\archive_system_last.txt");      
+      //ExtractOneDocument("747bca57-1d56-4f93-a4ae-36b666a0ba5e", "c:\\temp\\archive_doc_2012-05-24.txt");      
+	   //ExtractOneDocument("346d1ea7-2793-434c-a8f8-40c53ece9ceb", "c:\\temp\\archive_doc_2012-25-25.txt");	   
+      //ExtractOneDocument("264CE288-940E-4E92-8B11-DB02A5CD95EA", "c:\\temp\\test1.pdf");     
+      //ExtractOneDocument("4989A4D8-DA49-4E48-AB4C-395047EDC5EF", "c:\\temp\\test2.pdf");     
+      //ExtractOneDocument("5D1D920B-4D97-4ED7-8FF8-B4045EE6F918", "c:\\temp\\test3.pdf");     
+      //ExtractOneDocument("644BDAAC-6504-4290-80F6-EE07E3D872A9", "c:\\temp\\test4.pdf");     
+      //ExtractOneDocument("EF639451-15CB-4AB7-94DB-657995C66EC8", "c:\\temp\\test5.pdf");     
 		//ExtractOneDocument("D1DC3F43-591B-4299-BE87-EE970A62DC90", "c:\\temp\\alex2\\5.pdf");
 		//ExtractOneDocument("5F72669A-BECD-4513-849C-ECCEF216001D", "c:\\temp\\alex2\\6.pdf");
 		//ExtractOneDocument("017961ff-1899-40a7-8d3d-6d32729780ef", "c:\\temp\\test2.pdf");
@@ -528,7 +561,8 @@ public class DumpTest
 	
 	@Test
 	public void testDumpSystemEventLog() throws Exception {
-		dumper.dumpCF("SystemEventLog", 150);
+		dumper.dumpCF("SystemEventLog", 30);
+      //dumper.dumpCF("SystemEventLog", "21a80940-d38a-4e49-9aad-9269fd778e08");   
 	}
 	@Test
 	public void SystemEventLogByTime() throws Exception {
@@ -537,12 +571,18 @@ public class DumpTest
 	@Test
 	public void testDumpDocEventLog() throws Exception {
 		dumper.dumpCF("DocEventLog", 30);
+      //dumper.dumpCF("DocEventLog", "41a275d4-4561-437d-a1be-b6287119445b");
+      //dumper.dumpCF("DocEventLog", "36f3a4ff-d065-4289-af18-f67482bdf13e");
+      //dumper.dumpCF("DocEventLog", "f781b54c-d10a-4931-a9a5-c042eb76c56e");
 	}
+	
 	@Test
 	public void testDumpDocEventLogByTime() throws Exception {
 		dumper.printColumnNameInHex = true;
-		dumper.dumpCF("DocEventLogByTime", 15);
+		dumper.dumpCF("DocEventLogByTime", 150);
+		//dumper.dumpCF("DocEventLogByTime", "20120524");
 	}
+	
 	@Test
 	public void testDumpUser() throws Exception {
 		dumper.dumpCF("User", 15);

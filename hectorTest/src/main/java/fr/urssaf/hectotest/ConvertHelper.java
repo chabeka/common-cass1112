@@ -1,10 +1,12 @@
 package fr.urssaf.hectotest;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.UUID;
 
 import org.apache.commons.lang.ArrayUtils;
 
@@ -36,7 +38,14 @@ public class ConvertHelper
     	{
     	   value = (value << 8) + (b[i] & 0xff);
     	}
-        return value;
+      return value;
+    }
+
+    public static UUID byteArrayToUUID(byte[] b) {
+       ByteBuffer buffer = ByteBuffer.wrap(b);
+       long mostSigBit = buffer.getLong(0);
+       long leastSigBit = buffer.getLong(8);
+       return new UUID(mostSigBit,leastSigBit);
     }
 
     /**
