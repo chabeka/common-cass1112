@@ -244,6 +244,9 @@ public final class MajLotServiceImpl implements MajLotService {
       try {
          serviceProvider.getJobAdministrationService().start(
                JobUtils.INDEX_CATEGORIES_JOB, parameters);
+         
+         LOG.info("fin d'indexation des métadonnées systèmes ");
+         
       } catch (NoSuchJobException e) {
          LOG.error("échec indexation", e);
       } catch (JobInstanceAlreadyExistsException e) {
