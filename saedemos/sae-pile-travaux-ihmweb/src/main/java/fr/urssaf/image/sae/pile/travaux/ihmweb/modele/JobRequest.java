@@ -1,8 +1,9 @@
 package fr.urssaf.image.sae.pile.travaux.ihmweb.modele;
 
-
 import java.util.Date;
 import java.util.UUID;
+
+import fr.urssaf.image.sae.pile.travaux.ihmweb.modele.droit.VIContenuExtrait;
 
 /**
  * Traitement dans la pile des travaux. Les propriétés sont.
@@ -56,10 +57,12 @@ public class JobRequest {
    private Integer docCount;
 
    private Integer pid;
-   
+
    private Boolean toCheckFlag;
-   
+
    private String toCheckFlagRaison;
+
+   private VIContenuExtrait vi;
 
    /**
     * @return the idJob
@@ -285,7 +288,7 @@ public class JobRequest {
    public final void setPid(Integer pid) {
       this.pid = pid;
    }
-   
+
    /**
     * @return the toCheckFlag
     */
@@ -294,7 +297,8 @@ public class JobRequest {
    }
 
    /**
-    * @param toCheckFlag the toCheckFlag to set
+    * @param toCheckFlag
+    *           the toCheckFlag to set
     */
    public void setToCheckFlag(Boolean toCheckFlag) {
       this.toCheckFlag = toCheckFlag;
@@ -308,11 +312,26 @@ public class JobRequest {
    }
 
    /**
-    * @param toCheckFlagRaison the toCheckFlagRaison to set
+    * @param toCheckFlagRaison
+    *           the toCheckFlagRaison to set
     */
    public void setToCheckFlagRaison(String toCheckFlagRaison) {
       this.toCheckFlagRaison = toCheckFlagRaison;
    }
 
+   /**
+    * @return the vi
+    */
+   public final VIContenuExtrait getVi() {
+      return vi;
+   }
+
+   /**
+    * @param vi
+    *           the vi to set
+    */
+   public final void setVi(VIContenuExtrait vi) {
+      this.vi = vi;
+   }
 
 }

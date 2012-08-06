@@ -39,6 +39,8 @@ import fr.urssaf.image.sae.pile.travaux.ihmweb.modele.ConfigEtClients;
 import fr.urssaf.image.sae.pile.travaux.ihmweb.modele.JobHistory;
 import fr.urssaf.image.sae.pile.travaux.ihmweb.modele.JobRequest;
 import fr.urssaf.image.sae.pile.travaux.ihmweb.modele.JobState;
+import fr.urssaf.image.sae.pile.travaux.ihmweb.modele.droit.VIContenuExtrait;
+import fr.urssaf.image.sae.pile.travaux.ihmweb.serializer.VISerializer;
 
 @Service
 public class PileTravauxService {
@@ -60,6 +62,7 @@ public class PileTravauxService {
    private static final String JR_PID = "pid";
    public static final String JR_TO_CHECK_FLAG = "toCheckFlag";
    public static final String JR_TO_CHECK_FLAG_RAISON = "toCheckFlagRaison";
+   public static final String JR_VI = "vi";
 
    
    // Column Family JobHistory
@@ -183,6 +186,12 @@ public class PileTravauxService {
 
       jobRequest
             .setToCheckFlagRaison(result.getString(JR_TO_CHECK_FLAG_RAISON));
+      
+      if (result.getByteArray(JR_VI) != null) {
+         VIContenuExtrait contenuExtrait = VISerializer.get().fromBytes(
+               result.getByteArray(JR_VI));
+         jobRequest.setVi(contenuExtrait);
+      }
 
       return jobRequest;
       

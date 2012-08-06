@@ -21,16 +21,15 @@
 <form:form method="post" modelAttribute="formulaire">
 
 	<!-- Configuration Cassandra/Zookeeper -->
-   <sae:configPile
-      pathFormulaire="connexionConfig"
-      objetFormulaire="${formulaire.connexionConfig}"/>
+	<sae:configPile pathFormulaire="connexionConfig"
+		objetFormulaire="${formulaire.connexionConfig}" />
 	<br />
 	<input type="submit" value="Appliquer la configuration" />
-   <br />
+	<br />
 	<br />
 
-   
-   <!-- Contenu de la pile des travaux -->
+
+	<!-- Contenu de la pile des travaux -->
 	<table class="tabPile">
 
 		<tr style="font-weight: bold;">
@@ -40,16 +39,18 @@
 			<td>state</td>
 			<td>creationDate</td>
 			<td>saeHost</td>
-         <td>clientHost</td>
-         <td>docCount</td>
-         <td>reservationDate</td>
-         <td>reservedBy</td>
-         <td>startingDate</td>
-         <td>pid</td>
+			<td>clientHost</td>
+			<td>docCount</td>
+			<td>reservationDate</td>
+			<td>reservedBy</td>
+			<td>startingDate</td>
+			<td>pid</td>
 			<td>endingDate</td>
 			<td>message</td>
-         <td>toCheckFlag</td>
-         <td>toCheckFlagRaison</td>
+			<td>toCheckFlag</td>
+			<td>toCheckFlagRaison</td>
+			<td>vi</td>
+			<td>droits</td>
 		</tr>
 
 
@@ -57,26 +58,34 @@
 			varStatus="loopStatus">
 
 			<tr class="ligne${loopStatus.count % 2}">
-				<td style="font-size:8pt;">
-               <a href="history.do?idJobReq=${travail.idJob}" target="_blank">
-               <c:out value="${travail.idJob}" />
-               </a>
-            </td>
+				<td style="font-size: 8pt;"><a
+					href="history.do?idJobReq=${travail.idJob}" target="_blank"> <c:out
+					value="${travail.idJob}" /> </a></td>
 				<td><c:out value="${travail.type}" /></td>
-				<td style="font-size:8pt;"><c:out value="${travail.parameters}" /></td>
+				<td style="font-size: 8pt;"><c:out
+					value="${travail.parameters}" /></td>
 				<td><c:out value="${travail.state}" /></td>
 				<td>${sae:formateDateTime(travail.creationDate)}</td>
 				<td><c:out value="${travail.saeHost}" /></td>
-            <td><c:out value="${travail.clientHost}" /></td>
-            <td><c:out value="${travail.docCount}" /></td>
+				<td><c:out value="${travail.clientHost}" /></td>
+				<td><c:out value="${travail.docCount}" /></td>
 				<td>${sae:formateDateTime(travail.reservationDate)}</td>
 				<td>${sae:ajouteProprietaireDuPC(travail.reservedBy)}</td>
 				<td>${sae:formateDateTime(travail.startingDate)}</td>
 				<td><c:out value="${travail.pid}" /></td>
 				<td>${sae:formateDateTime(travail.endingDate)}</td>
 				<td>${sae:nl2br(travail.message)}</td>
-            <td><c:out value="${travail.toCheckFlag}" /></td>
-            <td style="font-size:8pt;"><c:out value="${travail.toCheckFlagRaison}" /></td>
+				<td><c:out value="${travail.toCheckFlag}" /></td>
+				<td style="font-size: 8pt;"><c:out
+					value="${travail.toCheckFlagRaison}" /></td>
+				<td>CodeAppli:&nbsp;<c:out value="${travail.vi.codeAppli}" /><br />
+				Utilisateur:&nbsp;<c:out value="${travail.vi.idUtilisateur}" /></td>
+				<td><c:forEach var="droit" items="${travail.vi.saeDroits}">${droit.key}:&nbsp;
+				
+				<c:forEach var="saeprmd" items="${droit.value}">code:&nbsp;${saeprmd.prmd.code}<br />paramètres:&nbsp;${saeprmd.values}<br />lucene:&nbsp;${saeprmd.prmd.lucene}<br />metadonnées:&nbsp;${saeprmd.prmd.metadata}<br />
+					</c:forEach>
+
+				</c:forEach></td>
 			</tr>
 
 		</c:forEach>
