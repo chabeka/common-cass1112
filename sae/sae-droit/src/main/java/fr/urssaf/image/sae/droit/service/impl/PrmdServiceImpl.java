@@ -50,6 +50,9 @@ public class PrmdServiceImpl implements PrmdService {
    public final String createLucene(String lucene, List<SaePrmd> prmds) {
 
       LOGGER.debug("{} - Debut de la creation de la requete", TRC_LUCENE);
+      
+      LOGGER.debug("{} - Requête LUCENE de départ : {}", new String[] {
+            TRC_LUCENE, lucene });
 
       String currentRequete;
       Prmd prmd;
@@ -113,6 +116,8 @@ public class PrmdServiceImpl implements PrmdService {
          
       }
 
+      LOGGER.debug("{} - Requête LUCENE travaillée : {}", new String[] {
+            TRC_LUCENE, requete });
       return requete;
    }
 
@@ -125,7 +130,7 @@ public class PrmdServiceImpl implements PrmdService {
       StringBuffer buffer = new StringBuffer();
       for (int index = 0; index < sousRequetes.size(); index++) {
          if (index != 0) {
-            buffer.append("OR");
+            buffer.append(" OR ");
          }
          buffer.append("(" + sousRequetes.get(index) + ")");
       }

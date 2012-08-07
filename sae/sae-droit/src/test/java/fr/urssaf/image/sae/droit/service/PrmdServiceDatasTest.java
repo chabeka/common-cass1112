@@ -233,7 +233,7 @@ public class PrmdServiceDatasTest {
 
       String requete = prmdService.createLucene("meta:valeur", prmds);
       String attendue = "(meta:valeur) AND ((META_1:VALEUR_1 AND META_2:VALEUR_2)"
-            + "OR(META_1:VALEUR_3 AND META_2:VALEUR_4 AND META_3:VALEUR_5))";
+            + " OR (META_1:VALEUR_3 AND META_2:VALEUR_4 AND META_3:VALEUR_5))";
       Assert.assertEquals("la requete fournie doit etre correcte", attendue,
             requete);
 
