@@ -7,12 +7,12 @@ import net.docubase.toolkit.service.ServiceProvider;
 import net.docubase.toolkit.service.administration.BaseAdministrationService;
 import net.docubase.toolkit.service.administration.StorageAdministrationService;
 
-import org.apache.commons.lang.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.JobParametersInvalidException;
 import org.springframework.batch.core.launch.JobInstanceAlreadyExistsException;
 import org.springframework.batch.core.launch.NoSuchJobException;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -244,9 +244,9 @@ public final class MajLotServiceImpl implements MajLotService {
       try {
          serviceProvider.getJobAdministrationService().start(
                JobUtils.INDEX_CATEGORIES_JOB, parameters);
-         
+
          LOG.info("fin d'indexation des métadonnées systèmes ");
-         
+
       } catch (NoSuchJobException e) {
          LOG.error("échec indexation", e);
       } catch (JobInstanceAlreadyExistsException e) {
@@ -261,13 +261,16 @@ public final class MajLotServiceImpl implements MajLotService {
 
       LOG
             .info("Début de l'opération : création des nouvelles CF pour la version 1.1.0 de DFCE");
+      
       // Récupération de la chaîne de connexion au cluster cassandra
-      // SAECassandraUpdater updater = new SAECassandraUpdater(cassandraConfig);
-      // updater.updateToVersion4();
-      throw new NotImplementedException(
-            "création des nouvelles CF pour la version 1.1.0 de DFCE n'est pas implémentée");
+      CassandraConfig config = new CassandraConfig();
+      BeanUtils.copyProperties(cassandraConfig, config);
+      config.setKeyspaceName("PMA1");
+      DFCECassandraUpdater updater = new DFCECassandraUpdater(config);
+      updater.updateToVersion110();
 
-      // LOG.info("Fin de l'opération : création des nouvelles CF pour la version 1.1.0 de DFC");
+      LOG
+            .info("Fin de l'opération : création des nouvelles CF pour la version 1.1.0 de DFC");
    }
 
 }
