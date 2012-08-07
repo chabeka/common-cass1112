@@ -178,8 +178,16 @@ java -Dlogback.configurationFile=@@SAE_HOME@@/sae-lotinstallmaj/logback-sae-loti
 // Installation du lot SAE-120512 - Mise à niveau de la base Cassandra "SAE" 
 java -Dlogback.configurationFile=@@SAE_HOME@@/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar @@SAE_HOME@@/sae-lotinstallmaj/sae-lotinstallmaj.jar @@SAE_HOME@@/sae-config.properties CASSANDRA_120512
 
-// Installation du lot SAE-120513 - Mise à niveau de la base Cassandra "SAE" 
-java -Dlogback.configurationFile=@@SAE_HOME@@/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar @@SAE_HOME@@/sae-lotinstallmaj/sae-lotinstallmaj.jar @@SAE_HOME@@/sae-config.properties CASSANDRA_120513
+// Installation du lot SAE-120910 - Mise à niveau de la base Cassandra pour le Keyspace "SAE" 
+java -Dlogback.configurationFile=@@SAE_HOME@@/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar @@SAE_HOME@@/sae-lotinstallmaj/sae-lotinstallmaj.jar @@SAE_HOME@@/sae-config.properties CASSANDRA_120910
+
+// Installation du lot SAE-120910 - Mise à niveau de la base Cassandra pour le Keyspace "Docubase" pour DFCE 1.1.0
+java -Dlogback.configurationFile=@@SAE_HOME@@/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar @@SAE_HOME@@/sae-lotinstallmaj/sae-lotinstallmaj.jar @@SAE_HOME@@/sae-config.properties DFCE_110_CASSANDRA
+
+// Installation du lot SAE-120910 - Indexation des métadonnées systèmes dates dans DFCE 1.10
+java -Dlogback.configurationFile=@@SAE_HOME@@/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar @@SAE_HOME@@/sae-lotinstallmaj/sae-lotinstallmaj.jar @@SAE_HOME@@/sae-config.properties DFCE_110_INDEX_DATES
+
+
 
 
 // --------------------------------------------------------------------
