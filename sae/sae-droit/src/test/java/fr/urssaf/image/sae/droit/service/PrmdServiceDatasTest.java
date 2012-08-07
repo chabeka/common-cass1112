@@ -232,8 +232,39 @@ public class PrmdServiceDatasTest {
       prmds.add(saePrmd);
 
       String requete = prmdService.createLucene("meta:valeur", prmds);
-      String attendue = "(meta:valeur)AND((META_1:VALEUR_1 AND META_2:VALEUR_2)"
+      String attendue = "(meta:valeur) AND ((META_1:VALEUR_1 AND META_2:VALEUR_2)"
             + "OR(META_1:VALEUR_3 AND META_2:VALEUR_4 AND META_3:VALEUR_5))";
+      Assert.assertEquals("la requete fournie doit etre correcte", attendue,
+            requete);
+
+   }
+   
+   
+   @Test
+   public void luceneFromPrmdUnSeulPrmd() {
+      
+      // Cas particulier d'1 seul PRMD :
+      // Le comportement de la construction de la requête LUCENE
+      //  change légèrement, afin de ne pas ajouter de parenthèses
+      //  inutiles autour de la sous-requête du PRMD.
+      
+      List<SaePrmd> prmds = new ArrayList<SaePrmd>();
+
+      SaePrmd saePrmd = new SaePrmd();
+      Map<String, String> values = new HashMap<String, String>();
+      values.put(META_1, VALEUR_1);
+      values.put(META_2, VALEUR_2);
+      saePrmd.setValues(values);
+
+      Prmd prmd = new Prmd();
+      prmd.setCode("LE_PRMD");
+      prmd.setLucene("MetaPrmd:ValeurMetaPrmd");
+      saePrmd.setPrmd(prmd);
+
+      prmds.add(saePrmd);
+
+      String requete = prmdService.createLucene("meta:valeur", prmds);
+      String attendue = "(meta:valeur) AND (MetaPrmd:ValeurMetaPrmd)";
       Assert.assertEquals("la requete fournie doit etre correcte", attendue,
             requete);
 
@@ -256,7 +287,7 @@ public class PrmdServiceDatasTest {
       prmds.add(saePrmd);
 
       String requete = prmdService.createLucene("meta:valeur", prmds);
-      String attendue = "(meta:valeur)AND((prmd1:valeur1))";
+      String attendue = "(meta:valeur) AND (prmd1:valeur1)";
 
       Assert.assertEquals("la requete fournie doit etre correcte", attendue,
             requete);
