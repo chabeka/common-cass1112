@@ -75,6 +75,15 @@
     </file>
     
   </files>
+
+   <dependencySets>
+      <dependencySet>
+         <includes>
+            <include>com.docubase:dfce-migration-from-1.0.1-to-1.1.0</include>
+         </includes>
+         <outputDirectory>dfce-migration</outputDirectory>
+      </dependencySet>
+   </dependencySets>
    
 </assembly>
 
