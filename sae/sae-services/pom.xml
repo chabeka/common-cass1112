@@ -1,17 +1,16 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
    <modelVersion>4.0.0</modelVersion>
 
    <parent>
       <groupId>fr.urssaf.image.sae</groupId>
       <artifactId>sae</artifactId>
-      <version>12.5.12.3-SNAPSHOT</version>
+      <version>12.9.10.1</version>
    </parent>
 
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-services</artifactId>
-   <version>12.5.12.3-SNAPSHOT</version>
+   <version>12.9.10.1</version>
 
    <name>sae-services</name>
 
@@ -54,10 +53,7 @@
                         <phase>generate-sources</phase>
                         <configuration>
                            <target name="suppressWarnings('PMD')">
-                              <replace dir="${basedir}/src/main/java"
-                                 includes="fr/urssaf/image/sae/services/capturemasse/modele/*/*.java"
-                                 token="public class"
-                                 value="@SuppressWarnings(&quot;PMD&quot;)&#xA;public class" />
+                              <replace dir="${basedir}/src/main/java" includes="fr/urssaf/image/sae/services/capturemasse/modele/*/*.java" token="public class" value="@SuppressWarnings(&quot;PMD&quot;)&#xA;public class" />
                            </target>
                         </configuration>
                         <goals>
@@ -92,49 +88,49 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-bo</artifactId>
-         <version>12.5.12.3-SNAPSHOT</version>
+         <version>12.9.10.1</version>
       </dependency>
 
       <!-- SAE MAPPING -->
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-mapping</artifactId>
-         <version>12.5.12.3-SNAPSHOT</version>
+         <version>12.9.10.1</version>
       </dependency>
 
       <!-- SAE STORAGE -->
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-storage</artifactId>
-         <version>12.5.12.3-SNAPSHOT</version>
+         <version>12.9.10.1</version>
       </dependency>
 
       <!-- SAE STORAGE DFCE -->
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-storage-dfce</artifactId>
-         <version>12.5.12.3-SNAPSHOT</version>
+         <version>12.9.10.1</version>
       </dependency>
 
       <!-- SAE METADATA -->
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-metadata</artifactId>
-         <version>12.5.12.3-SNAPSHOT</version>
+         <version>12.9.10.1</version>
       </dependency>
 
       <!-- SAE ECDE -->
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-ecde</artifactId>
-         <version>12.5.12.3-SNAPSHOT</version>
+         <version>12.9.10.1</version>
       </dependency>
 
       <!-- SAE-PILE-TRAVAUX -->
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-pile-travaux</artifactId>
-         <version>12.5.12.3-SNAPSHOT</version>
+         <version>12.9.10.1</version>
       </dependency>
 
       <!-- SPRING BATCH CASSANDRA -->
