@@ -82,6 +82,7 @@
             <include>com.docubase:dfce-migration-from-1.0.1-to-1.1.0</include>
          </includes>
          <outputDirectory>dfce-migration</outputDirectory>
+         <outputFileNameMapping>dfce-migration-from-1.0.1-to-1.1.0.jar</outputFileNameMapping>
       </dependencySet>
    </dependencySets>
    
