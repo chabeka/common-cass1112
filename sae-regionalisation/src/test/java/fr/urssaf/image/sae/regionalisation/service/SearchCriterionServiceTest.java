@@ -45,9 +45,10 @@ public class SearchCriterionServiceTest {
       Assert.assertEquals("le nombre de critères est inattendu", 3, criterias
             .size());
 
-      assertSearchCriterion(criterias.get(0), "nce:630000000004296911", false);
-      assertSearchCriterion(criterias.get(1), "nci:0023552", false);
-      assertSearchCriterion(criterias.get(2), "npe:0015197", false);
+      assertSearchCriterion(criterias.get(0),
+            "nce:630000000004296911 AND cog:630", false);
+      assertSearchCriterion(criterias.get(1), "nci:0023552 AND cog:630", false);
+      assertSearchCriterion(criterias.get(2), "npe:0015197 AND cog:150", false);
 
       Map<String, Object> metadata0 = metadataDao
             .find(criterias.get(0).getId());

@@ -109,14 +109,19 @@ public class SearchCriterionServiceImpl implements SearchCriterionService {
 
    }
 
-   private static final int COG_INDEX = 3;
+   private static final int NEW_COG_INDEX = 3;
+
+   private static final int OLD_COG_INDEX = 0;
+
+   private static final String COG_CODE = "cog";
 
    @Transactional
    private void saveCompteExterne(String[] args) {
 
       SearchCriterion searchCriterion = new SearchCriterion();
 
-      String lucene = "nce:" + args[1];
+      String lucene = "nce:" + args[1] + " AND " + COG_CODE + ":"
+            + args[OLD_COG_INDEX];
       searchCriterion.setLucene(lucene);
       searchCriterion.setUpdated(false);
 
@@ -128,8 +133,8 @@ public class SearchCriterionServiceImpl implements SearchCriterionService {
 
       Metadata metadata0 = new Metadata();
 
-      metadata0.setCode("cog");
-      metadata0.setValue(args[COG_INDEX]);
+      metadata0.setCode(COG_CODE);
+      metadata0.setValue(args[NEW_COG_INDEX]);
       metadata0.setFlag(true);
 
       metadatas.add(metadata0);
@@ -153,7 +158,8 @@ public class SearchCriterionServiceImpl implements SearchCriterionService {
 
       SearchCriterion searchCriterion = new SearchCriterion();
 
-      String lucene = "nci:" + args[1];
+      String lucene = "nci:" + args[1] + " AND " + COG_CODE + ":"
+            + args[OLD_COG_INDEX];
       searchCriterion.setLucene(lucene);
       searchCriterion.setUpdated(false);
 
@@ -165,8 +171,8 @@ public class SearchCriterionServiceImpl implements SearchCriterionService {
 
       Metadata metadata0 = new Metadata();
 
-      metadata0.setCode("cog");
-      metadata0.setValue(args[COG_INDEX]);
+      metadata0.setCode(COG_CODE);
+      metadata0.setValue(args[NEW_COG_INDEX]);
       metadata0.setFlag(true);
 
       metadatas.add(metadata0);
@@ -191,7 +197,9 @@ public class SearchCriterionServiceImpl implements SearchCriterionService {
 
       SearchCriterion searchCriterion = new SearchCriterion();
 
-      String lucene = "npe:" + args[1];
+      String lucene = "npe:" + args[1] + " AND " + COG_CODE + ":"
+            + args[OLD_COG_INDEX];
+
       searchCriterion.setLucene(lucene);
       searchCriterion.setUpdated(false);
 
@@ -203,8 +211,8 @@ public class SearchCriterionServiceImpl implements SearchCriterionService {
 
       Metadata metadata0 = new Metadata();
 
-      metadata0.setCode("cog");
-      metadata0.setValue(args[COG_INDEX]);
+      metadata0.setCode(COG_CODE);
+      metadata0.setValue(args[NEW_COG_INDEX]);
       metadata0.setFlag(true);
 
       metadatas.add(metadata0);
