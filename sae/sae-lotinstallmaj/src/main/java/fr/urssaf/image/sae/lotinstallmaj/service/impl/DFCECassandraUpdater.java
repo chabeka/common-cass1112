@@ -205,7 +205,7 @@ public class DFCECassandraUpdater {
                   + " est déjà existante");
          } else {
             LOG.info("Création de la famille de colonnes " + c.getName());
-            cluster.addColumnFamily(c);
+            cluster.addColumnFamily(c,true);
          }
       }
 

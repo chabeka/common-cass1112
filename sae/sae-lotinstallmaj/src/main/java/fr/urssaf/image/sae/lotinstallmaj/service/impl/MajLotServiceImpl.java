@@ -270,7 +270,7 @@ public final class MajLotServiceImpl implements MajLotService {
       updater.updateToVersion110();
 
       LOG
-            .info("Fin de l'opération : création des nouvelles CF pour la version 1.1.0 de DFC");
+            .info("Fin de l'opération : création des nouvelles CF pour la version 1.1.0 de DFCE");
    }
 
 }
