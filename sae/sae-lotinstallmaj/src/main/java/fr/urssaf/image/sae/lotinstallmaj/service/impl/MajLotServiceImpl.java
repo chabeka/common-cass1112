@@ -265,7 +265,7 @@ public final class MajLotServiceImpl implements MajLotService {
       // Récupération de la chaîne de connexion au cluster cassandra
       CassandraConfig config = new CassandraConfig();
       BeanUtils.copyProperties(cassandraConfig, config);
-      config.setKeyspaceName("PMA1");
+      config.setKeyspaceName("Docubase");
       DFCECassandraUpdater updater = new DFCECassandraUpdater(config);
       updater.updateToVersion110();
 
