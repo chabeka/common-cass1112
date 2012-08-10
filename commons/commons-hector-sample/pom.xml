@@ -139,14 +139,18 @@
       <dependency>
          <groupId>fr.urssaf.image.commons</groupId>
          <artifactId>commons-cassandra</artifactId>
-         <version>0.0.3-SNAPSHOT</version>
+         <version>0.0.3</version>
       </dependency>
+      
       <dependency>
       	<groupId>junit</groupId>
       	<artifactId>junit</artifactId>
       	<version>${junit.version}</version>
+         <scope>test</scope>
       </dependency>
+      
    </dependencies>
+   
    <build>
       <plugins>
 

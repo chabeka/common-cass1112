@@ -65,6 +65,7 @@
          <outputDirectory>sae-services-executable</outputDirectory>
          <unpack>false</unpack>
          <outputFileNameMapping>sae-services-executable.jar</outputFileNameMapping>
+         <useProjectArtifact>false</useProjectArtifact>
       </dependencySet>
       
       <dependencySet>
@@ -74,6 +75,7 @@
          <outputDirectory>sae-dfce-admin-exploit</outputDirectory>
          <unpack>false</unpack>
          <outputFileNameMapping>sae-dfce-admin-exploit.jar</outputFileNameMapping>
+         <useProjectArtifact>false</useProjectArtifact>
       </dependencySet>
 
    </dependencySets>
