@@ -2,23 +2,39 @@
    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <modelVersion>4.0.0</modelVersion>
 
-   <parent>
-      <groupId>fr.urssaf.image.saedemos</groupId>
-      <artifactId>saedemos</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
-   </parent>
-
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-traitements-divers</artifactId>
    <version>0.0.1-SNAPSHOT</version>
+   
    <packaging>jar</packaging>
 
    <name>sae-traitements-divers</name>
 
-
    <properties>
+      
+      <!-- Encodage de caractères -->
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+      <!-- Version des plug-ins Maven -->
+      <maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
+      <maven-source-plugin.version>2.1.2</maven-source-plugin.version>
+      <maven-resources-plugin.version>2.5</maven-resources-plugin.version>
+      <maven-javadoc-plugin.version>2.8.1</maven-javadoc-plugin.version>
+      
+      <!-- Version des dépendances -->
+      <junit.version>4.8.2</junit.version>      
+      <org.slf4j.version>1.6.1</org.slf4j.version>
+      <logback.version>0.9.30</logback.version>
       <jaxrpc.version>1.1.3_01</jaxrpc.version>
       <antrun.version>1.6</antrun.version>
+      <axis.version>1.4</axis.version>
+      <axis-wsdl4j.version>1.5.1</axis-wsdl4j.version>
+      <apache.commons-logging.version>1.1.1</apache.commons-logging.version>
+      <apache.commons-lang.version>2.6</apache.commons-lang.version>
+      <apache.commons-collections.version>3.2.1</apache.commons-collections.version>
+      <apache.commons-discovery.version>0.5</apache.commons-discovery.version>
+      <spring.framework.version>3.0.5.RELEASE</spring.framework.version>
+      
    </properties>
 
    <profiles>
@@ -78,7 +94,138 @@
 
    </profiles>
 
+
+   <build>
+      <plugins>
+
+         <!--
+            On spécifie la version du JDK et l'encodage de caractères
+            des sources
+         -->
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>${maven-compiler-plugin.version}</version>
+            <configuration>
+               <source>1.6</source>
+               <target>1.6</target>
+               <encoding>${project.build.sourceEncoding}</encoding>
+            </configuration>
+         </plugin>
+
+
+         <!--
+            Dans le cas d'un packaging JAR, on demande que le JAR des
+            sources soit également généré
+         -->
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>${maven-source-plugin.version}</version>
+            <executions>
+               <execution>
+                  <id>bind-sources</id>
+                  <goals>
+                     <goal>jar</goal>
+                  </goals>
+               </execution>
+            </executions>
+         </plugin>
+
+
+         <!--
+            On spécifie l'encodage de caractères des ressources
+         -->
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-resources-plugin</artifactId>
+            <version>${maven-resources-plugin.version}</version>
+            <configuration>
+               <encoding>${project.build.sourceEncoding}</encoding>
+            </configuration>
+         </plugin>
+
+
+         <!--
+         On demande la génération de la Javadoc
+         -->
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>${maven-javadoc-plugin.version}</version>
+            <executions>
+               <execution>
+                  <id>attach-javadocs</id>
+                  <goals>
+                     <goal>jar</goal>
+                  </goals>
+               </execution>
+            </executions>
+            <configuration>
+               <quiet>true</quiet>
+            </configuration>
+         </plugin>
+
+      </plugins>
+
+
+      <pluginManagement>
+
+         <plugins>
+
+            <!-- COMPILATION ASPECT -->
+            <plugin>
+               <groupId>org.codehaus.mojo</groupId>
+               <artifactId>aspectj-maven-plugin</artifactId>
+               <version>${aspectj-maven-plugin.version}</version>
+               <configuration>
+                  <source>1.6</source>
+                  <Xlint>ignore</Xlint>
+               </configuration>
+               <executions>
+                  <execution>
+                     <goals>
+                        <goal>compile</goal>
+                        <goal>test-compile</goal>
+                     </goals>
+                  </execution>
+               </executions>
+            </plugin>
+
+         </plugins>
+
+      </pluginManagement>
+
+   </build>
+
+
    <dependencies>
+      
+      <!-- JUnit -->
+      <dependency>
+         <groupId>junit</groupId>
+         <artifactId>junit</artifactId>
+         <version>${junit.version}</version>
+         <scope>test</scope>
+      </dependency>
+
+      <!-- SLF4J et Logback -->
+      <dependency>
+         <groupId>org.slf4j</groupId>
+         <artifactId>slf4j-api</artifactId>
+         <version>${org.slf4j.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>ch.qos.logback</groupId>
+         <artifactId>logback-classic</artifactId>
+         <version>${logback.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>ch.qos.logback</groupId>
+         <artifactId>logback-core</artifactId>
+         <version>${logback.version}</version>
+      </dependency>
+      
       <dependency>
          <groupId>com.sun.xml.rpc</groupId>
          <artifactId>jaxrpc-impl</artifactId>

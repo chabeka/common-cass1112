@@ -179,11 +179,14 @@ public class DumpTest {
       // Dump
       System.out.println("Version du RND utilisée : " + versionRND);
       List<ComptageInt> comptagesTries = triComptage(comptages);
+      int total = 0;
       for (ComptageInt comptage : comptagesTries) {
          System.out.println(String.format(
                "Durée %1$4s : %2$4s type(s) de documents", comptage.valeur,
                comptage.comptage));
+         total += comptage.comptage;
       }
+      System.out.println("Total types de documents : " + total);
 
    }
 
