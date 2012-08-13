@@ -8,6 +8,13 @@
    
 
    <logger name="org.opensaml" level="warn"/>
+   <logger name="org.springframework" level="warn"/>
+   <logger name="org.apache.commons" level="warn"/>
+   <logger name="org.apache.axiom" level="warn"/>
+   <logger name="org.apache.axis2" level="warn"/>
+   <logger name="org.apache.xml" level="warn"/>
+   <logger name="httpclient.wire" level="warn"/>
+
 
    <root level="debug">
       <appender-ref ref="STDOUT" />

@@ -6,6 +6,8 @@ import org.apache.axiom.soap.SOAPEnvelope;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.client.OperationClient;
 import org.apache.axis2.context.MessageContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -13,6 +15,7 @@ import org.apache.axis2.context.MessageContext;
  */
 public final class SoapTestUtils {
 
+   private static Logger LOG = LoggerFactory.getLogger(SoapTestUtils.class);
    
    public static final String FAIL_MSG = "le test doit échouer";
 
@@ -66,6 +69,8 @@ public final class SoapTestUtils {
          String namespaceURI, 
          String prefix) {
 
+      LOG.debug("SoapFault obtenue", fault);
+      
       // Vérification du code de la SoapFault
       
       String faultCodeAttendu = prefix + ":" + localPart;
