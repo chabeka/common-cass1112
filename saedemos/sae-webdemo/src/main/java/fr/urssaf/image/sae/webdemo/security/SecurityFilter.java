@@ -19,6 +19,7 @@ import org.springframework.web.util.WebUtils;
 import fr.urssaf.image.sae.vi.exception.VIException;
 import fr.urssaf.image.sae.vi.modele.VIPortailContenuExtrait;
 import fr.urssaf.image.sae.vi.service.PortailVIService;
+import fr.urssaf.image.sae.vi.service.impl.PortailVIServiceImpl;
 import fr.urssaf.image.sae.webdemo.service.ConnectionService;
 
 /**
@@ -61,7 +62,7 @@ public class SecurityFilter extends AbstractAuthenticationProcessingFilter {
    protected SecurityFilter(ConnectionService connection) {
       super("/" + SECURITY_URL);
 
-      this.saePortailViService = new PortailVIService();
+      this.saePortailViService = new PortailVIServiceImpl();
 
       this.connection = connection;
 

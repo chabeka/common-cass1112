@@ -28,7 +28,7 @@ public class Log {
    /**
     * @return identifiant de séquentialité
     */
-   public final long getIdseq() {
+   public long getIdseq() {
       return idseq;
    }
 
@@ -36,7 +36,7 @@ public class Log {
     * @param idseq
     *           identifiant de séquentialité
     */
-   public final void setIdseq(long idseq) {
+   public void setIdseq(long idseq) {
       this.idseq = idseq;
    }
 
@@ -44,7 +44,7 @@ public class Log {
     * @return horodatage
     */
    @JsonSerialize(using = CustomDateSerializer.class)
-   public final Date getHorodatage() {
+   public Date getHorodatage() {
       return (Date) horodatage.clone();
    }
 
@@ -52,14 +52,14 @@ public class Log {
     * @param horodatage
     *           horodatage
     */
-   public final void setHorodatage(Date horodatage) {
+   public void setHorodatage(Date horodatage) {
       this.horodatage = (Date) horodatage.clone();
    }
 
    /**
     * @return nombre d'occurrence du problème
     */
-   public final int getOccurences() {
+   public int getOccurences() {
       return occurences;
    }
 
@@ -67,14 +67,14 @@ public class Log {
     * @param occurences
     *           nombre d'occurrence du problème
     */
-   public final void setOccurences(int occurences) {
+   public void setOccurences(int occurences) {
       this.occurences = occurences;
    }
 
    /**
     * @return libellé du problème survenu
     */
-   public final String getProbleme() {
+   public String getProbleme() {
       return probleme;
    }
 
@@ -82,14 +82,14 @@ public class Log {
     * @param probleme
     *           libellé du problème survenu
     */
-   public final void setProbleme(String probleme) {
+   public void setProbleme(String probleme) {
       this.probleme = probleme;
    }
 
    /**
     * @return code de l'action à réaliser pour corriger le problème
     */
-   public final String getAction() {
+   public String getAction() {
       return action;
    }
 
@@ -97,14 +97,14 @@ public class Log {
     * @param action
     *           code de l'action à réaliser pour corriger le problème
     */
-   public final void setAction(String action) {
+   public void setAction(String action) {
       this.action = action;
    }
 
    /**
     * @return informations complémentaires
     */
-   public final String getInfos() {
+   public String getInfos() {
       return infos;
    }
 
@@ -112,7 +112,7 @@ public class Log {
     * @param infos
     *           informations complémentaires
     */
-   public final void setInfos(String infos) {
+   public void setInfos(String infos) {
       this.infos = infos;
    }
 

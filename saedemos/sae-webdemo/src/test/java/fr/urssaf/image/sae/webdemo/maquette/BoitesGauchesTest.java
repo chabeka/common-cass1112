@@ -50,6 +50,9 @@ public class BoitesGauchesTest {
 
    @Autowired
    private TestController servlet;
+   
+   @Autowired
+   private PortailVIService saePortailViService;
 
    private Source source;
 
@@ -112,8 +115,6 @@ public class BoitesGauchesTest {
    }
 
    private void authenticate() throws Exception {
-
-      PortailVIService saePortailViService = new PortailVIService();
 
       File file = new File("src/test/resources/saml/ctd_rights.xml");
       String xml = FileUtils.readFileToString(file, "UTF-8");
