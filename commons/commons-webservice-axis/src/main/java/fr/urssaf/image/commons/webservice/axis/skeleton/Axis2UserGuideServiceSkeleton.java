@@ -2,7 +2,7 @@
  * Axis2UserGuideServiceSkeleton.java
  *
  * This file was auto-generated from WSDL
- * by the Apache Axis2 version: 1.5.4  Built on : Dec 19, 2010 (08:18:42 CET)
+ * by the Apache Axis2 version: 1.6.2  Built on : Apr 17, 2012 (05:33:49 IST)
  */
 package fr.urssaf.image.commons.webservice.axis.skeleton;
 
@@ -25,7 +25,7 @@ import fr.urssaf.image.commons.webservice.axis.service.UserGuideService;
 public class Axis2UserGuideServiceSkeleton {
 
    private final UserGuideService service;
-   
+
    @Autowired
    public Axis2UserGuideServiceSkeleton(UserGuideService service) {
       this.service = service;
@@ -38,46 +38,42 @@ public class Axis2UserGuideServiceSkeleton {
     */
 
    public void doInOnly(DoInOnlyRequest request) {
-     
       service.doInOnly(request);
-
    }
 
    /**
     * Auto generated method signature
     * 
-    * @param twoWayOneParameterEchoRequest
+    * @param request
+    * @return twoWayOneParameterEchoResponse
     */
 
    public TwoWayOneParameterEchoResponse twoWayOneParameterEcho(
          TwoWayOneParameterEchoRequest request) {
-
       return service.twoWayOneParameterEcho(request);
    }
 
    /**
     * Auto generated method signature
     * 
-    * @param noParametersRequest
+    * @param request
+    * @return noParametersResponse
     */
 
-   public NoParametersResponse noParameters(
-         NoParametersRequest request) {
-
+   public NoParametersResponse noParameters(NoParametersRequest request) {
       return service.noParameters(request);
    }
 
    /**
     * Auto generated method signature
     * 
-    * @param multipleParametersAddItemRequest
+    * @param request
+    * @return multipleParametersAddItemResponse
     */
 
    public MultipleParametersAddItemResponse multipleParametersAddItem(
          MultipleParametersAddItemRequest request) {
-
-      return service
-            .multipleParametersAddItem(request);
+      return service.multipleParametersAddItem(request);
    }
 
 }

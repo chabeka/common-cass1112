@@ -4,7 +4,7 @@
  * Axis2UserGuideServiceMessageReceiverInOnly.java
  *
  * This file was auto-generated from WSDL
- * by the Apache Axis2 version: 1.5.4  Built on : Dec 19, 2010 (08:18:42 CET)
+ * by the Apache Axis2 version: 1.6.2  Built on : Apr 17, 2012 (05:33:49 IST)
  */
         package fr.urssaf.image.commons.webservice.axis.skeleton;
 
@@ -12,9 +12,7 @@
         *  Axis2UserGuideServiceMessageReceiverInOnly message receiver
         */
 
-// CHECKSTYLE:OFF
-@SuppressWarnings("all")
-public class Axis2UserGuideServiceMessageReceiverInOnly extends org.apache.axis2.receivers.AbstractInMessageReceiver{
+        public class Axis2UserGuideServiceMessageReceiverInOnly extends org.apache.axis2.receivers.AbstractInMessageReceiver{
 
         public void invokeBusinessLogic(org.apache.axis2.context.MessageContext inMessage) throws org.apache.axis2.AxisFault{
 
@@ -157,7 +155,7 @@ public class Axis2UserGuideServiceMessageReceiverInOnly extends org.apache.axis2
 
             }
         
-                    private  org.apache.axiom.soap.SOAPEnvelope toEnvelope(org.apache.axiom.soap.SOAPFactory factory, org.apache.axis2.axis2userguide.TwoWayOneParameterEchoResponse param, boolean optimizeContent)
+                    private  org.apache.axiom.soap.SOAPEnvelope toEnvelope(org.apache.axiom.soap.SOAPFactory factory, org.apache.axis2.axis2userguide.TwoWayOneParameterEchoResponse param, boolean optimizeContent, javax.xml.namespace.QName methodQName)
                         throws org.apache.axis2.AxisFault{
                       try{
                           org.apache.axiom.soap.SOAPEnvelope emptyEnvelope = factory.getDefaultEnvelope();
@@ -176,7 +174,7 @@ public class Axis2UserGuideServiceMessageReceiverInOnly extends org.apache.axis2
                                 return wrappedElement;
                          }
                     
-                    private  org.apache.axiom.soap.SOAPEnvelope toEnvelope(org.apache.axiom.soap.SOAPFactory factory, org.apache.axis2.axis2userguide.NoParametersResponse param, boolean optimizeContent)
+                    private  org.apache.axiom.soap.SOAPEnvelope toEnvelope(org.apache.axiom.soap.SOAPFactory factory, org.apache.axis2.axis2userguide.NoParametersResponse param, boolean optimizeContent, javax.xml.namespace.QName methodQName)
                         throws org.apache.axis2.AxisFault{
                       try{
                           org.apache.axiom.soap.SOAPEnvelope emptyEnvelope = factory.getDefaultEnvelope();
@@ -195,7 +193,7 @@ public class Axis2UserGuideServiceMessageReceiverInOnly extends org.apache.axis2
                                 return wrappedElement;
                          }
                     
-                    private  org.apache.axiom.soap.SOAPEnvelope toEnvelope(org.apache.axiom.soap.SOAPFactory factory, org.apache.axis2.axis2userguide.MultipleParametersAddItemResponse param, boolean optimizeContent)
+                    private  org.apache.axiom.soap.SOAPEnvelope toEnvelope(org.apache.axiom.soap.SOAPFactory factory, org.apache.axis2.axis2userguide.MultipleParametersAddItemResponse param, boolean optimizeContent, javax.xml.namespace.QName methodQName)
                         throws org.apache.axis2.AxisFault{
                       try{
                           org.apache.axiom.soap.SOAPEnvelope emptyEnvelope = factory.getDefaultEnvelope();

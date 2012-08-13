@@ -11,6 +11,9 @@ import org.apache.log4j.Logger;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import fr.urssaf.image.commons.webservice.axis.client.modele.version.VersionStub.GetVersion;
+import fr.urssaf.image.commons.webservice.axis.client.modele.version.VersionStub.GetVersionResponse;
+
 @SuppressWarnings( { "PMD.MethodNamingConventions",
       "PMD.JUnitAssertionsShouldIncludeMessage" })
 public class VersionTest {
@@ -38,22 +41,27 @@ public class VersionTest {
    }
 
    @Test
-   public void getVersion_jms() throws RemoteException, ExceptionException {
+   public void getVersion_jms() throws RemoteException, VersionExceptionException {
 
       service = new VersionStub(ctx, JMS);
       assertVersion(service);
    }
 
    @Test
-   public void getVersion_http() throws RemoteException, ExceptionException {
+   public void getVersion_http() throws RemoteException, VersionExceptionException {
 
       service = new VersionStub(ctx, HTTP);
       assertVersion(service);
    }
 
-   private void assertVersion(VersionStub service) throws RemoteException,
-         ExceptionException {
+   private void assertVersion(VersionStub service) throws RemoteException, VersionExceptionException  {
 
-      LOG.debug(service.getVersion().get_return());
+       GetVersion request = new GetVersion();
+       
+       GetVersionResponse response = service.getVersion(request);
+       
+       String reponse = response.get_return();
+      
+       LOG.debug(reponse);
    }
 }

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
    <!-- This file was auto-generated from WSDL -->
    <!--
-      by the Apache Axis2 version: 1.5.4 Built on : Dec 19, 2010
-      (08:18:42 CET)
+      by the Apache Axis2 version: 1.6.2 Built on : Apr 17, 2012
+      (05:33:49 IST)
    -->
 <serviceGroup>
    <service name="Axis2UserGuideService_SpringInit"
@@ -19,8 +19,10 @@
    </service>
    <service name="Axis2UserGuideService">
       <transports>
-         <transport>jms</transport>
          <transport>http</transport>
+         <!--
+         <transport>jms</transport>
+         -->
       </transports>
       <messageReceivers>
          <messageReceiver mep="http://www.w3.org/ns/wsdl/in-out"
@@ -34,10 +36,13 @@
       </parameter>
       <parameter name="useOriginalwsdl">true</parameter>
       <parameter name="modifyUserWSDLPortAddress">true</parameter>
+      <!--
       <parameter name="transport.jms.ConnectionFactory"
          locked="true">myTopicConnectionFactory</parameter>
       <parameter name="transport.jms.DestinationType">topic</parameter>
-      <parameter name="transport.jms.Destination" locked="true">dynamicTopics/userGuide.request</parameter>
+      <parameter name="transport.jms.Destination" locked="true">dynamicTopics/userGuide.request
+      </parameter>
+      -->
       <operation name="DoInOnly" mep="http://www.w3.org/ns/wsdl/in-only"
          namespace="http://apache.org/axis2/Axis2UserGuide">
          <actionMapping>DoInOnly</actionMapping>
@@ -68,6 +73,5 @@
             </passwordCallbackClass>
          </action>
       </parameter>
-
    </service>
 </serviceGroup>

@@ -11,5 +11,5 @@ public final class ConnectionConfiguration {
 
    }
 
-   public static final String WS_HTTP = "http://localhost:8080/axis2-1.5.4-rampart/services/";
+   public static final String WS_HTTP = "http://localhost:8080/axis2/services/";
 }

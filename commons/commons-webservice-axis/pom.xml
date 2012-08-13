@@ -13,7 +13,8 @@
    <packaging>aar</packaging>
 
    <properties>
-      <axis.version>1.5.4</axis.version>
+      <axis.version>1.6.2</axis.version>
+      <rampart.version>1.6.2</rampart.version>
       <axiom.version>1.2.9</axiom.version>
       <org.springframework.version>3.0.5.RELEASE</org.springframework.version>
    </properties>
@@ -72,7 +73,7 @@
                      </excludes>
                      <replacements>
                         <replacement>
-                           <token>[ ]*public[ ]*class</token>
+                           <token>[ ]*@SuppressWarnings\(\{"unchecked","unused"\}\)</token>
                            <valueFile>src/main/config/add_suppress_warnings.txt</valueFile>
                         </replacement>
                      </replacements>
@@ -152,14 +153,22 @@
 
          </exclusions>
       </dependency>
+      
+      
+      <dependency>
+         <groupId>org.apache.axis2</groupId>
+         <artifactId>axis2-transport-jms</artifactId>
+         <version>1.0.0</version>
+      </dependency>
 
       <!-- APACHE RAMPART -->
 
       <dependency>
          <groupId>org.apache.rampart</groupId>
          <artifactId>rampart</artifactId>
-         <version>1.5.1</version>
+         <version>${rampart.version}</version>
       </dependency>
+      
 
       <!--  AXIOM  -->
 
