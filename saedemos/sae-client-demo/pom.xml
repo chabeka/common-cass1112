@@ -18,8 +18,8 @@
       
       <!-- Version des framework -->
       <junit.version>4.8.2</junit.version>
-      <axis2.version>1.6.1</axis2.version>
-      <rampart.version>1.6.1</rampart.version>
+      <axis2.version>1.6.2</axis2.version>
+      <rampart.version>1.6.2</rampart.version>
       <apache.commons-io.version>2.0.1</apache.commons-io.version>
       <apache.commons-lang.version>2.6</apache.commons-lang.version>
       
