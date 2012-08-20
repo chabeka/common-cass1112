@@ -32,18 +32,6 @@
          </tasklet>
 
          <next on="FAILED" to="finBloquant" />
-         <next on="*" to="compteElements" />
-
-      </step>
-
-      <step id="compteElements">
-         <tasklet ref="countSommaireDocumentsTasklet">
-            <listeners>
-               <listener ref="debutTraitementFlagListener" />
-            </listeners>
-         </tasklet>
-
-         <next on="FAILED" to="finBloquant" />
          <next on="*" to="controleFormatSommaireStep" />
 
       </step>
@@ -56,8 +44,22 @@
          </tasklet>
 
          <next on="FAILED" to="finBloquant" />
-         <next on="*" to="controleDocuments" />
+         <next on="*" to="compteElements" />
       </step>
+      
+      <step id="compteElements">
+         <tasklet ref="countSommaireDocumentsTasklet">
+            <listeners>
+               <listener ref="debutTraitementFlagListener" />
+            </listeners>
+         </tasklet>
+
+         <next on="FAILED" to="finBloquant" />
+         <next on="*" to="controleDocuments" />
+
+      </step>
+
+      
 
 
       <!-- contrôle des documents du fichier sommaire.xml -->
