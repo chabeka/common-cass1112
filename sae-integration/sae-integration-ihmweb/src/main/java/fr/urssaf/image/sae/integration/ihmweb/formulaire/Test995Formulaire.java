@@ -18,7 +18,7 @@ public class Test995Formulaire extends TestWsParentFormulaire {
    private TestTechnique test007;
    private TestTechnique test008;
    // private TestTechnique test009;
-   private TestTechnique test010;
+   // private TestTechnique test010;
    
    
    /**
@@ -165,20 +165,20 @@ public class Test995Formulaire extends TestWsParentFormulaire {
 //   }
    
    
-   /**
-    * @return the test010
-    */
-   public final TestTechnique getTest010() {
-      return test010;
-   }
-   
-   
-   /**
-    * @param test010 the test010 to set
-    */
-   public final void setTest010(TestTechnique test010) {
-      this.test010 = test010;
-   }
+//   /**
+//    * @return the test010
+//    */
+//   public final TestTechnique getTest010() {
+//      return test010;
+//   }
+//   
+//   
+//   /**
+//    * @param test010 the test010 to set
+//    */
+//   public final void setTest010(TestTechnique test010) {
+//      this.test010 = test010;
+//   }
    
    
    
@@ -196,7 +196,7 @@ public class Test995Formulaire extends TestWsParentFormulaire {
       test007 = new TestTechnique("007_PingSecure-SoapFault_vi_InvalidService");
       test008 = new TestTechnique("008_PingSecure-SoapFault_vi_InvalidAuthLevel");
       // test009 = new TestTechnique("009_PingSecure-SoapFault_vi_InvalidPagm");
-      test010 = new TestTechnique("010_PingSecure-SoapFault_sae_DroitsInsuffisants");
+//      test010 = new TestTechnique("010_PingSecure-SoapFault_sae_DroitsInsuffisants");
    }
    
    
@@ -213,7 +213,7 @@ public class Test995Formulaire extends TestWsParentFormulaire {
       test007.clearResultats();
       test008.clearResultats();
 //      test009.clearResultats();
-      test010.clearResultats();
+//      test010.clearResultats();
    }
   
 }

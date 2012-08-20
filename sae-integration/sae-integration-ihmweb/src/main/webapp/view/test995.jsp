@@ -23,7 +23,6 @@ function toutCocherDecocher() {
    document.getElementsByName('test006.aLancer')[0].checked = cocher;
    document.getElementsByName('test007.aLancer')[0].checked = cocher;
    document.getElementsByName('test008.aLancer')[0].checked = cocher;
-   document.getElementsByName('test010.aLancer')[0].checked = cocher;
 
    cocher = !cocher;
    
@@ -97,12 +96,6 @@ function toutCocherDecocher() {
       <td><form:checkbox path="test008.aLancer" label="${formulaire.test008.code}" /></td>
       <sae:statusTest objetStatus="${formulaire.test008.status}"/>
       <td><form:textarea path="test008.details" cssStyle="width:100%;height:30pt;" readonly="true" /></td>
-   </tr>
-   
-   <tr>
-      <td><form:checkbox path="test010.aLancer" label="${formulaire.test010.code}" /></td>
-      <sae:statusTest objetStatus="${formulaire.test010.status}"/>
-      <td><form:textarea path="test010.details" cssStyle="width:100%;height:30pt;" readonly="true" /></td>
    </tr>
    
 </table>

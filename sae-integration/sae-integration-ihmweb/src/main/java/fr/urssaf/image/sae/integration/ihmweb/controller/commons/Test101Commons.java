@@ -272,7 +272,7 @@ public class Test101Commons {
       valeursAttendues.add("FormatFichier", "fmt/354");
       valeursAttendues.add("TailleFichier", "56587");
       valeursAttendues.add("IdTraitementMasse", StringUtils.EMPTY);
-      valeursAttendues.add("ContratDeService", "ATT_PROD_001");
+      valeursAttendues.add("ContratDeService", "CS_ANCIEN_SYSTEME");
       // valeursAttendues.add("DateArchivage",); // <= à vérifier "à la main"
 
       testCommons.getRechercheTestService().verifieResultatRecherche(
@@ -336,7 +336,7 @@ public class Test101Commons {
                formConsult.getResultats(), metas, "TailleFichier", "56587");
          testCommons.getTestsMetasService().verifiePresenceEtValeurAvecLog(
                formConsult.getResultats(), metas, "ContratDeService",
-               "ATT_PROD_001");
+               "CS_ANCIEN_SYSTEME");
 
          // DateArchivage à vérifier à la main
          // getTestsMetasService().verifiePresenceEtValeurAvecLog(

@@ -184,7 +184,7 @@ public class Test403Controller extends AbstractTestWsController<Test403Formulair
       metaAttendues.add(new MetadonneeValeur("CodeOrganismeProprietaire", "AC750"));
       metaAttendues.add(new MetadonneeValeur("CodeRND", "2.3.1.1.12"));
       metaAttendues.add(new MetadonneeValeur("CodeSousCategorieV2", StringUtils.EMPTY));
-      metaAttendues.add(new MetadonneeValeur("ContratDeService", "ATT_PROD_001"));
+      metaAttendues.add(new MetadonneeValeur("ContratDeService", "CS_ANCIEN_SYSTEME"));
       // metaAttendues.add(new MetadonneeValeur("DateArchivage", "")); // => non prédictible
       metaAttendues.add(new MetadonneeValeur("DateCreation", "2011-09-01"));
       // metaAttendues.add(new MetadonneeValeur("DateDebutConservation", "")); // => non prédictible

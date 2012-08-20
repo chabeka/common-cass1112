@@ -175,7 +175,7 @@ public class Test401Controller extends AbstractTestWsController<Test401Formulair
                formConsult.getResultats(), 
                metas, 
                "ContratDeService", 
-               "ATT_PROD_001");
+               "CS_ANCIEN_SYSTEME");
          // DateArchivage => à vérifier manuellement
 //       getTestsMetasService().verifiePresenceEtValeurAvecLog(
 //             formConsult.getResultats(), 

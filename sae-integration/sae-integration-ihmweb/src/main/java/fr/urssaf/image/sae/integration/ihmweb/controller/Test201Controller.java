@@ -238,7 +238,7 @@ public class Test201Controller extends
       valeursAttendues.add("CodeOrganismeGestionnaire", "CER69");
       valeursAttendues.add("CodeOrganismeProprietaire", "UR750");
       valeursAttendues.add("CodeRND", "2.3.1.1.12");
-      valeursAttendues.add("ContratDeService", "ATT_PROD_001");
+      valeursAttendues.add("ContratDeService", "CS_ANCIEN_SYSTEME");
       // valeursAttendues.add("DateArchivage", ""); // non prédictible
       valeursAttendues.add("DateCreation", "2011-09-08");
       // valeursAttendues.add("DateDebutConservation", ""); // non prédictible

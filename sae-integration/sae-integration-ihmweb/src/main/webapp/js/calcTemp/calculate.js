@@ -13,6 +13,7 @@ function init() {
 		id : 'startDate',
 		width : 190,
 		allowBlank : false,
+		blankText: 'Il faut spécifier la date de début',
 		format : "d/m/Y"
 	});
 
@@ -23,7 +24,9 @@ function init() {
 		fieldLabel : 'Durée (en jours)',
 		name : 'time',
 		id : 'time',
-		width : 100
+		width : 100,
+		allowBlank : false,
+		blankText: 'Il faut spécifier la durée'
 	});
 
 	monFormulaire.add(time);
@@ -73,13 +76,19 @@ function getDateDebut(form, startDate) {
 
 function majEndDate(startDateField, endDate, timeField, form) {
 
-	var dateValue = Ext.util.Format.date(startDateField.getValue(), "d/m/Y");
+	if (!form.getForm().isValid()) {
+	   alert('La saisie n\'est pas valide');
+	   return ;
+	}
+   
+   var dateValue = Ext.util.Format.date(startDateField.getValue(), "d/m/Y");
 	var timeValue = timeField.getValue();
 
 	Ext.Ajax.request( {
 		url : 'calcTemp.do',
 		params : {
-			startDate : dateValue,
+   	   action : 'calculDateFin',	
+   	   startDate : dateValue,
 			time : timeValue
 		},
 		method : 'POST',
@@ -94,10 +103,12 @@ function majEndDate(startDateField, endDate, timeField, form) {
 			}
 		},
 		failure : function(response, opts) {
-			alert("impossible d'appeler le calcul de temps");
+		   alert("impossible d'appeler le calcul de temps");
 		}
 	});
 
 }
+
+Ext.QuickTips.init();
 
 init();

@@ -5,13 +5,16 @@ package fr.urssaf.image.sae.integration.ihmweb.controller;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
 import org.apache.commons.lang.time.DateUtils;
+import org.joda.time.DateTime;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CalcTempFormulaire;
@@ -25,6 +28,8 @@ import fr.urssaf.image.sae.integration.ihmweb.formulaire.CalcTempFormulaire;
 public class CalcTempController {
 
    private SimpleDateFormat SIMPLE_DF = new SimpleDateFormat("dd/MM/yyyy");
+   
+   private SimpleDateFormat SIMPLE_HF = new SimpleDateFormat("HH:mm:ss");
 
    /**
     * Retourne la page par défaut
@@ -61,7 +66,7 @@ public class CalcTempController {
     * @return la date
     */
    @ResponseBody
-   @RequestMapping(method = RequestMethod.POST)
+   @RequestMapping(method = RequestMethod.POST, params = "action=calculDateFin")
    public final HashMap<String, Object> getDefaultDate(
          CalcTempFormulaire formulaire) {
 
@@ -89,6 +94,58 @@ public class CalcTempController {
 
       map.put("message", message);
       map.put("success", succes);
+
+      return map;
+
+   }
+   
+   
+   @ResponseBody
+   @RequestMapping(method = RequestMethod.POST, params = "action=convertTimestampToDate")
+   public final HashMap<String, Object> convertTimestampToDate(
+         @RequestParam long timestamp) {
+
+      Date laDate = new Date(timestamp) ;
+      
+      String date = SIMPLE_DF.format(laDate);
+      String heure = SIMPLE_HF.format(laDate);
+      
+      HashMap<String, Object> map = new HashMap<String, Object>();
+      map.put("success", true);
+      map.put("date", date);
+      map.put("heure", heure);
+
+      return map;
+
+   }
+   
+   
+   @ResponseBody
+   @RequestMapping(method = RequestMethod.POST, params = "action=convertDateToTimestamp")
+   public final HashMap<String, Object> convertDateToTimestamp(
+         @RequestParam String date,
+         @RequestParam String heure) throws ParseException {
+
+      Date datePart = SIMPLE_DF.parse(date);
+      Date heurePart = SIMPLE_HF.parse(heure);
+      
+      Calendar calendarHeure = Calendar.getInstance();
+      calendarHeure.setTime(heurePart);
+      int cHeure = calendarHeure.get(Calendar.HOUR_OF_DAY); 
+      int cMinute = calendarHeure.get(Calendar.MINUTE);
+      int cSecondes = calendarHeure.get(Calendar.SECOND);
+      
+      Calendar calendarDate = Calendar.getInstance();
+      calendarDate.setTime(datePart);
+      calendarDate.set(Calendar.HOUR_OF_DAY, cHeure);
+      calendarDate.set(Calendar.MINUTE, cMinute);
+      calendarDate.set(Calendar.SECOND, cSecondes);
+      
+      long timestamp = calendarDate.getTimeInMillis();
+      
+      HashMap<String, Object> map = new HashMap<String, Object>();
+      map.put("success", true);
+      map.put("timestamp", timestamp);
 
       return map;
 

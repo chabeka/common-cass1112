@@ -83,7 +83,7 @@ public class Test995Controller extends AbstractTestWsController<Test995Formulair
       testsService.casTest008(formulaire.getUrlServiceWeb(),formulaire.getTest008());
       
       // 010_PingSecure-SoapFault_sae_DroitsInsuffisants
-      testsService.casTest010(formulaire.getUrlServiceWeb(),formulaire.getTest010());
+//      testsService.casTest010(formulaire.getUrlServiceWeb(),formulaire.getTest010());
       
    }
    

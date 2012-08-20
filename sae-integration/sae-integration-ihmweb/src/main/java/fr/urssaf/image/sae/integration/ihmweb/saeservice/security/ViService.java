@@ -37,7 +37,7 @@ public class ViService {
    private static final String DEFAULT_RECIPIENT = "urn:URSSAF";
    private static final String DEFAULT_AUDIENCE = "http://sae.urssaf.fr";
    private static final String DEFAULT_ISSUER = "SaeIntegration";
-   private static final String[] DEFAULT_PAGM = new String[] {"ACCES_FULL_PAGM"};
+   private static final String[] DEFAULT_PAGM = new String[] {"ROLE_TOUS;FULL"};
    private static final String DEFAULT_METHODAUTHN2 = "urn:oasis:names:tc:SAML:2.0:ac:classes:unspecified";
    
    
