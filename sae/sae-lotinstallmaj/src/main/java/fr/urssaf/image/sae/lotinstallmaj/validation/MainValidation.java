@@ -31,7 +31,8 @@ public class MainValidation {
     * @param args
     *           chemin complet du fichier de configuration SAE operations a
     *           effectuée
-    * @throws MajLotGeneralException en cas d'échec de validation de args
+    * @throws MajLotGeneralException
+    *            en cas d'échec de validation de args
     * 
     */
    @Before(MAIN_METHOD)
@@ -113,15 +114,23 @@ public class MainValidation {
    private void checkOperationName(String nomOperation)
          throws MajLotGeneralException {
 
-      if (MajLotServiceImpl.CODE_ACTIVITE.equalsIgnoreCase(nomOperation)) return;
-      if (MajLotServiceImpl.CASSANDRA_120510.equalsIgnoreCase(nomOperation)) return;
-      if (MajLotServiceImpl.CASSANDRA_120512.equalsIgnoreCase(nomOperation)) return;
-      if (MajLotServiceImpl.CASSANDRA_120910.equalsIgnoreCase(nomOperation)) return;
-      if (MajLotServiceImpl.DFCE_110_CASSANDRA.equalsIgnoreCase(nomOperation)) return;
-      if (MajLotServiceImpl.DFCE_110_INDEX_DATES.equalsIgnoreCase(nomOperation)) return;
+      if (MajLotServiceImpl.CODE_ACTIVITE.equalsIgnoreCase(nomOperation))
+         return;
+      if (MajLotServiceImpl.CASSANDRA_120510.equalsIgnoreCase(nomOperation))
+         return;
+      if (MajLotServiceImpl.CASSANDRA_120512.equalsIgnoreCase(nomOperation))
+         return;
+      if (MajLotServiceImpl.CASSANDRA_120910.equalsIgnoreCase(nomOperation))
+         return;
+      if (MajLotServiceImpl.DFCE_110_CASSANDRA.equalsIgnoreCase(nomOperation))
+         return;
+      if (MajLotServiceImpl.DFCE_110_INDEX_DATES.equalsIgnoreCase(nomOperation))
+         return;
+      if (MajLotServiceImpl.META_SEPA.equalsIgnoreCase(nomOperation))
+         return;
       // TODO : Traiter le cas de la mise à jour de la durée de conservation de
       // 3.1.3.1.1 (en attente du JIRA CRTL-81)
-      
+
       // Opération non trouvée
       String message = String.format("Erreur : Opération inconnue : %s",
             nomOperation);

@@ -1,7 +1,17 @@
 package fr.urssaf.image.sae.lotinstallmaj.service.impl;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
+
+import net.docubase.toolkit.model.ToolkitFactory;
 import net.docubase.toolkit.model.base.Base;
 import net.docubase.toolkit.model.base.BaseCategory;
+import net.docubase.toolkit.model.reference.Category;
 import net.docubase.toolkit.model.reference.LifeCycleRule;
 import net.docubase.toolkit.service.ServiceProvider;
 import net.docubase.toolkit.service.administration.BaseAdministrationService;
@@ -14,13 +24,17 @@ import org.springframework.batch.core.launch.JobInstanceAlreadyExistsException;
 import org.springframework.batch.core.launch.NoSuchJobException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import com.docubase.dfce.commons.jobs.JobUtils;
+import com.thoughtworks.xstream.XStream;
 
 import fr.urssaf.image.sae.lotinstallmaj.exception.MajLotRuntimeException;
 import fr.urssaf.image.sae.lotinstallmaj.modele.CassandraConfig;
+import fr.urssaf.image.sae.lotinstallmaj.modele.DataBaseModel;
 import fr.urssaf.image.sae.lotinstallmaj.modele.DfceConfig;
+import fr.urssaf.image.sae.lotinstallmaj.modele.SaeCategory;
 import fr.urssaf.image.sae.lotinstallmaj.service.MajLotService;
 
 /**
@@ -38,6 +52,7 @@ public final class MajLotServiceImpl implements MajLotService {
    public static final String CASSANDRA_120910 = "CASSANDRA_120910";
    public static final String DFCE_110_INDEX_DATES = "DFCE_110_INDEX_DATES";
    public static final String DFCE_110_CASSANDRA = "DFCE_110_CASSANDRA";
+   public static final String META_SEPA = "META_SEPA";
 
    public static final int DUREE_1825 = 1825;
    public static final int DUREE_1643 = 1643;
@@ -54,6 +69,9 @@ public final class MajLotServiceImpl implements MajLotService {
 
    @Autowired
    private CassandraConfig cassandraConfig;
+
+   @Autowired
+   private ApplicationContext context;
 
    /**
     * {@inheritDoc}
@@ -89,6 +107,10 @@ public final class MajLotServiceImpl implements MajLotService {
       } else if (DFCE_110_CASSANDRA.equalsIgnoreCase(nomOperation)) {
 
          this.updateDFCE110CASSANDRA();
+
+      } else if (META_SEPA.equalsIgnoreCase(nomOperation)) {
+
+         updateMetaSepa();
 
       } else {
 
@@ -261,7 +283,7 @@ public final class MajLotServiceImpl implements MajLotService {
 
       LOG
             .info("Début de l'opération : création des nouvelles CF pour la version 1.1.0 de DFCE");
-      
+
       // Récupération de la chaîne de connexion au cluster cassandra
       CassandraConfig config = new CassandraConfig();
       BeanUtils.copyProperties(cassandraConfig, config);
@@ -273,4 +295,82 @@ public final class MajLotServiceImpl implements MajLotService {
             .info("Fin de l'opération : création des nouvelles CF pour la version 1.1.0 de DFCE");
    }
 
+   /**
+    * Pour lot 120912 du SAE : mise à jour du modèle de données des documents.
+    */
+   private void updateMetaSepa() {
+      LOG.info("Début de l'opération : ajout des métadonnées au document");
+
+      LOG.info("- début de récupération des catégories à ajouter");
+      XStream xStream = new XStream();
+      xStream.processAnnotations(DataBaseModel.class);
+      Reader reader = null;
+      InputStream stream = null;
+
+      try {
+         stream = context.getResource("metaSepa.xml").getInputStream();
+         reader = new InputStreamReader(stream, Charset.forName("UTF-8"));
+         DataBaseModel model = DataBaseModel.class
+               .cast(xStream.fromXML(reader));
+
+         LOG.info("- fin de récupération des catégories à ajouter");
+
+         // connexion a DFCE
+         connectDfce();
+
+         Base base = serviceProvider.getBaseAdministrationService().getBase(
+               dfceConfig.getBasename());
+
+         final List<BaseCategory> baseCategories = new ArrayList<BaseCategory>();
+         final ToolkitFactory toolkit = ToolkitFactory.getInstance();
+         for (SaeCategory category : model.getDataBase().getSaeCategories()
+               .getCategories()) {
+            final Category categoryDfce = serviceProvider
+                  .getStorageAdministrationService().findOrCreateCategory(
+                        category.getName(), category.categoryDataType());
+            final BaseCategory baseCategory = toolkit.createBaseCategory(
+                  categoryDfce, category.isIndex());
+            baseCategory.setEnableDictionary(category.isEnableDictionary());
+            baseCategory.setMaximumValues(category.getMaximumValues());
+            baseCategory.setMinimumValues(category.getMinimumValues());
+            baseCategory.setSingle(category.isSingle());
+            baseCategories.add(baseCategory);
+         }
+
+         LOG.info("- début d'insertion des catégories");
+         for (BaseCategory baseCategory : baseCategories) {
+            base.addBaseCategory(baseCategory);
+         }
+         
+         serviceProvider.getBaseAdministrationService().updateBase(base);
+         
+         
+
+         LOG.info("- fin d'insertion des catégories");
+
+      } catch (IOException e) {
+         LOG.warn("impossible de récupérer le fichier contenant les données");
+      } finally {
+         if (reader != null) {
+            try {
+               reader.close();
+            } catch (IOException e) {
+               LOG.debug("impossible de fermer le reader");
+            }
+         }
+
+         if (stream != null) {
+            try {
+               stream.close();
+            } catch (IOException e) {
+               LOG.debug("impossible de fermer le flux de données");
+            }
+
+         }
+         
+         serviceProvider.disconnect();
+      }
+
+      LOG.info("Fin de l'opération : ajout des métadonnées au document");
+   }
 }
