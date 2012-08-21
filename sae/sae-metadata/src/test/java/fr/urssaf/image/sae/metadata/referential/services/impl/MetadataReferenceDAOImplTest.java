@@ -30,7 +30,7 @@ public class MetadataReferenceDAOImplTest extends AbstractService {
 	public void getAllMetadataReferences() throws IOException,
 			ReferentialException {
 		Assert.assertTrue(getMetadataReferenceDAO().getAllMetadataReferences()
-				.size() == 47);
+				.size() == 50);
 	}
 
 	/**
@@ -46,7 +46,7 @@ public class MetadataReferenceDAOImplTest extends AbstractService {
 	public void getConsultableMetadataReferences() throws IOException,
 			ReferentialException {
 		Assert.assertTrue(getMetadataReferenceDAO()
-				.getConsultableMetadataReferences().size() == 42);
+				.getConsultableMetadataReferences().size() == 45);
 		for (Map.Entry<String, MetadataReference> metaData : Utils.nullSafeMap(
 				getMetadataReferenceDAO().getConsultableMetadataReferences())
 				.entrySet()) {
@@ -137,7 +137,7 @@ public class MetadataReferenceDAOImplTest extends AbstractService {
 	public void getSearchableMetadataReferences() throws IOException,
 			ReferentialException {
 		Assert.assertTrue(getMetadataReferenceDAO()
-				.getSearchableMetadataReferences().size() == 29);
+				.getSearchableMetadataReferences().size() == 31);
 		for (Map.Entry<String, MetadataReference> metaData : Utils.nullSafeMap(
 				getMetadataReferenceDAO()
 				.getSearchableMetadataReferences())
@@ -159,7 +159,7 @@ public class MetadataReferenceDAOImplTest extends AbstractService {
 	public void getArchivableMetadataReferences() throws IOException,
 			ReferentialException {
 		Assert.assertTrue(getMetadataReferenceDAO()
-				.getArchivableMetadataReferences().size() == 31);
+				.getArchivableMetadataReferences().size() == 34);
 	}
 
 
