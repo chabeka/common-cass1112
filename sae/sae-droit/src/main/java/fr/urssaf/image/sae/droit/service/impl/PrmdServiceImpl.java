@@ -50,7 +50,7 @@ public class PrmdServiceImpl implements PrmdService {
    public final String createLucene(String lucene, List<SaePrmd> prmds) {
 
       LOGGER.debug("{} - Debut de la creation de la requete", TRC_LUCENE);
-      
+
       LOGGER.debug("{} - Requête LUCENE de départ : {}", new String[] {
             TRC_LUCENE, lucene });
 
@@ -92,28 +92,28 @@ public class PrmdServiceImpl implements PrmdService {
       String requete = lucene;
       if (StringUtils.isNotEmpty(sousRequete)) {
          LOGGER.debug("{} - Assemblage de la requête définitive", TRC_LUCENE);
-         
-         // Suite à la découverte d'un problème dans l'analyseur de 
+
+         // Suite à la découverte d'un problème dans l'analyseur de
          // requête DFCE en 1.1.0 (JIRA CRTL-95), on gère le cas particulier
-         // d'1 seul PRMD (1 seule sous-requête) 
+         // d'1 seul PRMD (1 seule sous-requête)
          // En effet, la requête suivante ne fonctionne pas dans DFCE 1.1.0 :
-         //  (Meta1:Valeur1) AND ((Meta2:Valeur2))
+         // (Meta1:Valeur1) AND ((Meta2:Valeur2))
          // Alors que celle-ci fonctionne :
-         //  (Meta1:Valeur1) AND (Meta2:Valeur2)
-         if (sousRequetes.size()==1) {
-            
-            // Cas particulier d'1 seul PRMD : pas besoin d'ajouter de parenthèse
-            // supplémentaire autour de la sous-requête. Les parenthèses sont déjà
+         // (Meta1:Valeur1) AND (Meta2:Valeur2)
+         if (sousRequetes.size() == 1) {
+
+            // Cas particulier d'1 seul PRMD : pas besoin d'ajouter de
+            // parenthèse
+            // supplémentaire autour de la sous-requête. Les parenthèses sont
+            // déjà
             // ajoutées lors de la construction de cette sous-requête.
-            requete = "(" + requete + ") AND " + sousRequete ;
-            
+            requete = "(" + requete + ") AND " + sousRequete;
+
          } else {
-            
-            
+
             requete = "(" + requete + ") AND (" + sousRequete + ")";
          }
-         
-         
+
       }
 
       LOGGER.debug("{} - Requête LUCENE travaillée : {}", new String[] {
@@ -264,7 +264,8 @@ public class PrmdServiceImpl implements PrmdService {
                      .toUpperCase()));
 
          boolean metaDynamic = containsIgnoreCase(dynamicParam.keySet(), key)
-               && containsIgnoreCase(parametres.get(key), dynamicParam.get(key));
+               && metaValues.get(key.toUpperCase()).equalsIgnoreCase(
+                     dynamicParam.get(key));
 
          if (!metaStatic && !metaDynamic) {
             match = false;

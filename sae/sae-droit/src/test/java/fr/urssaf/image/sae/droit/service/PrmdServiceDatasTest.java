@@ -86,7 +86,7 @@ public class PrmdServiceDatasTest {
       saePrmds.add(saePrmd);
 
       Map<String, String> dynamicParams = new HashMap<String, String>();
-      dynamicParams.put(META_1, VALEUR_5);
+      dynamicParams.put(META_1, VALEUR_1);
       dynamicParams.put(META_2, VALEUR_2);
       saePrmd.setValues(dynamicParams);
 
