@@ -10,7 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import fr.urssaf.image.sae.igc.exception.IgcDownloadException;
-import fr.urssaf.image.sae.igc.modele.IgcConfig;
+import fr.urssaf.image.sae.igc.modele.IgcConfigs;
 import fr.urssaf.image.sae.igc.util.TextUtils;
 
 @SuppressWarnings( { "PMD.MethodNamingConventions" })
@@ -26,7 +26,7 @@ public class IgcDownloadServiceTest {
       service = new IgcDownloadService() {
 
          @Override
-         public int telechargeCRLs(IgcConfig igcConfig)
+         public int telechargeCRLs(IgcConfigs igcConfigs)
                throws IgcDownloadException {
 
             return 0;
@@ -39,9 +39,9 @@ public class IgcDownloadServiceTest {
    @Test
    public void telechargeCRLs_success() throws IgcDownloadException {
 
-      IgcConfig igcConfig = new IgcConfig();
+      IgcConfigs igcConfigs = new IgcConfigs();
       assertNotNull("les arguments doivent être valides", service
-            .telechargeCRLs(igcConfig));
+            .telechargeCRLs(igcConfigs));
    }
 
    @Test

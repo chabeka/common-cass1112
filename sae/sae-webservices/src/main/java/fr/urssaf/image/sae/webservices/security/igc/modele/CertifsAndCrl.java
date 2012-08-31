@@ -3,6 +3,7 @@ package fr.urssaf.image.sae.webservices.security.igc.modele;
 import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
 import java.util.List;
+import java.util.Map;
 
 import org.joda.time.DateTime;
 
@@ -14,7 +15,7 @@ import org.joda.time.DateTime;
  */
 public class CertifsAndCrl {
 
-   private List<X509Certificate> certsAcRacine;
+   private Map<X509Certificate, String> certsAcRacine;
 
    private List<X509CRL> crl;
 
@@ -24,7 +25,7 @@ public class CertifsAndCrl {
     * 
     * @return Les certificats des AC racines en lesquelles le SAE a confiance
     */
-   public final List<X509Certificate> getCertsAcRacine() {
+   public final Map<X509Certificate, String> getCertsAcRacine() {
       return certsAcRacine;
    }
 
@@ -33,7 +34,7 @@ public class CertifsAndCrl {
     * @param certsAcRacine
     *           Les certificats des AC racines en lesquelles le SAE a confiance
     */
-   public final void setCertsAcRacine(List<X509Certificate> certsAcRacine) {
+   public final void setCertsAcRacine(Map<X509Certificate, String> certsAcRacine) {
       this.certsAcRacine = certsAcRacine;
    }
 

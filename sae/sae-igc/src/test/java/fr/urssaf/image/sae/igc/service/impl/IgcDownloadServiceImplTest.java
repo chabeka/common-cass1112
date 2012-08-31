@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -24,6 +25,8 @@ import org.slf4j.LoggerFactory;
 
 import fr.urssaf.image.sae.igc.exception.IgcDownloadException;
 import fr.urssaf.image.sae.igc.modele.IgcConfig;
+import fr.urssaf.image.sae.igc.modele.IgcConfigs;
+import fr.urssaf.image.sae.igc.modele.URLList;
 
 @SuppressWarnings( { "PMD.MethodNamingConventions",
       "PMD.VariableNamingConventions" })
@@ -62,9 +65,9 @@ public class IgcDownloadServiceImplTest {
 
    @AfterClass
    public static void afterClass() throws IOException {
-        
+
       FileUtils.deleteDirectory(DIRECTORY);
-      
+
    }
 
    @Before
@@ -76,15 +79,22 @@ public class IgcDownloadServiceImplTest {
    @Test
    public void telechargeCRLs_success() throws IgcDownloadException {
 
+      IgcConfigs igcConfigs = new IgcConfigs();
       IgcConfig igcConfig = new IgcConfig();
-      igcConfig.setRepertoireCRLs(CRL.getAbsolutePath());
+      igcConfig.setCrlsRep(CRL.getAbsolutePath());
 
       List<URL> urls = new ArrayList<URL>();
       urls.add(download_exist);
 
-      igcConfig.setUrlsTelechargementCRLs(urls);
+      URLList urlList = new URLList();
+      urlList.setUrls(urls);
+      igcConfig.setUrlList(urlList);
 
-      Integer crlsNumber = service.telechargeCRLs(igcConfig);
+      igcConfig.setPkiIdent("PKI_TEST");
+
+      igcConfigs.setIgcConfigs(Arrays.asList(new IgcConfig[] { igcConfig }));
+
+      Integer crlsNumber = service.telechargeCRLs(igcConfigs);
 
       assertEquals("erreur sur le nombre d'urls à télécharger", Integer
             .valueOf(15), crlsNumber);
@@ -102,15 +112,22 @@ public class IgcDownloadServiceImplTest {
    public void telechargeCRLs_failure() throws IgcDownloadException,
          MalformedURLException {
 
+      IgcConfigs configs = new IgcConfigs();
+
       IgcConfig igcConfig = new IgcConfig();
-      igcConfig.setRepertoireCRLs(CRL.getAbsolutePath());
+      igcConfig.setCrlsRep(CRL.getAbsolutePath());
 
       List<URL> urls = new ArrayList<URL>();
       urls.add(new URL("http://download.oracle.com/javase/6/docs/api/"));
 
-      igcConfig.setUrlsTelechargementCRLs(urls);
+      URLList urlList = new URLList();
+      urlList.setUrls(urls);
+      igcConfig.setUrlList(urlList);
 
-      service.telechargeCRLs(igcConfig);
+      igcConfig.setPkiIdent("PKI_TEST");
+      configs.setIgcConfigs(Arrays.asList(new IgcConfig[] { igcConfig }));
+
+      service.telechargeCRLs(configs);
 
    }
 }

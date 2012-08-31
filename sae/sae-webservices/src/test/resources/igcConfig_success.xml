@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <IgcConfig>
 
-   <repertoireACRacines>
-     c:\sae\certificats\ACRacine
-   </repertoireACRacines>
+   <!--
+      un identifiant pour différencier les PKI de ce fichier. cet
+      identifiant doit pouvoir être utilisé comme nom de répertoire
+   -->
+   <id>PKI_VAL_AED</id>
 
-   <repertoireCRL>
-       c:\sae\certificats\CRL
-   </repertoireCRL>
+   <certifACRacine>C:\appl\sae\certificats\PKI_VAL_AED\ACRacineDeConfiance\pseudo_IGCA.crt</certifACRacine>
+
+   <repertoireCRL>c:\sae\certificats\CRL</repertoireCRL>
 
    <URLTelechargementCRL>
       <url>http://cer69idxpkival1.cer69.recouv/*.crl</url>
    </URLTelechargementCRL>
 
-
+   <issuers>
+      <issuer>CN=IGC/A</issuer>
+   </issuers>
 
 </IgcConfig> 

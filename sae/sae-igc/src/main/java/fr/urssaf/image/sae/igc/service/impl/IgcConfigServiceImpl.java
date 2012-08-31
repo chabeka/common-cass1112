@@ -1,16 +1,13 @@
 package fr.urssaf.image.sae.igc.service.impl;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.ConversionException;
-import org.apache.commons.configuration.PropertyConverter;
-import org.apache.commons.configuration.XMLConfiguration;
+import com.thoughtworks.xstream.XStream;
 
 import fr.urssaf.image.sae.igc.exception.IgcConfigException;
-import fr.urssaf.image.sae.igc.modele.IgcConfig;
+import fr.urssaf.image.sae.igc.modele.IgcConfigs;
 import fr.urssaf.image.sae.igc.service.IgcConfigService;
 
 /**
@@ -21,51 +18,33 @@ import fr.urssaf.image.sae.igc.service.IgcConfigService;
 public class IgcConfigServiceImpl implements IgcConfigService {
 
    @Override
-   public final IgcConfig loadConfig(String pathConfigFile)
+   public final IgcConfigs loadConfig(String pathConfigFile)
          throws IgcConfigException {
 
+      final XStream xstream = new XStream();
+      xstream.processAnnotations(IgcConfigs.class);
+      FileInputStream stream = null;
+      IgcConfigs configs;
+
       try {
-
-         XMLConfiguration config = new XMLConfiguration(pathConfigFile);
-         IgcConfig igcConfig = this.loadConfig(config);
-
-         return igcConfig;
-      } catch (ConversionException e) {
+         stream = new FileInputStream(pathConfigFile);
+         configs = IgcConfigs.class.cast(xstream.fromXML(stream));
+      } catch (FileNotFoundException e) {
          throw new IgcConfigException(e);
-      } catch (ConfigurationException e) {
+      } catch (Exception e) {
          throw new IgcConfigException(e);
+      } finally {
+         if (stream != null) {
+            try {
+               stream.close();
+            } catch (IOException e) {
+               // nothing to do 
+            }
+         }
       }
+      
 
-   }
-
-   /**
-    * Renvoie la configuration des éléments de l'IGC
-    * 
-    * @param config
-    *           classe de configuration de l'IGC
-    * @return Configuration des éléments de l'IGC
-    */
-   public final IgcConfig loadConfig(XMLConfiguration config) {
-
-      IgcConfig igcConfig = new IgcConfig();
-     
-      String acRacines = config.getString("repertoireACRacines");
-      igcConfig.setRepertoireACRacines(acRacines);
-      String crlsRepertory = config.getString("repertoireCRL");
-      igcConfig.setRepertoireCRLs(crlsRepertory);
-
-      List<URL> urls = new ArrayList<URL>();
-
-      for (Object value : config.getList("URLTelechargementCRL.url")) {
-
-         URL url = PropertyConverter.toURL(value);
-         urls.add(url);
-
-      }
-
-      igcConfig.setUrlsTelechargementCRLs(urls);
-
-      return igcConfig;
+      return configs;
 
    }
 }

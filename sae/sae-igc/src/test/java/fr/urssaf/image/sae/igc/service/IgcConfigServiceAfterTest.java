@@ -4,15 +4,19 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 
 import org.apache.commons.configuration.XMLConfiguration;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.thoughtworks.xstream.XStream;
+
 import fr.urssaf.image.sae.igc.exception.IgcConfigException;
 import fr.urssaf.image.sae.igc.modele.IgcConfig;
-import fr.urssaf.image.sae.igc.service.impl.IgcConfigServiceImpl;
+import fr.urssaf.image.sae.igc.modele.IgcConfigs;
 import fr.urssaf.image.sae.igc.util.ConfigurationUtils;
 import fr.urssaf.image.sae.igc.util.TextUtils;
 
@@ -36,20 +40,30 @@ public class IgcConfigServiceAfterTest {
       service = new IgcConfigService() {
 
          @Override
-         public IgcConfig loadConfig(String pathConfigFile)
+         public IgcConfigs loadConfig(String pathConfigFile)
                throws IgcConfigException {
 
-            IgcConfigServiceImpl instance = new IgcConfigServiceImpl();
+            final XStream xstream = new XStream();
+            xstream.processAnnotations(IgcConfigs.class);
+            FileInputStream stream = null;
+            IgcConfigs configs;
 
-            IgcConfig igcConfig = instance.loadConfig(config);
+            try {
+               stream = new FileInputStream(pathConfigFile);
+               configs = IgcConfigs.class.cast(xstream.fromXML(stream));
+            } catch (FileNotFoundException e) {
+               throw new IgcConfigException(e);
+            }
 
-            // transformation des chemin en chemin absolu
-            igcConfig.setRepertoireACRacines(ConfigurationUtils
-                  .getAbsolute(igcConfig.getRepertoireACRacines()));
-            igcConfig.setRepertoireCRLs(ConfigurationUtils
-                  .getAbsolute(igcConfig.getRepertoireCRLs()));
+            for (IgcConfig igcConfig : configs.getIgcConfigs()) {
+               // transformation des chemin en chemin absolu
+               igcConfig.setAcRacine(ConfigurationUtils.getAbsolute(igcConfig
+                     .getAcRacine()));
+               igcConfig.setCrlsRep(ConfigurationUtils.getAbsolute(igcConfig
+                     .getCrlsRep()));
+            }
 
-            return igcConfig;
+            return configs;
          }
       };
 
@@ -89,10 +103,13 @@ public class IgcConfigServiceAfterTest {
 
       this.config = ConfigurationUtils.createConfig(path);
 
-      assertLoadConfig_failure(service, config,
-            IgcConfigService.AC_RACINES_NOTEXIST, ConfigurationUtils
-                  .getAbsolute("notExist/certificats/ACRacine"),
-                  ConfigurationUtils.getIgcConfig(path));
+      assertLoadConfig_failure(
+            service,
+            config,
+            IgcConfigService.AC_RACINES_NOTEXIST,
+            ConfigurationUtils
+                  .getAbsolute("notExist/certificats/ACRacine/pseudo_IGCA.crt"),
+            ConfigurationUtils.getIgcConfig(path));
 
    }
 
@@ -104,7 +121,8 @@ public class IgcConfigServiceAfterTest {
       this.config = ConfigurationUtils.createConfig(path);
 
       assertLoadConfig_failure(service, config,
-            IgcConfigService.AC_RACINES_REQUIRED, ConfigurationUtils.getIgcConfig(path));
+            IgcConfigService.AC_RACINES_REQUIRED, ConfigurationUtils
+                  .getIgcConfig(path));
 
    }
 
@@ -141,7 +159,8 @@ public class IgcConfigServiceAfterTest {
       this.config = ConfigurationUtils.createConfig(path);
 
       assertLoadConfig_failure(service, config,
-            IgcConfigService.URLS_CRL_REQUIRED, ConfigurationUtils.getIgcConfig(path));
+            IgcConfigService.URLS_CRL_REQUIRED, ConfigurationUtils
+                  .getIgcConfig(path));
 
    }
 

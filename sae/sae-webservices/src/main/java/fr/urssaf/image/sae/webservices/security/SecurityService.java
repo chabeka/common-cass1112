@@ -2,7 +2,6 @@ package fr.urssaf.image.sae.webservices.security;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,10 +40,8 @@ public class SecurityService {
 
    private final IgcService igcService;
 
-   private final List<String> patterns;
-
    private final boolean acceptOldWs;
-   
+
    // private final VISignVerifParams signVerifParams;
 
    /**
@@ -68,8 +65,6 @@ public class SecurityService {
          throw new IllegalStateException(e);
       }
 
-      this.patterns = SecurityUtils.loadIssuerPatterns();
-      
       this.acceptOldWs = configuration.isAncienWsActif();
 
    }
@@ -103,7 +98,7 @@ public class SecurityService {
       VIContenuExtrait viExtrait;
 
       VISignVerifParams signVerifParams = new VISignVerifParams();
-      signVerifParams.setPatternsIssuer(this.patterns);
+      signVerifParams.setPatternsIssuer(this.igcService.getPatternIssuers());
 
       CertifsAndCrl certifsAndCrl = this.igcService.getInstanceCertifsAndCrl();
       signVerifParams.setCertifsACRacine(certifsAndCrl.getCertsAcRacine());

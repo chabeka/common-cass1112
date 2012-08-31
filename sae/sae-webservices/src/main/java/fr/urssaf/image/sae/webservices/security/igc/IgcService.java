@@ -1,5 +1,7 @@
 package fr.urssaf.image.sae.webservices.security.igc;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.GeneralSecurityException;
@@ -7,9 +9,13 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -22,6 +28,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.sae.igc.modele.IgcConfig;
+import fr.urssaf.image.sae.igc.modele.IgcConfigs;
 import fr.urssaf.image.sae.igc.util.TextUtils;
 import fr.urssaf.image.sae.webservices.security.SecurityUtils;
 import fr.urssaf.image.sae.webservices.security.igc.exception.LoadCertifsAndCrlException;
@@ -46,29 +53,28 @@ public class IgcService implements InitializingBean {
 
    private CertifsAndCrl certifsAndCrl;
 
-   private final IgcConfig igcConfig;
+   private final IgcConfigs igcConfigs;
 
-   private final List<X509Certificate> certsAcRacine;
+   private final Map<X509Certificate, String> certsAcRacine;
 
    private static final int VALIDATE_TIME = 24;
-   
+
    public static final String CRL_ERROR = "Une erreur s'est produite lors du chargement des CRL";
 
    public static final String AC_RACINE_ERROR = "Une erreur s'est produite lors du chargement des certificats des AC racine de confiance";
 
-   public static final String AC_RACINE_EMPTY = "Aucun certificat d'AC racine de confiance trouvé dans le répertoire ${0}";
+   public static final String AC_RACINE_EMPTY = "Aucun certificat d'AC racine de confiance trouvé pour le fichier ${0}";
 
    public static final String CRL_FIRST_LOAD = "Chargement des CRL en mémoire depuis les fichiers .crl pour la première fois";
-   
+
    public static final String CRL_RELOAD = "Rechargement des CRL en mémoire depuis les fichiers .crl car les informations en mémoire sont périmées (date du chargement en mémoire précédent : ${0})";
-   
+
    public static final String CRL_COUNT = "${0} CRL chargée(s) en mémoire";
-   
+
    public static final String AC_RACINE_LOAD = "Chargement en mémoire des certificats des AC racine depuis les fichiers .crt";
-   
+
    public static final String AC_RACINE_COUNT = "${0} certificat(s) d'AC racine de confiance chargé(s) en mémoire";
 
-   
    /**
     * Instanciation de {@link IgcService}
     * 
@@ -76,10 +82,10 @@ public class IgcService implements InitializingBean {
     *           configuration de l'IGC
     */
    @Autowired
-   public IgcService(IgcConfig igcConfig) {
+   public IgcService(IgcConfigs igcConfigs) {
 
-      this.igcConfig = igcConfig;
-      this.certsAcRacine = new ArrayList<X509Certificate>();
+      this.igcConfigs = igcConfigs;
+      this.certsAcRacine = new HashMap<X509Certificate, String>();
 
    }
 
@@ -103,48 +109,52 @@ public class IgcService implements InitializingBean {
    public final void afterPropertiesSet() {
 
       LOG.info(AC_RACINE_LOAD);
-      
-      FileSystemResource repACRacine = new FileSystemResource(igcConfig
-            .getRepertoireACRacines());
 
-      List<Resource> resources = ResourceUtils.loadResources(repACRacine,
-            new String[] { "crt" });
+      List<String> certificats = new ArrayList<String>();
 
-      for (Resource crt : resources) {
+      for (IgcConfig igcConfig : igcConfigs.getIgcConfigs()) {
 
+         InputStream input = null;
          try {
 
-            LOG.debug("loading certificat: " + crt.getFilename());
-            InputStream input = crt.getInputStream();
+            LOG.debug("loading certificat: " + igcConfig.getAcRacine());
+            File crt = new File(igcConfig.getAcRacine());
+            input = new FileInputStream(crt);
 
             try {
-
-               certsAcRacine.add(SecurityUtils.loadCertificat(input));
+               certsAcRacine.put(SecurityUtils.loadCertificat(input), igcConfig
+                     .getPkiIdent());
+               certificats.add(igcConfig.getAcRacine());
 
             } catch (CertificateException e) {
 
-               LOG.error("erreur lors du chargement du certificat : " + crt.getFilename());
+               LOG.error("erreur lors du chargement du certificat : "
+                     + crt.getName());
                throw new IllegalArgumentException(AC_RACINE_ERROR, e);
             }
 
-            finally {
-               input.close();
-            }
-
          } catch (IOException e) {
-            throw new IllegalArgumentException(AC_RACINE_ERROR, e);
+            throw new IllegalArgumentException(TextUtils.getMessage(
+                  AC_RACINE_EMPTY, igcConfig.getAcRacine()), e);
+
+         } finally {
+            if (input != null) {
+               try {
+                  input.close();
+               } catch (IOException e) {
+                  LOG.info("impossible de fermer le flux");
+               }
+            }
          }
       }
 
-      if (CollectionUtils.isEmpty(certsAcRacine)) {
+      if (MapUtils.isEmpty(certsAcRacine)) {
          throw new IllegalArgumentException(TextUtils.getMessage(
-               AC_RACINE_EMPTY, repACRacine.getPath()));
+               AC_RACINE_EMPTY, StringUtils.join(certificats, ",")));
       }
-      
-      LOG.info(
-            TextUtils.getMessage(
-                  AC_RACINE_COUNT, 
-                  String.valueOf(this.certsAcRacine.size())));
+
+      LOG.info(TextUtils.getMessage(AC_RACINE_COUNT, String
+            .valueOf(this.certsAcRacine.size())));
 
    }
 
@@ -189,35 +199,36 @@ public class IgcService implements InitializingBean {
       if ((certifsAndCrl == null) || (certifsAndCrl.getDateMajCrl() == null)) {
          mustLoad = true;
          isFirstLoad = true;
-      }
-      else if (DateTimeUtils.diffHours(certifsAndCrl.getDateMajCrl(),systemDate) > VALIDATE_TIME) {
+      } else if (DateTimeUtils.diffHours(certifsAndCrl.getDateMajCrl(),
+            systemDate) > VALIDATE_TIME) {
          mustLoad = true;
          isReload = true;
       }
-      
+
       // Recharge les CRL si nécessaires
       if (mustLoad) {
-      
+
          // Ajout d'un log pour indiquer que l'on recharge les CRL
          if (isFirstLoad) {
             LOG.info(CRL_FIRST_LOAD);
          } else if (isReload) {
-            
-            DateTimeFormatter fmt = DateTimeFormat.forPattern("dd/MM/yyyy HH'h'mm");
-            
-            String dateFormatee = certifsAndCrl.getDateMajCrl().toString(fmt); 
-            
-            LOG.info(
-                  TextUtils.getMessage(
-                        CRL_RELOAD, 
-                        dateFormatee));
-         }
-         
-         
-         // Chargement des fichiers .crl dans des objets X509CRL
-         List<X509CRL> crls = loadCRLResources(igcConfig.getRepertoireCRLs());
 
-         
+            DateTimeFormatter fmt = DateTimeFormat
+                  .forPattern("dd/MM/yyyy HH'h'mm");
+
+            String dateFormatee = certifsAndCrl.getDateMajCrl().toString(fmt);
+
+            LOG.info(TextUtils.getMessage(CRL_RELOAD, dateFormatee));
+         }
+
+         List<X509CRL> crls = new ArrayList<X509CRL>();
+
+         for (IgcConfig igcConfig : igcConfigs.getIgcConfigs()) {
+
+            // Chargement des fichiers .crl dans des objets X509CRL
+            crls.addAll(loadCRLResources(igcConfig.getCrlsRep()));
+         }
+
          // Construction de l'objet contenant les CRL
          CertifsAndCrl instance = new CertifsAndCrl();
 
@@ -226,13 +237,11 @@ public class IgcService implements InitializingBean {
          instance.setCrl(crls);
 
          this.setCertifsAndCrl(instance);
-         
+
          // Ajout d'un log pour indiquer le nombre de CRL chargée en mémoire
-         LOG.info(
-               TextUtils.getMessage(
-                     CRL_COUNT, 
-                     String.valueOf(this.certifsAndCrl.getCrl().size())));
-         
+         LOG.info(TextUtils.getMessage(CRL_COUNT, String
+               .valueOf(this.certifsAndCrl.getCrl().size())));
+
       }
    }
 
@@ -245,9 +254,10 @@ public class IgcService implements InitializingBean {
          throws LoadCertifsAndCrlException {
 
       FileSystemResource repCRLs = new FileSystemResource(repertoireCRLs);
-      List<Resource> resources = ResourceUtils.loadResources(repCRLs, 
-            new String[] { "crl","Crl","cRl","crL","CRl","CrL","cRL","CRL" });
-      
+      List<Resource> resources = ResourceUtils.loadResources(repCRLs,
+            new String[] { "crl", "Crl", "cRl", "crL", "CRl", "CrL", "cRL",
+                  "CRL" });
+
       List<X509CRL> crls = new ArrayList<X509CRL>();
 
       for (Resource crl : resources) {
@@ -259,7 +269,8 @@ public class IgcService implements InitializingBean {
             try {
                crls.add(SecurityUtils.loadCRL(input));
             } catch (GeneralSecurityException e) {
-               LOG.error("erreur de chargement du fichier CRL: " + crl.getURI(), e);
+               LOG.error(
+                     "erreur de chargement du fichier CRL: " + crl.getURI(), e);
                throw new LoadCertifsAndCrlException(CRL_ERROR, e);
             } finally {
 
@@ -267,7 +278,8 @@ public class IgcService implements InitializingBean {
             }
          } catch (IOException e) {
 
-            LOG.error("erreur de chargement du fichier CRL: " + crl.getFilename(), e);
+            LOG.error("erreur de chargement du fichier CRL: "
+                  + crl.getFilename(), e);
             throw new LoadCertifsAndCrlException(CRL_ERROR, e);
          }
 
@@ -277,4 +289,23 @@ public class IgcService implements InitializingBean {
 
    }
 
+   /**
+    * Retourne la liste des issuers en fonction des id des PKI
+    * 
+    * @return la map des issuers
+    */
+   public Map<String, List<String>> getPatternIssuers() {
+
+      Map<String, List<String>> map = null;
+
+      if (CollectionUtils.isNotEmpty(igcConfigs.getIgcConfigs())) {
+         map = new HashMap<String, List<String>>();
+         for (IgcConfig igcConfig : this.igcConfigs.getIgcConfigs()) {
+            map.put(igcConfig.getPkiIdent(), igcConfig.getIssuerList()
+                  .getIssuers());
+         }
+      }
+
+      return map;
+   }
 }

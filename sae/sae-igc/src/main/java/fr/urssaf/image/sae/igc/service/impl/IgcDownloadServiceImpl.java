@@ -3,8 +3,10 @@ package fr.urssaf.image.sae.igc.service.impl;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
@@ -13,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import fr.urssaf.image.sae.igc.exception.IgcDownloadException;
 import fr.urssaf.image.sae.igc.modele.IgcConfig;
+import fr.urssaf.image.sae.igc.modele.IgcConfigs;
 import fr.urssaf.image.sae.igc.service.IgcDownloadService;
 import fr.urssaf.image.sae.igc.util.URLUtils;
 
@@ -27,21 +30,29 @@ public class IgcDownloadServiceImpl implements IgcDownloadService {
          .getLogger(IgcDownloadServiceImpl.class);
 
    @Override
-   public final int telechargeCRLs(IgcConfig igcConfig)
+   public final int telechargeCRLs(IgcConfigs igcConfigs)
          throws IgcDownloadException {
 
       int downloads = 0;
+      List<Exception> exceptions = new ArrayList<Exception>();
+      for (IgcConfig igcConfig : igcConfigs.getIgcConfigs()) {
 
-      try {
+         try {
 
-         for (URL url : igcConfig.getUrlsTelechargementCRLs()) {
+            for (URL url : igcConfig.getUrlList().getUrls()) {
 
-            downloads = this.download(url, igcConfig.getRepertoireCRLs());
+               downloads = this.download(url, igcConfig.getCrlsRep());
 
+            }
+
+         } catch (IOException e) {
+            exceptions.add(e);
          }
+      }
 
-      } catch (IOException e) {
-         throw new IgcDownloadException(e);
+      if (!CollectionUtils.isEmpty(exceptions)) {
+         // TODO FBON - Comment retourner l'ensemble des exceptions ?
+         throw new IgcDownloadException(exceptions.get(0));
       }
 
       return downloads;

@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.ConversionException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -21,10 +20,12 @@ import org.apache.commons.lang.SystemUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.xml.sax.SAXParseException;
+
+import com.thoughtworks.xstream.converters.ConversionException;
+import com.thoughtworks.xstream.io.StreamException;
 
 import fr.urssaf.image.sae.igc.exception.IgcConfigException;
-import fr.urssaf.image.sae.igc.modele.IgcConfig;
+import fr.urssaf.image.sae.igc.modele.IgcConfigs;
 import fr.urssaf.image.sae.igc.util.ConfigurationUtils;
 
 @SuppressWarnings( { "PMD.MethodNamingConventions" })
@@ -38,7 +39,7 @@ public class IgcConfigServiceImplTest {
 
    static {
       DIRECTORY = FilenameUtils.concat(SystemUtils.getJavaIoTmpDir()
-            .getAbsolutePath(), "certificats");
+            .getAbsolutePath(), "certificats/PKI");
    }
 
    @BeforeClass
@@ -68,13 +69,16 @@ public class IgcConfigServiceImplTest {
       try {
          newXML.load(ConfigurationUtils.getIgcConfig("igcConfig_modele.xml"));
 
-         newXML.addProperty("repertoireACRacines", acRacines);
-         newXML.addProperty("repertoireCRL", crls);
+         newXML.addProperty("IgcConfig.id", "PKI_TEST");
+         newXML.addProperty("IgcConfig.certifACRacine", acRacines);
+         newXML.addProperty("IgcConfig.repertoireCRL", crls);
 
          for (String url : urls) {
 
-            newXML.addProperty("URLTelechargementCRL.url", url);
+            newXML.addProperty("IgcConfig.URLTelechargementCRL.url", url);
          }
+
+         newXML.addProperty("IgcConfig.issuers.issuer", "CN=IGC/A");
 
          newXML.save(DIRECTORY + "/" + newConfig);
 
@@ -90,21 +94,26 @@ public class IgcConfigServiceImplTest {
    public void loadConfig_success() throws IgcConfigException,
          MalformedURLException {
 
-      String pathConfigFile = loadConfig("igcConfig_success_temp.xml",
+      String pathConfigFile = loadConfig(
+            "igcConfig_success_temp.xml",
             ConfigurationUtils
-                  .getAbsolute("src/test/resources/certificats/ACRacine"),
+                  .getAbsolute("src/test/resources/certificats/PKI_TEST/ACRacine/pseudo_IGCA.crt"),
             ConfigurationUtils
-                  .getAbsolute("src/test/resources/certificats/CRL/"),
+                  .getAbsolute("src/test/resources/certificats/PKI_TEST/CRL/"),
             "http://cer69idxpkival1.cer69.recouv/*.crl");
 
-      IgcConfig config = service.loadConfig(pathConfigFile);
+      IgcConfigs configs = service.loadConfig(pathConfigFile);
 
-      assertEquals("erreur sur le repertoire acRacine", ConfigurationUtils
-            .getAbsolute("src/test/resources/certificats/ACRacine"), config
-            .getRepertoireACRacines());
+      assertEquals(
+            "erreur sur le repertoire acRacine",
+            ConfigurationUtils
+                  .getAbsolute("src/test/resources/certificats/PKI_TEST/ACRacine/pseudo_IGCA.crt"),
+            ConfigurationUtils.getAbsolute(configs.getIgcConfigs().get(0)
+                  .getAcRacine()));
       assertEquals("erreur sur le repertoire des crls", ConfigurationUtils
-            .getAbsolute("src/test/resources/certificats/CRL/"), config
-            .getRepertoireCRLs());
+            .getAbsolute("src/test/resources/certificats/PKI_TEST/CRL/"),
+            ConfigurationUtils.getAbsolute(configs.getIgcConfigs().get(0)
+                  .getCrlsRep()));
 
       URL url = new URL("http://cer69idxpkival1.cer69.recouv/*.crl");
 
@@ -112,7 +121,8 @@ public class IgcConfigServiceImplTest {
       urls.add(url);
 
       String expected = StringUtils.join(urls, ",");
-      String actual = StringUtils.join(config.getUrlsTelechargementCRLs(), ",");
+      String actual = StringUtils.join(configs.getIgcConfigs().get(0)
+            .getUrlList().getUrls(), ",");
 
       assertEquals("erreur sur les urls de téléchargement", expected, actual);
    }
@@ -156,7 +166,7 @@ public class IgcConfigServiceImplTest {
       } catch (IgcConfigException e) {
 
          assertEquals("erreur la cause de l'exception",
-               SAXParseException.class, e.getCause().getCause().getClass());
+               StreamException.class, e.getCause().getClass());
       }
 
    }

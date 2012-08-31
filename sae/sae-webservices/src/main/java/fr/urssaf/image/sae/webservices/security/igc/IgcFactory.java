@@ -6,6 +6,7 @@ import org.springframework.util.Assert;
 import fr.urssaf.image.sae.igc.IgcServiceFactory;
 import fr.urssaf.image.sae.igc.exception.IgcConfigException;
 import fr.urssaf.image.sae.igc.modele.IgcConfig;
+import fr.urssaf.image.sae.igc.modele.IgcConfigs;
 import fr.urssaf.image.sae.igc.service.IgcConfigService;
 import fr.urssaf.image.sae.igc.util.TextUtils;
 
@@ -68,7 +69,7 @@ public final class IgcFactory {
     * @return instance de {@link IgcConfig}
     * 
     */
-   public static IgcConfig createIgcConfig(FileSystemResource igcConfigResource) {
+   public static IgcConfigs createIgcConfig(FileSystemResource igcConfigResource) {
 
       Assert.hasText(igcConfigResource.getPath(), IGC_CONFIG_REQUIRED);
 

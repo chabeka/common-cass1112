@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<IgcConfig>
-
-   <repertoireACRacines>
-      src/test/resources/certificats/ACRacine
-   </repertoireACRacines>
-
-   <repertoireCRL>
-       src/test/resources/certificats/CRL/
-   </repertoireCRL>
-
-
-</IgcConfig> 
+<IgcConfigs>
+   <IgcConfig>
+   
+      <id>PKI_TEST</id>
+   
+      <certifACRacine>src/test/resources/certificats/PKI_TEST/ACRacine/pseudo_IGCA.crt</certifACRacine>
+   
+      <repertoireCRL>src/test/resources/certificats/PKI_TEST/CRL/</repertoireCRL>
+   </IgcConfig>
+</IgcConfigs> 

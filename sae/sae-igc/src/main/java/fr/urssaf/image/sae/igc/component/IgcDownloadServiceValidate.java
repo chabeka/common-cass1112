@@ -4,7 +4,7 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 
-import fr.urssaf.image.sae.igc.modele.IgcConfig;
+import fr.urssaf.image.sae.igc.modele.IgcConfigs;
 import fr.urssaf.image.sae.igc.util.TextUtils;
 
 /**
@@ -35,9 +35,9 @@ public class IgcDownloadServiceValidate {
    @Before(METHODE)
    public final void telechargeCRLsBefore(JoinPoint joinPoint) {
 
-      IgcConfig igcConfig = (IgcConfig) joinPoint.getArgs()[0];
+      IgcConfigs igcConfigs = (IgcConfigs) joinPoint.getArgs()[0];
 
-      if (igcConfig == null) {
+      if (igcConfigs == null) {
          throw new IllegalArgumentException(TextUtils.getArgEmpty("igcConfig"));
       }
 

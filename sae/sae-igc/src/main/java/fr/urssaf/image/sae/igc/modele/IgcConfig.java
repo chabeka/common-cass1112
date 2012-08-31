@@ -1,96 +1,98 @@
 package fr.urssaf.image.sae.igc.modele;
 
-import java.net.URL;
-import java.util.List;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 /**
  * Configuration des éléments de l'IGC
  * 
  * 
  */
+@XStreamAlias("IgcConfig")
 public class IgcConfig {
 
-   private String acRacinesRep;
+   @XStreamAlias("id")
+   private String pkiIdent;
 
+   @XStreamAlias("certifACRacine")
+   private String acRacine;
+
+   @XStreamAlias("repertoireCRL")
    private String crlsRep;
 
-   private List<URL> crlsURLs;
+   @XStreamAlias("URLTelechargementCRL")
+   private URLList urlList;
+   
+   @XStreamAlias("issuers")
+   private IssuerList issuerList;
 
    /**
-    * 
-    * Exemples de valeur de retour :
-    * <ul>
-    * <li>c:\sae\certificats\ACRacines</li>
-    * <li>
-    * /appl/sae/certificats/ACRacines</li>
-    * </ul>
-    * 
-    * On s'attend à trouver dans ce répertoire un ensemble de fichiers .crt
-    * 
-    * 
-    * @return Répertoire où se trouvent les certificats des AC racine en
-    *         lesquelles le SAE a confiance
+    * @return the pkiIdent
     */
-   public final String getRepertoireACRacines() {
-      return acRacinesRep;
+   public final String getPkiIdent() {
+      return pkiIdent;
    }
 
    /**
-    * 
-    * @param repertory
-    *           Répertoire où se trouvent les certificats des AC racine en
-    *           lesquelles le SAE a confiance
+    * @param pkiIdent the pkiIdent to set
     */
-   public final void setRepertoireACRacines(String repertory) {
-      this.acRacinesRep = repertory;
+   public final void setPkiIdent(String pkiIdent) {
+      this.pkiIdent = pkiIdent;
    }
 
    /**
-    * 
-    * Exemples de valeur de retour :
-    * <ul>
-    * <li>c:\sae\certificats\CRL</li>
-    * <li>
-    * /appl/sae/certificats/CRL</li>
-    * </ul>
-    * 
-    * On s'attend à trouver dans ce répertoire un ensemble de fichiers.crl
-    * 
-    * 
-    * @return Répertoire où se trouvent les CRL de toutes les AC utilisés par le
-    *         SAE
+    * @return the acRacine
     */
-   public final String getRepertoireCRLs() {
+   public final String getAcRacine() {
+      return acRacine;
+   }
+
+   /**
+    * @param acRacine the acRacine to set
+    */
+   public final void setAcRacine(String acRacine) {
+      this.acRacine = acRacine;
+   }
+
+   /**
+    * @return the crlsRep
+    */
+   public final String getCrlsRep() {
       return crlsRep;
    }
 
    /**
-    * 
-    * @param repertory
-    *           Répertoire où se trouvent les CRL de toutes les AC utilisés par
-    *           le SAE
+    * @param crlsRep the crlsRep to set
     */
-   public final void setRepertoireCRLs(String repertory) {
-      this.crlsRep = repertory;
+   public final void setCrlsRep(String crlsRep) {
+      this.crlsRep = crlsRep;
    }
 
    /**
-    * Chaque URL se présente sous la forme d’un pattern<br>
-    * exemple : http://serveur/repertoire/*.crl
-    * 
-    * @return Liste des URL de téléchargement des CRL
+    * @return the urlList
     */
-   public final List<URL> getUrlsTelechargementCRLs() {
-      return crlsURLs;
+   public final URLList getUrlList() {
+      return urlList;
    }
 
    /**
-    * 
-    * @param urls
-    *           Liste des URL de téléchargement des CRL
+    * @param urlList the urlList to set
     */
-   public final void setUrlsTelechargementCRLs(List<URL> urls) {
-      this.crlsURLs = urls;
+   public final void setUrlList(URLList urlList) {
+      this.urlList = urlList;
+   }
+
+   /**
+    * @return the issuerList
+    */
+   public final IssuerList getIssuerList() {
+      return issuerList;
+   }
+
+   /**
+    * @param issuerList the issuerList to set
+    */
+   public final void setIssuerList(IssuerList issuerList) {
+      this.issuerList = issuerList;
    }
 
 }

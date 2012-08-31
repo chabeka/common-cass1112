@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.security.cert.CRLException;
 import java.security.cert.CertificateException;
+import java.util.Arrays;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -21,6 +22,8 @@ import org.slf4j.LoggerFactory;
 
 import fr.urssaf.image.sae.igc.exception.IgcDownloadException;
 import fr.urssaf.image.sae.igc.modele.IgcConfig;
+import fr.urssaf.image.sae.igc.modele.IgcConfigs;
+import fr.urssaf.image.sae.igc.modele.IssuerList;
 import fr.urssaf.image.sae.webservices.component.IgcConfigUtils;
 import fr.urssaf.image.sae.webservices.security.igc.exception.LoadCertifsAndCrlException;
 
@@ -40,7 +43,7 @@ public class IgcServiceTest {
 
    private static final File AC_RACINE;
 
-   private IgcConfig igcConfig;
+   private IgcConfigs igcConfigs;
 
    static {
 
@@ -68,16 +71,27 @@ public class IgcServiceTest {
    @Before
    public void before() {
 
-      igcConfig = new IgcConfig();
+      igcConfigs = new IgcConfigs();
 
-      igcConfig.setRepertoireACRacines(AC_RACINE.getAbsolutePath());
-      igcConfig.setRepertoireCRLs(CRL.getAbsolutePath());
+      IgcConfig igcConfig = new IgcConfig();
+
+      igcConfig.setPkiIdent("PKI_VAL_AED");
+      igcConfig.setAcRacine(AC_RACINE.getAbsolutePath() + File.separator
+            + CERTIFICAT.getFile());
+      igcConfig.setCrlsRep(CRL.getAbsolutePath());
+
+      IssuerList issuerList = new IssuerList();
+      issuerList
+            .setIssuers(Arrays.asList(new String[] { "CN=AC Application" }));
+      igcConfig.setIssuerList(issuerList);
+
+      igcConfigs.setIgcConfigs(Arrays.asList(new IgcConfig[] { igcConfig }));
 
    }
 
    private IgcService createIgcService() {
 
-      IgcService igcService = new IgcService(igcConfig);
+      IgcService igcService = new IgcService(igcConfigs);
       igcService.afterPropertiesSet();
 
       return igcService;
@@ -108,7 +122,7 @@ public class IgcServiceTest {
       URL pem = IgcConfigUtils
             .createURL("http://cer69idxpkival1.cer69.recouv/Pseudo_ACOSS.pem");
 
-      IgcConfigUtils.download(pem, new File(AC_RACINE, "certificat.crt"));
+      IgcConfigUtils.download(pem, new File(AC_RACINE, "pseudo_appli.crt"));
 
       try {
          createIgcService();
@@ -137,7 +151,7 @@ public class IgcServiceTest {
                e
                      .getMessage()
                      .startsWith(
-                           "Aucun certificat d'AC racine de confiance trouvé dans le répertoire"));
+                           "Aucun certificat d'AC racine de confiance trouvé pour le fichier"));
       }
    }
 

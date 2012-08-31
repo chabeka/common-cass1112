@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<IgcConfig>
+<IgcConfigs>
+   <IgcConfig>
 
-   <repertoireACRacines>
-      notExist/certificats/ACRacine
-   </repertoireACRacines>
+      <id>PKI_TEST</id>
 
-   <repertoireCRL>
-       src/test/resources/certificats/CRL/
-   </repertoireCRL>
+      <certifACRacine>notExist/certificats/ACRacine/pseudo_IGCA.crt</certifACRacine>
 
-   <URLTelechargementCRL>
-      <url>http://cer69idxpkival1.cer69.recouv/*.crl</url>
-   </URLTelechargementCRL>
+      <repertoireCRL>src/test/resources/certificats/CRL/</repertoireCRL>
+
+      <URLTelechargementCRL>
+         <url>http://cer69idxpkival1.cer69.recouv/*.crl</url>
+      </URLTelechargementCRL>
+
+      <issuers>
+         <issuer>CN=IGC/A</issuer>
+      </issuers>
 
 
-</IgcConfig> 
+   </IgcConfig>
+</IgcConfigs>

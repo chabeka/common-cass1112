@@ -1,7 +1,7 @@
 package fr.urssaf.image.sae.igc.service;
 
 import fr.urssaf.image.sae.igc.exception.IgcConfigException;
-import fr.urssaf.image.sae.igc.modele.IgcConfig;
+import fr.urssaf.image.sae.igc.modele.IgcConfigs;
 
 /**
  * Manipulation de la configuration des éléments de l'IGC
@@ -11,7 +11,7 @@ import fr.urssaf.image.sae.igc.modele.IgcConfig;
 public interface IgcConfigService {
 
    @SuppressWarnings("PMD.LongVariable")
-   String AC_RACINES_REQUIRED = "Le répertoire des certificats des AC racines n’est pas spécifié dans le fichier de configuration ${0}";
+   String AC_RACINES_REQUIRED = "L'AC racine n’est pas spécifiée dans le fichier de configuration ${0}";
 
    @SuppressWarnings("PMD.LongVariable")
    String AC_RACINES_NOTEXIST = "Le répertoire des certificats des AC racines (${0}) spécifié dans le fichier de configuration (${1}) est introuvable";
@@ -32,5 +32,5 @@ public interface IgcConfigService {
     *            Une erreur s'est produite lors de la lecture ou de la
     *            vérification de la configuration de l'IGC
     */
-   IgcConfig loadConfig(String pathConfigFile) throws IgcConfigException;
+   IgcConfigs loadConfig(String pathConfigFile) throws IgcConfigException;
 }

@@ -9,6 +9,7 @@ import org.aspectj.lang.annotation.Pointcut;
 
 import fr.urssaf.image.sae.igc.exception.IgcConfigException;
 import fr.urssaf.image.sae.igc.modele.IgcConfig;
+import fr.urssaf.image.sae.igc.modele.IgcConfigs;
 import fr.urssaf.image.sae.igc.service.IgcConfigService;
 import fr.urssaf.image.sae.igc.util.FileUtils;
 import fr.urssaf.image.sae.igc.util.TextUtils;
@@ -84,7 +85,7 @@ public class IgcConfigServiceValidate {
     * </ul>
     * 
     * @param pathConfig
-    *            chemin de configuration
+    *           chemin de configuration
     *           {@link IgcConfigService#loadConfig(String)}
     * @param igcConfig
     *           instance de de {@link IgcConfig} en sortie de la méthode
@@ -92,43 +93,46 @@ public class IgcConfigServiceValidate {
     *            une exception est levée sur l'instance de {@link IgcConfig} en
     *            sortie
     */
-   @AfterReturning(pointcut = "loadConfig(pathConfig)", returning = "igcConfig")
-   public final void loadConfigAfter(String pathConfig, IgcConfig igcConfig)
+   @AfterReturning(pointcut = "loadConfig(pathConfig)", returning = "igcConfigs")
+   public final void loadConfigAfter(String pathConfig, IgcConfigs igcConfigs)
          throws IgcConfigException {
 
       // String pathConfig = (String) joinPoint.getArgs()[0];
 
-      if (!StringUtils.isNotBlank(igcConfig.getRepertoireACRacines())) {
+      for (IgcConfig igcConfig : igcConfigs.getIgcConfigs()) {
+         if (StringUtils.isBlank(igcConfig.getAcRacine())) {
 
-         throw new IgcConfigException(TextUtils.getMessage(
-               IgcConfigService.AC_RACINES_REQUIRED, pathConfig));
-      }
+            throw new IgcConfigException(TextUtils.getMessage(
+                  IgcConfigService.AC_RACINES_REQUIRED, pathConfig));
+         }
 
-      if (!FileUtils.isDirectory(igcConfig.getRepertoireACRacines())
-            || !FileUtils.isAbsolute(igcConfig.getRepertoireACRacines())) {
+         if (!FileUtils.isFile(igcConfig.getAcRacine())
+               || !FileUtils.isAbsolute(igcConfig.getAcRacine())) {
 
-         throw new IgcConfigException(TextUtils.getMessage(
-               IgcConfigService.AC_RACINES_NOTEXIST, igcConfig
-                     .getRepertoireACRacines(), pathConfig));
-      }
+            throw new IgcConfigException(TextUtils.getMessage(
+                  IgcConfigService.AC_RACINES_NOTEXIST,
+                  igcConfig.getAcRacine(), pathConfig));
+         }
 
-      if (!StringUtils.isNotBlank(igcConfig.getRepertoireCRLs())) {
-         throw new IgcConfigException(TextUtils.getMessage(
-               IgcConfigService.CRLS_REQUIRED, pathConfig));
-      }
+         if (StringUtils.isBlank(igcConfig.getCrlsRep())) {
+            throw new IgcConfigException(TextUtils.getMessage(
+                  IgcConfigService.CRLS_REQUIRED, pathConfig));
+         }
 
-      if (!FileUtils.isDirectory(igcConfig.getRepertoireCRLs())
-            || !FileUtils.isAbsolute(igcConfig.getRepertoireCRLs())) {
+         if (!FileUtils.isDirectory(igcConfig.getCrlsRep())
+               || !FileUtils.isAbsolute(igcConfig.getCrlsRep())) {
 
-         throw new IgcConfigException(TextUtils.getMessage(
-               IgcConfigService.CRLS_NOTEXIST, igcConfig.getRepertoireCRLs(),
-               pathConfig));
-      }
+            throw new IgcConfigException(TextUtils.getMessage(
+                  IgcConfigService.CRLS_NOTEXIST, igcConfig.getCrlsRep(),
+                  pathConfig));
+         }
 
-      if (CollectionUtils.isEmpty(igcConfig.getUrlsTelechargementCRLs())) {
+         if (igcConfig.getUrlList() == null
+               || CollectionUtils.isEmpty(igcConfig.getUrlList().getUrls())) {
 
-         throw new IgcConfigException(TextUtils.getMessage(
-               IgcConfigService.URLS_CRL_REQUIRED, pathConfig));
+            throw new IgcConfigException(TextUtils.getMessage(
+                  IgcConfigService.URLS_CRL_REQUIRED, pathConfig));
+         }
       }
    }
 

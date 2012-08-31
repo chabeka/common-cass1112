@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import fr.urssaf.image.sae.igc.IgcServiceFactory;
 import fr.urssaf.image.sae.igc.exception.IgcConfigException;
 import fr.urssaf.image.sae.igc.exception.IgcDownloadException;
-import fr.urssaf.image.sae.igc.modele.IgcConfig;
+import fr.urssaf.image.sae.igc.modele.IgcConfigs;
 import fr.urssaf.image.sae.igc.util.TextUtils;
 import fr.urssaf.image.sae.igcmaj.exception.IgcMainException;
 
@@ -52,11 +52,11 @@ public final class IgcMain {
       String pathConfigFile = args[0];
 
       try {
-         IgcConfig igcConfig = IgcServiceFactory.createIgcConfigService().loadConfig(
+         IgcConfigs igcConfigs = IgcServiceFactory.createIgcConfigService().loadConfig(
                pathConfigFile);
 
          LOG.info(TextUtils.getMessage(MESSAGE, String.valueOf(IgcServiceFactory
-               .createIgcDownloadService().telechargeCRLs(igcConfig))));
+               .createIgcDownloadService().telechargeCRLs(igcConfigs))));
 
       } catch (IgcConfigException e) {
          LOG.error(e.getMessage(), e);

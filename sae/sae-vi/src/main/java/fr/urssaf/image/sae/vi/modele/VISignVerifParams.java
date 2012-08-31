@@ -3,34 +3,36 @@ package fr.urssaf.image.sae.vi.modele;
 import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
 import java.util.List;
-
+import java.util.Map;
 
 /**
  * Eléments permettant de vérifier la signature d'un VI
  */
 public class VISignVerifParams {
 
-   private List<X509Certificate> certifsACRacine;
-   
+   private Map<X509Certificate, String> certifsACRacine;
+
    private List<X509CRL> crls;
-   
-   private List<String> patternsIssuer;
+
+   private Map<String, List<String>> patternsIssuer;
 
    /**
     * Les certificats des AC racine
     * 
     * @return Les certificats des AC racine
     */
-   public final List<X509Certificate> getCertifsACRacine() {
+   public final Map<X509Certificate, String> getCertifsACRacine() {
       return certifsACRacine;
    }
 
    /**
     * Les certificats des AC racine
     * 
-    * @param certifsACRacine Les certificats des AC racine
+    * @param certifsACRacine
+    *           Les certificats des AC racine
     */
-   public final void setCertifsACRacine(List<X509Certificate> certifsACRacine) {
+   public final void setCertifsACRacine(
+         Map<X509Certificate, String> certifsACRacine) {
       this.certifsACRacine = certifsACRacine;
    }
 
@@ -38,8 +40,8 @@ public class VISignVerifParams {
     * Les CRL de toutes les AC impliquées dans la délivrance des certificats de
     * signature de VI
     * 
-    * @return  Les CRL de toutes les AC impliquées dans la délivrance des certificats de
-    *          signature de VI
+    * @return Les CRL de toutes les AC impliquées dans la délivrance des
+    *         certificats de signature de VI
     */
    public final List<X509CRL> getCrls() {
       return crls;
@@ -49,34 +51,35 @@ public class VISignVerifParams {
     * Les CRL de toutes les AC impliquées dans la délivrance des certificats de
     * signature de VI
     * 
-    * @param crls 
-    *    Les CRL de toutes les AC impliquées dans la délivrance des certificats de
-    *    signature de VI
+    * @param crls
+    *           Les CRL de toutes les AC impliquées dans la délivrance des
+    *           certificats de signature de VI
     */
    public final void setCrls(List<X509CRL> crls) {
       this.crls = crls;
    }
-   
+
    /**
-    * Les patterns de vérification de l'IssuerDN du certificat contenant la clé publique
-    * associée à la clé privée de la signature du VI.<br>
+    * Les patterns de vérification de l'IssuerDN du certificat contenant la clé
+    * publique associée à la clé privée de la signature du VI.<br>
     * Ce sont des expressions régulières.
     * 
     * @return les patterns
     */
-   public final List<String> getPatternsIssuer() {
+   public final Map<String, List<String>> getPatternsIssuer() {
       return patternsIssuer;
    }
 
    /**
-    * Les patterns de vérification de l'IssuerDN du certificat contenant la clé publique
-    * associée à la clé privée de la signature du VI.<br>
+    * Les patterns de vérification de l'IssuerDN du certificat contenant la clé
+    * publique associée à la clé privée de la signature du VI.<br>
     * Ce sont des expressions régulières.
     * 
-    * @param patternsIssuer les patterns
+    * @param patternsIssuer
+    *           les patterns
     */
-   public final void setPatternsIssuer(List<String> patternsIssuer) {
+   public final void setPatternsIssuer(Map<String, List<String>> patternsIssuer) {
       this.patternsIssuer = patternsIssuer;
    }
-   
+
 }

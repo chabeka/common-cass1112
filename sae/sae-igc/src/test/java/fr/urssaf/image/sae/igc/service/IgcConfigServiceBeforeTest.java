@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import fr.urssaf.image.sae.igc.component.IgcConfigServiceValidate;
 import fr.urssaf.image.sae.igc.exception.IgcConfigException;
-import fr.urssaf.image.sae.igc.modele.IgcConfig;
+import fr.urssaf.image.sae.igc.modele.IgcConfigs;
 import fr.urssaf.image.sae.igc.util.TextUtils;
 
 /**
@@ -31,12 +31,12 @@ public class IgcConfigServiceBeforeTest {
       service = new IgcConfigService() {
 
          @Override
-         public IgcConfig loadConfig(String pathConfigFile)
+         public IgcConfigs loadConfig(String pathConfigFile)
                throws IgcConfigException {
 
-            IgcConfig igcConfig = new IgcConfig();
+            IgcConfigs igcConfigs = new IgcConfigs();
 
-            return igcConfig;
+            return igcConfigs;
          }
       };
 
