@@ -69,13 +69,14 @@ public class IgcMainTest {
       try {
          newXML
                .load(getAbsolute("src/test/resources/igcConfig/igcConfig_modele.xml"));
-
-         newXML.addProperty("repertoireACRacines", acRacines);
-         newXML.addProperty("repertoireCRL", crls);
+         newXML.addProperty("IgcConfig.id", "PKI_VAL_AED");
+         newXML.addProperty("IgcConfig.certifACRacine", acRacines);
+         newXML.addProperty("IgcConfig.repertoireCRL", crls);
+         newXML.addProperty("IgcConfig.issuers.issuer", "CN=IGC/A");
 
          for (String url : urls) {
 
-            newXML.addProperty("URLTelechargementCRL.url", url);
+            newXML.addProperty("IgcConfig.URLTelechargementCRL.url", url);
          }
 
          newXML.save(DIRECTORY + "/" + newConfig);
@@ -91,10 +92,10 @@ public class IgcMainTest {
    @Test
    public void igcMain_success() {
 
-      String pathConfigFile = loadConfig("igcConfig_success_temp.xml",
-            getAbsolute("src/test/resources/certificats/ACRacine"), CRL
-                  .getAbsolutePath(),
-            "http://cer69idxpkival1.cer69.recouv/*.crl");
+      String pathConfigFile = loadConfig(
+            "igcConfig_success_temp.xml",
+            getAbsolute("src/test/resources/certificats/ACRacine/pseudo_IGCA.crt"),
+            CRL.getAbsolutePath(), "http://cer69idxpkival1.cer69.recouv/*.crl");
 
       IgcMain.main(new String[] { pathConfigFile });
 
@@ -149,7 +150,7 @@ public class IgcMainTest {
    public void igcMain_failure_igcDownloadException() {
 
       String pathConfigFile = loadConfig("igcConfig_success_temp.xml",
-            getAbsolute("src/test/resources/certificats/ACRacine"), CRL
+            getAbsolute("src/test/resources/certificats/ACRacine/pseudo_IGCA.crt"), CRL
                   .getAbsolutePath(),
             "http://download.oracle.com/javase/6/docs/api/");
 
