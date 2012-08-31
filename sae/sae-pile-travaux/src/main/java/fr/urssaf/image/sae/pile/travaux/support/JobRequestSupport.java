@@ -286,8 +286,8 @@ public class JobRequestSupport {
       this.jobRequestDao.ecritColonneReservationDate(updaterJobRequest, null, clock);
       this.jobRequestDao.ecritColonneReservedBy(updaterJobRequest, "", clock);
       this.jobRequestDao.ecritColonneStartingDate(updaterJobRequest, null, clock);
-      Integer pid = new Integer(null);
-      this.jobRequestDao.ecritColonnePid(updaterJobRequest, pid, clock);
+      
+      this.jobRequestDao.ecritColonnePid(updaterJobRequest, 0, clock);
       this.jobRequestDao.ecritColonneEndingDate(updaterJobRequest, null, clock);
       this.jobRequestDao.ecritColonneMessage(updaterJobRequest, "", clock);
 

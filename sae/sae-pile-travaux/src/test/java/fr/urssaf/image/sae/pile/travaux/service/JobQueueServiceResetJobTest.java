@@ -85,19 +85,19 @@ public class JobQueueServiceResetJobTest {
 
       Assert.assertNull("la date de réservation est inattendue", jobRequest.getReservationDate());
       Assert.assertNull("startingDate inattendue", jobRequest.getStartingDate());
-      Assert.assertNull("le Pid est inattendu", jobRequest.getPid());
+      Assert.assertEquals("le Pid est inattendu", Integer.valueOf(0), jobRequest.getPid());
       Assert.assertNull("endingDate inattendue", jobRequest.getEndingDate());
       Assert.assertEquals("le message est inattendu", "", jobRequest.getMessage());
       
       // vérification de JobHistory
       List<JobHistory> histories = jobLectureService.getJobHistory(idJob);
 
-      Assert.assertEquals("le nombre de message est inattendu", 2, histories
+      Assert.assertEquals("le nombre de message est inattendu", 3, histories
             .size());
 
       Assert.assertEquals(
             "le message de l'ajout d'un traitement est inattendu",
-            "RESET DU JOB", histories.get(1).getTrace());
+            "RESET DU JOB", histories.get(2).getTrace());
    }
 
     private void createJob(UUID idJob) {
