@@ -268,4 +268,30 @@ public class JobRequestSupport {
       mutator.execute();
 
    }
+
+   /**
+    * Met à blanc toutes les informations d'un traitement préalable
+    * 
+    * @param idJob
+    *           identifiant du job à mettre à jour
+    */
+   public void resetJob(UUID idJob, long clock) {
+      
+      // On utilise un ColumnFamilyUpdater, et on renseigne
+      // la valeur de la clé dans la construction de l'updater
+      ColumnFamilyUpdater<UUID, String> updaterJobRequest = this.jobRequestDao
+            .getJobRequestTmpl().createUpdater(idJob);
+      
+      this.jobRequestDao.ecritColonneState(updaterJobRequest, "CREATED", clock);
+      this.jobRequestDao.ecritColonneReservationDate(updaterJobRequest, null, clock);
+      this.jobRequestDao.ecritColonneReservedBy(updaterJobRequest, "", clock);
+      this.jobRequestDao.ecritColonneStartingDate(updaterJobRequest, null, clock);
+      Integer pid = new Integer(null);
+      this.jobRequestDao.ecritColonnePid(updaterJobRequest, pid, clock);
+      this.jobRequestDao.ecritColonneEndingDate(updaterJobRequest, null, clock);
+      this.jobRequestDao.ecritColonneMessage(updaterJobRequest, "", clock);
+
+      // Ecrit en base
+      this.jobRequestDao.getJobRequestTmpl().update(updaterJobRequest);
+   }
 }

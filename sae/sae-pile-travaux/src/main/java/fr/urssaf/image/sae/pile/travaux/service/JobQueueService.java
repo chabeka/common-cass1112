@@ -136,4 +136,12 @@ public interface JobQueueService {
     */
    void deleteJob(UUID idJob);
 
+   /**
+    * Met à jour le travail afin qu'il soit à nouveau éligible au lancement par
+    * l'ordonnanceur
+    * 
+    * @param idJob
+    *           identifiant du job
+    */
+   void resetJob(UUID idJob);
 }

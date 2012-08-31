@@ -492,4 +492,46 @@ public class JobQueueServiceImpl implements JobQueueService {
 
    }
 
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final void resetJob(UUID idJob) {
+
+      JobRequest jobRequest = this.jobLectureService.getJobRequest(idJob);
+      // Vérifier que le job existe
+      if (jobRequest == null) {
+         return;
+      }
+
+      // Lecture du job
+      ColumnFamilyResult<UUID, String> result = this.jobRequestDao
+            .getJobRequestTmpl().queryColumns(idJob);
+
+      // Récupération de la colonne "state"
+      HColumn<?, ?> columnState = result
+            .getColumn(JobRequestDao.JR_STATE_COLUMN);
+
+      // Lecture des propriétés du job dont on a besoin
+      String type = jobRequest.getType();
+      String parameters = jobRequest.getParameters();
+
+      // Timestamp de l'opération
+      // Il faut vérifier le décalage de temps
+      long clock = jobClockSupport.currentCLock(columnState);
+
+      // Ecriture dans la CF "JobRequest"
+      this.jobRequestSupport.resetJob(idJob, clock);
+      
+      // Ecriture dans la CF "JobQueues"
+      this.jobsQueueSupport.ajouterJobDansJobQueuesEnWaiting(idJob, type,
+            parameters, clock);
+      
+      // Ecriture dans la CF "JobHistory"
+      String messageTrace = "RESET DU JOB";
+      UUID timestampTrace = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+      this.jobHistorySupport.ajouterTrace(idJob, timestampTrace, messageTrace,
+            clock);
+   }
+
 }
