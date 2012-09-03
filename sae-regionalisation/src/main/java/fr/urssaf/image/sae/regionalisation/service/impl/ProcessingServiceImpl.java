@@ -1,6 +1,7 @@
 package fr.urssaf.image.sae.regionalisation.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -102,6 +103,8 @@ public class ProcessingServiceImpl implements ProcessingService {
             LOGGER.debug("nombre de critères de recherche à traiter: {}",
                   searchCriterions.size());
 
+            Date dateStart, dateEnd;
+
             for (SearchCriterion searchCriterion : searchCriterions) {
 
                LOGGER.debug(
@@ -116,8 +119,16 @@ public class ProcessingServiceImpl implements ProcessingService {
                            "nombre de métadonnées à mettre à jour pour la requête lucène '{}': {}",
                            searchCriterion.getLucene(), metadatas.size());
 
+               dateStart = new Date();
+
                List<Document> documents = this.saeDocumentDao
                      .getDocuments(searchCriterion.getLucene());
+
+               dateEnd = new Date();
+
+               LOGGER.info("temps de recherche pour le critere {} = {}",
+                     searchCriterion.getId(), ((dateEnd.getTime() - dateStart
+                           .getTime()) / 1000));
 
                // on incrémente de 1 si aucun document n'est retourné
                if (documents.isEmpty()) {
@@ -132,7 +143,16 @@ public class ProcessingServiceImpl implements ProcessingService {
                // si le flag est positionné à MISE_A_JOUR
                if (updateDatas) {
 
+                  dateStart = new Date();
+
                   update(searchCriterion, documents, metadatas);
+
+                  dateEnd = new Date();
+                  LOGGER
+                        .info(
+                              "temps de mise a jour des documents pour le critere {} = {}",
+                              searchCriterion.getId(),
+                              ((dateEnd.getTime() - dateStart.getTime()) / 1000));
 
                } else {
 
