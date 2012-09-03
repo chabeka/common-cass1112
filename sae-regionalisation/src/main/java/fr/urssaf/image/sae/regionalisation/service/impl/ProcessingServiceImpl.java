@@ -103,9 +103,11 @@ public class ProcessingServiceImpl implements ProcessingService {
             LOGGER.debug("nombre de critères de recherche à traiter: {}",
                   searchCriterions.size());
 
-            Date dateStart, dateEnd;
+            Date dateStart, dateEnd, firstDate, lastDate;
 
             for (SearchCriterion searchCriterion : searchCriterions) {
+
+               firstDate = new Date();
 
                LOGGER.debug(
                      "critère de recherche {} avec la requête lucène '{}'",
@@ -171,6 +173,11 @@ public class ProcessingServiceImpl implements ProcessingService {
                // on incrémente de 1 le nombre de documents traités
                nbRecordDocumentTraites += documents.size();
 
+               lastDate = new Date();
+               LOGGER.info(
+                     "temps de traitement global pour le critere {} = {} ms",
+                     searchCriterion.getId(), (lastDate.getTime() - firstDate
+                           .getTime()));
             }
 
             // dans le cas du tir à blanc on continue la pagination
