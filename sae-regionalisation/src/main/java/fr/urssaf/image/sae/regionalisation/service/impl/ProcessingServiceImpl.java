@@ -126,9 +126,9 @@ public class ProcessingServiceImpl implements ProcessingService {
 
                dateEnd = new Date();
 
-               LOGGER.info("temps de recherche pour le critere {} = {}",
-                     searchCriterion.getId(), ((dateEnd.getTime() - dateStart
-                           .getTime()) / 1000));
+               LOGGER.info("temps de recherche pour le critere {} = {} ms",
+                     searchCriterion.getId(), (dateEnd.getTime() - dateStart
+                           .getTime()));
 
                // on incrémente de 1 si aucun document n'est retourné
                if (documents.isEmpty()) {
@@ -150,9 +150,9 @@ public class ProcessingServiceImpl implements ProcessingService {
                   dateEnd = new Date();
                   LOGGER
                         .info(
-                              "temps de mise a jour des documents pour le critere {} = {}",
+                              "temps de mise a jour des documents pour le critere {} = {} ms",
                               searchCriterion.getId(),
-                              ((dateEnd.getTime() - dateStart.getTime()) / 1000));
+                              (dateEnd.getTime() - dateStart.getTime()));
 
                } else {
 
