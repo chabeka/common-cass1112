@@ -33,3 +33,33 @@
    font-weight: bold;
 }
 
+.flor{
+	float:right;
+}
+	
+.flol{
+	float:left;
+}
+.even{
+ 	background-color:Gainsboro;
+}
+
+.odd{ 
+ 	background-color:GhostWhite;
+}
+
+.table {
+		width:98%;
+}
+
+.blank{
+	float:left;
+	width:70px;
+}
+
+.blank2{
+	float:left;
+	width:140px;
+}
+
+.text{padding-bottom:5px;}

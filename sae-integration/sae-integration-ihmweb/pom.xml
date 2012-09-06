@@ -437,6 +437,12 @@
          <artifactId>commons-dfce</artifactId>
          <version>${commons.dfce.version}</version>
       </dependency>
+      
+      <dependency>
+         <groupId>fr.urssaf.image.sae</groupId>
+         <artifactId>sae-droit</artifactId>
+         <version>12.9.10.2-SNAPSHOT</version>
+      </dependency>
    
 
       <!-- JUnit -->
