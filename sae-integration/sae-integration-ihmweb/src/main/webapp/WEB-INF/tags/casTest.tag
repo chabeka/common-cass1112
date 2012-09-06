@@ -1,6 +1,18 @@
 <%@ tag body-content="empty"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
+<script type="text/javascript">
+
+
+
+window.onload=function(){
+	var numEtape =document.getElementById('etape').value;
+   if(numEtape!="" && numEtape!=null){
+      document.getElementById('etape-'+numEtape).scrollIntoView(true);
+      };     
+}
+</script>
+
 <table border="0" cellpadding="0" style="width: 100%;">
 	<tr style="width: 100%;">
 		<td style="width: 75%;">

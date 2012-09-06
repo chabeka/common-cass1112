@@ -9,7 +9,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="/WEB-INF/tld/sae_integration.tld" prefix="sae" %>
 
-<p style="font-weight:bold;text-decoration:underline;">
+<p id="etape-${numeroEtape}" style="font-weight:bold;text-decoration:underline;">
 Etape <c:out value="${numeroEtape}"/> : Appel du service web de recherche
 </p>
 

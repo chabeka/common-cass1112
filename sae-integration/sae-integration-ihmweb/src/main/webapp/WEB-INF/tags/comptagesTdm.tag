@@ -7,7 +7,7 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib uri="/WEB-INF/tld/sae_integration.tld" prefix="sae" %>
 
-<p style="font-weight:bold;text-decoration:underline;">
+<p id="etape-${numeroEtape}" style="font-weight:bold;text-decoration:underline;">
 Etape <c:out value="${numeroEtape}"/> : Comptages du nombre de documents pour le traitement de masse
 </p>
 
