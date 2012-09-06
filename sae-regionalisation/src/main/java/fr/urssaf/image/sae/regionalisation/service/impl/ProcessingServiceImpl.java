@@ -96,14 +96,18 @@ public class ProcessingServiceImpl implements ProcessingService {
          List<SearchCriterion> searchCriterions;
          do {
 
+            Date dateStart, dateEnd, firstDate, lastDate;
+
+            dateStart = new Date();
             // on récupère des blocs de recherches
             searchCriterions = this.searchCriterionDao.getSearchCriteria(
                   indexRecord, Math.min(SIZE_BLOCK, processingCount - count));
+            dateEnd = new Date();
+            LOGGER.info("temps de récupération des enregistrements = {} ms",
+                  (dateEnd.getTime() - dateStart.getTime()));
 
             LOGGER.debug("nombre de critères de recherche à traiter: {}",
                   searchCriterions.size());
-
-            Date dateStart, dateEnd, firstDate, lastDate;
 
             for (SearchCriterion searchCriterion : searchCriterions) {
 
@@ -112,10 +116,16 @@ public class ProcessingServiceImpl implements ProcessingService {
                LOGGER.debug(
                      "critère de recherche {} avec la requête lucène '{}'",
                      searchCriterion.getId(), searchCriterion.getLucene());
-
+               dateStart = new Date();
                Map<String, Object> metadatas = this.metadataDao
                      .getMetadatas(searchCriterion.getId());
+               dateEnd = new Date();
 
+               LOGGER
+                     .info(
+                           "temps de chargements des metadonnées pour le critere {} = {} ms",
+                           searchCriterion.getId(),
+                           (dateEnd.getTime() - dateStart.getTime()));
                LOGGER
                      .debug(
                            "nombre de métadonnées à mettre à jour pour la requête lucène '{}': {}",
