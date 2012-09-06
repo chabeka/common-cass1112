@@ -147,7 +147,8 @@ public class JobsQueueSupport {
     * @param idJob
     *           identifiant du job
     * @param reservedBy
-    *           Hostname ou IP du serveur qui a réservé/exécuté le job, peut-être null
+    *           Hostname ou IP du serveur qui a réservé/exécuté le job,
+    *           peut-être null
     * @param clock
     *           horloge de suppression du job de la file d'exécution/réservation
     */
@@ -170,6 +171,35 @@ public class JobsQueueSupport {
       // Exécution de l'opération
       mutator.execute();
 
+   }
+
+   /**
+    * Met à jour le travail afin qu’il soit à nouveau éligible au lancement par
+    * l’ordonnanceur en le replaçant dans la liste des jobs en attente
+    * 
+    * @param idJob
+    *           Identifiant du document à mettre à jour
+    * @param hote
+    *           Nom de l’hôte ayant lancé le traitement
+    */
+   public final void unreservedJob(UUID idJob, String type, String parameters, String hote, long clock) {
+ 
+      // Création du Mutator
+      Mutator<String> mutator = this.jobsQueueDao.createMutator();
+      
+      JobQueue jobQueue = new JobQueue();
+      jobQueue.setIdJob(idJob);
+      jobQueue.setType(type);
+      jobQueue.setParameters(parameters);
+
+      // On ajoute le job dans jobsWaiting
+      this.jobsQueueDao.mutatorAjouterInsertionJobQueue(mutator, JOBS_WAITING_KEY, jobQueue, clock);
+      
+      // On supprime le job dans le reservedBy correspondant
+      this.jobsQueueDao.mutatorAjouterSuppressionJobQueue(mutator, hote, idJob, clock);
+      
+      mutator.execute();
+      
    }
 
 }

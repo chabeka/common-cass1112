@@ -24,6 +24,7 @@ import fr.urssaf.image.sae.pile.travaux.dao.JobRequestDao;
 import fr.urssaf.image.sae.pile.travaux.dao.JobsQueueDao;
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
+import fr.urssaf.image.sae.pile.travaux.exception.JobNonReinitialisableException;
 import fr.urssaf.image.sae.pile.travaux.exception.LockTimeoutException;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 import fr.urssaf.image.sae.pile.travaux.model.JobToCreate;
@@ -494,9 +495,13 @@ public class JobQueueServiceImpl implements JobQueueService {
 
    /**
     * {@inheritDoc}
+    * 
+    * @throws JobNonReinitialisableException
+    *            Exception levé si l'état du job ne permet pas de le relancer
+    *            (différent de RESERVED ou STARTING)
     */
    @Override
-   public final void resetJob(UUID idJob) {
+   public final void resetJob(UUID idJob) throws JobNonReinitialisableException {
 
       JobRequest jobRequest = this.jobLectureService.getJobRequest(idJob);
       // Vérifier que le job existe
@@ -512,26 +517,33 @@ public class JobQueueServiceImpl implements JobQueueService {
       HColumn<?, ?> columnState = result
             .getColumn(JobRequestDao.JR_STATE_COLUMN);
 
-      // Lecture des propriétés du job dont on a besoin
-      String type = jobRequest.getType();
-      String parameters = jobRequest.getParameters();
+      String etat = jobRequest.getState().toString();
+      if ("RESERVED".equals(etat)
+            || "STARTING".equals(etat)) {
 
-      // Timestamp de l'opération
-      // Il faut vérifier le décalage de temps
-      long clock = jobClockSupport.currentCLock(columnState);
+         // Lecture des propriétés du job dont on a besoin
+         String type = jobRequest.getType();
+         String parameters = jobRequest.getParameters();
+         String reservedBy = jobRequest.getReservedBy();
 
-      // Ecriture dans la CF "JobRequest"
-      this.jobRequestSupport.resetJob(idJob, clock);
-      
-      // Ecriture dans la CF "JobQueues"
-      this.jobsQueueSupport.ajouterJobDansJobQueuesEnWaiting(idJob, type,
-            parameters, clock);
-      
-      // Ecriture dans la CF "JobHistory"
-      String messageTrace = "RESET DU JOB";
-      UUID timestampTrace = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
-      this.jobHistorySupport.ajouterTrace(idJob, timestampTrace, messageTrace,
-            clock);
+         // Timestamp de l'opération
+         // Il faut vérifier le décalage de temps
+         long clock = jobClockSupport.currentCLock(columnState);
+
+         // Ecriture dans la CF "JobRequest"
+         this.jobRequestSupport.resetJob(idJob, etat, clock);
+
+         this.jobsQueueSupport.unreservedJob(idJob, type, parameters, reservedBy, clock);
+
+         // Ecriture dans la CF "JobHistory"
+         String messageTrace = "RESET DU JOB";
+         UUID timestampTrace = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+         this.jobHistorySupport.ajouterTrace(idJob, timestampTrace,
+               messageTrace, clock);
+
+      } else {
+         throw new JobNonReinitialisableException(idJob);
+      }
    }
 
 }

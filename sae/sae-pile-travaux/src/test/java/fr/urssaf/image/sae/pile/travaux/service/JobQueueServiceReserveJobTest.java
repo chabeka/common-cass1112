@@ -141,6 +141,8 @@ public class JobQueueServiceReserveJobTest {
       Assert.assertEquals(
             "le message de l'ajout d'un traitement est inattendu",
             "RESERVATION DU JOB", histories.get(1).getTrace());
+            
+            
    }
 
    @Test(expected = JobDejaReserveException.class)
