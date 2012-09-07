@@ -146,10 +146,11 @@ public class ResultatsCMComparateurController {
       
       List<File> filesList = new ArrayList<File>();
       
-      Collection<File> filesColl = FileUtils.listFiles(repertoire, new String[] {"xml"}, false);
+      if(repertoire.isDirectory()){
+         Collection<File> filesColl = FileUtils.listFiles(repertoire, new String[] {"xml"}, false);
       
-      filesList.addAll(filesColl);
-      
+         filesList.addAll(filesColl);
+      }
       return filesList;
       
    }
