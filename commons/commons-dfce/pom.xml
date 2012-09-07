@@ -39,6 +39,9 @@
       <hector.version>1.0-3</hector.version>
       <spring.framework.version>3.0.5.RELEASE</spring.framework.version>
       <spring.batch.version>2.1.8.RELEASE</spring.batch.version>
+      
+      <spring.security.version>3.0.5.RELEASE</spring.security.version>
+      <dozer.version>5.3.1</dozer.version>
 
    </properties>
 
@@ -220,6 +223,31 @@
          <artifactId>spring-test</artifactId>
          <version>${spring.framework.version}</version>
          <scope>test</scope>
+      </dependency>
+      
+      <!-- SPRING SECURITY -->
+      <!--
+         la dépendance à spring security est uniquement utile pour les
+         exceptions, qui sont renvoyés sérialisées côté serveur par DFCE, 
+         puis désérialisées dans leur API cliente
+      -->
+      <dependency>
+         <groupId>org.springframework.security</groupId>
+         <artifactId>spring-security-core</artifactId>
+         <version>${spring.security.version}</version>
+      </dependency>
+      
+      
+      <!-- DOZER -->
+      <!--
+         la dépendance à Dozer est uniquement utile pour les
+         exceptions, qui sont renvoyés sérialisées côté serveur par DFCE, 
+         puis désérialisées dans leur API cliente
+      -->
+      <dependency>
+         <groupId>net.sf.dozer</groupId>
+         <artifactId>dozer</artifactId>
+         <version>${dozer.version}</version>
       </dependency>
 
    </dependencies>
