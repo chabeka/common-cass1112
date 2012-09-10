@@ -1,7 +1,6 @@
 package fr.urssaf.image.sae.igc.service;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.net.MalformedURLException;
@@ -26,10 +25,9 @@ public class IgcDownloadServiceTest {
       service = new IgcDownloadService() {
 
          @Override
-         public int telechargeCRLs(IgcConfigs igcConfigs)
+         public void telechargeCRLs(IgcConfigs igcConfigs)
                throws IgcDownloadException {
 
-            return 0;
          }
 
       };
@@ -40,8 +38,8 @@ public class IgcDownloadServiceTest {
    public void telechargeCRLs_success() throws IgcDownloadException {
 
       IgcConfigs igcConfigs = new IgcConfigs();
-      assertNotNull("les arguments doivent être valides", service
-            .telechargeCRLs(igcConfigs));
+      service.telechargeCRLs(igcConfigs);
+
    }
 
    @Test

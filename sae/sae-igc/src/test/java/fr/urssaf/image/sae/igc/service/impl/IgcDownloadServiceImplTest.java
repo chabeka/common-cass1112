@@ -94,12 +94,12 @@ public class IgcDownloadServiceImplTest {
 
       igcConfigs.setIgcConfigs(Arrays.asList(new IgcConfig[] { igcConfig }));
 
-      Integer crlsNumber = service.telechargeCRLs(igcConfigs);
-
-      assertEquals("erreur sur le nombre d'urls à télécharger", Integer
-            .valueOf(15), crlsNumber);
+      service.telechargeCRLs(igcConfigs);
 
       Collection<File> files = FileUtils.listFiles(CRL, null, true);
+
+      assertEquals("erreur sur le nombre d'urls à télécharger", 15, files
+            .size());
 
       for (File file : files) {
 

@@ -30,10 +30,9 @@ public class IgcDownloadServiceImpl implements IgcDownloadService {
          .getLogger(IgcDownloadServiceImpl.class);
 
    @Override
-   public final int telechargeCRLs(IgcConfigs igcConfigs)
+   public final void telechargeCRLs(IgcConfigs igcConfigs)
          throws IgcDownloadException {
 
-      int downloads = 0;
       List<Exception> exceptions = new ArrayList<Exception>();
       for (IgcConfig igcConfig : igcConfigs.getIgcConfigs()) {
 
@@ -41,7 +40,12 @@ public class IgcDownloadServiceImpl implements IgcDownloadService {
 
             for (URL url : igcConfig.getUrlList().getUrls()) {
 
-               downloads = this.download(url, igcConfig.getCrlsRep());
+               int downloads = this.download(url, igcConfig.getCrlsRep());
+
+               LOG
+                     .info(
+                           "Mise a jour des CRL pour la PKI {} : {} CRL telechargees",
+                           igcConfig.getPkiIdent(), downloads);
 
             }
 
@@ -54,8 +58,6 @@ public class IgcDownloadServiceImpl implements IgcDownloadService {
          // TODO FBON - Comment retourner l'ensemble des exceptions ?
          throw new IgcDownloadException(exceptions.get(0));
       }
-
-      return downloads;
 
    }
 

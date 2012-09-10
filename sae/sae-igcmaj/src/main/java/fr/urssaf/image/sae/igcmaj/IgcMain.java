@@ -9,7 +9,6 @@ import fr.urssaf.image.sae.igc.IgcServiceFactory;
 import fr.urssaf.image.sae.igc.exception.IgcConfigException;
 import fr.urssaf.image.sae.igc.exception.IgcDownloadException;
 import fr.urssaf.image.sae.igc.modele.IgcConfigs;
-import fr.urssaf.image.sae.igc.util.TextUtils;
 import fr.urssaf.image.sae.igcmaj.exception.IgcMainException;
 
 /**
@@ -25,8 +24,6 @@ public final class IgcMain {
    }
 
    private static final Logger LOG = LoggerFactory.getLogger(IgcMain.class);
-
-   private static final String MESSAGE = "Mise a jour des CRL : ${0} CRL telechargees";
 
    public static final String IGC_CONFIG_EMPTY = "Il faut préciser, dans la ligne de commande, le chemin complet du fichier de configuration de l'IGC";
 
@@ -52,11 +49,11 @@ public final class IgcMain {
       String pathConfigFile = args[0];
 
       try {
-         IgcConfigs igcConfigs = IgcServiceFactory.createIgcConfigService().loadConfig(
-               pathConfigFile);
+         IgcConfigs igcConfigs = IgcServiceFactory.createIgcConfigService()
+               .loadConfig(pathConfigFile);
 
-         LOG.info(TextUtils.getMessage(MESSAGE, String.valueOf(IgcServiceFactory
-               .createIgcDownloadService().telechargeCRLs(igcConfigs))));
+         IgcServiceFactory.createIgcDownloadService()
+               .telechargeCRLs(igcConfigs);
 
       } catch (IgcConfigException e) {
          LOG.error(e.getMessage(), e);
