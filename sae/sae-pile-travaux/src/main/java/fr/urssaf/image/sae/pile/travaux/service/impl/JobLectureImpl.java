@@ -32,11 +32,13 @@ import fr.urssaf.image.sae.pile.travaux.dao.JobRequestDao;
 import fr.urssaf.image.sae.pile.travaux.dao.JobsQueueDao;
 import fr.urssaf.image.sae.pile.travaux.dao.iterator.JobQueueIterator;
 import fr.urssaf.image.sae.pile.travaux.dao.serializer.JobQueueSerializer;
+import fr.urssaf.image.sae.pile.travaux.dao.serializer.VISerializer;
 import fr.urssaf.image.sae.pile.travaux.model.JobHistory;
 import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 import fr.urssaf.image.sae.pile.travaux.model.JobState;
 import fr.urssaf.image.sae.pile.travaux.service.JobLectureService;
+import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 
 /**
  * Implémentation du service {@link JobLectureService}
@@ -53,6 +55,7 @@ public class JobLectureImpl implements JobLectureService {
    private final JobHistoryDao jobHistoryDao;
 
    // Column Family JobRequest
+   public static final String JR_VI = "vi";
    private static final String JOBREQUEST_CFNAME = "JobRequest";
    private static final String JR_TYPE_COLUMN = "type";
    private static final String JR_PARAMETERS_COLUMN = "parameters";
@@ -69,9 +72,9 @@ public class JobLectureImpl implements JobLectureService {
    private static final String JR_PID = "pid";
    public static final String JR_TO_CHECK_FLAG = "toCheckFlag";
    public static final String JR_TO_CHECK_FLAG_RAISON = "toCheckFlagRaison";
-   
+
    private static final int MAX_JOB_ATTIBUTS = 100;
-   
+
    /**
     * Valeur de la clé pour les jobs en attente de réservation
     */
@@ -188,13 +191,13 @@ public class JobLectureImpl implements JobLectureService {
       return histories;
 
    }
-   
+
    /**
     * {@inheritDoc}
     */
    @Override
    public final List<JobRequest> getAllJobs(Keyspace keyspace) {
-      
+
       // On n'utilise pas d'index. On récupère tous les jobs sans distinction,
       // en requêtant directement dans la CF JobRequest
       BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
@@ -227,10 +230,10 @@ public class JobLectureImpl implements JobLectureService {
          if (jobRequest != null)
             list.add(jobRequest);
       }
-      return list;      
+      return list;
 
    }
-   
+
    /**
     * Crée un objet JobRequest à partir de données lues de cassandra.
     * 
@@ -296,8 +299,14 @@ public class JobLectureImpl implements JobLectureService {
       jobRequest
             .setToCheckFlagRaison(result.getString(JR_TO_CHECK_FLAG_RAISON));
 
+      if (result.getByteArray(JR_VI) != null) {
+         VIContenuExtrait extrait = VISerializer.get().fromBytes(
+               result.getByteArray(JR_VI));
+         jobRequest.setVi(extrait);
+      }
+
       return jobRequest;
-      
+
    }
-   
+
 }
