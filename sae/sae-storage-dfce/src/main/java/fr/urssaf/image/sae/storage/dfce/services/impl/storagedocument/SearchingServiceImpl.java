@@ -57,12 +57,12 @@ public class SearchingServiceImpl extends AbstractServices implements
          QueryParseServiceEx {
       final List<StorageDocument> storageDocuments = new ArrayList<StorageDocument>();
       try {
-         
-         SearchQuery paramSearchQuery = new QueryImpl(luceneCriteria.getLuceneQuery(),getBaseDFCE());
-         paramSearchQuery.setSearchLimit(luceneCriteria.getLimit());
-         SearchResult searchResult = getDfceService().getSearchService().search(paramSearchQuery );
-         
-         
+
+         SearchQuery paramSearchQuery = new QueryImpl(luceneCriteria
+               .getLuceneQuery(), getBaseDFCE());
+         SearchResult searchResult = getDfceService().getSearchService()
+               .search(paramSearchQuery);
+
          for (Document document : Utils.nullSafeIterable(searchResult
                .getDocuments())) {
 
