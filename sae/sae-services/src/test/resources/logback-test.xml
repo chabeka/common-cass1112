@@ -11,6 +11,7 @@
    <logger name="org.cassandraunit" level="WARN" />
    <logger name="me.prettyprint" level="WARN" />
    <logger name="com.netflix.curator" level="WARN" />
+   <logger name="org.apache.zookeeper" level="WARN" />
    
    <logger name="fr.urssaf.image.commons" level="INFO" />
    
