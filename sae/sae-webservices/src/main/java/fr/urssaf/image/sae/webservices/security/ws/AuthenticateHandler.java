@@ -2,6 +2,8 @@ package fr.urssaf.image.sae.webservices.security.ws;
 
 import javax.xml.namespace.QName;
 
+import me.prettyprint.hector.api.exceptions.HectorException;
+
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.soap.SOAPHeader;
 import org.apache.axis2.AxisFault;
@@ -13,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Element;
+
+import com.google.common.util.concurrent.UncheckedExecutionException;
 
 import fr.urssaf.image.sae.vi.exception.VIVerificationException;
 import fr.urssaf.image.sae.webservices.security.SecurityService;
@@ -46,14 +50,12 @@ public class AuthenticateHandler {
    // ")";
 
    private static final String WSSE_NS = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd";
-   
-   private static final String WSSE_LN = "Security";
-   
-   private static final String ASSERTION_LN = "Assertion";
-   
-   private final SecurityService securityService;
 
-  
+   private static final String WSSE_LN = "Security";
+
+   private static final String ASSERTION_LN = "Assertion";
+
+   private final SecurityService securityService;
 
    /**
     * 
@@ -94,7 +96,7 @@ public class AuthenticateHandler {
 
    }
 
-/**
+   /**
     * instanciation d'un contexte de sécurité à partir des informations
     * contenues dans le header du message SOAP<br>
     * <br>
@@ -105,7 +107,8 @@ public class AuthenticateHandler {
     * <br>
     * Seules les méthodes finissant par Secure sont concernées
     * 
-    * @throws AxisFault le VI comporte une erreur ou est absent
+    * @throws AxisFault
+    *            le VI comporte une erreur ou est absent
     */
    // @Before(METHODE)
    public final void authenticate() throws AxisFault {
@@ -146,8 +149,8 @@ public class AuthenticateHandler {
          throw new VIEmptyAxisFault();
       }
 
-      OMElement security = header.getFirstChildWithName(new QName(
-            WSSE_NS, WSSE_LN));
+      OMElement security = header.getFirstChildWithName(new QName(WSSE_NS,
+            WSSE_LN));
 
       if (security == null) {
          LOG.warn(prefixeLog
@@ -178,9 +181,18 @@ public class AuthenticateHandler {
          try {
             securityService.authentification(identification);
          } catch (VIVerificationException e) {
+
             LOG.warn(prefixeLog
                   + "Erreur lors de la mise en place de l'authentification : "
                   + e.toString(), e);
+            
+            if (e.getCause() != null
+                  && e.getCause() instanceof UncheckedExecutionException
+                  && e.getCause().getCause() != null
+                  && e.getCause().getCause() instanceof HectorException) {
+               throw new AxisFault("La base de données est temporairement inaccessible", e);
+            }
+
             throw new VIVerificationAxisFault(e);
          } catch (LoadCertifsAndCrlException e) {
             LOG.warn(prefixeLog
