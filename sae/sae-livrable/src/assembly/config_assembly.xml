@@ -55,9 +55,25 @@
       </fileSet>
       
       <fileSet>
+         <directory>src/config/</directory>
+         <includes>
+            <include>sae-igc-config.xml</include>
+         </includes>
+         <outputDirectory />
+      </fileSet>
+      
+      <fileSet>
          <directory>src/pki/</directory>
          <includes>
             <include>pseudo_IGCA.crt</include>
+         </includes>
+         <outputDirectory />
+      </fileSet>
+      
+      <fileSet>
+         <directory>src/pki/</directory>
+         <includes>
+            <include>AC_RACINE_IGCN_RECOUV_2012.crt</include>
          </includes>
          <outputDirectory />
       </fileSet>
