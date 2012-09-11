@@ -16,6 +16,7 @@ import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -30,6 +31,7 @@ import fr.urssaf.image.sae.regionalisation.support.ServiceProviderSupport;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-regionalisation-mock-test.xml" })
 @SuppressWarnings("PMD.MethodNamingConventions")
+@DirtiesContext
 public class ProcessingServiceTest {
 
    @Autowired
@@ -63,6 +65,12 @@ public class ProcessingServiceTest {
    @Test
    public void launch_mise_a_jour() {
 
+      EasyMock.reset(saeDocumentDao);
+      EasyMock.reset(providerSupport);
+      EasyMock.reset(searchCriterionDao);
+      EasyMock.reset(metadataDao);
+      EasyMock.reset(traceDao);
+      
       // connexion à DFCE
 
       providerSupport.connect();
@@ -78,7 +86,7 @@ public class ProcessingServiceTest {
 
       EasyMock.expect(
             searchCriterionDao
-                  .getSearchCriteria(EasyMock.eq(0), EasyMock.eq(2)))
+                  .getSearchCriteria(EasyMock.eq(5), EasyMock.eq(2)))
             .andReturn(createSearchCriterions(2));
 
       launchCommun();

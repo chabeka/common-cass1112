@@ -15,6 +15,10 @@ public class BootStrapTest {
 
    private BootStrap bootStrap;
 
+   private static final String BASE_SOURCE = "BASE";
+
+   private static final String FILE_SOURCE = "CSV";
+
    private static final String DFCE_CONFIG = "src/test/resources/dfce/test-dfce.properties";
 
    private static final String POSTGRESQL_CONFIG = "src/test/resources/database/test-postgresql.properties";
@@ -52,8 +56,8 @@ public class BootStrapTest {
 
       EasyMock.replay(processingService);
 
-      String[] args = new String[] { DFCE_CONFIG, POSTGRESQL_CONFIG, "5",
-            "100", "TIR_A_BLANC" };
+      String[] args = new String[] { BASE_SOURCE, DFCE_CONFIG,
+            POSTGRESQL_CONFIG, "5", "100", "TIR_A_BLANC" };
       bootStrap.execute(args);
 
       assertService();
@@ -66,8 +70,8 @@ public class BootStrapTest {
 
       EasyMock.replay(processingService);
 
-      String[] args = new String[] { DFCE_CONFIG, POSTGRESQL_CONFIG, "12",
-            "50", "MISE_A_JOUR" };
+      String[] args = new String[] { BASE_SOURCE, DFCE_CONFIG,
+            POSTGRESQL_CONFIG, "12", "50", "MISE_A_JOUR" };
       bootStrap.execute(args);
 
       assertService();
@@ -78,7 +82,8 @@ public class BootStrapTest {
 
       EasyMock.replay(processingService);
 
-      String[] args = new String[] { DFCE_CONFIG, POSTGRESQL_CONFIG };
+      String[] args = new String[] { BASE_SOURCE, DFCE_CONFIG,
+            POSTGRESQL_CONFIG };
       bootStrap.execute(args);
 
       assertService();
@@ -96,8 +101,8 @@ public class BootStrapTest {
 
       EasyMock.replay(processingService);
 
-      String[] args = new String[] { DFCE_CONFIG, POSTGRESQL_CONFIG, "12",
-            "50", "MISE_A_JOUR" };
+      String[] args = new String[] { BASE_SOURCE, DFCE_CONFIG,
+            POSTGRESQL_CONFIG, "12", "50", "MISE_A_JOUR" };
       bootStrap.execute(args);
 
       assertService();

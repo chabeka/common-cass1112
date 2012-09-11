@@ -19,6 +19,10 @@ public class BootStrapValidationTest {
 
    private static final String COUNT_RECORD = "100";
 
+   private static final String BASE_SOURCE = "BASE";
+
+   private static final String CSV_SOURCE = "CSV";
+
    @Before
    public void before() {
 
@@ -41,9 +45,23 @@ public class BootStrapValidationTest {
    }
 
    @Test
+   public void execute_failure_required_source() {
+      String[] args = new String[0];
+
+      assertExecute(args, "La source de données doit être indiquée BASE/CSV");
+   }
+
+   @Test
+   public void execute_failure_source_inexistante() {
+      String[] args = new String[] { "SOURCE_INEXISTANTE" };
+
+      assertExecute(args, "La source soit être valide : BASE / CSV");
+   }
+
+   @Test
    public void execute_failure_required_dfce() {
 
-      String[] args = new String[0];
+      String[] args = new String[] { BASE_SOURCE };
 
       assertExecute(
             args,
@@ -54,7 +72,7 @@ public class BootStrapValidationTest {
    @Test
    public void execute_failure_required_postgresql() {
 
-      String[] args = new String[] { DFCE_CONFIG };
+      String[] args = new String[] { BASE_SOURCE, DFCE_CONFIG };
 
       assertExecute(
             args,
@@ -65,7 +83,8 @@ public class BootStrapValidationTest {
    @Test
    public void execute_failure_required_first_index() {
 
-      String[] args = new String[] { DFCE_CONFIG, POSTGRESQL_CONFIG };
+      String[] args = new String[] { BASE_SOURCE, DFCE_CONFIG,
+            POSTGRESQL_CONFIG };
 
       assertExecute(args,
             "L'index de l'enregistrement de départ doit être renseigné.");
@@ -75,7 +94,8 @@ public class BootStrapValidationTest {
    @Test
    public void execute_failure_false_first_index() {
 
-      String[] args = new String[] { DFCE_CONFIG, POSTGRESQL_CONFIG, "zzzz" };
+      String[] args = new String[] { BASE_SOURCE, DFCE_CONFIG,
+            POSTGRESQL_CONFIG, "zzzz" };
 
       assertExecute(args,
             "L'index de l'enregistrement de départ doit être un nombre.");
@@ -85,7 +105,8 @@ public class BootStrapValidationTest {
    @Test
    public void execute_failure_false_first_negatif() {
 
-      String[] args = new String[] { DFCE_CONFIG, POSTGRESQL_CONFIG, "-1" };
+      String[] args = new String[] { BASE_SOURCE, DFCE_CONFIG,
+            POSTGRESQL_CONFIG, "-1" };
 
       assertExecute(
             args,
@@ -96,8 +117,8 @@ public class BootStrapValidationTest {
    @Test
    public void execute_failure_required_count_record() {
 
-      String[] args = new String[] { DFCE_CONFIG, POSTGRESQL_CONFIG,
-            FIRST_INDEX };
+      String[] args = new String[] { BASE_SOURCE, DFCE_CONFIG,
+            POSTGRESQL_CONFIG, FIRST_INDEX };
 
       assertExecute(args,
             "Le nombre d'enregistrement à traiter doit être renseigné.");
@@ -107,8 +128,8 @@ public class BootStrapValidationTest {
    @Test
    public void execute_failure_false_count_record() {
 
-      String[] args = new String[] { DFCE_CONFIG, POSTGRESQL_CONFIG,
-            FIRST_INDEX, "aaaa" };
+      String[] args = new String[] { BASE_SOURCE, DFCE_CONFIG,
+            POSTGRESQL_CONFIG, FIRST_INDEX, "aaaa" };
 
       assertExecute(args,
             "Le nombre d'enregistrement à traiter doit être un nombre.");
@@ -118,8 +139,8 @@ public class BootStrapValidationTest {
    @Test
    public void execute_failure_false_count_negatif() {
 
-      String[] args = new String[] { DFCE_CONFIG, POSTGRESQL_CONFIG,
-            FIRST_INDEX, "0" };
+      String[] args = new String[] { BASE_SOURCE, DFCE_CONFIG,
+            POSTGRESQL_CONFIG, FIRST_INDEX, "0" };
 
       assertExecute(args,
             "Le nombre d'enregistrement à traiter doit être un nombre supérieur à 0.");
@@ -129,8 +150,8 @@ public class BootStrapValidationTest {
    @Test
    public void execute_failure_required_mode() {
 
-      String[] args = new String[] { DFCE_CONFIG, POSTGRESQL_CONFIG,
-            FIRST_INDEX, COUNT_RECORD };
+      String[] args = new String[] { BASE_SOURCE, DFCE_CONFIG,
+            POSTGRESQL_CONFIG, FIRST_INDEX, COUNT_RECORD };
 
       assertExecute(args,
             "Le mode TIR_A_BLANC/MISE_A_JOUR doit être renseigné.");
@@ -140,10 +161,24 @@ public class BootStrapValidationTest {
    @Test
    public void execute_failure_bad_mode() {
 
-      String[] args = new String[] { DFCE_CONFIG, POSTGRESQL_CONFIG,
-            FIRST_INDEX, COUNT_RECORD, "BAD_MODE" };
+      String[] args = new String[] { BASE_SOURCE, DFCE_CONFIG,
+            POSTGRESQL_CONFIG, FIRST_INDEX, COUNT_RECORD, "BAD_MODE" };
 
       assertExecute(args, "Le mode doit être TIR_A_BLANC ou MISE_A_JOUR.");
 
+   }
+   
+   @Test
+   public void execute_failure_file_required() {
+      String[] args = new String[] { CSV_SOURCE, DFCE_CONFIG };
+
+      assertExecute(args, "Le fichier doit être indiqué si la source est un fichier");
+   }
+   
+   @Test
+   public void execute_failure_file_must_exist() {
+      String[] args = new String[] { CSV_SOURCE, DFCE_CONFIG, "src/test/fichierInexistant.txt" };
+
+      assertExecute(args, "Le fichier spécifié doit exister");
    }
 }

@@ -8,6 +8,7 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,7 @@ import fr.urssaf.image.sae.regionalisation.bean.SearchCriterion;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/applicationContext-sae-regionalisation-service-test.xml")
 @SuppressWarnings("PMD.MethodNamingConventions")
+@DirtiesContext
 public class SearchCriterionDaoTest {
 
    @Autowired
@@ -44,28 +46,11 @@ public class SearchCriterionDaoTest {
       Assert.assertEquals("le nombre de resultats de la requête est inattendu",
             5, searchCriterions.size());
 
-      assertSearchCriterion(searchCriterions.get(0), 2, "lucene2", false);
-      assertSearchCriterion(searchCriterions.get(1), 4, "lucene4", false);
-      assertSearchCriterion(searchCriterions.get(2), 5, "lucene5", false);
-      assertSearchCriterion(searchCriterions.get(3), 6, "lucene6", false);
-      assertSearchCriterion(searchCriterions.get(4), 8, "lucene8", false);
-
-   }
-
-   @Test
-   public void getSearchCriteria_total() {
-
-      List<SearchCriterion> searchCriterions = dao.getSearchCriteria(0,
-            Integer.MAX_VALUE);
-
-      for (SearchCriterion searchCriterion : searchCriterions) {
-
-         if (searchCriterion.isUpdated()) {
-            Assert.fail("la recherche id:" + searchCriterion.getId()
-                  + " lucene:" + searchCriterion.getLucene()
-                  + " ne devrait pas récupérée");
-         }
-      }
+      assertSearchCriterion(searchCriterions.get(0), 1, "lucene1", true);
+      assertSearchCriterion(searchCriterions.get(1), 2, "lucene2", false);
+      assertSearchCriterion(searchCriterions.get(2), 3, "lucene3", false);
+      assertSearchCriterion(searchCriterions.get(3), 4, "lucene4", false);
+      assertSearchCriterion(searchCriterions.get(4), 5, "lucene5", false);
 
    }
 

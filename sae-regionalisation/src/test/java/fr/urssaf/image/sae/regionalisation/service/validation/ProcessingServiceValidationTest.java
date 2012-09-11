@@ -1,5 +1,6 @@
 package fr.urssaf.image.sae.regionalisation.service.validation;
 
+import java.io.File;
 import java.io.IOException;
 
 import junit.framework.Assert;
@@ -23,6 +24,12 @@ public class ProcessingServiceValidationTest {
          public void launch(boolean updateDatas, int firstRecord,
                int processingCount) {
 
+            // aucune implémentation
+
+         }
+
+         @Override
+         public void launchWithFile(boolean updateDatas, File source) {
             // aucune implémentation
 
          }
@@ -61,6 +68,24 @@ public class ProcessingServiceValidationTest {
 
          Assert.assertEquals("le message de l'exception est inattendu",
                "le paramètre 'processingCount' doit être supérieur à 0", e
+                     .getMessage());
+
+      }
+   }
+   
+   @Test
+   public void launchWithFile_failure_file_null() throws IOException {
+
+      try {
+
+         service.launchWithFile(true, null);
+
+         Assert.fail("une exception IllegalArgumentException doit être levée");
+
+      } catch (IllegalArgumentException e) {
+
+         Assert.assertEquals("le message de l'exception est inattendu",
+               "le paramètre fichier doit être renseigné", e
                      .getMessage());
 
       }

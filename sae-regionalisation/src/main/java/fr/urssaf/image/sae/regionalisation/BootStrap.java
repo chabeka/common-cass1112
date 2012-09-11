@@ -1,5 +1,7 @@
 package fr.urssaf.image.sae.regionalisation;
 
+import java.io.File;
+
 import org.apache.commons.lang.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,22 +40,41 @@ public class BootStrap {
 
    }
 
-   private static final int DFCE_ARG_INDEX = 0;
-   private static final int POSTGRESQL_ARG_INDEX = 1;
-   private static final int FIRST_ARG_INDEX = 2;
-   private static final int COUNT_ARG_INDEX = 3;
-   private static final int MODE_ARG_INDEX = 4;
+   private static final int SOURCE_ARG_INDEX = 0;
+   private static final int DFCE_ARG_INDEX = 1;
+   private static final int POSTGRESQL_ARG_INDEX = 2;
+   private static final int FIRST_ARG_INDEX = 3;
+   private static final int COUNT_ARG_INDEX = 4;
+   private static final int MODE_ARG_INDEX = 5;
+
+   private static final int FILE_ARG_INDEX = 2;
+   private static final int MODE_ARG_FILE_INDEX = 3;
 
    private static final String MODE_0 = "TIR_A_BLANC";
    private static final String MODE_1 = "MISE_A_JOUR";
+
+   private static final String SOURCE_0 = "BASE";
+   private static final String SOURCE_1 = "CSV";
 
    private String dfceConfig;
    private String postgresqlConfig;
    private int firstRecord;
    private int processingCount;
    private boolean updateDatas;
+   private boolean isDbSource;
+   private File sourceFile;
 
    protected final void validate(String[] args) {
+
+      validate(args, SOURCE_ARG_INDEX,
+            "La source de données doit être indiquée BASE/CSV");
+
+      if (!ArrayUtils.contains(new String[] { SOURCE_0, SOURCE_1 },
+            args[SOURCE_ARG_INDEX])) {
+
+         throw new IllegalArgumentException(
+               "La source soit être valide : BASE / CSV");
+      }
 
       // fichier de configuration connexion DFCE
       validate(
@@ -62,6 +83,40 @@ public class BootStrap {
             "Le chemin complet du fichier de configuration connexion DFCE doit être renseigné.");
 
       dfceConfig = args[DFCE_ARG_INDEX];
+
+      if (SOURCE_0.equalsIgnoreCase(args[SOURCE_ARG_INDEX])) {
+         isDbSource = true;
+         validateDataBase(args);
+      } else {
+         isDbSource = false;
+         validateFile(args);
+      }
+
+   }
+
+   /**
+    * @param args
+    */
+   private void validateFile(String[] args) {
+      validate(args, FILE_ARG_INDEX,
+            "Le fichier doit être indiqué si la source est un fichier");
+
+      File file = new File(args[FILE_ARG_INDEX]);
+      if (!file.exists()) {
+         throw new IllegalArgumentException("Le fichier spécifié doit exister");
+      }
+      sourceFile = file;
+
+      updateDatas = MODE_0.equals(args[MODE_ARG_FILE_INDEX]) ? false : true;
+   }
+
+   /**
+    * Validation des paramètres dans le cadre d'une mise à jour via la base de
+    * données
+    * 
+    * @param args
+    */
+   private void validateDataBase(String[] args) {
 
       // fichier de configuration connexion POSTGRESQL
       validate(
@@ -175,7 +230,11 @@ public class BootStrap {
                         args[COUNT_ARG_INDEX] });
 
       // lancement de la régionalisation
-      service.launch(updateDatas, firstRecord, processingCount);
+      if (isDbSource) {
+         service.launch(updateDatas, firstRecord, processingCount);
+      } else {
+         service.launchWithFile(updateDatas, sourceFile);
+      }
 
       LOGGER.info("la régionalisation est terminée");
    }

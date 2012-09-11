@@ -10,6 +10,7 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,7 @@ import fr.urssaf.image.sae.regionalisation.dao.SearchCriterionDao;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/applicationContext-sae-regionalisation-service-test.xml")
 @SuppressWarnings("PMD.MethodNamingConventions")
+@DirtiesContext
 public class SearchCriterionServiceTest {
 
    @Autowired
@@ -42,26 +44,26 @@ public class SearchCriterionServiceTest {
       List<SearchCriterion> criterias = searchCriterionDao.getSearchCriteria(7,
             Integer.MAX_VALUE);
 
-      Assert.assertEquals("le nombre de critères est inattendu", 3, criterias
+      Assert.assertEquals("le nombre de critères est inattendu", 6, criterias
             .size());
 
-      assertSearchCriterion(criterias.get(0),
+      assertSearchCriterion(criterias.get(3),
             "nce:630000000004296911 AND cog:630", false);
-      assertSearchCriterion(criterias.get(1), "nci:0023552 AND cog:630", false);
-      assertSearchCriterion(criterias.get(2), "npe:0015197 AND cog:150", false);
+      assertSearchCriterion(criterias.get(4), "nci:0023552 AND cog:630", false);
+      assertSearchCriterion(criterias.get(5), "npe:0015197 AND cog:150", false);
 
       Map<String, Object> metadata0 = metadataDao
-            .find(criterias.get(0).getId());
+            .find(criterias.get(3).getId());
       assertMetadata(metadata0, "cog", "837");
       assertMetadata(metadata0, "nce", "837000000000012658");
 
       Map<String, Object> metadata1 = metadataDao
-            .find(criterias.get(1).getId());
+            .find(criterias.get(4).getId());
       assertMetadata(metadata1, "cog", "837");
       assertMetadata(metadata1, "nci", "0009586");
 
       Map<String, Object> metadata2 = metadataDao
-            .find(criterias.get(2).getId());
+            .find(criterias.get(5).getId());
       assertMetadata(metadata2, "cog", "837");
       assertMetadata(metadata2, "npe", "2015197");
 

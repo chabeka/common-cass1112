@@ -1,7 +1,14 @@
 package fr.urssaf.image.sae.regionalisation.service.impl;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -10,6 +17,7 @@ import net.docubase.toolkit.model.document.Document;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +29,8 @@ import fr.urssaf.image.sae.regionalisation.dao.MetadataDao;
 import fr.urssaf.image.sae.regionalisation.dao.SaeDocumentDao;
 import fr.urssaf.image.sae.regionalisation.dao.SearchCriterionDao;
 import fr.urssaf.image.sae.regionalisation.dao.TraceDao;
+import fr.urssaf.image.sae.regionalisation.exception.ErreurTechniqueException;
+import fr.urssaf.image.sae.regionalisation.exception.LineFormatException;
 import fr.urssaf.image.sae.regionalisation.service.ProcessingService;
 import fr.urssaf.image.sae.regionalisation.support.ServiceProviderSupport;
 
@@ -111,89 +121,89 @@ public class ProcessingServiceImpl implements ProcessingService {
 
             for (SearchCriterion searchCriterion : searchCriterions) {
 
-               firstDate = new Date();
+               if (!searchCriterion.isUpdated()) {
+                  firstDate = new Date();
 
-               LOGGER.debug(
-                     "critère de recherche {} avec la requête lucène '{}'",
-                     searchCriterion.getId(), searchCriterion.getLucene());
-               dateStart = new Date();
-               Map<String, Object> metadatas = this.metadataDao
-                     .getMetadatas(searchCriterion.getId());
-               dateEnd = new Date();
-
-               LOGGER
-                     .info(
-                           "temps de chargements des metadonnées pour le critere {} = {} ms",
-                           searchCriterion.getId(),
-                           (dateEnd.getTime() - dateStart.getTime()));
-               LOGGER
-                     .debug(
-                           "nombre de métadonnées à mettre à jour pour la requête lucène '{}': {}",
-                           searchCriterion.getLucene(), metadatas.size());
-
-               dateStart = new Date();
-
-               List<Document> documents = this.saeDocumentDao
-                     .getDocuments(searchCriterion.getLucene());
-
-               dateEnd = new Date();
-
-               LOGGER.info("temps de recherche pour le critere {} = {} ms",
-                     searchCriterion.getId(), (dateEnd.getTime() - dateStart
-                           .getTime()));
-
-               // on incrémente de 1 si aucun document n'est retourné
-               if (documents.isEmpty()) {
-                  nbRecordSansDocument++;
+                  LOGGER.debug(
+                        "critère de recherche {} avec la requête lucène '{}'",
+                        searchCriterion.getId(), searchCriterion.getLucene());
+                  dateStart = new Date();
+                  Map<String, Object> metadatas = this.metadataDao
+                        .getMetadatas(searchCriterion.getId());
+                  dateEnd = new Date();
 
                   LOGGER
+                        .info(
+                              "temps de chargements des metadonnées pour le critere {} = {} ms",
+                              searchCriterion.getId(),
+                              (dateEnd.getTime() - dateStart.getTime()));
+                  LOGGER
                         .debug(
-                              "aucune document n'a été récupéré pour la requête lucène '{}'",
-                              searchCriterion.getLucene());
-               }
-
-               // si le flag est positionné à MISE_A_JOUR
-               if (updateDatas) {
+                              "nombre de métadonnées à mettre à jour pour la requête lucène '{}': {}",
+                              searchCriterion.getLucene(), metadatas.size());
 
                   dateStart = new Date();
 
-                  update(searchCriterion, documents, metadatas);
+                  List<Document> documents = this.saeDocumentDao
+                        .getDocuments(searchCriterion.getLucene());
 
                   dateEnd = new Date();
+
+                  LOGGER.info("temps de recherche pour le critere {} = {} ms",
+                        searchCriterion.getId(), (dateEnd.getTime() - dateStart
+                              .getTime()));
+
+                  // on incrémente de 1 si aucun document n'est retourné
+                  if (documents.isEmpty()) {
+                     nbRecordSansDocument++;
+
+                     LOGGER
+                           .debug(
+                                 "aucune document n'a été récupéré pour la requête lucène '{}'",
+                                 searchCriterion.getLucene());
+                  }
+
+                  // si le flag est positionné à MISE_A_JOUR
+                  if (updateDatas) {
+
+                     dateStart = new Date();
+
+                     update(searchCriterion, documents, metadatas);
+
+                     dateEnd = new Date();
+                     LOGGER
+                           .info(
+                                 "temps de mise a jour des documents pour le critere {} = {} ms",
+                                 searchCriterion.getId(),
+                                 (dateEnd.getTime() - dateStart.getTime()));
+
+                  } else {
+
+                     // on trace le nombre de documents pour un critère de
+                     // recherche pour le mode TIR_A_BLANC
+                     this.traceDao.addTraceRec(searchCriterion.getId(),
+                           documents.size(), false);
+
+                     LOGGER
+                           .debug(
+                                 "nombre de documents à mettre à jour pour la requête lucène '{}': {}",
+                                 searchCriterion.getLucene(), documents.size());
+
+                  }
+
+                  // on incrémente de 1 le nombre de documents traités
+                  nbRecordDocumentTraites += documents.size();
+
+                  lastDate = new Date();
                   LOGGER
                         .info(
-                              "temps de mise a jour des documents pour le critere {} = {} ms",
+                              "temps de traitement global pour le critere {} = {} ms",
                               searchCriterion.getId(),
-                              (dateEnd.getTime() - dateStart.getTime()));
-
-               } else {
-
-                  // on trace le nombre de documents pour un critère de
-                  // recherche pour le mode TIR_A_BLANC
-                  this.traceDao.addTraceRec(searchCriterion.getId(), documents
-                        .size(), false);
-
-                  LOGGER
-                        .debug(
-                              "nombre de documents à mettre à jour pour la requête lucène '{}': {}",
-                              searchCriterion.getLucene(), documents.size());
-
+                              (lastDate.getTime() - firstDate.getTime()));
                }
-
-               // on incrémente de 1 le nombre de documents traités
-               nbRecordDocumentTraites += documents.size();
-
-               lastDate = new Date();
-               LOGGER.info(
-                     "temps de traitement global pour le critere {} = {} ms",
-                     searchCriterion.getId(), (lastDate.getTime() - firstDate
-                           .getTime()));
             }
 
-            // dans le cas du tir à blanc on continue la pagination
-            if (!updateDatas) {
-               indexRecord += SIZE_BLOCK;
-            }
+            indexRecord += SIZE_BLOCK;
 
             count += SIZE_BLOCK;
 
@@ -215,6 +225,8 @@ public class ProcessingServiceImpl implements ProcessingService {
 
    private void update(SearchCriterion searchCriterion,
          List<Document> documents, Map<String, Object> metadatas) {
+
+      // FIXME FBON - A Enlever dans le cadre de la source fichier
 
       // on trace le nombre de documents pour un critère de
       // recherche pour le mode MISE_A_JOUR
@@ -255,6 +267,9 @@ public class ProcessingServiceImpl implements ProcessingService {
                         "document n°{} a mis à jour la métadonnée '{}' avec une nouvelle valeur '{}' pour remplacer l'ancienne '{}'",
                         new Object[] { document.getUuid(), trace.getMetaName(),
                               trace.getNewValue(), trace.getOldValue() });
+
+            // FIXME FBON - accès par les deux côtés - supprimer la trace en
+            // base si fichier en source
 
             trace.setIdDocument(document.getUuid());
             trace.setIdSearch(searchCriterion.getId());
@@ -301,6 +316,142 @@ public class ProcessingServiceImpl implements ProcessingService {
       }
 
       return trace;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void launchWithFile(boolean updateDatas, File source) {
+
+      final String trcPrefixe = "launchWithFile()";
+
+      FileReader fileReader = null;
+      BufferedReader reader = null;
+      int nbRecordSansDocument = 0;
+      int nbRecordDocumentTraites = 0;
+
+      // connexion à DFCE
+      this.serviceSupport.connect();
+
+      try {
+         Date dateStart, dateEnd;
+         fileReader = new FileReader(source);
+         reader = new BufferedReader(fileReader);
+         String line;
+         String[] tabLine;
+         int i = 0;
+         while ((line = reader.readLine()) != null) {
+            tabLine = StringUtils.split(line, ';');
+
+            if ((tabLine.length - 1) % 2 != 0 || tabLine.length < 2) {
+               throw new LineFormatException(
+                     "le format de la ligne est incorrecte : " + line);
+            }
+
+            SearchCriterion criterion = new SearchCriterion();
+            criterion.setId(BigDecimal.valueOf(i));
+            criterion.setLucene(tabLine[0]);
+
+            Map<String, Object> metadonnees = new HashMap<String, Object>();
+
+            for (int j = 1; j < tabLine.length; j = j + 2) {
+               metadonnees.put(tabLine[j], tabLine[j + 1]);
+            }
+
+            LOGGER
+                  .debug(
+                        "nombre de métadonnées à mettre à jour pour la requête lucène '{}': {}",
+                        criterion.getLucene(), metadonnees.size());
+
+            dateStart = new Date();
+
+            List<Document> documents = this.saeDocumentDao
+                  .getDocuments(criterion.getLucene());
+
+            dateEnd = new Date();
+
+            LOGGER.info("temps de recherche pour le critere {} = {} ms",
+                  criterion.getId(), (dateEnd.getTime() - dateStart.getTime()));
+
+            // on incrémente de 1 si aucun document n'est retourné
+            if (documents.isEmpty()) {
+               nbRecordSansDocument++;
+
+               LOGGER
+                     .debug(
+                           "aucune document n'a été récupéré pour la requête lucène '{}'",
+                           criterion.getLucene());
+            }
+
+            // si le flag est positionné à MISE_A_JOUR
+            if (updateDatas) {
+
+               dateStart = new Date();
+
+               update(criterion, documents, metadonnees);
+
+               dateEnd = new Date();
+               LOGGER
+                     .info(
+                           "temps de mise a jour des documents pour le critere {} = {} ms",
+                           criterion.getId(), (dateEnd.getTime() - dateStart
+                                 .getTime()));
+
+            } else {
+
+               // FIXME FBON - Trace dans un fichier
+
+               LOGGER
+                     .debug(
+                           "nombre de documents à mettre à jour pour la requête lucène '{}': {}",
+                           criterion.getLucene(), documents.size());
+
+            }
+
+            // on incrémente de 1 le nombre de documents traités
+            nbRecordDocumentTraites += documents.size();
+
+            i++;
+
+         }
+
+         LOGGER.info("nombre de recherche sans documents associés: {}",
+               nbRecordSansDocument);
+         LOGGER
+               .info("nombre de documents traités: {}", nbRecordDocumentTraites);
+
+      } catch (FileNotFoundException exception) {
+         throw new ErreurTechniqueException(exception);
+
+      } catch (IOException exception) {
+         throw new ErreurTechniqueException(exception);
+
+      } finally {
+         if (reader != null) {
+            try {
+               reader.close();
+            } catch (IOException e) {
+               LOGGER.info(
+                     "{} - Impossible de fermer le flux de lecture buffer",
+                     trcPrefixe);
+            }
+         }
+
+         if (fileReader != null) {
+            try {
+               fileReader.close();
+            } catch (IOException e) {
+               LOGGER.info(
+                     "{} - Impossible de fermer le flux de lecture fichier",
+                     trcPrefixe);
+            }
+         }
+
+         // deconnexion de DFCE
+         serviceSupport.disconnect();
+      }
+
    }
 
 }

@@ -1,5 +1,7 @@
 package fr.urssaf.image.sae.regionalisation.service.validation;
 
+import java.io.File;
+
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 
@@ -18,6 +20,9 @@ public class ProcessingServiceValidation {
    private static final String METHOD = "execution(void " + CLASS
          + "launch(*,*,*))"
          + "&& args(updateDatas,firstRecord,processingCount)";
+
+   private static final String FILE_METHOD = "execution(void " + CLASS
+         + "launchWithFile(*,*))" + "&& args(updateDatas,source)";
 
    /**
     * Validation des méthodes de
@@ -47,6 +52,31 @@ public class ProcessingServiceValidation {
       if (processingCount < 1) {
          throw new IllegalArgumentException(
                "le paramètre 'processingCount' doit être supérieur à 0");
+      }
+
+   }
+
+   
+   
+   /**
+    * Validation des méthodes de
+    * {@link fr.urssaf.image.sae.regionalisation.service.ProcessingService#launchWithFile(boolean, java.io.File)
+    * <br>
+    * <ul>
+    * <li><code>source</code> doit être non null</li>
+    * </ul>
+    * 
+    * @param updateDatas
+    *           flag indiquant si le traitement est réel ou tir à blanc.
+    * @param source
+    *          fichier contenant les données
+    */
+   @Before(FILE_METHOD)
+   public final void launchWithFile(boolean updateDatas, File source) {
+
+      if (source == null) {
+         throw new IllegalArgumentException(
+               "le paramètre fichier doit être renseigné");
       }
 
    }

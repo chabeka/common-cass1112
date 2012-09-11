@@ -17,6 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +33,7 @@ import fr.urssaf.image.sae.regionalisation.support.ServiceProviderSupport;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-regionalisation-service-test.xml" })
 @SuppressWarnings("PMD.MethodNamingConventions")
+@DirtiesContext
 public class ProcessingServiceDaoTest {
 
    @Autowired
@@ -113,12 +115,12 @@ public class ProcessingServiceDaoTest {
       assertSearchCriterion(0, false);
       assertSearchCriterion(1, true);
       assertSearchCriterion(2, true);
-      assertSearchCriterion(3, false);
+      assertSearchCriterion(3, true);
       assertSearchCriterion(4, true);
       assertSearchCriterion(5, true);
-      assertSearchCriterion(6, true);
+      assertSearchCriterion(6, false);
       assertSearchCriterion(7, true);
-      assertSearchCriterion(8, true);
+      assertSearchCriterion(8, false);
       assertSearchCriterion(9, false);
    }
 
@@ -159,9 +161,9 @@ public class ProcessingServiceDaoTest {
 
       assertTrace(traces.get(0), "dre", "dre_old", "2007-07-12");
       assertTrace(traces.get(1), "nbp", "nbp_old", "4");
-      //impossible de connaitre l'ordre
-      //assertTrace(traces.get(2), "nne", "?", "?");
-      //assertTrace(traces.get(3), "nne", "?", "?");
+      // impossible de connaitre l'ordre
+      // assertTrace(traces.get(2), "nne", "?", "?");
+      // assertTrace(traces.get(3), "nne", "?", "?");
       assertTrace(traces.get(4), "npe", "npe_old", "123854");
 
    }
