@@ -26,6 +26,7 @@ import fr.urssaf.image.sae.pile.travaux.exception.LockTimeoutException;
 import fr.urssaf.image.sae.pile.travaux.model.JobHistory;
 import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
+import fr.urssaf.image.sae.pile.travaux.model.JobState;
 import fr.urssaf.image.sae.pile.travaux.model.JobToCreate;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -168,6 +169,46 @@ public class JobLectureServiceTest {
 
    }
 
+   @Test
+   public void testIsResettable() {
+      // création d'un job
+      idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+      JobRequest job = new JobRequest();
+
+      // Le job est à l'état CREATED, sa réinitialisation doit être possible
+      job.setState(JobState.RESERVED);
+      Assert.assertTrue(
+            "Le job est à l'état RESERVED, il doit pouvoir être réinitialisé",
+            jobLectureService.isJobResettable(job));
+
+      // Le job est dans un état différente de CREATED, RESERVED ou STARTING, sa
+      // réinitialisation est impossible
+      job.setState(JobState.FAILURE);
+      Assert.assertFalse(
+            "Le job est à l'état FAILURE, il ne doit pas pouvoir être réinitialisé",
+            jobLectureService.isJobResettable(job));
+   }
+
+   @Test
+   public void testIsRemovable() {
+      // création d'un job
+      idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+      JobRequest job = new JobRequest();
+
+      // Le job est à l'état CREATED, sa suppression doit être possible
+      job.setState(JobState.CREATED);
+      Assert.assertTrue(
+            "Le job est à l'état CREATED, il doit pouvoir être supprimé",
+            jobLectureService.isJobRemovable(job));
+
+      // Le job est dans un état différente de CREATED, RESERVED ou STARTING, sa
+      // suppression est impossible
+      job.setState(JobState.FAILURE);
+      Assert.assertFalse(
+            "Le job est à l'état FAILURE, il ne doit pas pouvoir être supprimé",
+            jobLectureService.isJobRemovable(job));
+   }  
+   
    private void assertHistory(JobHistory history, String expectedTrace,
          Date expectedDate, int decalage) {
 

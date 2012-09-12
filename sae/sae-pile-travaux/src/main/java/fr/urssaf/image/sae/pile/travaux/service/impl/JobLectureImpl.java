@@ -309,4 +309,26 @@ public class JobLectureImpl implements JobLectureService {
 
    }
 
+   /**
+    * {@inheritDoc}
+    */   
+   public final boolean isJobResettable(JobRequest job) {
+      String state = job.getState().toString();
+      if (state.equals("RESERVED") || state.equals("STARTING")) {
+         return true;
+      }
+      return false;
+   }
+   
+   /**
+    * {@inheritDoc}
+    */
+   public final boolean isJobRemovable(JobRequest job) {
+      String state = job.getState().toString();
+      if (state.equals("CREATED") || state.equals("STARTING") || state.equals("RESERVED")) {
+         return true;
+      }
+      return false;      
+   }
+   
 }

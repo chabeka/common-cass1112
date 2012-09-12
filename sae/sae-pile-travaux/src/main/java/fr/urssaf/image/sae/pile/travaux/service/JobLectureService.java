@@ -69,4 +69,20 @@ public interface JobLectureService {
     * @return liste des traitements
     */
    List<JobRequest> getAllJobs(Keyspace keyspace);
+   
+   /**
+    * Teste si le job peut être réinitialisé
+    * (ie : si le job est à l'état RESERVED ou STARTING) 
+    * @param job le job à tester
+    * @return true si le job peut être réinitialisé
+    */
+   boolean isJobResettable(JobRequest job);
+   
+   /**
+    * Teste si le job peut être supprimé
+    * (ie : si le job est à l'état CREATED, STARTING ou RESERVED)
+    * @param job le job à tester
+    * @return true si le job peut être supprimé
+    */
+   boolean isJobRemovable(JobRequest job);
 }
