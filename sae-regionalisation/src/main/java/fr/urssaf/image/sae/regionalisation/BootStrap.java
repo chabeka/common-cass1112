@@ -10,6 +10,7 @@ import org.springframework.context.ApplicationContext;
 import fr.urssaf.image.sae.regionalisation.factory.SAEApplicationContextFactory;
 import fr.urssaf.image.sae.regionalisation.security.AuthenticateSupport;
 import fr.urssaf.image.sae.regionalisation.service.ProcessingService;
+import fr.urssaf.image.sae.regionalisation.util.LaunchHelper;
 import fr.urssaf.image.sae.regionalisation.util.ValidateUtils;
 
 /**
@@ -40,6 +41,8 @@ public class BootStrap {
 
    }
 
+   private static final String HELP = "help";
+
    private static final int SOURCE_ARG_INDEX = 0;
    private static final int DFCE_ARG_INDEX = 1;
    private static final int POSTGRESQL_ARG_INDEX = 2;
@@ -47,8 +50,8 @@ public class BootStrap {
    private static final int COUNT_ARG_INDEX = 4;
    private static final int MODE_ARG_INDEX = 5;
 
-   private static final int FILE_ARG_INDEX = 2;
-   private static final int MODE_ARG_FILE_INDEX = 3;
+   private static final int FILE_ARG_INDEX = 3;
+   private static final int MODE_ARG_FILE_INDEX = 4;
 
    private static final String MODE_0 = "TIR_A_BLANC";
    private static final String MODE_1 = "MISE_A_JOUR";
@@ -84,6 +87,14 @@ public class BootStrap {
 
       dfceConfig = args[DFCE_ARG_INDEX];
 
+      // fichier de configuration connexion POSTGRESQL
+      validate(
+            args,
+            POSTGRESQL_ARG_INDEX,
+            "Le chemin complet du fichier de configuration connexion POSTGRESQL doit être renseigné.");
+
+      postgresqlConfig = args[POSTGRESQL_ARG_INDEX];
+
       if (SOURCE_0.equalsIgnoreCase(args[SOURCE_ARG_INDEX])) {
          isDbSource = true;
          validateDataBase(args);
@@ -107,6 +118,17 @@ public class BootStrap {
       }
       sourceFile = file;
 
+      // mode TIR_A_BLANC/MISE_A_JOUR
+      validate(args, MODE_ARG_FILE_INDEX,
+            "Le mode TIR_A_BLANC/MISE_A_JOUR doit être renseigné.");
+
+      if (!ArrayUtils.contains(new String[] { MODE_0, MODE_1 },
+            args[MODE_ARG_FILE_INDEX])) {
+
+         throw new IllegalArgumentException(
+               "Le mode doit être TIR_A_BLANC ou MISE_A_JOUR.");
+      }
+
       updateDatas = MODE_0.equals(args[MODE_ARG_FILE_INDEX]) ? false : true;
    }
 
@@ -117,14 +139,6 @@ public class BootStrap {
     * @param args
     */
    private void validateDataBase(String[] args) {
-
-      // fichier de configuration connexion POSTGRESQL
-      validate(
-            args,
-            POSTGRESQL_ARG_INDEX,
-            "Le chemin complet du fichier de configuration connexion POSTGRESQL doit être renseigné.");
-
-      postgresqlConfig = args[POSTGRESQL_ARG_INDEX];
 
       // index de l'enregistrement de départ
       validate(args, FIRST_ARG_INDEX,
@@ -167,7 +181,6 @@ public class BootStrap {
       }
 
       // mode TIR_A_BLANC/MISE_A_JOUR
-
       validate(args, MODE_ARG_INDEX,
             "Le mode TIR_A_BLANC/MISE_A_JOUR doit être renseigné.");
 
@@ -247,17 +260,22 @@ public class BootStrap {
     */
    public static void main(String[] args) {
 
-      BootStrap booStrap = new BootStrap(
-            "/applicationContext-sae-regionalisation.xml",
-            new AuthenticateSupport());
+      if (ArrayUtils.isEmpty(args) || HELP.equalsIgnoreCase(args[0])) {
+         LOGGER.warn(LaunchHelper.getReadme());
+      } else {
 
-      try {
+         BootStrap booStrap = new BootStrap(
+               "/applicationContext-sae-regionalisation.xml",
+               new AuthenticateSupport());
 
-         booStrap.execute(args);
+         try {
 
-      } catch (Exception e) {
+            booStrap.execute(args);
 
-         LOGGER.error("une erreur a eu lieu dans la régionalisation", e);
+         } catch (Exception e) {
+
+            LOGGER.error("une erreur a eu lieu dans la régionalisation", e);
+         }
       }
 
    }

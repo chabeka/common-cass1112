@@ -167,17 +167,28 @@ public class BootStrapValidationTest {
       assertExecute(args, "Le mode doit être TIR_A_BLANC ou MISE_A_JOUR.");
 
    }
-   
+
    @Test
-   public void execute_failure_file_required() {
+   public void execute_failure_database_required() {
       String[] args = new String[] { CSV_SOURCE, DFCE_CONFIG };
 
-      assertExecute(args, "Le fichier doit être indiqué si la source est un fichier");
+      assertExecute(
+            args,
+            "Le chemin complet du fichier de configuration connexion POSTGRESQL doit être renseigné.");
    }
-   
+
+   @Test
+   public void execute_failure_file_required() {
+      String[] args = new String[] { CSV_SOURCE, DFCE_CONFIG, POSTGRESQL_CONFIG };
+
+      assertExecute(args,
+            "Le fichier doit être indiqué si la source est un fichier");
+   }
+
    @Test
    public void execute_failure_file_must_exist() {
-      String[] args = new String[] { CSV_SOURCE, DFCE_CONFIG, "src/test/fichierInexistant.txt" };
+      String[] args = new String[] { CSV_SOURCE, DFCE_CONFIG,
+            POSTGRESQL_CONFIG, "src/test/fichierInexistant.txt" };
 
       assertExecute(args, "Le fichier spécifié doit exister");
    }
