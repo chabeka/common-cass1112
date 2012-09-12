@@ -10,6 +10,8 @@ Deux modes sont à distinguer selon la source d'information.
 	[count] = nombre d'enregistrements à traiter
 	[mode] = TIR_A_BLANC ou MISE_A_JOUR
 - Source fichier :
-	java -jar -Dlogback.configurationFile=<fichier> sae-regionalisation.jar CSV [fichier]
+	java -jar -Dlogback.configurationFile=<fichier> sae-regionalisation.jar CSV [dfce] [postgres] [fichier]
 	avec :
+	[dfce] = chemin complet vers le fichier de configuration de connexion à DFCE
+	[postgres] = chemin complet vers le fichier de connexion à la base POSTGRESQL
 	[fichier] = chemin vers le fichier contenant les données à traiter
