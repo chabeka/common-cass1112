@@ -236,16 +236,19 @@ public class BootStrap {
       // appel du service ProcessingService
       ProcessingService service = context.getBean(ProcessingService.class);
 
-      LOGGER
-            .info(
-                  "lancement de la régionalisation en mode {} avec l'index de départ {} et avec un nombre d'enregistrements à traiter de {}",
-                  new Object[] { args[MODE_ARG_INDEX], args[FIRST_ARG_INDEX],
-                        args[COUNT_ARG_INDEX] });
-
       // lancement de la régionalisation
       if (isDbSource) {
+         LOGGER
+         .info(
+               "lancement de la régionalisation en mode {} avec l'index de départ {} et avec un nombre d'enregistrements à traiter de {}",
+               new Object[] { args[MODE_ARG_INDEX], args[FIRST_ARG_INDEX],
+                     args[COUNT_ARG_INDEX] });
          service.launch(updateDatas, firstRecord, processingCount);
       } else {
+         LOGGER
+         .info(
+               "lancement de la régionalisation en mode {} avec le fichier {}",
+               new Object[] { args[MODE_ARG_FILE_INDEX], args[FILE_ARG_INDEX]});
          service.launchWithFile(updateDatas, sourceFile);
       }
 
