@@ -88,10 +88,12 @@ public class Test206Controller extends
       codesMeta.add("DateDebutConservation");
       codesMeta.add("DateFinConservation");
       codesMeta.add("DateReception");
+      codesMeta.add("DateSignature");
       codesMeta.add("Denomination");
       codesMeta.add("FormatFichier");
       codesMeta.add("Hash");
       codesMeta.add("IdTraitementMasse");
+      codesMeta.add("JetonDePreuve");
       codesMeta.add("NbPages");
       codesMeta.add("NniEmployeur");
       codesMeta.add("NomFichier");
@@ -103,6 +105,7 @@ public class Test206Controller extends
       codesMeta.add("NumeroStructure");
       codesMeta.add("Periode");
       codesMeta.add("PseudoSiret");
+      codesMeta.add("RUM");
       codesMeta.add("Siren");
       codesMeta.add("Siret");
       codesMeta.add("SiteAcquisition");
@@ -236,13 +239,15 @@ public class Test206Controller extends
       valeursAttendues.add("CodeSousCategorieV2", "11");
       valeursAttendues.add("DateCreation", "2011-09-05");
       valeursAttendues.add("DateDebutConservation", "2011-09-02");
-      valeursAttendues.add("DateFinConservation", "2016-08-31");
+      valeursAttendues.add("DateFinConservation", "2016-08-31");      
       valeursAttendues.add("DateReception", "2011-09-01");
+      valeursAttendues.add("DateSignature", "2012-09-04");
       valeursAttendues.add("Denomination",
             "Test 206-CaptureMasse-OK-Toutes-metadonnees-specifiables");
       valeursAttendues.add("FormatFichier", "fmt/354");
       valeursAttendues.add("Hash", "a2f93f1f121ebba0faef2c0596f2f126eacae77b");
       valeursAttendues.add("IdTraitementMasse", "123654");
+      valeursAttendues.add("JetonDePreuve", "1A2B3C4D5E6F7G8H9I");
       valeursAttendues.add("NbPages", "2");
       valeursAttendues.add("NniEmployeur", "148032541101648");
       valeursAttendues.add("NomFichier", "doc1.PDF");
@@ -254,6 +259,7 @@ public class Test206Controller extends
       valeursAttendues.add("NumeroStructure", "000050221");
       valeursAttendues.add("Periode", "PERI");
       valeursAttendues.add("PseudoSiret", "4914736610005");
+      valeursAttendues.add("RUM", "24534Y8465435413Y012312356690123");
       valeursAttendues.add("Siren", "0123456789");
       valeursAttendues.add("Siret", "12345678912345");
       valeursAttendues.add("SiteAcquisition", "CER44");

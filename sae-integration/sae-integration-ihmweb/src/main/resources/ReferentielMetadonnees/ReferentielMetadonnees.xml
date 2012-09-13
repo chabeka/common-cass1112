@@ -576,4 +576,40 @@
         <obligatoireAuStockage>false</obligatoireAuStockage>
         <typeDfce>date</typeDfce>
     </Metadonnee>
+    <Metadonnee>
+        <codeLong>JetonDePreuve</codeLong>
+        <codeCourt>jdp</codeCourt>
+        <archivablePossible>true</archivablePossible>
+        <archivableObligatoire>false</archivableObligatoire>
+        <consulteeParDefaut>false</consulteeParDefaut>
+        <consultable>true</consultable>
+        <critereRecherche>false</critereRecherche>
+        <client>true</client>
+        <obligatoireAuStockage>false</obligatoireAuStockage>
+        <typeDfce>string</typeDfce>
+    </Metadonnee>
+    <Metadonnee>
+        <codeLong>RUM</codeLong>
+        <codeCourt>rum</codeCourt>
+        <archivablePossible>true</archivablePossible>
+        <archivableObligatoire>false</archivableObligatoire>
+        <consulteeParDefaut>false</consulteeParDefaut>
+        <consultable>true</consultable>
+        <critereRecherche>true</critereRecherche>
+        <client>true</client>
+        <obligatoireAuStockage>false</obligatoireAuStockage>
+        <typeDfce>string</typeDfce>
+    </Metadonnee>
+    <Metadonnee>
+        <codeLong>DateSignature</codeLong>
+        <codeCourt>dsi</codeCourt>
+        <archivablePossible>true</archivablePossible>
+        <archivableObligatoire>false</archivableObligatoire>
+        <consulteeParDefaut>false</consulteeParDefaut>
+        <consultable>true</consultable>
+        <critereRecherche>true</critereRecherche>
+        <client>true</client>
+        <obligatoireAuStockage>false</obligatoireAuStockage>
+        <typeDfce>string</typeDfce>
+    </Metadonnee>    
 </ReferentielMetadonnees>

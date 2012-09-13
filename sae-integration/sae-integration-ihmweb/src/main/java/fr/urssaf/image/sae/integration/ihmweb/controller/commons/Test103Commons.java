@@ -86,11 +86,13 @@ public class Test103Commons {
       metadonnees.add("CodeSousCategorieV2", "11");
       metadonnees.add("DateCreation", "2011-09-05");
       metadonnees.add("DateDebutConservation", "2011-09-02");
+      metadonnees.add("DateSignature", "2012-09-04");
       metadonnees.add("DateReception", "2011-09-01");
       metadonnees.add("Denomination",getDenomination(numeroTest));
       metadonnees.add("FormatFichier", "fmt/354");
       metadonnees.add("Hash", "a2f93f1f121ebba0faef2c0596f2f126eacae77b");
       metadonnees.add("IdTraitementMasse", "123654");
+      metadonnees.add("JetonDePreuve", "1A2B3C4D5E6F7G8H9I");
       metadonnees.add("NbPages", "2");
       metadonnees.add("NniEmployeur", "148032541101648");
       metadonnees.add("NumeroCompteExterne", "30148032541101600");
@@ -101,6 +103,7 @@ public class Test103Commons {
       metadonnees.add("NumeroStructure", "000050221");
       metadonnees.add("Periode", "PERI");
       metadonnees.add("PseudoSiret", "4914736610005");
+      metadonnees.add("RUM", "24534Y8465435413Y012312356690123");
       metadonnees.add("Siren", "0123456789");
       metadonnees.add("Siret", "12345678912345");
       metadonnees.add("SiteAcquisition", "CER44");
@@ -130,12 +133,14 @@ public class Test103Commons {
       codesMeta.add("CodeSousCategorieV2");
       codesMeta.add("DateCreation");
       codesMeta.add("DateDebutConservation");
+      codesMeta.add("DateSignature");
       codesMeta.add("DateFinConservation");
       codesMeta.add("DateReception");
       codesMeta.add("Denomination");
       codesMeta.add("FormatFichier");
       codesMeta.add("Hash");
       codesMeta.add("IdTraitementMasse");
+      codesMeta.add("JetonDePreuve");
       codesMeta.add("NbPages");
       codesMeta.add("NniEmployeur");
       codesMeta.add("NomFichier");
@@ -147,6 +152,7 @@ public class Test103Commons {
       codesMeta.add("NumeroStructure");
       codesMeta.add("Periode");
       codesMeta.add("PseudoSiret");
+      codesMeta.add("RUM");
       codesMeta.add("Siren");
       codesMeta.add("Siret");
       codesMeta.add("SiteAcquisition");
@@ -255,10 +261,12 @@ public class Test103Commons {
       valeursAttendues.add("DateDebutConservation", "2011-09-02");
       valeursAttendues.add("DateFinConservation", "2016-08-31");
       valeursAttendues.add("DateReception", "2011-09-01");
+      valeursAttendues.add("DateSignature", "2012-09-04");
       valeursAttendues.add("Denomination", denomination);
       valeursAttendues.add("FormatFichier", "fmt/354");
       valeursAttendues.add("Hash", "a2f93f1f121ebba0faef2c0596f2f126eacae77b");
       valeursAttendues.add("IdTraitementMasse", "123654");
+      valeursAttendues.add("JetonDePreuve", "1A2B3C4D5E6F7G8H9I");
       valeursAttendues.add("NbPages", "2");
       valeursAttendues.add("NniEmployeur", "148032541101648");
       valeursAttendues.add("NomFichier", "doc1.PDF");
@@ -270,6 +278,7 @@ public class Test103Commons {
       valeursAttendues.add("NumeroStructure", "000050221");
       valeursAttendues.add("Periode", "PERI");
       valeursAttendues.add("PseudoSiret", "4914736610005");
+      valeursAttendues.add("RUM", "24534Y8465435413Y012312356690123");
       valeursAttendues.add("Siren", "0123456789");
       valeursAttendues.add("Siret", "12345678912345");
       valeursAttendues.add("SiteAcquisition", "CER44");

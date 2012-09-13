@@ -88,7 +88,12 @@ public final class SaeServiceLogUtils {
             for (MetadonneeType metaType : tabMetaTypes) {
                code = metaType.getCode().getMetadonneeCodeType();
                valeur = metaType.getValeur().getMetadonneeValeurType();
-               listeMetas.add(code + "=" + valeur);
+               if(valeur.length()>50){
+                  listeMetas.add(code + "=" + StringUtils.substring(valeur, 0,50)+"...");
+               }else{
+                  listeMetas.add(code + "=" + valeur);
+               }
+               
             }
             Collections.sort(listeMetas);
             for (String uneMeta : listeMetas) {
@@ -118,7 +123,12 @@ public final class SaeServiceLogUtils {
          log.appendLogLn("Nombre de métadonnées : " + metadonnees.size());
          log.appendLogLn("Liste :");
          for (MetadonneeValeur meta : metadonnees) {
-            log.appendLogLn(meta.getCode() + "=" + meta.getValeur());
+            if (meta.getValeur().length()>50) {
+               log.appendLogLn(meta.getCode() + "="
+                     + meta.getValeur().substring(0, 50) + "...");
+            } else {
+               log.appendLogLn(meta.getCode() + "=" + meta.getValeur());
+            }
          }
       }
    }

@@ -58,8 +58,15 @@ public class MetadonneeListEditor extends PropertyEditorSupport {
       // NB : ne pas trimmer, car on peut vouloir laisser des espaces
       // String cleValeurOk = StringUtils.trim(cleValeur);
       String cleValeurOk = cleValeur;
+      String[] cleValeurSplit = null;
       
-      String[] cleValeurSplit = StringUtils.split(cleValeurOk, '=');
+      if(cleValeurOk.contains("JetonDePreuve")){
+         cleValeurSplit = cleValeurOk.split("=",2);
+      }else {
+         cleValeurSplit = StringUtils.split(cleValeurOk,"=");   
+      }
+      
+      
       if (cleValeurSplit.length>2) {
          throw new IntegrationRuntimeException("La syntaxe de métadonnée suivante est incorrecte : " + cleValeur);
       }

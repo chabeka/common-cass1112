@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.ImportResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -23,8 +25,7 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
  */
 @Controller
 @RequestMapping(value = "test403")
-public class Test403Controller extends AbstractTestWsController<Test403Formulaire> {
-
+public class Test403Controller extends AbstractTestWsController<Test403Formulaire> {   
    
    /**
     * {@inheritDoc}
@@ -61,10 +62,13 @@ public class Test403Controller extends AbstractTestWsController<Test403Formulair
       metadonnees.add("CodeOrganismeProprietaire","AC750");
       metadonnees.add("CodeRND","2.3.1.1.12");
       metadonnees.add("DateCreation","2011-09-01");
+      metadonnees.add("DateSignature","2012-09-04");
       metadonnees.add("Denomination","Test 403-Consultation-OK-TouteMetadonneeConsultable");
       metadonnees.add("FormatFichier","fmt/354");
       metadonnees.add("Hash","a2f93f1f121ebba0faef2c0596f2f126eacae77b");
+      metadonnees.add("JetonDePreuve","1A2B3C4D5E6F7G8H9I" );
       metadonnees.add("NbPages","2");
+      metadonnees.add("RUM","24534Y8465435413Y012312356690123");
       metadonnees.add("Titre","Attestation de vigilance");
       metadonnees.add("TypeHash","SHA-1");
       
@@ -119,7 +123,7 @@ public class Test403Controller extends AbstractTestWsController<Test403Formulair
          Test403Formulaire formulaire) {
       
       // Initialise
-      CaptureUnitaireFormulaire formCaptureEtp1 = formulaire.getCaptureUnitaire();
+      CaptureUnitaireFormulaire formCaptureEtp1 = formulaire.getCaptureUnitaire();           
 
       // Vide le résultat du test précédent de l'étape 2 
       ConsultationFormulaire formConsultEtp2 = formulaire.getConsultation();
@@ -190,12 +194,14 @@ public class Test403Controller extends AbstractTestWsController<Test403Formulair
       // metaAttendues.add(new MetadonneeValeur("DateDebutConservation", "")); // => non prédictible
       // metaAttendues.add(new MetadonneeValeur("DateFinConservation", "")); // => non prédictible
       metaAttendues.add(new MetadonneeValeur("DateReception", StringUtils.EMPTY));
+      metaAttendues.add(new MetadonneeValeur("DateSignature", "2012-09-04"));
       metaAttendues.add(new MetadonneeValeur("Denomination", "Test 403-Consultation-OK-TouteMetadonneeConsultable"));
       metaAttendues.add(new MetadonneeValeur("DureeConservation", "1825"));
       metaAttendues.add(new MetadonneeValeur("FormatFichier", "fmt/354"));
       metaAttendues.add(new MetadonneeValeur("Gel", "false"));
-      metaAttendues.add(new MetadonneeValeur("Hash", "a2f93f1f121ebba0faef2c0596f2f126eacae77b"));
+      metaAttendues.add(new MetadonneeValeur("Hash", "a2f93f1f121ebba0faef2c0596f2f126eacae77b"));      
       metaAttendues.add(new MetadonneeValeur("IdTraitementMasse", StringUtils.EMPTY));
+      metaAttendues.add(new MetadonneeValeur("JetonDePreuve", "1A2B3C4D5E6F7G8H9I"));
       metaAttendues.add(new MetadonneeValeur("NbPages", "2"));
       metaAttendues.add(new MetadonneeValeur("NniEmployeur", StringUtils.EMPTY));
       metaAttendues.add(new MetadonneeValeur("NomFichier", "doc1.PDF"));
@@ -207,6 +213,7 @@ public class Test403Controller extends AbstractTestWsController<Test403Formulair
       metaAttendues.add(new MetadonneeValeur("NumeroStructure", StringUtils.EMPTY));
       metaAttendues.add(new MetadonneeValeur("Periode", StringUtils.EMPTY));
       metaAttendues.add(new MetadonneeValeur("PseudoSiret", StringUtils.EMPTY));
+      metaAttendues.add(new MetadonneeValeur("RUM", "24534Y8465435413Y012312356690123"));
       metaAttendues.add(new MetadonneeValeur("Siren", StringUtils.EMPTY));
       metaAttendues.add(new MetadonneeValeur("Siret", StringUtils.EMPTY));
       metaAttendues.add(new MetadonneeValeur("SiteAcquisition", StringUtils.EMPTY));
