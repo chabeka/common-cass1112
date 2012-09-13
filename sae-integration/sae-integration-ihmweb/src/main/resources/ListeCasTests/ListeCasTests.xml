@@ -730,6 +730,16 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 275-CaptureMasse-KO-AutreModeToutOuRien-Inconnu"</luceneExemple>
          </CasTest>
+         
+         <CasTest>
+            <id>288</id>
+            <code>288-CaptureMasse-KO-Format-XML-KO</code>
+            <description>
+               la capture de masse en mode "tout ou rien" renvoie une erreur spécifique dans le fichier resultats.xml lorsque l'on essaie d'intégrer un ficher XML qui ne respecte pas la desscription XSD
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 288-CaptureMasse-KO-Format-XML-KO"</luceneExemple>
+         </CasTest>
 
       </CasTests>
 
