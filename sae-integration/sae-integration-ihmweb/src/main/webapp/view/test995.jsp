@@ -40,9 +40,17 @@ function toutCocherDecocher() {
 <sae:casTest/>
 
 <sae:urlServiceWeb/>
+<p>
+<input
+   style="width:100%;"
+   type="submit"
+   value="Lancer les tests cochés" />
+</p>
 
-
-<table border="1" cellpadding="3" style="width:100%">
+<p>
+<input type="button" value="Tout cocher/décocher" onclick="javascript:toutCocherDecocher();" />
+</p>
+<table border="1" style="width:100%; font-size:14px;">
 
    <tr style="width:70%;font-weight: bold;text-align:center;">
       <td style="width:30%">Cas de test</td>
@@ -53,63 +61,53 @@ function toutCocherDecocher() {
    <tr>
       <td><form:checkbox path="test001.aLancer" label="${formulaire.test001.code}" /></td>
       <sae:statusTest objetStatus="${formulaire.test001.status}"/>
-      <td><form:textarea path="test001.details" cssStyle="width:100%;height:30pt;" readonly="true" /></td>
+      <td><form:textarea path="test001.details" cssStyle="width:100%;height:20pt;" readonly="true" /></td>
    </tr>
    
    <tr>
       <td><form:checkbox path="test002.aLancer" label="${formulaire.test002.code}" /></td>
       <sae:statusTest objetStatus="${formulaire.test002.status}"/>
-      <td><form:textarea path="test002.details" cssStyle="width:100%;height:30pt;" readonly="true" /></td>
+      <td><form:textarea path="test002.details" cssStyle="width:100%;height:20pt;" readonly="true" /></td>
    </tr>
    
    <tr>
       <td><form:checkbox path="test003.aLancer" label="${formulaire.test003.code}" /></td>
       <sae:statusTest objetStatus="${formulaire.test003.status}"/>
-      <td><form:textarea path="test003.details" cssStyle="width:100%;height:30pt;" readonly="true" /></td>
+      <td><form:textarea path="test003.details" cssStyle="width:100%;height:20pt;" readonly="true" /></td>
    </tr>
    
    <tr>
       <td><form:checkbox path="test004.aLancer" label="${formulaire.test004.code}" /></td>
       <sae:statusTest objetStatus="${formulaire.test004.status}"/>
-      <td><form:textarea path="test004.details" cssStyle="width:100%;height:30pt;" readonly="true" /></td>
+      <td><form:textarea path="test004.details" cssStyle="width:100%;height:20pt;" readonly="true" /></td>
    </tr>
    
    <tr>
       <td><form:checkbox path="test005.aLancer" label="${formulaire.test005.code}" /></td>
       <sae:statusTest objetStatus="${formulaire.test005.status}"/>
-      <td><form:textarea path="test005.details" cssStyle="width:100%;height:30pt;" readonly="true" /></td>
+      <td><form:textarea path="test005.details" cssStyle="width:100%;height:20pt;" readonly="true" /></td>
    </tr>
    
    <tr>
       <td><form:checkbox path="test006.aLancer" label="${formulaire.test006.code}" /></td>
       <sae:statusTest objetStatus="${formulaire.test006.status}"/>
-      <td><form:textarea path="test006.details" cssStyle="width:100%;height:30pt;" readonly="true" /></td>
+      <td><form:textarea path="test006.details" cssStyle="width:100%;height:20pt;" readonly="true" /></td>
    </tr>
    
    <tr>
       <td><form:checkbox path="test007.aLancer" label="${formulaire.test007.code}" /></td>
       <sae:statusTest objetStatus="${formulaire.test007.status}"/>
-      <td><form:textarea path="test007.details" cssStyle="width:100%;height:30pt;" readonly="true" /></td>
+      <td><form:textarea path="test007.details" cssStyle="width:100%;height:20pt;" readonly="true" /></td>
    </tr>
    
    <tr>
       <td><form:checkbox path="test008.aLancer" label="${formulaire.test008.code}" /></td>
       <sae:statusTest objetStatus="${formulaire.test008.status}"/>
-      <td><form:textarea path="test008.details" cssStyle="width:100%;height:30pt;" readonly="true" /></td>
+      <td><form:textarea path="test008.details" cssStyle="width:100%;height:20pt;" readonly="true" /></td>
    </tr>
    
 </table>
 
-<p>
-<input type="button" value="Tout cocher/décocher" onclick="javascript:toutCocherDecocher();" />
-</p>
-
-<p>
-<input
-   style="width:100%;"
-   type="submit"
-   value="Lancer les tests cochés" />
-</p>
 
 </form:form>
 
