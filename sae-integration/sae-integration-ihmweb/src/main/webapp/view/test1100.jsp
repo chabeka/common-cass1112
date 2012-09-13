@@ -14,7 +14,7 @@
 
 <form:form method="post" modelAttribute="formulaire">
 
-	<form:hidden path="etape" />
+	<form:hidden id="etape" path="etape" />
    
    <sae:casTest />
 
