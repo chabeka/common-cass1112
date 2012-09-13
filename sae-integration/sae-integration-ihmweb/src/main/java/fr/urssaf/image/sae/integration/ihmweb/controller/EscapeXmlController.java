@@ -28,7 +28,6 @@ public class EscapeXmlController {
    @RequestMapping(method = RequestMethod.GET)
    public final String defaultView(Model model, HttpSession session) {
       EscapeXmlFormulaire xmlFormulaire = new EscapeXmlFormulaire();
-      xmlFormulaire.setXmlString("titi");
       xmlFormulaire.setEscapedString(null);
       model.addAttribute("escapeFormulaire", xmlFormulaire);
       return NOM_VUE;

@@ -28,8 +28,8 @@ function initTable() {
 
 	// tableau des resultats
 	var grid = new Ext.grid.GridPanel( {
-		height : 280,
-		width : 1050,
+		height : 1000,
+		width : 1300,
 		title : 'Liste des cas de test',
 		store : store,
 		trackMouseOver : false,
@@ -112,7 +112,7 @@ function initForm(gridTable) {
 		frame : true,
 		id : 'formPanel',
 		// title : 'Saisie des Informations Personnelles',
-		width : 1100
+		width : 1300
 	});
 
 	// Un champ texte
@@ -130,6 +130,7 @@ function initForm(gridTable) {
 	var monBoutonValidation = new Ext.Button( {
 		text : 'Injecter les jeux de test',
 		id : 'btnValider',
+		style : 'float:left; padding-right:10px',
 		handler : function() {
 			var tempName;
 
@@ -194,8 +195,37 @@ function initForm(gridTable) {
 			}
 		}
 	});
+	
+	
+	var monBoutonDeSelectAll = new Ext.Button( {
+      text : 'Tout désélectionner',
+      id : 'btnDeSelectAll',
+      style : 'float:left; padding-right:10px',
+      handler : function() {
+	      // on selectionne tous les checkbox
+	      var cb = Ext.DomQuery.jsSelect('input[name=cck]','formPanel');
+   	   for(var i=0; i<cb.length; i++){
+   	      cb[i].checked=false;
+   	   };
+      }
+   });
+	
+	var monBoutonSelectAll = new Ext.Button( {
+      text : 'Tout sélectionner',
+      id : 'btnSelectAll',
+      style : 'float:left; padding-right:10px',
+      handler : function() {
+         // on selectionne tous les checkbox
+         var cb = Ext.DomQuery.jsSelect('input[name=cck]','formPanel');
+         for(var i=0; i<cb.length; i++){
+            cb[i].checked=true;
+         };
+      }
+   });
 
 	monFormulaire.add(monBoutonValidation);
+	monFormulaire.add(monBoutonSelectAll);
+	monFormulaire.add(monBoutonDeSelectAll);
 
 	// Dessin du formulaire
 	monFormulaire.doLayout();
