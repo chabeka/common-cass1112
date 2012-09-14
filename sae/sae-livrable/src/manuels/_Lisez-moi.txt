@@ -2,7 +2,7 @@
 // Fichiers de configuration
 // --------------------------------------------------------------------
 
-Il faut substituer les "variables" HAWAI suivantes par leurs valeurs correspondantes : 
+Il faut substituer les tokens HAWAI suivants par leurs valeurs correspondantes : 
 
 @@SAE_HOME@@
 Chemin complet du répertoire "racine" de l'application SAE, dans lequel sont mis
@@ -31,16 +31,38 @@ Les paramètres supplémentaires à fournir à la JVM dans laquelle s'exécute u
 L'objectif est d'y mettre le paramétrage mémoire.
 Par exemple, on peut mettre "-Xms500m -Xmx2500m" pour indiquer que la JVM démarre avec 500 Mo de RAM,
 et peut monter jusqu'à 2.5 Go de RAM.
+Le valeur du token doit être à vide à partir du lot 120510, dans lequel la capture de masse
+a été optimisée et n'a plus besoin de cette configuration. 
 
 
+@@SAE_PKIVALAED_CRL@@
+L'URL du point de distribution des CRL de la PKI de validation AED.
+La valeur par défaut doit être :
+http://cer69idxpkival1.cer69.recouv/*.crl
 
-De plus, le fichier sae-igc-config.xml est regénéré au niveau d'Hawai.
-Pour l'instant, le SAE reconnaît uniquement la PKI de validation n°1 de l'AED.
-Du coup, le point de distribution des CRL de cette PKI est :
-   <URLTelechargementCRL>
-      <url>http://cer69idxpkival1.cer69.recouv/*.crl</url>
-   </URLTelechargementCRL>
 
+@@SAE_PKIVALAED_ISSUER@@
+Pour la PKI de validation AED, le pattern du CN de l'issuer du certificat de
+signature du VI.
+La valeur par défaut doit être :
+CN=AC Applications
+
+
+@@SAE_PKINAT_CRL@@
+L'URL du point de distribution des CRL de la PKI nationale.
+La valeur par défaut doit être :
+http://pkipubcrl.cnp.recouv/*.crl
+Sur une plateforme d'intégration/validation, on pourra par exemple se brancher
+plutôt sur la PKI nationale de test.
+
+
+@@SAE_PKINAT_ISSUER@@
+Pour la PKI nationale, le pattern du CN de l'issuer du certificat de
+signature du VI.
+La valeur par défaut doit être :
+CN=AC_APPLI_IGCN_RECOUV_2012
+Sur une plateforme d'intégration/validation, on pourra par exemple mettre la 
+valeur correspondant pour la PKI nationale de test
 
 
 
@@ -50,54 +72,60 @@ Du coup, le point de distribution des CRL de cette PKI est :
 // --------------------------------------------------------------------
 
 Les fichiers suivants sont installés dans @@SAE_HOME@@/
+  ecdesources.xml
+  sae-cassandra-config.properties
   sae-config.properties
   sae-dfce-config.properties
-  ecdesources.xml
   sae-igc-config.xml
-
+  
 
 Les répertoires suivants doivent être créés :
   @@SAE_HOME@@/certificats
-  @@SAE_HOME@@/certificats/ACRacineDeConfiance/
-  @@SAE_HOME@@/certificats/CRL/
-  @@SAE_HOME@@/sae-igcmaj/
-  @@SAE_HOME@@/sae-services-executable/
+  @@SAE_HOME@@/certificats/PKI_NAT
+  @@SAE_HOME@@/certificats/PKI_NAT/ACRacine
+  @@SAE_HOME@@/certificats/PKI_NAT/CRL
+  @@SAE_HOME@@/certificats/PKI_VAL_AED
+  @@SAE_HOME@@/certificats/PKI_VAL_AED/ACRacine
+  @@SAE_HOME@@/certificats/PKI_VAL_AED/CRL
+  @@SAE_HOME@@/dfce-migration/
   @@SAE_HOME@@/sae-dfce-admin-exploit/
-  @@SAE_HOME@@/sae-ordonnanceur/
+  @@SAE_HOME@@/sae-igcmaj/
   @@SAE_HOME@@/sae-lotinstallmaj/
+  @@SAE_HOME@@/sae-ordonnanceur/
+  @@SAE_HOME@@/sae-services-executable/
   
 
+Les fichiers ci-dessous sont installés dans @@SAE_HOME@@/certificats/PKI_NAT/ACRacine
+  AC_RACINE_IGCN_RECOUV_2012.crt
 
-Les fichiers ci-dessous sont installés dans @@SAE_HOME@@/certificats/ACRacineDeConfiance/
+Les fichiers ci-dessous sont installés dans @@SAE_HOME@@/certificats/PKI_VAL_AED/ACRacine
   pseudo_IGCA.crt
 
+Les fichiers ci-dessous sont installés dans @@SAE_HOME@@/dfce-migration/
+  dfce-migration-from-1.0.1-to-1.1.0.jar
 
+Les fichiers ci-dessous sont installés dans @@SAE_HOME@@/sae-dfce-admin-exploit/
+  LifeCycleRule.xml
+  logback-sae-dfce-admin-exploit.xml
+  saeBase.xml
+  sae-dfce-admin-exploit.jar
+ 
 Les fichiers ci-dessous sont installés dans @@SAE_HOME@@/sae-igcmaj/
   sae-igcmaj-exe.jar
   
-
-Les fichiers ci-dessous sont installés dans @@SAE_HOME@@/sae-services-executable/
-  sae-services-executable.jar
-  logback-sae-services-executable.xml
-
-
-Les fichiers ci-dessous sont installés dans @@SAE_HOME@@/sae-dfce-admin-exploit/
-  sae-dfce-admin-exploit.jar
-  logback-sae-dfce-admin-exploit.xml
-  saeBase.xml
-  LifeCycleRule.xml
-
-
 Les fichiers ci-dessous sont installés dans @@SAE_HOME@@/sae-lotinstallmaj/
- sae-lotinstallmaj.jar
- logback-sae-lotinstallmaj.xml
- 
+  logback-sae-lotinstallmaj.xml
+  sae-lotinstallmaj.jar
 
 Les fichiers ci-dessous sont installés dans @@SAE_HOME@@/sae-ordonnanceur/
- sae-ordonnanceur.jar
  logback-sae-ordonnanceur.xml
+ sae-ordonnanceur.jar
  sae-ordonnanceur.sh
 
+Les fichiers ci-dessous sont installés dans @@SAE_HOME@@/sae-services-executable/
+  logback-sae-services-executable.xml
+  sae-services-executable.jar
+ 
 
 
 // --------------------------------------------------------------------
@@ -184,7 +212,7 @@ java -Dlogback.configurationFile=@@SAE_HOME@@/sae-lotinstallmaj/logback-sae-loti
 // Installation du lot SAE-120910 - Mise à niveau de la base Cassandra pour le Keyspace "Docubase" pour DFCE 1.1.0
 java -Dlogback.configurationFile=@@SAE_HOME@@/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar @@SAE_HOME@@/sae-lotinstallmaj/sae-lotinstallmaj.jar @@SAE_HOME@@/sae-config.properties DFCE_110_CASSANDRA
 
-// Installation du lot SAE-120910 - Indexation des métadonnées systèmes dates dans DFCE 1.10
+// Installation du lot SAE-120910 - Indexation des métadonnées systèmes dates dans DFCE 1.1.0
 java -Dlogback.configurationFile=@@SAE_HOME@@/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar @@SAE_HOME@@/sae-lotinstallmaj/sae-lotinstallmaj.jar @@SAE_HOME@@/sae-config.properties DFCE_110_INDEX_DATES
 
 

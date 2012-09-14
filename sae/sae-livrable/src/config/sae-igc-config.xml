@@ -35,16 +35,16 @@
           http://serveur/repertoire/*.crl
       -->
       <URLTelechargementCRL>
-        <url>http://cer69idxpkival1.cer69.recouv/*.crl</url>
+        <url>@@SAE_PKIVALAED_CRL@@</url>
       </URLTelechargementCRL>
       
       <!--
-         Les DN des AC de la PKI autorisees à deliver des certificats applicatifs.
+         Les DN des AC de la PKI autorisees a deliver des certificats applicatifs.
          Ce sont donc les DN possibles pour l'issuer du certificat de signature
          utilise pour signer le VI.
       -->
      <issuers>
-       <issuer>CN=AC Applications</issuer>
+       <issuer>@@SAE_PKIVALAED_ISSUER@@</issuer>
      </issuers>
         
    </IgcConfig>
@@ -60,11 +60,11 @@
       <repertoireCRL>@@SAE_HOME@@/certificats/PKI_NAT/CRL/</repertoireCRL>
       
       <URLTelechargementCRL>
-         <url>http://pkipubcrl.cnp.recouv/*.crl</url>
+         <url>@@SAE_PKINAT_CRL@@</url>
       </URLTelechargementCRL>
 
       <issuers>
-         <issuer>CN=AC_APPLI_IGCN_RECOUV_2012</issuer>
+         <issuer>@@SAE_PKINAT_ISSUER@@</issuer>
       </issuers>
         
    </IgcConfig>
