@@ -203,6 +203,7 @@ public class PingSecureTest {
       contrat.setDescription("contrat pour les TU");
       contrat.setLibelle("CS TESTS UNITAIRES");
       contrat.setViDuree(60L);
+      contrat.setIdPki("CN=IGC/A");
       contratSupport.create(contrat, clock.currentCLock());
    }
 
