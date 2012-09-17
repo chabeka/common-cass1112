@@ -273,6 +273,9 @@ public class Test101Commons {
       valeursAttendues.add("TailleFichier", "56587");
       valeursAttendues.add("IdTraitementMasse", StringUtils.EMPTY);
       valeursAttendues.add("ContratDeService", "CS_ANCIEN_SYSTEME");
+      valeursAttendues.add("DateSignature", StringUtils.EMPTY);
+      valeursAttendues.add("JetonDePreuve", StringUtils.EMPTY);
+      valeursAttendues.add("RUM", StringUtils.EMPTY);
       // valeursAttendues.add("DateArchivage",); // <= à vérifier "à la main"
 
       testCommons.getRechercheTestService().verifieResultatRecherche(
