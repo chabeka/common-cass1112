@@ -26,7 +26,7 @@ public class IgcConfig {
    private IssuerList issuerList;
 
    @XStreamAlias("activerTelechargementCRL")
-   private boolean dlActivated;
+   private boolean dlActivated = true;
 
    /**
     * @return l'identifiant de la PKI
