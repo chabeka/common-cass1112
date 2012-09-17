@@ -215,6 +215,9 @@ java -Dlogback.configurationFile=@@SAE_HOME@@/sae-lotinstallmaj/logback-sae-loti
 // Installation du lot SAE-120910 - Indexation des métadonnées systèmes dates dans DFCE 1.1.0
 java -Dlogback.configurationFile=@@SAE_HOME@@/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar @@SAE_HOME@@/sae-lotinstallmaj/sae-lotinstallmaj.jar @@SAE_HOME@@/sae-config.properties DFCE_110_INDEX_DATES
 
+// Création des nouvelles métadonnées pour la gestion des mandats SEPA
+java -Dlogback.configurationFile=@@SAE_HOME@@/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar @@SAE_HOME@@/sae-lotinstallmaj/sae-lotinstallmaj.jar @@SAE_HOME@@/sae-config.properties META_SEPA
+
 
 
 
