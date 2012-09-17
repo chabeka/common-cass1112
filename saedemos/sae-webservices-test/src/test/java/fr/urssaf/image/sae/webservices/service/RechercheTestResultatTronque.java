@@ -1,18 +1,12 @@
 package fr.urssaf.image.sae.webservices.service;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.rmi.RemoteException;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -39,13 +33,13 @@ public class RechercheTestResultatTronque {
       SecurityConfiguration.cleanSecurityContext();
    }
 
-   @Before
-   public final void init() throws URISyntaxException, RemoteException {
-      URI urlSommaireEcde = new URI(
-            "ecde://cnp69devecde.cer69.recouv/SAE_INTEGRATION/20120828/casdetest/sommaire.xml");
-      masseService.archivageMasse(urlSommaireEcde);
-
-   }
+   // @Before
+   // public final void init() throws URISyntaxException, RemoteException {
+   // URI urlSommaireEcde = new URI(
+   // "ecde://cnp69devecde.cer69.recouv/SAE_INTEGRATION/20120828/casdetest/sommaire.xml");
+   // masseService.archivageMasse(urlSommaireEcde);
+   //
+   // }
 
    @Test
    @Ignore("Resultat non prédictible")
@@ -53,14 +47,14 @@ public class RechercheTestResultatTronque {
 
       AuthenticateUtils.authenticate("ROLE_TOUS;FULL");
 
-      String lucene = "Denomination:\"TEST_10\"";
+      String lucene = "Denomination:\"Test 201-CaptureMasse-OK-Tor-10\"";
       String[] codes = new String[] { "Titre", "Hash" };
 
       RechercheResponseType response = service.recherche(lucene, codes);
 
       ResultatRechercheType[] resultats = response.getResultats().getResultat();
 
-      Assert.assertEquals("on s'attend à avoir 249 documents", 249,
+      Assert.assertEquals("on s'attend à avoir 200 documents", 200,
             resultats.length);
 
       Assert.assertTrue("le resultat doit etre tronqué", response
