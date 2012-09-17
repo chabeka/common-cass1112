@@ -33,7 +33,7 @@ public class BootStrap {
     */
    public static void main(String[] args) throws IOException {
 
-      if (args == null || args.length != 6) {
+      if (args == null || args.length != 7) {
          throw new RuntimeException("Le nombre d'arguments est incorrect");
       }
 

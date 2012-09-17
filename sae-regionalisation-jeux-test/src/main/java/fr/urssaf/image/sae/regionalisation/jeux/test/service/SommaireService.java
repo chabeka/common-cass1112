@@ -149,11 +149,13 @@ public final class SommaireService {
                      nce, cog);
 
          if (i <= nbATraiter) {
-            createRecord(nce, cog, stmtCreateCriteres, stmtCreateMetas, writer);
+            createRecord(nce, cog, stmtCreateCriteres, stmtCreateMetas,
+                  donneesWriter);
          } else if (i <= nbATraiter + nbNonTraite) {
             cog = calculRand(0, 999, FORMAT_COG);
             nce = calculRand(0L, 999999999999999999L, FORMAT_NCE);
-            createRecord(nce, cog, stmtCreateCriteres, stmtCreateMetas, writer);
+            createRecord(nce, cog, stmtCreateCriteres, stmtCreateMetas,
+                  donneesWriter);
          }
 
          if (i % 200 == 0) {

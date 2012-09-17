@@ -116,7 +116,7 @@
                      <transformers>
                         <transformer
                            implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                           <mainClass>fr.urssaf.image.sae.demos.regionalisation.jeux.test.BootStrap</mainClass>
+                           <mainClass>fr.urssaf.image.sae.regionalisation.jeux.test.BootStrap</mainClass>
                         </transformer>
                         <transformer
                            implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
