@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.docubase.toolkit.model.document.Document;
-import net.docubase.toolkit.model.search.SearchQuery;
 import net.docubase.toolkit.model.search.SearchResult;
-import net.docubase.toolkit.model.search.impl.QueryImpl;
+import net.docubase.toolkit.model.search.SortedSearchQuery;
+import net.docubase.toolkit.model.search.impl.SortedQueryImpl;
 import net.docubase.toolkit.service.ServiceProvider;
 
 import org.slf4j.Logger;
@@ -58,8 +58,9 @@ public class SearchingServiceImpl extends AbstractServices implements
       final List<StorageDocument> storageDocuments = new ArrayList<StorageDocument>();
       try {
 
-         SearchQuery paramSearchQuery = new QueryImpl(luceneCriteria
-               .getLuceneQuery(), getBaseDFCE());
+         SortedSearchQuery paramSearchQuery = new SortedQueryImpl(
+               luceneCriteria.getLuceneQuery(), luceneCriteria.getLimit(), 0,
+               getBaseDFCE());
          SearchResult searchResult = getDfceService().getSearchService()
                .search(paramSearchQuery);
 
