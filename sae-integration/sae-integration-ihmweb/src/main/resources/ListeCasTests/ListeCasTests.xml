@@ -512,6 +512,16 @@
          </CasTest>
          
          <CasTest>
+            <id>212</id>
+            <code>212-CaptureMasse-Pile-OK-ECDE-local</code>
+            <description>
+               Ce test permet de vérifier que la capture de masse en mode « tout ou rien » avec gestion des traitements dans une pile fonctionne correctement en ne prenant que les demandes de l'ecde local. 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 212-CaptureMasse-Pile-OK-ECDE-local-1"</luceneExemple>
+         </CasTest>
+         
+         <CasTest>
             <id>214</id>
             <code>214-CaptureMasse-OK-HashMajMin</code>
             <description>
@@ -520,7 +530,37 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 214-CaptureMasse-OK-HashMajMin"</luceneExemple>
          </CasTest>
-
+         
+         <CasTest>
+            <id>215</id>
+            <code>215-CaptureMasse-OK-Tor-100000</code>
+            <description>
+               On vérifie que la capture de masse fonctionne correctement lorsque l’on souhaite intégrer 100000 documents – test de volume
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 215-CaptureMasse-OK-Tor-100000"</luceneExemple>
+         </CasTest>
+         
+         <CasTest>
+            <id>216</id>
+            <code>216-CaptureMasse-OK-Tor-300000</code>
+            <description>
+               On vérifie que la capture de masse fonctionne correctement lorsque l’on souhaite intégrer 300000 documents – test de volume
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 216-CaptureMasse-OK-Tor-300000"</luceneExemple>
+         </CasTest>
+         
+         <CasTest>
+            <id>217</id>
+            <code>217-CaptureMasse-OK-Tor-500000</code>
+            <description>
+               On vérifie que la capture de masse fonctionne correctement lorsque l’on souhaite intégrer 500000 documents – test de volume
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 217-CaptureMasse-OK-Tor-500000"</luceneExemple>
+         </CasTest>
+         
          <CasTest>
             <id>250</id>
             <code>250-CaptureMasse-KO-SansAuthentification</code>
@@ -729,6 +769,26 @@
             </description>
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 275-CaptureMasse-KO-AutreModeToutOuRien-Inconnu"</luceneExemple>
+         </CasTest>
+         
+         <CasTest>
+            <id>277</id>
+            <code>277-CaptureMasse-Pile-KO-ExeIntrouvable</code>
+            <description>
+               Vérifie que la capture de masse en mode « tout ou rien » avec gestion des traitements dans une pile logue bien un dysfonctionnement dans le log de l’ordonnanceur quand l’exécutable sae-services-executable est introuvable.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 277-CaptureMasse-Pile-KO-ExeIntrouvable"</luceneExemple>
+         </CasTest>
+         
+         <CasTest>
+            <id>278</id>
+            <code>278-CaptureMasse-Pile-KO-CassandraKO</code>
+            <description>
+               Vérifie que la capture de masse en mode « tout ou rien » avec gestion des traitements dans une pile renvoie bien une erreur lorsqu’on essaie de stocker dans la pile alors que cassandra est arrêtée.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 278-CaptureMasse-Pile-KO-CassandraKO"</luceneExemple>
          </CasTest>
          
          <CasTest>

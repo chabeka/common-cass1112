@@ -194,5 +194,32 @@ public class EcdeService {
       
    }
    
+   
+   /**
+    * Construit une URL ECDE pour une source donnée<br>
+    * Objectif : générer une url ECDE pour une source donnée
+    * 
+    * @param apresDns ce qu'il faut mettre après la partie DNS de l'ECDE
+    * @param index la position de la sourc e souhaitée
+    * @return
+    */
+   public String construitUrlEcde(String apresDns, int index) {
+      
+      String prefixe = "ecde://";
+      
+      List<EcdeSource> listeSources = ecdeSources.getSources();
+      
+      String dns = listeSources.get(index).getHost();
+      
+      if (!apresDns.startsWith("/")) {
+         apresDns = '/' + apresDns;
+      }
+      
+      String result = prefixe + dns + apresDns;
+      
+      return result;
+      
+   }
+   
 
 }

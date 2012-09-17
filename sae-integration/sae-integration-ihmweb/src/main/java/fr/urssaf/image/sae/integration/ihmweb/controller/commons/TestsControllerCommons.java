@@ -8,6 +8,7 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.CasTest;
 import fr.urssaf.image.sae.integration.ihmweb.service.ecde.EcdeService;
 import fr.urssaf.image.sae.integration.ihmweb.service.referentiels.ReferentielCasTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.referentiels.ReferentielMetadonneesService;
+import fr.urssaf.image.sae.integration.ihmweb.service.tests.CaptureMasseTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.CaptureUnitaireTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.ConsultationTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.RechercheTestService;
@@ -30,6 +31,9 @@ public class TestsControllerCommons {
    
    @Autowired
    private CaptureUnitaireTestService captUnitTestServ;
+   
+   @Autowired
+   private CaptureMasseTestService captMasseTestServ;
    
    @Autowired
    private RechercheTestService rechTestServ;
@@ -79,6 +83,18 @@ public class TestsControllerCommons {
     */
    public final CaptureUnitaireTestService getCaptureUnitaireTestService() {
       return captUnitTestServ;
+   }
+   
+   
+   /**
+    * Service des tests de l'opération "capture de masse" du service web
+    * SaeService
+    * 
+    * @return Service des tests de l'opération "capture de masse" du service web
+    *         SaeService
+    */
+   public final CaptureMasseTestService getCaptureMasseTestService() {
+      return captMasseTestServ;
    }
    
    /**
