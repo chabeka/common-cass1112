@@ -130,9 +130,6 @@ public class IgcDownloadServiceImplTest {
 
       service.telechargeCRLs(igcConfigs);
 
-      assertEquals("erreur sur le nombre d'urls à télécharger", Integer
-            .valueOf(0), crlsNumber);
-
    }
 
    @Test(expected = IgcDownloadException.class)
