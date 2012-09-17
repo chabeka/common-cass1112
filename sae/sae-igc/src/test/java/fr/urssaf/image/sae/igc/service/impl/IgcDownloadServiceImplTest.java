@@ -128,7 +128,7 @@ public class IgcDownloadServiceImplTest {
 
       igcConfigs.setIgcConfigs(Arrays.asList(new IgcConfig[] { igcConfig }));
 
-      Integer crlsNumber = service.telechargeCRLs(igcConfigs);
+      service.telechargeCRLs(igcConfigs);
 
       assertEquals("erreur sur le nombre d'urls à télécharger", Integer
             .valueOf(0), crlsNumber);
