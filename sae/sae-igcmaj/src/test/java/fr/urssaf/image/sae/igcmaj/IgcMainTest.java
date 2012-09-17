@@ -73,6 +73,7 @@ public class IgcMainTest {
          newXML.addProperty("IgcConfig.certifACRacine", acRacines);
          newXML.addProperty("IgcConfig.repertoireCRL", crls);
          newXML.addProperty("IgcConfig.issuers.issuer", "CN=IGC/A");
+         newXML.addProperty("IgcConfig.activerTelechargementCRL", true);
 
          for (String url : urls) {
 
