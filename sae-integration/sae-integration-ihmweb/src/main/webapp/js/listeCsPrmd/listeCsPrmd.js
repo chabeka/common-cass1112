@@ -172,8 +172,8 @@ function csPopup(csCode){
         new Ext.Window({           
            html: tplCsInstancie,
            shadow:false,
-           width:800,
-           height:400,
+           width:1300,
+           height:1000,
            autoScroll:true,
            title:'Détail du contrat de service :'+csCode
         }).show();
