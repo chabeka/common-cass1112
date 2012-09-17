@@ -70,4 +70,12 @@ public class SaeDroitServiceSkipImpl implements SaeDroitService {
       return saeDroits;
    }
 
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public ServiceContract getServiceContract(String idClient) {
+      return null;
+   }
+
 }

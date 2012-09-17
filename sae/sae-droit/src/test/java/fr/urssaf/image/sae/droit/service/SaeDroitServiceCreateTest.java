@@ -72,7 +72,8 @@ public class SaeDroitServiceCreateTest {
       serviceContract.setDescription("description");
       serviceContract.setLibelle("libellé");
       serviceContract.setViDuree(Long.valueOf(60));
-
+      serviceContract.setIdPki("pki 1");
+      serviceContract.setVerifNommage(false);
       contratSupport.create(serviceContract, clockSupport.currentCLock());
 
       List<Pagm> pagms = new ArrayList<Pagm>();
@@ -94,6 +95,8 @@ public class SaeDroitServiceCreateTest {
       serviceContract.setCodeClient("codeClient");
       serviceContract.setDescription("description");
       serviceContract.setLibelle("libellé");
+      serviceContract.setIdPki("pki 1");
+      serviceContract.setVerifNommage(false);
       serviceContract.setViDuree(Long.valueOf(60));
 
       List<Pagm> pagms = new ArrayList<Pagm>();
@@ -117,6 +120,8 @@ public class SaeDroitServiceCreateTest {
       serviceContract.setDescription("description");
       serviceContract.setLibelle("libellé");
       serviceContract.setViDuree(Long.valueOf(60));
+      serviceContract.setIdPki("pki 1");
+      serviceContract.setVerifNommage(false);
 
       List<Pagm> pagms = new ArrayList<Pagm>();
       Pagm pagm = new Pagm();
@@ -137,6 +142,8 @@ public class SaeDroitServiceCreateTest {
       serviceContract.setDescription("description");
       serviceContract.setLibelle("libellé");
       serviceContract.setViDuree(Long.valueOf(60));
+      serviceContract.setIdPki("pki 1");
+      serviceContract.setVerifNommage(false);
 
       List<Pagm> pagms = new ArrayList<Pagm>();
       Pagm pagm = new Pagm();
@@ -162,6 +169,8 @@ public class SaeDroitServiceCreateTest {
       serviceContract.setDescription("description");
       serviceContract.setLibelle("libellé");
       serviceContract.setViDuree(Long.valueOf(60));
+      serviceContract.setIdPki("pki 1");
+      serviceContract.setVerifNommage(false);
 
       List<Pagm> pagms = new ArrayList<Pagm>();
       Pagm pagm = new Pagm();

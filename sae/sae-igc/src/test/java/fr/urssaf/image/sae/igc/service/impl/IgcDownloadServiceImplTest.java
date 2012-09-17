@@ -82,6 +82,7 @@ public class IgcDownloadServiceImplTest {
       IgcConfigs igcConfigs = new IgcConfigs();
       IgcConfig igcConfig = new IgcConfig();
       igcConfig.setCrlsRep(CRL.getAbsolutePath());
+      igcConfig.setDlActivated(true);
 
       List<URL> urls = new ArrayList<URL>();
       urls.add(download_exist);
@@ -108,6 +109,32 @@ public class IgcDownloadServiceImplTest {
 
    }
 
+   @Test
+   public void telechargeCRLs_success_zero_dl() throws IgcDownloadException {
+
+      IgcConfigs igcConfigs = new IgcConfigs();
+      IgcConfig igcConfig = new IgcConfig();
+      igcConfig.setCrlsRep(CRL.getAbsolutePath());
+      igcConfig.setDlActivated(false);
+
+      List<URL> urls = new ArrayList<URL>();
+      urls.add(download_exist);
+
+      URLList urlList = new URLList();
+      urlList.setUrls(urls);
+      igcConfig.setUrlList(urlList);
+
+      igcConfig.setPkiIdent("PKI_TEST");
+
+      igcConfigs.setIgcConfigs(Arrays.asList(new IgcConfig[] { igcConfig }));
+
+      Integer crlsNumber = service.telechargeCRLs(igcConfigs);
+
+      assertEquals("erreur sur le nombre d'urls à télécharger", Integer
+            .valueOf(0), crlsNumber);
+
+   }
+
    @Test(expected = IgcDownloadException.class)
    public void telechargeCRLs_failure() throws IgcDownloadException,
          MalformedURLException {
@@ -116,6 +143,7 @@ public class IgcDownloadServiceImplTest {
 
       IgcConfig igcConfig = new IgcConfig();
       igcConfig.setCrlsRep(CRL.getAbsolutePath());
+      igcConfig.setDlActivated(true);
 
       List<URL> urls = new ArrayList<URL>();
       urls.add(new URL("http://download.oracle.com/javase/6/docs/api/"));

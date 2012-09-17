@@ -22,6 +22,8 @@ public interface IgcConfigService {
 
    String URLS_CRL_REQUIRED = "Il faut spécifier au moins une URL de téléchargement des CRL dans le fichier de configuration ${0} ";
 
+   String ID_PKI_REQUIRED = "L'identifiant de la PKI est à renseigner dans le fichier de configuration ${0}";
+
    /**
     * Renvoie la configuration des éléments de l'IGC
     * 

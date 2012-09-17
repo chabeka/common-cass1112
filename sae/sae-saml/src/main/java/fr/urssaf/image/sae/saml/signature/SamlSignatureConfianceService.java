@@ -61,7 +61,7 @@ public final class SamlSignatureConfianceService {
     * 
     * 
     */
-   public static String verifierConfiance(
+   public static X509Certificate verifierConfiance(
          SamlSignatureVerifParams signVerifParams,
          List<java.security.cert.X509Certificate> chaineCertif)
          throws SamlSignatureValidateException {
@@ -115,7 +115,7 @@ public final class SamlSignatureConfianceService {
             TrustAnchor anchor = result.getTrustAnchor();
             X509Certificate certificate = anchor.getTrustedCert();
 
-            return signVerifParams.getCertifsACRacine().get(certificate);
+            return certificate;
 
          } catch (CertPathValidatorException e) {
 

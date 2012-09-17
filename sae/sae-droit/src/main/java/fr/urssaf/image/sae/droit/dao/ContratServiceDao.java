@@ -3,6 +3,7 @@
  */
 package fr.urssaf.image.sae.droit.dao;
 
+import me.prettyprint.cassandra.serializers.BooleanSerializer;
 import me.prettyprint.cassandra.serializers.LongSerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
@@ -40,6 +41,15 @@ public class ContratServiceDao {
 
    /** description du contrat de service */
    public static final String CS_DESCRIPTION = "description";
+
+   /** CN de la pki attendue */
+   public static final String CS_PKI = "pki";
+
+   /** CN du certificat client attendu */
+   public static final String CS_CERT = "cert";
+
+   /** Vérification controle de nommage */
+   public static final String CS_VERIF_NOMMAGE = "verifNommage";
 
    /**
     * 
@@ -85,6 +95,18 @@ public class ContratServiceDao {
          Serializer<String> valueSerializer, long clock) {
 
       HColumn<String, String> column = HFactory.createColumn(colName, value,
+            nameSerializer, valueSerializer);
+
+      column.setClock(clock);
+      updater.setColumn(column);
+
+   }
+
+   private void addColumnBoolean(ColumnFamilyUpdater<String, String> updater,
+         String colName, boolean value, Serializer<String> nameSerializer,
+         Serializer<Boolean> valueSerializer, long clock) {
+
+      HColumn<String, Boolean> column = HFactory.createColumn(colName, value,
             nameSerializer, valueSerializer);
 
       column.setClock(clock);
@@ -155,6 +177,60 @@ public class ContratServiceDao {
 
       addColumn(updater, CS_DESCRIPTION, value, StringSerializer.get(),
             StringSerializer.get(), clock);
+
+   }
+
+   /**
+    * ajoute une colonne {@value #CS_PKI}
+    * 
+    * @param updater
+    *           updater de <code>DroitContratService</code>
+    * @param value
+    *           valeur de la colonne
+    * @param clock
+    *           horloge de la colonne
+    */
+   public final void ecritIdPki(ColumnFamilyUpdater<String, String> updater,
+         String value, long clock) {
+
+      addColumn(updater, CS_PKI, value, StringSerializer.get(),
+            StringSerializer.get(), clock);
+
+   }
+
+   /**
+    * ajoute une colonne {@value #CS_CERT}
+    * 
+    * @param updater
+    *           updater de <code>DroitContratService</code>
+    * @param value
+    *           valeur de la colonne
+    * @param clock
+    *           horloge de la colonne
+    */
+   public final void ecritCert(ColumnFamilyUpdater<String, String> updater,
+         String value, long clock) {
+
+      addColumn(updater, CS_CERT, value, StringSerializer.get(),
+            StringSerializer.get(), clock);
+
+   }
+
+   /**
+    * ajoute une colonne {@value #CS_CERT}
+    * 
+    * @param updater
+    *           updater de <code>DroitContratService</code>
+    * @param value
+    *           valeur de la colonne
+    * @param clock
+    *           horloge de la colonne
+    */
+   public final void ecritFlagControlNommage(
+         ColumnFamilyUpdater<String, String> updater, boolean value, long clock) {
+
+      addColumnBoolean(updater, CS_VERIF_NOMMAGE, value,
+            StringSerializer.get(), BooleanSerializer.get(), clock);
 
    }
 

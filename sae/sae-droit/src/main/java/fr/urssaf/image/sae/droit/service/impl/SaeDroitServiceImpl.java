@@ -274,9 +274,11 @@ public class SaeDroitServiceImpl implements SaeDroitService {
                      "{} - Vérification que le contrat de service {} n'est pas préexistant",
                      TRC_CREATE, serviceContract.getCodeClient());
          checkContratServiceInexistant(serviceContract);
-         LOGGER.debug("{} - Vérification que le Pagm est inexistant", TRC_CREATE);
+         LOGGER.debug("{} - Vérification que le Pagm est inexistant",
+               TRC_CREATE);
          checkPagmInexistant(serviceContract);
-         LOGGER.debug("{} - vérification que les pagmas et pagmps existent", TRC_CREATE);
+         LOGGER.debug("{} - vérification que les pagmas et pagmps existent",
+               TRC_CREATE);
          checkPagmsExist(pagms);
 
          contratSupport.create(serviceContract, clockSupport.currentCLock());
@@ -491,6 +493,19 @@ public class SaeDroitServiceImpl implements SaeDroitService {
                   + " n'a pas été trouvé "
                   + "dans la famille de colonne DroitPagmp", e);
          }
+      }
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public ServiceContract getServiceContract(String idClient) {
+      try {
+         return contratsCache.getUnchecked(idClient);
+      } catch (InvalidCacheLoadException e) {
+         throw new ContratServiceReferenceException(MESSAGE_CONTRAT + idClient
+               + "n'existe pas", e);
       }
    }
 }

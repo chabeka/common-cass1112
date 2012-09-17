@@ -5,6 +5,7 @@ import org.w3c.dom.Element;
 
 import fr.urssaf.image.sae.saml.exception.SamlFormatException;
 import fr.urssaf.image.sae.saml.exception.signature.SamlSignatureException;
+import fr.urssaf.image.sae.saml.modele.SignatureVerificationResult;
 import fr.urssaf.image.sae.saml.opensaml.SamlXML;
 import fr.urssaf.image.sae.saml.opensaml.service.SamlAssertionService;
 import fr.urssaf.image.sae.saml.opensaml.signature.SamlSignatureValidateService;
@@ -35,10 +36,14 @@ public class SamlAssertionVerificationService {
 
    /**
     * Méthode de vérification du corps et de la signature d'un jeton SAML
+    * 
     * @param assertionSaml
     *           L'assertion SAML à vérifier
     * @param signVerifParams
-    *           Les éléments nécessaires à la vérification de la signature de l'assertion
+    *           Les éléments nécessaires à la vérification de la signature de
+    *           l'assertion
+    * @return les certificats de la PKI et le certificat client intervenants
+    *         dans la vérification de la signature
     * @throws SamlFormatException
     *            Lorsque le format de l’assertion est incorrecte par rapport
     *            au(x) schéma(s) XSD
@@ -46,12 +51,9 @@ public class SamlAssertionVerificationService {
     *            Lorsque la signature électronique de l'assertion n'est pas
     *            valide
     */
-   public final void verifierAssertion(
-         Element assertionSaml,
-         SamlSignatureVerifParams signVerifParams)
-      throws 
-         SamlFormatException, 
-         SamlSignatureException {
+   public final SignatureVerificationResult verifierAssertion(
+         Element assertionSaml, SamlSignatureVerifParams signVerifParams)
+         throws SamlFormatException, SamlSignatureException {
 
       // Création de l'objet Assertion du framework opensaml à partir
       // de l'objet Element
@@ -60,9 +62,9 @@ public class SamlAssertionVerificationService {
       // Vérification du format de l'assertion par rapport à ses schémas XSD
       // (valeurs obligatoires, ...)
       assertionService.validate(assertion);
-      
+
       // Vérification de la signature
-      signValService.verifierSignature(assertion,signVerifParams);
+      return signValService.verifierSignature(assertion, signVerifParams);
 
    }
 

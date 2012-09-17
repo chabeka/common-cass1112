@@ -21,6 +21,18 @@ public class ServiceContract {
    /** description du contrat de service */
    private String description;
 
+   /** identifiant de la PKI attendue lors de la vérification des droits */
+   private String idPki;
+
+   /** flag indiquant si la vérification de nommage doit être réalisée ou non */
+   private boolean verifNommage;
+
+   /**
+    * identifiant du certificat client attendu lors de la vérification des
+    * droits
+    */
+   private String idCertifClient;
+
    /**
     * @return le code intelligible du CS
     */
@@ -79,6 +91,55 @@ public class ServiceContract {
     */
    public final void setDescription(String description) {
       this.description = description;
+   }
+
+   /**
+    * @return l'identifiant de la PKI attendue lors de la vérification des
+    *         droits
+    */
+   public final String getIdPki() {
+      return idPki;
+   }
+
+   /**
+    * @param idPki
+    *           l'identifiant de la PKI attendue lors de la vérification des
+    *           droits
+    */
+   public final void setIdPki(String idPki) {
+      this.idPki = idPki;
+   }
+
+   /**
+    * @return l'identifiant du certificat client attendu lors de la vérification
+    *         des droits
+    */
+   public final String getIdCertifClient() {
+      return idCertifClient;
+   }
+
+   /**
+    * @param idCertifClient
+    *           identifiant du certificat client attendu lors de la vérification
+    *           des droits
+    */
+   public final void setIdCertifClient(String idCertifClient) {
+      this.idCertifClient = idCertifClient;
+   }
+
+   /**
+    * @return le flag de vérification de nommage
+    */
+   public final boolean isVerifNommage() {
+      return verifNommage;
+   }
+
+   /**
+    * @param verifNommage
+    *           le flag de vérification de nommage
+    */
+   public final void setVerifNommage(boolean verifNommage) {
+      this.verifNommage = verifNommage;
    }
 
    /**

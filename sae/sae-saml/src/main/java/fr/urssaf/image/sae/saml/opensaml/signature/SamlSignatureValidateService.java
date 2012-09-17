@@ -28,6 +28,7 @@ import fr.urssaf.image.sae.saml.exception.signature.validate.SamlSignatureKeyInf
 import fr.urssaf.image.sae.saml.exception.signature.validate.SamlSignatureNonConformeAuProfilException;
 import fr.urssaf.image.sae.saml.exception.signature.validate.SamlSignatureNotFoundException;
 import fr.urssaf.image.sae.saml.exception.signature.validate.SamlSignatureValidateException;
+import fr.urssaf.image.sae.saml.modele.SignatureVerificationResult;
 import fr.urssaf.image.sae.saml.params.SamlSignatureVerifParams;
 import fr.urssaf.image.sae.saml.signature.SamlSignatureConfianceService;
 
@@ -47,11 +48,13 @@ public class SamlSignatureValidateService {
     * @param signVerifParams
     *           Les éléments nécessaires à la vérification de la signature de
     *           l'assertion
+    * @return un objet représentant les certificats intervenants dans la
+    *         vérification de la signature
     * @throws SamlSignatureValidateException
     *            la signature est invalide
     */
-   public final void verifierSignature(Assertion assertion,
-         SamlSignatureVerifParams signVerifParams)
+   public final SignatureVerificationResult verifierSignature(
+         Assertion assertion, SamlSignatureVerifParams signVerifParams)
          throws SamlSignatureValidateException {
 
       // Vérifications des paramètres d'entrée
@@ -99,11 +102,21 @@ public class SamlSignatureValidateService {
       verifierCryptographie(signature, publicKeyNatif);
 
       // Vérifications de la confiance dans le certificat de signature
-      String idPki = verifierConfiance(signature, signVerifParams);
+      java.security.cert.X509Certificate pki = verifierConfiance(signature,
+            signVerifParams);
+      String idPki = signVerifParams.getCertifsACRacine().get(pki);
+
       String issuer = publicKeyNatif.getIssuerX500Principal().getName(
             X500Principal.RFC2253);
 
       verifierIssuerPki(idPki, signVerifParams, issuer);
+
+      // création de l'objet de retour
+      SignatureVerificationResult result = new SignatureVerificationResult();
+      result.setCertificat(publicKeyNatif);
+      result.setPki(pki);
+
+      return result;
 
    }
 
@@ -235,8 +248,8 @@ public class SamlSignatureValidateService {
 
    }
 
-   private String verifierConfiance(Signature signature,
-         SamlSignatureVerifParams signVerifParams)
+   private java.security.cert.X509Certificate verifierConfiance(
+         Signature signature, SamlSignatureVerifParams signVerifParams)
          throws SamlSignatureValidateException {
 
       // Vérifications des paramètres d'entrée

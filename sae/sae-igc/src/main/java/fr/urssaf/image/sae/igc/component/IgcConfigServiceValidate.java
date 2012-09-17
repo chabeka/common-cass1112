@@ -133,6 +133,12 @@ public class IgcConfigServiceValidate {
             throw new IgcConfigException(TextUtils.getMessage(
                   IgcConfigService.URLS_CRL_REQUIRED, pathConfig));
          }
+
+         if (StringUtils.isEmpty(igcConfig.getPkiIdent())) {
+
+            throw new IgcConfigException(TextUtils.getMessage(
+                  IgcConfigService.ID_PKI_REQUIRED, pathConfig));
+         }
       }
    }
 

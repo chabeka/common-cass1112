@@ -33,6 +33,8 @@ public class ContratServiceDatasSupportTest {
 
    private static final Long VI_DUREE = Long.valueOf(61);
 
+   private static final String ID_PKI = "id_pki";
+
    @Autowired
    private CassandraServerBean cassandraServer;
 
@@ -52,6 +54,8 @@ public class ContratServiceDatasSupportTest {
       contract.setDescription(DESCRIPTION1);
       contract.setLibelle(LIBELLE1);
       contract.setViDuree(VI_DUREE);
+      contract.setIdPki(ID_PKI);
+      contract.setVerifNommage(false);
 
       support.create(contract, new Date().getTime());
 
@@ -66,6 +70,10 @@ public class ContratServiceDatasSupportTest {
             res.getDescription());
       Assert.assertEquals("la durée doit être correcte", VI_DUREE, res
             .getViDuree());
+      Assert.assertEquals("l'identifiant de la pki doit être correct", ID_PKI,
+            res.getIdPki());
+      Assert.assertFalse("la vérification doit être désactivée", res
+            .isVerifNommage());
 
    }
 
@@ -76,6 +84,8 @@ public class ContratServiceDatasSupportTest {
       contract.setDescription(DESCRIPTION1);
       contract.setLibelle(LIBELLE1);
       contract.setViDuree(VI_DUREE);
+      contract.setIdPki(ID_PKI);
+      contract.setVerifNommage(false);
 
       support.create(contract, new Date().getTime());
 
@@ -94,6 +104,8 @@ public class ContratServiceDatasSupportTest {
       contract.setDescription(DESCRIPTION1);
       contract.setLibelle(LIBELLE1);
       contract.setViDuree(VI_DUREE);
+      contract.setIdPki("pki 1");
+      contract.setVerifNommage(false);
 
       support.create(contract, new Date().getTime());
 
@@ -102,6 +114,8 @@ public class ContratServiceDatasSupportTest {
       contract.setDescription("description2");
       contract.setLibelle("libelle2");
       contract.setViDuree(Long.valueOf(62));
+      contract.setIdPki("pki 1");
+      contract.setVerifNommage(false);
 
       support.create(contract, new Date().getTime());
 
@@ -110,6 +124,8 @@ public class ContratServiceDatasSupportTest {
       contract.setDescription("description3");
       contract.setLibelle("libelle3");
       contract.setViDuree(Long.valueOf(63));
+      contract.setIdPki("pki 1");
+      contract.setVerifNommage(false);
 
       support.create(contract, new Date().getTime());
 

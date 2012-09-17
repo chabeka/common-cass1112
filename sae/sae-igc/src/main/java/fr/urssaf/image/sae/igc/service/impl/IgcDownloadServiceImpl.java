@@ -36,26 +36,31 @@ public class IgcDownloadServiceImpl implements IgcDownloadService {
       List<Exception> exceptions = new ArrayList<Exception>();
       for (IgcConfig igcConfig : igcConfigs.getIgcConfigs()) {
 
-         try {
+         if (igcConfig.isDlActivated()) {
 
-            for (URL url : igcConfig.getUrlList().getUrls()) {
+            try {
 
-               int downloads = this.download(url, igcConfig.getCrlsRep());
+               for (URL url : igcConfig.getUrlList().getUrls()) {
 
-               LOG
-                     .info(
-                           "Mise a jour des CRL pour la PKI {} : {} CRL telechargees",
-                           igcConfig.getPkiIdent(), downloads);
+                  int downloads = this.download(url, igcConfig.getCrlsRep());
 
+                  LOG
+                        .info(
+                              "Mise a jour des CRL pour la PKI {} : {} CRL telechargees",
+                              igcConfig.getPkiIdent(), downloads);
+
+               }
+
+            } catch (IOException e) {
+               exceptions.add(e);
             }
-
-         } catch (IOException e) {
-            exceptions.add(e);
+         } else {
+            LOG.info("mise à jour des CRL désactivée pour la PKI {}", igcConfig
+                  .getPkiIdent());
          }
       }
 
       if (!CollectionUtils.isEmpty(exceptions)) {
-         // TODO FBON - Comment retourner l'ensemble des exceptions ?
          throw new IgcDownloadException(exceptions.get(0));
       }
 

@@ -272,6 +272,8 @@ public class ContratServiceSupportTest {
       contract.setDescription("code contrat numero 1");
       contract.setLibelle("libelle du code client 1");
       contract.setViDuree(Long.valueOf(120L));
+      contract.setIdPki("pki 1");
+      contract.setVerifNommage(false);
       contratSupport.create(contract, new Date().getTime());
 
       contract = new ServiceContract();
@@ -279,6 +281,8 @@ public class ContratServiceSupportTest {
       contract.setDescription("code contrat numero 2");
       contract.setLibelle("libelle du code client 2");
       contract.setViDuree(Long.valueOf(240L));
+      contract.setIdPki("pki 2");
+      contract.setVerifNommage(false);
       contratSupport.create(contract, new Date().getTime());
    }
 

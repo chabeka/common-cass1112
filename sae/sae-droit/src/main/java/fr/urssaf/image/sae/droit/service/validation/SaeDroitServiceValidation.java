@@ -36,6 +36,9 @@ public class SaeDroitServiceValidation {
    private static final String CHECK_METHOD = "execution(boolean fr.urssaf.image.sae.droit.service.SaeDroitService.contratServiceExists(*))"
          + "&& args(idClient)";
 
+   private static final String GET_METHOD = "execution(fr.urssaf.image.sae.droit.dao.model.ServiceContract fr.urssaf.image.sae.droit.service.SaeDroitService.getServiceContract(*))"
+         + "&& args(idClient)";
+
    /**
     * Validation de la méthode loadSaeDroits(String, List)
     * 
@@ -101,6 +104,17 @@ public class SaeDroitServiceValidation {
                ARG_REQUIRED, "liste des pagms"));
       }
 
+      if (StringUtils.isEmpty(contrat.getIdPki())) {
+         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
+               ARG_REQUIRED, "le nom de la PKI"));
+      }
+
+      if (StringUtils.isEmpty(contrat.getIdCertifClient())
+            && contrat.isVerifNommage()) {
+         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
+               ARG_REQUIRED, "le certificat client"));
+      }
+
    }
 
    /**
@@ -112,6 +126,21 @@ public class SaeDroitServiceValidation {
     */
    @Before(CHECK_METHOD)
    public final void checkExists(String idClient) {
+
+      if (StringUtils.isEmpty(idClient)) {
+         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
+               ARG_REQUIRED, "le code client"));
+      }
+   }
+
+   /**
+    * Validation de la méthode getServiceContract(idClient)
+    * 
+    * @param idClient
+    *           contrat de service
+    */
+   @Before(GET_METHOD)
+   public final void checkGetServiceContract(String idClient) {
 
       if (StringUtils.isEmpty(idClient)) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(

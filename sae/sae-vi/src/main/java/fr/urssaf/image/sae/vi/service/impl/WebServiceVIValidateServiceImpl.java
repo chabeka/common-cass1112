@@ -1,9 +1,14 @@
 package fr.urssaf.image.sae.vi.service.impl;
 
 import java.net.URI;
+import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.security.auth.x500.X500Principal;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.text.StrSubstitutor;
@@ -13,12 +18,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Element;
 
+import fr.urssaf.image.sae.droit.dao.model.ServiceContract;
 import fr.urssaf.image.sae.saml.data.SamlAssertionData;
 import fr.urssaf.image.sae.saml.exception.SamlFormatException;
 import fr.urssaf.image.sae.saml.exception.signature.SamlSignatureException;
+import fr.urssaf.image.sae.saml.modele.SignatureVerificationResult;
 import fr.urssaf.image.sae.saml.params.SamlSignatureVerifParams;
 import fr.urssaf.image.sae.saml.service.SamlAssertionVerificationService;
 import fr.urssaf.image.sae.vi.exception.VIAppliClientException;
+import fr.urssaf.image.sae.vi.exception.VICertificatException;
 import fr.urssaf.image.sae.vi.exception.VIFormatTechniqueException;
 import fr.urssaf.image.sae.vi.exception.VIInvalideException;
 import fr.urssaf.image.sae.vi.exception.VINivAuthException;
@@ -38,6 +46,10 @@ import fr.urssaf.image.sae.vi.service.WebServiceVIValidateService;
 public class WebServiceVIValidateServiceImpl implements
       WebServiceVIValidateService {
 
+   private static final String ERREUR_PKI = "Le certificat utilisé pour signer le VI n'est pas "
+         + "issu de l'IGC définie dans le Contrat de Service";
+   private static final String ERREUR_CERT = "Le nom du certificat utilisé pour signer le VI ne "
+         + "correspond pas au nom défini dans le Contrat de Service";
    private static final String DATE_PATTERN = "dd/MM/yyyy HH:mm:ss";
    private static final Logger LOGGER = LoggerFactory
          .getLogger(WebServiceVIValidateServiceImpl.class);
@@ -47,7 +59,7 @@ public class WebServiceVIValidateServiceImpl implements
    /**
     * {@inheritDoc}
     */
-   public final void validate(Element identification,
+   public final SignatureVerificationResult validate(Element identification,
          VISignVerifParams signVerifParams) throws VIFormatTechniqueException,
          VISignatureException {
 
@@ -55,7 +67,8 @@ public class WebServiceVIValidateServiceImpl implements
 
          SamlSignatureVerifParams samlVerifSignPrms = convertSignParams(signVerifParams);
 
-         checkService.verifierAssertion(identification, samlVerifSignPrms);
+         return checkService.verifierAssertion(identification,
+               samlVerifSignPrms);
 
       } catch (SamlFormatException e) {
          throw new VIFormatTechniqueException(e);
@@ -85,9 +98,9 @@ public class WebServiceVIValidateServiceImpl implements
          String idAppliClient, Date systemDate) throws VIInvalideException,
          VIAppliClientException, VINivAuthException, VIPagmIncorrectException,
          VIServiceIncorrectException {
-      
+
       String prefixeTrc = "validate()";
-      
+
       // la date systeme doit être postérieure à NotOnBefore
       Date notOnBefore = data.getAssertionParams().getCommonsParams()
             .getNotOnBefore();
@@ -137,7 +150,9 @@ public class WebServiceVIValidateServiceImpl implements
       }
 
       // Au moins 1 PAGM
-      LOGGER.debug("{} -Vérification qu'au moins un PAGM est présent dans le VI", prefixeTrc);
+      LOGGER.debug(
+            "{} -Vérification qu'au moins un PAGM est présent dans le VI",
+            prefixeTrc);
       if (CollectionUtils.isEmpty(data.getAssertionParams().getCommonsParams()
             .getPagm())) {
          throw new VIPagmIncorrectException(
@@ -152,6 +167,45 @@ public class WebServiceVIValidateServiceImpl implements
       // throw new VIAppliClientException(data.getAssertionParams()
       // .getCommonsParams().getIssuer());
       // }
+
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final void validateCertificates(ServiceContract contract,
+         SignatureVerificationResult result) throws VICertificatException {
+
+      // on vérifie tout le temps pa PKI et optionnellement le certificat
+      String patternPki = contract.getIdPki();
+      X509Certificate pki = result.getPki();
+      String pkiName = pki.getIssuerX500Principal().getName(
+            X500Principal.RFC2253);
+      checkPattern(patternPki, pkiName, ERREUR_PKI);
+
+      if (contract.isVerifNommage()) {
+         String patternCert = contract.getIdCertifClient();
+         X509Certificate cert = result.getPki();
+         String certName = cert.getIssuerX500Principal().getName(
+               X500Principal.RFC2253);
+         checkPattern(patternCert, certName, ERREUR_CERT);
+      }
+
+   }
+
+   /**
+    * @param regexp
+    * @param value
+    * @throws VICertificatException
+    */
+   private void checkPattern(String regexp, String value, String messageErreur)
+         throws VICertificatException {
+      Pattern pattern = Pattern.compile(regexp);
+      Matcher matcher = pattern.matcher(value);
+      if (!matcher.find()) {
+         throw new VICertificatException(messageErreur);
+      }
 
    }
 }

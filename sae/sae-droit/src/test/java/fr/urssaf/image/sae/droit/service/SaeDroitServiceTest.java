@@ -199,11 +199,78 @@ public class SaeDroitServiceTest {
    }
 
    @Test
+   public void testCreatePkiObligatoire() {
+
+      try {
+         ServiceContract contract = new ServiceContract();
+         contract.setCodeClient("codeClient");
+         contract.setDescription("description");
+         contract.setLibelle("libellé");
+         contract.setViDuree(Long.valueOf(12));
+         List<Pagm> list = new ArrayList<Pagm>();
+         list.add(new Pagm());
+
+         service.createContratService(contract, list);
+         Assert.fail(EXCEPTION_ATTENDUE);
+
+      } catch (Exception e) {
+         Assert.assertEquals(TYPE_CORRECT, IllegalArgumentException.class, e
+               .getClass());
+         Assert.assertTrue("message de l'exception contient PKI", e
+               .getMessage().contains("PKI"));
+      }
+
+   }
+
+   @Test
+   public void testCreateCertificatClientObligatoire() {
+
+      try {
+         ServiceContract contract = new ServiceContract();
+         contract.setCodeClient("codeClient");
+         contract.setDescription("description");
+         contract.setLibelle("libellé");
+         contract.setViDuree(Long.valueOf(12));
+         List<Pagm> list = new ArrayList<Pagm>();
+         list.add(new Pagm());
+         contract.setIdPki("pki");
+         contract.setVerifNommage(true);
+
+         service.createContratService(contract, list);
+         Assert.fail(EXCEPTION_ATTENDUE);
+
+      } catch (Exception e) {
+         Assert.assertEquals(TYPE_CORRECT, IllegalArgumentException.class, e
+               .getClass());
+         Assert.assertTrue("message de l'exception contient certificat client",
+               e.getMessage().contains("certificat client"));
+      }
+
+   }
+
+   @Test
    public void testExistsContratObligatoire() {
 
       try {
 
          service.contratServiceExists(null);
+         Assert.fail(EXCEPTION_ATTENDUE);
+
+      } catch (Exception e) {
+         Assert.assertEquals(TYPE_CORRECT, IllegalArgumentException.class, e
+               .getClass());
+         Assert.assertTrue("message de l'exception contient code client", e
+               .getMessage().contains("code client"));
+      }
+
+   }
+
+   @Test
+   public void testGetServiceContratObligatoire() {
+
+      try {
+
+         service.getServiceContract(null);
          Assert.fail(EXCEPTION_ATTENDUE);
 
       } catch (Exception e) {

@@ -57,8 +57,19 @@ public class ContratServiceSupport {
             clock);
       dao.ecritViDuree(updaterJobRequest, contratService.getViDuree(), clock);
 
+      dao.ecritIdPki(updaterJobRequest, contratService.getIdPki(), clock);
+
+      if (contratService.getIdCertifClient() != null) {
+         dao.ecritCert(updaterJobRequest, contratService.getIdCertifClient(),
+               clock);
+      }
+
+      dao.ecritFlagControlNommage(updaterJobRequest, contratService
+            .isVerifNommage(), clock);
+
       // écriture en base
       dao.getContratServiceTmpl().update(updaterJobRequest);
+
    }
 
    /**
@@ -109,6 +120,20 @@ public class ContratServiceSupport {
          contract.setDescription(result
                .getString(ContratServiceDao.CS_DESCRIPTION));
          contract.setViDuree(result.getLong(ContratServiceDao.CS_VI_DUREE));
+
+         if (result.getString(ContratServiceDao.CS_PKI) != null) {
+            contract.setIdPki(result.getString(ContratServiceDao.CS_PKI));
+         }
+
+         if (result.getString(ContratServiceDao.CS_CERT) != null) {
+            contract.setIdCertifClient(result
+                  .getString(ContratServiceDao.CS_CERT));
+         }
+
+         if (result.getBoolean(ContratServiceDao.CS_VERIF_NOMMAGE) != null) {
+            contract.setVerifNommage(result
+                  .getBoolean(ContratServiceDao.CS_VERIF_NOMMAGE));
+         }
       }
 
       return contract;

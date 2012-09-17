@@ -36,6 +36,7 @@ import fr.urssaf.image.sae.droit.dao.support.PagmaSupport;
 import fr.urssaf.image.sae.droit.dao.support.PagmpSupport;
 import fr.urssaf.image.sae.droit.dao.support.PrmdSupport;
 import fr.urssaf.image.sae.droit.exception.ContratServiceNotFoundException;
+import fr.urssaf.image.sae.droit.exception.ContratServiceReferenceException;
 import fr.urssaf.image.sae.droit.exception.PagmNotFoundException;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
@@ -95,6 +96,8 @@ public class SaeDroitServiceDataTest {
 
    private static final String LUCENE_PRMD_2 = "lucene prmd 2";
 
+   private static final String ID_PKI = "pki";
+
    @Autowired
    private SaeDroitService service;
 
@@ -124,22 +127,20 @@ public class SaeDroitServiceDataTest {
       cassandraServer.resetData();
    }
 
-   
    @Test
    public void testServiceContratServiceInexistant() {
       boolean exists = service.contratServiceExists(CODE_CLIENT);
-      
+
       Assert.assertFalse("le contrat de service n'existe pas", exists);
    }
-   
+
    @Test
    public void testServiceContratServiceExistant() {
       creationContrat();
       boolean exists = service.contratServiceExists(CODE_CLIENT);
       Assert.assertTrue("le contrat de service existe", exists);
    }
-   
-   
+
    @Test(expected = ContratServiceNotFoundException.class)
    public void testContratServiceInexistant()
          throws ContratServiceNotFoundException, PagmNotFoundException {
@@ -285,6 +286,33 @@ public class SaeDroitServiceDataTest {
       comparerPrmd(prmd2, saePrmds.get(0).getPrmd());
    }
 
+   @Test(expected = ContratServiceReferenceException.class)
+   public void testGetServiceContractInexistant() {
+
+      creationContrat();
+
+      this.service.getServiceContract("code inexistant");
+
+   }
+
+   @Test
+   public void testGetServiceContractSuccess() {
+
+      creationContrat();
+
+      ServiceContract contract = this.service.getServiceContract(CODE_CLIENT);
+
+      Assert.assertEquals("description du contrat doit être correcte",
+            DESCRIPTION_CONTRAT, contract.getDescription());
+      Assert.assertEquals("libellé du contrat doit être correcte",
+            LIBELLE_CONTRAT, contract.getLibelle());
+      Assert.assertEquals("durée du contrat doit être correcte", DUREE_CONTRAT,
+            contract.getViDuree());
+      Assert.assertEquals("code client doit être correcte", CODE_CLIENT,
+            contract.getCodeClient());
+
+   }
+
    private void creationActionUnitaire() {
       ActionUnitaire actionUnitaire = new ActionUnitaire();
       actionUnitaire.setCode(CODE_ACTION_1);
@@ -307,7 +335,8 @@ public class SaeDroitServiceDataTest {
       contract.setDescription(DESCRIPTION_CONTRAT);
       contract.setLibelle(LIBELLE_CONTRAT);
       contract.setViDuree(DUREE_CONTRAT);
-
+      contract.setIdPki(ID_PKI);
+      contract.setVerifNommage(false);
       contratSupport.create(contract, new Date().getTime());
    }
 
@@ -390,7 +419,7 @@ public class SaeDroitServiceDataTest {
       prmd.setLucene(LUCENE_PRMD_2);
       prmd.setBean(BEAN1);
       prmd.setMetadata(new HashMap<String, List<String>>());
-      
+
       prmdSupport.create(prmd, new Date().getTime());
 
       return prmd;

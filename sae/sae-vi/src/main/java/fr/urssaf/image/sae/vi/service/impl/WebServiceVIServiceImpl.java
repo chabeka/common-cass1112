@@ -15,12 +15,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Element;
 
+import fr.urssaf.image.sae.droit.dao.model.ServiceContract;
+import fr.urssaf.image.sae.droit.dao.support.ContratServiceSupport;
 import fr.urssaf.image.sae.droit.exception.ContratServiceNotFoundException;
 import fr.urssaf.image.sae.droit.exception.PagmNotFoundException;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.service.SaeDroitService;
 import fr.urssaf.image.sae.saml.data.SamlAssertionData;
 import fr.urssaf.image.sae.saml.exception.SamlExtractionException;
+import fr.urssaf.image.sae.saml.modele.SignatureVerificationResult;
 import fr.urssaf.image.sae.saml.service.SamlAssertionCreationService;
 import fr.urssaf.image.sae.saml.service.SamlAssertionExtractionService;
 import fr.urssaf.image.sae.vi.exception.VIAppliClientException;
@@ -65,13 +68,13 @@ public class WebServiceVIServiceImpl implements WebServiceVIService {
     */
    @Autowired
    public WebServiceVIServiceImpl(SaeDroitService droitService,
-         WebServiceVIValidateService validateService) {
+         WebServiceVIValidateService validateService,
+         ContratServiceSupport support) {
       extractService = new SamlAssertionExtractionService();
 
       this.validateService = validateService;
 
       this.droitService = droitService;
-
    }
 
    /**
@@ -82,7 +85,8 @@ public class WebServiceVIServiceImpl implements WebServiceVIService {
          throws VIVerificationException {
 
       // vérification du jeton SAML
-      validateService.validate(identification, signVerifParams);
+      SignatureVerificationResult result = validateService.validate(
+            identification, signVerifParams);
 
       // extraction du jeton SAML
       SamlAssertionData data;
@@ -137,6 +141,10 @@ public class WebServiceVIServiceImpl implements WebServiceVIService {
 
       List<String> pagms = data.getAssertionParams().getCommonsParams()
             .getPagm();
+
+      // vérification que les certificats qui entrent en jeu sont ceux attendus
+      ServiceContract contract = this.droitService.getServiceContract(issuer);
+      validateService.validateCertificates(contract, result);
 
       // Extraction des PAGM du VI
       SaeDroits saeDroits;
