@@ -139,6 +139,8 @@ public class InsertionDonnees {
             StringSerializer.get(), PagmSerializer.get(), updater);
       addColumn("viDuree", Long.valueOf(7200), StringSerializer.get(),
             LongSerializer.get(), updater);
+      addColumn("pki", "CN=IGC/A", StringSerializer.get(), StringSerializer
+            .get(), updater);
 
       cfTmpl.update(updater);
 
