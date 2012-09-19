@@ -14,11 +14,7 @@ import javax.naming.NamingException;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.springframework.mock.jndi.SimpleNamingContextBuilder;
-import org.springframework.mock.web.MockFilterConfig;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import fr.urssaf.image.commons.maquette.config.MaquetteFilterConfig;
@@ -32,6 +28,7 @@ import fr.urssaf.image.commons.maquette.fixture.FixtureMenu;
 import fr.urssaf.image.commons.maquette.session.SessionTools;
 import fr.urssaf.image.commons.maquette.tool.MaquetteConstant;
 import fr.urssaf.image.commons.maquette.tool.MenuItem;
+import fr.urssaf.image.commons.maquette.util.JndiSupport;
 
 /**
  * Tests unitaires de la classe {@link MaquetteParser}
@@ -40,39 +37,13 @@ import fr.urssaf.image.commons.maquette.tool.MenuItem;
 @SuppressWarnings("PMD")
 public class MaquetteParserTest {
 
-   static private File file;
-   static private SimpleNamingContextBuilder builder;
-   static private MockHttpServletRequest request;
-   static private MockFilterConfig filterConfig;
-
-   @BeforeClass
-   public static void init() throws IOException, IllegalStateException,
-         NamingException {
-
-      builder = new SimpleNamingContextBuilder();
-
-      file = File.createTempFile("confFile_success", ".properties");
-      builder.bind("java:comp/env/confFile", file.getAbsolutePath());
-      builder.activate();
-
-      request = new MockHttpServletRequest();
-      filterConfig = new MockFilterConfig();
-      filterConfig.addInitParameter("fichierProprietes", "confFile");
-   }
-
-   @AfterClass
-   public static void end() {
-      builder.clear();
-      builder.deactivate();
-      file.delete();
-   }
-
    @After
    public void endExec() throws IOException {
-      String path = file.getAbsolutePath();
-      file.delete();
-      file = new File(path);
+      String path = JndiSupport.getFile().getAbsolutePath();
+      JndiSupport.getFile().delete();
+      File file = new File(path);
       file.createNewFile();
+      JndiSupport.setFile(file);
    }
 
    /**
@@ -91,6 +62,7 @@ public class MaquetteParserTest {
          MaquetteConfigException, MaquetteThemeException, URISyntaxException,
          NamingException {
 
+      MockHttpServletRequest request = new MockHttpServletRequest();
       // Le HTML
       String html = "<html></html>";
 
@@ -99,7 +71,7 @@ public class MaquetteParserTest {
 
       // La configuration de la maquette
       MaquetteFilterConfig maquetteFilterConfig = new MaquetteFilterConfig(
-            filterConfig);
+            JndiSupport.getFilterConfig());
       MaquetteConfig maquetteCfg = new MaquetteConfig(request,
             maquetteFilterConfig);
 
@@ -130,6 +102,7 @@ public class MaquetteParserTest {
    public void constructeur_CasTemplateInexistant() throws IOException,
          MaquetteConfigException, MaquetteThemeException {
 
+      MockHttpServletRequest request = new MockHttpServletRequest();
       // Le HTML
       String html = "<html></html>";
 
@@ -138,7 +111,7 @@ public class MaquetteParserTest {
 
       // La configuration de la maquette
       MaquetteFilterConfig maquetteFilterConfig = new MaquetteFilterConfig(
-            filterConfig);
+            JndiSupport.getFilterConfig());
       MaquetteConfig maquetteCfg = new MaquetteConfig(request,
             maquetteFilterConfig);
 
@@ -186,6 +159,7 @@ public class MaquetteParserTest {
          MissingSourceParserException,
          MissingHtmlElementInTemplateParserException {
 
+      MockHttpServletRequest request = new MockHttpServletRequest();
       // Le HTML de test, généré par l'application métier
       StringBuffer sbHtmlClient = new StringBuffer();
       sbHtmlClient.append("<html>" + "\r\n");
@@ -210,7 +184,7 @@ public class MaquetteParserTest {
 
       // La configuration de la maquette
       MaquetteFilterConfig maquetteFilterConfig = new MaquetteFilterConfig(
-            filterConfig);
+            JndiSupport.getFilterConfig());
       MaquetteConfig maquetteCfg = new MaquetteConfig(request,
             maquetteFilterConfig);
 
@@ -291,6 +265,7 @@ public class MaquetteParserTest {
          MissingSourceParserException,
          MissingHtmlElementInTemplateParserException {
 
+      MockHttpServletRequest request = new MockHttpServletRequest();
       // Le HTML de test, généré par l'application métier
       StringBuffer sbHtmlClient = new StringBuffer();
       sbHtmlClient.append("<html>" + "\r\n");
@@ -305,7 +280,7 @@ public class MaquetteParserTest {
 
       // La configuration de la maquette
       MaquetteFilterConfig maquetteFilterConfig = new MaquetteFilterConfig(
-            filterConfig);
+            JndiSupport.getFilterConfig());
       MaquetteConfig maquetteCfg = new MaquetteConfig(request,
             maquetteFilterConfig);
 
@@ -376,6 +351,7 @@ public class MaquetteParserTest {
          MissingSourceParserException,
          MissingHtmlElementInTemplateParserException {
 
+      MockHttpServletRequest request = new MockHttpServletRequest();
       // Le HTML de test, généré par l'application métier
       StringBuffer sbHtmlClient = new StringBuffer();
       sbHtmlClient.append("<html>" + "\r\n");
@@ -398,7 +374,7 @@ public class MaquetteParserTest {
 
       // La configuration de la maquette
       MaquetteFilterConfig maquetteFilterConfig = new MaquetteFilterConfig(
-            filterConfig);
+            JndiSupport.getFilterConfig());
       MaquetteConfig maquetteCfg = new MaquetteConfig(request,
             maquetteFilterConfig);
 
@@ -475,6 +451,7 @@ public class MaquetteParserTest {
          MaquetteThemeException, IOException, MissingSourceParserException,
          MissingHtmlElementInTemplateParserException, MenuException {
 
+      MockHttpServletRequest request = new MockHttpServletRequest();
       // Le HTML de test, généré par l'application métier
       StringBuffer sbHtmlClient = new StringBuffer();
       String htmlClient = sbHtmlClient.toString();
@@ -494,10 +471,10 @@ public class MaquetteParserTest {
       lines.add(ConstantesConfigFiltre.APPLOGO + "=/applogo.png");
       lines.add(ConstantesConfigFiltre.IMPL_MENU
             + "=fr.urssaf.image.commons.maquette.fixture.FixtureMenu");
-      FileUtils.writeLines(file, lines);
+      FileUtils.writeLines(JndiSupport.getFile(), lines);
 
       MaquetteFilterConfig maquetteFilterConfig = new MaquetteFilterConfig(
-            filterConfig);
+            JndiSupport.getFilterConfig());
       MaquetteConfig maquetteCfg = new MaquetteConfig(request,
             maquetteFilterConfig);
 
@@ -559,6 +536,7 @@ public class MaquetteParserTest {
    public void buildBodyGetFilAriane_Contextuel()
          throws MaquetteConfigException, MaquetteThemeException, IOException {
 
+      MockHttpServletRequest request = new MockHttpServletRequest();
       // Le HTML de test, généré par l'application métier
       // aucun intérêt pour ce test
       StringBuffer sbHtmlClient = new StringBuffer();
@@ -573,10 +551,11 @@ public class MaquetteParserTest {
             "1");
 
       // Configuration de la maquette
-      FileUtils.writeStringToFile(file, ConstantesConfigFiltre.IMPL_MENU
-            + "=fr.urssaf.image.commons.maquette.fixture.FixtureMenu");
+      FileUtils.writeStringToFile(JndiSupport.getFile(),
+            ConstantesConfigFiltre.IMPL_MENU
+                  + "=fr.urssaf.image.commons.maquette.fixture.FixtureMenu");
       MaquetteFilterConfig maquetteFilterConfig = new MaquetteFilterConfig(
-            filterConfig);
+            JndiSupport.getFilterConfig());
       MaquetteConfig maquetteCfg = new MaquetteConfig(request,
             maquetteFilterConfig);
 
@@ -609,6 +588,7 @@ public class MaquetteParserTest {
    public void buildBodyGetFilAriane_SansImplementationMenu()
          throws MaquetteConfigException, MaquetteThemeException, IOException {
 
+      MockHttpServletRequest request = new MockHttpServletRequest();
       // Le HTML de test, généré par l'application métier
       // aucun intérêt pour ce test
       StringBuffer sbHtmlClient = new StringBuffer();
@@ -620,7 +600,7 @@ public class MaquetteParserTest {
 
       // Configuration de la maquette
       MaquetteFilterConfig maquetteFilterConfig = new MaquetteFilterConfig(
-            filterConfig);
+            JndiSupport.getFilterConfig());
       MaquetteConfig maquetteCfg = new MaquetteConfig(request,
             maquetteFilterConfig);
 
@@ -654,6 +634,7 @@ public class MaquetteParserTest {
    public void buildBodyGetFilAriane_MenuSelectionne()
          throws MaquetteConfigException, MaquetteThemeException, IOException {
 
+      MockHttpServletRequest request = new MockHttpServletRequest();
       // Le HTML de test, généré par l'application métier
       // aucun intérêt pour ce test
       StringBuffer sbHtmlClient = new StringBuffer();
@@ -664,10 +645,11 @@ public class MaquetteParserTest {
       String cheminTemplate = "/resource/html/main_test01.html";
 
       // Configuration de la maquette
-      filterConfig.addInitParameter(ConstantesConfigFiltre.IMPL_MENU,
-            "fr.urssaf.image.commons.maquette.fixture.FixtureMenu");
+      FileUtils.writeStringToFile(JndiSupport.getFile(),
+            ConstantesConfigFiltre.IMPL_MENU
+                  + "=fr.urssaf.image.commons.maquette.fixture.FixtureMenu");
       MaquetteFilterConfig maquetteFilterConfig = new MaquetteFilterConfig(
-            filterConfig);
+            JndiSupport.getFilterConfig());
       MaquetteConfig maquetteCfg = new MaquetteConfig(request,
             maquetteFilterConfig);
 
@@ -685,9 +667,9 @@ public class MaquetteParserTest {
 
       // Appel de la méthode à tester
       String filAriane = parser.buildBodyGetFilAriane();
-      
+
       SessionTools.storeSelectedMenu(request, null);
-      
+
       // Vérification
       String sActual = filAriane;
       String sExpected = FixtureMenu.TITRE_MENU_POUR_TEST;
@@ -715,6 +697,7 @@ public class MaquetteParserTest {
          MissingSourceParserException,
          MissingHtmlElementInTemplateParserException {
 
+      MockHttpServletRequest request = new MockHttpServletRequest();
       // Le HTML de test, généré par l'application métier
       StringBuffer sbHtmlClient = new StringBuffer();
       sbHtmlClient.append("<html>" + "\r\n");
@@ -732,10 +715,11 @@ public class MaquetteParserTest {
             "1");
 
       // La configuration de la maquette
-      FileUtils.writeStringToFile(file, ConstantesConfigFiltre.IMPL_MENU +
-            "=fr.urssaf.image.commons.maquette.fixture.FixtureMenu");
+      FileUtils.writeStringToFile(JndiSupport.getFile(),
+            ConstantesConfigFiltre.IMPL_MENU
+                  + "=fr.urssaf.image.commons.maquette.fixture.FixtureMenu");
       MaquetteFilterConfig maquetteFilterConfig = new MaquetteFilterConfig(
-            filterConfig);
+            JndiSupport.getFilterConfig());
       MaquetteConfig maquetteCfg = new MaquetteConfig(request,
             maquetteFilterConfig);
 
@@ -797,6 +781,7 @@ public class MaquetteParserTest {
          MissingSourceParserException,
          MissingHtmlElementInTemplateParserException {
 
+      MockHttpServletRequest request = new MockHttpServletRequest();
       // Le HTML de test, généré par l'application métier
       StringBuffer sbHtmlClient = new StringBuffer();
       sbHtmlClient.append("<html>" + "\r\n");
@@ -811,7 +796,7 @@ public class MaquetteParserTest {
 
       // La configuration de la maquette
       MaquetteFilterConfig maquetteFilterConfig = new MaquetteFilterConfig(
-            filterConfig);
+            JndiSupport.getFilterConfig());
       MaquetteConfig maquetteCfg = new MaquetteConfig(request,
             maquetteFilterConfig);
 
@@ -871,6 +856,7 @@ public class MaquetteParserTest {
          MissingSourceParserException,
          MissingHtmlElementInTemplateParserException {
 
+      MockHttpServletRequest request = new MockHttpServletRequest();
       // Le HTML de test, généré par l'application métier
       StringBuffer sbHtmlClient = new StringBuffer();
       sbHtmlClient.append("<html>" + "\r\n");
@@ -887,7 +873,7 @@ public class MaquetteParserTest {
 
       // La configuration de la maquette
       MaquetteFilterConfig maquetteFilterConfig = new MaquetteFilterConfig(
-            filterConfig);
+            JndiSupport.getFilterConfig());
       MaquetteConfig maquetteCfg = new MaquetteConfig(request,
             maquetteFilterConfig);
 
