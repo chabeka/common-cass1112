@@ -1,13 +1,10 @@
-<project
-   xmlns="http://maven.apache.org/POM/4.0.0"
-   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
    <modelVersion>4.0.0</modelVersion>
    
    <groupId>fr.urssaf.image.saedemos</groupId>
    <artifactId>sae-anais-portail</artifactId>
-   <version>0.0.2-SNAPSHOT</version>
+   <version>1.0.0</version>
    
    <packaging>war</packaging>
    
@@ -259,13 +256,13 @@
    <!-- Configuration SVN pour le plug-in maven-release -->
    <scm>
       <url>
-        scm:svn:svn://cer69-svn/image/java/trunk/saedemos/sae-anais-portail/
+        scm:svn:svn://cer69-svn/image/java/tags/sae-anais-portail-1.0.0
       </url>
       <developerConnection>
-        scm:svn:svn://cer69-svn/image/java/trunk/saedemos/sae-anais-portail/
+        scm:svn:svn://cer69-svn/image/java/tags/sae-anais-portail-1.0.0
       </developerConnection>
       <connection>
-        scm:svn:svn://cer69-svn/image/java/trunk/saedemos/sae-anais-portail/
+        scm:svn:svn://cer69-svn/image/java/tags/sae-anais-portail-1.0.0
       </connection>
    </scm>
    
