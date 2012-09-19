@@ -50,5 +50,8 @@ public final class ConstantesConfigFiltre {
    public static final String CSSMENUFIRSTROWFONTCOLOR = "cssMenuFirstRowFontColor" ;
    public static final String CSSMENULINKFONTCOLOR = "cssMenuLinkFontColor" ;
    public static final String CSSMENULINKHOVERFONTCOLOR = "cssMenuLinkHoverFontColor" ;
+
+   public static final String PROPERTY_FILE = "fichierProprietes";
+   public static final String PATH_CONFIG = "sae.ihm.web.exploit.cheminConfigurationMaquette";
    
 }

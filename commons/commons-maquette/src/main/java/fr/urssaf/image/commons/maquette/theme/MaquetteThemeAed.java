@@ -1,6 +1,6 @@
 package fr.urssaf.image.commons.maquette.theme;
 
-import javax.servlet.FilterConfig;
+import java.util.Properties;
 
 import fr.urssaf.image.commons.maquette.exception.MaquetteThemeException;
 
@@ -21,7 +21,7 @@ public final class MaquetteThemeAed extends AbstractMaquetteTheme {
     * @param filterConfig la configuration du filtre
     * @throws MaquetteThemeException un problème est survenu
     */
-   public MaquetteThemeAed(FilterConfig filterConfig) throws MaquetteThemeException {
+   public MaquetteThemeAed(Properties filterConfig) throws MaquetteThemeException {
       super(filterConfig);
    }
 

@@ -1,6 +1,6 @@
 package fr.urssaf.image.commons.maquette.theme;
 
-import javax.servlet.FilterConfig;
+import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -27,19 +27,19 @@ public final class MaquetteThemeTools {
     * Se base sur la propriété de configuration "<code>theme</code>" de
     * la configuration du filtre pour déterminer le thème à utiliser
     * 
-    * @param filterConfig la configuration du filtre
+    * @param propertiesConfig la configuration du filtre
     * @return le thème
     * @throws MaquetteThemeException s'il y a un problème sur le thème
     */
-   public static AbstractMaquetteTheme getTheme(FilterConfig filterConfig) throws MaquetteThemeException {
+   public static AbstractMaquetteTheme getTheme(Properties propertiesConfig) throws MaquetteThemeException {
       
       // Lit le nom du thème dans la configuration du filtre
       String theme;
-      if (filterConfig==null) {
+      if (propertiesConfig==null) {
          theme = "";
       }
       else {
-         theme = filterConfig.getInitParameter(ConstantesConfigFiltre.THEME) ;
+         theme = propertiesConfig.getProperty(ConstantesConfigFiltre.THEME) ;
       }
       if (theme==null) {
          theme = "";
@@ -50,13 +50,13 @@ public final class MaquetteThemeTools {
       // Créé la bonne classe selon le thème
       AbstractMaquetteTheme result;
       if (theme.equals(MaquetteConstant.THEME_AED)) {
-         result = new MaquetteThemeAed(filterConfig);
+         result = new MaquetteThemeAed(propertiesConfig);
       } 
       else if (theme.equals(MaquetteConstant.THEME_GED)) {
-         result = new MaquetteThemeGed(filterConfig);
+         result = new MaquetteThemeGed(propertiesConfig);
       }
       else if (StringUtils.isEmpty(theme)) {
-         result = new MaquetteThemeParDefaut(filterConfig);
+         result = new MaquetteThemeParDefaut(propertiesConfig);
       }
       else {
          throw new MaquetteThemeException(
