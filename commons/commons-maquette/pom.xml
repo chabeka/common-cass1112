@@ -5,7 +5,7 @@
    <groupId>fr.urssaf.image.commons</groupId>
    <artifactId>commons-maquette</artifactId>
    <packaging>jar</packaging>
-   <version>1.0.1-SNAPSHOT</version>
+   <version>0.0.2-SNAPSHOT</version>
 
    <name>commons-maquette</name>
 
@@ -230,5 +230,23 @@
 
 
    </dependencies>
+   
+    <!--
+      On indique l'URL des repository Nexus, pour les versions Snapshots
+      et Releases des artéfacts
+   -->
+   <distributionManagement>
+      <repository>
+         <id>nexus</id>
+         <name>Releases</name>
+         <url>http://cer69-nexus.cer69.recouv:8081/nexus/content/repositories/releases</url>
+      </repository>
+      <snapshotRepository>
+         <id>nexus</id>
+         <name>Snapshots</name>
+         <url>http://cer69-nexus.cer69.recouv:8081/nexus/content/repositories/snapshots</url>
+         <uniqueVersion>false</uniqueVersion>
+      </snapshotRepository>
+   </distributionManagement>
 
 </project>
