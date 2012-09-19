@@ -5,6 +5,10 @@
    <Environment
       name="SAE_ANAIS_PORTAIL_CONFIG"
       type="java.lang.String"
-      value="c:/sae/ihmexploit/sae-anais-portail-ihmexploit.properties" />
+      value="c:/appl/sae/ihmexploit/sae-anais-portail-ihmexploit.properties" />
+   
+   <Environment name="IHMExploit_Anais_Configuration" type="java.lang.String"
+   value="c:/appl/sae/ihmexploit/sae-anais-config.properties" />
+   
 
 </Context>
