@@ -1,29 +1,27 @@
-<project
-   xmlns="http://maven.apache.org/POM/4.0.0"
-   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
    <modelVersion>4.0.0</modelVersion>
-   
+
    <groupId>fr.urssaf.image.saedemos</groupId>
    <artifactId>sae-anais-framework</artifactId>
    <version>0.0.2-SNAPSHOT</version>
-   
+
    <packaging>jar</packaging>
-   
+
    <name>sae-anais-framework</name>
-   
+
    <properties>
-      
+
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-      
+
       <maven.source.plugin.version>2.1.2</maven.source.plugin.version>
       <maven.javadoc.plugin.version>2.7</maven.javadoc.plugin.version>
       <maven.surefire.plugin.version>2.12</maven.surefire.plugin.version>
       <sonar.maven.plugin.version>1.0-beta-2</sonar.maven.plugin.version>
       <maven.release.plugin.version>2.2.1</maven.release.plugin.version>
       <aspectj.maven.plugin.version>1.3</aspectj.maven.plugin.version>
-      
+
       <junit.version>4.8.2</junit.version>
       <org.slf4j.version>1.6.1</org.slf4j.version>
       <logback.version>0.9.30</logback.version>
@@ -31,18 +29,18 @@
       <apache.commons-lang.version>2.6</apache.commons-lang.version>
       <apache.commons-configuration.version>1.6</apache.commons-configuration.version>
       <apache.commons-io.version>2.0.1</apache.commons-io.version>
-      
+
       <anais.api.version>1.5.5</anais.api.version>
-      <sae.version>12.5.12.3-SNAPSHOT</sae.version>
-      
+
    </properties>
-   
+
 
    <build>
       <plugins>
-         
-         <!-- 
-         On spécifie la version du JDK et l'encodage de caractères des sources
+
+         <!--
+            On spécifie la version du JDK et l'encodage de caractères
+            des sources
          -->
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
@@ -55,9 +53,9 @@
          </plugin>
 
 
-         <!-- 
-         Dans le cas d'un packaging JAR, on demande que le JAR des sources
-         soit également généré
+         <!--
+            Dans le cas d'un packaging JAR, on demande que le JAR des
+            sources soit également généré
          -->
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
@@ -72,10 +70,10 @@
                </execution>
             </executions>
          </plugin>
-            
-         
-         <!-- 
-         On spécifie l'encodage de caractères des ressources
+
+
+         <!--
+            On spécifie l'encodage de caractères des ressources
          -->
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
@@ -84,10 +82,10 @@
                <encoding>${project.build.sourceEncoding}</encoding>
             </configuration>
          </plugin>
-         
-         
+
+
          <!--
-         On demande la génération de la Javadoc         
+            On demande la génération de la Javadoc
          -->
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
@@ -102,26 +100,26 @@
                </execution>
             </executions>
          </plugin>
-         
-         
+
+
          <!-- Tests unitaires -->
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
             <version>${maven.surefire.plugin.version}</version>
          </plugin>
-         
-         
+
+
          <!--
-         On spécifie la version du plugin Maven pour Sonar
+            On spécifie la version du plugin Maven pour Sonar
          -->
          <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>sonar-maven-plugin</artifactId>
             <version>${sonar.maven.plugin.version}</version>
          </plugin>
-         
-         
+
+
          <!--
          Pour la gestion des release
          -->
@@ -135,8 +133,8 @@
                <useReleaseProfile>false</useReleaseProfile>
             </configuration>
          </plugin>
-         
-         
+
+
          <!--
          Compilation Aspect
          -->
@@ -157,15 +155,28 @@
                </execution>
             </executions>
          </plugin>
-      
-         
+
+
       </plugins>
-      
+
    </build>
+
+   <!-- Configuration SVN pour le plug-in maven-release -->
+   <scm>
+      <url>
+        scm:svn:svn://cer69-svn/image/java/trunk/saedemos/sae-anais-framework/
+      </url>
+      <developerConnection>
+        scm:svn:svn://cer69-svn/image/java/trunk/saedemos/sae-anais-framework/
+      </developerConnection>
+      <connection>
+        scm:svn:svn://cer69-svn/image/java/trunk/saedemos/sae-anais-framework/
+      </connection>
+   </scm>
 
 
    <dependencies>
-   
+
       <!-- JUnit -->
       <dependency>
          <groupId>junit</groupId>
@@ -173,7 +184,7 @@
          <version>${junit.version}</version>
          <scope>test</scope>
       </dependency>
-      
+
       <!-- SLF4j / Log back -->
       <dependency>
          <groupId>org.slf4j</groupId>
@@ -203,16 +214,14 @@
          <version>${aspectj.version}</version>
       </dependency>
 
-      <!-- 
-         API ANAIS
-         Désactivé pour le moment : le code source de l'API est fourni directement
+      <!--
+         API ANAIS Désactivé pour le moment : le code source de l'API
+         est fourni directement
       -->
       <!--
-      <dependency>
-         <groupId>recouv.cirti.anais.api</groupId>
+         <dependency> <groupId>recouv.cirti.anais.api</groupId>
          <artifactId>anais-api-java</artifactId>
-         <version>${anais.api.version}</version>
-      </dependency>
+         <version>${anais.api.version}</version> </dependency>
       -->
 
       <!-- Apache Commons -->
@@ -234,5 +243,24 @@
       </dependency>
 
    </dependencies>
+
+
+   <!--
+      On indique l'URL des repository Nexus, pour les versions Snapshots
+      et Releases des artéfacts
+   -->
+   <distributionManagement>
+      <repository>
+         <id>nexus</id>
+         <name>Releases</name>
+         <url>http://cer69-nexus.cer69.recouv:8081/nexus/content/repositories/releases</url>
+      </repository>
+      <snapshotRepository>
+         <id>nexus</id>
+         <name>Snapshots</name>
+         <url>http://cer69-nexus.cer69.recouv:8081/nexus/content/repositories/snapshots</url>
+         <uniqueVersion>false</uniqueVersion>
+      </snapshotRepository>
+   </distributionManagement>
 
 </project>
