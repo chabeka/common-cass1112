@@ -31,10 +31,10 @@
       <spring.framework.version>3.0.5.RELEASE</spring.framework.version>
       <jstl.version>1.2</jstl.version>
       
-      <sae.anais.framework.version>0.0.2-SNAPSHOT</sae.anais.framework.version>
-      <commons.maquette.version>0.0.2-SNAPSHOT</commons.maquette.version>
+      <sae.anais.framework.version>1.0.0</sae.anais.framework.version>
+      <commons.maquette.version>1.0.0</commons.maquette.version>
       
-      <sae.version>12.5.12.3-SNAPSHOT</sae.version>
+      <sae.version>12.9.10.2</sae.version>
       
    </properties>
    
@@ -255,5 +255,36 @@
       </dependency>
 
    </dependencies>
+   
+   <!-- Configuration SVN pour le plug-in maven-release -->
+   <scm>
+      <url>
+        scm:svn:svn://cer69-svn/image/java/trunk/saedemos/sae-anais-portail/
+      </url>
+      <developerConnection>
+        scm:svn:svn://cer69-svn/image/java/trunk/saedemos/sae-anais-portail/
+      </developerConnection>
+      <connection>
+        scm:svn:svn://cer69-svn/image/java/trunk/saedemos/sae-anais-portail/
+      </connection>
+   </scm>
+   
+   <!--
+      On indique l'URL des repository Nexus, pour les versions Snapshots
+      et Releases des artéfacts
+   -->
+   <distributionManagement>
+      <repository>
+         <id>nexus</id>
+         <name>Releases</name>
+         <url>http://cer69-nexus.cer69.recouv:8081/nexus/content/repositories/releases</url>
+      </repository>
+      <snapshotRepository>
+         <id>nexus</id>
+         <name>Snapshots</name>
+         <url>http://cer69-nexus.cer69.recouv:8081/nexus/content/repositories/snapshots</url>
+         <uniqueVersion>false</uniqueVersion>
+      </snapshotRepository>
+   </distributionManagement>
    
 </project>
