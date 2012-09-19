@@ -1,12 +1,11 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
    <modelVersion>4.0.0</modelVersion>
 
    <groupId>fr.urssaf.image.commons</groupId>
    <artifactId>commons-maquette</artifactId>
    <packaging>jar</packaging>
-   <version>0.0.2-SNAPSHOT</version>
+   <version>1.0.0</version>
 
    <name>commons-maquette</name>
 
@@ -147,13 +146,13 @@
    <!-- Configuration SVN pour le plug-in maven-release -->
    <scm>
       <url>
-        scm:svn:svn://cer69-svn/image/java/trunk/commons/commons-maquette/
+        scm:svn:svn://cer69-svn/image/java/tags/commons-maquette-1.0.0
       </url>
       <developerConnection>
-        scm:svn:svn://cer69-svn/image/java/trunk/commons/commons-maquette/
+        scm:svn:svn://cer69-svn/image/java/tags/commons-maquette-1.0.0
       </developerConnection>
       <connection>
-        scm:svn:svn://cer69-svn/image/java/trunk/commons/commons-maquette/
+        scm:svn:svn://cer69-svn/image/java/tags/commons-maquette-1.0.0
       </connection>
    </scm>
 
