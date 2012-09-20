@@ -265,6 +265,9 @@ public final class DroitService {
       LOG.debug("Code intelligible : {}", serviceContract.getLibelle());
       LOG.debug("Description : {}", serviceContract.getDescription());
       LOG.debug("Durée de vie d'un VI (en secondes) : {}", serviceContract.getViDuree());
+      LOG.debug("PKI : {}", serviceContract.getIdPki());
+      LOG.debug("Vérification nommage certificat applicatif : {}", serviceContract.isVerifNommage());
+      LOG.debug("Nom attendu du certificat applicatif : {}", serviceContract.getIdCertifClient());
       
    }
    

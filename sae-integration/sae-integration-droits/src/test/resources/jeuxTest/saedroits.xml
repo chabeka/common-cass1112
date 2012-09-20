@@ -96,6 +96,9 @@
                <parametres />
             </pagm>
          </pagms>
+         <cnPki></cnPki>
+         <verifCnCert></verifCnCert>
+         <cnCert></cnCert>
       </cs>
       -->
       
@@ -141,6 +144,11 @@
             </pagm>
             
          </pagms>
+         
+         <cnPki>CN=IGC/A</cnPki>
+         <verifCnCert>false</verifCnCert>
+         <cnCert />
+         
       </cs>
       
       
@@ -177,6 +185,9 @@
                </parametres>
             </pagm>
          </pagms>
+         <cnPki>CN=IGC/A</cnPki>
+         <verifCnCert>false</verifCnCert>
+         <cnCert />
       </cs>
    
    </listeCs>

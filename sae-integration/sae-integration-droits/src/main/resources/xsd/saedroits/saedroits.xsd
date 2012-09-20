@@ -68,6 +68,9 @@
          <xsd:element name="description" type="xsd:string" />
          <xsd:element name="viduree" type="xsd:long" />
          <xsd:element name="pagms" type="this:ListePagmType" />
+         <xsd:element name="cnPki" type="xsd:string" />
+         <xsd:element name="verifCnCert" type="xsd:boolean" />
+         <xsd:element name="cnCert" type="xsd:string" />
       </xsd:sequence>
    </xsd:complexType>
    

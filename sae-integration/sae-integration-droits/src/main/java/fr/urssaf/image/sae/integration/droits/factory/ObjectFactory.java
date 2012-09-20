@@ -87,6 +87,9 @@ public final class ObjectFactory {
       serviceContract.setLibelle(csType.getCode());
       serviceContract.setDescription(csType.getDescription());
       serviceContract.setViDuree(csType.getViduree());
+      serviceContract.setIdPki(csType.getCnPki());
+      serviceContract.setVerifNommage(csType.isVerifCnCert());
+      serviceContract.setIdCertifClient(csType.getCnCert());
       
       return serviceContract;
       

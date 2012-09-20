@@ -32,7 +32,7 @@
       <spring.framework.version>3.0.5.RELEASE</spring.framework.version>
       
       <!-- Version du SAE -->
-      <sae.version>12.5.12.3-SNAPSHOT</sae.version>
+      <sae.version>12.9.10.3-SNAPSHOT</sae.version>
       
    </properties>
 
