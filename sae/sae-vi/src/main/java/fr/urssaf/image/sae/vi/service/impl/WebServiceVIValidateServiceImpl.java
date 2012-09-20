@@ -177,20 +177,55 @@ public class WebServiceVIValidateServiceImpl implements
    public final void validateCertificates(ServiceContract contract,
          SignatureVerificationResult result) throws VICertificatException {
 
+      // Traces debug
+      String prefixeTrc = "validateCertificates()";
+      LOGGER.debug("{} - Début", prefixeTrc);
+
       // on vérifie tout le temps pa PKI et optionnellement le certificat
+      LOGGER
+            .debug(
+                  "{} - Vérifie que la PKI dont est issu le certificat applicatif correspond à la PKI déclaré dans le contrat de service",
+                  prefixeTrc);
       String patternPki = contract.getIdPki();
       X509Certificate pki = result.getPki();
-      String pkiName = pki.getIssuerX500Principal().getName(
+      String pkiName = pki.getSubjectX500Principal().getName(
             X500Principal.RFC2253);
+      LOGGER
+            .debug(
+                  "{} - Le certificat applicatif de signature du VI est issu de la PKI \"{}\", pour un contrat de service {} s'appuyant sur la PKI dont le pattern de nommage est \"{}\"",
+                  new String[] { prefixeTrc, pkiName, contract.getCodeClient(),
+                        patternPki });
       checkPattern(patternPki, pkiName, ERREUR_PKI);
 
       if (contract.isVerifNommage()) {
+
+         LOGGER
+               .debug(
+                     "{} - Vérifie que le nom du certificat applicatif correspond au nom déclaré dans le contrat de service",
+                     prefixeTrc);
+
          String patternCert = contract.getIdCertifClient();
-         X509Certificate cert = result.getPki();
-         String certName = cert.getIssuerX500Principal().getName(
+         X509Certificate cert = result.getCertificat();
+         String certName = cert.getSubjectX500Principal().getName(
                X500Principal.RFC2253);
+
+         LOGGER
+               .debug(
+                     "{} - Le certificat applicatif de signature du VI porte le nom \"{}\", pour un contrat de service {} attendant un certificat nommé selon le pattern \"{}\"",
+                     new String[] { prefixeTrc, certName,
+                           contract.getCodeClient(), patternCert });
+
          checkPattern(patternCert, certName, ERREUR_CERT);
+
+      } else {
+         LOGGER
+               .debug(
+                     "{} - La vérification du nom du certificat applicatif n'est pas activée pour le contrat de service {}",
+                     prefixeTrc, contract.getCodeClient());
       }
+
+      // Traces debug
+      LOGGER.debug("{} - Fin", prefixeTrc);
 
    }
 
