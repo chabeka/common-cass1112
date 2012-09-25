@@ -15,7 +15,6 @@ import me.prettyprint.cassandra.serializers.BytesArraySerializer;
 import me.prettyprint.cassandra.serializers.CompositeSerializer;
 import me.prettyprint.cassandra.serializers.LongSerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
-import me.prettyprint.hector.api.Cluster;
 import me.prettyprint.hector.api.Keyspace;
 import me.prettyprint.hector.api.beans.ColumnSlice;
 import me.prettyprint.hector.api.beans.Composite;
@@ -50,6 +49,11 @@ public class Dumper {
 	 * pour chaque élément du composite s'il faut l'afficher en hexadécimal
 	 */
 	public boolean[] compositeDisplayTypeMapper;
+	
+	private SimpleDateFormat SIMPLE_DF = new SimpleDateFormat("dd/MM/yyyy");
+   
+   private SimpleDateFormat SIMPLE_HF = new SimpleDateFormat("HH:mm:ss");
+
 	
 	public Dumper(Keyspace k, PrintStream p) {
 		keyspace = k;
@@ -219,6 +223,7 @@ public class Dumper {
 	private void dumpQueryResult(QueryResult<OrderedRows<byte[], byte[], byte[]>> result) throws Exception {
 		OrderedRows<byte[], byte[], byte[]> orderedRows = result.get();
 		sysout.println("Count " + orderedRows.getCount());
+		sysout.println();
 		dumpRows(orderedRows);
 	}
 	
@@ -239,6 +244,7 @@ public class Dumper {
 			ColumnSlice<byte[], byte[]> columnSlice = row.getColumnSlice();
 			List<HColumn<byte[], byte[]>> columns = columnSlice.getColumns();
 			dumpColumns(columns);
+			sysout.println();
 		}		
 	}
 	
@@ -307,6 +313,11 @@ public class Dumper {
 				String hexValue = ConvertHelper.getHexString(value);
 				s += " - hexValue : " + hexValue;
 			}
+			
+			// On ajoute le timestamp Cassandra de la colonne
+			s += " - clock : " + convertClockToDateString(column.getClock());
+			
+			
 			sysout.println(s);
 		}
 	}
@@ -406,6 +417,21 @@ public class Dumper {
 			dumpColumns(columns);
 		}
 		//sysout.println(result.getHostUsed().getHost());
+	}
+	
+	
+	private String convertClockToDateString(long timestamp) {
+	   
+	   // NB: les timestamp Cassandra sont en microsecondes
+	   // Il faut les convertir en millisecondes pour la date
+	   
+	   Date laDate = new Date(timestamp / 1000) ;
+      
+      String date = SIMPLE_DF.format(laDate);
+      String heure = SIMPLE_HF.format(laDate);
+      
+      return date + " " + heure;
+	   
 	}
 	
 	

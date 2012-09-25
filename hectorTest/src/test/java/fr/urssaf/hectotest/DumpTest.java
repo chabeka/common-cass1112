@@ -20,10 +20,8 @@ import me.prettyprint.cassandra.model.thrift.ThriftCountQuery;
 import me.prettyprint.cassandra.serializers.BytesArraySerializer;
 import me.prettyprint.cassandra.serializers.CompositeSerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
-import me.prettyprint.cassandra.serializers.UUIDSerializer;
 import me.prettyprint.cassandra.service.CassandraHostConfigurator;
 import me.prettyprint.cassandra.service.FailoverPolicy;
-import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
 import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
 import me.prettyprint.cassandra.service.template.ThriftColumnFamilyTemplate;
@@ -68,7 +66,7 @@ public class DumpTest
 		String servers;
 		//servers = "cnp69saecas1:9160, cnp69saecas2:9160, cnp69saecas3:9160, cnp31saecas1.cer31.recouv:9160";
 		//servers = "hwi54saecas1.cve.recouv:9160";	// CNH
-		//servers = "cer69imageint9.cer69.recouv:9160";
+		// servers = "cer69imageint9.cer69.recouv:9160";
 		//servers = "cer69imageint10.cer69.recouv:9160";
 		//servers = "10.203.34.39:9160";		// Noufnouf
 		//servers = "hwi69givnsaecas1.cer69.recouv:9160,hwi69givnsaecas2.cer69.recouv:9160";
@@ -109,7 +107,7 @@ public class DumpTest
 	@Test
 	public void testDumpDocInfo() throws Exception {
 		dumper.printKeyInHex = true;
-		dumper.dumpCF("DocInfo", 50);
+		dumper.dumpCF("DocInfo", 300);
 	}
 
 	@Test
@@ -174,10 +172,10 @@ public class DumpTest
 	@Test
 	public void testGetDocCount() throws Exception {
 		// Ne compte que 2 blocs sur 50
-		getDocCount(200, 2);
+		// getDocCount(200, 2);
 		
 		// Comptage exhaustif, par bloc de 50
-		//getDocCount(50, 50);
+		getDocCount(50, 50);
 	}
 	
 	/**
@@ -544,6 +542,7 @@ public class DumpTest
 	public void testDumpJobs() throws Exception {
 		dumper.dumpCF("Jobs", 15);
 	}
+		
 	@Test
 	public void testDumpLifeCycleRules() throws Exception {
 		dumper.dumpCF("LifeCycleRules", 2000);
@@ -720,4 +719,52 @@ public class DumpTest
 			sysout.println("Long prop = " + pojo2.getLongProp1());
 		}
 	}
+	
+	@Test
+   public void testDumpBatchCounter() throws Exception {
+      dumper.dumpCF("BatchCounter", 10);
+   }
+	
+	@Test
+   public void testDumpDocEventLogByTimeSerialized() throws Exception {
+      dumper.printColumnNameInHex = true;
+      dumper.dumpCF("DocEventLogByTimeSerialized", 150);
+   }
+	
+	@Test
+   public void testDumpDocInfoFreezer() throws Exception {
+      dumper.dumpCF("DocInfoFreezer", 50);
+   }
+	
+	@Test
+   public void testDumpJobInstance() throws Exception {
+      dumper.dumpCF("JobInstance", 50);
+   }
+   
+   @Test
+   public void testDumpJobExecution() throws Exception {
+      dumper.dumpCF("JobExecution", 50);
+   }
+   
+   @Test
+   public void testDumpLocker() throws Exception {
+      dumper.dumpCF("Locker", 50);
+   }
+	
+	@Test
+   public void testDumpStepExecution() throws Exception {
+      dumper.dumpCF("StepExecution", 100);
+   }
+	
+	@Test
+   public void testDumpSystemEventLogByTime() throws Exception {
+      dumper.dumpCF("SystemEventLogByTime", 50);
+   }
+	
+	@Test
+   public void testDumpSystemEventLogByTimeSerialized() throws Exception {
+	   dumper.printColumnNameInHex = true;
+	   dumper.dumpCF("SystemEventLogByTimeSerialized", 50);
+   }
+	
 }
