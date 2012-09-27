@@ -11,6 +11,7 @@ public class ViFormulaire {
    private String recipient;
    private String audience;
    private PagmList pagms;
+   private String idCertif;
    
    /**
     * L'identifiant du contrat de service
@@ -74,6 +75,22 @@ public class ViFormulaire {
     */
    public final void setPagms(PagmList pagms) {
       this.pagms = pagms;
+   }
+
+   /**
+    * L'identifiant du certificat à utiliser pour la signature du VI
+    * @return L'identifiant du certificat à utiliser pour la signature du VI
+    */
+   public final String getIdCertif() {
+      return idCertif;
+   }
+
+   /**
+    * L'identifiant du certificat à utiliser pour la signature du VI
+    * @param idCertif L'identifiant du certificat à utiliser pour la signature du VI
+    */
+   public final void setIdCertif(String idCertif) {
+      this.idCertif = idCertif;
    }
    
 }

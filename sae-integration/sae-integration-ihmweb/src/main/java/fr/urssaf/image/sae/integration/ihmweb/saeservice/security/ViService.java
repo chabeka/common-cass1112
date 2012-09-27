@@ -11,12 +11,16 @@ import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.sae.integration.ihmweb.exception.IntegrationRuntimeException;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ViFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.PagmList;
+import fr.urssaf.image.sae.integration.ihmweb.modele.certificats.Certificat;
+import fr.urssaf.image.sae.integration.ihmweb.modele.certificats.MyKeyStore;
+import fr.urssaf.image.sae.integration.ihmweb.service.certificats.CertificatService;
 import fr.urssaf.image.sae.integration.ihmweb.signature.XmlSignature;
 
 /**
@@ -30,9 +34,7 @@ public class ViService {
    private static final String PATH_MODELE_SAML = "viModeles/modele_assertion_saml2.xml";
    private static final String PATH_MODELE_WSSE = "viModeles/modele_wsseSecurity.xml";
    
-   private static final String PATH_PKCS12 = "certificats/PNR_Application_Test.p12";
-   private static final String KEYSTORE_PASSWORD = "QEtDiGuGuEnZ";
-   private static final String KEYSTORE_ALIAS = "1";
+   private static final String DEFAULT_ID_CERTIF = "1";
    
    private static final String DEFAULT_RECIPIENT = "urn:URSSAF";
    private static final String DEFAULT_AUDIENCE = "http://sae.urssaf.fr";
@@ -40,19 +42,25 @@ public class ViService {
    private static final String[] DEFAULT_PAGM = new String[] {"ROLE_TOUS;FULL"};
    private static final String DEFAULT_METHODAUTHN2 = "urn:oasis:names:tc:SAML:2.0:ac:classes:unspecified";
    
+   private CertificatService certificatService;
    
-   
-   private KeyStore keystore;
+   private List<MyKeyStore> keystores;
    
    
    /**
     * Constructeur
     */
-   public ViService() {
+   @Autowired
+   public ViService(CertificatService certifService) {
       
-      keystore = chargeKeyStore();
+      this.certificatService = certifService;
+      
+      keystores = new ArrayList<MyKeyStore>();
+      
+      loadAllKeyStores();
       
    }
+   
    
    /**
     * Génération d'un VI de type tel que demandé en paramètres d'entrée
@@ -139,6 +147,8 @@ public class ViService {
       String audience;
       String[] pagm;
       
+      String idCertif;
+      
       if ((viParams==null) || (StringUtils.isBlank(viParams.getIssuer()))) {
          
          issuer = DEFAULT_ISSUER;
@@ -146,6 +156,8 @@ public class ViService {
          audience = DEFAULT_AUDIENCE;
 
          pagm = DEFAULT_PAGM ;
+         
+         idCertif = DEFAULT_ID_CERTIF; 
          
       } else {
          
@@ -155,6 +167,8 @@ public class ViService {
          
          PagmList pagmList = viParams.getPagms();
          pagm = (String[])viParams.getPagms().toArray(new String[pagmList.size()]);
+         
+         idCertif = viParams.getIdCertif();
          
       }
       
@@ -168,7 +182,8 @@ public class ViService {
             notOnOrAfter,
             notBefore,
             pagm,
-            methodAuthn2);
+            methodAuthn2,
+            idCertif);
          
    }
    
@@ -226,7 +241,8 @@ public class ViService {
          String notOnOrAfter,
          String notBefore,
          String[] pagm,
-         String methodAuthn2) {
+         String methodAuthn2,
+         String idCertif) {
       
       try {
       
@@ -241,7 +257,7 @@ public class ViService {
                pagm,
                methodAuthn2);
          
-         String assertionSignee = getAssertionSignee(assertionNonSignee);
+         String assertionSignee = getAssertionSignee(assertionNonSignee, idCertif);
          
          String enTestWsSecurity = getEnTestWsSecurity(assertionSignee,assertionId); 
          
@@ -303,18 +319,19 @@ public class ViService {
    }
    
    
-   private String getAssertionSignee(String assertionNonSignee) {
+   private String getAssertionSignee(
+         String assertionNonSignee,
+         String idCertif) {
     
       try {
       
-         String alias = KEYSTORE_ALIAS ;
-         String password = KEYSTORE_PASSWORD;
+         MyKeyStore myKeystore = findMyKeyStore(idCertif);
          
          String assertionSignee = XmlSignature.signeXml(
                IOUtils.toInputStream(assertionNonSignee), 
-               keystore,
-               alias, 
-               password);
+               myKeystore.getKeystore(),
+               myKeystore.getAliasClePrivee(), 
+               myKeystore.getPassword());
          
          return assertionSignee;
       
@@ -325,15 +342,23 @@ public class ViService {
    }
    
    
-   private KeyStore chargeKeyStore()  {
+   private KeyStore chargeKeyStore(Certificat certif) {
+         
+      return chargeKeyStore(certif.getChemin(), certif.getPassword());
+      
+   }
+   
+   private KeyStore chargeKeyStore(
+         String cheminPkcs12dansRessource,
+         String password)  {
       
       try {
          
-         ClassPathResource resource = new ClassPathResource(PATH_PKCS12);
+         ClassPathResource resource = new ClassPathResource(cheminPkcs12dansRessource);
          
          KeyStore keystore = KeyStore.getInstance("PKCS12");
          
-         keystore.load(resource.getInputStream(), KEYSTORE_PASSWORD.toCharArray());
+         keystore.load(resource.getInputStream(), password.toCharArray());
          
          return keystore;
       
@@ -429,6 +454,7 @@ public class ViService {
       String notBefore = defaultNotBefore(systemDate);
       String[] pagm = DEFAULT_PAGM ;
       String methodAuthn2 = DEFAULT_METHODAUTHN2;
+      String idCertif = DEFAULT_ID_CERTIF; 
       
       String vi = generationVi(
             assertionId,
@@ -439,7 +465,8 @@ public class ViService {
             notOnOrAfter,
             notBefore,
             pagm,
-            methodAuthn2);
+            methodAuthn2,
+            idCertif);
       
       LOGGER.debug("Fin de la génération d'un VI wsse:InvalidSecurityToken");
       return vi;
@@ -501,6 +528,7 @@ public class ViService {
       String notBefore = systemDate.minusHours(2).toString();
       String[] pagm = DEFAULT_PAGM ;
       String methodAuthn2 = DEFAULT_METHODAUTHN2;
+      String idCertif = DEFAULT_ID_CERTIF;
       String vi = generationVi(
             assertionId,
             issuer,
@@ -510,7 +538,8 @@ public class ViService {
             notOnOrAfter,
             notBefore,
             pagm,
-            methodAuthn2);
+            methodAuthn2,
+            idCertif);
       
       // Renvoi du VI
       LOGGER.debug("Fin de la génération d'un VI vi:InvalidVI");
@@ -542,6 +571,7 @@ public class ViService {
       String notBefore = defaultNotBefore(systemDate);
       String[] pagm = DEFAULT_PAGM ;
       String methodAuthn2 = DEFAULT_METHODAUTHN2;
+      String idCertif = DEFAULT_ID_CERTIF;
       String vi = generationVi(
             assertionId,
             issuer,
@@ -551,7 +581,8 @@ public class ViService {
             notOnOrAfter,
             notBefore,
             pagm,
-            methodAuthn2);
+            methodAuthn2,
+            idCertif);
       
       // Renvoi du VI
       LOGGER.debug("Fin de la génération d'un VI vi:InvalidService");
@@ -583,6 +614,7 @@ public class ViService {
       String notBefore = defaultNotBefore(systemDate);
       String[] pagm = DEFAULT_PAGM ;
       String methodAuthn2 = "urn:methode:inexistante"; // Méthode d'authentification inconnue du SAE
+      String idCertif = DEFAULT_ID_CERTIF;
       String vi = generationVi(
             assertionId,
             issuer,
@@ -592,7 +624,8 @@ public class ViService {
             notOnOrAfter,
             notBefore,
             pagm,
-            methodAuthn2);
+            methodAuthn2,
+            idCertif);
       
       // Renvoi du VI
       LOGGER.debug("Fin de la génération d'un VI vi:InvalidAuthLevel");
@@ -624,6 +657,7 @@ public class ViService {
       String notBefore = defaultNotBefore(systemDate);
       String[] pagm = new String[] {"ROLE_INEXISTANT;FULL"}; ;
       String methodAuthn2 = DEFAULT_METHODAUTHN2;
+      String idCertif = DEFAULT_ID_CERTIF;
       String vi = generationVi(
             assertionId,
             issuer,
@@ -633,11 +667,38 @@ public class ViService {
             notOnOrAfter,
             notBefore,
             pagm,
-            methodAuthn2);
+            methodAuthn2,
+            idCertif);
       
       // Renvoi du VI
       LOGGER.debug("Fin de la génération d'un VI sae:DroitsInsuffisants");
       return vi;
+      
+   }
+   
+   private void loadAllKeyStores() {
+      
+      KeyStore keystore;
+      for (Certificat certif : certificatService.getCertificats().getCertificats()) {
+         
+         keystore = chargeKeyStore(certif);
+         
+         keystores.add(new MyKeyStore(
+               certif.getId(), keystore, certif.getPassword(), certif.getAliasClePrivee()));
+         
+      }
+      
+   }
+   
+   
+   private MyKeyStore findMyKeyStore(String idCertif) {
+      
+      for(MyKeyStore ks : keystores) {
+         if (ks.getIdCertif().equals(idCertif)) {
+            return ks;
+         }
+      }
+      return null;
       
    }
    
