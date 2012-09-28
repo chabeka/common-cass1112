@@ -107,7 +107,7 @@ public class ProcessingServiceTest {
       EasyMock.replay(providerSupport);
       EasyMock.replay(traceDao);
 
-      Resource fichier = new ClassPathResource("CSV/fichier_format_correct");
+      Resource fichier = new ClassPathResource("csv/fichier_format_correct");
 
       service.launchWithFile(true, fichier.getFile(), "12", 0, 7, repository
             .getAbsolutePath());
@@ -149,7 +149,7 @@ public class ProcessingServiceTest {
       EasyMock.replay(providerSupport);
       EasyMock.replay(traceDao);
 
-      Resource fichier = new ClassPathResource("CSV/fichier_format_correct");
+      Resource fichier = new ClassPathResource("csv/fichier_format_correct");
 
       service.launchWithFile(false, fichier.getFile(), "12", 0, 7, repository
             .getAbsolutePath());

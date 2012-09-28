@@ -25,7 +25,7 @@ public class BootStrapValidationTest {
 
    private static final String COUNT_RECORD = "100";
 
-   private static final String FICHIER_SOURCE = "CSV/fichier_format_correct";
+   private static final String FICHIER_SOURCE = "csv/fichier_format_correct";
 
    @Before
    public void before() {
