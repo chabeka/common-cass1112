@@ -13,12 +13,23 @@ public class LineFormatException extends RuntimeException {
     * 
     */
    private static final long serialVersionUID = 1L;
+   private int indexLigne;
 
    /**
-    * @param message
+    * @param indexLigne
+    *           index de la ligne en erreur
     */
-   public LineFormatException(String message) {
-      super(message);
+   public LineFormatException(int indexLigne) {
+      this.indexLigne = indexLigne;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final String getMessage() {
+      return "Erreur de format à la ligne " + indexLigne + "\n"
+            + super.getMessage();
    }
 
 }

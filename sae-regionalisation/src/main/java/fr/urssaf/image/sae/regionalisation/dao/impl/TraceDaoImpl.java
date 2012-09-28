@@ -1,22 +1,22 @@
 package fr.urssaf.image.sae.regionalisation.dao.impl;
 
-import java.math.BigDecimal;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.UUID;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
-import javax.sql.DataSource;
-
-import org.apache.commons.lang.text.StrBuilder;
+import org.apache.commons.lang.text.StrSubstitutor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import fr.urssaf.image.sae.regionalisation.bean.Trace;
 import fr.urssaf.image.sae.regionalisation.dao.TraceDao;
+import fr.urssaf.image.sae.regionalisation.exception.ErreurTechniqueException;
+import fr.urssaf.image.sae.regionalisation.util.Constants;
 
 /**
  * Implémentation du service {@link TraceDao}
@@ -26,17 +26,56 @@ import fr.urssaf.image.sae.regionalisation.dao.TraceDao;
 @Repository
 public class TraceDaoImpl implements TraceDao {
 
-   private final JdbcTemplate jdbcTemplate;
+   private static final Logger LOGGER = LoggerFactory
+         .getLogger(TraceDaoImpl.class);
+
+   private final File repository;
+   private File file;
+   private FileWriter writer;
 
    /**
+    * Constructeur
     * 
-    * @param dataSource
-    *           paramètres des sources
+    * @param repository
+    *           répertoire² où le fichier de suivi sera créé
     */
    @Autowired
-   public TraceDaoImpl(DataSource dataSource) {
-      this.jdbcTemplate = new JdbcTemplate(dataSource);
+   public TraceDaoImpl(File repository) {
+      this.repository = repository;
+      this.writer = null;
+   }
 
+   /**
+    * {@inheritDoc}
+    */
+   public final void open(String uuid) {
+
+      try {
+         if (!repository.exists()) {
+            repository.createNewFile();
+         }
+
+         this.file = new File(repository, "suivi_" + uuid + ".log");
+         this.writer = new FileWriter(file, true);
+
+      } catch (IOException e) {
+         throw new ErreurTechniqueException(e);
+      }
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   public final void close() {
+
+      if (writer != null) {
+         try {
+            writer.close();
+
+         } catch (IOException e) {
+            LOGGER.info("impossible de fermer le flux {}", file.getName());
+         }
+      }
    }
 
    /**
@@ -46,85 +85,55 @@ public class TraceDaoImpl implements TraceDao {
    @Transactional
    public final void addTraceMaj(Trace trace) {
 
-      StrBuilder sql = new StrBuilder();
-      sql.append("insert into trace_maj ");
-      sql
-            .append("(id_document, id_critere, nom_metadata,ancienne_valeur,nouvelle_valeur) ");
-      sql.append("values (?, ?, ?, ?, ?) ");
+      try {
+         Map<String, String> map = new HashMap<String, String>();
+         map.put(Constants.TRACE_LIGNE, String.valueOf(trace.getLineNumber()));
+         map.put(Constants.TRACE_ID_DOCUMENT, trace.getIdDocument().toString());
+         map.put(Constants.TRACE_META_NAME, trace.getMetaName());
+         map.put(Constants.TRACE_OLD_VALUE, trace.getOldValue());
+         map.put(Constants.TRACE_NEW_VALUE, trace.getNewValue());
 
-      this.jdbcTemplate.update(sql.toString(), new Object[] {
-            trace.getIdDocument(), trace.getIdSearch(), trace.getMetaName(),
-            trace.getOldValue(), trace.getNewValue() });
+         writer.write(StrSubstitutor.replace(Constants.TRACE_OUT_MAJ, map));
+         writer.write("\n");
+         writer.flush();
 
-   }
-
-   /***
-    * {@inheritDoc}
-    */
-   @Override
-   public final void addTraceRec(BigDecimal idCriterion, int documentCount,
-         boolean maj) {
-
-      StrBuilder sql = new StrBuilder();
-      sql.append("insert into trace_rec ");
-      sql.append("(id_critere, nbre_doc, maj) ");
-      sql.append("values (?, ?, ?) ");
-
-      this.jdbcTemplate.update(sql.toString(), new Object[] { idCriterion,
-            documentCount, maj });
+      } catch (IOException e) {
+         throw new ErreurTechniqueException(trace.getLineNumber(), e);
+      }
 
    }
 
-   /***
+   /**
     * {@inheritDoc}
     */
    @Override
-   public final int findNbreDocs(BigDecimal idCriterion) {
+   public final void addTraceRec(String requeteLucene, int lineNumber,
+         int documentCount, boolean maj) {
 
-      StrBuilder sql = new StrBuilder();
-      sql.append("select nbre_doc ");
-      sql.append("from trace_rec ");
-      sql.append("where id =  ");
-      sql
-            .append("(select max (trace.id) from trace_rec trace where id_critere= ?  )");
+      try {
+         Map<String, String> map = new HashMap<String, String>();
+         map.put(Constants.TRACE_LIGNE, String.valueOf(lineNumber));
+         map.put(Constants.TRACE_REQUETE_LUCENE, requeteLucene);
+         map.put(Constants.TRACE_DOC_COUNT, String.valueOf(documentCount));
+         map.put(Constants.TRACE_INDIC_MAJ, maj ? Constants.TRACE_UPDATE_TRUE
+               : Constants.TRACE_UPDATE_FALSE);
 
-      int result = jdbcTemplate.queryForInt(sql.toString(),
-            new Object[] { idCriterion });
+         writer.write(StrSubstitutor.replace(Constants.TRACE_OUT_REC, map));
+         writer.write("\n");
+         writer.flush();
 
-      return result;
+      } catch (IOException e) {
+         throw new ErreurTechniqueException(lineNumber, e);
+      }
+
    }
 
-   /***
+   /**
     * {@inheritDoc}
     */
    @Override
-   public final List<Trace> findTraceMajByCriterion(BigDecimal idCriterion) {
-      StrBuilder sql = new StrBuilder();
-      sql
-            .append("select id_critere,id_document,nom_metadata,ancienne_valeur,nouvelle_valeur ");
-      sql.append("from trace_maj ");
-      sql.append("where id_critere=? ");
-
-      RowMapper<Trace> mapper = new RowMapper<Trace>() {
-         public Trace mapRow(ResultSet resultSet, int rowNum)
-               throws SQLException {
-
-            Trace trace = new Trace();
-            trace.setIdDocument(UUID.fromString(resultSet
-                  .getString("id_document")));
-            trace.setIdSearch(resultSet.getBigDecimal("id_critere"));
-            trace.setMetaName(resultSet.getString("nom_metadata"));
-            trace.setNewValue(resultSet.getString("nouvelle_valeur"));
-            trace.setOldValue(resultSet.getString("ancienne_valeur"));
-
-            return trace;
-         }
-      };
-
-      List<Trace> results = jdbcTemplate.query(sql.toString(),
-            new Object[] { idCriterion }, mapper);
-
-      return results;
+   public final File getFile() {
+      return file;
    }
 
 }

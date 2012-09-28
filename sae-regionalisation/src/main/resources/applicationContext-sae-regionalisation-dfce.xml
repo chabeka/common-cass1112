@@ -21,19 +21,26 @@
       <property name="location" ref="saeConfigResource" />
    </bean>
 
-   <bean id="base_regionalisation" class="java.lang.String">
-
-      <constructor-arg>
-
+   <bean id="repriseConfiguration"
+      class="fr.urssaf.image.sae.regionalisation.bean.RepriseConfiguration">
+      <constructor-arg name="maxTestCount">
          <bean factory-bean="dfceConfiguration" factory-method="getProperty">
-
-            <constructor-arg value="db.baseName" />
-
+            <constructor-arg value="maxTestCount" />
          </bean>
-
       </constructor-arg>
+      <constructor-arg name="timeInterval">
+         <bean factory-bean="dfceConfiguration" factory-method="getProperty">
+            <constructor-arg value="timeInterval" />
+         </bean>
+      </constructor-arg>
+   </bean>
 
-
+   <bean id="base_regionalisation" class="java.lang.String">
+      <constructor-arg>
+         <bean factory-bean="dfceConfiguration" factory-method="getProperty">
+            <constructor-arg value="db.baseName" />
+         </bean>
+      </constructor-arg>
    </bean>
 
 </beans>

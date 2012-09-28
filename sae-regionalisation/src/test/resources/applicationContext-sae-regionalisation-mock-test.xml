@@ -13,13 +13,15 @@
    <bean id="serviceProviderSupportImpl" factory-bean="daoMock"
       factory-method="createServiceProviderSupport" />
 
-   <bean id="searchCriterionDaoImpl" factory-bean="daoMock"
-      factory-method="createSearchCriterionDao" />
-
-   <bean id="metadataDaoImpl" factory-bean="daoMock" factory-method="createMetadataDao" />
-
    <bean id="traceDaoImpl" factory-bean="daoMock" factory-method="createTraceDao" />
 
+   <bean id="repriseConfiguration" class="fr.urssaf.image.sae.regionalisation.bean.RepriseConfiguration">
+      <constructor-arg name="maxTestCount" value="1" />
+      <constructor-arg name="timeInterval" value="10" />
+   </bean>
+   
+   <bean id="repository" class="fr.urssaf.image.sae.regionalisation.util.RegioFactory" factory-method="createSuiviTempFile" />
+   
    <import resource="applicationContext-sae-regionalisation-service.xml" />
    
 </beans>

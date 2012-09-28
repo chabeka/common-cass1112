@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.login.AppConfigurationEntry;
@@ -14,7 +15,6 @@ import javax.security.auth.login.LoginException;
 import javax.security.auth.login.AppConfigurationEntry.LoginModuleControlFlag;
 import javax.security.auth.spi.LoginModule;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
@@ -35,7 +35,7 @@ public final class AuthenticateSupport {
 
    private final Class<? extends LoginModule> loginModule;
 
-   private final String authentificationPassword;
+   private final Properties passwords;
 
    /**
     * constructeur par défaut
@@ -71,7 +71,8 @@ public final class AuthenticateSupport {
 
          try {
 
-            authentificationPassword = StringUtils.trim(input.readLine());
+            passwords = new Properties();
+            passwords.load(input);
 
          } finally {
 
@@ -90,10 +91,12 @@ public final class AuthenticateSupport {
    /**
     * méthode d'authentification.
     * 
+    * @param mode
+    *           mode de lancement : <b>MISE_A_JOUR</b> ou <b>TIR_A_BLANC</b>
     * @throws LoginException
     *            l'authentification a échoué
     */
-   public void authenticate() throws LoginException {
+   public void authenticate(final String mode) throws LoginException {
 
       Configuration configuration = new Configuration() {
 
@@ -101,6 +104,8 @@ public final class AuthenticateSupport {
          public AppConfigurationEntry[] getAppConfigurationEntry(String name) {
 
             AppConfigurationEntry[] config = new AppConfigurationEntry[1];
+
+            String authentificationPassword = passwords.getProperty(mode);
 
             Map<String, Object> options = new HashMap<String, Object>();
             options.put("password", authentificationPassword);

@@ -1,5 +1,7 @@
 package fr.urssaf.image.sae.regionalisation.factory;
 
+import java.io.File;
+
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
@@ -24,28 +26,27 @@ public final class SAEApplicationContextFactory {
     *           fichier de configuration du contexte
     * @param dfceConfig
     *           fichier de configuration de connexion à DFCE
-    * @param postgresqlConfig
-    *           fichier de configuration de connexion à POSTGRESQL
+    * @param dirPath
+    *           chemin du répertoire où seront créés les fichiers de suivi
     * @return contexte d'application
     */
    public static ClassPathXmlApplicationContext load(String contextConfig,
-         String dfceConfig, String postgresqlConfig) {
+         String dfceConfig, String dirPath) {
 
       GenericApplicationContext genericContext = new GenericApplicationContext();
 
-      BeanDefinitionBuilder dfceConfigBean = BeanDefinitionBuilder
+      BeanDefinitionBuilder configFile = BeanDefinitionBuilder
             .genericBeanDefinition(FileSystemResource.class);
-      dfceConfigBean.addConstructorArgValue(dfceConfig);
+      configFile.addConstructorArgValue(dfceConfig);
 
-      genericContext.registerBeanDefinition("saeConfigResource", dfceConfigBean
+      genericContext.registerBeanDefinition("saeConfigResource", configFile
             .getBeanDefinition());
 
-      BeanDefinitionBuilder postgresqlConfigBean = BeanDefinitionBuilder
-            .genericBeanDefinition(FileSystemResource.class);
-      postgresqlConfigBean.addConstructorArgValue(postgresqlConfig);
-
-      genericContext.registerBeanDefinition("postgresqlConfigResource",
-            postgresqlConfigBean.getBeanDefinition());
+      BeanDefinitionBuilder parentFile = BeanDefinitionBuilder
+            .genericBeanDefinition(File.class);
+      parentFile.addConstructorArgValue(dirPath);
+      genericContext.registerBeanDefinition("repository", parentFile
+            .getBeanDefinition());
 
       genericContext.refresh();
 

@@ -40,7 +40,7 @@ public class AuthenticateSupportTest {
       AuthenticateSupport authenticateSupport = new AuthenticateSupport(
             callbackHandler, loginModule);
 
-      authenticateSupport.authenticate();
+      authenticateSupport.authenticate("TIR_A_BLANC");
 
    }
 
@@ -62,7 +62,7 @@ public class AuthenticateSupportTest {
             callbackHandler, loginModule);
 
       try {
-         authenticateSupport.authenticate();
+         authenticateSupport.authenticate("MISE_A_JOUR");
 
          Assert.fail("l'authentification doit lever une LoginException");
 

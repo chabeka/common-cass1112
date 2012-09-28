@@ -1,5 +1,8 @@
 package fr.urssaf.image.sae.regionalisation.factory;
 
+import java.io.File;
+
+import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
@@ -11,12 +14,16 @@ public class SAEApplicationContextFactoryTest {
    public void load_success() {
 
       String contextConfig = "/applicationContext-sae-regionalisation.xml";
-      
+
       String dfceConfig = "src/test/resources/dfce/test-dfce.properties";
-      String postgresqlConfig = "src/test/resources/database/test-postgresql.properties";
+      File dirParent = new File(FileUtils.getTempDirectory(), "suivi");
+      dirParent.mkdir();
+
       ApplicationContext context = SAEApplicationContextFactory.load(
-            contextConfig, dfceConfig, postgresqlConfig);
+            contextConfig, dfceConfig, dirParent.getAbsolutePath());
 
       Assert.assertNotNull("Un context spring doit être créé", context);
+
+      FileUtils.deleteQuietly(dirParent);
    }
 }

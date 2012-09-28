@@ -12,9 +12,14 @@
 
    <bean id="serviceProviderSupportImpl" factory-bean="daoMock"
       factory-method="createServiceProviderSupport" />
+      
+   <bean id="repository" class="fr.urssaf.image.sae.regionalisation.util.RegioFactory" factory-method="createSuiviTempFile" />
 
-   <import resource="applicationContext-sae-regionalisation-datasource-test.xml" />
+   <bean id="repriseConfiguration" class="fr.urssaf.image.sae.regionalisation.bean.RepriseConfiguration">
+      <constructor-arg name="maxTestCount" value="1" />
+      <constructor-arg name="timeInterval" value="10" />
+   </bean>
+   
    <import resource="applicationContext-sae-regionalisation-service.xml" />
-   <import resource="applicationContext-sae-regionalisation-transaction.xml" />
    
 </beans>

@@ -16,8 +16,14 @@
 
    <context:component-scan base-package="fr.urssaf.image.sae.regionalisation.support" />
 
+   <bean id="repriseConfiguration" class="fr.urssaf.image.sae.regionalisation.bean.RepriseConfiguration">
+      <constructor-arg name="maxTestCount" value="1" />
+      <constructor-arg name="timeInterval" value="10" />
+   </bean>
+   
+   <bean id="repository" class="fr.urssaf.image.sae.regionalisation.util.RegioFactory" factory-method="createSuiviTempFile" />
+   
    <bean id="saeDocumentDao"
       class="fr.urssaf.image.sae.regionalisation.dao.impl.SaeDocumentDaoImpl" />
-
 
 </beans>

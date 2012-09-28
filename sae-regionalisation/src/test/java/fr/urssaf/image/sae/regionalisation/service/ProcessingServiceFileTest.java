@@ -5,16 +5,15 @@ package fr.urssaf.image.sae.regionalisation.service;
 
 import java.io.File;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import junit.framework.Assert;
 import net.docubase.toolkit.model.document.Document;
 import net.docubase.toolkit.model.document.impl.DocumentImpl;
 
 import org.easymock.EasyMock;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +43,9 @@ public class ProcessingServiceFileTest {
    private TraceDao traceDao;
 
    @Autowired
+   private File repository;
+
+   @Autowired
    private ApplicationContext context;
 
    @Autowired
@@ -64,9 +66,10 @@ public class ProcessingServiceFileTest {
          EasyMock.replay(providerSupport);
 
          Resource resource = context.getResource("csv/fichier_format_errone");
-         File file = resource.getFile();
+         File fichier = resource.getFile();
 
-         service.launchWithFile(false, file);
+         service.launchWithFile(false, fichier, "12", 0, 12, repository
+               .getAbsolutePath());
 
       } catch (Exception e) {
 
@@ -108,16 +111,23 @@ public class ProcessingServiceFileTest {
 
       // trace dans trace Maj
       // 3 documents avec 2 métadonnées valides
-      traceDao.addTraceRec(EasyMock.anyObject(BigDecimal.class), EasyMock
-            .anyInt(), EasyMock.anyBoolean());
+      traceDao.addTraceRec(EasyMock.anyObject(String.class), EasyMock.anyInt(),
+            EasyMock.anyInt(), EasyMock.anyBoolean());
       EasyMock.expectLastCall().times(3);
+
+      traceDao.open("12");
+      EasyMock.expectLastCall().once();
+
+      traceDao.close();
+      EasyMock.expectLastCall().once();
 
       EasyMock.replay(traceDao, providerSupport, saeDocumentDao);
 
       Resource resource = context.getResource("csv/fichier_format_correct");
-      File file = resource.getFile();
+      File fichier = resource.getFile();
 
-      service.launchWithFile(true, file);
+      service
+            .launchWithFile(true, fichier, "12", 0, 50, repository.getAbsolutePath());
 
       EasyMock.verify(providerSupport, traceDao, saeDocumentDao);
 
@@ -126,7 +136,7 @@ public class ProcessingServiceFileTest {
    }
 
    /**
-    * 
+    *
     */
    private void recuperationDonneesDocuments() {
       // récupération des documents

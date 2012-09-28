@@ -1,6 +1,5 @@
 package fr.urssaf.image.sae.regionalisation.bean;
 
-import java.math.BigDecimal;
 
 /**
  * Classe représentant un objet de critères de recherche.
@@ -9,16 +8,14 @@ import java.math.BigDecimal;
  */
 public class SearchCriterion {
 
-   private BigDecimal identifiant;
+   private int identifiant;
 
    private String lucene;
-
-   private boolean updated;
 
    /**
     * @return identifiant
     */
-   public final BigDecimal getId() {
+   public final int getId() {
       return identifiant;
    }
 
@@ -26,7 +23,7 @@ public class SearchCriterion {
     * @param identifiant
     *           identifiant
     */
-   public final void setId(BigDecimal identifiant) {
+   public final void setId(int identifiant) {
       this.identifiant = identifiant;
    }
 
@@ -46,29 +43,13 @@ public class SearchCriterion {
    }
 
    /**
-    * @return flag de traitement
-    */
-   public final boolean isUpdated() {
-      return updated;
-   }
-
-   /**
-    * @param updated
-    *           flag de traitement
-    */
-   public final void setUpdated(boolean updated) {
-      this.updated = updated;
-   }
-
-   /**
     * {@inheritDoc}
     */
    @Override
    public final String toString() {
       StringBuilder builder = new StringBuilder();
       builder.append("SearchCriterion [identifiant=").append(identifiant)
-            .append(", lucene=").append(lucene).append(", updated=").append(
-                  updated).append("]");
+            .append(", lucene=").append(lucene).append("]");
       return builder.toString();
    }
 

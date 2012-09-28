@@ -3,9 +3,7 @@ package fr.urssaf.image.sae.regionalisation.mock;
 import org.easymock.EasyMock;
 import org.springframework.stereotype.Component;
 
-import fr.urssaf.image.sae.regionalisation.dao.MetadataDao;
 import fr.urssaf.image.sae.regionalisation.dao.SaeDocumentDao;
-import fr.urssaf.image.sae.regionalisation.dao.SearchCriterionDao;
 import fr.urssaf.image.sae.regionalisation.dao.TraceDao;
 import fr.urssaf.image.sae.regionalisation.support.ServiceProviderSupport;
 
@@ -19,34 +17,11 @@ public class DaoMock {
 
    /**
     * 
-    * @return instance de {@link MetadataDao}
-    */
-   public final MetadataDao createMetadataDao() {
-
-      MetadataDao service = EasyMock.createMock(MetadataDao.class);
-
-      return service;
-   }
-
-   /**
-    * 
     * @return instance de {@link SaeDocumentDao}
     */
    public final SaeDocumentDao createSaeDocumentDao() {
 
       SaeDocumentDao service = EasyMock.createMock(SaeDocumentDao.class);
-
-      return service;
-   }
-
-   /**
-    * 
-    * @return instance de {@link SearchCriterionDao}
-    */
-   public final SearchCriterionDao createSearchCriterionDao() {
-
-      SearchCriterionDao service = EasyMock
-            .createMock(SearchCriterionDao.class);
 
       return service;
    }

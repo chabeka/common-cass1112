@@ -5,11 +5,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import junit.framework.Assert;
 import net.docubase.toolkit.model.ToolkitFactory;
 import net.docubase.toolkit.model.document.Document;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,13 +17,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.sae.regionalisation.dao.MetadataDao;
+import fr.urssaf.image.sae.regionalisation.util.Constants;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-regionalisation-dfce-test.xml" })
 @SuppressWarnings("PMD.MethodNamingConventions")
 public class ServiceProviderSupportTest {
 
+   
    @Autowired
    private ServiceProviderSupport support;
 
@@ -80,9 +81,9 @@ public class ServiceProviderSupportTest {
       // compte
 
       Assert.assertEquals("le nombre de métadonnées est inattendu",
-            MetadataDao.METADATAS.length, metadatas.size());
+            Constants.METADATAS.length, metadatas.size());
 
-      for (String code : MetadataDao.METADATAS) {
+      for (String code : Constants.METADATAS) {
 
          if (!metadatas.containsKey(code)) {
             Assert.fail("la métadonnée " + code + " n'est pas prise en compte");

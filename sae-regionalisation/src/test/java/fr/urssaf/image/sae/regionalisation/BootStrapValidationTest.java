@@ -1,27 +1,31 @@
 package fr.urssaf.image.sae.regionalisation;
 
+import java.io.IOException;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.core.io.ClassPathResource;
 
 import fr.urssaf.image.sae.regionalisation.security.AuthenticateSupport;
 
 @SuppressWarnings("PMD.MethodNamingConventions")
 public class BootStrapValidationTest {
 
+   /**
+    * 
+    */
+   private static final String UUID = "12";
+
    private BootStrap bootStrap;
 
    private static final String DFCE_CONFIG = "src/test/resources/dfce/test-dfce.properties";
 
-   private static final String POSTGRESQL_CONFIG = "src/test/resources/database/test-postgresql.properties";
-
-   private static final String FIRST_INDEX = "0";
+   private static final String FIRST_INDEX = "1";
 
    private static final String COUNT_RECORD = "100";
 
-   private static final String BASE_SOURCE = "BASE";
-
-   private static final String CSV_SOURCE = "CSV";
+   private static final String FICHIER_SOURCE = "CSV/fichier_format_correct";
 
    @Before
    public void before() {
@@ -48,20 +52,13 @@ public class BootStrapValidationTest {
    public void execute_failure_required_source() {
       String[] args = new String[0];
 
-      assertExecute(args, "La source de données doit être indiquée BASE/CSV");
-   }
-
-   @Test
-   public void execute_failure_source_inexistante() {
-      String[] args = new String[] { "SOURCE_INEXISTANTE" };
-
-      assertExecute(args, "La source soit être valide : BASE / CSV");
+      assertExecute(args, "L'identifiant de traitement doit être renseigné.");
    }
 
    @Test
    public void execute_failure_required_dfce() {
 
-      String[] args = new String[] { BASE_SOURCE };
+      String[] args = new String[] { UUID };
 
       assertExecute(
             args,
@@ -70,21 +67,28 @@ public class BootStrapValidationTest {
    }
 
    @Test
-   public void execute_failure_required_postgresql() {
+   public void execute_failure_required_file() {
 
-      String[] args = new String[] { BASE_SOURCE, DFCE_CONFIG };
+      String[] args = new String[] { UUID, DFCE_CONFIG };
 
-      assertExecute(
-            args,
-            "Le chemin complet du fichier de configuration connexion POSTGRESQL doit être renseigné.");
+      assertExecute(args, "Le fichier source doit être indiqué");
 
    }
 
    @Test
-   public void execute_failure_required_first_index() {
+   public void execute_failure_exists_file() {
 
-      String[] args = new String[] { BASE_SOURCE, DFCE_CONFIG,
-            POSTGRESQL_CONFIG };
+      String[] args = new String[] { UUID, DFCE_CONFIG, "dd" };
+
+      assertExecute(args, "Le fichier spécifié doit exister");
+
+   }
+
+   @Test
+   public void execute_failure_required_first_index() throws IOException {
+
+      String[] args = new String[] { UUID, DFCE_CONFIG,
+            new ClassPathResource(FICHIER_SOURCE).getFile().getAbsolutePath() };
 
       assertExecute(args,
             "L'index de l'enregistrement de départ doit être renseigné.");
@@ -92,10 +96,11 @@ public class BootStrapValidationTest {
    }
 
    @Test
-   public void execute_failure_false_first_index() {
+   public void execute_failure_false_first_index() throws IOException {
 
-      String[] args = new String[] { BASE_SOURCE, DFCE_CONFIG,
-            POSTGRESQL_CONFIG, "zzzz" };
+      String[] args = new String[] { UUID, DFCE_CONFIG,
+            new ClassPathResource(FICHIER_SOURCE).getFile().getAbsolutePath(),
+            "zzzz" };
 
       assertExecute(args,
             "L'index de l'enregistrement de départ doit être un nombre.");
@@ -103,55 +108,73 @@ public class BootStrapValidationTest {
    }
 
    @Test
-   public void execute_failure_false_first_negatif() {
+   public void execute_failure_false_first_negatif() throws IOException {
 
-      String[] args = new String[] { BASE_SOURCE, DFCE_CONFIG,
-            POSTGRESQL_CONFIG, "-1" };
+      String[] args = new String[] { UUID, DFCE_CONFIG,
+            new ClassPathResource(FICHIER_SOURCE).getFile().getAbsolutePath(),
+            "-1" };
 
       assertExecute(
             args,
-            "L'index de l'enregistrement de départ doit être un nombre supérieur ou égal à 0.");
+            "L'index de l'enregistrement de départ doit être un nombre supérieur ou égal à 1.");
 
    }
 
    @Test
-   public void execute_failure_required_count_record() {
+   public void execute_failure_required_count_record() throws IOException {
 
-      String[] args = new String[] { BASE_SOURCE, DFCE_CONFIG,
-            POSTGRESQL_CONFIG, FIRST_INDEX };
+      String[] args = new String[] { UUID, DFCE_CONFIG,
+            new ClassPathResource(FICHIER_SOURCE).getFile().getAbsolutePath(),
+            FIRST_INDEX };
 
       assertExecute(args,
-            "Le nombre d'enregistrement à traiter doit être renseigné.");
+            "L'index du dernier enregistrement à traiter doit être renseigné.");
 
    }
 
    @Test
-   public void execute_failure_false_count_record() {
+   public void execute_failure_false_count_record() throws IOException {
 
-      String[] args = new String[] { BASE_SOURCE, DFCE_CONFIG,
-            POSTGRESQL_CONFIG, FIRST_INDEX, "aaaa" };
+      String[] args = new String[] { UUID, DFCE_CONFIG,
+            new ClassPathResource(FICHIER_SOURCE).getFile().getAbsolutePath(),
+            FIRST_INDEX, "aaaa" };
 
       assertExecute(args,
-            "Le nombre d'enregistrement à traiter doit être un nombre.");
+            "L'index du dernier enregistrement à traiter doit être un nombre.");
 
    }
 
    @Test
-   public void execute_failure_false_count_negatif() {
+   public void execute_failure_last_lt_than_first() throws IOException {
 
-      String[] args = new String[] { BASE_SOURCE, DFCE_CONFIG,
-            POSTGRESQL_CONFIG, FIRST_INDEX, "0" };
+      String[] args = new String[] { UUID, DFCE_CONFIG,
+            new ClassPathResource(FICHIER_SOURCE).getFile().getAbsolutePath(),
+            FIRST_INDEX, "-1" };
+
+      assertExecute(
+            args,
+            "L'index du dernier enregistrement doit être supérieur ou égal à l'index de l'enregistrement de départ.");
+
+   }
+
+   @Test
+   public void execute_failure_repertoire_required() throws IOException {
+
+      String[] args = new String[] { UUID, DFCE_CONFIG,
+            new ClassPathResource(FICHIER_SOURCE).getFile().getAbsolutePath(),
+            FIRST_INDEX, COUNT_RECORD };
 
       assertExecute(args,
-            "Le nombre d'enregistrement à traiter doit être un nombre supérieur à 0.");
+            "Le répertoire de génération des fichiers de résultats doit être renseigné.");
 
    }
 
    @Test
-   public void execute_failure_required_mode() {
+   public void execute_failure_required_mode() throws IOException {
 
-      String[] args = new String[] { BASE_SOURCE, DFCE_CONFIG,
-            POSTGRESQL_CONFIG, FIRST_INDEX, COUNT_RECORD };
+      String[] args = new String[] { UUID, DFCE_CONFIG,
+            new ClassPathResource(FICHIER_SOURCE).getFile().getAbsolutePath(),
+            FIRST_INDEX, COUNT_RECORD, "c:/" };
 
       assertExecute(args,
             "Le mode TIR_A_BLANC/MISE_A_JOUR doit être renseigné.");
@@ -159,37 +182,13 @@ public class BootStrapValidationTest {
    }
 
    @Test
-   public void execute_failure_bad_mode() {
+   public void execute_failure_bad_mode() throws IOException {
 
-      String[] args = new String[] { BASE_SOURCE, DFCE_CONFIG,
-            POSTGRESQL_CONFIG, FIRST_INDEX, COUNT_RECORD, "BAD_MODE" };
+      String[] args = new String[] { UUID, DFCE_CONFIG,
+            new ClassPathResource(FICHIER_SOURCE).getFile().getAbsolutePath(),
+            FIRST_INDEX, COUNT_RECORD, "c:/", "BAD_MODE" };
 
       assertExecute(args, "Le mode doit être TIR_A_BLANC ou MISE_A_JOUR.");
 
-   }
-
-   @Test
-   public void execute_failure_database_required() {
-      String[] args = new String[] { CSV_SOURCE, DFCE_CONFIG };
-
-      assertExecute(
-            args,
-            "Le chemin complet du fichier de configuration connexion POSTGRESQL doit être renseigné.");
-   }
-
-   @Test
-   public void execute_failure_file_required() {
-      String[] args = new String[] { CSV_SOURCE, DFCE_CONFIG, POSTGRESQL_CONFIG };
-
-      assertExecute(args,
-            "Le fichier doit être indiqué si la source est un fichier");
-   }
-
-   @Test
-   public void execute_failure_file_must_exist() {
-      String[] args = new String[] { CSV_SOURCE, DFCE_CONFIG,
-            POSTGRESQL_CONFIG, "src/test/fichierInexistant.txt" };
-
-      assertExecute(args, "Le fichier spécifié doit exister");
    }
 }

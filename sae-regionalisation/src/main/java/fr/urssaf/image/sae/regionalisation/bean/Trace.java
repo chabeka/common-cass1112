@@ -1,6 +1,5 @@
 package fr.urssaf.image.sae.regionalisation.bean;
 
-import java.math.BigDecimal;
 import java.util.UUID;
 
 /**
@@ -10,8 +9,6 @@ import java.util.UUID;
  */
 public class Trace {
 
-   private BigDecimal idSearch;
-
    private UUID idDocument;
 
    private String metaName;
@@ -20,20 +17,7 @@ public class Trace {
 
    private String newValue;
 
-   /**
-    * @return identifiant du critère de recherche
-    */
-   public final BigDecimal getIdSearch() {
-      return idSearch;
-   }
-
-   /**
-    * @param idSearch
-    *           identifiant du critère de recherche
-    */
-   public final void setIdSearch(BigDecimal idSearch) {
-      this.idSearch = idSearch;
-   }
+   private int lineNumber;
 
    /**
     * @return identifiant du document modifié
@@ -102,10 +86,24 @@ public class Trace {
    public final String toString() {
       StringBuilder builder = new StringBuilder();
       builder.append("Trace [idDocument=").append(idDocument).append(
-            ", idSearch=").append(idSearch).append(", metaName=").append(
-            metaName).append(", newValue=").append(newValue).append(
-            ", oldValue=").append(oldValue).append("]");
+            ", metaName=").append(metaName).append(", newValue=").append(
+            newValue).append(", oldValue=").append(oldValue).append("]");
       return builder.toString();
+   }
+
+   /**
+    * @return the lineNumber
+    */
+   public final int getLineNumber() {
+      return lineNumber;
+   }
+
+   /**
+    * @param lineNumber
+    *           the lineNumber to set
+    */
+   public final void setLineNumber(int lineNumber) {
+      this.lineNumber = lineNumber;
    }
 
 }

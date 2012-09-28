@@ -7,16 +7,23 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 
 /**
  * Classe regroupant les fonctions utilitaires pour le lancement du traitement
  * 
  */
-public class LaunchHelper {
+public final class LaunchHelper {
 
+   /**
+    * constructeur
+    */
+   private LaunchHelper() {
+   }
+
+   /**
+    * @return le contenu du readme
+    */
    public static String getReadme() {
 
       ClassPathResource resource = new ClassPathResource("readme.txt");

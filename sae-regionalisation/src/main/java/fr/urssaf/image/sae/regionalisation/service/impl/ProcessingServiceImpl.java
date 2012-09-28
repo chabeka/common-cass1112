@@ -4,8 +4,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -15,24 +16,25 @@ import java.util.Map.Entry;
 
 import net.docubase.toolkit.model.document.Document;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.ObjectUtils;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import au.com.bytecode.opencsv.CSVReader;
+import fr.urssaf.image.sae.regionalisation.bean.RepriseConfiguration;
 import fr.urssaf.image.sae.regionalisation.bean.SearchCriterion;
 import fr.urssaf.image.sae.regionalisation.bean.Trace;
-import fr.urssaf.image.sae.regionalisation.dao.MetadataDao;
 import fr.urssaf.image.sae.regionalisation.dao.SaeDocumentDao;
-import fr.urssaf.image.sae.regionalisation.dao.SearchCriterionDao;
 import fr.urssaf.image.sae.regionalisation.dao.TraceDao;
 import fr.urssaf.image.sae.regionalisation.exception.ErreurTechniqueException;
 import fr.urssaf.image.sae.regionalisation.exception.LineFormatException;
 import fr.urssaf.image.sae.regionalisation.service.ProcessingService;
 import fr.urssaf.image.sae.regionalisation.support.ServiceProviderSupport;
+import fr.urssaf.image.sae.regionalisation.util.Constants;
 
 /**
  * Implémentation du service {@link ProcessingService}
@@ -42,12 +44,13 @@ import fr.urssaf.image.sae.regionalisation.support.ServiceProviderSupport;
 @Service
 public class ProcessingServiceImpl implements ProcessingService {
 
+   /**
+    * 
+    */
+   private static final int MILLISEC_CONVERSION = 1000;
+
    private static final Logger LOGGER = LoggerFactory
          .getLogger(ProcessingServiceImpl.class);
-
-   private final SearchCriterionDao searchCriterionDao;
-
-   private final MetadataDao metadataDao;
 
    private final SaeDocumentDao saeDocumentDao;
 
@@ -55,188 +58,34 @@ public class ProcessingServiceImpl implements ProcessingService {
 
    private final ServiceProviderSupport serviceSupport;
 
-   private static final int SIZE_BLOCK = 5;
+   private final RepriseConfiguration repriseConfiguration;
+
+   private int currentRecord;
 
    /**
     * 
-    * @param searchCriterionDao
-    *           dao des critères de recherche
-    * @param metadataDao
-    *           dao des métadonnées
-    * @param saeDocumentDao
+    @param saeDocumentDao
     *           dao des documents SAE
     * @param traceDao
     *           dao des traces
     * @param serviceSupport
     *           services DFCE
+    * @param repriseConfiguration
+    *           configuration de reprise de traitement automatique
     */
    @Autowired
-   public ProcessingServiceImpl(SearchCriterionDao searchCriterionDao,
-         MetadataDao metadataDao, SaeDocumentDao saeDocumentDao,
-         TraceDao traceDao, ServiceProviderSupport serviceSupport) {
+   public ProcessingServiceImpl(SaeDocumentDao saeDocumentDao,
+         TraceDao traceDao, ServiceProviderSupport serviceSupport,
+         RepriseConfiguration repriseConfiguration) {
 
-      this.searchCriterionDao = searchCriterionDao;
-      this.metadataDao = metadataDao;
       this.saeDocumentDao = saeDocumentDao;
       this.traceDao = traceDao;
       this.serviceSupport = serviceSupport;
-
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final void launch(boolean updateDatas, int firstRecord,
-         int processingCount) {
-
-      // connexion à DFCE
-      this.serviceSupport.connect();
-
-      try {
-
-         // nombre d'enregistrement sans correspondance de documents
-         int nbRecordSansDocument = 0;
-
-         // nombre de documents traités
-         int nbRecordDocumentTraites = 0;
-
-         int count = 0;
-         int indexRecord = firstRecord;
-         List<SearchCriterion> searchCriterions;
-         do {
-
-            Date dateStart, dateEnd, firstDate, lastDate;
-
-            dateStart = new Date();
-            // on récupère des blocs de recherches
-            searchCriterions = this.searchCriterionDao.getSearchCriteria(
-                  indexRecord, Math.min(SIZE_BLOCK, processingCount - count));
-            dateEnd = new Date();
-            LOGGER.info("temps de récupération des enregistrements = {} ms",
-                  (dateEnd.getTime() - dateStart.getTime()));
-
-            LOGGER.debug("nombre de critères de recherche à traiter: {}",
-                  searchCriterions.size());
-
-            for (SearchCriterion searchCriterion : searchCriterions) {
-
-               if (!searchCriterion.isUpdated()) {
-                  firstDate = new Date();
-
-                  LOGGER.debug(
-                        "critère de recherche {} avec la requête lucène '{}'",
-                        searchCriterion.getId(), searchCriterion.getLucene());
-                  dateStart = new Date();
-                  Map<String, Object> metadatas = this.metadataDao
-                        .getMetadatas(searchCriterion.getId());
-                  dateEnd = new Date();
-
-                  LOGGER
-                        .info(
-                              "temps de chargements des metadonnées pour le critere {} = {} ms",
-                              searchCriterion.getId(),
-                              (dateEnd.getTime() - dateStart.getTime()));
-                  LOGGER
-                        .debug(
-                              "nombre de métadonnées à mettre à jour pour la requête lucène '{}': {}",
-                              searchCriterion.getLucene(), metadatas.size());
-
-                  dateStart = new Date();
-
-                  List<Document> documents = this.saeDocumentDao
-                        .getDocuments(searchCriterion.getLucene());
-
-                  dateEnd = new Date();
-
-                  LOGGER.info("temps de recherche pour le critere {} = {} ms",
-                        searchCriterion.getId(), (dateEnd.getTime() - dateStart
-                              .getTime()));
-
-                  // on incrémente de 1 si aucun document n'est retourné
-                  if (documents.isEmpty()) {
-                     nbRecordSansDocument++;
-
-                     LOGGER
-                           .debug(
-                                 "aucune document n'a été récupéré pour la requête lucène '{}'",
-                                 searchCriterion.getLucene());
-                  }
-
-                  // si le flag est positionné à MISE_A_JOUR
-                  if (updateDatas) {
-
-                     dateStart = new Date();
-
-                     update(searchCriterion, documents, metadatas);
-
-                     dateEnd = new Date();
-                     LOGGER
-                           .info(
-                                 "temps de mise a jour des documents pour le critere {} = {} ms",
-                                 searchCriterion.getId(),
-                                 (dateEnd.getTime() - dateStart.getTime()));
-
-                  } else {
-
-                     // on trace le nombre de documents pour un critère de
-                     // recherche pour le mode TIR_A_BLANC
-                     this.traceDao.addTraceRec(searchCriterion.getId(),
-                           documents.size(), false);
-
-                     LOGGER
-                           .debug(
-                                 "nombre de documents à mettre à jour pour la requête lucène '{}': {}",
-                                 searchCriterion.getLucene(), documents.size());
-
-                  }
-
-                  // on incrémente de 1 le nombre de documents traités
-                  nbRecordDocumentTraites += documents.size();
-
-                  lastDate = new Date();
-                  LOGGER
-                        .info(
-                              "temps de traitement global pour le critere {} = {} ms",
-                              searchCriterion.getId(),
-                              (lastDate.getTime() - firstDate.getTime()));
-               }
-            }
-
-            indexRecord += SIZE_BLOCK;
-
-            count += SIZE_BLOCK;
-
-         } while (count < processingCount
-               && searchCriterions.size() == SIZE_BLOCK);
-
-         LOGGER.info("nombre de recherche sans documents associés: {}",
-               nbRecordSansDocument);
-         LOGGER
-               .info("nombre de documents traités: {}", nbRecordDocumentTraites);
-
-      } finally {
-
-         // dans tous les cas, on se déconnecte de DFCE
-         this.serviceSupport.disconnect();
-      }
-
+      this.repriseConfiguration = repriseConfiguration;
    }
 
    private void update(SearchCriterion searchCriterion,
-         List<Document> documents, Map<String, Object> metadatas) {
-
-      // FIXME FBON - A Enlever dans le cadre de la source fichier
-
-      // on trace le nombre de documents pour un critère de
-      // recherche pour le mode MISE_A_JOUR
-      this.traceDao
-            .addTraceRec(searchCriterion.getId(), documents.size(), true);
-
-      LOGGER
-            .debug(
-                  "nombre de documents à mettre à jour pour la requête lucène '{}': {}",
-                  searchCriterion.getLucene(), documents.size());
+         List<Document> documents, Map<String, Object> metadatas, int lineNumber) {
 
       // int nbRecordDocumentTraites = 0;
 
@@ -247,7 +96,7 @@ public class ProcessingServiceImpl implements ProcessingService {
          // mettre à jour les métadonnées
          for (Entry<String, Object> metadata : metadatas.entrySet()) {
 
-            Trace trace = this.update(document, metadata);
+            Trace trace = this.update(document, metadata, lineNumber);
 
             if (trace != null) {
                traces.add(trace);
@@ -268,19 +117,12 @@ public class ProcessingServiceImpl implements ProcessingService {
                         new Object[] { document.getUuid(), trace.getMetaName(),
                               trace.getNewValue(), trace.getOldValue() });
 
-            // FIXME FBON - accès par les deux côtés - supprimer la trace en
-            // base si fichier en source
-
             trace.setIdDocument(document.getUuid());
-            trace.setIdSearch(searchCriterion.getId());
 
             this.traceDao.addTraceMaj(trace);
          }
 
       }
-
-      // mise à jour flag traite du critères de recherche
-      this.searchCriterionDao.updateSearchCriterion(searchCriterion.getId());
 
       LOGGER
             .debug(
@@ -289,11 +131,12 @@ public class ProcessingServiceImpl implements ProcessingService {
 
    }
 
-   private Trace update(Document document, Entry<String, Object> metadata) {
+   private Trace update(Document document, Entry<String, Object> metadata,
+         int lineNumber) {
 
       Trace trace = null;
 
-      if (ArrayUtils.contains(MetadataDao.METADATAS, metadata.getKey())) {
+      if (ArrayUtils.contains(Constants.METADATAS, metadata.getKey())) {
 
          trace = new Trace();
          trace.setMetaName(metadata.getKey());
@@ -305,6 +148,7 @@ public class ProcessingServiceImpl implements ProcessingService {
          }
 
          trace.setNewValue(ObjectUtils.toString(metadata.getValue()));
+         trace.setLineNumber(lineNumber);
 
          this.serviceSupport.updateCriterion(document, metadata.getKey(),
                metadata.getValue());
@@ -322,8 +166,104 @@ public class ProcessingServiceImpl implements ProcessingService {
     * {@inheritDoc}
     */
    @Override
-   public void launchWithFile(boolean updateDatas, File source) {
+   public final void launchWithFile(boolean updateDatas, File source,
+         String uuid, int firstRecord, int lastRecord, String dirPath) {
+      boolean success = false;
+      int count = 1;
+      currentRecord = firstRecord;
 
+      File dirParent = new File(dirPath);
+      File endFile = new File(dirParent, "fin_traitement_" + uuid + ".flag");
+      FileUtils.deleteQuietly(endFile);
+
+      while (!success && count <= repriseConfiguration.getMaxTestCount()) {
+         try {
+
+            if (count > 1) {
+               Thread.sleep(repriseConfiguration.getMaxTestCount()
+                     * MILLISEC_CONVERSION);
+            }
+
+            traceDao.open(uuid);
+            createOrUpdateDebutTraitement(dirParent, uuid, count);
+            process(updateDatas, source, uuid, lastRecord);
+            success = true;
+
+         } catch (Throwable throwable) {
+            LOGGER.error(
+                  "Echec de la tentative de traitement {} à la ligne {}\n",
+                  count, currentRecord);
+            LOGGER.error("erreur source :", throwable);
+
+         } finally {
+            traceDao.close();
+         }
+
+         count++;
+      }
+
+      createFinTraitement(dirParent, success, uuid);
+
+   }
+
+   /**
+    * @param dirParent
+    */
+   private void createOrUpdateDebutTraitement(File dirParent, String uuid,
+         int tentative) {
+
+      File startFile = new File(dirParent, "debut_traitement_" + uuid + ".flag");
+      FileWriter fileWriter = null;
+
+      try {
+         fileWriter = new FileWriter(startFile, true);
+         fileWriter.write("tentative " + tentative + " - ");
+         fileWriter.write("Date : "
+               + new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date())
+               + "\n");
+
+      } catch (IOException e) {
+         throw new ErreurTechniqueException(e);
+
+      } finally {
+         if (fileWriter != null) {
+            try {
+               fileWriter.close();
+            } catch (IOException e) {
+               LOGGER.info("impossible de fermer le flux de "
+                     + startFile.getName());
+            }
+         }
+      }
+
+   }
+
+   private void createFinTraitement(File dirParent, boolean succes, String uuid) {
+      File endFile = new File(dirParent, "fin_traitement_" + uuid + ".flag");
+      FileWriter fileWriter = null;
+
+      try {
+         fileWriter = new FileWriter(endFile);
+         fileWriter.write(succes ? "OK" : "KO");
+
+      } catch (IOException e) {
+         throw new ErreurTechniqueException(e);
+
+      } finally {
+         if (fileWriter != null) {
+            try {
+               fileWriter.close();
+            } catch (IOException e) {
+               LOGGER.info("impossible de fermer le flux de "
+                     + endFile.getName());
+            }
+         }
+      }
+
+   }
+
+   private void process(boolean updateDatas, File source, String uuid,
+         int lastRecord) {
       final String trcPrefixe = "launchWithFile()";
 
       FileReader fileReader = null;
@@ -338,19 +278,19 @@ public class ProcessingServiceImpl implements ProcessingService {
          Date dateStart, dateEnd;
          fileReader = new FileReader(source);
          reader = new BufferedReader(fileReader);
-         String line;
+         CSVReader csvReader = new CSVReader(fileReader, ';', '\'',
+               currentRecord);
          String[] tabLine;
-         int i = 0;
-         while ((line = reader.readLine()) != null) {
-            tabLine = StringUtils.split(line, ';');
+
+         while (ArrayUtils.isNotEmpty((tabLine = csvReader.readNext()))
+               && currentRecord <= lastRecord) {
 
             if ((tabLine.length - 1) % 2 != 0 || tabLine.length < 2) {
-               throw new LineFormatException(
-                     "le format de la ligne est incorrecte : " + line);
+               throw new LineFormatException(currentRecord);
             }
 
             SearchCriterion criterion = new SearchCriterion();
-            criterion.setId(BigDecimal.valueOf(i));
+            criterion.setId(currentRecord);
             criterion.setLucene(tabLine[0]);
 
             Map<String, Object> metadonnees = new HashMap<String, Object>();
@@ -384,23 +324,24 @@ public class ProcessingServiceImpl implements ProcessingService {
                            criterion.getLucene());
             }
 
+            this.traceDao.addTraceRec(criterion.getLucene(), currentRecord,
+                  documents.size(), updateDatas);
+
             // si le flag est positionné à MISE_A_JOUR
             if (updateDatas) {
 
                dateStart = new Date();
 
-               update(criterion, documents, metadonnees);
+               update(criterion, documents, metadonnees, currentRecord);
 
                dateEnd = new Date();
                LOGGER
-                     .info(
+                     .debug(
                            "temps de mise a jour des documents pour le critere {} = {} ms",
                            criterion.getId(), (dateEnd.getTime() - dateStart
                                  .getTime()));
 
             } else {
-
-               // FIXME FBON - Trace dans un fichier
 
                LOGGER
                      .debug(
@@ -412,7 +353,8 @@ public class ProcessingServiceImpl implements ProcessingService {
             // on incrémente de 1 le nombre de documents traités
             nbRecordDocumentTraites += documents.size();
 
-            i++;
+            LOGGER.warn("ligne " + currentRecord);
+            currentRecord++;
 
          }
 
@@ -451,7 +393,6 @@ public class ProcessingServiceImpl implements ProcessingService {
          // deconnexion de DFCE
          serviceSupport.disconnect();
       }
-
    }
 
 }

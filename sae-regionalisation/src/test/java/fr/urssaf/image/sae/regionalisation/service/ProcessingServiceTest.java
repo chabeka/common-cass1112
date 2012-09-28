@@ -1,6 +1,7 @@
 package fr.urssaf.image.sae.regionalisation.service;
 
-import java.math.BigDecimal;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,21 +11,19 @@ import java.util.UUID;
 import net.docubase.toolkit.model.document.Document;
 import net.docubase.toolkit.model.document.impl.DocumentImpl;
 
-import org.apache.commons.lang.math.RandomUtils;
 import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.sae.regionalisation.bean.SearchCriterion;
 import fr.urssaf.image.sae.regionalisation.bean.Trace;
-import fr.urssaf.image.sae.regionalisation.dao.MetadataDao;
 import fr.urssaf.image.sae.regionalisation.dao.SaeDocumentDao;
-import fr.urssaf.image.sae.regionalisation.dao.SearchCriterionDao;
 import fr.urssaf.image.sae.regionalisation.dao.TraceDao;
 import fr.urssaf.image.sae.regionalisation.support.ServiceProviderSupport;
 
@@ -41,71 +40,54 @@ public class ProcessingServiceTest {
    private ProcessingService service;
 
    @Autowired
-   private SearchCriterionDao searchCriterionDao;
-
-   @Autowired
-   private MetadataDao metadataDao;
-
-   @Autowired
    private TraceDao traceDao;
 
    @Autowired
    private ServiceProviderSupport providerSupport;
+
+   @Autowired
+   private File repository;
 
    @After
    public void after() {
 
       EasyMock.reset(saeDocumentDao);
       EasyMock.reset(providerSupport);
-      EasyMock.reset(searchCriterionDao);
-      EasyMock.reset(metadataDao);
       EasyMock.reset(traceDao);
    }
 
    @Test
-   public void launch_mise_a_jour() {
+   public void launch_mise_a_jour() throws IOException {
 
       EasyMock.reset(saeDocumentDao);
       EasyMock.reset(providerSupport);
-      EasyMock.reset(searchCriterionDao);
-      EasyMock.reset(metadataDao);
       EasyMock.reset(traceDao);
-      
+
       // connexion à DFCE
 
       providerSupport.connect();
 
       EasyMock.expectLastCall().once();
 
-      // récupération des critères
-
-      EasyMock.expect(
-            searchCriterionDao
-                  .getSearchCriteria(EasyMock.eq(0), EasyMock.eq(5)))
-            .andReturn(createSearchCriterions(5));
-
-      EasyMock.expect(
-            searchCriterionDao
-                  .getSearchCriteria(EasyMock.eq(5), EasyMock.eq(2)))
-            .andReturn(createSearchCriterions(2));
-
       launchCommun();
 
       // trace dans trace rec
+      traceDao.addTraceRec(EasyMock.anyObject(String.class), EasyMock.anyInt(),
+            EasyMock.anyInt(), EasyMock.eq(true));
+      EasyMock.expectLastCall().times(3);
 
-      traceDao.addTraceRec(EasyMock.anyObject(BigDecimal.class), EasyMock
-            .anyInt(), EasyMock.eq(true));
+      traceDao.open("12");
+      EasyMock.expectLastCall().once();
 
-      EasyMock.expectLastCall().times(7);
+      traceDao.close();
+      EasyMock.expectLastCall().once();
 
       // persistance des modifications
-
       providerSupport.updateCriterion(EasyMock.anyObject(Document.class),
             EasyMock.anyObject(String.class), EasyMock.anyObject());
 
       // 3 documents avec 2 métadonnées valides
       EasyMock.expectLastCall().times(6);
-
       saeDocumentDao.update(EasyMock.anyObject(Document.class));
 
       EasyMock.expectLastCall().times(3);
@@ -113,14 +95,7 @@ public class ProcessingServiceTest {
       // trace dans trace Maj
       // 3 documents avec 2 métadonnées valides
       traceDao.addTraceMaj(EasyMock.anyObject(Trace.class));
-
       EasyMock.expectLastCall().times(6);
-
-      // mise à jour des critères de recherche
-      searchCriterionDao.updateSearchCriterion(EasyMock
-            .anyObject(BigDecimal.class));
-
-      EasyMock.expectLastCall().times(7);
 
       // déconnexion à DFCE
 
@@ -130,11 +105,12 @@ public class ProcessingServiceTest {
 
       EasyMock.replay(saeDocumentDao);
       EasyMock.replay(providerSupport);
-      EasyMock.replay(searchCriterionDao);
-      EasyMock.replay(metadataDao);
       EasyMock.replay(traceDao);
 
-      service.launch(true, 0, 7);
+      Resource fichier = new ClassPathResource("CSV/fichier_format_correct");
+
+      service.launchWithFile(true, fichier.getFile(), "12", 0, 7, repository
+            .getAbsolutePath());
 
       // vérification des services
       assertSaeDocumentDao();
@@ -142,7 +118,7 @@ public class ProcessingServiceTest {
    }
 
    @Test
-   public void launch_tir_a_blanc() {
+   public void launch_tir_a_blanc() throws IOException {
 
       // connexion à DFCE
 
@@ -151,41 +127,19 @@ public class ProcessingServiceTest {
       EasyMock.expectLastCall().once();
 
       // récupération des critères
-
-      EasyMock.expect(
-            searchCriterionDao
-                  .getSearchCriteria(EasyMock.eq(0), EasyMock.eq(5)))
-            .andReturn(createSearchCriterions(5));
-
-      EasyMock.expect(
-            searchCriterionDao
-                  .getSearchCriteria(EasyMock.eq(5), EasyMock.eq(2)))
-            .andReturn(createSearchCriterions(2));
-
       launchCommun();
 
       // trace dans trace rec
 
-      traceDao.addTraceRec(EasyMock.anyObject(BigDecimal.class), EasyMock
-            .anyInt(), EasyMock.eq(false));
+      traceDao.addTraceRec(EasyMock.anyObject(String.class), EasyMock.anyInt(),
+            EasyMock.anyInt(), EasyMock.eq(false));
+      EasyMock.expectLastCall().times(3);
 
-      EasyMock.expectLastCall().times(7);
+      traceDao.open("12");
+      EasyMock.expectLastCall().once();
 
-      // aucune trace
-
-      // persistance des modifications
-
-      // aucune persistance
-
-      // trace dans trace Maj
-
-      // aucune trace
-
-      // mise à jour des critères de recherche
-
-      // aucune mise à jour
-
-      // déconnexion à DFCE
+      traceDao.close();
+      EasyMock.expectLastCall().once();
 
       providerSupport.disconnect();
 
@@ -193,11 +147,12 @@ public class ProcessingServiceTest {
 
       EasyMock.replay(saeDocumentDao);
       EasyMock.replay(providerSupport);
-      EasyMock.replay(searchCriterionDao);
-      EasyMock.replay(metadataDao);
       EasyMock.replay(traceDao);
 
-      service.launch(false, 0, 7);
+      Resource fichier = new ClassPathResource("CSV/fichier_format_correct");
+
+      service.launchWithFile(false, fichier.getFile(), "12", 0, 7, repository
+            .getAbsolutePath());
 
       // vérification des services
       assertSaeDocumentDao();
@@ -212,12 +167,6 @@ public class ProcessingServiceTest {
       metadatas.put("nne", "value1");
       metadatas.put("nbp", null);
       metadatas.put("metadataUnknown", "valueUnknown");
-
-      EasyMock.expect(
-            metadataDao.getMetadatas(EasyMock.anyObject(BigDecimal.class)))
-            .andReturn(metadatas).times(7);
-
-      // récupération des documents
 
       List<Document> docs0 = new ArrayList<Document>();
 
@@ -236,26 +185,7 @@ public class ProcessingServiceTest {
 
       EasyMock.expect(
             saeDocumentDao.getDocuments(EasyMock.anyObject(String.class)))
-            .andReturn(docs0).andReturn(docs1).andReturn(docs2).times(5);
-   }
-
-   private List<SearchCriterion> createSearchCriterions(int nbCriterion) {
-
-      List<SearchCriterion> criterions = new ArrayList<SearchCriterion>();
-
-      for (int i = 0; i < nbCriterion; i++) {
-
-         SearchCriterion criterion = new SearchCriterion();
-
-         criterion.setId(new BigDecimal(RandomUtils.nextInt()));
-         criterion
-               .setLucene("lucene request n°" + criterion.getId().intValue());
-
-         criterions.add(criterion);
-
-      }
-
-      return criterions;
+            .andReturn(docs0).andReturn(docs1).andReturn(docs2);
    }
 
    private Document createDocument() {
@@ -271,8 +201,6 @@ public class ProcessingServiceTest {
 
       EasyMock.verify(saeDocumentDao);
       EasyMock.verify(providerSupport);
-      EasyMock.verify(searchCriterionDao);
-      EasyMock.verify(metadataDao);
       EasyMock.verify(traceDao);
    }
 

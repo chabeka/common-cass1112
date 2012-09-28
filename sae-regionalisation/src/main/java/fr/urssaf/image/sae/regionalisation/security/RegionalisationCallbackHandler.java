@@ -21,7 +21,7 @@ public class RegionalisationCallbackHandler implements CallbackHandler {
     * {@inheritDoc}
     */
    @Override
-   public final void handle(Callback[] callbacks) throws IOException,
+   public void handle(Callback[] callbacks) throws IOException,
          UnsupportedCallbackException {
 
       for (int i = 0; i < callbacks.length; i++) {
