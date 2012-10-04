@@ -10,9 +10,9 @@ package fr.urssaf.image.sae.regionalisation.bean;
  */
 public class RepriseConfiguration {
 
-   private int maxTestCount;
+   private final int maxTestCount;
 
-   private int timeInterval;
+   private final int timeInterval;
 
    /**
     * Constructeur

@@ -42,7 +42,6 @@ public class TraceDaoImpl implements TraceDao {
    @Autowired
    public TraceDaoImpl(File repository) {
       this.repository = repository;
-      this.writer = null;
    }
 
    /**

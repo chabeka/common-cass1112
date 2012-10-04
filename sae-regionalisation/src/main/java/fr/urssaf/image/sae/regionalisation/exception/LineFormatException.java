@@ -13,13 +13,14 @@ public class LineFormatException extends RuntimeException {
     * 
     */
    private static final long serialVersionUID = 1L;
-   private int indexLigne;
+   private final int indexLigne;
 
    /**
     * @param indexLigne
     *           index de la ligne en erreur
     */
    public LineFormatException(int indexLigne) {
+      super();
       this.indexLigne = indexLigne;
    }
 
