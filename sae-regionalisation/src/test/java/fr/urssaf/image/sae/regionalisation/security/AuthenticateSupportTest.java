@@ -31,7 +31,7 @@ public class AuthenticateSupportTest {
          protected String loadPassword(PasswordCallback passwordCallback)
                throws IOException {
 
-            return "regionalisation";
+            return "tirablanc";
 
          }
 
