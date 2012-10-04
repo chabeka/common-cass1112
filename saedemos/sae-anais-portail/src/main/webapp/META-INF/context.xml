@@ -2,13 +2,10 @@
 <Context>
 
    <!-- Chemin complet du fichier de configuration de l'application -->
-   <Environment
-      name="SAE_ANAIS_PORTAIL_CONFIG"
-      type="java.lang.String"
-      value="c:/appl/sae/ihmexploit/sae-anais-portail-ihmexploit.properties" />
-   
-   <Environment name="IHMExploit_Anais_Configuration" type="java.lang.String"
-   value="c:/appl/sae/ihmexploit/sae-anais-config.properties" />
-   
+   <Environment name="SAE_ANAIS_PORTAIL_CONFIG" type="java.lang.String"
+      value="/appl/sae-ihm-web-exploit/config-sae-anais-portail/sae-anais-portail-ihmwebexploit.properties" />
+
+   <Environment name="SAE_ANAIS_PORTAIL_MAQUETTE"
+      type="java.lang.String" value="/appl/sae-ihm-web-exploit/config-sae-anais-portail/sae-anais-portail-config-maquette-generique.properties" />
 
 </Context>

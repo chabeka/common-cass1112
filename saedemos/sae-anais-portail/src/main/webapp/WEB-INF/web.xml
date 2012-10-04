@@ -43,7 +43,7 @@
 
       <init-param>
          <param-name>fichierProprietes</param-name>
-         <param-value>IHMExploit_Anais_Configuration</param-value>
+         <param-value>SAE_ANAIS_PORTAIL_MAQUETTE</param-value>
       </init-param>
 
    </filter>
