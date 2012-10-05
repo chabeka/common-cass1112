@@ -2,7 +2,9 @@ package fr.urssaf.image.sae.integration.ihmweb.saeservice.security;
 
 import java.io.IOException;
 import java.security.KeyStore;
+import java.security.KeyStoreException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -679,12 +681,15 @@ public class ViService {
    private void loadAllKeyStores() {
       
       KeyStore keystore;
+      String aliasClePrivee;
       for (Certificat certif : certificatService.getCertificats().getCertificats()) {
          
          keystore = chargeKeyStore(certif);
          
+         aliasClePrivee = trouveAliasClePrivee(keystore);
+         
          keystores.add(new MyKeyStore(
-               certif.getId(), keystore, certif.getPassword(), certif.getAliasClePrivee()));
+               certif.getId(), keystore, certif.getPassword(), aliasClePrivee));
          
       }
       
@@ -699,6 +704,28 @@ public class ViService {
          }
       }
       return null;
+      
+   }
+   
+   private String trouveAliasClePrivee(KeyStore keystore) {
+      
+      List<String> aliases;
+      try {
+         
+         aliases = Collections.list(keystore.aliases());
+         
+         for (String alias: aliases) {
+            if (keystore.isKeyEntry(alias)) {
+               return alias;
+            }
+         }
+         
+         // Si pas trouvé, on lève une exception
+         throw new IntegrationRuntimeException("");
+         
+      } catch (KeyStoreException e) {
+         throw new IntegrationRuntimeException(e);
+      }
       
    }
    

@@ -13,9 +13,6 @@ public class Certificat {
    @XStreamAlias("password")
    private String password;
    
-   @XStreamAlias("aliasClePrivee")
-   private String aliasClePrivee;
-   
    public final String getId() {
       return id;
    }
@@ -34,12 +31,5 @@ public class Certificat {
    public final void setPassword(String password) {
       this.password = password;
    }
-   public final String getAliasClePrivee() {
-      return aliasClePrivee;
-   }
-   public final void setAliasClePrivee(String aliasClePrivee) {
-      this.aliasClePrivee = aliasClePrivee;
-   }
-   
    
 }
