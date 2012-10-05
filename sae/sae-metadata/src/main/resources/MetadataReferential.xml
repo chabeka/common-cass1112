@@ -149,7 +149,7 @@
       </pattern>
       <consultable>true</consultable>
       <defaultConsultable>false</defaultConsultable>
-      <searchable>false</searchable>
+      <searchable>true</searchable>
       <internal>false</internal>
       <archivable>true</archivable>
       <label>Numéro de compte interne</label>
