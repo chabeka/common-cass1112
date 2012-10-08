@@ -280,7 +280,7 @@ public class ProcessingServiceImpl implements ProcessingService {
          fileReader = new FileReader(source);
          reader = new BufferedReader(fileReader);
          CSVReader csvReader = new CSVReader(fileReader, ';', '\'',
-               currentRecord);
+               currentRecord -1);
          String[] tabLine;
 
          while (ArrayUtils.isNotEmpty((tabLine = csvReader.readNext()))
@@ -312,7 +312,7 @@ public class ProcessingServiceImpl implements ProcessingService {
 
             dateEnd = new Date();
 
-            LOGGER.info("temps de recherche pour le critere {} = {} ms",
+            LOGGER.debug("temps de recherche pour le critere {} = {} ms",
                   criterion.getId(), (dateEnd.getTime() - dateStart.getTime()));
 
             // on incrémente de 1 si aucun document n'est retourné
@@ -354,7 +354,7 @@ public class ProcessingServiceImpl implements ProcessingService {
             // on incrémente de 1 le nombre de documents traités
             nbRecordDocumentTraites += documents.size();
 
-            LOGGER.warn("ligne " + currentRecord);
+            LOGGER.debug("ligne " + currentRecord);
             currentRecord++;
 
          }

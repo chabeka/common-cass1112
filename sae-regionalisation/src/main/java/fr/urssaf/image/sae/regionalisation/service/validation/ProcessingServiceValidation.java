@@ -22,9 +22,9 @@ public class ProcessingServiceValidation {
          + "launchWithFile(*,*, *, *, *, *))"
          + "&& args(updateDatas,source, uuid, first, last, dirPath)";
 
-/**
+   /**
     * Validation des méthodes de
-    * {@link fr.urssaf.image.sae.regionalisation.service.ProcessingService#launchWithFile(boolean, java.io.File)
+    * {@link fr.urssaf.image.sae.regionalisation.service.ProcessingService#launchWithFile(boolean, java.io.File)}
     * <br>
     * <ul>
     * <li><code>source</code> doit être non null</li>
@@ -33,11 +33,15 @@ public class ProcessingServiceValidation {
     * @param updateDatas
     *           flag indiquant si le traitement est réel ou tir à blanc.
     * @param source
-    *          fichier contenant les données
-    *          @param uuid identifiant unique du traitement
-    *          @param first index du premier enregistrement à traiter
-    *          @param last index du dernier enregistrement à traiter
-    *          @param dirPath chemin du répertoire où seront créés les fichiers de suivi
+    *           fichier contenant les données
+    * @param uuid
+    *           identifiant unique du traitement
+    * @param first
+    *           index du premier enregistrement à traiter
+    * @param last
+    *           index du dernier enregistrement à traiter
+    * @param dirPath
+    *           chemin du répertoire où seront créés les fichiers de suivi
     */
    @Before(FILE_METHOD)
    public final void launchWithFile(boolean updateDatas, File source,

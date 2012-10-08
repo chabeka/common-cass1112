@@ -93,7 +93,7 @@ public class BootStrap {
 
       try {
 
-         firstRecord = Integer.valueOf(args[FIRST_ARG_INDEX]) - 1;
+         firstRecord = Integer.valueOf(args[FIRST_ARG_INDEX]);
 
       } catch (NumberFormatException e) {
 
@@ -101,7 +101,7 @@ public class BootStrap {
                "L'index de l'enregistrement de départ doit être un nombre.", e);
       }
 
-      if (firstRecord < 0) {
+      if (firstRecord < 1) {
 
          throw new IllegalArgumentException(
                "L'index de l'enregistrement de départ doit être un nombre supérieur ou égal à 1.");
