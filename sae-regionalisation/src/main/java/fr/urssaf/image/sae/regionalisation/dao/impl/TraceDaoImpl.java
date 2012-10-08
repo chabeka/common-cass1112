@@ -55,7 +55,15 @@ public class TraceDaoImpl implements TraceDao {
          }
 
          this.file = new File(repository, "suivi_" + uuid + ".log");
+         boolean fileExist = file.exists();
          this.writer = new FileWriter(file, true);
+         
+         if (!fileExist) {
+            writer.write(Constants.ENTETE_OUT_REC);
+            writer.write("\n");
+            writer.write(Constants.ENTETE_OUT_MAJ);
+            writer.write("\n");
+         }
 
       } catch (IOException e) {
          throw new ErreurTechniqueException(e);

@@ -53,16 +53,21 @@ public final class Constants {
    public static final String TRACE_UPDATE_FALSE = "non";
 
    /** trace écrite lors d'une mise à jour de métadonnée */
-   public static final String TRACE_OUT_MAJ = "ligne ${" + TRACE_LIGNE
-         + "} - document ${" + TRACE_ID_DOCUMENT + "} : " + "métadonnée ${"
-         + TRACE_META_NAME + "} mise à jour. " + "Ancienne valeur = ${"
-         + TRACE_OLD_VALUE + "} / Nouvelle valeur = ${" + TRACE_NEW_VALUE
-         + "}.";
+   public static final String TRACE_OUT_MAJ = "MAJ;${" + TRACE_LIGNE + "}%${"
+         + TRACE_ID_DOCUMENT + "}%${" + TRACE_META_NAME + "}%${"
+         + TRACE_OLD_VALUE + "}%${" + TRACE_NEW_VALUE + "}";
 
    /** trace écrite lors d'une recherche de documents */
-   public static final String TRACE_OUT_REC = "ligne ${" + TRACE_LIGNE
-         + "} - la requête lucene ${" + TRACE_REQUETE_LUCENE + "} concerne ${"
-         + TRACE_DOC_COUNT + "} documents. Mise à jour des métadonnées : ${"
-         + TRACE_INDIC_MAJ + "}.";
+   public static final String TRACE_OUT_REC = "REC;${" + TRACE_LIGNE + "}%${"
+         + TRACE_REQUETE_LUCENE + "}%${" + TRACE_DOC_COUNT + "}%${"
+         + TRACE_INDIC_MAJ + "}";
+
+   /** entete recherche */
+   public static final String ENTETE_OUT_REC = "#REC;numero de ligne%requete lucene"
+         + "%nombre de doc impactes%mise a jour des donnees";
+
+   /** entete mise a jour */
+   public static final String ENTETE_OUT_MAJ = "#MAJ;ligne%document"
+         + "%metadonnee%ancienne valeur%nouvelle valeur";
 
 }

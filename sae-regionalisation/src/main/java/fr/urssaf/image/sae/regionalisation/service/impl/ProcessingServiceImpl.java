@@ -245,6 +245,7 @@ public class ProcessingServiceImpl implements ProcessingService {
       try {
          fileWriter = new FileWriter(endFile);
          fileWriter.write(succes ? "OK" : "KO");
+         fileWriter.write("\n");
 
       } catch (IOException e) {
          throw new ErreurTechniqueException(e);

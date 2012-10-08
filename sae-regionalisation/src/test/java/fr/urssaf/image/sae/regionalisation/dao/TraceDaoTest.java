@@ -56,7 +56,7 @@ public class TraceDaoTest {
       // récupération des traces
       List<String> lines = FileUtils.readLines(dao.getFile());
 
-      Assert.assertEquals("le nombre de traces est inattendu", 1, lines.size());
+      Assert.assertEquals("le nombre de traces est inattendu", 3, lines.size());
 
       Map<String, String> map = new HashMap<String, String>();
       map.put(Constants.TRACE_ID_DOCUMENT,
@@ -69,7 +69,7 @@ public class TraceDaoTest {
       String ligneAttendue = StrSubstitutor.replace(Constants.TRACE_OUT_MAJ,
             map);
       Assert.assertEquals("la trace réalisée doit être correcte",
-            ligneAttendue, lines.get(0));
+            ligneAttendue, lines.get(2));
 
    }
 
@@ -90,11 +90,11 @@ public class TraceDaoTest {
       List<String> lines = FileUtils.readLines(dao.getFile());
 
       Assert.assertEquals(
-            "le nombre de ligne dans le fichier doit etre correct", 1, lines
+            "le nombre de ligne dans le fichier doit etre correct", 3, lines
                   .size());
 
       Assert.assertEquals("la ligne générée doit être correcte", attendu, lines
-            .get(0));
+            .get(2));
 
    }
 
