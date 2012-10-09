@@ -44,7 +44,7 @@ public final class MajLotServiceImpl implements MajLotService {
    public static final String DUREE_CONSERVATION = "DUREECONSERVATIONDEMANDEDELAICOTISANT";
    public static final String CASSANDRA_120510 = "CASSANDRA_120510";
    public static final String CASSANDRA_120512 = "CASSANDRA_120512";
-   public static final String CASSANDRA_120910 = "CASSANDRA_120910";
+   public static final String CASSANDRA_121110 = "CASSANDRA_121110";
    public static final String DFCE_110_INDEX_DATES = "DFCE_110_INDEX_DATES";
    public static final String DFCE_110_CASSANDRA = "DFCE_110_CASSANDRA";
    public static final String META_SEPA = "META_SEPA";
@@ -91,7 +91,7 @@ public final class MajLotServiceImpl implements MajLotService {
 
          updateCassandra120512();
 
-      } else if (CASSANDRA_120910.equalsIgnoreCase(nomOperation)) {
+      } else if (CASSANDRA_121110.equalsIgnoreCase(nomOperation)) {
 
          updateCassandra120910();
 
