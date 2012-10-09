@@ -5,12 +5,12 @@
    <parent>
       <groupId>fr.urssaf.image.sae</groupId>
       <artifactId>sae</artifactId>
-      <version>12.11.10.1</version>
+      <version>12.11.10.2-SNAPSHOT</version>
    </parent>
 
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-services</artifactId>
-   <version>12.11.10.1</version>
+   <version>12.11.10.2-SNAPSHOT</version>
 
    <name>sae-services</name>
 
@@ -88,49 +88,49 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-bo</artifactId>
-         <version>12.11.10.1</version>
+         <version>12.11.10.2-SNAPSHOT</version>
       </dependency>
 
       <!-- SAE MAPPING -->
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-mapping</artifactId>
-         <version>12.11.10.1</version>
+         <version>12.11.10.2-SNAPSHOT</version>
       </dependency>
 
       <!-- SAE STORAGE -->
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-storage</artifactId>
-         <version>12.11.10.1</version>
+         <version>12.11.10.2-SNAPSHOT</version>
       </dependency>
 
       <!-- SAE STORAGE DFCE -->
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-storage-dfce</artifactId>
-         <version>12.11.10.1</version>
+         <version>12.11.10.2-SNAPSHOT</version>
       </dependency>
 
       <!-- SAE METADATA -->
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-metadata</artifactId>
-         <version>12.11.10.1</version>
+         <version>12.11.10.2-SNAPSHOT</version>
       </dependency>
 
       <!-- SAE ECDE -->
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-ecde</artifactId>
-         <version>12.11.10.1</version>
+         <version>12.11.10.2-SNAPSHOT</version>
       </dependency>
 
       <!-- SAE-PILE-TRAVAUX -->
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-pile-travaux</artifactId>
-         <version>12.11.10.1</version>
+         <version>12.11.10.2-SNAPSHOT</version>
       </dependency>
 
       <!-- SPRING BATCH CASSANDRA -->

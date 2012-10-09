@@ -4,7 +4,7 @@
 
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae</artifactId>
-   <version>12.11.10.1</version>
+   <version>12.11.10.2-SNAPSHOT</version>
 
    <packaging>pom</packaging>
 
@@ -420,13 +420,13 @@
    <!-- Configuration SVN pour le plug-in maven-release -->
    <scm>
       <url>
-        scm:svn:svn://cer69-svn.cer69.recouv/image/java/tags/sae-12.11.10.1
+        scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/sae/
       </url>
       <developerConnection>
-         scm:svn:svn://cer69-svn.cer69.recouv/image/java/tags/sae-12.11.10.1
+         scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/sae/
       </developerConnection>
       <connection>
-         scm:svn:svn://cer69-svn.cer69.recouv/image/java/tags/sae-12.11.10.1
+         scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/sae/
       </connection>
    </scm>
 
