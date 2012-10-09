@@ -122,10 +122,10 @@ public class MainValidation {
          return;
       if (MajLotServiceImpl.CASSANDRA_120910.equalsIgnoreCase(nomOperation))
          return;
-      if (MajLotServiceImpl.DFCE_110_CASSANDRA.equalsIgnoreCase(nomOperation))
+      /*if (MajLotServiceImpl.DFCE_110_CASSANDRA.equalsIgnoreCase(nomOperation))
          return;
       if (MajLotServiceImpl.DFCE_110_INDEX_DATES.equalsIgnoreCase(nomOperation))
-         return;
+         return;*/
       if (MajLotServiceImpl.META_SEPA.equalsIgnoreCase(nomOperation))
          return;
       // TODO : Traiter le cas de la mise à jour de la durée de conservation de

@@ -51,7 +51,7 @@ public class SAECassandraUpdaterTest {
       Assert.assertEquals(3, updater.getDatabaseVersion());
    }
    
-   @Test
+   /*@Test
    public void updateToVersion110() {
       CassandraConfig config = new CassandraConfig();
       config.setHosts(CassandraUnit.host);
@@ -59,6 +59,6 @@ public class SAECassandraUpdaterTest {
       DFCECassandraUpdater updater = new DFCECassandraUpdater(config);
       updater.updateToVersion110();
      
-   }
+   }*/
 
 }

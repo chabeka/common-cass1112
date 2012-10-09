@@ -19,15 +19,10 @@ import net.docubase.toolkit.service.administration.StorageAdministrationService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.batch.core.JobParametersInvalidException;
-import org.springframework.batch.core.launch.JobInstanceAlreadyExistsException;
-import org.springframework.batch.core.launch.NoSuchJobException;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
-import com.docubase.dfce.commons.jobs.JobUtils;
 import com.thoughtworks.xstream.XStream;
 
 import fr.urssaf.image.sae.lotinstallmaj.exception.MajLotRuntimeException;
@@ -100,13 +95,15 @@ public final class MajLotServiceImpl implements MajLotService {
 
          updateCassandra120910();
 
-      } else if (DFCE_110_INDEX_DATES.equalsIgnoreCase(nomOperation)) {
-
-         updateIndexationDFCE110();
-
-      } else if (DFCE_110_CASSANDRA.equalsIgnoreCase(nomOperation)) {
-
-         this.updateDFCE110CASSANDRA();
+         /*
+          * } else if (DFCE_110_INDEX_DATES.equalsIgnoreCase(nomOperation)) {
+          * 
+          * updateIndexationDFCE110();
+          * 
+          * } else if (DFCE_110_CASSANDRA.equalsIgnoreCase(nomOperation)) {
+          * 
+          * this.updateDFCE110CASSANDRA();
+          */
 
       } else if (META_SEPA.equalsIgnoreCase(nomOperation)) {
 
@@ -253,47 +250,45 @@ public final class MajLotServiceImpl implements MajLotService {
     * Indexation pour les métadonnées système qui n'étaient pas indexées en
     * 1.0.1
     */
-   private void updateIndexationDFCE110() {
+   /*
+    * private void updateIndexationDFCE110() {
+    * 
+    * // Log LOG.info("début d'indexation des métadonnées systèmes ");
+    * 
+    * // Connection à DFCE connectDfce();
+    * 
+    * String parameters = "category.names=SM_CREATION_DATE|SM_ARCHIVAGE_DATE|" +
+    * "SM_MODIFICATION_DATE, timestamp=" + System.currentTimeMillis(); try {
+    * serviceProvider.getJobAdministrationService().start(
+    * JobUtils.INDEX_CATEGORIES_JOB, parameters);
+    * 
+    * LOG.info("fin d'indexation des métadonnées systèmes ");
+    * 
+    * } catch (NoSuchJobException e) { LOG.error("échec indexation", e); } catch
+    * (JobInstanceAlreadyExistsException e) { LOG.error("échec indexation", e);
+    * } catch (JobParametersInvalidException e) { LOG.error("échec indexation",
+    * e); }
+    * 
+    * }
+    */
 
-      // Log
-      LOG.info("début d'indexation des métadonnées systèmes ");
-
-      // Connection à DFCE
-      connectDfce();
-
-      String parameters = "category.names=SM_CREATION_DATE|SM_ARCHIVAGE_DATE|"
-            + "SM_MODIFICATION_DATE, timestamp=" + System.currentTimeMillis();
-      try {
-         serviceProvider.getJobAdministrationService().start(
-               JobUtils.INDEX_CATEGORIES_JOB, parameters);
-
-         LOG.info("fin d'indexation des métadonnées systèmes ");
-
-      } catch (NoSuchJobException e) {
-         LOG.error("échec indexation", e);
-      } catch (JobInstanceAlreadyExistsException e) {
-         LOG.error("échec indexation", e);
-      } catch (JobParametersInvalidException e) {
-         LOG.error("échec indexation", e);
-      }
-
-   }
-
-   private void updateDFCE110CASSANDRA() {
-
-      LOG
-            .info("Début de l'opération : création des nouvelles CF pour la version 1.1.0 de DFCE");
-
-      // Récupération de la chaîne de connexion au cluster cassandra
-      CassandraConfig config = new CassandraConfig();
-      BeanUtils.copyProperties(cassandraConfig, config);
-      config.setKeyspaceName("Docubase");
-      DFCECassandraUpdater updater = new DFCECassandraUpdater(config);
-      updater.updateToVersion110();
-
-      LOG
-            .info("Fin de l'opération : création des nouvelles CF pour la version 1.1.0 de DFCE");
-   }
+   /*
+    * private void updateDFCE110CASSANDRA() {
+    * 
+    * LOG.info(
+    * "Début de l'opération : création des nouvelles CF pour la version 1.1.0 de DFCE"
+    * );
+    * 
+    * // Récupération de la chaîne de connexion au cluster cassandra
+    * CassandraConfig config = new CassandraConfig();
+    * BeanUtils.copyProperties(cassandraConfig, config);
+    * config.setKeyspaceName("Docubase"); DFCECassandraUpdater updater = new
+    * DFCECassandraUpdater(config); updater.updateToVersion110();
+    * 
+    * LOG.info(
+    * "Fin de l'opération : création des nouvelles CF pour la version 1.1.0 de DFCE"
+    * ); }
+    */
 
    /**
     * Pour lot 120912 du SAE : mise à jour du modèle de données des documents.
@@ -341,10 +336,8 @@ public final class MajLotServiceImpl implements MajLotService {
          for (BaseCategory baseCategory : baseCategories) {
             base.addBaseCategory(baseCategory);
          }
-         
+
          serviceProvider.getBaseAdministrationService().updateBase(base);
-         
-         
 
          LOG.info("- fin d'insertion des catégories");
 
@@ -367,7 +360,7 @@ public final class MajLotServiceImpl implements MajLotService {
             }
 
          }
-         
+
          serviceProvider.disconnect();
       }
 

@@ -11,9 +11,7 @@ import net.docubase.toolkit.model.ToolkitFactory;
 import net.docubase.toolkit.model.base.Base;
 import net.docubase.toolkit.model.base.BaseCategory;
 import net.docubase.toolkit.model.document.Document;
-import net.docubase.toolkit.model.search.SearchQuery;
 import net.docubase.toolkit.model.search.SearchResult;
-import net.docubase.toolkit.model.search.impl.QueryImpl;
 import net.docubase.toolkit.service.ServiceProvider;
 
 import org.apache.commons.lang.exception.NestableRuntimeException;
@@ -199,13 +197,18 @@ public class SAEServiceTestProvider {
 
       try {
 
-         SearchQuery paramSearchQuery = new QueryImpl("iti:"
-               + idTreatement.toString(), base);
-         paramSearchQuery.setSearchLimit(limitResult);
-         SearchResult searchResult = serviceProvider.getSearchService().search(
-               paramSearchQuery);
+         /*
+          * SearchQuery paramSearchQuery = new QueryImpl("iti:" +
+          * idTreatement.toString(), base);
+          * paramSearchQuery.setSearchLimit(limitResult); SearchResult
+          * searchResult = serviceProvider.getSearchService().search(
+          * paramSearchQuery);
+          * 
+          * return searchResult;
+          */
 
-         return searchResult;
+         return serviceProvider.getSearchService().search(
+               "iti:" + idTreatement, limitResult, base);
 
       } catch (ExceededSearchLimitException e) {
          throw new NestableRuntimeException(e);
