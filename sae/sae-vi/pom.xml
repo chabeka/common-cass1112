@@ -5,12 +5,12 @@
    <parent>
       <groupId>fr.urssaf.image.sae</groupId>
       <artifactId>sae</artifactId>
-      <version>12.9.10.4-SNAPSHOT</version>
+      <version>12.11.10.1</version>
    </parent>
 
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-vi</artifactId>
-   <version>12.9.10.4-SNAPSHOT</version>
+   <version>12.11.10.1</version>
 
    <name>sae-vi</name>
 
@@ -102,14 +102,14 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-saml</artifactId>
-         <version>12.9.10.4-SNAPSHOT</version>
+         <version>12.11.10.1</version>
       </dependency>
 
       <!-- SAE-DROIT -->
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-droit</artifactId>
-         <version>12.9.10.4-SNAPSHOT</version>
+         <version>12.11.10.1</version>
       </dependency>
 
 
