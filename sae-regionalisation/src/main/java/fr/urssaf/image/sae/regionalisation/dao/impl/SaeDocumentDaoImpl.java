@@ -4,9 +4,7 @@ import java.util.List;
 
 import net.docubase.toolkit.model.base.Base;
 import net.docubase.toolkit.model.document.Document;
-import net.docubase.toolkit.model.search.SearchQuery;
 import net.docubase.toolkit.model.search.SearchResult;
-import net.docubase.toolkit.model.search.impl.QueryImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -49,14 +47,24 @@ public class SaeDocumentDaoImpl implements SaeDocumentDao {
 
       Base base = this.serviceSupport.getBase();
 
-      SearchQuery paramSearchQuery = new QueryImpl(lucene, base);
+      /*
+       * SearchQuery paramSearchQuery = new QueryImpl(lucene, base);
+       * SearchResult searchResult;
+       * 
+       * try {
+       * 
+       * searchResult = serviceSupport.getSearchService().search(
+       * paramSearchQuery);
+       * 
+       * } catch (ExceededSearchLimitException e) { throw new
+       * ErreurTechniqueException(e); } catch (SearchQueryParseException e) {
+       * throw new ErreurTechniqueException(e); }
+       */
+
       SearchResult searchResult;
-
       try {
-
-         searchResult = serviceSupport.getSearchService().search(
-               paramSearchQuery);
-
+         searchResult = serviceSupport.getSearchService().search(lucene, 200,
+               base);
       } catch (ExceededSearchLimitException e) {
          throw new ErreurTechniqueException(e);
       } catch (SearchQueryParseException e) {

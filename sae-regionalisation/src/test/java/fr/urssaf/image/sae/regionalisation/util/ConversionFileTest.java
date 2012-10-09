@@ -40,31 +40,31 @@ public class ConversionFileTest {
          String lucene;
          
          while ((tabLine = csvReader.readNext()) != null) {
-            if (COTI_CLE.equals(tabLine[0])) {
-               lucene = "nce:" + tabLine[2] + " AND cog:UR" + tabLine[1];
+            if (COTI_CLE.equals(tabLine[0].trim())) {
+               lucene = "nce:" + tabLine[2].trim() + " AND cog:UR" + tabLine[1].trim();
                fileWriter.write(lucene);
                fileWriter.write(";nce;");
-               fileWriter.write(tabLine[3]);
+               fileWriter.write(tabLine[3].trim());
                fileWriter.write(";cog;UR");
-               fileWriter.write(tabLine[4]);
+               fileWriter.write(tabLine[4].trim());
                fileWriter.write("\n");
                
             } else if (CPTE_CLE.equals(tabLine[0])) {
-               lucene = "nci:" + tabLine[2] + " AND cog:UR" + tabLine[1];
+               lucene = "nci:" + tabLine[2].trim() + " AND cog:UR" + tabLine[1].trim();
                fileWriter.write(lucene);
                fileWriter.write(";nci;");
-               fileWriter.write(tabLine[3]);
+               fileWriter.write(tabLine[3].trim());
                fileWriter.write(";cog;UR");
-               fileWriter.write(tabLine[4]);
+               fileWriter.write(tabLine[4].trim());
                fileWriter.write("\n");
                
-            } else if (PERS_CLE.equals(tabLine[0])) {
-               lucene = "npe:" + tabLine[2] + " AND cog:UR" + tabLine[1];
+            } else if (PERS_CLE.equals(tabLine[0].trim())) {
+               lucene = "npe:" + tabLine[2].trim() + " AND cog:UR" + tabLine[1].trim();
                fileWriter.write(lucene);
                fileWriter.write(";npe;");
-               fileWriter.write(tabLine[3]);
+               fileWriter.write(tabLine[3].trim());
                fileWriter.write(";cog;UR");
-               fileWriter.write(tabLine[4]);
+               fileWriter.write(tabLine[4].trim());
                fileWriter.write("\n");
                
             }
