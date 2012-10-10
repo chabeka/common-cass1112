@@ -103,7 +103,7 @@
         <archivableObligatoire>false</archivableObligatoire>
         <consulteeParDefaut>false</consulteeParDefaut>
         <consultable>true</consultable>
-        <critereRecherche>false</critereRecherche>
+        <critereRecherche>true</critereRecherche>
         <client>true</client>
         <obligatoireAuStockage>false</obligatoireAuStockage>
         <typeDfce>string</typeDfce>
