@@ -46,6 +46,7 @@
       <apache.commons-collections.version>3.2.1</apache.commons-collections.version>
       
       <sae.version>12.11.10.1</sae.version>
+      <guava.version>12.0</guava.version>
 
    </properties>
 
@@ -435,10 +436,24 @@
 
    <dependencies>
    
+      <!-- SAE -->
+      
+      <dependency>
+         <groupId>com.google.guava</groupId>
+         <artifactId>guava</artifactId>
+         <version>${guava.version}</version>
+      </dependency>
+      
       <dependency>
          <groupId>fr.urssaf.image.commons</groupId>
          <artifactId>commons-dfce</artifactId>
          <version>${commons.dfce.version}</version>
+         <exclusions>
+            <exclusion>
+               <groupId>com.google.guava</groupId>
+               <artifactId>guava</artifactId>
+            </exclusion>
+         </exclusions>
       </dependency>
       
       <dependency>
