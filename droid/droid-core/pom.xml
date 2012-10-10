@@ -1,0 +1,75 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+  
+    <parent>
+        <artifactId>droid-parent</artifactId>
+        <groupId>uk.gov.nationalarchives</groupId>
+        <version>6.2-SNAPSHOT</version>
+        <relativePath>../droid-parent</relativePath>
+    </parent>
+  
+    <artifactId>droid-core</artifactId>
+    <packaging>jar</packaging>
+
+    <name>droid-core</name>
+    
+    <!--scm>
+        <connection>scm:git:https://github.com/digital-preservation/droid.git</connection>
+        <developerConnection>scm:git:https://github.com/digital-preservation/droid.git</developerConnection>
+        <url>scm:git:https://github.com/digital-preservation/droid.git</url>
+    </scm-->
+  
+    <build>
+
+    </build>
+  
+    <dependencies>
+  	<dependency>
+            <groupId>uk.gov.nationalarchives</groupId>
+            <artifactId>droid-core-interfaces</artifactId>
+            <version>${project.version}</version>
+  	</dependency>
+        <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+  	</dependency>
+  	<dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+  	</dependency>
+  	<dependency>
+            <groupId>commons-digester</groupId>
+            <artifactId>commons-digester</artifactId>
+            <version>2.1</version>
+  	</dependency>
+  	<dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+  	</dependency>
+  	<dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+  	</dependency>
+  	<dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils-core</artifactId>
+  	</dependency>
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr</artifactId>
+  	</dependency>
+  	<dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr-runtime</artifactId>
+  	</dependency>
+  	<dependency>
+            <groupId>com.google.code.byteseek</groupId>
+            <artifactId>byteseek</artifactId>
+  	</dependency>
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <scope>test</scope>
+  	</dependency>
+  </dependencies>
+</project>
