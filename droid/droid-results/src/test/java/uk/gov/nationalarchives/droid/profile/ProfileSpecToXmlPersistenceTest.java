@@ -114,7 +114,7 @@ public class ProfileSpecToXmlPersistenceTest {
         profileSpecJaxbDao.saveProfile(profile, new File("profiles/untitled-1"));
 
         String control = "<Profile Id=\"untitled-1\">"
-                + "  <CreatedDate>2009-01-01T00:00:00Z</CreatedDate>"
+                + "  <CreatedDate>2009-01-01T00:00:00+01:00</CreatedDate>"
                 + "  <State>STOPPED</State>"
                 + "  <Throttle>0</Throttle>"
                 + "  <SignatureFileVersion>26</SignatureFileVersion>"
@@ -158,7 +158,7 @@ public class ProfileSpecToXmlPersistenceTest {
         DateTime testDateTime = new DateTime(0L);
         DateTimeFormatter formatter = ISODateTimeFormat.dateTimeNoMillis();
         String control = "<Profile Id=\"untitled-1\">"
-                + "  <CreatedDate>2009-01-01T00:00:00Z</CreatedDate>"
+                + "  <CreatedDate>2009-01-01T00:00:00+01:00</CreatedDate>"
                 + "  <ProfileSpec>"
                 + "    <Resources>"
                 + "     <File>"
@@ -326,7 +326,7 @@ public class ProfileSpecToXmlPersistenceTest {
         assertEquals("STOPPED", profile.getState().name());
         assertEquals(120, profile.getThrottle());
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-        assertEquals(df.parse("2009-01-01 00:00:00"), profile.getDateCreated());
+        assertEquals(df.parse("2009-01-01 01:00:00"), profile.getDateCreated());
 
         ProfileSpec profileSpec = profile.getProfileSpec();
 

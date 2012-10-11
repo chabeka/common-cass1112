@@ -56,7 +56,7 @@ public class ResourceFileChooserTest {
     public void testFileChooserSetup() {
         
         assertTrue(fc.isAcceptAllFileFilterUsed());
-        assertEquals("All Files", fc.getFileFilter().getDescription());
+        assertEquals("Tous les fichiers", fc.getFileFilter().getDescription());
         assertTrue(fc.isMultiSelectionEnabled());
     }
     

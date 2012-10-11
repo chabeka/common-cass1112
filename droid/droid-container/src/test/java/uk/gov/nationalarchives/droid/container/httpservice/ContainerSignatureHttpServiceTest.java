@@ -65,6 +65,7 @@ public class ContainerSignatureHttpServiceTest {
     }
     
     @Test
+    @Ignore("necessite une connexion internet")
     public void testGetLatestVersion() throws SignatureServiceException {
         when(proxySettings.isEnabled()).thenReturn(false);
         httpService.onProxyChange(proxySettings);
@@ -93,6 +94,7 @@ public class ContainerSignatureHttpServiceTest {
     }
 
     @Test
+    @Ignore("necessite une connexion internet")
     public void testImportSignatureFile() {
         when(proxySettings.isEnabled()).thenReturn(false);
         httpService.onProxyChange(proxySettings);

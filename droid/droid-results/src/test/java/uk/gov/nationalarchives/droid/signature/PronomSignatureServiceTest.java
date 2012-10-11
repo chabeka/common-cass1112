@@ -119,6 +119,7 @@ public class PronomSignatureServiceTest {
     }
 
     @Test
+    @Ignore("Nécessite une connexion internet")
     public void testGetLatestSigFileVersion() {
         
         SignatureFileInfo info = importer.getLatestVersion(1);
@@ -150,6 +151,7 @@ public class PronomSignatureServiceTest {
     }
 
     @Test
+    @Ignore("Nécessite une connexion internet")
     public void testGetSigFileFromRemoteWebServiceSavesFileLocally() throws SignatureServiceException {
         
         File[] sigFiles = sigFileDir.listFiles();

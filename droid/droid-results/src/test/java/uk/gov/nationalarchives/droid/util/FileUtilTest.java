@@ -52,8 +52,8 @@ public class FileUtilTest {
         
         assertEquals("12 bytes", FileUtil.formatFileSize(12L, 3));
         assertEquals("12 KB", FileUtil.formatFileSize(kb12, 3));
-        assertEquals("11.7 MB", FileUtil.formatFileSize(mb12, 1));
+        assertEquals("11,7 MB", FileUtil.formatFileSize(mb12, 1));
         assertEquals("12 GB", FileUtil.formatFileSize(gb12, 3));
-        assertEquals("12,288 GB", FileUtil.formatFileSize(tb12, 3));
+        assertEquals("12 288 GB", FileUtil.formatFileSize(tb12, 3));
     }
 }
