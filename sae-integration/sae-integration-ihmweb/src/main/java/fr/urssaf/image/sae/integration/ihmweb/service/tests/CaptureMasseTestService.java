@@ -615,8 +615,6 @@ public class CaptureMasseTestService {
 
       if (startFlagFile.exists()) {
          log.appendLogLn("Un traitement a été lancé sur l'URL " + urlEcde);
-         log
-               .appendLogLn("Le fichier concerné est en lecture seule, aucune écriture n'est possible.");
          captureMasseResultat.getResultats().setStatus(TestStatusEnum.Echec);
       } else {
          log.appendLogLn("Pas de fichier de traitement présent sur " + urlEcde);
