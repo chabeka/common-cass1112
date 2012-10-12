@@ -48,67 +48,74 @@ import uk.gov.nationalarchives.droid.gui.widgetwrapper.ProfileSelectionDialog;
 
 public class SaveAllProfilesDialogTest {
 
-    @Test
-    @Ignore
-    public void showGui() throws Exception {
-        
-        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        
+   static {
+      System.setProperty("java.awt.headless", "true");
+   }
 
-        ProfileForm profile1 = mock(ProfileForm.class);
-        ProfileForm profile2 = mock(ProfileForm.class);
-        
-        when(profile1.getName()).thenReturn("profile1");
-        when(profile2.getName()).thenReturn("profile2");
-        
-        List<ProfileForm> profiles = new ArrayList<ProfileForm>();
-        profiles.add(profile1);
-        profiles.add(profile2);
-        
-        ProfileSelectionDialog dialog = new SaveAllProfilesDialog(null, profiles);
-            
-        dialog.open();
-    }
-    
-    @Test
-    public void testSelectionWhenProfile2IsUnselected() {
-        ProfileForm profile1 = mock(ProfileForm.class);
-        ProfileForm profile2 = mock(ProfileForm.class);
-        
-        when(profile1.getName()).thenReturn("profile1");
-        when(profile2.getName()).thenReturn("profile2");
-        
-        List<ProfileForm> profiles = new ArrayList<ProfileForm>();
-        profiles.add(profile1);
-        profiles.add(profile2);
-        
-        SaveAllProfilesDialog dialog = new SaveAllProfilesDialog(null, profiles);
-        dialog.getModel().get(1).toggleSelection();
-        
-        List<ProfileForm> selections = dialog.getSelectedProfiles();
-        assertTrue(selections.contains(profile1));
-        assertFalse(selections.contains(profile2));
-    }
+   @Test
+   @Ignore
+   public void showGui() throws Exception {
 
-    @Test
-    public void testSelectionWhenBothProfilesAreUnselected() {
-        ProfileForm profile1 = mock(ProfileForm.class);
-        ProfileForm profile2 = mock(ProfileForm.class);
-        
-        when(profile1.getName()).thenReturn("profile1");
-        when(profile2.getName()).thenReturn("profile2");
-        
-        List<ProfileForm> profiles = new ArrayList<ProfileForm>();
-        profiles.add(profile1);
-        profiles.add(profile2);
-        
-        SaveAllProfilesDialog dialog = new SaveAllProfilesDialog(null, profiles);
-        dialog.getModel().get(0).toggleSelection();
-        dialog.getModel().get(1).toggleSelection();
-        
-        List<ProfileForm> selections = dialog.getSelectedProfiles();
-        assertFalse(selections.contains(profile2));
-        assertFalse(selections.contains(profile1));
-        assertTrue(selections.isEmpty());
-    }
+      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+
+      ProfileForm profile1 = mock(ProfileForm.class);
+      ProfileForm profile2 = mock(ProfileForm.class);
+
+      when(profile1.getName()).thenReturn("profile1");
+      when(profile2.getName()).thenReturn("profile2");
+
+      List<ProfileForm> profiles = new ArrayList<ProfileForm>();
+      profiles.add(profile1);
+      profiles.add(profile2);
+
+      ProfileSelectionDialog dialog = new SaveAllProfilesDialog(null, profiles);
+
+      dialog.open();
+   }
+
+   @Test
+   @Ignore("nécessite java.awt.headless=true")
+   public void testSelectionWhenProfile2IsUnselected() {
+      ProfileForm profile1 = mock(ProfileForm.class);
+      ProfileForm profile2 = mock(ProfileForm.class);
+
+      when(profile1.getName()).thenReturn("profile1");
+      when(profile2.getName()).thenReturn("profile2");
+
+      List<ProfileForm> profiles = new ArrayList<ProfileForm>();
+      profiles.add(profile1);
+      profiles.add(profile2);
+
+      SaveAllProfilesDialog dialog = new SaveAllProfilesDialog(null, profiles);
+      dialog.getModel().get(1).toggleSelection();
+
+      List<ProfileForm> selections = dialog.getSelectedProfiles();
+      assertTrue(selections.contains(profile1));
+      System.out.println("$*$: " + selections.contains(profile1));
+      assertFalse(selections.contains(profile2));
+      System.out.println("$*$: " + selections.contains(profile2));
+   }
+
+   @Test
+   @Ignore("nécessite java.awt.headless=true")
+   public void testSelectionWhenBothProfilesAreUnselected() {
+      ProfileForm profile1 = mock(ProfileForm.class);
+      ProfileForm profile2 = mock(ProfileForm.class);
+
+      when(profile1.getName()).thenReturn("profile1");
+      when(profile2.getName()).thenReturn("profile2");
+
+      List<ProfileForm> profiles = new ArrayList<ProfileForm>();
+      profiles.add(profile1);
+      profiles.add(profile2);
+
+      SaveAllProfilesDialog dialog = new SaveAllProfilesDialog(null, profiles);
+      dialog.getModel().get(0).toggleSelection();
+      dialog.getModel().get(1).toggleSelection();
+
+      List<ProfileForm> selections = dialog.getSelectedProfiles();
+      assertFalse(selections.contains(profile2));
+      assertFalse(selections.contains(profile1));
+      assertTrue(selections.isEmpty());
+   }
 }

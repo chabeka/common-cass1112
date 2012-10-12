@@ -12,6 +12,16 @@
     <packaging>jar</packaging>
     
     <name>droid-results</name>
+    <build>
+   <plugins>
+      <plugin>
+         <artifactId>maven-surefire-plugin</artifactId>
+         <configuration>
+            <argLine>-Djava.awt.headless=true</argLine>
+         </configuration>
+      </plugin>
+   </plugins>
+   </build>
     
     <!--scm>
         <connection>scm:git:https://github.com/digital-preservation/droid.git</connection>

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Copyright (c) 2012, The National Archives <pronom@nationalarchives.gsi.gov.uk>
  * All rights reserved.
  *
@@ -31,19 +31,20 @@
  */
 package uk.gov.nationalarchives.droid.profile.config;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import uk.gov.nationalarchives.droid.core.interfaces.config.DroidGlobalConfig;
@@ -82,7 +83,7 @@ public class DroidGlobalConfigTest {
     }
     
     @Test
-	@Ignore("ne pointe pas vers les bon r�pertoires")
+	@Ignore("ne pointe pas vers les bon répertoires")
     public void testDefaultHome() throws IOException {
         DroidGlobalConfig config = new DroidGlobalConfig();
         File expectedHome = new File(System.getProperty("user.home"), ".droid6");
