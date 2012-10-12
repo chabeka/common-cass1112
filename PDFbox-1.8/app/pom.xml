@@ -28,7 +28,7 @@
   </parent>
 
   <artifactId>pdfbox-app</artifactId>
-  <packaging>bundle</packaging>
+  <packaging>jar</packaging>
   <name>Apache PDFBox application</name>
   <url>http://pdfbox.apache.org/</url>
 

@@ -56,7 +56,7 @@
     <module>examples</module>
   </modules>
 
-  <build>
+  <!-- build>
     <plugins>
       <plugin>
         <artifactId>maven-deploy-plugin</artifactId>
@@ -65,7 +65,7 @@
         </configuration>
       </plugin>
     </plugins>
-  </build>
+  </build-->
 
   <profiles>
     <profile>
@@ -176,5 +176,19 @@ A release vote template has been generated for you:
       </build>
     </profile>
   </profiles>
+  
+     <distributionManagement>
+      <repository>
+         <id>nexus</id>
+         <name>Releases</name>
+         <url>http://cer69-nexus.cer69.recouv:8081/nexus/content/repositories/releases</url>
+      </repository>
+      <snapshotRepository>
+         <id>nexus</id>
+         <name>Snapshots</name>
+         <url>http://cer69-nexus.cer69.recouv:8081/nexus/content/repositories/snapshots</url>
+         <uniqueVersion>false</uniqueVersion>
+      </snapshotRepository>
+   </distributionManagement>
 
 </project>

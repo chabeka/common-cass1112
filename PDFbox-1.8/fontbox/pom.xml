@@ -26,7 +26,7 @@
   </parent>
 
   <artifactId>fontbox</artifactId>
-  <packaging>bundle</packaging>
+  <packaging>jar</packaging>
 
   <name>Apache FontBox</name>
   <description>

@@ -20,7 +20,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>xmpbox</artifactId>
-  <packaging>bundle</packaging>
+  <packaging>jar</packaging>
   <name>Apache XmpBox</name>
 
   <description>
@@ -76,7 +76,7 @@
     	<groupId>org.apache.pdfbox</groupId>
     	<artifactId>pdfbox</artifactId>
     	<version>${project.version}</version>
-    	<type>bundle</type>
+    	<type>jar</type>
     	<scope>compile</scope>
     </dependency>
   </dependencies>

@@ -29,7 +29,7 @@
       subproject of Apache PDFBox.
   </description>
 
-  <packaging>bundle</packaging>
+  <packaging>jar</packaging>
  
   <parent>
     <groupId>org.apache.pdfbox</groupId>
