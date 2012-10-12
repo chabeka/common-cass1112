@@ -23,7 +23,7 @@ public final class SessionTools {
    
    
    /**
-    * Enregistre en session la configuration du filtre
+    * Enregistre dans le scope application la configuration du filtre
     * 
     * @param request la requête HTTP en cours
     * @param maqFilterConfig la configuration du filtre
@@ -31,12 +31,13 @@ public final class SessionTools {
    public static void storeFilterConfig(
          HttpServletRequest request,
          MaquetteFilterConfig maqFilterConfig) {
-      request.getSession().setAttribute(SESSION_FILTER, maqFilterConfig) ;
+      request.getSession().getServletContext().setAttribute(SESSION_FILTER, maqFilterConfig) ;
+    
    }
    
    
    /**
-    * Renvoie la configuration du filtre de la maquette, stocké en session
+    * Renvoie la configuration du filtre de la maquette, stocké dans le scope application
     * 
     * @param request la requête HTTP
     * @return l'objet MaquetteFilterConfig, ou null si la configuration 
@@ -47,7 +48,7 @@ public final class SessionTools {
 
       MaquetteFilterConfig result;
       
-      Object obj = request.getSession().getAttribute(SESSION_FILTER);
+      Object obj = request.getSession().getServletContext().getAttribute(SESSION_FILTER);
       
       if (obj==null) {
          result = null; // NOPMD
@@ -63,7 +64,7 @@ public final class SessionTools {
    
    
    /**
-    * Enregistre en session le menu en cours
+    * Enregistre dans le scope application le menu en cours
     * 
     * @param request la requête HTTP en cours
     * @param selectedMenu le menu en cours
@@ -71,13 +72,13 @@ public final class SessionTools {
    public static void storeSelectedMenu(
          HttpServletRequest request,
          MenuItem selectedMenu) {
-      request.getSession().setAttribute(SESSION_MENU, selectedMenu) ;
+      request.getSession().getServletContext().setAttribute(SESSION_MENU, selectedMenu) ;
    }
    
    
    
    /**
-    * Renvoie le menu en cours, stocké en session
+    * Renvoie le menu en cours, stocké dans le scope application
     * 
     * @param request la requête HTTP
     * @return l'objet MenuItem, ou null si le menu en cours n'est pas
@@ -88,7 +89,7 @@ public final class SessionTools {
 
       MenuItem result;
       
-      Object obj = request.getSession().getAttribute(SESSION_MENU);
+      Object obj = request.getSession().getServletContext().getAttribute(SESSION_MENU);
       
       if (obj==null) {
          result = null; // NOPMD
