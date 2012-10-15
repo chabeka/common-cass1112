@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Copyright (c) 2012, The National Archives <pronom@nationalarchives.gsi.gov.uk>
  * All rights reserved.
  *
@@ -83,7 +83,7 @@ public class DroidGlobalConfigTest {
     }
     
     @Test
-	@Ignore("ne pointe pas vers les bon répertoires")
+	@Ignore("ne pointe pas vers les bon r\\U00E9pertoires")
     public void testDefaultHome() throws IOException {
         DroidGlobalConfig config = new DroidGlobalConfig();
         File expectedHome = new File(System.getProperty("user.home"), ".droid6");

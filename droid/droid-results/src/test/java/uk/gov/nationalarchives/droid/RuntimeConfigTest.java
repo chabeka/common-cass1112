@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Copyright (c) 2012, The National Archives <pronom@nationalarchives.gsi.gov.uk>
  * All rights reserved.
  *
@@ -73,7 +73,7 @@ public class RuntimeConfigTest {
     }
 
     @Test
-	@Ignore("les varibales d'environnements ne sont pas correcte user.home sous linux pointe vers le répertoire tomcat alors qu'on a défini /appl/droid6 comme répertoire de droid")
+	@Ignore("les varibales d'environnements ne sont pas correcte user.home sous linux pointe vers le répertoire tomcat alors qu'on a défini /appl/droid6 comme r\\u00e9pertoire de droid")
     public void testConfigureDefaultRuntimeEnvironment() {
         System.clearProperty(RuntimeConfig.DROID_USER);
         System.clearProperty(RuntimeConfig.LOG_DIR);
