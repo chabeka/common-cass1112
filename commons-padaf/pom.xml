@@ -11,11 +11,6 @@
       </dependency>
             <dependency>
          <groupId>net.padaf</groupId>
-         <artifactId>padaf</artifactId>
-         <version>0.6.2-SNAPSHOT</version>
-      </dependency>
-            <dependency>
-         <groupId>net.padaf</groupId>
          <artifactId>preflight</artifactId>
          <version>0.6.2-SNAPSHOT</version>
       </dependency>
