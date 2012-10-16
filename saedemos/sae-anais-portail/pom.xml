@@ -29,7 +29,7 @@
       <jstl.version>1.2</jstl.version>
       
       <sae.anais.framework.version>1.0.0</sae.anais.framework.version>
-      <commons.maquette.version>1.0.1-SNAPSHOT</commons.maquette.version>
+      <commons.maquette.version>1.0.1</commons.maquette.version>
       
       <sae.version>12.9.10.2</sae.version>
       
