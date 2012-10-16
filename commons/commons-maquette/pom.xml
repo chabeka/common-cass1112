@@ -5,7 +5,7 @@
    <groupId>fr.urssaf.image.commons</groupId>
    <artifactId>commons-maquette</artifactId>
    <packaging>jar</packaging>
-   <version>1.0.1</version>
+   <version>1.0.2-SNAPSHOT</version>
 
    <name>commons-maquette</name>
 
@@ -146,13 +146,13 @@
    <!-- Configuration SVN pour le plug-in maven-release -->
    <scm>
       <url>
-        scm:svn:svn://cer69-svn/image/java/tags/commons-maquette-1.0.1
+        scm:svn:svn://cer69-svn/image/java/trunk/commons/commons-maquette/
       </url>
       <developerConnection>
-        scm:svn:svn://cer69-svn/image/java/tags/commons-maquette-1.0.1
+        scm:svn:svn://cer69-svn/image/java/trunk/commons/commons-maquette/
       </developerConnection>
       <connection>
-        scm:svn:svn://cer69-svn/image/java/tags/commons-maquette-1.0.1
+        scm:svn:svn://cer69-svn/image/java/trunk/commons/commons-maquette/
       </connection>
    </scm>
 
