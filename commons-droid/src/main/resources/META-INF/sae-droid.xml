@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+
+   <bean id="profileManager"
+      class="uk.gov.nationalarchives.droid.profile.ProfileManagerImpl">
+      <!--
+         <property name="profileInstanceFactory"
+         ref="profileInstanceFactory"/>
+      -->
+      <property name="profileContextLocator" ref="profileContextLocator" />
+      <property name="profileSpecDao" ref="profileSpecDao" />
+      <property name="profileDiskAction" ref="profileDiskAction" />
+      <property name="signatureManager" ref="signatureManager" />
+      <property name="config" ref="globalConfig" />
+   </bean>
+
+   <bean id="profileContextLocator"
+      class="uk.gov.nationalarchives.droid.profile.ProfileContextLocator">
+      <property name="profileInstanceLocator" ref="profileInstanceFactory" />
+      <property name="globalConfig" ref="globalConfig" />
+   </bean>
+
+   <bean id="profileSpecDao"
+      class="uk.gov.nationalarchives.droid.profile.JaxbProfileSpecDao" />
+
+   <bean id="profileDiskAction"
+      class="uk.gov.nationalarchives.droid.profile.ProfileDiskAction" />
+
+   <bean id="signatureManager"
+      class="uk.gov.nationalarchives.droid.signature.SignatureManagerImpl"
+      init-method="init">
+      <property name="signatureUpdateServices">
+         <map>
+            <entry key="BINARY" value-ref="binarySignatureUpdateService" />
+            <entry key="CONTAINER" value-ref="containerSignatureUpdateService" />
+            <!-- <entry key="TEXT" value-ref="textSignatureUpdateService"/> -->
+         </map>
+      </property>
+      <property name="config" ref="globalConfig" />
+   </bean>
+
+   <bean id="globalConfig"
+      class="uk.gov.nationalarchives.droid.core.interfaces.config.DroidGlobalConfig"
+      init-method="init" />
+   <bean id="profileInstanceFactory"
+      class="uk.gov.nationalarchives.droid.profile.SpringProfileInstanceFactory" />
+
+   <bean id="binarySignatureUpdateService"
+      class="uk.gov.nationalarchives.droid.signature.PronomSignatureService">
+      <property name="filenamePattern" value="DROID_SignatureFile_V%s.xml" />
+      <property name="pronomService" ref="pronomClient" />
+   </bean>
+
+   <bean id="pronomClient" class="uk.gov.nationalarchives.pronom.PronomService"
+      factory-bean="pronomClientFactory" factory-method="create" />
+
+   <bean id="pronomClientFactory" class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean">
+      <property name="serviceClass"
+         value="uk.gov.nationalarchives.pronom.PronomService" />
+      <property name="address"
+         value="http://www.nationalarchives.gov.uk/pronom/service.asmx" />
+   </bean>
+
+   <bean id="containerSignatureUpdateService"
+      class="uk.gov.nationalarchives.droid.container.httpservice.ContainerSignatureHttpService">
+   </bean>
+</beans>
