@@ -1,2 +1,0 @@
-@SuppressWarnings("PMD")
-public class
