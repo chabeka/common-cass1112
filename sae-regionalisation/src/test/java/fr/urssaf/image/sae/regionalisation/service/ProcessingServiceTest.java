@@ -164,16 +164,16 @@ public class ProcessingServiceTest {
       // récupération des métadonnées
 
       Map<String, Object> metadatas = new HashMap<String, Object>();
-      metadatas.put("nne", "value1");
-      metadatas.put("nbp", null);
+      metadatas.put("nce", "value1");
+      metadatas.put("nci", null);
       metadatas.put("metadataUnknown", "valueUnknown");
 
       List<Document> docs0 = new ArrayList<Document>();
 
       Document doc0 = createDocument();
-      doc0.addCriterion("nne", "oldValue");
-      doc0.addCriterion("nbp", "oldValue");
-      doc0.addCriterion("zzz", "oldValue");
+      doc0.addCriterion("nce", "oldValue");
+      doc0.addCriterion("cog", "oldValue");
+      doc0.addCriterion("npe", "oldValue");
 
       docs0.add(doc0);
       docs0.add(createDocument());

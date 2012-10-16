@@ -33,6 +33,7 @@ import fr.urssaf.image.sae.regionalisation.dao.TraceDao;
 import fr.urssaf.image.sae.regionalisation.exception.ErreurTechniqueException;
 import fr.urssaf.image.sae.regionalisation.exception.LineFormatException;
 import fr.urssaf.image.sae.regionalisation.service.ProcessingService;
+import fr.urssaf.image.sae.regionalisation.service.utils.TraceDatasUtils;
 import fr.urssaf.image.sae.regionalisation.support.ServiceProviderSupport;
 import fr.urssaf.image.sae.regionalisation.util.Constants;
 
@@ -280,7 +281,7 @@ public class ProcessingServiceImpl implements ProcessingService {
          fileReader = new FileReader(source);
          reader = new BufferedReader(fileReader);
          CSVReader csvReader = new CSVReader(fileReader, ';', '\'',
-               currentRecord -1);
+               currentRecord - 1);
          String[] tabLine;
 
          while (ArrayUtils.isNotEmpty((tabLine = csvReader.readNext()))
@@ -295,9 +296,12 @@ public class ProcessingServiceImpl implements ProcessingService {
             criterion.setLucene(tabLine[0]);
 
             Map<String, Object> metadonnees = new HashMap<String, Object>();
-
+            Map<String, Object> oldMetadonnees = new HashMap<String, Object>();
+            String donnees;
             for (int j = 1; j < tabLine.length; j = j + 2) {
-               metadonnees.put(tabLine[j], tabLine[j + 1]);
+               donnees = tabLine[j + 1];
+               metadonnees.put(tabLine[j], donnees.split(">")[1]);
+               oldMetadonnees.put(tabLine[j], donnees.split(">")[0]);
             }
 
             LOGGER
@@ -309,6 +313,9 @@ public class ProcessingServiceImpl implements ProcessingService {
 
             List<Document> documents = this.saeDocumentDao
                   .getDocuments(criterion.getLucene());
+
+            TraceDatasUtils.traceMetas(documents, metadonnees, oldMetadonnees,
+                  currentRecord);
 
             dateEnd = new Date();
 

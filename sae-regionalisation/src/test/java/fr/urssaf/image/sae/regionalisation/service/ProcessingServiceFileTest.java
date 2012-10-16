@@ -144,9 +144,9 @@ public class ProcessingServiceFileTest {
       List<Document> docs0 = new ArrayList<Document>();
 
       Document doc0 = createDocument();
-      doc0.addCriterion("nne", "oldValue");
-      doc0.addCriterion("nbp", "oldValue");
-      doc0.addCriterion("zzz", "oldValue");
+      doc0.addCriterion("cog", "oldValue");
+      doc0.addCriterion("nce", "oldValue");
+      doc0.addCriterion("nci", "oldValue");
 
       docs0.add(doc0);
       docs0.add(createDocument());
