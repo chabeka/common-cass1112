@@ -3,8 +3,6 @@
  */
 package fr.urssaf.image.sae.regionalisation.support.impl;
 
-import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

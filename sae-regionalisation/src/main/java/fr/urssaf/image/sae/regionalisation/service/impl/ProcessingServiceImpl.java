@@ -391,6 +391,16 @@ public class ProcessingServiceImpl implements ProcessingService {
 
          }
 
+         while (line != null) {
+            LOGGER
+                  .debug(
+                        "nombre de documents à mettre à jour pour la requête lucène '{}': {}",
+                        line.split(";")[0], 0);
+
+            nbRecordSansDocument++;
+            line = reader.readLine();
+         }
+
          LOGGER.info("nombre de recherche sans documents associés: {}",
                nbRecordSansDocument);
          LOGGER.info(
@@ -399,6 +409,9 @@ public class ProcessingServiceImpl implements ProcessingService {
          LOGGER.info("nombre de documents mis à jour : {}", nbRecordUpdated);
 
       } catch (FileNotFoundException exception) {
+         throw new ErreurTechniqueException(exception);
+
+      } catch (IOException exception) {
          throw new ErreurTechniqueException(exception);
 
       } finally {
