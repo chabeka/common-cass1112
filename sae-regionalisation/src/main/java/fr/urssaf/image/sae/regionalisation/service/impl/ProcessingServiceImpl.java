@@ -86,6 +86,8 @@ public class ProcessingServiceImpl implements ProcessingService {
 
    private int nbRecordDocumentTraites = 0;
 
+   private int nbRecordUpdated = 0;
+
    /**
     * 
     @param saeDocumentDao
@@ -129,7 +131,8 @@ public class ProcessingServiceImpl implements ProcessingService {
       String donnees;
       String[] tabLine;
       List<Document> modifiedDocs = new ArrayList<Document>();
-
+      String lastRequest = "";
+      String currentRequest = "";
       while (indexLine < listLines.size() && indexDoc < documents.size()) {
 
          line = lines.get(listLines.get(indexLine));
@@ -142,12 +145,16 @@ public class ProcessingServiceImpl implements ProcessingService {
             donnees = tabLine[j + 1];
             metadonnees.put(tabLine[j], donnees.split(">")[1]);
             oldMetadonnees.put(tabLine[j], donnees.split(">")[0]);
+            currentRequest = tabLine[0];
          }
 
-         LOGGER
-               .debug(
-                     "nombre de métadonnées à mettre à jour pour la requête lucène '{}': {}",
-                     searchCriterion.getLucene(), metadonnees.size());
+         if (!currentRequest.equals(lastRequest)) {
+            LOGGER
+                  .debug(
+                        "nombre de métadonnées à mettre à jour pour la requête lucène '{}': {}",
+                        searchCriterion.getLucene(), metadonnees.size());
+            lastRequest = currentRequest;
+         }
 
          while (((String) documents.get(indexDoc).getSingleCriterion("cog")
                .getWord()).compareTo((String) oldMetadonnees.get("cog")) < 0) {
@@ -192,11 +199,13 @@ public class ProcessingServiceImpl implements ProcessingService {
                this.traceDao.addTraceMaj(trace);
             }
 
+            nbRecordUpdated += modifiedDocs.size();
+
             indexDoc++;
          }
 
          indexLine++;
-         
+
          TraceDatasUtils.traceMetas(modifiedDocs, metadonnees, oldMetadonnees,
                currentRecord);
       }
@@ -384,8 +393,10 @@ public class ProcessingServiceImpl implements ProcessingService {
 
          LOGGER.info("nombre de recherche sans documents associés: {}",
                nbRecordSansDocument);
-         LOGGER
-               .info("nombre de documents traités: {}", nbRecordDocumentTraites);
+         LOGGER.info(
+               "nombre de documents traités (récupérés par les requêtes) : {}",
+               nbRecordDocumentTraites);
+         LOGGER.info("nombre de documents mis à jour : {}", nbRecordUpdated);
 
       } catch (FileNotFoundException exception) {
          throw new ErreurTechniqueException(exception);
@@ -497,7 +508,6 @@ public class ProcessingServiceImpl implements ProcessingService {
       // de documents retournés
       nbRecordDocumentTraites += documents.size();
 
-      LOGGER.debug("ligne " + currentRecord);
       currentRecord++;
 
    }
