@@ -6,8 +6,10 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Reader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -24,16 +26,22 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import au.com.bytecode.opencsv.CSVReader;
+import com.netflix.astyanax.query.RowQuery;
+
 import fr.urssaf.image.sae.regionalisation.bean.RepriseConfiguration;
 import fr.urssaf.image.sae.regionalisation.bean.SearchCriterion;
+import fr.urssaf.image.sae.regionalisation.bean.TermInfoRangeStringColumn;
+import fr.urssaf.image.sae.regionalisation.bean.TermInfoRangeStringKey;
 import fr.urssaf.image.sae.regionalisation.bean.Trace;
+import fr.urssaf.image.sae.regionalisation.comparator.DocumentCogComparator;
 import fr.urssaf.image.sae.regionalisation.dao.SaeDocumentDao;
+import fr.urssaf.image.sae.regionalisation.dao.TermInfoRangeStringDao;
 import fr.urssaf.image.sae.regionalisation.dao.TraceDao;
+import fr.urssaf.image.sae.regionalisation.datas.TermInfoResultSet;
 import fr.urssaf.image.sae.regionalisation.exception.ErreurTechniqueException;
-import fr.urssaf.image.sae.regionalisation.exception.LineFormatException;
 import fr.urssaf.image.sae.regionalisation.service.ProcessingService;
 import fr.urssaf.image.sae.regionalisation.service.utils.TraceDatasUtils;
+import fr.urssaf.image.sae.regionalisation.support.CassandraSupport;
 import fr.urssaf.image.sae.regionalisation.support.ServiceProviderSupport;
 import fr.urssaf.image.sae.regionalisation.util.Constants;
 
@@ -48,6 +56,13 @@ public class ProcessingServiceImpl implements ProcessingService {
    /**
     * 
     */
+   private static final int END_COG_POS = 3;
+
+   private static final DocumentCogComparator DOC_COMPARATOR = new DocumentCogComparator();
+
+   private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat(
+         "dd/MM/yyyy HH:mm:ss");
+
    private static final int MILLISEC_CONVERSION = 1000;
 
    private static final Logger LOGGER = LoggerFactory
@@ -61,7 +76,15 @@ public class ProcessingServiceImpl implements ProcessingService {
 
    private final RepriseConfiguration repriseConfiguration;
 
+   private final CassandraSupport cassandraSupport;
+
+   private final TermInfoRangeStringDao termInfoDao;
+
    private int currentRecord;
+
+   private int nbRecordSansDocument = 0;
+
+   private int nbRecordDocumentTraites = 0;
 
    /**
     * 
@@ -73,56 +96,109 @@ public class ProcessingServiceImpl implements ProcessingService {
     *           services DFCE
     * @param repriseConfiguration
     *           configuration de reprise de traitement automatique
+    * @param cassandraSupport
+    *           opérations sur la base cassandra
+    * @param termInfoDao
+    *           opérations sur la famille de colonne TermInfoRangeString
+    * 
     */
    @Autowired
    public ProcessingServiceImpl(SaeDocumentDao saeDocumentDao,
          TraceDao traceDao, ServiceProviderSupport serviceSupport,
-         RepriseConfiguration repriseConfiguration) {
+         RepriseConfiguration repriseConfiguration,
+         CassandraSupport cassandraSupport, TermInfoRangeStringDao termInfoDao) {
 
       this.saeDocumentDao = saeDocumentDao;
       this.traceDao = traceDao;
       this.serviceSupport = serviceSupport;
       this.repriseConfiguration = repriseConfiguration;
+      this.cassandraSupport = cassandraSupport;
+      this.termInfoDao = termInfoDao;
    }
 
-   private void update(SearchCriterion searchCriterion,
-         List<Document> documents, Map<String, Object> metadatas, int lineNumber) {
+   private void updateDocuments(SearchCriterion searchCriterion,
+         List<Document> documents, Map<Integer, String> lines) {
 
       // int nbRecordDocumentTraites = 0;
 
-      for (Document document : documents) {
+      int indexDoc = 0;
+      int indexLine = 0;
+      List<Integer> listLines = new ArrayList<Integer>(lines.keySet());
+      Collections.sort(listLines);
+      String line;
+      String donnees;
+      String[] tabLine;
+      List<Document> modifiedDocs = new ArrayList<Document>();
 
-         List<Trace> traces = new ArrayList<Trace>();
+      while (indexLine < listLines.size() && indexDoc < documents.size()) {
 
-         // mettre à jour les métadonnées
-         for (Entry<String, Object> metadata : metadatas.entrySet()) {
+         line = lines.get(listLines.get(indexLine));
+         tabLine = line.split(";");
 
-            Trace trace = this.update(document, metadata, lineNumber);
+         Map<String, Object> metadonnees = new HashMap<String, Object>();
+         Map<String, Object> oldMetadonnees = new HashMap<String, Object>();
 
-            if (trace != null) {
-               traces.add(trace);
+         for (int j = 1; j < tabLine.length; j = j + 2) {
+            donnees = tabLine[j + 1];
+            metadonnees.put(tabLine[j], donnees.split(">")[1]);
+            oldMetadonnees.put(tabLine[j], donnees.split(">")[0]);
+         }
+
+         LOGGER
+               .debug(
+                     "nombre de métadonnées à mettre à jour pour la requête lucène '{}': {}",
+                     searchCriterion.getLucene(), metadonnees.size());
+
+         while (((String) documents.get(indexDoc).getSingleCriterion("cog")
+               .getWord()).compareTo((String) oldMetadonnees.get("cog")) < 0) {
+            indexDoc++;
+         }
+
+         while (((String) documents.get(indexDoc).getSingleCriterion("cog")
+               .getWord()).equals((String) oldMetadonnees.get("cog"))) {
+
+            List<Trace> traces = new ArrayList<Trace>();
+
+            // mettre à jour les métadonnées
+            for (Entry<String, Object> metadata : metadonnees.entrySet()) {
+
+               Trace trace = this.updateDocument(documents.get(indexDoc),
+                     metadata, listLines.get(indexLine));
+
+               if (trace != null) {
+                  traces.add(trace);
+               }
             }
+
+            // persistance des modifications
+            this.saeDocumentDao.update(documents.get(indexDoc));
+            modifiedDocs.add(documents.get(indexDoc));
+
+            LOGGER.debug("document n°{} a été mise à jour", documents.get(
+                  indexDoc).getUuid());
+
+            // ajout des traces de modifications des données
+            for (Trace trace : traces) {
+
+               LOGGER
+                     .debug(
+                           "document n°{} a mis à jour la métadonnée '{}' avec une nouvelle valeur '{}' pour remplacer l'ancienne '{}'",
+                           new Object[] { documents.get(indexDoc).getUuid(),
+                                 trace.getMetaName(), trace.getNewValue(),
+                                 trace.getOldValue() });
+
+               trace.setIdDocument(documents.get(indexDoc).getUuid());
+
+               this.traceDao.addTraceMaj(trace);
+            }
+
+            indexDoc++;
          }
 
-         // persistance des modifications
-         this.saeDocumentDao.update(document);
-
-         LOGGER.debug("document n°{} a été mise à jour", document.getUuid());
-
-         // ajout des traces de modifications des données
-         for (Trace trace : traces) {
-
-            LOGGER
-                  .debug(
-                        "document n°{} a mis à jour la métadonnée '{}' avec une nouvelle valeur '{}' pour remplacer l'ancienne '{}'",
-                        new Object[] { document.getUuid(), trace.getMetaName(),
-                              trace.getNewValue(), trace.getOldValue() });
-
-            trace.setIdDocument(document.getUuid());
-
-            this.traceDao.addTraceMaj(trace);
-         }
-
+         indexLine++;
+         
+         TraceDatasUtils.traceMetas(modifiedDocs, metadonnees, oldMetadonnees,
+               currentRecord);
       }
 
       LOGGER
@@ -132,8 +208,8 @@ public class ProcessingServiceImpl implements ProcessingService {
 
    }
 
-   private Trace update(Document document, Entry<String, Object> metadata,
-         int lineNumber) {
+   private Trace updateDocument(Document document,
+         Entry<String, Object> metadata, int lineNumber) {
 
       Trace trace = null;
 
@@ -187,7 +263,8 @@ public class ProcessingServiceImpl implements ProcessingService {
 
             traceDao.open(uuid);
             createOrUpdateDebutTraitement(dirParent, uuid, count);
-            process(updateDatas, source, uuid, lastRecord);
+            processFile(updateDatas, source, lastRecord);
+
             success = true;
 
          } catch (Throwable throwable) {
@@ -219,8 +296,7 @@ public class ProcessingServiceImpl implements ProcessingService {
       try {
          fileWriter = new FileWriter(startFile, true);
          fileWriter.write("tentative " + tentative + " - ");
-         fileWriter.write("Date : "
-               + new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date())
+         fileWriter.write("Date : " + SIMPLE_DATE_FORMAT.format(new Date())
                + "\n");
 
       } catch (IOException e) {
@@ -264,105 +340,45 @@ public class ProcessingServiceImpl implements ProcessingService {
 
    }
 
-   private void process(boolean updateDatas, File source, String uuid,
-         int lastRecord) {
-      final String trcPrefixe = "launchWithFile()";
+   private void processFile(boolean updateDatas, File source, int lastRecord) {
+      final String trcPrefixe = "processFile()";
 
-      FileReader fileReader = null;
-      BufferedReader reader = null;
-      int nbRecordSansDocument = 0;
-      int nbRecordDocumentTraites = 0;
-
-      // connexion à DFCE
       this.serviceSupport.connect();
+      this.cassandraSupport.connect();
+
+      String indexName = getIndexNameFromFile(source);
+      Map<Integer, String> map = getValuesFromLineNumber(currentRecord,
+            lastRecord, source);
+
+      List<Integer> keys = new ArrayList<Integer>(map.keySet());
+      Collections.sort(keys);
+
+      Date dateStart = new Date();
+      RowQuery<TermInfoRangeStringKey, TermInfoRangeStringColumn> query = termInfoDao
+            .getQuery(map.get(currentRecord), map.get(keys.get(1)), indexName);
+
+      Date dateEnd = new Date();
+      LOGGER.debug("temps de création de la recherche (en ms) : {}", (dateEnd
+            .getTime() - dateStart.getTime()));
+
+      Reader fileReader = null;
+      BufferedReader reader = null;
 
       try {
-         Date dateStart, dateEnd;
          fileReader = new FileReader(source);
          reader = new BufferedReader(fileReader);
-         CSVReader csvReader = new CSVReader(fileReader, ';', '\'',
-               currentRecord - 1);
-         String[] tabLine;
 
-         while (ArrayUtils.isNotEmpty((tabLine = csvReader.readNext()))
-               && currentRecord <= lastRecord) {
+         String line = gotoLine(reader, currentRecord);
 
-            if ((tabLine.length - 1) % 2 != 0 || tabLine.length < 2) {
-               throw new LineFormatException(currentRecord);
-            }
+         TermInfoResultSet resultSet = new TermInfoResultSet(query);
+         String reference;
 
-            SearchCriterion criterion = new SearchCriterion();
-            criterion.setId(currentRecord);
-            criterion.setLucene(tabLine[0]);
+         while ((reference = resultSet.getNextValue()) != null && line != null
+               && currentRecord < lastRecord) {
 
-            Map<String, Object> metadonnees = new HashMap<String, Object>();
-            Map<String, Object> oldMetadonnees = new HashMap<String, Object>();
-            String donnees;
-            for (int j = 1; j < tabLine.length; j = j + 2) {
-               donnees = tabLine[j + 1];
-               metadonnees.put(tabLine[j], donnees.split(">")[1]);
-               oldMetadonnees.put(tabLine[j], donnees.split(">")[0]);
-            }
-
-            LOGGER
-                  .debug(
-                        "nombre de métadonnées à mettre à jour pour la requête lucène '{}': {}",
-                        criterion.getLucene(), metadonnees.size());
-
-            dateStart = new Date();
-
-            List<Document> documents = this.saeDocumentDao
-                  .getDocuments(criterion.getLucene());
-
-            TraceDatasUtils.traceMetas(documents, metadonnees, oldMetadonnees,
-                  currentRecord);
-
-            dateEnd = new Date();
-
-            LOGGER.debug("temps de recherche pour le critere {} = {} ms",
-                  criterion.getId(), (dateEnd.getTime() - dateStart.getTime()));
-
-            // on incrémente de 1 si aucun document n'est retourné
-            if (documents.isEmpty()) {
-               nbRecordSansDocument++;
-
-               LOGGER
-                     .debug(
-                           "aucune document n'a été récupéré pour la requête lucène '{}'",
-                           criterion.getLucene());
-            }
-
-            this.traceDao.addTraceRec(criterion.getLucene(), currentRecord,
-                  documents.size(), updateDatas);
-
-            // si le flag est positionné à MISE_A_JOUR
-            if (updateDatas) {
-
-               dateStart = new Date();
-
-               update(criterion, documents, metadonnees, currentRecord);
-
-               dateEnd = new Date();
-               LOGGER
-                     .debug(
-                           "temps de mise a jour des documents pour le critere {} = {} ms",
-                           criterion.getId(), (dateEnd.getTime() - dateStart
-                                 .getTime()));
-
-            } else {
-
-               LOGGER
-                     .debug(
-                           "nombre de documents à mettre à jour pour la requête lucène '{}': {}",
-                           criterion.getLucene(), documents.size());
-
-            }
-
-            // on incrémente de 1 le nombre de documents traités
-            nbRecordDocumentTraites += documents.size();
-
-            LOGGER.debug("ligne " + currentRecord);
-            currentRecord++;
+            line = logInexistingLines(reader, reference, line, lastRecord);
+            line = updateExistingDatas(reader, reference, line, updateDatas,
+                  lastRecord);
 
          }
 
@@ -374,17 +390,13 @@ public class ProcessingServiceImpl implements ProcessingService {
       } catch (FileNotFoundException exception) {
          throw new ErreurTechniqueException(exception);
 
-      } catch (IOException exception) {
-         throw new ErreurTechniqueException(exception);
-
       } finally {
          if (reader != null) {
             try {
                reader.close();
             } catch (IOException e) {
-               LOGGER.info(
-                     "{} - Impossible de fermer le flux de lecture buffer",
-                     trcPrefixe);
+               LOGGER.info("{} - Impossible de fermer le flux de données "
+                     + source.getName(), trcPrefixe);
             }
          }
 
@@ -392,15 +404,260 @@ public class ProcessingServiceImpl implements ProcessingService {
             try {
                fileReader.close();
             } catch (IOException e) {
-               LOGGER.info(
-                     "{} - Impossible de fermer le flux de lecture fichier",
-                     trcPrefixe);
+               LOGGER.info("{} - Impossible de fermer le flux de données "
+                     + source.getName(), trcPrefixe);
             }
          }
 
-         // deconnexion de DFCE
+         cassandraSupport.disconnect();
          serviceSupport.disconnect();
       }
    }
 
+   private String updateExistingDatas(BufferedReader reader, String reference,
+         String line, boolean updateDatas, int lastRecord) {
+
+      String currentLine = line;
+      try {
+         Map<Integer, String> lines = new HashMap<Integer, String>();
+         while (currentLine != null
+               && currentLine.split(";")[2].split(">")[0].equals(reference)
+               && currentRecord < lastRecord) {
+
+            lines.put(currentRecord, currentLine);
+            currentLine = reader.readLine();
+            currentRecord++;
+         }
+
+         if (!lines.isEmpty()) {
+            searchAndUpdateDocuments(lines, updateDatas);
+         }
+
+         return currentLine;
+
+      } catch (IOException exception) {
+         throw new ErreurTechniqueException(exception);
+      }
+
+   }
+
+   /**
+    * @param lines
+    */
+   private void searchAndUpdateDocuments(Map<Integer, String> lines,
+         boolean updateDatas) {
+
+      Date dateStart, dateEnd;
+      List<String> lLines = new ArrayList<String>(lines.values());
+      String line = lLines.get(0);
+      String[] tabLine = line.split(";");
+
+      SearchCriterion criterion = new SearchCriterion();
+      criterion.setId(currentRecord);
+      criterion.setLucene(tabLine[0]);
+
+      List<Document> documents = this.saeDocumentDao.getDocuments(criterion
+            .getLucene());
+
+      // on incrémente de 1 si aucun document n'est retourné
+      if (documents.isEmpty()) {
+         nbRecordSansDocument++;
+
+         LOGGER.debug(
+               "aucun document n'a été récupéré pour la requête lucène '{}'",
+               criterion.getLucene());
+      }
+
+      this.traceDao.addTraceRec(criterion.getLucene(), currentRecord, documents
+            .size(), updateDatas);
+
+      // si le flag est positionné à MISE_A_JOUR
+      if (updateDatas) {
+
+         dateStart = new Date();
+
+         Collections.sort(documents, DOC_COMPARATOR);
+         updateDocuments(criterion, documents, lines);
+
+         dateEnd = new Date();
+         LOGGER.debug(
+               "temps de mise a jour des documents pour le critere {} = {} ms",
+               criterion.getId(), (dateEnd.getTime() - dateStart.getTime()));
+
+      } else {
+
+         LOGGER
+               .debug(
+                     "nombre de documents à mettre à jour pour la requête lucène '{}': {}",
+                     criterion.getLucene(), documents.size());
+
+      }
+
+      // on incrémente le nombre de documents traités d'autant que
+      // de documents retournés
+      nbRecordDocumentTraites += documents.size();
+
+      LOGGER.debug("ligne " + currentRecord);
+      currentRecord++;
+
+   }
+
+   private String logInexistingLines(BufferedReader reader, String reference,
+         String line, int lastRecord) {
+
+      String currentLine = line;
+
+      try {
+         while (currentLine != null
+               && currentLine.split(";")[2].split(">")[0].compareTo(reference) < 0
+               && currentRecord < lastRecord) {
+            LOGGER
+                  .debug(
+                        "nombre de documents à mettre à jour pour la requête lucène '{}': {}",
+                        currentLine.split(";")[0], 0);
+
+            nbRecordSansDocument++;
+            currentLine = reader.readLine();
+            currentRecord++;
+         }
+
+         return currentLine;
+
+      } catch (IOException exception) {
+         throw new ErreurTechniqueException(exception);
+      }
+   }
+
+   /**
+    * @param reader
+    * @param currentRecord2
+    * @return
+    */
+   private String gotoLine(BufferedReader reader, int record) {
+      try {
+         int index = 0;
+         String line = null;
+
+         while (index < record && (line = reader.readLine()) != null) {
+            index++;
+         }
+
+         return line;
+
+      } catch (IOException exception) {
+         throw new ErreurTechniqueException(exception);
+      }
+   }
+
+   private Map<Integer, String> getValuesFromLineNumber(int firstRecord,
+         int lastRecord, File source) {
+
+      Map<Integer, String> map = new HashMap<Integer, String>();
+      FileReader fileReader = null;
+      BufferedReader reader = null;
+      String trcMethodName = "getValuesFromLineNumber()";
+
+      try {
+         fileReader = new FileReader(source);
+         reader = new BufferedReader(fileReader);
+         int index = 0;
+
+         index = addReferenceToMap(map, index, firstRecord, reader);
+         addReferenceToMap(map, index, lastRecord, reader);
+
+         return map;
+
+      } catch (FileNotFoundException exception) {
+         throw new ErreurTechniqueException(exception);
+
+      } finally {
+         if (reader != null) {
+            try {
+               reader.close();
+            } catch (IOException e) {
+               LOGGER.info("{} - Impossible de fermer le flux de données "
+                     + source.getName(), trcMethodName);
+            }
+         }
+
+         if (fileReader != null) {
+            try {
+               fileReader.close();
+            } catch (IOException e) {
+               LOGGER.info("{} - Impossible de fermer le flux de données "
+                     + source.getName(), trcMethodName);
+            }
+         }
+      }
+
+   }
+
+   private int addReferenceToMap(Map<Integer, String> map, int index,
+         int record, BufferedReader reader) {
+
+      int currentIndex = index;
+      try {
+         String line = null;
+         String value = null;
+         while (currentIndex < record && (line = reader.readLine()) != null) {
+            value = line;
+            currentIndex++;
+         }
+
+         String requete = value.split(";")[0];
+         String reference = requete.split(":")[1];
+         map.put(currentIndex, reference);
+
+         return currentIndex;
+
+      } catch (IOException exception) {
+         throw new ErreurTechniqueException(exception);
+      }
+
+   }
+
+   /**
+    * @param source
+    * @return
+    */
+   private String getIndexNameFromFile(File source) {
+
+      String trcMethodName = "getModeFromFile()";
+      FileReader fileReader = null;
+      BufferedReader reader = null;
+
+      try {
+         fileReader = new FileReader(source);
+         reader = new BufferedReader(fileReader);
+
+         String line = reader.readLine();
+         String indexName = line.substring(0, END_COG_POS);
+
+         return indexName;
+
+      } catch (FileNotFoundException exception) {
+         throw new ErreurTechniqueException(exception);
+
+      } catch (IOException exception) {
+         throw new ErreurTechniqueException(exception);
+      } finally {
+         if (reader != null) {
+            try {
+               reader.close();
+            } catch (IOException e) {
+               LOGGER.info("{} - Impossible de fermer le flux de données "
+                     + source.getName(), trcMethodName);
+            }
+         }
+
+         if (fileReader != null) {
+            try {
+               fileReader.close();
+            } catch (IOException e) {
+               LOGGER.info("{} - Impossible de fermer le flux de données "
+                     + source.getName(), trcMethodName);
+            }
+         }
+      }
+   }
 }

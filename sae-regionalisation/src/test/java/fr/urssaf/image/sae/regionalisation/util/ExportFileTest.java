@@ -26,73 +26,79 @@ public class ExportFileTest {
    @Ignore
    @Test
    public void generateFile() {
-      File file = new File("c:/result.log");
+      File mainDirectory = new File("c:/datas");
       Reader reader = null;
       CSVReader csvReader = null;
       Writer fileWriter = null;
+      Map<String, List<String>> map = new HashMap<String, List<String>>();
 
-      try {
-         reader = new FileReader(file);
-         csvReader = new CSVReader(reader, '$');
-         fileWriter = new FileWriter("c:/correspondances.csv");
-         String[] tabLine;
-         Map<String, List<String>> map = new HashMap<String, List<String>>();
+      for (File directory : mainDirectory.listFiles()) {
+         for (File file : directory.listFiles()) {
+            try {
+               reader = new FileReader(file);
+               csvReader = new CSVReader(reader, '$');
+               String[] tabLine;
 
-         while ((tabLine = csvReader.readNext()) != null) {
+               while ((tabLine = csvReader.readNext()) != null) {
 
-            if (!map.containsKey(tabLine[1].trim())) {
-               map.put(tabLine[1].trim(), new ArrayList<String>());
-            }
+                  if (!map.containsKey(tabLine[1].trim())) {
+                     map.put(tabLine[1].trim(), new ArrayList<String>());
+                  }
 
-            if (!map.get(tabLine[1].trim()).contains(tabLine[4].trim())) {
-               map.get(tabLine[1].trim()).add(tabLine[4].trim());
+                  if (!map.get(tabLine[1].trim()).contains(tabLine[4].trim())) {
+                     map.get(tabLine[1].trim()).add(tabLine[4].trim());
+                  }
+               }
+
+            } catch (FileNotFoundException e) {
+               e.printStackTrace();
+
+            } catch (IOException e) {
+               e.printStackTrace();
+
+            } finally {
+               if (csvReader != null) {
+                  try {
+                     csvReader.close();
+                  } catch (IOException e) {
+                     e.printStackTrace();
+                  }
+               }
+
+               if (reader != null) {
+                  try {
+                     reader.close();
+                  } catch (IOException e) {
+                     e.printStackTrace();
+                  }
+               }
             }
          }
-         
-         List<String> list = new ArrayList<String>(map.keySet());
-         Collections.sort(list);
-         
+      }
+
+      List<String> list = new ArrayList<String>(map.keySet());
+      Collections.sort(list);
+      try {
+         fileWriter = new FileWriter("c:/correspondances.csv");
+
          for (String key : list) {
             for (String value : map.get(key)) {
                fileWriter.write(key + ";" + value + "\n");
             }
          }
 
-      } catch (FileNotFoundException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
       } catch (IOException e) {
-         // TODO Auto-generated catch block
          e.printStackTrace();
+
       } finally {
-         if (csvReader != null) {
-            try {
-               csvReader.close();
-            } catch (IOException e) {
-               // TODO Auto-generated catch block
-               e.printStackTrace();
-            }
-         }
-
-         if (reader != null) {
-            try {
-               reader.close();
-            } catch (IOException e) {
-               // TODO Auto-generated catch block
-               e.printStackTrace();
-            }
-         }
-
          if (fileWriter != null) {
             try {
                fileWriter.close();
             } catch (IOException e) {
-               // TODO Auto-generated catch block
                e.printStackTrace();
             }
          }
       }
-
    }
 
 }

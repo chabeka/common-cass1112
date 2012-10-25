@@ -26,6 +26,10 @@ import fr.urssaf.image.sae.regionalisation.support.ServiceProviderSupport;
 @Repository
 public class SaeDocumentDaoImpl implements SaeDocumentDao {
 
+   /**
+    * 
+    */
+   private static final int RECORD_COUNT = 200;
    private final ServiceProviderSupport serviceSupport;
 
    /**
@@ -63,7 +67,7 @@ public class SaeDocumentDaoImpl implements SaeDocumentDao {
 
       SearchResult searchResult;
       try {
-         searchResult = serviceSupport.getSearchService().search(lucene, 200,
+         searchResult = serviceSupport.getSearchService().search(lucene, RECORD_COUNT,
                base);
       } catch (ExceededSearchLimitException e) {
          throw new ErreurTechniqueException(e);

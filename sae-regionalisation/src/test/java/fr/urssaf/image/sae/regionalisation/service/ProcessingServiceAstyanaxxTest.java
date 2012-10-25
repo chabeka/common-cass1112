@@ -1,3 +1,6 @@
+/**
+ * 
+ */
 package fr.urssaf.image.sae.regionalisation.service;
 
 import java.io.File;
@@ -16,9 +19,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -48,23 +51,7 @@ import fr.urssaf.image.sae.regionalisation.support.ServiceProviderSupport;
       "/applicationContext-sae-regionalisation-mock-test.xml",
       "/applicationContext-sae-regionalisation-cassandra-test.xml" })
 @SuppressWarnings("PMD.MethodNamingConventions")
-@DirtiesContext
-public class ProcessingServiceTest {
-
-   @Autowired
-   private SaeDocumentDao saeDocumentDao;
-
-   @Autowired
-   private ProcessingService service;
-
-   @Autowired
-   private TraceDao traceDao;
-
-   @Autowired
-   private ServiceProviderSupport providerSupport;
-
-   @Autowired
-   private File repository;
+public class ProcessingServiceAstyanaxxTest {
 
    @Autowired
    private CassandraConfig config;
@@ -74,6 +61,24 @@ public class ProcessingServiceTest {
 
    @Autowired
    private CassandraServerBean server;
+
+   @Autowired
+   private ServiceProviderSupport providerSupport;
+
+   @Autowired
+   private SaeDocumentDao saeDocumentDao;
+
+   @Autowired
+   private TraceDao traceDao;
+
+   @Autowired
+   private File repository;
+
+   @Autowired
+   private ApplicationContext appContext;
+
+   @Autowired
+   private ProcessingService service;
 
    @Autowired
    private CassandraSupport cassandraSupport;
@@ -103,6 +108,12 @@ public class ProcessingServiceTest {
       cassandraSupport.connect();
    }
 
+   @After
+   public void end() throws Exception {
+      cassandraSupport.disconnect();
+      server.resetData();
+   }
+
    public void initDatas() throws IOException, ConnectionException {
 
       ClassPathResource resource = new ClassPathResource(
@@ -126,49 +137,25 @@ public class ProcessingServiceTest {
       }
    }
 
-   @After
-   public void end() throws Exception {
-      cassandraSupport.disconnect();
-      server.resetData();
-      EasyMock.reset(saeDocumentDao);
-      EasyMock.reset(providerSupport);
-      EasyMock.reset(traceDao);
-   }
-
    @Test
-   public void launch_mise_a_jour() throws IOException {
-
-      EasyMock.reset(saeDocumentDao);
-      EasyMock.reset(providerSupport);
-      EasyMock.reset(traceDao);
+   public void test_succes_traitement_fichier() throws IOException {
 
       // connexion à DFCE
-
       providerSupport.connect();
-
       EasyMock.expectLastCall().once();
 
-      launchCommun();
-
-      // trace dans trace rec
-      traceDao.addTraceRec(EasyMock.anyObject(String.class), EasyMock.anyInt(),
-            EasyMock.anyInt(), EasyMock.eq(true));
-      EasyMock.expectLastCall().times(1);
-
-      traceDao.open("12");
+      // déconnexion de DFCE
+      providerSupport.disconnect();
       EasyMock.expectLastCall().once();
 
-      traceDao.close();
-      EasyMock.expectLastCall().once();
-
-      // persistance des modifications
+      // persistance des modifications - 3 doc * 2 critères
       providerSupport.updateCriterion(EasyMock.anyObject(Document.class),
             EasyMock.anyObject(String.class), EasyMock.anyObject());
-
-      // 3 documents avec 2 métadonnées valides
       EasyMock.expectLastCall().times(2);
-      saeDocumentDao.update(EasyMock.anyObject(Document.class));
 
+      recuperationDonneesDocuments();
+
+      saeDocumentDao.update(EasyMock.anyObject(Document.class));
       EasyMock.expectLastCall().times(1);
 
       // trace dans trace Maj
@@ -176,42 +163,10 @@ public class ProcessingServiceTest {
       traceDao.addTraceMaj(EasyMock.anyObject(Trace.class));
       EasyMock.expectLastCall().times(2);
 
-      // déconnexion à DFCE
-
-      providerSupport.disconnect();
-
-      EasyMock.expectLastCall().once();
-
-      EasyMock.replay(saeDocumentDao);
-      EasyMock.replay(providerSupport);
-      EasyMock.replay(traceDao);
-
-      Resource fichier = new ClassPathResource("cassandra/file-datas.txt");
-
-      service.launchWithFile(true, fichier.getFile(), "12", 1, 50, repository
-            .getAbsolutePath());
-
-      // vérification des services
-      assertSaeDocumentDao();
-
-   }
-
-   @Test
-   public void launch_tir_a_blanc() throws IOException {
-
-      // connexion à DFCE
-
-      providerSupport.connect();
-
-      EasyMock.expectLastCall().once();
-
-      // récupération des critères
-      launchCommun();
-
-      // trace dans trace rec
-
+      // trace dans trace Maj
+      // 3 documents avec 2 métadonnées valides
       traceDao.addTraceRec(EasyMock.anyObject(String.class), EasyMock.anyInt(),
-            EasyMock.anyInt(), EasyMock.eq(false));
+            EasyMock.anyInt(), EasyMock.anyBoolean());
       EasyMock.expectLastCall().times(1);
 
       traceDao.open("12");
@@ -220,25 +175,25 @@ public class ProcessingServiceTest {
       traceDao.close();
       EasyMock.expectLastCall().once();
 
-      providerSupport.disconnect();
+      EasyMock.replay(traceDao, providerSupport, saeDocumentDao);
 
-      EasyMock.expectLastCall().once();
+      Resource resource = appContext.getResource("cassandra/file-datas.txt");
+      File fichier = resource.getFile();
 
-      EasyMock.replay(saeDocumentDao);
-      EasyMock.replay(providerSupport);
-      EasyMock.replay(traceDao);
-
-      Resource fichier = new ClassPathResource("cassandra/file-datas.txt");
-
-      service.launchWithFile(false, fichier.getFile(), "12", 1, 50, repository
+      service.launchWithFile(true, fichier, "12", 1, 50, repository
             .getAbsolutePath());
 
-      // vérification des services
-      assertSaeDocumentDao();
+      EasyMock.verify(providerSupport, traceDao, saeDocumentDao);
+
+      EasyMock.reset(providerSupport, traceDao, saeDocumentDao);
 
    }
 
-   private void launchCommun() {
+   /**
+    *
+    */
+   private void recuperationDonneesDocuments() {
+      // récupération des documents
 
       List<Document> docs = new ArrayList<Document>();
 
@@ -250,20 +205,23 @@ public class ProcessingServiceTest {
       doc0.addCriterion("cog", "112");
       doc0.addCriterion("nce", "23456789012345");
       docs.add(doc0);
-
+      
       doc0 = createDocument();
       doc0.addCriterion("cog", "234");
       doc0.addCriterion("nce", "23456789012345");
       docs.add(doc0);
-
+      
       doc0 = createDocument();
       doc0.addCriterion("cog", "448");
       doc0.addCriterion("nce", "23456789012345");
       docs.add(doc0);
 
+      
+
       EasyMock.expect(
             saeDocumentDao.getDocuments(EasyMock.anyObject(String.class)))
             .andReturn(docs);
+
    }
 
    private Document createDocument() {
@@ -273,13 +231,6 @@ public class ProcessingServiceTest {
       document.setUuid(UUID.randomUUID());
 
       return document;
-   }
-
-   private void assertSaeDocumentDao() {
-
-      EasyMock.verify(saeDocumentDao);
-      EasyMock.verify(providerSupport);
-      EasyMock.verify(traceDao);
    }
 
 }

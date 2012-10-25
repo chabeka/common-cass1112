@@ -16,11 +16,14 @@ import org.slf4j.LoggerFactory;
  * documents
  * 
  */
-public class TraceDatasUtils {
+public final class TraceDatasUtils {
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(TraceDatasUtils.class);
 
+   private TraceDatasUtils(){
+   }
+   
    /**
     * Loggue les valeurs anciennes et nouvelles des métadonnées à modifier,
     * ainsi que la concordance avec la valeur de la métadonnée du documentt

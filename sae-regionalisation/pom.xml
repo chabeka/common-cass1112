@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
    <modelVersion>4.0.0</modelVersion>
    <groupId>fr.urssaf.image.sae</groupId>
@@ -39,6 +40,8 @@
       <apache.commons-lang.version>2.6</apache.commons-lang.version>
       <apache.commons-codec.version>1.4</apache.commons-codec.version>
 
+      <!-- cassandra unit -->
+      <cassandra-unit.version>1.0.3.1</cassandra-unit.version>
    </properties>
 
    <build>
@@ -128,13 +131,16 @@
                         </excludes>
                      </artifactSet>
                      <transformers>
-                        <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                        <transformer
+                           implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                            <mainClass>fr.urssaf.image.sae.regionalisation.BootStrap</mainClass>
                         </transformer>
-                        <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                        <transformer
+                           implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                            <resource>META-INF/spring.handlers</resource>
                         </transformer>
-                        <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                        <transformer
+                           implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                            <resource>META-INF/spring.schemas</resource>
                         </transformer>
                      </transformers>
@@ -161,7 +167,7 @@
                </execution>
             </executions>
          </plugin>
-         
+
          <!--
          Pour la gestion des release
          -->
@@ -184,6 +190,12 @@
 
 
    <dependencies>
+
+      <dependency>
+         <groupId>com.google.guava</groupId>
+         <artifactId>guava</artifactId>
+         <version>12.0</version>
+      </dependency>
 
       <!-- LOGBACK -->
 
@@ -227,6 +239,16 @@
          <groupId>fr.urssaf.image.commons</groupId>
          <artifactId>commons-dfce</artifactId>
          <version>${commons.dfce.version}</version>
+         <exclusions>
+            <exclusion>
+               <groupId>org.slf4j</groupId>
+               <artifactId>slf4j-api</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>com.google.guava</groupId>
+               <artifactId>guava</artifactId>
+            </exclusion>
+         </exclusions>
       </dependency>
 
       <!-- SPRING -->
@@ -352,8 +374,63 @@
          <version>2.3</version>
       </dependency>
 
+      <dependency>
+         <groupId>fr.urssaf.image.commons</groupId>
+         <artifactId>commons-cassandra</artifactId>
+         <version>0.0.4</version>
+      </dependency>
+
+      <!-- Accès CASSANDRA -->
+      <dependency>
+         <groupId>com.netflix.astyanax</groupId>
+         <artifactId>astyanax</artifactId>
+         <version>1.0.5</version>
+         <exclusions>
+            <exclusion>
+               <artifactId>cassandra-parent</artifactId>
+               <groupId>org.apache.cassandra</groupId>
+            </exclusion>
+            <exclusion>
+               <groupId>com.google.guava</groupId>
+               <artifactId>guava</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.slf4j</groupId>
+               <artifactId>slf4j-api</artifactId>
+            </exclusion>
+            <exclusion>
+               <artifactId>cassandra-thrift</artifactId>
+               <groupId>org.apache.cassandra</groupId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+      <dependency>
+         <groupId>org.cassandraunit</groupId>
+         <artifactId>cassandra-unit</artifactId>
+         <version>${cassandra-unit.version}</version>
+         <scope>compile</scope>
+         <exclusions>
+            <exclusion>
+               <groupId>org.slf4j</groupId>
+               <artifactId>slf4j-log4j12</artifactId>
+            </exclusion>
+            <exclusion>
+               <artifactId>cassandra-parent</artifactId>
+               <groupId>org.apache.cassandra</groupId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.slf4j</groupId>
+               <artifactId>slf4j-api</artifactId>
+            </exclusion>
+            <exclusion>
+               <artifactId>cassandra-all</artifactId>
+               <groupId>org.apache.cassandra</groupId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+
    </dependencies>
-   
+
    <!-- Configuration SVN pour le plug-in maven-release -->
    <scm>
       <url>
@@ -366,7 +443,7 @@
          scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/sae-regionalisation/
       </connection>
    </scm>
-   
+
    <!--
       On indique l'URL des repository Nexus, pour les versions Snapshots
       et Releases des artéfacts
