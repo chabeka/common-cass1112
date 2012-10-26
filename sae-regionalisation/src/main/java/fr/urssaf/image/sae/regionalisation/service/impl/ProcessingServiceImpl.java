@@ -391,7 +391,7 @@ public class ProcessingServiceImpl implements ProcessingService {
 
          }
 
-         while (line != null) {
+         while (line != null && currentRecord < lastRecord) {
             LOGGER
                   .debug(
                         "nombre de documents à mettre à jour pour la requête lucène '{}': {}",
@@ -399,6 +399,7 @@ public class ProcessingServiceImpl implements ProcessingService {
 
             nbRecordSansDocument++;
             line = reader.readLine();
+            currentRecord++;
          }
 
          LOGGER.info("nombre de recherche sans documents associés: {}",
@@ -521,7 +522,7 @@ public class ProcessingServiceImpl implements ProcessingService {
       // de documents retournés
       nbRecordDocumentTraites += documents.size();
 
-      currentRecord++;
+      // currentRecord++;
 
    }
 
