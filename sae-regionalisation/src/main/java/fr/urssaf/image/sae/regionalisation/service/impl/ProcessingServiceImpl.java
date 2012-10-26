@@ -156,13 +156,15 @@ public class ProcessingServiceImpl implements ProcessingService {
             lastRequest = currentRequest;
          }
 
-         while (((String) documents.get(indexDoc).getSingleCriterion("cog")
-               .getWord()).compareTo((String) oldMetadonnees.get("cog")) < 0) {
+         while (indexDoc < documents.size()
+               && ((String) documents.get(indexDoc).getSingleCriterion("cog")
+                     .getWord()).compareTo((String) oldMetadonnees.get("cog")) < 0) {
             indexDoc++;
          }
 
-         while (((String) documents.get(indexDoc).getSingleCriterion("cog")
-               .getWord()).equals((String) oldMetadonnees.get("cog"))) {
+         while (indexDoc < documents.size()
+               && ((String) documents.get(indexDoc).getSingleCriterion("cog")
+                     .getWord()).equals((String) oldMetadonnees.get("cog"))) {
 
             List<Trace> traces = new ArrayList<Trace>();
 
@@ -392,7 +394,7 @@ public class ProcessingServiceImpl implements ProcessingService {
          }
 
          while (line != null && currentRecord < lastRecord) {
-            LOGGER
+            LOGGER 
                   .debug(
                         "nombre de documents à mettre à jour pour la requête lucène '{}': {}",
                         line.split(";")[0], 0);
