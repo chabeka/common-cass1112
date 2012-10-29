@@ -19,4 +19,6 @@
    <bean id="prmdControleTest"
       class="fr.urssaf.image.sae.droit.controle.PrmdControleTestImpl" />
 
+   <bean class="fr.urssaf.image.sae.droit.cache.CacheConfig" id="cacheConfig" />
+   
 </beans>
