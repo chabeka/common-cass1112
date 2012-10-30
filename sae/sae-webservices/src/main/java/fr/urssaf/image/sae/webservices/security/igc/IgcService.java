@@ -117,7 +117,8 @@ public class IgcService implements InitializingBean {
          InputStream input = null;
          try {
 
-            LOG.debug("loading certificat: " + igcConfig.getAcRacine());
+            LOG.info("Chargement du certificat d'AC racine {}", igcConfig.getAcRacine());
+            
             File crt = new File(igcConfig.getAcRacine());
             input = new FileInputStream(crt);
 
