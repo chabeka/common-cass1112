@@ -176,6 +176,10 @@ public class ProcessingServiceTest {
       traceDao.addTraceMaj(EasyMock.anyObject(Trace.class));
       EasyMock.expectLastCall().times(2);
 
+      traceDao.addTraceRec(EasyMock.anyObject(String.class), EasyMock.anyInt(),
+            EasyMock.anyInt(), EasyMock.anyBoolean());
+      EasyMock.expectLastCall().anyTimes();
+
       // déconnexion à DFCE
 
       providerSupport.disconnect();

@@ -40,7 +40,6 @@ import fr.urssaf.image.sae.regionalisation.dao.TraceDao;
 import fr.urssaf.image.sae.regionalisation.datas.TermInfoResultSet;
 import fr.urssaf.image.sae.regionalisation.exception.ErreurTechniqueException;
 import fr.urssaf.image.sae.regionalisation.service.ProcessingService;
-import fr.urssaf.image.sae.regionalisation.service.utils.TraceDatasUtils;
 import fr.urssaf.image.sae.regionalisation.support.CassandraSupport;
 import fr.urssaf.image.sae.regionalisation.support.ServiceProviderSupport;
 import fr.urssaf.image.sae.regionalisation.util.Constants;
@@ -208,8 +207,9 @@ public class ProcessingServiceImpl implements ProcessingService {
 
          indexLine++;
 
-         TraceDatasUtils.traceMetas(modifiedDocs, metadonnees, oldMetadonnees,
-               currentRecord);
+         // TraceDatasUtils.traceMetas(modifiedDocs, metadonnees,
+         // oldMetadonnees,
+         // currentRecord);
       }
 
       LOGGER
@@ -385,16 +385,20 @@ public class ProcessingServiceImpl implements ProcessingService {
          String reference;
 
          while ((reference = resultSet.getNextValue()) != null && line != null
-               && currentRecord < lastRecord) {
+               && currentRecord <= lastRecord) {
 
-            line = logInexistingLines(reader, reference, line, lastRecord);
+            line = logInexistingLines(reader, reference, line, lastRecord,
+                  updateDatas);
             line = updateExistingDatas(reader, reference, line, updateDatas,
                   lastRecord);
 
          }
 
-         while (line != null && currentRecord < lastRecord) {
-            LOGGER 
+         while (line != null && currentRecord <= lastRecord) {
+
+            line = logInexistingLines(reader, line, lastRecord, updateDatas);
+
+            LOGGER
                   .debug(
                         "nombre de documents à mettre à jour pour la requête lucène '{}': {}",
                         line.split(";")[0], 0);
@@ -449,7 +453,7 @@ public class ProcessingServiceImpl implements ProcessingService {
          Map<Integer, String> lines = new HashMap<Integer, String>();
          while (currentLine != null
                && currentLine.split(";")[2].split(">")[0].equals(reference)
-               && currentRecord < lastRecord) {
+               && currentRecord <= lastRecord) {
 
             lines.put(currentRecord, currentLine);
             currentLine = reader.readLine();
@@ -495,8 +499,12 @@ public class ProcessingServiceImpl implements ProcessingService {
                criterion.getLucene());
       }
 
-      this.traceDao.addTraceRec(criterion.getLucene(), currentRecord, documents
-            .size(), updateDatas);
+      List<Integer> listLines = new ArrayList<Integer>(lines.keySet());
+      Collections.sort(listLines);
+      for (Integer lineNumber : listLines) {
+         this.traceDao.addTraceRec(criterion.getLucene(), lineNumber, documents
+               .size(), updateDatas);
+      }
 
       // si le flag est positionné à MISE_A_JOUR
       if (updateDatas) {
@@ -524,26 +532,19 @@ public class ProcessingServiceImpl implements ProcessingService {
       // de documents retournés
       nbRecordDocumentTraites += documents.size();
 
-      // currentRecord++;
-
    }
 
    private String logInexistingLines(BufferedReader reader, String reference,
-         String line, int lastRecord) {
+         String line, int lastRecord, boolean updateDatas) {
 
       String currentLine = line;
 
       try {
          while (currentLine != null
                && currentLine.split(";")[2].split(">")[0].compareTo(reference) < 0
-               && currentRecord < lastRecord) {
-            LOGGER
-                  .debug(
-                        "nombre de documents à mettre à jour pour la requête lucène '{}': {}",
-                        currentLine.split(";")[0], 0);
+               && currentRecord <= lastRecord) {
 
-            nbRecordSansDocument++;
-            currentLine = reader.readLine();
+            currentLine = logLine(currentLine, updateDatas, reader);
             currentRecord++;
          }
 
@@ -552,6 +553,39 @@ public class ProcessingServiceImpl implements ProcessingService {
       } catch (IOException exception) {
          throw new ErreurTechniqueException(exception);
       }
+   }
+
+   private String logInexistingLines(BufferedReader reader, String line,
+         int lastRecord, boolean updateDatas) {
+
+      String currentLine = line;
+
+      try {
+         while (currentLine != null && currentRecord <= lastRecord) {
+
+            currentLine = logLine(currentLine, updateDatas, reader);
+            currentRecord++;
+
+         }
+
+         return currentLine;
+
+      } catch (IOException exception) {
+         throw new ErreurTechniqueException(exception);
+      }
+   }
+
+   private String logLine(String currentLine, boolean updateDatas,
+         BufferedReader reader) throws IOException {
+      String currentValue = currentLine.split(";")[0];
+
+      this.traceDao.addTraceRec(currentValue, currentRecord, 0, updateDatas);
+      LOGGER
+            .debug(
+                  "nombre de documents à mettre à jour pour la requête lucène '{}': {}",
+                  currentValue, 0);
+      nbRecordSansDocument++;
+      return reader.readLine();
    }
 
    /**

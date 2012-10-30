@@ -175,6 +175,10 @@ public class ProcessingServiceAstyanaxxTest {
       traceDao.close();
       EasyMock.expectLastCall().once();
 
+      traceDao.addTraceRec(EasyMock.anyObject(String.class), EasyMock.anyInt(),
+            EasyMock.anyInt(), EasyMock.anyBoolean());
+      EasyMock.expectLastCall().anyTimes();
+
       EasyMock.replay(traceDao, providerSupport, saeDocumentDao);
 
       Resource resource = appContext.getResource("cassandra/file-datas.txt");
@@ -205,18 +209,16 @@ public class ProcessingServiceAstyanaxxTest {
       doc0.addCriterion("cog", "112");
       doc0.addCriterion("nce", "23456789012345");
       docs.add(doc0);
-      
+
       doc0 = createDocument();
       doc0.addCriterion("cog", "234");
       doc0.addCriterion("nce", "23456789012345");
       docs.add(doc0);
-      
+
       doc0 = createDocument();
       doc0.addCriterion("cog", "448");
       doc0.addCriterion("nce", "23456789012345");
       docs.add(doc0);
-
-      
 
       EasyMock.expect(
             saeDocumentDao.getDocuments(EasyMock.anyObject(String.class)))
