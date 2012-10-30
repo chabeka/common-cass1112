@@ -58,14 +58,23 @@
 
    </build>
    
-   <!-- 
+   
    <dependencies>
+      
+      <!--
+      Cette dépendance est incluse dans le package, dans le tar.gz
+      cf. src/assembly/config_assembly.xml
+      -->
+      <!-- Désactivé pour l'instant, car DFCE 1.1.0 n'a pas été intégré au SAE -->
+      <!--
       <dependency>
          <groupId>com.docubase</groupId>
          <artifactId>dfce-migration-from-1.0.1-to-1.1.0</artifactId>
          <version>1.0</version>
       </dependency>
+      -->
+      
    </dependencies>
-   -->
+   
 
 </project>

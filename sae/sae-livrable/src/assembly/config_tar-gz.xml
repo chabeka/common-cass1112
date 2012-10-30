@@ -77,6 +77,10 @@
   </files>
 
    <dependencySets>
+      
+      <!-- La dépendance se trouve dans le pom.xml -->
+      <!-- Désactivé pour l'instant, car DFCE 1.1.0 n'a pas été intégré au SAE -->
+      <!--
       <dependencySet>
          <includes>
             <include>com.docubase:dfce-migration-from-1.0.1-to-1.1.0</include>
@@ -84,6 +88,7 @@
          <outputDirectory>dfce-migration</outputDirectory>
          <outputFileNameMapping>dfce-migration-from-1.0.1-to-1.1.0.jar</outputFileNameMapping>
       </dependencySet>
+      -->
    </dependencySets>
    
 </assembly>
