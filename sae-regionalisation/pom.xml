@@ -4,7 +4,7 @@
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-regionalisation</artifactId>
    <name>sae-regionalisation</name>
-   <version>1.0.2</version>
+   <version>1.0.3-SNAPSHOT</version>
    <description>Opération de mise à jour de métadonnées en masse dans la cadre de la régionalisation</description>
 
    <properties>
@@ -430,13 +430,13 @@
    <!-- Configuration SVN pour le plug-in maven-release -->
    <scm>
       <url>
-        scm:svn:svn://cer69-svn.cer69.recouv/image/java/tags/sae-regionalisation-1.0.2
+        scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/sae-regionalisation/
       </url>
       <developerConnection>
-         scm:svn:svn://cer69-svn.cer69.recouv/image/java/tags/sae-regionalisation-1.0.2
+         scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/sae-regionalisation/
       </developerConnection>
       <connection>
-         scm:svn:svn://cer69-svn.cer69.recouv/image/java/tags/sae-regionalisation-1.0.2
+         scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/sae-regionalisation/
       </connection>
    </scm>
 
