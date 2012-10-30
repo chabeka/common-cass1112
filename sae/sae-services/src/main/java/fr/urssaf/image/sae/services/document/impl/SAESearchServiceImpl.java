@@ -157,8 +157,15 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
     */
    private boolean checkConversion(String requete, String requeteVerif)
          throws SAESearchServiceEx {
+      
       // la requete verif ainsi remplacée doit être la même que la requête de
       // départ.
+      
+      String prefixeTrc = "checkConversion()";
+      LOG.debug("{} - Début", prefixeTrc);
+      LOG.debug("{} - Requête d'origine avec codes longs : {}", prefixeTrc, requete);
+      LOG.debug("{} - Requête reconvertie avec codes longs : {}", prefixeTrc, requeteVerif);
+      
       boolean checkLuceneQuery = false;
       if (requete.equals(requeteVerif)) {
          checkLuceneQuery = true;
@@ -166,6 +173,9 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
       if (!checkLuceneQuery) {
          throw new SAESearchServiceEx("search.analyse.lucene.error");
       }
+      
+      
+      LOG.debug("{} - Fin", prefixeTrc);
       return checkLuceneQuery;
    }
 
