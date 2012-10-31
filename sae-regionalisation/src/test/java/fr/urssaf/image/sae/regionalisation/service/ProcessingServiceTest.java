@@ -216,7 +216,7 @@ public class ProcessingServiceTest {
 
       traceDao.addTraceRec(EasyMock.anyObject(String.class), EasyMock.anyInt(),
             EasyMock.anyInt(), EasyMock.eq(false));
-      EasyMock.expectLastCall().times(1);
+      EasyMock.expectLastCall().times(6);
 
       traceDao.open("12");
       EasyMock.expectLastCall().once();

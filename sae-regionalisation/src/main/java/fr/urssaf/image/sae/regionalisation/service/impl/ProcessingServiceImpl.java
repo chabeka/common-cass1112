@@ -398,15 +398,6 @@ public class ProcessingServiceImpl implements ProcessingService {
          while (StringUtils.isNotBlank(line) && currentRecord <= lastRecord) {
 
             line = logInexistingLines(reader, line, lastRecord, updateDatas);
-
-            LOGGER
-                  .debug(
-                        "nombre de documents à mettre à jour pour la requête lucène '{}': {}",
-                        line.split(";")[0], 0);
-
-            nbRecordSansDocument++;
-            line = reader.readLine();
-            currentRecord++;
          }
 
          LOGGER.info("nombre de recherche sans documents associés: {}",
@@ -566,6 +557,7 @@ public class ProcessingServiceImpl implements ProcessingService {
                && currentRecord <= lastRecord) {
 
             currentLine = logLine(currentLine, updateDatas, reader);
+            nbRecordSansDocument++;
             currentRecord++;
 
          }
