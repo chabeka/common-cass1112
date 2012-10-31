@@ -21,6 +21,7 @@ import net.docubase.toolkit.model.document.Document;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -384,8 +385,8 @@ public class ProcessingServiceImpl implements ProcessingService {
          TermInfoResultSet resultSet = new TermInfoResultSet(query);
          String reference;
 
-         while ((reference = resultSet.getNextValue()) != null && line != null
-               && currentRecord <= lastRecord) {
+         while ((reference = resultSet.getNextValue()) != null
+               && StringUtils.isNotBlank(line) && currentRecord <= lastRecord) {
 
             line = logInexistingLines(reader, reference, line, lastRecord,
                   updateDatas);
@@ -394,7 +395,7 @@ public class ProcessingServiceImpl implements ProcessingService {
 
          }
 
-         while (line != null && currentRecord <= lastRecord) {
+         while (StringUtils.isNotBlank(line) && currentRecord <= lastRecord) {
 
             line = logInexistingLines(reader, line, lastRecord, updateDatas);
 
@@ -451,7 +452,7 @@ public class ProcessingServiceImpl implements ProcessingService {
       String currentLine = line;
       try {
          Map<Integer, String> lines = new HashMap<Integer, String>();
-         while (currentLine != null
+         while (StringUtils.isNotBlank(currentLine)
                && currentLine.split(";")[2].split(">")[0].equals(reference)
                && currentRecord <= lastRecord) {
 
@@ -540,7 +541,7 @@ public class ProcessingServiceImpl implements ProcessingService {
       String currentLine = line;
 
       try {
-         while (currentLine != null
+         while (StringUtils.isNotBlank(currentLine)
                && currentLine.split(";")[2].split(">")[0].compareTo(reference) < 0
                && currentRecord <= lastRecord) {
 
@@ -561,7 +562,8 @@ public class ProcessingServiceImpl implements ProcessingService {
       String currentLine = line;
 
       try {
-         while (currentLine != null && currentRecord <= lastRecord) {
+         while (StringUtils.isNotBlank(currentLine)
+               && currentRecord <= lastRecord) {
 
             currentLine = logLine(currentLine, updateDatas, reader);
             currentRecord++;

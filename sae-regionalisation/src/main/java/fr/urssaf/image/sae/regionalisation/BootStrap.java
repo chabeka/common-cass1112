@@ -1,6 +1,7 @@
 package fr.urssaf.image.sae.regionalisation;
 
 import java.io.File;
+import java.util.Date;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.slf4j.Logger;
@@ -182,6 +183,8 @@ public class BootStrap {
          return;
       }
 
+      long timeStart = new Date().getTime();
+
       // instanciation du contexte de SPRING
       ApplicationContext context = SAEApplicationContextFactory.load(
             configLocation, configFile, dirPath);
@@ -192,14 +195,19 @@ public class BootStrap {
       // lancement de la régionalisation
       LOGGER
             .info(
-                  "lancement de la régionalisation en mode {} avec l'index de départ {} et avec un nombre d'enregistrements à traiter de {}, sur le fichier {}",
+                  "lancement de la régionalisation en mode {} avec l'index de départ {} et avec l'index de fin {}, sur le fichier {}",
                   new Object[] { args[MODE_ARG_INDEX], args[FIRST_ARG_INDEX],
                         args[LAST_ARG_INDEX], args[FILE_ARG_INDEX] });
 
       service.launchWithFile(updateDatas, sourceFile, uuid, firstRecord,
             lastRecord, dirPath);
 
-      LOGGER.info("la régionalisation est terminée");
+      long timeEnd = new Date().getTime();
+
+      long timeMs = timeEnd - timeStart;
+      long timeMin = (timeMs / 1000) / 60;
+
+      LOGGER.info("la régionalisation est terminée en {} minutes", timeMin);
    }
 
    /**
