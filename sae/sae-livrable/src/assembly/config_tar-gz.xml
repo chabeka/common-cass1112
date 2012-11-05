@@ -19,6 +19,7 @@
          <directory>src/config/</directory>
          <includes>
             <include>LifeCycleRule.xml</include>
+            <include>LifeCycleRule-121111-SEPA.xml</include>
          </includes>
          <outputDirectory>sae-dfce-admin-exploit</outputDirectory>
       </fileSet>

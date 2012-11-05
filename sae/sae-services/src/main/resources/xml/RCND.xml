@@ -8473,4 +8473,12 @@
       <DureeConservation>1825</DureeConservation>
       <VersionRND>11.2</VersionRND>
    </TypeDocument>
+   <TypeDocument>
+      <CodeRND>1.2.2.4.12</CodeRND>
+      <CodeFonction>1</CodeFonction>
+      <CodeActivite>2</CodeActivite>
+      <LibelleRND>MANDAT SEPA</LibelleRND>
+      <DureeConservation>1825</DureeConservation>
+      <VersionRND>11.5</VersionRND>
+   </TypeDocument>
 </RCND>
