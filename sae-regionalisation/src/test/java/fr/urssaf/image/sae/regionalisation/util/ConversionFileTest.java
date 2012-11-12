@@ -5,15 +5,20 @@ package fr.urssaf.image.sae.regionalisation.util;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
+import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.springframework.core.io.ClassPathResource;
 
 import au.com.bytecode.opencsv.CSVReader;
 
@@ -24,7 +29,7 @@ public class ConversionFileTest {
    private static final String PERS_CLE = "PERS_CLE";
 
    @Test
-    @Ignore
+   // @Ignore
    public void generateFile() {
       File parentDirectory = new File("c:/datas");
 
@@ -39,9 +44,20 @@ public class ConversionFileTest {
     * @param tempDirectory
     */
    @Test
-   @Ignore
+   // @Ignore
    public void createDatasFile() {
-      
+
+      ClassPathResource resource = new ClassPathResource(
+            "datas/correspondances.properties");
+      Properties properties = new Properties();
+
+      try {
+         properties.load(resource.getInputStream());
+      } catch (IOException e1) {
+         throw new RuntimeException(
+               "impossible de charger le fichier de resource");
+      }
+
       File parentDirectory = new File("c:/datas");
       File tempDirectory = new File(parentDirectory, "temp");
       Reader reader = null;
@@ -67,13 +83,26 @@ public class ConversionFileTest {
                   fileWriter.write(">");
                   fileWriter.write(tabLine[3].trim());
                   fileWriter.write(";cog;UR");
-                  fileWriter.write(tabLine[1].trim());
+                  
+                  fileWriter
+                        .write(properties.containsKey(tabLine[1].trim()) ? properties
+                              .getProperty(tabLine[1].trim())
+                              : tabLine[1].trim());
                   fileWriter.write(">UR");
-                  fileWriter.write(tabLine[4].trim());
+                  fileWriter
+                        .write(properties.containsKey(tabLine[4].trim()) ? properties
+                              .getProperty(tabLine[4].trim())
+                              : tabLine[4].trim());
                   fileWriter.write(";cop;UR");
-                  fileWriter.write(tabLine[1].trim());
+                  fileWriter
+                        .write(properties.containsKey(tabLine[1].trim()) ? properties
+                              .getProperty(tabLine[1].trim())
+                              : tabLine[1].trim());
                   fileWriter.write(">UR");
-                  fileWriter.write(tabLine[4].trim());
+                  fileWriter
+                        .write(properties.containsKey(tabLine[4].trim()) ? properties
+                              .getProperty(tabLine[4].trim())
+                              : tabLine[4].trim());
                   fileWriter.write("\n");
 
                } else if (CPTE_CLE.equals(tabLine[0])) {
@@ -84,13 +113,25 @@ public class ConversionFileTest {
                   fileWriter.write(">");
                   fileWriter.write(tabLine[3].trim());
                   fileWriter.write(";cog;UR");
-                  fileWriter.write(tabLine[1].trim());
+                  fileWriter
+                        .write(properties.containsKey(tabLine[1].trim()) ? properties
+                              .getProperty(tabLine[1].trim())
+                              : tabLine[1].trim());
                   fileWriter.write(">UR");
-                  fileWriter.write(tabLine[4].trim());
+                  fileWriter
+                        .write(properties.containsKey(tabLine[4].trim()) ? properties
+                              .getProperty(tabLine[4].trim())
+                              : tabLine[4].trim());
                   fileWriter.write(";cop;UR");
-                  fileWriter.write(tabLine[1].trim());
+                  fileWriter
+                        .write(properties.containsKey(tabLine[1].trim()) ? properties
+                              .getProperty(tabLine[1].trim())
+                              : tabLine[1].trim());
                   fileWriter.write(">UR");
-                  fileWriter.write(tabLine[4].trim());
+                  fileWriter
+                        .write(properties.containsKey(tabLine[4].trim()) ? properties
+                              .getProperty(tabLine[4].trim())
+                              : tabLine[4].trim());
                   fileWriter.write("\n");
 
                } else if (PERS_CLE.equals(tabLine[0].trim())) {
@@ -101,13 +142,25 @@ public class ConversionFileTest {
                   fileWriter.write(">");
                   fileWriter.write(tabLine[3].trim());
                   fileWriter.write(";cog;UR");
-                  fileWriter.write(tabLine[1].trim());
+                  fileWriter
+                        .write(properties.containsKey(tabLine[1].trim()) ? properties
+                              .getProperty(tabLine[1].trim())
+                              : tabLine[1].trim());
                   fileWriter.write(">UR");
-                  fileWriter.write(tabLine[4].trim());
+                  fileWriter
+                        .write(properties.containsKey(tabLine[4].trim()) ? properties
+                              .getProperty(tabLine[4].trim())
+                              : tabLine[4].trim());
                   fileWriter.write(";cop;UR");
-                  fileWriter.write(tabLine[1].trim());
+                  fileWriter
+                        .write(properties.containsKey(tabLine[1].trim()) ? properties
+                              .getProperty(tabLine[1].trim())
+                              : tabLine[1].trim());
                   fileWriter.write(">UR");
-                  fileWriter.write(tabLine[4].trim());
+                  fileWriter
+                        .write(properties.containsKey(tabLine[4].trim()) ? properties
+                              .getProperty(tabLine[4].trim())
+                              : tabLine[4].trim());
                   fileWriter.write("\n");
 
                }
@@ -229,6 +282,105 @@ public class ConversionFileTest {
       }
 
       return tempDirectory;
+   }
+
+   @Test
+   @Ignore
+   public void supprimeZeros() {
+      File directory = new File("c:/datas");
+      File[] listFile = directory.listFiles(new FilenameFilter() {
+
+         @Override
+         public boolean accept(File dir, String name) {
+            return name.startsWith("regionalisation");
+         }
+      });
+
+      for (File file : listFile) {
+
+         Reader reader = null;
+         BufferedReader bReader = null;
+         Writer writer = null;
+
+         String line, requete, value;
+         Long iValue;
+
+         try {
+            reader = new FileReader(file);
+            bReader = new BufferedReader(reader);
+            writer = new FileWriter(new File(directory, "zeros_less_"
+                  + file.getName()));
+            String[] tabLine, tabRequete, tabLink;
+
+            while (StringUtils.isNotBlank((line = bReader.readLine()))) {
+               tabLine = line.split(";");
+               requete = tabLine[0];
+               tabRequete = requete.split(":");
+               value = tabRequete[1];
+
+               if (value.startsWith("0")) {
+                  iValue = Long.valueOf(value);
+                  value = String.valueOf(iValue);
+                  writer.write(tabRequete[0] + ":" + value + ";");
+               } else {
+                  writer.write(tabLine[0] + ";");
+               }
+
+               writer.write(tabLine[1] + ";");
+
+               if (tabLine[2].startsWith("0")) {
+                  tabLink = tabLine[2].split(">");
+                  value = tabLink[0];
+                  iValue = Long.valueOf(value);
+                  value = String.valueOf(iValue);
+
+                  writer.write(value + ">" + tabLink[1] + ";");
+               } else {
+                  writer.write(tabLine[2] + ";");
+               }
+
+               writer.write(tabLine[3] + ";");
+               writer.write(tabLine[4] + ";");
+               writer.write(tabLine[5] + ";");
+               writer.write(tabLine[6] + "\n");
+
+            }
+
+         } catch (FileNotFoundException e) {
+            e.printStackTrace();
+
+         } catch (IOException e) {
+            e.printStackTrace();
+         } finally {
+
+            if (bReader != null) {
+
+               try {
+                  bReader.close();
+               } catch (Exception e) {
+                  e.printStackTrace();
+               }
+            }
+
+            if (reader != null) {
+
+               try {
+                  reader.close();
+               } catch (Exception e) {
+                  e.printStackTrace();
+               }
+            }
+
+            if (writer != null) {
+               try {
+                  writer.close();
+               } catch (IOException ex) {
+                  ex.printStackTrace();
+               }
+            }
+         }
+
+      }
    }
 
 }
