@@ -22,6 +22,12 @@ public final class Constants {
          "cv2", "scv", "nci", "nce", "srt", "psi", "nst", "nre", "nic", "dre",
          "apr", "atr", "cop", "cog", "sac", "nbp" };
 
+   /** numéro de compte externe */
+   public static final String NUM_CPTE_EXT = "nce";
+
+   /** code organisme gestionnaire */
+   public static final String CODE_ORG_GEST = "cog";
+
    /** identifiant du document */
    public static final String TRACE_ID_DOCUMENT = "TRACE_ID_DOCUMENT";
 

@@ -41,6 +41,7 @@ import fr.urssaf.image.sae.regionalisation.dao.TraceDao;
 import fr.urssaf.image.sae.regionalisation.datas.TermInfoResultSet;
 import fr.urssaf.image.sae.regionalisation.exception.ErreurTechniqueException;
 import fr.urssaf.image.sae.regionalisation.service.ProcessingService;
+import fr.urssaf.image.sae.regionalisation.service.utils.TraceDocumentUtils;
 import fr.urssaf.image.sae.regionalisation.support.CassandraSupport;
 import fr.urssaf.image.sae.regionalisation.support.ServiceProviderSupport;
 import fr.urssaf.image.sae.regionalisation.util.Constants;
@@ -512,6 +513,9 @@ public class ProcessingServiceImpl implements ProcessingService {
                criterion.getId(), (dateEnd.getTime() - dateStart.getTime()));
 
       } else {
+
+         TraceDocumentUtils.logDocumentsNotUpdated(new ArrayList<String>(lines.values()),
+               documents);
 
          LOGGER
                .debug(
