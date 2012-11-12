@@ -29,7 +29,7 @@ public class ConversionFileTest {
    private static final String PERS_CLE = "PERS_CLE";
 
    @Test
-   // @Ignore
+   @Ignore
    public void generateFile() {
       File parentDirectory = new File("c:/datas");
 
@@ -44,7 +44,7 @@ public class ConversionFileTest {
     * @param tempDirectory
     */
    @Test
-   // @Ignore
+   @Ignore
    public void createDatasFile() {
 
       ClassPathResource resource = new ClassPathResource(
@@ -83,7 +83,7 @@ public class ConversionFileTest {
                   fileWriter.write(">");
                   fileWriter.write(tabLine[3].trim());
                   fileWriter.write(";cog;UR");
-                  
+
                   fileWriter
                         .write(properties.containsKey(tabLine[1].trim()) ? properties
                               .getProperty(tabLine[1].trim())
