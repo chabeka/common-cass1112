@@ -88,8 +88,8 @@ public class DocInfoServiceTest {
       EasyMock.expect(row.getColumns()).andReturn(columnList).times(3);
 
       iterator = EasyMock.createMock(Iterator.class);
-      EasyMock.expect(iterator.hasNext()).andReturn(true).times(5).andReturn(
-            false).times(2);
+      EasyMock.expect(iterator.hasNext()).andReturn(true).times(3).andReturn(
+            false).times(1);
       EasyMock.expect(iterator.next()).andReturn(row).times(3);
 
       rows = EasyMock.createMock(Rows.class);
@@ -100,7 +100,7 @@ public class DocInfoServiceTest {
       EasyMock.expect(operation.getResult()).andReturn(rows);
       // initialisation de la query
       query = EasyMock.createMock(AllRowsQuery.class);
-      EasyMock.expect(query.execute()).andReturn(operation).andReturn(null);
+      EasyMock.expect(query.execute()).andReturn(operation);
 
       EasyMock.expect(docInfoDao.getQuery()).andReturn(query);
 
