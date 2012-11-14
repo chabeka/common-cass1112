@@ -17,13 +17,23 @@ import fr.urssaf.image.sae.regionalisation.fond.documentaire.service.TraitementS
  * 
  * 
  */
-public class BootStrap {
+public final class BootStrap {
 
+   /**
+    * 
+    */
+   private static final int CONVERSION_MIN = 60000;
    private static final String MODE_LISTE = "liste";
    private static final String MODE_MAJ = "maj";
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(BootStrap.class);
+
+   /**
+    * Constructeur
+    */
+   private BootStrap() {
+   }
 
    /**
     * Classe de démarrage de l'application
@@ -54,7 +64,7 @@ public class BootStrap {
       }
 
       long endTime = new Date().getTime();
-      long time = (endTime - startTime) / 60000;
+      long time = (endTime - startTime) / CONVERSION_MIN;
       LOGGER.debug("{} - Fin du traitement", trcPrefix);
       LOGGER.debug("{} - Traitement réalisé en {} min.", new Object[] {
             trcPrefix, time });

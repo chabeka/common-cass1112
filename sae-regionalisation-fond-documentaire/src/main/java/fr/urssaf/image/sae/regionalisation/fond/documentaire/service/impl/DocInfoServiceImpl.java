@@ -32,7 +32,7 @@ public class DocInfoServiceImpl implements DocInfoService {
     * {@inheritDoc}
     */
    @Override
-   public List<String> getCodesOrganismes() {
+   public final List<String> getCodesOrganismes() {
       AllRowsQuery<DocInfoKey, String> query = dao.getQuery();
       DocInfoResultSet resultSet = new DocInfoResultSet(query);
 

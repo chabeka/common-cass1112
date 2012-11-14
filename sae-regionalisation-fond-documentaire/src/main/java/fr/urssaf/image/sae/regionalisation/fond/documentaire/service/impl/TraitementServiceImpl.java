@@ -38,7 +38,7 @@ public class TraitementServiceImpl implements TraitementService {
     * {@inheritDoc}
     */
    @Override
-   public void writeCodesOrganismes(String filePath) {
+   public final void writeCodesOrganismes(String filePath) {
 
       String trcPrefix = "writeCodesOrganismes";
 

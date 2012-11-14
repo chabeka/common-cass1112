@@ -13,7 +13,13 @@ import fr.urssaf.image.sae.regionalisation.fond.documentaire.support.CassandraSu
  * Classe permettant de réaliser les mocks
  * 
  */
-public class MockFactory {
+public final class MockFactory {
+
+   /**
+    * Constructeur
+    */
+   private MockFactory() {
+   }
 
    /**
     * @return un mock de {@link DocInfoDao}

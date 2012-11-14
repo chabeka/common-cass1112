@@ -20,6 +20,11 @@ import fr.urssaf.image.sae.regionalisation.fond.documentaire.support.CassandraSu
 @Component
 public class DocInfoDaoImpl implements DocInfoDao {
 
+   /**
+    * 
+    */
+   private static final int ROW_LIMIT = 100;
+
    public static final String CF_DOCINFO = "DocInfo";
 
    @Autowired
@@ -28,9 +33,9 @@ public class DocInfoDaoImpl implements DocInfoDao {
    /**
     * {@inheritDoc}
     */
-   public AllRowsQuery<DocInfoKey, String> getQuery() {
+   public final AllRowsQuery<DocInfoKey, String> getQuery() {
       return cassandraSupport.getKeySpace().prepareQuery(DocInfoCF.CF_DOC_INFO)
-            .getAllRows().setRowLimit(100).withColumnSlice("cop", "cog");
+            .getAllRows().setRowLimit(ROW_LIMIT).withColumnSlice("cop", "cog");
    }
 
 }
