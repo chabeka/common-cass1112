@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import fr.urssaf.image.sae.regionalisation.fond.documentaire.exception.CassandraException;
 import fr.urssaf.image.sae.regionalisation.fond.documentaire.exception.ErreurTechniqueException;
 import fr.urssaf.image.sae.regionalisation.fond.documentaire.service.DocInfoService;
 import fr.urssaf.image.sae.regionalisation.fond.documentaire.service.TraitementService;
@@ -57,6 +58,9 @@ public class TraitementServiceImpl implements TraitementService {
          FileUtils.writeLines(file, codes);
 
       } catch (IOException exception) {
+         throw new ErreurTechniqueException(exception);
+
+      } catch (CassandraException exception) {
          throw new ErreurTechniqueException(exception);
 
       } finally {

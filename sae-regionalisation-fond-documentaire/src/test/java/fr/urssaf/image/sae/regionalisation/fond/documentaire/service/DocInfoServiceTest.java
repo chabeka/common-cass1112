@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.netflix.astyanax.Serializer;
 import com.netflix.astyanax.connectionpool.OperationResult;
 import com.netflix.astyanax.connectionpool.exceptions.ConnectionException;
 import com.netflix.astyanax.model.ColumnList;
@@ -26,6 +27,7 @@ import com.netflix.astyanax.query.AllRowsQuery;
 
 import fr.urssaf.image.sae.regionalisation.fond.documentaire.dao.DocInfoDao;
 import fr.urssaf.image.sae.regionalisation.fond.documentaire.dao.cf.DocInfoKey;
+import fr.urssaf.image.sae.regionalisation.fond.documentaire.exception.CassandraException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
@@ -53,7 +55,8 @@ public class DocInfoServiceTest {
    }
 
    @Test
-   public void testGetOrganisme() throws ConnectionException {
+   public void testGetOrganisme() throws ConnectionException,
+         CassandraException {
       initMock();
 
       List<String> liste = service.getCodesOrganismes();
@@ -78,14 +81,16 @@ public class DocInfoServiceTest {
       columnList = EasyMock.createMock(ColumnList.class);
       EasyMock.expect(columnList.getColumnNames()).andReturn(
             Arrays.asList("cop", "cog")).times(3);
+
       EasyMock.expect(
-            columnList.getStringValue(EasyMock.anyObject(String.class),
-                  EasyMock.anyObject(String.class))).andReturn("UR123")
-            .andReturn("UR123").andReturn("UR124").andReturn("UR125")
-            .andReturn("UR123").andReturn("UR126");
+            columnList.getValue(EasyMock.anyObject(String.class), EasyMock
+                  .anyObject(Serializer.class), EasyMock
+                  .anyObject(String.class))).andReturn("UR123").andReturn(
+            "UR123").andReturn("UR124").andReturn("UR125").andReturn("UR123")
+            .andReturn("UR126");
 
       row = EasyMock.createMock(Row.class);
-      EasyMock.expect(row.getColumns()).andReturn(columnList).times(3);
+      EasyMock.expect(row.getColumns()).andReturn(columnList).times(9);
 
       iterator = EasyMock.createMock(Iterator.class);
       EasyMock.expect(iterator.hasNext()).andReturn(true).times(3).andReturn(

@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.sae.regionalisation.fond.documentaire.exception.CassandraException;
 import fr.urssaf.image.sae.regionalisation.fond.documentaire.support.CassandraSupport;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -50,7 +51,7 @@ public class TraitementServiceTest {
    }
 
    @Test
-   public void testEcritureFichier() throws IOException {
+   public void testEcritureFichier() throws IOException, CassandraException {
 
       initMock();
 
@@ -70,7 +71,7 @@ public class TraitementServiceTest {
 
    }
 
-   private void initMock() {
+   private void initMock() throws CassandraException {
       EasyMock.expect(docInfoService.getCodesOrganismes()).andReturn(
             Arrays.asList("UR123", "UR345"));
 

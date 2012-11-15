@@ -14,15 +14,12 @@ import fr.urssaf.image.sae.regionalisation.fond.documentaire.dao.cf.DocInfoKey;
 import fr.urssaf.image.sae.regionalisation.fond.documentaire.support.CassandraSupport;
 
 /**
- * 
+ * Implémentation de l'interface {@link DocInfoDao}
  * 
  */
 @Component
 public class DocInfoDaoImpl implements DocInfoDao {
 
-   /**
-    * 
-    */
    private static final int ROW_LIMIT = 100;
 
    public static final String CF_DOCINFO = "DocInfo";

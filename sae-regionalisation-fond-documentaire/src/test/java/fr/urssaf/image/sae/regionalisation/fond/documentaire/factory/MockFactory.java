@@ -6,6 +6,7 @@ package fr.urssaf.image.sae.regionalisation.fond.documentaire.factory;
 import org.easymock.EasyMock;
 
 import fr.urssaf.image.sae.regionalisation.fond.documentaire.dao.DocInfoDao;
+import fr.urssaf.image.sae.regionalisation.fond.documentaire.dao.TermInfoRangeUuidDao;
 import fr.urssaf.image.sae.regionalisation.fond.documentaire.service.DocInfoService;
 import fr.urssaf.image.sae.regionalisation.fond.documentaire.support.CassandraSupport;
 
@@ -40,6 +41,13 @@ public final class MockFactory {
     */
    public static DocInfoService createDocInfoService() {
       return EasyMock.createMock(DocInfoService.class);
+   }
+
+   /**
+    * @return un mock de {@link TermInfoRangeUuidDao}
+    */
+   public static TermInfoRangeUuidDao createTermInfoRangeUuidDao() {
+      return EasyMock.createMock(TermInfoRangeUuidDao.class);
    }
 
 }

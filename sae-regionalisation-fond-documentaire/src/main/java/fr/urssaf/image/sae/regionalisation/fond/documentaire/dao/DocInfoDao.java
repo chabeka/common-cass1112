@@ -8,7 +8,8 @@ import com.netflix.astyanax.query.AllRowsQuery;
 import fr.urssaf.image.sae.regionalisation.fond.documentaire.dao.cf.DocInfoKey;
 
 /**
- * 
+ * Interface offrant les services concernant la famille de colonne
+ * <b>DocInfo</b>
  * 
  */
 public interface DocInfoDao {

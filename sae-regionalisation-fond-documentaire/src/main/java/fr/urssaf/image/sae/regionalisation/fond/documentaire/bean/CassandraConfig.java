@@ -3,6 +3,8 @@
  */
 package fr.urssaf.image.sae.regionalisation.fond.documentaire.bean;
 
+import java.util.UUID;
+
 /**
  * classe représentant les paramètres CASSANDRA
  * 
@@ -20,6 +22,8 @@ public class CassandraConfig {
    private String keyspace;
 
    private int port;
+
+   private UUID baseUuid;
 
    /**
     * @return the servers
@@ -109,6 +113,21 @@ public class CassandraConfig {
     */
    public final void setPort(int port) {
       this.port = port;
+   }
+
+   /**
+    * @return the baseUuid
+    */
+   public final UUID getBaseUuid() {
+      return baseUuid;
+   }
+
+   /**
+    * @param baseUuid
+    *           the baseUuid to set
+    */
+   public final void setBaseUuid(UUID baseUuid) {
+      this.baseUuid = baseUuid;
    }
 
 }

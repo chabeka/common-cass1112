@@ -50,5 +50,10 @@
             <constructor-arg value="cassandra.user" />
          </bean>
       </property>
+      <property name="baseUuid">
+         <bean factory-bean="cassandraConf" factory-method="getProperty">
+            <constructor-arg value="cassandra.baseUuid" />
+         </bean>
+      </property>
    </bean>
 </beans>

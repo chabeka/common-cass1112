@@ -5,6 +5,8 @@ package fr.urssaf.image.sae.regionalisation.fond.documentaire.service;
 
 import java.util.List;
 
+import fr.urssaf.image.sae.regionalisation.fond.documentaire.exception.CassandraException;
+
 /**
  * Interface fournissant les services concernant la famille de colonne
  * <b>DocInfo</b>
@@ -17,7 +19,9 @@ public interface DocInfoService {
     * métadonnées des documents
     * 
     * @return la liste des organismes
+    * @throws CassandraException
+    *            exception levée en cas d'erreur d'accès aux données
     */
-   List<String> getCodesOrganismes();
+   List<String> getCodesOrganismes() throws CassandraException;
 
 }
