@@ -14,7 +14,7 @@ import fr.urssaf.image.sae.regionalisation.fond.documentaire.exception.DfceExcep
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-regionalisation-cassandra-test.xml" })
-public class ServicesValidation {
+public class ServicesValidationTest {
 
    @Autowired
    private TraitementService service;
@@ -24,7 +24,7 @@ public class ServicesValidation {
 
    /* UPDATE DOCUMENT */
    @Test
-   public void testUpdateDocumentInputFilePathObligatoire() {
+   public final void testUpdateDocumentInputFilePathObligatoire() {
       try {
          service.updateDocuments(null, null, 0, 0);
          Assert.fail("une erreur IllegalArgumentException est attendue");
@@ -40,7 +40,7 @@ public class ServicesValidation {
    }
 
    @Test
-   public void testUpdateDocumentPropertiesFilePathObligatoire() {
+   public final void testUpdateDocumentPropertiesFilePathObligatoire() {
       try {
          service.updateDocuments("fichier", null, 0, 0);
          Assert.fail("une erreur IllegalArgumentException est attendue");
@@ -57,13 +57,13 @@ public class ServicesValidation {
 
    /* WRITE CODES ORG */
    @Test(expected = IllegalArgumentException.class)
-   public void testWriteOrgsInputFilePathObligatoire() {
+   public final void testWriteOrgsInputFilePathObligatoire() {
       service.writeCodesOrganismes(null);
    }
 
    /* WRITE DOCUMENTS */
    @Test
-   public void testWriteDocumentOutputFilePathObligatoire() {
+   public final void testWriteDocumentOutputFilePathObligatoire() {
       try {
          service.writeDocUuidsToUpdate(null, null);
 
@@ -80,7 +80,7 @@ public class ServicesValidation {
    }
 
    @Test
-   public void testWriteDocumentPropertiesFilePathObligatoire() {
+   public final void testWriteDocumentPropertiesFilePathObligatoire() {
       try {
          service.writeDocUuidsToUpdate("fichier", null);
 
@@ -98,13 +98,13 @@ public class ServicesValidation {
 
    /* GET DOCUMENT */
    @Test(expected = IllegalArgumentException.class)
-   public void testGetDocumentUuidObligatoire() {
+   public final void testGetDocumentUuidObligatoire() {
       documentService.getDocument(null);
    }
 
    /* UPDATE DOCUMENT */
    @Test(expected = IllegalArgumentException.class)
-   public void testupdateDocumentObligatoire() throws DfceException {
+   public final void testupdateDocumentObligatoire() throws DfceException {
       documentService.updateDocument(null);
    }
 }

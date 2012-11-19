@@ -155,7 +155,7 @@ public class TraitementServiceImpl implements TraitementService {
     * {@inheritDoc}
     */
    @Override
-   public void updateDocuments(String inputFilePath, String propertiesFilePath,
+   public final void updateDocuments(String inputFilePath, String propertiesFilePath,
          int firstRecord, int lastRecord) {
 
       File file = new File(inputFilePath);
@@ -179,11 +179,11 @@ public class TraitementServiceImpl implements TraitementService {
 
          String line = skipLines(bReader, firstRecord);
 
-         int i = firstRecord - 1;
-         while (StringUtils.isNotEmpty(line) && i < lastRecord) {
+         int index = firstRecord - 1;
+         while (StringUtils.isNotEmpty(line) && index < lastRecord) {
             updateDocument(line, properties);
             line = bReader.readLine();
-            i++;
+            index++;
          }
 
       } catch (IOException exception) {
@@ -205,14 +205,14 @@ public class TraitementServiceImpl implements TraitementService {
    private String skipLines(BufferedReader bReader, int firstRecord)
          throws IOException {
 
-      int i = 0;
+      int index = 0;
       String line;
 
       do {
          line = bReader.readLine();
-         i++;
+         index++;
 
-      } while (line != null && i < firstRecord);
+      } while (line != null && index < firstRecord);
 
       return line;
    }

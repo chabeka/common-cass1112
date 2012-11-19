@@ -31,7 +31,7 @@ public class DocumentDaoImpl implements DocumentDao {
     * {@inheritDoc}
     */
    @Override
-   public Document getDocument(UUID uuid) {
+   public final Document getDocument(UUID uuid) {
 
       return providerSupport.getSearchService().getDocumentByUUID(
             providerSupport.getBase(), uuid);
@@ -41,7 +41,7 @@ public class DocumentDaoImpl implements DocumentDao {
     * {@inheritDoc}
     */
    @Override
-   public void updateDocument(Document document) throws DfceException {
+   public final void updateDocument(Document document) throws DfceException {
       
       try {
          providerSupport.getStoreService().updateDocument(document);

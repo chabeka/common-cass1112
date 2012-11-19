@@ -31,8 +31,8 @@ public class TraitementServiceValidation {
    /**
     * Validation de la méthode de writeCodesOrganismes <br>
     * 
-    * @param uuid
-    *           identifiant unique du document
+    * @param filePath
+    *           chemin du fichier de sortie
     */
    @Before(WRITE_ORG_METHOD)
    public final void writeCodesOrganismes(String filePath) {
@@ -46,8 +46,10 @@ public class TraitementServiceValidation {
    /**
     * Validation de la méthode de writeDocUuidsToUpdate <br>
     * 
-    * @param document
-    *           document à mettre à jour
+    * @param outputPath
+    *           chemin du fichier de sortie
+    * @param propertiesPath
+    *           fichier de correspondances
     */
    @Before(WRITE_UUID_METHOD)
    public final void writeUuids(String outputPath, String propertiesPath) {
@@ -66,8 +68,14 @@ public class TraitementServiceValidation {
    /**
     * Validation de la méthode de writeDocUuidsToUpdate <br>
     * 
-    * @param document
-    *           document à mettre à jour
+    * @param inputPath
+    *           chemin du fichier d'entrée
+    * @param propertiesPath
+    *           fichier de correspondances
+    * @param first
+    *           index du premier enregistrement
+    * @param last
+    *           index du dernier enregistrement
     */
    @Before(UPDATE_DOCUMENT_METHOD)
    public final void updateDocument(String inputPath, String propertiesPath,

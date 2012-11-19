@@ -22,13 +22,20 @@ import fr.urssaf.image.sae.regionalisation.fond.documentaire.service.TraitementS
  */
 public final class BootStrap {
 
-   /**
-    * 
-    */
+   private static final int ARG_0 = 0;
+   private static final int ARG_1 = 1;
+   private static final int ARG_2 = 2;
+   private static final int ARG_3 = 3;
+   private static final int ARG_4 = 4;
+   private static final int ARG_5 = 5;
    private static final int CONVERSION_MIN = 60000;
    private static final String MODE_LISTE_CODE_ORG = "listeOrgs";
    private static final String MODE_LISTE_DOCUMENTS = "listeDocs";
    private static final String MODE_MAJ = "maj";
+
+   private static final int MAX_DOC_ARGS = 4;
+   private static final int MAX_MAJ_ARGS = 6;
+   private static final int MAX_ORG_ARGS = 3;
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(BootStrap.class);
@@ -61,15 +68,15 @@ public final class BootStrap {
 
       TraitementService service = context.getBean(TraitementService.class);
 
-      if (MODE_LISTE_CODE_ORG.equals(args[0])) {
-         service.writeCodesOrganismes(args[2]);
+      if (MODE_LISTE_CODE_ORG.equals(args[ARG_0])) {
+         service.writeCodesOrganismes(args[ARG_2]);
 
-      } else if (MODE_LISTE_DOCUMENTS.equals(args[0])) {
-         service.writeDocUuidsToUpdate(args[2], args[3]);
+      } else if (MODE_LISTE_DOCUMENTS.equals(args[ARG_0])) {
+         service.writeDocUuidsToUpdate(args[2], args[ARG_3]);
 
-      } else if (MODE_MAJ.equals(args[0])) {
-         service.updateDocuments(args[2], args[3], Integer.valueOf(args[4]),
-               Integer.valueOf(args[5]));
+      } else if (MODE_MAJ.equals(args[ARG_0])) {
+         service.updateDocuments(args[ARG_2], args[ARG_3], Integer
+               .valueOf(args[ARG_4]), Integer.valueOf(args[ARG_5]));
       }
 
       long endTime = new Date().getTime();
@@ -86,22 +93,22 @@ public final class BootStrap {
          throw new IllegalArgumentException("la ligne de commande est erronée");
       }
 
-      checkCommand(args[0]);
+      checkCommand(args[ARG_0]);
 
-      String configPath = args[1];
+      String configPath = args[ARG_1];
       File configFile = new File(configPath);
       if (!configFile.exists()) {
          throw new IllegalArgumentException(
                "le fichier de configuration est inexistant");
       }
 
-      if (MODE_LISTE_CODE_ORG.equals(args[0])) {
+      if (MODE_LISTE_CODE_ORG.equals(args[ARG_0])) {
          checkCodeOrg(args);
 
-      } else if (MODE_LISTE_DOCUMENTS.equals(args[0])) {
+      } else if (MODE_LISTE_DOCUMENTS.equals(args[ARG_0])) {
          checkDocs(args);
 
-      } else if (MODE_MAJ.equals(args[0])) {
+      } else if (MODE_MAJ.equals(args[ARG_0])) {
          checkMaj(args);
 
       }
@@ -109,7 +116,7 @@ public final class BootStrap {
    }
 
    private static void checkMaj(String[] args) {
-      if (args.length != 6) {
+      if (args.length != MAX_MAJ_ARGS) {
          throw new IllegalArgumentException(
                "la commande est incorrecte. Les paramètres sont les suivants : \n"
                      + "1. commande du programme à lancer ("
@@ -122,7 +129,7 @@ public final class BootStrap {
                      + "6. index du dernier enregistrement à traiter\n");
       }
 
-      String pathDatas = args[2];
+      String pathDatas = args[ARG_2];
       File fileDatas = new File(pathDatas);
 
       if (!fileDatas.exists()) {
@@ -130,7 +137,7 @@ public final class BootStrap {
                "le fichier de données est inexistant");
       }
 
-      String pathCorresp = args[3];
+      String pathCorresp = args[ARG_3];
       File fileCorresp = new File(pathCorresp);
 
       if (!fileCorresp.exists()) {
@@ -138,20 +145,20 @@ public final class BootStrap {
                "le fichier de correspondances est inexistant");
       }
 
-      String sFirstIndex = args[4];
+      String sFirstIndex = args[ARG_4];
       if (!StringUtils.isNumeric(sFirstIndex)) {
          throw new IllegalArgumentException(
                "l'index du premier enregistrement doit être un numérique");
       }
 
-      String sLastIndex = args[5];
+      String sLastIndex = args[ARG_5];
       if (!StringUtils.isNumeric(sLastIndex)) {
          throw new IllegalArgumentException(
                "l'index du dernier enregistrement doit être un numérique");
       }
 
-      int firstIndex = Integer.valueOf(sFirstIndex).intValue();
-      int lastIndex = Integer.valueOf(sLastIndex).intValue();
+      int firstIndex = Integer.valueOf(sFirstIndex);
+      int lastIndex = Integer.valueOf(sLastIndex);
 
       if (firstIndex > lastIndex) {
          throw new IllegalArgumentException(
@@ -161,7 +168,7 @@ public final class BootStrap {
    }
 
    private static void checkDocs(String[] args) {
-      if (args.length != 4) {
+      if (args.length != MAX_DOC_ARGS) {
          throw new IllegalArgumentException(
                "la commande est incorrecte. Les paramètres sont les suivants : \n"
                      + "1. commande du programme à lancer ("
@@ -180,7 +187,7 @@ public final class BootStrap {
                "le fichier de sortie est existe déjà");
       }
 
-      String propPath = args[3];
+      String propPath = args[ARG_3];
       File propFile = new File(propPath);
       if (!propFile.exists()) {
          throw new IllegalArgumentException(
@@ -190,7 +197,7 @@ public final class BootStrap {
    }
 
    private static void checkCodeOrg(String[] args) {
-      if (args.length != 3) {
+      if (args.length != MAX_ORG_ARGS) {
          throw new IllegalArgumentException(
                "la commande est incorrecte. Les paramètres sont les suivants : \n"
                      + "1. commande du programme à lancer ("
@@ -200,7 +207,7 @@ public final class BootStrap {
                      + "3. fichier de sortie\n");
       }
 
-      String pathOutput = args[2];
+      String pathOutput = args[ARG_2];
       File fileOutput = new File(pathOutput);
 
       if (fileOutput.exists()) {

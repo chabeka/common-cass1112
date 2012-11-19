@@ -27,7 +27,7 @@ public class DocumentServiceImpl implements DocumentService {
     * {@inheritDoc}
     */
    @Override
-   public Document getDocument(UUID uuid) {
+   public final Document getDocument(UUID uuid) {
 
       return documentDao.getDocument(uuid);
    }
@@ -36,7 +36,7 @@ public class DocumentServiceImpl implements DocumentService {
     * {@inheritDoc}
     */
    @Override
-   public void updateDocument(Document document) throws DfceException {
+   public final void updateDocument(Document document) throws DfceException {
 
       documentDao.updateDocument(document);
 
