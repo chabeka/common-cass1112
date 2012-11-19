@@ -48,7 +48,6 @@ public class TraitementServiceTest {
    private TermInfoRangeUuidService termInfoRangeUuidService;
 
    private File file;
-   private List<Map<String, String>> listDocs;
    private List<String> listUuid;
 
    @Before
@@ -132,7 +131,7 @@ public class TraitementServiceTest {
       listUuid = Arrays.asList(UUID.randomUUID().toString(), UUID.randomUUID()
             .toString(), UUID.randomUUID().toString());
 
-      listDocs = new ArrayList<Map<String, String>>();
+      List<Map<String, String>> listDocs = new ArrayList<Map<String, String>>();
       Map<String, String> map = new HashMap<String, String>();
       map.put(Constants.CODE_ORG_GEST, "UR123");
       map.put(Constants.CODE_ORG_PROP, "UR124");

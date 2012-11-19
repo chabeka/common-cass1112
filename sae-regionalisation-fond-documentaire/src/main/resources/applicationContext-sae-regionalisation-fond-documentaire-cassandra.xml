@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+   xsi:schemaLocation="
+		http://www.springframework.org/schema/beans	
+		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+
+   <!-- Définition de la connexion à cassandra -->
+   <bean
+      class="fr.urssaf.image.sae.regionalisation.fond.documentaire.bean.CassandraConfig"
+      id="cassandraConfig">
+      <property name="cluster">
+         <bean factory-bean="cassandraConf" factory-method="getProperty">
+            <constructor-arg value="cassandra.cluster" />
+         </bean>
+      </property>
+      <property name="keyspace">
+         <bean factory-bean="cassandraConf" factory-method="getProperty">
+            <constructor-arg value="cassandra.keyspace" />
+         </bean>
+      </property>
+      <property name="password">
+         <bean factory-bean="cassandraConf" factory-method="getProperty">
+            <constructor-arg value="cassandra.password" />
+         </bean>
+      </property>
+      <property name="port">
+         <bean factory-bean="cassandraConf" factory-method="getProperty">
+            <constructor-arg value="cassandra.port" />
+         </bean>
+      </property>
+      <property name="servers">
+         <bean factory-bean="cassandraConf" factory-method="getProperty">
+            <constructor-arg value="cassandra.servers" />
+         </bean>
+      </property>
+      <property name="user">
+         <bean factory-bean="cassandraConf" factory-method="getProperty">
+            <constructor-arg value="cassandra.user" />
+         </bean>
+      </property>
+      <property name="baseUuid">
+         <bean factory-bean="cassandraConf" factory-method="getProperty">
+            <constructor-arg value="cassandra.baseUuid" />
+         </bean>
+      </property>
+   </bean>
+
+</beans>

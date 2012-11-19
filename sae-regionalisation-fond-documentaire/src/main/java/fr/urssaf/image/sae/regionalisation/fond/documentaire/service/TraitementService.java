@@ -29,4 +29,19 @@ public interface TraitementService {
     *           nouveau_code
     */
    void writeDocUuidsToUpdate(String outputPath, String propertiesFilePath);
+
+   /**
+    * Met à jour les documents listés dans le fichier dans l'intervalle spécifié
+    * 
+    * @param inputFilePath
+    *           fichier contenant la liste des documents à modifier
+    * @param propertiesFilePath
+    *           fichier contenant les correspondances
+    * @param firstRecord
+    *           index du premier enregistrement à traiter
+    * @param lastRecord
+    *           index du dernier enregistrement à traiter
+    */
+   void updateDocuments(String inputFilePath, String propertiesFilePath,
+         int firstRecord, int lastRecord);
 }

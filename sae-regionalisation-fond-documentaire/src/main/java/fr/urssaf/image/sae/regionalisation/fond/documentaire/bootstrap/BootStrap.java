@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -58,16 +59,17 @@ public final class BootStrap {
             "/applicationContext-sae-regionalisation-fond-documentaire.xml",
             args[1]);
 
+      TraitementService service = context.getBean(TraitementService.class);
+
       if (MODE_LISTE_CODE_ORG.equals(args[0])) {
-         TraitementService service = context.getBean(TraitementService.class);
          service.writeCodesOrganismes(args[2]);
 
       } else if (MODE_LISTE_DOCUMENTS.equals(args[0])) {
-         TraitementService service = context.getBean(TraitementService.class);
          service.writeDocUuidsToUpdate(args[2], args[3]);
 
       } else if (MODE_MAJ.equals(args[0])) {
-         // TODO
+         service.updateDocuments(args[2], args[3], Integer.valueOf(args[4]),
+               Integer.valueOf(args[5]));
       }
 
       long endTime = new Date().getTime();
@@ -100,15 +102,62 @@ public final class BootStrap {
          checkDocs(args);
 
       } else if (MODE_MAJ.equals(args[0])) {
-         String pathCorresp = args[2];
-         File fileCorresp = new File(pathCorresp);
+         checkMaj(args);
 
-         if (!fileCorresp.exists()) {
-            throw new IllegalArgumentException(
-                  "le fichier de correspondances est inexistant");
-         }
       }
 
+   }
+
+   private static void checkMaj(String[] args) {
+      if (args.length != 6) {
+         throw new IllegalArgumentException(
+               "la commande est incorrecte. Les paramètres sont les suivants : \n"
+                     + "1. commande du programme à lancer ("
+                     + MODE_MAJ
+                     + "\n"
+                     + "2. fichier de configuration pour les accès CASSANDRA et DFCE\n"
+                     + "3. fichier de données\n"
+                     + "4. fichier de correspondances\n"
+                     + "5. index du premier enregistrement à traiter\n"
+                     + "6. index du dernier enregistrement à traiter\n");
+      }
+
+      String pathDatas = args[2];
+      File fileDatas = new File(pathDatas);
+
+      if (!fileDatas.exists()) {
+         throw new IllegalArgumentException(
+               "le fichier de données est inexistant");
+      }
+
+      String pathCorresp = args[3];
+      File fileCorresp = new File(pathCorresp);
+
+      if (!fileCorresp.exists()) {
+         throw new IllegalArgumentException(
+               "le fichier de correspondances est inexistant");
+      }
+
+      String sFirstIndex = args[4];
+      if (!StringUtils.isNumeric(sFirstIndex)) {
+         throw new IllegalArgumentException(
+               "l'index du premier enregistrement doit être un numérique");
+      }
+
+      String sLastIndex = args[5];
+      if (!StringUtils.isNumeric(sLastIndex)) {
+         throw new IllegalArgumentException(
+               "l'index du dernier enregistrement doit être un numérique");
+      }
+
+      int firstIndex = Integer.valueOf(sFirstIndex).intValue();
+      int lastIndex = Integer.valueOf(sLastIndex).intValue();
+
+      if (firstIndex > lastIndex) {
+         throw new IllegalArgumentException(
+               "l'index du premier enregistrement doit être un supérieur "
+                     + "à l'index du dernier enregistrement");
+      }
    }
 
    private static void checkDocs(String[] args) {

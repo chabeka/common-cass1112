@@ -19,6 +19,26 @@
    <import
       resource="applicationContext-sae-regionalisation-fond-documentaire-cassandra.xml" />
 
-   <import
-      resource="applicationContext-sae-regionalisation-fond-documentaire-dfce.xml" />
+   <!-- Définition de la connexion à DFCE -->
+   <bean id="dfceConnection"
+      class="fr.urssaf.image.commons.dfce.manager.DFCEConnectionFactory"
+      factory-method="createDFCEConnectionByDFCEConfiguration">
+      <constructor-arg>
+         <bean class="java.io.File" factory-bean="cassandraFile"
+            factory-method="getFile" />
+      </constructor-arg>
+   </bean>
+
+   <bean id="dfceConnectionService"
+      class="fr.urssaf.image.commons.dfce.service.impl.DFCEConnectionServiceImpl">
+      <constructor-arg ref="dfceConnection" />
+   </bean>
+
+   <bean id="base_regionalisation" class="java.lang.String">
+      <constructor-arg>
+         <bean factory-bean="cassandraConf" factory-method="getProperty">
+            <constructor-arg value="db.baseName" />
+         </bean>
+      </constructor-arg>
+   </bean>
 </beans>

@@ -6,10 +6,13 @@ package fr.urssaf.image.sae.regionalisation.fond.documentaire.factory;
 import org.easymock.EasyMock;
 
 import fr.urssaf.image.sae.regionalisation.fond.documentaire.dao.DocInfoDao;
+import fr.urssaf.image.sae.regionalisation.fond.documentaire.dao.DocumentDao;
 import fr.urssaf.image.sae.regionalisation.fond.documentaire.dao.TermInfoRangeUuidDao;
 import fr.urssaf.image.sae.regionalisation.fond.documentaire.service.DocInfoService;
+import fr.urssaf.image.sae.regionalisation.fond.documentaire.service.DocumentService;
 import fr.urssaf.image.sae.regionalisation.fond.documentaire.service.TermInfoRangeUuidService;
 import fr.urssaf.image.sae.regionalisation.fond.documentaire.support.CassandraSupport;
+import fr.urssaf.image.sae.regionalisation.fond.documentaire.support.ServiceProviderSupport;
 
 /**
  * Classe permettant de réaliser les mocks
@@ -56,6 +59,27 @@ public final class MockFactory {
     */
    public static TermInfoRangeUuidService createTermInfoRangeUuidService() {
       return EasyMock.createMock(TermInfoRangeUuidService.class);
+   }
+
+   /**
+    * @return un mock de {@link DocumentDao}
+    */
+   public static DocumentDao createDocumentDao() {
+      return EasyMock.createMock(DocumentDao.class);
+   }
+
+   /**
+    * @return un mock de {@link DocumentService}
+    */
+   public static DocumentService createDocumentService() {
+      return EasyMock.createMock(DocumentService.class);
+   }
+
+   /**
+    * @return un mock de {@link ServiceProviderSupport}
+    */
+   public static ServiceProviderSupport createProviderSupport() {
+      return EasyMock.createMock(ServiceProviderSupport.class);
    }
 
 }

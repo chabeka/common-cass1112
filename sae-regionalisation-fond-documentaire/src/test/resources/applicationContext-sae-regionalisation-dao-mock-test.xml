@@ -10,9 +10,13 @@
    <bean id="docInfoDao"
       class="fr.urssaf.image.sae.regionalisation.fond.documentaire.factory.MockFactory"
       factory-method="createDocInfoDao" primary="true" />
-      
+
    <bean id="termInfoRangeUuidDao"
       class="fr.urssaf.image.sae.regionalisation.fond.documentaire.factory.MockFactory"
       factory-method="createTermInfoRangeUuidDao" primary="true" />
-      
+
+   <bean id="documentDao"
+      class="fr.urssaf.image.sae.regionalisation.fond.documentaire.factory.MockFactory"
+      factory-method="createDocumentDao" primary="true" />
+
 </beans>
