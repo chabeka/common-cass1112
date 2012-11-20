@@ -1,12 +1,7 @@
 package fr.urssaf.image.sae.webservices.security;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
+import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.namespace.QName;
@@ -17,83 +12,77 @@ import org.apache.axiom.soap.SOAPHeader;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.handlers.AbstractHandler;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.rampart.util.Axis2Util;
 import org.apache.ws.security.WSConstants;
 import org.apache.ws.security.WSSecurityException;
 import org.apache.ws.security.message.WSSecHeader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import fr.urssaf.image.sae.vi.service.WebServiceVICreateService;
 import fr.urssaf.image.sae.vi.service.WebServiceVIService;
-import fr.urssaf.image.sae.webservices.util.AuthenticateUtils;
 import fr.urssaf.image.sae.webservices.util.Constantes;
 
 /**
  * Handler pour ajouter le jeton SAML 2.0 dans la la balise WS-security du web
- * service<br>
- * Le handler est configuré dans le fichier <code>META-INF/axis2.xml</code>
- * 
- * <pre>
- * 
- * &lt;phaseOrder type="OutFlow">
- *    ...
- *    &lt;phase name="Security" />
- *    &lt;phase name="SamlToken">
- *          &lt;handler name="SamlTokenHandler"
- *             class="fr.urssaf.image.sae.webservices.security.SamlTokenHandler" /> 
- *    &lt;/phase>
- * &lt;/phaseOrder>
- * 
- * </pre>
- * 
- * 
+ * service
  */
 public class SamlTokenHandler extends AbstractHandler {
 
+   private static final Logger LOG = LoggerFactory.getLogger(SamlTokenHandler.class);
+   
+   private static final String DEFAULT_ISSUER = Constantes.DEFAULT_ISSUER;
+   private static final String DEFAULT_PAGM = Constantes.DEFAULT_PAGM;
+
    private final WebServiceVICreateService viService;
 
-   private static KeyStore keystore;
+   private String issuer;
 
-   private static String alias;
+   private List<String> pagms;
 
-   private static String password;
-
-   private static final String ISSUER = Constantes.CONTRAT;
-
-   static {
-      password = "hiUnk6O3QnRN";
-      try {
-         keystore = KeyStore.getInstance("PKCS12");
-         FileInputStream inputStream = new FileInputStream(
-               "src/main/resources/Portail_Image.p12");
-         try {
-            keystore.load(inputStream, password.toCharArray());
-
-         } finally {
-            inputStream.close();
-         }
-         alias = keystore.aliases().nextElement();
-      } catch (KeyStoreException e) {
-         throw new IllegalStateException(e);
-      } catch (FileNotFoundException e) {
-         throw new IllegalStateException(e);
-      } catch (NoSuchAlgorithmException e) {
-         throw new IllegalStateException(e);
-      } catch (CertificateException e) {
-         throw new IllegalStateException(e);
-      } catch (IOException e) {
-         throw new IllegalStateException(e);
-      }
-   }
+   private MyKeyStore myKeyStore;
 
    /**
-    * instanciation de {@link WebServiceVICreateService}
+    * Constructeur
     */
    public SamlTokenHandler(WebServiceVICreateService viService) {
       super();
       this.viService = viService;
+      this.issuer = DEFAULT_ISSUER;
+      this.pagms = new ArrayList<String>();
+      this.pagms.add(DEFAULT_PAGM);
+      this.myKeyStore = MyKeystoreProvider.portailImageKeyStore;
+   }
+
+   public SamlTokenHandler(WebServiceVICreateService viService, String issuer,
+         List<String> pagms) {
+      super();
+      this.viService = viService;
+      this.issuer = issuer;
+      this.pagms = pagms;
+      this.myKeyStore = MyKeystoreProvider.portailImageKeyStore;
+   }
+   
+   
+   public SamlTokenHandler(WebServiceVICreateService viService, String issuer,
+         String pagm) {
+      super();
+      this.viService = viService;
+      this.issuer = issuer;
+      this.pagms = new ArrayList<String>();
+      this.pagms.add(pagm);
+      this.myKeyStore = MyKeystoreProvider.portailImageKeyStore;
+   }
+
+   public SamlTokenHandler(WebServiceVICreateService viService, String issuer,
+         List<String> pagms, MyKeyStore myKeyStore) {
+      super();
+      this.viService = viService;
+      this.issuer = issuer;
+      this.pagms = pagms;
+      this.myKeyStore = myKeyStore;
    }
 
    /**
@@ -110,48 +99,55 @@ public class SamlTokenHandler extends AbstractHandler {
    public final InvocationResponse invoke(MessageContext msgCtx)
          throws AxisFault {
 
-      // création de WS-Security
+      
+      // Récupération de l'enveloppe SOAP, requise plusieurs fois ultérieurement
+      Document doc;
       try {
-         Document doc = Axis2Util.getDocumentFromSOAPEnvelope(msgCtx
+         doc = Axis2Util.getDocumentFromSOAPEnvelope(msgCtx
                .getEnvelope(), true);
-
-         WSSecHeader secHeader = new WSSecHeader(null, false);
+      } catch (WSSecurityException ex) {
+         throw new IllegalStateException(ex);
+      }
+      SOAPEnvelope soapEnv = (SOAPEnvelope) doc.getDocumentElement();
+      msgCtx.setEnvelope(soapEnv);
+      soapEnv.build();
+      
+      // Ajout de l'en-tête WS-Security
+      WSSecHeader secHeader = new WSSecHeader(null, false);
+      try {
          secHeader.insertSecurityHeader(doc);
-
-         msgCtx.setEnvelope((SOAPEnvelope) doc.getDocumentElement());
-
       } catch (WSSecurityException e) {
          throw new IllegalStateException(e);
       }
-
-      List<String> roles = AuthenticateUtils.getRoles();
-
-      // TODO : améliorer le test pour les périmètres de données
-      // if (roles != null) {
-      // for (int i = 0; i < roles.size(); i++) {
-      // roles.set(i, roles.get(i) + ";FULL");
-      // }
-      // }
-
+      
       // création du jeton SAML 2.0
-      if (CollectionUtils.isNotEmpty(roles)) {
+      // List<String> roles = AuthenticateUtils.getRoles();
+      // if (CollectionUtils.isNotEmpty(roles)) {
 
-         Element token = this.viService.creerVIpourServiceWeb(roles, ISSUER,
-               null, keystore, alias, password);
+      Element token = this.viService.creerVIpourServiceWeb(pagms, issuer, null,
+            myKeyStore.getKeystore(), myKeyStore.getAliasClePrivee(),
+            myKeyStore.getPassword());
 
-         SOAPHeader header = msgCtx.getEnvelope().getHeader();
+      SOAPHeader header = msgCtx.getEnvelope().getHeader();
 
-         OMElement security = header.getFirstChildWithName(new QName(
-               WSConstants.WSSE_NS, "Security"));
+      OMElement security = header.getFirstChildWithName(new QName(
+            WSConstants.WSSE_NS, "Security"));
 
-         try {
+      try {
 
-            security.addChild(org.apache.axis2.util.XMLUtils.toOM(token));
+         security.addChild(org.apache.axis2.util.XMLUtils.toOM(token));
+         
+         // Log du message SOAP de request
+         soapEnv.build();
+         StringWriter sWriter = new StringWriter();
+         soapEnv.serialize(sWriter);
+         LOG.debug("Message SOAP de request : \r\n{}", sWriter.toString());
+         
 
-         } catch (Exception e) {
-            throw new IllegalStateException(e);
-         }
+      } catch (Exception e) {
+         throw new IllegalStateException(e);
       }
+      // }
 
       return InvocationResponse.CONTINUE;
    }

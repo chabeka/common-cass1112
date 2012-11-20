@@ -191,22 +191,14 @@
       </dependency>
 
 
-      <!-- SPRING  SECURITY-->
-
-      <dependency>
-         <groupId>org.springframework.security</groupId>
-         <artifactId>spring-security-core</artifactId>
-         <version>${spring.framework.version}</version>
-      </dependency>
-
+      <!--  TEST -->
+      
       <dependency>
          <groupId>org.springframework</groupId>
          <artifactId>spring-test</artifactId>
          <version>${spring.framework.version}</version>
          <scope>test</scope>
       </dependency>
-
-      <!--  TEST -->
 
       <dependency>
          <groupId>commons-configuration</groupId>

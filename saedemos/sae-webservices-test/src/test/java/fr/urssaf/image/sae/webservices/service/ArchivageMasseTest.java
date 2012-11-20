@@ -7,7 +7,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.apache.commons.configuration.ConfigurationException;
-import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,9 +15,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.webservices.configuration.EcdeManager;
-import fr.urssaf.image.sae.webservices.configuration.SecurityConfiguration;
 import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.ArchivageMasseResponseType;
-import fr.urssaf.image.sae.webservices.util.AuthenticateUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-webservices.xml" })
@@ -28,12 +25,6 @@ public class ArchivageMasseTest {
    @Autowired
    private ArchivageMasseService service;
 
-   @After
-   public final void after() {
-
-      SecurityConfiguration.cleanSecurityContext();
-   }
-
    @BeforeClass
    public static void beforeClass() throws ConfigurationException, IOException {
 
@@ -42,8 +33,6 @@ public class ArchivageMasseTest {
 
    @Test
    public void archivageMasse_success() throws URISyntaxException, IOException {
-
-      AuthenticateUtils.authenticate("ROLE_TOUS");
 
       // enregistrement du sommaire dans l'ECDE
       // File sommaire = new File("src/test/resources/storage/sommaire.xml");

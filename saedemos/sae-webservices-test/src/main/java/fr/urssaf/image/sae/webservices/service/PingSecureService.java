@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import fr.urssaf.image.sae.webservices.modele.SaeServiceStub;
-import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.PingRequest;
-import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.PingResponse;
+import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.PingSecureRequest;
+import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.PingSecureResponse;
 
 /**
  * Service client du ping du SAE
@@ -17,7 +17,7 @@ import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.PingResponse;
  * 
  */
 @Service
-public class PingService {
+public class PingSecureService {
 
    private final SaeServiceStub service;
 
@@ -27,23 +27,23 @@ public class PingService {
     *           stub du client des web services du SAE
     */
    @Autowired
-   public PingService(@Qualifier("serviceStub") SaeServiceStub service) {
+   public PingSecureService(@Qualifier("secureStub") SaeServiceStub service) {
       Assert.notNull(service, "SaeServiceStub is required");
       this.service = service;
    }
 
    /**
-    * appel du service ping du SAE
+    * appel du service ping sécurisé du SAE
     * 
-    * @return message du ping
+    * @return message du ping sécurisé
     * @throws RemoteException
     *            levée par le service web
     */
-   public final PingResponse ping() throws RemoteException {
+   public final PingSecureResponse pingSecure() throws RemoteException {
 
-      PingRequest request = new PingRequest();
+      PingSecureRequest request = new PingSecureRequest();
 
-      return service.ping(request);
+      return service.pingSecure(request);
    }
-
+   
 }

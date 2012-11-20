@@ -39,8 +39,6 @@ public class LogInMessageHandler extends AbstractHandler {
 
       LOG.debug("Début de l'interception du message SOAP en réception");
 
-      // Ajout de l'en-tête WS-Security chargé depuis un fichier de ressource
-      // XML
       try {
 
          StringWriter sWriter = new StringWriter();

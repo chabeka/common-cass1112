@@ -18,7 +18,6 @@ import org.apache.axis2.Constants;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.io.FileUtils;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -31,7 +30,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.webservices.configuration.EcdeManager;
-import fr.urssaf.image.sae.webservices.configuration.SecurityConfiguration;
 import fr.urssaf.image.sae.webservices.modele.SaeServiceStub;
 import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.ArchivageUnitairePJ;
 import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.ArchivageUnitairePJRequestType;
@@ -45,7 +43,6 @@ import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.MetadonneeType;
 import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.MetadonneeValeurType;
 import fr.urssaf.image.sae.webservices.service.factory.ObjectModelFactory;
 import fr.urssaf.image.sae.webservices.service.model.Metadata;
-import fr.urssaf.image.sae.webservices.util.AuthenticateUtils;
 
 
 /**
@@ -82,17 +79,11 @@ public class ArchivageUnitairePJTest {
       EcdeManager.cleanEcde();
    }
 
-   @After
-   public final void after() {
-
-      SecurityConfiguration.cleanSecurityContext();
-   }  
    
    @Test
    public void archivageUnitairePJ_success_AvecContenu_SansMtom() throws URISyntaxException,
          FileNotFoundException, IOException {
 
-      AuthenticateUtils.authenticate("ROLE_TOUS");
       String fileName = "NomFichier.txt";
       byte[] contenu = new byte[20];
       
@@ -162,8 +153,6 @@ public class ArchivageUnitairePJTest {
    @Test
    public void archivageUnitairePJ_success_AvecUrlEcde() throws URISyntaxException,
          FileNotFoundException, IOException {
-
-      AuthenticateUtils.authenticate("ROLE_TOUS");
 
       // enregistrement du fichier dans l'ECDE
       File srcFile = new File("src/test/resources/storage/attestation.pdf");
@@ -247,7 +236,6 @@ public class ArchivageUnitairePJTest {
       service._getServiceClient().getOptions().setProperty(
             Constants.Configuration.ENABLE_MTOM, Constants.VALUE_TRUE);
       
-      AuthenticateUtils.authenticate("ROLE_TOUS");
       String fileName = "NomFichier.txt";
       //byte[] contenu = new byte[20];
       

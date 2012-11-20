@@ -12,27 +12,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.PingResponse;
+import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.PingSecureResponse;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-webservices.xml" })
 @SuppressWarnings("PMD.MethodNamingConventions")
-public class PingTest {
+public class PingSecureTest {
 
    @Autowired
-   private PingService service;
+   private PingSecureService service;
 
-   private static final Logger LOG = LoggerFactory.getLogger(PingTest.class);
+   private static final Logger LOG = LoggerFactory.getLogger(PingSecureTest.class);
+
 
    @Test
-   public void ping_success() throws RemoteException {
+   public void pingSecure_success() throws RemoteException {
 
-      PingResponse response = service.ping();
+      PingSecureResponse response = service.pingSecure();
 
       LOG.debug(response.getPingString());
 
-      assertEquals("Test du ping", "Les services SAE sont en ligne", response
-            .getPingString());
-   }
+      assertEquals("Test du ping securisé",
+            "Les services du SAE sécurisés par authentification sont en ligne",
+            response.getPingString());
 
+   }
+   
 }

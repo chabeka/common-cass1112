@@ -3,7 +3,6 @@ package fr.urssaf.image.sae.webservices.service;
 import java.rmi.RemoteException;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -14,10 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.sae.webservices.configuration.SecurityConfiguration;
 import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.RechercheResponseType;
 import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.ResultatRechercheType;
-import fr.urssaf.image.sae.webservices.util.AuthenticateUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-webservices.xml" })
@@ -30,17 +27,9 @@ public class RechercheTest {
    @Autowired
    private RechercheService service;
 
-   @After
-   public final void after() {
-
-      SecurityConfiguration.cleanSecurityContext();
-   }
-
    @Test
    @Ignore("Resultat non prédictible")
    public void recherche_success() throws RemoteException {
-
-      AuthenticateUtils.authenticate("ROLE_TOUS");
 
       String lucene = "Siren:123456789 AND CodeRND:2.3.1.1.8";
       String[] codes = new String[] { "Titre", "Hash" };

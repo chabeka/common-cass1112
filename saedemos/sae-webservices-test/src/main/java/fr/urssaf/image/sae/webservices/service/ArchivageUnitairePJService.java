@@ -3,6 +3,7 @@ package fr.urssaf.image.sae.webservices.service;
 import java.net.URI;
 import java.rmi.RemoteException;
 import java.util.Collection;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -81,4 +82,31 @@ public class ArchivageUnitairePJService {
       return service.archivageUnitairePJ(request)
             .getArchivageUnitairePJResponse();
    }
+
+   /**
+    * appel du service d'archivage unitaire du SAE
+    * 
+    * @param fileName
+    *           nom du fichier à archiver
+    * @param contenu
+    *           contenu du fichier à archiver
+    * @param metadatas
+    *           liste des métadonnées pour l'archive
+    * @return l'UUID du document archivé
+    * @throws RemoteException
+    *            levée par le web service
+    */
+   public UUID archivageUnitairePJavecRetourUUID(String fileName,
+         byte[] contenu, Collection<Metadata> metadatas) throws RemoteException {
+
+      ArchivageUnitairePJ request = RequestServiceFactory
+            .createArchivagePJUnitaire(fileName, contenu, metadatas);
+
+      ArchivageUnitairePJResponseType response = service.archivageUnitairePJ(
+            request).getArchivageUnitairePJResponse();
+
+      return UUID.fromString(response.getIdArchive().getUuidType());
+
+   }
+
 }

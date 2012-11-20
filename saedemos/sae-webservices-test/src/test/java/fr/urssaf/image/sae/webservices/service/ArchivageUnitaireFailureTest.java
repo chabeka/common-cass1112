@@ -13,7 +13,6 @@ import org.apache.axis2.AxisFault;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.configuration.ConfigurationException;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -27,10 +26,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.webservices.configuration.EcdeManager;
-import fr.urssaf.image.sae.webservices.configuration.SecurityConfiguration;
 import fr.urssaf.image.sae.webservices.service.factory.ObjectModelFactory;
 import fr.urssaf.image.sae.webservices.service.model.Metadata;
-import fr.urssaf.image.sae.webservices.util.AuthenticateUtils;
 import fr.urssaf.image.sae.webservices.util.SoapTestUtils;
 
 
@@ -99,8 +96,6 @@ public class ArchivageUnitaireFailureTest {
    @Before
    public final void before() throws IOException {
 
-      AuthenticateUtils.authenticate("ROLE_TOUS");
-
       metadatasRef = new HashMap<String, Metadata>();
 
       putMetadata("CodeRND", "2.3.1.1.12");
@@ -121,12 +116,6 @@ public class ArchivageUnitaireFailureTest {
    private void putMetadata(String code, String value) {
 
       metadatasRef.put(code, ObjectModelFactory.createMetadata(code, value));
-   }
-
-   @After
-   public final void after() {
-
-      SecurityConfiguration.cleanSecurityContext();
    }
 
    @Test

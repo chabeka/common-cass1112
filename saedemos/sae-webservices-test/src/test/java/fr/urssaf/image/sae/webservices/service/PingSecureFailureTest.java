@@ -5,35 +5,24 @@ import static org.junit.Assert.fail;
 import java.rmi.RemoteException;
 
 import org.apache.axis2.AxisFault;
-import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.sae.webservices.configuration.SecurityConfiguration;
-import fr.urssaf.image.sae.webservices.util.AuthenticateUtils;
+import fr.urssaf.image.sae.webservices.util.SaeServiceStubUtils;
 import fr.urssaf.image.sae.webservices.util.SoapTestUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-webservices.xml" })
 @SuppressWarnings("PMD.MethodNamingConventions")
-public class PingFailureTest {
-
-   @Autowired
-   private PingService service;
+public class PingSecureFailureTest {
 
    private static final Logger LOG = LoggerFactory
-         .getLogger(PingFailureTest.class);
+         .getLogger(PingSecureFailureTest.class);
 
-   @After
-   public final void after() {
-
-      SecurityConfiguration.cleanSecurityContext();
-   }
 
    private String getSoapFaultInfos(AxisFault fault) {
       StringBuilder messageFailure = new StringBuilder();
@@ -63,6 +52,11 @@ public class PingFailureTest {
    public void pingSecure_failure_SecurityTokenUnavailable()
          throws RemoteException {
 
+      // On truande le service PingSecureService en lui collant un stub
+      // qui ne possède pas la mécanique pour inclure le VI
+      PingSecureService service = new PingSecureService(
+            SaeServiceStubUtils.getServiceStub());
+      
       try {
          service.pingSecure();
          fail("le test doit échouer");

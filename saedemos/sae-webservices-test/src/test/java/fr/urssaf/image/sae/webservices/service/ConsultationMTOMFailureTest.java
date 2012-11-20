@@ -7,8 +7,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.axis2.AxisFault;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,8 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.sae.webservices.configuration.SecurityConfiguration;
-import fr.urssaf.image.sae.webservices.util.AuthenticateUtils;
 import fr.urssaf.image.sae.webservices.util.SoapTestUtils;
 
 /**
@@ -47,16 +43,6 @@ public class ConsultationMTOMFailureTest {
 
    @Autowired
    private ConsultationMTOMService service;
-
-   @Before
-   public void before() {
-      AuthenticateUtils.authenticate("ROLE_TOUS");
-   }
-
-   @After
-   public final void after() {
-      SecurityConfiguration.cleanSecurityContext();
-   }
 
    @Test
    public void consultationMTOM_failure_ArchiveNonTrouve()
@@ -90,8 +76,6 @@ public class ConsultationMTOMFailureTest {
    public final void consultationMTOM_failure_ConsultationMetadonneesInexistante()
          throws RemoteException {
 
-      AuthenticateUtils.authenticate("ROLE_TOUS");
-
       List<String> listMdString = Arrays.asList(NOT_EXISTS_META);
 
       try {
@@ -108,7 +92,6 @@ public class ConsultationMTOMFailureTest {
                      SoapTestUtils.SAE_NAMESPACE, SoapTestUtils.SAE_PREFIX);
       }
 
-      SecurityConfiguration.cleanSecurityContext();
    }
 
    /**
@@ -121,8 +104,6 @@ public class ConsultationMTOMFailureTest {
    @Ignore
    public final void consultationMTOM_failure_ConsultationMetadonneesNonAutorisees()
          throws RemoteException {
-
-      AuthenticateUtils.authenticate("ROLE_TOUS");
 
       List<String> listMdString = Arrays.asList(NO_CONSULT_META);
 
@@ -140,7 +121,6 @@ public class ConsultationMTOMFailureTest {
                      SoapTestUtils.SAE_NAMESPACE, SoapTestUtils.SAE_PREFIX);
       }
 
-      SecurityConfiguration.cleanSecurityContext();
    }
 
 }

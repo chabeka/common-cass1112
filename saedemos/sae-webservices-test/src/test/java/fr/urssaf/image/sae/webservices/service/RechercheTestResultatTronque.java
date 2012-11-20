@@ -2,7 +2,6 @@ package fr.urssaf.image.sae.webservices.service;
 
 import java.rmi.RemoteException;
 
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -11,10 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.sae.webservices.configuration.SecurityConfiguration;
 import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.RechercheResponseType;
 import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.ResultatRechercheType;
-import fr.urssaf.image.sae.webservices.util.AuthenticateUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-webservices.xml" })
@@ -24,14 +21,8 @@ public class RechercheTestResultatTronque {
    @Autowired
    private RechercheService service;
 
-   @Autowired
-   private ArchivageMasseService masseService;
-
-   @After
-   public final void after() {
-
-      SecurityConfiguration.cleanSecurityContext();
-   }
+//   @Autowired
+//   private ArchivageMasseService masseService;
 
    // @Before
    // public final void init() throws URISyntaxException, RemoteException {
@@ -44,8 +35,6 @@ public class RechercheTestResultatTronque {
    @Test
    @Ignore("Resultat non prédictible")
    public void recherche_success_resultat_tronque() throws RemoteException {
-
-      AuthenticateUtils.authenticate("ROLE_TOUS;FULL");
 
       String lucene = "Denomination:\"Test 201-CaptureMasse-OK-Tor-10\"";
       String[] codes = new String[] { "Titre", "Hash" };

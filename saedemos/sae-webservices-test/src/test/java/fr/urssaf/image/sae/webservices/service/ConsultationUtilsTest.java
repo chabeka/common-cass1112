@@ -34,13 +34,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.webservices.configuration.EcdeManager;
-import fr.urssaf.image.sae.webservices.configuration.SecurityConfiguration;
 import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.ArchivageUnitaireResponseType;
 import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.ConsultationResponseType;
 import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.MetadonneeType;
 import fr.urssaf.image.sae.webservices.service.factory.ObjectModelFactory;
 import fr.urssaf.image.sae.webservices.service.model.Metadata;
-import fr.urssaf.image.sae.webservices.util.AuthenticateUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-webservices.xml" })
@@ -80,8 +78,6 @@ public class ConsultationUtilsTest {
    @Ignore
    public final void prepareDatas() throws IOException {
       EcdeManager.cleanEcde();
-
-      AuthenticateUtils.authenticate("ROLE_TOUS");
 
       // enregistrement du fichier dans l'ECDE
       File srcFile = new File(PDF_FILE_PATH);
@@ -140,7 +136,6 @@ public class ConsultationUtilsTest {
       LOG.info("date archivage : " + date);
       LOG.info("===================");
 
-      SecurityConfiguration.cleanSecurityContext();
    }
    
    

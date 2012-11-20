@@ -14,17 +14,14 @@ import org.apache.axiom.soap.impl.builder.StAXSOAPModelBuilder;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.engine.Handler.InvocationResponse;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.vi.service.WebServiceVICreateService;
-import fr.urssaf.image.sae.webservices.util.AuthenticateUtils;
+import fr.urssaf.image.sae.webservices.util.Constantes;
 
 @SuppressWarnings("PMD.MethodNamingConventions")
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -34,25 +31,13 @@ public class SamlTokenHandlerTest {
    @Autowired
    private WebServiceVICreateService createService;
 
-   private SamlTokenHandler handler;
-
-   @Before
-   public void before() {
-      handler = new SamlTokenHandler(createService);
-   }
-
-   @After
-   public void after() {
-
-      SecurityContextHolder.createEmptyContext();
-      SecurityContextHolder.getContext().setAuthentication(null);
-   }
 
    @Test
    @SuppressWarnings("PMD.JUnitAssertionsShouldIncludeMessage")
    public void invoke_success() throws AxisFault {
 
-      AuthenticateUtils.authenticate("ROLE_TEST");
+      SamlTokenHandler handler = new SamlTokenHandler(createService,
+            Constantes.DEFAULT_ISSUER, "ROLE_TEST");
 
       MessageContext msgCtx = new MessageContext();
       this.init(msgCtx, "src/test/resources/soap/soap_success.xml");
@@ -64,6 +49,8 @@ public class SamlTokenHandlerTest {
    @SuppressWarnings("PMD.JUnitAssertionsShouldIncludeMessage")
    public void invoke_success_emptyRole() throws AxisFault {
 
+      SamlTokenHandler handler = new SamlTokenHandler(createService);
+      
       MessageContext msgCtx = new MessageContext();
       this.init(msgCtx, "src/test/resources/soap/soap_success.xml");
 
@@ -94,6 +81,8 @@ public class SamlTokenHandlerTest {
    @Test(expected = IllegalStateException.class)
    public void invoke_failure_emptyEnveloppe() throws AxisFault {
 
+      SamlTokenHandler handler = new SamlTokenHandler(createService);
+      
       MessageContext msgCtx = new MessageContext();
       handler.invoke(msgCtx);
    }

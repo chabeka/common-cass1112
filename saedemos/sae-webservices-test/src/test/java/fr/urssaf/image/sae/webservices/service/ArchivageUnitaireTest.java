@@ -14,7 +14,6 @@ import java.util.Map;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.io.FileUtils;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -26,11 +25,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.webservices.configuration.EcdeManager;
-import fr.urssaf.image.sae.webservices.configuration.SecurityConfiguration;
 import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.ArchivageUnitaireResponseType;
 import fr.urssaf.image.sae.webservices.service.factory.ObjectModelFactory;
 import fr.urssaf.image.sae.webservices.service.model.Metadata;
-import fr.urssaf.image.sae.webservices.util.AuthenticateUtils;
 
 
 /**
@@ -63,17 +60,9 @@ public class ArchivageUnitaireTest {
       EcdeManager.cleanEcde();
    }
 
-   @After
-   public final void after() {
-
-      SecurityConfiguration.cleanSecurityContext();
-   }
-
    @Test
    public void archivageUnitaire_success() throws URISyntaxException,
          FileNotFoundException, IOException {
-
-      AuthenticateUtils.authenticate("ROLE_TOUS");
 
       // enregistrement du fichier dans l'ECDE
       File srcFile = new File("src/test/resources/storage/attestation.pdf");

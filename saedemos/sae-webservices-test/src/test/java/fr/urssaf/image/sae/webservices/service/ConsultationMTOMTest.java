@@ -23,11 +23,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.sae.webservices.configuration.SecurityConfiguration;
 import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.ConsultationMTOMResponseType;
 import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.ListeMetadonneeType;
 import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.MetadonneeType;
-import fr.urssaf.image.sae.webservices.util.AuthenticateUtils;
 
 /**
  * Tests de l'opération "consultationMTOM" pour lesquels on attend une réponse
@@ -84,8 +82,6 @@ public class ConsultationMTOMTest {
    public final void consultationMTOM_success_ListMetaNull()
          throws RemoteException {
 
-      AuthenticateUtils.authenticate("ROLE_TOUS");
-
       ConsultationMTOMResponseType responseType = consultationMTOMService
             .consultationMTOM(UUID_EXISTANT);
       ListeMetadonneeType listeMD = responseType.getMetadonnees();
@@ -122,7 +118,6 @@ public class ConsultationMTOMTest {
 
       checkContenu(responseType.getContenu());
 
-      SecurityConfiguration.cleanSecurityContext();
    }
 
    /**
@@ -135,8 +130,6 @@ public class ConsultationMTOMTest {
    @Ignore
    public final void consultationMTOM_success_ListMetaVide()
          throws RemoteException {
-
-      AuthenticateUtils.authenticate("ROLE_TOUS");
 
       ConsultationMTOMResponseType responseType = consultationMTOMService
             .consultationMTOM(UUID_EXISTANT, new ArrayList<String>());
@@ -174,7 +167,6 @@ public class ConsultationMTOMTest {
 
       checkContenu(responseType.getContenu());
 
-      SecurityConfiguration.cleanSecurityContext();
    }
 
    /**
@@ -187,8 +179,6 @@ public class ConsultationMTOMTest {
    @Ignore
    public final void consultationMTOM_success_ListMetaRemplie()
          throws RemoteException {
-
-      AuthenticateUtils.authenticate("ROLE_TOUS");
 
       List<String> listMdString = Arrays.asList(WANTED_META);
 
@@ -228,7 +218,6 @@ public class ConsultationMTOMTest {
 
       checkContenu(responseType.getContenu());
 
-      SecurityConfiguration.cleanSecurityContext();
    }
 
    private void checkContenu(DataHandler contenu) {

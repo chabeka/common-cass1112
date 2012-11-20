@@ -23,11 +23,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.sae.webservices.configuration.SecurityConfiguration;
 import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.ConsultationResponseType;
 import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.ListeMetadonneeType;
 import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.MetadonneeType;
-import fr.urssaf.image.sae.webservices.util.AuthenticateUtils;
 
 /**
  * Tests de l'opération "consultation" pour lesquels on attend une réponse
@@ -83,8 +81,6 @@ public class ConsultationTest {
    @Ignore
    public final void consultation_success_ListMetaNull() throws RemoteException {
 
-      AuthenticateUtils.authenticate("ACCES_FULL_PAGM");
-
       ConsultationResponseType responseType = consultationService
             .consultation(UUID_EXISTANT);
       ListeMetadonneeType listeMD = responseType.getMetadonnees();
@@ -122,7 +118,6 @@ public class ConsultationTest {
       checkContenu(responseType.getObjetNumerique()
             .getObjetNumeriqueConsultationTypeChoice_type0().getContenu());
 
-      SecurityConfiguration.cleanSecurityContext();
    }
 
    /**
@@ -133,8 +128,6 @@ public class ConsultationTest {
    @Test
    @Ignore
    public final void consultation_success_ListMetaVide() throws RemoteException {
-
-      AuthenticateUtils.authenticate("ROLE_TOUS");
 
       ConsultationResponseType responseType = consultationService.consultation(
             UUID_EXISTANT, new ArrayList<String>());
@@ -173,7 +166,6 @@ public class ConsultationTest {
       checkContenu(responseType.getObjetNumerique()
             .getObjetNumeriqueConsultationTypeChoice_type0().getContenu());
 
-      SecurityConfiguration.cleanSecurityContext();
    }
 
    /**
@@ -186,8 +178,6 @@ public class ConsultationTest {
    @Ignore
    public final void consultation_success_ListMetaRemplie()
          throws RemoteException {
-
-      AuthenticateUtils.authenticate("ROLE_TOUS");
 
       List<String> listMdString = Arrays.asList(WANTED_META);
 
@@ -228,7 +218,6 @@ public class ConsultationTest {
       checkContenu(responseType.getObjetNumerique()
             .getObjetNumeriqueConsultationTypeChoice_type0().getContenu());
 
-      SecurityConfiguration.cleanSecurityContext();
    }
 
    private void checkContenu(DataHandler contenu) {
