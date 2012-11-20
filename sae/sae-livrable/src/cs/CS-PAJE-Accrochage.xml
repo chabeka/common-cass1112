@@ -3,16 +3,16 @@
 
    <listePrmd>
    
-      <!-- PRMD pour les mandats SEPA de CTC -->
+      <!-- PRMD pour les mandats SEPA de PAJE -->
       <prmd>
-         <code>PRMD_CTC_MANDATS_SEPA</code>
-         <description>CTC - Mandats SEPA</description>
+         <code>PRMD_PAJE_MANDATS_SEPA</code>
+         <description>PAJE - Mandats SEPA</description>
          <!--
             La metadonnee FormatFichier n'est pas presente dans le filtrage de la requete, car :
                - elle n'est fonctionnellement utile que lors de l'archivage
                - techniquement, elle ne peut pas etre utilisee comme critere de recherche (referentiel des metadonnees 1.6)
          -->
-         <lucene>CodeRND:1.2.2.4.12 AND ApplicationProductrice:CTC AND ApplicationTraitement:CTC</lucene>
+         <lucene>CodeRND:1.2.2.4.12 AND ApplicationProductrice:PAJE AND ApplicationTraitement:PAJE</lucene>
          <metadonnees>
             <metadonnee>
                <code>CodeRND</code>
@@ -23,13 +23,13 @@
             <metadonnee>
                <code>ApplicationProductrice</code>
                <valeurs>
-                  <valeur>CTC</valeur>
+                  <valeur>PAJE</valeur>
                </valeurs>
             </metadonnee>
             <metadonnee>
                <code>ApplicationTraitement</code>
                <valeurs>
-                  <valeur>CTC</valeur>
+                  <valeur>PAJE</valeur>
                </valeurs>
             </metadonnee>
             <metadonnee>
@@ -46,45 +46,45 @@
    
    <listeCs>
    
-      <!-- Contrat de service d'accrochage pour CTC Mandats SEPA -->
+      <!-- Contrat de service d'accrochage pour PAJE Mandats SEPA -->
       <cs>
-         <issuer>CS_CTC_ACCROCHAGE</issuer>
-         <code>CS_CTC_ACCROCHAGE</code>
-         <description>Contrat de service pour le client CTC</description>
+         <issuer>CS_PAJE_ACCROCHAGE</issuer>
+         <code>CS_PAJE_ACCROCHAGE</code>
+         <description>Contrat de service pour le client PAJE</description>
          <viduree>7200</viduree>
          <pagms>
 
             <pagm>
-               <code>CTC_SEPA_ARCHIVAGE_UNITAIRE</code>
-               <description>CTC - Archivage unitaire des mandats SEPA</description>
+               <code>PAJE_SEPA_ARCHIVAGE_UNITAIRE</code>
+               <description>PAJE - Archivage unitaire des mandats SEPA</description>
                <pagma>
-                  <code>ACCROCHAGE_CTC_SEPA_ARCHIVAGE_UNITAIRE_PAGMa</code>
+                  <code>ACCROCHAGE_PAJE_SEPA_ARCHIVAGE_UNITAIRE_PAGMa</code>
                   <actions>
                      <action>archivage_unitaire</action>
                   </actions>
                </pagma>
                <pagmp>
-                  <code>ACCROCHAGE_CTC_SEPA_ARCHIVAGE_UNITAIRE_PAGMp</code>
+                  <code>ACCROCHAGE_PAJE_SEPA_ARCHIVAGE_UNITAIRE_PAGMp</code>
                   <description>Mandats SEPA</description>
-                  <prmd>PRMD_CTC_MANDATS_SEPA</prmd>
+                  <prmd>PRMD_PAJE_MANDATS_SEPA</prmd>
                </pagmp>
                <parametres />
             </pagm>
 
             <pagm>
-               <code>CTC_SEPA_RECHERCHE_CONSULTATION</code>
-               <description>CTC - Recherche et consultation des mandats SEPA</description>
+               <code>PAJE_SEPA_RECHERCHE_CONSULTATION</code>
+               <description>PAJE - Recherche et consultation des mandats SEPA</description>
                <pagma>
-                  <code>ACCROCHAGE_CTC_SEPA_RECHERCHE_CONSULTATION_PAGMa</code>
+                  <code>ACCROCHAGE_PAJE_SEPA_RECHERCHE_CONSULTATION_PAGMa</code>
                   <actions>
                      <action>recherche</action>
                      <action>consultation</action>
                   </actions>
                </pagma>
                <pagmp>
-                  <code>ACCROCHAGE_CTC_SEPA_RECHERCHE_CONSULTATION_PAGMp</code>
+                  <code>ACCROCHAGE_PAJE_SEPA_RECHERCHE_CONSULTATION_PAGMp</code>
                   <description>Mandats SEPA</description>
-                  <prmd>PRMD_CTC_MANDATS_SEPA</prmd>
+                  <prmd>PRMD_PAJE_MANDATS_SEPA</prmd>
                </pagmp>
                <parametres />
             </pagm>
