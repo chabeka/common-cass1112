@@ -1,0 +1,3 @@
+      <saml2:Attribute Name="PAGM">
+         <saml2:AttributeValue>[PAGM]</saml2:AttributeValue>
+      </saml2:Attribute>
