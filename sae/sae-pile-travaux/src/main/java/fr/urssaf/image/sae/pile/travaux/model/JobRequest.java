@@ -1,6 +1,7 @@
 package fr.urssaf.image.sae.pile.travaux.model;
 
 import java.util.Date;
+import java.util.Map;
 import java.util.UUID;
 
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
@@ -70,6 +71,8 @@ public class JobRequest {
    private String toCheckFlagRaison;
 
    private VIContenuExtrait vi;
+   
+   private Map<String, String> jobParameters;
 
    /**
     * @return the idJob
@@ -339,6 +342,24 @@ public class JobRequest {
     */
    public final void setVi(VIContenuExtrait vi) {
       this.vi = vi;
+   }
+
+   /**
+    * 
+    * @return jobParameters
+    *                Objet contenant tous les paramètres du job
+    */
+   public Map<String, String> getJobParameters() {
+      return jobParameters;
+   }
+
+   /**
+    * 
+    * @param jobParameters
+    *              Objet contenant tous les paramètres du job
+    */
+   public void setJobParameters(Map<String, String> jobParameters) {
+      this.jobParameters = jobParameters;
    }
 
 }

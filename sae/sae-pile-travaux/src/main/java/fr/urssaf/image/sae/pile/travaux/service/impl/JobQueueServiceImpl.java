@@ -110,9 +110,15 @@ public class JobQueueServiceImpl implements JobQueueService {
       this.jobRequestSupport.ajouterJobDansJobRequest(jobToCreate, clock);
 
       // Ecriture dans la CF "JobQueues"
-      this.jobsQueueSupport.ajouterJobDansJobQueuesEnWaiting(jobToCreate
-            .getIdJob(), jobToCreate.getType(), jobToCreate.getParameters(),
-            clock);
+      if (jobToCreate.getParameters() != null) {
+         this.jobsQueueSupport.ajouterJobDansJobQueuesEnWaiting(jobToCreate
+               .getIdJob(), jobToCreate.getType(), jobToCreate.getParameters(),
+               clock);
+      } else {
+         this.jobsQueueSupport.ajouterJobDansJobQueuesEnWaiting(jobToCreate
+               .getIdJob(), jobToCreate.getType(), jobToCreate
+               .getJobParameters(), clock);
+      }
 
       // Ecriture dans la CF "JobHistory"
       String messageTrace = "CREATION DU JOB";
@@ -232,8 +238,13 @@ public class JobQueueServiceImpl implements JobQueueService {
                dateReservation, clock);
 
          // Ecriture dans la CF "JobQueues"
-         this.jobsQueueSupport.reserverJobDansJobQueues(idJob, hostname, type,
-               parameters, clock);
+         if (parameters != null) {
+            this.jobsQueueSupport.reserverJobDansJobQueues(idJob, hostname,
+                  type, parameters, clock);
+         } else {
+            this.jobsQueueSupport.reserverJobDansJobQueues(idJob, hostname,
+                  type, jobRequest.getJobParameters(), clock);
+         }
 
          // Ecriture dans la CF "JobHistory"
          String messageTrace = "RESERVATION DU JOB";
@@ -533,7 +544,11 @@ public class JobQueueServiceImpl implements JobQueueService {
          // Ecriture dans la CF "JobRequest"
          this.jobRequestSupport.resetJob(idJob, etat, clock);
 
-         this.jobsQueueSupport.unreservedJob(idJob, type, parameters, reservedBy, clock);
+         if(parameters!=null){
+            this.jobsQueueSupport.unreservedJob(idJob, type, parameters, reservedBy, clock);
+         }else{
+            this.jobsQueueSupport.unreservedJob(idJob, type, jobRequest.getJobParameters(), reservedBy, clock);
+         }
 
          // Ecriture dans la CF "JobHistory"
          String messageTrace = "RESET DU JOB";

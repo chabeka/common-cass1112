@@ -54,6 +54,10 @@ public class JobRequestSupport {
             clock);
       jobRequestDao.ecritColonneParameters(updaterJobRequest, jobToCreate
             .getParameters(), clock);
+      if (jobToCreate.getJobParameters() != null) {
+         jobRequestDao.ecritColonneJobParameters(updaterJobRequest, jobToCreate
+               .getJobParameters(), clock);
+      }
       jobRequestDao.ecritColonneState(updaterJobRequest, state, clock);
       jobRequestDao.ecritColonneCreationDate(updaterJobRequest, jobToCreate
             .getCreationDate(), clock);
@@ -74,11 +78,9 @@ public class JobRequestSupport {
          jobRequestDao.ecritColonneVi(updaterJobRequest, jobToCreate.getVi(),
                clock);
       }
-      
-      
+
       // Ecrit en base
       this.jobRequestDao.getJobRequestTmpl().update(updaterJobRequest);
-
 
    }
 
@@ -278,36 +280,41 @@ public class JobRequestSupport {
     *           identifiant du job à mettre à jour
     */
    public void resetJob(UUID idJob, String etat, long clock) {
-      
+
       // On utilise un ColumnFamilyUpdater, et on renseigne
       // la valeur de la clé dans la construction de l'updater
       ColumnFamilyUpdater<UUID, String> updaterJobRequest = this.jobRequestDao
             .getJobRequestTmpl().createUpdater(idJob);
-      
+
       // On passe l'état à CREATED
       this.jobRequestDao.ecritColonneState(updaterJobRequest, "CREATED", clock);
       // Ecrit en base
       this.jobRequestDao.getJobRequestTmpl().update(updaterJobRequest);
-      
+
       Mutator<UUID> mutator = this.jobRequestDao.createMutator();
-      
+
       // On supprime la colonne reservationDate
-      mutator.addDeletion(idJob, "JobRequest", "reservationDate", StringSerializer.get());
+      mutator.addDeletion(idJob, "JobRequest", "reservationDate",
+            StringSerializer.get());
       // On supprime la colonne reservedBy
-      mutator.addDeletion(idJob, "JobRequest", "reservedBy", StringSerializer.get());
-      
+      mutator.addDeletion(idJob, "JobRequest", "reservedBy", StringSerializer
+            .get());
+
       // Si le job est à l'état STARTING, on supprime :
-      // - la colonne startingDate 
-      // - la colonne pid 
+      // - la colonne startingDate
+      // - la colonne pid
       // - la colonne endingDate
       // - la colonne message
-      
-      mutator.addDeletion(idJob, "JobRequest", "startingDate", StringSerializer.get());
+
+      mutator.addDeletion(idJob, "JobRequest", "startingDate", StringSerializer
+            .get());
       mutator.addDeletion(idJob, "JobRequest", "pid", StringSerializer.get());
-      mutator.addDeletion(idJob, "JobRequest", "endingDate", StringSerializer.get());
-      mutator.addDeletion(idJob, "JobRequest", "message", StringSerializer.get());
-      
-      mutator.execute();      
-      
+      mutator.addDeletion(idJob, "JobRequest", "endingDate", StringSerializer
+            .get());
+      mutator.addDeletion(idJob, "JobRequest", "message", StringSerializer
+            .get());
+
+      mutator.execute();
+
    }
 }

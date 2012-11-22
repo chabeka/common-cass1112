@@ -1,5 +1,6 @@
 package fr.urssaf.image.sae.pile.travaux.model;
 
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -19,7 +20,10 @@ public class JobQueue {
 
    private String type;
 
+   @Deprecated
    private String parameters;
+   
+   private Map<String, String> jobParameters;
 
    /**
     * @return the idJob
@@ -54,6 +58,7 @@ public class JobQueue {
    /**
     * @return the parameters
     */
+   @Deprecated
    public final String getParameters() {
       return parameters;
    }
@@ -62,8 +67,17 @@ public class JobQueue {
     * @param parameters
     *           the parameters to set
     */
+   @Deprecated
    public final void setParameters(String parameters) {
       this.parameters = parameters;
+   }
+
+   public Map<String, String> getJobParameters() {
+      return jobParameters;
+   }
+
+   public void setJobParameters(Map<String, String> jobParameters) {
+      this.jobParameters = jobParameters;
    }
 
 }

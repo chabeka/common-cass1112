@@ -1,6 +1,7 @@
 package fr.urssaf.image.sae.pile.travaux.model;
 
 import java.util.Date;
+import java.util.Map;
 import java.util.UUID;
 
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
@@ -14,7 +15,10 @@ public class JobToCreate {
 
    private String type;
 
+   @Deprecated
    private String parameters;
+   
+   private Map<String,String> jobParameters;
    
    private Date creationDate;
 
@@ -59,6 +63,7 @@ public class JobToCreate {
    /**
     * @return the parameters
     */
+   @Deprecated
    public final String getParameters() {
       return parameters;
    }
@@ -67,6 +72,7 @@ public class JobToCreate {
     * @param parameters
     *           the parameters to set
     */
+   @Deprecated
    public final void setParameters(String parameters) {
       this.parameters = parameters;
    }
@@ -150,6 +156,22 @@ public class JobToCreate {
     */
    public final void setVi(VIContenuExtrait vi) {
       this.vi = vi;
+   }
+
+   /**
+    * 
+    * @return Tous les paramètres du job
+    */
+   public Map<String, String> getJobParameters() {
+      return jobParameters;
+   }
+
+   /**
+    * 
+    * @param jobParameters Les paramètres du job
+    */
+   public void setJobParameters(Map<String, String> jobParameters) {
+      this.jobParameters = jobParameters;
    }
 
 }

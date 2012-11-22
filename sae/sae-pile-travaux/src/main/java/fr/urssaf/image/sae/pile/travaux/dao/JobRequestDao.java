@@ -1,6 +1,7 @@
 package fr.urssaf.image.sae.pile.travaux.dao;
 
 import java.util.Date;
+import java.util.Map;
 import java.util.UUID;
 
 import me.prettyprint.cassandra.serializers.BooleanSerializer;
@@ -22,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import fr.urssaf.image.commons.cassandra.serializer.NullableDateSerializer;
+import fr.urssaf.image.sae.pile.travaux.dao.serializer.MapSerializer;
 import fr.urssaf.image.sae.pile.travaux.dao.serializer.VISerializer;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 import fr.urssaf.image.sae.pile.travaux.model.JobState;
@@ -116,6 +118,12 @@ public class JobRequestDao {
     * Colonne {@value #JR_VI}
     */
    public static final String JR_VI = "vi";
+   
+   /**
+    * Colonne {@value #JR_JOB_PARAM_COLUMN}
+    */
+   public static final String JR_JOB_PARAM_COLUMN = "jobParameters";
+
 
    private static final int MAX_JOB_ATTIBUTS = 100;
 
@@ -488,6 +496,25 @@ public class JobRequestDao {
             VISerializer.get(), clock);
 
    }
+   
+   
+   /**
+    * Ajoute une colonne {@value #JR_JOB_PARAM_COLUMN}
+    * 
+    * @param updater
+    *           Updater de <code>JobRequest</code>
+    * @param valeur
+    *           valeur de la colonne
+    * @param clock
+    *           horloge de la colonne
+    */
+   public final void ecritColonneJobParameters(
+         ColumnFamilyUpdater<UUID, String> updater, Map<String,String> valeur, long clock) {
+
+      addColumn(updater, JR_JOB_PARAM_COLUMN, valeur, StringSerializer.get(),
+            StringSerializer.get(), clock);
+
+   }
 
    /**
     * Suppression d'un JobRequest
@@ -527,7 +554,7 @@ public class JobRequestDao {
       jobRequest.setType(result.getString(JR_TYPE_COLUMN));
 
       jobRequest.setParameters(result.getString(JR_PARAMETERS_COLUMN));
-
+      
       String state = result.getString(JR_STATE_COLUMN);
       jobRequest.setState(JobState.valueOf(state));
 
@@ -574,6 +601,11 @@ public class JobRequestDao {
          VIContenuExtrait contenuExtrait = VISerializer.get().fromBytes(
                result.getByteArray(JR_VI));
          jobRequest.setVi(contenuExtrait);
+      }
+      
+      if(result.getByteArray(JR_JOB_PARAM_COLUMN)!=null){
+            byte[] bMetadata = result.getByteArray(JR_JOB_PARAM_COLUMN);
+            jobRequest.setJobParameters(MapSerializer.get().fromBytes(bMetadata));
       }
 
       return jobRequest;
