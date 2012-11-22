@@ -6,13 +6,19 @@ package fr.urssaf.image.sae.services.capturemasse.support.ecde.impl;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseEcdeWriteFileException;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
+import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireHashException;
+import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireTypeHashException;
 import fr.urssaf.image.sae.services.capturemasse.support.ecde.EcdeControleSupport;
+import fr.urssaf.image.sae.services.exception.capture.SAECaptureServiceRuntimeException;
 
 /**
  * Implémentation du support {@link EcdeControleSupport}
@@ -62,6 +68,35 @@ public class EcdeControleSupportImpl implements EcdeControleSupport {
             parentFile.getAbsoluteFile());
 
       LOGGER.debug("{} - Sortie", PREFIXE_TRC);
+   }
+   
+   /**
+    * {@inheritDoc}
+    * 
+    */
+   public final void checkHash(File sommaire, String hash, String typeHash) throws CaptureMasseSommaireTypeHashException, CaptureMasseSommaireHashException{
+      
+      if(typeHash.equals("SHA-1")){
+         
+         // récupération du contenu pour le calcul du HASH
+         byte[] content = null;
+         try {
+            content = FileUtils.readFileToByteArray(sommaire);
+         } catch (IOException e) {
+            throw new SAECaptureServiceRuntimeException(e);
+         }
+         //calcul du Hash
+         String hashCode = DigestUtils.shaHex(content);
+         
+         // comparaison avec la valeur attendu
+         if(!StringUtils
+         .equalsIgnoreCase(hashCode,
+               hash.trim())){
+            throw new CaptureMasseSommaireHashException(hash, hashCode, typeHash);
+         }
+      }else{
+         throw new CaptureMasseSommaireTypeHashException(typeHash);
+      }
    }
 
 }

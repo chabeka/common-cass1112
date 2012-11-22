@@ -6,6 +6,7 @@ package fr.urssaf.image.sae.services.capturemasse.validation;
 import java.net.URI;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 
@@ -22,6 +23,10 @@ public class SAECaptureMasseServiceValidation {
 
    private static final String CAPTURE_METHOD = "execution(fr.urssaf.image.sae.services.batch.model.ExitTraitement fr.urssaf.image.sae.services.capturemasse.SAECaptureMasseService.captureMasse(*,*))"
          + " && args(sommaireURL, idTraitement)";
+   
+   private static final String CAPTURE_METHOD_HASH = "execution(fr.urssaf.image.sae.services.batch.model.ExitTraitement fr.urssaf.image.sae.services.capturemasse.SAECaptureMasseService.captureMasse(*,*,*,*))"
+      + " && args(sommaireURL, idTraitement, hash, typeHash)";
+
 
    /**
     * permet de vérifier que l'ensemble des paramètres de la méthode
@@ -46,5 +51,29 @@ public class SAECaptureMasseServiceValidation {
                "argument.required", "idTraitement"));
       }
    }
-
+   /**
+    * permet de vérifier que l'ensemble des paramètres de la méthode
+    * captureMasse de SAECaptureMasseService possède tous les arguments
+    * renseignés
+    * 
+    * @param sommaireURL
+    *           URL du fichier sommaire.xml
+    * @param idTraitement
+    *           identifiant du traitement
+    * @param hash
+    *          le hash du fichier sommaire.xml
+    * @param typeHash
+    *          Algorithme de hash utilisé
+    */
+   @Before(CAPTURE_METHOD_HASH)
+   public final void captureMasse(final URI sommaireURL, final UUID idTraitement, final String hash, final String typeHash) {
+      
+      captureMasse(sommaireURL, idTraitement);
+      // controle des paramètres supplémentaires
+      if(hash!=null && StringUtils.isBlank(typeHash)){
+         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
+               "argument.required", "typeHash"));
+      }      
+   }
+   
 }

@@ -3,6 +3,7 @@
  */
 package fr.urssaf.image.sae.services.batch.model;
 
+import java.util.Map;
 import java.util.UUID;
 
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
@@ -12,7 +13,8 @@ import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
  * 
  */
 public class CaptureMasseParametres {
-
+   
+   @Deprecated
    private String ecdeURL;
 
    private UUID uuid;
@@ -24,6 +26,11 @@ public class CaptureMasseParametres {
    private String clientHost;
 
    private VIContenuExtrait vi;
+   
+   /**
+    * Paramètre de la capture de masse
+    */
+   private Map<String, String> jobParameters;
 
    /**
     * @param ecdeURL
@@ -49,10 +56,36 @@ public class CaptureMasseParametres {
       this.nbreDocs = nbreDocs;
       this.vi = vi;
    }
+   
+   /**
+    * @param jobParameters
+    *           Les paramètres de la capture de masse
+    * @param uuid
+    *           l'identifiant de traitement
+    * @param saeHost
+    *           le nom de la machine locale
+    * @param clientHost
+    *           l'adresse de la machine demandant le traitement
+    * @param nbreDocs
+    *           nombre de documents contenus dans le fichier sommaire.xml
+    * @param vi
+    *           contenu du VI
+    */
+   public CaptureMasseParametres(Map<String,String> jobParameters, UUID uuid, String saeHost,
+         String clientHost, Integer nbreDocs, VIContenuExtrait vi) {
+      super();
+      this.jobParameters = jobParameters;
+      this.uuid = uuid;
+      this.saeHost = saeHost;
+      this.clientHost = clientHost;
+      this.nbreDocs = nbreDocs;
+      this.vi = vi;
+   }
 
    /**
     * @return l'url ECDE
     */
+   @Deprecated
    public final String getEcdeURL() {
       return ecdeURL;
    }
@@ -92,6 +125,14 @@ public class CaptureMasseParametres {
     */
    public final VIContenuExtrait getVi() {
       return vi;
+   }
+
+   /**
+    * 
+    * @return les paramètre de la capture de masse
+    */
+   public Map<String, String> getJobParameters() {
+      return jobParameters;
    }
 
 }

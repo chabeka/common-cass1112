@@ -28,4 +28,21 @@ public interface SAECaptureMasseService {
    @PreAuthorize("hasRole('archivage_masse')")
    ExitTraitement captureMasse(URI sommaireURL, UUID idTraitement);
 
+   /**
+    * Service de capture de masse
+    * 
+    * @param sommaireURI
+    *           URI ECDE du fichier sommaire.xml
+    * @param idTraitement
+    *           identifiant unique du traitement
+    * @param hash
+    *            Le hash du fichier sommaire.xml
+    * @param typeHash 
+    *            algorithme de hash utilisé                     
+    * @return le status du traitement
+    */
+   @PreAuthorize("hasRole('archivage_masse')")
+   ExitTraitement captureMasse(URI sommaireURI, UUID idTraitement, String hash, String typeHash);
+
+   
 }

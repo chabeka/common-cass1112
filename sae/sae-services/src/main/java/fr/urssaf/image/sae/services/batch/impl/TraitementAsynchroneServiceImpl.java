@@ -117,7 +117,7 @@ public class TraitementAsynchroneServiceImpl implements
       job.setSaeHost(parameters.getSaeHost());
       job.setDocCount(parameters.getNbreDocs());
       job.setVi(parameters.getVi());
-
+      job.setJobParameters(parameters.getJobParameters());
       jobQueueService.addJob(job);
 
    }

@@ -64,59 +64,9 @@ public class SAECaptureMasseServiceImpl implements SAECaptureMasseService {
    public final ExitTraitement captureMasse(final URI sommaireURL,
          final UUID idTraitement) {
 
-      Map<String, JobParameter> mapParam = new HashMap<String, JobParameter>();
-      mapParam.put(Constantes.SOMMAIRE,
-            new JobParameter(sommaireURL.toString()));
-      mapParam.put(Constantes.ID_TRAITEMENT, new JobParameter(idTraitement
-            .toString()));
 
-      JobParameters parameters = new JobParameters(mapParam);
       ExitTraitement exitTraitement = new ExitTraitement();
-      JobExecution jobExecution = null;
-
-      try {
-         jobExecution = jobLauncher.run(job, parameters);
-
-         List<StepExecution> list = new ArrayList<StepExecution>(jobExecution
-               .getStepExecutions());
-         boolean traitementOK = ExitStatus.COMPLETED.equals(jobExecution
-               .getExitStatus());
-
-         int index = 0;
-         while (traitementOK && index < list.size()) {
-            if ("finBloquant".equalsIgnoreCase(list.get(index).getStepName())
-                  || "finErreur"
-                        .equalsIgnoreCase(list.get(index).getStepName())) {
-               traitementOK = false;
-            }
-            index++;
-         }
-
-         if (traitementOK) {
-            exitTraitement.setExitMessage("Traitement réalisé avec succès");
-            exitTraitement.setSucces(true);
-         } else {
-
-            checkFinal(jobExecution, sommaireURL, idTraitement, jobExecution
-                  .getAllFailureExceptions());
-
-            exitTraitement.setExitMessage("Traitement en erreur");
-            exitTraitement.setSucces(false);
-         }
-
-      } catch (Throwable e) {
-
-         LOGGER.warn(
-               "{} - erreur lors de la capture de masse. Exception levée",
-               TRC_CAPTURE, e);
-
-         List<Throwable> listThrowables = new ArrayList<Throwable>();
-         listThrowables.add(e);
-         checkFinal(jobExecution, sommaireURL, idTraitement, listThrowables);
-
-         exitTraitement.setExitMessage(e.getMessage());
-         exitTraitement.setSucces(false);
-      }
+      exitTraitement = captureMasse(sommaireURL, idTraitement, null, null);
 
       return exitTraitement;
 
@@ -152,4 +102,72 @@ public class SAECaptureMasseServiceImpl implements SAECaptureMasseService {
             logPresent, listeExceptions, idTraitement);
 
    }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public ExitTraitement captureMasse(URI sommaireURI, UUID idTraitement,
+         String hash, String typeHash) {
+      Map<String, JobParameter> mapParam = new HashMap<String, JobParameter>();
+      mapParam.put(Constantes.SOMMAIRE,
+            new JobParameter(sommaireURI.toString()));
+      mapParam.put(Constantes.ID_TRAITEMENT, new JobParameter(idTraitement
+            .toString()));
+      mapParam.put(Constantes.HASH, new JobParameter(hash));
+      mapParam.put(Constantes.TYPE_HASH, new JobParameter(typeHash));
+      
+
+      JobParameters parameters = new JobParameters(mapParam);
+      ExitTraitement exitTraitement = new ExitTraitement();
+      JobExecution jobExecution = null;
+
+      try {
+         jobExecution = jobLauncher.run(job, parameters);
+
+         List<StepExecution> list = new ArrayList<StepExecution>(jobExecution
+               .getStepExecutions());
+         boolean traitementOK = ExitStatus.COMPLETED.equals(jobExecution
+               .getExitStatus());
+
+         int index = 0;
+         while (traitementOK && index < list.size()) {
+            if ("finBloquant".equalsIgnoreCase(list.get(index).getStepName())
+                  || "finErreur"
+                        .equalsIgnoreCase(list.get(index).getStepName())) {
+               traitementOK = false;
+            }
+            index++;
+         }
+
+         if (traitementOK) {
+            exitTraitement.setExitMessage("Traitement réalisé avec succès");
+            exitTraitement.setSucces(true);
+         } else {
+
+            checkFinal(jobExecution, sommaireURI, idTraitement, jobExecution
+                  .getAllFailureExceptions());
+
+            exitTraitement.setExitMessage("Traitement en erreur");
+            exitTraitement.setSucces(false);
+         }
+
+      } catch (Throwable e) {
+
+         LOGGER.warn(
+               "{} - erreur lors de la capture de masse. Exception levée",
+               TRC_CAPTURE, e);
+
+         List<Throwable> listThrowables = new ArrayList<Throwable>();
+         listThrowables.add(e);
+         checkFinal(jobExecution, sommaireURI, idTraitement, listThrowables);
+
+         exitTraitement.setExitMessage(e.getMessage());
+         exitTraitement.setSucces(false);
+      }
+
+      return exitTraitement;
+   }
+   
+   
 }

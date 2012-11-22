@@ -90,7 +90,24 @@ public final class Constantes {
     * Flag indiquant qu'un trace pour le systeme a été générée
     */
    public static final String FLAG_BUL003 = "FLAG_BUL003";
+   
+   /**
+    * Hash du fichier sommaire.xml
+    */
+   public static final String HASH = "hash";
+   
+   /**
+    * Le type de hash
+    */
+   public static final String TYPE_HASH = "typeHash";
 
+   /**
+    * l'Url ECDE
+    */
+   public static final String ECDE_URL = "ecdeUrl";
+
+   
+   
    /**
     * Constructeur
     */

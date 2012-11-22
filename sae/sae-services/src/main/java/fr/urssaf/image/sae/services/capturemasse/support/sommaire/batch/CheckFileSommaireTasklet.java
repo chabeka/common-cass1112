@@ -22,6 +22,8 @@ import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseEcdeWrite
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireEcdeURLException;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireFileNotFoundException;
+import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireHashException;
+import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireTypeHashException;
 import fr.urssaf.image.sae.services.capturemasse.support.ecde.EcdeControleSupport;
 import fr.urssaf.image.sae.services.capturemasse.support.ecde.EcdeSommaireFileSupport;
 
@@ -50,6 +52,10 @@ public class CheckFileSommaireTasklet implements Tasklet {
             .getJobParameters();
 
       final String urlEcde = (String) parameters.get(Constantes.SOMMAIRE);
+      
+      final String hash = (String) parameters.get(Constantes.HASH);
+      
+      final String typeHash = (String) parameters.get(Constantes.TYPE_HASH);
 
       final StepExecution stepExecution = chunkContext.getStepContext()
             .getStepExecution();
@@ -64,6 +70,10 @@ public class CheckFileSommaireTasklet implements Tasklet {
          final File sommaire = fileSupport.convertURLtoFile(uriEcde);
 
          controleSupport.checkEcdeWrite(sommaire);
+         
+         if(hash!=null){
+            controleSupport.checkHash(sommaire, hash, typeHash);
+         }
 
          context.put(Constantes.SOMMAIRE_FILE, sommaire.getAbsolutePath());
 
@@ -90,6 +100,18 @@ public class CheckFileSommaireTasklet implements Tasklet {
          exceptions.add(exception);
 
       } catch (CaptureMasseRuntimeException e) {
+         final Exception exception = new Exception(e.getMessage());
+         ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) chunkContext
+               .getStepContext().getStepExecution().getJobExecution()
+               .getExecutionContext().get(Constantes.DOC_EXCEPTION);
+         exceptions.add(exception);
+      } catch(CaptureMasseSommaireHashException e ){
+         final Exception exception = new Exception(e.getMessage());
+         ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) chunkContext
+               .getStepContext().getStepExecution().getJobExecution()
+               .getExecutionContext().get(Constantes.DOC_EXCEPTION);
+         exceptions.add(exception);
+      } catch(CaptureMasseSommaireTypeHashException e){
          final Exception exception = new Exception(e.getMessage());
          ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) chunkContext
                .getStepContext().getStepExecution().getJobExecution()
