@@ -50,6 +50,9 @@
    <bean id="traitementAsynchroneService" factory-bean="SAEServiceFactory"
       factory-method="createTraitementAsynchroneService" />
 
+   <bean id="ecdeControleSupport"
+      class="fr.urssaf.image.sae.services.capturemasse.support.ecde.impl.EcdeControleSupportImpl" />
+
    <!-- Services necessaires à la consultation des etats des services  -->
    <context:component-scan
       base-package="fr.urssaf.image.sae.webservices.dfceservice.test" />

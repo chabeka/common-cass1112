@@ -198,6 +198,30 @@ public class SaeServiceMessageReceiverInOut extends org.apache.axis2.receivers.A
             } else {
               throw new java.lang.RuntimeException("method not found");
             }
+            
+            if("archivageMasseAvecHash".equals(methodName)){
+               
+               fr.cirtil.www.saeservice.ArchivageMasseAvecHashResponse archivageMasseAvecHashResponse31 = null;
+                          fr.cirtil.www.saeservice.ArchivageMasseAvecHash wrappedParam =
+                                                            (fr.cirtil.www.saeservice.ArchivageMasseAvecHash)fromOM(
+                                   msgContext.getEnvelope().getBody().getFirstElement(),
+                                   fr.cirtil.www.saeservice.ArchivageMasseAvecHash.class,
+                                   getEnvelopeNamespaces(msgContext.getEnvelope()));
+                          
+                          String callerIP = (String) msgContext.getProperty(MessageContext.REMOTE_ADDR);
+                                   
+                          
+                                              archivageMasseAvecHashResponse31 =
+                                                  
+                                                  
+                                                        skel.archivageMasseAvecHashSecure(wrappedParam, callerIP);
+                                           
+                                       envelope = toEnvelope(getSOAPFactory(msgContext), archivageMasseAvecHashResponse31, false, new javax.xml.namespace.QName("http://www.cirtil.fr/saeService",
+                                                   "archivageMasseAvecHash"));
+                                   
+           } else {
+             throw new java.lang.RuntimeException("method not found");
+           }
         
 
         newMsgContext.setEnvelope(envelope);
@@ -584,8 +608,25 @@ public class SaeServiceMessageReceiverInOut extends org.apache.axis2.receivers.A
                                 fr.cirtil.www.saeservice.ArchivageMasseResponse wrappedElement = new fr.cirtil.www.saeservice.ArchivageMasseResponse();
                                 return wrappedElement;
                          }
-                    
+                         
+                         private  org.apache.axiom.soap.SOAPEnvelope toEnvelope(org.apache.axiom.soap.SOAPFactory factory, fr.cirtil.www.saeservice.ArchivageMasseAvecHashResponse param, boolean optimizeContent, javax.xml.namespace.QName methodQName)
+                         throws org.apache.axis2.AxisFault{
+                       try{
+                           org.apache.axiom.soap.SOAPEnvelope emptyEnvelope = factory.getDefaultEnvelope();
+                            
+                                     emptyEnvelope.getBody().addChild(param.getOMElement(fr.cirtil.www.saeservice.ArchivageMasseAvecHashResponse.MY_QNAME,factory));
+                                 
 
+                          return emptyEnvelope;
+                     } catch(org.apache.axis2.databinding.ADBException e){
+                         throw org.apache.axis2.AxisFault.makeFault(e);
+                     }
+                     }
+                         private fr.cirtil.www.saeservice.ArchivageMasseAvecHashResponse wraparchivageMasseAvecHash(){
+                            fr.cirtil.www.saeservice.ArchivageMasseAvecHashResponse wrappedElement = new fr.cirtil.www.saeservice.ArchivageMasseAvecHashResponse();
+                            return wrappedElement;
+                     }
+                         
 
         /**
         *  get the default envelope

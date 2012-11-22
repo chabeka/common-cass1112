@@ -46,6 +46,11 @@
             <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/archivageMasseResponse
          </outputActionMapping>
         </operation>
+        <operation name="archivageMasseAvecHash" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://www.cirtil.fr/saeService">
+            <actionMapping>archivageMasseAvecHash</actionMapping>
+            <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/archivageMasseAvecHashResponse
+         </outputActionMapping>
+        </operation>
         <operation name="recherche" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://www.cirtil.fr/saeService">
             <actionMapping>recherche</actionMapping>
             <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/rechercheResponse

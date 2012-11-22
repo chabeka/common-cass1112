@@ -3,6 +3,8 @@ package fr.urssaf.image.sae.webservices.skeleton;
 import org.apache.axis2.AxisFault;
 
 import fr.cirtil.www.saeservice.ArchivageMasse;
+import fr.cirtil.www.saeservice.ArchivageMasseAvecHash;
+import fr.cirtil.www.saeservice.ArchivageMasseAvecHashResponse;
 import fr.cirtil.www.saeservice.ArchivageMasseResponse;
 import fr.cirtil.www.saeservice.ArchivageUnitaire;
 import fr.cirtil.www.saeservice.ArchivageUnitairePJ;
@@ -134,5 +136,21 @@ public interface SaeServiceSkeletonInterface {
     *            exception levée dans la consommation du web service
     */
    PingResponse ping(PingRequest pingRequest) throws AxisFault;
+   
+   /**
+    * endpoint de la capture de masse avec hash
+    * 
+    * @param request
+    *           request du web service
+    * @param callerIP
+    *          adresse IP de l'appelant 
+    * @return reponse du web service
+    * @throws AxisFault
+    *            exception levée dans la consommation du web service
+    * @throws SaeAccessDeniedAxisFault
+    *             exception levée si droits insuffisants
+    */
+   ArchivageMasseAvecHashResponse archivageMasseAvecHashSecure(ArchivageMasseAvecHash request, String callerIP)
+         throws AxisFault;
 
 }

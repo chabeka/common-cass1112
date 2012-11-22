@@ -24,6 +24,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 import fr.cirtil.www.saeservice.ArchivageMasse;
+import fr.cirtil.www.saeservice.ArchivageMasseAvecHash;
+import fr.cirtil.www.saeservice.ArchivageMasseAvecHashResponse;
 import fr.cirtil.www.saeservice.ArchivageMasseResponse;
 import fr.cirtil.www.saeservice.ArchivageUnitaire;
 import fr.cirtil.www.saeservice.ArchivageUnitairePJ;
@@ -444,6 +446,48 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
          } catch (IOException e) {
             throw new RuntimeException(e);
          }
+      }
+   }
+   
+   /**
+    * {@inheritDoc}
+    * 
+    * @throws CaptureAxisFault
+    * @throws SaeAccessDeniedAxisFault
+    */
+   @Override
+   public final ArchivageMasseAvecHashResponse archivageMasseAvecHashSecure(
+         ArchivageMasseAvecHash request, String callerIP) throws CaptureAxisFault,
+         SaeAccessDeniedAxisFault {
+      try {
+
+         // Traces debug - entrée méthode
+         String prefixeTrc = "Opération archivageMasseAvecHashSecure()";
+         LOG.debug("{} - Début", prefixeTrc);
+         // Fin des traces debug - entrée méthode
+
+         // l'opération web service n'interagit pas avec DFCE
+         // il n'est pas nécessaire de vérifier si DFCE est Up
+         ArchivageMasseAvecHashResponse response = captureMasse.archivageEnMasseAvecHash(
+               request, callerIP);
+
+         // Traces debug - sortie méthode
+         LOG.debug("{} - Sortie", prefixeTrc);
+         // Fin des traces debug - sortie méthode
+
+         return response;
+
+      } catch (CaptureAxisFault ex) {
+         logSoapFault(ex);
+         throw ex;
+      } catch (AccessDeniedException exception) {
+         throw new SaeAccessDeniedAxisFault(exception);
+      } catch (RuntimeException ex) {
+         logRuntimeException(ex);
+         throw new CaptureAxisFault(
+               "ErreurInterneCapture",
+               "Une erreur interne à l'application est survenue lors de la capture.",
+               ex);
       }
    }
 

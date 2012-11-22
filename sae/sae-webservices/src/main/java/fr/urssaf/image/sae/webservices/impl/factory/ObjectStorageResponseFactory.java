@@ -1,5 +1,7 @@
 package fr.urssaf.image.sae.webservices.impl.factory;
 
+import fr.cirtil.www.saeservice.ArchivageMasseAvecHashResponse;
+import fr.cirtil.www.saeservice.ArchivageMasseAvecHashResponseType;
 import fr.cirtil.www.saeservice.ArchivageMasseResponse;
 import fr.cirtil.www.saeservice.ArchivageMasseResponseType;
 
@@ -35,4 +37,23 @@ public final class ObjectStorageResponseFactory {
       return response;
    }
 
+   /**
+    * instanciation de {@link ArchivageMasseAvecHashResponse}.<br>
+    * implémentation de {@link ArchivageMasseAvecHashResponseType}
+    * 
+    * <pre>
+    * &lt;xsd:complexType name="archivageMasseAvecHashResponseType">
+    * ...
+    * &lt;/xsd:complexType>
+    * </pre>
+    * 
+    * @return instance de {@link ArchivageMasseAvecHashResponse}
+    */
+   public static ArchivageMasseAvecHashResponse createArchivageMasseAvecHashResponse() {
+
+      ArchivageMasseAvecHashResponse response = new ArchivageMasseAvecHashResponse();
+      ArchivageMasseAvecHashResponseType responseType = new ArchivageMasseAvecHashResponseType();
+      response.setArchivageMasseAvecHashResponse(responseType);
+      return response;
+   }
 }
