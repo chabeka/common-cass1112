@@ -92,6 +92,9 @@ public class IntegrationSpringBatchFailureStepExecutionTest {
    private static final String ERREUR_ATTENDUE_003 = "Le traitement de masse "
          + "n°{} doit être rollbacké par une procédure d'exploitation";
 
+   private static final String ERREUR_ATTENDUE_FIN_TRAITEMENT_003 = "Le traitement de masse n°{} doit éventuellement être rollbacké "
+         + "par une procédure d'exploitation (il faut faire une analyse au préalable).";
+
    @Autowired
    private ApplicationContext applicationContext;
 
@@ -130,7 +133,7 @@ public class IntegrationSpringBatchFailureStepExecutionTest {
 
       logger.debug("initialisation du répertoire de traitetement :"
             + ecdeTestSommaire.getRepEcde());
-      
+
       // initialisation du contexte de sécurité
       VIContenuExtrait viExtrait = new VIContenuExtrait();
       viExtrait.setCodeAppli("TESTS_UNITAIRES");
@@ -166,7 +169,7 @@ public class IntegrationSpringBatchFailureStepExecutionTest {
       EasyMock.reset(provider, storageDocumentService);
 
       AuthenticationContext.setAuthenticationToken(null);
-      
+
       logger.detachAppender(logAppenderSae);
    }
 
@@ -522,7 +525,8 @@ public class IntegrationSpringBatchFailureStepExecutionTest {
 
       Assert.assertNotNull("liste des messages non null", loggingEvents);
 
-      Assert.assertTrue("au moins deux une trace SAE", loggingEvents.size() > 1);
+      Assert
+            .assertTrue("au moins deux une trace SAE", loggingEvents.size() > 1);
 
       List<ILoggingEvent> list = LogUtils.getLogsByLevel(loggingEvents,
             Level.ERROR);
@@ -530,8 +534,11 @@ public class IntegrationSpringBatchFailureStepExecutionTest {
       Assert.assertEquals("deux messages de niveau ERROR", 2, list.size());
 
       // message resultats.xml
-      boolean messageOk = LogUtils.logExists(list, Level.ERROR,
-            "Génération de secours du fichier resultats.xml car il n'a pas été généré par le job de capture de masse. Détails :");
+      boolean messageOk = LogUtils
+            .logExists(
+                  list,
+                  Level.ERROR,
+                  "Génération de secours du fichier resultats.xml car il n'a pas été généré par le job de capture de masse. Détails :");
 
       Assert.assertTrue("présence du message de resultats.xml", messageOk);
 
@@ -566,8 +573,8 @@ public class IntegrationSpringBatchFailureStepExecutionTest {
       Assert.assertTrue("présence du message indiquant que "
             + "le rollback a été effectué en dehors du job", messageOk);
 
-      messageOk = LogUtils.logExists(list, Level.ERROR, ERREUR_ATTENDUE_003
-            .replace("{}", uuid));
+      messageOk = LogUtils.logExists(list, Level.ERROR,
+            ERREUR_ATTENDUE_FIN_TRAITEMENT_003.replace("{}", uuid));
 
       Assert.assertTrue("présence du message indiquant que "
             + "le rollback doit être manuel", messageOk);

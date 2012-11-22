@@ -105,7 +105,7 @@ public class VerificationSupportImpl implements VerificationSupport {
          CaptureMasseSommaireFileNotFoundException {
 
       return fileSupport.convertURLtoFile(urlEcde);
-   
+
    }
 
    /**
@@ -281,7 +281,8 @@ public class VerificationSupportImpl implements VerificationSupport {
          LOGGER
                .error(
 
-                     "Le traitement de masse n°{} doit être rollbacké par une procédure d'exploitation",
+                     "Le traitement de masse n°{} doit éventuellement être rollbacké "
+                           + "par une procédure d'exploitation (il faut faire une analyse au préalable).",
                      idTraitement);
       }
 
