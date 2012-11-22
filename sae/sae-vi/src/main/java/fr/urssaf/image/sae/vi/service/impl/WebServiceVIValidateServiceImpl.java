@@ -4,6 +4,7 @@ import java.net.URI;
 import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -187,15 +188,28 @@ public class WebServiceVIValidateServiceImpl implements
                   "{} - Vérifie que la PKI dont est issu le certificat applicatif correspond à la PKI déclaré dans le contrat de service",
                   prefixeTrc);
       String patternPki = contract.getIdPki();
+      List<String> patternPkis = contract.getListPki();
+
       X509Certificate pki = result.getPki();
       String pkiName = pki.getSubjectX500Principal().getName(
             X500Principal.RFC2253);
-      LOGGER
-            .debug(
-                  "{} - Le certificat applicatif de signature du VI est issu de la PKI \"{}\", pour un contrat de service {} s'appuyant sur la PKI dont le pattern de nommage est \"{}\"",
-                  new String[] { prefixeTrc, pkiName, contract.getCodeClient(),
-                        patternPki });
-      checkPattern(patternPki, pkiName, ERREUR_PKI);
+
+      if (CollectionUtils.isNotEmpty(patternPkis)) {
+         LOGGER
+               .debug(
+                     "{} - Le certificat applicatif de signature du VI est issu de la PKI \"{}\", pour un contrat de service {} s'appuyant sur la PKI dont le pattern de nommage fait partie de \"{}\"",
+                     new String[] { prefixeTrc, pkiName,
+                           contract.getCodeClient(), patternPkis.toString() });
+         checkPatterns(patternPkis, pkiName, ERREUR_PKI);
+
+      } else {
+         LOGGER
+               .debug(
+                     "{} - Le certificat applicatif de signature du VI est issu de la PKI \"{}\", pour un contrat de service {} s'appuyant sur la PKI dont le pattern de nommage est \"{}\"",
+                     new String[] { prefixeTrc, pkiName,
+                           contract.getCodeClient(), patternPki });
+         checkPattern(patternPki, pkiName, ERREUR_PKI);
+      }
 
       if (contract.isVerifNommage()) {
 
@@ -204,18 +218,29 @@ public class WebServiceVIValidateServiceImpl implements
                      "{} - Vérifie que le nom du certificat applicatif correspond au nom déclaré dans le contrat de service",
                      prefixeTrc);
 
+         List<String> patternCerts = contract.getListCertifsClient();
          String patternCert = contract.getIdCertifClient();
+
          X509Certificate cert = result.getCertificat();
          String certName = cert.getSubjectX500Principal().getName(
                X500Principal.RFC2253);
 
-         LOGGER
-               .debug(
-                     "{} - Le certificat applicatif de signature du VI porte le nom \"{}\", pour un contrat de service {} attendant un certificat nommé selon le pattern \"{}\"",
-                     new String[] { prefixeTrc, certName,
-                           contract.getCodeClient(), patternCert });
+         if (CollectionUtils.isNotEmpty(patternCerts)) {
+            LOGGER
+                  .debug(
+                        "{} - Le certificat applicatif de signature du VI porte le nom \"{}\", pour un contrat de service {} attendant un certificat nommé selon un des patterns \"{}\"",
+                        new String[] { prefixeTrc, certName,
+                              contract.getCodeClient(), patternCerts.toString() });
+            checkPatterns(patternCerts, certName, ERREUR_CERT);
 
-         checkPattern(patternCert, certName, ERREUR_CERT);
+         } else {
+            LOGGER
+                  .debug(
+                        "{} - Le certificat applicatif de signature du VI porte le nom \"{}\", pour un contrat de service {} attendant un certificat nommé selon le pattern \"{}\"",
+                        new String[] { prefixeTrc, certName,
+                              contract.getCodeClient(), patternCert });
+            checkPattern(patternCert, certName, ERREUR_CERT);
+         }
 
       } else {
          LOGGER
@@ -226,6 +251,26 @@ public class WebServiceVIValidateServiceImpl implements
 
       // Traces debug
       LOGGER.debug("{} - Fin", prefixeTrc);
+
+   }
+
+   private void checkPatterns(List<String> regexps, String value,
+         String messageErreur) throws VICertificatException {
+
+      boolean found = false;
+      int i = 0;
+      Pattern pattern;
+      Matcher matcher;
+      while (!found && i < regexps.size()) {
+         pattern = Pattern.compile(regexps.get(i));
+         matcher = pattern.matcher(value);
+         found = matcher.find();
+         i++;
+      }
+
+      if (!found) {
+         throw new VICertificatException(messageErreur);
+      }
 
    }
 
