@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+   xsi:schemaLocation="
+      http://www.springframework.org/schema/beans  
+      http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+      http://www.springframework.org/schema/context 
+      http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+
+   <context:property-placeholder location="classpath:config/cassandra-local.properties"/>
+   <context:property-placeholder location="classpath:saelotinstall-dfce-config.properties"/>
+   
+   
+   <bean id="configCassandra"
+      class="fr.urssaf.image.sae.lotinstallmaj.modele.CassandraConfig">
+      <property name="hosts" value="${cassandra.hosts}" />
+      <property name="login" value="${cassandra.username}" />
+      <property name="password" value="${cassandra.password}" />
+      <property name="keyspaceName" value="${cassandra.keyspace}" />
+   </bean>
+   
+   
+   <bean id="dfceConfig"
+      class="fr.urssaf.image.sae.lotinstallmaj.modele.DfceConfig">
+      <property name="urlToolkit" value="toto" />
+      <property name="login" value="tata" />
+      <property name="password" value="tata" />
+      <property name="basename" value="tata" />
+   </bean>
+   
+   
+   <context:component-scan base-package="fr.urssaf.image.sae.lotinstallmaj" />
+   
+
+   <!--Gestion de message à partir d'un fichier -->
+   <bean id="messageSource_sae_lotservice"
+      class="org.springframework.context.support.ResourceBundleMessageSource">
+      <property name="basename" value="maj_lotservice_messages" />
+   </bean>
+
+   <bean id="SAECassandraDao" class="fr.urssaf.image.sae.lotinstallmaj.dao.SAECassandraDao">
+      <property name="config" ref="configCassandra"/>
+   </bean>
+   <bean id="SAECassandraService"
+      class="fr.urssaf.image.sae.lotinstallmaj.service.impl.SAECassandraService">
+      <property name="saeDao" ref="SAECassandraDao" />
+   </bean>
+
+
+
+   <import resource="classpath*:/applicationContext-commons-cassandra.xml" />
+
+</beans>

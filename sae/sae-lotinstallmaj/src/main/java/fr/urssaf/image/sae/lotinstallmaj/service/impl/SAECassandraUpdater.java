@@ -6,17 +6,12 @@ import java.util.List;
 import java.util.Map;
 
 import me.prettyprint.cassandra.model.BasicColumnDefinition;
-import me.prettyprint.cassandra.model.ConfigurableConsistencyLevel;
-import me.prettyprint.cassandra.serializers.LongSerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.service.CassandraHostConfigurator;
-import me.prettyprint.cassandra.service.FailoverPolicy;
 import me.prettyprint.cassandra.service.ThriftKsDef;
 import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
-import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
 import me.prettyprint.cassandra.service.template.ThriftColumnFamilyTemplate;
 import me.prettyprint.hector.api.Cluster;
-import me.prettyprint.hector.api.HConsistencyLevel;
 import me.prettyprint.hector.api.Keyspace;
 import me.prettyprint.hector.api.ddl.ColumnDefinition;
 import me.prettyprint.hector.api.ddl.ColumnFamilyDefinition;
@@ -27,7 +22,10 @@ import me.prettyprint.hector.api.factory.HFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import fr.urssaf.image.sae.lotinstallmaj.dao.SAECassandraDao;
 import fr.urssaf.image.sae.lotinstallmaj.exception.MajLotRuntimeException;
 import fr.urssaf.image.sae.lotinstallmaj.modele.CassandraConfig;
 
@@ -35,25 +33,20 @@ import fr.urssaf.image.sae.lotinstallmaj.modele.CassandraConfig;
  * Classe permettant la mise à jour du schéma du keyspace SAE dans cassandra
  * 
  */
+@Component
 public class SAECassandraUpdater {
 
-   /**
-    * Nom du keyspace
-    */
    private final String ksName;
-
    private final Cluster cluster;
-   private Keyspace keyspace;
-   private final Map<String, String> credentials;
+   private SAECassandraService saeCassandraService;
+   @Autowired
+   private SAECassandraDao saeDao;
 
    // LOGGER
    private static final Logger LOG = LoggerFactory
          .getLogger(SAECassandraUpdater.class);
 
-   // GCgrace par fixé à 20 jours.
-   // Il est à 10 jours par défaut. Ça nous laisse plus de temps pour réagir en
-   // cas de problème avec les repair.
-   private static final int DEFAULT_GCGRACE = 1728000;
+
 
    /**
     * Constructeur
@@ -61,14 +54,12 @@ public class SAECassandraUpdater {
     * @param config
     *           : configuration d'accès au cluster cassandra
     */
-   public SAECassandraUpdater(CassandraConfig config) {
-      ksName = config.getKeyspaceName();
-      credentials = new HashMap<String, String>();
-      credentials.put("username", config.getLogin());
-      credentials.put("password", config.getPassword());
-      CassandraHostConfigurator chc = new CassandraHostConfigurator(config
-            .getHosts());
-      cluster = HFactory.getOrCreateCluster("SAECluster", chc, credentials);
+   @Autowired
+   public SAECassandraUpdater(SAECassandraService saeCassandraService) {
+      this.saeCassandraService = saeCassandraService;
+      cluster = saeCassandraService.getCluster();
+      ksName = saeCassandraService.getKeySpaceName();
+
    }
 
    /**
@@ -76,7 +67,7 @@ public class SAECassandraUpdater {
     */
    public final void updateToVersion1() {
 
-      long version = getDatabaseVersion();
+      long version = saeDao.getDatabaseVersion();
       if (version >= 1) {
          LOG.info("La base de données est déja en version " + version);
          return;
@@ -85,13 +76,13 @@ public class SAECassandraUpdater {
       LOG.info("Création du keyspace SAE en version 1");
 
       // On crée le keyspace "SAE" n'existe pas déjà.
-      KeyspaceDefinition keyspaceDef = cluster.describeKeyspace(ksName);
+      KeyspaceDefinition keyspaceDef = saeDao.describeKeyspace();
       if (keyspaceDef == null) {
          // Create the keyspace definition
          // Le facteur de réplication utilisé est le même que celui utilisé pour
          // le keyspace "Docubase", soit
          // 3 pour l'environnement de production, et de 1 à 3 pour les autres.
-         int replicationFactor = getDocubaseReplicationFactor(cluster);
+         int replicationFactor = saeDao.getDocubaseReplicationFactor(cluster);
 
          KeyspaceDefinition newKeyspace = HFactory.createKeyspaceDefinition(
                ksName, ThriftKsDef.DEF_STRATEGY_CLASS, replicationFactor,
@@ -99,11 +90,11 @@ public class SAECassandraUpdater {
          // Add the schema to the cluster.
          // "true" as the second param means that Hector will block until all
          // nodes see the change.
-         cluster.addKeyspace(newKeyspace, true);
+         saeDao.createNewKeySpace(newKeyspace, true);
       }
 
       // On se connecte au keyspace maintenant qu'il existe
-      connectToKeyspace();
+      saeDao.connectToKeySpace();
 
       // Liste contenant la définition des column families à créer
       List<ColumnFamilyDefinition> cfDefs = new ArrayList<ColumnFamilyDefinition>();
@@ -169,24 +160,12 @@ public class SAECassandraUpdater {
       cfDefs.add(HFactory.createColumnFamilyDefinition(ksName, "Parameters",
             ComparatorType.BYTESTYPE));
 
-      // Ajoute les options les plus courantes à chacune des CF
-      for (ColumnFamilyDefinition c : cfDefs) {
-         addDefaultCFAttributs(c);
-      }
-
       // Création des CF
-      for (ColumnFamilyDefinition c : cfDefs) {
-         if (cfExists(keyspaceDef, c.getName())) {
-            LOG.info("La famille de colonnes " + c.getName()
-                  + " est déjà existante");
-         } else {
-            LOG.info("Création de la famille de colonnes " + c.getName());
-            cluster.addColumnFamily(c, true);
-         }
-      }
+
+      saeCassandraService.createColumnFamilyFromList(cfDefs, true);
 
       // On positionne la version à 1
-      setDatabaseVersion(1L);
+      saeDao.setDatabaseVersion(1L);
 
    }
 
@@ -195,7 +174,7 @@ public class SAECassandraUpdater {
     */
    public final void updateToVersion2() {
 
-      long version = getDatabaseVersion();
+      long version = saeDao.getDatabaseVersion();
       if (version >= 2) {
          LOG.info("La base de données est déja en version " + version);
          return;
@@ -205,14 +184,14 @@ public class SAECassandraUpdater {
 
       // Si le KeySpace SAE n'existe pas, on quitte
       // En effet, il aurait du être créé lors de l'install du lot SAE-120511
-      KeyspaceDefinition keyspaceDef = cluster.describeKeyspace(ksName);
+      KeyspaceDefinition keyspaceDef = saeDao.describeKeyspace();
       if (keyspaceDef == null) {
          throw new MajLotRuntimeException("Le Keyspace " + ksName
                + " n'existe pas !");
       }
 
       // On se connecte au keyspace
-      connectToKeyspace();
+      saeDao.connectToKeySpace();
 
       // Liste contenant la définition des column families à créer
       List<ColumnFamilyDefinition> cfDefs = new ArrayList<ColumnFamilyDefinition>();
@@ -221,24 +200,13 @@ public class SAECassandraUpdater {
       cfDefs.add(HFactory.createColumnFamilyDefinition(ksName, "JobHistory",
             ComparatorType.TIMEUUIDTYPE));
 
-      // Ajoute les options les plus courantes à chacune des CF
-      for (ColumnFamilyDefinition c : cfDefs) {
-         addDefaultCFAttributs(c);
-      }
 
       // Création des CF
-      for (ColumnFamilyDefinition c : cfDefs) {
-         if (cfExists(keyspaceDef, c.getName())) {
-            LOG.info("La famille de colonnes " + c.getName()
-                  + " est déjà existante");
-         } else {
-            LOG.info("Création de la famille de colonnes " + c.getName());
-            cluster.addColumnFamily(c, true);
-         }
-      }
+
+      saeCassandraService.createColumnFamilyFromList(cfDefs, true);
 
       // On positionne la version à 2
-      setDatabaseVersion(2L);
+      saeDao.setDatabaseVersion(2L);
 
    }
 
@@ -247,7 +215,7 @@ public class SAECassandraUpdater {
     */
    public final void updateToVersion3() {
 
-      long version = getDatabaseVersion();
+      long version = saeDao.getDatabaseVersion();
       if (version >= 3) {
          LOG.info("La base de données est déja en version " + version);
          return;
@@ -257,14 +225,14 @@ public class SAECassandraUpdater {
 
       // Si le KeySpace SAE n'existe pas, on quitte
       // En effet, il aurait du être créé lors de l'install du lot SAE-120511
-      KeyspaceDefinition keyspaceDef = cluster.describeKeyspace(ksName);
+      KeyspaceDefinition keyspaceDef = saeDao.describeKeyspace();
       if (keyspaceDef == null) {
          throw new MajLotRuntimeException("Le Keyspace " + ksName
                + " n'existe pas !");
       }
 
       // On se connecte au keyspace
-      connectToKeyspace();
+      saeDao.connectToKeySpace();
 
       // Liste contenant la définition des column families à créer
       List<ColumnFamilyDefinition> cfDefs = new ArrayList<ColumnFamilyDefinition>();
@@ -293,138 +261,17 @@ public class SAECassandraUpdater {
       cfDefs.add(HFactory.createColumnFamilyDefinition(ksName, "DroitPrmd",
             ComparatorType.UTF8TYPE));
 
-      // Ajoute les options les plus courantes à chacune des CF
-      for (ColumnFamilyDefinition c : cfDefs) {
-         addDefaultCFAttributs(c);
-      }
 
       // Création des CF
-      for (ColumnFamilyDefinition c : cfDefs) {
-         if (cfExists(keyspaceDef, c.getName())) {
-            LOG.info("La famille de colonnes " + c.getName()
-                  + " est déjà existante");
-         } else {
-            LOG.info("Création de la famille de colonnes " + c.getName());
-            cluster.addColumnFamily(c, true);
-         }
-      }
+      saeCassandraService.createColumnFamilyFromList(cfDefs, true );
 
       // ajout des actions unitaires de base
-      InsertionDonnees donnees = new InsertionDonnees(keyspace);
+      InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
       donnees.addDroits();
 
       // On positionne la version à 3
-      setDatabaseVersion(3L);
+      saeDao.setDatabaseVersion(3L);
 
    }
-
-   private void connectToKeyspace() {
-      if (keyspace != null)
-         return;
-      ConfigurableConsistencyLevel ccl = new ConfigurableConsistencyLevel();
-      ccl.setDefaultReadConsistencyLevel(HConsistencyLevel.QUORUM);
-      ccl.setDefaultWriteConsistencyLevel(HConsistencyLevel.QUORUM);
-      keyspace = HFactory.createKeyspace(ksName, cluster, ccl,
-            FailoverPolicy.ON_FAIL_TRY_ALL_AVAILABLE, credentials);
-   }
-
-   /**
-    * Enregistre le n° de version de la base de données dans cassandra
-    * 
-    * @param version
-    *           : n° de la version
-    */
-   private void setDatabaseVersion(long version) {
-      ColumnFamilyTemplate<String, String> template = getParametersTemplate();
-      String key = "parameters";
-      ColumnFamilyUpdater<String, String> updater = template.createUpdater(key);
-      updater.setLong("versionBDD", version);
-      template.update(updater);
-   }
-
-   /**
-    * Renvoie le n° de version de la base de données qui est stockée dans
-    * cassandra
-    * 
-    * @return n° de version
-    */
-   public final long getDatabaseVersion() {
-      // On regarde si le keyspace "SAE" existe.
-      KeyspaceDefinition keyspaceDef = cluster.describeKeyspace(ksName);
-      if (keyspaceDef == null)
-         return 0;
-
-      // On regarde si la CF Parameters existe
-      if (!cfExists(keyspaceDef, "Parameters"))
-         return 0;
-
-      // On lit la version dans la base de données
-      connectToKeyspace();
-      ColumnFamilyTemplate<String, String> template = getParametersTemplate();
-      String key = "parameters";
-      return template
-            .querySingleColumn(key, "versionBDD", LongSerializer.get())
-            .getValue();
-   }
-
-   /**
-    * @param keyspaceDef
-    *           Keyspace definition
-    * @param cfName
-    *           Name of the CF to search for
-    * @return true if the CF exists in keyspace
-    */
-   private boolean cfExists(KeyspaceDefinition keyspaceDef, String cfName) {
-      if (keyspaceDef == null)
-         return false;
-      for (ColumnFamilyDefinition cfDef : keyspaceDef.getCfDefs()) {
-         if (cfDef.getName().equals(cfName)) {
-            return true;
-         }
-      }
-      return false;
-   }
-
-   private ColumnFamilyTemplate<String, String> getParametersTemplate() {
-      return new ThriftColumnFamilyTemplate<String, String>(keyspace,
-            "Parameters", StringSerializer.get(), StringSerializer.get());
-   }
-
-   /**
-    * @param cluster
-    *           : le cluster cassandra
-    * @return le facteur de réplication du keyspace Docubase
-    */
-   private int getDocubaseReplicationFactor(Cluster cluster) {
-      KeyspaceDefinition keyspaceDef = cluster.describeKeyspace("Docubase");
-      if (keyspaceDef != null) {
-         return keyspaceDef.getReplicationFactor();
-      }
-      // On est sûrement en test. On renvoie 1.
-      return 1;
-   }
-
-   /**
-    * Ajoute les options les plus fréquemment utilisées.
-    * 
-    * @param cfDef
-    *           : définition de la CF
-    */
-   private void addDefaultCFAttributs(ColumnFamilyDefinition cfDef) {
-      // GCgrace fixé à 20 jours.
-      cfDef.setGcGraceSeconds(DEFAULT_GCGRACE);
-
-      // Snappy compression
-      Map<String, String> compressOptions = new HashMap<String, String>();
-      compressOptions.put("sstable_compression", "SnappyCompressor");
-      cfDef.setCompressionOptions(compressOptions);
-      // FIXME FBON - A Vérifier
-      Map<String, String> compactionOptions = new HashMap<String, String>();
-      compactionOptions.put("sstable_size_in_mb", "200");
-
-      // Leveled compaction.
-      cfDef.setCompactionStrategy("LeveledCompactionStrategy");
-      cfDef.setCompactionStrategyOptions(compactionOptions);
-   }
-
+   
 }

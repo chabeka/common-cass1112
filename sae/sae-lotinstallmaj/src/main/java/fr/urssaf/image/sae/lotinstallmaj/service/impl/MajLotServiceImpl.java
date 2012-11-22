@@ -63,10 +63,10 @@ public final class MajLotServiceImpl implements MajLotService {
    private DfceConfig dfceConfig;
 
    @Autowired
-   private CassandraConfig cassandraConfig;
-
-   @Autowired
    private ApplicationContext context;
+   
+   @Autowired
+   private SAECassandraUpdater updater;
 
    /**
     * {@inheritDoc}
@@ -217,7 +217,6 @@ public final class MajLotServiceImpl implements MajLotService {
    private void updateCassandra120510() {
       LOG.info("Début de l'opération : création du keyspace SAE");
       // Récupération de la chaîne de connexion au cluster cassandra
-      SAECassandraUpdater updater = new SAECassandraUpdater(cassandraConfig);
       updater.updateToVersion1();
       LOG.info("Fin de l'opération : création du keyspace SAE");
    }
@@ -229,7 +228,6 @@ public final class MajLotServiceImpl implements MajLotService {
    private void updateCassandra120512() {
       LOG.info("Début de l'opération : mise à jour du keyspace SAE");
       // Récupération de la chaîne de connexion au cluster cassandra
-      SAECassandraUpdater updater = new SAECassandraUpdater(cassandraConfig);
       updater.updateToVersion2();
       LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
    }
@@ -241,7 +239,6 @@ public final class MajLotServiceImpl implements MajLotService {
    private void updateCassandra120910() {
       LOG.info("Début de l'opération : mise à jour du keyspace SAE");
       // Récupération de la chaîne de connexion au cluster cassandra
-      SAECassandraUpdater updater = new SAECassandraUpdater(cassandraConfig);
       updater.updateToVersion3();
       LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
    }

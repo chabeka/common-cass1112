@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<keyspace xmlns="http://xml.dataset.cassandraunit.org"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://xml.dataset.cassandraunit.org cassandraUnitDataset.xsd ">
+   <name>LotInstallMaj</name>
+   <strategy>org.apache.cassandra.locator.SimpleStrategy</strategy>
+   <replicationFactor>1</replicationFactor>
+   <columnFamilies>
+      <columnFamily>
+         <name>DroitActionUnitaire</name>
+         <comparatorType>BytesType</comparatorType>
+      </columnFamily>
+      <columnFamily>
+         <name>DroitContratService</name>
+         <comparatorType>BytesType</comparatorType>
+      </columnFamily>
+      <columnFamily>
+         <name>DroitPagma</name>
+         <comparatorType>BytesType</comparatorType>
+      </columnFamily>
+      <columnFamily>
+         <name>DroitPagmp</name>
+         <comparatorType>BytesType</comparatorType>
+      </columnFamily>
+      <columnFamily>
+         <name>DroitPagm</name>
+         <comparatorType>BytesType</comparatorType>
+      </columnFamily>
+      <columnFamily>
+         <name>DroitPrmd</name>
+         <comparatorType>BytesType</comparatorType>
+      </columnFamily>
+   </columnFamilies>
+</keyspace>
