@@ -17,6 +17,7 @@ import me.prettyprint.hector.api.mutation.Mutator;
 import me.prettyprint.hector.api.query.QueryResult;
 import me.prettyprint.hector.api.query.RangeSlicesQuery;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,6 +25,7 @@ import fr.urssaf.image.commons.cassandra.helper.HectorIterator;
 import fr.urssaf.image.commons.cassandra.helper.QueryResultConverter;
 import fr.urssaf.image.sae.droit.dao.ContratServiceDao;
 import fr.urssaf.image.sae.droit.dao.model.ServiceContract;
+import fr.urssaf.image.sae.droit.dao.serializer.ListSerializer;
 
 /**
  * Classe de support de la classe {@link ContratServiceDao}
@@ -61,6 +63,16 @@ public class ContratServiceSupport {
 
       if (contratService.getIdCertifClient() != null) {
          dao.ecritCert(updaterJobRequest, contratService.getIdCertifClient(),
+               clock);
+      }
+
+      if (CollectionUtils.isNotEmpty(contratService.getListCertifsClient())) {
+         dao.ecritListeCert(updaterJobRequest, contratService
+               .getListCertifsClient(), clock);
+      }
+
+      if (CollectionUtils.isNotEmpty(contratService.getListPki())) {
+         dao.ecritListePki(updaterJobRequest, contratService.getListPki(),
                clock);
       }
 
@@ -128,6 +140,17 @@ public class ContratServiceSupport {
          if (result.getString(ContratServiceDao.CS_CERT) != null) {
             contract.setIdCertifClient(result
                   .getString(ContratServiceDao.CS_CERT));
+         }
+
+         if (result.getByteArray(ContratServiceDao.CS_LISTE_CERT) != null) {
+            byte[] bytes = result.getByteArray(ContratServiceDao.CS_LISTE_CERT);
+            contract
+                  .setListCertifsClient(ListSerializer.get().fromBytes(bytes));
+         }
+
+         if (result.getByteArray(ContratServiceDao.CS_LISTE_PKI) != null) {
+            byte[] bytes = result.getByteArray(ContratServiceDao.CS_LISTE_PKI);
+            contract.setListPki(ListSerializer.get().fromBytes(bytes));
          }
 
          if (result.getBoolean(ContratServiceDao.CS_VERIF_NOMMAGE) != null) {

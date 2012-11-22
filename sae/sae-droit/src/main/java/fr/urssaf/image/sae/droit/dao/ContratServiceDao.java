@@ -3,6 +3,8 @@
  */
 package fr.urssaf.image.sae.droit.dao;
 
+import java.util.List;
+
 import me.prettyprint.cassandra.serializers.BooleanSerializer;
 import me.prettyprint.cassandra.serializers.LongSerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
@@ -17,6 +19,8 @@ import me.prettyprint.hector.api.mutation.Mutator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
+import fr.urssaf.image.sae.droit.dao.serializer.ListSerializer;
 
 /**
  * Service DAO de la famille de colonnes "DroitContratService"
@@ -45,8 +49,14 @@ public class ContratServiceDao {
    /** CN de la pki attendue */
    public static final String CS_PKI = "pki";
 
+   /** liste des CN des pki attendues */
+   public static final String CS_LISTE_PKI = "listPki";
+
    /** CN du certificat client attendu */
    public static final String CS_CERT = "cert";
+
+   /** liste des CN des certificats clients attendus */
+   public static final String CS_LISTE_CERT = "listeCert";
 
    /** Vérification controle de nommage */
    public static final String CS_VERIF_NOMMAGE = "verifNommage";
@@ -96,6 +106,18 @@ public class ContratServiceDao {
 
       HColumn<String, String> column = HFactory.createColumn(colName, value,
             nameSerializer, valueSerializer);
+
+      column.setClock(clock);
+      updater.setColumn(column);
+
+   }
+
+   private void addListColumn(ColumnFamilyUpdater<String, String> updater,
+         String colName, List<String> value, Serializer<String> nameSerializer,
+         Serializer<List<String>> valueSerializer, long clock) {
+
+      HColumn<String, List<String>> column = HFactory.createColumn(colName,
+            value, nameSerializer, valueSerializer);
 
       column.setClock(clock);
       updater.setColumn(column);
@@ -199,6 +221,24 @@ public class ContratServiceDao {
    }
 
    /**
+    * ajoute une colonne {@value #CS_LISTE_PKI}
+    * 
+    * @param updater
+    *           updater de <code>DroitContratService</code>
+    * @param value
+    *           valeur de la colonne
+    * @param clock
+    *           horloge de la colonne
+    */
+   public final void ecritListePki(ColumnFamilyUpdater<String, String> updater,
+         List<String> value, long clock) {
+
+      addListColumn(updater, CS_LISTE_PKI, value, StringSerializer.get(),
+            ListSerializer.get(), clock);
+
+   }
+
+   /**
     * ajoute une colonne {@value #CS_CERT}
     * 
     * @param updater
@@ -213,6 +253,25 @@ public class ContratServiceDao {
 
       addColumn(updater, CS_CERT, value, StringSerializer.get(),
             StringSerializer.get(), clock);
+
+   }
+
+   /**
+    * ajoute une colonne {@value #CS_LISTE_CERT}
+    * 
+    * @param updater
+    *           updater de <code>DroitContratService</code>
+    * @param value
+    *           valeur de la colonne
+    * @param clock
+    *           horloge de la colonne
+    */
+   public final void ecritListeCert(
+         ColumnFamilyUpdater<String, String> updater, List<String> value,
+         long clock) {
+
+      addListColumn(updater, CS_LISTE_CERT, value, StringSerializer.get(),
+            ListSerializer.get(), clock);
 
    }
 

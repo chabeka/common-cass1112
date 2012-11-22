@@ -32,6 +32,7 @@ import fr.urssaf.image.sae.droit.dao.support.PagmSupport;
 import fr.urssaf.image.sae.droit.dao.support.PagmaSupport;
 import fr.urssaf.image.sae.droit.dao.support.PagmpSupport;
 import fr.urssaf.image.sae.droit.exception.DroitRuntimeException;
+import fr.urssaf.image.sae.droit.exception.PagmReferenceException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-droit-test.xml" })
@@ -207,6 +208,102 @@ public class SaeDroitServiceCreateTest {
 
       Assert.assertTrue("les pagm stockés doivent être identiques", pagms
             .containsAll(storedPagm));
+
+   }
+
+   @Test
+   public void testAddPagmSucces() {
+      ServiceContract serviceContract = new ServiceContract();
+      serviceContract.setCodeClient("codeClient");
+      serviceContract.setDescription("description");
+      serviceContract.setLibelle("libellé");
+      serviceContract.setViDuree(Long.valueOf(60));
+      serviceContract.setIdPki("pki 1");
+      serviceContract.setVerifNommage(false);
+
+      List<Pagm> pagms = new ArrayList<Pagm>();
+      Pagm pagm = new Pagm();
+      pagm.setCode("codePagm");
+      pagm.setDescription("description pagm");
+      pagm.setPagma("pagma");
+      pagm.setPagmp("pagmp");
+      pagm.setParametres(new HashMap<String, String>());
+      pagms.add(pagm);
+
+      Pagma pagma = new Pagma();
+      pagma.setActionUnitaires(Arrays.asList(new String[] { "action1" }));
+      pagma.setCode("pagma");
+      pagmaSupport.create(pagma, clockSupport.currentCLock());
+
+      Pagmp pagmp = new Pagmp();
+      pagmp.setCode("pagmp");
+      pagmp.setDescription("description pagmp");
+      pagmp.setPrmd("codePrmd");
+      pagmpSupport.create(pagmp, clockSupport.currentCLock());
+
+      service.createContratService(serviceContract, pagms);
+
+      pagm = new Pagm();
+      pagm.setCode("codePagm2");
+      pagm.setDescription("description pagm");
+      pagm.setPagma("pagma");
+      pagm.setPagmp("pagmp");
+      pagm.setParametres(new HashMap<String, String>());
+
+      service.addPagmContratService(serviceContract.getCodeClient(), pagm);
+
+      List<Pagm> storedPagm = pagmSupport.find("codeClient");
+
+      Assert.assertEquals("il doit y avoir deux pagm dans la liste", 2,
+            storedPagm.size());
+
+      boolean found = false;
+      int i = 0;
+      while (i < storedPagm.size() && !found) {
+         if ("codePagm2".equals(storedPagm.get(i).getCode())) {
+            found = true;
+         }
+         i++;
+      }
+
+      Assert.assertTrue(
+            "le pagm ajouté doit être contenu dans la liste retournée", found);
+
+   }
+
+   @Test(expected=PagmReferenceException.class)
+   public void testAddPagmFailPagmExistant() {
+      ServiceContract serviceContract = new ServiceContract();
+      serviceContract.setCodeClient("codeClient");
+      serviceContract.setDescription("description");
+      serviceContract.setLibelle("libellé");
+      serviceContract.setViDuree(Long.valueOf(60));
+      serviceContract.setIdPki("pki 1");
+      serviceContract.setVerifNommage(false);
+
+      List<Pagm> pagms = new ArrayList<Pagm>();
+      Pagm pagm = new Pagm();
+      pagm.setCode("codePagm");
+      pagm.setDescription("description pagm");
+      pagm.setPagma("pagma");
+      pagm.setPagmp("pagmp");
+      pagm.setParametres(new HashMap<String, String>());
+      pagms.add(pagm);
+
+      Pagma pagma = new Pagma();
+      pagma.setActionUnitaires(Arrays.asList(new String[] { "action1" }));
+      pagma.setCode("pagma");
+      pagmaSupport.create(pagma, clockSupport.currentCLock());
+
+      Pagmp pagmp = new Pagmp();
+      pagmp.setCode("pagmp");
+      pagmp.setDescription("description pagmp");
+      pagmp.setPrmd("codePrmd");
+      pagmpSupport.create(pagmp, clockSupport.currentCLock());
+
+      service.createContratService(serviceContract, pagms);
+
+      service.addPagmContratService(serviceContract.getCodeClient(), pagm);
 
    }
 }

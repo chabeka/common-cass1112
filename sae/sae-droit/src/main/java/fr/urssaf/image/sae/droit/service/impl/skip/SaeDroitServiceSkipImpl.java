@@ -78,4 +78,12 @@ public class SaeDroitServiceSkipImpl implements SaeDroitService {
       return null;
    }
 
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void addPagmContratService(String idContratService, Pagm pagm) {
+      /* Rien à faire */
+   }
+
 }

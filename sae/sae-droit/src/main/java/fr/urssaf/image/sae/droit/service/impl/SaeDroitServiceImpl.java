@@ -5,6 +5,7 @@ package fr.urssaf.image.sae.droit.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
@@ -62,6 +63,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
    private static final String TRC_CREATE = "createContratService()";
 
    private static final String MESSAGE_CONTRAT = "Le contrat de service ";
+   private static final String MESSAGE_PAGM = "Le pagm ";
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(SaeDroitServiceImpl.class);
@@ -84,6 +86,8 @@ public class SaeDroitServiceImpl implements SaeDroitService {
    private final CuratorFramework curatorClient;
 
    private final JobClockSupport clockSupport;
+
+   private final Runnable cacheRefreshRunnable;
 
    /**
     * Constructeur
@@ -112,8 +116,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
          final ActionUnitaireSupport actionSupport,
          final PrmdSupport prmdSupport, final CuratorFramework curatorClient,
          final JobClockSupport clockSupport, CacheConfig cacheConfig) {
-      contratsCache = CacheBuilder.newBuilder().expireAfterAccess(
-            cacheConfig.getDroitsCacheDuration(), TimeUnit.MINUTES).build(
+      contratsCache = CacheBuilder.newBuilder().build(
             new CacheLoader<String, ServiceContract>() {
 
                @Override
@@ -123,8 +126,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
 
             });
 
-      pagmsCache = CacheBuilder.newBuilder().expireAfterAccess(
-            cacheConfig.getDroitsCacheDuration(), TimeUnit.MINUTES).build(
+      pagmsCache = CacheBuilder.newBuilder().build(
             new CacheLoader<String, List<Pagm>>() {
 
                @Override
@@ -134,8 +136,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
 
             });
 
-      pagmasCache = CacheBuilder.newBuilder().expireAfterAccess(
-            cacheConfig.getDroitsCacheDuration(), TimeUnit.MINUTES).build(
+      pagmasCache = CacheBuilder.newBuilder().build(
             new CacheLoader<String, Pagma>() {
 
                @Override
@@ -145,8 +146,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
 
             });
 
-      pagmpsCache = CacheBuilder.newBuilder().expireAfterAccess(
-            cacheConfig.getDroitsCacheDuration(), TimeUnit.MINUTES).build(
+      pagmpsCache = CacheBuilder.newBuilder().build(
             new CacheLoader<String, Pagmp>() {
 
                @Override
@@ -156,8 +156,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
 
             });
 
-      actionsCache = CacheBuilder.newBuilder().expireAfterAccess(
-            cacheConfig.getDroitsCacheDuration(), TimeUnit.MINUTES).build(
+      actionsCache = CacheBuilder.newBuilder().build(
             new CacheLoader<String, ActionUnitaire>() {
 
                @Override
@@ -167,8 +166,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
 
             });
 
-      prmdsCache = CacheBuilder.newBuilder().expireAfterAccess(
-            cacheConfig.getDroitsCacheDuration(), TimeUnit.MINUTES).build(
+      prmdsCache = CacheBuilder.newBuilder().build(
             new CacheLoader<String, Prmd>() {
 
                @Override
@@ -183,6 +181,23 @@ public class SaeDroitServiceImpl implements SaeDroitService {
       this.curatorClient = curatorClient;
       this.clockSupport = clockSupport;
 
+      cacheRefreshRunnable = new Runnable() {
+
+         @Override
+         public void run() {
+            actionsCache.invalidateAll();
+            pagmasCache.invalidateAll();
+            prmdsCache.invalidateAll();
+            pagmpsCache.invalidateAll();
+            pagmsCache.invalidateAll();
+            contratsCache.invalidateAll();
+
+         }
+      };
+
+      Executors.newScheduledThreadPool(1).scheduleWithFixedDelay(
+            cacheRefreshRunnable, cacheConfig.getDroitsCacheDuration(),
+            cacheConfig.getDroitsCacheDuration(), TimeUnit.MINUTES);
    }
 
    /**
@@ -513,7 +528,56 @@ public class SaeDroitServiceImpl implements SaeDroitService {
          return contratsCache.getUnchecked(idClient);
       } catch (InvalidCacheLoadException e) {
          throw new ContratServiceReferenceException(MESSAGE_CONTRAT + idClient
-               + "n'existe pas", e);
+               + " n'existe pas", e);
       }
    }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void addPagmContratService(String idContratService, Pagm pagm) {
+      try {
+         contratsCache.getUnchecked(idContratService);
+      } catch (InvalidCacheLoadException e) {
+         throw new ContratServiceReferenceException(MESSAGE_CONTRAT
+               + idContratService + " n'existe pas");
+      }
+
+      try {
+         List<Pagm> pagms = pagmsCache.getUnchecked(idContratService);
+         if (pagms.contains(pagm)) {
+            throw new PagmReferenceException(MESSAGE_PAGM + pagm.getCode()
+                  + " existe déjà");
+         } else {
+            LOGGER
+                  .debug(
+                        "le pagm {} est inexistant, on peut l'ajouter au contrat de service",
+                        pagm.getCode());
+         }
+
+      } catch (InvalidCacheLoadException e) {
+         LOGGER
+               .debug(
+                     "impossible de trouver des pagms associés au contrat de service {}, on peut ajouter le pagm {}",
+                     idContratService, pagm.getCode());
+      }
+
+      String lockName = PREFIXE_CONTRAT + idContratService;
+
+      ZookeeperMutex mutex = ZookeeperUtils
+            .createMutex(curatorClient, lockName);
+
+      try {
+
+         ZookeeperUtils.acquire(mutex, lockName);
+         pagmSupport
+               .create(idContratService, pagm, clockSupport.currentCLock());
+
+      } finally {
+         mutex.release();
+      }
+
+   }
+
 }

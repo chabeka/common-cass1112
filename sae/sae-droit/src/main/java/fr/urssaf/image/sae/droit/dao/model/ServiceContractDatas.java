@@ -50,6 +50,8 @@ public class ServiceContractDatas extends ServiceContract {
       this.setDescription(serviceContract.getDescription());
       this.setLibelle(serviceContract.getLibelle());
       this.setViDuree(serviceContract.getViDuree());
+      this.setListCertifsClient(serviceContract.getListCertifsClient());
+      this.setListPki(serviceContract.getListPki());
    }
 
    /**

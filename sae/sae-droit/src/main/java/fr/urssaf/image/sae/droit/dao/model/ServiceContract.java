@@ -3,6 +3,8 @@
  */
 package fr.urssaf.image.sae.droit.dao.model;
 
+import java.util.List;
+
 /**
  * Classe de modèle d'un contrat de service
  * 
@@ -24,6 +26,9 @@ public class ServiceContract {
    /** identifiant de la PKI attendue lors de la vérification des droits */
    private String idPki;
 
+   /** liste des identifiants des PKI possibles pour la vérification des droits */
+   private List<String> listPki;
+
    /** flag indiquant si la vérification de nommage doit être réalisée ou non */
    private boolean verifNommage;
 
@@ -32,6 +37,12 @@ public class ServiceContract {
     * droits
     */
    private String idCertifClient;
+
+   /**
+    * liste des identifiants des certificats clients attendus lors de la
+    * vérification des droits
+    */
+   private List<String> listCertifsClient;
 
    /**
     * @return le code intelligible du CS
@@ -94,6 +105,7 @@ public class ServiceContract {
    }
 
    /**
+    * @deprecated utiliser listPki
     * @return l'identifiant de la PKI attendue lors de la vérification des
     *         droits
     */
@@ -102,6 +114,7 @@ public class ServiceContract {
    }
 
    /**
+    * @deprecated utiliser listPki
     * @param idPki
     *           l'identifiant de la PKI attendue lors de la vérification des
     *           droits
@@ -111,6 +124,24 @@ public class ServiceContract {
    }
 
    /**
+    * @return la liste des identifiants des PKI possibles pour la vérification
+    *         des droits
+    */
+   public final List<String> getListPki() {
+      return listPki;
+   }
+
+   /**
+    * @param listPki
+    *           la liste des identifiants des PKI possibles pour la vérification
+    *           des droits
+    */
+   public final void setListPki(List<String> listPki) {
+      this.listPki = listPki;
+   }
+
+   /**
+    * @deprecated Utiliser la liste des certificats clients
     * @return l'identifiant du certificat client attendu lors de la vérification
     *         des droits
     */
@@ -119,6 +150,7 @@ public class ServiceContract {
    }
 
    /**
+    * @deprecated Utiliser la liste des certificats clients
     * @param idCertifClient
     *           identifiant du certificat client attendu lors de la vérification
     *           des droits
@@ -140,6 +172,23 @@ public class ServiceContract {
     */
    public final void setVerifNommage(boolean verifNommage) {
       this.verifNommage = verifNommage;
+   }
+
+   /**
+    * @return la liste des identifiants des certificats clients attendus lors de
+    *         la vérification des droits
+    */
+   public final List<String> getListCertifsClient() {
+      return listCertifsClient;
+   }
+
+   /**
+    * @param listCertifsClient
+    *           la liste des identifiants des certificats clients attendus lors
+    *           de la vérification des droits
+    */
+   public final void setListCertifsClient(List<String> listCertifsClient) {
+      this.listCertifsClient = listCertifsClient;
    }
 
    /**

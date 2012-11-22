@@ -38,6 +38,9 @@ public class SaeDroitServiceValidation {
 
    private static final String GET_METHOD = "execution(fr.urssaf.image.sae.droit.dao.model.ServiceContract fr.urssaf.image.sae.droit.service.SaeDroitService.getServiceContract(*))"
          + "&& args(idClient)";
+   
+   private static final String ADD_PAGM_METHOD = "execution(void fr.urssaf.image.sae.droit.service.SaeDroitService.addPagmContratService(*,*))"
+         + "&& args(id, pagm)";;
 
    /**
     * Validation de la méthode loadSaeDroits(String, List)
@@ -146,6 +149,29 @@ public class SaeDroitServiceValidation {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
                ARG_REQUIRED, "le code client"));
       }
+   }
+   
+   /**
+    * Validation de la méthode loadSaeDroits(String, List)
+    * 
+    * @param idClient
+    *           identifiant client
+    * @param pagms
+    *           liste des pagms
+    */
+   @Before(ADD_PAGM_METHOD)
+   public final void checkAddPagm(final String id, Pagm pagm) {
+
+      if (StringUtils.isEmpty(id)) {
+         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
+               ARG_REQUIRED, "identifiant client"));
+      }
+
+      if (pagm == null) {
+         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
+               ARG_REQUIRED, "pagm"));
+      }
+
    }
 
 }

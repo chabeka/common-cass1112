@@ -62,4 +62,14 @@ public interface SaeDroitService {
     * @return le contrat de service
     */
    ServiceContract getServiceContract(String idClient);
+
+   /**
+    * Référence le PAGM pour le contrat de service avec l'identifiant donné
+    * 
+    * @param idContratService
+    *           identifiant du contrat de service
+    * @param pagm
+    *           pagm à référencer
+    */
+   void addPagmContratService(String idContratService, Pagm pagm);
 }
