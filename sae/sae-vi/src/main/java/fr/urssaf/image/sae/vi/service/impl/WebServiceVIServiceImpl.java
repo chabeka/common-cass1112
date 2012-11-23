@@ -18,6 +18,7 @@ import org.w3c.dom.Element;
 import fr.urssaf.image.sae.droit.dao.model.ServiceContract;
 import fr.urssaf.image.sae.droit.dao.support.ContratServiceSupport;
 import fr.urssaf.image.sae.droit.exception.ContratServiceNotFoundException;
+import fr.urssaf.image.sae.droit.exception.ContratServiceReferenceException;
 import fr.urssaf.image.sae.droit.exception.PagmNotFoundException;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.service.SaeDroitService;
@@ -143,7 +144,12 @@ public class WebServiceVIServiceImpl implements WebServiceVIService {
             .getPagm();
 
       // vérification que les certificats qui entrent en jeu sont ceux attendus
-      ServiceContract contract = this.droitService.getServiceContract(issuer);
+      ServiceContract contract;
+      try {
+         contract = this.droitService.getServiceContract(issuer);
+      } catch (ContratServiceReferenceException exception1) {
+         throw new VIAppliClientException(issuer);
+      }
       validateService.validateCertificates(contract, result);
 
       // Extraction des PAGM du VI
@@ -152,7 +158,7 @@ public class WebServiceVIServiceImpl implements WebServiceVIService {
          saeDroits = this.droitService.loadSaeDroits(issuer, pagms);
 
       } catch (ContratServiceNotFoundException exception) {
-         throw new VIAppliClientException(exception.getMessage());
+         throw new VIAppliClientException(issuer);
 
       } catch (PagmNotFoundException exception) {
          throw new VIPagmIncorrectException(exception.getMessage());
