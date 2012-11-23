@@ -466,7 +466,7 @@
       </pattern>
       <consultable>true</consultable>
       <defaultConsultable>false</defaultConsultable>
-      <searchable>true</searchable>
+      <searchable>false</searchable>
       <internal>true</internal>
       <archivable>false</archivable>
       <label>Durée de conservation</label>
