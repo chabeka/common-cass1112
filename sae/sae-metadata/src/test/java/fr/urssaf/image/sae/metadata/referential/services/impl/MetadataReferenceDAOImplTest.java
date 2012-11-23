@@ -137,7 +137,7 @@ public class MetadataReferenceDAOImplTest extends AbstractService {
 	public void getSearchableMetadataReferences() throws IOException,
 			ReferentialException {
 		Assert.assertTrue(getMetadataReferenceDAO()
-				.getSearchableMetadataReferences().size() == 32);
+				.getSearchableMetadataReferences().size() == 31);
 		for (Map.Entry<String, MetadataReference> metaData : Utils.nullSafeMap(
 				getMetadataReferenceDAO()
 				.getSearchableMetadataReferences())

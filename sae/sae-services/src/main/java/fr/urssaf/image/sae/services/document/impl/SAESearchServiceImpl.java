@@ -32,11 +32,9 @@ import fr.urssaf.image.sae.mapping.exception.InvalidSAETypeException;
 import fr.urssaf.image.sae.mapping.exception.MappingFromReferentialException;
 import fr.urssaf.image.sae.mapping.services.MappingDocumentService;
 import fr.urssaf.image.sae.metadata.control.services.MetadataControlServices;
-import fr.urssaf.image.sae.metadata.exceptions.LongCodeNotFoundException;
 import fr.urssaf.image.sae.metadata.exceptions.ReferentialException;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 import fr.urssaf.image.sae.metadata.referential.services.MetadataReferenceDAO;
-import fr.urssaf.image.sae.metadata.referential.services.SAEConvertMetadataService;
 import fr.urssaf.image.sae.services.document.SAESearchService;
 import fr.urssaf.image.sae.services.exception.SAESearchQueryParseException;
 import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
@@ -88,7 +86,7 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
 
    @Autowired
    private PrmdService prmdService;
-   
+
    @Autowired
    private SAESearchQueryParserServiceImpl queryParseService;
 
@@ -158,15 +156,17 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
     */
    private boolean checkConversion(String requete, String requeteVerif)
          throws SAESearchServiceEx {
-      
+
       // la requete verif ainsi remplacée doit être la même que la requête de
       // départ.
-      
+
       String prefixeTrc = "checkConversion()";
       LOG.debug("{} - Début", prefixeTrc);
-      LOG.debug("{} - Requête d'origine avec codes longs : {}", prefixeTrc, requete);
-      LOG.debug("{} - Requête reconvertie avec codes longs : {}", prefixeTrc, requeteVerif);
-      
+      LOG.debug("{} - Requête d'origine avec codes longs : {}", prefixeTrc,
+            requete);
+      LOG.debug("{} - Requête reconvertie avec codes longs : {}", prefixeTrc,
+            requeteVerif);
+
       boolean checkLuceneQuery = false;
       if (requete.equals(requeteVerif)) {
          checkLuceneQuery = true;
@@ -174,8 +174,7 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
       if (!checkLuceneQuery) {
          throw new SAESearchServiceEx("search.analyse.lucene.error");
       }
-      
-      
+
       LOG.debug("{} - Fin", prefixeTrc);
       return checkLuceneQuery;
    }
@@ -299,7 +298,7 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
                   "{} - Fin de la vérification : Les métadonnées utilisées dans la requête de recherche existent dans le référentiel des métadonnées",
                   prefixeTrc);
    }
-   
+
    /**
     * Extrait les codes long d'une requête Lucene.
     * 
@@ -309,45 +308,46 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
     * @throws SyntaxLuceneEx
     *            : Une exception de type {@link SyntaxLuceneEx}
     */
-   public List<String> extractLongCodesFromQuery(String requete)throws SyntaxLuceneEx{
+   public List<String> extractLongCodesFromQuery(String requete)
+         throws SyntaxLuceneEx {
 
-         // Traces debug - entrée méthode
-         String prefixeTrc = "extractLongCodeFromQuery()";
-         LOG.debug("{} - Début", prefixeTrc);
-         // Fin des traces debug - entrée méthode
-         List<String> listCodeReq = new ArrayList<String>();
-         try {
-            LOG
-                  .debug(
-                        "{} - Début de la vérification SAE: La requête de recherche est syntaxiquement correcte",
-                        prefixeTrc);
-
-            Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_CURRENT);
-            QueryParser queryParser = new QueryParser(Version.LUCENE_CURRENT, "",
-                  analyzer);
-            queryParser.parse(requete);
-            Pattern patt = Pattern.compile(SPLIT);
-            Matcher matcher = patt.matcher(requete);
-            while (matcher.find()) {
-               // recup que la partie les codes longs.
-               listCodeReq.add(matcher.group().replaceAll("\\s*[:>]", ""));
-            }
-         } catch (PatternSyntaxException except) {
-            LOG.debug("{} - {}", prefixeTrc, ResourceMessagesUtils.loadMessage(
-                  "lucene.syntax.error", SPLIT));
-            throw new SyntaxLuceneEx(ResourceMessagesUtils.loadMessage(
-                  "lucene.syntax.error", SPLIT), except);
-         } catch (ParseException except) {
-            LOG.debug("{} - {}", prefixeTrc, ResourceMessagesUtils
-                  .loadMessage("search.syntax.lucene.error"));
-            throw new SyntaxLuceneEx(ResourceMessagesUtils
-                  .loadMessage("search.syntax.lucene.error"), except);
-         }
+      // Traces debug - entrée méthode
+      String prefixeTrc = "extractLongCodeFromQuery()";
+      LOG.debug("{} - Début", prefixeTrc);
+      // Fin des traces debug - entrée méthode
+      List<String> listCodeReq = new ArrayList<String>();
+      try {
          LOG
                .debug(
-                     "{} - Fin de la vérification SAE: La requête de recherche est syntaxiquement correcte",
+                     "{} - Début de la vérification SAE: La requête de recherche est syntaxiquement correcte",
                      prefixeTrc);
-         return listCodeReq;
+
+         Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_CURRENT);
+         QueryParser queryParser = new QueryParser(Version.LUCENE_CURRENT, "",
+               analyzer);
+         queryParser.parse(requete);
+         Pattern patt = Pattern.compile(SPLIT);
+         Matcher matcher = patt.matcher(requete);
+         while (matcher.find()) {
+            // recup que la partie les codes longs.
+            listCodeReq.add(matcher.group().replaceAll("\\s*[:>]", ""));
+         }
+      } catch (PatternSyntaxException except) {
+         LOG.debug("{} - {}", prefixeTrc, ResourceMessagesUtils.loadMessage(
+               "lucene.syntax.error", SPLIT));
+         throw new SyntaxLuceneEx(ResourceMessagesUtils.loadMessage(
+               "lucene.syntax.error", SPLIT), except);
+      } catch (ParseException except) {
+         LOG.debug("{} - {}", prefixeTrc, ResourceMessagesUtils
+               .loadMessage("search.syntax.lucene.error"));
+         throw new SyntaxLuceneEx(ResourceMessagesUtils
+               .loadMessage("search.syntax.lucene.error"), except);
+      }
+      LOG
+            .debug(
+                  "{} - Fin de la vérification SAE: La requête de recherche est syntaxiquement correcte",
+                  prefixeTrc);
+      return listCodeReq;
 
    }
 
@@ -527,15 +527,17 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
          List<String> longCodesReq = extractLongCodesFromQuery(requete);
          checkExistingLuceneMetadata(longCodesReq);
          String requeteFinal = requete;
-         
+
          // converstion de la requête avec les codes long en code court
-         requeteFinal = queryParseService
-               .convertFromLongToShortCode(requeteFinal, longCodesReq);
+         requeteFinal = queryParseService.convertFromLongToShortCode(
+               requeteFinal, longCodesReq);
          LOG
                .debug(
                      "{} - Requête de recherche après remplacement des codes longs par les codes courts : {}",
                      prefixeTrc, requeteFinal);
          checkExistingMetadataDesired(listMetaDesired);
+
+         listCodCourt = recupererListCodCourtByLongCode(longCodesReq);
          checkSearchableLuceneMetadata(listCodCourt);
          if (listMetaDesired.isEmpty()) {
             listCodCourtConsult = recupererListDefaultMetadatas();
@@ -568,7 +570,7 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
          // LOG.debug("{} - Liste des résultats : \"{}\"",
          // prefixeTrc,buildMessageFromList(listUntypedDocument));
 
-      }catch(SAESearchQueryParseException except){
+      } catch (SAESearchQueryParseException except) {
          throw new SAESearchServiceEx(ResourceMessagesUtils
                .loadMessage("search.parse.error"), except);
       } catch (NumberFormatException except) {
