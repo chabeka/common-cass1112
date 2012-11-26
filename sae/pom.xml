@@ -403,6 +403,7 @@
       <module>sae-pile-travaux</module>
       <module>sae-services</module>
       <module>sae-droit</module>
+      <module>sae-trace</module>
 
       <!-- Les applications finales -->
       <module>sae-igcmaj</module>
