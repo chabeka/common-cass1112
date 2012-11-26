@@ -3,7 +3,6 @@ package fr.urssaf.image.sae.pile.travaux.support;
 import java.util.Date;
 import java.util.UUID;
 
-import me.prettyprint.cassandra.serializers.DateSerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
 import me.prettyprint.hector.api.mutation.Mutator;

@@ -65,10 +65,20 @@ public interface JobLectureService {
    /**
     * Récupère l'ensemble des jobs présents dans la pile des travaux 
     * (non démarrés, démarrés, terminés)
-    * 
+    * Cette fonction retourne par défaut 200 jobs (par ordre des UUID)
+    * @param keyspace Keyspace
     * @return liste des traitements
     */
    List<JobRequest> getAllJobs(Keyspace keyspace);
+   
+   /**
+    * Récupère l'ensemble des jobs présents dans la pile des travaux 
+    * (non démarrés, démarrés, terminés)
+    * @param keyspace Keyspace
+    * @param maxKeysToRead Nombre de job max à retourner
+    * @return liste des traitements
+    */
+   List<JobRequest> getAllJobs(Keyspace keyspace, int maxKeysToRead);
    
    /**
     * Teste si le job peut être réinitialisé

@@ -191,12 +191,20 @@ public class JobLectureImpl implements JobLectureService {
       return histories;
 
    }
-
+   
    /**
     * {@inheritDoc}
     */
    @Override
    public final List<JobRequest> getAllJobs(Keyspace keyspace) {
+      return getAllJobs(keyspace, 200);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final List<JobRequest> getAllJobs(Keyspace keyspace, int maxKeysToRead) {
 
       // On n'utilise pas d'index. On récupère tous les jobs sans distinction,
       // en requêtant directement dans la CF JobRequest
@@ -206,8 +214,6 @@ public class JobLectureImpl implements JobLectureService {
                   StringSerializer.get(), bytesSerializer);
       rangeSlicesQuery.setColumnFamily(JOBREQUEST_CFNAME);
       rangeSlicesQuery.setRange("", "", false, MAX_JOB_ATTIBUTS);
-      // TODO : AGA maxKeysToRead
-      int maxKeysToRead = 200;
       rangeSlicesQuery.setRowCount(maxKeysToRead);
       QueryResult<OrderedRows<UUID, String, byte[]>> queryResult = rangeSlicesQuery
             .execute();
