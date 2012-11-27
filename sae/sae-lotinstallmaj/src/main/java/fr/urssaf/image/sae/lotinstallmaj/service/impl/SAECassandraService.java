@@ -33,7 +33,7 @@ public class SAECassandraService {
    private static final Logger LOG = LoggerFactory
          .getLogger(SAECassandraUpdater.class);
 
-   private int maxRetryValue = MAX_RETRY;
+   private final int maxRetryValue = MAX_RETRY;
    private int maxRetry = MAX_RETRY;
 
    @Autowired
@@ -92,7 +92,7 @@ public class SAECassandraService {
    /**
     * Surcouche à la méthode addColumnFamily facilitant les tests
     * 
-    * @param c
+    * @param colDef
     *           définition d'une column familly
     * @param blockUntilComplete
     *           boolean permettant de dire est ce qu'on attend l'acception du
@@ -101,27 +101,27 @@ public class SAECassandraService {
     *           Max tentatives, contante définie au niveau de la classe
     */
    protected final boolean createColumnFamillyFromDefinition(
-         ColumnFamilyDefinition c, boolean blockUntilComplete, int tentatives) {
+         ColumnFamilyDefinition colDef, boolean blockUntilComplete, int tentatives) {
       // on décrémente le compteur
       this.setMaxRetry(tentatives - 1);
       boolean succes = false;
       try {
          // appel de la creation de la CF
-         saeDao.createColumnFamily(c, blockUntilComplete);
+         saeDao.createColumnFamily(colDef, blockUntilComplete);
       } catch (HectorException e) {
          LOG.error("Error : ", e);
          LOG
                .debug(
                      "Echec de la création du Column Familly {} nouvelle tentative dans 5 sec",
-                     c.getName());
+                     colDef.getName());
          try {
             // en cas d'exception on met en pause 5 sec et on re-essaie
             Thread.sleep(SLEEP_TIME);
             if (this.getMaxRetry() > 0 && !succes) {
                int nbTentatives = maxRetryValue - tentatives;
-               LOG.debug("Tentative {} : création de {} ", nbTentatives, c
+               LOG.debug("Tentative {} : création de {} ", nbTentatives, colDef
                      .getName());
-               succes = createColumnFamillyFromDefinition(c,
+               succes = createColumnFamillyFromDefinition(colDef,
                      blockUntilComplete, this.getMaxRetry());
             } else {
                // on réinitialise le compteur
@@ -133,7 +133,7 @@ public class SAECassandraService {
             LOG
                   .error(
                         "Echec lors de la mise en vielle de la création d'une famille de colonne {}",
-                        c.getName());
+                        colDef.getName());
          }
       }
       // on réinitialise le compteur

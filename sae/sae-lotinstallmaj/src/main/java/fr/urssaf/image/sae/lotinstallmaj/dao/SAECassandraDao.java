@@ -33,11 +33,11 @@ import fr.urssaf.image.sae.lotinstallmaj.modele.CassandraConfig;
 @Component
 public class SAECassandraDao {
 
-   private String keySpaceName;
+   private final String keySpaceName;
 
    private Keyspace keyspace;
 
-   private Cluster cluster;
+   private final Cluster cluster;
 
    private final Map<String, String> credentials;
 
@@ -119,18 +119,18 @@ public class SAECassandraDao {
     * Permet d'ajouter les options de la CF qui sont fréquement utilisées et de
     * créer la CF
     * 
-    * @param c
+    * @param colDef
     *           la définition d'une column family
     * @param blockUntilComplete
     *           boolean permettant de dire si on attend la réponse du/des
     *           serveur/s
     */
-   public final void createColumnFamily(ColumnFamilyDefinition c,
+   public final void createColumnFamily(ColumnFamilyDefinition colDef,
          boolean blockUntilComplete) {
       // ajout des attributs par défauts
-      addDefaultCFAttributs(c);
+      addDefaultCFAttributs(colDef);
       // creattion de la column familly
-      cluster.addColumnFamily(c, blockUntilComplete);
+      cluster.addColumnFamily(colDef, blockUntilComplete);
    }
 
    /**

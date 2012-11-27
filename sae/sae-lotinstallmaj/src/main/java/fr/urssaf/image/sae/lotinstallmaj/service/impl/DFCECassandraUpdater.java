@@ -32,6 +32,8 @@ import fr.urssaf.image.sae.lotinstallmaj.modele.CassandraConfig;
  */
 public class DFCECassandraUpdater {
 
+   private static final String UTF8_TYPE = "UTF8Type";
+
    /**
     * Nom du keyspace
     */
@@ -123,7 +125,7 @@ public class DFCECassandraUpdater {
 
       BasicColumnDefinition e21 = new BasicColumnDefinition();
       e21.setName(StringSerializer.get().toByteBuffer("jobInstanceName"));
-      e21.setValidationClass("UTF8Type");
+      e21.setValidationClass(UTF8_TYPE);
       e21.setIndexType(ColumnIndexType.KEYS);
       e21.setIndexName("JobInstance_jobInstanceName_idx");
       columnMetadata2.add(e21);
@@ -145,7 +147,7 @@ public class DFCECassandraUpdater {
 
       BasicColumnDefinition e31 = new BasicColumnDefinition();
       e31.setName(StringSerializer.get().toByteBuffer("jobInstanceName"));
-      e31.setValidationClass("UTF8Type");
+      e31.setValidationClass(UTF8_TYPE);
       e31.setIndexType(ColumnIndexType.KEYS);
       e31.setIndexName("JobExecution_jobInstanceName_idx");
       columnMetadata3.add(e31);
@@ -167,14 +169,14 @@ public class DFCECassandraUpdater {
 
       BasicColumnDefinition e41 = new BasicColumnDefinition();
       e41.setName(StringSerializer.get().toByteBuffer("stepName"));
-      e41.setValidationClass("UTF8Type");
+      e41.setValidationClass(UTF8_TYPE);
       e41.setIndexType(ColumnIndexType.KEYS);
       e41.setIndexName("StepExecution_stepName_idx");
       columnMetadata4.add(e41);
 
       BasicColumnDefinition e42 = new BasicColumnDefinition();
       e42.setName(StringSerializer.get().toByteBuffer("jobInstanceName"));
-      e42.setValidationClass("UTF8Type");
+      e42.setValidationClass(UTF8_TYPE);
       e42.setIndexType(ColumnIndexType.KEYS);
       e42.setIndexName("StepExecution_jobInstanceName_idx");
       columnMetadata4.add(e42);

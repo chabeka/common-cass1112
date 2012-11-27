@@ -24,11 +24,12 @@ import fr.urssaf.image.sae.lotinstallmaj.serializer.PagmSerializer;
  */
 public class InsertionDonnees {
 
+   private static final String DESCRIPTION = "description";
    /**
     * 
     */
    private static final int DEFAULT_CONSERVATION = 7200;
-   private Keyspace keyspace;
+   private final Keyspace keyspace;
 
    /**
     * Constructeur
@@ -84,7 +85,7 @@ public class InsertionDonnees {
                   .get());
       ColumnFamilyUpdater<String, String> updater = cfTmpl
             .createUpdater("ACCES_FULL_PRMD");
-      addColumn("description", "acces total", StringSerializer.get(),
+      addColumn(DESCRIPTION, "acces total", StringSerializer.get(),
             StringSerializer.get(), updater);
       addColumn("bean", "permitAll", StringSerializer.get(), StringSerializer
             .get(), updater);
@@ -115,7 +116,7 @@ public class InsertionDonnees {
                   .get());
       ColumnFamilyUpdater<String, String> updater = cfTmpl
             .createUpdater("ACCES_FULL_PAGMP");
-      addColumn("description", "acces pagmp full", StringSerializer.get(),
+      addColumn(DESCRIPTION, "acces pagmp full", StringSerializer.get(),
             StringSerializer.get(), updater);
       addColumn("prmd", "ACCES_FULL_PRMD", StringSerializer.get(),
             StringSerializer.get(), updater);
@@ -148,7 +149,7 @@ public class InsertionDonnees {
             .createUpdater("CS_ANCIEN_SYSTEME");
       addColumn("libelle", "accès ancien contrat de service", StringSerializer
             .get(), PagmSerializer.get(), updater);
-      addColumn("description", "accès ancien contrat de service",
+      addColumn(DESCRIPTION, "accès ancien contrat de service",
             StringSerializer.get(), PagmSerializer.get(), updater);
       addColumn("viDuree", Long.valueOf(DEFAULT_CONSERVATION), StringSerializer.get(),
             LongSerializer.get(), updater);
@@ -159,15 +160,10 @@ public class InsertionDonnees {
 
    }
 
-   /**
-    * @param cfTmpl
-    * @param string
-    * @param string2
-    */
-   private void addActionUnitaire(String id, String description,
+   private void addActionUnitaire(String identifiant, String description,
          ColumnFamilyTemplate<String, String> cfTmpl) {
-      ColumnFamilyUpdater<String, String> updater = cfTmpl.createUpdater(id);
-      HColumn<String, String> column = HFactory.createColumn("description",
+      ColumnFamilyUpdater<String, String> updater = cfTmpl.createUpdater(identifiant);
+      HColumn<String, String> column = HFactory.createColumn(DESCRIPTION,
             description, StringSerializer.get(), StringSerializer.get());
       updater.setColumn(column);
 

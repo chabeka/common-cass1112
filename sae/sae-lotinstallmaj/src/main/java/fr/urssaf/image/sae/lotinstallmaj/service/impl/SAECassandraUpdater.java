@@ -35,7 +35,7 @@ public class SAECassandraUpdater {
    private static final int VERSION_3 = 3;
    private final String ksName;
    private final Cluster cluster;
-   private SAECassandraService saeCassandraService;
+   private final SAECassandraService saeCassandraService;
    @Autowired
    private SAECassandraDao saeDao;
 
