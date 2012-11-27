@@ -146,7 +146,7 @@ public class RollbackTasklet implements Tasklet {
                      idTraitement);
          chunkContext.getStepContext().getStepExecution().getJobExecution()
                .getExecutionContext().put(Constantes.FLAG_BUL003,
-                     new Boolean(true));
+                     Boolean.TRUE);
 
          status = RepeatStatus.FINISHED;
       }

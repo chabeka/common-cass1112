@@ -228,8 +228,6 @@ public class SAECaptureMasseTest {
          Assert.assertTrue("le fichier résultats.xml doit exister", resultats
                .exists());
 
-         System.out.println(FileUtils.readFileToString(resultats));
-
          Resource sommaireXSD = applicationContext
                .getResource("xsd_som_res/resultats.xsd");
          URL xsdSchema = sommaireXSD.getURL();

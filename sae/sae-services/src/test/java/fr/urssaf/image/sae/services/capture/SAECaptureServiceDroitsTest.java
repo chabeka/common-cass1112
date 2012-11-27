@@ -92,8 +92,6 @@ public class SAECaptureServiceDroitsTest {
 
    private static File ecdeRepertory;
 
-   private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
-
    @BeforeClass
    public static void beforeClass() throws IOException {
 

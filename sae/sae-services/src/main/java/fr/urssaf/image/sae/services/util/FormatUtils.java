@@ -34,13 +34,13 @@ public final class FormatUtils {
       listCodeErrors = new ArrayList<String>(
             new HashSet<String>(listCodeErrors));
       Collections.sort(listCodeErrors);
-      int i = 0;
+      int index = 0;
       for (String value : Utils.nullSafeIterable(listCodeErrors)) {
          builder.append(value);
-         if (i < listCodeErrors.size() - 1) {
+         if (index < listCodeErrors.size() - 1) {
             builder.append(", ");
          }
-         i++;
+         index++;
       }
       return builder.toString();
 

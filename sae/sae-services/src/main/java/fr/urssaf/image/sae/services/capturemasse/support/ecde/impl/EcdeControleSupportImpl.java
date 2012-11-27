@@ -69,15 +69,17 @@ public class EcdeControleSupportImpl implements EcdeControleSupport {
 
       LOGGER.debug("{} - Sortie", PREFIXE_TRC);
    }
-   
+
    /**
     * {@inheritDoc}
     * 
     */
-   public final void checkHash(File sommaire, String hash, String typeHash) throws CaptureMasseSommaireTypeHashException, CaptureMasseSommaireHashException{
-      
-      if(typeHash.equals("SHA-1")){
-         
+   public final void checkHash(File sommaire, String hash, String typeHash)
+         throws CaptureMasseSommaireTypeHashException,
+         CaptureMasseSommaireHashException {
+
+      if ("SHA-1".equals(typeHash)) {
+
          // récupération du contenu pour le calcul du HASH
          byte[] content = null;
          try {
@@ -85,16 +87,15 @@ public class EcdeControleSupportImpl implements EcdeControleSupport {
          } catch (IOException e) {
             throw new SAECaptureServiceRuntimeException(e);
          }
-         //calcul du Hash
+         // calcul du Hash
          String hashCode = DigestUtils.shaHex(content);
-         
+
          // comparaison avec la valeur attendu
-         if(!StringUtils
-         .equalsIgnoreCase(hashCode,
-               hash.trim())){
-            throw new CaptureMasseSommaireHashException(hash, hashCode, typeHash);
+         if (!StringUtils.equalsIgnoreCase(hashCode, hash.trim())) {
+            throw new CaptureMasseSommaireHashException(hash, hashCode,
+                  typeHash);
          }
-      }else{
+      } else {
          throw new CaptureMasseSommaireTypeHashException(typeHash);
       }
    }

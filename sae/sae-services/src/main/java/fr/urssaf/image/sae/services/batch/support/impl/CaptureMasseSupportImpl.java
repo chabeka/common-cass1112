@@ -58,13 +58,12 @@ public class CaptureMasseSupportImpl implements TraitementExecutionSupport {
       // le paramètre stocké dans la pile des travaux correspond pour les
       // traitements de capture en masse à l'URL ECDE
       String urlECDE = StringUtils.EMPTY;
-      if(job.getParameters()!=null){
+      if (StringUtils.isNotBlank(job.getParameters())) {
          urlECDE = job.getParameters();
-      }else{
+      } else {
          urlECDE = job.getJobParameters().get(Constantes.ECDE_URL);
       }
 
-      
       URI sommaireURL;
 
       try {
@@ -78,13 +77,14 @@ public class CaptureMasseSupportImpl implements TraitementExecutionSupport {
          throw new JobParameterTypeException(job, e);
 
       }
-      
-      if(job.getJobParameters()!=null){
-         exitTraitement = captureMasseService.captureMasse(
-               sommaireURL, idTraitement, job.getJobParameters().get(Constantes.HASH), job.getJobParameters().get(Constantes.TYPE_HASH));
-      }else{
-      exitTraitement = captureMasseService.captureMasse(
-            sommaireURL, idTraitement);
+
+      if (StringUtils.isNotBlank(job.getParameters())) {
+         exitTraitement = captureMasseService.captureMasse(sommaireURL,
+               idTraitement, job.getJobParameters().get(Constantes.HASH), job
+                     .getJobParameters().get(Constantes.TYPE_HASH));
+      } else {
+         exitTraitement = captureMasseService.captureMasse(sommaireURL,
+               idTraitement);
       }
 
       return exitTraitement;

@@ -39,9 +39,7 @@ import fr.urssaf.image.sae.services.capturemasse.support.stockage.multithreading
 @Component
 public class StockageListener {
 
-   /**
-    * 
-    */
+   private static final String UNCHECKED = "unchecked";
    private static final int THREAD_SLEEP = 30000;
 
    private StepExecution stepExecution;
@@ -73,7 +71,7 @@ public class StockageListener {
     *           exception levée par la lecture
     */
    @OnReadError
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings(UNCHECKED)
    public final void logReadError(final Exception exception) {
       ExecutionContext jobExecution = stepExecution.getJobExecution()
             .getExecutionContext();
@@ -118,7 +116,7 @@ public class StockageListener {
     *           exception levée
     */
    @OnProcessError
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings(UNCHECKED)
    public final void logProcessError(final Object documentType,
          final Exception exception) {
 
@@ -167,7 +165,7 @@ public class StockageListener {
 
       final JobExecution jobExecution = stepExecution.getJobExecution();
 
-      @SuppressWarnings("unchecked")
+      @SuppressWarnings(UNCHECKED)
       ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) jobExecution
             .getExecutionContext().get(Constantes.DOC_EXCEPTION);
 
@@ -210,15 +208,15 @@ public class StockageListener {
    private ExitStatus stockageListener(
          InsertionMasseRuntimeException exception, JobExecution jobExecution) {
 
-      @SuppressWarnings("unchecked")
+      @SuppressWarnings(UNCHECKED)
       ConcurrentLinkedQueue<String> codes = (ConcurrentLinkedQueue<String>) jobExecution
             .getExecutionContext().get(Constantes.CODE_EXCEPTION);
 
-      @SuppressWarnings("unchecked")
+      @SuppressWarnings(UNCHECKED)
       ConcurrentLinkedQueue<Integer> index = (ConcurrentLinkedQueue<Integer>) jobExecution
             .getExecutionContext().get(Constantes.INDEX_EXCEPTION);
 
-      @SuppressWarnings("unchecked")
+      @SuppressWarnings(UNCHECKED)
       ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) jobExecution
             .getExecutionContext().get(Constantes.DOC_EXCEPTION);
 
@@ -241,7 +239,7 @@ public class StockageListener {
                      idTraitement);
 
          stepExecution.getJobExecution().getExecutionContext().put(
-               Constantes.FLAG_BUL003, new Boolean(true));
+               Constantes.FLAG_BUL003, Boolean.TRUE);
 
          String messageError = "La capture de masse en mode 'Tout ou rien' a été interrompue. Une procédure d'exploitation a été initialisée pour supprimer les données qui auraient pu être stockées.";
 

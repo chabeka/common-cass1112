@@ -76,7 +76,7 @@ public class RollbackListener {
                         "Le traitement de masse n°{} doit être rollbacké par une procédure d'exploitation",
                         idTraitement);
             stepExecution.getJobExecution().getExecutionContext().put(
-                  Constantes.FLAG_BUL003, new Boolean(true));
+                  Constantes.FLAG_BUL003, Boolean.TRUE);
          }
 
          throw new CaptureMasseRuntimeException(e);

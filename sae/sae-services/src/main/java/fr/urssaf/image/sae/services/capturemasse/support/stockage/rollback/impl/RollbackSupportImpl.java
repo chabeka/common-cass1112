@@ -67,8 +67,8 @@ public class RollbackSupportImpl implements RollbackSupport {
                identifiant);
       } catch (Throwable throwable) {
 
-         throw new DeletionServiceEx((StorageMessageHandler
-               .getMessage(Constants.DEL_CODE_ERROR)), throwable.getMessage(),
+         throw new DeletionServiceEx(StorageMessageHandler
+               .getMessage(Constants.DEL_CODE_ERROR), throwable.getMessage(),
                throwable);
       }
 

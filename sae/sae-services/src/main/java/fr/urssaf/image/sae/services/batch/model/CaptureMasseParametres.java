@@ -17,15 +17,15 @@ public class CaptureMasseParametres {
    @Deprecated
    private String ecdeURL;
 
-   private UUID uuid;
+   private final UUID uuid;
 
-   private Integer nbreDocs;
+   private final Integer nbreDocs;
 
-   private String saeHost;
+   private final String saeHost;
 
-   private String clientHost;
+   private final String clientHost;
 
-   private VIContenuExtrait vi;
+   private final VIContenuExtrait viExtrait;
    
    /**
     * Paramètre de la capture de masse
@@ -43,18 +43,18 @@ public class CaptureMasseParametres {
     *           l'adresse de la machine demandant le traitement
     * @param nbreDocs
     *           nombre de documents contenus dans le fichier sommaire.xml
-    * @param vi
+    * @param viExtrait
     *           contenu du VI
     */
    public CaptureMasseParametres(String ecdeURL, UUID uuid, String saeHost,
-         String clientHost, Integer nbreDocs, VIContenuExtrait vi) {
+         String clientHost, Integer nbreDocs, VIContenuExtrait viExtrait) {
       super();
       this.ecdeURL = ecdeURL;
       this.uuid = uuid;
       this.saeHost = saeHost;
       this.clientHost = clientHost;
       this.nbreDocs = nbreDocs;
-      this.vi = vi;
+      this.viExtrait = viExtrait;
    }
    
    /**
@@ -68,18 +68,18 @@ public class CaptureMasseParametres {
     *           l'adresse de la machine demandant le traitement
     * @param nbreDocs
     *           nombre de documents contenus dans le fichier sommaire.xml
-    * @param vi
+    * @param viExtrait
     *           contenu du VI
     */
    public CaptureMasseParametres(Map<String,String> jobParameters, UUID uuid, String saeHost,
-         String clientHost, Integer nbreDocs, VIContenuExtrait vi) {
+         String clientHost, Integer nbreDocs, VIContenuExtrait viExtrait) {
       super();
       this.jobParameters = jobParameters;
       this.uuid = uuid;
       this.saeHost = saeHost;
       this.clientHost = clientHost;
       this.nbreDocs = nbreDocs;
-      this.vi = vi;
+      this.viExtrait = viExtrait;
    }
 
    /**
@@ -124,7 +124,7 @@ public class CaptureMasseParametres {
     * @return le contenu du VI
     */
    public final VIContenuExtrait getVi() {
-      return vi;
+      return viExtrait;
    }
 
    /**

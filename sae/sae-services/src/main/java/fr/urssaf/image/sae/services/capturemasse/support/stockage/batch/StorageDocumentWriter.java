@@ -54,13 +54,15 @@ public class StorageDocumentWriter implements ItemWriter<StorageDocument> {
 
    private static final String TRC_INIT = "init()";
 
+   private static final String UNCHECKED = "unchecked";
+   
    /**
     * initialisation du context
     * 
     * @param stepExecution
     *           context de l'étape
     */
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings(UNCHECKED)
    @BeforeStep
    public final void init(StepExecution stepExecution) {
 
@@ -117,17 +119,17 @@ public class StorageDocumentWriter implements ItemWriter<StorageDocument> {
          LOGGER.warn("{} - erreur lors de la fermeture de la base de données",
                TRC_END, e);
 
-         @SuppressWarnings("unchecked")
+         @SuppressWarnings(UNCHECKED)
          ConcurrentLinkedQueue<String> codes = (ConcurrentLinkedQueue<String>) stepExecution
                .getJobExecution().getExecutionContext().get(
                      Constantes.CODE_EXCEPTION);
 
-         @SuppressWarnings("unchecked")
+         @SuppressWarnings(UNCHECKED)
          ConcurrentLinkedQueue<Integer> index = (ConcurrentLinkedQueue<Integer>) stepExecution
                .getJobExecution().getExecutionContext().get(
                      Constantes.INDEX_EXCEPTION);
 
-         @SuppressWarnings("unchecked")
+         @SuppressWarnings(UNCHECKED)
          ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) stepExecution
                .getJobExecution().getExecutionContext().get(
                      Constantes.DOC_EXCEPTION);
