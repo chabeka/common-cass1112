@@ -49,7 +49,8 @@ public class SAECassandraService {
 
    /**
     * 
-    * @param maxRetry le nombre maximum d'essais
+    * @param maxRetry
+    *           le nombre maximum d'essais
     */
    public final void setMaxRetry(int maxRetry) {
       this.maxRetry = maxRetry;
@@ -101,7 +102,8 @@ public class SAECassandraService {
     *           Max tentatives, contante définie au niveau de la classe
     */
    protected final boolean createColumnFamillyFromDefinition(
-         ColumnFamilyDefinition colDef, boolean blockUntilComplete, int tentatives) {
+         ColumnFamilyDefinition colDef, boolean blockUntilComplete,
+         int tentatives) {
       // on décrémente le compteur
       this.setMaxRetry(tentatives - 1);
       boolean succes = false;
@@ -173,4 +175,12 @@ public class SAECassandraService {
       return saeDao.getKeySpaceName();
    }
 
+   /**
+    * 
+    * @param saeDao
+    *           le service de DAO
+    */
+   public void setSaeDao(SAECassandraDao saeDao) {
+      this.saeDao = saeDao;
+   }
 }
