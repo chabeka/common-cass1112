@@ -15,6 +15,10 @@ import org.springframework.core.io.Resource;
 public class PropertiesFactory {
 
    
+   private static final int RES_LENGTH = 3;
+
+
+
    /**
     * Méthode à utiliser en tant que "factory-method" Spring pour mettre dans
     * le conteneur IOC l'objet PropertyPlaceholderConfigurer contenant
@@ -24,12 +28,12 @@ public class PropertiesFactory {
     * @return l'objet PropertyPlaceholderConfigurer à mettre dans le conteneur IOC
     * @throws IOException en cas de problème de lecture du fichier de configuration générale
     */
-   public PropertyPlaceholderConfigurer load(FileSystemResource saeConfigResource) throws IOException  {
+   public final PropertyPlaceholderConfigurer load(FileSystemResource saeConfigResource) throws IOException  {
       
       // Deux fichiers properties : 
       //  - Fichier de configuration générale
       //  - Fichier de configuration DFCE
-      Resource[] tabResource = new Resource[3];
+      Resource[] tabResource = new Resource[RES_LENGTH];
       
       // Fichier de configuration générale
       tabResource[0] = saeConfigResource;

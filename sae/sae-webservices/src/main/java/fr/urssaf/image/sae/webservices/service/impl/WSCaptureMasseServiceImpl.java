@@ -4,7 +4,6 @@ import java.io.File;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
@@ -64,7 +63,7 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
 
    @Autowired
    private EcdeServices ecdeServices;
-   
+
    @Autowired
    private EcdeControleSupport controleSupport;
 
@@ -85,15 +84,16 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
       LOG.debug("{} - URI ECDE: {}", prefixeTrc, ecdeUrl);
 
       String hName = getHostName();
-      
-      UUID id= checkEcdeUrl(ecdeUrl);
-      
+
+      UUID identifiant = checkEcdeUrl(ecdeUrl);
+
       Integer nbDoc = getNombreDoc(ecdeUrl);
-      
-      VIContenuExtrait extrait = (VIContenuExtrait) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-      
+
+      VIContenuExtrait extrait = (VIContenuExtrait) SecurityContextHolder
+            .getContext().getAuthentication().getPrincipal();
+
       CaptureMasseParametres parametres = new CaptureMasseParametres(ecdeUrl,
-            id, hName, callerIP, nbDoc, extrait);
+            identifiant, hName, callerIP, nbDoc, extrait);
 
       // appel de la méthode d'insertion du job dans la pile des travaux
       traitementService.ajouterJobCaptureMasse(parametres);
@@ -104,11 +104,15 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
 
    }
 
+   /**
+    * 
+    * {@inheritDoc}
+    */
    @Override
-   public ArchivageMasseAvecHashResponse archivageEnMasseAvecHash(
+   public final ArchivageMasseAvecHashResponse archivageEnMasseAvecHash(
          ArchivageMasseAvecHash request, String callerIP)
          throws CaptureAxisFault {
-      
+
       String prefixeTrc = "ArchivageMasseAvecHashResponse()";
 
       LOG.debug("{} - Début", prefixeTrc);
@@ -118,15 +122,14 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
       String ecdeUrl = ecdeUrlWs.getEcdeUrlSommaireType().toString();
       String hash = request.getArchivageMasseAvecHash().getHash();
       String typeHash = request.getArchivageMasseAvecHash().getTypeHash();
-      
+
       LOG.debug("{} - URI ECDE: {}", prefixeTrc, ecdeUrl);
       LOG.debug("{} - HASH: {}", prefixeTrc, hash);
       LOG.debug("{} - TYPE HASH: {}", prefixeTrc, typeHash);
-      
+
       File fileEcde;
       try {
-         fileEcde = ecdeServices
-         .convertSommaireToFile(new URI(ecdeUrl));
+         fileEcde = ecdeServices.convertSommaireToFile(new URI(ecdeUrl));
          controleSupport.checkHash(fileEcde, hash, typeHash);
       } catch (EcdeBadURLException e) {
          throw new CaptureAxisFault("CaptureUrlEcdeIncorrecte", e.getMessage(),
@@ -137,28 +140,26 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
       } catch (URISyntaxException e) {
          throw new CaptureAxisFault("CaptureUrlEcdeIncorrecte", e.getMessage(),
                e);
-      }catch (CaptureMasseSommaireHashException e) {
-         throw new CaptureAxisFault("HashSommaireIncorrect", e.getMessage(),
-               e);
+      } catch (CaptureMasseSommaireHashException e) {
+         throw new CaptureAxisFault("HashSommaireIncorrect", e.getMessage(), e);
       } catch (CaptureMasseSommaireTypeHashException e) {
-         throw new CaptureAxisFault("TypeHashSommaireIncorrect", e.getMessage(),
-               e);
+         throw new CaptureAxisFault("TypeHashSommaireIncorrect",
+               e.getMessage(), e);
       }
-            
-      Map<String,String> jobParam = new HashMap<String, String>();
+
+      Map<String, String> jobParam = new HashMap<String, String>();
       jobParam.put(Constantes.ECDE_URL, ecdeUrl);
       jobParam.put(Constantes.HASH, hash);
       jobParam.put(Constantes.TYPE_HASH, typeHash);
 
       String hName = getHostName();
-      
-      UUID id= checkEcdeUrl(ecdeUrl);
-      
-      
+
+      UUID id = checkEcdeUrl(ecdeUrl);
+
       Integer nbDoc = getNombreDoc(ecdeUrl);
-      
-      VIContenuExtrait extrait = (VIContenuExtrait) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-      
+
+      VIContenuExtrait extrait = (VIContenuExtrait) SecurityContextHolder
+            .getContext().getAuthentication().getPrincipal();
 
       CaptureMasseParametres parametres = new CaptureMasseParametres(jobParam,
             id, hName, callerIP, nbDoc, extrait);
@@ -168,11 +169,11 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
 
       // On prend acte de la demande,
       // le retour se fera via le fichier resultats.xml de l'ECDE
-      return ObjectStorageResponseFactory.createArchivageMasseAvecHashResponse();
+      return ObjectStorageResponseFactory
+            .createArchivageMasseAvecHashResponse();
    }
 
-   
-   private UUID checkEcdeUrl(String ecdeUrl) throws CaptureAxisFault{
+   private UUID checkEcdeUrl(String ecdeUrl) throws CaptureAxisFault {
       // vérification de l'URL ECDE du sommaire contenu dans la requête SOAP
       try {
 
@@ -194,13 +195,12 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
       String contextLog = MDC.get(BuildOrClearMDCAspect.LOG_CONTEXTE);
       // récupération de l'UUID du traitement
       UUID uuid = UUID.fromString(contextLog);
-      
 
       return uuid;
 
    }
-   
-   private String getHostName(){
+
+   private String getHostName() {
       String hostName = null;
 
       try {
@@ -215,8 +215,8 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
       }
       return hostName;
    }
-   
-   private Integer getNombreDoc(String ecdeUrl) throws CaptureAxisFault{
+
+   private Integer getNombreDoc(String ecdeUrl) throws CaptureAxisFault {
       File sommaire;
       try {
          URI uri = new URI(ecdeUrl);
@@ -236,7 +236,7 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
 
       try {
          nombreDoc = XmlReadUtils.compterElements(sommaire, "document");
-         
+
       } catch (CaptureMasseRuntimeException e) {
          LOG.warn("impossible d'ouvrir le fichier attendu", e);
       }

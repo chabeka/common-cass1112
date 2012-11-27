@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 import fr.urssaf.image.sae.ecde.service.EcdeServices;
 import fr.urssaf.image.sae.services.batch.TraitementAsynchroneService;
 import fr.urssaf.image.sae.services.capture.SAECaptureService;
-import fr.urssaf.image.sae.services.capturemasse.support.ecde.EcdeControleSupport;
 import fr.urssaf.image.sae.services.controles.SAEControlesCaptureService;
 
 /**

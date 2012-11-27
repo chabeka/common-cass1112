@@ -4,13 +4,19 @@
 package fr.urssaf.image.sae.webservices.modele;
 
 /**
- * 
+ * configuration du webservice
  * 
  */
 public class WebServiceConfiguration {
 
-   private boolean ancienWsActif;
+   private final boolean ancienWsActif;
 
+   /**
+    * 
+    * @param ancienWsActif
+    *           booleen indiquant si l'ancien mode de fonctionnement WS est
+    *           actif ou non
+    */
    public WebServiceConfiguration(boolean ancienWsActif) {
       this.ancienWsActif = ancienWsActif;
    }

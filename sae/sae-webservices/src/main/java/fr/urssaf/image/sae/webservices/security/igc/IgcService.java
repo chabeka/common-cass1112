@@ -78,8 +78,8 @@ public class IgcService implements InitializingBean {
    /**
     * Instanciation de {@link IgcService}
     * 
-    * @param igcConfig
-    *           configuration de l'IGC
+    * @param igcConfigs
+    *           liste des configuration de l'IGC
     */
    @Autowired
    public IgcService(IgcConfigs igcConfigs) {
@@ -117,8 +117,9 @@ public class IgcService implements InitializingBean {
          InputStream input = null;
          try {
 
-            LOG.info("Chargement du certificat d'AC racine {}", igcConfig.getAcRacine());
-            
+            LOG.info("Chargement du certificat d'AC racine {}", igcConfig
+                  .getAcRacine());
+
             File crt = new File(igcConfig.getAcRacine());
             input = new FileInputStream(crt);
 
@@ -295,7 +296,7 @@ public class IgcService implements InitializingBean {
     * 
     * @return la map des issuers
     */
-   public Map<String, List<String>> getPatternIssuers() {
+   public final Map<String, List<String>> getPatternIssuers() {
 
       Map<String, List<String>> map = null;
 

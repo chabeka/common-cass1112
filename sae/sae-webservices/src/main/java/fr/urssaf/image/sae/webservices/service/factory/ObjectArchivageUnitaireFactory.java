@@ -55,11 +55,11 @@ public final class ObjectArchivageUnitaireFactory {
             .getArchivageUnitaireResponse();
 
       responseType.setIdArchive(ObjectTypeFactory.createUuidType(idArchive));
-      if (response != null) {
+      if (response == null) {
+         LOG.debug("{} - Valeur de retour : null", prefixeTrc);
+      } else {
          LOG.debug("{} - Valeur de retour archiveId: \"{}\"", prefixeTrc, response
                .getArchivageUnitaireResponse().getIdArchive());
-      } else {
-         LOG.debug("{} - Valeur de retour : null", prefixeTrc);
       }
       LOG.debug("{} - Sortie", prefixeTrc);
       // Fin des traces debug - sortie méthode
@@ -112,11 +112,11 @@ public final class ObjectArchivageUnitaireFactory {
             .getArchivageUnitairePJResponse();
 
       responseType.setIdArchive(ObjectTypeFactory.createUuidType(idArchive));
-      if (response != null) {
+      if (response == null) {
+         LOG.debug("{} - Valeur de retour : null", prefixeTrc);
+      } else {
          LOG.debug("{} - Valeur de retour archiveId: \"{}\"", prefixeTrc, response
                .getArchivageUnitairePJResponse().getIdArchive());
-      } else {
-         LOG.debug("{} - Valeur de retour : null", prefixeTrc);
       }
       LOG.debug("{} - Sortie", prefixeTrc);
       // Fin des traces debug - sortie méthode

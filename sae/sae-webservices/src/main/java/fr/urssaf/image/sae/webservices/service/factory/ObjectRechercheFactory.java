@@ -117,10 +117,10 @@ public final class ObjectRechercheFactory {
       String valeur = null;
       for (UntypedMetadata untypedMetadata : untypedDocument.getUMetadatas()) {
          String code = untypedMetadata.getLongCode();
-         if (untypedMetadata.getValue() != null) {
-            valeur = untypedMetadata.getValue().toString();
-         } else {
+         if (untypedMetadata.getValue() == null) {
             valeur = StringUtils.EMPTY;
+         } else {
+            valeur = untypedMetadata.getValue().toString();
          }
          MetadonneeType metadonnee = ObjectTypeFactory.createMetadonneeType(
                code, valeur);

@@ -49,6 +49,10 @@ public class SecurityService {
     * 
     * @param igcService
     *           instance IgcService
+    * @param service
+    *           service du VI
+    * @param configuration
+    *           configuration du webservice
     */
    @Autowired
    public SecurityService(IgcService igcService, WebServiceVIService service,
