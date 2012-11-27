@@ -64,7 +64,7 @@ public class VerificationSupportImpl implements VerificationSupport {
     * {@inheritDoc}
     */
    @Override
-   public void checkFinTraitement(URI urlEcde, Integer nbreDocs,
+   public final void checkFinTraitement(URI urlEcde, Integer nbreDocs,
          Integer nbreStockes, boolean logPresent, List<Throwable> erreurs,
          UUID idTraitement) {
 

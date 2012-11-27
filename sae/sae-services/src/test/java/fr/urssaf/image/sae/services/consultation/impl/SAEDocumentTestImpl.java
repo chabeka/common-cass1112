@@ -35,10 +35,10 @@ public class SAEDocumentTestImpl implements SAEDocumentService {
    private int searchMaxIndex = 0;
 
    /**
-    * 
+    * {@inheritDoc}
     */
    @Override
-   public UntypedDocument consultation(UUID idArchive)
+   public final UntypedDocument consultation(UUID idArchive)
          throws SAEConsultationServiceException, UnknownDesiredMetadataEx,
          MetaDataUnauthorizedToConsultEx {
 
@@ -58,10 +58,10 @@ public class SAEDocumentTestImpl implements SAEDocumentService {
    }
 
    /**
-    * 
+    * {@inheritDoc}
     */
    @Override
-   public UntypedDocument consultation(ConsultParams consultParams)
+   public final UntypedDocument consultation(ConsultParams consultParams)
          throws SAEConsultationServiceException, UnknownDesiredMetadataEx,
          MetaDataUnauthorizedToConsultEx {
 
@@ -84,7 +84,7 @@ public class SAEDocumentTestImpl implements SAEDocumentService {
     * {@inheritDoc}
     */
    @Override
-   public List<UntypedDocument> search(String requete,
+   public final List<UntypedDocument> search(String requete,
          List<String> listMetaDesired) throws MetaDataUnauthorizedToSearchEx,
          MetaDataUnauthorizedToConsultEx, UnknownDesiredMetadataEx,
          UnknownLuceneMetadataEx, SyntaxLuceneEx, SAESearchServiceEx {
@@ -114,7 +114,7 @@ public class SAEDocumentTestImpl implements SAEDocumentService {
     * {@inheritDoc}
     */
    @Override
-   public List<UntypedDocument> search(String requete,
+   public final List<UntypedDocument> search(String requete,
          List<String> listMetaDesired, int maxResult)
          throws MetaDataUnauthorizedToSearchEx,
          MetaDataUnauthorizedToConsultEx, UnknownDesiredMetadataEx,

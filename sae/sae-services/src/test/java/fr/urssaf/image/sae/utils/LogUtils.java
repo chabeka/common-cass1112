@@ -15,8 +15,11 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
  * 
  * 
  */
-public class LogUtils {
+public final class LogUtils {
 
+   private LogUtils() {
+   }
+   
    /**
     * Recherche le message donné dans le log fourni
     * 

@@ -25,7 +25,7 @@ public class SaeStepExecutionDao extends MapStepExecutionDao {
     * atteindra la step correspondant à la step to fail.</b>
     */
    @Override
-   public void saveStepExecution(StepExecution stepExecution) {
+   public final void saveStepExecution(StepExecution stepExecution) {
 
       if (stepExecution.getStepName().equals(stepToFail)) {
          throw new Error(ERREUR_SAUVEGARDE);

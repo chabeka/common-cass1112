@@ -12,6 +12,9 @@ import org.springframework.batch.core.repository.dao.MapJobExecutionDao;
  */
 public class SaeJobExecutionDao extends MapJobExecutionDao {
 
+   /**
+    * Etapes disponibles
+    */
    public enum StepAvailable {
       BEFORE, AFTER
    };
@@ -20,7 +23,7 @@ public class SaeJobExecutionDao extends MapJobExecutionDao {
 
    private StepAvailable stepToFail;
 
-   int index = 0;
+   private int index = 0;
 
    /**
     * {@inheritDoc}<br>
@@ -28,7 +31,7 @@ public class SaeJobExecutionDao extends MapJobExecutionDao {
     * atteindra la step correspondant à la step to fail.</b>
     */
    @Override
-   public void saveJobExecution(JobExecution jobExecution) {
+   public final void saveJobExecution(JobExecution jobExecution) {
 
       if (stepToFail != null && StepAvailable.BEFORE.equals(stepToFail)) {
          throw new Error("erreur de jobExecutionDao");
@@ -41,7 +44,7 @@ public class SaeJobExecutionDao extends MapJobExecutionDao {
     * {@inheritDoc}
     */
    @Override
-   public void updateJobExecution(JobExecution jobExecution) {
+   public final void updateJobExecution(JobExecution jobExecution) {
       if (stepToFail != null && StepAvailable.AFTER.equals(stepToFail)
             && index == 1) {
          throw new Error("erreur de jobExecutionDao");

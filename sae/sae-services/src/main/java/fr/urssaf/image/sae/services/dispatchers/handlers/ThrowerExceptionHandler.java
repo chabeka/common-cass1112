@@ -11,10 +11,11 @@ import fr.urssaf.image.sae.services.dispatchers.AbstractExceptionHandler;
 public class ThrowerExceptionHandler extends AbstractExceptionHandler {
 
    /**
-    * Lève l'exception reçue en paramètre. Utile en fin de chaine.
+    * 
+    * {@inheritDoc}
     */
    @Override
-   public <T extends Exception> void handleException(T exception) throws T {
+   public final <T extends Exception> void handleException(T exception) throws T {
       throw exception;
    }
 }

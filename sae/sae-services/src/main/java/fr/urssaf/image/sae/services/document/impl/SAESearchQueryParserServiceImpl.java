@@ -18,17 +18,28 @@ import fr.urssaf.image.sae.services.exception.SAESearchQueryParseException;
 import fr.urssaf.image.sae.services.exception.search.SAESearchServiceEx;
 import fr.urssaf.image.sae.services.exception.search.SyntaxLuceneEx;
 import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
+
+/**
+ * Classe d'implémentation de l'interface {@link SAESearchQueryParserService}
+ * 
+ * 
+ */
 @Component
-public class SAESearchQueryParserServiceImpl implements SAESearchQueryParserService{
+public class SAESearchQueryParserServiceImpl implements
+      SAESearchQueryParserService {
    @Autowired
    private SAEConvertMetadataService convertService;
-   
+
    private static final Logger LOG = LoggerFactory
-   .getLogger(SAESearchQueryParserServiceImpl.class);
-   
-   public String convertFromLongToShortCode(String requeteFinal, List<String> listeCodeLong) throws SyntaxLuceneEx, SAESearchServiceEx, SAESearchQueryParseException {
-      
-      
+         .getLogger(SAESearchQueryParserServiceImpl.class);
+
+   /**
+    * {@inheritDoc}
+    */
+   public final String convertFromLongToShortCode(String requeteFinal,
+         List<String> listeCodeLong) throws SyntaxLuceneEx, SAESearchServiceEx,
+         SAESearchQueryParseException {
+
       // définition de la liste des opérateurs qu'on peut trouver dans une
       // requête.
       List<String> operateurList = new ArrayList<String>();
@@ -38,21 +49,19 @@ public class SAESearchQueryParserServiceImpl implements SAESearchQueryParserServ
       operateurList.add(" ");
       operateurList.add("(");
       operateurList.add(")");
-      
+
       // récupération de la valeur du code court
       // on prend un sous ensemble de nomMeta puisqu'il est possible
       // d'avoir des opérateurs tels que + - ( et NOT au début de la
       // chaîne de caractère mais pas à la fin.
       Map<String, String> map;
-      try{
-      map = convertService
-            .longCodeToShortCode(listeCodeLong);
-      }catch(LongCodeNotFoundException e){
+      try {
+         map = convertService.longCodeToShortCode(listeCodeLong);
+      } catch (LongCodeNotFoundException e) {
          throw new SAESearchServiceEx(ResourceMessagesUtils
                .loadMessage("search.referentiel.error"), e);
       }
-      
-      
+
       String requete = StringUtils.EMPTY;
       // on remplace tous les " AND " et " OR " par $%#A#%$ et $%#O#%$
       // respectivement
@@ -63,11 +72,10 @@ public class SAESearchQueryParserServiceImpl implements SAESearchQueryParserServ
       // régulière (\\w{1})\\s+((\\+|\\-)[A-Z]{1}) remplace la chaine "a +A"
       // ou "b -C" par ¤¤£. le $1 et $2 permettent de récupère le "a" et le
       // "A" pour reconstituer la chaîne originale
-      requeteFinal = requeteFinal.replaceAll(
-            "(\\w{1})\\s+((\\+|\\-)[A-Z]{1})", "$1¤¤£$2");
+      requeteFinal = requeteFinal.replaceAll("(\\w{1})\\s+((\\+|\\-)[A-Z]{1})",
+            "$1¤¤£$2");
       // on remplace tous les espaces précédé par un "
-      requeteFinal = requeteFinal
-            .replaceAll("(\")\\s+|(\\))\\s+", "$1$2@@£");
+      requeteFinal = requeteFinal.replaceAll("(\")\\s+|(\\))\\s+", "$1$2@@£");
 
       // on décompose la chaime entière pour avoir un tableau de métadonnées
       // String[] meta = requeteFinal.split("§%#.#%§£");
@@ -92,10 +100,10 @@ public class SAESearchQueryParserServiceImpl implements SAESearchQueryParserServ
          m = m.replace("§%#|#%§", StringUtils.EMPTY);
          m = m.replace("@@", StringUtils.EMPTY);
          m = m.replace("¤¤", StringUtils.EMPTY);
-         
+
          String nomMeta = m.substring(0, m.indexOf(":"));
          String codeCourt = StringUtils.EMPTY;
-         
+
          // on vérifie qu'il n'existe pas d'autres opérateurs + - ( NOT ou
          // une combinaison d'opérateurs
          // si on détecte la présence d'un ou de plusieurs de ces opérateurs
@@ -119,7 +127,6 @@ public class SAESearchQueryParserServiceImpl implements SAESearchQueryParserServ
             }
 
          }
-         
 
          for (Map.Entry<String, String> e : map.entrySet()) {
             if (e.getValue().equals(
@@ -138,11 +145,13 @@ public class SAESearchQueryParserServiceImpl implements SAESearchQueryParserServ
 
       // on doit avoir le même nombre de code court que de code long
       if (meta.length != metaCourt.size()) {
-         LOG.error("Erreur le nombre de code court est inférieure à celui attendu");
+         LOG
+               .error("Erreur le nombre de code court est inférieure à celui attendu");
          LOG.error("Liste des métadonnées longues : {}", meta);
-         LOG.error("Liste des métadonnées courtes : {}", ArrayUtils.toString(metaCourt));
-         throw new SAESearchQueryParseException(ResourceMessagesUtils.loadMessage(
-               "search.parse.error"));
+         LOG.error("Liste des métadonnées courtes : {}", ArrayUtils
+               .toString(metaCourt));
+         throw new SAESearchQueryParseException(ResourceMessagesUtils
+               .loadMessage("search.parse.error"));
       } else {
          // construction de la requête avec le code court
          for (int i = 0; i < metaCourt.size(); i++) {
@@ -174,7 +183,7 @@ public class SAESearchQueryParserServiceImpl implements SAESearchQueryParserServ
             }
          }
       }
-      
+
       // remplacer les tokens par les filtres de départ. Le £ le figure plus
       // dans les tokens puisqu'il a été utilisé pour splitter la requête.
       requete = requete.replace("§%#&#%§", " AND ");
@@ -183,6 +192,5 @@ public class SAESearchQueryParserServiceImpl implements SAESearchQueryParserServ
       requete = requete.replace("@@", " ");
       return requete;
    }
-   
-        
+
 }

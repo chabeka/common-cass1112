@@ -20,7 +20,7 @@ import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 /**
  * Service commun pour l’archivage unitaire et l’archivage en masse.
  * 
- *@author rhofir,  lbaadj.
+ *@author rhofir, lbaadj.
  */
 public interface SAECommonCaptureService {
 
@@ -63,15 +63,17 @@ public interface SAECommonCaptureService {
     *            {@link UnknownCodeRndEx}.
     * @throws ReferentialRndException
     *            {@link ReferentialRndException}.
-    * @throws SAECaptureServiceEx @link SAECaptureServiceEx}.
+    * @throws SAECaptureServiceEx
+    *            {@link SAECaptureServiceEx}.
     */
    StorageDocument buildStorageDocumentForCapture(
          UntypedDocument untypedDocument) throws RequiredStorageMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
          DuplicatedMetadataEx, NotArchivableMetadataEx, EmptyDocumentEx,
          RequiredArchivableMetadataEx, SAEEnrichmentEx, UnknownHashCodeEx,
-         ReferentialRndException, UnknownCodeRndEx, NotSpecifiableMetadataEx, SAECaptureServiceEx;
-   
+         ReferentialRndException, UnknownCodeRndEx, NotSpecifiableMetadataEx,
+         SAECaptureServiceEx;
+
    /**
     * Cette méthode permet de construire un StorageDocument à partir d’un
     * UntypedDocument pour un fichier dont le contenu binaire a été transmis.
@@ -111,14 +113,17 @@ public interface SAECommonCaptureService {
     *            {@link UnknownCodeRndEx}.
     * @throws ReferentialRndException
     *            {@link ReferentialRndException}.
-    * @throws SAECaptureServiceEx @link SAECaptureServiceEx}.
+    * @throws SAECaptureServiceEx
+    *            {@link SAECaptureServiceEx}.
+    * @throws EmptyFileNameEx
+    *            {@link EmptyFileNameEx}
     */
    StorageDocument buildBinaryStorageDocumentForCapture(
          UntypedDocument untypedDocument) throws RequiredStorageMetadataEx,
-         InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx, EmptyFileNameEx,
-         DuplicatedMetadataEx, NotArchivableMetadataEx, EmptyDocumentEx,
-         RequiredArchivableMetadataEx, SAEEnrichmentEx, UnknownHashCodeEx,
-         ReferentialRndException, UnknownCodeRndEx, NotSpecifiableMetadataEx, SAECaptureServiceEx;
-   
-   
+         InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
+         EmptyFileNameEx, DuplicatedMetadataEx, NotArchivableMetadataEx,
+         EmptyDocumentEx, RequiredArchivableMetadataEx, SAEEnrichmentEx,
+         UnknownHashCodeEx, ReferentialRndException, UnknownCodeRndEx,
+         NotSpecifiableMetadataEx, SAECaptureServiceEx;
+
 }

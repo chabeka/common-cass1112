@@ -131,7 +131,7 @@ public class CaptureMasseParametres {
     * 
     * @return les paramètre de la capture de masse
     */
-   public Map<String, String> getJobParameters() {
+   public final Map<String, String> getJobParameters() {
       return jobParameters;
    }
 

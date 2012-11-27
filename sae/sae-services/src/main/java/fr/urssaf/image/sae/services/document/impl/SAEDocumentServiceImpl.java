@@ -84,7 +84,7 @@ public class SAEDocumentServiceImpl implements SAEDocumentService {
     * {@inheritDoc}
     */
    @Override
-   public List<UntypedDocument> search(String requete,
+   public final List<UntypedDocument> search(String requete,
          List<String> listMetaDesired, int maxResult)
          throws MetaDataUnauthorizedToSearchEx,
          MetaDataUnauthorizedToConsultEx, UnknownDesiredMetadataEx,

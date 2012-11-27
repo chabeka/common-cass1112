@@ -68,9 +68,14 @@ public interface SAECaptureService {
     * @throws UnknownHashCodeEx
     *            {@link UnknownHashCodeEx}
     * @throws CaptureEcdeUrlFileNotFoundEx
-    *            @link CaptureEcdeUrlFileNotFoundEx}
+    *            {@link CaptureEcdeUrlFileNotFoundEx}
     * @throws CaptureBadEcdeUrlEx
-    *            @link CaptureBadEcdeUrlEx}
+    *            {@link CaptureBadEcdeUrlEx}
+    * @throws CaptureBadEcdeUrlEx
+    *            {@link CaptureBadEcdeUrlEx}
+    * @throws CaptureEcdeUrlFileNotFoundEx
+    *            {@link CaptureEcdeUrlFileNotFoundEx}
+    * 
     */
    @PreAuthorize("hasRole('archivage_unitaire')")
    UUID capture(List<UntypedMetadata> metadatas, URI ecdeURL)
@@ -80,8 +85,7 @@ public interface SAECaptureService {
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
          ReferentialRndException, UnknownCodeRndEx, UnknownHashCodeEx,
          CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx;
-   
-   
+
    /**
     * 
     * Service pour l'opération : capture unitaire. Le fichier a <br>
@@ -124,15 +128,15 @@ public interface SAECaptureService {
     * @throws UnknownHashCodeEx
     *            {@link UnknownHashCodeEx}
     * @throws EmptyFileNameEx
-    *            @link EmptyFileNameEx}
+    *            {@link EmptyFileNameEx}
     */
    @PreAuthorize("hasRole('archivage_unitaire')")
-   UUID captureBinaire(List<UntypedMetadata> metadatas, byte[] content, String fileName)
-         throws SAECaptureServiceEx, RequiredStorageMetadataEx,
-         InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
-         DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
-         RequiredArchivableMetadataEx, NotArchivableMetadataEx,
-         ReferentialRndException, UnknownCodeRndEx, UnknownHashCodeEx,
-         EmptyFileNameEx;
-   
+   UUID captureBinaire(List<UntypedMetadata> metadatas, byte[] content,
+         String fileName) throws SAECaptureServiceEx,
+         RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx,
+         UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
+         EmptyDocumentEx, RequiredArchivableMetadataEx,
+         NotArchivableMetadataEx, ReferentialRndException, UnknownCodeRndEx,
+         UnknownHashCodeEx, EmptyFileNameEx;
+
 }

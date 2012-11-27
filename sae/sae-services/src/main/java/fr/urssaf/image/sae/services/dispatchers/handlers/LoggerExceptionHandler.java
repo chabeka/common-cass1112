@@ -15,7 +15,8 @@ public class LoggerExceptionHandler extends AbstractExceptionHandler {
    private static final Logger LOGGER = LoggerFactory.getLogger(LoggerExceptionHandler.class);
 
    /**
-    * Log l'exception reçue en paramètre
+    * 
+    * {@inheritDoc}
     */
    @Override
    public final <T extends Exception> void handleException(T exception) throws T {

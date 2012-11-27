@@ -308,7 +308,7 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
     * @throws SyntaxLuceneEx
     *            : Une exception de type {@link SyntaxLuceneEx}
     */
-   public List<String> extractLongCodesFromQuery(String requete)
+   public final List<String> extractLongCodesFromQuery(String requete)
          throws SyntaxLuceneEx {
 
       // Traces debug - entrée méthode
@@ -486,7 +486,7 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
     * {@inheritDoc}
     */
    @Override
-   public List<UntypedDocument> search(String requete,
+   public final List<UntypedDocument> search(String requete,
          List<String> listMetaDesired, int maxResult)
          throws MetaDataUnauthorizedToSearchEx,
          MetaDataUnauthorizedToConsultEx, UnknownDesiredMetadataEx,

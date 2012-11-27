@@ -32,7 +32,7 @@ public class SAEDocumentPermissionEvaluator implements PermissionEvaluator {
     * {@inheritDoc}
     */
    @Override
-   public boolean hasPermission(Authentication authentication, Object domain,
+   public final boolean hasPermission(Authentication authentication, Object domain,
          Object permission) {
 
       boolean hasPermission = false;
@@ -65,7 +65,7 @@ public class SAEDocumentPermissionEvaluator implements PermissionEvaluator {
     * {@inheritDoc}
     */
    @Override
-   public boolean hasPermission(Authentication authentication,
+   public final boolean hasPermission(Authentication authentication,
          Serializable targetId, String targetType, Object permission) {
       // TODO Auto-generated method stub
       return false;

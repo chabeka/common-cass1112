@@ -25,9 +25,12 @@ public class ExceptionDispatcher {
     * @param exception
     *           Exception à dispatcher, elle sera traitée par les handlers
     *           concrets.
-    * @throws Exception
+    * @param <T>
+    *           type de l'exception
+    * @throws T
+    *            exception
     */
-   public <T extends Exception> void dispatch(T exception) throws T {
+   public final <T extends Exception> void dispatch(T exception) throws T {
       if (handler != null) {
          handler.handle(exception);
       }
@@ -36,7 +39,7 @@ public class ExceptionDispatcher {
    /**
     * @return Premier handler de la chaine
     */
-   public AbstractExceptionHandler getHandler() {
+   public final AbstractExceptionHandler getHandler() {
       return this.handler;
    }
 
@@ -46,7 +49,7 @@ public class ExceptionDispatcher {
     * @param handler
     *           Premier handler de la chaine
     */
-   public void setHandler(AbstractExceptionHandler handler) {
+   public final void setHandler(AbstractExceptionHandler handler) {
       this.handler = handler;
    }
 

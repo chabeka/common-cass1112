@@ -36,7 +36,7 @@ public class RNDReferenceDAOImpl implements RNDReferenceDAO {
    @Autowired
    private ApplicationContext context;
 
-   private static Map<String, TypeDocument> ALL_RNDS;
+   private static Map<String, TypeDocument> allRnds;
 
    /**
     * @return Le service Xml.
@@ -82,11 +82,11 @@ public class RNDReferenceDAOImpl implements RNDReferenceDAO {
             "classpath:xml/RCND.xml");
       try {
          synchronized (this) {
-            if (ALL_RNDS == null) {
-               ALL_RNDS = xmlDataService.rndReferenceReader(referentiel
+            if (allRnds == null) {
+               allRnds = xmlDataService.rndReferenceReader(referentiel
                      .getInputStream());
             }
-            return ALL_RNDS;
+            return allRnds;
          }
 
       } catch (IOException e) {

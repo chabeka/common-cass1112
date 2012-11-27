@@ -107,7 +107,7 @@ public class SAECaptureMasseServiceImpl implements SAECaptureMasseService {
     * {@inheritDoc}
     */
    @Override
-   public ExitTraitement captureMasse(URI sommaireURI, UUID idTraitement,
+   public final ExitTraitement captureMasse(URI sommaireURI, UUID idTraitement,
          String hash, String typeHash) {
       Map<String, JobParameter> mapParam = new HashMap<String, JobParameter>();
       mapParam.put(Constantes.SOMMAIRE,

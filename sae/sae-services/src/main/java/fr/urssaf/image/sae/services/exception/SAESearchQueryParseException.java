@@ -1,5 +1,8 @@
 package fr.urssaf.image.sae.services.exception;
 
+/**
+ * Exception de parsing de requete
+ */
 public class SAESearchQueryParseException extends Exception {
 
    /**

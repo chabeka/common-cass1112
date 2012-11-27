@@ -18,7 +18,7 @@ import fr.urssaf.image.sae.metadata.utils.Utils;
  * 
  */
 public final class FormatUtils {
-   
+
    public static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss";
    public static final Locale DEFAULT_LOCAL = Locale.FRENCH;
 
@@ -26,6 +26,7 @@ public final class FormatUtils {
     * Formatter la liste des code erreurs.
     * 
     * @param listCodeErrors
+    *           liste des codes erreur
     * @return Une Chaîne de code erreur.
     */
    public static String formattingDisplayList(List<String> listCodeErrors) {
@@ -60,11 +61,11 @@ public final class FormatUtils {
    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
    public static String dateToString(final Date date) {
       String newDate = StringUtils.EMPTY;
-         if (date != null) {
-            final SimpleDateFormat formatter = new SimpleDateFormat(
-                  DATE_PATTERN, DEFAULT_LOCAL);
-            newDate = formatter.format(date);
-         }
+      if (date != null) {
+         final SimpleDateFormat formatter = new SimpleDateFormat(DATE_PATTERN,
+               DEFAULT_LOCAL);
+         newDate = formatter.format(date);
+      }
       return newDate;
    }
 }
