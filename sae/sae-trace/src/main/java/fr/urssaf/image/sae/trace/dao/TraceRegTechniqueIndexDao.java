@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.UUID;
 
 import me.prettyprint.cassandra.serializers.DateSerializer;
-import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.serializers.UUIDSerializer;
 import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
@@ -35,7 +34,7 @@ public class TraceRegTechniqueIndexDao {
    private static final int MAX_ATTRIBUTS = 100;
    public static final String REG_TECHNIQUE_INDEX_CFNAME = "TraceRegTechniqueIndex";
 
-   private final ColumnFamilyTemplate<Date, UUID> pagmTmpl;
+   private final ColumnFamilyTemplate<Date, UUID> techIndexTmpl;
    private final Keyspace keyspace;
 
    /**
@@ -49,11 +48,11 @@ public class TraceRegTechniqueIndexDao {
 
       this.keyspace = keyspace;
 
-      pagmTmpl = new ThriftColumnFamilyTemplate<Date, UUID>(keyspace,
+      techIndexTmpl = new ThriftColumnFamilyTemplate<Date, UUID>(keyspace,
             REG_TECHNIQUE_INDEX_CFNAME, DateSerializer.get(), UUIDSerializer
                   .get());
 
-      pagmTmpl.setCount(MAX_ATTRIBUTS);
+      techIndexTmpl.setCount(MAX_ATTRIBUTS);
    }
 
    @SuppressWarnings("unchecked")
@@ -102,15 +101,38 @@ public class TraceRegTechniqueIndexDao {
    }
 
    /**
+    * Méthode de suppression d'une ligne TraceRegTechniqueIndex
+    * 
+    * @param mutator
+    *           Mutator de <code>TraceRegTechniqueIndex</code>
+    * @param code
+    *           identifiant de la trace
+    * @param clock
+    *           horloge de la suppression
+    */
+   public final void mutatorSuppressionDestinataire(Mutator<Date> mutator,
+         Date code, long clock) {
+
+      mutator.addDeletion(code, REG_TECHNIQUE_INDEX_CFNAME, clock);
+   }
+
+   /**
     * 
     * @return Mutator de <code>TraceRegTechniqueIndex</code>
     */
-   public final Mutator<String> createMutator() {
+   public final Mutator<Date> createMutator() {
 
-      Mutator<String> mutator = HFactory.createMutator(keyspace,
-            StringSerializer.get());
+      Mutator<Date> mutator = HFactory.createMutator(keyspace, DateSerializer
+            .get());
 
       return mutator;
 
+   }
+
+   /**
+    * @return le CassandraTemplate de <code>TraceRegTechniqueIndex</code>
+    */
+   public final ColumnFamilyTemplate<Date, UUID> getTechIndexTmpl() {
+      return techIndexTmpl;
    }
 }

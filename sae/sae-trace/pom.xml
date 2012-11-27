@@ -73,5 +73,12 @@
          <version>${spring.framework.version}</version>
          <scope>test</scope>
       </dependency>
+
+      <!-- COMMONS APACHE -->
+      <dependency>
+         <groupId>commons-collections</groupId>
+         <artifactId>commons-collections</artifactId>
+         <version>${apache.commons-collections.version}</version>
+      </dependency>
    </dependencies>
 </project>

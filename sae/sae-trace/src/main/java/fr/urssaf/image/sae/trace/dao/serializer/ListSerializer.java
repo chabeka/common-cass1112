@@ -13,9 +13,10 @@ import fr.urssaf.image.commons.cassandra.serializer.XMLSerializer;
  * Serializer de liste de String
  * 
  */
-public class ListSerializer extends AbstractSerializer<List<String>> {
+public final class ListSerializer extends AbstractSerializer<List<String>> {
 
    private ListSerializer() {
+      super();
    }
 
    /**
@@ -45,10 +46,11 @@ public class ListSerializer extends AbstractSerializer<List<String>> {
       return ListSerializerHolder.INSTANCE;
    }
 
-   private static class ListSerializerHolder {
+   private static final class ListSerializerHolder {
       private ListSerializerHolder() {
       }
 
+      @SuppressWarnings("PMD.AccessorClassGeneration")
       private static final ListSerializer INSTANCE = new ListSerializer();
    }
 }

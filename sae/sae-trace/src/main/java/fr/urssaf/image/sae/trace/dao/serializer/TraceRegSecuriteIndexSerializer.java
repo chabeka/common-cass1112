@@ -11,7 +11,7 @@ import fr.urssaf.image.sae.trace.dao.model.TraceRegSecuriteIndex;
  * sérailiseur JSON.
  * 
  */
-public class TraceRegSecuriteIndexSerializer extends
+public final class TraceRegSecuriteIndexSerializer extends
       JacksonSerializer<TraceRegSecuriteIndex> {
 
    /**
@@ -27,7 +27,7 @@ public class TraceRegSecuriteIndexSerializer extends
    /**
     * Retourne l'instance de {@link TraceRegSecuriteIndexSerializer}
     * 
-    * @return
+    * @return le sérialiseur de TraceRegSecuriteIndex
     */
    public static TraceRegSecuriteIndexSerializer get() {
       return TraceRegSecuriteIndexSerializerHolder.INSTANCE;
@@ -36,10 +36,11 @@ public class TraceRegSecuriteIndexSerializer extends
    /**
     * Classe contenant l'instance de {@link TraceRegSecuriteIndexSerializer}
     */
-   private static class TraceRegSecuriteIndexSerializerHolder {
+   private static final class TraceRegSecuriteIndexSerializerHolder {
       private TraceRegSecuriteIndexSerializerHolder() {
       }
 
+      @SuppressWarnings("PMD.AccessorClassGeneration")
       private static final TraceRegSecuriteIndexSerializer INSTANCE = new TraceRegSecuriteIndexSerializer(
             TraceRegSecuriteIndex.class);
    }

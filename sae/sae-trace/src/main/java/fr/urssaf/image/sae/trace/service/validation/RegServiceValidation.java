@@ -21,15 +21,15 @@ public class RegServiceValidation {
    private static final String MESSAGE_ERREUR = "l'argument {0} est obligatoire";
 
    private static final String CLASS_NAME = "fr.urssaf.image.sae.trace.service.RegService.";
-   private static final String LECTURE_METHOD = "execution(fr.urssaf.image.sae.trace.dao.model.* " + CLASS_NAME
-         + "lecture(*))" + " && args(uuid)";
+   private static final String LECTURE_METHOD = "execution(fr.urssaf.image.sae.trace.dao.model.* "
+         + CLASS_NAME + "lecture(*))" + " && args(uuid)";
    private static final String PURGE_METHOD = "execution(void " + CLASS_NAME
          + "purge(*,*))" + " && args(dateDebut, dateFin)";
 
    /**
     * Réalise la validation de la méthode lecture de l'interface RegService
     * 
-    * @param identifiant
+    * @param uuid
     *           identifiant de la trace
     */
    @Before(LECTURE_METHOD)
@@ -50,7 +50,7 @@ public class RegServiceValidation {
     *           date de fin
     */
    @Before(PURGE_METHOD)
-   public void testPurge(Date dateDebut, Date dateFin) {
+   public final void testPurge(Date dateDebut, Date dateFin) {
       if (dateDebut == null) {
          throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
                "{0}", "date de début"));

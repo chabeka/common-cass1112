@@ -26,7 +26,7 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
     * {@inheritDoc}
     */
    @Override
-   public List<TraceRegSecuriteIndex> lecture(Date dateDebut, Date dateFin,
+   public final List<TraceRegSecuriteIndex> lecture(Date dateDebut, Date dateFin,
          int limite) {
       // TODO Auto-generated method stub
       return null;
@@ -36,7 +36,7 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
     * {@inheritDoc}
     */
    @Override
-   public TraceRegSecurite lecture(UUID identifiant) {
+   public final TraceRegSecurite lecture(UUID identifiant) {
       // TODO Auto-generated method stub
       return null;
    }
@@ -45,7 +45,7 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
     * {@inheritDoc}
     */
    @Override
-   public void purge(Date dateDebut, Date dateFin) {
+   public final void purge(Date dateDebut, Date dateFin) {
       // TODO Auto-generated method stub
 
    }

@@ -42,11 +42,11 @@ public class TraceRegTechniqueDao {
 
    /** identifiant utilisateur */
    public static final String COL_LOGIN = "login";
-   
+
    private static final int MAX_ATTRIBUTS = 100;
    public static final String REG_TECHNIQUE_CFNAME = "TraceRegTechnique";
 
-   private final ColumnFamilyTemplate<UUID, String> pagmTmpl;
+   private final ColumnFamilyTemplate<UUID, String> techTmpl;
    private final Keyspace keyspace;
 
    /**
@@ -60,12 +60,12 @@ public class TraceRegTechniqueDao {
 
       this.keyspace = keyspace;
 
-      pagmTmpl = new ThriftColumnFamilyTemplate<UUID, String>(keyspace,
+      techTmpl = new ThriftColumnFamilyTemplate<UUID, String>(keyspace,
             REG_TECHNIQUE_CFNAME, UUIDSerializer.get(), StringSerializer.get());
 
-      pagmTmpl.setCount(MAX_ATTRIBUTS);
+      techTmpl.setCount(MAX_ATTRIBUTS);
    }
-   
+
    /**
     * ajoute une colonne {@value TraceRegTechniqueDao#COL_TIMESTAMP}
     * 
@@ -143,13 +143,29 @@ public class TraceRegTechniqueDao {
    }
 
    /**
+    * Méthode de suppression d'une ligne TraceRegTechnique
+    * 
+    * @param mutator
+    *           Mutator de <code>TraceRegTechnique</code>
+    * @param code
+    *           identifiant de la trace
+    * @param clock
+    *           horloge de la suppression
+    */
+   public final void mutatorSuppressionDestinataire(Mutator<UUID> mutator,
+         UUID code, long clock) {
+
+      mutator.addDeletion(code, REG_TECHNIQUE_CFNAME, clock);
+   }
+
+   /**
     * 
     * @return Mutator de <code>TraceRegTechnique</code>
     */
-   public final Mutator<String> createMutator() {
+   public final Mutator<UUID> createMutator() {
 
-      Mutator<String> mutator = HFactory.createMutator(keyspace,
-            StringSerializer.get());
+      Mutator<UUID> mutator = HFactory.createMutator(keyspace, UUIDSerializer
+            .get());
 
       return mutator;
 
@@ -164,5 +180,12 @@ public class TraceRegTechniqueDao {
 
       column.setClock(clock);
       updater.setColumn(column);
+   }
+
+   /**
+    * @return le CassandraTemplate de <code>TraceRegTechnique</code>
+    */
+   public final ColumnFamilyTemplate<UUID, String> getTechTmpl() {
+      return techTmpl;
    }
 }

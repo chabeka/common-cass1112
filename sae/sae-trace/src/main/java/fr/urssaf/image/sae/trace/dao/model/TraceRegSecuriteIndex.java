@@ -13,7 +13,7 @@ import java.util.UUID;
 public class TraceRegSecuriteIndex {
 
    /** Identifiant de la trace */
-   private UUID id;
+   private UUID identifiant;
 
    /** Date de création de la trace */
    private Date timestamp;
@@ -28,21 +28,21 @@ public class TraceRegSecuriteIndex {
    private String login;
 
    /** code du contrat de service */
-   private String cs;
+   private String contrat;
 
    /**
     * @return l'Identifiant de la trace
     */
-   public final UUID getId() {
-      return id;
+   public final UUID getIdentifiant() {
+      return identifiant;
    }
 
    /**
-    * @param id
+    * @param identifiant
     *           Identifiant de la trace
     */
-   public final void setId(UUID id) {
-      this.id = id;
+   public final void setIdentifiant(UUID identifiant) {
+      this.identifiant = identifiant;
    }
 
    /**
@@ -108,16 +108,16 @@ public class TraceRegSecuriteIndex {
    /**
     * @return le code du contrat de service
     */
-   public final String getCs() {
-      return cs;
+   public final String getContrat() {
+      return contrat;
    }
 
    /**
-    * @param cs
+    * @param contrat
     *           code du contrat de service
     */
-   public final void setCs(String cs) {
-      this.cs = cs;
+   public final void setContrat(String contrat) {
+      this.contrat = contrat;
    }
 
 }

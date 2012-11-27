@@ -18,6 +18,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations = { "/applicationContext-sae-trace-test.xml" })
 public class RegSecuriteServiceTest {
 
+   private static final String MESSAGE_OK = "le message d'erreur doit etre correct";
+
+   private static final String ILLEGAL_EXPECTED = "Une exception IllegalArgumentException est attendue";
+
    @Autowired
    private RegSecuriteService service;
 
@@ -28,15 +32,15 @@ public class RegSecuriteServiceTest {
 
       try {
          service.lecture(null);
-         Assert.fail("Une exception IllegalArgumentException est attendue");
+         Assert.fail(ILLEGAL_EXPECTED);
 
       } catch (IllegalArgumentException exception) {
-         Assert.assertEquals("le message d'erreur doit etre correct",
+         Assert.assertEquals(MESSAGE_OK,
                StringUtils.replace(MESSAGE_ERREUR, "{0}", "identifiant"),
                exception.getMessage());
 
       } catch (Exception exception) {
-         Assert.fail("Une exception IllegalArgumentException est attendue");
+         Assert.fail(ILLEGAL_EXPECTED);
       }
 
    }
@@ -46,15 +50,15 @@ public class RegSecuriteServiceTest {
 
       try {
          service.lecture(null, null, 0);
-         Assert.fail("Une exception IllegalArgumentException est attendue");
+         Assert.fail(ILLEGAL_EXPECTED);
 
       } catch (IllegalArgumentException exception) {
-         Assert.assertEquals("le message d'erreur doit etre correct",
+         Assert.assertEquals(MESSAGE_OK,
                StringUtils.replace(MESSAGE_ERREUR, "{0}", "date de début"),
                exception.getMessage());
 
       } catch (Exception exception) {
-         Assert.fail("Une exception IllegalArgumentException est attendue");
+         Assert.fail(ILLEGAL_EXPECTED);
       }
 
    }
@@ -64,15 +68,15 @@ public class RegSecuriteServiceTest {
 
       try {
          service.lecture(new Date(), null, 0);
-         Assert.fail("Une exception IllegalArgumentException est attendue");
+         Assert.fail(ILLEGAL_EXPECTED);
 
       } catch (IllegalArgumentException exception) {
-         Assert.assertEquals("le message d'erreur doit etre correct",
+         Assert.assertEquals(MESSAGE_OK,
                StringUtils.replace(MESSAGE_ERREUR, "{0}", "date de fin"),
                exception.getMessage());
 
       } catch (Exception exception) {
-         Assert.fail("Une exception IllegalArgumentException est attendue");
+         Assert.fail(ILLEGAL_EXPECTED);
       }
 
    }
@@ -82,15 +86,15 @@ public class RegSecuriteServiceTest {
 
       try {
          service.lecture(DateUtils.addHours(new Date(), 2), new Date(), 0);
-         Assert.fail("Une exception IllegalArgumentException est attendue");
+         Assert.fail(ILLEGAL_EXPECTED);
 
       } catch (IllegalArgumentException exception) {
-         Assert.assertEquals("le message d'erreur doit etre correct",
+         Assert.assertEquals(MESSAGE_OK,
                "la date de début doit être inférieure à la date de fin",
                exception.getMessage());
 
       } catch (Exception exception) {
-         Assert.fail("Une exception IllegalArgumentException est attendue");
+         Assert.fail(ILLEGAL_EXPECTED);
       }
 
    }
@@ -101,15 +105,15 @@ public class RegSecuriteServiceTest {
       try {
          Date date = new Date();
          service.lecture(date, date, 0);
-         Assert.fail("Une exception IllegalArgumentException est attendue");
+         Assert.fail(ILLEGAL_EXPECTED);
 
       } catch (IllegalArgumentException exception) {
-         Assert.assertEquals("le message d'erreur doit etre correct",
+         Assert.assertEquals(MESSAGE_OK,
                "la date de début doit être inférieure à la date de fin",
                exception.getMessage());
 
       } catch (Exception exception) {
-         Assert.fail("Une exception IllegalArgumentException est attendue");
+         Assert.fail(ILLEGAL_EXPECTED);
       }
 
    }
@@ -119,15 +123,15 @@ public class RegSecuriteServiceTest {
 
       try {
          service.lecture(new Date(), DateUtils.addHours(new Date(), 2), 0);
-         Assert.fail("Une exception IllegalArgumentException est attendue");
+         Assert.fail(ILLEGAL_EXPECTED);
 
       } catch (IllegalArgumentException exception) {
-         Assert.assertEquals("le message d'erreur doit etre correct",
+         Assert.assertEquals(MESSAGE_OK,
                StringUtils.replace(MESSAGE_ERREUR, "{0}", "limite"), exception
                      .getMessage());
 
       } catch (Exception exception) {
-         Assert.fail("Une exception IllegalArgumentException est attendue");
+         Assert.fail(ILLEGAL_EXPECTED);
       }
 
    }
@@ -137,15 +141,15 @@ public class RegSecuriteServiceTest {
 
       try {
          service.purge(null, null);
-         Assert.fail("Une exception IllegalArgumentException est attendue");
+         Assert.fail(ILLEGAL_EXPECTED);
 
       } catch (IllegalArgumentException exception) {
-         Assert.assertEquals("le message d'erreur doit etre correct",
+         Assert.assertEquals(MESSAGE_OK,
                StringUtils.replace(MESSAGE_ERREUR, "{0}", "date de début"),
                exception.getMessage());
 
       } catch (Exception exception) {
-         Assert.fail("Une exception IllegalArgumentException est attendue");
+         Assert.fail(ILLEGAL_EXPECTED);
       }
 
    }
@@ -155,15 +159,15 @@ public class RegSecuriteServiceTest {
 
       try {
          service.purge(new Date(), null);
-         Assert.fail("Une exception IllegalArgumentException est attendue");
+         Assert.fail(ILLEGAL_EXPECTED);
 
       } catch (IllegalArgumentException exception) {
-         Assert.assertEquals("le message d'erreur doit etre correct",
+         Assert.assertEquals(MESSAGE_OK,
                StringUtils.replace(MESSAGE_ERREUR, "{0}", "date de fin"),
                exception.getMessage());
 
       } catch (Exception exception) {
-         Assert.fail("Une exception IllegalArgumentException est attendue");
+         Assert.fail(ILLEGAL_EXPECTED);
       }
 
    }
@@ -173,15 +177,15 @@ public class RegSecuriteServiceTest {
 
       try {
          service.purge(DateUtils.addHours(new Date(), 2), new Date());
-         Assert.fail("Une exception IllegalArgumentException est attendue");
+         Assert.fail(ILLEGAL_EXPECTED);
 
       } catch (IllegalArgumentException exception) {
-         Assert.assertEquals("le message d'erreur doit etre correct",
+         Assert.assertEquals(MESSAGE_OK,
                "la date de début doit être inférieure à la date de fin",
                exception.getMessage());
 
       } catch (Exception exception) {
-         Assert.fail("Une exception IllegalArgumentException est attendue");
+         Assert.fail(ILLEGAL_EXPECTED);
       }
 
    }
@@ -192,15 +196,15 @@ public class RegSecuriteServiceTest {
       try {
          Date date = new Date();
          service.purge(date, date);
-         Assert.fail("Une exception IllegalArgumentException est attendue");
+         Assert.fail(ILLEGAL_EXPECTED);
 
       } catch (IllegalArgumentException exception) {
-         Assert.assertEquals("le message d'erreur doit etre correct",
+         Assert.assertEquals(MESSAGE_OK,
                "la date de début doit être inférieure à la date de fin",
                exception.getMessage());
 
       } catch (Exception exception) {
-         Assert.fail("Une exception IllegalArgumentException est attendue");
+         Assert.fail(ILLEGAL_EXPECTED);
       }
 
    }

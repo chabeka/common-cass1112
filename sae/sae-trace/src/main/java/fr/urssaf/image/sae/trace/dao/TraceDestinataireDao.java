@@ -36,7 +36,7 @@ public class TraceDestinataireDao {
    public static final String COL_REG_EXPLOIT = "REG_EXPLOITATION";
    public static final String COL_REG_TECHNIQUE = "REG_TECHNIQUE";
 
-   private final ColumnFamilyTemplate<String, String> pagmTmpl;
+   private final ColumnFamilyTemplate<String, String> destTmpl;
 
    private final Keyspace keyspace;
 
@@ -51,10 +51,10 @@ public class TraceDestinataireDao {
 
       this.keyspace = keyspace;
 
-      pagmTmpl = new ThriftColumnFamilyTemplate<String, String>(keyspace,
+      destTmpl = new ThriftColumnFamilyTemplate<String, String>(keyspace,
             DEST_CFNAME, StringSerializer.get(), StringSerializer.get());
 
-      pagmTmpl.setCount(MAX_ATTRIBUTS);
+      destTmpl.setCount(MAX_ATTRIBUTS);
    }
 
    @SuppressWarnings("unchecked")
@@ -83,8 +83,7 @@ public class TraceDestinataireDao {
    public final void writeColumnHistArchive(
          ColumnFamilyUpdater<String, String> updater, List<String> value,
          long clock) {
-      addColumn(updater, COL_HIST_ARCHIVE, value, ListSerializer.get(),
-            clock);
+      addColumn(updater, COL_HIST_ARCHIVE, value, ListSerializer.get(), clock);
    }
 
    /**
@@ -101,8 +100,7 @@ public class TraceDestinataireDao {
    public final void writeColumnHistEvt(
          ColumnFamilyUpdater<String, String> updater, List<String> value,
          long clock) {
-      addColumn(updater, COL_HIST_EVT, value, ListSerializer.get(),
-            clock);
+      addColumn(updater, COL_HIST_EVT, value, ListSerializer.get(), clock);
    }
 
    /**
@@ -119,8 +117,7 @@ public class TraceDestinataireDao {
    public final void writeColumnRegExploit(
          ColumnFamilyUpdater<String, String> updater, List<String> value,
          long clock) {
-      addColumn(updater, COL_REG_EXPLOIT, value, ListSerializer.get(),
-            clock);
+      addColumn(updater, COL_REG_EXPLOIT, value, ListSerializer.get(), clock);
    }
 
    /**
@@ -137,8 +134,7 @@ public class TraceDestinataireDao {
    public final void writeColumnRegSecurite(
          ColumnFamilyUpdater<String, String> updater, List<String> value,
          long clock) {
-      addColumn(updater, COL_REG_SECURITE, value, ListSerializer.get(),
-            clock);
+      addColumn(updater, COL_REG_SECURITE, value, ListSerializer.get(), clock);
    }
 
    /**
@@ -155,8 +151,23 @@ public class TraceDestinataireDao {
    public final void writeColumnRegTechnique(
          ColumnFamilyUpdater<String, String> updater, List<String> value,
          long clock) {
-      addColumn(updater, COL_REG_TECHNIQUE, value,
-            ListSerializer.get(), clock);
+      addColumn(updater, COL_REG_TECHNIQUE, value, ListSerializer.get(), clock);
+   }
+
+   /**
+    * Méthode de suppression d'une ligne TraceDestinataire
+    * 
+    * @param mutator
+    *           Mutator de <code>TraceDestinataire</code>
+    * @param code
+    *           identifiant de la trace
+    * @param clock
+    *           horloge de la suppression
+    */
+   public final void mutatorSuppressionDestinataire(Mutator<String> mutator,
+         String code, long clock) {
+
+      mutator.addDeletion(code, DEST_CFNAME, clock);
    }
 
    /**
@@ -171,4 +182,12 @@ public class TraceDestinataireDao {
       return mutator;
 
    }
+
+   /**
+    * @return le CassandraTemplate de <code>TraceDestinataire</code>
+    */
+   public final ColumnFamilyTemplate<String, String> getDestTmpl() {
+      return destTmpl;
+   }
+
 }

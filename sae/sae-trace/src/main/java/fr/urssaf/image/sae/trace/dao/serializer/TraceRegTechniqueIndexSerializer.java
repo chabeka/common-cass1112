@@ -11,7 +11,7 @@ import fr.urssaf.image.sae.trace.dao.model.TraceRegTechniqueIndex;
  * sérailiseur JSON.
  * 
  */
-public class TraceRegTechniqueIndexSerializer extends
+public final class TraceRegTechniqueIndexSerializer extends
       JacksonSerializer<TraceRegTechniqueIndex> {
 
    /**
@@ -27,7 +27,7 @@ public class TraceRegTechniqueIndexSerializer extends
    /**
     * Retourne l'instance de {@link TraceRegTechniqueIndexSerializer}
     * 
-    * @return
+    * @return le sérialiseur de TraceRegTechniqueIndex
     */
    public static TraceRegTechniqueIndexSerializer get() {
       return TraceRegTechniqueIndexSerializerHolder.INSTANCE;
@@ -36,10 +36,11 @@ public class TraceRegTechniqueIndexSerializer extends
    /**
     * Classe contenant l'instance de {@link TraceRegTechniqueIndexSerializer}
     */
-   private static class TraceRegTechniqueIndexSerializerHolder {
+   private static final class TraceRegTechniqueIndexSerializerHolder {
       private TraceRegTechniqueIndexSerializerHolder() {
       }
 
+      @SuppressWarnings("PMD.AccessorClassGeneration")
       private static final TraceRegTechniqueIndexSerializer INSTANCE = new TraceRegTechniqueIndexSerializer(
             TraceRegTechniqueIndex.class);
    }

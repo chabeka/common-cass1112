@@ -58,7 +58,7 @@ public class TraceRegSecuriteIndexIterator implements
     * {@inheritDoc}
     */
    @Override
-   public boolean hasNext() {
+   public final boolean hasNext() {
       return sliceIterator.hasNext();
    }
 
@@ -66,7 +66,7 @@ public class TraceRegSecuriteIndexIterator implements
     * {@inheritDoc}
     */
    @Override
-   public TraceRegSecuriteIndex next() {
+   public final TraceRegSecuriteIndex next() {
       HColumn<UUID, TraceRegSecuriteIndex> column = sliceIterator.next();
       return TraceRegSecuriteIndexSerializer.get().fromByteBuffer(
             column.getValueBytes());
@@ -76,7 +76,7 @@ public class TraceRegSecuriteIndexIterator implements
     * {@inheritDoc}
     */
    @Override
-   public void remove() {
+   public final void remove() {
       throw new NotImplementedException();
 
    }

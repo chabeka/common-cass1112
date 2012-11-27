@@ -46,7 +46,7 @@ public class TraceRegSecuriteDao {
    /** identifiant utilisateur */
    public static final String COL_LOGIN = "login";
 
-   private final ColumnFamilyTemplate<UUID, String> pagmTmpl;
+   private final ColumnFamilyTemplate<UUID, String> secuTmpl;
    private final Keyspace keyspace;
 
    /**
@@ -60,10 +60,10 @@ public class TraceRegSecuriteDao {
 
       this.keyspace = keyspace;
 
-      pagmTmpl = new ThriftColumnFamilyTemplate<UUID, String>(keyspace,
+      secuTmpl = new ThriftColumnFamilyTemplate<UUID, String>(keyspace,
             REG_SECURITE_CFNAME, UUIDSerializer.get(), StringSerializer.get());
 
-      pagmTmpl.setCount(MAX_ATTRIBUTS);
+      secuTmpl.setCount(MAX_ATTRIBUTS);
    }
 
    @SuppressWarnings("unchecked")
@@ -154,15 +154,38 @@ public class TraceRegSecuriteDao {
    }
 
    /**
+    * Méthode de suppression d'une ligne TraceRegSecurite
+    * 
+    * @param mutator
+    *           Mutator de <code>TraceRegSecurite</code>
+    * @param code
+    *           identifiant de la trace
+    * @param clock
+    *           horloge de la suppression
+    */
+   public final void mutatorSuppressionDestinataire(Mutator<UUID> mutator,
+         UUID code, long clock) {
+
+      mutator.addDeletion(code, REG_SECURITE_CFNAME, clock);
+   }
+
+   /**
     * 
     * @return Mutator de <code>TraceRegSecurite</code>
     */
-   public final Mutator<String> createMutator() {
+   public final Mutator<UUID> createMutator() {
 
-      Mutator<String> mutator = HFactory.createMutator(keyspace,
-            StringSerializer.get());
+      Mutator<UUID> mutator = HFactory.createMutator(keyspace, UUIDSerializer
+            .get());
 
       return mutator;
 
+   }
+
+   /**
+    * @return le CassandraTemplate de <code>TraceRegSecurite</code>
+    */
+   public final ColumnFamilyTemplate<UUID, String> getSecuTmpl() {
+      return secuTmpl;
    }
 }

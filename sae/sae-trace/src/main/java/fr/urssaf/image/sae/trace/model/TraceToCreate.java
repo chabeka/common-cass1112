@@ -32,7 +32,7 @@ public class TraceToCreate {
    private String login;
 
    /** Code du contrat de service */
-   private String cs;
+   private String contrat;
 
    /** Informations supplémentaires sur la trace */
    private Map<String, Object> infos;
@@ -130,16 +130,16 @@ public class TraceToCreate {
    /**
     * @return le Code du contrat de service
     */
-   public final String getCs() {
-      return cs;
+   public final String getContrat() {
+      return contrat;
    }
 
    /**
-    * @param cs
+    * @param contrat
     *           Code du contrat de service
     */
-   public final void setCs(String cs) {
-      this.cs = cs;
+   public final void setContrat(String contrat) {
+      this.contrat = contrat;
    }
 
    /**
