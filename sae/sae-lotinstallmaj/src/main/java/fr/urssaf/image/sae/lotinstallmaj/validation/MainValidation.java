@@ -122,6 +122,8 @@ public class MainValidation {
          return;
       if (MajLotServiceImpl.CASSANDRA_121110.equalsIgnoreCase(nomOperation))
          return;
+      if ("SUPPRESSION".equalsIgnoreCase(nomOperation))
+         return;
       /*if (MajLotServiceImpl.DFCE_110_CASSANDRA.equalsIgnoreCase(nomOperation))
          return;
       if (MajLotServiceImpl.DFCE_110_INDEX_DATES.equalsIgnoreCase(nomOperation))

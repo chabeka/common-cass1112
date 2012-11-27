@@ -1,18 +1,12 @@
 package fr.urssaf.image.sae.lotinstallmaj.service.impl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import me.prettyprint.cassandra.model.BasicColumnDefinition;
 import me.prettyprint.cassandra.serializers.StringSerializer;
-import me.prettyprint.cassandra.service.CassandraHostConfigurator;
 import me.prettyprint.cassandra.service.ThriftKsDef;
-import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
-import me.prettyprint.cassandra.service.template.ThriftColumnFamilyTemplate;
 import me.prettyprint.hector.api.Cluster;
-import me.prettyprint.hector.api.Keyspace;
 import me.prettyprint.hector.api.ddl.ColumnDefinition;
 import me.prettyprint.hector.api.ddl.ColumnFamilyDefinition;
 import me.prettyprint.hector.api.ddl.ColumnIndexType;
@@ -27,7 +21,6 @@ import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.lotinstallmaj.dao.SAECassandraDao;
 import fr.urssaf.image.sae.lotinstallmaj.exception.MajLotRuntimeException;
-import fr.urssaf.image.sae.lotinstallmaj.modele.CassandraConfig;
 
 /**
  * Classe permettant la mise à jour du schéma du keyspace SAE dans cassandra
@@ -36,6 +29,10 @@ import fr.urssaf.image.sae.lotinstallmaj.modele.CassandraConfig;
 @Component
 public class SAECassandraUpdater {
 
+   /**
+    * 
+    */
+   private static final int VERSION_3 = 3;
    private final String ksName;
    private final Cluster cluster;
    private SAECassandraService saeCassandraService;
@@ -46,13 +43,11 @@ public class SAECassandraUpdater {
    private static final Logger LOG = LoggerFactory
          .getLogger(SAECassandraUpdater.class);
 
-
-
    /**
     * Constructeur
     * 
-    * @param config
-    *           : configuration d'accès au cluster cassandra
+    * @param saeCassandraService
+    *           services pour CASSANDRA
     */
    @Autowired
    public SAECassandraUpdater(SAECassandraService saeCassandraService) {
@@ -200,7 +195,6 @@ public class SAECassandraUpdater {
       cfDefs.add(HFactory.createColumnFamilyDefinition(ksName, "JobHistory",
             ComparatorType.TIMEUUIDTYPE));
 
-
       // Création des CF
 
       saeCassandraService.createColumnFamilyFromList(cfDefs, true);
@@ -216,7 +210,7 @@ public class SAECassandraUpdater {
    public final void updateToVersion3() {
 
       long version = saeDao.getDatabaseVersion();
-      if (version >= 3) {
+      if (version >= VERSION_3) {
          LOG.info("La base de données est déja en version " + version);
          return;
       }
@@ -261,17 +255,16 @@ public class SAECassandraUpdater {
       cfDefs.add(HFactory.createColumnFamilyDefinition(ksName, "DroitPrmd",
             ComparatorType.UTF8TYPE));
 
-
       // Création des CF
-      saeCassandraService.createColumnFamilyFromList(cfDefs, true );
+      saeCassandraService.createColumnFamilyFromList(cfDefs, true);
 
       // ajout des actions unitaires de base
       InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
       donnees.addDroits();
 
       // On positionne la version à 3
-      saeDao.setDatabaseVersion(3L);
+      saeDao.setDatabaseVersion(VERSION_3);
 
    }
-   
+
 }

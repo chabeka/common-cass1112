@@ -24,13 +24,26 @@ import fr.urssaf.image.sae.lotinstallmaj.serializer.PagmSerializer;
  */
 public class InsertionDonnees {
 
+   /**
+    * 
+    */
+   private static final int DEFAULT_CONSERVATION = 7200;
    private Keyspace keyspace;
 
+   /**
+    * Constructeur
+    * 
+    * @param keyspace
+    *           le keyspace CASSANDRA
+    */
    public InsertionDonnees(Keyspace keyspace) {
       this.keyspace = keyspace;
    }
 
-   public void addDroits() {
+   /**
+    * Insertion de données de droits
+    */
+   public final void addDroits() {
       addActionsUnitaires();
       addPrmd();
       addPagma();
@@ -137,7 +150,7 @@ public class InsertionDonnees {
             .get(), PagmSerializer.get(), updater);
       addColumn("description", "accès ancien contrat de service",
             StringSerializer.get(), PagmSerializer.get(), updater);
-      addColumn("viDuree", Long.valueOf(7200), StringSerializer.get(),
+      addColumn("viDuree", Long.valueOf(DEFAULT_CONSERVATION), StringSerializer.get(),
             LongSerializer.get(), updater);
       addColumn("pki", "CN=IGC/A", StringSerializer.get(), StringSerializer
             .get(), updater);

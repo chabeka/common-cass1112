@@ -26,7 +26,6 @@ import org.springframework.stereotype.Service;
 import com.thoughtworks.xstream.XStream;
 
 import fr.urssaf.image.sae.lotinstallmaj.exception.MajLotRuntimeException;
-import fr.urssaf.image.sae.lotinstallmaj.modele.CassandraConfig;
 import fr.urssaf.image.sae.lotinstallmaj.modele.DataBaseModel;
 import fr.urssaf.image.sae.lotinstallmaj.modele.DfceConfig;
 import fr.urssaf.image.sae.lotinstallmaj.modele.SaeCategory;

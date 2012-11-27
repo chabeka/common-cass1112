@@ -66,6 +66,9 @@ public class DFCECassandraUpdater {
       cluster = HFactory.getOrCreateCluster("SAECluster", chc, credentials);
    }
 
+   /**
+    * Mise à jour vers la version 110
+    */
    public final void updateToVersion110() {
 
       LOG.info("Mise à jour du keyspace DFCE en version 1.1.0");
@@ -85,14 +88,14 @@ public class DFCECassandraUpdater {
 
       // DocEventLogByTimeSerialized
 
-      String comparator_alias = "("
+      String comparatorAlias = "("
             + ComparatorType.getByClassName("DateType").getTypeName() + ", "
             + ComparatorType.UUIDTYPE.getTypeName() + ")";
 
       ColumnFamilyDefinition column0 = HFactory
             .createColumnFamilyDefinition(ksName,
                   "DocEventLogByTimeSerialized", ComparatorType.COMPOSITETYPE);
-      column0.setComparatorTypeAlias(comparator_alias);
+      column0.setComparatorTypeAlias(comparatorAlias);
       column0.setRowCacheSize(0);
       column0.setKeyCacheSize(0);
       cfDefs.add(column0);
@@ -102,7 +105,7 @@ public class DFCECassandraUpdater {
       ColumnFamilyDefinition column1 = HFactory.createColumnFamilyDefinition(
             ksName, "SystemEventLogByTimeSerialized",
             ComparatorType.COMPOSITETYPE);
-      column1.setComparatorTypeAlias(comparator_alias);
+      column1.setComparatorTypeAlias(comparatorAlias);
       column1.setRowCacheSize(0);
       column1.setKeyCacheSize(0);
       cfDefs.add(column1);
@@ -148,8 +151,7 @@ public class DFCECassandraUpdater {
       columnMetadata3.add(e31);
 
       ColumnFamilyDefinition column3 = HFactory.createColumnFamilyDefinition(
-            ksName, "JobExecution", ComparatorType.UTF8TYPE,
-            columnMetadata3);
+            ksName, "JobExecution", ComparatorType.UTF8TYPE, columnMetadata3);
       cfDefs.add(column3);
 
       // StepExecution
@@ -205,7 +207,7 @@ public class DFCECassandraUpdater {
                   + " est déjà existante");
          } else {
             LOG.info("Création de la famille de colonnes " + c.getName());
-            cluster.addColumnFamily(c,true);
+            cluster.addColumnFamily(c, true);
          }
       }
 
