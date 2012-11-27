@@ -24,8 +24,6 @@ public class JobNonReinitialisableException extends Exception {
     * 
     * @param jobRequestId
     *           identifiant du job déjà réservé
-    * @param server
-    *           nom du serveur qui a réservé le job
     */
    public JobNonReinitialisableException(UUID jobRequestId) {
 
@@ -61,5 +59,4 @@ public class JobNonReinitialisableException extends Exception {
       return message;
    }
 
-   
 }

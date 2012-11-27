@@ -22,7 +22,7 @@ public class JobQueue {
 
    @Deprecated
    private String parameters;
-   
+
    private Map<String, String> jobParameters;
 
    /**
@@ -72,11 +72,19 @@ public class JobQueue {
       this.parameters = parameters;
    }
 
-   public Map<String, String> getJobParameters() {
+   /**
+    * @return les parametres du job
+    */
+   public final Map<String, String> getJobParameters() {
       return jobParameters;
    }
 
-   public void setJobParameters(Map<String, String> jobParameters) {
+   /**
+    * 
+    * @param jobParameters
+    *           les parametres du job
+    */
+   public final void setJobParameters(Map<String, String> jobParameters) {
       this.jobParameters = jobParameters;
    }
 

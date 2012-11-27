@@ -69,7 +69,6 @@ public class JobsQueueSupport {
 
    }
 
-   
    /**
     * Ajoute un job en attente.
     * 
@@ -83,7 +82,7 @@ public class JobsQueueSupport {
     *           horloge de l'ajout du job en attente
     */
    public final void ajouterJobDansJobQueuesEnWaiting(UUID idJob, String type,
-         Map<String,String> jobParameters, long clock) {
+         Map<String, String> jobParameters, long clock) {
 
       // On utilise un ColumnFamilyUpdater, et on renseigne
       // la valeur de la clé dans la construction de l'updater
@@ -103,7 +102,7 @@ public class JobsQueueSupport {
       this.jobsQueueDao.getJobsQueueTmpl().update(updaterJobQueues);
 
    }
-   
+
    /**
     * Réservation du job : suppression de la file d'attente et ajout dans la
     * file du serveur qui a réservé le job.
@@ -148,8 +147,7 @@ public class JobsQueueSupport {
       mutator.execute();
 
    }
-   
-   
+
    /**
     * Réservation du job : suppression de la file d'attente et ajout dans la
     * file du serveur qui a réservé le job.
@@ -166,7 +164,7 @@ public class JobsQueueSupport {
     *           horloge de réservation du job
     */
    public final void reserverJobDansJobQueues(UUID idJob, String reservedBy,
-         String type, Map<String,String> jobParameters, long clock) {
+         String type, Map<String, String> jobParameters, long clock) {
 
       // Dans la CF JobQueues, on "switch" le job entre :
       // - la clé "jobsWaiting" (suppression)
@@ -265,27 +263,36 @@ public class JobsQueueSupport {
     *           Identifiant du document à mettre à jour
     * @param hote
     *           Nom de l’hôte ayant lancé le traitement
+    * @param parameters
+    *           parametres du job
+    * @param type
+    *           type de job
+    * @param clock
+    *           horloge de la réservation
     */
-   public final void unreservedJob(UUID idJob, String type, String parameters, String hote, long clock) {
- 
+   public final void unreservedJob(UUID idJob, String type, String parameters,
+         String hote, long clock) {
+
       // Création du Mutator
       Mutator<String> mutator = this.jobsQueueDao.createMutator();
-      
+
       JobQueue jobQueue = new JobQueue();
       jobQueue.setIdJob(idJob);
       jobQueue.setType(type);
       jobQueue.setParameters(parameters);
 
       // On ajoute le job dans jobsWaiting
-      this.jobsQueueDao.mutatorAjouterInsertionJobQueue(mutator, JOBS_WAITING_KEY, jobQueue, clock);
-      
+      this.jobsQueueDao.mutatorAjouterInsertionJobQueue(mutator,
+            JOBS_WAITING_KEY, jobQueue, clock);
+
       // On supprime le job dans le reservedBy correspondant
-      this.jobsQueueDao.mutatorAjouterSuppressionJobQueue(mutator, hote, idJob, clock);
-      
+      this.jobsQueueDao.mutatorAjouterSuppressionJobQueue(mutator, hote, idJob,
+            clock);
+
       mutator.execute();
-      
+
    }
-   
+
    /**
     * Met à jour le travail afin qu’il soit à nouveau éligible au lancement par
     * l’ordonnanceur en le replaçant dans la liste des jobs en attente
@@ -293,15 +300,20 @@ public class JobsQueueSupport {
     * @param idJob
     *           Identifiant du document à mettre à jour
     * @param jobParameters
-    *          Objet contenant tous les paramètres du job
+    *           Objet contenant tous les paramètres du job
+    * @param type
+    *           type du job
     * @param hote
     *           Nom de l’hôte ayant lancé le traitement
+    * @param clock
+    *           horloge de déréservation
     */
-   public final void unreservedJob(UUID idJob, String type, Map<String,String> jobParameters, String hote, long clock) {
- 
+   public final void unreservedJob(UUID idJob, String type,
+         Map<String, String> jobParameters, String hote, long clock) {
+
       // Création du Mutator
       Mutator<String> mutator = this.jobsQueueDao.createMutator();
-      
+
       JobQueue jobQueue = new JobQueue();
       jobQueue.setIdJob(idJob);
       jobQueue.setType(type);
@@ -309,13 +321,15 @@ public class JobsQueueSupport {
       jobQueue.setJobParameters(jobParameters);
 
       // On ajoute le job dans jobsWaiting
-      this.jobsQueueDao.mutatorAjouterInsertionJobQueue(mutator, JOBS_WAITING_KEY, jobQueue, clock);
-      
+      this.jobsQueueDao.mutatorAjouterInsertionJobQueue(mutator,
+            JOBS_WAITING_KEY, jobQueue, clock);
+
       // On supprime le job dans le reservedBy correspondant
-      this.jobsQueueDao.mutatorAjouterSuppressionJobQueue(mutator, hote, idJob, clock);
-      
+      this.jobsQueueDao.mutatorAjouterSuppressionJobQueue(mutator, hote, idJob,
+            clock);
+
       mutator.execute();
-      
+
    }
 
 }

@@ -143,6 +143,8 @@ public interface JobQueueService {
     * 
     * @param idJob
     *           identifiant du job
+    * @throws JobNonReinitialisableException
+    *            exception levée lorsque le travail n'est pas réinitialisable
     */
    void resetJob(UUID idJob) throws JobNonReinitialisableException;
 }

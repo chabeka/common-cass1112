@@ -70,7 +70,7 @@ public class JobRequest {
 
    private String toCheckFlagRaison;
 
-   private VIContenuExtrait vi;
+   private VIContenuExtrait viExtrait;
    
    private Map<String, String> jobParameters;
 
@@ -333,15 +333,15 @@ public class JobRequest {
     * @return le contenu du VI
     */
    public final VIContenuExtrait getVi() {
-      return vi;
+      return viExtrait;
    }
 
    /**
-    * @param vi
+    * @param viExtrait
     *           le contenu du VI
     */
-   public final void setVi(VIContenuExtrait vi) {
-      this.vi = vi;
+   public final void setVi(VIContenuExtrait viExtrait) {
+      this.viExtrait = viExtrait;
    }
 
    /**
@@ -349,7 +349,7 @@ public class JobRequest {
     * @return jobParameters
     *                Objet contenant tous les paramètres du job
     */
-   public Map<String, String> getJobParameters() {
+   public final Map<String, String> getJobParameters() {
       return jobParameters;
    }
 
@@ -358,7 +358,7 @@ public class JobRequest {
     * @param jobParameters
     *              Objet contenant tous les paramètres du job
     */
-   public void setJobParameters(Map<String, String> jobParameters) {
+   public final void setJobParameters(Map<String, String> jobParameters) {
       this.jobParameters = jobParameters;
    }
 

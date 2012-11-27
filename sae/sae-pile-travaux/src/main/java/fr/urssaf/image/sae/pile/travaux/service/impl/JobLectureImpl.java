@@ -48,6 +48,8 @@ import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 @Service
 public class JobLectureImpl implements JobLectureService {
 
+   private static final int MAX_ALL_JOBS = 200;
+
    private final JobRequestDao jobRequestDao;
 
    private final JobsQueueDao jobsQueueDao;
@@ -191,13 +193,13 @@ public class JobLectureImpl implements JobLectureService {
       return histories;
 
    }
-   
+
    /**
     * {@inheritDoc}
     */
    @Override
    public final List<JobRequest> getAllJobs(Keyspace keyspace) {
-      return getAllJobs(keyspace, 200);
+      return getAllJobs(keyspace, MAX_ALL_JOBS);
    }
 
    /**
@@ -317,7 +319,7 @@ public class JobLectureImpl implements JobLectureService {
 
    /**
     * {@inheritDoc}
-    */   
+    */
    public final boolean isJobResettable(JobRequest job) {
       String state = job.getState().toString();
       if (state.equals("RESERVED") || state.equals("STARTING")) {
@@ -325,16 +327,17 @@ public class JobLectureImpl implements JobLectureService {
       }
       return false;
    }
-   
+
    /**
     * {@inheritDoc}
     */
    public final boolean isJobRemovable(JobRequest job) {
       String state = job.getState().toString();
-      if (state.equals("CREATED") || state.equals("STARTING") || state.equals("RESERVED")) {
+      if ("CREATED".equals(state) || "STARTING".equals(state)
+            || "RESERVED".equals(state)) {
          return true;
       }
-      return false;      
+      return false;
    }
-   
+
 }

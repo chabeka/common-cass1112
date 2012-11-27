@@ -277,8 +277,12 @@ public class JobRequestSupport {
     * 
     * @param idJob
     *           identifiant du job à mettre à jour
+    * @param etat
+    *           etat du travail
+    * @param clock
+    *           horloge de la remise à zéro
     */
-   public void resetJob(UUID idJob, String etat, long clock) {
+   public final void resetJob(UUID idJob, String etat, long clock) {
 
       // On utilise un ColumnFamilyUpdater, et on renseigne
       // la valeur de la clé dans la construction de l'updater
@@ -305,13 +309,14 @@ public class JobRequestSupport {
       // - la colonne endingDate
       // - la colonne message
 
-      mutator.addDeletion(idJob, "JobRequest", "startingDate", StringSerializer
-            .get());
-      mutator.addDeletion(idJob, "JobRequest", "pid", StringSerializer.get());
-      mutator.addDeletion(idJob, "JobRequest", "endingDate", StringSerializer
-            .get());
-      mutator.addDeletion(idJob, "JobRequest", "message", StringSerializer
-            .get());
+      mutator.addDeletion(idJob, JobRequestDao.JOBREQUEST_CFNAME,
+            "startingDate", StringSerializer.get());
+      mutator.addDeletion(idJob, JobRequestDao.JOBREQUEST_CFNAME, "pid",
+            StringSerializer.get());
+      mutator.addDeletion(idJob, JobRequestDao.JOBREQUEST_CFNAME, "endingDate",
+            StringSerializer.get());
+      mutator.addDeletion(idJob, JobRequestDao.JOBREQUEST_CFNAME, "message",
+            StringSerializer.get());
 
       mutator.execute();
 

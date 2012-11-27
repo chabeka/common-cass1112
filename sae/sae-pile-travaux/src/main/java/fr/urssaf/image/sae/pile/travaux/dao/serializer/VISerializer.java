@@ -11,10 +11,7 @@ import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
  * sérialiseur JSON
  * 
  */
-public class VISerializer extends JacksonSerializer<VIContenuExtrait> {
-
-   public static final VISerializer INSTANCE = new VISerializer(
-         VIContenuExtrait.class);
+public final class VISerializer extends JacksonSerializer<VIContenuExtrait> {
 
    /**
     * Constructeur
@@ -22,7 +19,7 @@ public class VISerializer extends JacksonSerializer<VIContenuExtrait> {
     * @param clazz
     *           classe en entrée
     */
-   public VISerializer(Class<VIContenuExtrait> clazz) {
+   private VISerializer(Class<VIContenuExtrait> clazz) {
       super(clazz);
    }
 
@@ -32,7 +29,16 @@ public class VISerializer extends JacksonSerializer<VIContenuExtrait> {
     * @return un singleton
     */
    public static VISerializer get() {
-      return INSTANCE;
+      return ViSerializerHolder.INSTANCE;
+   }
+
+   private static final class ViSerializerHolder {
+      private ViSerializerHolder() {
+      }
+
+      @SuppressWarnings("PMD.AccessorClassGeneration")
+      private static final VISerializer INSTANCE = new VISerializer(
+            VIContenuExtrait.class);
    }
 
 }

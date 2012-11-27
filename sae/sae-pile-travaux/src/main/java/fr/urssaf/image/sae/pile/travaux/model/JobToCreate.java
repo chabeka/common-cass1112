@@ -28,7 +28,7 @@ public class JobToCreate {
 
    private Integer docCount;
    
-   private VIContenuExtrait vi;
+   private VIContenuExtrait viExtrait;
 
    /**
     * @return the idJob
@@ -148,21 +148,21 @@ public class JobToCreate {
     * @return le contenu du VI
     */
    public final VIContenuExtrait getVi() {
-      return vi;
+      return viExtrait;
    }
 
    /**
-    * @param vi le contenu du VI
+    * @param viExtrait le contenu du VI
     */
-   public final void setVi(VIContenuExtrait vi) {
-      this.vi = vi;
+   public final void setVi(VIContenuExtrait viExtrait) {
+      this.viExtrait = viExtrait;
    }
 
    /**
     * 
     * @return Tous les paramètres du job
     */
-   public Map<String, String> getJobParameters() {
+   public final Map<String, String> getJobParameters() {
       return jobParameters;
    }
 
@@ -170,7 +170,7 @@ public class JobToCreate {
     * 
     * @param jobParameters Les paramètres du job
     */
-   public void setJobParameters(Map<String, String> jobParameters) {
+   public final void setJobParameters(Map<String, String> jobParameters) {
       this.jobParameters = jobParameters;
    }
 

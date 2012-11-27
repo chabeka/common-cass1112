@@ -37,7 +37,7 @@ import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 @Repository
 public class JobRequestDao {
 
-   private static final String JOBREQUEST_CFNAME = "JobRequest";
+   public static final String JOBREQUEST_CFNAME = "JobRequest";
 
    /**
     * Colonne {@value #JR_TYPE_COLUMN}

@@ -9,6 +9,7 @@ import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
 import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 import me.prettyprint.hector.api.beans.HColumn;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,7 +111,7 @@ public class JobQueueServiceImpl implements JobQueueService {
       this.jobRequestSupport.ajouterJobDansJobRequest(jobToCreate, clock);
 
       // Ecriture dans la CF "JobQueues"
-      if (jobToCreate.getParameters() != null) {
+      if (StringUtils.isNotBlank(jobToCreate.getParameters())) {
          this.jobsQueueSupport.ajouterJobDansJobQueuesEnWaiting(jobToCreate
                .getIdJob(), jobToCreate.getType(), jobToCreate.getParameters(),
                clock);
@@ -238,12 +239,12 @@ public class JobQueueServiceImpl implements JobQueueService {
                dateReservation, clock);
 
          // Ecriture dans la CF "JobQueues"
-         if (parameters != null) {
-            this.jobsQueueSupport.reserverJobDansJobQueues(idJob, hostname,
-                  type, parameters, clock);
-         } else {
+         if (parameters == null) {
             this.jobsQueueSupport.reserverJobDansJobQueues(idJob, hostname,
                   type, jobRequest.getJobParameters(), clock);
+         } else {
+            this.jobsQueueSupport.reserverJobDansJobQueues(idJob, hostname,
+                  type, parameters, clock);
          }
 
          // Ecriture dans la CF "JobHistory"
@@ -529,8 +530,7 @@ public class JobQueueServiceImpl implements JobQueueService {
             .getColumn(JobRequestDao.JR_STATE_COLUMN);
 
       String etat = jobRequest.getState().toString();
-      if ("RESERVED".equals(etat)
-            || "STARTING".equals(etat)) {
+      if ("RESERVED".equals(etat) || "STARTING".equals(etat)) {
 
          // Lecture des propriétés du job dont on a besoin
          String type = jobRequest.getType();
@@ -544,10 +544,13 @@ public class JobQueueServiceImpl implements JobQueueService {
          // Ecriture dans la CF "JobRequest"
          this.jobRequestSupport.resetJob(idJob, etat, clock);
 
-         if(parameters!=null){
-            this.jobsQueueSupport.unreservedJob(idJob, type, parameters, reservedBy, clock);
-         }else{
-            this.jobsQueueSupport.unreservedJob(idJob, type, jobRequest.getJobParameters(), reservedBy, clock);
+         if (parameters == null) {
+            this.jobsQueueSupport.unreservedJob(idJob, type, jobRequest
+                  .getJobParameters(), reservedBy, clock);
+
+         } else {
+            this.jobsQueueSupport.unreservedJob(idJob, type, parameters,
+                  reservedBy, clock);
          }
 
          // Ecriture dans la CF "JobHistory"
