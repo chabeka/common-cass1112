@@ -3,6 +3,7 @@ package fr.urssaf.image.sae.services.batch.support.impl;
 import java.net.URI;
 import java.util.UUID;
 
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -78,7 +79,7 @@ public class CaptureMasseSupportImpl implements TraitementExecutionSupport {
 
       }
 
-      if (StringUtils.isNotBlank(job.getParameters())) {
+      if (MapUtils.isNotEmpty(job.getJobParameters())) {
          exitTraitement = captureMasseService.captureMasse(sommaireURL,
                idTraitement, job.getJobParameters().get(Constantes.HASH), job
                      .getJobParameters().get(Constantes.TYPE_HASH));
