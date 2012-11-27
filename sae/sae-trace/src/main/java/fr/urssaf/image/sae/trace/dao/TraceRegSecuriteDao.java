@@ -4,6 +4,7 @@
 package fr.urssaf.image.sae.trace.dao;
 
 import java.util.Date;
+import java.util.Map;
 import java.util.UUID;
 
 import me.prettyprint.cassandra.serializers.DateSerializer;
@@ -20,6 +21,8 @@ import me.prettyprint.hector.api.mutation.Mutator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
+import fr.urssaf.image.sae.trace.dao.serializer.MapSerializer;
 
 /**
  * Service DAO de la famille de colonnes "TraceRegSecurite"
@@ -45,6 +48,9 @@ public class TraceRegSecuriteDao {
 
    /** identifiant utilisateur */
    public static final String COL_LOGIN = "login";
+
+   /** informations supplémentaires */
+   public static final String COL_INFOS = "infos";
 
    private final ColumnFamilyTemplate<UUID, String> secuTmpl;
    private final Keyspace keyspace;
@@ -154,6 +160,22 @@ public class TraceRegSecuriteDao {
    }
 
    /**
+    * ajoute une colonne {@value TraceRegSecuriteDao#COL_INFOS}
+    * 
+    * @param updater
+    *           updater de <b>TraceRegSecurite</b>
+    * @param value
+    *           valeur de la colonne
+    * @param clock
+    *           horloge de la colonne
+    */
+   public final void writeColumnInfos(
+         ColumnFamilyUpdater<UUID, String> updater, Map<String, String> value,
+         long clock) {
+      addColumn(updater, COL_INFOS, value, MapSerializer.get(), clock);
+   }
+
+   /**
     * Méthode de suppression d'une ligne TraceRegSecurite
     * 
     * @param mutator
@@ -163,7 +185,7 @@ public class TraceRegSecuriteDao {
     * @param clock
     *           horloge de la suppression
     */
-   public final void mutatorSuppressionDestinataire(Mutator<UUID> mutator,
+   public final void mutatorSuppressionTraceRegSecurite(Mutator<UUID> mutator,
          UUID code, long clock) {
 
       mutator.addDeletion(code, REG_SECURITE_CFNAME, clock);

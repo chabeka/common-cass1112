@@ -18,6 +18,13 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations = { "/applicationContext-sae-trace-test.xml" })
 public class RegSecuriteServiceTest {
 
+   /**
+    * 
+    */
+   private static final String DATE_DEB_INF_DATE_FIN = "la date de début doit être inférieure à la date de fin";
+
+   private static final String ARG_0 = "{0}";
+
    private static final String MESSAGE_OK = "le message d'erreur doit etre correct";
 
    private static final String ILLEGAL_EXPECTED = "Une exception IllegalArgumentException est attendue";
@@ -36,7 +43,7 @@ public class RegSecuriteServiceTest {
 
       } catch (IllegalArgumentException exception) {
          Assert.assertEquals(MESSAGE_OK,
-               StringUtils.replace(MESSAGE_ERREUR, "{0}", "identifiant"),
+               StringUtils.replace(MESSAGE_ERREUR, ARG_0, "identifiant"),
                exception.getMessage());
 
       } catch (Exception exception) {
@@ -54,7 +61,7 @@ public class RegSecuriteServiceTest {
 
       } catch (IllegalArgumentException exception) {
          Assert.assertEquals(MESSAGE_OK,
-               StringUtils.replace(MESSAGE_ERREUR, "{0}", "date de début"),
+               StringUtils.replace(MESSAGE_ERREUR, ARG_0, "date de début"),
                exception.getMessage());
 
       } catch (Exception exception) {
@@ -72,7 +79,7 @@ public class RegSecuriteServiceTest {
 
       } catch (IllegalArgumentException exception) {
          Assert.assertEquals(MESSAGE_OK,
-               StringUtils.replace(MESSAGE_ERREUR, "{0}", "date de fin"),
+               StringUtils.replace(MESSAGE_ERREUR, ARG_0, "date de fin"),
                exception.getMessage());
 
       } catch (Exception exception) {
@@ -90,7 +97,7 @@ public class RegSecuriteServiceTest {
 
       } catch (IllegalArgumentException exception) {
          Assert.assertEquals(MESSAGE_OK,
-               "la date de début doit être inférieure à la date de fin",
+               DATE_DEB_INF_DATE_FIN,
                exception.getMessage());
 
       } catch (Exception exception) {
@@ -109,7 +116,7 @@ public class RegSecuriteServiceTest {
 
       } catch (IllegalArgumentException exception) {
          Assert.assertEquals(MESSAGE_OK,
-               "la date de début doit être inférieure à la date de fin",
+               DATE_DEB_INF_DATE_FIN,
                exception.getMessage());
 
       } catch (Exception exception) {
@@ -127,7 +134,7 @@ public class RegSecuriteServiceTest {
 
       } catch (IllegalArgumentException exception) {
          Assert.assertEquals(MESSAGE_OK,
-               StringUtils.replace(MESSAGE_ERREUR, "{0}", "limite"), exception
+               StringUtils.replace(MESSAGE_ERREUR, ARG_0, "limite"), exception
                      .getMessage());
 
       } catch (Exception exception) {
@@ -145,7 +152,7 @@ public class RegSecuriteServiceTest {
 
       } catch (IllegalArgumentException exception) {
          Assert.assertEquals(MESSAGE_OK,
-               StringUtils.replace(MESSAGE_ERREUR, "{0}", "date de début"),
+               StringUtils.replace(MESSAGE_ERREUR, ARG_0, "date de début"),
                exception.getMessage());
 
       } catch (Exception exception) {
@@ -163,7 +170,7 @@ public class RegSecuriteServiceTest {
 
       } catch (IllegalArgumentException exception) {
          Assert.assertEquals(MESSAGE_OK,
-               StringUtils.replace(MESSAGE_ERREUR, "{0}", "date de fin"),
+               StringUtils.replace(MESSAGE_ERREUR, ARG_0, "date de fin"),
                exception.getMessage());
 
       } catch (Exception exception) {
@@ -181,7 +188,7 @@ public class RegSecuriteServiceTest {
 
       } catch (IllegalArgumentException exception) {
          Assert.assertEquals(MESSAGE_OK,
-               "la date de début doit être inférieure à la date de fin",
+               DATE_DEB_INF_DATE_FIN,
                exception.getMessage());
 
       } catch (Exception exception) {
@@ -200,7 +207,7 @@ public class RegSecuriteServiceTest {
 
       } catch (IllegalArgumentException exception) {
          Assert.assertEquals(MESSAGE_OK,
-               "la date de début doit être inférieure à la date de fin",
+               DATE_DEB_INF_DATE_FIN,
                exception.getMessage());
 
       } catch (Exception exception) {
