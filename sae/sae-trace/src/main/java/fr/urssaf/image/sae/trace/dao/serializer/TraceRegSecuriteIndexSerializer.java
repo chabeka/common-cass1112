@@ -29,7 +29,7 @@ public class TraceRegSecuriteIndexSerializer extends
     * 
     * @return
     */
-   public static TraceRegSecuriteIndexSerializer getInstance() {
+   public static TraceRegSecuriteIndexSerializer get() {
       return TraceRegSecuriteIndexSerializerHolder.INSTANCE;
    }
 

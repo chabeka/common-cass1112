@@ -3,9 +3,18 @@
  */
 package fr.urssaf.image.sae.trace.dao.iterator;
 
+import java.util.Date;
 import java.util.Iterator;
+import java.util.UUID;
+
+import me.prettyprint.cassandra.service.ColumnSliceIterator;
+import me.prettyprint.hector.api.beans.HColumn;
+import me.prettyprint.hector.api.query.SliceQuery;
+
+import org.apache.commons.lang.NotImplementedException;
 
 import fr.urssaf.image.sae.trace.dao.model.TraceRegSecuriteIndex;
+import fr.urssaf.image.sae.trace.dao.serializer.TraceRegSecuriteIndexSerializer;
 
 /**
  * Itérateur sur les index des traces de sécurité
@@ -14,13 +23,43 @@ import fr.urssaf.image.sae.trace.dao.model.TraceRegSecuriteIndex;
 public class TraceRegSecuriteIndexIterator implements
       Iterator<TraceRegSecuriteIndex> {
 
+   private final ColumnSliceIterator<Date, UUID, TraceRegSecuriteIndex> sliceIterator;
+
+   /**
+    * Constructeur
+    * 
+    * @param sliceQuery
+    *           La requête cassandra permettant de faire l'itération
+    */
+   public TraceRegSecuriteIndexIterator(
+         SliceQuery<Date, UUID, TraceRegSecuriteIndex> sliceQuery) {
+      sliceIterator = new ColumnSliceIterator<Date, UUID, TraceRegSecuriteIndex>(
+            sliceQuery, (UUID) null, (UUID) null, false);
+   }
+
+   /**
+    * Constructeur
+    * 
+    * @param sliceQuery
+    *           La requête cassandra permettant de faire l'itération
+    * @param start
+    *           TimeUUID de la première colonne
+    * @param end
+    *           TimeUUID de la dernière colonne
+    */
+   public TraceRegSecuriteIndexIterator(
+         SliceQuery<Date, UUID, TraceRegSecuriteIndex> sliceQuery, UUID start,
+         UUID end) {
+      sliceIterator = new ColumnSliceIterator<Date, UUID, TraceRegSecuriteIndex>(
+            sliceQuery, start, end, false);
+   }
+
    /**
     * {@inheritDoc}
     */
    @Override
    public boolean hasNext() {
-      // TODO Auto-generated method stub
-      return false;
+      return sliceIterator.hasNext();
    }
 
    /**
@@ -28,8 +67,9 @@ public class TraceRegSecuriteIndexIterator implements
     */
    @Override
    public TraceRegSecuriteIndex next() {
-      // TODO Auto-generated method stub
-      return null;
+      HColumn<UUID, TraceRegSecuriteIndex> column = sliceIterator.next();
+      return TraceRegSecuriteIndexSerializer.get().fromByteBuffer(
+            column.getValueBytes());
    }
 
    /**
@@ -37,8 +77,8 @@ public class TraceRegSecuriteIndexIterator implements
     */
    @Override
    public void remove() {
-      // TODO Auto-generated method stub
-      
+      throw new NotImplementedException();
+
    }
 
 }
