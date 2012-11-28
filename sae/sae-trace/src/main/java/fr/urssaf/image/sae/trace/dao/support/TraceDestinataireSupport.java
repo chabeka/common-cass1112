@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
 import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
@@ -16,6 +17,11 @@ import me.prettyprint.hector.api.mutation.Mutator;
 import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.google.common.cache.CacheLoader.InvalidCacheLoadException;
 
 import fr.urssaf.image.sae.trace.dao.TraceDestinataireDao;
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
@@ -29,8 +35,32 @@ import fr.urssaf.image.sae.trace.exception.TraceRuntimeException;
 @Component
 public class TraceDestinataireSupport {
 
+   private static final int LIFE_DURATION = 10;
+
+   private final TraceDestinataireDao dao;
+
+   private final LoadingCache<String, TraceDestinataire> traces;
+
+   /**
+    * Constructeur
+    * 
+    * @param dao
+    *           DAO des traces destinataires
+    */
    @Autowired
-   private TraceDestinataireDao dao;
+   public TraceDestinataireSupport(TraceDestinataireDao dao) {
+      this.dao = dao;
+      traces = CacheBuilder.newBuilder().expireAfterWrite(LIFE_DURATION,
+            TimeUnit.MINUTES).build(
+            new CacheLoader<String, TraceDestinataire>() {
+
+               @Override
+               public TraceDestinataire load(String identifiant) {
+                  return findById(identifiant);
+               }
+
+            });
+   }
 
    /**
     * Création d'une colonne
@@ -79,6 +109,15 @@ public class TraceDestinataireSupport {
     * @return l'enregistrement de la trace destinataire correspondante
     */
    public final TraceDestinataire find(String code) {
+      try {
+         return this.traces.getUnchecked(code);
+
+      } catch (InvalidCacheLoadException exception) {
+         throw new TraceRuntimeException(exception);
+      }
+   }
+
+   private TraceDestinataire findById(String code) {
       ColumnFamilyTemplate<String, String> tmpl = dao.getDestTmpl();
       ColumnFamilyResult<String, String> result = tmpl.queryColumns(code);
 
@@ -116,7 +155,7 @@ public class TraceDestinataireSupport {
 
       TraceDestinataire trace = null;
 
-      if (result != null && result.hasNext()) {
+      if (result != null && result.hasResults()) {
          trace = new TraceDestinataire();
          trace.setCodeEvt(result.getKey());
 
@@ -131,7 +170,9 @@ public class TraceDestinataireSupport {
          List<String> values;
          for (String colName : colNames) {
             values = getListFromResult(colName, result);
-            destinataires.put(colName, values);
+            if (values != null) {
+               destinataires.put(colName, values);
+            }
          }
 
          trace.setDestinataires(destinataires);

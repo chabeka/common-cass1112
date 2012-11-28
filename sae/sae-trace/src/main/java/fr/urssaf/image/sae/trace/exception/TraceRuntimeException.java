@@ -21,4 +21,14 @@ public class TraceRuntimeException extends RuntimeException {
       super(message);
    }
 
+   /**
+    * Constructeur
+    * 
+    * @param exception
+    *           exception mère
+    */
+   public TraceRuntimeException(Exception exception) {
+      super(exception);
+   }
+
 }

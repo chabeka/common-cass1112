@@ -31,6 +31,28 @@ public class TraceRegTechniqueIndex {
    private String contrat;
 
    /**
+    * constructeur par défaut
+    */
+   public TraceRegTechniqueIndex() {
+      // constructeur par défaut
+   }
+
+   /**
+    * Constructeur
+    * 
+    * @param trace
+    *           trace technique
+    */
+   public TraceRegTechniqueIndex(TraceRegTechnique trace) {
+      this.codeEvt = trace.getCodeEvt();
+      this.contexte = trace.getContexte();
+      this.contrat = trace.getContrat();
+      this.identifiant = trace.getIdentifiant();
+      this.login = trace.getLogin();
+      this.timestamp = trace.getTimestamp();
+   }
+
+   /**
     * @return l'Identifiant de la trace
     */
    public final UUID getIdentifiant() {

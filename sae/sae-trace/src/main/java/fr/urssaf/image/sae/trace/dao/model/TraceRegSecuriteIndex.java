@@ -31,6 +31,28 @@ public class TraceRegSecuriteIndex {
    private String contrat;
 
    /**
+    * Constructeur par défaut
+    */
+   public TraceRegSecuriteIndex() {
+      // constructeur par défaut
+   }
+
+   /**
+    * Constructeur
+    * 
+    * @param trace
+    *           trace de sécurité
+    */
+   public TraceRegSecuriteIndex(TraceRegSecurite trace) {
+      this.codeEvt = trace.getCodeEvt();
+      this.contexte = trace.getContexte();
+      this.contrat = trace.getContrat();
+      this.identifiant = trace.getIdentifiant();
+      this.login = trace.getLogin();
+      this.timestamp = trace.getTimestamp();
+   }
+
+   /**
     * @return l'Identifiant de la trace
     */
    public final UUID getIdentifiant() {
