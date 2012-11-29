@@ -107,16 +107,13 @@ public class TraceRegSecuriteIndexDao {
     *           Mutator de <code>TraceRegSecuriteIndex</code>
     * @param code
     *           identifiant de la ligne d'index
-    * @param uuid
-    *           identifiant de la trace
     * @param clock
     *           horloge de la suppression
     */
-   public final void mutatorSuppressionTraceRegSecuriteIndex(Mutator<Date> mutator,
-         Date code, UUID uuid, long clock) {
+   public final void mutatorSuppressionTraceRegSecuriteIndex(
+         Mutator<Date> mutator, Date code, long clock) {
 
-      mutator.addDeletion(code, REG_SECURITE_INDEX_CFNAME, uuid, UUIDSerializer
-            .get(), clock);
+      mutator.addDeletion(code, REG_SECURITE_INDEX_CFNAME, clock);
    }
 
    /**

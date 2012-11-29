@@ -46,12 +46,23 @@ public class TraceRegTechniqueIndexIterator implements
     *           TimeUUID de la première colonne
     * @param end
     *           TimeUUID de la dernière colonne
+    * @param reversed
+    *           booleen indiquant si l'ordre décroissant doit etre appliqué<br>
+    *           <ul>
+    *           <li>true : ordre décroissant</li>
+    *           <li>false : ordre croissant</li>
+    *           </ul>
     */
    public TraceRegTechniqueIndexIterator(
          SliceQuery<Date, UUID, TraceRegTechniqueIndex> sliceQuery, UUID start,
-         UUID end) {
-      sliceIterator = new ColumnSliceIterator<Date, UUID, TraceRegTechniqueIndex>(
-            sliceQuery, start, end, false);
+         UUID end, boolean reversed) {
+      if (reversed) {
+         sliceIterator = new ColumnSliceIterator<Date, UUID, TraceRegTechniqueIndex>(
+               sliceQuery, end, start, reversed);
+      } else {
+         sliceIterator = new ColumnSliceIterator<Date, UUID, TraceRegTechniqueIndex>(
+               sliceQuery, start, end, reversed);
+      }
    }
 
    /**

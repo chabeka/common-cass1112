@@ -1,7 +1,7 @@
 /**
  * 
  */
-package fr.urssaf.image.sae.trace.service.dao.support;
+package fr.urssaf.image.sae.trace.dao.support;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -23,7 +23,6 @@ import com.google.common.cache.CacheLoader.InvalidCacheLoadException;
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.sae.trace.dao.TraceDestinataireDao;
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
-import fr.urssaf.image.sae.trace.dao.support.TraceDestinataireSupport;
 import fr.urssaf.image.sae.trace.exception.TraceRuntimeException;
 
 @RunWith(SpringJUnit4ClassRunner.class)

@@ -12,6 +12,7 @@ import java.util.UUID;
 import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
 import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
+import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 import me.prettyprint.hector.api.mutation.Mutator;
 import me.prettyprint.hector.api.query.SliceQuery;
 
@@ -78,27 +79,29 @@ public class TraceRegTechniqueSupport {
    }
 
    /**
-    * suppression d'une trace du registre technique
+    * Suppression de toutes les traces et index
     * 
-    * @param identifiant
-    *           identifiant de la trace
+    * @param date
+    *           date pour laquelle supprimer toutes les traces
     * @param clock
     *           horloge de la suppression
     */
-   public final void delete(UUID identifiant, long clock) {
-      // récupération de la date pour la suppression de l'index
-      Date date = DateUtils.truncate(find(identifiant).getTimestamp(),
-            Calendar.DATE);
+   public final void delete(Date date, long clock) {
 
-      // suppression de la ligne
-      Mutator<UUID> mutator = dao.createMutator();
-      dao.mutatorSuppressionTraceRegTechnique(mutator, identifiant, clock);
-      mutator.execute();
+      SliceQuery<Date, UUID, TraceRegTechniqueIndex> sliceQuery;
+      sliceQuery = indexDao.createSliceQuery();
+      Date dateRef = DateUtils.truncate(date, Calendar.DATE);
+      sliceQuery.setKey(dateRef);
+
+      TraceRegTechniqueIndexIterator iterator = new TraceRegTechniqueIndexIterator(
+            sliceQuery);
+
+      deleteRecords(iterator, clock);
 
       // suppression de l'index
       Mutator<Date> indexMutator = indexDao.createMutator();
-      indexDao.mutatorSuppressionTraceRegTechniqueIndex(indexMutator, date,
-            identifiant, clock);
+      indexDao.mutatorSuppressionTraceRegTechniqueIndex(indexMutator, dateRef,
+            clock);
       indexMutator.execute();
 
    }
@@ -124,23 +127,66 @@ public class TraceRegTechniqueSupport {
     *           date à laquelle rechercher les traces
     * @return la liste des traces techniques
     */
-   public final List<TraceRegTechnique> findByDate(Date date) {
+   public final List<TraceRegTechniqueIndex> findByDate(Date date) {
       SliceQuery<Date, UUID, TraceRegTechniqueIndex> sliceQuery = indexDao
             .createSliceQuery();
       sliceQuery.setKey(DateUtils.truncate(date, Calendar.DATE));
 
-      List<TraceRegTechnique> list = null;
+      List<TraceRegTechniqueIndex> list = null;
       TraceRegTechniqueIndexIterator iterator = new TraceRegTechniqueIndexIterator(
             sliceQuery);
 
       if (iterator.hasNext()) {
-         list = new ArrayList<TraceRegTechnique>();
+         list = new ArrayList<TraceRegTechniqueIndex>();
       }
 
-      TraceRegTechniqueIndex index;
       while (iterator.hasNext()) {
-         index = iterator.next();
-         list.add(find(index.getIdentifiant()));
+         list.add(iterator.next());
+      }
+
+      return list;
+   }
+
+   /**
+    * recherche et retourne la liste des traces de technique pour un intervalle
+    * de dates données
+    * 
+    * @param startDate
+    *           date de début de recherche
+    * @param endDate
+    *           date de fin de recherche
+    * @param maxCount
+    *           nombre maximal d'enregistrements à retourner
+    * @param reversed
+    *           booleen indiquant si l'ordre décroissant doit etre appliqué<br>
+    *           <ul>
+    *           <li>true : ordre décroissant</li>
+    *           <li>false : ordre croissant</li>
+    *           </ul>
+    * @return la liste des traces techniques
+    */
+   public final List<TraceRegTechniqueIndex> findByDates(Date startDate,
+         Date endDate, int maxCount, boolean reversed) {
+      List<TraceRegTechniqueIndex> list = null;
+
+      SliceQuery<Date, UUID, TraceRegTechniqueIndex> sliceQuery = indexDao
+            .createSliceQuery();
+      sliceQuery.setKey(DateUtils.truncate(startDate, Calendar.DATE));
+
+      UUID startUuid = TimeUUIDUtils.getTimeUUID(startDate.getTime());
+      UUID endUuid = TimeUUIDUtils.getTimeUUID(endDate.getTime());
+
+      TraceRegTechniqueIndexIterator iterator = new TraceRegTechniqueIndexIterator(
+            sliceQuery, startUuid, endUuid, reversed);
+
+      if (iterator.hasNext()) {
+         list = new ArrayList<TraceRegTechniqueIndex>();
+      }
+
+      int count = 0;
+      while (iterator.hasNext() && count < maxCount) {
+         list.add(iterator.next());
+         count++;
       }
 
       return list;
@@ -175,5 +221,17 @@ public class TraceRegTechniqueSupport {
       }
 
       return exploit;
+   }
+
+   private void deleteRecords(TraceRegTechniqueIndexIterator iterator,
+         long clock) {
+
+      // suppression de toutes les traces
+      Mutator<UUID> mutator = dao.createMutator();
+      while (iterator.hasNext()) {
+         dao.mutatorSuppressionTraceRegTechnique(mutator, iterator.next()
+               .getIdentifiant(), clock);
+      }
+      mutator.execute();
    }
 }

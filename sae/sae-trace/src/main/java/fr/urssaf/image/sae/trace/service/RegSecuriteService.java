@@ -24,8 +24,15 @@ public interface RegSecuriteService extends RegService<TraceRegSecurite> {
     *           date de fin de la plage de temps
     * @param limite
     *           Nombre de traces maximum à récupérer
+    * @param reversed
+    *           booleen indiquant si l'ordre décroissant doit etre appliqué<br>
+    *           <ul>
+    *           <li>true : ordre décroissant</li>
+    *           <li>false : ordre croissant</li>
+    *           </ul>
     * @return une liste de traces de sécurité contenues dans l'index
     */
-   List<TraceRegSecuriteIndex> lecture(Date dateDebut, Date dateFin, int limite);
+   List<TraceRegSecuriteIndex> lecture(Date dateDebut, Date dateFin,
+         int limite, boolean reversed);
 
 }

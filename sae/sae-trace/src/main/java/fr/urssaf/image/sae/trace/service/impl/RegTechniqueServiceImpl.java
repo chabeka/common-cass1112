@@ -3,15 +3,22 @@
  */
 package fr.urssaf.image.sae.trace.service.impl;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.lang.time.DateUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegTechnique;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegTechniqueIndex;
+import fr.urssaf.image.sae.trace.dao.support.TraceRegTechniqueSupport;
 import fr.urssaf.image.sae.trace.service.RegTechniqueService;
+import fr.urssaf.image.sae.trace.utils.DateRegUtils;
 
 /**
  * Classe d'implémentation du support {@link RegTechniqueService}. Cette classe
@@ -22,14 +29,44 @@ import fr.urssaf.image.sae.trace.service.RegTechniqueService;
 @Service
 public class RegTechniqueServiceImpl implements RegTechniqueService {
 
+   @Autowired
+   private TraceRegTechniqueSupport support;
+   
+   @Autowired
+   private JobClockSupport clockSupport;
+
    /**
     * {@inheritDoc}
     */
    @Override
-   public final List<TraceRegTechniqueIndex> lecture(Date dateDebut, Date dateFin,
-         int limite) {
-      // TODO Auto-generated method stub
-      return null;
+   public final List<TraceRegTechniqueIndex> lecture(Date dateDebut,
+         Date dateFin, int limite, boolean reversed) {
+
+      int sizeMax = limite;
+      Date endDate = dateFin;
+      List<TraceRegTechniqueIndex> list = new ArrayList<TraceRegTechniqueIndex>(
+            limite);
+      Date startDate = DateRegUtils.getFirstDate(dateDebut, dateFin);
+      List<TraceRegTechniqueIndex> result;
+
+      do {
+         result = support.findByDates(startDate, endDate, sizeMax, reversed);
+
+         if (result != null) {
+            list.addAll(result);
+         }
+         sizeMax = limite - list.size();
+
+         endDate = startDate;
+         startDate = DateRegUtils.getStartDate(startDate, dateDebut);
+
+      } while (startDate.compareTo(dateDebut) >= 0 && sizeMax > 0);
+
+      if (list.isEmpty()) {
+         list = null;
+      }
+
+      return list;
    }
 
    /**
@@ -37,8 +74,7 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
     */
    @Override
    public final TraceRegTechnique lecture(UUID identifiant) {
-      // TODO Auto-generated method stub
-      return null;
+      return support.find(identifiant);
    }
 
    /**
@@ -46,7 +82,16 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
     */
    @Override
    public final void purge(Date dateDebut, Date dateFin) {
-      // TODO Auto-generated method stub
+
+      Date date = DateUtils.truncate(dateDebut, Calendar.DATE);
+      Date endDate = DateUtils.truncate(dateFin, Calendar.DATE);
+
+      do {
+
+         support.delete(date, clockSupport.currentCLock());
+         date = DateUtils.addDays(date, 1);
+
+      } while (date.compareTo(endDate) <= 0);
 
    }
 

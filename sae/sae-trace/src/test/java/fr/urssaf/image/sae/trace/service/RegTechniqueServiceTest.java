@@ -61,7 +61,7 @@ public class RegTechniqueServiceTest {
    public void testLectureDateDebutObligatoire() {
 
       try {
-         service.lecture(null, null, 0);
+         service.lecture(null, null, 0, true);
          Assert.fail(ILLEGAL_EXPECTED);
 
       } catch (IllegalArgumentException exception) {
@@ -78,7 +78,7 @@ public class RegTechniqueServiceTest {
    public void testLectureDateFinObligatoire() {
 
       try {
-         service.lecture(new Date(), null, 0);
+         service.lecture(new Date(), null, 0, true);
          Assert.fail(ILLEGAL_EXPECTED);
 
       } catch (IllegalArgumentException exception) {
@@ -95,7 +95,8 @@ public class RegTechniqueServiceTest {
    public void testLectureDateDebutInfDateFin() {
 
       try {
-         service.lecture(DateUtils.addHours(new Date(), 2), new Date(), 0);
+         service
+               .lecture(DateUtils.addHours(new Date(), 2), new Date(), 0, true);
          Assert.fail(ILLEGAL_EXPECTED);
 
       } catch (IllegalArgumentException exception) {
@@ -113,7 +114,7 @@ public class RegTechniqueServiceTest {
 
       try {
          Date date = new Date();
-         service.lecture(date, date, 0);
+         service.lecture(date, date, 0, true);
          Assert.fail(ILLEGAL_EXPECTED);
 
       } catch (IllegalArgumentException exception) {
@@ -130,7 +131,8 @@ public class RegTechniqueServiceTest {
    public void testLectureLimiteObligatoire() {
 
       try {
-         service.lecture(new Date(), DateUtils.addHours(new Date(), 2), 0);
+         service
+               .lecture(new Date(), DateUtils.addHours(new Date(), 2), 0, true);
          Assert.fail(ILLEGAL_EXPECTED);
 
       } catch (IllegalArgumentException exception) {

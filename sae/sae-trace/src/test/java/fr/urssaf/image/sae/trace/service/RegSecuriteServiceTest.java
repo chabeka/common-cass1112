@@ -42,9 +42,8 @@ public class RegSecuriteServiceTest {
          Assert.fail(ILLEGAL_EXPECTED);
 
       } catch (IllegalArgumentException exception) {
-         Assert.assertEquals(MESSAGE_OK,
-               StringUtils.replace(MESSAGE_ERREUR, ARG_0, "identifiant"),
-               exception.getMessage());
+         Assert.assertEquals(MESSAGE_OK, StringUtils.replace(MESSAGE_ERREUR,
+               ARG_0, "identifiant"), exception.getMessage());
 
       } catch (Exception exception) {
          Assert.fail(ILLEGAL_EXPECTED);
@@ -56,13 +55,12 @@ public class RegSecuriteServiceTest {
    public void testLectureDateDebutObligatoire() {
 
       try {
-         service.lecture(null, null, 0);
+         service.lecture(null, null, 0, true);
          Assert.fail(ILLEGAL_EXPECTED);
 
       } catch (IllegalArgumentException exception) {
-         Assert.assertEquals(MESSAGE_OK,
-               StringUtils.replace(MESSAGE_ERREUR, ARG_0, "date de début"),
-               exception.getMessage());
+         Assert.assertEquals(MESSAGE_OK, StringUtils.replace(MESSAGE_ERREUR,
+               ARG_0, "date de début"), exception.getMessage());
 
       } catch (Exception exception) {
          Assert.fail(ILLEGAL_EXPECTED);
@@ -74,13 +72,12 @@ public class RegSecuriteServiceTest {
    public void testLectureDateFinObligatoire() {
 
       try {
-         service.lecture(new Date(), null, 0);
+         service.lecture(new Date(), null, 0, true);
          Assert.fail(ILLEGAL_EXPECTED);
 
       } catch (IllegalArgumentException exception) {
-         Assert.assertEquals(MESSAGE_OK,
-               StringUtils.replace(MESSAGE_ERREUR, ARG_0, "date de fin"),
-               exception.getMessage());
+         Assert.assertEquals(MESSAGE_OK, StringUtils.replace(MESSAGE_ERREUR,
+               ARG_0, "date de fin"), exception.getMessage());
 
       } catch (Exception exception) {
          Assert.fail(ILLEGAL_EXPECTED);
@@ -92,13 +89,13 @@ public class RegSecuriteServiceTest {
    public void testLectureDateDebutInfDateFin() {
 
       try {
-         service.lecture(DateUtils.addHours(new Date(), 2), new Date(), 0);
+         service
+               .lecture(DateUtils.addHours(new Date(), 2), new Date(), 0, true);
          Assert.fail(ILLEGAL_EXPECTED);
 
       } catch (IllegalArgumentException exception) {
-         Assert.assertEquals(MESSAGE_OK,
-               DATE_DEB_INF_DATE_FIN,
-               exception.getMessage());
+         Assert.assertEquals(MESSAGE_OK, DATE_DEB_INF_DATE_FIN, exception
+               .getMessage());
 
       } catch (Exception exception) {
          Assert.fail(ILLEGAL_EXPECTED);
@@ -111,13 +108,12 @@ public class RegSecuriteServiceTest {
 
       try {
          Date date = new Date();
-         service.lecture(date, date, 0);
+         service.lecture(date, date, 0, true);
          Assert.fail(ILLEGAL_EXPECTED);
 
       } catch (IllegalArgumentException exception) {
-         Assert.assertEquals(MESSAGE_OK,
-               DATE_DEB_INF_DATE_FIN,
-               exception.getMessage());
+         Assert.assertEquals(MESSAGE_OK, DATE_DEB_INF_DATE_FIN, exception
+               .getMessage());
 
       } catch (Exception exception) {
          Assert.fail(ILLEGAL_EXPECTED);
@@ -129,13 +125,13 @@ public class RegSecuriteServiceTest {
    public void testLectureLimiteObligatoire() {
 
       try {
-         service.lecture(new Date(), DateUtils.addHours(new Date(), 2), 0);
+         service
+               .lecture(new Date(), DateUtils.addHours(new Date(), 2), 0, true);
          Assert.fail(ILLEGAL_EXPECTED);
 
       } catch (IllegalArgumentException exception) {
-         Assert.assertEquals(MESSAGE_OK,
-               StringUtils.replace(MESSAGE_ERREUR, ARG_0, "limite"), exception
-                     .getMessage());
+         Assert.assertEquals(MESSAGE_OK, StringUtils.replace(MESSAGE_ERREUR,
+               ARG_0, "limite"), exception.getMessage());
 
       } catch (Exception exception) {
          Assert.fail(ILLEGAL_EXPECTED);
@@ -151,9 +147,8 @@ public class RegSecuriteServiceTest {
          Assert.fail(ILLEGAL_EXPECTED);
 
       } catch (IllegalArgumentException exception) {
-         Assert.assertEquals(MESSAGE_OK,
-               StringUtils.replace(MESSAGE_ERREUR, ARG_0, "date de début"),
-               exception.getMessage());
+         Assert.assertEquals(MESSAGE_OK, StringUtils.replace(MESSAGE_ERREUR,
+               ARG_0, "date de début"), exception.getMessage());
 
       } catch (Exception exception) {
          Assert.fail(ILLEGAL_EXPECTED);
@@ -169,9 +164,8 @@ public class RegSecuriteServiceTest {
          Assert.fail(ILLEGAL_EXPECTED);
 
       } catch (IllegalArgumentException exception) {
-         Assert.assertEquals(MESSAGE_OK,
-               StringUtils.replace(MESSAGE_ERREUR, ARG_0, "date de fin"),
-               exception.getMessage());
+         Assert.assertEquals(MESSAGE_OK, StringUtils.replace(MESSAGE_ERREUR,
+               ARG_0, "date de fin"), exception.getMessage());
 
       } catch (Exception exception) {
          Assert.fail(ILLEGAL_EXPECTED);
@@ -187,9 +181,8 @@ public class RegSecuriteServiceTest {
          Assert.fail(ILLEGAL_EXPECTED);
 
       } catch (IllegalArgumentException exception) {
-         Assert.assertEquals(MESSAGE_OK,
-               DATE_DEB_INF_DATE_FIN,
-               exception.getMessage());
+         Assert.assertEquals(MESSAGE_OK, DATE_DEB_INF_DATE_FIN, exception
+               .getMessage());
 
       } catch (Exception exception) {
          Assert.fail(ILLEGAL_EXPECTED);
@@ -206,9 +199,8 @@ public class RegSecuriteServiceTest {
          Assert.fail(ILLEGAL_EXPECTED);
 
       } catch (IllegalArgumentException exception) {
-         Assert.assertEquals(MESSAGE_OK,
-               DATE_DEB_INF_DATE_FIN,
-               exception.getMessage());
+         Assert.assertEquals(MESSAGE_OK, DATE_DEB_INF_DATE_FIN, exception
+               .getMessage());
 
       } catch (Exception exception) {
          Assert.fail(ILLEGAL_EXPECTED);

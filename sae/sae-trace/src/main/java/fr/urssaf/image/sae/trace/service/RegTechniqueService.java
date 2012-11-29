@@ -24,9 +24,16 @@ public interface RegTechniqueService extends RegService<TraceRegTechnique> {
     *           date de fin de la plage de temps
     * @param limite
     *           Nombre de traces maximum à récupérer
+    * @param reversed
+    *           booleen indiquant si l'ordre décroissant doit etre appliqué<br>
+    *           <ul>
+    *           <li>true : ordre décroissant</li>
+    *           <li>false : ordre croissant</li>
+    *           </ul>
     * @return une liste de traces de surveillance technique contenues dans
     *         l'index
     */
-   List<TraceRegTechniqueIndex> lecture(Date dateDebut, Date dateFin, int limite);
+   List<TraceRegTechniqueIndex> lecture(Date dateDebut, Date dateFin,
+         int limite, boolean reversed);
 
 }

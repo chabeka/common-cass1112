@@ -21,8 +21,8 @@ public class RegSpecifiquesServiceValidation {
 
    private static final String CLASS_NAME = "fr.urssaf.image.sae.trace.service.*.";
    private static final String LECTURE_METHOD = "execution(java.util.List "
-         + CLASS_NAME + "lecture(*,*,*))"
-         + " && args(dateDebut, dateFin, limite)";
+         + CLASS_NAME + "lecture(*,*,*,*))"
+         + " && args(dateDebut, dateFin, limite, reversed)";
 
    /**
     * Réalise la validation de la méthode lecture
@@ -33,9 +33,17 @@ public class RegSpecifiquesServiceValidation {
     *           date de fin
     * @param limite
     *           nombre maximum d'enregistrements
+    * @param reversed
+    *           boolean pour savoir si l'ordre est décroissant ou non<br>
+    *           <ul>
+    *           <li>true : décroissant</li>
+    *           <li>false : croissant</li>
+    *           </ul>
+    * 
     */
    @Before(LECTURE_METHOD)
-   public final void testLecture(Date dateDebut, Date dateFin, int limite) {
+   public final void testLecture(Date dateDebut, Date dateFin, int limite,
+         boolean reversed) {
 
       if (dateDebut == null) {
          throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,

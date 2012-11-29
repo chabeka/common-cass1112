@@ -12,6 +12,7 @@ import java.util.UUID;
 import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
 import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
+import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 import me.prettyprint.hector.api.mutation.Mutator;
 import me.prettyprint.hector.api.query.SliceQuery;
 
@@ -76,28 +77,31 @@ public class TraceRegSecuriteSupport {
    }
 
    /**
-    * Suppression d'une trace dans le registre de sécurité
+    * Suppression de toutes les traces et index
     * 
-    * @param identifiant
-    *           identifiant de la trace à supprimer
+    * @param date
+    *           date à laquelle supprimer les traces
     * @param clock
     *           horloge de la suppression
     */
-   public final void delete(UUID identifiant, long clock) {
-      // récupération de la date pour pouvoir réaliser la suppression de l'index
-      Date date = DateUtils.truncate(find(identifiant).getTimestamp(),
-            Calendar.DATE);
+   public final void delete(Date date, long clock) {
 
-      // suppression de la trace
-      Mutator<UUID> mutator = dao.createMutator();
-      dao.mutatorSuppressionTraceRegSecurite(mutator, identifiant, clock);
-      mutator.execute();
+      SliceQuery<Date, UUID, TraceRegSecuriteIndex> sliceQuery;
+      sliceQuery = indexDao.createSliceQuery();
+      Date dateRef = DateUtils.truncate(date, Calendar.DATE);
+      sliceQuery.setKey(dateRef);
+
+      TraceRegSecuriteIndexIterator iterator = new TraceRegSecuriteIndexIterator(
+            sliceQuery);
+
+      deleteRecords(iterator, clock);
 
       // suppression de l'index
       Mutator<Date> indexMutator = indexDao.createMutator();
-      indexDao.mutatorSuppressionTraceRegSecuriteIndex(indexMutator, date,
-            identifiant, clock);
+      indexDao.mutatorSuppressionTraceRegSecuriteIndex(indexMutator, dateRef,
+            clock);
       indexMutator.execute();
+
    }
 
    /**
@@ -122,23 +126,66 @@ public class TraceRegSecuriteSupport {
     *           la date à laquelle rechercher les traces
     * @return la liste des traces de sécurité
     */
-   public final List<TraceRegSecurite> findByDate(Date date) {
+   public final List<TraceRegSecuriteIndex> findByDate(Date date) {
       SliceQuery<Date, UUID, TraceRegSecuriteIndex> sliceQuery = indexDao
             .createSliceQuery();
       sliceQuery.setKey(DateUtils.truncate(date, Calendar.DATE));
 
-      List<TraceRegSecurite> list = null;
+      List<TraceRegSecuriteIndex> list = null;
       TraceRegSecuriteIndexIterator iterator = new TraceRegSecuriteIndexIterator(
             sliceQuery);
 
       if (iterator.hasNext()) {
-         list = new ArrayList<TraceRegSecurite>();
+         list = new ArrayList<TraceRegSecuriteIndex>();
       }
 
-      TraceRegSecuriteIndex index;
       while (iterator.hasNext()) {
-         index = iterator.next();
-         list.add(find(index.getIdentifiant()));
+         list.add(iterator.next());
+      }
+
+      return list;
+   }
+
+   /**
+    * recherche et retourne la liste des traces de sécurité pour un intervalle
+    * de dates données
+    * 
+    * @param startDate
+    *           date de début de recherche
+    * @param endDate
+    *           date de fin de recherche
+    * @param maxCount
+    *           nombre maximal d'enregistrements à retourner
+    * @param reversed
+    *           booleen indiquant si l'ordre décroissant doit etre appliqué<br>
+    *           <ul>
+    *           <li>true : ordre décroissant</li>
+    *           <li>false : ordre croissant</li>
+    *           </ul>
+    * @return la liste des traces de sécurité
+    */
+   public final List<TraceRegSecuriteIndex> findByDates(Date startDate,
+         Date endDate, int maxCount, boolean reversed) {
+      List<TraceRegSecuriteIndex> list = null;
+
+      SliceQuery<Date, UUID, TraceRegSecuriteIndex> sliceQuery = indexDao
+            .createSliceQuery();
+      sliceQuery.setKey(DateUtils.truncate(startDate, Calendar.DATE));
+
+      UUID startUuid = TimeUUIDUtils.getTimeUUID(startDate.getTime());
+      UUID endUuid = TimeUUIDUtils.getTimeUUID(endDate.getTime());
+
+      TraceRegSecuriteIndexIterator iterator = new TraceRegSecuriteIndexIterator(
+            sliceQuery, startUuid, endUuid, reversed);
+
+      if (iterator.hasNext()) {
+         list = new ArrayList<TraceRegSecuriteIndex>();
+      }
+
+      int count = 0;
+      while (iterator.hasNext() && count < maxCount) {
+         list.add(iterator.next());
+         count++;
       }
 
       return list;
@@ -170,5 +217,16 @@ public class TraceRegSecuriteSupport {
       }
 
       return securite;
+   }
+
+   private void deleteRecords(TraceRegSecuriteIndexIterator iterator, long clock) {
+
+      // suppression de toutes les traces
+      Mutator<UUID> mutator = dao.createMutator();
+      while (iterator.hasNext()) {
+         dao.mutatorSuppressionTraceRegSecurite(mutator, iterator.next()
+               .getIdentifiant(), clock);
+      }
+      mutator.execute();
    }
 }
