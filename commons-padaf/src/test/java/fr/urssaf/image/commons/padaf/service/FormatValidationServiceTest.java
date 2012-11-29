@@ -1,4 +1,4 @@
-package fr.urssaf.image.commons.pdfbox.service;
+package fr.urssaf.image.commons.padaf.service;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -15,8 +15,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.urssaf.image.commons.pdfbox.exception.FormatValidationException;
-import fr.urssaf.image.commons.pdfbox.service.impl.FormatValidationServiceImpl;
+import fr.urssaf.image.commons.padaf.exception.FormatValidationException;
+import fr.urssaf.image.commons.padaf.service.impl.FormatValidationServiceImpl;
 
 /**
  * Tests unitaires de la classe FormatValidationService
@@ -110,7 +110,7 @@ public class FormatValidationServiceTest {
    public void verif_conformite_sur_un_fichier()
          throws FormatValidationException {
 
-      String path = "S:/produits/Qualite/Projet_ae/Documentation refonte/Refonte/Développement/00015 - Gestion des formats/01 - Eléments de support/Isartor testsuite/PDFA-1b/6.3 Fonts/6.3.3 Composite fonts/6.3.3.3 CMaps/isartor-6-3-3-3-t01-fail-a.pdf";
+      String path = "S:/produits/Qualite/Projet_ae/Documentation refonte/Refonte/Développement/00015 - Gestion des formats/01 - Eléments de support/Bavaria testsuite/conforming/Real world/LT_demo.pdf";
       File file = new File(path);
 
       FormatValidationService formatValService = new FormatValidationServiceImpl();
@@ -137,7 +137,7 @@ public class FormatValidationServiceTest {
    public void verif_conformite_sur_un_repertoire() {
 
       // Chemin du répertoire à tester
-      
+
       // Bavaria - fichiers conformes
       // String path = "S:/produits/Qualite/Projet_ae/Documentation refonte/Refonte/Développement/00015 - Gestion des formats/01 - Eléments de support/Bavaria testsuite/conforming";
       
@@ -154,7 +154,6 @@ public class FormatValidationServiceTest {
       // String path = "S:/produits/Qualite/Projet_ae/Documentation refonte/Refonte/Développement/00015 - Gestion des formats/01 - Eléments de support/PDF_récupéré_serveur_intégration_saeint3/";
       String path = "S:/produits/Qualite/Projet_ae/Documentation refonte/Refonte/Développement/00015 - Gestion des formats/01 - Eléments de support/PDF_dans_le_SAE_de_prod/";
       
-
       // Instantiation du service
       FormatValidationService formatValService = new FormatValidationServiceImpl();
 

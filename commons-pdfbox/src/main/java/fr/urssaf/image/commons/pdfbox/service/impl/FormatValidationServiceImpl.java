@@ -13,6 +13,7 @@ import org.apache.pdfbox.preflight.parser.PreflightParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.urssaf.image.commons.pdfbox.exception.FormatValidationException;
 import fr.urssaf.image.commons.pdfbox.service.FormatValidationService;
 
 /**
@@ -29,14 +30,15 @@ public final class FormatValidationServiceImpl implements
     */
    @Override
    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-   public List<String> validate(final File file) throws IOException {
+   public List<String> validate(final File file) throws FormatValidationException {
 
       final List<String> result = new ArrayList<String>();
 
       ValidationResult pdfboxResult;
-      PreflightParser parser = new PreflightParser(file);
       try {
 
+         PreflightParser parser = new PreflightParser(file);
+         
          /*
           * Parse the PDF file with PreflightParser that inherits from the
           * NonSequentialParser. Some additional controls are present to check a
@@ -64,6 +66,15 @@ public final class FormatValidationServiceImpl implements
           */
          // In this case, the exception contains an instance of ValidationResult
          pdfboxResult = e.getResult();
+         
+      } catch (IOException e) {
+         LOGGER.debug("Exception levée lors de la validation du fichier {} : {}",
+               file.getAbsolutePath(), e);
+         throw new FormatValidationException(e.getMessage(), e);
+      } catch (RuntimeException e) {
+         LOGGER.debug("Exception levée lors de la validation du fichier {} : {}",
+               file.getAbsolutePath(), e);
+         throw new FormatValidationException(e.getMessage(), e);
       }
 
       // Construit la liste des erreurs de validation dans l'objet résultat

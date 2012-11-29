@@ -1,9 +1,9 @@
-package fr.urssaf.image.commons.pdfbox.service;
+package fr.urssaf.image.commons.padaf.service;
 
 import java.io.File;
 import java.util.List;
 
-import fr.urssaf.image.commons.pdfbox.exception.FormatValidationException;
+import fr.urssaf.image.commons.padaf.exception.FormatValidationException;
 
 /**
  * Service de validation d'un format de fichier
