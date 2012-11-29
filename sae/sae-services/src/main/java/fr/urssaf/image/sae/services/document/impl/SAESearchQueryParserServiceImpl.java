@@ -36,10 +36,13 @@ public class SAESearchQueryParserServiceImpl implements
    /**
     * {@inheritDoc}
     */
+   @Override
    public final String convertFromLongToShortCode(String requeteFinal,
          List<String> listeCodeLong) throws SyntaxLuceneEx, SAESearchServiceEx,
          SAESearchQueryParseException {
-
+         
+      String requeteAvecCodeCourt = StringUtils.EMPTY;
+      
       // définition de la liste des opérateurs qu'on peut trouver dans une
       // requête.
       List<String> operateurList = new ArrayList<String>();
@@ -61,29 +64,29 @@ public class SAESearchQueryParserServiceImpl implements
          throw new SAESearchServiceEx(ResourceMessagesUtils
                .loadMessage("search.referentiel.error"), e);
       }
+      String requeteATraiter = requeteFinal;
 
-      String requete = StringUtils.EMPTY;
       // on remplace tous les " AND " et " OR " par $%#A#%$ et $%#O#%$
       // respectivement
-      requeteFinal = requeteFinal.replace(" AND ", "§%#&#%§£");
-      requeteFinal = requeteFinal.replace(" OR ", "§%#|#%§£");
+      requeteATraiter = requeteATraiter.replace(" AND ", "§%#&#%§£");
+      requeteATraiter = requeteATraiter.replace(" OR ", "§%#|#%§£");
       // on remplace tous les espaces qui suivi par un + ou un -
       // on utilise $1 et $2 poure reconstruire la châine. l'expression
       // régulière (\\w{1})\\s+((\\+|\\-)[A-Z]{1}) remplace la chaine "a +A"
       // ou "b -C" par ¤¤£. le $1 et $2 permettent de récupère le "a" et le
       // "A" pour reconstituer la chaîne originale
-      requeteFinal = requeteFinal.replaceAll("(\\w{1})\\s+((\\+|\\-)[A-Z]{1})",
+      requeteATraiter = requeteATraiter.replaceAll("(\\w{1})\\s+((\\+|\\-)[A-Z]{1})",
             "$1¤¤£$2");
       // on remplace tous les espaces précédé par un "
-      requeteFinal = requeteFinal.replaceAll("(\")\\s+|(\\))\\s+", "$1$2@@£");
+      requeteATraiter = requeteATraiter.replaceAll("(\")\\s+|(\\))\\s+", "$1$2@@£");
 
       // on décompose la chaime entière pour avoir un tableau de métadonnées
       // String[] meta = requeteFinal.split("§%#.#%§£");
-      String[] meta = requeteFinal.split("£");
+      String[] meta = requeteATraiter.split("£");
 
       // on supprime tout sauf les sépartateurs afin de garder la séquence
       // des AND et des OR pour la reconstruction de la requête
-      String copieRequeteFinale = requeteFinal;
+      String copieRequeteFinale = requeteATraiter;
       // on remplace tous sauf les tokens afin d'enregistrer la position de
       // chaque opérateurs ou espace
       copieRequeteFinale = copieRequeteFinale.replaceAll(
@@ -144,7 +147,9 @@ public class SAESearchQueryParserServiceImpl implements
       }
 
       // on doit avoir le même nombre de code court que de code long
-      if (meta.length != metaCourt.size()) {
+      if (meta.length == metaCourt.size()) {
+         requeteAvecCodeCourt = rebuidQuery(metaCourt, position);
+      } else {
          LOG
                .error("Erreur le nombre de code court est inférieure à celui attendu");
          LOG.error("Liste des métadonnées longues : {}", meta);
@@ -152,44 +157,54 @@ public class SAESearchQueryParserServiceImpl implements
                .toString(metaCourt));
          throw new SAESearchQueryParseException(ResourceMessagesUtils
                .loadMessage("search.parse.error"));
-      } else {
-         // construction de la requête avec le code court
-         for (int i = 0; i < metaCourt.size(); i++) {
-            // on a plusieurs cas possibles, une combinaison de AND OR et
-            // d'espaces. Si on a m1:v1 +m2:v2 AND m3:v3 on aura un tablea de
-            // position de taille 2 avec [vide,AND] on va donc devoir tester
-            // la longeur de la chaîne pour savoir s'il faut mettre un espace
-            if (position.length > 0) {
-               if (i < position.length) {
-                  // on vérifie la longeur de la chaîne si elle est > 0 c'est
-                  // un token sinon c'est un espace
-                  if (position[i].length() > 0) {
-                     requete += metaCourt.get(i) + position[i];
-                  } else {
-                     requete += metaCourt.get(i) + " ";
-                  }
+
+      }
+
+
+      return requeteAvecCodeCourt;
+   }
+   
+   private String rebuidQuery(List<String> metaCourt, String[] position){
+      String requete = StringUtils.EMPTY;
+      // construction de la requête avec le code court
+      for (int i = 0; i < metaCourt.size(); i++) {
+         // on a plusieurs cas possibles, une combinaison de AND OR et
+         // d'espaces. Si on a m1:v1 +m2:v2 AND m3:v3 on aura un tablea de
+         // position de taille 2 avec [vide,AND] on va donc devoir tester
+         // la longeur de la chaîne pour savoir s'il faut mettre un espace
+         if (position.length > 0) {
+            if (i < position.length) {
+               // on vérifie la longeur de la chaîne si elle est > 0 c'est
+               // un token sinon c'est un espace
+               if (position[i].length() > 0) {
+                  requete = requete.concat(metaCourt.get(i));
+                  requete = requete.concat(position[i]);
                } else {
-                  // dernière méta donnée
-                  requete += metaCourt.get(i);
+                  requete =requete.concat(metaCourt.get(i));
+                  requete =requete.concat(" ");
                }
             } else {
-               // cas ou on a pas d'opérateur OR NOT ou AND mais que des
-               // espaces et ou ce n'est pas la dernière métadonnée
-               if (i < metaCourt.size() - 1) {
-                  requete += metaCourt.get(i) + " ";
-               } else {
-                  requete += metaCourt.get(i);
-               }
+               // dernière méta donnée
+               requete = requete.concat(metaCourt.get(i));
+            }
+         } else {
+            // cas ou on a pas d'opérateur OR NOT ou AND mais que des
+            // espaces et ou ce n'est pas la dernière métadonnée
+            if (i < metaCourt.size() - 1) {
+               requete =requete.concat( metaCourt.get(i));
+               requete =requete.concat(" ");
+            } else {
+               requete =requete.concat(metaCourt.get(i));
             }
          }
       }
-
       // remplacer les tokens par les filtres de départ. Le £ le figure plus
       // dans les tokens puisqu'il a été utilisé pour splitter la requête.
       requete = requete.replace("§%#&#%§", " AND ");
       requete = requete.replace("§%#|#%§", " OR ");
       requete = requete.replace("¤¤", " ");
       requete = requete.replace("@@", " ");
+      
       return requete;
    }
 
