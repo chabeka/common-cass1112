@@ -316,6 +316,7 @@
                     </archive>
                 </configuration>
                 <executions>
+                    <!--
                     <execution>
                         <id>attach-sources</id>
                         <phase>verify</phase>
@@ -323,7 +324,15 @@
                             <goal>jar</goal>
                         </goals>
                     </execution>
+                    -->
+                    <execution>
+                        <id>bind-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
                 </executions>
+                
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
