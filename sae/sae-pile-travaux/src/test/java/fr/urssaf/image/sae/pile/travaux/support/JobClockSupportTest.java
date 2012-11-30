@@ -1,6 +1,8 @@
 package fr.urssaf.image.sae.pile.travaux.support;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import junit.framework.Assert;
@@ -61,11 +63,14 @@ public class JobClockSupportTest {
       UUID idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
 
       Date dateCreation = new Date();
+      
+      Map<String,String> jobParam= new HashMap<String, String>();
+      jobParam.put("parameters", "param");
 
       JobToCreate job = new JobToCreate();
       job.setIdJob(idJob);
       job.setType("type");
-      job.setParameters("parametres");
+      job.setJobParameters(jobParam);
       job.setCreationDate(dateCreation);
 
       jobQueueService.addJob(job);

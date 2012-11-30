@@ -512,7 +512,7 @@ public class JobRequestDao {
          ColumnFamilyUpdater<UUID, String> updater, Map<String,String> valeur, long clock) {
 
       addColumn(updater, JR_JOB_PARAM_COLUMN, valeur, StringSerializer.get(),
-            StringSerializer.get(), clock);
+            MapSerializer.get(), clock);
 
    }
 

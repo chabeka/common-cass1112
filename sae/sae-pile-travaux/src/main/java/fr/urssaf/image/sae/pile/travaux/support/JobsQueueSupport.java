@@ -93,7 +93,6 @@ public class JobsQueueSupport {
       JobQueue jobQueue = new JobQueue();
       jobQueue.setIdJob(idJob);
       jobQueue.setType(type);
-      jobQueue.setParameters(null);
       jobQueue.setJobParameters(jobParameters);
       this.jobsQueueDao.ecritColonneJobQueue(updaterJobQueues, idJob, jobQueue,
             clock);
@@ -180,7 +179,6 @@ public class JobsQueueSupport {
       JobQueue jobQueue = new JobQueue();
       jobQueue.setIdJob(idJob);
       jobQueue.setType(type);
-      jobQueue.setParameters(null);
       jobQueue.setJobParameters(jobParameters);
       this.jobsQueueDao.mutatorAjouterInsertionJobQueue(mutator, reservedBy,
             jobQueue, clock);
@@ -317,7 +315,6 @@ public class JobsQueueSupport {
       JobQueue jobQueue = new JobQueue();
       jobQueue.setIdJob(idJob);
       jobQueue.setType(type);
-      jobQueue.setParameters(null);
       jobQueue.setJobParameters(jobParameters);
 
       // On ajoute le job dans jobsWaiting

@@ -1,8 +1,10 @@
 package fr.urssaf.image.sae.pile.travaux.service;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import me.prettyprint.cassandra.utils.TimeUUIDUtils;
@@ -140,8 +142,8 @@ public class JobQueueServiceResetJobTest {
             jobQueueEnAttente);
       Assert.assertEquals("le type de traitement est inattendu",
             "ArchivageMasse", jobQueueEnAttente.getType());
-      Assert.assertEquals("les paramètres sont inattendus", "parameters",
-            jobQueueEnAttente.getParameters());
+      Assert.assertEquals("les paramètres sont inattendus", "param",
+            jobQueueEnAttente.getJobParameters().get("parameters"));
 
       Iterator<JobQueue> jobQueues = jobLectureService
             .getNonTerminatedSimpleJobs(reservedBy).iterator();
@@ -186,10 +188,13 @@ public class JobQueueServiceResetJobTest {
 
       Date dateCreation = new Date();
 
+      Map<String,String> jobParam= new HashMap<String, String>();
+      jobParam.put("parameters", "param");
+      
       JobToCreate job = new JobToCreate();
       job.setIdJob(idJob);
       job.setType("ArchivageMasse");
-      job.setParameters("parameters");
+      job.setJobParameters(jobParam);
       job.setClientHost("clientHost");
       job.setDocCount(100);
       job.setSaeHost("saeHost");

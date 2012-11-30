@@ -51,8 +51,11 @@ public class JobRequestSupport {
       // Ecriture des colonnes
       jobRequestDao.ecritColonneType(updaterJobRequest, jobToCreate.getType(),
             clock);
-      jobRequestDao.ecritColonneParameters(updaterJobRequest, jobToCreate
-            .getParameters(), clock);
+      if (jobToCreate.getParameters() != null) {
+         jobRequestDao.ecritColonneParameters(updaterJobRequest, jobToCreate
+               .getParameters(), clock);
+      }
+      
       if (jobToCreate.getJobParameters() != null) {
          jobRequestDao.ecritColonneJobParameters(updaterJobRequest, jobToCreate
                .getJobParameters(), clock);

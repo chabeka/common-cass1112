@@ -1,7 +1,9 @@
 package fr.urssaf.image.sae.pile.travaux.service;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import me.prettyprint.cassandra.utils.TimeUUIDUtils;
@@ -136,11 +138,13 @@ public class JobQueueServiceRenseignerPidJobTest {
    private void createJob(UUID idJob) {
 
       Date dateCreation = new Date();
-
+      Map<String,String> jobParam= new HashMap<String, String>();
+      jobParam.put("parameters", "param");
+      
       JobToCreate job = new JobToCreate();
       job.setIdJob(idJob);
       job.setType("ArchivageMasse");
-      job.setParameters("parameters");
+      job.setJobParameters(jobParam);
       job.setClientHost("clientHost");
       job.setDocCount(100);
       job.setSaeHost("saeHost");

@@ -3,9 +3,11 @@ package fr.urssaf.image.sae.pile.travaux.service;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
 
 import me.prettyprint.cassandra.utils.TimeUUIDUtils;
@@ -224,11 +226,13 @@ public class JobLectureServiceTest {
    }
 
    private void createJob(UUID idJob) {
-
+      Map<String,String> jobParam= new HashMap<String, String>();
+      jobParam.put("parameters", "param");
+      
       JobToCreate job = new JobToCreate();
       job.setIdJob(idJob);
       job.setType("ArchivageMasse");
-      job.setParameters("parameters");
+      job.setJobParameters(jobParam);
       job.setCreationDate(new Date());
 
       jobQueueService.addJob(job);
