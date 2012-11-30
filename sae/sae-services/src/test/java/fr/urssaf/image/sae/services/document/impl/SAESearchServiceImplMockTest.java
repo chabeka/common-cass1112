@@ -1,7 +1,5 @@
 package fr.urssaf.image.sae.services.document.impl;
 
-import static org.junit.Assert.fail;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

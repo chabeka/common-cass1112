@@ -104,45 +104,9 @@ public class SAESearchQueryParserServiceImpl implements
          m = m.replace("@@", StringUtils.EMPTY);
          m = m.replace("¤¤", StringUtils.EMPTY);
 
-         String nomMeta = m.substring(0, m.indexOf(":"));
-         String codeCourt = StringUtils.EMPTY;
+         // on recherche les codes court pour les codes longs présents dans la requête
+         findCodeCourtForCodeLong(operateurList, m, map, metaCourt);
 
-         // on vérifie qu'il n'existe pas d'autres opérateurs + - ( NOT ou
-         // une combinaison d'opérateurs
-         // si on détecte la présence d'un ou de plusieurs de ces opérateurs
-         // on ajuste la position de départ
-         // ces opérateurs seront présents uniquement en début de chaîne et
-         // pas en fin de chaîne car il ne peut pas y avoir d'opérateurs
-         // entre la métadonnée et ":"
-         int startPosition = 0;
-         for (String op : operateurList) {
-            int nbOccurence = StringUtils.countMatches(nomMeta, op);
-            if (nbOccurence > 0) {
-               // on doit prendre en compte la longueur de l'opérateur. en
-               // effet "+" est de longueur 1 donc le nombre d'occurence
-               // correspond au nombre de caractères à prendre en compte. Par
-               // contre "NOT" est de longueur 3, si on considère uniquement le
-               // nombre d'occurence, le nombre de caractère à prendre en
-               // compte sera faux. il faut donc multiplier le nombre
-               // d'occurence par la longueur. pour 1 occurence le nombre de
-               // caractère a prendre en compte est de 3.
-               startPosition += (nbOccurence * op.length());
-            }
-
-         }
-
-         for (Map.Entry<String, String> e : map.entrySet()) {
-            if (e.getValue().equals(
-                  nomMeta.substring(startPosition, nomMeta.length()))) {
-               codeCourt = e.getKey();
-            }
-         }
-
-         // replacer les codes longs par les codes courts
-         if (codeCourt != null && codeCourt != StringUtils.EMPTY) {
-            metaCourt.add(m.replaceFirst(nomMeta.substring(startPosition,
-                  nomMeta.length()), codeCourt));
-         }
 
       }
 
@@ -206,6 +170,50 @@ public class SAESearchQueryParserServiceImpl implements
       requete = requete.replace("@@", " ");
       
       return requete;
+   }
+   
+   private void findCodeCourtForCodeLong(List<String> operateurList, String metaLong, Map<String, String> CodeCourtCodeLong, List<String> metaCourt ){
+      
+      String nomMeta = metaLong.substring(0, metaLong.indexOf(":"));
+      String codeCourt = StringUtils.EMPTY;
+      
+      // on vérifie qu'il n'existe pas d'autres opérateurs + - ( NOT ou
+      // une combinaison d'opérateurs
+      // si on détecte la présence d'un ou de plusieurs de ces opérateurs
+      // on ajuste la position de départ
+      // ces opérateurs seront présents uniquement en début de chaîne et
+      // pas en fin de chaîne car il ne peut pas y avoir d'opérateurs
+      // entre la métadonnée et ":"
+      int startPosition = 0;
+      for (String op : operateurList) {
+         int nbOccurence = StringUtils.countMatches(nomMeta, op);
+         if (nbOccurence > 0) {
+            // on doit prendre en compte la longueur de l'opérateur. en
+            // effet "+" est de longueur 1 donc le nombre d'occurence
+            // correspond au nombre de caractères à prendre en compte. Par
+            // contre "NOT" est de longueur 3, si on considère uniquement le
+            // nombre d'occurence, le nombre de caractère à prendre en
+            // compte sera faux. il faut donc multiplier le nombre
+            // d'occurence par la longueur. pour 1 occurence le nombre de
+            // caractère a prendre en compte est de 3.
+            startPosition += (nbOccurence * op.length());
+         }
+
+      }
+
+      for (Map.Entry<String, String> e : CodeCourtCodeLong.entrySet()) {
+         if (e.getValue().equals(
+               nomMeta.substring(startPosition, nomMeta.length()))) {
+            codeCourt = e.getKey();
+         }
+      }
+
+      // replacer les codes longs par les codes courts
+      if (codeCourt != null && codeCourt != StringUtils.EMPTY) {
+         metaCourt.add(metaLong.replaceFirst(nomMeta.substring(startPosition,
+               nomMeta.length()), codeCourt));
+      }
+      
    }
 
 }
