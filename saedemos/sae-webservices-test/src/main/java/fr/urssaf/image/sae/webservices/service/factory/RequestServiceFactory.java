@@ -12,6 +12,8 @@ import org.apache.commons.collections.CollectionUtils;
 
 import fr.urssaf.image.sae.webservices.factory.ObjectModeleFactory;
 import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.ArchivageMasse;
+import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.ArchivageMasseAvecHash;
+import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.ArchivageMasseAvecHashRequestType;
 import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.ArchivageMasseRequestType;
 import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.ArchivageUnitaire;
 import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.ArchivageUnitairePJ;
@@ -323,7 +325,36 @@ public final class RequestServiceFactory {
 
    }
    
-   
+   /**
+    * 
+    * @param url
+    *           L'URL ECDE du fichier sommaire.xml décrivant le traitement de
+    *           masse
+    * @param hash
+    *            Hash du fichier sommaire.xml
+    * @param typeHash
+    *            l'ago de hash utilisé
+    * @return instance de {@link ArchivageMasse}
+    */
+   public static ArchivageMasseAvecHash createArchivageMasseAvecHash(URI url, String hash, String typeHash) {
+
+      ArchivageMasseAvecHash request = new ArchivageMasseAvecHash();
+
+      ArchivageMasseAvecHashRequestType requestType = new ArchivageMasseAvecHashRequestType();
+      request.setArchivageMasseAvecHash(requestType);
+
+      EcdeUrlSommaireType urlType = new EcdeUrlSommaireType();
+
+      urlType.setEcdeUrlSommaireType(ConverterUtil.convertToAnyURI(url
+            .toASCIIString()));
+      requestType.setUrlSommaire(urlType);
+      requestType.setHash(hash);
+      requestType.setTypeHash(typeHash);
+      
+
+      return request;
+
+   }
    
 
 }
