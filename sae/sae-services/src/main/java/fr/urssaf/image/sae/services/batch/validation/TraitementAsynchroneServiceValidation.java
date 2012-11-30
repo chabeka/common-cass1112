@@ -3,11 +3,13 @@ package fr.urssaf.image.sae.services.batch.validation;
 import java.text.MessageFormat;
 import java.util.UUID;
 
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 
 import fr.urssaf.image.sae.services.batch.model.CaptureMasseParametres;
+import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
 
 /**
  * Classe de validation des arguments en entrée des implémentations du service
@@ -45,10 +47,17 @@ public class TraitementAsynchroneServiceValidation {
                "parametres"));
       }
 
-      if (StringUtils.isBlank(parametres.getEcdeURL())) {
-
-         throw new IllegalArgumentException(MessageFormat.format(ARG_EMPTY,
-               "urlEcde"));
+      if(!MapUtils.isEmpty(parametres.getJobParameters())){
+         if(StringUtils.isBlank(parametres.getJobParameters().get(Constantes.ECDE_URL))){
+            throw new IllegalArgumentException(MessageFormat.format(ARG_EMPTY,
+            "urlEcde"));
+         }
+      }else{
+         if (StringUtils.isBlank(parametres.getEcdeURL())) {
+   
+            throw new IllegalArgumentException(MessageFormat.format(ARG_EMPTY,
+                  "urlEcde"));
+         }
       }
 
       if (parametres.getUuid() == null) {

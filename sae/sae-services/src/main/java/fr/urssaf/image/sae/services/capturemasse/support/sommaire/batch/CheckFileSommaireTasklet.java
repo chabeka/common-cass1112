@@ -24,8 +24,8 @@ import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireE
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireFileNotFoundException;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireHashException;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireTypeHashException;
-import fr.urssaf.image.sae.services.capturemasse.support.ecde.EcdeControleSupport;
 import fr.urssaf.image.sae.services.capturemasse.support.ecde.EcdeSommaireFileSupport;
+import fr.urssaf.image.sae.services.controles.SAEControleSupportService;
 
 /**
  * Tasklet pour la vérification du fichier sommaire.xml
@@ -38,7 +38,7 @@ public class CheckFileSommaireTasklet implements Tasklet {
    private EcdeSommaireFileSupport fileSupport;
 
    @Autowired
-   private EcdeControleSupport controleSupport;
+   private SAEControleSupportService controleSupport;
 
    /**
     * {@inheritDoc}

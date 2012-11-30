@@ -2,6 +2,8 @@ package fr.urssaf.image.sae.services.batch;
 
 import java.net.URI;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import me.prettyprint.cassandra.utils.TimeUUIDUtils;
@@ -107,11 +109,13 @@ public class TraitementAsynchroneServiceTest {
 
       // création d'un traitement de capture en masse
       idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
-
+      Map<String,String> jobParam= new HashMap<String, String>();
+      jobParam.put("ECDE_URL", "ecde://ecde.cer69.recouv/sommaire.xml");
+      
       JobToCreate jobToCreate = new JobToCreate();
       jobToCreate.setIdJob(idJob);
       jobToCreate.setType(TRAITEMENT_TYPE);
-      jobToCreate.setParameters("ecde://ecde.cer69.recouv/sommaire.xml");
+      jobToCreate.setJobParameters(jobParam);
 
       jobQueueService.addJob(jobToCreate);
       jobQueueService.reserveJob(idJob, "hostname", new Date());
@@ -121,7 +125,7 @@ public class TraitementAsynchroneServiceTest {
       exitTraitement.setExitMessage("message de sortie en succès");
       EasyMock.expect(
             captureMasseService.captureMasse(URI.create(jobToCreate
-                  .getParameters()), idJob)).andReturn(exitTraitement);
+                  .getJobParameters().get("ECDE_URL")), idJob)).andReturn(exitTraitement);
 
       EasyMock.replay(captureMasseService);
 
@@ -146,11 +150,13 @@ public class TraitementAsynchroneServiceTest {
 
       // création d'un traitement de capture en masse
       idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
-
+      Map<String,String> jobParam= new HashMap<String, String>();
+      jobParam.put("ECDE_URL", "ecde://ecde.cer69.recouv/sommaire.xml");
+      
       JobToCreate jobToCreate = new JobToCreate();
       jobToCreate.setIdJob(idJob);
       jobToCreate.setType(TRAITEMENT_TYPE);
-      jobToCreate.setParameters("ecde://ecde.cer69.recouv/sommaire.xml");
+      jobToCreate.setJobParameters(jobParam);
 
       jobQueueService.addJob(jobToCreate);
       jobQueueService.reserveJob(idJob, "hostname", new Date());
@@ -160,7 +166,7 @@ public class TraitementAsynchroneServiceTest {
       exitTraitement.setExitMessage("message de sortie en échec");
       EasyMock.expect(
             captureMasseService.captureMasse(URI.create(jobToCreate
-                  .getParameters()), idJob)).andReturn(exitTraitement);
+                  .getJobParameters().get("ECDE_URL")), idJob)).andReturn(exitTraitement);
 
       EasyMock.replay(captureMasseService);
 
@@ -187,10 +193,13 @@ public class TraitementAsynchroneServiceTest {
       // création d'un traitement de capture en masse
       idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
 
+      Map<String,String> jobParam= new HashMap<String, String>();
+      jobParam.put("ECDE_URL", "ecde://azaz^^/sommaire.xml");
+      
       JobToCreate jobToCreate = new JobToCreate();
       jobToCreate.setIdJob(idJob);
       jobToCreate.setType(TRAITEMENT_TYPE);
-      jobToCreate.setParameters("ecde://azaz^^/sommaire.xml");
+      jobToCreate.setJobParameters(jobParam);
 
       jobQueueService.addJob(jobToCreate);
       jobQueueService.reserveJob(idJob, "hostname", new Date());
@@ -206,7 +215,7 @@ public class TraitementAsynchroneServiceTest {
                   "le message de sortie du job dans la pile des travaux est inattendu",
                   "Le traitement n°" + idJob
                         + " a des paramètres inattendu : '"
-                        + job.getParameters() + "'.", job.getMessage());
+                        + job.getJobParameters().get("ECDE_URL") + "'.", job.getMessage());
 
    }
 
@@ -217,10 +226,13 @@ public class TraitementAsynchroneServiceTest {
       // création d'un traitement de capture en masse
       idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
 
+      Map<String,String> jobParam= new HashMap<String, String>();
+      jobParam.put("PARAM", "");
+      
       JobToCreate job = new JobToCreate();
       job.setIdJob(idJob);
       job.setType(TRAITEMENT_TYPE);
-      job.setParameters("");
+      job.setJobParameters(jobParam);
       jobQueueService.addJob(job);
 
       try {
@@ -251,10 +263,13 @@ public class TraitementAsynchroneServiceTest {
       // création d'un traitement de capture en masse
       idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
 
+      Map<String,String> jobParam= new HashMap<String, String>();
+      jobParam.put("PARAM", "");      
+      
       JobToCreate job = new JobToCreate();
       job.setIdJob(idJob);
       job.setType("other_masse");
-      job.setParameters("");
+      job.setJobParameters(jobParam);
 
       jobQueueService.addJob(job);
 
