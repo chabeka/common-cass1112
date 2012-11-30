@@ -27,8 +27,13 @@
          </array>
       </property>
    </bean>
+   
+   <!--<bean id="messageSource_sae_services"
+      class="org.springframework.context.support.ResourceBundleMessageSource">
+      <property name="basename" value="i18n.sae_services_messages" />
+   </bean>
 
-   <import resource="applicationContext-service.xml" />
+   --><import resource="applicationContext-service.xml" />
 
    <!-- mock pour consultation et recherche -->
    <bean id="saeServiceProvider"
@@ -45,6 +50,10 @@
    <!-- mock pour le controle de la capture -->
    <bean id="saeControlesCaptureService" factory-bean="SAEServiceFactory"
       factory-method="createSAEControlesCaptureService" />
+
+   <!-- mock pour le controle de la capture -->
+   <bean id="saeControlesSupportService" factory-bean="SAEServiceFactory"
+      factory-method="createSAEControlesSupportService" />
 
    <!-- mock pour le lancement des traitements de masse -->
    <bean id="traitementAsynchroneService" factory-bean="SAEServiceFactory"

@@ -31,7 +31,7 @@ import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireHashException;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireTypeHashException;
-import fr.urssaf.image.sae.services.capturemasse.support.ecde.EcdeControleSupport;
+import fr.urssaf.image.sae.services.controles.SAEControleSupportService;
 import fr.urssaf.image.sae.services.controles.SAEControlesCaptureService;
 import fr.urssaf.image.sae.services.exception.capture.CaptureBadEcdeUrlEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureEcdeUrlFileNotFoundEx;
@@ -65,7 +65,7 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
    private EcdeServices ecdeServices;
 
    @Autowired
-   private EcdeControleSupport controleSupport;
+   private SAEControleSupportService controleSupport;
 
    /**
     * {@inheritDoc}
@@ -145,6 +145,9 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
       } catch (CaptureMasseSommaireTypeHashException e) {
          throw new CaptureAxisFault("TypeHashSommaireIncorrect",
                e.getMessage(), e);
+      } catch (CaptureMasseRuntimeException e){
+         throw new CaptureAxisFault("CaptureUrlEcdeFichierIntrouvable",
+               e.getMessage(), e);
       }
 
       Map<String, String> jobParam = new HashMap<String, String>();
@@ -170,7 +173,7 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
       // On prend acte de la demande,
       // le retour se fera via le fichier resultats.xml de l'ECDE
       return ObjectStorageResponseFactory
-            .createArchivageMasseAvecHashResponse();
+            .createArchivageMasseAvecHashResponse(id.toString());
    }
 
    private UUID checkEcdeUrl(String ecdeUrl) throws CaptureAxisFault {

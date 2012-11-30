@@ -1,5 +1,7 @@
 package fr.urssaf.image.sae.webservices.impl.factory;
 
+import java.util.UUID;
+
 import fr.cirtil.www.saeservice.ArchivageMasseAvecHashResponse;
 import fr.cirtil.www.saeservice.ArchivageMasseAvecHashResponseType;
 import fr.cirtil.www.saeservice.ArchivageMasseResponse;
@@ -49,10 +51,11 @@ public final class ObjectStorageResponseFactory {
     * 
     * @return instance de {@link ArchivageMasseAvecHashResponse}
     */
-   public static ArchivageMasseAvecHashResponse createArchivageMasseAvecHashResponse() {
+   public static ArchivageMasseAvecHashResponse createArchivageMasseAvecHashResponse(String uuid) {
 
       ArchivageMasseAvecHashResponse response = new ArchivageMasseAvecHashResponse();
       ArchivageMasseAvecHashResponseType responseType = new ArchivageMasseAvecHashResponseType();
+      responseType.setUuid(uuid);
       response.setArchivageMasseAvecHashResponse(responseType);
       return response;
    }
