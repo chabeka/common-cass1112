@@ -1,30 +1,37 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project
+   xmlns="http://maven.apache.org/POM/4.0.0"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   
    <modelVersion>4.0.0</modelVersion>
+   
    <groupId>fr.urssaf.image.commons</groupId>
    <artifactId>commons-droid</artifactId>
    <version>0.0.1-SNAPSHOT</version>
-   <packaging>pom</packaging>
+   
+   <name>commons-droid</name>
+   
    <properties>
-      <version>6.2-SNAPSHOT</version>
-
+   
       <!-- Encodage de caractères -->
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-            <!-- Version des plug-ins Maven -->
+      
+      <!-- Version des plug-ins Maven -->
       <maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
       <maven-source-plugin.version>2.1.2</maven-source-plugin.version>
       <maven-resources-plugin.version>2.5</maven-resources-plugin.version>
       <maven-javadoc-plugin.version>2.8.1</maven-javadoc-plugin.version>
       <maven-release-plugin.version>2.2.1</maven-release-plugin.version>
+      
+      <!-- version des framework -->
+      <junit.version>4.8.2</junit.version>
+      <org.slf4j.version>1.6.1</org.slf4j.version>
+      <logback.version>0.9.30</logback.version>
+      <jcl-over-slf4j.version>1.6.1</jcl-over-slf4j.version>
+      <log4j-over-slf4j.version>1.6.1</log4j-over-slf4j.version>      
+      <droid.version>6.2-SNAPSHOT</droid.version>
 
    </properties>
-   <dependencies>
-      <dependency>
-         <groupId>uk.gov.nationalarchives</groupId>
-         <artifactId>droid-command-line</artifactId>
-         <version>${version}</version>
-      </dependency>
-   </dependencies>
    
     <!-- Configuration SVN pour le plug-in maven-release -->
    <scm>
@@ -139,4 +146,61 @@
       </snapshotRepository>
    </distributionManagement>
    
+   
+   <dependencies>
+   
+      <!-- JUnit -->
+      <dependency>
+         <groupId>junit</groupId>
+         <artifactId>junit</artifactId>
+         <version>${junit.version}</version>
+         <scope>test</scope>
+      </dependency>
+      
+      <!-- SLF4J et Logback -->
+      <dependency>
+         <groupId>org.slf4j</groupId>
+         <artifactId>slf4j-api</artifactId>
+         <version>${org.slf4j.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>ch.qos.logback</groupId>
+         <artifactId>logback-classic</artifactId>
+         <version>${logback.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>ch.qos.logback</groupId>
+         <artifactId>logback-core</artifactId>
+         <version>${logback.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.slf4j</groupId>
+         <artifactId>jcl-over-slf4j</artifactId>
+         <version>${jcl-over-slf4j.version}</version>
+         <scope>runtime</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.slf4j</groupId>
+         <artifactId>log4j-over-slf4j</artifactId>
+         <version>${log4j-over-slf4j.version}</version>
+         <scope>runtime</scope>
+      </dependency>
+         
+   
+      <!-- Droid -->
+      <dependency>
+         <groupId>uk.gov.nationalarchives</groupId>
+         <artifactId>droid-command-line</artifactId>
+         <version>${droid.version}</version>
+         <exclusions>
+            <exclusion>
+               <groupId>org.slf4j</groupId>
+               <artifactId>slf4j-log4j12</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+      
+   </dependencies>
+   
 </project>
+
