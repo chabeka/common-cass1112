@@ -32,6 +32,7 @@ import fr.urssaf.image.sae.services.batch.exception.JobNonReserveException;
 import fr.urssaf.image.sae.services.batch.model.CaptureMasseParametres;
 import fr.urssaf.image.sae.services.batch.model.ExitTraitement;
 import fr.urssaf.image.sae.services.capturemasse.SAECaptureMasseService;
+import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-traitement-masse-test.xml" })
@@ -110,7 +111,9 @@ public class TraitementAsynchroneServiceTest {
       // création d'un traitement de capture en masse
       idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
       Map<String,String> jobParam= new HashMap<String, String>();
-      jobParam.put("ECDE_URL", "ecde://ecde.cer69.recouv/sommaire.xml");
+      jobParam.put(Constantes.ECDE_URL, "ecde://ecde.cer69.recouv/sommaire.xml");
+      jobParam.put(Constantes.HASH, "hash");
+      jobParam.put(Constantes.TYPE_HASH, "typeHash");
       
       JobToCreate jobToCreate = new JobToCreate();
       jobToCreate.setIdJob(idJob);
@@ -125,7 +128,7 @@ public class TraitementAsynchroneServiceTest {
       exitTraitement.setExitMessage("message de sortie en succès");
       EasyMock.expect(
             captureMasseService.captureMasse(URI.create(jobToCreate
-                  .getJobParameters().get("ECDE_URL")), idJob)).andReturn(exitTraitement);
+                  .getJobParameters().get(Constantes.ECDE_URL)), idJob, jobParam.get(Constantes.HASH),jobParam.get(Constantes.TYPE_HASH))).andReturn(exitTraitement);
 
       EasyMock.replay(captureMasseService);
 
@@ -151,7 +154,9 @@ public class TraitementAsynchroneServiceTest {
       // création d'un traitement de capture en masse
       idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
       Map<String,String> jobParam= new HashMap<String, String>();
-      jobParam.put("ECDE_URL", "ecde://ecde.cer69.recouv/sommaire.xml");
+      jobParam.put(Constantes.ECDE_URL, "ecde://ecde.cer69.recouv/sommaire.xml");
+      jobParam.put(Constantes.HASH, "hash");
+      jobParam.put(Constantes.TYPE_HASH, "typeHash");
       
       JobToCreate jobToCreate = new JobToCreate();
       jobToCreate.setIdJob(idJob);
@@ -166,7 +171,7 @@ public class TraitementAsynchroneServiceTest {
       exitTraitement.setExitMessage("message de sortie en échec");
       EasyMock.expect(
             captureMasseService.captureMasse(URI.create(jobToCreate
-                  .getJobParameters().get("ECDE_URL")), idJob)).andReturn(exitTraitement);
+                  .getJobParameters().get(Constantes.ECDE_URL)), idJob, jobParam.get(Constantes.HASH),jobParam.get(Constantes.TYPE_HASH))).andReturn(exitTraitement);
 
       EasyMock.replay(captureMasseService);
 
@@ -194,7 +199,7 @@ public class TraitementAsynchroneServiceTest {
       idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
 
       Map<String,String> jobParam= new HashMap<String, String>();
-      jobParam.put("ECDE_URL", "ecde://azaz^^/sommaire.xml");
+      jobParam.put(Constantes.ECDE_URL, "ecde://azaz^^/sommaire.xml");
       
       JobToCreate jobToCreate = new JobToCreate();
       jobToCreate.setIdJob(idJob);
@@ -215,7 +220,7 @@ public class TraitementAsynchroneServiceTest {
                   "le message de sortie du job dans la pile des travaux est inattendu",
                   "Le traitement n°" + idJob
                         + " a des paramètres inattendu : '"
-                        + job.getJobParameters().get("ECDE_URL") + "'.", job.getMessage());
+                        + job.getJobParameters().get(Constantes.ECDE_URL) + "'.", job.getMessage());
 
    }
 

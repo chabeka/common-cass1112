@@ -137,12 +137,4 @@ public class EcdeControleSupportTest {
       support.checkHash(sommaireFile.getFile(), "dc4ae92653b08ef0b806f4aba451fc28876c15bb", "SHA-1");
    }
    
-   @Test
-   public void testGetHash() throws IOException{
-
-      File fichier = new File(
-            "C:/appl/ecde/SAE_INTEGRATION/20110822/CaptureMasse-212-CaptureMasse-Pile-OK-ECDE-local-1/sommaire.xml");
-      byte[] content = FileUtils.readFileToByteArray(fichier);
-      System.out.println(DigestUtils.shaHex(content));
-   }
 }
