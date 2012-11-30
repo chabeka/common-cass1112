@@ -14,7 +14,7 @@ import fr.urssaf.image.commons.cassandra.serializer.XMLSerializer;
  * 
  */
 public final class MapSerializer extends
-      AbstractSerializer<Map<String, String>> {
+      AbstractSerializer<Map<String, Object>> {
 
    private MapSerializer() {
       super();
@@ -24,9 +24,9 @@ public final class MapSerializer extends
     * {@inheritDoc}
     */
    @Override
-   public Map<String, String> fromByteBuffer(ByteBuffer byteBuffer) {
+   public Map<String, Object> fromByteBuffer(ByteBuffer byteBuffer) {
       @SuppressWarnings("unchecked")
-      Map<String, String> obj = (Map<String, String>) XMLSerializer.get()
+      Map<String, Object> obj = (Map<String, Object>) XMLSerializer.get()
             .fromByteBuffer(byteBuffer);
 
       return obj;
@@ -36,7 +36,7 @@ public final class MapSerializer extends
     * {@inheritDoc}
     */
    @Override
-   public ByteBuffer toByteBuffer(Map<String, String> obj) {
+   public ByteBuffer toByteBuffer(Map<String, Object> obj) {
       return XMLSerializer.get().toByteBuffer(obj);
    }
 

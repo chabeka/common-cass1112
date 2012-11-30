@@ -37,5 +37,10 @@ public class DispatcheurServiceValidation {
          throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
                "{0}", "trace"));
       }
+      
+      if (StringUtils.isBlank(trace.getCodeEvt())) {
+         throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
+               "{0}", "code événement"));
+      }
    }
 }

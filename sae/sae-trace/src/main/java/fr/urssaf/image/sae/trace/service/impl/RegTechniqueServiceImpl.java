@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,7 +32,7 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
 
    @Autowired
    private TraceRegTechniqueSupport support;
-   
+
    @Autowired
    private JobClockSupport clockSupport;
 
@@ -46,6 +47,7 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
       Date endDate = dateFin;
       List<TraceRegTechniqueIndex> list = new ArrayList<TraceRegTechniqueIndex>(
             limite);
+      List<TraceRegTechniqueIndex> value = null;
       Date startDate = DateRegUtils.getFirstDate(dateDebut, dateFin);
       List<TraceRegTechniqueIndex> result;
 
@@ -62,11 +64,11 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
 
       } while (startDate.compareTo(dateDebut) >= 0 && sizeMax > 0);
 
-      if (list.isEmpty()) {
-         list = null;
+      if (CollectionUtils.isNotEmpty(list)) {
+         value = list;
       }
 
-      return list;
+      return value;
    }
 
    /**

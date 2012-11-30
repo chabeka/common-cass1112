@@ -170,7 +170,7 @@ public class TraceRegSecuriteDao {
     *           horloge de la colonne
     */
    public final void writeColumnInfos(
-         ColumnFamilyUpdater<UUID, String> updater, Map<String, String> value,
+         ColumnFamilyUpdater<UUID, String> updater, Map<String, Object> value,
          long clock) {
       addColumn(updater, COL_INFOS, value, MapSerializer.get(), clock);
    }

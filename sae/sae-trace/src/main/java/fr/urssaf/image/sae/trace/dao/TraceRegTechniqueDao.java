@@ -45,7 +45,7 @@ public class TraceRegTechniqueDao {
 
    /** identifiant utilisateur */
    public static final String COL_LOGIN = "login";
-   
+
    /** informations supplémentaires */
    public static final String COL_INFOS = "infos";
 
@@ -150,8 +150,6 @@ public class TraceRegTechniqueDao {
          ColumnFamilyUpdater<UUID, String> updater, String value, long clock) {
       addColumn(updater, COL_LOGIN, value, StringSerializer.get(), clock);
    }
-   
-
 
    /**
     * ajoute une colonne {@value TraceRegTechniqueDao#COL_STACKTRACE}
@@ -167,7 +165,7 @@ public class TraceRegTechniqueDao {
          ColumnFamilyUpdater<UUID, String> updater, String value, long clock) {
       addColumn(updater, COL_STACKTRACE, value, StringSerializer.get(), clock);
    }
-   
+
    /**
     * ajoute une colonne {@value TraceRegTechniqueDao#COL_INFOS}
     * 
@@ -179,7 +177,7 @@ public class TraceRegTechniqueDao {
     *           horloge de la colonne
     */
    public final void writeColumnInfos(
-         ColumnFamilyUpdater<UUID, String> updater, Map<String, String> value,
+         ColumnFamilyUpdater<UUID, String> updater, Map<String, Object> value,
          long clock) {
       addColumn(updater, COL_INFOS, value, MapSerializer.get(), clock);
    }

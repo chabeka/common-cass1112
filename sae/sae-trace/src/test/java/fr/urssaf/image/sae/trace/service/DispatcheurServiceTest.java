@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.sae.trace.model.TraceToCreate;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-trace-test.xml" })
 public class DispatcheurServiceTest {
@@ -30,6 +32,24 @@ public class DispatcheurServiceTest {
       } catch (IllegalArgumentException exception) {
          Assert.assertEquals("le message d'erreur doit etre correct",
                StringUtils.replace(MESSAGE_ERREUR, "{0}", "trace"), exception
+                     .getMessage());
+
+      } catch (Exception exception) {
+         Assert.fail("Une exception IllegalArgumentException est attendue");
+      }
+
+   }
+   
+   @Test
+   public void testTraceCodeEvenementObligatoire() {
+
+      try {
+         service.ajouterTrace(new TraceToCreate());
+         Assert.fail("Une exception IllegalArgumentException est attendue");
+
+      } catch (IllegalArgumentException exception) {
+         Assert.assertEquals("le message d'erreur doit etre correct",
+               StringUtils.replace(MESSAGE_ERREUR, "{0}", "code événement"), exception
                      .getMessage());
 
       } catch (Exception exception) {

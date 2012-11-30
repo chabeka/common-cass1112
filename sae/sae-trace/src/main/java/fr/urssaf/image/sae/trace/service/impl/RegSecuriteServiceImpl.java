@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,6 +47,7 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
       Date endDate = dateFin;
       List<TraceRegSecuriteIndex> list = new ArrayList<TraceRegSecuriteIndex>(
             limite);
+      List<TraceRegSecuriteIndex> value = null;
       Date startDate = DateRegUtils.getFirstDate(dateDebut, dateFin);
       List<TraceRegSecuriteIndex> result;
 
@@ -62,11 +64,11 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
 
       } while (startDate.compareTo(dateDebut) >= 0 && sizeMax > 0);
 
-      if (list.isEmpty()) {
-         list = null;
+      if (CollectionUtils.isNotEmpty(list)) {
+         value = list;
       }
 
-      return list;
+      return value;
 
    }
 

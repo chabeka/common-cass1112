@@ -42,9 +42,9 @@ public class RegSecuriteServiceDatasTest {
    private static final String CONTRAT = "contrat de service";
    private static final String CODE_EVT = "code événement";
    private static final String CONTEXTE = "contexte";
-   private static final Map<String, String> INFOS;
+   private static final Map<String, Object> INFOS;
    static {
-      INFOS = new HashMap<String, String>();
+      INFOS = new HashMap<String, Object>();
       INFOS.put(KEY, VALUE);
    }
 

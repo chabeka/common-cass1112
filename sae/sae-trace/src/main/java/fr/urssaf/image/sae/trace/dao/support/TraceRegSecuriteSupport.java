@@ -16,6 +16,7 @@ import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 import me.prettyprint.hector.api.mutation.Mutator;
 import me.prettyprint.hector.api.query.SliceQuery;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -56,9 +57,15 @@ public class TraceRegSecuriteSupport {
 
       dao.writeColumnCodeEvt(updater, trace.getCodeEvt(), clock);
       dao.writeColumnContexte(updater, trace.getContexte(), clock);
-      dao.writeColumnContratService(updater, trace.getContrat(), clock);
-      dao.writeColumnLogin(updater, trace.getLogin(), clock);
       dao.writeColumnTimestamp(updater, trace.getTimestamp(), clock);
+
+      if (StringUtils.isNotBlank(trace.getContrat())) {
+         dao.writeColumnContratService(updater, trace.getContrat(), clock);
+      }
+
+      if (StringUtils.isNotBlank(trace.getLogin())) {
+         dao.writeColumnLogin(updater, trace.getLogin(), clock);
+      }
 
       if (trace.getInfos() != null) {
          dao.writeColumnInfos(updater, trace.getInfos(), clock);
