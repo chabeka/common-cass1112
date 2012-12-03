@@ -3,6 +3,7 @@
  */
 package fr.urssaf.image.sae.trace.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import me.prettyprint.cassandra.serializers.StringSerializer;
@@ -83,7 +84,18 @@ public class TraceDestinataireDao {
    public final void writeColumnHistArchive(
          ColumnFamilyUpdater<String, String> updater, List<String> value,
          long clock) {
-      addColumn(updater, COL_HIST_ARCHIVE, value, ListSerializer.get(), clock);
+
+      // bien que la liste soit nulle, on veut quand meme que la trace soit
+      // présente dans les registres, on la met donc à vide
+      List<String> refValues;
+      if (value == null) {
+         refValues = new ArrayList<String>();
+      } else {
+         refValues = value;
+      }
+
+      addColumn(updater, COL_HIST_ARCHIVE, refValues, ListSerializer.get(),
+            clock);
    }
 
    /**
@@ -100,7 +112,17 @@ public class TraceDestinataireDao {
    public final void writeColumnHistEvt(
          ColumnFamilyUpdater<String, String> updater, List<String> value,
          long clock) {
-      addColumn(updater, COL_HIST_EVT, value, ListSerializer.get(), clock);
+
+      // bien que la liste soit nulle, on veut quand meme que la trace soit
+      // présente dans les registres, on la met donc à vide
+      List<String> refValues;
+      if (value == null) {
+         refValues = new ArrayList<String>();
+      } else {
+         refValues = value;
+      }
+
+      addColumn(updater, COL_HIST_EVT, refValues, ListSerializer.get(), clock);
    }
 
    /**
@@ -117,7 +139,17 @@ public class TraceDestinataireDao {
    public final void writeColumnRegExploit(
          ColumnFamilyUpdater<String, String> updater, List<String> value,
          long clock) {
-      addColumn(updater, COL_REG_EXPLOIT, value, ListSerializer.get(), clock);
+      // bien que la liste soit nulle, on veut quand meme que la trace soit
+      // présente dans les registres, on la met donc à vide
+      List<String> refValues;
+      if (value == null) {
+         refValues = new ArrayList<String>();
+      } else {
+         refValues = value;
+      }
+
+      addColumn(updater, COL_REG_EXPLOIT, refValues, ListSerializer.get(),
+            clock);
    }
 
    /**
@@ -134,7 +166,17 @@ public class TraceDestinataireDao {
    public final void writeColumnRegSecurite(
          ColumnFamilyUpdater<String, String> updater, List<String> value,
          long clock) {
-      addColumn(updater, COL_REG_SECURITE, value, ListSerializer.get(), clock);
+      // bien que la liste soit nulle, on veut quand meme que la trace soit
+      // présente dans les registres, on la met donc à vide
+      List<String> refValues;
+      if (value == null) {
+         refValues = new ArrayList<String>();
+      } else {
+         refValues = value;
+      }
+
+      addColumn(updater, COL_REG_SECURITE, refValues, ListSerializer.get(),
+            clock);
    }
 
    /**
@@ -151,7 +193,17 @@ public class TraceDestinataireDao {
    public final void writeColumnRegTechnique(
          ColumnFamilyUpdater<String, String> updater, List<String> value,
          long clock) {
-      addColumn(updater, COL_REG_TECHNIQUE, value, ListSerializer.get(), clock);
+      // bien que la liste soit nulle, on veut quand meme que la trace soit
+      // présente dans les registres, on la met donc à vide
+      List<String> refValues;
+      if (value == null) {
+         refValues = new ArrayList<String>();
+      } else {
+         refValues = value;
+      }
+
+      addColumn(updater, COL_REG_TECHNIQUE, refValues, ListSerializer.get(),
+            clock);
    }
 
    /**

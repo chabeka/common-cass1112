@@ -14,6 +14,7 @@ import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 
+import fr.urssaf.image.sae.trace.commons.Constantes;
 import fr.urssaf.image.sae.trace.model.TraceToCreate;
 
 /**
@@ -52,11 +53,14 @@ public class TraceRegTechnique {
    public TraceRegTechnique() {
       super();
    }
-   
+
    /**
     * Constructeur
-    * @param trace trace d'origine
-    * @param listInfos liste des informations supplémentaires à récupérer
+    * 
+    * @param trace
+    *           trace d'origine
+    * @param listInfos
+    *           liste des informations supplémentaires à récupérer
     */
    public TraceRegTechnique(TraceToCreate trace, List<String> listInfos) {
       this.contexte = trace.getContexte();
@@ -75,6 +79,12 @@ public class TraceRegTechnique {
             if (trace.getInfos().get(info) != null) {
                this.infos.put(info, trace.getInfos().get(info));
             }
+         }
+
+         // on récupère toutes les infos
+         if (listInfos.size() == 1
+               && Constantes.REG_ALL_INFOS.equals(listInfos.get(0))) {
+            infos.putAll(trace.getInfos());
          }
       }
    }
