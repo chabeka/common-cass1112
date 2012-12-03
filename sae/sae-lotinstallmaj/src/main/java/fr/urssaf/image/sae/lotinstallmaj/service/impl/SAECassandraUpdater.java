@@ -33,6 +33,7 @@ public class SAECassandraUpdater {
     * 
     */
    private static final int VERSION_3 = 3;
+   private static final int VERSION_4 = 4;
    private final String ksName;
    private final Cluster cluster;
    private final SAECassandraService saeCassandraService;
@@ -265,6 +266,56 @@ public class SAECassandraUpdater {
       // On positionne la version à 3
       saeDao.setDatabaseVersion(VERSION_3);
 
+   }
+
+   /**
+    * Version 4 : ajout des CF de traces dans le keyspace "SAE"
+    */
+   public void updateToVersion4() {
+      long version = saeDao.getDatabaseVersion();
+      if (version >= VERSION_4) {
+         LOG.info("La base de données est déja en version " + version);
+         return;
+      }
+
+      LOG.info("Mise à jour du keyspace SAE en version 4");
+
+      // On se connecte au keyspace
+      saeDao.connectToKeySpace();
+
+      // Liste contenant la définition des column families à créer
+      List<ColumnFamilyDefinition> cfDefs = new ArrayList<ColumnFamilyDefinition>();
+
+      // TraceDestinataire
+      cfDefs.add(HFactory.createColumnFamilyDefinition(ksName,
+            "TraceDestinataire", ComparatorType.UTF8TYPE));
+
+      // TraceRegSecurite
+      cfDefs.add(HFactory.createColumnFamilyDefinition(ksName,
+            "TraceRegSecurite", ComparatorType.UTF8TYPE));
+      // TraceRegSecuriteIndex
+      cfDefs.add(HFactory.createColumnFamilyDefinition(ksName,
+            "TraceRegSecuriteIndex", ComparatorType.TIMEUUIDTYPE));
+
+      // TraceRegExploitation
+      cfDefs.add(HFactory.createColumnFamilyDefinition(ksName,
+            "TraceRegExploitation", ComparatorType.UTF8TYPE));
+      // TraceRegExploitationIndex
+      cfDefs.add(HFactory.createColumnFamilyDefinition(ksName,
+            "TraceRegExploitationIndex", ComparatorType.TIMEUUIDTYPE));
+
+      // TraceRegTechnique
+      cfDefs.add(HFactory.createColumnFamilyDefinition(ksName,
+            "TraceRegTechnique", ComparatorType.UTF8TYPE));
+      // TraceRegTechniqueIndex
+      cfDefs.add(HFactory.createColumnFamilyDefinition(ksName,
+            "TraceRegTechniqueIndex", ComparatorType.TIMEUUIDTYPE));
+
+      // Création des CF
+      saeCassandraService.createColumnFamilyFromList(cfDefs, true);
+      
+   // On positionne la version à 3
+      saeDao.setDatabaseVersion(VERSION_4);
    }
 
 }

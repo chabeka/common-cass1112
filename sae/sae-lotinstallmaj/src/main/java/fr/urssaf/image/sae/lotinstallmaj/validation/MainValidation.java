@@ -124,11 +124,16 @@ public class MainValidation {
          return;
       if ("SUPPRESSION".equalsIgnoreCase(nomOperation))
          return;
-      /*if (MajLotServiceImpl.DFCE_110_CASSANDRA.equalsIgnoreCase(nomOperation))
-         return;
-      if (MajLotServiceImpl.DFCE_110_INDEX_DATES.equalsIgnoreCase(nomOperation))
-         return;*/
+      /*
+       * if
+       * (MajLotServiceImpl.DFCE_110_CASSANDRA.equalsIgnoreCase(nomOperation))
+       * return; if
+       * (MajLotServiceImpl.DFCE_110_INDEX_DATES.equalsIgnoreCase(nomOperation))
+       * return;
+       */
       if (MajLotServiceImpl.META_SEPA.equalsIgnoreCase(nomOperation))
+         return;
+      if (MajLotServiceImpl.CASSANDRA_13XX10.equalsIgnoreCase(nomOperation))
          return;
       // TODO : Traiter le cas de la mise à jour de la durée de conservation de
       // 3.1.3.1.1 (en attente du JIRA CRTL-81)
