@@ -6,8 +6,12 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import junit.framework.Assert;
+
+import org.apache.axis2.AxisFault;
 import org.apache.commons.configuration.ConfigurationException;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +43,7 @@ public class ArchivageMasseAvecHashTest {
     */
    
    @Test
+   @Ignore
    public void archivageMasseAvecHash_success() throws URISyntaxException, IOException {
 
       // enregistrement du sommaire dans l'ECDE
@@ -61,4 +66,66 @@ public class ArchivageMasseAvecHashTest {
 
    }
 
+   
+   @Test
+   @Ignore
+   public void archivageMasseAvecHash_FailureHashKo() throws URISyntaxException, IOException {
+
+      URI urlSommaireEcde = new URI(
+            "ecde://CER69-TEC24251/SAE_INTEGRATION/20110822/CaptureMasse-212-CaptureMasse-Pile-OK-ECDE-local-1/sommaire.xml");
+      // le hash est incorrecte
+      String hash = "42b7d80f0fd3b31e46141876ce4301fdba4a0";
+      String typeHash = "SHA-1";
+      try {
+         ArchivageMasseAvecHashResponseType response = service.archivageMasse(
+               urlSommaireEcde, hash, typeHash);
+      } catch (AxisFault fault) {
+
+         Assert.assertEquals("HashSommaireIncorrect", fault.getFaultCode().getLocalPart());
+
+      }
+
+   }
+   
+   @Test
+   @Ignore
+   public void archivageMasseAvecHash_FailureTypeHashKo() throws URISyntaxException, IOException {
+
+      URI urlSommaireEcde = new URI(
+            "ecde://CER69-TEC24251/SAE_INTEGRATION/20110822/CaptureMasse-212-CaptureMasse-Pile-OK-ECDE-local-1/sommaire.xml");
+      String hash="42b7d80f0fd3b31e46141876ce4301fdba4a0";
+      // le type de hash est incorrecte
+      String typeHash="algo-1";
+      
+      try {
+         ArchivageMasseAvecHashResponseType response = service.archivageMasse(
+               urlSommaireEcde, hash, typeHash);
+      } catch (AxisFault fault) {
+
+         Assert.assertEquals("TypeHashSommaireIncorrect", fault.getFaultCode().getLocalPart());
+
+      }
+
+   }
+   
+   @Test
+   @Ignore
+   public void archivageMasseAvecHash_FailureNoParamKo() throws URISyntaxException, IOException {
+
+      URI urlSommaireEcde = new URI(
+            "ecde://CER69-TEC24251/SAE_INTEGRATION/20110822/CaptureMasse-212-CaptureMasse-Pile-OK-ECDE-local-1/sommaire.xml");
+      String hash="";
+      // le type de hash est incorrecte
+      String typeHash="";
+      
+      try {
+         ArchivageMasseAvecHashResponseType response = service.archivageMasse(
+               urlSommaireEcde, hash, typeHash);
+      } catch (AxisFault fault) {
+
+         Assert.assertEquals("TypeHashSommaireIncorrect", fault.getFaultCode().getLocalPart());
+
+      }
+
+   }
 }
