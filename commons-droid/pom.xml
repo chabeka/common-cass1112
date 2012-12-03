@@ -28,7 +28,8 @@
       <org.slf4j.version>1.6.1</org.slf4j.version>
       <logback.version>0.9.30</logback.version>
       <jcl-over-slf4j.version>1.6.1</jcl-over-slf4j.version>
-      <log4j-over-slf4j.version>1.6.1</log4j-over-slf4j.version>      
+      <log4j-over-slf4j.version>1.6.1</log4j-over-slf4j.version>
+      <spring.framework.version>3.0.5.RELEASE</spring.framework.version>      
       <droid.version>6.2-SNAPSHOT</droid.version>
 
    </properties>
@@ -185,17 +186,47 @@
          <version>${log4j-over-slf4j.version}</version>
          <scope>runtime</scope>
       </dependency>
+      
+      <!-- Spring -->
+      <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-beans</artifactId>
+         <version>${spring.framework.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-test</artifactId>
+         <version>${spring.framework.version}</version>
+         <scope>test</scope>
+      </dependency>
+      <!-- Les dépendances suivantes permettent d'écraser la version de Spring de Droid -->
+      <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-aspects</artifactId>
+         <version>${spring.framework.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-web</artifactId>
+         <version>${spring.framework.version}</version>
+      </dependency>
          
-   
       <!-- Droid -->
       <dependency>
          <groupId>uk.gov.nationalarchives</groupId>
+         <!--
+         <artifactId>droid-container</artifactId>
+         -->
          <artifactId>droid-command-line</artifactId>
          <version>${droid.version}</version>
          <exclusions>
             <exclusion>
                <groupId>org.slf4j</groupId>
                <artifactId>slf4j-log4j12</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.springframework</groupId>
+               <artifactId>spring</artifactId>
             </exclusion>
          </exclusions>
       </dependency>

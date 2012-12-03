@@ -5,15 +5,31 @@ import static org.junit.Assert.assertNull;
 
 import java.io.File;
 import java.net.URISyntaxException;
+import java.util.Collections;
+import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.commons.droid.service.impl.FormatIdentificationServiceImpl;
+import fr.urssaf.image.commons.droid.exception.FormatIdentificationRuntimeException;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = "/applicationContext-commons-droid.xml")
+@SuppressWarnings("PMD")
 public class FormatIdentificationServiceTest {
 
-   private FormatIdentificationServiceImpl formatIdService = new FormatIdentificationServiceImpl();
+   private static Logger LOGGER = LoggerFactory
+         .getLogger(FormatIdentificationServiceTest.class);
+
+   @Autowired
+   private FormatIdentificationService formatIdService;
 
    private String getRessourceFilePath(String cheminRessource) {
 
@@ -26,16 +42,12 @@ public class FormatIdentificationServiceTest {
    }
 
    @Test
-   @Ignore("La méthode d'identification par extension n'est pas encore implémentée")
    public void test_Texte() {
 
       String cheminFichier = getRessourceFilePath("/jeuTest/FichierTexte.txt");
       File file = new File(cheminFichier);
 
-      boolean analyserContenuArchives = false;
-
-      String idPronom = formatIdService
-            .identifie(file, analyserContenuArchives);
+      String idPronom = formatIdService.identifie(file);
 
       assertEquals("Le format identifié n'est pas celui attendu", "x-fmt/111",
             idPronom);
@@ -48,10 +60,7 @@ public class FormatIdentificationServiceTest {
       String cheminFichier = getRessourceFilePath("/jeuTest/FichierWord.doc");
       File file = new File(cheminFichier);
 
-      boolean analyserContenuArchives = false;
-
-      String idPronom = formatIdService
-            .identifie(file, analyserContenuArchives);
+      String idPronom = formatIdService.identifie(file);
 
       assertEquals("Le format identifié n'est pas celui attendu", "fmt/40",
             idPronom);
@@ -64,10 +73,7 @@ public class FormatIdentificationServiceTest {
       String cheminFichier = getRessourceFilePath("/jeuTest/FichierXml1.xml");
       File file = new File(cheminFichier);
 
-      boolean analyserContenuArchives = false;
-
-      String idPronom = formatIdService
-            .identifie(file, analyserContenuArchives);
+      String idPronom = formatIdService.identifie(file);
 
       assertEquals("Le format identifié n'est pas celui attendu", "fmt/101",
             idPronom);
@@ -80,10 +86,7 @@ public class FormatIdentificationServiceTest {
       String cheminFichier = getRessourceFilePath("/jeuTest/FichierXml2.xml");
       File file = new File(cheminFichier);
 
-      boolean analyserContenuArchives = false;
-
-      String idPronom = formatIdService
-            .identifie(file, analyserContenuArchives);
+      String idPronom = formatIdService.identifie(file);
 
       assertNull("Le format identifié n'est pas celui attendu", idPronom);
 
@@ -95,10 +98,7 @@ public class FormatIdentificationServiceTest {
       String cheminFichier = getRessourceFilePath("/jeuTest/pdfa1b.pdf");
       File file = new File(cheminFichier);
 
-      boolean analyserContenuArchives = false;
-
-      String idPronom = formatIdService
-            .identifie(file, analyserContenuArchives);
+      String idPronom = formatIdService.identifie(file);
 
       assertEquals("Le format identifié n'est pas celui attendu", "fmt/18",
             idPronom);
@@ -111,10 +111,7 @@ public class FormatIdentificationServiceTest {
       String cheminFichier = getRessourceFilePath("/jeuTest/pdfa1b.pdf.gz");
       File file = new File(cheminFichier);
 
-      boolean analyserContenuArchives = false;
-
-      String idPronom = formatIdService
-            .identifie(file, analyserContenuArchives);
+      String idPronom = formatIdService.identifie(file);
 
       assertEquals("Le format identifié n'est pas celui attendu", "x-fmt/266",
             idPronom);
@@ -127,10 +124,7 @@ public class FormatIdentificationServiceTest {
       String cheminFichier = getRessourceFilePath("/jeuTest/pdfa1b.tar");
       File file = new File(cheminFichier);
 
-      boolean analyserContenuArchives = false;
-
-      String idPronom = formatIdService
-            .identifie(file, analyserContenuArchives);
+      String idPronom = formatIdService.identifie(file);
 
       assertEquals("Le format identifié n'est pas celui attendu", "x-fmt/265",
             idPronom);
@@ -143,10 +137,7 @@ public class FormatIdentificationServiceTest {
       String cheminFichier = getRessourceFilePath("/jeuTest/pdfa1b.zip");
       File file = new File(cheminFichier);
 
-      boolean analyserContenuArchives = false;
-
-      String idPronom = formatIdService
-            .identifie(file, analyserContenuArchives);
+      String idPronom = formatIdService.identifie(file);
 
       assertEquals("Le format identifié n'est pas celui attendu", "x-fmt/263",
             idPronom);
@@ -154,53 +145,75 @@ public class FormatIdentificationServiceTest {
    }
 
    @Test
-   @Ignore("L'analyse des archives gzip n'est pas encore implémentée")
-   public void test_Pdf_Dans_ArchiveGzip() {
+   @Ignore("Ceci n'est pas un vrai TU")
+   public void analyseRepertoire() {
 
-      String cheminFichier = getRessourceFilePath("/jeuTest/pdfa1b.pdf.gz");
-      File file = new File(cheminFichier);
+      // Chemin du répertoire à tester
 
-      boolean analyserContenuArchives = true;
+      // Bavaria - fichiers conformes
+      // String path =
+      // "S:/produits/Qualite/Projet_ae/Documentation refonte/Refonte/Développement/00015 - Gestion des formats/01 - Eléments de support/Bavaria testsuite/conforming";
 
-      String idPronom = formatIdService
-            .identifie(file, analyserContenuArchives);
+      // Bavaria - fichiers non conformes
+      // String path =
+      // "S:/produits/Qualite/Projet_ae/Documentation refonte/Refonte/Développement/00015 - Gestion des formats/01 - Eléments de support/Bavaria testsuite/nonconforming";
 
-      assertEquals("Le format identifié n'est pas celui attendu", "fmt/18",
-            idPronom);
+      // Bavaria - fichiers unclear
+      // String path =
+      // "S:/produits/Qualite/Projet_ae/Documentation refonte/Refonte/Développement/00015 - Gestion des formats/01 - Eléments de support/Bavaria testsuite/unclear";
 
-   }
+      // Isartor
+      // String path =
+      // "S:/produits/Qualite/Projet_ae/Documentation refonte/Refonte/Développement/00015 - Gestion des formats/01 - Eléments de support/Isartor testsuite/PDFA-1b/";
 
-   @Test
-   @Ignore("L'analyse des archives tar n'est pas encore implémentée")
-   public void test_Pdf_Dans_ArchiveTar() {
+      // CIRTIL
+      // String path =
+      // "S:/produits/Qualite/Projet_ae/Documentation refonte/Refonte/Développement/00015 - Gestion des formats/01 - Eléments de support/PDF_récupéré_serveur_intégration_saeint3/";
+      String path = "S:/produits/Qualite/Projet_ae/Documentation refonte/Refonte/Développement/00015 - Gestion des formats/01 - Eléments de support/PDF_dans_le_SAE_de_prod/";
 
-      String cheminFichier = getRessourceFilePath("/jeuTest/pdfa1b.tar");
-      File file = new File(cheminFichier);
+      // Récupère la liste des fichiers présents dans le répertoire
+      // String[] filtresExtension = new String[] { "pdf" };
+      String[] filtresExtension = null;
+      boolean recurse = true;
+      List<File> files = (List<File>) FileUtils.listFiles(new File(path),
+            filtresExtension, recurse);
 
-      boolean analyserContenuArchives = true;
+      // Tri par ordre alphabétique de nom de fichier, case insensitive
+      Collections.sort(files);
 
-      String idPronom = formatIdService
-            .identifie(file, analyserContenuArchives);
+      // On va mettre dans un StringBuilder l'ensemble des résultats
+      // d'identification, dans un format CSV :
+      // chemin_fichier;idPronom
+      StringBuilder sbResult = new StringBuilder();
 
-      assertEquals("Le format identifié n'est pas celui attendu", "fmt/18",
-            idPronom);
+      // Boucle sur la liste des fichiers
+      String cheminFichier;
+      String idPronom;
+      String crlf = "\r\n";
+      for (File file : files) {
 
-   }
+         cheminFichier = file.getAbsolutePath();
 
-   @Test
-   @Ignore("L'analyse des archives zip n'est pas encore implémentée")
-   public void test_Pdf_Dans_ArchiveZip() {
+         LOGGER.debug("Validation de {}", cheminFichier);
 
-      String cheminFichier = getRessourceFilePath("/jeuTest/pdfa1b.zip");
-      File file = new File(cheminFichier);
+         try {
 
-      boolean analyserContenuArchives = true;
+            idPronom = formatIdService.identifie(file);
 
-      String idPronom = formatIdService
-            .identifie(file, analyserContenuArchives);
+            sbResult.append(String.format("%s;%s", cheminFichier, idPronom));
 
-      assertEquals("Le format identifié n'est pas celui attendu", "fmt/18",
-            idPronom);
+         } catch (FormatIdentificationRuntimeException ex) {
+
+            LOGGER.debug("Une exception de validation a été levée : {}", ex);
+            sbResult.append(String.format("%s;Erreur", cheminFichier));
+
+         }
+
+         sbResult.append(crlf);
+
+      }
+
+      LOGGER.debug("Résumé du résultat en CSV : \r\n{}", sbResult);
 
    }
 
