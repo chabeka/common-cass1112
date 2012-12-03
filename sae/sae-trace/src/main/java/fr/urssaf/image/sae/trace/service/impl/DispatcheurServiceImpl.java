@@ -40,6 +40,8 @@ public class DispatcheurServiceImpl implements DispatcheurService {
    private static final String ARG_0 = "0";
    private static final String ARG_1 = "1";
 
+   private static final String FIN_LOG = "{} - fin";
+   private static final String DEBUT_LOG = "{} - début";
    private static final Logger LOGGER = LoggerFactory
          .getLogger(DispatcheurServiceImpl.class);
 
@@ -81,6 +83,9 @@ public class DispatcheurServiceImpl implements DispatcheurService {
    @Override
    public final void ajouterTrace(TraceToCreate trace) {
 
+      String prefix = "ajouterTrace()";
+      LOGGER.debug(DEBUT_LOG, prefix);
+
       String codeEvt = trace.getCodeEvt();
 
       TraceDestinataire traceDest = destSupport.find(codeEvt);
@@ -91,6 +96,8 @@ public class DispatcheurServiceImpl implements DispatcheurService {
                trace);
 
       }
+
+      LOGGER.debug(FIN_LOG, prefix);
 
    }
 
@@ -192,22 +199,30 @@ public class DispatcheurServiceImpl implements DispatcheurService {
 
    private void saveTrace(TraceToCreate trace, String type, List<String> list) {
 
+      String prefix = "saveTrace()";
+      LOGGER.debug(DEBUT_LOG, prefix);
+
       if (TraceDestinataireDao.COL_REG_EXPLOIT.equals(type)) {
+         LOGGER.debug("{} - ajout d'une trace d'exploitation", prefix);
          TraceRegExploitation traceExploit = new TraceRegExploitation(trace,
                list);
          exploitSupport.create(traceExploit, clockSupport.currentCLock());
 
       } else if (TraceDestinataireDao.COL_REG_SECURITE.equals(type)) {
+         LOGGER.debug("{} - ajout d'une trace de sécurité", prefix);
          TraceRegSecurite traceSecurite = new TraceRegSecurite(trace, list);
          secuSupport.create(traceSecurite, clockSupport.currentCLock());
 
       } else if (TraceDestinataireDao.COL_REG_TECHNIQUE.equals(type)) {
+         LOGGER.debug("{} - ajout d'une trace technique", prefix);
          TraceRegTechnique traceTechnique = new TraceRegTechnique(trace, list);
          techSupport.create(traceTechnique, clockSupport.currentCLock());
       } else {
          throw new IllegalArgumentException(StringUtils.replace(
                "pas de type existant {0} à convertir", "{0}", type));
       }
+
+      LOGGER.debug(FIN_LOG, prefix);
 
    }
 }

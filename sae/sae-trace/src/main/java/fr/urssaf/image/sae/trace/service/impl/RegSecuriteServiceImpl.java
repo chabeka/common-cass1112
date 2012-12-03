@@ -11,6 +11,8 @@ import java.util.UUID;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.time.DateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,12 +38,20 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
    @Autowired
    private JobClockSupport clockSupport;
 
+   private static final String FIN_LOG = "{} - fin";
+   private static final String DEBUT_LOG = "{} - début";
+   private static final Logger LOGGER = LoggerFactory
+         .getLogger(RegSecuriteServiceImpl.class);
+
    /**
     * {@inheritDoc}
     */
    @Override
    public final List<TraceRegSecuriteIndex> lecture(Date dateDebut,
          Date dateFin, int limite, boolean reversed) {
+
+      String prefix = "lecture()";
+      LOGGER.debug(DEBUT_LOG, prefix);
 
       int sizeMax = limite;
       Date endDate = dateFin;
@@ -68,6 +78,8 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
          value = list;
       }
 
+      LOGGER.debug(FIN_LOG, prefix);
+
       return value;
 
    }
@@ -86,6 +98,9 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
    @Override
    public final void purge(Date dateDebut, Date dateFin) {
 
+      String prefix = "purge()";
+      LOGGER.debug(DEBUT_LOG, prefix);
+
       Date date = DateUtils.truncate(dateDebut, Calendar.DATE);
       Date endDate = DateUtils.truncate(dateFin, Calendar.DATE);
 
@@ -95,6 +110,8 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
          date = DateUtils.addDays(date, 1);
 
       } while (date.compareTo(endDate) <= 0);
+
+      LOGGER.debug(FIN_LOG, prefix);
 
    }
 
