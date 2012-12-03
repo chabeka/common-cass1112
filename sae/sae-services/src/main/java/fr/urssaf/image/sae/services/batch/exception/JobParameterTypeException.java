@@ -2,7 +2,11 @@ package fr.urssaf.image.sae.services.batch.exception;
 
 import java.text.MessageFormat;
 
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang.StringUtils;
+
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
+import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
 
 /**
  * Erreur levée lorsque que les paramètres du job dans la pile des travaux ne
@@ -61,9 +65,17 @@ public class JobParameterTypeException extends RuntimeException {
    @Override
    public final String getMessage() {
 
-      String message = MessageFormat.format(EXCEPTION_MESSAGE, job.getIdJob(),
-            job.getParameters());
-
+      String message = StringUtils.EMPTY;
+      if(StringUtils.isNotBlank(job.getParameters())){
+         message = MessageFormat.format(EXCEPTION_MESSAGE, job.getIdJob(),
+               job.getParameters());
+      }else{
+         if(MapUtils.isNotEmpty(job.getJobParameters())){
+            message = MessageFormat.format(EXCEPTION_MESSAGE, job.getIdJob(),
+                  job.getJobParameters().get(Constantes.ECDE_URL));
+         }
+      }
+      
       return message;
    }
 
