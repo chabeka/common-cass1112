@@ -42,8 +42,6 @@ public class ArchivageMasseAvecHashTest {
    @Autowired
    private SaeServiceSkeletonInterface skeleton;
 
-   @Autowired
-   private SAEControlesCaptureService controlesService;
    
    @Autowired
    private SAEControleSupportService supportService;
@@ -65,7 +63,7 @@ public class ArchivageMasseAvecHashTest {
    @After
    public void after() {
 
-      EasyMock.reset(controlesService, ecdeServices);
+      EasyMock.reset(ecdeServices, supportService);
 
       SecurityContextHolder.getContext().setAuthentication(null);
    }
@@ -77,7 +75,7 @@ public class ArchivageMasseAvecHashTest {
                .expect(
                      ecdeServices.convertSommaireToFile(EasyMock
                            .anyObject(URI.class)))
-               .andReturn(new ClassPathResource("sommaire.xml").getFile()).times(2);
+               .andReturn(new ClassPathResource("sommaire.xml").getFile());
       } catch (EcdeBadURLException e) {
          throw new NestableRuntimeException(e);
       } catch (EcdeBadURLFormatException e) {
