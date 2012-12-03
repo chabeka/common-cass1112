@@ -20,6 +20,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.webservices.configuration.EcdeManager;
 import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.ArchivageMasseAvecHashResponseType;
+import fr.urssaf.image.sae.webservices.util.SoapTestUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-webservices.xml" })
@@ -80,8 +81,13 @@ public class ArchivageMasseAvecHashTest {
          ArchivageMasseAvecHashResponseType response = service.archivageMasse(
                urlSommaireEcde, hash, typeHash);
       } catch (AxisFault fault) {
-
-         Assert.assertEquals("HashSommaireIncorrect", fault.getFaultCode().getLocalPart());
+         
+         SoapTestUtils
+         .assertAxisFault(
+               fault,
+               "Le hash du fichier sommaire.xml attendu 42b7d80f0fd3b31e46141876ce4301fdba4a0 est différent de celui obtenu 42b7d80f7ba0fd3b31e46141876ce4301fdba4a0 (type de hash SHA-1)",
+               "HashSommaireIncorrect",
+               SoapTestUtils.SAE_NAMESPACE, SoapTestUtils.SAE_PREFIX);
 
       }
 
@@ -102,7 +108,12 @@ public class ArchivageMasseAvecHashTest {
                urlSommaireEcde, hash, typeHash);
       } catch (AxisFault fault) {
 
-         Assert.assertEquals("TypeHashSommaireIncorrect", fault.getFaultCode().getLocalPart());
+         SoapTestUtils
+         .assertAxisFault(
+               fault,
+               "Le type de hash algo-1 nest pas autorisé",
+               "TypeHashSommaireIncorrect",
+               SoapTestUtils.SAE_NAMESPACE, SoapTestUtils.SAE_PREFIX);
 
       }
 
@@ -123,6 +134,12 @@ public class ArchivageMasseAvecHashTest {
                urlSommaireEcde, hash, typeHash);
       } catch (AxisFault fault) {
 
+         SoapTestUtils
+         .assertAxisFault(
+               fault,
+               "Le type de hash  nest pas autorisé",
+               "TypeHashSommaireIncorrect",
+               SoapTestUtils.SAE_NAMESPACE, SoapTestUtils.SAE_PREFIX);
          Assert.assertEquals("TypeHashSommaireIncorrect", fault.getFaultCode().getLocalPart());
 
       }
