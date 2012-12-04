@@ -3,9 +3,6 @@ package fr.urssaf.image.commons.droid.support;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Field;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -33,23 +30,6 @@ import fr.urssaf.image.commons.droid.exception.FormatIdentificationRuntimeExcept
  */
 public class MyBinarySignatureIdentifier extends BinarySignatureIdentifier {
 
-   @SuppressWarnings("unchecked")
-   private static class AccessVarPrivee implements PrivilegedAction {
-
-      private final Field privateField;
-
-      public AccessVarPrivee(Field privateField) {
-         this.privateField = privateField;
-      }
-
-      @Override
-      public Object run() {
-         privateField.setAccessible(true);
-         return null;
-      }
-
-   }
-
    private final Resource signaturesResource;
 
    /**
@@ -66,36 +46,13 @@ public class MyBinarySignatureIdentifier extends BinarySignatureIdentifier {
    /**
     * {@inheritDoc}
     */
-   @SuppressWarnings("unchecked")
    @Override
    public final void init() {
 
       // Chargement du fichier des signatures
       FFSignatureFile sigFile = loadSignatures();
       sigFile.prepareForUse();
-
-      // Ecrase par réflexion le champ privé "sigFile" de la classe que l'on
-      // dérive
-      // TODO : Trouver autre chose que la réflexion
-      try {
-
-         final Field privateField = BinarySignatureIdentifier.class
-               .getDeclaredField("sigFile");
-
-         // privateField.setAccessible(true);
-         AccessController.doPrivileged(new AccessVarPrivee(privateField));
-
-         privateField.set(this, sigFile);
-
-      } catch (SecurityException ex) {
-         throw new FormatIdentificationRuntimeException(ex);
-      } catch (NoSuchFieldException ex) {
-         throw new FormatIdentificationRuntimeException(ex);
-      } catch (IllegalArgumentException ex) {
-         throw new FormatIdentificationRuntimeException(ex);
-      } catch (IllegalAccessException ex) {
-         throw new FormatIdentificationRuntimeException(ex);
-      }
+      this.setSigFile(sigFile);
 
    }
 

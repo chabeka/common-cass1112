@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -190,6 +191,7 @@ public class FormatIdentificationServiceTest {
       String cheminFichier;
       String idPronom;
       String crlf = "\r\n";
+      int nbFmt354 = 0;
       for (File file : files) {
 
          cheminFichier = file.getAbsolutePath();
@@ -201,6 +203,10 @@ public class FormatIdentificationServiceTest {
             idPronom = formatIdService.identifie(file);
 
             sbResult.append(String.format("%s;%s", cheminFichier, idPronom));
+            
+            if (StringUtils.equalsIgnoreCase(idPronom, "fmt/354")) {
+               nbFmt354++;
+            }
 
          } catch (FormatIdentificationRuntimeException ex) {
 
@@ -213,6 +219,8 @@ public class FormatIdentificationServiceTest {
 
       }
 
+      LOGGER.debug("Nombre fmt/354 : {}", nbFmt354);
+      LOGGER.debug("Nombre autres : {}", files.size()-nbFmt354);
       LOGGER.debug("Résumé du résultat en CSV : \r\n{}", sbResult);
 
    }
