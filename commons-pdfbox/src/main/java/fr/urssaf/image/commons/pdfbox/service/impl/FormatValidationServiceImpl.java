@@ -2,9 +2,13 @@ package fr.urssaf.image.commons.pdfbox.service.impl;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.activation.DataSource;
+
+import org.apache.commons.mail.ByteArrayDataSource;
 import org.apache.pdfbox.preflight.PreflightDocument;
 import org.apache.pdfbox.preflight.ValidationResult;
 import org.apache.pdfbox.preflight.ValidationResult.ValidationError;
@@ -29,16 +33,61 @@ public final class FormatValidationServiceImpl implements
     * {@inheritDoc}
     */
    @Override
-   @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-   public List<String> validate(final File file) throws FormatValidationException {
+   public List<String> validate(File file) throws FormatValidationException {
 
-      final List<String> result = new ArrayList<String>();
+      PreflightParser parser = buildPreflightParser(file);
+
+      return validate(parser);
+
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public List<String> validate(DataSource dataSource)
+         throws FormatValidationException {
+
+      PreflightParser parser = buildPreflightParser(dataSource);
+
+      return validate(parser);
+
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public List<String> validate(InputStream inputStream)
+         throws FormatValidationException {
+
+      PreflightParser parser = buildPreflightParser(inputStream);
+
+      return validate(parser);
+
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public List<String> validate(byte[] data) throws FormatValidationException {
+
+      PreflightParser parser = buildPreflightParser(data);
+
+      return validate(parser);
+
+   }
+
+   @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
+   private List<String> validate(PreflightParser parser)
+         throws FormatValidationException {
+
+      List<String> result = new ArrayList<String>();
 
       ValidationResult pdfboxResult;
       try {
 
-         PreflightParser parser = new PreflightParser(file);
-         
          /*
           * Parse the PDF file with PreflightParser that inherits from the
           * NonSequentialParser. Some additional controls are present to check a
@@ -66,15 +115,13 @@ public final class FormatValidationServiceImpl implements
           */
          // In this case, the exception contains an instance of ValidationResult
          pdfboxResult = e.getResult();
-         
+
       } catch (IOException e) {
-         LOGGER.debug("Exception levée lors de la validation du fichier {} : {}",
-               file.getAbsolutePath(), e);
-         throw new FormatValidationException(e.getMessage(), e);
+         LOGGER.debug("Exception levée lors de la validation PDF/A : {}", e);
+         throw new FormatValidationException(e);
       } catch (RuntimeException e) {
-         LOGGER.debug("Exception levée lors de la validation du fichier {} : {}",
-               file.getAbsolutePath(), e);
-         throw new FormatValidationException(e.getMessage(), e);
+         LOGGER.debug("Exception levée lors de la validation PDF/A : {}", e);
+         throw new FormatValidationException(e);
       }
 
       // Construit la liste des erreurs de validation dans l'objet résultat
@@ -90,16 +137,52 @@ public final class FormatValidationServiceImpl implements
          }
 
          // Une trace de debug
-         LOGGER
-               .debug(
-                     "Le fichier '{}' n'a pas passé la validation PDFBox du PDF/A. Détails : {}",
-                     file.getAbsolutePath(), result);
+         LOGGER.debug("Non conforme PDF/A. Détails : {}", result);
 
       }
 
       // Renvoie du résultat
       return result;
 
+   }
+
+   private PreflightParser buildPreflightParser(DataSource dataSource)
+         throws FormatValidationException {
+      try {
+         return new PreflightParser(dataSource);
+      } catch (IOException ex) {
+         throw new FormatValidationException(ex);
+      }
+   }
+
+   private PreflightParser buildPreflightParser(File file)
+         throws FormatValidationException {
+      try {
+         return new PreflightParser(file);
+      } catch (IOException ex) {
+         throw new FormatValidationException(ex);
+      }
+   }
+
+   private PreflightParser buildPreflightParser(InputStream stream)
+         throws FormatValidationException {
+      try {
+         DataSource dataSource = new ByteArrayDataSource(stream, null);
+         return buildPreflightParser(dataSource);
+      } catch (IOException ex) {
+         throw new FormatValidationException(ex);
+      }
+   }
+
+   private PreflightParser buildPreflightParser(byte[] data)
+         throws FormatValidationException {
+      DataSource dataSource;
+      try {
+         dataSource = new ByteArrayDataSource(data, null);
+         return buildPreflightParser(dataSource);
+      } catch (IOException ex) {
+         throw new FormatValidationException(ex);
+      }
    }
 
 }

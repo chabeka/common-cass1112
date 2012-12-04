@@ -5,11 +5,18 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.List;
 
+import javax.activation.DataSource;
+
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.mail.ByteArrayDataSource;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -101,6 +108,70 @@ public class FormatValidationServiceTest {
 
    }
 
+   @Test
+   public void test_from_Datasource() throws FormatValidationException,
+         IOException {
+
+      File file = getFileFromResource("/pdf/conformes/text_to_pdfa.pdf");
+
+      InputStream inputStream = new FileInputStream(file);
+
+      DataSource dataSource = new ByteArrayDataSource(inputStream, null);
+
+      FormatValidationService formatValService = new FormatValidationServiceImpl();
+
+      List<String> erreurs = formatValService.validate(dataSource);
+
+      assertNotNull(
+            "La liste renvoyée par le service ne devrait pas être null",
+            erreurs);
+
+      assertTrue("La validation aurait dû réussir", erreurs.isEmpty());
+
+   }
+
+   @Test
+   public void test_from_InputStream() throws FormatValidationException,
+         IOException {
+
+      File file = getFileFromResource("/pdf/conformes/text_to_pdfa.pdf");
+
+      InputStream inputStream = new FileInputStream(file);
+
+      FormatValidationService formatValService = new FormatValidationServiceImpl();
+
+      List<String> erreurs = formatValService.validate(inputStream);
+
+      assertNotNull(
+            "La liste renvoyée par le service ne devrait pas être null",
+            erreurs);
+
+      assertTrue("La validation aurait dû réussir", erreurs.isEmpty());
+
+   }
+
+   @Test
+   public void test_from_ByteArray() throws FormatValidationException,
+         IOException {
+
+      File file = getFileFromResource("/pdf/conformes/text_to_pdfa.pdf");
+
+      InputStream inputStream = new FileInputStream(file);
+
+      byte[] data = IOUtils.toByteArray(inputStream);
+
+      FormatValidationService formatValService = new FormatValidationServiceImpl();
+
+      List<String> erreurs = formatValService.validate(data);
+
+      assertNotNull(
+            "La liste renvoyée par le service ne devrait pas être null",
+            erreurs);
+
+      assertTrue("La validation aurait dû réussir", erreurs.isEmpty());
+
+   }
+
    /**
     * Il ne s'agit pas d'un vrai TU, mais juste d'un moyen de lancer une
     * validation sur un fichier
@@ -139,21 +210,26 @@ public class FormatValidationServiceTest {
       // Chemin du répertoire à tester
 
       // Bavaria - fichiers conformes
-      // String path = "S:/produits/Qualite/Projet_ae/Documentation refonte/Refonte/Développement/00015 - Gestion des formats/01 - Eléments de support/Bavaria testsuite/conforming";
-      
+      // String path =
+      // "S:/produits/Qualite/Projet_ae/Documentation refonte/Refonte/Développement/00015 - Gestion des formats/01 - Eléments de support/Bavaria testsuite/conforming";
+
       // Bavaria - fichiers non conformes
-      // String path = "S:/produits/Qualite/Projet_ae/Documentation refonte/Refonte/Développement/00015 - Gestion des formats/01 - Eléments de support/Bavaria testsuite/nonconforming";
+      // String path =
+      // "S:/produits/Qualite/Projet_ae/Documentation refonte/Refonte/Développement/00015 - Gestion des formats/01 - Eléments de support/Bavaria testsuite/nonconforming";
 
       // Bavaria - fichiers unclear
-      // String path = "S:/produits/Qualite/Projet_ae/Documentation refonte/Refonte/Développement/00015 - Gestion des formats/01 - Eléments de support/Bavaria testsuite/unclear";
+      // String path =
+      // "S:/produits/Qualite/Projet_ae/Documentation refonte/Refonte/Développement/00015 - Gestion des formats/01 - Eléments de support/Bavaria testsuite/unclear";
 
       // Isartor
-      // String path = "S:/produits/Qualite/Projet_ae/Documentation refonte/Refonte/Développement/00015 - Gestion des formats/01 - Eléments de support/Isartor testsuite/PDFA-1b/";
-      
+      // String path =
+      // "S:/produits/Qualite/Projet_ae/Documentation refonte/Refonte/Développement/00015 - Gestion des formats/01 - Eléments de support/Isartor testsuite/PDFA-1b/";
+
       // CIRTIL
-      // String path = "S:/produits/Qualite/Projet_ae/Documentation refonte/Refonte/Développement/00015 - Gestion des formats/01 - Eléments de support/PDF_récupéré_serveur_intégration_saeint3/";
+      // String path =
+      // "S:/produits/Qualite/Projet_ae/Documentation refonte/Refonte/Développement/00015 - Gestion des formats/01 - Eléments de support/PDF_récupéré_serveur_intégration_saeint3/";
       String path = "S:/produits/Qualite/Projet_ae/Documentation refonte/Refonte/Développement/00015 - Gestion des formats/01 - Eléments de support/PDF_dans_le_SAE_de_prod/";
-      
+
       // Instantiation du service
       FormatValidationService formatValService = new FormatValidationServiceImpl();
 

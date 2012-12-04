@@ -19,4 +19,14 @@ public class FormatValidationException extends Exception {
       super(message, cause);
    }
 
+   /**
+    * Constructeur
+    * 
+    * @param cause
+    *           la cause de l'exception
+    */
+   public FormatValidationException(Throwable cause) {
+      super(cause);
+   }
+
 }
