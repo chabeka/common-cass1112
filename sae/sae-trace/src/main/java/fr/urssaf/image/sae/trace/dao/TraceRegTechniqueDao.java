@@ -62,7 +62,7 @@ public class TraceRegTechniqueDao {
     * Constructeur
     * 
     * @param keyspace
-    *           Keyspace utilisé par la pile des travaux
+    *           Keyspace utilisé
     */
    @Autowired
    public TraceRegTechniqueDao(Keyspace keyspace) {

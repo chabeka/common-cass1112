@@ -59,7 +59,7 @@ public class TraceRegSecuriteDao {
     * Constructeur
     * 
     * @param keyspace
-    *           Keyspace utilisé par la pile des travaux
+    *           Keyspace utilisé
     */
    @Autowired
    public TraceRegSecuriteDao(Keyspace keyspace) {
