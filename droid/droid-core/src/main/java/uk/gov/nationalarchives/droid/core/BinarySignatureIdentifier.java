@@ -162,8 +162,12 @@ public class BinarySignatureIdentifier implements DroidCore {
     /**
      * @return the sigFile
      */
-    FFSignatureFile getSigFile() {
+    protected FFSignatureFile getSigFile() {
         return sigFile;
+    }
+    
+    protected void setSigFile(FFSignatureFile sigFile) {
+       this.sigFile = sigFile;
     }
 
     /** 
