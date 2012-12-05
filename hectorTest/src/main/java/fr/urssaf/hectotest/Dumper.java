@@ -249,7 +249,8 @@ public class Dumper {
 	}
 	
 	private void dumpColumns(List<HColumn<byte[], byte[]>> columns) throws Exception {
-		for (HColumn<byte[], byte[]> column : columns) {
+	   System.out.println("Nombre de colonnes : " + columns.size());
+	   for (HColumn<byte[], byte[]> column : columns) {
 			String s;
 			if (printColumnNameInHex) {
 				s = "Name (hex) : " + ConvertHelper.getHexString(column.getName());
