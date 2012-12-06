@@ -111,7 +111,7 @@ public class JobClockSupportTest {
    @Test(expected = ClockSynchronizationException.class)
    public void synchronisation_failure() {
 
-      long decalage = configuration.getMaxTimeSynchroError() + 100;
+      long decalage = configuration.getMaxTimeSynchroError() + 10000;
 
       HColumn<?, ?> column = addJob();
       column.setClock(keyspace.createClock() + decalage);
