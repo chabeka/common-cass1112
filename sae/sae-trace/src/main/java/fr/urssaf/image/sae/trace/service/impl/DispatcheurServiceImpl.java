@@ -8,6 +8,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.docubase.toolkit.model.ToolkitFactory;
+import net.docubase.toolkit.model.recordmanager.RMSystemEvent;
+import net.docubase.toolkit.service.ged.RecordManagerService;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrSubstitutor;
 import org.slf4j.Logger;
@@ -21,6 +25,7 @@ import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegExploitation;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegSecurite;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegTechnique;
+import fr.urssaf.image.sae.trace.dao.support.ServiceProviderSupport;
 import fr.urssaf.image.sae.trace.dao.support.TraceDestinataireSupport;
 import fr.urssaf.image.sae.trace.dao.support.TraceRegExploitationSupport;
 import fr.urssaf.image.sae.trace.dao.support.TraceRegSecuriteSupport;
@@ -39,6 +44,7 @@ public class DispatcheurServiceImpl implements DispatcheurService {
 
    private static final String ARG_0 = "0";
    private static final String ARG_1 = "1";
+   private static final String USERNAME = "_ADMIN";
 
    private static final String FIN_LOG = "{} - fin";
    private static final String DEBUT_LOG = "{} - début";
@@ -77,6 +83,9 @@ public class DispatcheurServiceImpl implements DispatcheurService {
    @Autowired
    private TraceRegTechniqueSupport techSupport;
 
+   @Autowired
+   private ServiceProviderSupport providerSupport;
+
    /**
     * {@inheritDoc}
     */
@@ -113,6 +122,9 @@ public class DispatcheurServiceImpl implements DispatcheurService {
       } else if (REG_AUTORISES.contains(type)) {
          checkRegistresValues(trace, type);
          saveTrace(trace, type, list);
+
+      } else if (TraceDestinataireDao.COL_HIST_EVT.equals(type)) {
+         saveTraceHistEvt(trace);
 
       } else {
          LOGGER.debug("Fonctionnalité non prise en charge pour le moment");
@@ -224,5 +236,13 @@ public class DispatcheurServiceImpl implements DispatcheurService {
 
       LOGGER.debug(FIN_LOG, prefix);
 
+   }
+
+   private void saveTraceHistEvt(TraceToCreate trace) {
+      RecordManagerService service = providerSupport.getRecordManagerService();
+      RMSystemEvent event = ToolkitFactory.getInstance().createRMSystemEvent();
+      event.setUsername(USERNAME);
+      event.setEventDescription(trace.toString());
+      service.createCustomSystemEventLog(event);
    }
 }

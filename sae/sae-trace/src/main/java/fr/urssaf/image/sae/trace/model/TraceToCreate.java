@@ -3,8 +3,15 @@
  */
 package fr.urssaf.image.sae.trace.model;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.http.impl.cookie.DateUtils;
 
 /**
  * Formulaire d'une trace à créer. Ce modèle sert essentiellement au dispatcheur
@@ -12,6 +19,9 @@ import java.util.Map;
  * 
  */
 public class TraceToCreate {
+
+   private static final int BUFFER_MIN_SIZE = 26;
+   private static final String DATE_FORMAT = "dd/MM/yyyy HH:mm:ss";
 
    /** Date de création de la trace */
    private Date timestamp;
@@ -157,4 +167,55 @@ public class TraceToCreate {
       this.infos = infos;
    }
 
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final String toString() {
+
+      StringBuffer buffer = new StringBuffer(BUFFER_MIN_SIZE);
+      buffer.append("code evenement:");
+      buffer.append(this.codeEvt);
+
+      if (StringUtils.isNotBlank(this.action)) {
+         buffer.append(";action:");
+         buffer.append(this.action);
+      }
+
+      if (StringUtils.isNotBlank(this.contexte)) {
+         buffer.append(";contexte:");
+         buffer.append(this.contexte);
+      }
+
+      if (StringUtils.isNotBlank(this.contrat)) {
+         buffer.append(";contrat:");
+         buffer.append(this.contrat);
+      }
+
+      if (StringUtils.isNotBlank(this.login)) {
+         buffer.append(";login:");
+         buffer.append(this.login);
+      }
+
+      buffer.append(";timestamp:");
+      buffer.append(DateUtils.formatDate(this.timestamp, DATE_FORMAT));
+
+      if (StringUtils.isNotBlank(this.stracktrace)) {
+         buffer.append(";stacktrace:");
+         buffer.append(this.stracktrace);
+      }
+
+      if (MapUtils.isNotEmpty(this.infos)) {
+         List<String> keys = new ArrayList<String>(this.infos.keySet());
+         Collections.sort(keys);
+         for (String key : keys) {
+            buffer.append(';');
+            buffer.append(key);
+            buffer.append(':');
+            buffer.append(this.infos.get(key));
+         }
+      }
+
+      return buffer.toString();
+   }
 }

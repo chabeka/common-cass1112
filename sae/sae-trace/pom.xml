@@ -40,6 +40,26 @@
    </build>
 
    <dependencies>
+      <!-- COMMONS DFCE -->
+      <dependency>
+         <groupId>fr.urssaf.image.commons</groupId>
+         <artifactId>commons-dfce</artifactId>
+         <version>${commons.dfce}</version>
+         <exclusions>
+            <exclusion>
+               <groupId>com.google.guava</groupId>
+               <artifactId>guava</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+      
+      <!-- JODA TIME  -->
+      <dependency>
+         <groupId>joda-time</groupId>
+         <artifactId>joda-time</artifactId>
+         <version>${joda-time.version}</version>
+      </dependency>
+
       <!-- JASPECT -->
       <dependency>
          <groupId>org.aspectj</groupId>

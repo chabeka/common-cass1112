@@ -7,12 +7,25 @@
         http://www.springframework.org/schema/context 
         http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
+   <bean id="resourceSaeConfig" class="org.springframework.core.io.ClassPathResource">
+      <constructor-arg value="config/commons-config.properties" />
+   </bean>
+   
+   <bean class="java.io.File" id="fileSaeConfig">
+      <constructor-arg>
+         <bean factory-bean="resourceSaeConfig" factory-method="getURI" />
+      </constructor-arg>
+   </bean>
 
-   <bean
-      class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-      <property name="locations">
-         <value>classpath:config/commons-cassandra.properties</value>
-      </property>
+   <bean id="saeConfigResource" class="org.springframework.core.io.FileSystemResource">
+      <constructor-arg>
+         <bean factory-bean="fileSaeConfig" factory-method="getAbsolutePath" />
+      </constructor-arg>
+   </bean>
+
+   <bean class="fr.urssaf.image.sae.trace.factory.PropertiesFactory"
+      factory-method="load">
+      <constructor-arg ref="saeConfigResource" />
    </bean>
 
    <import resource="applicationContext-sae-trace.xml" />
