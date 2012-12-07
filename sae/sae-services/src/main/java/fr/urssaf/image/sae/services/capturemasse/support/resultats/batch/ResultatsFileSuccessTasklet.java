@@ -6,10 +6,7 @@ package fr.urssaf.image.sae.services.capturemasse.support.resultats.batch;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -29,6 +26,7 @@ import org.xml.sax.SAXException;
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
 import fr.urssaf.image.sae.services.capturemasse.model.CaptureMasseIntegratedDocument;
 import fr.urssaf.image.sae.services.capturemasse.support.resultats.ResultatFileSuccessSupport;
+import fr.urssaf.image.sae.services.capturemasse.support.stockage.multithreading.InsertionPoolThreadExecutor;
 import fr.urssaf.image.sae.services.util.XmlValidationUtils;
 
 /**
@@ -50,10 +48,13 @@ public class ResultatsFileSuccessTasklet implements Tasklet {
    private static final Logger LOGGER = LoggerFactory
          .getLogger(ResultatsFileSuccessTasklet.class);
 
+   // Pool d'execution des insertions de documents
+   @Autowired
+   InsertionPoolThreadExecutor executor;
+
    /**
     * {@inheritDoc}
     */
-   @SuppressWarnings("unchecked")
    @Override
    public final RepeatStatus execute(final StepContribution contribution,
          final ChunkContext chunkContext) throws Exception {
@@ -66,21 +67,21 @@ public class ResultatsFileSuccessTasklet implements Tasklet {
       final File sommaireFile = new File(path);
       final File ecdeDirectory = sommaireFile.getParentFile();
 
-      final ConcurrentLinkedQueue<UUID> listIntDocs = (ConcurrentLinkedQueue<UUID>) chunkContext
-            .getStepContext().getStepExecution().getJobExecution()
-            .getExecutionContext().get(Constantes.INTEG_DOCS);
+      final ConcurrentLinkedQueue<CaptureMasseIntegratedDocument> listIntDocs = executor
+            .getIntegratedDocuments();
 
       int initCount = (Integer) map.get(Constantes.DOC_COUNT);
 
-      List<CaptureMasseIntegratedDocument> integDocs = new ArrayList<CaptureMasseIntegratedDocument>();
-      CaptureMasseIntegratedDocument doc;
-      for (UUID uuid : listIntDocs) {
-         doc = new CaptureMasseIntegratedDocument();
-         doc.setIdentifiant(uuid);
-         integDocs.add(doc);
+      boolean restitutionUuid = false;
+      if (chunkContext.getStepContext()
+            .getStepExecution().getJobExecution().getExecutionContext()
+            .get(Constantes.RESTITUTION_UUIDS) != null) {
+         restitutionUuid = (Boolean) (chunkContext.getStepContext()
+               .getStepExecution().getJobExecution().getExecutionContext()
+               .get(Constantes.RESTITUTION_UUIDS));
       }
-
-      successSupport.writeResultatsFile(ecdeDirectory, integDocs, initCount);
+      successSupport.writeResultatsFile(ecdeDirectory, listIntDocs, initCount,
+            restitutionUuid, sommaireFile);
 
       File resultats = new File(ecdeDirectory, "resultats.xml");
 
@@ -99,5 +100,4 @@ public class ResultatsFileSuccessTasklet implements Tasklet {
 
       return RepeatStatus.FINISHED;
    }
-
 }

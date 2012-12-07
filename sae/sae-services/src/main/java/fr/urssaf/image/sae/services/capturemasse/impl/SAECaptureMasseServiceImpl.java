@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,28 +76,23 @@ public class SAECaptureMasseServiceImpl implements SAECaptureMasseService {
     * @param idTraitement
     * @param sommaireURL
     */
-   @SuppressWarnings("unchecked")
    private void checkFinal(JobExecution jobExecution, URI sommaireURL,
          UUID idTraitement, List<Throwable> listeExceptions) {
 
       Integer nbreDocs = null;
-      ConcurrentLinkedQueue<UUID> listUuid = null;
+      Integer nbDocsIntegres = null;
       boolean logPresent = false;
 
       if (jobExecution != null) {
          nbreDocs = (Integer) jobExecution.getExecutionContext().get(
                Constantes.DOC_COUNT);
 
-         listUuid = (ConcurrentLinkedQueue<UUID>) jobExecution
-               .getExecutionContext().get(Constantes.INTEG_DOCS);
+         nbDocsIntegres = (Integer)jobExecution.getExecutionContext().get(Constantes.NB_INTEG_DOCS);
          logPresent = jobExecution.getExecutionContext().containsKey(
                Constantes.FLAG_BUL003);
       }
-      if (listUuid == null) {
-         listUuid = new ConcurrentLinkedQueue<UUID>();
-      }
 
-      verifSupport.checkFinTraitement(sommaireURL, nbreDocs, listUuid.size(),
+      verifSupport.checkFinTraitement(sommaireURL, nbreDocs, nbDocsIntegres,
             logPresent, listeExceptions, idTraitement);
 
    }
@@ -107,7 +101,7 @@ public class SAECaptureMasseServiceImpl implements SAECaptureMasseService {
     * {@inheritDoc}
     */
    @Override
-   public final ExitTraitement captureMasse(URI sommaireURI, UUID idTraitement,
+   public ExitTraitement captureMasse(URI sommaireURI, UUID idTraitement,
          String hash, String typeHash) {
       Map<String, JobParameter> mapParam = new HashMap<String, JobParameter>();
       mapParam.put(Constantes.SOMMAIRE,
@@ -168,6 +162,5 @@ public class SAECaptureMasseServiceImpl implements SAECaptureMasseService {
 
       return exitTraitement;
    }
-   
    
 }

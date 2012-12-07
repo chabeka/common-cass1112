@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -28,8 +27,10 @@ import org.xml.sax.SAXException;
 
 import fr.urssaf.image.sae.services.capturemasse.common.CaptureMasseErreur;
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
+import fr.urssaf.image.sae.services.capturemasse.model.CaptureMasseIntegratedDocument;
 import fr.urssaf.image.sae.services.capturemasse.support.resultats.ResultatsFileEchecSupport;
 import fr.urssaf.image.sae.services.capturemasse.support.sommaire.SommaireFormatValidationSupport;
+import fr.urssaf.image.sae.services.capturemasse.support.stockage.multithreading.InsertionPoolThreadExecutor;
 import fr.urssaf.image.sae.services.util.XmlValidationUtils;
 
 /**
@@ -58,6 +59,10 @@ public class ResultatsFileFailureTasklet implements Tasklet {
    private static final Logger LOGGER = LoggerFactory
          .getLogger(ResultatsFileFailureTasklet.class);
 
+   // Pool d'execution des insertions de documents
+   @Autowired
+   InsertionPoolThreadExecutor executor;
+   
    /**
     * {@inheritDoc}
     */
@@ -98,10 +103,9 @@ public class ResultatsFileFailureTasklet implements Tasklet {
          isModeToutOuRien = false;
       }
 
-      @SuppressWarnings("unchecked")
-      ConcurrentLinkedQueue<UUID> listUUID = (ConcurrentLinkedQueue<UUID>) map.get(Constantes.INTEG_DOCS);
+      ConcurrentLinkedQueue<CaptureMasseIntegratedDocument> listIntDocs = executor.getIntegratedDocuments();
 
-      if (isModeToutOuRien && CollectionUtils.isNotEmpty(listUUID)) {
+      if (isModeToutOuRien && CollectionUtils.isNotEmpty(listIntDocs)) {
          erreur.getListCodes().set(0, Constantes.ERR_BUL003);
          erreur.getListException().set(0, new Exception(LIBELLE_BUL003));
       }

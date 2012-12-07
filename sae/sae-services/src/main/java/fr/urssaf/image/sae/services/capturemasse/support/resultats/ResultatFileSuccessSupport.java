@@ -4,7 +4,7 @@
 package fr.urssaf.image.sae.services.capturemasse.support.resultats;
 
 import java.io.File;
-import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import fr.urssaf.image.sae.services.capturemasse.model.CaptureMasseIntegratedDocument;
 
@@ -25,9 +25,13 @@ public interface ResultatFileSuccessSupport {
     *           liste des documents persistés dans DFCE
     * @param initDocCount
     *           nombre de documents initial
+    * @param restitutionUuids
+    *           booléen pour ajouter ou non la liste des documents intégrés avec
+    *           leur UUID dans le resultat.xml
+    * @param sommaireFile fichier sommaire.xml          
     */
    void writeResultatsFile(File ecdeDirectory,
-         List<CaptureMasseIntegratedDocument> integDocs,
-         int initDocCount);
+         ConcurrentLinkedQueue<CaptureMasseIntegratedDocument> integDocs, int initDocCount,
+         boolean restitutionUuids, File sommaireFile);
 
 }

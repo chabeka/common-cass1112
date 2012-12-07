@@ -44,7 +44,12 @@ public final class Constantes {
     * Documents intégrés
     */
    public static final String INTEG_DOCS = "INTEGRATED_DOCUMENTS";
-
+   
+   /**
+    * Nombre de documents intégrés
+    */
+   public static final String NB_INTEG_DOCS = "NB_INTEG_DOCS";
+   
    /**
     * Chemin complet du fichier sommaire.xml
     */
@@ -100,6 +105,12 @@ public final class Constantes {
     * Le type de hash
     */
    public static final String TYPE_HASH = "typeHash";
+
+   /*
+    * Paramétrage pour activer ou non l'écriture de la liste des documents
+    * intégrés avec l'UUID associé dans le fichier resultat.xml
+    */
+   public static final String RESTITUTION_UUIDS = "RESTITUTION_UUIDS";
 
    /**
     * l'Url ECDE

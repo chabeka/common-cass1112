@@ -4,10 +4,7 @@
 package fr.urssaf.image.sae.services.capturemasse.support.stockage.batch;
 
 import java.text.MessageFormat;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepExecution;
@@ -19,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
+import fr.urssaf.image.sae.services.capturemasse.support.stockage.multithreading.InsertionPoolThreadExecutor;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 
 /**
@@ -40,6 +38,9 @@ public class RollbackListener {
    @Autowired
    @Qualifier("storageServiceProvider")
    private StorageServiceProvider serviceProvider;
+   
+   @Autowired
+   private InsertionPoolThreadExecutor executor;
 
    /**
     * Ouverture de la connexion à DFCE au début du rollback
@@ -50,9 +51,7 @@ public class RollbackListener {
    @BeforeStep
    public final void beforeRollback(StepExecution stepExecution) {
 
-      @SuppressWarnings("unchecked")
-      ConcurrentLinkedQueue<UUID> integDocs = (ConcurrentLinkedQueue<UUID>) stepExecution
-            .getJobExecution().getExecutionContext().get(Constantes.INTEG_DOCS);
+      int nbDocsIntegres = executor.getIntegratedDocuments().size();
 
       try {
          serviceProvider.openConnexion();
@@ -68,7 +67,7 @@ public class RollbackListener {
 
          LOGGER.warn(errorMessage, e);
 
-         if (CollectionUtils.isNotEmpty(integDocs)) {
+         if (nbDocsIntegres >0) {
 
             LOGGER
                   .error(
@@ -87,8 +86,8 @@ public class RollbackListener {
       // insertion du nombre d'éléments à supprimer dans une variable de step
       int countRollback = 0;
 
-      if (CollectionUtils.isNotEmpty(integDocs)) {
-         countRollback = integDocs.size();
+      if (nbDocsIntegres > 0) {
+         countRollback = nbDocsIntegres;
       }
 
       stepExecution.getExecutionContext().putInt(Constantes.COUNT_ROLLBACK,
@@ -108,6 +107,9 @@ public class RollbackListener {
       // pour ne pas la cacher et attérir dans un état en erreur
 
       try {
+         // On stocke le nombre de document intégrés
+         stepExecution.getJobExecution().getExecutionContext().put(Constantes.NB_INTEG_DOCS, executor.getIntegratedDocuments().size());
+         
          serviceProvider.closeConnexion();
 
       } catch (Throwable e) {

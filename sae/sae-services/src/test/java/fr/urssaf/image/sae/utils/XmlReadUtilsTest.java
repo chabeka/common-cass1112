@@ -27,8 +27,8 @@ public class XmlReadUtilsTest {
       Assert.assertEquals("il doit y avoir 3 documents", 3, nbre);
 
    }
-   
-   @Test(expected=CaptureMasseRuntimeException.class)
+
+   @Test(expected = CaptureMasseRuntimeException.class)
    public void validateFichierInexistant() throws ParserConfigurationException,
          SAXException, IOException {
 
@@ -40,11 +40,10 @@ public class XmlReadUtilsTest {
       Assert.assertEquals("il doit y avoir 3 documents", 3, nbre);
 
    }
-   
-   
+
    @Test
-   public void validate_baliseInexistante() throws ParserConfigurationException,
-         SAXException, IOException {
+   public void validate_baliseInexistante()
+         throws ParserConfigurationException, SAXException, IOException {
 
       File xmlFile = new File(
             "src/test/resources/sommaire/sommaire_success.xml");
@@ -54,4 +53,55 @@ public class XmlReadUtilsTest {
       Assert.assertEquals("il doit y avoir 0 documents", 0, nbre);
 
    }
+
+   @Test
+   public void validateSuccessGetElementValue()
+         throws ParserConfigurationException, SAXException, IOException {
+
+      File xmlFile = new File(
+            "src/test/resources/sommaire/sommaire_success.xml");
+
+      String res = XmlReadUtils.getElementValue(xmlFile, "batchMode");
+
+      Assert.assertEquals("Le résultat doit être TOUT_OU_RIEN", "TOUT_OU_RIEN",
+            res);
+   }
+   
+   @Test(expected = CaptureMasseRuntimeException.class)
+   public void validateFichierInexistantGetElementValue()
+         throws ParserConfigurationException, SAXException, IOException {
+
+      File xmlFile = new File(
+            "src/test/resources/sommaire/sommaire_inexistant.xml");
+
+      XmlReadUtils.getElementValue(xmlFile, "batchMode");
+
+   }
+   
+   @Test
+   public void validate_baliseInexistanteGetElementValue()
+         throws ParserConfigurationException, SAXException, IOException {
+
+      File xmlFile = new File(
+            "src/test/resources/sommaire/sommaire_success.xml");
+
+      String res = XmlReadUtils.getElementValue(xmlFile, "balise");
+
+      Assert.assertEquals("Le résultat doit être null", null, res);
+
+   }
+
+   @Test
+   public void validate_baliseNonTexteGetElementValue()
+         throws ParserConfigurationException, SAXException, IOException {
+
+      File xmlFile = new File(
+            "src/test/resources/sommaire/sommaire_success.xml");
+
+      String res = XmlReadUtils.getElementValue(xmlFile, "objetNumerique");
+
+      Assert.assertEquals("Le résultat doit être null", null, res);
+
+   }   
+   
 }

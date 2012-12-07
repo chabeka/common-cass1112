@@ -10,6 +10,8 @@
    <som:dateCreation>2011-07-12</som:dateCreation>
    <!-- Description du traitement -->
    <som:description>La description du traitement</som:description>
+   <!-- Restitution UUID -->
+   <som:restitutionUuids>true</som:restitutionUuids>
 
    <!-- Liste des documents à archiver -->
    <som:documents>

@@ -141,7 +141,7 @@ public class VerificationSupportImpl implements VerificationSupport {
     * @param nbreStockes
     */
    private void checkResultats(File repTravail, Integer nbreDocs,
-         int nbreStockes, List<Throwable> listeErreurs, File sommaire) {
+         Integer nbreStockes, List<Throwable> listeErreurs, File sommaire) {
 
       File resultats = new File(repTravail, "resultats.xml");
 

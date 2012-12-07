@@ -6,7 +6,6 @@ package fr.urssaf.image.sae.services.capturemasse.support.stockage.batch;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -22,6 +21,9 @@ import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
+import fr.urssaf.image.sae.services.capturemasse.model.CaptureMasseIntegratedDocument;
+import fr.urssaf.image.sae.services.capturemasse.modele.commun_sommaire_et_resultat.IntegratedDocumentType;
+import fr.urssaf.image.sae.services.capturemasse.support.stockage.multithreading.InsertionPoolThreadExecutor;
 import fr.urssaf.image.sae.services.capturemasse.support.stockage.rollback.RollbackSupport;
 import fr.urssaf.image.sae.services.document.SAEDocumentService;
 import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
@@ -58,19 +60,22 @@ public class RollbackTasklet implements Tasklet {
    @Autowired
    private RollbackSupport support;
 
+   /**
+    * Pool d'exécution des insertions de documents
+    */
    @Autowired
    private SAEDocumentService documentService;
+
+   @Autowired
+   private InsertionPoolThreadExecutor executor;
 
    /**
     * {@inheritDoc}
     */
-   @SuppressWarnings( { "unchecked", "PMD.AvoidThrowingRawExceptionTypes" })
+   @SuppressWarnings( { "PMD.AvoidThrowingRawExceptionTypes" })
    @Override
    public final RepeatStatus execute(final StepContribution contribution,
          final ChunkContext chunkContext) {
-
-      Map<String, Object> mapJob = chunkContext.getStepContext()
-            .getJobExecutionContext();
 
       /*
        * on va incrémenter le nombre d'enregistrements lus et écrits. ces
@@ -83,8 +88,8 @@ public class RollbackTasklet implements Tasklet {
       int countWrite = chunkContext.getStepContext().getStepExecution()
             .getWriteCount();
 
-      ConcurrentLinkedQueue<UUID> listIntegDocs = (ConcurrentLinkedQueue<UUID>) mapJob
-            .get(Constantes.INTEG_DOCS);
+      ConcurrentLinkedQueue<CaptureMasseIntegratedDocument> listIntegDocs = executor
+            .getIntegratedDocuments();
 
       RepeatStatus status;
 
@@ -98,8 +103,10 @@ public class RollbackTasklet implements Tasklet {
              * à mesure. Il faut donc toujours récupérer le 1er élément de la
              * liste.
              */
-
-            UUID strDocumentID = listIntegDocs.toArray(new UUID[0])[0];
+            CaptureMasseIntegratedDocument intDoc = listIntegDocs
+                  .toArray(new CaptureMasseIntegratedDocument[0])[0];
+            // UUID strDocumentID = listIntegDocs.toArray(new UUID[0])[0];
+            UUID strDocumentID = intDoc.getIdentifiant();
 
             support.rollback(strDocumentID);
 
@@ -112,7 +119,7 @@ public class RollbackTasklet implements Tasklet {
             chunkContext.getStepContext().getStepExecution().setWriteCount(
                   ++countWrite);
 
-            listIntegDocs.remove(strDocumentID);
+            listIntegDocs.remove(intDoc);
 
             if (CollectionUtils.isEmpty(listIntegDocs)) {
                status = realiserRecherche(chunkContext);
@@ -145,8 +152,7 @@ public class RollbackTasklet implements Tasklet {
                      "Le traitement de masse n°{} doit être rollbacké par une procédure d'exploitation",
                      idTraitement);
          chunkContext.getStepContext().getStepExecution().getJobExecution()
-               .getExecutionContext().put(Constantes.FLAG_BUL003,
-                     Boolean.TRUE);
+               .getExecutionContext().put(Constantes.FLAG_BUL003, Boolean.TRUE);
 
          status = RepeatStatus.FINISHED;
       }
@@ -161,7 +167,9 @@ public class RollbackTasklet implements Tasklet {
 
       RepeatStatus repeatStatus;
 
-      ConcurrentLinkedQueue<UUID> listUUID = new ConcurrentLinkedQueue<UUID>();
+      // ConcurrentLinkedQueue<UUID> listUUID = new
+      // ConcurrentLinkedQueue<UUID>();
+      ConcurrentLinkedQueue<CaptureMasseIntegratedDocument> listeIntegratedDoc = new ConcurrentLinkedQueue<CaptureMasseIntegratedDocument>();
 
       int nbreDocsTotal = (Integer) chunkContext.getStepContext()
             .getJobExecutionContext().get(Constantes.DOC_COUNT);
@@ -185,7 +193,9 @@ public class RollbackTasklet implements Tasklet {
 
          if (CollectionUtils.isNotEmpty(listDocs)) {
 
-            listUUID = transformerListeDocEnUuid(listDocs);
+            // listUUID = transformerListeDocEnUuid(listDocs);
+            listeIntegratedDoc = transformerEnListeIntegratedDoc(listDocs);
+            executor.getIntegratedDocuments().addAll(listeIntegratedDoc);
 
             countRecherche = listDocs.size();
 
@@ -206,20 +216,20 @@ public class RollbackTasklet implements Tasklet {
                            String.valueOf(nbreDocsTotal),
                            String.valueOf(rollbackCount) });
 
-      } else if (CollectionUtils.isEmpty(listUUID)) {
+      } else if (CollectionUtils.isEmpty(listeIntegratedDoc)) {
          repeatStatus = RepeatStatus.FINISHED;
 
-      } else if (MAX_RESULT == listUUID.size()) {
+      } else if (MAX_RESULT == listeIntegratedDoc.size()) {
 
          repeatStatus = RepeatStatus.CONTINUABLE;
 
-         chunkContext.getStepContext().getStepExecution().getJobExecution()
-               .getExecutionContext().put(Constantes.INTEG_DOCS, listUUID);
+         // chunkContext.getStepContext().getStepExecution().getJobExecution().getExecutionContext().put(Constantes.INTEG_DOCS,
+         // listUUID);
       } else {
          repeatStatus = RepeatStatus.CONTINUABLE;
 
-         chunkContext.getStepContext().getStepExecution().getJobExecution()
-               .getExecutionContext().put(Constantes.INTEG_DOCS, listUUID);
+         // chunkContext.getStepContext().getStepExecution().getJobExecution().getExecutionContext().put(Constantes.INTEG_DOCS,
+         // listUUID);
 
          chunkContext.getStepContext().getStepExecution().getExecutionContext()
                .put(Constantes.SEARCH_ROLLBACK, Boolean.TRUE.toString());
@@ -263,18 +273,35 @@ public class RollbackTasklet implements Tasklet {
     * @param listDocs
     * @return
     */
-   private ConcurrentLinkedQueue<UUID> transformerListeDocEnUuid(
+   /*
+    * private ConcurrentLinkedQueue<UUID> transformerListeDocEnUuid(
+    * List<UntypedDocument> listDocs) {
+    * 
+    * ConcurrentLinkedQueue<UUID> list = new ConcurrentLinkedQueue<UUID>();
+    * 
+    * if (CollectionUtils.isNotEmpty(listDocs)) {
+    * 
+    * for (UntypedDocument document : listDocs) { list.add(document.getUuid());
+    * } }
+    * 
+    * return list; }
+    */
+
+   /**
+    * Transforme une liste de UntypedDoc en liste d'IntegratedDocumentType
+    * (uniquement pour l'uuid)
+    */
+   private ConcurrentLinkedQueue<CaptureMasseIntegratedDocument> transformerEnListeIntegratedDoc(
          List<UntypedDocument> listDocs) {
-
-      ConcurrentLinkedQueue<UUID> list = new ConcurrentLinkedQueue<UUID>();
-
+      ConcurrentLinkedQueue<CaptureMasseIntegratedDocument> list = new ConcurrentLinkedQueue<CaptureMasseIntegratedDocument>();
       if (CollectionUtils.isNotEmpty(listDocs)) {
-
          for (UntypedDocument document : listDocs) {
-            list.add(document.getUuid());
+            CaptureMasseIntegratedDocument doc = new CaptureMasseIntegratedDocument();
+            doc.setIdentifiant(document.getUuid());
+            list.add(doc);
          }
       }
-
       return list;
    }
+
 }

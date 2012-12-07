@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
 import fr.urssaf.image.sae.services.capturemasse.support.flag.FinTraitementFlagSupport;
+import fr.urssaf.image.sae.services.capturemasse.support.stockage.multithreading.InsertionPoolThreadExecutor;
 
 /**
  * Tasklet d'écriture du fichier fin_traitement.flag
@@ -26,6 +27,9 @@ public class FinTraitementFlagTasklet implements Tasklet {
    @Autowired
    private FinTraitementFlagSupport support;
 
+   @Autowired
+   private InsertionPoolThreadExecutor executor;
+
    /**
     * {@inheritDoc}
     */
@@ -36,7 +40,11 @@ public class FinTraitementFlagTasklet implements Tasklet {
       final ExecutionContext context = chunkContext.getStepContext()
             .getStepExecution().getJobExecution().getExecutionContext();
 
-      final String sommairePath = (String) context.get(Constantes.SOMMAIRE_FILE);
+      final String sommairePath = (String) context
+            .get(Constantes.SOMMAIRE_FILE);
+
+      context.put(Constantes.NB_INTEG_DOCS, executor.getIntegratedDocuments()
+            .size());
 
       final File sommaireFile = new File(sommairePath);
       final File ecdeDirectory = sommaireFile.getParentFile();

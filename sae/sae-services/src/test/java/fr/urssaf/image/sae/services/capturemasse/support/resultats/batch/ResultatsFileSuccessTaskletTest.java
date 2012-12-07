@@ -4,13 +4,14 @@
 package fr.urssaf.image.sae.services.capturemasse.support.resultats.batch;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -22,6 +23,7 @@ import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
@@ -31,6 +33,8 @@ import org.xml.sax.SAXException;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
+import fr.urssaf.image.sae.services.capturemasse.model.CaptureMasseIntegratedDocument;
+import fr.urssaf.image.sae.services.capturemasse.support.stockage.multithreading.InsertionPoolThreadExecutor;
 import fr.urssaf.image.sae.services.util.XmlValidationUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -48,6 +52,9 @@ public class ResultatsFileSuccessTaskletTest {
    private JobLauncherTestUtils launcher;
 
    private EcdeTestSommaire ecdeTestSommaire;
+   
+   @Autowired
+   private InsertionPoolThreadExecutor executor;
 
    @Before
    public void init() {
@@ -63,28 +70,81 @@ public class ResultatsFileSuccessTaskletTest {
       }
    }
 
+   // T
    @Test
    public void testLancement() throws Exception {
 
       ExecutionContext context = new ExecutionContext();
-      ConcurrentLinkedQueue<UUID> listUuids = new ConcurrentLinkedQueue<UUID>();
-      listUuids.add(UUID.randomUUID());
-      listUuids.add(UUID.randomUUID());
-      listUuids.add(UUID.randomUUID());
-      listUuids.add(UUID.randomUUID());
-      listUuids.add(UUID.randomUUID());
-      listUuids.add(UUID.randomUUID());
-      listUuids.add(UUID.randomUUID());
-      listUuids.add(UUID.randomUUID());
-      listUuids.add(UUID.randomUUID());
-      listUuids.add(UUID.randomUUID());
-      context.put(Constantes.INTEG_DOCS, listUuids);
+
       context.put(Constantes.DOC_COUNT, 10);
+      context.put(Constantes.RESTITUTION_UUIDS, false);
 
       File sommaire = new File(ecdeTestSommaire.getRepEcde(), "sommaire.xml");
       context.put(Constantes.SOMMAIRE_FILE, sommaire.getAbsolutePath());
 
       JobExecution execution = launcher.launchStep("finSucces", context);
+
+      File resultatsFile = new File(ecdeTestSommaire.getRepEcde(),
+            "resultats.xml");
+
+      Assert.assertTrue("le step doit etre COMPLETED", ExitStatus.COMPLETED
+            .equals(execution.getExitStatus()));
+      Assert.assertTrue("le fichier resultats.xml doit exister", resultatsFile
+            .exists());
+      Assert.assertTrue("le fichier doit etre non vide",
+            resultatsFile.length() > 0);
+
+      Resource sommaireXSD = applicationContext
+            .getResource("xsd_som_res/resultats.xsd");
+      URL xsdSchema = sommaireXSD.getURL();
+
+      File resultats = new File(ecdeTestSommaire.getRepEcde(), "resultats.xml");
+
+      try {
+         XmlValidationUtils.parse(resultats, xsdSchema);
+      } catch (ParserConfigurationException e) {
+         e.printStackTrace();
+         Assert.fail("le fichier resultats.xml doit etre valide");
+      } catch (SAXException e) {
+         e.printStackTrace();
+         Assert.fail("le fichier resultats.xml doit etre valide");
+      }
+   }
+   
+   @Test
+   public void testLancementAvecUUIDDansResultat() throws Exception {
+
+      ExecutionContext context = new ExecutionContext();
+
+      context.put(Constantes.DOC_COUNT, 10);
+      context.put(Constantes.RESTITUTION_UUIDS, true);
+
+      File sommaire = new File(ecdeTestSommaire.getRepEcde(), "sommaire.xml");
+      ClassPathResource resSommaire = new ClassPathResource("sommaire/sommaire_success.xml");
+      FileOutputStream fos = new FileOutputStream(sommaire);
+      IOUtils.copy(resSommaire.getInputStream(), fos);
+     
+      context.put(Constantes.SOMMAIRE_FILE, sommaire.getAbsolutePath());
+
+      // Liste des documents intégrés
+      CaptureMasseIntegratedDocument doc1 = new CaptureMasseIntegratedDocument();
+      doc1.setDocumentFile(null);
+      doc1.setIdentifiant(UUID.randomUUID());
+      doc1.setIndex(0);
+      CaptureMasseIntegratedDocument doc2 = new CaptureMasseIntegratedDocument();
+      doc2.setDocumentFile(null);
+      doc2.setIdentifiant(UUID.randomUUID());
+      doc2.setIndex(1);
+      CaptureMasseIntegratedDocument doc3 = new CaptureMasseIntegratedDocument();
+      doc3.setDocumentFile(null);
+      doc3.setIdentifiant(UUID.randomUUID());
+      doc3.setIndex(2);
+      executor.getIntegratedDocuments().add(doc1);
+      executor.getIntegratedDocuments().add(doc2);
+      executor.getIntegratedDocuments().add(doc3);
+      
+      JobExecution execution = launcher.launchStep("finSucces", context);
+      
 
       File resultatsFile = new File(ecdeTestSommaire.getRepEcde(),
             "resultats.xml");

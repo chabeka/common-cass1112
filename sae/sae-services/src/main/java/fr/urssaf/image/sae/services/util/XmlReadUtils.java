@@ -97,4 +97,75 @@ public final class XmlReadUtils {
 
    }
 
+   /**
+    * Renvoie la valeur de la première balise avec le nom donné
+    * 
+    * @param file
+    *           Fichier dans lequel effectuer la recherche
+    * @param balise
+    *           Nom de la balise dont la valeur est à récupérer
+    * @return Valeur de la balise. Null si non trouvé ou ne correspondant pas à
+    *         un élément texte
+    */
+   public static String getElementValue(File file, String balise) {
+      FileInputStream stream = null;
+      XMLEventReader reader = null;
+      // Fabrique de parseur
+      final XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
+
+      // Ouverture du fichier XML
+      try {
+         stream = new FileInputStream(file);
+         // Création d'un parseur de type évenementiel
+         reader = xmlInputFactory.createXMLEventReader(stream);
+         XMLEvent event;
+         while (reader.hasNext()) {
+            event = reader.nextEvent();
+            if (event.isStartElement()
+                  && balise.equals(event.asStartElement().getName()
+                        .getLocalPart())) {
+               // Récupération de la valeur
+               event = reader.nextEvent();
+               // Si c'est une balise texte
+               if (event.isCharacters()) {
+                  if (!event.asCharacters().isWhiteSpace()) {
+                     return event.asCharacters().getData();
+                  } else {
+                     return null;
+                  }
+               } else {
+                  return null;
+               }             
+            }
+         }
+         // Si la balise n'est pas trouvée
+         return null;
+      } catch (FileNotFoundException e) {
+         throw new CaptureMasseRuntimeException(e);
+
+      } catch (XMLStreamException e) {
+         throw new CaptureMasseRuntimeException(e);
+
+      } finally {
+
+         if (reader != null) {
+            try {
+               reader.close();
+            } catch (XMLStreamException e) {
+               LOGGER.debug("erreur de fermeture du reader "
+                     + file.getAbsolutePath());
+            }
+         }
+
+         if (stream != null) {
+            try {
+               stream.close();
+            } catch (IOException e) {
+               LOGGER.debug("erreur de fermeture du flux "
+                     + file.getAbsolutePath());
+            }
+         }
+      }
+   }
+
 }

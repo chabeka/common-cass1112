@@ -24,12 +24,27 @@ public class CaptureMasseIntegratedDocument implements Serializable {
     * Chemin du fichier du document dans le répertoire ECDE
     */
    private File documentFile;
-
+   
+   /**
+    * Index du document traité
+    */
+   private int index;
+   
    /**
     * @return the identifiant Identifiant d'archivage d'un document dans DFCE
     */
    public final UUID getIdentifiant() {
       return identifiant;
+   }
+   
+   /**
+    * @return l'index du document traité
+    */
+   public final int getIndex() {
+      return index;
+   }
+   public final void setIndex(int ind) {
+      index = ind;
    }
 
    /**

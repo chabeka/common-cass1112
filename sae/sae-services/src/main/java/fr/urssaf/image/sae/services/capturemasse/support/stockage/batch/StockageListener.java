@@ -186,7 +186,8 @@ public class StockageListener {
 
          final ConcurrentLinkedQueue<UUID> list = getIntegratedDocuments();
 
-         jobExecution.getExecutionContext().put(Constantes.INTEG_DOCS, list);
+         jobExecution.getExecutionContext().put(Constantes.NB_INTEG_DOCS,
+               executor.getIntegratedDocuments().size());
 
          jobExecution.getExecutionContext().remove(Constantes.THREAD_POOL);
 

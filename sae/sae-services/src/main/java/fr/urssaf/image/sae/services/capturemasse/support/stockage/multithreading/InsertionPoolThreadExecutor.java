@@ -57,6 +57,7 @@ public class InsertionPoolThreadExecutor extends ThreadPoolExecutor implements
    @Autowired
    @Qualifier("interruption_capture_masse")
    private final InterruptionTraitementConfig config;
+   
 
    /**
     * instanciation d'un {@link ThreadPoolExecutor} avec comme arguments : <br>
@@ -152,7 +153,7 @@ public class InsertionPoolThreadExecutor extends ThreadPoolExecutor implements
          final File file = new File(storageDocument.getFilePath());
          document.setDocumentFile(file);
          document.setIdentifiant(storageDocument.getUuid());
-
+         document.setIndex(indexDocument);
          integDocs.add(document);
 
          LOGGER

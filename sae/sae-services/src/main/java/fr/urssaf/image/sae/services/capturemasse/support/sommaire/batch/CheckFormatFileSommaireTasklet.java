@@ -6,6 +6,8 @@ package fr.urssaf.image.sae.services.capturemasse.support.sommaire.batch;
 import java.io.File;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepContribution;
@@ -21,6 +23,7 @@ import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireFormatValidationException;
 import fr.urssaf.image.sae.services.capturemasse.support.sommaire.SommaireFormatValidationSupport;
+import fr.urssaf.image.sae.services.util.XmlReadUtils;
 
 /**
  * Tasklet de vérification du format de fichier sommaire.xml
@@ -65,6 +68,14 @@ public class CheckFormatFileSommaireTasklet implements Tasklet {
          validationSupport.validerModeBatch(sommaireFile, "TOUT_OU_RIEN");
          
          LOGGER.debug("{} - Fin de validation du BATCH_MODE du sommaire.xml", TRC_EXEC);
+         
+         boolean restitutionUuids = false;
+         String valeur = XmlReadUtils.getElementValue(sommaireFile, "restitutionUuids");
+         if (StringUtils.isNotBlank(valeur)) {
+            restitutionUuids = BooleanUtils.toBoolean(valeur);
+            context.put(Constantes.RESTITUTION_UUIDS, restitutionUuids);
+         }
+         
       } catch (CaptureMasseSommaireFormatValidationException e) {
          final Exception exception = new Exception(e.getMessage());
          @SuppressWarnings("unchecked")

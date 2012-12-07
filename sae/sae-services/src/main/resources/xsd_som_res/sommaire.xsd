@@ -56,6 +56,13 @@
             </xsd:annotation>
          </xsd:element>
          
+         <!-- affichage des uuids dans le fichier de résultat -->
+         <xsd:element name="restitutionUuids" type="xsd:boolean" minOccurs="0" maxOccurs="1" nillable="true">
+            <xsd:annotation>
+               <xsd:documentation>Restitution ou non des UUID dans le resultat.xml</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         
          <!-- Liste des documents à archiver -->
          <xsd:element name="documents" type="somres:listeDocumentsType" minOccurs="1" maxOccurs="1">
             <xsd:annotation>
