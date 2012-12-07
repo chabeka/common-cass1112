@@ -134,7 +134,7 @@ public class EcdeControleSupportTest {
    @Test
    public void testCorrectHash() throws CaptureMasseSommaireHashException, CaptureMasseSommaireTypeHashException, IOException{
       ClassPathResource sommaireFile = new ClassPathResource("sommaire.xml");
-      support.checkHash(sommaireFile.getFile(), "dc4ae92653b08ef0b806f4aba451fc28876c15bb", "SHA-1");
+      support.checkHash(sommaireFile.getFile(), "d1c0f4497241a9a0317d50783dcdbba8417af804", "SHA-1");
    }
    
 }
