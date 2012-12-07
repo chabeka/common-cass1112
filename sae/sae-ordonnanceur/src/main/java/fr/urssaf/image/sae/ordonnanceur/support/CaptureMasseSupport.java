@@ -5,7 +5,9 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections.Predicate;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,6 +28,8 @@ public class CaptureMasseSupport {
    public static final String CAPTURE_MASSE_JN = "capture_masse";
 
    private final EcdeSupport ecdeSupport;
+   
+   private final String ECDE_URL= "ecdeUrl";
 
    /**
     * 
@@ -135,7 +139,14 @@ public class CaptureMasseSupport {
 
       // Dans le cadre d'une capture de masse seule l'url ECDE du sommaire est
       // sérializée dans les paramètres
-      String ecdeUrl = jobRequest.getParameters();
+      String ecdeUrl = StringUtils.EMPTY;
+      if (StringUtils.isNotBlank(jobRequest.getParameters())) {
+         ecdeUrl = jobRequest.getParameters();
+      } else {
+         if (MapUtils.isNotEmpty(jobRequest.getJobParameters())) {
+            ecdeUrl = jobRequest.getJobParameters().get(ECDE_URL);
+         }
+      }
 
       boolean isLocal = false;
 

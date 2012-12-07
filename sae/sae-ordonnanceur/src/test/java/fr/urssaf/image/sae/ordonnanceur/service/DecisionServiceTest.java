@@ -1,7 +1,9 @@
 package fr.urssaf.image.sae.ordonnanceur.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import junit.framework.Assert;
@@ -85,11 +87,47 @@ public class DecisionServiceTest {
 
       Assert.assertEquals("le traitement attendu est le job2", job2.getIdJob(),
             job.getIdJob());
+      
 
       EasyMock.verify(dfceSuppport);
 
    }
 
+   /**
+    * test permettant de vérifier le traitement des parametres passés sous la forme d'un jobParameter
+    * @throws AucunJobALancerException
+    */
+   @Test
+   public void decisionService_JobParamsuccess() throws AucunJobALancerException {
+
+      EasyMock.expect(dfceSuppport.isDfceUp()).andReturn(true);
+
+      EasyMock.replay(dfceSuppport);
+
+      List<JobRequest> jobsEnCours = new ArrayList<JobRequest>();
+
+      jobsEnCours.add(createJobRequest("OTHER_JN1"));
+      jobsEnCours.add(createJobRequest("OTHER_JN2"));
+
+      List<JobQueue> jobsEnAttente = new ArrayList<JobQueue>();
+
+      HashMap param = new HashMap<String,String>();
+      param.put("ecdeUrl", CER69_SOMMAIRE);
+      JobQueue job5 = createJobWithJobParam(CAPTURE_MASSE_JN, param);
+
+      jobsEnAttente.add(job5);
+
+      JobQueue job = decisionService.trouverJobALancer(jobsEnAttente,
+            jobsEnCours);
+
+      Assert.assertEquals("le traitement attendu est le job2", job5.getIdJob(),
+            job.getIdJob());
+      
+
+      EasyMock.verify(dfceSuppport);
+
+   }
+   
    /**
     * DFCE est down
     * 
@@ -219,6 +257,14 @@ public class DecisionServiceTest {
 
       JobQueue job = createJob(type);
       job.setParameters(parameters);
+
+      return job;
+   }
+   
+   private JobQueue createJobWithJobParam(String type, Map<String,String> parameters) {
+
+      JobQueue job = createJob(type);
+      job.setJobParameters(parameters);
 
       return job;
    }
