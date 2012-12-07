@@ -25,7 +25,7 @@ public class CaptureMasseSommaireHashException extends Exception {
       super(
             MessageFormat
                   .format(
-                        "Le hash du fichier sommaire.xml attendu {0} est différent de celui obtenu {1} (type de hash {2})",
+                        "Le hash du fichier sommaire.xml attendu : {0} est différent de celui obtenu : {1} (type de hash : {2})",
                         hashAttendu, hashObtenu, typeHash));
    }
 }

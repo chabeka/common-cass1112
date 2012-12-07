@@ -8,6 +8,7 @@ import java.util.UUID;
 import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 
 import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,7 @@ import fr.urssaf.image.sae.services.batch.exception.JobNonReserveException;
 import fr.urssaf.image.sae.services.batch.model.CaptureMasseParametres;
 import fr.urssaf.image.sae.services.batch.model.ExitTraitement;
 import fr.urssaf.image.sae.services.batch.support.TraitementExecutionSupport;
+import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
 import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
@@ -96,11 +98,13 @@ public class TraitementAsynchroneServiceImpl implements
     */
    @Override
    public final void ajouterJobCaptureMasse(CaptureMasseParametres parameters) {
-      LOG
-            .debug(
-                  "{} - ajout d'un traitement de capture en masse avec le sommaire : {} pour  l'identifiant: {}",
-                  new Object[] { "ajouterJobCaptureMasse()",
-                        parameters.getEcdeURL(), parameters.getUuid() });
+      
+         LOG
+         .debug(
+               "{} - ajout d'un traitement de capture en masse avec le sommaire : {} pour  l'identifiant: {}",
+               new Object[] { "ajouterJobCaptureMasse()",
+                     getEcdeUrl(parameters),parameters.getUuid()});
+
 
       String type = CAPTURE_MASSE_JN;
 
@@ -234,5 +238,16 @@ public class TraitementAsynchroneServiceImpl implements
       jobQueueService.endingJob(idJob, exitTraitement.isSucces(), new Date(),
             exitTraitement.getExitMessage());
 
+   }
+   
+   private String getEcdeUrl(CaptureMasseParametres parameters){
+      String url = StringUtils.EMPTY;
+      if(StringUtils.isNotBlank(parameters.getEcdeURL())){
+         url =parameters.getJobParameters().get(Constantes.ECDE_URL);
+      }else{
+         url =parameters.getEcdeURL();
+      }
+      
+      return url;
    }
 }

@@ -14,7 +14,7 @@ public class CaptureMasseSommaireTypeHashException extends Exception {
     *           type de hash en erreur
     */
    public CaptureMasseSommaireTypeHashException(String typeHash) {
-      super(MessageFormat.format("Le type de hash {0} n'est pas autorisé",
+      super(MessageFormat.format("Le type de hash {0} n'''est pas autorisé",
             typeHash));
 
    }

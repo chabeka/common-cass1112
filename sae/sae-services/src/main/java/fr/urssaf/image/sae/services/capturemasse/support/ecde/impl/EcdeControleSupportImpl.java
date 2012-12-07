@@ -35,7 +35,7 @@ public class EcdeControleSupportImpl implements EcdeControleSupport {
    private static final String PREFIXE_TRC = "checkEcdeWrite()";
    
    @Autowired
-   private static SAEControleSupportService controlService;
+   private SAEControleSupportService controlService;
 
    /**
     * {@inheritDoc}
