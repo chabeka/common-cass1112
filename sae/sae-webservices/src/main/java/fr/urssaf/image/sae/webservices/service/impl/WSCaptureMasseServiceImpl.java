@@ -113,7 +113,7 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
          ArchivageMasseAvecHash request, String callerIP)
          throws CaptureAxisFault {
 
-      String prefixeTrc = "ArchivageMasseAvecHashResponse()";
+      String prefixeTrc = "archivageMasseAvecHashResponse()";
 
       LOG.debug("{} - Début", prefixeTrc);
 
@@ -124,12 +124,14 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
       String typeHash = request.getArchivageMasseAvecHash().getTypeHash();
 
       LOG.debug("{} - URI ECDE: {}", prefixeTrc, ecdeUrl);
-      LOG.debug("{} - HASH: {}", prefixeTrc, hash);
-      LOG.debug("{} - TYPE HASH: {}", prefixeTrc, typeHash);
+      LOG.debug("{} - Hash: {}", prefixeTrc, hash);
+      LOG.debug("{} - Type hash: {}", prefixeTrc, typeHash);
 
       File fileEcde;
       try {
          fileEcde = ecdeServices.convertSommaireToFile(new URI(ecdeUrl));
+         LOG.debug("Contrôle de cohérence du hash du fichier sommaire.xml par rapport au hash transmis");
+         
          controleSupport.checkHash(fileEcde, hash, typeHash);
       } catch (EcdeBadURLException e) {
          throw new CaptureAxisFault("CaptureUrlEcdeIncorrecte", e.getMessage(),
