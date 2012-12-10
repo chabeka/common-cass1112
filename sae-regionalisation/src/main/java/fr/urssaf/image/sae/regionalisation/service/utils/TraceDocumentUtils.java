@@ -54,10 +54,11 @@ public class TraceDocumentUtils {
             cog = (String) document.getSingleCriterion(Constants.CODE_ORG_GEST)
                   .getWord();
             if (!cogs.contains(cog)) {
+               // id;nce;cog
                LOGGER.trace(
-                     "le document {} n'est pas modifié. nce = {} / cog = {}",
+                     "{};{};{}",
                      new Object[] {
-                           document.getFileUUID(),
+                           document.getUuid(),
                            (String) document.getSingleCriterion(
                                  Constants.NUM_CPTE_EXT).getWord(), cog });
             }
