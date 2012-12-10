@@ -117,8 +117,8 @@ public class RegTechniqueServiceDatasTest {
    public void testRetourTousElements() {
       createTraces();
 
-      Date dateStart = DateUtils.addDays(DATE_INF, -1);
-      Date dateEnd = DateUtils.addDays(DATE_SUP, 1);
+      Date dateStart = DateUtils.addSeconds(DATE_JOUR_PRECEDENT, -1);
+      Date dateEnd = DateUtils.addSeconds(DATE_JOUR_SUIVANT, 1);
 
       List<TraceRegTechniqueIndex> result = service.lecture(dateStart, dateEnd,
             10, true);
@@ -189,7 +189,7 @@ public class RegTechniqueServiceDatasTest {
             "il ne doit plus rester de traces pour les deux jours donnés",
             result);
 
-      result = service.lecture(DATE, DATE_JOUR_SUIVANT, 100, false);
+      result = service.lecture(DATE, DateUtils.addSeconds(DATE_JOUR_SUIVANT, 1), 100, false);
       Assert.assertEquals("il ne doit y avoir qu'une trace", 1, result.size());
       Assert.assertTrue("il doit s'agir de la trace du jour +1", result.get(0)
             .getCodeEvt().contains("DATE_JOUR_SUIVANT"));

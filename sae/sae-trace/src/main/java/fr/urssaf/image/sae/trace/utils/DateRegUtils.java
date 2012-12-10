@@ -3,8 +3,10 @@
  */
 package fr.urssaf.image.sae.trace.utils;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang.time.DateUtils;
 
@@ -18,22 +20,42 @@ public final class DateRegUtils {
    }
 
    /**
-    * Cherche la nouvelle date de début en fonction de la précédente
+    * Détermine la date de début en cours
     * 
-    * @param startDate
-    *           date précédemment calculée
+    * @param currentDate
+    *           date en cours
     * @param dateDebut
     *           date de référence, date minimale
     * @return la nouvelle date de début calculée
     */
-   public static Date getStartDate(Date startDate, Date dateDebut) {
+   public static Date getStartDate(Date currentDate, Date dateDebut) {
 
-      Date date, newDay;
-      newDay = DateUtils.addDays(startDate, -1);
-      if (DateUtils.isSameDay(newDay, dateDebut)) {
+      Date date;
+      if (DateUtils.isSameDay(currentDate, dateDebut)) {
          date = dateDebut;
       } else {
-         date = newDay;
+         date = DateUtils.truncate(currentDate, Calendar.DATE);
+      }
+
+      return date;
+   }
+
+   /**
+    * Détermine la date de fin en cours
+    * 
+    * @param currentDate
+    *           date en cours
+    * @param dateFin
+    *           de fin de référence
+    * @return la nouvelle date de fin calculée
+    */
+   public static Date getEndDate(Date currentDate, Date dateFin) {
+      Date date;
+      if (DateUtils.isSameDay(currentDate, dateFin)) {
+         date = dateFin;
+      } else {
+         date = DateUtils.addDays(currentDate, 1);
+         date = DateUtils.truncate(date, Calendar.DATE);
       }
 
       return date;
@@ -56,6 +78,33 @@ public final class DateRegUtils {
       }
 
       return startDate;
+   }
+
+   /**
+    * parcours tous les jours entre les deux dates fournies et les ajoute à la
+    * liste. <br>
+    * La liste retournée inclus les deux jours passés en paramètre tels quels
+    * 
+    * @param dateDebut
+    *           première date
+    * @param dateFin
+    *           dernière date
+    * @return la liste des dates comprises dans cet intervalle
+    */
+   public static List<Date> getListFromDates(Date dateDebut, Date dateFin) {
+      List<Date> list = new ArrayList<Date>();
+
+      Date currentDate = dateDebut;
+
+      do {
+         list.add(currentDate);
+         currentDate = DateUtils.addDays(currentDate, 1);
+      } while (!DateUtils.isSameDay(currentDate, dateFin)
+            && currentDate.before(dateFin));
+
+      list.add(dateFin);
+
+      return list;
    }
 
 }

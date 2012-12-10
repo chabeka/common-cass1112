@@ -53,26 +53,15 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
       String prefix = "lecture()";
       LOGGER.debug(DEBUT_LOG, prefix);
 
-      int sizeMax = limite;
-      Date endDate = dateFin;
-      List<TraceRegSecuriteIndex> list = new ArrayList<TraceRegSecuriteIndex>(
-            limite);
+      List<Date> dates = DateRegUtils.getListFromDates(dateDebut, dateFin);
+
       List<TraceRegSecuriteIndex> value = null;
-      Date startDate = DateRegUtils.getFirstDate(dateDebut, dateFin);
-      List<TraceRegSecuriteIndex> result;
-
-      do {
-         result = support.findByDates(startDate, endDate, sizeMax, reversed);
-
-         if (result != null) {
-            list.addAll(result);
-         }
-         sizeMax = limite - list.size();
-
-         endDate = startDate;
-         startDate = DateRegUtils.getStartDate(startDate, dateDebut);
-
-      } while (startDate.compareTo(dateDebut) >= 0 && sizeMax > 0);
+      List<TraceRegSecuriteIndex> list;
+      if (reversed) {
+         list = findReversedOrder(dates, limite);
+      } else {
+         list = findNormalOrder(dates, limite);
+      }
 
       if (CollectionUtils.isNotEmpty(list)) {
          value = list;
@@ -113,6 +102,61 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
 
       LOGGER.debug(FIN_LOG, prefix);
 
+   }
+
+   private List<TraceRegSecuriteIndex> findNormalOrder(List<Date> dates,
+         int limite) {
+      int index = 0;
+      int countLeft = limite;
+      List<TraceRegSecuriteIndex> result;
+      List<TraceRegSecuriteIndex> values = new ArrayList<TraceRegSecuriteIndex>();
+      Date currentDate, startDate, endDate;
+
+      do {
+         currentDate = dates.get(index);
+         startDate = DateRegUtils.getStartDate(currentDate, dates.get(0));
+         endDate = DateRegUtils.getEndDate(currentDate, dates
+               .get(dates.size() - 1));
+
+         result = support.findByDates(startDate, endDate, countLeft, false);
+
+         if (CollectionUtils.isNotEmpty(result)) {
+            values.addAll(result);
+            countLeft = limite - values.size();
+         }
+         index++;
+      } while (index < dates.size() && countLeft > 0
+            && !DateUtils.isSameDay(dates.get(0), dates.get(dates.size() - 1)));
+
+      return values;
+   }
+
+   private List<TraceRegSecuriteIndex> findReversedOrder(List<Date> dates,
+         int limite) {
+
+      int index = dates.size() - 1;
+      int countLeft = limite;
+      List<TraceRegSecuriteIndex> result;
+      List<TraceRegSecuriteIndex> values = new ArrayList<TraceRegSecuriteIndex>();
+      Date currentDate, startDate, endDate;
+
+      do {
+         currentDate = dates.get(index);
+         startDate = DateRegUtils.getStartDate(currentDate, dates.get(0));
+         endDate = DateRegUtils.getEndDate(currentDate, dates
+               .get(dates.size() - 1));
+
+         result = support.findByDates(startDate, endDate, countLeft, true);
+
+         if (CollectionUtils.isNotEmpty(result)) {
+            values.addAll(result);
+            countLeft = limite - values.size();
+         }
+         index--;
+      } while (index >= 0 && countLeft > 0
+            && !DateUtils.isSameDay(dates.get(0), dates.get(dates.size() - 1)));
+
+      return values;
    }
 
 }
