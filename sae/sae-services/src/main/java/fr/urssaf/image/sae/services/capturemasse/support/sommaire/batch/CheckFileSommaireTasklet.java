@@ -71,11 +71,11 @@ public class CheckFileSommaireTasklet implements Tasklet {
 
          controleSupport.checkEcdeWrite(sommaire);
          
+         context.put(Constantes.SOMMAIRE_FILE, sommaire.getAbsolutePath());
+         
          if(hash!=null){
             controleSupport.checkHash(sommaire, hash, typeHash);
          }
-
-         context.put(Constantes.SOMMAIRE_FILE, sommaire.getAbsolutePath());
 
       } catch (CaptureMasseSommaireEcdeURLException e) {
          final Exception exception = new Exception(e.getMessage());
