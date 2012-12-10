@@ -49,8 +49,8 @@ public class ArchivageMasseAvecHashTest {
    @Autowired
    private EcdeServices ecdeServices;
 
-   private static final String EXCEPTION_MSG_TYPE_ERROR = "Le type de hash type hash error nest pas autorisé";
-   private static final String EXCEPTION_MSG_HASH_ERROR = "Le hash du fichier sommaire.xml attendu h1 est différent de celui obtenu h2 (type de hash type)";
+   private static final String EXCEPTION_MSG_TYPE_ERROR = "Le type de hash type hash error n'est pas autorisé";
+   private static final String EXCEPTION_MSG_HASH_ERROR = "Le hash du fichier sommaire.xml attendu : h1 est différent de celui obtenu : h2 (type de hash : type)";
    private static final String EXCEPTION_MSG_FILE_ERROR = "Impossible de lire le fichier";
    private static final String AXIS_FAULT = "SOAP FAULT non attendu";
    
