@@ -17,7 +17,7 @@ avec :
 
 // listeDocs
 commande :
-java -jar -Dlogback.configurationFile=[logback] sae-regionalisation-fond-documentaire.jar listeOrgs [connexions] [sortie] [corresp]
+java -jar -Dlogback.configurationFile=[logback] sae-regionalisation-fond-documentaire.jar listeDocs [connexions] [sortie] [corresp]
 avec :
 [logback] 		= fichier de configuration des logs logback
 [connexions] 	= fichier de configuration des connexions DFCE + CASSANDRA
