@@ -243,9 +243,9 @@ public class TraitementAsynchroneServiceImpl implements
    private String getEcdeUrl(CaptureMasseParametres parameters){
       String url = StringUtils.EMPTY;
       if(StringUtils.isNotBlank(parameters.getEcdeURL())){
-         url =parameters.getJobParameters().get(Constantes.ECDE_URL);
+         url =parameters.getEcdeURL();         
       }else{
-         url =parameters.getEcdeURL();
+         url =parameters.getJobParameters().get(Constantes.ECDE_URL);
       }
       
       return url;
