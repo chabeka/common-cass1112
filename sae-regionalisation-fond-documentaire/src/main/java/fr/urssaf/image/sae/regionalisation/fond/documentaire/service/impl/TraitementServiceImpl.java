@@ -74,14 +74,14 @@ public class TraitementServiceImpl implements TraitementService {
 
          LOGGER.debug("{} - récupération des codes organismes", trcPrefix);
 
-         List<String> codes = docInfoService.getCodesOrganismes();
+         Map<String, Long> codes = docInfoService.getCodesOrganismes();
          File file = new File(filePath);
 
          LOGGER.debug(
                "{} - Ecriture des codes organismes récupérés dans le fichier",
                trcPrefix);
 
-         FileUtils.writeLines(file, codes);
+         writeFile(codes, file);
 
       } catch (IOException exception) {
          throw new ErreurTechniqueException(exception);
@@ -92,6 +92,19 @@ public class TraitementServiceImpl implements TraitementService {
       } finally {
          cassandraSupport.disconnect();
       }
+
+   }
+
+   private void writeFile(Map<String, Long> codes, File file)
+         throws IOException {
+
+      List<String> lines = new ArrayList<String>();
+
+      for (Map.Entry<String, Long> entry : codes.entrySet()) {
+         lines.add(String.format("%s;%s", entry.getKey(), entry.getValue()));
+      }
+
+      FileUtils.writeLines(file, lines);
 
    }
 
@@ -155,8 +168,8 @@ public class TraitementServiceImpl implements TraitementService {
     * {@inheritDoc}
     */
    @Override
-   public final void updateDocuments(String inputFilePath, String propertiesFilePath,
-         int firstRecord, int lastRecord) {
+   public final void updateDocuments(String inputFilePath,
+         String propertiesFilePath, int firstRecord, int lastRecord) {
 
       File file = new File(inputFilePath);
       Reader reader = null;

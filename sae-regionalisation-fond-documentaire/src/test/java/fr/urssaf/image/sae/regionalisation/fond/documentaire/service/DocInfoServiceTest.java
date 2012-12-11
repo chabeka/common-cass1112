@@ -4,8 +4,9 @@
 package fr.urssaf.image.sae.regionalisation.fond.documentaire.service;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Map;
 
 import junit.framework.Assert;
 
@@ -59,18 +60,27 @@ public class DocInfoServiceTest {
          CassandraException {
       initMock();
 
-      List<String> liste = service.getCodesOrganismes();
+      Map<String, Long> liste = service.getCodesOrganismes();
 
       EasyMock.verify(docInfoDao, query, columnList, row, iterator, rows,
             operation);
 
-      List<String> attendus = Arrays.asList("UR123", "UR124", "UR125", "UR126");
+      Map<String, Long> attendus = new HashMap<String, Long>();
+      attendus.put("UR123;cop", 2L);
+      attendus.put("UR123;cog", 1L);
+      attendus.put("UR124;cop", 1L);
+      attendus.put("UR125;cog", 1L);
+      attendus.put("UR126;cog", 1L);
+      
+      Assert.assertEquals("il est attendu " + attendus.size() + " éléments", attendus.size(), liste.size());
 
-      Assert.assertEquals("il est attendu 4 éléments", 4, liste.size());
-
-      for (String attendu : attendus) {
-         Assert.assertTrue("l'élément " + attendu
-               + " doit etre présent dans la liste", liste.contains(attendu));
+      for (Map.Entry<String, Long> entry : attendus.entrySet()) {
+         Assert.assertTrue("Le code " + entry.getKey()
+               + " doit etre présent dans la liste", liste.containsKey(entry
+               .getKey()));
+         Assert.assertEquals("Le code " + entry.getKey()
+               + " aurait dû être trouvé " + entry.getValue() + " fois", entry
+               .getValue(), liste.get(entry.getKey()));
       }
 
    }

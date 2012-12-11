@@ -77,18 +77,22 @@ public class TraitementServiceTest {
       Assert.assertEquals("le nombre de lignes doit etre correct", 2, lines
             .size());
 
-      List<String> attendus = Arrays.asList("UR123", "UR345");
+      List<String> attendus = Arrays.asList("UR123;cog;1", "UR345;cop;1");
 
       for (String attendu : attendus) {
          Assert.assertTrue("l'élement " + attendu
-               + "doit etre présent dans le fichier", lines.contains(attendu));
+               + " doit etre présent dans le fichier", lines.contains(attendu));
       }
 
    }
 
    private void initMockEcriture() throws CassandraException {
-      EasyMock.expect(docInfoService.getCodesOrganismes()).andReturn(
-            Arrays.asList("UR123", "UR345"));
+
+      Map<String, Long> codes = new HashMap<String, Long>();
+      codes.put("UR123;cog", 1L);
+      codes.put("UR345;cop", 1L);
+
+      EasyMock.expect(docInfoService.getCodesOrganismes()).andReturn(codes);
 
       cassandraSupport.connect();
       EasyMock.expectLastCall().once();

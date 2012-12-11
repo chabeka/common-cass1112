@@ -3,11 +3,13 @@
  */
 package fr.urssaf.image.sae.regionalisation.fond.documentaire.service.impl;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -27,6 +29,9 @@ import fr.urssaf.image.sae.regionalisation.fond.documentaire.service.DocInfoServ
 @Component
 public class DocInfoServiceImpl implements DocInfoService {
 
+   private static final Logger LOGGER = LoggerFactory
+         .getLogger(DocInfoServiceImpl.class);
+
    @Autowired
    private DocInfoDao dao;
 
@@ -34,28 +39,56 @@ public class DocInfoServiceImpl implements DocInfoService {
     * {@inheritDoc}
     */
    @Override
-   public final List<String> getCodesOrganismes() throws CassandraException {
+   public final Map<String, Long> getCodesOrganismes()
+         throws CassandraException {
+
+      LOGGER.info("Parcours de la Column Family DocInfo ...");
 
       AllRowsQuery<DocInfoKey, String> query = dao.getQuery();
       CassandraAllRowResultSet<DocInfoKey, String> resultSet = new CassandraAllRowResultSet<DocInfoKey, String>(
             query);
-      List<String> codes = new ArrayList<String>();
+      Map<String, Long> codes = new HashMap<String, Long>();
+
+      int nbDocInfo = 1;
+      int nbDocInfoParTrace = 10000;
 
       while (resultSet.hasNext()) {
          resultSet.next();
 
          List<String> columns = resultSet.getColumnNames();
-         for (String columnKey : columns) {
-            String value = resultSet.getValue(columnKey,
-                  StringSerializer.get(), null);
 
-            if (StringUtils.isNotBlank(value) && !codes.contains(value)) {
-               codes.add(value);
+         if (!columns.isEmpty()) {
+
+            for (String columnKey : columns) {
+
+               String codeOrga = resultSet.getValue(columnKey, StringSerializer
+                     .get(), null);
+
+               if (StringUtils.isNotBlank(codeOrga)) {
+
+                  String cleMap = codeOrga + ";" + columnKey;
+
+                  if (codes.containsKey(cleMap)) {
+                     codes.put(cleMap, codes.get(cleMap) + 1);
+                  } else {
+                     codes.put(cleMap, 1L);
+                  }
+
+               }
             }
+
+            // Compteurs de lignes parcourues
+            if (nbDocInfo % nbDocInfoParTrace == 0) {
+               LOGGER.info("Nombre de lignes de DocInfo parcourues : {}",
+                     nbDocInfo);
+            }
+            nbDocInfo++;
+
          }
+
       }
 
-      Collections.sort(codes);
+      LOGGER.info("Nombre de lignes de DocInfo au total : {}", nbDocInfo - 1);
 
       return codes;
    }
