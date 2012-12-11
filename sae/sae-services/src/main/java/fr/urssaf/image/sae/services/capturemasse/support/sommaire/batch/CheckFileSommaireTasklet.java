@@ -53,10 +53,6 @@ public class CheckFileSommaireTasklet implements Tasklet {
 
       final String urlEcde = (String) parameters.get(Constantes.SOMMAIRE);
       
-      final String hash = (String) parameters.get(Constantes.HASH);
-      
-      final String typeHash = (String) parameters.get(Constantes.TYPE_HASH);
-
       final StepExecution stepExecution = chunkContext.getStepContext()
             .getStepExecution();
       final ExecutionContext context = stepExecution.getJobExecution()
@@ -73,10 +69,6 @@ public class CheckFileSommaireTasklet implements Tasklet {
          
          context.put(Constantes.SOMMAIRE_FILE, sommaire.getAbsolutePath());
          
-         if(hash!=null){
-            controleSupport.checkHash(sommaire, hash, typeHash);
-         }
-
       } catch (CaptureMasseSommaireEcdeURLException e) {
          final Exception exception = new Exception(e.getMessage());
 
@@ -105,19 +97,7 @@ public class CheckFileSommaireTasklet implements Tasklet {
                .getStepContext().getStepExecution().getJobExecution()
                .getExecutionContext().get(Constantes.DOC_EXCEPTION);
          exceptions.add(exception);
-      } catch(CaptureMasseSommaireHashException e ){
-         final Exception exception = new Exception(e.getMessage());
-         ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) chunkContext
-               .getStepContext().getStepExecution().getJobExecution()
-               .getExecutionContext().get(Constantes.DOC_EXCEPTION);
-         exceptions.add(exception);
-      } catch(CaptureMasseSommaireTypeHashException e){
-         final Exception exception = new Exception(e.getMessage());
-         ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) chunkContext
-               .getStepContext().getStepExecution().getJobExecution()
-               .getExecutionContext().get(Constantes.DOC_EXCEPTION);
-         exceptions.add(exception);
-      }
+      } 
 
       return RepeatStatus.FINISHED;
    }
