@@ -113,7 +113,7 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
          ArchivageMasseAvecHash request, String callerIP)
          throws CaptureAxisFault {
 
-      String prefixeTrc = "archivageMasseAvecHashResponse()";
+      String prefixeTrc = "archivageEnMasseAvecHash()";
 
       LOG.debug("{} - Début", prefixeTrc);
 
