@@ -6,6 +6,7 @@
    <artifactId>sae-trace</artifactId>
    <version>12.11.11.2-SNAPSHOT</version>
    <packaging>jar</packaging>
+   <description>Module de la traçabilité dans le SAE</description>
 
    <parent>
       <groupId>fr.urssaf.image.sae</groupId>
