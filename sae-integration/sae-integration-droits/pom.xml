@@ -4,7 +4,7 @@
    
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-integration-droits</artifactId>
-   <version>12.11.11.1</version>
+   <version>12.11.11.2-SNAPSHOT</version>
    
    <name>sae-integration-droits</name>
    
@@ -41,13 +41,13 @@
    <!-- Configuration SVN pour le plug-in maven-release -->
    <scm>
       <url>
-        scm:svn:svn://cer69-svn.cer69.recouv/image/java/tags/sae-integration-droits-12.11.11.1
+        scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/sae-integration/sae-integration-droits/
       </url>
       <developerConnection>
-         scm:svn:svn://cer69-svn.cer69.recouv/image/java/tags/sae-integration-droits-12.11.11.1
+         scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/sae-integration/sae-integration-droits/
       </developerConnection>
       <connection>
-         scm:svn:svn://cer69-svn.cer69.recouv/image/java/tags/sae-integration-droits-12.11.11.1
+         scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/sae-integration/sae-integration-droits/
       </connection>
    </scm>
 
