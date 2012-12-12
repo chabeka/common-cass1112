@@ -4,6 +4,7 @@
 package fr.urssaf.image.sae.lotinstallmaj.service.impl;
 
 import me.prettyprint.cassandra.serializers.LongSerializer;
+import me.prettyprint.cassandra.serializers.ObjectSerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
@@ -151,8 +152,8 @@ public class InsertionDonnees {
             .get(), PagmSerializer.get(), updater);
       addColumn(DESCRIPTION, "accès ancien contrat de service",
             StringSerializer.get(), PagmSerializer.get(), updater);
-      addColumn("viDuree", Long.valueOf(DEFAULT_CONSERVATION), StringSerializer.get(),
-            LongSerializer.get(), updater);
+      addColumn("viDuree", Long.valueOf(DEFAULT_CONSERVATION), StringSerializer
+            .get(), LongSerializer.get(), updater);
       addColumn("pki", "CN=IGC/A", StringSerializer.get(), StringSerializer
             .get(), updater);
 
@@ -162,12 +163,43 @@ public class InsertionDonnees {
 
    private void addActionUnitaire(String identifiant, String description,
          ColumnFamilyTemplate<String, String> cfTmpl) {
-      ColumnFamilyUpdater<String, String> updater = cfTmpl.createUpdater(identifiant);
+      ColumnFamilyUpdater<String, String> updater = cfTmpl
+            .createUpdater(identifiant);
       HColumn<String, String> column = HFactory.createColumn(DESCRIPTION,
             description, StringSerializer.get(), StringSerializer.get());
       updater.setColumn(column);
 
       cfTmpl.update(updater);
+   }
+
+   /**
+    * Ajoute les paramètres nécessaires à la purge des registres
+    */
+   public void addPurgeParameters() {
+      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+            keyspace, "Parameters", StringSerializer.get(), StringSerializer
+                  .get());
+      addPurgeDuree("PURGE_EXPLOIT_DUREE", cfTmpl);
+      addPurgeDuree("PURGE_SECU_DUREE", cfTmpl);
+      addPurgeDuree("PURGE_TECH_DUREE", cfTmpl);
+
+   }
+
+   /**
+    * @param name
+    * @param cfTmpl
+    */
+   private void addPurgeDuree(String name,
+         ColumnFamilyTemplate<String, String> cfTmpl) {
+      ColumnFamilyUpdater<String, String> updater = cfTmpl
+            .createUpdater("parametresPurge");
+
+      HColumn<String, Object> column = HFactory.createColumn(name, 10,
+            StringSerializer.get(), ObjectSerializer.get());
+      updater.setColumn(column);
+
+      cfTmpl.update(updater);
+
    }
 
 }

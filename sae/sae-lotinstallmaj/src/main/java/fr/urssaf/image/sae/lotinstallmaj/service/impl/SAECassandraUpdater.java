@@ -314,6 +314,9 @@ public class SAECassandraUpdater {
       // Création des CF
       saeCassandraService.createColumnFamilyFromList(cfDefs, true);
       
+      InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
+      donnees.addPurgeParameters();
+      
    // On positionne la version à 3
       saeDao.setDatabaseVersion(VERSION_4);
    }
