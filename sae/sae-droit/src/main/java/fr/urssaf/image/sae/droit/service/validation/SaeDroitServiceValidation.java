@@ -38,7 +38,7 @@ public class SaeDroitServiceValidation {
 
    private static final String GET_METHOD = "execution(fr.urssaf.image.sae.droit.dao.model.ServiceContract fr.urssaf.image.sae.droit.service.SaeDroitService.getServiceContract(*))"
          + "&& args(idClient)";
-   
+
    private static final String ADD_PAGM_METHOD = "execution(void fr.urssaf.image.sae.droit.service.SaeDroitService.addPagmContratService(*,*))"
          + "&& args(id, pagm)";;
 
@@ -107,15 +107,18 @@ public class SaeDroitServiceValidation {
                ARG_REQUIRED, "liste des pagms"));
       }
 
-      if (StringUtils.isEmpty(contrat.getIdPki())) {
+      if (StringUtils.isEmpty(contrat.getIdPki())
+            && CollectionUtils.isEmpty(contrat.getListPki())) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               ARG_REQUIRED, "le nom de la PKI"));
+               ARG_REQUIRED, "le nom de la PKI ou la liste des PKI"));
       }
 
       if (StringUtils.isEmpty(contrat.getIdCertifClient())
+            && CollectionUtils.isEmpty(contrat.getListCertifsClient())
             && contrat.isVerifNommage()) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               ARG_REQUIRED, "le certificat client"));
+               ARG_REQUIRED,
+               "le certificat client ou la liste des certificats clients"));
       }
 
    }
@@ -150,7 +153,7 @@ public class SaeDroitServiceValidation {
                ARG_REQUIRED, "le code client"));
       }
    }
-   
+
    /**
     * Validation de la méthode loadSaeDroits(String, List)
     * 

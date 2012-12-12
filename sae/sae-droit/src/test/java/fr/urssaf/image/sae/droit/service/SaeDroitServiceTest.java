@@ -16,19 +16,17 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.droit.dao.model.Pagm;
 import fr.urssaf.image.sae.droit.dao.model.ServiceContract;
+import fr.urssaf.image.sae.droit.utils.ResourceMessagesUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-droit-test.xml" })
 public class SaeDroitServiceTest {
 
-   /**
-    * 
-    */
    private static final String EXCEPTION_ATTENDUE = "exception attendue";
-   /**
-    * 
-    */
+   private static final String ARG_REQUIRED = "argument.required";
    private static final String TYPE_CORRECT = "type de l'exception correcte";
+   private static final String MESSAGE_CORRECT = "le message de l'exception doit etre correct";
+
    @Autowired
    private SaeDroitService service;
 
@@ -42,8 +40,8 @@ public class SaeDroitServiceTest {
       } catch (Exception e) {
          Assert.assertEquals(TYPE_CORRECT, IllegalArgumentException.class, e
                .getClass());
-         Assert.assertTrue("message de l'exception contient identifiant", e
-               .getMessage().contains("identifiant"));
+         Assert.assertEquals(MESSAGE_CORRECT, getMessage("identifiant client"),
+               e.getMessage());
       }
 
    }
@@ -58,8 +56,8 @@ public class SaeDroitServiceTest {
       } catch (Exception e) {
          Assert.assertEquals(TYPE_CORRECT, IllegalArgumentException.class, e
                .getClass());
-         Assert.assertTrue("message de l'exception contient liste des pagms", e
-               .getMessage().contains("liste des pagms"));
+         Assert.assertEquals(MESSAGE_CORRECT, getMessage("liste des pagms"), e
+               .getMessage());
       }
 
    }
@@ -78,8 +76,8 @@ public class SaeDroitServiceTest {
       } catch (Exception e) {
          Assert.assertEquals(TYPE_CORRECT, IllegalArgumentException.class, e
                .getClass());
-         Assert.assertTrue("message de l'exception contient contrat", e
-               .getMessage().contains("contrat"));
+         Assert.assertEquals(MESSAGE_CORRECT, getMessage("contrat"), e
+               .getMessage());
       }
 
    }
@@ -101,8 +99,8 @@ public class SaeDroitServiceTest {
       } catch (Exception e) {
          Assert.assertEquals(TYPE_CORRECT, IllegalArgumentException.class, e
                .getClass());
-         Assert.assertTrue("message de l'exception contient code client", e
-               .getMessage().contains("code client"));
+         Assert.assertEquals(MESSAGE_CORRECT,
+               getMessage("code client contrat"), e.getMessage());
       }
 
    }
@@ -124,8 +122,8 @@ public class SaeDroitServiceTest {
       } catch (Exception e) {
          Assert.assertEquals(TYPE_CORRECT, IllegalArgumentException.class, e
                .getClass());
-         Assert.assertTrue("message de l'exception contient description", e
-               .getMessage().contains("description"));
+         Assert.assertEquals(MESSAGE_CORRECT,
+               getMessage("description contrat"), e.getMessage());
       }
 
    }
@@ -147,8 +145,8 @@ public class SaeDroitServiceTest {
       } catch (Exception e) {
          Assert.assertEquals(TYPE_CORRECT, IllegalArgumentException.class, e
                .getClass());
-         Assert.assertTrue("message de l'exception contient libellé", e
-               .getMessage().contains("libellé"));
+         Assert.assertEquals(MESSAGE_CORRECT, getMessage("libellé contrat"), e
+               .getMessage());
       }
 
    }
@@ -170,8 +168,8 @@ public class SaeDroitServiceTest {
       } catch (Exception e) {
          Assert.assertEquals(TYPE_CORRECT, IllegalArgumentException.class, e
                .getClass());
-         Assert.assertTrue("message de l'exception contient durée", e
-               .getMessage().contains("durée"));
+         Assert.assertEquals(MESSAGE_CORRECT, getMessage("durée contrat"), e
+               .getMessage());
       }
 
    }
@@ -192,8 +190,8 @@ public class SaeDroitServiceTest {
       } catch (Exception e) {
          Assert.assertEquals(TYPE_CORRECT, IllegalArgumentException.class, e
                .getClass());
-         Assert.assertTrue("message de l'exception contient pagms", e
-               .getMessage().contains("pagms"));
+         Assert.assertEquals(MESSAGE_CORRECT, getMessage("liste des pagms"), e
+               .getMessage());
       }
 
    }
@@ -216,8 +214,9 @@ public class SaeDroitServiceTest {
       } catch (Exception e) {
          Assert.assertEquals(TYPE_CORRECT, IllegalArgumentException.class, e
                .getClass());
-         Assert.assertTrue("message de l'exception contient PKI", e
-               .getMessage().contains("PKI"));
+         Assert.assertEquals(MESSAGE_CORRECT,
+               getMessage("le nom de la PKI ou la liste des PKI"), e
+                     .getMessage());
       }
 
    }
@@ -242,8 +241,11 @@ public class SaeDroitServiceTest {
       } catch (Exception e) {
          Assert.assertEquals(TYPE_CORRECT, IllegalArgumentException.class, e
                .getClass());
-         Assert.assertTrue("message de l'exception contient certificat client",
-               e.getMessage().contains("certificat client"));
+         Assert
+               .assertEquals(
+                     MESSAGE_CORRECT,
+                     getMessage("le certificat client ou la liste des certificats clients"),
+                     e.getMessage());
       }
 
    }
@@ -280,5 +282,9 @@ public class SaeDroitServiceTest {
                .getMessage().contains("code client"));
       }
 
+   }
+
+   private String getMessage(String value) {
+      return ResourceMessagesUtils.loadMessage(ARG_REQUIRED, value);
    }
 }
