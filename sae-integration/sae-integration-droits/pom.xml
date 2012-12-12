@@ -24,6 +24,7 @@
       <maven-shade-plugin.version>1.4</maven-shade-plugin.version>
       <maven-replacer-plugin.version>1.3.6</maven-replacer-plugin.version>
       <maven-jaxb-plugin.version>1.1.1</maven-jaxb-plugin.version>
+      <maven-release-plugin.version>2.2.1</maven-release-plugin.version>
       
       <!-- Version des framework -->
       <junit.version>4.8.2</junit.version>
@@ -32,10 +33,23 @@
       <spring.framework.version>3.0.5.RELEASE</spring.framework.version>
       
       <!-- Version du SAE -->
-      <sae.version>12.9.10.3-SNAPSHOT</sae.version>
+      <sae.version>12.11.11.1</sae.version>
       
    </properties>
 
+
+   <!-- Configuration SVN pour le plug-in maven-release -->
+   <scm>
+      <url>
+        scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/sae-integration/sae-integration-droits/
+      </url>
+      <developerConnection>
+         scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/sae-integration/sae-integration-droits/
+      </developerConnection>
+      <connection>
+         scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/sae-integration/sae-integration-droits/
+      </connection>
+   </scm>
 
    <build>
       <plugins>
@@ -139,6 +153,21 @@
                </execution>
             </executions>
          </plugin>
+         
+         <!--
+         Pour la gestion des release
+         -->
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-release-plugin</artifactId>
+            <version>${maven-release-plugin.version}</version>
+            <configuration>
+               <preparationGoals>clean javadoc:jar install</preparationGoals>
+               <autoVersionSubmodules>true</autoVersionSubmodules>
+               <useReleaseProfile>false</useReleaseProfile>
+            </configuration>
+         </plugin>
+         
       </plugins>
    </build>
 
@@ -275,6 +304,24 @@
       </dependency>
       
    </dependencies>
-
+   
+   
+   <!--
+      On indique l'URL des repository Nexus, pour les versions Snapshots
+      et Releases des artéfacts
+   -->
+   <distributionManagement>
+      <repository>
+         <id>nexus</id>
+         <name>Releases</name>
+         <url>http://cer69-nexus.cer69.recouv:8081/nexus/content/repositories/releases</url>
+      </repository>
+      <snapshotRepository>
+         <id>nexus</id>
+         <name>Snapshots</name>
+         <url>http://cer69-nexus.cer69.recouv:8081/nexus/content/repositories/snapshots</url>
+         <uniqueVersion>false</uniqueVersion>
+      </snapshotRepository>
+   </distributionManagement>
 
 </project>
