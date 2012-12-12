@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
@@ -288,99 +287,105 @@ public class ConversionFileTest {
    @Ignore
    public void supprimeZeros() {
       File directory = new File("c:/datas");
-      File[] listFile = directory.listFiles(new FilenameFilter() {
+      File file = new File(directory, "regionalisation_pers.csv");
 
-         @Override
-         public boolean accept(File dir, String name) {
-            return name.startsWith("regionalisation");
+      Reader reader = null;
+      BufferedReader bReader = null;
+      Writer writer = null;
+
+      String line, requete, value;
+      Long iValue;
+
+      try {
+         reader = new FileReader(file);
+         bReader = new BufferedReader(reader);
+         writer = new FileWriter(new File(directory, "zeros_less_"
+               + file.getName()));
+         String[] tabLine, tabRequete, tabLink;
+
+         while (StringUtils.isNotBlank((line = bReader.readLine()))) {
+            tabLine = line.split(";");
+            requete = tabLine[0];
+            tabRequete = requete.split(":");
+            value = tabRequete[1];
+
+            if (value.startsWith("0")) {
+               iValue = Long.valueOf(value);
+               value = String.valueOf(iValue);
+               writer.write(tabRequete[0] + ":" + value + ";");
+            } else {
+               writer.write(tabLine[0] + ";");
+            }
+
+            writer.write(tabLine[1] + ";");
+
+            String corresp = tabLine[2];
+            tabLink = corresp.split(">");
+            if (tabLink[0].startsWith("0")) {
+               value = tabLink[0];
+               iValue = Long.valueOf(value);
+               value = String.valueOf(iValue);
+               writer.write(value);
+
+            } else {
+               writer.write(tabLink[0]);
+            }
+            
+            writer.write(">");
+
+            if (tabLink[1].startsWith("0")) {
+               value = tabLink[1];
+               iValue = Long.valueOf(value);
+               value = String.valueOf(iValue);
+
+               writer.write(value);
+            } else {
+               writer.write(tabLink[1]);
+            }
+
+            writer.write(";");
+
+            writer.write(tabLine[3] + ";");
+            writer.write(tabLine[4] + ";");
+            writer.write(tabLine[5] + ";");
+            writer.write(tabLine[6] + "\n");
+
          }
-      });
 
-      for (File file : listFile) {
+      } catch (FileNotFoundException e) {
+         e.printStackTrace();
 
-         Reader reader = null;
-         BufferedReader bReader = null;
-         Writer writer = null;
+      } catch (IOException e) {
+         e.printStackTrace();
+      } finally {
 
-         String line, requete, value;
-         Long iValue;
+         if (bReader != null) {
 
-         try {
-            reader = new FileReader(file);
-            bReader = new BufferedReader(reader);
-            writer = new FileWriter(new File(directory, "zeros_less_"
-                  + file.getName()));
-            String[] tabLine, tabRequete, tabLink;
-
-            while (StringUtils.isNotBlank((line = bReader.readLine()))) {
-               tabLine = line.split(";");
-               requete = tabLine[0];
-               tabRequete = requete.split(":");
-               value = tabRequete[1];
-
-               if (value.startsWith("0")) {
-                  iValue = Long.valueOf(value);
-                  value = String.valueOf(iValue);
-                  writer.write(tabRequete[0] + ":" + value + ";");
-               } else {
-                  writer.write(tabLine[0] + ";");
-               }
-
-               writer.write(tabLine[1] + ";");
-
-               if (tabLine[2].startsWith("0")) {
-                  tabLink = tabLine[2].split(">");
-                  value = tabLink[0];
-                  iValue = Long.valueOf(value);
-                  value = String.valueOf(iValue);
-
-                  writer.write(value + ">" + tabLink[1] + ";");
-               } else {
-                  writer.write(tabLine[2] + ";");
-               }
-
-               writer.write(tabLine[3] + ";");
-               writer.write(tabLine[4] + ";");
-               writer.write(tabLine[5] + ";");
-               writer.write(tabLine[6] + "\n");
-
-            }
-
-         } catch (FileNotFoundException e) {
-            e.printStackTrace();
-
-         } catch (IOException e) {
-            e.printStackTrace();
-         } finally {
-
-            if (bReader != null) {
-
-               try {
-                  bReader.close();
-               } catch (Exception e) {
-                  e.printStackTrace();
-               }
-            }
-
-            if (reader != null) {
-
-               try {
-                  reader.close();
-               } catch (Exception e) {
-                  e.printStackTrace();
-               }
-            }
-
-            if (writer != null) {
-               try {
-                  writer.close();
-               } catch (IOException ex) {
-                  ex.printStackTrace();
-               }
+            try {
+               bReader.close();
+            } catch (Exception e) {
+               e.printStackTrace();
             }
          }
 
+         if (reader != null) {
+
+            try {
+               reader.close();
+            } catch (Exception e) {
+               e.printStackTrace();
+            }
+         }
+
+         if (writer != null) {
+            try {
+               writer.close();
+            } catch (IOException ex) {
+               ex.printStackTrace();
+            }
+         }
       }
+
    }
 
 }
