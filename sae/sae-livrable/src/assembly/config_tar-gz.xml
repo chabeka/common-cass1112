@@ -47,6 +47,14 @@
          </includes>
          <outputDirectory>sae-services-executable</outputDirectory>
       </fileSet>
+      
+      <fileSet>
+         <directory>src/config/</directory>
+         <includes>
+            <include>logback-sae-trace-executable.xml</include>
+         </includes>
+         <outputDirectory>sae-trace-executable</outputDirectory>
+      </fileSet>
 
       <fileSet>
          <directory>src/scripts/</directory>
@@ -73,6 +81,14 @@
       </source>
       <outputDirectory>sae-services-executable</outputDirectory>
       <destName>sae-services-executable.jar</destName>
+    </file>
+    
+    <file>
+      <source>
+         ${project.parent.basedir}/sae-trace-executable/target/sae-trace-executable-${version}.jar
+      </source>
+      <outputDirectory>sae-trace-executable</outputDirectory>
+      <destName>sae-trace-executable.jar</destName>
     </file>
     
   </files>
