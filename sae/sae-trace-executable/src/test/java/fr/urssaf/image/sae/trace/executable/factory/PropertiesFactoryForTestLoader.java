@@ -13,11 +13,11 @@ import org.springframework.core.io.Resource;
  * dans le conteneur IOC avec l'ensemble de toutes les paires clé/valeur des
  * fichiers properties
  */
-public final class PropertiesFactoryForTest {
+public final class PropertiesFactoryForTestLoader {
 
    private static final int RES_LENGTH = 3;
 
-   private PropertiesFactoryForTest() {
+   private PropertiesFactoryForTestLoader() {
    }
 
    /**

@@ -24,7 +24,7 @@
    </bean>
 
    <bean
-      class="fr.urssaf.image.sae.trace.executable.factory.PropertiesFactoryForTest"
+      class="fr.urssaf.image.sae.trace.executable.factory.PropertiesFactoryForTestLoader"
       factory-method="load">
       <constructor-arg ref="saeConfigResource" />
    </bean>
