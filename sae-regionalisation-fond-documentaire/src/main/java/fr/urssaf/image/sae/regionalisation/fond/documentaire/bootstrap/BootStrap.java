@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,6 +62,8 @@ public final class BootStrap {
 
       checkParams(args);
 
+      LOGGER.info("Arguments de la ligne de commande : {}", ArrayUtils.toString(args));
+      
       // instanciation du contexte de SPRING
       ApplicationContext context = SAEApplicationContextFactory.load(
             "/applicationContext-sae-regionalisation-fond-documentaire.xml",
