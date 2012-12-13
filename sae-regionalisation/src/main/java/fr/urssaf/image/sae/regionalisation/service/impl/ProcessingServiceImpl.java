@@ -172,11 +172,15 @@ public class ProcessingServiceImpl implements ProcessingService {
             // mettre à jour les métadonnées
             for (Entry<String, Object> metadata : metadonnees.entrySet()) {
 
-               Trace trace = this.updateDocument(documents.get(indexDoc),
-                     metadata, listLines.get(indexLine));
-
-               if (trace != null) {
-                  traces.add(trace);
+               if ((!StringUtils.equalsIgnoreCase(metadata.getKey(), "cog")) && (!StringUtils.equalsIgnoreCase(metadata.getKey(), "cop")))  {
+               
+                  Trace trace = this.updateDocument(documents.get(indexDoc),
+                        metadata, listLines.get(indexLine));
+   
+                  if (trace != null) {
+                     traces.add(trace);
+                  }
+               
                }
             }
 

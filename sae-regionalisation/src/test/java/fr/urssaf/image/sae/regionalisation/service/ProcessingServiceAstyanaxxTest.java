@@ -148,10 +148,10 @@ public class ProcessingServiceAstyanaxxTest {
       providerSupport.disconnect();
       EasyMock.expectLastCall().once();
 
-      // persistance des modifications - 3 doc * 2 critères
+      // persistance des modifications - 3 doc * 2 critères - 1 code organisme 
       providerSupport.updateCriterion(EasyMock.anyObject(Document.class),
             EasyMock.anyObject(String.class), EasyMock.anyObject());
-      EasyMock.expectLastCall().times(2);
+      EasyMock.expectLastCall().times(1);
 
       recuperationDonneesDocuments();
 
@@ -159,9 +159,9 @@ public class ProcessingServiceAstyanaxxTest {
       EasyMock.expectLastCall().times(1);
 
       // trace dans trace Maj
-      // 3 documents avec 2 métadonnées valides
+      // 3 documents avec 2 métadonnées valides, dont 1 code organisme que l'on ne change pas
       traceDao.addTraceMaj(EasyMock.anyObject(Trace.class));
-      EasyMock.expectLastCall().times(2);
+      EasyMock.expectLastCall().times(1);
 
       // trace dans trace Maj
       // 3 documents avec 2 métadonnées valides

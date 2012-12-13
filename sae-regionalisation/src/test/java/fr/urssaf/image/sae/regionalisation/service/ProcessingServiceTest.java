@@ -165,16 +165,16 @@ public class ProcessingServiceTest {
       providerSupport.updateCriterion(EasyMock.anyObject(Document.class),
             EasyMock.anyObject(String.class), EasyMock.anyObject());
 
-      // 3 documents avec 2 métadonnées valides
-      EasyMock.expectLastCall().times(2);
+      // 3 documents avec 2 métadonnées valides, dont 1 code organisme que l'on ne change pas
+      EasyMock.expectLastCall().times(1);
       saeDocumentDao.update(EasyMock.anyObject(Document.class));
 
       EasyMock.expectLastCall().times(1);
 
       // trace dans trace Maj
-      // 3 documents avec 2 métadonnées valides
+      // 3 documents avec 2 métadonnées valides, dont 1 code organisme que l'on ne change pas
       traceDao.addTraceMaj(EasyMock.anyObject(Trace.class));
-      EasyMock.expectLastCall().times(2);
+      EasyMock.expectLastCall().times(1);
 
       traceDao.addTraceRec(EasyMock.anyObject(String.class), EasyMock.anyInt(),
             EasyMock.anyInt(), EasyMock.anyBoolean());
