@@ -62,8 +62,9 @@ public final class BootStrap {
 
       checkParams(args);
 
-      LOGGER.info("Arguments de la ligne de commande : {}", ArrayUtils.toString(args));
-      
+      LOGGER.info("Arguments de la ligne de commande : {}", ArrayUtils
+            .toString(args));
+
       // instanciation du contexte de SPRING
       ApplicationContext context = SAEApplicationContextFactory.load(
             "/applicationContext-sae-regionalisation-fond-documentaire.xml",
@@ -71,15 +72,20 @@ public final class BootStrap {
 
       TraitementService service = context.getBean(TraitementService.class);
 
-      if (MODE_LISTE_CODE_ORG.equals(args[ARG_0])) {
-         service.writeCodesOrganismes(args[ARG_2]);
+      try {
+         if (MODE_LISTE_CODE_ORG.equals(args[ARG_0])) {
+            service.writeCodesOrganismes(args[ARG_2]);
 
-      } else if (MODE_LISTE_DOCUMENTS.equals(args[ARG_0])) {
-         service.writeDocUuidsToUpdate(args[2], args[ARG_3]);
+         } else if (MODE_LISTE_DOCUMENTS.equals(args[ARG_0])) {
+            service.writeDocUuidsToUpdate(args[2], args[ARG_3]);
 
-      } else if (MODE_MAJ.equals(args[ARG_0])) {
-         service.updateDocuments(args[ARG_2], args[ARG_3], Integer
-               .valueOf(args[ARG_4]), Integer.valueOf(args[ARG_5]));
+         } else if (MODE_MAJ.equals(args[ARG_0])) {
+            service.updateDocuments(args[ARG_2], args[ARG_3], Integer
+                  .valueOf(args[ARG_4]), Integer.valueOf(args[ARG_5]));
+         }
+
+      } catch (Throwable exception) {
+         LOGGER.error("erreur lors du traitement", exception);
       }
 
       long endTime = new Date().getTime();

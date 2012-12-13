@@ -3,6 +3,8 @@
  */
 package fr.urssaf.image.sae.regionalisation.fond.documentaire.service.impl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +30,9 @@ import fr.urssaf.image.sae.regionalisation.fond.documentaire.service.DocInfoServ
  */
 @Component
 public class DocInfoServiceImpl implements DocInfoService {
+
+   private static final List<String> codesAutorisesOrga = Arrays.asList("cop",
+         "cog");
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(DocInfoServiceImpl.class);
@@ -57,14 +62,15 @@ public class DocInfoServiceImpl implements DocInfoService {
 
          List<String> columns = resultSet.getColumnNames();
 
-         if (!columns.isEmpty()) {
+         if (columns.size() == 3) {
 
             for (String columnKey : columns) {
 
                String codeOrga = resultSet.getValue(columnKey, StringSerializer
                      .get(), null);
 
-               if (StringUtils.isNotBlank(codeOrga)) {
+               if (StringUtils.isNotBlank(codeOrga)
+                     && codesAutorisesOrga.contains(columnKey)) {
 
                   String cleMap = codeOrga + ";" + columnKey;
 
@@ -91,6 +97,49 @@ public class DocInfoServiceImpl implements DocInfoService {
       LOGGER.info("Nombre de lignes de DocInfo au total : {}", nbDocInfo - 1);
 
       return codes;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public List<Map<String, String>> getInfosDoc() throws CassandraException {
+      LOGGER.info("Parcours de la Column Family DocInfo ...");
+
+      AllRowsQuery<DocInfoKey, String> query = dao.getQuery();
+      CassandraAllRowResultSet<DocInfoKey, String> resultSet = new CassandraAllRowResultSet<DocInfoKey, String>(
+            query);
+      List<Map<String, String>> values = new ArrayList<Map<String, String>>();
+      Map<String, String> infos;
+
+      int nbDocInfo = 1;
+      int nbDocInfoParTrace = 10000;
+
+      while (resultSet.hasNext()) {
+         resultSet.next();
+
+         List<String> columns = resultSet.getColumnNames();
+
+         if (columns.size() == 3) {
+
+            infos = new HashMap<String, String>();
+            for (String columnKey : columns) {
+               infos.put(columnKey, resultSet.getValue(columnKey,
+                     StringSerializer.get(), null));
+            }
+
+            values.add(infos);
+         }
+
+         // Compteurs de lignes parcourues
+         if (nbDocInfo % nbDocInfoParTrace == 0) {
+            LOGGER.info("Nombre de lignes de DocInfo parcourues : {}",
+                  nbDocInfo);
+         }
+         nbDocInfo++;
+      }
+
+      return values;
    }
 
 }

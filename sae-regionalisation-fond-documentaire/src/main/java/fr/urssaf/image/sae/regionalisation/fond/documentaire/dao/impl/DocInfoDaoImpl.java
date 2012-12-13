@@ -32,7 +32,7 @@ public class DocInfoDaoImpl implements DocInfoDao {
     */
    public final AllRowsQuery<DocInfoKey, String> getQuery() {
       return cassandraSupport.getKeySpace().prepareQuery(DocInfoCF.CF_DOC_INFO)
-            .getAllRows().setRowLimit(ROW_LIMIT).withColumnSlice("cop", "cog");
+            .getAllRows().setRowLimit(ROW_LIMIT).withColumnSlice("SM_UUID", "cop", "cog");
    }
 
 }

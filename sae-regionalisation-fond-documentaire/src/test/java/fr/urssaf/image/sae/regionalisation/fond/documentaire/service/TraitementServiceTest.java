@@ -45,7 +45,7 @@ public class TraitementServiceTest {
    private TraitementService service;
 
    @Autowired
-   private TermInfoRangeUuidService termInfoRangeUuidService;
+   private DocInfoService docsInfoService;
 
    private File file;
    private List<String> listUuid;
@@ -60,7 +60,7 @@ public class TraitementServiceTest {
       FileUtils.deleteQuietly(file);
 
       EasyMock
-            .reset(docInfoService, cassandraSupport, termInfoRangeUuidService);
+            .reset(docInfoService, cassandraSupport, docsInfoService);
    }
 
    @Test
@@ -114,7 +114,7 @@ public class TraitementServiceTest {
       service.writeDocUuidsToUpdate(file.getAbsolutePath(), resource.getFile()
             .getAbsolutePath());
 
-      EasyMock.verify(termInfoRangeUuidService, cassandraSupport);
+      EasyMock.verify(docsInfoService, cassandraSupport);
 
       List<String> lines = FileUtils.readLines(file);
 
@@ -152,7 +152,7 @@ public class TraitementServiceTest {
       map.put(Constants.UUID, listUuid.get(2));
       listDocs.add(map);
 
-      EasyMock.expect(termInfoRangeUuidService.getInfosDoc()).andReturn(
+      EasyMock.expect(docsInfoService.getInfosDoc()).andReturn(
             listDocs);
 
       cassandraSupport.connect();
@@ -161,7 +161,7 @@ public class TraitementServiceTest {
       cassandraSupport.disconnect();
       EasyMock.expectLastCall().once();
 
-      EasyMock.replay(termInfoRangeUuidService, cassandraSupport);
+      EasyMock.replay(docsInfoService, cassandraSupport);
 
    }
 

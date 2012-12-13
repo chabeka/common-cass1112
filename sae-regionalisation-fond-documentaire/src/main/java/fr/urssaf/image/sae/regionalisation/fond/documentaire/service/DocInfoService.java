@@ -3,6 +3,7 @@
  */
 package fr.urssaf.image.sae.regionalisation.fond.documentaire.service;
 
+import java.util.List;
 import java.util.Map;
 
 import fr.urssaf.image.sae.regionalisation.fond.documentaire.exception.CassandraException;
@@ -26,4 +27,11 @@ public interface DocInfoService {
     */
    Map<String, Long> getCodesOrganismes() throws CassandraException;
 
+   /**
+    * Retourne les informations rattachées aux documents existants
+    * 
+    * @return la liste des uuids des documents ainsi que de leurs informations
+    *         rattachées exception levée en cas d'erreur d'accès aux données
+    */
+   List<Map<String, String>> getInfosDoc() throws CassandraException;
 }

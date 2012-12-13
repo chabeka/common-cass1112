@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.UUID;
 
 import junit.framework.Assert;
 
@@ -71,8 +72,9 @@ public class DocInfoServiceTest {
       attendus.put("UR124;cop", 1L);
       attendus.put("UR125;cog", 1L);
       attendus.put("UR126;cog", 1L);
-      
-      Assert.assertEquals("il est attendu " + attendus.size() + " éléments", attendus.size(), liste.size());
+
+      Assert.assertEquals("il est attendu " + attendus.size() + " éléments",
+            attendus.size(), liste.size());
 
       for (Map.Entry<String, Long> entry : attendus.entrySet()) {
          Assert.assertTrue("Le code " + entry.getKey()
@@ -90,17 +92,19 @@ public class DocInfoServiceTest {
 
       columnList = EasyMock.createMock(ColumnList.class);
       EasyMock.expect(columnList.getColumnNames()).andReturn(
-            Arrays.asList("cop", "cog")).times(3);
+            Arrays.asList("cop", "cog", "SM_UUID")).times(3);
 
       EasyMock.expect(
             columnList.getValue(EasyMock.anyObject(String.class), EasyMock
                   .anyObject(Serializer.class), EasyMock
                   .anyObject(String.class))).andReturn("UR123").andReturn(
-            "UR123").andReturn("UR124").andReturn("UR125").andReturn("UR123")
-            .andReturn("UR126");
+            "UR123").andReturn(UUID.randomUUID().toString()).andReturn("UR124")
+            .andReturn("UR125").andReturn(UUID.randomUUID().toString())
+            .andReturn("UR123").andReturn("UR126").andReturn(
+                  UUID.randomUUID().toString());
 
       row = EasyMock.createMock(Row.class);
-      EasyMock.expect(row.getColumns()).andReturn(columnList).times(9);
+      EasyMock.expect(row.getColumns()).andReturn(columnList).times(12);
 
       iterator = EasyMock.createMock(Iterator.class);
       EasyMock.expect(iterator.hasNext()).andReturn(true).times(3).andReturn(

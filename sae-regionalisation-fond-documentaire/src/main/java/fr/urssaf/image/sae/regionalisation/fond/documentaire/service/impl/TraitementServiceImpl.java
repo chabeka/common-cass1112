@@ -31,7 +31,6 @@ import fr.urssaf.image.sae.regionalisation.fond.documentaire.exception.DfceExcep
 import fr.urssaf.image.sae.regionalisation.fond.documentaire.exception.ErreurTechniqueException;
 import fr.urssaf.image.sae.regionalisation.fond.documentaire.service.DocInfoService;
 import fr.urssaf.image.sae.regionalisation.fond.documentaire.service.DocumentService;
-import fr.urssaf.image.sae.regionalisation.fond.documentaire.service.TermInfoRangeUuidService;
 import fr.urssaf.image.sae.regionalisation.fond.documentaire.service.TraitementService;
 import fr.urssaf.image.sae.regionalisation.fond.documentaire.support.CassandraSupport;
 import fr.urssaf.image.sae.regionalisation.fond.documentaire.support.ServiceProviderSupport;
@@ -45,9 +44,6 @@ public class TraitementServiceImpl implements TraitementService {
 
    @Autowired
    private DocInfoService docInfoService;
-
-   @Autowired
-   private TermInfoRangeUuidService termInfoService;
 
    @Autowired
    private DocumentService documentService;
@@ -131,7 +127,7 @@ public class TraitementServiceImpl implements TraitementService {
                "{} - récupération de tous les documents et des métadonnées",
                trcPrefix);
 
-         List<Map<String, String>> documents = termInfoService.getInfosDoc();
+         List<Map<String, String>> documents = docInfoService.getInfosDoc();
          List<String> uuids = new ArrayList<String>();
 
          for (Map<String, String> document : documents) {
@@ -147,6 +143,9 @@ public class TraitementServiceImpl implements TraitementService {
          FileUtils.writeLines(fileOutput, uuids);
 
       } catch (IOException exception) {
+         throw new ErreurTechniqueException(exception);
+
+      } catch (CassandraException exception) {
          throw new ErreurTechniqueException(exception);
 
       } finally {

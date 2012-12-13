@@ -28,6 +28,6 @@ public final class Constants {
    /**
     * identifiant unique du document
     */
-   public static final String UUID = "uuid";
+   public static final String UUID = "SM_UUID";
 
 }

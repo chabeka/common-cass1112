@@ -15,10 +15,6 @@
       class="fr.urssaf.image.sae.regionalisation.fond.documentaire.factory.MockFactory"
       factory-method="createDocInfoService" primary="true" />
 
-   <bean id="termInfoRangeUuidService"
-      class="fr.urssaf.image.sae.regionalisation.fond.documentaire.factory.MockFactory"
-      factory-method="createTermInfoRangeUuidService" primary="true" />
-
    <bean id="documentService"
       class="fr.urssaf.image.sae.regionalisation.fond.documentaire.factory.MockFactory"
       factory-method="createDocumentService" />
