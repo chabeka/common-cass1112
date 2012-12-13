@@ -7,10 +7,8 @@ import org.easymock.EasyMock;
 
 import fr.urssaf.image.sae.regionalisation.fond.documentaire.dao.DocInfoDao;
 import fr.urssaf.image.sae.regionalisation.fond.documentaire.dao.DocumentDao;
-import fr.urssaf.image.sae.regionalisation.fond.documentaire.dao.TermInfoRangeUuidDao;
 import fr.urssaf.image.sae.regionalisation.fond.documentaire.service.DocInfoService;
 import fr.urssaf.image.sae.regionalisation.fond.documentaire.service.DocumentService;
-import fr.urssaf.image.sae.regionalisation.fond.documentaire.service.TermInfoRangeUuidService;
 import fr.urssaf.image.sae.regionalisation.fond.documentaire.support.CassandraSupport;
 import fr.urssaf.image.sae.regionalisation.fond.documentaire.support.ServiceProviderSupport;
 
@@ -45,20 +43,6 @@ public final class MockFactory {
     */
    public static DocInfoService createDocInfoService() {
       return EasyMock.createMock(DocInfoService.class);
-   }
-
-   /**
-    * @return un mock de {@link TermInfoRangeUuidDao}
-    */
-   public static TermInfoRangeUuidDao createTermInfoRangeUuidDao() {
-      return EasyMock.createMock(TermInfoRangeUuidDao.class);
-   }
-
-   /**
-    * @return un mock de {@link TermInfoRangeUuidService}
-    */
-   public static TermInfoRangeUuidService createTermInfoRangeUuidService() {
-      return EasyMock.createMock(TermInfoRangeUuidService.class);
    }
 
    /**
