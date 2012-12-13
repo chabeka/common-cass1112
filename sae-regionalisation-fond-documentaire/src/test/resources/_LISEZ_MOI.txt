@@ -23,3 +23,14 @@ avec :
 [connexions] 	= fichier de configuration des connexions DFCE + CASSANDRA
 [sortie]		= fichier où sera inscrit les données
 [corresp]		= fichier properties contenant la liste des correspondances de codes organismes
+
+// maj
+commande :
+java -jar -Dlogback.configurationFile=[logback] sae-regionalisation-fond-documentaire.jar maj [connexions] [donnees] [corresp] [first_index] [last_index]
+avec :
+[logback] 		= fichier de configuration des logs logback
+[connexions] 	= fichier de configuration des connexions DFCE + CASSANDRA
+[donnees}		= fichier de données à traiter
+[corresp]		= fichier properties contenant la liste des correspondances de codes organismes
+[first_index]	= index du premier enregistrement à traiter
+[last_index]	= index du dernier enregistrement à traiter
