@@ -131,7 +131,6 @@ public class ProcessingServiceImpl implements ProcessingService {
       String line;
       String donnees;
       String[] tabLine;
-      List<Document> modifiedDocs = new ArrayList<Document>();
       String lastRequest = "";
       String currentRequest = "";
       while (indexLine < listLines.size() && indexDoc < documents.size()) {
@@ -172,21 +171,23 @@ public class ProcessingServiceImpl implements ProcessingService {
             // mettre à jour les métadonnées
             for (Entry<String, Object> metadata : metadonnees.entrySet()) {
 
-               if ((!StringUtils.equalsIgnoreCase(metadata.getKey(), "cog")) && (!StringUtils.equalsIgnoreCase(metadata.getKey(), "cop")))  {
-               
+               if ((!StringUtils.equalsIgnoreCase(metadata.getKey(), "cog"))
+                     && (!StringUtils
+                           .equalsIgnoreCase(metadata.getKey(), "cop"))) {
+
                   Trace trace = this.updateDocument(documents.get(indexDoc),
                         metadata, listLines.get(indexLine));
-   
+
                   if (trace != null) {
                      traces.add(trace);
                   }
-               
+
                }
             }
 
             // persistance des modifications
             this.saeDocumentDao.update(documents.get(indexDoc));
-            modifiedDocs.add(documents.get(indexDoc));
+            nbRecordUpdated++;
 
             LOGGER.debug("document n°{} a été mise à jour", documents.get(
                   indexDoc).getUuid());
@@ -205,8 +206,6 @@ public class ProcessingServiceImpl implements ProcessingService {
 
                this.traceDao.addTraceMaj(trace);
             }
-
-            nbRecordUpdated += modifiedDocs.size();
 
             indexDoc++;
          }
@@ -518,8 +517,8 @@ public class ProcessingServiceImpl implements ProcessingService {
 
       } else {
 
-         TraceDocumentUtils.logDocumentsNotUpdated(new ArrayList<String>(lines.values()),
-               documents);
+         TraceDocumentUtils.logDocumentsNotUpdated(new ArrayList<String>(lines
+               .values()), documents);
 
          LOGGER
                .debug(
