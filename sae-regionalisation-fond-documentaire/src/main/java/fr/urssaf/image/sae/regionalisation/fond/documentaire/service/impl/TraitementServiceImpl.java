@@ -258,13 +258,18 @@ public class TraitementServiceImpl implements TraitementService {
       LOGGER.debug("{} - Recherche du document {}", new Object[] { trcPrefix,
             uuid });
       Document document = documentService.getDocument(UUID.fromString(uuid));
+      if (document==null) {
+         LOGGER.warn("{} - Document non trouvé : {}", new Object[] { trcPrefix,
+               uuid });
+      } else {
+         updateCriterion(document, Constants.CODE_ORG_GEST, properties);
+         updateCriterion(document, Constants.CODE_ORG_PROP, properties);
 
-      updateCriterion(document, Constants.CODE_ORG_GEST, properties);
-      updateCriterion(document, Constants.CODE_ORG_PROP, properties);
+         LOGGER.debug("{} - Mise à jour du document {}", new Object[] { trcPrefix,
+               uuid });
+         documentService.updateDocument(document);
+      }
 
-      LOGGER.debug("{} - Mise à jour du document {}", new Object[] { trcPrefix,
-            uuid });
-      documentService.updateDocument(document);
    }
 
    private void updateCriterion(Document document, String codeCriterion,
