@@ -192,11 +192,19 @@ public class TraitementServiceImpl implements TraitementService {
          String line = skipLines(bReader, firstRecord);
 
          int index = firstRecord - 1;
+         int nbPourTrace = 5000;
+         int cptPourTrace = 1;
          while (StringUtils.isNotEmpty(line) && index < lastRecord) {
             updateDocument(line, properties);
             line = bReader.readLine();
             index++;
+            
+            if ((cptPourTrace % nbPourTrace) == 0) {
+               LOGGER.info("Nombre de documents traités : {}", cptPourTrace);
+            }
+            cptPourTrace++;
          }
+         LOGGER.info("Nombre de documents traités : {}", cptPourTrace-1);
 
       } catch (IOException exception) {
          throw new ErreurTechniqueException(exception);
