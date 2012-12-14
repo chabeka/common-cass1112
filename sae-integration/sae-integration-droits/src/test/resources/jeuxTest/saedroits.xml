@@ -96,9 +96,15 @@
                <parametres />
             </pagm>
          </pagms>
-         <cnPki></cnPki>
+         <lstCnPki>
+            <cnPki></cnPki>
+            <cnPki></cnPki>
+         </lstCnPki>
          <verifCnCert></verifCnCert>
-         <cnCert></cnCert>
+         <lstCnCert>
+            <cnCert></cnCert>
+            <cnCert></cnCert>
+         </lstCnCert>
       </cs>
       -->
       
