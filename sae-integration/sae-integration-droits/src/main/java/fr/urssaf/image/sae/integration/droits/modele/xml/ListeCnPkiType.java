@@ -12,20 +12,21 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for ListePrmdType complex type.
+ * <p>Java class for ListeCnPkiType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ListePrmdType">
+ * &lt;complexType name="ListeCnPkiType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="prmd" type="{http://www.cirtil.fr/saeIntegration/droit}PrmdType" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="cnPki" type="{http://www.w3.org/2001/XMLSchema}string" maxOccurs="unbounded"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -35,42 +36,43 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ListePrmdType", propOrder = {
-    "prmd"
+@XmlType(name = "ListeCnPkiType", propOrder = {
+    "cnPki"
 })
 // CHECKSTYLE:OFF
 @SuppressWarnings("all")
-public class ListePrmdType {
+public class ListeCnPkiType {
 
-    protected List<PrmdType> prmd;
+    @XmlElement(required = true)
+    protected List<String> cnPki;
 
     /**
-     * Gets the value of the prmd property.
+     * Gets the value of the cnPki property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the prmd property.
+     * This is why there is not a <CODE>set</CODE> method for the cnPki property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getPrmd().add(newItem);
+     *    getCnPki().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link PrmdType }
+     * {@link String }
      * 
      * 
      */
-    public List<PrmdType> getPrmd() {
-        if (prmd == null) {
-            prmd = new ArrayList<PrmdType>();
+    public List<String> getCnPki() {
+        if (cnPki == null) {
+            cnPki = new ArrayList<String>();
         }
-        return this.prmd;
+        return this.cnPki;
     }
 
 }

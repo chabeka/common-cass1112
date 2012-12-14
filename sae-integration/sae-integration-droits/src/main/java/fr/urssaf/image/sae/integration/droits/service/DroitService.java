@@ -265,11 +265,13 @@ public final class DroitService {
       LOG.debug("Code intelligible : {}", serviceContract.getLibelle());
       LOG.debug("Description : {}", serviceContract.getDescription());
       LOG.debug("Durée de vie d'un VI (en secondes) : {}", serviceContract.getViDuree());
-      LOG.debug("PKI : {}", serviceContract.getIdPki());
+      LOG.debug("PKI (version mono pki) : {}", serviceContract.getIdPki());
+      LOG.debug("PKI (version multi pki) : {}", serviceContract.getListPki());
       LOG.debug("Vérification nommage certificat applicatif : {}", serviceContract.isVerifNommage());
-      LOG.debug("Nom attendu du certificat applicatif : {}", serviceContract.getIdCertifClient());
-      
+      LOG.debug("Nom attendu du certificat applicatif (version mono certificat) : {}", serviceContract.getIdCertifClient());
+      LOG.debug("Nom attendu des certificats applicatifs (version multi certificats) : {}", serviceContract.getListCertifsClient());      
    }
+   
    
    private void logPagm(Pagm pagm, Pagma pagma, Pagmp pagmp) {
       

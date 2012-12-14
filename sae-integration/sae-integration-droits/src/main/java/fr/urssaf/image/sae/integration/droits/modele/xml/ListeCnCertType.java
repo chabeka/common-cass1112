@@ -16,16 +16,16 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for ListePrmdType complex type.
+ * <p>Java class for ListeCnCertType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ListePrmdType">
+ * &lt;complexType name="ListeCnCertType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="prmd" type="{http://www.cirtil.fr/saeIntegration/droit}PrmdType" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="cnCert" type="{http://www.w3.org/2001/XMLSchema}string" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -35,42 +35,42 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ListePrmdType", propOrder = {
-    "prmd"
+@XmlType(name = "ListeCnCertType", propOrder = {
+    "cnCert"
 })
 // CHECKSTYLE:OFF
 @SuppressWarnings("all")
-public class ListePrmdType {
+public class ListeCnCertType {
 
-    protected List<PrmdType> prmd;
+    protected List<String> cnCert;
 
     /**
-     * Gets the value of the prmd property.
+     * Gets the value of the cnCert property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the prmd property.
+     * This is why there is not a <CODE>set</CODE> method for the cnCert property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getPrmd().add(newItem);
+     *    getCnCert().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link PrmdType }
+     * {@link String }
      * 
      * 
      */
-    public List<PrmdType> getPrmd() {
-        if (prmd == null) {
-            prmd = new ArrayList<PrmdType>();
+    public List<String> getCnCert() {
+        if (cnCert == null) {
+            cnCert = new ArrayList<String>();
         }
-        return this.prmd;
+        return this.cnCert;
     }
 
 }

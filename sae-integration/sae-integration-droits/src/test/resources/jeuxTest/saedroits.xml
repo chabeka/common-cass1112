@@ -145,12 +145,15 @@
             
          </pagms>
          
-         <cnPki>CN=IGC/A</cnPki>
+         <lstCnPki>
+            <cnPki>CN=IGC/A</cnPki>
+         </lstCnPki>
+         
          <verifCnCert>false</verifCnCert>
-         <cnCert />
+         
+         <lstCnCert />
          
       </cs>
-      
       
       
       <cs>
@@ -185,9 +188,19 @@
                </parametres>
             </pagm>
          </pagms>
-         <cnPki>CN=IGC/A</cnPki>
-         <verifCnCert>false</verifCnCert>
-         <cnCert />
+         
+         <lstCnPki>
+            <cnPki>CN=IGC/A</cnPki>
+            <cnPki>CN=IGC/A2</cnPki>
+         </lstCnPki>
+         
+         <verifCnCert>true</verifCnCert>
+         
+         <lstCnCert>
+            <cnCert>CN=CERT1</cnCert>
+            <cnCert>CN=CERT2</cnCert>
+         </lstCnCert>
+         
       </cs>
    
    </listeCs>
