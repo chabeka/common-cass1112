@@ -35,6 +35,7 @@ import fr.urssaf.image.sae.metadata.control.services.MetadataControlServices;
 import fr.urssaf.image.sae.metadata.exceptions.ReferentialException;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 import fr.urssaf.image.sae.metadata.referential.services.MetadataReferenceDAO;
+import fr.urssaf.image.sae.services.document.SAESearchQueryParserService;
 import fr.urssaf.image.sae.services.document.SAESearchService;
 import fr.urssaf.image.sae.services.exception.SAESearchQueryParseException;
 import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
@@ -88,7 +89,7 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
    private PrmdService prmdService;
 
    @Autowired
-   private SAESearchQueryParserServiceImpl queryParseService;
+   private SAESearchQueryParserService queryParseService;
 
    // du referentiel
    private static final String SPLIT = "(\\w+)\\s*[:>]";
@@ -145,38 +146,6 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
             .debug(
                   "{} - Fin de la vérification : Les métadonnées demandées dans les résultats de recherche sont autorisées à la consultation",
                   prefixeTrc);
-   }
-
-   /**
-    * verification de la conversion la requête verif ainsi remplacée doit être
-    * la même que la requête dedépart.
-    * 
-    * 
-    * @throws SAESearchServiceEx
-    */
-   private boolean checkConversion(String requete, String requeteVerif)
-         throws SAESearchServiceEx {
-
-      // la requete verif ainsi remplacée doit être la même que la requête de
-      // départ.
-
-      String prefixeTrc = "checkConversion()";
-      LOG.debug("{} - Début", prefixeTrc);
-      LOG.debug("{} - Requête d'origine avec codes longs : {}", prefixeTrc,
-            requete);
-      LOG.debug("{} - Requête reconvertie avec codes longs : {}", prefixeTrc,
-            requeteVerif);
-
-      boolean checkLuceneQuery = false;
-      if (requete.equals(requeteVerif)) {
-         checkLuceneQuery = true;
-      }
-      if (!checkLuceneQuery) {
-         throw new SAESearchServiceEx("search.analyse.lucene.error");
-      }
-
-      LOG.debug("{} - Fin", prefixeTrc);
-      return checkLuceneQuery;
    }
 
    /**
@@ -505,6 +474,13 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
                   prefixeTrc,
                   StringUtils.isEmpty(buildMessageFromList(listMetaDesired)) ? "Vide"
                         : buildMessageFromList(listMetaDesired));
+      
+      // Trim la requête de recherche
+      String requeteTrim = StringUtils.trim(requete);
+      LOG.debug(
+            "{} - Requête de recherche après trim : {}",
+            prefixeTrc, requeteTrim);
+      
       boolean isFromRefrentiel = false;
       // liste de résultats à envoyer
       List<UntypedDocument> listUntypedDocument = new ArrayList<UntypedDocument>();
@@ -516,7 +492,7 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
       List<SaePrmd> prmds = token.getDetails().get("recherche");
       LOG.debug("{} - Ajustage de la requete avec les éléments des droits",
             prefixeTrc);
-      requete = prmdService.createLucene(requete, prmds);
+      requeteTrim = prmdService.createLucene(requeteTrim, prmds);
 
       // conversion code court
       List<SAEMetadata> listCodCourt = new ArrayList<SAEMetadata>();
@@ -524,9 +500,9 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
 
       try {
 
-         List<String> longCodesReq = extractLongCodesFromQuery(requete);
+         List<String> longCodesReq = extractLongCodesFromQuery(requeteTrim);
          checkExistingLuceneMetadata(longCodesReq);
-         String requeteFinal = requete;
+         String requeteFinal = requeteTrim;
 
          // converstion de la requête avec les codes long en code court
          requeteFinal = queryParseService.convertFromLongToShortCode(
