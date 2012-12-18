@@ -1,8 +1,10 @@
 package fr.urssaf.image.sae.vi.component;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrSubstitutor;
 import org.aspectj.lang.annotation.Aspect;
@@ -48,8 +50,15 @@ public class WebServiceVIValidateServiceValidate {
          SignatureVerificationResult result) {
 
       notNullValidate(contract, "contrat");
-      notNullValidate(contract.getIdPki(), "identifiant de la PKI");
-      if (contract.isVerifNommage()) {
+
+      if (StringUtils.isBlank(contract.getIdPki())
+            && listIsEmpty(contract.getListPki())) {
+         notNullValidate(contract.getIdPki(), "identifiant de la PKI");
+      }
+
+      if (contract.isVerifNommage()
+            && StringUtils.isEmpty(contract.getIdCertifClient())
+            && listIsEmpty(contract.getListCertifsClient())) {
          notNullValidate(contract.getIdCertifClient(),
                "identifiant du certificat client");
       }
@@ -75,7 +84,7 @@ public class WebServiceVIValidateServiceValidate {
 
    private void notNullValidate(String obj, String name) {
 
-      if (!StringUtils.isNotBlank(obj)) {
+      if (StringUtils.isBlank(obj)) {
 
          Map<String, String> args = new HashMap<String, String>();
          args.put("0", name);
@@ -83,6 +92,13 @@ public class WebServiceVIValidateServiceValidate {
          throw new IllegalArgumentException(StrSubstitutor.replace(ARG_EMPTY,
                args));
       }
+
+   }
+
+   private boolean listIsEmpty(List<String> liste) {
+
+      return (CollectionUtils.isEmpty(liste) || (StringUtils.isBlank(liste
+            .get(0))));
 
    }
 
