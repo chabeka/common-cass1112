@@ -12,6 +12,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 
 import fr.urssaf.image.sae.trace.executable.exception.TraceExecutableRuntimeException;
@@ -33,9 +34,9 @@ public final class Main {
 
    private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
-   private Main(){
+   private Main() {
    }
-   
+
    /**
     * Méthode de lancement des traitements
     * 
@@ -55,6 +56,9 @@ public final class Main {
       PurgeType purgeType = PurgeType.valueOf(args[2]);
       TraitementService service = context.getBean(TraitementService.class);
       service.purgerRegistre(purgeType);
+
+      // Fermeture du contexte d'application
+      ((ClassPathXmlApplicationContext) context).close();
 
       long endDate = new Date().getTime();
       long duree = (endDate - startDate) / CONVERSION_MINUTES;
