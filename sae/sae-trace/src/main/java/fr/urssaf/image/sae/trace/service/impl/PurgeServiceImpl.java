@@ -8,6 +8,8 @@ import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +33,9 @@ import fr.urssaf.image.sae.trace.service.RegTechniqueService;
 @Service
 public class PurgeServiceImpl implements PurgeService {
 
+   private static final Logger LOGGER = LoggerFactory
+         .getLogger(PurgeServiceImpl.class);
+
    @Autowired
    private ParametersService paramService;
 
@@ -49,6 +54,10 @@ public class PurgeServiceImpl implements PurgeService {
    @Override
    public void purgerRegistre(PurgeType typePurge) {
 
+      String trcPrefix = "purgerRegistre";
+
+      LOGGER.debug("{} - début", trcPrefix);
+
       Boolean isRunning = getPurgeIsRunningFromPurgeType(typePurge);
       if (Boolean.TRUE.equals(isRunning)) {
          String registre = getRegistreFromPurgeType(typePurge);
@@ -56,26 +65,33 @@ public class PurgeServiceImpl implements PurgeService {
                "La purge des registres {0} est déjà en cours", "{0}", registre));
       }
 
+      LOGGER.debug("{} - mise à jour du flag de traitement à TRUE", trcPrefix);
       updateIsRunning(typePurge, Boolean.TRUE);
 
       Date minDate = getDateFromPurgeType(typePurge);
       Integer retentionDuration = getDureeFomPurgeType(typePurge);
       Date maxDate = DateUtils.addDays(new Date(), -retentionDuration);
 
-      if (PurgeType.PURGE_EXPLOITATION.equals(typePurge)) {
-         exploitService.purge(minDate, maxDate);
+      try {
+         if (PurgeType.PURGE_EXPLOITATION.equals(typePurge)) {
+            exploitService.purge(minDate, maxDate);
 
-      } else if (PurgeType.PURGE_SECURITE.equals(typePurge)) {
-         secuService.purge(minDate, maxDate);
+         } else if (PurgeType.PURGE_SECURITE.equals(typePurge)) {
+            secuService.purge(minDate, maxDate);
 
-      } else {
-         techService.purge(minDate, maxDate);
+         } else {
+            techService.purge(minDate, maxDate);
+         }
+
+         maxDate = DateUtils.truncate(maxDate, Calendar.DATE);
+         updateDate(typePurge, maxDate);
+
+      } finally {
+         LOGGER.debug("{} - mise à jour du flag de traitement à FALSE",
+               trcPrefix);
+         updateIsRunning(typePurge, Boolean.FALSE);
+
       }
-
-      maxDate = DateUtils.truncate(maxDate, Calendar.DATE);
-      updateDate(typePurge, maxDate);
-
-      updateIsRunning(typePurge, Boolean.TRUE);
    }
 
    private Date getDateFromPurgeType(PurgeType purgeType) {

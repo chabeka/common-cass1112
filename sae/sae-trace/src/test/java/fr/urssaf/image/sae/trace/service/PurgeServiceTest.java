@@ -238,7 +238,7 @@ public class PurgeServiceTest {
    private void checkExecution(ParameterType parameterType) {
       try {
          Parameter param = paramService.loadParameter(parameterType);
-         Assert.assertEquals("le boolean doit etre correcte", Boolean.TRUE,
+         Assert.assertEquals("le boolean doit etre correcte", Boolean.FALSE,
                (Boolean) param.getValue());
 
       } catch (ParameterNotFoundException exception) {
