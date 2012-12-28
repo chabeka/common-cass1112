@@ -44,4 +44,16 @@ public interface TraitementService {
     */
    void updateDocuments(String inputFilePath, String propertiesFilePath,
          int firstRecord, int lastRecord);
+
+   /**
+    * Liste et écrit dans un fichier les documents dont le numéro de compte
+    * externe commence par un code organisme listé dans le fichier de properties
+    * 
+    * @param outputPath
+    *           fichier de sortie
+    * @param propertiesFilePath
+    *           fichier de propriétés contenant les correspondances
+    */
+   void writeDocStartingWithCodeOrga(String outputPath,
+         String propertiesFilePath);
 }

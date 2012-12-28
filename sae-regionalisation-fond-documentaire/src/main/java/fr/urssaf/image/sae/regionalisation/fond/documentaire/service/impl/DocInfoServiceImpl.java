@@ -49,7 +49,7 @@ public class DocInfoServiceImpl implements DocInfoService {
 
       LOGGER.info("Parcours de la Column Family DocInfo ...");
 
-      AllRowsQuery<DocInfoKey, String> query = dao.getQuery();
+      AllRowsQuery<DocInfoKey, String> query = dao.getQuery("SM_UUID", "cop", "cog");
       CassandraAllRowResultSet<DocInfoKey, String> resultSet = new CassandraAllRowResultSet<DocInfoKey, String>(
             query);
       Map<String, Long> codes = new HashMap<String, Long>();
@@ -104,9 +104,18 @@ public class DocInfoServiceImpl implements DocInfoService {
     */
    @Override
    public List<Map<String, String>> getInfosDoc() throws CassandraException {
+      return getInfosDoc("SM_UUID", "cop", "cog");
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public List<Map<String, String>> getInfosDoc(String... metas)
+         throws CassandraException {
       LOGGER.info("Parcours de la Column Family DocInfo ...");
 
-      AllRowsQuery<DocInfoKey, String> query = dao.getQuery();
+      AllRowsQuery<DocInfoKey, String> query = dao.getQuery(metas);
       CassandraAllRowResultSet<DocInfoKey, String> resultSet = new CassandraAllRowResultSet<DocInfoKey, String>(
             query);
       List<Map<String, String>> values = new ArrayList<Map<String, String>>();
@@ -120,7 +129,7 @@ public class DocInfoServiceImpl implements DocInfoService {
 
          List<String> columns = resultSet.getColumnNames();
 
-         if (columns.size() == 3) {
+         if (columns.size() == metas.length) {
 
             infos = new HashMap<String, String>();
             for (String columnKey : columns) {

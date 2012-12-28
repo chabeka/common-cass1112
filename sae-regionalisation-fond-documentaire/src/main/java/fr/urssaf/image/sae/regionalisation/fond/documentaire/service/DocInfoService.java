@@ -34,4 +34,15 @@ public interface DocInfoService {
     *         rattachées exception levée en cas d'erreur d'accès aux données
     */
    List<Map<String, String>> getInfosDoc() throws CassandraException;
+
+   /**
+    * Retourne les informations rattachées aux documents existants
+    * 
+    * @param infos
+    *           champs à retourner
+    * 
+    * @return la liste des informations demandées des documents
+    */
+   List<Map<String, String>> getInfosDoc(String... infos)
+         throws CassandraException;
 }

@@ -6,10 +6,14 @@ package fr.urssaf.image.sae.regionalisation.fond.documentaire.service.impl;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -25,10 +29,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.netflix.astyanax.query.AllRowsQuery;
+
 import fr.urssaf.image.sae.regionalisation.fond.documentaire.common.Constants;
-import fr.urssaf.image.sae.regionalisation.fond.documentaire.exception.CassandraException;
+import fr.urssaf.image.sae.regionalisation.fond.documentaire.dao.DocInfoDao;
+import fr.urssaf.image.sae.regionalisation.fond.documentaire.dao.cf.DocInfoKey;
 import fr.urssaf.image.sae.regionalisation.fond.documentaire.exception.DfceException;
 import fr.urssaf.image.sae.regionalisation.fond.documentaire.exception.ErreurTechniqueException;
+import fr.urssaf.image.sae.regionalisation.fond.documentaire.iterator.CassandraIterator;
 import fr.urssaf.image.sae.regionalisation.fond.documentaire.service.DocInfoService;
 import fr.urssaf.image.sae.regionalisation.fond.documentaire.service.DocumentService;
 import fr.urssaf.image.sae.regionalisation.fond.documentaire.service.TraitementService;
@@ -43,9 +51,6 @@ import fr.urssaf.image.sae.regionalisation.fond.documentaire.support.ServiceProv
 public class TraitementServiceImpl implements TraitementService {
 
    @Autowired
-   private DocInfoService docInfoService;
-
-   @Autowired
    private DocumentService documentService;
 
    @Autowired
@@ -54,8 +59,12 @@ public class TraitementServiceImpl implements TraitementService {
    @Autowired
    private ServiceProviderSupport providerSupport;
 
+   @Autowired
+   private DocInfoDao dao;
+
    private static final Logger LOGGER = LoggerFactory
          .getLogger(TraitementServiceImpl.class);
+   private static final int LENGTH_CODE_ORGA = 3;
 
    /**
     * {@inheritDoc}
@@ -70,19 +79,57 @@ public class TraitementServiceImpl implements TraitementService {
 
          LOGGER.debug("{} - récupération des codes organismes", trcPrefix);
 
-         Map<String, Long> codes = docInfoService.getCodesOrganismes();
-         File file = new File(filePath);
+         List<String> codesAutorisesOrga = Arrays.asList("cop", "cog");
+         AllRowsQuery<DocInfoKey, String> query = dao.getQuery("SM_UUID",
+               "cop", "cog");
+         CassandraIterator<DocInfoKey> iterator = new CassandraIterator<DocInfoKey>(
+               query);
+         Map<String, String> infos;
+         Map<String, Long> map = new HashMap<String, Long>();
+         int nbDocInfo = 0;
+         int nbDocInfoParTrace = 1000;
+         
+         while (iterator.hasNext()) {
+            infos = iterator.next();
 
-         LOGGER.debug(
-               "{} - Ecriture des codes organismes récupérés dans le fichier",
-               trcPrefix);
+            if (infos.size() == 3) {
+               for (String codeorga : codesAutorisesOrga) {
 
-         writeFile(codes, file);
+                  String value = infos.get(codeorga);
+
+                  if (StringUtils.isNotBlank(value)) {
+
+                     String cleMap = value + ";" + codeorga;
+
+                     if (map.containsKey(cleMap)) {
+                        map.put(cleMap, map.get(cleMap) + 1);
+                     } else {
+                        map.put(cleMap, 1L);
+                     }
+
+                  }
+               }
+
+               // Compteurs de lignes parcourues
+               if (nbDocInfo % nbDocInfoParTrace == 0) {
+                  LOGGER.info("Nombre de lignes de DocInfo parcourues : {}",
+                        nbDocInfo);
+               }
+               nbDocInfo++;
+            }
+
+         }
+
+//         Map<String, Long> codes = docInfoService.getCodesOrganismes();
+//         File file = new File(filePath);
+//
+//         LOGGER.debug(
+//               "{} - Ecriture des codes organismes récupérés dans le fichier",
+//               trcPrefix);
+
+         writeFile(map, new File(filePath));
 
       } catch (IOException exception) {
-         throw new ErreurTechniqueException(exception);
-
-      } catch (CassandraException exception) {
          throw new ErreurTechniqueException(exception);
 
       } finally {
@@ -127,14 +174,21 @@ public class TraitementServiceImpl implements TraitementService {
                "{} - récupération de tous les documents et des métadonnées",
                trcPrefix);
 
-         List<Map<String, String>> documents = docInfoService.getInfosDoc();
-         List<String> uuids = new ArrayList<String>();
+         AllRowsQuery<DocInfoKey, String> query = dao.getQuery("SM_UUID",
+               "cop", "cog");
+         CassandraIterator<DocInfoKey> iterator = new CassandraIterator<DocInfoKey>(
+               query);
 
-         for (Map<String, String> document : documents) {
-            if (properties.keySet().contains(
-                  document.get(Constants.CODE_ORG_GEST))
-                  || properties.keySet().contains(
-                        document.get(Constants.CODE_ORG_PROP))) {
+         List<String> uuids = new ArrayList<String>();
+         Map<String, String> document;
+
+         while (iterator.hasNext()) {
+            document = iterator.next();
+            if (document.size() == 3
+                  && (properties.keySet().contains(
+                        document.get(Constants.CODE_ORG_GEST)) || properties
+                        .keySet().contains(
+                              document.get(Constants.CODE_ORG_PROP)))) {
                uuids.add(document.get(Constants.UUID));
             }
          }
@@ -143,9 +197,6 @@ public class TraitementServiceImpl implements TraitementService {
          FileUtils.writeLines(fileOutput, uuids);
 
       } catch (IOException exception) {
-         throw new ErreurTechniqueException(exception);
-
-      } catch (CassandraException exception) {
          throw new ErreurTechniqueException(exception);
 
       } finally {
@@ -192,19 +243,11 @@ public class TraitementServiceImpl implements TraitementService {
          String line = skipLines(bReader, firstRecord);
 
          int index = firstRecord - 1;
-         int nbPourTrace = 5000;
-         int cptPourTrace = 1;
          while (StringUtils.isNotEmpty(line) && index < lastRecord) {
             updateDocument(line, properties);
             line = bReader.readLine();
             index++;
-            
-            if ((cptPourTrace % nbPourTrace) == 0) {
-               LOGGER.info("Nombre de documents traités : {}", cptPourTrace);
-            }
-            cptPourTrace++;
          }
-         LOGGER.info("Nombre de documents traités : {}", cptPourTrace-1);
 
       } catch (IOException exception) {
          throw new ErreurTechniqueException(exception);
@@ -251,6 +294,20 @@ public class TraitementServiceImpl implements TraitementService {
       }
    }
 
+   private void close(Writer writer, String name) {
+      String trcPrefix = "close()";
+
+      if (writer != null) {
+         try {
+            writer.close();
+
+         } catch (IOException exception) {
+            LOGGER.info("{} - impossible de fermer le flux {}", new Object[] {
+                  trcPrefix, name });
+         }
+      }
+   }
+
    private void updateDocument(String uuid, Properties properties)
          throws DfceException {
       String trcPrefix = "updateDocument()";
@@ -258,15 +315,15 @@ public class TraitementServiceImpl implements TraitementService {
       LOGGER.debug("{} - Recherche du document {}", new Object[] { trcPrefix,
             uuid });
       Document document = documentService.getDocument(UUID.fromString(uuid));
-      if (document==null) {
+      if (document == null) {
          LOGGER.warn("{} - Document non trouvé : {}", new Object[] { trcPrefix,
                uuid });
       } else {
          updateCriterion(document, Constants.CODE_ORG_GEST, properties);
          updateCriterion(document, Constants.CODE_ORG_PROP, properties);
 
-         LOGGER.debug("{} - Mise à jour du document {}", new Object[] { trcPrefix,
-               uuid });
+         LOGGER.debug("{} - Mise à jour du document {}", new Object[] {
+               trcPrefix, uuid });
          documentService.updateDocument(document);
       }
 
@@ -286,5 +343,91 @@ public class TraitementServiceImpl implements TraitementService {
          }
       }
 
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void writeDocStartingWithCodeOrga(String outputPath,
+         String propertiesFilePath) {
+      String trcPrefix = "writeDocStartingWithCodeOrga()";
+      LOGGER.debug("{} - début du listing des documents", trcPrefix);
+
+      Writer writer = null;
+      Reader reader = null;
+      Properties properties = new Properties();
+      try {
+         File outputFile = new File(outputPath);
+         writer = new FileWriter(outputFile);
+
+         File propertiesFile = new File(propertiesFilePath);
+         reader = new FileReader(propertiesFile);
+         properties.load(reader);
+         List<String> codesOrga = getCodesOrgaFromProperties(properties);
+
+         cassandraSupport.connect();
+
+         LOGGER.debug(
+               "{} - recherche de tous les documents et leurs informations",
+               trcPrefix);
+
+         AllRowsQuery<DocInfoKey, String> query = dao
+               .getQuery("nce", "SM_UUID");
+         CassandraIterator<DocInfoKey> iterator = new CassandraIterator<DocInfoKey>(
+               query);
+
+         String nce, nceStart;
+         Map<String, String> infos;
+         int index = 0;
+         while (iterator.hasNext()) {
+            infos = iterator.next();
+
+            if (infos.size() == 2) {
+               nce = infos.get("nce");
+               nceStart = StringUtils.left(nce, LENGTH_CODE_ORGA);
+               if (codesOrga.contains(nceStart)) {
+                  writer.write(nce);
+                  writer.write(";");
+                  writer.write(infos.get("SM_UUID"));
+                  writer.write("\n");
+               }
+            }
+
+            if (index % 1000 == 0) {
+               LOGGER.info("{} - nombre de docs traités : {}", new Object[] {
+                     trcPrefix, index });
+            }
+
+            index++;
+         }
+
+      } catch (IOException exception) {
+         throw new ErreurTechniqueException(exception);
+
+      } finally {
+         close(reader, propertiesFilePath);
+         close(writer, outputPath);
+         cassandraSupport.disconnect();
+      }
+
+   }
+
+   /**
+    * @param properties
+    * @return
+    */
+   private List<String> getCodesOrgaFromProperties(Properties properties) {
+
+      List<String> list = new ArrayList<String>();
+
+      String sKey;
+      for (Object key : properties.keySet()) {
+         sKey = (String) key;
+         sKey = StringUtils.right(sKey, LENGTH_CODE_ORGA);
+         list.add(sKey);
+      }
+
+      return list;
    }
 }

@@ -121,7 +121,8 @@ public class DocInfoServiceTest {
       query = EasyMock.createMock(AllRowsQuery.class);
       EasyMock.expect(query.execute()).andReturn(operation);
 
-      EasyMock.expect(docInfoDao.getQuery()).andReturn(query);
+      EasyMock.expect(docInfoDao.getQuery("SM_UUID", "cop", "cog")).andReturn(
+            query);
 
       EasyMock.replay(columnList, row, iterator, rows, operation, query,
             docInfoDao);

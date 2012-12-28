@@ -17,8 +17,11 @@ public interface DocInfoDao {
    /**
     * Récupère l'ensemble des documents
     * 
+    * @param metas
+    *           liste des métadonnées à récupérer
+    * 
     * @return la requete permettant de récupérer les documents
     */
-   AllRowsQuery<DocInfoKey, String> getQuery();
+   AllRowsQuery<DocInfoKey, String> getQuery(String... metas);
 
 }
