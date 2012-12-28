@@ -56,13 +56,13 @@ public class HistEvenementSupport {
     * @return la liste des traces
     */
    @SuppressWarnings("unchecked")
-   public final List<String> findByDates(Date dateDebut, Date dateFin,
+   public final List<RMSystemEvent> findByDates(Date dateDebut, Date dateFin,
          int limite, boolean reversed) {
 
       List<RMSystemEvent> events = support.getRecordManagerService()
             .getSystemEventLogsByDates(dateDebut, dateFin);
 
-      List<String> values = null;
+      List<RMSystemEvent> values = null;
 
       if (CollectionUtils.isNotEmpty(events)) {
          Iterator<RMSystemEvent> iterator;
@@ -73,9 +73,9 @@ public class HistEvenementSupport {
          }
 
          int countLeft = limite;
-         values = new ArrayList<String>(limite);
+         values = new ArrayList<RMSystemEvent>(limite);
          while (countLeft > 0 && iterator.hasNext()) {
-            values.add(iterator.next().getEventDescription());
+            values.add(iterator.next());
             countLeft--;
          }
       }

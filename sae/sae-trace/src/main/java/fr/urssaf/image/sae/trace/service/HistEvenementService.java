@@ -6,6 +6,8 @@ package fr.urssaf.image.sae.trace.service;
 import java.util.Date;
 import java.util.List;
 
+import net.docubase.toolkit.model.recordmanager.RMSystemEvent;
+
 /**
  * Services de l'historique des événements
  * 
@@ -29,7 +31,7 @@ public interface HistEvenementService {
     *           </ul>
     * @return une liste de traces de l'historique des événements
     */
-   List<String> lecture(Date dateDebut, Date dateFin, int limite,
+   List<RMSystemEvent> lecture(Date dateDebut, Date dateFin, int limite,
          boolean reversed);
 
 }

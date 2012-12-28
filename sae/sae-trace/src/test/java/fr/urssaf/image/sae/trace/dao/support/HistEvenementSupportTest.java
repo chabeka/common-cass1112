@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.docubase.toolkit.model.recordmanager.RMSystemEvent;
+
 import org.apache.commons.lang.time.DateUtils;
 import org.junit.After;
 import org.junit.Assert;
@@ -68,13 +70,14 @@ public class HistEvenementSupportTest {
       Date fin = DateUtils.truncate(DateUtils.addDays(endDate, 1),
             Calendar.DATE);
 
-      List<String> values = support.findByDates(deb, fin, MAX_COUNT, true);
+      List<RMSystemEvent> values = support.findByDates(deb, fin, MAX_COUNT,
+            true);
 
       boolean found = false;
       int index = 0;
       while (!found && index < values.size()) {
-         if (values.get(index).contains(CONTRAT)
-               && values.get(index).contains(ACTION)) {
+         if (values.get(index).getEventDescription().contains(CONTRAT)
+               && values.get(index).getEventDescription().contains(ACTION)) {
             found = true;
          }
          index++;
@@ -82,7 +85,7 @@ public class HistEvenementSupportTest {
 
       Assert.assertTrue("l'historique doit contenir la trace", found);
    }
-   
+
    private void createTrace() {
       TraceToCreate trace = new TraceToCreate();
       trace.setAction(ACTION);

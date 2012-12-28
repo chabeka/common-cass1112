@@ -7,6 +7,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import net.docubase.toolkit.model.recordmanager.RMSystemEvent;
+
 import org.apache.commons.lang.time.DateUtils;
 import org.joda.time.DateTimeZone;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +33,7 @@ public class HistEvenementServiceImpl implements HistEvenementService {
     * {@inheritDoc}
     */
    @Override
-   public final List<String> lecture(Date dateDebut, Date dateFin, int limite,
+   public final List<RMSystemEvent> lecture(Date dateDebut, Date dateFin, int limite,
          boolean reversed) {
 
       Date startDate = getGmtDate(dateDebut);

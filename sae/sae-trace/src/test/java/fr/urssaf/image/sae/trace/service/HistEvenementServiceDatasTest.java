@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.docubase.toolkit.model.recordmanager.RMSystemEvent;
+
 import org.apache.commons.lang.time.DateUtils;
 import org.junit.After;
 import org.junit.Assert;
@@ -74,7 +76,8 @@ public class HistEvenementServiceDatasTest {
       Date dateStart = DateUtils.addDays(startDate, 1);
       Date dateFin = DateUtils.addDays(endDate, 2);
 
-      List<String> result = service.lecture(dateStart, dateFin, 10, true);
+      List<RMSystemEvent> result = service
+            .lecture(dateStart, dateFin, 10, true);
       Assert.assertNull("il ne doit y avoir aucun résultat", result);
    }
 
@@ -84,7 +87,7 @@ public class HistEvenementServiceDatasTest {
       createTraces();
       Date dateFin = new Date();
 
-      List<String> result = service.lecture(dateDebut, dateFin, 1, true);
+      List<RMSystemEvent> result = service.lecture(dateDebut, dateFin, 1, true);
 
       Assert.assertNotNull("il doit y avoir un résultat");
       Assert.assertEquals("le nombre d'éléments de la liste doit etre correct",
@@ -98,8 +101,7 @@ public class HistEvenementServiceDatasTest {
       Date dateStart = DATE_INF;
       Date dateEnd = DATE_SUP;
 
-      List<String> result = service.lecture(dateStart,
-            dateEnd, 3, true);
+      List<RMSystemEvent> result = service.lecture(dateStart, dateEnd, 3, true);
       Assert.assertNotNull("il doit y avoir un résultat");
       Assert.assertEquals("le nombre d'éléments de la liste doit etre correct",
             3, result.size());
