@@ -26,7 +26,7 @@ public class ServicesValidationTest {
    @Test
    public final void testUpdateDocumentInputFilePathObligatoire() {
       try {
-         service.updateDocuments(null, null, 0, 0);
+         service.updateDocuments(null, null, null, 0, 0);
          Assert.fail("une erreur IllegalArgumentException est attendue");
 
       } catch (IllegalArgumentException exception) {
@@ -40,9 +40,25 @@ public class ServicesValidationTest {
    }
 
    @Test
+   public final void testUpdateDocumentOutFilePathObligatoire() {
+      try {
+         service.updateDocuments("fichier", null, null, 0, 0);
+         Assert.fail("une erreur IllegalArgumentException est attendue");
+
+      } catch (IllegalArgumentException exception) {
+         Assert.assertEquals("le message d'erreur doit etre correct",
+               "le paramètre fichier de sortie doit être renseigné",
+               exception.getMessage());
+
+      } catch (Exception exception) {
+         Assert.fail("le paramètre fichier de sortie doit être renseigné");
+      }
+   }
+   
+   @Test
    public final void testUpdateDocumentPropertiesFilePathObligatoire() {
       try {
-         service.updateDocuments("fichier", null, 0, 0);
+         service.updateDocuments("fichier", "fichier", null, 0, 0);
          Assert.fail("une erreur IllegalArgumentException est attendue");
 
       } catch (IllegalArgumentException exception) {

@@ -23,15 +23,18 @@ public class BootStrapTest {
    private static final String ILLEGAL_ARGUMENT_MESSAGE = "une erreur IllegalArgumentException était attendue";
 
    private File tempFile;
+   private File outFile;
 
    @Before
    public void init() throws IOException {
       tempFile = File.createTempFile("bootstrap", ".log");
+      outFile = File.createTempFile("bootstrap", ".log");
    }
 
    @After
    public void end() {
       FileUtils.deleteQuietly(tempFile);
+      FileUtils.deleteQuietly(outFile);
    }
 
    @Test
@@ -197,11 +200,10 @@ public class BootStrapTest {
       ClassPathResource resource = new ClassPathResource(CASSANDRA_PROPERTIES);
 
       try {
-         BootStrap
-               .main(new String[] { "maj",
-                     resource.getFile().getAbsolutePath(),
-                     tempFile.getAbsolutePath(), tempFile.getAbsolutePath(),
-                     "1", "2" });
+         BootStrap.main(new String[] { "maj",
+               resource.getFile().getAbsolutePath(),
+               tempFile.getAbsolutePath(), tempFile.getAbsolutePath(),
+               tempFile.getAbsolutePath(), "1", "2" });
          Assert.fail(ILLEGAL_ARGUMENT_MESSAGE);
 
       } catch (IllegalArgumentException exception) {
@@ -215,19 +217,41 @@ public class BootStrapTest {
    }
 
    @Test
-   public void testMajFichierCorrespondanceInexistant() throws IOException {
+   public void testMajFichierSortieExistant() throws IOException {
 
       ClassPathResource resource = new ClassPathResource(CASSANDRA_PROPERTIES);
 
       try {
          BootStrap.main(new String[] { "maj",
                resource.getFile().getAbsolutePath(),
-               tempFile.getAbsolutePath(), "fichier/inexistant", "1", "2" });
+               tempFile.getAbsolutePath(),  outFile.getAbsolutePath(), "fichier/inexistant", "1", "2" });
          Assert.fail(ILLEGAL_ARGUMENT_MESSAGE);
 
       } catch (IllegalArgumentException exception) {
          Assert.assertEquals(MESSAGE_CORRECT,
-               "le fichier de correspondances est inexistant", exception.getMessage());
+               "le fichier de sortie existe déjà", exception.getMessage());
+
+      } catch (Exception exception) {
+         Assert.fail(ILLEGAL_ARGUMENT_MESSAGE);
+      }
+
+   }
+
+   @Test
+   public void testMajFichierCorrespondanceInexistant() throws IOException {
+
+      ClassPathResource resource = new ClassPathResource(CASSANDRA_PROPERTIES);
+      FileUtils.deleteQuietly(outFile);
+      try {
+         BootStrap.main(new String[] { "maj",
+               resource.getFile().getAbsolutePath(), 
+               tempFile.getAbsolutePath(), outFile.getAbsolutePath(), "fichier/inexistant", "1", "2" });
+         Assert.fail(ILLEGAL_ARGUMENT_MESSAGE);
+
+      } catch (IllegalArgumentException exception) {
+         Assert.assertEquals(MESSAGE_CORRECT,
+               "le fichier de correspondances est inexistant", exception
+                     .getMessage());
 
       } catch (Exception exception) {
          Assert.fail(ILLEGAL_ARGUMENT_MESSAGE);
@@ -239,11 +263,11 @@ public class BootStrapTest {
    public void testMajIndexDepartNonNumerique() throws IOException {
 
       ClassPathResource resource = new ClassPathResource(CASSANDRA_PROPERTIES);
-
+      FileUtils.deleteQuietly(outFile);
       try {
          BootStrap.main(new String[] { "maj",
-               resource.getFile().getAbsolutePath(),
-               tempFile.getAbsolutePath(), tempFile.getAbsolutePath(), "12s",
+               resource.getFile().getAbsolutePath(), 
+               tempFile.getAbsolutePath(), outFile.getAbsolutePath(),tempFile.getAbsolutePath(), "12s",
                "2" });
          Assert.fail(ILLEGAL_ARGUMENT_MESSAGE);
 
@@ -263,10 +287,11 @@ public class BootStrapTest {
 
       ClassPathResource resource = new ClassPathResource(CASSANDRA_PROPERTIES);
 
+      FileUtils.deleteQuietly(outFile);
       try {
          BootStrap.main(new String[] { "maj",
-               resource.getFile().getAbsolutePath(),
-               tempFile.getAbsolutePath(), tempFile.getAbsolutePath(), "1",
+               resource.getFile().getAbsolutePath(), 
+               tempFile.getAbsolutePath(), outFile.getAbsolutePath(),tempFile.getAbsolutePath(), "1",
                "45s" });
          Assert.fail(ILLEGAL_ARGUMENT_MESSAGE);
 
@@ -285,11 +310,11 @@ public class BootStrapTest {
    public void testMajIndexDepartSuperieurIndexFin() throws IOException {
 
       ClassPathResource resource = new ClassPathResource(CASSANDRA_PROPERTIES);
-
+      FileUtils.deleteQuietly(outFile);
       try {
          BootStrap.main(new String[] { "maj",
-               resource.getFile().getAbsolutePath(),
-               tempFile.getAbsolutePath(), tempFile.getAbsolutePath(), "45",
+               resource.getFile().getAbsolutePath(), 
+               tempFile.getAbsolutePath(), outFile.getAbsolutePath(), tempFile.getAbsolutePath(), "45",
                "12" });
          Assert.fail(ILLEGAL_ARGUMENT_MESSAGE);
 
@@ -304,8 +329,7 @@ public class BootStrapTest {
       }
 
    }
-   
-   
+
    @Test
    public void testNonIntegresNbreParametresErrone() throws IOException {
 

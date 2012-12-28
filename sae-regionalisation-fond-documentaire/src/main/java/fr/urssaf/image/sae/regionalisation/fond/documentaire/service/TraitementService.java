@@ -35,6 +35,8 @@ public interface TraitementService {
     * 
     * @param inputFilePath
     *           fichier contenant la liste des documents à modifier
+    * @param outputFilePath
+    *           fichier contenant la liste des modifications effectuées
     * @param propertiesFilePath
     *           fichier contenant les correspondances
     * @param firstRecord
@@ -42,8 +44,8 @@ public interface TraitementService {
     * @param lastRecord
     *           index du dernier enregistrement à traiter
     */
-   void updateDocuments(String inputFilePath, String propertiesFilePath,
-         int firstRecord, int lastRecord);
+   void updateDocuments(String inputFilePath, String outputFilePath,
+         String propertiesFilePath, int firstRecord, int lastRecord);
 
    /**
     * Liste et écrit dans un fichier les documents dont le numéro de compte

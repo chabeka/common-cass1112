@@ -44,17 +44,20 @@ public class TraitementServiceUpdateDocumentTest {
 
    private File inputFile;
    private File propertiesFile;
+   private File outFile;
 
    @Before
    public void init() throws IOException {
       inputFile = File.createTempFile("input", ".txt");
       propertiesFile = File.createTempFile("prop", ".txt");
+      outFile = File.createTempFile("out", ".txt");
    }
 
    @After
    public void end() {
       FileUtils.deleteQuietly(inputFile);
       FileUtils.deleteQuietly(propertiesFile);
+      FileUtils.deleteQuietly(outFile);
       EasyMock.reset(providerSupport, documentService);
    }
 
@@ -64,8 +67,8 @@ public class TraitementServiceUpdateDocumentTest {
       FileUtils.deleteQuietly(inputFile);
 
       try {
-         service
-               .updateDocuments("fichierInexistant", "fichierInexistant", 0, 0);
+         service.updateDocuments("fichierInexistant", "fichierInexistant",
+               "fichierInexistant", 0, 0);
          Assert.fail("une exception ErreurTechniqueException est attendue");
       } catch (ErreurTechniqueException exception) {
          EasyMock.verify(providerSupport);
@@ -79,10 +82,11 @@ public class TraitementServiceUpdateDocumentTest {
       initProvider();
       initDocumentServiceErreur();
       initDatasErreur();
+      FileUtils.deleteQuietly(outFile);
 
       try {
-         service.updateDocuments(inputFile.getAbsolutePath(), propertiesFile
-               .getAbsolutePath(), 1, 2);
+         service.updateDocuments(inputFile.getAbsolutePath(), outFile
+               .getAbsolutePath(), propertiesFile.getAbsolutePath(), 1, 2);
          Assert.fail("une exception ErreurTechniqueException est attendue");
 
       } catch (ErreurTechniqueException exception) {
@@ -98,9 +102,10 @@ public class TraitementServiceUpdateDocumentTest {
       initProvider();
       initDocumentService();
       initDatas();
+      FileUtils.deleteQuietly(outFile);
 
-      service.updateDocuments(inputFile.getAbsolutePath(), propertiesFile
-            .getAbsolutePath(), 1, 2);
+      service.updateDocuments(inputFile.getAbsolutePath(), outFile
+            .getAbsolutePath(), propertiesFile.getAbsolutePath(), 1, 2);
 
       EasyMock.verify(providerSupport, documentService);
    }

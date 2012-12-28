@@ -25,8 +25,8 @@ public class TraitementServiceValidation {
          + "&& args(outputPath, propertiesPath)";
 
    private static final String UPDATE_DOCUMENT_METHOD = "execution(void "
-         + CLASS + "updateDocuments(*,*,*,*))"
-         + "&& args(inputPath, propertiesPath, first, last)";
+         + CLASS + "updateDocuments(*,*,*,*,*))"
+         + "&& args(inputPath, outPath, propertiesPath, first, last)";
 
    /**
     * Validation de la méthode de writeCodesOrganismes <br>
@@ -78,12 +78,17 @@ public class TraitementServiceValidation {
     *           index du dernier enregistrement
     */
    @Before(UPDATE_DOCUMENT_METHOD)
-   public final void updateDocument(String inputPath, String propertiesPath,
+   public final void updateDocument(String inputPath, String outPath, String propertiesPath,
          int first, int last) {
 
       if (StringUtils.isBlank(inputPath)) {
          throw new IllegalArgumentException(
                "le paramètre fichier d'entrée doit être renseigné");
+      }
+      
+      if (StringUtils.isBlank(outPath)) {
+         throw new IllegalArgumentException(
+               "le paramètre fichier de sortie doit être renseigné");
       }
 
       if (StringUtils.isBlank(propertiesPath)) {

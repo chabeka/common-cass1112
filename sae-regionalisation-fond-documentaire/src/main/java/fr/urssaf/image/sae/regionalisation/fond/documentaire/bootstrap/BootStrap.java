@@ -29,6 +29,7 @@ public final class BootStrap {
    private static final int ARG_3 = 3;
    private static final int ARG_4 = 4;
    private static final int ARG_5 = 5;
+   private static final int ARG_6 = 6;
    private static final int CONVERSION_MIN = 60000;
    private static final String MODE_LISTE_CODE_ORG = "listeOrgs";
    private static final String MODE_LISTE_DOCUMENTS = "listeDocs";
@@ -36,7 +37,7 @@ public final class BootStrap {
    private static final String MODE_MAJ = "maj";
 
    private static final int MAX_DOC_ARGS = 4;
-   private static final int MAX_MAJ_ARGS = 6;
+   private static final int MAX_MAJ_ARGS = 7;
    private static final int MAX_ORG_ARGS = 3;
 
    private static final Logger LOGGER = LoggerFactory
@@ -81,9 +82,9 @@ public final class BootStrap {
             service.writeDocUuidsToUpdate(args[ARG_2], args[ARG_3]);
 
          } else if (MODE_MAJ.equals(args[ARG_0])) {
-            service.updateDocuments(args[ARG_2], args[ARG_3], Integer
-                  .valueOf(args[ARG_4]), Integer.valueOf(args[ARG_5]));
-         
+            service.updateDocuments(args[ARG_2], args[ARG_3], args[ARG_4],
+                  Integer.valueOf(args[ARG_5]), Integer.valueOf(args[ARG_6]));
+
          } else if (MODE_LISTE_NON_INTEGRES.equals(args[ARG_0])) {
             service.writeDocStartingWithCodeOrga(args[ARG_2], args[ARG_3]);
          }
@@ -139,9 +140,10 @@ public final class BootStrap {
                      + "\n"
                      + "2. fichier de configuration pour les accès CASSANDRA et DFCE\n"
                      + "3. fichier de données\n"
-                     + "4. fichier de correspondances\n"
-                     + "5. index du premier enregistrement à traiter\n"
-                     + "6. index du dernier enregistrement à traiter\n");
+                     + "4. fichier de sortie des traces de mise à jour\n"
+                     + "5. fichier de correspondances\n"
+                     + "6. index du premier enregistrement à traiter\n"
+                     + "7. index du dernier enregistrement à traiter\n");
       }
 
       String pathDatas = args[ARG_2];
@@ -152,21 +154,29 @@ public final class BootStrap {
                "le fichier de données est inexistant");
       }
 
-      String pathCorresp = args[ARG_3];
+      String pathOut = args[ARG_3];
+      File fileOut = new File(pathOut);
+
+      if (fileOut.exists()) {
+         throw new IllegalArgumentException(
+               "le fichier de sortie existe déjà");
+      }
+
+      String pathCorresp = args[ARG_4];
       File fileCorresp = new File(pathCorresp);
 
       if (!fileCorresp.exists()) {
          throw new IllegalArgumentException(
                "le fichier de correspondances est inexistant");
       }
-
-      String sFirstIndex = args[ARG_4];
+      
+      String sFirstIndex = args[ARG_5];
       if (!StringUtils.isNumeric(sFirstIndex)) {
          throw new IllegalArgumentException(
                "l'index du premier enregistrement doit être un numérique");
       }
 
-      String sLastIndex = args[ARG_5];
+      String sLastIndex = args[ARG_6];
       if (!StringUtils.isNumeric(sLastIndex)) {
          throw new IllegalArgumentException(
                "l'index du dernier enregistrement doit être un numérique");
@@ -210,7 +220,7 @@ public final class BootStrap {
       }
 
    }
-   
+
    private static void checkNonIntegres(String[] args) {
       if (args.length != MAX_DOC_ARGS) {
          throw new IllegalArgumentException(

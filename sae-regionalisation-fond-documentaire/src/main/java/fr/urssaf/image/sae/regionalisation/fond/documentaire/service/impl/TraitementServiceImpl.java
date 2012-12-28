@@ -37,7 +37,6 @@ import fr.urssaf.image.sae.regionalisation.fond.documentaire.dao.cf.DocInfoKey;
 import fr.urssaf.image.sae.regionalisation.fond.documentaire.exception.DfceException;
 import fr.urssaf.image.sae.regionalisation.fond.documentaire.exception.ErreurTechniqueException;
 import fr.urssaf.image.sae.regionalisation.fond.documentaire.iterator.CassandraIterator;
-import fr.urssaf.image.sae.regionalisation.fond.documentaire.service.DocInfoService;
 import fr.urssaf.image.sae.regionalisation.fond.documentaire.service.DocumentService;
 import fr.urssaf.image.sae.regionalisation.fond.documentaire.service.TraitementService;
 import fr.urssaf.image.sae.regionalisation.fond.documentaire.support.CassandraSupport;
@@ -88,7 +87,7 @@ public class TraitementServiceImpl implements TraitementService {
          Map<String, Long> map = new HashMap<String, Long>();
          int nbDocInfo = 0;
          int nbDocInfoParTrace = 1000;
-         
+
          while (iterator.hasNext()) {
             infos = iterator.next();
 
@@ -120,12 +119,12 @@ public class TraitementServiceImpl implements TraitementService {
 
          }
 
-//         Map<String, Long> codes = docInfoService.getCodesOrganismes();
-//         File file = new File(filePath);
-//
-//         LOGGER.debug(
-//               "{} - Ecriture des codes organismes récupérés dans le fichier",
-//               trcPrefix);
+         // Map<String, Long> codes = docInfoService.getCodesOrganismes();
+         // File file = new File(filePath);
+         //
+         // LOGGER.debug(
+         // "{} - Ecriture des codes organismes récupérés dans le fichier",
+         // trcPrefix);
 
          writeFile(map, new File(filePath));
 
@@ -219,19 +218,24 @@ public class TraitementServiceImpl implements TraitementService {
     */
    @Override
    public final void updateDocuments(String inputFilePath,
-         String propertiesFilePath, int firstRecord, int lastRecord) {
+         String outputFilePath, String propertiesFilePath, int firstRecord,
+         int lastRecord) {
 
       File file = new File(inputFilePath);
       Reader reader = null;
       BufferedReader bReader = null;
       Reader propReader = null;
       String trcPrefix = "updateDocuments()";
+      File outFile = new File(outputFilePath);
+      Writer writer = null;
 
       try {
          providerSupport.connect();
 
          reader = new FileReader(file);
          bReader = new BufferedReader(reader);
+
+         writer = new FileWriter(outFile);
 
          LOGGER.debug("{} - chargement des données du fichier de properties",
                trcPrefix);
@@ -244,7 +248,7 @@ public class TraitementServiceImpl implements TraitementService {
 
          int index = firstRecord - 1;
          while (StringUtils.isNotEmpty(line) && index < lastRecord) {
-            updateDocument(line, properties);
+            updateDocument(line, properties, writer);
             line = bReader.readLine();
             index++;
          }
@@ -259,6 +263,8 @@ public class TraitementServiceImpl implements TraitementService {
          close(bReader, file.getName());
          close(reader, file.getName());
          close(propReader, new File(propertiesFilePath).getName());
+
+         close(writer, new File(outputFilePath).getName());
 
          providerSupport.disconnect();
       }
@@ -308,7 +314,7 @@ public class TraitementServiceImpl implements TraitementService {
       }
    }
 
-   private void updateDocument(String uuid, Properties properties)
+   private void updateDocument(String uuid, Properties properties, Writer writer)
          throws DfceException {
       String trcPrefix = "updateDocument()";
 
@@ -319,8 +325,8 @@ public class TraitementServiceImpl implements TraitementService {
          LOGGER.warn("{} - Document non trouvé : {}", new Object[] { trcPrefix,
                uuid });
       } else {
-         updateCriterion(document, Constants.CODE_ORG_GEST, properties);
-         updateCriterion(document, Constants.CODE_ORG_PROP, properties);
+         updateCriterion(document, Constants.CODE_ORG_GEST, properties, writer);
+         updateCriterion(document, Constants.CODE_ORG_PROP, properties, writer);
 
          LOGGER.debug("{} - Mise à jour du document {}", new Object[] {
                trcPrefix, uuid });
@@ -330,13 +336,27 @@ public class TraitementServiceImpl implements TraitementService {
    }
 
    private void updateCriterion(Document document, String codeCriterion,
-         Properties properties) {
+         Properties properties, Writer writer) {
 
       Criterion criterion = document.getSingleCriterion(codeCriterion);
       if (criterion != null) {
          String value = (String) criterion.getWord();
 
          if (properties.keySet().contains(value)) {
+
+            try {
+               writer.write(document.getUuid().toString());
+               writer.write(";");
+               writer.write(codeCriterion);
+               writer.write(";");
+               writer.write(value);
+               writer.write(";");
+               writer.write(properties.getProperty(value));
+               writer.write("\n");
+
+            } catch (IOException exception) {
+               throw new ErreurTechniqueException(exception);
+            }
 
             document.getSingleCriterion(codeCriterion).setWord(
                   properties.getProperty(value));
