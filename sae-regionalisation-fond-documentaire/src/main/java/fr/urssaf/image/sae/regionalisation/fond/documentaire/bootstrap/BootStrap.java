@@ -32,6 +32,7 @@ public final class BootStrap {
    private static final int CONVERSION_MIN = 60000;
    private static final String MODE_LISTE_CODE_ORG = "listeOrgs";
    private static final String MODE_LISTE_DOCUMENTS = "listeDocs";
+   private static final String MODE_LISTE_NON_INTEGRES = "listeNonIntegres";
    private static final String MODE_MAJ = "maj";
 
    private static final int MAX_DOC_ARGS = 4;
@@ -77,11 +78,14 @@ public final class BootStrap {
             service.writeCodesOrganismes(args[ARG_2]);
 
          } else if (MODE_LISTE_DOCUMENTS.equals(args[ARG_0])) {
-            service.writeDocUuidsToUpdate(args[2], args[ARG_3]);
+            service.writeDocUuidsToUpdate(args[ARG_2], args[ARG_3]);
 
          } else if (MODE_MAJ.equals(args[ARG_0])) {
             service.updateDocuments(args[ARG_2], args[ARG_3], Integer
                   .valueOf(args[ARG_4]), Integer.valueOf(args[ARG_5]));
+         
+         } else if (MODE_LISTE_NON_INTEGRES.equals(args[ARG_0])) {
+            service.writeDocStartingWithCodeOrga(args[ARG_2], args[ARG_3]);
          }
 
       } catch (Throwable exception) {
@@ -120,6 +124,8 @@ public final class BootStrap {
       } else if (MODE_MAJ.equals(args[ARG_0])) {
          checkMaj(args);
 
+      } else if (MODE_LISTE_NON_INTEGRES.equals(args[ARG_0])) {
+         checkNonIntegres(args);
       }
 
    }
@@ -204,6 +210,35 @@ public final class BootStrap {
       }
 
    }
+   
+   private static void checkNonIntegres(String[] args) {
+      if (args.length != MAX_DOC_ARGS) {
+         throw new IllegalArgumentException(
+               "la commande est incorrecte. Les paramètres sont les suivants : \n"
+                     + "1. commande du programme à lancer ("
+                     + MODE_LISTE_NON_INTEGRES
+                     + "\n"
+                     + "2. fichier de configuration pour les accès CASSANDRA et DFCE\n"
+                     + "3. fichier de sortie\n"
+                     + "4. fichier de correspondance des organismes\n");
+      }
+
+      String pathOutput = args[2];
+      File fileOutput = new File(pathOutput);
+
+      if (fileOutput.exists()) {
+         throw new IllegalArgumentException(
+               "le fichier de sortie est existe déjà");
+      }
+
+      String propPath = args[ARG_3];
+      File propFile = new File(propPath);
+      if (!propFile.exists()) {
+         throw new IllegalArgumentException(
+               "le fichier de correspondance est inexistant");
+      }
+
+   }
 
    private static void checkCodeOrg(String[] args) {
       if (args.length != MAX_ORG_ARGS) {
@@ -229,7 +264,7 @@ public final class BootStrap {
    private static void checkCommand(String command) {
 
       List<String> commands = Arrays.asList(MODE_LISTE_CODE_ORG,
-            MODE_LISTE_DOCUMENTS, MODE_MAJ);
+            MODE_LISTE_DOCUMENTS, MODE_MAJ, MODE_LISTE_NON_INTEGRES);
 
       if (!commands.contains(command)) {
          throw new IllegalArgumentException(

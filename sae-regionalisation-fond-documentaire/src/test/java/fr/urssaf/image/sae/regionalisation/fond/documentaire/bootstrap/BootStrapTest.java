@@ -304,5 +304,72 @@ public class BootStrapTest {
       }
 
    }
+   
+   
+   @Test
+   public void testNonIntegresNbreParametresErrone() throws IOException {
+
+      ClassPathResource resource = new ClassPathResource(CASSANDRA_PROPERTIES);
+      try {
+         BootStrap.main(new String[] { "listeNonIntegres",
+               resource.getFile().getAbsolutePath() });
+
+         Assert.fail(ILLEGAL_ARGUMENT_MESSAGE);
+
+      } catch (IllegalArgumentException exception) {
+         Assert.assertTrue(MESSAGE_CORRECT, exception.getMessage().startsWith(
+               "la commande est incorrecte. Les paramètres sont les suivants"));
+
+      } catch (Exception exception) {
+         Assert.fail(ILLEGAL_ARGUMENT_MESSAGE);
+      }
+   }
+
+   @Test
+   public void testNonIntegresFichierDestExistant() throws IOException {
+
+      ClassPathResource resource = new ClassPathResource(CASSANDRA_PROPERTIES);
+      try {
+         BootStrap.main(new String[] { "listeNonIntegres",
+               resource.getFile().getAbsolutePath(),
+               tempFile.getAbsolutePath(), null });
+
+         Assert.fail(ILLEGAL_ARGUMENT_MESSAGE);
+
+      } catch (IllegalArgumentException exception) {
+         Assert.assertEquals(MESSAGE_CORRECT,
+               "le fichier de sortie est existe déjà", exception.getMessage());
+
+      } catch (Exception exception) {
+         Assert.fail(ILLEGAL_ARGUMENT_MESSAGE);
+
+      } finally {
+         FileUtils.deleteQuietly(tempFile);
+      }
+   }
+
+   @Test
+   public void testNonIntegresFichierPropertiesInexistant() throws IOException {
+
+      FileUtils.deleteQuietly(tempFile);
+
+      ClassPathResource resource = new ClassPathResource(CASSANDRA_PROPERTIES);
+      try {
+         BootStrap.main(new String[] { "listeNonIntegres",
+               resource.getFile().getAbsolutePath(),
+               tempFile.getAbsolutePath(), "src/inexistant" });
+
+         Assert.fail(ILLEGAL_ARGUMENT_MESSAGE);
+
+      } catch (IllegalArgumentException exception) {
+         Assert.assertEquals(MESSAGE_CORRECT,
+               "le fichier de correspondance est inexistant", exception
+                     .getMessage());
+
+      } catch (Exception exception) {
+         Assert.fail(ILLEGAL_ARGUMENT_MESSAGE);
+
+      }
+   }
 
 }
