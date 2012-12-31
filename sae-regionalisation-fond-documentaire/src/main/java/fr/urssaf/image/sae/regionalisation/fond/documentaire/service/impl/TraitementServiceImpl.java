@@ -393,7 +393,7 @@ public class TraitementServiceImpl implements TraitementService {
                trcPrefix);
 
          AllRowsQuery<DocInfoKey, String> query = dao
-               .getQuery("nce", "SM_UUID");
+               .getQuery("nce", "SM_UUID", "cog", "cop", "SM_ARCHIVAGE_DATE", "SM_DOCUMENT_TYPE");
          CassandraIterator<DocInfoKey> iterator = new CassandraIterator<DocInfoKey>(
                query);
 
@@ -403,13 +403,21 @@ public class TraitementServiceImpl implements TraitementService {
          while (iterator.hasNext()) {
             infos = iterator.next();
 
-            if (infos.size() == 2) {
+            if (infos.size() == 6) {
                nce = infos.get("nce");
                nceStart = StringUtils.left(nce, LENGTH_CODE_ORGA);
                if (codesOrga.contains(nceStart)) {
                   writer.write(nce);
                   writer.write(";");
                   writer.write(infos.get("SM_UUID"));
+                  writer.write(";");
+                  writer.write(infos.get("cog"));
+                  writer.write(";");
+                  writer.write(infos.get("cop"));
+                  writer.write(";");
+                  writer.write(infos.get("SM_ARCHIVAGE_DATE"));
+                  writer.write(";");
+                  writer.write(infos.get("SM_DOCUMENT_TYPE"));
                   writer.write("\n");
                }
             }
