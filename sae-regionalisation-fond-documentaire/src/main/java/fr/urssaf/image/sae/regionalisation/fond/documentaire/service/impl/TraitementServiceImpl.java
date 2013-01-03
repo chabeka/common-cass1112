@@ -160,14 +160,20 @@ public class TraitementServiceImpl implements TraitementService {
       String trcPrefix = "writeDocUuidsToUpdate";
       InputStream inStream = null;
 
+      File fileCodeOrga = new File(propertiesFilePath);
+
+      File outFile = new File(outputPath);
+      Writer writer = null;
+
       try {
          cassandraSupport.connect();
 
-         File file = new File(propertiesFilePath);
-         inStream = FileUtils.openInputStream(file);
+         inStream = FileUtils.openInputStream(fileCodeOrga);
 
          Properties properties = new Properties();
          properties.load(inStream);
+
+         writer = new FileWriter(outFile);
 
          LOGGER.debug(
                "{} - récupération de tous les documents et des métadonnées",
@@ -178,37 +184,53 @@ public class TraitementServiceImpl implements TraitementService {
          CassandraIterator<DocInfoKey> iterator = new CassandraIterator<DocInfoKey>(
                query);
 
-         List<String> uuids = new ArrayList<String>();
          Map<String, String> document;
 
+         int nbDocInfo = 0;
+         int nbDocInfoParTrace = 1000;
+
          while (iterator.hasNext()) {
+
+            // Traitement du document courant
             document = iterator.next();
             if (document.size() == 3
                   && (properties.keySet().contains(
                         document.get(Constants.CODE_ORG_GEST)) || properties
                         .keySet().contains(
                               document.get(Constants.CODE_ORG_PROP)))) {
-               uuids.add(document.get(Constants.UUID));
+
+               // Ecriture de l'id d'archivage dans le fichier de sortie
+               writer
+                     .write(String.format("%s\n", document.get(Constants.UUID)));
+
             }
+
+            // Trace
+            if (nbDocInfo % nbDocInfoParTrace == 0) {
+               LOGGER.info("Nombre de lignes de DocInfo parcourues : {}",
+                     nbDocInfo);
+            }
+
+            // Mise à jour du compteur du nombre de lignes parcourues
+            nbDocInfo++;
+
          }
 
-         File fileOutput = new File(outputPath);
-         FileUtils.writeLines(fileOutput, uuids);
+         // Trace
+         LOGGER.info("Nombre total de lignes de DocInfo parcourues : {}",
+               nbDocInfo - 1);
 
       } catch (IOException exception) {
          throw new ErreurTechniqueException(exception);
 
       } finally {
 
-         if (inStream != null) {
-            try {
-               inStream.close();
-            } catch (IOException exception) {
-               LOGGER.info("{} - Impossible de fermer le flux", trcPrefix);
-            }
-         }
+         close(inStream, fileCodeOrga.getAbsolutePath());
+
+         close(writer, outFile.getAbsolutePath());
 
          cassandraSupport.disconnect();
+
       }
 
    }
@@ -314,6 +336,21 @@ public class TraitementServiceImpl implements TraitementService {
       }
    }
 
+   private void close(InputStream inputStream, String name) {
+      String trcPrefix = "close()";
+
+      if (inputStream != null) {
+         try {
+            inputStream.close();
+
+         } catch (IOException exception) {
+            LOGGER.info("{} - impossible de fermer le flux {}", new Object[] {
+                  trcPrefix, name });
+         }
+      }
+
+   }
+
    private void updateDocument(String uuid, Properties properties, Writer writer)
          throws DfceException {
       String trcPrefix = "updateDocument()";
@@ -393,7 +430,8 @@ public class TraitementServiceImpl implements TraitementService {
                trcPrefix);
 
          AllRowsQuery<DocInfoKey, String> query = dao
-               .getQuery("nce", "SM_UUID", "cog", "cop", "SM_ARCHIVAGE_DATE", "SM_DOCUMENT_TYPE");
+               .getQuery("nce", "SM_UUID", "cog", "cop", "SM_ARCHIVAGE_DATE",
+                     "SM_DOCUMENT_TYPE");
          CassandraIterator<DocInfoKey> iterator = new CassandraIterator<DocInfoKey>(
                query);
 

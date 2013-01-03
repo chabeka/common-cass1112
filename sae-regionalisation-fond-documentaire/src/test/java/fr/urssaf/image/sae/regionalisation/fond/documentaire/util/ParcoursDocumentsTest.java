@@ -90,6 +90,9 @@ public class ParcoursDocumentsTest {
          
          Map<String, String> map;
          String meta, value;
+         
+         int nbDocsTraites = 0;
+         
          while (iterator.hasNext()) {
             map = iterator.next();
             
@@ -106,7 +109,15 @@ public class ParcoursDocumentsTest {
                   writer.write("\n");
                }
             }
+            
+            nbDocsTraites++;
+            if ((nbDocsTraites%1000)==0) {
+               System.out.println("Nombre de docs traités : " + nbDocsTraites);
+            }
+            
          }
+         
+         System.out.println("Nombre de docs traités : " + (nbDocsTraites-1));
 
       } catch (IOException exception) {
          System.err.println(exception);
