@@ -29,13 +29,15 @@
     It is mainly used by subproject preflight of Apache PDFBox. 
     XmpBox is a subproject of Apache PDFBox.
   </description>
+  
 
-  <parent>
-    <groupId>org.apache.pdfbox</groupId>
-    <artifactId>pdfbox-parent</artifactId>
-    <version>1.8.0-SNAPSHOT</version>
-    <relativePath>../parent/pom.xml</relativePath>
-  </parent>
+  
+   <parent>
+      <groupId>org.apache.pdfbox</groupId>
+      <artifactId>pdfbox-parent</artifactId>
+      <version>1.8.0-SNAPSHOT</version>
+      <relativePath>../parent/pom.xml</relativePath>
+   </parent>
 
 
   <dependencies>
@@ -75,13 +77,13 @@
     <dependency>
     	<groupId>org.apache.pdfbox</groupId>
     	<artifactId>pdfbox</artifactId>
-    	<version>${project.version}</version>
+    	<version>1.8.0-SNAPSHOT</version>
     	<type>jar</type>
     	<scope>compile</scope>
     </dependency>
   </dependencies>
 
-  <build>
+  <!-- build>
     <plugins>
       <plugin>
         <groupId>org.apache.felix</groupId>
@@ -89,7 +91,7 @@
         <extensions>true</extensions>
       </plugin>
     </plugins>
-  </build>
+  </build-->
 
   <reporting>
     <plugins>
@@ -162,5 +164,22 @@
       </plugin>
     </plugins>
   </reporting>
+  
+     <build>
+      <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <executions>
+               <execution>
+                  <id>attach-sources</id>
+                  <goals>
+                     <goal>jar</goal>
+                  </goals>
+               </execution>
+            </executions>
+         </plugin>
+      </plugins>
+   </build>
 
 </project>
