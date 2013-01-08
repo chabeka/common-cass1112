@@ -12,7 +12,7 @@
   
     <groupId>uk.gov.nationalarchives</groupId>
     <artifactId>droid-parent</artifactId>
-    <version>6.2-SNAPSHOT</version>
+    <version>6.2</version>
     <packaging>pom</packaging>
   
     <name>droid-parent</name>
@@ -196,7 +196,7 @@
         								</goals>
         							</pluginExecutionFilter>
         							<action>
-        								<ignore></ignore>
+        								<ignore />
         							</action>
         						</pluginExecution>
         					</pluginExecutions>
