@@ -4,7 +4,7 @@
 	<artifactId>padaf</artifactId>
 	<name>Padaf</name>
 	<packaging>pom</packaging>
-	<version>0.6.2-SNAPSHOT</version>
+	<version>0.6.3</version>
 
 	<properties>
 		<project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
@@ -13,13 +13,13 @@
 	   <!-- Configuration SVN pour le plug-in maven-release -->
    <scm>
       <url>
-        scm:svn:svn://cer69-svn/image/java/trunk/padaf-0.6/
+        scm:svn:svn://cer69-svn/image/java/tags/padaf-0.6.3
       </url>
       <developerConnection>
-         scm:svn:svn://cer69-svn/image/java/trunk/padaf-0.6/
+         scm:svn:svn://cer69-svn/image/java/tags/padaf-0.6.3
       </developerConnection>
       <connection>
-         scm:svn:svn://cer69-svn/image/java/trunk/padaf-0.6/
+         scm:svn:svn://cer69-svn/image/java/tags/padaf-0.6.3
       </connection>
    </scm>
 
