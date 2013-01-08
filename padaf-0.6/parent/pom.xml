@@ -3,7 +3,7 @@
 	<groupId>net.padaf</groupId>
 	<artifactId>parent</artifactId>
 	<packaging>pom</packaging>
-	<version>0.6.4</version>
+	<version>0.6.5-SNAPSHOT</version>
 
  	<properties>
  		<pdfbox.version>1.5.0</pdfbox.version>
@@ -14,13 +14,13 @@
 	
    <scm>
       <url>
-        scm:svn:svn://cer69-svn/image/java/tags/parent-0.6.4
+        scm:svn:svn://cer69-svn/image/java/trunk/padaf-0.6/
       </url>
       <developerConnection>
-         scm:svn:svn://cer69-svn/image/java/tags/parent-0.6.4
+         scm:svn:svn://cer69-svn/image/java/trunk/padaf-0.6/
       </developerConnection>
       <connection>
-         scm:svn:svn://cer69-svn/image/java/tags/parent-0.6.4
+         scm:svn:svn://cer69-svn/image/java/trunk/padaf-0.6/
       </connection>
    </scm>
 
