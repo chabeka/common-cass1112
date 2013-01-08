@@ -4,7 +4,7 @@
 	<artifactId>padaf</artifactId>
 	<name>Padaf</name>
 	<packaging>pom</packaging>
-	<version>0.6.4-SNAPSHOT</version>
+	<version>0.6.4</version>
 
 	<properties>
 		<project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
