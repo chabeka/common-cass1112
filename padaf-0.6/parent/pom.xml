@@ -10,13 +10,31 @@
 		<project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
  	</properties>
 
+		     <distributionManagement>
+      <repository>
+         <id>nexus</id>
+         <name>Releases</name>
+         <url>http://cer69-nexus.cer69.recouv:8081/nexus/content/repositories/releases</url>
+      </repository>
+      <snapshotRepository>
+         <id>nexus</id>
+         <name>Snapshots</name>
+         <url>http://cer69-nexus.cer69.recouv:8081/nexus/content/repositories/snapshots</url>
+         <uniqueVersion>false</uniqueVersion>
+      </snapshotRepository>
+   </distributionManagement>
 	
-	<distributionManagement>
-		<site>
-			<id>site</id>
-			<url>${ganesh-site-url}/padaf</url>
-		</site>
-	</distributionManagement>
+	   <scm>
+      <url>
+        scm:svn:svn://cer69-svn/image/java/trunk/padaf-0.6/
+      </url>
+      <developerConnection>
+         scm:svn:svn://cer69-svn/image/java/trunk/padaf-0.6/
+      </developerConnection>
+      <connection>
+         scm:svn:svn://cer69-svn/image/java/trunk/padaf-0.6/
+      </connection>
+   </scm>
 
 	<licenses>
 		<license>
