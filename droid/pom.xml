@@ -31,6 +31,19 @@
         <module>droid-results</module>
         <module>droid-swing-ui</module>
     </modules>
+	
+	   <!-- Configuration SVN pour le plug-in maven-release -->
+   <scm>
+      <url>
+        scm:svn:svn://cer69-svn/image/java/trunk/droid/
+      </url>
+      <developerConnection>
+         scm:svn:svn://cer69-svn/image/java/trunk/droid/
+      </developerConnection>
+      <connection>
+         scm:svn:svn://cer69-svn/image/java/trunk/droid/
+      </connection>
+   </scm>
     
     <build>
         <plugins>
