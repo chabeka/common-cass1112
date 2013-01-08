@@ -13,13 +13,13 @@
 	   <!-- Configuration SVN pour le plug-in maven-release -->
    <scm>
       <url>
-        scm:svn:svn://cer69-svn/image/java/trunk/padaf-0.6/
+        scm:svn:svn://cer69-svn/image/java/tags/padaf-0.6.4
       </url>
       <developerConnection>
-         scm:svn:svn://cer69-svn/image/java/trunk/padaf-0.6/
+         scm:svn:svn://cer69-svn/image/java/tags/padaf-0.6.4
       </developerConnection>
       <connection>
-         scm:svn:svn://cer69-svn/image/java/trunk/padaf-0.6/
+         scm:svn:svn://cer69-svn/image/java/tags/padaf-0.6.4
       </connection>
    </scm>
 
