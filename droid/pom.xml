@@ -4,7 +4,7 @@
     <parent>
         <artifactId>droid-parent</artifactId>
         <groupId>uk.gov.nationalarchives</groupId>
-        <version>6.2</version>
+        <version>6.3-SNAPSHOT</version>
         <relativePath>droid-parent</relativePath>
     </parent>
   
@@ -35,13 +35,13 @@
 	   <!-- Configuration SVN pour le plug-in maven-release -->
    <scm>
       <url>
-        scm:svn:svn://cer69-svn/image/java/tags/droid-6.2
+        scm:svn:svn://cer69-svn/image/java/trunk/droid/
       </url>
       <developerConnection>
-         scm:svn:svn://cer69-svn/image/java/tags/droid-6.2
+         scm:svn:svn://cer69-svn/image/java/trunk/droid/
       </developerConnection>
       <connection>
-         scm:svn:svn://cer69-svn/image/java/tags/droid-6.2
+         scm:svn:svn://cer69-svn/image/java/trunk/droid/
       </connection>
    </scm>
     
