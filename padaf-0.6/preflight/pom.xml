@@ -31,9 +31,9 @@
 
 	<parent>
 		<groupId>net.padaf</groupId>
-		<artifactId>parent</artifactId>
+		<artifactId>padaf</artifactId>
 		<version>0.6.5-SNAPSHOT</version>
-		<relativePath>../parent</relativePath>
+		<relativePath>../</relativePath>
 	</parent>
 
 	<properties>
