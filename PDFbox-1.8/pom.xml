@@ -42,7 +42,8 @@
    </scm>
 
    <properties>
-      <project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	  <sourceReleaseAssemblyDescriptor>source-release</sourceReleaseAssemblyDescriptor>
    </properties>
 
    <modules>
@@ -264,6 +265,7 @@
                         </goals>
                         <configuration>
                            <runOnlyAtExecutionRoot>true</runOnlyAtExecutionRoot>
+						   <descriptorRefs><descriptorRef>${sourceReleaseAssemblyDescriptor}</descriptorRef></descriptorRefs>
                            <tarLongFileFormat>gnu</tarLongFileFormat>
                         </configuration>
                      </execution>
