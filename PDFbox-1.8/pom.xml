@@ -35,15 +35,9 @@
 
   	   <!-- Configuration SVN pour le plug-in maven-release -->
    <scm>
-      <url>
-        scm:svn:svn://cer69-svn/image/java/trunk/PDFbox-1.8
-      </url>
-      <developerConnection>
-         scm:svn:svn://cer69-svn/image/java/trunk/PDFbox-1.8
-      </developerConnection>
-      <connection>
-         scm:svn:svn://cer69-svn/image/java/trunk/PDFbox-1.8
-      </connection>
+      <url>scm:svn:svn://cer69-svn/image/java/trunk/PDFbox-1.8</url>
+      <developerConnection>scm:svn:svn://cer69-svn/image/java/trunk/PDFbox-1.8</developerConnection>
+      <connection>scm:svn:svn://cer69-svn/image/java/trunk/PDFbox-1.8</connection>
    </scm>	
    
      <properties>
@@ -150,6 +144,7 @@
         <plugins>
           <plugin>
             <artifactId>maven-assembly-plugin</artifactId>
+			<version>2.4</version>
             <executions>
               <execution>
                 <goals>
