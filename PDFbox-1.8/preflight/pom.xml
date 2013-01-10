@@ -24,7 +24,7 @@
     <parent>
     <groupId>org.apache.pdfbox</groupId>
     <artifactId>pdfbox-reactor</artifactId>
-    <version>1.8.0</version>
+    <version>1.8.0-CRTL-1-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   
