@@ -9,7 +9,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.ConfigurationContext;
@@ -19,80 +18,27 @@ import org.apache.axis2.engine.Phase;
 import org.apache.commons.httpclient.protocol.Protocol;
 
 import fr.urssaf.image.dictao.client.handler.SoapHandler;
-import fr.urssaf.image.dictao.client.modele.wsdl.DVSStub;
-import fr.urssaf.image.dictao.client.modele.wsdl.DVSStub.DVSDetailedStatusStruct;
-import fr.urssaf.image.dictao.client.modele.wsdl.DVSStub.DataString;
-import fr.urssaf.image.dictao.client.modele.wsdl.DVSStub.DataType;
-import fr.urssaf.image.dictao.client.modele.wsdl.DVSStub.VerifySignatureEx;
-import fr.urssaf.image.dictao.client.modele.wsdl.DVSStub.VerifySignatureExResponse;
+import fr.urssaf.image.dictao.client.modele.wsdl.D2SStub;
+import fr.urssaf.image.dictao.client.modele.wsdl.D2SStub.SignatureEx;
+import fr.urssaf.image.dictao.client.modele.wsdl.D2SStub.DataString;
+import fr.urssaf.image.dictao.client.modele.wsdl.D2SStub.DataType;
+import fr.urssaf.image.dictao.client.modele.wsdl.D2SStub.SignatureExResponse;
 import fr.urssaf.image.dictao.client.utils.PatchedAuthSSLProtocolSocketFactory;
 
-public class VerifierSignatureService {
+public class SignatureService {
 
 	private static String TRANSACTION_ID = "SignatureXadesDetach";
-	private static int REFRESH_CRL = 1;
 
-	public void verifierSignature(String urlWs, URL keystoreURL,
-			String keyStorePassword, URL trustStoreURL,
-			String trustStorePassword, String signatureAverifier,
-			String sha256, int nbIterationsAppelWs, boolean sysoutSoapEnSortie) {
-
-		// Mise en place du SSL
-		initSsl(keystoreURL, keyStorePassword, trustStoreURL,
-				trustStorePassword);
-
-		// Création du stub d'accès au WS
-		DVSStub stub = createStub(urlWs, sysoutSoapEnSortie);
-
-		// Création des paramètres d'entrée
-		VerifySignatureEx paramEntree = createParamEntree(signatureAverifier, sha256);
-
-		// Boucle d'appel au WS
-		for (int iter = 0; iter < nbIterationsAppelWs; iter++) {
-
-			String requestId = "Vérification de masse "
-					+ Integer.toString(iter + 1);
-			System.out.println(requestId);
-			paramEntree.setRequestId(requestId);
-
-			VerifySignatureExResponse response;
-			try {
-				response = stub.verifySignatureEx(paramEntree);
-			} catch (RemoteException e) {
-				throw new RuntimeException(e);
-			}
-
-			int opStatus = response.getVerifySignatureExResult().getOpStatus();
-			int globalStatus = response.getVerifySignatureExResult()
-					.getDVSGlobalStatus();
-
-			System.out.println(String.format("OpStatus : %d, GlobalStatus: %d",
-					opStatus, globalStatus));
-
-			DVSDetailedStatusStruct[] details = response
-					.getVerifySignatureExResult().getDVSDetailedStatus()
-					.getDVSDetailedStatusStruct();
-			for (DVSDetailedStatusStruct detail : details) {
-
-				System.out.println(String.format(
-						"SubjectName : %s, DVSStatus: %s",
-						detail.getSubjectName(), detail.getDVSStatus()));
-			}
-
-			System.out.println();
-
-		}
-	}
 
 	/**
-	 * Lance des vérifications en masse.
+	 * Lance des signature en masse.
 	 * On continue la boucle même en cas d'échec. Utilisé pour tester la haute dispo netscaler
 	 * @throws InterruptedException 
+	 * @throws Exception 
 	 */
-	public void verifierSignatureSansEchec(String urlWs, URL keystoreURL,
+	public void signatureEnMasseSansEchec(String urlWs, URL keystoreURL,
 			String keyStorePassword, URL trustStoreURL,
-			String trustStorePassword, String signatureAverifier,
-			String sha256, int nbIterationsAppelWs, boolean sysoutSoapEnSortie) throws Exception {
+			String trustStorePassword, int nbIterationsAppelWs, boolean sysoutSoapEnSortie) throws InterruptedException, Exception {
 
 		// Mise en place du SSL
 		initSsl(keystoreURL, keyStorePassword, trustStoreURL,
@@ -100,35 +46,35 @@ public class VerifierSignatureService {
 		String host = new URL(urlWs).getHost();
 
 		// Création des paramètres d'entrée
-		VerifySignatureEx paramEntree = createParamEntree(signatureAverifier, sha256);
+		SignatureEx paramEntree = createParamEntree();
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		
 		int nbOK = 0;
 		int nbKO = 0;
 		Date dateDebutIndisponibilite = null;
 		Date dateFinIndisponibilite = null;
-
-		// Création du stub d'accès au WS
-		DVSStub stub = createStub(urlWs, sysoutSoapEnSortie);
-
+		
 		// Boucle d'appel au WS
 		for (int iter = 0; iter < nbIterationsAppelWs; iter++) {
 
+			// Création du stub d'accès au WS
+			D2SStub stub = createStub(urlWs, sysoutSoapEnSortie);
+
 			Date currentDate = new Date();
-			String requestId = "Vérification de masse " + Integer.toString(iter + 1);
+			String requestId = "Signature de masse " + Integer.toString(iter + 1);
 			System.out.print(dateFormat.format(currentDate) + " " + requestId + " ... ");
 			paramEntree.setRequestId(requestId);
-
+			
 			InetAddress inet = InetAddress.getByName(host);
 			System.out.print(String.format("(IP: %s)...", inet.toString()));
 
 			boolean ok = true;
-			VerifySignatureExResponse response;
+			SignatureExResponse response;
 			try {
-				response = stub.verifySignatureEx(paramEntree);
-				int opStatus = response.getVerifySignatureExResult().getOpStatus();
-				int globalStatus = response.getVerifySignatureExResult()
-						.getDVSGlobalStatus();
+				response = stub.signatureEx(paramEntree);
+				int opStatus = response.getSignatureExResult().getOpStatus();
+				int globalStatus = response.getSignatureExResult()
+						.getD2SStatus();
 				//System.out.println(String.format("OpStatus : %d, GlobalStatus: %d", opStatus, globalStatus));
 				ok = opStatus == 0 && globalStatus == 0;
 			} catch (RemoteException e) {
@@ -149,47 +95,44 @@ public class VerifierSignatureService {
 			if (dateFinIndisponibilite != null) diffInSeconds = (dateFinIndisponibilite.getTime() - dateDebutIndisponibilite.getTime()) / 1000;			
 			System.out.println(String.format("OK: %d,KO: %d, Durée indispo:%d s",
 					nbOK, nbKO, diffInSeconds));
+			stub.cleanup();
 			Thread.sleep(1000);
 		}
-		stub.cleanup();
 	}
 
 	
-	private VerifySignatureEx createParamEntree(String signatureAverifier, String sha256) {
-		DataType signature = new DataType();
+	private SignatureEx createParamEntree() {
 
-		DataString sigXml = new DataString();
+		String sha256 = "SiIF7rIeYc5TE3vmAjHwJAYYZP3xPE5cA56jY32Zo2U=";
+		String signatureParameter = String.format(
+                "<Parameters>" +
+                " <Manifest>" +
+                "  <Reference>" +
+                "   <DigestValue>%s</DigestValue>" +
+                "   <DigestMethod>SHA256</DigestMethod>" +
+                "   <URI/>" +
+                "  </Reference>" +
+                " </Manifest>" +
+                "</Parameters>", sha256);
 
-		// sigXml.setDataFormat(DataEncoding.gzEnc); // Ne pas spécifier le
-		// dataFormat
-
-		sigXml.setString(signatureAverifier);
-
-		signature.setValue(sigXml);
-
-		String signedDataHash = String.format("<SignedDataHash>"
-				+ " <Manifest>" + "  <Ref>"
-				+ "   <DigestMethod>SHA256</DigestMethod>"
-				+ "   <DigestValue>%s</DigestValue>" + "  </Ref>"
-				+ " </Manifest>" + "</SignedDataHash>", sha256);
-
-		String tag = "Tag vérification de masse";
+		String tag = "Tag signature de masse";
 
 		DataType businessData = null;
-		DataType signedData = null;
-		// PluginParameterStruct[] pluginParameter = null;
-		String properties = null;
-
-		VerifySignatureEx paramEntree = new VerifySignatureEx();
+		DataType dataToSign = new DataType();
+		DataString dataString = new DataString();
+		dataString.setDataFormat(null);
+		dataString.setString("<Manifest/>");
+		dataToSign.setValue(dataString);
+		
+		SignatureEx paramEntree = new SignatureEx();
 		paramEntree.setTransactionId(TRANSACTION_ID);
-		paramEntree.setRefreshCRLs(REFRESH_CRL);
 		paramEntree.setTag(tag);
 		paramEntree.setBusinessData(businessData);
-		paramEntree.setSignature(signature);
-		paramEntree.setSignedData(signedData);
-		paramEntree.setSignedDataHash(signedDataHash);
-		paramEntree.setVerifySignatureExChoice_type0(null);
-		paramEntree.setProperties(properties);
+		paramEntree.setKeyContainerParameter(null);
+		paramEntree.setDataToSign(dataToSign);
+		paramEntree.setSignatureParameter(signatureParameter);
+		paramEntree.setSignatureFormat("XADES");
+		paramEntree.setSignatureType("MANIFEST");
 		paramEntree.setPluginParameter(null);
 		return paramEntree;
 
@@ -218,13 +161,12 @@ public class VerifierSignatureService {
 
 	}
 
-	private DVSStub createStub(String urlWs, boolean avecSortieSoap) {
-		DVSStub stub;
-
+	private D2SStub createStub(String urlWs, boolean avecSortieSoap) {
+		D2SStub stub;
 		if (!avecSortieSoap) {
 
 			try {
-				stub = new DVSStub(urlWs);
+				stub = new D2SStub(urlWs);
 			} catch (AxisFault e) {
 				throw new RuntimeException(e);
 			}
@@ -248,14 +190,15 @@ public class VerifierSignatureService {
 
 			// Création de l'objet Stub
 			try {
-				stub = new DVSStub(configContext, urlWs);
+				stub = new D2SStub(configContext, urlWs);
 			} catch (AxisFault e) {
 				throw new RuntimeException(e);
 			}
+			
+		      
 		}
 		// Désactivation du chunking
 	    //stub._getServiceClient().getOptions().setProperty(org.apache.axis2.transport.http.HTTPConstants.CHUNKED, Boolean.FALSE);
-		
 		// Renvoie l'objet Stub
 		return stub;
 	}

@@ -132,6 +132,22 @@
                            <overWrite>true</overWrite>
                         </configuration>
                      </execution>
+                     <execution>
+                     	<id>generatesources_d2s</id>
+                        <goals>
+                           <goal>wsdl2code</goal>
+                        </goals>
+                        <configuration>
+                           <wsdlFile>src/test/resources/wsdl/d2s.wsdl</wsdlFile>
+                           <packageName>fr.urssaf.image.dictao.client.modele.wsdl</packageName>
+                           <wsdlVersion>1.1</wsdlVersion>
+                           <outputDirectory>src</outputDirectory>
+                           <databindingName>adb</databindingName>
+                           <targetSourceFolderLocation>main/java</targetSourceFolderLocation>
+                           <skipBuildXML>true</skipBuildXML>
+                           <overWrite>true</overWrite>
+                        </configuration>
+                     </execution>
                   </executions>
                </plugin>
 
@@ -222,7 +238,14 @@
       	<artifactId>commons-logging</artifactId>
       	<version>1.1.1</version>
       </dependency>
-            
+
+	<!-- Bouncy Castle -->
+	<dependency>
+		<groupId>org.bouncycastle</groupId>
+		<artifactId>bctsp-jdk16</artifactId>
+		<version>1.45</version>
+	</dependency>
+	
    </dependencies>
 
 </project>
