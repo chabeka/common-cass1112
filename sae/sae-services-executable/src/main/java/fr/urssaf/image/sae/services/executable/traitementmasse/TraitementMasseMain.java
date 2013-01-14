@@ -84,8 +84,9 @@ public class TraitementMasseMain {
          // on force ici la fermeture du contexte de Spring
          // ceci a pour but de forcer la déconnexion avec Cassandra, la SGBD
          // chargé de la persistance de la pile des travaux
+         LOG.debug("execute - fermeture du contexte d'application");
          context.close();
-
+         LOG.debug("execute - fermeture du contexte d'application effectuée");
       }
 
    }

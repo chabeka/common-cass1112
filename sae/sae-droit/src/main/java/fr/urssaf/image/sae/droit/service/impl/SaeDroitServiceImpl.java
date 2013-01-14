@@ -5,7 +5,6 @@ package fr.urssaf.image.sae.droit.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
@@ -87,8 +86,6 @@ public class SaeDroitServiceImpl implements SaeDroitService {
 
    private final JobClockSupport clockSupport;
 
-   private final Runnable cacheRefreshRunnable;
-
    /**
     * Constructeur
     * 
@@ -116,7 +113,9 @@ public class SaeDroitServiceImpl implements SaeDroitService {
          final ActionUnitaireSupport actionSupport,
          final PrmdSupport prmdSupport, final CuratorFramework curatorClient,
          final JobClockSupport clockSupport, CacheConfig cacheConfig) {
-      contratsCache = CacheBuilder.newBuilder().build(
+
+      contratsCache = CacheBuilder.newBuilder().expireAfterWrite(
+            cacheConfig.getDroitsCacheDuration(), TimeUnit.MINUTES).build(
             new CacheLoader<String, ServiceContract>() {
 
                @Override
@@ -126,7 +125,8 @@ public class SaeDroitServiceImpl implements SaeDroitService {
 
             });
 
-      pagmsCache = CacheBuilder.newBuilder().build(
+      pagmsCache = CacheBuilder.newBuilder().expireAfterWrite(
+            cacheConfig.getDroitsCacheDuration(), TimeUnit.MINUTES).build(
             new CacheLoader<String, List<Pagm>>() {
 
                @Override
@@ -136,7 +136,8 @@ public class SaeDroitServiceImpl implements SaeDroitService {
 
             });
 
-      pagmasCache = CacheBuilder.newBuilder().build(
+      pagmasCache = CacheBuilder.newBuilder().expireAfterWrite(
+            cacheConfig.getDroitsCacheDuration(), TimeUnit.MINUTES).build(
             new CacheLoader<String, Pagma>() {
 
                @Override
@@ -146,7 +147,8 @@ public class SaeDroitServiceImpl implements SaeDroitService {
 
             });
 
-      pagmpsCache = CacheBuilder.newBuilder().build(
+      pagmpsCache = CacheBuilder.newBuilder().expireAfterWrite(
+            cacheConfig.getDroitsCacheDuration(), TimeUnit.MINUTES).build(
             new CacheLoader<String, Pagmp>() {
 
                @Override
@@ -156,7 +158,8 @@ public class SaeDroitServiceImpl implements SaeDroitService {
 
             });
 
-      actionsCache = CacheBuilder.newBuilder().build(
+      actionsCache = CacheBuilder.newBuilder().expireAfterWrite(
+            cacheConfig.getDroitsCacheDuration(), TimeUnit.MINUTES).build(
             new CacheLoader<String, ActionUnitaire>() {
 
                @Override
@@ -166,7 +169,8 @@ public class SaeDroitServiceImpl implements SaeDroitService {
 
             });
 
-      prmdsCache = CacheBuilder.newBuilder().build(
+      prmdsCache = CacheBuilder.newBuilder().expireAfterWrite(
+            cacheConfig.getDroitsCacheDuration(), TimeUnit.MINUTES).build(
             new CacheLoader<String, Prmd>() {
 
                @Override
@@ -180,24 +184,6 @@ public class SaeDroitServiceImpl implements SaeDroitService {
       this.pagmSupport = pagmSupport;
       this.curatorClient = curatorClient;
       this.clockSupport = clockSupport;
-
-      cacheRefreshRunnable = new Runnable() {
-
-         @Override
-         public void run() {
-            actionsCache.invalidateAll();
-            pagmasCache.invalidateAll();
-            prmdsCache.invalidateAll();
-            pagmpsCache.invalidateAll();
-            pagmsCache.invalidateAll();
-            contratsCache.invalidateAll();
-
-         }
-      };
-
-      Executors.newScheduledThreadPool(1).scheduleWithFixedDelay(
-            cacheRefreshRunnable, cacheConfig.getDroitsCacheDuration(),
-            cacheConfig.getDroitsCacheDuration(), TimeUnit.MINUTES);
    }
 
    /**
