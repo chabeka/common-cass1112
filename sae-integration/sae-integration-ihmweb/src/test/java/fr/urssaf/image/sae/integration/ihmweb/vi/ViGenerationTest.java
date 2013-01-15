@@ -2,7 +2,9 @@ package fr.urssaf.image.sae.integration.ihmweb.vi;
 
 import java.io.IOException;
 import java.security.KeyStore;
+import java.security.KeyStoreException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,8 +26,8 @@ import fr.urssaf.image.sae.integration.ihmweb.signature.XmlSignature;
 public class ViGenerationTest {
 
    
+   private static final String PKCS12 = "certificats/PNR_Application_Test.p12";
    private static final String KEYSTORE_PASSWORD = "QEtDiGuGuEnZ";
-   private static final String KEYSOTRE_ALIAS = "1";
    
    
    /**
@@ -56,8 +58,8 @@ public class ViGenerationTest {
     * </ul>
     * 
     */
-   @Ignore("Ce n'est pas un TU, mais un moyen de générer des VI")
    @Test
+   @Ignore("Ce n'est pas un TU, mais un moyen de générer des VI")
    public void generationViAA() {
       
       try {
@@ -152,7 +154,7 @@ public class ViGenerationTest {
       try {
       
          KeyStore keystore = chargeKeyStore();
-         String alias = KEYSOTRE_ALIAS ;
+         String alias = trouveAliasClePrivee(keystore) ;
          String password = KEYSTORE_PASSWORD;
          
          String assertionSignee = XmlSignature.signeXml(
@@ -174,9 +176,9 @@ public class ViGenerationTest {
       
       try {
          
-         ClassPathResource resource = new ClassPathResource("certificats/PNR_Application_Test.p12");
+         ClassPathResource resource = new ClassPathResource(PKCS12);
          
-         KeyStore keystore = KeyStore.getInstance("PKCS12");
+         KeyStore keystore = KeyStore.getInstance("PKCS12", "SunJSSE");
          
          keystore.load(resource.getInputStream(), KEYSTORE_PASSWORD.toCharArray());
          
@@ -221,6 +223,28 @@ public class ViGenerationTest {
       
       } catch (Exception ex) {
          throw new IntegrationRuntimeException(ex);
+      }
+      
+   }
+   
+   private String trouveAliasClePrivee(KeyStore keystore) {
+      
+      List<String> aliases;
+      try {
+         
+         aliases = Collections.list(keystore.aliases());
+         
+         for (String alias: aliases) {
+            if (keystore.isKeyEntry(alias)) {
+               return alias;
+            }
+         }
+         
+         // Si pas trouvé, on lève une exception
+         throw new IntegrationRuntimeException("");
+         
+      } catch (KeyStoreException e) {
+         throw new IntegrationRuntimeException(e);
       }
       
    }

@@ -8,8 +8,6 @@
 
 package fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -17,29 +15,20 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * Un document virtuel
+ * Définition d'un document archivé
  * 
- * <p>Java class for documentVirtuelType complex type.
+ * <p>Java class for integratedDocumentType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="documentVirtuelType">
+ * &lt;complexType name="integratedDocumentType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element name="objetNumerique" type="{http://www.cirtil.fr/sae/commun_sommaire_et_resultat}fichierType"/>
- *         &lt;element name="composants">
- *           &lt;complexType>
- *             &lt;complexContent>
- *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *                 &lt;sequence>
- *                   &lt;element name="composant" type="{http://www.cirtil.fr/sae/commun_sommaire_et_resultat}composantDocumentVirtuelType" maxOccurs="unbounded" minOccurs="0"/>
- *                 &lt;/sequence>
- *               &lt;/restriction>
- *             &lt;/complexContent>
- *           &lt;/complexType>
- *         &lt;/element>
+ *         &lt;element name="metadonnees" type="{http://www.cirtil.fr/sae/commun_sommaire_et_resultat}listeMetadonneeType"/>
+ *         &lt;element name="uuid" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="numeroPageDebut" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
  *         &lt;element name="nombreDePages" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
  *       &lt;/sequence>
@@ -51,20 +40,23 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "documentVirtuelType", propOrder = {
+@XmlType(name = "integratedDocumentType", propOrder = {
     "objetNumerique",
-    "composants",
+    "metadonnees",
+    "uuid",
     "numeroPageDebut",
     "nombreDePages"
 })
 // CHECKSTYLE:OFF
 @SuppressWarnings("all")
-public class DocumentVirtuelType {
+public class IntegratedDocumentType {
 
     @XmlElement(required = true)
     protected FichierType objetNumerique;
     @XmlElement(required = true)
-    protected DocumentVirtuelType.Composants composants;
+    protected ListeMetadonneeType metadonnees;
+    @XmlElement(required = true)
+    protected String uuid;
     protected Integer numeroPageDebut;
     protected Integer nombreDePages;
 
@@ -93,27 +85,51 @@ public class DocumentVirtuelType {
     }
 
     /**
-     * Gets the value of the composants property.
+     * Gets the value of the metadonnees property.
      * 
      * @return
      *     possible object is
-     *     {@link DocumentVirtuelType.Composants }
+     *     {@link ListeMetadonneeType }
      *     
      */
-    public DocumentVirtuelType.Composants getComposants() {
-        return composants;
+    public ListeMetadonneeType getMetadonnees() {
+        return metadonnees;
     }
 
     /**
-     * Sets the value of the composants property.
+     * Sets the value of the metadonnees property.
      * 
      * @param value
      *     allowed object is
-     *     {@link DocumentVirtuelType.Composants }
+     *     {@link ListeMetadonneeType }
      *     
      */
-    public void setComposants(DocumentVirtuelType.Composants value) {
-        this.composants = value;
+    public void setMetadonnees(ListeMetadonneeType value) {
+        this.metadonnees = value;
+    }
+
+    /**
+     * Gets the value of the uuid property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getUuid() {
+        return uuid;
+    }
+
+    /**
+     * Sets the value of the uuid property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setUuid(String value) {
+        this.uuid = value;
     }
 
     /**
@@ -162,65 +178,6 @@ public class DocumentVirtuelType {
      */
     public void setNombreDePages(Integer value) {
         this.nombreDePages = value;
-    }
-
-
-    /**
-     * <p>Java class for anonymous complex type.
-     * 
-     * <p>The following schema fragment specifies the expected content contained within this class.
-     * 
-     * <pre>
-     * &lt;complexType>
-     *   &lt;complexContent>
-     *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
-     *       &lt;sequence>
-     *         &lt;element name="composant" type="{http://www.cirtil.fr/sae/commun_sommaire_et_resultat}composantDocumentVirtuelType" maxOccurs="unbounded" minOccurs="0"/>
-     *       &lt;/sequence>
-     *     &lt;/restriction>
-     *   &lt;/complexContent>
-     * &lt;/complexType>
-     * </pre>
-     * 
-     * 
-     */
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "composant"
-    })
-    public static class Composants {
-
-        protected List<ComposantDocumentVirtuelType> composant;
-
-        /**
-         * Gets the value of the composant property.
-         * 
-         * <p>
-         * This accessor method returns a reference to the live list,
-         * not a snapshot. Therefore any modification you make to the
-         * returned list will be present inside the JAXB object.
-         * This is why there is not a <CODE>set</CODE> method for the composant property.
-         * 
-         * <p>
-         * For example, to add a new item, do as follows:
-         * <pre>
-         *    getComposant().add(newItem);
-         * </pre>
-         * 
-         * 
-         * <p>
-         * Objects of the following type(s) are allowed in the list
-         * {@link ComposantDocumentVirtuelType }
-         * 
-         * 
-         */
-        public List<ComposantDocumentVirtuelType> getComposant() {
-            if (composant == null) {
-                composant = new ArrayList<ComposantDocumentVirtuelType>();
-            }
-            return this.composant;
-        }
-
     }
 
 }

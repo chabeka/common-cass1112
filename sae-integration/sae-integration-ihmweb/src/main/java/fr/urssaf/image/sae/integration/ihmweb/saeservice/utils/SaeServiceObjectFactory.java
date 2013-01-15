@@ -14,6 +14,8 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.CodeMetadonneeList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeur;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeurList;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ArchivageMasse;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ArchivageMasseAvecHash;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ArchivageMasseAvecHashRequestType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ArchivageMasseRequestType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ArchivageUnitaire;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ArchivageUnitairePJ;
@@ -338,6 +340,43 @@ public final class SaeServiceObjectFactory {
 
       // fin
       return archivageMasse;
+
+   }
+
+   /**
+    * Renvoie un objet de requête pour le service web archivageMasseAvecHash
+    * 
+    * @param urlSommaire
+    *           l'URL du fichier sommaire.xml
+    * @return l'objet pour la couche WebService
+    */
+   public static ArchivageMasseAvecHash buildArchivageMasseAvecHashRequest(
+         String urlSommaire, String hash, String typeHash) {
+
+      ArchivageMasseAvecHash archivageMasseAvecHash = new ArchivageMasseAvecHash();
+
+      ArchivageMasseAvecHashRequestType archivageMasseAvecHashReqType = new ArchivageMasseAvecHashRequestType();
+
+      archivageMasseAvecHash
+            .setArchivageMasseAvecHash(archivageMasseAvecHashReqType);
+
+      // URL de sommaire.xml
+      EcdeUrlSommaireType urlEcdeSommaire;
+      try {
+         urlEcdeSommaire = buildEcdeUrlSommaire(urlSommaire);
+      } catch (MalformedURIException e) {
+         throw new IntegrationRuntimeException(e);
+      }
+      archivageMasseAvecHashReqType.setUrlSommaire(urlEcdeSommaire);
+
+      // Le hash
+      archivageMasseAvecHashReqType.setHash(hash);
+
+      // Le type de hash
+      archivageMasseAvecHashReqType.setTypeHash(typeHash);
+
+      // fin
+      return archivageMasseAvecHash;
 
    }
 

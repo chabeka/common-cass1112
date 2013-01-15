@@ -64,13 +64,28 @@ function createCsTableSummary(jsonData){
                 '<tpl for="cs">',
                 '<tpl exec="values.popup = parent.popup;"></tpl>', // cette ligne est reproduite a plusieurs endroit et permet de faire hériter les elements fils de la valeur popup
                   '<div class="{[xindex % 2 === 0 ? "even" : "odd"]}">',
-                  '<tpl if="popup==false">', // suivant la valeur passé par le controller on affiche plus ou moins de détails
-                     '<div class="text"><a href="#" onclick="csPopup(&quot;{codeClient}&quot;)"><p><b>{codeClient}</b></p></a> <tpl if="parent.popup==true"> <u>Description : </u><i>{description}</i></tpl></div>',
-                  '</tpl>',
-                  '<tpl if="popup==true">',
-                  '<div class="text"><p><b>{codeClient}</b></p><tpl if="parent.popup==true"> <u>Description : </u><i>{description}</i></tpl></div>',
-                  '</tpl>',
+               
 
+                     // suivant la valeur passé par le controller on affiche plus ou moins de détails
+                      '<tpl if="popup==false">', 
+                         '<div class="text"><a href="#" onclick="csPopup(&quot;{codeClient}&quot;)"><p><b>{codeClient}</b></p></a> <tpl if="parent.popup==true">',
+                         '<u>Description : </u><i>{description}</i>',
+                         '<br /><u>PKI : </u><i>{pki}</i>',
+                         '<br /><u>Vérification du nom du certificat client : </u><i>{verifNommageCertifClient}</i>',
+                         '<br /><u>Certificats clients : </u><i>{certifClient}</i>',
+                         '<br /><u>Liste des PAGM : </u>',
+                         '</tpl></div>',
+                      '</tpl>',
+                      '<tpl if="popup==true">',
+                         '<div class="text"><p><b>{codeClient}</b></p><tpl if="parent.popup==true">',
+                         '<u>Description : </u><i>{description}</i>',
+                         '<br /><u>PKI : </u><i>{pki}</i>',
+                         '<br /><u>Vérification du nom du certificat client : </u><i>{verifNommageCertifClient}</i>',
+                         '<br /><u>Certificats clients : </u><i>{certifClient}</i>',
+                         '<br /><u>Liste des PAGM : </u>',
+                         '</tpl></div>',
+                      '</tpl>',
+                  
                           '<tpl for="pagms"}>',
                           '<tpl exec="values.popup = parent.popup;"></tpl>',
                                '<div class="blank">&nbsp;</div>',
@@ -172,8 +187,8 @@ function csPopup(csCode){
         new Ext.Window({           
            html: tplCsInstancie,
            shadow:false,
-           width:1300,
-           height:1000,
+           width:800,
+           height:500,
            autoScroll:true,
            title:'Détail du contrat de service :'+csCode
         }).show();

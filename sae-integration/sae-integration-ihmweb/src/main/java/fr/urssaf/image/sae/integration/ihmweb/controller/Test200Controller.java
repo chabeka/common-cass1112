@@ -8,6 +8,7 @@ import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseResultatFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ComptagesTdmFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.Test200Formulaire;
+import fr.urssaf.image.sae.integration.ihmweb.modele.CaptureMasseResultat;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTest;
 import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
 
@@ -93,14 +94,23 @@ public class Test200Controller extends AbstractTestWsController<Test200Formulair
       formCaptMassRes.getResultats().clear();
       formCaptMassRes.setUrlSommaire(null);
       
+      // Vide le résultat du test précédent de l'étape 3
+      ComptagesTdmFormulaire formComptages = formulaire.getComptagesFormulaire();
+      formComptages.getResultats().clear();
+      formComptages.setIdTdm(null);
+      
       // Appel de la méthode de test
-      getCaptureMasseTestService().appelWsOpArchiMasseTestLibre(
+      CaptureMasseResultat cmResult = getCaptureMasseTestService().appelWsOpArchiMasseTestLibre(
             urlWebService, 
             formulaire.getCaptureMasseDeclenchement());
       
       // Renseigne le formulaire de l'étape 2
       formCaptMassRes.setUrlSommaire(formulaire.getCaptureMasseDeclenchement().getUrlSommaire());
       
+      // Renseigne éventuellement le formulaire de l'étape 3
+      if (cmResult.isAppelAvecHashSommaire()) {
+         formComptages.setIdTdm(cmResult.getIdTraitement());
+      }
       
    }
    

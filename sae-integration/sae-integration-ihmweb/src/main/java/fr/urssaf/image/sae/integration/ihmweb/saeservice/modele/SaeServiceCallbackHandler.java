@@ -3,7 +3,7 @@
  * SaeServiceCallbackHandler.java
  *
  * This file was auto-generated from WSDL
- * by the Apache Axis2 version: 1.6.1  Built on : Aug 31, 2011 (12:22:40 CEST)
+ * by the Apache Axis2 version: 1.6.2  Built on : Apr 17, 2012 (05:33:49 IST)
  */
 
     package fr.urssaf.image.sae.integration.ihmweb.saeservice.modele;
@@ -46,6 +46,22 @@ public abstract class SaeServiceCallbackHandler{
      }
 
         
+           /**
+            * auto generated Axis2 call back method for archivageMasseAvecHash method
+            * override this method for handling normal response from archivageMasseAvecHash operation
+            */
+           public void receiveResultarchivageMasseAvecHash(
+                    fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ArchivageMasseAvecHashResponse result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from archivageMasseAvecHash operation
+           */
+            public void receiveErrorarchivageMasseAvecHash(java.lang.Exception e) {
+            }
+                
            /**
             * auto generated Axis2 call back method for archivageUnitairePJ method
             * override this method for handling normal response from archivageUnitairePJ operation

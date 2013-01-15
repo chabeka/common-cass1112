@@ -1,15 +1,18 @@
 package fr.urssaf.image.sae.integration.ihmweb.controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,6 +25,9 @@ import fr.urssaf.image.sae.droit.dao.model.Pagmp;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.dao.model.ServiceContractDatas;
 import fr.urssaf.image.sae.droit.dao.support.ContratServiceDatasSupport;
+import fr.urssaf.image.sae.integration.ihmweb.comparator.PagmComparator;
+import fr.urssaf.image.sae.integration.ihmweb.comparator.PrmdComparator;
+import fr.urssaf.image.sae.integration.ihmweb.comparator.ServiceContractDatasComparator;
 
 /**
  * Classe gérant l'affichage de la page listeCsPrmd.do
@@ -64,11 +70,19 @@ public class ListeCsPrmdController {
       HashMap listPrmd = new HashMap<String, Prmd>();
       HashMap listPagma = new HashMap<String, Pagma>();
       HashMap listPagmp = new HashMap<String, Pagmp>();
-      HashMap<String, Object> map = new HashMap<String, Object>();
+      
       HashMap listCsRecompose = new HashMap<String, HashMap>();
       ArrayList listPrmdCs = new ArrayList();
 
       List<ServiceContractDatas> listCs = data.findAll(50);
+      
+      // Tri des CS par ordre d'identifiant croissant
+      Collections.sort(listCs, new ServiceContractDatasComparator());
+      
+      // Et dans chaque CS, tri des PAGM par ordre croissant
+      for (ServiceContractDatas cs : listCs) {
+         Collections.sort(cs.getPagms(), new PagmComparator());
+      }
 
       // parcour du résultat pour alimenter les feuilles
       for (ServiceContractDatas cs : listCs) {
@@ -134,7 +148,6 @@ public class ListeCsPrmdController {
       for (ServiceContractDatas cs : listCs) {
          ArrayList pagmaList = new ArrayList();
          ArrayList pagmList = new ArrayList();
-         HashMap csRecompose = new HashMap();
          
          // pour chaque pagm on complète les infos
          for (Pagm pagm : cs.getPagms()) {
@@ -156,15 +169,12 @@ public class ListeCsPrmdController {
             pagmList.add(pagmRecompose);
          }
          // on ajoute les composants du contrat service
-         csRecompose.put("codeClient",cs.getCodeClient());
-         csRecompose.put("libelle",cs.getLibelle());
-         csRecompose.put("description",cs.getDescription());
-         csRecompose.put("pagms", pagmList);
+         HashMap csPourJson = buildCsPourJson(cs, pagmList);
 
          // on ajout le contrat service à la liste des contrat service.
-         listCsFinal.add(csRecompose);
+         listCsFinal.add(csPourJson);
          // on construit une deuxième liste qui sera stockée en session.
-         listCsRecompose.put(cs.getCodeClient(), csRecompose);
+         listCsRecompose.put(cs.getCodeClient(), csPourJson);
          
       }
       
@@ -198,14 +208,19 @@ public class ListeCsPrmdController {
          listPrmdCs.add(prmdCsMap);
       }       
       
+      // Tri les PRMD par ordre croissant de code
+      Collections.sort(listPrmdCs, new PrmdComparator());
 
-      map.put("cs", listCsFinal);
-      map.put("popup", false);
-      map.put("listPrmd", listPrmdCs);
       // mise en session de la liste des Contrat service indexée
       session.setAttribute("listCs", listCsRecompose);
       
+      // Renvoie du résultat en json
+      HashMap<String, Object> map = new HashMap<String, Object>();
+      map.put("cs", listCsFinal);
+      map.put("popup", false);
+      map.put("listPrmd", listPrmdCs);
       return map;
+      
    }
    
    @ResponseBody
@@ -221,5 +236,76 @@ public class ListeCsPrmdController {
       
             return map;
    }
+   
+   
+   private HashMap buildCsPourJson(
+         ServiceContractDatas cs,
+         ArrayList pagmList) {
+
+      HashMap csJson = new HashMap();
+      
+      csJson.put("codeClient",cs.getCodeClient());
+      csJson.put("libelle",cs.getLibelle());
+      csJson.put("description",cs.getDescription());
+      csJson.put("pagms", pagmList);
+      
+      csJson.put("pki", buildListePki(cs));
+      csJson.put("certifClient", buildListeCertifClients(cs));
+      if (cs.isVerifNommage()) {
+         csJson.put("verifNommageCertifClient", "Oui");
+      } else {
+         csJson.put("verifNommageCertifClient", "Non");
+      }
+      
+      return csJson;
+      
+   }
+   
+   
+   private String buildListePki(ServiceContractDatas cs) {
+      
+      String result = StringUtils.EMPTY;
+      
+      if (!CollectionUtils.isEmpty(cs.getListPki())) {
+         
+         for(String pki: cs.getListPki()) {
+            result += "\"" + pki + "\" ";
+         }
+         
+      } else {
+         result = "\"" + cs.getIdPki() + "\"" ;
+      }
+      
+      return result;
+      
+   }
+   
+   
+   private String buildListeCertifClients(ServiceContractDatas cs) {
+      
+      String result = StringUtils.EMPTY;
+      
+      if (!CollectionUtils.isEmpty(cs.getListCertifsClient() )) {
+         
+         for(String certifClient: cs.getListCertifsClient()) {
+            result += "\"" + certifClient + "\" ";
+         }
+         
+      } else {
+         
+         if (StringUtils.isNotBlank(cs.getIdCertifClient())) {
+            result = "\"" + cs.getIdCertifClient() + "\" ";
+         }
+         
+      }
+      
+      if (StringUtils.isBlank(result)) {
+         result = "aucun";
+      }
+      
+      return result;
+      
+   }
+   
    
 }

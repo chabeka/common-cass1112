@@ -1,55 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- edited with XMLSpy v2011 rel. 2 sp1 (http://www.altova.com) by CIRTIL (CIRTIL) -->
+<!-- edited with XMLSpy v2011 rel. 2 sp1 (http://www.altova.com) by CIRTIL (CIRTIL)
+-->
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:res="http://www.cirtil.fr/sae/resultatsXml" xmlns:somres="http://www.cirtil.fr/sae/commun_sommaire_et_resultat" targetNamespace="http://www.cirtil.fr/sae/resultatsXml" elementFormDefault="qualified" attributeFormDefault="unqualified">
-	<!-- Import des types communs entre sommaire.xsd et resultat.xsd -->
-	<xsd:import namespace="http://www.cirtil.fr/sae/commun_sommaire_et_resultat" schemaLocation="commun_sommaire_et_resultat.xsd"/>
-	<!-- 
+   <!-- Import des types communs entre sommaire.xsd et resultat.xsd -->
+   <xsd:import namespace="http://www.cirtil.fr/sae/commun_sommaire_et_resultat" schemaLocation="commun_sommaire_et_resultat.xsd"/>
+   <!-- 
    =======================================
    L'unique élément autorisé dans resultats.xml
    =======================================
    -->
-	<xsd:element name="resultats" type="res:resultatsType">
-		<xsd:annotation>
-			<xsd:documentation>L'élément resultats est l'élément racine d'un fichier resultats.xml</xsd:documentation>
-		</xsd:annotation>
-	</xsd:element>
-	<!-- 
+   <xsd:element name="resultats" type="res:resultatsType">
+      <xsd:annotation>
+         <xsd:documentation>L'élément resultats est l'élément racine d'un fichier resultats.xml</xsd:documentation>
+      </xsd:annotation>
+   </xsd:element>
+   <!-- 
    =======================================
    Définition de resultats
    =======================================
    -->
-	<xsd:complexType name="resultatsType">
-		<xsd:choice>
-			<xsd:sequence>
-				<!-- Le type du traitement de masse (tout ou rien, partiel) -->
-				<xsd:element name="batchMode" type="somres:batchModeType" minOccurs="1" maxOccurs="1">
-					<xsd:annotation>
-						<xsd:documentation>Le type du traitement de masse</xsd:documentation>
-					</xsd:annotation>
-				</xsd:element>
-				<!-- Compteurs -->
-				<xsd:element name="initialDocumentsCount" type="xsd:int" minOccurs="1" maxOccurs="1"/>
-				<xsd:element name="integratedDocumentsCount" type="xsd:int" minOccurs="1" maxOccurs="1"/>
-				<xsd:element name="nonIntegratedDocumentsCount" type="xsd:int" minOccurs="1" maxOccurs="1"/>
-				<xsd:element name="initialVirtualDocumentsCount" type="xsd:int" minOccurs="1" maxOccurs="1"/>
-				<xsd:element name="integratedVirtualDocumentsCount" type="xsd:int" minOccurs="1" maxOccurs="1"/>
-				<xsd:element name="nonIntegratedVirtualDocumentsCount" type="xsd:int" minOccurs="1" maxOccurs="1"/>
-				<!-- Liste des documents non archivés (le cas échéant) -->
-				<xsd:element name="nonIntegratedDocuments" type="somres:listeNonIntegratedDocumentsType" minOccurs="1" maxOccurs="1">
-					<xsd:annotation>
-						<xsd:documentation>La liste des documents qui n'ont pas été archivés (le cas échéant)</xsd:documentation>
-					</xsd:annotation>
-				</xsd:element>
-				<!-- Liste des documents virtuels non archivés (le cas échéant) -->
-				<xsd:element name="nonIntegratedVirtualDocuments" type="somres:listeDocumentsVirtuelsType" minOccurs="1" maxOccurs="1">
-					<xsd:annotation>
-						<xsd:documentation>La liste des documents virtuels qui n'ont pas été archivés (le cas échéant)</xsd:documentation>
-					</xsd:annotation>
-				</xsd:element>
-			</xsd:sequence>
-			<xsd:sequence>
-				<xsd:element name="erreurBloquanteTraitement" type="somres:erreurType" minOccurs="1" maxOccurs="1"/>
-			</xsd:sequence>
-		</xsd:choice>
-	</xsd:complexType>
+   <xsd:complexType name="resultatsType">
+      <xsd:choice>
+         <xsd:sequence>
+            <!-- Le type du traitement de masse (tout ou rien, partiel) -->
+            <xsd:element name="batchMode" type="somres:batchModeType" minOccurs="1" maxOccurs="1">
+               <xsd:annotation>
+                  <xsd:documentation>Le type du traitement de masse</xsd:documentation>
+               </xsd:annotation>
+            </xsd:element>
+            <!-- Compteurs -->
+            <xsd:element name="initialDocumentsCount" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+            <xsd:element name="integratedDocumentsCount" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+            <xsd:element name="nonIntegratedDocumentsCount" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+            <xsd:element name="initialVirtualDocumentsCount" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+            <xsd:element name="integratedVirtualDocumentsCount" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+            <xsd:element name="nonIntegratedVirtualDocumentsCount" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+            <!-- Liste des documents non archivés (le cas échéant) -->
+            <xsd:element name="nonIntegratedDocuments" type="somres:listeNonIntegratedDocumentsType" minOccurs="1" maxOccurs="1">
+               <xsd:annotation>
+                  <xsd:documentation>La liste des documents qui n'ont pas été archivés (le cas échéant)</xsd:documentation>
+               </xsd:annotation>
+            </xsd:element>
+            <!-- Liste des documents virtuels non archivés (le cas échéant) -->
+            <xsd:element name="nonIntegratedVirtualDocuments" type="somres:listeDocumentsVirtuelsType" minOccurs="1" maxOccurs="1">
+               <xsd:annotation>
+                  <xsd:documentation>La liste des documents virtuels qui n'ont pas été archivés (le cas échéant)</xsd:documentation>
+               </xsd:annotation>
+            </xsd:element>
+                <xsd:element name="integratedDocuments" type="somres:listeIntegratedDocumentsType" minOccurs="0" maxOccurs="1">
+                  <xsd:annotation>
+                     <xsd:documentation>La liste des documents qui ont été archivés</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+         </xsd:sequence>
+            <xsd:sequence>
+            <xsd:element name="erreurBloquanteTraitement" type="somres:erreurType" minOccurs="1" maxOccurs="1"/>
+            </xsd:sequence>
+      </xsd:choice>
+   </xsd:complexType>
 </xsd:schema>

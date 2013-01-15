@@ -30,13 +30,8 @@ public final class WsTestListenerImplLibre implements WsTestListener {
          ConfigurationContext configurationContext,
          TestWsParentFormulaire testWsParentFormulaire) {
 
-      String messageIn = (String) configurationContext
-            .getProperty(LogInMessageHandler.PROP_MESSAGE_IN);
-      String messageOut = (String) configurationContext
-            .getProperty(VIHandler.PROP_MESSAGE_OUT);
-
-      testWsParentFormulaire.getSoapFormulaire().setMessageIn(messageIn);
-      testWsParentFormulaire.getSoapFormulaire().setMessageOut(messageOut);
+      // Mémorise les messages SOAP dans les champs du formulaire
+      addSoapMessages(testWsParentFormulaire, configurationContext);
 
    }
 
@@ -51,13 +46,8 @@ public final class WsTestListenerImplLibre implements WsTestListener {
       log.appendLogNewLine();
       LogUtils.logSoapFault(log, faultObtenue);
 
-      String messageIn = (String) configurationContext
-            .getProperty(LogInMessageHandler.PROP_MESSAGE_IN);
-      String messageOut = (String) configurationContext
-            .getProperty(VIHandler.PROP_MESSAGE_OUT);
-
-      testWsParentFormulaire.getSoapFormulaire().setMessageIn(messageIn);
-      testWsParentFormulaire.getSoapFormulaire().setMessageOut(messageOut);
+      // Mémorise les messages SOAP dans les champs du formulaire
+      addSoapMessages(testWsParentFormulaire, configurationContext);
 
    }
 
@@ -71,6 +61,14 @@ public final class WsTestListenerImplLibre implements WsTestListener {
       log.appendLogLn("Une exception non SoapFault a été levée :");
       log.appendLogNewLine();
       log.appendLogLn(exception.toString());
+
+      // Mémorise les messages SOAP dans les champs du formulaire
+      addSoapMessages(testWsParentFormulaire, configurationContext);
+
+   }
+
+   private void addSoapMessages(TestWsParentFormulaire testWsParentFormulaire,
+         ConfigurationContext configurationContext) {
 
       String messageIn = (String) configurationContext
             .getProperty(LogInMessageHandler.PROP_MESSAGE_IN);

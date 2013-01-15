@@ -9,8 +9,15 @@
    
    <certificat>
       <id>2</id>
+      <chemin>certificats/PKI_VAL-AED_ApplicationTestSAE.p12</chemin>
+      <password>dKQmz8NwyO4d</password>
+   </certificat>
+   
+   <certificat>
+      <id>3</id>
       <chemin>certificats/PKI_Test_CertifAppliCliente.p12</chemin>
       <password>toto</password>
    </certificat>
-
+   
+   
 </certificats>

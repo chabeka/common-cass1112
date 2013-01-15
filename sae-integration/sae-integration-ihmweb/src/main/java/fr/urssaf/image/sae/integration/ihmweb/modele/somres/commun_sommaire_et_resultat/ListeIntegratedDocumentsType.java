@@ -16,18 +16,18 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * Une liste d'erreur
+ * Une liste de documents archivés
  * 
- * <p>Java class for listeErreurType complex type.
+ * <p>Java class for listeIntegratedDocumentsType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="listeErreurType">
+ * &lt;complexType name="listeIntegratedDocumentsType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="erreur" type="{http://www.cirtil.fr/sae/commun_sommaire_et_resultat}erreurType" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="integratedDocument" type="{http://www.cirtil.fr/sae/commun_sommaire_et_resultat}integratedDocumentType" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -37,42 +37,42 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "listeErreurType", propOrder = {
-    "erreur"
+@XmlType(name = "listeIntegratedDocumentsType", propOrder = {
+    "integratedDocument"
 })
 // CHECKSTYLE:OFF
 @SuppressWarnings("all")
-public class ListeErreurType {
+public class ListeIntegratedDocumentsType {
 
-    protected List<ErreurType> erreur;
+    protected List<IntegratedDocumentType> integratedDocument;
 
     /**
-     * Gets the value of the erreur property.
+     * Gets the value of the integratedDocument property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the erreur property.
+     * This is why there is not a <CODE>set</CODE> method for the integratedDocument property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getErreur().add(newItem);
+     *    getIntegratedDocument().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link ErreurType }
+     * {@link IntegratedDocumentType }
      * 
      * 
      */
-    public List<ErreurType> getErreur() {
-        if (erreur == null) {
-            erreur = new ArrayList<ErreurType>();
+    public List<IntegratedDocumentType> getIntegratedDocument() {
+        if (integratedDocument == null) {
+            integratedDocument = new ArrayList<IntegratedDocumentType>();
         }
-        return this.erreur;
+        return this.integratedDocument;
     }
 
 }

@@ -19,6 +19,7 @@ import fr.urssaf.image.sae.integration.ihmweb.exception.IntegrationException;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseResultatFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ViFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.modele.CaptureMasseResultat;
 import fr.urssaf.image.sae.integration.ihmweb.modele.Comptage;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTest;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTestLog;
@@ -29,6 +30,9 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_r
 import fr.urssaf.image.sae.integration.ihmweb.modele.somres.resultats.ResultatsType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ArchivageMasse;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ArchivageMasseAvecHash;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ArchivageMasseAvecHashResponse;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ArchivageMasseResponse;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.security.ViStyle;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.utils.SaeServiceLogUtils;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.utils.SaeServiceObjectFactory;
@@ -71,9 +75,12 @@ public class CaptureMasseTestService {
    @Autowired
    private SaeServiceStubUtils saeServiceStubUtils;
 
-   private void appelWsOpArchiMasse(String urlServiceWeb, ViStyle viStyle,
-         ViFormulaire viParams, CaptureMasseFormulaire formulaire,
-         WsTestListener wsListener) {
+   private CaptureMasseResultat appelWsOpArchiMasse(String urlServiceWeb,
+         ViStyle viStyle, ViFormulaire viParams,
+         CaptureMasseFormulaire formulaire, WsTestListener wsListener) {
+
+      // Initialise le résultat
+      CaptureMasseResultat result = null;
 
       // on supprime les fichiers de traitement précédents
       String urlEcde = formulaire.getUrlSommaire();
@@ -111,12 +118,37 @@ public class CaptureMasseTestService {
       // Appel du service web et gestion de erreurs
       try {
 
-         // Construction du paramètre d'entrée de l'opération
-         ArchivageMasse paramsService = SaeServiceObjectFactory
-               .buildArchivageMasseRequest(formulaire.getUrlSommaire());
+         // Selon si l'on demande l'opération archivageMasse ou
+         // archivageMasseAvecHash
+         if (formulaire.getAvecHash()) {
 
-         // Appel du service web
-         service.archivageMasse(paramsService);
+            // Construction du paramètre d'entrée de l'opération
+            ArchivageMasseAvecHash paramsService = SaeServiceObjectFactory
+                  .buildArchivageMasseAvecHashRequest(formulaire
+                        .getUrlSommaire(), formulaire.getHash(), formulaire
+                        .getTypeHash());
+
+            // Appel du service web
+            ArchivageMasseAvecHashResponse response = service
+                  .archivageMasseAvecHash(paramsService);
+
+            // Construction de l'objet modèle de résultat
+            result = fromCaptureMasseAvecHash(response);
+
+         } else {
+
+            // Construction du paramètre d'entrée de l'opération
+            ArchivageMasse paramsService = SaeServiceObjectFactory
+                  .buildArchivageMasseRequest(formulaire.getUrlSommaire());
+
+            // Appel du service web
+            ArchivageMasseResponse response = service
+                  .archivageMasse(paramsService);
+
+            // Construction de l'objet modèle de résultat
+            result = fromCaptureMasseAncienService(response);
+
+         }
 
          // Appel du listener
          wsListener.onRetourWsSansErreur(resultatTest, service
@@ -126,7 +158,7 @@ public class CaptureMasseTestService {
          // Log de la réponse obtenue
          log
                .appendLogLn("Détails de la réponse obtenue de l'opération \"archivageMasse\" :");
-         log.appendLogLn("Le service n'a pas renvoyé d'erreur");
+         SaeServiceLogUtils.logResultatCaptureMasse(resultatTest, result);
 
       } catch (AxisFault fault) {
 
@@ -147,6 +179,9 @@ public class CaptureMasseTestService {
       // Ajoute le timestamp en 1ère ligne du log
       log.insertTimestamp();
 
+      // Renvoie de l'objet résultat
+      return result;
+
    }
 
    /**
@@ -158,10 +193,10 @@ public class CaptureMasseTestService {
     * @param formulaire
     *           le formulaire
     */
-   public final void appelWsOpArchiMasseTestLibre(String urlServiceWeb,
-         CaptureMasseFormulaire formulaire) {
+   public final CaptureMasseResultat appelWsOpArchiMasseTestLibre(
+         String urlServiceWeb, CaptureMasseFormulaire formulaire) {
 
-      appelWsOpArchiMasseTestLibre(urlServiceWeb, formulaire, null);
+      return appelWsOpArchiMasseTestLibre(urlServiceWeb, formulaire, null);
 
    }
 
@@ -176,16 +211,17 @@ public class CaptureMasseTestService {
     * @param viParams
     *           les paramètres du VI
     */
-   public final void appelWsOpArchiMasseTestLibre(String urlServiceWeb,
-         CaptureMasseFormulaire formulaire, ViFormulaire viParams) {
+   public final CaptureMasseResultat appelWsOpArchiMasseTestLibre(
+         String urlServiceWeb, CaptureMasseFormulaire formulaire,
+         ViFormulaire viParams) {
 
       // Création de l'objet qui implémente l'interface WsTestListener
       // et qui ne s'attend pas à un quelconque résultat (test libre)
       WsTestListener testLibre = new WsTestListenerImplLibre();
 
       // Appel de la méthode "générique" de test
-      appelWsOpArchiMasse(urlServiceWeb, ViStyle.VI_OK, viParams, formulaire,
-            testLibre);
+      return appelWsOpArchiMasse(urlServiceWeb, ViStyle.VI_OK, viParams,
+            formulaire, testLibre);
 
    }
 
@@ -221,11 +257,11 @@ public class CaptureMasseTestService {
     * @param urlWebService
     *           adresse du WS
     */
-   public final void appelWsOpArchiMasseOKAttendu(String urlWebService,
-         CaptureMasseFormulaire formulaire) {
+   public final CaptureMasseResultat appelWsOpArchiMasseOKAttendu(
+         String urlWebService, CaptureMasseFormulaire formulaire) {
 
       // Fait la même chose que le test libre
-      appelWsOpArchiMasseTestLibre(urlWebService, formulaire);
+      return appelWsOpArchiMasseTestLibre(urlWebService, formulaire);
 
    }
 
@@ -999,6 +1035,28 @@ public class CaptureMasseTestService {
       if (comptageAttendu != null) {
          resultatTest.setStatus(TestStatusEnum.Echec);
       }
+
+   }
+
+   private CaptureMasseResultat fromCaptureMasseAncienService(
+         ArchivageMasseResponse response) {
+
+      CaptureMasseResultat result = new CaptureMasseResultat();
+      result.setAppelAvecHashSommaire(false);
+
+      return result;
+
+   }
+
+   private CaptureMasseResultat fromCaptureMasseAvecHash(
+         ArchivageMasseAvecHashResponse response) {
+
+      CaptureMasseResultat result = new CaptureMasseResultat();
+      result.setAppelAvecHashSommaire(true);
+      result.setIdTraitement(response.getArchivageMasseAvecHashResponse()
+            .getUuid());
+
+      return result;
 
    }
 

@@ -22,6 +22,19 @@ Etape <c:out value="${numeroEtape}"/> : Appel du service web de capture de masse
                   <form:input path="${pathFormulaire}.urlSommaire" cssStyle="width:100%;" readonly="${readonly}" />
                </td>
             </tr>
+            <tr>
+               <td colspan="2">
+                  <form:checkbox label="avec hash du sommaire" path="${pathFormulaire}.avecHash" />
+               </td>
+            </tr>
+            <tr>
+               <td>Hash:</td>
+               <td><form:input path="${pathFormulaire}.hash" cssStyle="width:100%;" readonly="${readonly}" /></td>
+            </tr>
+            <tr>
+               <td>Type de hash:</td>
+               <td><form:input path="${pathFormulaire}.typeHash" cssStyle="width:100%;" readonly="${readonly}" /></td>
+            </tr>
          </table>
       </td>
       <td style="width:50%;border-left-width:2px;border-left-color:black;border-left-style:solid;">

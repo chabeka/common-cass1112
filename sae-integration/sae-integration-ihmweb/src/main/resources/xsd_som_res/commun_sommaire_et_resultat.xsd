@@ -335,5 +335,47 @@
       </xsd:sequence>
    </xsd:complexType>
    
-
+   <!-- 
+   =======================================
+   La liste des documents qui ont été archivés
+   =======================================
+   -->
+   <xsd:complexType name="listeIntegratedDocumentsType">
+      <xsd:annotation>
+         <xsd:documentation>Une liste de documents archivés</xsd:documentation>
+      </xsd:annotation>
+      <xsd:sequence>
+         <xsd:element name="integratedDocument" type="somres:integratedDocumentType" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+   </xsd:complexType>
+   
+   <!-- 
+   =======================================
+   Document archivé
+   =======================================
+   -->
+   <xsd:complexType name="integratedDocumentType">
+      <xsd:annotation>
+            <xsd:documentation>Définition d'un document archivé</xsd:documentation>
+      </xsd:annotation>
+      <xsd:sequence>
+         <!-- L'objet numérique (fichier) -->
+         <xsd:element name="objetNumerique" type="somres:fichierType" minOccurs="1" maxOccurs="1">
+            <xsd:annotation>
+               <xsd:documentation>Le fichier représentant le contenu du document archivé</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+            <!-- Les métadonnées -->
+            <xsd:element name="metadonnees" type="somres:listeMetadonneeType" minOccurs="1" maxOccurs="1">
+               <xsd:annotation>
+                  <xsd:documentation>La liste des métadonnées associées au document, sous la forme d'une liste de paire clé/valeur</xsd:documentation>
+               </xsd:annotation>
+            </xsd:element>
+            <!-- L’identifiant unique du document -->
+            <xsd:element name="uuid" type="xsd:string" minOccurs="1" maxOccurs="1" />
+           <xsd:element name="numeroPageDebut" type="xsd:int" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="nombreDePages" type="xsd:int" minOccurs="0" maxOccurs="1" />
+      </xsd:sequence>
+   </xsd:complexType>
+   
 </xsd:schema>

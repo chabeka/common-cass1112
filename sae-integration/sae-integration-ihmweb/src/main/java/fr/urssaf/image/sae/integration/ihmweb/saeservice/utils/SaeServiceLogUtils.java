@@ -24,6 +24,7 @@ import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureUnitaireFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ConsultationFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.modele.CaptureMasseResultat;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ConsultationResultat;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeur;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeurList;
@@ -88,12 +89,13 @@ public final class SaeServiceLogUtils {
             for (MetadonneeType metaType : tabMetaTypes) {
                code = metaType.getCode().getMetadonneeCodeType();
                valeur = metaType.getValeur().getMetadonneeValeurType();
-               if(valeur.length()>50){
-                  listeMetas.add(code + "=" + StringUtils.substring(valeur, 0,50)+"...");
-               }else{
+               if (valeur.length() > 50) {
+                  listeMetas.add(code + "="
+                        + StringUtils.substring(valeur, 0, 50) + "...");
+               } else {
                   listeMetas.add(code + "=" + valeur);
                }
-               
+
             }
             Collections.sort(listeMetas);
             for (String uneMeta : listeMetas) {
@@ -123,7 +125,7 @@ public final class SaeServiceLogUtils {
          log.appendLogLn("Nombre de métadonnées : " + metadonnees.size());
          log.appendLogLn("Liste :");
          for (MetadonneeValeur meta : metadonnees) {
-            if (meta.getValeur().length()>50) {
+            if (meta.getValeur().length() > 50) {
                log.appendLogLn(meta.getCode() + "="
                      + meta.getValeur().substring(0, 50) + "...");
             } else {
@@ -486,8 +488,19 @@ public final class SaeServiceLogUtils {
       log.appendLogLn(String.valueOf(objResultatXml
             .getNonIntegratedVirtualDocumentsCount()));
 
+      // Regarde si le fichier resultats.xml contient les id d'archivage
+      log.appendLog("Présence des identifiants d'archivage : ");
+      if ((objResultatXml.getIntegratedDocuments() != null)
+            && (!CollectionUtils.isEmpty(objResultatXml
+                  .getIntegratedDocuments().getIntegratedDocument()))) {
+         log.appendLogLn("OUI");
+      } else {
+         log.appendLogLn("NON");
+      }
+
+      // Lecture du fichier debut_traitement.flag
       log.appendLogLn(StringUtils.EMPTY);
-      log.appendLogLn("contenu du fichier debut_traitement.flag");
+      log.appendLogLn("Contenu du fichier debut_traitement.flag");
       File file = new File(cheminFichierDebutFlag);
       try {
          List<String> lines = FileUtils.readLines(file);
@@ -496,6 +509,29 @@ public final class SaeServiceLogUtils {
          }
       } catch (IOException e) {
          log.appendLogLn("impossible de lire le fichier");
+      }
+
+   }
+
+   /**
+    * Ajoute, dans le log du résultat du test, un résultat de l'opération
+    * "archivageMasse" ou "archivageMasseAvecHash"
+    * 
+    * @param resultatTest
+    *           les résultats du test à mettre à jour
+    * @param resultat
+    *           la réponse de l'opération "consultation"
+    */
+   public static void logResultatCaptureMasse(ResultatTest resultatTest,
+         CaptureMasseResultat resultat) {
+
+      ResultatTestLog log = resultatTest.getLog();
+
+      if (resultat.isAppelAvecHashSommaire()) {
+         log.appendLogLn("Identifiant du traitement : "
+               + resultat.getIdTraitement());
+      } else {
+         log.appendLogLn("Le service n'a pas renvoyé d'erreur");
       }
 
    }

@@ -52,7 +52,8 @@
                <td>PKCS#12 à utiliser pour signer le VI:</td>
                <td><form:select path="${pathFormulaire}.idCertif">
                   <form:option value="1">IGC AED (val), CN=PNR_Application_Test</form:option>
-                  <form:option value="2">IGC cellule intégration, CN=APPLICATION_TEST_1</form:option>
+                  <form:option value="2">IGC AED (val), CN=ApplicationTestSAE</form:option>
+                  <form:option value="3">IGC cellule intégration, CN=APPLICATION_TEST_1</form:option>
                </form:select></td>
                <td>&nbsp;</td>
             </tr>
