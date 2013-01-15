@@ -31,6 +31,7 @@ public class GenerationDonneesTest {
       String applicationTraitement = null;
       boolean avecNumeroRecours = true;
       String dateCreation = "2011-09-08";
+      boolean avecRestitutionId = false;
       
       service.genereSommaireMonoPdf(
             nbDocs, 
@@ -42,7 +43,8 @@ public class GenerationDonneesTest {
             sirenAleatoire,
             applicationTraitement,
             avecNumeroRecours,
-            dateCreation);
+            dateCreation,
+            avecRestitutionId);
       
    }
    
@@ -63,6 +65,7 @@ public class GenerationDonneesTest {
       String applicationTraitement = null;
       boolean avecNumeroRecours = true;
       String dateCreation = "2012-05-09";
+      boolean avecRestitutionId = false;
       
       service.genereSommaireMonoPdf(
             nbDocs, 
@@ -74,7 +77,42 @@ public class GenerationDonneesTest {
             sirenAleatoire,
             applicationTraitement,
             avecNumeroRecours,
-            dateCreation);
+            dateCreation,
+            avecRestitutionId);
+      
+   }
+   
+   
+   @Test
+   @Ignore
+   public void sommaire_50000_avec_restitution_uuid() throws IOException {
+      
+      SommaireService service = new SommaireService();
+      
+      int nbDocs = 50000;
+      String cheminEcritureFichierSommaire = "c:/divers/sommaire.xml";
+      String objNumCheminEtNomFichier = "doc1.PDF";
+      String hash = "a2f93f1f121ebba0faef2c0596f2f126eacae77b";
+      String denomination = "Test 221-CaptureMasseID-OK-Tor-50000";
+      String siren = null;
+      boolean sirenAleatoire = false;
+      String applicationTraitement = null;
+      boolean avecNumeroRecours = true;
+      String dateCreation = "2013-01-14";
+      boolean avecRestitutionId = true;
+      
+      service.genereSommaireMonoPdf(
+            nbDocs, 
+            cheminEcritureFichierSommaire, 
+            objNumCheminEtNomFichier, 
+            hash, 
+            denomination, 
+            siren, 
+            sirenAleatoire,
+            applicationTraitement,
+            avecNumeroRecours,
+            dateCreation,
+            avecRestitutionId);
       
    }
    

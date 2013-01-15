@@ -29,6 +29,7 @@ public final class SommaireService {
       String applicationTraitement = "ATTESTATIONS";
       boolean avecNumeroRecours = false;
       String dateCreation = "2011-10-22";
+      boolean avecRestitutionId = false;
       
       genereSommaireMonoPdf(
             nbDocs,
@@ -40,7 +41,8 @@ public final class SommaireService {
             sirenAleatoire,
             applicationTraitement,
             avecNumeroRecours,
-            dateCreation);
+            dateCreation,
+            avecRestitutionId);
       
    }
    
@@ -56,7 +58,8 @@ public final class SommaireService {
          boolean sirenAleatoire,
          String applicationTraitement,
          boolean avecNumeroRecours,
-         String dateCreation) throws IOException {
+         String dateCreation,
+         boolean avecRestitutionId) throws IOException {
       
       File file = new File(cheminEcritureFichierSommaire);
       
@@ -66,7 +69,7 @@ public final class SommaireService {
       try {
        
          // En-tête 
-         ecritureSommaire_EnTete(writer);
+         ecritureSommaire_EnTete(writer, avecRestitutionId);
          
          // Pour chaque document
          for (int i=1;i<=nbDocs;i++) {
@@ -113,6 +116,7 @@ public final class SommaireService {
       String applicationTraitement = "ATTESTATIONS";
       boolean avecNumeroRecours = false;
       String dateCreation = "2011-10-22";
+      boolean avecRestitutionId = false;
       
       genereSommairePluriPdf(
             nbDocs,
@@ -123,7 +127,8 @@ public final class SommaireService {
             sirenAleatoire,
             applicationTraitement,
             avecNumeroRecours,
-            dateCreation);
+            dateCreation,
+            avecRestitutionId);
       
    }
    
@@ -138,7 +143,8 @@ public final class SommaireService {
          boolean sirenAleatoire,
          String applicationTraitement,
          boolean avecNumeroRecours,
-         String dateCreation) throws IOException {
+         String dateCreation,
+         boolean avecRestitutionId) throws IOException {
       
       File fileSommaire = new File(cheminEcritureFichierSommaire);
       
@@ -157,7 +163,7 @@ public final class SommaireService {
       try {
        
          // En-tête 
-         ecritureSommaire_EnTete(writer);
+         ecritureSommaire_EnTete(writer, avecRestitutionId);
          
          // Pour chaque document
          for (int i=1;i<=nbDocs;i++) {
@@ -206,7 +212,8 @@ public final class SommaireService {
    
    
    private void ecritureSommaire_EnTete(
-         FileWriterWithEncoding writer) throws IOException {
+         FileWriterWithEncoding writer,
+         boolean avecRestitutionId) throws IOException {
       
       writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"); writer.write("\r\n");
       writer.write("<som:sommaire"); writer.write("\r\n");
@@ -216,6 +223,9 @@ public final class SommaireService {
       writer.write("   <som:batchMode>TOUT_OU_RIEN</som:batchMode>"); writer.write("\r\n");
       // writer.write("   <som:dateCreation>2011-10-15</som:dateCreation>"); writer.write("\r\n");
       // writer.write("   <som:description>La description du traitement</som:description>"); writer.write("\r\n");
+      if (avecRestitutionId) {
+         writer.write("   <som:restitutionUuids>true</som:restitutionUuids>"); writer.write("\r\n");
+      }
       writer.write("   <som:documents>"); writer.write("\r\n");
       
    }
