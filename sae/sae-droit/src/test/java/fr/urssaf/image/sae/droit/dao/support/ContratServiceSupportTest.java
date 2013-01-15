@@ -17,6 +17,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.util.CollectionUtils;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.sae.droit.dao.model.ActionUnitaire;
@@ -119,12 +120,77 @@ public class ContratServiceSupportTest {
          pagmps = Arrays.asList(CONTRAT_1_LISTE_PAGMP);
          actions = Arrays.asList(CONTRAT_1_LISTE_ACTIONS_UNITAIRES);
          prmds = Arrays.asList(CONTRAT_1_LISTE_PRMD);
+
+         Assert.assertEquals("La description du CS est incorrecte",
+               "code contrat numero 1", serviceContractDatas.getDescription());
+         Assert.assertEquals("Le libellé du CS est incorrecte",
+               "libelle du code client 1", serviceContractDatas.getLibelle());
+         Assert.assertEquals("La durée de vie d'un VI est incorret", new Long(
+               120), serviceContractDatas.getViDuree());
+         Assert.assertEquals("L'identifiant de la PKI est incorrect", "pki 1",
+               serviceContractDatas.getIdPki());
+         Assert
+               .assertEquals(
+                     "Le flag de vérification du nom du certificat applicatif est incorrect",
+                     false, serviceContractDatas.isVerifNommage());
+         Assert.assertEquals(
+               "L'identifiant du certificat applicatif client est incorrect",
+               null, serviceContractDatas.getIdCertifClient());
+         Assert.assertTrue("La liste des PKI devrait être vide",
+               CollectionUtils.isEmpty(serviceContractDatas.getListPki()));
+         Assert.assertTrue(
+               "La liste des certificats clients devrait être vide",
+               CollectionUtils.isEmpty(serviceContractDatas
+                     .getListCertifsClient()));
+
       } else {
          pagms = Arrays.asList(CONTRAT_2_LISTE_PAGM);
          pagmas = Arrays.asList(CONTRAT_2_LISTE_PAGMA);
          pagmps = Arrays.asList(CONTRAT_2_LISTE_PAGMP);
          actions = Arrays.asList(CONTRAT_2_LISTE_ACTIONS_UNITAIRES);
          prmds = Arrays.asList(CONTRAT_2_LISTE_PRMD);
+
+         Assert.assertEquals("La description du CS est incorrecte",
+               "code contrat numero 2", serviceContractDatas.getDescription());
+         Assert.assertEquals("Le libellé du CS est incorrecte",
+               "libelle du code client 2", serviceContractDatas.getLibelle());
+         Assert.assertEquals("La durée de vie d'un VI est incorret", new Long(
+               240), serviceContractDatas.getViDuree());
+         Assert.assertEquals("L'identifiant de la PKI est incorrect", "pki 2",
+               serviceContractDatas.getIdPki());
+         Assert
+               .assertEquals(
+                     "Le flag de vérification du nom du certificat applicatif est incorrect",
+                     true, serviceContractDatas.isVerifNommage());
+         Assert.assertEquals(
+               "L'identifiant du certificat applicatif client est incorrect",
+               "id certif client 2", serviceContractDatas.getIdCertifClient());
+
+         Assert.assertFalse("La liste des PKI ne devrait pas être vide",
+               CollectionUtils.isEmpty(serviceContractDatas.getListPki()));
+         Assert.assertEquals("Le nombre de PKI dans la liste est incorrect", 2,
+               serviceContractDatas.getListPki().size());
+         Assert.assertEquals("La 1ère PKI de la liste est incorrect", "pki 2",
+               serviceContractDatas.getListPki().get(0));
+         Assert.assertEquals("La 2ème PKI de la liste est incorrect",
+               "pki 2.1", serviceContractDatas.getListPki().get(1));
+
+         Assert.assertFalse(
+               "La liste des certificats clients ne devrait pas être vide",
+               CollectionUtils.isEmpty(serviceContractDatas
+                     .getListCertifsClient()));
+         Assert.assertEquals(
+               "Le nombre de certificats clients dans la liste est incorrect",
+               2, serviceContractDatas.getListCertifsClient().size());
+         Assert.assertEquals(
+               "Le 1er certificat client de la liste est incorrect",
+               "id certif client 2", serviceContractDatas
+                     .getListCertifsClient().get(0));
+         Assert.assertEquals(
+               "Le 2ème certificat client de la liste est incorrect",
+               "id certif client 2.1", serviceContractDatas
+                     .getListCertifsClient().get(1));
+
       }
 
       // vérification que tous les pagms sont bien présents
@@ -162,7 +228,7 @@ public class ContratServiceSupportTest {
                + serviceContractDatas.getCodeClient(), pagmps.contains(pagmp
                .getCode()));
       }
-      
+
       // vérification que tous les prmds sont présents
       Assert.assertEquals(
             "le nombre de prmd doit etre correct pour le code client "
@@ -174,7 +240,7 @@ public class ContratServiceSupportTest {
                + serviceContractDatas.getCodeClient(), prmds.contains(prmd
                .getCode()));
       }
-      
+
       // vérification que toutes les actions unitaires sont présentes
       Assert.assertEquals(
             "le nombre d'actions unitaires doit etre correct pour le code client "
@@ -186,8 +252,7 @@ public class ContratServiceSupportTest {
                + serviceContractDatas.getCodeClient(), actions.contains(action
                .getCode()));
       }
-      
-      
+
    }
 
    private void createActionsUnitaires() {
@@ -274,6 +339,7 @@ public class ContratServiceSupportTest {
       contract.setViDuree(Long.valueOf(120L));
       contract.setIdPki("pki 1");
       contract.setVerifNommage(false);
+      contract.setIdCertifClient(null);
       contratSupport.create(contract, new Date().getTime());
 
       contract = new ServiceContract();
@@ -282,7 +348,11 @@ public class ContratServiceSupportTest {
       contract.setLibelle("libelle du code client 2");
       contract.setViDuree(Long.valueOf(240L));
       contract.setIdPki("pki 2");
-      contract.setVerifNommage(false);
+      contract.setVerifNommage(true);
+      contract.setIdCertifClient("id certif client 2");
+      contract.setListPki(Arrays.asList("pki 2", "pki 2.1"));
+      contract.setListCertifsClient(Arrays.asList("id certif client 2",
+            "id certif client 2.1"));
       contratSupport.create(contract, new Date().getTime());
    }
 
