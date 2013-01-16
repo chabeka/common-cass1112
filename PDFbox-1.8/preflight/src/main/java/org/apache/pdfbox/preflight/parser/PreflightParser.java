@@ -21,11 +21,13 @@
 
 package org.apache.pdfbox.preflight.parser;
 
-import static org.apache.pdfbox.preflight.PreflightConstants.*;
+import static org.apache.pdfbox.preflight.PreflightConstants.ERROR_SYNTAX_ARRAY_TOO_LONG;
 import static org.apache.pdfbox.preflight.PreflightConstants.ERROR_SYNTAX_CROSS_REF;
 import static org.apache.pdfbox.preflight.PreflightConstants.ERROR_SYNTAX_HEXA_STRING_EVEN_NUMBER;
 import static org.apache.pdfbox.preflight.PreflightConstants.ERROR_SYNTAX_HEXA_STRING_INVALID;
 import static org.apache.pdfbox.preflight.PreflightConstants.ERROR_SYNTAX_HEXA_STRING_TOO_LONG;
+import static org.apache.pdfbox.preflight.PreflightConstants.ERROR_SYNTAX_INVALID_OFFSET;
+import static org.apache.pdfbox.preflight.PreflightConstants.ERROR_SYNTAX_MISSING_OFFSET;
 import static org.apache.pdfbox.preflight.PreflightConstants.ERROR_SYNTAX_NAME_TOO_LONG;
 import static org.apache.pdfbox.preflight.PreflightConstants.ERROR_SYNTAX_NUMERIC_RANGE;
 import static org.apache.pdfbox.preflight.PreflightConstants.ERROR_SYNTAX_OBJ_DELIMITER;
@@ -253,16 +255,17 @@ public class PreflightParser extends NonSequentialPDFParser {
 	protected void checkPdfHeader() {
 		BufferedReader reader = null;
 		try {
-			reader = new BufferedReader(new InputStreamReader(new FileInputStream(getPdfFile()), "ISO-8859-1"));
+			reader = new BufferedReader(new InputStreamReader(new FileInputStream(getPdfFile()), encoding));
 			String firstLine = reader.readLine();
 			if (firstLine == null || (firstLine != null && !firstLine.matches("%PDF-1\\.[1-9]"))) {
 				addValidationError(new ValidationError(PreflightConstants.ERROR_SYNTAX_HEADER, "First line must match %PDF-1.\\d"));	
 			}
 
 			String secondLine = reader.readLine(); 
-			if (secondLine != null && secondLine.getBytes().length >= 5) {
-				for (int i = 0; i < secondLine.getBytes().length; ++i ) {
-					byte b = secondLine.getBytes()[i]; 
+			byte[] secondLineAsBytes = secondLine.getBytes(encoding.name());
+			if (secondLine != null && secondLineAsBytes.length >= 5) {
+				for (int i = 0; i < secondLineAsBytes.length; ++i ) {
+					byte b = secondLineAsBytes[i]; 
 					if (i == 0 && ((char)b != '%')) {
 						addValidationError(new ValidationError(PreflightConstants.ERROR_SYNTAX_HEADER, "Second line must contains at least 4 bytes greater than 127"));
 						break;
@@ -476,7 +479,7 @@ public class PreflightParser extends NonSequentialPDFParser {
 	 * Check that the hexa string contains only an even number of Hexadecimal characters.
 	 * Once it is done, reset the offset at the beginning of the string and call {@link BaseParser#parseCOSString()}
 	 */
-	protected COSString parseCOSString() throws IOException
+	protected COSString parseCOSString(boolean isDictionary) throws IOException
 	{
 		// offset reminder
 		long offset = pdfSource.getOffset();
@@ -502,7 +505,7 @@ public class PreflightParser extends NonSequentialPDFParser {
 
 		// reset the offset to parse the COSString
 		pdfSource.seek(offset);
-		COSString result = super.parseCOSString();
+		COSString result = super.parseCOSString(isDictionary);
 
 		if ( result.getString().length() > MAX_STRING_LENGTH) {
 			addValidationError(new ValidationError(ERROR_SYNTAX_HEXA_STRING_TOO_LONG, "Hexa string is too long"));
@@ -554,14 +557,16 @@ public class PreflightParser extends NonSequentialPDFParser {
 			Long offsetOrObjstmObNr = xrefTrailerResolver.getXrefTable().get( objKey );
 
 			// sanity test to circumvent loops with broken documents
-			if ( requireExistingNotCompressedObj &&	( ( offsetOrObjstmObNr == null ) || ( offsetOrObjstmObNr <= 0 ) ) )	{   
-				addValidationError(new ValidationError(ERROR_SYNTAX_NEGATIVE_OFFSET, "Object must be defined and must not be compressed object: " +	objKey.getNumber() + ":" + objKey.getGeneration()));
+			if ( requireExistingNotCompressedObj &&	( ( offsetOrObjstmObNr == null ) ) )	{   
+				addValidationError(new ValidationError(ERROR_SYNTAX_MISSING_OFFSET, "Object must be defined and must not be compressed object: " +	objKey.getNumber() + ":" + objKey.getGeneration()));
 				throw new SyntaxValidationException( "Object must be defined and must not be compressed object: " +	objKey.getNumber() + ":" + objKey.getGeneration(), validationResult);
 			}
 
 			if ( offsetOrObjstmObNr == null )	{
 				// not defined object -> NULL object (Spec. 1.7, chap. 3.2.9)
 				pdfObject.setObject( COSNull.NULL );
+			} else if ( offsetOrObjstmObNr == 0 )	{
+				addValidationError(new ValidationError(ERROR_SYNTAX_INVALID_OFFSET, "Object {" +	objKey.getNumber() + ":" + objKey.getGeneration()+"} has an offset of 0"));
 			}	else if ( offsetOrObjstmObNr > 0 )	{
 				// offset of indirect object in file
 				// ---- go to object start

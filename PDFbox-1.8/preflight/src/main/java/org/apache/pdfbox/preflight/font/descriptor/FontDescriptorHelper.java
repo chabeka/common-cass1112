@@ -23,12 +23,10 @@ package org.apache.pdfbox.preflight.font.descriptor;
 
 import static org.apache.pdfbox.preflight.PreflightConstants.ERROR_FONTS_DESCRIPTOR_INVALID;
 import static org.apache.pdfbox.preflight.PreflightConstants.ERROR_FONTS_FONT_FILEX_INVALID;
-import static org.apache.pdfbox.preflight.PreflightConstants.ERROR_METADATA_CATEGORY_PROPERTY_INVALID;
 import static org.apache.pdfbox.preflight.PreflightConstants.ERROR_METADATA_FORMAT;
 import static org.apache.pdfbox.preflight.PreflightConstants.ERROR_METADATA_FORMAT_STREAM;
 import static org.apache.pdfbox.preflight.PreflightConstants.ERROR_METADATA_FORMAT_UNKOWN;
 import static org.apache.pdfbox.preflight.PreflightConstants.ERROR_METADATA_FORMAT_XPACKET;
-import static org.apache.pdfbox.preflight.PreflightConstants.ERROR_METADATA_RDF_ABOUT_ATTRIBUTE_MISSING;
 import static org.apache.pdfbox.preflight.PreflightConstants.ERROR_METADATA_UNKNOWN_VALUETYPE;
 import static org.apache.pdfbox.preflight.PreflightConstants.ERROR_SYNTAX_STREAM_INVALID_FILTER;
 import static org.apache.pdfbox.preflight.PreflightConstants.FONT_DICTIONARY_KEY_ASCENT;
@@ -48,13 +46,9 @@ import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.padaf.xmpbox.XMPMetadata;
-import org.apache.padaf.xmpbox.parser.XMPDocumentBuilder;
-import org.apache.padaf.xmpbox.parser.XmpExpectedRdfAboutAttribute;
-import org.apache.padaf.xmpbox.parser.XmpParsingException;
-import org.apache.padaf.xmpbox.parser.XmpSchemaException;
-import org.apache.padaf.xmpbox.parser.XmpUnknownValueTypeException;
-import org.apache.padaf.xmpbox.parser.XmpXpacketEndException;
-import org.apache.padaf.xmpbox.type.BadFieldValueException;
+import org.apache.padaf.xmpbox.xml.DomXmpParser;
+import org.apache.padaf.xmpbox.xml.XmpParsingException;
+import org.apache.padaf.xmpbox.xml.XmpParsingException.ErrorType;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.common.PDMetadata;
@@ -75,7 +69,7 @@ public abstract class FontDescriptorHelper <T extends FontContainer> {
 	protected PDFont font;
 
 	protected PDFontDescriptorDictionary fontDescriptor;
-	
+
 	public FontDescriptorHelper(PreflightContext context, PDFont font, T fontContainer) {
 		super();
 		this.fContainer = fontContainer;
@@ -88,7 +82,7 @@ public abstract class FontDescriptorHelper <T extends FontContainer> {
 		// Only a PDFontDescriptorDictionary provides a way to embedded the font program.
 		if(fd != null && fd instanceof PDFontDescriptorDictionary) {
 			fontDescriptor = (PDFontDescriptorDictionary)fd;
-			
+
 			if (checkMandatoryFields(fontDescriptor.getCOSDictionary())) {
 				if (hasOnlyOneFontFile(fontDescriptor)) {
 					PDStream fontFile = extractFontFile(fontDescriptor);
@@ -97,7 +91,12 @@ public abstract class FontDescriptorHelper <T extends FontContainer> {
 						checkFontFileMetaData(fontDescriptor, fontFile);
 					}
 				} else {
-					this.fContainer.push(new ValidationError(ERROR_FONTS_FONT_FILEX_INVALID,	"They are more than one FontFile"));
+					if (fontFileNotEmbedded(fontDescriptor)) {
+						this.fContainer.push(new ValidationError(ERROR_FONTS_FONT_FILEX_INVALID, "FontFile entry is missing from FontDescriptor for " + fontDescriptor.getFontName()));
+						this.fContainer.notEmbedded();
+					} else {
+						this.fContainer.push(new ValidationError(ERROR_FONTS_FONT_FILEX_INVALID,	"They are more than one FontFile for " + fontDescriptor.getFontName()));
+					}
 				}
 			}
 		} else {
@@ -136,6 +135,13 @@ public abstract class FontDescriptorHelper <T extends FontContainer> {
 		return (ff1 != null ^ ff2 != null ^ ff3 != null);
 	}
 
+	protected boolean fontFileNotEmbedded(PDFontDescriptorDictionary fontDescriptor) {
+		PDStream ff1 = fontDescriptor.getFontFile();
+		PDStream ff2 = fontDescriptor.getFontFile2();
+		PDStream ff3 = fontDescriptor.getFontFile3();
+		return (ff1 == null && ff2 == null && ff3 == null);
+	}
+
 	protected abstract void processFontFile(PDFontDescriptorDictionary fontDescriptor, PDStream fontFile);
 
 	/**
@@ -148,7 +154,7 @@ public abstract class FontDescriptorHelper <T extends FontContainer> {
 		PDMetadata metadata = null;
 		try {
 			metadata = fontFile.getMetadata();
-			
+
 			if (metadata != null) {
 				// Filters are forbidden in a XMP stream
 				if (metadata.getFilters() != null && !metadata.getFilters().isEmpty()) {
@@ -160,7 +166,7 @@ public abstract class FontDescriptorHelper <T extends FontContainer> {
 
 				try {
 
-					XMPDocumentBuilder xmpBuilder = new XMPDocumentBuilder();
+					DomXmpParser xmpBuilder = new DomXmpParser();
 					XMPMetadata xmpMeta = xmpBuilder.parse(mdAsBytes);
 
 					FontMetaDataValidation fontMDval = new FontMetaDataValidation();
@@ -169,25 +175,21 @@ public abstract class FontDescriptorHelper <T extends FontContainer> {
 					fontMDval.analyseRights(xmpMeta, fontDescriptor, ve);
 					this.fContainer.push(ve);
 
-				} catch (XmpUnknownValueTypeException e) {
-					this.fContainer.push(new ValidationError(ERROR_METADATA_UNKNOWN_VALUETYPE, e.getMessage()));
 				} catch (XmpParsingException e) {
-					this.fContainer.push(new ValidationError(ERROR_METADATA_FORMAT, e.getMessage()));
-				} catch (XmpSchemaException e) {
-					this.fContainer.push(new ValidationError(ERROR_METADATA_FORMAT, e.getMessage()));
-				} catch (XmpExpectedRdfAboutAttribute e) {
-					this.fContainer.push(new ValidationError(ERROR_METADATA_RDF_ABOUT_ATTRIBUTE_MISSING,e.getMessage()));
-				} catch (BadFieldValueException e) {
-					this.fContainer.push(new ValidationError(ERROR_METADATA_CATEGORY_PROPERTY_INVALID,e.getMessage()));
-				} catch (XmpXpacketEndException e) {
-					this.fContainer.push(new ValidationError(ERROR_METADATA_FORMAT_XPACKET, "Unable to parse font metadata due to : "  + e.getMessage()));
+					if (e.getErrorType()==ErrorType.NoValueType) {
+						this.fContainer.push(new ValidationError(ERROR_METADATA_UNKNOWN_VALUETYPE, e.getMessage()));
+					} else if (e.getErrorType()==ErrorType.XpacketBadEnd) {
+						this.fContainer.push(new ValidationError(ERROR_METADATA_FORMAT_XPACKET, "Unable to parse font metadata due to : "  + e.getMessage()));
+					} else {
+						this.fContainer.push(new ValidationError(ERROR_METADATA_FORMAT, e.getMessage()));
+					}
 				}
 			}
 		} catch (IllegalStateException e) {
 			this.fContainer.push(new ValidationError(ERROR_METADATA_FORMAT_UNKOWN,	"The Metadata entry doesn't reference a stream object"));
 		}
 	}
-	
+
 	protected final byte[] getMetaDataStreamAsBytes(PDMetadata metadata) {
 		byte[] result = null;
 		ByteArrayOutputStream bos = null;
