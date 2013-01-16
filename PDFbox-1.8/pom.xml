@@ -27,16 +27,16 @@
 
    <artifactId>pdfbox-reactor</artifactId>
    <groupId>org.apache.pdfbox</groupId>
-   <version>1.8.0-CRTL-1</version>
+   <version>1.8.0-CRTL-2-SNAPSHOT</version>
    <packaging>pom</packaging>
 
    <name>PDFBox reactor</name>
 
    <!-- Configuration SVN pour le plug-in maven-release -->
    <scm>
-      <url>scm:svn:svn://cer69-svn/image/java/tags/pdfbox-reactor-1.8.0-CRTL-1</url>
-      <developerConnection>scm:svn:svn://cer69-svn/image/java/tags/pdfbox-reactor-1.8.0-CRTL-1</developerConnection>
-      <connection>scm:svn:svn://cer69-svn/image/java/tags/pdfbox-reactor-1.8.0-CRTL-1</connection>
+      <url>scm:svn:svn://cer69-svn/image/java/trunk/PDFbox-1.8</url>
+      <developerConnection>scm:svn:svn://cer69-svn/image/java/trunk/PDFbox-1.8</developerConnection>
+      <connection>scm:svn:svn://cer69-svn/image/java/trunk/PDFbox-1.8</connection>
    </scm>
 
    <properties>
