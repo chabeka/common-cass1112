@@ -107,8 +107,8 @@ public class Test200Controller extends AbstractTestWsController<Test200Formulair
       // Renseigne le formulaire de l'étape 2
       formCaptMassRes.setUrlSommaire(formulaire.getCaptureMasseDeclenchement().getUrlSommaire());
       
-      // Renseigne éventuellement le formulaire de l'étape 3
-      if (cmResult.isAppelAvecHashSommaire()) {
+      // Si pas d'erreur, on pré-remplit le formulaire de l'étape 3
+      if ((cmResult!=null) && (cmResult.isAppelAvecHashSommaire())) {
          formComptages.setIdTdm(cmResult.getIdTraitement());
       }
       
