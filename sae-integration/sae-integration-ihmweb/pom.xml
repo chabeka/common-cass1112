@@ -365,10 +365,11 @@
          <id>genererCodeModeleSommaireEtResultat</id>
          <build>
             <plugins>
+            
                <plugin>
-                  <groupId>com.sun.tools.xjc.maven2</groupId>
-                  <artifactId>maven-jaxb-plugin</artifactId>
-                  <version>1.1.1</version>
+                  <groupId>org.jvnet.jaxb2.maven2</groupId>
+                  <artifactId>maven-jaxb2-plugin</artifactId>
+                  <version>0.8.2</version>
                   <executions>
                      <execution>
                         <goals>
@@ -377,16 +378,13 @@
                      </execution>
                   </executions>
                   <configuration>
+                     <verbose>true</verbose>
                      <schemaDirectory>${basedir}/src/main/resources/xsd_som_res</schemaDirectory>
                      <generateDirectory>${basedir}/src/main/java</generateDirectory>
-                     <includeSchemas>
-                        <includeSchema>commun_sommaire_et_resultat.xsd</includeSchema>
-                        <includeSchema>sommaire.xsd</includeSchema>
-                        <includeSchema>resultats.xsd</includeSchema>
-                     </includeSchemas>
+                     <schemaListFileName>commun_sommaire_et_resultat.xsd,sommaire.xsd,resultats.xsd</schemaListFileName>
                   </configuration>
                </plugin>
-
+               
                <plugin>
                   <groupId>com.google.code.maven-replacer-plugin</groupId>
                   <artifactId>maven-replacer-plugin</artifactId>
