@@ -86,4 +86,12 @@ public class SaeDroitServiceSkipImpl implements SaeDroitService {
       /* Rien à faire */
    }
 
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public List<Pagm> getListePagm(String idContratService) {
+      return null;
+   }
+
 }

@@ -527,7 +527,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
          contratsCache.getUnchecked(idContratService);
       } catch (InvalidCacheLoadException e) {
          throw new ContratServiceReferenceException(MESSAGE_CONTRAT
-               + idContratService + " n'existe pas");
+               + idContratService + " n'existe pas", e);
       }
 
       try {
@@ -563,6 +563,30 @@ public class SaeDroitServiceImpl implements SaeDroitService {
       } finally {
          mutex.release();
       }
+
+      // Recharge immédiatement le cache des PAGM du CS, pour intégrer
+      // le nouveau PAGM que l'on vient juste de créer.
+      // Attention : cette mise à jour de cache valable que pour le serveur
+      // en cours.
+      pagmsCache.invalidate(idContratService);
+
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public List<Pagm> getListePagm(String idContratService) {
+
+      List<Pagm> pagms;
+
+      try {
+         pagms = pagmsCache.getUnchecked(idContratService);
+      } catch (InvalidCacheLoadException e) {
+         pagms = new ArrayList<Pagm>();
+      }
+
+      return pagms;
 
    }
 
