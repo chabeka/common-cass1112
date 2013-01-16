@@ -14,51 +14,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.pdfbox.util.operator.pagedrawer;
+package org.apache.pdfbox.util.operator;
 
-import java.awt.geom.GeneralPath;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.pdfbox.cos.COSBase;
-import org.apache.pdfbox.pdfviewer.PageDrawer;
+import org.apache.pdfbox.cos.COSInteger;
+import org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace;
+import org.apache.pdfbox.pdmodel.graphics.color.PDColorState;
+import org.apache.pdfbox.pdmodel.graphics.color.PDIndexed;
 import org.apache.pdfbox.util.PDFOperator;
-import org.apache.pdfbox.util.operator.OperatorProcessor;
 
 /**
- * Implementation of content stream operator for page drawer.
- *
- * @author <a href="mailto:Daniel.Wilson@BlackLocustSoftware.com">Daniel Wilson</a>
- * @version $Revision: 1.1 $
+ * 
+ * @version $Revision: 1.0 $
  */
-public class ClipEvenOddRule extends OperatorProcessor
+public class SetStrokingIndexed extends OperatorProcessor 
 {
 
     /**
-     * Log instance.
-     */
-    private static final Log LOG = LogFactory.getLog(ClipEvenOddRule.class);
-
-    /**
-     * process : W* : set clipping path using even odd rule.
+     * scn Set color space for non stroking operations.
      * @param operator The operator that is being executed.
      * @param arguments List
-     *
-     * @throws IOException if there is an error during execution.
+     * @throws IOException If an error occurs while processing the font.
      */
     public void process(PDFOperator operator, List<COSBase> arguments) throws IOException
     {
+        PDColorState colorInstance = context.getGraphicsState().getStrokingColor();
+        PDColorSpace colorSpace = colorInstance.getColorSpace();
 
-        try 
+        if (colorSpace != null) 
         {
-            PageDrawer drawer = (PageDrawer)context;
-            drawer.setClippingWindingRule(GeneralPath.WIND_EVEN_ODD);
-        } 
-        catch (Exception e) 
-        {
-            LOG.warn(e, e);
+            PDIndexed indexed = (PDIndexed) colorSpace;
+            colorSpace = indexed.getBaseColorSpace();
+            COSInteger colorValue = (COSInteger)arguments.get(0);
+            colorInstance.setColorSpaceValue(indexed.calculateColorValues(colorValue.intValue()));
         }
     }
 }

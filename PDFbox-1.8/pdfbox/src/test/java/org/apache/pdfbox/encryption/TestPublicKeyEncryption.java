@@ -34,7 +34,6 @@ import org.apache.pdfbox.pdmodel.encryption.AccessPermission;
 import org.apache.pdfbox.pdmodel.encryption.PublicKeyDecryptionMaterial;
 import org.apache.pdfbox.pdmodel.encryption.PublicKeyProtectionPolicy;
 import org.apache.pdfbox.pdmodel.encryption.PublicKeyRecipient;
-import org.junit.Ignore;
 
 /**
  * Tests for public key encryption.
@@ -42,7 +41,6 @@ import org.junit.Ignore;
  * @author <a href="mailto:ben@benlitchfield.com">Ben Litchfield</a>
  * @version $Revision: 1.3 $
  */
-@Ignore("marche pas, une erreur se produit lors de l'écriture du fichier dans doc.save(buffer);")
 public class TestPublicKeyEncryption extends TestCase
 {
 
@@ -118,7 +116,6 @@ public class TestPublicKeyEncryption extends TestCase
      *
      * @throws Exception If there is an unexpected error during the test.
      */
-    @Ignore("marche pas, une erreur se produit lors de l'écriture du fichier dans doc.save(buffer);")
     public void testProtectionError() throws Exception
     {
         PublicKeyProtectionPolicy policy = new PublicKeyProtectionPolicy();

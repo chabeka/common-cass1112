@@ -28,7 +28,6 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.junit.Ignore;
 
 
 /**
@@ -37,7 +36,6 @@ import org.junit.Ignore;
  * @author <a href="mailto:ben@benlitchfield.com">Ben Litchfield</a>
  * @version $Revision: 1.4 $
  */
-@Ignore("mauvaise chemin de fichier")
 public class TestTextStripperPerformance extends TestCase
 {
     /**

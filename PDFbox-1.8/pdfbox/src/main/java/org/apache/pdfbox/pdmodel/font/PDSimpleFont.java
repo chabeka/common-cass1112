@@ -60,7 +60,11 @@ public abstract class PDSimpleFont extends PDFont
 
     private float avgFontWidth = 0.0f;
     private float avgFontHeight = 0.0f;
-    
+    private float fontWidthOfSpace = -1f; 
+
+    private static final byte[] SPACE_BYTES = { (byte)32 };
+
+
     /**
      * Log instance.
      */
@@ -484,13 +488,63 @@ public abstract class PDSimpleFont extends PDFont
     }
     
     private boolean isFontSubstituted = false;
+    
+    /**
+     * This will get the value for isFontSubstituted, which indicates
+     * if the font was substituted due to a problem with the embedded one.
+     * 
+     * @return true if the font was substituted
+     */
     protected boolean isFontSubstituted()
     {
         return isFontSubstituted;
     }
     
+    /**
+     * This will set  the value for isFontSubstituted.
+     * 
+     * @param isSubstituted true if the font was substituted
+     */
     protected void setIsFontSubstituted(boolean isSubstituted)
     {
         isFontSubstituted = isSubstituted;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public float getSpaceWidth()
+    {
+        if (fontWidthOfSpace == -1f)
+        {
+            COSBase toUnicode = getToUnicode();
+            try 
+            {
+                if (toUnicode != null) 
+                {
+                    int spaceMapping = toUnicodeCmap.getSpaceMapping();
+                    if (spaceMapping > -1)
+                    {
+                        fontWidthOfSpace = getFontWidth(spaceMapping);
+                    }
+                }
+                else
+                {
+                    fontWidthOfSpace = getFontWidth( SPACE_BYTES, 0, 1 );
+                }
+                // use the average font width as fall back
+                if (fontWidthOfSpace <= 0)
+                {
+                    fontWidthOfSpace = getAverageFontWidth();
+                }
+            }
+            catch (Exception e) 
+            {
+                LOG.error("Can't determine the width of the space character using 250 as default", e);
+                fontWidthOfSpace = 250f;
+            }
+        }
+        return fontWidthOfSpace;
+    }
+
 }

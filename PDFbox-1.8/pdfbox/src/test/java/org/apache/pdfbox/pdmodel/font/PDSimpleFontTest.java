@@ -25,7 +25,6 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -76,7 +75,6 @@ public class PDSimpleFontTest {
      * Test of the error reported in PDFBox-1019
      */
     @Test
-    @Ignore("on a pas besoin de la conversion d'image")
     public void testPDFBox1019() throws Exception {
         PDDocument doc = null;
         try {

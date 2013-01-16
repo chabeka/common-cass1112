@@ -17,7 +17,6 @@
 package org.apache.pdfbox.pdmodel.graphics.xobject;
 
 import java.awt.AlphaComposite;
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Transparency;
 import java.awt.color.ColorSpace;
@@ -193,7 +192,7 @@ public class PDPixelMap extends PDXObjectImage
             PDColorSpace colorspace = getColorSpace();
             if (colorspace == null)
             {
-                LOG.error("getColorSpace() returned NULL.  Predictor = " + getPredictor());
+                LOG.error("getColorSpace() returned NULL.");
                 return null;
             }
 
@@ -201,50 +200,14 @@ public class PDPixelMap extends PDXObjectImage
             if (colorspace instanceof PDIndexed)
             {
                 PDIndexed csIndexed = (PDIndexed)colorspace;
-                // the base color space uses 8 bit per component, as the indexed color values
-                // of an indexed color space are always in a range from 0 to 255
-                ColorModel baseColorModel = csIndexed.getBaseColorSpace().createColorModel(8);
-                // number of possible color values in the target color space
-                int numberOfColorValues = 1 << bpc;
-                // number of indexed color values
-                int highValue = csIndexed.getHighValue();
-                // choose the correct size, sometimes there are more indexed values than needed
-                // and sometimes there are fewer indexed value than possible
-                int size = Math.min(numberOfColorValues-1, highValue);
-                byte[] index = csIndexed.getLookupData();
-                boolean hasAlpha = baseColorModel.hasAlpha();
                 COSBase maskArray = getMask();
-                if( baseColorModel.getTransferType() != DataBuffer.TYPE_BYTE )
-                {
-                    throw new IOException( "Not implemented" );
-                }
-                // the IndexColorModel uses RGB-based color values
-                // which leads to 3 color components and a optional alpha channel
-                int numberOfComponents = 3 + (hasAlpha ? 1 : 0);
-                int buffersize = (size+1) * numberOfComponents;
-                byte[] colorValues = new byte[buffersize];
-                byte[] inData = new byte[baseColorModel.getNumComponents()];
-                int bufferIndex = 0;
-                for( int i = 0; i <= size; i++ )
-                {
-                    System.arraycopy(index, i * inData.length, inData, 0, inData.length);
-                    // convert the indexed color values to RGB 
-                    colorValues[bufferIndex] = (byte)baseColorModel.getRed(inData);
-                    colorValues[bufferIndex+1] = (byte)baseColorModel.getGreen(inData);
-                    colorValues[bufferIndex+2] = (byte)baseColorModel.getBlue(inData);
-                    if( hasAlpha )
-                    {
-                        colorValues[bufferIndex+3] = (byte)baseColorModel.getAlpha(inData);
-                    }
-                    bufferIndex += numberOfComponents;
-                }
                 if (maskArray != null && maskArray instanceof COSArray)
                 {
-                    cm = new IndexColorModel(bpc, size+1, colorValues, 0, hasAlpha, ((COSArray)maskArray).getInt(0));
+                    cm = csIndexed.createColorModel(bpc, ((COSArray)maskArray).getInt(0));
                 }
                 else
                 {
-                    cm = new IndexColorModel(bpc, size+1, colorValues, 0, hasAlpha);
+                    cm = csIndexed.createColorModel(bpc);
                 }
             }
             else if (colorspace instanceof PDSeparation)
@@ -352,47 +315,8 @@ public class PDPixelMap extends PDXObjectImage
             System.arraycopy( array, 0,bufferData, 0,
                     (array.length<bufferData.length?array.length: bufferData.length) );
             image = new BufferedImage(cm, raster, false, null);
-
-            // If there is a 'soft mask' image then we use that as a transparency mask.
-            PDXObjectImage smask = getSMaskImage();
-            if (smask != null)
-            {
-                BufferedImage smaskBI = smask.getRGBImage();
-
-                COSArray decodeArray = smask.getDecode();
-
-                CompositeImage compositeImage = new CompositeImage(image, smaskBI);
-                BufferedImage rgbImage = compositeImage.createMaskedImage(decodeArray);
-
-                return rgbImage;
-            }
-            else if (getImageMask())
-            {
-                BufferedImage stencilMask = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-                Graphics2D graphics = (Graphics2D)stencilMask.getGraphics();
-                if (getStencilColor() != null)
-                {
-                    graphics.setColor(getStencilColor().getJavaColor());
-                }
-                else
-                {
-                    // this might happen when using ExractImages, see PDFBOX-1145
-                    LOG.debug("no stencil color for PixelMap found, using Color.BLACK instead.");
-                    graphics.setColor(Color.BLACK);
-                }
-                
-                graphics.fillRect(0, 0, width, height);
-                // assume default values ([0,1]) for the DecodeArray
-                // TODO DecodeArray == [1,0]
-                graphics.setComposite(AlphaComposite.DstIn);
-                graphics.drawImage(image, null, 0, 0);
-                return stencilMask;
-            }
-            else
-            {
-                // if there is no mask, use the unaltered image.
-                return image;
-            }
+           
+            return applyMasks(image);  
         }
         catch (Exception exception)
         {
@@ -402,8 +326,10 @@ public class PDPixelMap extends PDXObjectImage
             return null;
         }
     }
+    
+ 
 
-    /**
+	/**
      * Writes the image as .png.
      *
      * {@inheritDoc}
@@ -428,6 +354,7 @@ public class PDPixelMap extends PDXObjectImage
      *
      * @return The decoding parameters.
      *
+     * @deprecated Use {@link org.apache.pdfbox.pdmodel.common.PDStream#getDecodeParms() } instead
      */
     public COSDictionary getDecodeParams()
     {
@@ -468,6 +395,9 @@ public class PDPixelMap extends PDXObjectImage
      * Default value: 1.
      *
      * @return predictor algorithm code
+     * 
+     * @deprecated see {@link org.apache.pdfbox.filter.FlateFilter}
+     * 
      */
     public int getPredictor()
     {

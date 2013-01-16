@@ -28,7 +28,6 @@ import junit.framework.TestSuite;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.junit.Ignore;
 
 /**
  * Test suite for PDFTextStripper.
@@ -55,7 +54,6 @@ import org.junit.Ignore;
  * @author <a href="mailto:ben@benlitchfield.com">Ben Litchfield</a>
  * @version $Revision: 1.1 $
  */
-@Ignore("test la conversion d'images en pdf ... on en a pas besoin")
 public class TestPDFToImage extends TestCase
 {
 

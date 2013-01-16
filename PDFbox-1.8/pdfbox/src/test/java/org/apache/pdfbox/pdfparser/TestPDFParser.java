@@ -26,7 +26,6 @@ import junit.framework.TestSuite;
 
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.junit.Ignore;
 
 
 /**
@@ -35,7 +34,6 @@ import org.junit.Ignore;
  * @author <a href="mailto:ben@benlitchfield.com">Ben Litchfield</a>
  * @version $Revision: 1.3 $
  */
-@Ignore("le fichier pdf n'existe pas dans le répertoire spécifié ni sur github")
 public class TestPDFParser extends TestCase
 {
     //private static Logger log = Logger.getLogger(TestFDF.class);
@@ -89,7 +87,6 @@ public class TestPDFParser extends TestCase
      *
      * @throws Exception If there is an error parsing the PDF.
      */
-    
     public void testParsingTroublePDFs() throws Exception
     {
         PDDocument doc = null;

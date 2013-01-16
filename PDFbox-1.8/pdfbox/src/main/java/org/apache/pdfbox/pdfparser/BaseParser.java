@@ -787,10 +787,10 @@ public abstract class BaseParser
      *
      * @throws IOException If there is an error reading from the stream.
      */
-    protected COSString parseCOSString() throws IOException
+    protected COSString parseCOSString(boolean isDictionary) throws IOException
     {
         char nextChar = (char)pdfSource.read();
-        COSString retval = new COSString();
+        COSString retval = new COSString(isDictionary);
         char openBrace;
         char closeBrace;
         if( nextChar == '(' )
@@ -925,12 +925,9 @@ public abstract class BaseParser
                     }
                     default:
                     {
-                        retval.append( '\\' );
+                        // dropping the backslash
+                        // see 7.3.4.2 Literal Strings for further information
                         retval.append( next );
-                        //another problem with PDF's, sometimes the \ doesn't really
-                        //mean escape like the PDF spec says it does, sometimes is should be literal
-                        //which is what we will assume here.
-                        //throw new IOException( "Unexpected break sequence '" + next + "' " + pdfSource );
                     }
                 }
             }
@@ -1224,7 +1221,7 @@ public abstract class BaseParser
             }
             else
             {
-                retval = parseCOSString();
+                retval = parseCOSString(true);
             }
             break;
         }
@@ -1234,7 +1231,7 @@ public abstract class BaseParser
             break;
         }
         case '(':
-            retval = parseCOSString();
+            retval = parseCOSString(true);
             break;
         case '/':   // name
             retval = parseCOSName();
