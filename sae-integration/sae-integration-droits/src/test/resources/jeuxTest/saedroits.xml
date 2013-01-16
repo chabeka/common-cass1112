@@ -211,5 +211,68 @@
    
    </listeCs>
    
+   <listeAjoutPagm>
+      
+      <ajoutPagm>
+         <csIssuer>CS2</csIssuer>
+         <pagms>
+            <pagm>
+               <code>CS2_PAGM_Ajout1</code>
+               <description>Description de CS2_PAGM_Ajout1</description>
+               <pagma>
+                  <code>CS2_PAGM_Ajout1_PAGMa</code>
+                  <actions>
+                     <action>archivage_unitaire</action>
+                  </actions>
+               </pagma>
+               <pagmp>
+                  <code>CS2_PAGM_Ajout1_PAGMp</code>
+                  <description>Description de CS2_PAGM_Ajout1_PAGMp</description>
+                  <prmd>PRMD1</prmd>
+               </pagmp>
+               <parametres />
+            </pagm>
+            <pagm>
+               <code>CS2_PAGM_Ajout2</code>
+               <description>Description de CS2_PAGM_Ajout2</description>
+               <pagma>
+                  <code>CS2_PAGM_Ajout2_PAGMa</code>
+                  <actions>
+                     <action>recherche</action>
+                  </actions>
+               </pagma>
+               <pagmp>
+                  <code>CS2_PAGM_Ajout2_PAGMp</code>
+                  <description>Description de CS2_PAGM_Ajout2_PAGMp</description>
+                  <prmd>PRMD2</prmd>
+               </pagmp>
+               <parametres />
+            </pagm>
+         </pagms>
+      </ajoutPagm>
+      
+      <ajoutPagm>
+         <csIssuer>CS2</csIssuer>
+         <pagms>
+            <pagm>
+               <code>CS2_PAGM_Ajout3</code>
+               <description>Description de CS2_PAGM_Ajout3</description>
+               <pagma>
+                  <code>CS2_PAGM_Ajout3_PAGMa</code>
+                  <actions>
+                     <action>archivage_unitaire</action>
+                  </actions>
+               </pagma>
+               <pagmp>
+                  <code>CS2_PAGM_Ajout3_PAGMp</code>
+                  <description>Description de CS2_PAGM_Ajout3_PAGMp</description>
+                  <prmd>PRMD2</prmd>
+               </pagmp>
+               <parametres />
+            </pagm>
+         </pagms>
+      </ajoutPagm>
+      
+   </listeAjoutPagm>
    
 </droit>

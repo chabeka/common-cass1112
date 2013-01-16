@@ -15,17 +15,17 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Classe Java pour ParametrePagmType complex type.
+ * <p>Classe Java pour AjoutPagmType complex type.
  * 
  * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  * 
  * <pre>
- * &lt;complexType name="ParametrePagmType">
+ * &lt;complexType name="AjoutPagmType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="code" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="valeur" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="csIssuer" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="pagms" type="{http://www.cirtil.fr/saeIntegration/droit}ListePagmType"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -35,65 +35,65 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ParametrePagmType", propOrder = {
-    "code",
-    "valeur"
+@XmlType(name = "AjoutPagmType", propOrder = {
+    "csIssuer",
+    "pagms"
 })
 // CHECKSTYLE:OFF
 @SuppressWarnings("all")
-public class ParametrePagmType {
+public class AjoutPagmType {
 
     @XmlElement(required = true)
-    protected String code;
+    protected String csIssuer;
     @XmlElement(required = true)
-    protected String valeur;
+    protected ListePagmType pagms;
 
     /**
-     * Obtient la valeur de la propriété code.
+     * Obtient la valeur de la propriété csIssuer.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getCode() {
-        return code;
+    public String getCsIssuer() {
+        return csIssuer;
     }
 
     /**
-     * Définit la valeur de la propriété code.
+     * Définit la valeur de la propriété csIssuer.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setCode(String value) {
-        this.code = value;
+    public void setCsIssuer(String value) {
+        this.csIssuer = value;
     }
 
     /**
-     * Obtient la valeur de la propriété valeur.
+     * Obtient la valeur de la propriété pagms.
      * 
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link ListePagmType }
      *     
      */
-    public String getValeur() {
-        return valeur;
+    public ListePagmType getPagms() {
+        return pagms;
     }
 
     /**
-     * Définit la valeur de la propriété valeur.
+     * Définit la valeur de la propriété pagms.
      * 
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link ListePagmType }
      *     
      */
-    public void setValeur(String value) {
-        this.valeur = value;
+    public void setPagms(ListePagmType value) {
+        this.pagms = value;
     }
 
 }

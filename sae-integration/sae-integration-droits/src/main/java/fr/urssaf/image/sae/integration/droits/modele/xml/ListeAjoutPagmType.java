@@ -16,16 +16,16 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Classe Java pour ListeCsType complex type.
+ * <p>Classe Java pour ListeAjoutPagmType complex type.
  * 
  * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  * 
  * <pre>
- * &lt;complexType name="ListeCsType">
+ * &lt;complexType name="ListeAjoutPagmType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="cs" type="{http://www.cirtil.fr/saeIntegration/droit}CsType" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="ajoutPagm" type="{http://www.cirtil.fr/saeIntegration/droit}AjoutPagmType" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -35,42 +35,42 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ListeCsType", propOrder = {
-    "cs"
+@XmlType(name = "ListeAjoutPagmType", propOrder = {
+    "ajoutPagm"
 })
 // CHECKSTYLE:OFF
 @SuppressWarnings("all")
-public class ListeCsType {
+public class ListeAjoutPagmType {
 
-    protected List<CsType> cs;
+    protected List<AjoutPagmType> ajoutPagm;
 
     /**
-     * Gets the value of the cs property.
+     * Gets the value of the ajoutPagm property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the cs property.
+     * This is why there is not a <CODE>set</CODE> method for the ajoutPagm property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getCs().add(newItem);
+     *    getAjoutPagm().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link CsType }
+     * {@link AjoutPagmType }
      * 
      * 
      */
-    public List<CsType> getCs() {
-        if (cs == null) {
-            cs = new ArrayList<CsType>();
+    public List<AjoutPagmType> getAjoutPagm() {
+        if (ajoutPagm == null) {
+            ajoutPagm = new ArrayList<AjoutPagmType>();
         }
-        return this.cs;
+        return this.ajoutPagm;
     }
 
 }

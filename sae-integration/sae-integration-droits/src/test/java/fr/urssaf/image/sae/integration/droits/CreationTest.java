@@ -35,7 +35,7 @@ public class CreationTest {
       
       File fichierDroitsXml = new File("src/test/resources/jeuxTest/saedroits.xml");
 //      File fichierDroitsXml = new File(
-//         "S:/produits/Qualite/Projet_ae/Documentation refonte/Refonte/Cellule_Intégration/Intégrations/0007 - Lot 12xx10/droits/saedroits.xml");
+//         "c:/divers/saedroitsV2.xml");
       
       droitService.creationDesDroits(fichierDroitsXml);
       

@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import fr.urssaf.image.sae.droit.service.SaePagmpService;
 import fr.urssaf.image.sae.droit.service.SaePrmdService;
 import fr.urssaf.image.sae.integration.droits.exception.IntegrationRuntimeException;
 import fr.urssaf.image.sae.integration.droits.factory.ObjectFactory;
+import fr.urssaf.image.sae.integration.droits.modele.xml.AjoutPagmType;
 import fr.urssaf.image.sae.integration.droits.modele.xml.CsType;
 import fr.urssaf.image.sae.integration.droits.modele.xml.DroitType;
 import fr.urssaf.image.sae.integration.droits.modele.xml.PagmType;
@@ -75,6 +77,9 @@ public final class DroitService {
       
       // Traitement des CS
       traitementCs(droitType);
+      
+      // Traitement des ajouts de PAGM à des CS existants
+      traitementAjoutPagmDansCsExistant(droitType);
       
       // Traces
       LOG.info("Création des droits terminée");
@@ -201,27 +206,9 @@ public final class DroitService {
                   // Trace
                   LOG.debug("Traitement préliminaire du PAGM \"{}\"", codePagm);
                   
-                  // Création de l'objet Pagm requis par le service de sae-droit
-                  Pagm pagm = ObjectFactory.createPagm(pagmType);
+                  // Création du PAGMa et du PAGMp
+                  Pagm pagm = traitementPreliminairePagm(pagmType);
                   pagms.add(pagm);
-                  
-                  // Création de l'objet Pagma requis par le service de sae-droit
-                  Pagma pagma = ObjectFactory.createPagma(pagmType.getPagma());
-                  
-                  // Création de l'objet Pagmp requis par le service de sae-droit
-                  Pagmp pagmp = ObjectFactory.createPagmp(pagmType.getPagmp());
-                  
-                  // Traces
-                  logPagm(pagm, pagma, pagmp);
-                  
-                  // Appel du service de sae-droit pour créer le PAGMa
-                  saePagmaService.createPagma(pagma);
-                  
-                  // Appel du service de sae-droit pour créer le PAGMp
-                  saePagmpService.createPagmp(pagmp);
-                  
-                  // Trace
-                  LOG.debug("Traitement préliminaire du PAGM \"{}\" terminé", codePagm);
                   
                }
                
@@ -234,10 +221,6 @@ public final class DroitService {
                LOG.debug("Traitement du CS \"{}\" terminé", codeCs);
                
             }
-            
-            
-            
-            
             
          }
          
@@ -317,5 +300,120 @@ public final class DroitService {
       
    }
    
+   
+   private void traitementAjoutPagmDansCsExistant(DroitType droitType) {
+      
+      if ((droitType.getListeAjoutPagm()!=null) && 
+            (CollectionUtils.isNotEmpty(droitType.getListeAjoutPagm().getAjoutPagm()))) {
+         
+         // Trace
+         LOG.info("Présence de demandes d'ajouts de PAGM dans des CS existants : OUI");
+         
+         // Trace
+         LOG.info("Traitement des ajouts de PAGM dans des CS existants");
+         
+         // Boucle sur la liste des ajouts de PAGM
+         for (AjoutPagmType ajoutPagm: droitType.getListeAjoutPagm().getAjoutPagm()) {
+            
+            // Init boucle
+            String codeCs = ajoutPagm.getCsIssuer();
+            
+            // Trace
+            LOG.info("Traitement du/des ajouts de PAGM pour le CS \"{}\"", codeCs);
+            
+            // Vérifie que le CS existe
+            if (!saeDroitService.contratServiceExists(codeCs)) {
+               LOG.info("Erreur : Le CS \"{}\" n'a pas été trouvé. On saute cet ajout de PAGM", codeCs);
+               continue;
+            }
+            
+            // Récupère la liste des PAGM déjà présents dans le CS
+            List<Pagm> pagmsExistants = saeDroitService.getListePagm(codeCs);
+            
+            // Traitement des PAGM
+            int nbPagm = ajoutPagm.getPagms().getPagm().size();
+            LOG.debug("Nombre de PAGM à ajouter pour le CS \"{}\" : {}", codeCs, nbPagm);
+            LOG.debug("Traitement des PAGM");
+            for (PagmType pagmType : ajoutPagm.getPagms().getPagm()) {
+               
+               // Init boucle
+               String codePagm = pagmType.getCode();
+               
+               // Trace
+               LOG.debug("Traitement préliminaire du PAGM \"{}\"", codePagm);
+               
+               // Vérifie que le PAGM n'existe pas déjà dans le CS
+               if (existePagm(pagmsExistants, codePagm)) {
+                  LOG.info("Erreur : Le PAGM \"{}\" existe déjà dans le CS {}", codePagm, codeCs);
+                  continue;
+               }
+               
+               // Création du PAGMa et du PAGMp
+               Pagm pagm = traitementPreliminairePagm(pagmType);
+               
+               // Appel du service de sae-droit pour ajouter le PAGM au CS
+               LOG.debug("Appel du service d'ajout des PAGM au CS \"{}\"", codeCs);
+               saeDroitService.addPagmContratService(codeCs, pagm);
+               
+               // Trace
+               LOG.debug("PAGM \"{}\" ajouté avec succès au CS \"{}\"", codePagm, codeCs);
+               
+            }
+            
+            // Trace
+            LOG.debug("Traitement du/des ajouts de PAGM pour le CS \"{}\" terminé", codeCs);
+            
+         }
+         
+         // Trace
+         LOG.info("Traitement des ajouts de PAGM dans des CS existants terminé");
+         
+         
+      } else {
+         
+         // Trace
+         LOG.info("Présence de demandes d'ajout de PAGM dans des CS existants : NON");
+         
+      }
+      
+   }
+   
+   private Pagm traitementPreliminairePagm(PagmType pagmType) {
+      
+      // Création de l'objet Pagm requis par le service de sae-droit
+      Pagm pagm = ObjectFactory.createPagm(pagmType);
+      
+      // Création de l'objet Pagma requis par le service de sae-droit
+      Pagma pagma = ObjectFactory.createPagma(pagmType.getPagma());
+      
+      // Création de l'objet Pagmp requis par le service de sae-droit
+      Pagmp pagmp = ObjectFactory.createPagmp(pagmType.getPagmp());
+      
+      // Traces
+      logPagm(pagm, pagma, pagmp);
+      
+      // Appel du service de sae-droit pour créer le PAGMa
+      saePagmaService.createPagma(pagma);
+      
+      // Appel du service de sae-droit pour créer le PAGMp
+      saePagmpService.createPagmp(pagmp);
+      
+      // Renvoie l'objet Pagm
+      return pagm;
+      
+   }
+   
+   private boolean existePagm(List<Pagm> pagmsExistants, String codePagm) {
+      
+      if (CollectionUtils.isNotEmpty(pagmsExistants)) {
+         for (Pagm pagm: pagmsExistants) {
+            if (pagm.getCode().equals(codePagm)) {
+               return true;
+            }
+         }
+      }
+      
+      return false;
+   }
 
 }
