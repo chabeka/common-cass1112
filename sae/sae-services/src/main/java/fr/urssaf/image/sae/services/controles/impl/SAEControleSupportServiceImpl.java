@@ -77,7 +77,8 @@ public class SAEControleSupportServiceImpl implements SAEControleSupportService 
    @Override
    public final void checkHash(File sommaire, String hash, String typeHash) throws CaptureMasseSommaireTypeHashException, CaptureMasseSommaireHashException{
       
-      if("SHA-1".equals(typeHash)){
+      if(StringUtils
+            .equalsIgnoreCase("SHA-1",typeHash)){
          
          // récupération du contenu pour le calcul du HASH
          byte[] content = null;
