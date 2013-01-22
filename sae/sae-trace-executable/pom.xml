@@ -1,16 +1,15 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
    <modelVersion>4.0.0</modelVersion>
 
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-trace-executable</artifactId>
-   <version>12.11.11.2-SNAPSHOT</version>
+   <version>13.4.10.1</version>
    <packaging>jar</packaging>
 
    <parent>
       <groupId>fr.urssaf.image.sae</groupId>
       <artifactId>sae</artifactId>
-      <version>12.11.11.2-SNAPSHOT</version>
+      <version>13.4.10.1</version>
    </parent>
 
    <name>sae-trace-executable</name>
@@ -25,7 +24,7 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-trace</artifactId>
-         <version>12.11.11.2-SNAPSHOT</version>
+         <version>13.4.10.1</version>
       </dependency>
 
       <!-- SPRING -->
@@ -68,16 +67,13 @@
                         </filter>
                      </filters>
                      <transformers>
-                        <transformer
-                           implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                            <mainClass>fr.urssaf.image.sae.trace.executable.bootstrap.Main</mainClass>
                         </transformer>
-                        <transformer
-                           implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                            <resource>META-INF/spring.handlers</resource>
                         </transformer>
-                        <transformer
-                           implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                            <resource>META-INF/spring.schemas</resource>
                         </transformer>
                      </transformers>
