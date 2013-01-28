@@ -1,0 +1,109 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>fr.urssaf.image</groupId>
+  <artifactId>pdfa-validator</artifactId>
+  <name>pdfa-validator</name>
+  <version>0.0.1-SNAPSHOT</version>
+  <description>Outil en ligne de commande permettant d'analyser la conformité d'un PDF/A par rapport aux normes.</description>
+  
+  <properties>
+        <org.slf4j.version>1.6.1</org.slf4j.version>
+        <logback.version>0.9.30</logback.version>
+        <junit.version>4.8.2</junit.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
+              <maven-resources-plugin.version>2.5</maven-resources-plugin.version>
+  </properties>
+  
+  <dependencies>
+   <!-- Junit -->
+   <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+   </dependency>
+   <!-- commons-pdfbox -->
+   <dependency>
+      <groupId>fr.urssaf.image.commons</groupId>
+      <artifactId>commons-pdfbox</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+   </dependency>
+   <!-- SLF4J et Logback -->
+   <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${org.slf4j.version}</version>
+   </dependency>
+   <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>${logback.version}</version>
+   </dependency>
+   <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-core</artifactId>
+      <version>${logback.version}</version>
+   </dependency>
+<dependency>
+	<groupId>commons-io</groupId>
+	<artifactId>commons-io</artifactId>
+	<version>2.4</version>
+</dependency>
+<dependency>
+   <groupId>commons-lang</groupId>
+   <artifactId>commons-lang</artifactId>
+   <version>2.4</version>
+</dependency>
+</dependencies>
+  
+     <build>
+
+      <plugins>
+               <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>${maven-compiler-plugin.version}</version>
+            <configuration>
+               <source>1.6</source>
+               <target>1.6</target>
+               <encoding>${project.build.sourceEncoding}</encoding>
+            </configuration>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-resources-plugin</artifactId>
+            <version>${maven-resources-plugin.version}</version>
+            <configuration>
+               <encoding>${project.build.sourceEncoding}</encoding>
+            </configuration>
+         </plugin>
+
+         <plugin>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <configuration>
+               <archive>
+                  <manifest>
+                     <mainClass>fr.urssaf.image.pdfa.validator.ValidatePDF</mainClass>
+                  </manifest>
+               </archive>
+               <descriptors>
+                  <descriptor>src/assembly/jar-executable.xml</descriptor>
+               </descriptors>
+            </configuration>
+            <executions>
+               <execution>
+                  <id>make-assembly</id>
+                  <phase>package</phase>
+                  <goals>
+                     <goal>single</goal>
+                  </goals>
+               </execution>
+            </executions>
+
+         </plugin>
+
+      </plugins>
+
+      </build>
+</project>

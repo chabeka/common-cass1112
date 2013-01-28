@@ -1,0 +1,5 @@
+Début de l'analyse des fichiers PDF 
+E-frutiger.pdf --> KO 
+Le document est n'est pas un PDF/A conforme
+3.1.6 : Invalid Font definition, Width of the character "201" in the font program "AEOQYB+Frutiger-Bold-ANSI"is inconsistent with the width in the PDF dictionary.
+
