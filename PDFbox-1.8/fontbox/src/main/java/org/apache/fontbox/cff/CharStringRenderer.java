@@ -190,6 +190,12 @@ public class CharStringRenderer extends CharStringHandler
                 setWidth(numbers.get(0));
             }
         }
+        // Ajout pour vérifier que la validation passe ... dans certains cas on trouve un endchar et la taille n'est pas revoyé=> générant une erreur de validation
+        else if ("endchar".equals(name)) {
+           if (numbers.size() % 2 == 1 ) {
+               setWidth(numbers.get(0));
+           }
+       }
         else if ("hstemhm".equals(name)) {
             if (numbers.size() % 2 == 1) {
                 setWidth(numbers.get(0));

@@ -1,0 +1,52 @@
+
+Analyse de l'erreur généré par PDFBox lors de la validation des fichiers PDF issues de la chaine de production URSSAF.
+L'erreur générée est la suivante
+3.1.6 : Invalid Font definition, Width of the character "201" in the font program "AEOQYB+Frutiger-Bold-ANSI"is inconsistent with the width in the PDF dictionary.
+
+Cette non-conformité, dans le cas des documents URSSAF, est liée à une incohérence entre les données de la police de caratère et ceux définie dans le 
+fichier PDF sur la taille d'un caractère.
+
+Si on regarde la méthode checkGlyphWith(...) de la classe FontContainer (org.apache.pdfbox.preflight.font.container), le validateur de PDFBox
+effectue une vérification entre la taille attendue et la taille trouvée. Dans notre cas pour le caractère É le validateur trouve la valeur 0 au lieu de
+556(valeur attendue). Nous avons vérifié la validité de cette valeur à travers un outils externe, FontForge. Ce dernier permet d'extraire les
+polices de caractères d'un document PDF pour en voir les caractéristiques. De plus pour avons récupéré les polices origianles utilisée sur le serveur
+de production et nous avons confronter les valeurs attendues.
+
+Les raisons de la divergence entre valeur obtenue et valeur attendu au niveau du validateur peuvent provenir d'une mauvaise catégorisation de la police de caractère en Type2
+	Quand on ouvre le document PDF avec acrobat reader et qu'on regarde les propriétés des polices de caractères du document 
+	on constate que Frutiger est une police de type 1. Lors du chargement de la police au niveau de la classe CFFParser (org.apache.fontbox.cff.CFFParser)
+	PDFBox ne détecte pas la valeur du CharStringType 
+	font.addValueToTopDict("CharstringType", getNumber(topDict, "CharstringType", 2));
+	on en prend par conséquent la valeur par défaut 2. Du coup la police de caractère est considérée comme une police de Type2
+	
+	A partir du moment ou la police est considérée comme type 2, quand le caractère É sera rencontré, afin de déterminer ses caractéristiques
+	PDFBox appel la méthode handleCommandType2 de la classe org.apache.fontbox.cff.CharStringRenderer. Au cour de cette analyse
+	on va rencontrer au niveau de la sequence l'opérateur "endchar". Selon le The Type 2 Charstring Format Technical Note #5177 de Mars 2000
+	cette opérateur est bien placé 
+	
+	w? {hs* vs* cm* hm* mt subpath}? {mt subpath}* endchar
+	Where:
+	w = width
+	hs = hstem or hstemhm command
+	vs = vstem or vstemhm command
+	cm = cntrmask operator
+	hm = hintmask operator
+	mt = moveto (i.e. any of the moveto) operators 
+	subpath = refers to the construction of a subpath (one complete closed contour), which may include hintmask operators where appropriate.
+	
+	Mais PDFBox vérifie que la taille de la sequence est de 1. C'est à dire qu'il doit contenir qu'un autre élément en plus du endchar ... pourquoi ???
+	Comme il existe plus d'un élément PDFBox ne met pas à jour la taille de la police avec la valeur 556 mais la laisse à 0 ce qui provoque l'erreur.
+
+	
+	
+	Ce problème fait l'objet d'un ticket sur le projet PDFBox, en attendant on a modifier la classe CharStringRenderer ligne 193 à 198 pour rajouter les éléments suivants
+	
+	    // Ajout pour vérifier que la validation passe ... dans certains cas on trouve un endchar et la taille n'est pas revoyé=> générant une erreur de validation
+        else if ("endchar".equals(name)) {
+           if (numbers.size() % 2 == 1 ) {
+               setWidth(numbers.get(0));
+           }
+       }
+	 
+
+
