@@ -136,6 +136,17 @@ public class SAESearchServiceImplTest {
       listeQuery
             .add("CodeRND:2.3.1.1.12 AND Siren:3090000001 AND DateCreation:20070401 AND  Denomination:\"Test 309-Recherche-OK-ProjetAttestations\"");
 
+      listeQuery.add("Denomination:\"Test 301-Recherche-OK-Standard\" AND CodeRND:(\"2.3.1.1.12\" AND \"2.3.1.1.8\")");
+      listeQuery.add("Denomination:\"Test 301-Recherche-OK-Standard\" AND CodeRND:(\"2.3.1.1.12\" OR \"2.3.1.1.8\")");
+      listeQuery.add("CodeRND:(\"2.3.1.1.12\" OR \"2.3.1.1.8\") AND Denomination:\"Test 301-Recherche-OK-Standard\"");
+      listeQuery.add("DateCreation:20050618 AND CodeRND:(\"2.3.1.1.12\" OR \"2.3.1.1.8\") AND Denomination:\"Test 301-Recherche-OK-Standard\"");
+      
+      listeQuery.add("Denomination:\"Test 301-Recherche-OK-Standard\" AND CodeRND:(\"2.3.1.1.12\" OR \"2.3.1.1.8\" OR \"2.4.1.1.8\" OR \"2.5.1.1.8\" OR \"2.6.1.1.8\" OR \"2.6.1.1.8\" OR \"2.7.1.1.8\" OR \"2.7.1.1.8\" OR \"2.8.1.1.8\" OR \"2.9.1.1.8\")" );
+      listeQuery.add("CodeRND:(\"2.3.1.1.12\" OR \"2.3.1.1.8\" OR \"2.6.1.1.8\" OR \"2.6.1.1.8\" OR \"2.7.1.1.8\") AND Denomination:\"Test 301-Recherche-OK-Standard\"");
+      listeQuery.add("DateCreation:20050618 AND CodeRND:(\"2.3.1.1.12\" OR \"2.3.1.1.8\" OR \"2.6.1.1.8\" OR \"2.6.1.1.8\" OR \"2.7.1.1.8\") AND Denomination:\"Test 301-Recherche-OK-Standard\"");
+      listeQuery.add("DateCreation:20050618 AND CodeRND:(\"2.3.1.1.12\" OR \"2.3.1.1.8\" OR \"2.6.1.1.8\" OR \"2.6.1.1.8\" OR \"2.7.1.1.8\") AND Denomination:(\"Test 301-Recherche-OK-Standard\" OR \"Test 302-Recherche-OK-Standard\" OR \"Test 303-Recherche-OK-Standard\")");
+
+
       
       
       // définiton des requêtes coverties attentudes
@@ -186,8 +197,16 @@ public class SAESearchServiceImplTest {
       // Attestation
       listeConvertedQuery
             .add("SM_DOCUMENT_TYPE:2.3.1.1.12 AND srn:3090000001 AND SM_CREATION_DATE:20070401 AND  den:\"Test 309-Recherche-OK-ProjetAttestations\"");
-
-
+      
+      listeConvertedQuery.add("den:\"Test 301-Recherche-OK-Standard\" AND SM_DOCUMENT_TYPE:(\"2.3.1.1.12\" AND \"2.3.1.1.8\")");
+      listeConvertedQuery.add("den:\"Test 301-Recherche-OK-Standard\" AND SM_DOCUMENT_TYPE:(\"2.3.1.1.12\" OR \"2.3.1.1.8\")");
+      listeConvertedQuery.add("SM_DOCUMENT_TYPE:(\"2.3.1.1.12\" OR \"2.3.1.1.8\") AND den:\"Test 301-Recherche-OK-Standard\"");
+      listeConvertedQuery.add("SM_CREATION_DATE:20050618 AND SM_DOCUMENT_TYPE:(\"2.3.1.1.12\" OR \"2.3.1.1.8\") AND den:\"Test 301-Recherche-OK-Standard\"");
+      
+      listeConvertedQuery.add("den:\"Test 301-Recherche-OK-Standard\" AND SM_DOCUMENT_TYPE:(\"2.3.1.1.12\" OR \"2.3.1.1.8\" OR \"2.4.1.1.8\" OR \"2.5.1.1.8\" OR \"2.6.1.1.8\" OR \"2.6.1.1.8\" OR \"2.7.1.1.8\" OR \"2.7.1.1.8\" OR \"2.8.1.1.8\" OR \"2.9.1.1.8\")" );
+      listeConvertedQuery.add("SM_DOCUMENT_TYPE:(\"2.3.1.1.12\" OR \"2.3.1.1.8\" OR \"2.6.1.1.8\" OR \"2.6.1.1.8\" OR \"2.7.1.1.8\") AND den:\"Test 301-Recherche-OK-Standard\"");
+      listeConvertedQuery.add("SM_CREATION_DATE:20050618 AND SM_DOCUMENT_TYPE:(\"2.3.1.1.12\" OR \"2.3.1.1.8\" OR \"2.6.1.1.8\" OR \"2.6.1.1.8\" OR \"2.7.1.1.8\") AND den:\"Test 301-Recherche-OK-Standard\"");
+      listeConvertedQuery.add("SM_CREATION_DATE:20050618 AND SM_DOCUMENT_TYPE:(\"2.3.1.1.12\" OR \"2.3.1.1.8\" OR \"2.6.1.1.8\" OR \"2.6.1.1.8\" OR \"2.7.1.1.8\") AND den:(\"Test 301-Recherche-OK-Standard\" OR \"Test 302-Recherche-OK-Standard\" OR \"Test 303-Recherche-OK-Standard\")");
       
 
       // pour toutes les requêtes définies

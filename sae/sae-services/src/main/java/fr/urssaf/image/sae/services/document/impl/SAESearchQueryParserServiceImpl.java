@@ -1,6 +1,7 @@
 package fr.urssaf.image.sae.services.document.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -66,11 +67,11 @@ public class SAESearchQueryParserServiceImpl implements
       }
       String requeteATraiter = requeteFinal;
 
-      // on remplace tous les " AND " et " OR " par $%#A#%$ et $%#O#%$
+      // on remplace tous les " AND " et " OR " par $%#&#%$ et $%#|#%$
       // respectivement
       requeteATraiter = requeteATraiter.replace(" AND ", "§%#&#%§£");
       requeteATraiter = requeteATraiter.replace(" OR ", "§%#|#%§£");
-      // on remplace tous les espaces qui suivi par un + ou un -
+      // on remplace tous les espaces qui sont suivi par un + ou un -
       // on utilise $1 et $2 poure reconstruire la châine. l'expression
       // régulière (\\w{1})\\s+((\\+|\\-)[A-Z]{1}) remplace la chaine "a +A"
       // ou "b -C" par ¤¤£. le $1 et $2 permettent de récupère le "a" et le
@@ -80,7 +81,7 @@ public class SAESearchQueryParserServiceImpl implements
       // on remplace tous les espaces précédé par un "
       requeteATraiter = requeteATraiter.replaceAll("(\")\\s+|(\\))\\s+", "$1$2@@£");
 
-      // on décompose la chaime entière pour avoir un tableau de métadonnées
+      // on décompose la chaine entière pour avoir un tableau de métadonnées
       // String[] meta = requeteFinal.split("§%#.#%§£");
       String[] meta = requeteATraiter.split("£");
 
@@ -96,7 +97,10 @@ public class SAESearchQueryParserServiceImpl implements
       // parcour de la liste des méta données pour remplacer les codes longs
       // par les codes courts
       ArrayList<String> metaCourt = new ArrayList<String>();
-      for (String m : meta) {
+      int nbCodeLong = 0;
+      int index = 0;
+      HashMap<Integer, String> metaMultipleValue = new HashMap<Integer,String>();
+      for (String m : meta) {         
          // la décomposition s'est fait à partir du £ il faut donc enlever
          // les reste de token
          m = m.replace("§%#&#%§", StringUtils.EMPTY);
@@ -105,14 +109,26 @@ public class SAESearchQueryParserServiceImpl implements
          m = m.replace("¤¤", StringUtils.EMPTY);
 
          // on recherche les codes court pour les codes longs présents dans la requête
-         findCodeCourtForCodeLong(operateurList, m, map, metaCourt);
+         if(m.contains(":")){
+            // seul les éléments contenant un ":" sont considérés comme
+            // metadonnées ex CodeRND:("2.3.1.1.12" AND "2.3.1.1.8") sera
+            // décomposé en [CodeRND:("2.3.1.1.12", "2.3.1.1.8")] la taille de
+            // la liste est de deux mais elle ne contient q'une seule métadonnée 
+            nbCodeLong++;
+            findCodeCourtForCodeLong(operateurList, m, map, metaCourt);
+         }else{
+            // cette liste va contenir les valuers pour lesquelles il n'y a pas
+            // de métadonnées par ex la valeu "2.3.1.1.8" si on reprend le cas
+            // de CodeRND:("2.3.1.1.12" AND "2.3.1.1.8")
+            metaCourt.add(index, m);
+         }
 
-
+         index++;
       }
 
       // on doit avoir le même nombre de code court que de code long
       if (meta.length == metaCourt.size()) {
-         requeteAvecCodeCourt = rebuidQuery(metaCourt, position);
+         requeteAvecCodeCourt = rebuidQuery(metaCourt, position,metaMultipleValue);
       } else {
          LOG
                .error("Erreur le nombre de code court est inférieure à celui attendu");
@@ -128,12 +144,12 @@ public class SAESearchQueryParserServiceImpl implements
       return requeteAvecCodeCourt;
    }
    
-   private String rebuidQuery(List<String> metaCourt, String[] position){
+   private String rebuidQuery(List<String> metaCourt, String[] position, Map multipleValue){
       String requete = StringUtils.EMPTY;
       // construction de la requête avec le code court
       for (int i = 0; i < metaCourt.size(); i++) {
          // on a plusieurs cas possibles, une combinaison de AND OR et
-         // d'espaces. Si on a m1:v1 +m2:v2 AND m3:v3 on aura un tablea de
+         // d'espaces. Si on a m1:v1 +m2:v2 AND m3:v3 on aura un tableau de
          // position de taille 2 avec [vide,AND] on va donc devoir tester
          // la longeur de la chaîne pour savoir s'il faut mettre un espace
          if (position.length > 0) {
@@ -174,7 +190,8 @@ public class SAESearchQueryParserServiceImpl implements
    
    private void findCodeCourtForCodeLong(List<String> operateurList, String metaLong, Map<String, String> CodeCourtCodeLong, List<String> metaCourt ){
       
-      String nomMeta = metaLong.substring(0, metaLong.indexOf(":"));
+      
+	  String nomMeta = metaLong.substring(0, metaLong.indexOf(":"));
       String codeCourt = StringUtils.EMPTY;
       
       // on vérifie qu'il n'existe pas d'autres opérateurs + - ( NOT ou
@@ -213,7 +230,6 @@ public class SAESearchQueryParserServiceImpl implements
          metaCourt.add(metaLong.replaceFirst(nomMeta.substring(startPosition,
                nomMeta.length()), codeCourt));
       }
-      
    }
 
 }
