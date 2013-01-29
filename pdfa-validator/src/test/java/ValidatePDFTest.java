@@ -92,7 +92,7 @@ public class ValidatePDFTest {
       // on valide le fichier
       validate.main(args);
       // on compare le fichier temoin avec celui obtenu pour vérifier que les log ont bien étaient écrit
-      Assert.assertTrue(FileUtils.contentEqualsIgnoreEOL(getFileFromResource("\\log.txt"), new File(repTemp.getAbsolutePath(),"log.txt"),null));
+      Assert.assertTrue(FileUtils.contentEqualsIgnoreEOL(getFileFromResource("/log.txt"), new File(repTemp.getAbsolutePath(),"log.txt"),null));
       FileUtils.deleteQuietly(repTemp);
    }
    
@@ -105,7 +105,7 @@ public class ValidatePDFTest {
       // on valide le fichier
       validate.main(args);
       // on compare le fichier temoin avec celui obtenu pour vérifier que les log ont bien étaient écrit
-      Assert.assertTrue(FileUtils.contentEqualsIgnoreEOL(getFileFromResource("\\log-2.txt"), new File(repTemp.getAbsolutePath(),"log.txt"),null));
+      Assert.assertTrue(FileUtils.contentEqualsIgnoreEOL(getFileFromResource("/log-2.txt"), new File(repTemp.getAbsolutePath(),"log.txt"),null));
       FileUtils.deleteQuietly(repTemp);
    }
    
