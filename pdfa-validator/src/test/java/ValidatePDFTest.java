@@ -8,6 +8,7 @@ import junit.framework.Assert;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +44,14 @@ public class ValidatePDFTest {
       } catch (URISyntaxException ex) {
          throw new RuntimeException(ex);
       }
+   }
+   @Ignore
+   @Test   
+   public void displayHelp() throws IOException, NoAnalysisFolderOrLogFolderException, NotAFileException, FileExisteException, NotAFolderException{
+      String[] args = new String[]{"help"};
+      
+      ValidatePDF validate = new ValidatePDF();
+      validate.main(args);
    }
    //On vérifie qu'on sort bien en exception si les paramètres d'entrés ne sont pas fournis
    @Test(expected = NoAnalysisFolderOrLogFolderException.class)   
