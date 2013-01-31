@@ -362,7 +362,6 @@
          <groupId>net.sf.opencsv</groupId>
          <artifactId>opencsv</artifactId>
          <version>${opencsv.version}</version>
-         <scope>test</scope>
       </dependency>
 
    </dependencies>
