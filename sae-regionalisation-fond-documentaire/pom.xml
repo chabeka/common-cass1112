@@ -38,6 +38,9 @@
       <guava.version>12.0</guava.version>
       <org.springframework.version>3.0.5.RELEASE</org.springframework.version>
       <easymock.version>3.1</easymock.version>
+      
+      <opencsv.version>2.3</opencsv.version>
+      
    </properties>
 
 
@@ -351,6 +354,14 @@
          <groupId>org.easymock</groupId>
          <artifactId>easymock</artifactId>
          <version>${easymock.version}</version>
+         <scope>test</scope>
+      </dependency>
+      
+      <!-- Open CSV -->
+      <dependency>
+         <groupId>net.sf.opencsv</groupId>
+         <artifactId>opencsv</artifactId>
+         <version>${opencsv.version}</version>
          <scope>test</scope>
       </dependency>
 
