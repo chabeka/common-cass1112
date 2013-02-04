@@ -92,14 +92,16 @@ public class SAESearchQueryParserServiceImpl implements
       // chaque opérateurs ou espace
       copieRequeteFinale = copieRequeteFinale.replaceAll(
             "[^§%#&#%§£|§%#\\|#%§£|@@£|¤¤£]", StringUtils.EMPTY);
-      String[] position = copieRequeteFinale.split("£");
+      String[] position = null;
+      if(copieRequeteFinale.contains("£")){
+         position = copieRequeteFinale.split("£");
+      }
 
       // parcour de la liste des méta données pour remplacer les codes longs
       // par les codes courts
       ArrayList<String> metaCourt = new ArrayList<String>();
       int nbCodeLong = 0;
       int index = 0;
-      HashMap<Integer, String> metaMultipleValue = new HashMap<Integer,String>();
       for (String m : meta) {         
          // la décomposition s'est fait à partir du £ il faut donc enlever
          // les reste de token
@@ -128,7 +130,7 @@ public class SAESearchQueryParserServiceImpl implements
 
       // on doit avoir le même nombre de code court que de code long
       if (meta.length == metaCourt.size()) {
-         requeteAvecCodeCourt = rebuidQuery(metaCourt, position,metaMultipleValue);
+         requeteAvecCodeCourt = rebuidQuery(metaCourt, position);
       } else {
          LOG
                .error("Erreur le nombre de code court est inférieure à celui attendu");
@@ -144,7 +146,7 @@ public class SAESearchQueryParserServiceImpl implements
       return requeteAvecCodeCourt;
    }
    
-   private String rebuidQuery(List<String> metaCourt, String[] position, Map multipleValue){
+   private String rebuidQuery(List<String> metaCourt, String[] position){
       String requete = StringUtils.EMPTY;
       // construction de la requête avec le code court
       for (int i = 0; i < metaCourt.size(); i++) {
@@ -152,7 +154,7 @@ public class SAESearchQueryParserServiceImpl implements
          // d'espaces. Si on a m1:v1 +m2:v2 AND m3:v3 on aura un tableau de
          // position de taille 2 avec [vide,AND] on va donc devoir tester
          // la longeur de la chaîne pour savoir s'il faut mettre un espace
-         if (position.length > 0) {
+         if (position!=null && position.length > 0) {
             if (i < position.length) {
                // on vérifie la longeur de la chaîne si elle est > 0 c'est
                // un token sinon c'est un espace
