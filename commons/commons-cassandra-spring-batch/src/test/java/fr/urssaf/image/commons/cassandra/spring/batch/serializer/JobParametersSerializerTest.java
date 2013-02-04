@@ -41,5 +41,36 @@ public class JobParametersSerializerTest {
       mapJobParameters.put("5ème_parametre", new JobParameter(56.5));
       return new JobParameters(mapJobParameters);
    }
+   
+   
+   private JobParameters getTestJobParametersAvecNull() {
+      Map<String, JobParameter> mapJobParameters = new HashMap<String, JobParameter>();
+      mapJobParameters.put("param1", new JobParameter("param1"));
+      mapJobParameters.put("param2", new JobParameter((String)null));
+      return new JobParameters(mapJobParameters) ;
+   }
+   
+   
+   @Test
+   public void parametreNull_success() {
+      
+      JobParametersSerializer js = JobParametersSerializer.get();
+      StringSerializer ss = StringSerializer.get();
+      JobParameters jobParameters1 = getTestJobParametersAvecNull();
+      byte[] bytes1 = js.toBytes(jobParameters1);
+      System.out.println(jobParameters1);
+      String s1 = ss.fromBytes(bytes1);
+      System.out.println(s1);
+
+      JobParameters jobParameters2 = js.fromBytes(bytes1);
+      byte[] bytes2 = js.toBytes(jobParameters1);
+      System.out.println(jobParameters2);
+      String s2 = ss.fromBytes(bytes2);
+      System.out.println(s2);
+      Assert.assertArrayEquals(bytes2, bytes1);
+      Assert.assertEquals(jobParameters2, jobParameters1);
+      
+      
+   }
 
 }

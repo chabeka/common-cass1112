@@ -32,7 +32,10 @@ public class JobParametersSerializer extends AbstractSerializer<JobParameters> {
       for (Entry<String, Object> entySet : mapObject.entrySet()) {
          String key = entySet.getKey();
          Object value = entySet.getValue();
-         if (value instanceof Date)
+         if (value==null) {
+            // Un JobParameter peut être null 
+            mapParam.put(key, new JobParameter((String)null));
+         } else if (value instanceof Date)
             mapParam.put(key, new JobParameter((Date) value));
          else if (value instanceof Long)
             mapParam.put(key, new JobParameter((Long) value));
