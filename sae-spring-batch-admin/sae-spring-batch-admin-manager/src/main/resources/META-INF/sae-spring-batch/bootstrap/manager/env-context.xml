@@ -14,6 +14,13 @@
 		<property name="ignoreUnresolvablePlaceholders" value="true" />
 		<property name="order" value="10" />
 	</bean>
+   
+   <bean id="propertiesFactory"
+         class="org.springframework.batch.admin.factory.PropertiesFactory" />
+   
+   <bean id="placeholderPropertiesJobConfigFileDir" 
+         factory-bean="propertiesFactory" 
+         factory-method="load" />
 
    <!-- Chargement des propriétés pour serveurs cassandra et zookeeper locaux -->
    <bean id="cassandraPlaceholderProperties" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
