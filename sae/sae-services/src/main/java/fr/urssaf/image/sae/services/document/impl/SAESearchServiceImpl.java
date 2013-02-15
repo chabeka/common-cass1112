@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -37,6 +34,7 @@ import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 import fr.urssaf.image.sae.metadata.referential.services.MetadataReferenceDAO;
 import fr.urssaf.image.sae.services.document.SAESearchQueryParserService;
 import fr.urssaf.image.sae.services.document.SAESearchService;
+import fr.urssaf.image.sae.services.document.model.SAESearchQueryParserResult;
 import fr.urssaf.image.sae.services.exception.SAESearchQueryParseException;
 import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
 import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedToConsultEx;
@@ -58,9 +56,7 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 /**
- * Fournit l'implémentation des services pour la recherche.<BR />
- * 
- * @author lbaadj.
+ * Fournit l'implémentation des services pour la recherche.
  */
 @Service
 @Qualifier("saeSearchService")
@@ -90,9 +86,6 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
 
    @Autowired
    private SAESearchQueryParserService queryParseService;
-
-   // du referentiel
-   private static final String SPLIT = "(\\w+)\\s*[:>]";
 
    /**
     * {@inheritDoc}
@@ -269,43 +262,31 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
    }
 
    /**
-    * Extrait les codes long d'une requête Lucene.
+    * Vérifie rapidement la syntaxe de la requête LUCENE en utilisant un
+    * QueryParser LUCENE
     * 
     * @param requete
     *           : Requête Lucene.
-    * @return Une liste de code court des métadonnées.
     * @throws SyntaxLuceneEx
     *            : Une exception de type {@link SyntaxLuceneEx}
     */
-   public final List<String> extractLongCodesFromQuery(String requete)
-         throws SyntaxLuceneEx {
+   private void verifieSyntaxeLucene(String requete) throws SyntaxLuceneEx {
 
       // Traces debug - entrée méthode
-      String prefixeTrc = "extractLongCodeFromQuery()";
+      String prefixeTrc = "verifieSyntaxeLucene()";
       LOG.debug("{} - Début", prefixeTrc);
+      LOG
+            .debug(
+                  "{} - Début de la vérification SAE: La requête de recherche est syntaxiquement correcte",
+                  prefixeTrc);
       // Fin des traces debug - entrée méthode
-      List<String> listCodeReq = new ArrayList<String>();
-      try {
-         LOG
-               .debug(
-                     "{} - Début de la vérification SAE: La requête de recherche est syntaxiquement correcte",
-                     prefixeTrc);
 
-         Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_CURRENT);
-         QueryParser queryParser = new QueryParser(Version.LUCENE_CURRENT, "",
-               analyzer);
+      // Utilise un QueryParser LUCENE pour analyse la requête
+      Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_CURRENT);
+      QueryParser queryParser = new QueryParser(Version.LUCENE_CURRENT,
+            StringUtils.EMPTY, analyzer);
+      try {
          queryParser.parse(requete);
-         Pattern patt = Pattern.compile(SPLIT);
-         Matcher matcher = patt.matcher(requete);
-         while (matcher.find()) {
-            // recup que la partie les codes longs.
-            listCodeReq.add(matcher.group().replaceAll("\\s*[:>]", ""));
-         }
-      } catch (PatternSyntaxException except) {
-         LOG.debug("{} - {}", prefixeTrc, ResourceMessagesUtils.loadMessage(
-               "lucene.syntax.error", SPLIT));
-         throw new SyntaxLuceneEx(ResourceMessagesUtils.loadMessage(
-               "lucene.syntax.error", SPLIT), except);
       } catch (ParseException except) {
          LOG.debug("{} - {}", prefixeTrc, ResourceMessagesUtils
                .loadMessage("search.syntax.lucene.error"));
@@ -316,7 +297,8 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
             .debug(
                   "{} - Fin de la vérification SAE: La requête de recherche est syntaxiquement correcte",
                   prefixeTrc);
-      return listCodeReq;
+
+      LOG.debug("{} - Fin", prefixeTrc);
 
    }
 
@@ -474,13 +456,12 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
                   prefixeTrc,
                   StringUtils.isEmpty(buildMessageFromList(listMetaDesired)) ? "Vide"
                         : buildMessageFromList(listMetaDesired));
-      
+
       // Trim la requête de recherche
       String requeteTrim = StringUtils.trim(requete);
-      LOG.debug(
-            "{} - Requête de recherche après trim : {}",
-            prefixeTrc, requeteTrim);
-      
+      LOG.debug("{} - Requête de recherche après trim : {}", prefixeTrc,
+            requeteTrim);
+
       boolean isFromRefrentiel = false;
       // liste de résultats à envoyer
       List<UntypedDocument> listUntypedDocument = new ArrayList<UntypedDocument>();
@@ -500,17 +481,26 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
 
       try {
 
-         List<String> longCodesReq = extractLongCodesFromQuery(requeteTrim);
-         checkExistingLuceneMetadata(longCodesReq);
+         // Vérifie globalement la syntaxe de la requête LUCENE
+         verifieSyntaxeLucene(requeteTrim);
          String requeteFinal = requeteTrim;
 
-         // converstion de la requête avec les codes long en code court
-         requeteFinal = queryParseService.convertFromLongToShortCode(
-               requeteFinal, longCodesReq);
+         // Conversion de la requête avec les codes long en code court
+         SAESearchQueryParserResult parserResult = queryParseService
+               .convertFromLongToShortCode(requeteFinal);
+         requeteFinal = parserResult.getRequeteCodeCourts();
          LOG
                .debug(
                      "{} - Requête de recherche après remplacement des codes longs par les codes courts : {}",
                      prefixeTrc, requeteFinal);
+
+         List<String> longCodesReq = new ArrayList<String>(parserResult
+               .getMetaUtilisees().keySet());
+         checkExistingLuceneMetadata(longCodesReq);
+
+         // Vérifie que les métadonnées demandées dans les résultats de
+         // recherche
+         // existent dans le référentiel des métadonnées
          checkExistingMetadataDesired(listMetaDesired);
 
          listCodCourt = recupererListCodCourtByLongCode(longCodesReq);

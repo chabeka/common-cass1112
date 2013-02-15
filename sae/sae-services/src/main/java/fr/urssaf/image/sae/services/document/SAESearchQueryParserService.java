@@ -1,7 +1,6 @@
 package fr.urssaf.image.sae.services.document;
 
-import java.util.List;
-
+import fr.urssaf.image.sae.services.document.model.SAESearchQueryParserResult;
 import fr.urssaf.image.sae.services.exception.SAESearchQueryParseException;
 import fr.urssaf.image.sae.services.exception.search.SAESearchServiceEx;
 import fr.urssaf.image.sae.services.exception.search.SyntaxLuceneEx;
@@ -18,10 +17,7 @@ public interface SAESearchQueryParserService {
     * 
     * @param requeteFinal
     *           requete à modifier
-    * @param listeCodeLong
-    *           liste des codes longs
-    * @return la requête dont les codes longs ont été remplacés par des codes
-    *         courts
+    * @return le résultat du parser
     * @throws SyntaxLuceneEx
     *            exception levée si la syntaxe de la requete est erronée
     * @throws SAESearchServiceEx
@@ -31,8 +27,8 @@ public interface SAESearchQueryParserService {
     *            exception levée si une erreur quelconque est soulevée lors du
     *            traitement
     */
-   String convertFromLongToShortCode(String requeteFinal,
-         List<String> listeCodeLong) throws SyntaxLuceneEx, SAESearchServiceEx,
+   SAESearchQueryParserResult convertFromLongToShortCode(String requeteFinal)
+         throws SyntaxLuceneEx, SAESearchServiceEx,
          SAESearchQueryParseException;
 
 }
