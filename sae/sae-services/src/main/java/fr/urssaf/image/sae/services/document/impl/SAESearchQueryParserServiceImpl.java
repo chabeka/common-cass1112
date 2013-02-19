@@ -88,7 +88,11 @@ public class SAESearchQueryParserServiceImpl implements
       // on remplace tous les " AND " et " OR " par $%#&#%$ et $%#|#%$
       // respectivement
       requeteATraiter = requeteATraiter.replace(" AND ", "§%#&#%§£");
+      LOG.debug("{} - Requête après traitement des opérateurs AND : {}",
+            prefixeTrc, requeteATraiter);
       requeteATraiter = requeteATraiter.replace(" OR ", "§%#|#%§£");
+      LOG.debug("{} - Requête après traitement des opérateurs OR : {}",
+            prefixeTrc, requeteATraiter);
       // on remplace tous les espaces qui sont suivi par un + ou un -
       // on utilise $1 et $2 poure reconstruire la châine. l'expression
       // régulière (\\w{1})\\s+((\\+|\\-)[A-Z]{1}) remplace la chaine "a +A"
@@ -96,13 +100,24 @@ public class SAESearchQueryParserServiceImpl implements
       // "A" pour reconstituer la chaîne originale
       requeteATraiter = requeteATraiter.replaceAll(
             "(\\w{1})\\s+((\\+|\\-)[A-Z]{1})", "$1¤¤£$2");
+      LOG
+            .debug(
+                  "{} - Requête après traitement des espaces après un + ou un - : {}",
+                  prefixeTrc, requeteATraiter);
       // on remplace tous les espaces précédé par un "
       requeteATraiter = requeteATraiter.replaceAll("(\")\\s+|(\\))\\s+",
             "$1$2@@£");
+      LOG
+            .debug(
+                  "{} - Requête après traitement des espaces précédé par un double-quotes : {}",
+                  prefixeTrc, requeteATraiter);
 
       // on décompose la chaine entière pour avoir un tableau de métadonnées
       // String[] meta = requeteFinal.split("§%#.#%§£");
       String[] meta = requeteATraiter.split("£");
+      LOG.debug(
+            "{} - Split de la requête pour la recherche des métadonnées : {}",
+            prefixeTrc, meta);
 
       // on supprime tout sauf les sépartateurs afin de garder la séquence
       // des AND et des OR pour la reconstruction de la requête
@@ -120,19 +135,29 @@ public class SAESearchQueryParserServiceImpl implements
 
       // parcour de la liste des méta données pour remplacer les codes longs
       // par les codes courts
+      LOG.debug("{} - Traitements des parties splittés", prefixeTrc);
       ArrayList<String> metaCourt = new ArrayList<String>();
       int index = 0;
       for (String m : meta) {
+
+         LOG.debug("{} - Traitement de : {}", prefixeTrc, m);
+
          // la décomposition s'est fait à partir du £ il faut donc enlever
          // les reste de token
          m = m.replace("§%#&#%§", StringUtils.EMPTY);
          m = m.replace("§%#|#%§", StringUtils.EMPTY);
          m = m.replace("@@", StringUtils.EMPTY);
          m = m.replace("¤¤", StringUtils.EMPTY);
+         LOG.debug("{} - Bloc après remplacement des tokens : {}", prefixeTrc,
+               m);
 
          // on recherche les codes court pour les codes longs présents dans la
          // requête
          if (m.contains(":")) {
+            LOG
+                  .debug(
+                        "{} - On a trouvé un : dans le bloc. On extrait la métadonnée",
+                        prefixeTrc);
             // seul les éléments contenant un ":" sont considérés comme
             // metadonnées ex CodeRND:("2.3.1.1.12" AND "2.3.1.1.8") sera
             // décomposé en [CodeRND:("2.3.1.1.12", "2.3.1.1.8")] la taille de
@@ -146,6 +171,10 @@ public class SAESearchQueryParserServiceImpl implements
                      e);
             }
          } else {
+            LOG
+                  .debug(
+                        "{} - Pas de : dans le bloc. On récupère le bloc [{}] tel quel",
+                        prefixeTrc, m);
             // cette liste va contenir les valuers pour lesquelles il n'y a pas
             // de métadonnées par ex la valeu "2.3.1.1.8" si on reprend le cas
             // de CodeRND:("2.3.1.1.12" AND "2.3.1.1.8")
@@ -243,10 +272,18 @@ public class SAESearchQueryParserServiceImpl implements
    }
 
    private void findCodeCourtForCodeLong(List<String> operateurList,
-         String metaLong, List<String> metaCourt,
+         String blocAanalyser, List<String> metaCourt,
          Map<String, String> metasTrouvees) throws ReferentialException {
 
-      String nomMeta = metaLong.substring(0, metaLong.indexOf(':'));
+      // Traces
+      String prefixeTrc = "findCodeCourtForCodeLong()";
+      LOG.debug("{} - Début", prefixeTrc);
+      LOG.debug("{} - Bloc à analyser : {}", prefixeTrc, blocAanalyser);
+
+      String nomMeta = blocAanalyser.substring(0, blocAanalyser.indexOf(':'));
+      nomMeta = StringUtils.trim(nomMeta);
+      LOG.debug("{} - Métadonnée trouvée en 1ère analyse : {}", prefixeTrc,
+            nomMeta);
 
       // on vérifie qu'il n'existe pas d'autres opérateurs + - ( NOT ou
       // une combinaison d'opérateurs
@@ -273,6 +310,8 @@ public class SAESearchQueryParserServiceImpl implements
       }
 
       String codeLongMeta = nomMeta.substring(startPosition, nomMeta.length());
+      LOG.debug("{} - Code long de la métadonnée trouvée en 2ème analyse : {}",
+            prefixeTrc, codeLongMeta);
 
       MetadataReference objMetadata = metaRefDAO.getByLongCode(codeLongMeta);
 
@@ -283,16 +322,38 @@ public class SAESearchQueryParserServiceImpl implements
          codeCourt = objMetadata.getShortCode();
       }
 
+      LOG
+            .debug(
+                  "{} - Code court de la métadonnée récupérée du référentiel des métadonnées : {}",
+                  prefixeTrc, codeCourt);
+
       // replacer les codes longs par les codes courts
       // et mémoriser la métadonnées que l'on vient de détecter
       if (codeCourt != null && codeCourt != StringUtils.EMPTY) {
 
-         metaCourt.add(metaLong.replaceFirst(nomMeta.substring(startPosition,
-               nomMeta.length()), codeCourt));
+         LOG.debug("{} - Remplacement du code long par le code court.",
+               prefixeTrc);
+
+         metaCourt.add(blocAanalyser.replaceFirst(nomMeta.substring(
+               startPosition, nomMeta.length()), codeCourt));
+
+         LOG
+               .debug(
+                     "{} - Mémorise la métadonnée détectée. Code long = {}, Code court = {}.",
+                     prefixeTrc, new Object[] { codeLongMeta, codeCourt });
 
          metasTrouvees.put(codeLongMeta, codeCourt);
 
+      } else {
+         LOG
+               .debug(
+                     "{} - La métadonnée {} n'a pas été trouvée dans le référentiel des métadonnées. On conserver le code long.",
+                     prefixeTrc, codeLongMeta);
       }
+
+      // Fin
+      LOG.debug("{} - Fin", prefixeTrc);
+
    }
 
    private List<String> extraitValeursEntreQuotes(String requete) {
