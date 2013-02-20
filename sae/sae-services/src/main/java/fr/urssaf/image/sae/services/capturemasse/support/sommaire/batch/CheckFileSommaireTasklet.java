@@ -22,8 +22,6 @@ import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseEcdeWrite
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireEcdeURLException;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireFileNotFoundException;
-import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireHashException;
-import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireTypeHashException;
 import fr.urssaf.image.sae.services.capturemasse.support.ecde.EcdeSommaireFileSupport;
 import fr.urssaf.image.sae.services.controles.SAEControleSupportService;
 
@@ -44,7 +42,6 @@ public class CheckFileSommaireTasklet implements Tasklet {
     * {@inheritDoc}
     */
    @Override
-   @SuppressWarnings("unchecked")
    public final RepeatStatus execute(final StepContribution contribution,
          final ChunkContext chunkContext) throws Exception {
 
@@ -69,36 +66,31 @@ public class CheckFileSommaireTasklet implements Tasklet {
          
          context.put(Constantes.SOMMAIRE_FILE, sommaire.getAbsolutePath());
          
-      } catch (CaptureMasseSommaireEcdeURLException e) {
-         final Exception exception = new Exception(e.getMessage());
+      } catch (CaptureMasseSommaireEcdeURLException exception) {
+         addException(chunkContext, exception);
 
-         ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) chunkContext
-               .getStepContext().getStepExecution().getJobExecution()
-               .getExecutionContext().get(Constantes.DOC_EXCEPTION);
-         exceptions.add(exception);
+      } catch (CaptureMasseSommaireFileNotFoundException exception) {
+         addException(chunkContext, exception);
 
-      } catch (CaptureMasseSommaireFileNotFoundException e) {
-         final Exception exception = new Exception(e.getMessage());
-         ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) chunkContext
-               .getStepContext().getStepExecution().getJobExecution()
-               .getExecutionContext().get(Constantes.DOC_EXCEPTION);
-         exceptions.add(exception);
+      } catch (CaptureMasseEcdeWriteFileException exception) {
+         addException(chunkContext, exception);
 
-      } catch (CaptureMasseEcdeWriteFileException e) {
-         final Exception exception = new Exception(e.getMessage());
-         ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) chunkContext
-               .getStepContext().getStepExecution().getJobExecution()
-               .getExecutionContext().get(Constantes.DOC_EXCEPTION);
-         exceptions.add(exception);
-
-      } catch (CaptureMasseRuntimeException e) {
-         final Exception exception = new Exception(e.getMessage());
-         ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) chunkContext
-               .getStepContext().getStepExecution().getJobExecution()
-               .getExecutionContext().get(Constantes.DOC_EXCEPTION);
-         exceptions.add(exception);
+      } catch (CaptureMasseRuntimeException exception) {
+         addException(chunkContext, exception);
       } 
 
       return RepeatStatus.FINISHED;
+   }
+
+   private void addException(ChunkContext chunkContext,
+         Exception paramException) {
+      final Exception exception = new Exception(paramException.getMessage());
+      
+      @SuppressWarnings("unchecked")
+      ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) chunkContext
+            .getStepContext().getStepExecution().getJobExecution()
+            .getExecutionContext().get(Constantes.DOC_EXCEPTION);
+      exceptions.add(exception);
+      
    }
 }

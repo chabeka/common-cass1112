@@ -10,7 +10,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepContribution;
@@ -62,14 +61,18 @@ public class ResultatsFileFailureErrorTasklet implements Tasklet {
       final ConcurrentLinkedQueue<Exception> erreurs = (ConcurrentLinkedQueue<Exception>) context
             .get(Constantes.DOC_EXCEPTION);
 
-      Exception erreur = erreurs.toArray(new Exception[0])[0];
+      Exception erreur = erreurs.peek();
+      if (erreur != null) {
+         LOGGER.error("erreur bloquante détectée", erreur);
+         stepContext.getStepExecution().getJobExecution().addFailureException(
+               erreur);
+      }
 
-      LOGGER.warn(erreur.getMessage());
+      Object sommairePahObject = context.get(Constantes.SOMMAIRE_FILE);
 
-      final String sommairePath = context.getString(Constantes.SOMMAIRE_FILE);
+      if (sommairePahObject instanceof String && erreur != null) {
 
-      if (StringUtils.isNotBlank(sommairePath)) {
-
+         String sommairePath = (String) sommairePahObject;
          final File sommaireFile = new File(sommairePath);
          File ecdeDirectory = sommaireFile.getParentFile();
          support.writeResultatsFile(ecdeDirectory, erreur);

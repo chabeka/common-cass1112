@@ -43,6 +43,10 @@ public class CaptureMasseIntegratedDocument implements Serializable {
    public final int getIndex() {
       return index;
    }
+   
+   /**
+    * @param ind l'index du document traité
+    */
    public final void setIndex(int ind) {
       index = ind;
    }

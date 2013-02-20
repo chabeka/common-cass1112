@@ -273,7 +273,7 @@ public class VerificationSupportImpl implements VerificationSupport {
    private void checkLogs(Integer nbreStockes, UUID idTraitement,
          boolean logPresent) {
 
-      if (!logPresent && nbreStockes > 0) {
+      if (!logPresent && nbreStockes != null && nbreStockes > 0) {
          LOGGER.error("Génération de secours du log ERROR "
                + "de rollback par procédure d'exploitation "
                + "car il n'a pas été généré par le job de capture de masse");

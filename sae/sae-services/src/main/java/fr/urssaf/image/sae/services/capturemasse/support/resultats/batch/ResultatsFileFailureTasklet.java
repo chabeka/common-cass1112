@@ -61,7 +61,7 @@ public class ResultatsFileFailureTasklet implements Tasklet {
 
    // Pool d'execution des insertions de documents
    @Autowired
-   InsertionPoolThreadExecutor executor;
+   private InsertionPoolThreadExecutor executor;
    
    /**
     * {@inheritDoc}

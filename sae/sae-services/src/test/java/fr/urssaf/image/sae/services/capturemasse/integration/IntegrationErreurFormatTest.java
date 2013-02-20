@@ -228,7 +228,7 @@ public class IntegrationErreurFormatTest {
 
       ILoggingEvent event = loggingEvents.get(0);
 
-      Assert.assertEquals("le log doit être de niveau WARN", Level.WARN, event
+      Assert.assertEquals("le log doit être de niveau ERROR", Level.ERROR, event
             .getLevel());
 
       boolean messageFound = LogUtils.logContainsMessage(event, LOG_WARN);

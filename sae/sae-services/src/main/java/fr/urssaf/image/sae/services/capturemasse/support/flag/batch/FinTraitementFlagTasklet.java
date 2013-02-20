@@ -37,19 +37,22 @@ public class FinTraitementFlagTasklet implements Tasklet {
    public final RepeatStatus execute(final StepContribution contribution,
          final ChunkContext chunkContext) throws Exception {
 
-      final ExecutionContext context = chunkContext.getStepContext()
+      ExecutionContext context = chunkContext.getStepContext()
             .getStepExecution().getJobExecution().getExecutionContext();
 
-      final String sommairePath = (String) context
-            .get(Constantes.SOMMAIRE_FILE);
+      Object sommairePathObject = context.get(Constantes.SOMMAIRE_FILE);
 
-      context.put(Constantes.NB_INTEG_DOCS, executor.getIntegratedDocuments()
-            .size());
+      if (sommairePathObject instanceof String) {
+         String sommairePath = (String) sommairePathObject;
 
-      final File sommaireFile = new File(sommairePath);
-      final File ecdeDirectory = sommaireFile.getParentFile();
+         context.put(Constantes.NB_INTEG_DOCS, executor
+               .getIntegratedDocuments().size());
 
-      support.writeFinTraitementFlag(ecdeDirectory);
+         final File sommaireFile = new File(sommairePath);
+         final File ecdeDirectory = sommaireFile.getParentFile();
+
+         support.writeFinTraitementFlag(ecdeDirectory);
+      }
 
       return RepeatStatus.FINISHED;
    }

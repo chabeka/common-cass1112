@@ -17,11 +17,10 @@ import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseEcdeWrite
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireHashException;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireTypeHashException;
-import fr.urssaf.image.sae.services.capturemasse.support.ecde.EcdeControleSupport;
 import fr.urssaf.image.sae.services.controles.SAEControleSupportService;
 
 /**
- * Implémentation du support {@link EcdeControleSupport}
+ * Implémentation du support {@link SAEControleSupportService}
  * 
  */
 @Component
@@ -31,6 +30,12 @@ public class SAEControleSupportServiceImpl implements SAEControleSupportService 
          .getLogger(SAEControleSupportServiceImpl.class);
 
    private static final String PREFIXE_TRC = "checkEcdeWrite()";
+
+   /** Temps d'attente entre deux essais */
+   private static final int WAITING_TIME = 10000;
+
+   /** nombre maximum d'essais de contrôles */
+   private static final int MAX_ESSAIS = 3;
 
    /**
     * {@inheritDoc}
@@ -45,18 +50,12 @@ public class SAEControleSupportServiceImpl implements SAEControleSupportService 
       boolean ecdePermission = false;
 
       // Implementation pour windows
-      if (parentFile.canWrite()) {
-         try {
-            final File tmpfile = File.createTempFile("bulkFlagPermission",
-                  ".tmp", parentFile);
+      int index = 0;
 
-            if (tmpfile.isFile() && tmpfile.exists()) {
-               ecdePermission = tmpfile.delete();
-            }
+      while (index < MAX_ESSAIS && !ecdePermission) {
 
-         } catch (IOException e) {
-            throw new CaptureMasseRuntimeException(e);
-         }
+         ecdePermission = checkEcde(index, parentFile);
+         index++;
       }
 
       if (!ecdePermission) {
@@ -69,17 +68,18 @@ public class SAEControleSupportServiceImpl implements SAEControleSupportService 
 
       LOGGER.debug("{} - Sortie", PREFIXE_TRC);
    }
-   
+
    /**
     * {@inheritDoc}
     * 
     */
    @Override
-   public final void checkHash(File sommaire, String hash, String typeHash) throws CaptureMasseSommaireTypeHashException, CaptureMasseSommaireHashException{
-      
-      if(StringUtils
-            .equalsIgnoreCase("SHA-1",typeHash)){
-         
+   public final void checkHash(File sommaire, String hash, String typeHash)
+         throws CaptureMasseSommaireTypeHashException,
+         CaptureMasseSommaireHashException {
+
+      if (StringUtils.equalsIgnoreCase("SHA-1", typeHash)) {
+
          // récupération du contenu pour le calcul du HASH
          byte[] content = null;
          try {
@@ -87,18 +87,54 @@ public class SAEControleSupportServiceImpl implements SAEControleSupportService 
          } catch (IOException e) {
             throw new CaptureMasseRuntimeException(e);
          }
-         //calcul du Hash
+         // calcul du Hash
          String hashCode = DigestUtils.shaHex(content);
-         
+
          // comparaison avec la valeur attendu
-         if(!StringUtils
-         .equalsIgnoreCase(hashCode,
-               hash.trim())){
-            throw new CaptureMasseSommaireHashException(hash, hashCode, typeHash);
+         if (!StringUtils.equalsIgnoreCase(hashCode, hash.trim())) {
+            throw new CaptureMasseSommaireHashException(hash, hashCode,
+                  typeHash);
          }
-      }else{
+      } else {
          throw new CaptureMasseSommaireTypeHashException(typeHash);
       }
+   }
+
+   private boolean checkEcde(int index, File parentFile) {
+
+      boolean ecdePermission = false;
+      if (parentFile.canWrite()) {
+         try {
+            final File tmpfile = File.createTempFile("bulkFlagPermission",
+                  ".tmp", parentFile);
+
+            if (tmpfile.isFile() && tmpfile.exists()) {
+               ecdePermission = tmpfile.delete();
+            }
+
+         } catch (IOException e) {
+
+            if (index > 0) {
+               LOGGER
+                     .warn(
+                           "{} - {}ème tentative de contrôle des droits d'écriture dans le répertoire de l'ECDE",
+                           new Object[] { PREFIXE_TRC, index + 1 });
+            }
+
+            if (index == MAX_ESSAIS - 1) {
+               throw new CaptureMasseRuntimeException(e);
+
+            } else {
+               try {
+                  Thread.sleep(WAITING_TIME);
+               } catch (InterruptedException exception) {
+                  LOGGER.warn("impossible de réaliser le sleep", exception);
+               }
+            }
+         }
+      }
+
+      return ecdePermission;
    }
 
 }

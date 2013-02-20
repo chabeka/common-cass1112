@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resultats xmlns="http://www.cirtil.fr/sae/resultatsXml" xmlns:ns2="http://www.cirtil.fr/sae/commun_sommaire_et_resultat">
+    <batchMode>TOUT_OU_RIEN</batchMode>
+    <initialDocumentsCount>1</initialDocumentsCount>
+    <integratedDocumentsCount>0</integratedDocumentsCount>
+    <nonIntegratedDocumentsCount>1</nonIntegratedDocumentsCount>
+    <initialVirtualDocumentsCount>0</initialVirtualDocumentsCount>
+    <integratedVirtualDocumentsCount>0</integratedVirtualDocumentsCount>
+    <nonIntegratedVirtualDocumentsCount>0</nonIntegratedVirtualDocumentsCount>
+    <nonIntegratedDocuments>
+        <ns2:nonIntegratedDocument>
+            <ns2:objetNumerique>
+                <ns2:cheminEtNomDuFichier>doc1.PDF</ns2:cheminEtNomDuFichier>
+            </ns2:objetNumerique>
+            <ns2:erreurs>
+                <ns2:erreur>
+                    <ns2:code>SAE-CA-BUL001</ns2:code>
+                    <ns2:libelle>Une erreur interne à l'application est survenue lors de la capture du document doc1.PDF. Détails : java.lang.Exception: Erreur technique&#xd;
+	at fr.urssaf.image.sae.services.capturemasse.support.sommaire.batch.CheckFileSommaireTasklet.addException(CheckFileSommaireTasklet.java:91)&#xd;
+	at fr.urssaf.image.sae.services.capturemasse.support.sommaire.batch.CheckFileSommaireTasklet.execute(CheckFileSommaireTasklet.java:79)&#xd;
+	at org.springframework.batch.core.step.tasklet.TaskletStep$ChunkTransactionCallback.doInTransaction(TaskletStep.java:386)&#xd;
+	at org.springframework.transaction.support.TransactionTemplate.execute(TransactionTemplate.java:130)&#xd;
+	at org.springframework.batch.core.step.tasklet.TaskletStep$2.doInChunkContext(TaskletStep.java:264)&#xd;
+	at org.springframework.batch.core.scope.context.StepContextRepeatCallback.doInIteration(StepContextRepeatCallback.java:76)&#xd;
+	at org.springframework.batch.repeat.support.RepeatTemplate.getNextResult(RepeatTemplate.java:367)&#xd;
+	at org.springframework.batch.repeat.support.RepeatTemplate.executeInternal(RepeatTemplate.java:214)&#xd;
+	at org.springframework.batch.repeat.support.RepeatTemplate.iterate(RepeatTemplate.java:143)&#xd;
+	at org.springframework.batch.core.step.tasklet.TaskletStep.doExecute(TaskletStep.java:250)&#xd;
+	at org.springframework.batch.core.step.AbstractStep.execute(AbstractStep.java:195)&#xd;
+	at org.springframework.batch.core.job.SimpleStepHandler.handleStep(SimpleStepHandler.java:135)&#xd;
+	at org.springframework.batch.core.job.flow.JobFlowExecutor.executeStep(JobFlowExecutor.java:61)&#xd;
+	at org.springframework.batch.core.job.flow.support.state.StepState.handle(StepState.java:60)&#xd;
+	at org.springframework.batch.core.job.flow.support.SimpleFlow.resume(SimpleFlow.java:144)&#xd;
+	at org.springframework.batch.core.job.flow.support.SimpleFlow.start(SimpleFlow.java:124)&#xd;
+	at org.springframework.batch.core.job.flow.FlowJob.doExecute(FlowJob.java:135)&#xd;
+	at org.springframework.batch.core.job.AbstractJob.execute(AbstractJob.java:281)&#xd;
+	at org.springframework.batch.core.launch.support.SimpleJobLauncher$1.run(SimpleJobLauncher.java:120)&#xd;
+	at org.springframework.core.task.SyncTaskExecutor.execute(SyncTaskExecutor.java:48)&#xd;
+	at org.springframework.batch.core.launch.support.SimpleJobLauncher.run(SimpleJobLauncher.java:114)&#xd;
+	at fr.urssaf.image.sae.services.capturemasse.impl.SAECaptureMasseServiceImpl.captureMasse(SAECaptureMasseServiceImpl.java:120)&#xd;
+	at fr.urssaf.image.sae.services.capturemasse.impl.SAECaptureMasseServiceImpl.captureMasse(SAECaptureMasseServiceImpl.java:68)&#xd;
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)&#xd;
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)&#xd;
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)&#xd;
+	at java.lang.reflect.Method.invoke(Method.java:597)&#xd;
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:309)&#xd;
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:183)&#xd;
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:150)&#xd;
+	at org.springframework.security.access.intercept.aopalliance.MethodSecurityInterceptor.invoke(MethodSecurityInterceptor.java:67)&#xd;
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:172)&#xd;
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:202)&#xd;
+	at $Proxy59.captureMasse(Unknown Source)&#xd;
+	at fr.urssaf.image.sae.services.capturemasse.support.sommaire.batch.CheckFileSommaireTaskletCheckEcdeTest.testUriDomaineConnuFichierExistantEcritureImpossible(CheckFileSommaireTaskletCheckEcdeTest.java:133)&#xd;
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)&#xd;
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)&#xd;
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)&#xd;
+	at java.lang.reflect.Method.invoke(Method.java:597)&#xd;
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)&#xd;
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:15)&#xd;
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:41)&#xd;
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:20)&#xd;
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:28)&#xd;
+	at org.springframework.test.context.junit4.statements.RunBeforeTestMethodCallbacks.evaluate(RunBeforeTestMethodCallbacks.java:74)&#xd;
+	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:31)&#xd;
+	at org.springframework.test.context.junit4.statements.RunAfterTestMethodCallbacks.evaluate(RunAfterTestMethodCallbacks.java:82)&#xd;
+	at org.springframework.test.context.junit4.statements.SpringRepeat.evaluate(SpringRepeat.java:72)&#xd;
+	at org.springframework.test.context.junit4.SpringJUnit4ClassRunner.runChild(SpringJUnit4ClassRunner.java:240)&#xd;
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:49)&#xd;
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:193)&#xd;
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:52)&#xd;
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:191)&#xd;
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:42)&#xd;
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:184)&#xd;
+	at org.springframework.test.context.junit4.statements.RunBeforeTestClassCallbacks.evaluate(RunBeforeTestClassCallbacks.java:61)&#xd;
+	at org.springframework.test.context.junit4.statements.RunAfterTestClassCallbacks.evaluate(RunAfterTestClassCallbacks.java:70)&#xd;
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:236)&#xd;
+	at org.springframework.test.context.junit4.SpringJUnit4ClassRunner.run(SpringJUnit4ClassRunner.java:180)&#xd;
+	at org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:46)&#xd;
+	at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)&#xd;
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:467)&#xd;
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:683)&#xd;
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:390)&#xd;
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:197)&#xd;
+</ns2:libelle>
+                </ns2:erreur>
+            </ns2:erreurs>
+        </ns2:nonIntegratedDocument>
+    </nonIntegratedDocuments>
+    <nonIntegratedVirtualDocuments/>
+</resultats>

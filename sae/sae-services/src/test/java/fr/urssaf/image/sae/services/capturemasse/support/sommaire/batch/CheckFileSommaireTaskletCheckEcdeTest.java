@@ -1,7 +1,7 @@
 /**
  * 
  */
-package fr.urssaf.image.sae.services.capturemasse.integration;
+package fr.urssaf.image.sae.services.capturemasse.support.sommaire.batch;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,9 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -35,14 +33,9 @@ import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
-import fr.urssaf.image.sae.services.batch.model.ExitTraitement;
 import fr.urssaf.image.sae.services.capturemasse.SAECaptureMasseService;
-import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
-import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
-import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
-import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
-import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
-import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentService;
+import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
+import fr.urssaf.image.sae.services.controles.SAEControleSupportService;
 import fr.urssaf.image.sae.utils.LogUtils;
 import fr.urssaf.image.sae.utils.SaeLogAppender;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
@@ -50,11 +43,14 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
 import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
+/**
+ * 
+ * 
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {
-      "/applicationContext-sae-services-test.xml",
-      "/applicationContext-sae-services-integration-test.xml" })
-public class Integration275Test {
+@ContextConfiguration(value = { "/applicationContext-sae-services-test.xml",
+      "/applicationContext-sae-services-sommaire-test.xml" })
+public class CheckFileSommaireTaskletCheckEcdeTest {
 
    @Autowired
    private SAECaptureMasseService service;
@@ -63,16 +59,9 @@ public class Integration275Test {
    private EcdeTestTools ecdeTestTools;
 
    @Autowired
-   @Qualifier("storageDocumentService")
-   private StorageDocumentService storageDocumentService;
-
-   @Autowired
-   @Qualifier("storageServiceProvider")
-   private StorageServiceProvider provider;
+   private SAEControleSupportService controleService;
 
    private EcdeTestSommaire ecdeTestSommaire;
-
-   private static final String LOG_WARN = "Aucun document du sommaire ne sera intégré dans le SAE.";
 
    private Logger logger;
 
@@ -80,15 +69,13 @@ public class Integration275Test {
 
    @Before
    public void init() {
+
       logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
 
-      logAppender = new SaeLogAppender(Level.WARN, "fr.urssaf.image.sae");
+      logAppender = new SaeLogAppender(Level.ALL, "fr.urssaf.image.sae");
       logger.addAppender(logAppender);
 
       ecdeTestSommaire = ecdeTestTools.buildEcdeTestSommaire();
-
-      logger.debug("initialisation du répertoire de traitetement :"
-            + ecdeTestSommaire.getRepEcde());
 
       // initialisation du contexte de sécurité
       VIContenuExtrait viExtrait = new VIContenuExtrait();
@@ -119,73 +106,71 @@ public class Integration275Test {
       try {
          ecdeTestTools.cleanEcdeTestSommaire(ecdeTestSommaire);
       } catch (IOException e) {
-         // rien a faire
+         // rien à faire
       }
-
-      EasyMock.reset(provider, storageDocumentService);
 
       logger.detachAppender(logAppender);
 
-      AuthenticationContext.setAuthenticationToken(null);
+      EasyMock.reset(controleService);
    }
 
+   /**
+    * Lancer un test avec une URI dont le nom de domaine n'est pas connu
+    * 
+    * @throws Exception
+    */
    @Test
-   @DirtiesContext
-   public void testLancement() throws ConnectionServiceEx, DeletionServiceEx,
-         InsertionServiceEx, IOException {
-      initComposants();
+   public void testUriDomaineConnuFichierExistantEcritureImpossible()
+         throws Exception {
+
       initDatas();
 
-      ExitTraitement exitStatus = service.captureMasse(ecdeTestSommaire
-            .getUrlEcde(), UUID.randomUUID());
+      controleService.checkEcdeWrite(EasyMock.anyObject(File.class));
+      EasyMock.expectLastCall().andThrow(
+            new CaptureMasseRuntimeException("Erreur technique"));
+      EasyMock.replay(controleService);
 
-      EasyMock.verify(provider, storageDocumentService);
+      service.captureMasse(ecdeTestSommaire.getUrlEcde(), UUID.randomUUID());
 
-      Assert.assertFalse("le traitement doit etre en erreur", exitStatus
-            .isSucces());
+      EasyMock.verify(controleService);
+
+      List<ILoggingEvent> loggingEvents = logAppender.getLoggingEvents();
+
+      boolean logErrorExists = LogUtils.logExists(loggingEvents, Level.ERROR,
+            "Erreur technique");
+
+      Assert.assertTrue("le log erreur doit exister", logErrorExists);
+
+      List<ILoggingEvent> errorLogs = LogUtils.getLogsByLevel(loggingEvents,
+            Level.ERROR);
+      boolean foundNullPointer = false;
+      int index = 0;
+
+      while (!foundNullPointer && index < errorLogs.size()) {
+         if (errorLogs.get(index).getMessage().contains("SOMMAIRE_FILE")
+               && errorLogs.get(index).getMessage().contains(
+                     "java.lang.ClassCastException")) {
+            foundNullPointer = true;
+         }
+         index++;
+      }
+
+      Assert.assertFalse("l'erreur NullPointer ne doit pas etre présente",
+            foundNullPointer);
 
       checkFiles();
 
-      checkLogs();
-
-   }
-
-   private void initComposants() throws ConnectionServiceEx, DeletionServiceEx,
-         InsertionServiceEx {
-
-      // règlage provider
-      provider.openConnexion();
-      EasyMock.expectLastCall().anyTimes();
-      provider.closeConnexion();
-      EasyMock.expectLastCall().anyTimes();
-      EasyMock.expect(provider.getStorageDocumentService()).andReturn(
-            storageDocumentService).anyTimes();
-
-      // règlage storageDocumentService
-      storageDocumentService.deleteStorageDocument(EasyMock
-            .anyObject(UUID.class));
-      EasyMock.expectLastCall().anyTimes();
-
-      StorageDocument storageDocument = new StorageDocument();
-      storageDocument.setUuid(UUID.randomUUID());
-
-      EasyMock.expect(
-            storageDocumentService.insertStorageDocument(EasyMock
-                  .anyObject(StorageDocument.class)))
-            .andReturn(storageDocument).anyTimes();
-
-      EasyMock.replay(provider, storageDocumentService);
    }
 
    private void initDatas() throws IOException {
       File sommaire = new File(ecdeTestSommaire.getRepEcde(), "sommaire.xml");
       ClassPathResource resSommaire = new ClassPathResource(
-            "testhautniveau/275/sommaire.xml");
+            "testhautniveau/checkEcde/sommaire.xml");
       FileUtils.copyURLToFile(resSommaire.getURL(), sommaire);
 
       File repEcde = new File(ecdeTestSommaire.getRepEcde(), "documents");
       ClassPathResource resAttestation1 = new ClassPathResource(
-            "testhautniveau/275/documents/doc1.PDF");
+            "testhautniveau/checkEcde/documents/doc1.PDF");
       File fileAttestation1 = new File(repEcde, "doc1.PDF");
       FileUtils.copyURLToFile(resAttestation1.getURL(), fileAttestation1);
 
@@ -198,6 +183,8 @@ public class Integration275Test {
       File fin = new File(repTraitement, "fin_traitement.flag");
       File resultats = new File(repTraitement, "resultats.xml");
 
+      FileUtils.copyFile(resultats, new File("c:/resultats.xml"));
+
       Assert.assertTrue("le fichier debut_traitement.flag doit exister", debut
             .exists());
       Assert.assertTrue("le fichier fin_traitement.flag doit exister", fin
@@ -205,45 +192,8 @@ public class Integration275Test {
       Assert.assertTrue("le fichier resultats.xml doit exister", resultats
             .exists());
 
-      String sha1Resultat = calculeSha1(resultats);
-      String sha1Attendu = "51b17876ca3a54819b25873648d232ba6e4bf237";
-
-      Assert.assertEquals(
-            "le sha1 attendu et de résultat doivent etre identiques",
-            sha1Attendu, sha1Resultat);
+      Assert.assertTrue("l'erreur doit être une SAE-CA-BUL001", FileUtils
+            .readFileToString(resultats).contains("SAE-CA-BUL001"));
 
    }
-
-   private String calculeSha1(File file) throws IOException {
-
-      FileInputStream fis = new FileInputStream(file);
-      try {
-
-         return DigestUtils.shaHex(fis);
-
-      } finally {
-         if (fis != null) {
-            fis.close();
-         }
-      }
-
-   }
-
-   private void checkLogs() {
-      List<ILoggingEvent> loggingEvents = logAppender.getLoggingEvents();
-
-      Assert.assertNotNull("liste des messages non null", loggingEvents);
-
-      Assert.assertEquals("un message attendu", 1, loggingEvents.size());
-
-      ILoggingEvent event = loggingEvents.get(0);
-
-      Assert.assertEquals("le log doit être de niveau ERROR", Level.ERROR,
-            event.getLevel());
-
-      boolean messageFound = LogUtils.logContainsMessage(event, LOG_WARN);
-      Assert.assertTrue("le message d'erreur attendu doit être correct",
-            messageFound);
-   }
-
 }

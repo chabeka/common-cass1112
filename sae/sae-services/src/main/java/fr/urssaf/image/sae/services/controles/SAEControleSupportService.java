@@ -27,17 +27,25 @@ public interface SAEControleSupportService {
     */
    void checkEcdeWrite(File sommaireFile)
          throws CaptureMasseEcdeWriteFileException;
-   
+
    /**
-    * Service permettant de vérifier que le hash fourni correspond à celui du fichier passé en paramètre
+    * Service permettant de vérifier que le hash fourni correspond à celui du
+    * fichier passé en paramètre
     * 
-    * @throws CaptureMasseSommaireHashException 
-    *          Erreur survenu lors de la vérification du hash
+    * @param sommaire
+    *           fichier sommaire
+    * @param hash
+    *           hash du fichier sommaire
+    * @param typeHash
+    *           type de hash utilisé
+    * 
+    * @throws CaptureMasseSommaireHashException
+    *            Erreur survenu lors de la vérification du hash
     * @throws CaptureMasseSommaireTypeHashException
-    *          Erreur survenu lors de la vérification de l'agorithme de hash
+    *            Erreur survenu lors de la vérification de l'agorithme de hash
     */
-   void checkHash(File sommaire, String hash, String typeHash)throws CaptureMasseSommaireHashException, CaptureMasseSommaireTypeHashException;
-      
-   
+   void checkHash(File sommaire, String hash, String typeHash)
+         throws CaptureMasseSommaireHashException,
+         CaptureMasseSommaireTypeHashException;
 
 }
