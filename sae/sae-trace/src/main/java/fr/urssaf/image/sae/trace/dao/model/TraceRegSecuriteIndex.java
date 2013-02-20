@@ -3,7 +3,9 @@
  */
 package fr.urssaf.image.sae.trace.dao.model;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -30,6 +32,9 @@ public class TraceRegSecuriteIndex {
    /** code du contrat de service */
    private String contrat;
 
+   /** Le ou les PAGM */
+   private List<String> pagms = new ArrayList<String>();
+
    /**
     * Constructeur par défaut
     */
@@ -47,6 +52,7 @@ public class TraceRegSecuriteIndex {
       this.codeEvt = trace.getCodeEvt();
       this.contexte = trace.getContexte();
       this.contrat = trace.getContrat();
+      this.pagms.addAll(trace.getPagms());
       this.identifiant = trace.getIdentifiant();
       this.login = trace.getLogin();
       this.timestamp = trace.getTimestamp();
@@ -140,6 +146,25 @@ public class TraceRegSecuriteIndex {
     */
    public final void setContrat(String contrat) {
       this.contrat = contrat;
+   }
+
+   /**
+    * Le ou les PAGM
+    * 
+    * @return Le ou les PAGM
+    */
+   public final List<String> getPagms() {
+      return pagms;
+   }
+
+   /**
+    * Le ou les PAGM
+    * 
+    * @param pagms
+    *           Le ou les PAGM
+    */
+   public final void setPagms(List<String> pagms) {
+      this.pagms = pagms;
    }
 
 }

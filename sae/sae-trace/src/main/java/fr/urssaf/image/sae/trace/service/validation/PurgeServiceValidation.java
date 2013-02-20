@@ -26,8 +26,8 @@ public class PurgeServiceValidation {
    /**
     * Réalise la validation de la méthode lecture de l'interface RegService
     * 
-    * @param uuid
-    *           identifiant de la trace
+    * @param typePurge
+    *           le type de purge
     */
    @Before(PURGE_METHOD)
    public final void testPurge(PurgeType typePurge) {

@@ -158,8 +158,12 @@ public class DispatcheurServiceImpl implements DispatcheurService {
       checkStringValue("code événement", trace.getCodeEvt(), suffixe);
       checkNotNullableObject("date", trace.getTimestamp(), suffixe);
 
-      checkStringValues("contrat de service ou login", Arrays.asList(trace
-            .getContrat(), trace.getLogin()), suffixe);
+      // Dans certains cas, on ne dispose pas du CS ni du login
+      // Par exemple, dans le cas d'un appel WS où il manque l'en-tête
+      // de sécurité et pour lequel on va quand même tracer l'erreur
+      // checkStringValues("contrat de service ou login", Arrays.asList(trace
+      // .getContrat(), trace.getLogin()), suffixe);
+
    }
 
    private void checkStringValue(String name, String value, String suffixe) {
@@ -178,28 +182,6 @@ public class DispatcheurServiceImpl implements DispatcheurService {
          String suffixe) {
 
       if (object == null) {
-         Map<String, String> map = new HashMap<String, String>();
-         map.put(ARG_0, name);
-         map.put(ARG_1, suffixe);
-         throw new IllegalArgumentException(StrSubstitutor.replace(
-               MESSAGE_ERREUR, map));
-      }
-
-   }
-
-   private void checkStringValues(String name, List<String> values,
-         String suffixe) {
-
-      boolean filled = false;
-      int index = 0;
-      while (index < values.size() && !filled) {
-         if (StringUtils.isNotBlank(values.get(index))) {
-            filled = true;
-         }
-         index++;
-      }
-
-      if (!filled) {
          Map<String, String> map = new HashMap<String, String>();
          map.put(ARG_0, name);
          map.put(ARG_1, suffixe);

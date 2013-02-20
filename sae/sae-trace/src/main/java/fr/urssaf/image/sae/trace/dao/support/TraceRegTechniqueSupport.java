@@ -16,6 +16,7 @@ import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 import me.prettyprint.hector.api.mutation.Mutator;
 import me.prettyprint.hector.api.query.SliceQuery;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
@@ -27,6 +28,7 @@ import fr.urssaf.image.sae.trace.dao.TraceRegTechniqueIndexDao;
 import fr.urssaf.image.sae.trace.dao.iterator.TraceRegTechniqueIndexIterator;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegTechnique;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegTechniqueIndex;
+import fr.urssaf.image.sae.trace.dao.serializer.ListSerializer;
 import fr.urssaf.image.sae.trace.dao.serializer.MapSerializer;
 
 /**
@@ -62,6 +64,10 @@ public class TraceRegTechniqueSupport {
 
       if (StringUtils.isNotBlank(trace.getContrat())) {
          dao.writeColumnContratService(updater, trace.getContrat(), clock);
+      }
+
+      if (CollectionUtils.isNotEmpty(trace.getPagms())) {
+         dao.writeColumnPagms(updater, trace.getPagms(), clock);
       }
 
       if (StringUtils.isNotBlank(trace.getLogin())) {
@@ -226,6 +232,11 @@ public class TraceRegTechniqueSupport {
          byte[] bValue = result.getByteArray(TraceRegTechniqueDao.COL_INFOS);
          if (bValue != null) {
             exploit.setInfos(MapSerializer.get().fromBytes(bValue));
+         }
+
+         bValue = result.getByteArray(TraceRegTechniqueDao.COL_PAGMS);
+         if (bValue != null) {
+            exploit.setPagms(ListSerializer.get().fromBytes(bValue));
          }
 
       }

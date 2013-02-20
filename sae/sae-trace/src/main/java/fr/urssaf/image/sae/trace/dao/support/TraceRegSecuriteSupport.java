@@ -16,6 +16,7 @@ import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 import me.prettyprint.hector.api.mutation.Mutator;
 import me.prettyprint.hector.api.query.SliceQuery;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ import fr.urssaf.image.sae.trace.dao.TraceRegSecuriteIndexDao;
 import fr.urssaf.image.sae.trace.dao.iterator.TraceRegSecuriteIndexIterator;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegSecurite;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegSecuriteIndex;
+import fr.urssaf.image.sae.trace.dao.serializer.ListSerializer;
 import fr.urssaf.image.sae.trace.dao.serializer.MapSerializer;
 
 /**
@@ -61,6 +63,10 @@ public class TraceRegSecuriteSupport {
 
       if (StringUtils.isNotBlank(trace.getContrat())) {
          dao.writeColumnContratService(updater, trace.getContrat(), clock);
+      }
+
+      if (CollectionUtils.isNotEmpty(trace.getPagms())) {
+         dao.writeColumnPagms(updater, trace.getPagms(), clock);
       }
 
       if (StringUtils.isNotBlank(trace.getLogin())) {
@@ -220,6 +226,11 @@ public class TraceRegSecuriteSupport {
          byte[] bValue = result.getByteArray(TraceRegSecuriteDao.COL_INFOS);
          if (bValue != null) {
             securite.setInfos(MapSerializer.get().fromBytes(bValue));
+         }
+
+         bValue = result.getByteArray(TraceRegSecuriteDao.COL_PAGMS);
+         if (bValue != null) {
+            securite.setPagms(ListSerializer.get().fromBytes(bValue));
          }
       }
 

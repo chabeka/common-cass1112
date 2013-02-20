@@ -3,6 +3,7 @@
  */
 package fr.urssaf.image.sae.trace.dao.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -44,6 +45,9 @@ public class TraceRegTechnique {
    /** code du contrat de service */
    private String contrat;
 
+   /** Le ou les PAGM */
+   private List<String> pagms = new ArrayList<String>();
+
    /** informations supplémentaires de la trace */
    private Map<String, Object> infos;
 
@@ -66,6 +70,9 @@ public class TraceRegTechnique {
       this.contexte = trace.getContexte();
       this.codeEvt = trace.getCodeEvt();
       this.contrat = trace.getContrat();
+      if (CollectionUtils.isNotEmpty(trace.getPagms())) {
+         this.pagms.addAll(trace.getPagms());
+      }
       this.login = trace.getLogin();
       this.timestamp = trace.getTimestamp();
       this.stacktrace = trace.getStracktrace();
@@ -192,6 +199,25 @@ public class TraceRegTechnique {
     */
    public final void setContrat(String contrat) {
       this.contrat = contrat;
+   }
+
+   /**
+    * Le ou les PAGM
+    * 
+    * @return Le ou les PAGM
+    */
+   public final List<String> getPagms() {
+      return pagms;
+   }
+
+   /**
+    * Le ou les PAGM
+    * 
+    * @param pagms
+    *           Le ou les PAGM
+    */
+   public final void setPagms(List<String> pagms) {
+      this.pagms = pagms;
    }
 
    /**

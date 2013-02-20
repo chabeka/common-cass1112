@@ -70,10 +70,8 @@ public class ParametersDao {
     * 
     * @param updater
     *           updater de <b>TraceRegTechniqueIndex</b>
-    * @param name
-    *           nom de la colonne
-    * @param value
-    *           valeur de la colonne
+    * @param parameter
+    *           le paramètre à écrire
     * @param clock
     *           horloge de la colonne
     */

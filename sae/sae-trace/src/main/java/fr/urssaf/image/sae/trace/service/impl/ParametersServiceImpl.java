@@ -32,7 +32,7 @@ public class ParametersServiceImpl implements ParametersService {
     * {@inheritDoc}
     */
    @Override
-   public Parameter loadParameter(ParameterType code)
+   public final Parameter loadParameter(ParameterType code)
          throws ParameterNotFoundException {
       return support.find(code);
    }
@@ -41,7 +41,7 @@ public class ParametersServiceImpl implements ParametersService {
     * {@inheritDoc}
     */
    @Override
-   public void saveParameter(Parameter parameter) {
+   public final void saveParameter(Parameter parameter) {
       support.create(parameter, clockSupport.currentCLock());
    }
 

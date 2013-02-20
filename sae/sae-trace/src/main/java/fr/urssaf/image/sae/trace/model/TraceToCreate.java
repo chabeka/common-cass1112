@@ -6,9 +6,11 @@ package fr.urssaf.image.sae.trace.model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.impl.cookie.DateUtils;
@@ -44,8 +46,11 @@ public class TraceToCreate {
    /** Code du contrat de service */
    private String contrat;
 
+   /** Le ou les PAGM */
+   private List<String> pagms = new ArrayList<String>();
+
    /** Informations supplémentaires sur la trace */
-   private Map<String, Object> infos;
+   private Map<String, Object> infos = new HashMap<String, Object>();
 
    /**
     * @return la Date de création de la trace
@@ -168,6 +173,25 @@ public class TraceToCreate {
    }
 
    /**
+    * Le ou les PAGM
+    * 
+    * @return Le ou les PAGM
+    */
+   public final List<String> getPagms() {
+      return pagms;
+   }
+
+   /**
+    * Le ou les PAGM
+    * 
+    * @param pagms
+    *           Le ou les PAGM
+    */
+   public final void setPagms(List<String> pagms) {
+      this.pagms = pagms;
+   }
+
+   /**
     * {@inheritDoc}
     */
    @Override
@@ -190,6 +214,11 @@ public class TraceToCreate {
       if (StringUtils.isNotBlank(this.contrat)) {
          buffer.append(";contrat:");
          buffer.append(this.contrat);
+      }
+
+      if (CollectionUtils.isNotEmpty(this.pagms)) {
+         buffer.append(";pagms:");
+         buffer.append(this.pagms);
       }
 
       if (StringUtils.isNotBlank(this.login)) {
@@ -218,4 +247,5 @@ public class TraceToCreate {
 
       return buffer.toString();
    }
+
 }

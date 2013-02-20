@@ -29,8 +29,8 @@ public class ParametersServiceValidation {
    /**
     * Réalise la validation de la méthode lecture de l'interface RegService
     * 
-    * @param uuid
-    *           identifiant de la trace
+    * @param code
+    *           le code du paramètre
     */
    @Before(LOAD_METHOD)
    public final void testLoad(ParameterType code) {
@@ -44,10 +44,8 @@ public class ParametersServiceValidation {
    /**
     * Réalise la validation de la méthode purge de l'interface RegService
     * 
-    * @param dateDebut
-    *           date de début
-    * @param dateFin
-    *           date de fin
+    * @param parameter
+    *           l'objet représentant le paramètre
     */
    @Before(SAVE_METHOD)
    public final void testPurge(Parameter parameter) {

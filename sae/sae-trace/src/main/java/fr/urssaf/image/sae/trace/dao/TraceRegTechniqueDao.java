@@ -4,6 +4,7 @@
 package fr.urssaf.image.sae.trace.dao;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -22,6 +23,7 @@ import me.prettyprint.hector.api.mutation.Mutator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import fr.urssaf.image.sae.trace.dao.serializer.ListSerializer;
 import fr.urssaf.image.sae.trace.dao.serializer.MapSerializer;
 
 /**
@@ -45,6 +47,9 @@ public class TraceRegTechniqueDao {
 
    /** identifiant utilisateur */
    public static final String COL_LOGIN = "login";
+
+   /** Le ou les PAGMS */
+   public static final String COL_PAGMS = "pagms";
 
    /** informations supplémentaires */
    public static final String COL_INFOS = "infos";
@@ -134,6 +139,22 @@ public class TraceRegTechniqueDao {
          ColumnFamilyUpdater<UUID, String> updater, String value, long clock) {
       addColumn(updater, COL_CONTRAT_SERVICE, value, StringSerializer.get(),
             clock);
+   }
+
+   /**
+    * ajoute une colonne {@value TraceRegTechniqueDao#COL_PAGMS}
+    * 
+    * @param updater
+    *           updater de <b>TraceRegExploitation</b>
+    * @param value
+    *           valeur de la colonne
+    * @param clock
+    *           horloge de la colonne
+    */
+   public final void writeColumnPagms(
+         ColumnFamilyUpdater<UUID, String> updater, List<String> value,
+         long clock) {
+      addColumn(updater, COL_PAGMS, value, ListSerializer.get(), clock);
    }
 
    /**

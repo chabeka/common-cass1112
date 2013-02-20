@@ -52,7 +52,7 @@ public class PurgeServiceImpl implements PurgeService {
     * {@inheritDoc}
     */
    @Override
-   public void purgerRegistre(PurgeType typePurge) {
+   public final void purgerRegistre(PurgeType typePurge) {
 
       String trcPrefix = "purgerRegistre";
 

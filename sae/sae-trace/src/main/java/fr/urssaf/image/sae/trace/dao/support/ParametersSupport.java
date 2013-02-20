@@ -51,6 +51,7 @@ public class ParametersSupport {
     *           identifiant de la trace d'exploitation
     * @return la trace d'exploitation
     * @throws ParameterNotFoundException
+    *            exception levée si le paramètre n'a pas été trouvé
     */
    public final Parameter find(ParameterType identifiant)
          throws ParameterNotFoundException {

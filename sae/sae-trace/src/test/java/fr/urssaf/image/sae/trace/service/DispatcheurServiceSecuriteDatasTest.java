@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrSubstitutor;
 import org.apache.commons.lang.time.DateUtils;
 import org.junit.After;
@@ -95,7 +96,7 @@ public class DispatcheurServiceSecuriteDatasTest {
    }
 
    @Test
-   public void testCreationTraceTechniqueErreurDateNonRenseigné() {
+   public void testCreationTraceSecuriteErreurDateNonRenseigné() {
       createDestinataireSecurite();
 
       TraceToCreate traceToCreate = new TraceToCreate();
@@ -122,7 +123,7 @@ public class DispatcheurServiceSecuriteDatasTest {
    }
 
    @Test
-   public void testCreationTraceTechniqueErreurContratNonRenseigné() {
+   public void testCreationTraceSecuriteSuccesContratNonRenseigné() {
       createDestinataireSecurite();
 
       TraceToCreate traceToCreate = new TraceToCreate();
@@ -130,27 +131,27 @@ public class DispatcheurServiceSecuriteDatasTest {
       traceToCreate.setContexte(CONTEXTE);
       traceToCreate.setTimestamp(DATE);
 
-      try {
-         service.ajouterTrace(traceToCreate);
-         Assert.fail("une erreur IllegalArgumentException est attendue");
+      service.ajouterTrace(traceToCreate);
 
-      } catch (IllegalArgumentException exception) {
+      // on vérifie qu'il y a un résultat
+      List<TraceRegSecuriteIndex> result = secuService.lecture(DATE, DateUtils
+            .addMinutes(DATE, 1), 1, false);
+      Assert.assertNotNull(
+            "une trace dans le registre technique doit etre trouvé", result);
+      Assert.assertEquals(
+            "on ne doit avoir qu'une seule trace dans le registre de sécurité",
+            1, result.size());
 
-         Map<String, String> map = new HashMap<String, String>();
-         map.put("0", "contrat de service ou login");
-         map.put("1", "de sécurité");
-         String message = StrSubstitutor.replace(MESSAGE_ERREUR, map);
+      // on vérifie la trace
+      TraceRegSecurite trace = secuService.lecture(result.get(0)
+            .getIdentifiant());
+      Assert.assertTrue("Le contrat de service ne doit pas être renseigné",
+            StringUtils.isEmpty(trace.getContrat()));
 
-         Assert.assertEquals("l'exception doit être correcte", message,
-               exception.getMessage());
-
-      } catch (Exception exception) {
-         Assert.fail("une erreur IllegalArgumentException est attendue");
-      }
    }
 
    @Test
-   public void testCreationTraceTechniqueSucces() {
+   public void testCreationTraceSecuriteSucces() {
       createDestinataireSecurite();
 
       TraceToCreate traceToCreate = new TraceToCreate();

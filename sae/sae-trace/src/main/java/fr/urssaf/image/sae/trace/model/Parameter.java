@@ -9,9 +9,9 @@ package fr.urssaf.image.sae.trace.model;
  */
 public class Parameter {
 
-   private ParameterType name;
+   private final ParameterType name;
 
-   private Object value;
+   private final Object value;
 
    /**
     * Constructeur

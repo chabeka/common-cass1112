@@ -3,6 +3,7 @@
  */
 package fr.urssaf.image.sae.trace.dao.support;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +36,7 @@ public class TraceRegTechniqueSupportTest {
    private static final Date DATE = new Date();
    private static final String LOGIN = "LE LOGIN";
    private static final String CONTRAT = "contrat de service";
+   private static final List<String> PAGMS = Arrays.asList("PAGM1", "PAGM2");
    private static final String CODE_EVT = "code événement";
    private static final String STACK = "erreur java stack";
    private static final String CONTEXTE = "contexte execution";
@@ -118,6 +120,7 @@ public class TraceRegTechniqueSupportTest {
             technique.getCodeEvt());
       Assert.assertEquals("le contrat doit etre correcte", CONTRAT, technique
             .getContrat());
+      checkPagms(technique.getPagms());
       Assert.assertEquals("l'identifiant doit etre correcte", uuid, technique
             .getIdentifiant());
       Assert.assertEquals("le login doit etre correcte", LOGIN, technique
@@ -146,6 +149,7 @@ public class TraceRegTechniqueSupportTest {
             index.getCodeEvt());
       Assert.assertEquals("le contrat doit etre correcte", CONTRAT, index
             .getContrat());
+      checkPagms(index.getPagms());
       Assert.assertEquals("l'identifiant doit etre correcte", uuid, index
             .getIdentifiant());
       Assert.assertEquals("le login doit etre correcte", LOGIN, index
@@ -154,11 +158,22 @@ public class TraceRegTechniqueSupportTest {
             .getTimestamp());
    }
 
+   private void checkPagms(List<String> pagms) {
+      Assert.assertNotNull("La liste des PAGM ne doit pas être nulle", pagms);
+      Assert.assertEquals("La liste des PAGM doit contenir 2 éléments", 2,
+            pagms.size());
+      Assert.assertTrue("La liste des PAGM doit contenir le PAGM \"PAGM1\"",
+            pagms.contains("PAGM1"));
+      Assert.assertTrue("La liste des PAGM doit contenir le PAGM \"PAGM2\"",
+            pagms.contains("PAGM2"));
+   }
+
    private void createTrace(UUID uuid) {
       TraceRegTechnique trace = new TraceRegTechnique();
       trace.setContexte(CONTEXTE);
       trace.setCodeEvt(CODE_EVT);
       trace.setContrat(CONTRAT);
+      trace.setPagms(PAGMS);
       trace.setIdentifiant(uuid);
       trace.setLogin(LOGIN);
       trace.setTimestamp(DATE);
