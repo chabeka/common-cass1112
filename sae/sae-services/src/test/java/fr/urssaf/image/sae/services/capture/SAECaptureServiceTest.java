@@ -86,6 +86,8 @@ public class SAECaptureServiceTest {
    private SAEServiceTestProvider testProvider;
 
    private UUID uuid;
+   
+   private static String path;
 
    private static File ecdeRepertory;
 
@@ -98,7 +100,7 @@ public class SAECaptureServiceTest {
 
       ecdeRepertory = new File(FilenameUtils.concat(SystemUtils
             .getJavaIoTmpDir().getAbsolutePath(), "ecde"));
-
+      path =new ClassPathResource("doc/attestation_consultation.pdf").getFile().getAbsolutePath();
       FileUtils.forceMkdir(ecdeRepertory);
       FileUtils.cleanDirectory(ecdeRepertory);
    }
@@ -504,5 +506,87 @@ public class SAECaptureServiceTest {
       service.captureBinaire(metadatas, content, fileNameEmpty);
 
    }
+   
+ /**
+  * Test permetant de vérifier que la capture fonctionne quand on lui passe un emplacement de fichier
+  */
+   
+   @Test
+   public void captureFileSuccess() throws SAECaptureServiceEx,
+         ReferentialRndException, UnknownCodeRndEx, RequiredStorageMetadataEx,
+         InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
+         DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
+         RequiredArchivableMetadataEx, NotArchivableMetadataEx,
+         UnknownHashCodeEx, IOException, CaptureBadEcdeUrlEx,
+         CaptureEcdeUrlFileNotFoundEx {
 
+      File srcFile = new File(
+            path);
+
+      List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
+
+      // liste des métadonnées obligatoires
+      metadatas.add(new UntypedMetadata("ApplicationProductrice", "ADELAIDE"));
+      metadatas.add(new UntypedMetadata("CodeOrganismeProprietaire", "CER69"));
+      metadatas.add(new UntypedMetadata("CodeOrganismeGestionnaire", "UR750"));
+      metadatas.add(new UntypedMetadata("FormatFichier", "fmt/1354"));
+      metadatas.add(new UntypedMetadata("NbPages", "2"));
+      metadatas.add(new UntypedMetadata("DateCreation", "2012-01-01"));
+      metadatas.add(new UntypedMetadata("TypeHash", "SHA-1"));
+      String hash = DigestUtils.shaHex(new FileInputStream(srcFile));
+      metadatas.add(new UntypedMetadata("Hash", StringUtils.upperCase(hash)));
+      metadatas.add(new UntypedMetadata("CodeRND", "2.3.1.1.12"));
+      metadatas.add(new UntypedMetadata("Titre", "Attestation de vigilance"));
+
+      // liste des métadonnées non obligatoires
+      metadatas.add(new UntypedMetadata("DateReception", "1999-11-25"));
+      metadatas.add(new UntypedMetadata("DateDebutConservation", "2011-09-02"));
+
+      uuid = service.captureFichier(metadatas, path);
+      LOG.debug("document archivé dans DFCE:" + uuid);
+      Document doc = testProvider.searchDocument(uuid);
+
+      Assert.assertNotNull("l'UUID '" + uuid + "' doit exister dans le SAE",
+            doc);
+
+      // test sur les métadonnées techniques
+      assertDocument(doc, hash);
+
+      // test sur les autres métadonnées
+      List<Criterion> criterions = new ArrayList<Criterion>();
+      criterions.addAll(doc.getAllCriterions());
+      assertCriterions(criterions);
+
+      // test sur le contenu du document
+      Assert.assertTrue("le contenu n'est pas attendu", IOUtils.contentEquals(
+            FileUtils.openInputStream(srcFile), testProvider
+                  .loadDocumentFile(doc)));
+   }
+
+   
+   /**
+    * Test permetant de tester la levée d'exception si le fichier est inexistant
+    * @throws UnknownHashCodeEx 
+    * @throws RequiredArchivableMetadataEx 
+    * @throws EmptyDocumentEx 
+    * @throws NotArchivableMetadataEx 
+    * @throws NotSpecifiableMetadataEx 
+    * @throws DuplicatedMetadataEx 
+    * @throws UnknownMetadataEx 
+    * @throws InvalidValueTypeAndFormatMetadataEx 
+    * @throws RequiredStorageMetadataEx 
+    * @throws FileNotFoundException 
+    * @throws UnknownCodeRndEx 
+    * @throws ReferentialRndException 
+    * @throws SAECaptureServiceEx 
+    */
+   @Test(expected = FileNotFoundException.class)
+   public void fileNotFoundExceptionTest() throws SAECaptureServiceEx, ReferentialRndException, UnknownCodeRndEx, FileNotFoundException, RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx, NotArchivableMetadataEx, EmptyDocumentEx, RequiredArchivableMetadataEx, UnknownHashCodeEx{
+      String path= FileUtils.getTempDirectoryPath();
+      List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
+      uuid = service.captureFichier(metadatas, path.concat("FichierInexistant.pdf"));
+      LOG.debug("document archivé alors que le fichier est inexistant:" + uuid);
+      Assert.fail();
+   }
+   
 }

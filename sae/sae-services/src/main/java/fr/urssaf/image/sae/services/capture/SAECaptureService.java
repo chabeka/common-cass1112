@@ -1,5 +1,6 @@
 package fr.urssaf.image.sae.services.capture;
 
+import java.io.FileNotFoundException;
 import java.net.URI;
 import java.util.List;
 import java.util.UUID;
@@ -139,4 +140,52 @@ public interface SAECaptureService {
          NotArchivableMetadataEx, ReferentialRndException, UnknownCodeRndEx,
          UnknownHashCodeEx, EmptyFileNameEx;
 
+   
+   /**
+    * 
+    * Service pour l'opération : capture unitaire
+    * 
+    * @param metadatas
+    *           liste des métadonnées à archiver
+    * @param path
+    *           chemin absolu du fichier
+    * 
+    * 
+    * 
+    * @throws SAECaptureServiceEx
+    *            exception levée lors de la capture
+    * @throws RequiredStorageMetadataEx
+    *            les métadonnées obligatoires sont absentes
+    * @throws InvalidValueTypeAndFormatMetadataEx
+    *            les valeurs des métadonnées ne sont pas du bon type ou au bon
+    *            format
+    * @throws UnknownMetadataEx
+    *            les métadonnées n'existent pas dans le référentiel
+    * @throws DuplicatedMetadataEx
+    *            les métadonnées sont dupliquées
+    * @throws NotSpecifiableMetadataEx
+    *            les métadonnées ne sont pas archivables
+    * @throws NotArchivableMetadataEx
+    *            les métadonnées ne sont pas archivables
+    * @throws RequiredArchivableMetadataEx
+    *            les métadonnées obligatoires pour l'archivage sont absentes
+    * @throws EmptyDocumentEx
+    *            Le fichier à archiver est vide
+    * @throws UnknownCodeRndEx
+    *            {@link UnknownCodeRndEx}
+    * @throws ReferentialRndException
+    *            {@link ReferentialRndException}
+    * @throws UnknownHashCodeEx
+    *            {@link UnknownHashCodeEx}
+    * @throws FileNotFoundException
+    *             {@link FileNotFoundException}}
+    */
+   @PreAuthorize("hasRole('archivage_unitaire')")
+   UUID captureFichier(List<UntypedMetadata> metadatas, String path)
+         throws SAECaptureServiceEx, RequiredStorageMetadataEx,
+         InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
+         DuplicatedMetadataEx, NotSpecifiableMetadataEx,
+         NotArchivableMetadataEx, ReferentialRndException, UnknownCodeRndEx,
+         EmptyDocumentEx, RequiredArchivableMetadataEx, UnknownHashCodeEx, FileNotFoundException;
+   
 }

@@ -42,6 +42,8 @@ public class SAECaptureServiceValidationTest {
    private static List<UntypedMetadata> metadatas;
 
    private static URI ecdeURL;
+   
+   private static String path;
 
    @BeforeClass
    public static void beforeClass() {
@@ -69,6 +71,11 @@ public class SAECaptureServiceValidationTest {
          public UUID captureBinaire(List<UntypedMetadata> metadatas,
                byte[] content, String fileName)  {
             
+            return null;
+         }
+
+         @Override
+         public UUID captureFichier(List<UntypedMetadata> metadatas, String path){
             return null;
          }
       };

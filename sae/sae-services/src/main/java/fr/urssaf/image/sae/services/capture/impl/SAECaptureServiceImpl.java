@@ -1,6 +1,7 @@
 package fr.urssaf.image.sae.services.capture.impl;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.net.URI;
 import java.util.Collection;
 import java.util.List;
@@ -113,21 +114,50 @@ public class SAECaptureServiceImpl implements SAECaptureService {
       controlesService.checkCaptureEcdeUrl(ecdeURL.toString());
       // chargement du document de l'ECDE
       File ecdeFile = loadEcdeFile(ecdeURL);
+          
+      UUID uuid = insertDocument(metadatas, ecdeFile);
+      // Traces debug - sortie méthode
+      LOG.debug("{} - Valeur de retour archiveId: \"{}\"", prefixeTrc, uuid);
+      LOG.debug("{} - Sortie", prefixeTrc);
+      // Fin des traces debug - sortie méthode
 
-      // instanciation d'un UntypedDocument
-      UntypedDocument untypedDocument = createUntypedDocument(metadatas,
-            ecdeFile);
-      // appel du service commun d'archivage dans la capture unitaire
-      StorageDocument storageDoc;
-      try {
-         storageDoc = commonsService
-               .buildStorageDocumentForCapture(untypedDocument);
-      } catch (SAEEnrichmentEx e) {
-         throw new SAECaptureServiceEx(e);
+      return uuid;
+
+   }
+   
+   
+   /**
+    * {@inheritDoc}
+    * @throws UnknownHashCodeEx 
+    * @throws RequiredArchivableMetadataEx 
+    * @throws EmptyDocumentEx 
+    * @throws UnknownCodeRndEx 
+    * @throws ReferentialRndException 
+    * @throws FileNotFoundException 
+    */
+   @Override
+   public final UUID captureFichier(List<UntypedMetadata> metadatas, String path)
+         throws SAECaptureServiceEx, RequiredStorageMetadataEx,
+         InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
+         DuplicatedMetadataEx, NotSpecifiableMetadataEx,
+         NotArchivableMetadataEx, ReferentialRndException, UnknownCodeRndEx,
+         EmptyDocumentEx, RequiredArchivableMetadataEx, UnknownHashCodeEx, FileNotFoundException {
+      // Traces debug - entrée méthode
+      String prefixeTrc = "capture()";
+      LOG.debug("{} - Début", prefixeTrc);
+      LOG.debug("{} - Liste des métadonnées : \"{}\"", prefixeTrc,
+            buildMessageFromList(metadatas));
+      LOG.debug("{} - Chemin du fichier : \"{}\"", prefixeTrc, path);
+      // Fin des traces debug - entrée méthode
+      File file = new File(path);
+      UUID uuid;
+      if (file.exists()) {
+         uuid = insertDocument(metadatas, file);
+      } else {
+         LOG.debug("{} - Fichier inexistant: \"{}\"", prefixeTrc, path);
+         throw new FileNotFoundException("Le fichier à archiver n'existe pas");
       }
 
-      // archivage du document dans DFCE
-      UUID uuid = insererStorageDocument(storageDoc);
       // Traces debug - sortie méthode
       LOG.debug("{} - Valeur de retour archiveId: \"{}\"", prefixeTrc, uuid);
       LOG.debug("{} - Sortie", prefixeTrc);
@@ -293,5 +323,49 @@ public class SAECaptureServiceImpl implements SAECaptureService {
          }
       }
       return toStrBuilder.toString();
+   }
+   
+   
+   /**
+    * Méthode commune à captureFile et capture permettant d'archiver un document qui provient soit de l'ECDE soit d'un emplacement donné
+    * @param metadatas 
+    *                   Liste des métadonnées
+    * @param file 
+    *                   fichier à archiver
+    * @return UUID
+    *                   L'uuid de l'archivage
+    * @throws SAECaptureServiceEx
+    * @throws ReferentialRndException
+    * @throws UnknownCodeRndEx
+    * @throws RequiredStorageMetadataEx
+    * @throws InvalidValueTypeAndFormatMetadataEx
+    * @throws UnknownMetadataEx
+    * @throws DuplicatedMetadataEx
+    * @throws NotArchivableMetadataEx
+    * @throws EmptyDocumentEx
+    * @throws RequiredArchivableMetadataEx
+    * @throws UnknownHashCodeEx
+    * @throws NotSpecifiableMetadataEx
+    */
+   private UUID insertDocument(List<UntypedMetadata> metadatas, File file)
+         throws SAECaptureServiceEx, ReferentialRndException, UnknownCodeRndEx,
+         RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx,
+         UnknownMetadataEx, DuplicatedMetadataEx, NotArchivableMetadataEx,
+         EmptyDocumentEx, RequiredArchivableMetadataEx, UnknownHashCodeEx,
+         NotSpecifiableMetadataEx {
+
+      // instanciation d'un UntypedDocument
+      UntypedDocument untypedDocument = createUntypedDocument(metadatas, file);
+      // appel du service commun d'archivage dans la capture unitaire
+      StorageDocument storageDoc;
+      try {
+         storageDoc = commonsService
+               .buildStorageDocumentForCapture(untypedDocument);
+      } catch (SAEEnrichmentEx e) {
+         throw new SAECaptureServiceEx(e);
+      }
+
+      // archivage du document dans DFCE
+      return insererStorageDocument(storageDoc);
    }
 }
