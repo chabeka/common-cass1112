@@ -172,6 +172,7 @@ public class WebServiceVIServiceImpl implements WebServiceVIService {
       extrait.setSaeDroits(saeDroits);
       extrait.setIdUtilisateur(data.getAssertionParams().getSubjectId2());
       extrait.setCodeAppli(issuer);
+      extrait.getPagms().addAll(data.getAssertionParams().getCommonsParams().getPagm());
 
       // Renvoie du résultat
       return extrait;

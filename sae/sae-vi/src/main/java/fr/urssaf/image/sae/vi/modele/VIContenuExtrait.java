@@ -1,5 +1,8 @@
 package fr.urssaf.image.sae.vi.modele;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 
 /**
@@ -17,6 +20,8 @@ public class VIContenuExtrait {
    private String idUtilisateur;
 
    private SaeDroits saeDroits;
+   
+   private List<String> pagms = new ArrayList<String>();
 
    /**
     * 
@@ -67,6 +72,22 @@ public class VIContenuExtrait {
     */
    public final void setSaeDroits(SaeDroits saeDroits) {
       this.saeDroits = saeDroits;
+   }
+
+   /**
+    * Le ou les PAGM
+    * @return Le ou les PAGM
+    */
+   public List<String> getPagms() {
+      return pagms;
+   }
+
+   /**
+    * Le ou les PAGM
+    * @param pagms Le ou les PAGM
+    */
+   public void setPagms(List<String> pagms) {
+      this.pagms = pagms;
    }
 
 }
