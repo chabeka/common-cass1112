@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docuBase>
+	<base>
+		<categories>
+			<!-- Réference documentaire -->
+			<category>
+				<descriptif>ReferenceDocumentaire</descriptif>
+				<name>rdo</name>
+				<dataType>String</dataType>
+				<index>true</index>
+				<minimumValues>0</minimumValues>
+				<maximumValues>1</maximumValues>
+	 			<single>false</single>
+				<enableDictionary>false</enableDictionary>
+			</category>
+		</categories>
+	</base>
+</docuBase>

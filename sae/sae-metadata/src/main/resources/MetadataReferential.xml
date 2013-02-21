@@ -879,4 +879,21 @@
       <label>Date de signature</label>
       <description>Date de signature</description>
    </metaDataReference>
+   <metaDataReference>
+      <shortCode>rdo</shortCode>
+      <longCode>ReferenceDocumentaire</longCode>
+      <type>String</type>
+      <requiredForArchival>false</requiredForArchival>
+      <requiredForStorage>false</requiredForStorage>
+      <length>30</length>
+      <pattern>
+      </pattern>
+      <consultable>true</consultable>
+      <defaultConsultable>false</defaultConsultable>
+      <searchable>true</searchable>
+      <internal>false</internal>
+      <archivable>true</archivable>
+      <label>Référence documentaire</label>
+      <description>Référence documentaire. Utilisée pour l'instant dans les mandats SEPA.</description>
+   </metaDataReference>
 </referentiel>

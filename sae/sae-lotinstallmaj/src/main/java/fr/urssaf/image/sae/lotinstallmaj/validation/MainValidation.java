@@ -133,6 +133,8 @@ public class MainValidation {
        */
       if (MajLotServiceImpl.META_SEPA.equalsIgnoreCase(nomOperation))
          return;
+      if (MajLotServiceImpl.META_130400.equalsIgnoreCase(nomOperation))
+         return;
       if (MajLotServiceImpl.CASSANDRA_130400.equalsIgnoreCase(nomOperation))
          return;
       // TODO : Traiter le cas de la mise à jour de la durée de conservation de

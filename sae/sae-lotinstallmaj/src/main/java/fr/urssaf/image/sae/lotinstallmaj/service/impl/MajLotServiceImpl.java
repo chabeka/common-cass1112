@@ -47,6 +47,7 @@ public final class MajLotServiceImpl implements MajLotService {
    public static final String DFCE_110_INDEX_DATES = "DFCE_110_INDEX_DATES";
    public static final String DFCE_110_CASSANDRA = "DFCE_110_CASSANDRA";
    public static final String META_SEPA = "META_SEPA";
+   public static final String META_130400 = "META_130400";
    public static final String CASSANDRA_130400 = "CASSANDRA_130400";
 
    public static final int DUREE_1825 = 1825;
@@ -108,6 +109,10 @@ public final class MajLotServiceImpl implements MajLotService {
       } else if (META_SEPA.equalsIgnoreCase(nomOperation)) {
 
          updateMetaSepa();
+
+      } else if (META_130400.equalsIgnoreCase(nomOperation)) {
+         // Pour lot 130400 du SAE : Ajout de la métadonnée ReferenceDocumentaire
+         updateMeta("meta130400.xml");
 
       } else if (CASSANDRA_130400.equalsIgnoreCase(nomOperation)) {
          
@@ -377,4 +382,83 @@ public final class MajLotServiceImpl implements MajLotService {
 
       LOG.info("Fin de l'opération : ajout des métadonnées au document");
    }
+   
+   /**
+    * Ajout de métadonnées dans DFCE à partir d'un fichier xml contenant les métadonnées
+    * ex : meta130400.xml (dans /src/main/resources/)
+    * @param fichierlisteMeta le fichier contenant les métadonnées
+    */
+   private void updateMeta(String fichierlisteMeta) {
+      LOG.info("Début de l'opération : ajout des métadonnées au document");
+
+      LOG.info("- début de récupération des catégories à ajouter");
+      XStream xStream = new XStream();
+      xStream.processAnnotations(DataBaseModel.class);
+      Reader reader = null;
+      InputStream stream = null;
+
+      try {
+         stream = context.getResource(fichierlisteMeta).getInputStream();
+         reader = new InputStreamReader(stream, Charset.forName("UTF-8"));
+         DataBaseModel model = DataBaseModel.class
+               .cast(xStream.fromXML(reader));
+
+         LOG.info("- fin de récupération des catégories à ajouter");
+
+         // connexion a DFCE
+         connectDfce();
+
+         Base base = serviceProvider.getBaseAdministrationService().getBase(
+               dfceConfig.getBasename());
+
+         final List<BaseCategory> baseCategories = new ArrayList<BaseCategory>();
+         final ToolkitFactory toolkit = ToolkitFactory.getInstance();
+         for (SaeCategory category : model.getDataBase().getSaeCategories()
+               .getCategories()) {
+            final Category categoryDfce = serviceProvider
+                  .getStorageAdministrationService().findOrCreateCategory(
+                        category.getName(), category.categoryDataType());
+            final BaseCategory baseCategory = toolkit.createBaseCategory(
+                  categoryDfce, category.isIndex());
+            baseCategory.setEnableDictionary(category.isEnableDictionary());
+            baseCategory.setMaximumValues(category.getMaximumValues());
+            baseCategory.setMinimumValues(category.getMinimumValues());
+            baseCategory.setSingle(category.isSingle());
+            baseCategories.add(baseCategory);
+         }
+
+         LOG.info("- début d'insertion des catégories");
+         for (BaseCategory baseCategory : baseCategories) {
+            base.addBaseCategory(baseCategory);
+         }
+
+         serviceProvider.getBaseAdministrationService().updateBase(base);
+
+         LOG.info("- fin d'insertion des catégories");
+
+      } catch (IOException e) {
+         LOG.warn("impossible de récupérer le fichier contenant les données");
+      } finally {
+         if (reader != null) {
+            try {
+               reader.close();
+            } catch (IOException e) {
+               LOG.debug("impossible de fermer le reader");
+            }
+         }
+
+         if (stream != null) {
+            try {
+               stream.close();
+            } catch (IOException e) {
+               LOG.debug("impossible de fermer le flux de données");
+            }
+
+         }
+
+         serviceProvider.disconnect();
+      }
+
+      LOG.info("Fin de l'opération : ajout des métadonnées au document");
+   }   
 }
