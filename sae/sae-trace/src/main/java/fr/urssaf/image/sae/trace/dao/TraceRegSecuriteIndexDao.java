@@ -3,10 +3,13 @@
  */
 package fr.urssaf.image.sae.trace.dao;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.UUID;
 
-import me.prettyprint.cassandra.serializers.DateSerializer;
+import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.serializers.UUIDSerializer;
 import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
@@ -34,8 +37,11 @@ public class TraceRegSecuriteIndexDao {
    private static final int MAX_ATTRIBUTS = 100;
    public static final String REG_SECURITE_INDEX_CFNAME = "TraceRegSecuriteIndex";
 
-   private final ColumnFamilyTemplate<Date, UUID> secuIndexTmpl;
+   private final ColumnFamilyTemplate<String, UUID> secuIndexTmpl;
    private final Keyspace keyspace;
+
+   private final DateFormat dateFormatJournee = new SimpleDateFormat(
+         "yyyyMMdd", Locale.FRANCE);
 
    /**
     * Constructeur
@@ -48,15 +54,15 @@ public class TraceRegSecuriteIndexDao {
 
       this.keyspace = keyspace;
 
-      secuIndexTmpl = new ThriftColumnFamilyTemplate<Date, UUID>(keyspace,
-            REG_SECURITE_INDEX_CFNAME, DateSerializer.get(), UUIDSerializer
+      secuIndexTmpl = new ThriftColumnFamilyTemplate<String, UUID>(keyspace,
+            REG_SECURITE_INDEX_CFNAME, StringSerializer.get(), UUIDSerializer
                   .get());
 
       secuIndexTmpl.setCount(MAX_ATTRIBUTS);
    }
 
    @SuppressWarnings("unchecked")
-   private void addColumn(ColumnFamilyUpdater<Date, UUID> updater,
+   private void addColumn(ColumnFamilyUpdater<String, UUID> updater,
          UUID colName, Object value, Serializer valueSerializer, long clock) {
 
       HColumn<UUID, Object> column = HFactory.createColumn(colName, value,
@@ -79,7 +85,7 @@ public class TraceRegSecuriteIndexDao {
     * @param clock
     *           horloge de la colonne
     */
-   public final void writeColumn(ColumnFamilyUpdater<Date, UUID> updater,
+   public final void writeColumn(ColumnFamilyUpdater<String, UUID> updater,
          UUID name, TraceRegSecuriteIndex value, long clock) {
       addColumn(updater, name, value, TraceRegSecuriteIndexSerializer.get(),
             clock);
@@ -89,10 +95,10 @@ public class TraceRegSecuriteIndexDao {
     * 
     * @return SliceQuery de <code>TraceRegSecuriteIndex</code>
     */
-   public final SliceQuery<Date, UUID, TraceRegSecuriteIndex> createSliceQuery() {
+   public final SliceQuery<String, UUID, TraceRegSecuriteIndex> createSliceQuery() {
 
-      SliceQuery<Date, UUID, TraceRegSecuriteIndex> sliceQuery = HFactory
-            .createSliceQuery(keyspace, DateSerializer.get(), UUIDSerializer
+      SliceQuery<String, UUID, TraceRegSecuriteIndex> sliceQuery = HFactory
+            .createSliceQuery(keyspace, StringSerializer.get(), UUIDSerializer
                   .get(), TraceRegSecuriteIndexSerializer.get());
 
       sliceQuery.setColumnFamily(REG_SECURITE_INDEX_CFNAME);
@@ -111,7 +117,7 @@ public class TraceRegSecuriteIndexDao {
     *           horloge de la suppression
     */
    public final void mutatorSuppressionTraceRegSecuriteIndex(
-         Mutator<Date> mutator, Date code, long clock) {
+         Mutator<String> mutator, String code, long clock) {
 
       mutator.addDeletion(code, REG_SECURITE_INDEX_CFNAME, clock);
    }
@@ -120,19 +126,46 @@ public class TraceRegSecuriteIndexDao {
     * 
     * @return Mutator de <code>TraceRegSecuriteIndex</code>
     */
-   public final Mutator<Date> createMutator() {
+   public final Mutator<String> createMutator() {
 
-      Mutator<Date> mutator = HFactory.createMutator(keyspace, DateSerializer
-            .get());
+      Mutator<String> mutator = HFactory.createMutator(keyspace,
+            StringSerializer.get());
 
       return mutator;
 
    }
 
    /**
-    * @return le CassandraTemplate de <code>TraceRegSecuriteIndex</code>
+    * Renvoie la journée au format AAAAMMJJ correspondant à un timestamp<br>
+    * La journée est la clé de la CF {@value #REG_SECURITE_INDEX_CFNAME}
+    * 
+    * @param timestamp
+    *           le timestamp
+    * @return la journée au format {@value #REG_SECURITE_INDEX_CFNAME} (clé de
+    *         la CF {@value #REG_SECURITE_INDEX_CFNAME})
     */
-   public final ColumnFamilyTemplate<Date, UUID> getSecuIndexTmpl() {
-      return secuIndexTmpl;
+   public final String getJournee(Date timestamp) {
+      return dateFormatJournee.format(timestamp);
+   }
+
+   /**
+    * Création du ColumnFamilyUpdater
+    * 
+    * @param journee
+    *           la journée, au format obtenu de {@link #getJournee(Date)}
+    * @return le ColumnFamilyUpdater
+    */
+   public final ColumnFamilyUpdater<String, UUID> createUpdater(String journee) {
+      return secuIndexTmpl.createUpdater(journee);
+   }
+
+   /**
+    * Flush les mises à jour
+    * 
+    * @param updater
+    *           l'updater de la CF
+    */
+   public final void update(ColumnFamilyUpdater<String, UUID> updater) {
+      secuIndexTmpl.update(updater);
    }
 }

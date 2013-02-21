@@ -3,7 +3,6 @@
  */
 package fr.urssaf.image.sae.trace.dao.iterator;
 
-import java.util.Date;
 import java.util.Iterator;
 import java.util.UUID;
 
@@ -23,7 +22,7 @@ import fr.urssaf.image.sae.trace.dao.serializer.TraceRegTechniqueIndexSerializer
 public class TraceRegTechniqueIndexIterator implements
       Iterator<TraceRegTechniqueIndex> {
 
-   private final ColumnSliceIterator<Date, UUID, TraceRegTechniqueIndex> sliceIterator;
+   private final ColumnSliceIterator<String, UUID, TraceRegTechniqueIndex> sliceIterator;
 
    /**
     * Constructeur
@@ -32,8 +31,8 @@ public class TraceRegTechniqueIndexIterator implements
     *           La requête cassandra permettant de faire l'itération
     */
    public TraceRegTechniqueIndexIterator(
-         SliceQuery<Date, UUID, TraceRegTechniqueIndex> sliceQuery) {
-      sliceIterator = new ColumnSliceIterator<Date, UUID, TraceRegTechniqueIndex>(
+         SliceQuery<String, UUID, TraceRegTechniqueIndex> sliceQuery) {
+      sliceIterator = new ColumnSliceIterator<String, UUID, TraceRegTechniqueIndex>(
             sliceQuery, (UUID) null, (UUID) null, false);
    }
 
@@ -54,13 +53,13 @@ public class TraceRegTechniqueIndexIterator implements
     *           </ul>
     */
    public TraceRegTechniqueIndexIterator(
-         SliceQuery<Date, UUID, TraceRegTechniqueIndex> sliceQuery, UUID start,
-         UUID end, boolean reversed) {
+         SliceQuery<String, UUID, TraceRegTechniqueIndex> sliceQuery,
+         UUID start, UUID end, boolean reversed) {
       if (reversed) {
-         sliceIterator = new ColumnSliceIterator<Date, UUID, TraceRegTechniqueIndex>(
+         sliceIterator = new ColumnSliceIterator<String, UUID, TraceRegTechniqueIndex>(
                sliceQuery, end, start, reversed);
       } else {
-         sliceIterator = new ColumnSliceIterator<Date, UUID, TraceRegTechniqueIndex>(
+         sliceIterator = new ColumnSliceIterator<String, UUID, TraceRegTechniqueIndex>(
                sliceQuery, start, end, reversed);
       }
    }

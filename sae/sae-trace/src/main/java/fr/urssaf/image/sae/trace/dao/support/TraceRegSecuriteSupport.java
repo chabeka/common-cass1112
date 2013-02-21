@@ -4,7 +4,6 @@
 package fr.urssaf.image.sae.trace.dao.support;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -18,7 +17,6 @@ import me.prettyprint.hector.api.query.SliceQuery;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -81,12 +79,12 @@ public class TraceRegSecuriteSupport {
 
       // création de l'index
       TraceRegSecuriteIndex index = new TraceRegSecuriteIndex(trace);
-      ColumnFamilyTemplate<Date, UUID> indexTmpl = indexDao.getSecuIndexTmpl();
-      ColumnFamilyUpdater<Date, UUID> indexUpdater = indexTmpl
-            .createUpdater(DateUtils.truncate(trace.getTimestamp(),
-                  Calendar.DATE));
+      String journee = indexDao.getJournee(index.getTimestamp());
+      ColumnFamilyUpdater<String, UUID> indexUpdater = indexDao
+            .createUpdater(journee);
       indexDao.writeColumn(indexUpdater, index.getIdentifiant(), index, clock);
-      indexTmpl.update(indexUpdater);
+      indexDao.update(indexUpdater);
+
    }
 
    /**
@@ -99,10 +97,10 @@ public class TraceRegSecuriteSupport {
     */
    public final void delete(Date date, long clock) {
 
-      SliceQuery<Date, UUID, TraceRegSecuriteIndex> sliceQuery;
+      SliceQuery<String, UUID, TraceRegSecuriteIndex> sliceQuery;
       sliceQuery = indexDao.createSliceQuery();
-      Date dateRef = DateUtils.truncate(date, Calendar.DATE);
-      sliceQuery.setKey(dateRef);
+      String journee = indexDao.getJournee(date);
+      sliceQuery.setKey(journee);
 
       TraceRegSecuriteIndexIterator iterator = new TraceRegSecuriteIndexIterator(
             sliceQuery);
@@ -110,8 +108,8 @@ public class TraceRegSecuriteSupport {
       deleteRecords(iterator, clock);
 
       // suppression de l'index
-      Mutator<Date> indexMutator = indexDao.createMutator();
-      indexDao.mutatorSuppressionTraceRegSecuriteIndex(indexMutator, dateRef,
+      Mutator<String> indexMutator = indexDao.createMutator();
+      indexDao.mutatorSuppressionTraceRegSecuriteIndex(indexMutator, journee,
             clock);
       indexMutator.execute();
 
@@ -140,9 +138,10 @@ public class TraceRegSecuriteSupport {
     * @return la liste des traces de sécurité
     */
    public final List<TraceRegSecuriteIndex> findByDate(Date date) {
-      SliceQuery<Date, UUID, TraceRegSecuriteIndex> sliceQuery = indexDao
+      SliceQuery<String, UUID, TraceRegSecuriteIndex> sliceQuery = indexDao
             .createSliceQuery();
-      sliceQuery.setKey(DateUtils.truncate(date, Calendar.DATE));
+
+      sliceQuery.setKey(indexDao.getJournee(date));
 
       List<TraceRegSecuriteIndex> list = null;
       TraceRegSecuriteIndexIterator iterator = new TraceRegSecuriteIndexIterator(
@@ -181,9 +180,9 @@ public class TraceRegSecuriteSupport {
          Date endDate, int maxCount, boolean reversed) {
       List<TraceRegSecuriteIndex> list = null;
 
-      SliceQuery<Date, UUID, TraceRegSecuriteIndex> sliceQuery = indexDao
+      SliceQuery<String, UUID, TraceRegSecuriteIndex> sliceQuery = indexDao
             .createSliceQuery();
-      sliceQuery.setKey(DateUtils.truncate(startDate, Calendar.DATE));
+      sliceQuery.setKey(indexDao.getJournee(startDate));
 
       UUID startUuid = TimeUUIDUtils.getTimeUUID(startDate.getTime());
       UUID endUuid = TimeUUIDUtils.getTimeUUID(endDate.getTime());
