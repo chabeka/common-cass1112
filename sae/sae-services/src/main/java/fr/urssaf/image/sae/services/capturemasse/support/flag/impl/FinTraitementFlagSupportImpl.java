@@ -27,6 +27,9 @@ public class FinTraitementFlagSupportImpl implements FinTraitementFlagSupport {
 
    private static final String FIN_FLAG = "fin_traitement.flag";
 
+   /** nombre maximum d'essais d'écriture du fichier */
+   private static final int MAX_ESSAIS = 3;
+
    /**
     * {@inheritDoc}
     */
@@ -41,10 +44,26 @@ public class FinTraitementFlagSupportImpl implements FinTraitementFlagSupport {
 
       final File file = new File(path);
 
-      try {
-         file.createNewFile();
-      } catch (IOException e) {
-         throw new CaptureMasseRuntimeException(e);
+      int index = 0;
+
+      while (index < MAX_ESSAIS && !file.exists()) {
+         try {
+            file.createNewFile();
+         } catch (IOException e) {
+
+            if (index > 0) {
+               LOGGER
+                     .warn(
+                           "{} - {}ème tentative d'écriture du ficher fin_traitement.flag",
+                           new Object[] { PREFIXE_TRC, index + 1 });
+            }
+
+            if (index == MAX_ESSAIS - 1) {
+               throw new CaptureMasseRuntimeException(e);
+            }
+
+            index++;
+         }
       }
 
       LOGGER.debug("{} - Fin de création du fichier ({})", PREFIXE_TRC,
