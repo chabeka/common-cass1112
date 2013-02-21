@@ -29,18 +29,15 @@ import fr.urssaf.image.sae.lotinstallmaj.exception.MajLotRuntimeException;
 @Component
 public class SAECassandraUpdater {
 
-   /**
-    * 
-    */
    private static final int VERSION_3 = 3;
    private static final int VERSION_4 = 4;
    private final String ksName;
    private final Cluster cluster;
    private final SAECassandraService saeCassandraService;
+
    @Autowired
    private SAECassandraDao saeDao;
 
-   // LOGGER
    private static final Logger LOG = LoggerFactory
          .getLogger(SAECassandraUpdater.class);
 
@@ -269,7 +266,12 @@ public class SAECassandraUpdater {
    }
 
    /**
-    * Version 4 : ajout des CF de traces dans le keyspace "SAE"
+    * Version 4 :
+    * <ul>
+    *    <li>ajout des CF de traces dans le keyspace "SAE"</li>
+    *    <li>initialisation des paramètres de purge des registres</li> 
+    *    <li>initialisation du référentiel des événements</li>
+    * </ul>
     */
    public void updateToVersion4() {
       long version = saeDao.getDatabaseVersion();
@@ -313,12 +315,14 @@ public class SAECassandraUpdater {
 
       // Création des CF
       saeCassandraService.createColumnFamilyFromList(cfDefs, true);
-      
+
       InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
       donnees.addPurgeParameters();
-      
-   // On positionne la version à 3
+      donnees.addReferentielEvenementV1();
+
+      // On positionne la version à 4
       saeDao.setDatabaseVersion(VERSION_4);
+
    }
 
 }

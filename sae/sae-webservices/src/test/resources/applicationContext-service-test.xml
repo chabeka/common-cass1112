@@ -7,10 +7,8 @@
       http://www.springframework.org/schema/context 
       http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-   <!--  chargement des paramètres du SAE pour les tests-->
-   <bean id="saeConfigResource" class="org.springframework.core.io.ClassPathResource">
-      <constructor-arg value="config/sae-services-test.properties" />
-   </bean>
+   
+   <import resource="applicationContext-properties-test.xml" />
 
    <bean
       class="fr.urssaf.image.sae.webservices.modele.WebServiceConfiguration"
@@ -18,22 +16,9 @@
       <constructor-arg value="${sae.webservice.ancien.service.actif}" />
    </bean>
 
-   <bean id="applicationProperties"
-      class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-      <property name="locations">
-         <array value-type="org.springframework.core.io.Resource">
-            <ref bean="saeConfigResource" />
-            <value>classpath:config/cassandra-local.properties</value>
-         </array>
-      </property>
-   </bean>
+   <import resource="applicationContext-sae-trace.xml" />
    
-   <!--<bean id="messageSource_sae_services"
-      class="org.springframework.context.support.ResourceBundleMessageSource">
-      <property name="basename" value="i18n.sae_services_messages" />
-   </bean>
-
-   --><import resource="applicationContext-service.xml" />
+   <import resource="applicationContext-service.xml" />
 
    <!-- mock pour consultation et recherche -->
    <bean id="saeServiceProvider"

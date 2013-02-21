@@ -10,15 +10,11 @@
       http://www.springframework.org/schema/jee 
       http://www.springframework.org/schema/jee/spring-jee-3.0.xsd">
 
+   <import resource="applicationContext-properties-test.xml" />
+   
    <context:component-scan base-package="fr.urssaf.image.sae.exploitation" />  
    
-   <bean id="applicationProperties"
-      class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-      <property name="location"
-         value="classpath:config/sae-servlet-test-failure.properties" />
-   </bean>
-      
-  <!--Instantiation du bean de connexion à la base DFCE -->
+   <!--Instantiation du bean de connexion à la base DFCE -->
    <bean id="storageBase"
       class="fr.urssaf.image.sae.storage.model.connection.StorageBase">
       <property name="baseName" value="${db.baseName}" />
@@ -26,7 +22,7 @@
    <!--Valorisation des paramètres à partir du fichier properties. -->
    <bean id="storageHost"
       class="fr.urssaf.image.sae.storage.model.connection.StorageHost">
-      <property name="hostName" value="${db.hostName}" />
+      <property name="hostName" value="hostExistePas" />
       <property name="hostPort" value="${db.hostPort}" />
       <property name="contextRoot" value="${db.contextRoot}" />
       <property name="secure" value="${db.secure}" />

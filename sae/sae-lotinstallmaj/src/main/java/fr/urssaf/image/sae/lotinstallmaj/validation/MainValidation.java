@@ -133,7 +133,7 @@ public class MainValidation {
        */
       if (MajLotServiceImpl.META_SEPA.equalsIgnoreCase(nomOperation))
          return;
-      if (MajLotServiceImpl.CASSANDRA_13XX10.equalsIgnoreCase(nomOperation))
+      if (MajLotServiceImpl.CASSANDRA_130400.equalsIgnoreCase(nomOperation))
          return;
       // TODO : Traiter le cas de la mise à jour de la durée de conservation de
       // 3.1.3.1.1 (en attente du JIRA CRTL-81)

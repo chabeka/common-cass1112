@@ -1,10 +1,8 @@
 package fr.urssaf.image.sae.webservices.service.impl;
 
 import java.io.File;
-import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -42,6 +40,7 @@ import fr.urssaf.image.sae.webservices.aspect.BuildOrClearMDCAspect;
 import fr.urssaf.image.sae.webservices.exception.CaptureAxisFault;
 import fr.urssaf.image.sae.webservices.impl.factory.ObjectStorageResponseFactory;
 import fr.urssaf.image.sae.webservices.service.WSCaptureMasseService;
+import fr.urssaf.image.sae.webservices.util.HostnameUtil;
 
 /**
  * Implémentation de {@link WSCaptureMasseService}<br>
@@ -83,7 +82,7 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
       String ecdeUrl = ecdeUrlWs.getEcdeUrlSommaireType().toString();
       LOG.debug("{} - URI ECDE: {}", prefixeTrc, ecdeUrl);
 
-      String hName = getHostName();
+      String hName = HostnameUtil.getHostname();
 
       UUID identifiant = checkEcdeUrl(ecdeUrl);
 
@@ -130,8 +129,9 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
       File fileEcde;
       try {
          fileEcde = ecdeServices.convertSommaireToFile(new URI(ecdeUrl));
-         LOG.debug("Contrôle de cohérence du hash du fichier sommaire.xml par rapport au hash transmis");
-         
+         LOG
+               .debug("Contrôle de cohérence du hash du fichier sommaire.xml par rapport au hash transmis");
+
          controleSupport.checkHash(fileEcde, hash, typeHash);
       } catch (EcdeBadURLException e) {
          throw new CaptureAxisFault("CaptureUrlEcdeIncorrecte", e.getMessage(),
@@ -147,9 +147,9 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
       } catch (CaptureMasseSommaireTypeHashException e) {
          throw new CaptureAxisFault("TypeHashSommaireIncorrect",
                e.getMessage(), e);
-      } catch (CaptureMasseRuntimeException e){
-         throw new CaptureAxisFault("CaptureUrlEcdeFichierIntrouvable",
-               e.getMessage(), e);
+      } catch (CaptureMasseRuntimeException e) {
+         throw new CaptureAxisFault("CaptureUrlEcdeFichierIntrouvable", e
+               .getMessage(), e);
       }
 
       Map<String, String> jobParam = new HashMap<String, String>();
@@ -157,7 +157,7 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
       jobParam.put(Constantes.HASH, hash);
       jobParam.put(Constantes.TYPE_HASH, typeHash);
 
-      String hName = getHostName();
+      String hName = HostnameUtil.getHostname();
 
       UUID id = checkEcdeUrl(ecdeUrl);
 
@@ -203,22 +203,6 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
 
       return uuid;
 
-   }
-
-   private String getHostName() {
-      String hostName = null;
-
-      try {
-         InetAddress address = InetAddress.getLocalHost();
-         hostName = address.getHostName();
-
-      } catch (UnknownHostException e) {
-         LOG
-               .warn(
-                     "Impossible de récupérer les informations relatives à la machine locale",
-                     e);
-      }
-      return hostName;
    }
 
    private Integer getNombreDoc(String ecdeUrl) throws CaptureAxisFault {

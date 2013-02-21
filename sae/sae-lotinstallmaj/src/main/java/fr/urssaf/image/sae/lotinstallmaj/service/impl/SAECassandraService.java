@@ -70,10 +70,9 @@ public class SAECassandraService {
       for (ColumnFamilyDefinition c : cfDefs) {
 
          if (cfExists(c.getName())) {
-            LOG.debug("La famille de colonnes {} est déjà existante", c
+            LOG.info("La famille de colonnes {} existe déjà", c
                   .getName());
          } else {
-            LOG.debug("Création de la famille de colonnes {}", c.getName());
             try {
                createColumnFamillyFromDefinition(c, blockUntilComplete, this
                      .getMaxRetry());
@@ -82,7 +81,7 @@ public class SAECassandraService {
                // blockUntilComplete,this.getMAX_RETRY());
                LOG
                      .error(
-                           "Un exception s'est produite lors de la création de la column familly {}",
+                           "Un exception s'est produite lors de la création de la famille de colonnes {}",
                            c.getName());
             }
          }
@@ -109,19 +108,20 @@ public class SAECassandraService {
       boolean succes = false;
       try {
          // appel de la creation de la CF
+         LOG.info("Création de la famille de colonnes {}", colDef.getName());
          saeDao.createColumnFamily(colDef, blockUntilComplete);
       } catch (HectorException e) {
          LOG.error("Error : ", e);
          LOG
-               .debug(
-                     "Echec de la création du Column Familly {} nouvelle tentative dans 5 sec",
+               .error(
+                     "Echec de la création de la famille de colonnes {}. Nouvelle tentative dans 5 sec",
                      colDef.getName());
          try {
             // en cas d'exception on met en pause 5 sec et on re-essaie
             Thread.sleep(SLEEP_TIME);
             if (this.getMaxRetry() > 0 && !succes) {
                int nbTentatives = maxRetryValue - tentatives;
-               LOG.debug("Tentative {} : création de {} ", nbTentatives, colDef
+               LOG.info("Tentative {} : création de {} ", nbTentatives, colDef
                      .getName());
                succes = createColumnFamillyFromDefinition(colDef,
                      blockUntilComplete, this.getMaxRetry());
@@ -134,7 +134,7 @@ public class SAECassandraService {
          } catch (InterruptedException e1) {
             LOG
                   .error(
-                        "Echec lors de la mise en vielle de la création d'une famille de colonne {}",
+                        "Echec lors de la temporisation entre 2 tentatives de création de famille de colonnes {}",
                         colDef.getName());
          }
       }

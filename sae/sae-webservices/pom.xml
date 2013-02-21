@@ -104,8 +104,37 @@
 
    <dependencies>
 
+      <!-- Pont entre SLF4J et Apache commons-logging -->
+      <dependency>
+         <groupId>org.slf4j</groupId>
+         <artifactId>jcl-over-slf4j</artifactId>
+         <version>${jcl-over-slf4j.version}</version>
+         <scope>runtime</scope>
+      </dependency>
+      
+      <!-- Pont entre SLF4J et Log4j -->
+      <dependency>
+         <groupId>org.slf4j</groupId>
+         <artifactId>log4j-over-slf4j</artifactId>
+         <version>${log4j-over-slf4j.version}</version>
+         <scope>runtime</scope>
+      </dependency>
+      
       <!-- SAE -->
 
+      <!-- SAE Traces -->
+      <dependency>
+         <groupId>fr.urssaf.image.sae</groupId>
+         <artifactId>sae-trace</artifactId>
+         <version>13.4.10.2-SNAPSHOT</version>
+         <exclusions>
+            <exclusion>
+               <groupId>commons-logging</groupId>
+               <artifactId>commons-logging</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+      
       <!-- SAE VI -->
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
@@ -118,8 +147,14 @@
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-igc</artifactId>
          <version>13.4.10.2-SNAPSHOT</version>
+         <exclusions>
+            <exclusion>
+               <groupId>commons-logging</groupId>
+               <artifactId>commons-logging</artifactId>
+            </exclusion>
+         </exclusions>
       </dependency>
-
+      
       <!-- SAE SERVICES -->
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
@@ -143,6 +178,10 @@
             <exclusion>
                <groupId>javax.servlet</groupId>
                <artifactId>servlet-api</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>commons-logging</groupId>
+               <artifactId>commons-logging</artifactId>
             </exclusion>
          </exclusions>
       </dependency>
@@ -183,12 +222,24 @@
          <groupId>org.apache.ws.commons.axiom</groupId>
          <artifactId>axiom-api</artifactId>
          <version>${axiom.version}</version>
+         <exclusions>
+            <exclusion>
+               <groupId>commons-logging</groupId>
+               <artifactId>commons-logging</artifactId>
+            </exclusion>
+         </exclusions>
       </dependency>
 
       <dependency>
          <groupId>org.apache.ws.commons.axiom</groupId>
          <artifactId>axiom-impl</artifactId>
          <version>${axiom.version}</version>
+         <exclusions>
+            <exclusion>
+               <groupId>commons-logging</groupId>
+               <artifactId>commons-logging</artifactId>
+            </exclusion>
+         </exclusions>
       </dependency>
 
       <dependency>
@@ -196,6 +247,12 @@
          <artifactId>axiom-tests</artifactId>
          <version>1.2.9</version>
          <scope>test</scope>
+         <exclusions>
+            <exclusion>
+               <groupId>commons-logging</groupId>
+               <artifactId>commons-logging</artifactId>
+            </exclusion>
+         </exclusions>
       </dependency>
 
       <!-- JASPECT -->
@@ -211,6 +268,12 @@
          <groupId>org.springframework</groupId>
          <artifactId>spring-context</artifactId>
          <version>${spring.framework.version}</version>
+         <exclusions>
+            <exclusion>
+               <groupId>commons-logging</groupId>
+               <artifactId>commons-logging</artifactId>
+            </exclusion>
+         </exclusions>
       </dependency>
 
       <dependency>

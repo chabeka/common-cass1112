@@ -1,7 +1,5 @@
 package fr.urssaf.image.sae.webservices.impl.factory;
 
-import java.util.UUID;
-
 import fr.cirtil.www.saeservice.ArchivageMasseAvecHashResponse;
 import fr.cirtil.www.saeservice.ArchivageMasseAvecHashResponseType;
 import fr.cirtil.www.saeservice.ArchivageMasseResponse;

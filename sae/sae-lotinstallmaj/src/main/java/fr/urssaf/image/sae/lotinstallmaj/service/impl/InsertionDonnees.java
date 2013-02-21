@@ -3,6 +3,9 @@
  */
 package fr.urssaf.image.sae.lotinstallmaj.service.impl;
 
+import java.util.Arrays;
+import java.util.List;
+
 import me.prettyprint.cassandra.serializers.LongSerializer;
 import me.prettyprint.cassandra.serializers.ObjectSerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
@@ -15,8 +18,11 @@ import me.prettyprint.hector.api.beans.HColumn;
 import me.prettyprint.hector.api.factory.HFactory;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.urssaf.image.sae.lotinstallmaj.modele.Pagm;
+import fr.urssaf.image.sae.lotinstallmaj.serializer.ListSerializer;
 import fr.urssaf.image.sae.lotinstallmaj.serializer.PagmSerializer;
 
 /**
@@ -25,11 +31,12 @@ import fr.urssaf.image.sae.lotinstallmaj.serializer.PagmSerializer;
  */
 public class InsertionDonnees {
 
+   private static final Logger LOG = LoggerFactory.getLogger(InsertionDonnees.class);
+   
    private static final String DESCRIPTION = "description";
-   /**
-    * 
-    */
+   
    private static final int DEFAULT_CONSERVATION = 7200;
+   
    private final Keyspace keyspace;
 
    /**
@@ -176,6 +183,7 @@ public class InsertionDonnees {
     * Ajoute les paramètres nécessaires à la purge des registres
     */
    public void addPurgeParameters() {
+      LOG.info("Création des paramètres de purge des registres");
       ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
             keyspace, "Parameters", StringSerializer.get(), StringSerializer
                   .get());
@@ -192,12 +200,64 @@ public class InsertionDonnees {
    private void addPurgeDuree(String name,
          ColumnFamilyTemplate<String, String> cfTmpl) {
       ColumnFamilyUpdater<String, String> updater = cfTmpl
-            .createUpdater("parametresPurge");
+            .createUpdater("parametresPurges");
 
       HColumn<String, Object> column = HFactory.createColumn(name, 10,
             StringSerializer.get(), ObjectSerializer.get());
       updater.setColumn(column);
 
+      cfTmpl.update(updater);
+
+   }
+
+   /**
+    * Initialisation du référentiel des événements en V1
+    */
+   public void addReferentielEvenementV1() {
+
+      LOG.info("Initialisation du référentiel des événements");
+      
+      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+            keyspace, "TraceDestinataire", StringSerializer.get(),
+            StringSerializer.get());
+
+      ColumnFamilyUpdater<String, String> updater;
+
+      List<String> allInfos = Arrays.asList("all_infos");
+
+      // WS_RECHERCHE|KO
+      // dans le registre de surveillance technique avec all_infos
+      updater = cfTmpl.createUpdater("WS_RECHERCHE|KO");
+      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
+            ListSerializer.get(), updater);
+      cfTmpl.update(updater);
+
+      // WS_CAPTURE_MASSE|KO
+      // dans le registre de surveillance technique avec all_infos
+      updater = cfTmpl.createUpdater("WS_CAPTURE_MASSE|KO");
+      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
+            ListSerializer.get(), updater);
+      cfTmpl.update(updater);
+
+      // WS_CAPTURE_UNITAIRE|KO
+      // dans le registre de surveillance technique avec all_infos
+      updater = cfTmpl.createUpdater("WS_CAPTURE_UNITAIRE|KO");
+      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
+            ListSerializer.get(), updater);
+      cfTmpl.update(updater);
+
+      // WS_CONSULTATION|KO
+      // dans le registre de surveillance technique avec all_infos
+      updater = cfTmpl.createUpdater("WS_CONSULTATION|KO");
+      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
+            ListSerializer.get(), updater);
+      cfTmpl.update(updater);
+
+      // WS_PING_SECURE|KO
+      // dans le registre de surveillance technique avec all_infos
+      updater = cfTmpl.createUpdater("WS_PING_SECURE|KO");
+      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
+            ListSerializer.get(), updater);
       cfTmpl.update(updater);
 
    }

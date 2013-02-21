@@ -46,6 +46,11 @@
    </logger>
    
    
+   <!-- Niveau de log de certains framework -->
+   <logger name="org.springframework" level="WARN" /> 
+   <logger name="me.prettyprint" level="WARN" />
+   
+   
    <!-- Niveau general pour l'application -->
    <root level="INFO">
       <appender-ref ref="log-file" />
