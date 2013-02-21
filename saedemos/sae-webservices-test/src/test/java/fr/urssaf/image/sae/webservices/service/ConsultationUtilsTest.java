@@ -62,6 +62,7 @@ public class ConsultationUtilsTest {
    private static final String CODE_ORGA_PROPRIO = "CER69";
    private static final String CODE_ORGA_GESTION = "UR750";
    private static final String CODE_RND = "2.3.1.1.12";
+   private static final String REFERENCE_DOCUMENTAIRE = "213039953275";
    
    
    @Autowired
@@ -116,6 +117,8 @@ public class ConsultationUtilsTest {
             DATE_RECEPT));
       metadatas.add(ObjectModelFactory.createMetadata("DateDebutConservation",
             DATE_DEB_CONSERV));
+      metadatas.add(ObjectModelFactory.createMetadata("ReferenceDocumentaire",
+            REFERENCE_DOCUMENTAIRE));
 
       URI urlEcde = URI
             .create("ecde://ecde.local.recouv/DCL001/19991231/3/documents/attestation.pdf");
@@ -161,6 +164,7 @@ public class ConsultationUtilsTest {
       expectedMetadatas.put("Hash", "4bf2ddbd82d5fd38e821e6aae434ac989972a043");
       expectedMetadatas.put("TailleFichier", "73791");
       expectedMetadatas.put("DateArchivage", getDateNow());
+      expectedMetadatas.put("ReferenceDocumentaire", "213039953275");
       
       return expectedMetadatas;
       

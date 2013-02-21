@@ -45,7 +45,7 @@ public class ConsultationTest {
     * Pour archiver un document, utiliser le TU
     * ConsultationUtilsTest.prepareData()
     */
-   private static final String UUID_EXISTANT = "4f9193c8-4d7d-41c5-ba77-6e696f6f9b4b";
+   private static final String UUID_EXISTANT = "2FFE2FF0-28E3-4DC6-AA47-8B1331F5BCFC";
 
    private static final String[] DEFAULT_META = new String[] { "Titre",
          "DateCreation", "DateReception", "CodeOrganismeProprietaire",
@@ -53,7 +53,7 @@ public class ConsultationTest {
          "FormatFichier", "TailleFichier", "ContratDeService", "DateArchivage" };
 
    private static final String[] WANTED_META = new String[] { "TypeHash",
-         "NbPages" };
+         "NbPages", "ReferenceDocumentaire" };
 
    /**
     * map contenant les metadatas

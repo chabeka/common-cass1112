@@ -101,6 +101,7 @@ public class ArchivageUnitaireTest {
             "1999-11-25"));
       metadatas.add(ObjectModelFactory.createMetadata("DateDebutConservation",
             "2011-09-02"));
+      metadatas.add(ObjectModelFactory.createMetadata("ReferenceDocumentaire", "213039953275"));
 
       URI urlEcde = URI
             .create("ecde://ecde.cer69.recouv/DCL001/19991231/3/documents/attestation.pdf");
@@ -128,10 +129,11 @@ public class ArchivageUnitaireTest {
       expectedMetadatas.put("CodeRND", "2.3.1.1.12");
       expectedMetadatas.put("NomFichier", "attestation.pdf");
       expectedMetadatas.put("FormatFichier", "fmt/354");
-      expectedMetadatas.put("ContratDeService", "TESTS_UNITAIRES");
+      expectedMetadatas.put("ContratDeService", "CS_ANCIEN_SYSTEME");
       expectedMetadatas.put("Hash", hash);
       expectedMetadatas.put("TailleFichier", Long.toString(FileUtils
             .sizeOf(srcFile)));
+      expectedMetadatas.put("ReferenceDocumentaire", "213039953275");
 
       ConsultationUtilsTest consultationTest = new ConsultationUtilsTest();
 

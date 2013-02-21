@@ -44,5 +44,46 @@ public class RechercheTest {
       LOG.debug("la recherche renvoie " + resultats.length + " documents");
 
    }
+   
+   @Test
+   @Ignore("Resultat non prédictible")
+   /**
+    * Teste que la métadonnée ReferenceDocumentaire est spécifiable à l'archivage
+    */
+   public void recherche_success_refDoc() throws RemoteException {
 
+      String lucene = "CodeRND:2.3.1.1.12 AND ReferenceDocumentaire:213039953275";
+      String[] codes = new String[] { "Titre", "Hash" };
+
+      RechercheResponseType response = service.recherche(lucene, codes);
+
+      ResultatRechercheType[] resultats = response.getResultats().getResultat();
+
+      Assert.assertFalse("on s'attend à avoir au moins un document", ArrayUtils
+            .isEmpty(resultats));
+
+      LOG.debug("la recherche renvoie " + resultats.length + " documents");
+
+   }
+   
+   @Test
+   //@Ignore("Resultat non prédictible")
+   /**
+    * Teste que la métadonnée ReferenceDocumentaire est spécifiable à l'archivage et indexée
+    */
+   public void recherche_success_refDocIndexee() throws RemoteException {
+
+      String lucene = "ReferenceDocumentaire:213039953275";
+      String[] codes = new String[] { "Titre", "Hash" };
+
+      RechercheResponseType response = service.recherche(lucene, codes);
+
+      ResultatRechercheType[] resultats = response.getResultats().getResultat();
+
+      Assert.assertFalse("on s'attend à avoir au moins un document", ArrayUtils
+            .isEmpty(resultats));
+
+      LOG.debug("la recherche renvoie " + resultats.length + " documents");
+
+   }
 }
