@@ -38,7 +38,7 @@ public class MainTest {
    }
 
    @Test
-   public void testAucunArgument() {
+   public void testAucunArgument() throws Throwable {
       try {
          Main.main(null);
          Assert
@@ -56,7 +56,7 @@ public class MainTest {
    }
 
    @Test
-   public void testHelpArgument() {
+   public void testHelpArgument() throws Throwable {
       try {
          Main.main(new String[] { "Help" });
          Assert
@@ -73,7 +73,7 @@ public class MainTest {
    }
 
    @Test
-   public void testNombreArgumentsIncorrect() {
+   public void testNombreArgumentsIncorrect() throws Throwable {
       try {
          Main.main(new String[] { "argument 1" });
          Assert
@@ -91,7 +91,7 @@ public class MainTest {
    }
 
    @Test
-   public void testFichierInexistant() {
+   public void testFichierInexistant() throws Throwable {
       try {
          Main.main(new String[] { "argument 1", "argument 2", "argument 3" });
          Assert
@@ -109,7 +109,7 @@ public class MainTest {
    }
 
    @Test
-   public void testParametrePurgeIncorrect() {
+   public void testParametrePurgeIncorrect() throws Throwable {
       try {
          Main.main(new String[] { saeConfig.getAbsolutePath(), "PRUGE",
                "argument 3" });
@@ -128,7 +128,7 @@ public class MainTest {
    }
 
    @Test
-   public void testParametreTypePurgeIncorrect() {
+   public void testParametreTypePurgeIncorrect() throws Throwable {
       try {
          Main.main(new String[] { saeConfig.getAbsolutePath(), "PURGE",
                "argument 3" });
