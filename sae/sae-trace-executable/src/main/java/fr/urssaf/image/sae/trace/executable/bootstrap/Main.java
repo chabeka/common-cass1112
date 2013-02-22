@@ -6,11 +6,13 @@ package fr.urssaf.image.sae.trace.executable.bootstrap;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.ClassPathResource;
@@ -42,28 +44,47 @@ public final class Main {
     * 
     * @param args
     *           arguments de la ligne de commande
+    * @throws Throwable
+    *            exception levée lors du traitement
     */
-   public static void main(String[] args) {
+   public static void main(String[] args) throws Throwable {
 
-      long startDate = new Date().getTime();
+      MDC.put("log_contexte_uuid", UUID.randomUUID().toString());
+
       String prefix = "main()";
       LOGGER.debug("{} - début", prefix);
+      LOGGER.info("{} - Arguments de la ligne de commande : {}", new Object[] {
+            prefix, args });
 
-      checkArguments(args);
+      ApplicationContext context = null;
 
-      ApplicationContext context = TraceContextFactory.loadContext(
-            CONFIGURATION_FILE, args[0]);
-      PurgeType purgeType = PurgeType.valueOf(args[2]);
-      TraitementService service = context.getBean(TraitementService.class);
-      service.purgerRegistre(purgeType);
+      try {
 
-      // Fermeture du contexte d'application
-      ((ClassPathXmlApplicationContext) context).close();
+         long startDate = new Date().getTime();
 
-      long endDate = new Date().getTime();
-      long duree = (endDate - startDate) / CONVERSION_MINUTES;
-      LOGGER.debug("{} - fin. Traitement réalisé en {} min", new Object[] {
-            prefix, duree });
+         checkArguments(args);
+
+         context = TraceContextFactory.loadContext(CONFIGURATION_FILE, args[0]);
+         PurgeType purgeType = PurgeType.valueOf(args[2]);
+         TraitementService service = context.getBean(TraitementService.class);
+         service.purgerRegistre(purgeType);
+
+         long endDate = new Date().getTime();
+         long duree = (endDate - startDate) / CONVERSION_MINUTES;
+         LOGGER.debug("{} - fin. Traitement réalisé en {} min", new Object[] {
+               prefix, duree });
+
+      } catch (Throwable ex) {
+
+         LOGGER.error("Une erreur a eu lieu", ex);
+         throw ex;
+
+      } finally {
+         // Fermeture du contexte d'application
+         if (context != null) {
+            ((ClassPathXmlApplicationContext) context).close();
+         }
+      }
 
    }
 
