@@ -27,6 +27,7 @@ import fr.urssaf.image.sae.trace.dao.model.TraceRegSecurite;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegSecuriteIndex;
 import fr.urssaf.image.sae.trace.dao.serializer.ListSerializer;
 import fr.urssaf.image.sae.trace.dao.serializer.MapSerializer;
+import fr.urssaf.image.sae.trace.utils.DateRegUtils;
 
 /**
  * Support de la classe DAO {@link TraceRegSecuriteDao}
@@ -79,7 +80,7 @@ public class TraceRegSecuriteSupport {
 
       // création de l'index
       TraceRegSecuriteIndex index = new TraceRegSecuriteIndex(trace);
-      String journee = indexDao.getJournee(index.getTimestamp());
+      String journee = DateRegUtils.getJournee(index.getTimestamp());
       ColumnFamilyUpdater<String, UUID> indexUpdater = indexDao
             .createUpdater(journee);
       indexDao.writeColumn(indexUpdater, index.getIdentifiant(), index, clock);
@@ -94,24 +95,34 @@ public class TraceRegSecuriteSupport {
     *           date à laquelle supprimer les traces
     * @param clock
     *           horloge de la suppression
+    * @return le nombre de traces purgées
     */
-   public final void delete(Date date, long clock) {
+   public final long delete(Date date, long clock) {
+
+      long nbTracesPurgees = 0;
 
       SliceQuery<String, UUID, TraceRegSecuriteIndex> sliceQuery;
       sliceQuery = indexDao.createSliceQuery();
-      String journee = indexDao.getJournee(date);
+      String journee = DateRegUtils.getJournee(date);
       sliceQuery.setKey(journee);
 
       TraceRegSecuriteIndexIterator iterator = new TraceRegSecuriteIndexIterator(
             sliceQuery);
 
-      deleteRecords(iterator, clock);
+      if (iterator.hasNext()) {
 
-      // suppression de l'index
-      Mutator<String> indexMutator = indexDao.createMutator();
-      indexDao.mutatorSuppressionTraceRegSecuriteIndex(indexMutator, journee,
-            clock);
-      indexMutator.execute();
+         // Suppression des traces de la CF TraceRegSecurite
+         nbTracesPurgees = deleteRecords(iterator, clock);
+
+         // suppression de l'index
+         Mutator<String> indexMutator = indexDao.createMutator();
+         indexDao.mutatorSuppressionTraceRegSecuriteIndex(indexMutator,
+               journee, clock);
+         indexMutator.execute();
+
+      }
+
+      return nbTracesPurgees;
 
    }
 
@@ -141,7 +152,7 @@ public class TraceRegSecuriteSupport {
       SliceQuery<String, UUID, TraceRegSecuriteIndex> sliceQuery = indexDao
             .createSliceQuery();
 
-      sliceQuery.setKey(indexDao.getJournee(date));
+      sliceQuery.setKey(DateRegUtils.getJournee(date));
 
       List<TraceRegSecuriteIndex> list = null;
       TraceRegSecuriteIndexIterator iterator = new TraceRegSecuriteIndexIterator(
@@ -182,7 +193,7 @@ public class TraceRegSecuriteSupport {
 
       SliceQuery<String, UUID, TraceRegSecuriteIndex> sliceQuery = indexDao
             .createSliceQuery();
-      sliceQuery.setKey(indexDao.getJournee(startDate));
+      sliceQuery.setKey(DateRegUtils.getJournee(startDate));
 
       UUID startUuid = TimeUUIDUtils.getTimeUUID(startDate.getTime());
       UUID endUuid = TimeUUIDUtils.getTimeUUID(endDate.getTime());
@@ -236,14 +247,20 @@ public class TraceRegSecuriteSupport {
       return securite;
    }
 
-   private void deleteRecords(TraceRegSecuriteIndexIterator iterator, long clock) {
+   private long deleteRecords(TraceRegSecuriteIndexIterator iterator, long clock) {
+
+      long result = 0;
 
       // suppression de toutes les traces
       Mutator<UUID> mutator = dao.createMutator();
       while (iterator.hasNext()) {
          dao.mutatorSuppressionTraceRegSecurite(mutator, iterator.next()
                .getIdentifiant(), clock);
+         result++;
       }
       mutator.execute();
+
+      return result;
+
    }
 }

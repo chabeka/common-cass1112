@@ -23,6 +23,7 @@ import fr.urssaf.image.sae.trace.service.PurgeService;
 import fr.urssaf.image.sae.trace.service.RegExploitationService;
 import fr.urssaf.image.sae.trace.service.RegSecuriteService;
 import fr.urssaf.image.sae.trace.service.RegTechniqueService;
+import fr.urssaf.image.sae.trace.service.support.LoggerSupport;
 
 /**
  * Classe d'implémentation de l'interface {@link PurgeService}. Cette classe est
@@ -48,6 +49,9 @@ public class PurgeServiceImpl implements PurgeService {
    @Autowired
    private RegSecuriteService secuService;
 
+   @Autowired
+   private LoggerSupport loggerSupport;
+
    /**
     * {@inheritDoc}
     */
@@ -57,6 +61,7 @@ public class PurgeServiceImpl implements PurgeService {
       String trcPrefix = "purgerRegistre";
 
       LOGGER.debug("{} - début", trcPrefix);
+      loggerSupport.logPurgeDebut(LOGGER, trcPrefix, typePurge);
 
       Boolean isRunning = getPurgeIsRunningFromPurgeType(typePurge);
       if (Boolean.TRUE.equals(isRunning)) {
@@ -66,11 +71,14 @@ public class PurgeServiceImpl implements PurgeService {
       }
 
       LOGGER.debug("{} - mise à jour du flag de traitement à TRUE", trcPrefix);
+      loggerSupport.logPurgeFlag(LOGGER, trcPrefix, typePurge, Boolean.TRUE);
       updateIsRunning(typePurge, Boolean.TRUE);
 
       Date minDate = getDateFromPurgeType(typePurge);
       Integer retentionDuration = getDureeFomPurgeType(typePurge);
       Date maxDate = DateUtils.addDays(new Date(), -retentionDuration);
+      loggerSupport.logPurgeJournees(LOGGER, trcPrefix, typePurge, minDate,
+            maxDate);
 
       try {
          if (PurgeType.PURGE_EXPLOITATION.equals(typePurge)) {
@@ -89,9 +97,13 @@ public class PurgeServiceImpl implements PurgeService {
       } finally {
          LOGGER.debug("{} - mise à jour du flag de traitement à FALSE",
                trcPrefix);
+         loggerSupport
+               .logPurgeFlag(LOGGER, trcPrefix, typePurge, Boolean.FALSE);
          updateIsRunning(typePurge, Boolean.FALSE);
-
       }
+
+      loggerSupport.logPurgeFin(LOGGER, trcPrefix, typePurge);
+
    }
 
    private Date getDateFromPurgeType(PurgeType purgeType) {
@@ -104,7 +116,18 @@ public class PurgeServiceImpl implements PurgeService {
          date = (Date) param.getValue();
 
       } catch (ParameterNotFoundException exception) {
-         date = new Date(0L);
+
+         // On commence au 01/01/2013
+         Calendar calendar = Calendar.getInstance();
+         calendar.set(Calendar.YEAR, 2013);
+         calendar.set(Calendar.MONTH, 0); // les numéros de mois commencent à 0
+         calendar.set(Calendar.DAY_OF_MONTH, 1);
+         calendar.set(Calendar.HOUR_OF_DAY, 0);
+         calendar.set(Calendar.MINUTE, 0);
+         calendar.set(Calendar.SECOND, 0);
+         calendar.set(Calendar.MILLISECOND, 0);
+         date = calendar.getTime();
+
       }
 
       return date;

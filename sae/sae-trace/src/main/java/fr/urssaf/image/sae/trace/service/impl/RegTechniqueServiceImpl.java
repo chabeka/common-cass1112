@@ -20,7 +20,9 @@ import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegTechnique;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegTechniqueIndex;
 import fr.urssaf.image.sae.trace.dao.support.TraceRegTechniqueSupport;
+import fr.urssaf.image.sae.trace.model.PurgeType;
 import fr.urssaf.image.sae.trace.service.RegTechniqueService;
+import fr.urssaf.image.sae.trace.service.support.LoggerSupport;
 import fr.urssaf.image.sae.trace.utils.DateRegUtils;
 
 /**
@@ -41,8 +43,11 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
    @Autowired
    private JobClockSupport clockSupport;
 
+   @Autowired
+   private LoggerSupport loggerSupport;
+
    private static final Logger LOGGER = LoggerFactory
-         .getLogger(RegExploitationServiceImpl.class);
+         .getLogger(RegTechniqueServiceImpl.class);
 
    /**
     * {@inheritDoc}
@@ -94,7 +99,13 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
 
       do {
 
-         support.delete(date, clockSupport.currentCLock());
+         loggerSupport.logPurgeJourneeDebut(LOGGER, prefix,
+               PurgeType.PURGE_TECHNIQUE, DateRegUtils.getJournee(date));
+         long nbTracesPurgees = support.delete(date, clockSupport
+               .currentCLock());
+         loggerSupport.logPurgeJourneeFin(LOGGER, prefix,
+               PurgeType.PURGE_TECHNIQUE, DateRegUtils.getJournee(date),
+               nbTracesPurgees);
          date = DateUtils.addDays(date, 1);
 
       } while (date.compareTo(endDate) <= 0);

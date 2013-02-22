@@ -52,7 +52,7 @@
       <file>${LOGS_FOLDER}/${LOGS_FILENAME_PREFIXE}.log</file>
       
       <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-         <level>WARN</level>
+         <level>INFO</level>
       </filter>
       
       <filter

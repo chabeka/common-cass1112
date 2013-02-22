@@ -3,10 +3,12 @@
  */
 package fr.urssaf.image.sae.trace.utils;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.lang.time.DateUtils;
 
@@ -105,6 +107,18 @@ public final class DateRegUtils {
       list.add(dateFin);
 
       return list;
+   }
+
+   /**
+    * Renvoie la journée au format AAAAMMJJ correspondant à un timestamp<br>
+    * Sert aux index en bdd, à la purge
+    * 
+    * @param timestamp
+    *           le timestamp
+    * @return la journée au format AAAAMMJJ
+    */
+   public static String getJournee(Date timestamp) {
+      return new SimpleDateFormat("yyyyMMdd", Locale.FRANCE).format(timestamp);
    }
 
 }

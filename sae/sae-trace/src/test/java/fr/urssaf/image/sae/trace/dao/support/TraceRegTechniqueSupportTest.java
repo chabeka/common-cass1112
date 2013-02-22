@@ -80,7 +80,7 @@ public class TraceRegTechniqueSupportTest {
       UUID uuid = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
       createTrace(uuid);
 
-      support.delete(new Date(), new Date().getTime());
+      long nbTracesPurgees = support.delete(new Date(), new Date().getTime());
 
       TraceRegTechnique technique = support.find(uuid);
       Assert.assertNull("aucune trace ne doit etre touvée", technique);
@@ -88,6 +88,10 @@ public class TraceRegTechniqueSupportTest {
       List<TraceRegTechniqueIndex> list = support.findByDate(DATE);
       Assert.assertTrue("aucun index ne doit etre present, donc aucune trace",
             CollectionUtils.isEmpty(list));
+
+      Assert.assertEquals("Le nombre de traces purgées est incorrect", 1L,
+            nbTracesPurgees);
+
    }
 
    @Test

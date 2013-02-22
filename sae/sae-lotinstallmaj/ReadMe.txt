@@ -93,9 +93,9 @@ Positionne le paramètre versionBDD de la CF Parameters à la valeur "3"
 sudo java -Dlogback.configurationFile=/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar /hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar /hawai/data/sae/sae-config.properties META_SEPA
 
 Création des métadonnées pour SEPA dans DFCE :
-   - JetonDePreuve
-   - RUM
-   - DateSignature
+   - JetonDePreuve (jdp)
+   - RUM (rum)
+   - DateSignature (dsi)
 
 
 // ------------------------------------------
@@ -132,6 +132,13 @@ Insertion des événéments à tracer dans la CF TraceDestinataire :
 Positionne le paramètre versionBDD de la CF Parameters à la valeur "4"
 
 
+
+3.2) META_130400
+
+sudo java -Dlogback.configurationFile=/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar /hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar /hawai/data/sae/sae-config.properties META_130400
+
+Création des nouvelles métadonnées :
+   - ReferenceDocumentaire (rdo)
 
 
 
