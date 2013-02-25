@@ -125,6 +125,10 @@ Les fichiers ci-dessous sont installés dans @@SAE_HOME@@/sae-ordonnanceur/
 Les fichiers ci-dessous sont installés dans @@SAE_HOME@@/sae-services-executable/
   logback-sae-services-executable.xml
   sae-services-executable.jar
+
+Les fichiers ci-dessous sont installés dans @@SAE_HOME@@/sae-trace-executable/
+  logback-sae-trace-executable.xml
+  sae-trace-executable.jar
  
 
 
@@ -241,6 +245,13 @@ java -Dlogback.configurationFile=@@SAE_HOME@@/sae-trace-executable/logback-sae-t
 // Purge du registre de sécurité
 java -Dlogback.configurationFile=@@SAE_HOME@@/sae-trace-executable/logback-sae-trace-executable.xml -jar @@SAE_HOME@@/sae-trace-executable/sae-trace-executable.jar @@SAE_HOME@@/sae-config.properties PURGE PURGE_SECURITE
 
+// Production du journal SAE
+java -Dlogback.configurationFile=@@SAE_HOME@@/sae-trace-executable/logback-sae-trace-executable.xml -jar @@SAE_HOME@@/sae-trace-executable/sae-trace-executable.jar @@SAE_HOME@@/sae-config.properties JOURNALISATION JOURNALISATION_EVT
+
+// Purge des traces SAE
+java -Dlogback.configurationFile=@@SAE_HOME@@/sae-trace-executable/logback-sae-trace-executable.xml -jar @@SAE_HOME@@/sae-trace-executable/sae-trace-executable.jar @@SAE_HOME@@/sae-config.properties PURGE PURGE_EVT
+
+
 
 // --------------------------------------------------------------------
 // Les CRON à créer
@@ -254,5 +265,10 @@ java -Dlogback.configurationFile=@@SAE_HOME@@/sae-trace-executable/logback-sae-t
     - sae-dfce-admin-exploit.jar clearSystemEvent
     - sae-dfce-admin-exploit.jar creatDocEvent
     - sae-dfce-admin-exploit.jar clearDocEvent
+    - sae-trace-executable.jar PURGE PURGE_TECHNIQUE
+    - sae-trace-executable.jar PURGE PURGE_EXPLOITATION
+    - sae-trace-executable.jar PURGE PURGE_SECURITE
+    - sae-trace-executable.jar JOURNALISATION JOURNALISATION_EVT
+    - sae-trace-executable.jar PURGE PURGE_EVT
 
 
