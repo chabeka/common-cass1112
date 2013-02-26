@@ -43,8 +43,6 @@ public class SAECaptureServiceValidationTest {
 
    private static URI ecdeURL;
    
-   private static String path;
-
    @BeforeClass
    public static void beforeClass() {
 

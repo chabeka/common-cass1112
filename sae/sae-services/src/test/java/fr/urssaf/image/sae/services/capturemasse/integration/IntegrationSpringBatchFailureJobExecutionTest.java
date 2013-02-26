@@ -41,7 +41,6 @@ import org.xml.sax.SAXException;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
@@ -54,7 +53,6 @@ import fr.urssaf.image.sae.services.capturemasse.modele.commun_sommaire_et_resul
 import fr.urssaf.image.sae.services.capturemasse.modele.commun_sommaire_et_resultat.NonIntegratedDocumentType;
 import fr.urssaf.image.sae.services.capturemasse.modele.resultats.ObjectFactory;
 import fr.urssaf.image.sae.services.capturemasse.modele.resultats.ResultatsType;
-import fr.urssaf.image.sae.services.document.SAEDocumentService;
 import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
 import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedToConsultEx;
 import fr.urssaf.image.sae.services.exception.search.MetaDataUnauthorizedToSearchEx;
@@ -80,9 +78,6 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
       "/applicationContext-sae-services-test.xml",
       "/applicationContext-sae-traitement-masse-dao-spring.xml" })
 public class IntegrationSpringBatchFailureJobExecutionTest {
-
-   private static final String ERREUR_ATTENDUE = "Une erreur interne à l'application est "
-         + "survenue lors de la capture du " + "document doc1.PDF. Détails : ";
 
    @Autowired
    private ApplicationContext applicationContext;

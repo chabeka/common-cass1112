@@ -157,11 +157,9 @@ public class IntegrationBUL001ErreurAvantInsertionTest {
    public void testLancementRuntime() throws ConnectionServiceEx,
          DeletionServiceEx, InsertionServiceEx, IOException, JAXBException,
          SAXException {
+      
       initComposantsRuntime();
       initDatas();
-
-      AuthenticationToken token = (AuthenticationToken) AuthenticationContext
-            .getAuthenticationToken();
 
       ExitTraitement exitStatus = service.captureMasse(ecdeTestSommaire
             .getUrlEcde(), UUID.randomUUID());

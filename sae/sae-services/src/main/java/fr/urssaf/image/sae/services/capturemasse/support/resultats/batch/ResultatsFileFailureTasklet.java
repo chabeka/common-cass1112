@@ -4,26 +4,17 @@
 package fr.urssaf.image.sae.services.capturemasse.support.resultats.batch;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.apache.commons.collections.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
-import org.xml.sax.SAXException;
 
 import fr.urssaf.image.sae.services.capturemasse.common.CaptureMasseErreur;
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
@@ -31,7 +22,7 @@ import fr.urssaf.image.sae.services.capturemasse.model.CaptureMasseIntegratedDoc
 import fr.urssaf.image.sae.services.capturemasse.support.resultats.ResultatsFileEchecSupport;
 import fr.urssaf.image.sae.services.capturemasse.support.sommaire.SommaireFormatValidationSupport;
 import fr.urssaf.image.sae.services.capturemasse.support.stockage.multithreading.InsertionPoolThreadExecutor;
-import fr.urssaf.image.sae.services.util.XmlValidationUtils;
+import fr.urssaf.image.sae.services.capturemasse.support.xsd.XsdValidationSupport;
 
 /**
  * Tasklet pour l'écriture du fichier resultats.xml lors d'un échec de
@@ -48,21 +39,18 @@ public class ResultatsFileFailureTasklet implements Tasklet {
    @Autowired
    private ResultatsFileEchecSupport support;
 
-   private static final String RESULTATS_XSD = "xsd_som_res/resultats.xsd";
-
    @Autowired
    private SommaireFormatValidationSupport validationSupport;
 
    @Autowired
-   private ApplicationContext applContext;
+   private XsdValidationSupport xsdValidationSupport;
 
-   private static final Logger LOGGER = LoggerFactory
-         .getLogger(ResultatsFileFailureTasklet.class);
-
-   // Pool d'execution des insertions de documents
+   /**
+    * Pool d'execution des insertions de documents
+    */
    @Autowired
    private InsertionPoolThreadExecutor executor;
-   
+
    /**
     * {@inheritDoc}
     */
@@ -103,7 +91,8 @@ public class ResultatsFileFailureTasklet implements Tasklet {
          isModeToutOuRien = false;
       }
 
-      ConcurrentLinkedQueue<CaptureMasseIntegratedDocument> listIntDocs = executor.getIntegratedDocuments();
+      ConcurrentLinkedQueue<CaptureMasseIntegratedDocument> listIntDocs = executor
+            .getIntegratedDocuments();
 
       if (isModeToutOuRien && CollectionUtils.isNotEmpty(listIntDocs)) {
          erreur.getListCodes().set(0, Constantes.ERR_BUL003);
@@ -118,18 +107,7 @@ public class ResultatsFileFailureTasklet implements Tasklet {
 
       File resultats = new File(ecdeDirectory, "resultats.xml");
 
-      try {
-         Resource sommaireXSD = applContext.getResource(RESULTATS_XSD);
-         URL xsdSchema = sommaireXSD.getURL();
-
-         XmlValidationUtils.parse(resultats, xsdSchema);
-      } catch (IOException ioExcept) {
-         LOGGER.warn("Erreur lors de la validation XSD", ioExcept);
-      } catch (ParserConfigurationException parseExcept) {
-         LOGGER.warn("Erreur lors de la validation XSD", parseExcept);
-      } catch (SAXException saxExcept) {
-         LOGGER.warn("Erreur lors de la validation XSD", saxExcept);
-      }
+      xsdValidationSupport.resultatsValidation(resultats);
 
       return RepeatStatus.FINISHED;
    }

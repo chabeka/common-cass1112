@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<keyspace xmlns="http://xml.dataset.cassandraunit.org"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://xml.dataset.cassandraunit.org cassandraUnitDataset.xsd ">
+   <name>SAE_TU</name>
+   <strategy>org.apache.cassandra.locator.SimpleStrategy</strategy>
+   <replicationFactor>1</replicationFactor>
+   <columnFamilies>
+      
+      <!-- Général -->
+      <columnFamily>
+         <name>Parameters</name>
+         <comparatorType>UTF8Type</comparatorType>
+      </columnFamily>
+      
+      <!-- La pile des travaux -->
+      <columnFamily>
+         <name>JobRequest</name>
+         <comparatorType>BytesType</comparatorType>
+      </columnFamily>
+      <columnFamily>
+         <name>JobsQueue</name>
+         <comparatorType>TimeUUIDType</comparatorType>
+      </columnFamily>
+      <columnFamily>
+         <name>JobHistory</name>
+         <comparatorType>TimeUUIDType</comparatorType>
+      </columnFamily>
+      
+      <!-- Les droits -->
+      <columnFamily>
+         <name>DroitActionUnitaire</name>
+         <comparatorType>BytesType</comparatorType>
+      </columnFamily>
+      <columnFamily>
+         <name>DroitContratService</name>
+         <comparatorType>BytesType</comparatorType>
+      </columnFamily>
+      <columnFamily>
+         <name>DroitPagma</name>
+         <comparatorType>BytesType</comparatorType>
+      </columnFamily>
+      <columnFamily>
+         <name>DroitPagmp</name>
+         <comparatorType>BytesType</comparatorType>
+      </columnFamily>
+      <columnFamily>
+         <name>DroitPagm</name>
+         <comparatorType>BytesType</comparatorType>
+      </columnFamily>
+      <columnFamily>
+         <name>DroitPrmd</name>
+         <comparatorType>BytesType</comparatorType>
+      </columnFamily>
+      
+      <!-- La traçabilité -->
+      
+      <columnFamily>
+         <name>TraceDestinataire</name>
+         <type>STANDARD</type>
+         <keyType>UTF8Type</keyType>
+         <comparatorType>UTF8Type</comparatorType>
+         <defaultColumnValueType>UTF8Type</defaultColumnValueType>
+         <row>
+            <key>CAPTURE_MASSE|KO</key>
+            <column>
+               <name>REG_TECHNIQUE</name>
+               <value>&lt;?xml version=&quot;1.0&quot; ?&gt;&lt;java.util.Arrays_-ArrayList&gt;&lt;a class=&quot;string-array&quot;&gt;&lt;string&gt;all_infos&lt;/string&gt;&lt;/a&gt;&lt;/java.util.Arrays_-ArrayList&gt;</value>
+            </column>
+         </row>
+      </columnFamily>
+      
+      <columnFamily>
+         <name>TraceRegSecurite</name>
+         <comparatorType>UTF8Type</comparatorType>
+      </columnFamily>
+      <columnFamily>
+         <name>TraceRegSecuriteIndex</name>
+         <comparatorType>TimeUUIDType</comparatorType>
+      </columnFamily>
+      <columnFamily>
+         <name>TraceRegExploitation</name>
+         <comparatorType>UTF8Type</comparatorType>
+      </columnFamily>
+      <columnFamily>
+         <name>TraceRegExploitationIndex</name>
+         <comparatorType>TimeUUIDType</comparatorType>
+      </columnFamily>
+      <columnFamily>
+         <name>TraceRegTechnique</name>
+         <comparatorType>UTF8Type</comparatorType>
+      </columnFamily>
+      <columnFamily>
+         <name>TraceRegTechniqueIndex</name>
+         <comparatorType>TimeUUIDType</comparatorType>
+      </columnFamily>
+      
+   </columnFamilies>
+</keyspace>

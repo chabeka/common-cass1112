@@ -4,11 +4,7 @@
 package fr.urssaf.image.sae.services.capturemasse.support.resultats.batch;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URL;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,14 +15,11 @@ import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
-import org.xml.sax.SAXException;
 
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
 import fr.urssaf.image.sae.services.capturemasse.support.resultats.ResultatsFileEchecBloquantSupport;
-import fr.urssaf.image.sae.services.util.XmlValidationUtils;
+import fr.urssaf.image.sae.services.capturemasse.support.xsd.XsdValidationSupport;
 
 /**
  * Tasklet décriture du fichier resultats.xml en cas d'erreur bloquante
@@ -41,10 +34,8 @@ public class ResultatsFileFailureErrorTasklet implements Tasklet {
    @Autowired
    private ResultatsFileEchecBloquantSupport support;
 
-   private static final String RESULTATS_XSD = "xsd_som_res/resultats.xsd";
-
    @Autowired
-   private ApplicationContext applContext;
+   private XsdValidationSupport xsdValidationSupport;
 
    /**
     * {@inheritDoc}
@@ -68,29 +59,19 @@ public class ResultatsFileFailureErrorTasklet implements Tasklet {
                erreur);
       }
 
-      Object sommairePahObject = context.get(Constantes.SOMMAIRE_FILE);
+      Object sommairePathObject = context.get(Constantes.SOMMAIRE_FILE);
 
-      if (sommairePahObject instanceof String && erreur != null) {
+      if (sommairePathObject instanceof String && erreur != null) {
 
-         String sommairePath = (String) sommairePahObject;
+         String sommairePath = (String) sommairePathObject;
          final File sommaireFile = new File(sommairePath);
          File ecdeDirectory = sommaireFile.getParentFile();
          support.writeResultatsFile(ecdeDirectory, erreur);
 
          File resultats = new File(ecdeDirectory, "resultats.xml");
 
-         try {
-            Resource sommaireXSD = applContext.getResource(RESULTATS_XSD);
-            URL xsdSchema = sommaireXSD.getURL();
+         xsdValidationSupport.resultatsValidation(resultats);
 
-            XmlValidationUtils.parse(resultats, xsdSchema);
-         } catch (IOException ioExcept) {
-            LOGGER.warn("Erreur lors de la validation XSD", ioExcept);
-         } catch (ParserConfigurationException parseExcept) {
-            LOGGER.warn("Erreur lors de la validation XSD", parseExcept);
-         } catch (SAXException saxExcept) {
-            LOGGER.warn("Erreur lors de la validation XSD", saxExcept);
-         }
       }
 
       return RepeatStatus.FINISHED;

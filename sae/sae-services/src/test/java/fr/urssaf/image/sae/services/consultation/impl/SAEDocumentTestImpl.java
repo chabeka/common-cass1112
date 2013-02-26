@@ -83,6 +83,7 @@ public class SAEDocumentTestImpl implements SAEDocumentService {
    /**
     * {@inheritDoc}
     */
+   @SuppressWarnings("unchecked")
    @Override
    public final List<UntypedDocument> search(String requete,
          List<String> listMetaDesired) throws MetaDataUnauthorizedToSearchEx,
@@ -113,6 +114,7 @@ public class SAEDocumentTestImpl implements SAEDocumentService {
    /**
     * {@inheritDoc}
     */
+   @SuppressWarnings("unchecked")
    @Override
    public final List<UntypedDocument> search(String requete,
          List<String> listMetaDesired, int maxResult)

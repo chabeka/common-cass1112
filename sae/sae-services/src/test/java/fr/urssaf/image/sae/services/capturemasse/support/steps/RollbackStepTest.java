@@ -6,7 +6,6 @@ package fr.urssaf.image.sae.services.capturemasse.support.steps;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import net.docubase.toolkit.service.ServiceProvider;
 
