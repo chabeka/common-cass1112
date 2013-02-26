@@ -4,6 +4,8 @@
 package fr.urssaf.image.sae.lotinstallmaj.service.impl;
 
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import me.prettyprint.cassandra.serializers.LongSerializer;
@@ -31,12 +33,13 @@ import fr.urssaf.image.sae.lotinstallmaj.serializer.PagmSerializer;
  */
 public class InsertionDonnees {
 
-   private static final Logger LOG = LoggerFactory.getLogger(InsertionDonnees.class);
-   
+   private static final Logger LOG = LoggerFactory
+         .getLogger(InsertionDonnees.class);
+
    private static final String DESCRIPTION = "description";
-   
+
    private static final int DEFAULT_CONSERVATION = 7200;
-   
+
    private final Keyspace keyspace;
 
    /**
@@ -180,16 +183,44 @@ public class InsertionDonnees {
    }
 
    /**
-    * Ajoute les paramètres nécessaires à la purge des registres
+    * Ajoute les paramètres nécessaires à la traçabilité SAE
     */
-   public void addPurgeParameters() {
-      LOG.info("Création des paramètres de purge des registres");
+   public void addTracabiliteParameters() {
+
+      LOG.info("Création des paramètres de traçabilité");
+
       ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
             keyspace, "Parameters", StringSerializer.get(), StringSerializer
                   .get());
-      addPurgeDuree("PURGE_EXPLOIT_DUREE", cfTmpl);
-      addPurgeDuree("PURGE_SECU_DUREE", cfTmpl);
-      addPurgeDuree("PURGE_TECH_DUREE", cfTmpl);
+
+      Date debutTracabilite = getTracabiliteDerniereDateTraitee();
+
+      addTracabiliteParameter(cfTmpl, "PURGE_TECH_DUREE", new Integer(10));
+      addTracabiliteParameter(cfTmpl, "PURGE_SECU_DUREE", new Integer(10));
+      addTracabiliteParameter(cfTmpl, "PURGE_EXPLOIT_DUREE", new Integer(10));
+      addTracabiliteParameter(cfTmpl, "PURGE_EVT_DUREE", new Integer(10));
+
+      addTracabiliteParameter(cfTmpl, "PURGE_TECH_IS_RUNNING", Boolean.FALSE);
+      addTracabiliteParameter(cfTmpl, "PURGE_SECU_IS_RUNNING", Boolean.FALSE);
+      addTracabiliteParameter(cfTmpl, "PURGE_EXPLOIT_IS_RUNNING", Boolean.FALSE);
+      addTracabiliteParameter(cfTmpl, "PURGE_EVT_IS_RUNNING", Boolean.FALSE);
+
+      addTracabiliteParameter(cfTmpl, "PURGE_TECH_DATE", debutTracabilite);
+      addTracabiliteParameter(cfTmpl, "PURGE_SECU_DATE", debutTracabilite);
+      addTracabiliteParameter(cfTmpl, "PURGE_EXPLOIT_DATE", debutTracabilite);
+      addTracabiliteParameter(cfTmpl, "PURGE_EVT_DATE", debutTracabilite);
+
+      addTracabiliteParameter(cfTmpl, "JOURNALISATION_EVT_DATE",
+            debutTracabilite);
+      addTracabiliteParameter(cfTmpl, "JOURNALISATION_EVT_IS_RUNNING",
+            Boolean.FALSE);
+
+      addTracabiliteParameter(cfTmpl,
+            "JOURNALISATION_EVT_ID_JOURNAL_PRECEDENT",
+            "00000000-0000-0000-0000-000000000000");
+      addTracabiliteParameter(cfTmpl,
+            "JOURNALISATION_EVT_HASH_JOURNAL_PRECEDENT",
+            "0000000000000000000000000000000000000000");
 
    }
 
@@ -197,16 +228,36 @@ public class InsertionDonnees {
     * @param name
     * @param cfTmpl
     */
-   private void addPurgeDuree(String name,
-         ColumnFamilyTemplate<String, String> cfTmpl) {
-      ColumnFamilyUpdater<String, String> updater = cfTmpl
-            .createUpdater("parametresPurges");
+   private void addTracabiliteParameter(
+         ColumnFamilyTemplate<String, String> cfTmpl, String subname,
+         Object valeur) {
 
-      HColumn<String, Object> column = HFactory.createColumn(name, 10,
+      ColumnFamilyUpdater<String, String> updater = cfTmpl
+            .createUpdater("parametresTracabilite");
+
+      HColumn<String, Object> column = HFactory.createColumn(subname, valeur,
             StringSerializer.get(), ObjectSerializer.get());
       updater.setColumn(column);
 
       cfTmpl.update(updater);
+
+   }
+
+   private Date getTracabiliteDerniereDateTraitee() {
+
+      // On démarre la traçabilité SAE au 01/02/2013
+      // La dernière date des traitements est positionné au 31/01/2013
+      // Car les traitements font un J+1 à partir des valeurs de paramètres
+
+      Calendar calendar = Calendar.getInstance();
+      calendar.set(Calendar.YEAR, 2013);
+      calendar.set(Calendar.MONTH, 0); // les numéros de mois commencent à 0
+      calendar.set(Calendar.DAY_OF_MONTH, 31);
+      calendar.set(Calendar.HOUR_OF_DAY, 0);
+      calendar.set(Calendar.MINUTE, 0);
+      calendar.set(Calendar.SECOND, 0);
+      calendar.set(Calendar.MILLISECOND, 0);
+      return calendar.getTime();
 
    }
 
@@ -216,7 +267,7 @@ public class InsertionDonnees {
    public void addReferentielEvenementV1() {
 
       LOG.info("Initialisation du référentiel des événements");
-      
+
       ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
             keyspace, "TraceDestinataire", StringSerializer.get(),
             StringSerializer.get());

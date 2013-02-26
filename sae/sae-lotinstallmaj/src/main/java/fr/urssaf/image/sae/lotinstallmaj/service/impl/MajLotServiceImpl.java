@@ -389,9 +389,10 @@ public final class MajLotServiceImpl implements MajLotService {
     * @param fichierlisteMeta le fichier contenant les métadonnées
     */
    private void updateMeta(String fichierlisteMeta) {
-      LOG.info("Début de l'opération : ajout des métadonnées au document");
+      
+      LOG.info("Début de l'opération : Création des nouvelles métadonnées");
 
-      LOG.info("- début de récupération des catégories à ajouter");
+      LOG.debug("Lecture du fichier XML contenant les métadonnées à ajouter - Début");
       XStream xStream = new XStream();
       xStream.processAnnotations(DataBaseModel.class);
       Reader reader = null;
@@ -403,7 +404,7 @@ public final class MajLotServiceImpl implements MajLotService {
          DataBaseModel model = DataBaseModel.class
                .cast(xStream.fromXML(reader));
 
-         LOG.info("- fin de récupération des catégories à ajouter");
+         LOG.debug("Lecture du fichier XML contenant les métadonnées à ajouter - Fin");
 
          // connexion a DFCE
          connectDfce();
@@ -415,6 +416,9 @@ public final class MajLotServiceImpl implements MajLotService {
          final ToolkitFactory toolkit = ToolkitFactory.getInstance();
          for (SaeCategory category : model.getDataBase().getSaeCategories()
                .getCategories()) {
+            
+            LOG.info("Métadonnée : " + category.getDescriptif());
+            
             final Category categoryDfce = serviceProvider
                   .getStorageAdministrationService().findOrCreateCategory(
                         category.getName(), category.categoryDataType());
@@ -427,14 +431,14 @@ public final class MajLotServiceImpl implements MajLotService {
             baseCategories.add(baseCategory);
          }
 
-         LOG.info("- début d'insertion des catégories");
+         LOG.debug("Création des métadonnées dans DFCE - Début");
          for (BaseCategory baseCategory : baseCategories) {
             base.addBaseCategory(baseCategory);
          }
 
          serviceProvider.getBaseAdministrationService().updateBase(base);
 
-         LOG.info("- fin d'insertion des catégories");
+         LOG.debug("Création des métadonnées dans DFCE - Fin");
 
       } catch (IOException e) {
          LOG.warn("impossible de récupérer le fichier contenant les données");
@@ -459,6 +463,6 @@ public final class MajLotServiceImpl implements MajLotService {
          serviceProvider.disconnect();
       }
 
-      LOG.info("Fin de l'opération : ajout des métadonnées au document");
+      LOG.info("Fin de l'opération : Création des nouvelles métadonnées");
    }   
 }

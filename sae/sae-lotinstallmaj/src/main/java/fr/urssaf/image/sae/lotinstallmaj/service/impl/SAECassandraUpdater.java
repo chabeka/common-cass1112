@@ -317,7 +317,7 @@ public class SAECassandraUpdater {
       saeCassandraService.createColumnFamilyFromList(cfDefs, true);
 
       InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
-      donnees.addPurgeParameters();
+      donnees.addTracabiliteParameters();
       donnees.addReferentielEvenementV1();
 
       // On positionne la version à 4
