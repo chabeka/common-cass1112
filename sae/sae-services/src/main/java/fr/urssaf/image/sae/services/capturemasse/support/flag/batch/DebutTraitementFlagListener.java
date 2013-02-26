@@ -36,7 +36,7 @@ public class DebutTraitementFlagListener {
          for (Throwable throwable : stepExecution.getFailureExceptions()) {
             LOGGER
                   .warn(
-                        "Erreur lors de l'étape d'écriture du fichier fin_traitement.flag",
+                        "Erreur lors de l'étape d'écriture du fichier debut_traitement.flag",
                         throwable);
          }
       }

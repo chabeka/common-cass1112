@@ -7,9 +7,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -18,6 +17,7 @@ import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeEx
 import fr.urssaf.image.sae.services.capturemasse.support.flag.DebutTraitementFlagSupport;
 import fr.urssaf.image.sae.services.capturemasse.support.flag.model.DebutTraitementFlag;
 import fr.urssaf.image.sae.services.util.FormatUtils;
+import fr.urssaf.image.sae.services.util.WriteUtils;
 
 /**
  * implémentation du support {@link DebutTraitementFlagSupport}
@@ -60,14 +60,15 @@ public class DebutTraitementFlagSupportImpl implements
                PREFIXE_TRC, DEBUT_FLAG, urlFlag.toString() });
 
          final File bulkStartFile = new File(urlFlag.toString());
-         final Collection<String> bulkCaptureInfos = new ArrayList<String>();
+         final List<String> bulkCaptureInfos = new ArrayList<String>();
          final InetAddress hostInfo = flag.getHostInfo();
          bulkCaptureInfos.add("idTraitementMasse=" + flag.getIdTraitement());
          bulkCaptureInfos.add("heureDebutTraitementEnMasse="
                + FormatUtils.dateToString(flag.getStartDate()));
          bulkCaptureInfos.add("hostnameServeurAppli=" + hostInfo.getHostName());
          bulkCaptureInfos.add("hostIP=" + hostInfo.getHostAddress());
-         FileUtils.writeLines(bulkStartFile, bulkCaptureInfos, "\r");
+
+         WriteUtils.writeFile(bulkStartFile, bulkCaptureInfos, "\r");
          LOGGER.debug("{} - Fin de création du fichier ({})", PREFIXE_TRC,
                DEBUT_FLAG);
 

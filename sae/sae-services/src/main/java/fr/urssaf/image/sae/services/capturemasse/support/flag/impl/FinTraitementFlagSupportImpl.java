@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
 import fr.urssaf.image.sae.services.capturemasse.support.flag.FinTraitementFlagSupport;
+import fr.urssaf.image.sae.services.util.WriteUtils;
 
 /**
  * Implémentation du support {@link FinTraitementFlagSupport}
@@ -27,9 +28,6 @@ public class FinTraitementFlagSupportImpl implements FinTraitementFlagSupport {
 
    private static final String FIN_FLAG = "fin_traitement.flag";
 
-   /** nombre maximum d'essais d'écriture du fichier */
-   private static final int MAX_ESSAIS = 3;
-
    /**
     * {@inheritDoc}
     */
@@ -44,26 +42,11 @@ public class FinTraitementFlagSupportImpl implements FinTraitementFlagSupport {
 
       final File file = new File(path);
 
-      int index = 0;
-
-      while (index < MAX_ESSAIS && !file.exists()) {
-         try {
-            file.createNewFile();
-         } catch (IOException e) {
-
-            if (index > 0) {
-               LOGGER
-                     .warn(
-                           "{} - {}ème tentative d'écriture du ficher fin_traitement.flag",
-                           new Object[] { PREFIXE_TRC, index + 1 });
-            }
-
-            if (index == MAX_ESSAIS - 1) {
-               throw new CaptureMasseRuntimeException(e);
-            }
-
-            index++;
-         }
+      try {
+         WriteUtils.writeFile(file, null, null);
+      
+      } catch (IOException exception) {
+         throw new CaptureMasseRuntimeException(exception);
       }
 
       LOGGER.debug("{} - Fin de création du fichier ({})", PREFIXE_TRC,

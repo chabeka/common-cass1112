@@ -6,6 +6,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -43,6 +44,7 @@ import fr.urssaf.image.sae.services.exception.capture.UnknownHashCodeEx;
 import fr.urssaf.image.sae.services.exception.capture.UnknownMetadataEx;
 import fr.urssaf.image.sae.services.util.FormatUtils;
 import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
+import fr.urssaf.image.sae.services.util.WriteUtils;
 import fr.urssaf.image.sae.storage.dfce.utils.Utils;
 
 /**
@@ -179,13 +181,12 @@ public class SAEControlesCaptureServiceImpl implements
          } catch (IOException e) {
             throw new SAECaptureServiceRuntimeException(e);
          }
-      }
-      else {
+      } else {
          fileName = saeDocument.getFileName();
          content = saeDocument.getContent();
-      }   
-      
-      //File docFile = new File(saeDocument.getFilePath());
+      }
+
+      // File docFile = new File(saeDocument.getFilePath());
       LOGGER.debug("{} - Début de la vérification : Le type de hash est SHA-1",
             prefixeTrc);
       if (!"SHA-1".equals(algoHashCode)) {
@@ -204,16 +205,12 @@ public class SAEControlesCaptureServiceImpl implements
                   "{} - Début de la vérification : "
                         + "Equivalence entre le hash fourni en métadonnée et le hash recalculé à partir du fichier",
                   prefixeTrc);
-      if (!StringUtils
-            .equalsIgnoreCase(DigestUtils.shaHex(content),
+      if (!StringUtils.equalsIgnoreCase(DigestUtils.shaHex(content),
             hashCodeValue.trim())) {
-         LOGGER
-               .debug(
-                     "{} - Hash du document {} est différent que celui recalculé {}",
-                     new Object[] {
-                           prefixeTrc,
-                           hashCodeValue,
-                           DigestUtils.shaHex(content) });
+         LOGGER.debug(
+               "{} - Hash du document {} est différent que celui recalculé {}",
+               new Object[] { prefixeTrc, hashCodeValue,
+                     DigestUtils.shaHex(content) });
          throw new UnknownHashCodeEx(ResourceMessagesUtils.loadMessage(
                "capture.hash.erreur", fileName));
       }
@@ -222,7 +219,7 @@ public class SAEControlesCaptureServiceImpl implements
                   "{} - Fin de la vérification : "
                         + "Equivalence entre le hash fourni en métadonnée et le hash recalculé à partir du fichier",
                   prefixeTrc);
-      
+
       // Traces debug - sortie méthode
       LOGGER.debug("{} - Sortie", prefixeTrc);
       // Fin des traces debug - sortie méthode
@@ -375,21 +372,18 @@ public class SAEControlesCaptureServiceImpl implements
          // Traces debug - entrée méthode
          String prefixeTrc = "checkBulkCaptureEcdeUrl()";
          LOGGER.debug("{} - Début", prefixeTrc);
-         LOGGER
-               .debug(
-                     "{} - Début des vérifications sur " +
-                     "l'URL ECDE envoyée au service de capture de masse",
-                     prefixeTrc);
+         LOGGER.debug("{} - Début des vérifications sur "
+               + "l'URL ECDE envoyée au service de capture de masse",
+               prefixeTrc);
          // Fin des traces debug - entrée méthode
 
          File fileEcde = ecdeServices
                .convertSommaireToFile(convertToEcdeUri(urlEcde));
          checkExistingEcdeFile(fileEcde, urlEcde);
-         LOGGER
-               .debug(
-                     "{} - Début de la vérification sur les droits d'écriture " +
-                     "du SAE dans le répertoire de traitement ECDE",
-                     prefixeTrc);
+         LOGGER.debug(
+               "{} - Début de la vérification sur les droits d'écriture "
+                     + "du SAE dans le répertoire de traitement ECDE",
+               prefixeTrc);
 
          File parentFile = fileEcde.getParentFile();
          // Dans le cas du système d'exploitation Windows
@@ -399,31 +393,35 @@ public class SAEControlesCaptureServiceImpl implements
          if (!parentFile.canWrite()) {
             ecdePermission = false;
          }
+
          // Implementation pour windows
          if (ecdePermission) {
             try {
-               File tmpfile = File.createTempFile("bulkFlagPermission", ".tmp",
-                     parentFile);
+               String uuid = UUID.randomUUID().toString();
+
+               File tmpfile = new File(parentFile, "bulkFlagPermission_" + uuid
+                     + ".tmp");
+               WriteUtils.writeFile(tmpfile, null, null);
+
                if (tmpfile.isFile() && tmpfile.exists()) {
                   tmpfile.delete();
                } else {
                   ecdePermission = false;
                }
+
             } catch (Exception e) {
                ecdePermission = false;
             }
          }
+         
          if (!ecdePermission) {
             throw new CaptureEcdeWriteFileEx(ResourceMessagesUtils.loadMessage(
                   "capture.ecde.droit.ecriture", urlEcde));
          }
          LOGGER.debug("{} - Le répertoire de traitement ECDE est {}",
                prefixeTrc, parentFile.getAbsoluteFile());
-         LOGGER
-               .debug(
-                     "{} - Fin de la vérification sur les droits d'écriture " +
-                     "du SAE dans le répertoire de traitement ECDE  ",
-                     prefixeTrc);
+         LOGGER.debug("{} - Fin de la vérification sur les droits d'écriture "
+               + "du SAE dans le répertoire de traitement ECDE  ", prefixeTrc);
 
          LOGGER
                .debug(
@@ -475,7 +473,8 @@ public class SAEControlesCaptureServiceImpl implements
    /**
     * Convertit l'URL ECDE vers une URI.
     * 
-    * @param url : url de l'ECDE.
+    * @param url
+    *           : url de l'ECDE.
     * @throws CaptureBadEcdeUrlEx
     *            si l'URL ECDE n'est pas incorrecte.
     */
@@ -494,7 +493,8 @@ public class SAEControlesCaptureServiceImpl implements
     * @param ecdeFile
     *           : Fichier à archiver pour le cas de la capture unitaire ou le
     *           sommaire.xml pour le cas de la capture en masse.
-    * @param urlEcde : url de l'ECDE.
+    * @param urlEcde
+    *           : url de l'ECDE.
     * @throws CaptureEcdeUrlFileNotFoundEx
     *            si le fichier à archiver ou le sommaire.xml n'est pas présent.
     */
@@ -523,48 +523,51 @@ public class SAEControlesCaptureServiceImpl implements
       // Fin des traces debug - sortie méthode
    }
 
-   
    /**
     * {@inheritDoc}
     */
    @Override
    public final void checkUntypedBinaryDocument(UntypedDocument untypedDocument)
          throws EmptyDocumentEx, EmptyFileNameEx {
-     
+
       byte[] content = untypedDocument.getContent();
       String fileName = untypedDocument.getFileName();
-      
+
       checkBinaryContent(content);
-      checkBinaryFileName(fileName);      
+      checkBinaryFileName(fileName);
    }
+
    /**
     * Permet de vérifier si le contenu du fichier n'est pas null
     * 
-    * @param content contenu du fichier
+    * @param content
+    *           contenu du fichier
     * 
-    * @throws EmptyDocumentEx 
+    * @throws EmptyDocumentEx
     */
    public final void checkBinaryContent(byte[] content) throws EmptyDocumentEx {
-      
+
       if (content == null || content.length == 0) {
-         throw new EmptyDocumentEx(ResourceMessagesUtils.loadMessage(
-               "capture.fichier.binaire.vide"));
+         throw new EmptyDocumentEx(ResourceMessagesUtils
+               .loadMessage("capture.fichier.binaire.vide"));
       }
    }
+
    /**
     * Permet de vérifier que le nom de fichier est bien renseigné.
     * 
-    * @param fileName 
-    *          nom du fichier
+    * @param fileName
+    *           nom du fichier
     * 
-    * @throws EmptyFileNameEx 
+    * @throws EmptyFileNameEx
     */
-   public final void checkBinaryFileName(String fileName) throws EmptyFileNameEx {
-      
+   public final void checkBinaryFileName(String fileName)
+         throws EmptyFileNameEx {
+
       if (StringUtils.isBlank(fileName)) {
-         throw new EmptyFileNameEx(ResourceMessagesUtils.loadMessage(
-               "nomfichier.vide"));
+         throw new EmptyFileNameEx(ResourceMessagesUtils
+               .loadMessage("nomfichier.vide"));
       }
    }
-   
+
 }

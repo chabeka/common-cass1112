@@ -18,6 +18,7 @@ import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeEx
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireHashException;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireTypeHashException;
 import fr.urssaf.image.sae.services.controles.SAEControleSupportService;
+import fr.urssaf.image.sae.services.util.WriteUtils;
 
 /**
  * Implémentation du support {@link SAEControleSupportService}
@@ -30,12 +31,6 @@ public class SAEControleSupportServiceImpl implements SAEControleSupportService 
          .getLogger(SAEControleSupportServiceImpl.class);
 
    private static final String PREFIXE_TRC = "checkEcdeWrite()";
-
-   /** Temps d'attente entre deux essais */
-   private static final int WAITING_TIME = 10000;
-
-   /** nombre maximum d'essais de contrôles */
-   private static final int MAX_ESSAIS = 3;
 
    /**
     * {@inheritDoc}
@@ -50,13 +45,8 @@ public class SAEControleSupportServiceImpl implements SAEControleSupportService 
       boolean ecdePermission = false;
 
       // Implementation pour windows
-      int index = 0;
 
-      while (index < MAX_ESSAIS && !ecdePermission) {
-
-         ecdePermission = checkEcde(index, parentFile);
-         index++;
-      }
+      ecdePermission = checkEcde(parentFile);
 
       if (!ecdePermission) {
          throw new CaptureMasseEcdeWriteFileException(sommaireFile
@@ -100,37 +90,24 @@ public class SAEControleSupportServiceImpl implements SAEControleSupportService 
       }
    }
 
-   private boolean checkEcde(int index, File parentFile) {
+   private boolean checkEcde(File parentFile) {
 
       boolean ecdePermission = false;
+
       if (parentFile.canWrite()) {
          try {
             final File tmpfile = File.createTempFile("bulkFlagPermission",
                   ".tmp", parentFile);
+
+            WriteUtils.writeFile(tmpfile, null, null);
 
             if (tmpfile.isFile() && tmpfile.exists()) {
                ecdePermission = tmpfile.delete();
             }
 
          } catch (IOException e) {
-
-            if (index > 0) {
-               LOGGER
-                     .warn(
-                           "{} - {}ème tentative de contrôle des droits d'écriture dans le répertoire de l'ECDE",
-                           new Object[] { PREFIXE_TRC, index + 1 });
-            }
-
-            if (index == MAX_ESSAIS - 1) {
-               throw new CaptureMasseRuntimeException(e);
-
-            } else {
-               try {
-                  Thread.sleep(WAITING_TIME);
-               } catch (InterruptedException exception) {
-                  LOGGER.warn("impossible de réaliser le sleep", exception);
-               }
-            }
+            LOGGER
+                  .info("impossible de réaliser la création du fichier, droits insuffisants");
          }
       }
 
