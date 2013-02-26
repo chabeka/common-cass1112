@@ -24,7 +24,9 @@ public class RegServiceValidation {
    private static final String LECTURE_METHOD = "execution(fr.urssaf.image.sae.trace.dao.model.* "
          + CLASS_NAME + "lecture(*))" + " && args(uuid)";
    private static final String PURGE_METHOD = "execution(void " + CLASS_NAME
-         + "purge(*,*))" + " && args(dateDebut, dateFin)";
+         + "purge(*))" + " && args(date)";
+   private static final String HAS_RECORDS_METHOD = "execution(boolean "
+         + CLASS_NAME + "hasRecords(*))" + " && args(date)";
 
    /**
     * Réalise la validation de la méthode lecture de l'interface RegService
@@ -50,20 +52,26 @@ public class RegServiceValidation {
     *           date de fin
     */
    @Before(PURGE_METHOD)
-   public final void testPurge(Date dateDebut, Date dateFin) {
-      if (dateDebut == null) {
+   public final void testPurge(Date date) {
+      if (date == null) {
          throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
-               "{0}", "date de début"));
+               "{0}", "date de purge"));
       }
+   }
 
-      if (dateFin == null) {
+   /**
+    * Réalise la validation de la méthode purge de l'interface RegService
+    * 
+    * @param dateDebut
+    *           date de début
+    * @param dateFin
+    *           date de fin
+    */
+   @Before(HAS_RECORDS_METHOD)
+   public final void testHasRecords(Date date) {
+      if (date == null) {
          throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
-               "{0}", "date de fin"));
-      }
-
-      if (dateDebut.compareTo(dateFin) >= 0) {
-         throw new IllegalArgumentException(
-               "la date de début doit être inférieure à la date de fin");
+               "{0}", "date"));
       }
    }
 

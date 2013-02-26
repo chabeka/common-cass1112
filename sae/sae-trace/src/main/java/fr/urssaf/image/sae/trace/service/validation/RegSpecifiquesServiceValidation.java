@@ -3,6 +3,7 @@
  */
 package fr.urssaf.image.sae.trace.service.validation;
 
+import java.io.File;
 import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
@@ -23,6 +24,9 @@ public class RegSpecifiquesServiceValidation {
    private static final String LECTURE_METHOD = "execution(java.util.List "
          + CLASS_NAME + "lecture(*,*,*,*))"
          + " && args(dateDebut, dateFin, limite, reversed)";
+   private static final String EXPORT_METHOD = "execution(java.lang.String "
+         + CLASS_NAME + "export(*,*,*,*))"
+         + " && args(date, repertoire, id, hash)";
 
    /**
     * Réalise la validation de la méthode lecture
@@ -63,6 +67,55 @@ public class RegSpecifiquesServiceValidation {
       if (limite < 1) {
          throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
                "{0}", "limite"));
+      }
+
+   }
+
+   /**
+    * Réalise la validation de la méthode export
+    * 
+    * @param date
+    *           date concernée par l'export
+    * @param repertoire
+    *           répertoire dans lequel créer le fichier d'export
+    * @param id
+    *           identifiant du journal précédent
+    * @param hash
+    *           hash du journal précédent
+    * 
+    */
+   @Before(EXPORT_METHOD)
+   public final void testExport(Date date, String repertoire, String id,
+         String hash) {
+
+      if (date == null) {
+         throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
+               "{0}", "date d'export"));
+      }
+
+      if (StringUtils.isEmpty(repertoire)) {
+         throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
+               "{0}", "répertoire"));
+      }
+
+      if (StringUtils.isEmpty(id)) {
+         throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
+               "{0}", "identifiant du journal précédent"));
+      }
+
+      if (StringUtils.isEmpty(hash)) {
+         throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
+               "{0}", "hash du journal précédent"));
+      }
+
+      File file = new File(repertoire);
+      if (!file.exists()) {
+         throw new IllegalArgumentException("le répertoire doit exister");
+      }
+
+      if (!file.isDirectory()) {
+         throw new IllegalArgumentException(
+               "le paramètre n'est pas un répertoire");
       }
 
    }

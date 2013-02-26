@@ -18,5 +18,14 @@ public interface PurgeService {
     *           la purge à lancer
     */
    void purgerRegistre(PurgeType typePurge);
+   
+   
+   /**
+    * Réalise la purge d'un journal donné
+    * 
+    * @param typePurge
+    *           la purge à lancer
+    */
+   void purgerJournal(PurgeType typePurge);
 
 }

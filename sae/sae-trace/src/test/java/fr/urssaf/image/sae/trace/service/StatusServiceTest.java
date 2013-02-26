@@ -3,10 +3,7 @@
  */
 package fr.urssaf.image.sae.trace.service;
 
-import java.util.Date;
-
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.time.DateUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,14 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.sae.trace.model.JournalisationType;
+import fr.urssaf.image.sae.trace.model.PurgeType;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-trace-test.xml" })
-public class RegSecuriteServiceTest {
-
-   /**
-    * 
-    */
-   private static final String DATE_DEB_INF_DATE_FIN = "la date de début doit être inférieure à la date de fin";
+public class StatusServiceTest {
 
    private static final String ARG_0 = "{0}";
 
@@ -30,20 +25,20 @@ public class RegSecuriteServiceTest {
    private static final String ILLEGAL_EXPECTED = "Une exception IllegalArgumentException est attendue";
 
    @Autowired
-   private RegSecuriteService service;
+   private StatusService service;
 
    private static final String MESSAGE_ERREUR = "l'argument {0} est obligatoire";
 
    @Test
-   public void testLectureIdentifiantObligatoire() {
+   public void testIsJournalisationObligatoire() {
 
       try {
-         service.lecture(null);
+         service.isJournalisationRunning(null);
          Assert.fail(ILLEGAL_EXPECTED);
 
       } catch (IllegalArgumentException exception) {
          Assert.assertEquals(MESSAGE_OK, StringUtils.replace(MESSAGE_ERREUR,
-               ARG_0, "identifiant"), exception.getMessage());
+               ARG_0, "type de journalisation"), exception.getMessage());
 
       } catch (Exception exception) {
          Assert.fail(ILLEGAL_EXPECTED);
@@ -52,15 +47,15 @@ public class RegSecuriteServiceTest {
    }
 
    @Test
-   public void testLectureDateDebutObligatoire() {
+   public void testIsPurgeObligatoire() {
 
       try {
-         service.lecture(null, null, 0, true);
+         service.isPurgeRunning(null);
          Assert.fail(ILLEGAL_EXPECTED);
 
       } catch (IllegalArgumentException exception) {
          Assert.assertEquals(MESSAGE_OK, StringUtils.replace(MESSAGE_ERREUR,
-               ARG_0, "date de début"), exception.getMessage());
+               ARG_0, "type de purge"), exception.getMessage());
 
       } catch (Exception exception) {
          Assert.fail(ILLEGAL_EXPECTED);
@@ -69,15 +64,15 @@ public class RegSecuriteServiceTest {
    }
 
    @Test
-   public void testLectureDateFinObligatoire() {
+   public void testUpdateJournalisationTypeObligatoire() {
 
       try {
-         service.lecture(new Date(), null, 0, true);
+         service.updateJournalisationStatus(null, null);
          Assert.fail(ILLEGAL_EXPECTED);
 
       } catch (IllegalArgumentException exception) {
          Assert.assertEquals(MESSAGE_OK, StringUtils.replace(MESSAGE_ERREUR,
-               ARG_0, "date de fin"), exception.getMessage());
+               ARG_0, "type de journalisation"), exception.getMessage());
 
       } catch (Exception exception) {
          Assert.fail(ILLEGAL_EXPECTED);
@@ -86,52 +81,16 @@ public class RegSecuriteServiceTest {
    }
 
    @Test
-   public void testLectureDateDebutInfDateFin() {
+   public void testUpdateJournalisationValeurObligatoire() {
 
       try {
-         service
-               .lecture(DateUtils.addHours(new Date(), 2), new Date(), 0, true);
-         Assert.fail(ILLEGAL_EXPECTED);
-
-      } catch (IllegalArgumentException exception) {
-         Assert.assertEquals(MESSAGE_OK, DATE_DEB_INF_DATE_FIN, exception
-               .getMessage());
-
-      } catch (Exception exception) {
-         Assert.fail(ILLEGAL_EXPECTED);
-      }
-
-   }
-
-   @Test
-   public void testLectureDateDebutEqDateFin() {
-
-      try {
-         Date date = new Date();
-         service.lecture(date, date, 0, true);
-         Assert.fail(ILLEGAL_EXPECTED);
-
-      } catch (IllegalArgumentException exception) {
-         Assert.assertEquals(MESSAGE_OK, DATE_DEB_INF_DATE_FIN, exception
-               .getMessage());
-
-      } catch (Exception exception) {
-         Assert.fail(ILLEGAL_EXPECTED);
-      }
-
-   }
-
-   @Test
-   public void testLectureLimiteObligatoire() {
-
-      try {
-         service
-               .lecture(new Date(), DateUtils.addHours(new Date(), 2), 0, true);
+         service.updateJournalisationStatus(
+               JournalisationType.JOURNALISATION_EVT, null);
          Assert.fail(ILLEGAL_EXPECTED);
 
       } catch (IllegalArgumentException exception) {
          Assert.assertEquals(MESSAGE_OK, StringUtils.replace(MESSAGE_ERREUR,
-               ARG_0, "limite"), exception.getMessage());
+               ARG_0, "valeur"), exception.getMessage());
 
       } catch (Exception exception) {
          Assert.fail(ILLEGAL_EXPECTED);
@@ -140,36 +99,37 @@ public class RegSecuriteServiceTest {
    }
 
    @Test
-   public void testPurgeDateDebutObligatoire() {
+   public void testUpdatePurgeTypeObligatoire() {
 
       try {
-         service.purge(null);
+         service.updatePurgeStatus(null, null);
          Assert.fail(ILLEGAL_EXPECTED);
 
       } catch (IllegalArgumentException exception) {
          Assert.assertEquals(MESSAGE_OK, StringUtils.replace(MESSAGE_ERREUR,
-               ARG_0, "date de purge"), exception.getMessage());
+               ARG_0, "type de purge"), exception.getMessage());
 
       } catch (Exception exception) {
          Assert.fail(ILLEGAL_EXPECTED);
       }
 
    }
-   
+
    @Test
-   public void testHasRecordsDebutObligatoire() {
+   public void testUpdatePurgeValeurObligatoire() {
 
       try {
-         service.hasRecords(null);
+         service.updatePurgeStatus(PurgeType.PURGE_EVT, null);
          Assert.fail(ILLEGAL_EXPECTED);
 
       } catch (IllegalArgumentException exception) {
          Assert.assertEquals(MESSAGE_OK, StringUtils.replace(MESSAGE_ERREUR,
-               ARG_0, "date"), exception.getMessage());
+               ARG_0, "valeur"), exception.getMessage());
 
       } catch (Exception exception) {
          Assert.fail(ILLEGAL_EXPECTED);
       }
 
    }
+
 }

@@ -20,6 +20,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.sae.trace.dao.TraceDestinataireDao;
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
+import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndex;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegExploitation;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegExploitationIndex;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegSecuriteIndex;
@@ -68,6 +69,9 @@ public class DispatcheurServiceRegistresDatasAucuneInfosTest {
 
    @Autowired
    private RegTechniqueService techniqueService;
+   
+   @Autowired
+   private JournalEvtService evtService;
 
    @After
    public void after() throws Exception {
@@ -91,6 +95,7 @@ public class DispatcheurServiceRegistresDatasAucuneInfosTest {
       checkTechnique();
       checkExploitation();
       checkSecurite();
+      checkJournalEvt();
 
    }
 
@@ -144,6 +149,23 @@ public class DispatcheurServiceRegistresDatasAucuneInfosTest {
       Assert.assertNull("les infos ne doivent pas etre renseignées", trace
             .getInfos());
    }
+   
+   private void checkJournalEvt() {
+      // on vérifie qu'il y a un résultat
+      List<TraceJournalEvtIndex> result = evtService.lecture(DATE,
+            DateUtils.addMinutes(DATE, 1), 1, false);
+      Assert.assertNotNull(
+            "une trace dans le registre technique doit etre trouvé", result);
+      Assert.assertEquals(
+            "on ne doit avoir qu'une seule trace dans le registre de sécurité",
+            1, result.size());
+
+      // on vérifie les infos présentes dans les infos
+      TraceRegTechnique trace = techniqueService.lecture(result.get(0)
+            .getId());
+      Assert.assertNull("les infos ne doivent pas etre renseignées", trace
+            .getInfos());
+   }
 
    private void createDestinataireExploitation() {
       TraceDestinataire trace = new TraceDestinataire();
@@ -152,6 +174,7 @@ public class DispatcheurServiceRegistresDatasAucuneInfosTest {
       map.put(TraceDestinataireDao.COL_REG_EXPLOIT, null);
       map.put(TraceDestinataireDao.COL_REG_SECURITE, null);
       map.put(TraceDestinataireDao.COL_REG_TECHNIQUE, null);
+      map.put(TraceDestinataireDao.COL_JOURN_EVT, null);
       trace.setDestinataires(map);
 
       destSupport.create(trace, DATE.getTime());

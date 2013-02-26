@@ -22,11 +22,13 @@ import org.springframework.stereotype.Service;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.trace.dao.TraceDestinataireDao;
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
+import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvt;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegExploitation;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegSecurite;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegTechnique;
 import fr.urssaf.image.sae.trace.dao.support.ServiceProviderSupport;
 import fr.urssaf.image.sae.trace.dao.support.TraceDestinataireSupport;
+import fr.urssaf.image.sae.trace.dao.support.TraceJournalEvtSupport;
 import fr.urssaf.image.sae.trace.dao.support.TraceRegExploitationSupport;
 import fr.urssaf.image.sae.trace.dao.support.TraceRegSecuriteSupport;
 import fr.urssaf.image.sae.trace.dao.support.TraceRegTechniqueSupport;
@@ -44,6 +46,7 @@ public class DispatcheurServiceImpl implements DispatcheurService {
 
    private static final String ARG_0 = "0";
    private static final String ARG_1 = "1";
+   private static final String ARG_2 = "2";
    private static final String USERNAME = "_ADMIN";
 
    private static final String FIN_LOG = "{} - fin";
@@ -51,22 +54,31 @@ public class DispatcheurServiceImpl implements DispatcheurService {
    private static final Logger LOGGER = LoggerFactory
          .getLogger(DispatcheurServiceImpl.class);
 
-   private static final String MESSAGE_ERREUR = "l'argument ${0} est obligatoire dans le registre ${1}";
+   private static final String MESSAGE_ERREUR_REGISTRE = "l'argument ${0} est obligatoire dans le ${1} ${2}";
+
    private static final String REG_SECURITE = "de sécurité";
    private static final String REG_EXPLOITATION = "d'exploitation";
    private static final String REG_TECHNIQUE = "technique";
+   private static final String JOURNAL_EVT = "des événements SAE";
+
+   private static final String REGISTRE = "registre";
+   private static final String JOURNAL = "journal";
 
    private static final List<String> DEST_AUTORISES = Arrays.asList(
          TraceDestinataireDao.COL_HIST_ARCHIVE,
          TraceDestinataireDao.COL_HIST_EVT,
          TraceDestinataireDao.COL_REG_EXPLOIT,
          TraceDestinataireDao.COL_REG_SECURITE,
-         TraceDestinataireDao.COL_REG_TECHNIQUE);
+         TraceDestinataireDao.COL_REG_TECHNIQUE,
+         TraceDestinataireDao.COL_JOURN_EVT);
 
    private static final List<String> REG_AUTORISES = Arrays.asList(
          TraceDestinataireDao.COL_REG_EXPLOIT,
          TraceDestinataireDao.COL_REG_SECURITE,
          TraceDestinataireDao.COL_REG_TECHNIQUE);
+
+   private static final List<String> JOURN_AUTORISES = Arrays
+         .asList(TraceDestinataireDao.COL_JOURN_EVT);
 
    @Autowired
    private JobClockSupport clockSupport;
@@ -82,6 +94,9 @@ public class DispatcheurServiceImpl implements DispatcheurService {
 
    @Autowired
    private TraceRegTechniqueSupport techSupport;
+   
+   @Autowired
+   private TraceJournalEvtSupport evtSupport;
 
    @Autowired
    private ServiceProviderSupport providerSupport;
@@ -119,8 +134,8 @@ public class DispatcheurServiceImpl implements DispatcheurService {
                "Le destinataire {0} ne doit pas exister pour l'événement {1}",
                new Object[] { type, codeEvt });
 
-      } else if (REG_AUTORISES.contains(type)) {
-         checkRegistresValues(trace, type);
+      } else if (REG_AUTORISES.contains(type) || JOURN_AUTORISES.contains(type)) {
+         checkCategoriesValues(trace, type);
          saveTrace(trace, type, list);
 
       } else if (TraceDestinataireDao.COL_HIST_EVT.equals(type)) {
@@ -132,7 +147,7 @@ public class DispatcheurServiceImpl implements DispatcheurService {
 
    }
 
-   private void checkRegistresValues(TraceToCreate trace, String type) {
+   private void checkCategoriesValues(TraceToCreate trace, String type) {
 
       if (trace == null) {
          throw new IllegalArgumentException("la trace doit etre non nulle");
@@ -141,22 +156,31 @@ public class DispatcheurServiceImpl implements DispatcheurService {
       String suffixe;
       if (TraceDestinataireDao.COL_REG_EXPLOIT.equals(type)) {
          suffixe = REG_EXPLOITATION;
-         checkStringValue("action", trace.getAction(), suffixe);
+         checkStringValue("action", trace.getAction(), suffixe, REGISTRE);
 
       } else if (TraceDestinataireDao.COL_REG_SECURITE.equals(type)) {
          suffixe = REG_SECURITE;
-         checkStringValue("contexte", trace.getContexte(), suffixe);
+         checkStringValue("contexte", trace.getContexte(), suffixe, REGISTRE);
 
       } else if (TraceDestinataireDao.COL_REG_TECHNIQUE.equals(type)) {
          suffixe = REG_TECHNIQUE;
-         checkStringValue("contexte", trace.getContexte(), suffixe);
+         checkStringValue("contexte", trace.getContexte(), suffixe, REGISTRE);
+      
+      } else if (TraceDestinataireDao.COL_JOURN_EVT.equals(type)) {
+         suffixe = JOURNAL_EVT;
+         checkStringValue("contexte", trace.getContexte(), suffixe, JOURNAL);
+         
       } else {
          throw new IllegalArgumentException(
                "pas de vérification prévue pour cette trace");
       }
 
-      checkStringValue("code événement", trace.getCodeEvt(), suffixe);
-      checkNotNullableObject("date", trace.getTimestamp(), suffixe);
+      String typeTrace = REGISTRE;
+      if (JOURN_AUTORISES.contains(type)) {
+         typeTrace = JOURNAL;
+      }
+      checkStringValue("code événement", trace.getCodeEvt(), suffixe, typeTrace);
+      checkNotNullableObject("date", trace.getTimestamp(), suffixe, typeTrace);
 
       // Dans certains cas, on ne dispose pas du CS ni du login
       // Par exemple, dans le cas d'un appel WS où il manque l'en-tête
@@ -166,27 +190,30 @@ public class DispatcheurServiceImpl implements DispatcheurService {
 
    }
 
-   private void checkStringValue(String name, String value, String suffixe) {
+   private void checkStringValue(String name, String value, String suffixe,
+         String categorie) {
 
       if (StringUtils.isBlank(value)) {
          Map<String, String> map = new HashMap<String, String>();
          map.put(ARG_0, name);
-         map.put(ARG_1, suffixe);
+         map.put(ARG_1, categorie);
+         map.put(ARG_2, suffixe);
          throw new IllegalArgumentException(StrSubstitutor.replace(
-               MESSAGE_ERREUR, map));
+               MESSAGE_ERREUR_REGISTRE, map));
       }
 
    }
 
    private void checkNotNullableObject(String name, Object object,
-         String suffixe) {
+         String suffixe, String categorie) {
 
       if (object == null) {
          Map<String, String> map = new HashMap<String, String>();
          map.put(ARG_0, name);
-         map.put(ARG_1, suffixe);
+         map.put(ARG_1, categorie);
+         map.put(ARG_2, suffixe);
          throw new IllegalArgumentException(StrSubstitutor.replace(
-               MESSAGE_ERREUR, map));
+               MESSAGE_ERREUR_REGISTRE, map));
       }
 
    }
@@ -211,6 +238,12 @@ public class DispatcheurServiceImpl implements DispatcheurService {
          LOGGER.debug("{} - ajout d'une trace technique", prefix);
          TraceRegTechnique traceTechnique = new TraceRegTechnique(trace, list);
          techSupport.create(traceTechnique, clockSupport.currentCLock());
+      
+      } else if (TraceDestinataireDao.COL_JOURN_EVT.equals(type)) {
+         LOGGER.debug("{} - ajout d'une trace journal des événements", prefix);
+         TraceJournalEvt traceTechnique = new TraceJournalEvt(trace, list);
+         evtSupport.create(traceTechnique, clockSupport.currentCLock());
+         
       } else {
          throw new IllegalArgumentException(StringUtils.replace(
                "pas de type existant {0} à convertir", "{0}", type));

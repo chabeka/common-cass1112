@@ -36,6 +36,7 @@ public class TraceDestinataireDao {
    public static final String COL_REG_SECURITE = "REG_SECURITE";
    public static final String COL_REG_EXPLOIT = "REG_EXPLOITATION";
    public static final String COL_REG_TECHNIQUE = "REG_TECHNIQUE";
+   public static final String COL_JOURN_EVT = "JOURN_EVT";
 
    private final ColumnFamilyTemplate<String, String> destTmpl;
 
@@ -179,6 +180,33 @@ public class TraceDestinataireDao {
             clock);
    }
 
+   /**
+    * Ajoute une colonne {@value TraceDestinataireDao#COL_JOURN_EVT} à la
+    * ligne donnée
+    * 
+    * @param updater
+    *           updater de <b>TraceDestinataire</b>
+    * @param value
+    *           valeur de la colonne
+    * @param clock
+    *           horloge de la colonne
+    */
+   public final void writeColumnJournalEvt(
+         ColumnFamilyUpdater<String, String> updater, List<String> value,
+         long clock) {
+      // bien que la liste soit nulle, on veut quand meme que la trace soit
+      // présente dans les registres, on la met donc à vide
+      List<String> refValues;
+      if (value == null) {
+         refValues = new ArrayList<String>();
+      } else {
+         refValues = value;
+      }
+
+      addColumn(updater, COL_JOURN_EVT, refValues, ListSerializer.get(),
+            clock);
+   }
+   
    /**
     * Ajoute une colonne {@value TraceDestinataireDao#COL_REG_TECHNIQUE} à la
     * ligne donnée

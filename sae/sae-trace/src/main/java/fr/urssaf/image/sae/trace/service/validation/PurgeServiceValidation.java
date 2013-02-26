@@ -22,15 +22,32 @@ public class PurgeServiceValidation {
    private static final String CLASS_NAME = "fr.urssaf.image.sae.trace.service.PurgeService.";
    private static final String PURGE_METHOD = "execution(void " + CLASS_NAME
          + "purgerRegistre(*))" + " && args(typePurge)";
+   private static final String PURGE_JOURN_METHOD = "execution(void "
+         + CLASS_NAME + "purgerJournal(*))" + " && args(typePurge)";
 
    /**
-    * Réalise la validation de la méthode lecture de l'interface RegService
+    * Réalise la validation de la méthode de purge de l'interface PurgeService
     * 
     * @param typePurge
     *           le type de purge
     */
    @Before(PURGE_METHOD)
    public final void testPurge(PurgeType typePurge) {
+
+      if (typePurge == null) {
+         throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
+               "{0}", "type de purge"));
+      }
+   }
+
+   /**
+    * Réalise la validation de la méthode de purge de l'interface PurgeService
+    * 
+    * @param typePurge
+    *           le type de purge
+    */
+   @Before(PURGE_JOURN_METHOD)
+   public final void testPurgeJournal(PurgeType typePurge) {
 
       if (typePurge == null) {
          throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,

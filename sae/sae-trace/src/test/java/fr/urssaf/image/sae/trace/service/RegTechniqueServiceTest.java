@@ -149,69 +149,33 @@ public class RegTechniqueServiceTest {
    public void testPurgeDateDebutObligatoire() {
 
       try {
-         service.purge(null, null);
+         service.purge(null);
          Assert.fail(ILLEGAL_EXPECTED);
 
       } catch (IllegalArgumentException exception) {
          Assert.assertEquals(MESSAGE_OK, StringUtils.replace(MESSAGE_ERREUR,
-               ARG_0, "date de début"), exception.getMessage());
+               ARG_0, "date de purge"), exception.getMessage());
 
       } catch (Exception exception) {
          Assert.fail(ILLEGAL_EXPECTED);
       }
 
    }
-
+   
    @Test
-   public void testPurgeDateFinObligatoire() {
+   public void testHasRecordsDebutObligatoire() {
 
       try {
-         service.purge(new Date(), null);
+         service.hasRecords(null);
          Assert.fail(ILLEGAL_EXPECTED);
 
       } catch (IllegalArgumentException exception) {
          Assert.assertEquals(MESSAGE_OK, StringUtils.replace(MESSAGE_ERREUR,
-               ARG_0, "date de fin"), exception.getMessage());
+               ARG_0, "date"), exception.getMessage());
 
       } catch (Exception exception) {
          Assert.fail(ILLEGAL_EXPECTED);
       }
 
    }
-
-   @Test
-   public void testPurgeDateDebutInfDateFin() {
-
-      try {
-         service.purge(DateUtils.addHours(new Date(), 2), new Date());
-         Assert.fail(ILLEGAL_EXPECTED);
-
-      } catch (IllegalArgumentException exception) {
-         Assert.assertEquals(MESSAGE_OK, MESSAGE_DATE_DEB_INF_DATE_FIN,
-               exception.getMessage());
-
-      } catch (Exception exception) {
-         Assert.fail(ILLEGAL_EXPECTED);
-      }
-
-   }
-
-   @Test
-   public void testPurgeDateDebutEqDateFin() {
-
-      try {
-         Date date = new Date();
-         service.purge(date, date);
-         Assert.fail(ILLEGAL_EXPECTED);
-
-      } catch (IllegalArgumentException exception) {
-         Assert.assertEquals(MESSAGE_OK, MESSAGE_DATE_DEB_INF_DATE_FIN,
-               exception.getMessage());
-
-      } catch (Exception exception) {
-         Assert.fail(ILLEGAL_EXPECTED);
-      }
-
-   }
-
 }

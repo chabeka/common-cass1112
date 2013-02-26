@@ -16,6 +16,9 @@ public enum PurgeType {
    PURGE_EXPLOITATION,
 
    /** Nom du paramètre de la purge des registres de sécurité */
-   PURGE_SECURITE
+   PURGE_SECURITE,
+
+   /** Nom du paramètre de la purge du journal des événements du SAE */
+   PURGE_EVT
 
 }

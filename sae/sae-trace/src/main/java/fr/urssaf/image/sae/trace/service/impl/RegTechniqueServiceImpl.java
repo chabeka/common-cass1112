@@ -90,25 +90,19 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
     * {@inheritDoc}
     */
    @Override
-   public final void purge(Date dateDebut, Date dateFin) {
+   public final void purge(Date date) {
       String prefix = "purge()";
       LOGGER.debug(DEBUT_LOG, prefix);
 
-      Date date = DateUtils.truncate(dateDebut, Calendar.DATE);
-      Date endDate = DateUtils.truncate(dateFin, Calendar.DATE);
+      Date dateIndex = DateUtils.truncate(date, Calendar.DATE);
 
-      do {
-
-         loggerSupport.logPurgeJourneeDebut(LOGGER, prefix,
-               PurgeType.PURGE_TECHNIQUE, DateRegUtils.getJournee(date));
-         long nbTracesPurgees = support.delete(date, clockSupport
-               .currentCLock());
-         loggerSupport.logPurgeJourneeFin(LOGGER, prefix,
-               PurgeType.PURGE_TECHNIQUE, DateRegUtils.getJournee(date),
-               nbTracesPurgees);
-         date = DateUtils.addDays(date, 1);
-
-      } while (date.compareTo(endDate) <= 0);
+      loggerSupport.logPurgeJourneeDebut(LOGGER, prefix,
+            PurgeType.PURGE_TECHNIQUE, DateRegUtils.getJournee(date));
+      long nbTracesPurgees = support.delete(dateIndex, clockSupport
+            .currentCLock());
+      loggerSupport.logPurgeJourneeFin(LOGGER, prefix,
+            PurgeType.PURGE_TECHNIQUE, DateRegUtils.getJournee(date),
+            nbTracesPurgees);
 
       LOGGER.debug(FIN_LOG, prefix);
 
@@ -167,6 +161,23 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
             && !DateUtils.isSameDay(dates.get(0), dates.get(dates.size() - 1)));
 
       return values;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public boolean hasRecords(Date date) {
+
+      Date beginDate = DateUtils.truncate(date, Calendar.DATE);
+      Date endDate = DateUtils.addDays(beginDate, 1);
+      endDate = DateUtils.addMilliseconds(endDate, -1);
+
+      List<TraceRegTechniqueIndex> list = lecture(beginDate, endDate, 1, false);
+
+      boolean hasRecords = CollectionUtils.isNotEmpty(list);
+
+      return hasRecords;
    }
 
 }

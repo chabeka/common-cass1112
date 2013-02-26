@@ -22,6 +22,7 @@ import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.sae.trace.commons.Constantes;
 import fr.urssaf.image.sae.trace.dao.TraceDestinataireDao;
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
+import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndex;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegExploitation;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegExploitationIndex;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegSecurite;
@@ -72,6 +73,9 @@ public class DispatcheurServiceRegistresDatasToutesInfosTest {
    @Autowired
    private RegTechniqueService techniqueService;
 
+   @Autowired
+   private JournalEvtService evtService;
+
    @After
    public void after() throws Exception {
       server.resetData();
@@ -94,6 +98,7 @@ public class DispatcheurServiceRegistresDatasToutesInfosTest {
       checkTechnique();
       checkExploitation();
       checkSecurite();
+      checkJournalEvt();
 
    }
 
@@ -190,6 +195,36 @@ public class DispatcheurServiceRegistresDatasToutesInfosTest {
             MESSAGE_VALUE, trace.getInfos().get(MESSAGE));
    }
 
+   private void checkJournalEvt() {
+      // on vérifie qu'il y a un résultat
+      List<TraceJournalEvtIndex> result = evtService.lecture(DATE, DateUtils
+            .addMinutes(DATE, 1), 1, false);
+      Assert.assertNotNull(
+            "une trace dans le registre technique doit etre trouvé", result);
+      Assert.assertEquals(
+            "on ne doit avoir qu'une seule trace dans le registre de sécurité",
+            1, result.size());
+
+      // on vérifie les infos présentes dans les infos
+      TraceRegSecurite trace = securiteService.lecture(result.get(0).getId());
+      Assert.assertNotNull("les infos doivent etre renseignées", trace
+            .getInfos());
+      Assert.assertEquals("le nombre d'infos doit etre correct", 3, trace
+            .getInfos().size());
+      Assert.assertTrue("le champ vi doit etre présent", trace.getInfos()
+            .containsKey(VI));
+      Assert.assertEquals("la valeur du champ vi doit etre correcte", VI_VALUE,
+            trace.getInfos().get(VI));
+      Assert.assertTrue("le champ ip doit etre présent", trace.getInfos()
+            .containsKey(IP));
+      Assert.assertEquals("la valeur du champ ip doit etre correcte", IP_VALUE,
+            trace.getInfos().get(IP));
+      Assert.assertTrue("le champ message doit etre présent", trace.getInfos()
+            .containsKey(MESSAGE));
+      Assert.assertEquals("la valeur du champ message doit etre correcte",
+            MESSAGE_VALUE, trace.getInfos().get(MESSAGE));
+   }
+
    private void createDestinataireExploitation() {
       TraceDestinataire trace = new TraceDestinataire();
       trace.setCodeEvt(ARCHIVAGE_UNITAIRE);
@@ -199,6 +234,8 @@ public class DispatcheurServiceRegistresDatasToutesInfosTest {
       map.put(TraceDestinataireDao.COL_REG_SECURITE, Arrays
             .asList(Constantes.REG_ALL_INFOS));
       map.put(TraceDestinataireDao.COL_REG_TECHNIQUE, Arrays
+            .asList(Constantes.REG_ALL_INFOS));
+      map.put(TraceDestinataireDao.COL_JOURN_EVT, Arrays
             .asList(Constantes.REG_ALL_INFOS));
       trace.setDestinataires(map);
 

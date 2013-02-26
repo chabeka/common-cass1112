@@ -26,11 +26,18 @@ public interface RegService<T> {
    /**
     * Purge les traces d'un registre sur une plage de temps
     * 
-    * @param dateDebut
-    *           date de début de la plage de temps
-    * @param dateFin
-    *           date de fin de la plage de temps
+    * @param date
+    *           date à laquelle réaliser la purge
     */
-   void purge(Date dateDebut, Date dateFin);
+   void purge(Date date);
+
+   /**
+    * Renvoie un indicateur de présence d'enregistrements pour la date donnée
+    * 
+    * @param date
+    *           date pour laquelle vérifier la présence d'enregistrements
+    * @return un indicateur de présence de données
+    */
+   boolean hasRecords(Date date);
 
 }

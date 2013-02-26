@@ -143,6 +143,10 @@ public class TraceDestinataireSupport {
 
       } else if (TraceDestinataireDao.COL_REG_TECHNIQUE.equals(key)) {
          dao.writeColumnRegTechnique(updater, list, clock);
+
+      } else if (TraceDestinataireDao.COL_JOURN_EVT.equals(key)) {
+         dao.writeColumnJournalEvt(updater, list, clock);
+
       } else {
          throw new TraceRuntimeException(
                "Impossible de créer l'enregistrement demandé. " + "La clé "
@@ -164,7 +168,8 @@ public class TraceDestinataireSupport {
                TraceDestinataireDao.COL_HIST_EVT,
                TraceDestinataireDao.COL_REG_EXPLOIT,
                TraceDestinataireDao.COL_REG_SECURITE,
-               TraceDestinataireDao.COL_REG_TECHNIQUE);
+               TraceDestinataireDao.COL_REG_TECHNIQUE,
+               TraceDestinataireDao.COL_JOURN_EVT);
 
          Map<String, List<String>> destinataires = new HashMap<String, List<String>>();
          List<String> values;

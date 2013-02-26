@@ -31,7 +31,7 @@ public class ParametersDao {
 
    private static final int MAX_ATTRIBUTS = 100;
    public static final String PARAM_CFNAME = "Parameters";
-   public static final String KEY_ROW_PURGE = "parametresPurges";
+   public static final String KEY_ROW_PURGE = "parametresTracabilite";
 
    private final ColumnFamilyTemplate<String, String> paramsTmpl;
    private final Keyspace keyspace;

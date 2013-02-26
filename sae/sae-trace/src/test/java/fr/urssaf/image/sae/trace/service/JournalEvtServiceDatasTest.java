@@ -21,13 +21,13 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.sae.trace.dao.model.TraceRegSecurite;
-import fr.urssaf.image.sae.trace.dao.model.TraceRegSecuriteIndex;
-import fr.urssaf.image.sae.trace.dao.support.TraceRegSecuriteSupport;
+import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvt;
+import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndex;
+import fr.urssaf.image.sae.trace.dao.support.TraceJournalEvtSupport;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-trace-test.xml" })
-public class RegSecuriteServiceDatasTest {
+public class JournalEvtServiceDatasTest {
 
    private static final Date DATE = new Date();
    private static final Date DATE_INF = DateUtils.addHours(DATE, -1);
@@ -49,13 +49,13 @@ public class RegSecuriteServiceDatasTest {
    }
 
    @Autowired
-   private RegSecuriteService service;
+   private JournalEvtService service;
 
    @Autowired
    private CassandraServerBean server;
 
    @Autowired
-   private TraceRegSecuriteSupport support;
+   private TraceJournalEvtSupport support;
 
    @After
    public void after() throws Exception {
@@ -70,7 +70,7 @@ public class RegSecuriteServiceDatasTest {
       Date dateStart = DateUtils.addHours(DATE, -3);
       Date dateFin = DateUtils.addHours(DATE, -2);
 
-      List<TraceRegSecuriteIndex> result = service.lecture(dateStart, dateFin,
+      List<TraceJournalEvtIndex> result = service.lecture(dateStart, dateFin,
             10, true);
       Assert.assertNull("il ne doit y avoir aucun résultat", result);
    }
@@ -82,7 +82,7 @@ public class RegSecuriteServiceDatasTest {
       Date dateStart = DateUtils.addHours(DATE, -2);
       Date dateFin = DateUtils.addHours(DATE, 2);
 
-      List<TraceRegSecuriteIndex> result = service.lecture(dateStart, dateFin,
+      List<TraceJournalEvtIndex> result = service.lecture(dateStart, dateFin,
             1, true);
       Assert.assertNotNull("il doit y avoir un résultat");
       Assert.assertEquals("le nombre d'éléments de la liste doit etre correct",
@@ -98,7 +98,7 @@ public class RegSecuriteServiceDatasTest {
       Date dateStart = DATE_INF;
       Date dateEnd = DATE_SUP;
 
-      List<TraceRegSecuriteIndex> result = service.lecture(dateStart, dateEnd,
+      List<TraceJournalEvtIndex> result = service.lecture(dateStart, dateEnd,
             10, true);
       Assert.assertNotNull("il doit y avoir un résultat");
       Assert.assertEquals("le nombre d'éléments de la liste doit etre correct",
@@ -119,7 +119,7 @@ public class RegSecuriteServiceDatasTest {
       Date dateStart = DateUtils.addSeconds(DATE_JOUR_PRECEDENT, -1);
       Date dateEnd = DateUtils.addSeconds(DATE_JOUR_SUIVANT, 1);
 
-      List<TraceRegSecuriteIndex> result = service.lecture(dateStart, dateEnd,
+      List<TraceJournalEvtIndex> result = service.lecture(dateStart, dateEnd,
             10, true);
       Assert.assertNotNull("il doit y avoir un résultat");
       Assert.assertEquals("le nombre d'éléments de la liste doit etre correct",
@@ -147,7 +147,7 @@ public class RegSecuriteServiceDatasTest {
 
       UUID uuid = TimeUUIDUtils.getTimeUUID(DATE.getTime());
       String suffixe = " [DATE]";
-      TraceRegSecurite result = service.lecture(uuid);
+      TraceJournalEvt result = service.lecture(uuid);
       Assert.assertNotNull("il doit y avoir un résultat");
       Assert.assertNotNull("l'objet doit etre trouvé", result);
       Assert.assertEquals("l'action doit etre correcte", CONTEXTE + suffixe,
@@ -155,9 +155,9 @@ public class RegSecuriteServiceDatasTest {
       Assert.assertEquals("le code evenement doit etre correcte", CODE_EVT
             + suffixe, result.getCodeEvt());
       Assert.assertEquals("le contrat doit etre correcte", CONTRAT + suffixe,
-            result.getContrat());
+            result.getCs());
       Assert.assertEquals("l'identifiant doit etre correcte", uuid, result
-            .getIdentifiant());
+            .getId());
       Assert.assertEquals("le login doit etre correcte", LOGIN + suffixe,
             result.getLogin());
       Assert.assertEquals("la date doit etre correcte", DATE, result
@@ -181,7 +181,7 @@ public class RegSecuriteServiceDatasTest {
       service.purge(DATE_JOUR_PRECEDENT);
       service.purge(DATE);
 
-      List<TraceRegSecuriteIndex> result = service.lecture(DATE_JOUR_PRECEDENT,
+      List<TraceJournalEvtIndex> result = service.lecture(DATE_JOUR_PRECEDENT,
             DATE, 100, false);
       Assert.assertNull(
             "il ne doit plus rester de traces pour les deux jours donnés",
@@ -194,6 +194,8 @@ public class RegSecuriteServiceDatasTest {
             .getCodeEvt().contains("DATE_JOUR_SUIVANT"));
 
    }
+   
+
    
    @Test
    public void testHasRecordsTheDayBefore() {
@@ -224,15 +226,17 @@ public class RegSecuriteServiceDatasTest {
    }
 
    private void createTrace(Date date, String suffixe) {
-      TraceRegSecurite trace = new TraceRegSecurite();
+      TraceJournalEvt trace = new TraceJournalEvt();
       trace.setContexte(CONTEXTE + suffixe);
       trace.setCodeEvt(CODE_EVT + suffixe);
-      trace.setContrat(CONTRAT + suffixe);
-      trace.setIdentifiant(TimeUUIDUtils.getTimeUUID(date.getTime()));
+      trace.setCs(CONTRAT + suffixe);
+      trace.setId(TimeUUIDUtils.getTimeUUID(date.getTime()));
       trace.setLogin(LOGIN + suffixe);
       trace.setTimestamp(date);
       trace.setInfos(INFOS);
 
       support.create(trace, new Date().getTime());
    }
+
+   // FIXME - FBON - Tester l'export
 }
