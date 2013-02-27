@@ -1,5 +1,7 @@
 package fr.urssaf.image.sae.integration.ihmweb.modele;
 
+import java.util.List;
+
 /**
  * Description d'un cas de test
  */
@@ -10,6 +12,7 @@ public class CasTest {
    private String categorie;
    private String description;
    private String luceneExemple;
+   private List<String> luceneExempleList;
 
    
    /**
@@ -110,5 +113,27 @@ public class CasTest {
    public final void setLuceneExemple(String luceneExemple) {
       this.luceneExemple = luceneExemple;
    }
+   
+
+   /**
+    * Requête LUCENE associée au cas de test (facultatif)
+    * 
+    * @return Requête LUCENE associée au cas de test (facultatif)
+    */
+   public final List<String> getLuceneExempleList() {
+      return luceneExempleList;
+   }
+
+
+   /**
+    * Requête LUCENE associée au cas de test (facultatif)
+    * 
+    * @param luceneExemple Requête LUCENE associée au cas de test (facultatif)
+    */
+   public final void setLuceneExempleList(List<String> luceneExempleList) {
+      this.luceneExempleList = luceneExempleList;
+   }
+
+   
    
 }

@@ -15,7 +15,7 @@ public class RechercheFormulaire extends GenericForm {
    private ResultatTest resultats = new ResultatTest();
 
    private String requeteLucene;
-
+   
    private CodeMetadonneeList codeMetadonnees = new CodeMetadonneeList();
 
    /**
@@ -27,6 +27,16 @@ public class RechercheFormulaire extends GenericForm {
    public RechercheFormulaire(TestWsParentFormulaire parent) {
       super(parent);
    }
+   
+   
+   /**
+    * Constructeur
+    * 
+    */
+   public RechercheFormulaire() {
+
+   }
+   
 
    /**
     * Les résultats de l'appel à l'opération

@@ -109,6 +109,7 @@ public class ReferentielCasTestService {
                casTestTrouve.setCategorie(categorie.getNom());
                casTestTrouve.setDescription(casTest.getDescription());
                casTestTrouve.setLuceneExemple(casTest.getLuceneExemple());
+               casTestTrouve.setLuceneExempleList(casTest.getLuceneExempleList());
                
                break;
             }

@@ -8,9 +8,13 @@
 
 package fr.urssaf.image.sae.integration.ihmweb.modele.listetests;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlList;
 import javax.xml.bind.annotation.XmlType;
 
 
@@ -29,6 +33,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="description" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="implemente" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
  *         &lt;element name="luceneExemple" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="luceneExempleList" type="{http://www.cirtil.fr/saeIntegration/tests}luceneExempleList" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -43,7 +48,8 @@ import javax.xml.bind.annotation.XmlType;
     "code",
     "description",
     "implemente",
-    "luceneExemple"
+    "luceneExemple",
+    "luceneExempleList"
 })
 // CHECKSTYLE:OFF
 @SuppressWarnings("all")
@@ -57,6 +63,8 @@ public class CasTestType {
     protected String description;
     protected boolean implemente;
     protected String luceneExemple;
+    @XmlElement(name="luceneExempleList")
+    protected List<String> luceneExempleList;
 
     /**
      * Gets the value of the id property.
@@ -168,6 +176,33 @@ public class CasTestType {
      */
     public void setLuceneExemple(String value) {
         this.luceneExemple = value;
+    }
+    
+    /**
+     * Gets the value of the luceneExemple property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public List<String> getLuceneExempleList() {
+       if (luceneExempleList == null) {
+          luceneExempleList = new ArrayList<String>();
+      }
+        return luceneExempleList;
+    }
+
+    /**
+     * Sets the value of the luceneExemple property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setLuceneExempleList(List<String> value) {
+        this.luceneExempleList = value;
     }
 
 }
