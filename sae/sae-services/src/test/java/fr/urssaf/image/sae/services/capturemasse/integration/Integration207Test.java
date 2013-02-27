@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -37,6 +38,7 @@ import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.services.batch.model.ExitTraitement;
 import fr.urssaf.image.sae.services.capturemasse.SAECaptureMasseService;
+import fr.urssaf.image.sae.services.capturemasse.utils.TraceAssertUtils;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
@@ -75,6 +77,9 @@ public class Integration207Test {
 
    private SaeLogAppender logAppender;
 
+   @Autowired
+   private TraceAssertUtils traceAssertUtils;
+
    @Before
    public void init() {
       logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
@@ -91,6 +96,7 @@ public class Integration207Test {
       VIContenuExtrait viExtrait = new VIContenuExtrait();
       viExtrait.setCodeAppli("TESTS_UNITAIRES");
       viExtrait.setIdUtilisateur("UTILISATEUR TEST");
+      viExtrait.setPagms(Arrays.asList("TU_PAGM1", "TU_PAGM2"));
 
       SaeDroits saeDroits = new SaeDroits();
       List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
@@ -144,6 +150,8 @@ public class Integration207Test {
       checkFiles();
 
       checkLogs();
+
+      checkTracabilite();
 
    }
 
@@ -231,6 +239,12 @@ public class Integration207Test {
 
       Assert.assertTrue("aucun message d'erreur ou warn attendu",
             loggingEvents == null || loggingEvents.isEmpty());
+
+   }
+
+   private void checkTracabilite() {
+
+      traceAssertUtils.verifieAucuneTraceDansRegistres();
 
    }
 

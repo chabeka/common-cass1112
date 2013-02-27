@@ -46,7 +46,6 @@ import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentService;
-import fr.urssaf.image.sae.trace.service.RegTechniqueService;
 import fr.urssaf.image.sae.utils.LogUtils;
 import fr.urssaf.image.sae.utils.SaeLogAppender;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
@@ -76,14 +75,14 @@ public class Integration252Test {
    @Qualifier("storageServiceProvider")
    private StorageServiceProvider provider;
 
-   @Autowired
-   private RegTechniqueService regTechniqueService;
-
    private EcdeTestSommaire ecdeTestSommaire;
 
    private Logger logger;
 
    private SaeLogAppender logAppender;
+
+   @Autowired
+   private TraceAssertUtils traceAssertUtils;
 
    @Before
    public void init() {
@@ -101,7 +100,7 @@ public class Integration252Test {
       VIContenuExtrait viExtrait = new VIContenuExtrait();
       viExtrait.setCodeAppli("TESTS_UNITAIRES");
       viExtrait.setIdUtilisateur("UTILISATEUR TEST");
-      viExtrait.setPagms(Arrays.asList("TU_PAGM1","TU_PAGM2"));
+      viExtrait.setPagms(Arrays.asList("TU_PAGM1", "TU_PAGM2"));
 
       SaeDroits saeDroits = new SaeDroits();
       List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
@@ -158,7 +157,7 @@ public class Integration252Test {
 
       checkLogs();
 
-      checkTracabilite(idTdm.toString(), urlSommaire.toString());
+      checkTracabilite(idTdm, urlSommaire);
 
    }
 
@@ -268,13 +267,14 @@ public class Integration252Test {
             messageFound);
    }
 
-   private void checkTracabilite(String idTdm, String urlSommaire) {
+   private void checkTracabilite(UUID idTdm, URI urlSommaire) {
 
-      TraceAssertUtils
+      traceAssertUtils
             .verifieTraceCaptureMasseDansRegTechnique(
-                  regTechniqueService,
-                  "fr.urssaf.image.sae.services.exception.capture.RequiredArchivableMetadataEx: La ou les métadonnées suivantes, obligatoires lors de l'archivage, ne sont pas renseignées : ApplicationProductrice, CodeOrganismeGestionnaire, CodeOrganismeProprietaire, CodeRND, DateCreation, FormatFichier, Hash, NbPages, Titre, TypeHash",
-                  idTdm, urlSommaire);
+                  idTdm,
+                  urlSommaire,
+                  Arrays
+                        .asList("fr.urssaf.image.sae.services.exception.capture.RequiredArchivableMetadataEx: La ou les métadonnées suivantes, obligatoires lors de l'archivage, ne sont pas renseignées : ApplicationProductrice, CodeOrganismeGestionnaire, CodeOrganismeProprietaire, CodeRND, DateCreation, FormatFichier, Hash, NbPages, Titre, TypeHash"));
 
    }
 

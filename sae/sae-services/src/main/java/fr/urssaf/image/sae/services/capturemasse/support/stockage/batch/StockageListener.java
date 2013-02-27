@@ -263,7 +263,7 @@ public class StockageListener {
 
          codes.add(Constantes.ERR_BUL001);
          index.add(exception.getIndex());
-         exceptions.add(new Exception(message));
+         exceptions.add(new Exception(message, e));
 
          status = ExitStatus.FAILED;
 

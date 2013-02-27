@@ -12,12 +12,10 @@ import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameter;
 import org.springframework.batch.core.JobParameters;
-import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -26,6 +24,7 @@ import org.springframework.stereotype.Service;
 import fr.urssaf.image.sae.services.batch.model.ExitTraitement;
 import fr.urssaf.image.sae.services.capturemasse.SAECaptureMasseService;
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
+import fr.urssaf.image.sae.services.capturemasse.utils.StatutCaptureUtils;
 import fr.urssaf.image.sae.services.capturemasse.verification.VerificationSupport;
 
 /**
@@ -63,7 +62,6 @@ public class SAECaptureMasseServiceImpl implements SAECaptureMasseService {
    public final ExitTraitement captureMasse(final URI sommaireURL,
          final UUID idTraitement) {
 
-
       ExitTraitement exitTraitement = new ExitTraitement();
       exitTraitement = captureMasse(sommaireURL, idTraitement, null, null);
 
@@ -87,7 +85,8 @@ public class SAECaptureMasseServiceImpl implements SAECaptureMasseService {
          nbreDocs = (Integer) jobExecution.getExecutionContext().get(
                Constantes.DOC_COUNT);
 
-         nbDocsIntegres = (Integer)jobExecution.getExecutionContext().get(Constantes.NB_INTEG_DOCS);
+         nbDocsIntegres = (Integer) jobExecution.getExecutionContext().get(
+               Constantes.NB_INTEG_DOCS);
          logPresent = jobExecution.getExecutionContext().containsKey(
                Constantes.FLAG_BUL003);
       }
@@ -110,7 +109,6 @@ public class SAECaptureMasseServiceImpl implements SAECaptureMasseService {
             .toString()));
       mapParam.put(Constantes.HASH, new JobParameter(hash));
       mapParam.put(Constantes.TYPE_HASH, new JobParameter(typeHash));
-      
 
       JobParameters parameters = new JobParameters(mapParam);
       ExitTraitement exitTraitement = new ExitTraitement();
@@ -119,20 +117,7 @@ public class SAECaptureMasseServiceImpl implements SAECaptureMasseService {
       try {
          jobExecution = jobLauncher.run(job, parameters);
 
-         List<StepExecution> list = new ArrayList<StepExecution>(jobExecution
-               .getStepExecutions());
-         boolean traitementOK = ExitStatus.COMPLETED.equals(jobExecution
-               .getExitStatus());
-
-         int index = 0;
-         while (traitementOK && index < list.size()) {
-            if ("finBloquant".equalsIgnoreCase(list.get(index).getStepName())
-                  || "finErreur"
-                        .equalsIgnoreCase(list.get(index).getStepName())) {
-               traitementOK = false;
-            }
-            index++;
-         }
+         boolean traitementOK = StatutCaptureUtils.isCaptureOk(jobExecution);
 
          if (traitementOK) {
             exitTraitement.setExitMessage("Traitement réalisé avec succès");
@@ -162,5 +147,5 @@ public class SAECaptureMasseServiceImpl implements SAECaptureMasseService {
 
       return exitTraitement;
    }
-   
+
 }

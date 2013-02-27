@@ -31,6 +31,11 @@ public final class Constantes {
    public static final String DOC_EXCEPTION = "DOCUMENT_EXCEPTION";
 
    /**
+    * Liste des exceptions survenues sur un rollback
+    */
+   public static final String ROLLBACK_EXCEPTION = "ROLLBACK_EXCEPTION";
+
+   /**
     * Liste des indexs des documents en erreur
     */
    public static final String INDEX_EXCEPTION = "INDEX_EXCEPTION";

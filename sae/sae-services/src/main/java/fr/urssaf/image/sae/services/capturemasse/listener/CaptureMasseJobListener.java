@@ -44,6 +44,10 @@ public class CaptureMasseJobListener {
 
       ConcurrentLinkedQueue<Exception> listExceptions = new ConcurrentLinkedQueue<Exception>();
       context.put(Constantes.DOC_EXCEPTION, listExceptions);
+
+      ConcurrentLinkedQueue<Exception> listRollbackExceptions = new ConcurrentLinkedQueue<Exception>();
+      context.put(Constantes.ROLLBACK_EXCEPTION, listRollbackExceptions);
+
    }
 
    /**

@@ -5,8 +5,10 @@ package fr.urssaf.image.sae.services.capturemasse.integration;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -50,6 +52,7 @@ import fr.urssaf.image.sae.services.capturemasse.modele.commun_sommaire_et_resul
 import fr.urssaf.image.sae.services.capturemasse.modele.commun_sommaire_et_resultat.NonIntegratedDocumentType;
 import fr.urssaf.image.sae.services.capturemasse.modele.resultats.ObjectFactory;
 import fr.urssaf.image.sae.services.capturemasse.modele.resultats.ResultatsType;
+import fr.urssaf.image.sae.services.capturemasse.utils.TraceAssertUtils;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
@@ -92,6 +95,9 @@ public class IntegrationDeleteOutOfMemoryTest {
    private static final Logger LOGGER = LoggerFactory
          .getLogger(IntegrationDeleteOutOfMemoryTest.class);
 
+   @Autowired
+   private TraceAssertUtils traceAssertUtils;
+
    @Before
    public void init() {
       ecdeTestSommaire = ecdeTestTools.buildEcdeTestSommaire();
@@ -103,6 +109,7 @@ public class IntegrationDeleteOutOfMemoryTest {
       VIContenuExtrait viExtrait = new VIContenuExtrait();
       viExtrait.setCodeAppli("TESTS_UNITAIRES");
       viExtrait.setIdUtilisateur("UTILISATEUR TEST");
+      viExtrait.setPagms(Arrays.asList("TU_PAGM1", "TU_PAGM2"));
 
       SaeDroits saeDroits = new SaeDroits();
       List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
@@ -144,8 +151,10 @@ public class IntegrationDeleteOutOfMemoryTest {
       initComposants();
       initDatas();
 
-      ExitTraitement exitStatus = service.captureMasse(ecdeTestSommaire
-            .getUrlEcde(), UUID.randomUUID());
+      UUID idTdm = UUID.randomUUID();
+      URI urlSommaire = ecdeTestSommaire.getUrlEcde();
+
+      ExitTraitement exitStatus = service.captureMasse(urlSommaire, idTdm);
 
       EasyMock.verify(provider, storageDocumentService);
 
@@ -153,6 +162,8 @@ public class IntegrationDeleteOutOfMemoryTest {
             .isSucces());
 
       checkFiles();
+
+      checkTracabilite(idTdm, urlSommaire);
 
    }
 
@@ -300,6 +311,19 @@ public class IntegrationDeleteOutOfMemoryTest {
             .unmarshal(resultats);
 
       return doc.getValue();
+
+   }
+
+   private void checkTracabilite(UUID idTdm, URI urlSommaire) {
+
+      traceAssertUtils
+            .verifieTraceCaptureMasseDansRegTechnique(
+                  idTdm,
+                  urlSommaire,
+                  Arrays
+                        .asList(
+                              "fr.urssaf.image.sae.storage.exception.InsertionServiceEx: erreur mémoire",
+                              "fr.urssaf.image.sae.storage.exception.DeletionServiceEx: exception de suppression"));
 
    }
 

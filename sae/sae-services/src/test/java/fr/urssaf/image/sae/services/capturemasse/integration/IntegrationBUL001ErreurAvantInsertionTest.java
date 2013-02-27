@@ -5,8 +5,10 @@ package fr.urssaf.image.sae.services.capturemasse.integration;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -52,6 +54,7 @@ import fr.urssaf.image.sae.services.capturemasse.modele.commun_sommaire_et_resul
 import fr.urssaf.image.sae.services.capturemasse.modele.commun_sommaire_et_resultat.NonIntegratedDocumentType;
 import fr.urssaf.image.sae.services.capturemasse.modele.resultats.ObjectFactory;
 import fr.urssaf.image.sae.services.capturemasse.modele.resultats.ResultatsType;
+import fr.urssaf.image.sae.services.capturemasse.utils.TraceAssertUtils;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
@@ -100,6 +103,9 @@ public class IntegrationBUL001ErreurAvantInsertionTest {
 
    private SaeLogAppender logAppenderSae;
 
+   @Autowired
+   private TraceAssertUtils traceAssertUtils;
+
    @Before
    public void init() {
       logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
@@ -117,6 +123,7 @@ public class IntegrationBUL001ErreurAvantInsertionTest {
       VIContenuExtrait viExtrait = new VIContenuExtrait();
       viExtrait.setCodeAppli("TESTS_UNITAIRES");
       viExtrait.setIdUtilisateur("UTILISATEUR TEST");
+      viExtrait.setPagms(Arrays.asList("TU_PAGM1", "TU_PAGM2"));
 
       SaeDroits saeDroits = new SaeDroits();
       List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
@@ -157,12 +164,14 @@ public class IntegrationBUL001ErreurAvantInsertionTest {
    public void testLancementRuntime() throws ConnectionServiceEx,
          DeletionServiceEx, InsertionServiceEx, IOException, JAXBException,
          SAXException {
-      
+
       initComposantsRuntime();
       initDatas();
 
-      ExitTraitement exitStatus = service.captureMasse(ecdeTestSommaire
-            .getUrlEcde(), UUID.randomUUID());
+      UUID idTdm = UUID.randomUUID();
+      URI urlSommaire = ecdeTestSommaire.getUrlEcde();
+
+      ExitTraitement exitStatus = service.captureMasse(urlSommaire, idTdm);
 
       EasyMock.verify(provider, storageDocumentService);
 
@@ -172,6 +181,9 @@ public class IntegrationBUL001ErreurAvantInsertionTest {
       checkFiles();
 
       checkLogs();
+
+      checkTracabilite(idTdm, urlSommaire,
+            "Caused by: java.lang.RuntimeException: erreur ouverture base");
 
    }
 
@@ -183,8 +195,10 @@ public class IntegrationBUL001ErreurAvantInsertionTest {
       initComposantsThrowable();
       initDatas();
 
-      ExitTraitement exitStatus = service.captureMasse(ecdeTestSommaire
-            .getUrlEcde(), UUID.randomUUID());
+      UUID idTdm = UUID.randomUUID();
+      URI urlSommaire = ecdeTestSommaire.getUrlEcde();
+
+      ExitTraitement exitStatus = service.captureMasse(urlSommaire, idTdm);
 
       EasyMock.verify(provider, storageDocumentService);
 
@@ -194,6 +208,9 @@ public class IntegrationBUL001ErreurAvantInsertionTest {
       checkFiles();
 
       checkLogs();
+
+      checkTracabilite(idTdm, urlSommaire,
+            "Caused by: java.lang.Error: erreur ouverture base");
 
    }
 
@@ -350,6 +367,13 @@ public class IntegrationBUL001ErreurAvantInsertionTest {
             MESSAGE_ERREUR);
       Assert.assertTrue("le message d'erreur attendu doit être correct",
             messageFound);
+   }
+
+   private void checkTracabilite(UUID idTdm, URI urlSommaire, String stackTrace) {
+
+      traceAssertUtils.verifieTraceCaptureMasseDansRegTechnique(idTdm,
+            urlSommaire, Arrays.asList(stackTrace));
+
    }
 
 }

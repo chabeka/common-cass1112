@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
+import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -71,7 +72,7 @@ public class RollbackTasklet implements Tasklet {
    /**
     * {@inheritDoc}
     */
-   @SuppressWarnings( { "PMD.AvoidThrowingRawExceptionTypes" })
+   @SuppressWarnings( { "PMD.AvoidThrowingRawExceptionTypes", "unchecked" })
    @Override
    public final RepeatStatus execute(final StepContribution contribution,
          final ChunkContext chunkContext) {
@@ -153,7 +154,17 @@ public class RollbackTasklet implements Tasklet {
          chunkContext.getStepContext().getStepExecution().getJobExecution()
                .getExecutionContext().put(Constantes.FLAG_BUL003, Boolean.TRUE);
 
+         // Ajoute l'exception survenue dans la liste des exceptions du Rollback
+         ExecutionContext executionContext = chunkContext.getStepContext()
+               .getStepExecution().getJobExecution().getExecutionContext();
+         if (executionContext.get(Constantes.ROLLBACK_EXCEPTION) != null) {
+            ConcurrentLinkedQueue<Exception> listExceptions = (ConcurrentLinkedQueue<Exception>) executionContext
+                  .get(Constantes.ROLLBACK_EXCEPTION);
+            listExceptions.add(e);
+         }
+
          status = RepeatStatus.FINISHED;
+
       }
 
       return status;

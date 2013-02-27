@@ -1,12 +1,13 @@
 package fr.urssaf.image.sae.services.capturemasse.support.traces;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
+import fr.urssaf.image.sae.services.capturemasse.utils.StatutCaptureUtils;
 import fr.urssaf.image.sae.services.util.HostnameUtil;
 import fr.urssaf.image.sae.trace.model.TraceToCreate;
 import fr.urssaf.image.sae.trace.service.DispatcheurService;
@@ -44,20 +46,33 @@ public class TracesSupport {
    @SuppressWarnings("PMD.AvoidCatchingThrowable")
    public final void traceEchecCaptureMasse(JobExecution jobExecution) {
 
-      // Récupère la liste des exceptions survenues pendant le job
-      List<Throwable> exceptions = jobExecution.getAllFailureExceptions();
+      // On fait un try/catch(Throwable) pour la traçabilité ne fasse pas
+      // planter cette méthode
+      try {
 
-      // Récupère le status du job
-      BatchStatus batchStatus = jobExecution.getStatus();
+         // Traces
+         String prefix = "traceEchecCaptureMasse()";
+         LOGGER.debug("{} - Début", prefix);
 
-      // Si le job est en erreur, et/ou que la liste des exceptions n'est pas
-      // vide, on écrit une trace d'erreur de capture de masse
-      if ((!BatchStatus.COMPLETED.equals(batchStatus))
-            || (CollectionUtils.isNotEmpty(exceptions))) {
+         // Détermine si on considère la capture de masse en erreur ou non
+         if (StatutCaptureUtils.isCaptureOk(jobExecution)) {
 
-         // On fait un try/catch(Throwable) pour la traçabilité ne fasse pas
-         // planter cette méthode
-         try {
+            LOGGER
+                  .debug(
+                        "{} - On ne va pas tracer d'événement d'échec la capture de masse",
+                        prefix);
+
+         } else {
+
+            // Traces
+            LOGGER
+                  .debug(
+                        "{} - On va tracer l'événement d'échec de la capture de masse",
+                        prefix);
+
+            // Récupère le status du job
+            BatchStatus batchStatus = jobExecution.getStatus();
+            LOGGER.debug("{} - BatchStatus : {}", prefix, batchStatus);
 
             // Instantiation de l'objet TraceToCreate
             TraceToCreate traceToCreate = new TraceToCreate();
@@ -73,10 +88,9 @@ public class TracesSupport {
             traceToCreate.setContexte("captureMasse");
 
             // Le détail des exceptions survenues
-            if (CollectionUtils.isNotEmpty(exceptions)) {
-               String exceptionsAsString = buildStackTrace(exceptions);
-               traceToCreate.setStracktrace(exceptionsAsString);
-            }
+            String exceptionsAsString = buildStackTrace(jobExecution);
+            traceToCreate.setStracktrace(exceptionsAsString);
+            LOGGER.debug("{} - StackTrace : {}", prefix, exceptionsAsString);
 
             // Contrat de service et login
             setInfosAuth(traceToCreate);
@@ -96,13 +110,16 @@ public class TracesSupport {
             // Appel du dispatcheur
             dispatcheurService.ajouterTrace(traceToCreate);
 
-         } catch (Throwable ex) {
-            LOGGER
-                  .error(
-                        "Une erreur s'est produite lors de l'écriture de la trace d'erreur de capture de masse",
-                        ex);
          }
 
+         // Traces
+         LOGGER.debug("{} - Fin", prefix);
+
+      } catch (Throwable ex) {
+         LOGGER
+               .error(
+                     "Une erreur s'est produite lors de l'écriture de la trace d'erreur de capture de masse",
+                     ex);
       }
 
    }
@@ -141,31 +158,115 @@ public class TracesSupport {
 
    }
 
-   private String buildStackTrace(List<Throwable> exceptions) {
+   private String buildStackTrace(JobExecution jobExecution) {
 
-      String result = StringUtils.EMPTY;
+      // Traces
+      String prefix = "buildStackTrace()";
+      LOGGER.debug("{} - Début", prefix);
 
-      if (CollectionUtils.isNotEmpty(exceptions)) {
+      // Initialise le SpringBuilder
+      StringBuilder sBuilder = new StringBuilder();
 
-         StringBuilder sBuilder = new StringBuilder();
+      // Les exceptions SpringBatch
+      LOGGER.debug("{} - Traitement des exceptions Spring Batch", prefix);
+      List<Throwable> exceptionsSpBatch = jobExecution
+            .getAllFailureExceptions();
+      int nbEx = sizeCollection(exceptionsSpBatch);
+      sBuilder
+            .append(String.format("Exception(s) Spring Batch : %s\r\n", nbEx));
+      if (nbEx > 0) {
+         LOGGER.debug("{} - {} exception(s) Spring Batch", prefix, nbEx);
+         addExceptions1(exceptionsSpBatch, sBuilder);
+      } else {
+         LOGGER.debug("{} - Aucune exception Spring Batch", prefix);
+      }
 
-         String stackTrace;
-         
-         Throwable throwable;
-         for (int i=0;i<exceptions.size();i++) {
-            throwable = exceptions.get(i);
-            stackTrace = ExceptionUtils.getFullStackTrace(throwable);
-            sBuilder.append(stackTrace);
-            if (i<(exceptions.size()-1)) {
-               sBuilder.append("\r\n");
-            }
-         }
-         
-         result = sBuilder.toString();
+      // Les exceptions "Document"
+      LOGGER.debug("{} - Traitement des exceptions sur les documents", prefix);
+      ConcurrentLinkedQueue<Exception> exceptionsDocs = getDocumentExceptions(jobExecution);
+      nbEx = sizeCollection(exceptionsDocs);
+      sBuilder.append(String.format("Exception(s) sur les documents : %s\r\n",
+            nbEx));
+      if (nbEx > 0) {
+         LOGGER.debug("{} - {} exception(s) sur les documents", prefix, nbEx);
+         addExceptions2(exceptionsDocs, sBuilder);
+      } else {
+         LOGGER.debug("{} - Aucune exception sur les documents", prefix);
+      }
+
+      // Les exceptions survenues lors du rollback
+      LOGGER.debug("{} - Traitement des exceptions du rollback", prefix);
+      ConcurrentLinkedQueue<Exception> exceptionsRoll = getRollbackExceptions(jobExecution);
+      nbEx = sizeCollection(exceptionsRoll);
+      sBuilder.append(String.format("Exception(s) du rollback : %s\r\n", nbEx));
+      if (nbEx > 0) {
+         LOGGER.debug("{} - {} exception(s) du rollback", prefix, nbEx);
+         addExceptions2(exceptionsRoll, sBuilder);
+      } else {
+         LOGGER.debug("{} - Aucune exception du rollback", prefix);
+      }
+
+      // Traces
+      LOGGER.debug("{} - Fin", prefix);
+
+      // Termine
+      return sBuilder.toString();
+
+   }
+
+   private ConcurrentLinkedQueue<Exception> getDocumentExceptions(
+         JobExecution jobExecution) {
+      return getListeExceptions(jobExecution, Constantes.DOC_EXCEPTION);
+   }
+
+   private ConcurrentLinkedQueue<Exception> getRollbackExceptions(
+         JobExecution jobExecution) {
+      return getListeExceptions(jobExecution, Constantes.ROLLBACK_EXCEPTION);
+   }
+
+   @SuppressWarnings("unchecked")
+   private ConcurrentLinkedQueue<Exception> getListeExceptions(
+         JobExecution jobExecution, String cle) {
+      ConcurrentLinkedQueue<Exception> listExceptions = null;
+      if ((jobExecution.getExecutionContext() != null)
+            && (jobExecution.getExecutionContext().get(cle) != null)) {
+         listExceptions = (ConcurrentLinkedQueue<Exception>) jobExecution
+               .getExecutionContext().get(cle);
+      }
+      return listExceptions;
+   }
+
+   private void addExceptions2(Iterable<Exception> exceptions,
+         StringBuilder sBuilder) {
+
+      String stackTrace;
+
+      for (Exception exception : exceptions) {
+
+         stackTrace = ExceptionUtils.getFullStackTrace(exception);
+
+         sBuilder.append(stackTrace);
+
+         sBuilder.append("\r\n");
 
       }
 
-      return result;
+   }
+
+   private void addExceptions1(Iterable<Throwable> exceptions,
+         StringBuilder sBuilder) {
+
+      String stackTrace;
+
+      for (Throwable throwable : exceptions) {
+
+         stackTrace = ExceptionUtils.getFullStackTrace(throwable);
+
+         sBuilder.append(stackTrace);
+
+         sBuilder.append("\r\n");
+
+      }
 
    }
 
@@ -193,4 +294,15 @@ public class TracesSupport {
       }
 
    }
+
+   private int sizeCollection(Collection<?> liste) {
+      int result;
+      if (liste == null) {
+         result = 0;
+      } else {
+         result = liste.size();
+      }
+      return result;
+   }
+
 }
