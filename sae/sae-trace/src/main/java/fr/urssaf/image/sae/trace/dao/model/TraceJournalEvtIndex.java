@@ -17,7 +17,7 @@ public class TraceJournalEvtIndex {
    /**
     * Identifiant de la trace
     */
-   private UUID id;
+   private UUID identifiant;
 
    /**
     * Date de création de la trace
@@ -37,7 +37,7 @@ public class TraceJournalEvtIndex {
    /**
     * Code du contrat de service
     */
-   private String cs;
+   private String contratService;
 
    /**
     * Code événement
@@ -63,9 +63,9 @@ public class TraceJournalEvtIndex {
    public TraceJournalEvtIndex(TraceJournalEvt exploitation) {
       this.contexte = exploitation.getContexte();
       this.codeEvt = exploitation.getCodeEvt();
-      this.cs = exploitation.getCs();
+      this.contratService = exploitation.getContratService();
       this.pagms.addAll(exploitation.getPagms());
-      this.id = exploitation.getId();
+      this.identifiant = exploitation.getIdentifiant();
       this.login = exploitation.getLogin();
       this.timestamp = exploitation.getTimestamp();
    }
@@ -73,16 +73,16 @@ public class TraceJournalEvtIndex {
    /**
     * @return l'identifiant de la trace
     */
-   public final UUID getId() {
-      return id;
+   public final UUID getIdentifiant() {
+      return identifiant;
    }
 
    /**
-    * @param id
+    * @param identifiant
     *           l'identifiant de la trace
     */
-   public final void setId(UUID id) {
-      this.id = id;
+   public final void setIdentifiant(UUID identifiant) {
+      this.identifiant = identifiant;
    }
 
    /**
@@ -133,16 +133,16 @@ public class TraceJournalEvtIndex {
    /**
     * @return le code du contrat de service
     */
-   public final String getCs() {
-      return cs;
+   public final String getContratService() {
+      return contratService;
    }
 
    /**
-    * @param cs
+    * @param contratService
     *           le code du contrat de service
     */
-   public final void setCs(String cs) {
-      this.cs = cs;
+   public final void setContratService(String contratService) {
+      this.contratService = contratService;
    }
 
    /**

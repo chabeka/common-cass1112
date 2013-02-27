@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema
+   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+   xmlns:journalSae="http://www.cirtil.fr/sae/journalSae"
+   targetNamespace="http://www.cirtil.fr/sae/journalSae"
+   elementFormDefault="qualified"
+   attributeFormDefault="unqualified">
+
+   
+   <!-- L'unique élément autorisé dans le journal -->
+   <xsd:element name="journal" type="journalSae:journalType">
+      <xsd:annotation>
+         <xsd:documentation>L'élément journal est l'élément racine d'un fichier journal SAE</xsd:documentation>
+      </xsd:annotation>
+   </xsd:element>
+   
+   
+   <xsd:complexType name="journalType">
+      <xsd:sequence>
+         
+         <xsd:element name="journalPrecedent" type="journalSae:journalPrecedentType" minOccurs="1" maxOccurs="1">
+            <xsd:annotation>
+               <xsd:documentation>Informations sur le journal précédent (pour le chaînage)</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>         
+         
+         <xsd:element name="dateJournee" type="xsd:date" minOccurs="1" maxOccurs="1">
+            <xsd:annotation>
+               <xsd:documentation>Journée de ce journal (journée des traces du journal)</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         
+         <xsd:element name="traces" type="journalSae:listeTraceType" minOccurs="1" maxOccurs="1">
+            <xsd:annotation>
+               <xsd:documentation>La liste des traces</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         
+      </xsd:sequence>
+   </xsd:complexType>
+   
+   <xsd:complexType name="journalPrecedentType">
+      <xsd:annotation>
+         <xsd:documentation>Informations sur le journal précédent</xsd:documentation>
+      </xsd:annotation>
+      <xsd:sequence>
+
+         <xsd:element name="id" type="journalSae:uuidType" minOccurs="1" maxOccurs="1">
+            <xsd:annotation>
+               <xsd:documentation>L'identifiant unique d'archivage du journal précédent</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+
+         <xsd:element name="hash" minOccurs="1" maxOccurs="1">
+            <xsd:annotation>
+               <xsd:documentation>Le hash du journal précédent</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+               <xsd:restriction base="xsd:string">
+                  <xsd:minLength value="1"/>
+               </xsd:restriction>
+            </xsd:simpleType>
+         </xsd:element>
+         
+         <xsd:element name="typeHash" minOccurs="1" maxOccurs="1">
+            <xsd:annotation>
+               <xsd:documentation>L'algorithme de hash utilisé pour calculer le hash du journal précédent</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+               <xsd:restriction base="xsd:string">
+                  <xsd:minLength value="1"/>
+               </xsd:restriction>
+            </xsd:simpleType>
+         </xsd:element>
+
+      </xsd:sequence>
+   </xsd:complexType>   
+   
+   
+   <xsd:complexType name="listeTraceType">
+      <xsd:annotation>
+         <xsd:documentation>Une liste de traces</xsd:documentation>
+      </xsd:annotation>
+      <xsd:sequence>
+         <xsd:element name="trace" type="journalSae:traceType" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+   </xsd:complexType>
+   
+   
+   <xsd:complexType name="traceType">
+      <xsd:annotation>
+         <xsd:documentation>Une trace</xsd:documentation>
+      </xsd:annotation>
+      <xsd:sequence>
+
+         <xsd:element name="id" type="journalSae:uuidType" minOccurs="1" maxOccurs="1">
+            <xsd:annotation>
+               <xsd:documentation>L'identifiant unique de la trace (au format UUID)</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+
+         <xsd:element name="timestamp" type="xsd:dateTime" minOccurs="1" maxOccurs="1">
+            <xsd:annotation>
+               <xsd:documentation>Le timestamp de la trace (date + heure)</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         
+         <xsd:element name="codeEvt" minOccurs="1" maxOccurs="1">
+            <xsd:annotation>
+               <xsd:documentation>Le code de l'événement</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+               <xsd:restriction base="xsd:string">
+                  <xsd:minLength value="1"/>
+               </xsd:restriction>
+            </xsd:simpleType>
+         </xsd:element>
+         
+         <xsd:element name="contexte" minOccurs="1" maxOccurs="1">
+            <xsd:annotation>
+               <xsd:documentation>Le contexte de la trace</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+               <xsd:restriction base="xsd:string">
+                  <xsd:minLength value="1"/>
+               </xsd:restriction>
+            </xsd:simpleType>
+         </xsd:element>
+         
+         <xsd:element name="cs" type="xsd:string" minOccurs="1" maxOccurs="1">
+            <xsd:annotation>
+               <xsd:documentation>Le contrat de service</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         
+         <xsd:element name="pagms" type="journalSae:listePagmType" minOccurs="1" maxOccurs="1">
+            <xsd:annotation>
+               <xsd:documentation>La liste des PAGM</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         
+         <xsd:element name="login" type="xsd:string" minOccurs="1" maxOccurs="1">
+            <xsd:annotation>
+               <xsd:documentation>Le login</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         
+         <xsd:element name="infos" type="journalSae:listeInfoType" minOccurs="1" maxOccurs="1">
+            <xsd:annotation>
+               <xsd:documentation>Les informations associées à la trace</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         
+      </xsd:sequence>
+   </xsd:complexType>
+   
+   <xsd:simpleType name="uuidType">
+		<xsd:annotation>
+			<xsd:documentation>UUID (Unique Universal Identifier) encodé sous forme hexadécimale, par exemple f81d4fae-7dec-11d0-a765-00a0c91e6bf6</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:pattern value="[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:complexType name="listePagmType">
+      <xsd:annotation>
+         <xsd:documentation>Une liste de PAGM</xsd:documentation>
+      </xsd:annotation>
+      <xsd:sequence>
+         <xsd:element name="pagm" type="journalSae:pagmType" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+   </xsd:complexType>
+   
+   <xsd:simpleType name="pagmType">
+		<xsd:annotation>
+			<xsd:documentation>Un PAGM</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:minLength value="1"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:complexType name="listeInfoType">
+      <xsd:annotation>
+         <xsd:documentation>Une liste d'informations associées à une trace</xsd:documentation>
+      </xsd:annotation>
+      <xsd:sequence>
+         <xsd:element name="info" type="journalSae:infoType" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+   </xsd:complexType>
+   
+   <xsd:complexType name="infoType">
+      <xsd:annotation>
+         <xsd:documentation>Une information associée à une trace</xsd:documentation>
+      </xsd:annotation>
+      <xsd:sequence>
+         <xsd:element name="code" minOccurs="1" maxOccurs="1">
+            <xsd:annotation>
+               <xsd:documentation>Le code de l'information</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+               <xsd:restriction base="xsd:string">
+                  <xsd:minLength value="1"/>
+               </xsd:restriction>
+            </xsd:simpleType>
+         </xsd:element>
+         <xsd:element name="valeur" type="xsd:string" minOccurs="1" maxOccurs="1">
+            <xsd:annotation>
+               <xsd:documentation>La valeur de l'information</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+      </xsd:sequence>
+   </xsd:complexType>
+   
+   
+</xsd:schema>

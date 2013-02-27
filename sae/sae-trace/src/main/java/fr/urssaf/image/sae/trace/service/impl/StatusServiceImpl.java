@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.sae.trace.exception.ParameterNotFoundException;
+import fr.urssaf.image.sae.trace.exception.TraceRuntimeException;
 import fr.urssaf.image.sae.trace.model.JournalisationType;
 import fr.urssaf.image.sae.trace.model.Parameter;
 import fr.urssaf.image.sae.trace.model.ParameterType;
@@ -35,7 +36,8 @@ public class StatusServiceImpl implements StatusService {
     * {@inheritDoc}
     */
    @Override
-   public boolean isJournalisationRunning(JournalisationType typeJournalisation) {
+   public final boolean isJournalisationRunning(
+         JournalisationType typeJournalisation) {
 
       boolean isRunning = false;
       ParameterType parameterType = null;
@@ -62,7 +64,7 @@ public class StatusServiceImpl implements StatusService {
     * {@inheritDoc}
     */
    @Override
-   public boolean isPurgeRunning(PurgeType typePurge) {
+   public final boolean isPurgeRunning(PurgeType typePurge) {
 
       boolean isRunning = false;
       ParameterType parameterType = getParameterIsRunningPurge(typePurge);
@@ -86,7 +88,7 @@ public class StatusServiceImpl implements StatusService {
     * {@inheritDoc}
     */
    @Override
-   public void updateJournalisationStatus(
+   public final void updateJournalisationStatus(
          JournalisationType typeJournalisation, Boolean value) {
 
       ParameterType parameterType = getParameterIsRunningJournalisation(typeJournalisation);
@@ -100,7 +102,7 @@ public class StatusServiceImpl implements StatusService {
     * {@inheritDoc}
     */
    @Override
-   public void updatePurgeStatus(PurgeType typePurge, Boolean value) {
+   public final void updatePurgeStatus(PurgeType typePurge, Boolean value) {
       ParameterType parameterType = getParameterIsRunningPurge(typePurge);
 
       Parameter parameter = new Parameter(parameterType, value);
@@ -130,6 +132,14 @@ public class StatusServiceImpl implements StatusService {
    private ParameterType getParameterIsRunningJournalisation(
          JournalisationType typeJournalisation) {
 
-      return ParameterType.JOURNALISATION_EVT_IS_RUNNING;
+      ParameterType type;
+      if (JournalisationType.JOURNALISATION_EVT.equals(typeJournalisation)) {
+         type = ParameterType.JOURNALISATION_EVT_IS_RUNNING;
+
+      } else {
+         throw new TraceRuntimeException("Type de journalisation non supporté");
+      }
+      
+      return type;
    }
 }

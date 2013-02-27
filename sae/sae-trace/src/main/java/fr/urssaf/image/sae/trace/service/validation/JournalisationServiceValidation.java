@@ -20,6 +20,8 @@ import fr.urssaf.image.sae.trace.model.JournalisationType;
 @Aspect
 public class JournalisationServiceValidation {
 
+   private static final String ARG_0 = "{0}";
+
    private static final String MESSAGE_ERREUR = "l'argument {0} est obligatoire";
 
    private static final String CLASS_NAME = "fr.urssaf.image.sae.trace.service.JournalisationService.";
@@ -36,6 +38,10 @@ public class JournalisationServiceValidation {
     * 
     * @param type
     *           type de la purge
+    * @param repertoire
+    *           repertoire dans lequel réaliser l'export
+    * @param date
+    *           date pour laquelle réaliser l'export
     */
    @Before(EXPORT_METHOD)
    public final void testExport(JournalisationType type, String repertoire,
@@ -43,17 +49,17 @@ public class JournalisationServiceValidation {
 
       if (type == null) {
          throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
-               "{0}", "type de journalisation"));
+               ARG_0, "type de journalisation"));
       }
 
       if (StringUtils.isEmpty(repertoire)) {
          throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
-               "{0}", "repertoire"));
+               ARG_0, "repertoire"));
       }
 
       if (date == null) {
          throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
-               "{0}", "date"));
+               ARG_0, "date"));
       }
 
       File file = new File(repertoire);
@@ -80,7 +86,7 @@ public class JournalisationServiceValidation {
 
       if (type == null) {
          throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
-               "{0}", "type de journalisation"));
+               ARG_0, "type de journalisation"));
       }
    }
 }

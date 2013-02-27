@@ -167,7 +167,7 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
     * {@inheritDoc}
     */
    @Override
-   public boolean hasRecords(Date date) {
+   public final boolean hasRecords(Date date) {
 
       Date beginDate = DateUtils.truncate(date, Calendar.DATE);
       Date endDate = DateUtils.addDays(beginDate, 1);

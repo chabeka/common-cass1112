@@ -120,10 +120,10 @@ public class TraceJournalEvtSupportTest {
       Assert.assertEquals("le code evenement doit etre correcte", CODE_EVT,
             securite.getCodeEvt());
       Assert.assertEquals("le contrat doit etre correcte", CONTRAT, securite
-            .getCs());
+            .getContratService());
       checkPagms(securite.getPagms());
       Assert.assertEquals("l'identifiant doit etre correcte", uuid, securite
-            .getId());
+            .getIdentifiant());
       Assert.assertEquals("le login doit etre correcte", LOGIN, securite
             .getLogin());
       Assert.assertEquals("la date doit etre correcte", DATE, securite
@@ -147,10 +147,10 @@ public class TraceJournalEvtSupportTest {
       Assert.assertEquals("le code evenement doit etre correcte", CODE_EVT,
             index.getCodeEvt());
       Assert.assertEquals("le contrat doit etre correcte", CONTRAT, index
-            .getCs());
+            .getContratService());
       checkPagms(index.getPagms());
       Assert.assertEquals("l'identifiant doit etre correcte", uuid, index
-            .getId());
+            .getIdentifiant());
       Assert.assertEquals("le login doit etre correcte", LOGIN, index
             .getLogin());
       Assert.assertEquals("la date doit etre correcte", DATE, index
@@ -172,9 +172,9 @@ public class TraceJournalEvtSupportTest {
       TraceJournalEvt trace = new TraceJournalEvt();
       trace.setContexte(CONTEXT);
       trace.setCodeEvt(CODE_EVT);
-      trace.setCs(CONTRAT);
+      trace.setContratService(CONTRAT);
       trace.setPagms(PAGMS);
-      trace.setId(uuid);
+      trace.setIdentifiant(uuid);
       trace.setLogin(LOGIN);
       trace.setTimestamp(DATE);
       trace.setInfos(INFOS);

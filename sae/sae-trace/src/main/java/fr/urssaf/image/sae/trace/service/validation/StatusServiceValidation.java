@@ -18,6 +18,10 @@ import fr.urssaf.image.sae.trace.model.PurgeType;
 @Aspect
 public class StatusServiceValidation {
 
+   private static final String ARG_0 = "{0}";
+
+   private static final String TYPE_DE_PURGE = "type de purge";
+
    private static final String MESSAGE_ERREUR = "l'argument {0} est obligatoire";
 
    private static final String CLASS_NAME = "fr.urssaf.image.sae.trace.service.StatusService.";
@@ -45,7 +49,7 @@ public class StatusServiceValidation {
 
       if (type == null) {
          throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
-               "{0}", "type de purge"));
+               ARG_0, TYPE_DE_PURGE));
       }
    }
 
@@ -61,7 +65,7 @@ public class StatusServiceValidation {
 
       if (type == null) {
          throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
-               "{0}", "type de journalisation"));
+               ARG_0, "type de journalisation"));
       }
    }
 
@@ -71,18 +75,20 @@ public class StatusServiceValidation {
     * 
     * @param type
     *           type de la purge
+    * @param value
+    *           valeur
     */
    @Before(UPDATE_PURGE_METHOD)
    public final void updatePurge(PurgeType type, Boolean value) {
 
       if (type == null) {
          throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
-               "{0}", "type de purge"));
+               ARG_0, TYPE_DE_PURGE));
       }
 
       if (value == null) {
          throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
-               "{0}", "valeur"));
+               ARG_0, "valeur"));
       }
    }
 
@@ -92,18 +98,20 @@ public class StatusServiceValidation {
     * 
     * @param type
     *           type de la journalisation
+    * @param value
+    *           valeur
     */
    @Before(UPDATE_JOURNALISATION_METHOD)
    public final void updateJournalisation(JournalisationType type, Boolean value) {
 
       if (type == null) {
          throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
-               "{0}", "type de journalisation"));
+               ARG_0, "type de journalisation"));
       }
 
       if (value == null) {
          throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
-               "{0}", "valeur"));
+               ARG_0, "valeur"));
       }
    }
 }

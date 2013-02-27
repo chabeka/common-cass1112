@@ -15,7 +15,7 @@ import java.util.UUID;
 
 import javanet.staxutils.IndentingXMLEventWriter;
 
-import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLEventFactory;
 import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -36,7 +36,9 @@ import fr.urssaf.image.sae.trace.exception.TraceRuntimeException;
 import fr.urssaf.image.sae.trace.model.PurgeType;
 import fr.urssaf.image.sae.trace.service.JournalEvtService;
 import fr.urssaf.image.sae.trace.service.support.LoggerSupport;
+import fr.urssaf.image.sae.trace.service.support.TraceFileSupport;
 import fr.urssaf.image.sae.trace.utils.DateRegUtils;
+import fr.urssaf.image.sae.trace.utils.StaxUtils;
 
 /**
  * Classe d'implémentation du support {@link JournalEvtService}. Cette classe
@@ -65,40 +67,42 @@ public class JournalEvtServiceImpl implements JournalEvtService {
    @Autowired
    private LoggerSupport loggerSupport;
 
+   @Autowired
+   private TraceFileSupport traceFileSupport;
+
    /**
     * {@inheritDoc}
     */
    @Override
-   public String export(Date date, String repertoire,
+   public final String export(Date date, String repertoire,
          String idJournalPrecedent, String hashJournalPrecedent) {
 
       List<TraceJournalEvtIndex> listTraces = support.findByDate(date);
 
       String path = null;
+      String sDate = DateFormatUtils.format(date, PATTERN_DATE);
       if (CollectionUtils.isNotEmpty(listTraces)) {
 
          File file, directory;
          directory = new File(repertoire);
          try {
-            file = File.createTempFile(DateFormatUtils.format(date,
-                  PATTERN_DATE), ".xml", directory);
+            file = File.createTempFile(sDate, ".xml", directory);
 
          } catch (IOException exception) {
             throw new TraceRuntimeException(exception);
          }
 
-         writeTraces(file, listTraces);
+         path = file.getAbsolutePath();
+         writeTraces(file, listTraces, idJournalPrecedent,
+               hashJournalPrecedent, date);
 
       }
 
       return path;
    }
 
-   /**
-    * @param file
-    * @param listTraces
-    */
-   private void writeTraces(File file, List<TraceJournalEvtIndex> listTraces) {
+   private void writeTraces(File file, List<TraceJournalEvtIndex> listTraces,
+         String idJournalPrecedent, String hashJournalPrecedent, Date date) {
 
       FileOutputStream resultatsStream = null;
       final String resultatPath = file.getAbsolutePath();
@@ -107,11 +111,31 @@ public class JournalEvtServiceImpl implements JournalEvtService {
       try {
          resultatsStream = new FileOutputStream(resultatPath);
          writer = loadWriter(resultatsStream);
-         
-         
+         XMLEventFactory eventFactory = XMLEventFactory.newInstance();
+         StaxUtils staxUtils = new StaxUtils(eventFactory, writer);
+
+         traceFileSupport.ecrireEntete(staxUtils);
+         traceFileSupport.ecrireInfosJournalPrecedent(staxUtils,
+               idJournalPrecedent, hashJournalPrecedent);
+         traceFileSupport.ecrireDate(staxUtils, date);
+
+         traceFileSupport.ecrireBaliseDebutTraces(staxUtils);
+
+         TraceJournalEvt trace;
+         if (CollectionUtils.isNotEmpty(listTraces)) {
+            for (TraceJournalEvtIndex evt : listTraces) {
+               trace = support.find(evt.getIdentifiant());
+               traceFileSupport.ecrireTrace(staxUtils, trace);
+            }
+         }
+
+         traceFileSupport.ecrireBalisesFin(staxUtils);
 
       } catch (FileNotFoundException e) {
          throw new TraceRuntimeException(e);
+
+      } catch (XMLStreamException exception) {
+         throw new TraceRuntimeException(exception);
 
       } finally {
          if (writer != null) {
@@ -144,8 +168,8 @@ public class JournalEvtServiceImpl implements JournalEvtService {
       final XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
 
       try {
-         final XMLEventWriter writer = outputFactory
-               .createXMLEventWriter(resultatsStream);
+         final XMLEventWriter writer = outputFactory.createXMLEventWriter(
+               resultatsStream, "UTF-8");
          IndentingXMLEventWriter iWriter = new IndentingXMLEventWriter(writer);
          iWriter.setIndent(INDENTATION);
          return iWriter;
@@ -159,8 +183,8 @@ public class JournalEvtServiceImpl implements JournalEvtService {
     * {@inheritDoc}
     */
    @Override
-   public List<TraceJournalEvtIndex> lecture(Date dateDebut, Date dateFin,
-         int limite, boolean reversed) {
+   public final List<TraceJournalEvtIndex> lecture(Date dateDebut,
+         Date dateFin, int limite, boolean reversed) {
       String prefix = "lecture()";
       LOGGER.debug(DEBUT_LOG, prefix);
 
@@ -187,7 +211,7 @@ public class JournalEvtServiceImpl implements JournalEvtService {
     * {@inheritDoc}
     */
    @Override
-   public TraceJournalEvt lecture(UUID identifiant) {
+   public final TraceJournalEvt lecture(UUID identifiant) {
       return support.find(identifiant);
    }
 
@@ -195,7 +219,7 @@ public class JournalEvtServiceImpl implements JournalEvtService {
     * {@inheritDoc}
     */
    @Override
-   public void purge(Date date) {
+   public final void purge(Date date) {
       String prefix = "purge()";
       LOGGER.debug(DEBUT_LOG, prefix);
 
@@ -208,7 +232,6 @@ public class JournalEvtServiceImpl implements JournalEvtService {
       loggerSupport.logPurgeJourneeFin(LOGGER, prefix,
             PurgeType.PURGE_EXPLOITATION, DateRegUtils.getJournee(date),
             nbTracesPurgees);
-      date = DateUtils.addDays(date, 1);
 
       LOGGER.debug(FIN_LOG, prefix);
 
@@ -273,7 +296,7 @@ public class JournalEvtServiceImpl implements JournalEvtService {
     * {@inheritDoc}
     */
    @Override
-   public boolean hasRecords(Date date) {
+   public final boolean hasRecords(Date date) {
 
       Date beginDate = DateUtils.truncate(date, Calendar.DATE);
       Date endDate = DateUtils.addDays(beginDate, 1);

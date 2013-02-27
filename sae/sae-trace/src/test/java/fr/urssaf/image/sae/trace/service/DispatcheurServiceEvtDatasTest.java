@@ -146,9 +146,9 @@ public class DispatcheurServiceEvtDatasTest {
                   1, result.size());
 
       // on vérifie la trace
-      TraceJournalEvt trace = evtService.lecture(result.get(0).getId());
+      TraceJournalEvt trace = evtService.lecture(result.get(0).getIdentifiant());
       Assert.assertTrue("Le contrat de service ne doit pas être renseigné",
-            StringUtils.isEmpty(trace.getCs()));
+            StringUtils.isEmpty(trace.getContratService()));
 
    }
 
@@ -178,7 +178,7 @@ public class DispatcheurServiceEvtDatasTest {
                   1, result.size());
 
       // on vérifie les infos présentes dans les infos
-      TraceJournalEvt trace = evtService.lecture(result.get(0).getId());
+      TraceJournalEvt trace = evtService.lecture(result.get(0).getIdentifiant());
       Assert.assertNotNull("les infos doivent etre renseignées", trace
             .getInfos());
       Assert.assertEquals("le nombre d'infos doit etre correct", 2, trace

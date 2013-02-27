@@ -37,4 +37,24 @@ public class PurgeServiceDatasTest {
       }
 
    }
+   
+   @Test
+   public void testPurgeJournalObligatoire() {
+
+      try {
+         service.purgerJournal(null);
+         Assert.fail("Une exception IllegalArgumentException est attendue");
+
+      } catch (IllegalArgumentException exception) {
+         Assert.assertEquals("le message d'erreur doit etre correct",
+               StringUtils.replace(MESSAGE_ERREUR, "{0}", "type de purge"),
+               exception.getMessage());
+
+      } catch (Exception exception) {
+         Assert.fail("Une exception IllegalArgumentException est attendue");
+      }
+
+   }
+   
+   
 }

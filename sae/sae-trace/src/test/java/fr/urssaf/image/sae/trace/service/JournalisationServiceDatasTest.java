@@ -3,14 +3,22 @@
  */
 package fr.urssaf.image.sae.trace.service;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.junit.After;
 import org.junit.Assert;
@@ -61,7 +69,7 @@ public class JournalisationServiceDatasTest {
    public void after() throws Exception {
       server.resetData();
    }
-
+   
    @Test
    public void testRecup0Dates() {
 
@@ -99,6 +107,63 @@ public class JournalisationServiceDatasTest {
 
    }
 
+   @Test
+   public void testExport() throws IOException {
+
+      Parameter parameter = new Parameter(
+            ParameterType.JOURNALISATION_EVT_ID_JOURNAL_PRECEDENT, "6f5e4930-80cc-11e2-8759-005056c00008");
+      parametersService.saveParameter(parameter);
+      parameter = new Parameter(
+            ParameterType.JOURNALISATION_EVT_HASH_JOURNAL_PRECEDENT, "00000");
+      parametersService.saveParameter(parameter);
+
+      Calendar calendar = new GregorianCalendar();
+      calendar.set(Calendar.YEAR, 2013);
+      calendar.set(Calendar.MONTH, 3);
+      calendar.set(Calendar.DATE, 15);
+      calendar.set(Calendar.AM_PM, Calendar.AM);
+      calendar.set(Calendar.HOUR, 11);
+      calendar.set(Calendar.MINUTE, 45);
+      calendar.set(Calendar.SECOND, 50);
+
+      createTrace(calendar.getTime(), " [DATE]", UUID
+            .fromString("1b163270-80bd-11e2-8148-005056c00008"));
+
+      String dirPath = System.getProperty("java.io.tmpdir");
+      File tempDirectory = new File(dirPath);
+      File repertoire = new File(tempDirectory, "export");
+      repertoire.mkdir();
+
+      String path = service.exporterTraces(
+            JournalisationType.JOURNALISATION_EVT,
+            repertoire.getAbsolutePath(), calendar.getTime());
+
+      String sha1Attendu = "9d0bf360dee181cb3a51f512db52d57f18a8ea49";
+      String sha1Obtenu = calculeSha1(new File(path));
+
+      FileUtils.deleteDirectory(repertoire);
+
+      Assert.assertEquals(
+            "le sha1 doit etre correct : le fichier doit etre correct",
+            sha1Attendu, sha1Obtenu);
+
+   }
+
+   private String calculeSha1(File file) throws IOException {
+
+      FileInputStream fis = new FileInputStream(file);
+      try {
+
+         return DigestUtils.shaHex(fis);
+
+      } finally {
+         if (fis != null) {
+            fis.close();
+         }
+      }
+
+   }
+
    private void createTraces() {
       createTrace(DATE, " [DATE]");
       createTrace(DateUtils.addDays(DATE, -1), " [DATE_1]");
@@ -112,8 +177,8 @@ public class JournalisationServiceDatasTest {
       TraceJournalEvt trace = new TraceJournalEvt();
       trace.setContexte(CONTEXTE + suffixe);
       trace.setCodeEvt(CODE_EVT + suffixe);
-      trace.setCs(CONTRAT + suffixe);
-      trace.setId(TimeUUIDUtils.getTimeUUID(date.getTime()));
+      trace.setContratService(CONTRAT + suffixe);
+      trace.setIdentifiant(TimeUUIDUtils.getTimeUUID(date.getTime()));
       trace.setLogin(LOGIN + suffixe);
       trace.setTimestamp(date);
       trace.setInfos(INFOS);
@@ -121,5 +186,17 @@ public class JournalisationServiceDatasTest {
       support.create(trace, new Date().getTime());
    }
 
-   // FIXME - FBON - Tester l'export
+   private void createTrace(Date date, String suffixe, UUID id) {
+      TraceJournalEvt trace = new TraceJournalEvt();
+      trace.setContexte(CONTEXTE + suffixe);
+      trace.setCodeEvt(CODE_EVT + suffixe);
+      trace.setContratService(CONTRAT + suffixe);
+      trace.setIdentifiant(id);
+      trace.setLogin(LOGIN + suffixe);
+      trace.setTimestamp(date);
+      trace.setInfos(INFOS);
+      trace.setPagms(Arrays.asList("PAGM " + suffixe));
+
+      support.create(trace, new Date().getTime());
+   }
 }

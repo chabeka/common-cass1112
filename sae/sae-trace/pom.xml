@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
    <modelVersion>4.0.0</modelVersion>
 
    <groupId>fr.urssaf.image.sae</groupId>
@@ -56,7 +57,7 @@
             </exclusion>
          </exclusions>
       </dependency>
-      
+
       <!-- JODA TIME  -->
       <dependency>
          <groupId>joda-time</groupId>
@@ -76,6 +77,12 @@
          <groupId>fr.urssaf.image.commons</groupId>
          <artifactId>commons-cassandra</artifactId>
          <version>${commons.cassandra}</version>
+         <exclusions>
+            <exclusion>
+               <groupId>commons-codec</groupId>
+               <artifactId>commons-codec</artifactId>
+            </exclusion>
+         </exclusions>
       </dependency>
 
       <!-- SPRING -->
@@ -104,7 +111,12 @@
          <artifactId>commons-collections</artifactId>
          <version>${apache.commons-collections.version}</version>
       </dependency>
-      
+      <dependency>
+         <groupId>commons-codec</groupId>
+         <artifactId>commons-codec</artifactId>
+         <version>${apache.commons-codec.version}</version>
+      </dependency>
+
       <!-- STAX -->
       <dependency>
          <groupId>net.java.dev.stax-utils</groupId>
@@ -117,5 +129,7 @@
             </exclusion>
          </exclusions>
       </dependency>
+
+
    </dependencies>
 </project>

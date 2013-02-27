@@ -3,7 +3,6 @@
  */
 package fr.urssaf.image.sae.trace.dao;
 
-import java.util.Date;
 import java.util.UUID;
 
 import me.prettyprint.cassandra.serializers.StringSerializer;

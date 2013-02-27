@@ -162,7 +162,7 @@ public class DispatcheurServiceRegistresDatasAucuneInfosTest {
 
       // on vérifie les infos présentes dans les infos
       TraceRegTechnique trace = techniqueService.lecture(result.get(0)
-            .getId());
+            .getIdentifiant());
       Assert.assertNull("les infos ne doivent pas etre renseignées", trace
             .getInfos());
    }

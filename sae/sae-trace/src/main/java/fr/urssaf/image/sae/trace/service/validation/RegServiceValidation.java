@@ -46,10 +46,8 @@ public class RegServiceValidation {
    /**
     * Réalise la validation de la méthode purge de l'interface RegService
     * 
-    * @param dateDebut
-    *           date de début
-    * @param dateFin
-    *           date de fin
+    * @param date
+    *           date de la purge
     */
    @Before(PURGE_METHOD)
    public final void testPurge(Date date) {
@@ -60,12 +58,10 @@ public class RegServiceValidation {
    }
 
    /**
-    * Réalise la validation de la méthode purge de l'interface RegService
+    * Réalise la validation de la méthode hasRecords de l'interface RegService
     * 
-    * @param dateDebut
-    *           date de début
-    * @param dateFin
-    *           date de fin
+    * @param date
+    *           date pour laquelle vérifier qu'il y a des enregistrements
     */
    @Before(HAS_RECORDS_METHOD)
    public final void testHasRecords(Date date) {

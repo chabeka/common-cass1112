@@ -133,7 +133,7 @@ public class PurgeServiceImpl implements PurgeService {
     * {@inheritDoc}
     */
    @Override
-   public void purgerJournal(PurgeType typePurge) {
+   public final void purgerJournal(PurgeType typePurge) {
 
       String trcPrefix = "purgerRegistre";
       List<PurgeType> authorized = Arrays.asList(PurgeType.PURGE_EVT);
@@ -215,18 +215,7 @@ public class PurgeServiceImpl implements PurgeService {
          date = (Date) param.getValue();
 
       } catch (ParameterNotFoundException exception) {
-
-         // On commence au 01/01/2013
-         Calendar calendar = Calendar.getInstance();
-         calendar.set(Calendar.YEAR, 2013);
-         calendar.set(Calendar.MONTH, 0); // les numéros de mois commencent à 0
-         calendar.set(Calendar.DAY_OF_MONTH, 1);
-         calendar.set(Calendar.HOUR_OF_DAY, 0);
-         calendar.set(Calendar.MINUTE, 0);
-         calendar.set(Calendar.SECOND, 0);
-         calendar.set(Calendar.MILLISECOND, 0);
-         date = calendar.getTime();
-
+         throw new TraceRuntimeException(exception);
       }
 
       return date;
@@ -303,10 +292,19 @@ public class PurgeServiceImpl implements PurgeService {
 
    private Date getDateJournalisationFromPurgeType(PurgeType typePurge) {
 
+      ParameterType type;
+      if (PurgeType.PURGE_EVT.equals(typePurge)) {
+         type = ParameterType.JOURNALISATION_EVT_DATE;
+
+      } else {
+         throw new TraceRuntimeException(
+               "type de journalisation non supporté pour cette purge");
+      }
+
       Date date;
       try {
          Parameter param = paramService
-               .loadParameter(ParameterType.JOURNALISATION_EVT_DATE);
+               .loadParameter(type);
          date = (Date) param.getValue();
 
       } catch (ParameterNotFoundException exception) {

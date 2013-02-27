@@ -18,6 +18,8 @@ import org.aspectj.lang.annotation.Before;
 @Aspect
 public class RegSpecifiquesServiceValidation {
 
+   private static final String ARG_0 = "{0}";
+
    private static final String MESSAGE_ERREUR = "l'argument {0} est obligatoire";
 
    private static final String CLASS_NAME = "fr.urssaf.image.sae.trace.service.*.";
@@ -26,7 +28,7 @@ public class RegSpecifiquesServiceValidation {
          + " && args(dateDebut, dateFin, limite, reversed)";
    private static final String EXPORT_METHOD = "execution(java.lang.String "
          + CLASS_NAME + "export(*,*,*,*))"
-         + " && args(date, repertoire, id, hash)";
+         + " && args(date, repertoire, identifiant, hash)";
 
    /**
     * Réalise la validation de la méthode lecture
@@ -51,12 +53,12 @@ public class RegSpecifiquesServiceValidation {
 
       if (dateDebut == null) {
          throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
-               "{0}", "date de début"));
+               ARG_0, "date de début"));
       }
 
       if (dateFin == null) {
          throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
-               "{0}", "date de fin"));
+               ARG_0, "date de fin"));
       }
 
       if (dateDebut.compareTo(dateFin) >= 0) {
@@ -66,7 +68,7 @@ public class RegSpecifiquesServiceValidation {
 
       if (limite < 1) {
          throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
-               "{0}", "limite"));
+               ARG_0, "limite"));
       }
 
    }
@@ -78,34 +80,34 @@ public class RegSpecifiquesServiceValidation {
     *           date concernée par l'export
     * @param repertoire
     *           répertoire dans lequel créer le fichier d'export
-    * @param id
+    * @param identifiant
     *           identifiant du journal précédent
     * @param hash
     *           hash du journal précédent
     * 
     */
    @Before(EXPORT_METHOD)
-   public final void testExport(Date date, String repertoire, String id,
+   public final void testExport(Date date, String repertoire, String identifiant,
          String hash) {
 
       if (date == null) {
          throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
-               "{0}", "date d'export"));
+               ARG_0, "date d'export"));
       }
 
       if (StringUtils.isEmpty(repertoire)) {
          throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
-               "{0}", "répertoire"));
+               ARG_0, "répertoire"));
       }
 
-      if (StringUtils.isEmpty(id)) {
+      if (StringUtils.isEmpty(identifiant)) {
          throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
-               "{0}", "identifiant du journal précédent"));
+               ARG_0, "identifiant du journal précédent"));
       }
 
       if (StringUtils.isEmpty(hash)) {
          throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
-               "{0}", "hash du journal précédent"));
+               ARG_0, "hash du journal précédent"));
       }
 
       File file = new File(repertoire);

@@ -27,7 +27,7 @@ public class TraceJournalEvt {
    /**
     * identifiant de la trace
     */
-   private UUID id;
+   private UUID identifiant;
 
    /**
     * Date de création de la trace
@@ -47,7 +47,7 @@ public class TraceJournalEvt {
    /**
     * Code du contrat de service
     */
-   private String cs;
+   private String contratService;
 
    /**
     * Login de l'utilisateur
@@ -82,13 +82,13 @@ public class TraceJournalEvt {
    public TraceJournalEvt(TraceToCreate trace, List<String> listInfos) {
       this.contexte = trace.getContexte();
       this.codeEvt = trace.getCodeEvt();
-      this.cs = trace.getContrat();
+      this.contratService = trace.getContrat();
       if (CollectionUtils.isNotEmpty(trace.getPagms())) {
          this.pagms.addAll(trace.getPagms());
       }
       this.login = trace.getLogin();
       this.timestamp = trace.getTimestamp();
-      this.id = TimeUUIDUtils.getTimeUUID(trace.getTimestamp().getTime());
+      this.identifiant = TimeUUIDUtils.getTimeUUID(trace.getTimestamp().getTime());
 
       if (CollectionUtils.isNotEmpty(listInfos)
             && MapUtils.isNotEmpty(trace.getInfos())) {
@@ -108,18 +108,18 @@ public class TraceJournalEvt {
    }
 
    /**
-    * @return the id
+    * @return the identifiant
     */
-   public final UUID getId() {
-      return id;
+   public final UUID getIdentifiant() {
+      return identifiant;
    }
 
    /**
-    * @param id
-    *           the id to set
+    * @param identifiant
+    *           the identifiant to set
     */
-   public final void setId(UUID id) {
-      this.id = id;
+   public final void setIdentifiant(UUID identifiant) {
+      this.identifiant = identifiant;
    }
 
    /**
@@ -168,18 +168,18 @@ public class TraceJournalEvt {
    }
 
    /**
-    * @return the cs
+    * @return the contratService
     */
-   public final String getCs() {
-      return cs;
+   public final String getContratService() {
+      return contratService;
    }
 
    /**
-    * @param cs
-    *           the cs to set
+    * @param contratService
+    *           the contratService to set
     */
-   public final void setCs(String cs) {
-      this.cs = cs;
+   public final void setContratService(String contratService) {
+      this.contratService = contratService;
    }
 
    /**

@@ -55,14 +55,14 @@ public class TraceJournalEvtSupport {
       // création de la trace
       ColumnFamilyTemplate<UUID, String> tmpl = dao.getJournalEvtTmpl();
       ColumnFamilyUpdater<UUID, String> updater = tmpl.createUpdater(trace
-            .getId());
+            .getIdentifiant());
 
       dao.writeColumnCodeEvt(updater, trace.getCodeEvt(), clock);
       dao.writeColumnContext(updater, trace.getContexte(), clock);
       dao.writeColumnTimestamp(updater, trace.getTimestamp(), clock);
 
-      if (StringUtils.isNotBlank(trace.getCs())) {
-         dao.writeColumnContratService(updater, trace.getCs(), clock);
+      if (StringUtils.isNotBlank(trace.getContratService())) {
+         dao.writeColumnContratService(updater, trace.getContratService(), clock);
       }
 
       if (CollectionUtils.isNotEmpty(trace.getPagms())) {
@@ -84,7 +84,7 @@ public class TraceJournalEvtSupport {
       String journee = DateRegUtils.getJournee(index.getTimestamp());
       ColumnFamilyUpdater<String, UUID> indexUpdater = indexDao
             .createUpdater(journee);
-      indexDao.writeColumn(indexUpdater, index.getId(), index, clock);
+      indexDao.writeColumn(indexUpdater, index.getIdentifiant(), index, clock);
       indexDao.update(indexUpdater);
 
    }
@@ -223,12 +223,12 @@ public class TraceJournalEvtSupport {
       if (result != null && result.hasResults()) {
          securite = new TraceJournalEvt();
 
-         securite.setId(result.getKey());
+         securite.setIdentifiant(result.getKey());
          securite
                .setCodeEvt(result.getString(TraceRegSecuriteDao.COL_CODE_EVT));
          securite.setContexte(result
                .getString(TraceRegSecuriteDao.COL_CONTEXTE));
-         securite.setCs(result
+         securite.setContratService(result
                .getString(TraceRegSecuriteDao.COL_CONTRAT_SERVICE));
          securite.setLogin(result.getString(TraceRegSecuriteDao.COL_LOGIN));
          securite.setTimestamp(result
@@ -256,7 +256,7 @@ public class TraceJournalEvtSupport {
       Mutator<UUID> mutator = dao.createMutator();
       while (iterator.hasNext()) {
          dao.mutatorSuppressionRegExploitation(mutator,
-               iterator.next().getId(), clock);
+               iterator.next().getIdentifiant(), clock);
          result++;
       }
       mutator.execute();

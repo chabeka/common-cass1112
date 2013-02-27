@@ -206,7 +206,7 @@ public class DispatcheurServiceRegistresDatasToutesInfosTest {
             1, result.size());
 
       // on vérifie les infos présentes dans les infos
-      TraceRegSecurite trace = securiteService.lecture(result.get(0).getId());
+      TraceRegSecurite trace = securiteService.lecture(result.get(0).getIdentifiant());
       Assert.assertNotNull("les infos doivent etre renseignées", trace
             .getInfos());
       Assert.assertEquals("le nombre d'infos doit etre correct", 3, trace

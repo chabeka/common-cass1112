@@ -3,6 +3,7 @@
  */
 package fr.urssaf.image.sae.trace.exception;
 
+
 /**
  * Exception runtime de traitement
  * 
@@ -29,6 +30,16 @@ public class TraceRuntimeException extends RuntimeException {
     */
    public TraceRuntimeException(Exception exception) {
       super(exception);
+   }
+
+   /**
+    * @param message
+    *           message de l'erreur
+    * @param exception
+    *           exception mère
+    */
+   public TraceRuntimeException(String message, Exception exception) {
+      super(message, exception);
    }
 
 }
