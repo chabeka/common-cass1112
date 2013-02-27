@@ -103,6 +103,7 @@ public class Test103Commons {
       metadonnees.add("NumeroStructure", "000050221");
       metadonnees.add("Periode", "PERI");
       metadonnees.add("PseudoSiret", "4914736610005");
+      metadonnees.add("ReferenceDocumentaire", "1234567890AZERTyuio1234567890");
       metadonnees.add("RUM", "24534Y8465435413Y012312356690123");
       metadonnees.add("Siren", "0123456789");
       metadonnees.add("Siret", "12345678912345");
@@ -152,6 +153,7 @@ public class Test103Commons {
       codesMeta.add("NumeroStructure");
       codesMeta.add("Periode");
       codesMeta.add("PseudoSiret");
+      codesMeta.add("ReferenceDocumentaire");
       codesMeta.add("RUM");
       codesMeta.add("Siren");
       codesMeta.add("Siret");
@@ -278,6 +280,7 @@ public class Test103Commons {
       valeursAttendues.add("NumeroStructure", "000050221");
       valeursAttendues.add("Periode", "PERI");
       valeursAttendues.add("PseudoSiret", "4914736610005");
+      valeursAttendues.add("ReferenceDocumentaire", "1234567890AZERTyuio1234567890");
       valeursAttendues.add("RUM", "24534Y8465435413Y012312356690123");
       valeursAttendues.add("Siren", "0123456789");
       valeursAttendues.add("Siret", "12345678912345");

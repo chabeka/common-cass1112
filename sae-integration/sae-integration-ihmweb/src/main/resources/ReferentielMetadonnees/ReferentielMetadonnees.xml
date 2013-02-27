@@ -611,5 +611,17 @@
         <client>true</client>
         <obligatoireAuStockage>false</obligatoireAuStockage>
         <typeDfce>string</typeDfce>
-    </Metadonnee>    
+    </Metadonnee>
+    <Metadonnee>
+        <codeLong>ReferenceDocumentaire</codeLong>
+        <codeCourt>rdo</codeCourt>
+        <archivablePossible>true</archivablePossible>
+        <archivableObligatoire>false</archivableObligatoire>
+        <consulteeParDefaut>false</consulteeParDefaut>
+        <consultable>true</consultable>
+        <critereRecherche>true</critereRecherche>
+        <client>true</client>
+        <obligatoireAuStockage>false</obligatoireAuStockage>
+        <typeDfce>string</typeDfce>
+   </Metadonnee>       
 </ReferentielMetadonnees>
