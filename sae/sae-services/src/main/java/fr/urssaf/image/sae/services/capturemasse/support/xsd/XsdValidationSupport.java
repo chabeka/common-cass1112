@@ -19,7 +19,7 @@ import fr.urssaf.image.sae.services.util.XmlValidationUtils;
  * Support de validation de fichier XML à l'aide de fichiers XSD
  */
 @Component
-public class XsdValidationSupport {
+public final class XsdValidationSupport {
 
    @Autowired
    private ApplicationContext applContext;
@@ -31,8 +31,6 @@ public class XsdValidationSupport {
     * 
     * @param fileResultats
     *           l'objet File pointant sur le fichier resultats.xml
-    * @throws CaptureMasseRuntimeException
-    *            erreur du parser XSD
     */
    public void resultatsValidation(File fileResultats) {
 

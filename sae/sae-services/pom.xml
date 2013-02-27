@@ -132,6 +132,13 @@
          <artifactId>sae-pile-travaux</artifactId>
          <version>13.4.10.2-SNAPSHOT</version>
       </dependency>
+      
+      <!-- SAE-TRACE -->
+      <dependency>
+         <groupId>fr.urssaf.image.sae</groupId>
+         <artifactId>sae-trace</artifactId>
+         <version>13.4.10.2-SNAPSHOT</version>
+      </dependency>
 
       <!-- SPRING BATCH CASSANDRA -->
       <dependency>

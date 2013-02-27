@@ -4,7 +4,6 @@
 package fr.urssaf.image.sae.services.capturemasse.support.flag.batch;
 
 import java.io.File;
-import java.net.InetAddress;
 import java.util.Date;
 import java.util.UUID;
 
@@ -20,6 +19,7 @@ import org.springframework.stereotype.Component;
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
 import fr.urssaf.image.sae.services.capturemasse.support.flag.DebutTraitementFlagSupport;
 import fr.urssaf.image.sae.services.capturemasse.support.flag.model.DebutTraitementFlag;
+import fr.urssaf.image.sae.services.util.HostnameUtil;
 
 /**
  * Tasklet d'écriture du fichier fin_traitement.flag
@@ -55,7 +55,7 @@ public class DebutTraitementFlagTasklet implements Tasklet {
       final UUID idTraitement = UUID.fromString(ident);
 
       final DebutTraitementFlag flag = new DebutTraitementFlag();
-      flag.setHostInfo(InetAddress.getLocalHost());
+      flag.setHostInfo(HostnameUtil.getLocalHost());
       flag.setIdTraitement(idTraitement);
       flag.setStartDate(new Date());
 

@@ -6,7 +6,9 @@ package fr.urssaf.image.sae.services.capturemasse.integration;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -37,12 +39,14 @@ import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.services.batch.model.ExitTraitement;
 import fr.urssaf.image.sae.services.capturemasse.SAECaptureMasseService;
+import fr.urssaf.image.sae.services.capturemasse.utils.TraceAssertUtils;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentService;
+import fr.urssaf.image.sae.trace.service.RegTechniqueService;
 import fr.urssaf.image.sae.utils.LogUtils;
 import fr.urssaf.image.sae.utils.SaeLogAppender;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
@@ -72,6 +76,9 @@ public class Integration252Test {
    @Qualifier("storageServiceProvider")
    private StorageServiceProvider provider;
 
+   @Autowired
+   private RegTechniqueService regTechniqueService;
+
    private EcdeTestSommaire ecdeTestSommaire;
 
    private Logger logger;
@@ -94,6 +101,7 @@ public class Integration252Test {
       VIContenuExtrait viExtrait = new VIContenuExtrait();
       viExtrait.setCodeAppli("TESTS_UNITAIRES");
       viExtrait.setIdUtilisateur("UTILISATEUR TEST");
+      viExtrait.setPagms(Arrays.asList("TU_PAGM1","TU_PAGM2"));
 
       SaeDroits saeDroits = new SaeDroits();
       List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
@@ -136,8 +144,10 @@ public class Integration252Test {
       initComposants();
       initDatas();
 
-      ExitTraitement exitStatus = service.captureMasse(ecdeTestSommaire
-            .getUrlEcde(), UUID.randomUUID());
+      UUID idTdm = UUID.randomUUID();
+      URI urlSommaire = ecdeTestSommaire.getUrlEcde();
+
+      ExitTraitement exitStatus = service.captureMasse(urlSommaire, idTdm);
 
       EasyMock.verify(provider, storageDocumentService);
 
@@ -147,6 +157,8 @@ public class Integration252Test {
       checkFiles();
 
       checkLogs();
+
+      checkTracabilite(idTdm.toString(), urlSommaire.toString());
 
    }
 
@@ -254,6 +266,16 @@ public class Integration252Test {
       boolean messageFound = LogUtils.logContainsMessage(event, LOG_WARN);
       Assert.assertTrue("le message d'erreur attendu doit être correct",
             messageFound);
+   }
+
+   private void checkTracabilite(String idTdm, String urlSommaire) {
+
+      TraceAssertUtils
+            .verifieTraceCaptureMasseDansRegTechnique(
+                  regTechniqueService,
+                  "fr.urssaf.image.sae.services.exception.capture.RequiredArchivableMetadataEx: La ou les métadonnées suivantes, obligatoires lors de l'archivage, ne sont pas renseignées : ApplicationProductrice, CodeOrganismeGestionnaire, CodeOrganismeProprietaire, CodeRND, DateCreation, FormatFichier, Hash, NbPages, Titre, TypeHash",
+                  idTdm, urlSommaire);
+
    }
 
 }

@@ -44,12 +44,12 @@ public final class Constantes {
     * Documents intégrés
     */
    public static final String INTEG_DOCS = "INTEGRATED_DOCUMENTS";
-   
+
    /**
     * Nombre de documents intégrés
     */
    public static final String NB_INTEG_DOCS = "NB_INTEG_DOCS";
-   
+
    /**
     * Chemin complet du fichier sommaire.xml
     */
@@ -95,12 +95,12 @@ public final class Constantes {
     * Flag indiquant qu'un trace pour le systeme a été générée
     */
    public static final String FLAG_BUL003 = "FLAG_BUL003";
-   
+
    /**
     * Hash du fichier sommaire.xml
     */
    public static final String HASH = "hash";
-   
+
    /**
     * Le type de hash
     */
@@ -117,8 +117,11 @@ public final class Constantes {
     */
    public static final String ECDE_URL = "ecdeUrl";
 
-   
-   
+   /**
+    * Traçabilité : le code de l'événement pour l'échec d'une capture de masse
+    */
+   public static final String TRACE_CODE_EVT_ECHEC_CM = "CAPTURE_MASSE|KO";
+
    /**
     * Constructeur
     */
