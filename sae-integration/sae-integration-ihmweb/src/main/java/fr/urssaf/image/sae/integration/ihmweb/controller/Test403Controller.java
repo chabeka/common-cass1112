@@ -68,6 +68,7 @@ public class Test403Controller extends AbstractTestWsController<Test403Formulair
       metadonnees.add("Hash","a2f93f1f121ebba0faef2c0596f2f126eacae77b");
       metadonnees.add("JetonDePreuve","1A2B3C4D5E6F7G8H9I" );
       metadonnees.add("NbPages","2");
+      metadonnees.add("ReferenceDocumentaire","2131179500003");
       metadonnees.add("RUM","24534Y8465435413Y012312356690123");
       metadonnees.add("Titre","Attestation de vigilance");
       metadonnees.add("TypeHash","SHA-1");
@@ -213,6 +214,7 @@ public class Test403Controller extends AbstractTestWsController<Test403Formulair
       metaAttendues.add(new MetadonneeValeur("NumeroStructure", StringUtils.EMPTY));
       metaAttendues.add(new MetadonneeValeur("Periode", StringUtils.EMPTY));
       metaAttendues.add(new MetadonneeValeur("PseudoSiret", StringUtils.EMPTY));
+      metaAttendues.add(new MetadonneeValeur("ReferenceDocumentaire", "2131179500003"));
       metaAttendues.add(new MetadonneeValeur("RUM", "24534Y8465435413Y012312356690123"));
       metaAttendues.add(new MetadonneeValeur("Siren", StringUtils.EMPTY));
       metaAttendues.add(new MetadonneeValeur("Siret", StringUtils.EMPTY));
