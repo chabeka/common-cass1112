@@ -562,6 +562,47 @@
          </CasTest>
          
          <CasTest>
+            <id>218</id>
+            <code>218-CaptureMasse-OK-RND-Mandat-SEPA</code>
+            <description>
+               On vérifie que la capture de masse fonctionne correctement lorsque l’on souhaite intégrer des documents de type Mandat-SEPA
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 218-CaptureMasse-OK-MANDAT-SEPA"</luceneExemple>
+         </CasTest>
+         
+         <CasTest>
+            <id>220</id>
+            <code>220-CaptureMasse-Avec-Hash-OK-Tor-10</code>
+            <description>
+               On vérifie la nouvelle capture de masse avec hash fonctionne correctement
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 220-CaptureMasse-Avec-Hash-OK-Tor-10"</luceneExemple>
+         </CasTest>         
+         
+         
+         <CasTest>
+            <id>224</id>
+            <code>224-CaptureMasse-OK-RUM</code>
+            <description>
+               On vérifie que la nouvelle capture de masse fonctionne correctement sur la valeur spécifique RUM qui peut avoir des espaces à gauche du terme.
+            </description>
+            <implemente>true</implemente>
+            <luceneExempleList>Denomination:"Test 224-CaptureMasse-OK-RUM" AND RUM:"12345678901234567890123456789012345"</luceneExempleList>
+            <luceneExempleList>Denomination:"Test 224-CaptureMasse-OK-RUM" AND RUM:"     678901234567890123456789012345"</luceneExempleList>
+            <luceneExempleList>Denomination:"Test 224-CaptureMasse-OK-RUM" AND RUM:" 2345678901234567890     6789012345"</luceneExempleList>
+            <luceneExempleList>Denomination:"Test 224-CaptureMasse-OK-RUM" AND RUM:"??abc : d 12 ef"</luceneExempleList>
+            <luceneExempleList>Denomination:"Test 224-CaptureMasse-OK-RUM" AND RUM:"     ??abc : d 12 ef     "</luceneExempleList>
+            <luceneExempleList>Denomination:"Test 224-CaptureMasse-OK-RUM" AND RUM:"98765432109876543210987654321098765"</luceneExempleList>
+            <luceneExempleList>Denomination:"Test 224-CaptureMasse-OK-RUM" AND RUM:"12345     12345     12345     00000"</luceneExempleList>
+            <luceneExempleList>Denomination:"Test 224-CaptureMasse-OK-RUM" AND RUM:"00000000001234567890123456789000000"</luceneExempleList>
+            <luceneExempleList>Denomination:"Test 224-CaptureMasse-OK-RUM" AND RUM: "                              12345"</luceneExempleList>
+            <luceneExempleList>Denomination:"Test 224-CaptureMasse-OK-RUM" AND RUM:"00000000000000000000000000000000000"</luceneExempleList>
+            <luceneExempleList>Denomination:"Test 224-CaptureMasse-OK-RUM" AND RUM:"++345678901234567890123456789012345"</luceneExempleList>
+         </CasTest>
+         
+         <CasTest>
             <id>250</id>
             <code>250-CaptureMasse-KO-SansAuthentification</code>
             <description>
@@ -800,7 +841,31 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 288-CaptureMasse-KO-Format-XML-KO"</luceneExemple>
          </CasTest>
-
+         <CasTest>
+            <id>289</id>
+            <code>289-CaptureMasse-Avec-Hash-Fourni-KO-Tor-10</code>
+            <description>
+               Ce test permet de vérifier que la nouvelle capture de masse avec hash fonctionne correctement en refusant d’exécuter une capture lorsque le hash fourni n’est pas celui attendu.
+            </description>
+            <implemente>true</implemente>
+         </CasTest>
+         <CasTest>
+            <id>290</id>
+            <code>290-CaptureMasse-Avec-Hash-Recalcule-KO-Tor-10</code>
+            <description>
+               Ce test permet de vérifier que la nouvelle capture de masse avec hash fonctionne correctement en refusant d’exécuter une capture lorsque le hash fourni n’est pas celui attendu.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 290-CaptureMasse-Avec-Hash-Recalcule-KO-Tor-10"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>291</id>
+            <code>291-CaptureMasse-Avec-Hash-Type-Hash-KO-Tor-10</code>
+            <description>
+               Ce test permet de vérifier que la nouvelle capture de masse avec hash fonctionne correctement en refusant d’exécuter une capture lorsque le hash fourni n’est pas autorisé.
+            </description>
+            <implemente>true</implemente>
+         </CasTest>
       </CasTests>
 
    </Categorie>

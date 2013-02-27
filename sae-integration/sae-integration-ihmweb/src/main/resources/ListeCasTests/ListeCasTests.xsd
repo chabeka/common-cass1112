@@ -31,14 +31,24 @@
    </xsd:complexType>
    
    
+       
    <xsd:complexType name="CasTestType">
       <xsd:sequence>
          <xsd:element name="id" type="xsd:string" />
          <xsd:element name="code" type="xsd:string" />
          <xsd:element name="description" type="xsd:string" />
          <xsd:element name="implemente" type="xsd:boolean" />
-         <xsd:element name="luceneExemple" type="xsd:string" minOccurs="0" />
+         <xsd:element name="luceneExemple" type="xsd:string" minOccurs="0"/>
+         <!-- xsd:element name="luceneExempleList" minOccurs="0">
+          <xsd:simpleType>
+                <xsd:list itemType="xsd:string"/>
+          </xsd:simpleType>
+         </xsd:element-->
+         <xsd:sequence>
+                <xsd:element name="luceneExempleList" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+         </xsd:sequence>         
       </xsd:sequence>
    </xsd:complexType>
+   
    
 </xsd:schema>
