@@ -413,7 +413,7 @@ public class SAEControlesCaptureServiceImpl implements
                ecdePermission = false;
             }
          }
-         
+
          if (!ecdePermission) {
             throw new CaptureEcdeWriteFileEx(ResourceMessagesUtils.loadMessage(
                   "capture.ecde.droit.ecriture", urlEcde));
@@ -544,6 +544,7 @@ public class SAEControlesCaptureServiceImpl implements
     *           contenu du fichier
     * 
     * @throws EmptyDocumentEx
+    *            erreur levée lorsquele document est vide
     */
    public final void checkBinaryContent(byte[] content) throws EmptyDocumentEx {
 
@@ -560,6 +561,7 @@ public class SAEControlesCaptureServiceImpl implements
     *           nom du fichier
     * 
     * @throws EmptyFileNameEx
+    *            erreur levée lorsque le nom de fichier est vide
     */
    public final void checkBinaryFileName(String fileName)
          throws EmptyFileNameEx {

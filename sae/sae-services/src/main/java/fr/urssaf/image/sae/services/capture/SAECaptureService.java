@@ -140,7 +140,6 @@ public interface SAECaptureService {
          NotArchivableMetadataEx, ReferentialRndException, UnknownCodeRndEx,
          UnknownHashCodeEx, EmptyFileNameEx;
 
-   
    /**
     * 
     * Service pour l'opération : capture unitaire
@@ -150,7 +149,7 @@ public interface SAECaptureService {
     * @param path
     *           chemin absolu du fichier
     * 
-    * 
+    * @return l'identifiant du fichier
     * 
     * @throws SAECaptureServiceEx
     *            exception levée lors de la capture
@@ -178,7 +177,7 @@ public interface SAECaptureService {
     * @throws UnknownHashCodeEx
     *            {@link UnknownHashCodeEx}
     * @throws FileNotFoundException
-    *             {@link FileNotFoundException}}
+    *            {@link FileNotFoundException}
     */
    @PreAuthorize("hasRole('archivage_unitaire')")
    UUID captureFichier(List<UntypedMetadata> metadatas, String path)
@@ -186,6 +185,7 @@ public interface SAECaptureService {
          InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
          DuplicatedMetadataEx, NotSpecifiableMetadataEx,
          NotArchivableMetadataEx, ReferentialRndException, UnknownCodeRndEx,
-         EmptyDocumentEx, RequiredArchivableMetadataEx, UnknownHashCodeEx, FileNotFoundException;
-   
+         EmptyDocumentEx, RequiredArchivableMetadataEx, UnknownHashCodeEx,
+         FileNotFoundException;
+
 }
