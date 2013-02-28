@@ -336,6 +336,20 @@ public class InsertionDonnees {
             .get(), updater);
       cfTmpl.update(updater);
 
+      // WS_LOAD_CERTS_ACRACINE|OK
+      // dans le registre de surveillance technique avec all_infos
+      updater = cfTmpl.createUpdater("WS_LOAD_CERTS_ACRACINE|OK");
+      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
+            ListSerializer.get(), updater);
+      cfTmpl.update(updater);
+
+      // WS_LOAD_CRLS|OK
+      // dans le registre de surveillance technique avec all_infos
+      updater = cfTmpl.createUpdater("WS_LOAD_CRLS|OK");
+      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
+            ListSerializer.get(), updater);
+      cfTmpl.update(updater);
+
    }
 
 }

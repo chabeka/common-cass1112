@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.webservices.skeleton.SaeServiceSkeleton;
-import fr.urssaf.image.sae.webservices.support.TracesSupport;
+import fr.urssaf.image.sae.webservices.support.TracesWsSupport;
 
 /**
  * Aspect permettant de logger le message SOAP de requete lorsqu'une exception
@@ -25,7 +25,7 @@ public class LogWarnSkeletonAspect {
          .getLogger(SaeServiceSkeleton.class);
 
    @Autowired
-   private TracesSupport tracesSupport;
+   private TracesWsSupport tracesSupport;
 
    /**
     * Méthode permettant de logger les WARN

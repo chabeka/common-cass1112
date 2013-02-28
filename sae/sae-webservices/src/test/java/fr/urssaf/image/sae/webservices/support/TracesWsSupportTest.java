@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -45,14 +46,14 @@ import fr.urssaf.image.sae.webservices.exception.RechercheAxis2Fault;
 import fr.urssaf.image.sae.webservices.util.HostnameUtil;
 
 /**
- * Tests unitaires de la classe {@link TracesSupport}
+ * Tests unitaires de la classe {@link TracesWsSupport}
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-traces-test.xml" })
-public class TracesSupportTest {
+public class TracesWsSupportTest {
 
    @Autowired
-   private TracesSupport tracesSupport;
+   private TracesWsSupport tracesSupport;
 
    @Autowired
    private CassandraServerBean server;
@@ -73,9 +74,9 @@ public class TracesSupportTest {
    public void after() throws Exception {
 
       server.resetData();
-      
+
       AuthenticationContext.setAuthenticationToken(null);
-      
+
    }
 
    @Before
@@ -84,6 +85,22 @@ public class TracesSupportTest {
       TraceDestinataire evenement = new TraceDestinataire();
       evenement.setCodeEvt(TracesConstantes.CODE_EVT_WS_RECHERCHE_KO);
       Map<String, List<String>> map = new HashMap<String, List<String>>();
+      evenement.setDestinataires(map);
+      map.put(TraceDestinataireDao.COL_REG_TECHNIQUE, Arrays
+            .asList("all_infos"));
+      destSupport.create(evenement, new Date().getTime());
+
+      evenement = new TraceDestinataire();
+      evenement.setCodeEvt(TracesConstantes.CODE_EVT_CHARGE_CERT_ACRACINE);
+      map = new HashMap<String, List<String>>();
+      evenement.setDestinataires(map);
+      map.put(TraceDestinataireDao.COL_REG_TECHNIQUE, Arrays
+            .asList("all_infos"));
+      destSupport.create(evenement, new Date().getTime());
+
+      evenement = new TraceDestinataire();
+      evenement.setCodeEvt(TracesConstantes.CODE_EVT_CHARGE_CRL);
+      map = new HashMap<String, List<String>>();
       evenement.setDestinataires(map);
       map.put(TraceDestinataireDao.COL_REG_TECHNIQUE, Arrays
             .asList("all_infos"));
@@ -158,8 +175,8 @@ public class TracesSupportTest {
       checkPagms(trace.getPagms());
       assertEquals("Le login dans la trace est incorrect", "LeIdUser", trace
             .getLogin());
-      assertEquals("Le contexte dans la trace est incorrect",
-            "recherche", trace.getContexte());
+      assertEquals("Le contexte dans la trace est incorrect", "recherche",
+            trace.getContexte());
       assertEquals("La stacktrace dans la trace est incorrect", ExceptionUtils
             .getFullStackTrace(axisFault), trace.getStacktrace());
       assertTrue("Les infos supplémentaires ne devraient pas être vides",
@@ -325,6 +342,86 @@ public class TracesSupportTest {
                   roles, viExtrait.getSaeDroits());
 
       AuthenticationContext.setAuthenticationToken(authentication);
+
+   }
+
+   @Test
+   public void traceChargementCertAcRacine() {
+
+      // Préparation
+
+      Date timestamp = new Date();
+
+      String fichier1 = "/rep1/fichier1.crt";
+      String fichier2 = "/rep1/fichier2.crt";
+      String fichier3 = "/rep2/fichier3.crt";
+
+      List<File> fichiers = Arrays.asList(new File(fichier1),
+            new File(fichier2), new File(fichier3));
+
+      authentifie();
+
+      // Appel de la méthode d'écriture de la trace
+
+      tracesSupport.traceChargementCertAcRacine(timestamp, fichiers);
+
+      // Vérifie la trace créée
+
+      String saeServeurHostname = HostnameUtil.getHostname();
+      String saeServeurIP = HostnameUtil.getIP();
+
+      verifieNombreTracesDansTraceRegSecurite(timestamp, 0);
+
+      verifieNombreTracesDansTraceRegExploitation(timestamp, 0);
+
+      List<TraceRegTechniqueIndex> tracesTechIndex = verifieNombreTracesDansTraceRegTechnique(
+            timestamp, 1);
+
+      TraceRegTechniqueIndex traceTechIndex = tracesTechIndex.get(0);
+
+      assertEquals(
+            "Le code événement dans la trace (dans son index) est incorrect",
+            TracesConstantes.CODE_EVT_CHARGE_CERT_ACRACINE, traceTechIndex
+                  .getCodeEvt());
+      assertEquals("Le timestamp dans la trace (dans son index) est incorrect",
+            timestamp, traceTechIndex.getTimestamp());
+      assertEquals(
+            "Le contrat de service dans la trace (dans son index) est incorrect",
+            "CodeContratService", traceTechIndex.getContrat());
+      checkPagms(traceTechIndex.getPagms());
+      assertEquals("Le login dans la trace (dans son index) est incorrect",
+            "LeIdUser", traceTechIndex.getLogin());
+      assertEquals("Le contexte dans la trace (dans son index) est incorrect",
+            "ChargementCertACRacine", traceTechIndex.getContexte());
+
+      TraceRegTechnique trace = regTechniqueService.lecture(traceTechIndex
+            .getIdentifiant());
+
+      assertEquals("Le code événement dans la trace est incorrect",
+            TracesConstantes.CODE_EVT_CHARGE_CERT_ACRACINE, trace.getCodeEvt());
+      assertEquals("Le timestamp dans la trace est incorrect", timestamp, trace
+            .getTimestamp());
+      assertEquals("Le contrat de service dans la trace est incorrect",
+            "CodeContratService", trace.getContrat());
+      checkPagms(trace.getPagms());
+      assertEquals("Le login dans la trace est incorrect", "LeIdUser", trace
+            .getLogin());
+      assertEquals("Le contexte dans la trace est incorrect",
+            "ChargementCertACRacine", trace.getContexte());
+      assertTrue("Les infos supplémentaires ne devraient pas être vides",
+            MapUtils.isNotEmpty(trace.getInfos()));
+      assertEquals(
+            "Le nombre d'informations supplémentaires est différent de l'attendu",
+            3, trace.getInfos().size());
+      assertEquals(
+            "L'information supplémentaire saeServeurHostname est incorrect",
+            saeServeurHostname, trace.getInfos().get("saeServeurHostname"));
+      assertEquals("L'information supplémentaire saeServeurIP est incorrect",
+            saeServeurIP, trace.getInfos().get("saeServeurIP"));
+      assertEquals("L'information supplémentaire fichiers est incorrect",
+            Arrays.asList(new File(fichier1).getAbsolutePath(), new File(
+                  fichier2).getAbsolutePath(), new File(fichier3)
+                  .getAbsolutePath()), trace.getInfos().get("fichiers"));
 
    }
 

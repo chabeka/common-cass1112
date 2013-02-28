@@ -9,6 +9,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +22,6 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -33,6 +33,7 @@ import fr.urssaf.image.sae.igc.util.TextUtils;
 import fr.urssaf.image.sae.webservices.security.SecurityUtils;
 import fr.urssaf.image.sae.webservices.security.igc.exception.LoadCertifsAndCrlException;
 import fr.urssaf.image.sae.webservices.security.igc.modele.CertifsAndCrl;
+import fr.urssaf.image.sae.webservices.support.TracesWsSupport;
 import fr.urssaf.image.sae.webservices.util.DateTimeUtils;
 import fr.urssaf.image.sae.webservices.util.ResourceUtils;
 
@@ -47,7 +48,7 @@ import fr.urssaf.image.sae.webservices.util.ResourceUtils;
  * 
  */
 @Service
-public class IgcService implements InitializingBean {
+public class IgcService {
 
    private static final Logger LOG = LoggerFactory.getLogger(IgcService.class);
 
@@ -58,6 +59,11 @@ public class IgcService implements InitializingBean {
    private final Map<X509Certificate, String> certsAcRacine;
 
    private static final int VALIDATE_TIME = 24;
+
+   private static final String[] CRL_EXTENSIONS = new String[] { "crl", "Crl",
+         "cRl", "crL", "CRl", "CrL", "cRL", "CRL" };
+
+   private final TracesWsSupport tracesWsSupport;
 
    public static final String CRL_ERROR = "Une erreur s'est produite lors du chargement des CRL";
 
@@ -80,18 +86,21 @@ public class IgcService implements InitializingBean {
     * 
     * @param igcConfigs
     *           liste des configuration de l'IGC
+    * @param tracesWsSupport
+    *           le bean de support de la traçabilité
     */
    @Autowired
-   public IgcService(IgcConfigs igcConfigs) {
+   public IgcService(IgcConfigs igcConfigs, TracesWsSupport tracesWsSupport) {
 
       this.igcConfigs = igcConfigs;
       this.certsAcRacine = new HashMap<X509Certificate, String>();
+      this.tracesWsSupport = tracesWsSupport;
 
    }
 
    /**
     * 
-    * Chargement des AC racines<br>
+    * Chargement des certificats d'AC racines<br>
     * Les certificats sont récupérés dans le repertoire indiqué par
     * {@link IgcConfig#getRepertoireACRacines()}<br>
     * Tous les fichier de type *.pem sont chargés en mémoire<br>
@@ -105,12 +114,13 @@ public class IgcService implements InitializingBean {
     * 
     * 
     */
-   @Override
-   public final void afterPropertiesSet() {
+   protected final void chargementCertificatsACRacine() {
 
       LOG.info(AC_RACINE_LOAD);
 
       List<String> certificats = new ArrayList<String>();
+
+      List<File> fichiersAcRacine = new ArrayList<File>();
 
       for (IgcConfig igcConfig : igcConfigs.getIgcConfigs()) {
 
@@ -121,6 +131,7 @@ public class IgcService implements InitializingBean {
                   .getAcRacine());
 
             File crt = new File(igcConfig.getAcRacine());
+            fichiersAcRacine.add(crt);
             input = new FileInputStream(crt);
 
             try {
@@ -157,6 +168,10 @@ public class IgcService implements InitializingBean {
 
       LOG.info(TextUtils.getMessage(AC_RACINE_COUNT, String
             .valueOf(this.certsAcRacine.size())));
+
+      // Trace l'événement
+      // "WS - Chargement en mémoire des certificats d'AC racine"
+      tracesWsSupport.traceChargementCertAcRacine(new Date(), fichiersAcRacine);
 
    }
 
@@ -207,6 +222,11 @@ public class IgcService implements InitializingBean {
          isReload = true;
       }
 
+      // Chargement des certificats d'AC racine si nécessaire
+      if (isFirstLoad) {
+         chargementCertificatsACRacine();
+      }
+
       // Recharge les CRL si nécessaires
       if (mustLoad) {
 
@@ -224,11 +244,13 @@ public class IgcService implements InitializingBean {
          }
 
          List<X509CRL> crls = new ArrayList<X509CRL>();
+         List<File> fichiersCrl = new ArrayList<File>();
 
          for (IgcConfig igcConfig : igcConfigs.getIgcConfigs()) {
 
             // Chargement des fichiers .crl dans des objets X509CRL
-            crls.addAll(loadCRLResources(igcConfig.getCrlsRep()));
+            crls.addAll(loadCRLResources(igcConfig.getCrlsRep(), fichiersCrl));
+
          }
 
          // Construction de l'objet contenant les CRL
@@ -244,6 +266,10 @@ public class IgcService implements InitializingBean {
          LOG.info(TextUtils.getMessage(CRL_COUNT, String
                .valueOf(this.certifsAndCrl.getCrl().size())));
 
+         // Trace l'événement
+         // "WS - Chargement en mémoire des CRL"
+         tracesWsSupport.traceChargementCRL(new Date(), fichiersCrl);
+
       }
    }
 
@@ -252,13 +278,12 @@ public class IgcService implements InitializingBean {
       this.certifsAndCrl = certifsAndCrl;
    }
 
-   private static List<X509CRL> loadCRLResources(String repertoireCRLs)
-         throws LoadCertifsAndCrlException {
+   private static List<X509CRL> loadCRLResources(String repertoireCRLs,
+         List<File> fichiersCrl) throws LoadCertifsAndCrlException {
 
       FileSystemResource repCRLs = new FileSystemResource(repertoireCRLs);
       List<Resource> resources = ResourceUtils.loadResources(repCRLs,
-            new String[] { "crl", "Crl", "cRl", "crL", "CRl", "CrL", "cRL",
-                  "CRL" });
+            CRL_EXTENSIONS);
 
       List<X509CRL> crls = new ArrayList<X509CRL>();
 
@@ -266,6 +291,7 @@ public class IgcService implements InitializingBean {
 
          try {
             LOG.debug("loading CRL:" + crl.getFilename());
+            fichiersCrl.add(crl.getFile());
             InputStream input = crl.getInputStream();
 
             try {

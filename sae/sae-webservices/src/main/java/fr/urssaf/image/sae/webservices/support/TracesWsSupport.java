@@ -1,6 +1,9 @@
 package fr.urssaf.image.sae.webservices.support;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.axis2.context.MessageContext;
 import org.apache.commons.collections.CollectionUtils;
@@ -15,16 +18,17 @@ import org.springframework.stereotype.Component;
 import fr.urssaf.image.sae.trace.model.TraceToCreate;
 import fr.urssaf.image.sae.trace.service.DispatcheurService;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
+import fr.urssaf.image.sae.webservices.constantes.TracesConstantes;
 import fr.urssaf.image.sae.webservices.util.HostnameUtil;
 
 /**
  * Classe de support pour écrire les traces via la brique de traçabilité.
  */
 @Component
-public class TracesSupport {
+public class TracesWsSupport {
 
    private static final Logger LOG = LoggerFactory
-         .getLogger(TracesSupport.class);
+         .getLogger(TracesWsSupport.class);
 
    @Autowired
    private DispatcheurService dispatcheurService;
@@ -83,18 +87,18 @@ public class TracesSupport {
       String result = StringUtils.EMPTY;
 
       if ("PingSecure".equals(nomOperation)) {
-         result = "WS_PING_SECURE|KO";
+         result = TracesConstantes.CODE_EVT_WS_PINGSECURE_KO;
       } else if ("archivageUnitaire".equals(nomOperation)
             || "archivageUnitairePJ".equals(nomOperation)) {
-         result = "WS_CAPTURE_UNITAIRE|KO";
+         result = TracesConstantes.CODE_EVT_WS_ARCHIVAGE_UNITAIRE_KO;
       } else if ("archivageMasse".equals(nomOperation)
             || "archivageMasseAvecHash".equals(nomOperation)) {
-         result = "WS_CAPTURE_MASSE|KO";
+         result = TracesConstantes.CODE_EVT_WS_ARCHIVAGE_MASSE_KO;
       } else if ("consultation".equals(nomOperation)
             || "consultationMTOM".equals(nomOperation)) {
-         result = "WS_CONSULTATION|KO";
+         result = TracesConstantes.CODE_EVT_WS_CONSULTATION_KO;
       } else if ("recherche".equals(nomOperation)) {
-         result = "WS_RECHERCHE|KO";
+         result = TracesConstantes.CODE_EVT_WS_RECHERCHE_KO;
       }
 
       return result;
@@ -165,6 +169,94 @@ public class TracesSupport {
          traceToCreate.setLogin(extrait.getIdUtilisateur());
 
       }
+
+   }
+
+   /**
+    * Trace l'événement du chargement des certificats d'AC racine
+    * 
+    * @param timestamp
+    *           le timestamp de l'événement
+    * @param fichiers
+    *           la liste des fichiers des certificats d'AC racine
+    */
+   @SuppressWarnings("PMD.AvoidCatchingThrowable")
+   public final void traceChargementCertAcRacine(Date timestamp,
+         List<File> fichiers) {
+
+      try {
+
+         traceChargementFichiers(timestamp,
+               TracesConstantes.CODE_EVT_CHARGE_CERT_ACRACINE,
+               "ChargementCertACRacine", fichiers);
+
+      } catch (Throwable ex) {
+         LOG
+               .error(
+                     "Une erreur est survenue lors de la traçabilité du chargement des certificats d'AC racine",
+                     ex);
+      }
+
+   }
+
+   /**
+    * Trace l'événement du chargement des CRL
+    * 
+    * @param timestamp
+    *           le timestamp de l'événement
+    * @param fichiers
+    *           la liste des fichiers des CRL
+    */
+   @SuppressWarnings("PMD.AvoidCatchingThrowable")
+   public final void traceChargementCRL(Date timestamp, List<File> fichiers) {
+
+      try {
+
+         traceChargementFichiers(timestamp,
+               TracesConstantes.CODE_EVT_CHARGE_CRL, "ChargementCRL", fichiers);
+
+      } catch (Throwable ex) {
+         LOG
+               .error(
+                     "Une erreur est survenue lors de la traçabilité du chargement des CRL",
+                     ex);
+      }
+
+   }
+
+   private void traceChargementFichiers(Date timestamp, String codeEvt,
+         String contexte, List<File> fichiers) {
+
+      // Instantiation de l'objet TraceToCreate
+      TraceToCreate traceToCreate = new TraceToCreate();
+
+      // Code de l'événement
+      traceToCreate.setCodeEvt(codeEvt);
+
+      // Timestamp
+      traceToCreate.setTimestamp(timestamp);
+
+      // Contexte
+      traceToCreate.setContexte(contexte);
+
+      // Contrat de service et login
+      setInfosAuth(traceToCreate);
+
+      // Info supplémentaire : Hostname et IP du serveur sur lequel tourne ce
+      // code
+      traceToCreate.getInfos().put("saeServeurHostname",
+            HostnameUtil.getHostname());
+      traceToCreate.getInfos().put("saeServeurIP", HostnameUtil.getIP());
+
+      // Info supplémentaire : Liste des fichiers des certificats d'AC racine
+      List<String> cheminsFichier = new ArrayList<String>();
+      for (File file : fichiers) {
+         cheminsFichier.add(file.getAbsolutePath());
+      }
+      traceToCreate.getInfos().put("fichiers", cheminsFichier);
+
+      // Appel du dispatcheur
+      dispatcheurService.ajouterTrace(traceToCreate);
 
    }
 

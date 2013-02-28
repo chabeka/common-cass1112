@@ -17,8 +17,12 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.igc.exception.IgcDownloadException;
 import fr.urssaf.image.sae.igc.modele.IgcConfig;
@@ -26,7 +30,10 @@ import fr.urssaf.image.sae.igc.modele.IgcConfigs;
 import fr.urssaf.image.sae.igc.modele.IssuerList;
 import fr.urssaf.image.sae.webservices.component.IgcConfigUtils;
 import fr.urssaf.image.sae.webservices.security.igc.exception.LoadCertifsAndCrlException;
+import fr.urssaf.image.sae.webservices.support.TracesWsSupport;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "/applicationContext-traces-test.xml" })
 @SuppressWarnings( { "PMD.MethodNamingConventions" })
 public class IgcServiceTest {
 
@@ -44,6 +51,9 @@ public class IgcServiceTest {
    private static final File AC_RACINE;
 
    private IgcConfigs igcConfigs;
+
+   @Autowired
+   private TracesWsSupport tracesWsSupport;
 
    static {
 
@@ -91,8 +101,8 @@ public class IgcServiceTest {
 
    private IgcService createIgcService() {
 
-      IgcService igcService = new IgcService(igcConfigs);
-      igcService.afterPropertiesSet();
+      IgcService igcService = new IgcService(igcConfigs, tracesWsSupport);
+      igcService.chargementCertificatsACRacine();
 
       return igcService;
    }
