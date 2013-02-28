@@ -30,7 +30,7 @@ public final class ServiceMessageHandler {
    @SuppressWarnings("PMD.LongVariable")
    public static String getMessage(final String messageKey) {
       return MESSAGE_SOURCES.getMessage(messageKey, null,
-            Constants.NO_MESSAGE_FOR_THIS_KEY, Constants.LOCAL);
+            Constants.NO_MESSAGE_FOR_THIS_KEY, Constants.DEFAULT_LOCAL);
    }
 
    /** Cette classe n'est pas faite pour être instanciée. */
