@@ -102,6 +102,31 @@ public enum ParameterType {
     * Hash du journal précédent dans le cadre de la journalisation des
     * événements SAE
     */
-   JOURNALISATION_EVT_HASH_JOURNAL_PRECEDENT
+   JOURNALISATION_EVT_HASH_JOURNAL_PRECEDENT,
+
+   /**
+    * Métadonnée TITRE
+    */
+   JOURNALISATION_EVT_META_TITRE,
+
+   /**
+    * Métadonnée application productrice
+    */
+   JOURNALISATION_EVT_META_APPLICATION_PRODUCTRICE,
+
+   /**
+    * Métadonnée application de traitement
+    */
+   JOURNALISATION_EVT_META_APPLICATION_TRAITEMENT,
+
+   /**
+    * Métadonnée code organisme (propriétaire et gestionnaire)
+    */
+   JOURNALISATION_EVT_META_CODE_ORGA, 
+   
+   /**
+    * Métadonnée Code RND
+    */
+   JOURNALISATION_EVT_META_CODE_RND
 
 }
