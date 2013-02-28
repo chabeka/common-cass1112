@@ -32,7 +32,6 @@ public class HistEvenementSupportTest {
    private static final String VALUE = "valeur";
    private static final String KEY = "clé";
 
-   private static final Date DATE = new Date();
    private static final String LOGIN = "LE LOGIN";
    private static final String CONTRAT = "contrat de service";
    private static final String CODE_EVT = "code événement";
@@ -92,7 +91,6 @@ public class HistEvenementSupportTest {
       trace.setCodeEvt(CODE_EVT);
       trace.setContrat(CONTRAT);
       trace.setLogin(LOGIN);
-      trace.setTimestamp(DATE);
       trace.setInfos(INFOS);
 
       support.create(trace);

@@ -5,7 +5,6 @@ package fr.urssaf.image.sae.trace.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +12,6 @@ import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.impl.cookie.DateUtils;
 
 /**
  * Formulaire d'une trace à créer. Ce modèle sert essentiellement au dispatcheur
@@ -23,10 +21,6 @@ import org.apache.http.impl.cookie.DateUtils;
 public class TraceToCreate {
 
    private static final int BUFFER_MIN_SIZE = 26;
-   private static final String DATE_FORMAT = "dd/MM/yyyy HH:mm:ss";
-
-   /** Date de création de la trace */
-   private Date timestamp;
 
    /** Contexte de la trace */
    private String contexte;
@@ -51,21 +45,6 @@ public class TraceToCreate {
 
    /** Informations supplémentaires sur la trace */
    private Map<String, Object> infos = new HashMap<String, Object>();
-
-   /**
-    * @return la Date de création de la trace
-    */
-   public final Date getTimestamp() {
-      return timestamp;
-   }
-
-   /**
-    * @param timestamp
-    *           Date de création de la trace
-    */
-   public final void setTimestamp(Date timestamp) {
-      this.timestamp = timestamp;
-   }
 
    /**
     * @return le Contexte de la trace
@@ -225,9 +204,6 @@ public class TraceToCreate {
          buffer.append(";login:");
          buffer.append(this.login);
       }
-
-      buffer.append(";timestamp:");
-      buffer.append(DateUtils.formatDate(this.timestamp, DATE_FORMAT));
 
       if (StringUtils.isNotBlank(this.stracktrace)) {
          buffer.append(";stacktrace:");

@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import me.prettyprint.cassandra.utils.TimeUUIDUtils;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 
@@ -49,10 +47,16 @@ public class TraceRegSecurite {
    private Map<String, Object> infos;
 
    /**
-    * constructeur
+    * Constructeur
+    * 
+    * @param idTrace
+    *           l'identifiant unique à affecter à la trace
+    * @param timestamp
+    *           le timestamp à affecter à la trace
     */
-   public TraceRegSecurite() {
-      super();
+   public TraceRegSecurite(UUID idTrace, Date timestamp) {
+      this.identifiant = idTrace;
+      this.timestamp = timestamp;
    }
 
    /**
@@ -62,8 +66,13 @@ public class TraceRegSecurite {
     *           trace d'origine
     * @param listInfos
     *           la liste des informations supplémentaires à récupérer
+    * @param idTrace
+    *           l'identifiant unique à affecter à la trace
+    * @param timestamp
+    *           le timestamp à affecter à la trace
     */
-   public TraceRegSecurite(TraceToCreate trace, List<String> listInfos) {
+   public TraceRegSecurite(TraceToCreate trace, List<String> listInfos,
+         UUID idTrace, Date timestamp) {
       this.contexte = trace.getContexte();
       this.codeEvt = trace.getCodeEvt();
       this.contrat = trace.getContrat();
@@ -71,9 +80,8 @@ public class TraceRegSecurite {
          this.pagms.addAll(trace.getPagms());
       }
       this.login = trace.getLogin();
-      this.timestamp = trace.getTimestamp();
-      this.identifiant = TimeUUIDUtils.getTimeUUID(trace.getTimestamp()
-            .getTime());
+      this.timestamp = timestamp;
+      this.identifiant = idTrace;
 
       if (CollectionUtils.isNotEmpty(listInfos)
             && MapUtils.isNotEmpty(trace.getInfos())) {
@@ -100,26 +108,10 @@ public class TraceRegSecurite {
    }
 
    /**
-    * @param identifiant
-    *           Identifiant de la trace
-    */
-   public final void setIdentifiant(UUID identifiant) {
-      this.identifiant = identifiant;
-   }
-
-   /**
     * @return la Date de création de la trace
     */
    public final Date getTimestamp() {
       return timestamp;
-   }
-
-   /**
-    * @param timestamp
-    *           Date de création de la trace
-    */
-   public final void setTimestamp(Date timestamp) {
-      this.timestamp = timestamp;
    }
 
    /**

@@ -15,8 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import me.prettyprint.cassandra.utils.TimeUUIDUtils;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.time.DateUtils;
@@ -34,6 +32,7 @@ import fr.urssaf.image.sae.trace.dao.support.TraceJournalEvtSupport;
 import fr.urssaf.image.sae.trace.model.JournalisationType;
 import fr.urssaf.image.sae.trace.model.Parameter;
 import fr.urssaf.image.sae.trace.model.ParameterType;
+import fr.urssaf.image.sae.trace.utils.TimeUUIDTraceUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-trace-test.xml" })
@@ -69,7 +68,7 @@ public class JournalisationServiceDatasTest {
    public void after() throws Exception {
       server.resetData();
    }
-   
+
    @Test
    public void testRecup0Dates() {
 
@@ -111,7 +110,8 @@ public class JournalisationServiceDatasTest {
    public void testExport() throws IOException {
 
       Parameter parameter = new Parameter(
-            ParameterType.JOURNALISATION_EVT_ID_JOURNAL_PRECEDENT, "6f5e4930-80cc-11e2-8759-005056c00008");
+            ParameterType.JOURNALISATION_EVT_ID_JOURNAL_PRECEDENT,
+            "6f5e4930-80cc-11e2-8759-005056c00008");
       parametersService.saveParameter(parameter);
       parameter = new Parameter(
             ParameterType.JOURNALISATION_EVT_HASH_JOURNAL_PRECEDENT, "00000");
@@ -174,26 +174,23 @@ public class JournalisationServiceDatasTest {
    }
 
    private void createTrace(Date date, String suffixe) {
-      TraceJournalEvt trace = new TraceJournalEvt();
+      TraceJournalEvt trace = new TraceJournalEvt(TimeUUIDTraceUtils
+            .buildUUIDFromDate(date), date);
       trace.setContexte(CONTEXTE + suffixe);
       trace.setCodeEvt(CODE_EVT + suffixe);
       trace.setContratService(CONTRAT + suffixe);
-      trace.setIdentifiant(TimeUUIDUtils.getTimeUUID(date.getTime()));
       trace.setLogin(LOGIN + suffixe);
-      trace.setTimestamp(date);
       trace.setInfos(INFOS);
 
       support.create(trace, new Date().getTime());
    }
 
    private void createTrace(Date date, String suffixe, UUID id) {
-      TraceJournalEvt trace = new TraceJournalEvt();
+      TraceJournalEvt trace = new TraceJournalEvt(id, date);
       trace.setContexte(CONTEXTE + suffixe);
       trace.setCodeEvt(CODE_EVT + suffixe);
       trace.setContratService(CONTRAT + suffixe);
-      trace.setIdentifiant(id);
       trace.setLogin(LOGIN + suffixe);
-      trace.setTimestamp(date);
       trace.setInfos(INFOS);
       trace.setPagms(Arrays.asList("PAGM " + suffixe));
 

@@ -30,7 +30,6 @@ import fr.urssaf.image.sae.trace.model.TraceToCreate;
 @ContextConfiguration(locations = { "/applicationContext-sae-trace-test.xml" })
 public class DispatcheurServiceHistEvenementsDatasTest {
 
-   private static final Date DATE = new Date();
    private static final String ACTION = "action";
    private static final String CONTRAT_DE_SERVICE = "contrat de service";
    private static final String IP = "ip";
@@ -78,7 +77,6 @@ public class DispatcheurServiceHistEvenementsDatasTest {
       TraceToCreate traceToCreate = new TraceToCreate();
       traceToCreate.setCodeEvt(ARCHIVAGE_UNITAIRE);
       traceToCreate.setAction(ACTION);
-      traceToCreate.setTimestamp(DATE);
       traceToCreate.setContrat(CONTRAT_DE_SERVICE);
       traceToCreate.setInfos(INFOS);
 
@@ -99,6 +97,6 @@ public class DispatcheurServiceHistEvenementsDatasTest {
       Map<String, List<String>> map = new HashMap<String, List<String>>();
       map.put(TraceDestinataireDao.COL_HIST_EVT, null);
       trace.setDestinataires(map);
-      destSupport.create(trace, DATE.getTime());
+      destSupport.create(trace, new Date().getTime());
    }
 }

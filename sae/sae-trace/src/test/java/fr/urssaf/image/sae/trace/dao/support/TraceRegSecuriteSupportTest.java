@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import me.prettyprint.cassandra.utils.TimeUUIDUtils;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.junit.After;
@@ -25,6 +23,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegSecurite;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegSecuriteIndex;
+import fr.urssaf.image.sae.trace.utils.TimeUUIDTraceUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-trace-test.xml" })
@@ -60,7 +59,7 @@ public class TraceRegSecuriteSupportTest {
    @Test
    public void testCreateFindSuccess() {
 
-      UUID uuid = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+      UUID uuid = TimeUUIDTraceUtils.buildUUIDFromDate(new Date());
       createTrace(uuid);
 
       TraceRegSecurite securite = support.find(uuid);
@@ -75,7 +74,7 @@ public class TraceRegSecuriteSupportTest {
 
    @Test
    public void testDelete() {
-      UUID uuid = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+      UUID uuid = TimeUUIDTraceUtils.buildUUIDFromDate(new Date());
       createTrace(uuid);
 
       long nbTracesPurgees = support.delete(new Date(), new Date().getTime());
@@ -95,7 +94,7 @@ public class TraceRegSecuriteSupportTest {
    @Test
    public void testCreateFindByPlageSuccess() {
 
-      UUID uuid = TimeUUIDUtils.getTimeUUID(DATE.getTime());
+      UUID uuid = TimeUUIDTraceUtils.buildUUIDFromDate(DATE);
       createTrace(uuid);
 
       TraceRegSecurite exploitation = support.find(uuid);
@@ -170,14 +169,12 @@ public class TraceRegSecuriteSupportTest {
    }
 
    private void createTrace(UUID uuid) {
-      TraceRegSecurite trace = new TraceRegSecurite();
+      TraceRegSecurite trace = new TraceRegSecurite(uuid, DATE);
       trace.setContexte(CONTEXT);
       trace.setCodeEvt(CODE_EVT);
       trace.setContrat(CONTRAT);
       trace.setPagms(PAGMS);
-      trace.setIdentifiant(uuid);
       trace.setLogin(LOGIN);
-      trace.setTimestamp(DATE);
       trace.setInfos(INFOS);
 
       support.create(trace, new Date().getTime());

@@ -11,13 +11,14 @@ import java.util.UUID;
 import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
 import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
-import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 import me.prettyprint.hector.api.mutation.Mutator;
 import me.prettyprint.hector.api.query.SliceQuery;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -29,6 +30,7 @@ import fr.urssaf.image.sae.trace.dao.model.TraceRegTechniqueIndex;
 import fr.urssaf.image.sae.trace.dao.serializer.ListSerializer;
 import fr.urssaf.image.sae.trace.dao.serializer.MapSerializer;
 import fr.urssaf.image.sae.trace.utils.DateRegUtils;
+import fr.urssaf.image.sae.trace.utils.TimeUUIDTraceUtils;
 
 /**
  * Support de la classe DAO {@link TraceRegTechniqueDao}
@@ -42,6 +44,9 @@ public class TraceRegTechniqueSupport {
 
    @Autowired
    private TraceRegTechniqueIndexDao indexDao;
+
+   private static final Logger LOGGER = LoggerFactory
+         .getLogger(TraceRegTechniqueSupport.class);
 
    /**
     * création d'une trace dans le registre technique
@@ -90,6 +95,11 @@ public class TraceRegTechniqueSupport {
             .createUpdater(journee);
       indexDao.writeColumn(indexUpdater, index.getIdentifiant(), index, clock);
       indexDao.update(indexUpdater);
+
+      // Trace
+      LOGGER.debug(
+            "Trace ajoutée dans le registre de surveillance technique : {}",
+            trace.getIdentifiant());
 
    }
 
@@ -198,8 +208,8 @@ public class TraceRegTechniqueSupport {
             .createSliceQuery();
       sliceQuery.setKey(DateRegUtils.getJournee(startDate));
 
-      UUID startUuid = TimeUUIDUtils.getTimeUUID(startDate.getTime());
-      UUID endUuid = TimeUUIDUtils.getTimeUUID(endDate.getTime());
+      UUID startUuid = TimeUUIDTraceUtils.buildUUIDFromDate(startDate);
+      UUID endUuid = TimeUUIDTraceUtils.buildUUIDFromDate(endDate);
 
       TraceRegTechniqueIndexIterator iterator = new TraceRegTechniqueIndexIterator(
             sliceQuery, startUuid, endUuid, reversed);
@@ -222,9 +232,11 @@ public class TraceRegTechniqueSupport {
       TraceRegTechnique exploit = null;
 
       if (result != null && result.hasResults()) {
-         exploit = new TraceRegTechnique();
 
-         exploit.setIdentifiant(result.getKey());
+         UUID idTrace = result.getKey();
+         Date timestamp = result.getDate(TraceRegTechniqueDao.COL_TIMESTAMP);
+
+         exploit = new TraceRegTechnique(idTrace, timestamp);
 
          exploit.setContexte(result
                .getString(TraceRegTechniqueDao.COL_CONTEXTE));
@@ -235,8 +247,6 @@ public class TraceRegTechniqueSupport {
          exploit.setLogin(result.getString(TraceRegTechniqueDao.COL_LOGIN));
          exploit.setStacktrace(result
                .getString(TraceRegTechniqueDao.COL_STACKTRACE));
-         exploit.setTimestamp(result
-               .getDate(TraceRegTechniqueDao.COL_TIMESTAMP));
 
          byte[] bValue = result.getByteArray(TraceRegTechniqueDao.COL_INFOS);
          if (bValue != null) {

@@ -11,31 +11,35 @@ import java.util.UUID;
 import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
 import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
-import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 import me.prettyprint.hector.api.mutation.Mutator;
 import me.prettyprint.hector.api.query.SliceQuery;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.trace.dao.TraceJournalEvtDao;
 import fr.urssaf.image.sae.trace.dao.TraceJournalEvtIndexDao;
-import fr.urssaf.image.sae.trace.dao.TraceRegSecuriteDao;
 import fr.urssaf.image.sae.trace.dao.iterator.TraceJournalEvtIndexIterator;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvt;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndex;
 import fr.urssaf.image.sae.trace.dao.serializer.ListSerializer;
 import fr.urssaf.image.sae.trace.dao.serializer.MapSerializer;
 import fr.urssaf.image.sae.trace.utils.DateRegUtils;
+import fr.urssaf.image.sae.trace.utils.TimeUUIDTraceUtils;
 
 /**
- * Support de la classe DAO {@link TraceRegSecuriteDao}
+ * Support de la classe DAO {@link TraceJournalEvtDao}
  * 
  */
 @Component
 public class TraceJournalEvtSupport {
+
+   private static final Logger LOGGER = LoggerFactory
+         .getLogger(TraceJournalEvtSupport.class);
 
    @Autowired
    private TraceJournalEvtDao dao;
@@ -62,7 +66,8 @@ public class TraceJournalEvtSupport {
       dao.writeColumnTimestamp(updater, trace.getTimestamp(), clock);
 
       if (StringUtils.isNotBlank(trace.getContratService())) {
-         dao.writeColumnContratService(updater, trace.getContratService(), clock);
+         dao.writeColumnContratService(updater, trace.getContratService(),
+               clock);
       }
 
       if (CollectionUtils.isNotEmpty(trace.getPagms())) {
@@ -86,6 +91,10 @@ public class TraceJournalEvtSupport {
             .createUpdater(journee);
       indexDao.writeColumn(indexUpdater, index.getIdentifiant(), index, clock);
       indexDao.update(indexUpdater);
+
+      // Trace
+      LOGGER.debug("Trace ajoutée dans le journal des événements : {}", trace
+            .getIdentifiant());
 
    }
 
@@ -112,7 +121,7 @@ public class TraceJournalEvtSupport {
 
       if (iterator.hasNext()) {
 
-         // Suppression des traces de la CF TraceRegSecurite
+         // Suppression des traces de la CF TraceJournalEvt
          nbTracesPurgees = deleteRecords(iterator, clock);
 
          // suppression de l'index
@@ -138,7 +147,7 @@ public class TraceJournalEvtSupport {
       ColumnFamilyTemplate<UUID, String> tmpl = dao.getJournalEvtTmpl();
       ColumnFamilyResult<UUID, String> result = tmpl.queryColumns(identifiant);
 
-      return getTraceRegSecuriteFromResult(result);
+      return getTraceJournalEvtFromResult(result);
    }
 
    /**
@@ -196,8 +205,8 @@ public class TraceJournalEvtSupport {
             .createSliceQuery();
       sliceQuery.setKey(DateRegUtils.getJournee(startDate));
 
-      UUID startUuid = TimeUUIDUtils.getTimeUUID(startDate.getTime());
-      UUID endUuid = TimeUUIDUtils.getTimeUUID(endDate.getTime());
+      UUID startUuid = TimeUUIDTraceUtils.buildUUIDFromDate(startDate);
+      UUID endUuid = TimeUUIDTraceUtils.buildUUIDFromDate(endDate);
 
       TraceJournalEvtIndexIterator iterator = new TraceJournalEvtIndexIterator(
             sliceQuery, startUuid, endUuid, reversed);
@@ -215,37 +224,36 @@ public class TraceJournalEvtSupport {
       return list;
    }
 
-   private TraceJournalEvt getTraceRegSecuriteFromResult(
+   private TraceJournalEvt getTraceJournalEvtFromResult(
          ColumnFamilyResult<UUID, String> result) {
 
-      TraceJournalEvt securite = null;
+      TraceJournalEvt trace = null;
 
       if (result != null && result.hasResults()) {
-         securite = new TraceJournalEvt();
 
-         securite.setIdentifiant(result.getKey());
-         securite
-               .setCodeEvt(result.getString(TraceRegSecuriteDao.COL_CODE_EVT));
-         securite.setContexte(result
-               .getString(TraceRegSecuriteDao.COL_CONTEXTE));
-         securite.setContratService(result
-               .getString(TraceRegSecuriteDao.COL_CONTRAT_SERVICE));
-         securite.setLogin(result.getString(TraceRegSecuriteDao.COL_LOGIN));
-         securite.setTimestamp(result
-               .getDate(TraceRegSecuriteDao.COL_TIMESTAMP));
+         UUID idTrace = result.getKey();
+         Date timestamp = result.getDate(TraceJournalEvtDao.COL_TIMESTAMP);
 
-         byte[] bValue = result.getByteArray(TraceRegSecuriteDao.COL_INFOS);
+         trace = new TraceJournalEvt(idTrace, timestamp);
+
+         trace.setCodeEvt(result.getString(TraceJournalEvtDao.COL_CODE_EVT));
+         trace.setContexte(result.getString(TraceJournalEvtDao.COL_CONTEXT));
+         trace.setContratService(result
+               .getString(TraceJournalEvtDao.COL_CONTRAT_SERVICE));
+         trace.setLogin(result.getString(TraceJournalEvtDao.COL_LOGIN));
+
+         byte[] bValue = result.getByteArray(TraceJournalEvtDao.COL_INFOS);
          if (bValue != null) {
-            securite.setInfos(MapSerializer.get().fromBytes(bValue));
+            trace.setInfos(MapSerializer.get().fromBytes(bValue));
          }
 
-         bValue = result.getByteArray(TraceRegSecuriteDao.COL_PAGMS);
+         bValue = result.getByteArray(TraceJournalEvtDao.COL_PAGMS);
          if (bValue != null) {
-            securite.setPagms(ListSerializer.get().fromBytes(bValue));
+            trace.setPagms(ListSerializer.get().fromBytes(bValue));
          }
       }
 
-      return securite;
+      return trace;
    }
 
    private long deleteRecords(TraceJournalEvtIndexIterator iterator, long clock) {
@@ -255,8 +263,8 @@ public class TraceJournalEvtSupport {
       // suppression de toutes les traces
       Mutator<UUID> mutator = dao.createMutator();
       while (iterator.hasNext()) {
-         dao.mutatorSuppressionRegExploitation(mutator,
-               iterator.next().getIdentifiant(), clock);
+         dao.mutatorSuppressionRegExploitation(mutator, iterator.next()
+               .getIdentifiant(), clock);
          result++;
       }
       mutator.execute();

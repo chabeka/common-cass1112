@@ -4,10 +4,13 @@
 package fr.urssaf.image.sae.trace.service.impl;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
+import me.prettyprint.cassandra.service.clock.MicrosecondsSyncClockResolution;
 import net.docubase.toolkit.model.ToolkitFactory;
 import net.docubase.toolkit.model.recordmanager.RMSystemEvent;
 import net.docubase.toolkit.service.ged.RecordManagerService;
@@ -34,6 +37,7 @@ import fr.urssaf.image.sae.trace.dao.support.TraceRegSecuriteSupport;
 import fr.urssaf.image.sae.trace.dao.support.TraceRegTechniqueSupport;
 import fr.urssaf.image.sae.trace.model.TraceToCreate;
 import fr.urssaf.image.sae.trace.service.DispatcheurService;
+import fr.urssaf.image.sae.trace.utils.TimeUUIDTraceUtils;
 
 /**
  * Classe d'implémentation du support {@link DispatcheurService}. Cette classe
@@ -48,6 +52,7 @@ public class DispatcheurServiceImpl implements DispatcheurService {
    private static final String ARG_1 = "1";
    private static final String ARG_2 = "2";
    private static final String USERNAME = "_ADMIN";
+   private static final int MILLE = 1000;
 
    private static final String FIN_LOG = "{} - fin";
    private static final String DEBUT_LOG = "{} - début";
@@ -80,6 +85,8 @@ public class DispatcheurServiceImpl implements DispatcheurService {
    private static final List<String> JOURN_AUTORISES = Arrays
          .asList(TraceDestinataireDao.COL_JOURN_EVT);
 
+   private static final MicrosecondsSyncClockResolution CLOCK_RESOLUTION = new MicrosecondsSyncClockResolution();
+
    @Autowired
    private JobClockSupport clockSupport;
 
@@ -94,7 +101,7 @@ public class DispatcheurServiceImpl implements DispatcheurService {
 
    @Autowired
    private TraceRegTechniqueSupport techSupport;
-   
+
    @Autowired
    private TraceJournalEvtSupport evtSupport;
 
@@ -165,11 +172,11 @@ public class DispatcheurServiceImpl implements DispatcheurService {
       } else if (TraceDestinataireDao.COL_REG_TECHNIQUE.equals(type)) {
          suffixe = REG_TECHNIQUE;
          checkStringValue("contexte", trace.getContexte(), suffixe, REGISTRE);
-      
+
       } else if (TraceDestinataireDao.COL_JOURN_EVT.equals(type)) {
          suffixe = JOURNAL_EVT;
          checkStringValue("contexte", trace.getContexte(), suffixe, JOURNAL);
-         
+
       } else {
          throw new IllegalArgumentException(
                "pas de vérification prévue pour cette trace");
@@ -180,7 +187,6 @@ public class DispatcheurServiceImpl implements DispatcheurService {
          typeTrace = JOURNAL;
       }
       checkStringValue("code événement", trace.getCodeEvt(), suffixe, typeTrace);
-      checkNotNullableObject("date", trace.getTimestamp(), suffixe, typeTrace);
 
       // Dans certains cas, on ne dispose pas du CS ni du login
       // Par exemple, dans le cas d'un appel WS où il manque l'en-tête
@@ -204,46 +210,40 @@ public class DispatcheurServiceImpl implements DispatcheurService {
 
    }
 
-   private void checkNotNullableObject(String name, Object object,
-         String suffixe, String categorie) {
-
-      if (object == null) {
-         Map<String, String> map = new HashMap<String, String>();
-         map.put(ARG_0, name);
-         map.put(ARG_1, categorie);
-         map.put(ARG_2, suffixe);
-         throw new IllegalArgumentException(StrSubstitutor.replace(
-               MESSAGE_ERREUR_REGISTRE, map));
-      }
-
-   }
-
    private void saveTrace(TraceToCreate trace, String type, List<String> list) {
 
       String prefix = "saveTrace()";
       LOGGER.debug(DEBUT_LOG, prefix);
 
+      long timestampMicro = CLOCK_RESOLUTION.createClock();
+      UUID idTrace = TimeUUIDTraceUtils
+            .buildUUIDFromTimestampMicro(timestampMicro);
+      Date timestampTrace = new Date(timestampMicro / MILLE);
+
       if (TraceDestinataireDao.COL_REG_EXPLOIT.equals(type)) {
          LOGGER.debug("{} - ajout d'une trace d'exploitation", prefix);
          TraceRegExploitation traceExploit = new TraceRegExploitation(trace,
-               list);
+               list, idTrace, timestampTrace);
          exploitSupport.create(traceExploit, clockSupport.currentCLock());
 
       } else if (TraceDestinataireDao.COL_REG_SECURITE.equals(type)) {
          LOGGER.debug("{} - ajout d'une trace de sécurité", prefix);
-         TraceRegSecurite traceSecurite = new TraceRegSecurite(trace, list);
+         TraceRegSecurite traceSecurite = new TraceRegSecurite(trace, list,
+               idTrace, timestampTrace);
          secuSupport.create(traceSecurite, clockSupport.currentCLock());
 
       } else if (TraceDestinataireDao.COL_REG_TECHNIQUE.equals(type)) {
          LOGGER.debug("{} - ajout d'une trace technique", prefix);
-         TraceRegTechnique traceTechnique = new TraceRegTechnique(trace, list);
+         TraceRegTechnique traceTechnique = new TraceRegTechnique(trace, list,
+               idTrace, timestampTrace);
          techSupport.create(traceTechnique, clockSupport.currentCLock());
-      
+
       } else if (TraceDestinataireDao.COL_JOURN_EVT.equals(type)) {
          LOGGER.debug("{} - ajout d'une trace journal des événements", prefix);
-         TraceJournalEvt traceTechnique = new TraceJournalEvt(trace, list);
+         TraceJournalEvt traceTechnique = new TraceJournalEvt(trace, list,
+               idTrace, timestampTrace);
          evtSupport.create(traceTechnique, clockSupport.currentCLock());
-         
+
       } else {
          throw new IllegalArgumentException(StringUtils.replace(
                "pas de type existant {0} à convertir", "{0}", type));

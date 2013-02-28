@@ -34,7 +34,6 @@ import fr.urssaf.image.sae.trace.model.TraceToCreate;
 @ContextConfiguration(locations = { "/applicationContext-sae-trace-test.xml" })
 public class DispatcheurServiceTousRegistresDatasTest {
 
-   private static final Date DATE = new Date();
    private static final String ACTION = "action";
    private static final String CONTEXTE = "contexte";
    private static final String CONTRAT_DE_SERVICE = "contrat de service";
@@ -83,7 +82,6 @@ public class DispatcheurServiceTousRegistresDatasTest {
       TraceToCreate traceToCreate = new TraceToCreate();
       traceToCreate.setCodeEvt(ARCHIVAGE_UNITAIRE);
       traceToCreate.setAction(ACTION);
-      traceToCreate.setTimestamp(DATE);
       traceToCreate.setContrat(CONTRAT_DE_SERVICE);
       traceToCreate.setInfos(INFOS);
       traceToCreate.setContexte(CONTEXTE);
@@ -98,8 +96,9 @@ public class DispatcheurServiceTousRegistresDatasTest {
 
    private void checkExploitation() {
       // on vérifie qu'il y a un résultat
-      List<TraceRegExploitationIndex> result = exploitService.lecture(DATE,
-            DateUtils.addMinutes(DATE, 1), 1, false);
+      List<TraceRegExploitationIndex> result = exploitService.lecture(DateUtils
+            .addMinutes(new Date(), -5), DateUtils.addMinutes(new Date(), 5),
+            1, false);
       Assert.assertNotNull(
             "une trace dans le registre technique doit etre trouvé", result);
       Assert.assertEquals(
@@ -125,8 +124,9 @@ public class DispatcheurServiceTousRegistresDatasTest {
 
    private void checkTechnique() {
       // on vérifie qu'il y a un résultat
-      List<TraceRegTechniqueIndex> result = techniqueService.lecture(DATE,
-            DateUtils.addMinutes(DATE, 1), 1, false);
+      List<TraceRegTechniqueIndex> result = techniqueService.lecture(DateUtils
+            .addMinutes(new Date(), -5), DateUtils.addMinutes(new Date(), 5),
+            1, false);
       Assert.assertNotNull(
             "une trace dans le registre technique doit etre trouvé", result);
       Assert.assertEquals(
@@ -156,8 +156,9 @@ public class DispatcheurServiceTousRegistresDatasTest {
 
    private void checkSecurite() {
       // on vérifie qu'il y a un résultat
-      List<TraceRegSecuriteIndex> result = securiteService.lecture(DATE,
-            DateUtils.addMinutes(DATE, 1), 1, false);
+      List<TraceRegSecuriteIndex> result = securiteService.lecture(DateUtils
+            .addMinutes(new Date(), -5), DateUtils.addMinutes(new Date(), 5),
+            1, false);
       Assert.assertNotNull(
             "une trace dans le registre technique doit etre trouvé", result);
       Assert.assertEquals(
@@ -187,6 +188,6 @@ public class DispatcheurServiceTousRegistresDatasTest {
             MESSAGE, VI));
       trace.setDestinataires(map);
 
-      destSupport.create(trace, DATE.getTime());
+      destSupport.create(trace, new Date().getTime());
    }
 }

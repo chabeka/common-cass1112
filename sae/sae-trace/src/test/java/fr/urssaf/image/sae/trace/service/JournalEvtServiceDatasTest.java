@@ -15,8 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import me.prettyprint.cassandra.utils.TimeUUIDUtils;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.time.DateUtils;
@@ -32,6 +30,7 @@ import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvt;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndex;
 import fr.urssaf.image.sae.trace.dao.support.TraceJournalEvtSupport;
+import fr.urssaf.image.sae.trace.utils.TimeUUIDTraceUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-trace-test.xml" })
@@ -152,8 +151,7 @@ public class JournalEvtServiceDatasTest {
    @Test
    public void testGetBean() {
       createTraces();
-
-      UUID uuid = TimeUUIDUtils.getTimeUUID(DATE.getTime());
+      UUID uuid = TimeUUIDTraceUtils.buildUUIDFromDate(DATE);
       String suffixe = " [DATE]";
       TraceJournalEvt result = service.lecture(uuid);
       Assert.assertNotNull("il doit y avoir un résultat");
@@ -243,8 +241,9 @@ public class JournalEvtServiceDatasTest {
       File repertoire = new File(tempDirectory, "export");
       repertoire.mkdir();
 
-      String path = service.export(calendar.getTime(), repertoire
-            .getAbsolutePath(), "6f5e4930-80cc-11e2-8759-005056c00008", "00000");
+      String path = service
+            .export(calendar.getTime(), repertoire.getAbsolutePath(),
+                  "6f5e4930-80cc-11e2-8759-005056c00008", "00000");
 
       String sha1Attendu = "9d0bf360dee181cb3a51f512db52d57f18a8ea49";
       String sha1Obtenu = calculeSha1(new File(path));
@@ -281,13 +280,12 @@ public class JournalEvtServiceDatasTest {
    }
 
    private void createTrace(Date date, String suffixe) {
-      TraceJournalEvt trace = new TraceJournalEvt();
+      TraceJournalEvt trace = new TraceJournalEvt(TimeUUIDTraceUtils
+            .buildUUIDFromDate(date), date);
       trace.setContexte(CONTEXTE + suffixe);
       trace.setCodeEvt(CODE_EVT + suffixe);
       trace.setContratService(CONTRAT + suffixe);
-      trace.setIdentifiant(TimeUUIDUtils.getTimeUUID(date.getTime()));
       trace.setLogin(LOGIN + suffixe);
-      trace.setTimestamp(date);
       trace.setInfos(INFOS);
       trace.setPagms(Arrays.asList("PAGM " + suffixe));
 
@@ -295,13 +293,11 @@ public class JournalEvtServiceDatasTest {
    }
 
    private void createTrace(Date date, String suffixe, UUID id) {
-      TraceJournalEvt trace = new TraceJournalEvt();
+      TraceJournalEvt trace = new TraceJournalEvt(id, date);
       trace.setContexte(CONTEXTE + suffixe);
       trace.setCodeEvt(CODE_EVT + suffixe);
       trace.setContratService(CONTRAT + suffixe);
-      trace.setIdentifiant(id);
       trace.setLogin(LOGIN + suffixe);
-      trace.setTimestamp(date);
       trace.setInfos(INFOS);
       trace.setPagms(Arrays.asList("PAGM " + suffixe));
 

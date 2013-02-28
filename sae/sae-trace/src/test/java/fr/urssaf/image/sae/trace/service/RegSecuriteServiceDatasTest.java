@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import me.prettyprint.cassandra.utils.TimeUUIDUtils;
-
 import org.apache.commons.lang.time.DateUtils;
 import org.junit.After;
 import org.junit.Assert;
@@ -24,6 +22,7 @@ import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegSecurite;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegSecuriteIndex;
 import fr.urssaf.image.sae.trace.dao.support.TraceRegSecuriteSupport;
+import fr.urssaf.image.sae.trace.utils.TimeUUIDTraceUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-trace-test.xml" })
@@ -144,8 +143,7 @@ public class RegSecuriteServiceDatasTest {
    @Test
    public void testGetBean() {
       createTraces();
-
-      UUID uuid = TimeUUIDUtils.getTimeUUID(DATE.getTime());
+      UUID uuid = TimeUUIDTraceUtils.buildUUIDFromDate(DATE);
       String suffixe = " [DATE]";
       TraceRegSecurite result = service.lecture(uuid);
       Assert.assertNotNull("il doit y avoir un résultat");
@@ -194,25 +192,25 @@ public class RegSecuriteServiceDatasTest {
             .getCodeEvt().contains("DATE_JOUR_SUIVANT"));
 
    }
-   
+
    @Test
    public void testHasRecordsTheDayBefore() {
       createTrace(DATE, " [DATE]");
-      
+
       boolean hasRecords = service.hasRecords(DATE_JOUR_PRECEDENT);
-      
+
       Assert.assertFalse("il ne doit pas y avoir de trace", hasRecords);
-      
+
    }
-   
+
    @Test
    public void testHasRecords() {
       createTrace(DATE, " [DATE]");
-      
+
       boolean hasRecords = service.hasRecords(DATE);
-      
+
       Assert.assertTrue("il doit y avoir une trace", hasRecords);
-      
+
    }
 
    private void createTraces() {
@@ -224,13 +222,12 @@ public class RegSecuriteServiceDatasTest {
    }
 
    private void createTrace(Date date, String suffixe) {
-      TraceRegSecurite trace = new TraceRegSecurite();
+      TraceRegSecurite trace = new TraceRegSecurite(TimeUUIDTraceUtils
+            .buildUUIDFromDate(date), date);
       trace.setContexte(CONTEXTE + suffixe);
       trace.setCodeEvt(CODE_EVT + suffixe);
       trace.setContrat(CONTRAT + suffixe);
-      trace.setIdentifiant(TimeUUIDUtils.getTimeUUID(date.getTime()));
       trace.setLogin(LOGIN + suffixe);
-      trace.setTimestamp(date);
       trace.setInfos(INFOS);
 
       support.create(trace, new Date().getTime());

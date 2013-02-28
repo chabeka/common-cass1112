@@ -32,7 +32,6 @@ import fr.urssaf.image.sae.trace.model.TraceToCreate;
 @ContextConfiguration(locations = { "/applicationContext-sae-trace-test.xml" })
 public class DispatcheurServiceEvtDatasTest {
 
-   private static final Date DATE = new Date();
    private static final String CONTEXTE = "contexte";
    private static final String CONTRAT_DE_SERVICE = "contrat de service";
    private static final String IP = "ip";
@@ -96,46 +95,20 @@ public class DispatcheurServiceEvtDatasTest {
    }
 
    @Test
-   public void testCreationTraceSecuriteErreurDateNonRenseigné() {
-      createDestinataireEvt();
-
-      TraceToCreate traceToCreate = new TraceToCreate();
-      traceToCreate.setCodeEvt(ARCHIVAGE_UNITAIRE);
-      traceToCreate.setContexte(CONTEXTE);
-
-      try {
-         service.ajouterTrace(traceToCreate);
-         Assert.fail("une erreur IllegalArgumentException est attendue");
-
-      } catch (IllegalArgumentException exception) {
-
-         Map<String, String> map = new HashMap<String, String>();
-         map.put("0", "date");
-         map.put("1", "des événements SAE");
-         String message = StrSubstitutor.replace(MESSAGE_ERREUR, map);
-
-         Assert.assertEquals("l'exception doit être correcte", message,
-               exception.getMessage());
-
-      } catch (Exception exception) {
-         Assert.fail("une erreur IllegalArgumentException est attendue");
-      }
-   }
-
-   @Test
    public void testCreationTraceSecuriteSuccesContratNonRenseigné() {
       createDestinataireEvt();
 
       TraceToCreate traceToCreate = new TraceToCreate();
       traceToCreate.setCodeEvt(ARCHIVAGE_UNITAIRE);
       traceToCreate.setContexte(CONTEXTE);
-      traceToCreate.setTimestamp(DATE);
 
       service.ajouterTrace(traceToCreate);
 
       // on vérifie qu'il y a un résultat
-      List<TraceJournalEvtIndex> result = evtService.lecture(DATE, DateUtils
-            .addMinutes(DATE, 1), 1, false);
+
+      List<TraceJournalEvtIndex> result = evtService.lecture(DateUtils
+            .addMinutes(new Date(), -5), DateUtils.addMinutes(new Date(), 5),
+            1, false);
       Assert
             .assertNotNull(
                   "une trace dans le journal des événements doit etre trouvé",
@@ -146,7 +119,8 @@ public class DispatcheurServiceEvtDatasTest {
                   1, result.size());
 
       // on vérifie la trace
-      TraceJournalEvt trace = evtService.lecture(result.get(0).getIdentifiant());
+      TraceJournalEvt trace = evtService
+            .lecture(result.get(0).getIdentifiant());
       Assert.assertTrue("Le contrat de service ne doit pas être renseigné",
             StringUtils.isEmpty(trace.getContratService()));
 
@@ -159,15 +133,16 @@ public class DispatcheurServiceEvtDatasTest {
       TraceToCreate traceToCreate = new TraceToCreate();
       traceToCreate.setCodeEvt(ARCHIVAGE_UNITAIRE);
       traceToCreate.setContexte(CONTEXTE);
-      traceToCreate.setTimestamp(DATE);
       traceToCreate.setContrat(CONTRAT_DE_SERVICE);
       traceToCreate.setInfos(INFOS);
 
       service.ajouterTrace(traceToCreate);
 
       // on vérifie qu'il y a un résultat
-      List<TraceJournalEvtIndex> result = evtService.lecture(DATE, DateUtils
-            .addMinutes(DATE, 1), 1, false);
+      Date dateDebut = DateUtils.addMinutes(new Date(), -5);
+      Date dateFin = DateUtils.addMinutes(new Date(), 5);
+      
+      List<TraceJournalEvtIndex> result = evtService.lecture(dateDebut, dateFin, 1, false);
       Assert
             .assertNotNull(
                   "une trace dans le journal des événements doit etre trouvé",
@@ -178,7 +153,8 @@ public class DispatcheurServiceEvtDatasTest {
                   1, result.size());
 
       // on vérifie les infos présentes dans les infos
-      TraceJournalEvt trace = evtService.lecture(result.get(0).getIdentifiant());
+      TraceJournalEvt trace = evtService
+            .lecture(result.get(0).getIdentifiant());
       Assert.assertNotNull("les infos doivent etre renseignées", trace
             .getInfos());
       Assert.assertEquals("le nombre d'infos doit etre correct", 2, trace
@@ -193,13 +169,13 @@ public class DispatcheurServiceEvtDatasTest {
             MESSAGE_VALUE, trace.getInfos().get(MESSAGE));
 
    }
-   
+
    private void createDestinataireEvt() {
       TraceDestinataire trace = new TraceDestinataire();
       trace.setCodeEvt(ARCHIVAGE_UNITAIRE);
       Map<String, List<String>> map = new HashMap<String, List<String>>();
       map.put(TraceDestinataireDao.COL_JOURN_EVT, Arrays.asList(IP, MESSAGE));
       trace.setDestinataires(map);
-      destSupport.create(trace, DATE.getTime());
+      destSupport.create(trace, new Date().getTime());
    }
 }

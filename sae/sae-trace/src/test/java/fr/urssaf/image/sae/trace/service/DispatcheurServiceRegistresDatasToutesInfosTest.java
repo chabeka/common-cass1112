@@ -22,6 +22,7 @@ import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.sae.trace.commons.Constantes;
 import fr.urssaf.image.sae.trace.dao.TraceDestinataireDao;
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
+import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvt;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndex;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegExploitation;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegExploitationIndex;
@@ -36,7 +37,6 @@ import fr.urssaf.image.sae.trace.model.TraceToCreate;
 @ContextConfiguration(locations = { "/applicationContext-sae-trace-test.xml" })
 public class DispatcheurServiceRegistresDatasToutesInfosTest {
 
-   private static final Date DATE = new Date();
    private static final String ACTION = "action";
    private static final String CONTEXTE = "contexte";
    private static final String CONTRAT_DE_SERVICE = "contrat de service";
@@ -88,7 +88,6 @@ public class DispatcheurServiceRegistresDatasToutesInfosTest {
       TraceToCreate traceToCreate = new TraceToCreate();
       traceToCreate.setCodeEvt(ARCHIVAGE_UNITAIRE);
       traceToCreate.setAction(ACTION);
-      traceToCreate.setTimestamp(DATE);
       traceToCreate.setContrat(CONTRAT_DE_SERVICE);
       traceToCreate.setInfos(INFOS);
       traceToCreate.setContexte(CONTEXTE);
@@ -104,8 +103,9 @@ public class DispatcheurServiceRegistresDatasToutesInfosTest {
 
    private void checkExploitation() {
       // on vérifie qu'il y a un résultat
-      List<TraceRegExploitationIndex> result = exploitService.lecture(DATE,
-            DateUtils.addMinutes(DATE, 1), 1, false);
+      List<TraceRegExploitationIndex> result = exploitService.lecture(DateUtils
+            .addMinutes(new Date(), -5), DateUtils.addMinutes(new Date(), 5),
+            1, false);
       Assert.assertNotNull(
             "une trace dans le registre technique doit etre trouvé", result);
       Assert.assertEquals(
@@ -135,8 +135,9 @@ public class DispatcheurServiceRegistresDatasToutesInfosTest {
 
    private void checkTechnique() {
       // on vérifie qu'il y a un résultat
-      List<TraceRegTechniqueIndex> result = techniqueService.lecture(DATE,
-            DateUtils.addMinutes(DATE, 1), 1, false);
+      List<TraceRegTechniqueIndex> result = techniqueService.lecture(DateUtils
+            .addMinutes(new Date(), -5), DateUtils.addMinutes(new Date(), 5),
+            1, false);
       Assert.assertNotNull(
             "une trace dans le registre technique doit etre trouvé", result);
       Assert.assertEquals(
@@ -166,8 +167,9 @@ public class DispatcheurServiceRegistresDatasToutesInfosTest {
 
    private void checkSecurite() {
       // on vérifie qu'il y a un résultat
-      List<TraceRegSecuriteIndex> result = securiteService.lecture(DATE,
-            DateUtils.addMinutes(DATE, 1), 1, false);
+      List<TraceRegSecuriteIndex> result = securiteService.lecture(DateUtils
+            .addMinutes(new Date(), -5), DateUtils.addMinutes(new Date(), 5),
+            1, false);
       Assert.assertNotNull(
             "une trace dans le registre technique doit etre trouvé", result);
       Assert.assertEquals(
@@ -197,8 +199,9 @@ public class DispatcheurServiceRegistresDatasToutesInfosTest {
 
    private void checkJournalEvt() {
       // on vérifie qu'il y a un résultat
-      List<TraceJournalEvtIndex> result = evtService.lecture(DATE, DateUtils
-            .addMinutes(DATE, 1), 1, false);
+      List<TraceJournalEvtIndex> result = evtService.lecture(DateUtils
+            .addMinutes(new Date(), -5), DateUtils.addMinutes(new Date(), 5),
+            1, false);
       Assert.assertNotNull(
             "une trace dans le registre technique doit etre trouvé", result);
       Assert.assertEquals(
@@ -206,7 +209,8 @@ public class DispatcheurServiceRegistresDatasToutesInfosTest {
             1, result.size());
 
       // on vérifie les infos présentes dans les infos
-      TraceRegSecurite trace = securiteService.lecture(result.get(0).getIdentifiant());
+      TraceJournalEvt trace = evtService
+            .lecture(result.get(0).getIdentifiant());
       Assert.assertNotNull("les infos doivent etre renseignées", trace
             .getInfos());
       Assert.assertEquals("le nombre d'infos doit etre correct", 3, trace
@@ -239,6 +243,6 @@ public class DispatcheurServiceRegistresDatasToutesInfosTest {
             .asList(Constantes.REG_ALL_INFOS));
       trace.setDestinataires(map);
 
-      destSupport.create(trace, DATE.getTime());
+      destSupport.create(trace, new Date().getTime());
    }
 }

@@ -123,7 +123,6 @@ public class HistEvenementServiceDatasTest {
       trace.setCodeEvt(CODE_EVT + suffixe);
       trace.setContrat(CONTRAT + suffixe);
       trace.setLogin(LOGIN + suffixe);
-      trace.setTimestamp(date);
       trace.setInfos(INFOS);
 
       support.create(trace);

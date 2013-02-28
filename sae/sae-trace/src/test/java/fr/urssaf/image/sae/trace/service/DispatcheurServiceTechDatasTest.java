@@ -32,7 +32,6 @@ import fr.urssaf.image.sae.trace.model.TraceToCreate;
 @ContextConfiguration(locations = { "/applicationContext-sae-trace-test.xml" })
 public class DispatcheurServiceTechDatasTest {
 
-   private static final Date DATE = new Date();
    private static final String CONTEXTE = "contexte";
    private static final String CONTRAT_DE_SERVICE = "contrat de service";
    private static final String IP = "ip";
@@ -96,46 +95,19 @@ public class DispatcheurServiceTechDatasTest {
    }
 
    @Test
-   public void testCreationTraceTechniqueErreurDateNonRenseigné() {
-      createDestinataireTechnique();
-
-      TraceToCreate traceToCreate = new TraceToCreate();
-      traceToCreate.setCodeEvt(ARCHIVAGE_UNITAIRE);
-      traceToCreate.setContexte(CONTEXTE);
-
-      try {
-         service.ajouterTrace(traceToCreate);
-         Assert.fail("une erreur IllegalArgumentException est attendue");
-
-      } catch (IllegalArgumentException exception) {
-
-         Map<String, String> map = new HashMap<String, String>();
-         map.put("0", "date");
-         map.put("1", "technique");
-         String message = StrSubstitutor.replace(MESSAGE_ERREUR, map);
-
-         Assert.assertEquals("l'exception doit être correcte", message,
-               exception.getMessage());
-
-      } catch (Exception exception) {
-         Assert.fail("une erreur IllegalArgumentException est attendue");
-      }
-   }
-
-   @Test
    public void testCreationTraceTechniqueSuccesContratNonRenseigné() {
       createDestinataireTechnique();
 
       TraceToCreate traceToCreate = new TraceToCreate();
       traceToCreate.setCodeEvt(ARCHIVAGE_UNITAIRE);
       traceToCreate.setContexte(CONTEXTE);
-      traceToCreate.setTimestamp(DATE);
 
       service.ajouterTrace(traceToCreate);
 
       // on vérifie qu'il y a un résultat
-      List<TraceRegTechniqueIndex> result = techService.lecture(DATE, DateUtils
-            .addMinutes(DATE, 1), 1, false);
+      List<TraceRegTechniqueIndex> result = techService.lecture(DateUtils
+            .addMinutes(new Date(), -5), DateUtils.addMinutes(new Date(), 5),
+            1, false);
       Assert.assertNotNull(
             "une trace dans le registre technique doit etre trouvé", result);
       Assert.assertEquals(
@@ -157,15 +129,15 @@ public class DispatcheurServiceTechDatasTest {
       TraceToCreate traceToCreate = new TraceToCreate();
       traceToCreate.setCodeEvt(ARCHIVAGE_UNITAIRE);
       traceToCreate.setContexte(CONTEXTE);
-      traceToCreate.setTimestamp(DATE);
       traceToCreate.setContrat(CONTRAT_DE_SERVICE);
       traceToCreate.setInfos(INFOS);
 
       service.ajouterTrace(traceToCreate);
 
       // on vérifie qu'il y a un résultat
-      List<TraceRegTechniqueIndex> result = techService.lecture(DATE, DateUtils
-            .addMinutes(DATE, 1), 1, false);
+      List<TraceRegTechniqueIndex> result = techService.lecture(DateUtils
+            .addMinutes(new Date(), -5), DateUtils.addMinutes(new Date(), 5),
+            1, false);
       Assert.assertNotNull(
             "une trace dans le registre technique doit etre trouvé", result);
       Assert.assertEquals(
@@ -198,6 +170,6 @@ public class DispatcheurServiceTechDatasTest {
             .asList(IP, MESSAGE));
       trace.setDestinataires(map);
       trace.setDestinataires(map);
-      destSupport.create(trace, DATE.getTime());
+      destSupport.create(trace, new Date().getTime());
    }
 }
