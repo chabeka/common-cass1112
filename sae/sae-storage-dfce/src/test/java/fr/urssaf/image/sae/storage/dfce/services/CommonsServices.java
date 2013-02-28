@@ -31,10 +31,10 @@ import fr.urssaf.image.sae.storage.services.storagedocument.InsertionService;
  * 
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/appliContext-sae-storage-dfce-test.xml" })
+@ContextConfiguration(locations = { "/applicationContext-sae-storage-dfce-test.xml" })
 @SuppressWarnings( { "PMD.ExcessiveImports", "PMD.LongVariable",
       "AbstractClassWithoutAbstractMethod" })
-public class CommonsServices {
+public abstract class CommonsServices {
    @Autowired
    @Qualifier("xmlDataService")
    private XmlDataService xmlDataService;

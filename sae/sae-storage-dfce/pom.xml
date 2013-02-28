@@ -27,6 +27,18 @@
          <artifactId>sae-storage</artifactId>
          <version>13.4.10.2-SNAPSHOT</version>
       </dependency>
+      
+      <dependency>
+         <groupId>fr.urssaf.image.sae</groupId>
+         <artifactId>sae-trace</artifactId>
+         <version>13.4.10.2-SNAPSHOT</version>
+      </dependency>
+      
+      <dependency>
+         <groupId>fr.urssaf.image.sae</groupId>
+         <artifactId>sae-vi</artifactId>
+         <version>13.4.10.2-SNAPSHOT</version>
+      </dependency>
 
       <!-- XSTREAM -->
 
@@ -98,14 +110,6 @@
          <groupId>commons-lang</groupId>
          <artifactId>commons-lang</artifactId>
          <version>${apache.commons-lang.version}</version>
-      </dependency>
-
-      <!-- JUNITPERF -->
-      <dependency>
-         <groupId>junitperf</groupId>
-         <artifactId>junitperf</artifactId>
-         <version>${junitperf.version}</version>
-         <scope>test</scope>
       </dependency>
 
       <!-- EASYMOCK -->

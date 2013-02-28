@@ -8,6 +8,8 @@ import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 
+import org.apache.commons.lang.StringUtils;
+
 import fr.urssaf.image.sae.storage.dfce.constants.Constants;
 import fr.urssaf.image.sae.storage.dfce.messages.StorageMessageHandler;
 import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
@@ -102,7 +104,7 @@ public final class Utils {
    public static String buildUrlForConnection(
          final StorageConnectionParameter storageConnectionParameter)
          throws ConnectionServiceEx {
-      String url = Constants.BLANK;
+      String url = StringUtils.EMPTY;
       String protocol = Constants.HTTP;
       final StorageHost storageHost = storageConnectionParameter
             .getStorageHost();

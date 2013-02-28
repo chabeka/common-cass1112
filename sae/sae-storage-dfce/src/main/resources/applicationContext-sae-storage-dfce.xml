@@ -9,10 +9,13 @@
 		http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
 	<context:component-scan base-package="fr.urssaf.image.sae.storage.dfce" />
-	<!--Gestion de message à partir d'un fichier -->
+	
+   <!--Gestion de message à partir d'un fichier -->
 	<bean id="messageSource_sae_storage_dfce"
 		class="org.springframework.context.support.ResourceBundleMessageSource">
 		<property name="basename" value="i18n.storage_dfce_messages_fr_FR" />
 	</bean>
+   
+   <import resource="applicationContext-sae-trace.xml" />
 
 </beans>

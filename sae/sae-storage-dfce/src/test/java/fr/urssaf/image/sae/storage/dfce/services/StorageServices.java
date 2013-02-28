@@ -23,8 +23,8 @@ import fr.urssaf.image.sae.storage.services.storagedocument.SearchingService;
  * 
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/appliContext-sae-storage-dfce-test.xml" })
-public class StorageServices extends CommonsServices {
+@ContextConfiguration(locations = { "/applicationContext-sae-storage-dfce-test.xml" })
+public abstract class StorageServices extends CommonsServices {
 	@Autowired
 	@Qualifier("insertionService")
 	private InsertionService insertionService;

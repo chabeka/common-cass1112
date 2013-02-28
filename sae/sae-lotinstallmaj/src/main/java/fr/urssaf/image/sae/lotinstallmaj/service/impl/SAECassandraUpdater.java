@@ -268,9 +268,9 @@ public class SAECassandraUpdater {
    /**
     * Version 4 :
     * <ul>
-    *    <li>ajout des CF de traces dans le keyspace "SAE"</li>
-    *    <li>initialisation des paramètres de purge des registres</li> 
-    *    <li>initialisation du référentiel des événements</li>
+    * <li>ajout des CF de traces dans le keyspace "SAE"</li>
+    * <li>initialisation des paramètres de purge des registres</li>
+    * <li>initialisation du référentiel des événements</li>
     * </ul>
     */
    public void updateToVersion4() {
@@ -312,6 +312,13 @@ public class SAECassandraUpdater {
       // TraceRegTechniqueIndex
       cfDefs.add(HFactory.createColumnFamilyDefinition(ksName,
             "TraceRegTechniqueIndex", ComparatorType.TIMEUUIDTYPE));
+
+      // TraceJournalEvt
+      cfDefs.add(HFactory.createColumnFamilyDefinition(ksName,
+            "TraceJournalEvt", ComparatorType.UTF8TYPE));
+      // TraceJournalEvtIndex
+      cfDefs.add(HFactory.createColumnFamilyDefinition(ksName,
+            "TraceJournalEvtIndex", ComparatorType.TIMEUUIDTYPE));
 
       // Création des CF
       saeCassandraService.createColumnFamilyFromList(cfDefs, true);

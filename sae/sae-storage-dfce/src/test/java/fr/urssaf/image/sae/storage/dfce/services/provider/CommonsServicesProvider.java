@@ -25,7 +25,7 @@ import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
  * Classe abstract pour les tests.
  */
 @SuppressWarnings("PMD.LongVariable")
-public class CommonsServicesProvider extends CommonsServices {
+public abstract class CommonsServicesProvider extends CommonsServices {
    private StorageDocuments storageDocuments;
    private StorageDocument storageDocument;
    private List<StorageMetadata> storageMetadatas;

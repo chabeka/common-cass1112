@@ -329,6 +329,13 @@ public class InsertionDonnees {
             ListSerializer.get(), updater);
       cfTmpl.update(updater);
 
+      // DFCE_DEPOT_DOC|OK
+      // dans le journal des événements SAE avec all_infos
+      updater = cfTmpl.createUpdater("DFCE_DEPOT_DOC|OK");
+      addColumn("JOURN_EVT", allInfos, StringSerializer.get(), ListSerializer
+            .get(), updater);
+      cfTmpl.update(updater);
+
    }
 
 }

@@ -44,16 +44,16 @@ public final class StorageMessageHandler {
       strBuilder.setLength(0);
       strBuilder.append(
             MESSAGE_SOURCES.getMessage(errorCode, null,
-                  Constants.NO_MESSAGE_FOR_THIS_KEY, Constants.LOCAL)).append(" | ");
+                  Constants.NO_MESSAGE_FOR_THIS_KEY, Constants.DEFAULT_LOCAL)).append(" | ");
 
       strBuilder.append(" | ").append(
             MESSAGE_SOURCES.getMessage(messageKey, null,
-                  Constants.NO_MESSAGE_FOR_THIS_KEY, Constants.LOCAL));
+                  Constants.NO_MESSAGE_FOR_THIS_KEY, Constants.DEFAULT_LOCAL));
       strBuilder.append(" | ").append(
             MESSAGE_SOURCES.getMessage(impactKey, null,
-                  Constants.NO_MESSAGE_FOR_THIS_KEY, Constants.LOCAL)).append(" | ").append(
+                  Constants.NO_MESSAGE_FOR_THIS_KEY, Constants.DEFAULT_LOCAL)).append(" | ").append(
             MESSAGE_SOURCES.getMessage(actionKey, null,
-                  Constants.NO_MESSAGE_FOR_THIS_KEY, Constants.LOCAL));
+                  Constants.NO_MESSAGE_FOR_THIS_KEY, Constants.DEFAULT_LOCAL));
       return strBuilder.toString();
    }
 
@@ -65,7 +65,7 @@ public final class StorageMessageHandler {
    @SuppressWarnings("PMD.LongVariable")
    public static String getMessage(final String messageKey) {
       return MESSAGE_SOURCES.getMessage(messageKey, null,
-            Constants.NO_MESSAGE_FOR_THIS_KEY, Constants.LOCAL);
+            Constants.NO_MESSAGE_FOR_THIS_KEY, Constants.DEFAULT_LOCAL);
    }
 
    /** Cette classe n'est pas faite pour être instanciée. */
