@@ -222,6 +222,17 @@ public class InsertionDonnees {
             "JOURNALISATION_EVT_HASH_JOURNAL_PRECEDENT",
             "0000000000000000000000000000000000000000");
 
+      addTracabiliteParameter(cfTmpl, "JOURNALISATION_EVT_META_TITRE",
+            "Journal des événements SAE");
+      addTracabiliteParameter(cfTmpl,
+            "JOURNALISATION_EVT_META_APPLICATION_PRODUCTRICE", "SAE");
+      addTracabiliteParameter(cfTmpl,
+            "JOURNALISATION_EVT_META_APPLICATION_TRAITEMENT", "SAE");
+      addTracabiliteParameter(cfTmpl, "JOURNALISATION_EVT_META_CODE_ORGA",
+            "UR750");
+      addTracabiliteParameter(cfTmpl, "JOURNALISATION_EVT_META_CODE_RND",
+            "7.7.8.8.1");
+
    }
 
    /**
@@ -310,7 +321,7 @@ public class InsertionDonnees {
       addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
             ListSerializer.get(), updater);
       cfTmpl.update(updater);
-      
+
       // CAPTURE_MASSE|KO
       // dans le registre de surveillance technique avec all_infos
       updater = cfTmpl.createUpdater("CAPTURE_MASSE|KO");
