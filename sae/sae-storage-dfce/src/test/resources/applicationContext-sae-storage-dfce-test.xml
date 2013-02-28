@@ -42,5 +42,9 @@
       <property name="digestAlgo" value="${db.digestAlgo}" />
       <property name="checkHash" value="${db.checkHash}" />
    </bean>
+   
+   <bean
+      id="traceAssertUtils"
+      class="fr.urssaf.image.sae.storage.dfce.utils.TraceAssertUtils" />
 
 </beans>

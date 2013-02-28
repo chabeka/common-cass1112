@@ -27,7 +27,7 @@ import fr.urssaf.image.sae.storage.dfce.messages.LogLevel;
 import fr.urssaf.image.sae.storage.dfce.messages.StorageMessageHandler;
 import fr.urssaf.image.sae.storage.dfce.model.AbstractServices;
 import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
-import fr.urssaf.image.sae.storage.dfce.support.TracesSupport;
+import fr.urssaf.image.sae.storage.dfce.support.TracesDfceSupport;
 import fr.urssaf.image.sae.storage.dfce.utils.HashUtils;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
@@ -53,7 +53,7 @@ public class InsertionServiceImpl extends AbstractServices implements
    private DeletionService deletionService;
 
    @Autowired
-   private TracesSupport tracesSupport;
+   private TracesDfceSupport tracesSupport;
 
    /**
     * @return : Le service de suppression

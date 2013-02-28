@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
-import fr.urssaf.image.sae.services.capturemasse.support.traces.TracesSupport;
+import fr.urssaf.image.sae.services.capturemasse.support.traces.TracesServicesSupport;
 
 /**
  * Listener du job capture de masse
@@ -23,7 +23,7 @@ import fr.urssaf.image.sae.services.capturemasse.support.traces.TracesSupport;
 public class CaptureMasseJobListener {
 
    @Autowired
-   private TracesSupport tracesSupport;
+   private TracesServicesSupport tracesSupport;
 
    /**
     * Initialisation des variables nécessaires au bon déroulement du job

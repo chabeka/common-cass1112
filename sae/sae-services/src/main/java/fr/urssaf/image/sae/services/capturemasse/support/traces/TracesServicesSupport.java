@@ -29,10 +29,10 @@ import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
  * Classe de support pour écrire les traces via la brique de traçabilité.
  */
 @Component
-public class TracesSupport {
+public class TracesServicesSupport {
 
    private static final Logger LOGGER = LoggerFactory
-         .getLogger(TracesSupport.class);
+         .getLogger(TracesServicesSupport.class);
 
    @Autowired
    private DispatcheurService dispatcheurService;
