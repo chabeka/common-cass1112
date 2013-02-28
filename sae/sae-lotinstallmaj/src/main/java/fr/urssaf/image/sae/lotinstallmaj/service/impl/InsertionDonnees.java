@@ -310,6 +310,13 @@ public class InsertionDonnees {
       addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
             ListSerializer.get(), updater);
       cfTmpl.update(updater);
+      
+      // CAPTURE_MASSE|KO
+      // dans le registre de surveillance technique avec all_infos
+      updater = cfTmpl.createUpdater("CAPTURE_MASSE|KO");
+      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
+            ListSerializer.get(), updater);
+      cfTmpl.update(updater);
 
    }
 
