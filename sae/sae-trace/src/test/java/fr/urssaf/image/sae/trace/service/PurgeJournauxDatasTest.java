@@ -151,10 +151,10 @@ public class PurgeJournauxDatasTest {
       date = DateUtils.addDays(DATE, -10);
       List<TraceJournalEvtIndex> traces = evtService.lecture(date, DateUtils
             .addDays(DATE, 10), 20, false);
-      Assert.assertEquals("toutes les traces doivent etre présentes", 6, traces
+      Assert.assertEquals("toutes les traces doivent etre présentes", 5, traces
             .size());
 
-      date = DateUtils.addDays(DATE, -6);
+      date = DateUtils.addDays(DATE, -5);
       Assert.assertEquals("la date stockée doit etre correcte", DateUtils
             .truncate(date, Calendar.DATE), paramService.loadParameter(
             ParameterType.PURGE_EVT_DATE).getValue());
