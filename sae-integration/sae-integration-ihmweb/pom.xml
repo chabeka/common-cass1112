@@ -45,7 +45,7 @@
       <apache.commons-io.version>2.0.1</apache.commons-io.version>
       <apache.commons-collections.version>3.2.1</apache.commons-collections.version>
       
-      <sae.version>12.11.11.2-SNAPSHOT</sae.version>
+      <sae.version>13.4.10.2-SNAPSHOT</sae.version>
       <guava.version>12.0</guava.version>
 
    </properties>
@@ -457,6 +457,11 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-droit</artifactId>
+         <version>${sae.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>fr.urssaf.image.sae</groupId>
+         <artifactId>sae-trace</artifactId>
          <version>${sae.version}</version>
       </dependency>
    

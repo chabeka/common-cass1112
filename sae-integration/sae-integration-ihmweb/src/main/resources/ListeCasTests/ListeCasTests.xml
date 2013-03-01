@@ -1259,6 +1259,42 @@
             <implemente>true</implemente>
             <luceneExemple>CodeRND:2.3.1.1.12 AND Siren:3090000001 AND DateCreation:20070401</luceneExemple>
          </CasTest>
+         
+         <CasTest>
+            <id>1104</id>
+            <code>1104-Droits-Conformite-Recherche-ATT-VIGI</code>
+            <description>
+               ce test permet de valider que les fonctionnalités de recherche autorisées sur un PRMD précis 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1104-Droits-Conformite-Recherche-ATT-VIGI"</luceneExemple>
+         </CasTest>
+         
+         <CasTest>
+            <id>1150</id>
+            <code>1150-Droits-Toutes-Actions-KO-CS-Inconnu</code>
+            <description>
+               Ce test a pour objectif de vérifier le contrôle de l’existence du CS demandé en utilisant une action unitaire est correctement réalisé pour l’archivage unitaire, l’archivage de masse, la recherche et la consultation.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1150-Droits-Toutes-Actions-KO-CS-INCONNU"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1151</id>
+            <code>1151-Droits-Archivage-Unitaire-KO-PAGM-Inconnu</code>
+            <description>
+               Ce test a pour objectif de vérifier le contrôle de l’existence du PAGM demandé en utilisant une action unitaire ici l’archivage unitaire 
+            </description>
+            <implemente>true</implemente>
+         </CasTest>
+         <CasTest>
+            <id>1152</id>
+            <code>1152-Droits-Archivage-Unitaire-KO-PRMD-Innacessible</code>
+            <description>
+               ce test permet de valider que les fonctionnalités de recherche autorisées sur un PRMD précis 
+            </description>
+            <implemente>true</implemente>
+         </CasTest>
 
       </CasTests>
 

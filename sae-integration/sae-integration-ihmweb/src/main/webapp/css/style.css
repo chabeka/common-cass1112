@@ -71,3 +71,7 @@
 }
 
 .text{padding-bottom:5px;}
+
+.detail{float:left; padding-right:2px; border-right:1px solid; border-left:1px solid; word-wrap: break-word; font-size: 14px; height: 35px;}
+
+.trace{border:1px solid; float:left}
