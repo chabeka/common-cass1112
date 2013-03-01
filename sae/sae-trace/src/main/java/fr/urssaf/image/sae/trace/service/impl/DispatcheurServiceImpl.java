@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import me.prettyprint.cassandra.service.clock.MicrosecondsSyncClockResolution;
 import net.docubase.toolkit.model.ToolkitFactory;
 import net.docubase.toolkit.model.recordmanager.RMSystemEvent;
 import net.docubase.toolkit.service.ged.RecordManagerService;
@@ -24,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.trace.dao.TraceDestinataireDao;
+import fr.urssaf.image.sae.trace.dao.clock.MySyncClockResolution;
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvt;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegExploitation;
@@ -52,7 +52,6 @@ public class DispatcheurServiceImpl implements DispatcheurService {
    private static final String ARG_1 = "1";
    private static final String ARG_2 = "2";
    private static final String USERNAME = "_ADMIN";
-   private static final int MILLE = 1000;
 
    private static final String FIN_LOG = "{} - fin";
    private static final String DEBUT_LOG = "{} - début";
@@ -85,7 +84,7 @@ public class DispatcheurServiceImpl implements DispatcheurService {
    private static final List<String> JOURN_AUTORISES = Arrays
          .asList(TraceDestinataireDao.COL_JOURN_EVT);
 
-   private static final MicrosecondsSyncClockResolution CLOCK_RESOLUTION = new MicrosecondsSyncClockResolution();
+   private static final MySyncClockResolution CLOCK_RESOLUTION = new MySyncClockResolution();
 
    @Autowired
    private JobClockSupport clockSupport;
@@ -215,10 +214,14 @@ public class DispatcheurServiceImpl implements DispatcheurService {
       String prefix = "saveTrace()";
       LOGGER.debug(DEBUT_LOG, prefix);
 
-      long timestampMicro = CLOCK_RESOLUTION.createClock();
+      long timestampMicroDivDix = CLOCK_RESOLUTION.createClock();
+      LOGGER.debug(
+            "{} - Timestamp en microsecondes /10 du ClockResolution : {}",
+            prefix, timestampMicroDivDix);
       UUID idTrace = TimeUUIDTraceUtils
-            .buildUUIDFromTimestampMicro(timestampMicro);
-      Date timestampTrace = new Date(timestampMicro / MILLE);
+            .buildUUIDFromTimestampMicroSecDivDix(timestampMicroDivDix);
+      Date timestampTrace = new Date(timestampMicroDivDix
+            / TimeUUIDTraceUtils.CENT);
 
       if (TraceDestinataireDao.COL_REG_EXPLOIT.equals(type)) {
          LOGGER.debug("{} - ajout d'une trace d'exploitation", prefix);

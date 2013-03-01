@@ -189,6 +189,7 @@ public class JournalEvtServiceImpl implements JournalEvtService {
       LOGGER.debug(DEBUT_LOG, prefix);
 
       List<Date> dates = DateRegUtils.getListFromDates(dateDebut, dateFin);
+      LOGGER.debug("{} - Liste des dates à regarder : {}", prefix, dates);
 
       List<TraceJournalEvtIndex> value = null;
       List<TraceJournalEvtIndex> list;

@@ -3,14 +3,17 @@
  */
 package fr.urssaf.image.sae.trace.dao.support;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
 import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
+import me.prettyprint.hector.api.exceptions.HInvalidRequestException;
 import me.prettyprint.hector.api.mutation.Mutator;
 import me.prettyprint.hector.api.query.SliceQuery;
 
@@ -48,6 +51,9 @@ public class TraceRegTechniqueSupport {
    private static final Logger LOGGER = LoggerFactory
          .getLogger(TraceRegTechniqueSupport.class);
 
+   private final SimpleDateFormat dateFormat = new SimpleDateFormat(
+         "yyyy-MM-dd HH'h'mm ss's' SSS'ms'", Locale.FRENCH);
+
    /**
     * création d'une trace dans le registre technique
     * 
@@ -57,6 +63,11 @@ public class TraceRegTechniqueSupport {
     *           horloge de la création
     */
    public final void create(TraceRegTechnique trace, long clock) {
+
+      // Trace applicative
+      String prefix = "create()";
+      LOGGER.debug("{} - Début", prefix);
+
       // création de la trace
       ColumnFamilyTemplate<UUID, String> tmpl = dao.getTechTmpl();
       ColumnFamilyUpdater<UUID, String> updater = tmpl.createUpdater(trace
@@ -96,10 +107,12 @@ public class TraceRegTechniqueSupport {
       indexDao.writeColumn(indexUpdater, index.getIdentifiant(), index, clock);
       indexDao.update(indexUpdater);
 
-      // Trace
-      LOGGER.debug(
-            "Trace ajoutée dans le registre de surveillance technique : {}",
-            trace.getIdentifiant());
+      // Trace applicative
+      LOGGER
+            .debug(
+                  "{} - Trace ajoutée dans le registre de surveillance technique : {}",
+                  prefix, trace.getIdentifiant());
+      LOGGER.debug("{} - Fin", prefix);
 
    }
 
@@ -202,6 +215,15 @@ public class TraceRegTechniqueSupport {
     */
    public final List<TraceRegTechniqueIndex> findByDates(Date startDate,
          Date endDate, int maxCount, boolean reversed) {
+
+      // Trace applicative
+      String prefix = "findByDates()";
+      LOGGER.debug("{} - Début", prefix);
+      LOGGER.debug("{} - Date de début : {}", prefix, dateFormat
+            .format(startDate));
+      LOGGER.debug("{} - Date de fin : {}", prefix, dateFormat.format(endDate));
+      LOGGER.debug("{} - Ordre décroissant : {}", prefix, reversed);
+
       List<TraceRegTechniqueIndex> list = null;
 
       SliceQuery<String, UUID, TraceRegTechniqueIndex> sliceQuery = indexDao
@@ -209,13 +231,22 @@ public class TraceRegTechniqueSupport {
       sliceQuery.setKey(DateRegUtils.getJournee(startDate));
 
       UUID startUuid = TimeUUIDTraceUtils.buildUUIDFromDate(startDate);
-      UUID endUuid = TimeUUIDTraceUtils.buildUUIDFromDate(endDate);
+      UUID endUuid = TimeUUIDTraceUtils.buildUUIDFromDateBorneSup(endDate);
 
       TraceRegTechniqueIndexIterator iterator = new TraceRegTechniqueIndexIterator(
             sliceQuery, startUuid, endUuid, reversed);
 
-      if (iterator.hasNext()) {
-         list = new ArrayList<TraceRegTechniqueIndex>();
+      try {
+         if (iterator.hasNext()) {
+            list = new ArrayList<TraceRegTechniqueIndex>();
+         }
+      } catch (HInvalidRequestException ex) {
+         LOGGER
+               .warn(
+                     "{} - Echec de la requête Cassandra. Date de début : {}. UUID début : {}. Date de fin : {}. UUID fin : {}.",
+                     new Object[] { prefix, dateFormat.format(startDate),
+                           startUuid, dateFormat.format(endDate), endUuid });
+         throw ex;
       }
 
       int count = 0;
@@ -223,6 +254,9 @@ public class TraceRegTechniqueSupport {
          list.add(iterator.next());
          count++;
       }
+
+      // Trace applicative
+      LOGGER.debug("{} - Fin", prefix);
 
       return list;
    }
