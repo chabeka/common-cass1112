@@ -100,10 +100,34 @@ public class TracesDfceSupport {
 
    private void setInfosAuth(TraceToCreate traceToCreate) {
 
-      if ((SecurityContextHolder.getContext() != null)
-            && (SecurityContextHolder.getContext().getAuthentication() != null)
-            && (SecurityContextHolder.getContext().getAuthentication()
-                  .getPrincipal() != null)) {
+      String prefix = "setInfosAuth()";
+      LOGGER.debug("{} - Début", prefix);
+
+      if (SecurityContextHolder.getContext() == null) {
+
+         LOGGER.debug("{} - SecurityContextHolder.getContext() est null",
+               prefix);
+
+      } else if (SecurityContextHolder.getContext().getAuthentication() == null) {
+
+         LOGGER
+               .debug(
+                     "{} - SecurityContextHolder.getContext().getAuthentication() est null",
+                     prefix);
+
+      } else if (SecurityContextHolder.getContext().getAuthentication()
+            .getPrincipal() == null) {
+
+         LOGGER
+               .debug(
+                     "{} - SecurityContextHolder.getContext().getAuthentication().getPrincipal() est null",
+                     prefix);
+
+      } else {
+
+         LOGGER.debug(
+               "{} - Les informations d'authentification sont disponibles",
+               prefix);
 
          VIContenuExtrait extrait = (VIContenuExtrait) SecurityContextHolder
                .getContext().getAuthentication().getPrincipal();
@@ -120,6 +144,8 @@ public class TracesDfceSupport {
          traceToCreate.setLogin(extrait.getIdUtilisateur());
 
       }
+
+      LOGGER.debug("{} - Fin", prefix);
 
    }
 
