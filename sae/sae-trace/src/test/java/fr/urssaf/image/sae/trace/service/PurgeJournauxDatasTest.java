@@ -8,11 +8,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.commons.lang.time.DateUtils;
 import org.junit.After;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,18 +22,26 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.sae.trace.dao.TraceDestinataireDao;
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
+import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvt;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndex;
+import fr.urssaf.image.sae.trace.dao.model.TraceRegExploitation;
+import fr.urssaf.image.sae.trace.dao.model.TraceRegSecurite;
+import fr.urssaf.image.sae.trace.dao.model.TraceRegTechnique;
 import fr.urssaf.image.sae.trace.dao.support.TraceDestinataireSupport;
+import fr.urssaf.image.sae.trace.dao.support.TraceJournalEvtSupport;
+import fr.urssaf.image.sae.trace.dao.support.TraceRegExploitationSupport;
+import fr.urssaf.image.sae.trace.dao.support.TraceRegSecuriteSupport;
+import fr.urssaf.image.sae.trace.dao.support.TraceRegTechniqueSupport;
 import fr.urssaf.image.sae.trace.exception.ParameterNotFoundException;
 import fr.urssaf.image.sae.trace.exception.TraceRuntimeException;
 import fr.urssaf.image.sae.trace.model.Parameter;
 import fr.urssaf.image.sae.trace.model.ParameterType;
 import fr.urssaf.image.sae.trace.model.PurgeType;
 import fr.urssaf.image.sae.trace.model.TraceToCreate;
+import fr.urssaf.image.sae.trace.utils.TimeUUIDTraceUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-trace-test.xml" })
-@Ignore("Tests à revoir car le timestamp des traces n'est plus spécifiable")
 public class PurgeJournauxDatasTest {
 
    private static final Date DATE = new Date();
@@ -50,13 +58,22 @@ public class PurgeJournauxDatasTest {
    private TraceDestinataireSupport traceSupport;
 
    @Autowired
-   private DispatcheurService dispatcheurService;
-
-   @Autowired
    private JournalEvtService evtService;
 
    @Autowired
    private CassandraServerBean serverBean;
+
+   @Autowired
+   private TraceRegExploitationSupport exploitationSupport;
+
+   @Autowired
+   private TraceRegSecuriteSupport securiteSupport;
+
+   @Autowired
+   private TraceRegTechniqueSupport techniqueSupport;
+
+   @Autowired
+   private TraceJournalEvtSupport evtSupport;
 
    @After
    public void after() throws Exception {
@@ -184,20 +201,21 @@ public class PurgeJournauxDatasTest {
 
       traceSupport.create(destinataire, new Date().getTime());
 
-      createTrace("[JOUR J]", 0);
-      createTrace("[JOUR J-1]", -1);
-      createTrace("[JOUR J-2]", -2);
-      createTrace("[JOUR J-3]", -3);
-      createTrace("[JOUR J-4]", -4);
-      createTrace("[JOUR J-5]", -5);
-      createTrace("[JOUR J-6]", -6);
-      createTrace("[JOUR J-7]", -7);
-      createTrace("[JOUR J-8]", -8);
-      createTrace("[JOUR J-9]", -9);
+      createTrace("[JOUR J]", 0, destinataire);
+      createTrace("[JOUR J-1]", -1, destinataire);
+      createTrace("[JOUR J-2]", -2, destinataire);
+      createTrace("[JOUR J-3]", -3, destinataire);
+      createTrace("[JOUR J-4]", -4, destinataire);
+      createTrace("[JOUR J-5]", -5, destinataire);
+      createTrace("[JOUR J-6]", -6, destinataire);
+      createTrace("[JOUR J-7]", -7, destinataire);
+      createTrace("[JOUR J-8]", -8, destinataire);
+      createTrace("[JOUR J-9]", -9, destinataire);
 
    }
 
-   private void createTrace(String suffix, int decalage) {
+   private void createTrace(String suffix, int decalage,
+         TraceDestinataire destinataire) {
       TraceToCreate trace = new TraceToCreate();
       trace.setAction("action " + suffix);
       trace.setCodeEvt(CODE_EVT);
@@ -207,7 +225,36 @@ public class PurgeJournauxDatasTest {
       trace.setLogin("login " + suffix);
       trace.setStracktrace("stackTrace " + suffix);
       // trace.setTimestamp(DateUtils.addDays(DATE, decalage));
-      dispatcheurService.ajouterTrace(trace);
+
+      for (String dest : destinataire.getDestinataires().keySet()) {
+         createTraces(trace, dest, DateUtils.addDays(DATE, decalage));
+      }
    }
 
+   private void createTraces(TraceToCreate traceToCreate, String nomDestinaire,
+         Date date) {
+
+      long timestampMicroDivDix = date.getTime() * 100;
+      UUID idTrace = TimeUUIDTraceUtils
+            .buildUUIDFromTimestampMicroSecDivDix(timestampMicroDivDix);
+      Date timestampTrace = new Date(timestampMicroDivDix
+            / TimeUUIDTraceUtils.CENT);
+
+      if (TraceDestinataireDao.COL_REG_EXPLOIT.equalsIgnoreCase(nomDestinaire)) {
+         exploitationSupport.create(new TraceRegExploitation(traceToCreate,
+               null, idTrace, timestampTrace), timestampTrace.getTime());
+      } else if (TraceDestinataireDao.COL_REG_SECURITE
+            .equalsIgnoreCase(nomDestinaire)) {
+         securiteSupport.create(new TraceRegSecurite(traceToCreate, null,
+               idTrace, timestampTrace), timestampTrace.getTime());
+      } else if (TraceDestinataireDao.COL_REG_TECHNIQUE
+            .equalsIgnoreCase(nomDestinaire)) {
+         techniqueSupport.create(new TraceRegTechnique(traceToCreate, null,
+               idTrace, timestampTrace), timestampTrace.getTime());
+      } else if (TraceDestinataireDao.COL_JOURN_EVT
+            .equalsIgnoreCase(nomDestinaire)) {
+         evtSupport.create(new TraceJournalEvt(traceToCreate, null, idTrace,
+               timestampTrace), timestampTrace.getTime());
+      }
+   }
 }
