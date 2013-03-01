@@ -1,7 +1,6 @@
 package fr.urssaf.image.sae.trace.dao.clock;
 
 import me.prettyprint.cassandra.service.clock.AbstractClockResolution;
-import me.prettyprint.cassandra.service.clock.MicrosecondsSyncClockResolution;
 import me.prettyprint.hector.api.ClockResolution;
 
 /**
@@ -9,8 +8,8 @@ import me.prettyprint.hector.api.ClockResolution;
  * Un copier/collé de {@link MicrosecondsSyncClockResolution}<br>
  * TODO : à mettre dans commons-cassandra
  */
-public class MySyncClockResolution extends AbstractClockResolution implements
-      ClockResolution {
+public final class MySyncClockResolution extends AbstractClockResolution
+      implements ClockResolution {
 
    private static final long ONE_HUNDRED = 100L;
 

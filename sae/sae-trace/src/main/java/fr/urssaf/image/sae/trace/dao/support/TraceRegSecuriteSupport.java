@@ -31,8 +31,8 @@ import fr.urssaf.image.sae.trace.dao.model.TraceRegSecurite;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegSecuriteIndex;
 import fr.urssaf.image.sae.trace.dao.serializer.ListSerializer;
 import fr.urssaf.image.sae.trace.dao.serializer.MapSerializer;
+import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
 import fr.urssaf.image.sae.trace.utils.DateRegUtils;
-import fr.urssaf.image.sae.trace.utils.TimeUUIDTraceUtils;
 
 /**
  * Support de la classe DAO {@link TraceRegSecuriteDao}
@@ -52,6 +52,9 @@ public class TraceRegSecuriteSupport {
 
    @Autowired
    private TraceRegSecuriteIndexDao indexDao;
+
+   @Autowired
+   private TimeUUIDEtTimestampSupport timeUUIDSupport;
 
    /**
     * Création d'une trace dans le registre de sécurité
@@ -225,8 +228,8 @@ public class TraceRegSecuriteSupport {
             .createSliceQuery();
       sliceQuery.setKey(DateRegUtils.getJournee(startDate));
 
-      UUID startUuid = TimeUUIDTraceUtils.buildUUIDFromDate(startDate);
-      UUID endUuid = TimeUUIDTraceUtils.buildUUIDFromDateBorneSup(endDate);
+      UUID startUuid = timeUUIDSupport.buildUUIDFromDate(startDate);
+      UUID endUuid = timeUUIDSupport.buildUUIDFromDateBorneSup(endDate);
 
       TraceRegSecuriteIndexIterator iterator = new TraceRegSecuriteIndexIterator(
             sliceQuery, startUuid, endUuid, reversed);

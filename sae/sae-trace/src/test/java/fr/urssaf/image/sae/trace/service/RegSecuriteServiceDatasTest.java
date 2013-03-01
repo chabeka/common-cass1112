@@ -22,7 +22,7 @@ import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegSecurite;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegSecuriteIndex;
 import fr.urssaf.image.sae.trace.dao.support.TraceRegSecuriteSupport;
-import fr.urssaf.image.sae.trace.utils.TimeUUIDTraceUtils;
+import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-trace-test.xml" })
@@ -55,6 +55,9 @@ public class RegSecuriteServiceDatasTest {
 
    @Autowired
    private TraceRegSecuriteSupport support;
+
+   @Autowired
+   private TimeUUIDEtTimestampSupport timeUUIDSupport;
 
    @After
    public void after() throws Exception {
@@ -143,7 +146,7 @@ public class RegSecuriteServiceDatasTest {
    @Test
    public void testGetBean() {
       createTraces();
-      UUID uuid = TimeUUIDTraceUtils.buildUUIDFromDate(DATE);
+      UUID uuid = timeUUIDSupport.buildUUIDFromDate(DATE);
       String suffixe = " [DATE]";
       TraceRegSecurite result = service.lecture(uuid);
       Assert.assertNotNull("il doit y avoir un résultat");
@@ -222,7 +225,7 @@ public class RegSecuriteServiceDatasTest {
    }
 
    private void createTrace(Date date, String suffixe) {
-      TraceRegSecurite trace = new TraceRegSecurite(TimeUUIDTraceUtils
+      TraceRegSecurite trace = new TraceRegSecurite(timeUUIDSupport
             .buildUUIDFromDate(date), date);
       trace.setContexte(CONTEXTE + suffixe);
       trace.setCodeEvt(CODE_EVT + suffixe);

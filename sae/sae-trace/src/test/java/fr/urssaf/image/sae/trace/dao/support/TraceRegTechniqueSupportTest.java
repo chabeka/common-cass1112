@@ -23,7 +23,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegTechnique;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegTechniqueIndex;
-import fr.urssaf.image.sae.trace.utils.TimeUUIDTraceUtils;
+import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-trace-test.xml" })
@@ -53,6 +53,9 @@ public class TraceRegTechniqueSupportTest {
    @Autowired
    private CassandraServerBean server;
 
+   @Autowired
+   private TimeUUIDEtTimestampSupport timeUUIDSupport;
+
    @After
    public void after() throws Exception {
       server.resetData();
@@ -61,7 +64,7 @@ public class TraceRegTechniqueSupportTest {
    @Test
    public void testCreateFindSuccess() {
 
-      UUID uuid = TimeUUIDTraceUtils.buildUUIDFromDate(new Date());
+      UUID uuid = timeUUIDSupport.buildUUIDFromDate(new Date());
       createTrace(uuid);
 
       TraceRegTechnique technique = support.find(uuid);
@@ -76,7 +79,7 @@ public class TraceRegTechniqueSupportTest {
 
    @Test
    public void testDelete() {
-      UUID uuid = TimeUUIDTraceUtils.buildUUIDFromDate(new Date());
+      UUID uuid = timeUUIDSupport.buildUUIDFromDate(new Date());
       createTrace(uuid);
 
       long nbTracesPurgees = support.delete(new Date(), new Date().getTime());
@@ -96,7 +99,7 @@ public class TraceRegTechniqueSupportTest {
    @Test
    public void testCreateFindByPlageSuccess() {
 
-      UUID uuid = TimeUUIDTraceUtils.buildUUIDFromDate(DATE);
+      UUID uuid = timeUUIDSupport.buildUUIDFromDate(DATE);
       createTrace(uuid);
 
       TraceRegTechnique exploitation = support.find(uuid);

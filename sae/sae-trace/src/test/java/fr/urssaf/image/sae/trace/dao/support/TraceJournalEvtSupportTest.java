@@ -23,7 +23,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvt;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndex;
-import fr.urssaf.image.sae.trace.utils.TimeUUIDTraceUtils;
+import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-trace-test.xml" })
@@ -51,6 +51,9 @@ public class TraceJournalEvtSupportTest {
    @Autowired
    private CassandraServerBean server;
 
+   @Autowired
+   private TimeUUIDEtTimestampSupport timeUUIDSupport;
+
    @After
    public void after() throws Exception {
       server.resetData();
@@ -59,7 +62,7 @@ public class TraceJournalEvtSupportTest {
    @Test
    public void testCreateFindSuccess() {
 
-      UUID uuid = TimeUUIDTraceUtils.buildUUIDFromDate(new Date());
+      UUID uuid = timeUUIDSupport.buildUUIDFromDate(new Date());
       createTrace(uuid);
 
       TraceJournalEvt securite = support.find(uuid);
@@ -74,7 +77,7 @@ public class TraceJournalEvtSupportTest {
 
    @Test
    public void testDelete() {
-      UUID uuid = TimeUUIDTraceUtils.buildUUIDFromDate(new Date());
+      UUID uuid = timeUUIDSupport.buildUUIDFromDate(new Date());
       createTrace(uuid);
 
       long nbTracesPurgees = support.delete(new Date(), new Date().getTime());
@@ -93,7 +96,7 @@ public class TraceJournalEvtSupportTest {
 
    @Test
    public void testCreateFindByPlageSuccess() {
-      UUID uuid = TimeUUIDTraceUtils.buildUUIDFromDate(DATE);
+      UUID uuid = timeUUIDSupport.buildUUIDFromDate(DATE);
       createTrace(uuid);
 
       TraceJournalEvt exploitation = support.find(uuid);

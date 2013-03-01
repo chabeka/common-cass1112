@@ -30,7 +30,7 @@ import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvt;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndex;
 import fr.urssaf.image.sae.trace.dao.support.TraceJournalEvtSupport;
-import fr.urssaf.image.sae.trace.utils.TimeUUIDTraceUtils;
+import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-trace-test.xml" })
@@ -63,6 +63,9 @@ public class JournalEvtServiceDatasTest {
 
    @Autowired
    private TraceJournalEvtSupport support;
+
+   @Autowired
+   private TimeUUIDEtTimestampSupport timeUUIDSupport;
 
    @After
    public void after() throws Exception {
@@ -151,7 +154,7 @@ public class JournalEvtServiceDatasTest {
    @Test
    public void testGetBean() {
       createTraces();
-      UUID uuid = TimeUUIDTraceUtils.buildUUIDFromDate(DATE);
+      UUID uuid = timeUUIDSupport.buildUUIDFromDate(DATE);
       String suffixe = " [DATE]";
       TraceJournalEvt result = service.lecture(uuid);
       Assert.assertNotNull("il doit y avoir un résultat");
@@ -280,7 +283,7 @@ public class JournalEvtServiceDatasTest {
    }
 
    private void createTrace(Date date, String suffixe) {
-      TraceJournalEvt trace = new TraceJournalEvt(TimeUUIDTraceUtils
+      TraceJournalEvt trace = new TraceJournalEvt(timeUUIDSupport
             .buildUUIDFromDate(date), date);
       trace.setContexte(CONTEXTE + suffixe);
       trace.setCodeEvt(CODE_EVT + suffixe);

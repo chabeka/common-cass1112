@@ -32,7 +32,7 @@ import fr.urssaf.image.sae.trace.dao.support.TraceJournalEvtSupport;
 import fr.urssaf.image.sae.trace.model.JournalisationType;
 import fr.urssaf.image.sae.trace.model.Parameter;
 import fr.urssaf.image.sae.trace.model.ParameterType;
-import fr.urssaf.image.sae.trace.utils.TimeUUIDTraceUtils;
+import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-trace-test.xml" })
@@ -63,6 +63,9 @@ public class JournalisationServiceDatasTest {
 
    @Autowired
    private JournalisationService service;
+
+   @Autowired
+   private TimeUUIDEtTimestampSupport timeUUIDSupport;
 
    @After
    public void after() throws Exception {
@@ -174,7 +177,7 @@ public class JournalisationServiceDatasTest {
    }
 
    private void createTrace(Date date, String suffixe) {
-      TraceJournalEvt trace = new TraceJournalEvt(TimeUUIDTraceUtils
+      TraceJournalEvt trace = new TraceJournalEvt(timeUUIDSupport
             .buildUUIDFromDate(date), date);
       trace.setContexte(CONTEXTE + suffixe);
       trace.setCodeEvt(CODE_EVT + suffixe);

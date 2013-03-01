@@ -23,10 +23,10 @@ import fr.urssaf.image.sae.trace.model.TraceToCreate;
 public class TraceRegSecurite {
 
    /** Identifiant de la trace */
-   private UUID identifiant;
+   private final UUID identifiant;
 
    /** Date de création de la trace */
-   private Date timestamp;
+   private final Date timestamp;
 
    /** Contexte de la trace */
    private String contexte;

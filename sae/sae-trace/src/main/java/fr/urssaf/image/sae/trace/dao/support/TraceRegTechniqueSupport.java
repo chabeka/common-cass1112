@@ -32,8 +32,8 @@ import fr.urssaf.image.sae.trace.dao.model.TraceRegTechnique;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegTechniqueIndex;
 import fr.urssaf.image.sae.trace.dao.serializer.ListSerializer;
 import fr.urssaf.image.sae.trace.dao.serializer.MapSerializer;
+import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
 import fr.urssaf.image.sae.trace.utils.DateRegUtils;
-import fr.urssaf.image.sae.trace.utils.TimeUUIDTraceUtils;
 
 /**
  * Support de la classe DAO {@link TraceRegTechniqueDao}
@@ -47,6 +47,9 @@ public class TraceRegTechniqueSupport {
 
    @Autowired
    private TraceRegTechniqueIndexDao indexDao;
+
+   @Autowired
+   private TimeUUIDEtTimestampSupport timeUUIDSupport;
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(TraceRegTechniqueSupport.class);
@@ -230,8 +233,8 @@ public class TraceRegTechniqueSupport {
             .createSliceQuery();
       sliceQuery.setKey(DateRegUtils.getJournee(startDate));
 
-      UUID startUuid = TimeUUIDTraceUtils.buildUUIDFromDate(startDate);
-      UUID endUuid = TimeUUIDTraceUtils.buildUUIDFromDateBorneSup(endDate);
+      UUID startUuid = timeUUIDSupport.buildUUIDFromDate(startDate);
+      UUID endUuid = timeUUIDSupport.buildUUIDFromDateBorneSup(endDate);
 
       TraceRegTechniqueIndexIterator iterator = new TraceRegTechniqueIndexIterator(
             sliceQuery, startUuid, endUuid, reversed);

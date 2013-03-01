@@ -38,7 +38,7 @@ import fr.urssaf.image.sae.trace.model.Parameter;
 import fr.urssaf.image.sae.trace.model.ParameterType;
 import fr.urssaf.image.sae.trace.model.PurgeType;
 import fr.urssaf.image.sae.trace.model.TraceToCreate;
-import fr.urssaf.image.sae.trace.utils.TimeUUIDTraceUtils;
+import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-trace-test.xml" })
@@ -77,6 +77,9 @@ public class PurgeServiceTest {
 
    @Autowired
    private TraceRegTechniqueSupport techniqueSupport;
+
+   @Autowired
+   private TimeUUIDEtTimestampSupport timeUUIDSupport;
 
    @After
    public void after() throws Exception {
@@ -267,11 +270,9 @@ public class PurgeServiceTest {
    private void createTraces(TraceToCreate traceToCreate, String nomDestinaire,
          Date date) {
 
-      long timestampMicroDivDix = date.getTime()* 100;
-      UUID idTrace = TimeUUIDTraceUtils
-            .buildUUIDFromTimestampMicroSecDivDix(timestampMicroDivDix);
-      Date timestampTrace = new Date(timestampMicroDivDix
-            / TimeUUIDTraceUtils.CENT);
+      long timestamp = timeUUIDSupport.getTimestampFromDate(date);
+      UUID idTrace = timeUUIDSupport.buildUUIDFromTimestamp(timestamp);
+      Date timestampTrace = timeUUIDSupport.getDateFromTimestamp(timestamp);
 
       if (TraceDestinataireDao.COL_REG_EXPLOIT.equalsIgnoreCase(nomDestinaire)) {
          exploitationSupport.create(new TraceRegExploitation(traceToCreate,
