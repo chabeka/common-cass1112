@@ -41,11 +41,14 @@ public class TraceContextFactoryTest {
       FileUtils.writeLines(dfceFile, lines);
 
       saeResourceFile = File.createTempFile("sae-config", ".properties");
-      lines = Arrays.asList("sae.dfce.cheminFichierConfig="
-            + FilenameUtils.separatorsToUnix(dfceFile.getAbsolutePath()),
-            "sae.cassandra.cheminFichierConfig="
-                  + FilenameUtils.separatorsToUnix(cassandraFile
-                        .getAbsolutePath()));
+      lines = Arrays
+            .asList("sae.dfce.cheminFichierConfig="
+                  + FilenameUtils.separatorsToUnix(dfceFile.getAbsolutePath()),
+                  "sae.cassandra.cheminFichierConfig="
+                        + FilenameUtils.separatorsToUnix(cassandraFile
+                              .getAbsolutePath()),
+                  "sae.ecde.cheminFichierConfig=src/test/resources/config/ecdesources.xml");
+
       FileUtils.writeLines(saeResourceFile, lines);
 
    }

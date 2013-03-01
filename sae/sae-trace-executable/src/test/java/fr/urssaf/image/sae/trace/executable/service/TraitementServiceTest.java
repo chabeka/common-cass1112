@@ -24,7 +24,7 @@ public class TraitementServiceTest {
    public void testPurgeObligatoire() {
 
       try {
-         service.purgerRegistre(null);
+         service.purger(null);
       } catch (IllegalArgumentException exception) {
          Assert.assertEquals("le message d'erreur doit etre correct",
                StringUtils.replace(MESSAGE_ERREUR, "{0}", "type de purge"),
@@ -34,7 +34,20 @@ public class TraitementServiceTest {
          Assert.fail("une exception IllegalArgumentException est attendue");
       }
    }
-   
-   
-   
+
+   @Test
+   public void testJournalisationObligatoire() {
+
+      try {
+         service.journaliser(null);
+      } catch (IllegalArgumentException exception) {
+         Assert.assertEquals("le message d'erreur doit etre correct",
+               StringUtils.replace(MESSAGE_ERREUR, "{0}",
+                     "type de journalisation"), exception.getMessage());
+
+      } catch (Exception exception) {
+         Assert.fail("une exception IllegalArgumentException est attendue");
+      }
+   }
+
 }

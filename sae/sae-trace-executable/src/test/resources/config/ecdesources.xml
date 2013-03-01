@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<sources xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
+	<source>
+    <host>cnp69devecde.cer69.recouv</host>
+		<basePath>y:</basePath>
+		<local>true</local>
+	</source>
+	<source>
+    <host>ecde.cer69.recouv</host>
+		<basePath>C:/appl/sae/ecde_local</basePath>
+		<local>true</local>
+	</source>
+	<source>
+		<host>ecde.local</host>
+		<basePath>C:/appl/sae/ecde_local</basePath>
+		<local>true</local>
+	</source>
+</sources>

@@ -20,6 +20,7 @@ import org.springframework.core.io.ClassPathResource;
 import fr.urssaf.image.sae.trace.executable.exception.TraceExecutableRuntimeException;
 import fr.urssaf.image.sae.trace.executable.factory.TraceContextFactory;
 import fr.urssaf.image.sae.trace.executable.service.TraitementService;
+import fr.urssaf.image.sae.trace.model.JournalisationType;
 import fr.urssaf.image.sae.trace.model.PurgeType;
 
 /**
@@ -33,6 +34,7 @@ public final class Main {
    private static final String CONFIGURATION_FILE = "/applicationContext-sae-trace-executable.xml";
    private static final String HELP = "HELP";
    private static final String PURGE = "PURGE";
+   private static final String JOURNALISATION = "JOURNALISATION";
 
    private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
@@ -62,12 +64,17 @@ public final class Main {
 
          long startDate = new Date().getTime();
 
-         checkArguments(args);
+         Object actionType = checkArguments(args);
 
          context = TraceContextFactory.loadContext(CONFIGURATION_FILE, args[0]);
-         PurgeType purgeType = PurgeType.valueOf(args[2]);
          TraitementService service = context.getBean(TraitementService.class);
-         service.purgerRegistre(purgeType);
+
+         if (actionType instanceof PurgeType) {
+            service.purger((PurgeType) actionType);
+
+         } else {
+            service.journaliser((JournalisationType) actionType);
+         }
 
          long endDate = new Date().getTime();
          long duree = (endDate - startDate) / CONVERSION_MINUTES;
@@ -89,9 +96,11 @@ public final class Main {
    }
 
    @SuppressWarnings("PMD.PreserveStackTrace")
-   private static void checkArguments(String[] args) {
+   private static Object checkArguments(String[] args) {
       String prefix = "checkArguments()";
       LOGGER.debug("{} - début de vérification des arguments", prefix);
+
+      Object action = null;
 
       // récupération de l'aide à la commande
       String helpCmd;
@@ -128,20 +137,32 @@ public final class Main {
                "le fichier de configuration du SAE est inexistant");
       }
 
-      if (!args[1].equalsIgnoreCase(PURGE)) {
+      if (!PURGE.equalsIgnoreCase(args[1])
+            && !JOURNALISATION.equalsIgnoreCase(args[1])) {
          throw new TraceExecutableRuntimeException(
                "la commande est incorrecte.\n" + helpCmd);
       }
 
-      try {
-         PurgeType.valueOf(args[2]);
-      } catch (IllegalArgumentException exception) {
-         throw new TraceExecutableRuntimeException(
-               "le registre à purger n'est pas référencé.\n" + helpCmd);
+      if (PURGE.equalsIgnoreCase(args[1])) {
+         try {
+            action = PurgeType.valueOf(args[2]);
+         } catch (IllegalArgumentException exception) {
+            throw new TraceExecutableRuntimeException(
+                  "le registre à purger n'est pas référencé.\n" + helpCmd);
+         }
+
+      } else {
+         try {
+            action = JournalisationType.valueOf(args[2]);
+         } catch (IllegalArgumentException exception) {
+            throw new TraceExecutableRuntimeException(
+                  "le journal n'est pas référencé.\n" + helpCmd);
+         }
       }
 
       LOGGER.debug("{} - Fin de la vérification des arguments", prefix);
 
-   }
+      return action;
 
+   }
 }

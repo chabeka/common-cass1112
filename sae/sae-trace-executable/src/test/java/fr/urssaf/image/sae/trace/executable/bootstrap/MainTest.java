@@ -145,4 +145,23 @@ public class MainTest {
                .fail("une exception TraceExecutableRuntimeException est attendue");
       }
    }
+
+   @Test
+   public void testParametreTypeJournalisationIncorrect() throws Throwable {
+      try {
+         Main.main(new String[] { saeConfig.getAbsolutePath(),
+               "JOURNALISATION", "argument 3" });
+         Assert
+               .fail("une exception TraceExecutableRuntimeException est attendue");
+
+      } catch (TraceExecutableRuntimeException exception) {
+         Assert.assertEquals("l'exception doit être correcte",
+               "le journal n'est pas référencé.\n" + helpCmd, exception
+                     .getMessage());
+
+      } catch (Exception exception) {
+         Assert
+               .fail("une exception TraceExecutableRuntimeException est attendue");
+      }
+   }
 }

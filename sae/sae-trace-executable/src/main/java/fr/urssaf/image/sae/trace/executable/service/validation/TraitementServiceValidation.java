@@ -7,6 +7,7 @@ import org.apache.commons.lang.StringUtils;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 
+import fr.urssaf.image.sae.trace.model.JournalisationType;
 import fr.urssaf.image.sae.trace.model.PurgeType;
 
 /**
@@ -21,7 +22,9 @@ public class TraitementServiceValidation {
 
    private static final String CLASS_NAME = "fr.urssaf.image.sae.trace.executable.service.TraitementService.";
    private static final String PURGE_METHOD = "execution(void " + CLASS_NAME
-         + "purgerRegistre(*))" + " && args(typePurge)";
+         + "purger(*))" + " && args(typePurge)";
+   private static final String JOURNALISATION_METHOD = "execution(void "
+         + CLASS_NAME + "journaliser(*))" + " && args(journalisationType)";
 
    /**
     * Réalise la validation de la méthode lecture de l'interface RegService
@@ -35,6 +38,21 @@ public class TraitementServiceValidation {
       if (typePurge == null) {
          throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
                "{0}", "type de purge"));
+      }
+   }
+
+   /**
+    * Réalise la validation de la méthode lecture de l'interface RegService
+    * 
+    * @param journalisationType
+    *           type de journalisation
+    */
+   @Before(JOURNALISATION_METHOD)
+   public final void testJournalisaton(JournalisationType journalisationType) {
+
+      if (journalisationType == null) {
+         throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
+               "{0}", "type de journalisation"));
       }
    }
 

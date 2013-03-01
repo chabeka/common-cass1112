@@ -13,6 +13,27 @@
       <constructor-arg ref="saeConfigResource" />
    </bean>
 
-   <import resource="classpath*:/applicationContext-sae-trace.xml" />
 
+   <import resource="applicationContext-storageConnectionParameter.xml" />
+
+
+   <bean id="ecdeSourceManager" class="fr.urssaf.image.sae.ecde.EcdeSourceManagerImpl" />
+   <bean id="ecdeConfigFile" class="java.io.File">
+      <constructor-arg value="${sae.ecde.cheminFichierConfig}" />
+   </bean>
+   <bean id="ecdeSources" factory-bean="ecdeSourceManager"
+      factory-method="load">
+      <constructor-arg ref="ecdeConfigFile" />
+   </bean>
+
+
+
+   <import resource="applicationContext-commons-cassandra.xml" />
+   <!--  importation des contextes -->
+   <import resource="applicationContext-sae-services.xml" />
+   <import resource="applicationContext-sae-storage-dfce.xml" />
+   <import resource="applicationContext-sae-metadata.xml" />
+   <import resource="applicationContext-sae-ecde.xml" />
+   <import resource="applicationContext-sae-mapping.xml" />
+   <import resource="applicationContext-sae-trace.xml" />
 </beans>

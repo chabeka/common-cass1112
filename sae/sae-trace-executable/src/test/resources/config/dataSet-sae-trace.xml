@@ -34,6 +34,14 @@
          <name>TraceRegTechniqueIndex</name>
          <comparatorType>TimeUUIDType</comparatorType>
       </columnFamily>
+      <columnFamily>
+         <name>TraceJournalEvt</name>
+         <comparatorType>UTF8Type</comparatorType>
+      </columnFamily>
+      <columnFamily>
+         <name>TraceJournalEvtIndex</name>
+         <comparatorType>TimeUUIDType</comparatorType>
+      </columnFamily>
    <columnFamily>
       <name>Parameters</name>
       <comparatorType>UTF8Type</comparatorType>
