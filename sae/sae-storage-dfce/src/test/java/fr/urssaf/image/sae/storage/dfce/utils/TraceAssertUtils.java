@@ -69,9 +69,10 @@ public final class TraceAssertUtils {
       TraceJournalEvtIndex traceJrnIndex = tracesJrnIndex.get(0);
 
       // Le code événement
-      Assert.assertEquals("Le code événement est incorrect",
-            Constants.TRACE_CODE_EVT_DEPOT_DOC_DFCE, traceJrnIndex
-                  .getCodeEvt());
+      Assert
+            .assertEquals("Le code événement est incorrect",
+                  Constants.TRACE_CODE_EVT_DEPOT_DOC_DFCE, traceJrnIndex
+                        .getCodeEvt());
 
       // Le contexte
       Assert.assertEquals("Le contexte est incorrect", "DepotDocumentDansDFCE",
@@ -136,8 +137,8 @@ public final class TraceAssertUtils {
          int expected) {
 
       List<TraceRegTechniqueIndex> tracesIndex = regTechniqueService.lecture(
-            DateUtils.addYears(new Date(), -1), DateUtils.addYears(new Date(),
-                  1), DELTA_ANNEE, true);
+            DateUtils.addDays(new Date(), -1),
+            DateUtils.addDays(new Date(), 1), DELTA_ANNEE, true);
 
       if (expected <= 0) {
          assertTrue(
@@ -160,7 +161,7 @@ public final class TraceAssertUtils {
          int expected) {
 
       List<TraceRegExploitationIndex> tracesIndex = regExploitationService
-            .lecture(DateUtils.addYears(new Date(), -1), DateUtils.addYears(
+            .lecture(DateUtils.addDays(new Date(), -1), DateUtils.addDays(
                   new Date(), 1), 100, true);
 
       if (expected <= 0) {
@@ -184,8 +185,8 @@ public final class TraceAssertUtils {
          int expected) {
 
       List<TraceRegSecuriteIndex> tracesIndex = regSecuriteService.lecture(
-            DateUtils.addYears(new Date(), -1), DateUtils.addYears(new Date(),
-                  1), 100, true);
+            DateUtils.addDays(new Date(), -1),
+            DateUtils.addDays(new Date(), 1), 100, true);
 
       if (expected <= 0) {
          assertTrue(
@@ -208,8 +209,8 @@ public final class TraceAssertUtils {
          int expected) {
 
       List<TraceJournalEvtIndex> tracesIndex = journalEvtService.lecture(
-            DateUtils.addYears(new Date(), -1), DateUtils.addYears(new Date(),
-                  1), 100, true);
+            DateUtils.addDays(new Date(), -1),
+            DateUtils.addDays(new Date(), 1), 100, true);
 
       if (expected <= 0) {
          assertTrue("La liste des traces du journal SAE devrait être vide",

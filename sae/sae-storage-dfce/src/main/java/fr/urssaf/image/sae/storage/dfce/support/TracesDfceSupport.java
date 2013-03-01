@@ -59,10 +59,6 @@ public class TracesDfceSupport {
          // Code de l'événement
          traceToCreate.setCodeEvt(Constants.TRACE_CODE_EVT_DEPOT_DOC_DFCE);
 
-         // Timestamp
-         Date timestamp = new Date();
-         traceToCreate.setTimestamp(timestamp);
-
          // Contexte
          traceToCreate.setContexte("DepotDocumentDansDFCE");
 
