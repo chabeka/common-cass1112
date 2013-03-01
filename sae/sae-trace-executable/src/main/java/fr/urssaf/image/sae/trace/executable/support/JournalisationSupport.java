@@ -4,7 +4,9 @@
 package fr.urssaf.image.sae.trace.executable.support;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
@@ -50,8 +52,8 @@ public class JournalisationSupport {
     * @throws TraceExecutableException
     *            exception levée lors du traitement de journalisation
     */
-   public final void journaliser(JournalisationType typeJournalisation, Date date)
-         throws TraceExecutableException {
+   public final void journaliser(JournalisationType typeJournalisation,
+         Date date) throws TraceExecutableException {
       String trcPrefix = "journaliserDate()";
 
       String tempPath = System.getProperty("java.io.tmpdir");
@@ -70,6 +72,11 @@ public class JournalisationSupport {
       File zipFile = new File(zipPath);
       String hash = SaeFileUtils.calculateSha1(zipFile);
       UUID uuid = captureSupport.capture(zipPath, date);
+      LOGGER.info("{} - Journal du {} archivé. UUID : {}. SHA-1 : {}",
+            new Object[] {
+                  trcPrefix,
+                  new SimpleDateFormat("yyyy-MM-dd", Locale.FRENCH)
+                        .format(date), uuid, hash });
       isFileDeleted = FileUtils.deleteQuietly(zipFile);
 
       if (!isFileDeleted) {
