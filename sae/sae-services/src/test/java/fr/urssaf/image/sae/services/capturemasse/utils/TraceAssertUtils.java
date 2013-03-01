@@ -158,8 +158,8 @@ public final class TraceAssertUtils {
          int expected) {
 
       List<TraceRegTechniqueIndex> tracesIndex = regTechniqueService.lecture(
-            DateUtils.addYears(new Date(), -1), DateUtils.addYears(new Date(),
-                  1), DELTA_ANNEE, true);
+            DateUtils.addDays(new Date(), -1),
+            DateUtils.addDays(new Date(), 1), DELTA_ANNEE, true);
 
       if (expected <= 0) {
          assertTrue(
@@ -182,7 +182,7 @@ public final class TraceAssertUtils {
          int expected) {
 
       List<TraceRegExploitationIndex> tracesIndex = regExploitationService
-            .lecture(DateUtils.addYears(new Date(), -1), DateUtils.addYears(
+            .lecture(DateUtils.addDays(new Date(), -1), DateUtils.addDays(
                   new Date(), 1), 100, true);
 
       if (expected <= 0) {
@@ -206,8 +206,8 @@ public final class TraceAssertUtils {
          int expected) {
 
       List<TraceRegSecuriteIndex> tracesIndex = regSecuriteService.lecture(
-            DateUtils.addYears(new Date(), -1), DateUtils.addYears(new Date(),
-                  1), 100, true);
+            DateUtils.addDays(new Date(), -1),
+            DateUtils.addDays(new Date(), 1), 100, true);
 
       if (expected <= 0) {
          assertTrue(

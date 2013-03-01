@@ -1,7 +1,6 @@
 package fr.urssaf.image.sae.services.capturemasse.support.traces;
 
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -79,10 +78,6 @@ public class TracesServicesSupport {
 
             // Code de l'événement
             traceToCreate.setCodeEvt(Constantes.TRACE_CODE_EVT_ECHEC_CM);
-
-            // Timestamp
-            Date timestamp = new Date();
-            traceToCreate.setTimestamp(timestamp);
 
             // Contexte
             traceToCreate.setContexte("captureMasse");
