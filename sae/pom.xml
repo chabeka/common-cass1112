@@ -200,6 +200,7 @@
       <apache.commons-io.version>2.0.1</apache.commons-io.version>
       <apache.commons-lang.version>2.6</apache.commons-lang.version>
       <apache.commons-codec.version>1.4</apache.commons-codec.version>
+      <apache.commons-compress.version>1.4.1</apache.commons-compress.version>
 
       <!--
          Modèles de dépendance : <dependency>
@@ -222,6 +223,12 @@
          <dependency> <groupId>commons-codec</groupId>
          <artifactId>commons-codec</artifactId>
          <version>${apache.commons-codec.version}</version>
+         </dependency>
+         
+         <dependency>
+         <groupId>org.apache.commons</groupId>
+         <artifactId>commons-compress</artifactId>
+         <version>${apache.commons-compress.version}</version>
          </dependency>
       -->
 
