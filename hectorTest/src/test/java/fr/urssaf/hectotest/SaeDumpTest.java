@@ -78,13 +78,23 @@ public class SaeDumpTest
     * Attention : supprime toutes les données
     */
    public void truncate() throws Exception {
-      //truncate("TraceDestinataire");
-	   //truncate("TraceRegExploitation");
-	   //truncate("TraceRegExploitationIndex");
-	   //truncate("TraceRegSecurite");
-	   //truncate("TraceRegSecuriteIndex");
-	   //truncate("TraceRegTechnique");
-	   //truncate("TraceRegTechniqueIndex");
+	   
+//	   truncate("JobRequest");
+//	   truncate("JobsQueue");
+//	   truncate("JobHistory");
+	   
+//	   truncate("Parameters");
+	   
+//      truncate("TraceDestinataire");
+//	   truncate("TraceRegTechnique");
+//	   truncate("TraceRegTechniqueIndex");
+//	   truncate("TraceRegExploitation");
+//	   truncate("TraceRegExploitationIndex");
+//	   truncate("TraceRegSecurite");
+//	   truncate("TraceRegSecuriteIndex");
+//	   truncate("TraceJournalEvt");
+//	   truncate("TraceJournalEvtIndex");
+	   
    }
    
    /**
@@ -201,6 +211,18 @@ public class SaeDumpTest
    public void testDumpTraceRegTechniqueIndex() throws Exception {
       dumper.printKeyInHex = false;
       dumper.dumpCF("TraceRegTechniqueIndex", 1000);
+   }
+	
+	@Test
+   public void testDumpTraceJournalEvt() throws Exception {
+      dumper.printKeyInHex = false;
+      dumper.dumpCF("TraceJournalEvt", 5000);
+   }
+	
+	@Test
+   public void testDumpTraceJournalEvtIndex() throws Exception {
+      dumper.printKeyInHex = false;
+      dumper.dumpCF("TraceJournalEvtIndex", 5000);
    }
 		
 }

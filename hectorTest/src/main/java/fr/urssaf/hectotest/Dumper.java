@@ -225,6 +225,8 @@ public class Dumper {
 		sysout.println("Count " + orderedRows.getCount());
 		sysout.println();
 		dumpRows(orderedRows);
+		sysout.println();
+		sysout.println("Count " + orderedRows.getCount());
 	}
 	
 	private void dumpRows(Iterable<Row<byte[], byte[], byte[]>> orderedRows) throws Exception {

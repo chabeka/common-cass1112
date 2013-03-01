@@ -2,13 +2,8 @@ package fr.urssaf.hectotest;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetEncoder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.UUID;
-
-import org.apache.commons.lang.ArrayUtils;
 
 /**
  * Utilitaires de conversion

@@ -44,7 +44,11 @@ public class CheckBaseTest {
 		ConfigurableConsistencyLevel ccl = new ConfigurableConsistencyLevel();
 		ccl.setDefaultReadConsistencyLevel(HConsistencyLevel.QUORUM);
 		ccl.setDefaultWriteConsistencyLevel(HConsistencyLevel.QUORUM);
-		HashMap<String,String> credentials = new HashMap<String, String>() {{ put("username", "root");}{ put("password", "regina4932");}};
+		HashMap<String,String> credentials = new HashMap<String, String>() {
+		   
+         private static final long serialVersionUID = 4010531863456382257L;
+
+      { put("username", "root");}{ put("password", "regina4932");}};
 		
 		cluster = HFactory.getOrCreateCluster("Docubase", new CassandraHostConfigurator("cer69imageint9.cer69.recouv:9160" ));
 		//cluster = HFactory.getOrCreateCluster("Docubase", new CassandraHostConfigurator("cer69-saeint2.cer69.recouv:9160" ));
@@ -86,7 +90,8 @@ public class CheckBaseTest {
 	 * @param baseName
 	 * @throws Exception
 	 */
-	private void checkCategories(String baseName) throws Exception {
+	@SuppressWarnings("unchecked")
+   private void checkCategories(String baseName) throws Exception {
 		List<String> categories1 = getCategoriesFromBasesReference(baseName);
 		List<String> categories2 = getCategoriesFromBaseCategoriesReference(baseName);
 		Collection c = CollectionUtils.disjunction(categories1, categories2);

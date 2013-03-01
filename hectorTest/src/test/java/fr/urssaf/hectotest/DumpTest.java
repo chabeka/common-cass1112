@@ -65,14 +65,16 @@ public class DumpTest
 		HashMap<String,String> credentials = new HashMap<String, String>() {{ put("username", "root");}{ put("password", "regina4932");}};
 		String servers;
 		//servers = "cnp69saecas1:9160, cnp69saecas2:9160, cnp69saecas3:9160, cnp31saecas1.cer31.recouv:9160";
+		//servers = "cnp69saecas1:9160, cnp69saecas2:9160, cnp69saecas3:9160";
 		//servers = "hwi54saecas1.cve.recouv:9160";	// CNH
-		// servers = "cer69imageint9.cer69.recouv:9160";
+		servers = "cer69imageint9.cer69.recouv:9160";
 		//servers = "cer69imageint10.cer69.recouv:9160";
 		//servers = "10.203.34.39:9160";		// Noufnouf
 		//servers = "hwi69givnsaecas1.cer69.recouv:9160,hwi69givnsaecas2.cer69.recouv:9160";
-      servers = "hwi69devsaecas1.cer69.recouv:9160,hwi69devsaecas2.cer69.recouv:9160";
-      //servers = "hwi69ginsaecas2.cer69.recouv:9160";
-      //servers = "cer69-saeint3:9160";
+      //servers = "hwi69devsaecas1.cer69.recouv:9160,hwi69devsaecas2.cer69.recouv:9160";
+      // servers = "hwi69ginsaecas1.cer69.recouv:9160,hwi69ginsaecas2.cer69.recouv:9160";
+      //servers = "cer69-saeint3.cer69.recouv:9160";
+		// servers = "cnp69pprodsaecas1.cer69.recouv:9160,cnp69pprodsaecas2.cer69.recouv:9160,cnp69pprodsaecas3.cer69.recouv:9160";
 		
 		CassandraHostConfigurator hostConfigurator = new CassandraHostConfigurator(servers);
 		hostConfigurator.setLoadBalancingPolicy(new DynamicLoadBalancingPolicy());
@@ -118,7 +120,7 @@ public class DumpTest
 
 	@Test
 	public void testExtractOneDocInfo() throws Exception {
-		extractOneDocInfo  ("d62ce6b6-9133-42bd-bac8-484de4d0c552");
+		extractOneDocInfo  ("74b7cde6-01db-4630-a2e2-e8c543286168");
 		//extractOneDocInfo  ("05A5CB97-196B-423C-9A3C-F438F160DD03");
 		//extractOneDocInfo  ("3E915A0A-3878-47B4-8225-666F1ECAB779");
 		//extractOneDocInfo("1c577d7e-19bf-45b0-ae51-456b3ba084f8");
@@ -287,20 +289,22 @@ public class DumpTest
 	
 	@Test
 	public void testDumpOneDocument() throws Exception {
-		dumper.dumpCF("Documents", "f02d0eba-8897-4fbf-933b-e1255b17914d");
+		dumper.dumpCF("Documents", "9eba112d-2a44-4d52-ba17-a95cadd4037b");
 	}
 
 	@Test
 	public void testExtractOneDocument() throws Exception {
 	   
-        ExtractOneDocument("2326c0ff-3f13-4ae5-a860-5e494471a5f0", "c:\\temp\\archive_2326c0ff-3f13-4ae5-a860-5e494471a5f0.txt");
-        ExtractOneDocument("74c366f8-39d2-431c-9798-2c1cf64a7f42", "c:\\temp\\archive_74c366f8-39d2-431c-9798-2c1cf64a7f42.txt");
-        ExtractOneDocument("2c2b26b3-f855-4f8c-83d0-29bc02e0b221", "c:\\temp\\archive_2c2b26b3-f855-4f8c-83d0-29bc02e0b221.txt");
-        ExtractOneDocument("cdc7a928-f182-4284-9699-7c670b10aecb", "c:\\temp\\archive_cdc7a928-f182-4284-9699-7c670b10aecb.txt");
-        ExtractOneDocument("74c366f8-39d2-431c-9798-2c1cf64a7f42", "c:\\temp\\archive_74c366f8-39d2-431c-9798-2c1cf64a7f42.txt");
-        ExtractOneDocument("a5cea082-e6c2-487b-95c3-ca20f833cbc8", "c:\\temp\\archive_a5cea082-e6c2-487b-95c3-ca20f833cbc8.txt");
-        ExtractOneDocument("79f7e469-5efd-468e-b8dc-e06daeb27659", "c:\\temp\\archive_79f7e469-5efd-468e-b8dc-e06daeb27659.txt");
-        ExtractOneDocument("720ddb05-da41-496b-aade-1a06c1b47725", "c:\\temp\\archive_720ddb05-da41-496b-aade-1a06c1b47725.txt");
+	   ExtractOneDocument("4a6d4b6a-5fd3-47de-a8bc-b6bfe574cfd3","c:\\divers\\test1.pdf");
+	   
+//        ExtractOneDocument("2326c0ff-3f13-4ae5-a860-5e494471a5f0", "c:\\temp\\archive_2326c0ff-3f13-4ae5-a860-5e494471a5f0.txt");
+//        ExtractOneDocument("74c366f8-39d2-431c-9798-2c1cf64a7f42", "c:\\temp\\archive_74c366f8-39d2-431c-9798-2c1cf64a7f42.txt");
+//        ExtractOneDocument("2c2b26b3-f855-4f8c-83d0-29bc02e0b221", "c:\\temp\\archive_2c2b26b3-f855-4f8c-83d0-29bc02e0b221.txt");
+//        ExtractOneDocument("cdc7a928-f182-4284-9699-7c670b10aecb", "c:\\temp\\archive_cdc7a928-f182-4284-9699-7c670b10aecb.txt");
+//        ExtractOneDocument("74c366f8-39d2-431c-9798-2c1cf64a7f42", "c:\\temp\\archive_74c366f8-39d2-431c-9798-2c1cf64a7f42.txt");
+//        ExtractOneDocument("a5cea082-e6c2-487b-95c3-ca20f833cbc8", "c:\\temp\\archive_a5cea082-e6c2-487b-95c3-ca20f833cbc8.txt");
+//        ExtractOneDocument("79f7e469-5efd-468e-b8dc-e06daeb27659", "c:\\temp\\archive_79f7e469-5efd-468e-b8dc-e06daeb27659.txt");
+//        ExtractOneDocument("720ddb05-da41-496b-aade-1a06c1b47725", "c:\\temp\\archive_720ddb05-da41-496b-aade-1a06c1b47725.txt");
       //ExtractOneDocument("10a3173c-b742-4edb-b77d-3ffdb8f45321", "c:\\temp\\archive_system_last.txt");      
       //ExtractOneDocument("747bca57-1d56-4f93-a4ae-36b666a0ba5e", "c:\\temp\\archive_doc_2012-05-24.txt");      
 	   //ExtractOneDocument("346d1ea7-2793-434c-a8f8-40c53ece9ceb", "c:\\temp\\archive_doc_2012-25-25.txt");	   
@@ -697,7 +701,8 @@ public class DumpTest
 	}
 
     
-	@Test
+	@SuppressWarnings("deprecation")
+   @Test
 	public void testEntityManager() {
 
 		EntityManagerImpl em = new EntityManagerImpl(keyspace,
