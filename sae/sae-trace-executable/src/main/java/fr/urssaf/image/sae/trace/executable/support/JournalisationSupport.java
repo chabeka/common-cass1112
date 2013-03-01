@@ -86,7 +86,7 @@ public class JournalisationSupport {
       ParameterType idJournalPrecedent, hashJournalPrecedent, derniereDate;
 
       if (JournalisationType.JOURNALISATION_EVT.equals(typeJournalisation)) {
-         idJournalPrecedent = ParameterType.JOURNALISATION_EVT_HASH_JOURNAL_PRECEDENT;
+         idJournalPrecedent = ParameterType.JOURNALISATION_EVT_ID_JOURNAL_PRECEDENT;
          hashJournalPrecedent = ParameterType.JOURNALISATION_EVT_HASH_JOURNAL_PRECEDENT;
          derniereDate = ParameterType.JOURNALISATION_EVT_DATE;
 

@@ -68,7 +68,12 @@ public class TraitementServiceImpl implements TraitementService {
 
          LOGGER.info("{} - début du traitement de la purge pour le type {}",
                new Object[] { trcPrefix, purgeType.toString() });
-         purgeService.purgerRegistre(purgeType);
+
+         if (PurgeType.PURGE_EVT.equals(purgeType)) {
+            purgeService.purgerJournal(purgeType);
+         } else {
+            purgeService.purgerRegistre(purgeType);
+         }
          LOGGER.info("{} - fin du traitement de la purge pour le type {}",
                new Object[] { trcPrefix, purgeType.toString() });
 
