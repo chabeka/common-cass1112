@@ -55,6 +55,10 @@
                <groupId>log4j</groupId>
                <artifactId>log4j</artifactId>
             </exclusion>
+            <exclusion>
+               <groupId>commons-lang</groupId>
+               <artifactId>commons-lang</artifactId>
+            </exclusion>
          </exclusions>
       </dependency>
 
@@ -81,6 +85,10 @@
             <exclusion>
                <groupId>commons-codec</groupId>
                <artifactId>commons-codec</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>commons-lang</groupId>
+               <artifactId>commons-lang</artifactId>
             </exclusion>
          </exclusions>
       </dependency>
@@ -115,6 +123,11 @@
          <groupId>commons-codec</groupId>
          <artifactId>commons-codec</artifactId>
          <version>${apache.commons-codec.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>commons-lang</groupId>
+         <artifactId>commons-lang</artifactId>
+         <version>${apache.commons-lang.version}</version>
       </dependency>
 
       <!-- STAX -->
