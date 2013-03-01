@@ -70,7 +70,7 @@ public class PurgeServiceImpl implements PurgeService {
    @Override
    public final void purgerRegistre(PurgeType typePurge) {
 
-      String trcPrefix = "purgerRegistre";
+      String trcPrefix = "purgerRegistre()";
 
       LOGGER.debug("{} - début", trcPrefix);
       loggerSupport.logPurgeDebut(LOGGER, trcPrefix, typePurge);
@@ -92,30 +92,34 @@ public class PurgeServiceImpl implements PurgeService {
       LOGGER.debug("{} - mise à jour du flag de traitement à TRUE", trcPrefix);
       loggerSupport.logPurgeFlag(LOGGER, trcPrefix, typePurge, Boolean.TRUE);
       statusService.updatePurgeStatus(typePurge, Boolean.TRUE);
-
-      Date minDate = getDateFromPurgeType(typePurge);
-      Integer retentionDuration = getDureeFomPurgeType(typePurge);
-      Date maxDate = DateUtils.addDays(new Date(), -retentionDuration);
-      loggerSupport.logPurgeJournees(LOGGER, trcPrefix, typePurge, minDate,
-            maxDate);
-
       try {
-         @SuppressWarnings("unchecked")
-         RegService servicePurge;
-         if (PurgeType.PURGE_EXPLOITATION.equals(typePurge)) {
-            servicePurge = exploitService;
 
-         } else if (PurgeType.PURGE_SECURITE.equals(typePurge)) {
-            servicePurge = secuService;
+         Date minDate = getDateFromPurgeType(typePurge);
+         Integer retentionDuration = getDureeFomPurgeType(typePurge);
+         Date maxDate = DateUtils.addDays(new Date(), -retentionDuration);
+         loggerSupport.logPurgeJournees(LOGGER, trcPrefix, typePurge, minDate,
+               maxDate);
 
-         } else {
-            servicePurge = techService;
+         if (minDate.before(maxDate)) {
+
+            @SuppressWarnings("unchecked")
+            RegService servicePurge;
+            if (PurgeType.PURGE_EXPLOITATION.equals(typePurge)) {
+               servicePurge = exploitService;
+
+            } else if (PurgeType.PURGE_SECURITE.equals(typePurge)) {
+               servicePurge = secuService;
+
+            } else {
+               servicePurge = techService;
+            }
+
+            purge(servicePurge, minDate, maxDate, typePurge);
+
+            maxDate = DateUtils.truncate(maxDate, Calendar.DATE);
+            updateDate(typePurge, maxDate);
+
          }
-
-         purge(servicePurge, minDate, maxDate, typePurge);
-
-         maxDate = DateUtils.truncate(maxDate, Calendar.DATE);
-         updateDate(typePurge, maxDate);
 
       } finally {
          LOGGER.debug("{} - mise à jour du flag de traitement à FALSE",
@@ -152,25 +156,29 @@ public class PurgeServiceImpl implements PurgeService {
       LOGGER.debug("{} - mise à jour du flag de traitement à TRUE", trcPrefix);
       loggerSupport.logPurgeFlag(LOGGER, trcPrefix, typePurge, Boolean.TRUE);
       statusService.updatePurgeStatus(typePurge, Boolean.TRUE);
+      try {
 
-      Date dateMin = getDateFromPurgeType(typePurge);
-      Integer retentionDuration = getDureeFomPurgeType(typePurge);
-      Date maxDate = DateUtils.addDays(new Date(), -retentionDuration);
-      Date lastDateJournalisation = getDateJournalisationFromPurgeType(typePurge);
+         Date dateMin = getDateFromPurgeType(typePurge);
+         Integer retentionDuration = getDureeFomPurgeType(typePurge);
+         Date maxDate = DateUtils.addDays(new Date(), -retentionDuration);
+         Date lastDateJournalisation = getDateJournalisationFromPurgeType(typePurge);
 
-      if (lastDateJournalisation.before(maxDate)) {
-         maxDate = lastDateJournalisation;
+         if (lastDateJournalisation.before(maxDate)) {
+            maxDate = lastDateJournalisation;
+         }
+
+         if (dateMin.before(maxDate)) {
+            loggerSupport.logPurgeJournees(LOGGER, trcPrefix, typePurge,
+                  dateMin, maxDate);
+            purge(evtService, dateMin, maxDate, typePurge);
+         }
+      } finally {
+         LOGGER.debug("{} - mise à jour du flag de traitement à FALSE",
+               trcPrefix);
+         loggerSupport
+               .logPurgeFlag(LOGGER, trcPrefix, typePurge, Boolean.FALSE);
+         statusService.updatePurgeStatus(typePurge, Boolean.FALSE);
       }
-
-      if (dateMin.before(maxDate)) {
-         loggerSupport.logPurgeJournees(LOGGER, trcPrefix, typePurge, dateMin,
-               maxDate);
-         purge(evtService, dateMin, maxDate, typePurge);
-      }
-
-      LOGGER.debug("{} - mise à jour du flag de traitement à TRUE", trcPrefix);
-      loggerSupport.logPurgeFlag(LOGGER, trcPrefix, typePurge, Boolean.FALSE);
-      statusService.updatePurgeStatus(typePurge, Boolean.FALSE);
 
    }
 
@@ -188,8 +196,8 @@ public class PurgeServiceImpl implements PurgeService {
 
       do {
 
-         loggerSupport.logPurgeJourneeDebut(LOGGER, prefix,
-               PurgeType.PURGE_SECURITE, DateRegUtils.getJournee(date));
+         loggerSupport.logPurgeJourneeDebut(LOGGER, prefix, typePurge,
+               DateRegUtils.getJournee(date));
          servicePurge.purge(date);
 
          parameter = new Parameter(
