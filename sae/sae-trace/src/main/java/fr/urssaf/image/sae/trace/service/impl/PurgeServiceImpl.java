@@ -213,6 +213,9 @@ public class PurgeServiceImpl implements PurgeService {
       try {
          Parameter param = paramService.loadParameter(type);
          date = (Date) param.getValue();
+         // la dernière date sauvegardée est la dernière traitée. La première
+         // date à traiter est donc à J+1
+         DateUtils.addDays(date, 1);
 
       } catch (ParameterNotFoundException exception) {
          throw new TraceRuntimeException(exception);
@@ -303,8 +306,7 @@ public class PurgeServiceImpl implements PurgeService {
 
       Date date;
       try {
-         Parameter param = paramService
-               .loadParameter(type);
+         Parameter param = paramService.loadParameter(type);
          date = (Date) param.getValue();
 
       } catch (ParameterNotFoundException exception) {

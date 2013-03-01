@@ -95,10 +95,10 @@ public class JournalisationServiceDatasTest {
 
       List<Date> dates = service
             .recupererDates(JournalisationType.JOURNALISATION_EVT);
-      Assert.assertEquals("le nombre d'éléments doit etre correct", 5, dates
+      Assert.assertEquals("le nombre d'éléments doit etre correct", 4, dates
             .size());
 
-      for (int i = 1; i < 6; i++) {
+      for (int i = 1; i < 5; i++) {
          Assert.assertTrue("la date j-" + i + "doit etre contenue", dates
                .contains(DateUtils.truncate(DateUtils.addDays(DATE, -i),
                      Calendar.DATE)));

@@ -126,6 +126,9 @@ public class JournalisationServiceImpl implements JournalisationService {
          Parameter parameter = paramService.loadParameter(type);
          firstDate = (Date) parameter.getValue();
          firstDate = DateUtils.truncate(firstDate, Calendar.DATE);
+         // la date stockée est la dernière date traitée. La première date à
+         // traiter est donc à J+1
+         firstDate = DateUtils.addDays(firstDate, 1);
 
       } catch (ParameterNotFoundException exception) {
          throw new TraceRuntimeException(exception);
