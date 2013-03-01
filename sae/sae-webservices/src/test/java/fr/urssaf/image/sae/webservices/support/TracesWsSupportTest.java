@@ -123,8 +123,6 @@ public class TracesWsSupportTest {
       Exception axisFault = new RechercheAxis2Fault("Erreur dans la recherche",
             "RechercheMetadonneesInterdite", exceptionMere);
 
-      Date timestamp = new Date();
-
       String clientIP = "1.2.3.4";
 
       authentifie();
@@ -132,19 +130,18 @@ public class TracesWsSupportTest {
       // Appel de la méthode d'écriture de la trace
 
       tracesSupport.traceEchec(TracesConstantes.CODE_EVT_WS_RECHERCHE_KO,
-            "recherche", timestamp, soapRequest, axisFault, clientIP);
+            "recherche", soapRequest, axisFault, clientIP);
 
       // Vérifie la trace créée
 
       String saeServeurHostname = HostnameUtil.getHostname();
       String saeServeurIP = HostnameUtil.getIP();
 
-      verifieNombreTracesDansTraceRegSecurite(timestamp, 0);
+      verifieNombreTracesDansTraceRegSecurite(0);
 
-      verifieNombreTracesDansTraceRegExploitation(timestamp, 0);
+      verifieNombreTracesDansTraceRegExploitation(0);
 
-      List<TraceRegTechniqueIndex> tracesTechIndex = verifieNombreTracesDansTraceRegTechnique(
-            timestamp, 1);
+      List<TraceRegTechniqueIndex> tracesTechIndex = verifieNombreTracesDansTraceRegTechnique(1);
 
       TraceRegTechniqueIndex traceTechIndex = tracesTechIndex.get(0);
 
@@ -152,8 +149,6 @@ public class TracesWsSupportTest {
             "Le code événement dans la trace (dans son index) est incorrect",
             TracesConstantes.CODE_EVT_WS_RECHERCHE_KO, traceTechIndex
                   .getCodeEvt());
-      assertEquals("Le timestamp dans la trace (dans son index) est incorrect",
-            timestamp, traceTechIndex.getTimestamp());
       assertEquals(
             "Le contrat de service dans la trace (dans son index) est incorrect",
             "CodeContratService", traceTechIndex.getContrat());
@@ -168,8 +163,6 @@ public class TracesWsSupportTest {
 
       assertEquals("Le code événement dans la trace est incorrect",
             TracesConstantes.CODE_EVT_WS_RECHERCHE_KO, trace.getCodeEvt());
-      assertEquals("Le timestamp dans la trace est incorrect", timestamp, trace
-            .getTimestamp());
       assertEquals("Le contrat de service dans la trace est incorrect",
             "CodeContratService", trace.getContrat());
       checkPagms(trace.getPagms());
@@ -207,19 +200,16 @@ public class TracesWsSupportTest {
       Exception axisFault = new RechercheAxis2Fault("Erreur dans la recherche",
             "RechercheMetadonneesInterdite", exceptionMere);
 
-      Date timestamp = new Date();
-
       String clientIP = "5.6.7.8";
 
       // Appel de la méthode d'écriture de la trace
 
       tracesSupport.traceEchec(TracesConstantes.CODE_EVT_WS_RECHERCHE_KO,
-            "recherche", timestamp, soapRequest, axisFault, clientIP);
+            "recherche", soapRequest, axisFault, clientIP);
 
       // Vérifie la trace créée
 
-      List<TraceRegTechniqueIndex> tracesTechIndex = verifieNombreTracesDansTraceRegTechnique(
-            timestamp, 1);
+      List<TraceRegTechniqueIndex> tracesTechIndex = verifieNombreTracesDansTraceRegTechnique(1);
 
       TraceRegTechniqueIndex traceTechIndex = tracesTechIndex.get(0);
 
@@ -243,11 +233,11 @@ public class TracesWsSupportTest {
    }
 
    private List<TraceRegTechniqueIndex> verifieNombreTracesDansTraceRegTechnique(
-         Date timestamp, int expected) {
+         int expected) {
 
       List<TraceRegTechniqueIndex> tracesIndex = regTechniqueService.lecture(
-            DateUtils.addYears(timestamp, -1),
-            DateUtils.addYears(timestamp, 1), 100, true);
+            DateUtils.addDays(new Date(), -1),
+            DateUtils.addDays(new Date(), 1), 100, true);
 
       if (expected <= 0) {
          assertTrue(
@@ -267,11 +257,11 @@ public class TracesWsSupportTest {
    }
 
    private List<TraceRegSecuriteIndex> verifieNombreTracesDansTraceRegSecurite(
-         Date timestamp, int expected) {
+         int expected) {
 
       List<TraceRegSecuriteIndex> tracesIndex = regSecuriteService.lecture(
-            DateUtils.addYears(timestamp, -1),
-            DateUtils.addYears(timestamp, 1), 100, true);
+            DateUtils.addDays(new Date(), -1),
+            DateUtils.addDays(new Date(), 1), 100, true);
 
       if (expected <= 0) {
          assertTrue(
@@ -291,11 +281,11 @@ public class TracesWsSupportTest {
    }
 
    private List<TraceRegExploitationIndex> verifieNombreTracesDansTraceRegExploitation(
-         Date timestamp, int expected) {
+         int expected) {
 
       List<TraceRegExploitationIndex> tracesIndex = regExploitationService
-            .lecture(DateUtils.addYears(timestamp, -1), DateUtils.addYears(
-                  timestamp, 1), 100, true);
+            .lecture(DateUtils.addDays(new Date(), -1), DateUtils.addDays(
+                  new Date(), 1), 100, true);
 
       if (expected <= 0) {
          assertTrue(
@@ -350,8 +340,6 @@ public class TracesWsSupportTest {
 
       // Préparation
 
-      Date timestamp = new Date();
-
       String fichier1 = "/rep1/fichier1.crt";
       String fichier2 = "/rep1/fichier2.crt";
       String fichier3 = "/rep2/fichier3.crt";
@@ -363,19 +351,18 @@ public class TracesWsSupportTest {
 
       // Appel de la méthode d'écriture de la trace
 
-      tracesSupport.traceChargementCertAcRacine(timestamp, fichiers);
+      tracesSupport.traceChargementCertAcRacine(fichiers);
 
       // Vérifie la trace créée
 
       String saeServeurHostname = HostnameUtil.getHostname();
       String saeServeurIP = HostnameUtil.getIP();
 
-      verifieNombreTracesDansTraceRegSecurite(timestamp, 0);
+      verifieNombreTracesDansTraceRegSecurite(0);
 
-      verifieNombreTracesDansTraceRegExploitation(timestamp, 0);
+      verifieNombreTracesDansTraceRegExploitation(0);
 
-      List<TraceRegTechniqueIndex> tracesTechIndex = verifieNombreTracesDansTraceRegTechnique(
-            timestamp, 1);
+      List<TraceRegTechniqueIndex> tracesTechIndex = verifieNombreTracesDansTraceRegTechnique(1);
 
       TraceRegTechniqueIndex traceTechIndex = tracesTechIndex.get(0);
 
@@ -383,8 +370,6 @@ public class TracesWsSupportTest {
             "Le code événement dans la trace (dans son index) est incorrect",
             TracesConstantes.CODE_EVT_CHARGE_CERT_ACRACINE, traceTechIndex
                   .getCodeEvt());
-      assertEquals("Le timestamp dans la trace (dans son index) est incorrect",
-            timestamp, traceTechIndex.getTimestamp());
       assertEquals(
             "Le contrat de service dans la trace (dans son index) est incorrect",
             "CodeContratService", traceTechIndex.getContrat());
@@ -399,8 +384,6 @@ public class TracesWsSupportTest {
 
       assertEquals("Le code événement dans la trace est incorrect",
             TracesConstantes.CODE_EVT_CHARGE_CERT_ACRACINE, trace.getCodeEvt());
-      assertEquals("Le timestamp dans la trace est incorrect", timestamp, trace
-            .getTimestamp());
       assertEquals("Le contrat de service dans la trace est incorrect",
             "CodeContratService", trace.getContrat());
       checkPagms(trace.getPagms());

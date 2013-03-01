@@ -9,7 +9,6 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -171,7 +170,7 @@ public class IgcService {
 
       // Trace l'événement
       // "WS - Chargement en mémoire des certificats d'AC racine"
-      tracesWsSupport.traceChargementCertAcRacine(new Date(), fichiersAcRacine);
+      tracesWsSupport.traceChargementCertAcRacine(fichiersAcRacine);
 
    }
 
@@ -268,7 +267,7 @@ public class IgcService {
 
          // Trace l'événement
          // "WS - Chargement en mémoire des CRL"
-         tracesWsSupport.traceChargementCRL(new Date(), fichiersCrl);
+         tracesWsSupport.traceChargementCRL(fichiersCrl);
 
       }
    }

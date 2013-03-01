@@ -2,7 +2,6 @@ package fr.urssaf.image.sae.webservices.support;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.axis2.context.MessageContext;
@@ -55,9 +54,6 @@ public class TracesWsSupport {
          String nomOperation = msgCtx.getAxisOperation().getName()
                .getLocalPart();
 
-         // Le timestamp
-         Date timestamp = new Date();
-
          // L'adresse IP du client
          String ipClient;
          if (msgCtx.getProperty(MessageContext.REMOTE_ADDR) == null) {
@@ -69,8 +65,7 @@ public class TracesWsSupport {
          // Trace selon l'opération
          String codeEvt = getCodeEvtPourTrace(nomOperation);
          if (StringUtils.isNotEmpty(codeEvt)) {
-            traceEchec(codeEvt, nomOperation, timestamp, soapRequest,
-                  exception, ipClient);
+            traceEchec(codeEvt, nomOperation, soapRequest, exception, ipClient);
          }
 
       } catch (Throwable ex) {
@@ -106,17 +101,13 @@ public class TracesWsSupport {
    }
 
    protected final void traceEchec(String codeEvt, String nomOperation,
-         Date timestamp, String soapRequest, Exception exception,
-         String clientIP) {
+         String soapRequest, Exception exception, String clientIP) {
 
       // Instantiation de l'objet TraceToCreate
       TraceToCreate traceToCreate = new TraceToCreate();
 
       // Code de l'événement
       traceToCreate.setCodeEvt(codeEvt);
-
-      // Timestamp
-      traceToCreate.setTimestamp(timestamp);
 
       // Contexte
       traceToCreate.setContexte(nomOperation);
@@ -175,18 +166,15 @@ public class TracesWsSupport {
    /**
     * Trace l'événement du chargement des certificats d'AC racine
     * 
-    * @param timestamp
-    *           le timestamp de l'événement
     * @param fichiers
     *           la liste des fichiers des certificats d'AC racine
     */
    @SuppressWarnings("PMD.AvoidCatchingThrowable")
-   public final void traceChargementCertAcRacine(Date timestamp,
-         List<File> fichiers) {
+   public final void traceChargementCertAcRacine(List<File> fichiers) {
 
       try {
 
-         traceChargementFichiers(timestamp,
+         traceChargementFichiers(
                TracesConstantes.CODE_EVT_CHARGE_CERT_ACRACINE,
                "ChargementCertACRacine", fichiers);
 
@@ -202,18 +190,16 @@ public class TracesWsSupport {
    /**
     * Trace l'événement du chargement des CRL
     * 
-    * @param timestamp
-    *           le timestamp de l'événement
     * @param fichiers
     *           la liste des fichiers des CRL
     */
    @SuppressWarnings("PMD.AvoidCatchingThrowable")
-   public final void traceChargementCRL(Date timestamp, List<File> fichiers) {
+   public final void traceChargementCRL(List<File> fichiers) {
 
       try {
 
-         traceChargementFichiers(timestamp,
-               TracesConstantes.CODE_EVT_CHARGE_CRL, "ChargementCRL", fichiers);
+         traceChargementFichiers(TracesConstantes.CODE_EVT_CHARGE_CRL,
+               "ChargementCRL", fichiers);
 
       } catch (Throwable ex) {
          LOG
@@ -224,17 +210,14 @@ public class TracesWsSupport {
 
    }
 
-   private void traceChargementFichiers(Date timestamp, String codeEvt,
-         String contexte, List<File> fichiers) {
+   private void traceChargementFichiers(String codeEvt, String contexte,
+         List<File> fichiers) {
 
       // Instantiation de l'objet TraceToCreate
       TraceToCreate traceToCreate = new TraceToCreate();
 
       // Code de l'événement
       traceToCreate.setCodeEvt(codeEvt);
-
-      // Timestamp
-      traceToCreate.setTimestamp(timestamp);
 
       // Contexte
       traceToCreate.setContexte(contexte);
