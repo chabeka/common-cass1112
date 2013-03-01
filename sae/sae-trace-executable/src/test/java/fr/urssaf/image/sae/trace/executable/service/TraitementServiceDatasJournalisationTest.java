@@ -13,7 +13,6 @@ import java.util.UUID;
 import org.apache.commons.lang.time.DateUtils;
 import org.junit.After;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +37,15 @@ import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException
 import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.trace.dao.TraceDestinataireDao;
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
+import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvt;
+import fr.urssaf.image.sae.trace.dao.model.TraceRegExploitation;
+import fr.urssaf.image.sae.trace.dao.model.TraceRegSecurite;
+import fr.urssaf.image.sae.trace.dao.model.TraceRegTechnique;
 import fr.urssaf.image.sae.trace.dao.support.TraceDestinataireSupport;
+import fr.urssaf.image.sae.trace.dao.support.TraceJournalEvtSupport;
+import fr.urssaf.image.sae.trace.dao.support.TraceRegExploitationSupport;
+import fr.urssaf.image.sae.trace.dao.support.TraceRegSecuriteSupport;
+import fr.urssaf.image.sae.trace.dao.support.TraceRegTechniqueSupport;
 import fr.urssaf.image.sae.trace.exception.ParameterNotFoundException;
 import fr.urssaf.image.sae.trace.exception.TraceRuntimeException;
 import fr.urssaf.image.sae.trace.executable.exception.TraceExecutableException;
@@ -47,15 +54,16 @@ import fr.urssaf.image.sae.trace.model.JournalisationType;
 import fr.urssaf.image.sae.trace.model.Parameter;
 import fr.urssaf.image.sae.trace.model.ParameterType;
 import fr.urssaf.image.sae.trace.model.TraceToCreate;
-import fr.urssaf.image.sae.trace.service.DispatcheurService;
 import fr.urssaf.image.sae.trace.service.ParametersService;
+import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-trace-executable-test.xml" })
 public class TraitementServiceDatasJournalisationTest {
 
    private static final String CODE_EVT = "TEST_TRAITEMENT_SERVICE";
-
+   private static final Date DATE = new Date();
+   
    @Autowired
    private ParametersService paramService;
 
@@ -66,10 +74,22 @@ public class TraitementServiceDatasJournalisationTest {
    private TraceDestinataireSupport traceSupport;
 
    @Autowired
-   private DispatcheurService dispatcheurService;
+   private CassandraServerBean serverBean;
 
    @Autowired
-   private CassandraServerBean serverBean;
+   private TraceRegExploitationSupport exploitationSupport;
+
+   @Autowired
+   private TraceRegSecuriteSupport securiteSupport;
+
+   @Autowired
+   private TraceRegTechniqueSupport techniqueSupport;
+
+   @Autowired
+   private TraceJournalEvtSupport evtSupport;
+
+   @Autowired
+   private TimeUUIDEtTimestampSupport timeUUIDSupport;
 
    @After
    public void after() throws Exception {
@@ -122,7 +142,6 @@ public class TraitementServiceDatasJournalisationTest {
    }
 
    @Test
-   @Ignore("initialisation du TimeStamp désactivé pour cause de doublons")
    public void testJournalisationIdJournalPrecedentNonRenseignee() {
 
       createTraces();
@@ -152,7 +171,6 @@ public class TraitementServiceDatasJournalisationTest {
    }
 
    @Test
-   @Ignore("initialisation du TimeStamp désactivé pour cause de doublons")
    public void testJournalisationHashJournalPrecedentNonRenseignee() {
 
       createTraces();
@@ -183,7 +201,6 @@ public class TraitementServiceDatasJournalisationTest {
    }
 
    @Test
-   @Ignore("initialisation du TimeStamp désactivé pour cause de doublons")
    public void testSucces() throws IOException, TraceExecutableException,
          SAEConsultationServiceException, UnknownDesiredMetadataEx,
          MetaDataUnauthorizedToConsultEx, SAECaptureServiceEx,
@@ -243,12 +260,12 @@ public class TraitementServiceDatasJournalisationTest {
 
       traceSupport.create(destinataire, new Date().getTime());
 
-      createTrace("[JOUR J]", 0);
-      createTrace("[JOUR J-1]", -1);
-      createTrace("[JOUR J-2]", -2);
-      createTrace("[JOUR J-3]", -3);
-      createTrace("[JOUR J-4]", -4);
-      createTrace("[JOUR J-5]", -5);
+      createTrace("[JOUR J]", 0, destinataire);
+      createTrace("[JOUR J-1]", -1, destinataire);
+      createTrace("[JOUR J-2]", -2, destinataire);
+      createTrace("[JOUR J-3]", -3, destinataire);
+      createTrace("[JOUR J-4]", -4, destinataire);
+      createTrace("[JOUR J-5]", -5, destinataire);
    }
 
    private void create4Traces() {
@@ -260,13 +277,13 @@ public class TraitementServiceDatasJournalisationTest {
 
       traceSupport.create(destinataire, new Date().getTime());
 
-      createTrace("[JOUR J]", 0);
-      createTrace("[JOUR J-1]", -1);
-      createTrace("[JOUR J-2]", -2);
-      createTrace("[JOUR J-3]", -3);
+      createTrace("[JOUR J]", 0, destinataire);
+      createTrace("[JOUR J-1]", -1, destinataire);
+      createTrace("[JOUR J-2]", -2, destinataire);
+      createTrace("[JOUR J-3]", -3, destinataire);
    }
 
-   private void createTrace(String suffix, int decalage) {
+   private void createTrace(String suffix, int decalage, TraceDestinataire destinataire) {
       TraceToCreate trace = new TraceToCreate();
       trace.setAction("action " + suffix);
       trace.setCodeEvt(CODE_EVT);
@@ -275,7 +292,34 @@ public class TraitementServiceDatasJournalisationTest {
       trace.setInfos(null);
       trace.setLogin("login " + suffix);
       trace.setStracktrace("stackTrace " + suffix);
-      dispatcheurService.ajouterTrace(trace);
+      for (String dest : destinataire.getDestinataires().keySet()) {
+         createTraces(trace, dest, DateUtils.addDays(DATE, decalage));
+      }
+   }
+
+   private void createTraces(TraceToCreate traceToCreate, String nomDestinaire,
+         Date date) {
+
+      long timestamp = timeUUIDSupport.getTimestampFromDate(date);
+      UUID idTrace = timeUUIDSupport.buildUUIDFromTimestamp(timestamp);
+      Date timestampTrace = timeUUIDSupport.getDateFromTimestamp(timestamp);
+
+      if (TraceDestinataireDao.COL_REG_EXPLOIT.equalsIgnoreCase(nomDestinaire)) {
+         exploitationSupport.create(new TraceRegExploitation(traceToCreate,
+               null, idTrace, timestampTrace), timestampTrace.getTime());
+      } else if (TraceDestinataireDao.COL_REG_SECURITE
+            .equalsIgnoreCase(nomDestinaire)) {
+         securiteSupport.create(new TraceRegSecurite(traceToCreate, null,
+               idTrace, timestampTrace), timestampTrace.getTime());
+      } else if (TraceDestinataireDao.COL_REG_TECHNIQUE
+            .equalsIgnoreCase(nomDestinaire)) {
+         techniqueSupport.create(new TraceRegTechnique(traceToCreate, null,
+               idTrace, timestampTrace), timestampTrace.getTime());
+      } else if (TraceDestinataireDao.COL_JOURN_EVT
+            .equalsIgnoreCase(nomDestinaire)) {
+         evtSupport.create(new TraceJournalEvt(traceToCreate, null, idTrace,
+               timestampTrace), timestampTrace.getTime());
+      }
    }
 
 }
