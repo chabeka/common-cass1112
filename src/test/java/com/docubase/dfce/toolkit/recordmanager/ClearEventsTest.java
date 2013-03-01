@@ -14,6 +14,7 @@ import net.docubase.toolkit.model.recordmanager.RMSystemEvent;
 import net.docubase.toolkit.service.ged.ArchiveService;
 import net.docubase.toolkit.service.ged.RecordManagerService;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.junit.Test;
 
 import com.docubase.dfce.exception.IllegalEventsPurgeException;
@@ -36,7 +37,7 @@ public class ClearEventsTest extends AbstractTestCaseCreateAndPrepareBase {
       rmSystemEvent = recordManagerService.createCustomSystemEventLog(rmSystemEvent);
       Thread.sleep(2000);
       calendar = Calendar.getInstance();
-      calendar.add(Calendar.SECOND, -1);
+      calendar.add(Calendar.SECOND, -3);
       archiveService.clearSystemEventsTo(calendar.getTime());
    }
 
@@ -112,7 +113,7 @@ public class ClearEventsTest extends AbstractTestCaseCreateAndPrepareBase {
       // clearing event to job's last success (previous to custom event)
       archiveService.clearSystemEventsTo(lastSucessfulRunDate);
       List<RMSystemEvent> systemEventLogsByDates = recordManagerService.getSystemEventLogsByDates(
-            lastSucessfulRunDate, new Date());
+            lastSucessfulRunDate, DateUtils.addDays(new Date(), 1));
 
       boolean eventFound = false;
       for (RMSystemEvent rmSystemEventIter : systemEventLogsByDates) {
@@ -141,13 +142,13 @@ public class ClearEventsTest extends AbstractTestCaseCreateAndPrepareBase {
 
       Date lastSucessfulRunDate = archiveService.getLastSucessfulDocumentLogsArchiveRunDate();
       calendar.setTime(lastSucessfulRunDate);
-      calendar.add(Calendar.SECOND, -1);
+      calendar.add(Calendar.SECOND, -3);
       lastSucessfulRunDate = calendar.getTime();
 
       // clearing event to job's last success (previous to custom event)
       archiveService.clearDocumentEventsTo(lastSucessfulRunDate);
       List<RMDocEvent> documentEventLogsByDates = recordManagerService.getDocumentEventLogsByDates(
-            lastSucessfulRunDate, new Date());
+            lastSucessfulRunDate, DateUtils.addDays(new Date(), 1));
 
       boolean eventFound = false;
       for (RMDocEvent rmDocEventIter : documentEventLogsByDates) {

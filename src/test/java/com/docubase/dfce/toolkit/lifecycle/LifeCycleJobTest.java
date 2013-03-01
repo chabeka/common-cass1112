@@ -1,6 +1,7 @@
 package com.docubase.dfce.toolkit.lifecycle;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.io.File;
 import java.util.Calendar;
@@ -12,6 +13,7 @@ import net.docubase.toolkit.model.document.Document;
 import net.docubase.toolkit.model.reference.LifeCycleLengthUnit;
 import net.docubase.toolkit.model.reference.LifeCycleRule;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -57,14 +59,14 @@ public class LifeCycleJobTest extends AbstractTestCaseCreateAndPrepareBase {
          Document storedDocument = storeDocument(document, file);
 
          if (finalDate != null) {
-            calendar.setTime(new Date());
-            calendar.add(Calendar.MILLISECOND, 2000);
-
-            serviceProvider.getStoreService().updateDocumentFinalDate(storedDocument,
-                  calendar.getTime());
+            serviceProvider.getStoreService().updateDocumentFinalDate(storedDocument, finalDate);
 
             try {
-               Thread.currentThread().sleep(2000);
+               Date now = new Date();
+               while (now.before(finalDate)) {
+                  Thread.currentThread().sleep(250);
+                  now = new Date();
+               }
             } catch (InterruptedException e) {
                throw new RuntimeException(e);
             }
@@ -80,8 +82,10 @@ public class LifeCycleJobTest extends AbstractTestCaseCreateAndPrepareBase {
    public void testRunJob1Year() throws FrozenDocumentException {
       calendar.setTime(new Date());
       calendar.add(Calendar.YEAR, -1);
+      Date referenceDate = calendar.getTime();
+      DateUtils.addDays(referenceDate, -1);
       Document document = storeDocumentWithRuleAndDate(lifeCycleRule1Year.getDocumentType(),
-            calendar.getTime(), null);
+            referenceDate, null);
       UUID documentUUID = document.getUuid();
       assertNotNull(serviceProvider.getSearchService().getDocumentByUUID(base, documentUUID));
 
@@ -107,8 +111,11 @@ public class LifeCycleJobTest extends AbstractTestCaseCreateAndPrepareBase {
 
    @Test
    public void testRunJobOnOverloadedFinalDate() throws FrozenDocumentException {
+      Date referenceDate = new Date();
+      Date finalDate = DateUtils.addSeconds(referenceDate, 4);
+
       Document document = storeDocumentWithRuleAndDate(lifeCycleRule2Years.getDocumentType(),
-            new Date(), new Date());
+            referenceDate, finalDate);
       UUID documentUUID = document.getUuid();
       assertNotNull(serviceProvider.getSearchService().getDocumentByUUID(base, documentUUID));
 

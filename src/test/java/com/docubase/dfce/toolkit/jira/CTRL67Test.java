@@ -1,6 +1,6 @@
 package com.docubase.dfce.toolkit.jira;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.InputStream;
 import java.util.Calendar;
@@ -11,6 +11,7 @@ import net.docubase.toolkit.model.document.Document;
 import net.docubase.toolkit.model.search.SearchResult;
 import net.docubase.toolkit.service.ged.SearchService.DateFormat;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.junit.Test;
 
 import com.docubase.dfce.commons.indexation.SystemFieldName;
@@ -90,9 +91,19 @@ public class CTRL67Test extends AbstractCRTLTest {
    @Test
    public void testArchivageDateRange() throws ExceededSearchLimitException,
          SearchQueryParseException {
-      SearchResult searchResult = serviceProvider.getSearchService().search(
-            "srn:" + SRN_VALUE + " AND " + SystemFieldName.SM_ARCHIVAGE_DATE
-                  + ":[20000101 TO 20121231]", 10, base);
+      Calendar cal = Calendar.getInstance();
+      cal.set(2009, 0, 01); // Les mois commencent à 0
+      Date dateDebut = cal.getTime();
+      Date dateFin = DateUtils.addDays(new Date(), 1);
+      // Date dateFin = new Date();
+
+      String dateFrom = serviceProvider.getSearchService().formatDate(dateDebut, DateFormat.DATE);
+      String dateTo = serviceProvider.getSearchService().formatDate(dateFin, DateFormat.DATE);
+
+      String query = String.format("srn:%s AND %s:[%s TO %s]", SRN_VALUE,
+            SystemFieldName.SM_ARCHIVAGE_DATE, dateFrom, dateTo);
+
+      SearchResult searchResult = serviceProvider.getSearchService().search(query, 10, base);
       assertEquals(1, searchResult.getTotalHits());
    }
 

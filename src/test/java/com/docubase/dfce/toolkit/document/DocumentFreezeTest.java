@@ -65,7 +65,7 @@ public class DocumentFreezeTest extends AbstractTestCaseCreateAndPrepareBase {
    @Test
    public void testUnfreezeDocument() throws FrozenDocumentException {
       Calendar calendar = Calendar.getInstance();
-      calendar.add(Calendar.SECOND, 1);
+      calendar.add(Calendar.SECOND, 30);
       Date finalDate = calendar.getTime();
       serviceProvider.getStoreService().updateDocumentFinalDate(document, finalDate);
 

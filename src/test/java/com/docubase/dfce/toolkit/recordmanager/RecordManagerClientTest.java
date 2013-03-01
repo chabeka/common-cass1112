@@ -120,7 +120,7 @@ public class RecordManagerClientTest extends AbstractEventTest {
 
       // Ajouter un �v�nement
       List<RMSystemEvent> systemEventsLogList = buildSystemEventsLogList();
-      Date maxEventDate = new Date(0);
+      Date maxEventDate = new Date(0); // 01/01/1970
       for (RMSystemEvent rmSystemEvent : systemEventsLogList) {
          RMSystemEvent createdEvent = recordManagerService
                .createCustomSystemEventLog(rmSystemEvent);
@@ -132,7 +132,7 @@ public class RecordManagerClientTest extends AbstractEventTest {
       calendar.setTime(maxEventDate);
       calendar.add(Calendar.MILLISECOND, -1);
       beginDate = calendar.getTime();
-      calendar.add(Calendar.MILLISECOND, 2);
+      calendar.add(Calendar.MILLISECOND, 4);
       endDate = calendar.getTime();
 
       // retourner la liste d'�v�nements filtr�s
@@ -140,7 +140,7 @@ public class RecordManagerClientTest extends AbstractEventTest {
             endDate);
 
       // Attester que cette liste est non vide
-      assertTrue("La liste des �v�nements ne doit pas �tre vide",
+      assertTrue("La liste des évènements ne doit pas être vide",
             (!events.isEmpty() && events.size() > 1));
    }
 
