@@ -225,6 +225,15 @@ public class JournalEvtServiceDatasTest {
    }
 
    @Test
+   public void testHasRecordsAucun() {
+
+      boolean hasRecords = service.hasRecords(DATE);
+
+      Assert.assertFalse("il ne pas doit y avoir une trace", hasRecords);
+
+   }
+
+   @Test
    public void testExport() throws IOException {
 
       Calendar calendar = new GregorianCalendar();

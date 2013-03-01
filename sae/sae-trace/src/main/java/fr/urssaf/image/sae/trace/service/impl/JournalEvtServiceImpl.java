@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -49,8 +50,8 @@ import fr.urssaf.image.sae.trace.utils.StaxUtils;
 @Service
 public class JournalEvtServiceImpl implements JournalEvtService {
 
-   private static final String FIN_LOG = "{} - fin";
-   private static final String DEBUT_LOG = "{} - début";
+   private static final String FIN_LOG = "{} - Fin";
+   private static final String DEBUT_LOG = "{} - Début";
    private static final Logger LOGGER = LoggerFactory
          .getLogger(JournalEvtServiceImpl.class);
 
@@ -77,11 +78,20 @@ public class JournalEvtServiceImpl implements JournalEvtService {
    public final String export(Date date, String repertoire,
          String idJournalPrecedent, String hashJournalPrecedent) {
 
+      String trcPrefix = "export()";
+      LOGGER.debug(DEBUT_LOG, trcPrefix);
+
       List<TraceJournalEvtIndex> listTraces = support.findByDate(date);
 
       String path = null;
       String sDate = DateFormatUtils.format(date, PATTERN_DATE);
       if (CollectionUtils.isNotEmpty(listTraces)) {
+
+         LOGGER.info(
+               "{} - Nombre de traces trouvées pour la journée du {} : {}",
+               new Object[] { trcPrefix,
+                     new SimpleDateFormat("yyyy-MM-dd").format(date),
+                     listTraces.size() });
 
          File file, directory;
          directory = new File(repertoire);
@@ -96,8 +106,13 @@ public class JournalEvtServiceImpl implements JournalEvtService {
          writeTraces(file, listTraces, idJournalPrecedent,
                hashJournalPrecedent, date);
 
+      } else {
+         LOGGER.info("{} - Aucune trace trouvée pour la journée du {}",
+               new Object[] { trcPrefix,
+                     new SimpleDateFormat("yyyy-MM-dd").format(date) });
       }
 
+      LOGGER.debug(FIN_LOG, trcPrefix);
       return path;
    }
 
@@ -299,6 +314,9 @@ public class JournalEvtServiceImpl implements JournalEvtService {
    @Override
    public final boolean hasRecords(Date date) {
 
+      String trcPrefix = "hasRecords()";
+      LOGGER.debug(DEBUT_LOG, trcPrefix);
+
       Date beginDate = DateUtils.truncate(date, Calendar.DATE);
       Date endDate = DateUtils.addDays(beginDate, 1);
       endDate = DateUtils.addMilliseconds(endDate, -1);
@@ -307,6 +325,13 @@ public class JournalEvtServiceImpl implements JournalEvtService {
 
       boolean hasRecords = CollectionUtils.isNotEmpty(list);
 
+      if (!hasRecords) {
+         LOGGER.info("{} - Aucune trace trouvée pour la journée du {}",
+               new Object[] { trcPrefix,
+                     new SimpleDateFormat("yyyy-MM-dd").format(date) });
+      }
+
+      LOGGER.debug(FIN_LOG, trcPrefix);
       return hasRecords;
    }
 
