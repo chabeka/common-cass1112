@@ -12,21 +12,20 @@ import org.junit.Test;
 import com.docubase.dfce.toolkit.AbstractTestBase;
 
 public class SearchClientTest extends AbstractTestBase {
-    private final SearchService searchService = serviceProvider
-	    .getSearchService();
+   private final SearchService searchService = serviceProvider.getSearchService();
 
-    @BeforeClass
-    public static void setUp() {
-	connect();
-    }
+   @BeforeClass
+   public static void setUp() {
+      connect();
+   }
 
-    @AfterClass
-    public static void tearDown() {
-	disconnect();
-    }
+   @AfterClass
+   public static void tearDown() {
+      disconnect();
+   }
 
-    @Test
-    public void testFormatDate() {
-	searchService.formatDate(new Date(), DateFormat.DATE);
-    }
+   @Test
+   public void testFormatDate() {
+      searchService.formatDate(new Date(), DateFormat.DATE);
+   }
 }

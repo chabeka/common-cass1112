@@ -19,52 +19,49 @@ import com.docubase.dfce.toolkit.AbstractTestBase;
 
 public class BaseAdministrationServiceTest extends AbstractTestBase {
 
-    @BeforeClass
-    public static void setUp() {
-	serviceProvider.connect(ADM_LOGIN, ADM_PASSWORD, SERVICE_URL);
-    }
+   @BeforeClass
+   public static void setUp() {
+      serviceProvider.connect(ADM_LOGIN, ADM_PASSWORD, SERVICE_URL);
+   }
 
-    @AfterClass
-    public static void afterClass() {
-	serviceProvider.disconnect();
-    }
+   @AfterClass
+   public static void afterClass() {
+      serviceProvider.disconnect();
+   }
 
-    @Test
-    public void testGetAllBases() {
-	Base newBase = serviceProvider.getBaseAdministrationService().getBase(
-		"newBase");
-	if (newBase != null) {
-	    serviceProvider.getBaseAdministrationService().stopBase(newBase);
-	    serviceProvider.getBaseAdministrationService().deleteBase(newBase);
-	}
+   @Test
+   public void testGetAllBases() {
+      Base newBase = serviceProvider.getBaseAdministrationService().getBase("newBase");
+      if (newBase != null) {
+         serviceProvider.getBaseAdministrationService().stopBase(newBase);
+         serviceProvider.getBaseAdministrationService().deleteBase(newBase);
+      }
 
-	List<Base> allBases = serviceProvider.getBaseAdministrationService()
-		.getAllBases();
-	int allBasesSize = allBases.size();
+      List<Base> allBases = serviceProvider.getBaseAdministrationService().getAllBases();
+      int allBasesSize = allBases.size();
 
-	newBase = ToolkitFactory.getInstance().createBase("newBase");
+      newBase = ToolkitFactory.getInstance().createBase("newBase");
 
-	Category category = serviceProvider.getStorageAdministrationService()
-		.findOrCreateCategory("newCategory", CategoryDataType.STRING);
+      Category category = serviceProvider.getStorageAdministrationService().findOrCreateCategory(
+            "newCategory", CategoryDataType.STRING);
 
-	BaseCategory baseCategory = ToolkitFactory.getInstance()
-		.createBaseCategory(category, true);
+      BaseCategory baseCategory = ToolkitFactory.getInstance().createBaseCategory(category, true);
 
-	newBase.addBaseCategory(baseCategory);
+      newBase.addBaseCategory(baseCategory);
 
-	try {
-	    serviceProvider.getBaseAdministrationService().createBase(newBase);
-	} catch (ObjectAlreadyExistsException e) {
-	    e.printStackTrace();
-	    fail("base : " + newBase.getBaseId() + " already exists");
-	}
+      try {
+         serviceProvider.getBaseAdministrationService().createBase(newBase);
+      } catch (ObjectAlreadyExistsException e) {
+         e.printStackTrace();
+         fail("base : " + newBase.getBaseId() + " already exists");
+      }
 
-	List<Base> allBasesAfterNewBase = serviceProvider
-		.getBaseAdministrationService().getAllBases();
-	int allBasesAfterNewBaseSize = allBasesAfterNewBase.size();
+      List<Base> allBasesAfterNewBase = serviceProvider.getBaseAdministrationService()
+            .getAllBases();
+      int allBasesAfterNewBaseSize = allBasesAfterNewBase.size();
 
-	assertEquals(allBasesSize + 1, allBasesAfterNewBaseSize);
+      assertEquals(allBasesSize + 1, allBasesAfterNewBaseSize);
 
-	serviceProvider.getBaseAdministrationService().deleteBase(newBase);
-    }
+      serviceProvider.getBaseAdministrationService().deleteBase(newBase);
+   }
 }

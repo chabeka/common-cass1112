@@ -20,83 +20,78 @@ import com.docubase.dfce.exception.TagControlException;
 import com.docubase.dfce.toolkit.TestUtils;
 
 public class DictionaryTest extends AbstractTestCaseCreateAndPrepareBase {
-    private static BaseCategory baseCategory;
-    private File newDoc;
-    private Document document;
+   private static BaseCategory baseCategory;
+   private File newDoc;
+   private Document document;
 
-    @BeforeClass
-    public static void setupAll() {
-	Category category = serviceProvider.getStorageAdministrationService()
-		.findOrCreateCategory("CategoryWithDictionary",
-			CategoryDataType.INTEGER);
+   @BeforeClass
+   public static void setupAll() {
+      Category category = serviceProvider.getStorageAdministrationService().findOrCreateCategory(
+            "CategoryWithDictionary", CategoryDataType.INTEGER);
 
-	baseCategory = ToolkitFactory.getInstance().createBaseCategory(
-		category, true);
-	baseCategory.setMaximumValues((short) 10);
-	baseCategory.setEnableDictionary(true);
+      baseCategory = ToolkitFactory.getInstance().createBaseCategory(category, true);
+      baseCategory.setMaximumValues((short) 10);
+      baseCategory.setEnableDictionary(true);
 
-	serviceProvider.getBaseAdministrationService().stopBase(base);
-	base.addBaseCategory(baseCategory);
-	serviceProvider.getBaseAdministrationService().updateBase(base);
-	serviceProvider.getBaseAdministrationService().startBase(base);
-    }
+      serviceProvider.getBaseAdministrationService().stopBase(base);
+      base.addBaseCategory(baseCategory);
+      serviceProvider.getBaseAdministrationService().updateBase(base);
+      serviceProvider.getBaseAdministrationService().startBase(base);
+   }
 
-    @Before
-    public void setupEach() {
-	serviceProvider.getStorageAdministrationService().addDictionaryTerm(
-		baseCategory, "10");
+   @Before
+   public void setupEach() {
+      serviceProvider.getStorageAdministrationService().addDictionaryTerm(baseCategory, "10");
 
-	newDoc = TestUtils.getFile("doc1.pdf");
-	Assert.assertTrue(newDoc.exists());
+      newDoc = TestUtils.getFile("doc1.pdf");
+      Assert.assertTrue(newDoc.exists());
 
-	document = ToolkitFactory.getInstance().createDocumentTag(base);
-	String identifier = "Identifier" + UUID.randomUUID() + base.getBaseId();
-	document.addCriterion(category0, identifier);
+      document = ToolkitFactory.getInstance().createDocumentTag(base);
+      String identifier = "Identifier" + UUID.randomUUID() + base.getBaseId();
+      document.addCriterion(category0, identifier);
 
-	// Date de création du document (à priori avant son entrée dans la
-	// GED, on retranche une heure)
-	Calendar cal = Calendar.getInstance();
-	cal.setTimeInMillis(System.currentTimeMillis());
-	cal.add(Calendar.HOUR, -1);
-	document.setCreationDate(cal.getTime());
-    }
+      // Date de crï¿½ation du document (ï¿½ priori avant son entrï¿½e dans la
+      // GED, on retranche une heure)
+      Calendar cal = Calendar.getInstance();
+      cal.setTimeInMillis(System.currentTimeMillis());
+      cal.add(Calendar.HOUR, -1);
+      document.setCreationDate(cal.getTime());
+   }
 
-    @Test(expected = TagControlException.class)
-    public void testStoreDocWrongEntry() throws TagControlException {
-	document.addCriterion(baseCategory, 11);
+   @Test(expected = TagControlException.class)
+   public void testStoreDocWrongEntry() throws TagControlException {
+      document.addCriterion(baseCategory, 11);
 
-	storeDocument(document, newDoc);
-    }
+      storeDocument(document, newDoc);
+   }
 
-    @Test
-    public void testStoreDocCorrectEntry() {
-	document.addCriterion(baseCategory, 10);
-	Document stored;
-	try {
-	    stored = storeDocument(document, newDoc);
-	} catch (TagControlException e) {
-	    throw new RuntimeException(e);
-	}
+   @Test
+   public void testStoreDocCorrectEntry() {
+      document.addCriterion(baseCategory, 10);
+      Document stored;
+      try {
+         stored = storeDocument(document, newDoc);
+      } catch (TagControlException e) {
+         throw new RuntimeException(e);
+      }
 
-	// 10 est dans le dictionaire, le document est donc stocké
-	Assert.assertNotNull(stored);
-    }
+      // 10 est dans le dictionaire, le document est donc stockï¿½
+      Assert.assertNotNull(stored);
+   }
 
-    @Test(expected = TagControlException.class)
-    public void testRemoveEntry() throws TagControlException {
-	serviceProvider.getStorageAdministrationService().removeDictionaryTerm(
-		baseCategory, "10");
+   @Test(expected = TagControlException.class)
+   public void testRemoveEntry() throws TagControlException {
+      serviceProvider.getStorageAdministrationService().removeDictionaryTerm(baseCategory, "10");
 
-	document.addCriterion(baseCategory, 10);
-	storeDocument(document, newDoc);
-    }
+      document.addCriterion(baseCategory, 10);
+      storeDocument(document, newDoc);
+   }
 
-    @Test
-    public void testGetAllEntries() {
-	List<String> allEntries = serviceProvider
-		.getStorageAdministrationService().getAllDictonaryTerms(
-			baseCategory);
-	Assert.assertEquals(1, allEntries.size());
-	Assert.assertTrue(allEntries.contains("10"));
-    }
+   @Test
+   public void testGetAllEntries() {
+      List<String> allEntries = serviceProvider.getStorageAdministrationService()
+            .getAllDictonaryTerms(baseCategory);
+      Assert.assertEquals(1, allEntries.size());
+      Assert.assertTrue(allEntries.contains("10"));
+   }
 }

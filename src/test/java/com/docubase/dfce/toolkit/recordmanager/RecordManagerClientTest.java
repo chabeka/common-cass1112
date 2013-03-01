@@ -15,175 +15,168 @@ import org.junit.Test;
 
 public class RecordManagerClientTest extends AbstractEventTest {
 
-    private RecordManagerService recordManagerService = serviceProvider
-	    .getRecordManagerService();
+   private RecordManagerService recordManagerService = serviceProvider.getRecordManagerService();
 
-    /**
-     * Ce teste permet de vérifier l'enregistrement d'un seul évènement comme
-     * décrit ci-dessous :
-     * 
-     * <ol>
-     * <li>On enregistre un évènement.</li>
-     * <li>On retourne une liste d'évènements, en filtrant sur une date de debut
-     * et une date de fin</li>
-     * <li>On cherche dans cette liste, l'évènement enregistré et on atteste
-     * qu'il est bien enregistré</li>
-     * <li>Pour finir, on supprime tous les évènements entre une date de debut
-     * et une date de fin.</li>
-     * </ol>
-     */
-    @Test
-    public void testAddEventLog() {
-	// Ajouter un évènement
+   /**
+    * Ce teste permet de vï¿½rifier l'enregistrement d'un seul ï¿½vï¿½nement comme
+    * dï¿½crit ci-dessous :
+    * 
+    * <ol>
+    * <li>On enregistre un ï¿½vï¿½nement.</li>
+    * <li>On retourne une liste d'ï¿½vï¿½nements, en filtrant sur une date de debut
+    * et une date de fin</li>
+    * <li>On cherche dans cette liste, l'ï¿½vï¿½nement enregistrï¿½ et on atteste
+    * qu'il est bien enregistrï¿½</li>
+    * <li>Pour finir, on supprime tous les ï¿½vï¿½nements entre une date de debut et
+    * une date de fin.</li>
+    * </ol>
+    */
+   @Test
+   public void testAddEventLog() {
+      // Ajouter un ï¿½vï¿½nement
 
-	RMSystemEvent createdEvent = recordManagerService
-		.createCustomSystemEventLog((buildSystemEventsLogList().get(0)));
+      RMSystemEvent createdEvent = recordManagerService
+            .createCustomSystemEventLog((buildSystemEventsLogList().get(0)));
 
-	// retourner la liste d'évènements filtrés
-	List<RMSystemEvent> events = recordManagerService
-		.getSystemEventLogsByDates(
-			new DateTime(createdEvent.getEventDate())
-				.minusMillis(1).toDate(), new DateTime(
-				createdEvent.getEventDate()).plusMillis(1)
-				.toDate());
+      // retourner la liste d'ï¿½vï¿½nements filtrï¿½s
+      List<RMSystemEvent> events = recordManagerService.getSystemEventLogsByDates(new DateTime(
+            createdEvent.getEventDate()).minusMillis(1).toDate(),
+            new DateTime(createdEvent.getEventDate()).plusMillis(1).toDate());
 
-	// Trouver l'évènement enregistré dans la liste retournée
-	boolean found = false;
-	for (RMSystemEvent evt : events) {
-	    if ("EVENT1".equals(evt.getEventDescription())) {
-		found = true;
-	    }
-	}
+      // Trouver l'ï¿½vï¿½nement enregistrï¿½ dans la liste retournï¿½e
+      boolean found = false;
+      for (RMSystemEvent evt : events) {
+         if ("EVENT1".equals(evt.getEventDescription())) {
+            found = true;
+         }
+      }
 
-	// Attester que l'évènement est bien enregistré
-	assertTrue("L'évènement n'est pas enregistré", found);
-    }
+      // Attester que l'ï¿½vï¿½nement est bien enregistrï¿½
+      assertTrue("L'ï¿½vï¿½nement n'est pas enregistrï¿½", found);
+   }
 
-    /**
-     * Ce teste permet de vérifier l'enregistrement de plusieurs évènements
-     * comme décrit ci-dessous :
-     * 
-     * <ol>
-     * <li>On enregistre une liste d'évènements.</li>
-     * <li>On retourne une liste d'évènements, en filtrant sur une date de debut
-     * et une date de fin</li>
-     * <li>On cherche dans cette liste, les évènements enregistrés et on atteste
-     * qu'ils sont bien enregistrés</li>
-     * <li>Pour finir, on supprime tous les évènements entre une date de debut
-     * et une date de fin.</li>
-     * </ol>
-     */
-    @Test
-    public void testAddEventLogList() {
-	// Ajouter un évènement
-	List<RMSystemEvent> systemEventsLogList = buildSystemEventsLogList();
-	assertEquals(2, systemEventsLogList.size());
+   /**
+    * Ce teste permet de vï¿½rifier l'enregistrement de plusieurs ï¿½vï¿½nements comme
+    * dï¿½crit ci-dessous :
+    * 
+    * <ol>
+    * <li>On enregistre une liste d'ï¿½vï¿½nements.</li>
+    * <li>On retourne une liste d'ï¿½vï¿½nements, en filtrant sur une date de debut
+    * et une date de fin</li>
+    * <li>On cherche dans cette liste, les ï¿½vï¿½nements enregistrï¿½s et on atteste
+    * qu'ils sont bien enregistrï¿½s</li>
+    * <li>Pour finir, on supprime tous les ï¿½vï¿½nements entre une date de debut et
+    * une date de fin.</li>
+    * </ol>
+    */
+   @Test
+   public void testAddEventLogList() {
+      // Ajouter un ï¿½vï¿½nement
+      List<RMSystemEvent> systemEventsLogList = buildSystemEventsLogList();
+      assertEquals(2, systemEventsLogList.size());
 
-	RMSystemEvent createdEvent1 = recordManagerService
-		.createCustomSystemEventLog(systemEventsLogList.get(0));
-	RMSystemEvent createdEvent2 = recordManagerService
-		.createCustomSystemEventLog(systemEventsLogList.get(1));
+      RMSystemEvent createdEvent1 = recordManagerService
+            .createCustomSystemEventLog(systemEventsLogList.get(0));
+      RMSystemEvent createdEvent2 = recordManagerService
+            .createCustomSystemEventLog(systemEventsLogList.get(1));
 
-	// retourner la liste d'évènements
-	List<RMSystemEvent> events = recordManagerService
-		.getSystemEventLogsByDates(
-			new DateTime(createdEvent1.getEventDate()).minusMillis(
-				1).toDate(),
-			new DateTime(createdEvent2.getEventDate())
-				.plusMillis(1).toDate());
+      // retourner la liste d'ï¿½vï¿½nements
+      List<RMSystemEvent> events = recordManagerService.getSystemEventLogsByDates(new DateTime(
+            createdEvent1.getEventDate()).minusMillis(1).toDate(),
+            new DateTime(createdEvent2.getEventDate()).plusMillis(1).toDate());
 
-	// Trouver l'évènement enregistré dans la liste retournée
-	boolean foundA = false;
-	boolean foundB = false;
-	for (RMSystemEvent evt : events) {
-	    if ("EVENT1".equals(evt.getEventDescription()))
-		foundA = true;
+      // Trouver l'ï¿½vï¿½nement enregistrï¿½ dans la liste retournï¿½e
+      boolean foundA = false;
+      boolean foundB = false;
+      for (RMSystemEvent evt : events) {
+         if ("EVENT1".equals(evt.getEventDescription()))
+            foundA = true;
 
-	    if ("EVENT2".equals(evt.getEventDescription()))
-		foundB = true;
-	}
+         if ("EVENT2".equals(evt.getEventDescription()))
+            foundB = true;
+      }
 
-	// Attester que l'évènement de Stockage est bien enregistré
-	assertTrue("L'évènement de EVENT1 n'est pas enregistré", foundA);
+      // Attester que l'ï¿½vï¿½nement de Stockage est bien enregistrï¿½
+      assertTrue("L'ï¿½vï¿½nement de EVENT1 n'est pas enregistrï¿½", foundA);
 
-	// Attester que l'évènement de Stockage est bien enregistré
-	assertTrue("L'évènement de EVENT2 n'est pas enregistré", foundB);
-    }
+      // Attester que l'ï¿½vï¿½nement de Stockage est bien enregistrï¿½
+      assertTrue("L'ï¿½vï¿½nement de EVENT2 n'est pas enregistrï¿½", foundB);
+   }
 
-    /**
-     * Ce teste permet de vérifier la recherche d'évènements comme décrit
-     * ci-dessous :
-     * 
-     * <ol>
-     * <li>On enregistre une liste de 2 évènements.</li>
-     * <li>On cherche une liste d'évènements, en filtrant sur une date de debut
-     * et une date de fin</li>
-     * <li>On atteste que la liste remontée est non vide</li>
-     * <li>On affiche les évènements trouvés</li>
-     * </ol>
-     */
-    @Test
-    public void testGetEventLogList() {
+   /**
+    * Ce teste permet de vï¿½rifier la recherche d'ï¿½vï¿½nements comme dï¿½crit
+    * ci-dessous :
+    * 
+    * <ol>
+    * <li>On enregistre une liste de 2 ï¿½vï¿½nements.</li>
+    * <li>On cherche une liste d'ï¿½vï¿½nements, en filtrant sur une date de debut
+    * et une date de fin</li>
+    * <li>On atteste que la liste remontï¿½e est non vide</li>
+    * <li>On affiche les ï¿½vï¿½nements trouvï¿½s</li>
+    * </ol>
+    */
+   @Test
+   public void testGetEventLogList() {
 
-	// Ajouter un évènement
-	List<RMSystemEvent> systemEventsLogList = buildSystemEventsLogList();
-	Date maxEventDate = new Date(0);
-	for (RMSystemEvent rmSystemEvent : systemEventsLogList) {
-	    RMSystemEvent createdEvent = recordManagerService
-		    .createCustomSystemEventLog(rmSystemEvent);
-	    if (maxEventDate.before(createdEvent.getEventDate())) {
-		maxEventDate = createdEvent.getEventDate();
-	    }
-	}
-	Calendar calendar = Calendar.getInstance();
-	calendar.setTime(maxEventDate);
-	calendar.add(Calendar.MILLISECOND, -1);
-	beginDate = calendar.getTime();
-	calendar.add(Calendar.MILLISECOND, 2);
-	endDate = calendar.getTime();
+      // Ajouter un ï¿½vï¿½nement
+      List<RMSystemEvent> systemEventsLogList = buildSystemEventsLogList();
+      Date maxEventDate = new Date(0);
+      for (RMSystemEvent rmSystemEvent : systemEventsLogList) {
+         RMSystemEvent createdEvent = recordManagerService
+               .createCustomSystemEventLog(rmSystemEvent);
+         if (maxEventDate.before(createdEvent.getEventDate())) {
+            maxEventDate = createdEvent.getEventDate();
+         }
+      }
+      Calendar calendar = Calendar.getInstance();
+      calendar.setTime(maxEventDate);
+      calendar.add(Calendar.MILLISECOND, -1);
+      beginDate = calendar.getTime();
+      calendar.add(Calendar.MILLISECOND, 2);
+      endDate = calendar.getTime();
 
-	// retourner la liste d'évènements filtrés
-	List<RMSystemEvent> events = recordManagerService
-		.getSystemEventLogsByDates(beginDate, endDate);
+      // retourner la liste d'ï¿½vï¿½nements filtrï¿½s
+      List<RMSystemEvent> events = recordManagerService.getSystemEventLogsByDates(beginDate,
+            endDate);
 
-	// Attester que cette liste est non vide
-	assertTrue("La liste des évènements ne doit pas être vide",
-		(!events.isEmpty() && events.size() > 1));
-    }
+      // Attester que cette liste est non vide
+      assertTrue("La liste des ï¿½vï¿½nements ne doit pas ï¿½tre vide",
+            (!events.isEmpty() && events.size() > 1));
+   }
 
-    /**
-     * Ce teste permet de vérifier la traçabilité d'évènements liés à un
-     * document :
-     * 
-     * <ol>
-     * <li>On crée un document dans la base GED, mais nous admettons que le
-     * document existe</li>
-     * <li>On enregistre évènement pour ce document.</li>
-     * <li>On recherche les évènements liés à cet document, à partir de son
-     * identifiant UUID.</li>
-     * <li>On atteste que tous les évènements sont liés à ce document.</li>
-     * </ol>
-     */
-    @Test
-    public void testGetEventLogsByKeyDoc() {
-	// Ajouter un évènement de stockage de document
-	RMDocEvent docEventLog = buildDocEventLog();
+   /**
+    * Ce teste permet de vï¿½rifier la traï¿½abilitï¿½ d'ï¿½vï¿½nements liï¿½s ï¿½ un document
+    * :
+    * 
+    * <ol>
+    * <li>On crï¿½e un document dans la base GED, mais nous admettons que le
+    * document existe</li>
+    * <li>On enregistre ï¿½vï¿½nement pour ce document.</li>
+    * <li>On recherche les ï¿½vï¿½nements liï¿½s ï¿½ cet document, ï¿½ partir de son
+    * identifiant UUID.</li>
+    * <li>On atteste que tous les ï¿½vï¿½nements sont liï¿½s ï¿½ ce document.</li>
+    * </ol>
+    */
+   @Test
+   public void testGetEventLogsByKeyDoc() {
+      // Ajouter un ï¿½vï¿½nement de stockage de document
+      RMDocEvent docEventLog = buildDocEventLog();
 
-	recordManagerService.createCustomDocumentEventLog(docEventLog);
+      recordManagerService.createCustomDocumentEventLog(docEventLog);
 
-	List<RMDocEvent> events = serviceProvider.getRecordManagerService()
-		.getDocumentEventLogsByUUID(KEY_DOC);
+      List<RMDocEvent> events = serviceProvider.getRecordManagerService()
+            .getDocumentEventLogsByUUID(KEY_DOC);
 
-	boolean found = false;
-	for (RMDocEvent evt : events) {
-	    found = true;
-	    if (!KEY_DOC.toString().equals(evt.getDocUUID().toString())) {
-		found = false;
-		break;
-	    }
-	}
+      boolean found = false;
+      for (RMDocEvent evt : events) {
+         found = true;
+         if (!KEY_DOC.toString().equals(evt.getDocUUID().toString())) {
+            found = false;
+            break;
+         }
+      }
 
-	// Attester que l'évènement est bien enregistré
-	assertTrue("L'évènement n'est pas enregistré", found);
-    }
+      // Attester que l'ï¿½vï¿½nement est bien enregistrï¿½
+      assertTrue("L'ï¿½vï¿½nement n'est pas enregistrï¿½", found);
+   }
 }
