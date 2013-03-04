@@ -35,9 +35,11 @@
 
 <div id="parametres"></div>
 <div id='lecture'> <form:input type="button" path="titre" onclick="javascript:getTrace();" ></form:input></div>
-</ br>
-</ br>
+<br />
+
 <div id='traceTable' style="width:99%;"></div>
+
+<br /><br />
 
 <script type="text/javascript"
 	src="js/traces/traceVisualisation.js"></script>
