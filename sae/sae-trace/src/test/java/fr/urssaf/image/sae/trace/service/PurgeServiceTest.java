@@ -134,6 +134,38 @@ public class PurgeServiceTest {
 
       checkParameters();
    }
+   
+   @Test
+   public void testPurgeNonLancée() {
+      createParametersEquals();
+      createTraces();
+      
+      purgeService.purgerRegistre(PurgeType.PURGE_EXPLOITATION);
+      List<TraceRegExploitationIndex> traces = exploitService.lecture(DateUtils
+            .addMonths(DATE, -1), DateUtils.addMinutes(DATE, 1), 10, false);
+      Assert.assertEquals("les 6 traces doivent etre présentes", 6, traces.size());
+      
+      purgeService.purgerRegistre(PurgeType.PURGE_SECURITE);
+      List<TraceRegSecuriteIndex> tracesSecu = secuService.lecture(DateUtils
+            .addMonths(DATE, -1), DateUtils.addMinutes(DATE, 1), 10, false);
+      Assert.assertEquals("les 6 traces doivent etre présentes", 6, tracesSecu.size());
+
+      purgeService.purgerRegistre(PurgeType.PURGE_TECHNIQUE);
+      List<TraceRegTechniqueIndex> tracesTech = techService.lecture(DateUtils
+            .addMonths(DATE, -1), DateUtils.addMinutes(DATE, 1), 10, false);
+      Assert.assertEquals("les 6 traces doivent etre présentes", 6, tracesTech.size());
+   }
+   
+   private void createParametersEquals() {
+      Date lastDate = DateUtils.addDays(DATE, -1);
+      createParameter(ParameterType.PURGE_EXPLOIT_DATE, lastDate);
+      createParameter(ParameterType.PURGE_SECU_DATE, lastDate);
+      createParameter(ParameterType.PURGE_TECH_DATE, lastDate);
+
+      createParameter(ParameterType.PURGE_EXPLOIT_DUREE, Integer.valueOf(5));
+      createParameter(ParameterType.PURGE_SECU_DUREE, Integer.valueOf(5));
+      createParameter(ParameterType.PURGE_TECH_DUREE, Integer.valueOf(5));
+   }
 
    private void createParameters() {
       Date lastDate = DateUtils.addMonths(DATE, -1);
