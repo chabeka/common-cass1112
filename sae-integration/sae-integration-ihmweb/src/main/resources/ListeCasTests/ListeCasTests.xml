@@ -1250,7 +1250,7 @@
             <luceneExemple>Denomination:"Test 1100-Droits-TestLibre"</luceneExemple>
          </CasTest>
          
-         <CasTest>
+         <!--CasTest>
             <id>1101</id>
             <code>1101-Droits-Conformite-Recherche-Attestation</code>
             <description>
@@ -1268,7 +1268,7 @@
             </description>
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 1104-Droits-Conformite-Recherche-ATT-VIGI"</luceneExemple>
-         </CasTest>
+         </CasTest-->
          
          <CasTest>
             <id>1150</id>
