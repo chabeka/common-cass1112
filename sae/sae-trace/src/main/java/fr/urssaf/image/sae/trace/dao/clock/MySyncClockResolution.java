@@ -11,6 +11,8 @@ import me.prettyprint.hector.api.ClockResolution;
 public final class MySyncClockResolution extends AbstractClockResolution
       implements ClockResolution {
 
+   private static final long serialVersionUID = 1L;
+
    private static final long ONE_HUNDRED = 100L;
 
    /**
