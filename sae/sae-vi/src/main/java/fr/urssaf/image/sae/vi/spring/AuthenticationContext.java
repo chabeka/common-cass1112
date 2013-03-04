@@ -2,7 +2,6 @@ package fr.urssaf.image.sae.vi.spring;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 
-
 /**
  * Classe du Contexte de sécurité de Spring<br>
  * <br>
@@ -13,7 +12,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 public final class AuthenticationContext {
 
    private AuthenticationContext() {
-
    }
 
    /**
@@ -37,5 +35,14 @@ public final class AuthenticationContext {
     */
    public static void setAuthenticationToken(AuthenticationToken authentication) {
       SecurityContextHolder.getContext().setAuthentication(authentication);
+   }
+
+   /**
+    * Mis à jour de la stratégie du contexte de sécurité, afin que les thread
+    * fils du programme héritent du contexte
+    */
+   public static void setModeHeritage() {
+      SecurityContextHolder
+            .setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
    }
 }

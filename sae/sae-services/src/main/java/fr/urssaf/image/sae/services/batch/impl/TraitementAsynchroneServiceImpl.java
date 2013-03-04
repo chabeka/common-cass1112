@@ -171,6 +171,7 @@ public class TraitementAsynchroneServiceImpl implements
       token = AuthenticationFactory.createAuthentication(viExtrait
             .getIdUtilisateur(), viExtrait, roles, viExtrait.getSaeDroits());
       LOG.debug("{} - initialisation du contexte de sécurité", TRC_LANCER);
+      AuthenticationContext.setModeHeritage();
       AuthenticationContext.setAuthenticationToken(token);
 
       // vérification que le type de traitement existe bien
