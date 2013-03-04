@@ -257,6 +257,42 @@ public class CaptureUnitaireTestService {
             listener);
 
    }
+   
+   /**
+    * Test d'appel à l'opération "archivageUnitaire" du service web SaeService.<br>
+    * <br>
+    * On s'attend à obtenir une SoapFault.
+    * 
+    * @param urlServiceWeb
+    *           l'URL du service web SaeService
+    * @param formulaire
+    *           le formulaire
+    * @param viStyle
+    *           le type de VI à générer
+    * @param viParams
+    *           les paramètres du VI
+    * @param idSoapFaultAttendu
+    *           l'identifiant de la SoapFault attendu dans le référentiel des
+    *           SoapFault
+    * @param argsMsgSoapFault
+    *           les arguments pour le String.format du message de la SoapFault
+    *           attendue
+    */
+   public final void appelWsOpCaptureUnitaireSoapFault(String urlServiceWeb,
+         CaptureUnitaireFormulaire formulaire, ViStyle viStyle, ViFormulaire viParams,
+         String idSoapFaultAttendu, final Object[] argsMsgSoapFault) {
+
+      // Création de l'objet qui implémente l'interface WsTestListener
+      // et qui s'attend à recevoir une certaine SoapFault
+      SoapFault faultAttendue = refSoapFault.findSoapFault(idSoapFaultAttendu);
+      WsTestListener listener = new WsTestListenerImplSoapFault(faultAttendue,
+            argsMsgSoapFault);
+
+      // Appel de la méthode "générique" de test
+      appelWsOpCaptureUnitaire(urlServiceWeb, viStyle, viParams, formulaire,
+            listener);
+
+   }
 
    /**
     * Test d'appel à l'opération "archivageUnitaire" du service web SaeService.<br>

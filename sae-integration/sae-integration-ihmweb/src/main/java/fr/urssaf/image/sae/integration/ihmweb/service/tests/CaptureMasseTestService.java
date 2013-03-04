@@ -295,6 +295,36 @@ public class CaptureMasseTestService {
 
    }
 
+   
+   /**
+    * appel de l'archivage de masse avec en attente une saop fault dont on
+    * fournit le code
+    * 
+    * @param urlWebService
+    *           adresse du WS
+    * @param formulaire
+    *           formulaire affiché
+    * @param soapFault
+    *           code erreur attendue
+    * @param args
+    *           arguments de la soapFault
+    */
+   public final void appelWsOpArchiMasseSoapFaultAttendue(String urlWebService,
+         CaptureMasseFormulaire formulaire, ViFormulaire viParams, String soapFault, String[] args) {
+
+      // Création de l'objet qui implémente l'interface WsTestListener
+      // et qui ne s'attend pas à un quelconque résultat (test libre)
+
+      SoapFault faultAttendue = refSoapFault.findSoapFault(soapFault);
+
+      WsTestListener testLibre = new WsTestListenerImplSoapFault(faultAttendue,
+            args);
+
+      // Appel de la méthode "générique" de test
+      appelWsOpArchiMasse(urlWebService, ViStyle.VI_OK, viParams, formulaire,
+            testLibre);
+
+   }
    /**
     * Regarde les résultats d'un traitement de masse
     * 

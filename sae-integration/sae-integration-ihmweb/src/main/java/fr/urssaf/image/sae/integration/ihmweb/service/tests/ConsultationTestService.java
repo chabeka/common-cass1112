@@ -229,6 +229,41 @@ public class ConsultationTestService {
       appelWsOpConsultation(urlServiceWeb, viStyle, null, formulaire, testAuth);
 
    }
+   
+   
+   /**
+    * Test d'appel à l'opération "consultation" du service web SaeService.<br>
+    * On s'attend à récupérer une SoapFault
+    * 
+    * @param urlServiceWeb
+    *           l'URL du service web SaeService
+    * @param formulaire
+    *           le formulaire
+    * @param viStyle
+    *           le type de VI à générer
+    * @param viParams
+    *           les informations nécessaires pour générer le VI          
+    * @param idSoapFaultAttendu
+    *           l'identifiant de la SoapFault attendu dans le référentiel des
+    *           SoapFault
+    * @param argsMsgSoapFault
+    *           les arguments pour le String.format du message de la SoapFault
+    *           attendue
+    */
+   public final void appelWsOpConsultationSoapFault(String urlServiceWeb,
+         ConsultationFormulaire formulaire, ViStyle viStyle, ViFormulaire viParams,
+         String idSoapFaultAttendu, final Object[] argsMsgSoapFault) {
+
+      // Création de l'objet qui implémente l'interface WsTestListener
+      // et qui s'attend à recevoir une certaine SoapFault
+      SoapFault faultAttendue = refSoapFault.findSoapFault(idSoapFaultAttendu);
+      WsTestListener testAuth = new WsTestListenerImplSoapFault(faultAttendue,
+            argsMsgSoapFault);
+
+      // Appel de la méthode "générique" de test
+      appelWsOpConsultation(urlServiceWeb, viStyle, viParams, formulaire, testAuth);
+
+   }
 
    private void wsVerifieRetour(ConsultationFormulaire formulaire,
          ConsultationResultat response, String sha1attendu,

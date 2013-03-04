@@ -103,10 +103,10 @@ public class Test1150Controller extends
       viForm.setIssuer("INT_CS_INCONNU");
       viForm.setRecipient(SaeIntegrationConstantes.VI_DEFAULT_RECIPIENT);
       viForm.setAudience(SaeIntegrationConstantes.VI_DEFAULT_AUDIENCE);
-      PagmList pagmList = new PagmList();
-      viForm.setPagms(pagmList);
+      PagmList pagmList = new PagmList();      
       pagmList.add("INT_PAGM_CS_INCONNU");
-
+      viForm.setPagms(pagmList);
+      
       return formulaire;
 
    }
@@ -150,29 +150,41 @@ public class Test1150Controller extends
 
    private void etape1CaptureUnitaireAppelWs(String urlWebService,
          CaptureUnitaireFormulaire formulaire) {
-      String[] result = new String[]{""};
+      String[] result = new String[] { "" };
       // Appel de la méthode de test
+
       getCaptureUnitaireTestService().appelWsOpCaptureUnitaireSoapFault(
-            urlWebService, formulaire, ViStyle.VI_OK, "vi_InvalidIssuer",
+            urlWebService, formulaire, ViStyle.VI_OK,
+            formulaire.getParent().getViFormulaire(), "vi_InvalidIssuer",
             result);
 
    }
 
-   private void etape2CaptureMasseAppelWs(String urlWebService, CaptureMasseFormulaire formulaire){
-      String[] result = new String[]{""};
-      getCaptureMasseTestService().appelWsOpArchiMasseSoapFaultAttendue(urlWebService, formulaire, "vi_InvalidIssuer", result);
+   private void etape2CaptureMasseAppelWs(String urlWebService,
+         CaptureMasseFormulaire formulaire) {
+      String[] result = new String[] { "" };
+      getCaptureMasseTestService().appelWsOpArchiMasseSoapFaultAttendue(
+            urlWebService, formulaire,
+            formulaire.getParent().getViFormulaire(), "vi_InvalidIssuer",
+            result);
    }
 
-   private void etape4Consultation(String urlWebService, ConsultationFormulaire formulaire){
-      String[] result = new String[]{""};
-      getConsultationTestService().appelWsOpConsultationSoapFault(urlWebService, formulaire, ViStyle.VI_OK, "vi_InvalidIssuer", result);
+   private void etape4Consultation(String urlWebService,
+         ConsultationFormulaire formulaire) {
+      String[] result = new String[] { "" };
+      getConsultationTestService().appelWsOpConsultationSoapFault(
+            urlWebService, formulaire, ViStyle.VI_OK,
+            formulaire.getParent().getViFormulaire(), "vi_InvalidIssuer",
+            result);
    }
 
    private void recherche(String urlServiceWeb, RechercheFormulaire formulaire) {
-      String[] result = new String[]{""};
+      String[] result = new String[] { "" };
       // Appel de la méthode de test
       getRechercheTestService().appelWsOpRechercheSoapFault(urlServiceWeb,
-            formulaire, ViStyle.VI_OK, "vi_InvalidIssuer", result);
+            formulaire, ViStyle.VI_OK,
+            formulaire.getParent().getViFormulaire(), "vi_InvalidIssuer",
+            result);
 
    }
 
