@@ -45,7 +45,7 @@ public final class SaeFileUtils {
       String trcPrefix = "generateZip()";
       GZIPOutputStream outStream = null;
       InputStream inStream = null;
-      String zipPath = path + ".gz";
+      String zipPath = path + ".ext.gz";
 
       try {
          inStream = new FileInputStream(path);

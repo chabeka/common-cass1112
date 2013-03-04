@@ -214,7 +214,7 @@ public class TraitementServiceDatasJournalisationTest {
       create4Traces();
 
       createParameter(ParameterType.JOURNALISATION_EVT_DATE, DateUtils.addDays(
-            new Date(), -3));
+            DATE, -3));
       createParameter(ParameterType.JOURNALISATION_EVT_ID_JOURNAL_PRECEDENT,
             UUID.randomUUID().toString());
       createParameter(ParameterType.JOURNALISATION_EVT_HASH_JOURNAL_PRECEDENT,
