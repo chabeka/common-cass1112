@@ -52,6 +52,8 @@ public class TraceVisualisationController {
    @RequestMapping(value = "traceVisualisation", method = RequestMethod.GET)
    public final String defaultView(HttpSession session, Model model) {
       formulaire.setAction("getTrace");
+      formulaire.setPopUpAction("getTracePopUpInfo");
+      formulaire.setInfoPopUpUrl("tracePopUpInfo.do");
       formulaire.setUrl("traceVisualisation.do");
       formulaire.setTitre("Visualiser les traces");
       model.addAttribute("formulaire", formulaire);
@@ -62,6 +64,8 @@ public class TraceVisualisationController {
    public final String defaultViewJournal(HttpSession session, Model model) {
       // on a le même écran que pour les traces ..
       formulaire.setAction("getJournal");
+      formulaire.setPopUpAction("getJournalPopUpInfo");
+      formulaire.setInfoPopUpUrl("journalPopUpInfo.do");
       formulaire.setUrl("journalVisualisation.do");
       formulaire.setTitre("Visualiser les journaux");
       model.addAttribute("formulaire", formulaire);
@@ -207,13 +211,13 @@ public class TraceVisualisationController {
    }
 
    /**
-    * Retourne la liste des Constrat service
+    * Retourne la liste des journaux
     * 
     * @param model
     *           données spring
     * @param session
     *           session utilisateur
-    * @return la liste des contrat service
+    * @return la liste des journaux
     */
    @SuppressWarnings("unchecked")
    @ResponseBody
@@ -259,6 +263,29 @@ public class TraceVisualisationController {
       map.put("compteur", compteur);
       return map;
 
+   }
+   
+   @SuppressWarnings("unchecked")
+   @ResponseBody
+   @RequestMapping(value = "journalPopUpInfo", method = RequestMethod.GET, params = "action=getJournalPopUpInfo")
+   public final List<String> afficheJournalInfo(Model model, HttpSession session,
+         @RequestParam(value = "uuid", required = true) UUID uuid) {
+
+      List<String> journalContent = new ArrayList<String>();
+      TraceJournalEvt journal = journalEvtService.lecture(uuid);
+      Map<String, Object> info = journal.getInfos();
+      Iterator iter = info.keySet().iterator();
+      while (iter.hasNext()) {
+         String key = iter.next().toString();
+         Object valeur = info.get(key);
+         if (valeur == null) {
+            journalContent.add(key + ":null");
+         } else {
+            journalContent.add(key + ":"
+                  + StringEscapeUtils.escapeHtml(valeur.toString()));
+         }
+      }
+      return journalContent;
    }
 
    private Date calculeDateDebutJournee(Date dateDebut) {

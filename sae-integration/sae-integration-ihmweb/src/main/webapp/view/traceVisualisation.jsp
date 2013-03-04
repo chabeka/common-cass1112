@@ -20,6 +20,8 @@
 
 	<form:hidden path="action" />
 	<form:hidden path="url" />
+	<form:hidden path="infoPopUpUrl" />
+	<form:hidden path="popUpAction" />
 
 <table width="100%">
 	<tr>

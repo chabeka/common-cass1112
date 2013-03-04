@@ -50,6 +50,7 @@ function createJournauxTable(jsonData){
               '<div class="detail" style="width:150px;">{codeEvt}</div>',
               '<div class="detail" style="width:200px;">{[new Date(values.timestamp).toLocaleString()]}</div>',
               '<div class="detail" style="width:100px;"><tpl if="contexte!=null">{contexte}</tpl></div>',
+              '<div class="detail" style="width:100px;"><tpl if="contratService!=null">{contratService}</tpl></div>',
               '<div class="detail" style="width:100px;"><tpl if="login!=null">{login}</tpl></div>',
               '<div class="detail" style="width:100px;">',
                  '<tpl for="pagms">',
@@ -138,9 +139,9 @@ function getPopUp(id){
 
 function getPopUpInfo(info){
    Ext.Ajax.request( {
-      url : 'tracePopUpInfo.do',
+      url : document.getElementById("infoPopUpUrl").value,
       params : {
-         action : 'getTracePopUpInfo',
+         action : document.getElementById("popUpAction").value,
          uuid: info
       },
       method : 'GET',
