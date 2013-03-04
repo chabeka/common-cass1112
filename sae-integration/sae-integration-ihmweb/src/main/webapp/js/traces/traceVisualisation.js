@@ -28,7 +28,7 @@ function createTraceTable(jsonData){
               '</tpl>',
            '</tpl>',
         '</tpl>',
-        '<div>{Ext.get("compteur")]}</div>',
+        '<div>blala</div>',
         '</div>'
      );
    
