@@ -1,52 +1,28 @@
 package fr.urssaf.image.sae.integration.ihmweb.formulaire;
 
-import java.util.Date;
 
 public class TraceFormulaire {
 
-   Date dateDebut;
+  private String titre;
+   private String action;
+   private String url;
    
-   Date dateFin;
-   
-   boolean inverse;
-   
-   String nbTrace;
-
-   public Date getDateDebut() {
-      return dateDebut;
+   public String getAction() {
+      return action;
    }
-
-   public void setDateDebut(Date dateDebut) {
-      this.dateDebut = dateDebut;
+   public void setAction(String action) {
+      this.action = action;
    }
-
-   public Date getDateFin() {
-      return dateFin;
+   public String getUrl() {
+      return url;
    }
-
-   public void setDateFin(Date dateFin) {
-      this.dateFin = dateFin;
+   public void setUrl(String url) {
+      this.url = url;
    }
-
-   public boolean isInverse() {
-      return inverse;
+   public String getTitre() {
+      return titre;
    }
-
-   public void setInverse(boolean inverse) {
-      this.inverse = inverse;
+   public void setTitre(String titre) {
+      this.titre = titre;
    }
-
-   public String getNbTrace() {
-      return nbTrace;
-   }
-
-   public void setNbTrace(String nbTrace) {
-      this.nbTrace = nbTrace;
-   }
-   
-
-
-   
-   
-   
 }

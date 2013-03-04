@@ -38,10 +38,14 @@
 
 <p><br /></p>
 <p><a href="escapeXml.do">Conversion de chaînes XML</a></p>
-<p><br /><br /><br /><br /></p>
+<p><br /></p>
 
 <p><br /></p>
 <p><a href="traceVisualisation.do">Lecture des traces</a></p>
+<p><br /></p>
+
+<p><br /></p>
+<p><a href="journalVisualisation.do">Lecture des journaux</a></p>
 <p><br /><br /><br /><br /></p>
 
 </body>
