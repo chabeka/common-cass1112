@@ -17,7 +17,7 @@
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
       <!-- Version des librairies partagées -->
-      <commons.dfce.version>1.0.1-CRTL-1</commons.dfce.version>
+      <commons.dfce.version>1.0.4-CRTL-1</commons.dfce.version>
 
       <!-- Version des framework -->
       <spring.framework.version>3.0.5.RELEASE</spring.framework.version>
