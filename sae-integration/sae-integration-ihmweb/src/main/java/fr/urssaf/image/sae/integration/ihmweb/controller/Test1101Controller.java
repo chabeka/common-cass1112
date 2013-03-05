@@ -74,12 +74,12 @@ public class Test1101Controller extends
 
       // Paramètres du VI
       ViFormulaire viForm = formulaire.getViFormulaire();
-      viForm.setIssuer("INT_CS_ATT-VIGI");
+      viForm.setIssuer("INT_CS_ATT_VIGI");
       viForm.setRecipient(SaeIntegrationConstantes.VI_DEFAULT_RECIPIENT);
       viForm.setAudience(SaeIntegrationConstantes.VI_DEFAULT_AUDIENCE);
       PagmList pagmList = new PagmList();
       viForm.setPagms(pagmList);
-      pagmList.add("INT_PAGM_ATT-VIGI_RECH");
+      pagmList.add("INT_PAGM_ATT_VIGI_RECH");
 
       return formulaire;
 
