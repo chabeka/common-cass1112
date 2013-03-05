@@ -32,7 +32,7 @@ function createTraceTable(jsonData){
                     '</td>',
                     '<td><tpl if="login!=null">{login}</tpl></td>',
                     '<td>',
-                       '<tpl if="stacktrace!=null"><a href="#" onclick="javascript:getPopUp(&quot;{identifiant}&quot;);" >stacktrace</a></tpl>',
+                       '<tpl if="stacktrace!=null"><a href="#" onclick="javascript:getPopUpStackTrace(&quot;{identifiant}&quot;);" >stacktrace</a></tpl>',
                     '</td>',
                     '<td>',
                        '<tpl if="infos!=null"><div><a href="#" onclick="javascript:getPopUpInfo(&quot;{identifiant}&quot;);" >Afficher les infos</a></div></tpl>',
@@ -95,18 +95,13 @@ function createJournauxTable(jsonData){
 }
 
 
-function createPopUp(jsonData){
+function createPopUpStackTrace(jsonData){
    
    tpl = new Ext.XTemplate(
-        '<div class="table">',
-        
-        '<tpl for="trace">',
-        '<div class="trace" style="float:left">',
-           '<div class="detail">{stacktrace}</div>',
-        '</tpl>',
-
-        '</div>'
-     );
+         '<tpl for="trace">',
+         '<p style="font-size:8pt;">{stacktrace:nl2br}</p>',
+         '</tpl>'
+                            );
    
    var tplCs = tpl.apply(jsonData);
    return tplCs;
@@ -132,7 +127,7 @@ function createPopUpInfo(jsonData){
 
 
 
-function getPopUp(id){
+function getPopUpStackTrace(id){
       Ext.Ajax.request( {
       url : 'tracePopUp.do',
       params : {
@@ -144,12 +139,12 @@ function getPopUp(id){
         var jsonData = Ext.util.JSON.decode(response.responseText);
         var tableDom = Ext.DomHelper;
            
-        var tplInstancie = createPopUp(jsonData);
+        var tplInstancie = createPopUpStackTrace(jsonData);
         
         new Ext.Window({           
            html: tplInstancie,
            shadow:false,
-           width:800,
+           width:900,
            height:500,
            autoScroll:true,
            title:'Détail de la stack trace'
