@@ -1,5 +1,7 @@
 package fr.urssaf.image.sae.integration.ihmweb.controller;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -47,15 +49,14 @@ public class TraceVisualisationController {
    @Autowired
    private JournalEvtService journalEvtService;
 
-   private TraceFormulaire formulaire = new TraceFormulaire();
-
    @RequestMapping(value = "traceVisualisation", method = RequestMethod.GET)
    public final String defaultView(HttpSession session, Model model) {
+      TraceFormulaire formulaire = new TraceFormulaire();
       formulaire.setAction("getTrace");
       formulaire.setPopUpAction("getTracePopUpInfo");
       formulaire.setInfoPopUpUrl("tracePopUpInfo.do");
       formulaire.setUrl("traceVisualisation.do");
-      formulaire.setTitre("Visualiser les traces");
+      formulaire.setTitre("Traçabilité : Registre de surveillance technique");
       model.addAttribute("formulaire", formulaire);
       return NOM_VUE;
    }
@@ -63,11 +64,12 @@ public class TraceVisualisationController {
    @RequestMapping(value = "journalVisualisation", method = RequestMethod.GET)
    public final String defaultViewJournal(HttpSession session, Model model) {
       // on a le même écran que pour les traces ..
+      TraceFormulaire formulaire = new TraceFormulaire();
       formulaire.setAction("getJournal");
       formulaire.setPopUpAction("getJournalPopUpInfo");
       formulaire.setInfoPopUpUrl("journalPopUpInfo.do");
       formulaire.setUrl("journalVisualisation.do");
-      formulaire.setTitre("Visualiser les journaux");
+      formulaire.setTitre("Traçabilité : Journal des événements");
       model.addAttribute("formulaire", formulaire);
       return NOM_VUE;
    }
@@ -87,20 +89,26 @@ public class TraceVisualisationController {
     * @param session
     *           session utilisateur
     * @return la liste traces
+    * 
+    * @throws ParseException 
     */
    @SuppressWarnings("unchecked")
    @ResponseBody
    @RequestMapping(value = "traceVisualisation", method = RequestMethod.GET, params = "action=getTrace")
    public final Map<String, Object> lectureTrace(Model model,
          HttpSession session,
-         @RequestParam(value = "dateDebut", required = true) Date dateDebut,
-         @RequestParam(value = "dateFin", required = true) Date dateFin,
+         @RequestParam(value = "dateDebut", required = true) String sDateDebut,
+         @RequestParam(value = "dateFin", required = true) String sDateFin,
          @RequestParam(value = "inverse") boolean inverse,
-         @RequestParam(value = "nbTrace") int nbTrace) {
+         @RequestParam(value = "nbTrace") int nbTrace) throws ParseException {
 
       List listeDetail = new ArrayList();
 
       int compteur = 0;
+      
+      SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+      Date dateDebut = dateFormat.parse(sDateDebut);
+      Date dateFin = dateFormat.parse(sDateFin);
 
       Date dateDebutOk = calculeDateDebutJournee(dateDebut);
       Date dateFinOk = calculeDateFinJournee(dateFin);
@@ -218,20 +226,26 @@ public class TraceVisualisationController {
     * @param session
     *           session utilisateur
     * @return la liste des journaux
+    * 
+    * @throws ParseException 
     */
    @SuppressWarnings("unchecked")
    @ResponseBody
    @RequestMapping(value = "journalVisualisation", method = RequestMethod.GET, params = "action=getJournal")
    public final Map<String, Object> lectureJournal(Model model,
          HttpSession session,
-         @RequestParam(value = "dateDebut", required = true) Date dateDebut,
-         @RequestParam(value = "dateFin", required = true) Date dateFin,
+         @RequestParam(value = "dateDebut", required = true) String sDateDebut,
+         @RequestParam(value = "dateFin", required = true) String sDateFin,
          @RequestParam(value = "inverse") boolean inverse,
-         @RequestParam(value = "nbTrace") int nbTrace) {
+         @RequestParam(value = "nbTrace") int nbTrace) throws ParseException {
 
       List listeDetail = new ArrayList();
 
       int compteur = 0;
+      
+      SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+      Date dateDebut = dateFormat.parse(sDateDebut);
+      Date dateFin = dateFormat.parse(sDateFin);
 
       Date dateDebutOk = calculeDateDebutJournee(dateDebut);
       Date dateFinOk = calculeDateFinJournee(dateFin);

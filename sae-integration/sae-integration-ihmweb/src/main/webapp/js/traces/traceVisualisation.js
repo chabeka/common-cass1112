@@ -3,7 +3,7 @@ function createTraceTable(jsonData){
    
    tpl = new Ext.XTemplate(
         '<div class="table">',
-        '<div id="compteur">Nombre de traces : {values.compteur}</div>',
+        '<div id="compteur">Nombre de traces : <b>{values.compteur}</b></div>',
         '<br />',
         '<table border="1" style="font-size:8pt;width:100%;">',
            '<tr style="font-weight:bold;">',
@@ -54,7 +54,7 @@ function createJournauxTable(jsonData){
    
    tpl = new Ext.XTemplate(
         '<div class="table">',
-        '<div>Nombre de journaux : {values.compteur}</div>',
+        '<div>Nombre de traces : <b>{values.compteur}</b></div>',
         '<br />',
         '<table border="1" style="font-size:8pt;width:100%;">',
            '<tr style="font-weight:bold;">',
@@ -224,68 +224,42 @@ Ext.Ajax.request( {
 
 function initForm() {
    
-   var tabs = new Ext.Panel({
+   var tabs = new Ext.form.FormPanel({
       renderTo: Ext.get('parametres'),
-      activeTab: 0,
-      height:100,
-      width:800,
-      deferredRender: false,
-      forceLayout: true,      
+      labelWidth:200,
+      border:true,
+      width:400,
       items: [{
          xtype : 'datefield',
          name : 'dateDebut',
          id : 'dateDebut',
-         fieldLabel : 'date de début ',
-         labelWidth : 40,
-         value : new Date() 
+         fieldLabel : 'Date de début',
+         value : new Date(),
+         format: 'd/m/Y',
+         submitFormat: 'd/m/Y'
       },{
          xtype : 'datefield',
          name : 'dateFin',
          id : 'dateFin',
-         fieldLabel : 'date de fin ',
-         labelWidth : 40,
-         value : new Date() 
+         fieldLabel : 'Date de fin',
+         value : new Date(),
+         format: 'd/m/Y',
+         submitFormat: 'd/m/Y'
       },{
          xtype : 'checkbox',
          name : 'inverse',
          id : 'inverse',
-         fieldLabel : 'Inverser la lecture ',
-         labelWidth : 40
+         fieldLabel : 'Ordre décroissant',
+         checked: true
       },{
          xtype : 'textfield',
          name : 'nbTrace',
          id : 'nbTrace',
          fieldLabel : 'Nombre de trace à récupérer ',
-         value: 1000
+         value: 200,
+         width:70
       }]
   });
-   
-      
-  /** new Ext.Button({
-      renderTo: Ext.get('lecture'),
-      id: 'lecture',
-      text: 'Lecture', 
-      handler: getTrace()
-        });**/
-   
-  /** var tabs = new Ext.TabPanel({
-      renderTo: Ext.get('dataTableLaunch'),
-      activeTab: 0,
-      height:490,
-      width:1200,
-      deferredRender: false,
-      forceLayout: true,      
-      items: [{
-          title: 'Contrat service',
-          html: '<div id=csTableForm style="width:99%; font-size:12px;"></div>',
-          autoScroll:true
-      },{
-          title: 'PRMD',
-          html: '<div id=prmdTableForm style="width:99%; font-size:12px;"></div>',
-          autoScroll:true
-      }]
-  });**/
-
    
 }
 

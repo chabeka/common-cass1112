@@ -41,11 +41,8 @@
 <p><br /></p>
 
 <p><br /></p>
-<p><a href="traceVisualisation.do">Lecture des traces</a></p>
-<p><br /></p>
-
-<p><br /></p>
-<p><a href="journalVisualisation.do">Lecture des journaux</a></p>
+<p><a href="traceVisualisation.do">Traçabilité : Registre de surveillance technique</a></p>
+<p><a href="journalVisualisation.do">Traçabilité : Journal des événements</a></p>
 <p><br /><br /><br /><br /></p>
 
 </body>
