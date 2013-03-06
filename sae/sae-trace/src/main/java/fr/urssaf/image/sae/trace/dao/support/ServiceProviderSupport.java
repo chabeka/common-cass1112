@@ -44,7 +44,11 @@ public class ServiceProviderSupport {
     */
    public final void disconnect() {
 
-      serviceProvider.disconnect();
+      // Test du null
+      // Dans le cas par exemple où la connexion à DFCE n'a pas pu être établie
+      if (serviceProvider != null) {
+         serviceProvider.disconnect();
+      }
 
    }
 
