@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import fr.urssaf.image.sae.droit.exception.ContratServiceNotFoundException;
 import fr.urssaf.image.sae.droit.exception.PagmNotFoundException;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
+import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.droit.service.impl.skip.SaeDroitServiceSkipImpl;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
@@ -45,6 +46,8 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 @Service
 public class TraitementAsynchroneServiceImpl implements
       TraitementAsynchroneService {
+
+   private static final String ROLE_RECHERCHE = "recherche";
 
    private static final Logger LOG = LoggerFactory
          .getLogger(TraitementAsynchroneServiceImpl.class);
@@ -98,13 +101,12 @@ public class TraitementAsynchroneServiceImpl implements
     */
    @Override
    public final void ajouterJobCaptureMasse(CaptureMasseParametres parameters) {
-      
-         LOG
-         .debug(
-               "{} - ajout d'un traitement de capture en masse avec le sommaire : {} pour  l'identifiant: {}",
-               new Object[] { "ajouterJobCaptureMasse()",
-                     getEcdeUrl(parameters),parameters.getUuid()});
 
+      LOG
+            .debug(
+                  "{} - ajout d'un traitement de capture en masse avec le sommaire : {} pour  l'identifiant: {}",
+                  new Object[] { "ajouterJobCaptureMasse()",
+                        getEcdeUrl(parameters), parameters.getUuid() });
 
       String type = CAPTURE_MASSE_JN;
 
@@ -140,26 +142,33 @@ public class TraitementAsynchroneServiceImpl implements
       if (job == null) {
          throw new JobInexistantException(idJob);
       }
-      
+
       LOG.debug("{} - récupération du VI", TRC_LANCER);
       VIContenuExtrait viExtrait = job.getVi();
       AuthenticationToken token;
 
+      // chargement des droits autorisant tout afin d'associer les droits ses
+      // droits en recherche à la capture de masse.
+      // Dans le cas d'un rollback, si on ne possède pas les droits en
+      // recherche, le programme s'arrête en erreur
+      List<String> pagms = new ArrayList<String>();
+      pagms.add("ACCES_FULL_PAGM");
+      SaeDroitServiceSkipImpl impl = new SaeDroitServiceSkipImpl();
+      SaeDroits saeDroits = new SaeDroits();
+      try {
+         saeDroits = impl.loadSaeDroits("CS_ANCIEN_SYSTEME", pagms);
+      } catch (ContratServiceNotFoundException e) {
+         LOG.warn("impossible de créer un accès total");
+      } catch (PagmNotFoundException e) {
+         LOG.warn("impossible de créer un accès total");
+      }
+      
+      List<SaePrmd> prmdList = saeDroits.get(ROLE_RECHERCHE);
+
       if (viExtrait == null) {
-         
-         LOG.debug("{} - le Vi est null, on met toutes les autorisations", TRC_LANCER);
-         
-         List<String> pagms = new ArrayList<String>();
-         pagms.add("ACCES_FULL_PAGM");
-         SaeDroitServiceSkipImpl impl = new SaeDroitServiceSkipImpl();
-         SaeDroits saeDroits = new SaeDroits();
-         try {
-            saeDroits = impl.loadSaeDroits("CS_ANCIEN_SYSTEME", pagms);
-         } catch (ContratServiceNotFoundException e) {
-            LOG.warn("impossible de créer un accès total");
-         } catch (PagmNotFoundException e) {
-            LOG.warn("impossible de créer un accès total");
-         }
+         LOG.debug("{} - le Vi est null, on met toutes les autorisations",
+               TRC_LANCER);
+
          viExtrait = new VIContenuExtrait();
          viExtrait.setCodeAppli("aucun contrat de service");
          viExtrait.setIdUtilisateur("aucun contrat de service");
@@ -167,7 +176,15 @@ public class TraitementAsynchroneServiceImpl implements
 
       }
 
-      String[] roles = viExtrait.getSaeDroits().keySet().toArray(new String[0]);
+      List<String> lRoles = new ArrayList<String>();
+      lRoles.addAll(viExtrait.getSaeDroits().keySet());
+      if (!lRoles.contains(ROLE_RECHERCHE)) {
+         lRoles.add(ROLE_RECHERCHE);
+      }
+      
+      String[] roles = lRoles.toArray(new String[0]);
+      viExtrait.getSaeDroits().put(ROLE_RECHERCHE, prmdList);
+      
       token = AuthenticationFactory.createAuthentication(viExtrait
             .getIdUtilisateur(), viExtrait, roles, viExtrait.getSaeDroits());
       LOG.debug("{} - initialisation du contexte de sécurité", TRC_LANCER);
@@ -240,15 +257,15 @@ public class TraitementAsynchroneServiceImpl implements
             exitTraitement.getExitMessage());
 
    }
-   
-   private String getEcdeUrl(CaptureMasseParametres parameters){
+
+   private String getEcdeUrl(CaptureMasseParametres parameters) {
       String url = StringUtils.EMPTY;
-      if(StringUtils.isNotBlank(parameters.getEcdeURL())){
-         url =parameters.getEcdeURL();         
-      }else{
-         url =parameters.getJobParameters().get(Constantes.ECDE_URL);
+      if (StringUtils.isNotBlank(parameters.getEcdeURL())) {
+         url = parameters.getEcdeURL();
+      } else {
+         url = parameters.getJobParameters().get(Constantes.ECDE_URL);
       }
-      
+
       return url;
    }
 }
