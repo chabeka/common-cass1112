@@ -1,8 +1,6 @@
 package fr.urssaf.image.sae.services.batch.impl;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 import me.prettyprint.cassandra.utils.TimeUUIDUtils;
@@ -15,11 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import fr.urssaf.image.sae.droit.exception.ContratServiceNotFoundException;
-import fr.urssaf.image.sae.droit.exception.PagmNotFoundException;
-import fr.urssaf.image.sae.droit.model.SaeDroits;
-import fr.urssaf.image.sae.droit.model.SaePrmd;
-import fr.urssaf.image.sae.droit.service.impl.skip.SaeDroitServiceSkipImpl;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 import fr.urssaf.image.sae.pile.travaux.model.JobState;
@@ -32,10 +25,9 @@ import fr.urssaf.image.sae.services.batch.exception.JobNonReserveException;
 import fr.urssaf.image.sae.services.batch.model.CaptureMasseParametres;
 import fr.urssaf.image.sae.services.batch.model.ExitTraitement;
 import fr.urssaf.image.sae.services.batch.support.TraitementExecutionSupport;
+import fr.urssaf.image.sae.services.batch.utils.CaptureMasseAuthentificationUtils;
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
-import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
-import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 /**
@@ -46,8 +38,6 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 @Service
 public class TraitementAsynchroneServiceImpl implements
       TraitementAsynchroneService {
-
-   private static final String ROLE_RECHERCHE = "recherche";
 
    private static final Logger LOG = LoggerFactory
          .getLogger(TraitementAsynchroneServiceImpl.class);
@@ -144,49 +134,10 @@ public class TraitementAsynchroneServiceImpl implements
       }
 
       LOG.debug("{} - récupération du VI", TRC_LANCER);
-      VIContenuExtrait viExtrait = job.getVi();
-      AuthenticationToken token;
 
-      // chargement des droits autorisant tout afin d'associer les droits ses
-      // droits en recherche à la capture de masse.
-      // Dans le cas d'un rollback, si on ne possède pas les droits en
-      // recherche, le programme s'arrête en erreur
-      List<String> pagms = new ArrayList<String>();
-      pagms.add("ACCES_FULL_PAGM");
-      SaeDroitServiceSkipImpl impl = new SaeDroitServiceSkipImpl();
-      SaeDroits saeDroits = new SaeDroits();
-      try {
-         saeDroits = impl.loadSaeDroits("CS_ANCIEN_SYSTEME", pagms);
-      } catch (ContratServiceNotFoundException e) {
-         LOG.warn("impossible de créer un accès total");
-      } catch (PagmNotFoundException e) {
-         LOG.warn("impossible de créer un accès total");
-      }
-      
-      List<SaePrmd> prmdList = saeDroits.get(ROLE_RECHERCHE);
+      AuthenticationToken token = CaptureMasseAuthentificationUtils
+            .getToken(job);
 
-      if (viExtrait == null) {
-         LOG.debug("{} - le Vi est null, on met toutes les autorisations",
-               TRC_LANCER);
-
-         viExtrait = new VIContenuExtrait();
-         viExtrait.setCodeAppli("aucun contrat de service");
-         viExtrait.setIdUtilisateur("aucun contrat de service");
-         viExtrait.setSaeDroits(saeDroits);
-
-      }
-
-      List<String> lRoles = new ArrayList<String>();
-      lRoles.addAll(viExtrait.getSaeDroits().keySet());
-      if (!lRoles.contains(ROLE_RECHERCHE)) {
-         lRoles.add(ROLE_RECHERCHE);
-      }
-      
-      String[] roles = lRoles.toArray(new String[0]);
-      viExtrait.getSaeDroits().put(ROLE_RECHERCHE, prmdList);
-      
-      token = AuthenticationFactory.createAuthentication(viExtrait
-            .getIdUtilisateur(), viExtrait, roles, viExtrait.getSaeDroits());
       LOG.debug("{} - initialisation du contexte de sécurité", TRC_LANCER);
       AuthenticationContext.setModeHeritage();
       AuthenticationContext.setAuthenticationToken(token);
