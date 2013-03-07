@@ -168,31 +168,31 @@ L'ordonnanceur complète la ligne de commande avec les actions suivantes :
 // --------------------------------------------------------------------
 
 // Pour lancer la création de la base DFCE
-java -jar -Dlogback.configurationFile=@@SAE_HOME@@/sae-dfce-admin-exploit/logback-sae-dfce-admin-exploit.xml @@SAE_HOME@@/sae-dfce-admin-exploit/sae-dfce-admin-exploit.jar createDataBase @@SAE_HOME@@/sae-config.properties @@SAE_HOME@@/sae-dfce-admin-exploit/saeBase.xml @@SAE_HOME@@/sae-dfce-admin-exploit/LifeCycleRule.xml
+java -jar -Dlogback.configurationFile=@@SAE_HOME@@/sae-dfce-admin-exploit/logback-sae-dfce-admin-exploit.xml -Doperation=createDataBase @@SAE_HOME@@/sae-dfce-admin-exploit/sae-dfce-admin-exploit.jar createDataBase @@SAE_HOME@@/sae-config.properties @@SAE_HOME@@/sae-dfce-admin-exploit/saeBase.xml @@SAE_HOME@@/sae-dfce-admin-exploit/LifeCycleRule.xml
 
 // Pour lancer la réindexation de la base DFCE
-java -jar -Dlogback.configurationFile=@@SAE_HOME@@/sae-dfce-admin-exploit/logback-sae-dfce-admin-exploit.xml @@SAE_HOME@@/sae-dfce-admin-exploit/sae-dfce-admin-exploit.jar reindex @@SAE_HOME@@/sae-config.properties
+java -jar -Dlogback.configurationFile=@@SAE_HOME@@/sae-dfce-admin-exploit/logback-sae-dfce-admin-exploit.xml -Doperation=reindex @@SAE_HOME@@/sae-dfce-admin-exploit/sae-dfce-admin-exploit.jar reindex @@SAE_HOME@@/sae-config.properties
 
 // Pour lancer la création des journaux des événements
-java -jar -Dlogback.configurationFile=@@SAE_HOME@@/sae-dfce-admin-exploit/logback-sae-dfce-admin-exploit.xml @@SAE_HOME@@/sae-dfce-admin-exploit/sae-dfce-admin-exploit.jar creatSystemEvent @@SAE_HOME@@/sae-config.properties
+java -jar -Dlogback.configurationFile=@@SAE_HOME@@/sae-dfce-admin-exploit/logback-sae-dfce-admin-exploit.xml -Doperation=creatSystemEvent @@SAE_HOME@@/sae-dfce-admin-exploit/sae-dfce-admin-exploit.jar creatSystemEvent @@SAE_HOME@@/sae-config.properties
 
 // Pour consulter le dernier journal des événements créé
-java -jar -Dlogback.configurationFile=@@SAE_HOME@@/sae-dfce-admin-exploit/logback-sae-dfce-admin-exploit.xml @@SAE_HOME@@/sae-dfce-admin-exploit/sae-dfce-admin-exploit.jar consultSystemEvent @@SAE_HOME@@/sae-config.properties /tmp
+java -jar -Dlogback.configurationFile=@@SAE_HOME@@/sae-dfce-admin-exploit/logback-sae-dfce-admin-exploit.xml -Doperation=consultSystemEvent @@SAE_HOME@@/sae-dfce-admin-exploit/sae-dfce-admin-exploit.jar consultSystemEvent @@SAE_HOME@@/sae-config.properties /tmp
 
 // Pour lancer la purge des traces des événements
-java -jar -Dlogback.configurationFile=@@SAE_HOME@@/sae-dfce-admin-exploit/logback-sae-dfce-admin-exploit.xml @@SAE_HOME@@/sae-dfce-admin-exploit/sae-dfce-admin-exploit.jar clearSystemEvent @@SAE_HOME@@/sae-config.properties 30
+java -jar -Dlogback.configurationFile=@@SAE_HOME@@/sae-dfce-admin-exploit/logback-sae-dfce-admin-exploit.xml -Doperation=clearSystemEvent @@SAE_HOME@@/sae-dfce-admin-exploit/sae-dfce-admin-exploit.jar clearSystemEvent @@SAE_HOME@@/sae-config.properties 30
 
 // Pour lancer la création des journaux du cycle de vie des archives
-java -jar -Dlogback.configurationFile=@@SAE_HOME@@/sae-dfce-admin-exploit/logback-sae-dfce-admin-exploit.xml @@SAE_HOME@@/sae-dfce-admin-exploit/sae-dfce-admin-exploit.jar createDocEvent @@SAE_HOME@@/sae-config.properties
+java -jar -Dlogback.configurationFile=@@SAE_HOME@@/sae-dfce-admin-exploit/logback-sae-dfce-admin-exploit.xml -Doperation=createDocEvent @@SAE_HOME@@/sae-dfce-admin-exploit/sae-dfce-admin-exploit.jar createDocEvent @@SAE_HOME@@/sae-config.properties
 
 // Pour consulter le dernier journal du cycle de vie des archives créé
-java -jar -Dlogback.configurationFile=@@SAE_HOME@@/sae-dfce-admin-exploit/logback-sae-dfce-admin-exploit.xml @@SAE_HOME@@/sae-dfce-admin-exploit/sae-dfce-admin-exploit.jar consultDocEvent @@SAE_HOME@@/sae-config.properties /tmp
+java -jar -Dlogback.configurationFile=@@SAE_HOME@@/sae-dfce-admin-exploit/logback-sae-dfce-admin-exploit.xml -Doperation=consultDocEvent @@SAE_HOME@@/sae-dfce-admin-exploit/sae-dfce-admin-exploit.jar consultDocEvent @@SAE_HOME@@/sae-config.properties /tmp
 
 // Pour lancer la purge des traces du cycle de vie des archives
-java -jar -Dlogback.configurationFile=@@SAE_HOME@@/sae-dfce-admin-exploit/logback-sae-dfce-admin-exploit.xml @@SAE_HOME@@/sae-dfce-admin-exploit/sae-dfce-admin-exploit.jar clearDocEvent @@SAE_HOME@@/sae-config.properties 30
+java -jar -Dlogback.configurationFile=@@SAE_HOME@@/sae-dfce-admin-exploit/logback-sae-dfce-admin-exploit.xml -Doperation=clearDocEvent @@SAE_HOME@@/sae-dfce-admin-exploit/sae-dfce-admin-exploit.jar clearDocEvent @@SAE_HOME@@/sae-config.properties 30
 
 // Pour lancer la mise à jour des durée de conservation des documents
-java -jar -Dlogback.configurationFile=@@SAE_HOME@@/sae-dfce-admin-exploit/logback-sae-dfce-admin-exploit.xml @@SAE_HOME@@/sae-dfce-admin-exploit/sae-dfce-admin-exploit.jar updateLifecycleRules @@SAE_HOME@@/sae-config.properties @@SAE_HOME@@/sae-dfce-admin-exploit/LifeCycleRule.xml
+java -jar -Dlogback.configurationFile=@@SAE_HOME@@/sae-dfce-admin-exploit/logback-sae-dfce-admin-exploit.xml -Doperation=updateLifecycleRules @@SAE_HOME@@/sae-dfce-admin-exploit/sae-dfce-admin-exploit.jar updateLifecycleRules @@SAE_HOME@@/sae-config.properties @@SAE_HOME@@/sae-dfce-admin-exploit/LifeCycleRule.xml
 
 
 
@@ -237,19 +237,19 @@ java -Dlogback.configurationFile=@@SAE_HOME@@/sae-ordonnanceur/logback-sae-ordon
 // --------------------------------------------------------------------
 
 // Purge du registre de surveillance technique
-java -Dlogback.configurationFile=@@SAE_HOME@@/sae-trace-executable/logback-sae-trace-executable.xml -jar @@SAE_HOME@@/sae-trace-executable/sae-trace-executable.jar @@SAE_HOME@@/sae-config.properties PURGE PURGE_TECHNIQUE
+java -Dlogback.configurationFile=@@SAE_HOME@@/sae-trace-executable/logback-sae-trace-executable.xml -Doperation=PURGE_TECHNIQUE -jar @@SAE_HOME@@/sae-trace-executable/sae-trace-executable.jar @@SAE_HOME@@/sae-config.properties PURGE PURGE_TECHNIQUE
 
 // Purge du registre d'exploitation
-java -Dlogback.configurationFile=@@SAE_HOME@@/sae-trace-executable/logback-sae-trace-executable.xml -jar @@SAE_HOME@@/sae-trace-executable/sae-trace-executable.jar @@SAE_HOME@@/sae-config.properties PURGE PURGE_EXPLOITATION
+java -Dlogback.configurationFile=@@SAE_HOME@@/sae-trace-executable/logback-sae-trace-executable.xml -Doperation=PURGE_EXPLOITATION -jar @@SAE_HOME@@/sae-trace-executable/sae-trace-executable.jar @@SAE_HOME@@/sae-config.properties PURGE PURGE_EXPLOITATION
 
 // Purge du registre de sécurité
-java -Dlogback.configurationFile=@@SAE_HOME@@/sae-trace-executable/logback-sae-trace-executable.xml -jar @@SAE_HOME@@/sae-trace-executable/sae-trace-executable.jar @@SAE_HOME@@/sae-config.properties PURGE PURGE_SECURITE
+java -Dlogback.configurationFile=@@SAE_HOME@@/sae-trace-executable/logback-sae-trace-executable.xml -Doperation=PURGE_SECURITE -jar @@SAE_HOME@@/sae-trace-executable/sae-trace-executable.jar @@SAE_HOME@@/sae-config.properties PURGE PURGE_SECURITE
 
 // Production du journal SAE
-java -Dlogback.configurationFile=@@SAE_HOME@@/sae-trace-executable/logback-sae-trace-executable.xml -jar @@SAE_HOME@@/sae-trace-executable/sae-trace-executable.jar @@SAE_HOME@@/sae-config.properties JOURNALISATION JOURNALISATION_EVT
+java -Dlogback.configurationFile=@@SAE_HOME@@/sae-trace-executable/logback-sae-trace-executable.xml -Doperation=JOURNALISATION_EVT -jar @@SAE_HOME@@/sae-trace-executable/sae-trace-executable.jar @@SAE_HOME@@/sae-config.properties JOURNALISATION JOURNALISATION_EVT
 
 // Purge des traces SAE
-java -Dlogback.configurationFile=@@SAE_HOME@@/sae-trace-executable/logback-sae-trace-executable.xml -jar @@SAE_HOME@@/sae-trace-executable/sae-trace-executable.jar @@SAE_HOME@@/sae-config.properties PURGE PURGE_EVT
+java -Dlogback.configurationFile=@@SAE_HOME@@/sae-trace-executable/logback-sae-trace-executable.xml -Doperation=PURGE_EVT -jar @@SAE_HOME@@/sae-trace-executable/sae-trace-executable.jar @@SAE_HOME@@/sae-config.properties PURGE PURGE_EVT
 
 
 
