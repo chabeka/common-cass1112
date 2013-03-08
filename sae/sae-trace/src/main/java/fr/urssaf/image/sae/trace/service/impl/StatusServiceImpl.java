@@ -39,6 +39,8 @@ public class StatusServiceImpl implements StatusService {
    public final boolean isJournalisationRunning(
          JournalisationType typeJournalisation) {
 
+      String trcPrefix = "isJournalisationRunning()";
+
       boolean isRunning = false;
       ParameterType parameterType = null;
 
@@ -54,7 +56,8 @@ public class StatusServiceImpl implements StatusService {
          }
 
       } catch (ParameterNotFoundException exception) {
-         LOGGER.info("{} - Le paramètre n'existe pas");
+         LOGGER.info("{} - Le paramètre {} n'existe pas", trcPrefix,
+               parameterType.toString());
       }
 
       return isRunning;
@@ -65,6 +68,8 @@ public class StatusServiceImpl implements StatusService {
     */
    @Override
    public final boolean isPurgeRunning(PurgeType typePurge) {
+
+      String trcPrefix = "isPurgeRunning()";
 
       boolean isRunning = false;
       ParameterType parameterType = getParameterIsRunningPurge(typePurge);
@@ -78,7 +83,8 @@ public class StatusServiceImpl implements StatusService {
          }
 
       } catch (ParameterNotFoundException exception) {
-         LOGGER.info("{} - Le paramètre n'existe pas");
+         LOGGER.info("{} - Le paramètre {} n'existe pas", trcPrefix,
+               parameterType.toString());
       }
 
       return isRunning;
@@ -139,7 +145,7 @@ public class StatusServiceImpl implements StatusService {
       } else {
          throw new TraceRuntimeException("Type de journalisation non supporté");
       }
-      
+
       return type;
    }
 }
