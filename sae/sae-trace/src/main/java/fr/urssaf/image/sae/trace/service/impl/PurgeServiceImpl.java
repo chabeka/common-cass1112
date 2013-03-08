@@ -139,7 +139,7 @@ public class PurgeServiceImpl implements PurgeService {
    @Override
    public final void purgerJournal(PurgeType typePurge) {
 
-      String trcPrefix = "purgerRegistre";
+      String trcPrefix = "purgerJournal()";
       List<PurgeType> authorized = Arrays.asList(PurgeType.PURGE_EVT);
 
       if (!authorized.contains(typePurge)) {

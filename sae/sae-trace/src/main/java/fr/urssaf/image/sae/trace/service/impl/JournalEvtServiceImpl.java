@@ -242,11 +242,11 @@ public class JournalEvtServiceImpl implements JournalEvtService {
       Date dateIndex = DateUtils.truncate(date, Calendar.DATE);
 
       loggerSupport.logPurgeJourneeDebut(LOGGER, prefix,
-            PurgeType.PURGE_EXPLOITATION, DateRegUtils.getJournee(date));
+            PurgeType.PURGE_EVT, DateRegUtils.getJournee(date));
       long nbTracesPurgees = support.delete(dateIndex, clockSupport
             .currentCLock());
       loggerSupport.logPurgeJourneeFin(LOGGER, prefix,
-            PurgeType.PURGE_EXPLOITATION, DateRegUtils.getJournee(date),
+            PurgeType.PURGE_EVT, DateRegUtils.getJournee(date),
             nbTracesPurgees);
 
       LOGGER.debug(FIN_LOG, prefix);
