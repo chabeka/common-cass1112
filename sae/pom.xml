@@ -73,7 +73,7 @@
          ========================================== commons-dfce
          ==========================================
       -->
-      <commons.dfce>1.0.4-CRTL-1</commons.dfce>
+      <commons.dfce>1.0.5-CRTL-1</commons.dfce>
 
       <!--
          Modèle de dépendance : <dependency>
