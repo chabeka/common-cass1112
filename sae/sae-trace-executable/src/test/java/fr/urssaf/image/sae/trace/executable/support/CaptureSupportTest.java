@@ -252,7 +252,7 @@ public class CaptureSupportTest {
             ParameterType.JOURNALISATION_EVT_META_APPLICATION_TRAITEMENT,
             "SAET");
       ClassPathResource resource = new ClassPathResource(
-            "capture/resultat_attendu.xml.ext.gz");
+            "capture/resultat_attendu.xml.gz");
       File file = new File(resource.getURI());
 
       authentification();
