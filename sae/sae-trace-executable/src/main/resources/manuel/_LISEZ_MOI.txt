@@ -1,7 +1,7 @@
 Ligne de commande :
-java -jar -Dlogback.configurationFile=[logback] sae-trace-executable.jar [configuration] PURGE [type_purge]
+java -jar -Dlogback.configurationFile=[logback] -Doperation=[type_purge] sae-trace-executable.jar [configuration] PURGE [type_purge]
 ou
-java -jar -Dlogback.configurationFile=[logback] sae-trace-executable.jar [configuration] JOURNALISATION [type_journalisation]
+java -jar -Dlogback.configurationFile=[logback] -Doperation=[type_journalisation] sae-trace-executable.jar [configuration] JOURNALISATION [type_journalisation]
 
 avec :
 [logback] :			le fichier de configuration des traces
