@@ -87,7 +87,8 @@ public class TraitementServiceImpl implements TraitementService {
     * {@inheritDoc}
     */
    @Override
-   public final void journaliser(JournalisationType typeJournalisation) {
+   public final void journaliser(JournalisationType typeJournalisation)
+         throws TraceExecutableException {
 
       authentificationSupport.authentifier();
 
@@ -129,17 +130,15 @@ public class TraitementServiceImpl implements TraitementService {
                               typeJournalisation.toString(),
                               DateFormatUtils.ISO_DATE_FORMAT.format(date) });
          }
-      } catch (TraceExecutableException exception) {
-         LOGGER.error("{} - Erreur lors de la journalisation {}", new Object[] {
-               trcPrefix, typeJournalisation }, exception);
+
+         LOGGER.info(
+               "{} - fin du traitement de la journalisation pour le type {}",
+               new Object[] { trcPrefix, typeJournalisation.toString() });
+
       } finally {
          statusService.updateJournalisationStatus(typeJournalisation,
                Boolean.FALSE);
       }
-
-      LOGGER.info(
-            "{} - fin du traitement de la journalisation pour le type {}",
-            new Object[] { trcPrefix, typeJournalisation.toString() });
 
    }
 }

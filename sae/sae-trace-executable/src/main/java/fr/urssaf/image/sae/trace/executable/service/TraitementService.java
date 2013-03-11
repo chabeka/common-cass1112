@@ -3,6 +3,7 @@
  */
 package fr.urssaf.image.sae.trace.executable.service;
 
+import fr.urssaf.image.sae.trace.executable.exception.TraceExecutableException;
 import fr.urssaf.image.sae.trace.model.JournalisationType;
 import fr.urssaf.image.sae.trace.model.PurgeType;
 
@@ -25,7 +26,10 @@ public interface TraitementService {
     * 
     * @param typeJournalisation
     *           type de journalisation à lancer
+    * @throws TraceExecutableException
+    *            en cas de problème lors de la journalisation
     */
-   void journaliser(JournalisationType typeJournalisation);
+   void journaliser(JournalisationType typeJournalisation)
+         throws TraceExecutableException;
 
 }
