@@ -336,6 +336,13 @@ public class InsertionDonnees {
             .get(), updater);
       cfTmpl.update(updater);
 
+      // DFCE_SUPPRESSION_DOC|OK
+      // dans le journal des événements SAE avec all_infos
+      updater = cfTmpl.createUpdater("DFCE_SUPPRESSION_DOC|OK");
+      addColumn("JOURN_EVT", allInfos, StringSerializer.get(), ListSerializer
+            .get(), updater);
+      cfTmpl.update(updater);
+
       // WS_LOAD_CERTS_ACRACINE|OK
       // dans le registre de surveillance technique avec all_infos
       updater = cfTmpl.createUpdater("WS_LOAD_CERTS_ACRACINE|OK");

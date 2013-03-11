@@ -92,7 +92,7 @@ public class TracesDfceSupport {
       } catch (Throwable ex) {
          LOGGER
                .error(
-                     "Une erreur s'est produite lors de l'écriture de la trace de dépôt de fichier dans DFCE",
+                     "Une erreur s'est produite lors de l'écriture de la trace de dépôt de document dans DFCE",
                      ex);
       }
 
@@ -146,6 +146,60 @@ public class TracesDfceSupport {
       }
 
       LOGGER.debug("{} - Fin", prefix);
+
+   }
+
+   /**
+    * Trace l'événement "Suppression d'un document de DFCE"
+    * 
+    * @param idDoc
+    *           l'identifiant unique DFCE du document supprimé
+    */
+   @SuppressWarnings("PMD.AvoidCatchingThrowable")
+   public final void traceSuppressionDocumentDeDFCE(UUID idDoc) {
+
+      // On fait un try/catch(Throwable) pour la traçabilité ne fasse pas
+      // planter cette méthode
+      try {
+
+         // Traces
+         String prefix = "traceSuppressionDocumentDeDFCE()";
+         LOGGER.debug("{} - Début", prefix);
+
+         // Instantiation de l'objet TraceToCreate
+         TraceToCreate traceToCreate = new TraceToCreate();
+
+         // Code de l'événement
+         traceToCreate
+               .setCodeEvt(Constants.TRACE_CODE_EVT_SUPPRESSION_DOC_DFCE);
+
+         // Contexte
+         traceToCreate.setContexte("SuppressionDocumentDeDFCE");
+
+         // Contrat de service et login
+         setInfosAuth(traceToCreate);
+
+         // Info supplémentaire : Hostname et IP du serveur sur lequel tourne
+         // ce code
+         traceToCreate.getInfos().put("saeServeurHostname",
+               HostnameUtil.getHostname());
+         traceToCreate.getInfos().put("saeServeurIP", HostnameUtil.getIP());
+
+         // Info supplémentaire : identifiant d'archivage
+         traceToCreate.getInfos().put("idDoc", idDoc.toString());
+
+         // Appel du dispatcheur
+         dispatcheurService.ajouterTrace(traceToCreate);
+
+         // Traces
+         LOGGER.debug("{} - Fin", prefix);
+
+      } catch (Throwable ex) {
+         LOGGER
+               .error(
+                     "Une erreur s'est produite lors de l'écriture de la trace de suppression d'un document de DFCE",
+                     ex);
+      }
 
    }
 

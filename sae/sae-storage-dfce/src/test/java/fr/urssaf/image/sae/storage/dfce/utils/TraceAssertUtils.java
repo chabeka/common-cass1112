@@ -32,7 +32,9 @@ import fr.urssaf.image.sae.trace.service.RegTechniqueService;
  */
 public final class TraceAssertUtils {
 
-   private static final int JOURNAL_SAE_NB_INFOS = 6;
+   private static final int JOURNAL_SAE_NB_INFOS_DEPOT = 6;
+
+   private static final int JOURNAL_SAE_NB_INFOS_SUPPR = 3;
 
    private static final int DELTA_ANNEE = 100;
 
@@ -65,71 +67,10 @@ public final class TraceAssertUtils {
       // Vérification sur le nombre de trace trouvées via l'index
       List<TraceJournalEvtIndex> tracesJrnIndex = verifieNombreTracesDansJournalSae(1);
 
-      // Vérifications sur l'index
+      // Vérifications sur la trace de dépôt dans DFCE
       TraceJournalEvtIndex traceJrnIndex = tracesJrnIndex.get(0);
-
-      // Le code événement
-      Assert
-            .assertEquals("Le code événement est incorrect",
-                  Constants.TRACE_CODE_EVT_DEPOT_DOC_DFCE, traceJrnIndex
-                        .getCodeEvt());
-
-      // Le contexte
-      Assert.assertEquals("Le contexte est incorrect", "DepotDocumentDansDFCE",
-            traceJrnIndex.getContexte());
-
-      // Le CS
-      Assert.assertEquals("Le contrat de service est incorrect",
-            "TESTS_UNITAIRES", traceJrnIndex.getContratService());
-
-      // Les PAGM
-      Assert.assertEquals("Les PAGM sont incorrects", Arrays.asList("TU_PAGM1",
-            "TU_PAGM2"), traceJrnIndex.getPagms());
-
-      // Le login
-      Assert.assertEquals("Le login est incorrect", "UTILISATEUR TEST",
-            traceJrnIndex.getLogin());
-
-      // Vérifications sur la trace en elle-même
-      TraceJournalEvt trace = journalEvtService.lecture(traceJrnIndex
-            .getIdentifiant());
-
-      // Le code événement
-      Assert.assertEquals("Le code événement est incorrect",
-            Constants.TRACE_CODE_EVT_DEPOT_DOC_DFCE, trace.getCodeEvt());
-
-      // Le contexte
-      Assert.assertEquals("Le contexte est incorrect", "DepotDocumentDansDFCE",
-            trace.getContexte());
-
-      // Le CS
-      Assert.assertEquals("Le contrat de service est incorrect",
-            "TESTS_UNITAIRES", trace.getContratService());
-
-      // Les PAGM
-      Assert.assertEquals("Les PAGM sont incorrects", Arrays.asList("TU_PAGM1",
-            "TU_PAGM2"), trace.getPagms());
-
-      // Le login
-      Assert.assertEquals("Le login est incorrect", "UTILISATEUR TEST", trace
-            .getLogin());
-
-      // Les infos supplémentaires
-      Assert.assertNotNull("Les informations ne devraient pas être vide", trace
-            .getInfos());
-      Assert.assertTrue("Les informations ne devraient pas être vide", MapUtils
-            .isNotEmpty(trace.getInfos()));
-      Assert.assertEquals("Le nombre d'informations est incorrect",
-            JOURNAL_SAE_NB_INFOS, trace.getInfos().size());
-      verifieInfo(trace.getInfos(), "saeServeurHostname", HostnameUtil
-            .getHostname());
-      verifieInfo(trace.getInfos(), "saeServeurIP", HostnameUtil.getIP());
-      verifieInfo(trace.getInfos(), "idDoc", idDoc.toString());
-      verifieInfo(trace.getInfos(), "hash", hash);
-      verifieInfo(trace.getInfos(), "typeHash", typeHash);
-
-      // Pour l'instant, pas de vérification sur la date d'archivage dans DFCE
-      // verifieInfo(trace.getInfos(), "dateArchivageDfce", dateArchivageDfce);
+      assertTraceDepotDocDfceDansJournalSae(traceJrnIndex, idDoc, hash,
+            typeHash);
 
    }
 
@@ -246,6 +187,165 @@ public final class TraceAssertUtils {
       verifieNombreTracesDansTraceRegTechnique(0);
       verifieNombreTracesDansTraceRegExploitation(0);
       verifieNombreTracesDansTraceRegSecurite(0);
+
+   }
+
+   /**
+    * Vérifie qu'il y a une trace de dépôt et une trace de suppression dans le
+    * journal SAE
+    * 
+    * @param idDoc
+    *           l'identifiant unique du document dans DFCE
+    * @param hash
+    *           le hash du document
+    * @param typeHash
+    *           l'algo de hash
+    */
+   public void verifieTraceDepotEtSuppressionDfceDansJournalSae(UUID idDoc,
+         String hash, String typeHash) {
+
+      // Vérification sur le nombre de trace trouvées via l'index
+      List<TraceJournalEvtIndex> tracesJrnIndex = verifieNombreTracesDansJournalSae(2);
+
+      // Vérifications sur la trace de dépôt dans DFCE
+      TraceJournalEvtIndex traceJrnIndex = tracesJrnIndex.get(1);
+      assertTraceDepotDocDfceDansJournalSae(traceJrnIndex, idDoc, hash,
+            typeHash);
+
+      // Vérifications sur la trace de suppression de DFCE
+      traceJrnIndex = tracesJrnIndex.get(0);
+      assertTraceSupressionDocDfceDansJournalSae(traceJrnIndex, idDoc);
+
+   }
+
+   private void assertTraceDepotDocDfceDansJournalSae(
+         TraceJournalEvtIndex traceJrnIndex, UUID idDoc, String hash,
+         String typeHash) {
+
+      // Le code événement
+      Assert
+            .assertEquals("Le code événement est incorrect",
+                  Constants.TRACE_CODE_EVT_DEPOT_DOC_DFCE, traceJrnIndex
+                        .getCodeEvt());
+
+      // Le contexte
+      Assert.assertEquals("Le contexte est incorrect", "DepotDocumentDansDFCE",
+            traceJrnIndex.getContexte());
+
+      // Le CS
+      Assert.assertEquals("Le contrat de service est incorrect",
+            "TESTS_UNITAIRES", traceJrnIndex.getContratService());
+
+      // Les PAGM
+      Assert.assertEquals("Les PAGM sont incorrects", Arrays.asList("TU_PAGM1",
+            "TU_PAGM2"), traceJrnIndex.getPagms());
+
+      // Le login
+      Assert.assertEquals("Le login est incorrect", "UTILISATEUR TEST",
+            traceJrnIndex.getLogin());
+
+      // Vérifications sur la trace en elle-même
+      TraceJournalEvt trace = journalEvtService.lecture(traceJrnIndex
+            .getIdentifiant());
+
+      // Le code événement
+      Assert.assertEquals("Le code événement est incorrect",
+            Constants.TRACE_CODE_EVT_DEPOT_DOC_DFCE, trace.getCodeEvt());
+
+      // Le contexte
+      Assert.assertEquals("Le contexte est incorrect", "DepotDocumentDansDFCE",
+            trace.getContexte());
+
+      // Le CS
+      Assert.assertEquals("Le contrat de service est incorrect",
+            "TESTS_UNITAIRES", trace.getContratService());
+
+      // Les PAGM
+      Assert.assertEquals("Les PAGM sont incorrects", Arrays.asList("TU_PAGM1",
+            "TU_PAGM2"), trace.getPagms());
+
+      // Le login
+      Assert.assertEquals("Le login est incorrect", "UTILISATEUR TEST", trace
+            .getLogin());
+
+      // Les infos supplémentaires
+      Assert.assertNotNull("Les informations ne devraient pas être vide", trace
+            .getInfos());
+      Assert.assertTrue("Les informations ne devraient pas être vide", MapUtils
+            .isNotEmpty(trace.getInfos()));
+      Assert.assertEquals("Le nombre d'informations est incorrect",
+            JOURNAL_SAE_NB_INFOS_DEPOT, trace.getInfos().size());
+      verifieInfo(trace.getInfos(), "saeServeurHostname", HostnameUtil
+            .getHostname());
+      verifieInfo(trace.getInfos(), "saeServeurIP", HostnameUtil.getIP());
+      verifieInfo(trace.getInfos(), "idDoc", idDoc.toString());
+      verifieInfo(trace.getInfos(), "hash", hash);
+      verifieInfo(trace.getInfos(), "typeHash", typeHash);
+
+      // Pour l'instant, pas de vérification sur la date d'archivage dans DFCE
+      // verifieInfo(trace.getInfos(), "dateArchivageDfce", dateArchivageDfce);
+
+   }
+
+   private void assertTraceSupressionDocDfceDansJournalSae(
+         TraceJournalEvtIndex traceJrnIndex, UUID idDoc) {
+
+      // Le code événement
+      Assert.assertEquals("Le code événement est incorrect",
+            Constants.TRACE_CODE_EVT_SUPPRESSION_DOC_DFCE, traceJrnIndex
+                  .getCodeEvt());
+
+      // Le contexte
+      Assert.assertEquals("Le contexte est incorrect",
+            "SuppressionDocumentDeDFCE", traceJrnIndex.getContexte());
+
+      // Le CS
+      Assert.assertEquals("Le contrat de service est incorrect",
+            "TESTS_UNITAIRES", traceJrnIndex.getContratService());
+
+      // Les PAGM
+      Assert.assertEquals("Les PAGM sont incorrects", Arrays.asList("TU_PAGM1",
+            "TU_PAGM2"), traceJrnIndex.getPagms());
+
+      // Le login
+      Assert.assertEquals("Le login est incorrect", "UTILISATEUR TEST",
+            traceJrnIndex.getLogin());
+
+      // Vérifications sur la trace en elle-même
+      TraceJournalEvt trace = journalEvtService.lecture(traceJrnIndex
+            .getIdentifiant());
+
+      // Le code événement
+      Assert.assertEquals("Le code événement est incorrect",
+            Constants.TRACE_CODE_EVT_SUPPRESSION_DOC_DFCE, trace.getCodeEvt());
+
+      // Le contexte
+      Assert.assertEquals("Le contexte est incorrect",
+            "SuppressionDocumentDeDFCE", trace.getContexte());
+
+      // Le CS
+      Assert.assertEquals("Le contrat de service est incorrect",
+            "TESTS_UNITAIRES", trace.getContratService());
+
+      // Les PAGM
+      Assert.assertEquals("Les PAGM sont incorrects", Arrays.asList("TU_PAGM1",
+            "TU_PAGM2"), trace.getPagms());
+
+      // Le login
+      Assert.assertEquals("Le login est incorrect", "UTILISATEUR TEST", trace
+            .getLogin());
+
+      // Les infos supplémentaires
+      Assert.assertNotNull("Les informations ne devraient pas être vide", trace
+            .getInfos());
+      Assert.assertTrue("Les informations ne devraient pas être vide", MapUtils
+            .isNotEmpty(trace.getInfos()));
+      Assert.assertEquals("Le nombre d'informations est incorrect",
+            JOURNAL_SAE_NB_INFOS_SUPPR, trace.getInfos().size());
+      verifieInfo(trace.getInfos(), "saeServeurHostname", HostnameUtil
+            .getHostname());
+      verifieInfo(trace.getInfos(), "saeServeurIP", HostnameUtil.getIP());
+      verifieInfo(trace.getInfos(), "idDoc", idDoc.toString());
 
    }
 
