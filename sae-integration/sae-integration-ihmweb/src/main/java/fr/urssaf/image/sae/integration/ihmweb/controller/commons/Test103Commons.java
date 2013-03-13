@@ -1,5 +1,6 @@
 package fr.urssaf.image.sae.integration.ihmweb.controller.commons;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -54,6 +55,22 @@ public class Test103Commons {
       }
    }
 
+   
+   private String nomFichier ="doc1.PDF";
+   private String getnomFichier(String numeroTest) {
+      if ("103a".equals(numeroTest)) {
+         return StringUtils.EMPTY;
+      } else if ("103b".equals(numeroTest)) {
+         return StringUtils.EMPTY;
+      } else if ("103c".equals(numeroTest)) {
+         return nomFichier;
+      } else if ("103d".equals(numeroTest)) {
+         return nomFichier;
+      } else {
+         throw new IntegrationRuntimeException("Le numéro de test "
+               + numeroTest + " est inconnu");
+      }
+   }
    public final Test103Formulaire getFormulairePourGet(String numeroTest) {
 
       Test103Formulaire formulaire = new Test103Formulaire();
@@ -69,7 +86,7 @@ public class Test103Commons {
             .setUrlEcde(testCommons.getEcdeService().construitUrlEcde("SAE_INTEGRATION/20110822/CaptureUnitaire-103-CaptureUnitaire-OK-ToutesMetasSpecifiables/documents/doc1.PDF"));
 
       // Le nom du fichier
-      formCapture.setNomFichier("doc1.PDF");
+      formCapture.setNomFichier(getnomFichier(numeroTest));
 
       // Le mode d'utilisation de la capture
       formCapture.setModeCapture(getModeArchivage(numeroTest));

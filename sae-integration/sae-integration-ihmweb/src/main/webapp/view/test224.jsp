@@ -28,7 +28,6 @@
 		pathFormulaire="captureMasseResultat" />
 
 <c:forEach items="${formulaire.rechFormulaireList}" var="rech" varStatus="i">
-<c:out value="${rech}"></c:out>
 	<sae:recherche numeroEtape="3.${i.index}" pathFormulaire="rechFormulaireList[${i.index}]"
 		objetFormulaire="${rech}" />
 		

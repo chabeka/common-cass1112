@@ -17,11 +17,14 @@
 	<sae:casTest />
 
 	<sae:urlServiceWeb />
+	<form:hidden path="etape" />
 
-	<sae:recherche numeroEtape="unique"
-		objetFormulaire="${formulaire.recherche}" pathFormulaire="recherche"
+	<sae:recherche numeroEtape="1"
+		objetFormulaire="${formulaire.rechFormulaire}" pathFormulaire="rechFormulaire"
 		readonly="false" />
-
+	<sae:comptagesTdm numeroEtape="2" pathFormulaire="comptagesFormulaire"
+      objetFormulaire="${formulaire.comptagesFormulaire}" />
+      
 	<sae:soapMessages objetFormulaire="${formulaire.soapFormulaire}" />
 
 </form:form>

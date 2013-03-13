@@ -54,6 +54,22 @@ public class Test104Commons {
                + numeroTest + " est inconnu");
       }
    }
+   
+   private String nomFichier ="doc1.PDF";
+   private String getnomFichier(String numeroTest) {
+      if ("104a".equals(numeroTest)) {
+         return StringUtils.EMPTY;
+      } else if ("104b".equals(numeroTest)) {
+         return StringUtils.EMPTY;
+      } else if ("104c".equals(numeroTest)) {
+         return nomFichier;
+      } else if ("104d".equals(numeroTest)) {
+         return nomFichier;
+      } else {
+         throw new IntegrationRuntimeException("Le numéro de test "
+               + numeroTest + " est inconnu");
+      }
+   }
 
    public final Test104Formulaire getFormulairePourGet(String numeroTest) {
 
@@ -72,7 +88,7 @@ public class Test104Commons {
                         "SAE_INTEGRATION/20110822/CaptureUnitaire-104-CaptureUnitaire-OK-Sans-Code-Activite/documents/doc1.PDF"));
       
       // Le nom du fichier
-      formCapture.setNomFichier("doc1.PDF");
+      formCapture.setNomFichier(getnomFichier(numeroTest));
 
       // Le mode d'utilisation de la capture
       formCapture.setModeCapture(getModeArchivage(numeroTest));

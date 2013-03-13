@@ -4,8 +4,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
-import fr.urssaf.image.sae.integration.ihmweb.formulaire.TestWsRechercheFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.formulaire.Test302Formulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CodeMetadonneeList;
+import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTest;
 import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
 
 /**
@@ -14,12 +15,13 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
 @Controller
 @RequestMapping(value = "test302")
 public class Test302Controller extends
-      AbstractTestWsController<TestWsRechercheFormulaire> {
+      AbstractTestWsController<Test302Formulaire> {
 
    /**
     * 
     */
-   private static final int WAITED_COUNT = 200;
+   private static final int WAITED_COUNT_RECHERCHE = 200;
+   private static final int WAITED_COUNT_COMPTAGE = 250;
 
    /**
     * {@inheritDoc}
@@ -33,10 +35,10 @@ public class Test302Controller extends
     * {@inheritDoc}
     */
    @Override
-   protected final TestWsRechercheFormulaire getFormulairePourGet() {
+   protected final Test302Formulaire getFormulairePourGet() {
 
-      TestWsRechercheFormulaire formulaire = new TestWsRechercheFormulaire();
-      RechercheFormulaire formRecherche = formulaire.getRecherche();
+      Test302Formulaire formulaire = new Test302Formulaire();
+      RechercheFormulaire formRecherche = formulaire.getRechFormulaire();
       formRecherche.getResultats().setStatus(TestStatusEnum.SansStatus);
 
       // Requête de recherche correspondant au jeu de test inséré en base
@@ -55,14 +57,20 @@ public class Test302Controller extends
     * {@inheritDoc}
     */
    @Override
-   protected final void doPost(TestWsRechercheFormulaire formulaire) {
-      recherche(formulaire.getUrlServiceWeb(), formulaire.getRecherche());
+   protected final void doPost(Test302Formulaire formulaire) {
+      
+      String etape = formulaire.getEtape();
+      if("1".equals(etape)){
+         recherche(formulaire.getUrlServiceWeb(), formulaire.getRechFormulaire());
+      }else if("2".equals(etape)){
+         comptages(formulaire);
+      }
    }
 
    private void recherche(String urlServiceWeb, RechercheFormulaire formulaire) {
 
       // Résultats attendus
-      int nbResultatsAttendus = WAITED_COUNT;
+      int nbResultatsAttendus = WAITED_COUNT_RECHERCHE;
       boolean flagResultatsTronquesAttendu = true;
 
       // Appel de la méthode de test
@@ -72,6 +80,27 @@ public class Test302Controller extends
 
       if (!TestStatusEnum.Echec.equals(formulaire.getResultats().getStatus())) {
          formulaire.getResultats().setStatus(TestStatusEnum.Succes);
+      }
+
+   }
+   
+   private void comptages(Test302Formulaire formulaire) {
+
+      // Récupération de l'objet ResultatTest
+      ResultatTest resultatTest = formulaire.getComptagesFormulaire()
+            .getResultats();
+      resultatTest.clear();
+
+      // Lecture de l'identifiant du traitement de masse
+      String idTdm = formulaire.getComptagesFormulaire().getIdTdm();
+
+      // Appel du service de comptages
+      getCaptureMasseTestService().comptages(idTdm, resultatTest,
+            new Long(WAITED_COUNT_COMPTAGE));
+
+      // Passe le test en OK si pas KO
+      if (!TestStatusEnum.Echec.equals(resultatTest.getStatus())) {
+         resultatTest.setStatus(TestStatusEnum.Succes);
       }
 
    }

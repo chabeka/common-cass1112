@@ -65,7 +65,7 @@ public class Test220Controller extends
             .getCaptureMasseDeclenchement();
       formCapture.setUrlSommaire(getDebutUrlEcde() + "sommaire.xml");
       formCapture.getResultats().setStatus(TestStatusEnum.SansStatus);
-      formCapture.setHash("f25c677b2fa87aa51d8096c9e05a0d4c06472ac2");
+      formCapture.setHash("bf46fc3884dc98adcaeba36475a9ad33e56311be");
       formCapture.setTypeHash("SHA-1");
       formCapture.setAvecHash(true);
 

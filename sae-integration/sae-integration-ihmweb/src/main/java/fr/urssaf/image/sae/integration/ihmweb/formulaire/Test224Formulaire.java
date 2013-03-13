@@ -3,9 +3,6 @@ package fr.urssaf.image.sae.integration.ihmweb.formulaire;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.collections.FactoryUtils;
-import org.apache.commons.collections.list.LazyList;
-
 /**
  * Classe de formulaire
  */

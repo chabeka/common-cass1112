@@ -28,6 +28,7 @@ public class Test101Commons {
 
    @Autowired
    private TestsControllerCommons testCommons;
+   private String nomFichier ="doc1.PDF";
 
    private String getDenomination(String numeroTest) {
       if ("101a".equals(numeroTest)) {
@@ -58,6 +59,21 @@ public class Test101Commons {
                + numeroTest + " est inconnu");
       }
    }
+   
+   private String getnomFichier(String numeroTest) {
+      if ("101a".equals(numeroTest)) {
+         return StringUtils.EMPTY;
+      } else if ("101b".equals(numeroTest)) {
+         return StringUtils.EMPTY;
+      } else if ("101c".equals(numeroTest)) {
+         return nomFichier;
+      } else if ("101d".equals(numeroTest)) {
+         return nomFichier;
+      } else {
+         throw new IntegrationRuntimeException("Le numéro de test "
+               + numeroTest + " est inconnu");
+      }
+   }
 
    public final Test101Formulaire getFormulairePourGet(String numeroTest) {
 
@@ -77,7 +93,7 @@ public class Test101Commons {
                         "SAE_INTEGRATION/20110822/CaptureUnitaire-101-CaptureUnitaire-OK-Standard/documents/doc1.PDF"));
 
       // Le nom du fichier
-      formCapture.setNomFichier("doc1.PDF");
+      formCapture.setNomFichier(getnomFichier(numeroTest));
 
       // Le mode d'utilisation de la capture
       formCapture.setModeCapture(getModeArchivage(numeroTest));

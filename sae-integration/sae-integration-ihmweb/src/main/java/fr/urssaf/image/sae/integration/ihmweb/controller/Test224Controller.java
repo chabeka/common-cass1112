@@ -81,7 +81,6 @@ public class Test224Controller extends
       CodeMetadonneeList codeMetadonneeList = new CodeMetadonneeList();
       codeMetadonneeList.add("Denomination");
       codeMetadonneeList.add("RUM");
-      codeMetadonneeList.add("NumeroRecours");
       
       for(int i=0; i< getCasTest().getLuceneExempleList().size(); i++){
          RechercheFormulaire formulaireRecherche = new RechercheFormulaire(formulaire);
@@ -97,7 +96,7 @@ public class Test224Controller extends
       CodeMetadonneeList codeMetaConsult = new CodeMetadonneeList();
       formConsult.setCodeMetadonnees(codeMetaConsult);
       codeMetaConsult.add("Denomination");
-      codeMetaConsult.add("NumeroRecours");
+      codeMetaConsult.add("RUM");
       
 
       return formulaire;
@@ -239,7 +238,7 @@ public class Test224Controller extends
       
       // Valeurs des métadonnées attendues
       List<MetadonneeValeur> valeursMetaAttendus = new ArrayList<MetadonneeValeur>();
-      valeursMetaAttendus.add(new MetadonneeValeur("Denomination","Test 224-CaptureMasse-OK-RUM17"));
+      valeursMetaAttendus.add(new MetadonneeValeur("Denomination","Test 224-CaptureMasse-OK-RUM"));
       //valeursMetaAttendus.add(new MetadonneeValeur("RUM","a2f93f1f121ebba0faef2c0596f2f126eacae77b"));
       
       // Appel du service de vérification
