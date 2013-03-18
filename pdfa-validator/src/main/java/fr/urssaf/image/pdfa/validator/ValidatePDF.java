@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.text.MessageFormat;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -120,7 +122,16 @@ public class ValidatePDF {
             // file.getAbsolutePath()), true);
             FileUtils.write(log, MessageFormat.format("{0} --> KO \n", file
                   .getName()), true);
-            FileUtils.writeLines(log, erreurs, true);
+            Map<String, String> errorNoDoublon = new HashMap<String, String>();
+            for(String error : erreurs){
+               int count = Collections.frequency(erreurs, error);
+               Object[] args={count};
+               if(!errorNoDoublon.containsKey(error)){
+                  errorNoDoublon.put(error, error.concat(new MessageFormat(" ({0} fois)").format(args)));
+               }
+            }
+            FileUtils.write(log, "Le document est n'est pas un PDF/A conforme\n", true);
+            FileUtils.writeLines(log, errorNoDoublon.values(), true);
             FileUtils.write(log, "\n", true);
             LOGGER.info("{} --> KO ", file.getName());
          }

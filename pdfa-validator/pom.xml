@@ -9,10 +9,11 @@
   <properties>
         <org.slf4j.version>1.6.1</org.slf4j.version>
         <logback.version>0.9.30</logback.version>
+        <commons.pdfbox.version>0.0.1-SNAPSHOT</commons.pdfbox.version>
         <junit.version>4.8.2</junit.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
-              <maven-resources-plugin.version>2.5</maven-resources-plugin.version>
+        <maven-resources-plugin.version>2.5</maven-resources-plugin.version>
   </properties>
   
   <dependencies>
@@ -27,7 +28,7 @@
    <dependency>
       <groupId>fr.urssaf.image.commons</groupId>
       <artifactId>commons-pdfbox</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>${commons.pdfbox.version}</version>
    </dependency>
    <!-- SLF4J et Logback -->
    <dependency>
