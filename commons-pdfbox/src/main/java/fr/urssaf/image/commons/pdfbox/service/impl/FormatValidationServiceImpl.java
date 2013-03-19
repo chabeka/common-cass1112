@@ -128,7 +128,7 @@ public final class FormatValidationServiceImpl implements
       if (!pdfboxResult.isValid()) {
 
          // Ajoute un 1er message générique
-         result.add("Le document est n'est pas un PDF/A conforme");
+         //result.add("Le document est n'est pas un PDF/A conforme");
 
          // Ajoute les erreurs remontées par PDFBox
          for (ValidationError error : pdfboxResult.getErrorsList()) {

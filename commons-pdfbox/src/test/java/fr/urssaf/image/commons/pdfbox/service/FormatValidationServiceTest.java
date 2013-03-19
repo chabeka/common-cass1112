@@ -49,7 +49,7 @@ public class FormatValidationServiceTest {
       File file = getFileFromResource("/pdf/conformes/text_to_pdfa.pdf");
 
       FormatValidationService formatValService = new FormatValidationServiceImpl();
-
+      
       List<String> erreurs = formatValService.validate(file);
 
       assertNotNull(
@@ -63,7 +63,7 @@ public class FormatValidationServiceTest {
    @Test
    public void test_nonconforme() throws FormatValidationException {
 
-      File file = getFileFromResource("/pdf/nonconformes/bug1771.pdf");
+      File file = getFileFromResource("/pdf/nonconformes/ide_diss_p1.pdf");
 
       FormatValidationService formatValService = new FormatValidationServiceImpl();
 
@@ -107,7 +107,6 @@ public class FormatValidationServiceTest {
       formatValService.validate(file);
 
    }
-
    @Test
    public void test_from_Datasource() throws IOException,
          FormatValidationException {
@@ -129,7 +128,6 @@ public class FormatValidationServiceTest {
       assertTrue("La validation aurait dû réussir", erreurs.isEmpty());
 
    }
-
    @Test
    public void test_from_InputStream() throws IOException,
          FormatValidationException {
@@ -149,7 +147,6 @@ public class FormatValidationServiceTest {
       assertTrue("La validation aurait dû réussir", erreurs.isEmpty());
 
    }
-
    @Test
    public void test_from_ByteArray() throws IOException,
          FormatValidationException {
@@ -228,7 +225,8 @@ public class FormatValidationServiceTest {
       // CIRTIL
       // String path =
       // "S:/produits/Qualite/Projet_ae/Documentation refonte/Refonte/Développement/00015 - Gestion des formats/01 - Eléments de support/PDF_récupéré_serveur_intégration_saeint3/";
-      String path = "S:/produits/Qualite/Projet_ae/Documentation refonte/Refonte/Développement/00015 - Gestion des formats/01 - Eléments de support/PDF_dans_le_SAE_de_prod/";
+//      String path = "S:/produits/Qualite/Projet_ae/Documentation refonte/Refonte/Développement/00015 - Gestion des formats/01 - Eléments de support/PDF_dans_le_SAE_de_prod/";
+      String path = "Z:/PDF/test/";
 
       // Instantiation du service
       FormatValidationService formatValService = new FormatValidationServiceImpl();
@@ -287,5 +285,6 @@ public class FormatValidationServiceTest {
       LOGGER.debug("Résumé du résultat en CSV : \r\n{}", sbResult);
 
    }
+        
 
 }
