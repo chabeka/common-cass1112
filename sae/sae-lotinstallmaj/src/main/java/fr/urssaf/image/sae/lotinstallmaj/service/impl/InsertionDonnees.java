@@ -5,6 +5,7 @@ package fr.urssaf.image.sae.lotinstallmaj.service.impl;
 
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -195,30 +196,42 @@ public class InsertionDonnees {
 
       Date debutTracabilite = getTracabiliteDerniereDateTraitee();
 
-      addTracabiliteParameter(cfTmpl, "PURGE_TECH_DUREE", new Integer(10));
-      addTracabiliteParameter(cfTmpl, "PURGE_SECU_DUREE", new Integer(10));
-      addTracabiliteParameter(cfTmpl, "PURGE_EXPLOIT_DUREE", new Integer(10));
-      addTracabiliteParameter(cfTmpl, "PURGE_EVT_DUREE", new Integer(10));
+      checkAndAddTracabiliteParameter(cfTmpl, "PURGE_TECH_DUREE", new Integer(
+            10));
+      checkAndAddTracabiliteParameter(cfTmpl, "PURGE_SECU_DUREE", new Integer(
+            10));
+      checkAndAddTracabiliteParameter(cfTmpl, "PURGE_EXPLOIT_DUREE",
+            new Integer(10));
+      checkAndAddTracabiliteParameter(cfTmpl, "PURGE_EVT_DUREE",
+            new Integer(10));
 
-      addTracabiliteParameter(cfTmpl, "PURGE_TECH_IS_RUNNING", Boolean.FALSE);
-      addTracabiliteParameter(cfTmpl, "PURGE_SECU_IS_RUNNING", Boolean.FALSE);
-      addTracabiliteParameter(cfTmpl, "PURGE_EXPLOIT_IS_RUNNING", Boolean.FALSE);
-      addTracabiliteParameter(cfTmpl, "PURGE_EVT_IS_RUNNING", Boolean.FALSE);
-
-      addTracabiliteParameter(cfTmpl, "PURGE_TECH_DATE", debutTracabilite);
-      addTracabiliteParameter(cfTmpl, "PURGE_SECU_DATE", debutTracabilite);
-      addTracabiliteParameter(cfTmpl, "PURGE_EXPLOIT_DATE", debutTracabilite);
-      addTracabiliteParameter(cfTmpl, "PURGE_EVT_DATE", debutTracabilite);
-
-      addTracabiliteParameter(cfTmpl, "JOURNALISATION_EVT_DATE",
-            debutTracabilite);
-      addTracabiliteParameter(cfTmpl, "JOURNALISATION_EVT_IS_RUNNING",
+      checkAndAddTracabiliteParameter(cfTmpl, "PURGE_TECH_IS_RUNNING",
+            Boolean.FALSE);
+      checkAndAddTracabiliteParameter(cfTmpl, "PURGE_SECU_IS_RUNNING",
+            Boolean.FALSE);
+      checkAndAddTracabiliteParameter(cfTmpl, "PURGE_EXPLOIT_IS_RUNNING",
+            Boolean.FALSE);
+      checkAndAddTracabiliteParameter(cfTmpl, "PURGE_EVT_IS_RUNNING",
             Boolean.FALSE);
 
-      addTracabiliteParameter(cfTmpl,
+      checkAndAddTracabiliteParameter(cfTmpl, "PURGE_TECH_DATE",
+            debutTracabilite);
+      checkAndAddTracabiliteParameter(cfTmpl, "PURGE_SECU_DATE",
+            debutTracabilite);
+      checkAndAddTracabiliteParameter(cfTmpl, "PURGE_EXPLOIT_DATE",
+            debutTracabilite);
+      checkAndAddTracabiliteParameter(cfTmpl, "PURGE_EVT_DATE",
+            debutTracabilite);
+
+      checkAndAddTracabiliteParameter(cfTmpl, "JOURNALISATION_EVT_DATE",
+            debutTracabilite);
+      checkAndAddTracabiliteParameter(cfTmpl, "JOURNALISATION_EVT_IS_RUNNING",
+            Boolean.FALSE);
+
+      checkAndAddTracabiliteParameter(cfTmpl,
             "JOURNALISATION_EVT_ID_JOURNAL_PRECEDENT",
             "00000000-0000-0000-0000-000000000000");
-      addTracabiliteParameter(cfTmpl,
+      checkAndAddTracabiliteParameter(cfTmpl,
             "JOURNALISATION_EVT_HASH_JOURNAL_PRECEDENT",
             "0000000000000000000000000000000000000000");
 
@@ -235,22 +248,55 @@ public class InsertionDonnees {
 
    }
 
-   /**
-    * @param name
-    * @param cfTmpl
-    */
+   private void checkAndAddTracabiliteParameter(
+         ColumnFamilyTemplate<String, String> cfTmpl, String subname,
+         Object valeur) {
+
+      boolean inserted = checkAndAddValue(cfTmpl, "parametresTracabilite",
+            subname, valeur, StringSerializer.get(), ObjectSerializer.get());
+
+      if (!inserted) {
+         LOG.info("Le paramètre de traçabilité {} existe déjà", subname);
+      }
+
+   }
+
    private void addTracabiliteParameter(
          ColumnFamilyTemplate<String, String> cfTmpl, String subname,
          Object valeur) {
 
-      ColumnFamilyUpdater<String, String> updater = cfTmpl
-            .createUpdater("parametresTracabilite");
-
-      HColumn<String, Object> column = HFactory.createColumn(subname, valeur,
+      addValue(cfTmpl, "parametresTracabilite", subname, valeur,
             StringSerializer.get(), ObjectSerializer.get());
-      updater.setColumn(column);
 
+   }
+
+   private <ROW, COL, VAL> void addValue(ColumnFamilyTemplate<ROW, COL> cfTmpl,
+         ROW rowName, COL colName, VAL value, Serializer<COL> colSerializer,
+         Serializer<VAL> valSerializer) {
+
+      ColumnFamilyUpdater<ROW, COL> updater = cfTmpl.createUpdater(rowName);
+      HColumn<COL, VAL> column = HFactory.createColumn(colName, value,
+            colSerializer, valSerializer);
+      updater.setColumn(column);
       cfTmpl.update(updater);
+      LOG.info("Ecriture du paramètre de traçabilité {}", colName);
+
+   }
+
+   private <ROW, COL, VAL> boolean checkAndAddValue(
+         ColumnFamilyTemplate<ROW, COL> cfTmpl, ROW rowName, COL colName,
+         VAL value, Serializer<COL> colSerializer, Serializer<VAL> valSerializer) {
+
+      boolean inserted = false;
+
+      Collection<COL> columnNames = cfTmpl.queryColumns(rowName)
+            .getColumnNames();
+
+      if (!columnNames.contains(colName)) {
+         addValue(cfTmpl, rowName, colName, value, colSerializer, valSerializer);
+      }
+
+      return inserted;
 
    }
 
