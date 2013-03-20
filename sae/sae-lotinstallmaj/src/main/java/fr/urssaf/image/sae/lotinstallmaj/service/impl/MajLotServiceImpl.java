@@ -65,7 +65,7 @@ public final class MajLotServiceImpl implements MajLotService {
 
    @Autowired
    private ApplicationContext context;
-   
+
    @Autowired
    private SAECassandraUpdater updater;
 
@@ -111,13 +111,14 @@ public final class MajLotServiceImpl implements MajLotService {
          updateMetaSepa();
 
       } else if (META_130400.equalsIgnoreCase(nomOperation)) {
-         // Pour lot 130400 du SAE : Ajout de la métadonnée ReferenceDocumentaire
+         // Pour lot 130400 du SAE : Ajout de la métadonnée
+         // ReferenceDocumentaire
          updateMeta("meta130400.xml");
 
       } else if (CASSANDRA_130400.equalsIgnoreCase(nomOperation)) {
-         
+
          updateCassandra130400();
-         
+
       } else {
 
          // Opération inconnue => log + exception runtime
@@ -251,7 +252,7 @@ public final class MajLotServiceImpl implements MajLotService {
       updater.updateToVersion3();
       LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
    }
-   
+
    /**
     * Pour lot 13xx10 du SAE : mise à jour du keyspace "SAE" dans cassandra, en
     * version 4
@@ -382,15 +383,17 @@ public final class MajLotServiceImpl implements MajLotService {
 
       LOG.info("Fin de l'opération : ajout des métadonnées au document");
    }
-   
+
    /**
-    * Ajout de métadonnées dans DFCE à partir d'un fichier xml contenant les métadonnées
-    * ex : meta130400.xml (dans /src/main/resources/)
-    * @param fichierlisteMeta le fichier contenant les métadonnées
+    * Ajout de métadonnées dans DFCE à partir d'un fichier xml contenant les
+    * métadonnées ex : meta130400.xml (dans /src/main/resources/)
+    * 
+    * @param fichierlisteMeta
+    *           le fichier contenant les métadonnées
     */
    private void updateMeta(String fichierlisteMeta) {
-      
-      LOG.info("Début de l'opération : Création des nouvelles métadonnées");
+
+      LOG.info("Début de l'opération : Création des nouvelles métadonnées (META_130400)");
 
       LOG.debug("Lecture du fichier XML contenant les métadonnées à ajouter - Début");
       XStream xStream = new XStream();
@@ -414,24 +417,31 @@ public final class MajLotServiceImpl implements MajLotService {
 
          final List<BaseCategory> baseCategories = new ArrayList<BaseCategory>();
          final ToolkitFactory toolkit = ToolkitFactory.getInstance();
+         
+         LOG.debug("Création des métadonnées dans DFCE - Début");
+         
          for (SaeCategory category : model.getDataBase().getSaeCategories()
                .getCategories()) {
-            
-            LOG.info("Métadonnée : " + category.getDescriptif());
-            
-            final Category categoryDfce = serviceProvider
-                  .getStorageAdministrationService().findOrCreateCategory(
-                        category.getName(), category.categoryDataType());
-            final BaseCategory baseCategory = toolkit.createBaseCategory(
-                  categoryDfce, category.isIndex());
-            baseCategory.setEnableDictionary(category.isEnableDictionary());
-            baseCategory.setMaximumValues(category.getMaximumValues());
-            baseCategory.setMinimumValues(category.getMinimumValues());
-            baseCategory.setSingle(category.isSingle());
-            baseCategories.add(baseCategory);
+
+            // Test de l'existence de la métadonnée dans DFCE
+            if (serviceProvider.getStorageAdministrationService().getCategory(
+                  category.getName()) == null) {
+               final Category categoryDfce = serviceProvider
+                     .getStorageAdministrationService().findOrCreateCategory(
+                           category.getName(), category.categoryDataType());
+               final BaseCategory baseCategory = toolkit.createBaseCategory(
+                     categoryDfce, category.isIndex());
+               baseCategory.setEnableDictionary(category.isEnableDictionary());
+               baseCategory.setMaximumValues(category.getMaximumValues());
+               baseCategory.setMinimumValues(category.getMinimumValues());
+               baseCategory.setSingle(category.isSingle());
+               baseCategories.add(baseCategory);
+               LOG.info("La métadonnée {0} va être ajoutée.", baseCategory.getName());
+            } else {
+               LOG.info("La métadonnée {0} existe déjà.", category.getDescriptif());
+            }
          }
 
-         LOG.debug("Création des métadonnées dans DFCE - Début");
          for (BaseCategory baseCategory : baseCategories) {
             base.addBaseCategory(baseCategory);
          }
@@ -463,6 +473,6 @@ public final class MajLotServiceImpl implements MajLotService {
          serviceProvider.disconnect();
       }
 
-      LOG.info("Fin de l'opération : Création des nouvelles métadonnées");
-   }   
+      LOG.info("Fin de l'opération : Création des nouvelles métadonnées (META_130400)");
+   }
 }
