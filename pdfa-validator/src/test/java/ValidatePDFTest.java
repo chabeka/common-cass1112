@@ -1,7 +1,6 @@
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-
 import java.util.UUID;
 
 import junit.framework.Assert;
@@ -95,7 +94,7 @@ public class ValidatePDFTest {
    public void validateWithGivenPdfFile() throws IOException, NoAnalysisFolderOrLogFolderException, NotAFileException, FileExisteException, NotAFolderException{
       
       // on récupère le chemin vers le fichier PDF qui se trouve dans test/ressource
-      File file = getFileFromResource("/E-frutiger.pdf");
+      File file = getFileFromResource("/00_att0_mpurs-adobe.pdf");
       String[] args = new String[]{file.getAbsolutePath(),new File(repTemp.getAbsolutePath(),"log.txt").getAbsolutePath()};
       ValidatePDF validate = new ValidatePDF();
       // on valide le fichier
@@ -118,6 +117,20 @@ public class ValidatePDFTest {
       FileUtils.deleteQuietly(repTemp);
    }
    
-
+   @Ignore
+   @Test
+   public void validateWithAttestationAutoEnt() throws IOException, NoAnalysisFolderOrLogFolderException, NotAFileException, FileExisteException, NotAFolderException{
+      
+      // on récupère le chemin vers le fichier PDF qui se trouve dans test/ressource
+      File file = getFileFromResource("/doc3.pdf");
+      String[] args = new String[]{file.getAbsolutePath(),new File(repTemp.getAbsolutePath(),"log.txt").getAbsolutePath()};
+      ValidatePDF validate = new ValidatePDF();
+      // on valide le fichier
+      validate.main(args);
+      // on compare le fichier temoin avec celui obtenu pour vérifier que les log ont bien étaient écrit
+      Assert.assertTrue(FileUtils.contentEqualsIgnoreEOL(getFileFromResource("/log-3.txt"), new File(repTemp.getAbsolutePath(),"log.txt"),null));
+      FileUtils.deleteQuietly(repTemp);
+   }
+   
 
 }

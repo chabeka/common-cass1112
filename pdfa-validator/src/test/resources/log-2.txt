@@ -1,6 +1,7 @@
 Début de l'analyse des fichiers PDF 
-E-frutiger-no-font.pdf --> OK 
-E-frutiger.pdf --> KO 
+00_att0_mpurs-adobe.pdf --> KO 
 Le document est n'est pas un PDF/A conforme
-3.1.6 : Invalid Font definition, Width of the character "201" in the font program "AEOQYB+Frutiger-Bold-ANSI"is inconsistent with the width in the PDF dictionary. (1 fois)
+3.1.6 : Invalid Font definition, Width of the character "100" in the font program "IHMHBI+FrUrCn-ANSI"is inconsistent with the width in the PDF dictionary. (15 882 fois)
 
+doc3.pdf --> OK 
+E-frutiger.pdf --> OK 
