@@ -1,18 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <docuBase>
-	<base>
-		<categories>
-			<!-- Réference documentaire -->
-			<category>
-				<descriptif>ReferenceDocumentaire</descriptif>
-				<name>rdo</name>
-				<dataType>String</dataType>
-				<index>true</index>
-				<minimumValues>0</minimumValues>
-				<maximumValues>1</maximumValues>
-	 			<single>false</single>
-				<enableDictionary>false</enableDictionary>
-			</category>
-		</categories>
-	</base>
+   <base>
+      <categories>
+         <!-- Réference documentaire -->
+         <category>
+            <descriptif>ReferenceDocumentaire</descriptif>
+            <name>rdo</name>
+            <dataType>String</dataType>
+            <index>true</index>
+            <minimumValues>0</minimumValues>
+            <maximumValues>1</maximumValues>
+            <single>false</single>
+            <enableDictionary>false</enableDictionary>
+         </category>
+         <!-- Date du courrier V2 -->
+         <category>
+            <descriptif>DateCourrierV2</descriptif>
+            <name>dcr</name>
+            <dataType>Date</dataType>
+            <index>false</index>
+            <minimumValues>0</minimumValues>
+            <maximumValues>1</maximumValues>
+            <single>false</single>
+            <enableDictionary>false</enableDictionary>
+         </category>
+         <!-- Index RSI V2 -->
+         <category>
+            <descriptif>RIBA</descriptif>
+            <name>rib</name>
+            <dataType>String</dataType>
+            <index>true</index>
+            <minimumValues>0</minimumValues>
+            <maximumValues>1</maximumValues>
+            <single>false</single>
+            <enableDictionary>false</enableDictionary>
+         </category>
+         <!-- Code Produit V2 -->
+         <category>
+            <descriptif>CodeProduitV2</descriptif>
+            <name>cpr</name>
+            <dataType>String</dataType>
+            <index>false</index>
+            <minimumValues>0</minimumValues>
+            <maximumValues>1</maximumValues>
+            <single>false</single>
+            <enableDictionary>false</enableDictionary>
+         </category>
+         <!-- Code Traitement V2 -->
+         <category>
+            <descriptif>CodeTraitementV2</descriptif>
+            <name>ctr</name>
+            <dataType>String</dataType>
+            <index>false</index>
+            <minimumValues>0</minimumValues>
+            <maximumValues>1</maximumValues>
+            <single>false</single>
+            <enableDictionary>false</enableDictionary>
+         </category>
+      </categories>
+   </base>
 </docuBase>

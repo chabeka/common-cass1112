@@ -896,4 +896,70 @@
       <label>Référence documentaire</label>
       <description>Référence documentaire. Utilisée pour l'instant dans les mandats SEPA.</description>
    </metaDataReference>
+   <metaDataReference>
+      <shortCode>dcr</shortCode>
+      <longCode>DateCourrierV2</longCode>
+      <type>Date</type>
+      <requiredForArchival>false</requiredForArchival>
+      <requiredForStorage>false</requiredForStorage>
+      <length>10</length>
+      <pattern></pattern>
+      <consultable>true</consultable>
+      <defaultConsultable>false</defaultConsultable>
+      <searchable>oui</searchable>
+      <internal>false</internal>
+      <archivable>true</archivable>
+      <label>Date du courrier V2</label>
+      <description>Date du courrier V2 (enregistrement AAAA colonne 438 à 446)</description>
+   </metaDataReference>
+   <metaDataReference>
+      <shortCode>rib</shortCode>
+      <longCode>RIBA</longCode>
+      <type>String</type>
+      <requiredForArchival>false</requiredForArchival>
+      <requiredForStorage>false</requiredForStorage>
+      <length>20</length>
+      <pattern></pattern>
+      <consultable>true</consultable>
+      <defaultConsultable>false</defaultConsultable>
+      <searchable>true</searchable>
+      <internal>false</internal>
+      <archivable>true</archivable>
+      <label>Index RSI V2</label>
+      <description>Index RSI V2 (enregistrement BAAU colonne 28 à 47)</description>
+   </metaDataReference>
+   <metaDataReference>
+      <shortCode>cpr</shortCode>
+      <longCode>CodeProduitV2</longCode>
+      <type>String</type>
+      <requiredForArchival>false</requiredForArchival>
+      <requiredForStorage>false</requiredForStorage>
+      <length>5</length>
+      <pattern>
+      </pattern>
+      <consultable>true</consultable>
+      <defaultConsultable>false</defaultConsultable>
+      <searchable>true</searchable>
+      <internal>false</internal>
+      <archivable>true</archivable>
+      <label>Code produit V2</label>
+      <description>Code produit V2</description>
+   </metaDataReference>
+   <metaDataReference>
+      <shortCode>ctr</shortCode>
+      <longCode>CodeTraitementV2</longCode>
+      <type>String</type>
+      <requiredForArchival>false</requiredForArchival>
+      <requiredForStorage>false</requiredForStorage>
+      <length>8</length>
+      <pattern>
+      </pattern>
+      <consultable>true</consultable>
+      <defaultConsultable>false</defaultConsultable>
+      <searchable>true</searchable>
+      <internal>false</internal>
+      <archivable>true</archivable>
+      <label>Code traitement V2</label>
+      <description>Code traitement V2</description>
+   </metaDataReference>
 </referentiel>

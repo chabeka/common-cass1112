@@ -68,8 +68,8 @@ public class XmlDataServiceImplTest {
 				"classpath:MetadataReferential.xml").getInputStream();
 		final Map<String, MetadataReference> ref = xmlService
 				.referentialReader(xmlInputStream);
-		Assert.assertTrue("Le nombre de métadonnées doit être égal à 51",
-				ref.size() == 51);
+		Assert.assertTrue("Le nombre de métadonnées doit être égal à 54",
+				ref.size() == 55);
 	}
 
 }
