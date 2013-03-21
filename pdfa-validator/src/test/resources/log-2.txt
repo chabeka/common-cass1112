@@ -4,4 +4,4 @@ Le document est n'est pas un PDF/A conforme
 3.1.6 : Invalid Font definition, Width of the character "100" in the font program "IHMHBI+FrUrCn-ANSI"is inconsistent with the width in the PDF dictionary. (15 882 fois)
 
 doc3.pdf --> OK 
-E-frutiger.pdf --> OK 
+e-frutiger.pdf --> OK 
