@@ -113,7 +113,7 @@ public final class MajLotServiceImpl implements MajLotService {
       } else if (META_130400.equalsIgnoreCase(nomOperation)) {
          // Pour lot 130400 du SAE : Ajout de la métadonnée
          // ReferenceDocumentaire
-         updateMeta("meta130400.xml");
+         updateMeta("meta130400.xml", "META_130400");
 
       } else if (CASSANDRA_130400.equalsIgnoreCase(nomOperation)) {
 
@@ -258,7 +258,8 @@ public final class MajLotServiceImpl implements MajLotService {
     * version 4
     */
    private void updateCassandra130400() {
-      LOG.info("Début de l'opération : Lot 130400 - Mise à jour du keyspace SAE");
+      LOG
+            .info("Début de l'opération : Lot 130400 - Mise à jour du keyspace SAE");
       updater.updateToVersion4();
       LOG.info("Fin de l'opération : Lot 130400 - Mise à jour du keyspace SAE");
    }
@@ -390,12 +391,17 @@ public final class MajLotServiceImpl implements MajLotService {
     * 
     * @param fichierlisteMeta
     *           le fichier contenant les métadonnées
+    * @param nomOperation
+    *           Nom de la commande pour affichage dans les traces
     */
-   private void updateMeta(String fichierlisteMeta) {
+   private void updateMeta(String fichierlisteMeta, String nomOperation) {
 
-      LOG.info("Début de l'opération : Création des nouvelles métadonnées (META_130400)");
+      LOG.info(
+            "Début de l'opération : Création des nouvelles métadonnées ({})",
+            nomOperation);
 
-      LOG.debug("Lecture du fichier XML contenant les métadonnées à ajouter - Début");
+      LOG
+            .debug("Lecture du fichier XML contenant les métadonnées à ajouter - Début");
       XStream xStream = new XStream();
       xStream.processAnnotations(DataBaseModel.class);
       Reader reader = null;
@@ -407,7 +413,8 @@ public final class MajLotServiceImpl implements MajLotService {
          DataBaseModel model = DataBaseModel.class
                .cast(xStream.fromXML(reader));
 
-         LOG.debug("Lecture du fichier XML contenant les métadonnées à ajouter - Fin");
+         LOG
+               .debug("Lecture du fichier XML contenant les métadonnées à ajouter - Fin");
 
          // connexion a DFCE
          connectDfce();
@@ -417,9 +424,9 @@ public final class MajLotServiceImpl implements MajLotService {
 
          final List<BaseCategory> baseCategories = new ArrayList<BaseCategory>();
          final ToolkitFactory toolkit = ToolkitFactory.getInstance();
-         
+
          LOG.debug("Création des métadonnées dans DFCE - Début");
-         
+
          for (SaeCategory category : model.getDataBase().getSaeCategories()
                .getCategories()) {
 
@@ -436,9 +443,11 @@ public final class MajLotServiceImpl implements MajLotService {
                baseCategory.setMinimumValues(category.getMinimumValues());
                baseCategory.setSingle(category.isSingle());
                baseCategories.add(baseCategory);
-               LOG.info("La métadonnée {0} va être ajoutée.", baseCategory.getName());
+               LOG.info("La métadonnée {} va être ajoutée.", baseCategory
+                     .getName());
             } else {
-               LOG.info("La métadonnée {0} existe déjà.", category.getDescriptif());
+               LOG.info("La métadonnée {} existe déjà.", category
+                     .getDescriptif());
             }
          }
 
@@ -473,6 +482,7 @@ public final class MajLotServiceImpl implements MajLotService {
          serviceProvider.disconnect();
       }
 
-      LOG.info("Fin de l'opération : Création des nouvelles métadonnées (META_130400)");
+      LOG
+            .info("Fin de l'opération : Création des nouvelles métadonnées (META_130400)");
    }
 }
