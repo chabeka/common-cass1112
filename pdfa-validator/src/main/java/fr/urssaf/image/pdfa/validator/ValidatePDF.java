@@ -130,7 +130,7 @@ public class ValidatePDF {
                   errorNoDoublon.put(error, error.concat(new MessageFormat(" ({0} fois)").format(args)));
                }
             }
-            FileUtils.write(log, "Le document est n'est pas un PDF/A conforme\n", true);
+            FileUtils.write(log, "Le document n'est pas un PDF/A conforme\n", true);
             FileUtils.writeLines(log, errorNoDoublon.values(), true);
             FileUtils.write(log, "\n", true);
             LOGGER.info("{} --> KO ", file.getName());
