@@ -443,8 +443,8 @@ public final class MajLotServiceImpl implements MajLotService {
                baseCategory.setMinimumValues(category.getMinimumValues());
                baseCategory.setSingle(category.isSingle());
                baseCategories.add(baseCategory);
-               LOG.info("La métadonnée {} va être ajoutée.", baseCategory
-                     .getName());
+               LOG.info("La métadonnée {} va être ajoutée.", category
+                     .getDescriptif());
             } else {
                LOG.info("La métadonnée {} existe déjà.", category
                      .getDescriptif());
