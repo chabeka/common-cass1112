@@ -4,12 +4,12 @@
    <parent>
       <groupId>fr.urssaf.image.sae</groupId>
       <artifactId>sae</artifactId>
-      <version>13.4.10.3</version>
+      <version>13.4.10.4-SNAPSHOT</version>
    </parent>
 
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-droit</artifactId>
-   <version>13.4.10.3</version>
+   <version>13.4.10.4-SNAPSHOT</version>
    <packaging>jar</packaging>
 
    <name>sae-droit</name>
@@ -47,7 +47,7 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-bo</artifactId>
-         <version>13.4.10.3</version>
+         <version>13.4.10.4-SNAPSHOT</version>
       </dependency>
 
 
