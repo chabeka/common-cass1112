@@ -294,6 +294,7 @@ public class InsertionDonnees {
 
       if (!columnNames.contains(colName)) {
          addValue(cfTmpl, rowName, colName, value, colSerializer, valSerializer);
+         inserted = true;
       }
 
       return inserted;
