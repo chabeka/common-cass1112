@@ -200,7 +200,7 @@ public class StaxWriteUtils {
 
       try {
          final XMLEventWriter writer = outputFactory
-               .createXMLEventWriter(outputStream);
+               .createXMLEventWriter(outputStream, "UTF-8");
          IndentingXMLEventWriter iWriter = new IndentingXMLEventWriter(writer);
          iWriter.setIndent(INDENTATION);
          return iWriter;
