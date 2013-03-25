@@ -19,6 +19,7 @@
       <property name="login" value="${cassandra.username}" />
       <property name="password" value="${cassandra.password}" />
       <property name="keyspaceName" value="${cassandra.keyspace}" />
+	  <property name="timeout" value="${cassandra.timeout}" />
    </bean>
    
    

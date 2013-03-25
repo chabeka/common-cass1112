@@ -11,6 +11,7 @@ public final class CassandraConfig {
    private String login="";
    private String password="";
    private String keyspaceName;
+   private int timeout;
 
    /**
     * @return Chaîne de connexion aux serveurs cassandra
@@ -60,6 +61,20 @@ public final class CassandraConfig {
     */
    public void setKeyspaceName(String keyspaceName) {
       this.keyspaceName = keyspaceName;
+   }
+   
+   /**
+    * @return le timeout de la connexion à CASSANDRA
+    */
+   public final int getTimeout() {
+      return timeout;
+   }
+   
+   /**
+    * @param timeout le timeout de la connexion à CASSANDRA
+    */
+   public final void setTimeout(int timeout) {
+      this.timeout = timeout;
    }
    
    

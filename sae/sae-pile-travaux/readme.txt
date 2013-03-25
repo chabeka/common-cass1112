@@ -14,6 +14,7 @@ cassandra.startlocal				: mettre "true" pour utiliser un serveur cassandra local
 cassandra.hosts						: listes des serveurs cassandra, avec le port(9160), séparés par des virgules (peut être vide dans la cas d'un serveur démarré localement)
 cassandra.username					: username pour la connexion à cassandra 
 cassandra.password					: mot de passe pour la connexion à cassandra
+cassandra.timeout           : timeout de la connexion à CASSANDRA
 cassandra.keyspace					: nom du keyspace cassandra à utiliser (normalement "SAE", sauf si vous voulez vous créer un keyspace personnel)
 cassandra.dataset					: dans le cas du mode "local", il s'agit du chemin du fichier dataset qui sera utilisé pour charger les données
 zookeeper.startlocal				: mettre "true" pour utiliser un serveur zookeeper local lancé à la volée (utile pour les tests unitaires)
@@ -26,6 +27,7 @@ cassandra.startlocal=false
 cassandra.hosts=cer69imageint9.cer69.recouv:9160
 cassandra.username=root
 cassandra.password=regina4932
+cassandra.timeout=60000
 cassandra.keyspace=SAE
 cassandra.dataset=
 zookeeper.startlocal=false
@@ -38,6 +40,7 @@ cassandra.startlocal=true
 cassandra.hosts=
 cassandra.username=
 cassandra.password=
+cassandra.timeout=60000
 cassandra.keyspace=Batch
 cassandra.dataset=dataSet-sae-pile-travaux.xml
 zookeeper.startlocal=true

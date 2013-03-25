@@ -6,6 +6,9 @@ package fr.urssaf.image.sae.services.util;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
+
+import net.docubase.toolkit.service.ServiceProvider;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
