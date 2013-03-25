@@ -21,4 +21,16 @@ public class ParameterRuntimeException extends RuntimeException {
       super(message);
    }
 
+   /**
+    * constructeur
+    * 
+    * @param message
+    *           message d'erreur
+    * @param exception
+    *           erreur d'origine
+    */
+   public ParameterRuntimeException(String message, Exception exception) {
+      super(message, exception);
+   }
+
 }

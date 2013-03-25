@@ -227,11 +227,11 @@ public interface ParametersService {
    String getJournalisationEvtHashJournPrec() throws ParameterNotFoundException;
 
    /**
-    * @param id
+    * @param identifiant
     *           l'identifiant unique du journal précédent réalisé lors de la
     *           journalisation
     */
-   void setJournalisationEvtIdJournPrec(String id);
+   void setJournalisationEvtIdJournPrec(String identifiant);
 
    /**
     * @return l'identifiant unique du journal précédent réalisé lors de la

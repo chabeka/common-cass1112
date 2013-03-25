@@ -43,9 +43,9 @@ public class ParametersServiceImpl implements ParametersService {
    /**
     * Constructeur
     * 
-    * @param parametersSupport
-    * @param clockSupport
-    * @param curator
+    * @param parametersSupport support pour la column family Parameters
+    * @param clockSupport l'horloge
+    * @param curator le client zookeeper
     */
    @Autowired
    public ParametersServiceImpl(ParametersSupport parametersSupport,
@@ -298,9 +298,9 @@ public class ParametersServiceImpl implements ParametersService {
     * {@inheritDoc}
     */
    @Override
-   public final void setJournalisationEvtIdJournPrec(String id) {
+   public final void setJournalisationEvtIdJournPrec(String identifiant) {
       Parameter parameter = new Parameter(
-            ParameterType.JOURNALISATION_EVT_ID_JOURNAL_PRECEDENT, id);
+            ParameterType.JOURNALISATION_EVT_ID_JOURNAL_PRECEDENT, identifiant);
       insertParameter(parameter, ParameterRowType.TRACABILITE);
    }
 
@@ -521,7 +521,7 @@ public class ParametersServiceImpl implements ParametersService {
             }
          } catch (Exception e) {
             throw new ParameterRuntimeException("le parametre "
-                  + code.toString() + "n'a pas été créé");
+                  + code.toString() + "n'a pas été créé", e);
          }
 
       }
