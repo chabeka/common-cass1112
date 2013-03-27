@@ -26,7 +26,9 @@ public class DocumentsTypeList {
    /**
     * Liste des types de documents supportés
     */
-   public final List<String> types;
+   public List<String> types;
+
+   public DFCEServicesManager dfceServicesManager;
 
    /**
     * Consturcteur
@@ -36,8 +38,29 @@ public class DocumentsTypeList {
     */
    @Autowired
    public DocumentsTypeList(DFCEServicesManager dfceServicesManager) {
+      this.dfceServicesManager = dfceServicesManager;
+      this.types = null;
+   }
+
+   /**
+    * @return la liste des documents supportés
+    */
+   public final List<String> getTypes() {
+      if (types == null) {
+         init();
+      }
+
+      return types;
+   }
+
+   private void init() {
+
+      boolean startActive = dfceServicesManager.isActive();
       try {
-         dfceServicesManager.getConnection();
+         
+         if (!startActive) {
+            dfceServicesManager.getConnection();
+         }
 
          Set<LifeCycleRule> lifeCycleRules = dfceServicesManager
                .getDFCEService().getStorageAdministrationService()
@@ -52,17 +75,11 @@ public class DocumentsTypeList {
       } catch (ConnectionServiceEx exception) {
          throw new DocumentTypeException("impossible de se connecter à DFCE",
                exception);
-
       } finally {
-         dfceServicesManager.closeConnection();
+         if (!startActive) {
+            dfceServicesManager.closeConnection();
+         }
       }
-   }
-
-   /**
-    * @return la liste des documents supportés
-    */
-   public final List<String> getTypes() {
-      return types;
    }
 
 }
