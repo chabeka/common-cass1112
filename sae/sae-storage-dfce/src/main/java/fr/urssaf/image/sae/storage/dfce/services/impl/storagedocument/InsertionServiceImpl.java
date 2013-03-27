@@ -21,7 +21,9 @@ import com.docubase.dfce.exception.TagControlException;
 
 import fr.urssaf.image.sae.storage.dfce.annotations.Loggable;
 import fr.urssaf.image.sae.storage.dfce.annotations.ServiceChecked;
+import fr.urssaf.image.sae.storage.dfce.bo.DocumentsTypeList;
 import fr.urssaf.image.sae.storage.dfce.constants.Constants;
+import fr.urssaf.image.sae.storage.dfce.exception.DocumentTypeException;
 import fr.urssaf.image.sae.storage.dfce.mapping.BeanMapper;
 import fr.urssaf.image.sae.storage.dfce.messages.LogLevel;
 import fr.urssaf.image.sae.storage.dfce.messages.StorageMessageHandler;
@@ -54,6 +56,9 @@ public class InsertionServiceImpl extends AbstractServices implements
 
    @Autowired
    private TracesDfceSupport tracesSupport;
+
+   @Autowired
+   private DocumentsTypeList typeList;
 
    /**
     * @return : Le service de suppression
@@ -121,6 +126,7 @@ public class InsertionServiceImpl extends AbstractServices implements
          StorageDocument storageDoc) throws InsertionServiceEx {
 
       try {
+
          // conversion du storageDoc en DFCE Document
          Document docDfce = BeanMapper.storageDocumentToDfceDocument(
                getBaseDFCE(), storageDoc);
@@ -148,6 +154,22 @@ public class InsertionServiceImpl extends AbstractServices implements
                .getMessage(Constants.INS_CODE_ERROR), except.getMessage(),
                except);
       }
+   }
+
+   private void checkDocumentType(List<StorageMetadata> metadatas)
+         throws DocumentTypeException {
+
+      String docType = StorageMetadataUtils.valueMetadataFinder(metadatas,
+            StorageTechnicalMetadatas.TYPE.getShortCode());
+
+      if (!typeList.getTypes().contains(docType)) {
+         throw new DocumentTypeException(
+               StringUtils
+                     .replace(
+                           "Impossible d'insérer le document, son type n'est pas valide : {} ne fait pas partie des type référencés",
+                           "{}", docType));
+      }
+
    }
 
    protected final Document insertStorageDocument(Document document,
@@ -189,6 +211,13 @@ public class InsertionServiceImpl extends AbstractServices implements
 
       // Traces debug - entrée méthode
       LOGGER.debug("{} - Début", TRC_INSERT);
+
+      LOGGER
+            .debug("{} - Début de vérification du type de document", TRC_INSERT);
+
+      checkDocumentType(datas);
+
+      LOGGER.debug("{} - Fin de vérification du type de document", TRC_INSERT);
 
       try {
 

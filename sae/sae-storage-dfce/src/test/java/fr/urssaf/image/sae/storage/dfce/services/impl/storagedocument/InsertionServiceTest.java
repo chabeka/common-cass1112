@@ -22,6 +22,7 @@ import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.storage.dfce.data.constants.Constants;
 import fr.urssaf.image.sae.storage.dfce.data.model.SaeDocument;
 import fr.urssaf.image.sae.storage.dfce.data.utils.CheckDataUtils;
+import fr.urssaf.image.sae.storage.dfce.exception.DocumentTypeException;
 import fr.urssaf.image.sae.storage.dfce.mapping.DocumentForTestMapper;
 import fr.urssaf.image.sae.storage.dfce.services.StorageServices;
 import fr.urssaf.image.sae.storage.dfce.utils.TraceAssertUtils;
@@ -189,4 +190,37 @@ public class InsertionServiceTest extends StorageServices {
                   getRetrievalService().retrieveStorageDocumentContentByUUID(
                         uuid)));
    }
+
+   /**
+    * Test du service :
+    * {@link fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument.InsertionServiceImpl#insertStorageDocument(StorageDocument)
+    * insertStorageDocument} <br>
+    * <p>
+    * Tests réaliser :<br/>
+    * Insérer un document avec un RND inexistant
+    */
+   @Test
+   public void insertStorageDocumentWrongRnd() throws IOException,
+         ParseException, StorageException, NoSuchAlgorithmException {
+
+      try {
+         getInsertionService().setInsertionServiceParameter(
+               getDfceServicesManager().getDFCEService());
+         final SaeDocument saeDocument = getXmlDataService().saeDocumentReader(
+               new File(Constants.XML_PATH_DOC_WITH_ERROR[7]));
+         final StorageDocument storageDocument = DocumentForTestMapper
+               .saeDocumentXmlToStorageDocument(saeDocument);
+         getInsertionService().insertStorageDocument(storageDocument);
+
+         Assert.fail("une exception est attendue");
+
+      } catch (InsertionServiceEx ex) {
+         Assert.assertEquals("le type de l'exception mere doit etre correcte",
+               DocumentTypeException.class, ex.getCause().getClass());
+
+      } catch (Exception ex) {
+         Assert.fail("erreur DocumentTypeException attendue");
+      }
+   }
+
 }

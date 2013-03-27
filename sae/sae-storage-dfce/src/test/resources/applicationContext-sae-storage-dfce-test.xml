@@ -10,8 +10,6 @@
 
    <import resource="applicationContext-properties-test.xml"/>
    
-   <import resource="applicationContext-sae-storage-dfce.xml"/>
-   
    <!--Instantiation du bean de connexion à la base DFCE -->
    <bean id="storageBase"
       class="fr.urssaf.image.sae.storage.model.connection.StorageBase">
@@ -42,6 +40,8 @@
       <property name="digestAlgo" value="${db.digestAlgo}" />
       <property name="checkHash" value="${db.checkHash}" />
    </bean>
+   
+   <import resource="applicationContext-sae-storage-dfce.xml"/>
    
    <bean
       id="traceAssertUtils"

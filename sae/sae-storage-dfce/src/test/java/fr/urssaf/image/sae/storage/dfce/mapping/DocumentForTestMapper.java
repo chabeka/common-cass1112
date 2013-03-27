@@ -21,6 +21,7 @@ import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 /**
  * Fournit des méthodes statiques pour mapper les objets {@StorageDocument
  * 
+ * 
  * } et des objets et les objets {@link SaeDocument}
  * 
  */
@@ -52,25 +53,25 @@ public final class DocumentForTestMapper {
       for (SaeCategory saeCategory : Utils.nullSafeIterable(listOfCategoory)) {
          final String codeMetaData = saeCategory.getName();
          Object value = saeCategory.getValue();
-        	   if (Constants.TEC_METADATAS[0].equals(codeMetaData)) {
-        	      		value =  Utils.formatStringToDate((String)value);
-              } 
-        	   if (Constants.TEC_METADATAS[1].equals(codeMetaData)) {
-   	      		value =  Utils.formatStringToDate((String)value);
-         } 
-        	   if (Constants.TEC_METADATAS[3].equals(codeMetaData)) {
-   	      		value =  Utils.formatStringToDate((String)value);
-         } 
-        	   if (Constants.TEC_METADATAS[2].equals(codeMetaData)) {
-      	      		value =  Boolean.valueOf((String)value);
-            } 
-            metadatas.add(new StorageMetadata(codeMetaData, value));
-               }
+         if (Constants.TEC_METADATAS[0].equals(codeMetaData)) {
+            value = Utils.formatStringToDate((String) value);
+         }
+         if (Constants.TEC_METADATAS[1].equals(codeMetaData)) {
+            value = Utils.formatStringToDate((String) value);
+         }
+         if (Constants.TEC_METADATAS[3].equals(codeMetaData)) {
+            value = Utils.formatStringToDate((String) value);
+         }
+         if (Constants.TEC_METADATAS[2].equals(codeMetaData)) {
+            value = Boolean.valueOf((String) value);
+         }
+         metadatas.add(new StorageMetadata(codeMetaData, value));
+      }
       storageDocument.setMetadatas(metadatas);
-      storageDocument.setFilePath(new File(saeDocument.getBase()
-            .getFilePath()).toString());
-      storageDocument.setContent(Files.toByteArray(new File(saeDocument.getBase()
-            .getFilePath())));
+      storageDocument.setFilePath(new File(saeDocument.getBase().getFilePath())
+            .toString());
+      storageDocument.setContent(Files.toByteArray(new File(saeDocument
+            .getBase().getFilePath())));
       return storageDocument;
    }
 

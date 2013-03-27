@@ -22,7 +22,7 @@ public final class Constants {
     */
    public static final String XML_PATH_DOC_WITH_ERROR[] = { XML_DIR + "doc1.xml",
          XML_DIR + "doc11.xml", XML_DIR + "doc132.xml", XML_DIR + "doc4.xml",
-         XML_DIR + "doc7.xml", XML_DIR + "doc70.xml", XML_DIR + "doc77.xml" };
+         XML_DIR + "doc7.xml", XML_DIR + "doc70.xml", XML_DIR + "doc77.xml", XML_DIR + "doc_erreur.xml" };
    /**
     * Liste des métadatas techniques
     */
