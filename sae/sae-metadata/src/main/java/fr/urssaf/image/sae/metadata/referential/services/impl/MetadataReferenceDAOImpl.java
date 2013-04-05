@@ -7,15 +7,19 @@ import java.util.Map.Entry;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+
+import com.google.common.cache.LoadingCache;
 
 import fr.urssaf.image.sae.metadata.exceptions.ReferentialException;
 import fr.urssaf.image.sae.metadata.messages.MetadataMessageHandler;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 import fr.urssaf.image.sae.metadata.referential.services.MetadataReferenceDAO;
 import fr.urssaf.image.sae.metadata.referential.services.XmlDataService;
+import fr.urssaf.image.sae.metadata.referential.support.SaeMetadataSupport;
 import fr.urssaf.image.sae.metadata.utils.Utils;
 
 /**
@@ -36,11 +40,23 @@ public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
    @Autowired
    private ApplicationContext context;
 
-   private static Map<String, MetadataReference> ALL_METADATA_REFERENCES;
+   private enum MetaType{ALL_METADATAS};
+   
+   private LoadingCache<MetaType, Map<String, MetadataReference>> metadataReference;
 
+   // TODO Supprimer la variable
+   private Map<String, MetadataReference> ALL_METADATA_REFERENCES;
+
+   @Value("sae.metadata.cache")
+   private int cacheDuration;
+   
+   @Autowired
+   private SaeMetadataSupport metadataSupport;
+   
    /**
     * @return Le context.
     */
+   @Deprecated
    public final ApplicationContext getContext() {
       return context;
    }
@@ -49,6 +65,7 @@ public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
     * @param context
     *           : le context
     */
+   @Deprecated
    public final void setContext(final ApplicationContext context) {
       this.context = context;
    }
@@ -56,6 +73,7 @@ public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
    /**
     * @return Le service Xml
     */
+   @Deprecated
    public final XmlDataService getXmlDataService() {
       return xmlDataService;
    }
@@ -64,6 +82,7 @@ public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
     * @param xmlDataService
     *           : Le service Xml
     */
+   @Deprecated
    public final void setXmlDataService(final XmlDataService xmlDataService) {
       this.xmlDataService = xmlDataService;
    }
@@ -75,6 +94,7 @@ public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
     *            Exception lever lorsque la récupération des métadonnées ne sont
     *            pas disponibles.
     */
+   @Deprecated
    public final Map<String, MetadataReference> getAllMetadataReferences()
          throws ReferentialException {
 
@@ -83,6 +103,7 @@ public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
 
       try {
          synchronized (this) {
+            
             if (ALL_METADATA_REFERENCES == null) {
                ALL_METADATA_REFERENCES = xmlDataService
                      .referentialReader(referentiel.getInputStream());

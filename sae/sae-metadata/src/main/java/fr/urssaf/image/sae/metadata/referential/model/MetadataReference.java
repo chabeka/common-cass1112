@@ -5,8 +5,6 @@ import java.io.Serializable;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
 /**
  * Cette classe représente une métadonnée du référentiel des métadonnées. <BR />
  * Elle contient les attributs :
@@ -34,7 +32,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * @author akenore
  * 
  */
-@XStreamAlias("metaDataReference")
+
 @SuppressWarnings("PMD.LongVariable")
 public class MetadataReference implements Serializable {
 
@@ -45,17 +43,22 @@ public class MetadataReference implements Serializable {
 	private String shortCode;
 	private String longCode;
 	private String type;
-	private boolean requiredForArchival;
-	private boolean requiredForStorage;
-	private int length;
+	private Boolean requiredForArchival;
+	private Boolean requiredForStorage;
+	private Integer length;
 	private String pattern;
-	private boolean consultable;
-	private boolean defaultConsultable;
-	private boolean searchable;
-	private boolean internal;
-	private boolean archivable;
+	private Boolean consultable;
+	private Boolean defaultConsultable;
+	private Boolean searchable;
+	private Boolean internal;
+	private Boolean archivable;
 	private String label;
 	private String description;
+	private Boolean hasDictionary;
+	private String dictionaryName;
+	private Boolean isIndexed;
+	
+	
 
 	/**
 	 * @return Le code court
@@ -306,4 +309,44 @@ public class MetadataReference implements Serializable {
 	public final String getDescription() {
 		return description;
 	}
+
+	/**
+	 * @return renvoie vrai/faux suivant si la métadonnée est soumise à un dictionnaire
+	 */
+   public Boolean getHasDictionary() {
+      return hasDictionary;
+   }
+   /**
+    * @param hasDictionary indique si la métadonnée est soumise à un dictionnaire
+    */
+   public void setHasDictionary(Boolean hasDictionary) {
+      this.hasDictionary = hasDictionary;
+   }
+
+   /**
+    * @return nom du dictionnaire associé
+    */
+   public String getDictionaryName() {
+      return dictionaryName;
+   }
+   /**
+    * @param dictionaryName nom du dictionnaire
+    */
+   public void setDictionaryName(String dictionaryName) {
+      this.dictionaryName = dictionaryName;
+   }
+   
+   /**
+    * @return renvoie si la métadonnée est indexée
+    */
+   public Boolean getIsIndexed() {
+      return isIndexed;
+   }
+
+   /**
+    * @param isIndexed indique que la métadonnée est indexée
+    */
+   public void setIsIndexed(Boolean isIndexed) {
+      this.isIndexed = isIndexed;
+   }
 }

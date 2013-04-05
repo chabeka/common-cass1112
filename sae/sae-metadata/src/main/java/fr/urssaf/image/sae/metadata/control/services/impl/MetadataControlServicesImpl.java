@@ -19,6 +19,7 @@ import fr.urssaf.image.sae.metadata.control.services.MetadataControlServices;
 import fr.urssaf.image.sae.metadata.exceptions.ReferentialException;
 import fr.urssaf.image.sae.metadata.messages.MetadataMessageHandler;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
+import fr.urssaf.image.sae.metadata.referential.services.DictionaryService;
 import fr.urssaf.image.sae.metadata.referential.services.MetadataReferenceDAO;
 import fr.urssaf.image.sae.metadata.utils.Utils;
 
@@ -40,6 +41,10 @@ public class MetadataControlServicesImpl implements MetadataControlServices {
 	@Autowired
 	@Qualifier("metadataReferenceDAO")
 	private MetadataReferenceDAO referenceDAO;
+	
+	@Autowired
+	private DictionaryService dictionaryService;
+	 
 
 	/**
 	 * {@inheritDoc}
@@ -443,5 +448,12 @@ public class MetadataControlServicesImpl implements MetadataControlServices {
 	public MetadataControlServicesImpl() {
 		// ici on ne fait rien
 	}
+
+   @Override
+   public List<MetadataError> checkMetadataValueFromDictionary(
+         UntypedDocument document) {
+      // TODO Auto-generated method stub
+      return null;
+   }
 
 }
