@@ -12,7 +12,6 @@ import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
  * @author akenore
  * 
  */
-@Deprecated
 public interface XmlDataService {
 	/**
 	 * 
