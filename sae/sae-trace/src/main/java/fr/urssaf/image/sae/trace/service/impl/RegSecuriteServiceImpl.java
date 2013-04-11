@@ -34,19 +34,33 @@ import fr.urssaf.image.sae.trace.utils.DateRegUtils;
 @Service
 public class RegSecuriteServiceImpl implements RegSecuriteService {
 
-   @Autowired
-   private TraceRegSecuriteSupport support;
+   private final TraceRegSecuriteSupport support;
 
-   @Autowired
-   private JobClockSupport clockSupport;
+   private final JobClockSupport clockSupport;
 
-   @Autowired
-   private LoggerSupport loggerSupport;
+   private final LoggerSupport loggerSupport;
 
    private static final String FIN_LOG = "{} - fin";
    private static final String DEBUT_LOG = "{} - début";
    private static final Logger LOGGER = LoggerFactory
          .getLogger(RegSecuriteServiceImpl.class);
+
+   /**
+    * @param support
+    *           Support de la classe DAO TraceRegSecuriteDao
+    * @param clockSupport
+    *           JobClockSupport Cassandra
+    * @param loggerSupport
+    *           Support pour l'écriture des traces applicatives
+    */
+   @Autowired
+   public RegSecuriteServiceImpl(TraceRegSecuriteSupport support,
+         JobClockSupport clockSupport, LoggerSupport loggerSupport) {
+      super();
+      this.support = support;
+      this.clockSupport = clockSupport;
+      this.loggerSupport = loggerSupport;
+   }
 
    /**
     * {@inheritDoc}

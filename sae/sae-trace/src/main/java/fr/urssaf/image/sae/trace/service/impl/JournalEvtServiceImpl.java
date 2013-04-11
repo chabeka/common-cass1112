@@ -59,17 +59,31 @@ public class JournalEvtServiceImpl implements JournalEvtService {
    private static final String INDENTATION = "    ";
    private static final String ERREUR_FLUX = "erreur de fermeture du flux ";
 
-   @Autowired
-   private TraceJournalEvtSupport support;
+   private final TraceJournalEvtSupport support;
 
-   @Autowired
-   private JobClockSupport clockSupport;
+   private final JobClockSupport clockSupport;
 
-   @Autowired
-   private LoggerSupport loggerSupport;
+   private final LoggerSupport loggerSupport;
 
+   private final TraceFileSupport traceFileSupport;
+
+   
+   /**
+    * @param support Support de la classe DAO TraceJournalEvtDao
+    * @param clockSupport JobClockSupport
+    * @param loggerSupport Support pour l'écriture des traces applicatives
+    * @param traceFileSupport Classe de support pour la création des fichiers de traces
+    */
    @Autowired
-   private TraceFileSupport traceFileSupport;
+   public JournalEvtServiceImpl(TraceJournalEvtSupport support,
+         JobClockSupport clockSupport, LoggerSupport loggerSupport,
+         TraceFileSupport traceFileSupport) {
+      super();
+      this.support = support;
+      this.clockSupport = clockSupport;
+      this.loggerSupport = loggerSupport;
+      this.traceFileSupport = traceFileSupport;
+   }
 
    /**
     * {@inheritDoc}

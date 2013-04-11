@@ -19,12 +19,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.sae.trace.model.DfceTraceSyst;
+import fr.urssaf.image.sae.trace.model.DfceTraceDoc;
 import fr.urssaf.image.sae.trace.model.TraceToCreate;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-trace-test.xml" })
-public class HistEvenementSupportTest {
+public class CycleVieSupportTest {
 
    private static final int MAX_COUNT = 100;
 
@@ -42,7 +42,7 @@ public class HistEvenementSupportTest {
    }
 
    @Autowired
-   private HistEvenementSupport support;
+   private CycleVieSupport support;
 
    @Autowired
    private ServiceProviderSupport provider;
@@ -68,7 +68,7 @@ public class HistEvenementSupportTest {
       Date fin = DateUtils.truncate(DateUtils.addDays(endDate, 1),
             Calendar.DATE);
 
-      List<DfceTraceSyst> values = support.findByDates(deb, fin, MAX_COUNT,
+      List<DfceTraceDoc> values = support.findByDates(deb, fin, MAX_COUNT,
             true);
 
       boolean found = false;

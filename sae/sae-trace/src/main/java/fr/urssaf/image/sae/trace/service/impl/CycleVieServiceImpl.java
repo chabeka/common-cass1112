@@ -5,32 +5,33 @@ package fr.urssaf.image.sae.trace.service.impl;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import org.joda.time.DateTimeZone;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import fr.urssaf.image.sae.trace.dao.support.HistEvenementSupport;
-import fr.urssaf.image.sae.trace.model.DfceTraceSyst;
-import fr.urssaf.image.sae.trace.service.HistEvenementService;
+import fr.urssaf.image.sae.trace.dao.support.CycleVieSupport;
+import fr.urssaf.image.sae.trace.model.DfceTraceDoc;
+import fr.urssaf.image.sae.trace.service.CycleVieService;
 
 /**
- * Classe d'implémentation du support {@link HistEvenementService}. Cette classe
- * est un singleton et peut être accessible par le mécanisme d'injection IOC
- * avec l'annotation @Autowired
+ * Classe d'implémentation du support {@link CycleVieService}. Cette classe est
+ * un singleton et peut être accessible par le mécanisme d'injection IOC avec
+ * l'annotation @Autowired
  * 
  */
 @Service
-public class HistEvenementServiceImpl implements HistEvenementService {
+public class CycleVieServiceImpl implements CycleVieService {
 
-   private final HistEvenementSupport support;
+   private final CycleVieSupport support;
 
    /**
     * @param support
-    *           Classe de support pour les historiques des événements
+    *           Classe de support pour les journaux du cycle de vie des archives
     */
    @Autowired
-   public HistEvenementServiceImpl(HistEvenementSupport support) {
+   public CycleVieServiceImpl(CycleVieSupport support) {
       super();
       this.support = support;
    }
@@ -39,7 +40,7 @@ public class HistEvenementServiceImpl implements HistEvenementService {
     * {@inheritDoc}
     */
    @Override
-   public final List<DfceTraceSyst> lecture(Date dateDebut, Date dateFin,
+   public final List<DfceTraceDoc> lecture(Date dateDebut, Date dateFin,
          int limite, boolean reversed) {
 
       //Date startDate = getGmtDate(dateDebut);
@@ -50,6 +51,7 @@ public class HistEvenementServiceImpl implements HistEvenementService {
 
       //return support.findByDates(startDate, endDate, limite, reversed);
       return support.findByDates(dateDebut, dateFin, limite, reversed);
+
    }
 
    private Date getGmtDate(Date date) {
@@ -58,6 +60,15 @@ public class HistEvenementServiceImpl implements HistEvenementService {
 
       return new Date(value);
 
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final List<DfceTraceDoc> lectureParDocument(UUID docUuid) {
+
+      return support.findByDocUuid(docUuid);
    }
 
 }

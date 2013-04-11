@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.docubase.toolkit.model.recordmanager.RMSystemEvent;
-
 import org.apache.commons.lang.time.DateUtils;
 import org.junit.After;
 import org.junit.Assert;
@@ -24,6 +22,7 @@ import fr.urssaf.image.sae.trace.dao.TraceDestinataireDao;
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
 import fr.urssaf.image.sae.trace.dao.support.ServiceProviderSupport;
 import fr.urssaf.image.sae.trace.dao.support.TraceDestinataireSupport;
+import fr.urssaf.image.sae.trace.model.DfceTraceSyst;
 import fr.urssaf.image.sae.trace.model.TraceToCreate;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -81,9 +80,12 @@ public class DispatcheurServiceHistEvenementsDatasTest {
       traceToCreate.setInfos(INFOS);
 
       service.ajouterTrace(traceToCreate);
-      Date endDate = DateUtils.addSeconds(startDate, 1);
+      
+      // Ajout des 5 min car décalage entre les postes et le serveur...
+      startDate = DateUtils.addMinutes(startDate, -5);
+      Date endDate = DateUtils.addMinutes(startDate, 5);
 
-      List<RMSystemEvent> events = histService.lecture(startDate, endDate, 1,
+      List<DfceTraceSyst> events = histService.lecture(startDate, endDate, 1,
             false);
       Assert.assertNotNull("on doit avoir des événements", events);
       Assert.assertEquals("on doit avoir un nombre correct d'événements", 1,

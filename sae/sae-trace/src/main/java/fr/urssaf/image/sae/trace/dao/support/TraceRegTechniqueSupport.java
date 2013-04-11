@@ -42,20 +42,37 @@ import fr.urssaf.image.sae.trace.utils.DateRegUtils;
 @Component
 public class TraceRegTechniqueSupport {
 
-   @Autowired
-   private TraceRegTechniqueDao dao;
+   private final TraceRegTechniqueDao dao;
 
-   @Autowired
-   private TraceRegTechniqueIndexDao indexDao;
+   private final TraceRegTechniqueIndexDao indexDao;
 
-   @Autowired
-   private TimeUUIDEtTimestampSupport timeUUIDSupport;
+   private final TimeUUIDEtTimestampSupport timeUUIDSupport;
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(TraceRegTechniqueSupport.class);
 
    private final SimpleDateFormat dateFormat = new SimpleDateFormat(
          "yyyy-MM-dd HH'h'mm ss's' SSS'ms'", Locale.FRENCH);
+
+   /**
+    * Constructeur
+    * 
+    * @param dao
+    *           Service DAO de la famille de colonnes "TraceRegTechnique"
+    * @param indexDao
+    *           Service DAO de la famille de colonnes "TraceRegTechniqueIndex"
+    * @param timeUUIDSupport
+    *           Utilitaires pour créer des TimeUUID
+    */
+   @Autowired
+   public TraceRegTechniqueSupport(TraceRegTechniqueDao dao,
+         TraceRegTechniqueIndexDao indexDao,
+         TimeUUIDEtTimestampSupport timeUUIDSupport) {
+      super();
+      this.dao = dao;
+      this.indexDao = indexDao;
+      this.timeUUIDSupport = timeUUIDSupport;
+   }
 
    /**
     * création d'une trace dans le registre technique

@@ -37,17 +37,33 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
    private static final String FIN_LOG = "{} - fin";
    private static final String DEBUT_LOG = "{} - début";
 
-   @Autowired
-   private TraceRegTechniqueSupport support;
+   private final TraceRegTechniqueSupport support;
 
-   @Autowired
-   private JobClockSupport clockSupport;
+   private final JobClockSupport clockSupport;
 
-   @Autowired
-   private LoggerSupport loggerSupport;
+   private final LoggerSupport loggerSupport;
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(RegTechniqueServiceImpl.class);
+
+   /**
+    * Constructeur
+    * 
+    * @param support
+    *           Support de la classe DAO TraceRegTechniqueDao
+    * @param clockSupport
+    *           JobClockSupport Cassandra
+    * @param loggerSupport
+    *           Support pour l'écriture des traces applicatives
+    */
+   @Autowired
+   public RegTechniqueServiceImpl(TraceRegTechniqueSupport support,
+         JobClockSupport clockSupport, LoggerSupport loggerSupport) {
+      super();
+      this.support = support;
+      this.clockSupport = clockSupport;
+      this.loggerSupport = loggerSupport;
+   }
 
    /**
     * {@inheritDoc}

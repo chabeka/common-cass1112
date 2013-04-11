@@ -47,14 +47,29 @@ public class TraceJournalEvtSupport {
    private final SimpleDateFormat dateFormat = new SimpleDateFormat(
          "yyyy-MM-dd HH'h'mm ss's' SSS'ms'", Locale.FRENCH);
 
-   @Autowired
-   private TraceJournalEvtDao dao;
+   private final TraceJournalEvtDao dao;
 
-   @Autowired
-   private TraceJournalEvtIndexDao indexDao;
+   private final TraceJournalEvtIndexDao indexDao;
 
+   private final TimeUUIDEtTimestampSupport timeUUIDSupport;
+
+   /**
+    * @param dao
+    *           Service DAO de la famille de colonnes "TraceJournalEvt"
+    * @param indexDao
+    *           Service DAO de la famille de colonnes "TraceJournalEvtIndex"
+    * @param timeUUIDSupport
+    *           Utilitaires pour créer des TimeUUID
+    */
    @Autowired
-   private TimeUUIDEtTimestampSupport timeUUIDSupport;
+   public TraceJournalEvtSupport(TraceJournalEvtDao dao,
+         TraceJournalEvtIndexDao indexDao,
+         TimeUUIDEtTimestampSupport timeUUIDSupport) {
+      super();
+      this.dao = dao;
+      this.indexDao = indexDao;
+      this.timeUUIDSupport = timeUUIDSupport;
+   }
 
    /**
     * Création d'une trace dans le registre de sécurité

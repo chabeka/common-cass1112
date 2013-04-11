@@ -1,7 +1,10 @@
 package fr.urssaf.image.sae.trace.dao.support;
 
 import net.docubase.toolkit.service.ServiceProvider;
+import net.docubase.toolkit.service.ged.ArchiveService;
 import net.docubase.toolkit.service.ged.RecordManagerService;
+import net.docubase.toolkit.service.ged.SearchService;
+import net.docubase.toolkit.service.ged.StoreService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -59,5 +62,28 @@ public class ServiceProviderSupport {
 
       return serviceProvider.getRecordManagerService();
    }
-
+   
+   /**
+    * Renvoie le service d'accès aux journaux 
+    * @return le {@ling ArchiveService}
+    */
+   public final ArchiveService getArchiveService() {
+      return serviceProvider.getArchiveService();
+   }
+   
+   /**
+    * Renvoie le service de recherche
+    * @return le {@ling SearchService}
+    */
+   public final SearchService getSearchService() {
+      return serviceProvider.getSearchService();
+   }
+   
+   /**
+    * Renvoie le service d'accès aux contenus
+    * @return le {@ling StoreService}
+    */
+   public final StoreService getStoreService() {
+      return serviceProvider.getStoreService();
+   }
 }

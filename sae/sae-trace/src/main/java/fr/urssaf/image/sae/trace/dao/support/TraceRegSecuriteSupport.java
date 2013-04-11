@@ -47,14 +47,29 @@ public class TraceRegSecuriteSupport {
    private final SimpleDateFormat dateFormat = new SimpleDateFormat(
          "yyyy-MM-dd HH'h'mm ss's' SSS'ms'", Locale.FRENCH);
 
-   @Autowired
-   private TraceRegSecuriteDao dao;
+   private final TraceRegSecuriteDao dao;
 
-   @Autowired
-   private TraceRegSecuriteIndexDao indexDao;
+   private final TraceRegSecuriteIndexDao indexDao;
 
+   private final TimeUUIDEtTimestampSupport timeUUIDSupport;
+
+   /**
+    * @param dao
+    *           Service DAO de la famille de colonnes "TraceRegSecurite"
+    * @param indexDao
+    *           Service DAO de la famille de colonnes "TraceRegSecuriteIndex"
+    * @param timeUUIDSupport
+    *           Utilitaires pour créer des TimeUUID
+    */
    @Autowired
-   private TimeUUIDEtTimestampSupport timeUUIDSupport;
+   public TraceRegSecuriteSupport(TraceRegSecuriteDao dao,
+         TraceRegSecuriteIndexDao indexDao,
+         TimeUUIDEtTimestampSupport timeUUIDSupport) {
+      super();
+      this.dao = dao;
+      this.indexDao = indexDao;
+      this.timeUUIDSupport = timeUUIDSupport;
+   }
 
    /**
     * Création d'une trace dans le registre de sécurité

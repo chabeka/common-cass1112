@@ -5,17 +5,19 @@ package fr.urssaf.image.sae.trace.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
-import fr.urssaf.image.sae.trace.model.DfceTraceSyst;
+import fr.urssaf.image.sae.trace.model.DfceTraceDoc;
 
 /**
- * Services de l'historique des événements
+ * Service du journal de cycle de vie des archives
  * 
  */
-public interface HistEvenementService {
+public interface CycleVieService {
 
    /**
-    * Renvoie une liste de traces sur une plage de temps
+    * Recherche et renvoie la liste des traces du cycle de vie des archives
+    * comprises dans l'intervalle des dates donné
     * 
     * @param dateDebut
     *           date de début de la plage de temps
@@ -31,9 +33,17 @@ public interface HistEvenementService {
     *           </ul>
     * @return une liste de traces de l'historique des événements
     */
-   List<DfceTraceSyst> lecture(Date dateDebut, Date dateFin, int limite,
+   List<DfceTraceDoc> lecture(Date dateDebut, Date dateFin, int limite,
          boolean reversed);
 
-
+   /**
+    * Recherche et renvoie les traces pour le document dont l'UUID est passé en
+    * paramètre
+    * 
+    * @param docUuid
+    *           Identifiant unique du document
+    * @return Liste des traces DFCE concernant le document
+    */
+   List<DfceTraceDoc> lectureParDocument(UUID docUuid);
 
 }
