@@ -25,8 +25,6 @@ public class LancementTraitement implements Callable<UUID> {
    private static final Logger LOG = LoggerFactory
          .getLogger(LancementTraitement.class);
 
-   private static final String PREFIX_LOG = "LancementTraitement";
-
    private final ApplicationContext context;
 
    private final JobFailureService jobFailureService;
@@ -51,9 +49,13 @@ public class LancementTraitement implements Callable<UUID> {
     */
    @Override
    public UUID call() {
-      LOG.debug(
-            "{} - début de l'opération du lancement d'un traitement de masse ",
-            PREFIX_LOG);
+
+      String prefixeLog = "call()";
+
+      LOG
+            .debug(
+                  "{} - Début d'une passe d'analyse de la pile des travaux et de lancement d'un job en attente",
+                  prefixeLog);
       CoordinationService service = context.getBean(CoordinationService.class);
 
       UUID idJob = null;
@@ -63,23 +65,26 @@ public class LancementTraitement implements Callable<UUID> {
 
       } catch (AucunJobALancerException e) {
 
-         LOG.debug("{} - il n'y a aucun traitement à lancer", PREFIX_LOG);
+         LOG.debug("{} - Il n'y a aucun traitement de masse à lancer",
+               prefixeLog);
 
       } catch (JobRuntimeException e) {
 
-         LOG.debug("{} - il n'y a aucun traitement à lancer", PREFIX_LOG);
+         LOG.debug("{} - Il n'y a aucun traitement de masse à lancer",
+               prefixeLog);
 
          // on mémorise l'échec du traitement
          jobFailureService.ajouterEchec(e.getJob().getIdJob(), e);
 
-      } catch(RuntimeException e){
-         
-         LOG.error(PREFIX_LOG+" - Une erreur a eu lieu lors du lancement du traitement",e);
+      } catch (RuntimeException e) {
+
+         LOG.error(prefixeLog + " - Une erreur technique a eu lieu", e);
       }
 
-      LOG.debug(
-            "{} - fin de l'opération du lancement d'un traitement de masse ",
-            PREFIX_LOG);
+      LOG
+            .debug(
+                  "{} - Fin d'une passe d'analyse de la pile des travaux et de lancement d'un job en attente",
+                  prefixeLog);
       return idJob;
    }
 
