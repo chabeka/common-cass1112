@@ -41,7 +41,7 @@ import fr.urssaf.image.sae.pile.travaux.service.JobLectureService;
  * 
  */
 @Service
-public class JobLectureImpl implements JobLectureService {
+public class JobLectureServiceImpl implements JobLectureService {
 
    private static final int MAX_ALL_JOBS = 200;
 
@@ -68,7 +68,7 @@ public class JobLectureImpl implements JobLectureService {
     *           DAO de {@link JobHistory}
     */
    @Autowired
-   public JobLectureImpl(JobRequestDao jobRequestDao,
+   public JobLectureServiceImpl(JobRequestDao jobRequestDao,
          JobsQueueDao jobsQueueDao, JobHistoryDao jobHistoryDao) {
 
       this.jobRequestDao = jobRequestDao;

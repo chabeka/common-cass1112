@@ -25,6 +25,7 @@ import org.springframework.stereotype.Repository;
 import fr.urssaf.image.commons.cassandra.serializer.NullableDateSerializer;
 import fr.urssaf.image.sae.pile.travaux.dao.serializer.MapSerializer;
 import fr.urssaf.image.sae.pile.travaux.dao.serializer.VISerializer;
+import fr.urssaf.image.sae.pile.travaux.exception.PileTravauxRuntimeException;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 import fr.urssaf.image.sae.pile.travaux.model.JobState;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
@@ -118,12 +119,11 @@ public class JobRequestDao {
     * Colonne {@value #JR_VI}
     */
    public static final String JR_VI = "vi";
-   
+
    /**
     * Colonne {@value #JR_JOB_PARAM_COLUMN}
     */
    public static final String JR_JOB_PARAM_COLUMN = "jobParameters";
-
 
    private static final int MAX_JOB_ATTIBUTS = 100;
 
@@ -492,12 +492,11 @@ public class JobRequestDao {
    public final void ecritColonneVi(ColumnFamilyUpdater<UUID, String> updater,
          VIContenuExtrait valeur, long clock) {
 
-      addColumn(updater, JR_VI, valeur, StringSerializer.get(),
-            VISerializer.get(), clock);
+      addColumn(updater, JR_VI, valeur, StringSerializer.get(), VISerializer
+            .get(), clock);
 
    }
-   
-   
+
    /**
     * Ajoute une colonne {@value #JR_JOB_PARAM_COLUMN}
     * 
@@ -509,7 +508,8 @@ public class JobRequestDao {
     *           horloge de la colonne
     */
    public final void ecritColonneJobParameters(
-         ColumnFamilyUpdater<UUID, String> updater, Map<String,String> valeur, long clock) {
+         ColumnFamilyUpdater<UUID, String> updater, Map<String, String> valeur,
+         long clock) {
 
       addColumn(updater, JR_JOB_PARAM_COLUMN, valeur, StringSerializer.get(),
             MapSerializer.get(), clock);
@@ -554,12 +554,25 @@ public class JobRequestDao {
       jobRequest.setType(result.getString(JR_TYPE_COLUMN));
 
       jobRequest.setParameters(result.getString(JR_PARAMETERS_COLUMN));
-      
+
       String state = result.getString(JR_STATE_COLUMN);
       jobRequest.setState(JobState.valueOf(state));
 
       jobRequest.setReservedBy(result.getString(JR_RESERVED_BY_COLUMN));
 
+      // Lève une exception runtime si la colonne JR_CREATION_DATE_COLUMN est
+      // vide. Cela est un cas anormal, car cette colonne devrait être
+      // renseignée lors de la création du job. Si elle est vide, et que l'on ne
+      // fait pas ce test, une NPE est levée et on ne peut pas préciser des
+      // informations dans l'exception sur le job qui pose problème.
+      if (result.getByteArray(JR_CREATION_DATE_COLUMN) == null) {
+         throw new PileTravauxRuntimeException(
+               String
+                     .format(
+                           "Erreur technique : la colonne %s pour le job %s est vide ou absente (Column family %s)",
+                           JR_CREATION_DATE_COLUMN, jobRequest.getIdJob(),
+                           JOBREQUEST_CFNAME));
+      }
       Date creationDate = dSlz.fromBytes(result
             .getByteArray(JR_CREATION_DATE_COLUMN));
       jobRequest.setCreationDate(creationDate);
@@ -602,10 +615,10 @@ public class JobRequestDao {
                result.getByteArray(JR_VI));
          jobRequest.setVi(contenuExtrait);
       }
-      
-      if(result.getByteArray(JR_JOB_PARAM_COLUMN)!=null){
-            byte[] bMetadata = result.getByteArray(JR_JOB_PARAM_COLUMN);
-            jobRequest.setJobParameters(MapSerializer.get().fromBytes(bMetadata));
+
+      if (result.getByteArray(JR_JOB_PARAM_COLUMN) != null) {
+         byte[] bMetadata = result.getByteArray(JR_JOB_PARAM_COLUMN);
+         jobRequest.setJobParameters(MapSerializer.get().fromBytes(bMetadata));
       }
 
       return jobRequest;

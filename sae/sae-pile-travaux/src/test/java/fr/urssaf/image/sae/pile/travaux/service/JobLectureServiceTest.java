@@ -10,6 +10,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
+import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
 import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 
 import org.apache.commons.lang.time.DateUtils;
@@ -22,9 +23,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
+import fr.urssaf.image.sae.pile.travaux.dao.JobRequestDao;
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.exception.LockTimeoutException;
+import fr.urssaf.image.sae.pile.travaux.exception.PileTravauxRuntimeException;
 import fr.urssaf.image.sae.pile.travaux.model.JobHistory;
 import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
@@ -41,6 +45,12 @@ public class JobLectureServiceTest {
 
    @Autowired
    private JobLectureService jobLectureService;
+
+   @Autowired
+   private JobRequestDao jobRequestDao;
+
+   @Autowired
+   private JobClockSupport jobClockSupport;
 
    private UUID idJob;
 
@@ -186,9 +196,10 @@ public class JobLectureServiceTest {
       // Le job est dans un état différente de CREATED, RESERVED ou STARTING, sa
       // réinitialisation est impossible
       job.setState(JobState.FAILURE);
-      Assert.assertFalse(
-            "Le job est à l'état FAILURE, il ne doit pas pouvoir être réinitialisé",
-            jobLectureService.isJobResettable(job));
+      Assert
+            .assertFalse(
+                  "Le job est à l'état FAILURE, il ne doit pas pouvoir être réinitialisé",
+                  jobLectureService.isJobResettable(job));
    }
 
    @Test
@@ -206,11 +217,12 @@ public class JobLectureServiceTest {
       // Le job est dans un état différente de CREATED, RESERVED ou STARTING, sa
       // suppression est impossible
       job.setState(JobState.FAILURE);
-      Assert.assertFalse(
-            "Le job est à l'état FAILURE, il ne doit pas pouvoir être supprimé",
-            jobLectureService.isJobRemovable(job));
-   }  
-   
+      Assert
+            .assertFalse(
+                  "Le job est à l'état FAILURE, il ne doit pas pouvoir être supprimé",
+                  jobLectureService.isJobRemovable(job));
+   }
+
    private void assertHistory(JobHistory history, String expectedTrace,
          Date expectedDate, int decalage) {
 
@@ -226,9 +238,9 @@ public class JobLectureServiceTest {
    }
 
    private void createJob(UUID idJob) {
-      Map<String,String> jobParam= new HashMap<String, String>();
+      Map<String, String> jobParam = new HashMap<String, String>();
       jobParam.put("parameters", "param");
-      
+
       JobToCreate job = new JobToCreate();
       job.setIdJob(idJob);
       job.setType("ArchivageMasse");
@@ -236,6 +248,52 @@ public class JobLectureServiceTest {
       job.setCreationDate(new Date());
 
       jobQueueService.addJob(job);
+
+   }
+
+   /**
+    * TU pour les Redmine 3406 et 3407 Si la colonne dateCreation d'un
+    * JobRequest est vide => erreur technique
+    */
+   @Test
+   public void getJobRequest_DateCreationVide() {
+
+      // Création d'un job standard
+      idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+      createJob(idJob);
+
+      // Suppression manuelle de la colonne dateCreation
+      ColumnFamilyUpdater<UUID, String> updaterJobRequest = jobRequestDao
+            .getJobRequestTmpl().createUpdater(idJob);
+      updaterJobRequest.deleteColumn(JobRequestDao.JR_CREATION_DATE_COLUMN);
+      jobRequestDao.getJobRequestTmpl().update(updaterJobRequest);
+
+      // Lecture du job
+      try {
+
+         jobLectureService.getJobRequest(idJob);
+
+         Assert.fail("On attendait une exception");
+
+      } catch (PileTravauxRuntimeException ex) {
+
+         Assert
+               .assertEquals(
+                     "Le message de l'exception obtenue est incorrect",
+                     String
+                           .format(
+                                 "Erreur technique : la colonne creationDate pour le job %s est vide ou absente (Column family JobRequest)",
+                                 idJob), ex.getMessage());
+
+         // Remet le job dans un état correct pour que le after() fonctionne
+         updaterJobRequest = jobRequestDao.getJobRequestTmpl().createUpdater(
+               idJob);
+         long clock = jobClockSupport.currentCLock();
+         jobRequestDao.ecritColonneCreationDate(updaterJobRequest, new Date(),
+               clock);
+         jobRequestDao.getJobRequestTmpl().update(updaterJobRequest);
+
+      }
 
    }
 
