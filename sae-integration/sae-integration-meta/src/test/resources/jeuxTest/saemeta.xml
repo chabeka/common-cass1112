@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<meta
+   xmlns="http://www.cirtil.fr/saeIntegration/meta"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="
+      http://www.cirtil.fr/saeIntegration/meta ..\..\..\main\resources\xsd\saemeta\saemeta.xsd">
+
+   <dictionnaireAjout>
+   
+      <dictionnaire>
+         <code>dico1</code>
+         <valeurs>
+            <valeur>dico1_val1</valeur>
+            <valeur>dico1_val2</valeur>
+            <valeur>dico1_val3</valeur>
+         </valeurs>
+      </dictionnaire>
+      
+      <dictionnaire>
+         <code>dico2</code>
+         <valeurs>
+            <valeur>dico2_val1</valeur>
+            <valeur>dico2_val2</valeur>
+            <valeur>dico2_val3</valeur>
+         </valeurs>
+      </dictionnaire>
+      
+   </dictionnaireAjout>
+   
+   
+   
+   <dictionnaireSuppression>
+      
+      <dictionnaire>
+         <code>dico1</code>
+         <valeurs>
+            <valeur>dico1_val2</valeur>
+         </valeurs>
+      </dictionnaire>
+   
+   </dictionnaireSuppression>
+   
+   
+   
+   <metadonneesCreation>
+   
+      <metadonnee>
+         <codeCourt>tes1</codeCourt>
+         <codeLong>Test1</codeLong>
+         <libelle>Libellé de Test1</libelle>
+         <description>Description de Test1</description>
+         <specifiableArchivage>true</specifiableArchivage>
+         <obligatoireArchivage>false</obligatoireArchivage>
+         <consulteeParDefaut>false</consulteeParDefaut>
+         <consultable>true</consultable>
+         <recherchable>true</recherchable>
+         <estIndexee>false</estIndexee>
+         <formatage />
+         <tailleMax>0</tailleMax>
+         <gereeParDfce>false</gereeParDfce>
+         <typeDfce>String</typeDfce>
+         <obligatoireStockage>false</obligatoireStockage>
+         <aUnDico>false</aUnDico>
+         <nomDico />
+      </metadonnee>
+      
+      <metadonnee>
+         <codeCourt>tes2</codeCourt>
+         <codeLong>Test2</codeLong>
+         <libelle>Libellé de Test2</libelle>
+         <description>Description de Test2</description>
+         <specifiableArchivage>true</specifiableArchivage>
+         <obligatoireArchivage>false</obligatoireArchivage>
+         <consulteeParDefaut>false</consulteeParDefaut>
+         <consultable>true</consultable>
+         <recherchable>true</recherchable>
+         <estIndexee>false</estIndexee>
+         <formatage />
+         <tailleMax>10</tailleMax>
+         <gereeParDfce>false</gereeParDfce>
+         <typeDfce>String</typeDfce>
+         <obligatoireStockage>false</obligatoireStockage>
+         <aUnDico>true</aUnDico>
+         <nomDico>dico2</nomDico>
+      </metadonnee>
+      
+   </metadonneesCreation>
+   
+   
+   
+   <metadonneesModification>
+   
+      <metadonnee>
+         <codeCourt>tes1</codeCourt>
+         <codeLong>Test1</codeLong>
+         <libelle>Libellé de Test1</libelle>
+         <description>Description de Test1</description>
+         <specifiableArchivage>true</specifiableArchivage>
+         <obligatoireArchivage>false</obligatoireArchivage>
+         <consulteeParDefaut>false</consulteeParDefaut>
+         <consultable>true</consultable>
+         <recherchable>true</recherchable>
+         <estIndexee>false</estIndexee>
+         <formatage />
+         <tailleMax>20</tailleMax>  <!-- Changement de taille -->
+         <gereeParDfce>false</gereeParDfce>
+         <typeDfce>String</typeDfce>
+         <obligatoireStockage>false</obligatoireStockage>
+         <aUnDico>false</aUnDico>
+         <nomDico />
+      </metadonnee>
+      
+   </metadonneesModification>
+   
+   
+</meta>

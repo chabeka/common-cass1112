@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<bindings version="2.1" xmlns="http://java.sun.com/xml/ns/jaxb">
+  <!--
+
+Ce fichier a été généré par l'implémentation de référence JavaTM Architecture for XML Binding (JAXB), v2.2.5-2 
+Voir <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
+Toute modification apportée à ce fichier sera perdue lors de la recompilation du schéma source. 
+Généré le : 2013.04.15 à 10:47:57 AM CEST 
+
+  -->
+  <bindings scd="x-schema::tns" xmlns:tns="http://www.cirtil.fr/saeIntegration/meta">
+    <schemaBindings map="false">
+      <package name="fr.urssaf.image.sae.integration.meta.modele.xml"/>
+    </schemaBindings>
+    <bindings scd="~tns:MetaType">
+      <class ref="fr.urssaf.image.sae.integration.meta.modele.xml.MetaType"/>
+    </bindings>
+    <bindings scd="~tns:ListeDictionnaireType">
+      <class ref="fr.urssaf.image.sae.integration.meta.modele.xml.ListeDictionnaireType"/>
+    </bindings>
+    <bindings scd="~tns:MetadonneeType">
+      <class ref="fr.urssaf.image.sae.integration.meta.modele.xml.MetadonneeType"/>
+    </bindings>
+    <bindings scd="~tns:ListeMetadonneesType">
+      <class ref="fr.urssaf.image.sae.integration.meta.modele.xml.ListeMetadonneesType"/>
+    </bindings>
+    <bindings scd="~tns:ListeValeursDictionnaireType">
+      <class ref="fr.urssaf.image.sae.integration.meta.modele.xml.ListeValeursDictionnaireType"/>
+    </bindings>
+    <bindings scd="~tns:DictionnaireType">
+      <class ref="fr.urssaf.image.sae.integration.meta.modele.xml.DictionnaireType"/>
+    </bindings>
+  </bindings>
+</bindings>
+
