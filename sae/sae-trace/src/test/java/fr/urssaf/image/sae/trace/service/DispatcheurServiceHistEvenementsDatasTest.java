@@ -3,6 +3,7 @@
  */
 package fr.urssaf.image.sae.trace.service;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -70,6 +71,7 @@ public class DispatcheurServiceHistEvenementsDatasTest {
 
    @Test
    public void testCreationHistoriqueEvtSucces() {
+      Date endDate = new Date();
       Date startDate = new Date();
       createDestinataireExploitation();
 
@@ -81,9 +83,9 @@ public class DispatcheurServiceHistEvenementsDatasTest {
 
       service.ajouterTrace(traceToCreate);
       
-      // Ajout des 5 min car décalage entre les postes et le serveur...
-      startDate = DateUtils.addMinutes(startDate, -5);
-      Date endDate = DateUtils.addMinutes(startDate, 5);
+      startDate = DateUtils.truncate(startDate, Calendar.DATE);
+      endDate = DateUtils.addDays(endDate, 1);
+      endDate = DateUtils.truncate(endDate, Calendar.DATE);
 
       List<DfceTraceSyst> events = histService.lecture(startDate, endDate, 1,
             false);

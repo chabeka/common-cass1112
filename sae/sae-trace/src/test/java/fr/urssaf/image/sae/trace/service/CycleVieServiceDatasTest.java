@@ -3,6 +3,7 @@
  */
 package fr.urssaf.image.sae.trace.service;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -68,11 +69,14 @@ public class CycleVieServiceDatasTest {
       Date endDate = new Date();
 
       // on fixe les bornes inférieure à la première trace de la journée
-      Date dateStart = DateUtils.addMinutes(startDate, -5);
-      Date dateFin = DateUtils.addMinutes(endDate, 5);
+      startDate = DateUtils.truncate(startDate, Calendar.DATE);
+      //.addMinutes(startDate, -5);
+      //Date dateStart = DateUtils.Date dateFin = DateUtils.addMinutes(endDate, 5);
+      endDate = DateUtils.addDays(endDate, 1);
+      endDate = DateUtils.truncate(endDate, Calendar.DATE);
 
       List<DfceTraceDoc> result = service
-            .lecture(dateStart, dateFin, 10, true);
+            .lecture(startDate, endDate, 10, true);
       
       Assert.assertNotNull("il doit y avoir un résultat", result);
       

@@ -3,6 +3,7 @@
  */
 package fr.urssaf.image.sae.trace.service;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -89,8 +90,9 @@ public class HistEvenementServiceDatasTest {
       createTrace(uuid, "");
       Date dateFin = new Date();
 
-      dateDebut = DateUtils.addMinutes(dateDebut, -5);
-      dateFin = DateUtils.addMinutes(dateFin, 5);
+      dateDebut = DateUtils.truncate(dateDebut, Calendar.DATE);
+      dateFin = DateUtils.addDays(dateFin, 1);
+      dateFin = DateUtils.truncate(dateFin, Calendar.DATE);
       
       List<DfceTraceSyst> result = service.lecture(dateDebut, dateFin, 10, true);
 
