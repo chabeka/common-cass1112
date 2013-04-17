@@ -29,6 +29,7 @@ import fr.cirtil.www.saeservice.MetadonneeType;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.metadata.utils.Utils;
 import fr.urssaf.image.sae.services.capture.SAECaptureService;
+import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureBadEcdeUrlEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureEcdeUrlFileNotFoundEx;
 import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
@@ -324,6 +325,9 @@ public class WSCaptureServiceImpl implements WSCaptureService {
          throw new CaptureAxisFault("ErreurInterneCapture",
                MessageRessourcesUtils
                      .recupererMessage("ws.capture.error", null), e);
+      }catch (MetadataValueNotInDictionaryEx e) {
+
+         throw new CaptureAxisFault("CaptureMetadonneesValeurNonValide", e.getMessage());
       }
 
    }
@@ -393,6 +397,9 @@ public class WSCaptureServiceImpl implements WSCaptureService {
 
          throw new CaptureAxisFault("NomFichierVide", MessageRessourcesUtils
                .recupererMessage("ws.capture.error", null), e);
+      }catch (MetadataValueNotInDictionaryEx e) {
+
+         throw new CaptureAxisFault("CaptureMetadonneesValeurNonValide", e.getMessage());
       }
    }
 
