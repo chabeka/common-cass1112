@@ -17,6 +17,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.services.capture.SAECaptureService;
+import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureBadEcdeUrlEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureEcdeUrlFileNotFoundEx;
 import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
@@ -85,7 +86,7 @@ public class SAECaptureServiceValidationTest {
          UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
          EmptyDocumentEx, RequiredArchivableMetadataEx,
          NotArchivableMetadataEx, ReferentialRndException, UnknownCodeRndEx,
-         UnknownHashCodeEx, CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx {
+         UnknownHashCodeEx, CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx {
 
       try {
          service.capture(metadatas, ecdeURL);
@@ -102,7 +103,7 @@ public class SAECaptureServiceValidationTest {
          UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
          EmptyDocumentEx, RequiredArchivableMetadataEx,
          NotArchivableMetadataEx, ReferentialRndException, UnknownCodeRndEx,
-         UnknownHashCodeEx, CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx {
+         UnknownHashCodeEx, CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx {
 
       assertCapture_failure_metadatas(service, null);
       assertCapture_failure_metadatas(service, new ArrayList<UntypedMetadata>());
@@ -116,7 +117,7 @@ public class SAECaptureServiceValidationTest {
          DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
          ReferentialRndException, UnknownCodeRndEx, UnknownHashCodeEx,
-         CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx {
+         CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx {
 
       try {
 
@@ -137,7 +138,7 @@ public class SAECaptureServiceValidationTest {
          UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
          EmptyDocumentEx, RequiredArchivableMetadataEx,
          NotArchivableMetadataEx, ReferentialRndException, UnknownCodeRndEx,
-         UnknownHashCodeEx, CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx {
+         UnknownHashCodeEx, CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx {
 
       try {
 

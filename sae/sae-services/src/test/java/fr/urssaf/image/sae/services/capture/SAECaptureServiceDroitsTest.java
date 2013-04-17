@@ -40,6 +40,7 @@ import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestDocument;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.services.SAEServiceTestProvider;
+import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureBadEcdeUrlEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureEcdeUrlFileNotFoundEx;
 import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
@@ -149,7 +150,7 @@ public class SAECaptureServiceDroitsTest {
          DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
          UnknownHashCodeEx, IOException, CaptureBadEcdeUrlEx,
-         CaptureEcdeUrlFileNotFoundEx {
+         CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx {
 
       EcdeTestDocument ecde = ecdeTestTools
             .buildEcdeTestDocument("attestation_consultation.pdf");

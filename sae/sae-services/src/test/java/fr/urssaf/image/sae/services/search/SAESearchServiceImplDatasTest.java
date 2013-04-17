@@ -42,6 +42,7 @@ import fr.urssaf.image.sae.services.QueriesReferenceDAO;
 import fr.urssaf.image.sae.services.SAEServiceTestProvider;
 import fr.urssaf.image.sae.services.capture.SAECaptureService;
 import fr.urssaf.image.sae.services.document.SAESearchService;
+import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureBadEcdeUrlEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureEcdeUrlFileNotFoundEx;
@@ -171,7 +172,7 @@ public class SAESearchServiceImplDatasTest {
          UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
          EmptyDocumentEx, RequiredArchivableMetadataEx,
          NotArchivableMetadataEx, UnknownHashCodeEx, CaptureBadEcdeUrlEx,
-         CaptureEcdeUrlFileNotFoundEx, IOException {
+         CaptureEcdeUrlFileNotFoundEx, IOException, MetadataValueNotInDictionaryEx {
 
       // insertion d'un document
       ecde = ecdeTestTools

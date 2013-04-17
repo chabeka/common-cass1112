@@ -19,6 +19,7 @@ import fr.urssaf.image.sae.mapping.services.MappingDocumentService;
 import fr.urssaf.image.sae.services.controles.SAEControlesCaptureService;
 import fr.urssaf.image.sae.services.document.commons.SAECommonCaptureService;
 import fr.urssaf.image.sae.services.enrichment.SAEEnrichmentMetadataService;
+import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.EmptyDocumentEx;
 import fr.urssaf.image.sae.services.exception.capture.EmptyFileNameEx;
@@ -72,7 +73,7 @@ public class SAECommonCaptureServiceImpl implements SAECommonCaptureService {
          InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
          DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
          RequiredArchivableMetadataEx, SAEEnrichmentEx, UnknownHashCodeEx,
-         ReferentialRndException, UnknownCodeRndEx, SAECaptureServiceEx {
+         ReferentialRndException, UnknownCodeRndEx, SAECaptureServiceEx, MetadataValueNotInDictionaryEx {
       // Traces debug - entrée méthode
       String prefixeTrc = "buildStorageDocumentForCapture()";
       LOGGER.debug("{} - Début", prefixeTrc);
@@ -102,7 +103,7 @@ public class SAECommonCaptureServiceImpl implements SAECommonCaptureService {
          EmptyFileNameEx, DuplicatedMetadataEx, NotArchivableMetadataEx,
          EmptyDocumentEx, RequiredArchivableMetadataEx, SAEEnrichmentEx,
          UnknownHashCodeEx, ReferentialRndException, UnknownCodeRndEx,
-         NotSpecifiableMetadataEx, SAECaptureServiceEx {
+         NotSpecifiableMetadataEx, SAECaptureServiceEx, MetadataValueNotInDictionaryEx {
 
       // Traces debug - entrée méthode
       String prefixeTrc = "buildBinaryStorageDocumentForCapture()";
@@ -127,7 +128,7 @@ public class SAECommonCaptureServiceImpl implements SAECommonCaptureService {
          UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, SAEEnrichmentEx,
          ReferentialRndException, UnknownCodeRndEx, UnknownHashCodeEx,
-         RequiredStorageMetadataEx, SAECaptureServiceEx {
+         RequiredStorageMetadataEx, SAECaptureServiceEx, MetadataValueNotInDictionaryEx {
 
       SAEDocument saeDocument = null;
       StorageDocument storageDocument = null;

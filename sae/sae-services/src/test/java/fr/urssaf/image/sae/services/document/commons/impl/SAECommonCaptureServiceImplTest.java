@@ -20,6 +20,7 @@ import fr.urssaf.image.sae.mapping.exception.InvalidSAETypeException;
 import fr.urssaf.image.sae.mapping.exception.MappingFromReferentialException;
 import fr.urssaf.image.sae.services.CommonsServices;
 import fr.urssaf.image.sae.services.document.commons.SAECommonCaptureService;
+import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.EmptyDocumentEx;
 import fr.urssaf.image.sae.services.exception.capture.InvalidValueTypeAndFormatMetadataEx;
@@ -111,7 +112,7 @@ public class SAECommonCaptureServiceImplTest extends CommonsServices {
          NotSpecifiableMetadataEx, EmptyDocumentEx,
          RequiredArchivableMetadataEx, MappingFromReferentialException,
          InvalidSAETypeException, UnknownHashCodeEx, ReferentialRndException,
-         UnknownCodeRndEx {
+         UnknownCodeRndEx, MetadataValueNotInDictionaryEx {
 
       UntypedDocument untypedDocument = getUntypedDocumentMockData();
       saeCommonCaptureService.buildStorageDocumentForCapture(untypedDocument);

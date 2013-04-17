@@ -48,6 +48,7 @@ import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestDocument;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.services.SAEServiceTestProvider;
+import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureBadEcdeUrlEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureEcdeUrlFileNotFoundEx;
 import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
@@ -159,7 +160,7 @@ public class SAECaptureServiceTest {
          DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
          UnknownHashCodeEx, IOException, CaptureBadEcdeUrlEx,
-         CaptureEcdeUrlFileNotFoundEx {
+         CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx {
 
       EcdeTestDocument ecde = ecdeTestTools
             .buildEcdeTestDocument("attestation_consultation.pdf");
@@ -225,7 +226,7 @@ public class SAECaptureServiceTest {
          DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
          UnknownHashCodeEx, IOException, CaptureBadEcdeUrlEx,
-         CaptureEcdeUrlFileNotFoundEx {
+         CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx {
 
       EcdeTestDocument ecde = ecdeTestTools
             .buildEcdeTestDocument("attestation_consultation.pdf");
@@ -395,7 +396,7 @@ public class SAECaptureServiceTest {
          InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
          DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
-         UnknownHashCodeEx, IOException, EmptyFileNameEx {
+         UnknownHashCodeEx, IOException, EmptyFileNameEx, MetadataValueNotInDictionaryEx {
 
       File srcFile = new File(
             "src/test/resources/doc/attestation_consultation.pdf");
@@ -416,7 +417,7 @@ public class SAECaptureServiceTest {
          InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
          DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
-         UnknownHashCodeEx, IOException, EmptyFileNameEx {
+         UnknownHashCodeEx, IOException, EmptyFileNameEx, MetadataValueNotInDictionaryEx {
 
       File srcFile = new File(
             "src/test/resources/doc/attestation_consultation.pdf");
@@ -437,7 +438,7 @@ public class SAECaptureServiceTest {
          InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
          DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
-         UnknownHashCodeEx, IOException, EmptyFileNameEx {
+         UnknownHashCodeEx, IOException, EmptyFileNameEx, MetadataValueNotInDictionaryEx {
 
       File srcFile = new File(
             "src/test/resources/doc/attestation_consultation.pdf");
@@ -459,7 +460,7 @@ public class SAECaptureServiceTest {
          InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
          DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
-         UnknownHashCodeEx, IOException, EmptyFileNameEx {
+         UnknownHashCodeEx, IOException, EmptyFileNameEx, MetadataValueNotInDictionaryEx {
 
       List<UntypedMetadata> metadatas = getListMetadata();
 
@@ -477,7 +478,7 @@ public class SAECaptureServiceTest {
          InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
          DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
-         UnknownHashCodeEx, IOException, EmptyFileNameEx {
+         UnknownHashCodeEx, IOException, EmptyFileNameEx, MetadataValueNotInDictionaryEx {
 
       List<UntypedMetadata> metadatas = getListMetadata();
 
@@ -495,7 +496,7 @@ public class SAECaptureServiceTest {
          InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
          DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
-         UnknownHashCodeEx, IOException, EmptyFileNameEx {
+         UnknownHashCodeEx, IOException, EmptyFileNameEx, MetadataValueNotInDictionaryEx {
 
       List<UntypedMetadata> metadatas = getListMetadata();
 
@@ -518,7 +519,7 @@ public class SAECaptureServiceTest {
          DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
          UnknownHashCodeEx, IOException, CaptureBadEcdeUrlEx,
-         CaptureEcdeUrlFileNotFoundEx {
+         CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx {
 
       File srcFile = new File(
             path);
@@ -578,13 +579,21 @@ public class SAECaptureServiceTest {
     * @throws FileNotFoundException 
     * @throws UnknownCodeRndEx 
     * @throws ReferentialRndException 
-    * @throws SAECaptureServiceEx 
+    * @throws SAECaptureServiceEx
+    * @throws MetadataValueNotInDictionaryEx
     */
    @Test(expected = FileNotFoundException.class)
-   public void fileNotFoundExceptionTest() throws SAECaptureServiceEx, ReferentialRndException, UnknownCodeRndEx, FileNotFoundException, RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx, NotArchivableMetadataEx, EmptyDocumentEx, RequiredArchivableMetadataEx, UnknownHashCodeEx{
-      String path= FileUtils.getTempDirectoryPath();
+   public void fileNotFoundExceptionTest() throws SAECaptureServiceEx,
+         ReferentialRndException, UnknownCodeRndEx, FileNotFoundException,
+         RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx,
+         UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
+         NotArchivableMetadataEx, EmptyDocumentEx,
+         RequiredArchivableMetadataEx, UnknownHashCodeEx,
+         MetadataValueNotInDictionaryEx {
+      String path = FileUtils.getTempDirectoryPath();
       List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
-      uuid = service.captureFichier(metadatas, path.concat("FichierInexistant.pdf"));
+      uuid = service.captureFichier(metadatas, path
+            .concat("FichierInexistant.pdf"));
       LOG.debug("document archivé alors que le fichier est inexistant:" + uuid);
       Assert.fail();
    }

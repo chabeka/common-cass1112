@@ -2,6 +2,7 @@ package fr.urssaf.image.sae.services.controles;
 
 import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
+import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureBadEcdeUrlEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureEcdeUrlFileNotFoundEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureEcdeWriteFileEx;
@@ -55,10 +56,12 @@ public interface SAEControlesCaptureService {
     *            {@link InvalidValueTypeAndFormatMetadataEx}
     * @throws RequiredArchivableMetadataEx
     *            {@link RequiredArchivableMetadataEx}
+    * @throws MetadataValueNotInDictionaryEx
+    *            {@link MetadataValueNotInDictionaryEx}
     */
    void checkUntypedMetadata(UntypedDocument untypedDocument)
          throws UnknownMetadataEx, DuplicatedMetadataEx,
-         InvalidValueTypeAndFormatMetadataEx, RequiredArchivableMetadataEx;
+         InvalidValueTypeAndFormatMetadataEx, RequiredArchivableMetadataEx, MetadataValueNotInDictionaryEx;
 
    /**
     * Cette méthode permet de faire les contrôles suivant :<br>

@@ -29,6 +29,7 @@ import fr.urssaf.image.sae.metadata.control.services.MetadataControlServices;
 import fr.urssaf.image.sae.services.controles.SAEControlesCaptureService;
 import fr.urssaf.image.sae.services.enrichment.dao.impl.SAEMetatadaFinderUtils;
 import fr.urssaf.image.sae.services.enrichment.xml.model.SAEArchivalMetadatas;
+import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureBadEcdeUrlEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureEcdeUrlFileNotFoundEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureEcdeWriteFileEx;
@@ -265,7 +266,7 @@ public class SAEControlesCaptureServiceImpl implements
    @Override
    public final void checkUntypedMetadata(UntypedDocument untypedDocument)
          throws UnknownMetadataEx, DuplicatedMetadataEx,
-         InvalidValueTypeAndFormatMetadataEx, RequiredArchivableMetadataEx {
+         InvalidValueTypeAndFormatMetadataEx, RequiredArchivableMetadataEx, MetadataValueNotInDictionaryEx {
       // Traces debug - entrée méthode
       String prefixeTrc = "checkUntypedDocument()";
       LOGGER.debug("{} - Début", prefixeTrc);
@@ -341,6 +342,22 @@ public class SAEControlesCaptureServiceImpl implements
             .debug(
                   "{} - Fin de la vérification : Les métadonnées respectent leurs contraintes de format",
                   prefixeTrc);
+      LOGGER
+            .debug(
+                  "{} - Début de la vérification : Les métadonnées font bien parties du dictionnaire",
+                  prefixeTrc);
+      errorsList = metadataCS.checkMetadataValueFromDictionary(untypedDocument);
+      if (CollectionUtils.isNotEmpty(errorsList)) {
+         listeCodeLong = buildLongCodeError(errorsList);
+         LOGGER.debug("{} - {}", prefixeTrc, ResourceMessagesUtils.loadMessage(
+               "metadata.not.in.dictionary", listeCodeLong));
+         throw new MetadataValueNotInDictionaryEx();
+      }
+      LOGGER
+            .debug(
+                  "{} - Fin de la vérification : Les métadonnées font bien parties du dictionnaire",
+                  prefixeTrc);
+      
       // Traces debug - sortie méthode
       LOGGER.debug("{} - Sortie", prefixeTrc);
       // Fin des traces debug - sortie méthode

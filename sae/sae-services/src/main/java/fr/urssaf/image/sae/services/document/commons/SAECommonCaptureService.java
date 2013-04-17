@@ -1,6 +1,7 @@
 package fr.urssaf.image.sae.services.document.commons;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
+import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.EmptyDocumentEx;
 import fr.urssaf.image.sae.services.exception.capture.EmptyFileNameEx;
@@ -65,6 +66,8 @@ public interface SAECommonCaptureService {
     *            {@link ReferentialRndException}.
     * @throws SAECaptureServiceEx
     *            {@link SAECaptureServiceEx}.
+    * @throws MetadataValueNotInDictionaryEx
+    *            {@link MetadataValueNotInDictionaryEx}.
     */
    StorageDocument buildStorageDocumentForCapture(
          UntypedDocument untypedDocument) throws RequiredStorageMetadataEx,
@@ -72,7 +75,7 @@ public interface SAECommonCaptureService {
          DuplicatedMetadataEx, NotArchivableMetadataEx, EmptyDocumentEx,
          RequiredArchivableMetadataEx, SAEEnrichmentEx, UnknownHashCodeEx,
          ReferentialRndException, UnknownCodeRndEx, NotSpecifiableMetadataEx,
-         SAECaptureServiceEx;
+         SAECaptureServiceEx, MetadataValueNotInDictionaryEx;
 
    /**
     * Cette méthode permet de construire un StorageDocument à partir d’un
@@ -117,6 +120,9 @@ public interface SAECommonCaptureService {
     *            {@link SAECaptureServiceEx}.
     * @throws EmptyFileNameEx
     *            {@link EmptyFileNameEx}
+    * @throws MetadataValueNotInDictionaryEx
+    *            {@link MetadataValueNotInDictionaryEx}
+    *            
     */
    StorageDocument buildBinaryStorageDocumentForCapture(
          UntypedDocument untypedDocument) throws RequiredStorageMetadataEx,
@@ -124,6 +130,6 @@ public interface SAECommonCaptureService {
          EmptyFileNameEx, DuplicatedMetadataEx, NotArchivableMetadataEx,
          EmptyDocumentEx, RequiredArchivableMetadataEx, SAEEnrichmentEx,
          UnknownHashCodeEx, ReferentialRndException, UnknownCodeRndEx,
-         NotSpecifiableMetadataEx, SAECaptureServiceEx;
+         NotSpecifiableMetadataEx, SAECaptureServiceEx, MetadataValueNotInDictionaryEx;
 
 }

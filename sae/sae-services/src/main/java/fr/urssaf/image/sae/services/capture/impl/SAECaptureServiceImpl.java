@@ -25,6 +25,7 @@ import fr.urssaf.image.sae.metadata.utils.Utils;
 import fr.urssaf.image.sae.services.capture.SAECaptureService;
 import fr.urssaf.image.sae.services.controles.SAEControlesCaptureService;
 import fr.urssaf.image.sae.services.document.commons.SAECommonCaptureService;
+import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureBadEcdeUrlEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureEcdeUrlFileNotFoundEx;
 import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
@@ -103,7 +104,7 @@ public class SAECaptureServiceImpl implements SAECaptureService {
          DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
          ReferentialRndException, UnknownCodeRndEx, UnknownHashCodeEx,
-         CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx {
+         CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx {
       // Traces debug - entrée méthode
       String prefixeTrc = "capture()";
       LOG.debug("{} - Début", prefixeTrc);
@@ -134,6 +135,7 @@ public class SAECaptureServiceImpl implements SAECaptureService {
     * @throws UnknownCodeRndEx 
     * @throws ReferentialRndException 
     * @throws FileNotFoundException 
+    * @throws MetadataValueNotInDictionaryEx
     */
    @Override
    public final UUID captureFichier(List<UntypedMetadata> metadatas, String path)
@@ -141,7 +143,7 @@ public class SAECaptureServiceImpl implements SAECaptureService {
          InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
          DuplicatedMetadataEx, NotSpecifiableMetadataEx,
          NotArchivableMetadataEx, ReferentialRndException, UnknownCodeRndEx,
-         EmptyDocumentEx, RequiredArchivableMetadataEx, UnknownHashCodeEx, FileNotFoundException {
+         EmptyDocumentEx, RequiredArchivableMetadataEx, UnknownHashCodeEx, FileNotFoundException,MetadataValueNotInDictionaryEx {
       // Traces debug - entrée méthode
       String prefixeTrc = "capture()";
       LOG.debug("{} - Début", prefixeTrc);
@@ -174,7 +176,7 @@ public class SAECaptureServiceImpl implements SAECaptureService {
          UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
          EmptyDocumentEx, RequiredArchivableMetadataEx,
          NotArchivableMetadataEx, ReferentialRndException, UnknownCodeRndEx,
-         UnknownHashCodeEx, EmptyFileNameEx {
+         UnknownHashCodeEx, EmptyFileNameEx, MetadataValueNotInDictionaryEx {
 
       // Traces debug - entrée méthode
       String prefixeTrc = "captureBinaire()";
@@ -346,13 +348,14 @@ public class SAECaptureServiceImpl implements SAECaptureService {
     * @throws RequiredArchivableMetadataEx
     * @throws UnknownHashCodeEx
     * @throws NotSpecifiableMetadataEx
+    * @throws MetadataValueNotInDictionaryEx
     */
    private UUID insertDocument(List<UntypedMetadata> metadatas, File file)
          throws SAECaptureServiceEx, ReferentialRndException, UnknownCodeRndEx,
          RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx,
          UnknownMetadataEx, DuplicatedMetadataEx, NotArchivableMetadataEx,
          EmptyDocumentEx, RequiredArchivableMetadataEx, UnknownHashCodeEx,
-         NotSpecifiableMetadataEx {
+         NotSpecifiableMetadataEx, MetadataValueNotInDictionaryEx {
 
       // instanciation d'un UntypedDocument
       UntypedDocument untypedDocument = createUntypedDocument(metadatas, file);

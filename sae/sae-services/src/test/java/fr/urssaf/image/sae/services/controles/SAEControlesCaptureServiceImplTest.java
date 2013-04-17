@@ -26,6 +26,7 @@ import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.services.CommonsServices;
 import fr.urssaf.image.sae.services.enrichment.SAEEnrichmentMetadataService;
 import fr.urssaf.image.sae.services.enrichment.xml.model.SAEArchivalMetadatas;
+import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.InvalidValueTypeAndFormatMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.NotSpecifiableMetadataEx;
@@ -95,12 +96,13 @@ public class SAEControlesCaptureServiceImplTest extends CommonsServices {
     * Test de la méthode
     * {@link fr.urssaf.image.sae.services.controles.impl.SAEControlesCaptureServiceImpl#checkUntypedMetadata(fr.urssaf.image.sae.bo.model.untyped.UntypedDocument)}
     * .
+    * @throws MetadataValueNotInDictionaryEx 
     */
    @Test
    public final void checkUntypedMetadata() throws UnknownMetadataEx,
          DuplicatedMetadataEx, InvalidValueTypeAndFormatMetadataEx,
          SAECaptureServiceEx, IOException, ParseException,
-         RequiredArchivableMetadataEx {
+         RequiredArchivableMetadataEx, MetadataValueNotInDictionaryEx {
       UntypedDocument untypedDocument = getUntypedDocumentMockData();
       saeControlesCaptureService.checkUntypedMetadata(untypedDocument);
    }
@@ -109,12 +111,13 @@ public class SAEControlesCaptureServiceImplTest extends CommonsServices {
     * Test de la méthode
     * {@link fr.urssaf.image.sae.services.controles.impl.SAEControlesCaptureServiceImpl#checkUntypedMetadata(fr.urssaf.image.sae.bo.model.untyped.UntypedDocument)}
     * .
+    * @throws MetadataValueNotInDictionaryEx 
     */
    @Test(expected = DuplicatedMetadataEx.class)
    public final void checkDuplicatedMetadataFailed() throws UnknownMetadataEx,
          DuplicatedMetadataEx, InvalidValueTypeAndFormatMetadataEx,
          SAECaptureServiceEx, IOException, ParseException,
-         RequiredArchivableMetadataEx {
+         RequiredArchivableMetadataEx, MetadataValueNotInDictionaryEx {
       UntypedDocument untypedDocument = getUntypedDocumentMockData();
       untypedDocument.getUMetadatas().add(
             new UntypedMetadata("DateCreation", "2012-01-01"));
@@ -125,12 +128,13 @@ public class SAEControlesCaptureServiceImplTest extends CommonsServices {
     * Test de la méthode
     * {@link fr.urssaf.image.sae.services.controles.impl.SAEControlesCaptureServiceImpl#checkUntypedMetadata(fr.urssaf.image.sae.bo.model.untyped.UntypedDocument)}
     * .
+    * @throws MetadataValueNotInDictionaryEx 
     */
    @Test(expected = UnknownMetadataEx.class)
    public final void checkUnknownMetadataFailed() throws UnknownMetadataEx,
          DuplicatedMetadataEx, InvalidValueTypeAndFormatMetadataEx,
          SAECaptureServiceEx, IOException, ParseException,
-         RequiredArchivableMetadataEx {
+         RequiredArchivableMetadataEx, MetadataValueNotInDictionaryEx {
       UntypedDocument untypedDocument = getUntypedDocumentMockData();
       untypedDocument.getUMetadatas().add(
             new UntypedMetadata("DateCreat", "2012-01-01"));
@@ -141,12 +145,13 @@ public class SAEControlesCaptureServiceImplTest extends CommonsServices {
     * Test de la méthode
     * {@link fr.urssaf.image.sae.services.controles.impl.SAEControlesCaptureServiceImpl#checkUntypedMetadata(fr.urssaf.image.sae.bo.model.untyped.UntypedDocument)}
     * .
+    * @throws MetadataValueNotInDictionaryEx 
     */
    @Test(expected = InvalidValueTypeAndFormatMetadataEx.class)
    public final void checkInvalidValueTypeAndFormatMetadataFailed()
          throws UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, SAECaptureServiceEx, IOException,
-         ParseException, RequiredArchivableMetadataEx {
+         ParseException, RequiredArchivableMetadataEx, MetadataValueNotInDictionaryEx {
       UntypedDocument untypedDocument = getUntypedDocumentMockData();
       untypedDocument.getUMetadatas().add(
             new UntypedMetadata("DateReception", "12121"));

@@ -8,6 +8,7 @@ import java.io.File;
 import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireDocumentNotFoundException;
+import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.EmptyDocumentEx;
 import fr.urssaf.image.sae.services.exception.capture.InvalidValueTypeAndFormatMetadataEx;
@@ -79,7 +80,7 @@ public interface CaptureMasseControleSupport {
          throws CaptureMasseSommaireDocumentNotFoundException, EmptyDocumentEx,
          UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
-         RequiredArchivableMetadataEx, UnknownHashCodeEx, UnknownCodeRndEx;
+         RequiredArchivableMetadataEx, UnknownHashCodeEx, UnknownCodeRndEx, MetadataValueNotInDictionaryEx;
 
    /**
     * Service permettant de contrôler le fichier et les métadonnées d'un

@@ -27,6 +27,7 @@ import fr.urssaf.image.sae.services.controles.SAEControlesCaptureService;
 import fr.urssaf.image.sae.services.enrichment.dao.RNDReferenceDAO;
 import fr.urssaf.image.sae.services.enrichment.dao.impl.SAEMetatadaFinderUtils;
 import fr.urssaf.image.sae.services.enrichment.xml.model.SAEArchivalMetadatas;
+import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.EmptyDocumentEx;
 import fr.urssaf.image.sae.services.exception.capture.InvalidValueTypeAndFormatMetadataEx;
@@ -76,7 +77,7 @@ public class CaptureMasseControleSupportImpl implements
          throws CaptureMasseSommaireDocumentNotFoundException, EmptyDocumentEx,
          UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
-         RequiredArchivableMetadataEx, UnknownHashCodeEx, UnknownCodeRndEx {
+         RequiredArchivableMetadataEx, UnknownHashCodeEx, UnknownCodeRndEx, MetadataValueNotInDictionaryEx {
 
       final File file = getFichierSiExiste(document, ecdeDirectory);
 
