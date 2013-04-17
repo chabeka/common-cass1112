@@ -15,7 +15,7 @@ import fr.urssaf.image.sae.metadata.referential.services.MetadataReferenceDAO;
  * @author akenore
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-metadata.xml" })
+@ContextConfiguration(locations = { "/applicationContext-sae-metadata-test.xml" })
 @SuppressWarnings("PMD.AbstractClassWithoutAbstractMethod")
 public abstract class AbstractService {
 	@Autowired

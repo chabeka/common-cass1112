@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<keyspace xmlns="http://xml.dataset.cassandraunit.org"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://xml.dataset.cassandraunit.org cassandraUnitDataset.xsd ">
+   <name>Metadata</name>
+   <strategy>org.apache.cassandra.locator.SimpleStrategy</strategy>
+   <replicationFactor>1</replicationFactor>
+   <columnFamilies>
+      <columnFamily>
+         <name>MetaData</name>
+         <keyType>UTF8Type</keyType>
+         <comparatorType>StringType</comparatorType>
+         <defaultColumnValueType>UTF8Type</defaultColumnValueType>
+         <row>
+            <key>itm</key>
+            <column>
+               <name>lCode</name>
+               <value>IdTraitementMasse</value>
+            </column>
+         </row>
+          <row>
+            <key>nic</key>
+            <column>
+               <name>lCode</name>
+               <value>NumeroIntControle</value>
+            </column>
+         </row>
+         <row>
+            <key>per</key>
+            <column>
+               <name>lCode</name>
+               <value>Periode</value>
+            </column>
+         </row>
+      </columnFamily>
+      <columnFamily>
+         <name>Dictionary</name>
+         <comparatorType>BytesType</comparatorType>
+      </columnFamily>
+
+   </columnFamilies>
+</keyspace>

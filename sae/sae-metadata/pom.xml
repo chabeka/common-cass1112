@@ -13,6 +13,14 @@
    <version>13.4.10.5-SNAPSHOT</version>
 
    <name>sae-metadata</name>
+   
+   <properties>
+      <commons.cassandra>0.0.5</commons.cassandra>
+      <commons.dfce>1.0.5-CRTL-1</commons.dfce>
+      <sae.commons>13.4.10.5-SNAPSHOT</sae.commons>
+      <sae.storage>13.4.10.5-SNAPSHOT</sae.storage>
+   </properties>
+
 
    <!-- Ajout des dépendances -->
    <dependencies>
@@ -86,6 +94,26 @@
          <artifactId>junitperf</artifactId>
          <version>${junitperf.version}</version>
          <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>fr.urssaf.image.commons</groupId>
+         <artifactId>commons-cassandra</artifactId>
+         <version>${commons.cassandra}</version>
+      </dependency>
+      <dependency>
+         <groupId>fr.urssaf.image.commons</groupId>
+         <artifactId>commons-dfce</artifactId>
+         <version>${commons.dfce}</version>
+      </dependency>
+      <dependency>
+         <groupId>fr.urssaf.image.sae</groupId>
+         <artifactId>sae-commons</artifactId>
+         <version>${sae.commons}</version>
+      </dependency>
+            <dependency>
+         <groupId>fr.urssaf.image.sae</groupId>
+         <artifactId>sae-storage</artifactId>
+         <version>${sae.storage}</version>
       </dependency>
    </dependencies>
    <build>

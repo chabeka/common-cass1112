@@ -12,22 +12,15 @@
 		http://www.springframework.org/schema/context/spring-context-3.0.xsd
 		http://www.springframework.org/schema/aop
         http://www.springframework.org/schema/aop/spring-aop.xsd">
-
       <bean
       class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
       <property name="locations">
          <list>
-            <value>config/sae-config.properties</value>
             <value>config/cassandra-local.properties</value>
          </list>
       </property>
    </bean>
-   
-   <!--Gestion de message à partir d'un fichier -->
-   <bean id="messageSource_sae_metadata"
-      class="org.springframework.context.support.ResourceBundleMessageSource">
-      <property name="basename" value="i18n.sae_metadata_messages_fr_FR" />
-   </bean>
-   
-   <context:component-scan base-package="fr.urssaf.image.sae.metadata" />
+      
+   <import resource="classpath*:/applicationContext-sae-metadata.xml"/>
+   <import resource="classpath*:/applicationContext-commons-cassandra.xml" />
 </beans>

@@ -14,7 +14,7 @@ import com.clarkware.junitperf.TimedTest;
  * Classe de test pour la recherche .
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-metadata.xml" })
+@ContextConfiguration(locations = { "/applicationContext-sae-metadata-test.xml" })
 public class SearchLongCodePerfTest {
 	
 	 public  static   long maxElapsedTime = 800;

@@ -115,4 +115,11 @@ public interface MetadataControlServices {
     */
    List<MetadataError> checkMetadataRequiredValue(
          final UntypedDocument untypedDoc);
+   
+   /**
+    * Vérification de la valeur des métadonnées par rapport aux dictionnaires de données 
+    * @param document le document
+    * @return Liste de type MetadataError
+    */
+   List<MetadataError> checkMetadataValueFromDictionary(UntypedDocument document);
 }

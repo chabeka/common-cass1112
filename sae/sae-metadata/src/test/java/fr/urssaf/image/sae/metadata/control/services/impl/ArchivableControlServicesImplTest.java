@@ -1,11 +1,18 @@
 package fr.urssaf.image.sae.metadata.control.services.impl;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 
+import org.apache.cassandra.config.ConfigurationException;
+import org.cassandraunit.utils.EmbeddedCassandraServerHelper;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
 import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
 import fr.urssaf.image.sae.metadata.control.services.MetadataControlServices;
@@ -20,7 +27,11 @@ import fr.urssaf.image.sae.metadata.test.dataprovider.MetadataDataProviderUtils;
  * 
  */
 public class ArchivableControlServicesImplTest extends AbstractDataProvider {
-	/**
+	
+   @Autowired
+   private CassandraServerBean server;
+
+   /**
 	 * Fournit des données pour valider la méthode
 	 * {@link MetadataControlServicesImpl#checkArchivableMetadata(SAEDocument)}
 	 * 
@@ -43,6 +54,8 @@ public class ArchivableControlServicesImplTest extends AbstractDataProvider {
 		}
 		return new SAEDocument(null, metadatas);
 	}
+	
+
 
 	/**
 	 * Vérifie que la liste ne contenant pas d'intrus est valide
@@ -69,4 +82,11 @@ public class ArchivableControlServicesImplTest extends AbstractDataProvider {
 				archivableData(false)).isEmpty());
 	}
 
+	
+   @After
+   public void after() throws Exception {
+
+      server.resetData();
+
+   }
 }

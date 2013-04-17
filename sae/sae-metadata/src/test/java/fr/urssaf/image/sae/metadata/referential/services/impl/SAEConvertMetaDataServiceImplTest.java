@@ -21,7 +21,7 @@ import fr.urssaf.image.sae.metadata.referential.services.SAEConvertMetadataServi
  * 
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-metadata.xml" })
+@ContextConfiguration(locations = { "/applicationContext-sae-metadata-test.xml" })
 public class SAEConvertMetaDataServiceImplTest {
 
    @Autowired

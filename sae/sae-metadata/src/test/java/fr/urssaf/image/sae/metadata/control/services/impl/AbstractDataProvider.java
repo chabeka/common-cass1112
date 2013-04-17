@@ -14,7 +14,7 @@ import fr.urssaf.image.sae.metadata.control.services.MetadataControlServices;
  * 
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-metadata.xml" })
+@ContextConfiguration(locations = { "/applicationContext-sae-metadata-test.xml" })
 public class AbstractDataProvider {
 	@Autowired
 	@Qualifier("metadataControlServices")

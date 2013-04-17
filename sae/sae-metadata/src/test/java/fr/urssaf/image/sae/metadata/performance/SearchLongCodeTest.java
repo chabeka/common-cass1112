@@ -19,7 +19,7 @@ import fr.urssaf.image.sae.metadata.test.constants.Constants;
 import fr.urssaf.image.sae.metadata.test.dataprovider.MetadataDataProviderUtils;
 import fr.urssaf.image.sae.metadata.utils.Utils;
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-metadata.xml" })
+@ContextConfiguration(locations = { "/applicationContext-sae-metadata-test.xml" })
 public class SearchLongCodeTest {
 
 	private List<UntypedMetadata> metadatas;

@@ -12,6 +12,7 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
  * @author projet
  * 
  */
+@Deprecated
 @XStreamAlias("referentiel")
 public class Referentiel {
 	@XStreamImplicit(itemFieldName = "metaDataReference")
