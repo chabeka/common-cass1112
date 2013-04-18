@@ -142,7 +142,7 @@
             </xsd:annotation>
             <xsd:complexType>
                <xsd:sequence>
-                  <xsd:element name="composant" type="somres:composantDocumentVirtuelType" minOccurs="0" maxOccurs="unbounded">
+                  <xsd:element name="composant" type="somres:composantDocumentVirtuelType" minOccurs="1" maxOccurs="unbounded">
                      <xsd:annotation>
                         <xsd:documentation>Les composants</xsd:documentation>
                      </xsd:annotation>
@@ -150,10 +150,6 @@
                </xsd:sequence>
             </xsd:complexType>
          </xsd:element>
-         
-         <xsd:element name="numeroPageDebut" type="xsd:int" minOccurs="0" maxOccurs="1" />
-         
-         <xsd:element name="nombreDePages" type="xsd:int" minOccurs="0" maxOccurs="1" />
          
       </xsd:sequence>
    </xsd:complexType>
@@ -365,16 +361,89 @@
                <xsd:documentation>Le fichier représentant le contenu du document archivé</xsd:documentation>
             </xsd:annotation>
          </xsd:element>
-            <!-- Les métadonnées -->
-            <xsd:element name="metadonnees" type="somres:listeMetadonneeType" minOccurs="1" maxOccurs="1">
-               <xsd:annotation>
-                  <xsd:documentation>La liste des métadonnées associées au document, sous la forme d'une liste de paire clé/valeur</xsd:documentation>
-               </xsd:annotation>
-            </xsd:element>
-            <!-- L’identifiant unique du document -->
-            <xsd:element name="uuid" type="xsd:string" minOccurs="1" maxOccurs="1" />
-	        <xsd:element name="numeroPageDebut" type="xsd:int" minOccurs="0" maxOccurs="1" />
-            <xsd:element name="nombreDePages" type="xsd:int" minOccurs="0" maxOccurs="1" />
+         <!-- Les métadonnées -->
+         <xsd:element name="metadonnees" type="somres:listeMetadonneeType" minOccurs="1" maxOccurs="1">
+            <xsd:annotation>
+               <xsd:documentation>La liste des métadonnées associées au document, sous la forme d'une liste de paire clé/valeur</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         <!-- L'identifiant unique du document -->
+         <xsd:element name="uuid" type="xsd:string" minOccurs="1" maxOccurs="1" />
+	      <xsd:element name="numeroPageDebut" type="xsd:int" minOccurs="0" maxOccurs="1" />
+         <xsd:element name="nombreDePages" type="xsd:int" minOccurs="0" maxOccurs="1" />
+      </xsd:sequence>
+   </xsd:complexType>
+   
+   <!-- 
+   =======================================
+   La liste des documents virtuels qui ont été archivés
+   =======================================
+   -->
+   <xsd:complexType name="listeIntegratedDocumentsVirtuelsType">
+      <xsd:annotation>
+         <xsd:documentation>Une liste de documents virtuels archivés</xsd:documentation>
+      </xsd:annotation>
+      <xsd:sequence>
+         <xsd:element name="integratedDocumentVirtuel" type="somres:integratedDocumentVirtuelType" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+   </xsd:complexType>
+   
+   <xsd:complexType name="integratedDocumentVirtuelType">
+      <xsd:annotation>
+         <xsd:documentation>Un document virtuel archivé</xsd:documentation>
+      </xsd:annotation>
+      <xsd:sequence>
+         
+         <!-- L'objet numérique (fichier) -->
+         <xsd:element name="objetNumerique" type="somres:fichierType" minOccurs="1" maxOccurs="1">
+            <xsd:annotation>
+               <xsd:documentation>Le fichier représentant le contenu du document virtuel à archiver</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         
+         <!-- Les composants du document virtuel -->
+         <xsd:element name="composants" minOccurs="1" maxOccurs="1">
+            <xsd:annotation>
+               <xsd:documentation>Les composants du documents virtuels (indexations)</xsd:documentation>
+            </xsd:annotation>
+            <xsd:complexType>
+               <xsd:sequence>
+                  <xsd:element name="composant" type="somres:integratedComposantDocumentVirtuelType" minOccurs="1" maxOccurs="unbounded">
+                     <xsd:annotation>
+                        <xsd:documentation>Les composants</xsd:documentation>
+                     </xsd:annotation>
+                  </xsd:element>
+               </xsd:sequence>
+            </xsd:complexType>
+         </xsd:element>
+         
+      </xsd:sequence>
+   </xsd:complexType>
+   
+   <!-- 
+   =======================================
+   Composant d'un document virtuel intégré (indexation)
+   =======================================
+   -->
+   <xsd:complexType name="integratedComposantDocumentVirtuelType">
+      <xsd:annotation>
+         <xsd:documentation>Composant d'un document virtuel intégré (indexation)</xsd:documentation>
+      </xsd:annotation>
+      <xsd:sequence>
+         
+         <!-- Les métadonnées -->
+         <xsd:element name="metadonnees" type="somres:listeMetadonneeType" minOccurs="1" maxOccurs="1">
+            <xsd:annotation>
+               <xsd:documentation>La liste des métadonnées associées au document virtuel, sous la forme d'une liste de paire clé/valeur</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         
+         <xsd:element name="numeroPageDebut" type="xsd:int" minOccurs="1" maxOccurs="1" />
+         
+         <xsd:element name="nombreDePages" type="xsd:int" minOccurs="1" maxOccurs="1" />
+            
+         <xsd:element name="uuid" type="xsd:string" minOccurs="1" maxOccurs="1" />
+         
       </xsd:sequence>
    </xsd:complexType>
    
