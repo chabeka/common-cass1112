@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import com.thoughtworks.xstream.XStream;
 
 import fr.urssaf.image.sae.lotinstallmaj.exception.MajLotRuntimeException;
+import fr.urssaf.image.sae.lotinstallmaj.modele.CassandraConfig;
 import fr.urssaf.image.sae.lotinstallmaj.modele.DataBaseModel;
 import fr.urssaf.image.sae.lotinstallmaj.modele.DfceConfig;
 import fr.urssaf.image.sae.lotinstallmaj.modele.SaeCategory;
@@ -49,6 +50,7 @@ public final class MajLotServiceImpl implements MajLotService {
    public static final String META_SEPA = "META_SEPA";
    public static final String META_130400 = "META_130400";
    public static final String CASSANDRA_130400 = "CASSANDRA_130400";
+   public static final String CASSANDRA_130700 = "CASSANDRA_130700";
 
    public static final int DUREE_1825 = 1825;
    public static final int DUREE_1643 = 1643;
@@ -68,6 +70,9 @@ public final class MajLotServiceImpl implements MajLotService {
 
    @Autowired
    private SAECassandraUpdater updater;
+
+   @Autowired
+   private CassandraConfig cassandraConfig;
 
    /**
     * {@inheritDoc}
@@ -118,6 +123,10 @@ public final class MajLotServiceImpl implements MajLotService {
       } else if (CASSANDRA_130400.equalsIgnoreCase(nomOperation)) {
 
          updateCassandra130400();
+
+      } else if (CASSANDRA_130700.equalsIgnoreCase(nomOperation)) {
+
+         updateCassandra130700();
 
       } else {
 
@@ -262,6 +271,27 @@ public final class MajLotServiceImpl implements MajLotService {
             .info("Début de l'opération : Lot 130400 - Mise à jour du keyspace SAE");
       updater.updateToVersion4();
       LOG.info("Fin de l'opération : Lot 130400 - Mise à jour du keyspace SAE");
+   }
+
+   /**
+    * Pour lot 130700 du SAE : mise à jour du keyspace "SAE" dans cassandra, en
+    * version 5
+    */
+   private void updateCassandra130700() {
+
+      LOG
+            .info("Début de l'opération : Lot 130700 - Mise à jour du schéma DFCE");
+      DFCECassandraUpdater dfceUpdater = new DFCECassandraUpdater(
+            cassandraConfig);
+      dfceUpdater.updateToVersion110();
+      dfceUpdater.updateToVersion120();
+      LOG.info("Fin de l'opération : Lot 130700 - Mise à jour du schéma DFCE");
+
+      LOG
+            .info("Début de l'opération : Lot 130700 - Mise à jour du keyspace SAE");
+      updater.updateToVersion5();
+      LOG.info("Fin de l'opération : Lot 130700 - Mise à jour du keyspace SAE");
+
    }
 
    /**

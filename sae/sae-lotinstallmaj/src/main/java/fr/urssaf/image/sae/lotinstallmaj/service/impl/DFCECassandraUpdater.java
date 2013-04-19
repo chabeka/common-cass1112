@@ -215,6 +215,72 @@ public class DFCECassandraUpdater {
 
    }
 
+   /**
+    * Mise à jour vers la version 120
+    */
+   public final void updateToVersion120() {
+
+      LOG.info("Mise à jour du keyspace DFCE en version 1.2.0");
+
+      // Si le KeySpace n'existe pas, on quitte
+      KeyspaceDefinition keyspaceDef = cluster.describeKeyspace(ksName);
+      if (keyspaceDef == null) {
+         throw new MajLotRuntimeException("Le Keyspace " + ksName
+               + " n'existe pas !");
+      }
+
+      // On se connecte au keyspace
+      connectToKeyspace();
+
+      // Liste contenant la définition des column families à créer
+      List<ColumnFamilyDefinition> cfDefs = new ArrayList<ColumnFamilyDefinition>();
+
+      List<ColumnDefinition> columnMetadata0 = new ArrayList<ColumnDefinition>();
+
+      BasicColumnDefinition e01 = new BasicColumnDefinition();
+      e01.setName(StringSerializer.get().toByteBuffer("6e616d65"));
+      e01.setValidationClass("BytesType");
+      e01.setIndexType(ColumnIndexType.KEYS);
+      e01.setIndexName("stat_name_idx");
+      columnMetadata0.add(e01);
+
+      ColumnFamilyDefinition column0 = HFactory.createColumnFamilyDefinition(
+            ksName, "Statistics", ComparatorType.BYTESTYPE, columnMetadata0);
+      cfDefs.add(column0);
+
+      String comparatorAlias = "(a=>" + ComparatorType.ASCIITYPE.getTypeName()
+            + ", b=>" + ComparatorType.BYTESTYPE.getTypeName() + ", i=>"
+            + ComparatorType.INTEGERTYPE.getTypeName() + ", x=>"
+            + ComparatorType.LEXICALUUIDTYPE.getTypeName() + ", l=>"
+            + ComparatorType.LONGTYPE.getTypeName() + ", t=>"
+            + ComparatorType.TIMEUUIDTYPE.getTypeName() + ", s=>"
+            + ComparatorType.UTF8TYPE.getTypeName() + ", u=>"
+            + ComparatorType.UUIDTYPE.getTypeName() + ")";
+      ColumnFamilyDefinition column1 = HFactory.createColumnFamilyDefinition(
+            ksName, "StatisticsDatas", ComparatorType.DYNAMICCOMPOSITETYPE);
+      column1.setComparatorTypeAlias(comparatorAlias);
+      column1.setRowCacheSize(0);
+      column1.setKeyCacheSize(0);
+      cfDefs.add(column1);
+
+      // Ajoute les options les plus courantes à chacune des CF
+      for (ColumnFamilyDefinition c : cfDefs) {
+         addDefaultCFAttributs(c);
+      }
+
+      // Création des CF
+      for (ColumnFamilyDefinition c : cfDefs) {
+         if (cfExists(keyspaceDef, c.getName())) {
+            LOG.info("La famille de colonnes " + c.getName()
+                  + " est déjà existante");
+         } else {
+            LOG.info("Création de la famille de colonnes " + c.getName());
+            cluster.addColumnFamily(c, true);
+         }
+      }
+
+   }
+
    private void connectToKeyspace() {
       if (keyspace != null)
          return;

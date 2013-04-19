@@ -31,6 +31,8 @@ public class SAECassandraUpdater {
 
    private static final int VERSION_3 = 3;
    private static final int VERSION_4 = 4;
+   private static final int VERSION_5 = 5;
+
    private final String ksName;
    private final Cluster cluster;
    private final SAECassandraService saeCassandraService;
@@ -329,6 +331,43 @@ public class SAECassandraUpdater {
 
       // On positionne la version à 4
       saeDao.setDatabaseVersion(VERSION_4);
+
+   }
+
+   /**
+    * Version 5 :
+    * <ul>
+    * <li>ajout des CF de dictionnaire et métadonnées dans le keyspace "SAE"</li>
+    * </ul>
+    */
+   public void updateToVersion5() {
+      long version = saeDao.getDatabaseVersion();
+      if (version >= VERSION_5) {
+         LOG.info("La base de données est déja en version " + version);
+         return;
+      }
+
+      LOG.info("Mise à jour du keyspace SAE en version 5");
+
+      // On se connecte au keyspace
+      saeDao.connectToKeySpace();
+
+      // Liste contenant la définition des column families à créer
+      List<ColumnFamilyDefinition> cfDefs = new ArrayList<ColumnFamilyDefinition>();
+
+      // TraceDestinataire
+      cfDefs.add(HFactory.createColumnFamilyDefinition(ksName, "Metadata",
+            ComparatorType.UTF8TYPE));
+
+      // TraceRegSecurite
+      cfDefs.add(HFactory.createColumnFamilyDefinition(ksName, "Dictionary",
+            ComparatorType.UTF8TYPE));
+
+      // Création des CF
+      saeCassandraService.createColumnFamilyFromList(cfDefs, true);
+      
+      // On positionne la version à 5
+      saeDao.setDatabaseVersion(VERSION_5);
 
    }
 
