@@ -148,12 +148,11 @@ public class JournalServiceImpl implements JournalService {
       LOGGER.debug("{} - Nom de la base : {}", new String[] { trcPrefix,
             nomBase });
 
-      SimpleDateFormat f = new SimpleDateFormat("yyyyMMdd");
+      SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd");
       String date1 = f.format(dateDebut);
       
       String date2 = f.format(dateFin);
-      date2 = date2.concat("9999");
-
+      
       LOGGER.debug(LOG_FIN, trcPrefix);
       return journalSaeSupport.findByDates(date1, date2, nomBase);
 
