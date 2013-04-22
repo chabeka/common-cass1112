@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
@@ -19,22 +19,21 @@ import fr.urssaf.image.sae.mapping.services.MappingDocumentService;
 import fr.urssaf.image.sae.mapping.utils.Utils;
 import fr.urssaf.image.sae.metadata.exceptions.ReferentialException;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
+import fr.urssaf.image.sae.metadata.referential.services.MetadataReferenceDAO;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
-
 
 /**
  * Classe qui fournit des services de conversion entre objet du modèle et objet
  * technique de stockage.
  * 
- * @author akenore
- * 
  */
 @Service
-@Qualifier("mappingDocumentService")
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public final class MappingDocumentServiceImpl extends AbstractMappingDocumentService  implements MappingDocumentService {
- 
+public final class MappingDocumentServiceImpl implements MappingDocumentService {
+
+   @Autowired
+   private MetadataReferenceDAO referenceDAO;
 
    /**
     * {@inheritDoc}
@@ -43,17 +42,17 @@ public final class MappingDocumentServiceImpl extends AbstractMappingDocumentSer
          "PMD.DataflowAnomalyAnalysis" })
    public StorageDocument saeDocumentToStorageDocument(final SAEDocument saeDoc)
          throws InvalidSAETypeException {
-      
+
       final StorageDocument storageDoc = new StorageDocument();
-      
+
       final List<StorageMetadata> sMetadata = new ArrayList<StorageMetadata>();
-      
+
       storageDoc.setContent(saeDoc.getContent());
-      
+
       storageDoc.setFileName(saeDoc.getFileName());
-      
+
       storageDoc.setFilePath(saeDoc.getFilePath());
-      
+
       for (SAEMetadata metadata : Utils.nullSafeIterable(saeDoc.getMetadatas())) {
          sMetadata.add(new StorageMetadata(metadata.getShortCode(), metadata
                .getValue()));
@@ -79,7 +78,7 @@ public final class MappingDocumentServiceImpl extends AbstractMappingDocumentSer
       for (StorageMetadata sMetadata : Utils.nullSafeIterable(storageDoc
             .getMetadatas())) {
          try {
-            final MetadataReference reference = getReferenceDAO()
+            final MetadataReference reference = referenceDAO
                   .getByShortCode(sMetadata.getShortCode());
             metadatas.add(new SAEMetadata(reference.getLongCode(), reference
                   .getShortCode(), sMetadata.getValue()));
@@ -104,7 +103,7 @@ public final class MappingDocumentServiceImpl extends AbstractMappingDocumentSer
 
       for (SAEMetadata metadata : Utils.nullSafeIterable(saeDoc.getMetadatas())) {
          try {
-            final MetadataReference reference = getReferenceDAO()
+            final MetadataReference reference = referenceDAO
                   .getByLongCode(metadata.getLongCode());
 
             metadatas.add(new UntypedMetadata(metadata.getLongCode(), Utils
@@ -116,8 +115,8 @@ public final class MappingDocumentServiceImpl extends AbstractMappingDocumentSer
          }
       }
 
-      return new UntypedDocument(saeDoc.getContent(), saeDoc.getFilePath(), saeDoc.getFileName(),
-            metadatas);
+      return new UntypedDocument(saeDoc.getContent(), saeDoc.getFilePath(),
+            saeDoc.getFileName(), metadatas);
    }
 
    /**
@@ -131,7 +130,7 @@ public final class MappingDocumentServiceImpl extends AbstractMappingDocumentSer
       for (UntypedMetadata metadata : Utils.nullSafeIterable(untyped
             .getUMetadatas())) {
          try {
-            final MetadataReference reference = getReferenceDAO()
+            final MetadataReference reference = referenceDAO
                   .getByLongCode(metadata.getLongCode());
             metadatas.add(new SAEMetadata(reference.getLongCode(), reference
                   .getShortCode(), Utils.conversionToObject(
@@ -143,11 +142,10 @@ public final class MappingDocumentServiceImpl extends AbstractMappingDocumentSer
          }
       }
 
-      return new SAEDocument(untyped.getFilePath(), untyped.getContent(), untyped.getFileName(),
-            metadatas);
+      return new SAEDocument(untyped.getFilePath(), untyped.getContent(),
+            untyped.getFileName(), metadatas);
    }
 
- 
    /**
     * {@inheritDoc}
     * 
@@ -160,7 +158,7 @@ public final class MappingDocumentServiceImpl extends AbstractMappingDocumentSer
       for (StorageMetadata metadata : Utils.nullSafeIterable(storage
             .getMetadatas())) {
          try {
-            final MetadataReference reference = getReferenceDAO()
+            final MetadataReference reference = referenceDAO
                   .getByShortCode(metadata.getShortCode());
             metadatas.add(new UntypedMetadata(reference.getLongCode(), Utils
                   .convertToString(metadata.getValue(), reference)));
@@ -171,13 +169,13 @@ public final class MappingDocumentServiceImpl extends AbstractMappingDocumentSer
          }
       }
       String name = null;
-      if(StringUtils.isBlank(storage.getFilePath())) {
+      if (StringUtils.isBlank(storage.getFilePath())) {
          name = storage.getFileName();
       } else {
          name = FilenameUtils.getBaseName(storage.getFilePath());
       }
-      UntypedDocument untypedDocument = new UntypedDocument(storage.getContent(), storage
-            .getFilePath(), name, metadatas);
+      UntypedDocument untypedDocument = new UntypedDocument(storage
+            .getContent(), storage.getFilePath(), name, metadatas);
       untypedDocument.setUuid(storage.getUuid());
       return untypedDocument;
    }

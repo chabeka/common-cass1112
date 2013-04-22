@@ -8,15 +8,18 @@
 		http://www.springframework.org/schema/context 
 		http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-   <context:component-scan
-      base-package="fr.urssaf.image.sae.mapping,fr.urssaf.image.sae.building" />
-
-   <!-- Gestion de message à partir d'un fichier -->
-   <bean id="messageSource_sae_mapping"
-      class="org.springframework.context.support.ResourceBundleMessageSource">
-      <property name="basename" value="i18n.sae_mapping_messages_fr_FR" />
+   <!-- Fichiers de configuration -->
+   <bean
+      class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+      <property name="locations">
+         <list>
+            <value>config/sae-config.properties</value>
+            <value>config/cassandra-local.properties</value>
+         </list>
+      </property>
    </bean>
 
-   <import resource="applicationContext-sae-metadata.xml" />
+   <import resource="classpath*:/applicationContext-commons-cassandra.xml" />
+   <import resource="applicationContext-sae-mapping.xml" />
 
 </beans>
