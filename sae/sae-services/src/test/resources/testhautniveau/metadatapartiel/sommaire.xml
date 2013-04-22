@@ -54,10 +54,6 @@
                <somres:valeur>fmt/354</somres:valeur>
             </somres:metadonnee>
          <somres:metadonnee>
-               <somres:code>VersionRND</somres:code>
-               <somres:valeur>5.3</somres:valeur>
-            </somres:metadonnee>
-         <somres:metadonnee>
                <somres:code>DateDebutConservation</somres:code>
                <somres:valeur>2011-09-02</somres:valeur>
             </somres:metadonnee>

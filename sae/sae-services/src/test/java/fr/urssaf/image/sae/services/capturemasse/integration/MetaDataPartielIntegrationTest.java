@@ -222,7 +222,7 @@ public class MetaDataPartielIntegrationTest {
       datas.put("NomFichier", "doc1.PDF");
       datas.put("Titre", "Attestation de vigilance");
       datas.put("TypeHash", "SHA-1");
-      datas.put("VersionRND", "5.3");
+      datas.put("VersionRND", "11.2");
       datas.put("DocumentVirtuel", "false");
 
       return datas;
