@@ -65,8 +65,8 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
       SAESearchService {
    private static final Logger LOG = LoggerFactory
          .getLogger(SAESearchServiceImpl.class);
+   
    @Autowired
-   @Qualifier("metadataReferenceDAO")
    private MetadataReferenceDAO metaRefD;
 
    @Autowired
@@ -78,7 +78,6 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
    private BuildService buildService;
 
    @Autowired
-   @Qualifier("mappingDocumentService")
    private MappingDocumentService mappingDocumentService;
 
    @Autowired

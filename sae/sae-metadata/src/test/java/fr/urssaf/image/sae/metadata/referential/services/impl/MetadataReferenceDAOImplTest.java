@@ -5,15 +5,26 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.metadata.exceptions.ReferentialException;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
+import fr.urssaf.image.sae.metadata.referential.services.MetadataReferenceDAO;
 
 /**
  * Contient les tests sur les services de manipulation du referentiel des
  * métadonnées.
+ * 
  */
-public class MetadataReferenceDAOImplTest extends AbstractService {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "/applicationContext-sae-metadata-test.xml" })
+public class MetadataReferenceDAOImplTest {
+
+   @Autowired
+   private MetadataReferenceDAO referenceDAO;
 
    /**
     * Permet de tester la récupération des métadonnées du référentiel.
@@ -27,7 +38,7 @@ public class MetadataReferenceDAOImplTest extends AbstractService {
    public void getAllMetadataReferences() throws IOException,
          ReferentialException {
 
-      Map<String, MetadataReference> metadonnees = getMetadataReferenceDAO()
+      Map<String, MetadataReference> metadonnees = referenceDAO
             .getAllMetadataReferences();
 
       Assert.assertEquals("Le nombre de métadonnées attendues est incorrect",
@@ -77,7 +88,7 @@ public class MetadataReferenceDAOImplTest extends AbstractService {
    public void getConsultableMetadataReferences() throws IOException,
          ReferentialException {
 
-      Map<String, MetadataReference> metadonnees = getMetadataReferenceDAO()
+      Map<String, MetadataReference> metadonnees = referenceDAO
             .getConsultableMetadataReferences();
 
       Assert.assertEquals(
@@ -129,7 +140,7 @@ public class MetadataReferenceDAOImplTest extends AbstractService {
    public void getDefaultConsultableMetadataReferences() throws IOException,
          ReferentialException {
 
-      Map<String, MetadataReference> metadonnees = getMetadataReferenceDAO()
+      Map<String, MetadataReference> metadonnees = referenceDAO
             .getDefaultConsultableMetadataReferences();
 
       Assert
@@ -164,7 +175,7 @@ public class MetadataReferenceDAOImplTest extends AbstractService {
    public void getRequiredForArchivalMetadataReferences() throws IOException,
          ReferentialException {
 
-      Map<String, MetadataReference> metadonnees = getMetadataReferenceDAO()
+      Map<String, MetadataReference> metadonnees = referenceDAO
             .getRequiredForArchivalMetadataReferences();
 
       Assert
@@ -199,7 +210,7 @@ public class MetadataReferenceDAOImplTest extends AbstractService {
    public void getRequiredForStorageMetadataReferences() throws IOException,
          ReferentialException {
 
-      Map<String, MetadataReference> metadonnees = getMetadataReferenceDAO()
+      Map<String, MetadataReference> metadonnees = referenceDAO
             .getRequiredForStorageMetadataReferences();
 
       Assert
@@ -240,7 +251,7 @@ public class MetadataReferenceDAOImplTest extends AbstractService {
    public void getSearchableMetadataReferences() throws IOException,
          ReferentialException {
 
-      Map<String, MetadataReference> metadonnees = getMetadataReferenceDAO()
+      Map<String, MetadataReference> metadonnees = referenceDAO
             .getSearchableMetadataReferences();
 
       Assert
@@ -287,7 +298,7 @@ public class MetadataReferenceDAOImplTest extends AbstractService {
    public void getArchivableMetadataReferences() throws IOException,
          ReferentialException {
 
-      Map<String, MetadataReference> metadonnees = getMetadataReferenceDAO()
+      Map<String, MetadataReference> metadonnees = referenceDAO
             .getArchivableMetadataReferences();
 
       Assert
@@ -333,8 +344,7 @@ public class MetadataReferenceDAOImplTest extends AbstractService {
    @Test
    public void getByLongCode() throws IOException, ReferentialException {
 
-      MetadataReference metadata = getMetadataReferenceDAO().getByLongCode(
-            "CodeRND");
+      MetadataReference metadata = referenceDAO.getByLongCode("CodeRND");
 
       Assert.assertNotNull("La recherche par getByLongCode() n'a pas abouti",
             metadata);
@@ -361,8 +371,8 @@ public class MetadataReferenceDAOImplTest extends AbstractService {
    @Test
    public void getByShortCode() throws IOException, ReferentialException {
 
-      MetadataReference metadata = getMetadataReferenceDAO().getByShortCode(
-            "SM_DOCUMENT_TYPE");
+      MetadataReference metadata = referenceDAO
+            .getByShortCode("SM_DOCUMENT_TYPE");
 
       Assert.assertNotNull("La recherche par getByShortCode() n'a pas abouti",
             metadata);

@@ -5,7 +5,6 @@ package fr.urssaf.image.sae.services.capturemasse.support.enrichissement.batch;
 
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
@@ -25,7 +24,6 @@ public class EnrichissementMetadonneeProcessor implements
    private EnrichissementMetadonneeSupport support;
 
    @Autowired
-   @Qualifier("mappingDocumentService")
    private MappingDocumentService documentService;
    
    /**

@@ -49,13 +49,14 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 public class SAECommonCaptureServiceImpl implements SAECommonCaptureService {
    private static final Logger LOGGER = LoggerFactory
          .getLogger(SAECommonCaptureServiceImpl.class);
+   
    @Autowired
    @Qualifier("saeControlesCaptureService")
    private SAEControlesCaptureService controlesService;
 
    @Autowired
-   @Qualifier("mappingDocumentService")
    private MappingDocumentService mappingService;
+   
    @Autowired
    @Qualifier("saeEnrichmentMetadataService")
    private SAEEnrichmentMetadataService enrichmentService;
