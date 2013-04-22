@@ -24,7 +24,6 @@ public class TraceContextFactoryTest {
    private File saeResourceFile, cassandraFile, dfceFile;
 
    @Before
-   @SuppressWarnings("unchecked")
    public void before() throws IOException {
       ClassPathResource cassandraResource = new ClassPathResource(
             "config/commons-cassandra.properties");
@@ -42,12 +41,15 @@ public class TraceContextFactoryTest {
 
       saeResourceFile = File.createTempFile("sae-config", ".properties");
       lines = Arrays
-            .asList("sae.dfce.cheminFichierConfig="
-                  + FilenameUtils.separatorsToUnix(dfceFile.getAbsolutePath()),
+            .asList(
+                  "sae.dfce.cheminFichierConfig="
+                        + FilenameUtils.separatorsToUnix(dfceFile
+                              .getAbsolutePath()),
                   "sae.cassandra.cheminFichierConfig="
                         + FilenameUtils.separatorsToUnix(cassandraFile
                               .getAbsolutePath()),
-                  "sae.ecde.cheminFichierConfig=src/test/resources/config/ecdesources.xml");
+                  "sae.ecde.cheminFichierConfig=src/test/resources/config/ecdesources.xml",
+                  "sae.metadata.cache=6000");
 
       FileUtils.writeLines(saeResourceFile, lines);
 
