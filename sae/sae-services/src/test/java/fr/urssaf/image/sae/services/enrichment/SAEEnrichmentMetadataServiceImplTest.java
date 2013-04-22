@@ -35,14 +35,16 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 @SuppressWarnings("all")
 public class SAEEnrichmentMetadataServiceImplTest extends CommonsServices {
+   
    @Autowired
    @Qualifier("saeEnrichmentMetadataService")
-   SAEEnrichmentMetadataService saeEnrichmentMetadataService;
+   private SAEEnrichmentMetadataService saeEnrichmentMetadataService;
+   
    @Autowired
    @Qualifier("saeControlesCaptureService")
-   SAEControlesCaptureService controlesCaptureService;
+   private SAEControlesCaptureService controlesCaptureService;
+   
    @Autowired
-   @Qualifier("mappingDocumentService")
    private MappingDocumentService mappingService;
 
    /**
