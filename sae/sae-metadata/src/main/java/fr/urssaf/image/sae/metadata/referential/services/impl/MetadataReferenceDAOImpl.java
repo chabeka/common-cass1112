@@ -30,12 +30,11 @@ import fr.urssaf.image.sae.metadata.utils.Utils;
  * {@link fr.urssaf.image.sae.metadata.referential.services.MetadataReferenceDAO
  * MetadataReferenceService}
  * 
- * @author akenore
- * 
  */
 @Service
 @Qualifier("metadataReferenceDAO")
 public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
+
    @Autowired
    @Qualifier("xmlDataService")
    private XmlDataService xmlDataService;
@@ -43,16 +42,15 @@ public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
    @Autowired
    private ApplicationContext context;
 
-   private enum MetaType{ALL_METADATAS};
-   
-   private LoadingCache<MetaType, Map<String, MetadataReference>> metadataReference;
-   
+   private enum MetaType {
+      ALL_METADATAS
+   };
 
-   private int cacheDuration;
-   
+   private LoadingCache<MetaType, Map<String, MetadataReference>> metadataReference;
+
    @Autowired
    private SaeMetadataSupport metadataSupport;
-   
+
    /**
     * @return Le context.
     */
@@ -91,13 +89,12 @@ public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
     * {@inheritDoc}
     */
    @Deprecated
-   public final Map<String, MetadataReference> getAllMetadataReferences()
-          {
+   public final Map<String, MetadataReference> getAllMetadataReferences() {
 
-         synchronized (this) {
-            
-           return metadataReference.getUnchecked(MetaType.ALL_METADATAS);
-         }
+      synchronized (this) {
+
+         return metadataReference.getUnchecked(MetaType.ALL_METADATAS);
+      }
 
    }
 
@@ -159,12 +156,13 @@ public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
     */
    public final MetadataReference getByLongCode(final String longCode)
          throws ReferentialException {
-      MetadataReference metadata =null;
-      // on parcours tout le contenu du cache pour trouver l'objet ayant le code long demandé
+      MetadataReference metadata = null;
+      // on parcours tout le contenu du cache pour trouver l'objet ayant le code
+      // long demandé
       Map<String, MetadataReference> referenceList = getAllMetadataReferences();
-      for(MetadataReference meta : referenceList.values()){
-         if (meta.getLongCode()!=null && meta.getLongCode().equals(longCode)){
-            metadata= meta;
+      for (MetadataReference meta : referenceList.values()) {
+         if (meta.getLongCode() != null && meta.getLongCode().equals(longCode)) {
+            metadata = meta;
          }
       }
       return metadata;
@@ -253,11 +251,11 @@ public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
     * Construit un objet de type {@link MetadataReferenceDAOImpl}
     */
    @Autowired
-   public MetadataReferenceDAOImpl(@Value("${sae.metadata.cache}") int cacheDuration ) {
-         this.cacheDuration= cacheDuration;  
-         metadataReference = CacheBuilder.newBuilder().refreshAfterWrite(
-               cacheDuration, TimeUnit.MINUTES).build(
-               new CacheLoader<MetaType, Map<String, MetadataReference>>() {
+   public MetadataReferenceDAOImpl(
+         @Value("${sae.metadata.cache}") int cacheDuration) {
+      metadataReference = CacheBuilder.newBuilder().refreshAfterWrite(
+            cacheDuration, TimeUnit.MINUTES).build(
+            new CacheLoader<MetaType, Map<String, MetadataReference>>() {
 
                @Override
                public Map<String, MetadataReference> load(MetaType identifiant)
@@ -267,7 +265,7 @@ public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
                            .findAll();
                      Map<String, MetadataReference> mapMeta = new HashMap<String, MetadataReference>();
                      for (MetadataReference meta : listeMeta) {
-                        mapMeta.put(meta.getShortCode(), meta);
+                        mapMeta.put(meta.getLongCode(), meta);
                      }
                      return mapMeta;
                   } else {
@@ -276,9 +274,8 @@ public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
                   }
                }
 
-               });
+            });
 
    }
-   
 
 }

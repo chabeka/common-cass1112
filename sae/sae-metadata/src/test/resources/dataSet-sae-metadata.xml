@@ -12,10 +12,10 @@
          <comparatorType>UTF8Type</comparatorType>
          <defaultColumnValueType>UTF8Type</defaultColumnValueType>
          <row>
-            <key>itm</key>
+            <key>IdTraitementMasse</key>
             <column>
-               <name>lCode</name>
-               <value>IdTraitementMasse</value>
+               <name>sCode</name>
+               <value>itm</value>
             </column>
             <column>
                <name>type</name>
@@ -78,13 +78,12 @@
                <name>index</name>
                <value>false</value>
             </column>
-
          </row>
          <row>
-            <key>nic</key>
+            <key>NumeroIntControle</key>
             <column>
-               <name>lCode</name>
-               <value>NumeroIntControle</value>
+               <name>sCode</name>
+               <value>nic</value>
             </column>
             <column>
                <name>type</name>
@@ -148,10 +147,10 @@
             </column>
          </row>
          <row>
-            <key>per</key>
+            <key>Periode</key>
             <column>
-               <name>lCode</name>
-               <value>Periode</value>
+               <name>sCode</name>
+               <value>per</value>
             </column>
             <column>
                <name>type</name>
@@ -215,10 +214,10 @@
             </column>
          </row>
          <row>
-            <key>SM_VERSION</key>
+            <key>VersionNumber</key>
             <column>
-               <name>lCode</name>
-               <value>VersionNumber</value>
+               <name>sCode</name>
+               <value>SM_VERSION</value>
             </column>
             <column>
                <name>type</name>
@@ -282,10 +281,10 @@
             </column>
          </row>
          <row>
-            <key>SM_DOCUMENT_TYPE</key>
+            <key>CodeRND</key>
             <column>
-               <name>lCode</name>
-               <value>CodeRND</value>
+               <name>sCode</name>
+               <value>SM_DOCUMENT_TYPE</value>
             </column>
             <column>
                <name>type</name>
@@ -349,12 +348,11 @@
                <value>false</value>
             </column>
          </row>
-
          <row>
-            <key>act</key>
+            <key>CodeActivite</key>
             <column>
-               <name>lCode</name>
-               <value>CodeActivite</value>
+               <name>sCode</name>
+               <value>act</value>
             </column>
             <column>
                <name>type</name>
@@ -418,10 +416,10 @@
             </column>
          </row>
          <row>
-            <key>vrn</key>
+            <key>VersionRND</key>
             <column>
-               <name>lCode</name>
-               <value>VersionRND</value>
+               <name>sCode</name>
+               <value>vrn</value>
             </column>
             <column>
                <name>type</name>
@@ -486,10 +484,10 @@
             </column>
          </row>
          <row>
-            <key>SM_DIGEST</key>
+            <key>Hash</key>
             <column>
-               <name>lCode</name>
-               <value>Hash</value>
+               <name>sCode</name>
+               <value>SM_DIGEST</value>
             </column>
             <column>
                <name>type</name>
@@ -553,10 +551,10 @@
             </column>
          </row>
          <row>
-            <key>SM_START_PAGE</key>
+            <key>StartPage</key>
             <column>
-               <name>lCode</name>
-               <value>StartPage</value>
+               <name>sCode</name>
+               <value>SM_START_PAGE</value>
             </column>
             <column>
                <name>type</name>
@@ -615,13 +613,12 @@
                <name>index</name>
                <value>false</value>
             </column>
-
          </row>
          <row>
-            <key>SM_LIFE_CYCLE_REFERENCE_DATE</key>
+            <key>DateDebutConservation</key>
             <column>
-               <name>lCode</name>
-               <value>DateDebutConservation</value>
+               <name>sCode</name>
+               <value>SM_LIFE_CYCLE_REFERENCE_DATE</value>
             </column>
             <column>
                <name>type</name>
@@ -683,13 +680,12 @@
                <name>index</name>
                <value>false</value>
             </column>
-
          </row>
          <row>
-            <key>gel</key>
+            <key>Gel</key>
             <column>
-               <name>lCode</name>
-               <value>Gel</value>
+               <name>sCode</name>
+               <value>gel</value>
             </column>
             <column>
                <name>type</name>
@@ -707,7 +703,6 @@
                <name>length</name>
                <value>-1</value>
             </column>
-
             <column>
                <name>cons</name>
                <value>true</value>
@@ -755,10 +750,10 @@
             </column>
          </row>
          <row>
-            <key>dom</key>
+            <key>CodeFonction</key>
             <column>
-               <name>lCode</name>
-               <value>CodeFonction</value>
+               <name>sCode</name>
+               <value>dom</value>
             </column>
             <column>
                <name>type</name>
@@ -822,10 +817,10 @@
             </column>
          </row>
          <row>
-            <key>srt</key>
+            <key>Siret</key>
             <column>
-               <name>lCode</name>
-               <value>Siret</value>
+               <name>sCode</name>
+               <value>srt</value>
             </column>
             <column>
                <name>type</name>
@@ -888,8 +883,8 @@
                <value>false</value>
             </column>
          </row>
-         
       </columnFamily>
+      
       <columnFamily>
          <name>Dictionary</name>
          <keyType>UTF8Type</keyType>

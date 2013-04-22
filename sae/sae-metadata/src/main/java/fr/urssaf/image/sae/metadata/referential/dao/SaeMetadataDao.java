@@ -10,10 +10,11 @@ import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
 import me.prettyprint.hector.api.Keyspace;
 import me.prettyprint.hector.api.Serializer;
 import fr.urssaf.image.sae.commons.dao.AbstractDao;
+
 @Repository
 public class SaeMetadataDao extends AbstractDao<String, String> {
 
-   public static final String META_LONG_CODE = "lCode";
+   public static final String META_SHORT_CODE = "sCode";
    public static final String META_TYPE = "type";
    public static final String META_REQ_ARCH = "reqArch";
    public static final String META_REQ_STOR = "reqStor";
@@ -29,43 +30,37 @@ public class SaeMetadataDao extends AbstractDao<String, String> {
    public static final String META_HAS_DICT = "hasName";
    public static final String META_DICT_NAME = "dictName";
    public static final String META_INDEXED = "index";
-   
+
    public static final String METADATA_CFNAME = "MetaData";
 
-   
    @Autowired
    public SaeMetadataDao(Keyspace keyspace) {
       super(keyspace);
-      // TODO Auto-generated constructor stub
    }
 
    @Override
    public String getColumnFamilyName() {
-      // TODO Auto-generated method stub
       return METADATA_CFNAME;
    }
 
    @Override
    public Serializer<String> getColumnKeySerializer() {
-      // TODO Auto-generated method stub
       return StringSerializer.get();
    }
 
    @Override
    public Serializer<String> getRowKeySerializer() {
-
-      // TODO Auto-generated method stub
       return StringSerializer.get();
    }
 
-   public void ecritLongCode(String icode,
+   public void ecritShortCode(String sCode,
          ColumnFamilyUpdater<String, String> updater, long clock) {
-      addColumn(updater, META_LONG_CODE, icode, StringSerializer.get(), clock);
+      addColumn(updater, META_SHORT_CODE, sCode, StringSerializer.get(), clock);
    }
 
    public void ecritType(String type,
          ColumnFamilyUpdater<String, String> updater, long clock) {
-         addColumn(updater, META_TYPE, type, StringSerializer.get(), clock);
+      addColumn(updater, META_TYPE, type, StringSerializer.get(), clock);
    }
 
    public void ecritRequiredArchival(Boolean reqArch,
@@ -92,10 +87,11 @@ public class SaeMetadataDao extends AbstractDao<String, String> {
          ColumnFamilyUpdater<String, String> updater, long clock) {
       addColumn(updater, META_CONSUL, cons, BooleanSerializer.get(), clock);
    }
-   
+
    public void ecritDefaultConsultable(Boolean defCons,
          ColumnFamilyUpdater<String, String> updater, long clock) {
-      addColumn(updater, META_DEF_CONSUL, defCons, BooleanSerializer.get(), clock);
+      addColumn(updater, META_DEF_CONSUL, defCons, BooleanSerializer.get(),
+            clock);
    }
 
    public void ecritSearchable(Boolean search,
@@ -105,7 +101,8 @@ public class SaeMetadataDao extends AbstractDao<String, String> {
 
    public void ecritInternal(Boolean internal,
          ColumnFamilyUpdater<String, String> updater, long clock) {
-      addColumn(updater, META_INTERNAL, internal, BooleanSerializer.get(), clock);
+      addColumn(updater, META_INTERNAL, internal, BooleanSerializer.get(),
+            clock);
    }
 
    public void ecritArchivable(Boolean arch,
@@ -130,7 +127,8 @@ public class SaeMetadataDao extends AbstractDao<String, String> {
 
    public void ecritDictionaryName(String dictName,
          ColumnFamilyUpdater<String, String> updater, long clock) {
-      addColumn(updater, META_DICT_NAME, dictName, StringSerializer.get(), clock);
+      addColumn(updater, META_DICT_NAME, dictName, StringSerializer.get(),
+            clock);
    }
 
    public void ecritIndexed(Boolean index,
