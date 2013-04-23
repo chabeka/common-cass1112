@@ -37,19 +37,19 @@ public class DFCECassandraUpdater {
    /**
     * Nom du keyspace
     */
-   private final String ksName;
+   private static final String DFCE_KEYSPACE_NAME = "Docubase";
 
    private final Cluster cluster;
    private Keyspace keyspace;
    private final Map<String, String> credentials;
 
-   // LOGGER
    private static final Logger LOG = LoggerFactory
          .getLogger(DFCECassandraUpdater.class);
 
-   // GCgrace par fixé à 20 jours.
-   // Il est à 10 jours par défaut. Ça nous laisse plus de temps pour réagir en
-   // cas de problème avec les repair.
+   /**
+    * GCgrace par fixé à 20 jours. Il est à 10 jours par défaut. Ça nous laisse
+    * plus de temps pour réagir en cas de problème avec les repair.
+    */
    private static final int DEFAULT_GCGRACE = 1728000;
 
    /**
@@ -59,7 +59,6 @@ public class DFCECassandraUpdater {
     *           : configuration d'accès au cluster cassandra
     */
    public DFCECassandraUpdater(CassandraConfig config) {
-      ksName = config.getKeyspaceName();
       credentials = new HashMap<String, String>();
       credentials.put("username", config.getLogin());
       credentials.put("password", config.getPassword());
@@ -76,9 +75,10 @@ public class DFCECassandraUpdater {
       LOG.info("Mise à jour du keyspace DFCE en version 1.1.0");
 
       // Si le KeySpace n'existe pas, on quitte
-      KeyspaceDefinition keyspaceDef = cluster.describeKeyspace(ksName);
+      KeyspaceDefinition keyspaceDef = cluster
+            .describeKeyspace(DFCE_KEYSPACE_NAME);
       if (keyspaceDef == null) {
-         throw new MajLotRuntimeException("Le Keyspace " + ksName
+         throw new MajLotRuntimeException("Le Keyspace " + DFCE_KEYSPACE_NAME
                + " n'existe pas !");
       }
 
@@ -94,9 +94,9 @@ public class DFCECassandraUpdater {
             + ComparatorType.getByClassName("DateType").getTypeName() + ", "
             + ComparatorType.UUIDTYPE.getTypeName() + ")";
 
-      ColumnFamilyDefinition column0 = HFactory
-            .createColumnFamilyDefinition(ksName,
-                  "DocEventLogByTimeSerialized", ComparatorType.COMPOSITETYPE);
+      ColumnFamilyDefinition column0 = HFactory.createColumnFamilyDefinition(
+            DFCE_KEYSPACE_NAME, "DocEventLogByTimeSerialized",
+            ComparatorType.COMPOSITETYPE);
       column0.setComparatorTypeAlias(comparatorAlias);
       column0.setRowCacheSize(0);
       column0.setKeyCacheSize(0);
@@ -105,7 +105,7 @@ public class DFCECassandraUpdater {
       // SystemEventLogByTimeSerialized
 
       ColumnFamilyDefinition column1 = HFactory.createColumnFamilyDefinition(
-            ksName, "SystemEventLogByTimeSerialized",
+            DFCE_KEYSPACE_NAME, "SystemEventLogByTimeSerialized",
             ComparatorType.COMPOSITETYPE);
       column1.setComparatorTypeAlias(comparatorAlias);
       column1.setRowCacheSize(0);
@@ -131,7 +131,8 @@ public class DFCECassandraUpdater {
       columnMetadata2.add(e21);
 
       ColumnFamilyDefinition column2 = HFactory.createColumnFamilyDefinition(
-            ksName, "JobInstance", ComparatorType.UTF8TYPE, columnMetadata2);
+            DFCE_KEYSPACE_NAME, "JobInstance", ComparatorType.UTF8TYPE,
+            columnMetadata2);
       cfDefs.add(column2);
 
       // JobExecution
@@ -153,7 +154,8 @@ public class DFCECassandraUpdater {
       columnMetadata3.add(e31);
 
       ColumnFamilyDefinition column3 = HFactory.createColumnFamilyDefinition(
-            ksName, "JobExecution", ComparatorType.UTF8TYPE, columnMetadata3);
+            DFCE_KEYSPACE_NAME, "JobExecution", ComparatorType.UTF8TYPE,
+            columnMetadata3);
       cfDefs.add(column3);
 
       // StepExecution
@@ -182,20 +184,21 @@ public class DFCECassandraUpdater {
       columnMetadata4.add(e42);
 
       ColumnFamilyDefinition column4 = HFactory.createColumnFamilyDefinition(
-            ksName, "StepExecution", ComparatorType.UTF8TYPE, columnMetadata4);
+            DFCE_KEYSPACE_NAME, "StepExecution", ComparatorType.UTF8TYPE,
+            columnMetadata4);
       cfDefs.add(column4);
 
       // BatchCounter
 
       ColumnFamilyDefinition column5 = HFactory.createColumnFamilyDefinition(
-            ksName, "BatchCounter", ComparatorType.UTF8TYPE);
+            DFCE_KEYSPACE_NAME, "BatchCounter", ComparatorType.UTF8TYPE);
       column5.setDefaultValidationClass("CounterColumnType");
       cfDefs.add(column5);
 
       // Locker
 
-      cfDefs.add(HFactory.createColumnFamilyDefinition(ksName, "Locker",
-            ComparatorType.UTF8TYPE));
+      cfDefs.add(HFactory.createColumnFamilyDefinition(DFCE_KEYSPACE_NAME,
+            "Locker", ComparatorType.UTF8TYPE));
 
       // Ajoute les options les plus courantes à chacune des CF
       for (ColumnFamilyDefinition c : cfDefs) {
@@ -223,9 +226,10 @@ public class DFCECassandraUpdater {
       LOG.info("Mise à jour du keyspace DFCE en version 1.2.0");
 
       // Si le KeySpace n'existe pas, on quitte
-      KeyspaceDefinition keyspaceDef = cluster.describeKeyspace(ksName);
+      KeyspaceDefinition keyspaceDef = cluster
+            .describeKeyspace(DFCE_KEYSPACE_NAME);
       if (keyspaceDef == null) {
-         throw new MajLotRuntimeException("Le Keyspace " + ksName
+         throw new MajLotRuntimeException("Le Keyspace " + DFCE_KEYSPACE_NAME
                + " n'existe pas !");
       }
 
@@ -234,6 +238,8 @@ public class DFCECassandraUpdater {
 
       // Liste contenant la définition des column families à créer
       List<ColumnFamilyDefinition> cfDefs = new ArrayList<ColumnFamilyDefinition>();
+
+      // Statistics
 
       List<ColumnDefinition> columnMetadata0 = new ArrayList<ColumnDefinition>();
 
@@ -245,8 +251,11 @@ public class DFCECassandraUpdater {
       columnMetadata0.add(e01);
 
       ColumnFamilyDefinition column0 = HFactory.createColumnFamilyDefinition(
-            ksName, "Statistics", ComparatorType.BYTESTYPE, columnMetadata0);
+            DFCE_KEYSPACE_NAME, "Statistics", ComparatorType.BYTESTYPE,
+            columnMetadata0);
       cfDefs.add(column0);
+
+      // StatisticsDatas
 
       String comparatorAlias = "(a=>" + ComparatorType.ASCIITYPE.getTypeName()
             + ", b=>" + ComparatorType.BYTESTYPE.getTypeName() + ", i=>"
@@ -257,7 +266,8 @@ public class DFCECassandraUpdater {
             + ComparatorType.UTF8TYPE.getTypeName() + ", u=>"
             + ComparatorType.UUIDTYPE.getTypeName() + ")";
       ColumnFamilyDefinition column1 = HFactory.createColumnFamilyDefinition(
-            ksName, "StatisticsDatas", ComparatorType.DYNAMICCOMPOSITETYPE);
+            DFCE_KEYSPACE_NAME, "StatisticsDatas",
+            ComparatorType.DYNAMICCOMPOSITETYPE);
       column1.setComparatorTypeAlias(comparatorAlias);
       column1.setRowCacheSize(0);
       column1.setKeyCacheSize(0);
@@ -287,7 +297,7 @@ public class DFCECassandraUpdater {
       ConfigurableConsistencyLevel ccl = new ConfigurableConsistencyLevel();
       ccl.setDefaultReadConsistencyLevel(HConsistencyLevel.QUORUM);
       ccl.setDefaultWriteConsistencyLevel(HConsistencyLevel.QUORUM);
-      keyspace = HFactory.createKeyspace(ksName, cluster, ccl,
+      keyspace = HFactory.createKeyspace(DFCE_KEYSPACE_NAME, cluster, ccl,
             FailoverPolicy.ON_FAIL_TRY_ALL_AVAILABLE, credentials);
    }
 
