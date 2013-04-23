@@ -14,6 +14,7 @@ import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
  * @author akenore
  * 
  */
+@SuppressWarnings("PMD.TooManyMethods")
 public interface MetadataControlServices {
    /**
     * Contrôle que la liste des métadonnées sont autorisées à l'archivables lors
@@ -121,5 +122,5 @@ public interface MetadataControlServices {
     * @param document le document
     * @return Liste de type MetadataError
     */
-   List<MetadataError> checkMetadataValueFromDictionary(UntypedDocument document);
+   List<MetadataError> checkMetadataValueFromDictionary( final UntypedDocument document);
 }

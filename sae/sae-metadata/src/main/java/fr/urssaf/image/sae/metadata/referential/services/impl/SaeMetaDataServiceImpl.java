@@ -31,12 +31,13 @@ import fr.urssaf.image.sae.storage.model.connection.StorageConnectionParameter;
  * l'annotation @Autowired
  * 
  */
+@SuppressWarnings("PMD.PreserveStackTrace")
 public class SaeMetaDataServiceImpl implements SaeMetaDataService {
 
-   private SaeMetadataSupport saeMetadatasupport;
-   private JobClockSupport clockSupport;
-   private CuratorFramework curator;
-   private ServiceProvider serviceProvider;
+   private final SaeMetadataSupport saeMetadatasupport;
+   private final JobClockSupport clockSupport;
+   private final CuratorFramework curator;
+   private final ServiceProvider serviceProvider;
 
    @Autowired
    private StorageConnectionParameter storageParam;
@@ -44,11 +45,18 @@ public class SaeMetaDataServiceImpl implements SaeMetaDataService {
    private static final Logger LOGGER = LoggerFactory
          .getLogger(SaeMetaDataServiceImpl.class);
 
-   private int MAX_VALUES = 1;
-   private String PREFIXE_META = "/DroitMeta/";
+   private static final int MAX_VALUES = 1;
+   private static final String PREFIXE_META = "/DroitMeta/";
 
    private static final String TRC_CREATE = "create()";
 
+   /**
+    * Constructeur du service
+    * @param saeMetadataSupport la classe support
+    * @param clockSupport {@link JobClockSupport}
+    * @param curator {@link CuratorFramework}
+    * @param serviceProvider
+    */
    @Autowired
    public SaeMetaDataServiceImpl(SaeMetadataSupport saeMetadataSupport,
          JobClockSupport clockSupport, CuratorFramework curator,
@@ -65,7 +73,7 @@ public class SaeMetaDataServiceImpl implements SaeMetaDataService {
       String resourceName = PREFIXE_META + metadata.getShortCode();
 
       ZookeeperMutex mutex = ZookeeperUtils.createMutex(curator, resourceName);
-
+      LOGGER.debug("{} - Création de la métadonnée dans DFCE", metadata.getLongCode());
       // création de la métadonnée dans DFCE
       try {
          serviceProvider.getBaseAdministrationService().createBase(
@@ -92,7 +100,7 @@ public class SaeMetaDataServiceImpl implements SaeMetaDataService {
 
    @Override
    public void moify(MetadataReference metadata) {
-
+      LOGGER.debug("{} - Modification de la métadonnée", metadata.getLongCode());
       serviceProvider.getBaseAdministrationService().updateBase(
             createBase(metadata));
       saeMetadatasupport.create(metadata, clockSupport.currentCLock());
@@ -118,7 +126,7 @@ public class SaeMetaDataServiceImpl implements SaeMetaDataService {
          baseCategory.setMinimumValues(0);
       }
       baseCategory.setSingle(metadata.isRequiredForStorage());
-
+      LOGGER.debug("Métadonné crééé dans DFCE");
       return base;
    }
 

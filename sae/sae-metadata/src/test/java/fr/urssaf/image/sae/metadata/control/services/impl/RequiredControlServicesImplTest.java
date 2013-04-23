@@ -30,7 +30,6 @@ public class RequiredControlServicesImplTest {
 
    
    @Autowired
-   @Qualifier("metadataControlServices")
    private MetadataControlServices controlService;
 	/**
 	 * Fournit des données pour valider la méthode

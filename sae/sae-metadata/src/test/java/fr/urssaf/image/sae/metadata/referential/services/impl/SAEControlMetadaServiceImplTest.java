@@ -22,6 +22,7 @@ import fr.urssaf.image.sae.metadata.referential.services.SAEControlMetadataServi
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-metadata-test.xml" })
+@SuppressWarnings("PMD")
 public class SAEControlMetadaServiceImplTest {
 
    @Autowired

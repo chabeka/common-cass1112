@@ -33,7 +33,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
  * 
  */
 
-@SuppressWarnings("PMD.LongVariable")
+@SuppressWarnings({"PMD.LongVariable","PMD.TooManyFields"})
 public class MetadataReference implements Serializable {
 
 	/**

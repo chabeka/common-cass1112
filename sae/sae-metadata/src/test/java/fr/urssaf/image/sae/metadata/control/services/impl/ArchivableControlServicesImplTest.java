@@ -1,18 +1,13 @@
 package fr.urssaf.image.sae.metadata.control.services.impl;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.List;
 
-import org.apache.cassandra.config.ConfigurationException;
-import org.cassandraunit.utils.EmbeddedCassandraServerHelper;
 import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -32,6 +27,7 @@ import fr.urssaf.image.sae.metadata.test.dataprovider.MetadataDataProviderUtils;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-metadata-test.xml" })
+@SuppressWarnings("PMD")
 public class ArchivableControlServicesImplTest{
 	
    @Autowired   

@@ -34,7 +34,7 @@ import fr.urssaf.image.sae.metadata.utils.Utils;
  */
 @Service
 @Qualifier("metadataControlServices")
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals","PMD.TooManyMethods"})
 public class MetadataControlServicesImpl implements MetadataControlServices {
 	@Autowired
 	@Qualifier("ruleFactory")
@@ -451,7 +451,7 @@ public class MetadataControlServicesImpl implements MetadataControlServices {
 
    @Override
    public List<MetadataError> checkMetadataValueFromDictionary(
-         UntypedDocument document) {
+         final UntypedDocument document) {
       final List<MetadataError> errors = new ArrayList<MetadataError>();
          try {
             // récupération de toutes les métadonnées définies

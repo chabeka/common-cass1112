@@ -10,7 +10,7 @@ import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
 import me.prettyprint.hector.api.Keyspace;
 import me.prettyprint.hector.api.Serializer;
 import fr.urssaf.image.sae.commons.dao.AbstractDao;
-
+@SuppressWarnings("PMD.TooManyMethods")
 @Repository
 public class SaeMetadataDao extends AbstractDao<String, String> {
 

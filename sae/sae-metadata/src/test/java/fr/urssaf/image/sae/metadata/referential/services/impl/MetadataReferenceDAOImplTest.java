@@ -21,6 +21,7 @@ import fr.urssaf.image.sae.metadata.referential.services.MetadataReferenceDAO;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-metadata-test.xml" })
+@SuppressWarnings("PMD")
 public class MetadataReferenceDAOImplTest {
 
    @Autowired

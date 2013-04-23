@@ -8,32 +8,68 @@ import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
 import me.prettyprint.hector.api.Keyspace;
 import me.prettyprint.hector.api.Serializer;
 import fr.urssaf.image.sae.commons.dao.AbstractDao;
+
+/**
+ * DAO associé à la CF Dictionary
+ * 
+ * 
+ */
 @Repository
 public class DictionaryDao extends AbstractDao<String, String> {
-   
-   private static String CF_NAME="Dictionary";
+
+   private static final String CF_NAME = "Dictionary";
+
+   /**
+    * constructeur de la DAO
+    * 
+    * @param keyspace
+    *           le keyspace contenant la CF
+    */
    @Autowired
    public DictionaryDao(Keyspace keyspace) {
       super(keyspace);
-      // TODO Auto-generated constructor stub
    }
 
+   /**
+    *renvoie le nom de la CF
+    * 
+    * @return {@link String}
+    */
    @Override
    public String getColumnFamilyName() {
       return CF_NAME;
    }
 
+   /**
+    *renvoie le serializer de la CF
+    * 
+    * @return {@link StringSerializer}
+    */
    @Override
    public Serializer<String> getColumnKeySerializer() {
       return StringSerializer.get();
    }
 
+   /**
+    *renvoie le serializer de la clé de la CF
+    * 
+    * @return {@link StringSerializer}
+    */
    @Override
    public Serializer<String> getRowKeySerializer() {
       return StringSerializer.get();
    }
 
-   
+   /**
+    * Méthode permettant d'écrire une ligne de la CF
+    * 
+    * @param element
+    *           element à écrire
+    * @param updater
+    *           un CF updater
+    * @param clock
+    *           le timestamp
+    */
    public void ecritElement(String element,
          ColumnFamilyUpdater<String, String> updater, long clock) {
       addColumn(updater, element, "", StringSerializer.get(), clock);

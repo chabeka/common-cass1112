@@ -29,20 +29,27 @@ import fr.urssaf.image.sae.metadata.referential.support.DictionarySupport;
  * singleton et peut être accessible via le mécanisme d'injection IOC avec
  * l'annotation @Autowired
  */
+@SuppressWarnings("PMD.PreserveStackTrace")
 @Service
 public class DictionaryServiceImpl implements DictionaryService {
 
    private final DictionarySupport dictionarySupport;
    private final JobClockSupport clockSupport;
    private final CuratorFramework curator;
-   private LoadingCache<String, Dictionary> dictionaries;
-   private int duration;
-   private final String PREFIXE_DICT ="/Dictionary/";
+   private final LoadingCache<String, Dictionary> dictionaries;
+   private static final String PREFIXE_DICT ="/Dictionary/";
    private static final Logger LOGGER = LoggerFactory
    .getLogger(DictionaryServiceImpl.class);
    private static final String TRC_CREATE = "addElements()";
    private static final String TRC_DELETE = "deleteElements()";
 
+   /**
+    * Constructeur du service
+    * @param dictSupport la classe support
+    * @param jobClockSupport {@link JobClockSupport}
+    * @param curatorFramework {@link CuratorFramework}
+    * @param value durée du cache
+    */
    @Autowired
    public DictionaryServiceImpl(DictionarySupport dictSupport,
          JobClockSupport jobClockSupport, CuratorFramework curatorFramework,
@@ -50,9 +57,8 @@ public class DictionaryServiceImpl implements DictionaryService {
       this.dictionarySupport = dictSupport;
       this.clockSupport = jobClockSupport;
       this.curator = curatorFramework;
-      this.duration = value;
 
-      dictionaries = CacheBuilder.newBuilder().refreshAfterWrite(duration,
+      dictionaries = CacheBuilder.newBuilder().refreshAfterWrite(value,
             TimeUnit.MINUTES).build(new CacheLoader<String, Dictionary>() {
 
          @Override
@@ -66,6 +72,8 @@ public class DictionaryServiceImpl implements DictionaryService {
 
    /**
     * Ajout d'un nouveau dictionnaire
+    * @param name nom du dictionnaire
+    * @param values les des valeurs possibles
     */
    @Override
    public void addElements(String name, List<String> values) {
@@ -96,11 +104,15 @@ public class DictionaryServiceImpl implements DictionaryService {
    /**
     * Supression d'un dictionnaire. Attention les données supprimées sont
     * toujours présentes en cache jusqu'a leur expiration
+    * @param name nom du dictionnaire
+    * @param values les des valeurs possibles 
     */
 
    @Override
    public void deleteElements(String name, List<String> values) {
+      LOGGER.debug("{} - Supression des valeurs du dictionnaire", TRC_DELETE);
       for (String value : values) {
+         LOGGER.debug("{} - Supression de la valeur", value);
          dictionarySupport.deleteElement(name, value, clockSupport
                .currentCLock());
       }
@@ -110,6 +122,9 @@ public class DictionaryServiceImpl implements DictionaryService {
     * Méthode permettant de récupérer un dictionnaire donnée. Si le dictionnaire
     * n'est pas en cache on appel la méthode find sinon on renvoit la valeur
     * contenu dans le cache.
+    * @param name nom du dictionnaire
+    * @throws DictionaryNotFoundException dictionnaire non trouvé
+    * @return {@link Dictionary}
     */
    @Override
    public Dictionary find(String name) throws DictionaryNotFoundException {
@@ -120,6 +135,7 @@ public class DictionaryServiceImpl implements DictionaryService {
    /**
     * Méthode permettant de récupérer tous les dictionnaires sans passer par le
     * cache.
+    * @return List{@link Dictionary}
     */
    @Override
    public List<Dictionary> findAll() {

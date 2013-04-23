@@ -42,7 +42,7 @@ public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
       ALL_METADATAS
    };
 
-   private LoadingCache<MetaType, Map<String, MetadataReference>> metadataReference;
+   private final LoadingCache<MetaType, Map<String, MetadataReference>> metadataReference;
 
    @Autowired
    private SaeMetadataSupport metadataSupport;

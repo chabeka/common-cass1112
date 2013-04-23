@@ -16,7 +16,7 @@ public class LongCodeNotFoundException extends Exception {
     */
    private static final long serialVersionUID = 1L;
 
-   private List<String> listCode;
+   private final List<String> listCode;
 
     
    /**

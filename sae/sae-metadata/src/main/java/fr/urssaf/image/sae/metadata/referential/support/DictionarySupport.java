@@ -22,15 +22,21 @@ import fr.urssaf.image.sae.metadata.exceptions.DictionaryNotFoundException;
 import fr.urssaf.image.sae.metadata.referential.dao.DictionaryDao;
 import fr.urssaf.image.sae.metadata.referential.model.Dictionary;
 
-@Component
-public class DictionarySupport {
 /**
  * classe permettant de réaliser les actions de manipulation des DAO pour la famille de colonne "Dictionary"
  */
+
+@Component
+public class DictionarySupport {
    
-  private DictionaryDao dictionaryDao;
+  private final DictionaryDao dictionaryDao;
    
-   private int MAX_FIND_RESULT = 2000;
+   private static final int MAX_FIND_RESULT = 2000;
+   
+   /**
+    * Constructeur de la classe support
+    * @param dictionaryDao la dao
+    */
    @Autowired
    public DictionarySupport(DictionaryDao dictionaryDao ){
       this.dictionaryDao = dictionaryDao;
@@ -42,35 +48,35 @@ public class DictionarySupport {
     * @param value valeur de l'entée
     * @param clock horloge de la colonne
     */
-   public void addElement(String id, String value, long clock){
+   public void addElement(String identifiant, String value, long clock){
       ColumnFamilyUpdater<String, String> updater = dictionaryDao.getCfTmpl()
-      .createUpdater(id);
+      .createUpdater(identifiant);
       dictionaryDao.ecritElement(value, updater, clock);
       updater.update();
    } 
    
    /**
     * Supprime une entré du dictionnaire
-    * @param id identifiant du dictionnaire
+    * @param identifiant identifiant du dictionnaire
     * @param value Valeur de l'entrée à supprimer
     * @param clock Horloge de la colonne
     */
-   public void deleteElement(String id, String value, long clock){
+   public void deleteElement(String identifiant, String value, long clock){
       
-      dictionaryDao.mutatorSuppressionColonne(dictionaryDao.createMutator(), id, value, clock);
+      dictionaryDao.mutatorSuppressionColonne(dictionaryDao.createMutator(), identifiant, value, clock);
    }
    
    
    /**
     * Retourne le dictionnaire avec l'identifiant passé en paramètre
-    * @param id identifiant du dictionnaire.
+    * @param identifiant identifiant du dictionnaire.
     * @return l'objet dictionnaire
-    * @throws DictionaryNotFoundException
+    * @throws DictionaryNotFoundException dictionnaire non trouvé
     */
-   public Dictionary find(String id) throws DictionaryNotFoundException{
+   public Dictionary find(String identifiant) throws DictionaryNotFoundException{
 
       ColumnFamilyResult<String, String> result = dictionaryDao.getCfTmpl()
-      .queryColumns(id);
+      .queryColumns(identifiant);
 
       Dictionary dictionary =null;
       if (result != null && result.hasResults()) {

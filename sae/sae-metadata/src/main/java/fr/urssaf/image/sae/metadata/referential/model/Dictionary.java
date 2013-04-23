@@ -5,7 +5,7 @@ import java.util.List;
 public class Dictionary {
 
    
-   private String id;
+   private String identifiant;
    
    private List<String> entries;
 
@@ -15,8 +15,8 @@ public class Dictionary {
     * @param id identifiant du dictionnaire
     * @param entries Liste des valeurs autorisées
     */
-   public Dictionary(String id, List<String> entries){
-      this.id = id;
+   public Dictionary(String identifiant, List<String> entries){
+      this.identifiant = identifiant;
       this.entries = entries;
    }
    
@@ -25,15 +25,15 @@ public class Dictionary {
     * @return l'identifiant du dictionnaire
     */
    public String getId() {
-      return id;
+      return identifiant;
    }
 
    /**
     * 
     * @param id identifiant du dictionnaire
     */
-   public void setId(String id) {
-      this.id = id;
+   public void setId(String identifiant) {
+      this.identifiant = identifiant;
    }
 
    /**
