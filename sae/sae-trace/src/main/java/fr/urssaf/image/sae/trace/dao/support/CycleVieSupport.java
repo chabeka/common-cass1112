@@ -14,6 +14,7 @@ import net.docubase.toolkit.model.recordmanager.RMDocEvent;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.iterators.ReverseListIterator;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -41,10 +42,9 @@ public class CycleVieSupport {
       super();
       this.support = support;
    }
-   
 
    /**
-    * Ajout d'une trace dans l'historique des événéments
+    * Ajout d'une trace dans l'historique du cycle de vie des archives
     * 
     * @param trace
     *           la trace à ajouter
@@ -54,9 +54,15 @@ public class CycleVieSupport {
       RMDocEvent event = ToolkitFactory.getInstance().createRMDocEvent();
       event.setEventDescription(trace.toString());
       event.setUsername(trace.getLogin());
+      event.setDocVersion(StringUtils.EMPTY);
+      event.setDocUUID(UUID.randomUUID()); // TODO: à remplacer par l'UUID du
+      // document. Pour l'instant, on ne
+      // dispose pas directement de
+      // l'information dans l'objet
+      // TraceToCreate (elle est dans la partie infos supplémentaires)
       support.getRecordManagerService().createCustomDocumentEventLog(event);
    }
-   
+
    /**
     * Recherche des traces existantes dans le cycle de vie des archives
     * 
@@ -140,6 +146,5 @@ public class CycleVieSupport {
       return null;
 
    }
-   
 
 }
