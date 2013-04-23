@@ -5,6 +5,11 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
@@ -19,8 +24,12 @@ import fr.urssaf.image.sae.metadata.test.dataprovider.MetadataDataProviderUtils;
  * @author akenore
  * 
  */
-public class TypeAndFormatControlServicesImplTest extends AbstractDataProvider {
-
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "/applicationContext-sae-metadata-test.xml" })
+public class TypeAndFormatControlServicesImplTest {
+   @Autowired
+   @Qualifier("metadataControlServices")
+   private MetadataControlServices controlService;
 	/**
 	 * Fournit des données pour valider la méthode
 	 * {@link MetadataControlServicesImpl#checkMetadataValueTypeAndFormat(UntypedDocument) }
@@ -53,7 +62,7 @@ public class TypeAndFormatControlServicesImplTest extends AbstractDataProvider {
 	 */
 	@Test
 	public void checkMetadataValueTypeAndFormat() throws FileNotFoundException {
-		Assert.assertTrue(getControlService().checkMetadataValueTypeAndFormat(
+		Assert.assertTrue(controlService.checkMetadataValueTypeAndFormat(
 				typeAndPatternData(true)).isEmpty());
 	}
 
@@ -66,7 +75,7 @@ public class TypeAndFormatControlServicesImplTest extends AbstractDataProvider {
 	@Test
 	public void checkMetadataValueTypeAndFormatWithBadTypeAndFormat()
 			throws FileNotFoundException {
-		Assert.assertTrue(!getControlService().checkMetadataValueTypeAndFormat(
+		Assert.assertTrue(!controlService.checkMetadataValueTypeAndFormat(
 				typeAndPatternData(false)).isEmpty());
 	}
 

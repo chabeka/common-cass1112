@@ -5,6 +5,11 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
 import fr.urssaf.image.sae.metadata.control.services.MetadataControlServices;
@@ -19,9 +24,14 @@ import fr.urssaf.image.sae.metadata.test.dataprovider.MetadataDataProviderUtils;
  * @author akenore
  * 
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "/applicationContext-sae-metadata-test.xml" })
+public class ConsultableControlServicesImplTest {
 
-public class ConsultableControlServicesImplTest extends AbstractDataProvider {
-
+   @Autowired
+   @Qualifier("metadataControlServices")
+   private MetadataControlServices controlService;
+   
 	/**
 	 * Fournit des données pour valider la méthode
 	 * {@link MetadataControlServicesImpl#checkConsultableMetadata(List)}
@@ -54,7 +64,7 @@ public class ConsultableControlServicesImplTest extends AbstractDataProvider {
 	@Test
 	public void checkConsultableMetadataWithoutNotConsultableMetadata()
 			throws FileNotFoundException {
-		Assert.assertTrue(getControlService().checkConsultableMetadata(
+		Assert.assertTrue(controlService.checkConsultableMetadata(
 				consultableData(true)).isEmpty());
 	}
 	/**
@@ -66,7 +76,7 @@ public class ConsultableControlServicesImplTest extends AbstractDataProvider {
 	@Test
 	public void checkConsultableMetadataWithNotConsultableMetadata()
 			throws FileNotFoundException {
-		Assert.assertTrue(!getControlService().checkConsultableMetadata(
+		Assert.assertTrue(!controlService.checkConsultableMetadata(
 				consultableData(false)).isEmpty());
 	}
 

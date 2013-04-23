@@ -5,6 +5,11 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
@@ -20,8 +25,13 @@ import fr.urssaf.image.sae.metadata.test.dataprovider.MetadataDataProviderUtils;
  * @author akenore
  * 
  */
-public class ExistingControlServicesImplTest extends AbstractDataProvider {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "/applicationContext-sae-metadata-test.xml" })
+public class ExistingControlServicesImplTest {
 
+   @Autowired
+   @Qualifier("metadataControlServices")
+   private MetadataControlServices controlService;
 	/**
 	 * Fournit des données pour valider la méthode
 	 * {@link MetadataControlServicesImpl#checkExistingMetadata(UntypedDocument) }
@@ -54,7 +64,7 @@ public class ExistingControlServicesImplTest extends AbstractDataProvider {
 	@Test
 	public void checkExistingMetadataWithoutNotExistingMetadata()
 			throws FileNotFoundException {
-		Assert.assertTrue(getControlService().checkExistingMetadata(
+		Assert.assertTrue(controlService.checkExistingMetadata(
 				existingData(true)).isEmpty());
 	}
 	/**
@@ -66,7 +76,7 @@ public class ExistingControlServicesImplTest extends AbstractDataProvider {
 	@Test
 	public void checkExistingMetadataWithExistingMetadata()
 			throws FileNotFoundException {
-		Assert.assertTrue(!getControlService().checkExistingMetadata(
+		Assert.assertTrue(!controlService.checkExistingMetadata(
 				existingData(false)).isEmpty());
 	}
 

@@ -10,7 +10,11 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
@@ -26,8 +30,13 @@ import fr.urssaf.image.sae.metadata.test.dataprovider.MetadataDataProviderUtils;
  * @author akenore
  * 
  */
-public class ArchivableControlServicesImplTest extends AbstractDataProvider {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "/applicationContext-sae-metadata-test.xml" })
+public class ArchivableControlServicesImplTest{
 	
+   @Autowired   
+   private MetadataControlServices controlService;
+   
    @Autowired
    private CassandraServerBean server;
 
@@ -66,7 +75,7 @@ public class ArchivableControlServicesImplTest extends AbstractDataProvider {
 	@Test
 	public void checkArchivableMetadataWithoutNotArchivaleMetadata()
 			throws FileNotFoundException {
-		Assert.assertTrue(getControlService().checkArchivableMetadata(
+		Assert.assertTrue(controlService.checkArchivableMetadata(
 				archivableData(true)).isEmpty());
 	}
 	/**
@@ -78,7 +87,7 @@ public class ArchivableControlServicesImplTest extends AbstractDataProvider {
 	@Test
 	public void checkArchivableMetadataWithNotArchivaleMetadata()
 			throws FileNotFoundException {
-		Assert.assertTrue(!getControlService().checkArchivableMetadata(
+		Assert.assertTrue(!controlService.checkArchivableMetadata(
 				archivableData(false)).isEmpty());
 	}
 

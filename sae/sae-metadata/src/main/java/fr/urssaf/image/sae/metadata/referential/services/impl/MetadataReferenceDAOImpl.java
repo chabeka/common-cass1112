@@ -21,7 +21,6 @@ import fr.urssaf.image.sae.metadata.exceptions.MetadataRuntimeException;
 import fr.urssaf.image.sae.metadata.exceptions.ReferentialException;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 import fr.urssaf.image.sae.metadata.referential.services.MetadataReferenceDAO;
-import fr.urssaf.image.sae.metadata.referential.services.XmlDataService;
 import fr.urssaf.image.sae.metadata.referential.support.SaeMetadataSupport;
 import fr.urssaf.image.sae.metadata.utils.Utils;
 
@@ -35,9 +34,6 @@ import fr.urssaf.image.sae.metadata.utils.Utils;
 @Qualifier("metadataReferenceDAO")
 public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
 
-   @Autowired
-   @Qualifier("xmlDataService")
-   private XmlDataService xmlDataService;
 
    @Autowired
    private ApplicationContext context;
@@ -68,22 +64,7 @@ public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
       this.context = context;
    }
 
-   /**
-    * @return Le service Xml
-    */
-   @Deprecated
-   public final XmlDataService getXmlDataService() {
-      return xmlDataService;
-   }
 
-   /**
-    * @param xmlDataService
-    *           : Le service Xml
-    */
-   @Deprecated
-   public final void setXmlDataService(final XmlDataService xmlDataService) {
-      this.xmlDataService = xmlDataService;
-   }
 
    /**
     * {@inheritDoc}
@@ -156,16 +137,8 @@ public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
     */
    public final MetadataReference getByLongCode(final String longCode)
          throws ReferentialException {
-      MetadataReference metadata = null;
-      // on parcours tout le contenu du cache pour trouver l'objet ayant le code
-      // long demandé
-      Map<String, MetadataReference> referenceList = getAllMetadataReferences();
-      for (MetadataReference meta : referenceList.values()) {
-         if (meta.getLongCode() != null && meta.getLongCode().equals(longCode)) {
-            metadata = meta;
-         }
-      }
-      return metadata;
+      
+      return getAllMetadataReferences().get(longCode);
    }
 
    /**
@@ -233,21 +206,9 @@ public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
       return reqMetaDatas;
    }
 
-   /**
-    * Construit un objet de type {@link MetadataReferenceDAOImpl}
-    * 
-    * @param xmlDataService
-    *           : Le service de serialization des fichiers xml.
-    * @param context
-    *           : Le context applicatif.
-    */
-   public MetadataReferenceDAOImpl(final XmlDataService xmlDataService,
-         final ApplicationContext context) {
-      this.xmlDataService = xmlDataService;
-      this.context = context;
-   }
 
    /**
+    * @param cacheDuration la durée du cache définie dans le fichier sae-config 
     * Construit un objet de type {@link MetadataReferenceDAOImpl}
     */
    @Autowired

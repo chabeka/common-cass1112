@@ -5,6 +5,11 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.metadata.control.services.MetadataControlServices;
@@ -19,8 +24,12 @@ import fr.urssaf.image.sae.metadata.test.dataprovider.MetadataDataProviderUtils;
  * @author akenore
  * 
  */
-public class DuplicatedControlServicesImplTest extends AbstractDataProvider {
-
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "/applicationContext-sae-metadata-test.xml" })
+public class DuplicatedControlServicesImplTest{
+   @Autowired
+   @Qualifier("metadataControlServices")
+   private MetadataControlServices controlService;
 	/**
 	 * Fournit des données pour valider la méthode
 	 * {@link MetadataControlServicesImpl#checkDuplicateMetadata(List) }
@@ -54,7 +63,7 @@ public class DuplicatedControlServicesImplTest extends AbstractDataProvider {
 	@Test
 	public void checkDuplicateMetadataWithoutDuplicateMetadata()
 			throws FileNotFoundException {
-		Assert.assertTrue(getControlService().checkDuplicateMetadata(
+		Assert.assertTrue(controlService.checkDuplicateMetadata(
 				duplicateData(true)).isEmpty());
 	}
 
@@ -67,7 +76,7 @@ public class DuplicatedControlServicesImplTest extends AbstractDataProvider {
 	@Test
 	public void checkDuplicateMetadataWithDuplicateMetadata()
 			throws FileNotFoundException {
-		Assert.assertTrue(!getControlService().checkDuplicateMetadata(
+		Assert.assertTrue(!controlService.checkDuplicateMetadata(
 				duplicateData(false)).isEmpty());
 	}
 
@@ -80,7 +89,7 @@ public class DuplicatedControlServicesImplTest extends AbstractDataProvider {
 	 */
 	@Test
 	public void checkDuplicateMetadataCount() throws FileNotFoundException {
-		Assert.assertTrue(getControlService().checkDuplicateMetadata(
+		Assert.assertTrue(controlService.checkDuplicateMetadata(
 				duplicateData(false)).size() == 2);
 	}
 
