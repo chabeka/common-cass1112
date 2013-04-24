@@ -358,7 +358,7 @@ public class ViService {
          
          ClassPathResource resource = new ClassPathResource(cheminPkcs12dansRessource);
          
-         KeyStore keystore = KeyStore.getInstance("PKCS12");
+         KeyStore keystore = KeyStore.getInstance("PKCS12", "SunJSSE");
          
          keystore.load(resource.getInputStream(), password.toCharArray());
          
