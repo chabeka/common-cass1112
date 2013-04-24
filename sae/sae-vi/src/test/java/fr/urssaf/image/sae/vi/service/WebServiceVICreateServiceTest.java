@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.cert.CertificateException;
 import java.util.Arrays;
 import java.util.List;
@@ -55,7 +56,7 @@ public class WebServiceVICreateServiceTest {
 
    @Before
    public void before() throws KeyStoreException, NoSuchAlgorithmException,
-         CertificateException, IOException {
+         CertificateException, IOException, NoSuchProviderException {
 
       keystore = KeyStoreFactory.createKeystore();
       alias = keystore.aliases().nextElement();
