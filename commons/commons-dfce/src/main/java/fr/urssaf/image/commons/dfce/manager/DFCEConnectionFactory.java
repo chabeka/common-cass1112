@@ -8,6 +8,7 @@ import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
+import org.springframework.core.io.AbstractResource;
 
 import fr.urssaf.image.commons.dfce.exception.DFCEConfigurationFileRuntimeException;
 import fr.urssaf.image.commons.dfce.exception.DFCEConfigurationParameterNotFoundRuntimeException;
@@ -149,6 +150,35 @@ public final class DFCEConnectionFactory {
       }
 
       dfceConnection.setServerUrl(serverUrl);
+
+      return dfceConnection;
+
+   }
+
+   /**
+    * Instancie un objet DFCEConnection en allant chercher les paramètres de
+    * configuration à DFCE dans un objet de type Resource qui lui-même a été
+    * chargé à partir d'un fichier properties.
+    * 
+    * @param dfceConfigurationResource
+    *           l'objet Resource contenant le fichier de properties DFCE
+    * @return configuration DFCE
+    */
+   public static DFCEConnection createDFCEConnectionByDFCEConfigurationResource(
+         AbstractResource dfceConfigurationResource) {
+
+      Validate.notNull(dfceConfigurationResource,
+            "'dfceConfigurationResource' is required");
+
+      Properties dfceProperties;
+      try {
+         dfceProperties = PropertiesUtils.load(dfceConfigurationResource
+               .getInputStream());
+      } catch (IOException e) {
+         throw new DFCEConfigurationRuntimeException(e);
+      }
+
+      DFCEConnection dfceConnection = createDFCEConnectionByDFCEConfiguration(dfceProperties);
 
       return dfceConnection;
 
