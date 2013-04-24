@@ -34,6 +34,7 @@
       <jcl-over-slf4j.version>1.6.1</jcl-over-slf4j.version>
       
       <!-- Version du SAE -->
+      <commons-dfce.version>1.2.3-CRTL-2-SNAPSHOT</commons-dfce.version>
       <sae.version>13.4.10.5-SNAPSHOT</sae.version>
       
    </properties>
@@ -295,10 +296,23 @@
       </dependency>
       
       <!-- SAE -->
+      
+      <dependency>
+         <groupId>fr.urssaf.image.commons</groupId>
+         <artifactId>commons-dfce</artifactId>
+         <version>${commons-dfce.version}</version>
+      </dependency>
+      
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-metadata</artifactId>
          <version>${sae.version}</version>
+         <exclusions>
+            <exclusion>
+               <groupId>fr.urssaf.image.commons</groupId>
+               <artifactId>commons-dfce</artifactId>
+            </exclusion>
+         </exclusions>
       </dependency>
       
    </dependencies>

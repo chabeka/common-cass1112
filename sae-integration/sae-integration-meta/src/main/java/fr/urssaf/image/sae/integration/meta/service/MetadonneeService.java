@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.sae.integration.meta.exception.IntegrationRuntimeException;
@@ -14,6 +15,8 @@ import fr.urssaf.image.sae.integration.meta.modele.xml.MetaType;
 import fr.urssaf.image.sae.integration.meta.modele.xml.MetadonneeType;
 import fr.urssaf.image.sae.integration.meta.utils.JAXBUtils;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
+import fr.urssaf.image.sae.metadata.referential.services.DictionaryService;
+import fr.urssaf.image.sae.metadata.referential.services.SaeMetaDataService;
 
 /**
  * Service de manipulation des métadonnées et des dictionnaires à partir du
@@ -25,13 +28,11 @@ public class MetadonneeService {
    private static final Logger LOG = LoggerFactory
          .getLogger(MetadonneeService.class);
 
-   // TODO décommenter une fois que le service sera disponible
-   // @Autowired
-   // private SaeMetadataService saeMetadataService;
+   @Autowired
+   private SaeMetaDataService saeMetadataService;
 
-   // TODO décommenter
-   // @Autowired
-   // private DictionaryService dictionaryService;
+   @Autowired
+   private DictionaryService dictionaryService;
 
    /**
     * Réalise les traitements
@@ -111,8 +112,7 @@ public class MetadonneeService {
             LOG.info("Valeurs à ajouter : {}", valeurs.toString());
 
             // Appel du service adéquat
-            // TODO Appel du service d'ajout d'éléments dans un dico
-            // dictionaryService.addElements(codeDico, valeurs);
+            dictionaryService.addElements(codeDico, valeurs);
 
          }
 
@@ -150,8 +150,7 @@ public class MetadonneeService {
             LOG.info("Valeurs à supprimer : {}", valeurs.toString());
 
             // Appel du service adéquat
-            // TODO Appel du service de suppression d'éléments dans un dico
-            // dictionaryService.deleteElements(codeDico, valeurs);
+            dictionaryService.deleteElements(codeDico, valeurs);
 
          }
 
@@ -188,8 +187,7 @@ public class MetadonneeService {
                   metaToString(meta));
 
             // Appel du service adéquat
-            // TODO Appel du service de création de métadonnée
-            // saeMetadataService.create(meta)
+            saeMetadataService.create(meta);
 
          }
 
@@ -226,9 +224,8 @@ public class MetadonneeService {
                   metaToString(meta));
 
             // Appel du service adéquat
-            // TODO Appel du service de modification de métadonnée
-            // saeMetadataService.modify(objet
-            // fr.urssaf.image.sae.metadata.referential.model.MetadataReference)
+            // TODO : changer en modify
+            saeMetadataService.moify(meta);
 
          }
 
@@ -267,19 +264,18 @@ public class MetadonneeService {
       sBuilder.append(String.format("[Critère de recherche]=[%s]", meta
             .isSearchable()));
       sBuilder.append(";");
-      // sBuilder.append(String.format("[Indexée]=[%s]", meta.isHasIndex)); //
-      // TODO décommenter
-      // sBuilder.append(";");
+      sBuilder.append(String.format("[Indexée]=[%s]", meta.getIsIndexed()));
+      sBuilder.append(";");
       sBuilder.append(String.format("[Formatage]=[%s]", meta.getPattern()));
       sBuilder.append(";");
       sBuilder.append(String.format("[Taille max]=[%s]", meta.getLength()));
       sBuilder.append(";");
-      // sBuilder.append(String.format("[A un dico]=[%s]", meta.hasDico())); //
-      // TODO décommenter
-      // sBuilder.append(";");
-      // sBuilder.append(String.format("[Nom du dico]=[%s]",
-      // meta.getNomDico())); // TODO décommenter
-      // sBuilder.append(";");
+      sBuilder.append(String
+            .format("[A un dico]=[%s]", meta.getHasDictionary()));
+      sBuilder.append(";");
+      sBuilder.append(String.format("[Nom du dico]=[%s]", meta
+            .getDictionaryName()));
+      sBuilder.append(";");
       sBuilder
             .append(String.format("[Gérée par DFCE]=[%s]", meta.isInternal()));
       sBuilder.append(";");

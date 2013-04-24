@@ -31,11 +31,9 @@ public final class ObjectFactory {
       metaDest.setSearchable(metaSource.isRecherchable());
       metaDest.setShortCode(metaSource.getCodeCourt());
       metaDest.setType(metaSource.getTypeDfce());
-
-      // TODO décommenter les nouvelles propriétés de MetadataReference
-      // metaDest.setHasDictionary(metaSource.isAUnDico());
-      // metaDest.setDictionaryName(metaSource.getNomDico());
-      // metaDest.setIsIndex(metaSource.isEstIndexee());
+      metaDest.setHasDictionary(metaSource.isAUnDico());
+      metaDest.setDictionaryName(metaSource.getNomDico());
+      metaDest.setIsIndexed(metaSource.isEstIndexee());
 
       return metaDest;
 
