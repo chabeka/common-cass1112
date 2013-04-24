@@ -32,7 +32,7 @@ public final class DefaultKeystore {
 
       password = "dKQmz8NwyO4d";
       try {
-         keystore = KeyStore.getInstance("PKCS12");
+         keystore = KeyStore.getInstance("PKCS12", "SunJSSE");
          InputStream inputStream = ResourceUtils.loadResource(this, P12);
          try {
             keystore.load(inputStream, password.toCharArray());
