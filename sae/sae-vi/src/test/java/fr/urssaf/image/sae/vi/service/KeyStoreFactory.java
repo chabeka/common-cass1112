@@ -5,20 +5,21 @@ import java.io.IOException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.cert.CertificateException;
-
 
 /**
  * Outils de création de java.security.KeyStore
  */
 public final class KeyStoreFactory {
-   
+
    private KeyStoreFactory() {
 
    }
-   
+
    protected static KeyStore createKeystore() throws KeyStoreException,
-         NoSuchAlgorithmException, CertificateException, IOException {
+         NoSuchAlgorithmException, CertificateException, IOException,
+         NoSuchProviderException {
 
       return createKeystore("src/test/resources/Portail_Image.p12",
             "hiUnk6O3QnRN");
@@ -27,9 +28,9 @@ public final class KeyStoreFactory {
 
    protected static KeyStore createKeystore(String file, String password)
          throws KeyStoreException, NoSuchAlgorithmException,
-         CertificateException, IOException {
+         CertificateException, IOException, NoSuchProviderException {
 
-      KeyStore keystore = KeyStore.getInstance("PKCS12");
+      KeyStore keystore = KeyStore.getInstance("PKCS12", "SunJSSE");
 
       FileInputStream inputStream = new FileInputStream(file);
       try {

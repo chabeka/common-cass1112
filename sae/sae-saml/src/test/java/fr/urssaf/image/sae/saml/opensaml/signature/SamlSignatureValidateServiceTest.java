@@ -11,6 +11,7 @@ import java.net.URISyntaxException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
@@ -128,7 +129,7 @@ public class SamlSignatureValidateServiceTest {
          try {
             KeyStore keystore;
 
-            keystore = KeyStore.getInstance("PKCS12");
+            keystore = KeyStore.getInstance("PKCS12", "SunJSSE");
 
             FileInputStream inputStream = new FileInputStream(file);
             try {
@@ -149,6 +150,8 @@ public class SamlSignatureValidateServiceTest {
          } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
          } catch (IOException e) {
+            throw new RuntimeException(e);
+         } catch (NoSuchProviderException e) {
             throw new RuntimeException(e);
          }
 

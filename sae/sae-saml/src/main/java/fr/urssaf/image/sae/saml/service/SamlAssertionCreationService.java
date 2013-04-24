@@ -32,7 +32,7 @@ import fr.urssaf.image.sae.saml.util.SecurityUtil;
  * <pre>
  * exemple pour instancier un keystore à partir d'un P12
  * 
- * KeyStore keystore = KeyStore.getInstance("PKCS12");
+ * KeyStore keystore = KeyStore.getInstance("PKCS12", "SunJSSE");
  * FileInputStream in = new FileInputStream("/mon_certificat.p12");
  * try {
  *    keystore.load(in, "mon_password".toCharArray());
@@ -85,7 +85,8 @@ public class SamlAssertionCreationService {
     *           La clé privée, sa clé publique et sa chaîne de certification
     *           pour la signature de l'assertion SAML
     * @param alias
-    *           L'alias de la clé privée du KeyStore à utiliser pour la signature de l'assertion
+    *           L'alias de la clé privée du KeyStore à utiliser pour la
+    *           signature de l'assertion
     * @param password
     *           mot du de la clé privée
     * @return L'assertion SAML 2.0 signée électroniquement
@@ -156,6 +157,5 @@ public class SamlAssertionCreationService {
          throw new IllegalStateException(e);
       }
    }
-
 
 }
