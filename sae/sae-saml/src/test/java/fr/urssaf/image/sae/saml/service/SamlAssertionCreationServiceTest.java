@@ -6,6 +6,7 @@ import java.net.URISyntaxException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.cert.CertificateException;
 import java.util.Arrays;
 import java.util.Date;
@@ -58,7 +59,8 @@ public class SamlAssertionCreationServiceTest {
 
    @Before
    public void before() throws URISyntaxException, KeyStoreException,
-         NoSuchAlgorithmException, CertificateException, IOException {
+         NoSuchAlgorithmException, CertificateException, IOException,
+         NoSuchProviderException {
 
       params = new SamlAssertionParams();
 
@@ -93,10 +95,11 @@ public class SamlAssertionCreationServiceTest {
    public void after() throws SAXException, SamlFormatException,
          SamlSignatureException {
 
-      validationService.verifierAssertion(assertion, TuUtils.buildSignVerifParamsStd());
+      validationService.verifierAssertion(assertion, TuUtils
+            .buildSignVerifParamsStd());
 
       TuUtils.debugAssertion(LOG, assertion);
-      
+
    }
 
    /**
