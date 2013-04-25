@@ -406,4 +406,31 @@ public class InsertionDonnees {
 
    }
 
+   /**
+    * Référentiel des événements en V2
+    * Ajout de l'évenement MAJ_VERSION_RND|OK (Automatisation RND)
+    */
+   public void addReferentielEvenementV2() {
+
+      LOG.info("Mise à jour du référentiel des événements");
+
+      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+            keyspace, "TraceDestinataire", StringSerializer.get(),
+            StringSerializer.get());
+
+      ColumnFamilyUpdater<String, String> updater;
+
+      List<String> allInfos = Arrays.asList("all_infos");
+
+      // MAJ_VERSION_RND|OK
+      // dans le journal des événements SAE avec all_infos
+      updater = cfTmpl.createUpdater("MAJ_VERSION_RND|OK");
+      addColumn("JOURN_EVT", allInfos, StringSerializer.get(), ListSerializer
+            .get(), updater);
+      cfTmpl.update(updater);
+
+   }
+   
+
+
 }

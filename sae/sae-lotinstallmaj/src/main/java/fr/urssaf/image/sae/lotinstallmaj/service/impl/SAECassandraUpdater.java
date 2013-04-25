@@ -338,9 +338,12 @@ public class SAECassandraUpdater {
     * Version 5 :
     * <ul>
     * <li>ajout des CF de dictionnaire et métadonnées dans le keyspace "SAE"</li>
+    * <li>ajout des CF de mise à jour du RND dans le keyspace "SAE"</li>
+    * <li>MAJ du référentiel des événements</li>
     * </ul>
     */
    public void updateToVersion5() {
+
       long version = saeDao.getDatabaseVersion();
       if (version >= VERSION_5) {
          LOG.info("La base de données est déja en version " + version);
@@ -355,17 +358,31 @@ public class SAECassandraUpdater {
       // Liste contenant la définition des column families à créer
       List<ColumnFamilyDefinition> cfDefs = new ArrayList<ColumnFamilyDefinition>();
 
-      // TraceDestinataire
+      // Metadata
       cfDefs.add(HFactory.createColumnFamilyDefinition(ksName, "Metadata",
             ComparatorType.UTF8TYPE));
 
-      // TraceRegSecurite
+      // Dictionary
       cfDefs.add(HFactory.createColumnFamilyDefinition(ksName, "Dictionary",
             ComparatorType.UTF8TYPE));
 
+      // Rnd
+      cfDefs.add(HFactory.createColumnFamilyDefinition(ksName, "Rnd",
+            ComparatorType.UTF8TYPE));
+
+      // CorrespondancesRnd : Liste des correspondances codes temporaires /
+      // codes définitifs
+      cfDefs.add(HFactory.createColumnFamilyDefinition(ksName,
+            "CorrespondancesRnd", ComparatorType.UTF8TYPE));
+
       // Création des CF
       saeCassandraService.createColumnFamilyFromList(cfDefs, true);
-      
+
+      // Insertion de données
+      InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
+      // Ajout de l'évènement MAJ_VERSION_RND|OK
+      donnees.addReferentielEvenementV2();
+
       // On positionne la version à 5
       saeDao.setDatabaseVersion(VERSION_5);
 
