@@ -140,8 +140,28 @@ sudo java -Dlogback.configurationFile=/hawai/data/sae/sae-lotinstallmaj/logback-
 Création des nouvelles métadonnées :
    - ReferenceDocumentaire (rdo)
 
+// ------------------------------------------
+// 4) Lot 130700SAE
+// ------------------------------------------
 
+4.1) CASSANDRA_130700 
 
+sudo java -Dlogback.configurationFile=/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar /hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar /hawai/data/sae/sae-config.properties CASSANDRA_130700
+
+Met la base Cassandra du SAE en version 5
+
+Création des CF pour les métadonnées :
+   - Metadata
+   - Dictionary
+   
+Création des CF pour l'automatisation de la mise à jour du RND   
+   - Rnd
+   - CorrespondancesRnd
+
+Insertion des événéments à tracer dans la CF TraceDestinataire :
+   - MAJ_VERSION_RND|OK dans le registre de journal des événements du SAE avec all_infos
+   
+Positionne le paramètre versionBDD de la CF Parameters à la valeur "5"
 
 
 
