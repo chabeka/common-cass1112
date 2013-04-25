@@ -2,13 +2,36 @@
 <keyspace xmlns="http://xml.dataset.cassandraunit.org"
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="http://xml.dataset.cassandraunit.org cassandraUnitDataset.xsd ">
-   <name>TRACE</name>
+   
+   <name>KEYSPACE_TU</name>
+   
    <strategy>org.apache.cassandra.locator.SimpleStrategy</strategy>
    <replicationFactor>1</replicationFactor>
+   
    <columnFamilies>
+      
+      <!--
+      La traçabilité
+      -->
+      <!--
       <columnFamily>
          <name>TraceDestinataire</name>
          <comparatorType>UTF8Type</comparatorType>
+      </columnFamily>
+      -->
+      <columnFamily>
+         <name>TraceDestinataire</name>
+         <type>STANDARD</type>
+         <keyType>UTF8Type</keyType>
+         <comparatorType>UTF8Type</comparatorType>
+         <defaultColumnValueType>UTF8Type</defaultColumnValueType>
+         <row>
+            <key>CAPTURE_MASSE|KO</key>
+            <column>
+               <name>REG_TECHNIQUE</name>
+               <value>&lt;?xml version=&quot;1.0&quot; ?&gt;&lt;java.util.Arrays_-ArrayList&gt;&lt;a class=&quot;string-array&quot;&gt;&lt;string&gt;all_infos&lt;/string&gt;&lt;/a&gt;&lt;/java.util.Arrays_-ArrayList&gt;</value>
+            </column>
+         </row>
       </columnFamily>
       <columnFamily>
          <name>TraceRegSecurite</name>
@@ -42,9 +65,7 @@
          <name>TraceJournalEvtIndex</name>
          <comparatorType>TimeUUIDType</comparatorType>
       </columnFamily>
-   <columnFamily>
-      <name>Parameters</name>
-      <comparatorType>UTF8Type</comparatorType>
-   </columnFamily>
-</columnFamilies>
+   
+   </columnFamilies>
+   
 </keyspace>

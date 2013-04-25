@@ -31,7 +31,7 @@ public class SaeMetadataDao extends AbstractDao<String, String> {
    public static final String META_DICT_NAME = "dictName";
    public static final String META_INDEXED = "index";
 
-   public static final String METADATA_CFNAME = "MetaData";
+   public static final String METADATA_CFNAME = "Metadata";
 
    @Autowired
    public SaeMetadataDao(Keyspace keyspace) {

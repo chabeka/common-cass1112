@@ -2,18 +2,24 @@
 <keyspace xmlns="http://xml.dataset.cassandraunit.org"
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="http://xml.dataset.cassandraunit.org cassandraUnitDataset.xsd ">
-   <name>Mapping</name>
+   
+   <name>KEYSPACE_TU</name>
+   
    <strategy>org.apache.cassandra.locator.SimpleStrategy</strategy>
    <replicationFactor>1</replicationFactor>
+   
    <columnFamilies>
-
-      <!-- Les métadonnées -->
+      
+      <!--
+      Les métadonnées
+      -->
+      
       <columnFamily>
-         <name>MetaData</name>
+         <name>Metadata</name>
          <keyType>UTF8Type</keyType>
          <comparatorType>UTF8Type</comparatorType>
          <defaultColumnValueType>UTF8Type</defaultColumnValueType>
-         <!-- Titre -->
+         
          <row>
             <key>Titre</key>
             <column>
@@ -81,7 +87,961 @@
                <value>false</value>
             </column>
          </row>
-         <!-- DateCreation -->
+         
+         <row>
+            <key>Periode</key>
+            <column>
+               <name>sCode</name>
+               <value>per</value>
+            </column>
+            <column>
+               <name>type</name>
+               <value>String</value>
+            </column>
+            <column>
+               <name>reqArch</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>reqStor</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>length</name>
+               <value>integer(4)</value>
+            </column>
+            <column>
+               <name>cons</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>defCons</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>search</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>int</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>arch</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>label</name>
+               <value>Période</value>
+            </column>
+            <column>
+               <name>descr</name>
+               <value>Correspond à la période V2</value>
+            </column>
+            <column>
+               <name>pattern</name>
+               <value>a</value>
+            </column>
+            <column>
+               <name>hasDict</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>dictName</name>
+               <value>dict</value>
+            </column>
+            <column>
+               <name>index</name>
+               <value>false</value>
+            </column>
+         </row>
+         
+         <row>
+            <key>Siren</key>
+            <column>
+               <name>sCode</name>
+               <value>srn</value>
+            </column>
+            <column>
+               <name>type</name>
+               <value>String</value>
+            </column>
+            <column>
+               <name>reqArch</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>reqStor</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>length</name>
+               <value>integer(10)</value>
+            </column>
+            <column>
+               <name>cons</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>defCons</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>search</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>int</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>arch</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>label</name>
+               <value>Siren</value>
+            </column>
+            <column>
+               <name>descr</name>
+               <value>Numéro de SIREN V2</value>
+            </column>
+            <column>
+               <name>pattern</name>
+               <value />
+            </column>
+            <column>
+               <name>hasDict</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>dictName</name>
+               <value />
+            </column>
+            <column>
+               <name>index</name>
+               <value>true</value>
+            </column>
+         </row>
+         
+         <row>
+            <key>NniEmployeur</key>
+            <column>
+               <name>sCode</name>
+               <value>nne</value>
+            </column>
+            <column>
+               <name>type</name>
+               <value>String</value>
+            </column>
+            <column>
+               <name>reqArch</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>reqStor</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>length</name>
+               <value>integer(15)</value>
+            </column>
+            <column>
+               <name>cons</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>defCons</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>search</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>int</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>arch</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>label</name>
+               <value>NNI employeur</value>
+            </column>
+            <column>
+               <name>descr</name>
+               <value>Numéro National d'Identification ou Numéro de sécurité sociale de l'Employeur</value>
+            </column>
+            <column>
+               <name>pattern</name>
+               <value />
+            </column>
+            <column>
+               <name>hasDict</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>dictName</name>
+               <value />
+            </column>
+            <column>
+               <name>index</name>
+               <value>true</value>
+            </column>
+         </row>
+         
+         <row>
+            <key>NumeroPersonne</key>
+            <column>
+               <name>sCode</name>
+               <value>npe</value>
+            </column>
+            <column>
+               <name>type</name>
+               <value>String</value>
+            </column>
+            <column>
+               <name>reqArch</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>reqStor</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>length</name>
+               <value>integer(7)</value>
+            </column>
+            <column>
+               <name>cons</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>defCons</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>search</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>int</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>arch</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>label</name>
+               <value>Numéro de personne</value>
+            </column>
+            <column>
+               <name>descr</name>
+               <value>Numéro de personne (V2)</value>
+            </column>
+            <column>
+               <name>pattern</name>
+               <value />
+            </column>
+            <column>
+               <name>hasDict</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>dictName</name>
+               <value />
+            </column>
+            <column>
+               <name>index</name>
+               <value>true</value>
+            </column>
+         </row>
+         
+         <row>
+            <key>Denomination</key>
+            <column>
+               <name>sCode</name>
+               <value>den</value>
+            </column>
+            <column>
+               <name>type</name>
+               <value>String</value>
+            </column>
+            <column>
+               <name>reqArch</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>reqStor</name>
+               <value>false</value>
+            </column>
+            <!--
+            <column>
+               <name>length</name>
+               <value>integer(-1)</value>
+            </column>
+            -->
+            <column>
+               <name>cons</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>defCons</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>search</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>int</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>arch</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>label</name>
+               <value>Dénomination du compte</value>
+            </column>
+            <column>
+               <name>descr</name>
+               <value>Dénomination du compte (provient de la raison sociale V2)</value>
+            </column>
+            <column>
+               <name>pattern</name>
+               <value />
+            </column>
+            <column>
+               <name>hasDict</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>dictName</name>
+               <value />
+            </column>
+            <column>
+               <name>index</name>
+               <value>true</value>
+            </column>
+         </row>
+         
+         <row>
+            <key>CodeCategorieV2</key>
+            <column>
+               <name>sCode</name>
+               <value>cv2</value>
+            </column>
+            <column>
+               <name>type</name>
+               <value>String</value>
+            </column>
+            <column>
+               <name>reqArch</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>reqStor</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>length</name>
+               <value>integer(1)</value>
+            </column>
+            <column>
+               <name>cons</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>defCons</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>search</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>int</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>arch</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>label</name>
+               <value>Code catégorie V2</value>
+            </column>
+            <column>
+               <name>descr</name>
+               <value>Code catégorie V2</value>
+            </column>
+            <column>
+               <name>pattern</name>
+               <value />
+            </column>
+            <column>
+               <name>hasDict</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>dictName</name>
+               <value />
+            </column>
+            <column>
+               <name>index</name>
+               <value>false</value>
+            </column>
+         </row>
+         
+         <row>
+            <key>CodeSousCategorieV2</key>
+            <column>
+               <name>sCode</name>
+               <value>scv</value>
+            </column>
+            <column>
+               <name>type</name>
+               <value>String</value>
+            </column>
+            <column>
+               <name>reqArch</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>reqStor</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>length</name>
+               <value>integer(2)</value>
+            </column>
+            <column>
+               <name>cons</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>defCons</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>search</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>int</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>arch</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>label</name>
+               <value>Code sous catégorie V2</value>
+            </column>
+            <column>
+               <name>descr</name>
+               <value>Code sous catégorie V2</value>
+            </column>
+            <column>
+               <name>pattern</name>
+               <value />
+            </column>
+            <column>
+               <name>hasDict</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>dictName</name>
+               <value />
+            </column>
+            <column>
+               <name>index</name>
+               <value>false</value>
+            </column>
+         </row>
+         
+         <row>
+            <key>NumeroCompteInterne</key>
+            <column>
+               <name>sCode</name>
+               <value>nci</value>
+            </column>
+            <column>
+               <name>type</name>
+               <value>String</value>
+            </column>
+            <column>
+               <name>reqArch</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>reqStor</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>length</name>
+               <value>integer(7)</value>
+            </column>
+            <column>
+               <name>cons</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>defCons</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>search</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>int</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>arch</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>label</name>
+               <value>Numéro de compte interne</value>
+            </column>
+            <column>
+               <name>descr</name>
+               <value>Numéro de compte interne V2</value>
+            </column>
+            <column>
+               <name>pattern</name>
+               <value />
+            </column>
+            <column>
+               <name>hasDict</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>dictName</name>
+               <value />
+            </column>
+            <column>
+               <name>index</name>
+               <value>true</value>
+            </column>
+         </row>
+         
+         <row>
+            <key>NumeroCompteExterne</key>
+            <column>
+               <name>sCode</name>
+               <value>nce</value>
+            </column>
+            <column>
+               <name>type</name>
+               <value>String</value>
+            </column>
+            <column>
+               <name>reqArch</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>reqStor</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>length</name>
+               <value>integer(18)</value>
+            </column>
+            <column>
+               <name>cons</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>defCons</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>search</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>int</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>arch</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>label</name>
+               <value>Numéro de compte externe</value>
+            </column>
+            <column>
+               <name>descr</name>
+               <value>Numéro de compte externe V2</value>
+            </column>
+            <column>
+               <name>pattern</name>
+               <value />
+            </column>
+            <column>
+               <name>hasDict</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>dictName</name>
+               <value />
+            </column>
+            <column>
+               <name>index</name>
+               <value>true</value>
+            </column>
+         </row>
+         
+         <row>
+            <key>Siret</key>
+            <column>
+               <name>sCode</name>
+               <value>srt</value>
+            </column>
+            <column>
+               <name>type</name>
+               <value>String</value>
+            </column>
+            <column>
+               <name>reqArch</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>reqStor</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>length</name>
+               <value>integer(14)</value>
+            </column>
+            <column>
+               <name>cons</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>defCons</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>search</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>int</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>arch</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>label</name>
+               <value>Numéro de siret</value>
+            </column>
+            <column>
+               <name>descr</name>
+               <value>Numéro de Siret V2</value>
+            </column>
+            <column>
+               <name>pattern</name>
+               <value />
+            </column>
+            <column>
+               <name>hasDict</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>dictName</name>
+               <value />
+            </column>
+            <column>
+               <name>index</name>
+               <value>true</value>
+            </column>
+         </row>
+         
+         <row>
+            <key>PseudoSiret</key>
+            <column>
+               <name>sCode</name>
+               <value>psi</value>
+            </column>
+            <column>
+               <name>type</name>
+               <value>String</value>
+            </column>
+            <column>
+               <name>reqArch</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>reqStor</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>length</name>
+               <value>integer(14)</value>
+            </column>
+            <column>
+               <name>cons</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>defCons</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>search</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>int</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>arch</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>label</name>
+               <value>Numéro de pseudosiret</value>
+            </column>
+            <column>
+               <name>descr</name>
+               <value>Numéro de Pseudo Siret V2</value>
+            </column>
+            <column>
+               <name>pattern</name>
+               <value />
+            </column>
+            <column>
+               <name>hasDict</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>dictName</name>
+               <value />
+            </column>
+            <column>
+               <name>index</name>
+               <value>true</value>
+            </column>
+         </row>
+         
+         <row>
+            <key>NumeroStructure</key>
+            <column>
+               <name>sCode</name>
+               <value>nst</value>
+            </column>
+            <column>
+               <name>type</name>
+               <value>String</value>
+            </column>
+            <column>
+               <name>reqArch</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>reqStor</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>length</name>
+               <value>integer(10)</value>
+            </column>
+            <column>
+               <name>cons</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>defCons</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>search</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>int</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>arch</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>label</name>
+               <value>Numéro de structure</value>
+            </column>
+            <column>
+               <name>descr</name>
+               <value>Numéro de structure V2</value>
+            </column>
+            <column>
+               <name>pattern</name>
+               <value />
+            </column>
+            <column>
+               <name>hasDict</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>dictName</name>
+               <value />
+            </column>
+            <column>
+               <name>index</name>
+               <value>false</value>
+            </column>
+         </row>
+         
+         <row>
+            <key>NumeroRecours</key>
+            <column>
+               <name>sCode</name>
+               <value>nre</value>
+            </column>
+            <column>
+               <name>type</name>
+               <value>String</value>
+            </column>
+            <column>
+               <name>reqArch</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>reqStor</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>length</name>
+               <value>integer(15)</value>
+            </column>
+            <column>
+               <name>cons</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>defCons</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>search</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>int</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>arch</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>label</name>
+               <value>Numéro de recours</value>
+            </column>
+            <column>
+               <name>descr</name>
+               <value>Numéro de recours</value>
+            </column>
+            <column>
+               <name>pattern</name>
+               <value />
+            </column>
+            <column>
+               <name>hasDict</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>dictName</name>
+               <value />
+            </column>
+            <column>
+               <name>index</name>
+               <value>true</value>
+            </column>
+         </row>
+         
+         <row>
+            <key>NumeroIntControle</key>
+            <column>
+               <name>sCode</name>
+               <value>nic</value>
+            </column>
+            <column>
+               <name>type</name>
+               <value>String</value>
+            </column>
+            <column>
+               <name>reqArch</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>reqStor</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>length</name>
+               <value>integer(6)</value>
+            </column>
+            <column>
+               <name>cons</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>defCons</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>search</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>int</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>arch</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>label</name>
+               <value>Numéro interne contrôle</value>
+            </column>
+            <column>
+               <name>descr</name>
+               <value>Numéro interne contrôle</value>
+            </column>
+            <column>
+               <name>pattern</name>
+               <value />
+            </column>
+            <column>
+               <name>hasDict</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>dictName</name>
+               <value />
+            </column>
+            <column>
+               <name>index</name>
+               <value>true</value>
+            </column>
+         </row>
+         
          <row>
             <key>DateCreation</key>
             <column>
@@ -152,1254 +1112,7 @@
                <value>true</value>
             </column>
          </row>
-         <!-- ApplicationProductrice -->
-         <row>
-            <key>ApplicationProductrice</key>
-            <column>
-               <name>sCode</name>
-               <value>apr</value>
-            </column>
-            <column>
-               <name>type</name>
-               <value>String</value>
-            </column>
-            <column>
-               <name>reqArch</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>reqStor</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>length</name>
-               <value>integer(15)</value>
-            </column>
-            <column>
-               <name>cons</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>defCons</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>search</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>int</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>arch</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>label</name>
-               <value>Application Productrice du document</value>
-            </column>
-            <column>
-               <name>descr</name>
-               <value>Code de l'application qui a produit le document (pour un document WATT issu du scan, ce sera la chaine d'acquisition)</value>
-            </column>
-            <column>
-               <name>pattern</name>
-               <value />
-            </column>
-            <column>
-               <name>hasDict</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>dictName</name>
-               <value />
-            </column>
-            <column>
-               <name>index</name>
-               <value>true</value>
-            </column>
-         </row>
-         <!-- CodeOrganismeProprietaire -->
-         <row>
-            <key>CodeOrganismeProprietaire</key>
-            <column>
-               <name>sCode</name>
-               <value>cop</value>
-            </column>
-            <column>
-               <name>type</name>
-               <value>String</value>
-            </column>
-            <column>
-               <name>reqArch</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>reqStor</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>length</name>
-               <value>integer(5)</value>
-            </column>
-            <column>
-               <name>cons</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>defCons</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>search</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>int</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>arch</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>label</name>
-               <value>Code organisme propriétaire</value>
-            </column>
-            <column>
-               <name>descr</name>
-               <value>Code organisme propriétaire du document Cf. Liste des organismes</value>
-            </column>
-            <column>
-               <name>pattern</name>
-               <value />
-            </column>
-            <column>
-               <name>hasDict</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>dictName</name>
-               <value />
-            </column>
-            <column>
-               <name>index</name>
-               <value>false</value>
-            </column>
-         </row>
-         <!-- CodeOrganismeGestionnaire -->
-         <row>
-            <key>CodeOrganismeGestionnaire</key>
-            <column>
-               <name>sCode</name>
-               <value>cog</value>
-            </column>
-            <column>
-               <name>type</name>
-               <value>String</value>
-            </column>
-            <column>
-               <name>reqArch</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>reqStor</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>length</name>
-               <value>integer(5)</value>
-            </column>
-            <column>
-               <name>cons</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>defCons</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>search</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>int</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>arch</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>label</name>
-               <value>Code organisme gestionnaire</value>
-            </column>
-            <column>
-               <name>descr</name>
-               <value>Code organisme gestionnaire de la pièce Cf. Liste des organismes</value>
-            </column>
-            <column>
-               <name>pattern</name>
-               <value />
-            </column>
-            <column>
-               <name>hasDict</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>dictName</name>
-               <value />
-            </column>
-            <column>
-               <name>index</name>
-               <value>false</value>
-            </column>
-         </row>
-         <!-- CodeRND -->
-         <row>
-            <key>CodeRND</key>
-            <column>
-               <name>sCode</name>
-               <value>SM_DOCUMENT_TYPE</value>
-            </column>
-            <column>
-               <name>type</name>
-               <value>String</value>
-            </column>
-            <column>
-               <name>reqArch</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>reqStor</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>length</name>
-               <value>integer(14)</value>
-            </column>
-            <column>
-               <name>cons</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>defCons</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>search</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>int</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>arch</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>label</name>
-               <value>Code référentiel nationale de document</value>
-            </column>
-            <column>
-               <name>descr</name>
-               <value>Code issu d'un référentiel permettant de typer nationalement un document</value>
-            </column>
-            <column>
-               <name>pattern</name>
-               <value />
-            </column>
-            <column>
-               <name>hasDict</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>dictName</name>
-               <value />
-            </column>
-            <column>
-               <name>index</name>
-               <value>false</value>
-            </column>
-         </row>   
-         <!-- VersionRND -->
-         <row>
-            <key>VersionRND</key>
-            <column>
-               <name>sCode</name>
-               <value>vrn</value>
-            </column>
-            <column>
-               <name>type</name>
-               <value>String</value>
-            </column>
-            <column>
-               <name>reqArch</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>reqStor</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>length</name>
-               <value>integer(10)</value>
-            </column>
-            <column>
-               <name>cons</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>defCons</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>search</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>int</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>arch</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>label</name>
-               <value>Version de Code RND</value>
-            </column>
-            <column>
-               <name>descr</name>
-               <value>Numéro permettant d'identifier la version de provenance du code RND renseigné précédemment</value>
-            </column>
-            <column>
-               <name>pattern</name>
-               <value />
-            </column>
-            <column>
-               <name>hasDict</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>dictName</name>
-               <value />
-            </column>
-            <column>
-               <name>index</name>
-               <value>false</value>
-            </column>
-         </row>
-         <!-- CodeFonction -->
-         <row>
-            <key>CodeFonction</key>
-            <column>
-               <name>sCode</name>
-               <value>dom</value>
-            </column>
-            <column>
-               <name>type</name>
-               <value>String</value>
-            </column>
-            <column>
-               <name>reqArch</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>reqStor</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>length</name>
-               <value>integer(2)</value>
-            </column>
-            <column>
-               <name>cons</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>defCons</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>search</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>int</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>arch</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>label</name>
-               <value>Code fonction RFP</value>
-            </column>
-            <column>
-               <name>descr</name>
-               <value>Code de la fonction/domaine RFP</value>
-            </column>
-            <column>
-               <name>pattern</name>
-               <value />
-            </column>
-            <column>
-               <name>hasDict</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>dictName</name>
-               <value />
-            </column>
-            <column>
-               <name>index</name>
-               <value>false</value>
-            </column>
-         </row>
-         <!-- CodeActivite -->
-         <row>
-            <key>CodeActivite</key>
-            <column>
-               <name>sCode</name>
-               <value>act</value>
-            </column>
-            <column>
-               <name>type</name>
-               <value>String</value>
-            </column>
-            <column>
-               <name>reqArch</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>reqStor</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>length</name>
-               <value>integer(2)</value>
-            </column>
-            <column>
-               <name>cons</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>defCons</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>search</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>int</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>arch</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>label</name>
-               <value>Code Activité RFP</value>
-            </column>
-            <column>
-               <name>descr</name>
-               <value>Code de l'activité RFP</value>
-            </column>
-            <column>
-               <name>pattern</name>
-               <value />
-            </column>
-            <column>
-               <name>hasDict</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>dictName</name>
-               <value />
-            </column>
-            <column>
-               <name>index</name>
-               <value>false</value>
-            </column>
-         </row>
-         <!-- DateDebutConservation -->
-         <row>
-            <key>DateDebutConservation</key>
-            <column>
-               <name>sCode</name>
-               <value>SM_LIFE_CYCLE_REFERENCE_DATE</value>
-            </column>
-            <column>
-               <name>type</name>
-               <value>Date</value>
-            </column>
-            <column>
-               <name>reqArch</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>reqStor</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>length</name>
-               <value>integer(10)</value>
-            </column>
-            <column>
-               <name>cons</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>defCons</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>search</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>int</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>arch</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>label</name>
-               <value>Date début conservation</value>
-            </column>
-            <column>
-               <name>descr</name>
-               <value>Date de début de la durée de conservation.</value>
-            </column>
-            <column>
-               <name>pattern</name>
-               <!--
-               <value>yyyy-mm-dd</value>
-               -->
-               <value />
-            </column>
-            <column>
-               <name>hasDict</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>dictName</name>
-               <value />
-            </column>
-            <column>
-               <name>index</name>
-               <value>true</value>
-            </column>
-         </row>
-         <!-- DateFinConservation -->
-         <row>
-            <key>DateFinConservation</key>
-            <column>
-               <name>sCode</name>
-               <value>dfc</value>
-            </column>
-            <column>
-               <name>type</name>
-               <value>Date</value>
-            </column>
-            <column>
-               <name>reqArch</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>reqStor</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>length</name>
-               <value>integer(10)</value>
-            </column>
-            <column>
-               <name>cons</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>defCons</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>search</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>int</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>arch</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>label</name>
-               <value>Date fin conservation</value>
-            </column>
-            <column>
-               <name>descr</name>
-               <value>Date de fin de la durée de conservation</value>
-            </column>
-            <column>
-               <name>pattern</name>
-               <!--
-               <value>yyyy-mm-dd</value>
-               -->
-               <value />
-            </column>
-            <column>
-               <name>hasDict</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>dictName</name>
-               <value />
-            </column>
-            <column>
-               <name>index</name>
-               <value>false</value>
-            </column>
-         </row>
-         <!-- Hash -->
-         <row>
-            <key>Hash</key>
-            <column>
-               <name>sCode</name>
-               <value>SM_DIGEST</value>
-            </column>
-            <column>
-               <name>type</name>
-               <value>String</value>
-            </column>
-            <column>
-               <name>reqArch</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>reqStor</name>
-               <value>true</value>
-            </column>
-            <!--
-            <column>
-               <name>length</name>
-               <value>integer(-1)</value>
-            </column>
-            -->
-            <column>
-               <name>cons</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>defCons</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>search</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>int</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>arch</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>label</name>
-               <value>Hash du fichier</value>
-            </column>
-            <column>
-               <name>descr</name>
-               <value>Hash du fichier</value>
-            </column>
-            <column>
-               <name>pattern</name>
-               <value />
-            </column>
-            <column>
-               <name>hasDict</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>dictName</name>
-               <value />
-            </column>
-            <column>
-               <name>index</name>
-               <value>false</value>
-            </column>
-         </row>
-         <!-- TypeHash -->
-         <row>
-            <key>TypeHash</key>
-            <column>
-               <name>sCode</name>
-               <value>SM_DIGEST_ALGORITHM</value>
-            </column>
-            <column>
-               <name>type</name>
-               <value>String</value>
-            </column>
-            <column>
-               <name>reqArch</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>reqStor</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>length</name>
-               <value>integer(15)</value>
-            </column>
-            <column>
-               <name>cons</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>defCons</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>search</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>int</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>arch</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>label</name>
-               <value>Type de hash utilisé</value>
-            </column>
-            <column>
-               <name>descr</name>
-               <value>Identifiant de l'algorithme de hachage utilisé pour calculer le Hash du fichier</value>
-            </column>
-            <column>
-               <name>pattern</name>
-               <value />
-            </column>
-            <column>
-               <name>hasDict</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>dictName</name>
-               <value />
-            </column>
-            <column>
-               <name>index</name>
-               <value>false</value>
-            </column>
-         </row>
-         <!-- NbPages -->
-         <row>
-            <key>NbPages</key>
-            <column>
-               <name>sCode</name>
-               <value>nbp</value>
-            </column>
-            <column>
-               <name>type</name>
-               <value>Integer</value>
-            </column>
-            <column>
-               <name>reqArch</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>reqStor</name>
-               <value>true</value>
-            </column>
-            <!--
-            <column>
-               <name>length</name>
-               <value>integer(-1)</value>
-            </column>
-            -->
-            <column>
-               <name>cons</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>defCons</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>search</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>int</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>arch</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>label</name>
-               <value>Nombre de pages</value>
-            </column>
-            <column>
-               <name>descr</name>
-               <value>Nombre de pages du document</value>
-            </column>
-            <column>
-               <name>pattern</name>
-               <value />
-            </column>
-            <column>
-               <name>hasDict</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>dictName</name>
-               <value />
-            </column>
-            <column>
-               <name>index</name>
-               <value>false</value>
-            </column>
-         </row>
-         <!-- NomFichier -->
-         <row>
-            <key>NomFichier</key>
-            <column>
-               <name>sCode</name>
-               <value>nfi</value>
-            </column>
-            <column>
-               <name>type</name>
-               <value>String</value>
-            </column>
-            <column>
-               <name>reqArch</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>reqStor</name>
-               <value>true</value>
-            </column>
-            <!--
-            <column>
-               <name>length</name>
-               <value>integer(-1)</value>
-            </column>
-            -->
-            <column>
-               <name>cons</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>defCons</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>search</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>int</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>arch</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>label</name>
-               <value>Nom du fichier</value>
-            </column>
-            <column>
-               <name>descr</name>
-               <value>Nom du fichier physique avec extension lié au document</value>
-            </column>
-            <column>
-               <name>pattern</name>
-               <value />
-            </column>
-            <column>
-               <name>hasDict</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>dictName</name>
-               <value />
-            </column>
-            <column>
-               <name>index</name>
-               <value>false</value>
-            </column>
-         </row>
-         <!-- FormatFichier -->
-         <row>
-            <key>FormatFichier</key>
-            <column>
-               <name>sCode</name>
-               <value>ffi</value>
-            </column>
-            <column>
-               <name>type</name>
-               <value>String</value>
-            </column>
-            <column>
-               <name>reqArch</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>reqStor</name>
-               <value>true</value>
-            </column>
-            <!--
-            <column>
-               <name>length</name>
-               <value>integer(-1)</value>
-            </column>
-            -->
-            <column>
-               <name>cons</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>defCons</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>search</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>int</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>arch</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>label</name>
-               <value>Format de fichier</value>
-            </column>
-            <column>
-               <name>descr</name>
-               <value>Identifiant PRONOM (Cf. Référentiel PRONOM)</value>
-            </column>
-            <column>
-               <name>pattern</name>
-               <value />
-            </column>
-            <column>
-               <name>hasDict</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>dictName</name>
-               <value />
-            </column>
-            <column>
-               <name>index</name>
-               <value>false</value>
-            </column>
-         </row>
-         <!-- TailleFichier -->
-         <row>
-            <key>TailleFichier</key>
-            <column>
-               <name>sCode</name>
-               <value>SM_SIZE</value>
-            </column>
-            <column>
-               <name>type</name>
-               <value>Long</value>
-            </column>
-            <column>
-               <name>reqArch</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>reqStor</name>
-               <value>false</value>
-            </column>
-            <!--
-            <column>
-               <name>length</name>
-               <value>integer(-1)</value>
-            </column>
-            -->
-            <column>
-               <name>cons</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>defCons</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>search</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>int</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>arch</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>label</name>
-               <value>Taille du fichier</value>
-            </column>
-            <column>
-               <name>descr</name>
-               <value>Taille du fichier en octets</value>
-            </column>
-            <column>
-               <name>pattern</name>
-               <value />
-            </column>
-            <column>
-               <name>hasDict</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>dictName</name>
-               <value />
-            </column>
-            <column>
-               <name>index</name>
-               <value>false</value>
-            </column>
-         </row>
-         <!-- IdTraitementMasseInterne -->
-         <row>
-            <key>IdTraitementMasseInterne</key>
-            <column>
-               <name>sCode</name>
-               <value>iti</value>
-            </column>
-            <column>
-               <name>type</name>
-               <value>String</value>
-            </column>
-            <column>
-               <name>reqArch</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>reqStor</name>
-               <value>false</value>
-            </column>
-            <!--
-            <column>
-               <name>length</name>
-               <value>integer(20)</value>
-            </column>
-            -->
-            <column>
-               <name>cons</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>defCons</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>search</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>int</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>arch</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>label</name>
-               <value>Identifiant interne du traitement de masse</value>
-            </column>
-            <column>
-               <name>descr</name>
-               <value>Identifiant permettant de gérer le rollback sur les traitements de masse</value>
-            </column>
-            <column>
-               <name>pattern</name>
-               <value />
-            </column>
-            <column>
-               <name>hasDict</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>dictName</name>
-               <value />
-            </column>
-            <column>
-               <name>index</name>
-               <value>oui</value>
-            </column>
-         </row>
-         <!-- ContratDeService -->
-         <row>
-            <key>ContratDeService</key>
-            <column>
-               <name>sCode</name>
-               <value>cse</value>
-            </column>
-            <column>
-               <name>type</name>
-               <value>String</value>
-            </column>
-            <column>
-               <name>reqArch</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>reqStor</name>
-               <value>true</value>
-            </column>
-            <!--
-            <column>
-               <name>length</name>
-               <value>integer(-1)</value>
-            </column>
-            -->
-            <column>
-               <name>cons</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>defCons</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>search</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>int</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>arch</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>label</name>
-               <value>Contrat de Service</value>
-            </column>
-            <column>
-               <name>descr</name>
-               <value>Identifiant du contrat de service utilisé pour archiver le document</value>
-            </column>
-            <column>
-               <name>pattern</name>
-               <value />
-            </column>
-            <column>
-               <name>hasDict</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>dictName</name>
-               <value />
-            </column>
-            <column>
-               <name>index</name>
-               <value>false</value>
-            </column>
-         </row>
-         <!-- DateArchivage -->
-         <row>
-            <key>DateArchivage</key>
-            <column>
-               <name>sCode</name>
-               <value>SM_ARCHIVAGE_DATE</value>
-            </column>
-            <column>
-               <name>type</name>
-               <value>Date</value>
-            </column>
-            <column>
-               <name>reqArch</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>reqStor</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>length</name>
-               <value>integer(10)</value>
-            </column>
-            <column>
-               <name>cons</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>defCons</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>search</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>int</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>arch</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>label</name>
-               <value>Date archivage</value>
-            </column>
-            <column>
-               <name>descr</name>
-               <value>Date à laquelle le document a été archivé dans le SAE</value>
-            </column>
-            <column>
-               <name>pattern</name>
-               <!--
-               <value>yyyy-mm-dd</value>
-               -->
-               <value />
-            </column>
-            <column>
-               <name>hasDict</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>dictName</name>
-               <value />
-            </column>
-            <column>
-               <name>index</name>
-               <value>true</value>
-            </column>
-         </row>
-         <!-- DateReception -->
+         
          <row>
             <key>DateReception</key>
             <column>
@@ -1470,20 +1183,20 @@
                <value>false</value>
             </column>
          </row>
-         <!-- DocumentVirtuel -->
+         
          <row>
-            <key>DocumentVirtuel</key>
+            <key>ApplicationProductrice</key>
             <column>
                <name>sCode</name>
-               <value>SM_VIRTUAL</value>
+               <value>apr</value>
             </column>
             <column>
                <name>type</name>
-               <value>Boolean</value>
+               <value>String</value>
             </column>
             <column>
                <name>reqArch</name>
-               <value>false</value>
+               <value>true</value>
             </column>
             <column>
                <name>reqStor</name>
@@ -1491,11 +1204,11 @@
             </column>
             <column>
                <name>length</name>
-               <value>integer(20)</value>
+               <value>integer(15)</value>
             </column>
             <column>
                <name>cons</name>
-               <value>false</value>
+               <value>true</value>
             </column>
             <column>
                <name>defCons</name>
@@ -1503,23 +1216,91 @@
             </column>
             <column>
                <name>search</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>int</name>
                <value>true</value>
             </column>
             <column>
-               <name>arch</name>
+               <name>int</name>
                <value>false</value>
             </column>
             <column>
+               <name>arch</name>
+               <value>true</value>
+            </column>
+            <column>
                <name>label</name>
-               <value>Information indiquant si le document est virtuel ou non</value>
+               <value>Application Productrice du document</value>
             </column>
             <column>
                <name>descr</name>
-               <value>Information indiquant si le document est virtuel ou non</value>
+               <value>Code de l'application qui a produit le document (pour un document WATT issu du scan, ce sera la chaine d'acquisition)</value>
+            </column>
+            <column>
+               <name>pattern</name>
+               <value />
+            </column>
+            <column>
+               <name>hasDict</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>dictName</name>
+               <value />
+            </column>
+            <column>
+               <name>index</name>
+               <value>true</value>
+            </column>
+         </row>
+         
+         <row>
+            <key>ApplicationTraitement</key>
+            <column>
+               <name>sCode</name>
+               <value>atr</value>
+            </column>
+            <column>
+               <name>type</name>
+               <value>String</value>
+            </column>
+            <column>
+               <name>reqArch</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>reqStor</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>length</name>
+               <value>integer(15)</value>
+            </column>
+            <column>
+               <name>cons</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>defCons</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>search</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>int</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>arch</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>label</name>
+               <value>Application traitant le document</value>
+            </column>
+            <column>
+               <name>descr</name>
+               <value>Code de la dernière application qui a fait des traitements sur le document avant archivage c'est-à-dire celle qui a versé le document</value>
             </column>
             <column>
                <name>pattern</name>
@@ -1538,7 +1319,143 @@
                <value>false</value>
             </column>
          </row>
-         <!-- SiteAcquisition -->
+         
+         <row>
+            <key>CodeOrganismeProprietaire</key>
+            <column>
+               <name>sCode</name>
+               <value>cop</value>
+            </column>
+            <column>
+               <name>type</name>
+               <value>String</value>
+            </column>
+            <column>
+               <name>reqArch</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>reqStor</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>length</name>
+               <value>integer(5)</value>
+            </column>
+            <column>
+               <name>cons</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>defCons</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>search</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>int</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>arch</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>label</name>
+               <value>Code organisme propriétaire</value>
+            </column>
+            <column>
+               <name>descr</name>
+               <value>Code organisme propriétaire du document Cf. Liste des organismes</value>
+            </column>
+            <column>
+               <name>pattern</name>
+               <value />
+            </column>
+            <column>
+               <name>hasDict</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>dictName</name>
+               <value />
+            </column>
+            <column>
+               <name>index</name>
+               <value>false</value>
+            </column>
+         </row>
+         
+         <row>
+            <key>CodeOrganismeGestionnaire</key>
+            <column>
+               <name>sCode</name>
+               <value>cog</value>
+            </column>
+            <column>
+               <name>type</name>
+               <value>String</value>
+            </column>
+            <column>
+               <name>reqArch</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>reqStor</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>length</name>
+               <value>integer(5)</value>
+            </column>
+            <column>
+               <name>cons</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>defCons</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>search</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>int</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>arch</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>label</name>
+               <value>Code organisme gestionnaire</value>
+            </column>
+            <column>
+               <name>descr</name>
+               <value>Code organisme gestionnaire de la pièce Cf. Liste des organismes</value>
+            </column>
+            <column>
+               <name>pattern</name>
+               <value />
+            </column>
+            <column>
+               <name>hasDict</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>dictName</name>
+               <value />
+            </column>
+            <column>
+               <name>index</name>
+               <value>false</value>
+            </column>
+         </row>
+         
          <row>
             <key>SiteAcquisition</key>
             <column>
@@ -1606,12 +1523,12 @@
                <value>false</value>
             </column>
          </row>
-         <!-- TracabilitrePreArchivage -->
+         
          <row>
-            <key>TracabilitrePreArchivage</key>
+            <key>CodeRND</key>
             <column>
                <name>sCode</name>
-               <value>tpa</value>
+               <value>SM_DOCUMENT_TYPE</value>
             </column>
             <column>
                <name>type</name>
@@ -1619,81 +1536,11 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>reqStor</name>
-               <value>false</value>
-            </column>
-            <!--
-            <column>
-               <name>length</name>
-               <value>integer(-1)</value>
-            </column>
-            -->
-            <column>
-               <name>cons</name>
                <value>true</value>
             </column>
             <column>
-               <name>defCons</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>search</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>int</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>arch</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>label</name>
-               <value>Traçabilité pré archivage</value>
-            </column>
-            <column>
-               <name>descr</name>
-               <value>Traçabilité en amont du SAE, surtout utilisée dans le cas de la chaine d'acquisition</value>
-            </column>
-            <column>
-               <name>pattern</name>
-               <value />
-            </column>
-            <column>
-               <name>hasDict</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>dictName</name>
-               <value />
-            </column>
-            <column>
-               <name>index</name>
-               <value>false</value>
-            </column>
-         </row>
-         <!-- Siret -->
-         <row>
-            <key>Siret</key>
-            <column>
-               <name>sCode</name>
-               <value>srt</value>
-            </column>
-            <column>
-               <name>type</name>
-               <value>String</value>
-            </column>
-            <column>
-               <name>reqArch</name>
-               <value>false</value>
-            </column>
-            <column>
                <name>reqStor</name>
-               <value>false</value>
+               <value>true</value>
             </column>
             <column>
                <name>length</name>
@@ -1705,7 +1552,7 @@
             </column>
             <column>
                <name>defCons</name>
-               <value>false</value>
+               <value>true</value>
             </column>
             <column>
                <name>search</name>
@@ -1713,7 +1560,7 @@
             </column>
             <column>
                <name>int</name>
-               <value>false</value>
+               <value>true</value>
             </column>
             <column>
                <name>arch</name>
@@ -1721,11 +1568,11 @@
             </column>
             <column>
                <name>label</name>
-               <value>Numéro de siret</value>
+               <value>Code référentiel nationale de document</value>
             </column>
             <column>
                <name>descr</name>
-               <value>Numéro de Siret V2</value>
+               <value>Code issu d'un référentiel permettant de typer nationalement un document</value>
             </column>
             <column>
                <name>pattern</name>
@@ -1741,19 +1588,19 @@
             </column>
             <column>
                <name>index</name>
-               <value>true</value>
+               <value>false</value>
             </column>
          </row>
-         <!-- StartPage -->
+         
          <row>
-            <key>StartPage</key>
+            <key>VersionRND</key>
             <column>
                <name>sCode</name>
-               <value>SM_START_PAGE</value>
+               <value>vrn</value>
             </column>
             <column>
                <name>type</name>
-               <value>Integer</value>
+               <value>String</value>
             </column>
             <column>
                <name>reqArch</name>
@@ -1761,17 +1608,15 @@
             </column>
             <column>
                <name>reqStor</name>
-               <value>false</value>
+               <value>true</value>
             </column>
-            <!--
             <column>
                <name>length</name>
-               <value>integer(-1)</value>
+               <value>integer(10)</value>
             </column>
-            -->
             <column>
                <name>cons</name>
-               <value>false</value>
+               <value>true</value>
             </column>
             <column>
                <name>defCons</name>
@@ -1783,7 +1628,7 @@
             </column>
             <column>
                <name>int</name>
-               <value>true</value>
+               <value>false</value>
             </column>
             <column>
                <name>arch</name>
@@ -1791,11 +1636,11 @@
             </column>
             <column>
                <name>label</name>
-               <value>Page de début</value>
+               <value>Version de Code RND</value>
             </column>
             <column>
                <name>descr</name>
-               <value>Pour un document virtuel, il s'agit de la page de départ dans le document container</value>
+               <value>Numéro permettant d'identifier la version de provenance du code RND renseigné précédemment</value>
             </column>
             <column>
                <name>pattern</name>
@@ -1811,10 +1656,146 @@
             </column>
             <column>
                <name>index</name>
-               <value>true</value>
+               <value>false</value>
             </column>
          </row>
-         <!-- DureeConservation -->
+         
+         <row>
+            <key>CodeFonction</key>
+            <column>
+               <name>sCode</name>
+               <value>dom</value>
+            </column>
+            <column>
+               <name>type</name>
+               <value>String</value>
+            </column>
+            <column>
+               <name>reqArch</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>reqStor</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>length</name>
+               <value>integer(2)</value>
+            </column>
+            <column>
+               <name>cons</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>defCons</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>search</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>int</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>arch</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>label</name>
+               <value>Code fonction RFP</value>
+            </column>
+            <column>
+               <name>descr</name>
+               <value>Code de la fonction/domaine RFP</value>
+            </column>
+            <column>
+               <name>pattern</name>
+               <value />
+            </column>
+            <column>
+               <name>hasDict</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>dictName</name>
+               <value />
+            </column>
+            <column>
+               <name>index</name>
+               <value>false</value>
+            </column>
+         </row>
+         
+         <row>
+            <key>CodeActivite</key>
+            <column>
+               <name>sCode</name>
+               <value>act</value>
+            </column>
+            <column>
+               <name>type</name>
+               <value>String</value>
+            </column>
+            <column>
+               <name>reqArch</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>reqStor</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>length</name>
+               <value>integer(2)</value>
+            </column>
+            <column>
+               <name>cons</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>defCons</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>search</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>int</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>arch</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>label</name>
+               <value>Code Activité RFP</value>
+            </column>
+            <column>
+               <name>descr</name>
+               <value>Code de l'activité RFP</value>
+            </column>
+            <column>
+               <name>pattern</name>
+               <value />
+            </column>
+            <column>
+               <name>hasDict</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>dictName</name>
+               <value />
+            </column>
+            <column>
+               <name>index</name>
+               <value>false</value>
+            </column>
+         </row>
+         
          <row>
             <key>DureeConservation</key>
             <column>
@@ -1884,12 +1865,225 @@
                <value>true</value>
             </column>
          </row>
-         <!-- Denomination -->
+         
          <row>
-            <key>Denomination</key>
+            <key>DateDebutConservation</key>
             <column>
                <name>sCode</name>
-               <value>den</value>
+               <value>SM_LIFE_CYCLE_REFERENCE_DATE</value>
+            </column>
+            <column>
+               <name>type</name>
+               <value>Date</value>
+            </column>
+            <column>
+               <name>reqArch</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>reqStor</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>length</name>
+               <value>integer(10)</value>
+            </column>
+            <column>
+               <name>cons</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>defCons</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>search</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>int</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>arch</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>label</name>
+               <value>Date début conservation</value>
+            </column>
+            <column>
+               <name>descr</name>
+               <value>Date de début de la durée de conservation.</value>
+            </column>
+            <column>
+               <name>pattern</name>
+               <!--
+               <value>yyyy-mm-dd</value>
+               -->
+               <value />
+            </column>
+            <column>
+               <name>hasDict</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>dictName</name>
+               <value />
+            </column>
+            <column>
+               <name>index</name>
+               <value>true</value>
+            </column>
+         </row>
+         
+         <row>
+            <key>DateFinConservation</key>
+            <column>
+               <name>sCode</name>
+               <value>dfc</value>
+            </column>
+            <column>
+               <name>type</name>
+               <value>Date</value>
+            </column>
+            <column>
+               <name>reqArch</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>reqStor</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>length</name>
+               <value>integer(10)</value>
+            </column>
+            <column>
+               <name>cons</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>defCons</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>search</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>int</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>arch</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>label</name>
+               <value>Date fin conservation</value>
+            </column>
+            <column>
+               <name>descr</name>
+               <value>Date de fin de la durée de conservation</value>
+            </column>
+            <column>
+               <name>pattern</name>
+               <!--
+               <value>yyyy-mm-dd</value>
+               -->
+               <value />
+            </column>
+            <column>
+               <name>hasDict</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>dictName</name>
+               <value />
+            </column>
+            <column>
+               <name>index</name>
+               <value>false</value>
+            </column>
+         </row>
+         
+         <row>
+            <key>Gel</key>
+            <column>
+               <name>sCode</name>
+               <value>gel</value>
+            </column>
+            <column>
+               <name>type</name>
+               <value>Boolean</value>
+            </column>
+            <column>
+               <name>reqArch</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>reqStor</name>
+               <value>false</value>
+            </column>
+            <!--
+            <column>
+               <name>length</name>
+               <value>integer(-1)</value>
+            </column>
+            -->
+            <column>
+               <name>cons</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>defCons</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>search</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>int</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>arch</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>label</name>
+               <value>Gel</value>
+            </column>
+            <column>
+               <name>descr</name>
+               <value>Gel de l'archive permettant de ne pas détruire
+                  l'archive</value>
+            </column>
+            <column>
+               <name>pattern</name>
+               <value>true|false</value>
+            </column>
+            <column>
+               <name>hasDict</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>dictName</name>
+               <value>dict</value>
+            </column>
+            <column>
+               <name>index</name>
+               <value>false</value>
+            </column>
+         </row>
+         
+         <row>
+            <key>TracabilitrePreArchivage</key>
+            <column>
+               <name>sCode</name>
+               <value>tpa</value>
             </column>
             <column>
                <name>type</name>
@@ -1919,7 +2113,7 @@
             </column>
             <column>
                <name>search</name>
-               <value>true</value>
+               <value>false</value>
             </column>
             <column>
                <name>int</name>
@@ -1931,11 +2125,11 @@
             </column>
             <column>
                <name>label</name>
-               <value>Dénomination du compte</value>
+               <value>Traçabilité pré archivage</value>
             </column>
             <column>
                <name>descr</name>
-               <value>Dénomination du compte (provient de la raison sociale V2)</value>
+               <value>Traçabilité en amont du SAE, surtout utilisée dans le cas de la chaine d'acquisition</value>
             </column>
             <column>
                <name>pattern</name>
@@ -1951,15 +2145,15 @@
             </column>
             <column>
                <name>index</name>
-               <value>true</value>
+               <value>false</value>
             </column>
          </row>
-         <!-- NumeroRecours -->
+         
          <row>
-            <key>NumeroRecours</key>
+            <key>TracabilitePostArchivage</key>
             <column>
                <name>sCode</name>
-               <value>nre</value>
+               <value>toq</value>
             </column>
             <column>
                <name>type</name>
@@ -1972,6 +2166,146 @@
             <column>
                <name>reqStor</name>
                <value>false</value>
+            </column>
+            <!--
+            <column>
+               <name>length</name>
+               <value>integer(-1)</value>
+            </column>
+            -->
+            <column>
+               <name>cons</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>defCons</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>search</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>int</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>arch</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>label</name>
+               <value>Tracabilite post archivage</value>
+            </column>
+            <column>
+               <name>descr</name>
+               <value>Traçabilité contenue dans le système d'archive, lié à la vie de l'archive</value>
+            </column>
+            <column>
+               <name>pattern</name>
+               <value />
+            </column>
+            <column>
+               <name>hasDict</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>dictName</name>
+               <value />
+            </column>
+            <column>
+               <name>index</name>
+               <value>false</value>
+            </column>
+         </row>
+         
+         <row>
+            <key>Hash</key>
+            <column>
+               <name>sCode</name>
+               <value>SM_DIGEST</value>
+            </column>
+            <column>
+               <name>type</name>
+               <value>String</value>
+            </column>
+            <column>
+               <name>reqArch</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>reqStor</name>
+               <value>true</value>
+            </column>
+            <!--
+            <column>
+               <name>length</name>
+               <value>integer(-1)</value>
+            </column>
+            -->
+            <column>
+               <name>cons</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>defCons</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>search</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>int</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>arch</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>label</name>
+               <value>Hash du fichier</value>
+            </column>
+            <column>
+               <name>descr</name>
+               <value>Hash du fichier</value>
+            </column>
+            <column>
+               <name>pattern</name>
+               <value />
+            </column>
+            <column>
+               <name>hasDict</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>dictName</name>
+               <value />
+            </column>
+            <column>
+               <name>index</name>
+               <value>false</value>
+            </column>
+         </row>
+         
+         <row>
+            <key>TypeHash</key>
+            <column>
+               <name>sCode</name>
+               <value>SM_DIGEST_ALGORITHM</value>
+            </column>
+            <column>
+               <name>type</name>
+               <value>String</value>
+            </column>
+            <column>
+               <name>reqArch</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>reqStor</name>
+               <value>true</value>
             </column>
             <column>
                <name>length</name>
@@ -1987,11 +2321,11 @@
             </column>
             <column>
                <name>search</name>
-               <value>true</value>
+               <value>false</value>
             </column>
             <column>
                <name>int</name>
-               <value>false</value>
+               <value>true</value>
             </column>
             <column>
                <name>arch</name>
@@ -1999,11 +2333,11 @@
             </column>
             <column>
                <name>label</name>
-               <value>Numéro de recours</value>
+               <value>Type de hash utilisé</value>
             </column>
             <column>
                <name>descr</name>
-               <value>Numéro de recours</value>
+               <value>Identifiant de l'algorithme de hachage utilisé pour calculer le Hash du fichier</value>
             </column>
             <column>
                <name>pattern</name>
@@ -2019,32 +2353,34 @@
             </column>
             <column>
                <name>index</name>
-               <value>true</value>
+               <value>false</value>
             </column>
          </row>
-         <!-- CodeSousCategorieV2 -->
+         
          <row>
-            <key>CodeSousCategorieV2</key>
+            <key>NbPages</key>
             <column>
                <name>sCode</name>
-               <value>scv</value>
+               <value>nbp</value>
             </column>
             <column>
                <name>type</name>
-               <value>String</value>
+               <value>Integer</value>
             </column>
             <column>
                <name>reqArch</name>
-               <value>false</value>
+               <value>true</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>false</value>
+               <value>true</value>
             </column>
+            <!--
             <column>
                <name>length</name>
-               <value>integer(2)</value>
+               <value>integer(-1)</value>
             </column>
+            -->
             <column>
                <name>cons</name>
                <value>true</value>
@@ -2067,11 +2403,11 @@
             </column>
             <column>
                <name>label</name>
-               <value>Code sous catégorie V2</value>
+               <value>Nombre de pages</value>
             </column>
             <column>
                <name>descr</name>
-               <value>Code sous catégorie V2</value>
+               <value>Nombre de pages du document</value>
             </column>
             <column>
                <name>pattern</name>
@@ -2090,12 +2426,222 @@
                <value>false</value>
             </column>
          </row>
-         <!-- ApplicationTraitement -->
+         
          <row>
-            <key>ApplicationTraitement</key>
+            <key>NomFichier</key>
             <column>
                <name>sCode</name>
-               <value>atr</value>
+               <value>nfi</value>
+            </column>
+            <column>
+               <name>type</name>
+               <value>String</value>
+            </column>
+            <column>
+               <name>reqArch</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>reqStor</name>
+               <value>true</value>
+            </column>
+            <!--
+            <column>
+               <name>length</name>
+               <value>integer(-1)</value>
+            </column>
+            -->
+            <column>
+               <name>cons</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>defCons</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>search</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>int</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>arch</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>label</name>
+               <value>Nom du fichier</value>
+            </column>
+            <column>
+               <name>descr</name>
+               <value>Nom du fichier physique avec extension lié au document</value>
+            </column>
+            <column>
+               <name>pattern</name>
+               <value />
+            </column>
+            <column>
+               <name>hasDict</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>dictName</name>
+               <value />
+            </column>
+            <column>
+               <name>index</name>
+               <value>false</value>
+            </column>
+         </row>
+         
+         <row>
+            <key>FormatFichier</key>
+            <column>
+               <name>sCode</name>
+               <value>ffi</value>
+            </column>
+            <column>
+               <name>type</name>
+               <value>String</value>
+            </column>
+            <column>
+               <name>reqArch</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>reqStor</name>
+               <value>true</value>
+            </column>
+            <!--
+            <column>
+               <name>length</name>
+               <value>integer(-1)</value>
+            </column>
+            -->
+            <column>
+               <name>cons</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>defCons</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>search</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>int</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>arch</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>label</name>
+               <value>Format de fichier</value>
+            </column>
+            <column>
+               <name>descr</name>
+               <value>Identifiant PRONOM (Cf. Référentiel PRONOM)</value>
+            </column>
+            <column>
+               <name>pattern</name>
+               <value />
+            </column>
+            <column>
+               <name>hasDict</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>dictName</name>
+               <value />
+            </column>
+            <column>
+               <name>index</name>
+               <value>false</value>
+            </column>
+         </row>
+         
+         <row>
+            <key>TailleFichier</key>
+            <column>
+               <name>sCode</name>
+               <value>SM_SIZE</value>
+            </column>
+            <column>
+               <name>type</name>
+               <value>Long</value>
+            </column>
+            <column>
+               <name>reqArch</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>reqStor</name>
+               <value>false</value>
+            </column>
+            <!--
+            <column>
+               <name>length</name>
+               <value>integer(-1)</value>
+            </column>
+            -->
+            <column>
+               <name>cons</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>defCons</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>search</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>int</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>arch</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>label</name>
+               <value>Taille du fichier</value>
+            </column>
+            <column>
+               <name>descr</name>
+               <value>Taille du fichier en octets</value>
+            </column>
+            <column>
+               <name>pattern</name>
+               <value />
+            </column>
+            <column>
+               <name>hasDict</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>dictName</name>
+               <value />
+            </column>
+            <column>
+               <name>index</name>
+               <value>false</value>
+            </column>
+         </row>
+         
+         <row>
+            <key>IdTraitementMasseInterne</key>
+            <column>
+               <name>sCode</name>
+               <value>iti</value>
             </column>
             <column>
                <name>type</name>
@@ -2109,10 +2655,12 @@
                <name>reqStor</name>
                <value>false</value>
             </column>
+            <!--
             <column>
                <name>length</name>
-               <value>integer(15)</value>
+               <value>integer(20)</value>
             </column>
+            -->
             <column>
                <name>cons</name>
                <value>true</value>
@@ -2131,15 +2679,15 @@
             </column>
             <column>
                <name>arch</name>
-               <value>true</value>
+               <value>false</value>
             </column>
             <column>
                <name>label</name>
-               <value>Application traitant le document</value>
+               <value>Identifiant interne du traitement de masse</value>
             </column>
             <column>
                <name>descr</name>
-               <value>Code de la dernière application qui a fait des traitements sur le document avant archivage c'est-à-dire celle qui a versé le document</value>
+               <value>Identifiant permettant de gérer le rollback sur les traitements de masse</value>
             </column>
             <column>
                <name>pattern</name>
@@ -2155,78 +2703,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>false</value>
+               <value>oui</value>
             </column>
          </row>
-         <!-- CodeCategorieV2 -->
-         <row>
-            <key>CodeCategorieV2</key>
-            <column>
-               <name>sCode</name>
-               <value>cv2</value>
-            </column>
-            <column>
-               <name>type</name>
-               <value>String</value>
-            </column>
-            <column>
-               <name>reqArch</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>reqStor</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>length</name>
-               <value>integer(1)</value>
-            </column>
-            <column>
-               <name>cons</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>defCons</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>search</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>int</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>arch</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>label</name>
-               <value>Code catégorie V2</value>
-            </column>
-            <column>
-               <name>descr</name>
-               <value>Code catégorie V2</value>
-            </column>
-            <column>
-               <name>pattern</name>
-               <value />
-            </column>
-            <column>
-               <name>hasDict</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>dictName</name>
-               <value />
-            </column>
-            <column>
-               <name>index</name>
-               <value>false</value>
-            </column>
-         </row>
-         <!-- IdTraitementMasse -->
+         
          <row>
             <key>IdTraitementMasse</key>
             <column>
@@ -2294,16 +2774,16 @@
                <value>true</value>
             </column>
          </row>
-         <!-- NniEmployeur -->
+         
          <row>
-            <key>NniEmployeur</key>
+            <key>DocumentVirtuel</key>
             <column>
                <name>sCode</name>
-               <value>nne</value>
+               <value>SM_VIRTUAL</value>
             </column>
             <column>
                <name>type</name>
-               <value>String</value>
+               <value>Boolean</value>
             </column>
             <column>
                <name>reqArch</name>
@@ -2311,15 +2791,15 @@
             </column>
             <column>
                <name>reqStor</name>
-               <value>false</value>
+               <value>true</value>
             </column>
             <column>
                <name>length</name>
-               <value>integer(15)</value>
+               <value>integer(20)</value>
             </column>
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>false</value>
             </column>
             <column>
                <name>defCons</name>
@@ -2327,23 +2807,23 @@
             </column>
             <column>
                <name>search</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>int</name>
                <value>false</value>
             </column>
             <column>
-               <name>arch</name>
+               <name>int</name>
                <value>true</value>
             </column>
             <column>
+               <name>arch</name>
+               <value>false</value>
+            </column>
+            <column>
                <name>label</name>
-               <value>NNI employeur</value>
+               <value>Information indiquant si le document est virtuel ou non</value>
             </column>
             <column>
                <name>descr</name>
-               <value>Numéro National d'Identification ou Numéro de sécurité sociale de l'Employeur</value>
+               <value>Information indiquant si le document est virtuel ou non</value>
             </column>
             <column>
                <name>pattern</name>
@@ -2359,19 +2839,19 @@
             </column>
             <column>
                <name>index</name>
-               <value>true</value>
+               <value>false</value>
             </column>
          </row>
-         <!-- NumeroCompteExterne -->
+         
          <row>
-            <key>NumeroCompteExterne</key>
+            <key>StartPage</key>
             <column>
                <name>sCode</name>
-               <value>nce</value>
+               <value>SM_START_PAGE</value>
             </column>
             <column>
                <name>type</name>
-               <value>String</value>
+               <value>Integer</value>
             </column>
             <column>
                <name>reqArch</name>
@@ -2381,13 +2861,15 @@
                <name>reqStor</name>
                <value>false</value>
             </column>
+            <!--
             <column>
                <name>length</name>
-               <value>integer(18)</value>
+               <value>integer(-1)</value>
             </column>
+            -->
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>false</value>
             </column>
             <column>
                <name>defCons</name>
@@ -2395,23 +2877,23 @@
             </column>
             <column>
                <name>search</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>int</name>
                <value>false</value>
             </column>
             <column>
-               <name>arch</name>
+               <name>int</name>
                <value>true</value>
             </column>
             <column>
+               <name>arch</name>
+               <value>false</value>
+            </column>
+            <column>
                <name>label</name>
-               <value>Numéro de compte externe</value>
+               <value>Page de début</value>
             </column>
             <column>
                <name>descr</name>
-               <value>Numéro de compte externe V2</value>
+               <value>Pour un document virtuel, il s'agit de la page de départ dans le document container</value>
             </column>
             <column>
                <name>pattern</name>
@@ -2427,19 +2909,19 @@
             </column>
             <column>
                <name>index</name>
-               <value>true</value>
+               <value>false</value>
             </column>
          </row>
-         <!-- NumeroCompteInterne -->
+         
          <row>
-            <key>NumeroCompteInterne</key>
+            <key>EndPage</key>
             <column>
                <name>sCode</name>
-               <value>nci</value>
+               <value>SM_END_PAGE</value>
             </column>
             <column>
                <name>type</name>
-               <value>String</value>
+               <value>Integer</value>
             </column>
             <column>
                <name>reqArch</name>
@@ -2449,13 +2931,15 @@
                <name>reqStor</name>
                <value>false</value>
             </column>
+            <!--
             <column>
                <name>length</name>
-               <value>integer(7)</value>
+               <value>integer(-1)</value>
             </column>
+            -->
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>false</value>
             </column>
             <column>
                <name>defCons</name>
@@ -2463,23 +2947,23 @@
             </column>
             <column>
                <name>search</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>int</name>
                <value>false</value>
             </column>
             <column>
-               <name>arch</name>
+               <name>int</name>
                <value>true</value>
             </column>
             <column>
+               <name>arch</name>
+               <value>false</value>
+            </column>
+            <column>
                <name>label</name>
-               <value>Numéro de compte interne</value>
+               <value>Page de fin</value>
             </column>
             <column>
                <name>descr</name>
-               <value>Numéro de compte interne V2</value>
+               <value>Pour un document virtuel, il s'agit de la page de fin dans le document container</value>
             </column>
             <column>
                <name>pattern</name>
@@ -2495,15 +2979,15 @@
             </column>
             <column>
                <name>index</name>
-               <value>true</value>
+               <value>false</value>
             </column>
          </row>
-         <!-- NumeroIntControle -->
+         
          <row>
-            <key>NumeroIntControle</key>
+            <key>ContratDeService</key>
             <column>
                <name>sCode</name>
-               <value>nic</value>
+               <value>cse</value>
             </column>
             <column>
                <name>type</name>
@@ -2515,23 +2999,25 @@
             </column>
             <column>
                <name>reqStor</name>
-               <value>false</value>
+               <value>true</value>
             </column>
+            <!--
             <column>
                <name>length</name>
-               <value>integer(6)</value>
+               <value>integer(-1)</value>
             </column>
+            -->
             <column>
                <name>cons</name>
                <value>true</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>false</value>
+               <value>true</value>
             </column>
             <column>
                <name>search</name>
-               <value>true</value>
+               <value>false</value>
             </column>
             <column>
                <name>int</name>
@@ -2539,15 +3025,15 @@
             </column>
             <column>
                <name>arch</name>
-               <value>true</value>
+               <value>false</value>
             </column>
             <column>
                <name>label</name>
-               <value>Numéro interne contrôle</value>
+               <value>Contrat de Service</value>
             </column>
             <column>
                <name>descr</name>
-               <value>Numéro interne contrôle</value>
+               <value>Identifiant du contrat de service utilisé pour archiver le document</value>
             </column>
             <column>
                <name>pattern</name>
@@ -2563,19 +3049,19 @@
             </column>
             <column>
                <name>index</name>
-               <value>true</value>
+               <value>false</value>
             </column>
          </row>
-         <!-- NumeroPersonne -->
+         
          <row>
-            <key>NumeroPersonne</key>
+            <key>DateArchivage</key>
             <column>
                <name>sCode</name>
-               <value>npe</value>
+               <value>SM_ARCHIVAGE_DATE</value>
             </column>
             <column>
                <name>type</name>
-               <value>String</value>
+               <value>Date</value>
             </column>
             <column>
                <name>reqArch</name>
@@ -2583,75 +3069,7 @@
             </column>
             <column>
                <name>reqStor</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>length</name>
-               <value>integer(7)</value>
-            </column>
-            <column>
-               <name>cons</name>
                <value>true</value>
-            </column>
-            <column>
-               <name>defCons</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>search</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>int</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>arch</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>label</name>
-               <value>Numéro de personne</value>
-            </column>
-            <column>
-               <name>descr</name>
-               <value>Numéro de personne (V2)</value>
-            </column>
-            <column>
-               <name>pattern</name>
-               <value />
-            </column>
-            <column>
-               <name>hasDict</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>dictName</name>
-               <value />
-            </column>
-            <column>
-               <name>index</name>
-               <value>true</value>
-            </column>
-         </row>
-         <!-- NumeroStructure -->
-         <row>
-            <key>NumeroStructure</key>
-            <column>
-               <name>sCode</name>
-               <value>nst</value>
-            </column>
-            <column>
-               <name>type</name>
-               <value>String</value>
-            </column>
-            <column>
-               <name>reqArch</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>reqStor</name>
-               <value>false</value>
             </column>
             <column>
                <name>length</name>
@@ -2663,7 +3081,7 @@
             </column>
             <column>
                <name>defCons</name>
-               <value>false</value>
+               <value>true</value>
             </column>
             <column>
                <name>search</name>
@@ -2671,158 +3089,25 @@
             </column>
             <column>
                <name>int</name>
-               <value>false</value>
+               <value>true</value>
             </column>
             <column>
                <name>arch</name>
-               <value>true</value>
+               <value>false</value>
             </column>
             <column>
                <name>label</name>
-               <value>Numéro de structure</value>
+               <value>Date archivage</value>
             </column>
             <column>
                <name>descr</name>
-               <value>Numéro de structure V2</value>
+               <value>Date à laquelle le document a été archivé dans le SAE</value>
             </column>
             <column>
                <name>pattern</name>
-               <value />
-            </column>
-            <column>
-               <name>hasDict</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>dictName</name>
-               <value />
-            </column>
-            <column>
-               <name>index</name>
-               <value>false</value>
-            </column>
-         </row>
-         <!-- Periode -->
-         <row>
-            <key>Periode</key>
-            <column>
-               <name>sCode</name>
-               <value>per</value>
-            </column>
-            <column>
-               <name>type</name>
-               <value>String</value>
-            </column>
-            <column>
-               <name>reqArch</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>reqStor</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>length</name>
-               <value>integer(4)</value>
-            </column>
-            <column>
-               <name>cons</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>defCons</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>search</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>int</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>arch</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>label</name>
-               <value>Période</value>
-            </column>
-            <column>
-               <name>descr</name>
-               <value>Correspond à la période V2</value>
-            </column>
-            <column>
-               <name>pattern</name>
-               <value />
-            </column>
-            <column>
-               <name>hasDict</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>dictName</name>
-               <value />
-            </column>
-            <column>
-               <name>index</name>
-               <value>false</value>
-            </column>
-         </row>
-         <!-- PseudoSiret -->
-         <row>
-            <key>PseudoSiret</key>
-            <column>
-               <name>sCode</name>
-               <value>psi</value>
-            </column>
-            <column>
-               <name>type</name>
-               <value>String</value>
-            </column>
-            <column>
-               <name>reqArch</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>reqStor</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>length</name>
-               <value>integer(14)</value>
-            </column>
-            <column>
-               <name>cons</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>defCons</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>search</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>int</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>arch</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>label</name>
-               <value>Numéro de pseudosiret</value>
-            </column>
-            <column>
-               <name>descr</name>
-               <value>Numéro de Pseudo Siret V2</value>
-            </column>
-            <column>
-               <name>pattern</name>
+               <!--
+               <value>yyyy-mm-dd</value>
+               -->
                <value />
             </column>
             <column>
@@ -2838,143 +3123,7 @@
                <value>true</value>
             </column>
          </row>
-         <!-- Siren -->
-         <row>
-            <key>Siren</key>
-            <column>
-               <name>sCode</name>
-               <value>srn</value>
-            </column>
-            <column>
-               <name>type</name>
-               <value>String</value>
-            </column>
-            <column>
-               <name>reqArch</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>reqStor</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>length</name>
-               <value>integer(10)</value>
-            </column>
-            <column>
-               <name>cons</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>defCons</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>search</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>int</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>arch</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>label</name>
-               <value>Siren</value>
-            </column>
-            <column>
-               <name>descr</name>
-               <value>Numéro de SIREN V2</value>
-            </column>
-            <column>
-               <name>pattern</name>
-               <value />
-            </column>
-            <column>
-               <name>hasDict</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>dictName</name>
-               <value />
-            </column>
-            <column>
-               <name>index</name>
-               <value>true</value>
-            </column>
-         </row>
-         <!-- RUM -->
-         <row>
-            <key>RUM</key>
-            <column>
-               <name>sCode</name>
-               <value>rum</value>
-            </column>
-            <column>
-               <name>type</name>
-               <value>String</value>
-            </column>
-            <column>
-               <name>reqArch</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>reqStor</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>length</name>
-               <value>integer(35)</value>
-            </column>
-            <column>
-               <name>cons</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>defCons</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>search</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>int</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>arch</name>
-               <value>true</value>
-            </column>
-            <column>
-               <name>label</name>
-               <value>Référence Unique de Mandat</value>
-            </column>
-            <column>
-               <name>descr</name>
-               <value>Référence Unique de Mandat</value>
-            </column>
-            <column>
-               <name>pattern</name>
-               <value />
-            </column>
-            <column>
-               <name>hasDict</name>
-               <value>false</value>
-            </column>
-            <column>
-               <name>dictName</name>
-               <value />
-            </column>
-            <column>
-               <name>index</name>
-               <value>true</value>
-            </column>
-         </row>
-         <!-- VersionNumber -->
+         
          <row>
             <key>VersionNumber</key>
             <column>
@@ -3044,7 +3193,652 @@
                <value>true</value>
             </column>
          </row>
+         
+         <row>
+            <key>DateModification</key>
+            <column>
+               <name>sCode</name>
+               <value>SM_MODIFICATION_DATE</value>
+            </column>
+            <column>
+               <name>type</name>
+               <value>Date</value>
+            </column>
+            <column>
+               <name>reqArch</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>reqStor</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>length</name>
+               <value>integer(10)</value>
+            </column>
+            <column>
+               <name>cons</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>defCons</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>search</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>int</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>arch</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>label</name>
+               <value>Date modification (DFCE)</value>
+            </column>
+            <column>
+               <name>descr</name>
+               <value>Date modification (DFCE)</value>
+            </column>
+            <column>
+               <name>pattern</name>
+               <!--
+               <value>yyyy-mm-dd</value>
+               -->
+               <value />
+            </column>
+            <column>
+               <name>hasDict</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>dictName</name>
+               <value />
+            </column>
+            <column>
+               <name>index</name>
+               <value>true</value>
+            </column>
+         </row>
+         
+         <row>
+            <key>JetonDePreuve</key>
+            <column>
+               <name>sCode</name>
+               <value>jdp</value>
+            </column>
+            <column>
+               <name>type</name>
+               <value>String</value>
+            </column>
+            <column>
+               <name>reqArch</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>reqStor</name>
+               <value>false</value>
+            </column>
+            <!--
+            <column>
+               <name>length</name>
+               <value>integer(-1)</value>
+            </column>
+            -->
+            <column>
+               <name>cons</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>defCons</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>search</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>int</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>arch</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>label</name>
+               <value>Identifiant du jeton de preuve issu d'une vérification de signature(s) électronique(s)</value>
+            </column>
+            <column>
+               <name>descr</name>
+               <value>Identifiant du jeton de preuve renvoyé par les services de signature lors d'une demande de vérification de signature(s) électronique(s).</value>
+            </column>
+            <column>
+               <name>pattern</name>
+               <!--
+               <value>yyyy-mm-dd</value>
+               -->
+               <value />
+            </column>
+            <column>
+               <name>hasDict</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>dictName</name>
+               <value />
+            </column>
+            <column>
+               <name>index</name>
+               <value>false</value>
+            </column>
+         </row>
+         
+         <row>
+            <key>RUM</key>
+            <column>
+               <name>sCode</name>
+               <value>rum</value>
+            </column>
+            <column>
+               <name>type</name>
+               <value>String</value>
+            </column>
+            <column>
+               <name>reqArch</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>reqStor</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>length</name>
+               <value>integer(35)</value>
+            </column>
+            <column>
+               <name>cons</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>defCons</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>search</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>int</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>arch</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>label</name>
+               <value>Référence Unique de Mandat</value>
+            </column>
+            <column>
+               <name>descr</name>
+               <value>Référence Unique de Mandat</value>
+            </column>
+            <column>
+               <name>pattern</name>
+               <value />
+            </column>
+            <column>
+               <name>hasDict</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>dictName</name>
+               <value />
+            </column>
+            <column>
+               <name>index</name>
+               <value>true</value>
+            </column>
+         </row>
+         
+         <row>
+            <key>DateSignature</key>
+            <column>
+               <name>sCode</name>
+               <value>dsi</value>
+            </column>
+            <column>
+               <name>type</name>
+               <value>Date</value>
+            </column>
+            <column>
+               <name>reqArch</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>reqStor</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>length</name>
+               <value>integer(10)</value>
+            </column>
+            <column>
+               <name>cons</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>defCons</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>search</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>int</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>arch</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>label</name>
+               <value>Date de signature</value>
+            </column>
+            <column>
+               <name>descr</name>
+               <value>Date de signature</value>
+            </column>
+            <column>
+               <name>pattern</name>
+               <!--
+               <value>yyyy-mm-dd</value>
+               -->
+               <value />
+            </column>
+            <column>
+               <name>hasDict</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>dictName</name>
+               <value />
+            </column>
+            <column>
+               <name>index</name>
+               <value>false</value>
+            </column>
+         </row>
+         
+         <row>
+            <key>ReferenceDocumentaire</key>
+            <column>
+               <name>sCode</name>
+               <value>rdo</value>
+            </column>
+            <column>
+               <name>type</name>
+               <value>String</value>
+            </column>
+            <column>
+               <name>reqArch</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>reqStor</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>length</name>
+               <value>integer(30)</value>
+            </column>
+            <column>
+               <name>cons</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>defCons</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>search</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>int</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>arch</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>label</name>
+               <value>Référence documentaire</value>
+            </column>
+            <column>
+               <name>descr</name>
+               <value>Référence documentaire. Utilisée pour l'instant dans les mandats SEPA</value>
+            </column>
+            <column>
+               <name>pattern</name>
+               <!--
+               <value>yyyy-mm-dd</value>
+               -->
+               <value />
+            </column>
+            <column>
+               <name>hasDict</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>dictName</name>
+               <value />
+            </column>
+            <column>
+               <name>index</name>
+               <value>true</value>
+            </column>
+         </row>
+         
+         <row>
+            <key>DateCourrierV2</key>
+            <column>
+               <name>sCode</name>
+               <value>dcr</value>
+            </column>
+            <column>
+               <name>type</name>
+               <value>Date</value>
+            </column>
+            <column>
+               <name>reqArch</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>reqStor</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>length</name>
+               <value>integer(10)</value>
+            </column>
+            <column>
+               <name>cons</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>defCons</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>search</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>int</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>arch</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>label</name>
+               <value>Date du courrier V2</value>
+            </column>
+            <column>
+               <name>descr</name>
+               <value>Date du courrier V2 (enregistrement AAAA colonne 438 à 446)</value>
+            </column>
+            <column>
+               <name>pattern</name>
+               <!--
+               <value>yyyy-mm-dd</value>
+               -->
+               <value />
+            </column>
+            <column>
+               <name>hasDict</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>dictName</name>
+               <value />
+            </column>
+            <column>
+               <name>index</name>
+               <value>false</value>
+            </column>
+         </row>
+         
+         <row>
+            <key>RIBA</key>
+            <column>
+               <name>sCode</name>
+               <value>rib</value>
+            </column>
+            <column>
+               <name>type</name>
+               <value>String</value>
+            </column>
+            <column>
+               <name>reqArch</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>reqStor</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>length</name>
+               <value>integer(20)</value>
+            </column>
+            <column>
+               <name>cons</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>defCons</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>search</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>int</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>arch</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>label</name>
+               <value>Index RSI V2</value>
+            </column>
+            <column>
+               <name>descr</name>
+               <value>Index RSI V2 (enregistrement BAAU colonne 28 à 47)</value>
+            </column>
+            <column>
+               <name>pattern</name>
+               <value />
+            </column>
+            <column>
+               <name>hasDict</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>dictName</name>
+               <value />
+            </column>
+            <column>
+               <name>index</name>
+               <value>true</value>
+            </column>
+         </row>
+         
+         <row>
+            <key>CodeProduitV2</key>
+            <column>
+               <name>sCode</name>
+               <value>cpr</value>
+            </column>
+            <column>
+               <name>type</name>
+               <value>String</value>
+            </column>
+            <column>
+               <name>reqArch</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>reqStor</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>length</name>
+               <value>integer(5)</value>
+            </column>
+            <column>
+               <name>cons</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>defCons</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>search</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>int</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>arch</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>label</name>
+               <value>Code produit V2</value>
+            </column>
+            <column>
+               <name>descr</name>
+               <value>Code produit V2</value>
+            </column>
+            <column>
+               <name>pattern</name>
+               <value />
+            </column>
+            <column>
+               <name>hasDict</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>dictName</name>
+               <value />
+            </column>
+            <column>
+               <name>index</name>
+               <value>false</value>
+            </column>
+         </row>
+         
+         <row>
+            <key>CodeTraitementV2</key>
+            <column>
+               <name>sCode</name>
+               <value>ctr</value>
+            </column>
+            <column>
+               <name>type</name>
+               <value>String</value>
+            </column>
+            <column>
+               <name>reqArch</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>reqStor</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>length</name>
+               <value>integer(8)</value>
+            </column>
+            <column>
+               <name>cons</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>defCons</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>search</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>int</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>arch</name>
+               <value>true</value>
+            </column>
+            <column>
+               <name>label</name>
+               <value>Code traitement V2</value>
+            </column>
+            <column>
+               <name>descr</name>
+               <value>Code traitement V2</value>
+            </column>
+            <column>
+               <name>pattern</name>
+               <value />
+            </column>
+            <column>
+               <name>hasDict</name>
+               <value>false</value>
+            </column>
+            <column>
+               <name>dictName</name>
+               <value />
+            </column>
+            <column>
+               <name>index</name>
+               <value>false</value>
+            </column>
+         </row>
+         
       </columnFamily>
-
+      
+      <columnFamily>
+         <name>Dictionary</name>
+         <keyType>UTF8Type</keyType>
+         <comparatorType>UTF8Type</comparatorType>
+         <defaultColumnValueType>UTF8Type</defaultColumnValueType>
+         <row>
+            <key>dicCog</key>
+            <column>
+               <name>ALL_METADATAS</name>
+               <value></value>
+            </column>
+         </row>
+      </columnFamily>
+      
    </columnFamilies>
+   
 </keyspace>

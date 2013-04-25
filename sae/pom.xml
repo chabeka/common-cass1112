@@ -40,16 +40,19 @@
 
 
       <!--
-         ========================================== commons-cassandra
+         ==========================================
+         commons-cassandra
          ==========================================
       -->
-      <commons.cassandra>0.0.5</commons.cassandra>
+      <commons.cassandra>0.0.6-SNAPSHOT</commons.cassandra>
 
       <!--
-         Modèle de dépendance : <dependency>
-         <groupId>fr.urssaf.image.commons</groupId>
-         <artifactId>commons-cassandra</artifactId>
-         <version>${commons.cassandra}</version> </dependency>
+         Modèle de dépendance :
+         <dependency>
+            <groupId>fr.urssaf.image.commons</groupId>
+            <artifactId>commons-cassandra</artifactId>
+            <version>${commons.cassandra}</version>
+         </dependency>
       -->
 
 

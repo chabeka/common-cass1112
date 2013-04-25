@@ -2,13 +2,30 @@
 <keyspace xmlns="http://xml.dataset.cassandraunit.org"
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="http://xml.dataset.cassandraunit.org cassandraUnitDataset.xsd ">
-   <name>Commons</name>
+   
+   <name>KEYSPACE_TU</name>
+   
    <strategy>org.apache.cassandra.locator.SimpleStrategy</strategy>
    <replicationFactor>1</replicationFactor>
+   
    <columnFamilies>
+      
+      <!--
+      La pile des travaux
+      -->
       <columnFamily>
-         <name>Parameters</name>
-         <comparatorType>UTF8Type</comparatorType>
+         <name>JobRequest</name>
+         <comparatorType>BytesType</comparatorType>
       </columnFamily>
+      <columnFamily>
+         <name>JobsQueue</name>
+         <comparatorType>TimeUUIDType</comparatorType>
+      </columnFamily>
+      <columnFamily>
+         <name>JobHistory</name>
+         <comparatorType>TimeUUIDType</comparatorType>
+      </columnFamily>
+      
    </columnFamilies>
+   
 </keyspace>
