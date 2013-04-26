@@ -416,6 +416,7 @@
       <module>sae-trace</module>
       <module>sae-trace-executable</module>
       <module>sae-commons</module>
+      <module>sae-rnd</module>
 
       <!-- Les applications finales -->
       <module>sae-igcmaj</module>
