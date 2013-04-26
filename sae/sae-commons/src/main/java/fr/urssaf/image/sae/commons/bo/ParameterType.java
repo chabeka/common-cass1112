@@ -124,6 +124,18 @@ public enum ParameterType {
    /**
     * Métadonnée Code RND
     */
-   JOURNALISATION_EVT_META_CODE_RND
+   JOURNALISATION_EVT_META_CODE_RND,
+   
+   /**
+    * Version du RND en cours dans le SAE
+    */
+   VERSION_RND_NUMERO,
+   
+   /**
+    * Date de dernière mise à jour de la version du RND
+    */
+   VERSION_RND_DATE_MAJ
+   
+   
 
 }

@@ -480,6 +480,33 @@ public class ParametersServiceImpl implements ParametersService {
       insertParameter(parameter, ParameterRowType.TRACABILITE);
    }
 
+   
+   @Override
+   public Date getVersionRndDateMaj() throws ParameterNotFoundException {
+      return (Date) parametersSupport.find(
+            ParameterType.VERSION_RND_DATE_MAJ,
+            ParameterRowType.RND).getValue();
+   }
+
+   @Override
+   public String getVersionRndNumero() throws ParameterNotFoundException {
+      return (String) parametersSupport.find(
+            ParameterType.VERSION_RND_NUMERO,
+            ParameterRowType.RND).getValue();
+   }
+
+   @Override
+   public void setVersionRndDateMaj(Date dateMajRnd) {
+      Parameter parameter = new Parameter(ParameterType.VERSION_RND_DATE_MAJ, dateMajRnd);
+      insertParameter(parameter, ParameterRowType.RND);     
+   }
+
+   @Override
+   public void setVersionRndNumero(String numVersion) {
+      Parameter parameter = new Parameter(ParameterType.VERSION_RND_NUMERO, numVersion);
+      insertParameter(parameter, ParameterRowType.RND);      
+   }
+   
    private void insertParameter(Parameter parameter, ParameterRowType rowType) {
       String trcPrefix = "insertParameter()";
 
@@ -527,5 +554,7 @@ public class ParametersServiceImpl implements ParametersService {
       }
 
    }
+
+
 
 }

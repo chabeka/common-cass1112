@@ -269,4 +269,26 @@ public class ParametersServiceTest {
       Assert.assertEquals("le hash doit etre correct", storedMeta, meta);
    }
 
+   @Test
+   public void testVersionRndDateMaj() throws ParameterNotFoundException {
+      Date storedDate = DateUtils.addHours(date, 1);
+      parametersService.setVersionRndDateMaj(storedDate);
+
+      Date dateRecup = parametersService.getVersionRndDateMaj();
+
+      Assert.assertEquals("la date doit etre correcte", storedDate, dateRecup);
+
+   }
+   
+   @Test
+   public void testVersionRndNumero() throws ParameterNotFoundException {
+      String numVersion = "11.4";
+      parametersService.setVersionRndNumero(numVersion);
+
+      String numVersionRecup = parametersService.getVersionRndNumero();
+
+      Assert.assertEquals("la numéro de version RND doit être correct", numVersion, numVersionRecup);
+
+   }
+   
 }

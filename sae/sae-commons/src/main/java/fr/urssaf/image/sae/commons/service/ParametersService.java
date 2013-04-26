@@ -311,4 +311,30 @@ public interface ParametersService {
     */
    String getJournalisationEvtMetaTitre() throws ParameterNotFoundException;
 
+   /**
+    * @return Le numéro de la version du RND en cours dans le SAE
+    * @throws ParameterNotFoundException
+    *            exception levée si le paramètre n'est pas trouvé
+    */
+   String getVersionRndNumero() throws ParameterNotFoundException;
+
+   /**
+    * @param numVersion
+    *           le numéro de la version
+    */
+   void setVersionRndNumero(String numVersion);
+
+   /**
+    * @return La date de la dernière mise à jour du RND dans le SAE
+    * @throws ParameterNotFoundException
+    *            exception levée si le paramètre n'est pas trouvé
+    */
+   Date getVersionRndDateMaj() throws ParameterNotFoundException;
+
+   /**
+    * @param dateMajRnd
+    *           La date de mise à jour du RND
+    */
+   void setVersionRndDateMaj(Date dateMajRnd);
+
 }
