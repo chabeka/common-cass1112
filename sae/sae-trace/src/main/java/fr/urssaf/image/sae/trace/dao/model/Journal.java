@@ -26,6 +26,16 @@ public class Journal {
    private String nomFichier;
 
    /**
+    * Date de début des évenements stockés dans le journal
+    */
+   private Date dateDebutEvt;
+
+   /**
+    * Date de fin des évenements stockés dans le journal
+    */
+   private Date dateFinEvt;
+
+   /**
     * Constructeur
     */
    public Journal() {
@@ -42,11 +52,14 @@ public class Journal {
     * @param nomFichier
     *           Nom du fichier contenant le journal
     */
-   public Journal(Date date, UUID identifiant, String nomFichier) {
+   public Journal(Date date, UUID identifiant, String nomFichier,
+         Date dateDebutEvt, Date dateFinEvt) {
       super();
       this.date = date;
       this.identifiant = identifiant;
       this.nomFichier = nomFichier;
+      this.dateDebutEvt = dateDebutEvt;
+      this.dateFinEvt = dateFinEvt;
    }
 
    /**
@@ -92,6 +105,36 @@ public class Journal {
     */
    public final void setNomFichier(String nomFichier) {
       this.nomFichier = nomFichier;
+   }
+
+   /**
+    * @return the dateDebutEvt
+    */
+   public Date getDateDebutEvt() {
+      return dateDebutEvt;
+   }
+
+   /**
+    * @param dateDebutEvt
+    *           the dateDebutEvt to set
+    */
+   public void setDateDebutEvt(Date dateDebutEvt) {
+      this.dateDebutEvt = dateDebutEvt;
+   }
+
+   /**
+    * @return the dateFinEvt
+    */
+   public Date getDateFinEvt() {
+      return dateFinEvt;
+   }
+
+   /**
+    * @param dateFinEvt
+    *           the dateFinEvt to set
+    */
+   public void setDateFinEvt(Date dateFinEvt) {
+      this.dateFinEvt = dateFinEvt;
    }
 
 }

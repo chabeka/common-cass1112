@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import net.docubase.toolkit.model.base.Base;
+import net.docubase.toolkit.model.document.Criterion;
 import net.docubase.toolkit.model.document.Document;
 import net.docubase.toolkit.model.recordmanager.RMLogArchiveReport;
 import net.docubase.toolkit.model.search.SearchResult;
@@ -87,8 +88,14 @@ public class JournalDfceSupport {
             Document doc = serviceProvider.getSearchService()
                   .getDocumentByUUID(base, uuid);
             String nomFichier = doc.getFilename() + "." + doc.getExtension();
+
+            Date dateDebutEvt = (Date) doc
+                  .getSingleCriterion("LOG_ARCHIVE_BEGIN_DATE").getWord();
+            Date dateFinEvt = (Date) doc
+                  .getSingleCriterion("LOG_ARCHIVE_END_DATE").getWord();
+
             Journal journal = new Journal(doc.getArchivageDate(), uuid,
-                  nomFichier);
+                  nomFichier, dateDebutEvt, dateFinEvt);
             listeJournal.add(journal);
          }
       }
@@ -138,9 +145,17 @@ public class JournalDfceSupport {
          for (Document document : listeDoc) {
             String nomFichier = document.getFilename() + "."
                   + document.getExtension();
+
+            Date dateDebutEvt = (Date) document
+                  .getSingleCriterion("LOG_ARCHIVE_BEGIN_DATE").getWord();
+            Date dateFinEvt = (Date) document
+                  .getSingleCriterion("LOG_ARCHIVE_END_DATE").getWord();
+
             Journal journal = new Journal(document.getCreationDate(), document
-                  .getUuid(), nomFichier);
+                  .getUuid(), nomFichier, dateDebutEvt, dateFinEvt);
+
             listeJournal.add(journal);
+
          }
          return listeJournal;
 

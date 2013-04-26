@@ -2,7 +2,10 @@ package fr.urssaf.image.sae.trace.dao.support;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -82,8 +85,13 @@ public class JournalSaeSupport {
          for (Document document : listeDoc) {
             String nomFichier = document.getFilename() + "."
                   + document.getExtension();
+            String dateTmp = (String) document.getSingleCriterion("itm").getWord();
+            
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date dateDebutEvt = sdf.parse(dateTmp);
+               
             Journal journal = new Journal(document.getCreationDate(), document
-                  .getUuid(), nomFichier);
+                  .getUuid(), nomFichier, dateDebutEvt, dateDebutEvt);
             listeJournal.add(journal);
          }
          return listeJournal;
@@ -91,6 +99,8 @@ public class JournalSaeSupport {
       } catch (ExceededSearchLimitException e) {
          throw new TraceRuntimeException(e);
       } catch (SearchQueryParseException e) {
+         throw new TraceRuntimeException(e);
+      } catch (ParseException e) {
          throw new TraceRuntimeException(e);
       }
    }
