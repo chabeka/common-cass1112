@@ -2,10 +2,11 @@
 <keyspace xmlns="http://xml.dataset.cassandraunit.org"
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="http://xml.dataset.cassandraunit.org cassandraUnitDataset.xsd ">
-   <name>JobsQueue</name>
+   <name>KEYSPACE_TU</name>
    <strategy>org.apache.cassandra.locator.SimpleStrategy</strategy>
    <replicationFactor>1</replicationFactor>
    <columnFamilies>
+   
       <columnFamily>
          <name>JobRequest</name>
          <type>STANDARD</type>
@@ -24,7 +25,7 @@
             <name>startingDate</name>
             <validationClass>BytesType</validationClass>
          </columnMetadata>
-             <row>
+         <row>
             <key>3897da00-3893-11e2-9ff4-005056c00008</key>
             <column>
                <name>clientHost</name>
@@ -61,13 +62,17 @@
             </column>
          </row>
       </columnFamily>
+      
       <columnFamily>
          <name>JobsQueue</name>
          <comparatorType>TimeUUIDType</comparatorType>
       </columnFamily>
+      
       <columnFamily>
          <name>JobHistory</name>
          <comparatorType>TimeUUIDType</comparatorType>
       </columnFamily>
+      
    </columnFamilies>
+   
 </keyspace>

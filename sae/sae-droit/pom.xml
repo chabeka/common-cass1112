@@ -36,6 +36,7 @@
    </build>
 
    <dependencies>
+   
       <!-- COMMONS-CASSANDRA -->
       <dependency>
          <groupId>fr.urssaf.image.commons</groupId>
@@ -43,13 +44,17 @@
          <version>${commons.cassandra}</version>
       </dependency>
 
-      <!-- SAE METADATA -->
+      <!-- SAE -->
+      <dependency>
+         <groupId>fr.urssaf.image.sae</groupId>
+         <artifactId>sae-commons</artifactId>
+         <version>13.4.10.5-SNAPSHOT</version>
+      </dependency>
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-bo</artifactId>
          <version>13.4.10.5-SNAPSHOT</version>
       </dependency>
-
 
       <!-- SPRING -->
       <dependency>

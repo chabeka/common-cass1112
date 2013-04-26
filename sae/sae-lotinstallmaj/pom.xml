@@ -68,6 +68,13 @@
 
    <dependencies>
 
+      <!-- SAE -->
+      <dependency>
+         <groupId>fr.urssaf.image.sae</groupId>
+         <artifactId>sae-commons</artifactId>
+         <version>13.4.10.5-SNAPSHOT</version>
+      </dependency>
+
       <!-- SPRING -->
       <dependency>
          <groupId>org.springframework</groupId>
