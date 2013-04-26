@@ -2,7 +2,7 @@
 <keyspace xmlns="http://xml.dataset.cassandraunit.org"
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="http://xml.dataset.cassandraunit.org cassandraUnitDataset.xsd ">
-   <name>RND</name>
+   <name>KEYSPACE_TU</name>
    <strategy>org.apache.cassandra.locator.SimpleStrategy</strategy>
    <replicationFactor>1</replicationFactor>
    <columnFamilies>
