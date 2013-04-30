@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.junit.After;
 import org.junit.Assert;
@@ -74,8 +75,7 @@ public class CycleVieSupportTest {
       boolean found = false;
       int index = 0;
       while (!found && index < values.size()) {
-         if (values.get(index).getTypeEvt().contains(CONTRAT)
-               && values.get(index).getTypeEvt().contains(ACTION)) {
+         if (StringUtils.equals(values.get(index).getLogin(), LOGIN)) {
             found = true;
          }
          index++;
