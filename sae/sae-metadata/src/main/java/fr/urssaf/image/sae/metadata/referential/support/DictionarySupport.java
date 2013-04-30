@@ -10,6 +10,7 @@ import me.prettyprint.cassandra.service.template.ColumnFamilyResultWrapper;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
 import me.prettyprint.hector.api.beans.OrderedRows;
 import me.prettyprint.hector.api.factory.HFactory;
+import me.prettyprint.hector.api.mutation.Mutator;
 import me.prettyprint.hector.api.query.QueryResult;
 import me.prettyprint.hector.api.query.RangeSlicesQuery;
 
@@ -52,7 +53,7 @@ public class DictionarySupport {
       ColumnFamilyUpdater<String, String> updater = dictionaryDao.getCfTmpl()
       .createUpdater(identifiant);
       dictionaryDao.ecritElement(value, updater, clock);
-      updater.update();
+      dictionaryDao.getCfTmpl().update(updater);
    } 
    
    /**
@@ -63,7 +64,9 @@ public class DictionarySupport {
     */
    public void deleteElement(String identifiant, String value, long clock){
       
-      dictionaryDao.mutatorSuppressionColonne(dictionaryDao.createMutator(), identifiant, value, clock);
+      Mutator<String> mutator = dictionaryDao.createMutator();
+      dictionaryDao.mutatorSuppressionColonne(mutator, identifiant, value, clock);
+      mutator.execute();
    }
    
    
@@ -79,8 +82,10 @@ public class DictionarySupport {
       .queryColumns(identifiant);
 
       Dictionary dictionary =null;
-      if (result != null && result.hasResults()) {
-         dictionary = new Dictionary(result.getKey(), (List<String>) result.getColumnNames());
+      if (result==null || !result.hasResults()) {
+         throw new DictionaryNotFoundException(identifiant);
+      }else{
+         dictionary = new Dictionary(result.getKey(), new ArrayList<String>(result.getColumnNames()));
       }
 
       return dictionary;

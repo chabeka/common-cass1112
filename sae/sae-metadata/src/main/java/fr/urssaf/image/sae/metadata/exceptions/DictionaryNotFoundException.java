@@ -5,4 +5,19 @@ package fr.urssaf.image.sae.metadata.exceptions;
  */
 @SuppressWarnings("PMD")
 public class DictionaryNotFoundException extends Exception {
+   /**
+    * Constructeur
+    * 
+    * @param dictName nom du dictionnaire
+    */
+   public DictionaryNotFoundException(String message){
+      super(message);
+   }
+   /**
+    * Constructeur
+    * @param e exception levée
+    */
+   public DictionaryNotFoundException(Exception e){
+      super(e);
+   }
 }

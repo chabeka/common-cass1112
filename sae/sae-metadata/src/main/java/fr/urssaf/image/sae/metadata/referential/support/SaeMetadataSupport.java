@@ -139,7 +139,7 @@ public class SaeMetadataSupport {
          saeMetadataDao.ecritIndexed(false, updater, clock);
       }
 
-      updater.update();
+      saeMetadataDao.getCfTmpl().update(updater);
    }
 
    /**
@@ -234,61 +234,61 @@ public class SaeMetadataSupport {
 
          meta.setShortCode(result.getString(SaeMetadataDao.META_SHORT_CODE));
          meta.setPattern(result.getString(SaeMetadataDao.META_PATTERN));
-         if (StringUtils.isEmpty(result.getString(SaeMetadataDao.META_REQ_ARCH))) {           
+         if (StringUtils.isEmpty(result.getBoolean(SaeMetadataDao.META_REQ_ARCH).toString())) {           
             meta.setRequiredForArchival(Boolean.FALSE);
          } else {
-            meta.setRequiredForArchival(Boolean.valueOf(result
-                  .getString(SaeMetadataDao.META_REQ_ARCH)));
+            meta.setRequiredForArchival(result
+                  .getBoolean(SaeMetadataDao.META_REQ_ARCH));
          }
-         if (StringUtils.isEmpty(result.getString(SaeMetadataDao.META_REQ_STOR))) {
+         if (StringUtils.isEmpty(result.getBoolean(SaeMetadataDao.META_REQ_STOR).toString())) {
             meta.setRequiredForStorage(Boolean.FALSE);
          } else {
-            meta.setRequiredForStorage(Boolean.valueOf(result
-                  .getString(SaeMetadataDao.META_REQ_STOR)));            
+            meta.setRequiredForStorage(result
+                  .getBoolean(SaeMetadataDao.META_REQ_STOR));            
          }
-         if (StringUtils.isEmpty(result.getString(SaeMetadataDao.META_SEARCH))) {
+         if (StringUtils.isEmpty(result.getBoolean(SaeMetadataDao.META_SEARCH).toString())) {
             meta.setSearchable(Boolean.FALSE);
          } else {
-            meta.setSearchable(Boolean.valueOf(result
-                  .getString(SaeMetadataDao.META_SEARCH)));
+            meta.setSearchable(result
+                  .getBoolean(SaeMetadataDao.META_SEARCH));
          }
          meta.setType(result.getString(SaeMetadataDao.META_TYPE));
-         if (StringUtils.isEmpty(result.getString(SaeMetadataDao.META_ARCH))) {
+         if (StringUtils.isEmpty(result.getBoolean(SaeMetadataDao.META_ARCH).toString())) {
             meta.setArchivable(Boolean.FALSE);
          } else {
-            meta.setArchivable(Boolean.valueOf(result
-                  .getString(SaeMetadataDao.META_ARCH)));            
+            meta.setArchivable(result
+                  .getBoolean(SaeMetadataDao.META_ARCH));            
          }
-         if (StringUtils.isEmpty(result.getString(SaeMetadataDao.META_CONSUL))) {
+         if (StringUtils.isEmpty(result.getBoolean(SaeMetadataDao.META_CONSUL).toString())) {
             meta.setConsultable(Boolean.FALSE);
          } else {
-            meta.setConsultable(Boolean.valueOf(result
-                  .getString(SaeMetadataDao.META_CONSUL)));
+            meta.setConsultable(result
+                  .getBoolean(SaeMetadataDao.META_CONSUL));
 
          }
-         if (StringUtils.isEmpty(result.getString(SaeMetadataDao.META_DEF_CONSUL))) {
+         if (StringUtils.isEmpty(result.getBoolean(SaeMetadataDao.META_DEF_CONSUL).toString())) {
             meta.setConsultable(Boolean.FALSE);
          } else {
-            meta.setDefaultConsultable(Boolean.valueOf(result
-                  .getString(SaeMetadataDao.META_DEF_CONSUL)));            
+            meta.setDefaultConsultable(result
+                  .getBoolean(SaeMetadataDao.META_DEF_CONSUL));            
          }
-         if (StringUtils.isEmpty(result.getString(SaeMetadataDao.META_HAS_DICT))) {
+         if (StringUtils.isEmpty(result.getBoolean(SaeMetadataDao.META_HAS_DICT).toString())) {
             meta.setHasDictionary(Boolean.FALSE);
          } else {
-            meta.setHasDictionary(Boolean.valueOf(result
-                  .getString(SaeMetadataDao.META_HAS_DICT)));
+            meta.setHasDictionary(result
+                  .getBoolean(SaeMetadataDao.META_HAS_DICT));
          }
-         if (StringUtils.isEmpty(result.getString(SaeMetadataDao.META_INTERNAL))) {
+         if (StringUtils.isEmpty(result.getBoolean(SaeMetadataDao.META_INTERNAL).toString())) {
             meta.setInternal(Boolean.FALSE);
          } else {
-            meta.setInternal(Boolean.valueOf(result
-                  .getString(SaeMetadataDao.META_INTERNAL)));
+            meta.setInternal(result
+                  .getBoolean(SaeMetadataDao.META_INTERNAL));
          }
-         if (StringUtils.isEmpty(result.getString(SaeMetadataDao.META_INDEXED))) {
+         if (StringUtils.isEmpty(result.getBoolean(SaeMetadataDao.META_INDEXED).toString())) {
             meta.setIsIndexed(Boolean.FALSE);
          } else {
-            meta.setIsIndexed(Boolean.valueOf(result
-                  .getString(SaeMetadataDao.META_INDEXED)));
+            meta.setIsIndexed(result
+                  .getBoolean(SaeMetadataDao.META_INDEXED));
             
          }
 

@@ -1,5 +1,6 @@
 package fr.urssaf.image.sae.metadata.referential.dao;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -72,6 +73,6 @@ public class DictionaryDao extends AbstractDao<String, String> {
     */
    public void ecritElement(String element,
          ColumnFamilyUpdater<String, String> updater, long clock) {
-      addColumn(updater, element, "", StringSerializer.get(), clock);
+      addColumn(updater, element, StringUtils.EMPTY, StringSerializer.get(), clock);
    }
 }
