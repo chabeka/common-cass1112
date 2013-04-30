@@ -17,6 +17,7 @@ import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.metadata.control.services.MetadataControlServices;
 import fr.urssaf.image.sae.metadata.exceptions.DictionaryNotFoundException;
+import fr.urssaf.image.sae.metadata.exceptions.MetadataRuntimeException;
 import fr.urssaf.image.sae.metadata.exceptions.ReferentialException;
 import fr.urssaf.image.sae.metadata.messages.MetadataMessageHandler;
 import fr.urssaf.image.sae.metadata.referential.model.Dictionary;
@@ -449,40 +450,51 @@ public class MetadataControlServicesImpl implements MetadataControlServices {
 		// ici on ne fait rien
 	}
 
+
    @Override
    public List<MetadataError> checkMetadataValueFromDictionary(
          final UntypedDocument document) {
       final List<MetadataError> errors = new ArrayList<MetadataError>();
-         try {
-            // récupération de toutes les métadonnées définies
-            Map<String,MetadataReference> listeMeta = referenceDAO.getAllMetadataReferences();
-            // récupération des métadonnées du document
-            List<UntypedMetadata> documentMetaData = document.getUMetadatas();
-            // pour chaque métadonnée du document on va vérifier qu'elle est présente dans la liste de métadonnées définie
-            for(UntypedMetadata docMeta: documentMetaData){
-               // on parcours toutes les métadonnées définie pour vérifier la présence de la métadonnée du document
-               for(MetadataReference meta : listeMeta.values()){
-                  if(meta.getHasDictionary()){
-                     try {
-                        Dictionary dict = dictionaryService.find(meta.getDictionaryName());
-                        List<String> dictMeta = dict.getEntries();
-                        if(!dictMeta.contains(docMeta.getLongCode())){
-                           errors.add(new MetadataError());
-                        }
-                        
-                     } catch (DictionaryNotFoundException e) {
-                        errors.add(new MetadataError());
-                     }
+      try {
+         // récupération des métadonnées du document
+         List<UntypedMetadata> documentMetaData = document.getUMetadatas();
+         // pour chaque métadonnée du document on va vérifier qu'elle est
+         // présente dans la liste de métadonnées définie
+         for (UntypedMetadata docMeta : documentMetaData) {
+            MetadataReference meta = referenceDAO.getByLongCode(docMeta
+                  .getLongCode());
+            // on parcours toutes les métadonnées définie pour vérifier la
+            // présence de la métadonnée du document
+            if (meta.getHasDictionary()) {
+
+               try {
+                  Dictionary dict = dictionaryService.find(meta
+                        .getDictionaryName());
+                  List<String> dictMeta = dict.getEntries();
+                  if (!dictMeta.contains(docMeta.getValue())) {
+                     errors.add(new MetadataError(MetadataMessageHandler
+                           .getMessage("metadata.control.value.not.valid"),
+                           docMeta.getLongCode(), MetadataMessageHandler
+                                 .getMessage(
+                                       "metadata.dictionary.value.not.valid",
+                                       docMeta.getLongCode())));
                   }
+
+               } catch (DictionaryNotFoundException e) {
+                  throw new MetadataRuntimeException(MetadataMessageHandler
+                        .getMessage("metadata.dictionary.not.valid", meta
+                              .getDictionaryName()));                  
                }
-               
             }
 
-         } catch (ReferentialException e) {
-            errors.add(new MetadataError());
          }
-         
-         return errors;
+
+      } catch (ReferentialException e) {
+         errors.add(new MetadataError(MetadataMessageHandler
+               .getMessage("metadata.referentiel.error"), "ALL_METADATAS",MetadataMessageHandler
+               .getMessage("metadata.referentiel.retrieve")));
+      }
+      return errors;
    }
 
 }
