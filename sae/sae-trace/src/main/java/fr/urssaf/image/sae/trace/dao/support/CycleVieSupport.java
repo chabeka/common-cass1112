@@ -104,7 +104,9 @@ public class CycleVieSupport {
             trace.setDateEvt(event.getEventDate());
             trace.setDocUuid(event.getDocUUID());
             trace.setLogin(event.getUsername());
-            trace.setTypeEvt(event.getEventDescription());
+            if (event.getEventType() != null) {
+               trace.setTypeEvt(event.getEventType().toString());
+            }
             trace.setIdJournal(event.getArchiveUUID());
             values.add(trace);
             countLeft--;
