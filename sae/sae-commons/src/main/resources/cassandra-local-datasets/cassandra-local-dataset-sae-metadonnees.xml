@@ -143,7 +143,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>bytes(01)</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -1382,7 +1382,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>bytes(01)</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -2074,7 +2074,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>bytes(01)</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
