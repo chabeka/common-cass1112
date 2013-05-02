@@ -28,7 +28,7 @@ import fr.urssaf.image.sae.metadata.referential.support.SaeMetadataSupport;
 //FIXME : réactiver les testes après la mise en place des fichiers application contexte
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-metadata-test.xml" })
-public class SaeMetadataSupportTest {
+public class SaeMetadataServiceTest {
    
    @Autowired
    SaeMetadataSupport metaSupport;
@@ -38,8 +38,6 @@ public class SaeMetadataSupportTest {
    
    @Autowired
    private CassandraServerBean server;
-   @Autowired
-   private JobClockSupport clock;
    
    @Autowired
    private ServiceProviderSupport provider;
@@ -58,13 +56,12 @@ public class SaeMetadataSupportTest {
    
    /**
     * test permettant de verifier qu'une métadonnée est bien enregistré en base et qu'il est possible de la récupérer
-    * @throws DictionaryNotFoundException
     */
+   
    @Test
-   public void createMetaTest() throws DictionaryNotFoundException{
-
+   public void testServiceCreate(){
+      
       MetadataReference metaDest = new MetadataReference();
-
       metaDest.setArchivable(Boolean.TRUE);
       metaDest.setConsultable(Boolean.TRUE);
       metaDest.setDefaultConsultable(Boolean.FALSE);
@@ -78,13 +75,12 @@ public class SaeMetadataSupportTest {
       metaDest.setRequiredForStorage(Boolean.FALSE);
       metaDest.setSearchable(Boolean.TRUE);
       metaDest.setShortCode("meta2");
-      metaDest.setType("Srting");
+      metaDest.setType("String");
       metaDest.setHasDictionary(Boolean.FALSE);
       metaDest.setDictionaryName(StringUtils.EMPTY);
       metaDest.setIsIndexed(Boolean.TRUE);
+      service.create(metaDest);
       
-      
-      metaSupport.create(metaDest, clock.currentCLock());
       MetadataReference metafind = metaSupport.find(metaDest.getLongCode());
       Assert.assertNotNull(metafind);
       Assert.assertEquals("description fausse",metaDest.getDescription(), metafind.getDescription());
@@ -99,20 +95,4 @@ public class SaeMetadataSupportTest {
       Assert.assertEquals("valeur interne faux",metaDest.isInternal(), metafind.isInternal());
       Assert.assertEquals("recherchable faux",metaDest.isSearchable(), metafind.isSearchable());
    }
-   
-   /**
-    * Teste permettant de vérifier que tous les éléments de la CF sont renvoyés
-    */
-   
-   @Test
-   public void findAllMetaTest(){
-      List<MetadataReference> listeMeta = metaSupport.findAll();
-      Assert.assertEquals(55,listeMeta.size());
-   }
-   
-   @Test
-   public void modifyMetaTest(){
-      
-   }
-   
 }

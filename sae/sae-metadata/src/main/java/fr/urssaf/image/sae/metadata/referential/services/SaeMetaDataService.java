@@ -1,5 +1,6 @@
 package fr.urssaf.image.sae.metadata.referential.services;
 
+import fr.urssaf.image.sae.metadata.exceptions.MetadataReferenceNotFoundException;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 
 /**
@@ -22,6 +23,6 @@ public interface SaeMetaDataService {
     * @param value
     *           la métadonnée à modifier
     */
-   void moify(MetadataReference value);
+   void modify(MetadataReference value)throws MetadataReferenceNotFoundException;
 
 }
