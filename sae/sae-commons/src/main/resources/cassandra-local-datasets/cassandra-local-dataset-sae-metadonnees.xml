@@ -2,24 +2,23 @@
 <keyspace xmlns="http://xml.dataset.cassandraunit.org"
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="http://xml.dataset.cassandraunit.org cassandraUnitDataset.xsd ">
-   
+
    <name>KEYSPACE_TU</name>
-   
+
    <strategy>org.apache.cassandra.locator.SimpleStrategy</strategy>
    <replicationFactor>1</replicationFactor>
-   
+
    <columnFamilies>
-      
+
       <!--
       Les métadonnées
       -->
-      
+
       <columnFamily>
          <name>Metadata</name>
          <keyType>UTF8Type</keyType>
          <comparatorType>UTF8Type</comparatorType>
          <defaultColumnValueType>UTF8Type</defaultColumnValueType>
-         
          <row>
             <key>Titre</key>
             <column>
@@ -32,11 +31,11 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>length</name>
@@ -44,23 +43,23 @@
             </column>
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>search</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>int</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
@@ -76,7 +75,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -84,10 +83,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
          </row>
-         
+
          <row>
             <key>Periode</key>
             <column>
@@ -100,11 +99,11 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>length</name>
@@ -112,23 +111,23 @@
             </column>
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>search</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>int</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
@@ -144,7 +143,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -152,10 +151,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
          </row>
-         
+
          <row>
             <key>Siren</key>
             <column>
@@ -168,11 +167,11 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>length</name>
@@ -180,23 +179,23 @@
             </column>
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>search</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>int</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
@@ -212,7 +211,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -220,10 +219,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
          </row>
-         
+
          <row>
             <key>NniEmployeur</key>
             <column>
@@ -236,11 +235,11 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>length</name>
@@ -248,23 +247,23 @@
             </column>
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>search</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>int</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
@@ -272,7 +271,8 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Numéro National d'Identification ou Numéro de sécurité sociale de l'Employeur</value>
+               <value>Numéro National d'Identification ou Numéro de
+                  sécurité sociale de l'Employeur</value>
             </column>
             <column>
                <name>pattern</name>
@@ -280,7 +280,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -288,10 +288,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
          </row>
-         
+
          <row>
             <key>NumeroPersonne</key>
             <column>
@@ -304,11 +304,11 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>length</name>
@@ -316,23 +316,23 @@
             </column>
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>search</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>int</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
@@ -348,7 +348,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -356,10 +356,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
          </row>
-         
+
          <row>
             <key>Denomination</key>
             <column>
@@ -372,37 +372,35 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <!--
-            <column>
-               <name>length</name>
-               <value>integer(-1)</value>
-            </column>
+               <column> <name>length</name> <value>integer(-1)</value>
+               </column>
             -->
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>search</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>int</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
@@ -410,7 +408,8 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Dénomination du compte (provient de la raison sociale V2)</value>
+               <value>Dénomination du compte (provient de la raison
+                  sociale V2)</value>
             </column>
             <column>
                <name>pattern</name>
@@ -418,7 +417,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -426,10 +425,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
          </row>
-         
+
          <row>
             <key>CodeCategorieV2</key>
             <column>
@@ -442,11 +441,11 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>length</name>
@@ -454,23 +453,23 @@
             </column>
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>search</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>int</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
@@ -486,7 +485,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -494,10 +493,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
          </row>
-         
+
          <row>
             <key>CodeSousCategorieV2</key>
             <column>
@@ -510,11 +509,11 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>length</name>
@@ -522,23 +521,23 @@
             </column>
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>search</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>int</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
@@ -554,7 +553,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -562,10 +561,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
          </row>
-         
+
          <row>
             <key>NumeroCompteInterne</key>
             <column>
@@ -578,11 +577,11 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>length</name>
@@ -590,23 +589,23 @@
             </column>
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>search</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>int</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
@@ -622,7 +621,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -630,10 +629,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
          </row>
-         
+
          <row>
             <key>NumeroCompteExterne</key>
             <column>
@@ -646,11 +645,11 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>length</name>
@@ -658,23 +657,23 @@
             </column>
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>search</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>int</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
@@ -690,7 +689,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -698,10 +697,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
          </row>
-         
+
          <row>
             <key>Siret</key>
             <column>
@@ -714,11 +713,11 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>length</name>
@@ -726,23 +725,23 @@
             </column>
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>search</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>int</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
@@ -758,7 +757,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -766,10 +765,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
          </row>
-         
+
          <row>
             <key>PseudoSiret</key>
             <column>
@@ -782,11 +781,11 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>length</name>
@@ -794,23 +793,23 @@
             </column>
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>search</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>int</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
@@ -826,7 +825,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -834,10 +833,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
          </row>
-         
+
          <row>
             <key>NumeroStructure</key>
             <column>
@@ -850,11 +849,11 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>length</name>
@@ -862,23 +861,23 @@
             </column>
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>search</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>int</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
@@ -894,7 +893,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -902,10 +901,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
          </row>
-         
+
          <row>
             <key>NumeroRecours</key>
             <column>
@@ -918,11 +917,11 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>length</name>
@@ -930,23 +929,23 @@
             </column>
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>search</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>int</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
@@ -962,7 +961,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -970,10 +969,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
          </row>
-         
+
          <row>
             <key>NumeroIntControle</key>
             <column>
@@ -986,11 +985,11 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>length</name>
@@ -998,23 +997,23 @@
             </column>
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>search</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>int</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
@@ -1030,7 +1029,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -1038,10 +1037,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
          </row>
-         
+
          <row>
             <key>DateCreation</key>
             <column>
@@ -1054,11 +1053,11 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>length</name>
@@ -1066,23 +1065,23 @@
             </column>
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>search</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>int</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
@@ -1090,7 +1089,8 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Date de création du document au niveau de l'application émettrice</value>
+               <value>Date de création du document au niveau de
+                  l'application émettrice</value>
             </column>
             <column>
                <name>pattern</name>
@@ -1101,7 +1101,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -1109,10 +1109,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
          </row>
-         
+
          <row>
             <key>DateReception</key>
             <column>
@@ -1125,11 +1125,11 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>length</name>
@@ -1137,23 +1137,23 @@
             </column>
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>search</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>int</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
@@ -1161,7 +1161,8 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Date à laquelle le document a été reçu pour un courrier par exemple</value>
+               <value>Date à laquelle le document a été reçu pour un
+                  courrier par exemple</value>
             </column>
             <column>
                <name>pattern</name>
@@ -1172,7 +1173,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -1180,10 +1181,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
          </row>
-         
+
          <row>
             <key>ApplicationProductrice</key>
             <column>
@@ -1196,11 +1197,11 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>length</name>
@@ -1208,23 +1209,23 @@
             </column>
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>search</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>int</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
@@ -1232,7 +1233,9 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Code de l'application qui a produit le document (pour un document WATT issu du scan, ce sera la chaine d'acquisition)</value>
+               <value>Code de l'application qui a produit le document
+                  (pour un document WATT issu du scan, ce sera la chaine
+                  d'acquisition)</value>
             </column>
             <column>
                <name>pattern</name>
@@ -1240,7 +1243,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -1248,10 +1251,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
          </row>
-         
+
          <row>
             <key>ApplicationTraitement</key>
             <column>
@@ -1264,11 +1267,11 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>length</name>
@@ -1276,23 +1279,23 @@
             </column>
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>search</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>int</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
@@ -1300,7 +1303,9 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Code de la dernière application qui a fait des traitements sur le document avant archivage c'est-à-dire celle qui a versé le document</value>
+               <value>Code de la dernière application qui a fait des
+                  traitements sur le document avant archivage
+                  c'est-à-dire celle qui a versé le document</value>
             </column>
             <column>
                <name>pattern</name>
@@ -1308,7 +1313,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -1316,10 +1321,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
          </row>
-         
+
          <row>
             <key>CodeOrganismeProprietaire</key>
             <column>
@@ -1332,11 +1337,11 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>length</name>
@@ -1344,23 +1349,23 @@
             </column>
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>search</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>int</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
@@ -1368,7 +1373,8 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Code organisme propriétaire du document Cf. Liste des organismes</value>
+               <value>Code organisme propriétaire du document Cf. Liste
+                  des organismes</value>
             </column>
             <column>
                <name>pattern</name>
@@ -1376,7 +1382,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -1384,10 +1390,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
          </row>
-         
+
          <row>
             <key>CodeOrganismeGestionnaire</key>
             <column>
@@ -1400,11 +1406,11 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>length</name>
@@ -1412,23 +1418,23 @@
             </column>
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>search</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>int</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
@@ -1436,7 +1442,8 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Code organisme gestionnaire de la pièce Cf. Liste des organismes</value>
+               <value>Code organisme gestionnaire de la pièce Cf. Liste
+                  des organismes</value>
             </column>
             <column>
                <name>pattern</name>
@@ -1444,7 +1451,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -1452,10 +1459,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
          </row>
-         
+
          <row>
             <key>SiteAcquisition</key>
             <column>
@@ -1468,11 +1475,11 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>length</name>
@@ -1480,23 +1487,23 @@
             </column>
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>search</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>int</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
@@ -1504,7 +1511,8 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Code site du lieu d'acquisition dans le cas d'une numérisation Cf. Liste des organismes</value>
+               <value>Code site du lieu d'acquisition dans le cas d'une
+                  numérisation Cf. Liste des organismes</value>
             </column>
             <column>
                <name>pattern</name>
@@ -1512,7 +1520,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -1520,10 +1528,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
          </row>
-         
+
          <row>
             <key>CodeRND</key>
             <column>
@@ -1536,11 +1544,11 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>length</name>
@@ -1548,23 +1556,23 @@
             </column>
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>search</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>int</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
@@ -1572,7 +1580,8 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Code issu d'un référentiel permettant de typer nationalement un document</value>
+               <value>Code issu d'un référentiel permettant de typer
+                  nationalement un document</value>
             </column>
             <column>
                <name>pattern</name>
@@ -1580,7 +1589,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -1588,10 +1597,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
          </row>
-         
+
          <row>
             <key>VersionRND</key>
             <column>
@@ -1604,11 +1613,11 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>length</name>
@@ -1616,23 +1625,23 @@
             </column>
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>search</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>int</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>label</name>
@@ -1640,7 +1649,8 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Numéro permettant d'identifier la version de provenance du code RND renseigné précédemment</value>
+               <value>Numéro permettant d'identifier la version de
+                  provenance du code RND renseigné précédemment</value>
             </column>
             <column>
                <name>pattern</name>
@@ -1648,7 +1658,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -1656,10 +1666,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
          </row>
-         
+
          <row>
             <key>CodeFonction</key>
             <column>
@@ -1672,11 +1682,11 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>length</name>
@@ -1684,23 +1694,23 @@
             </column>
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>search</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>int</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>label</name>
@@ -1716,7 +1726,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -1724,10 +1734,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
          </row>
-         
+
          <row>
             <key>CodeActivite</key>
             <column>
@@ -1740,11 +1750,11 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>length</name>
@@ -1752,23 +1762,23 @@
             </column>
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>search</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>int</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>label</name>
@@ -1784,7 +1794,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -1792,10 +1802,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
          </row>
-         
+
          <row>
             <key>DureeConservation</key>
             <column>
@@ -1808,37 +1818,35 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <!--
-            <column>
-               <name>length</name>
-               <value>integer(-1)</value>
-            </column>
+               <column> <name>length</name> <value>integer(-1)</value>
+               </column>
             -->
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>search</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>int</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>label</name>
@@ -1846,7 +1854,8 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Durée de conservation de l'archive au terme duquel l'archive n'est plus accessible en jours</value>
+               <value>Durée de conservation de l'archive au terme duquel
+                  l'archive n'est plus accessible en jours</value>
             </column>
             <column>
                <name>pattern</name>
@@ -1854,7 +1863,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -1862,10 +1871,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
          </row>
-         
+
          <row>
             <key>DateDebutConservation</key>
             <column>
@@ -1878,11 +1887,11 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>length</name>
@@ -1890,23 +1899,23 @@
             </column>
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>search</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>int</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
@@ -1925,7 +1934,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -1933,10 +1942,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
          </row>
-         
+
          <row>
             <key>DateFinConservation</key>
             <column>
@@ -1949,11 +1958,11 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>length</name>
@@ -1961,23 +1970,23 @@
             </column>
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>search</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>int</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>label</name>
@@ -1996,7 +2005,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -2004,10 +2013,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
          </row>
-         
+
          <row>
             <key>Gel</key>
             <column>
@@ -2020,37 +2029,35 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <!--
-            <column>
-               <name>length</name>
-               <value>integer(-1)</value>
-            </column>
+               <column> <name>length</name> <value>integer(-1)</value>
+               </column>
             -->
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>search</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>int</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>label</name>
@@ -2067,7 +2074,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -2075,10 +2082,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
          </row>
-         
+
          <row>
             <key>TracabilitrePreArchivage</key>
             <column>
@@ -2091,37 +2098,35 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <!--
-            <column>
-               <name>length</name>
-               <value>integer(-1)</value>
-            </column>
+               <column> <name>length</name> <value>integer(-1)</value>
+               </column>
             -->
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>search</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>int</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
@@ -2129,7 +2134,8 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Traçabilité en amont du SAE, surtout utilisée dans le cas de la chaine d'acquisition</value>
+               <value>Traçabilité en amont du SAE, surtout utilisée dans
+                  le cas de la chaine d'acquisition</value>
             </column>
             <column>
                <name>pattern</name>
@@ -2137,7 +2143,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -2145,10 +2151,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
          </row>
-         
+
          <row>
             <key>TracabilitePostArchivage</key>
             <column>
@@ -2161,37 +2167,35 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <!--
-            <column>
-               <name>length</name>
-               <value>integer(-1)</value>
-            </column>
+               <column> <name>length</name> <value>integer(-1)</value>
+               </column>
             -->
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>search</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>int</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>label</name>
@@ -2199,7 +2203,8 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Traçabilité contenue dans le système d'archive, lié à la vie de l'archive</value>
+               <value>Traçabilité contenue dans le système d'archive,
+                  lié à la vie de l'archive</value>
             </column>
             <column>
                <name>pattern</name>
@@ -2207,7 +2212,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -2215,10 +2220,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
          </row>
-         
+
          <row>
             <key>Hash</key>
             <column>
@@ -2231,37 +2236,35 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <!--
-            <column>
-               <name>length</name>
-               <value>integer(-1)</value>
-            </column>
+               <column> <name>length</name> <value>integer(-1)</value>
+               </column>
             -->
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>search</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>int</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
@@ -2277,7 +2280,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -2285,10 +2288,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
          </row>
-         
+
          <row>
             <key>TypeHash</key>
             <column>
@@ -2301,11 +2304,11 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>length</name>
@@ -2313,23 +2316,23 @@
             </column>
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>search</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>int</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
@@ -2337,7 +2340,8 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Identifiant de l'algorithme de hachage utilisé pour calculer le Hash du fichier</value>
+               <value>Identifiant de l'algorithme de hachage utilisé
+                  pour calculer le Hash du fichier</value>
             </column>
             <column>
                <name>pattern</name>
@@ -2345,7 +2349,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -2353,10 +2357,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
          </row>
-         
+
          <row>
             <key>NbPages</key>
             <column>
@@ -2369,37 +2373,35 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <!--
-            <column>
-               <name>length</name>
-               <value>integer(-1)</value>
-            </column>
+               <column> <name>length</name> <value>integer(-1)</value>
+               </column>
             -->
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>search</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>int</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
@@ -2415,7 +2417,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -2423,10 +2425,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
          </row>
-         
+
          <row>
             <key>NomFichier</key>
             <column>
@@ -2439,37 +2441,35 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <!--
-            <column>
-               <name>length</name>
-               <value>integer(-1)</value>
-            </column>
+               <column> <name>length</name> <value>integer(-1)</value>
+               </column>
             -->
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>search</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>int</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>label</name>
@@ -2477,7 +2477,8 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Nom du fichier physique avec extension lié au document</value>
+               <value>Nom du fichier physique avec extension lié au
+                  document</value>
             </column>
             <column>
                <name>pattern</name>
@@ -2485,7 +2486,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -2493,10 +2494,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
          </row>
-         
+
          <row>
             <key>FormatFichier</key>
             <column>
@@ -2509,37 +2510,35 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <!--
-            <column>
-               <name>length</name>
-               <value>integer(-1)</value>
-            </column>
+               <column> <name>length</name> <value>integer(-1)</value>
+               </column>
             -->
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>search</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>int</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
@@ -2547,7 +2546,8 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Identifiant PRONOM (Cf. Référentiel PRONOM)</value>
+               <value>Identifiant PRONOM (Cf. Référentiel PRONOM)
+               </value>
             </column>
             <column>
                <name>pattern</name>
@@ -2555,7 +2555,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -2563,10 +2563,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
          </row>
-         
+
          <row>
             <key>TailleFichier</key>
             <column>
@@ -2579,37 +2579,35 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <!--
-            <column>
-               <name>length</name>
-               <value>integer(-1)</value>
-            </column>
+               <column> <name>length</name> <value>integer(-1)</value>
+               </column>
             -->
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>search</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>int</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>label</name>
@@ -2625,7 +2623,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -2633,10 +2631,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
          </row>
-         
+
          <row>
             <key>IdTraitementMasseInterne</key>
             <column>
@@ -2649,37 +2647,35 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <!--
-            <column>
-               <name>length</name>
-               <value>integer(20)</value>
-            </column>
+               <column> <name>length</name> <value>integer(20)</value>
+               </column>
             -->
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>search</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>int</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>label</name>
@@ -2687,7 +2683,8 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Identifiant permettant de gérer le rollback sur les traitements de masse</value>
+               <value>Identifiant permettant de gérer le rollback sur
+                  les traitements de masse</value>
             </column>
             <column>
                <name>pattern</name>
@@ -2695,7 +2692,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -2706,7 +2703,7 @@
                <value>oui</value>
             </column>
          </row>
-         
+
          <row>
             <key>IdTraitementMasse</key>
             <column>
@@ -2719,11 +2716,11 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>length</name>
@@ -2731,23 +2728,23 @@
             </column>
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>search</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>int</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
@@ -2755,7 +2752,8 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Identifiant permettant de gérer les traitements de masse pour l'application cliente</value>
+               <value>Identifiant permettant de gérer les traitements de
+                  masse pour l'application cliente</value>
             </column>
             <column>
                <name>pattern</name>
@@ -2763,7 +2761,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -2771,10 +2769,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
          </row>
-         
+
          <row>
             <key>DocumentVirtuel</key>
             <column>
@@ -2787,11 +2785,11 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>length</name>
@@ -2799,31 +2797,33 @@
             </column>
             <column>
                <name>cons</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>search</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>int</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>label</name>
-               <value>Information indiquant si le document est virtuel ou non</value>
+               <value>Information indiquant si le document est virtuel
+                  ou non</value>
             </column>
             <column>
                <name>descr</name>
-               <value>Information indiquant si le document est virtuel ou non</value>
+               <value>Information indiquant si le document est virtuel
+                  ou non</value>
             </column>
             <column>
                <name>pattern</name>
@@ -2831,7 +2831,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -2839,10 +2839,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
          </row>
-         
+
          <row>
             <key>StartPage</key>
             <column>
@@ -2855,37 +2855,35 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <!--
-            <column>
-               <name>length</name>
-               <value>integer(-1)</value>
-            </column>
+               <column> <name>length</name> <value>integer(-1)</value>
+               </column>
             -->
             <column>
                <name>cons</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>search</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>int</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>label</name>
@@ -2893,7 +2891,8 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Pour un document virtuel, il s'agit de la page de départ dans le document container</value>
+               <value>Pour un document virtuel, il s'agit de la page de
+                  départ dans le document container</value>
             </column>
             <column>
                <name>pattern</name>
@@ -2901,7 +2900,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -2909,10 +2908,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
          </row>
-         
+
          <row>
             <key>EndPage</key>
             <column>
@@ -2925,37 +2924,35 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <!--
-            <column>
-               <name>length</name>
-               <value>integer(-1)</value>
-            </column>
+               <column> <name>length</name> <value>integer(-1)</value>
+               </column>
             -->
             <column>
                <name>cons</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>search</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>int</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>label</name>
@@ -2963,7 +2960,8 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Pour un document virtuel, il s'agit de la page de fin dans le document container</value>
+               <value>Pour un document virtuel, il s'agit de la page de
+                  fin dans le document container</value>
             </column>
             <column>
                <name>pattern</name>
@@ -2971,7 +2969,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -2979,10 +2977,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
          </row>
-         
+
          <row>
             <key>ContratDeService</key>
             <column>
@@ -2995,37 +2993,35 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <!--
-            <column>
-               <name>length</name>
-               <value>integer(-1)</value>
-            </column>
+               <column> <name>length</name> <value>integer(-1)</value>
+               </column>
             -->
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>search</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>int</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>label</name>
@@ -3033,7 +3029,8 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Identifiant du contrat de service utilisé pour archiver le document</value>
+               <value>Identifiant du contrat de service utilisé pour
+                  archiver le document</value>
             </column>
             <column>
                <name>pattern</name>
@@ -3041,7 +3038,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -3049,10 +3046,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
          </row>
-         
+
          <row>
             <key>DateArchivage</key>
             <column>
@@ -3065,11 +3062,11 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>length</name>
@@ -3077,23 +3074,23 @@
             </column>
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>search</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>int</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>label</name>
@@ -3101,7 +3098,8 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Date à laquelle le document a été archivé dans le SAE</value>
+               <value>Date à laquelle le document a été archivé dans le
+                  SAE</value>
             </column>
             <column>
                <name>pattern</name>
@@ -3112,7 +3110,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -3120,10 +3118,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
          </row>
-         
+
          <row>
             <key>VersionNumber</key>
             <column>
@@ -3136,37 +3134,35 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <!--
-            <column>
-               <name>length</name>
-               <value>integer(-1)</value>
-            </column>
+               <column> <name>length</name> <value>integer(-1)</value>
+               </column>
             -->
             <column>
                <name>cons</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>search</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>int</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>label</name>
@@ -3182,7 +3178,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -3190,10 +3186,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
          </row>
-         
+
          <row>
             <key>DateModification</key>
             <column>
@@ -3206,11 +3202,11 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>length</name>
@@ -3218,23 +3214,23 @@
             </column>
             <column>
                <name>cons</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>search</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>int</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>label</name>
@@ -3253,7 +3249,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -3261,10 +3257,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
          </row>
-         
+
          <row>
             <key>JetonDePreuve</key>
             <column>
@@ -3277,45 +3273,46 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <!--
-            <column>
-               <name>length</name>
-               <value>integer(-1)</value>
-            </column>
+               <column> <name>length</name> <value>integer(-1)</value>
+               </column>
             -->
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>search</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>int</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
-               <value>Identifiant du jeton de preuve issu d'une vérification de signature(s) électronique(s)</value>
+               <value>Identifiant du jeton de preuve issu d'une
+                  vérification de signature(s) électronique(s)</value>
             </column>
             <column>
                <name>descr</name>
-               <value>Identifiant du jeton de preuve renvoyé par les services de signature lors d'une demande de vérification de signature(s) électronique(s).</value>
+               <value>Identifiant du jeton de preuve renvoyé par les
+                  services de signature lors d'une demande de
+                  vérification de signature(s) électronique(s).</value>
             </column>
             <column>
                <name>pattern</name>
@@ -3326,7 +3323,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -3334,10 +3331,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
          </row>
-         
+
          <row>
             <key>RUM</key>
             <column>
@@ -3350,11 +3347,11 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>length</name>
@@ -3362,23 +3359,23 @@
             </column>
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>search</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>int</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
@@ -3394,7 +3391,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -3402,10 +3399,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
          </row>
-         
+
          <row>
             <key>DateSignature</key>
             <column>
@@ -3418,11 +3415,11 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>length</name>
@@ -3430,23 +3427,23 @@
             </column>
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>search</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>int</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
@@ -3465,7 +3462,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -3473,10 +3470,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
          </row>
-         
+
          <row>
             <key>ReferenceDocumentaire</key>
             <column>
@@ -3489,11 +3486,11 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>length</name>
@@ -3501,23 +3498,23 @@
             </column>
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>search</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>int</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
@@ -3525,7 +3522,8 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Référence documentaire. Utilisée pour l'instant dans les mandats SEPA</value>
+               <value>Référence documentaire. Utilisée pour l'instant
+                  dans les mandats SEPA</value>
             </column>
             <column>
                <name>pattern</name>
@@ -3536,7 +3534,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -3544,10 +3542,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
          </row>
-         
+
          <row>
             <key>DateCourrierV2</key>
             <column>
@@ -3560,11 +3558,11 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>length</name>
@@ -3572,23 +3570,23 @@
             </column>
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>search</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>int</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
@@ -3596,7 +3594,8 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Date du courrier V2 (enregistrement AAAA colonne 438 à 446)</value>
+               <value>Date du courrier V2 (enregistrement AAAA colonne
+                  438 à 446)</value>
             </column>
             <column>
                <name>pattern</name>
@@ -3607,7 +3606,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -3615,10 +3614,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
          </row>
-         
+
          <row>
             <key>RIBA</key>
             <column>
@@ -3631,11 +3630,11 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>length</name>
@@ -3643,23 +3642,23 @@
             </column>
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>search</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>int</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
@@ -3667,7 +3666,8 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Index RSI V2 (enregistrement BAAU colonne 28 à 47)</value>
+               <value>Index RSI V2 (enregistrement BAAU colonne 28 à 47)
+               </value>
             </column>
             <column>
                <name>pattern</name>
@@ -3675,7 +3675,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -3683,10 +3683,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
          </row>
-         
+
          <row>
             <key>CodeProduitV2</key>
             <column>
@@ -3699,11 +3699,11 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>length</name>
@@ -3711,23 +3711,23 @@
             </column>
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>search</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>int</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
@@ -3743,7 +3743,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -3751,10 +3751,10 @@
             </column>
             <column>
                <name>index</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
          </row>
-         
+
          <row>
             <key>CodeTraitementV2</key>
             <column>
@@ -3767,11 +3767,11 @@
             </column>
             <column>
                <name>reqArch</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>reqStor</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>length</name>
@@ -3779,23 +3779,23 @@
             </column>
             <column>
                <name>cons</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>defCons</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>search</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>int</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>arch</name>
-               <value>true</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
@@ -3811,7 +3811,7 @@
             </column>
             <column>
                <name>hasDict</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>dictName</name>
@@ -3819,12 +3819,12 @@
             </column>
             <column>
                <name>index</name>
-               <value>false</value>
+               <value>bytes(00)</value>
             </column>
          </row>
-         
+
       </columnFamily>
-      
+
       <columnFamily>
          <name>Dictionary</name>
          <keyType>UTF8Type</keyType>
@@ -3837,8 +3837,29 @@
                <value></value>
             </column>
          </row>
+         <row>
+            <key>dicExist</key>
+            <column>
+               <name>Meta</name>
+               <value></value>
+            </column>
+         </row>
+         <row>
+            <key>dicExist2</key>
+            <column>
+               <name>Meta2</name>
+               <value></value>
+            </column>
+         </row>
+         <row>
+            <key>CodeOrganismeProprietaireDict</key>
+            <column>
+               <name>CER69</name>
+               <value></value>
+            </column>
+         </row>
       </columnFamily>
-      
+
    </columnFamilies>
-   
+
 </keyspace>
