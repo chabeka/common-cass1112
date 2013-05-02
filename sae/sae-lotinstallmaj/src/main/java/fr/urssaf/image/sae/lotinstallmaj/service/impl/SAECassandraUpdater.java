@@ -37,11 +37,14 @@ public class SAECassandraUpdater {
    private final Cluster cluster;
    private final SAECassandraService saeCassandraService;
 
+   private static final Logger LOG = LoggerFactory
+         .getLogger(SAECassandraUpdater.class);
+
    @Autowired
    private SAECassandraDao saeDao;
 
-   private static final Logger LOG = LoggerFactory
-         .getLogger(SAECassandraUpdater.class);
+   @Autowired
+   private RefMetaInitialisationService refMetaInitService;
 
    /**
     * Constructeur
@@ -382,6 +385,10 @@ public class SAECassandraUpdater {
       InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
       // Ajout de l'évènement MAJ_VERSION_RND|OK
       donnees.addReferentielEvenementV2();
+
+      // Initialisation du référentiel des métadonnées
+      // suite au passage à un stockage du référentiel en bdd
+      refMetaInitService.initialiseRefMeta(saeDao.getKeyspace());
 
       // On positionne la version à 5
       saeDao.setDatabaseVersion(VERSION_5);

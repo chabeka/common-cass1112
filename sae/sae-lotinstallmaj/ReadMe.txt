@@ -160,6 +160,8 @@ Création des CF pour l'automatisation de la mise à jour du RND
 
 Insertion des événéments à tracer dans la CF TraceDestinataire :
    - MAJ_VERSION_RND|OK dans le registre de journal des événements du SAE avec all_infos
+
+Insertion des métadonnées du référentiel 1.8 (moins les nouvelles métadonnées) dans la CF Metadata
    
 Positionne le paramètre versionBDD de la CF Parameters à la valeur "5"
 

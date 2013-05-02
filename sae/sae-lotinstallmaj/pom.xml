@@ -64,6 +64,11 @@
       </plugins>
 
    </build>
+   
+   
+   <properties>
+      <opencsv.version>2.3</opencsv.version>
+   </properties>
 
 
    <dependencies>
@@ -72,6 +77,11 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-commons</artifactId>
+         <version>13.4.10.5-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+         <groupId>fr.urssaf.image.sae</groupId>
+         <artifactId>sae-metadata</artifactId>
          <version>13.4.10.5-SNAPSHOT</version>
       </dependency>
 
@@ -134,13 +144,20 @@
          <artifactId>easymock</artifactId>
          <version>3.0</version>
          <scope>test</scope>
-   </dependency>
-   <dependency>
-      <groupId>aspectj</groupId>
-      <artifactId>aspectjweaver</artifactId>
-      <version>1.5.2</version>
-   </dependency>
+      </dependency>
       
-
+      <dependency>
+         <groupId>aspectj</groupId>
+         <artifactId>aspectjweaver</artifactId>
+         <version>1.5.2</version>
+      </dependency>
+   
+      <!-- Open CSV -->
+      <dependency>
+         <groupId>net.sf.opencsv</groupId>
+         <artifactId>opencsv</artifactId>
+         <version>${opencsv.version}</version>
+      </dependency>
+      
    </dependencies>
 </project>

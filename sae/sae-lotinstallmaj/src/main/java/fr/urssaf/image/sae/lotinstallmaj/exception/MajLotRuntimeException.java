@@ -29,4 +29,16 @@ public final class MajLotRuntimeException extends RuntimeException {
       super(message);
    }
 
+   /**
+    * Constructeur
+    * 
+    * @param message
+    *           le message de l'exception
+    * @param cause
+    *           cause de l'exception
+    */
+   public MajLotRuntimeException(String message, Throwable cause) {
+      super(message, cause);
+   }
+
 }
