@@ -1,15 +1,21 @@
 package fr.urssaf.image.sae.lotinstallmaj.service.impl;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.Assert;
 
+import org.apache.commons.io.FileUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.sae.lotinstallmaj.exception.MajLotRuntimeException;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -85,6 +91,133 @@ public class RefMetaInitialisationServiceTest {
       List<MetadataReference> metadonnees = refMetaService.chargeFichierMeta();
 
       refMetaService.verification2(metadonnees);
+   }
+
+   /**
+    * Ceci n'est pas un vrai TU<br>
+    * <br>
+    * Il s'agit de générer le dataset du Cassandra local à partir du fichier des
+    * métadonnées utilisé par RefMetaInitialisationService. Et ceci afin
+    * d'éviter les erreurs de saisie !
+    */
+   @Test
+   @Ignore("Ceci n'est pas un vrai TU")
+   public void genereDatasetCassandraLocal() {
+
+      List<MetadataReference> metadonnees = refMetaService.chargeFichierMeta();
+
+      List<String> dataSet = new ArrayList<String>();
+
+      for (MetadataReference metadonnee : metadonnees) {
+         dataSet.add("         <row>");
+         dataSet.add(String.format("            <key>%s</key>", metadonnee
+               .getLongCode()));
+         dataSet.add("            <column>");
+         dataSet.add("               <name>sCode</name>");
+         dataSet.add(String.format("               <value>%s</value>",
+               metadonnee.getShortCode()));
+         dataSet.add("            </column>");
+         dataSet.add("            <column>");
+         dataSet.add("               <name>type</name>");
+         dataSet.add(String.format("               <value>%s</value>",
+               metadonnee.getType()));
+         dataSet.add("            </column>");
+         dataSet.add("            <column>");
+         dataSet.add("               <name>reqArch</name>");
+         dataSet.add(String.format("               <value>%s</value>",
+               boolToStringForDataset(metadonnee.isRequiredForArchival())));
+         dataSet.add("            </column>");
+         dataSet.add("            <column>");
+         dataSet.add("               <name>reqStor</name>");
+         dataSet.add(String.format("               <value>%s</value>",
+               boolToStringForDataset(metadonnee.isRequiredForStorage())));
+         dataSet.add("            </column>");
+         if (metadonnee.getLength() > 0) {
+            dataSet.add("            <column>");
+            dataSet.add("               <name>length</name>");
+            dataSet.add(String.format("               <value>%s</value>",
+                  intToStringForDataset(metadonnee.getLength())));
+            dataSet.add("            </column>");
+         }
+         dataSet.add("            <column>");
+         dataSet.add("               <name>cons</name>");
+         dataSet.add(String.format("               <value>%s</value>",
+               boolToStringForDataset(metadonnee.isConsultable())));
+         dataSet.add("            </column>");
+         dataSet.add("            <column>");
+         dataSet.add("               <name>defCons</name>");
+         dataSet.add(String.format("               <value>%s</value>",
+               boolToStringForDataset(metadonnee.isDefaultConsultable())));
+         dataSet.add("            </column>");
+         dataSet.add("            <column>");
+         dataSet.add("               <name>search</name>");
+         dataSet.add(String.format("               <value>%s</value>",
+               boolToStringForDataset(metadonnee.isSearchable())));
+         dataSet.add("            </column>");
+         dataSet.add("            <column>");
+         dataSet.add("               <name>int</name>");
+         dataSet.add(String.format("               <value>%s</value>",
+               boolToStringForDataset(metadonnee.isInternal())));
+         dataSet.add("            </column>");
+         dataSet.add("            <column>");
+         dataSet.add("               <name>arch</name>");
+         dataSet.add(String.format("               <value>%s</value>",
+               boolToStringForDataset(metadonnee.isArchivable())));
+         dataSet.add("            </column>");
+         dataSet.add("            <column>");
+         dataSet.add("               <name>label</name>");
+         dataSet.add(String.format("               <value>%s</value>",
+               metadonnee.getLabel()));
+         dataSet.add("            </column>");
+         dataSet.add("            <column>");
+         dataSet.add("               <name>descr</name>");
+         dataSet.add(String.format("               <value>%s</value>",
+               metadonnee.getDescription()));
+         dataSet.add("            </column>");
+         dataSet.add("            <column>");
+         dataSet.add("               <name>pattern</name>");
+         dataSet.add(String.format("               <value>%s</value>",
+               metadonnee.getPattern()));
+         dataSet.add("            </column>");
+         dataSet.add("            <column>");
+         dataSet.add("               <name>hasDict</name>");
+         dataSet.add(String.format("               <value>%s</value>",
+               boolToStringForDataset(metadonnee.getHasDictionary())));
+         dataSet.add("            </column>");
+         dataSet.add("            <column>");
+         dataSet.add("               <name>dictName</name>");
+         dataSet.add(String.format("               <value>%s</value>",
+               metadonnee.getDictionaryName()));
+         dataSet.add("            </column>");
+         dataSet.add("            <column>");
+         dataSet.add("               <name>index</name>");
+         dataSet.add(String.format("               <value>%s</value>",
+               boolToStringForDataset(metadonnee.getIsIndexed())));
+         dataSet.add("            </column>");
+         dataSet.add("         </row>");
+         dataSet.add("");
+      }
+
+      // Ecriture dans un fichier temporaire, pour mieux visualiser
+      try {
+         File fileTemp = new File("c:/divers/bout-de-dataset-metadata.xml");
+         FileUtils.writeLines(fileTemp, dataSet);
+      } catch (IOException e) {
+         throw new MajLotRuntimeException(e);
+      }
+
+   }
+
+   private String boolToStringForDataset(boolean value) {
+      if (value) {
+         return "bytes(01)";
+      } else {
+         return "bytes(00)";
+      }
+   }
+
+   private String intToStringForDataset(int value) {
+      return "integer(" + value + ")";
    }
 
 }

@@ -110,8 +110,8 @@ public class MetadataReferenceDAOImplTest {
       Assert.assertTrue(String.format(metaNonTrouve, "Gel"), metadonnees
             .containsKey("Gel"));
       Assert.assertTrue(String
-            .format(metaNonTrouve, "TracabilitrePreArchivage"), metadonnees
-            .containsKey("TracabilitrePreArchivage"));
+            .format(metaNonTrouve, "TracabilitePreArchivage"), metadonnees
+            .containsKey("TracabilitePreArchivage"));
       Assert.assertTrue(String
             .format(metaNonTrouve, "TracabilitePostArchivage"), metadonnees
             .containsKey("TracabilitePostArchivage"));
@@ -255,8 +255,8 @@ public class MetadataReferenceDAOImplTest {
       Assert.assertTrue(String.format(metaNonTrouve, "Gel"), metadonnees
             .containsKey("Gel"));
       Assert.assertTrue(String
-            .format(metaNonTrouve, "TracabilitrePreArchivage"), metadonnees
-            .containsKey("TracabilitrePreArchivage"));
+            .format(metaNonTrouve, "TracabilitePreArchivage"), metadonnees
+            .containsKey("TracabilitePreArchivage"));
       Assert.assertTrue(String
             .format(metaNonTrouve, "TracabilitePostArchivage"), metadonnees
             .containsKey("TracabilitePostArchivage"));
@@ -429,7 +429,7 @@ public class MetadataReferenceDAOImplTest {
       Assert
             .assertEquals(
                   "Le nombre de métadonnées obligatoires au stockage attendues est incorrect",
-                  18, metadonnees.size());
+                  16, metadonnees.size());
 
       for (Map.Entry<String, MetadataReference> metadata : metadonnees
             .entrySet()) {
@@ -454,8 +454,6 @@ public class MetadataReferenceDAOImplTest {
             .containsKey("CodeRND"));
       Assert.assertTrue(String.format(metaNonTrouve, "VersionRND"), metadonnees
             .containsKey("VersionRND"));
-      Assert.assertTrue(String.format(metaNonTrouve, "CodeFonction"),
-            metadonnees.containsKey("CodeFonction"));
       Assert.assertTrue(String.format(metaNonTrouve, "DateDebutConservation"),
             metadonnees.containsKey("DateDebutConservation"));
       Assert.assertTrue(String.format(metaNonTrouve, "DateFinConservation"),
@@ -466,8 +464,6 @@ public class MetadataReferenceDAOImplTest {
             .containsKey("TypeHash"));
       Assert.assertTrue(String.format(metaNonTrouve, "NbPages"), metadonnees
             .containsKey("NbPages"));
-      Assert.assertTrue(String.format(metaNonTrouve, "NomFichier"), metadonnees
-            .containsKey("NomFichier"));
       Assert.assertTrue(String.format(metaNonTrouve, "FormatFichier"),
             metadonnees.containsKey("FormatFichier"));
       Assert.assertTrue(String.format(metaNonTrouve, "DocumentVirtuel"),
@@ -662,8 +658,8 @@ public class MetadataReferenceDAOImplTest {
       Assert.assertTrue(String.format(metaNonTrouve, "DateDebutConservation"),
             metadonnees.containsKey("DateDebutConservation"));
       Assert.assertTrue(String
-            .format(metaNonTrouve, "TracabilitrePreArchivage"), metadonnees
-            .containsKey("TracabilitrePreArchivage"));
+            .format(metaNonTrouve, "TracabilitePreArchivage"), metadonnees
+            .containsKey("TracabilitePreArchivage"));
       Assert.assertTrue(String.format(metaNonTrouve, "Hash"), metadonnees
             .containsKey("Hash"));
       Assert.assertTrue(String.format(metaNonTrouve, "TypeHash"), metadonnees

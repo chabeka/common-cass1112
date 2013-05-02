@@ -71,7 +71,7 @@
             </column>
             <column>
                <name>pattern</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -79,7 +79,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -139,7 +139,7 @@
             </column>
             <column>
                <name>pattern</name>
-               <value>a</value>
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -147,7 +147,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value>dict</value>
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -207,7 +207,7 @@
             </column>
             <column>
                <name>pattern</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -215,7 +215,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -271,12 +271,11 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Numéro National d'Identification ou Numéro de
-                  sécurité sociale de l'Employeur</value>
+               <value>Numéro National d'Identification ou Numéro de sécurité sociale de l'Employeur</value>
             </column>
             <column>
                <name>pattern</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -284,7 +283,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -344,7 +343,7 @@
             </column>
             <column>
                <name>pattern</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -352,7 +351,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -378,10 +377,6 @@
                <name>reqStor</name>
                <value>bytes(00)</value>
             </column>
-            <!--
-               <column> <name>length</name> <value>integer(-1)</value>
-               </column>
-            -->
             <column>
                <name>cons</name>
                <value>bytes(01)</value>
@@ -408,12 +403,11 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Dénomination du compte (provient de la raison
-                  sociale V2)</value>
+               <value>Dénomination du compte (provient de la raison sociale V2)</value>
             </column>
             <column>
                <name>pattern</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -421,7 +415,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -481,7 +475,7 @@
             </column>
             <column>
                <name>pattern</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -489,7 +483,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -549,7 +543,7 @@
             </column>
             <column>
                <name>pattern</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -557,7 +551,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -617,7 +611,7 @@
             </column>
             <column>
                <name>pattern</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -625,7 +619,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -685,7 +679,7 @@
             </column>
             <column>
                <name>pattern</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -693,7 +687,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -753,7 +747,7 @@
             </column>
             <column>
                <name>pattern</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -761,7 +755,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -821,7 +815,7 @@
             </column>
             <column>
                <name>pattern</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -829,7 +823,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -889,7 +883,7 @@
             </column>
             <column>
                <name>pattern</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -897,7 +891,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -957,7 +951,7 @@
             </column>
             <column>
                <name>pattern</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -965,7 +959,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -1025,7 +1019,7 @@
             </column>
             <column>
                <name>pattern</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -1033,7 +1027,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -1085,19 +1079,15 @@
             </column>
             <column>
                <name>label</name>
-               <value>Date création du document</value>
+               <value>Date création</value>
             </column>
             <column>
                <name>descr</name>
-               <value>Date de création du document au niveau de
-                  l'application émettrice</value>
+               <value>Date de création du document au niveau de l'application émettrice</value>
             </column>
             <column>
                <name>pattern</name>
-               <!--
-               <value>yyyy-mm-dd</value>
-               -->
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -1105,7 +1095,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -1161,15 +1151,11 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Date à laquelle le document a été reçu pour un
-                  courrier par exemple</value>
+               <value>Date à laquelle le document a été reçu pour un courrier par exemple</value>
             </column>
             <column>
                <name>pattern</name>
-               <!--
-               <value>yyyy-mm-dd</value>
-               -->
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -1177,7 +1163,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -1233,13 +1219,11 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Code de l'application qui a produit le document
-                  (pour un document WATT issu du scan, ce sera la chaine
-                  d'acquisition)</value>
+               <value>Code de l'application qui a produit le document (pour un document WATT issu du scan, ce sera la chaine d'acquisition)</value>
             </column>
             <column>
                <name>pattern</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -1247,11 +1231,11 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
-               <value>bytes(01)</value>
+               <value>bytes(00)</value>
             </column>
          </row>
 
@@ -1303,13 +1287,11 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Code de la dernière application qui a fait des
-                  traitements sur le document avant archivage
-                  c'est-à-dire celle qui a versé le document</value>
+               <value>Code de la dernière application qui a fait des traitements sur le document avant archivage c'est-à-dire celle qui a versé le document</value>
             </column>
             <column>
                <name>pattern</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -1317,7 +1299,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -1373,12 +1355,11 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Code organisme propriétaire du document Cf. Liste
-                  des organismes</value>
+               <value>Code organisme propriétaire du document Cf. Liste des organismes</value>
             </column>
             <column>
                <name>pattern</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -1386,7 +1367,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -1442,12 +1423,11 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Code organisme gestionnaire de la pièce Cf. Liste
-                  des organismes</value>
+               <value>Code organisme gestionnaire de la pièce Cf. Liste des organismes</value>
             </column>
             <column>
                <name>pattern</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -1455,7 +1435,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -1511,12 +1491,11 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Code site du lieu d'acquisition dans le cas d'une
-                  numérisation Cf. Liste des organismes</value>
+               <value>Code site du lieu d'acquisition dans le cas d'une numérisation Cf. Liste des organismes</value>
             </column>
             <column>
                <name>pattern</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -1524,7 +1503,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -1580,12 +1559,11 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Code issu d'un référentiel permettant de typer
-                  nationalement un document</value>
+               <value>Code issu d'un référentiel permettant de typer nationalement un document</value>
             </column>
             <column>
                <name>pattern</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -1593,7 +1571,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -1649,12 +1627,11 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Numéro permettant d'identifier la version de
-                  provenance du code RND renseigné précédemment</value>
+               <value>Numéro permettant d'identifier la version de provenance du code RND renseigné précédemment</value>
             </column>
             <column>
                <name>pattern</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -1662,7 +1639,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -1686,7 +1663,7 @@
             </column>
             <column>
                <name>reqStor</name>
-               <value>bytes(01)</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>length</name>
@@ -1722,7 +1699,7 @@
             </column>
             <column>
                <name>pattern</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -1730,7 +1707,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -1790,7 +1767,7 @@
             </column>
             <column>
                <name>pattern</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -1798,7 +1775,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -1824,10 +1801,6 @@
                <name>reqStor</name>
                <value>bytes(00)</value>
             </column>
-            <!--
-               <column> <name>length</name> <value>integer(-1)</value>
-               </column>
-            -->
             <column>
                <name>cons</name>
                <value>bytes(01)</value>
@@ -1854,12 +1827,11 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Durée de conservation de l'archive au terme duquel
-                  l'archive n'est plus accessible en jours</value>
+               <value>Durée de conservation de l'archive au terme duquel l'archive n'est plus accessible en jours</value>
             </column>
             <column>
                <name>pattern</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -1867,11 +1839,11 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
-               <value>bytes(01)</value>
+               <value>bytes(00)</value>
             </column>
          </row>
 
@@ -1927,10 +1899,7 @@
             </column>
             <column>
                <name>pattern</name>
-               <!--
-               <value>yyyy-mm-dd</value>
-               -->
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -1938,7 +1907,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -1998,10 +1967,7 @@
             </column>
             <column>
                <name>pattern</name>
-               <!--
-               <value>yyyy-mm-dd</value>
-               -->
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -2009,7 +1975,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -2035,10 +2001,6 @@
                <name>reqStor</name>
                <value>bytes(00)</value>
             </column>
-            <!--
-               <column> <name>length</name> <value>integer(-1)</value>
-               </column>
-            -->
             <column>
                <name>cons</name>
                <value>bytes(01)</value>
@@ -2053,7 +2015,7 @@
             </column>
             <column>
                <name>int</name>
-               <value>bytes(00)</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>arch</name>
@@ -2065,12 +2027,11 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Gel de l'archive permettant de ne pas détruire
-                  l'archive</value>
+               <value>Gel de l'archive permettant de ne pas détruire l'archive</value>
             </column>
             <column>
                <name>pattern</name>
-               <value>true|false</value>
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -2078,7 +2039,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value>dict</value>
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -2087,7 +2048,7 @@
          </row>
 
          <row>
-            <key>TracabilitrePreArchivage</key>
+            <key>TracabilitePreArchivage</key>
             <column>
                <name>sCode</name>
                <value>tpa</value>
@@ -2104,10 +2065,6 @@
                <name>reqStor</name>
                <value>bytes(00)</value>
             </column>
-            <!--
-               <column> <name>length</name> <value>integer(-1)</value>
-               </column>
-            -->
             <column>
                <name>cons</name>
                <value>bytes(01)</value>
@@ -2134,12 +2091,11 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Traçabilité en amont du SAE, surtout utilisée dans
-                  le cas de la chaine d'acquisition</value>
+               <value>Traçabilité en amont du SAE, surtout utilisée dans le cas de la chaine d'acquisition</value>
             </column>
             <column>
                <name>pattern</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -2147,7 +2103,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -2159,7 +2115,7 @@
             <key>TracabilitePostArchivage</key>
             <column>
                <name>sCode</name>
-               <value>toq</value>
+               <value>toa</value>
             </column>
             <column>
                <name>type</name>
@@ -2173,10 +2129,6 @@
                <name>reqStor</name>
                <value>bytes(00)</value>
             </column>
-            <!--
-               <column> <name>length</name> <value>integer(-1)</value>
-               </column>
-            -->
             <column>
                <name>cons</name>
                <value>bytes(01)</value>
@@ -2203,12 +2155,11 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Traçabilité contenue dans le système d'archive,
-                  lié à la vie de l'archive</value>
+               <value>Traçabilité contenue dans le système d'archive, lié à la vie de l'archive</value>
             </column>
             <column>
                <name>pattern</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -2216,7 +2167,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -2242,10 +2193,6 @@
                <name>reqStor</name>
                <value>bytes(01)</value>
             </column>
-            <!--
-               <column> <name>length</name> <value>integer(-1)</value>
-               </column>
-            -->
             <column>
                <name>cons</name>
                <value>bytes(01)</value>
@@ -2276,7 +2223,7 @@
             </column>
             <column>
                <name>pattern</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -2284,7 +2231,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -2340,12 +2287,11 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Identifiant de l'algorithme de hachage utilisé
-                  pour calculer le Hash du fichier</value>
+               <value>Identifiant de l'algorithme de hachage utilisé pour calculer le Hash du fichier</value>
             </column>
             <column>
                <name>pattern</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -2353,7 +2299,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -2379,10 +2325,6 @@
                <name>reqStor</name>
                <value>bytes(01)</value>
             </column>
-            <!--
-               <column> <name>length</name> <value>integer(-1)</value>
-               </column>
-            -->
             <column>
                <name>cons</name>
                <value>bytes(01)</value>
@@ -2413,7 +2355,7 @@
             </column>
             <column>
                <name>pattern</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -2421,7 +2363,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -2445,12 +2387,12 @@
             </column>
             <column>
                <name>reqStor</name>
-               <value>bytes(01)</value>
+               <value>bytes(00)</value>
             </column>
-            <!--
-               <column> <name>length</name> <value>integer(-1)</value>
-               </column>
-            -->
+            <column>
+               <name>length</name>
+               <value>integer(30)</value>
+            </column>
             <column>
                <name>cons</name>
                <value>bytes(01)</value>
@@ -2477,12 +2419,11 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Nom du fichier physique avec extension lié au
-                  document</value>
+               <value>Nom du fichier physique avec extension lié au document</value>
             </column>
             <column>
                <name>pattern</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -2490,7 +2431,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -2516,10 +2457,10 @@
                <name>reqStor</name>
                <value>bytes(01)</value>
             </column>
-            <!--
-               <column> <name>length</name> <value>integer(-1)</value>
-               </column>
-            -->
+            <column>
+               <name>length</name>
+               <value>integer(15)</value>
+            </column>
             <column>
                <name>cons</name>
                <value>bytes(01)</value>
@@ -2546,12 +2487,11 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Identifiant PRONOM (Cf. Référentiel PRONOM)
-               </value>
+               <value>Identifiant PRONOM (Cf. Référentiel PRONOM)</value>
             </column>
             <column>
                <name>pattern</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -2559,7 +2499,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -2585,10 +2525,6 @@
                <name>reqStor</name>
                <value>bytes(00)</value>
             </column>
-            <!--
-               <column> <name>length</name> <value>integer(-1)</value>
-               </column>
-            -->
             <column>
                <name>cons</name>
                <value>bytes(01)</value>
@@ -2619,7 +2555,7 @@
             </column>
             <column>
                <name>pattern</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -2627,7 +2563,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -2653,10 +2589,10 @@
                <name>reqStor</name>
                <value>bytes(00)</value>
             </column>
-            <!--
-               <column> <name>length</name> <value>integer(20)</value>
-               </column>
-            -->
+            <column>
+               <name>length</name>
+               <value>integer(20)</value>
+            </column>
             <column>
                <name>cons</name>
                <value>bytes(01)</value>
@@ -2683,12 +2619,11 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Identifiant permettant de gérer le rollback sur
-                  les traitements de masse</value>
+               <value>Identifiant permettant de gérer le rollback sur les traitements de masse</value>
             </column>
             <column>
                <name>pattern</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -2696,11 +2631,11 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
-               <value>oui</value>
+               <value>bytes(01)</value>
             </column>
          </row>
 
@@ -2752,12 +2687,11 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Identifiant permettant de gérer les traitements de
-                  masse pour l'application cliente</value>
+               <value>Identifiant permettant de gérer les traitements de masse pour l'application cliente</value>
             </column>
             <column>
                <name>pattern</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -2765,7 +2699,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -2792,10 +2726,6 @@
                <value>bytes(01)</value>
             </column>
             <column>
-               <name>length</name>
-               <value>integer(20)</value>
-            </column>
-            <column>
                <name>cons</name>
                <value>bytes(00)</value>
             </column>
@@ -2817,17 +2747,15 @@
             </column>
             <column>
                <name>label</name>
-               <value>Information indiquant si le document est virtuel
-                  ou non</value>
+               <value>Information indiquant si le document est virtuel ou non</value>
             </column>
             <column>
                <name>descr</name>
-               <value>Information indiquant si le document est virtuel
-                  ou non</value>
+               <value>Information indiquant si le document est virtuel ou non</value>
             </column>
             <column>
                <name>pattern</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -2835,7 +2763,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -2861,10 +2789,6 @@
                <name>reqStor</name>
                <value>bytes(00)</value>
             </column>
-            <!--
-               <column> <name>length</name> <value>integer(-1)</value>
-               </column>
-            -->
             <column>
                <name>cons</name>
                <value>bytes(00)</value>
@@ -2891,12 +2815,11 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Pour un document virtuel, il s'agit de la page de
-                  départ dans le document container</value>
+               <value>Pour un document virtuel, il s'agit de la page de départ dans le document container</value>
             </column>
             <column>
                <name>pattern</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -2904,7 +2827,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -2930,10 +2853,6 @@
                <name>reqStor</name>
                <value>bytes(00)</value>
             </column>
-            <!--
-               <column> <name>length</name> <value>integer(-1)</value>
-               </column>
-            -->
             <column>
                <name>cons</name>
                <value>bytes(00)</value>
@@ -2960,12 +2879,11 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Pour un document virtuel, il s'agit de la page de
-                  fin dans le document container</value>
+               <value>Pour un document virtuel, il s'agit de la page de fin dans le document container</value>
             </column>
             <column>
                <name>pattern</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -2973,7 +2891,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -2999,10 +2917,6 @@
                <name>reqStor</name>
                <value>bytes(01)</value>
             </column>
-            <!--
-               <column> <name>length</name> <value>integer(-1)</value>
-               </column>
-            -->
             <column>
                <name>cons</name>
                <value>bytes(01)</value>
@@ -3029,12 +2943,11 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Identifiant du contrat de service utilisé pour
-                  archiver le document</value>
+               <value>Identifiant du contrat de service utilisé pour archiver le document</value>
             </column>
             <column>
                <name>pattern</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -3042,7 +2955,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -3098,15 +3011,11 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Date à laquelle le document a été archivé dans le
-                  SAE</value>
+               <value>Date à laquelle le document a été archivé dans le SAE</value>
             </column>
             <column>
                <name>pattern</name>
-               <!--
-               <value>yyyy-mm-dd</value>
-               -->
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -3114,7 +3023,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -3140,10 +3049,6 @@
                <name>reqStor</name>
                <value>bytes(00)</value>
             </column>
-            <!--
-               <column> <name>length</name> <value>integer(-1)</value>
-               </column>
-            -->
             <column>
                <name>cons</name>
                <value>bytes(00)</value>
@@ -3174,7 +3079,7 @@
             </column>
             <column>
                <name>pattern</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -3182,11 +3087,11 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
-               <value>bytes(01)</value>
+               <value>bytes(00)</value>
             </column>
          </row>
 
@@ -3242,10 +3147,7 @@
             </column>
             <column>
                <name>pattern</name>
-               <!--
-               <value>yyyy-mm-dd</value>
-               -->
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -3253,7 +3155,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -3279,10 +3181,6 @@
                <name>reqStor</name>
                <value>bytes(00)</value>
             </column>
-            <!--
-               <column> <name>length</name> <value>integer(-1)</value>
-               </column>
-            -->
             <column>
                <name>cons</name>
                <value>bytes(01)</value>
@@ -3305,21 +3203,15 @@
             </column>
             <column>
                <name>label</name>
-               <value>Identifiant du jeton de preuve issu d'une
-                  vérification de signature(s) électronique(s)</value>
+               <value>Identifiant du jeton de preuve issu d'une vérification de signature(s) électronique(s)</value>
             </column>
             <column>
                <name>descr</name>
-               <value>Identifiant du jeton de preuve renvoyé par les
-                  services de signature lors d'une demande de
-                  vérification de signature(s) électronique(s).</value>
+               <value>Identifiant du jeton de preuve renvoyé par les services de signature lors d'une demande de vérification de signature(s) électronique(s).</value>
             </column>
             <column>
                <name>pattern</name>
-               <!--
-               <value>yyyy-mm-dd</value>
-               -->
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -3327,7 +3219,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -3387,7 +3279,7 @@
             </column>
             <column>
                <name>pattern</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -3395,7 +3287,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -3455,10 +3347,7 @@
             </column>
             <column>
                <name>pattern</name>
-               <!--
-               <value>yyyy-mm-dd</value>
-               -->
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -3466,7 +3355,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -3522,15 +3411,11 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Référence documentaire. Utilisée pour l'instant
-                  dans les mandats SEPA</value>
+               <value>Référence documentaire. Utilisée pour l'instant dans les mandats SEPA</value>
             </column>
             <column>
                <name>pattern</name>
-               <!--
-               <value>yyyy-mm-dd</value>
-               -->
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -3538,7 +3423,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -3594,15 +3479,11 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Date du courrier V2 (enregistrement AAAA colonne
-                  438 à 446)</value>
+               <value>Date du courrier V2 (enregistrement AAAA colonne 438 à 446)</value>
             </column>
             <column>
                <name>pattern</name>
-               <!--
-               <value>yyyy-mm-dd</value>
-               -->
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -3610,7 +3491,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -3666,12 +3547,11 @@
             </column>
             <column>
                <name>descr</name>
-               <value>Index RSI V2 (enregistrement BAAU colonne 28 à 47)
-               </value>
+               <value>Index RSI V2 (enregistrement BAAU colonne 28 à 47)</value>
             </column>
             <column>
                <name>pattern</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -3679,7 +3559,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -3739,7 +3619,7 @@
             </column>
             <column>
                <name>pattern</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -3747,7 +3627,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
@@ -3807,7 +3687,7 @@
             </column>
             <column>
                <name>pattern</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>hasDict</name>
@@ -3815,7 +3695,7 @@
             </column>
             <column>
                <name>dictName</name>
-               <value />
+               <value></value>
             </column>
             <column>
                <name>index</name>
