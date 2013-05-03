@@ -15,7 +15,7 @@ import fr.urssaf.image.commons.dfce.service.DFCEConnectionService;
  * 
  */
 @Component
-public class ServiceProviderSupport {
+public class ServiceProviderSupportMetadata {
 
    private ServiceProvider serviceProvider;
 
@@ -27,7 +27,7 @@ public class ServiceProviderSupport {
     *           service de connexion à DFCE
     */
    @Autowired
-   public ServiceProviderSupport(DFCEConnectionService dfceConnectionService) {
+   public ServiceProviderSupportMetadata(DFCEConnectionService dfceConnectionService) {
 
       this.dfceConnectionService = dfceConnectionService;
    }

@@ -7,7 +7,7 @@ import java.text.MessageFormat;
  *Exception levée lorsque le dictionnaire des donnée n'existe pas. 
  */
 @SuppressWarnings("PMD")
-public class DictionaryNotFoundException extends Exception {
+public class DictionaryNotFoundException extends RuntimeException {
    /**
     * Constructeur
     * 

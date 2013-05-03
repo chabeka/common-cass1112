@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import com.google.common.util.concurrent.UncheckedExecutionException;
+
 import fr.urssaf.image.sae.bo.model.MetadataError;
 import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
 import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
@@ -528,10 +530,11 @@ public class MetadataControlServicesImpl implements MetadataControlServices {
                                        docMeta.getLongCode())));
                   }
 
-               } catch (DictionaryNotFoundException e) {
+               } catch (UncheckedExecutionException e) {
+                  
                   throw new MetadataRuntimeException(MetadataMessageHandler
                         .getMessage("metadata.dictionary.not.valid", meta
-                              .getDictionaryName()));
+                              .getDictionaryName()), e);
                }
             }
 

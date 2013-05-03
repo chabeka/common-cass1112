@@ -15,7 +15,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
-import fr.urssaf.image.sae.metadata.dfce.ServiceProviderSupport;
+import fr.urssaf.image.sae.metadata.dfce.ServiceProviderSupportMetadata;
 import fr.urssaf.image.sae.metadata.exceptions.DictionaryNotFoundException;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 import fr.urssaf.image.sae.metadata.referential.services.SaeMetaDataService;
@@ -42,7 +42,7 @@ public class SaeMetadataSupportTest {
    private JobClockSupport clock;
    
    @Autowired
-   private ServiceProviderSupport provider;
+   private ServiceProviderSupportMetadata provider;
 
 
    @Before

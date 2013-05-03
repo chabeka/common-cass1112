@@ -13,4 +13,8 @@ public class MetadataRuntimeException extends RuntimeException {
    public MetadataRuntimeException(String message) {
       super(message);
    }
+   
+   public MetadataRuntimeException(String message, RuntimeException exception) {
+      super(message, exception);
+   }
 }

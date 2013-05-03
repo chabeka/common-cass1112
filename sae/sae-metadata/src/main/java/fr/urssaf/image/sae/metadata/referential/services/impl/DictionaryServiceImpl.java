@@ -123,11 +123,10 @@ public class DictionaryServiceImpl implements DictionaryService {
     * n'est pas en cache on appel la méthode find sinon on renvoit la valeur
     * contenu dans le cache.
     * @param name nom du dictionnaire
-    * @throws DictionaryNotFoundException dictionnaire non trouvé
     * @return {@link Dictionary}
     */
    @Override
-   public Dictionary find(String name) throws DictionaryNotFoundException {
+   public Dictionary find(String name){
 
       return dictionaries.getUnchecked(name);
    }

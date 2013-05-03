@@ -17,7 +17,7 @@ import com.netflix.curator.framework.CuratorFramework;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.commons.zookeeper.ZookeeperMutex;
 import fr.urssaf.image.sae.commons.utils.ZookeeperUtils;
-import fr.urssaf.image.sae.metadata.dfce.ServiceProviderSupport;
+import fr.urssaf.image.sae.metadata.dfce.ServiceProviderSupportMetadata;
 import fr.urssaf.image.sae.metadata.exceptions.MetadataReferenceException;
 import fr.urssaf.image.sae.metadata.exceptions.MetadataReferenceNotFoundException;
 import fr.urssaf.image.sae.metadata.exceptions.MetadataRuntimeException;
@@ -25,7 +25,6 @@ import fr.urssaf.image.sae.metadata.referential.model.DfceConfig;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 import fr.urssaf.image.sae.metadata.referential.services.SaeMetaDataService;
 import fr.urssaf.image.sae.metadata.referential.support.SaeMetadataSupport;
-import fr.urssaf.image.sae.storage.model.connection.StorageConnectionParameter;
 
 /**
  * Classe d'implémentation du service SaeMetadataService. Cette classe est un
@@ -40,7 +39,7 @@ public class SaeMetaDataServiceImpl implements SaeMetaDataService {
    private final SaeMetadataSupport saeMetadatasupport;
    private final JobClockSupport clockSupport;
    private final CuratorFramework curator;
-   private final ServiceProviderSupport serviceProviderSupport;
+   private final ServiceProviderSupportMetadata serviceProviderSupport;
 
    @Autowired
    private DfceConfig dfceConfig;
@@ -69,7 +68,7 @@ public class SaeMetaDataServiceImpl implements SaeMetaDataService {
    @Autowired
    public SaeMetaDataServiceImpl(SaeMetadataSupport saeMetadataSupport,
          JobClockSupport clockSupport, CuratorFramework curator,
-         ServiceProviderSupport serviceProviderSupport) {
+         ServiceProviderSupportMetadata serviceProviderSupport) {
       this.saeMetadatasupport = saeMetadataSupport;
       this.clockSupport = clockSupport;
       this.curator = curator;
