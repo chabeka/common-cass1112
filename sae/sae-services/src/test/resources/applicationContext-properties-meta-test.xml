@@ -15,7 +15,7 @@
    -->
 
    <bean id="resourceSaeConfig" class="org.springframework.core.io.ClassPathResource">
-      <constructor-arg value="config/test-sae-config.properties" />
+      <constructor-arg value="config/test-sae-config-meta.properties" />
    </bean>
    
    <bean class="java.io.File" id="fileSaeConfig">
@@ -35,7 +35,7 @@
       <constructor-arg ref="saeConfigResource" />
    </bean>
    
-   <bean id="dfceConfig" factory-bean="dfceConfigFactory"
+    <bean id="dfceConfig" factory-bean="dfceConfigFactory"
       factory-method="createDfceConfig">
 
       <!--
@@ -56,8 +56,5 @@
       class="fr.urssaf.image.commons.dfce.service.impl.DFCEConnectionServiceImpl">
       <constructor-arg ref="dfceConnection" />
    </bean>
-   
-   
-   
 
 </beans>

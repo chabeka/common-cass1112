@@ -202,7 +202,8 @@ public class SaeControleMetadataServiceImpl implements
          listeCodeLong = buildLongCodeError(errorsList);
          LOG.debug("{} - {}", trcPrefix, ResourceMessagesUtils.loadMessage(
                "metadata.not.in.dictionary", listeCodeLong));
-         throw new MetadataValueNotInDictionaryEx();
+         throw new MetadataValueNotInDictionaryEx(ResourceMessagesUtils.loadMessage(
+               "metadata.not.in.dictionary", listeCodeLong));
       }
       LOG
             .debug(

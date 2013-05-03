@@ -302,7 +302,6 @@ public class SAEControlesCaptureServiceImpl implements
       // Fin des traces debug - entrée méthode
 
       controleService.checkUntypedMetadatas(untypedDocument.getUMetadatas());
-
       // Traces debug - sortie méthode
       LOGGER.debug("{} - Sortie", prefixeTrc);
       // Fin des traces debug - sortie méthode
