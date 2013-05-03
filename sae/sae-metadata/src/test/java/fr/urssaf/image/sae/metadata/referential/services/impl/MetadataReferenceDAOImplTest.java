@@ -3,13 +3,16 @@ package fr.urssaf.image.sae.metadata.referential.services.impl;
 import java.io.IOException;
 import java.util.Map;
 
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.sae.metadata.exceptions.ReferentialException;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 import fr.urssaf.image.sae.metadata.referential.services.MetadataReferenceDAO;
@@ -25,7 +28,20 @@ import fr.urssaf.image.sae.metadata.referential.services.MetadataReferenceDAO;
 public class MetadataReferenceDAOImplTest {
 
    @Autowired
+   private CassandraServerBean server;
+
+   @Autowired
    private MetadataReferenceDAO referenceDAO;
+
+   @Before
+   public void before() throws Exception {
+      server.resetData();
+   }
+
+   @After
+   public void after() throws Exception {
+      server.resetData();
+   }
 
    /**
     * Permet de tester la récupération des métadonnées du référentiel.
@@ -109,9 +125,9 @@ public class MetadataReferenceDAOImplTest {
             metadonnees.containsKey("DateFinConservation"));
       Assert.assertTrue(String.format(metaNonTrouve, "Gel"), metadonnees
             .containsKey("Gel"));
-      Assert.assertTrue(String
-            .format(metaNonTrouve, "TracabilitePreArchivage"), metadonnees
-            .containsKey("TracabilitePreArchivage"));
+      Assert.assertTrue(
+            String.format(metaNonTrouve, "TracabilitePreArchivage"),
+            metadonnees.containsKey("TracabilitePreArchivage"));
       Assert.assertTrue(String
             .format(metaNonTrouve, "TracabilitePostArchivage"), metadonnees
             .containsKey("TracabilitePostArchivage"));
@@ -254,9 +270,9 @@ public class MetadataReferenceDAOImplTest {
             metadonnees.containsKey("DateFinConservation"));
       Assert.assertTrue(String.format(metaNonTrouve, "Gel"), metadonnees
             .containsKey("Gel"));
-      Assert.assertTrue(String
-            .format(metaNonTrouve, "TracabilitePreArchivage"), metadonnees
-            .containsKey("TracabilitePreArchivage"));
+      Assert.assertTrue(
+            String.format(metaNonTrouve, "TracabilitePreArchivage"),
+            metadonnees.containsKey("TracabilitePreArchivage"));
       Assert.assertTrue(String
             .format(metaNonTrouve, "TracabilitePostArchivage"), metadonnees
             .containsKey("TracabilitePostArchivage"));
@@ -657,9 +673,9 @@ public class MetadataReferenceDAOImplTest {
             .containsKey("CodeRND"));
       Assert.assertTrue(String.format(metaNonTrouve, "DateDebutConservation"),
             metadonnees.containsKey("DateDebutConservation"));
-      Assert.assertTrue(String
-            .format(metaNonTrouve, "TracabilitePreArchivage"), metadonnees
-            .containsKey("TracabilitePreArchivage"));
+      Assert.assertTrue(
+            String.format(metaNonTrouve, "TracabilitePreArchivage"),
+            metadonnees.containsKey("TracabilitePreArchivage"));
       Assert.assertTrue(String.format(metaNonTrouve, "Hash"), metadonnees
             .containsKey("Hash"));
       Assert.assertTrue(String.format(metaNonTrouve, "TypeHash"), metadonnees
