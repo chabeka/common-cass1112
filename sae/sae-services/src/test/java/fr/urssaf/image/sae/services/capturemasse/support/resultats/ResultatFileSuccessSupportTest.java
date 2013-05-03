@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -24,6 +25,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.services.capturemasse.model.CaptureMasseIntegratedDocument;
+import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageDocument;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })
@@ -101,13 +103,14 @@ public class ResultatFileSuccessSupportTest {
    public void testWriteFileWithUuidsSuccess() {
       try {
          File ecdeDirectory = ecdeTestSommaire.getRepEcde();
-         
+
          // Fichier sommaire.xml
          File sommaire = new File(ecdeDirectory, "sommaire.xml");
-         ClassPathResource resSommaire = new ClassPathResource("sommaire/sommaire_success.xml");
+         ClassPathResource resSommaire = new ClassPathResource(
+               "sommaire/sommaire_success.xml");
          FileOutputStream fos = new FileOutputStream(sommaire);
          IOUtils.copy(resSommaire.getInputStream(), fos);
-         
+
          // Liste des documents intégrés
          ConcurrentLinkedQueue<CaptureMasseIntegratedDocument> clq = new ConcurrentLinkedQueue<CaptureMasseIntegratedDocument>();
          CaptureMasseIntegratedDocument doc1 = new CaptureMasseIntegratedDocument();
@@ -125,10 +128,8 @@ public class ResultatFileSuccessSupportTest {
          doc3.setIdentifiant(UUID.randomUUID());
          doc3.setIndex(2);
          clq.add(doc3);
-         
-         support.writeResultatsFile(ecdeDirectory,
-               clq, 10,
-               true, sommaire);
+
+         support.writeResultatsFile(ecdeDirectory, clq, 10, true, sommaire);
 
          File resultatsFile = new File(ecdeDirectory, "resultats.xml");
 
@@ -142,6 +143,79 @@ public class ResultatFileSuccessSupportTest {
          Assert.fail("le fichier sommaire.xml doit être valide");
       }
 
+   }
+
+   @Test
+   public void testVirtualEcdeDirectoryObligatoire() {
+
+      try {
+         support.writeVirtualResultatsFile(null, null, -1, false, null);
+         Assert.fail("exception IllegalArgumentException attendue");
+
+      } catch (IllegalArgumentException exception) {
+         Assert.assertTrue("le message doit être correct", exception
+               .getMessage().contains("ecdeDirectory"));
+
+      } catch (Exception exception) {
+         Assert.fail("exception IllegalArgumentException attendue");
+      }
+   }
+
+   @Test
+   public void testVirtualListObligatoire() {
+      File ecdeDirectory = ecdeTestSommaire.getRepEcde();
+
+      try {
+         support
+               .writeVirtualResultatsFile(ecdeDirectory, null, -1, false, null);
+         Assert.fail("exception IllegalArgumentException attendue");
+
+      } catch (IllegalArgumentException exception) {
+         Assert.assertTrue("le message doit être correct", exception
+               .getMessage().contains("liste des documents intégrés"));
+
+      } catch (Exception exception) {
+         Assert.fail("exception IllegalArgumentException attendue");
+      }
+   }
+
+   @Test
+   public void testVirtualCountObligatoire() {
+      File ecdeDirectory = ecdeTestSommaire.getRepEcde();
+      ConcurrentLinkedQueue<VirtualStorageDocument> list = new ConcurrentLinkedQueue<VirtualStorageDocument>(
+            Arrays.asList(new VirtualStorageDocument()));
+
+      try {
+         support
+               .writeVirtualResultatsFile(ecdeDirectory, list, -1, false, null);
+         Assert.fail("exception IllegalArgumentException attendue");
+
+      } catch (IllegalArgumentException exception) {
+         Assert.assertTrue("le message doit être correct", exception
+               .getMessage().contains("documentsCount"));
+
+      } catch (Exception exception) {
+         Assert.fail("exception IllegalArgumentException attendue");
+      }
+   }
+
+   @Test
+   public void testVirtualSommaireObligatoire() {
+      File ecdeDirectory = ecdeTestSommaire.getRepEcde();
+      ConcurrentLinkedQueue<VirtualStorageDocument> list = new ConcurrentLinkedQueue<VirtualStorageDocument>(
+            Arrays.asList(new VirtualStorageDocument()));
+
+      try {
+         support.writeVirtualResultatsFile(ecdeDirectory, list, 1, true, null);
+         Assert.fail("exception IllegalArgumentException attendue");
+
+      } catch (IllegalArgumentException exception) {
+         Assert.assertTrue("le message doit être correct", exception
+               .getMessage().contains("fichier sommaire"));
+
+      } catch (Exception exception) {
+         Assert.fail("exception IllegalArgumentException attendue");
+      }
    }
 
 }

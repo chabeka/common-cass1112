@@ -91,5 +91,22 @@ public class EnrichissementMetadonneeSupportTest {
       support.enrichirMetadonnee(document);
 
    }
+   
+   @Test
+   public void testEnrichirMetadonneesVirtuellesObligatoire() {
+
+      try {
+         support.enrichirMetadonneesVirtuelles(null);
+         Assert.fail("exception IllegalArgumentException attendue");
+
+      } catch (IllegalArgumentException exception) {
+         Assert.assertTrue("le message doit être correct", exception
+               .getMessage().contains("document virtuel"));
+
+      } catch (Exception exception) {
+         Assert.fail("exception IllegalArgumentException attendue");
+      }
+
+   }
 
 }

@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
    <modelVersion>4.0.0</modelVersion>
 
@@ -40,19 +41,16 @@
 
 
       <!--
-         ==========================================
-         commons-cassandra
+         ========================================== commons-cassandra
          ==========================================
       -->
       <commons.cassandra>0.0.6-SNAPSHOT</commons.cassandra>
 
       <!--
-         Modèle de dépendance :
-         <dependency>
-            <groupId>fr.urssaf.image.commons</groupId>
-            <artifactId>commons-cassandra</artifactId>
-            <version>${commons.cassandra}</version>
-         </dependency>
+         Modèle de dépendance : <dependency>
+         <groupId>fr.urssaf.image.commons</groupId>
+         <artifactId>commons-cassandra</artifactId>
+         <version>${commons.cassandra}</version> </dependency>
       -->
 
 
@@ -226,9 +224,7 @@
          <dependency> <groupId>commons-codec</groupId>
          <artifactId>commons-codec</artifactId>
          <version>${apache.commons-codec.version}</version>
-         </dependency>
-         
-         <dependency>
+         </dependency> <dependency>
          <groupId>org.apache.commons</groupId>
          <artifactId>commons-compress</artifactId>
          <version>${apache.commons-compress.version}</version>
@@ -425,9 +421,9 @@
       <module>sae-dfce-admin-exploit</module>
       <module>sae-ordonnanceur</module>
       <module>sae-lotinstallmaj</module>
-      
-       <!-- Le module du livrable -->
-       <module>sae-livrable</module>
+
+      <!-- Le module du livrable -->
+      <module>sae-livrable</module>
 
    </modules>
 
@@ -538,6 +534,15 @@
                <preparationGoals>clean javadoc:jar install</preparationGoals>
                <autoVersionSubmodules>true</autoVersionSubmodules>
                <useReleaseProfile>false</useReleaseProfile>
+            </configuration>
+         </plugin>
+
+         <!-- Configuration mémoire pour les TU -->
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+               <argLine>-Xmx512m</argLine>
             </configuration>
          </plugin>
 

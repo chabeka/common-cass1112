@@ -16,6 +16,7 @@ import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
+import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
 import fr.urssaf.image.sae.services.util.XmlReadUtils;
 
 /**
@@ -53,13 +54,34 @@ public class CountSommaireDocumentsTasklet implements Tasklet {
       LOGGER.debug("{} - Début du dénombrement des documents présents dans "
             + "le fichier sommaire.xml", TRC_EXEC);
 
-      int nbreElements = XmlReadUtils.compterElements(file, "document");
-      
-      LOGGER.debug("{} - Fin du dénombrement", TRC_EXEC);
-      
-      LOGGER.debug("{} - {} documents présents dans le fichier sommaire.xml", TRC_EXEC, nbreElements);
+      int nbreDocs = XmlReadUtils.compterElements(file, "document");
 
-      context.put(Constantes.DOC_COUNT, nbreElements);
+      int nbreVDocs = XmlReadUtils.compterElements(file, "documentVirtuel");
+      int nbre;
+      String redirection;
+
+      LOGGER.debug("{} - Fin du dénombrement", TRC_EXEC);
+
+      if ((nbreDocs + nbreVDocs == 0) || (nbreDocs > 0 && nbreVDocs > 0)) {
+         throw new CaptureMasseRuntimeException(
+               "le fichier sommaire.xml est erroné");
+
+      } else if (nbreDocs > 0) {
+         nbre = nbreDocs;
+         redirection = "DOCS";
+
+      } else {
+         nbre = nbreVDocs;
+         redirection = "VDOCS";
+
+      }
+
+      LOGGER.debug("{} - {} documents présents dans le fichier sommaire.xml",
+            TRC_EXEC, nbre);
+
+      context.put(Constantes.DOC_COUNT, nbre);
+      stepExecution.getExecutionContext().put(Constantes.COUNT_DIRECTION,
+            redirection);
 
       LOGGER.debug("{} - Fin de méthode", TRC_EXEC);
 

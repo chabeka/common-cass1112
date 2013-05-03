@@ -22,8 +22,10 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.sae.bo.model.bo.VirtualReferenceFile;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
+import fr.urssaf.image.sae.bo.model.untyped.UntypedVirtualDocument;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
@@ -99,7 +101,8 @@ public class CaptureMasseControleSupportTest {
          UnknownCodeRndEx, CaptureMasseSommaireDocumentNotFoundException,
          EmptyDocumentEx, UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
-         RequiredArchivableMetadataEx, UnknownHashCodeEx, MetadataValueNotInDictionaryEx {
+         RequiredArchivableMetadataEx, UnknownHashCodeEx,
+         MetadataValueNotInDictionaryEx {
 
       File repertoireEcdeTraitement = ecdeTestSommaire.getRepEcde();
       File fileSommaire = new File(repertoireEcdeTraitement, "sommaire.xml");
@@ -125,7 +128,8 @@ public class CaptureMasseControleSupportTest {
          UnknownCodeRndEx, CaptureMasseSommaireDocumentNotFoundException,
          EmptyDocumentEx, UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
-         RequiredArchivableMetadataEx, UnknownHashCodeEx, MetadataValueNotInDictionaryEx {
+         RequiredArchivableMetadataEx, UnknownHashCodeEx,
+         MetadataValueNotInDictionaryEx {
 
       File repEcde = ecdeTestSommaire.getRepEcde();
       File fileSommaire = new File(repEcde, "sommaire.xml");
@@ -155,7 +159,8 @@ public class CaptureMasseControleSupportTest {
          UnknownCodeRndEx, CaptureMasseSommaireDocumentNotFoundException,
          EmptyDocumentEx, UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
-         RequiredArchivableMetadataEx, UnknownHashCodeEx, MetadataValueNotInDictionaryEx {
+         RequiredArchivableMetadataEx, UnknownHashCodeEx,
+         MetadataValueNotInDictionaryEx {
 
       File repEcde = ecdeTestSommaire.getRepEcde();
       File fileSommaire = new File(repEcde, "sommaire.xml");
@@ -185,7 +190,8 @@ public class CaptureMasseControleSupportTest {
          UnknownCodeRndEx, CaptureMasseSommaireDocumentNotFoundException,
          EmptyDocumentEx, UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
-         RequiredArchivableMetadataEx, UnknownHashCodeEx, MetadataValueNotInDictionaryEx {
+         RequiredArchivableMetadataEx, UnknownHashCodeEx,
+         MetadataValueNotInDictionaryEx {
 
       File repertoireEcdeTraitement = ecdeTestSommaire.getRepEcde();
       File fileSommaire = new File(repertoireEcdeTraitement, "sommaire.xml");
@@ -216,7 +222,8 @@ public class CaptureMasseControleSupportTest {
          UnknownCodeRndEx, CaptureMasseSommaireDocumentNotFoundException,
          EmptyDocumentEx, UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
-         RequiredArchivableMetadataEx, UnknownHashCodeEx, MetadataValueNotInDictionaryEx {
+         RequiredArchivableMetadataEx, UnknownHashCodeEx,
+         MetadataValueNotInDictionaryEx {
 
       File repertoireEcdeTraitement = ecdeTestSommaire.getRepEcde();
       File fileSommaire = new File(repertoireEcdeTraitement, "sommaire.xml");
@@ -248,7 +255,8 @@ public class CaptureMasseControleSupportTest {
          CaptureMasseSommaireDocumentNotFoundException, EmptyDocumentEx,
          UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
-         RequiredArchivableMetadataEx, UnknownHashCodeEx, MetadataValueNotInDictionaryEx {
+         RequiredArchivableMetadataEx, UnknownHashCodeEx,
+         MetadataValueNotInDictionaryEx {
 
       File repertoireEcdeTraitement = ecdeTestSommaire.getRepEcde();
       File fileSommaire = new File(repertoireEcdeTraitement, "sommaire.xml");
@@ -280,7 +288,8 @@ public class CaptureMasseControleSupportTest {
          CaptureMasseSommaireDocumentNotFoundException, EmptyDocumentEx,
          UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
-         RequiredArchivableMetadataEx, UnknownHashCodeEx, MetadataValueNotInDictionaryEx {
+         RequiredArchivableMetadataEx, UnknownHashCodeEx,
+         MetadataValueNotInDictionaryEx {
 
       File repertoireEcdeTraitement = ecdeTestSommaire.getRepEcde();
       File fileSommaire = new File(repertoireEcdeTraitement, "sommaire.xml");
@@ -312,7 +321,8 @@ public class CaptureMasseControleSupportTest {
          UnknownCodeRndEx, CaptureMasseSommaireDocumentNotFoundException,
          EmptyDocumentEx, UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
-         RequiredArchivableMetadataEx, UnknownHashCodeEx, MetadataValueNotInDictionaryEx {
+         RequiredArchivableMetadataEx, UnknownHashCodeEx,
+         MetadataValueNotInDictionaryEx {
 
       File repertoireEcdeTraitement = ecdeTestSommaire.getRepEcde();
       File fileSommaire = new File(repertoireEcdeTraitement, "sommaire.xml");
@@ -343,7 +353,8 @@ public class CaptureMasseControleSupportTest {
          UnknownCodeRndEx, CaptureMasseSommaireDocumentNotFoundException,
          EmptyDocumentEx, UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
-         RequiredArchivableMetadataEx, UnknownHashCodeEx, MetadataValueNotInDictionaryEx {
+         RequiredArchivableMetadataEx, UnknownHashCodeEx,
+         MetadataValueNotInDictionaryEx {
 
       File repertoireEcdeTraitement = ecdeTestSommaire.getRepEcde();
       File fileSommaire = new File(repertoireEcdeTraitement, "sommaire.xml");
@@ -371,7 +382,8 @@ public class CaptureMasseControleSupportTest {
    }
 
    @Test
-   public void testControleSAEDocumentSuccess() throws MetadataValueNotInDictionaryEx {
+   public void testControleSAEDocumentSuccess()
+         throws MetadataValueNotInDictionaryEx {
 
       try {
          File repertoireEcdeTraitement = ecdeTestSommaire.getRepEcde();
@@ -434,7 +446,7 @@ public class CaptureMasseControleSupportTest {
       list.add(new UntypedMetadata("Hash",
             "a2f93f1f121ebba0faef2c0596f2f126eacae77b"));
       list.add(new UntypedMetadata("TypeHash", "SHA-1"));
-      list.add(new UntypedMetadata("TracabilitrePreArchivage", "P"));
+      list.add(new UntypedMetadata("TracabilitePreArchivage", "P"));
       list.add(new UntypedMetadata("ApplicationProductrice", "GED"));
       list.add(new UntypedMetadata("FormatFichier", "fmt/18"));
       list.add(new UntypedMetadata("NbPages", "2"));
@@ -444,4 +456,294 @@ public class CaptureMasseControleSupportTest {
       return list;
    }
 
+   /*
+    * =====================================================================
+    * tests documents virtuels
+    * =====================================================================
+    */
+
+   @Test(expected = UnknownMetadataEx.class)
+   public void testControleVirtualSAEDocumentUnknownMetaData()
+         throws IOException, UnknownCodeRndEx,
+         CaptureMasseSommaireDocumentNotFoundException, EmptyDocumentEx,
+         UnknownMetadataEx, DuplicatedMetadataEx,
+         InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
+         RequiredArchivableMetadataEx, UnknownHashCodeEx,
+         MetadataValueNotInDictionaryEx {
+
+      File repEcde = ecdeTestSommaire.getRepEcde();
+      File fileSommaire = new File(repEcde, "sommaire.xml");
+      ClassPathResource resSommaire = new ClassPathResource(
+            "sommaire/sommaire_virtuel_success.xml");
+      FileOutputStream fos = new FileOutputStream(fileSommaire);
+
+      IOUtils.copy(resSommaire.getInputStream(), fos);
+      File repDocuments = new File(repEcde, "documents");
+      ClassPathResource resAttestation1 = new ClassPathResource("doc1.PDF");
+      File fileAttestation1 = new File(repDocuments, "doc1.PDF");
+      fos = new FileOutputStream(fileAttestation1);
+      IOUtils.copy(resAttestation1.getInputStream(), fos);
+
+      UntypedVirtualDocument document = new UntypedVirtualDocument();
+      document.setReference(new VirtualReferenceFile());
+      document.setuMetadatas(getUntypedMetaData());
+      document.getuMetadatas().add(
+            new UntypedMetadata("CodeInconnu", "ValeurInconnue"));
+
+      support.controleSAEMetadatas(document);
+
+      Assert.fail();
+   }
+
+   @Test(expected = DuplicatedMetadataEx.class)
+   public void testControleSAEVirtualDocumentDuplicateMetaData()
+         throws IOException, UnknownCodeRndEx,
+         CaptureMasseSommaireDocumentNotFoundException, EmptyDocumentEx,
+         UnknownMetadataEx, DuplicatedMetadataEx,
+         InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
+         RequiredArchivableMetadataEx, UnknownHashCodeEx,
+         MetadataValueNotInDictionaryEx {
+
+      File repEcde = ecdeTestSommaire.getRepEcde();
+      File fileSommaire = new File(repEcde, "sommaire.xml");
+      ClassPathResource resSommaire = new ClassPathResource("sommaire.xml");
+      FileOutputStream fos = new FileOutputStream(fileSommaire);
+
+      IOUtils.copy(resSommaire.getInputStream(), fos);
+      File repertoireEcdeDocuments = new File(repEcde, "documents");
+      ClassPathResource resAttestation1 = new ClassPathResource("doc1.PDF");
+      File fileAttestation1 = new File(repertoireEcdeDocuments, "doc1.PDF");
+      fos = new FileOutputStream(fileAttestation1);
+      IOUtils.copy(resAttestation1.getInputStream(), fos);
+
+      UntypedVirtualDocument document = new UntypedVirtualDocument();
+      VirtualReferenceFile reference = new VirtualReferenceFile();
+      reference.setHash("a2f93f1f121ebba0faef2c0596f2f126eacae77b");
+      document.setReference(reference);
+      document.setuMetadatas(getUntypedMetaData());
+      document.getuMetadatas().add(document.getuMetadatas().get(0));
+
+      support.controleSAEMetadatas(document);
+
+      Assert.fail();
+   }
+
+   @Test(expected = RequiredArchivableMetadataEx.class)
+   public void testControleSAEVirtualDocumentRequiredMetaData()
+         throws IOException, UnknownCodeRndEx,
+         CaptureMasseSommaireDocumentNotFoundException, EmptyDocumentEx,
+         UnknownMetadataEx, DuplicatedMetadataEx,
+         InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
+         RequiredArchivableMetadataEx, UnknownHashCodeEx,
+         MetadataValueNotInDictionaryEx {
+
+      File repertoireEcdeTraitement = ecdeTestSommaire.getRepEcde();
+      File fileSommaire = new File(repertoireEcdeTraitement, "sommaire.xml");
+      ClassPathResource resSommaire = new ClassPathResource("sommaire.xml");
+      FileOutputStream fos = new FileOutputStream(fileSommaire);
+
+      IOUtils.copy(resSommaire.getInputStream(), fos);
+      File repertoireEcdeDocuments = new File(repertoireEcdeTraitement,
+            "documents");
+      ClassPathResource resAttestation1 = new ClassPathResource("doc1.PDF");
+      File fileAttestation1 = new File(repertoireEcdeDocuments, "doc1.PDF");
+      fos = new FileOutputStream(fileAttestation1);
+      IOUtils.copy(resAttestation1.getInputStream(), fos);
+
+      UntypedVirtualDocument document = new UntypedVirtualDocument();
+      VirtualReferenceFile reference = new VirtualReferenceFile();
+      reference.setHash("a2f93f1f121ebba0faef2c0596f2f126eacae77b");
+      document.setReference(reference);
+      document.setuMetadatas(getUntypedMetaData());
+      document.getuMetadatas().remove(3);
+
+      support.controleSAEMetadatas(document);
+
+      Assert.fail();
+   }
+
+   @Test(expected = InvalidValueTypeAndFormatMetadataEx.class)
+   public void testControleSAEVirtualDocumentTypeAndFormatMetaData()
+         throws IOException, UnknownCodeRndEx,
+         CaptureMasseSommaireDocumentNotFoundException, EmptyDocumentEx,
+         UnknownMetadataEx, DuplicatedMetadataEx,
+         InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
+         RequiredArchivableMetadataEx, UnknownHashCodeEx,
+         MetadataValueNotInDictionaryEx {
+
+      File repertoireEcdeTraitement = ecdeTestSommaire.getRepEcde();
+      File fileSommaire = new File(repertoireEcdeTraitement, "sommaire.xml");
+      ClassPathResource resSommaire = new ClassPathResource("sommaire.xml");
+      FileOutputStream fos = new FileOutputStream(fileSommaire);
+
+      IOUtils.copy(resSommaire.getInputStream(), fos);
+      File repertoireEcdeDocuments = new File(repertoireEcdeTraitement,
+            "documents");
+      ClassPathResource resAttestation1 = new ClassPathResource("doc1.PDF");
+      File fileAttestation1 = new File(repertoireEcdeDocuments, "doc1.PDF");
+      fos = new FileOutputStream(fileAttestation1);
+      IOUtils.copy(resAttestation1.getInputStream(), fos);
+
+      UntypedVirtualDocument document = new UntypedVirtualDocument();
+      VirtualReferenceFile reference = new VirtualReferenceFile();
+      reference.setHash("a2f93f1f121ebba0faef2c0596f2f126eacae77b");
+      document.setReference(reference);
+      document.setuMetadatas(getUntypedMetaData());
+      document.getuMetadatas().get(0).setValue("");
+
+      support.controleSAEMetadatas(document);
+
+      Assert.fail();
+   }
+
+   @Test(expected = NotSpecifiableMetadataEx.class)
+   public void testControleSAEVirtualDocumentNotSpecifiableMetadata()
+         throws IOException, UnknownCodeRndEx,
+         CaptureMasseSommaireDocumentNotFoundException, EmptyDocumentEx,
+         UnknownMetadataEx, DuplicatedMetadataEx,
+         InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
+         RequiredArchivableMetadataEx, UnknownHashCodeEx,
+         MetadataValueNotInDictionaryEx {
+
+      File repertoireEcdeTraitement = ecdeTestSommaire.getRepEcde();
+      File fileSommaire = new File(repertoireEcdeTraitement, "sommaire.xml");
+      ClassPathResource resSommaire = new ClassPathResource("sommaire.xml");
+      FileOutputStream fos = new FileOutputStream(fileSommaire);
+
+      IOUtils.copy(resSommaire.getInputStream(), fos);
+      File repertoireEcdeDocuments = new File(repertoireEcdeTraitement,
+            "documents");
+      ClassPathResource resAttestation1 = new ClassPathResource("doc1.PDF");
+      File fileAttestation1 = new File(repertoireEcdeDocuments, "doc1.PDF");
+      fos = new FileOutputStream(fileAttestation1);
+      IOUtils.copy(resAttestation1.getInputStream(), fos);
+
+      UntypedVirtualDocument document = new UntypedVirtualDocument();
+      VirtualReferenceFile reference = new VirtualReferenceFile();
+      reference.setHash("a2f93f1f121ebba0faef2c0596f2f126eacae77b");
+      document.setReference(reference);
+      document.setuMetadatas(getUntypedMetaData());
+      document.getuMetadatas().add(
+            new UntypedMetadata("DureeConservation", "25"));
+
+      support.controleSAEMetadatas(document);
+
+      Assert.fail();
+   }
+
+   @Test(expected = UnknownCodeRndEx.class)
+   public void testControleSAEVirtualDocumentUnknownCodeRnd()
+         throws IOException, UnknownCodeRndEx,
+         CaptureMasseSommaireDocumentNotFoundException, EmptyDocumentEx,
+         UnknownMetadataEx, DuplicatedMetadataEx,
+         InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
+         RequiredArchivableMetadataEx, UnknownHashCodeEx,
+         MetadataValueNotInDictionaryEx {
+
+      File repertoireEcdeTraitement = ecdeTestSommaire.getRepEcde();
+      File fileSommaire = new File(repertoireEcdeTraitement, "sommaire.xml");
+      ClassPathResource resSommaire = new ClassPathResource("sommaire.xml");
+      FileOutputStream fos = new FileOutputStream(fileSommaire);
+
+      IOUtils.copy(resSommaire.getInputStream(), fos);
+      File repertoireEcdeDocuments = new File(repertoireEcdeTraitement,
+            "documents");
+      ClassPathResource resAttestation1 = new ClassPathResource("doc1.PDF");
+      File fileAttestation1 = new File(repertoireEcdeDocuments, "doc1.PDF");
+      fos = new FileOutputStream(fileAttestation1);
+      IOUtils.copy(resAttestation1.getInputStream(), fos);
+
+      UntypedVirtualDocument document = new UntypedVirtualDocument();
+      VirtualReferenceFile reference = new VirtualReferenceFile();
+      reference.setHash("a2f93f1f121ebba0faef2c0596f2f126eacae77b");
+      document.setReference(reference);
+      document.setuMetadatas(getUntypedMetaData());
+      document.getuMetadatas().get(3).setValue("0.1.1.12");
+
+      support.controleSAEMetadatas(document);
+
+      Assert.fail();
+   }
+
+   @Test(expected = UnknownHashCodeEx.class)
+   public void testControleSAEVirtualDocumentUnknownHashCode()
+         throws IOException, UnknownCodeRndEx,
+         CaptureMasseSommaireDocumentNotFoundException, EmptyDocumentEx,
+         UnknownMetadataEx, DuplicatedMetadataEx,
+         InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
+         RequiredArchivableMetadataEx, UnknownHashCodeEx,
+         MetadataValueNotInDictionaryEx {
+
+      File repertoireEcdeTraitement = ecdeTestSommaire.getRepEcde();
+      File fileSommaire = new File(repertoireEcdeTraitement, "sommaire.xml");
+      ClassPathResource resSommaire = new ClassPathResource("sommaire.xml");
+      FileOutputStream fos = new FileOutputStream(fileSommaire);
+
+      IOUtils.copy(resSommaire.getInputStream(), fos);
+      File repertoireEcdeDocuments = new File(repertoireEcdeTraitement,
+            "documents");
+      ClassPathResource resAttestation1 = new ClassPathResource("doc1.PDF");
+      File fileAttestation1 = new File(repertoireEcdeDocuments, "doc1.PDF");
+      fos = new FileOutputStream(fileAttestation1);
+      IOUtils.copy(resAttestation1.getInputStream(), fos);
+
+      UntypedVirtualDocument document = new UntypedVirtualDocument();
+      VirtualReferenceFile reference = new VirtualReferenceFile();
+      reference.setHash("a2f93f1f121ebba0faef2c0596f2f126eacae77b");
+      document.setReference(reference);
+      document.setuMetadatas(getUntypedMetaData());
+      document.getuMetadatas().get(4).setValue(
+            "a2f93f1f121ebba0faef2c0596f2f126eacae76b");
+
+      support.controleSAEMetadatas(document);
+
+      Assert.fail();
+   }
+
+   @Test
+   public void testControleSAVirtualEDocumentSuccess()
+         throws MetadataValueNotInDictionaryEx {
+
+      try {
+         File repertoireEcdeTraitement = ecdeTestSommaire.getRepEcde();
+         File fileSommaire = new File(repertoireEcdeTraitement, "sommaire.xml");
+         ClassPathResource resSommaire = new ClassPathResource("sommaire.xml");
+         FileOutputStream fos = new FileOutputStream(fileSommaire);
+
+         IOUtils.copy(resSommaire.getInputStream(), fos);
+         File repertoireEcdeDocuments = new File(repertoireEcdeTraitement,
+               "documents");
+         ClassPathResource resAttestation1 = new ClassPathResource("doc1.PDF");
+         File fileAttestation1 = new File(repertoireEcdeDocuments, "doc1.PDF");
+         fos = new FileOutputStream(fileAttestation1);
+         IOUtils.copy(resAttestation1.getInputStream(), fos);
+
+         UntypedVirtualDocument document = new UntypedVirtualDocument();
+         VirtualReferenceFile reference = new VirtualReferenceFile();
+         reference.setHash("a2f93f1f121ebba0faef2c0596f2f126eacae77b");
+         document.setReference(reference);
+         document.setuMetadatas(getUntypedMetaData());
+
+         support.controleSAEMetadatas(document);
+
+      } catch (FileNotFoundException e) {
+         Assert.fail("traitement complet attendu sans erreur");
+      } catch (UnknownCodeRndEx e) {
+         Assert.fail("traitement complet attendu sans erreur");
+      } catch (IOException e) {
+         Assert.fail("traitement complet attendu sans erreur");
+      } catch (UnknownMetadataEx e) {
+         Assert.fail("traitement complet attendu sans erreur");
+      } catch (DuplicatedMetadataEx e) {
+         Assert.fail("traitement complet attendu sans erreur");
+      } catch (InvalidValueTypeAndFormatMetadataEx e) {
+         Assert.fail("traitement complet attendu sans erreur");
+      } catch (NotSpecifiableMetadataEx e) {
+         Assert.fail("traitement complet attendu sans erreur");
+      } catch (RequiredArchivableMetadataEx e) {
+         Assert.fail("traitement complet attendu sans erreur");
+      } catch (UnknownHashCodeEx e) {
+         Assert.fail("traitement complet attendu sans erreur");
+      }
+   }
 }

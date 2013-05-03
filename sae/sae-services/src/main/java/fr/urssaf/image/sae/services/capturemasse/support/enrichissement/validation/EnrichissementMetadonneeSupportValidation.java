@@ -7,6 +7,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 
 import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
+import fr.urssaf.image.sae.bo.model.bo.SAEVirtualDocument;
 import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
 
 /**
@@ -19,6 +20,9 @@ import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
 public class EnrichissementMetadonneeSupportValidation {
 
    private static final String ENRICHMENT = "execution(void fr.urssaf.image.sae.services.capturemasse.support.enrichissement.EnrichissementMetadonneeSupport.enrichirMetadonnee(*))"
+         + " && args(document)";
+
+   private static final String ENRICHMENT_VRTL = "execution(void fr.urssaf.image.sae.services.capturemasse.support.enrichissement.EnrichissementMetadonneeSupport.enrichirMetadonneesVirtuelles(*))"
          + " && args(document)";
 
    /**
@@ -34,6 +38,22 @@ public class EnrichissementMetadonneeSupportValidation {
       if (document == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
                "argument.required", "document"));
+      }
+   }
+
+   /**
+    * permet de vérifier que l'ensemble des paramètres de la méthode
+    * enrichirMetadonnee possède tous les arguments renseignés
+    * 
+    * @param document
+    *           modèle métier du document
+    */
+   @Before(ENRICHMENT_VRTL)
+   public final void checkWriteVrtl(final SAEVirtualDocument document) {
+
+      if (document == null) {
+         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
+               "argument.required", "document virtuel"));
       }
    }
 }

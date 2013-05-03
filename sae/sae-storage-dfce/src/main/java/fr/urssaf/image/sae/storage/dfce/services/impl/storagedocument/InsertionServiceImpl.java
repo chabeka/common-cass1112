@@ -2,14 +2,20 @@ package fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.UUID;
 
+import net.docubase.toolkit.model.base.Base;
 import net.docubase.toolkit.model.document.Document;
+import net.docubase.toolkit.model.reference.FileReference;
 import net.docubase.toolkit.service.ServiceProvider;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +40,9 @@ import fr.urssaf.image.sae.storage.dfce.utils.HashUtils;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
+import fr.urssaf.image.sae.storage.model.storagedocument.StorageReferenceFile;
+import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageDocument;
+import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageReference;
 import fr.urssaf.image.sae.storage.services.storagedocument.DeletionService;
 import fr.urssaf.image.sae.storage.services.storagedocument.InsertionService;
 import fr.urssaf.image.sae.storage.util.StorageMetadataUtils;
@@ -295,4 +304,99 @@ public class InsertionServiceImpl extends AbstractServices implements
 
    }
 
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   @Loggable(LogLevel.TRACE)
+   @ServiceChecked
+   public StorageReferenceFile insertStorageReference(
+         VirtualStorageReference reference) throws InsertionServiceEx {
+      String trcPrefix = "insertStorageReference";
+      LOGGER.debug("{} - début", trcPrefix);
+
+      String name = FilenameUtils.getBaseName(reference.getFilePath());
+      String extension = FilenameUtils.getExtension(reference.getFilePath());
+      InputStream stream = null;
+      StorageReferenceFile referenceFile = null;
+
+      try {
+         stream = new FileInputStream(reference.getFilePath());
+
+         FileReference fileReference = getDfceService()
+               .getStorageAdministrationService().createFileReference(name,
+                     extension, stream);
+
+         referenceFile = BeanMapper
+               .fileReferenceToStorageReferenceFile(fileReference);
+
+         LOGGER.debug("{} - insertion réalisée. Fichier inséré : {}{}",
+               new Object[] { trcPrefix, IOUtils.LINE_SEPARATOR,
+                     referenceFile.toString() });
+
+      } catch (Exception exception) {
+         throw new InsertionServiceEx(StorageMessageHandler
+               .getMessage(Constants.INS_CODE_ERROR), exception.getMessage(),
+               exception);
+
+      } finally {
+         if (stream != null) {
+            try {
+               stream.close();
+            } catch (IOException exception) {
+               LOGGER
+                     .info("Impossible de fermer le flux du contenu", exception);
+            }
+         }
+      }
+
+      LOGGER.debug("{} - fin", trcPrefix);
+
+      return referenceFile;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   @Loggable(LogLevel.TRACE)
+   @ServiceChecked
+   public UUID insertVirtualStorageDocument(VirtualStorageDocument vDocument)
+         throws InsertionServiceEx {
+      String trcPrefix = "insertVirtualStorageDocument";
+      LOGGER.debug("{} - début", trcPrefix);
+
+      Base baseDFCE = getBaseDFCE();
+      UUID uuid = null;
+
+      try {
+         LOGGER.debug("{} - transformation de l'objet document en objet DFCE",
+               trcPrefix);
+         Document document = BeanMapper.virtualStorageDocumentToDfceDocument(
+               baseDFCE, vDocument);
+
+         LOGGER.debug(
+               "{} - transformation du fichier de référence en objet DFCE",
+               trcPrefix);
+         FileReference fileReference = BeanMapper
+               .storageReferenceFileToFileReference(vDocument
+                     .getReferenceFile());
+
+         LOGGER.debug("{} - insertion du document virtuel", trcPrefix);
+         Document generateDocument = getDfceService().getStoreService()
+               .storeVirtualDocument(document, fileReference,
+                     vDocument.getStartPage(), vDocument.getEndPage());
+
+         uuid = generateDocument.getUuid();
+
+      } catch (Exception exception) {
+         throw new InsertionServiceEx(StorageMessageHandler
+               .getMessage(Constants.INS_CODE_ERROR), exception.getMessage(),
+               exception);
+      }
+
+      LOGGER.debug("{} - fin", trcPrefix);
+
+      return uuid;
+   }
 }

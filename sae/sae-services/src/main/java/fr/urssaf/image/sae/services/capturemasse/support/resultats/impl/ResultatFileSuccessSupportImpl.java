@@ -47,6 +47,7 @@ import fr.urssaf.image.sae.services.capturemasse.modele.resultats.ResultatsType;
 import fr.urssaf.image.sae.services.capturemasse.support.resultats.ResultatFileSuccessSupport;
 import fr.urssaf.image.sae.services.util.CaptureMasseIntegratedDocumentComparateur;
 import fr.urssaf.image.sae.services.util.JAXBUtils;
+import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageDocument;
 
 /**
  * Implémentation du support {@link ResultatFileSuccessSupport}
@@ -322,5 +323,20 @@ public class ResultatFileSuccessSupportImpl implements
       } catch (XMLStreamException e) {
          throw new CaptureMasseRuntimeException(e);
       }
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final void writeVirtualResultatsFile(final File ecdeDirectory,
+         final ConcurrentLinkedQueue<VirtualStorageDocument> intDocuments,
+         final int documentsCount, boolean restitutionUuids, File sommaireFile) {
+      String trcPrefix = "writeVirtualResultatsFile";
+      LOGGER.debug("{} - début", trcPrefix);
+
+      LOGGER.debug("{} - fin", trcPrefix);
+      // TODO - FBON - Auto-generated method stub
+
    }
 }

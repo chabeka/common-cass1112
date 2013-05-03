@@ -11,6 +11,9 @@ import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocuments;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
+import fr.urssaf.image.sae.storage.model.storagedocument.StorageReferenceFile;
+import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageDocument;
+import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageReference;
 import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.LuceneCriteria;
 import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.UUIDCriteria;
 
@@ -186,5 +189,33 @@ public interface StorageDocumentService {
     *           : Le paramètre du service {@link StorageDocumentService}
     */
    <T> void setStorageDocumentServiceParameter(T parameter);
+   
+   
+   /**
+    * Insère le fichier de référence pour des documents virtuels
+    * virtuels
+    * 
+    * @param reference
+    *           référence pour les documents virtuels
+    * @return le fichier de référence inséré
+    * @throws InsertionServiceEx
+    *            Une erreur s'est produite lors de l'insertion du fichier de
+    *            référence
+    */
+   StorageReferenceFile insertStorageReference(VirtualStorageReference reference)
+         throws InsertionServiceEx;
+
+   /**
+    * Insère le document virtuel
+    * 
+    * @param document
+    *           le document virtuel à archiver
+    * @return l'identifiant unique de l'archive
+    * @throws InsertionServiceEx
+    *            Une erreur s'est produite lors de l'insertion du document
+    *            virtuel
+    */
+   UUID insertVirtualStorageDocument(VirtualStorageDocument document)
+         throws InsertionServiceEx;
 
 }

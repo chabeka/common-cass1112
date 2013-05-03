@@ -21,12 +21,14 @@ import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.sae.bo.model.MetadataError;
 import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
+import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.ecde.exception.EcdeBadURLException;
 import fr.urssaf.image.sae.ecde.exception.EcdeBadURLFormatException;
 import fr.urssaf.image.sae.ecde.service.EcdeServices;
 import fr.urssaf.image.sae.metadata.control.services.MetadataControlServices;
 import fr.urssaf.image.sae.services.controles.SAEControlesCaptureService;
+import fr.urssaf.image.sae.services.controles.SaeControleMetadataService;
 import fr.urssaf.image.sae.services.enrichment.dao.impl.SAEMetatadaFinderUtils;
 import fr.urssaf.image.sae.services.enrichment.xml.model.SAEArchivalMetadatas;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
@@ -65,6 +67,9 @@ public class SAEControlesCaptureServiceImpl implements
    @Autowired
    private EcdeServices ecdeServices;
 
+   @Autowired
+   private SaeControleMetadataService controleService;
+
    /**
     * {@inheritDoc}
     */
@@ -73,47 +78,9 @@ public class SAEControlesCaptureServiceImpl implements
       // Traces debug - entrée méthode
       String prefixeTrc = "checkSaeMetadataForCapture()";
       LOGGER.debug("{} - Début", prefixeTrc);
-      // Fin des traces debug - entrée méthode
-      List<MetadataError> errorsList = metadataCS
-            .checkArchivableMetadata(saeDocument);
-      String listeCodeLong = null;
-      LOGGER
-            .debug(
-                  "{} - Début de la vérification : "
-                        + "Les métadonnées fournies par l'application cliente sont spécifiables à l'archivage",
-                  prefixeTrc);
-      if (CollectionUtils.isNotEmpty(errorsList)) {
-         listeCodeLong = buildLongCodeError(errorsList);
-         LOGGER.debug("{} - {}", prefixeTrc, ResourceMessagesUtils
-               .loadMessage("capture.metadonnees.interdites",
-                     buildLongCodeError(errorsList)));
-         throw new NotSpecifiableMetadataEx(ResourceMessagesUtils
-               .loadMessage("capture.metadonnees.interdites",
-                     buildLongCodeError(errorsList)));
-      }
-      LOGGER
-            .debug(
-                  "{} - Fin de la vérification : "
-                        + "Les métadonnées fournies par l'application cliente sont spécifiables à l'archivage",
-                  prefixeTrc);
 
-      errorsList = metadataCS.checkRequiredForArchivalMetadata(saeDocument);
-      LOGGER
-            .debug(
-                  "{} - Début de la vérification : Les métadonnées obligatoires à l'archivage sont renseignées",
-                  prefixeTrc);
-      if (CollectionUtils.isNotEmpty(errorsList)) {
-         listeCodeLong = buildLongCodeError(errorsList);
-         LOGGER.debug("{} - {}", prefixeTrc, ResourceMessagesUtils.loadMessage(
-               "capture.metadonnees.archivage.obligatoire", listeCodeLong));
-         throw new RequiredArchivableMetadataEx(ResourceMessagesUtils
-               .loadMessage("capture.metadonnees.archivage.obligatoire",
-                     listeCodeLong));
-      }
-      LOGGER
-            .debug(
-                  "{} - Fin de la vérification : Les métadonnées obligatoires à l'archivage sont renseignées",
-                  prefixeTrc);
+      controleService.checkSaeMetadataForCapture(saeDocument.getMetadatas());
+
       // Traces debug - sortie méthode
       LOGGER.debug("{} - Sortie", prefixeTrc);
       // Fin des traces debug - sortie méthode
@@ -230,6 +197,67 @@ public class SAEControlesCaptureServiceImpl implements
     * {@inheritDoc}
     */
    @Override
+   public final void checkHashCodeMetadataListForStorage(
+         List<SAEMetadata> saeMetadatas, String refHash)
+         throws UnknownHashCodeEx {
+      // Traces debug - entrée méthode
+      String prefixeTrc = "checkHashCodeMetadataListForStorage()";
+      LOGGER.debug("{} - Début", prefixeTrc);
+      // Fin des traces debug - entrée méthode
+
+      String fileName = SAEMetatadaFinderUtils.codeMetadataFinder(saeMetadatas,
+            SAEArchivalMetadatas.NOM_FICHIER.getLongCode());
+
+      String hashCodeValue = SAEMetatadaFinderUtils.codeMetadataFinder(
+            saeMetadatas, SAEArchivalMetadatas.HASH_CODE.getLongCode());
+      LOGGER.debug("{} - Hash du document à archiver: {}", prefixeTrc,
+            hashCodeValue);
+
+      String algoHashCode = SAEMetatadaFinderUtils.codeMetadataFinder(
+            saeMetadatas, SAEArchivalMetadatas.TYPE_HASH.getLongCode());
+      LOGGER.debug("{} - Algorithme du document à archiver: {}", prefixeTrc,
+            algoHashCode);
+
+      // File docFile = new File(saeDocument.getFilePath());
+      LOGGER.debug("{} - Début de la vérification : Le type de hash est SHA-1",
+            prefixeTrc);
+      if (!"SHA-1".equals(algoHashCode)) {
+         LOGGER
+               .debug(
+                     "{} - L'algorithme du document à archiver est différent de SHA-1",
+                     prefixeTrc);
+         throw new UnknownHashCodeEx(ResourceMessagesUtils.loadMessage(
+               "capture.hash.erreur", fileName));
+      }
+      LOGGER.debug("{} - Fin de la vérification : "
+            + "Le type de hash est SHA-1", prefixeTrc);
+      LOGGER
+            .debug(
+                  "{} - Début de la vérification : "
+                        + "Equivalence entre le hash fourni en métadonnée et le hash recalculé à partir du fichier",
+                  prefixeTrc);
+      if (!StringUtils.equalsIgnoreCase(refHash, hashCodeValue.trim())) {
+         LOGGER.debug(
+               "{} - Hash du document {} est différent que celui recalculé {}",
+               new Object[] { prefixeTrc, refHash, hashCodeValue });
+         throw new UnknownHashCodeEx(ResourceMessagesUtils.loadMessage(
+               "capture.hash.erreur", fileName));
+      }
+      LOGGER
+            .debug(
+                  "{} - Fin de la vérification : "
+                        + "Equivalence entre le hash fourni en métadonnée et le hash recalculé à partir du fichier",
+                  prefixeTrc);
+
+      // Traces debug - sortie méthode
+      LOGGER.debug("{} - Sortie", prefixeTrc);
+      // Fin des traces debug - sortie méthode
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
    public final void checkUntypedDocument(UntypedDocument untypedDocument)
          throws EmptyDocumentEx {
       // Traces debug - entrée méthode
@@ -266,98 +294,15 @@ public class SAEControlesCaptureServiceImpl implements
    @Override
    public final void checkUntypedMetadata(UntypedDocument untypedDocument)
          throws UnknownMetadataEx, DuplicatedMetadataEx,
-         InvalidValueTypeAndFormatMetadataEx, RequiredArchivableMetadataEx, MetadataValueNotInDictionaryEx {
+         InvalidValueTypeAndFormatMetadataEx, RequiredArchivableMetadataEx,
+         MetadataValueNotInDictionaryEx {
       // Traces debug - entrée méthode
       String prefixeTrc = "checkUntypedDocument()";
       LOGGER.debug("{} - Début", prefixeTrc);
       // Fin des traces debug - entrée méthode
-      String listeCodeLong = null;
-      LOGGER
-            .debug(
-                  "{} - Début de la vérification :"
-                        + " Les métadonnées fournies par l'application cliente existent dans le référentiel des métadonnées",
-                  prefixeTrc);
-      List<MetadataError> errorsList = metadataCS
-            .checkExistingMetadata(untypedDocument);
-      if (CollectionUtils.isNotEmpty(errorsList)) {
-         listeCodeLong = buildLongCodeError(errorsList);
-         LOGGER.debug("{} - {}", prefixeTrc, ResourceMessagesUtils.loadMessage(
-               "capture.metadonnees.inconnu", listeCodeLong));
-         throw new UnknownMetadataEx(ResourceMessagesUtils.loadMessage(
-               "capture.metadonnees.inconnu", listeCodeLong));
-      }
-      LOGGER
-            .debug(
-                  "{} - Fin de la vérification : "
-                        + "Les métadonnées fournies par l'application cliente existent dans le référentiel des métadonnées",
-                  prefixeTrc);
-      LOGGER
-            .debug(
-                  "{} - Début de la vérification : Les métadonnées ne sont pas multi-valuées",
-                  prefixeTrc);
-      errorsList = metadataCS.checkDuplicateMetadata(untypedDocument
-            .getUMetadatas());
-      if (CollectionUtils.isNotEmpty(errorsList)) {
-         listeCodeLong = buildLongCodeError(errorsList);
-         LOGGER.debug("{} - {}", prefixeTrc, ResourceMessagesUtils.loadMessage(
-               "capture.metadonnees.doublon", listeCodeLong));
-         throw new DuplicatedMetadataEx(ResourceMessagesUtils.loadMessage(
-               "capture.metadonnees.doublon", listeCodeLong));
-      }
-      LOGGER
-            .debug(
-                  "{} - Fin de la vérification : Les métadonnées ne sont pas multi-valuées",
-                  prefixeTrc);
-      LOGGER
-            .debug(
-                  "{} - Début de la vérification : Les métadonnées obligatoires à l'archivage sont renseignées",
-                  prefixeTrc);
-      errorsList = metadataCS.checkMetadataRequiredValue(untypedDocument);
-      if (CollectionUtils.isNotEmpty(errorsList)) {
-         listeCodeLong = buildLongCodeError(errorsList);
-         LOGGER.debug("{} - {}", prefixeTrc, ResourceMessagesUtils.loadMessage(
-               "capture.metadonnees.archivage.obligatoire", listeCodeLong));
-         throw new RequiredArchivableMetadataEx(ResourceMessagesUtils
-               .loadMessage("capture.metadonnees.archivage.obligatoire",
-                     listeCodeLong));
-      }
-      LOGGER
-            .debug(
-                  "{} - Fin de la vérification : Les métadonnées obligatoires à l'archivage sont renseignées",
-                  prefixeTrc);
-      LOGGER
-            .debug(
-                  "{} - Début de la vérification : Les métadonnées respectent leurs contraintes de format",
-                  prefixeTrc);
-      errorsList = metadataCS.checkMetadataValueTypeAndFormat(untypedDocument);
-      if (CollectionUtils.isNotEmpty(errorsList)) {
-         listeCodeLong = buildLongCodeError(errorsList);
-         LOGGER.debug("{} - {}", prefixeTrc, ResourceMessagesUtils.loadMessage(
-               "capture.metadonnees.format.type.non.valide", listeCodeLong));
-         throw new InvalidValueTypeAndFormatMetadataEx(ResourceMessagesUtils
-               .loadMessage("capture.metadonnees.format.type.non.valide",
-                     listeCodeLong));
-      }
-      LOGGER
-            .debug(
-                  "{} - Fin de la vérification : Les métadonnées respectent leurs contraintes de format",
-                  prefixeTrc);
-      LOGGER
-            .debug(
-                  "{} - Début de la vérification : Les métadonnées font bien parties du dictionnaire",
-                  prefixeTrc);
-      errorsList = metadataCS.checkMetadataValueFromDictionary(untypedDocument);
-      if (CollectionUtils.isNotEmpty(errorsList)) {
-         listeCodeLong = buildLongCodeError(errorsList);
-         LOGGER.debug("{} - {}", prefixeTrc, ResourceMessagesUtils.loadMessage(
-               "metadata.not.in.dictionary", listeCodeLong));
-         throw new MetadataValueNotInDictionaryEx();
-      }
-      LOGGER
-            .debug(
-                  "{} - Fin de la vérification : Les métadonnées font bien parties du dictionnaire",
-                  prefixeTrc);
-      
+
+      controleService.checkUntypedMetadatas(untypedDocument.getUMetadatas());
+
       // Traces debug - sortie méthode
       LOGGER.debug("{} - Sortie", prefixeTrc);
       // Fin des traces debug - sortie méthode
@@ -587,6 +532,24 @@ public class SAEControlesCaptureServiceImpl implements
          throw new EmptyFileNameEx(ResourceMessagesUtils
                .loadMessage("nomfichier.vide"));
       }
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final void checkSaeMetadataListForCapture(List<SAEMetadata> metadatas)
+         throws NotSpecifiableMetadataEx, RequiredArchivableMetadataEx {
+
+      // Traces debug - entrée méthode
+      String prefixeTrc = "checkSaeMetadataForCapture()";
+      LOGGER.debug("{} - Début", prefixeTrc);
+
+      controleService.checkSaeMetadataForCapture(metadatas);
+
+      // Traces debug - sortie méthode
+      LOGGER.debug("{} - Sortie", prefixeTrc);
+      // Fin des traces debug - sortie méthode
    }
 
 }

@@ -10,6 +10,8 @@ import java.text.MessageFormat;
  */
 public class CaptureMasseSommaireHashException extends Exception {
 
+   private static final long serialVersionUID = 1L;
+
    /**
     * Constructeur
     * 

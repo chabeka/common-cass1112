@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.sae.bo.model.bo.VirtualReferenceFile;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
+import fr.urssaf.image.sae.bo.model.untyped.UntypedVirtualDocument;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireDocumentNotFoundException;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
@@ -37,7 +39,8 @@ public class CaptureMasseControleSupportValidationTest {
          throws UnknownCodeRndEx, EmptyDocumentEx, UnknownMetadataEx,
          DuplicatedMetadataEx, InvalidValueTypeAndFormatMetadataEx,
          NotSpecifiableMetadataEx, RequiredArchivableMetadataEx,
-         UnknownHashCodeEx, CaptureMasseSommaireDocumentNotFoundException, MetadataValueNotInDictionaryEx {
+         UnknownHashCodeEx, CaptureMasseSommaireDocumentNotFoundException,
+         MetadataValueNotInDictionaryEx {
 
       support.controleSAEDocument(null, new File(""));
       Assert.fail("sortie aspect attendue");
@@ -48,7 +51,8 @@ public class CaptureMasseControleSupportValidationTest {
          throws UnknownCodeRndEx, EmptyDocumentEx, UnknownMetadataEx,
          DuplicatedMetadataEx, InvalidValueTypeAndFormatMetadataEx,
          NotSpecifiableMetadataEx, RequiredArchivableMetadataEx,
-         UnknownHashCodeEx, CaptureMasseSommaireDocumentNotFoundException, MetadataValueNotInDictionaryEx {
+         UnknownHashCodeEx, CaptureMasseSommaireDocumentNotFoundException,
+         MetadataValueNotInDictionaryEx {
       support.controleSAEDocument(new UntypedDocument(), null);
       Assert.fail("sortie aspect attendue");
 
@@ -59,6 +63,91 @@ public class CaptureMasseControleSupportValidationTest {
          throws RequiredStorageMetadataEx {
       support.controleSAEDocumentStockage(null);
       Assert.fail("sortie aspect attendue");
+
+   }
+
+   @Test
+   public void testControleReferenceFileObligatoire() {
+
+      try {
+         support.controleFichier(null, null);
+         Assert.fail("exception IllegalArgumentException attendue");
+
+      } catch (IllegalArgumentException exception) {
+         Assert.assertTrue("le message doit être correct", exception
+               .getMessage().contains("fichier de référence"));
+
+      } catch (Exception exception) {
+         Assert.fail("exception IllegalArgumentException attendue");
+      }
+
+   }
+
+   @Test
+   public void testControleReferenceFileDirectoryObligatoire() {
+
+      try {
+         support.controleFichier(new VirtualReferenceFile(), null);
+         Assert.fail("exception IllegalArgumentException attendue");
+
+      } catch (IllegalArgumentException exception) {
+         Assert.assertTrue("le message doit être correct", exception
+               .getMessage().contains("ecdeDirectory"));
+
+      } catch (Exception exception) {
+         Assert.fail("exception IllegalArgumentException attendue");
+      }
+
+   }
+
+   @Test
+   public void testControleSAEMetadataDocumentObligatoire() {
+
+      try {
+         support.controleSAEMetadatas(null);
+         Assert.fail("exception IllegalArgumentException attendue");
+
+      } catch (IllegalArgumentException exception) {
+         Assert.assertTrue("le message doit être correct", exception
+               .getMessage().contains("document virtuel"));
+
+      } catch (Exception exception) {
+         Assert.fail("exception IllegalArgumentException attendue");
+      }
+
+   }
+
+   @Test
+   public void testControleSAEMetadataFichierReferenceObligatoire() {
+
+      try {
+         support.controleSAEMetadatas(new UntypedVirtualDocument());
+         Assert.fail("exception IllegalArgumentException attendue");
+
+      } catch (IllegalArgumentException exception) {
+         Assert.assertTrue("le message doit être correct", exception
+               .getMessage().contains("fichier de référence du document"));
+
+      } catch (Exception exception) {
+         Assert.fail("exception IllegalArgumentException attendue");
+      }
+
+   }
+
+   @Test
+   public void testControleSAEVirtualDocumentStockageDocumentObligatoire() {
+
+      try {
+         support.controleSAEVirtualDocumentStockage(null);
+         Assert.fail("exception IllegalArgumentException attendue");
+
+      } catch (IllegalArgumentException exception) {
+         Assert.assertTrue("le message doit être correct", exception
+               .getMessage().contains("document virtuel"));
+
+      } catch (Exception exception) {
+         Assert.fail("exception IllegalArgumentException attendue");
+      }
 
    }
 }

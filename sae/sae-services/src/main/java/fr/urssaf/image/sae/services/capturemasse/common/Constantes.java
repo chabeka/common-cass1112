@@ -128,6 +128,11 @@ public final class Constantes {
    public static final String TRACE_CODE_EVT_ECHEC_CM = "CAPTURE_MASSE|KO";
 
    /**
+    * La redirection a prendre pour le countElement
+    */
+   public static final String COUNT_DIRECTION = "capture.masse.count.element.redirection";
+
+   /**
     * Constructeur
     */
    private Constantes() {

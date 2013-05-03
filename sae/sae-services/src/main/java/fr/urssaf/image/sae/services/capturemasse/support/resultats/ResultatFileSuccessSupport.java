@@ -7,6 +7,7 @@ import java.io.File;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import fr.urssaf.image.sae.services.capturemasse.model.CaptureMasseIntegratedDocument;
+import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageDocument;
 
 /**
  * Support pour l'écriture des fichiers resultats.xml pour les traitements de
@@ -28,10 +29,32 @@ public interface ResultatFileSuccessSupport {
     * @param restitutionUuids
     *           booléen pour ajouter ou non la liste des documents intégrés avec
     *           leur UUID dans le resultat.xml
-    * @param sommaireFile fichier sommaire.xml          
+    * @param sommaireFile
+    *           fichier sommaire.xml
     */
    void writeResultatsFile(File ecdeDirectory,
-         ConcurrentLinkedQueue<CaptureMasseIntegratedDocument> integDocs, int initDocCount,
-         boolean restitutionUuids, File sommaireFile);
+         ConcurrentLinkedQueue<CaptureMasseIntegratedDocument> integDocs,
+         int initDocCount, boolean restitutionUuids, File sommaireFile);
+
+   /**
+    * Service permettant l'écriture d'un fichier resultats.xml dans l'ECDE pour
+    * les captures de masse de documents virtuels en mode tout ou rien ayant
+    * réussi
+    * 
+    * @param ecdeDirectory
+    *           répertoire ECDE de traitement pour une capture de masse
+    * @param integDocs
+    *           liste des documents virtuels persistés dans DFCE
+    * @param initDocCount
+    *           nombre de documents initial
+    * @param restitutionUuids
+    *           indicateur permettant de savoir s'il faut restituer les
+    *           identifiants des documents intégrés
+    * @param sommaireFile
+    *           fichier sommaire.xml
+    */
+   void writeVirtualResultatsFile(File ecdeDirectory,
+         ConcurrentLinkedQueue<VirtualStorageDocument> integDocs,
+         int initDocCount, boolean restitutionUuids, File sommaireFile);
 
 }

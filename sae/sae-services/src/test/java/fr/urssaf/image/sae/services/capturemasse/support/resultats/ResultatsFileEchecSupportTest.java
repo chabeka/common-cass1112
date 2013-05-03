@@ -108,4 +108,56 @@ public class ResultatsFileEchecSupportTest {
 
    }
 
+   @Test
+   public void testVirtualEcdeDirectoryObligatoire() {
+
+      try {
+         support.writeVirtualResultatsFile(null, new File(""),
+               new CaptureMasseErreur(), 0);
+         Assert.fail("exception IllegalArgumentException attendue");
+
+      } catch (IllegalArgumentException exception) {
+         Assert.assertTrue("le message doit être correct", exception
+               .getMessage().contains("ecdeDirectory"));
+
+      } catch (Exception exception) {
+         Assert.fail("exception IllegalArgumentException attendue");
+      }
+
+   }
+
+   @Test
+   public void testVirtualSommaireObligatoire() {
+
+      try {
+         support.writeVirtualResultatsFile(new File(""), null,
+               new CaptureMasseErreur(), 0);
+         Assert.fail("exception IllegalArgumentException attendue");
+
+      } catch (IllegalArgumentException exception) {
+         Assert.assertTrue("le message doit être correct", exception
+               .getMessage().contains("sommaireFile"));
+
+      } catch (Exception exception) {
+         Assert.fail("exception IllegalArgumentException attendue");
+      }
+   }
+
+   @Test
+   public void testVirtualErreurObligatoire() {
+
+      try {
+         support.writeVirtualResultatsFile(new File(""), new File(""), null, 0);
+         Assert.fail("exception IllegalArgumentException attendue");
+
+      } catch (IllegalArgumentException exception) {
+         Assert.assertTrue("le message doit être correct", exception
+               .getMessage().contains("erreur"));
+
+      } catch (Exception exception) {
+         Assert.fail("exception IllegalArgumentException attendue");
+      }
+
+   }
+
 }

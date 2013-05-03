@@ -1,5 +1,6 @@
 package fr.urssaf.image.sae.metadata.validation;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
@@ -38,6 +39,21 @@ public class MetadataControlServiceValidation {
    }
 
    /**
+    * Valide l'argument de la méthode
+    * {@link fr.urssaf.image.sae.metadata.control.services.MetadataControlServices#checkArchivableMetadata(fr.urssaf.image.sae.bo.model.bo.SAEDocument)}
+    * checkArchivableMetadata}. <br>
+    * 
+    * @param metadatas
+    *           : la liste des métadonnées
+    */
+   @Before(value = "execution( java.util.List<fr.urssaf.image.sae.bo.model.MetadataError>  fr.urssaf.image.sae.metadata.control.services.MetadataControlServices.checkArchivableMetadataList(..)) && args(metadatas)")
+   public final void checkArchivableMetadataList(
+         final List<SAEMetadata> metadatas) {
+      validateMetadatas(metadatas);
+
+   }
+
+   /**
     * 
     * @param saeDocument
     *           : Un objet de type {@link SAEDocument}
@@ -47,6 +63,11 @@ public class MetadataControlServiceValidation {
             "document.required", SAEDocument.class.getName()));
       Validate.notNull(saeDocument.getMetadatas(), MetadataMessageHandler
             .getMessage("metadatas.required", SAEDocument.class.getName()));
+   }
+
+   private void validateMetadatas(final Collection<?> collection) {
+      Validate.notNull(collection, MetadataMessageHandler
+            .getMessage("metadatas.list.required"));
    }
 
    /**
@@ -61,6 +82,21 @@ public class MetadataControlServiceValidation {
    public final void checkRequiredForArchivalMetadata(
          final SAEDocument saeDocument) {
       validateSaeDocument(saeDocument);
+
+   }
+
+   /**
+    * Valide l'argument de la méthode
+    * {@link fr.urssaf.image.sae.metadata.control.services.MetadataControlServices#checkRequiredForArchivalMetadataList(fr.urssaf.image.sae.bo.model.bo.SAEDocument)}
+    * checkRequiredMetadata}. <br>
+    * 
+    * @param metadatas
+    *           : la liste des métadonnées
+    */
+   @Before(value = "execution( java.util.List<fr.urssaf.image.sae.bo.model.MetadataError>  fr.urssaf.image.sae.metadata.control.services.MetadataControlServices.checkRequiredForArchivalMetadataList(..)) && args(metadatas)")
+   public final void checkRequiredForArchivalMetadata(
+         final List<SAEMetadata> metadatas) {
+      validateMetadatas(metadatas);
 
    }
 
@@ -91,6 +127,20 @@ public class MetadataControlServiceValidation {
    public final void checkExistingMetadata(final UntypedDocument untypedDoc) {
       validateUntypedDocument(untypedDoc);
 
+   }
+
+   /**
+    * Valide l'argument de la méthode
+    * {@link fr.urssaf.image.sae.metadata.control.services.MetadataControlServices#checkExistingMetadata(fr.urssaf.image.sae.bo.model.untyped.UntypedDocument)}
+    * checkExistingMetadata}. <br>
+    * 
+    * @param metadatas
+    *           : La liste des métadonnées
+    */
+   @Before(value = "execution( java.util.List<fr.urssaf.image.sae.bo.model.MetadataError>  fr.urssaf.image.sae.metadata.control.services.MetadataControlServices.checkExistingMetadataList(..)) && args(metadatas)")
+   public final void checkExistingMetadataList(
+         final List<UntypedMetadata> metadatas) {
+      validateMetadatas(metadatas);
    }
 
    /**
@@ -137,6 +187,21 @@ public class MetadataControlServiceValidation {
 
    /**
     * Valide l'argument de la méthode
+    * {@link fr.urssaf.image.sae.metadata.control.services.MetadataControlServices#checkMetadataListValueTypeAndFormat(fr.urssaf.image.sae.bo.model.untyped.UntypedDocument)}
+    * checkMetadataValueTypeAndFormat}. <br>
+    * 
+    * @param metadatas
+    *           : la liste des métadonnées
+    */
+   @Before(value = "execution( java.util.List<fr.urssaf.image.sae.bo.model.MetadataError>  fr.urssaf.image.sae.metadata.control.services.MetadataControlServices.checkMetadataListValueTypeAndFormat(..)) && args(metadatas)")
+   public final void checkMetadataListValueTypeAndFormat(
+         final List<UntypedMetadata> metadatas) {
+      validateMetadatas(metadatas);
+
+   }
+
+   /**
+    * Valide l'argument de la méthode
     * {@link fr.urssaf.image.sae.metadata.control.services.MetadataControlServices#checkMetadataRequiredValue(fr.urssaf.image.sae.bo.model.untyped.UntypedDocument)}
     * checkMetadataValueTypeAndFormat}. <br>
     * 
@@ -146,6 +211,51 @@ public class MetadataControlServiceValidation {
    @Before(value = "execution( java.util.List<fr.urssaf.image.sae.bo.model.MetadataError>  fr.urssaf.image.sae.metadata.control.services.MetadataControlServices.checkMetadataRequiredValue(..)) && args(untypedDoc)")
    public final void checkMetadataRequiredValue(final UntypedDocument untypedDoc) {
       validateUntypedDocument(untypedDoc);
+
+   }
+
+   /**
+    * Valide l'argument de la méthode
+    * {@link fr.urssaf.image.sae.metadata.control.services.MetadataControlServices#checkMetadataRequiredValue(fr.urssaf.image.sae.bo.model.untyped.UntypedDocument)}
+    * checkMetadataValueTypeAndFormat}. <br>
+    * 
+    * @param metadatas
+    *           : la liste des métadonnées
+    */
+   @Before(value = "execution( java.util.List<fr.urssaf.image.sae.bo.model.MetadataError>  fr.urssaf.image.sae.metadata.control.services.MetadataControlServices.checkMetadataListRequiredValue(..)) && args(metadatas)")
+   public final void checkMetadataListRequiredValue(
+         final List<UntypedMetadata> metadatas) {
+      validateMetadatas(metadatas);
+
+   }
+
+   /**
+    * Valide l'argument de la méthode
+    * {@link fr.urssaf.image.sae.metadata.control.services.MetadataControlServices#checkMetadataRequiredValue(fr.urssaf.image.sae.bo.model.untyped.UntypedDocument)}
+    * checkMetadataValueTypeAndFormat}. <br>
+    * 
+    * @param untypedDoc
+    *           : un objet de type {@link UntypedDocument}
+    */
+   @Before(value = "execution( java.util.List<fr.urssaf.image.sae.bo.model.MetadataError>  fr.urssaf.image.sae.metadata.control.services.MetadataControlServices.checkMetadataValueFromDictionary(..)) && args(untypedDoc)")
+   public final void checkMetadataValueFromDictionary(
+         final UntypedDocument untypedDoc) {
+      validateUntypedDocument(untypedDoc);
+
+   }
+
+   /**
+    * Valide l'argument de la méthode
+    * {@link fr.urssaf.image.sae.metadata.control.services.MetadataControlServices#checkMetadataRequiredValue(fr.urssaf.image.sae.bo.model.untyped.UntypedDocument)}
+    * checkMetadataValueTypeAndFormat}. <br>
+    * 
+    * @param metadatas
+    *           : la liste des métadonnées
+    */
+   @Before(value = "execution( java.util.List<fr.urssaf.image.sae.bo.model.MetadataError>  fr.urssaf.image.sae.metadata.control.services.MetadataControlServices.checkMetadataListValueFromDictionary(..)) && args(metadatas)")
+   public final void checkMetadataListValueFromDictionary(
+         final List<UntypedMetadata> metadatas) {
+      validateMetadatas(metadatas);
 
    }
 

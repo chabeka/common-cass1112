@@ -6,7 +6,10 @@ package fr.urssaf.image.sae.services.capturemasse.support.controle;
 import java.io.File;
 
 import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
+import fr.urssaf.image.sae.bo.model.bo.SAEVirtualDocument;
+import fr.urssaf.image.sae.bo.model.bo.VirtualReferenceFile;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
+import fr.urssaf.image.sae.bo.model.untyped.UntypedVirtualDocument;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireDocumentNotFoundException;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
@@ -75,12 +78,14 @@ public interface CaptureMasseControleSupport {
     *            reconnu par le SAE
     * @throws UnknownCodeRndEx
     *            La métadonnée codeRND n'existe pas
+    * @throws MetadataValueNotInDictionaryEx
     */
    void controleSAEDocument(UntypedDocument document, File ecdeDirectory)
          throws CaptureMasseSommaireDocumentNotFoundException, EmptyDocumentEx,
          UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
-         RequiredArchivableMetadataEx, UnknownHashCodeEx, UnknownCodeRndEx, MetadataValueNotInDictionaryEx;
+         RequiredArchivableMetadataEx, UnknownHashCodeEx, UnknownCodeRndEx,
+         MetadataValueNotInDictionaryEx;
 
    /**
     * Service permettant de contrôler le fichier et les métadonnées d'un
@@ -92,5 +97,67 @@ public interface CaptureMasseControleSupport {
     *            Des métadonnées obligatoires au stockage ne sont pas spécifiées
     */
    void controleSAEDocumentStockage(SAEDocument document)
+         throws RequiredStorageMetadataEx;
+
+   /**
+    * Réalise le contrôle du fichier passé en paramètre
+    * 
+    * @param virtualRefFile
+    *           le fichier de référence
+    * @param ecdeDirectory
+    *           dossier parent
+    * @throws CaptureMasseSommaireDocumentNotFoundException
+    *            Exception levée lorsque le fichier de référence n'existe pas
+    * @throws EmptyDocumentEx
+    *            Exception levée lorsque le fichier de référence est vide
+    */
+   void controleFichier(VirtualReferenceFile virtualRefFile, File ecdeDirectory)
+         throws CaptureMasseSommaireDocumentNotFoundException, EmptyDocumentEx;
+
+   /**
+    * Réalise les contrôles sur les métadonnées dans un traitement de capture de
+    * masse
+    * 
+    * @param document
+    *           le document virtuel à vérifier
+    * @throws UnknownMetadataEx
+    *            Des métadonnées n'existent pas dans le référentiel des
+    *            métadonnées
+    * @throws DuplicatedMetadataEx
+    *            Des métadonnées sont dupliquées
+    * @throws InvalidValueTypeAndFormatMetadataEx
+    *            Une métadonnée a un type ou un format non conforme au
+    *            référentiel des métadonnées
+    * @throws NotSpecifiableMetadataEx
+    *            Des métadonnées ne sont pas autorisées à l'archivage
+    * @throws RequiredArchivableMetadataEx
+    *            Des métadonnées obligatoires à l'archivage ne sont pas
+    *            spécifiées
+    * @throws UnknownHashCodeEx
+    *            La métadonnée TypeHash n'est pas un algorithme de hashage
+    *            reconnu par le SAE
+    * @throws UnknownCodeRndEx
+    *            La métadonnée codeRND n'existe pas
+    * @throws MetadataValueNotInDictionaryEx
+    *            La valeur de la métadonnée n'est pas comprise dans le
+    *            dictionnaire des valeurs associé
+    */
+   void controleSAEMetadatas(UntypedVirtualDocument document)
+         throws UnknownMetadataEx, DuplicatedMetadataEx,
+         InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
+         RequiredArchivableMetadataEx, UnknownHashCodeEx, UnknownCodeRndEx,
+         MetadataValueNotInDictionaryEx;
+
+   /**
+    * Service permettant de réaliser les contrôles des métadonnées avant
+    * stockage d'un document virtuel
+    * 
+    * @param document
+    *           le document virtuel à vérifier
+    * @throws RequiredStorageMetadataEx
+    *            Exception levée si une métadonnée obligatoire au stockage est
+    *            absente
+    */
+   void controleSAEVirtualDocumentStockage(SAEVirtualDocument document)
          throws RequiredStorageMetadataEx;
 }

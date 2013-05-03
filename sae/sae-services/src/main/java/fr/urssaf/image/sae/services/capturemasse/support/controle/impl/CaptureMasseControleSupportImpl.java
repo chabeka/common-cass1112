@@ -14,7 +14,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
+import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
+import fr.urssaf.image.sae.bo.model.bo.SAEVirtualDocument;
+import fr.urssaf.image.sae.bo.model.bo.VirtualReferenceFile;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
+import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
+import fr.urssaf.image.sae.bo.model.untyped.UntypedVirtualDocument;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.droit.service.PrmdService;
 import fr.urssaf.image.sae.mapping.exception.InvalidSAETypeException;
@@ -24,6 +29,7 @@ import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeEx
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireDocumentNotFoundException;
 import fr.urssaf.image.sae.services.capturemasse.support.controle.CaptureMasseControleSupport;
 import fr.urssaf.image.sae.services.controles.SAEControlesCaptureService;
+import fr.urssaf.image.sae.services.controles.SaeControleMetadataService;
 import fr.urssaf.image.sae.services.enrichment.dao.RNDReferenceDAO;
 import fr.urssaf.image.sae.services.enrichment.dao.impl.SAEMetatadaFinderUtils;
 import fr.urssaf.image.sae.services.enrichment.xml.model.SAEArchivalMetadatas;
@@ -54,10 +60,11 @@ public class CaptureMasseControleSupportImpl implements
 
    private static final String PREFIXE_TRC = "controleFichierNonVide()";
 
-   private static final String TRC_CONTROLE = "controleSAEDocument";
-
    @Autowired
    private SAEControlesCaptureService controleService;
+
+   @Autowired
+   private SaeControleMetadataService controleMetadataService;
 
    @Autowired
    private MappingDocumentService mappingService;
@@ -77,7 +84,8 @@ public class CaptureMasseControleSupportImpl implements
          throws CaptureMasseSommaireDocumentNotFoundException, EmptyDocumentEx,
          UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
-         RequiredArchivableMetadataEx, UnknownHashCodeEx, UnknownCodeRndEx, MetadataValueNotInDictionaryEx {
+         RequiredArchivableMetadataEx, UnknownHashCodeEx, UnknownCodeRndEx,
+         MetadataValueNotInDictionaryEx {
 
       final File file = getFichierSiExiste(document, ecdeDirectory);
 
@@ -105,29 +113,8 @@ public class CaptureMasseControleSupportImpl implements
 
       controleService.checkHashCodeMetadataForStorage(saeDocument);
 
-      final String valeurMetadata = SAEMetatadaFinderUtils.codeMetadataFinder(
-            saeDocument.getMetadatas(), SAEArchivalMetadatas.CODE_RND
-                  .getLongCode());
-
-      try {
-         rndReferenceDAO.getTypeDocument(valeurMetadata);
-      } catch (ReferentialRndException e) {
-         throw new CaptureMasseRuntimeException(e);
-      }
-
-      LOGGER.debug("{} - récupération du Vi", TRC_CONTROLE);
-      AuthenticationToken token = (AuthenticationToken) SecurityContextHolder
-            .getContext().getAuthentication();
-      List<SaePrmd> prmds = token.getDetails().get("archivage_masse");
-
-      LOGGER.debug("{} - vérification des droits", TRC_CONTROLE);
-      boolean isPermitted = prmdService.isPermitted(document.getUMetadatas(),
-            prmds);
-
-      if (!isPermitted) {
-         throw new AccessDeniedException(
-               "Le document est refusé à l'archivage car les droits sont insuffisants");
-      }
+      controleSAEMetadataList(document.getUMetadatas(), saeDocument
+            .getMetadatas());
 
    }
 
@@ -157,14 +144,29 @@ public class CaptureMasseControleSupportImpl implements
          final File ecdeDirectory)
          throws CaptureMasseSommaireDocumentNotFoundException {
 
+      return getFichierSiExiste(document.getFilePath(), ecdeDirectory);
+   }
+
+   /**
+    * Vérifie si le fichier existe. Si c'est le cas, le retourne. Sinon, levée
+    * d'une exception
+    * 
+    * @param filePath
+    *           chemin du fichier dont il faut vérifier l'existence
+    * @param ecdeDirectory
+    *           répertoire de traitement
+    * @throws CaptureMasseSommaireDocumentNotFoundException
+    *            exception si le fichier n'existe pas
+    */
+   private File getFichierSiExiste(String filePath, File ecdeDirectory)
+         throws CaptureMasseSommaireDocumentNotFoundException {
       final String path = ecdeDirectory.getAbsolutePath() + File.separator
-            + "documents" + File.separator + document.getFilePath();
+            + "documents" + File.separator + filePath;
 
       final File documentFile = new File(path);
 
       if (!documentFile.exists()) {
-         throw new CaptureMasseSommaireDocumentNotFoundException(document
-               .getFilePath());
+         throw new CaptureMasseSommaireDocumentNotFoundException(filePath);
       }
 
       return documentFile;
@@ -194,6 +196,100 @@ public class CaptureMasseControleSupportImpl implements
 
       LOGGER.debug("{} - Sortie", PREFIXE_TRC);
 
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void controleFichier(VirtualReferenceFile virtualRefFile,
+         File ecdeDirectory)
+         throws CaptureMasseSommaireDocumentNotFoundException, EmptyDocumentEx {
+      String trcPrefix = "controleFichier";
+      LOGGER.debug("{} - début", trcPrefix);
+
+      File file = getFichierSiExiste(virtualRefFile.getFilePath(),
+            ecdeDirectory);
+      controleFichierNonVide(file);
+
+      LOGGER.debug("{} - fin", trcPrefix);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void controleSAEMetadatas(UntypedVirtualDocument document)
+         throws UnknownMetadataEx, DuplicatedMetadataEx,
+         InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
+         RequiredArchivableMetadataEx, UnknownHashCodeEx, UnknownCodeRndEx,
+         MetadataValueNotInDictionaryEx {
+      String trcPrefix = "controleSAEMetadatas";
+      LOGGER.debug("{} - début", trcPrefix);
+
+      controleMetadataService.checkUntypedMetadatas(document.getuMetadatas());
+
+      List<SAEMetadata> saeMetadatas;
+      // Les deux catch sont inaccessibles car toutes les vérifications des
+      // metadonnees sont réalisées avant
+      try {
+         saeMetadatas = mappingService.untypedMetadatasToSaeMetadatas(document
+               .getuMetadatas());
+      } catch (InvalidSAETypeException e) {
+         throw new CaptureMasseRuntimeException(e);
+      } catch (MappingFromReferentialException e) {
+         throw new CaptureMasseRuntimeException(e);
+      }
+
+      controleService.checkSaeMetadataListForCapture(saeMetadatas);
+
+      String hash = document.getReference().getHash();
+      controleService.checkHashCodeMetadataListForStorage(saeMetadatas, hash);
+
+      controleSAEMetadataList(document.getuMetadatas(), saeMetadatas);
+
+      LOGGER.debug("{} - fin", trcPrefix);
+
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void controleSAEVirtualDocumentStockage(SAEVirtualDocument document)
+         throws RequiredStorageMetadataEx {
+      String trcPrefix = "controleSAEVirtualDocumentStockage()";
+      LOGGER.debug("{} - début", trcPrefix);
+
+      LOGGER.debug("{} - fin", trcPrefix);
+      // TODO Auto-generated method stub
+
+   }
+
+   private void controleSAEMetadataList(List<UntypedMetadata> metadatas,
+         List<SAEMetadata> saeMetadatas) throws UnknownCodeRndEx {
+      String trcPrefix = "controleSAEMetadataList()";
+      final String valeurMetadata = SAEMetatadaFinderUtils.codeMetadataFinder(
+            saeMetadatas, SAEArchivalMetadatas.CODE_RND.getLongCode());
+
+      try {
+         rndReferenceDAO.getTypeDocument(valeurMetadata);
+      } catch (ReferentialRndException e) {
+         throw new CaptureMasseRuntimeException(e);
+      }
+
+      LOGGER.debug("{} - récupération du Vi", trcPrefix);
+      AuthenticationToken token = (AuthenticationToken) SecurityContextHolder
+            .getContext().getAuthentication();
+      List<SaePrmd> prmds = token.getDetails().get("archivage_masse");
+
+      LOGGER.debug("{} - vérification des droits", trcPrefix);
+      boolean isPermitted = prmdService.isPermitted(metadatas, prmds);
+
+      if (!isPermitted) {
+         throw new AccessDeniedException(
+               "Le document est refusé à l'archivage car les droits sont insuffisants");
+      }
    }
 
 }

@@ -134,7 +134,7 @@
                <somres:valeur>Attestation de vigilance</somres:valeur>
             </somres:metadonnee>
             <somres:metadonnee>
-               <somres:code>TracabilitrePreArchivage</somres:code>
+               <somres:code>TracabilitePreArchivage</somres:code>
                <somres:valeur>Tracabilite pre archivage</somres:valeur>
             </somres:metadonnee>
               <somres:metadonnee>

@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.xml.bind.JAXBElement;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.ExitStatus;
@@ -14,7 +15,6 @@ import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.AfterStep;
 import org.springframework.batch.core.annotation.BeforeProcess;
 import org.springframework.batch.core.annotation.BeforeStep;
-import org.springframework.batch.core.annotation.OnProcessError;
 import org.springframework.batch.core.annotation.OnReadError;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.stereotype.Component;
@@ -61,7 +61,7 @@ public class ControleListener {
       ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) stepExecution
             .getJobExecution().getExecutionContext().get(
                   Constantes.DOC_EXCEPTION);
-      if (exceptions.isEmpty()) {
+      if (CollectionUtils.isEmpty(exceptions)) {
          exitStatus = ExitStatus.COMPLETED;
       }
 
@@ -92,40 +92,6 @@ public class ControleListener {
       listCodes.add(Constantes.ERR_BUL001);
       listIndex.add(0);
       listExceptions.add(new Exception(exception.getMessage()));
-
-   }
-
-   /**
-    * Erreur de transformation
-    * 
-    * @param untypedType
-    *           le document sur lequel s'est produit l'erreur
-    * @param exception
-    *           exception levée
-    */
-   @OnProcessError
-   @SuppressWarnings( { "unchecked", "PMD.AvoidThrowingRawExceptionTypes" })
-   public final void logProcessError(
-         final JAXBElement<UntypedDocument> untypedType,
-         final Exception exception) {
-
-      ExecutionContext context = stepExecution.getJobExecution()
-            .getExecutionContext();
-
-      ConcurrentLinkedQueue<String> listCodes = (ConcurrentLinkedQueue<String>) context
-            .get(Constantes.CODE_EXCEPTION);
-      ConcurrentLinkedQueue<Integer> listIndex = (ConcurrentLinkedQueue<Integer>) context
-            .get(Constantes.INDEX_EXCEPTION);
-      ConcurrentLinkedQueue<Exception> listExceptions = (ConcurrentLinkedQueue<Exception>) context
-            .get(Constantes.DOC_EXCEPTION);
-
-      listCodes.add(Constantes.ERR_BUL002);
-      listIndex.add(stepExecution.getExecutionContext().getInt(
-            Constantes.CTRL_INDEX));
-      listExceptions.add(new Exception(exception.getMessage()));
-
-      LOGGER.warn("une erreur est survenue lors des controles des documents",
-            exception);
 
    }
 

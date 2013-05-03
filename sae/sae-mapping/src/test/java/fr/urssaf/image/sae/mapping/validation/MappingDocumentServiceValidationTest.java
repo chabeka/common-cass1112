@@ -1,5 +1,7 @@
 package fr.urssaf.image.sae.mapping.validation;
 
+import java.util.ArrayList;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +9,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
+import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
+import fr.urssaf.image.sae.bo.model.bo.SAEVirtualDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.mapping.exception.InvalidSAETypeException;
 import fr.urssaf.image.sae.mapping.exception.MappingFromReferentialException;
@@ -158,6 +162,23 @@ public class MappingDocumentServiceValidationTest {
 
    /**
     * Permet de tester la methode
+    * {@link fr.urssaf.image.sae.mapping.services.MappingDocumentService#untypedMetadatasToSaeMetadatas(java.util.List)}
+    * 
+    * @throws InvalidSAETypeException
+    *            Exception levée lorsque la conversion n’aboutit pas.
+    * @throws MappingFromReferentialException
+    *            Exception levée lorsque la récupération de la métadata du
+    *            référentiel n'abouti pas
+    * @throws UnKnowSAETypeException
+    */
+   @Test(expected = IllegalArgumentException.class)
+   public void untypedMetadatasToSaeMetadatas() throws InvalidSAETypeException,
+         MappingFromReferentialException {
+      mappingDocService.untypedMetadatasToSaeMetadatas(null);
+   }
+
+   /**
+    * Permet de tester la methode
     * {@link fr.urssaf.image.sae.mapping.services.MappingDocumentService#untypedDocumentToSaeDocument(fr.urssaf.image.sae.bo.model.untyped.UntypedDocument)
     * untypedDocumentToSaeDocument}
     * 
@@ -190,6 +211,51 @@ public class MappingDocumentServiceValidationTest {
    public void untypedDocumentToSaeDocumentMetadata()
          throws InvalidSAETypeException, MappingFromReferentialException {
       mappingDocService.untypedDocumentToSaeDocument(new UntypedDocument());
+   }
+
+   /**
+    * Permet de tester la methode
+    * {@link fr.urssaf.image.sae.mapping.services.MappingDocumentService#saeVirtualDocumentToVirtualStorageDocument(fr.urssaf.image.sae.bo.model.bo.SAEVirtualDocument)}
+    * 
+    * @throws InvalidSAETypeException
+    *            Exception levée lorsque la conversion n’aboutit pas.
+    * @throws UnKnowSAETypeException
+    */
+   @Test(expected = IllegalArgumentException.class)
+   public void saeVirtualDocumentToVirtualStoragDocumentDocObligatoire()
+         throws InvalidSAETypeException {
+      mappingDocService.saeVirtualDocumentToVirtualStorageDocument(null);
+   }
+
+   /**
+    * Permet de tester la methode
+    * {@link fr.urssaf.image.sae.mapping.services.MappingDocumentService#saeVirtualDocumentToVirtualStorageDocument(fr.urssaf.image.sae.bo.model.bo.SAEVirtualDocument)}
+    * 
+    * @throws InvalidSAETypeException
+    *            Exception levée lorsque la conversion n’aboutit pas.
+    * @throws UnKnowSAETypeException
+    */
+   @Test(expected = IllegalArgumentException.class)
+   public void saeVirtualDocumentToVirtualStoragDocumentMetasObligatoires()
+         throws InvalidSAETypeException {
+      mappingDocService
+            .saeVirtualDocumentToVirtualStorageDocument(new SAEVirtualDocument());
+   }
+
+   /**
+    * Permet de tester la methode
+    * {@link fr.urssaf.image.sae.mapping.services.MappingDocumentService#saeVirtualDocumentToVirtualStorageDocument(fr.urssaf.image.sae.bo.model.bo.SAEVirtualDocument)}
+    * 
+    * @throws InvalidSAETypeException
+    *            Exception levée lorsque la conversion n’aboutit pas.
+    * @throws UnKnowSAETypeException
+    */
+   @Test(expected = IllegalArgumentException.class)
+   public void saeVirtualDocumentToVirtualStoragDocumentRefObligatoires()
+         throws InvalidSAETypeException {
+      SAEVirtualDocument document = new SAEVirtualDocument();
+      document.setMetadatas(new ArrayList<SAEMetadata>());
+      mappingDocService.saeVirtualDocumentToVirtualStorageDocument(document);
    }
 
 }

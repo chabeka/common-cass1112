@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
 import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
+import fr.urssaf.image.sae.bo.model.bo.SAEVirtualDocument;
 import fr.urssaf.image.sae.mapping.utils.Utils;
 import fr.urssaf.image.sae.metadata.exceptions.ReferentialException;
 import fr.urssaf.image.sae.metadata.referential.services.MetadataReferenceDAO;
@@ -84,59 +85,34 @@ public class SAEEnrichmentMetadataServiceImpl implements
          throws SAEEnrichmentEx, ReferentialRndException, UnknownCodeRndEx {
       // Traces debug - entrée méthode
       String prefixeTrc = "enrichmentMetadata()";
-      LOGGER.debug("{} - Début Enrichissement des métadonnées", prefixeTrc);
-      LOGGER.debug("{} - Paramètre saeDocument : \"{}\"", prefixeTrc, saeDoc
-            .toString());
-      // Fin des traces debug - entrée méthode
-      List<SAEMetadata> saeMetadatas = saeDoc.getMetadatas();
 
-      String rndValue = SAEMetatadaFinderUtils.codeMetadataFinder(saeMetadatas,
-            SAEArchivalMetadatas.CODE_RND.getLongCode());
+      String fileName = saeDoc.getFileName();
+      String filePath = saeDoc.getFilePath();
+      completedMetadatas(saeDoc.getMetadatas(), fileName, filePath);
 
-      String fileName = SAEMetatadaFinderUtils.codeMetadataFinder(saeMetadatas,
-            SAEArchivalMetadatas.NOM_FICHIER.getLongCode());
-
-      try {
-         if (!StringUtils.isEmpty(rndValue)) {
-            LOGGER
-                  .debug("{} - Début de la vérification : "
-                        + "Le type de document est autorisé en archivage",
-                        prefixeTrc);
-            authorizedCodeRnd(rndValue);
-            LOGGER
-                  .debug("{} - Fin de la vérification : "
-                        + "Le type de document est autorisé en archivage",
-                        prefixeTrc);
-            LOGGER.debug("{} - Métadonnées avant enrichissement : {}",
-                  prefixeTrc, saeDoc.getMetadatas().toString());
-            completedMetadatas(saeDoc, rndValue);
-            LOGGER.debug("{} - Métadonnées après enrichissement : {}",
-                  prefixeTrc, saeDoc.getMetadatas().toString());
-         }
-         if (!StringUtils.isBlank(fileName)) {
-
-            LOGGER.debug("{} - Métadonnées avant enrichissement : {}",
-                  prefixeTrc, saeDoc.getMetadatas().toString());
-            completedMetadatas(saeDoc, fileName);
-            LOGGER.debug("{} - Métadonnées après enrichissement : {}",
-                  prefixeTrc, saeDoc.getMetadatas().toString());
-         }
-      } catch (ReferentialRndException e) {
-         throw new ReferentialRndException(e.getMessage(), e);
-      } catch (UnknownCodeRndEx e) {
-         LOGGER.debug(
-               "{} - Le code RND {} ne fait pas partie des codes autorisés",
-               prefixeTrc, rndValue);
-         throw new UnknownCodeRndEx(e.getMessage(), e);
-      } catch (ParseException e) {
-         throw new SAEEnrichmentEx(e.getMessage(), e);
-      } catch (ReferentialException e) {
-         throw new SAEEnrichmentEx(e.getMessage(), e);
-      }
-      // Traces debug - sortie méthode
-      LOGGER.debug("{} - Fin Enrichissement des métadonnées", prefixeTrc);
       LOGGER.debug("{} - Sortie", prefixeTrc);
-      // Fin des traces debug - sortie méthode
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void enrichmentVirtualMetadata(SAEVirtualDocument document)
+         throws SAEEnrichmentEx, ReferentialRndException, UnknownCodeRndEx {
+      String trcPrefix = "enrichmentVirtualMetadata";
+      LOGGER.debug("{} - début", trcPrefix);
+
+      String filePath = document.getReference().getFilePath();
+      String fileName = FilenameUtils.getBaseName(filePath);
+      String startPage = String.valueOf(document.getStartPage());
+      String endPage = String.valueOf(document.getEndPage());
+      fileName = fileName.concat("_").concat(startPage).concat("_").concat(
+            endPage);
+
+      completedMetadatas(document.getMetadatas(), fileName, null);
+
+      LOGGER.debug("{} - fin", trcPrefix);
+
    }
 
    /**
@@ -154,39 +130,9 @@ public class SAEEnrichmentMetadataServiceImpl implements
       rndReferenceDAO.getActivityCodeByRnd(rndValue);
    }
 
-   /**
-    * Permet de compléter les métadonnées non specifiable qui sont :
-    * <ul>
-    * <li>VersionRND</li>
-    * <li>CodeFonction</li>
-    * <li>CodeActivite</li>
-    * <li>DateDebutConservation</li>
-    * <li>DateFinConservation</li>
-    * <li>NomFichier</li>
-    * <li>DocumentVirtuel</li>
-    * <li>ContratDeService</li>
-    * <li>DateArchivage</li>
-    * </ul>
-    * 
-    * @param document
-    *           : le document retourné par DFCE.
-    * @param metadata
-    *           : La métadonnée désirés.
-    * @throws UnknownCodeRndEx
-    *            {@link UnknownCodeRndEx}
-    * @throws ReferentialRndException
-    *            {@link ReferentialRndException}
-    * @throws ParseException
-    *            {@link ParseException}
-    * @throws ReferentialException
-    *            {@link ReferentialException}
-    */
-   // CHECKSTYLE:OFF
-   @SuppressWarnings( { "PMD.AvoidInstantiatingObjectsInLoops",
-         "PMD.ExcessiveMethodLength", "PMD.CollapsibleIfStatements" })
-   private void completedMetadatas(SAEDocument saeDocument, String rndCode)
-         throws ReferentialRndException, UnknownCodeRndEx, ParseException,
-         ReferentialException {
+   private void completedMetadatas(List<SAEMetadata> metadatas, String rndCode,
+         String filePath, String fileName) throws ReferentialException,
+         ReferentialRndException, UnknownCodeRndEx, ParseException {
       // Traces debug - entrée méthode
       String prefixeTrc = "completedMetadatas()";
       LOGGER.debug("{} - Début", prefixeTrc);
@@ -210,7 +156,7 @@ public class SAEEnrichmentMetadataServiceImpl implements
             if (StringUtils.isNotBlank(codeActiviteValue)) {
 
                saeMetadata.setValue(codeActiviteValue);
-               saeDocument.getMetadatas().add(saeMetadata);
+               metadatas.add(saeMetadata);
                LOGGER
                      .debug(
                            "{} - Enrichissement des métadonnées : ajout de la métadonnée CodeActivite  valeur : {}",
@@ -224,7 +170,7 @@ public class SAEEnrichmentMetadataServiceImpl implements
                   SAEArchivalMetadatas.CODE_FONCTION.getLongCode())
                   .getShortCode());
             saeMetadata.setValue(rndReferenceDAO.getFonctionCodeByRnd(rndCode));
-            saeDocument.getMetadatas().add(saeMetadata);
+            metadatas.add(saeMetadata);
             LOGGER
                   .debug(
                         "{} - Enrichissement des métadonnées : ajout de la métadonnée CodeFonction   valeur : {}",
@@ -237,9 +183,8 @@ public class SAEEnrichmentMetadataServiceImpl implements
                         "{} - Durée de conservation pour le code RND {} : {} (jours)",
                         new Object[] { prefixeTrc, rndCode,
                               rndReferenceDAO.getStorageDurationByRnd(rndCode) });
-            if (SAEMetatadaFinderUtils.dateMetadataFinder(saeDocument
-                  .getMetadatas(), SAEArchivalMetadatas.DATE_DEBUT_CONSERVATION
-                  .getLongCode()) == null) {
+            if (SAEMetatadaFinderUtils.dateMetadataFinder(metadatas,
+                  SAEArchivalMetadatas.DATE_DEBUT_CONSERVATION.getLongCode()) == null) {
                LOGGER
                      .debug(
                            "{} - DateDebutConservation n'est pas spécifiée par l'application cliente, "
@@ -252,8 +197,7 @@ public class SAEEnrichmentMetadataServiceImpl implements
                saeMetadata.setValue(dateFinConcervation);
             } else {
                Date dateFinConcervation = DateUtils.addDays(
-                     SAEMetatadaFinderUtils.dateMetadataFinder(saeDocument
-                           .getMetadatas(),
+                     SAEMetatadaFinderUtils.dateMetadataFinder(metadatas,
                            SAEArchivalMetadatas.DATE_DEBUT_CONSERVATION
                                  .getLongCode()), rndReferenceDAO
                            .getStorageDurationByRnd(rndCode));
@@ -264,31 +208,30 @@ public class SAEEnrichmentMetadataServiceImpl implements
             saeMetadata.setShortCode(metadataReferenceDAO.getByLongCode(
                   SAEArchivalMetadatas.DATE_FIN_CONSERVATION.getLongCode())
                   .getShortCode());
-            saeDocument.getMetadatas().add(saeMetadata);
+            metadatas.add(saeMetadata);
          } else if (metadata.getLongCode().equals(
                SAEArchivalMetadatas.NOM_FICHIER.getLongCode())) {
             saeMetadata.setShortCode(metadataReferenceDAO.getByLongCode(
                   SAEArchivalMetadatas.NOM_FICHIER.getLongCode())
                   .getShortCode());
-            if (saeDocument.getFilePath() != null) {
+            if (filePath != null) {
                saeMetadata.setValue(FilenameUtils.getName(FilenameUtils
-                     .separatorsToSystem(saeDocument.getFilePath())));
+                     .separatorsToSystem(filePath)));
             } else {
-               saeMetadata.setValue(saeDocument.getFileName());
+               saeMetadata.setValue(fileName);
             }
-            saeDocument.getMetadatas().add(saeMetadata);
+            metadatas.add(saeMetadata);
          } else if (metadata.getLongCode().equals(
                SAEArchivalMetadatas.DATE_ARCHIVAGE.getLongCode())) {
             saeMetadata.setShortCode(metadataReferenceDAO.getByLongCode(
                   SAEArchivalMetadatas.DATE_ARCHIVAGE.getLongCode())
                   .getShortCode());
             saeMetadata.setValue(new Date());
-            saeDocument.getMetadatas().add(saeMetadata);
+            metadatas.add(saeMetadata);
          } else if (metadata.getLongCode().equals(
                SAEArchivalMetadatas.DATE_DEBUT_CONSERVATION.getLongCode())) {
-            if (SAEMetatadaFinderUtils.dateMetadataFinder(saeDocument
-                  .getMetadatas(), SAEArchivalMetadatas.DATE_DEBUT_CONSERVATION
-                  .getLongCode()) == null) {
+            if (SAEMetatadaFinderUtils.dateMetadataFinder(metadatas,
+                  SAEArchivalMetadatas.DATE_DEBUT_CONSERVATION.getLongCode()) == null) {
                LOGGER
                      .debug(
                            "{} - DateDebutConservation n'est pas spécifiée par l'application cliente. "
@@ -301,7 +244,7 @@ public class SAEEnrichmentMetadataServiceImpl implements
                // La date DATEDEBUTCONSERVATION est égale à la date
                // d'archivage.
                saeMetadata.setValue(new Date());
-               saeDocument.getMetadatas().add(saeMetadata);
+               metadatas.add(saeMetadata);
             }
             LOGGER.debug(
                   "{} - DateDebutConservation est spécifiée par l'application cliente. "
@@ -312,7 +255,7 @@ public class SAEEnrichmentMetadataServiceImpl implements
                   SAEArchivalMetadatas.DOCUMENT_VIRTUEL.getLongCode())
                   .getShortCode());
             saeMetadata.setValue(false);
-            saeDocument.getMetadatas().add(saeMetadata);
+            metadatas.add(saeMetadata);
          } else if (metadata.getLongCode().equals(
                SAEArchivalMetadatas.CONTRAT_DE_SERVICE.getLongCode())) {
             saeMetadata.setShortCode(metadataReferenceDAO.getByLongCode(
@@ -326,16 +269,15 @@ public class SAEEnrichmentMetadataServiceImpl implements
             LOGGER.debug("{} - Mise a jour du code application", prefixeTrc);
             String codeContrat = extrait.getCodeAppli();
             saeMetadata.setValue(codeContrat);
-            saeDocument.getMetadatas().add(saeMetadata);
+            metadatas.add(saeMetadata);
             LOGGER
                   .debug(
                         "{} - Enrichissement des métadonnées : ajout de la métadonnée ContratDeService valeur: {}",
                         prefixeTrc, saeMetadata.getValue());
          } else if (metadata.getLongCode().equals(
                SAEArchivalMetadatas.VERSION_RND.getLongCode())) {
-            if (SAEMetatadaFinderUtils.codeMetadataFinder(saeDocument
-                  .getMetadatas(), SAEArchivalMetadatas.VERSION_RND
-                  .getLongCode()) == null) {
+            if (SAEMetatadaFinderUtils.codeMetadataFinder(metadatas,
+                  SAEArchivalMetadatas.VERSION_RND.getLongCode()) == null) {
                LOGGER
                      .debug(
                            "{} - La métadonnée VersionRND n'est pas spécifiée par l'application cliente",
@@ -345,7 +287,7 @@ public class SAEEnrichmentMetadataServiceImpl implements
                      .getShortCode());
                saeMetadata.setValue(rndReferenceDAO.getTypeDocument(rndCode)
                      .getVersionRnd());
-               saeDocument.getMetadatas().add(saeMetadata);
+               metadatas.add(saeMetadata);
                LOGGER
                      .debug(
                            "{} - Enrichissement des métadonnées : ajout de la métadonnée VersionRND valeur : {}",
@@ -353,9 +295,8 @@ public class SAEEnrichmentMetadataServiceImpl implements
             }
          } else if (metadata.getLongCode().equals(
                SAEArchivalMetadatas.NOM_FICHIER.getLongCode())) {
-            if (SAEMetatadaFinderUtils.codeMetadataFinder(saeDocument
-                  .getMetadatas(), SAEArchivalMetadatas.NOM_FICHIER
-                  .getLongCode()) == null) {
+            if (SAEMetatadaFinderUtils.codeMetadataFinder(metadatas,
+                  SAEArchivalMetadatas.NOM_FICHIER.getLongCode()) == null) {
                LOGGER
                      .debug(
                            "{} - La métadonnée NOM_FICHIER n'est pas spécifiée par l'application cliente",
@@ -364,13 +305,13 @@ public class SAEEnrichmentMetadataServiceImpl implements
                      SAEArchivalMetadatas.NOM_FICHIER.getLongCode())
                      .getShortCode());
                String name = "";
-               if (StringUtils.isEmpty(saeDocument.getFilePath())) {
-                  name = saeDocument.getFileName();
+               if (StringUtils.isEmpty(filePath)) {
+                  name = fileName;
                } else {
-                  name = FilenameUtils.getBaseName(saeDocument.getFilePath());
+                  name = FilenameUtils.getBaseName(filePath);
                }
                saeMetadata.setValue(name);
-               saeDocument.getMetadatas().add(saeMetadata);
+               metadatas.add(saeMetadata);
                LOGGER
                      .debug(
                            "{} - Enrichissement des métadonnées : ajout du nom de fichier valeur : {}",
@@ -383,5 +324,58 @@ public class SAEEnrichmentMetadataServiceImpl implements
       LOGGER.debug("{} - Sortie", prefixeTrc);
       // Fin des traces debug - sortie méthode
    }
+
    // CHECKSTYLE:ON
+
+   private void completedMetadatas(List<SAEMetadata> metadatas,
+         String docFileName, String docFilePath)
+         throws ReferentialRndException, UnknownCodeRndEx, SAEEnrichmentEx {
+
+      String trcPrefix = "completedMetadatas()";
+      LOGGER.debug("{} - Début Enrichissement des métadonnées", trcPrefix);
+      LOGGER.debug("{} - Paramètre saeDocument : \"{}\"", trcPrefix, metadatas
+            .toString());
+
+      String rndValue = SAEMetatadaFinderUtils.codeMetadataFinder(metadatas,
+            SAEArchivalMetadatas.CODE_RND.getLongCode());
+
+      String fileName = SAEMetatadaFinderUtils.codeMetadataFinder(metadatas,
+            SAEArchivalMetadatas.NOM_FICHIER.getLongCode());
+
+      try {
+         if (!StringUtils.isEmpty(rndValue)) {
+            LOGGER.debug("{} - Début de la vérification : "
+                  + "Le type de document est autorisé en archivage", metadatas);
+            authorizedCodeRnd(rndValue);
+            LOGGER.debug("{} - Fin de la vérification : "
+                  + "Le type de document est autorisé en archivage", metadatas);
+            LOGGER.debug("{} - Métadonnées avant enrichissement : {}",
+                  metadatas, metadatas.toString());
+            completedMetadatas(metadatas, rndValue, docFileName, docFilePath);
+            LOGGER.debug("{} - Métadonnées après enrichissement : {}",
+                  metadatas, metadatas.toString());
+         }
+         if (!StringUtils.isBlank(fileName)) {
+
+            LOGGER.debug("{} - Métadonnées avant enrichissement : {}",
+                  metadatas, metadatas.toString());
+            completedMetadatas(metadatas, fileName, docFileName, docFilePath);
+            LOGGER.debug("{} - Métadonnées après enrichissement : {}",
+                  metadatas, metadatas.toString());
+         }
+      } catch (ReferentialRndException e) {
+         throw new ReferentialRndException(e.getMessage(), e);
+      } catch (UnknownCodeRndEx e) {
+         LOGGER.debug(
+               "{} - Le code RND {} ne fait pas partie des codes autorisés",
+               metadatas, rndValue);
+         throw new UnknownCodeRndEx(e.getMessage(), e);
+      } catch (ParseException e) {
+         throw new SAEEnrichmentEx(e.getMessage(), e);
+      } catch (ReferentialException e) {
+         throw new SAEEnrichmentEx(e.getMessage(), e);
+      }
+      // Traces debug - sortie méthode
+      LOGGER.debug("{} - Fin Enrichissement des métadonnées", trcPrefix);
+   }
 }

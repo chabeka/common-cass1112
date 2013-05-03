@@ -364,4 +364,18 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
       staxUtils.addEndTag("erreurs", PX_SOMRES, NS_SOMRES);
    }
 
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void writeVirtualResultatsFile(File ecdeDirectory, File sommaireFile,
+         CaptureMasseErreur erreur, int totalDocuments) {
+      String trcPrefix = "writeVirtualResultatsFile";
+      LOGGER.debug("{} - début", trcPrefix);
+
+      LOGGER.debug("{} - fin", trcPrefix);
+      // TODO Auto-generated method stub
+
+   }
+
 }

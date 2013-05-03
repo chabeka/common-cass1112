@@ -19,6 +19,9 @@ import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocuments;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
+import fr.urssaf.image.sae.storage.model.storagedocument.StorageReferenceFile;
+import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageDocument;
+import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageReference;
 import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.LuceneCriteria;
 import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.UUIDCriteria;
 import fr.urssaf.image.sae.storage.services.storagedocument.DeletionService;
@@ -168,7 +171,6 @@ public class StorageDocumentServiceImpl extends AbstractServiceProvider
             .retrieveStorageDocumentMetaDatasByUUID(uUIDCriteria);
    }
 
-
    /**
     * Initialise les services d'insertion
     * 
@@ -230,6 +232,20 @@ public class StorageDocumentServiceImpl extends AbstractServiceProvider
     */
    public final <T> void setStorageDocumentServiceParameter(final T parameter) {
       setDfceService((ServiceProvider) parameter);
+   }
+
+   @Override
+   public StorageReferenceFile insertStorageReference(
+         VirtualStorageReference reference) throws InsertionServiceEx {
+      insertionService.setInsertionServiceParameter(getDfceService());
+      return insertionService.insertStorageReference(reference);
+   }
+
+   @Override
+   public UUID insertVirtualStorageDocument(VirtualStorageDocument document)
+         throws InsertionServiceEx {
+      insertionService.setInsertionServiceParameter(getDfceService());
+      return insertionService.insertVirtualStorageDocument(document);
    }
 
 }

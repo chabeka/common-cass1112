@@ -6,7 +6,6 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
 import fr.urssaf.image.sae.bo.model.AbstractDocument;
-import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 
 /**
  * Classe représentant un document c'est-à-dire un tableau de byte correspondant
@@ -59,7 +58,7 @@ public class SAEDocument extends AbstractDocument {
    }
 
    /**
-    * Construit un objet de type {@link UntypedDocument}
+    * Construit un objet de type {@link SAEDocument}
     * 
     * @param content
     *           : Le contenu du document métier.

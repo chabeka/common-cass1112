@@ -6,11 +6,13 @@ package fr.urssaf.image.sae.services.capturemasse.support.resultats.validation;
 import java.io.File;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 
 import fr.urssaf.image.sae.services.capturemasse.model.CaptureMasseIntegratedDocument;
 import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
+import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageDocument;
 
 /**
  * Validation des arguments en entrée des implémentations du service
@@ -22,6 +24,9 @@ import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
 public class ResultatFileSuccessSupportValidation {
 
    private static final String CHECK_METHOD = "execution(void fr.urssaf.image.sae.services.capturemasse.support.resultats.ResultatFileSuccessSupport.writeResultatsFile(*,*,*,*,*))"
+         + " && args(ecdeDirectory,integDocs,documentsCount,restitutionUuids,sommaireFile)";
+
+   private static final String CHECK_VRTL_METHOD = "execution(void fr.urssaf.image.sae.services.capturemasse.support.resultats.ResultatFileSuccessSupport.writeVirtualResultatsFile(*,*,*,*,*))"
          + " && args(ecdeDirectory,integDocs,documentsCount,restitutionUuids,sommaireFile)";
 
    /**
@@ -58,12 +63,59 @@ public class ResultatFileSuccessSupportValidation {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
                "argument.required", "documentsCount"));
       }
-      
-      if(restitutionUuids && sommaireFile == null) {
+
+      if (restitutionUuids && sommaireFile == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "documentsCount"));         
+               "argument.required", "documentsCount"));
       }
+
+   }
+
+   /**
+    * permet de vérifier que les éléments suivants sont présents :<br>
+    * <ul>
+    * <li>ecdeDirectory</li>
+    * <li>documentsCount</li>
+    * </ul>
+    * 
+    * @param ecdeDirectory
+    *           répertoire de traitement du traitement de masse
+    * @param integDocs
+    *           liste des documents intégrés
+    * @param documentsCount
+    *           nombre de documents intégrés
+    * @param restitutionUuids
+    *           Ecriture ou non l'UUID des documents intégrés dans le
+    *           resultat.xml
+    * @param sommaireFile
+    *           Fichier sommaire.xml
+    */
+   @Before(CHECK_VRTL_METHOD)
+   public final void checkVirtualWriteResultats(final File ecdeDirectory,
+         final ConcurrentLinkedQueue<VirtualStorageDocument> integDocs,
+         final int documentsCount, final boolean restitutionUuids,
+         final File sommaireFile) {
       
+      if (ecdeDirectory == null) {
+         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
+               "argument.required", "ecdeDirectory"));
+      }
+
+      if (CollectionUtils.isEmpty(integDocs)) {
+         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
+               "argument.required", "liste des documents intégrés"));
+      }
+
+      if (documentsCount < 0) {
+         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
+               "argument.required", "documentsCount"));
+      }
+
+      if (restitutionUuids && sommaireFile == null) {
+         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
+               "argument.required", "fichier sommaire"));
+      }
+
    }
 
 }

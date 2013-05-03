@@ -14,6 +14,7 @@ import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -33,7 +34,7 @@ import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
  */
 @Component
 public class InsertionPoolThreadExecutor extends ThreadPoolExecutor implements
-      Serializable {
+      Serializable, DisposableBean {
 
    // FIXME - Trouver une solution plus propre afin de ne pas partager les
    // ressources
@@ -332,6 +333,15 @@ public class InsertionPoolThreadExecutor extends ThreadPoolExecutor implements
     */
    public final Boolean getIsInterrupted() {
       return isInterrupted;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void destroy() throws Exception {
+      this.shutdownNow();
+      
    }
 
 }

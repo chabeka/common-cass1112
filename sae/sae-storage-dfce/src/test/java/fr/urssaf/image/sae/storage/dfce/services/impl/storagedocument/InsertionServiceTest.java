@@ -8,10 +8,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -30,6 +33,9 @@ import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.exception.StorageException;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
+import fr.urssaf.image.sae.storage.model.storagedocument.StorageReferenceFile;
+import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageDocument;
+import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageReference;
 import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.UUIDCriteria;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
@@ -49,6 +55,8 @@ public class InsertionServiceTest extends StorageServices {
 
    @Autowired
    private CassandraServerBean cassandraServerBean;
+
+   private static final String PDF1 = "src/test/resources/PDF/doc1.PDF";
 
    @Before
    public void before() {
@@ -221,6 +229,58 @@ public class InsertionServiceTest extends StorageServices {
       } catch (Exception ex) {
          Assert.fail("erreur DocumentTypeException attendue");
       }
+   }
+
+   /**
+    * Test du service :
+    * {@link fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument.InsertionServiceImpl#insertStorageDocument(StorageDocument)
+    * insertStorageDocument} <br>
+    * <p>
+    * Tests réaliser :
+    * <ul>
+    * <li>Insérer un document et vérifier son UUID.</li>
+    * <li>Récupère le document par uuid.</li>
+    * <li>Compare les métadonnée insérées dans DFCE et les métadonnées du
+    * document xml en entrée.</li>
+    * <li>Compare sha de Dfce et le sha1 calculé</li>
+    * </ul>
+    * </p>
+    */
+   @Test
+   @Ignore
+   public void insertVirtualReferenceFile() throws IOException, ParseException,
+         StorageException, NoSuchAlgorithmException {
+
+      File file = new File(PDF1);
+      VirtualStorageReference reference = new VirtualStorageReference();
+      reference.setFilePath(file.getAbsolutePath());
+
+      StorageReferenceFile storageReference = getInsertionService()
+            .insertStorageReference(reference);
+
+      Assert.assertNotNull("UUID après insertion ne doit pas être null ",
+            storageReference.getUuid());
+
+      final SaeDocument saeDocument = getXmlDataService().saeDocumentReader(
+            new File(Constants.XML_PATH_DOC_WITHOUT_ERROR[0]));
+      final StorageDocument storageDocument = DocumentForTestMapper
+            .saeDocumentXmlToStorageDocument(saeDocument);
+
+      VirtualStorageDocument document = new VirtualStorageDocument();
+      document.setStartPage(1);
+      document.setEndPage(2);
+      document.setMetadatas(storageDocument.getMetadatas());
+      document.setFileName("doc1_1_2.PDF");
+      document.setReferenceFile(storageReference);
+
+      UUID docUuid = getInsertionService().insertVirtualStorageDocument(
+            document);
+
+      final UUIDCriteria uuid = new UUIDCriteria(docUuid, null);
+      Assert.assertTrue("Les deux SHA1 doivent être identique", CheckDataUtils
+            .checkDocumentSha1(FileUtils.readFileToByteArray(file),
+                  getRetrievalService().retrieveStorageDocumentContentByUUID(
+                        uuid)));
    }
 
 }

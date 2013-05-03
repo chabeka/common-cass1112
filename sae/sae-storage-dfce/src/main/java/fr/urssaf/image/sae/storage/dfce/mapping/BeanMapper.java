@@ -14,6 +14,8 @@ import net.docubase.toolkit.model.base.Base;
 import net.docubase.toolkit.model.base.BaseCategory;
 import net.docubase.toolkit.model.document.Criterion;
 import net.docubase.toolkit.model.document.Document;
+import net.docubase.toolkit.model.reference.FileReference;
+import net.docubase.toolkit.model.reference.impl.FileReferenceImpl;
 import net.docubase.toolkit.service.ServiceProvider;
 
 import org.apache.commons.io.FilenameUtils;
@@ -25,6 +27,8 @@ import fr.urssaf.image.sae.storage.dfce.utils.Utils;
 import fr.urssaf.image.sae.storage.exception.StorageException;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
+import fr.urssaf.image.sae.storage.model.storagedocument.StorageReferenceFile;
+import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageDocument;
 
 /**
  * Fournit des méthodes statiques de conversion des elements DFCE ceux du SAE.
@@ -226,12 +230,41 @@ public final class BeanMapper {
    // CHECKSTYLE:OFF
    public static Document storageDocumentToDfceDocument(final Base baseDFCE,
          final StorageDocument storageDocument) throws ParseException {
+
+      Document document = createDocument(storageDocument.getMetadatas(),
+            baseDFCE);
+
+      return document;
+   }
+
+   /**
+    * Permet de convertir {@link VirtualStorageDocument} en {@link Document}.
+    * 
+    * @param baseDFCE
+    *           : La base dfce
+    * @param storageDocument
+    *           : Un VirtualStorageDocment.
+    * @return Un document DFCE à partir d'un VirtualStorageDocment.
+    * @throws ParseException
+    *            Exception si le parsing de la date ne se passe pas bien.
+    */
+   public static Document virtualStorageDocumentToDfceDocument(
+         final Base baseDFCE, final VirtualStorageDocument storageDocument)
+         throws ParseException {
+
+      Document document = createDocument(storageDocument.getMetadatas(),
+            baseDFCE);
+
+      return document;
+   }
+
+   private static Document createDocument(List<StorageMetadata> metadatas,
+         Base baseDFCE) {
       BaseCategory baseCategory = null;
       Date dateCreation = new Date();
       final Document document = ToolkitFactory.getInstance().createDocumentTag(
             baseDFCE);
-      for (StorageMetadata storageMetadata : Utils
-            .nullSafeIterable(storageDocument.getMetadatas())) {
+      for (StorageMetadata storageMetadata : Utils.nullSafeIterable(metadatas)) {
 
          // ici on exclut toutes les métadonnées techniques
          final StorageTechnicalMetadatas technical = Utils
@@ -286,6 +319,7 @@ public final class BeanMapper {
             document.addCriterion(baseCategory, storageMetadata.getValue());
          }
       }
+
       return document;
    }
 
@@ -395,5 +429,50 @@ public final class BeanMapper {
          metadataFound = new StorageMetadata(metadata.getShortCode(), "");
       }
       return metadataFound;
+   }
+
+   /**
+    * Transforme un objet {@link FileReference} en {@link StorageReferenceFile}
+    * 
+    * @param fileReference
+    *           le fichier de référence DFCE
+    * @return le fichier de référence métier
+    */
+   public static StorageReferenceFile fileReferenceToStorageReferenceFile(
+         FileReference fileReference) {
+
+      StorageReferenceFile referenceFile = new StorageReferenceFile();
+      FileReferenceImpl impl = (FileReferenceImpl) fileReference;
+
+      referenceFile.setDigest(impl.getDigest());
+      referenceFile.setDigestAlgorithm(impl.getDigestAlgorithm());
+      referenceFile.setExtension(impl.getExtension());
+      referenceFile.setName(impl.getName());
+      referenceFile.setSize(impl.getSize());
+      referenceFile.setUuid(impl.getUuid());
+
+      return referenceFile;
+
+   }
+
+   /**
+    * Transforme un objet {@link StorageReferenceFile} en {@link FileReference}
+    * 
+    * @param fileReference
+    *           le fichier de référence métier
+    * @return le fichier de référence DFCE
+    */
+   public static FileReference storageReferenceFileToFileReference(
+         StorageReferenceFile referenceFile) {
+
+      FileReferenceImpl impl = new FileReferenceImpl();
+      impl.setDigest(referenceFile.getDigest());
+      impl.setDigestAlgorithm(referenceFile.getDigestAlgorithm());
+      impl.setExtension(referenceFile.getExtension());
+      impl.setName(referenceFile.getName());
+      impl.setSize(referenceFile.getSize());
+      impl.setUuid(referenceFile.getUuid());
+
+      return (FileReference) impl;
    }
 }

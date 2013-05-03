@@ -116,11 +116,79 @@ public interface MetadataControlServices {
     */
    List<MetadataError> checkMetadataRequiredValue(
          final UntypedDocument untypedDoc);
-   
+
    /**
-    * Vérification de la valeur des métadonnées par rapport aux dictionnaires de données 
-    * @param document le document
+    * Vérification de la valeur des métadonnées par rapport aux dictionnaires de
+    * données
+    * 
+    * @param document
+    *           le document
     * @return Liste de type MetadataError
     */
-   List<MetadataError> checkMetadataValueFromDictionary( final UntypedDocument document);
+   List<MetadataError> checkMetadataValueFromDictionary(
+         final UntypedDocument document);
+
+   /**
+    * Contrôle que la liste des métadonnées sont autorisées à l'archivables lors
+    * de la capture.
+    * 
+    * @param metadatas
+    *           : la liste des métadonnées
+    * @return une liste d’objet de type {@link MetadataError}
+    */
+   List<MetadataError> checkArchivableMetadataList(
+         final List<SAEMetadata> metadatas);
+
+   /**
+    * Contrôle que la liste des métadonnées fournit contient toutes les
+    * métadonnées obligatoire à l'archivage.
+    * 
+    * @param metadatas
+    *           : la liste des métadonnées
+    * @return une liste d’objet de type {@link MetadataError}
+    */
+   List<MetadataError> checkRequiredForArchivalMetadataList(
+         final List<SAEMetadata> metadatas);
+
+   /**
+    * Contrôle que la liste des métadonnées existe dans le référentiel.
+    * 
+    * @param metadatas
+    *           : La liste des métadonnées
+    * @return une liste d’objet de type {@link MetadataError}
+    */
+   List<MetadataError> checkExistingMetadataList(
+         final List<UntypedMetadata> metadatas);
+
+   /**
+    * Contrôle que les valeurs des métadonnées obligatoires sont spécifiées.
+    * 
+    * @param metadatas
+    *           : la liste des métadonnées
+    * @return une liste d’objet de type {@link MetadataError}
+    */
+   List<MetadataError> checkMetadataListRequiredValue(
+         final List<UntypedMetadata> metadatas);
+
+   /**
+    * Vérification de la valeur des métadonnées par rapport aux dictionnaires de
+    * données
+    * 
+    * @param metadatas
+    *           la liste des métadonnées
+    * @return Liste de type MetadataError
+    */
+   List<MetadataError> checkMetadataListValueFromDictionary(
+         final List<UntypedMetadata> metadatas);
+
+   /**
+    * Contrôle le type ,le format , la taille max de la valeur de chaque
+    * métadonnées.
+    * 
+    * @param metadatas
+    *           : la liste des métadonnées
+    * @return une liste d’objet de type {@link MetadataError}
+    */
+   List<MetadataError> checkMetadataListValueTypeAndFormat(
+         final List<UntypedMetadata> metadatas);
 }

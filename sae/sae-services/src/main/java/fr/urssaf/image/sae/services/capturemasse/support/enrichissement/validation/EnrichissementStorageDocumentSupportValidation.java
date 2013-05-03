@@ -9,6 +9,7 @@ import org.aspectj.lang.annotation.Before;
 
 import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
+import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageDocument;
 
 /**
  * Validation des arguments passés en paramètre des implémentations de
@@ -22,13 +23,17 @@ public class EnrichissementStorageDocumentSupportValidation {
    private static final String ENRICHMENT = "execution(fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument fr.urssaf.image.sae.services.capturemasse.support.enrichissement.EnrichissementStorageDocumentSupport.enrichirDocument(*,*))"
          + " && args(document,uuid)";
 
+   private static final String ENRICHMENT_VRTL = "execution(fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageDocument fr.urssaf.image.sae.services.capturemasse.support.enrichissement.EnrichissementStorageDocumentSupport.enrichirVirtualDocument(*,*))"
+         + " && args(document,uuid)";
+
    /**
     * permet de vérifier que l'ensemble des paramètres de la méthode
     * enrichirMetadonnee possède tous les arguments renseignés
     * 
     * @param document
     *           modèle métier du document
-    *           @param uuid : uuid
+    * @param uuid
+    *           : uuid
     */
    @Before(ENRICHMENT)
    public final void checkEnrichissement(final StorageDocument document,
@@ -42,6 +47,30 @@ public class EnrichissementStorageDocumentSupportValidation {
       if (StringUtils.isBlank(uuid)) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
                "argument.required", "uuid"));
+      }
+   }
+
+   /**
+    * permet de vérifier que l'ensemble des paramètres de la méthode
+    * enrichirVirualDocument possède tous les arguments renseignés
+    * 
+    * @param document
+    *           modèle métier du document
+    * @param uuid
+    *           : uuid
+    */
+   @Before(ENRICHMENT_VRTL)
+   public final void checkEnrichissementVirtuel(
+         final VirtualStorageDocument document, String uuid) {
+
+      if (document == null) {
+         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
+               "argument.required", "document virtuel"));
+      }
+      
+      if (StringUtils.isEmpty(uuid)) {
+         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
+               "argument.required", "identifiant unique du process"));
       }
    }
 }

@@ -1,6 +1,9 @@
 package fr.urssaf.image.sae.services.controles;
 
+import java.util.List;
+
 import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
+import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureBadEcdeUrlEx;
@@ -61,7 +64,8 @@ public interface SAEControlesCaptureService {
     */
    void checkUntypedMetadata(UntypedDocument untypedDocument)
          throws UnknownMetadataEx, DuplicatedMetadataEx,
-         InvalidValueTypeAndFormatMetadataEx, RequiredArchivableMetadataEx, MetadataValueNotInDictionaryEx;
+         InvalidValueTypeAndFormatMetadataEx, RequiredArchivableMetadataEx,
+         MetadataValueNotInDictionaryEx;
 
    /**
     * Cette méthode permet de faire les contrôles suivant :<br>
@@ -84,8 +88,29 @@ public interface SAEControlesCaptureService {
          throws NotSpecifiableMetadataEx, RequiredArchivableMetadataEx;
 
    /**
-    * Vérifie l'ensemble des métadonnées obligatoires lors du stockage sont présentes. Cette méthode doit être
-    * appelée après <b>l’enrichissement</b> des métadonnées.
+    * Cette méthode permet de faire les contrôles suivant :<br>
+    * <ul>
+    * <br>
+    * <li>Vérifier lors de l’archivage si les métadonnées spécifiables sont
+    * présentes.</li><br>
+    * <li>Vérifier que l'ensemble des métadonnées obligatoires lors de
+    * l'archivage sont présentes</li><br>
+    * </ul>
+    * 
+    * @param metadatas
+    *           la liste des métadonnées
+    * @throws NotSpecifiableMetadataEx
+    *            {@link NotSpecifiableMetadataEx}
+    * @throws RequiredArchivableMetadataEx
+    *            {@link RequiredArchivableMetadataEx}
+    */
+   void checkSaeMetadataListForCapture(List<SAEMetadata> metadatas)
+         throws NotSpecifiableMetadataEx, RequiredArchivableMetadataEx;
+
+   /**
+    * Vérifie l'ensemble des métadonnées obligatoires lors du stockage sont
+    * présentes. Cette méthode doit être appelée après <b>l’enrichissement</b>
+    * des métadonnées.
     * 
     * @param sAEDocument
     *           : Classe représentant un document typé de type
@@ -135,40 +160,55 @@ public interface SAEControlesCaptureService {
     */
    void checkCaptureEcdeUrl(String urlEcde) throws CaptureBadEcdeUrlEx,
          CaptureEcdeUrlFileNotFoundEx;
-   
+
    /**
     * Permet de vérifier que la taille du contenu est supérieure<br>
     * à 0 octet et que le nom du fichier est renseigné.
     * 
     * @param untypedDocument
-    *        le document à traiter
+    *           le document à traiter
     * 
     * @throws EmptyDocumentEx
-    *         si le contenu est vide (0 octet)
+    *            si le contenu est vide (0 octet)
     * @throws EmptyFileNameEx
-    *         si le nom de fichier est vide ou rempli d'espaces
+    *            si le nom de fichier est vide ou rempli d'espaces
     * 
     */
-   void checkUntypedBinaryDocument(UntypedDocument untypedDocument) 
-        throws EmptyDocumentEx, EmptyFileNameEx;
-   
+   void checkUntypedBinaryDocument(UntypedDocument untypedDocument)
+         throws EmptyDocumentEx, EmptyFileNameEx;
+
    /**
     * Permet de vérifier si le contenu du fichier n'est pas null
     * 
     * @param content
-    *        le contenu du fichier
+    *           le contenu du fichier
     * 
-    * @throws EmptyDocumentEx 
+    * @throws EmptyDocumentEx
     */
    void checkBinaryContent(byte[] content) throws EmptyDocumentEx;
+
    /**
     * Permet de vérifier que le nom de fichier est bien renseigné.
     * 
     * @param fileName
-    *        le nom du fichier
+    *           le nom du fichier
     * 
-    * @throws EmptyFileNameEx 
+    * @throws EmptyFileNameEx
     */
    void checkBinaryFileName(String fileName) throws EmptyFileNameEx;
-   
+
+   /**
+    * Permet de comparer le hash de référence et celui contenu dans les
+    * métadonnées
+    * 
+    * @param saeMetadatas
+    *           la liste des métadonnées
+    * @param refHash
+    *           le hash de référence
+    * @throws UnknownHashCodeEx
+    *            Erreur levée si les deux hash ne correspondent pas
+    */
+   void checkHashCodeMetadataListForStorage(List<SAEMetadata> saeMetadatas,
+         String refHash) throws UnknownHashCodeEx;
+
 }

@@ -23,6 +23,17 @@
       <constructor-arg value="#{jobParameters['capture.masse.sommaire']}" />
    </bean>
 
+   <bean id="composantsReader" scope="step" factory-bean="captureMasseFactory"
+      factory-method="getComposantReader">
+      <constructor-arg value="#{jobParameters['capture.masse.sommaire']}" />
+   </bean>
+
+   <bean id="fichierReferenceReader" scope="step" name="fichierReferenceReader"
+      class="org.springframework.batch.item.xml.StaxEventItemReader"
+      factory-bean="captureMasseFactory" factory-method="getObjetNumeriqueReader">
+      <constructor-arg value="#{jobParameters['capture.masse.sommaire']}" />
+   </bean>
+
    <bean class="org.springframework.batch.item.support.CompositeItemProcessor"
       id="compositeControlProcessor">
       <property name="delegates">
@@ -33,7 +44,36 @@
       </property>
    </bean>
 
+   <bean class="org.springframework.batch.item.support.CompositeItemProcessor"
+      id="controleFichierReferenceProcessor">
+      <property name="delegates">
+         <list>
+            <ref bean="convertSommaireObjetNumeriqueProcessor" />
+            <ref bean="controleSommaireObjetNumeriqueProcessor" />
+         </list>
+      </property>
+   </bean>
 
+
+   <bean class="org.springframework.batch.item.support.CompositeItemProcessor"
+      id="persistanceFichierReferenceProcessor">
+      <property name="delegates">
+         <list>
+            <ref bean="convertSommaireObjetNumeriqueProcessor" />
+            <ref bean="convertVirtualReferenceFileProcessor" />
+         </list>
+      </property>
+   </bean>
+
+   <bean class="org.springframework.batch.item.support.CompositeItemProcessor"
+      id="controleComposantProcessor">
+      <property name="delegates">
+         <list>
+            <ref bean="convertSommaireComposantProcessor" />
+            <ref bean="controleSommaireDocumentsVirtuelsProcessor" />
+         </list>
+      </property>
+   </bean>
 
    <bean id="processorConvertMetier"
       class="org.springframework.batch.item.adapter.ItemProcessorAdapter"

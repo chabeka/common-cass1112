@@ -525,7 +525,7 @@
    </metaDataReference>
    <metaDataReference>
       <shortCode>tpa</shortCode>
-      <longCode>TracabilitrePreArchivage</longCode>
+      <longCode>TracabilitePreArchivage</longCode>
       <type>String</type>
       <requiredForArchival>false</requiredForArchival>
       <requiredForStorage>false</requiredForStorage>

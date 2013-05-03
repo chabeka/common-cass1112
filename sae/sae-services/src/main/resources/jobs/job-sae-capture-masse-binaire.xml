@@ -46,20 +46,21 @@
          <next on="FAILED" to="finBloquant" />
          <next on="*" to="compteElements" />
       </step>
-      
+
       <step id="compteElements">
          <tasklet ref="countSommaireDocumentsTasklet">
             <listeners>
-               <listener ref="debutTraitementFlagListener" />
+               <listener ref="countSommaireDocumentsListener" />
             </listeners>
          </tasklet>
 
          <next on="FAILED" to="finBloquant" />
-         <next on="*" to="controleDocuments" />
+         <next on="DOCS" to="controleDocuments" />
+         <next on="VDOCS" to="controleFichiersReference" />
 
       </step>
 
-      
+
 
 
       <!-- contrôle des documents du fichier sommaire.xml -->
@@ -69,6 +70,7 @@
                writer="emptyWriter" commit-interval="1000" />
             <listeners>
                <listener ref="controleListener" />
+               <listener ref="controleDocumentListener" />
                <listener ref="controleSommaireDocumentProcessor" />
             </listeners>
          </tasklet>
@@ -98,9 +100,9 @@
       </step>
 
       <step id="rollback">
-         <tasklet ref="rollbackTasklet" >
-         
-          <listeners>
+         <tasklet ref="rollbackTasklet">
+
+            <listeners>
                <listener ref="rollbackListener" />
             </listeners>
          </tasklet>
@@ -144,6 +146,79 @@
          </tasklet>
       </step>
 
+
+      <!-- contrôle des fichiers de référence -->
+      <step id="controleFichiersReference">
+         <tasklet>
+            <chunk reader="fichierReferenceReader" processor="controleFichierReferenceProcessor"
+               writer="virtualReferenceFileWriter" commit-interval="1" />
+            <listeners>
+               <listener ref="controleListener" />
+               <listener ref="controleReferenceListener" />
+               <listener ref="controleSommaireObjetNumeriqueProcessor" />
+            </listeners>
+         </tasklet>
+
+         <next on="*" to="controleDocumentsVirtuels" />
+      </step>
+
+      <!-- contrôle des documents virtuels -->
+      <step id="controleDocumentsVirtuels">
+         <tasklet>
+            <chunk reader="composantsReader" processor="controleComposantProcessor"
+               writer="emptyWriter" commit-interval="1000" />
+            <listeners>
+               <listener ref="controleListener" />
+               <listener ref="controleDocumentVirtuelListener" />
+            </listeners>
+         </tasklet>
+
+         <next on="*" to="persistanceFichiersReference" />
+      </step>
+
+      <!-- persistance des fichiers de référence -->
+      <step id="persistanceFichiersReference">
+         <tasklet>
+            <chunk reader="fichierReferenceReader" processor="persistanceFichierReferenceProcessor"
+               writer="virtualStorageReferenceWriter" commit-interval="1" />
+
+            <listeners>
+               <listener ref="convertVirtualReferenceFileProcessor" />
+               <listener ref="controleListener" />
+               <listener ref="controleReferenceListener" />
+               <listener ref="virtualStorageReferenceFileWriterListener" />
+            </listeners>
+
+         </tasklet>
+
+         <next on="*" to="persistanceDocumentsVirtuels" />
+      </step>
+
+      <!-- persistance des documents virtuels -->
+      <step id="persistanceDocumentsVirtuels">
+         <tasklet ref="resultatsVirtualFileFailureTasklet" />
+         <next on="*" to="rollbackVirtuel" />
+      </step>
+
+      <!--
+         rollback des données insérées dans le cadre des documents
+         virtuels
+      -->
+      <step id="rollbackVirtuel">
+         <tasklet ref="resultatsVirtualFileFailureTasklet" />
+         <next on="*" to="finErreurVirtuel" />
+      </step>
+
+      <!-- Ecriture du fichier résultat en erreur -->
+      <step id="finErreurVirtuel">
+         <tasklet ref="resultatsVirtualFileFailureTasklet" />
+         <next on="*" to="finSuccesVirtuel" />
+      </step>
+
+      <!-- Ecriture du fichier résultat en succes -->
+      <step id="finSuccesVirtuel">
+         <tasklet ref="resultatsVirtualFileFailureTasklet" />
+      </step>
 
    </job>
 

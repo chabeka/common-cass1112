@@ -74,7 +74,7 @@ public class CountSommaireDocumentStepTest {
                context);
 
          Assert.assertEquals("le step doit etre completed",
-               ExitStatus.COMPLETED, execution.getExitStatus());
+               new ExitStatus("DOCS"), execution.getExitStatus());
 
          int nbreDocs = execution.getExecutionContext().getInt(
                Constantes.DOC_COUNT);
