@@ -13,7 +13,9 @@ import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.opensaml.util.resource.ResourceException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -58,20 +60,19 @@ public class SAEControlesCaptureServiceImplMetaTest {
     * @throws MetadataValueNotInDictionaryEx
     * @throws URISyntaxException
     * @throws DictionaryNotFoundException 
+    * @throws ResourceException 
     */
    @Test
    public final void checkUntypedMetadataNotInDictionary()
          throws UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, SAECaptureServiceEx, IOException,
-         ParseException, RequiredArchivableMetadataEx, URISyntaxException, DictionaryNotFoundException {
-      File doc = new File(this.getClass().getClassLoader().getResource(
-            "doc1.pdf").toURI());
-
+         ParseException, RequiredArchivableMetadataEx, URISyntaxException, DictionaryNotFoundException, ResourceException {
+      ClassPathResource ressource = new ClassPathResource("PDF/doc1.PDF");
       List<UntypedMetadata> metas = new ArrayList<UntypedMetadata>();
       metas.add(new UntypedMetadata("CodeRND", "1.6"));
       metas.add(new UntypedMetadata("Hash", "hash"));
       UntypedDocument untypedDocument = new UntypedDocument(FileUtils
-            .readFileToByteArray(doc), metas);
+            .readFileToByteArray(ressource.getFile()), metas);
       try {
          saeControlesCaptureService.checkUntypedMetadata(untypedDocument);
       } catch (MetadataValueNotInDictionaryEx ex) {
@@ -91,22 +92,23 @@ public class SAEControlesCaptureServiceImplMetaTest {
     * @throws RequiredArchivableMetadataEx
     * @throws URISyntaxException
     * @throws MetadataValueNotInDictionaryEx
+    * @throws ResourceException 
     */
    
    @Test(expected=MetadataRuntimeException.class)
    public final void checkUntypedMetadataDictionaryNotExist()
          throws UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, SAECaptureServiceEx, IOException,
-         ParseException, RequiredArchivableMetadataEx, URISyntaxException, MetadataValueNotInDictionaryEx {
-      File doc = new File(this.getClass().getClassLoader().getResource(
-            "doc1.pdf").toURI());
-
+         ParseException, RequiredArchivableMetadataEx, URISyntaxException, MetadataValueNotInDictionaryEx, ResourceException {
+      
+      ClassPathResource ressource = new ClassPathResource("PDF/doc1.pdf");
+      
       List<UntypedMetadata> metas = new ArrayList<UntypedMetadata>();
       metas.add(new UntypedMetadata("CodeRND", "1.1"));
       metas.add(new UntypedMetadata("Hash", "hash"));
       metas.add(new UntypedMetadata("Siret", "siret"));
       UntypedDocument untypedDocument = new UntypedDocument(FileUtils
-            .readFileToByteArray(doc), metas);
+            .readFileToByteArray(ressource.getFile()), metas);
          saeControlesCaptureService.checkUntypedMetadata(untypedDocument);
    }
 
