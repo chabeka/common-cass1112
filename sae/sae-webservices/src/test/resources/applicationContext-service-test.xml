@@ -9,6 +9,10 @@
 
    
    <import resource="applicationContext-properties-test.xml" />
+   
+   <bean
+      class="fr.urssaf.image.sae.webservices.dfceservice.test.DfceInfoServiceTU"
+      id="dfceInfoService" />
 
    <bean
       class="fr.urssaf.image.sae.webservices.modele.WebServiceConfiguration"

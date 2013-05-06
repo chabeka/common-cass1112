@@ -11,6 +11,7 @@ import java.net.MalformedURLException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.core.io.Resource;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -64,6 +65,12 @@ public class IgcConfigServiceAfterTest {
             }
 
             return configs;
+         }
+
+         @Override
+         public IgcConfigs loadConfig(Resource configFile)
+               throws IgcConfigException {
+            return null;
          }
       };
 

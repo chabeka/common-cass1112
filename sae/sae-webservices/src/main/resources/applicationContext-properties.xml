@@ -14,7 +14,7 @@
    <!-- Chargement des fichiers properties -->
    
    
-   <!-- sae.properties -->
+   <!-- sae-config.properties -->
    <bean id="saeConfigResource" class="org.springframework.core.io.FileSystemResource">
          <constructor-arg>
             <jee:jndi-lookup id="SAE_Config"
@@ -24,12 +24,9 @@
    
    
    <!-- Le PropertyPlaceholderConfigurer -->
-   
-   <bean id="propertiesFactory"
-         class="fr.urssaf.image.sae.webservices.factory.PropertiesFactory" />
-   <bean id="applicationProperties" 
-         factory-bean="propertiesFactory" 
-         factory-method="load">
+   <bean
+      class="fr.urssaf.image.sae.commons.factory.PropertiesFactory"
+      factory-method="load">
       <constructor-arg ref="saeConfigResource" />
    </bean>
    

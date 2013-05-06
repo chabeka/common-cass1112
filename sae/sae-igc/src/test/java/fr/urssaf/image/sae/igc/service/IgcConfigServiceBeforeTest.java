@@ -7,6 +7,7 @@ import java.net.MalformedURLException;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.core.io.Resource;
 
 import fr.urssaf.image.sae.igc.component.IgcConfigServiceValidate;
 import fr.urssaf.image.sae.igc.exception.IgcConfigException;
@@ -37,6 +38,12 @@ public class IgcConfigServiceBeforeTest {
             IgcConfigs igcConfigs = new IgcConfigs();
 
             return igcConfigs;
+         }
+
+         @Override
+         public IgcConfigs loadConfig(Resource configFile)
+               throws IgcConfigException {
+            return null;
          }
       };
 

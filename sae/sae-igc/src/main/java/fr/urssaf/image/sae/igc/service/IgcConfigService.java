@@ -1,5 +1,7 @@
 package fr.urssaf.image.sae.igc.service;
 
+import org.springframework.core.io.Resource;
+
 import fr.urssaf.image.sae.igc.exception.IgcConfigException;
 import fr.urssaf.image.sae.igc.modele.IgcConfigs;
 
@@ -35,4 +37,17 @@ public interface IgcConfigService {
     *            vérification de la configuration de l'IGC
     */
    IgcConfigs loadConfig(String pathConfigFile) throws IgcConfigException;
+
+   /**
+    * Renvoie la configuration des éléments de l'IGC
+    * 
+    * @param configFile
+    *           La ressource représentant le fichier de configuration IGC
+    * @return Configuration des éléments de l'IGC
+    * @throws IgcConfigException
+    *            Une erreur s'est produite lors de la lecture ou de la
+    *            vérification de la configuration de l'IGC
+    */
+   IgcConfigs loadConfig(Resource configFile) throws IgcConfigException;
+
 }

@@ -57,7 +57,12 @@ public class IgcConfigServiceImplTest {
    public static void afterClass() throws IOException {
 
       File directory = new File(DIRECTORY);
-      FileUtils.deleteDirectory(directory);
+
+      try {
+         FileUtils.deleteDirectory(directory);
+      } catch (IOException e) {
+         // rien à faire
+      }
 
    }
 
@@ -165,8 +170,8 @@ public class IgcConfigServiceImplTest {
          fail(FAIL_MESSAGE);
       } catch (IgcConfigException e) {
 
-         assertEquals("erreur la cause de l'exception",
-               StreamException.class, e.getCause().getClass());
+         assertEquals("erreur la cause de l'exception", StreamException.class,
+               e.getCause().getClass());
       }
 
    }

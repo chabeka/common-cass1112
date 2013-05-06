@@ -56,7 +56,14 @@
          <artifactId>xstream</artifactId>
          <version>${xstream.version}</version>
       </dependency>
-
+      
+      <!-- Spring -->
+      <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-context</artifactId>
+         <version>${spring.framework.version}</version>
+      </dependency>
+      
 
    </dependencies>
 

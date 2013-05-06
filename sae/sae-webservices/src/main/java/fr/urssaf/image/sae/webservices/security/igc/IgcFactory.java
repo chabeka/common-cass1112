@@ -5,9 +5,9 @@ import org.springframework.util.Assert;
 
 import fr.urssaf.image.sae.igc.IgcServiceFactory;
 import fr.urssaf.image.sae.igc.exception.IgcConfigException;
+import fr.urssaf.image.sae.igc.modele.IgcConfig;
 import fr.urssaf.image.sae.igc.modele.IgcConfigs;
 import fr.urssaf.image.sae.igc.service.IgcConfigService;
-import fr.urssaf.image.sae.igc.util.TextUtils;
 
 /**
  * Classe d'instanciation de {@link IgcFactory}
@@ -70,15 +70,12 @@ public final class IgcFactory {
     */
    public static IgcConfigs createIgcConfig(FileSystemResource igcConfigResource) {
 
-      Assert.hasText(igcConfigResource.getPath(), IGC_CONFIG_REQUIRED);
-
-      Assert.isTrue(igcConfigResource.getFile().isFile(), TextUtils.getMessage(
-            IGC_CONFIG_NOTEXIST, igcConfigResource.getPath()));
+      Assert.notNull(igcConfigResource, IGC_CONFIG_REQUIRED);
 
       IgcConfigService service = IgcServiceFactory.createIgcConfigService();
 
       try {
-         return service.loadConfig(igcConfigResource.getPath());
+         return service.loadConfig(igcConfigResource);
       } catch (IgcConfigException e) {
 
          throw new IllegalArgumentException(ICG_CONFIG_ERROR, e);

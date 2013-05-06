@@ -3,6 +3,9 @@ package fr.urssaf.image.sae.igc.service.impl;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+
+import org.springframework.core.io.Resource;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -11,14 +14,41 @@ import fr.urssaf.image.sae.igc.modele.IgcConfigs;
 import fr.urssaf.image.sae.igc.service.IgcConfigService;
 
 /**
- * classe d'implémentation de {@link IgcConfigService}
- * 
- * 
+ * Classe d'implémentation de {@link IgcConfigService}
  */
-public class IgcConfigServiceImpl implements IgcConfigService {
+public final class IgcConfigServiceImpl implements IgcConfigService {
 
    @Override
-   public final IgcConfigs loadConfig(String pathConfigFile)
+   public IgcConfigs loadConfig(String pathConfigFile)
+         throws IgcConfigException {
+
+      InputStream inputStream;
+
+      try {
+         inputStream = new FileInputStream(pathConfigFile);
+      } catch (FileNotFoundException e) {
+         throw new IgcConfigException(e);
+      }
+
+      return loadConfig(inputStream);
+
+   }
+
+   public IgcConfigs loadConfig(Resource configFile) throws IgcConfigException {
+
+      InputStream inputStream;
+
+      try {
+         inputStream = configFile.getInputStream();
+      } catch (IOException e) {
+         throw new IgcConfigException(e);
+      }
+
+      return loadConfig(inputStream);
+
+   }
+
+   private IgcConfigs loadConfig(InputStream inputStream)
          throws IgcConfigException {
 
       final XStream xstream = new XStream();
@@ -27,10 +57,7 @@ public class IgcConfigServiceImpl implements IgcConfigService {
       IgcConfigs configs;
 
       try {
-         stream = new FileInputStream(pathConfigFile);
-         configs = IgcConfigs.class.cast(xstream.fromXML(stream));
-      } catch (FileNotFoundException e) {
-         throw new IgcConfigException(e);
+         configs = IgcConfigs.class.cast(xstream.fromXML(inputStream));
       } catch (Exception e) {
          throw new IgcConfigException(e);
       } finally {
@@ -38,13 +65,13 @@ public class IgcConfigServiceImpl implements IgcConfigService {
             try {
                stream.close();
             } catch (IOException e) {
-               // nothing to do 
+               // nothing to do
             }
          }
       }
-      
 
       return configs;
 
    }
+
 }

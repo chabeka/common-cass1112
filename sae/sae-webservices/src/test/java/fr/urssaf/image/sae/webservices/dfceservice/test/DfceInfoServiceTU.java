@@ -1,9 +1,6 @@
 package fr.urssaf.image.sae.webservices.dfceservice.test;
 
 import net.docubase.toolkit.service.ServiceProvider;
-
-import org.springframework.stereotype.Service;
-
 import fr.urssaf.image.sae.exploitation.service.DfceInfoService;
 
 /**
@@ -11,7 +8,6 @@ import fr.urssaf.image.sae.exploitation.service.DfceInfoService;
  * 
  *
  */
-@Service
 public final class DfceInfoServiceTU implements DfceInfoService {
 
    /**
