@@ -58,11 +58,7 @@ public class IgcConfigServiceImplTest {
 
       File directory = new File(DIRECTORY);
 
-      try {
-         FileUtils.deleteDirectory(directory);
-      } catch (IOException e) {
-         // rien à faire
-      }
+      FileUtils.deleteDirectory(directory);
 
    }
 

@@ -53,7 +53,6 @@ public final class IgcConfigServiceImpl implements IgcConfigService {
 
       final XStream xstream = new XStream();
       xstream.processAnnotations(IgcConfigs.class);
-      FileInputStream stream = null;
       IgcConfigs configs;
 
       try {
@@ -61,9 +60,9 @@ public final class IgcConfigServiceImpl implements IgcConfigService {
       } catch (Exception e) {
          throw new IgcConfigException(e);
       } finally {
-         if (stream != null) {
+         if (inputStream != null) {
             try {
-               stream.close();
+               inputStream.close();
             } catch (IOException e) {
                // nothing to do
             }
