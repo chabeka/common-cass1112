@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.junit.After;
 import org.junit.Assert;
@@ -105,7 +106,9 @@ public class TraitementServiceDatasTest {
                ParameterNotFoundException.class, exception.getCause()
                      .getClass());
       } catch (Exception exception) {
-         Assert.fail("une exception TraceRuntimeException est attendue");
+         Assert
+               .fail("Une exception TraceRuntimeException est attendue, alors qu'on a obtenue l'exception : \r\n"
+                     + ExceptionUtils.getFullStackTrace(exception));
       }
    }
 
@@ -122,7 +125,9 @@ public class TraitementServiceDatasTest {
                exception.getMessage());
 
       } catch (Exception exception) {
-         Assert.fail("une exception TraceRuntimeException est attendue");
+         Assert
+               .fail("une exception TraceRuntimeException est attendue, alors qu'on a obtenue l'exception : \r\n"
+                     + ExceptionUtils.getFullStackTrace(exception));
       }
 
    }

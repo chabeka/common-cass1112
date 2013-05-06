@@ -15,8 +15,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import utils.SaeFileUtils;
 import fr.urssaf.image.sae.trace.executable.exception.TraceExecutableException;
+import fr.urssaf.image.sae.trace.executable.utils.SaeFileUtils;
 import fr.urssaf.image.sae.trace.model.JournalisationType;
 import fr.urssaf.image.sae.trace.model.Parameter;
 import fr.urssaf.image.sae.trace.model.ParameterType;

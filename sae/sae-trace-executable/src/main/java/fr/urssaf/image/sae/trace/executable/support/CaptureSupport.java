@@ -13,11 +13,11 @@ import org.apache.commons.lang.time.DateFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import utils.SaeFileUtils;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.services.capture.SAECaptureService;
 import fr.urssaf.image.sae.trace.exception.ParameterNotFoundException;
 import fr.urssaf.image.sae.trace.executable.exception.TraceExecutableException;
+import fr.urssaf.image.sae.trace.executable.utils.SaeFileUtils;
 import fr.urssaf.image.sae.trace.model.ParameterType;
 import fr.urssaf.image.sae.trace.service.ParametersService;
 

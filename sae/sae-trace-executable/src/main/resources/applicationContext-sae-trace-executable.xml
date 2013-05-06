@@ -7,16 +7,25 @@
         http://www.springframework.org/schema/context 
         http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
+   <!-- Chargement des fichiers properties -->
    <bean
-      class="fr.urssaf.image.sae.trace.executable.factory.PropertiesFactory"
+      class="fr.urssaf.image.sae.commons.factory.PropertiesFactory"
       factory-method="load">
       <constructor-arg ref="saeConfigResource" />
    </bean>
 
-
+   <!-- Création des beans de connexion à DFCE pour les services de la couche storage -->
    <import resource="applicationContext-storageConnectionParameter.xml" />
+   
+   <!-- Création du bean de connexion à DFCE pour les métadonnées -->
+   <bean id="dfceConfig" class="fr.urssaf.image.sae.metadata.referential.model.DfceConfig">
+      <property name="urlToolkit" value="${db.urlToolkit}" />
+      <property name="login" value="${db.login}" />
+      <property name="password" value="${db.password}" />
+      <property name="basename" value="${db.baseName}" />
+   </bean>
 
-
+   <!-- Création des beans de la configuration ECDE -->
    <bean id="ecdeSourceManager" class="fr.urssaf.image.sae.ecde.EcdeSourceManagerImpl" />
    <bean id="ecdeConfigFile" class="java.io.File">
       <constructor-arg value="${sae.ecde.cheminFichierConfig}" />
@@ -26,14 +35,13 @@
       <constructor-arg ref="ecdeConfigFile" />
    </bean>
 
-
-
+   <!-- Importation des contextes des composants techniques -->
    <import resource="applicationContext-commons-cassandra.xml" />
-   <!--  importation des contextes -->
    <import resource="applicationContext-sae-services.xml" />
    <import resource="applicationContext-sae-storage-dfce.xml" />
    <import resource="applicationContext-sae-metadata.xml" />
    <import resource="applicationContext-sae-ecde.xml" />
    <import resource="applicationContext-sae-mapping.xml" />
    <import resource="applicationContext-sae-trace.xml" />
+   
 </beans>
