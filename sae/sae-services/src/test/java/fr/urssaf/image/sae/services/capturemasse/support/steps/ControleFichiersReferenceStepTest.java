@@ -123,7 +123,7 @@ public class ControleFichiersReferenceStepTest {
       File documents = new File(ecdeTestSommaire.getRepEcde(), "documents");
       documents.mkdir();
       File document = new File(documents, "attestation1.pdf");
-      ClassPathResource resDocument = new ClassPathResource("docVide.PDF");
+      ClassPathResource resDocument = new ClassPathResource("docVide.pdf");
 
       FileOutputStream fos = null;
       FileOutputStream fosDoc = null;

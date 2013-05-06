@@ -1,6 +1,5 @@
 package fr.urssaf.image.sae.services.controles;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.ParseException;
@@ -59,14 +58,15 @@ public class SAEControlesCaptureServiceImplMetaTest {
     * @throws RequiredArchivableMetadataEx
     * @throws MetadataValueNotInDictionaryEx
     * @throws URISyntaxException
-    * @throws DictionaryNotFoundException 
-    * @throws ResourceException 
+    * @throws DictionaryNotFoundException
+    * @throws ResourceException
     */
    @Test
    public final void checkUntypedMetadataNotInDictionary()
          throws UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, SAECaptureServiceEx, IOException,
-         ParseException, RequiredArchivableMetadataEx, URISyntaxException, DictionaryNotFoundException, ResourceException {
+         ParseException, RequiredArchivableMetadataEx, URISyntaxException,
+         DictionaryNotFoundException, ResourceException {
       ClassPathResource ressource = new ClassPathResource("PDF/doc1.PDF");
       List<UntypedMetadata> metas = new ArrayList<UntypedMetadata>();
       metas.add(new UntypedMetadata("CodeRND", "1.6"));
@@ -76,13 +76,18 @@ public class SAEControlesCaptureServiceImplMetaTest {
       try {
          saeControlesCaptureService.checkUntypedMetadata(untypedDocument);
       } catch (MetadataValueNotInDictionaryEx ex) {
-         Assert.assertEquals("La valeur de la métadonnée CodeRND est incorrecte: elle n'est pas comprise dans le dictionnaire de données associé", ex.getMessage());
+         Assert
+               .assertEquals(
+                     "La valeur de la métadonnée CodeRND est incorrecte: elle n'est pas comprise dans le dictionnaire de données associé",
+                     ex.getMessage());
       }
 
    }
-   
+
    /**
-    * Test permettant de vérifier qu'une exception est levée si le dictionnaire n'est pas trouvé
+    * Test permettant de vérifier qu'une exception est levée si le dictionnaire
+    * n'est pas trouvé
+    * 
     * @throws UnknownMetadataEx
     * @throws DuplicatedMetadataEx
     * @throws InvalidValueTypeAndFormatMetadataEx
@@ -92,24 +97,25 @@ public class SAEControlesCaptureServiceImplMetaTest {
     * @throws RequiredArchivableMetadataEx
     * @throws URISyntaxException
     * @throws MetadataValueNotInDictionaryEx
-    * @throws ResourceException 
+    * @throws ResourceException
     */
-   
-   @Test(expected=MetadataRuntimeException.class)
+
+   @Test(expected = MetadataRuntimeException.class)
    public final void checkUntypedMetadataDictionaryNotExist()
          throws UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, SAECaptureServiceEx, IOException,
-         ParseException, RequiredArchivableMetadataEx, URISyntaxException, MetadataValueNotInDictionaryEx, ResourceException {
-      
-      ClassPathResource ressource = new ClassPathResource("PDF/doc1.pdf");
-      
+         ParseException, RequiredArchivableMetadataEx, URISyntaxException,
+         MetadataValueNotInDictionaryEx, ResourceException {
+
+      ClassPathResource ressource = new ClassPathResource("PDF/doc1.PDF");
+
       List<UntypedMetadata> metas = new ArrayList<UntypedMetadata>();
       metas.add(new UntypedMetadata("CodeRND", "1.1"));
       metas.add(new UntypedMetadata("Hash", "hash"));
       metas.add(new UntypedMetadata("Siret", "siret"));
       UntypedDocument untypedDocument = new UntypedDocument(FileUtils
             .readFileToByteArray(ressource.getFile()), metas);
-         saeControlesCaptureService.checkUntypedMetadata(untypedDocument);
+      saeControlesCaptureService.checkUntypedMetadata(untypedDocument);
    }
 
 }
