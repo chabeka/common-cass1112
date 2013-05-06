@@ -11,29 +11,13 @@
         http://www.springframework.org/schema/batch/spring-batch-2.1.xsd">
 
 
-   <bean id="saeConfigResourceLoader"
-      class="fr.urssaf.image.sae.services.executable.manager.SAEConfigResourceLoader">
+   <!-- Chargement des fichiers properties -->
+   <bean
+      class="fr.urssaf.image.sae.commons.factory.PropertiesFactory"
+      factory-method="load">
       <constructor-arg ref="saeConfigResource" />
    </bean>
-
-   <bean id="dfceConfigResource" factory-bean="saeConfigResourceLoader"
-      factory-method="loadDFCEConfigResource" />
-
-   <bean id="cassandraConfigResource" factory-bean="saeConfigResourceLoader"
-      factory-method="loadCassandraConfigResource" />
-
-
-   <bean id="applicationProperties"
-      class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-      <property name="locations">
-         <array value-type="org.springframework.core.io.Resource">
-            <ref bean="saeConfigResource" />
-            <ref bean="dfceConfigResource" />
-            <ref bean="cassandraConfigResource" />
-         </array>
-      </property>
-   </bean>
-
+   
    <!-- service des traitements de masse  -->
    <import resource="applicationContext-sae-traitement-masse.xml" />
    <import resource="applicationContext-sae-capture-masse-item.xml" />
@@ -52,6 +36,14 @@
    <bean id="ecdeSources" factory-bean="ecdeSourceManager"
       factory-method="load">
       <constructor-arg ref="ecdeConfigFile" />
+   </bean>
+   
+   <!-- Création du bean de connexion à DFCE pour les métadonnées -->
+   <bean id="dfceConfig" class="fr.urssaf.image.sae.metadata.referential.model.DfceConfig">
+      <property name="urlToolkit" value="${db.urlToolkit}" />
+      <property name="login" value="${db.login}" />
+      <property name="password" value="${db.password}" />
+      <property name="basename" value="${db.baseName}" />
    </bean>
 
    <!--  importation des contextes -->
