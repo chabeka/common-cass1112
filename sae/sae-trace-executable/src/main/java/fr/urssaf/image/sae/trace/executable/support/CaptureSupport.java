@@ -1,6 +1,3 @@
-/**
- * 
- */
 package fr.urssaf.image.sae.trace.executable.support;
 
 import java.io.File;
@@ -14,12 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
+import fr.urssaf.image.sae.commons.exception.ParameterNotFoundException;
+import fr.urssaf.image.sae.commons.service.ParametersService;
 import fr.urssaf.image.sae.services.capture.SAECaptureService;
-import fr.urssaf.image.sae.trace.exception.ParameterNotFoundException;
 import fr.urssaf.image.sae.trace.executable.exception.TraceExecutableException;
 import fr.urssaf.image.sae.trace.executable.utils.SaeFileUtils;
-import fr.urssaf.image.sae.trace.model.ParameterType;
-import fr.urssaf.image.sae.trace.service.ParametersService;
 
 /**
  * Classe de support permettant de réaliser des captures de fichier
@@ -66,34 +62,38 @@ public class CaptureSupport {
 
       UntypedMetadata metadata;
 
-      metadata = new UntypedMetadata("Titre",
-            getParameter(ParameterType.JOURNALISATION_EVT_META_TITRE));
-      list.add(metadata);
+      try {
+
+         metadata = new UntypedMetadata("Titre", paramService
+               .getJournalisationEvtMetaTitre());
+         list.add(metadata);
+
+         metadata = new UntypedMetadata("ApplicationProductrice", paramService
+               .getJournalisationEvtMetaApplProd());
+         list.add(metadata);
+
+         metadata = new UntypedMetadata("CodeOrganismeProprietaire",
+               paramService.getJournalisationEvtMetaCodeOrga());
+         list.add(metadata);
+
+         metadata = new UntypedMetadata("CodeOrganismeGestionnaire",
+               paramService.getJournalisationEvtMetaCodeOrga());
+         list.add(metadata);
+
+         metadata = new UntypedMetadata("CodeRND", paramService
+               .getJournalisationEvtMetaCodeRnd());
+         list.add(metadata);
+
+         metadata = new UntypedMetadata("ApplicationTraitement", paramService
+               .getJournalisationEvtMetaApplTrait());
+         list.add(metadata);
+
+      } catch (ParameterNotFoundException exception) {
+         throw new TraceExecutableException(exception);
+      }
 
       metadata = new UntypedMetadata("DateCreation",
             DateFormatUtils.ISO_DATE_FORMAT.format(new Date()));
-      list.add(metadata);
-
-      metadata = new UntypedMetadata(
-            "ApplicationProductrice",
-            getParameter(ParameterType.JOURNALISATION_EVT_META_APPLICATION_PRODUCTRICE));
-      list.add(metadata);
-
-      metadata = new UntypedMetadata("CodeOrganismeProprietaire",
-            getParameter(ParameterType.JOURNALISATION_EVT_META_CODE_ORGA));
-      list.add(metadata);
-
-      metadata = new UntypedMetadata("CodeOrganismeGestionnaire",
-            getParameter(ParameterType.JOURNALISATION_EVT_META_CODE_ORGA));
-      list.add(metadata);
-
-      metadata = new UntypedMetadata("CodeRND",
-            getParameter(ParameterType.JOURNALISATION_EVT_META_CODE_RND));
-      list.add(metadata);
-
-      metadata = new UntypedMetadata(
-            "ApplicationTraitement",
-            getParameter(ParameterType.JOURNALISATION_EVT_META_APPLICATION_TRAITEMENT));
       list.add(metadata);
 
       metadata = new UntypedMetadata("Hash", SaeFileUtils
@@ -114,16 +114,6 @@ public class CaptureSupport {
       list.add(metadata);
 
       return list;
-   }
-
-   private String getParameter(ParameterType type)
-         throws TraceExecutableException {
-      try {
-         return (String) paramService.loadParameter(type).getValue();
-
-      } catch (ParameterNotFoundException exception) {
-         throw new TraceExecutableException(exception);
-      }
    }
 
 }

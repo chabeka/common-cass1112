@@ -1,6 +1,3 @@
-/**
- * 
- */
 package fr.urssaf.image.sae.trace.executable.service;
 
 import java.util.Calendar;
@@ -21,6 +18,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.sae.commons.exception.ParameterNotFoundException;
+import fr.urssaf.image.sae.commons.service.ParametersService;
 import fr.urssaf.image.sae.trace.dao.TraceDestinataireDao;
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvt;
@@ -35,16 +34,13 @@ import fr.urssaf.image.sae.trace.dao.support.TraceJournalEvtSupport;
 import fr.urssaf.image.sae.trace.dao.support.TraceRegExploitationSupport;
 import fr.urssaf.image.sae.trace.dao.support.TraceRegSecuriteSupport;
 import fr.urssaf.image.sae.trace.dao.support.TraceRegTechniqueSupport;
-import fr.urssaf.image.sae.trace.exception.ParameterNotFoundException;
 import fr.urssaf.image.sae.trace.exception.TraceRuntimeException;
-import fr.urssaf.image.sae.trace.model.Parameter;
-import fr.urssaf.image.sae.trace.model.ParameterType;
 import fr.urssaf.image.sae.trace.model.PurgeType;
 import fr.urssaf.image.sae.trace.model.TraceToCreate;
-import fr.urssaf.image.sae.trace.service.ParametersService;
 import fr.urssaf.image.sae.trace.service.RegExploitationService;
 import fr.urssaf.image.sae.trace.service.RegSecuriteService;
 import fr.urssaf.image.sae.trace.service.RegTechniqueService;
+import fr.urssaf.image.sae.trace.service.StatusService;
 import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -57,6 +53,9 @@ public class TraitementServiceDatasTest {
 
    @Autowired
    private ParametersService paramService;
+
+   @Autowired
+   private StatusService statusService;
 
    @Autowired
    private TraitementService traitementService;
@@ -114,12 +113,16 @@ public class TraitementServiceDatasTest {
 
    @Test
    public void testPurgeDejaEnCours() {
-      createParameter(ParameterType.PURGE_EXPLOIT_IS_RUNNING, Boolean.TRUE);
+
+      statusService.updatePurgeStatus(PurgeType.PURGE_EXPLOITATION,
+            Boolean.TRUE);
 
       try {
+
          traitementService.purger(PurgeType.PURGE_EXPLOITATION);
 
       } catch (TraceRuntimeException exception) {
+
          Assert.assertEquals("le message d'erreur doit etre correct",
                "La purge des registres d'exploitation est déjà en cours",
                exception.getMessage());
@@ -133,7 +136,7 @@ public class TraitementServiceDatasTest {
    }
 
    @Test
-   public void testPurge() {
+   public void testPurge() throws ParameterNotFoundException {
       createParameters();
       createTraces();
 
@@ -150,19 +153,17 @@ public class TraitementServiceDatasTest {
    }
 
    private void createParameters() {
+
       Date lastDate = DateUtils.addMonths(DATE, -1);
-      createParameter(ParameterType.PURGE_EXPLOIT_DATE, lastDate);
-      createParameter(ParameterType.PURGE_SECU_DATE, lastDate);
-      createParameter(ParameterType.PURGE_TECH_DATE, lastDate);
 
-      createParameter(ParameterType.PURGE_EXPLOIT_DUREE, Integer.valueOf(3));
-      createParameter(ParameterType.PURGE_SECU_DUREE, Integer.valueOf(4));
-      createParameter(ParameterType.PURGE_TECH_DUREE, Integer.valueOf(1));
-   }
+      paramService.setPurgeExploitDate(lastDate);
+      paramService.setPurgeSecuDate(lastDate);
+      paramService.setPurgeTechDate(lastDate);
 
-   private void createParameter(ParameterType type, Object value) {
-      Parameter parameter = new Parameter(type, value);
-      paramService.saveParameter(parameter);
+      paramService.setPurgeExploitDuree(3);
+      paramService.setPurgeSecuDuree(4);
+      paramService.setPurgeTechDuree(1);
+
    }
 
    private void createTraces() {
@@ -257,51 +258,40 @@ public class TraitementServiceDatasTest {
             + "[JOUR J-2]", traces.get(0).getContexte().contains("[JOUR J]"));
    }
 
-   private void checkParameters() {
+   private void checkParameters() throws ParameterNotFoundException {
       checkDates();
       checkExecutions();
    }
 
-   private void checkDates() {
+   private void checkDates() throws ParameterNotFoundException {
+
       Date maxDate = DateUtils.addDays(DATE, -3);
       maxDate = DateUtils.truncate(maxDate, Calendar.DATE);
-      checkDate(ParameterType.PURGE_EXPLOIT_DATE, maxDate);
+      Assert.assertEquals("la date doit etre correcte", maxDate, paramService
+            .getPurgeExploitDate());
 
       maxDate = DateUtils.addDays(DATE, -4);
       maxDate = DateUtils.truncate(maxDate, Calendar.DATE);
-      checkDate(ParameterType.PURGE_SECU_DATE, maxDate);
+      Assert.assertEquals("la date doit etre correcte", maxDate, paramService
+            .getPurgeSecuDate());
 
       maxDate = DateUtils.addDays(DATE, -1);
       maxDate = DateUtils.truncate(maxDate, Calendar.DATE);
-      checkDate(ParameterType.PURGE_TECH_DATE, maxDate);
-   }
+      Assert.assertEquals("la date doit etre correcte", maxDate, paramService
+            .getPurgeTechDate());
 
-   private void checkDate(ParameterType parameterType, Date value) {
-      try {
-         Parameter param = paramService.loadParameter(parameterType);
-         Assert.assertEquals("la date doit etre correcte", value, (Date) param
-               .getValue());
-
-      } catch (ParameterNotFoundException exception) {
-         Assert.fail("le paramètre doit etre renseigné");
-      }
    }
 
    private void checkExecutions() {
-      checkExecution(ParameterType.PURGE_EXPLOIT_IS_RUNNING);
-      checkExecution(ParameterType.PURGE_SECU_IS_RUNNING);
-      checkExecution(ParameterType.PURGE_TECH_IS_RUNNING);
-   }
 
-   private void checkExecution(ParameterType parameterType) {
-      try {
-         Parameter param = paramService.loadParameter(parameterType);
-         Assert.assertEquals("le boolean doit etre correcte", Boolean.FALSE,
-               (Boolean) param.getValue());
+      Assert.assertEquals("le boolean doit etre correcte", Boolean.FALSE,
+            statusService.isPurgeRunning(PurgeType.PURGE_EXPLOITATION));
 
-      } catch (ParameterNotFoundException exception) {
-         Assert.fail("le paramètre doit etre renseigné");
-      }
+      Assert.assertEquals("le boolean doit etre correcte", Boolean.FALSE,
+            statusService.isPurgeRunning(PurgeType.PURGE_SECURITE));
+
+      Assert.assertEquals("le boolean doit etre correcte", Boolean.FALSE,
+            statusService.isPurgeRunning(PurgeType.PURGE_TECHNIQUE));
 
    }
 

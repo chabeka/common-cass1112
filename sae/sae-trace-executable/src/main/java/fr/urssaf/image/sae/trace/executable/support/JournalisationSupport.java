@@ -1,6 +1,3 @@
-/**
- * 
- */
 package fr.urssaf.image.sae.trace.executable.support;
 
 import java.io.File;
@@ -15,13 +12,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import fr.urssaf.image.sae.commons.service.ParametersService;
 import fr.urssaf.image.sae.trace.executable.exception.TraceExecutableException;
 import fr.urssaf.image.sae.trace.executable.utils.SaeFileUtils;
 import fr.urssaf.image.sae.trace.model.JournalisationType;
-import fr.urssaf.image.sae.trace.model.Parameter;
-import fr.urssaf.image.sae.trace.model.ParameterType;
 import fr.urssaf.image.sae.trace.service.JournalisationService;
-import fr.urssaf.image.sae.trace.service.ParametersService;
 
 /**
  * Classe permettant de réaliser des opérations de journalisation
@@ -90,26 +85,16 @@ public class JournalisationSupport {
    private void updateParameters(JournalisationType typeJournalisation,
          UUID uuid, String hash, Date date) throws TraceExecutableException {
 
-      ParameterType idJournalPrecedent, hashJournalPrecedent, derniereDate;
-
       if (JournalisationType.JOURNALISATION_EVT.equals(typeJournalisation)) {
-         idJournalPrecedent = ParameterType.JOURNALISATION_EVT_ID_JOURNAL_PRECEDENT;
-         hashJournalPrecedent = ParameterType.JOURNALISATION_EVT_HASH_JOURNAL_PRECEDENT;
-         derniereDate = ParameterType.JOURNALISATION_EVT_DATE;
+
+         paramService.setJournalisationEvtIdJournPrec(uuid.toString());
+         paramService.setJournalisationEvtHashJournPrec(hash);
+         paramService.setJournalisationEvtDate(date);
 
       } else {
          throw new TraceExecutableException(
                "Type de journalisation non supportée");
       }
-
-      Parameter parameter = new Parameter(idJournalPrecedent, uuid.toString());
-      paramService.saveParameter(parameter);
-
-      parameter = new Parameter(hashJournalPrecedent, hash);
-      paramService.saveParameter(parameter);
-
-      parameter = new Parameter(derniereDate, date);
-      paramService.saveParameter(parameter);
 
    }
 

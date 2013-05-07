@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.sae.commons.exception.ParameterNotFoundException;
 import fr.urssaf.image.sae.commons.service.ParametersService;
-import fr.urssaf.image.sae.trace.exception.TraceRuntimeException;
 import fr.urssaf.image.sae.trace.model.JournalisationType;
 import fr.urssaf.image.sae.trace.model.PurgeType;
 import fr.urssaf.image.sae.trace.service.StatusService;
@@ -33,7 +32,7 @@ public class StatusServiceImpl implements StatusService {
          try {
             return paramService.isJournalisationEvtIsRunning();
          } catch (ParameterNotFoundException e) {
-            throw new TraceRuntimeException(e);
+            return false;
          }
       } else {
          throw new IllegalArgumentException("typeJournalisation");

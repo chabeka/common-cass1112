@@ -1,6 +1,3 @@
-/**
- * 
- */
 package fr.urssaf.image.sae.trace.executable.support;
 
 import java.io.File;
@@ -25,6 +22,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
+import fr.urssaf.image.sae.commons.exception.ParameterNotFoundException;
+import fr.urssaf.image.sae.commons.service.ParametersService;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
@@ -32,11 +31,7 @@ import fr.urssaf.image.sae.services.consultation.SAEConsultationService;
 import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
 import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedToConsultEx;
 import fr.urssaf.image.sae.services.exception.consultation.SAEConsultationServiceException;
-import fr.urssaf.image.sae.trace.exception.ParameterNotFoundException;
 import fr.urssaf.image.sae.trace.executable.exception.TraceExecutableException;
-import fr.urssaf.image.sae.trace.model.Parameter;
-import fr.urssaf.image.sae.trace.model.ParameterType;
-import fr.urssaf.image.sae.trace.service.ParametersService;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
 import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
@@ -50,7 +45,7 @@ public class CaptureSupportTest {
    private CaptureSupport support;
 
    @Autowired
-   private ParametersService parametersService;
+   private ParametersService paramService;
 
    @Autowired
    @Qualifier("saeConsultationService")
@@ -71,44 +66,41 @@ public class CaptureSupportTest {
          Assert.fail("une exception TraceExecutableException est attendue");
 
       } catch (TraceExecutableException exception) {
-         Assert
-               .assertEquals(
-                     "le message d'erreur d'origine doit etre un parametre non trouvé",
-                     ParameterNotFoundException.class, exception.getCause()
-                           .getCause().getClass());
-         Assert.assertEquals("le message d'erreur doit etre correct",
-               "le paramètre "
-                     + ParameterType.JOURNALISATION_EVT_META_TITRE.toString()
-                     + " n'existe pas", exception.getCause().getCause()
-                     .getMessage());
+         checkExceptionParametreInexistant(exception,
+               "JOURNALISATION_EVT_META_TITRE");
 
       } catch (Exception exception) {
          Assert.fail("une exception TraceExecutableException est attendue");
       }
    }
 
+   private void checkExceptionParametreInexistant(
+         TraceExecutableException exception, String parametre) {
+
+      Assert.assertEquals(
+            "le message d'erreur d'origine doit etre un parametre non trouvé",
+            ParameterNotFoundException.class, exception.getCause().getCause()
+                  .getClass());
+
+      String messageAttendu = "le paramètre " + parametre + " n'existe pas";
+      String messageObtenu = exception.getCause().getCause().getMessage();
+      Assert.assertEquals("le message d'erreur doit etre correct",
+            messageAttendu, messageObtenu);
+
+   }
+
    @Test
    public void testAppliProdObligatoire() {
 
-      createParameter(ParameterType.JOURNALISATION_EVT_META_TITRE, "JournalisationTest");
+      paramService.setJournalisationEvtMetaTitre("JournalisationTest");
 
       try {
          support.capture("", new Date());
          Assert.fail("une exception TraceExecutableException est attendue");
 
       } catch (TraceExecutableException exception) {
-         Assert
-               .assertEquals(
-                     "le message d'erreur d'origine doit etre un parametre non trouvé",
-                     ParameterNotFoundException.class, exception.getCause()
-                           .getCause().getClass());
-         Assert
-               .assertEquals(
-                     "le message d'erreur doit etre correct",
-                     "le paramètre "
-                           + ParameterType.JOURNALISATION_EVT_META_APPLICATION_PRODUCTRICE
-                                 .toString() + " n'existe pas", exception
-                           .getCause().getCause().getMessage());
+         checkExceptionParametreInexistant(exception,
+               "JOURNALISATION_EVT_META_APPLICATION_PRODUCTRICE");
 
       } catch (Exception exception) {
          Assert.fail("une exception TraceExecutableException est attendue");
@@ -117,26 +109,17 @@ public class CaptureSupportTest {
 
    @Test
    public void testAppliObligatoire() {
-      createParameter(ParameterType.JOURNALISATION_EVT_META_TITRE, "JournalisationTest");
-      createParameter(
-            ParameterType.JOURNALISATION_EVT_META_APPLICATION_PRODUCTRICE,
-            "Appli prod");
+
+      paramService.setJournalisationEvtMetaTitre("JournalisationTest");
+      paramService.setJournalisationEvtMetaApplProd("Appli prod");
 
       try {
          support.capture("", new Date());
          Assert.fail("une exception TraceExecutableException est attendue");
 
       } catch (TraceExecutableException exception) {
-         Assert
-               .assertEquals(
-                     "le message d'erreur d'origine doit etre un parametre non trouvé",
-                     ParameterNotFoundException.class, exception.getCause()
-                           .getCause().getClass());
-         Assert.assertEquals("le message d'erreur doit etre correct",
-               "le paramètre "
-                     + ParameterType.JOURNALISATION_EVT_META_CODE_ORGA
-                           .toString() + " n'existe pas", exception.getCause()
-                     .getCause().getMessage());
+         checkExceptionParametreInexistant(exception,
+               "JOURNALISATION_EVT_META_CODE_ORGA");
 
       } catch (Exception exception) {
          Assert.fail("une exception TraceExecutableException est attendue");
@@ -145,28 +128,18 @@ public class CaptureSupportTest {
 
    @Test
    public void testRndObligatoire() {
-      createParameter(ParameterType.JOURNALISATION_EVT_META_TITRE, "JournalisationTest");
-      createParameter(
-            ParameterType.JOURNALISATION_EVT_META_APPLICATION_PRODUCTRICE,
-            "Appli prod");
-      createParameter(ParameterType.JOURNALISATION_EVT_META_CODE_ORGA,
-            "Code orga");
+
+      paramService.setJournalisationEvtMetaTitre("JournalisationTest");
+      paramService.setJournalisationEvtMetaApplProd("Appli prod");
+      paramService.setJournalisationEvtMetaCodeOrga("Code orga");
 
       try {
          support.capture("", new Date());
          Assert.fail("une exception TraceExecutableException est attendue");
 
       } catch (TraceExecutableException exception) {
-         Assert
-               .assertEquals(
-                     "le message d'erreur d'origine doit etre un parametre non trouvé",
-                     ParameterNotFoundException.class, exception.getCause()
-                           .getCause().getClass());
-         Assert.assertEquals("le message d'erreur doit etre correct",
-               "le paramètre "
-                     + ParameterType.JOURNALISATION_EVT_META_CODE_RND
-                           .toString() + " n'existe pas", exception.getCause()
-                     .getCause().getMessage());
+         checkExceptionParametreInexistant(exception,
+               "JOURNALISATION_EVT_META_CODE_RND");
 
       } catch (Exception exception) {
          Assert.fail("une exception TraceExecutableException est attendue");
@@ -175,32 +148,19 @@ public class CaptureSupportTest {
 
    @Test
    public void testAppliTraitementObligatoire() {
-      createParameter(ParameterType.JOURNALISATION_EVT_META_TITRE, "JournalisationTest");
-      createParameter(
-            ParameterType.JOURNALISATION_EVT_META_APPLICATION_PRODUCTRICE,
-            "Appli prod");
-      createParameter(ParameterType.JOURNALISATION_EVT_META_CODE_ORGA,
-            "Code orga");
-      createParameter(ParameterType.JOURNALISATION_EVT_META_CODE_RND,
-            "Code rnd");
+
+      paramService.setJournalisationEvtMetaTitre("JournalisationTest");
+      paramService.setJournalisationEvtMetaApplProd("Appli prod");
+      paramService.setJournalisationEvtMetaCodeOrga("Code orga");
+      paramService.setJournalisationEvtMetaCodeRnd("Code rnd");
 
       try {
          support.capture("", new Date());
          Assert.fail("une exception TraceExecutableException est attendue");
 
       } catch (TraceExecutableException exception) {
-         Assert
-               .assertEquals(
-                     "le message d'erreur d'origine doit etre un parametre non trouvé",
-                     ParameterNotFoundException.class, exception.getCause()
-                           .getCause().getClass());
-         Assert
-               .assertEquals(
-                     "le message d'erreur doit etre correct",
-                     "le paramètre "
-                           + ParameterType.JOURNALISATION_EVT_META_APPLICATION_TRAITEMENT
-                                 .toString() + " n'existe pas", exception
-                           .getCause().getCause().getMessage());
+         checkExceptionParametreInexistant(exception,
+               "JOURNALISATION_EVT_META_APPLICATION_TRAITEMENT");
 
       } catch (Exception exception) {
          Assert.fail("une exception TraceExecutableException est attendue");
@@ -209,28 +169,22 @@ public class CaptureSupportTest {
 
    @Test
    public void testAppliFichierNonTrouvéObligatoire() {
-      createParameter(ParameterType.JOURNALISATION_EVT_META_TITRE, "JournalisationTest");
-      createParameter(
-            ParameterType.JOURNALISATION_EVT_META_APPLICATION_PRODUCTRICE,
-            "Appli prod");
-      createParameter(ParameterType.JOURNALISATION_EVT_META_CODE_ORGA,
-            "Code orga");
-      createParameter(ParameterType.JOURNALISATION_EVT_META_CODE_RND,
-            "Code rnd");
-      createParameter(
-            ParameterType.JOURNALISATION_EVT_META_APPLICATION_TRAITEMENT,
-            "Appli traitement");
+
+      paramService.setJournalisationEvtMetaTitre("JournalisationTest");
+      paramService.setJournalisationEvtMetaApplProd("Appli prod");
+      paramService.setJournalisationEvtMetaCodeOrga("Code orga");
+      paramService.setJournalisationEvtMetaCodeRnd("Code rnd");
+      paramService.setJournalisationEvtMetaApplTrait("Appli traitement");
 
       try {
          support.capture("", new Date());
          Assert.fail("une exception TraceExecutableException est attendue");
 
       } catch (TraceExecutableException exception) {
-         Assert
-               .assertEquals(
-                     "le message d'erreur d'origine doit etre un parametre non trouvé",
-                     FileNotFoundException.class, exception.getCause()
-                           .getCause().getClass());
+         Assert.assertEquals(
+               "le message d'erreur d'origine doit etre un fichier non trouvé",
+               FileNotFoundException.class, exception.getCause().getCause()
+                     .getClass());
 
       } catch (Exception exception) {
          Assert.fail("une exception TraceExecutableException est attendue");
@@ -241,16 +195,13 @@ public class CaptureSupportTest {
    public void testSucces() throws IOException, TraceExecutableException,
          SAEConsultationServiceException, UnknownDesiredMetadataEx,
          MetaDataUnauthorizedToConsultEx {
-      createParameter(ParameterType.JOURNALISATION_EVT_META_TITRE, "JournalisationTest");
-      createParameter(
-            ParameterType.JOURNALISATION_EVT_META_APPLICATION_PRODUCTRICE,
-            "SAE");
-      createParameter(ParameterType.JOURNALISATION_EVT_META_CODE_ORGA, "UR750");
-      createParameter(ParameterType.JOURNALISATION_EVT_META_CODE_RND,
-            "7.7.8.8.1");
-      createParameter(
-            ParameterType.JOURNALISATION_EVT_META_APPLICATION_TRAITEMENT,
-            "SAET");
+
+      paramService.setJournalisationEvtMetaTitre("JournalisationTest");
+      paramService.setJournalisationEvtMetaApplProd("SAE");
+      paramService.setJournalisationEvtMetaCodeOrga("UR750");
+      paramService.setJournalisationEvtMetaCodeRnd("7.7.8.8.1");
+      paramService.setJournalisationEvtMetaApplTrait("SAET");
+
       ClassPathResource resource = new ClassPathResource(
             "capture/resultat_attendu.xml.gz");
       File file = new File(resource.getURI());
@@ -306,13 +257,4 @@ public class CaptureSupportTest {
 
    }
 
-   @Test
-   public void captureSucces() {
-
-   }
-
-   private void createParameter(ParameterType type, Object value) {
-      Parameter parameter = new Parameter(type, value);
-      parametersService.saveParameter(parameter);
-   }
 }

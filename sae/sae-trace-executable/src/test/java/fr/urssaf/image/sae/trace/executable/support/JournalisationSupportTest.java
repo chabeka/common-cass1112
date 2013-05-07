@@ -1,6 +1,3 @@
-/**
- * 
- */
 package fr.urssaf.image.sae.trace.executable.support;
 
 import java.util.Date;
@@ -19,6 +16,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.sae.commons.exception.ParameterNotFoundException;
+import fr.urssaf.image.sae.commons.service.ParametersService;
 import fr.urssaf.image.sae.trace.dao.TraceDestinataireDao;
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvt;
@@ -30,15 +29,12 @@ import fr.urssaf.image.sae.trace.dao.support.TraceJournalEvtSupport;
 import fr.urssaf.image.sae.trace.dao.support.TraceRegExploitationSupport;
 import fr.urssaf.image.sae.trace.dao.support.TraceRegSecuriteSupport;
 import fr.urssaf.image.sae.trace.dao.support.TraceRegTechniqueSupport;
-import fr.urssaf.image.sae.trace.exception.ParameterNotFoundException;
 import fr.urssaf.image.sae.trace.exception.TraceRuntimeException;
 import fr.urssaf.image.sae.trace.executable.exception.TraceExecutableRuntimeException;
 import fr.urssaf.image.sae.trace.executable.service.TraitementService;
 import fr.urssaf.image.sae.trace.model.JournalisationType;
-import fr.urssaf.image.sae.trace.model.Parameter;
-import fr.urssaf.image.sae.trace.model.ParameterType;
 import fr.urssaf.image.sae.trace.model.TraceToCreate;
-import fr.urssaf.image.sae.trace.service.ParametersService;
+import fr.urssaf.image.sae.trace.service.StatusService;
 import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -51,6 +47,9 @@ public class JournalisationSupportTest {
 
    @Autowired
    private ParametersService paramService;
+
+   @Autowired
+   private StatusService statusService;
 
    @Autowired
    private TraitementService traitementService;
@@ -82,7 +81,9 @@ public class JournalisationSupportTest {
 
    @Test
    public void testJournalisationDejaEnCours() {
-      createParameter(ParameterType.JOURNALISATION_EVT_IS_RUNNING, Boolean.TRUE);
+
+      statusService.updateJournalisationStatus(
+            JournalisationType.JOURNALISATION_EVT, Boolean.TRUE);
 
       try {
          traitementService.journaliser(JournalisationType.JOURNALISATION_EVT);
@@ -109,19 +110,25 @@ public class JournalisationSupportTest {
          Assert.fail("une exception TraceRuntimeException est attendue");
 
       } catch (TraceRuntimeException exception) {
-         Assert
-               .assertEquals(
-                     "le message d'erreur d'origine doit etre un parametre non trouvé",
-                     exception.getCause().getClass(),
-                     ParameterNotFoundException.class);
-         Assert.assertEquals("le message d'erreur doit etre correct", exception
-               .getCause().getMessage(), "le paramètre "
-               + ParameterType.JOURNALISATION_EVT_DATE.toString()
-               + " n'existe pas");
+         checkExceptionParametreInexistant(exception, "JOURNALISATION_EVT_DATE");
 
       } catch (Exception exception) {
          Assert.fail("une exception TraceRuntimeException est attendue");
       }
+
+   }
+
+   private void checkExceptionParametreInexistant(
+         TraceRuntimeException exception, String parametre) {
+
+      Assert.assertEquals(
+            "le message d'erreur d'origine doit etre un parametre non trouvé",
+            ParameterNotFoundException.class, exception.getCause().getClass());
+
+      String messageAttendu = "le paramètre " + parametre + " n'existe pas";
+      String messageObtenu = exception.getCause().getMessage();
+      Assert.assertEquals("le message d'erreur doit etre correct",
+            messageAttendu, messageObtenu);
 
    }
 
@@ -130,23 +137,15 @@ public class JournalisationSupportTest {
 
       createTraces();
 
-      createParameter(ParameterType.JOURNALISATION_EVT_DATE, DateUtils.addDays(
-            new Date(), -2));
+      paramService.setJournalisationEvtDate(DateUtils.addDays(new Date(), -2));
 
       try {
          traitementService.journaliser(JournalisationType.JOURNALISATION_EVT);
          Assert.fail("une exception TraceRuntimeException est attendue");
 
       } catch (TraceRuntimeException exception) {
-         Assert
-               .assertEquals(
-                     "le message d'erreur d'origine doit etre un parametre non trouvé",
-                     exception.getCause().getClass(),
-                     ParameterNotFoundException.class);
-         Assert.assertEquals("le message d'erreur doit etre correct", exception
-               .getCause().getMessage(), "le paramètre "
-               + ParameterType.JOURNALISATION_EVT_ID_JOURNAL_PRECEDENT
-                     .toString() + " n'existe pas");
+         checkExceptionParametreInexistant(exception,
+               "JOURNALISATION_EVT_ID_JOURNAL_PRECEDENT");
 
       } catch (Exception exception) {
          Assert.fail("une exception TraceRuntimeException est attendue");
@@ -159,35 +158,22 @@ public class JournalisationSupportTest {
 
       createTraces();
 
-      createParameter(ParameterType.JOURNALISATION_EVT_DATE, DateUtils.addDays(
-            new Date(), -2));
-      createParameter(ParameterType.JOURNALISATION_EVT_ID_JOURNAL_PRECEDENT,
-            UUID.randomUUID().toString());
+      paramService.setJournalisationEvtDate(DateUtils.addDays(new Date(), -2));
+      paramService
+            .setJournalisationEvtIdJournPrec(UUID.randomUUID().toString());
 
       try {
          traitementService.journaliser(JournalisationType.JOURNALISATION_EVT);
          Assert.fail("une exception TraceRuntimeException est attendue");
 
       } catch (TraceRuntimeException exception) {
-         Assert
-               .assertEquals(
-                     "le message d'erreur d'origine doit etre un parametre non trouvé",
-                     exception.getCause().getClass(),
-                     ParameterNotFoundException.class);
-         Assert.assertEquals("le message d'erreur doit etre correct", exception
-               .getCause().getMessage(), "le paramètre "
-               + ParameterType.JOURNALISATION_EVT_HASH_JOURNAL_PRECEDENT
-                     .toString() + " n'existe pas");
+         checkExceptionParametreInexistant(exception,
+               "JOURNALISATION_EVT_HASH_JOURNAL_PRECEDENT");
 
       } catch (Exception exception) {
          Assert.fail("une exception TraceRuntimeException est attendue");
       }
 
-   }
-
-   private void createParameter(ParameterType type, Object value) {
-      Parameter parameter = new Parameter(type, value);
-      paramService.saveParameter(parameter);
    }
 
    private void createTraces() {
