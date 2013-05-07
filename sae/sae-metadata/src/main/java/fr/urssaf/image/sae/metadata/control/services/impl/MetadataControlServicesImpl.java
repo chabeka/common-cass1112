@@ -89,51 +89,6 @@ public class MetadataControlServicesImpl implements MetadataControlServices {
    }
 
    /**
-    * Permet de controller la presence des métadonnées obligatoires.
-    * 
-    * @param saeDoc
-    *           : Le document métier
-    * @param errors
-    *           : La liste des erreurs
-    * @param references
-    *           : Les métadonnées du référentiel
-    */
-   @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
-   private void checkRequired(final SAEDocument saeDoc,
-         final List<MetadataError> errors,
-         final Map<String, MetadataReference> references) {
-      for (Entry<String, MetadataReference> metadata : Utils.nullSafeMap(
-            references).entrySet()) {
-         if (!Utils
-               .isInRequiredList(metadata.getValue(), saeDoc.getMetadatas())) {
-            errors.add(new MetadataError(MetadataMessageHandler
-                  .getMessage("metadata.control.required"), metadata.getValue()
-                  .getLongCode(), MetadataMessageHandler.getMessage(
-                  "metadata.required", metadata.getValue().getLongCode())));
-         }
-      }
-      for (SAEMetadata metadata : Utils.nullSafeIterable(saeDoc.getMetadatas())) {
-         try {
-            final MetadataReference reference = referenceDAO
-                  .getByLongCode(metadata.getLongCode());
-            if (!ruleFactory.getRequiredValueRule().isSatisfiedBy(metadata,
-                  reference)) {
-               errors.add(new MetadataError(MetadataMessageHandler
-                     .getMessage("metadata.control.value.required"), metadata
-                     .getLongCode(), MetadataMessageHandler.getMessage(
-                     "metadata.value.required", metadata.getLongCode())));
-            }
-         } catch (ReferentialException refExcept) {
-            errors.add(new MetadataError(MetadataMessageHandler
-                  .getMessage("metadata.referentiel.error"), metadata
-                  .getLongCode(), MetadataMessageHandler.getMessage(
-                  "metadata.referentiel.retrieve", metadata.getLongCode())));
-         }
-      }
-
-   }
-
-   /**
     * {@inheritDoc}
     */
    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
@@ -258,19 +213,9 @@ public class MetadataControlServicesImpl implements MetadataControlServices {
          "PMD.DataflowAnomalyAnalysis" })
    public final List<MetadataError> checkRequiredForStorageMetadata(
          final SAEDocument saeDoc) {
-      final List<MetadataError> errors = new ArrayList<MetadataError>();
-      try {
-         final Map<String, MetadataReference> references = referenceDAO
-               .getRequiredForStorageMetadataReferences();
-         checkRequired(saeDoc, errors, references);
-      } catch (ReferentialException refExcept) {
-         errors.add(new MetadataError(MetadataMessageHandler
-               .getMessage("metadata.referentiel.error"), null,
-               MetadataMessageHandler
-                     .getMessage("metadata.referentiel.retrieve")));
-      }
 
-      return errors;
+      return checkRequiredForStorageMetadataList(saeDoc.getMetadatas());
+
    }
 
    /**
@@ -589,6 +534,27 @@ public class MetadataControlServicesImpl implements MetadataControlServices {
          }
 
       }
+      return errors;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final List<MetadataError> checkRequiredForStorageMetadataList(
+         List<SAEMetadata> metadatas) {
+      final List<MetadataError> errors = new ArrayList<MetadataError>();
+      try {
+         final Map<String, MetadataReference> references = referenceDAO
+               .getRequiredForStorageMetadataReferences();
+         checkRequired(metadatas, errors, references);
+      } catch (ReferentialException refExcept) {
+         errors.add(new MetadataError(MetadataMessageHandler
+               .getMessage("metadata.referentiel.error"), null,
+               MetadataMessageHandler
+                     .getMessage("metadata.referentiel.retrieve")));
+      }
+
       return errors;
    }
 

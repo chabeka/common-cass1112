@@ -152,6 +152,10 @@ public class StaxUtils {
       writer.add(eventFactory.createCharacters(value));
    }
 
+   public final void flush() throws XMLStreamException {
+      writer.flush();
+   }
+
    /**
     * Création du tag complet :
     * <ul>

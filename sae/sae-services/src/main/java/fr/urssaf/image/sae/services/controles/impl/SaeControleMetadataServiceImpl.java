@@ -54,9 +54,25 @@ public class SaeControleMetadataServiceImpl implements
       String trcPrefix = "checkMetadataForStorage";
       LOG.debug("{} - début", trcPrefix);
 
-      LOG.debug("{} - fin", trcPrefix);
-      // TODO Auto-generated method stub
+      // Fin des traces debug - entrée méthode
+      String listeCodeLong = null;
+      LOG.debug("{} - Début de la vérification : "
+            + "Les métadonnées obligatoires lors du stockage sont présentes",
+            trcPrefix);
+      List<MetadataError> errorsList = metadataCS
+            .checkRequiredForStorageMetadataList(metadatas);
+      if (CollectionUtils.isNotEmpty(errorsList)) {
+         listeCodeLong = buildLongCodeError(errorsList);
+         LOG.debug("{} - {}", trcPrefix, ResourceMessagesUtils.loadMessage(
+               "capture.metadonnees.stockage.obligatoire", listeCodeLong));
+         throw new RequiredStorageMetadataEx(ResourceMessagesUtils
+               .loadMessage("erreur.technique.capture.unitaire"));
+      }
+      LOG.debug("{} - Fin de la vérification : "
+            + "Les métadonnées obligatoire lors du stockage sont présentes",
+            trcPrefix);
 
+      LOG.debug("{} - fin", trcPrefix);
    }
 
    /**

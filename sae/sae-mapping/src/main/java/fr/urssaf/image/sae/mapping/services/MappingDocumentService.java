@@ -7,6 +7,7 @@ import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
 import fr.urssaf.image.sae.bo.model.bo.SAEVirtualDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
+import fr.urssaf.image.sae.bo.model.untyped.UntypedVirtualDocument;
 import fr.urssaf.image.sae.mapping.exception.InvalidSAETypeException;
 import fr.urssaf.image.sae.mapping.exception.MappingFromReferentialException;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
@@ -137,5 +138,23 @@ public interface MappingDocumentService {
     */
    List<SAEMetadata> untypedMetadatasToSaeMetadatas(
          final List<UntypedMetadata> metadatas) throws InvalidSAETypeException,
+         MappingFromReferentialException;
+
+   /**
+    * Service de conversion d’une liste d'objets de type {@link UntypedMetadata}
+    * 
+    * }vers une liste d'objets de type{@link SAEMetadata}.
+    * 
+    * @param document
+    *           : le document à transformer {@link UntypedVirtualDocument}
+    * @return un objet de type {@link SAEVirtualDocument}
+    * @throws InvalidSAETypeException
+    *            Exception levée lorsque la conversion ne se passe pas bien.
+    * @throws MappingFromReferentialException
+    *            Exception levée lorsque la récupération de la métadata du
+    *            référentiel n'abouti pas
+    */
+   SAEVirtualDocument untypedVirtualDocumentToSaeVirtualDocument(
+         final UntypedVirtualDocument document) throws InvalidSAETypeException,
          MappingFromReferentialException;
 }

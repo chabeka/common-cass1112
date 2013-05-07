@@ -4,12 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
@@ -19,14 +17,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import fr.urssaf.image.sae.bo.model.MetadataError;
 import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
 import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.ecde.exception.EcdeBadURLException;
 import fr.urssaf.image.sae.ecde.exception.EcdeBadURLFormatException;
 import fr.urssaf.image.sae.ecde.service.EcdeServices;
-import fr.urssaf.image.sae.metadata.control.services.MetadataControlServices;
 import fr.urssaf.image.sae.services.controles.SAEControlesCaptureService;
 import fr.urssaf.image.sae.services.controles.SaeControleMetadataService;
 import fr.urssaf.image.sae.services.enrichment.dao.impl.SAEMetatadaFinderUtils;
@@ -45,10 +41,8 @@ import fr.urssaf.image.sae.services.exception.capture.RequiredStorageMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.SAECaptureServiceRuntimeException;
 import fr.urssaf.image.sae.services.exception.capture.UnknownHashCodeEx;
 import fr.urssaf.image.sae.services.exception.capture.UnknownMetadataEx;
-import fr.urssaf.image.sae.services.util.FormatUtils;
 import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
 import fr.urssaf.image.sae.services.util.WriteUtils;
-import fr.urssaf.image.sae.storage.dfce.utils.Utils;
 
 /**
  *Classe de contrôle pour la capture unitaire et la capture en masse.
@@ -61,9 +55,7 @@ public class SAEControlesCaptureServiceImpl implements
       SAEControlesCaptureService {
    private static final Logger LOGGER = LoggerFactory
          .getLogger(SAEControlesCaptureServiceImpl.class);
-   @Autowired
-   @Qualifier("metadataControlServices")
-   private MetadataControlServices metadataCS;
+   
    @Autowired
    private EcdeServices ecdeServices;
 
@@ -95,23 +87,9 @@ public class SAEControlesCaptureServiceImpl implements
       // Traces debug - entrée méthode
       String prefixeTrc = "checkSaeMetadataForCapture()";
       LOGGER.debug("{} - Début", prefixeTrc);
-      // Fin des traces debug - entrée méthode
-      String listeCodeLong = null;
-      LOGGER.debug("{} - Début de la vérification : "
-            + "Les métadonnées obligatoires lors du stockage sont présentes",
-            prefixeTrc);
-      List<MetadataError> errorsList = metadataCS
-            .checkRequiredForStorageMetadata(sAEDocument);
-      if (CollectionUtils.isNotEmpty(errorsList)) {
-         listeCodeLong = buildLongCodeError(errorsList);
-         LOGGER.debug("{} - {}", prefixeTrc, ResourceMessagesUtils.loadMessage(
-               "capture.metadonnees.stockage.obligatoire", listeCodeLong));
-         throw new RequiredStorageMetadataEx(ResourceMessagesUtils
-               .loadMessage("erreur.technique.capture.unitaire"));
-      }
-      LOGGER.debug("{} - Fin de la vérification : "
-            + "Les métadonnées obligatoire lors du stockage sont présentes",
-            prefixeTrc);
+
+      controleService.checkMetadataForStorage(sAEDocument.getMetadatas());
+
       // Traces debug - sortie méthode
       LOGGER.debug("{} - Sortie", prefixeTrc);
       // Fin des traces debug - sortie méthode
@@ -305,23 +283,6 @@ public class SAEControlesCaptureServiceImpl implements
       // Traces debug - sortie méthode
       LOGGER.debug("{} - Sortie", prefixeTrc);
       // Fin des traces debug - sortie méthode
-   }
-
-   /**
-    * Construire une list de code long.
-    * 
-    * @param errorsList
-    *           : Liste de de type {@link MetadataError}
-    * @return Liste de code long à partir d'une liste de de type
-    *         {@link MetadataError}
-    */
-   private String buildLongCodeError(List<MetadataError> errorsList) {
-      List<String> codeLongErrors = new ArrayList<String>();
-      for (MetadataError metadataError : Utils.nullSafeIterable(errorsList)) {
-         codeLongErrors.add(metadataError.getLongCode());
-      }
-
-      return FormatUtils.formattingDisplayList(codeLongErrors);
    }
 
    @Override

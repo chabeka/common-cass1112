@@ -12,6 +12,7 @@ import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
 import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
 import fr.urssaf.image.sae.bo.model.bo.SAEVirtualDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
+import fr.urssaf.image.sae.bo.model.untyped.UntypedVirtualDocument;
 import fr.urssaf.image.sae.mapping.exception.InvalidSAETypeException;
 import fr.urssaf.image.sae.mapping.exception.MappingFromReferentialException;
 import fr.urssaf.image.sae.mapping.services.MappingDocumentService;
@@ -211,6 +212,24 @@ public class MappingDocumentServiceValidationTest {
    public void untypedDocumentToSaeDocumentMetadata()
          throws InvalidSAETypeException, MappingFromReferentialException {
       mappingDocService.untypedDocumentToSaeDocument(new UntypedDocument());
+   }
+
+   /**
+    * Permet de tester la methode
+    * {@link fr.urssaf.image.sae.mapping.services.MappingDocumentService#untypedVirtualDocumentToSaeVirtualDocument(fr.urssaf.image.sae.bo.model.untyped.UntypedVirtualDocument)}
+    * 
+    * @throws InvalidSAETypeException
+    *            Exception levée lorsque la conversion n’aboutit pas.
+    * @throws MappingFromReferentialException
+    *            Exception levée lorsque la récupération de la métadata du
+    *            référentiel n'abouti pas
+    * @throws UnKnowSAETypeException
+    */
+   @Test(expected = IllegalArgumentException.class)
+   public void untypedVirtualDocumentToSaeVirtualDocument()
+         throws InvalidSAETypeException, MappingFromReferentialException {
+      mappingDocService
+            .untypedVirtualDocumentToSaeVirtualDocument(new UntypedVirtualDocument());
    }
 
    /**

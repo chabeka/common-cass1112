@@ -43,7 +43,7 @@
 					</xsd:annotation>
 				</xsd:element>
 				<!-- Liste des documents virtuels non archivés (le cas échéant) -->
-				<xsd:element name="nonIntegratedVirtualDocuments" type="somres:listeDocumentsVirtuelsType" minOccurs="1" maxOccurs="1">
+				<xsd:element name="nonIntegratedVirtualDocuments" type="somres:listeNonIntegratedVirtualDocumentsType" minOccurs="1" maxOccurs="1">
 					<xsd:annotation>
 						<xsd:documentation>La liste des documents virtuels qui n'ont pas été archivés (le cas échéant)</xsd:documentation>
 					</xsd:annotation>

@@ -261,9 +261,9 @@ public class CaptureMasseControleSupportImpl implements
       String trcPrefix = "controleSAEVirtualDocumentStockage()";
       LOGGER.debug("{} - début", trcPrefix);
 
-      LOGGER.debug("{} - fin", trcPrefix);
-      // TODO Auto-generated method stub
+      controleMetadataService.checkMetadataForStorage(document.getMetadatas());
 
+      LOGGER.debug("{} - fin", trcPrefix);
    }
 
    private void controleSAEMetadataList(List<UntypedMetadata> metadatas,

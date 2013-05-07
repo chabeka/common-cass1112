@@ -92,5 +92,18 @@
       </property>
    </bean>
 
+   <bean class="org.springframework.batch.item.support.CompositeItemProcessor"
+      id="persistanceDocumentsVirtuelsProcessor">
+      <property name="delegates">
+         <list>
+            <ref bean="convertSommaireComposantProcessor" />
+            <ref bean="enrichissementVirtualMetadonneeProcessor" />
+            <ref bean="controleStorageVirtualDocumentProcessor" />
+            <ref bean="convertSaeVirtualDocumentProcessor" />
+            <ref bean="enrichissementVirtualStorageDocumentProcessor" />
+         </list>
+      </property>
+   </bean>
+
 
 </beans>

@@ -37,10 +37,10 @@ import fr.urssaf.image.sae.services.capturemasse.model.CaptureMasseIntegratedDoc
 import fr.urssaf.image.sae.services.capturemasse.modele.commun_sommaire_et_resultat.BatchModeType;
 import fr.urssaf.image.sae.services.capturemasse.modele.commun_sommaire_et_resultat.FichierType;
 import fr.urssaf.image.sae.services.capturemasse.modele.commun_sommaire_et_resultat.IntegratedDocumentType;
-import fr.urssaf.image.sae.services.capturemasse.modele.commun_sommaire_et_resultat.ListeDocumentsVirtuelsType;
 import fr.urssaf.image.sae.services.capturemasse.modele.commun_sommaire_et_resultat.ListeIntegratedDocumentsType;
 import fr.urssaf.image.sae.services.capturemasse.modele.commun_sommaire_et_resultat.ListeMetadonneeType;
 import fr.urssaf.image.sae.services.capturemasse.modele.commun_sommaire_et_resultat.ListeNonIntegratedDocumentsType;
+import fr.urssaf.image.sae.services.capturemasse.modele.commun_sommaire_et_resultat.ListeNonIntegratedVirtualDocumentsType;
 import fr.urssaf.image.sae.services.capturemasse.modele.commun_sommaire_et_resultat.MetadonneeType;
 import fr.urssaf.image.sae.services.capturemasse.modele.resultats.ObjectFactory;
 import fr.urssaf.image.sae.services.capturemasse.modele.resultats.ResultatsType;
@@ -130,7 +130,7 @@ public class ResultatFileSuccessSupportImpl implements
       resultatsType
             .setNonIntegratedDocuments(new ListeNonIntegratedDocumentsType());
       resultatsType
-            .setNonIntegratedVirtualDocuments(new ListeDocumentsVirtuelsType());
+            .setNonIntegratedVirtualDocuments(new ListeNonIntegratedVirtualDocumentsType());
       resultatsType.setErreurBloquanteTraitement(null);
 
       // Si on attend la liste des documents intégrés avec l'UUID associé

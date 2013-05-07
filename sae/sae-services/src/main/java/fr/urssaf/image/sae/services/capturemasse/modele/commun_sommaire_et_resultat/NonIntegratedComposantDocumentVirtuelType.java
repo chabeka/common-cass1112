@@ -17,16 +17,17 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * Composant d'un document virtuel (indexation)
  * 
- * <p>Java class for composantDocumentVirtuelType complex type.
+ * <p>Java class for nonIntegratedComposantDocumentVirtuelType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="composantDocumentVirtuelType">
+ * &lt;complexType name="nonIntegratedComposantDocumentVirtuelType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="metadonnees" type="{http://www.cirtil.fr/sae/commun_sommaire_et_resultat}listeMetadonneeType"/>
+ *         &lt;element name="metadonnees" type="{http://www.cirtil.fr/sae/commun_sommaire_et_resultat}listeMetadonneeType" minOccurs="0"/>
+ *         &lt;element name="erreurs" type="{http://www.cirtil.fr/sae/commun_sommaire_et_resultat}listeErreurType"/>
  *         &lt;element name="numeroPageDebut" type="{http://www.w3.org/2001/XMLSchema}int"/>
  *         &lt;element name="nombreDePages" type="{http://www.w3.org/2001/XMLSchema}int"/>
  *       &lt;/sequence>
@@ -38,16 +39,18 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "composantDocumentVirtuelType", propOrder = {
+@XmlType(name = "nonIntegratedComposantDocumentVirtuelType", propOrder = {
     "metadonnees",
+    "erreurs",
     "numeroPageDebut",
     "nombreDePages"
 })
 @SuppressWarnings("PMD")
-public class ComposantDocumentVirtuelType {
+public class NonIntegratedComposantDocumentVirtuelType {
 
-    @XmlElement(required = true)
     protected ListeMetadonneeType metadonnees;
+    @XmlElement(required = true)
+    protected ListeErreurType erreurs;
     protected int numeroPageDebut;
     protected int nombreDePages;
 
@@ -73,6 +76,30 @@ public class ComposantDocumentVirtuelType {
      */
     public void setMetadonnees(ListeMetadonneeType value) {
         this.metadonnees = value;
+    }
+
+    /**
+     * Gets the value of the erreurs property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link ListeErreurType }
+     *     
+     */
+    public ListeErreurType getErreurs() {
+        return erreurs;
+    }
+
+    /**
+     * Sets the value of the erreurs property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link ListeErreurType }
+     *     
+     */
+    public void setErreurs(ListeErreurType value) {
+        this.erreurs = value;
     }
 
     /**

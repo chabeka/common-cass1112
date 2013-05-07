@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.After;
@@ -21,7 +22,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.xml.sax.SAXException;
 
+import fr.urssaf.image.sae.commons.xml.StaxValidateUtils;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.services.capturemasse.common.CaptureMasseErreur;
@@ -157,6 +160,49 @@ public class ResultatsFileEchecSupportTest {
       } catch (Exception exception) {
          Assert.fail("exception IllegalArgumentException attendue");
       }
+
+   }
+
+   @Test
+   public void testEcritureVirtuelResultats() throws IOException,
+         JAXBException, ParserConfigurationException, SAXException {
+      File ecdeDirectory = ecdeTestSommaire.getRepEcde();
+
+      File sommaire = new File(ecdeDirectory, "sommaire.xml");
+      ClassPathResource resSommaire = new ClassPathResource(
+            "sommaire_virtuel.xml");
+      FileOutputStream fos = new FileOutputStream(sommaire);
+
+      IOUtils.copy(resSommaire.getInputStream(), fos);
+      File repEcde = new File(ecdeDirectory, "documents");
+      ClassPathResource resAttestation1 = new ClassPathResource("doc1.PDF");
+      File fileAttestation1 = new File(repEcde, "doc1.PDF");
+      fos = new FileOutputStream(fileAttestation1);
+      IOUtils.copy(resAttestation1.getInputStream(), fos);
+
+      CaptureMasseErreur erreur = new CaptureMasseErreur();
+      List<String> codes = new ArrayList<String>();
+      codes.add(Constantes.ERR_BUL002);
+      List<Integer> index = new ArrayList<Integer>();
+      index.add(1);
+      List<Exception> exceptions = new ArrayList<Exception>();
+      exceptions.add(new Exception("la valeur x est erronée"));
+
+      erreur.setListCodes(codes);
+      erreur.setListException(exceptions);
+      erreur.setListIndex(index);
+
+      support.writeVirtualResultatsFile(ecdeDirectory, sommaire, erreur, 3);
+
+      File resultats = new File(ecdeDirectory, "resultats.xml");
+
+      StaxValidateUtils.parse(resultats, new ClassPathResource(
+            "xsd_som_res/resultats.xsd").getURL());
+
+      Assert.assertTrue("la fichier resultats.xml doit exister", resultats
+            .exists());
+      Assert
+            .assertTrue("le fichier doit etre non vide", resultats.length() > 0);
 
    }
 

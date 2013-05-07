@@ -38,4 +38,15 @@
       <property name="checkHash" value="${db.checkHash}" />
    </bean>
    
+   <bean id="dfceConfig" factory-bean="dfceConfigFactory"
+      factory-method="createDfceConfig">
+
+      <!--
+         NB : le bean saeConfigResource est injecté manuellement dans la
+         méthode Main.main
+      -->
+      <constructor-arg ref="saeConfigResource" />
+
+   </bean>
+   
 </beans>

@@ -117,6 +117,21 @@ public class MetadataControlServiceValidation {
 
    /**
     * Valide l'argument de la méthode
+    * {@link fr.urssaf.image.sae.metadata.control.services.MetadataControlServices#checkRequiredForArchivalMetadataList(List)}
+    * <br>
+    * 
+    * @param metadatas
+    *           : Un objet de type {@link SAEDocument}
+    */
+   @Before(value = "execution( java.util.List<fr.urssaf.image.sae.bo.model.MetadataError>  fr.urssaf.image.sae.metadata.control.services.MetadataControlServices.checkRequiredForStorageMetadataList(..)) && args(metadatas)")
+   public final void checkRequiredForStorageMetadataList(
+         final List<SAEMetadata> metadatas) {
+      validateMetadatas(metadatas);
+
+   }
+
+   /**
+    * Valide l'argument de la méthode
     * {@link fr.urssaf.image.sae.metadata.control.services.MetadataControlServices#checkExistingMetadata(fr.urssaf.image.sae.bo.model.untyped.UntypedDocument)}
     * checkExistingMetadata}. <br>
     * 

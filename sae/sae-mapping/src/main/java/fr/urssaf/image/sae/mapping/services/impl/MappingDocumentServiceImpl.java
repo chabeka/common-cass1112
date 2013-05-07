@@ -14,6 +14,7 @@ import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
 import fr.urssaf.image.sae.bo.model.bo.SAEVirtualDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
+import fr.urssaf.image.sae.bo.model.untyped.UntypedVirtualDocument;
 import fr.urssaf.image.sae.mapping.exception.InvalidSAETypeException;
 import fr.urssaf.image.sae.mapping.exception.MappingFromReferentialException;
 import fr.urssaf.image.sae.mapping.services.MappingDocumentService;
@@ -169,6 +170,9 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
       return untypedDocument;
    }
 
+   /**
+    * {@inheritDoc}
+    */
    @Override
    public VirtualStorageDocument saeVirtualDocumentToVirtualStorageDocument(
          SAEVirtualDocument document) throws InvalidSAETypeException {
@@ -219,6 +223,26 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
       }
 
       return saeMetadatas;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public SAEVirtualDocument untypedVirtualDocumentToSaeVirtualDocument(
+         UntypedVirtualDocument document) throws InvalidSAETypeException,
+         MappingFromReferentialException {
+
+      SAEVirtualDocument virtualDocument = new SAEVirtualDocument();
+      virtualDocument.setEndPage(document.getEndPage());
+      virtualDocument.setIndex(document.getIndex());
+      List<SAEMetadata> metadatas = untypedMetadatasToSaeMetadatas(document
+            .getuMetadatas());
+      virtualDocument.setMetadatas(metadatas);
+      virtualDocument.setStartPage(document.getStartPage());
+      virtualDocument.setReference(document.getReference());
+
+      return virtualDocument;
    }
 
 }

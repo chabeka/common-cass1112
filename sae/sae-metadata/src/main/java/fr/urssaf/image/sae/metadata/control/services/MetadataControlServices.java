@@ -76,6 +76,17 @@ public interface MetadataControlServices {
    List<MetadataError> checkRequiredForStorageMetadata(final SAEDocument saeDoc);
 
    /**
+    * Contrôle que la liste des métadonnées fournit contient toutes les
+    * métadonnées obligatoire au stockage.
+    * 
+    * @param metadatas
+    *           : la liste des métadonnées
+    * @return une liste d’objet de type {@link MetadataError}
+    */
+   List<MetadataError> checkRequiredForStorageMetadataList(
+         final List<SAEMetadata> metadatas);
+
+   /**
     * Contrôle que la liste des métadonnées est autorisée à la consultation.
     * métadonnées obligatoire.
     * 

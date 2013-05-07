@@ -10,6 +10,7 @@ import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
 import fr.urssaf.image.sae.bo.model.bo.SAEVirtualDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
+import fr.urssaf.image.sae.bo.model.untyped.UntypedVirtualDocument;
 import fr.urssaf.image.sae.mapping.messages.MappingMessageHandler;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 
@@ -149,11 +150,30 @@ public class MappingDocumentServiceValidation {
             "mapping.document.required", SAEVirtualDocument.class.getName()));
 
       Validate.notNull(document.getMetadatas(), MappingMessageHandler
-            .getMessage("mapping.document.required", SAEVirtualDocument.class
-                  .getName()));
+            .getMessage("mapping.metadata.required"));
+
       Validate.notNull(document.getReference(), MappingMessageHandler
             .getMessage("mapping.reference.required", SAEVirtualDocument.class
                   .getName()));
+   }
+
+   /**
+    * 
+    * Valide l'argument de la méthode
+    * {@link MappingDocumentService#untypedVirtualDocumentToSaeVirtualDocument(fr.urssaf.image.sae.bo.model.untyped.UntypedVirtualDocument)}
+    * <br />
+    * 
+    * @param document
+    *           : Le document à transformer
+    */
+   @Before(value = "execution(fr.urssaf.image.sae.bo.model.bo.SAEVirtualDocument fr.urssaf.image.sae.mapping.services.MappingDocumentService.untypedVirtualDocumentToSaeVirtualDocument(..)) && args(document)")
+   public final void untypedVirtualDocumentToSaeVirtualStoragDocument(
+         final UntypedVirtualDocument document) {
+      Validate.notNull(document, MappingMessageHandler.getMessage(
+            "mapping.document.required", SAEVirtualDocument.class.getName()));
+
+      Validate.notNull(document.getuMetadatas(), MappingMessageHandler
+            .getMessage("mapping.metadata.required"));
    }
 
 }

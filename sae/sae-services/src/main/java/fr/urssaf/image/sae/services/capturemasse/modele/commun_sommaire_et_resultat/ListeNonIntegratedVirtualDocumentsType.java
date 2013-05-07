@@ -16,18 +16,18 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * Une liste d'erreur
+ * Une liste de documents non archivés
  * 
- * <p>Java class for listeErreurType complex type.
+ * <p>Java class for listeNonIntegratedVirtualDocumentsType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="listeErreurType">
+ * &lt;complexType name="listeNonIntegratedVirtualDocumentsType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="erreur" type="{http://www.cirtil.fr/sae/commun_sommaire_et_resultat}erreurType" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="nonIntegratedVirtualDocument" type="{http://www.cirtil.fr/sae/commun_sommaire_et_resultat}nonIntegratedVirtualDocumentType" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -37,41 +37,41 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "listeErreurType", propOrder = {
-    "erreur"
+@XmlType(name = "listeNonIntegratedVirtualDocumentsType", propOrder = {
+    "nonIntegratedVirtualDocument"
 })
 @SuppressWarnings("PMD")
-public class ListeErreurType {
+public class ListeNonIntegratedVirtualDocumentsType {
 
-    protected List<ErreurType> erreur;
+    protected List<NonIntegratedVirtualDocumentType> nonIntegratedVirtualDocument;
 
     /**
-     * Gets the value of the erreur property.
+     * Gets the value of the nonIntegratedVirtualDocument property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the erreur property.
+     * This is why there is not a <CODE>set</CODE> method for the nonIntegratedVirtualDocument property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getErreur().add(newItem);
+     *    getNonIntegratedVirtualDocument().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link ErreurType }
+     * {@link NonIntegratedVirtualDocumentType }
      * 
      * 
      */
-    public List<ErreurType> getErreur() {
-        if (erreur == null) {
-            erreur = new ArrayList<ErreurType>();
+    public List<NonIntegratedVirtualDocumentType> getNonIntegratedVirtualDocument() {
+        if (nonIntegratedVirtualDocument == null) {
+            nonIntegratedVirtualDocument = new ArrayList<NonIntegratedVirtualDocumentType>();
         }
-        return this.erreur;
+        return this.nonIntegratedVirtualDocument;
     }
 
 }

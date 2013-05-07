@@ -183,7 +183,7 @@ public class CaptureMasseFactory {
    public final ItemProcessorAdapter<SAEVirtualDocument, VirtualStorageDocument> getVirtualDocumentProcessor() {
       final ItemProcessorAdapter<SAEVirtualDocument, VirtualStorageDocument> adapter = new ItemProcessorAdapter<SAEVirtualDocument, VirtualStorageDocument>();
       adapter.setTargetObject(mappingService);
-      adapter.setTargetMethod("saeVirtualDocumentToVirtualStoragDocument");
+      adapter.setTargetMethod("saeVirtualDocumentToVirtualStorageDocument");
       return adapter;
    }
 }

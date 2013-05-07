@@ -90,6 +90,44 @@
    
    <!-- 
    =======================================
+   Document  virtuel non archivé
+   =======================================
+   -->
+   <xsd:complexType name="nonIntegratedVirtualDocumentType">
+      <xsd:annotation>
+         <xsd:documentation>Définition d'un document virtuel non archivé</xsd:documentation>
+      </xsd:annotation>
+      <xsd:sequence>
+         
+         <!-- L'objet numérique (fichier) -->
+         <xsd:element name="objetNumerique" type="somres:fichierType" minOccurs="1" maxOccurs="1">
+            <xsd:annotation>
+               <xsd:documentation>Le fichier représentant le contenu du document virtuel à archiver</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         
+         <!-- Les composants du document virtuel -->
+         <xsd:element name="composants" minOccurs="1" maxOccurs="1">
+            <xsd:annotation>
+               <xsd:documentation>Les composants du documents virtuels (indexations)</xsd:documentation>
+            </xsd:annotation>
+            <xsd:complexType>
+               <xsd:sequence>
+                  <xsd:element name="composant" type="somres:nonIntegratedComposantDocumentVirtuelType" minOccurs="1" maxOccurs="unbounded">
+                     <xsd:annotation>
+                        <xsd:documentation>Les composants</xsd:documentation>
+                     </xsd:annotation>
+                  </xsd:element>
+               </xsd:sequence>
+            </xsd:complexType>
+         </xsd:element>
+                  
+      </xsd:sequence>
+   </xsd:complexType>
+   
+   
+   <!-- 
+   =======================================
    Liste de documents
    =======================================
    -->
@@ -113,6 +151,20 @@
       </xsd:annotation>
       <xsd:sequence>
          <xsd:element name="nonIntegratedDocument" type="somres:nonIntegratedDocumentType" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+   </xsd:complexType>
+   
+   <!-- 
+   =======================================
+   La liste des documents qui n'ont pas été archivés
+   =======================================
+   -->
+   <xsd:complexType name="listeNonIntegratedVirtualDocumentsType">
+      <xsd:annotation>
+         <xsd:documentation>Une liste de documents non archivés</xsd:documentation>
+      </xsd:annotation>
+      <xsd:sequence>
+         <xsd:element name="nonIntegratedVirtualDocument" type="somres:nonIntegratedVirtualDocumentType" minOccurs="0" maxOccurs="unbounded" />
       </xsd:sequence>
    </xsd:complexType>
    
@@ -321,6 +373,38 @@
          <xsd:element name="metadonnees" type="somres:listeMetadonneeType" minOccurs="1" maxOccurs="1">
             <xsd:annotation>
                <xsd:documentation>La liste des métadonnées associées au document virtuel, sous la forme d'une liste de paire clé/valeur</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         
+         <xsd:element name="numeroPageDebut" type="xsd:int" minOccurs="1" maxOccurs="1" />
+         
+         <xsd:element name="nombreDePages" type="xsd:int" minOccurs="1" maxOccurs="1" />
+         
+      </xsd:sequence>
+   </xsd:complexType>
+   
+   <!-- 
+   =======================================
+   Composant d'un document virtuel non intégré(indexation)
+   =======================================
+   -->
+   <xsd:complexType name="nonIntegratedComposantDocumentVirtuelType">
+      <xsd:annotation>
+         <xsd:documentation>Composant d'un document virtuel (indexation)</xsd:documentation>
+      </xsd:annotation>
+      <xsd:sequence>
+         
+         <!-- Les métadonnées -->
+         <xsd:element name="metadonnees" type="somres:listeMetadonneeType" minOccurs="0" maxOccurs="1">
+            <xsd:annotation>
+               <xsd:documentation>La liste des métadonnées associées au document virtuel, sous la forme d'une liste de paire clé/valeur</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         
+         <!-- Les erreurs -->
+         <xsd:element name="erreurs" type="somres:listeErreurType" minOccurs="1" maxOccurs="1">
+            <xsd:annotation>
+               <xsd:documentation>La liste des erreurs des documents non archivés</xsd:documentation>
             </xsd:annotation>
          </xsd:element>
          

@@ -71,7 +71,7 @@ public class ControleDocumentVirtuelListener {
             Constantes.CTRL_INDEX));
       listExceptions.add(new Exception(exception.getMessage()));
 
-      LOGGER.warn("une erreur est survenue lors des controles des documents",
+      LOGGER.warn("une erreur est survenue lors du traitement des documents virtuels",
             exception);
 
    }

@@ -140,6 +140,16 @@ public class ValidationServiceImplTest {
 
    /**
     * validation de l'argument du service
+    * {@link fr.urssaf.image.sae.metadata.control.services.impl.MetadataControlServicesImpl#checkRequiredForStorageMetadata(SAEDocument)
+    * checkRequiredForStorageMetadata}
+    */
+   @Test(expected = IllegalArgumentException.class)
+   public void checkRequiredForStorageMetadataList() {
+      controlService.checkRequiredForStorageMetadataList(null);
+   }
+
+   /**
+    * validation de l'argument du service
     * {@link fr.urssaf.image.sae.metadata.control.services.impl.MetadataControlServicesImpl#checkRequiredForArchivalMetadata(SAEDocument)
     * checkRequiredForArchivalMetadata}
     */
