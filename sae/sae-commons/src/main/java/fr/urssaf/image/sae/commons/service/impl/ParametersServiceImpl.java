@@ -1,10 +1,9 @@
-/**
- * 
- */
 package fr.urssaf.image.sae.commons.service.impl;
 
+import java.util.Calendar;
 import java.util.Date;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,9 +42,12 @@ public class ParametersServiceImpl implements ParametersService {
    /**
     * Constructeur
     * 
-    * @param parametersSupport support pour la column family Parameters
-    * @param clockSupport l'horloge
-    * @param curator le client zookeeper
+    * @param parametersSupport
+    *           support pour la column family Parameters
+    * @param clockSupport
+    *           l'horloge
+    * @param curator
+    *           le client zookeeper
     */
    @Autowired
    public ParametersServiceImpl(ParametersSupport parametersSupport,
@@ -278,8 +280,9 @@ public class ParametersServiceImpl implements ParametersService {
     */
    @Override
    public final void setJournalisationEvtDate(Date date) {
+      Date dateOk = DateUtils.truncate(date, Calendar.DATE);
       Parameter parameter = new Parameter(
-            ParameterType.JOURNALISATION_EVT_DATE, date);
+            ParameterType.JOURNALISATION_EVT_DATE, dateOk);
       insertParameter(parameter, ParameterRowType.TRACABILITE);
    }
 
@@ -371,7 +374,8 @@ public class ParametersServiceImpl implements ParametersService {
     */
    @Override
    public final void setPurgeEvtDate(Date date) {
-      Parameter parameter = new Parameter(ParameterType.PURGE_EVT_DATE, date);
+      Date dateOk = DateUtils.truncate(date, Calendar.DATE);
+      Parameter parameter = new Parameter(ParameterType.PURGE_EVT_DATE, dateOk);
       insertParameter(parameter, ParameterRowType.TRACABILITE);
    }
 
@@ -399,8 +403,9 @@ public class ParametersServiceImpl implements ParametersService {
     */
    @Override
    public final void setPurgeExploitDate(Date date) {
+      Date dateOk = DateUtils.truncate(date, Calendar.DATE);
       Parameter parameter = new Parameter(ParameterType.PURGE_EXPLOIT_DATE,
-            date);
+            dateOk);
       insertParameter(parameter, ParameterRowType.TRACABILITE);
    }
 
@@ -429,7 +434,8 @@ public class ParametersServiceImpl implements ParametersService {
     */
    @Override
    public final void setPurgeSecuDate(Date date) {
-      Parameter parameter = new Parameter(ParameterType.PURGE_SECU_DATE, date);
+      Date dateOk = DateUtils.truncate(date, Calendar.DATE);
+      Parameter parameter = new Parameter(ParameterType.PURGE_SECU_DATE, dateOk);
       insertParameter(parameter, ParameterRowType.TRACABILITE);
    }
 
@@ -457,7 +463,8 @@ public class ParametersServiceImpl implements ParametersService {
     */
    @Override
    public final void setPurgeTechDate(Date date) {
-      Parameter parameter = new Parameter(ParameterType.PURGE_TECH_DATE, date);
+      Date dateOk = DateUtils.truncate(date, Calendar.DATE);
+      Parameter parameter = new Parameter(ParameterType.PURGE_TECH_DATE, dateOk);
       insertParameter(parameter, ParameterRowType.TRACABILITE);
    }
 
@@ -480,38 +487,56 @@ public class ParametersServiceImpl implements ParametersService {
       insertParameter(parameter, ParameterRowType.TRACABILITE);
    }
 
-   
+   /**
+    * {@inheritDoc}
+    */
    @Override
-   public Date getVersionRndDateMaj() throws ParameterNotFoundException {
-      return (Date) parametersSupport.find(
-            ParameterType.VERSION_RND_DATE_MAJ,
+   public final Date getVersionRndDateMaj() throws ParameterNotFoundException {
+      return (Date) parametersSupport.find(ParameterType.VERSION_RND_DATE_MAJ,
             ParameterRowType.RND).getValue();
    }
 
+   /**
+    * {@inheritDoc}
+    */
    @Override
-   public String getVersionRndNumero() throws ParameterNotFoundException {
-      return (String) parametersSupport.find(
-            ParameterType.VERSION_RND_NUMERO,
+   public final String getVersionRndNumero() throws ParameterNotFoundException {
+      return (String) parametersSupport.find(ParameterType.VERSION_RND_NUMERO,
             ParameterRowType.RND).getValue();
    }
 
+   /**
+    * {@inheritDoc}
+    */
    @Override
-   public void setVersionRndDateMaj(Date dateMajRnd) {
-      Parameter parameter = new Parameter(ParameterType.VERSION_RND_DATE_MAJ, dateMajRnd);
-      insertParameter(parameter, ParameterRowType.RND);     
+   public final void setVersionRndDateMaj(Date dateMajRnd) {
+      Parameter parameter = new Parameter(ParameterType.VERSION_RND_DATE_MAJ,
+            dateMajRnd);
+      insertParameter(parameter, ParameterRowType.RND);
    }
 
+   /**
+    * {@inheritDoc}
+    */
    @Override
-   public void setVersionRndNumero(String numVersion) {
-      Parameter parameter = new Parameter(ParameterType.VERSION_RND_NUMERO, numVersion);
-      insertParameter(parameter, ParameterRowType.RND);      
+   public final void setVersionRndNumero(String numVersion) {
+      Parameter parameter = new Parameter(ParameterType.VERSION_RND_NUMERO,
+            numVersion);
+      insertParameter(parameter, ParameterRowType.RND);
    }
-   
+
    private void insertParameter(Parameter parameter, ParameterRowType rowType) {
       String trcPrefix = "insertParameter()";
 
       LOGGER.debug("{} - Début de la création du parametre {}", trcPrefix,
             parameter.getName().toString());
+
+      if (parameter.getValue() == null) {
+         LOGGER.debug("{} - Valeur à écrire : {}", trcPrefix, "null");
+      } else {
+         LOGGER.debug("{} - Valeur à écrire : {}", trcPrefix, parameter
+               .getValue().toString());
+      }
 
       String resourceName = PREFIXE_PARAMS + rowType.toString() + "/"
             + parameter.getName().toString();
@@ -554,7 +579,5 @@ public class ParametersServiceImpl implements ParametersService {
       }
 
    }
-
-
 
 }

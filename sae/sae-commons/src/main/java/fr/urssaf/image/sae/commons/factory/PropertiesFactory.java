@@ -12,9 +12,13 @@ import org.springframework.core.io.Resource;
  * dans le conteneur IOC avec l'ensemble de toutes les paires clé/valeur des
  * fichiers properties
  */
-public class PropertiesFactory {
+public final class PropertiesFactory {
 
    private static final int RES_LENGTH = 3;
+
+   private PropertiesFactory() {
+      // constructeur privé
+   }
 
    /**
     * Méthode à utiliser en tant que "factory-method" Spring pour mettre dans le
@@ -29,7 +33,7 @@ public class PropertiesFactory {
     *            en cas de problème de lecture du fichier de configuration
     *            générale
     */
-   public final static PropertyPlaceholderConfigurer load(
+   public static PropertyPlaceholderConfigurer load(
          FileSystemResource saeConfigResource) throws IOException {
 
       // Deux fichiers properties :

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package fr.urssaf.image.sae.trace.service;
 
 import java.util.Arrays;
@@ -13,10 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.sae.trace.exception.ParameterNotFoundException;
+import fr.urssaf.image.sae.commons.exception.ParameterNotFoundException;
+import fr.urssaf.image.sae.commons.service.ParametersService;
 import fr.urssaf.image.sae.trace.model.JournalisationType;
-import fr.urssaf.image.sae.trace.model.Parameter;
-import fr.urssaf.image.sae.trace.model.ParameterType;
 import fr.urssaf.image.sae.trace.model.PurgeType;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -32,12 +28,10 @@ public class StatusServiceDatasTest {
    @Test
    public void testIsPurgeRunning() throws ParameterNotFoundException {
 
-      List<ParameterType> parameters = Arrays.asList(
-            ParameterType.PURGE_EVT_IS_RUNNING,
-            ParameterType.PURGE_EXPLOIT_IS_RUNNING,
-            ParameterType.PURGE_SECU_IS_RUNNING,
-            ParameterType.PURGE_TECH_IS_RUNNING);
-      createParameters(parameters, Boolean.TRUE);
+      paramService.setPurgeEvtIsRunning(Boolean.TRUE);
+      paramService.setPurgeExploitIsRunning(Boolean.TRUE);
+      paramService.setPurgeSecuIsRunning(Boolean.TRUE);
+      paramService.setPurgeTechIsRunning(Boolean.TRUE);
 
       List<PurgeType> purges = Arrays.asList(PurgeType.PURGE_EXPLOITATION,
             PurgeType.PURGE_EVT, PurgeType.PURGE_SECURITE,
@@ -74,9 +68,7 @@ public class StatusServiceDatasTest {
    @Test
    public void testIsJournalisationRunning() throws ParameterNotFoundException {
 
-      List<ParameterType> parameters = Arrays
-            .asList(ParameterType.JOURNALISATION_EVT_IS_RUNNING);
-      createParameters(parameters, Boolean.TRUE);
+      paramService.setJournalisationEvtIsRunning(Boolean.TRUE);
 
       Assert
             .assertEquals(
@@ -103,13 +95,4 @@ public class StatusServiceDatasTest {
                         .isJournalisationRunning(JournalisationType.JOURNALISATION_EVT));
    }
 
-   private void createParameters(List<ParameterType> parameters, Object value) {
-
-      Parameter parameter;
-      for (ParameterType parameterType : parameters) {
-         parameter = new Parameter(parameterType, value);
-         paramService.saveParameter(parameter);
-      }
-
-   }
 }

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package fr.urssaf.image.sae.trace.service.impl;
 
 import java.io.File;
@@ -12,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import javanet.staxutils.IndentingXMLEventWriter;
@@ -67,12 +65,15 @@ public class JournalEvtServiceImpl implements JournalEvtService {
 
    private final TraceFileSupport traceFileSupport;
 
-   
    /**
-    * @param support Support de la classe DAO TraceJournalEvtDao
-    * @param clockSupport JobClockSupport
-    * @param loggerSupport Support pour l'écriture des traces applicatives
-    * @param traceFileSupport Classe de support pour la création des fichiers de traces
+    * @param support
+    *           Support de la classe DAO TraceJournalEvtDao
+    * @param clockSupport
+    *           JobClockSupport
+    * @param loggerSupport
+    *           Support pour l'écriture des traces applicatives
+    * @param traceFileSupport
+    *           Classe de support pour la création des fichiers de traces
     */
    @Autowired
    public JournalEvtServiceImpl(TraceJournalEvtSupport support,
@@ -103,9 +104,10 @@ public class JournalEvtServiceImpl implements JournalEvtService {
 
          LOGGER.info(
                "{} - Nombre de traces trouvées pour la journée du {} : {}",
-               new Object[] { trcPrefix,
-                     new SimpleDateFormat("yyyy-MM-dd").format(date),
-                     listTraces.size() });
+               new Object[] {
+                     trcPrefix,
+                     new SimpleDateFormat("yyyy-MM-dd", Locale.FRENCH)
+                           .format(date), listTraces.size() });
 
          File file, directory;
          directory = new File(repertoire);
@@ -122,8 +124,10 @@ public class JournalEvtServiceImpl implements JournalEvtService {
 
       } else {
          LOGGER.info("{} - Aucune trace trouvée pour la journée du {}",
-               new Object[] { trcPrefix,
-                     new SimpleDateFormat("yyyy-MM-dd").format(date) });
+               new Object[] {
+                     trcPrefix,
+                     new SimpleDateFormat("yyyy-MM-dd", Locale.FRENCH)
+                           .format(date) });
       }
 
       LOGGER.debug(FIN_LOG, trcPrefix);
@@ -255,13 +259,12 @@ public class JournalEvtServiceImpl implements JournalEvtService {
 
       Date dateIndex = DateUtils.truncate(date, Calendar.DATE);
 
-      loggerSupport.logPurgeJourneeDebut(LOGGER, prefix,
-            PurgeType.PURGE_EVT, DateRegUtils.getJournee(date));
+      loggerSupport.logPurgeJourneeDebut(LOGGER, prefix, PurgeType.PURGE_EVT,
+            DateRegUtils.getJournee(date));
       long nbTracesPurgees = support.delete(dateIndex, clockSupport
             .currentCLock());
-      loggerSupport.logPurgeJourneeFin(LOGGER, prefix,
-            PurgeType.PURGE_EVT, DateRegUtils.getJournee(date),
-            nbTracesPurgees);
+      loggerSupport.logPurgeJourneeFin(LOGGER, prefix, PurgeType.PURGE_EVT,
+            DateRegUtils.getJournee(date), nbTracesPurgees);
 
       LOGGER.debug(FIN_LOG, prefix);
 
@@ -341,8 +344,10 @@ public class JournalEvtServiceImpl implements JournalEvtService {
 
       if (!hasRecords) {
          LOGGER.info("{} - Aucune trace trouvée pour la journée du {}",
-               new Object[] { trcPrefix,
-                     new SimpleDateFormat("yyyy-MM-dd").format(date) });
+               new Object[] {
+                     trcPrefix,
+                     new SimpleDateFormat("yyyy-MM-dd", Locale.FRENCH)
+                           .format(date) });
       }
 
       LOGGER.debug(FIN_LOG, trcPrefix);

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package fr.urssaf.image.sae.trace.service;
 
 import java.io.File;
@@ -27,11 +24,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.sae.commons.service.ParametersService;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvt;
 import fr.urssaf.image.sae.trace.dao.support.TraceJournalEvtSupport;
 import fr.urssaf.image.sae.trace.model.JournalisationType;
-import fr.urssaf.image.sae.trace.model.Parameter;
-import fr.urssaf.image.sae.trace.model.ParameterType;
 import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -75,13 +71,13 @@ public class JournalisationServiceDatasTest {
    @Test
    public void testRecup0Dates() {
 
-      Date date = new Date();
-      Parameter parameter = new Parameter(
-            ParameterType.JOURNALISATION_EVT_DATE, DateUtils.addDays(date, -5));
-      parametersService.saveParameter(parameter);
+      Date laDate = DateUtils.addDays(new Date(), -5);
+
+      parametersService.setJournalisationEvtDate(laDate);
 
       List<Date> dates = service
             .recupererDates(JournalisationType.JOURNALISATION_EVT);
+
       Assert.assertEquals("le nombre d'éléments doit etre correct", 0, dates
             .size());
 
@@ -92,9 +88,9 @@ public class JournalisationServiceDatasTest {
 
       createTraces();
 
-      Parameter parameter = new Parameter(
-            ParameterType.JOURNALISATION_EVT_DATE, DateUtils.addDays(DATE, -5));
-      parametersService.saveParameter(parameter);
+      Date laDate = DateUtils.addDays(DATE, -5);
+
+      parametersService.setJournalisationEvtDate(laDate);
 
       List<Date> dates = service
             .recupererDates(JournalisationType.JOURNALISATION_EVT);
@@ -112,13 +108,10 @@ public class JournalisationServiceDatasTest {
    @Test
    public void testExport() throws IOException {
 
-      Parameter parameter = new Parameter(
-            ParameterType.JOURNALISATION_EVT_ID_JOURNAL_PRECEDENT,
-            "6f5e4930-80cc-11e2-8759-005056c00008");
-      parametersService.saveParameter(parameter);
-      parameter = new Parameter(
-            ParameterType.JOURNALISATION_EVT_HASH_JOURNAL_PRECEDENT, "00000");
-      parametersService.saveParameter(parameter);
+      parametersService
+            .setJournalisationEvtIdJournPrec("6f5e4930-80cc-11e2-8759-005056c00008");
+
+      parametersService.setJournalisationEvtHashJournPrec("00000");
 
       Calendar calendar = new GregorianCalendar();
       calendar.set(Calendar.YEAR, 2013);

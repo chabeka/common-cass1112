@@ -1,12 +1,11 @@
-/**
- * 
- */
 package fr.urssaf.image.sae.trace.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
@@ -15,13 +14,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import fr.urssaf.image.sae.trace.exception.ParameterNotFoundException;
+import fr.urssaf.image.sae.commons.exception.ParameterNotFoundException;
+import fr.urssaf.image.sae.commons.service.ParametersService;
 import fr.urssaf.image.sae.trace.exception.TraceRuntimeException;
-import fr.urssaf.image.sae.trace.model.Parameter;
-import fr.urssaf.image.sae.trace.model.ParameterType;
 import fr.urssaf.image.sae.trace.model.PurgeType;
 import fr.urssaf.image.sae.trace.service.JournalEvtService;
-import fr.urssaf.image.sae.trace.service.ParametersService;
 import fr.urssaf.image.sae.trace.service.PurgeService;
 import fr.urssaf.image.sae.trace.service.RegExploitationService;
 import fr.urssaf.image.sae.trace.service.RegSecuriteService;
@@ -42,6 +39,9 @@ public class PurgeServiceImpl implements PurgeService {
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(PurgeServiceImpl.class);
+
+   private final SimpleDateFormat dateJourneeFormat = new SimpleDateFormat(
+         "yyyy-MM-dd", Locale.FRENCH);
 
    @Autowired
    private ParametersService paramService;
@@ -117,7 +117,7 @@ public class PurgeServiceImpl implements PurgeService {
             purge(servicePurge, minDate, maxDate, typePurge);
 
             maxDate = DateUtils.truncate(maxDate, Calendar.DATE);
-            updateDate(typePurge, maxDate);
+            setDateFromPurgeType(typePurge, maxDate);
 
          }
 
@@ -158,19 +158,47 @@ public class PurgeServiceImpl implements PurgeService {
       statusService.updatePurgeStatus(typePurge, Boolean.TRUE);
       try {
 
-         Date dateMin = getDateFromPurgeType(typePurge);
+         Date dateDerniereJourneePurgee = getDateFromPurgeType(typePurge);
+         Date premiereJourneeApurger = DateUtils.addDays(
+               dateDerniereJourneePurgee, 1);
+         LOGGER.debug("{} - Première journée à purger : {}", trcPrefix,
+               dateJourneeFormat.format(premiereJourneeApurger));
+
          Integer retentionDuration = getDureeFomPurgeType(typePurge);
+         LOGGER.debug("{} - Durée de rétention des traces : {}", trcPrefix,
+               retentionDuration);
+
          Date maxDate = DateUtils.addDays(new Date(), -retentionDuration);
+
+         LOGGER
+               .debug(
+                     "{} - Dernière journée à purger calculée uniquement avec la durée de rétention : {}",
+                     trcPrefix, dateJourneeFormat.format(maxDate));
+
          Date lastDateJournalisation = getDateJournalisationFromPurgeType(typePurge);
+         LOGGER.debug("{} - Dernière journée qui a été journalisée : {}",
+               trcPrefix, dateJourneeFormat.format(lastDateJournalisation));
 
          if (lastDateJournalisation.before(maxDate)) {
             maxDate = lastDateJournalisation;
          }
 
-         if (dateMin.before(maxDate)) {
+         LOGGER
+               .debug(
+                     "{} - Dernière journée à purger calculée avec la durée de rétention et la dernière date de journalisation : {}",
+                     trcPrefix, dateJourneeFormat.format(maxDate));
+
+         if (premiereJourneeApurger.before(maxDate)) {
+
             loggerSupport.logPurgeJournees(LOGGER, trcPrefix, typePurge,
-                  dateMin, maxDate);
-            purge(evtService, dateMin, maxDate, typePurge);
+                  premiereJourneeApurger, maxDate);
+
+            purge(evtService, premiereJourneeApurger, maxDate, typePurge);
+
+         } else {
+
+            LOGGER.debug("{} - Rien à purger", trcPrefix);
+
          }
       } finally {
          LOGGER.debug("{} - mise à jour du flag de traitement à FALSE",
@@ -192,17 +220,15 @@ public class PurgeServiceImpl implements PurgeService {
 
       Date date = DateUtils.truncate(minDate, Calendar.DATE);
       Date endDate = DateUtils.truncate(maxDate, Calendar.DATE);
-      Parameter parameter;
 
       do {
 
          loggerSupport.logPurgeJourneeDebut(LOGGER, prefix, typePurge,
                DateRegUtils.getJournee(date));
+
          servicePurge.purge(date);
 
-         parameter = new Parameter(
-               getDateParameterTypeFromPurgeType(typePurge), date);
-         paramService.saveParameter(parameter);
+         setDateFromPurgeType(typePurge, date);
 
          date = DateUtils.addDays(date, 1);
 
@@ -213,68 +239,72 @@ public class PurgeServiceImpl implements PurgeService {
 
    }
 
-   private Date getDateFromPurgeType(PurgeType purgeType) {
+   private void setDateFromPurgeType(PurgeType typePurge, Date date) {
 
-      ParameterType type = getDateParameterTypeFromPurgeType(purgeType);
+      if (PurgeType.PURGE_EXPLOITATION.equals(typePurge)) {
+         paramService.setPurgeExploitDate(date);
 
-      Date date;
-      try {
-         Parameter param = paramService.loadParameter(type);
-         date = (Date) param.getValue();
-         // la dernière date sauvegardée est la dernière traitée. La première
-         // date à traiter est donc à J+1
-         date = DateUtils.addDays(date, 1);
+      } else if (PurgeType.PURGE_SECURITE.equals(typePurge)) {
+         paramService.setPurgeSecuDate(date);
 
-      } catch (ParameterNotFoundException exception) {
-         throw new TraceRuntimeException(exception);
-      }
+      } else if (PurgeType.PURGE_TECHNIQUE.equals(typePurge)) {
+         paramService.setPurgeTechDate(date);
 
-      return date;
-   }
-
-   private ParameterType getDateParameterTypeFromPurgeType(PurgeType purgeType) {
-      ParameterType type;
-      if (PurgeType.PURGE_EXPLOITATION.equals(purgeType)) {
-         type = ParameterType.PURGE_EXPLOIT_DATE;
-
-      } else if (PurgeType.PURGE_SECURITE.equals(purgeType)) {
-         type = ParameterType.PURGE_SECU_DATE;
-
-      } else if (PurgeType.PURGE_TECHNIQUE.equals(purgeType)) {
-         type = ParameterType.PURGE_TECH_DATE;
+      } else if (PurgeType.PURGE_EVT.equals(typePurge)) {
+         paramService.setPurgeEvtDate(date);
 
       } else {
-         type = ParameterType.PURGE_EVT_DATE;
+         throw new IllegalArgumentException("typePurge");
       }
 
-      return type;
    }
 
-   private Integer getDureeFomPurgeType(PurgeType purgeType) {
-      ParameterType type;
-      if (PurgeType.PURGE_EXPLOITATION.equals(purgeType)) {
-         type = ParameterType.PURGE_EXPLOIT_DUREE;
+   private Date getDateFromPurgeType(PurgeType typePurge) {
 
-      } else if (PurgeType.PURGE_SECURITE.equals(purgeType)) {
-         type = ParameterType.PURGE_SECU_DUREE;
-
-      } else if (PurgeType.PURGE_TECHNIQUE.equals(purgeType)) {
-         type = ParameterType.PURGE_TECH_DUREE;
-
-      } else {
-         type = ParameterType.PURGE_EVT_DUREE;
-      }
-
-      Integer duree;
       try {
-         Parameter param = paramService.loadParameter(type);
-         duree = (Integer) param.getValue();
+         if (PurgeType.PURGE_EXPLOITATION.equals(typePurge)) {
+            return paramService.getPurgeExploitDate();
 
-      } catch (ParameterNotFoundException exception) {
-         throw new TraceRuntimeException(exception);
+         } else if (PurgeType.PURGE_SECURITE.equals(typePurge)) {
+            return paramService.getPurgeSecuDate();
+
+         } else if (PurgeType.PURGE_TECHNIQUE.equals(typePurge)) {
+            return paramService.getPurgeTechDate();
+
+         } else if (PurgeType.PURGE_EVT.equals(typePurge)) {
+            return paramService.getPurgeEvtDate();
+
+         } else {
+            throw new IllegalArgumentException("typePurge");
+         }
+      } catch (ParameterNotFoundException e) {
+         throw new TraceRuntimeException(e);
       }
 
-      return duree;
+   }
+
+   private Integer getDureeFomPurgeType(PurgeType typePurge) {
+
+      try {
+         if (PurgeType.PURGE_EXPLOITATION.equals(typePurge)) {
+            return paramService.getPurgeExploitDuree();
+
+         } else if (PurgeType.PURGE_SECURITE.equals(typePurge)) {
+            return paramService.getPurgeSecuDuree();
+
+         } else if (PurgeType.PURGE_TECHNIQUE.equals(typePurge)) {
+            return paramService.getPurgeTechDuree();
+
+         } else if (PurgeType.PURGE_EVT.equals(typePurge)) {
+            return paramService.getPurgeEvtDuree();
+
+         } else {
+            throw new IllegalArgumentException("typePurge");
+         }
+      } catch (ParameterNotFoundException e) {
+         throw new TraceRuntimeException(e);
+      }
+
    }
 
    private String getLibelleFromPurgeType(PurgeType purgeType) {
@@ -295,36 +325,24 @@ public class PurgeServiceImpl implements PurgeService {
       return registre;
    }
 
-   private void updateDate(PurgeType typePurge, Date maxDate) {
-      ParameterType type = getDateParameterTypeFromPurgeType(typePurge);
-      Parameter parameter = new Parameter(type, maxDate);
-      paramService.saveParameter(parameter);
-   }
-
    private Date getDateJournalisationFromPurgeType(PurgeType typePurge) {
 
-      ParameterType type;
       if (PurgeType.PURGE_EVT.equals(typePurge)) {
-         type = ParameterType.JOURNALISATION_EVT_DATE;
+
+         try {
+            Date date = paramService.getJournalisationEvtDate();
+
+            return date;
+
+         } catch (ParameterNotFoundException e) {
+            throw new TraceRuntimeException(e);
+         }
 
       } else {
          throw new TraceRuntimeException(
-               "type de journalisation non supporté pour cette purge");
+               "Type de journalisation non supporté pour cette purge");
       }
 
-      Date date;
-      try {
-         Parameter param = paramService.loadParameter(type);
-         date = (Date) param.getValue();
-         // la dernière date sauvegardée est la dernière traitée. La première
-         // date à traiter est donc à J+1
-         date = DateUtils.addDays(date, 1);
-
-      } catch (ParameterNotFoundException exception) {
-         throw new TraceRuntimeException(exception);
-      }
-
-      return date;
    }
 
 }

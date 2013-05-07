@@ -1,6 +1,3 @@
-/**
- * 
- */
 package fr.urssaf.image.sae.commons.service;
 
 import java.util.Date;
@@ -14,304 +11,460 @@ import fr.urssaf.image.sae.commons.exception.ParameterNotFoundException;
 public interface ParametersService {
 
    /**
+    * Durée de rétention des traces dans le registre de surveillance technique
+    * avant qu'elles soient purgées
+    * 
     * @param duree
-    *           duree de retention pour la purge du registre technique
+    *           Durée de rétention des traces dans le registre de surveillance
+    *           technique avant purge (en nombre de jours)
     */
    void setPurgeTechDuree(Integer duree);
 
    /**
-    * @return duree de retention pour la purge technique
+    * Durée de rétention des traces dans le registre de surveillance technique
+    * avant qu'elles soient purgées
+    * 
+    * @return Durée de rétention des traces dans le registre de surveillance
+    *         technique avant purge (en nombre de jours)
     * @throws ParameterNotFoundException
     *            exception levée si le paramètre n'est pas trouvé
     */
    Integer getPurgeTechDuree() throws ParameterNotFoundException;
 
    /**
+    * Durée de rétention des traces dans le registre d'exploitation avant
+    * qu'elles soient purgées
+    * 
     * @param duree
-    *           duree de retention pour la purge du registre d'exploitation
+    *           Durée de rétention des traces dans le registre d'exploitation
+    *           avant qu'elles soient purgées (en nombre de jours)
     */
    void setPurgeExploitDuree(Integer duree);
 
    /**
-    * @return duree de retention pour la purge du registre d'exploitation
+    * Durée de rétention des traces dans le registre d'exploitation avant
+    * qu'elles soient purgées
+    * 
+    * @return Durée de rétention des traces dans le registre d'exploitation
+    *         avant qu'elles soient purgées (en nombre de jours)
     * @throws ParameterNotFoundException
     *            exception levée si le paramètre n'est pas trouvé
     */
    Integer getPurgeExploitDuree() throws ParameterNotFoundException;
 
    /**
+    * Durée de rétention des traces dans le registre de sécurité avant qu'elles
+    * soient purgées
+    * 
     * @param duree
-    *           duree de retention pour la purge du registre de sécurité
+    *           Durée de rétention des traces dans le registre de sécurité avant
+    *           qu'elles soient purgées (en nombre de jours)
     */
    void setPurgeSecuDuree(Integer duree);
 
    /**
-    * @return duree de retention pour la purge du registre de sécurité
+    * Durée de rétention des traces dans le registre de sécurité avant qu'elles
+    * soient purgées
+    * 
+    * @return Durée de rétention des traces dans le registre de sécurité avant
+    *         qu'elles soient purgées (en nombre de jours)
     * @throws ParameterNotFoundException
     *            exception levée si le paramètre n'est pas trouvé
     */
    Integer getPurgeSecuDuree() throws ParameterNotFoundException;
 
    /**
+    * Toutes traces antérieures ou datant de cette journée ont été purgées dans
+    * le registre de surveillance technique.<br>
+    * A noter que la date est tronquée à la journée (année/mois/jour), l'heure
+    * n'est pas prise en compte.
+    * 
     * @param date
-    *           dernière date minimale utilisée pour la purge du registre
-    *           technique
+    *           Toutes traces antérieures ou datant de cette journée ont été
+    *           purgées dans le registre de surveillance technique.
     */
    void setPurgeTechDate(Date date);
 
    /**
-    * @return date dernière date minimale utilisée pour la purge du registre
-    *         technique
+    * Toutes traces antérieures ou datant de cette journée ont été purgées dans
+    * le registre de surveillance technique.<br>
+    * A noter que la date est tronquée à la journée (année/mois/jour), l'heure
+    * n'est pas prise en compte.
+    * 
+    * @return date Toutes traces antérieures ou datant de cette journée ont été
+    *         purgées dans le registre de surveillance technique.
     * @throws ParameterNotFoundException
     *            exception levée si le paramètre n'est pas trouvé
     */
    Date getPurgeTechDate() throws ParameterNotFoundException;
 
    /**
+    * Toutes traces antérieures ou datant de cette journée ont été purgées dans
+    * le registre d'exploitation.<br>
+    * A noter que la date est tronquée à la journée (année/mois/jour), l'heure
+    * n'est pas prise en compte.
+    * 
     * @param date
-    *           dernière date minimale utilisée pour la purge du registre
-    *           d'exploitation
+    *           Toutes traces antérieures ou datant de cette journée ont été
+    *           purgées dans le registre d'exploitation.
     */
    void setPurgeExploitDate(Date date);
 
    /**
-    * @return date dernière date minimale utilisée pour la purge du registre
-    *         d'exploitation
+    * Toutes traces antérieures ou datant de cette journée ont été purgées dans
+    * le registre d'exploitation.<br>
+    * A noter que la date est tronquée à la journée (année/mois/jour), l'heure
+    * n'est pas prise en compte.
+    * 
+    * @return date Toutes traces antérieures ou datant de cette journée ont été
+    *         purgées dans le registre d'exploitation.<br>
     * @throws ParameterNotFoundException
     *            exception levée si le paramètre n'est pas trouvé
     */
    Date getPurgeExploitDate() throws ParameterNotFoundException;
 
    /**
+    * Toutes traces antérieures ou datant de cette journée ont été purgées dans
+    * le registre de sécurité.<br>
+    * A noter que la date est tronquée à la journée (année/mois/jour), l'heure
+    * n'est pas prise en compte.
+    * 
     * @param date
-    *           dernière date minimale utilisée pour la purge du registre de
-    *           sécurité
+    *           Toutes traces antérieures ou datant de cette journée ont été
+    *           purgées dans le registre de sécurité.<br>
     */
    void setPurgeSecuDate(Date date);
 
    /**
-    * @return date dernière date minimale utilisée pour la purge du registre de
-    *         sécurité
+    * Toutes traces antérieures ou datant de cette journée ont été purgées dans
+    * le registre de sécurité.<br>
+    * A noter que la date est tronquée à la journée (année/mois/jour), l'heure
+    * n'est pas prise en compte.
+    * 
+    * @return date Toutes traces antérieures ou datant de cette journée ont été
+    *         purgées dans le registre de sécurité.<br>
     * @throws ParameterNotFoundException
     *            exception levée si le paramètre n'est pas trouvé
     */
    Date getPurgeSecuDate() throws ParameterNotFoundException;
 
    /**
+    * Flag indiquant si la purge du registre de surveillance technique est en
+    * cours
+    * 
     * @param isRunning
-    *           indicateur permettant de savoir si la purge des registres
-    *           techniques est en cours
+    *           Flag indiquant si la purge du registre de surveillance technique
+    *           est en cours
     */
    void setPurgeTechIsRunning(Boolean isRunning);
 
    /**
-    * @return indicateur permettant de savoir si la purge des registres
-    *         techniques est en cours
+    * Flag indiquant si la purge du registre de surveillance technique est en
+    * cours
+    * 
+    * @return Flag indiquant si la purge du registre de surveillance technique
+    *         est en cours
     * @throws ParameterNotFoundException
     *            exception levée si le paramètre n'est pas trouvé
     */
    Boolean isPurgeTechIsRunning() throws ParameterNotFoundException;
 
    /**
+    * Flag indiquant si la purge du registre d'exploitation est en cours
+    * 
     * @param isRunning
-    *           indicateur permettant de savoir si la purge des registres
-    *           d'exploitation est en cours
+    *           Flag indiquant si la purge du registre d'exploitation est en
+    *           cours
     */
    void setPurgeExploitIsRunning(Boolean isRunning);
 
    /**
-    * @return indicateur permettant de savoir si la purge des registres
-    *         d'exploitation est en cours
+    * Flag indiquant si la purge du registre d'exploitation est en cours
+    * 
+    * @return Flag indiquant si la purge du registre d'exploitation est en cours
     * @throws ParameterNotFoundException
     *            exception levée si le paramètre n'est pas trouvé
     */
    Boolean isPurgeExploitIsRunning() throws ParameterNotFoundException;
 
    /**
+    * Flag indiquant si la purge du registre de sécurité est en cours
+    * 
     * @param isRunning
-    *           indicateur permettant de savoir si la purge des registres de
-    *           sécurité est en cours
+    *           Flag indiquant si la purge du registre de sécurité est en cours
     */
    void setPurgeSecuIsRunning(Boolean isRunning);
 
    /**
-    * @return indicateur permettant de savoir si la purge des registres de
-    *         sécurité est en cours
+    * Flag indiquant si la purge du registre de sécurité est en cours
+    * 
+    * @return Flag indiquant si la purge du registre de sécurité est en cours
     * @throws ParameterNotFoundException
     *            exception levée si le paramètre n'est pas trouvé
     */
    Boolean isPurgeSecuIsRunning() throws ParameterNotFoundException;
 
    /**
+    * Toutes traces du journal des événements antérieures ou datant de cette
+    * journée ont été journalisées dans un produit documentaire. (ces traces
+    * sont donc éligibles à une purge)<br>
+    * A noter que la date est tronquée à la journée (année/mois/jour), l'heure
+    * n'est pas prise en compte.
+    * 
     * @param date
-    *           dernière date minimale utilisée pour la journalisation des
-    *           événements SAE
+    *           Toutes traces du journal des événements antérieures ou datant de
+    *           cette journée ont été journalisées dans un produit documentaire.
     */
    void setJournalisationEvtDate(Date date);
 
    /**
-    * @return date dernière date minimale utilisée pour journalisation des
-    *         événements SAE
+    * Toutes traces du journal des événements antérieures ou datant de cette
+    * journée ont été journalisées dans un produit documentaire. (ces traces
+    * sont donc éligibles à une purge)<br>
+    * A noter que la date est tronquée à la journée (année/mois/jour), l'heure
+    * n'est pas prise en compte.
+    * 
+    * @return Toutes traces du journal des événements antérieures ou datant de
+    *         cette journée ont été journalisées dans un produit documentaire.
     * @throws ParameterNotFoundException
     *            exception levée si le paramètre n'est pas trouvé
     */
    Date getJournalisationEvtDate() throws ParameterNotFoundException;
 
    /**
+    * Flag indiquant si la journalisation des événements SAE est en cours
+    * 
     * @param isRunning
-    *           indicateur permettant de savoir si la journalisation des
-    *           événements SAE est en cours
+    *           Flag indiquant si la journalisation des événements SAE est en
+    *           cours
     */
    void setJournalisationEvtIsRunning(Boolean isRunning);
 
    /**
-    * @return indicateur permettant de savoir si la journalisation des
-    *         événements SAE est en cours
+    * Flag indiquant si la journalisation des événements SAE est en cours
+    * 
+    * @return Flag indiquant si la journalisation des événements SAE est en
+    *         cours
     * @throws ParameterNotFoundException
     *            exception levée si le paramètre n'est pas trouvé
     */
    Boolean isJournalisationEvtIsRunning() throws ParameterNotFoundException;
 
    /**
+    * Durée de rétention des traces dans le journal des événements SAE avant
+    * qu'elles soient purgées
+    * 
     * @param duree
-    *           duree de retention pour la purge du journal des événements
+    *           Durée de rétention des traces dans le journal des événements SAE
+    *           avant qu'elles soient purgées (en nombre de jours)
     */
    void setPurgeEvtDuree(Integer duree);
 
    /**
-    * @return duree de retention pour la purge du journal des événements
+    * Durée de rétention des traces dans le journal des événements SAE avant
+    * qu'elles soient purgées
+    * 
+    * @return Durée de rétention des traces dans le journal des événements SAE
+    *         avant qu'elles soient purgées (en nombre de jours)
     * @throws ParameterNotFoundException
     *            exception levée si le paramètre n'est pas trouvé
     */
    Integer getPurgeEvtDuree() throws ParameterNotFoundException;
 
    /**
+    * Toutes traces antérieures ou datant de cette journée ont été purgées dans
+    * le journal des événements SAE.<br>
+    * A noter que la date est tronquée à la journée (année/mois/jour), l'heure
+    * n'est pas prise en compte.
+    * 
     * @param date
-    *           dernière date minimale utilisée pour la purge des événements SAE
+    *           Toutes traces antérieures ou datant de cette journée ont été
+    *           purgées dans le journal des événements SAE
     */
    void setPurgeEvtDate(Date date);
 
    /**
-    * @return date dernière date minimale utilisée pour purge des événements SAE
+    * Toutes traces antérieures ou datant de cette journée ont été purgées dans
+    * le journal des événements SAE.<br>
+    * A noter que la date est tronquée à la journée (année/mois/jour), l'heure
+    * n'est pas prise en compte.
+    * 
+    * @return Toutes traces antérieures ou datant de cette journée ont été
+    *         purgées dans le journal des événements SAE.
     * @throws ParameterNotFoundException
     *            exception levée si le paramètre n'est pas trouvé
     */
    Date getPurgeEvtDate() throws ParameterNotFoundException;
 
    /**
+    * Flag indiquant si la purge du journal des événements SAE est en cours
+    * 
     * @param isRunning
-    *           indicateur permettant de savoir si la purge du journal des
-    *           événements est en cours
+    *           Flag indiquant si la purge du journal des événements SAE est en
+    *           cours
     */
    void setPurgeEvtIsRunning(Boolean isRunning);
 
    /**
-    * @return indicateur permettant de savoir si la purge du journal des
-    *         événements est en cours
+    * Flag indiquant si la purge du journal des événements SAE est en cours
+    * 
+    * @return Flag indiquant si la purge du journal des événements SAE est en
+    *         cours
     * @throws ParameterNotFoundException
     *            exception levée si le paramètre n'est pas trouvé
     */
    Boolean isPurgeEvtIsRunning() throws ParameterNotFoundException;
 
    /**
+    * Hash du journal précédent produit lors de la précédente journalisation des
+    * événements SAE
+    * 
     * @param hash
-    *           le hash du journal précédent réalisé lors de la journalisation
+    *           Hash du journal précédent produit lors de la précédente
+    *           journalisation des événements SAE
     */
    void setJournalisationEvtHashJournPrec(String hash);
 
    /**
-    * @return le hash du journal précédent réalisé lors de la journalisation
+    * Hash du dernier journal produit lors de la journalisation des événements
+    * SAE
+    * 
+    * @return Hash du dernier journal produit lors de la journalisation des
+    *         événements SAE
     * @throws ParameterNotFoundException
     *            exception levée si le paramètre n'est pas trouvé
     */
    String getJournalisationEvtHashJournPrec() throws ParameterNotFoundException;
 
    /**
+    * Identifiant unique du dernier journal produit lors de la journalisation
+    * des événements SAE
+    * 
     * @param identifiant
-    *           l'identifiant unique du journal précédent réalisé lors de la
-    *           journalisation
+    *           Identifiant unique du dernier journal produit lors de la
+    *           journalisation des événements SAE
     */
    void setJournalisationEvtIdJournPrec(String identifiant);
 
    /**
-    * @return l'identifiant unique du journal précédent réalisé lors de la
-    *         journalisation
+    * Identifiant unique du dernier journal produit lors de la journalisation
+    * des événements SAE
+    * 
+    * @return Identifiant unique du dernier journal produit lors de la
+    *         journalisation des événements SAE
     * @throws ParameterNotFoundException
     *            exception levée si le paramètre n'est pas trouvé
     */
    String getJournalisationEvtIdJournPrec() throws ParameterNotFoundException;
 
    /**
+    * Valeur de la métadonnée "ApplicationProductrice" à associer aux journaux
+    * des événements SAE
+    * 
     * @param applProd
-    *           le code de l'application productrice rattachée à la
-    *           journalisation
+    *           Valeur de la métadonnée "ApplicationProductrice" à associer aux
+    *           journaux des événements SAE
     */
    void setJournalisationEvtMetaApplProd(String applProd);
 
    /**
-    * @return le code de l'application productrice rattachée à la journalisation
+    * Valeur de la métadonnée "ApplicationProductrice" à associer aux journaux
+    * des événements SAE
+    * 
+    * @return Valeur de la métadonnée "ApplicationProductrice" à associer aux
+    *         journaux des événements SAE
     * @throws ParameterNotFoundException
     *            exception levée si le paramètre n'est pas trouvé
     */
    String getJournalisationEvtMetaApplProd() throws ParameterNotFoundException;
 
    /**
+    * Valeur de la métadonnée "ApplicationTraitement" à associer aux journaux
+    * des événements SAE
+    * 
     * @param applTrait
-    *           le code de l'application de traitement rattachée à la
-    *           journalisation
+    *           Valeur de la métadonnée "ApplicationTraitement" à associer aux
+    *           journaux des événements SAE
     */
    void setJournalisationEvtMetaApplTrait(String applTrait);
 
    /**
-    * @return le code de l'application de traitement rattachée à la
-    *         journalisation
+    * Valeur de la métadonnée "ApplicationTraitement" à associer aux journaux
+    * des événements SAE
+    * 
+    * @return Valeur de la métadonnée "ApplicationTraitement" à associer aux
+    *         journaux des événements SAE
     * @throws ParameterNotFoundException
     *            exception levée si le paramètre n'est pas trouvé
     */
    String getJournalisationEvtMetaApplTrait() throws ParameterNotFoundException;
 
    /**
+    * Valeur des métadonnées "CodeOrganismeProprietaire" et
+    * "CodeOrganismeGestionnaire" à associer aux journaux des événements SAE
+    * 
     * @param codeOrga
-    *           le code de l'organisme propriétaire et gestionnaire rattachée à
-    *           la journalisation
+    *           Valeur des métadonnées "CodeOrganismeProprietaire" et
+    *           "CodeOrganismeGestionnaire" à associer aux journaux des
+    *           événements SAE
     */
    void setJournalisationEvtMetaCodeOrga(String codeOrga);
 
    /**
-    * @return le code de l'organisme propriétaire et gestionnaire rattachée à la
-    *         journalisation
+    * Valeur des métadonnées "CodeOrganismeProprietaire" et
+    * "CodeOrganismeGestionnaire" à associer aux journaux des événements SAE
+    * 
+    * @return Valeur des métadonnées "CodeOrganismeProprietaire" et
+    *         "CodeOrganismeGestionnaire" à associer aux journaux des événements
+    *         SAE
     * @throws ParameterNotFoundException
     *            exception levée si le paramètre n'est pas trouvé
     */
    String getJournalisationEvtMetaCodeOrga() throws ParameterNotFoundException;
 
    /**
+    * Valeur de la métadonnée "CodeRND" à associer aux journaux des événements
+    * SAE
+    * 
     * @param codeRnd
-    *           le code RND rattachée à la journalisation
+    *           Valeur de la métadonnée "CodeRND" à associer aux journaux des
+    *           événements SAE
     */
    void setJournalisationEvtMetaCodeRnd(String codeRnd);
 
    /**
-    * @return le code RND rattachée à la journalisation
+    * Valeur de la métadonnée "CodeRND" à associer aux journaux des événements
+    * SAE
+    * 
+    * @return Valeur de la métadonnée "CodeRND" à associer aux journaux des
+    *         événements SAE
     * @throws ParameterNotFoundException
     *            exception levée si le paramètre n'est pas trouvé
     */
    String getJournalisationEvtMetaCodeRnd() throws ParameterNotFoundException;
 
    /**
+    * Valeur de la métadonnée "Titre" à associer aux journaux des événements SAE
+    * 
     * @param titre
-    *           le titre rattachée à la journalisation
+    *           Valeur de la métadonnée "Titre" à associer aux journaux des
+    *           événements SAE
     */
    void setJournalisationEvtMetaTitre(String titre);
 
    /**
-    * @return le titre rattachée à la journalisation
+    * Valeur de la métadonnée "Titre" à associer aux journaux des événements SAE
+    * 
+    * @return Valeur de la métadonnée "Titre" à associer aux journaux des
+    *         événements SAE
     * @throws ParameterNotFoundException
     *            exception levée si le paramètre n'est pas trouvé
     */
    String getJournalisationEvtMetaTitre() throws ParameterNotFoundException;
 
    /**
+    * Le numéro de la version du RND en cours dans le SAE
+    * 
     * @return Le numéro de la version du RND en cours dans le SAE
     * @throws ParameterNotFoundException
     *            exception levée si le paramètre n'est pas trouvé
@@ -319,12 +472,16 @@ public interface ParametersService {
    String getVersionRndNumero() throws ParameterNotFoundException;
 
    /**
+    * Le numéro de la version du RND en cours dans le SAE
+    * 
     * @param numVersion
-    *           le numéro de la version
+    *           Le numéro de la version du RND en cours dans le SAE
     */
    void setVersionRndNumero(String numVersion);
 
    /**
+    * La date de la dernière mise à jour du RND dans le SAE
+    * 
     * @return La date de la dernière mise à jour du RND dans le SAE
     * @throws ParameterNotFoundException
     *            exception levée si le paramètre n'est pas trouvé
@@ -332,8 +489,10 @@ public interface ParametersService {
    Date getVersionRndDateMaj() throws ParameterNotFoundException;
 
    /**
+    * La date de la dernière mise à jour du RND dans le SAE
+    * 
     * @param dateMajRnd
-    *           La date de mise à jour du RND
+    *           La date de la dernière mise à jour du RND dans le SAE
     */
    void setVersionRndDateMaj(Date dateMajRnd);
 

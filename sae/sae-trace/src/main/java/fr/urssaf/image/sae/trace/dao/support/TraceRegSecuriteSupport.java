@@ -1,6 +1,3 @@
-/**
- * 
- */
 package fr.urssaf.image.sae.trace.dao.support;
 
 import java.text.SimpleDateFormat;
@@ -121,8 +118,11 @@ public class TraceRegSecuriteSupport {
       indexDao.update(indexUpdater);
 
       // Trace applicative
-      LOGGER.debug("{} - Trace ajoutée dans le registre de sécurité : {}",
-            prefix, trace.getIdentifiant());
+      LOGGER
+            .debug(
+                  "{} - Trace ajoutée dans le registre de sécurité : Id={}. Timestamp={}",
+                  new Object[] { prefix, trace.getIdentifiant(),
+                        dateFormat.format(trace.getTimestamp()) });
       LOGGER.debug("{} - Fin", prefix);
 
    }

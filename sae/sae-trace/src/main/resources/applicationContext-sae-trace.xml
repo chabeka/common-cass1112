@@ -21,4 +21,6 @@
    </bean>
    
    <import resource="classpath*:/applicationContext-commons-cassandra.xml" />
+   <import resource="classpath*:/applicationContext-sae-commons.xml" />
+   
 </beans>

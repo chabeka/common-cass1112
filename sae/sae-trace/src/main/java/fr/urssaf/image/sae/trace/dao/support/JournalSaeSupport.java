@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import net.docubase.toolkit.model.ToolkitFactory;
@@ -70,8 +71,8 @@ public class JournalSaeSupport {
          String requete = "SM_DOCUMENT_TYPE:7.7.8.8.1 AND itm:[" + dateDebut
                + " TO " + dateFin + "]";
 
-         ToolkitFactory tf = new ToolkitFactory();
-         Base base = tf.createBase(nomBase);
+         ToolkitFactory toolkitFactory = new ToolkitFactory();
+         Base base = toolkitFactory.createBase(nomBase);
 
          // Lancement de la recherche
          int nbMaxElements = Integer.MAX_VALUE;
@@ -85,11 +86,13 @@ public class JournalSaeSupport {
          for (Document document : listeDoc) {
             String nomFichier = document.getFilename() + "."
                   + document.getExtension();
-            String dateTmp = (String) document.getSingleCriterion("itm").getWord();
-            
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            String dateTmp = (String) document.getSingleCriterion("itm")
+                  .getWord();
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd",
+                  Locale.FRENCH);
             Date dateDebutEvt = sdf.parse(dateTmp);
-               
+
             Journal journal = new Journal(document.getCreationDate(), document
                   .getUuid(), nomFichier, dateDebutEvt, dateDebutEvt);
             listeJournal.add(journal);
@@ -115,8 +118,8 @@ public class JournalSaeSupport {
     * @return Contenu du journal
     */
    public final byte[] getContent(UUID idJournal, String nomBase) {
-      ToolkitFactory tf = new ToolkitFactory();
-      Base base = tf.createBase(nomBase);
+      ToolkitFactory toolkitFactory = new ToolkitFactory();
+      Base base = toolkitFactory.createBase(nomBase);
 
       Document doc = serviceProvider.getSearchService().getDocumentByUUID(base,
             idJournal);

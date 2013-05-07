@@ -10,7 +10,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import net.docubase.toolkit.model.base.Base;
-import net.docubase.toolkit.model.document.Criterion;
 import net.docubase.toolkit.model.document.Document;
 import net.docubase.toolkit.model.recordmanager.RMLogArchiveReport;
 import net.docubase.toolkit.model.search.SearchResult;
@@ -36,6 +35,8 @@ import fr.urssaf.image.sae.trace.model.JournalType;
  */
 @Component
 public class JournalDfceSupport {
+
+   private static final int CENT = 100;
 
    /**
     * Classe d'accès à DFCE
@@ -89,10 +90,10 @@ public class JournalDfceSupport {
                   .getDocumentByUUID(base, uuid);
             String nomFichier = doc.getFilename() + "." + doc.getExtension();
 
-            Date dateDebutEvt = (Date) doc
-                  .getSingleCriterion("LOG_ARCHIVE_BEGIN_DATE").getWord();
-            Date dateFinEvt = (Date) doc
-                  .getSingleCriterion("LOG_ARCHIVE_END_DATE").getWord();
+            Date dateDebutEvt = (Date) doc.getSingleCriterion(
+                  "LOG_ARCHIVE_BEGIN_DATE").getWord();
+            Date dateFinEvt = (Date) doc.getSingleCriterion(
+                  "LOG_ARCHIVE_END_DATE").getWord();
 
             Journal journal = new Journal(doc.getArchivageDate(), uuid,
                   nomFichier, dateDebutEvt, dateFinEvt);
@@ -120,20 +121,30 @@ public class JournalDfceSupport {
          JournalType journalType) {
 
       try {
+
          // Construction de la requête LUCENE
-         String requete = "LOG_ARCHIVE_BEGIN_DATE:[" + dateDebut + " TO "
-               + dateFin + "] AND LOG_ARCHIVE_END_DATE:[" + dateDebut + " TO "
-               + dateFin + "] AND LOG_ARCHIVE_TYPE:";
+
+         StringBuffer sBuffer = new StringBuffer(CENT);
+         sBuffer.append("LOG_ARCHIVE_BEGIN_DATE:[");
+         sBuffer.append(dateDebut);
+         sBuffer.append(" TO ");
+         sBuffer.append(dateFin);
+         sBuffer.append("] AND LOG_ARCHIVE_END_DATE:[");
+         sBuffer.append(dateDebut);
+         sBuffer.append(" TO ");
+         sBuffer.append(dateFin);
+         sBuffer.append("] AND LOG_ARCHIVE_TYPE:");
 
          if (journalType.equals(JournalType.JOURNAL_EVENEMENT_DFCE)) {
-            requete += "SYSTEM";
+            sBuffer.append("SYSTEM");
          } else if (journalType.equals(JournalType.JOURNAL_CYCLE_VIE)) {
-            requete += "DOCUMENT";
+            sBuffer.append("DOCUMENT");
          }
 
          Base base = serviceProvider.getArchiveService().getLogsArchiveBase();
 
          // Lancement de la recherche
+         String requete = sBuffer.toString();
          int nbMaxElements = Integer.MAX_VALUE;
 
          SearchResult resultat = serviceProvider.getSearchService().search(
@@ -146,10 +157,10 @@ public class JournalDfceSupport {
             String nomFichier = document.getFilename() + "."
                   + document.getExtension();
 
-            Date dateDebutEvt = (Date) document
-                  .getSingleCriterion("LOG_ARCHIVE_BEGIN_DATE").getWord();
-            Date dateFinEvt = (Date) document
-                  .getSingleCriterion("LOG_ARCHIVE_END_DATE").getWord();
+            Date dateDebutEvt = (Date) document.getSingleCriterion(
+                  "LOG_ARCHIVE_BEGIN_DATE").getWord();
+            Date dateFinEvt = (Date) document.getSingleCriterion(
+                  "LOG_ARCHIVE_END_DATE").getWord();
 
             Journal journal = new Journal(document.getCreationDate(), document
                   .getUuid(), nomFichier, dateDebutEvt, dateFinEvt);
@@ -235,8 +246,7 @@ public class JournalDfceSupport {
       Document doc = serviceProvider.getSearchService().getDocumentByUUID(base,
             idJournal);
 
-      String nomFichier = doc.getFilename() + "." + doc.getExtension();
-      return nomFichier;
+      return doc.getFilename() + "." + doc.getExtension();
 
    }
 

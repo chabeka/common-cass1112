@@ -1,6 +1,3 @@
-/**
- * 
- */
 package fr.urssaf.image.sae.trace.service.impl;
 
 import java.io.File;
@@ -20,14 +17,12 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.xml.sax.SAXException;
 
-import fr.urssaf.image.sae.trace.exception.ParameterNotFoundException;
+import fr.urssaf.image.sae.commons.exception.ParameterNotFoundException;
+import fr.urssaf.image.sae.commons.service.ParametersService;
 import fr.urssaf.image.sae.trace.exception.TraceRuntimeException;
 import fr.urssaf.image.sae.trace.model.JournalisationType;
-import fr.urssaf.image.sae.trace.model.Parameter;
-import fr.urssaf.image.sae.trace.model.ParameterType;
 import fr.urssaf.image.sae.trace.service.JournalEvtService;
 import fr.urssaf.image.sae.trace.service.JournalisationService;
-import fr.urssaf.image.sae.trace.service.ParametersService;
 import fr.urssaf.image.sae.trace.utils.XmlValidationUtils;
 
 /**
@@ -61,12 +56,11 @@ public class JournalisationServiceImpl implements JournalisationService {
 
       try {
          if (JournalisationType.JOURNALISATION_EVT.equals(typeJournalisation)) {
-            ident = (String) paramService.loadParameter(
-                  ParameterType.JOURNALISATION_EVT_ID_JOURNAL_PRECEDENT)
-                  .getValue();
-            hash = (String) paramService.loadParameter(
-                  ParameterType.JOURNALISATION_EVT_HASH_JOURNAL_PRECEDENT)
-                  .getValue();
+
+            ident = paramService.getJournalisationEvtIdJournPrec();
+
+            hash = paramService.getJournalisationEvtHashJournPrec();
+
             chemin = journalService.export(date, repertoire, ident, hash);
 
             checkFormat(chemin);
@@ -118,13 +112,11 @@ public class JournalisationServiceImpl implements JournalisationService {
    public final List<Date> recupererDates(JournalisationType typeJournalisation) {
 
       // pour l'instant, il n'y a qu'un seul journal
-      ParameterType type = ParameterType.JOURNALISATION_EVT_DATE;
       Date lastDate = DateUtils.truncate(new Date(), Calendar.DATE);
       Date firstDate;
 
       try {
-         Parameter parameter = paramService.loadParameter(type);
-         firstDate = (Date) parameter.getValue();
+         firstDate = paramService.getJournalisationEvtDate();
          firstDate = DateUtils.truncate(firstDate, Calendar.DATE);
          // la date stockée est la dernière date traitée. La première date à
          // traiter est donc à J+1

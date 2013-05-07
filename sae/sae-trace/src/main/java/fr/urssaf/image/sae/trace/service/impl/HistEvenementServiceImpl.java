@@ -1,12 +1,8 @@
-/**
- * 
- */
 package fr.urssaf.image.sae.trace.service.impl;
 
 import java.util.Date;
 import java.util.List;
 
-import org.joda.time.DateTimeZone;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -52,12 +48,12 @@ public class HistEvenementServiceImpl implements HistEvenementService {
       return support.findByDates(dateDebut, dateFin, limite, reversed);
    }
 
-   private Date getGmtDate(Date date) {
-      long value = DateTimeZone.getDefault().convertLocalToUTC(date.getTime(),
-            true);
-
-      return new Date(value);
-
-   }
+//   private Date getGmtDate(Date date) {
+//      long value = DateTimeZone.getDefault().convertLocalToUTC(date.getTime(),
+//            true);
+//
+//      return new Date(value);
+//
+//   }
 
 }

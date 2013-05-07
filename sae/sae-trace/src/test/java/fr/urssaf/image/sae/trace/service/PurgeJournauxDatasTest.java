@@ -1,6 +1,3 @@
-/**
- * 
- */
 package fr.urssaf.image.sae.trace.service;
 
 import java.util.Calendar;
@@ -20,6 +17,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.sae.commons.exception.ParameterNotFoundException;
+import fr.urssaf.image.sae.commons.service.ParametersService;
 import fr.urssaf.image.sae.trace.dao.TraceDestinataireDao;
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvt;
@@ -32,10 +31,7 @@ import fr.urssaf.image.sae.trace.dao.support.TraceJournalEvtSupport;
 import fr.urssaf.image.sae.trace.dao.support.TraceRegExploitationSupport;
 import fr.urssaf.image.sae.trace.dao.support.TraceRegSecuriteSupport;
 import fr.urssaf.image.sae.trace.dao.support.TraceRegTechniqueSupport;
-import fr.urssaf.image.sae.trace.exception.ParameterNotFoundException;
 import fr.urssaf.image.sae.trace.exception.TraceRuntimeException;
-import fr.urssaf.image.sae.trace.model.Parameter;
-import fr.urssaf.image.sae.trace.model.ParameterType;
 import fr.urssaf.image.sae.trace.model.PurgeType;
 import fr.urssaf.image.sae.trace.model.TraceToCreate;
 import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
@@ -99,7 +95,8 @@ public class PurgeJournauxDatasTest {
 
    @Test
    public void testPurgeDejaEnCours() {
-      createParameter(ParameterType.PURGE_EVT_IS_RUNNING, Boolean.TRUE);
+
+      paramService.setPurgeEvtIsRunning(Boolean.TRUE);
 
       try {
          purgeService.purgerJournal(PurgeType.PURGE_EVT);
@@ -115,35 +112,166 @@ public class PurgeJournauxDatasTest {
 
    }
 
+   /**
+    * <b><u>Explication du test</u></b><br>
+    * <br>
+    * Soit DATE = 07/05/2013 11h30<br>
+    * <br>
+    * On créé 10 traces dans le journal des événements SAE (notamment) à :<br>
+    * <table border="1">
+    * <tr>
+    * <td>DATE</td>
+    * <td>07/05/2013 11h30</td>
+    * </tr>
+    * <tr>
+    * <td>DATE -1 jour</td>
+    * <td>06/05/2013 11h30</td>
+    * </tr>
+    * <tr>
+    * <td>DATE -2 jours</td>
+    * <td>05/05/2013 11h30</td>
+    * </tr>
+    * <tr>
+    * <td>DATE -3 jours</td>
+    * <td>04/05/2013 11h30</td>
+    * </tr>
+    * <tr>
+    * <td>DATE -4 jours</td>
+    * <td>03/05/2013 11h30</td>
+    * </tr>
+    * <tr>
+    * <td>DATE -5 jours</td>
+    * <td>02/05/2013 11h30</td>
+    * </tr>
+    * <tr>
+    * <td>DATE -6 jours</td>
+    * <td>01/05/2013 11h30</td>
+    * </tr>
+    * <tr>
+    * <td>DATE -7 jours</td>
+    * <td>30/04/2013 11h30</td>
+    * </tr>
+    * <tr>
+    * <td>DATE -8 jours</td>
+    * <td>29/04/2013 11h30</td>
+    * </tr>
+    * <tr>
+    * <td>DATE -9 jours</td>
+    * <td>28/04/2013 11h30</td>
+    * </tr>
+    * </table>
+    * <br>
+    * On indique dans les paramètres :<br>
+    * <ul>
+    * <li>que les traces antérieures ou "égales" à DATE - 10 jours (27/04/2013
+    * dans l'exemple) ont été purgées</li>
+    * <li>que les traces antérieures ou "égales" à DATE - 10 jours (27/04/2013
+    * dans l'exemple) ont été journalisées</li>
+    * <li>que la durée de rétention des traces avant purge dans le journal des
+    * événements est de 5 jours</li>
+    * </ul>
+    * La purge va donc commencer dans l'exemple par la journée du 28/04/2013.<br>
+    * Or aucune des 10 traces à partir du 28/04 n'a été journalisée.<br>
+    * <br>
+    * <b>On doit donc retrouver, après la purge, l'ensemble des 10 traces.</b>
+    * 
+    */
    @Test
    public void testPurgeJournalMemeDateJournalisation() {
 
       Date date = DateUtils.addDays(DATE, -10);
 
-      createParameter(ParameterType.JOURNALISATION_EVT_DATE, date);
-      createParameter(ParameterType.PURGE_EVT_DATE, date);
-      createParameter(ParameterType.PURGE_EVT_DUREE, 5);
+      paramService.setJournalisationEvtDate(date);
+      paramService.setPurgeEvtDate(date);
+      paramService.setPurgeEvtDuree(5);
+
       createTraces();
 
       purgeService.purgerJournal(PurgeType.PURGE_EVT);
 
       List<TraceJournalEvtIndex> traces = evtService.lecture(date, DateUtils
             .addDays(DATE, 10), 20, false);
+
       Assert.assertEquals("toutes les traces doivent etre présentes", 10,
             traces.size());
    }
 
+   /**
+    * <b><u>Explication du test</u></b><br>
+    * <br>
+    * Soit DATE = 07/05/2013 11h30<br>
+    * <br>
+    * On créé 10 traces dans le journal des événements SAE (notamment) à :<br>
+    * <table border="1">
+    * <tr>
+    * <td>DATE</td>
+    * <td>07/05/2013 11h30</td>
+    * </tr>
+    * <tr>
+    * <td>DATE -1 jour</td>
+    * <td>06/05/2013 11h30</td>
+    * </tr>
+    * <tr>
+    * <td>DATE -2 jours</td>
+    * <td>05/05/2013 11h30</td>
+    * </tr>
+    * <tr>
+    * <td>DATE -3 jours</td>
+    * <td>04/05/2013 11h30</td>
+    * </tr>
+    * <tr>
+    * <td>DATE -4 jours</td>
+    * <td>03/05/2013 11h30</td>
+    * </tr>
+    * <tr>
+    * <td>DATE -5 jours</td>
+    * <td>02/05/2013 11h30</td>
+    * </tr>
+    * <tr>
+    * <td>DATE -6 jours</td>
+    * <td>01/05/2013 11h30</td>
+    * </tr>
+    * <tr>
+    * <td>DATE -7 jours</td>
+    * <td>30/04/2013 11h30</td>
+    * </tr>
+    * <tr>
+    * <td>DATE -8 jours</td>
+    * <td>29/04/2013 11h30</td>
+    * </tr>
+    * <tr>
+    * <td>DATE -9 jours</td>
+    * <td>28/04/2013 11h30</td>
+    * </tr>
+    * </table>
+    * <br>
+    * On indique dans les paramètres :<br>
+    * <ul>
+    * <li>que les traces antérieures ou "égales" à DATE - 10 jours (27/04/2013
+    * dans l'exemple) ont été purgées</li>
+    * <li>que les traces antérieures ou "égales" à DATE - 6 jours (01/05/2013
+    * dans l'exemple) ont été journalisées</li>
+    * <li>que la durée de rétention des traces avant purge dans le journal des
+    * événements est de 5 jours</li>
+    * </ul>
+    * La purge va donc commencer dans l'exemple par la journée du 28/04/2013.<br>
+    * Les traces du 28/04, 29/04, 30/04 et 01/05 ont été journalisées selon les
+    * paramètres.<br>
+    * Elles seront donc purgées. <br>
+    * <b>On doit donc retrouver, après la purge, 6 traces.</b>
+    * 
+    */
    @Test
    public void testPurgeJournalPosterieureJournalisation()
          throws ParameterNotFoundException {
 
       Date date = DateUtils.addDays(DATE, -10);
-      createParameter(ParameterType.PURGE_EVT_DATE, date);
+      paramService.setPurgeEvtDate(date);
 
       date = DateUtils.addDays(DATE, -6);
-      createParameter(ParameterType.JOURNALISATION_EVT_DATE, date);
+      paramService.setJournalisationEvtDate(date);
 
-      createParameter(ParameterType.PURGE_EVT_DUREE, 5);
+      paramService.setPurgeEvtDuree(5);
       createTraces();
 
       purgeService.purgerJournal(PurgeType.PURGE_EVT);
@@ -151,13 +279,16 @@ public class PurgeJournauxDatasTest {
       date = DateUtils.addDays(DATE, -10);
       List<TraceJournalEvtIndex> traces = evtService.lecture(date, DateUtils
             .addDays(DATE, 10), 20, false);
-      Assert.assertEquals("toutes les traces doivent etre présentes", 5, traces
+      Assert.assertEquals("toutes les traces doivent etre présentes", 6, traces
             .size());
 
-      date = DateUtils.addDays(DATE, -5);
-      Assert.assertEquals("la date stockée doit etre correcte", DateUtils
-            .truncate(date, Calendar.DATE), paramService.loadParameter(
-            ParameterType.PURGE_EVT_DATE).getValue());
+      Date dateAttendue = DateUtils.addDays(DATE, -6);
+      dateAttendue = DateUtils.truncate(dateAttendue, Calendar.DATE);
+
+      Date dateObtenue = paramService.getPurgeEvtDate();
+
+      Assert.assertEquals("la date stockée doit etre correcte", dateAttendue,
+            dateObtenue);
    }
 
    @Test
@@ -165,12 +296,12 @@ public class PurgeJournauxDatasTest {
          throws ParameterNotFoundException {
 
       Date date = DateUtils.addDays(DATE, -10);
-      createParameter(ParameterType.PURGE_EVT_DATE, date);
+      paramService.setPurgeEvtDate(date);
 
       date = DateUtils.addDays(DATE, -1);
-      createParameter(ParameterType.JOURNALISATION_EVT_DATE, date);
+      paramService.setJournalisationEvtDate(date);
 
-      createParameter(ParameterType.PURGE_EVT_DUREE, 5);
+      paramService.setPurgeEvtDuree(5);
       createTraces();
 
       purgeService.purgerJournal(PurgeType.PURGE_EVT);
@@ -181,15 +312,13 @@ public class PurgeJournauxDatasTest {
       Assert.assertEquals("toutes les traces doivent etre présentes", 5, traces
             .size());
 
-      date = DateUtils.addDays(DATE, -5);
-      Assert.assertEquals("la date stockée doit etre correcte", DateUtils
-            .truncate(date, Calendar.DATE), paramService.loadParameter(
-            ParameterType.PURGE_EVT_DATE).getValue());
-   }
+      Date dateAttendue = DateUtils.addDays(DATE, -5);
+      dateAttendue = DateUtils.truncate(dateAttendue, Calendar.DATE);
 
-   private void createParameter(ParameterType type, Object value) {
-      Parameter parameter = new Parameter(type, value);
-      paramService.saveParameter(parameter);
+      Date dateObtenue = paramService.getPurgeEvtDate();
+
+      Assert.assertEquals("la date stockée doit etre correcte", dateAttendue,
+            dateObtenue);
    }
 
    private void createTraces() {

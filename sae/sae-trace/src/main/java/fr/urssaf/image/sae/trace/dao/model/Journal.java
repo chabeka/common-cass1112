@@ -51,6 +51,11 @@ public class Journal {
     *           L'identifiant unique du journal
     * @param nomFichier
     *           Nom du fichier contenant le journal
+    * @param dateDebutEvt
+    *           Date de début des évenements stockés dans le journal
+    * @param dateFinEvt
+    *           Date de fin des évenements stockés dans le journal
+    * 
     */
    public Journal(Date date, UUID identifiant, String nomFichier,
          Date dateDebutEvt, Date dateFinEvt) {
@@ -110,7 +115,7 @@ public class Journal {
    /**
     * @return the dateDebutEvt
     */
-   public Date getDateDebutEvt() {
+   public final Date getDateDebutEvt() {
       return dateDebutEvt;
    }
 
@@ -118,14 +123,14 @@ public class Journal {
     * @param dateDebutEvt
     *           the dateDebutEvt to set
     */
-   public void setDateDebutEvt(Date dateDebutEvt) {
+   public final void setDateDebutEvt(Date dateDebutEvt) {
       this.dateDebutEvt = dateDebutEvt;
    }
 
    /**
     * @return the dateFinEvt
     */
-   public Date getDateFinEvt() {
+   public final Date getDateFinEvt() {
       return dateFinEvt;
    }
 
@@ -133,7 +138,7 @@ public class Journal {
     * @param dateFinEvt
     *           the dateFinEvt to set
     */
-   public void setDateFinEvt(Date dateFinEvt) {
+   public final void setDateFinEvt(Date dateFinEvt) {
       this.dateFinEvt = dateFinEvt;
    }
 

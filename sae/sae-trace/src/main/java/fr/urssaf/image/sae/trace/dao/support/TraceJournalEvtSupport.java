@@ -1,6 +1,3 @@
-/**
- * 
- */
 package fr.urssaf.image.sae.trace.dao.support;
 
 import java.text.SimpleDateFormat;
@@ -122,8 +119,11 @@ public class TraceJournalEvtSupport {
       indexDao.update(indexUpdater);
 
       // Trace applicative
-      LOGGER.debug("{} - Trace ajoutée dans le journal des événements : {}",
-            prefix, trace.getIdentifiant());
+      LOGGER
+            .debug(
+                  "{} - Trace ajoutée dans le journal des événements : Id={}. Timestamp={}",
+                  new Object[] { prefix, trace.getIdentifiant(),
+                        dateFormat.format(trace.getTimestamp()) });
       LOGGER.debug("{} - Fin", prefix);
 
    }
@@ -232,11 +232,12 @@ public class TraceJournalEvtSupport {
 
       // Trace applicative
       String prefix = "findByDates()";
-      LOGGER.debug("{} - Début", prefix);
-      LOGGER.debug("{} - Date de début : {}", prefix, dateFormat
-            .format(startDate));
-      LOGGER.debug("{} - Date de fin : {}", prefix, dateFormat.format(endDate));
-      LOGGER.debug("{} - Ordre décroissant : {}", prefix, reversed);
+      // LOGGER.debug("{} - Début", prefix);
+      // LOGGER.debug("{} - Date de début : {}", prefix, dateFormat
+      // .format(startDate));
+      // LOGGER.debug("{} - Date de fin : {}", prefix,
+      // dateFormat.format(endDate));
+      // LOGGER.debug("{} - Ordre décroissant : {}", prefix, reversed);
 
       List<TraceJournalEvtIndex> list = null;
 
@@ -270,7 +271,7 @@ public class TraceJournalEvtSupport {
       }
 
       // Trace applicative
-      LOGGER.debug("{} - Fin", prefix);
+      // LOGGER.debug("{} - Fin", prefix);
 
       return list;
    }

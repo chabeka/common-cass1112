@@ -1,5 +1,6 @@
 package fr.urssaf.image.sae.commons.service;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
@@ -35,56 +36,66 @@ public class ParametersServiceTest {
 
    @Test
    public void testJournalisationEvtDate() throws ParameterNotFoundException {
-      Date storedDate = DateUtils.addHours(date, 1);
+      Date storedDate = DateUtils.addDays(date, -2);
       parametersService.setJournalisationEvtDate(storedDate);
 
       Date dateRecup = parametersService.getJournalisationEvtDate();
+      Date dateAttendue = DateUtils.truncate(storedDate, Calendar.DATE);
 
-      Assert.assertEquals("la date doit etre correcte", storedDate, dateRecup);
+      Assert
+            .assertEquals("la date doit etre correcte", dateAttendue, dateRecup);
 
    }
 
    @Test
    public void testPurgeEvtDate() throws ParameterNotFoundException {
-      Date storedDate = DateUtils.addHours(date, 2);
+      Date storedDate = DateUtils.addDays(date, -3);
       parametersService.setPurgeEvtDate(storedDate);
 
       Date dateRecup = parametersService.getPurgeEvtDate();
+      Date dateAttendue = DateUtils.truncate(storedDate, Calendar.DATE);
 
-      Assert.assertEquals("la date doit etre correcte", storedDate, dateRecup);
+      Assert
+            .assertEquals("la date doit etre correcte", dateAttendue, dateRecup);
 
    }
 
    @Test
    public void testPurgeExploitDate() throws ParameterNotFoundException {
-      Date storedDate = DateUtils.addHours(date, 3);
+      Date storedDate = DateUtils.addDays(date, -4);
       parametersService.setPurgeExploitDate(storedDate);
 
       Date dateRecup = parametersService.getPurgeExploitDate();
+      Date dateAttendue = DateUtils.truncate(storedDate, Calendar.DATE);
 
-      Assert.assertEquals("la date doit etre correcte", storedDate, dateRecup);
+      Assert
+            .assertEquals("la date doit etre correcte", dateAttendue, dateRecup);
 
    }
 
    @Test
    public void testPurgeSecuDate() throws ParameterNotFoundException {
-      Date storedDate = DateUtils.addHours(date, 4);
+      Date storedDate = DateUtils.addDays(date, -5);
       parametersService.setPurgeSecuDate(storedDate);
 
       Date dateRecup = parametersService.getPurgeSecuDate();
+      Date dateAttendue = DateUtils.truncate(storedDate, Calendar.DATE);
 
-      Assert.assertEquals("la date doit etre correcte", storedDate, dateRecup);
+      Assert
+            .assertEquals("la date doit etre correcte", dateAttendue, dateRecup);
 
    }
 
    @Test
    public void testPurgeTechDate() throws ParameterNotFoundException {
-      Date storedDate = DateUtils.addHours(date, 5);
+      Date storedDate = DateUtils.addDays(date, -6);
       parametersService.setPurgeTechDate(storedDate);
 
       Date dateRecup = parametersService.getPurgeTechDate();
+      Date dateAttendue = DateUtils.truncate(storedDate, Calendar.DATE);
 
-      Assert.assertEquals("la date doit etre correcte", storedDate, dateRecup);
+      Assert
+            .assertEquals("la date doit etre correcte", dateAttendue, dateRecup);
 
    }
 
@@ -279,7 +290,7 @@ public class ParametersServiceTest {
       Assert.assertEquals("la date doit etre correcte", storedDate, dateRecup);
 
    }
-   
+
    @Test
    public void testVersionRndNumero() throws ParameterNotFoundException {
       String numVersion = "11.4";
@@ -287,8 +298,9 @@ public class ParametersServiceTest {
 
       String numVersionRecup = parametersService.getVersionRndNumero();
 
-      Assert.assertEquals("la numéro de version RND doit être correct", numVersion, numVersionRecup);
+      Assert.assertEquals("la numéro de version RND doit être correct",
+            numVersion, numVersionRecup);
 
    }
-   
+
 }

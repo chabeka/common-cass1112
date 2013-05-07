@@ -3,6 +3,7 @@ package fr.urssaf.image.sae.trace.service.impl;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -25,14 +26,15 @@ import fr.urssaf.image.sae.trace.service.JournalService;
  * 
  */
 @Service
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class JournalServiceImpl implements JournalService {
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(JournalServiceImpl.class);
 
-   private JournalDfceSupport journalDfceSupport;
+   private final JournalDfceSupport journalDfceSupport;
 
-   private JournalSaeSupport journalSaeSupport;
+   private final JournalSaeSupport journalSaeSupport;
 
    private static final String LOG_DEBUT = "{} - début";
    private static final String LOG_FIN = "{} - fin";
@@ -75,35 +77,38 @@ public class JournalServiceImpl implements JournalService {
       LOGGER.debug("{} - Date fin : {}", new String[] { trcPrefix,
             dateFin.toString() });
 
-      SimpleDateFormat f = new SimpleDateFormat("yyyyMMdd");
-      String date1 = f.format(dateDebut);
-      
-      String date2 = f.format(dateFin);
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Locale.FRENCH);
+      String date1 = sdf.format(dateDebut);
+
+      String date2 = sdf.format(dateFin);
       date2 = date2.concat("9999");
-      
+
       LOGGER.debug(LOG_FIN, trcPrefix);
-      return journalDfceSupport.findByDates(date1, date2, JournalType.JOURNAL_EVENEMENT_DFCE);
+      return journalDfceSupport.findByDates(date1, date2,
+            JournalType.JOURNAL_EVENEMENT_DFCE);
    }
 
    @Override
-   public final List<Journal> rechercherJournauxCycleVie(Date dateDebut, Date dateFin) {
-    
+   public final List<Journal> rechercherJournauxCycleVie(Date dateDebut,
+         Date dateFin) {
+
       String trcPrefix = "rechercherJournauxCycleVie";
       LOGGER.debug("{} - début", trcPrefix);
       LOGGER.debug("{} - Date début : {}", new String[] { trcPrefix,
             dateDebut.toString() });
       LOGGER.debug("{} - Date fin : {}", new String[] { trcPrefix,
             dateFin.toString() });
-      SimpleDateFormat f = new SimpleDateFormat("yyyyMMdd");
-      String date1 = f.format(dateDebut);
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Locale.FRENCH);
+      String date1 = sdf.format(dateDebut);
       date1 = date1.concat("000000000");
-      String date2 = f.format(dateFin);
+      String date2 = sdf.format(dateFin);
       date2 = date2.concat("999999999");
 
       LOGGER.debug("{} - fin", trcPrefix);
-      return journalDfceSupport.findByDates(date1, date2, JournalType.JOURNAL_CYCLE_VIE);
+      return journalDfceSupport.findByDates(date1, date2,
+            JournalType.JOURNAL_CYCLE_VIE);
    }
-   
+
    @Override
    public final byte[] recupererContenuJournalDfce(UUID uuidJournal) {
       String trcPrefix = "recupererContenuJournal";
@@ -148,18 +153,19 @@ public class JournalServiceImpl implements JournalService {
       LOGGER.debug("{} - Nom de la base : {}", new String[] { trcPrefix,
             nomBase });
 
-      SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd");
-      String date1 = f.format(dateDebut);
-      
-      String date2 = f.format(dateFin);
-      
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.FRENCH);
+      String date1 = sdf.format(dateDebut);
+
+      String date2 = sdf.format(dateFin);
+
       LOGGER.debug(LOG_FIN, trcPrefix);
       return journalSaeSupport.findByDates(date1, date2, nomBase);
 
    }
 
    @Override
-   public final byte[] recupererContenuJournalSae(UUID uuidJournal, String nomBase) {
+   public final byte[] recupererContenuJournalSae(UUID uuidJournal,
+         String nomBase) {
       String trcPrefix = "recupererContenuJournalSae";
       LOGGER.debug("{} - début", trcPrefix);
       LOGGER.debug("{} - UUID journal : {}", new String[] { trcPrefix,
@@ -177,7 +183,7 @@ public class JournalServiceImpl implements JournalService {
       LOGGER.debug("{} - début", trcPrefix);
       LOGGER.debug("{} - UUID journal : {}", new String[] { trcPrefix,
             uuidJournal.toString() });
-      
+
       LOGGER.debug("{} - fin", trcPrefix);
       return journalDfceSupport.getNomJournal(uuidJournal);
    }

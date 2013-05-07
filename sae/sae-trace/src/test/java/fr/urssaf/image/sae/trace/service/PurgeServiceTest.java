@@ -1,6 +1,3 @@
-/**
- * 
- */
 package fr.urssaf.image.sae.trace.service;
 
 import java.util.Calendar;
@@ -20,6 +17,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.sae.commons.exception.ParameterNotFoundException;
+import fr.urssaf.image.sae.commons.service.ParametersService;
 import fr.urssaf.image.sae.trace.dao.TraceDestinataireDao;
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegExploitation;
@@ -32,10 +31,7 @@ import fr.urssaf.image.sae.trace.dao.support.TraceDestinataireSupport;
 import fr.urssaf.image.sae.trace.dao.support.TraceRegExploitationSupport;
 import fr.urssaf.image.sae.trace.dao.support.TraceRegSecuriteSupport;
 import fr.urssaf.image.sae.trace.dao.support.TraceRegTechniqueSupport;
-import fr.urssaf.image.sae.trace.exception.ParameterNotFoundException;
 import fr.urssaf.image.sae.trace.exception.TraceRuntimeException;
-import fr.urssaf.image.sae.trace.model.Parameter;
-import fr.urssaf.image.sae.trace.model.ParameterType;
 import fr.urssaf.image.sae.trace.model.PurgeType;
 import fr.urssaf.image.sae.trace.model.TraceToCreate;
 import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
@@ -102,7 +98,8 @@ public class PurgeServiceTest {
 
    @Test
    public void testPurgeDejaEnCours() {
-      createParameter(ParameterType.PURGE_EXPLOIT_IS_RUNNING, Boolean.TRUE);
+
+      paramService.setPurgeExploitIsRunning(Boolean.TRUE);
 
       try {
          purgeService.purgerRegistre(PurgeType.PURGE_EXPLOITATION);
@@ -119,7 +116,7 @@ public class PurgeServiceTest {
    }
 
    @Test
-   public void testPurge() {
+   public void testPurge() throws ParameterNotFoundException {
       createParameters();
       createTraces();
 
@@ -134,53 +131,57 @@ public class PurgeServiceTest {
 
       checkParameters();
    }
-   
+
    @Test
    public void testPurgeNonLancée() {
       createParametersEquals();
       createTraces();
-      
+
       purgeService.purgerRegistre(PurgeType.PURGE_EXPLOITATION);
       List<TraceRegExploitationIndex> traces = exploitService.lecture(DateUtils
             .addMonths(DATE, -1), DateUtils.addMinutes(DATE, 1), 10, false);
-      Assert.assertEquals("les 6 traces doivent etre présentes", 6, traces.size());
-      
+      Assert.assertEquals("les 6 traces doivent etre présentes", 6, traces
+            .size());
+
       purgeService.purgerRegistre(PurgeType.PURGE_SECURITE);
       List<TraceRegSecuriteIndex> tracesSecu = secuService.lecture(DateUtils
             .addMonths(DATE, -1), DateUtils.addMinutes(DATE, 1), 10, false);
-      Assert.assertEquals("les 6 traces doivent etre présentes", 6, tracesSecu.size());
+      Assert.assertEquals("les 6 traces doivent etre présentes", 6, tracesSecu
+            .size());
 
       purgeService.purgerRegistre(PurgeType.PURGE_TECHNIQUE);
       List<TraceRegTechniqueIndex> tracesTech = techService.lecture(DateUtils
             .addMonths(DATE, -1), DateUtils.addMinutes(DATE, 1), 10, false);
-      Assert.assertEquals("les 6 traces doivent etre présentes", 6, tracesTech.size());
+      Assert.assertEquals("les 6 traces doivent etre présentes", 6, tracesTech
+            .size());
    }
-   
-   private void createParametersEquals() {
-      Date lastDate = DateUtils.addDays(DATE, -1);
-      createParameter(ParameterType.PURGE_EXPLOIT_DATE, lastDate);
-      createParameter(ParameterType.PURGE_SECU_DATE, lastDate);
-      createParameter(ParameterType.PURGE_TECH_DATE, lastDate);
 
-      createParameter(ParameterType.PURGE_EXPLOIT_DUREE, Integer.valueOf(5));
-      createParameter(ParameterType.PURGE_SECU_DUREE, Integer.valueOf(5));
-      createParameter(ParameterType.PURGE_TECH_DUREE, Integer.valueOf(5));
+   private void createParametersEquals() {
+
+      Date lastDate = DateUtils.addDays(DATE, -1);
+
+      paramService.setPurgeExploitDate(lastDate);
+      paramService.setPurgeSecuDate(lastDate);
+      paramService.setPurgeTechDate(lastDate);
+
+      paramService.setPurgeExploitDuree(5);
+      paramService.setPurgeSecuDuree(5);
+      paramService.setPurgeTechDuree(5);
+
    }
 
    private void createParameters() {
+
       Date lastDate = DateUtils.addMonths(DATE, -1);
-      createParameter(ParameterType.PURGE_EXPLOIT_DATE, lastDate);
-      createParameter(ParameterType.PURGE_SECU_DATE, lastDate);
-      createParameter(ParameterType.PURGE_TECH_DATE, lastDate);
 
-      createParameter(ParameterType.PURGE_EXPLOIT_DUREE, Integer.valueOf(3));
-      createParameter(ParameterType.PURGE_SECU_DUREE, Integer.valueOf(4));
-      createParameter(ParameterType.PURGE_TECH_DUREE, Integer.valueOf(1));
-   }
+      paramService.setPurgeExploitDate(lastDate);
+      paramService.setPurgeSecuDate(lastDate);
+      paramService.setPurgeTechDate(lastDate);
 
-   private void createParameter(ParameterType type, Object value) {
-      Parameter parameter = new Parameter(type, value);
-      paramService.saveParameter(parameter);
+      paramService.setPurgeExploitDuree(3);
+      paramService.setPurgeSecuDuree(4);
+      paramService.setPurgeTechDuree(1);
+
    }
 
    private void createTraces() {
@@ -251,51 +252,37 @@ public class PurgeServiceTest {
             + "[JOUR J-2]", traces.get(0).getContexte().contains("[JOUR J]"));
    }
 
-   private void checkParameters() {
+   private void checkParameters() throws ParameterNotFoundException {
       checkDates();
       checkExecutions();
    }
 
-   private void checkDates() {
+   private void checkDates() throws ParameterNotFoundException {
+
       Date maxDate = DateUtils.addDays(DATE, -3);
       maxDate = DateUtils.truncate(maxDate, Calendar.DATE);
-      checkDate(ParameterType.PURGE_EXPLOIT_DATE, maxDate);
+      Assert.assertEquals("la date doit etre correcte", maxDate, paramService
+            .getPurgeExploitDate());
 
       maxDate = DateUtils.addDays(DATE, -4);
       maxDate = DateUtils.truncate(maxDate, Calendar.DATE);
-      checkDate(ParameterType.PURGE_SECU_DATE, maxDate);
+      Assert.assertEquals("la date doit etre correcte", maxDate, paramService
+            .getPurgeSecuDate());
 
       maxDate = DateUtils.addDays(DATE, -1);
       maxDate = DateUtils.truncate(maxDate, Calendar.DATE);
-      checkDate(ParameterType.PURGE_TECH_DATE, maxDate);
+      Assert.assertEquals("la date doit etre correcte", maxDate, paramService
+            .getPurgeTechDate());
    }
 
-   private void checkDate(ParameterType parameterType, Date value) {
-      try {
-         Parameter param = paramService.loadParameter(parameterType);
-         Assert.assertEquals("la date doit etre correcte", value, (Date) param
-               .getValue());
+   private void checkExecutions() throws ParameterNotFoundException {
 
-      } catch (ParameterNotFoundException exception) {
-         Assert.fail("le paramètre doit etre renseigné");
-      }
-   }
-
-   private void checkExecutions() {
-      checkExecution(ParameterType.PURGE_EXPLOIT_IS_RUNNING);
-      checkExecution(ParameterType.PURGE_SECU_IS_RUNNING);
-      checkExecution(ParameterType.PURGE_TECH_IS_RUNNING);
-   }
-
-   private void checkExecution(ParameterType parameterType) {
-      try {
-         Parameter param = paramService.loadParameter(parameterType);
-         Assert.assertEquals("le boolean doit etre correcte", Boolean.FALSE,
-               (Boolean) param.getValue());
-
-      } catch (ParameterNotFoundException exception) {
-         Assert.fail("le paramètre doit etre renseigné");
-      }
+      Assert.assertEquals("le boolean doit etre correcte", Boolean.FALSE,
+            paramService.isPurgeExploitIsRunning());
+      Assert.assertEquals("le boolean doit etre correcte", Boolean.FALSE,
+            paramService.isPurgeSecuIsRunning());
+      Assert.assertEquals("le boolean doit etre correcte", Boolean.FALSE,
+            paramService.isPurgeTechIsRunning());
 
    }
 
