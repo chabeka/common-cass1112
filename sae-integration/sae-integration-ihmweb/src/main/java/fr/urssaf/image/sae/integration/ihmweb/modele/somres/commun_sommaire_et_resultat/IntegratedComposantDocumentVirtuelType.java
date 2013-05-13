@@ -15,20 +15,21 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * Composant d'un document virtuel (indexation)
+ * Composant d'un document virtuel intégré (indexation)
  * 
- * <p>Classe Java pour composantDocumentVirtuelType complex type.
+ * <p>Classe Java pour integratedComposantDocumentVirtuelType complex type.
  * 
  * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  * 
  * <pre>
- * &lt;complexType name="composantDocumentVirtuelType">
+ * &lt;complexType name="integratedComposantDocumentVirtuelType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element name="metadonnees" type="{http://www.cirtil.fr/sae/commun_sommaire_et_resultat}listeMetadonneeType"/>
  *         &lt;element name="numeroPageDebut" type="{http://www.w3.org/2001/XMLSchema}int"/>
  *         &lt;element name="nombreDePages" type="{http://www.w3.org/2001/XMLSchema}int"/>
+ *         &lt;element name="uuid" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -38,19 +39,22 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "composantDocumentVirtuelType", propOrder = {
+@XmlType(name = "integratedComposantDocumentVirtuelType", propOrder = {
     "metadonnees",
     "numeroPageDebut",
-    "nombreDePages"
+    "nombreDePages",
+    "uuid"
 })
 // CHECKSTYLE:OFF
 @SuppressWarnings("all")
-public class ComposantDocumentVirtuelType {
+public class IntegratedComposantDocumentVirtuelType {
 
     @XmlElement(required = true)
     protected ListeMetadonneeType metadonnees;
     protected int numeroPageDebut;
     protected int nombreDePages;
+    @XmlElement(required = true)
+    protected String uuid;
 
     /**
      * Obtient la valeur de la propriété metadonnees.
@@ -106,6 +110,30 @@ public class ComposantDocumentVirtuelType {
      */
     public void setNombreDePages(int value) {
         this.nombreDePages = value;
+    }
+
+    /**
+     * Obtient la valeur de la propriété uuid.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getUuid() {
+        return uuid;
+    }
+
+    /**
+     * Définit la valeur de la propriété uuid.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setUuid(String value) {
+        this.uuid = value;
     }
 
 }

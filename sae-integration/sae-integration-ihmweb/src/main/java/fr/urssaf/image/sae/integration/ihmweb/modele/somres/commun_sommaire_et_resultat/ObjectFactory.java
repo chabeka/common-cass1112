@@ -2,7 +2,7 @@
 // Ce fichier a été généré par l'implémentation de référence JavaTM Architecture for XML Binding (JAXB), v2.2.5-2 
 // Voir <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
 // Toute modification apportée à ce fichier sera perdue lors de la recompilation du schéma source. 
-// Généré le : 2013.01.16 à 09:24:43 AM CET 
+// Généré le : 2013.05.13 à 03:05:24 PM CEST 
 //
 
 
@@ -39,11 +39,27 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link IntegratedDocumentVirtuelType }
+     * 
+     */
+    public IntegratedDocumentVirtuelType createIntegratedDocumentVirtuelType() {
+        return new IntegratedDocumentVirtuelType();
+    }
+
+    /**
      * Create an instance of {@link DocumentVirtuelType }
      * 
      */
     public DocumentVirtuelType createDocumentVirtuelType() {
         return new DocumentVirtuelType();
+    }
+
+    /**
+     * Create an instance of {@link NonIntegratedVirtualDocumentType }
+     * 
+     */
+    public NonIntegratedVirtualDocumentType createNonIntegratedVirtualDocumentType() {
+        return new NonIntegratedVirtualDocumentType();
     }
 
     /**
@@ -79,6 +95,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link NonIntegratedComposantDocumentVirtuelType }
+     * 
+     */
+    public NonIntegratedComposantDocumentVirtuelType createNonIntegratedComposantDocumentVirtuelType() {
+        return new NonIntegratedComposantDocumentVirtuelType();
+    }
+
+    /**
      * Create an instance of {@link FichierType }
      * 
      */
@@ -100,6 +124,14 @@ public class ObjectFactory {
      */
     public NonIntegratedDocumentType createNonIntegratedDocumentType() {
         return new NonIntegratedDocumentType();
+    }
+
+    /**
+     * Create an instance of {@link ListeIntegratedDocumentsVirtuelsType }
+     * 
+     */
+    public ListeIntegratedDocumentsVirtuelsType createListeIntegratedDocumentsVirtuelsType() {
+        return new ListeIntegratedDocumentsVirtuelsType();
     }
 
     /**
@@ -127,6 +159,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link IntegratedComposantDocumentVirtuelType }
+     * 
+     */
+    public IntegratedComposantDocumentVirtuelType createIntegratedComposantDocumentVirtuelType() {
+        return new IntegratedComposantDocumentVirtuelType();
+    }
+
+    /**
      * Create an instance of {@link ListeDocumentsType }
      * 
      */
@@ -143,6 +183,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link ListeNonIntegratedVirtualDocumentsType }
+     * 
+     */
+    public ListeNonIntegratedVirtualDocumentsType createListeNonIntegratedVirtualDocumentsType() {
+        return new ListeNonIntegratedVirtualDocumentsType();
+    }
+
+    /**
      * Create an instance of {@link ListeErreurType }
      * 
      */
@@ -151,11 +199,27 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link IntegratedDocumentVirtuelType.Composants }
+     * 
+     */
+    public IntegratedDocumentVirtuelType.Composants createIntegratedDocumentVirtuelTypeComposants() {
+        return new IntegratedDocumentVirtuelType.Composants();
+    }
+
+    /**
      * Create an instance of {@link DocumentVirtuelType.Composants }
      * 
      */
     public DocumentVirtuelType.Composants createDocumentVirtuelTypeComposants() {
         return new DocumentVirtuelType.Composants();
+    }
+
+    /**
+     * Create an instance of {@link NonIntegratedVirtualDocumentType.Composants }
+     * 
+     */
+    public NonIntegratedVirtualDocumentType.Composants createNonIntegratedVirtualDocumentTypeComposants() {
+        return new NonIntegratedVirtualDocumentType.Composants();
     }
 
 }

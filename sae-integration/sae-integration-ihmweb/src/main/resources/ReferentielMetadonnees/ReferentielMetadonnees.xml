@@ -2,7 +2,7 @@
 <ReferentielMetadonnees xmlns="http://www.cirtil.fr/saeIntegration/referentielMetadonnees">
     <Metadonnee>
         <codeLong>Titre</codeLong>
-        <codeCourt>sm_title</codeCourt>
+        <codeCourt>SM_TITLE</codeCourt>
         <archivablePossible>true</archivablePossible>
         <archivableObligatoire>true</archivableObligatoire>
         <consulteeParDefaut>true</consulteeParDefaut>
@@ -10,7 +10,7 @@
         <critereRecherche>true</critereRecherche>
         <client>true</client>
         <obligatoireAuStockage>true</obligatoireAuStockage>
-        <typeDfce>string</typeDfce>
+        <typeDfce>String</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>Periode</codeLong>
@@ -22,7 +22,7 @@
         <critereRecherche>true</critereRecherche>
         <client>true</client>
         <obligatoireAuStockage>false</obligatoireAuStockage>
-        <typeDfce>string</typeDfce>
+        <typeDfce>String</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>Siren</codeLong>
@@ -34,7 +34,7 @@
         <critereRecherche>true</critereRecherche>
         <client>true</client>
         <obligatoireAuStockage>false</obligatoireAuStockage>
-        <typeDfce>string</typeDfce>
+        <typeDfce>String</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>NniEmployeur</codeLong>
@@ -44,9 +44,9 @@
         <consulteeParDefaut>false</consulteeParDefaut>
         <consultable>true</consultable>
         <critereRecherche>true</critereRecherche>
-        <client>false</client>
+        <client>true</client>
         <obligatoireAuStockage>false</obligatoireAuStockage>
-        <typeDfce>string</typeDfce>
+        <typeDfce>String</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>NumeroPersonne</codeLong>
@@ -58,7 +58,7 @@
         <critereRecherche>true</critereRecherche>
         <client>true</client>
         <obligatoireAuStockage>false</obligatoireAuStockage>
-        <typeDfce>string</typeDfce>
+        <typeDfce>String</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>Denomination</codeLong>
@@ -70,7 +70,7 @@
         <critereRecherche>true</critereRecherche>
         <client>true</client>
         <obligatoireAuStockage>false</obligatoireAuStockage>
-        <typeDfce>string</typeDfce>
+        <typeDfce>String</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>CodeCategorieV2</codeLong>
@@ -82,7 +82,7 @@
         <critereRecherche>false</critereRecherche>
         <client>true</client>
         <obligatoireAuStockage>false</obligatoireAuStockage>
-        <typeDfce>string</typeDfce>
+        <typeDfce>String</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>CodeSousCategorieV2</codeLong>
@@ -94,7 +94,7 @@
         <critereRecherche>false</critereRecherche>
         <client>true</client>
         <obligatoireAuStockage>false</obligatoireAuStockage>
-        <typeDfce>string</typeDfce>
+        <typeDfce>String</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>NumeroCompteInterne</codeLong>
@@ -106,7 +106,7 @@
         <critereRecherche>true</critereRecherche>
         <client>true</client>
         <obligatoireAuStockage>false</obligatoireAuStockage>
-        <typeDfce>string</typeDfce>
+        <typeDfce>String</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>NumeroCompteExterne</codeLong>
@@ -118,7 +118,7 @@
         <critereRecherche>true</critereRecherche>
         <client>true</client>
         <obligatoireAuStockage>false</obligatoireAuStockage>
-        <typeDfce>string</typeDfce>
+        <typeDfce>String</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>Siret</codeLong>
@@ -130,7 +130,7 @@
         <critereRecherche>true</critereRecherche>
         <client>true</client>
         <obligatoireAuStockage>false</obligatoireAuStockage>
-        <typeDfce>string</typeDfce>
+        <typeDfce>String</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>PseudoSiret</codeLong>
@@ -140,9 +140,9 @@
         <consulteeParDefaut>false</consulteeParDefaut>
         <consultable>true</consultable>
         <critereRecherche>true</critereRecherche>
-        <client>false</client>
+        <client>true</client>
         <obligatoireAuStockage>false</obligatoireAuStockage>
-        <typeDfce>string</typeDfce>
+        <typeDfce>String</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>NumeroStructure</codeLong>
@@ -152,9 +152,9 @@
         <consulteeParDefaut>false</consulteeParDefaut>
         <consultable>true</consultable>
         <critereRecherche>true</critereRecherche>
-        <client>false</client>
+        <client>true</client>
         <obligatoireAuStockage>false</obligatoireAuStockage>
-        <typeDfce>string</typeDfce>
+        <typeDfce>String</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>NumeroRecours</codeLong>
@@ -164,9 +164,9 @@
         <consulteeParDefaut>false</consulteeParDefaut>
         <consultable>true</consultable>
         <critereRecherche>true</critereRecherche>
-        <client>false</client>
+        <client>true</client>
         <obligatoireAuStockage>false</obligatoireAuStockage>
-        <typeDfce>string</typeDfce>
+        <typeDfce>String</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>NumeroIntControle</codeLong>
@@ -176,13 +176,13 @@
         <consulteeParDefaut>false</consulteeParDefaut>
         <consultable>true</consultable>
         <critereRecherche>true</critereRecherche>
-        <client>false</client>
+        <client>true</client>
         <obligatoireAuStockage>false</obligatoireAuStockage>
-        <typeDfce>string</typeDfce>
+        <typeDfce>String</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>DateCreation</codeLong>
-        <codeCourt>sm_creation_date</codeCourt>
+        <codeCourt>SM_CREATION_DATE</codeCourt>
         <archivablePossible>true</archivablePossible>
         <archivableObligatoire>true</archivableObligatoire>
         <consulteeParDefaut>true</consulteeParDefaut>
@@ -190,7 +190,7 @@
         <critereRecherche>true</critereRecherche>
         <client>true</client>
         <obligatoireAuStockage>true</obligatoireAuStockage>
-        <typeDfce>date</typeDfce>
+        <typeDfce>Date</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>DateReception</codeLong>
@@ -200,9 +200,9 @@
         <consulteeParDefaut>true</consulteeParDefaut>
         <consultable>true</consultable>
         <critereRecherche>true</critereRecherche>
-        <client>false</client>
+        <client>true</client>
         <obligatoireAuStockage>false</obligatoireAuStockage>
-        <typeDfce>date</typeDfce>
+        <typeDfce>Date</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>ApplicationProductrice</codeLong>
@@ -214,7 +214,7 @@
         <critereRecherche>true</critereRecherche>
         <client>true</client>
         <obligatoireAuStockage>true</obligatoireAuStockage>
-        <typeDfce>string</typeDfce>
+        <typeDfce>String</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>ApplicationTraitement</codeLong>
@@ -226,7 +226,7 @@
         <critereRecherche>true</critereRecherche>
         <client>true</client>
         <obligatoireAuStockage>false</obligatoireAuStockage>
-        <typeDfce>string</typeDfce>
+        <typeDfce>String</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>CodeOrganismeProprietaire</codeLong>
@@ -238,7 +238,7 @@
         <critereRecherche>true</critereRecherche>
         <client>true</client>
         <obligatoireAuStockage>true</obligatoireAuStockage>
-        <typeDfce>string</typeDfce>
+        <typeDfce>String</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>CodeOrganismeGestionnaire</codeLong>
@@ -250,7 +250,7 @@
         <critereRecherche>true</critereRecherche>
         <client>true</client>
         <obligatoireAuStockage>true</obligatoireAuStockage>
-        <typeDfce>string</typeDfce>
+        <typeDfce>String</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>SiteAcquisition</codeLong>
@@ -260,13 +260,13 @@
         <consulteeParDefaut>false</consulteeParDefaut>
         <consultable>true</consultable>
         <critereRecherche>true</critereRecherche>
-        <client>false</client>
+        <client>true</client>
         <obligatoireAuStockage>false</obligatoireAuStockage>
-        <typeDfce>string</typeDfce>
+        <typeDfce>String</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>CodeRND</codeLong>
-        <codeCourt>sm_document_type</codeCourt>
+        <codeCourt>SM_DOCUMENT_TYPE</codeCourt>
         <archivablePossible>true</archivablePossible>
         <archivableObligatoire>true</archivableObligatoire>
         <consulteeParDefaut>true</consulteeParDefaut>
@@ -274,19 +274,19 @@
         <critereRecherche>true</critereRecherche>
         <client>true</client>
         <obligatoireAuStockage>true</obligatoireAuStockage>
-        <typeDfce>string</typeDfce>
+        <typeDfce>String</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>VersionRND</codeLong>
         <codeCourt>vrn</codeCourt>
-        <archivablePossible>true</archivablePossible>
+        <archivablePossible>false</archivablePossible>
         <archivableObligatoire>false</archivableObligatoire>
         <consulteeParDefaut>false</consulteeParDefaut>
         <consultable>true</consultable>
         <critereRecherche>false</critereRecherche>
         <client>false</client>
         <obligatoireAuStockage>true</obligatoireAuStockage>
-        <typeDfce>string</typeDfce>
+        <typeDfce>String</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>CodeFonction</codeLong>
@@ -297,8 +297,8 @@
         <consultable>true</consultable>
         <critereRecherche>true</critereRecherche>
         <client>true</client>
-        <obligatoireAuStockage>true</obligatoireAuStockage>
-        <typeDfce>string</typeDfce>
+        <obligatoireAuStockage>false</obligatoireAuStockage>
+        <typeDfce>String</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>CodeActivite</codeLong>
@@ -310,23 +310,23 @@
         <critereRecherche>true</critereRecherche>
         <client>true</client>
         <obligatoireAuStockage>false</obligatoireAuStockage>
-        <typeDfce>string</typeDfce>
+        <typeDfce>String</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>DureeConservation</codeLong>
-        <codeCourt>Dans la CF LifeCycleRules</codeCourt>
+        <codeCourt>dco</codeCourt>
         <archivablePossible>false</archivablePossible>
         <archivableObligatoire>false</archivableObligatoire>
         <consulteeParDefaut>false</consulteeParDefaut>
         <consultable>true</consultable>
-        <critereRecherche>true</critereRecherche>
+        <critereRecherche>false</critereRecherche>
         <client>true</client>
-        <obligatoireAuStockage>true</obligatoireAuStockage>
-        <typeDfce>integer</typeDfce>
+        <obligatoireAuStockage>false</obligatoireAuStockage>
+        <typeDfce>Integer</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>DateDebutConservation</codeLong>
-        <codeCourt>sm_life_cycle_reference_date</codeCourt>
+        <codeCourt>SM_LIFE_CYCLE_REFERENCE_DATE</codeCourt>
         <archivablePossible>true</archivablePossible>
         <archivableObligatoire>false</archivableObligatoire>
         <consulteeParDefaut>false</consulteeParDefaut>
@@ -334,7 +334,7 @@
         <critereRecherche>true</critereRecherche>
         <client>true</client>
         <obligatoireAuStockage>true</obligatoireAuStockage>
-        <typeDfce>date</typeDfce>
+        <typeDfce>Date</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>DateFinConservation</codeLong>
@@ -346,7 +346,7 @@
         <critereRecherche>true</critereRecherche>
         <client>true</client>
         <obligatoireAuStockage>true</obligatoireAuStockage>
-        <typeDfce>date</typeDfce>
+        <typeDfce>Date</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>Gel</codeLong>
@@ -355,13 +355,13 @@
         <archivableObligatoire>false</archivableObligatoire>
         <consulteeParDefaut>false</consulteeParDefaut>
         <consultable>true</consultable>
-        <critereRecherche>true</critereRecherche>
+        <critereRecherche>false</critereRecherche>
         <client>false</client>
-        <obligatoireAuStockage>true</obligatoireAuStockage>
-        <typeDfce>bool</typeDfce>
+        <obligatoireAuStockage>false</obligatoireAuStockage>
+        <typeDfce>Boolean</typeDfce>
     </Metadonnee>
     <Metadonnee>
-        <codeLong>TracabilitrePreArchivage</codeLong>
+        <codeLong>TracabilitePreArchivage</codeLong>
         <codeCourt>tpa</codeCourt>
         <archivablePossible>true</archivablePossible>
         <archivableObligatoire>false</archivableObligatoire>
@@ -370,7 +370,7 @@
         <critereRecherche>false</critereRecherche>
         <client>false</client>
         <obligatoireAuStockage>false</obligatoireAuStockage>
-        <typeDfce>string</typeDfce>
+        <typeDfce>String</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>TracabilitePostArchivage</codeLong>
@@ -382,11 +382,11 @@
         <critereRecherche>false</critereRecherche>
         <client>false</client>
         <obligatoireAuStockage>false</obligatoireAuStockage>
-        <typeDfce>string</typeDfce>
+        <typeDfce>String</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>Hash</codeLong>
-        <codeCourt>sm_digest</codeCourt>
+        <codeCourt>SM_DIGEST</codeCourt>
         <archivablePossible>true</archivablePossible>
         <archivableObligatoire>true</archivableObligatoire>
         <consulteeParDefaut>true</consulteeParDefaut>
@@ -394,11 +394,11 @@
         <critereRecherche>false</critereRecherche>
         <client>true</client>
         <obligatoireAuStockage>true</obligatoireAuStockage>
-        <typeDfce>string</typeDfce>
+        <typeDfce>String</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>TypeHash</codeLong>
-        <codeCourt>sm_digest_algorithm</codeCourt>
+        <codeCourt>SM_DIGEST_ALGORITHM</codeCourt>
         <archivablePossible>true</archivablePossible>
         <archivableObligatoire>true</archivableObligatoire>
         <consulteeParDefaut>false</consulteeParDefaut>
@@ -406,7 +406,7 @@
         <critereRecherche>false</critereRecherche>
         <client>true</client>
         <obligatoireAuStockage>true</obligatoireAuStockage>
-        <typeDfce>string</typeDfce>
+        <typeDfce>String</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>NbPages</codeLong>
@@ -418,7 +418,7 @@
         <critereRecherche>false</critereRecherche>
         <client>true</client>
         <obligatoireAuStockage>true</obligatoireAuStockage>
-        <typeDfce>integer</typeDfce>
+        <typeDfce>Integer</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>NomFichier</codeLong>
@@ -429,8 +429,8 @@
         <consultable>true</consultable>
         <critereRecherche>false</critereRecherche>
         <client>true</client>
-        <obligatoireAuStockage>true</obligatoireAuStockage>
-        <typeDfce>string</typeDfce>
+        <obligatoireAuStockage>false</obligatoireAuStockage>
+        <typeDfce>String</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>FormatFichier</codeLong>
@@ -442,11 +442,11 @@
         <critereRecherche>false</critereRecherche>
         <client>true</client>
         <obligatoireAuStockage>true</obligatoireAuStockage>
-        <typeDfce>string</typeDfce>
+        <typeDfce>String</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>TailleFichier</codeLong>
-        <codeCourt>sm_size</codeCourt>
+        <codeCourt>SM_SIZE</codeCourt>
         <archivablePossible>false</archivablePossible>
         <archivableObligatoire>false</archivableObligatoire>
         <consulteeParDefaut>true</consulteeParDefaut>
@@ -454,7 +454,7 @@
         <critereRecherche>false</critereRecherche>
         <client>true</client>
         <obligatoireAuStockage>false</obligatoireAuStockage>
-        <typeDfce>long</typeDfce>
+        <typeDfce>Long</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>IdTraitementMasseInterne</codeLong>
@@ -466,7 +466,7 @@
         <critereRecherche>true</critereRecherche>
         <client>false</client>
         <obligatoireAuStockage>false</obligatoireAuStockage>
-        <typeDfce>string</typeDfce>
+        <typeDfce>String</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>IdTraitementMasse</codeLong>
@@ -478,11 +478,11 @@
         <critereRecherche>true</critereRecherche>
         <client>true</client>
         <obligatoireAuStockage>false</obligatoireAuStockage>
-        <typeDfce>string</typeDfce>
+        <typeDfce>String</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>DocumentVirtuel</codeLong>
-        <codeCourt>sm_virtual</codeCourt>
+        <codeCourt>SM_VIRTUAL</codeCourt>
         <archivablePossible>false</archivablePossible>
         <archivableObligatoire>false</archivableObligatoire>
         <consulteeParDefaut>false</consulteeParDefaut>
@@ -490,11 +490,11 @@
         <critereRecherche>false</critereRecherche>
         <client>false</client>
         <obligatoireAuStockage>true</obligatoireAuStockage>
-        <typeDfce>bool</typeDfce>
+        <typeDfce>Boolean</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>StartPage</codeLong>
-        <codeCourt>sm_start_page</codeCourt>
+        <codeCourt>SM_START_PAGE</codeCourt>
         <archivablePossible>false</archivablePossible>
         <archivableObligatoire>false</archivableObligatoire>
         <consulteeParDefaut>false</consulteeParDefaut>
@@ -502,11 +502,11 @@
         <critereRecherche>false</critereRecherche>
         <client>false</client>
         <obligatoireAuStockage>false</obligatoireAuStockage>
-        <typeDfce>integer</typeDfce>
+        <typeDfce>Integer</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>EndPage</codeLong>
-        <codeCourt>sm_end_page</codeCourt>
+        <codeCourt>SM_END_PAGE</codeCourt>
         <archivablePossible>false</archivablePossible>
         <archivableObligatoire>false</archivableObligatoire>
         <consulteeParDefaut>false</consulteeParDefaut>
@@ -514,7 +514,7 @@
         <critereRecherche>false</critereRecherche>
         <client>false</client>
         <obligatoireAuStockage>false</obligatoireAuStockage>
-        <typeDfce>integer</typeDfce>
+        <typeDfce>Integer</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>ContratDeService</codeLong>
@@ -526,11 +526,11 @@
         <critereRecherche>false</critereRecherche>
         <client>false</client>
         <obligatoireAuStockage>true</obligatoireAuStockage>
-        <typeDfce>string</typeDfce>
+        <typeDfce>String</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>DateArchivage</codeLong>
-        <codeCourt>sm_archivage_date</codeCourt>
+        <codeCourt>SM_ARCHIVAGE_DATE</codeCourt>
         <archivablePossible>false</archivablePossible>
         <archivableObligatoire>false</archivableObligatoire>
         <consulteeParDefaut>true</consulteeParDefaut>
@@ -538,23 +538,11 @@
         <critereRecherche>true</critereRecherche>
         <client>true</client>
         <obligatoireAuStockage>true</obligatoireAuStockage>
-        <typeDfce>date</typeDfce>
-    </Metadonnee>
-    <Metadonnee>
-        <codeLong>CurrentVersionNumber</codeLong>
-        <codeCourt>???</codeCourt>
-        <archivablePossible>false</archivablePossible>
-        <archivableObligatoire>false</archivableObligatoire>
-        <consulteeParDefaut>false</consulteeParDefaut>
-        <consultable>false</consultable>
-        <critereRecherche>false</critereRecherche>
-        <client>false</client>
-        <obligatoireAuStockage>false</obligatoireAuStockage>
-        <typeDfce>integer</typeDfce>
+        <typeDfce>Date</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>VersionNumber</codeLong>
-        <codeCourt>sm_version</codeCourt>
+        <codeCourt>SM_VERSION</codeCourt>
         <archivablePossible>false</archivablePossible>
         <archivableObligatoire>false</archivableObligatoire>
         <consulteeParDefaut>false</consulteeParDefaut>
@@ -562,11 +550,11 @@
         <critereRecherche>false</critereRecherche>
         <client>false</client>
         <obligatoireAuStockage>false</obligatoireAuStockage>
-        <typeDfce>integer</typeDfce>
+        <typeDfce>Integer</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>DateModification</codeLong>
-        <codeCourt>sm_modification_date</codeCourt>
+        <codeCourt>SM_MODIFICATION_DATE</codeCourt>
         <archivablePossible>false</archivablePossible>
         <archivableObligatoire>false</archivableObligatoire>
         <consulteeParDefaut>false</consulteeParDefaut>
@@ -574,7 +562,7 @@
         <critereRecherche>false</critereRecherche>
         <client>false</client>
         <obligatoireAuStockage>false</obligatoireAuStockage>
-        <typeDfce>date</typeDfce>
+        <typeDfce>Date</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>JetonDePreuve</codeLong>
@@ -586,7 +574,7 @@
         <critereRecherche>false</critereRecherche>
         <client>true</client>
         <obligatoireAuStockage>false</obligatoireAuStockage>
-        <typeDfce>string</typeDfce>
+        <typeDfce>String</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>RUM</codeLong>
@@ -598,7 +586,7 @@
         <critereRecherche>true</critereRecherche>
         <client>true</client>
         <obligatoireAuStockage>false</obligatoireAuStockage>
-        <typeDfce>string</typeDfce>
+        <typeDfce>String</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>DateSignature</codeLong>
@@ -610,7 +598,7 @@
         <critereRecherche>true</critereRecherche>
         <client>true</client>
         <obligatoireAuStockage>false</obligatoireAuStockage>
-        <typeDfce>string</typeDfce>
+        <typeDfce>Date</typeDfce>
     </Metadonnee>
     <Metadonnee>
         <codeLong>ReferenceDocumentaire</codeLong>
@@ -622,6 +610,54 @@
         <critereRecherche>true</critereRecherche>
         <client>true</client>
         <obligatoireAuStockage>false</obligatoireAuStockage>
-        <typeDfce>string</typeDfce>
-   </Metadonnee>       
+        <typeDfce>String</typeDfce>
+    </Metadonnee>
+    <Metadonnee>
+        <codeLong>DateCourrierV2</codeLong>
+        <codeCourt>dcr</codeCourt>
+        <archivablePossible>true</archivablePossible>
+        <archivableObligatoire>false</archivableObligatoire>
+        <consulteeParDefaut>false</consulteeParDefaut>
+        <consultable>true</consultable>
+        <critereRecherche>true</critereRecherche>
+        <client>true</client>
+        <obligatoireAuStockage>false</obligatoireAuStockage>
+        <typeDfce>Date</typeDfce>
+    </Metadonnee>
+    <Metadonnee>
+        <codeLong>RIBA</codeLong>
+        <codeCourt>rib</codeCourt>
+        <archivablePossible>true</archivablePossible>
+        <archivableObligatoire>false</archivableObligatoire>
+        <consulteeParDefaut>false</consulteeParDefaut>
+        <consultable>true</consultable>
+        <critereRecherche>true</critereRecherche>
+        <client>true</client>
+        <obligatoireAuStockage>false</obligatoireAuStockage>
+        <typeDfce>String</typeDfce>
+    </Metadonnee>
+    <Metadonnee>
+        <codeLong>CodeProduitV2</codeLong>
+        <codeCourt>cpr</codeCourt>
+        <archivablePossible>true</archivablePossible>
+        <archivableObligatoire>false</archivableObligatoire>
+        <consulteeParDefaut>false</consulteeParDefaut>
+        <consultable>true</consultable>
+        <critereRecherche>true</critereRecherche>
+        <client>true</client>
+        <obligatoireAuStockage>false</obligatoireAuStockage>
+        <typeDfce>String</typeDfce>
+    </Metadonnee>
+    <Metadonnee>
+        <codeLong>CodeTraitementV2</codeLong>
+        <codeCourt>ctr</codeCourt>
+        <archivablePossible>true</archivablePossible>
+        <archivableObligatoire>false</archivableObligatoire>
+        <consulteeParDefaut>false</consulteeParDefaut>
+        <consultable>true</consultable>
+        <critereRecherche>true</critereRecherche>
+        <client>true</client>
+        <obligatoireAuStockage>false</obligatoireAuStockage>
+        <typeDfce>String</typeDfce>
+    </Metadonnee>
 </ReferentielMetadonnees>

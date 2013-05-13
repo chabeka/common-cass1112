@@ -17,14 +17,14 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * Un document virtuel
+ * Définition d'un document virtuel non archivé
  * 
- * <p>Classe Java pour documentVirtuelType complex type.
+ * <p>Classe Java pour nonIntegratedVirtualDocumentType complex type.
  * 
  * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  * 
  * <pre>
- * &lt;complexType name="documentVirtuelType">
+ * &lt;complexType name="nonIntegratedVirtualDocumentType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
@@ -34,7 +34,7 @@ import javax.xml.bind.annotation.XmlType;
  *             &lt;complexContent>
  *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *                 &lt;sequence>
- *                   &lt;element name="composant" type="{http://www.cirtil.fr/sae/commun_sommaire_et_resultat}composantDocumentVirtuelType" maxOccurs="unbounded"/>
+ *                   &lt;element name="composant" type="{http://www.cirtil.fr/sae/commun_sommaire_et_resultat}nonIntegratedComposantDocumentVirtuelType" maxOccurs="unbounded"/>
  *                 &lt;/sequence>
  *               &lt;/restriction>
  *             &lt;/complexContent>
@@ -49,18 +49,18 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "documentVirtuelType", propOrder = {
+@XmlType(name = "nonIntegratedVirtualDocumentType", propOrder = {
     "objetNumerique",
     "composants"
 })
 // CHECKSTYLE:OFF
 @SuppressWarnings("all")
-public class DocumentVirtuelType {
+public class NonIntegratedVirtualDocumentType {
 
     @XmlElement(required = true)
     protected FichierType objetNumerique;
     @XmlElement(required = true)
-    protected DocumentVirtuelType.Composants composants;
+    protected NonIntegratedVirtualDocumentType.Composants composants;
 
     /**
      * Obtient la valeur de la propriété objetNumerique.
@@ -91,10 +91,10 @@ public class DocumentVirtuelType {
      * 
      * @return
      *     possible object is
-     *     {@link DocumentVirtuelType.Composants }
+     *     {@link NonIntegratedVirtualDocumentType.Composants }
      *     
      */
-    public DocumentVirtuelType.Composants getComposants() {
+    public NonIntegratedVirtualDocumentType.Composants getComposants() {
         return composants;
     }
 
@@ -103,10 +103,10 @@ public class DocumentVirtuelType {
      * 
      * @param value
      *     allowed object is
-     *     {@link DocumentVirtuelType.Composants }
+     *     {@link NonIntegratedVirtualDocumentType.Composants }
      *     
      */
-    public void setComposants(DocumentVirtuelType.Composants value) {
+    public void setComposants(NonIntegratedVirtualDocumentType.Composants value) {
         this.composants = value;
     }
 
@@ -121,7 +121,7 @@ public class DocumentVirtuelType {
      *   &lt;complexContent>
      *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
      *       &lt;sequence>
-     *         &lt;element name="composant" type="{http://www.cirtil.fr/sae/commun_sommaire_et_resultat}composantDocumentVirtuelType" maxOccurs="unbounded"/>
+     *         &lt;element name="composant" type="{http://www.cirtil.fr/sae/commun_sommaire_et_resultat}nonIntegratedComposantDocumentVirtuelType" maxOccurs="unbounded"/>
      *       &lt;/sequence>
      *     &lt;/restriction>
      *   &lt;/complexContent>
@@ -137,7 +137,7 @@ public class DocumentVirtuelType {
     public static class Composants {
 
         @XmlElement(required = true)
-        protected List<ComposantDocumentVirtuelType> composant;
+        protected List<NonIntegratedComposantDocumentVirtuelType> composant;
 
         /**
          * Gets the value of the composant property.
@@ -157,13 +157,13 @@ public class DocumentVirtuelType {
          * 
          * <p>
          * Objects of the following type(s) are allowed in the list
-         * {@link ComposantDocumentVirtuelType }
+         * {@link NonIntegratedComposantDocumentVirtuelType }
          * 
          * 
          */
-        public List<ComposantDocumentVirtuelType> getComposant() {
+        public List<NonIntegratedComposantDocumentVirtuelType> getComposant() {
             if (composant == null) {
-                composant = new ArrayList<ComposantDocumentVirtuelType>();
+                composant = new ArrayList<NonIntegratedComposantDocumentVirtuelType>();
             }
             return this.composant;
         }

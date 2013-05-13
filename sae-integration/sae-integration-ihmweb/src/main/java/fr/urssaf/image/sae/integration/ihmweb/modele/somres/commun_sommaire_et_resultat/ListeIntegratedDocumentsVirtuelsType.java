@@ -16,18 +16,18 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * Une liste de documents
+ * Une liste de documents virtuels archivés
  * 
- * <p>Classe Java pour listeDocumentsType complex type.
+ * <p>Classe Java pour listeIntegratedDocumentsVirtuelsType complex type.
  * 
  * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  * 
  * <pre>
- * &lt;complexType name="listeDocumentsType">
+ * &lt;complexType name="listeIntegratedDocumentsVirtuelsType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="document" type="{http://www.cirtil.fr/sae/commun_sommaire_et_resultat}documentType" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="integratedDocumentVirtuel" type="{http://www.cirtil.fr/sae/commun_sommaire_et_resultat}integratedDocumentVirtuelType" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -37,42 +37,42 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "listeDocumentsType", propOrder = {
-    "document"
+@XmlType(name = "listeIntegratedDocumentsVirtuelsType", propOrder = {
+    "integratedDocumentVirtuel"
 })
 // CHECKSTYLE:OFF
 @SuppressWarnings("all")
-public class ListeDocumentsType {
+public class ListeIntegratedDocumentsVirtuelsType {
 
-    protected List<DocumentType> document;
+    protected List<IntegratedDocumentVirtuelType> integratedDocumentVirtuel;
 
     /**
-     * Gets the value of the document property.
+     * Gets the value of the integratedDocumentVirtuel property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the document property.
+     * This is why there is not a <CODE>set</CODE> method for the integratedDocumentVirtuel property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getDocument().add(newItem);
+     *    getIntegratedDocumentVirtuel().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link DocumentType }
+     * {@link IntegratedDocumentVirtuelType }
      * 
      * 
      */
-    public List<DocumentType> getDocument() {
-        if (document == null) {
-            document = new ArrayList<DocumentType>();
+    public List<IntegratedDocumentVirtuelType> getIntegratedDocumentVirtuel() {
+        if (integratedDocumentVirtuel == null) {
+            integratedDocumentVirtuel = new ArrayList<IntegratedDocumentVirtuelType>();
         }
-        return this.document;
+        return this.integratedDocumentVirtuel;
     }
 
 }

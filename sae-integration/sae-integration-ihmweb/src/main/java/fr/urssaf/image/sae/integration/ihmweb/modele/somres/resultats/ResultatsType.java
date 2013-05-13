@@ -2,7 +2,7 @@
 // Ce fichier a été généré par l'implémentation de référence JavaTM Architecture for XML Binding (JAXB), v2.2.5-2 
 // Voir <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
 // Toute modification apportée à ce fichier sera perdue lors de la recompilation du schéma source. 
-// Généré le : 2013.01.16 à 09:24:43 AM CET 
+// Généré le : 2013.05.13 à 03:05:24 PM CEST 
 //
 
 
@@ -13,9 +13,10 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.BatchModeType;
 import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.ErreurType;
-import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.ListeDocumentsVirtuelsType;
 import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.ListeIntegratedDocumentsType;
+import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.ListeIntegratedDocumentsVirtuelsType;
 import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.ListeNonIntegratedDocumentsType;
+import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.ListeNonIntegratedVirtualDocumentsType;
 
 
 /**
@@ -37,8 +38,9 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_r
  *           &lt;element name="integratedVirtualDocumentsCount" type="{http://www.w3.org/2001/XMLSchema}int"/>
  *           &lt;element name="nonIntegratedVirtualDocumentsCount" type="{http://www.w3.org/2001/XMLSchema}int"/>
  *           &lt;element name="nonIntegratedDocuments" type="{http://www.cirtil.fr/sae/commun_sommaire_et_resultat}listeNonIntegratedDocumentsType"/>
- *           &lt;element name="nonIntegratedVirtualDocuments" type="{http://www.cirtil.fr/sae/commun_sommaire_et_resultat}listeDocumentsVirtuelsType"/>
+ *           &lt;element name="nonIntegratedVirtualDocuments" type="{http://www.cirtil.fr/sae/commun_sommaire_et_resultat}listeNonIntegratedVirtualDocumentsType"/>
  *           &lt;element name="integratedDocuments" type="{http://www.cirtil.fr/sae/commun_sommaire_et_resultat}listeIntegratedDocumentsType" minOccurs="0"/>
+ *           &lt;element name="integratedVirtualDocuments" type="{http://www.cirtil.fr/sae/commun_sommaire_et_resultat}listeIntegratedDocumentsVirtuelsType" minOccurs="0"/>
  *         &lt;/sequence>
  *         &lt;sequence>
  *           &lt;element name="erreurBloquanteTraitement" type="{http://www.cirtil.fr/sae/commun_sommaire_et_resultat}erreurType"/>
@@ -63,6 +65,7 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_r
     "nonIntegratedDocuments",
     "nonIntegratedVirtualDocuments",
     "integratedDocuments",
+    "integratedVirtualDocuments",
     "erreurBloquanteTraitement"
 })
 // CHECKSTYLE:OFF
@@ -77,8 +80,9 @@ public class ResultatsType {
     protected Integer integratedVirtualDocumentsCount;
     protected Integer nonIntegratedVirtualDocumentsCount;
     protected ListeNonIntegratedDocumentsType nonIntegratedDocuments;
-    protected ListeDocumentsVirtuelsType nonIntegratedVirtualDocuments;
+    protected ListeNonIntegratedVirtualDocumentsType nonIntegratedVirtualDocuments;
     protected ListeIntegratedDocumentsType integratedDocuments;
+    protected ListeIntegratedDocumentsVirtuelsType integratedVirtualDocuments;
     protected ErreurType erreurBloquanteTraitement;
 
     /**
@@ -278,10 +282,10 @@ public class ResultatsType {
      * 
      * @return
      *     possible object is
-     *     {@link ListeDocumentsVirtuelsType }
+     *     {@link ListeNonIntegratedVirtualDocumentsType }
      *     
      */
-    public ListeDocumentsVirtuelsType getNonIntegratedVirtualDocuments() {
+    public ListeNonIntegratedVirtualDocumentsType getNonIntegratedVirtualDocuments() {
         return nonIntegratedVirtualDocuments;
     }
 
@@ -290,10 +294,10 @@ public class ResultatsType {
      * 
      * @param value
      *     allowed object is
-     *     {@link ListeDocumentsVirtuelsType }
+     *     {@link ListeNonIntegratedVirtualDocumentsType }
      *     
      */
-    public void setNonIntegratedVirtualDocuments(ListeDocumentsVirtuelsType value) {
+    public void setNonIntegratedVirtualDocuments(ListeNonIntegratedVirtualDocumentsType value) {
         this.nonIntegratedVirtualDocuments = value;
     }
 
@@ -319,6 +323,30 @@ public class ResultatsType {
      */
     public void setIntegratedDocuments(ListeIntegratedDocumentsType value) {
         this.integratedDocuments = value;
+    }
+
+    /**
+     * Obtient la valeur de la propriété integratedVirtualDocuments.
+     * 
+     * @return
+     *     possible object is
+     *     {@link ListeIntegratedDocumentsVirtuelsType }
+     *     
+     */
+    public ListeIntegratedDocumentsVirtuelsType getIntegratedVirtualDocuments() {
+        return integratedVirtualDocuments;
+    }
+
+    /**
+     * Définit la valeur de la propriété integratedVirtualDocuments.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link ListeIntegratedDocumentsVirtuelsType }
+     *     
+     */
+    public void setIntegratedVirtualDocuments(ListeIntegratedDocumentsVirtuelsType value) {
+        this.integratedVirtualDocuments = value;
     }
 
     /**

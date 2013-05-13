@@ -15,22 +15,21 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * Définition d'un document archivé
+ * Composant d'un document virtuel (indexation)
  * 
- * <p>Classe Java pour integratedDocumentType complex type.
+ * <p>Classe Java pour nonIntegratedComposantDocumentVirtuelType complex type.
  * 
  * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  * 
  * <pre>
- * &lt;complexType name="integratedDocumentType">
+ * &lt;complexType name="nonIntegratedComposantDocumentVirtuelType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="objetNumerique" type="{http://www.cirtil.fr/sae/commun_sommaire_et_resultat}fichierType"/>
- *         &lt;element name="metadonnees" type="{http://www.cirtil.fr/sae/commun_sommaire_et_resultat}listeMetadonneeType"/>
- *         &lt;element name="uuid" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="numeroPageDebut" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
- *         &lt;element name="nombreDePages" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
+ *         &lt;element name="metadonnees" type="{http://www.cirtil.fr/sae/commun_sommaire_et_resultat}listeMetadonneeType" minOccurs="0"/>
+ *         &lt;element name="erreurs" type="{http://www.cirtil.fr/sae/commun_sommaire_et_resultat}listeErreurType"/>
+ *         &lt;element name="numeroPageDebut" type="{http://www.w3.org/2001/XMLSchema}int"/>
+ *         &lt;element name="nombreDePages" type="{http://www.w3.org/2001/XMLSchema}int"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -40,49 +39,21 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "integratedDocumentType", propOrder = {
-    "objetNumerique",
+@XmlType(name = "nonIntegratedComposantDocumentVirtuelType", propOrder = {
     "metadonnees",
-    "uuid",
+    "erreurs",
     "numeroPageDebut",
     "nombreDePages"
 })
 // CHECKSTYLE:OFF
 @SuppressWarnings("all")
-public class IntegratedDocumentType {
+public class NonIntegratedComposantDocumentVirtuelType {
 
-    @XmlElement(required = true)
-    protected FichierType objetNumerique;
-    @XmlElement(required = true)
     protected ListeMetadonneeType metadonnees;
     @XmlElement(required = true)
-    protected String uuid;
-    protected Integer numeroPageDebut;
-    protected Integer nombreDePages;
-
-    /**
-     * Obtient la valeur de la propriété objetNumerique.
-     * 
-     * @return
-     *     possible object is
-     *     {@link FichierType }
-     *     
-     */
-    public FichierType getObjetNumerique() {
-        return objetNumerique;
-    }
-
-    /**
-     * Définit la valeur de la propriété objetNumerique.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link FichierType }
-     *     
-     */
-    public void setObjetNumerique(FichierType value) {
-        this.objetNumerique = value;
-    }
+    protected ListeErreurType erreurs;
+    protected int numeroPageDebut;
+    protected int nombreDePages;
 
     /**
      * Obtient la valeur de la propriété metadonnees.
@@ -109,74 +80,58 @@ public class IntegratedDocumentType {
     }
 
     /**
-     * Obtient la valeur de la propriété uuid.
+     * Obtient la valeur de la propriété erreurs.
      * 
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link ListeErreurType }
      *     
      */
-    public String getUuid() {
-        return uuid;
+    public ListeErreurType getErreurs() {
+        return erreurs;
     }
 
     /**
-     * Définit la valeur de la propriété uuid.
+     * Définit la valeur de la propriété erreurs.
      * 
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link ListeErreurType }
      *     
      */
-    public void setUuid(String value) {
-        this.uuid = value;
+    public void setErreurs(ListeErreurType value) {
+        this.erreurs = value;
     }
 
     /**
      * Obtient la valeur de la propriété numeroPageDebut.
      * 
-     * @return
-     *     possible object is
-     *     {@link Integer }
-     *     
      */
-    public Integer getNumeroPageDebut() {
+    public int getNumeroPageDebut() {
         return numeroPageDebut;
     }
 
     /**
      * Définit la valeur de la propriété numeroPageDebut.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link Integer }
-     *     
      */
-    public void setNumeroPageDebut(Integer value) {
+    public void setNumeroPageDebut(int value) {
         this.numeroPageDebut = value;
     }
 
     /**
      * Obtient la valeur de la propriété nombreDePages.
      * 
-     * @return
-     *     possible object is
-     *     {@link Integer }
-     *     
      */
-    public Integer getNombreDePages() {
+    public int getNombreDePages() {
         return nombreDePages;
     }
 
     /**
      * Définit la valeur de la propriété nombreDePages.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link Integer }
-     *     
      */
-    public void setNombreDePages(Integer value) {
+    public void setNombreDePages(int value) {
         this.nombreDePages = value;
     }
 

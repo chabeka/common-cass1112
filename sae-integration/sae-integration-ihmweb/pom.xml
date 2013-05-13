@@ -16,9 +16,6 @@
       <!-- Encodage de caractères -->
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-      <!-- Version des librairies partagées -->
-      <commons.dfce.version>1.0.5-CRTL-1</commons.dfce.version>
-
       <!-- Version des framework -->
       <spring.framework.version>3.0.5.RELEASE</spring.framework.version>
       <jsr303.api.version>1.0.0.GA</jsr303.api.version>
@@ -45,9 +42,8 @@
       <apache.commons-io.version>2.0.1</apache.commons-io.version>
       <apache.commons-collections.version>3.2.1</apache.commons-collections.version>
       
-      <sae.version>13.4.10.2-SNAPSHOT</sae.version>
-      <guava.version>12.0</guava.version>
-
+      <sae.version>13.4.10.5-SNAPSHOT</sae.version>
+      
    </properties>
 
 
@@ -435,25 +431,6 @@
    <dependencies>
    
       <!-- SAE -->
-      
-      <dependency>
-         <groupId>com.google.guava</groupId>
-         <artifactId>guava</artifactId>
-         <version>${guava.version}</version>
-      </dependency>
-      
-      <dependency>
-         <groupId>fr.urssaf.image.commons</groupId>
-         <artifactId>commons-dfce</artifactId>
-         <version>${commons.dfce.version}</version>
-         <exclusions>
-            <exclusion>
-               <groupId>com.google.guava</groupId>
-               <artifactId>guava</artifactId>
-            </exclusion>
-         </exclusions>
-      </dependency>
-      
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-droit</artifactId>
@@ -474,6 +451,7 @@
          <scope>test</scope>
       </dependency>
 
+      <!-- XStream -->
       <dependency>
          <groupId>com.thoughtworks.xstream</groupId>
          <artifactId>xstream</artifactId>
@@ -481,14 +459,12 @@
       </dependency>
       
       
-      <!--  AXIS 2 -->
-      
+      <!-- AXIS 2 -->
       <dependency>
          <groupId>org.apache.axis2</groupId>
          <artifactId>axis2</artifactId>
          <version>${axis2.version}</version>
       </dependency>
-
       <dependency>
          <groupId>org.apache.axis2</groupId>
          <artifactId>axis2-adb</artifactId>
@@ -500,13 +476,11 @@
             </exclusion>
          </exclusions>
       </dependency>
-
       <dependency>
          <groupId>org.apache.axis2</groupId>
          <artifactId>axis2-transport-local</artifactId>
          <version>${axis2.version}</version>
       </dependency>
-
       <dependency>
          <groupId>org.apache.axis2</groupId>
          <artifactId>axis2-transport-http</artifactId>
@@ -520,28 +494,22 @@
          <artifactId>commons-configuration</artifactId>
          <version>${apache.commons-configuration.version}</version>
          <exclusions>
-
             <exclusion>
                <groupId>commons-lang</groupId>
                <artifactId>commons-lang</artifactId>
             </exclusion>
-
          </exclusions>
-
       </dependency>
-
       <dependency>
          <groupId>commons-lang</groupId>
          <artifactId>commons-lang</artifactId>
          <version>${apache.commons-lang.version}</version>
       </dependency>
-
       <dependency>
          <groupId>commons-codec</groupId>
          <artifactId>commons-codec</artifactId>
          <version>${apache.commons-codec.version}</version>
       </dependency>
-
       <dependency>
          <groupId>commons-io</groupId>
          <artifactId>commons-io</artifactId>
@@ -554,63 +522,52 @@
          <artifactId>rampart-core</artifactId>
          <version>${rampart.version}</version>
          <exclusions>
-
             <exclusion>
                <groupId>commons-lang</groupId>
                <artifactId>commons-lang</artifactId>
             </exclusion>
-
             <exclusion>
                <groupId>org.slf4j</groupId>
                <artifactId>slf4j-api</artifactId>
             </exclusion>
-
             <exclusion>
                <groupId>org.slf4j</groupId>
                <artifactId>slf4j-jdk14</artifactId>
             </exclusion>
-
             <exclusion>
                <groupId>org.slf4j</groupId>
                <artifactId>log4j-over-slf4j</artifactId>
             </exclusion>
-
             <exclusion>
                <groupId>org.slf4j</groupId>
                <artifactId>jcl-over-slf4j</artifactId>
             </exclusion>
-            
          </exclusions>
       </dependency>
 
 
       <!-- SPRING -->
-
       <dependency>
          <groupId>org.springframework</groupId>
          <artifactId>spring-beans</artifactId>
          <version>${spring.framework.version}</version>
       </dependency>
-
       <dependency>
          <groupId>org.springframework</groupId>
          <artifactId>spring-context</artifactId>
          <version>${spring.framework.version}</version>
       </dependency>
-
       <dependency>
          <groupId>org.springframework</groupId>
          <artifactId>spring-test</artifactId>
          <version>${spring.framework.version}</version>
          <scope>test</scope>
       </dependency>
-
       <dependency>
          <groupId>org.springframework</groupId>
          <artifactId>spring-webmvc</artifactId>
          <version>${spring.framework.version}</version>
       </dependency>
-
 
       <!-- Validation JSR 303 -->
       <dependency>
@@ -628,7 +585,6 @@
                <artifactId>slf4j-api</artifactId>
             </exclusion>
          </exclusions>
-
       </dependency>
 
       <dependency>
