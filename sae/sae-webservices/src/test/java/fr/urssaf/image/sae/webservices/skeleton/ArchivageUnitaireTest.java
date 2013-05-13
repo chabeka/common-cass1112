@@ -22,6 +22,7 @@ import fr.cirtil.www.saeservice.ArchivageUnitaire;
 import fr.cirtil.www.saeservice.ArchivageUnitaireResponseType;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.services.capture.SAECaptureService;
+import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.webservices.exception.CaptureAxisFault;
 import fr.urssaf.image.sae.webservices.security.exception.SaeAccessDeniedAxisFault;
 import fr.urssaf.image.sae.webservices.util.XMLStreamUtils;
@@ -119,5 +120,34 @@ public class ArchivageUnitaireTest {
                .getFaultCode().getNamespaceURI());
       }
    }
+   
+   
+   @Test
+   public void archivageUnitaire_Failure_metadataNotInDict() throws CaptureAxisFault, SaeAccessDeniedAxisFault{
+      List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
+      metadatas.add(EasyMock.anyObject(UntypedMetadata.class));
+
+      try {
+         EasyMock
+               .expect(
+                     captureService.capture(metadatas, EasyMock
+                           .anyObject(URI.class))).andThrow(new MetadataValueNotInDictionaryEx("La valeur de la métadonnée uneMetadonnée est incorrecte : elle n’est pas comprise dans le dictionnaire de données associé"));
+      } catch (Exception e) {
+         throw new NestableRuntimeException(e);
+      }
+
+      EasyMock.replay(captureService);
+      
+      ArchivageUnitaire request = createArchivageMasseResponse("src/test/resources/request/archivageUnitaire_FailureMetadataValueNotInDict.xml");
+      try{
+      ArchivageUnitaireResponseType response = skeleton
+      .archivageUnitaireSecure(request).getArchivageUnitaireResponse();
+      }catch(CaptureAxisFault e){
+         Assert.assertEquals("La valeur de la métadonnée uneMetadonnée est incorrecte : elle n’est pas comprise dans le dictionnaire de données associé", e.getMessage());
+      }
+      
+   }
+   
+
 
 }
