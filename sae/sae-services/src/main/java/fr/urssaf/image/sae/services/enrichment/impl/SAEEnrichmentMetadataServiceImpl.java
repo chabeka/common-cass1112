@@ -97,7 +97,7 @@ public class SAEEnrichmentMetadataServiceImpl implements
     * {@inheritDoc}
     */
    @Override
-   public void enrichmentVirtualMetadata(SAEVirtualDocument document)
+   public final void enrichmentVirtualMetadata(SAEVirtualDocument document)
          throws SAEEnrichmentEx, ReferentialRndException, UnknownCodeRndEx {
       String trcPrefix = "enrichmentVirtualMetadata";
       LOGGER.debug("{} - début", trcPrefix);

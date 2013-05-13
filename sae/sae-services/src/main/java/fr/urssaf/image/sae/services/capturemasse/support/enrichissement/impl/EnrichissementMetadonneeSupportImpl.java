@@ -48,7 +48,7 @@ public class EnrichissementMetadonneeSupportImpl implements
     * {@inheritDoc}
     */
    @Override
-   public void enrichirMetadonneesVirtuelles(
+   public final void enrichirMetadonneesVirtuelles(
          SAEVirtualDocument saeVirtualDocument) {
 
       try {

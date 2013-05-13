@@ -30,7 +30,7 @@ public class ControleStorageVirtualDocumentProcessor implements
     * {@inheritDoc}
     */
    @Override
-   public SAEVirtualDocument process(SAEVirtualDocument item) throws Exception {
+   public final SAEVirtualDocument process(SAEVirtualDocument item) throws Exception {
       String trcPrefix = "process";
       LOGGER.debug("{} - début", trcPrefix);
 

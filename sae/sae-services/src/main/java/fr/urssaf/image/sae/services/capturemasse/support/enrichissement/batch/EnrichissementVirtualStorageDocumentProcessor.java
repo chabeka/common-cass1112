@@ -47,7 +47,7 @@ public class EnrichissementVirtualStorageDocumentProcessor implements
     * {@inheritDoc}
     */
    @Override
-   public VirtualStorageDocument process(VirtualStorageDocument item)
+   public final VirtualStorageDocument process(VirtualStorageDocument item)
          throws Exception {
       String trcPrefix = "process";
       LOGGER.debug("{} - début", trcPrefix);

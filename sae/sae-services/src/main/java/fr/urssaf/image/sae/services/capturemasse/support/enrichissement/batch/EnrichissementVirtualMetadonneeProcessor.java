@@ -10,13 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.bo.model.bo.SAEVirtualDocument;
-import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedVirtualDocument;
 import fr.urssaf.image.sae.mapping.services.MappingDocumentService;
 import fr.urssaf.image.sae.services.capturemasse.support.enrichissement.EnrichissementMetadonneeSupport;
 
 /**
- * enrichissement des métadonnées de l'objet {@link UntypedDocument}
+ * enrichissement des métadonnées de l'objet {@link UntypedVirtualDocument}
  * 
  */
 @Component
@@ -36,7 +35,7 @@ public class EnrichissementVirtualMetadonneeProcessor implements
     * {@inheritDoc}
     */
    @Override
-   public SAEVirtualDocument process(UntypedVirtualDocument item)
+   public final SAEVirtualDocument process(UntypedVirtualDocument item)
          throws Exception {
       String trcPrefix = "process";
       LOGGER.debug("{} - début", trcPrefix);

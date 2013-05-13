@@ -313,40 +313,40 @@ public class MetadataReference implements Serializable {
 	/**
 	 * @return renvoie vrai/faux suivant si la métadonnée est soumise à un dictionnaire
 	 */
-   public Boolean getHasDictionary() {
+   public final Boolean getHasDictionary() {
       return hasDictionary;
    }
    /**
     * @param hasDictionary indique si la métadonnée est soumise à un dictionnaire
     */
-   public void setHasDictionary(Boolean hasDictionary) {
+   public final void setHasDictionary(Boolean hasDictionary) {
       this.hasDictionary = hasDictionary;
    }
 
    /**
     * @return nom du dictionnaire associé
     */
-   public String getDictionaryName() {
+   public final String getDictionaryName() {
       return dictionaryName;
    }
    /**
     * @param dictionaryName nom du dictionnaire
     */
-   public void setDictionaryName(String dictionaryName) {
+   public final void setDictionaryName(String dictionaryName) {
       this.dictionaryName = dictionaryName;
    }
    
    /**
     * @return renvoie si la métadonnée est indexée
     */
-   public Boolean getIsIndexed() {
+   public final Boolean getIsIndexed() {
       return isIndexed;
    }
 
    /**
     * @param isIndexed indique que la métadonnée est indexée
     */
-   public void setIsIndexed(Boolean isIndexed) {
+   public final void setIsIndexed(Boolean isIndexed) {
       this.isIndexed = isIndexed;
    }
 }

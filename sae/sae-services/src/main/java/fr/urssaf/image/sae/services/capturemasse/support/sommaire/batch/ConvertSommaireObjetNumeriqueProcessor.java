@@ -29,7 +29,7 @@ public class ConvertSommaireObjetNumeriqueProcessor implements
     * {@inheritDoc}
     */
    @Override
-   public VirtualReferenceFile process(JAXBElement<FichierType> item)
+   public final VirtualReferenceFile process(JAXBElement<FichierType> item)
          throws Exception {
       String trcPrefix = "process";
       LOGGER.debug("{} - début", trcPrefix);

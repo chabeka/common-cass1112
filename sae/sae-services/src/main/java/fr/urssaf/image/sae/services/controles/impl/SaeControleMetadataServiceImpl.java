@@ -49,7 +49,7 @@ public class SaeControleMetadataServiceImpl implements
     * {@inheritDoc}
     */
    @Override
-   public void checkMetadataForStorage(List<SAEMetadata> metadatas)
+   public final void checkMetadataForStorage(List<SAEMetadata> metadatas)
          throws RequiredStorageMetadataEx {
       String trcPrefix = "checkMetadataForStorage";
       LOG.debug("{} - début", trcPrefix);
@@ -79,7 +79,7 @@ public class SaeControleMetadataServiceImpl implements
     * {@inheritDoc}
     */
    @Override
-   public void checkSaeMetadataForCapture(List<SAEMetadata> metadatas)
+   public final void checkSaeMetadataForCapture(List<SAEMetadata> metadatas)
          throws NotSpecifiableMetadataEx, RequiredArchivableMetadataEx {
       String trcPrefix = "checkSaeMetadataForCapture";
       LOG.debug("{} - début", trcPrefix);
@@ -132,7 +132,7 @@ public class SaeControleMetadataServiceImpl implements
     * {@inheritDoc}
     */
    @Override
-   public void checkUntypedMetadatas(List<UntypedMetadata> metadatas)
+   public final void checkUntypedMetadatas(List<UntypedMetadata> metadatas)
          throws UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, RequiredArchivableMetadataEx,
          MetadataValueNotInDictionaryEx {

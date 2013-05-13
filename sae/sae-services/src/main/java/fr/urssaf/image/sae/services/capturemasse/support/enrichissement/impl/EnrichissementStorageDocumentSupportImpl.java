@@ -37,7 +37,7 @@ public class EnrichissementStorageDocumentSupportImpl implements
     * {@inheritDoc}
     */
    @Override
-   public VirtualStorageDocument enrichirVirtualDocument(
+   public final VirtualStorageDocument enrichirVirtualDocument(
          VirtualStorageDocument document, String uuid) {
 
       addUuidToMetadatas(document.getMetadatas(), uuid);

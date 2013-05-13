@@ -22,7 +22,10 @@ public interface SaeMetaDataService {
     * 
     * @param value
     *           la métadonnée à modifier
+    * @throws MetadataReferenceNotFoundException
+    *            la métadonnée n'est pas trouvée
     */
-   void modify(MetadataReference value)throws MetadataReferenceNotFoundException;
+   void modify(MetadataReference value)
+         throws MetadataReferenceNotFoundException;
 
 }

@@ -41,7 +41,7 @@ public class ResultatsVirtualFileFailureTasklet extends
     * {@inheritDoc}
     */
    @Override
-   ConcurrentLinkedQueue<?> getIntegratedDocuments() {
+   public final ConcurrentLinkedQueue<?> getIntegratedDocuments() {
       return executor.getIntegratedDocuments();
    }
 
@@ -49,7 +49,7 @@ public class ResultatsVirtualFileFailureTasklet extends
     * {@inheritDoc}
     */
    @Override
-   ResultatsFileEchecSupport getResultatsFileEchecSupport() {
+   public final ResultatsFileEchecSupport getResultatsFileEchecSupport() {
       return support;
    }
 
@@ -57,7 +57,7 @@ public class ResultatsVirtualFileFailureTasklet extends
     * {@inheritDoc}
     */
    @Override
-   SommaireFormatValidationSupport getSommaireFormatValidationSupport() {
+   public final SommaireFormatValidationSupport getSommaireFormatValidationSupport() {
       return validationSupport;
    }
 
@@ -65,7 +65,7 @@ public class ResultatsVirtualFileFailureTasklet extends
     * {@inheritDoc}
     */
    @Override
-   XsdValidationSupport getXsdValidationSupport() {
+   public final XsdValidationSupport getXsdValidationSupport() {
       return xsdValidationSupport;
    }
 
@@ -73,7 +73,7 @@ public class ResultatsVirtualFileFailureTasklet extends
     * {@inheritDoc}
     */
    @Override
-   boolean isVirtual() {
+   public final boolean isVirtual() {
       return true;
    }
 

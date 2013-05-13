@@ -52,26 +52,26 @@ public class SaeMetadataDao extends AbstractDao<String, String> {
    }
 
    /**
-    * Renvoie le nom de la CF
+    * @return le nom de la CF
     */
    @Override
-   public String getColumnFamilyName() {
+   public final String getColumnFamilyName() {
       return METADATA_CFNAME;
    }
 
    /**
-    * Renvoie le sérializer d'une colonne
+    * @return Renvoie le sérializer d'une colonne
     */
    @Override
-   public Serializer<String> getColumnKeySerializer() {
+   public final Serializer<String> getColumnKeySerializer() {
       return StringSerializer.get();
    }
 
    /**
-    * renvoie le sérializer de la clé d'une ligne
+    * @return le sérializer de la clé d'une ligne
     */
    @Override
-   public Serializer<String> getRowKeySerializer() {
+   public final Serializer<String> getRowKeySerializer() {
       return StringSerializer.get();
    }
 
@@ -85,7 +85,7 @@ public class SaeMetadataDao extends AbstractDao<String, String> {
     * @param clock
     *           le timestamp d'écriture
     */
-   public void ecritShortCode(String sCode,
+   public final void ecritShortCode(String sCode,
          ColumnFamilyUpdater<String, String> updater, long clock) {
       addColumn(updater, META_SHORT_CODE, sCode, StringSerializer.get(), clock);
    }
@@ -100,7 +100,7 @@ public class SaeMetadataDao extends AbstractDao<String, String> {
     * @param clock
     *           le timestamp d'écriture
     */
-   public void ecritType(String type,
+   public final void ecritType(String type,
          ColumnFamilyUpdater<String, String> updater, long clock) {
       addColumn(updater, META_TYPE, type, StringSerializer.get(), clock);
    }
@@ -115,7 +115,7 @@ public class SaeMetadataDao extends AbstractDao<String, String> {
     * @param clock
     *           le timestamp d'écriture
     */
-   public void ecritRequiredArchival(Boolean reqArch,
+   public final void ecritRequiredArchival(Boolean reqArch,
          ColumnFamilyUpdater<String, String> updater, long clock) {
       addColumn(updater, META_REQ_ARCH, reqArch, BooleanSerializer.get(), clock);
    }
@@ -130,7 +130,7 @@ public class SaeMetadataDao extends AbstractDao<String, String> {
     * @param clock
     *           le timestamp d'écriture
     */
-   public void ecritRequiredStorage(Boolean reqStor,
+   public final void ecritRequiredStorage(Boolean reqStor,
          ColumnFamilyUpdater<String, String> updater, long clock) {
       addColumn(updater, META_REQ_STOR, reqStor, BooleanSerializer.get(), clock);
    }
@@ -145,7 +145,7 @@ public class SaeMetadataDao extends AbstractDao<String, String> {
     * @param clock
     *           le timestamp d'écriture
     */
-   public void ecritLength(Integer length,
+   public final void ecritLength(Integer length,
          ColumnFamilyUpdater<String, String> updater, long clock) {
       addColumn(updater, META_LENGTH, length, IntegerSerializer.get(), clock);
    }
@@ -160,7 +160,7 @@ public class SaeMetadataDao extends AbstractDao<String, String> {
     * @param clock
     *           le timestamp d'écriture
     */
-   public void ecritPattern(String pattern,
+   public final void ecritPattern(String pattern,
          ColumnFamilyUpdater<String, String> updater, long clock) {
       addColumn(updater, META_PATTERN, pattern, StringSerializer.get(), clock);
    }
@@ -175,7 +175,7 @@ public class SaeMetadataDao extends AbstractDao<String, String> {
     * @param clock
     *           le timestamp d'écriture
     */
-   public void ecritConsultable(Boolean cons,
+   public final void ecritConsultable(Boolean cons,
          ColumnFamilyUpdater<String, String> updater, long clock) {
       addColumn(updater, META_CONSUL, cons, BooleanSerializer.get(), clock);
    }
@@ -190,7 +190,7 @@ public class SaeMetadataDao extends AbstractDao<String, String> {
     * @param clock
     *           le timestamp d'écriture
     */
-   public void ecritDefaultConsultable(Boolean defCons,
+   public final void ecritDefaultConsultable(Boolean defCons,
          ColumnFamilyUpdater<String, String> updater, long clock) {
       addColumn(updater, META_DEF_CONSUL, defCons, BooleanSerializer.get(),
             clock);
@@ -206,7 +206,7 @@ public class SaeMetadataDao extends AbstractDao<String, String> {
     * @param clock
     *           le timestamp d'écriture
     */
-   public void ecritSearchable(Boolean search,
+   public final void ecritSearchable(Boolean search,
          ColumnFamilyUpdater<String, String> updater, long clock) {
       addColumn(updater, META_SEARCH, search, BooleanSerializer.get(), clock);
    }
@@ -221,7 +221,7 @@ public class SaeMetadataDao extends AbstractDao<String, String> {
     * @param clock
     *           le timestamp d'écriture
     */
-   public void ecritInternal(Boolean internal,
+   public final void ecritInternal(Boolean internal,
          ColumnFamilyUpdater<String, String> updater, long clock) {
       addColumn(updater, META_INTERNAL, internal, BooleanSerializer.get(),
             clock);
@@ -237,7 +237,7 @@ public class SaeMetadataDao extends AbstractDao<String, String> {
     * @param clock
     *           le timestamp d'écriture
     */
-   public void ecritArchivable(Boolean arch,
+   public final void ecritArchivable(Boolean arch,
          ColumnFamilyUpdater<String, String> updater, long clock) {
       addColumn(updater, META_ARCH, arch, BooleanSerializer.get(), clock);
    }
@@ -252,7 +252,7 @@ public class SaeMetadataDao extends AbstractDao<String, String> {
     * @param clock
     *           le timestamp d'écriture
     */
-   public void ecritLabel(String label,
+   public final void ecritLabel(String label,
          ColumnFamilyUpdater<String, String> updater, long clock) {
       addColumn(updater, META_LABEL, label, StringSerializer.get(), clock);
    }
@@ -267,7 +267,7 @@ public class SaeMetadataDao extends AbstractDao<String, String> {
     * @param clock
     *           le timestamp d'écriture
     */
-   public void ecritDescription(String descr,
+   public final void ecritDescription(String descr,
          ColumnFamilyUpdater<String, String> updater, long clock) {
       addColumn(updater, META_DESCR, descr, StringSerializer.get(), clock);
    }
@@ -282,7 +282,7 @@ public class SaeMetadataDao extends AbstractDao<String, String> {
     * @param clock
     *           le timestamp d'écriture
     */
-   public void ecritHasDictionary(Boolean hasDict,
+   public final void ecritHasDictionary(Boolean hasDict,
          ColumnFamilyUpdater<String, String> updater, long clock) {
       addColumn(updater, META_HAS_DICT, hasDict, BooleanSerializer.get(), clock);
    }
@@ -297,7 +297,7 @@ public class SaeMetadataDao extends AbstractDao<String, String> {
     * @param clock
     *           le timestamp d'écriture
     */
-   public void ecritDictionaryName(String dictName,
+   public final void ecritDictionaryName(String dictName,
          ColumnFamilyUpdater<String, String> updater, long clock) {
       addColumn(updater, META_DICT_NAME, dictName, StringSerializer.get(),
             clock);
@@ -313,7 +313,7 @@ public class SaeMetadataDao extends AbstractDao<String, String> {
     * @param clock
     *           le timestamp d'écriture
     */
-   public void ecritIndexed(Boolean index,
+   public final void ecritIndexed(Boolean index,
          ColumnFamilyUpdater<String, String> updater, long clock) {
       addColumn(updater, META_INDEXED, index, BooleanSerializer.get(), clock);
    }

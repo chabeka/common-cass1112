@@ -146,7 +146,7 @@ public class VirtualStorageDocumentWriter implements
     * {@inheritDoc}
     */
    @Override
-   public void write(List<? extends VirtualStorageDocument> items)
+   public final void write(List<? extends VirtualStorageDocument> items)
          throws Exception {
       String trcPrefix = "write";
       LOGGER.debug("{} - début", trcPrefix);

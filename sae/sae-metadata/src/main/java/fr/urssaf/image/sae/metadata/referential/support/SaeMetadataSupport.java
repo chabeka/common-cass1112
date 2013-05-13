@@ -50,7 +50,7 @@ public class SaeMetadataSupport {
     * @param metadata l'objet métadonné
     * @param clock le timestamp de l'opération
     */ 
-   public void create(MetadataReference metadata, long clock) {
+   public final void create(MetadataReference metadata, long clock) {
 
       ColumnFamilyUpdater<String, String> updater = saeMetadataDao.getCfTmpl()
             .createUpdater(metadata.getLongCode());
@@ -148,7 +148,7 @@ public class SaeMetadataSupport {
     * @return Liste des métadonnées
     */
 
-   public List<MetadataReference> findAll() {
+   public final List<MetadataReference> findAll() {
 
       BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
       RangeSlicesQuery<String, String, byte[]> rangeSlicesQuery = HFactory
@@ -189,7 +189,7 @@ public class SaeMetadataSupport {
     *           Code long de la métadonné à rechercher
     * @return {@link MetadataReference}
     */
-   public MetadataReference find(String codeLong) {
+   public final MetadataReference find(String codeLong) {
       ColumnFamilyResult<String, String> result = saeMetadataDao.getCfTmpl()
             .queryColumns(codeLong);
 

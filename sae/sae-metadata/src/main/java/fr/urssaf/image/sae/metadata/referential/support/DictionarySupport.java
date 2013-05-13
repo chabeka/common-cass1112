@@ -24,83 +24,97 @@ import fr.urssaf.image.sae.metadata.referential.dao.DictionaryDao;
 import fr.urssaf.image.sae.metadata.referential.model.Dictionary;
 
 /**
- * classe permettant de réaliser les actions de manipulation des DAO pour la famille de colonne "Dictionary"
+ * classe permettant de réaliser les actions de manipulation des DAO pour la
+ * famille de colonne "Dictionary"
  */
 
 @Component
 public class DictionarySupport {
-   
-  private final DictionaryDao dictionaryDao;
-   
+
+   private final DictionaryDao dictionaryDao;
+
    private static final int MAX_FIND_RESULT = 2000;
-   
+
    /**
     * Constructeur de la classe support
-    * @param dictionaryDao la dao
+    * 
+    * @param dictionaryDao
+    *           la dao
     */
    @Autowired
-   public DictionarySupport(DictionaryDao dictionaryDao ){
+   public DictionarySupport(DictionaryDao dictionaryDao) {
       this.dictionaryDao = dictionaryDao;
    }
-   
+
    /**
     * Ajout d'une entré au dictionnaire, le créé s'il n'existe pas
-    * @param id identifiant du dictionnaire
-    * @param value valeur de l'entée
-    * @param clock horloge de la colonne
+    * 
+    * @param identifiant
+    *           identifiant du dictionnaire
+    * @param value
+    *           valeur de l'entée
+    * @param clock
+    *           horloge de la colonne
     */
-   public void addElement(String identifiant, String value, long clock){
+   public final void addElement(String identifiant, String value, long clock) {
       ColumnFamilyUpdater<String, String> updater = dictionaryDao.getCfTmpl()
-      .createUpdater(identifiant);
+            .createUpdater(identifiant);
       dictionaryDao.ecritElement(value, updater, clock);
       dictionaryDao.getCfTmpl().update(updater);
-   } 
-   
+   }
+
    /**
     * Supprime une entré du dictionnaire
-    * @param identifiant identifiant du dictionnaire
-    * @param value Valeur de l'entrée à supprimer
-    * @param clock Horloge de la colonne
+    * 
+    * @param identifiant
+    *           identifiant du dictionnaire
+    * @param value
+    *           Valeur de l'entrée à supprimer
+    * @param clock
+    *           Horloge de la colonne
     */
-   public void deleteElement(String identifiant, String value, long clock){
-      
+   public final void deleteElement(String identifiant, String value, long clock) {
+
       Mutator<String> mutator = dictionaryDao.createMutator();
-      dictionaryDao.mutatorSuppressionColonne(mutator, identifiant, value, clock);
+      dictionaryDao.mutatorSuppressionColonne(mutator, identifiant, value,
+            clock);
       mutator.execute();
    }
-   
-   
+
    /**
     * Retourne le dictionnaire avec l'identifiant passé en paramètre
-    * @param identifiant identifiant du dictionnaire.
+    * 
+    * @param identifiant
+    *           identifiant du dictionnaire.
     * @return l'objet dictionnaire
-    * @throws DictionaryNotFoundException dictionnaire non trouvé
     */
-   public Dictionary find(String identifiant) throws DictionaryNotFoundException{
+   public final Dictionary find(String identifiant) {
 
       ColumnFamilyResult<String, String> result = dictionaryDao.getCfTmpl()
-      .queryColumns(identifiant);
+            .queryColumns(identifiant);
 
-      Dictionary dictionary =null;
-      if (result==null || !result.hasResults()) {
+      Dictionary dictionary = null;
+      if (result == null || !result.hasResults()) {
          throw new DictionaryNotFoundException(identifiant);
-      }else{
-         dictionary = new Dictionary(result.getKey(), new ArrayList<String>(result.getColumnNames()));
+      } else {
+         dictionary = new Dictionary(result.getKey(), new ArrayList<String>(
+               result.getColumnNames()));
       }
 
       return dictionary;
    }
-   
-   
+
    /**
     * Retourne l'ensemble des dictionnaires
+    * 
     * @return Liste d'objet dictionnaire
     */
-   public List<Dictionary> findAll(){
+   public final List<Dictionary> findAll() {
       BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
       RangeSlicesQuery<String, String, byte[]> rangeSlicesQuery = HFactory
-            .createRangeSlicesQuery(dictionaryDao.getKeyspace(), StringSerializer.get(),
-                  StringSerializer.get(), bytesSerializer);
+            .createRangeSlicesQuery(dictionaryDao.getKeyspace(),
+                  StringSerializer.get(), StringSerializer.get(),
+                  bytesSerializer);
       rangeSlicesQuery.setColumnFamily(dictionaryDao.getColumnFamilyName());
       rangeSlicesQuery.setRange("", "", false, MAX_FIND_RESULT);
       QueryResult<OrderedRows<String, String, byte[]>> queryResult = rangeSlicesQuery
@@ -119,12 +133,13 @@ public class DictionarySupport {
       List<Dictionary> list = new ArrayList<Dictionary>();
       for (ColumnFamilyResult<String, String> row : resultIterator) {
          if (row != null && row.hasResults()) {
-            Dictionary dict = new Dictionary(row.getKey(), (List<String>) row.getColumnNames());
+            Dictionary dict = new Dictionary(row.getKey(), (List<String>) row
+                  .getColumnNames());
             list.add(dict);
          }
 
       }
       return list;
    }
-   
+
 }

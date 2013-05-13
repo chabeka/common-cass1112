@@ -13,9 +13,7 @@ import fr.urssaf.image.sae.services.exception.capture.InvalidValueTypeAndFormatM
 import fr.urssaf.image.sae.services.exception.capture.NotSpecifiableMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.RequiredArchivableMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.RequiredStorageMetadataEx;
-import fr.urssaf.image.sae.services.exception.capture.UnknownHashCodeEx;
 import fr.urssaf.image.sae.services.exception.capture.UnknownMetadataEx;
-import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 
 /**
  * Service centralisant les contrôles des métadonnées
@@ -42,15 +40,9 @@ public interface SaeControleMetadataService {
     * @throws InvalidValueTypeAndFormatMetadataEx
     *            Exception levée lorsqu'une métadonnée ne possède pas le bon
     *            format ou le type de valeur
-    * @throws NotSpecifiableMetadataEx
-    *            Exception levée si une métadonnée non spécifiable est présente
     * @throws RequiredArchivableMetadataEx
     *            Exception levée si une métadonnée obligatoire à l'archivage est
     *            manquante
-    * @throws UnknownHashCodeEx
-    *            Erreur levée lors de la vérification du hash
-    * @throws UnknownCodeRndEx
-    *            Erreur levée si le code RND est inconnu
     * @throws MetadataValueNotInDictionaryEx
     *            Erreur levée si la valeur de la métadonnée ne correspond pas à
     *            une valeur du dictionnaire associé

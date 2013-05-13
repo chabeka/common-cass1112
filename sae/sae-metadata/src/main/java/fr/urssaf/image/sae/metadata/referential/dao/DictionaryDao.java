@@ -38,7 +38,7 @@ public class DictionaryDao extends AbstractDao<String, String> {
     * @return {@link String}
     */
    @Override
-   public String getColumnFamilyName() {
+   public final String getColumnFamilyName() {
       return CF_NAME;
    }
 
@@ -48,7 +48,7 @@ public class DictionaryDao extends AbstractDao<String, String> {
     * @return {@link StringSerializer}
     */
    @Override
-   public Serializer<String> getColumnKeySerializer() {
+   public final Serializer<String> getColumnKeySerializer() {
       return StringSerializer.get();
    }
 
@@ -58,7 +58,7 @@ public class DictionaryDao extends AbstractDao<String, String> {
     * @return {@link StringSerializer}
     */
    @Override
-   public Serializer<String> getRowKeySerializer() {
+   public final Serializer<String> getRowKeySerializer() {
       return StringSerializer.get();
    }
 
@@ -72,7 +72,7 @@ public class DictionaryDao extends AbstractDao<String, String> {
     * @param clock
     *           le timestamp
     */
-   public void ecritElement(String element,
+   public final void ecritElement(String element,
          ColumnFamilyUpdater<String, String> updater, long clock) {
       addColumn(updater, element, StringUtils.EMPTY, StringSerializer.get(), clock);
    }

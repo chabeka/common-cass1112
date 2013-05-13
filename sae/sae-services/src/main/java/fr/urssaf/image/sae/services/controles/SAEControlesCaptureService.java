@@ -183,7 +183,7 @@ public interface SAEControlesCaptureService {
     * @param content
     *           le contenu du fichier
     * 
-    * @throws EmptyDocumentEx
+    * @throws EmptyDocumentEx exception levée si le document est vide
     */
    void checkBinaryContent(byte[] content) throws EmptyDocumentEx;
 
@@ -193,7 +193,7 @@ public interface SAEControlesCaptureService {
     * @param fileName
     *           le nom du fichier
     * 
-    * @throws EmptyFileNameEx
+    * @throws EmptyFileNameEx exception levée si le document est vide
     */
    void checkBinaryFileName(String fileName) throws EmptyFileNameEx;
 

@@ -37,18 +37,23 @@ public class DictionaryServiceImpl implements DictionaryService {
    private final JobClockSupport clockSupport;
    private final CuratorFramework curator;
    private final LoadingCache<String, Dictionary> dictionaries;
-   private static final String PREFIXE_DICT ="/Dictionary/";
+   private static final String PREFIXE_DICT = "/Dictionary/";
    private static final Logger LOGGER = LoggerFactory
-   .getLogger(DictionaryServiceImpl.class);
+         .getLogger(DictionaryServiceImpl.class);
    private static final String TRC_CREATE = "addElements()";
    private static final String TRC_DELETE = "deleteElements()";
 
    /**
     * Constructeur du service
-    * @param dictSupport la classe support
-    * @param jobClockSupport {@link JobClockSupport}
-    * @param curatorFramework {@link CuratorFramework}
-    * @param value durée du cache
+    * 
+    * @param dictSupport
+    *           la classe support
+    * @param jobClockSupport
+    *           {@link JobClockSupport}
+    * @param curatorFramework
+    *           {@link CuratorFramework}
+    * @param value
+    *           durée du cache
     */
    @Autowired
    public DictionaryServiceImpl(DictionarySupport dictSupport,
@@ -62,8 +67,7 @@ public class DictionaryServiceImpl implements DictionaryService {
             TimeUnit.MINUTES).build(new CacheLoader<String, Dictionary>() {
 
          @Override
-         public Dictionary load(String identifiant)
-               throws DictionaryNotFoundException {
+         public Dictionary load(String identifiant) {
             return dictionarySupport.find(identifiant);
          }
 
@@ -72,44 +76,48 @@ public class DictionaryServiceImpl implements DictionaryService {
 
    /**
     * Ajout d'un nouveau dictionnaire
-    * @param name nom du dictionnaire
-    * @param values les des valeurs possibles
+    * 
+    * @param name
+    *           nom du dictionnaire
+    * @param values
+    *           les des valeurs possibles
     */
    @Override
-   public void addElements(String name, List<String> values) {
-      
+   public final void addElements(String name, List<String> values) {
+
       String resourceName = PREFIXE_DICT + name;
 
-      ZookeeperMutex mutex = ZookeeperUtils.createMutex(curator,
-            resourceName);
+      ZookeeperMutex mutex = ZookeeperUtils.createMutex(curator, resourceName);
       try {
-         
+
          LOGGER.debug("{} - Lock Zookeeper", TRC_CREATE);
          ZookeeperUtils.acquire(mutex, resourceName);
          LOGGER.debug("{} - Création du Dictionnaire", TRC_CREATE);
          for (String value : values) {
-            dictionarySupport.addElement(name, value, clockSupport.currentCLock());
+            dictionarySupport.addElement(name, value, clockSupport
+                  .currentCLock());
          }
-         
+
          checkLock(mutex, name);
 
       } finally {
          mutex.release();
       }
-      
-
 
    }
 
    /**
     * Supression d'un dictionnaire. Attention les données supprimées sont
     * toujours présentes en cache jusqu'a leur expiration
-    * @param name nom du dictionnaire
-    * @param values les des valeurs possibles 
+    * 
+    * @param name
+    *           nom du dictionnaire
+    * @param values
+    *           les des valeurs possibles
     */
 
    @Override
-   public void deleteElements(String name, List<String> values) {
+   public final void deleteElements(String name, List<String> values) {
       LOGGER.debug("{} - Supression des valeurs du dictionnaire", TRC_DELETE);
       for (String value : values) {
          LOGGER.debug("{} - Supression de la valeur", value);
@@ -122,11 +130,13 @@ public class DictionaryServiceImpl implements DictionaryService {
     * Méthode permettant de récupérer un dictionnaire donnée. Si le dictionnaire
     * n'est pas en cache on appel la méthode find sinon on renvoit la valeur
     * contenu dans le cache.
-    * @param name nom du dictionnaire
+    * 
+    * @param name
+    *           nom du dictionnaire
     * @return {@link Dictionary}
     */
    @Override
-   public Dictionary find(String name){
+   public final Dictionary find(String name) {
 
       return dictionaries.getUnchecked(name);
    }
@@ -134,27 +144,29 @@ public class DictionaryServiceImpl implements DictionaryService {
    /**
     * Méthode permettant de récupérer tous les dictionnaires sans passer par le
     * cache.
+    * 
     * @return List{@link Dictionary}
     */
    @Override
-   public List<Dictionary> findAll() {
+   public final List<Dictionary> findAll() {
       return dictionarySupport.findAll();
    }
-   
+
    private void checkLock(ZookeeperMutex mutex, String dictionary) {
 
       if (!ZookeeperUtils.isLock(mutex)) {
 
-         Dictionary storedDict =null;
+         Dictionary storedDict = null;
          try {
             storedDict = dictionarySupport.find(dictionary);
          } catch (DictionaryNotFoundException e) {
-            throw new MetadataReferenceException("Le dictionnaire "+ dictionary
-                  + " n'a pas été créé");
+            throw new MetadataReferenceException("Le dictionnaire "
+                  + dictionary + " n'a pas été créé");
          }
 
          if (!storedDict.getId().equals(dictionary)) {
-            throw new MetadataRuntimeException("Le dictionnaire "+ dictionary +" a déjà été créé");
+            throw new MetadataRuntimeException("Le dictionnaire " + dictionary
+                  + " a déjà été créé");
          }
 
       }

@@ -1,7 +1,6 @@
 package fr.urssaf.image.sae.metadata.dfce;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -14,104 +13,111 @@ import org.springframework.stereotype.Component;
 import fr.urssaf.image.sae.metadata.referential.model.DfceConfig;
 
 /**
- * Factory permettant de créer un objet DfceConfig. 
- *
+ * Factory permettant de créer un objet DfceConfig.
+ * 
  */
 @Component
 public final class DfceConfigFactory {
 
-   public DfceConfigFactory(){
-      
+   /**
+    * Constructeur
+    */
+   public DfceConfigFactory() {
+
    }
-   
+
    /**
     * Methode permettant de créer un objet DfceConfig.
     * 
     * @param saeGeneralConfig
-    *                fichier général de configuration SAE
-    * @return dfceConfig 
-    *                contenant la configuration d'accès à DFCE.
+    *           fichier général de configuration SAE
+    * @return dfceConfig contenant la configuration d'accès à DFCE.
     */
    public DfceConfig createDfceConfig(FileSystemResource saeGeneralConfig) {
-           
+
       Properties prop = new Properties();
       DfceConfig dfceConfig = null;
-      InputStream inputStream = null;        
+      InputStream inputStream = null;
       try {
-          inputStream = saeGeneralConfig.getInputStream();            
-          prop.load(inputStream);
-          // recuperation du chemin du fichier DFCE à partir du fichier de configuration générale du SAE
-          String filePathDfceConf = prop.getProperty("sae.dfce.cheminFichierConfig");
-          if (! StringUtils.isBlank(filePathDfceConf)) {
-             // récupération propriétés du chemin de conf DFCE
-             Properties propDfce = readDfceConf(filePathDfceConf);
-             
-             dfceConfig = createDfceConfig(propDfce);
-          }   
-          inputStream.close();
-          return dfceConfig;
+         inputStream = saeGeneralConfig.getInputStream();
+         prop.load(inputStream);
+         // recuperation du chemin du fichier DFCE à partir du fichier de
+         // configuration générale du SAE
+         String filePathDfceConf = prop
+               .getProperty("sae.dfce.cheminFichierConfig");
+         if (!StringUtils.isBlank(filePathDfceConf)) {
+            // récupération propriétés du chemin de conf DFCE
+            Properties propDfce = readDfceConf(filePathDfceConf);
+
+            dfceConfig = createDfceConfig(propDfce);
+         }
+         inputStream.close();
+         return dfceConfig;
       } catch (IOException exception) {
-         
+
          // Une erreur non prévue s'est produite lors de la création de la
          // configuration d'accès à DFCE.
          throw new RuntimeException(exception);
       }
    }
-   
+
    /**
     * Création de l'objet properties pour la lecture du fichier de conf DFCE
-    * @throws IOException 
-    * @throws FileNotFoundException 
+    * 
+    * @throws IOException erreur de lecture du fichier
     */
    private Properties readDfceConf(String filePathDfceConf) throws IOException {
       Properties props = new Properties();
       ClassPathResource dfceClassResource = new ClassPathResource(
             filePathDfceConf);
-      FileInputStream fileInputStream = new FileInputStream(dfceClassResource.getFile());
+      FileInputStream fileInputStream = new FileInputStream(dfceClassResource
+            .getFile());
       props.load(fileInputStream);
       fileInputStream.close();
       return props;
    }
-   
+
    /**
-    * Récupération des données et instanciation de l'objet DfceConfig a partir d'un objet Properties
+    * Récupération des données et instanciation de l'objet DfceConfig a partir
+    * d'un objet Properties
     */
    private DfceConfig createDfceConfig(Properties props) {
-      
+
       DfceConfig dfceConfig = new DfceConfig();
 
-      //login
+      // login
       String login = props.getProperty("db.login");
       dfceConfig.setLogin(login);
-      
-      //password
+
+      // password
       String password = props.getProperty("db.password");
       dfceConfig.setPassword(password);
-      
-      //basename
+
+      // basename
       String baseName = props.getProperty("db.baseName");
       dfceConfig.setBasename(baseName);
-      
+
       // secure
       String secure = "http";
-      String propSecure = props.getProperty("db.secure"); 
+      String propSecure = props.getProperty("db.secure");
       boolean https = Boolean.valueOf(propSecure);
       if (https) {
          secure = "https";
       }
       // serveur
-      String serveur = props.getProperty("db.hostName"); 
+      String serveur = props.getProperty("db.hostName");
       // port
       String port = props.getProperty("db.hostPort");
       // contextRoot
       String contextRoot = props.getProperty("db.contextRoot");
       // URL
-      String urlToolkit = secure.concat("://").concat(serveur).concat(":").concat(port).concat(contextRoot);
-      
+      String urlToolkit = secure.concat("://").concat(serveur).concat(":")
+            .concat(port).concat(contextRoot);
+
       dfceConfig.setUrlToolkit(urlToolkit);
-      
-      return dfceConfig;      
-      
+
+      return dfceConfig;
+
    }
-   
+
 }

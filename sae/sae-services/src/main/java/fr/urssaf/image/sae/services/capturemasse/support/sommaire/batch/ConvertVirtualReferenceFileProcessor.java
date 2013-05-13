@@ -45,7 +45,7 @@ public class ConvertVirtualReferenceFileProcessor implements
     * {@inheritDoc}
     */
    @Override
-   public VirtualStorageReference process(VirtualReferenceFile item)
+   public final VirtualStorageReference process(VirtualReferenceFile item)
          throws Exception {
       String trcPrefix = "process";
       LOGGER.debug("{} - début", trcPrefix);

@@ -39,7 +39,7 @@ public class VirtualStorageReferenceWriter implements
     * {@inheritDoc}
     */
    @Override
-   public void write(List<? extends VirtualStorageReference> items)
+   public final void write(List<? extends VirtualStorageReference> items)
          throws Exception {
       String trcPrefix = "write";
       LOGGER.debug("{} - début", trcPrefix);

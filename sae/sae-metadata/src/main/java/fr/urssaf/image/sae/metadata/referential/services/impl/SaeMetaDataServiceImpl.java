@@ -76,7 +76,7 @@ public class SaeMetaDataServiceImpl implements SaeMetaDataService {
    }
 
    @Override
-   public void create(MetadataReference metadata) {
+   public final void create(MetadataReference metadata) {
 
       String resourceName = PREFIXE_META + metadata.getShortCode();
 
@@ -105,7 +105,7 @@ public class SaeMetaDataServiceImpl implements SaeMetaDataService {
    }
 
    @Override
-   public void modify(MetadataReference metadata) throws MetadataReferenceNotFoundException {
+   public final void modify(MetadataReference metadata) throws MetadataReferenceNotFoundException {
       LOGGER
             .debug("{} - Modification de la métadonnée", metadata.getLongCode());
       serviceProviderSupport.getBaseAdministrationService().updateBase(

@@ -202,7 +202,7 @@ public class CaptureMasseControleSupportImpl implements
     * {@inheritDoc}
     */
    @Override
-   public void controleFichier(VirtualReferenceFile virtualRefFile,
+   public final void controleFichier(VirtualReferenceFile virtualRefFile,
          File ecdeDirectory)
          throws CaptureMasseSommaireDocumentNotFoundException, EmptyDocumentEx {
       String trcPrefix = "controleFichier";
@@ -219,7 +219,7 @@ public class CaptureMasseControleSupportImpl implements
     * {@inheritDoc}
     */
    @Override
-   public void controleSAEMetadatas(UntypedVirtualDocument document)
+   public final void controleSAEMetadatas(UntypedVirtualDocument document)
          throws UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx, UnknownCodeRndEx,
@@ -256,7 +256,7 @@ public class CaptureMasseControleSupportImpl implements
     * {@inheritDoc}
     */
    @Override
-   public void controleSAEVirtualDocumentStockage(SAEVirtualDocument document)
+   public final void controleSAEVirtualDocumentStockage(SAEVirtualDocument document)
          throws RequiredStorageMetadataEx {
       String trcPrefix = "controleSAEVirtualDocumentStockage()";
       LOGGER.debug("{} - début", trcPrefix);

@@ -16,7 +16,6 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
-import fr.urssaf.image.sae.metadata.exceptions.DictionaryNotFoundException;
 import fr.urssaf.image.sae.metadata.exceptions.MetadataRuntimeException;
 import fr.urssaf.image.sae.metadata.exceptions.ReferentialException;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
@@ -33,7 +32,6 @@ import fr.urssaf.image.sae.metadata.utils.Utils;
 @Service
 @Qualifier("metadataReferenceDAO")
 public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
-
 
    @Autowired
    private ApplicationContext context;
@@ -63,8 +61,6 @@ public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
    public final void setContext(final ApplicationContext context) {
       this.context = context;
    }
-
-
 
    /**
     * {@inheritDoc}
@@ -137,7 +133,7 @@ public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
     */
    public final MetadataReference getByLongCode(final String longCode)
          throws ReferentialException {
-      
+
       return getAllMetadataReferences().get(longCode);
    }
 
@@ -206,10 +202,10 @@ public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
       return reqMetaDatas;
    }
 
-
    /**
-    * @param cacheDuration la durée du cache définie dans le fichier sae-config 
-    * Construit un objet de type {@link MetadataReferenceDAOImpl}
+    * @param cacheDuration
+    *           la durée du cache définie dans le fichier sae-config Construit
+    *           un objet de type {@link MetadataReferenceDAOImpl}
     */
    @Autowired
    public MetadataReferenceDAOImpl(
@@ -219,8 +215,7 @@ public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
             new CacheLoader<MetaType, Map<String, MetadataReference>>() {
 
                @Override
-               public Map<String, MetadataReference> load(MetaType identifiant)
-                     throws DictionaryNotFoundException {
+               public Map<String, MetadataReference> load(MetaType identifiant) {
                   if (identifiant.equals(MetaType.ALL_METADATAS)) {
                      List<MetadataReference> listeMeta = metadataSupport
                            .findAll();

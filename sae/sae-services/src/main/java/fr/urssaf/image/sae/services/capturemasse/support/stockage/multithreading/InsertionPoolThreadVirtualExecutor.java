@@ -336,7 +336,7 @@ public class InsertionPoolThreadVirtualExecutor extends ThreadPoolExecutor
     * {@inheritDoc}
     */
    @Override
-   public void destroy() throws Exception {
+   public final void destroy() throws Exception {
       this.shutdownNow();
 
    }

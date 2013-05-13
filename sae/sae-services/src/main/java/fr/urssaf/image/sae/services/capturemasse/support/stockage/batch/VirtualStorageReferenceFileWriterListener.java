@@ -131,7 +131,7 @@ public class VirtualStorageReferenceFileWriterListener {
     */
    @SuppressWarnings("unchecked")
    @OnWriteError
-   public void onWriteError(Exception exception,
+   public final void onWriteError(Exception exception,
          List<StorageReferenceFile> references) {
 
       String trcPrefix = "onWriteError()";

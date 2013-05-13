@@ -2,26 +2,29 @@ package fr.urssaf.image.sae.metadata.exceptions;
 
 import java.text.MessageFormat;
 
-
 /**
- *Exception levée lorsque le dictionnaire des donnée n'existe pas. 
+ *Exception levée lorsque le dictionnaire des donnée n'existe pas.
  */
 @SuppressWarnings("PMD")
 public class DictionaryNotFoundException extends RuntimeException {
    /**
     * Constructeur
     * 
-    * @param dictName nom du dictionnaire
+    * @param dictName
+    *           nom du dictionnaire
     */
-   public DictionaryNotFoundException(String message){
+   public DictionaryNotFoundException(String dictName) {
       super(MessageFormat.format("Le dictionnaire {0} n''a pas été trouvé",
-            message));
+            dictName));
    }
+
    /**
     * Constructeur
-    * @param e exception levée
+    * 
+    * @param e
+    *           exception levée
     */
-   public DictionaryNotFoundException(Exception e){
+   public DictionaryNotFoundException(Exception e) {
       super(e);
    }
 }

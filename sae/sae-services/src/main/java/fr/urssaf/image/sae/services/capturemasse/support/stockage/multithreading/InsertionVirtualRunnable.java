@@ -48,7 +48,7 @@ public class InsertionVirtualRunnable implements Runnable {
     * {@inheritDoc}
     */
    @Override
-   public void run() {
+   public final void run() {
       String trcPrefix = "run";
       LOGGER.debug("{} - début", trcPrefix);
 

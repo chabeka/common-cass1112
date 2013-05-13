@@ -46,7 +46,7 @@ public class ResultatsVirtualFileSuccessTasklet implements Tasklet {
     * {@inheritDoc}
     */
    @Override
-   public RepeatStatus execute(StepContribution contribution,
+   public final RepeatStatus execute(StepContribution contribution,
          ChunkContext chunkContext) throws Exception {
       String trcPrefix = "execute()";
       LOGGER.debug("{} - début", trcPrefix);

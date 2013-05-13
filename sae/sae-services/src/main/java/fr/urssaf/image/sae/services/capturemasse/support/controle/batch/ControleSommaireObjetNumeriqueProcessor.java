@@ -52,7 +52,7 @@ public class ControleSommaireObjetNumeriqueProcessor implements
     * {@inheritDoc}
     */
    @Override
-   public VirtualReferenceFile process(VirtualReferenceFile item)
+   public final VirtualReferenceFile process(VirtualReferenceFile item)
          throws Exception {
       String trcPrefix = "process";
       LOGGER.debug("{} - début", trcPrefix);

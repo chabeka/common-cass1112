@@ -40,7 +40,7 @@ public class ConvertSommaireComposantProcessor
     * {@inheritDoc}
     */
    @Override
-   public UntypedVirtualDocument process(
+   public final UntypedVirtualDocument process(
          JAXBElement<SaeComposantVirtuelType> item) throws Exception {
       String trcPrefix = "process";
       LOGGER.debug("{} - début", trcPrefix);

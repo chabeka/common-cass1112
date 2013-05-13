@@ -339,7 +339,7 @@ public class InsertionPoolThreadExecutor extends ThreadPoolExecutor implements
     * {@inheritDoc}
     */
    @Override
-   public void destroy() throws Exception {
+   public final void destroy() throws Exception {
       this.shutdownNow();
       
    }

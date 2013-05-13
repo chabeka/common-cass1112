@@ -78,7 +78,7 @@ public interface CaptureMasseControleSupport {
     *            reconnu par le SAE
     * @throws UnknownCodeRndEx
     *            La métadonnée codeRND n'existe pas
-    * @throws MetadataValueNotInDictionaryEx
+    * @throws MetadataValueNotInDictionaryEx la valeur donnée n'est pas présente dans la liste des valeurs autorisées
     */
    void controleSAEDocument(UntypedDocument document, File ecdeDirectory)
          throws CaptureMasseSommaireDocumentNotFoundException, EmptyDocumentEx,

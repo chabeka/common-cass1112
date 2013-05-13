@@ -36,7 +36,7 @@ public class ConvertSaeVirtualDocumentProcessor implements
     * {@inheritDoc}
     */
    @Override
-   public VirtualStorageDocument process(SAEVirtualDocument item)
+   public final VirtualStorageDocument process(SAEVirtualDocument item)
          throws Exception {
       String trcPrefix = "process";
       LOG.debug("{} - début", trcPrefix);

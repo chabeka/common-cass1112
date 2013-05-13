@@ -30,7 +30,7 @@ public class ControleSommaireDocumentsVirtuelsProcessor implements
     * {@inheritDoc}
     */
    @Override
-   public UntypedVirtualDocument process(UntypedVirtualDocument item)
+   public final UntypedVirtualDocument process(UntypedVirtualDocument item)
          throws Exception {
       String trcPrefix = "process";
       LOGGER.debug("{} - début", trcPrefix);

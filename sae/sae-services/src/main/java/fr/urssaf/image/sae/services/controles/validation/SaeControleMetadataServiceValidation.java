@@ -33,8 +33,8 @@ public class SaeControleMetadataServiceValidation {
     * methode checkUntypedMetadatas de l'interface SaeControleMetadataService
     * sont bien correct.
     * 
-    * @param untypedDocument
-    *           document à traiter
+    * @param metadatas
+    *           la liste des métadonnées
     * 
     */
    @Before(CHECK_UNTYPED_METHOD)
@@ -51,8 +51,8 @@ public class SaeControleMetadataServiceValidation {
     * methode checkSaeMetadataForCapture de l'interface
     * SaeControleMetadataService sont bien correct.
     * 
-    * @param untypedDocument
-    *           document à traiter
+    * @param metadatas
+    *           la liste des métadonnées
     * 
     */
    @Before(CHECK_CAPTURE_METHOD)
@@ -69,8 +69,8 @@ public class SaeControleMetadataServiceValidation {
     * methode checkSaeMetadataForCapture de l'interface
     * SaeControleMetadataService sont bien correct.
     * 
-    * @param untypedDocument
-    *           document à traiter
+    * @param metadatas
+    *           la liste des métadonnées
     * 
     */
    @Before(CHECK_STORAGE_METHOD)

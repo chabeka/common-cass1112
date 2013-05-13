@@ -475,19 +475,20 @@ public class ResultatFileSuccessSupportImpl implements
          List<CaptureMasseVirtualDocument> intDocuments, int index)
          throws XMLStreamException {
 
+      int tempIndex = index;
       if (event.isStartElement()) {
          String tagName = event.asStartElement().getName().getLocalPart();
          gererStartTagVirtuel(staxUtils, tagName);
       } else if (event.isEndElement()) {
          String tagName = event.asEndElement().getName().getLocalPart();
-         index = gererEndTagVirtuel(staxUtils, tagName, intDocuments, index);
+         tempIndex = gererEndTagVirtuel(staxUtils, tagName, intDocuments, index);
 
       } else if (event.isCharacters()) {
          String value = event.asCharacters().getData();
          staxUtils.addValue(value);
       }
 
-      return index;
+      return tempIndex;
 
    }
 
@@ -500,6 +501,8 @@ public class ResultatFileSuccessSupportImpl implements
    private int gererEndTagVirtuel(StaxWriteUtils staxUtils, String tagName,
          List<CaptureMasseVirtualDocument> intDocuments, int index)
          throws XMLStreamException {
+      
+      int tempIndex = index;
       if ("documentsVirtuels".equals(tagName)) {
          staxUtils.addEndTag("integratedVirtualDocuments", PX_RES, NS_RES);
       } else if ("documentVirtuel".equals(tagName)) {
@@ -509,12 +512,12 @@ public class ResultatFileSuccessSupportImpl implements
          staxUtils.addStartTag("uuid", PX_SOMRES, NS_SOMRES);
          staxUtils.addValue(intDocuments.get(index).getUuid().toString());
          staxUtils.addEndTag("uuid", PX_SOMRES, NS_SOMRES);
-         index++;
+         tempIndex++;
       } else if (!"sommaire".equalsIgnoreCase(tagName)) {
          staxUtils.addEndTag(tagName, PX_RES, NS_RES);
       }
 
-      return index;
+      return tempIndex;
 
    }
 

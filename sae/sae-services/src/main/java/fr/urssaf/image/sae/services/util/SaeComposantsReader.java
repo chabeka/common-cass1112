@@ -44,7 +44,7 @@ public class SaeComposantsReader
       ResourceAwareItemReaderItemStream<JAXBElement<SaeComposantVirtuelType>>,
       InitializingBean {
 
-   private static final Log logger = LogFactory
+   private static final Log LOGGER = LogFactory
          .getLog(StaxEventItemReader.class);
 
    private FragmentEventReader fragmentReader;
@@ -69,6 +69,9 @@ public class SaeComposantsReader
 
    private int indexCount = -1;
 
+   /**
+    * Constructeur
+    */
    public SaeComposantsReader() {
       setName(ClassUtils.getShortName(StaxEventItemReader.class));
    }
@@ -81,11 +84,15 @@ public class SaeComposantsReader
     * @param strict
     *           false by default
     */
-   public void setStrict(boolean strict) {
+   public final void setStrict(boolean strict) {
       this.strict = strict;
    }
 
-   public void setResource(Resource resource) {
+   /**
+    * @param resource
+    *           la resource à lire
+    */
+   public final void setResource(Resource resource) {
       this.resource = resource;
    }
 
@@ -93,7 +100,7 @@ public class SaeComposantsReader
     * @param unmarshaller
     *           maps xml fragments corresponding to records to objects
     */
-   public void setUnmarshaller(Unmarshaller unmarshaller) {
+   public final void setUnmarshaller(Unmarshaller unmarshaller) {
       this.unmarshaller = unmarshaller;
    }
 
@@ -101,7 +108,7 @@ public class SaeComposantsReader
     * @param fragmentRootElementName
     *           name of the root element of the fragment
     */
-   public void setFragmentRootElementName(String fragmentRootElementName) {
+   public final void setFragmentRootElementName(String fragmentRootElementName) {
       this.fragmentRootElementName = fragmentRootElementName;
    }
 
@@ -109,7 +116,7 @@ public class SaeComposantsReader
     * {@inheritDoc}
     */
    @Override
-   public void afterPropertiesSet() throws Exception {
+   public final void afterPropertiesSet() throws Exception {
       Assert.notNull(unmarshaller, "The Unmarshaller must not be null.");
       Assert.hasLength(fragmentRootElementName,
             "The FragmentRootElementName must not be null");
@@ -136,8 +143,7 @@ public class SaeComposantsReader
     *            if the cursor could not be moved. This will be treated as fatal
     *            and subsequent calls to read will return null.
     */
-   protected boolean moveCursorToNextFragment(XMLEventReader reader)
-         throws NonTransientResourceException {
+   protected final boolean moveCursorToNextFragment(XMLEventReader reader) {
       try {
          while (true) {
             while (reader.peek() != null && !reader.peek().isStartElement()) {
@@ -172,7 +178,7 @@ public class SaeComposantsReader
     * {@inheritDoc}
     */
    @Override
-   protected void doClose() throws Exception {
+   protected final void doClose() throws Exception {
       try {
          if (fragmentReader != null) {
             fragmentReader.close();
@@ -191,7 +197,7 @@ public class SaeComposantsReader
     * {@inheritDoc}
     */
    @Override
-   protected void doOpen() throws Exception {
+   protected final void doOpen() throws Exception {
       Assert.notNull(resource, "The Resource must not be null.");
 
       noInput = true;
@@ -200,7 +206,7 @@ public class SaeComposantsReader
             throw new IllegalStateException(
                   "Input resource must exist (reader is in 'strict' mode)");
          }
-         logger.warn("Input resource does not exist "
+         LOGGER.warn("Input resource does not exist "
                + resource.getDescription());
          return;
       }
@@ -209,7 +215,7 @@ public class SaeComposantsReader
             throw new IllegalStateException(
                   "Input resource must be readable (reader is in 'strict' mode)");
          }
-         logger.warn("Input resource is not readable "
+         LOGGER.warn("Input resource is not readable "
                + resource.getDescription());
          return;
       }
@@ -226,7 +232,8 @@ public class SaeComposantsReader
     * {@inheritDoc}
     */
    @Override
-   protected JAXBElement<SaeComposantVirtuelType> doRead() throws Exception {
+   protected final JAXBElement<SaeComposantVirtuelType> doRead()
+         throws Exception {
 
       if (noInput) {
          return null;
@@ -271,7 +278,7 @@ public class SaeComposantsReader
     * {@inheritDoc}
     */
    @Override
-   protected void jumpToItem(int itemIndex) throws Exception {
+   protected final void jumpToItem(int itemIndex) throws Exception {
       for (int i = 0; i < itemIndex; i++) {
          readToStartFragment();
          readToEndFragment();
