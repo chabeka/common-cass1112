@@ -113,10 +113,10 @@ public class SaeMetaDataServiceImpl implements SaeMetaDataService {
       // On vérifie si la métadonnée que la métadonné existe si ce n'est pas le
       // cas on sort en exception
       MetadataReference meta = saeMetadatasupport.find(metadata.getLongCode());
-      if (meta != null) {
-         saeMetadatasupport.create(metadata, clockSupport.currentCLock());
-      } else {
+      if (meta == null) {
          throw new MetadataReferenceNotFoundException(metadata.getLongCode());
+      } else {
+         saeMetadatasupport.create(metadata, clockSupport.currentCLock());
       }
    }
 

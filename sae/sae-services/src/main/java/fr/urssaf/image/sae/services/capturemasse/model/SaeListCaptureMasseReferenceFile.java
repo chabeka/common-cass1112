@@ -19,4 +19,10 @@ public class SaeListCaptureMasseReferenceFile extends
 
    private static final long serialVersionUID = 1L;
 
+   /**
+    * Constructeur
+    */
+   public SaeListCaptureMasseReferenceFile() {
+      // nothing to do
+   }
 }

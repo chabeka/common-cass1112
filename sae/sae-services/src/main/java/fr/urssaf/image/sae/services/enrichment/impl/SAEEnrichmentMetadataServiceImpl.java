@@ -214,11 +214,11 @@ public class SAEEnrichmentMetadataServiceImpl implements
             saeMetadata.setShortCode(metadataReferenceDAO.getByLongCode(
                   SAEArchivalMetadatas.NOM_FICHIER.getLongCode())
                   .getShortCode());
-            if (filePath != null) {
+            if (filePath == null) {
+               saeMetadata.setValue(fileName);
+            } else {
                saeMetadata.setValue(FilenameUtils.getName(FilenameUtils
                      .separatorsToSystem(filePath)));
-            } else {
-               saeMetadata.setValue(fileName);
             }
             metadatas.add(saeMetadata);
          } else if (metadata.getLongCode().equals(

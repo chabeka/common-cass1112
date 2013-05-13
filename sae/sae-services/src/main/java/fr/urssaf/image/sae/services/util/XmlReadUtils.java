@@ -128,10 +128,10 @@ public final class XmlReadUtils {
                event = reader.nextEvent();
                // Si c'est une balise texte
                if (event.isCharacters()) {
-                  if (!event.asCharacters().isWhiteSpace()) {
-                     return event.asCharacters().getData();
-                  } else {
+                  if (event.asCharacters().isWhiteSpace()) {
                      return null;
+                  } else {
+                     return event.asCharacters().getData();
                   }
                } else {
                   return null;

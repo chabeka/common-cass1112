@@ -63,6 +63,8 @@ import fr.urssaf.image.sae.services.util.JAXBUtils;
 public class ResultatFileSuccessSupportImpl implements
       ResultatFileSuccessSupport {
 
+   private static final String ERREUR_VALEUR_VIDE = "Valeur vide non autorisée dans la valeur de la balise";
+
    private static final Logger LOGGER = LoggerFactory
          .getLogger(ResultatFileSuccessSupportImpl.class);
 
@@ -206,7 +208,7 @@ public class ResultatFileSuccessSupportImpl implements
                      final XMLEvent xmlEventTmp = reader.peek();
                      if (!xmlEventTmp.isCharacters()) {
                         throw new CaptureMasseRuntimeException(
-                              "Valeur vide non autorisée dans la valeur de la balise");
+                              ERREUR_VALEUR_VIDE);
                      }
                      objetNumerique.setCheminEtNomDuFichier(xmlEventTmp
                            .asCharacters().getData());
@@ -218,7 +220,7 @@ public class ResultatFileSuccessSupportImpl implements
                      final XMLEvent xmlEventTmp = reader.peek();
                      if (!xmlEventTmp.isCharacters()) {
                         throw new CaptureMasseRuntimeException(
-                              "Valeur vide non autorisée dans la valeur de la balise");
+                              ERREUR_VALEUR_VIDE);
                      }
                      metadonnee.setCode(xmlEventTmp.asCharacters().getData());
                   } else if (VALEUR.equals(name)) {
@@ -226,7 +228,7 @@ public class ResultatFileSuccessSupportImpl implements
                      final XMLEvent xmlEventTmp = reader.peek();
                      if (!xmlEventTmp.isCharacters()) {
                         throw new CaptureMasseRuntimeException(
-                              "Valeur vide non autorisée dans la valeur de la balise");
+                              ERREUR_VALEUR_VIDE);
                      }
                      metadonnee.setValeur(xmlEventTmp.asCharacters().getData());
                      metadonnees.getMetadonnee().add(metadonnee);
@@ -235,7 +237,7 @@ public class ResultatFileSuccessSupportImpl implements
                      final XMLEvent xmlEventTmp = reader.peek();
                      if (!xmlEventTmp.isCharacters()) {
                         throw new CaptureMasseRuntimeException(
-                              "Valeur vide non autorisée dans la valeur de la balise");
+                              ERREUR_VALEUR_VIDE);
                      }
                      integratedDocumentType.setNumeroPageDebut(Integer
                            .parseInt(xmlEventTmp.asCharacters().getData()));
@@ -244,7 +246,7 @@ public class ResultatFileSuccessSupportImpl implements
                      final XMLEvent xmlEventTmp = reader.peek();
                      if (!xmlEventTmp.isCharacters()) {
                         throw new CaptureMasseRuntimeException(
-                              "Valeur vide non autorisée dans la valeur de la balise");
+                              ERREUR_VALEUR_VIDE);
                      }
                      integratedDocumentType.setNombreDePages(Integer
                            .parseInt(xmlEventTmp.asCharacters().getData()));

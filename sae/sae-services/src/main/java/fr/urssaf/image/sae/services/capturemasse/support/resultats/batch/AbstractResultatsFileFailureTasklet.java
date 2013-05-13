@@ -99,27 +99,27 @@ public abstract class AbstractResultatsFileFailureTasklet implements Tasklet {
    /**
     * @return la liste des éléments intégrés
     */
-   abstract ConcurrentLinkedQueue<?> getIntegratedDocuments();
+   protected abstract ConcurrentLinkedQueue<?> getIntegratedDocuments();
 
    /**
     * @return l'indicateur de traitement de documents virtuels
     */
-   abstract boolean isVirtual();
+   protected abstract boolean isVirtual();
 
    /**
     * @return le support de génération des fichiers en erreur
     */
-   abstract ResultatsFileEchecSupport getResultatsFileEchecSupport();
+   protected abstract ResultatsFileEchecSupport getResultatsFileEchecSupport();
 
    /**
     * @return la classe permettant de réaliser des validations de fichier
     *         sommaire
     */
-   abstract SommaireFormatValidationSupport getSommaireFormatValidationSupport();
+   protected abstract SommaireFormatValidationSupport getSommaireFormatValidationSupport();
 
    /**
     * @return le support de validation de fichiers XML
     */
-   abstract XsdValidationSupport getXsdValidationSupport();
+   protected abstract XsdValidationSupport getXsdValidationSupport();
 
 }

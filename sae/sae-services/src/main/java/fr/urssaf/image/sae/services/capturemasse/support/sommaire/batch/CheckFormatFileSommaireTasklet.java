@@ -50,6 +50,7 @@ public class CheckFormatFileSommaireTasklet implements Tasklet {
     * {@inheritDoc}
     */
    @Override
+   @SuppressWarnings("unchecked")
    public final RepeatStatus execute(final StepContribution contribution,
          final ChunkContext chunkContext) {
 
@@ -100,7 +101,6 @@ public class CheckFormatFileSommaireTasklet implements Tasklet {
 
       } catch (CaptureMasseSommaireFormatValidationException e) {
          final Exception exception = new Exception(e.getMessage());
-         @SuppressWarnings("unchecked")
          ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) chunkContext
                .getStepContext().getStepExecution().getJobExecution()
                .getExecutionContext().get(Constantes.DOC_EXCEPTION);
@@ -108,21 +108,18 @@ public class CheckFormatFileSommaireTasklet implements Tasklet {
 
       } catch (CaptureMasseRuntimeException e) {
          final Exception exception = new Exception(e.getMessage());
-         @SuppressWarnings("unchecked")
          ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) chunkContext
                .getStepContext().getStepExecution().getJobExecution()
                .getExecutionContext().get(Constantes.DOC_EXCEPTION);
          exceptions.add(exception);
       } catch (CaptureMasseSommaireHashException e) {
          final Exception exception = new Exception(e.getMessage());
-         @SuppressWarnings("unchecked")
          ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) chunkContext
                .getStepContext().getStepExecution().getJobExecution()
                .getExecutionContext().get(Constantes.DOC_EXCEPTION);
          exceptions.add(exception);
       } catch (CaptureMasseSommaireTypeHashException e) {
          final Exception exception = new Exception(e.getMessage());
-         @SuppressWarnings("unchecked")
          ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) chunkContext
                .getStepContext().getStepExecution().getJobExecution()
                .getExecutionContext().get(Constantes.DOC_EXCEPTION);

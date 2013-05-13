@@ -20,13 +20,6 @@ import fr.urssaf.image.sae.metadata.referential.model.DfceConfig;
 public final class DfceConfigFactory {
 
    /**
-    * Constructeur
-    */
-   public DfceConfigFactory() {
-
-   }
-
-   /**
     * Methode permettant de créer un objet DfceConfig.
     * 
     * @param saeGeneralConfig
@@ -64,7 +57,8 @@ public final class DfceConfigFactory {
    /**
     * Création de l'objet properties pour la lecture du fichier de conf DFCE
     * 
-    * @throws IOException erreur de lecture du fichier
+    * @throws IOException
+    *            erreur de lecture du fichier
     */
    private Properties readDfceConf(String filePathDfceConf) throws IOException {
       Properties props = new Properties();

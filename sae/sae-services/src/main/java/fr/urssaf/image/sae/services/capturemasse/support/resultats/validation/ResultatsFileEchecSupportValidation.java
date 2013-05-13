@@ -20,6 +20,8 @@ import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
 @Aspect
 public class ResultatsFileEchecSupportValidation {
 
+  private static final String ARGUMENT_REQUIRED = "argument.required";
+
    private static final String WRITE_METHOD = "execution(void fr.urssaf.image.sae.services.capturemasse.support.resultats.ResultatsFileEchecSupport.writeResultatsFile(*,*,*,*))"
          + " && args(ecdeDirectory,sommaireFile,erreur, nombreDocsTotal)";
 
@@ -46,17 +48,17 @@ public class ResultatsFileEchecSupportValidation {
 
       if (ecdeDirectory == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "ecdeDirectory"));
+               ARGUMENT_REQUIRED, "ecdeDirectory"));
       }
 
       if (sommaireFile == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "sommaireFile"));
+               ARGUMENT_REQUIRED, "sommaireFile"));
       }
 
       if (erreur == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "erreur"));
+               ARGUMENT_REQUIRED, "erreur"));
       }
 
    }
@@ -81,17 +83,17 @@ public class ResultatsFileEchecSupportValidation {
 
       if (ecdeDirectory == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "ecdeDirectory"));
+               ARGUMENT_REQUIRED, "ecdeDirectory"));
       }
 
       if (sommaireFile == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "sommaireFile"));
+               ARGUMENT_REQUIRED, "sommaireFile"));
       }
 
       if (erreur == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "erreur"));
+               ARGUMENT_REQUIRED, "erreur"));
       }
 
    }

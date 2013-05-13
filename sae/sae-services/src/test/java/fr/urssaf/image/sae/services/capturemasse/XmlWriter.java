@@ -23,7 +23,7 @@ import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 
 /**
- * 
+ * Classe permettant l'écriture des storagedocument
  * 
  */
 public class XmlWriter implements ItemWriter<StorageDocument> {

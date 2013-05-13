@@ -23,6 +23,8 @@ import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
 @Aspect
 public class ResultatFileSuccessSupportValidation {
 
+   private static final String ARGUMENT_REQUIRED = "argument.required";
+
    private static final String CHECK_METHOD = "execution(void fr.urssaf.image.sae.services.capturemasse.support.resultats.ResultatFileSuccessSupport.writeResultatsFile(*,*,*,*,*))"
          + " && args(ecdeDirectory,integDocs,documentsCount,restitutionUuids,sommaireFile)";
 
@@ -56,17 +58,17 @@ public class ResultatFileSuccessSupportValidation {
 
       if (ecdeDirectory == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "ecdeDirectory"));
+               ARGUMENT_REQUIRED, "ecdeDirectory"));
       }
 
       if (documentsCount < 0) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "documentsCount"));
+               ARGUMENT_REQUIRED, "documentsCount"));
       }
 
       if (restitutionUuids && sommaireFile == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "documentsCount"));
+               ARGUMENT_REQUIRED, "documentsCount"));
       }
 
    }
@@ -98,22 +100,22 @@ public class ResultatFileSuccessSupportValidation {
 
       if (ecdeDirectory == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "ecdeDirectory"));
+               ARGUMENT_REQUIRED, "ecdeDirectory"));
       }
 
       if (restitutionUuids && CollectionUtils.isEmpty(integDocs)) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "liste des documents intégrés"));
+               ARGUMENT_REQUIRED, "liste des documents intégrés"));
       }
 
       if (documentsCount < 0) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "documentsCount"));
+               ARGUMENT_REQUIRED, "documentsCount"));
       }
 
       if (restitutionUuids && sommaireFile == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "fichier sommaire"));
+               ARGUMENT_REQUIRED, "fichier sommaire"));
       }
 
    }

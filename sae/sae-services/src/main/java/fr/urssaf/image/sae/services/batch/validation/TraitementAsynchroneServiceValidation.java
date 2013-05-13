@@ -47,14 +47,15 @@ public class TraitementAsynchroneServiceValidation {
                "parametres"));
       }
 
-      if(!MapUtils.isEmpty(parametres.getJobParameters())){
-         if(StringUtils.isBlank(parametres.getJobParameters().get(Constantes.ECDE_URL))){
-            throw new IllegalArgumentException(MessageFormat.format(ARG_EMPTY,
-            "urlEcde"));
-         }
-      }else{
+      if (MapUtils.isEmpty(parametres.getJobParameters())) {
          if (StringUtils.isBlank(parametres.getEcdeURL())) {
-   
+
+            throw new IllegalArgumentException(MessageFormat.format(ARG_EMPTY,
+                  "urlEcde"));
+         }
+      } else {
+         if (StringUtils.isBlank(parametres.getJobParameters().get(
+               Constantes.ECDE_URL))) {
             throw new IllegalArgumentException(MessageFormat.format(ARG_EMPTY,
                   "urlEcde"));
          }

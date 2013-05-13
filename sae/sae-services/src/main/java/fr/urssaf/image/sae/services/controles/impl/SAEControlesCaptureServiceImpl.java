@@ -119,7 +119,10 @@ public class SAEControlesCaptureServiceImpl implements
       // pré-définit.
       String fileName = null;
       byte[] content = null;
-      if (saeDocument.getFilePath() != null) {
+      if (saeDocument.getFilePath() == null) {
+         fileName = saeDocument.getFileName();
+         content = saeDocument.getContent();
+      } else {
          fileName = FilenameUtils.getBaseName(saeDocument.getFilePath());
          File docFile = new File(saeDocument.getFilePath());
          try {
@@ -127,9 +130,6 @@ public class SAEControlesCaptureServiceImpl implements
          } catch (IOException e) {
             throw new SAECaptureServiceRuntimeException(e);
          }
-      } else {
-         fileName = saeDocument.getFileName();
-         content = saeDocument.getContent();
       }
 
       // File docFile = new File(saeDocument.getFilePath());

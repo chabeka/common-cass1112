@@ -20,6 +20,8 @@ import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageDocument;
 @Aspect
 public class EnrichissementStorageDocumentSupportValidation {
 
+   private static final String ARGUMENT_REQUIRED = "argument.required";
+
    private static final String ENRICHMENT = "execution(fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument fr.urssaf.image.sae.services.capturemasse.support.enrichissement.EnrichissementStorageDocumentSupport.enrichirDocument(*,*))"
          + " && args(document,uuid)";
 
@@ -41,12 +43,12 @@ public class EnrichissementStorageDocumentSupportValidation {
 
       if (document == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "document"));
+               ARGUMENT_REQUIRED, "document"));
       }
 
       if (StringUtils.isBlank(uuid)) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "uuid"));
+               ARGUMENT_REQUIRED, "uuid"));
       }
    }
 
@@ -65,12 +67,12 @@ public class EnrichissementStorageDocumentSupportValidation {
 
       if (document == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "document virtuel"));
+               ARGUMENT_REQUIRED, "document virtuel"));
       }
       
       if (StringUtils.isEmpty(uuid)) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "identifiant unique du process"));
+               ARGUMENT_REQUIRED, "identifiant unique du process"));
       }
    }
 }

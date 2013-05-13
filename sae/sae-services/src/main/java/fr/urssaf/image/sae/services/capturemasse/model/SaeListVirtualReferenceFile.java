@@ -20,4 +20,10 @@ public class SaeListVirtualReferenceFile extends
 
    private static final long serialVersionUID = 1L;
 
+   /**
+    * Constructeur
+    */
+   public SaeListVirtualReferenceFile() {
+      // nothing to do
+   }
 }

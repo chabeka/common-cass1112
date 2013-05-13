@@ -38,6 +38,8 @@ import fr.urssaf.image.sae.storage.dfce.utils.Utils;
 public class SaeControleMetadataServiceImpl implements
       SaeControleMetadataService {
 
+   private static final String META_OBLIGATOIRE = "capture.metadonnees.archivage.obligatoire";
+
    private static final Logger LOG = LoggerFactory
          .getLogger(SaeControleMetadataServiceImpl.class);
 
@@ -115,9 +117,9 @@ public class SaeControleMetadataServiceImpl implements
       if (CollectionUtils.isNotEmpty(errorsList)) {
          listeCodeLong = buildLongCodeError(errorsList);
          LOG.debug("{} - {}", trcPrefix, ResourceMessagesUtils.loadMessage(
-               "capture.metadonnees.archivage.obligatoire", listeCodeLong));
+               META_OBLIGATOIRE, listeCodeLong));
          throw new RequiredArchivableMetadataEx(ResourceMessagesUtils
-               .loadMessage("capture.metadonnees.archivage.obligatoire",
+               .loadMessage(META_OBLIGATOIRE,
                      listeCodeLong));
       }
       LOG
@@ -183,9 +185,9 @@ public class SaeControleMetadataServiceImpl implements
       if (CollectionUtils.isNotEmpty(errorsList)) {
          listeCodeLong = buildLongCodeError(errorsList);
          LOG.debug("{} - {}", trcPrefix, ResourceMessagesUtils.loadMessage(
-               "capture.metadonnees.archivage.obligatoire", listeCodeLong));
+               META_OBLIGATOIRE, listeCodeLong));
          throw new RequiredArchivableMetadataEx(ResourceMessagesUtils
-               .loadMessage("capture.metadonnees.archivage.obligatoire",
+               .loadMessage(META_OBLIGATOIRE,
                      listeCodeLong));
       }
       LOG

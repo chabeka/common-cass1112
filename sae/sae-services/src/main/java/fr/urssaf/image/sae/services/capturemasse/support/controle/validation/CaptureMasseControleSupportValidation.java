@@ -24,6 +24,8 @@ import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
 @Aspect
 public class CaptureMasseControleSupportValidation {
 
+  private static final String ARGUMENT_REQUIRED = "argument.required";
+
    private static final String CONTROLE = "execution(void fr.urssaf.image.sae.services.capturemasse.support.controle.CaptureMasseControleSupport.controleSAEDocument(*,*))"
          + " && args(document,ecdeDirectory)";
 
@@ -54,12 +56,12 @@ public class CaptureMasseControleSupportValidation {
 
       if (document == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "document"));
+               ARGUMENT_REQUIRED, "document"));
       }
 
       if (ecdeDirectory == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "ecdeDirectory"));
+               ARGUMENT_REQUIRED, "ecdeDirectory"));
       }
 
    }
@@ -76,7 +78,7 @@ public class CaptureMasseControleSupportValidation {
 
       if (document == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "document"));
+               ARGUMENT_REQUIRED, "document"));
       }
 
    }
@@ -96,12 +98,12 @@ public class CaptureMasseControleSupportValidation {
 
       if (reference == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "fichier de référence"));
+               ARGUMENT_REQUIRED, "fichier de référence"));
       }
 
       if (ecdeDirectory == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "ecdeDirectory"));
+               ARGUMENT_REQUIRED, "ecdeDirectory"));
       }
 
    }
@@ -119,12 +121,12 @@ public class CaptureMasseControleSupportValidation {
 
       if (document == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "document virtuel"));
+               ARGUMENT_REQUIRED, "document virtuel"));
       }
 
       if (document.getReference() == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "fichier de référence du document"));
+               ARGUMENT_REQUIRED, "fichier de référence du document"));
       }
 
    }
@@ -142,7 +144,7 @@ public class CaptureMasseControleSupportValidation {
 
       if (document == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "document virtuel"));
+               ARGUMENT_REQUIRED, "document virtuel"));
       }
 
    }
