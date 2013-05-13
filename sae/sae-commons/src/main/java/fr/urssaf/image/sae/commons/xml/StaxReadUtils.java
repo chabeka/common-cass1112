@@ -7,14 +7,21 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+
+import javanet.staxutils.IndentingXMLEventWriter;
 
 import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import fr.urssaf.image.sae.commons.exception.StaxRuntimeException;
 
 /**
  * Classe utilitaire de lecture de fichier XML
@@ -161,6 +168,27 @@ public final class StaxReadUtils {
                      + file.getAbsolutePath());
             }
          }
+      }
+   }
+
+   /**
+    * création du writer du fichier XML
+    * 
+    * @param inputStream
+    *           flux d'entrée
+    * @return le reader créé à partir de l'inputStream
+    */
+   public static XMLEventReader loadReader(InputStream inputStream) {
+
+      final XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+
+      try {
+         final XMLEventReader reader = inputFactory
+               .createXMLEventReader(inputStream);
+         return reader;
+
+      } catch (XMLStreamException exception) {
+         throw new StaxRuntimeException(exception);
       }
    }
 

@@ -7,7 +7,7 @@ import java.io.File;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import fr.urssaf.image.sae.services.capturemasse.model.CaptureMasseIntegratedDocument;
-import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageDocument;
+import fr.urssaf.image.sae.services.capturemasse.model.CaptureMasseVirtualDocument;
 
 /**
  * Support pour l'écriture des fichiers resultats.xml pour les traitements de
@@ -54,7 +54,7 @@ public interface ResultatFileSuccessSupport {
     *           fichier sommaire.xml
     */
    void writeVirtualResultatsFile(File ecdeDirectory,
-         ConcurrentLinkedQueue<VirtualStorageDocument> integDocs,
+         ConcurrentLinkedQueue<CaptureMasseVirtualDocument> integDocs,
          int initDocCount, boolean restitutionUuids, File sommaireFile);
 
 }

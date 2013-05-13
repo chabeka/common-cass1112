@@ -41,6 +41,7 @@ import fr.urssaf.image.sae.webservices.exception.CaptureAxisFault;
 import fr.urssaf.image.sae.webservices.impl.factory.ObjectStorageResponseFactory;
 import fr.urssaf.image.sae.webservices.service.WSCaptureMasseService;
 import fr.urssaf.image.sae.webservices.util.HostnameUtil;
+import fr.urssaf.image.sae.webservices.util.MessageRessourcesUtils;
 
 /**
  * Implémentation de {@link WSCaptureMasseService}<br>
@@ -222,9 +223,23 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
       }
 
       Integer nombreDoc = null;
+      int nombreDocuments = 0;
+      int nombreComposants = 0;
 
       try {
-         nombreDoc = XmlReadUtils.compterElements(sommaire, "document");
+         nombreDocuments = XmlReadUtils.compterElements(sommaire, "document");
+         nombreComposants = XmlReadUtils.compterElements(sommaire, "composant");
+
+         if ((nombreDocuments + nombreComposants == 0)
+               || (nombreComposants > 0 && nombreDocuments > 0)) {
+            String message = MessageRessourcesUtils.recupererMessage(
+                  "capture.masse.sommaire.format.incorrect", null);
+            throw new CaptureAxisFault("FormatSommaireIncorrect", message);
+         } else if (nombreDocuments > 0) {
+            nombreDoc = nombreDocuments;
+         } else {
+            nombreDoc = nombreComposants;
+         }
 
       } catch (CaptureMasseRuntimeException e) {
          LOG.warn("impossible d'ouvrir le fichier attendu", e);

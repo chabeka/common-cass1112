@@ -11,8 +11,8 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 
 import fr.urssaf.image.sae.services.capturemasse.model.CaptureMasseIntegratedDocument;
+import fr.urssaf.image.sae.services.capturemasse.model.CaptureMasseVirtualDocument;
 import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
-import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageDocument;
 
 /**
  * Validation des arguments en entrée des implémentations du service
@@ -92,16 +92,16 @@ public class ResultatFileSuccessSupportValidation {
     */
    @Before(CHECK_VRTL_METHOD)
    public final void checkVirtualWriteResultats(final File ecdeDirectory,
-         final ConcurrentLinkedQueue<VirtualStorageDocument> integDocs,
+         final ConcurrentLinkedQueue<CaptureMasseVirtualDocument> integDocs,
          final int documentsCount, final boolean restitutionUuids,
          final File sommaireFile) {
-      
+
       if (ecdeDirectory == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
                "argument.required", "ecdeDirectory"));
       }
 
-      if (CollectionUtils.isEmpty(integDocs)) {
+      if (restitutionUuids && CollectionUtils.isEmpty(integDocs)) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
                "argument.required", "liste des documents intégrés"));
       }

@@ -12,8 +12,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import org.xml.sax.SAXException;
 
+import fr.urssaf.image.sae.commons.xml.StaxValidateUtils;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
-import fr.urssaf.image.sae.services.util.XmlValidationUtils;
 
 /**
  * Support de validation de fichier XML à l'aide de fichiers XSD
@@ -42,7 +42,7 @@ public final class XsdValidationSupport {
 
          URL xsdSchema = sommaireXSD.getURL();
 
-         XmlValidationUtils.parse(fileResultats, xsdSchema);
+         StaxValidateUtils.parse(fileResultats, xsdSchema);
 
       } catch (IOException ioExcept) {
          throw new CaptureMasseRuntimeException(

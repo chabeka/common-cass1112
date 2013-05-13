@@ -18,7 +18,6 @@ import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.metadata.control.services.MetadataControlServices;
-import fr.urssaf.image.sae.metadata.exceptions.DictionaryNotFoundException;
 import fr.urssaf.image.sae.metadata.exceptions.MetadataRuntimeException;
 import fr.urssaf.image.sae.metadata.exceptions.ReferentialException;
 import fr.urssaf.image.sae.metadata.messages.MetadataMessageHandler;

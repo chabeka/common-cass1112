@@ -56,7 +56,7 @@ public class CountSommaireDocumentsTasklet implements Tasklet {
 
       int nbreDocs = XmlReadUtils.compterElements(file, "document");
 
-      int nbreVDocs = XmlReadUtils.compterElements(file, "documentVirtuel");
+      int nbreVDocs = XmlReadUtils.compterElements(file, "composant");
       int nbre;
       String redirection;
 

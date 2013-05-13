@@ -234,8 +234,6 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
                index = startTag(name, staxUtils, reader, erreur, index);
             }
 
-            staxUtils.flush();
-
          } else if (xmlEvent.isEndElement()) {
             endElement = xmlEvent.asEndElement();
             name = endElement.getName().getLocalPart();
@@ -245,12 +243,8 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
             } else {
                endElement(name, staxUtils);
             }
-
-            staxUtils.flush();
          }
       }
-
-      staxUtils.flush();
 
       if (!isVirtual) {
          staxUtils.addStartTag("nonIntegratedVirtualDocuments", PX_RES,
@@ -259,11 +253,7 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
                NS_SOMRES);
       }
 
-      staxUtils.flush();
-
       staxUtils.addEndTag("resultats", PX_RES, NS_RES);
-
-      staxUtils.flush();
    }
 
    /**
@@ -494,8 +484,6 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
       staxUtils.createTag("nonIntegratedVirtualDocumentsCount", countVirtual,
             PX_RES, NS_RES);
 
-      staxUtils.flush();
-
    }
 
    private void gestionValeur(XMLEvent xmlEvent, StaxUtils staxUtils)
@@ -551,8 +539,6 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
                staxUtils.createTag("code", code, PX_SOMRES, NS_SOMRES);
                staxUtils.createTag("libelle", message, PX_SOMRES, NS_SOMRES);
                staxUtils.addEndTag("erreur", PX_SOMRES, NS_SOMRES);
-
-               staxUtils.flush();
             }
          }
       }
@@ -597,8 +583,6 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
                staxUtils.createTag("code", code, PX_SOMRES, NS_SOMRES);
                staxUtils.createTag("libelle", message, PX_SOMRES, NS_SOMRES);
                staxUtils.addEndTag("erreur", PX_SOMRES, NS_SOMRES);
-
-               staxUtils.flush();
             }
          }
       }

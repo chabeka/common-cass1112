@@ -11,6 +11,8 @@ import java.util.Arrays;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Assert;
@@ -21,11 +23,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.xml.sax.SAXException;
 
+import fr.urssaf.image.sae.commons.xml.StaxValidateUtils;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.services.capturemasse.model.CaptureMasseIntegratedDocument;
-import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageDocument;
+import fr.urssaf.image.sae.services.capturemasse.model.CaptureMasseVirtualDocument;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })
@@ -146,6 +150,58 @@ public class ResultatFileSuccessSupportTest {
    }
 
    @Test
+   public void testWriteFileVirtualWithUuidsSuccess() {
+      try {
+         File ecdeDirectory = ecdeTestSommaire.getRepEcde();
+
+         // Fichier sommaire.xml
+         File sommaire = new File(ecdeDirectory, "sommaire.xml");
+         ClassPathResource resSommaire = new ClassPathResource(
+               "sommaire_virtuel.xml");
+         FileOutputStream fos = new FileOutputStream(sommaire);
+         IOUtils.copy(resSommaire.getInputStream(), fos);
+
+         // Liste des documents intégrés
+         ConcurrentLinkedQueue<CaptureMasseVirtualDocument> clq = new ConcurrentLinkedQueue<CaptureMasseVirtualDocument>();
+         CaptureMasseVirtualDocument doc1 = new CaptureMasseVirtualDocument();
+         doc1.setUuid(UUID.randomUUID());
+         doc1.setIndex(0);
+         clq.add(doc1);
+         doc1.setIndex(0);
+         CaptureMasseVirtualDocument doc2 = new CaptureMasseVirtualDocument();
+         doc2.setUuid(UUID.randomUUID());
+         doc2.setIndex(1);
+         clq.add(doc2);
+         CaptureMasseVirtualDocument doc3 = new CaptureMasseVirtualDocument();
+         doc3.setUuid(UUID.randomUUID());
+         doc3.setIndex(2);
+         clq.add(doc3);
+
+         support.writeVirtualResultatsFile(ecdeDirectory, clq, 3, true,
+               sommaire);
+
+         File resultatsFile = new File(ecdeDirectory, "resultats.xml");
+
+         Assert.assertTrue("le fichier resultats.xml doit exister",
+               resultatsFile.exists());
+         Assert.assertTrue("Le fichier doit avoir une taille > 0",
+               resultatsFile.length() > 0);
+
+         StaxValidateUtils.parse(resultatsFile, new ClassPathResource(
+               "xsd_som_res/resultats.xsd").getURL());
+      } catch (FileNotFoundException e) {
+         Assert.fail("le fichier sommaire.xml doit être valide");
+      } catch (IOException e) {
+         Assert.fail("le fichier sommaire.xml doit être valide");
+      } catch (ParserConfigurationException exception) {
+         Assert.fail("le fichier resultats.xml doit être valide");
+      } catch (SAXException exception) {
+         Assert.fail("le fichier resultats doit être valide");
+      }
+
+   }
+
+   @Test
    public void testVirtualEcdeDirectoryObligatoire() {
 
       try {
@@ -167,7 +223,7 @@ public class ResultatFileSuccessSupportTest {
 
       try {
          support
-               .writeVirtualResultatsFile(ecdeDirectory, null, -1, false, null);
+               .writeVirtualResultatsFile(ecdeDirectory, null, -1, true, null);
          Assert.fail("exception IllegalArgumentException attendue");
 
       } catch (IllegalArgumentException exception) {
@@ -182,8 +238,8 @@ public class ResultatFileSuccessSupportTest {
    @Test
    public void testVirtualCountObligatoire() {
       File ecdeDirectory = ecdeTestSommaire.getRepEcde();
-      ConcurrentLinkedQueue<VirtualStorageDocument> list = new ConcurrentLinkedQueue<VirtualStorageDocument>(
-            Arrays.asList(new VirtualStorageDocument()));
+      ConcurrentLinkedQueue<CaptureMasseVirtualDocument> list = new ConcurrentLinkedQueue<CaptureMasseVirtualDocument>(
+            Arrays.asList(new CaptureMasseVirtualDocument()));
 
       try {
          support
@@ -202,8 +258,8 @@ public class ResultatFileSuccessSupportTest {
    @Test
    public void testVirtualSommaireObligatoire() {
       File ecdeDirectory = ecdeTestSommaire.getRepEcde();
-      ConcurrentLinkedQueue<VirtualStorageDocument> list = new ConcurrentLinkedQueue<VirtualStorageDocument>(
-            Arrays.asList(new VirtualStorageDocument()));
+      ConcurrentLinkedQueue<CaptureMasseVirtualDocument> list = new ConcurrentLinkedQueue<CaptureMasseVirtualDocument>(
+            Arrays.asList(new CaptureMasseVirtualDocument()));
 
       try {
          support.writeVirtualResultatsFile(ecdeDirectory, list, 1, true, null);

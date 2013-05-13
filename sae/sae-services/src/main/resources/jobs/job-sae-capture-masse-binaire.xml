@@ -135,6 +135,7 @@
                <listener ref="resultatsFileSuccessListener" />
             </listeners>
          </tasklet>
+         
          <next on="*" to="finTraitement" />
       </step>
 
@@ -159,6 +160,7 @@
             </listeners>
          </tasklet>
 
+         <next on="FAILED" to="finErreurVirtuel" />
          <next on="*" to="controleDocumentsVirtuels" />
       </step>
 
@@ -173,6 +175,7 @@
             </listeners>
          </tasklet>
 
+         <next on="FAILED" to="finErreurVirtuel" />
          <next on="*" to="persistanceFichiersReference" />
       </step>
 
@@ -191,6 +194,9 @@
 
          </tasklet>
 
+
+         <next on="FAILED" to="rollbackVirtuel" />
+         <next on="FAILED_NO_ROLLBACK" to="finErreurVirtuel" />
          <next on="*" to="persistanceDocumentsVirtuels" />
       </step>
 
@@ -206,7 +212,11 @@
                <listener ref="virtualStorageDocumentWriter" />
             </listeners>
          </tasklet>
-         <next on="*" to="rollbackVirtuel" />
+
+
+         <next on="FAILED" to="rollbackVirtuel" />
+         <next on="FAILED_NO_ROLLBACK" to="finErreurVirtuel" />
+         <next on="*" to="finSuccesVirtuel" />
       </step>
 
       <!--
@@ -230,7 +240,13 @@
 
       <!-- Ecriture du fichier résultat en succes -->
       <step id="finSuccesVirtuel">
-         <tasklet ref="resultatsVirtualFileFailureTasklet" />
+         <tasklet ref="resultatsVirtualFileSuccessTasklet">
+            <listeners>
+               <listener ref="resultatsFileSuccessListener" />
+            </listeners>
+         </tasklet>
+         
+         <next on="*" to="finTraitement" />
       </step>
 
    </job>

@@ -3,13 +3,15 @@
  */
 package fr.urssaf.image.sae.services.capturemasse.support.resultats.batch;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.batch.core.StepContribution;
-import org.springframework.batch.core.scope.context.ChunkContext;
-import org.springframework.batch.core.step.tasklet.Tasklet;
-import org.springframework.batch.repeat.RepeatStatus;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import fr.urssaf.image.sae.services.capturemasse.support.resultats.ResultatsFileEchecSupport;
+import fr.urssaf.image.sae.services.capturemasse.support.sommaire.SommaireFormatValidationSupport;
+import fr.urssaf.image.sae.services.capturemasse.support.stockage.multithreading.InsertionPoolThreadVirtualExecutor;
+import fr.urssaf.image.sae.services.capturemasse.support.xsd.XsdValidationSupport;
 
 /**
  * Tasklet pour l'écriture du fichier resultats.xml dans le cas d'un échec de
@@ -17,23 +19,62 @@ import org.springframework.stereotype.Component;
  * 
  */
 @Component
-public class ResultatsVirtualFileFailureTasklet implements Tasklet {
+public class ResultatsVirtualFileFailureTasklet extends
+      AbstractResultatsFileFailureTasklet {
 
-   private static final Logger LOGGER = LoggerFactory
-         .getLogger(ResultatsVirtualFileFailureTasklet.class);
+   @Autowired
+   private ResultatsFileEchecSupport support;
+
+   @Autowired
+   private SommaireFormatValidationSupport validationSupport;
+
+   @Autowired
+   private XsdValidationSupport xsdValidationSupport;
+
+   /**
+    * Pool d'execution des insertions de documents
+    */
+   @Autowired
+   private InsertionPoolThreadVirtualExecutor executor;
 
    /**
     * {@inheritDoc}
     */
    @Override
-   public RepeatStatus execute(StepContribution contribution,
-         ChunkContext chunkContext) throws Exception {
-      String trcPrefix = "execute";
-      LOGGER.debug("{} - début", trcPrefix);
+   ConcurrentLinkedQueue<?> getIntegratedDocuments() {
+      return executor.getIntegratedDocuments();
+   }
 
-      LOGGER.debug("{} - fin", trcPrefix);
-      // TODO Auto-generated method stub
-      return null;
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   ResultatsFileEchecSupport getResultatsFileEchecSupport() {
+      return support;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   SommaireFormatValidationSupport getSommaireFormatValidationSupport() {
+      return validationSupport;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   XsdValidationSupport getXsdValidationSupport() {
+      return xsdValidationSupport;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   boolean isVirtual() {
+      return true;
    }
 
 }

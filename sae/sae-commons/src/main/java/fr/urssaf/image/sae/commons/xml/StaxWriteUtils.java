@@ -16,7 +16,7 @@ import javax.xml.stream.events.StartDocument;
 import fr.urssaf.image.sae.commons.exception.StaxRuntimeException;
 
 /**
- * 
+ * Classe permettant l'écriture de fichiers XML
  * 
  */
 public class StaxWriteUtils {
@@ -199,8 +199,8 @@ public class StaxWriteUtils {
       final XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
 
       try {
-         final XMLEventWriter writer = outputFactory
-               .createXMLEventWriter(outputStream, "UTF-8");
+         final XMLEventWriter writer = outputFactory.createXMLEventWriter(
+               outputStream, "UTF-8");
          IndentingXMLEventWriter iWriter = new IndentingXMLEventWriter(writer);
          iWriter.setIndent(INDENTATION);
          return iWriter;

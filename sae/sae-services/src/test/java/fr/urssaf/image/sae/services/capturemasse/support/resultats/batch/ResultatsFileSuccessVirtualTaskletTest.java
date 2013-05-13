@@ -34,13 +34,13 @@ import fr.urssaf.image.sae.commons.xml.StaxValidateUtils;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
-import fr.urssaf.image.sae.services.capturemasse.model.CaptureMasseIntegratedDocument;
-import fr.urssaf.image.sae.services.capturemasse.support.stockage.multithreading.InsertionPoolThreadExecutor;
+import fr.urssaf.image.sae.services.capturemasse.model.CaptureMasseVirtualDocument;
+import fr.urssaf.image.sae.services.capturemasse.support.stockage.multithreading.InsertionPoolThreadVirtualExecutor;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })
 @DirtiesContext
-public class ResultatsFileSuccessTaskletTest {
+public class ResultatsFileSuccessVirtualTaskletTest {
 
    @Autowired
    private ApplicationContext applicationContext;
@@ -52,9 +52,9 @@ public class ResultatsFileSuccessTaskletTest {
    private JobLauncherTestUtils launcher;
 
    private EcdeTestSommaire ecdeTestSommaire;
-   
+
    @Autowired
-   private InsertionPoolThreadExecutor executor;
+   private InsertionPoolThreadVirtualExecutor executor;
 
    @Before
    public void init() {
@@ -70,19 +70,18 @@ public class ResultatsFileSuccessTaskletTest {
       }
    }
 
-   // T
    @Test
    public void testLancement() throws Exception {
 
       ExecutionContext context = new ExecutionContext();
 
-      context.put(Constantes.DOC_COUNT, 10);
+      context.put(Constantes.DOC_COUNT, 3);
       context.put(Constantes.RESTITUTION_UUIDS, false);
 
       File sommaire = new File(ecdeTestSommaire.getRepEcde(), "sommaire.xml");
       context.put(Constantes.SOMMAIRE_FILE, sommaire.getAbsolutePath());
 
-      JobExecution execution = launcher.launchStep("finSucces", context);
+      JobExecution execution = launcher.launchStep("finSuccesVirtuel", context);
 
       File resultatsFile = new File(ecdeTestSommaire.getRepEcde(),
             "resultats.xml");
@@ -110,7 +109,7 @@ public class ResultatsFileSuccessTaskletTest {
          Assert.fail("le fichier resultats.xml doit etre valide");
       }
    }
-   
+
    @Test
    public void testLancementAvecUUIDDansResultat() throws Exception {
 
@@ -120,31 +119,28 @@ public class ResultatsFileSuccessTaskletTest {
       context.put(Constantes.RESTITUTION_UUIDS, true);
 
       File sommaire = new File(ecdeTestSommaire.getRepEcde(), "sommaire.xml");
-      ClassPathResource resSommaire = new ClassPathResource("sommaire/sommaire_success.xml");
+      ClassPathResource resSommaire = new ClassPathResource(
+            "sommaire_virtuel.xml");
       FileOutputStream fos = new FileOutputStream(sommaire);
       IOUtils.copy(resSommaire.getInputStream(), fos);
-     
+
       context.put(Constantes.SOMMAIRE_FILE, sommaire.getAbsolutePath());
 
       // Liste des documents intégrés
-      CaptureMasseIntegratedDocument doc1 = new CaptureMasseIntegratedDocument();
-      doc1.setDocumentFile(null);
-      doc1.setIdentifiant(UUID.randomUUID());
+      CaptureMasseVirtualDocument doc1 = new CaptureMasseVirtualDocument();
+      doc1.setUuid(UUID.randomUUID());
       doc1.setIndex(0);
-      CaptureMasseIntegratedDocument doc2 = new CaptureMasseIntegratedDocument();
-      doc2.setDocumentFile(null);
-      doc2.setIdentifiant(UUID.randomUUID());
+      CaptureMasseVirtualDocument doc2 = new CaptureMasseVirtualDocument();
+      doc2.setUuid(UUID.randomUUID());
       doc2.setIndex(1);
-      CaptureMasseIntegratedDocument doc3 = new CaptureMasseIntegratedDocument();
-      doc3.setDocumentFile(null);
-      doc3.setIdentifiant(UUID.randomUUID());
+      CaptureMasseVirtualDocument doc3 = new CaptureMasseVirtualDocument();
+      doc3.setUuid(UUID.randomUUID());
       doc3.setIndex(2);
       executor.getIntegratedDocuments().add(doc1);
       executor.getIntegratedDocuments().add(doc2);
       executor.getIntegratedDocuments().add(doc3);
-      
-      JobExecution execution = launcher.launchStep("finSucces", context);
-      
+
+      JobExecution execution = launcher.launchStep("finSuccesVirtuel", context);
 
       File resultatsFile = new File(ecdeTestSommaire.getRepEcde(),
             "resultats.xml");
