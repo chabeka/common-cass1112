@@ -222,7 +222,10 @@ java -Dlogback.configurationFile=@@SAE_HOME@@/sae-lotinstallmaj/logback-sae-loti
 // Installation du lot 130400SAE - Création des nouvelles métadonnées 
 java -Dlogback.configurationFile=@@SAE_HOME@@/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar @@SAE_HOME@@/sae-lotinstallmaj/sae-lotinstallmaj.jar @@SAE_HOME@@/sae-config.properties META_130400
 
-// Installation du lot 130700SAE - Création des nouvelles métadonnées 
+// Installation du lot 130700SAE - Mise à jour du Keyspace Docubase pour la version 1.2.x de DFCE 
+java -Dlogback.configurationFile=@@SAE_HOME@@/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar @@SAE_HOME@@/sae-lotinstallmaj/sae-lotinstallmaj.jar @@SAE_HOME@@/sae-config.properties DFCE_130700
+
+// Installation du lot 130700SAE - Mise à jour du Keyspace SAE, création des nouvelles métadonnées 
 java -Dlogback.configurationFile=@@SAE_HOME@@/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar @@SAE_HOME@@/sae-lotinstallmaj/sae-lotinstallmaj.jar @@SAE_HOME@@/sae-config.properties CASSANDRA_130700
 
 

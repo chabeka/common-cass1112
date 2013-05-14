@@ -45,12 +45,11 @@ public final class MajLotServiceImpl implements MajLotService {
    public static final String CASSANDRA_120510 = "CASSANDRA_120510";
    public static final String CASSANDRA_120512 = "CASSANDRA_120512";
    public static final String CASSANDRA_121110 = "CASSANDRA_121110";
-   public static final String DFCE_110_INDEX_DATES = "DFCE_110_INDEX_DATES";
-   public static final String DFCE_110_CASSANDRA = "DFCE_110_CASSANDRA";
    public static final String META_SEPA = "META_SEPA";
    public static final String META_130400 = "META_130400";
    public static final String CASSANDRA_130400 = "CASSANDRA_130400";
    public static final String CASSANDRA_130700 = "CASSANDRA_130700";
+   public static final String DFCE_130700 = "DFCE_130700";
 
    public static final int DUREE_1825 = 1825;
    public static final int DUREE_1643 = 1643;
@@ -123,6 +122,10 @@ public final class MajLotServiceImpl implements MajLotService {
       } else if (CASSANDRA_130400.equalsIgnoreCase(nomOperation)) {
 
          updateCassandra130400();
+
+      } else if (DFCE_130700.equalsIgnoreCase(nomOperation)) {
+
+         updateDFCE130700();
 
       } else if (CASSANDRA_130700.equalsIgnoreCase(nomOperation)) {
 
@@ -280,14 +283,6 @@ public final class MajLotServiceImpl implements MajLotService {
    private void updateCassandra130700() {
 
       LOG
-            .info("Début de l'opération : Lot 130700 - Mise à jour du schéma DFCE");
-      DFCECassandraUpdater dfceUpdater = new DFCECassandraUpdater(
-            cassandraConfig);
-      dfceUpdater.updateToVersion110();
-      dfceUpdater.updateToVersion120();
-      LOG.info("Fin de l'opération : Lot 130700 - Mise à jour du schéma DFCE");
-
-      LOG
             .info("Début de l'opération : Lot 130700 - Mise à jour du keyspace SAE");
       updater.updateToVersion5();
       LOG.info("Fin de l'opération : Lot 130700 - Mise à jour du keyspace SAE");
@@ -318,24 +313,6 @@ public final class MajLotServiceImpl implements MajLotService {
     * e); }
     * 
     * }
-    */
-
-   /*
-    * private void updateDFCE110CASSANDRA() {
-    * 
-    * LOG.info(
-    * "Début de l'opération : création des nouvelles CF pour la version 1.1.0 de DFCE"
-    * );
-    * 
-    * // Récupération de la chaîne de connexion au cluster cassandra
-    * CassandraConfig config = new CassandraConfig();
-    * BeanUtils.copyProperties(cassandraConfig, config);
-    * config.setKeyspaceName("Docubase"); DFCECassandraUpdater updater = new
-    * DFCECassandraUpdater(config); updater.updateToVersion110();
-    * 
-    * LOG.info(
-    * "Fin de l'opération : création des nouvelles CF pour la version 1.1.0 de DFCE"
-    * ); }
     */
 
    /**
@@ -515,4 +492,21 @@ public final class MajLotServiceImpl implements MajLotService {
       LOG
             .info("Fin de l'opération : Création des nouvelles métadonnées (META_130400)");
    }
+
+   /**
+    * Pour lot 130700 du SAE : mise à jour du keyspace "Docubase" pour le
+    * passage à la version 1.2.x de DFCE
+    */
+   private void updateDFCE130700() {
+
+      LOG
+            .info("Début de l'opération : Lot 130700 - Mise à jour du schéma DFCE");
+      DFCECassandraUpdater dfceUpdater = new DFCECassandraUpdater(
+            cassandraConfig);
+      dfceUpdater.updateToVersion110();
+      dfceUpdater.updateToVersion120();
+      LOG.info("Fin de l'opération : Lot 130700 - Mise à jour du schéma DFCE");
+
+   }
+
 }
