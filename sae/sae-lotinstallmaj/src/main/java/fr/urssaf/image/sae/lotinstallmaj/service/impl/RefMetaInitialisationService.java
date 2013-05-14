@@ -1,6 +1,7 @@
 package fr.urssaf.image.sae.lotinstallmaj.service.impl;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -8,7 +9,7 @@ import java.util.List;
 
 import me.prettyprint.hector.api.Keyspace;
 
-import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -323,16 +324,27 @@ public final class RefMetaInitialisationService {
    @SuppressWarnings("unchecked")
    private void compareDeuxListeLignes(String numeroVerif,
          String ficRessourceOriginal, List<String> lignesGenerees) {
-
+      String trcPrefix = "compareDeuxListeLignes()";
       ClassPathResource resource = new ClassPathResource(ficRessourceOriginal);
 
       List<String> lignesOriginales;
 
+      InputStream stream = null;
       try {
-         lignesOriginales = (List<String>) FileUtils.readLines(resource
-               .getFile());
+         stream = resource.getInputStream();
+
+         lignesOriginales = (List<String>) IOUtils.readLines(stream, "UTF-8");
       } catch (IOException e) {
          throw new MajLotRuntimeException(e);
+      } finally {
+         if (stream != null) {
+            try {
+               stream.close();
+            } catch (IOException exception) {
+               LOG.info("{} - fermeture du flux " + ficRessourceOriginal
+                     + " impossible", trcPrefix);
+            }
+         }
       }
 
       // Vérifie le nombre global de lignes
@@ -449,5 +461,5 @@ public final class RefMetaInitialisationService {
       }
 
    }
-   
+
 }
