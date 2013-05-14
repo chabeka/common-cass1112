@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import com.docubase.dfce.exception.FrozenDocumentException;
 import com.docubase.dfce.exception.TagControlException;
 
+import fr.urssaf.image.sae.storage.dfce.annotations.ServiceChecked;
 import fr.urssaf.image.sae.storage.dfce.model.AbstractServices;
 import fr.urssaf.image.sae.storage.dfce.support.TracesDfceSupport;
 import fr.urssaf.image.sae.storage.dfce.utils.Utils;
@@ -47,6 +48,7 @@ public class UpdateServiceImpl extends AbstractServices implements
     * {@inheritDoc}
     */
    @Override
+   @ServiceChecked
    public void updateStorageDocument(UUID uuid,
          List<StorageMetadata> modifiedMetadatas,
          List<StorageMetadata> deletedMetadatas) throws UpdateServiceEx {

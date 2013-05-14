@@ -202,4 +202,14 @@ public interface MetadataControlServices {
     */
    List<MetadataError> checkMetadataListValueTypeAndFormat(
          final List<UntypedMetadata> metadatas);
+
+   /**
+    * Vérifie que les métadonnées passées en paramètre sont toutes modifiables
+    * 
+    * @param metadatas
+    *           liste des métadonnées à contrôler
+    * @return une liste d'erreur
+    */
+   List<MetadataError> checkModifiableMetadataList(
+         final List<UntypedMetadata> metadatas);
 }

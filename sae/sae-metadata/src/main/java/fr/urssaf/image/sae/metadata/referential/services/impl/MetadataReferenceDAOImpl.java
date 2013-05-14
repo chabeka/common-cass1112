@@ -234,4 +234,23 @@ public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
 
    }
 
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final Map<String, MetadataReference> getModifiableMetadataReferences()
+         throws ReferentialException {
+
+      final Map<String, MetadataReference> archMetas = new HashMap<String, MetadataReference>();
+      final Map<String, MetadataReference> referentiel = this.metadataReference
+            .getUnchecked(MetaType.ALL_METADATAS);
+      for (Map.Entry<String, MetadataReference> metaData : Utils.nullSafeMap(
+            referentiel).entrySet()) {
+         if (metaData.getValue().isModifiable()) {
+            archMetas.put(metaData.getKey(), metaData.getValue());
+         }
+      }
+      return archMetas;
+   }
+
 }

@@ -475,7 +475,7 @@ public class MetadataControlServicesImpl implements MetadataControlServices {
                   }
 
                } catch (UncheckedExecutionException e) {
-                  
+
                   throw new MetadataRuntimeException(MetadataMessageHandler
                         .getMessage("metadata.dictionary.not.valid", meta
                               .getDictionaryName()), e);
@@ -552,6 +552,36 @@ public class MetadataControlServicesImpl implements MetadataControlServices {
                .getMessage("metadata.referentiel.error"), null,
                MetadataMessageHandler
                      .getMessage("metadata.referentiel.retrieve")));
+      }
+
+      return errors;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final List<MetadataError> checkModifiableMetadataList(
+         List<UntypedMetadata> metadatas) {
+      final List<MetadataError> errors = new ArrayList<MetadataError>();
+
+      for (UntypedMetadata metadata : metadatas) {
+         try {
+            final MetadataReference reference = referenceDAO
+                  .getByLongCode(metadata.getLongCode());
+            if (!ruleFactory.getModifiableRule().isSatisfiedBy(metadata,
+                  reference)) {
+               errors.add(new MetadataError(MetadataMessageHandler
+                     .getMessage("metadata.control.modifiable"), metadata
+                     .getLongCode(), MetadataMessageHandler.getMessage(
+                     "metadata.not.modifiable", metadata.getLongCode())));
+            }
+         } catch (ReferentialException refExcept) {
+            errors.add(new MetadataError(MetadataMessageHandler
+                  .getMessage("metadata.referentiel.error"), metadata
+                  .getLongCode(), MetadataMessageHandler.getMessage(
+                  "metadata.referentiel.retrieve", metadata.getLongCode())));
+         }
       }
 
       return errors;

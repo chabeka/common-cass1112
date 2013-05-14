@@ -266,4 +266,14 @@ public class ValidationServiceImplTest {
       controlService.checkExistingMetadataList(null);
    }
 
+   /**
+    * validation de l'argument du service
+    * {@link fr.urssaf.image.sae.metadata.control.services.impl.MetadataControlServicesImpl#checkExistingMetadataList(java.util.List)
+    * ) checkExistingMetadataList}
+    */
+   @Test(expected = IllegalArgumentException.class)
+   public void checkModifiableMetadataList() {
+      controlService.checkModifiableMetadataList(null);
+   }
+
 }

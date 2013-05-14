@@ -336,4 +336,21 @@ public class MetadataControlServiceValidation {
             "metadatas.required", List.class.getName()));
 
    }
+
+   
+   /**
+    * Valide l'argument de la méthode
+    * {@link fr.urssaf.image.sae.metadata.control.services.MetadataControlServices#checkArchivableMetadata(fr.urssaf.image.sae.bo.model.bo.SAEDocument)}
+    * checkArchivableMetadata}. <br>
+    * 
+    * @param metadatas
+    *           : la liste des métadonnées
+    */
+   @Before(value = "execution( java.util.List<fr.urssaf.image.sae.bo.model.MetadataError>  fr.urssaf.image.sae.metadata.control.services.MetadataControlServices.checkModifiableMetadataList(..)) && args(metadatas)")
+   public final void checkModifiableMetadataList(
+         final List<UntypedMetadata> metadatas) {
+      validateMetadatas(metadatas);
+
+   }
+   
 }
