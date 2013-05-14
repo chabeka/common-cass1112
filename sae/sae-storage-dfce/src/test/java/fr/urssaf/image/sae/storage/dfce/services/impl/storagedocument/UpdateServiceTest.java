@@ -79,6 +79,11 @@ public class UpdateServiceTest extends StorageServices {
                   .getSaeDroits());
       AuthenticationContext.setAuthenticationToken(token);
 
+      try {
+         cassandraServerBean.resetData();
+      } catch (Exception exception) {
+         // rien à faire
+      }
    }
 
    @After
