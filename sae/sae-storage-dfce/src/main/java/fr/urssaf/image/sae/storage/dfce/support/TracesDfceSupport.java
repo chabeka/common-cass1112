@@ -1,9 +1,11 @@
 package fr.urssaf.image.sae.storage.dfce.support;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,6 +84,79 @@ public class TracesDfceSupport {
 
          // Info supplémentaire : date d'archivage DFCE
          traceToCreate.getInfos().put("dateArchivageDfce", dateArchivageDfce);
+
+         // Appel du dispatcheur
+         dispatcheurService.ajouterTrace(traceToCreate);
+
+         // Traces
+         LOGGER.debug("{} - Fin", prefix);
+
+      } catch (Throwable ex) {
+         LOGGER
+               .error(
+                     "Une erreur s'est produite lors de l'écriture de la trace de dépôt de document dans DFCE",
+                     ex);
+      }
+
+   }
+
+   /**
+    * Trace l'événement "Modification d'un document dans DFCE"
+    * 
+    * @param idDoc
+    *           l'identifiant unique DFCE du document archivé
+    * @param modifiedMetas
+    *           les metas modifiées
+    * @param deletedMetas
+    *           les métas supprimées
+    * @param dateModificationDfce
+    *           la date de modification DFCE
+    */
+   @SuppressWarnings("PMD.AvoidCatchingThrowable")
+   public final void traceModifDocumentDansDFCE(UUID idDoc,
+         List<String> modifiedMetas, List<String> deletedMetas,
+         Date dateModificationDfce) {
+
+      // On fait un try/catch(Throwable) pour la traçabilité ne fasse pas
+      // planter cette méthode
+      try {
+
+         // Traces
+         String prefix = "traceModifDocumentDansDFCE()";
+         LOGGER.debug("{} - Début", prefix);
+
+         // Instantiation de l'objet TraceToCreate
+         TraceToCreate traceToCreate = new TraceToCreate();
+
+         // Code de l'événement
+         traceToCreate.setCodeEvt(Constants.TRACE_CODE_EVT_MODIF_DOC_DFCE);
+
+         // Contexte
+         traceToCreate.setContexte("ModificationDocumentDansDFCE");
+
+         // Contrat de service et login
+         setInfosAuth(traceToCreate);
+
+         // Info supplémentaire : Hostname et IP du serveur sur lequel tourne
+         // ce code
+         traceToCreate.getInfos().put("saeServeurHostname",
+               HostnameUtil.getHostname());
+         traceToCreate.getInfos().put("saeServeurIP", HostnameUtil.getIP());
+
+         // Info supplémentaire : identifiant d'archivage
+         traceToCreate.getInfos().put("idDoc", idDoc.toString());
+
+         // Info supplémentaire : hash du document
+         traceToCreate.getInfos().put("modifiedMetadatas",
+               StringUtils.join(modifiedMetas, ","));
+
+         // Info supplémentaire : type de hash
+         traceToCreate.getInfos().put("deletedMetadatas",
+               StringUtils.join(deletedMetas, ","));
+
+         // Info supplémentaire : date d'archivage DFCE
+         traceToCreate.getInfos().put("dateModificationDfce",
+               dateModificationDfce);
 
          // Appel du dispatcheur
          dispatcheurService.ajouterTrace(traceToCreate);

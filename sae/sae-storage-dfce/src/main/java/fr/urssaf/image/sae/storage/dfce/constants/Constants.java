@@ -79,5 +79,10 @@ public final class Constants {
     * Traçabilité : code de l'événément "Suppression d'un document de DFCE"
     */
    public static final String TRACE_CODE_EVT_SUPPRESSION_DOC_DFCE = "DFCE_SUPPRESSION_DOC|OK";
+   
+   /**
+    * Traçabilité : code de l'événément "Modification d'un document dans DFCE"
+    */
+   public static final String TRACE_CODE_EVT_MODIF_DOC_DFCE = "DFCE_MODIF_DOC|OK";
 
 }

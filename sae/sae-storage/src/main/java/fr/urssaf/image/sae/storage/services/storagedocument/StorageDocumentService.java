@@ -8,6 +8,7 @@ import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.exception.QueryParseServiceEx;
 import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
+import fr.urssaf.image.sae.storage.exception.UpdateServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocuments;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
@@ -189,11 +190,9 @@ public interface StorageDocumentService {
     *           : Le paramètre du service {@link StorageDocumentService}
     */
    <T> void setStorageDocumentServiceParameter(T parameter);
-   
-   
+
    /**
-    * Insère le fichier de référence pour des documents virtuels
-    * virtuels
+    * Insère le fichier de référence pour des documents virtuels virtuels
     * 
     * @param reference
     *           référence pour les documents virtuels
@@ -217,5 +216,22 @@ public interface StorageDocumentService {
     */
    UUID insertVirtualStorageDocument(VirtualStorageDocument document)
          throws InsertionServiceEx;
+
+   /**
+    * Réalise la mise à jour du document dans DFCE
+    * 
+    * @param uuid
+    *           identifiant unique du document
+    * @param modifiedMetadatas
+    *           Liste des métadonnées à modifier
+    * @param deletedMetadatas
+    *           Liste des métadonnées à supprimer
+    * @throws UpdateServiceEx
+    *            Exception levée lorsque la modification du document est en
+    *            erreur
+    */
+   void updateStorageDocument(UUID uuid,
+         List<StorageMetadata> modifiedMetadatas,
+         List<StorageMetadata> deletedMetadatas) throws UpdateServiceEx;
 
 }
