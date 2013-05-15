@@ -246,7 +246,7 @@ public class ArchivageUnitaireTest {
          ArchivageUnitaireResponseType archivageResponse = archivage
                .archivageUnitaire(urlEcde, metadatas);
       } catch (AxisFault fault) {
-         // on vérifie que la soapfault a été causé par le MetadataRuntimeexception 
+         
          Assert.assertTrue(fault.getDetail().toString().contains("MetadataRuntimeException: Le dictionnaire dictExistePas n'a pas été trouvée"));
          // on vérifie que l'exception levée est une erreur interne de capture.
          SoapTestUtils
@@ -258,4 +258,61 @@ public class ArchivageUnitaireTest {
 
       }      
    }
+   
+   /**
+    * test vérifiant l'échec d'une capture si le dictionnaire est inexistant. la MetadataRuntimeException est transformée en erreur interne de capture
+    * @throws URISyntaxException
+    * @throws FileNotFoundException
+    * @throws IOException
+    */
+   @Test
+   public void archivageUnitaireNokAfterMetaCreation()
+         throws URISyntaxException, FileNotFoundException, IOException {
+
+      // appel du service archivage unitaire
+
+      List<Metadata> metadatas = new ArrayList<Metadata>();
+
+      metadatas.add(ObjectModelFactory.createMetadata(
+            "CodeOrganismeProprietaire", "CER69"));
+      metadatas.add(ObjectModelFactory.createMetadata(
+            "CodeOrganismeGestionnaire", "UR750"));
+      metadatas.add(ObjectModelFactory.createMetadata("CodeRND", "2.3.1.1.12"));
+      metadatas.add(ObjectModelFactory.createMetadata("VersionRND", "11.1"));
+      metadatas.add(ObjectModelFactory.createMetadata("NbPages", "2"));
+      metadatas.add(ObjectModelFactory.createMetadata("FormatFichier",
+            "fmt/354"));
+      metadatas.add(ObjectModelFactory.createMetadata("DateCreation",
+            "2012-01-01"));
+      metadatas.add(ObjectModelFactory.createMetadata("Titre",
+            "Attestation de vigilance"));
+      metadatas.add(ObjectModelFactory.createMetadata("TypeHash", "SHA-1"));
+      metadatas.add(ObjectModelFactory.createMetadata("Hash", "128775498884"));
+      metadatas.add(ObjectModelFactory.createMetadata("DateReception",
+            "1999-11-25"));
+      metadatas.add(ObjectModelFactory.createMetadata("DateDebutConservation",
+            "2011-09-02"));
+      // cette metadonnées nes pas référencée dans le dictionnaire des données
+      // dictMeta2
+      metadatas.add(ObjectModelFactory.createMetadata("metadonne4", "3"));
+
+//      URI urlEcde = URI
+//            .create(" ecde.cer69.recouv/DCL001/19991231/3/documents/attestation.pdf");
+       URI urlEcde = URI
+       .create("ecde://CER69-TEC24251/SAE_INTEGRATION/20110822/CaptureUnitaire-101-CaptureUnitaire-OK-Standard/documents/doc1.PDF");
+      try {
+         ArchivageUnitaireResponseType archivageResponse = archivage
+               .archivageUnitaire(urlEcde, metadatas);
+      } catch (AxisFault fault) {
+         // on vérifie que l'exception levée est liée à l'inexistance de la métadonnée.
+         SoapTestUtils
+               .assertAxisFault(
+                     fault,
+                     "La ou les métadonnées suivantes n'existent pas dans le référentiel des métadonnées : metadonne4",
+                     "CaptureMetadonneesInconnu", SoapTestUtils.SAE_NAMESPACE,
+                     SoapTestUtils.SAE_PREFIX);
+
+      }      
+   }
+   
 }
