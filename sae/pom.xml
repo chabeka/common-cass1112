@@ -413,6 +413,7 @@
       <module>sae-trace-executable</module>
       <module>sae-commons</module>
       <module>sae-rnd</module>
+      <module>sae-rnd-executable</module>
 
       <!-- Les applications finales -->
       <module>sae-igcmaj</module>
