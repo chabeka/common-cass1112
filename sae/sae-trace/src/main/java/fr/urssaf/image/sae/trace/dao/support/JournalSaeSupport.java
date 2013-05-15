@@ -14,6 +14,8 @@ import net.docubase.toolkit.model.ToolkitFactory;
 import net.docubase.toolkit.model.base.Base;
 import net.docubase.toolkit.model.document.Document;
 import net.docubase.toolkit.model.search.SearchResult;
+import net.docubase.toolkit.model.search.SortedSearchQuery;
+import net.docubase.toolkit.model.search.impl.SortedQueryImpl;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,8 +79,10 @@ public class JournalSaeSupport {
          // Lancement de la recherche
          int nbMaxElements = Integer.MAX_VALUE;
 
+         SortedSearchQuery paramSearchQuery = new SortedQueryImpl(requete,
+               nbMaxElements, 0, base);
          SearchResult resultat = serviceProvider.getSearchService().search(
-               requete, nbMaxElements, base);
+               paramSearchQuery);
 
          List<Journal> listeJournal = new ArrayList<Journal>();
 
