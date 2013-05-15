@@ -4,7 +4,7 @@
 
    <groupId>fr.urssaf.image.commons</groupId>
    <artifactId>commons-dfce</artifactId>
-   <version>1.2.4-CRTL-1</version>
+   <version>1.2.4-CRTL-2-SNAPSHOT</version>
 
    <name>commons-dfce</name>
 
@@ -255,13 +255,13 @@
    <!-- Configuration SVN pour le plug-in maven-release -->
    <scm>
       <url>
-        scm:svn:svn://cer69-svn.cer69.recouv/image/java/tags/commons-dfce-1.2.4-CRTL-1
+        scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/commons/commons-dfce
       </url>
       <developerConnection>
-         scm:svn:svn://cer69-svn.cer69.recouv/image/java/tags/commons-dfce-1.2.4-CRTL-1
+         scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/commons/commons-dfce
       </developerConnection>
       <connection>
-         scm:svn:svn://cer69-svn.cer69.recouv/image/java/tags/commons-dfce-1.2.4-CRTL-1
+         scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/commons/commons-dfce
       </connection>
    </scm>
 
