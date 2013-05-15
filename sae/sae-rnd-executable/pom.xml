@@ -1,0 +1,39 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+
+   <groupId>fr.urssaf.image.sae</groupId>
+   <artifactId>sae-rnd-executable</artifactId>
+   <version>0.0.1-SNAPSHOT</version>
+
+   <name>sae-rnd-executable</name>
+   <description>Lancement des services de mise à jour du RND</description>
+
+   <parent>
+      <groupId>fr.urssaf.image.sae</groupId>
+      <artifactId>sae</artifactId>
+      <version>13.4.10.5-SNAPSHOT</version>
+   </parent>
+
+   <properties>
+      <sae-version>13.4.10.5-SNAPSHOT</sae-version>
+   </properties>
+
+   <dependencies>
+      <!-- SAE-RND -->
+      <dependency>
+         <groupId>fr.urssaf.image.sae</groupId>
+         <artifactId>sae-rnd</artifactId>
+         <version>${sae-version}</version>
+      </dependency>
+
+      <!-- EASYMOCK -->
+      <dependency>
+         <groupId>org.easymock</groupId>
+         <artifactId>easymock</artifactId>
+         <version>${easymock.version}</version>
+         <scope>test</scope>
+      </dependency>
+   </dependencies>
+
+</project>
