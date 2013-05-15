@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<ns1:recherche xmlns:ns1="http://www.cirtil.fr/saeService">
-   <ns1:requete>Titre:NOTIFICATIONS</ns1:requete>
-   <ns1:metadonnees>
-      <!--Zero or more repetitions:-->
-      <ns1:metadonneeCode>TailleFichier</ns1:metadonneeCode>
-   </ns1:metadonnees>
-</ns1:recherche>
