@@ -83,7 +83,7 @@ public class SaeMetaDataServiceImpl implements SaeMetaDataService {
       ZookeeperMutex mutex = ZookeeperUtils.createMutex(curator, resourceName);
       LOGGER.debug("{} - Création de la métadonnée dans DFCE", metadata
             .getLongCode());
-
+      serviceProviderSupport.connect();
       // création de la métadonnée dans DFCE
       serviceProviderSupport.getBaseAdministrationService().updateBase(
             createBase(metadata));
@@ -106,6 +106,7 @@ public class SaeMetaDataServiceImpl implements SaeMetaDataService {
 
    @Override
    public final void modify(MetadataReference metadata) throws MetadataReferenceNotFoundException {
+      serviceProviderSupport.connect();
       LOGGER
             .debug("{} - Modification de la métadonnée", metadata.getLongCode());
       serviceProviderSupport.getBaseAdministrationService().updateBase(
@@ -123,7 +124,7 @@ public class SaeMetaDataServiceImpl implements SaeMetaDataService {
    private Base createBase(MetadataReference metadata) {
       Base base = serviceProviderSupport.getBaseAdministrationService()
       .getBase( dfceConfig.getBasename());
-
+      serviceProviderSupport.connect();
       final ToolkitFactory toolkit = ToolkitFactory.getInstance();
       
       final Category categoryDfce = serviceProviderSupport
