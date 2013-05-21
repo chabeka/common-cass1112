@@ -493,7 +493,7 @@ public class ParametersServiceImpl implements ParametersService {
    @Override
    public final Date getVersionRndDateMaj() throws ParameterNotFoundException {
       return (Date) parametersSupport.find(ParameterType.VERSION_RND_DATE_MAJ,
-            ParameterRowType.RND).getValue();
+            ParameterRowType.parametresRnd).getValue();
    }
 
    /**
@@ -502,7 +502,7 @@ public class ParametersServiceImpl implements ParametersService {
    @Override
    public final String getVersionRndNumero() throws ParameterNotFoundException {
       return (String) parametersSupport.find(ParameterType.VERSION_RND_NUMERO,
-            ParameterRowType.RND).getValue();
+            ParameterRowType.parametresRnd).getValue();
    }
 
    /**
@@ -512,7 +512,7 @@ public class ParametersServiceImpl implements ParametersService {
    public final void setVersionRndDateMaj(Date dateMajRnd) {
       Parameter parameter = new Parameter(ParameterType.VERSION_RND_DATE_MAJ,
             dateMajRnd);
-      insertParameter(parameter, ParameterRowType.RND);
+      insertParameter(parameter, ParameterRowType.parametresRnd);
    }
 
    /**
@@ -522,7 +522,7 @@ public class ParametersServiceImpl implements ParametersService {
    public final void setVersionRndNumero(String numVersion) {
       Parameter parameter = new Parameter(ParameterType.VERSION_RND_NUMERO,
             numVersion);
-      insertParameter(parameter, ParameterRowType.RND);
+      insertParameter(parameter, ParameterRowType.parametresRnd);
    }
 
    private void insertParameter(Parameter parameter, ParameterRowType rowType) {

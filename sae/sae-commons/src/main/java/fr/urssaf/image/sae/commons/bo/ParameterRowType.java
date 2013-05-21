@@ -18,6 +18,6 @@ public enum ParameterRowType {
    /**
     * Nom correspondant à la ligne contenant les paramètres du RND
     */
-   RND
+   parametresRnd
 
 }
