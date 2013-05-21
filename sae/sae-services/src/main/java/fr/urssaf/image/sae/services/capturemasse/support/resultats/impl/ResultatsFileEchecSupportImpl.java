@@ -557,12 +557,12 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
 
       staxUtils.addStartTag("erreurs", PX_SOMRES, NS_SOMRES);
 
-      if (erreur.getListIndex().contains(index)) {
+      if (erreur.getListIndex().contains(index - 1)) {
 
          Integer currIndex;
          for (int i = 0; i < erreur.getListIndex().size(); i++) {
             currIndex = erreur.getListIndex().get(i);
-            if (index == currIndex.intValue()) {
+            if ((index - 1) == currIndex.intValue()) {
                staxUtils.addStartTag("erreur", PX_SOMRES, NS_SOMRES);
 
                String code = erreur.getListCodes().get(i);

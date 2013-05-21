@@ -1,6 +1,7 @@
 package fr.urssaf.image.sae.services.capturemasse.utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.batch.core.ExitStatus;
@@ -16,7 +17,7 @@ public final class StatutCaptureUtils {
    private StatutCaptureUtils() {
       // Constructeur privé
    }
-   
+
    /**
     * Renvoie true si la capture de masse est considérée comme réussie
     * 
@@ -33,9 +34,12 @@ public final class StatutCaptureUtils {
             .getExitStatus());
 
       int index = 0;
+      String stepName;
+      List<String> failedSteps = Arrays.asList("finBloquant", "finErreur",
+            "finErreurVirtuel");
       while (traitementOK && index < list.size()) {
-         if ("finBloquant".equalsIgnoreCase(list.get(index).getStepName())
-               || "finErreur".equalsIgnoreCase(list.get(index).getStepName())) {
+         stepName = list.get(index).getStepName();
+         if (failedSteps.contains(stepName)) {
             traitementOK = false;
          }
          index++;
