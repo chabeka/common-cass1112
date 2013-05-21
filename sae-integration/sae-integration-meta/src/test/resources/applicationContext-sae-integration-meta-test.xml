@@ -14,11 +14,28 @@
       Chargement des fichiers .properties de test dans des objets Resource
    -->
    
-   <bean
-      id="saeConfigResource"
-      class="org.springframework.core.io.ClassPathResource">
+   
+         <bean id="resourceSaeConfig" class="org.springframework.core.io.ClassPathResource">
       <constructor-arg value="config/sae-config.properties" />
    </bean>
+
+   <bean class="java.io.File" id="fileSaeConfig">
+      <constructor-arg>
+         <bean factory-bean="resourceSaeConfig" factory-method="getURI" />
+      </constructor-arg>
+   </bean>
+
+   <bean id="saeConfigResource" class="org.springframework.core.io.FileSystemResource">
+      <constructor-arg>
+         <bean factory-bean="fileSaeConfig" factory-method="getAbsolutePath" />
+      </constructor-arg>
+   </bean>
+   
+<!--   <bean-->
+<!--      id="saeConfigResource"-->
+<!--      class="org.springframework.core.io.ClassPathResource">-->
+<!--      <constructor-arg value="config/sae-config.properties" />-->
+<!--   </bean>-->
       
    <bean
       id="dfceConfigResource"
@@ -86,6 +103,24 @@
       <property name="digestAlgo" value="${db.digestAlgo}" />
       <property name="checkHash" value="${db.checkHash}" />
    </bean>
+   
+   
+   
+
+
+
+   <bean id="dfceConfig" factory-bean="dfceConfigFactory"
+      factory-method="createDfceConfig">
+
+      <!--
+         NB : le bean saeConfigResource est injecté manuellement dans la
+         méthode Main.main
+      -->
+      <constructor-arg ref="saeConfigResource" />
+
+   </bean>
+   
+   
    <!-- Ouverture de la connexion à DFCE -->
    <bean id="dfceConnectionParametres"
       class="fr.urssaf.image.commons.dfce.manager.DFCEConnectionFactory"

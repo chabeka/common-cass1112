@@ -15,10 +15,35 @@
       <property name="locations">
          <array value-type="org.springframework.core.io.Resource">
             <ref bean="cassandraConfigResource" />
+            <ref bean="dfceConfigResource" />
          </array>
       </property>
    </bean>
 
+   <bean id="dfceConfig"
+      class="fr.urssaf.image.sae.metadata.referential.model.DfceConfig">
+      <property name="urlToolkit" value="${db.urlToolkit}" />
+      <property name="login" value="${db.login}" />
+      <property name="password" value="${db.password}" />
+      <property name="basename" value="${db.baseName}" />
+   </bean>
+
+   <import resource="classpath*:/applicationContext-commons-cassandra.xml" />
+   
+      <!-- Ouverture de la connexion à DFCE -->
+   <bean id="dfceConnectionParametres"
+      class="fr.urssaf.image.commons.dfce.manager.DFCEConnectionFactory"
+      factory-method="createDFCEConnectionByDFCEConfigurationResource">
+      <constructor-arg ref="dfceConfigResource" />
+   </bean>
+   <bean id="dfceConnectionService"
+      class="fr.urssaf.image.commons.dfce.service.impl.DFCEConnectionServiceImpl">
+      <constructor-arg ref="dfceConnectionParametres" />
+   </bean>
+   <bean id="dfceServiceProvider"
+      factory-bean="dfceConnectionService"
+      factory-method="openConnection">
+   </bean>
    
    <!-- Import du fichier de contexte String de l'artéfact sae-metadata -->
    <import resource="classpath*:/applicationContext-sae-metadata.xml" />

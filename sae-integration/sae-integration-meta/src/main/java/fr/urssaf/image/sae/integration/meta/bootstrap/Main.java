@@ -57,11 +57,17 @@ public final class Main {
             throw new IllegalArgumentException(
                   "Il faut spécifier en 2ème argument de la ligne de commande le chemin complet du fichier de configuration Cassandra");
          }
+         
+         if (!isNotBlank(args, 1)) {
+            throw new IllegalArgumentException(
+                  "Il faut spécifier en 3ème argument de la ligne de commande le chemin complet du fichier de configuration Dfce");
+         }
 
          // Traitement
          File fichierXml = new File(args[0]);
          File fichierConfCassandra = new File(args[1]);
-         traitement(fichierXml, fichierConfCassandra);
+         File fichierConfDfce = new File(args[2]);
+         traitement(fichierXml, fichierConfCassandra, fichierConfDfce);
 
       }
 
@@ -107,10 +113,10 @@ public final class Main {
             && StringUtils.isNotBlank(args[index]);
    }
 
-   private static void traitement(File fichierXml, File fichierConfCassandra) {
+   private static void traitement(File fichierXml, File fichierConfCassandra, File fichierConfDfce) {
 
       // Chargement du fichier de contexte Spring
-      ClassPathXmlApplicationContext context = chargementContexteSpring(fichierConfCassandra);
+      ClassPathXmlApplicationContext context = chargementContexteSpring(fichierConfCassandra, fichierConfDfce);
       try {
 
          // Récupération du service "principal"
@@ -131,7 +137,7 @@ public final class Main {
    }
 
    private static ClassPathXmlApplicationContext chargementContexteSpring(
-         File fichierConfCassandra) {
+         File fichierConfCassandra, File fichierConfDfce) {
 
       String contextConfig = "applicationContext-sae-integration-meta.xml";
 
@@ -143,6 +149,13 @@ public final class Main {
 
       genericContext.registerBeanDefinition("cassandraConfigResource",
             saeConfigBean.getBeanDefinition());
+
+      BeanDefinitionBuilder dfceConfigBean = BeanDefinitionBuilder
+            .genericBeanDefinition(FileSystemResource.class);
+      dfceConfigBean.addConstructorArgValue(fichierConfDfce);
+
+      genericContext.registerBeanDefinition("dfceConfigResource",
+            dfceConfigBean.getBeanDefinition());
       genericContext.refresh();
 
       ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(

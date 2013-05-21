@@ -14,6 +14,7 @@ import fr.urssaf.image.sae.integration.meta.modele.xml.DictionnaireType;
 import fr.urssaf.image.sae.integration.meta.modele.xml.MetaType;
 import fr.urssaf.image.sae.integration.meta.modele.xml.MetadonneeType;
 import fr.urssaf.image.sae.integration.meta.utils.JAXBUtils;
+import fr.urssaf.image.sae.metadata.exceptions.MetadataReferenceNotFoundException;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 import fr.urssaf.image.sae.metadata.referential.services.DictionaryService;
 import fr.urssaf.image.sae.metadata.referential.services.SaeMetaDataService;
@@ -225,7 +226,11 @@ public class MetadonneeService {
 
             // Appel du service adéquat
             // TODO : changer en modify
-            saeMetadataService.moify(meta);
+            try {
+               saeMetadataService.modify(meta);
+            } catch (MetadataReferenceNotFoundException e) {
+               LOG.info("La métadonnées à modifier {} n'existe pas", meta.getLongCode());
+            }
 
          }
 
