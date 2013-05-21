@@ -27,7 +27,7 @@ public class ParameterRowTypeTest {
       Assert
             .assertEquals(
                   "La méthode toString() du type de paramètre \"RND\" renvoie une valeur incorrecte",
-                  "RND", ParameterRowType.RND.toString());
+                  "parametresRnd", ParameterRowType.parametresRnd.toString());
 
    }
 
