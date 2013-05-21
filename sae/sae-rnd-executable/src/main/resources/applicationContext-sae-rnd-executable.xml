@@ -8,17 +8,15 @@
         http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
    <import resource="applicationContext-sae-commons.xml" />
-   
+
    <!-- Chargement des fichiers properties -->
-   <bean
-      class="fr.urssaf.image.sae.commons.factory.PropertiesFactory"
+   <bean class="fr.urssaf.image.sae.commons.factory.PropertiesFactory"
       factory-method="load">
       <constructor-arg ref="saeConfigResource" />
    </bean>
 
    <!-- Le PropertyPlaceholderConfigurer -->
-   <bean id="propertiesFactory" class="fr.urssaf.image.sae.commons.factory.PropertiesFactory" />
-   <bean id="applicationProperties" factory-bean="propertiesFactory"
+   <bean id="applicationProperties" class="fr.urssaf.image.sae.commons.factory.PropertiesFactory"
       factory-method="load">
       <constructor-arg ref="saeConfigResource" />
    </bean>

@@ -1,7 +1,11 @@
 package fr.urssaf.image.sae.rnd.executable;
 
+import java.util.Date;
+
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Exécutable pour les différents services contenus dans ce module :
@@ -22,6 +26,13 @@ import org.apache.commons.lang.StringUtils;
  */
 public final class ServicesMain {
 
+   private static final String MAJ_RND = "MAJ_RND";
+   private static final String MAJ_CORRESPONDANCES_RND = "MAJ_CORRESPONDANCES_RND";
+   private static final int CONVERSION_MINUTES = 60000;
+
+   private static final Logger LOGGER = LoggerFactory
+         .getLogger(ServicesMain.class);
+
    private ServicesMain() {
 
    }
@@ -31,28 +42,50 @@ public final class ServicesMain {
     * 
     * @param args
     *           arguments de l'exécutable
+    * @throws Throwable 
     */
-   public static void main(String[] args) {
+   public static void main(String[] args) throws Throwable {
 
-      if (ArrayUtils.getLength(args) <= 0 || !StringUtils.isNotBlank(args[0])) {
-         throw new IllegalArgumentException(
-               "L'opération du traitement doit être renseignée.");
-      }
+      String prefix = "main()";
+      LOGGER.debug("{} - début", prefix);
+      LOGGER.info("{} - Arguments de la ligne de commande : {}", new Object[] {
+            prefix, args });
 
-      String[] newArgs = (String[]) ArrayUtils.subarray(args, 1, args.length);
+      try {
+         long startDate = new Date().getTime();
 
-      if ("MAJ_RND".equals(args[0])) {
+         if (ArrayUtils.getLength(args) <= 0
+               || !StringUtils.isNotBlank(args[0])) {
+            throw new IllegalArgumentException(
+                  "L'opération du traitement doit être renseignée.");
+         }
 
-         MajRndMain.main(newArgs);
+         String[] newArgs = (String[]) ArrayUtils
+               .subarray(args, 1, args.length);
 
-      } else if ("MAJ_CORRESPONDANCE_RND".equals(args[0])) {
+         if (MAJ_RND.equals(args[0])) {
 
-         MajCorrespondancesMain.main(newArgs);
+            MajRndMain.main(newArgs);
 
-      } else {
-         throw new IllegalArgumentException("L'opération du traitement '"
-               + args[0] + "' est inconnu.");
-      }
+         } else if (MAJ_CORRESPONDANCES_RND.equals(args[0])) {
 
+            MajCorrespondancesMain.main(newArgs);
+
+         } else {
+            throw new IllegalArgumentException("L'opération du traitement '"
+                  + args[0] + "' est inconnu.");
+         }
+
+         long endDate = new Date().getTime();
+         long duree = (endDate - startDate) / CONVERSION_MINUTES;
+         LOGGER.debug("{} - fin. Traitement réalisé en {} min", new Object[] {
+               prefix, duree });
+
+      } catch (Throwable ex) {
+
+         LOGGER.error("Une erreur a eu lieu dans l'execution du jar sae-rnd-executable", ex);
+         throw ex;
+
+      } 
    }
 }

@@ -7,7 +7,7 @@ import org.junit.Test;
 public class ServicesMainTest {
 
    @Test
-   public void ServicesMain_failure_emptyOperation() {
+   public void ServicesMain_failure_emptyOperation() throws Throwable {
 
       try {
 
@@ -26,7 +26,7 @@ public class ServicesMainTest {
    }
 
    @Test
-   public void ServicesMain_failure_unknownOperation() {
+   public void ServicesMain_failure_unknownOperation() throws Throwable {
 
       String operation = "unknownOperation";
 
@@ -47,7 +47,7 @@ public class ServicesMainTest {
    }
 
    @Test
-   public void ServicesMain_majRnd() {
+   public void ServicesMain_majRnd() throws Throwable {
 
       String[] args = new String[] { "MAJ_RND" };
 
@@ -55,9 +55,9 @@ public class ServicesMainTest {
    }
 
    @Test
-   public void ServicesMain_majCorrespondances() {
+   public void ServicesMain_majCorrespondances() throws Throwable {
 
-      String[] args = new String[] { "MAJ_CORRESPONDANCE_RND" };
+      String[] args = new String[] { "MAJ_CORRESPONDANCES_RND" };
 
       ServicesMain.main(args);
    }
