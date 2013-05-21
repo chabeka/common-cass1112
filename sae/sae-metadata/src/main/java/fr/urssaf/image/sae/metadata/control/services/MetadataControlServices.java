@@ -212,4 +212,15 @@ public interface MetadataControlServices {
     */
    List<MetadataError> checkModifiableMetadataList(
          final List<UntypedMetadata> metadatas);
+
+   /**
+    * Contrôle que la liste des métadonnées sont autorisées à l'archivables lors
+    * de la capture.
+    * 
+    * @param metadatas
+    *           : La liste des métadonnées
+    * @return une liste d’objet de type {@link MetadataError}
+    */
+   List<MetadataError> checkSupprimableMetadatas(
+         final List<UntypedMetadata> metadatas);
 }

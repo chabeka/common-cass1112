@@ -39,6 +39,7 @@ public class SaeMetadataDao extends AbstractDao<String, String> {
    public static final String META_INDEXED = "index";
 
    public static final String METADATA_CFNAME = "Metadata";
+   public static final String META_UPDATE = "update";
 
    /**
     * Contructeur
@@ -316,6 +317,21 @@ public class SaeMetadataDao extends AbstractDao<String, String> {
    public final void ecritIndexed(Boolean index,
          ColumnFamilyUpdater<String, String> updater, long clock) {
       addColumn(updater, META_INDEXED, index, BooleanSerializer.get(), clock);
+   }
+
+   /**
+    * Ecrit la valeur de la propriété modifiable
+    * 
+    * @param index
+    *           indique si la métadonnée est modifiable
+    * @param updater
+    *           {@link ColumnFamilyUpdater}
+    * @param clock
+    *           le timestamp d'écriture
+    */
+   public final void ecritModifiable(Boolean index,
+         ColumnFamilyUpdater<String, String> updater, long clock) {
+      addColumn(updater, META_UPDATE, index, BooleanSerializer.get(), clock);
    }
 
 }

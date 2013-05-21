@@ -12,6 +12,8 @@ import java.util.UUID;
 import net.docubase.toolkit.model.document.Document;
 import net.docubase.toolkit.service.ServiceProvider;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,7 @@ import com.docubase.dfce.exception.TagControlException;
 
 import fr.urssaf.image.sae.storage.dfce.annotations.ServiceChecked;
 import fr.urssaf.image.sae.storage.dfce.model.AbstractServices;
+import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
 import fr.urssaf.image.sae.storage.dfce.support.TracesDfceSupport;
 import fr.urssaf.image.sae.storage.dfce.utils.Utils;
 import fr.urssaf.image.sae.storage.exception.UpdateServiceEx;
@@ -63,8 +66,7 @@ public class UpdateServiceImpl extends AbstractServices implements
 
       LOGGER.debug("{} - Modification des critères", trcPrefix);
       for (StorageMetadata metadata : Utils.nullSafeIterable(modifiedMetadatas)) {
-         storedDocument.getSingleCriterion(metadata.getShortCode()).setWord(
-               (Serializable) metadata.getValue());
+         manageMetadata(storedDocument, metadata);
          modifMetas.add(metadata.getShortCode());
       }
 
@@ -76,14 +78,22 @@ public class UpdateServiceImpl extends AbstractServices implements
       }
 
       LOGGER.debug("{} - Mise à jour dans DFCE", trcPrefix);
+      String rndCode = null;
+      Date referenceDate = null;
+
       try {
+         rndCode = rndCodeUpdate(modifiedMetadatas, storedDocument);
+         referenceDate = referenceDateUpdate(modifiedMetadatas, storedDocument);
          getDfceService().getStoreService().updateDocument(storedDocument);
 
       } catch (TagControlException exception) {
+         rollback(rndCode, referenceDate, storedDocument);
          throw new UpdateServiceEx(exception);
 
       } catch (FrozenDocumentException exception) {
+         rollback(rndCode, referenceDate, storedDocument);
          throw new UpdateServiceEx(exception);
+
       }
 
       LOGGER.debug("{} - Ajout d'une trace", trcPrefix);
@@ -94,12 +104,145 @@ public class UpdateServiceImpl extends AbstractServices implements
 
    }
 
+   private void rollback(String rndCode, Date referenceDate,
+         Document storedDocument) {
+      String trcPrefix = "rollback";
+      LOGGER.debug("{} - début", trcPrefix);
+
+      if (StringUtils.isNotBlank(rndCode)) {
+         try {
+            updateRnd(storedDocument, rndCode);
+         } catch (FrozenDocumentException exception) {
+            LOGGER.error("{} - Impossible de réinitialiser à l'état "
+                  + "d'origine le code RND pour le document {}. "
+                  + "Code d'origine : {}", new Object[] { trcPrefix,
+                  storedDocument.getUuid().toString(), rndCode });
+         }
+      }
+
+      if (referenceDate != null) {
+         try {
+            updateReferenceDate(referenceDate, storedDocument);
+         } catch (FrozenDocumentException exception) {
+            LOGGER.error("{} - Impossible de réinitialiser à l'état "
+                  + "d'origine la date de débit de conservation "
+                  + "pour le document {}. Date d'origine : {}", new Object[] {
+                  trcPrefix, storedDocument.getUuid().toString(),
+                  DateFormatUtils.ISO_DATE_FORMAT.format(referenceDate) });
+         }
+      }
+
+      LOGGER.debug("{} - fin", trcPrefix);
+   }
+
+   private void updateRnd(Document storedDocument, String rndCode)
+         throws FrozenDocumentException {
+      String trcPrefix = "updateRnd";
+      LOGGER.debug("{} - début", trcPrefix);
+
+      getDfceService().getStoreService().updateDocumentType(storedDocument,
+            rndCode);
+
+      LOGGER.debug("{} - fin", trcPrefix);
+   }
+
+   private Date referenceDateUpdate(List<StorageMetadata> modifiedMetadatas,
+         Document storedDocument) throws FrozenDocumentException {
+      String trcPrefix = "referenceDateUpdate()";
+      LOGGER.debug("{} - début", trcPrefix);
+
+      Date oldDate = null;
+
+      StorageMetadata metadata = find(
+            StorageTechnicalMetadatas.DATE_DEBUT_CONSERVATION.getShortCode(),
+            modifiedMetadatas);
+      if (metadata != null) {
+         oldDate = storedDocument.getLifeCycleReferenceDate();
+         updateReferenceDate((Date) metadata.getValue(), storedDocument);
+      }
+
+      LOGGER.debug("{} - fin", trcPrefix);
+      return oldDate;
+   }
+
+   private void updateReferenceDate(Date referenceDate, Document storedDocument)
+         throws FrozenDocumentException {
+      String trcPrefix = "updateReferenceDate";
+      LOGGER.debug("{} - début", trcPrefix);
+
+      getDfceService().getStoreService().updateDocumentLifeCycleReferenceDate(
+            storedDocument, referenceDate);
+
+      LOGGER.debug("{} - fin", trcPrefix);
+   }
+
+   private String rndCodeUpdate(List<StorageMetadata> modifiedMetadatas,
+         Document storedDocument) throws FrozenDocumentException {
+      String trcPrefix = "rndCodeUpdate()";
+      LOGGER.debug("{} - début", trcPrefix);
+
+      String oldRnd = null;
+
+      StorageMetadata metadata = find(StorageTechnicalMetadatas.TYPE
+            .getShortCode(), modifiedMetadatas);
+      if (metadata != null) {
+         oldRnd = storedDocument.getType();
+         updateRnd(storedDocument, (String) metadata.getValue());
+      }
+
+      LOGGER.debug("{} - fin", trcPrefix);
+      return oldRnd;
+   }
+
+   private StorageMetadata find(String shortCode,
+         List<StorageMetadata> modifiedMetadatas) {
+
+      String trcPrefix = "find";
+      LOGGER.debug("{} - début", trcPrefix);
+
+      int index = 0;
+      StorageMetadata metadata = null;
+      while (metadata == null && index < modifiedMetadatas.size()) {
+         if (shortCode.equals(modifiedMetadatas.get(index).getShortCode())) {
+            metadata = modifiedMetadatas.get(index);
+         }
+         index++;
+      }
+
+      LOGGER.debug("{} - fin", trcPrefix);
+      return metadata;
+   }
+
    /**
     * {@inheritDoc}
     */
    @Override
    public final <T> void setUpdateServiceParameter(final T parameter) {
       setDfceService((ServiceProvider) parameter);
+
+   }
+
+   private void manageMetadata(Document storedDocument, StorageMetadata metadata) {
+      String trcPrefix = "manageMetadata";
+      LOGGER.debug("{} - début", trcPrefix);
+
+      if (StorageTechnicalMetadatas.TITRE.getShortCode().equals(
+            metadata.getShortCode())) {
+         storedDocument.setTitle((String) metadata.getValue());
+
+      } else if (StorageTechnicalMetadatas.DATE_CREATION.getShortCode().equals(
+            metadata.getShortCode())) {
+         storedDocument.setCreationDate((Date) metadata.getValue());
+
+      } else if (!StorageTechnicalMetadatas.DATE_DEBUT_CONSERVATION
+            .getShortCode().equals(metadata.getShortCode())
+            && !StorageTechnicalMetadatas.TYPE.getShortCode().equals(
+                  metadata.getShortCode())) {
+         storedDocument.getSingleCriterion(metadata.getShortCode()).setWord(
+               (Serializable) metadata.getValue());
+      }
+
+      LOGGER.debug("{} - fin", trcPrefix);
 
    }
 }

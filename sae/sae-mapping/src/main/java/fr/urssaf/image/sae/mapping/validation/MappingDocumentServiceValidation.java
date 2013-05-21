@@ -7,11 +7,13 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 
 import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
+import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
 import fr.urssaf.image.sae.bo.model.bo.SAEVirtualDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedVirtualDocument;
 import fr.urssaf.image.sae.mapping.messages.MappingMessageHandler;
+import fr.urssaf.image.sae.mapping.services.MappingDocumentService;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 
 /**
@@ -167,7 +169,7 @@ public class MappingDocumentServiceValidation {
     *           : Le document à transformer
     */
    @Before(value = "execution(fr.urssaf.image.sae.bo.model.bo.SAEVirtualDocument fr.urssaf.image.sae.mapping.services.MappingDocumentService.untypedVirtualDocumentToSaeVirtualDocument(..)) && args(document)")
-   public final void untypedVirtualDocumentToSaeVirtualStoragDocument(
+   public final void untypedVirtualDocumentToSaeVirtualDocument(
          final UntypedVirtualDocument document) {
       Validate.notNull(document, MappingMessageHandler.getMessage(
             "mapping.document.required", SAEVirtualDocument.class.getName()));
@@ -176,4 +178,17 @@ public class MappingDocumentServiceValidation {
             .getMessage("mapping.metadata.required"));
    }
 
+   /**
+    * Valide l'argument de la méthode
+    * {@link MappingDocumentService#saeMetadatasToStorageMetadatas(List)}
+    * 
+    * @param metadatas
+    *           la liste des métadonnées
+    */
+   @Before(value = "execution(java.util.List fr.urssaf.image.sae.mapping.services.MappingDocumentService.saeMetadatasToStorageMetadatas(..)) && args(metadatas)")
+   public final void saeMetadatasToStorageMetadatas(
+         final List<SAEMetadata> metadatas) {
+      Validate.notEmpty(metadatas, MappingMessageHandler.getMessage(
+            "mapping.metadata.required", SAEDocument.class.getName()));
+   }
 }

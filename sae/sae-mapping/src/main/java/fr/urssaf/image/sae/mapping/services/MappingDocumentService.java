@@ -11,6 +11,7 @@ import fr.urssaf.image.sae.bo.model.untyped.UntypedVirtualDocument;
 import fr.urssaf.image.sae.mapping.exception.InvalidSAETypeException;
 import fr.urssaf.image.sae.mapping.exception.MappingFromReferentialException;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
+import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageDocument;
 
 /**
@@ -35,6 +36,18 @@ public interface MappingDocumentService {
 
    StorageDocument saeDocumentToStorageDocument(final SAEDocument saeDoc)
          throws InvalidSAETypeException;
+
+   /**
+    * Service de conversion d’une liste de métadonnées SAEM vers un objet de
+    * type. StorageDocument.
+    * 
+    * @param metadatas
+    *           : la liste des métadonnées
+    * @return une liste de {@link StorageMetadata}
+    */
+
+   List<StorageMetadata> saeMetadatasToStorageMetadatas(
+         List<SAEMetadata> metadatas);
 
    /**
     * Service de conversion d’un objet de type StorageDocument vers un objet de

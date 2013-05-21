@@ -5,7 +5,7 @@
       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
    <bean id="storageDocumentService" factory-bean="mockFactory"
-      factory-method="createStorageDocumentService">
+      factory-method="createStorageDocumentService" primary="true">
       <qualifier value="storageDocumentService" />
    </bean>
 

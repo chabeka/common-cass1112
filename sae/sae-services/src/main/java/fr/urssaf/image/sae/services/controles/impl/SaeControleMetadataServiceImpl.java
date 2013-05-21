@@ -3,7 +3,6 @@
  */
 package fr.urssaf.image.sae.services.controles.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -25,9 +24,8 @@ import fr.urssaf.image.sae.services.exception.capture.NotSpecifiableMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.RequiredArchivableMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.RequiredStorageMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.UnknownMetadataEx;
-import fr.urssaf.image.sae.services.util.FormatUtils;
+import fr.urssaf.image.sae.services.util.MetadataErrorUtils;
 import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
-import fr.urssaf.image.sae.storage.dfce.utils.Utils;
 
 /**
  * Classe d'implémentation de l'interface {@link SaeControleMetadataService}.
@@ -64,7 +62,7 @@ public class SaeControleMetadataServiceImpl implements
       List<MetadataError> errorsList = metadataCS
             .checkRequiredForStorageMetadataList(metadatas);
       if (CollectionUtils.isNotEmpty(errorsList)) {
-         listeCodeLong = buildLongCodeError(errorsList);
+         listeCodeLong = MetadataErrorUtils.buildLongCodeError(errorsList);
          LOG.debug("{} - {}", trcPrefix, ResourceMessagesUtils.loadMessage(
                "capture.metadonnees.stockage.obligatoire", listeCodeLong));
          throw new RequiredStorageMetadataEx(ResourceMessagesUtils
@@ -95,13 +93,13 @@ public class SaeControleMetadataServiceImpl implements
                         + "Les métadonnées fournies par l'application cliente sont spécifiables à l'archivage",
                   trcPrefix);
       if (CollectionUtils.isNotEmpty(errorsList)) {
-         listeCodeLong = buildLongCodeError(errorsList);
+         listeCodeLong = MetadataErrorUtils.buildLongCodeError(errorsList);
          LOG.debug("{} - {}", trcPrefix, ResourceMessagesUtils
                .loadMessage("capture.metadonnees.interdites",
-                     buildLongCodeError(errorsList)));
+                     MetadataErrorUtils.buildLongCodeError(errorsList)));
          throw new NotSpecifiableMetadataEx(ResourceMessagesUtils
                .loadMessage("capture.metadonnees.interdites",
-                     buildLongCodeError(errorsList)));
+                     MetadataErrorUtils.buildLongCodeError(errorsList)));
       }
       LOG
             .debug(
@@ -115,7 +113,7 @@ public class SaeControleMetadataServiceImpl implements
                   "{} - Début de la vérification : Les métadonnées obligatoires à l'archivage sont renseignées",
                   trcPrefix);
       if (CollectionUtils.isNotEmpty(errorsList)) {
-         listeCodeLong = buildLongCodeError(errorsList);
+         listeCodeLong = MetadataErrorUtils.buildLongCodeError(errorsList);
          LOG.debug("{} - {}", trcPrefix, ResourceMessagesUtils.loadMessage(
                META_OBLIGATOIRE, listeCodeLong));
          throw new RequiredArchivableMetadataEx(ResourceMessagesUtils
@@ -150,7 +148,7 @@ public class SaeControleMetadataServiceImpl implements
       List<MetadataError> errorsList = metadataCS
             .checkExistingMetadataList(metadatas);
       if (CollectionUtils.isNotEmpty(errorsList)) {
-         listeCodeLong = buildLongCodeError(errorsList);
+         listeCodeLong = MetadataErrorUtils.buildLongCodeError(errorsList);
          LOG.debug("{} - {}", trcPrefix, ResourceMessagesUtils.loadMessage(
                "capture.metadonnees.inconnu", listeCodeLong));
          throw new UnknownMetadataEx(ResourceMessagesUtils.loadMessage(
@@ -167,7 +165,7 @@ public class SaeControleMetadataServiceImpl implements
                   trcPrefix);
       errorsList = metadataCS.checkDuplicateMetadata(metadatas);
       if (CollectionUtils.isNotEmpty(errorsList)) {
-         listeCodeLong = buildLongCodeError(errorsList);
+         listeCodeLong = MetadataErrorUtils.buildLongCodeError(errorsList);
          LOG.debug("{} - {}", trcPrefix, ResourceMessagesUtils.loadMessage(
                "capture.metadonnees.doublon", listeCodeLong));
          throw new DuplicatedMetadataEx(ResourceMessagesUtils.loadMessage(
@@ -183,7 +181,7 @@ public class SaeControleMetadataServiceImpl implements
                   trcPrefix);
       errorsList = metadataCS.checkMetadataListRequiredValue(metadatas);
       if (CollectionUtils.isNotEmpty(errorsList)) {
-         listeCodeLong = buildLongCodeError(errorsList);
+         listeCodeLong = MetadataErrorUtils.buildLongCodeError(errorsList);
          LOG.debug("{} - {}", trcPrefix, ResourceMessagesUtils.loadMessage(
                META_OBLIGATOIRE, listeCodeLong));
          throw new RequiredArchivableMetadataEx(ResourceMessagesUtils
@@ -200,7 +198,7 @@ public class SaeControleMetadataServiceImpl implements
                   trcPrefix);
       errorsList = metadataCS.checkMetadataListValueTypeAndFormat(metadatas);
       if (CollectionUtils.isNotEmpty(errorsList)) {
-         listeCodeLong = buildLongCodeError(errorsList);
+         listeCodeLong = MetadataErrorUtils.buildLongCodeError(errorsList);
          LOG.debug("{} - {}", trcPrefix, ResourceMessagesUtils.loadMessage(
                "capture.metadonnees.format.type.non.valide", listeCodeLong));
          throw new InvalidValueTypeAndFormatMetadataEx(ResourceMessagesUtils
@@ -217,7 +215,7 @@ public class SaeControleMetadataServiceImpl implements
                   trcPrefix);
       errorsList = metadataCS.checkMetadataListValueFromDictionary(metadatas);
       if (CollectionUtils.isNotEmpty(errorsList)) {
-         listeCodeLong = buildLongCodeError(errorsList);
+         listeCodeLong = MetadataErrorUtils.buildLongCodeError(errorsList);
          LOG.debug("{} - {}", trcPrefix, ResourceMessagesUtils.loadMessage(
                "metadata.not.in.dictionary", listeCodeLong));
          throw new MetadataValueNotInDictionaryEx(ResourceMessagesUtils.loadMessage(
@@ -229,23 +227,6 @@ public class SaeControleMetadataServiceImpl implements
                   trcPrefix);
 
       LOG.debug("{} - fin", trcPrefix);
-   }
-
-   /**
-    * Construire une list de code long.
-    * 
-    * @param errorsList
-    *           : Liste de de type {@link MetadataError}
-    * @return Liste de code long à partir d'une liste de de type
-    *         {@link MetadataError}
-    */
-   private String buildLongCodeError(List<MetadataError> errorsList) {
-      List<String> codeLongErrors = new ArrayList<String>();
-      for (MetadataError metadataError : Utils.nullSafeIterable(errorsList)) {
-         codeLongErrors.add(metadataError.getLongCode());
-      }
-
-      return FormatUtils.formattingDisplayList(codeLongErrors);
    }
 
 }

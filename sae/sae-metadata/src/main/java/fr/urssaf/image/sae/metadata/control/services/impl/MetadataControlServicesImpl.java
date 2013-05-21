@@ -587,4 +587,36 @@ public class MetadataControlServicesImpl implements MetadataControlServices {
       return errors;
    }
 
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final List<MetadataError> checkSupprimableMetadatas(
+         List<UntypedMetadata> metadatas) {
+
+      List<MetadataError> errors = new ArrayList<MetadataError>();
+      try {
+         final Map<String, MetadataReference> references = referenceDAO
+               .getRequiredForArchivalMetadataReferences();
+
+         for (UntypedMetadata metadata : metadatas) {
+
+            if (Utils.isRequired(references, metadata.getLongCode())) {
+               errors.add(new MetadataError(MetadataMessageHandler
+                     .getMessage("metadata.control.required"), metadata
+                     .getLongCode(), MetadataMessageHandler.getMessage(
+                     "metadata.required", metadata.getLongCode())));
+            }
+         }
+
+      } catch (ReferentialException exception) {
+         errors.add(new MetadataError(MetadataMessageHandler
+               .getMessage("metadata.referentiel.error"), null,
+               MetadataMessageHandler
+                     .getMessage("metadata.referentiel.retrieve")));
+      }
+
+      return errors;
+   }
+
 }

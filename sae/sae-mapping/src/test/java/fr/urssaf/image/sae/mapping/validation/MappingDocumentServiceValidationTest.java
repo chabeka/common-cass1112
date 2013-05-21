@@ -1,6 +1,7 @@
 package fr.urssaf.image.sae.mapping.validation;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -275,6 +276,12 @@ public class MappingDocumentServiceValidationTest {
       SAEVirtualDocument document = new SAEVirtualDocument();
       document.setMetadatas(new ArrayList<SAEMetadata>());
       mappingDocService.saeVirtualDocumentToVirtualStorageDocument(document);
+   }
+
+   @Test(expected = IllegalArgumentException.class)
+   public void saeMetadatasToStorageMetadatasArgumentObligatoire() {
+      List<SAEMetadata> list = new ArrayList<SAEMetadata>();
+      mappingDocService.saeMetadatasToStorageMetadatas(list);
    }
 
 }

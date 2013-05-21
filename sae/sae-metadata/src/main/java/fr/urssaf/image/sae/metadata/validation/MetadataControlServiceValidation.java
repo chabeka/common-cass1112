@@ -337,7 +337,6 @@ public class MetadataControlServiceValidation {
 
    }
 
-   
    /**
     * Valide l'argument de la méthode
     * {@link fr.urssaf.image.sae.metadata.control.services.MetadataControlServices#checkArchivableMetadata(fr.urssaf.image.sae.bo.model.bo.SAEDocument)}
@@ -352,5 +351,19 @@ public class MetadataControlServiceValidation {
       validateMetadatas(metadatas);
 
    }
-   
+
+   /**
+    * Valide l'argument de la méthode
+    * {@link fr.urssaf.image.sae.metadata.control.services.MetadataControlServices#checkSupprimableMetadatas(List)}
+    * 
+    * @param metadatas
+    *           : la liste des métadonnées
+    */
+   @Before(value = "execution( java.util.List<fr.urssaf.image.sae.bo.model.MetadataError>  fr.urssaf.image.sae.metadata.control.services.MetadataControlServices.checkSupprimableMetadatas(..)) && args(metadatas)")
+   public final void checkSupprimableMetadataList(
+         final List<UntypedMetadata> metadatas) {
+      validateMetadatas(metadatas);
+
+   }
+
 }

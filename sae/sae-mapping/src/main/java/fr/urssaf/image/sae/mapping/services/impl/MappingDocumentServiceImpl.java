@@ -48,7 +48,8 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
 
       final StorageDocument storageDoc = new StorageDocument();
 
-      final List<StorageMetadata> sMetadata = new ArrayList<StorageMetadata>();
+      final List<StorageMetadata> sMetadata = saeMetadatasToStorageMetadatas(saeDoc
+            .getMetadatas());
 
       storageDoc.setContent(saeDoc.getContent());
 
@@ -56,10 +57,6 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
 
       storageDoc.setFilePath(saeDoc.getFilePath());
 
-      for (SAEMetadata metadata : Utils.nullSafeIterable(saeDoc.getMetadatas())) {
-         sMetadata.add(new StorageMetadata(metadata.getShortCode(), metadata
-               .getValue()));
-      }
       storageDoc.setMetadatas(sMetadata);
 
       return storageDoc;
@@ -243,6 +240,19 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
       virtualDocument.setReference(document.getReference());
 
       return virtualDocument;
+   }
+
+   @Override
+   public List<StorageMetadata> saeMetadatasToStorageMetadatas(
+         List<SAEMetadata> metadatas) {
+
+      List<StorageMetadata> sMetadata = new ArrayList<StorageMetadata>();
+      for (SAEMetadata metadata : Utils.nullSafeIterable(metadatas)) {
+         sMetadata.add(new StorageMetadata(metadata.getShortCode(), metadata
+               .getValue()));
+      }
+
+      return sMetadata;
    }
 
 }

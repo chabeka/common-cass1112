@@ -145,7 +145,7 @@ public class SAEControlesCaptureServiceImpl implements
       }
       LOGGER.debug("{} - Fin de la vérification : "
             + "Le type de hash est SHA-1", prefixeTrc);
-      // FIXME à partie de l'algorithme calculer le hashCode.
+      // FIXME à partir de l'algorithme calculer le hashCode.
       LOGGER
             .debug(
                   "{} - Début de la vérification : "

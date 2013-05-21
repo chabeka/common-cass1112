@@ -276,4 +276,13 @@ public class ValidationServiceImplTest {
       controlService.checkModifiableMetadataList(null);
    }
 
+   /**
+    * validation de l'argument du service
+    * {@link fr.urssaf.image.sae.metadata.control.services.impl.MetadataControlServicesImpl#checkSupprimableMetadatas(java.util.List)}
+    */
+   @Test(expected = IllegalArgumentException.class)
+   public void checkSupprimableMetadatas() {
+      controlService.checkSupprimableMetadatas(null);
+   }
+
 }

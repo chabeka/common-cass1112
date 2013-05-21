@@ -15,8 +15,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
 import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
+import fr.urssaf.image.sae.bo.model.bo.SAEVirtualDocument;
+import fr.urssaf.image.sae.bo.model.bo.VirtualReferenceFile;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
+import fr.urssaf.image.sae.bo.model.untyped.UntypedVirtualDocument;
 import fr.urssaf.image.sae.mapping.dataprovider.MappingDataProviderUtils;
 import fr.urssaf.image.sae.mapping.exception.InvalidSAETypeException;
 import fr.urssaf.image.sae.mapping.exception.MappingFromReferentialException;
@@ -24,6 +27,8 @@ import fr.urssaf.image.sae.mapping.services.MappingDocumentService;
 import fr.urssaf.image.sae.mapping.test.constants.Constants;
 import fr.urssaf.image.sae.mapping.utils.Utils;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
+import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
+import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageDocument;
 
 /**
  * Classe qui permet de faire les tests sur les services
@@ -158,6 +163,63 @@ public class MappingDocumentServiceTest {
       Assert.assertNotNull(storageDoc);
       Assert.assertNotNull(storageDoc.getMetadatas());
       Assert.assertTrue(storageDoc.getMetadatas().size() == 5);
+
+   }
+
+   /**
+    * Test de la méthode saeDocumentToStorageDocument
+    * 
+    * @throws FileNotFoundException
+    *            Exception lever lorqu'il y'a un dysfonctionnement.
+    * @throws InvalidSAETypeException
+    *            Exception lever lorqu'il y'a un dysfonctionnement.
+    * @throws MappingFromReferentialException
+    *            Exception lever lorqu'il y'a un dysfonctionnement.
+    * @throws ParseException
+    *            Exception lever lorqu'il y'a un dysfonctionnement.
+    */
+   @Test
+   public void untytpedVirtualDocumentToSaeVirtualDocument()
+         throws FileNotFoundException, InvalidSAETypeException,
+         MappingFromReferentialException, ParseException {
+      final UntypedDocument untyped = getUntypedDocument(Constants.MAPPING_FILE_1);
+      UntypedVirtualDocument document = new UntypedVirtualDocument();
+      document.setuMetadatas(untyped.getUMetadatas());
+      document.setIndex(0);
+      document.setStartPage(1);
+      document.setEndPage(2);
+      VirtualReferenceFile reference = new VirtualReferenceFile();
+      reference.setFilePath("/toto");
+      reference.setHash("hash");
+      reference.setTypeHash("typeHash");
+      document.setReference(reference);
+
+      final SAEVirtualDocument saeDoc = mappingService
+            .untypedVirtualDocumentToSaeVirtualDocument(document);
+      final VirtualStorageDocument storageDoc = mappingService
+            .saeVirtualDocumentToVirtualStorageDocument(saeDoc);
+      Assert.assertNotNull(storageDoc);
+      Assert.assertNotNull(storageDoc.getMetadatas());
+      Assert.assertTrue(storageDoc.getMetadatas().size() == 5);
+
+   }
+
+   /**
+    * Test de la méthode
+    * {@link MappingDocumentService#saeMetadatasToStorageMetadatas(List)}
+    */
+   @Test
+   public void saeMetadatasToStorageMetadatas() throws FileNotFoundException,
+         InvalidSAETypeException, MappingFromReferentialException,
+         ParseException {
+      final UntypedDocument untyped = getUntypedDocument(Constants.MAPPING_FILE_1);
+      List<SAEMetadata> saeMetas = mappingService
+            .untypedMetadatasToSaeMetadatas(untyped.getUMetadatas());
+      List<StorageMetadata> storageMetadatas = mappingService
+            .saeMetadatasToStorageMetadatas(saeMetas);
+
+      Assert.assertNotNull(storageMetadatas);
+      Assert.assertTrue(storageMetadatas.size() == 5);
 
    }
 

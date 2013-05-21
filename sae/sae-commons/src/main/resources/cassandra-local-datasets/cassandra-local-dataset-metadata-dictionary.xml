@@ -79,6 +79,10 @@
                <name>index</name>
                <value>bytes(00)</value>
             </column>
+            <column>
+               <name>update</name>
+               <value>bytes(01)</value>
+            </column>
          </row>
          <row>
             <key>Hash</key>
@@ -146,6 +150,10 @@
                <name>index</name>
                <value>false</value>
             </column>
+            <column>
+               <name>update</name>
+               <value>bytes(00)</value>
+            </column>
          </row>
          <row>
             <key>Siret</key>
@@ -211,6 +219,10 @@
             </column>
             <column>
                <name>index</name>
+               <value>bytes(01)</value>
+            </column>
+            <column>
+               <name>update</name>
                <value>bytes(01)</value>
             </column>
          </row>

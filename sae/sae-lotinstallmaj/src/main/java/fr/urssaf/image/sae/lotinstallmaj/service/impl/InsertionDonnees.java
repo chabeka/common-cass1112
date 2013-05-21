@@ -434,8 +434,8 @@ public class InsertionDonnees {
    }
 
    /**
-    * Référentiel des événements en V2
-    * Ajout de l'évenement MAJ_VERSION_RND|OK (Automatisation RND)
+    * Référentiel des événements en V2 Ajout de l'évenement MAJ_VERSION_RND|OK
+    * (Automatisation RND)
     */
    public void addReferentielEvenementV2() {
 
@@ -454,10 +454,13 @@ public class InsertionDonnees {
       updater = cfTmpl.createUpdater("MAJ_VERSION_RND|OK");
       addColumn("JOURN_EVT", allInfos, StringSerializer.get(), ListSerializer
             .get(), updater);
+
+      updater = cfTmpl.createUpdater("DFCE_MODIF_DOC|OK");
+      addColumn("JOURN_EVT", allInfos, StringSerializer.get(), ListSerializer
+            .get(), updater);
+
       cfTmpl.update(updater);
 
    }
-   
-
 
 }
