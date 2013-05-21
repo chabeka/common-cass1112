@@ -386,6 +386,8 @@ public class SAECassandraUpdater {
       // Ajout de l'évènement MAJ_VERSION_RND|OK
       donnees.addReferentielEvenementV2();
 
+      donnees.addRndParameters();
+      
       // Initialisation du référentiel des métadonnées
       // suite au passage à un stockage du référentiel en bdd
       refMetaInitService.initialiseRefMeta(saeDao.getKeyspace());

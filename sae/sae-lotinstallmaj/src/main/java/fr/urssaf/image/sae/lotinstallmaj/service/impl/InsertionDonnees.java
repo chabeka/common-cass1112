@@ -184,6 +184,20 @@ public class InsertionDonnees {
    }
 
    /**
+    * Ajoute les paramètres nécéssaires à la maj du RND
+    */
+   public void addRndParameters() {
+      LOG.info("Création des paramètres de maj du RND");
+
+      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+            keyspace, "Rnd", StringSerializer.get(), StringSerializer
+                  .get());
+
+      checkAndAddRndParameter(cfTmpl, "VERSION_RND_NUMERO", "");
+ 
+   }
+   
+   /**
     * Ajoute les paramètres nécessaires à la traçabilité SAE
     */
    public void addTracabiliteParameters() {
@@ -257,6 +271,19 @@ public class InsertionDonnees {
 
       if (!inserted) {
          LOG.info("Le paramètre de traçabilité {} existe déjà", subname);
+      }
+
+   }
+   
+   private void checkAndAddRndParameter(
+         ColumnFamilyTemplate<String, String> cfTmpl, String subname,
+         Object valeur) {
+
+      boolean inserted = checkAndAddValue(cfTmpl, "parametresRnd",
+            subname, valeur, StringSerializer.get(), ObjectSerializer.get());
+
+      if (!inserted) {
+         LOG.info("Le paramètre de maj du RND {} existe déjà", subname);
       }
 
    }

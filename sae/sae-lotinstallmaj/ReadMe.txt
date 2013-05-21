@@ -165,5 +165,7 @@ Insertion des métadonnées du référentiel 1.8 (moins les nouvelles métadonn�
    
 Positionne le paramètre versionBDD de la CF Parameters à la valeur "5"
 
+Positionne à vide le paramètre VERSION_RND_NUMERO de la CF Rnd.
+
 
 
