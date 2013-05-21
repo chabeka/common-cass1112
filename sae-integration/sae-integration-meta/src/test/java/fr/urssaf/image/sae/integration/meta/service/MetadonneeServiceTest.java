@@ -11,6 +11,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-integration-meta-test.xml" })
+@Ignore
 public class MetadonneeServiceTest {
 
    @Autowired
