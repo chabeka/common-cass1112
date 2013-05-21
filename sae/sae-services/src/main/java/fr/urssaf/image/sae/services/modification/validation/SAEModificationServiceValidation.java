@@ -29,6 +29,8 @@ public class SAEModificationServiceValidation {
     * 
     * @param uuid
     *           identifiant unique du document à supprimer
+    * @param metas
+    *           la liste des métadonnées
     */
    @Before(PARAM_DELETE)
    public final void delete(UUID uuid, List<UntypedMetadata> metas) {

@@ -75,7 +75,7 @@ public class SAEModificationServiceImpl implements SAEModificationService {
     * {@inheritDoc}
     */
    @Override
-   public void modification(UUID idArchive, List<UntypedMetadata> metadonnees)
+   public final void modification(UUID idArchive, List<UntypedMetadata> metadonnees)
          throws InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
          DuplicatedMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
@@ -85,7 +85,7 @@ public class SAEModificationServiceImpl implements SAEModificationService {
       LOG.debug("{} - début", trcPrefix);
 
       LOG.debug("{} - recherche du document", trcPrefix);
-      UUIDCriteria UuidCriteria = new UUIDCriteria(idArchive, Arrays.asList(
+      UUIDCriteria uuidCriteria = new UUIDCriteria(idArchive, Arrays.asList(
             new StorageMetadata(
                   StorageTechnicalMetadatas.DATE_DEBUT_CONSERVATION
                         .getShortCode()), new StorageMetadata(
@@ -93,7 +93,7 @@ public class SAEModificationServiceImpl implements SAEModificationService {
       StorageDocument document;
       try {
          document = documentService
-               .searchStorageDocumentByUUIDCriteria(UuidCriteria);
+               .searchStorageDocumentByUUIDCriteria(uuidCriteria);
 
       } catch (SearchingServiceEx exception) {
          String message = StringUtils.replace(

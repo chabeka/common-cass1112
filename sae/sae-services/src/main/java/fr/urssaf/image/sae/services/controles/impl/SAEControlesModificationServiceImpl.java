@@ -58,7 +58,7 @@ public class SAEControlesModificationServiceImpl implements
     * {@inheritDoc}
     */
    @Override
-   public void checkSaeMetadataForDelete(List<UntypedMetadata> metadatas)
+   public final void checkSaeMetadataForDelete(List<UntypedMetadata> metadatas)
          throws NotModifiableMetadataEx {
       String trcPrefix = "checkSaeMetadataForDelete()";
       LOG.debug("{} - début", trcPrefix);
@@ -86,7 +86,7 @@ public class SAEControlesModificationServiceImpl implements
     * {@inheritDoc}
     */
    @Override
-   public void checkSaeMetadataForUpdate(List<UntypedMetadata> metadatas)
+   public final void checkSaeMetadataForUpdate(List<UntypedMetadata> metadatas)
          throws InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
          DuplicatedMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
