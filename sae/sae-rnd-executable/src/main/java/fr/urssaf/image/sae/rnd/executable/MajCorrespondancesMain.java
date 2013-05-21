@@ -90,7 +90,7 @@ public class MajCorrespondancesMain {
       } catch (Exception e) {
          LOG
                .error(
-                     "Une erreur a eu lieu dans le processus du mise à jour des correspondances du RND.",
+                     "Une erreur a eu lieu dans le processus de mise à jour des correspondances du RND.",
                      e);
       }
    }

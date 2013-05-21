@@ -90,7 +90,7 @@ public class MajRndMain {
          instance.execute(args);
       } catch (Exception e) {
          LOG.error(
-               "Une erreur a eu lieu dans le processus du mise à jour du RND.",
+               "Une erreur a eu lieu dans le processus de mise à jour du RND.",
                e);
       }
    }

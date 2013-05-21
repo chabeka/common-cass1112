@@ -1,6 +1,7 @@
 package fr.urssaf.image.sae.rnd.executable;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 @SuppressWarnings("PMD.MethodNamingConventions")
@@ -46,18 +47,20 @@ public class ServicesMainTest {
       }
    }
 
+   @Ignore
    @Test
    public void ServicesMain_majRnd() throws Throwable {
 
-      String[] args = new String[] { "MAJ_RND" };
+      String[] args = new String[] { "MAJ_RND", "src/test/resources/config_sae.properties" };
 
       ServicesMain.main(args);
    }
 
+   @Ignore
    @Test
    public void ServicesMain_majCorrespondances() throws Throwable {
 
-      String[] args = new String[] { "MAJ_CORRESPONDANCES_RND" };
+      String[] args = new String[] { "MAJ_CORRESPONDANCES_RND", "src/test/resources/config_sae.properties" };
 
       ServicesMain.main(args);
    }
