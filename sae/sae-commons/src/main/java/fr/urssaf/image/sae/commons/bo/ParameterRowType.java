@@ -1,6 +1,3 @@
-/**
- * 
- */
 package fr.urssaf.image.sae.commons.bo;
 
 /**
@@ -10,8 +7,14 @@ package fr.urssaf.image.sae.commons.bo;
 public enum ParameterRowType {
 
    /** Nom correspondant à la ligne contenant les paramètres de tracabilite */
-   TRACABILITE,
-   
+   TRACABILITE {
+
+      @Override
+      public String toString() {
+         return "parametresTracabilite";
+      }
+   },
+
    /**
     * Nom correspondant à la ligne contenant les paramètres du RND
     */
