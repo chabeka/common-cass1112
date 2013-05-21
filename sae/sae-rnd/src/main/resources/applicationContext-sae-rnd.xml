@@ -14,8 +14,12 @@
    <import resource="classpath*:/applicationContext-commons-cassandra.xml" />
    
    <import resource="applicationContext-dfce.xml" />
-   
+
+   <import resource="applicationContext-sae-trace.xml" />
+      
    <import resource="applicationContext-sae-commons.xml" />
+   
+
 
    <bean id="configWsAdrn" class="fr.urssaf.image.sae.rnd.modele.Configuration">
       <property name="urlWsAdrn" value="${sae.rnd.url}" />

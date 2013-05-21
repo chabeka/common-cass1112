@@ -43,25 +43,27 @@ public class SaeBddSupport {
     * 
     * @return Un objet {@link VersionRnd} contenant les informations sur la
     *         version RND
-    * @throws ParameterNotFoundException
-    *            Exception levée si le paramètre n'est pas trouvé
     * @throws SaeBddRuntimeException
     *            Exception levée lors de la mise à jour de la BDD
     */
-   public final VersionRnd getVersionRnd() throws ParameterNotFoundException,
-         SaeBddRuntimeException {
+   public final VersionRnd getVersionRnd() throws SaeBddRuntimeException {
 
       try {
-         String nomVersion = parametersService.getVersionRndNumero();
-         Date dateMajVersion = parametersService.getVersionRndDateMaj();
+         String nomVersion;
 
+         nomVersion = parametersService.getVersionRndNumero();
+         Date dateMajVersion = parametersService.getVersionRndDateMaj();
          VersionRnd versionRnd = new VersionRnd();
          versionRnd.setDateMiseAJour(dateMajVersion);
          versionRnd.setVersionEnCours(nomVersion);
          return versionRnd;
+
+      } catch (ParameterNotFoundException e) {
+         throw new SaeBddRuntimeException(e);
       } catch (Exception e) {
-         throw new SaeBddRuntimeException(e.getMessage(), e.getCause());
+         throw new SaeBddRuntimeException(e);
       }
+
    }
 
    /**
@@ -69,16 +71,16 @@ public class SaeBddSupport {
     * 
     * @param versionRnd
     *           Version à mettre à jour
+    * @throws SaeBddRuntimeException 
     * @throws SaeBddRuntimeException
     *            Exception levée lors de la mise à jour de la BDD
     */
-   public final void updateVersionRnd(VersionRnd versionRnd)
-         throws SaeBddRuntimeException {
+   public final void updateVersionRnd(VersionRnd versionRnd) throws SaeBddRuntimeException {
       try {
          parametersService.setVersionRndDateMaj(versionRnd.getDateMiseAJour());
          parametersService.setVersionRndNumero(versionRnd.getVersionEnCours());
       } catch (Exception e) {
-         throw new SaeBddRuntimeException(e.getMessage(), e.getCause());
+         throw new SaeBddRuntimeException(e);
       }
    }
 
@@ -101,7 +103,7 @@ public class SaeBddSupport {
             }
          }
       } catch (Exception e) {
-         throw new SaeBddRuntimeException(e.getMessage(), e.getCause());
+         throw new SaeBddRuntimeException(e);
       }
    }
 
@@ -140,10 +142,10 @@ public class SaeBddSupport {
                typeDoc.setCloture(true);
                rndSupport.ajouterRnd(typeDoc, clockSupport.currentCLock());
             }
-            
+
          }
       } catch (Exception e) {
-         throw new SaeBddRuntimeException(e.getMessage(), e.getCause());
+         throw new SaeBddRuntimeException(e);
       }
 
    }
@@ -160,7 +162,7 @@ public class SaeBddSupport {
       try {
          return correspondancesRndSupport.getAllCorrespondances();
       } catch (Exception e) {
-         throw new SaeBddRuntimeException(e.getMessage(), e.getCause());
+         throw new SaeBddRuntimeException(e);
       }
    }
 
@@ -180,7 +182,7 @@ public class SaeBddSupport {
          correspondancesRndSupport.ajouterCorrespondance(correspondance,
                clockSupport.currentCLock());
       } catch (Exception e) {
-         throw new SaeBddRuntimeException(e.getMessage(), e.getCause());
+         throw new SaeBddRuntimeException(e);
       }
    }
 }

@@ -28,6 +28,7 @@ public class RndServiceImpl implements RndService {
     */
    private final LoadingCache<String, TypeDocument> cacheRnd;
 
+   @Autowired
    private RndSupport rndSupport;
 
    /**

@@ -50,7 +50,7 @@ public class MajCorrespondancesServiceImpl implements MajCorrespondancesService 
          
 
       } catch (SaeBddRuntimeException e) {
-         throw new MajCorrespondancesException(e.getMessage(), e.getCause());
+         throw new MajCorrespondancesException(e);
       }
 
       LOGGER.debug(FIN_LOG, trcPrefix);

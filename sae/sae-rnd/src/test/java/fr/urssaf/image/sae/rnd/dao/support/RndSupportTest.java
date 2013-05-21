@@ -1,4 +1,4 @@
-package dao.support;
+package fr.urssaf.image.sae.rnd.dao.support;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -38,8 +38,8 @@ public class RndSupportTest {
       TypeDocument typeDocCree = new TypeDocument();
       typeDocCree.setCloture(false);
       typeDocCree.setCode("1.2.1.1.1");
-      typeDocCree.setCodeActivite("1");
-      typeDocCree.setCodeFonction("2");
+      typeDocCree.setCodeActivite("2");
+      typeDocCree.setCodeFonction("1");
       typeDocCree.setDureeConservation(300);
       typeDocCree.setLibelle("Libellé 1.2.1.1.1");
       typeDocCree.setType(TypeCode.ARCHIVABLE_AED);

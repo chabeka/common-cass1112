@@ -18,29 +18,18 @@ import fr.urssaf.image.commons.dfce.service.DFCEConnectionService;
  * 
  */
 @Component
-public class ServiceProviderSupport {
+public class ServiceProviderSupportRnd {
 
    private ServiceProvider serviceProvider;
 
-   private final DFCEConnectionService dfceConnectionService;
-
-   /**
-    * 
-    * @param dfceConnectionService
-    *           service de connexion à DFCE
-    */
    @Autowired
-   public ServiceProviderSupport(DFCEConnectionService dfceConnectionService) {
+   private DFCEConnectionService dfceConnectionService;
 
-      this.dfceConnectionService = dfceConnectionService;
-   }
-
-   /**
+    /**
     * connexion à DFCE
     */
    public final void connect() {
       serviceProvider = dfceConnectionService.openConnection();
-
    }
 
    /**
@@ -95,4 +84,5 @@ public class ServiceProviderSupport {
    public final StorageAdministrationService getStorageAdministrationService() {
       return serviceProvider.getStorageAdministrationService();
    }
+
 }

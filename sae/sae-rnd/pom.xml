@@ -21,6 +21,8 @@
       <sae-version>13.4.10.5-SNAPSHOT</sae-version>
       <axis.version>1.4</axis.version>
       <jaxrpc.version>1.1.3_01</jaxrpc.version>
+      <apache.commons-discovery.version>0.5</apache.commons-discovery.version>
+      <axis-wsdl4j.version>1.5.1</axis-wsdl4j.version>
    </properties>
 
    <dependencies>
@@ -70,6 +72,26 @@
          <version>${spring.framework.version}</version>
          <scope>test</scope>
       </dependency>
+
+      <dependency>
+         <groupId>commons-discovery</groupId>
+         <artifactId>commons-discovery</artifactId>
+         <version>${apache.commons-discovery.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>axis</groupId>
+         <artifactId>axis-wsdl4j</artifactId>
+         <version>${axis-wsdl4j.version}</version>
+      </dependency>
+
+      <!-- EASYMOCK -->
+      <dependency>
+         <groupId>org.easymock</groupId>
+         <artifactId>easymock</artifactId>
+         <version>${easymock.version}</version>
+         <scope>test</scope>
+      </dependency>
+
 
    </dependencies>
 

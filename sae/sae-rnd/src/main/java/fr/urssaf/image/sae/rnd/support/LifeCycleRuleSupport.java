@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 import com.docubase.dfce.exception.ObjectAlreadyExistsException;
 
-import fr.urssaf.image.sae.rnd.dao.support.ServiceProviderSupport;
+import fr.urssaf.image.sae.rnd.dao.support.ServiceProviderSupportRnd;
 import fr.urssaf.image.sae.rnd.modele.TypeDocument;
 
 /**
@@ -34,9 +34,9 @@ public class LifeCycleRuleSupport {
     *           Support pour la gestion de la connexion à DFCE
     */
    public final void updateLifeCycleRule(TypeDocument typeDoc,
-         ServiceProviderSupport serviceProviderSupport) {
+         ServiceProviderSupportRnd serviceProviderSupport) {
 
-      String trcPrefix = "rechercherJournauxDocument";
+      String trcPrefix = "updateLifeCycleRule";
       LOGGER.debug(DEBUT_LOG, trcPrefix);
 
       LOGGER.debug("{} - Code du type de doc : {}", new String[] { trcPrefix,
@@ -61,17 +61,18 @@ public class LifeCycleRuleSupport {
          } else {
             // Si le code existe déjà et que la durée de conservation est
             // différente
-            if (typeDoc.getDureeConservation() != lifeCycleRule
-                  .getLifeCycleLength()) {
+            int dureeLifeCycleRule = lifeCycleRule.getLifeCycleLength();
+            int dureeTypeDoc = typeDoc.getDureeConservation();
+            if (dureeTypeDoc != dureeLifeCycleRule) {
 
                serviceProviderSupport.getStorageAdministrationService()
                      .updateLifeCycleRule(typeDoc.getCode(),
-                           typeDoc.getDureeConservation(),
+                           dureeTypeDoc,
                            LifeCycleLengthUnit.DAY);
                LOGGER
-                     .warn(
-                           "{} - La durée de conservation du code {} a été modifiée !",
-                           new String[] { trcPrefix, typeDoc.getCode() });
+                     .info(
+                           "{} - La durée de conservation du code {} a été modifiée ({} => {}) !",
+                           new String[] { trcPrefix, typeDoc.getCode(), Integer.toString(dureeLifeCycleRule), Integer.toString(dureeTypeDoc) });
             }
          }
       } catch (ObjectAlreadyExistsException objectExist) {

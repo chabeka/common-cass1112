@@ -1,4 +1,4 @@
-package dao.support;
+package fr.urssaf.image.sae.rnd.dao.support;
 
 import static org.junit.Assert.assertNotNull;
 

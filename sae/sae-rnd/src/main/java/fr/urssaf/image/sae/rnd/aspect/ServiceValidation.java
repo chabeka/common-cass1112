@@ -14,8 +14,7 @@ import fr.urssaf.image.sae.rnd.modele.Correspondance;
 @Aspect
 public class ServiceValidation {
 
-   private static final String AJOUTER_CORRES = "execution(void "
-         + "fr.urssaf.image.sae.rnd.dao.support.CorrespondancesRndSupport.ajouterCorrespondance(*,*))"
+   private static final String AJOUTER_CORRES = "execution(void fr.urssaf.image.sae.rnd.dao.support.CorrespondancesRndSupport.ajouterCorrespondance(*,*))"
          + "&& args(correspondance, clock)";
 
    /**
@@ -23,7 +22,7 @@ public class ServiceValidation {
     * 
     * @param correspondance
     *           la correspondance
-    * @param code
+    * @param clock 
     *           Horloge de la création
     */
    @Before(AJOUTER_CORRES)

@@ -19,6 +19,16 @@ public class MajCorrespondancesException extends Exception {
    }
 
    /**
+    * Constructeur
+    * 
+    * @param exception
+    *           exception mère
+    */
+   public MajCorrespondancesException(Exception exception) {
+      super(exception);
+   }
+   
+   /**
     * Construit une nouvelle {@link MajCorrespondancesException } avec un message et une
     * cause données.
     * 

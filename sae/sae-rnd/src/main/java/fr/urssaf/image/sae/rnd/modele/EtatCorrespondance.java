@@ -25,13 +25,6 @@ public enum EtatCorrespondance {
       return name();
    }
 
-   /**
-    * 
-    * @param value
-    *           La valeur
-    */
-   public void setValue(String value) {
-   }
 
    /**
     * 

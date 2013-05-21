@@ -12,15 +12,24 @@ public class MajRndException extends Exception {
    private static final long serialVersionUID = 1L;
 
    /**
-    * Construit une nouvelle {@link MajRndException }.
+    * Constructeur par défaut
     */
    public MajRndException() {
       super();
    }
+   
+   /**
+    * Constructeur
+    * 
+    * @param exception
+    *           exception mère
+    */
+   public MajRndException(Exception exception) {
+      super(exception);
+   }
 
    /**
-    * Construit une nouvelle {@link MajRndException } avec un message et une
-    * cause données.
+    * Constructeur avec un message et une cause données.
     * 
     * @param message
     *           : Le message d'erreur
@@ -32,7 +41,7 @@ public class MajRndException extends Exception {
    }
 
    /**
-    * Construit une nouvelle {@link MajRndException }avec un message.
+    * Constructeur avec un message.
     * 
     * @param message
     *           : Le message de l'erreur

@@ -24,13 +24,6 @@ public enum TypeCode {
       return name();
    }
 
-   /**
-    * 
-    * @param value
-    *           La valeur
-    */
-   public void setValue(String value) {
-   }
 
    /**
     * 

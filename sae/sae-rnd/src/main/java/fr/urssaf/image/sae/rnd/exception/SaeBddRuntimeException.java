@@ -19,6 +19,16 @@ public class SaeBddRuntimeException extends Exception {
    }
 
    /**
+    * Constructeur
+    * 
+    * @param exception
+    *           exception mère
+    */
+   public SaeBddRuntimeException(Exception exception) {
+      super(exception);
+   }
+   
+   /**
     * Construit une nouvelle {@link SaeBddRuntimeException } avec un message et
     * une cause données.
     * 

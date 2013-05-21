@@ -63,7 +63,7 @@ public class RndRecuperationServiceImpl implements RndRecuperationService {
             TypeDocument typeDoc = new TypeDocument();
             typeDoc.setCloture(false);
             typeDoc.setCode(transCodeTemporaire.getReferenceCodeTemporaire());
-           
+
             // Durée à 3 ans (3*365 jours)
             typeDoc.setDureeConservation(DUREE_CONSERVATION);
             typeDoc.setLibelle(transCodeTemporaire.getLabelCodeTemporaire());

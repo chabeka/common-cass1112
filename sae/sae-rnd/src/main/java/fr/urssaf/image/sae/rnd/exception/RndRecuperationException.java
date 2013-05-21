@@ -13,15 +13,14 @@ public class RndRecuperationException extends Exception {
    private static final long serialVersionUID = 1L;
 
    /**
-    * Construit une nouvelle {@link RndRecuperationException }.
+    * Constructeur par défaut
     */
    public RndRecuperationException() {
       super();
    }
 
    /**
-    * Construit une nouvelle {@link RndRecuperationException } avec un message et
-    * une cause données.
+    * Consttructeur avec un message et une cause données.
     * 
     * @param message
     *           : Le message d'erreur
@@ -33,7 +32,7 @@ public class RndRecuperationException extends Exception {
    }
 
    /**
-    * Construit une nouvelle {@link RndRecuperationException }avec un message.
+    * Constructeur avec un message.
     * 
     * @param message
     *           : Le message de l'erreur

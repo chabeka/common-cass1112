@@ -14,6 +14,8 @@ import me.prettyprint.hector.api.query.QueryResult;
 import me.prettyprint.hector.api.query.RangeSlicesQuery;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +24,7 @@ import fr.urssaf.image.commons.cassandra.helper.QueryResultConverter;
 import fr.urssaf.image.sae.rnd.dao.CorrespondancesDao;
 import fr.urssaf.image.sae.rnd.modele.Correspondance;
 import fr.urssaf.image.sae.rnd.modele.EtatCorrespondance;
+import fr.urssaf.image.sae.rnd.support.LifeCycleRuleSupport;
 
 /**
  * Support permettant d'effectuer les opérations d'écriture sur la CF
@@ -33,6 +36,11 @@ import fr.urssaf.image.sae.rnd.modele.EtatCorrespondance;
 public class CorrespondancesRndSupport {
 
    private final CorrespondancesDao correspondancesDao;
+
+   private static final String FIN_LOG = "{} - fin";
+   private static final String DEBUT_LOG = "{} - début";
+   private static final Logger LOGGER = LoggerFactory
+         .getLogger(CorrespondancesRndSupport.class);
 
    /**
     * Constructeur
@@ -58,6 +66,14 @@ public class CorrespondancesRndSupport {
    public final void ajouterCorrespondance(Correspondance correspondance,
          long clock) {
 
+      String trcPrefix = "ajouterCorrespondance";
+      LOGGER.debug(DEBUT_LOG, trcPrefix);
+
+      LOGGER.debug("{} - Correspondance code tempo : {}", new String[] {
+            trcPrefix, correspondance.getCodeTemporaire() });
+      LOGGER.debug("{} - Correspondance code définitif : {}", new String[] {
+            trcPrefix, correspondance.getCodeDefinitif() });
+
       ColumnFamilyUpdater<String, String> updater = correspondancesDao
             .getCfTmpl().createUpdater(correspondance.getCodeTemporaire());
 
@@ -78,6 +94,12 @@ public class CorrespondancesRndSupport {
       }
 
       correspondancesDao.getCfTmpl().update(updater);
+
+      LOGGER.info("{} - Ajout de la correspondance : {} / {}", new String[] {
+            trcPrefix, correspondance.getCodeTemporaire(),
+            correspondance.getCodeDefinitif() });
+
+      LOGGER.debug(FIN_LOG, trcPrefix);
    }
 
    /**

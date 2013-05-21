@@ -3,6 +3,8 @@ package fr.urssaf.image.sae.rnd.dao.support;
 import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +20,12 @@ import fr.urssaf.image.sae.rnd.modele.TypeDocument;
 @Component
 public class RndSupport {
 
-   private RndDao rndDao;
+   private final RndDao rndDao;
+
+   private static final String FIN_LOG = "{} - fin";
+   private static final String DEBUT_LOG = "{} - début";
+   private static final Logger LOGGER = LoggerFactory
+         .getLogger(RndSupport.class);
 
    /**
     * Constructeur
@@ -40,20 +47,39 @@ public class RndSupport {
     *           Horloge de la création
     */
    public final void ajouterRnd(TypeDocument typeDoc, long clock) {
+
+      String trcPrefix = "ajouterRnd";
+      LOGGER.debug(DEBUT_LOG, trcPrefix);
+
+      LOGGER.debug("{} - Code du type de doc : {}", new String[] { trcPrefix,
+            typeDoc.getCode() });
+
       ColumnFamilyUpdater<String, String> updater = rndDao.getCfTmpl()
             .createUpdater(typeDoc.getCode());
 
       rndDao.ecritCloture(typeDoc.isCloture(), updater, clock);
-      rndDao.ecritCodeActivite(Integer.valueOf(typeDoc.getCodeActivite()),
-            updater, clock);
-      rndDao.ecritCodeFonction(Integer.valueOf(typeDoc.getCodeFonction()),
-            updater, clock);
+
+      // Le code activité peut être null
+      if (typeDoc.getCodeActivite() != null) {
+         rndDao.ecritCodeActivite(Integer.valueOf(typeDoc.getCodeActivite()),
+               updater, clock);
+      }
+      // Le code fonction peut être null pour les types de document temporaire
+      if (typeDoc.getCodeFonction() != null) {
+         rndDao.ecritCodeFonction(Integer.valueOf(typeDoc.getCodeFonction()),
+               updater, clock);
+      }
       rndDao.ecritDureeConservation(Integer.valueOf(typeDoc
             .getDureeConservation()), updater, clock);
       rndDao.ecritLibelle(typeDoc.getLibelle(), updater, clock);
       rndDao.ecritType(typeDoc.getType().toString(), updater, clock);
 
       rndDao.getCfTmpl().update(updater);
+
+      LOGGER.info("{} - Ajout du code : {}", new String[] { trcPrefix,
+            typeDoc.getCode() });
+
+      LOGGER.debug(FIN_LOG, trcPrefix);
    }
 
    /**

@@ -1,6 +1,5 @@
 package fr.urssaf.image.sae.rnd.modele;
 
-import org.springframework.stereotype.Component;
 
 
 /**

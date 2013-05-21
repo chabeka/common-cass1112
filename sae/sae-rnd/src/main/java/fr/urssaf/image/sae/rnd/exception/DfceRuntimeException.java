@@ -19,6 +19,16 @@ public class DfceRuntimeException extends Exception {
    }
 
    /**
+    * Constructeur
+    * 
+    * @param exception
+    *           exception mère
+    */
+   public DfceRuntimeException(Exception exception) {
+      super(exception);
+   }
+   
+   /**
     * Construit une nouvelle {@link DfceRuntimeException } avec un message et
     * une cause données.
     * 

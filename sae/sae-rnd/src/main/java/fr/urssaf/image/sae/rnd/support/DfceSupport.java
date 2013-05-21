@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fr.urssaf.image.sae.rnd.dao.support.ServiceProviderSupport;
+import fr.urssaf.image.sae.rnd.dao.support.ServiceProviderSupportRnd;
 import fr.urssaf.image.sae.rnd.exception.DfceRuntimeException;
 import fr.urssaf.image.sae.rnd.modele.TypeDocument;
 
@@ -18,7 +18,7 @@ import fr.urssaf.image.sae.rnd.modele.TypeDocument;
 public class DfceSupport {
 
    @Autowired
-   private ServiceProviderSupport serviceProviderSupport;
+   private ServiceProviderSupportRnd serviceProviderSupport;
    
    @Autowired
    private LifeCycleRuleSupport lifeCycleRuleSupport;
@@ -39,7 +39,7 @@ public class DfceSupport {
       
          serviceProviderSupport.disconnect();
       } catch (Exception e) {
-         throw new DfceRuntimeException(e.getMessage(), e.getCause());
+         throw new DfceRuntimeException(e);
       }
       
    }

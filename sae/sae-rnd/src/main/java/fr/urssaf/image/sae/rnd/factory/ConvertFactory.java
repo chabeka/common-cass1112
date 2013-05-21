@@ -3,8 +3,6 @@ package fr.urssaf.image.sae.rnd.factory;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-
 import fr.urssaf.image.sae.rnd.modele.TypeCode;
 import fr.urssaf.image.sae.rnd.modele.TypeDocument;
 import fr.urssaf.image.sae.rnd.ws.adrn.modele.RNDTypeDocument;
@@ -27,23 +25,32 @@ public class ConvertFactory {
       TypeDocument typeDoc = new TypeDocument();
 
       // Code RND
-      typeDoc.setCode(rndTypeDoc.get_reference());
+      String codeRnd = rndTypeDoc.get_reference();
+      typeDoc.setCode(codeRnd);
 
-      // Code Fonction
-      String fonction = rndTypeDoc.get_refFonction();
+      String tabRnd[] = codeRnd.split("\\.");
+
+      // Code fonction et code activité
+      // On ne récupère pas ceux fournis pas le WS car ils peuvent être null ou
+      // incorrects (ex : code activité = 1.2 pour le code RND 1.2.A.X.X)
+
+      // String fonction = rndTypeDoc.get_refFonction();
+      String fonction = tabRnd[0];
       typeDoc.setCodeFonction(fonction);
 
-      // Code Activité
-      // Si l'activité est nulle
-      if (StringUtils.isBlank(rndTypeDoc.get_refActivite())) {
-         char activite = typeDoc.toString().charAt(2);
-         // le caractère à la 3ème position du code type est numérique alors il
-         // correspond à l'activité
-         if (Character.isDigit(activite)) {
-            typeDoc.setCodeActivite(Character.toString(activite));
+      // String activite = rndTypeDoc.get_refActivite();
+      String activite = tabRnd[1];
+      // Si ce que l'on récupère est numérique alors cela correspond bien à
+      // l'activité
+      int taille = activite.length();
+      boolean isNumerique = true;
+      for (int i = 0; i < taille; i++) {
+         if (!Character.isDigit(activite.charAt(i))) {
+            isNumerique = false;
          }
-      } else {
-         typeDoc.setCodeActivite(rndTypeDoc.get_refActivite());
+      }
+      if (isNumerique) {
+         typeDoc.setCodeActivite(activite);
       }
 
       // Libellé du code RND
