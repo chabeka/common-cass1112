@@ -235,88 +235,66 @@ public class SaeMetadataSupport {
          // NB: -1 est la valeur signifiant "non renseigné"
          if (StringUtils.isEmpty(result.getString(SaeMetadataDao.META_LENGTH))) {
             meta.setLength(-1);
-         } else {
-            if ("-1".equals(result.getString(SaeMetadataDao.META_LENGTH))) {
-               meta.setLength(-1);
-            } else {
-               meta.setLength(result.getInteger(SaeMetadataDao.META_LENGTH));
-            }
 
+         } else if ("-1".equals(result.getString(SaeMetadataDao.META_LENGTH))) {
+            meta.setLength(-1);
+
+         } else {
+            meta.setLength(result.getInteger(SaeMetadataDao.META_LENGTH));
          }
 
          meta.setShortCode(result.getString(SaeMetadataDao.META_SHORT_CODE));
          meta.setPattern(result.getString(SaeMetadataDao.META_PATTERN));
-         if (StringUtils.isEmpty(result
-               .getBoolean(SaeMetadataDao.META_REQ_ARCH).toString())) {
-            meta.setRequiredForArchival(Boolean.FALSE);
-         } else {
-            meta.setRequiredForArchival(result
-                  .getBoolean(SaeMetadataDao.META_REQ_ARCH));
-         }
-         if (StringUtils.isEmpty(result
-               .getBoolean(SaeMetadataDao.META_REQ_STOR).toString())) {
-            meta.setRequiredForStorage(Boolean.FALSE);
-         } else {
-            meta.setRequiredForStorage(result
-                  .getBoolean(SaeMetadataDao.META_REQ_STOR));
-         }
-         if (StringUtils.isEmpty(result.getBoolean(SaeMetadataDao.META_SEARCH)
-               .toString())) {
-            meta.setSearchable(Boolean.FALSE);
-         } else {
-            meta.setSearchable(result.getBoolean(SaeMetadataDao.META_SEARCH));
-         }
+
+         Boolean requredArchiv = getBooleanValue(result,
+               SaeMetadataDao.META_REQ_ARCH);
+         meta.setRequiredForArchival(requredArchiv);
+
+         Boolean requiredStor = getBooleanValue(result,
+               SaeMetadataDao.META_REQ_STOR);
+         meta.setRequiredForStorage(requiredStor);
+
+         Boolean searchable = getBooleanValue(result,
+               SaeMetadataDao.META_SEARCH);
+         meta.setSearchable(searchable);
+
          meta.setType(result.getString(SaeMetadataDao.META_TYPE));
-         if (StringUtils.isEmpty(result.getBoolean(SaeMetadataDao.META_ARCH)
-               .toString())) {
-            meta.setArchivable(Boolean.FALSE);
-         } else {
-            meta.setArchivable(result.getBoolean(SaeMetadataDao.META_ARCH));
-         }
-         if (StringUtils.isEmpty(result.getBoolean(SaeMetadataDao.META_CONSUL)
-               .toString())) {
-            meta.setConsultable(Boolean.FALSE);
-         } else {
-            meta.setConsultable(result.getBoolean(SaeMetadataDao.META_CONSUL));
 
-         }
-         if (StringUtils.isEmpty(result.getBoolean(
-               SaeMetadataDao.META_DEF_CONSUL).toString())) {
-            meta.setConsultable(Boolean.FALSE);
-         } else {
-            meta.setDefaultConsultable(result
-                  .getBoolean(SaeMetadataDao.META_DEF_CONSUL));
-         }
-         if (StringUtils.isEmpty(result
-               .getBoolean(SaeMetadataDao.META_HAS_DICT).toString())) {
-            meta.setHasDictionary(Boolean.FALSE);
-         } else {
-            meta.setHasDictionary(result
-                  .getBoolean(SaeMetadataDao.META_HAS_DICT));
-         }
-         if (StringUtils.isEmpty(result
-               .getBoolean(SaeMetadataDao.META_INTERNAL).toString())) {
-            meta.setInternal(Boolean.FALSE);
-         } else {
-            meta.setInternal(result.getBoolean(SaeMetadataDao.META_INTERNAL));
-         }
-         if (StringUtils.isEmpty(result.getBoolean(SaeMetadataDao.META_INDEXED)
-               .toString())) {
-            meta.setIsIndexed(Boolean.FALSE);
-         } else {
-            meta.setIsIndexed(result.getBoolean(SaeMetadataDao.META_INDEXED));
+         Boolean metaArchivable = getBooleanValue(result,
+               SaeMetadataDao.META_ARCH);
+         meta.setArchivable(metaArchivable);
 
-         }
+         Boolean metaConsultable = getBooleanValue(result,
+               SaeMetadataDao.META_CONSUL);
+         meta.setConsultable(metaConsultable);
 
-         if (StringUtils.isEmpty(result.getBoolean(SaeMetadataDao.META_UPDATE)
-               .toString())) {
-            meta.setModifiable(Boolean.FALSE);
-         } else {
-            meta.setModifiable(result.getBoolean(SaeMetadataDao.META_UPDATE));
+         Boolean defaultConsultable = getBooleanValue(result,
+               SaeMetadataDao.META_DEF_CONSUL);
+         meta.setDefaultConsultable(defaultConsultable);
 
-         }
+         Boolean hasDict = getBooleanValue(result, SaeMetadataDao.META_HAS_DICT);
+         meta.setHasDictionary(hasDict);
+
+         Boolean internal = getBooleanValue(result,
+               SaeMetadataDao.META_INTERNAL);
+         meta.setInternal(internal);
+
+         Boolean indexed = getBooleanValue(result, SaeMetadataDao.META_INDEXED);
+         meta.setIsIndexed(indexed);
+
+         Boolean update = getBooleanValue(result, SaeMetadataDao.META_UPDATE);
+         meta.setModifiable(update);
 
       }
       return meta;
+   }
+
+   private Boolean getBooleanValue(ColumnFamilyResult<String, String> result,
+         String columnName) {
+      Boolean value = Boolean.FALSE;
+      if (result.getBoolean(columnName) != null) {
+         value = result.getBoolean(columnName);
+      }
+      return value;
    }
 }
