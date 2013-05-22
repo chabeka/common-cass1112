@@ -13,7 +13,6 @@ import me.prettyprint.hector.api.factory.HFactory;
 import me.prettyprint.hector.api.query.QueryResult;
 import me.prettyprint.hector.api.query.RangeSlicesQuery;
 
-import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -61,95 +60,53 @@ public class SaeMetadataSupport {
 
       saeMetadataDao.ecritShortCode(metadata.getShortCode(), updater, clock);
       saeMetadataDao.ecritType(metadata.getType(), updater, clock);
-      if (BooleanUtils.isFalse(metadata.isRequiredForArchival())
-            || BooleanUtils.isTrue(metadata.isRequiredForArchival())) {
-         saeMetadataDao.ecritRequiredArchival(metadata.isRequiredForArchival(),
-               updater, clock);
-      } else {
-         saeMetadataDao.ecritRequiredArchival(false, updater, clock);
-      }
-      if (BooleanUtils.isFalse(metadata.isRequiredForStorage())
-            || BooleanUtils.isTrue(metadata.isRequiredForStorage())) {
-         saeMetadataDao.ecritRequiredStorage(metadata.isRequiredForStorage(),
-               updater, clock);
-      } else {
-         saeMetadataDao.ecritRequiredStorage(false, updater, clock);
-      }
+
+      Boolean requiredArchiv = getBooleanValue(metadata.isRequiredForArchival());
+      saeMetadataDao.ecritRequiredArchival(requiredArchiv, updater, clock);
+
+      Boolean requiredStor = getBooleanValue(metadata.isRequiredForStorage());
+      saeMetadataDao.ecritRequiredStorage(requiredStor, updater, clock);
+
+      int length = -1;
       if (metadata.getLength() >= 0) {
-         saeMetadataDao.ecritLength(metadata.getLength(), updater, clock);
-      } else {
-         saeMetadataDao.ecritLength(-1, updater, clock);
+         length = metadata.getLength();
       }
+      saeMetadataDao.ecritLength(length, updater, clock);
+
       saeMetadataDao.ecritPattern(metadata.getPattern(), updater, clock);
 
-      if (BooleanUtils.isFalse(metadata.isConsultable())
-            || BooleanUtils.isTrue(metadata.isConsultable())) {
-         saeMetadataDao.ecritConsultable(metadata.isConsultable(), updater,
-               clock);
-      } else {
-         saeMetadataDao.ecritConsultable(false, updater, clock);
-      }
+      Boolean consultable = getBooleanValue(metadata.isConsultable());
+      saeMetadataDao.ecritConsultable(consultable, updater, clock);
 
-      if (BooleanUtils.isFalse(metadata.isDefaultConsultable())
-            || BooleanUtils.isTrue(metadata.isDefaultConsultable())) {
-         saeMetadataDao.ecritDefaultConsultable(
-               metadata.isDefaultConsultable(), updater, clock);
-      } else {
-         saeMetadataDao.ecritDefaultConsultable(false, updater, clock);
-      }
+      Boolean defaultConsultable = getBooleanValue(metadata
+            .isDefaultConsultable());
+      saeMetadataDao
+            .ecritDefaultConsultable(defaultConsultable, updater, clock);
 
-      if (BooleanUtils.isFalse(metadata.isSearchable())
-            || BooleanUtils.isTrue(metadata.isSearchable())) {
-         saeMetadataDao
-               .ecritSearchable(metadata.isSearchable(), updater, clock);
-      } else {
-         saeMetadataDao.ecritSearchable(false, updater, clock);
-      }
+      Boolean searchable = getBooleanValue(metadata.isSearchable());
+      saeMetadataDao.ecritSearchable(searchable, updater, clock);
 
-      if (BooleanUtils.isFalse(metadata.isInternal())
-            || BooleanUtils.isTrue(metadata.isInternal())) {
-         saeMetadataDao.ecritInternal(metadata.isInternal(), updater, clock);
-      } else {
-         saeMetadataDao.ecritInternal(false, updater, clock);
-      }
+      Boolean internal = getBooleanValue(metadata.isInternal());
+      saeMetadataDao.ecritInternal(internal, updater, clock);
 
-      if (BooleanUtils.isFalse(metadata.isArchivable())
-            || BooleanUtils.isTrue(metadata.isArchivable())) {
-         saeMetadataDao
-               .ecritArchivable(metadata.isArchivable(), updater, clock);
-      } else {
-         saeMetadataDao.ecritArchivable(false, updater, clock);
-      }
+      Boolean archivable = getBooleanValue(metadata.isArchivable());
+      saeMetadataDao.ecritArchivable(archivable, updater, clock);
 
       saeMetadataDao.ecritLabel(metadata.getLabel(), updater, clock);
       saeMetadataDao
             .ecritDescription(metadata.getDescription(), updater, clock);
 
-      if (BooleanUtils.isFalse(metadata.getHasDictionary())
-            || BooleanUtils.isTrue(metadata.getHasDictionary())) {
-         saeMetadataDao.ecritHasDictionary(metadata.getHasDictionary(),
-               updater, clock);
-      } else {
-         saeMetadataDao.ecritHasDictionary(false, updater, clock);
-      }
+      Boolean hasDict = getBooleanValue(metadata.getHasDictionary());
+      saeMetadataDao.ecritHasDictionary(hasDict, updater, clock);
 
       saeMetadataDao.ecritDictionaryName(metadata.getDictionaryName(), updater,
             clock);
 
-      if (BooleanUtils.isFalse(metadata.getIsIndexed())
-            || BooleanUtils.isTrue(metadata.getIsIndexed())) {
-         saeMetadataDao.ecritIndexed(metadata.getIsIndexed(), updater, clock);
-      } else {
-         saeMetadataDao.ecritIndexed(false, updater, clock);
-      }
+      Boolean indexed = getBooleanValue(metadata.getIsIndexed());
+      saeMetadataDao.ecritIndexed(indexed, updater, clock);
 
-      if (BooleanUtils.isFalse(metadata.isModifiable())
-            || BooleanUtils.isTrue(metadata.isModifiable())) {
-         saeMetadataDao
-               .ecritModifiable(metadata.isModifiable(), updater, clock);
-      } else {
-         saeMetadataDao.ecritModifiable(false, updater, clock);
-      }
+      Boolean modifiable = getBooleanValue(metadata.isModifiable());
+      saeMetadataDao.ecritModifiable(modifiable, updater, clock);
 
       saeMetadataDao.getCfTmpl().update(updater);
    }
@@ -159,7 +116,6 @@ public class SaeMetadataSupport {
     * 
     * @return Liste des métadonnées
     */
-
    public final List<MetadataReference> findAll() {
 
       BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
@@ -295,6 +251,16 @@ public class SaeMetadataSupport {
       if (result.getBoolean(columnName) != null) {
          value = result.getBoolean(columnName);
       }
+      return value;
+   }
+
+   private Boolean getBooleanValue(Boolean srcValue) {
+      Boolean value = Boolean.FALSE;
+
+      if (srcValue != null) {
+         value = srcValue;
+      }
+
       return value;
    }
 }
