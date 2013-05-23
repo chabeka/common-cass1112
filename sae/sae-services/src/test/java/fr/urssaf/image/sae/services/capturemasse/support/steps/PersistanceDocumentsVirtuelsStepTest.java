@@ -143,6 +143,8 @@ public class PersistanceDocumentsVirtuelsStepTest {
             new ConcurrentLinkedQueue<Integer>());
       contextParam.put(Constantes.DOC_EXCEPTION,
             new ConcurrentLinkedQueue<Exception>());
+      contextParam.put(Constantes.INDEX_REF_EXCEPTION,
+            new ConcurrentLinkedQueue<Integer>());
 
       Map<String, JobParameter> map = new HashMap<String, JobParameter>();
       map.put(Constantes.SOMMAIRE, new JobParameter(ecdeTestSommaire
@@ -186,6 +188,8 @@ public class PersistanceDocumentsVirtuelsStepTest {
             new ConcurrentLinkedQueue<Integer>());
       contextParam.put(Constantes.DOC_EXCEPTION,
             new ConcurrentLinkedQueue<Exception>());
+      contextParam.put(Constantes.INDEX_REF_EXCEPTION,
+            new ConcurrentLinkedQueue<Integer>());
 
       Map<String, JobParameter> map = new HashMap<String, JobParameter>();
       map.put(Constantes.SOMMAIRE, new JobParameter(ecdeTestSommaire
@@ -229,6 +233,8 @@ public class PersistanceDocumentsVirtuelsStepTest {
             new ConcurrentLinkedQueue<Integer>());
       contextParam.put(Constantes.DOC_EXCEPTION,
             new ConcurrentLinkedQueue<Exception>());
+      contextParam.put(Constantes.INDEX_REF_EXCEPTION,
+            new ConcurrentLinkedQueue<Integer>());
 
       Map<String, JobParameter> map = new HashMap<String, JobParameter>();
       map.put(Constantes.SOMMAIRE, new JobParameter(ecdeTestSommaire
@@ -299,6 +305,8 @@ public class PersistanceDocumentsVirtuelsStepTest {
             new ConcurrentLinkedQueue<Integer>());
       contextParam.put(Constantes.DOC_EXCEPTION,
             new ConcurrentLinkedQueue<Exception>());
+      contextParam.put(Constantes.INDEX_REF_EXCEPTION,
+            new ConcurrentLinkedQueue<Integer>());
 
       Map<String, JobParameter> map = new HashMap<String, JobParameter>();
       map.put(Constantes.SOMMAIRE, new JobParameter(ecdeTestSommaire
@@ -371,6 +379,8 @@ public class PersistanceDocumentsVirtuelsStepTest {
             new ConcurrentLinkedQueue<Integer>());
       contextParam.put(Constantes.DOC_EXCEPTION,
             new ConcurrentLinkedQueue<Exception>());
+      contextParam.put(Constantes.INDEX_REF_EXCEPTION,
+            new ConcurrentLinkedQueue<Integer>());
 
       Map<String, JobParameter> map = new HashMap<String, JobParameter>();
       map.put(Constantes.SOMMAIRE, new JobParameter(ecdeTestSommaire

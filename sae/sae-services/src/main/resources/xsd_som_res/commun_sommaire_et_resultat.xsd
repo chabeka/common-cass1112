@@ -106,6 +106,13 @@
             </xsd:annotation>
          </xsd:element>
          
+         <!-- Les erreurs -->
+         <xsd:element name="erreurs" type="somres:listeErreurType" minOccurs="0" maxOccurs="1">
+            <xsd:annotation>
+               <xsd:documentation>La liste des erreurs des fichiers de référence</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         
          <!-- Les composants du document virtuel -->
          <xsd:element name="composants" minOccurs="1" maxOccurs="1">
             <xsd:annotation>

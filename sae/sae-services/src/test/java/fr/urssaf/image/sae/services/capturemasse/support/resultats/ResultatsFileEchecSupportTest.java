@@ -95,10 +95,12 @@ public class ResultatsFileEchecSupportTest {
       index.add(3);
       List<Exception> exceptions = new ArrayList<Exception>();
       exceptions.add(new Exception("la valeur x est erronée"));
+      List<Integer> refIndex = new ArrayList<Integer>();
 
       erreur.setListCodes(codes);
       erreur.setListException(exceptions);
       erreur.setListIndex(index);
+      erreur.setListRefIndex(refIndex);
 
       support.writeResultatsFile(ecdeDirectory, sommaire, erreur, 21);
 
@@ -187,10 +189,12 @@ public class ResultatsFileEchecSupportTest {
       index.add(1);
       List<Exception> exceptions = new ArrayList<Exception>();
       exceptions.add(new Exception("la valeur x est erronée"));
+      List<Integer> refIndex = new ArrayList<Integer>();
 
       erreur.setListCodes(codes);
       erreur.setListException(exceptions);
       erreur.setListIndex(index);
+      erreur.setListRefIndex(refIndex);
 
       support.writeVirtualResultatsFile(ecdeDirectory, sommaire, erreur, 3);
 

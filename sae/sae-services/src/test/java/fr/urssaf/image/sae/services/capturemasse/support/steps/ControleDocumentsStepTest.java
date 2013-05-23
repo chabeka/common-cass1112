@@ -75,10 +75,14 @@ public class ControleDocumentsStepTest {
       JobParameters jobParameters = new JobParameters(map);
 
       ExecutionContext context = new ExecutionContext();
-      context.put(Constantes.CODE_EXCEPTION, new ConcurrentLinkedQueue<String>());
-      context.put(Constantes.INDEX_EXCEPTION, new ConcurrentLinkedQueue<Integer>());
+      context.put(Constantes.CODE_EXCEPTION,
+            new ConcurrentLinkedQueue<String>());
+      context.put(Constantes.INDEX_EXCEPTION,
+            new ConcurrentLinkedQueue<Integer>());
       context.put(Constantes.DOC_EXCEPTION,
             new ConcurrentLinkedQueue<Exception>());
+      context.put(Constantes.INDEX_REF_EXCEPTION,
+            new ConcurrentLinkedQueue<Integer>());
 
       JobExecution execution = launcher.launchStep("controleDocuments",
             jobParameters, context);
@@ -120,8 +124,12 @@ public class ControleDocumentsStepTest {
       contextParam.put(Constantes.SOMMAIRE, ecdeTestSommaire.getUrlEcde()
             .toString());
       contextParam.put(Constantes.SOMMAIRE_FILE, sommaire.getAbsolutePath());
-      contextParam.put(Constantes.CODE_EXCEPTION, new ConcurrentLinkedQueue<String>());
-      contextParam.put(Constantes.INDEX_EXCEPTION, new ConcurrentLinkedQueue<Integer>());
+      contextParam.put(Constantes.CODE_EXCEPTION,
+            new ConcurrentLinkedQueue<String>());
+      contextParam.put(Constantes.INDEX_EXCEPTION,
+            new ConcurrentLinkedQueue<Integer>());
+      contextParam.put(Constantes.INDEX_REF_EXCEPTION,
+            new ConcurrentLinkedQueue<Integer>());
       contextParam.put(Constantes.DOC_EXCEPTION,
             new ConcurrentLinkedQueue<Exception>());
 

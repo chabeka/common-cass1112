@@ -78,9 +78,11 @@ public class ResultatsFileFailureTaskletTest {
       index.add(3);
       ConcurrentLinkedQueue<Exception> exceptions = new ConcurrentLinkedQueue<Exception>();
       exceptions.add(new Exception("la valeur x est erronée"));
+      ConcurrentLinkedQueue<Integer> refIndex = new ConcurrentLinkedQueue<Integer>();
 
       context.put(Constantes.DOC_EXCEPTION, exceptions);
       context.put(Constantes.INDEX_EXCEPTION, index);
+      context.put(Constantes.INDEX_REF_EXCEPTION, refIndex);
       context.put(Constantes.CODE_EXCEPTION, codes);
 
       context.put(Constantes.DOC_COUNT, 21);

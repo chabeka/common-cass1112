@@ -154,7 +154,6 @@
             <chunk reader="fichierReferenceReader" processor="controleFichierReferenceProcessor"
                writer="virtualReferenceFileWriter" commit-interval="1" />
             <listeners>
-               <listener ref="controleListener" />
                <listener ref="controleReferenceListener" />
                <listener ref="controleSommaireObjetNumeriqueProcessor" />
             </listeners>
@@ -187,7 +186,6 @@
 
             <listeners>
                <listener ref="convertVirtualReferenceFileProcessor" />
-               <listener ref="controleListener" />
                <listener ref="controleReferenceListener" />
                <listener ref="virtualStorageReferenceFileWriterListener" />
             </listeners>
@@ -235,7 +233,7 @@
       <!-- Ecriture du fichier résultat en erreur -->
       <step id="finErreurVirtuel">
          <tasklet ref="resultatsVirtualFileFailureTasklet" />
-         <next on="*" to="finSuccesVirtuel" />
+         <next on="*" to="finTraitement" />
       </step>
 
       <!-- Ecriture du fichier résultat en succes -->

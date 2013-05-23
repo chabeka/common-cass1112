@@ -41,6 +41,11 @@ public final class Constantes {
    public static final String INDEX_EXCEPTION = "INDEX_EXCEPTION";
 
    /**
+    * Liste des indexs des fichiers de référence
+    */
+   public static final String INDEX_REF_EXCEPTION = "INDEX_REF_EXCEPTION";
+
+   /**
     * Liste des codes erreur
     */
    public static final String CODE_EXCEPTION = "CODE_EXCEPTION";
@@ -64,6 +69,11 @@ public final class Constantes {
     * Index utilisé pour le contrôler le document courant
     */
    public static final String CTRL_INDEX = "CTRL_INDEX";
+
+   /**
+    * Index utilisé pour le contrôler le fichier de référence
+    */
+   public static final String CTRL_REF_INDEX = "CTRL_REF_INDEX";
 
    /**
     * Nombre de documents total dans un fichier sommaire.xml

@@ -143,7 +143,7 @@ public class IntegrationVdocsTest {
    public void testLancement() throws ConnectionServiceEx, DeletionServiceEx,
          InsertionServiceEx, IOException {
       initComposants();
-      initDatas();
+      initDatas("sommaire.xml");
 
       ExitTraitement exitStatus = service.captureMasse(ecdeTestSommaire
             .getUrlEcde(), UUID.randomUUID());
@@ -158,6 +158,22 @@ public class IntegrationVdocsTest {
       checkLogs();
 
       checkTracabilite();
+
+   }
+
+   @Test
+   @DirtiesContext
+   public void testErreurReferenceFileReadError() throws ConnectionServiceEx,
+         DeletionServiceEx, InsertionServiceEx, IOException {
+      initDatas("sommaire_fichier2_inexistant.xml");
+
+      ExitTraitement exitStatus = service.captureMasse(ecdeTestSommaire
+            .getUrlEcde(), UUID.randomUUID());
+
+      Assert.assertFalse("le traitement doit etre un succes", exitStatus
+            .isSucces());
+
+      checkFilesReadError();
 
    }
 
@@ -193,10 +209,10 @@ public class IntegrationVdocsTest {
       EasyMock.replay(provider, storageDocumentService);
    }
 
-   private void initDatas() throws IOException {
+   private void initDatas(String fileName) throws IOException {
       File sommaire = new File(ecdeTestSommaire.getRepEcde(), "sommaire.xml");
       ClassPathResource resSommaire = new ClassPathResource(
-            "testhautniveau/vdocs/sommaire.xml");
+            "testhautniveau/vdocs/" + fileName);
       FileUtils.copyURLToFile(resSommaire.getURL(), sommaire);
 
       File repEcde = new File(ecdeTestSommaire.getRepEcde(), "documents");
@@ -223,6 +239,29 @@ public class IntegrationVdocsTest {
 
       String sha1Resultat = calculeSha1(resultats);
       String sha1Attendu = "c3e8435dbcdd4b594a2f9df7650f3abfa8cd461f";
+
+      Assert.assertEquals(
+            "le sha1 attendu et de résultat doivent etre identiques",
+            sha1Attendu, sha1Resultat);
+
+   }
+   
+   private void checkFilesReadError() throws IOException {
+
+      File repTraitement = ecdeTestSommaire.getRepEcde();
+      File debut = new File(repTraitement, "debut_traitement.flag");
+      File fin = new File(repTraitement, "fin_traitement.flag");
+      File resultats = new File(repTraitement, "resultats.xml");
+
+      Assert.assertTrue("le fichier debut_traitement.flag doit exister", debut
+            .exists());
+      Assert.assertTrue("le fichier fin_traitement.flag doit exister", fin
+            .exists());
+      Assert.assertTrue("le fichier resultats.xml doit exister", resultats
+            .exists());
+
+      String sha1Resultat = calculeSha1(resultats);
+      String sha1Attendu = "bca8ef6bcf883ffe964f780bd34c58cbdc3559a8";
 
       Assert.assertEquals(
             "le sha1 attendu et de résultat doivent etre identiques",

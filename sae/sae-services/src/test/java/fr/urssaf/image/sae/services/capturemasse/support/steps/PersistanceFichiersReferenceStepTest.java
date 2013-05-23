@@ -109,7 +109,7 @@ public class PersistanceFichiersReferenceStepTest {
       EasyMock.reset(provider, documentService);
 
       saeListCaptureMasseReferenceFile.clear();
-      
+
       try {
          ecdeTestTools.cleanEcdeTestSommaire(ecdeTestSommaire);
       } catch (IOException exception) {
@@ -141,6 +141,8 @@ public class PersistanceFichiersReferenceStepTest {
             new ConcurrentLinkedQueue<Integer>());
       context.put(Constantes.DOC_EXCEPTION,
             new ConcurrentLinkedQueue<Exception>());
+      context.put(Constantes.INDEX_REF_EXCEPTION,
+            new ConcurrentLinkedQueue<Integer>());
 
       JobExecution execution = launcher.launchStep(
             "persistanceFichiersReference", jobParameters, context);
@@ -183,6 +185,8 @@ public class PersistanceFichiersReferenceStepTest {
             new ConcurrentLinkedQueue<Integer>());
       contextParam.put(Constantes.DOC_EXCEPTION,
             new ConcurrentLinkedQueue<Exception>());
+      contextParam.put(Constantes.INDEX_REF_EXCEPTION,
+            new ConcurrentLinkedQueue<Integer>());
 
       Map<String, JobParameter> map = new HashMap<String, JobParameter>();
       map.put(Constantes.SOMMAIRE, new JobParameter(ecdeTestSommaire
@@ -224,6 +228,8 @@ public class PersistanceFichiersReferenceStepTest {
             new ConcurrentLinkedQueue<Integer>());
       contextParam.put(Constantes.DOC_EXCEPTION,
             new ConcurrentLinkedQueue<Exception>());
+      contextParam.put(Constantes.INDEX_REF_EXCEPTION,
+            new ConcurrentLinkedQueue<Integer>());
 
       Map<String, JobParameter> map = new HashMap<String, JobParameter>();
       map.put(Constantes.SOMMAIRE, new JobParameter(ecdeTestSommaire
@@ -286,6 +292,8 @@ public class PersistanceFichiersReferenceStepTest {
             new ConcurrentLinkedQueue<Integer>());
       context.put(Constantes.DOC_EXCEPTION,
             new ConcurrentLinkedQueue<Exception>());
+      context.put(Constantes.INDEX_REF_EXCEPTION,
+            new ConcurrentLinkedQueue<Integer>());
 
       JobExecution execution = launcher.launchStep(
             "persistanceFichiersReference", jobParameters, context);
@@ -336,6 +344,8 @@ public class PersistanceFichiersReferenceStepTest {
             new ConcurrentLinkedQueue<Integer>());
       context.put(Constantes.DOC_EXCEPTION,
             new ConcurrentLinkedQueue<Exception>());
+      context.put(Constantes.INDEX_REF_EXCEPTION,
+            new ConcurrentLinkedQueue<Integer>());
 
       JobExecution execution = launcher.launchStep(
             "persistanceFichiersReference", jobParameters, context);
@@ -393,6 +403,8 @@ public class PersistanceFichiersReferenceStepTest {
             new ConcurrentLinkedQueue<Integer>());
       context.put(Constantes.DOC_EXCEPTION,
             new ConcurrentLinkedQueue<Exception>());
+      context.put(Constantes.INDEX_REF_EXCEPTION,
+            new ConcurrentLinkedQueue<Integer>());
 
       JobExecution execution = launcher.launchStep(
             "persistanceFichiersReference", jobParameters, context);

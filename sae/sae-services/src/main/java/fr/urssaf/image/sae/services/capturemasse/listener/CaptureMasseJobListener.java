@@ -38,6 +38,9 @@ public class CaptureMasseJobListener {
 
       ConcurrentLinkedQueue<Integer> listIndex = new ConcurrentLinkedQueue<Integer>();
       context.put(Constantes.INDEX_EXCEPTION, listIndex);
+      
+      ConcurrentLinkedQueue<Integer> listRefIndex = new ConcurrentLinkedQueue<Integer>();
+      context.put(Constantes.INDEX_REF_EXCEPTION, listRefIndex);
 
       ConcurrentLinkedQueue<String> listCodes = new ConcurrentLinkedQueue<String>();
       context.put(Constantes.CODE_EXCEPTION, listCodes);

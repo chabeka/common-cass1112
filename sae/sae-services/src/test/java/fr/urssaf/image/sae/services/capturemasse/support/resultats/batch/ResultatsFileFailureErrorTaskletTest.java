@@ -75,12 +75,14 @@ public class ResultatsFileFailureErrorTaskletTest {
       codes.add(Constantes.ERR_BUL002);
       ConcurrentLinkedQueue<Integer> index = new ConcurrentLinkedQueue<Integer>();
       index.add(3);
+      ConcurrentLinkedQueue<Integer> refIndex = new ConcurrentLinkedQueue<Integer>();
       ConcurrentLinkedQueue<Exception> exceptions = new ConcurrentLinkedQueue<Exception>();
       exceptions.add(new Exception("la valeur x est erronée"));
 
       context.put(Constantes.DOC_EXCEPTION, exceptions);
       context.put(Constantes.INDEX_EXCEPTION, index);
       context.put(Constantes.CODE_EXCEPTION, codes);
+      context.put(Constantes.INDEX_REF_EXCEPTION, refIndex);
 
       launcher.launchStep("finBloquant", context);
 

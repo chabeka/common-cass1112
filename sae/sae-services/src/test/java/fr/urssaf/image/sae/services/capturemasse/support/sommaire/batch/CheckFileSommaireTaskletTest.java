@@ -84,6 +84,7 @@ public class CheckFileSommaireTaskletTest {
       ExecutionContext context = new ExecutionContext();
       context.put(Constantes.CODE_EXCEPTION, new ConcurrentLinkedQueue<String>());
       context.put(Constantes.INDEX_EXCEPTION, new ConcurrentLinkedQueue<Integer>());
+      context.put(Constantes.INDEX_REF_EXCEPTION, new ConcurrentLinkedQueue<Integer>());
       context.put(Constantes.DOC_EXCEPTION,
             new ConcurrentLinkedQueue<Exception>());
 
@@ -129,6 +130,7 @@ public class CheckFileSommaireTaskletTest {
       ExecutionContext contextParam = new ExecutionContext();
       contextParam.put(Constantes.CODE_EXCEPTION, new ConcurrentLinkedQueue<String>());
       contextParam.put(Constantes.INDEX_EXCEPTION, new ConcurrentLinkedQueue<Integer>());
+      contextParam.put(Constantes.INDEX_REF_EXCEPTION, new ConcurrentLinkedQueue<Integer>());
       contextParam.put(Constantes.DOC_EXCEPTION,
             new ConcurrentLinkedQueue<Exception>());
 
@@ -169,6 +171,7 @@ public class CheckFileSommaireTaskletTest {
       ExecutionContext contextParam = new ExecutionContext();
       contextParam.put(Constantes.CODE_EXCEPTION, new ConcurrentLinkedQueue<String>());
       contextParam.put(Constantes.INDEX_EXCEPTION, new ConcurrentLinkedQueue<Integer>());
+      contextParam.put(Constantes.INDEX_REF_EXCEPTION, new ConcurrentLinkedQueue<Integer>());
       contextParam.put(Constantes.DOC_EXCEPTION,
             new ConcurrentLinkedQueue<Exception>());
 

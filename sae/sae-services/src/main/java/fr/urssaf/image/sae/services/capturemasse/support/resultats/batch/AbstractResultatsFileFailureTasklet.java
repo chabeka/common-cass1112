@@ -4,7 +4,7 @@
 package fr.urssaf.image.sae.services.capturemasse.support.resultats.batch;
 
 import java.io.File;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -46,14 +46,17 @@ public abstract class AbstractResultatsFileFailureTasklet implements Tasklet {
       ConcurrentLinkedQueue<Integer> index = (ConcurrentLinkedQueue<Integer>) map
             .get(Constantes.INDEX_EXCEPTION);
       @SuppressWarnings("unchecked")
+      ConcurrentLinkedQueue<Integer> refIndex = (ConcurrentLinkedQueue<Integer>) map
+            .get(Constantes.INDEX_REF_EXCEPTION);
+      @SuppressWarnings("unchecked")
       ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) map
             .get(Constantes.DOC_EXCEPTION);
 
       CaptureMasseErreur erreur = new CaptureMasseErreur();
-      erreur.setListCodes(Arrays.asList(codes.toArray(new String[0])));
-      erreur.setListException(Arrays.asList(exceptions
-            .toArray(new Exception[0])));
-      erreur.setListIndex(Arrays.asList(index.toArray(new Integer[0])));
+      erreur.setListCodes(new ArrayList<String>(codes));
+      erreur.setListException(new ArrayList<Exception>(exceptions));
+      erreur.setListIndex(new ArrayList<Integer>(index));
+      erreur.setListRefIndex(new ArrayList<Integer>(refIndex));
 
       final String pathSommaire = (String) map.get(Constantes.SOMMAIRE_FILE);
       File sommaireFile = new File(pathSommaire);

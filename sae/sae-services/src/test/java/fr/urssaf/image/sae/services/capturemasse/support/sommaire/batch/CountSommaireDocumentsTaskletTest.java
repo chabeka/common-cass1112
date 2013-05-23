@@ -101,6 +101,8 @@ public class CountSommaireDocumentsTaskletTest {
             new ConcurrentLinkedQueue<Integer>());
       context.put(Constantes.DOC_EXCEPTION,
             new ConcurrentLinkedQueue<Exception>());
+      context.put(Constantes.INDEX_REF_EXCEPTION,
+            new ConcurrentLinkedQueue<Integer>());
 
       mapParameter.put(Constantes.ID_TRAITEMENT, new JobParameter(UUID
             .randomUUID().toString()));
@@ -228,6 +230,8 @@ public class CountSommaireDocumentsTaskletTest {
             new ConcurrentLinkedQueue<Integer>());
       context.put(Constantes.DOC_EXCEPTION,
             new ConcurrentLinkedQueue<Exception>());
+      context.put(Constantes.INDEX_REF_EXCEPTION,
+            new ConcurrentLinkedQueue<Integer>());
 
       mapParameter.put(Constantes.ID_TRAITEMENT, new JobParameter(UUID
             .randomUUID().toString()));
@@ -271,6 +275,8 @@ public class CountSommaireDocumentsTaskletTest {
             new ConcurrentLinkedQueue<Integer>());
       context.put(Constantes.DOC_EXCEPTION,
             new ConcurrentLinkedQueue<Exception>());
+      context.put(Constantes.INDEX_REF_EXCEPTION,
+            new ConcurrentLinkedQueue<Integer>());
 
       mapParameter.put(Constantes.ID_TRAITEMENT, new JobParameter(UUID
             .randomUUID().toString()));

@@ -187,6 +187,8 @@ public class ControleFichiersReferenceStepTest {
             new ConcurrentLinkedQueue<Integer>());
       context.put(Constantes.DOC_EXCEPTION,
             new ConcurrentLinkedQueue<Exception>());
+      context.put(Constantes.INDEX_REF_EXCEPTION,
+            new ConcurrentLinkedQueue<Integer>());
 
       JobExecution execution = launcher.launchStep("controleFichiersReference",
             jobParameters, context);
@@ -225,6 +227,8 @@ public class ControleFichiersReferenceStepTest {
             new ConcurrentLinkedQueue<Integer>());
       contextParam.put(Constantes.DOC_EXCEPTION,
             new ConcurrentLinkedQueue<Exception>());
+      contextParam.put(Constantes.INDEX_REF_EXCEPTION,
+            new ConcurrentLinkedQueue<Integer>());
 
       Map<String, JobParameter> map = new HashMap<String, JobParameter>();
       map.put(Constantes.SOMMAIRE, new JobParameter(ecdeTestSommaire

@@ -213,7 +213,7 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
       EndElement endElement;
 
       String name;
-      int index = 0;
+      IndexReference indexReference = new IndexReference(0, 0);
 
       if (isVirtual) {
          staxUtils.addStartTag("nonIntegratedDocuments", PX_RES, PX_SOMRES);
@@ -229,9 +229,11 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
             name = startElement.getName().getLocalPart();
 
             if (isVirtual) {
-               index = startTagVirtuel(name, staxUtils, reader, erreur, index);
+               indexReference = startTagVirtuel(name, staxUtils, reader,
+                     erreur, indexReference);
             } else {
-               index = startTag(name, staxUtils, reader, erreur, index);
+               indexReference = startTag(name, staxUtils, reader, erreur,
+                     indexReference);
             }
 
          } else if (xmlEvent.isEndElement()) {
@@ -300,11 +302,12 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
     * @param index
     * @throws XMLStreamException
     */
-   private int startTag(final String name, final StaxUtils staxUtils,
-         final XMLEventReader reader, final CaptureMasseErreur erreur,
-         final int index) throws XMLStreamException {
+   private IndexReference startTag(final String name,
+         final StaxUtils staxUtils, final XMLEventReader reader,
+         final CaptureMasseErreur erreur, final IndexReference indexReference)
+         throws XMLStreamException {
 
-      int value = index;
+      IndexReference reference = indexReference;
 
       if ("documents".equals(name)) {
          staxUtils.addStartTag("nonIntegratedDocuments", PX_RES, NS_RES);
@@ -321,12 +324,14 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
          gestionValeur(xmlEvent, staxUtils);
          staxUtils.addEndElement(CHEMIN_FICHIER, PX_SOMRES, NS_SOMRES);
          staxUtils.addEndElement(OBJET_NUMERIQUE, PX_SOMRES, NS_SOMRES);
-         addErreur(erreur, index, staxUtils, xmlEvent);
+         addErreur(erreur, indexReference.getDocIndex(), staxUtils, xmlEvent);
 
-         value++;
+         int value = indexReference.getDocIndex() + 1;
+         reference = new IndexReference(value, indexReference.getRefIndex());
+
       }
 
-      return value;
+      return reference;
    }
 
    /**
@@ -338,11 +343,12 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
     * @param index
     * @throws XMLStreamException
     */
-   private int startTagVirtuel(final String name, final StaxUtils staxUtils,
-         final XMLEventReader reader, final CaptureMasseErreur erreur,
-         final int index) throws XMLStreamException {
+   private IndexReference startTagVirtuel(final String name,
+         final StaxUtils staxUtils, final XMLEventReader reader,
+         final CaptureMasseErreur erreur, final IndexReference indexReference)
+         throws XMLStreamException {
 
-      int value = index;
+      IndexReference reference = indexReference;
 
       if ("documentsVirtuels".equals(name)) {
          staxUtils.addStartTag("nonIntegratedVirtualDocuments", PX_RES,
@@ -360,16 +366,18 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
          staxUtils.addEndTag(CHEMIN_FICHIER, PX_SOMRES, NS_SOMRES);
          staxUtils.addEndTag(OBJET_NUMERIQUE, PX_SOMRES, NS_SOMRES);
 
-         value++;
+         int value = indexReference.getDocIndex() + 1;
+         reference = new IndexReference(value, indexReference.getRefIndex());
       } else if (NUMERO_PAGE_DEBUT.equals(name)) {
-         addErreurVirtuelle(erreur, index, staxUtils);
+         addErreurVirtuelle(erreur, indexReference.getDocIndex(), staxUtils);
 
          staxUtils.addStartTag(NUMERO_PAGE_DEBUT, PX_SOMRES, NS_SOMRES);
          XMLEvent xmlEvent = reader.peek();
          gestionValeur(xmlEvent, staxUtils);
          staxUtils.addEndTag(NUMERO_PAGE_DEBUT, PX_SOMRES, NS_SOMRES);
 
-         value++;
+         int value = indexReference.getDocIndex() + 1;
+         reference = new IndexReference(value, indexReference.getRefIndex());
 
       } else if (NOMBRE_PAGES.equals(name)) {
          staxUtils.addStartTag(NOMBRE_PAGES, PX_SOMRES, NS_SOMRES);
@@ -378,13 +386,19 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
          staxUtils.addEndTag(NOMBRE_PAGES, PX_SOMRES, NS_SOMRES);
 
       } else if (METADONNEES.equals(name)) {
-         addMetadatas(erreur, index, staxUtils, reader);
+         addMetadatas(erreur, indexReference.getDocIndex(), staxUtils, reader);
 
-      } else if ("composant".equals(name) || "composants".equals(name)) {
+      } else if ("composant".equals(name)) {
          staxUtils.addStartTag(name, PX_SOMRES, NS_SOMRES);
+      
+      } else if ("composants".equals(name)) {
+         addErreurReference(erreur, indexReference.getRefIndex(), staxUtils);
+         staxUtils.addStartTag(name, PX_SOMRES, NS_SOMRES);
+         reference = new IndexReference(indexReference.getDocIndex(),
+               indexReference.getRefIndex() + 1);
       }
 
-      return value;
+      return reference;
    }
 
    /**
@@ -591,6 +605,50 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
    }
 
    /**
+    * 
+    * @param erreur
+    * @param staxUtils
+    * @throws XMLStreamException
+    */
+   private void addErreurReference(final CaptureMasseErreur erreur, int index,
+         final StaxUtils staxUtils) throws XMLStreamException {
+
+      staxUtils.addStartTag("erreurs", PX_SOMRES, NS_SOMRES);
+
+      if (erreur.getListRefIndex().contains(index)) {
+
+         Integer currIndex;
+         for (int i = 0; i < erreur.getListRefIndex().size(); i++) {
+            currIndex = erreur.getListRefIndex().get(i);
+            if ((index) == currIndex.intValue()) {
+               staxUtils.addStartTag("erreur", PX_SOMRES, NS_SOMRES);
+
+               String code = erreur.getListCodes().get(i);
+               String messageErreur = erreur.getListException().get(i)
+                     .getMessage();
+               String message;
+
+               if (Constantes.ERR_BUL002.equalsIgnoreCase(code)) {
+                  message = "Le document virtuel n'a pas été archivé. Détails : "
+                        + messageErreur;
+               } else if (Constantes.ERR_BUL001.equalsIgnoreCase(code)) {
+                  message = "Une erreur interne à l'application est survenue lors de la capture "
+                        + "du document virtuel. Détails : " + messageErreur;
+               } else {
+                  message = messageErreur;
+               }
+
+               staxUtils.createTag("code", code, PX_SOMRES, NS_SOMRES);
+               staxUtils.createTag("libelle", message, PX_SOMRES, NS_SOMRES);
+               staxUtils.addEndTag("erreur", PX_SOMRES, NS_SOMRES);
+            }
+         }
+      }
+
+      staxUtils.addEndTag("erreurs", PX_SOMRES, NS_SOMRES);
+   }
+
+   /**
     * {@inheritDoc}
     */
    @Override
@@ -599,6 +657,31 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
 
       writeResultatsFile(ecdeDirectory, sommaireFile, erreur, totalDocuments,
             true);
+
+   }
+
+   private class IndexReference {
+      private final int docIndex;
+      private final int refIndex;
+
+      public IndexReference(int docIndex, int refIndex) {
+         this.docIndex = docIndex;
+         this.refIndex = refIndex;
+      }
+
+      /**
+       * @return the docIndex
+       */
+      public final int getDocIndex() {
+         return docIndex;
+      }
+
+      /**
+       * @return the refIndex
+       */
+      public final int getRefIndex() {
+         return refIndex;
+      }
 
    }
 

@@ -10,6 +10,7 @@ import javax.xml.bind.JAXBElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepExecution;
+import org.springframework.batch.core.annotation.BeforeProcess;
 import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.core.annotation.OnProcessError;
 import org.springframework.batch.item.ExecutionContext;
@@ -73,6 +74,25 @@ public class ControleDocumentListener {
 
       LOGGER.warn("une erreur est survenue lors des controles des documents",
             exception);
+
+   }
+
+   /**
+    * Action exécutée avant chaque process
+    * 
+    * @param untypedType
+    *           le document
+    */
+   @BeforeProcess
+   public final void beforeProcess(
+         final JAXBElement<UntypedDocument> untypedType) {
+
+      ExecutionContext context = stepExecution.getExecutionContext();
+
+      int valeur = context.getInt(Constantes.CTRL_INDEX);
+      valeur++;
+
+      context.put(Constantes.CTRL_INDEX, valeur);
 
    }
 }

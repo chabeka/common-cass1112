@@ -29,6 +29,11 @@ public class CaptureMasseErreur {
    private List<Integer> listIndex;
 
    /**
+    * Liste des index des fichiers de référence
+    */
+   private List<Integer> listRefIndex;
+
+   /**
     * Liste des exceptions
     */
    private List<Exception> listException;
@@ -76,6 +81,21 @@ public class CaptureMasseErreur {
     */
    public final void setListException(List<Exception> listException) {
       this.listException = listException;
+   }
+
+   /**
+    * @return the listRefIndex
+    */
+   public final List<Integer> getListRefIndex() {
+      return listRefIndex;
+   }
+
+   /**
+    * @param listRefIndex
+    *           the listRefIndex to set
+    */
+   public final void setListRefIndex(List<Integer> listRefIndex) {
+      this.listRefIndex = listRefIndex;
    }
 
 }

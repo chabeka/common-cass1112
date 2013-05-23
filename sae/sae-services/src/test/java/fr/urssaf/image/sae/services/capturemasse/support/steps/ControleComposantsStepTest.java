@@ -120,6 +120,8 @@ public class ControleComposantsStepTest {
             new ConcurrentLinkedQueue<Integer>());
       context.put(Constantes.DOC_EXCEPTION,
             new ConcurrentLinkedQueue<Exception>());
+      context.put(Constantes.INDEX_REF_EXCEPTION,
+            new ConcurrentLinkedQueue<Integer>());
 
       JobExecution execution = launcher.launchStep("controleDocumentsVirtuels",
             jobParameters, context);
@@ -160,6 +162,8 @@ public class ControleComposantsStepTest {
             new ConcurrentLinkedQueue<Integer>());
       context.put(Constantes.DOC_EXCEPTION,
             new ConcurrentLinkedQueue<Exception>());
+      context.put(Constantes.INDEX_REF_EXCEPTION,
+            new ConcurrentLinkedQueue<Integer>());
 
       VirtualReferenceFile ref = new VirtualReferenceFile();
       ref.setHash("4bf2ddbd82d5fd38e821e6aae434ac989972a044");
@@ -209,6 +213,8 @@ public class ControleComposantsStepTest {
             new ConcurrentLinkedQueue<Integer>());
       context.put(Constantes.DOC_EXCEPTION,
             new ConcurrentLinkedQueue<Exception>());
+      context.put(Constantes.INDEX_REF_EXCEPTION,
+            new ConcurrentLinkedQueue<Integer>());
 
       VirtualReferenceFile ref = new VirtualReferenceFile();
       ref.setHash("4bf2ddbd82d5fd38e821e6aae434ac989972a043");
