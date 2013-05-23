@@ -25,7 +25,7 @@ public class ServiceValidation {
    private static final String UPDATE_VERSION = "execution(void fr.urssaf.image.sae.rnd.dao.support.SaeBddSupport.updateVersionRnd(*))"
          + "&& args(versionRnd)";
 
-   private static final String RND_SERVICE = "execution(java.lang.String fr.urssaf.image.sae.rnd.service.RndService.get*(*))"
+   private static final String RND_SERVICE = "execution(* fr.urssaf.image.sae.rnd.service.RndService.get*(*))"
          + "&& args(codeRnd)";
 
    /**
@@ -44,21 +44,29 @@ public class ServiceValidation {
 
    }
 
-   
+   /**
+    * Vérification des arguments des méthodes get de updateVersionRnd
+    * 
+    * @param versionRnd
+    *           la version RND
+    */
    @Before(UPDATE_VERSION)
    public final void validationArgUpdateVersionRnd(VersionRnd versionRnd) {
       if (versionRnd == null) {
-         throw new IllegalArgumentException("l'argument versionRnd n'est pas valide");
+         throw new IllegalArgumentException(
+               "l'argument versionRnd n'est pas valide");
       } else {
          if (versionRnd.getDateMiseAJour() == null) {
-            throw new IllegalArgumentException("l'argument versionRnd n'est pas valide : date de mise à jour null");
+            throw new IllegalArgumentException(
+                  "l'argument versionRnd n'est pas valide : date de mise à jour null");
          }
          if (StringUtils.isBlank(versionRnd.getVersionEnCours())) {
-            throw new IllegalArgumentException("l'argument versionRnd n'est pas valide : numéro version null ou vide");
+            throw new IllegalArgumentException(
+                  "l'argument versionRnd n'est pas valide : numéro version null ou vide");
          }
       }
    }
-   
+
    /**
     * Validation des arguments de la méthode d'ajout d'un type de document
     * 
@@ -81,7 +89,7 @@ public class ServiceValidation {
          // Le code RND ne peut pas être null
          if (StringUtils.isBlank(typeDoc.getCode())) {
             throw new IllegalArgumentException(
-                  "l'argument correspondance n'est pas valide : code Rnd null ou vide");
+                  "l'argument typeDoc n'est pas valide : code Rnd null ou vide");
          }
 
          // Le code activité peut être null
@@ -91,13 +99,13 @@ public class ServiceValidation {
          if (!TypeCode.TEMPORAIRE.equals(typeDoc.getType())
                && StringUtils.isBlank(typeDoc.getCodeFonction())) {
             throw new IllegalArgumentException(
-                  "l'argument codeFonction n'est pas valide : codeFonction null ou vide alors que le type de document n'est pas TEMPORAIRE");
+                  "l'argument typeDoc n'est pas valide : codeFonction null ou vide alors que le type de document n'est pas TEMPORAIRE");
          }
 
          // La durée de conservation doit être renseignée
          if (typeDoc.getDureeConservation() <= 0) {
             throw new IllegalArgumentException(
-                  "l'argument dureeConservation n'est pas valide : dureeConservation négatif");
+                  "l'argument typeDoc n'est pas valide : dureeConservation négatif ou nul");
          }
       }
    }
