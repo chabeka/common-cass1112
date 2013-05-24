@@ -30,6 +30,7 @@ import fr.cirtil.www.saeservice.ObjetNumeriqueConsultationTypeChoice_type0;
 import fr.cirtil.www.saeservice.ResultatRechercheType;
 import fr.cirtil.www.saeservice.UrlConsultationDirecteType;
 import fr.cirtil.www.saeservice.UuidType;
+import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 
 /**
  * Classe d'instanciation du modèle généré par le web service. <br>
@@ -252,6 +253,31 @@ public final class ObjectTypeFactory {
    }
 
    /**
+    * Permet de convertir un objet de la couche WebService de type
+    * MetadonneeCodeType[] en une liste List&lt;UntypedMetadata&gt;
+    * 
+    * @param listeMD
+    *           liste des codes de métadonnées
+    * @return Liste métadonnées converties de l'objet MetadonneeCodeType[]
+    */
+   public static List<UntypedMetadata> buildMetaListFromWS(
+         MetadonneeType[] listeMD) {
+      List<UntypedMetadata> listMDDesired = null;
+
+      if (ArrayUtils.isNotEmpty(listeMD)) {
+         listMDDesired = new ArrayList<UntypedMetadata>();
+
+         for (MetadonneeType metadonneeType : listeMD) {
+            String code = metadonneeType.getCode().getMetadonneeCodeType();
+            String valeur = metadonneeType.getValeur()
+                  .getMetadonneeValeurType();
+            listMDDesired.add(new UntypedMetadata(code, valeur));
+         }
+      }
+      return listMDDesired;
+   }
+
+   /**
     * construit la liste des codes de metadata à partir de la liste fournie
     * 
     * @param metadonnees
@@ -266,6 +292,27 @@ public final class ObjectTypeFactory {
          datas = new ArrayList<String>();
 
          datas.addAll(buildMetaCodeFromWS(metadonnees.getMetadonneeCode()));
+      }
+
+      return datas;
+
+   }
+
+   /**
+    * construit la liste des codes de metadata à partir de la liste fournie
+    * 
+    * @param metadonnees
+    *           liste des metadatas dont il faut récupérer le code
+    * @return la liste des codes
+    */
+   public static List<UntypedMetadata> buildMetaFromWS(
+         ListeMetadonneeType metadonnees) {
+
+      List<UntypedMetadata> datas = null;
+      if (metadonnees != null) {
+         datas = new ArrayList<UntypedMetadata>();
+
+         datas.addAll(buildMetaListFromWS(metadonnees.getMetadonnee()));
       }
 
       return datas;
@@ -294,43 +341,53 @@ public final class ObjectTypeFactory {
       return datas;
 
    }
-   
+
    /**
     * Méthode permettant de convertir un objet ConsultationMTOM en Consultation
-    * @param consultationMTOM objet de consultation
+    * 
+    * @param consultationMTOM
+    *           objet de consultation
     * @return objet Consultation
     */
-   public static Consultation convertToConsultation(ConsultationMTOM consultationMTOM) {
+   public static Consultation convertToConsultation(
+         ConsultationMTOM consultationMTOM) {
       Consultation consultation = new Consultation();
-      
-      ConsultationMTOMRequestType consultMTOMRT = consultationMTOM.getConsultationMTOM();
-      
+
+      ConsultationMTOMRequestType consultMTOMRT = consultationMTOM
+            .getConsultationMTOM();
+
       ConsultationRequestType consultRT = new ConsultationRequestType();
-      UuidType uuidType = consultMTOMRT.getIdArchive(); 
+      UuidType uuidType = consultMTOMRT.getIdArchive();
       consultRT.setIdArchive(uuidType);
       ListeMetadonneeCodeType listeMD = consultMTOMRT.getMetadonnees();
       consultRT.setMetadonnees(listeMD);
-      
+
       consultation.setConsultation(consultRT);
-      
+
       return consultation;
    }
-   
+
    /**
-    * Méthode permettant de convertir un objet ConsultationResponse en ConsultationMTOMResponse
-    * @param consultationResponse objet de response de la consultation
+    * Méthode permettant de convertir un objet ConsultationResponse en
+    * ConsultationMTOMResponse
+    * 
+    * @param consultationResponse
+    *           objet de response de la consultation
     * @return ConsultationMTOMResponse
     */
-   public static ConsultationMTOMResponse convertToConsultRespMTOM(ConsultationResponse consultationResponse) {
+   public static ConsultationMTOMResponse convertToConsultRespMTOM(
+         ConsultationResponse consultationResponse) {
       ConsultationMTOMResponseType param = new ConsultationMTOMResponseType();
-      param.setMetadonnees(consultationResponse.getConsultationResponse().getMetadonnees());
-      
+      param.setMetadonnees(consultationResponse.getConsultationResponse()
+            .getMetadonnees());
+
       ConsultationMTOMResponse responseMTOM = new ConsultationMTOMResponse();
-      param.setContenu(consultationResponse.getConsultationResponse().getObjetNumerique().getObjetNumeriqueConsultationTypeChoice_type0().getContenu());
+      param.setContenu(consultationResponse.getConsultationResponse()
+            .getObjetNumerique()
+            .getObjetNumeriqueConsultationTypeChoice_type0().getContenu());
       responseMTOM.setConsultationMTOMResponse(param);
-      
+
       return responseMTOM;
    }
-   
 
 }

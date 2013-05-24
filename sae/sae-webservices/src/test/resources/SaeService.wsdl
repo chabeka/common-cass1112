@@ -95,6 +95,26 @@
          consultationMTOM de documents au SAE</wsdl:documentation>
 		<wsdl:part name="output" element="sae:consultationMTOMResponse"/>
 	</wsdl:message>
+   <wsdl:message name="suppressionRequestMessage">
+      <wsdl:documentation>Message contenant le résultat de la
+         suppression de documents au SAE</wsdl:documentation>
+      <wsdl:part name="input" element="sae:suppression"/>
+   </wsdl:message>
+   <wsdl:message name="suppressionResponseMessage">
+      <wsdl:documentation>Message contenant le résultat de la
+         suppression de documents au SAE</wsdl:documentation>
+      <wsdl:part name="output" element="sae:suppressionResponse"/>
+   </wsdl:message>
+   <wsdl:message name="modificationRequestMessage">
+      <wsdl:documentation>Message contenant le résultat de la
+         suppression de documents au SAE</wsdl:documentation>
+      <wsdl:part name="input" element="sae:modification"/>
+   </wsdl:message>
+   <wsdl:message name="modificationResponseMessage">
+      <wsdl:documentation>Message contenant le résultat de la
+         suppression de documents au SAE</wsdl:documentation>
+      <wsdl:part name="output" element="sae:modificationResponse"/>
+   </wsdl:message>
 	<wsdl:portType name="SaeServicePortType">
 		<wsdl:operation name="Ping" parameterOrder="input">
 			<wsdl:documentation>Opération de test de la disponibilité du
@@ -150,6 +170,17 @@
 			<wsdl:input message="tns:archivageUnitairePJRequestMessage"/>
 			<wsdl:output message="tns:archivageUnitairePJResponseMessage"/>
 		</wsdl:operation>
+      <wsdl:operation name="modification" parameterOrder="input">
+         <wsdl:documentation>Opération de modifiaction d'un document unique
+         </wsdl:documentation>
+         <wsdl:input message="tns:modificationRequestMessage"/>
+         <wsdl:output message="tns:modificationResponseMessage"/>
+      </wsdl:operation><wsdl:operation name="suppression" parameterOrder="input">
+         <wsdl:documentation>Opération de suppression d'un document unique
+         </wsdl:documentation>
+         <wsdl:input message="tns:suppressionRequestMessage"/>
+         <wsdl:output message="tns:suppressionResponseMessage"/>
+      </wsdl:operation>
 	</wsdl:portType>
 	<wsdl:binding name="SaeServiceSoapBinding" type="sae:SaeServicePortType">
 		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>

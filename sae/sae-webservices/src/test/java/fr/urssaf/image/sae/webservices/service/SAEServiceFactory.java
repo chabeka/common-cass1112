@@ -8,6 +8,8 @@ import fr.urssaf.image.sae.services.batch.TraitementAsynchroneService;
 import fr.urssaf.image.sae.services.capture.SAECaptureService;
 import fr.urssaf.image.sae.services.controles.SAEControleSupportService;
 import fr.urssaf.image.sae.services.controles.SAEControlesCaptureService;
+import fr.urssaf.image.sae.services.modification.SAEModificationService;
+import fr.urssaf.image.sae.services.suppression.SAESuppressionService;
 
 /**
  * Implémentation des Mocks des services SAE
@@ -30,6 +32,30 @@ public class SAEServiceFactory {
 
    /**
     * 
+    * @return instance de {@link SAEModificationService}
+    */
+   public final SAEModificationService createSAEModificationService() {
+
+      SAEModificationService service = EasyMock
+            .createMock(SAEModificationService.class);
+
+      return service;
+   }
+
+   /**
+    * 
+    * @return instance de {@link SAESuppressionService}
+    */
+   public final SAESuppressionService createSAESuppressionService() {
+
+      SAESuppressionService service = EasyMock
+            .createMock(SAESuppressionService.class);
+
+      return service;
+   }
+
+   /**
+    * 
     * @return instance de {@link SAEControlesCaptureService}
     */
    public final SAEControlesCaptureService createSAEControlesCaptureService() {
@@ -39,7 +65,7 @@ public class SAEServiceFactory {
 
       return service;
    }
-   
+
    /**
     * 
     * @return instance de {@link SAEControleSupportService}

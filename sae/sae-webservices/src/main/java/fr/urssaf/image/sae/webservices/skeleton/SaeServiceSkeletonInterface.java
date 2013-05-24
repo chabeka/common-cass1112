@@ -14,12 +14,16 @@ import fr.cirtil.www.saeservice.Consultation;
 import fr.cirtil.www.saeservice.ConsultationMTOM;
 import fr.cirtil.www.saeservice.ConsultationMTOMResponse;
 import fr.cirtil.www.saeservice.ConsultationResponse;
+import fr.cirtil.www.saeservice.Modification;
+import fr.cirtil.www.saeservice.ModificationResponse;
 import fr.cirtil.www.saeservice.PingRequest;
 import fr.cirtil.www.saeservice.PingResponse;
 import fr.cirtil.www.saeservice.PingSecureRequest;
 import fr.cirtil.www.saeservice.PingSecureResponse;
 import fr.cirtil.www.saeservice.Recherche;
 import fr.cirtil.www.saeservice.RechercheResponse;
+import fr.cirtil.www.saeservice.Suppression;
+import fr.cirtil.www.saeservice.SuppressionResponse;
 import fr.urssaf.image.sae.webservices.security.exception.SaeAccessDeniedAxisFault;
 
 /**
@@ -140,5 +144,28 @@ public interface SaeServiceSkeletonInterface {
     */
    ArchivageMasseAvecHashResponse archivageMasseAvecHashSecure(
          ArchivageMasseAvecHash request, String callerIP) throws AxisFault;
+
+   /**
+    * endpoint de la suppression de document
+    * 
+    * @param request
+    *           request du web service
+    * @return reponse du web service
+    * @throws AxisFault
+    *            exception levée dans la consommation du web service
+    */
+   SuppressionResponse suppressionSecure(Suppression request) throws AxisFault;
+
+   /**
+    * endpoint de la modification de document
+    * 
+    * @param request
+    *           request du web service
+    * @return reponse du web service
+    * @throws AxisFault
+    *            exception levée dans la consommation du web service
+    */
+   ModificationResponse modificationSecure(Modification request)
+         throws AxisFault;
 
 }

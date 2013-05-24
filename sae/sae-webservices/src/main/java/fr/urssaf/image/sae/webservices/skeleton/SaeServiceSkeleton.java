@@ -35,12 +35,16 @@ import fr.cirtil.www.saeservice.Consultation;
 import fr.cirtil.www.saeservice.ConsultationMTOM;
 import fr.cirtil.www.saeservice.ConsultationMTOMResponse;
 import fr.cirtil.www.saeservice.ConsultationResponse;
+import fr.cirtil.www.saeservice.Modification;
+import fr.cirtil.www.saeservice.ModificationResponse;
 import fr.cirtil.www.saeservice.PingRequest;
 import fr.cirtil.www.saeservice.PingResponse;
 import fr.cirtil.www.saeservice.PingSecureRequest;
 import fr.cirtil.www.saeservice.PingSecureResponse;
 import fr.cirtil.www.saeservice.Recherche;
 import fr.cirtil.www.saeservice.RechercheResponse;
+import fr.cirtil.www.saeservice.Suppression;
+import fr.cirtil.www.saeservice.SuppressionResponse;
 import fr.urssaf.image.sae.exploitation.service.DfceInfoService;
 import fr.urssaf.image.sae.webservices.SaeService;
 import fr.urssaf.image.sae.webservices.exception.CaptureAxisFault;
@@ -50,7 +54,9 @@ import fr.urssaf.image.sae.webservices.security.exception.SaeAccessDeniedAxisFau
 import fr.urssaf.image.sae.webservices.service.WSCaptureMasseService;
 import fr.urssaf.image.sae.webservices.service.WSCaptureService;
 import fr.urssaf.image.sae.webservices.service.WSConsultationService;
+import fr.urssaf.image.sae.webservices.service.WSModificationService;
 import fr.urssaf.image.sae.webservices.service.WSRechercheService;
+import fr.urssaf.image.sae.webservices.service.WSSuppressionService;
 import fr.urssaf.image.sae.webservices.util.MessageRessourcesUtils;
 
 /**
@@ -83,6 +89,12 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
 
    @Autowired
    private WSCaptureMasseService captureMasse;
+
+   @Autowired
+   private WSModificationService modificationService;
+
+   @Autowired
+   private WSSuppressionService suppressionService;
 
    @Autowired
    private DfceInfoService dfceInfoService;
@@ -448,7 +460,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
          }
       }
    }
-   
+
    /**
     * {@inheritDoc}
     * 
@@ -457,8 +469,8 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
     */
    @Override
    public final ArchivageMasseAvecHashResponse archivageMasseAvecHashSecure(
-         ArchivageMasseAvecHash request, String callerIP) throws CaptureAxisFault,
-         SaeAccessDeniedAxisFault {
+         ArchivageMasseAvecHash request, String callerIP)
+         throws CaptureAxisFault, SaeAccessDeniedAxisFault {
       try {
 
          // Traces debug - entrée méthode
@@ -468,8 +480,8 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
 
          // l'opération web service n'interagit pas avec DFCE
          // il n'est pas nécessaire de vérifier si DFCE est Up
-         ArchivageMasseAvecHashResponse response = captureMasse.archivageEnMasseAvecHash(
-               request, callerIP);
+         ArchivageMasseAvecHashResponse response = captureMasse
+               .archivageEnMasseAvecHash(request, callerIP);
 
          // Traces debug - sortie méthode
          LOG.debug("{} - Sortie", prefixeTrc);
@@ -489,6 +501,32 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
                "Une erreur interne à l'application est survenue lors de la capture.",
                ex);
       }
+   }
+
+   @Override
+   public ModificationResponse modificationSecure(Modification request)
+         throws AxisFault {
+      String trcPrefix = "modificationSecure";
+      LOG.debug("{} - début", trcPrefix);
+
+      ModificationResponse response = modificationService.modification(request);
+
+      LOG.debug("{} - fin", trcPrefix);
+
+      return response;
+   }
+
+   @Override
+   public SuppressionResponse suppressionSecure(Suppression request)
+         throws AxisFault {
+      String trcPrefix = "suppressionSecure";
+      LOG.debug("{} - début", trcPrefix);
+
+      SuppressionResponse response = suppressionService.suppression(request);
+
+      LOG.debug("{} - fin", trcPrefix);
+
+      return response;
    }
 
 }

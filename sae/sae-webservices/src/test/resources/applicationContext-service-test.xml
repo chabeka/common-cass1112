@@ -7,9 +7,9 @@
       http://www.springframework.org/schema/context 
       http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-   
+
    <import resource="applicationContext-properties-test.xml" />
-   
+
    <bean
       class="fr.urssaf.image.sae.webservices.dfceservice.test.DfceInfoServiceTU"
       id="dfceInfoService" />
@@ -21,13 +21,17 @@
    </bean>
 
    <import resource="applicationContext-sae-trace.xml" />
-   
+
    <import resource="applicationContext-service.xml" />
 
    <!-- mock pour consultation et recherche -->
    <bean id="saeServiceProvider"
       class="fr.urssaf.image.sae.webservices.service.SAEServiceProviderImpl">
    </bean>
+
+   <bean factory-bean="SAEServiceFactory" factory-method="createSAEModificationService" />
+   
+   <bean factory-bean="SAEServiceFactory" factory-method="createSAESuppressionService" />
 
    <!-- mock pour capture unitaire -->
    <bean id="saeCaptureService" factory-bean="SAEServiceFactory"
