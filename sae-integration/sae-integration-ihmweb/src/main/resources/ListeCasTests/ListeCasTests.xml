@@ -978,7 +978,7 @@
                Recherche classique des utilisateurs pour le projet attestation
             </description>
             <implemente>true</implemente>
-            <luceneExemple>CodeRND:2.3.1.1.12 AND Siren:3090000001 AND DateCreation:20070401</luceneExemple>
+            <luceneExemple>CodeRND:2.3.1.1.12 AND Siren:3095555551 AND DateCreation:20070401</luceneExemple>
          </CasTest>
 
          <CasTest>
