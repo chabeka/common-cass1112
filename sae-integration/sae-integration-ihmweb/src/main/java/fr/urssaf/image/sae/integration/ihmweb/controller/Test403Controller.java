@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.ImportResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -222,7 +220,7 @@ public class Test403Controller extends AbstractTestWsController<Test403Formulair
       metaAttendues.add(new MetadonneeValeur("TailleFichier", "56587"));
       metaAttendues.add(new MetadonneeValeur("Titre", "Attestation de vigilance"));
       metaAttendues.add(new MetadonneeValeur("TracabilitePostArchivage", StringUtils.EMPTY));
-      metaAttendues.add(new MetadonneeValeur("TracabilitrePreArchivage", StringUtils.EMPTY));
+      metaAttendues.add(new MetadonneeValeur("TracabilitePreArchivage", StringUtils.EMPTY));
       metaAttendues.add(new MetadonneeValeur("TypeHash", "SHA-1"));
       metaAttendues.add(new MetadonneeValeur("VersionRND", getTestConfig().getVersionRND()));
       

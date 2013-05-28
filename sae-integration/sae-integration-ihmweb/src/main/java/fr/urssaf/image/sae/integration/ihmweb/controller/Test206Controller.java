@@ -112,7 +112,7 @@ public class Test206Controller extends
       codesMeta.add("SiteAcquisition");
       codesMeta.add("TailleFichier");
       codesMeta.add("Titre");
-      codesMeta.add("TracabilitrePreArchivage");
+      codesMeta.add("TracabilitePreArchivage");
       codesMeta.add("TypeHash");
       codesMeta.add("VersionRND");
       
@@ -267,7 +267,7 @@ public class Test206Controller extends
       valeursAttendues.add("SiteAcquisition", "CER44");
       valeursAttendues.add("TailleFichier", "56587");
       valeursAttendues.add("Titre", "Attestation de vigilance");
-      valeursAttendues.add("TracabilitrePreArchivage",
+      valeursAttendues.add("TracabilitePreArchivage",
             "Tracabilite pre archivage");
       valeursAttendues.add("TypeHash", "SHA-1");
       valeursAttendues.add("VersionRND", "5.3");

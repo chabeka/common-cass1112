@@ -126,7 +126,7 @@ public class Test103Commons {
       metadonnees.add("Siret", "12345678912345");
       metadonnees.add("SiteAcquisition", "CER44");
       metadonnees.add("Titre", "Attestation de vigilance");
-      metadonnees.add("TracabilitrePreArchivage", "Traçabilité pré archivage");
+      metadonnees.add("TracabilitePreArchivage", "Traçabilité pré archivage");
       metadonnees.add("TypeHash", "SHA-1");
       metadonnees.add("VersionRND", "5.3");
 
@@ -177,7 +177,7 @@ public class Test103Commons {
       codesMeta.add("SiteAcquisition");
       codesMeta.add("TailleFichier");
       codesMeta.add("Titre");
-      codesMeta.add("TracabilitrePreArchivage");
+      codesMeta.add("TracabilitePreArchivage");
       codesMeta.add("TypeHash");
       codesMeta.add("VersionRND");
 
@@ -304,7 +304,7 @@ public class Test103Commons {
       valeursAttendues.add("SiteAcquisition", "CER44");
       valeursAttendues.add("TailleFichier", "56587");
       valeursAttendues.add("Titre", "Attestation de vigilance");
-      valeursAttendues.add("TracabilitrePreArchivage",
+      valeursAttendues.add("TracabilitePreArchivage",
             "Traçabilité pré archivage");
       valeursAttendues.add("TypeHash", "SHA-1");
       valeursAttendues.add("VersionRND", "5.3");
