@@ -114,7 +114,6 @@ public class Test206Controller extends
       codesMeta.add("Titre");
       codesMeta.add("TracabilitePreArchivage");
       codesMeta.add("TypeHash");
-      codesMeta.add("VersionRND");
       
       
       // Initialise le formulaire de consultation
@@ -270,7 +269,6 @@ public class Test206Controller extends
       valeursAttendues.add("TracabilitePreArchivage",
             "Tracabilite pre archivage");
       valeursAttendues.add("TypeHash", "SHA-1");
-      valeursAttendues.add("VersionRND", "5.3");
 
       getRechercheTestService().verifieResultatRecherche(resultatRecherche,
             numeroResultatRecherche, resultatTest, valeursAttendues);

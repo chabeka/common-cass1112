@@ -108,7 +108,6 @@ public class Test102Commons {
       metadonnees.add("NbPages", "2");
       metadonnees.add("Titre", "Attestation de vigilance");
       metadonnees.add("TypeHash", "SHA-1");
-      metadonnees.add("VersionRND", "5.3");
 
       // -----------------------------------------------------------------------------
       // Initialisation du formulaire de l'étape de recherche
@@ -127,7 +126,6 @@ public class Test102Commons {
       codesMeta.add("DateFinConservation");
       codesMeta.add("Denomination");
       codesMeta.add("DureeConservation");
-      codesMeta.add("VersionRND");
 
       // Renvoie le formulaire
       return formulaire;
@@ -221,7 +219,6 @@ public class Test102Commons {
       valeursAttendues.add("DateFinConservation", "2016-08-30");
       valeursAttendues.add("Denomination", denomination);
       valeursAttendues.add("DureeConservation", "1825");
-      valeursAttendues.add("VersionRND", "5.3");
 
       testCommons.getRechercheTestService().verifieResultatRecherche(
             resultatRecherche, numeroResultatRecherche, resultatTest,

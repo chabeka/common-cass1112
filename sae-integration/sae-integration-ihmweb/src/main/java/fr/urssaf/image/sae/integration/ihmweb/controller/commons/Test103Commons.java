@@ -128,7 +128,6 @@ public class Test103Commons {
       metadonnees.add("Titre", "Attestation de vigilance");
       metadonnees.add("TracabilitePreArchivage", "Traçabilité pré archivage");
       metadonnees.add("TypeHash", "SHA-1");
-      metadonnees.add("VersionRND", "5.3");
 
       // -----------------------------------------------------------------------------
       // Initialisation du formulaire de l'étape de recherche
@@ -179,7 +178,6 @@ public class Test103Commons {
       codesMeta.add("Titre");
       codesMeta.add("TracabilitePreArchivage");
       codesMeta.add("TypeHash");
-      codesMeta.add("VersionRND");
 
       // Renvoie le formulaire
       return formulaire;
@@ -307,7 +305,6 @@ public class Test103Commons {
       valeursAttendues.add("TracabilitePreArchivage",
             "Traçabilité pré archivage");
       valeursAttendues.add("TypeHash", "SHA-1");
-      valeursAttendues.add("VersionRND", "5.3");
 
       testCommons.getRechercheTestService().verifieResultatRecherche(resultatRecherche,
             numeroResultatRecherche, resultatTest, valeursAttendues);
