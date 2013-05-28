@@ -2,6 +2,7 @@ package fr.urssaf.image.sae.rnd.service.impl;
 
 import java.util.concurrent.TimeUnit;
 
+import org.apache.cassandra.cli.CliParser.newColumnFamily_return;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.common.cache.CacheLoader.InvalidCacheLoadException;
 
 import fr.urssaf.image.sae.rnd.dao.support.RndSupport;
 import fr.urssaf.image.sae.rnd.exception.CodeRndInexistantException;
@@ -54,36 +56,48 @@ public class RndServiceImpl implements RndService {
    @Override
    public final String getCodeActivite(String codeRnd)
          throws CodeRndInexistantException {
-
-      TypeDocument typeDoc = cacheRnd.getUnchecked(codeRnd);
-      return typeDoc.getCodeActivite();
+      try {
+         TypeDocument typeDoc = cacheRnd.getUnchecked(codeRnd);
+         return typeDoc.getCodeActivite();
+      } catch (InvalidCacheLoadException e) {
+         throw new CodeRndInexistantException("Le code RND "+codeRnd+" n'existe pas", e.getCause());
+      }
 
    }
 
    @Override
    public final String getCodeFonction(String codeRnd)
          throws CodeRndInexistantException {
-
-      TypeDocument typeDoc = cacheRnd.getUnchecked(codeRnd);
-      return typeDoc.getCodeFonction();
-
-   }
+      try {
+         TypeDocument typeDoc = cacheRnd.getUnchecked(codeRnd);
+         return typeDoc.getCodeFonction();
+      } catch (InvalidCacheLoadException e) {
+         throw new CodeRndInexistantException("Le code RND "+codeRnd+" n'existe pas", e.getCause());
+      }
+    }
 
    @Override
    public final int getDureeConservation(String codeRnd)
          throws CodeRndInexistantException {
-
-      TypeDocument typeDoc = cacheRnd.getUnchecked(codeRnd);
-      return typeDoc.getDureeConservation();
+      try {
+         TypeDocument typeDoc = cacheRnd.getUnchecked(codeRnd);
+         return typeDoc.getDureeConservation();
+      } catch (InvalidCacheLoadException e) {
+         throw new CodeRndInexistantException("Le code RND "+codeRnd+" n'existe pas", e.getCause());
+      }
 
    }
 
    @Override
    public final TypeDocument getTypeDocument(String codeRnd)
          throws CodeRndInexistantException {
-
-      return cacheRnd.getUnchecked(codeRnd);
-
+      try {
+         TypeDocument typeDoc = new TypeDocument();
+         typeDoc = cacheRnd.getUnchecked(codeRnd);
+         return typeDoc;
+      } catch (InvalidCacheLoadException e) {
+         throw new CodeRndInexistantException("Le code RND "+codeRnd+" n'existe pas", e.getCause());
+      }
    }
 
 }
