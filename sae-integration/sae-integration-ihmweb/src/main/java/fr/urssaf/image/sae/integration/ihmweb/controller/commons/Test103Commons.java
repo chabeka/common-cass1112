@@ -55,8 +55,8 @@ public class Test103Commons {
       }
    }
 
-   
-   private String nomFichier ="doc1.PDF";
+   private String nomFichier = "doc1.PDF";
+
    private String getnomFichier(String numeroTest) {
       if ("103a".equals(numeroTest)) {
          return StringUtils.EMPTY;
@@ -71,6 +71,7 @@ public class Test103Commons {
                + numeroTest + " est inconnu");
       }
    }
+
    public final Test103Formulaire getFormulairePourGet(String numeroTest) {
 
       Test103Formulaire formulaire = new Test103Formulaire();
@@ -83,7 +84,10 @@ public class Test103Commons {
 
       // L'URL ECDE
       formCapture
-            .setUrlEcde(testCommons.getEcdeService().construitUrlEcde("SAE_INTEGRATION/20110822/CaptureUnitaire-103-CaptureUnitaire-OK-ToutesMetasSpecifiables/documents/doc1.PDF"));
+            .setUrlEcde(testCommons
+                  .getEcdeService()
+                  .construitUrlEcde(
+                        "SAE_INTEGRATION/20110822/CaptureUnitaire-103-CaptureUnitaire-OK-ToutesMetasSpecifiables/documents/doc1.PDF"));
 
       // Le nom du fichier
       formCapture.setNomFichier(getnomFichier(numeroTest));
@@ -99,13 +103,16 @@ public class Test103Commons {
       metadonnees.add("CodeCategorieV2", "4");
       metadonnees.add("CodeOrganismeGestionnaire", "CER69");
       metadonnees.add("CodeOrganismeProprietaire", "UR750");
+      metadonnees.add("CodeProduitV2", "QD75A");
       metadonnees.add("CodeRND", "2.3.1.1.12");
       metadonnees.add("CodeSousCategorieV2", "11");
+      metadonnees.add("CodeTraitementV2", "RD75.L02");
+      metadonnees.add("DateCourrierV2", "2013-03-13");
       metadonnees.add("DateCreation", "2011-09-05");
       metadonnees.add("DateDebutConservation", "2011-09-02");
       metadonnees.add("DateSignature", "2012-09-04");
       metadonnees.add("DateReception", "2011-09-01");
-      metadonnees.add("Denomination",getDenomination(numeroTest));
+      metadonnees.add("Denomination", getDenomination(numeroTest));
       metadonnees.add("FormatFichier", "fmt/354");
       metadonnees.add("Hash", "a2f93f1f121ebba0faef2c0596f2f126eacae77b");
       metadonnees.add("IdTraitementMasse", "123654");
@@ -121,6 +128,7 @@ public class Test103Commons {
       metadonnees.add("Periode", "PERI");
       metadonnees.add("PseudoSiret", "4914736610005");
       metadonnees.add("ReferenceDocumentaire", "1234567890AZERTyuio1234567890");
+      metadonnees.add("RIBA", "99/39405R00006204505");
       metadonnees.add("RUM", "24534Y8465435413Y012312356690123");
       metadonnees.add("Siren", "0123456789");
       metadonnees.add("Siret", "12345678912345");
@@ -136,7 +144,8 @@ public class Test103Commons {
       RechercheFormulaire formRecherche = formulaire.getRecherche();
 
       // Requête LUCENE
-      formRecherche.setRequeteLucene(testCommons.getCasTest(numeroTest).getLuceneExemple());
+      formRecherche.setRequeteLucene(testCommons.getCasTest(numeroTest)
+            .getLuceneExemple());
 
       // Métadonnées souhaitées
       CodeMetadonneeList codesMeta = new CodeMetadonneeList();
@@ -146,8 +155,11 @@ public class Test103Commons {
       codesMeta.add("CodeCategorieV2");
       codesMeta.add("CodeOrganismeGestionnaire");
       codesMeta.add("CodeOrganismeProprietaire");
+      codesMeta.add("CodeProduitV2");
       codesMeta.add("CodeRND");
       codesMeta.add("CodeSousCategorieV2");
+      codesMeta.add("CodeTraitementV2");
+      codesMeta.add("DateCourrierV2");
       codesMeta.add("DateCreation");
       codesMeta.add("DateDebutConservation");
       codesMeta.add("DateSignature");
@@ -169,6 +181,7 @@ public class Test103Commons {
       codesMeta.add("NumeroStructure");
       codesMeta.add("Periode");
       codesMeta.add("PseudoSiret");
+      codesMeta.add("RIBA");
       codesMeta.add("ReferenceDocumentaire");
       codesMeta.add("RUM");
       codesMeta.add("Siren");
@@ -215,8 +228,9 @@ public class Test103Commons {
       formRecherche.getResultats().clear();
 
       // Lance le test
-      testCommons.getCaptureUnitaireTestService().appelWsOpCaptureUnitaireReponseAttendue(
-            formulaire.getUrlServiceWeb(), formCaptureEtp1);
+      testCommons.getCaptureUnitaireTestService()
+            .appelWsOpCaptureUnitaireReponseAttendue(
+                  formulaire.getUrlServiceWeb(), formCaptureEtp1);
 
    }
 
@@ -272,8 +286,11 @@ public class Test103Commons {
       valeursAttendues.add("CodeCategorieV2", "4");
       valeursAttendues.add("CodeOrganismeGestionnaire", "CER69");
       valeursAttendues.add("CodeOrganismeProprietaire", "UR750");
+      valeursAttendues.add("CodeProduitV2", "QD75A");
       valeursAttendues.add("CodeRND", "2.3.1.1.12");
       valeursAttendues.add("CodeSousCategorieV2", "11");
+      valeursAttendues.add("CodeTraitementV2", "RD75.L02");
+      valeursAttendues.add("DateCourrierV2", "2013-03-13");
       valeursAttendues.add("DateCreation", "2011-09-05");
       valeursAttendues.add("DateDebutConservation", "2011-09-02");
       valeursAttendues.add("DateFinConservation", "2016-08-31");
@@ -295,7 +312,9 @@ public class Test103Commons {
       valeursAttendues.add("NumeroStructure", "000050221");
       valeursAttendues.add("Periode", "PERI");
       valeursAttendues.add("PseudoSiret", "4914736610005");
-      valeursAttendues.add("ReferenceDocumentaire", "1234567890AZERTyuio1234567890");
+      valeursAttendues.add("ReferenceDocumentaire",
+            "1234567890AZERTyuio1234567890");
+      valeursAttendues.add("RIBA", "99/39405R00006204505");
       valeursAttendues.add("RUM", "24534Y8465435413Y012312356690123");
       valeursAttendues.add("Siren", "0123456789");
       valeursAttendues.add("Siret", "12345678912345");
@@ -306,8 +325,9 @@ public class Test103Commons {
             "Traçabilité pré archivage");
       valeursAttendues.add("TypeHash", "SHA-1");
 
-      testCommons.getRechercheTestService().verifieResultatRecherche(resultatRecherche,
-            numeroResultatRecherche, resultatTest, valeursAttendues);
+      testCommons.getRechercheTestService().verifieResultatRecherche(
+            resultatRecherche, numeroResultatRecherche, resultatTest,
+            valeursAttendues);
 
    }
 
