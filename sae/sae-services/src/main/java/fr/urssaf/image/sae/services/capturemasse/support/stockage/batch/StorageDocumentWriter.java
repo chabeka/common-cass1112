@@ -55,14 +55,16 @@ public class StorageDocumentWriter implements ItemWriter<StorageDocument> {
    private static final String TRC_INIT = "init()";
 
    private static final String UNCHECKED = "unchecked";
-   
+
+   private static final String CATCH = "AvoidCatchingThrowable";
+
    /**
     * initialisation du context
     * 
     * @param stepExecution
     *           context de l'étape
     */
-   @SuppressWarnings(UNCHECKED)
+   @SuppressWarnings( { UNCHECKED, CATCH })
    @BeforeStep
    public final void init(StepExecution stepExecution) {
 
@@ -71,6 +73,7 @@ public class StorageDocumentWriter implements ItemWriter<StorageDocument> {
       try {
          serviceProvider.openConnexion();
 
+         /* nous sommes obligés de récupérer les throwable pour les erreurs DFCE */
       } catch (Throwable e) {
 
          LOGGER.warn("{} - erreur de connexion à DFCE", TRC_INIT, e);
@@ -103,6 +106,7 @@ public class StorageDocumentWriter implements ItemWriter<StorageDocument> {
     *           le stepExecution
     * @return un status de sortie
     */
+   @SuppressWarnings(CATCH)
    @AfterStep
    public final ExitStatus end(final StepExecution stepExecution) {
 
@@ -114,6 +118,7 @@ public class StorageDocumentWriter implements ItemWriter<StorageDocument> {
       try {
          serviceProvider.closeConnexion();
 
+         /* nous sommes obligés de récupérer les throwable pour les erreurs DFCE */
       } catch (Throwable e) {
 
          LOGGER.warn("{} - erreur lors de la fermeture de la base de données",
@@ -180,6 +185,7 @@ public class StorageDocumentWriter implements ItemWriter<StorageDocument> {
     * @throws InsertionServiceEx
     *            Exception levée lors de la persistance
     */
+   @SuppressWarnings(CATCH)
    public final StorageDocument insertStorageDocument(
          final StorageDocument storageDocument) throws InsertionServiceEx {
 
@@ -194,6 +200,8 @@ public class StorageDocumentWriter implements ItemWriter<StorageDocument> {
          throw new InsertionServiceEx(StorageMessageHandler
                .getMessage(Constants.INS_CODE_ERROR), except.getMessage(),
                except);
+
+         /* nous sommes obligés de récupérer les throwable pour les erreurs DFCE */
       } catch (Throwable except) {
 
          throw new InsertionServiceEx(StorageMessageHandler

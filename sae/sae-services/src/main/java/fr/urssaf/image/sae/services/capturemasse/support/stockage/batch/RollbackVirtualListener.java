@@ -35,10 +35,12 @@ public class RollbackVirtualListener {
 
    private static final String TRC_BEFORE = "beforeRollback()";
 
+   private static final String CATCH = "AvoidCatchingThrowable";
+
    @Autowired
    @Qualifier("storageServiceProvider")
    private StorageServiceProvider serviceProvider;
-   
+
    @Autowired
    private InsertionPoolThreadVirtualExecutor executor;
 
@@ -48,6 +50,7 @@ public class RollbackVirtualListener {
     * @param stepExecution
     *           étape de rollback
     */
+   @SuppressWarnings(CATCH)
    @BeforeStep
    public final void beforeRollback(StepExecution stepExecution) {
 
@@ -56,6 +59,7 @@ public class RollbackVirtualListener {
       try {
          serviceProvider.openConnexion();
 
+         /* on catch les throwable de DFCE */
       } catch (Throwable e) {
 
          String idTraitement = (String) stepExecution.getJobParameters()
@@ -67,7 +71,7 @@ public class RollbackVirtualListener {
 
          LOGGER.warn(errorMessage, e);
 
-         if (nbDocsIntegres >0) {
+         if (nbDocsIntegres > 0) {
 
             LOGGER
                   .error(
@@ -100,6 +104,7 @@ public class RollbackVirtualListener {
     * @param stepExecution
     *           étape de rollback
     */
+   @SuppressWarnings(CATCH)
    @AfterStep
    public final void afterRollback(StepExecution stepExecution) {
 
@@ -108,10 +113,13 @@ public class RollbackVirtualListener {
 
       try {
          // On stocke le nombre de document intégrés
-         stepExecution.getJobExecution().getExecutionContext().put(Constantes.NB_INTEG_DOCS, executor.getIntegratedDocuments().size());
-         
+         stepExecution.getJobExecution().getExecutionContext().put(
+               Constantes.NB_INTEG_DOCS,
+               executor.getIntegratedDocuments().size());
+
          serviceProvider.closeConnexion();
 
+         /* on catch les throwable de DFCE */
       } catch (Throwable e) {
 
          LOGGER.warn("{} - Fermeture de la base impossible", TRC_AFTER, e);

@@ -32,6 +32,8 @@ public class RollbackSupportImpl implements RollbackSupport {
 
    private final InterruptionTraitementMasseSupport support;
 
+   private static final String CATCH = "AvoidCatchingThrowable";
+
    /**
     * 
     * @param serviceProvider
@@ -56,6 +58,7 @@ public class RollbackSupportImpl implements RollbackSupport {
    /**
     * {@inheritDoc}
     */
+   @SuppressWarnings(CATCH)
    @Override
    public final void rollback(final UUID identifiant)
          throws InterruptionTraitementException, DeletionServiceEx {
@@ -65,6 +68,8 @@ public class RollbackSupportImpl implements RollbackSupport {
       try {
          serviceProvider.getStorageDocumentService().deleteStorageDocument(
                identifiant);
+
+         /* récupération des erreurs de DFCE */
       } catch (Throwable throwable) {
 
          throw new DeletionServiceEx(StorageMessageHandler

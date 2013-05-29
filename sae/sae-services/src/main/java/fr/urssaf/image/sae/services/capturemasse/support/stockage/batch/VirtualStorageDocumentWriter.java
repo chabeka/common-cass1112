@@ -51,13 +51,17 @@ public class VirtualStorageDocumentWriter implements
 
    private StepExecution stepExecution;
 
+   private static final String CATCH = "AvoidCatchingThrowable";
+
+   private static final String UNCHECKED = "unchecked";
+
    /**
     * initialisation du context
     * 
     * @param stepExecution
     *           context de l'étape
     */
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings( { UNCHECKED, CATCH })
    @BeforeStep
    public final void init(StepExecution stepExecution) {
 
@@ -68,6 +72,7 @@ public class VirtualStorageDocumentWriter implements
       try {
          serviceProvider.openConnexion();
 
+         /* nous sommes obligés de récupérer les throwable pour les erreurs DFCE */
       } catch (Throwable e) {
 
          LOGGER.warn("{} - erreur de connexion à DFCE", trcPrefix, e);
@@ -101,7 +106,7 @@ public class VirtualStorageDocumentWriter implements
     * @return un status de sortie
     */
    @AfterStep
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings( { UNCHECKED, CATCH })
    public final ExitStatus end(final StepExecution stepExecution) {
 
       String trcPrefix = "end()";
@@ -114,6 +119,7 @@ public class VirtualStorageDocumentWriter implements
       try {
          serviceProvider.closeConnexion();
 
+         /* nous sommes obligés de récupérer les throwable pour les erreurs DFCE */
       } catch (Throwable e) {
 
          LOGGER.warn("{} - erreur lors de la fermeture de la base de données",
@@ -183,6 +189,7 @@ public class VirtualStorageDocumentWriter implements
     * @throws InsertionServiceEx
     *            Exception levée lors de la persistance
     */
+   @SuppressWarnings(CATCH)
    public final VirtualStorageDocument insertStorageDocument(
          final VirtualStorageDocument storageDocument)
          throws InsertionServiceEx {
@@ -206,6 +213,8 @@ public class VirtualStorageDocumentWriter implements
          throw new InsertionServiceEx(StorageMessageHandler
                .getMessage(Constants.INS_CODE_ERROR), except.getMessage(),
                except);
+
+         /* nous sommes obligés de récupérer les throwable pour les erreurs DFCE */
       } catch (Throwable except) {
 
          throw new InsertionServiceEx(StorageMessageHandler

@@ -60,9 +60,12 @@ public class VerificationSupportImpl implements VerificationSupport {
          + "\"Tout ou rien\" a été interrompue. Une procédure d'exploitation a été "
          + "initialisée pour supprimer les données qui auraient pu être stockées.";
 
+   private static final String CATCH = "AvoidCatchingThrowable";
+
    /**
     * {@inheritDoc}
     */
+   @SuppressWarnings(CATCH)
    @Override
    public final void checkFinTraitement(URI urlEcde, Integer nbreDocs,
          Integer nbreStockes, boolean logPresent, List<Throwable> erreurs,
@@ -86,6 +89,7 @@ public class VerificationSupportImpl implements VerificationSupport {
 
          LOGGER.debug("{} - fin", CHECK);
 
+         /* erreurs de vérification du fichier sommaire */
       } catch (Throwable e) {
          LOGGER
                .warn(

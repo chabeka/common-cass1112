@@ -43,6 +43,8 @@ public class SAECaptureMasseServiceImpl implements SAECaptureMasseService {
    @Autowired
    private VerificationSupport verifSupport;
 
+   private static final String CATCH = "AvoidCatchingThrowable";
+
    /**
     * Job de la capture de masse
     */
@@ -99,6 +101,7 @@ public class SAECaptureMasseServiceImpl implements SAECaptureMasseService {
    /**
     * {@inheritDoc}
     */
+   @SuppressWarnings(CATCH)
    @Override
    public final ExitTraitement captureMasse(URI sommaireURI, UUID idTraitement,
          String hash, String typeHash) {
@@ -131,6 +134,7 @@ public class SAECaptureMasseServiceImpl implements SAECaptureMasseService {
             exitTraitement.setSucces(false);
          }
 
+         /* erreurs Spring non gérées */
       } catch (Throwable e) {
 
          LOGGER.warn(

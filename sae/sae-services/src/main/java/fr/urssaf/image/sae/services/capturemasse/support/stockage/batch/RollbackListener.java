@@ -35,10 +35,12 @@ public class RollbackListener {
 
    private static final String TRC_BEFORE = "beforeRollback()";
 
+   private static final String CATCH = "AvoidCatchingThrowable";
+
    @Autowired
    @Qualifier("storageServiceProvider")
    private StorageServiceProvider serviceProvider;
-   
+
    @Autowired
    private InsertionPoolThreadExecutor executor;
 
@@ -49,6 +51,7 @@ public class RollbackListener {
     *           étape de rollback
     */
    @BeforeStep
+   @SuppressWarnings(CATCH)
    public final void beforeRollback(StepExecution stepExecution) {
 
       int nbDocsIntegres = executor.getIntegratedDocuments().size();
@@ -56,6 +59,7 @@ public class RollbackListener {
       try {
          serviceProvider.openConnexion();
 
+         /* on catch car DFCE renvoie des throwables */
       } catch (Throwable e) {
 
          String idTraitement = (String) stepExecution.getJobParameters()
@@ -67,7 +71,7 @@ public class RollbackListener {
 
          LOGGER.warn(errorMessage, e);
 
-         if (nbDocsIntegres >0) {
+         if (nbDocsIntegres > 0) {
 
             LOGGER
                   .error(
@@ -101,6 +105,7 @@ public class RollbackListener {
     *           étape de rollback
     */
    @AfterStep
+   @SuppressWarnings(CATCH)
    public final void afterRollback(StepExecution stepExecution) {
 
       // pour l'instant nous avons fait le choix de propager l'erreur
@@ -108,10 +113,13 @@ public class RollbackListener {
 
       try {
          // On stocke le nombre de document intégrés
-         stepExecution.getJobExecution().getExecutionContext().put(Constantes.NB_INTEG_DOCS, executor.getIntegratedDocuments().size());
-         
+         stepExecution.getJobExecution().getExecutionContext().put(
+               Constantes.NB_INTEG_DOCS,
+               executor.getIntegratedDocuments().size());
+
          serviceProvider.closeConnexion();
 
+         /* on catch car DFCE renvoie des throwables */
       } catch (Throwable e) {
 
          LOGGER.warn("{} - Fermeture de la base impossible", TRC_AFTER, e);

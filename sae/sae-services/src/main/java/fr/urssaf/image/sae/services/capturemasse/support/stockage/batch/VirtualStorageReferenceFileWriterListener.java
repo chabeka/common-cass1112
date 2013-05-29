@@ -32,6 +32,10 @@ public class VirtualStorageReferenceFileWriterListener {
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(VirtualStorageReferenceFileWriterListener.class);
+   
+   private static final String UNCHECKED = "unchecked";
+   
+   private static final String CATCH = "AvoidCatchingThrowable";
 
    private StepExecution stepExecution;
 
@@ -45,13 +49,15 @@ public class VirtualStorageReferenceFileWriterListener {
     *           le stepExecution
     */
    @BeforeStep
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings({UNCHECKED, CATCH})
    public final void init(StepExecution stepExecution) {
 
       String trcPrefix = "init()";
 
       try {
          storageServiceProvider.openConnexion();
+      
+      /* on doit catcher les throwables à cause de DFCE */
       } catch (Throwable throwable) {
          LOGGER.warn("{} - erreur de connexion à DFCE", trcPrefix, throwable);
 
@@ -84,7 +90,7 @@ public class VirtualStorageReferenceFileWriterListener {
     * @return un status de sortie
     */
    @AfterStep
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings({UNCHECKED, CATCH})
    public final ExitStatus end(final StepExecution stepExecution) {
 
       String trcPrefix = "end()";
@@ -93,6 +99,7 @@ public class VirtualStorageReferenceFileWriterListener {
       try {
          storageServiceProvider.closeConnexion();
 
+         /* on doit catcher les throwables à cause de DFCE */
       } catch (Throwable e) {
 
          LOGGER.warn("{} - erreur lors de la fermeture de la base de données",
@@ -129,7 +136,7 @@ public class VirtualStorageReferenceFileWriterListener {
     * @param references
     *           la liste des fichiers de référence en cours d'écriture
     */
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings(UNCHECKED)
    @OnWriteError
    public final void onWriteError(Exception exception,
          List<StorageReferenceFile> references) {

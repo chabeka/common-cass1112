@@ -33,6 +33,8 @@ public class InterruptionTraitementMasseSupportImpl implements
 
    private final DFCEServicesManager dfceManager;
 
+   private static final String CATCH = "AvoidCatchingThrowable";
+
    /**
     * 
     * @param dfceManager
@@ -124,6 +126,7 @@ public class InterruptionTraitementMasseSupportImpl implements
       }
    }
 
+   @SuppressWarnings(CATCH)
    private ConnectionResult pause(final long delay,
          final Exception lastException, final int tentatives, final int total,
          final DFCEServicesManager dfceManager) throws InterruptedException {
@@ -167,6 +170,8 @@ public class InterruptionTraitementMasseSupportImpl implements
 
             connectionResult = pause(this.defaultDelay, e, newTentatives,
                   total, dfceManager);
+
+            /* erreur DFCE catchée */
          } catch (Throwable throwable) {
 
             final int newTentatives = tentatives - 1;
@@ -187,9 +192,9 @@ public class InterruptionTraitementMasseSupportImpl implements
    }
 
    private static final class ConnectionResult {
-      private ConnectionResult(){
+      private ConnectionResult() {
       }
-      
+
       private Exception exception;
 
       private int step;
