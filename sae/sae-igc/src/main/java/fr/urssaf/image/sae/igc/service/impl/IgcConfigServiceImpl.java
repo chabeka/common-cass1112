@@ -18,6 +18,9 @@ import fr.urssaf.image.sae.igc.service.IgcConfigService;
  */
 public final class IgcConfigServiceImpl implements IgcConfigService {
 
+   /**
+    * {@inheritDoc}
+    */
    @Override
    public IgcConfigs loadConfig(String pathConfigFile)
          throws IgcConfigException {
@@ -34,6 +37,10 @@ public final class IgcConfigServiceImpl implements IgcConfigService {
 
    }
 
+   /**
+    * {@inheritDoc}
+    */
+   @Override
    public IgcConfigs loadConfig(Resource configFile) throws IgcConfigException {
 
       InputStream inputStream;
