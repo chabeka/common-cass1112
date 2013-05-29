@@ -55,6 +55,14 @@
          </includes>
          <outputDirectory>sae-trace-executable</outputDirectory>
       </fileSet>
+      
+      <fileSet>
+         <directory>src/config/</directory>
+         <includes>
+            <include>logback-sae-rnd-executable.xml</include>
+         </includes>
+         <outputDirectory>sae-rnd-executable</outputDirectory>
+      </fileSet>
 
       <fileSet>
          <directory>src/scripts/</directory>
@@ -89,6 +97,14 @@
       </source>
       <outputDirectory>sae-trace-executable</outputDirectory>
       <destName>sae-trace-executable.jar</destName>
+    </file>
+    
+    <file>
+      <source>
+         ${project.parent.basedir}/sae-rnd-executable/target/sae-rnd-executable-${version}.jar
+      </source>
+      <outputDirectory>sae-rnd-executable</outputDirectory>
+      <destName>sae-rnd-executable.jar</destName>
     </file>
     
   </files>
