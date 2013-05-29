@@ -26,9 +26,9 @@ public class DocumentsTypeList {
    /**
     * Liste des types de documents supportés
     */
-   public List<String> types;
+   private List<String> types;
 
-   public DFCEServicesManager dfceServicesManager;
+   private final DFCEServicesManager dfceServicesManager;
 
    /**
     * Consturcteur
