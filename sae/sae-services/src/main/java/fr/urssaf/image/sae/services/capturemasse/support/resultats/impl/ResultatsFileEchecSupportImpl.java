@@ -390,7 +390,7 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
 
       } else if ("composant".equals(name)) {
          staxUtils.addStartTag(name, PX_SOMRES, NS_SOMRES);
-      
+
       } else if ("composants".equals(name)) {
          addErreurReference(erreur, indexReference.getRefIndex(), staxUtils);
          staxUtils.addStartTag(name, PX_SOMRES, NS_SOMRES);
@@ -664,6 +664,14 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
       private final int docIndex;
       private final int refIndex;
 
+      /**
+       * Constructeur
+       * 
+       * @param docIndex
+       *           index du document
+       * @param refIndex
+       *           index de la référence
+       */
       public IndexReference(int docIndex, int refIndex) {
          this.docIndex = docIndex;
          this.refIndex = refIndex;
