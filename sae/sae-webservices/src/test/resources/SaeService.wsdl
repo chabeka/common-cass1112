@@ -279,6 +279,28 @@
 				<soap:body use="literal"/>
 			</wsdl:output>
 		</wsdl:operation>
+      <wsdl:operation name="modification">
+         <wsdl:documentation>Service de modification unitaire de document
+         </wsdl:documentation>
+         <soap:operation soapAction="modification"/>
+         <wsdl:input>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="suppression">
+         <wsdl:documentation>Service de suppression unitaire de document
+         </wsdl:documentation>
+         <soap:operation soapAction="suppression"/>
+         <wsdl:input>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
 	</wsdl:binding>
 	<wsdl:service name="SaeService">
 		<wsdl:port name="SaeServicePort" binding="tns:SaeServiceSoapBinding">
