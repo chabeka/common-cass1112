@@ -8,14 +8,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.axiom.soap.SOAPEnvelope;
 import org.apache.axiom.soap.SOAPHeader;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.handlers.AbstractHandler;
-import org.apache.rampart.util.Axis2Util;
 import org.joda.time.DateTime;
-import org.w3c.dom.Document;
 
 import fr.urssaf.image.sae.client.vi.exception.ViSignatureException;
 import fr.urssaf.image.sae.client.vi.exception.XmlSignatureException;
@@ -84,12 +81,6 @@ public class VIHandler extends AbstractHandler {
 
          // Génération de l'en-tête wsse
          String wsse = genererEnTeteWsse(msgCtx);
-
-         // Insertion du VI dans l'en-tête SOAP
-         Document doc = Axis2Util.getDocumentFromSOAPEnvelope(msgCtx
-               .getEnvelope(), true);
-
-         msgCtx.setEnvelope((SOAPEnvelope) doc.getDocumentElement());
 
          SOAPHeader soapHeader = msgCtx.getEnvelope().getHeader();
 

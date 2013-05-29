@@ -9,7 +9,8 @@
 
    <name>sae-client-vi</name>
 
-   <description>Module utilitaire de génération des Token SAML pour service SAE</description>
+   <description>Module utilitaire de génération des Token SAML pour
+      service SAE</description>
 
    <build>
       <resources>
@@ -85,8 +86,25 @@
    </properties>
 
 
-
    <dependencies>
+
+      <dependency>
+         <groupId>org.apache.ws.commons.axiom</groupId>
+         <artifactId>axiom-dom</artifactId>
+         <version>1.2.13</version>
+      </dependency>
+
+      <dependency>
+         <groupId>org.apache.ws.commons.axiom</groupId>
+         <artifactId>axiom-impl</artifactId>
+         <version>1.2.13</version>
+      </dependency>
+
+      <dependency>
+         <groupId>org.apache.ws.commons.axiom</groupId>
+         <artifactId>axiom-api</artifactId>
+         <version>1.2.13</version>
+      </dependency>
 
       <!-- AXIS 2 -->
       <dependency>
@@ -105,75 +123,18 @@
          <groupId>xalan</groupId>
          <artifactId>serializer</artifactId>
          <version>2.7.1</version>
-      </dependency>
-
-
-      <!-- APACHE RAMPART -->
-      <dependency>
-         <groupId>org.apache.rampart</groupId>
-         <artifactId>rampart-core</artifactId>
-         <version>${rampart.version}</version>
          <exclusions>
             <exclusion>
-               <artifactId>rampart-trust</artifactId>
-               <groupId>org.apache.rampart</groupId>
+               <groupId>xml-apis</groupId>
+               <artifactId>xml-apis</artifactId>
             </exclusion>
-            <exclusion>
-               <artifactId>rampart-policy</artifactId>
-               <groupId>org.apache.rampart</groupId>
-            </exclusion>
-            <exclusion>
-               <groupId>commons-lang</groupId>
-               <artifactId>commons-lang</artifactId>
-            </exclusion>
-
-            <exclusion>
-               <groupId>org.slf4j</groupId>
-               <artifactId>jcl-over-slf4j</artifactId>
-            </exclusion>
-            <exclusion>
-               <groupId>javax.servlet</groupId>
-               <artifactId>servlet-api</artifactId>
-            </exclusion>
-
-            <exclusion>
-               <groupId>org.apache.axis2</groupId>
-               <artifactId>mex</artifactId>
-            </exclusion>
-            <exclusion>
-               <groupId>org.apache.axis2</groupId>
-               <artifactId>axis2-mtompolicy</artifactId>
-            </exclusion>
-
-            <exclusion>
-               <groupId>org.slf4j</groupId>
-               <artifactId>slf4j-jdk14</artifactId>
-            </exclusion>
-
-            <exclusion>
-               <artifactId>commons-fileupload</artifactId>
-               <groupId>commons-fileupload</groupId>
-            </exclusion>
-
-            <exclusion>
-               <artifactId>opensaml</artifactId>
-               <groupId>org.opensaml</groupId>
-            </exclusion>
-            <exclusion>
-               <groupId>org.apache.axis2</groupId>
-               <artifactId>axis2-kernel</artifactId>
-            </exclusion>
-            <exclusion>
-               <groupId>org.apache.geronimo.specs</groupId>
-               <artifactId>geronimo-javamail_1.4_spec</artifactId>
-            </exclusion>
-            <exclusion>
-               <groupId>org.apache.xalan</groupId>
-               <artifactId>xalan</artifactId>
-            </exclusion>
-
-
          </exclusions>
+      </dependency>
+
+      <dependency>
+         <groupId>xml-apis</groupId>
+         <artifactId>xml-apis</artifactId>
+         <version>1.4.01</version>
       </dependency>
 
       <!--  COMMONS APACHE  -->
@@ -187,6 +148,12 @@
          <groupId>commons-lang</groupId>
          <artifactId>commons-lang</artifactId>
          <version>${apache.commons-lang.version}</version>
+      </dependency>
+
+      <dependency>
+         <groupId>org.apache.santuario</groupId>
+         <artifactId>xmlsec</artifactId>
+         <version>1.5.1</version>
       </dependency>
 
       <!-- JODA TIME  -->
