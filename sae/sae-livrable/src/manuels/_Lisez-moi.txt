@@ -194,6 +194,8 @@ java -jar -Dlogback.configurationFile=@@SAE_HOME@@/sae-dfce-admin-exploit/logbac
 // Pour lancer la mise à jour des durée de conservation des documents
 java -jar -Dlogback.configurationFile=@@SAE_HOME@@/sae-dfce-admin-exploit/logback-sae-dfce-admin-exploit.xml -Doperation=updateLifecycleRules @@SAE_HOME@@/sae-dfce-admin-exploit/sae-dfce-admin-exploit.jar updateLifecycleRules @@SAE_HOME@@/sae-config.properties @@SAE_HOME@@/sae-dfce-admin-exploit/LifeCycleRule.xml
 
+// Pour lancer la réindexation des documents sur un ou plusieurs métadonnées (nb: utiliser les codes courts, séparer par des ;)
+java -jar -Dlogback.configurationFile=@@SAE_HOME@@/sae-dfce-admin-exploit/logback-sae-dfce-admin-exploit.xml -Doperation=updateDocuments @@SAE_HOME@@/sae-dfce-admin-exploit/sae-dfce-admin-exploit.jar updateDocuments @@SAE_HOME@@/sae-config.properties meta1;meta2
 
 
 // --------------------------------------------------------------------
