@@ -1,4 +1,4 @@
-package fr.urssaf.image.sae.rnd.executable;
+package fr.urssaf.image.sae.rnd.executable.bootstrap;
 
 import org.apache.commons.lang.exception.NestableRuntimeException;
 import org.easymock.EasyMock;
@@ -7,8 +7,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import exception.MajRndMainException;
 import fr.urssaf.image.sae.rnd.exception.MajRndException;
+import fr.urssaf.image.sae.rnd.executable.bootstrap.MajRndMain;
+import fr.urssaf.image.sae.rnd.executable.exception.MajRndMainException;
 import fr.urssaf.image.sae.rnd.executable.service.RndServiceProvider;
 import fr.urssaf.image.sae.rnd.service.MajRndService;
 

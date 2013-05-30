@@ -1,4 +1,4 @@
-package exception;
+package fr.urssaf.image.sae.rnd.executable.exception;
 
 /**
  * Exception levée lors de l’exécution d'un traitement de capture en masse

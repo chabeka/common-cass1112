@@ -1,4 +1,4 @@
-package fr.urssaf.image.sae.rnd.executable;
+package fr.urssaf.image.sae.rnd.executable.bootstrap;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
@@ -6,24 +6,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import exception.MajCorrespondancesMainException;
 import fr.urssaf.image.sae.commons.context.ContextFactory;
-import fr.urssaf.image.sae.rnd.exception.MajCorrespondancesException;
-import fr.urssaf.image.sae.rnd.service.MajCorrespondancesService;
+import fr.urssaf.image.sae.rnd.exception.MajRndException;
+import fr.urssaf.image.sae.rnd.executable.exception.MajRndMainException;
+import fr.urssaf.image.sae.rnd.service.MajRndService;
 
 /**
- * Lancement du traitement de mise à jour des correspondances du RND
+ * Lancement du traitement de la mise à jour du RND
  * 
  * 
  */
-public class MajCorrespondancesMain {
+public class MajRndMain {
 
-   private static final Logger LOG = LoggerFactory
-         .getLogger(MajCorrespondancesMain.class);
+   private static final Logger LOG = LoggerFactory.getLogger(MajRndMain.class);
 
    private final String contextConfig;
 
-   protected MajCorrespondancesMain(String contextConfig) {
+   protected MajRndMain(String contextConfig) {
 
       this.contextConfig = contextConfig;
    }
@@ -34,7 +33,6 @@ public class MajCorrespondancesMain {
          throw new IllegalArgumentException(
                "Le chemin complet du fichier de configuration générale du SAE doit être renseigné.");
       }
-
       if (ArrayUtils.getLength(args) > 0 && !StringUtils.isNotBlank(args[0])) {
          throw new IllegalArgumentException(
                "Le chemin complet du fichier de configuration générale du SAE doit être renseigné.");
@@ -48,20 +46,23 @@ public class MajCorrespondancesMain {
 
       try {
 
-         // appel du service de MAJ des correspondances
-         MajCorrespondancesService majCorrespondancesService = (MajCorrespondancesService) context
-               .getBean(MajCorrespondancesService.class);
+         // appel du service de mise à jour du RND
+         MajRndService majRndService = (MajRndService) context
+               .getBean(MajRndService.class);
 
-         try {
-            majCorrespondancesService.lancer();
-         } catch (MajCorrespondancesException e) {
-            LOG
-                  .error(
-                        "Une erreur a eu lieu dans le processus de mise à jour des correspondances du RND.",
-                        e);
-            throw new MajCorrespondancesMainException(e);
-         }
+         majRndService.lancer();
 
+      } catch (MajRndException e) {
+         LOG.error(
+               "Une erreur a eu lieu dans le processus de mise à jour du RND.",
+               e);
+         throw new MajRndMainException(e);
+      } catch (Exception e) {
+
+         LOG.error(
+               "Une erreur a eu lieu dans le processus de mise à jour du RND.",
+               e);
+         throw new MajRndMainException(e);
       } finally {
 
          // on force ici la fermeture du contexte de Spring
@@ -82,16 +83,15 @@ public class MajCorrespondancesMain {
     */
    public static void main(String[] args) {
 
-      MajCorrespondancesMain instance = new MajCorrespondancesMain(
+      MajRndMain instance = new MajRndMain(
             "/applicationContext-sae-rnd-executable.xml");
 
       try {
          instance.execute(args);
       } catch (Exception e) {
-         LOG
-               .error(
-                     "Une erreur a eu lieu dans le processus de mise à jour des correspondances du RND.",
-                     e);
+         LOG.error(
+               "Une erreur a eu lieu dans le processus de mise à jour du RND.",
+               e);
       }
    }
 

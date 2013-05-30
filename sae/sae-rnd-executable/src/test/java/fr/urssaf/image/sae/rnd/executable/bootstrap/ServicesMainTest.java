@@ -1,8 +1,10 @@
-package fr.urssaf.image.sae.rnd.executable;
+package fr.urssaf.image.sae.rnd.executable.bootstrap;
 
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import fr.urssaf.image.sae.rnd.executable.bootstrap.ServicesMain;
 
 @SuppressWarnings("PMD.MethodNamingConventions")
 public class ServicesMainTest {
@@ -19,10 +21,9 @@ public class ServicesMainTest {
 
       } catch (IllegalArgumentException e) {
 
-         Assert
-               .assertEquals("le message de l'exception est incorrect",
-                     "L'opération du traitement doit être renseignée.", e
-                           .getMessage());
+         Assert.assertEquals("le message de l'exception est incorrect",
+               "L'opération du traitement doit être renseignée.", e
+                     .getMessage());
       }
    }
 
@@ -51,7 +52,8 @@ public class ServicesMainTest {
    @Test
    public void ServicesMain_majRnd() throws Throwable {
 
-      String[] args = new String[] { "MAJ_RND", "src/test/resources/config_sae.properties" };
+      String[] args = new String[] { "MAJ_RND",
+            "src/test/resources/config_sae.properties" };
 
       ServicesMain.main(args);
    }
@@ -60,7 +62,8 @@ public class ServicesMainTest {
    @Test
    public void ServicesMain_majCorrespondances() throws Throwable {
 
-      String[] args = new String[] { "MAJ_CORRESPONDANCES_RND", "src/test/resources/config_sae.properties" };
+      String[] args = new String[] { "MAJ_CORRESPONDANCES_RND",
+            "src/test/resources/config_sae.properties" };
 
       ServicesMain.main(args);
    }

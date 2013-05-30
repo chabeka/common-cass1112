@@ -1,11 +1,13 @@
-package fr.urssaf.image.sae.rnd.executable;
+package fr.urssaf.image.sae.rnd.executable.bootstrap;
 
 import java.util.Date;
+import java.util.UUID;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 /**
  * Exécutable pour les différents services contenus dans ce module :
@@ -42,9 +44,11 @@ public final class ServicesMain {
     * 
     * @param args
     *           arguments de l'exécutable
-    * @throws Throwable 
+    * @throws Throwable
     */
    public static void main(String[] args) throws Throwable {
+
+      MDC.put("log_contexte_uuid", UUID.randomUUID().toString());
 
       String prefix = "main()";
       LOGGER.debug("{} - début", prefix);
@@ -83,9 +87,12 @@ public final class ServicesMain {
 
       } catch (Throwable ex) {
 
-         LOGGER.error("Une erreur a eu lieu dans l'execution du jar sae-rnd-executable", ex);
+         LOGGER
+               .error(
+                     "Une erreur a eu lieu dans l'execution du jar sae-rnd-executable",
+                     ex);
          throw ex;
 
-      } 
+      }
    }
 }

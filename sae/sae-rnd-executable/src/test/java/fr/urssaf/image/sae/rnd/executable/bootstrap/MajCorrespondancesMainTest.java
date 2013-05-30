@@ -1,4 +1,4 @@
-package fr.urssaf.image.sae.rnd.executable;
+package fr.urssaf.image.sae.rnd.executable.bootstrap;
 
 import org.easymock.EasyMock;
 import org.junit.After;
@@ -6,6 +6,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import fr.urssaf.image.sae.rnd.executable.bootstrap.MajCorrespondancesMain;
 import fr.urssaf.image.sae.rnd.executable.service.RndServiceProvider;
 import fr.urssaf.image.sae.rnd.service.MajCorrespondancesService;
 
@@ -36,8 +37,7 @@ public class MajCorrespondancesMainTest {
    @Test
    public void traitementMasseMain_success() {
 
-      String[] args = new String[] {
-            "src/test/resources/config_sae.properties"};
+      String[] args = new String[] { "src/test/resources/config_sae.properties" };
 
       instance.execute(args);
    }
