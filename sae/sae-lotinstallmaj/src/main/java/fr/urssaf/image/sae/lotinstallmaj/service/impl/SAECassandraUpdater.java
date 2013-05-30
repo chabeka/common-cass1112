@@ -396,25 +396,4 @@ public class SAECassandraUpdater {
       saeDao.setDatabaseVersion(VERSION_5);
 
    }
-
-   /**
-    * Ajout des droits spécifiques GED :
-    * <ul>
-    * <li>modification</li>
-    * <li>suppression</li>
-    * </ul>
-    */
-   public void updateDroitsGed() {
-
-      LOG
-            .info("Mise à jour des droits GED pour ajouter modification et suppression");
-
-      // On se connecte au keyspace
-      saeDao.connectToKeySpace();
-
-      // Insertion de données
-      InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
-      donnees.addDroitsGed();
-   }
-
 }

@@ -51,6 +51,7 @@ public final class MajLotServiceImpl implements MajLotService {
    public static final String CASSANDRA_130700 = "CASSANDRA_130700";
    public static final String DFCE_130700 = "DFCE_130700";
    public static final String CASSANDRA_DROITS_GED = "CASSANDRA_DROITS_GED";
+   public static final String CREATION_GED = "CREATION_GED";
 
    public static final int DUREE_1825 = 1825;
    public static final int DUREE_1643 = 1643;
@@ -70,6 +71,9 @@ public final class MajLotServiceImpl implements MajLotService {
 
    @Autowired
    private SAECassandraUpdater updater;
+
+   @Autowired
+   private GedCassandraUpdater gedUpdater;
 
    @Autowired
    private CassandraConfig cassandraConfig;
@@ -135,6 +139,10 @@ public final class MajLotServiceImpl implements MajLotService {
       } else if (CASSANDRA_DROITS_GED.equalsIgnoreCase(nomOperation)) {
 
          updateCassandraDroitsGed();
+
+      } else if (CREATION_GED.equalsIgnoreCase(nomOperation)) {
+
+         createGedBase();
 
       } else {
 
@@ -301,7 +309,7 @@ public final class MajLotServiceImpl implements MajLotService {
 
       LOG
             .info("Début de l'opération : Lot 130700 - Mise à jour du keyspace SAE");
-      updater.updateDroitsGed();
+      gedUpdater.updateAuthorizationAccess();
       LOG.info("Fin de l'opération : Lot 130700 - Mise à jour du keyspace SAE");
 
    }
@@ -524,6 +532,17 @@ public final class MajLotServiceImpl implements MajLotService {
       dfceUpdater.updateToVersion120();
       LOG.info("Fin de l'opération : Lot 130700 - Mise à jour du schéma DFCE");
 
+   }
+   
+   /**
+    * Création de la base GED
+    */
+   private void createGedBase() {
+      updater.updateToVersion1();
+      updater.updateToVersion2();
+      updater.updateToVersion3();
+      updater.updateToVersion4();
+      updater.updateToVersion5();
    }
 
 }
