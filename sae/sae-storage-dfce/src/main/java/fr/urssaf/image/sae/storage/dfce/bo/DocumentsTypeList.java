@@ -46,18 +46,24 @@ public class DocumentsTypeList {
     * @return la liste des documents supportés
     */
    public final List<String> getTypes() {
-      if (types == null) {
-         init();
+
+      synchronized (DocumentsTypeList.class) {
+
+         if (types == null) {
+            init();
+         }
+
       }
 
       return types;
+
    }
 
    private void init() {
 
       boolean startActive = dfceServicesManager.isActive();
       try {
-         
+
          if (!startActive) {
             dfceServicesManager.getConnection();
          }
