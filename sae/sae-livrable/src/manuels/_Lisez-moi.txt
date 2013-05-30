@@ -229,6 +229,8 @@ java -Dlogback.configurationFile=@@SAE_HOME@@/sae-lotinstallmaj/logback-sae-loti
 
 // Installation du lot 130700SAE - Mise à jour du Keyspace SAE, création des nouvelles métadonnées 
 java -Dlogback.configurationFile=@@SAE_HOME@@/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar @@SAE_HOME@@/sae-lotinstallmaj/sae-lotinstallmaj.jar @@SAE_HOME@@/sae-config.properties CASSANDRA_130700
+// Installation des droits GED 
+java -Dlogback.configurationFile=@@SAE_HOME@@/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar @@SAE_HOME@@/sae-lotinstallmaj/sae-lotinstallmaj.jar @@SAE_HOME@@/sae-config.properties CASSANDRA_DROITS_GED
 
 
 // --------------------------------------------------------------------
