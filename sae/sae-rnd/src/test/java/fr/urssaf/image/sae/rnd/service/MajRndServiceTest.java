@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.util.CollectionUtils;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -119,17 +120,19 @@ public class MajRndServiceTest {
       // "0.0.0.0.0" existe bien dans la base
       TypeDocument typeDoc1 = rndSupport.getRnd("1.1.1.1.1");
       Assert.assertNotNull(typeDoc1);
-      
+
       TypeDocument typeDoc2 = rndSupport.getRnd("2.1.1.1.1");
       Assert.assertNotNull(typeDoc2);
-      
+
       TypeDocument typeDoc3 = rndSupport.getRnd("3.1.1.1.1");
       Assert.assertNotNull(typeDoc3);
-      
+
       // On vérifie que la durée de conservation du 1er doc a été passée à 300
-      Assert.assertEquals("Le type de doc 1.1.1.1.1 doit avoir une durée de conservation à 300", 300,
-            typeDoc1.getDureeConservation());
-      
+      Assert
+            .assertEquals(
+                  "Le type de doc 1.1.1.1.1 doit avoir une durée de conservation à 300",
+                  300, typeDoc1.getDureeConservation());
+
       // On vérifie que le code "1.1.1.1.1" a été passé à clôturé suite à la
       // mise à jour des correspondances
       Assert.assertEquals("Le type de doc 1.1.1.1.1 doit être clôturé", true,
@@ -283,17 +286,41 @@ public class MajRndServiceTest {
       Assert.assertTrue("Message de log d'info incorrect",
             loggingEvents != null && loggingEvents.size() > 0);
 
-      Assert.assertTrue("ajouterRnd - Ajout du code : 1.1.1.1.1"
-            .equals(loggingEvents.get(3).getFormattedMessage()));
-      Assert.assertTrue("ajouterRnd - Ajout du code : 2.1.1.1.1"
-            .equals(loggingEvents.get(4).getFormattedMessage()));
+      Assert.assertTrue(logContains(loggingEvents,
+            "ajouterRnd - Ajout du code : 1.1.1.1.1"));
+
+      Assert.assertTrue(logContains(loggingEvents,
+            "ajouterRnd - Ajout du code : 2.1.1.1.1"));
+
       Assert
-            .assertTrue("updateLifeCycleRule - La durée de conservation du code 1.1.1.1.1 a été modifiée (3000 => 300) !"
-                  .equals(loggingEvents.get(5).getFormattedMessage()));
-      Assert.assertTrue("updateLifeCycleRule - Ajout du code : 3.1.1.1.1"
-            .equals(loggingEvents.get(6).getFormattedMessage()));
+            .assertTrue(logContains(
+                  loggingEvents,
+                  "updateLifeCycleRule - La durée de conservation du code 1.1.1.1.1 a été modifiée (3000 => 300) !"));
+
+      Assert.assertTrue(logContains(loggingEvents,
+            "updateLifeCycleRule - Ajout du code : 3.1.1.1.1"));
+
       Assert
-            .assertTrue("ajouterCorrespondance - Ajout de la correspondance : 1.1.1.1.1 / 2.2.2.2.2"
-                  .equals(loggingEvents.get(7).getFormattedMessage()));
+            .assertTrue(logContains(loggingEvents,
+                  "ajouterCorrespondance - Ajout de la correspondance : 1.1.1.1.1 / 2.2.2.2.2"));
+
    }
+
+   private boolean logContains(List<ILoggingEvent> loggingEvents, String message) {
+
+      boolean result = false;
+
+      if (!CollectionUtils.isEmpty(loggingEvents)) {
+         for (ILoggingEvent loggingEvent : loggingEvents) {
+            if (loggingEvent.getFormattedMessage().equals(message)) {
+               result = true;
+               break;
+            }
+         }
+      }
+
+      return result;
+
+   }
+
 }
