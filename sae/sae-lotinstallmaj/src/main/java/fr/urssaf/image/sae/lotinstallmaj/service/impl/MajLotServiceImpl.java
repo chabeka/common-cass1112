@@ -50,6 +50,7 @@ public final class MajLotServiceImpl implements MajLotService {
    public static final String CASSANDRA_130400 = "CASSANDRA_130400";
    public static final String CASSANDRA_130700 = "CASSANDRA_130700";
    public static final String DFCE_130700 = "DFCE_130700";
+   public static final String CASSANDRA_DROITS_GED = "CASSANDRA_DROITS_GED";
 
    public static final int DUREE_1825 = 1825;
    public static final int DUREE_1643 = 1643;
@@ -130,6 +131,10 @@ public final class MajLotServiceImpl implements MajLotService {
       } else if (CASSANDRA_130700.equalsIgnoreCase(nomOperation)) {
 
          updateCassandra130700();
+
+      } else if (CASSANDRA_DROITS_GED.equalsIgnoreCase(nomOperation)) {
+
+         updateCassandraDroitsGed();
 
       } else {
 
@@ -285,6 +290,18 @@ public final class MajLotServiceImpl implements MajLotService {
       LOG
             .info("Début de l'opération : Lot 130700 - Mise à jour du keyspace SAE");
       updater.updateToVersion5();
+      LOG.info("Fin de l'opération : Lot 130700 - Mise à jour du keyspace SAE");
+
+   }
+
+   /**
+    * Ajout des droits GED
+    */
+   private void updateCassandraDroitsGed() {
+
+      LOG
+            .info("Début de l'opération : Lot 130700 - Mise à jour du keyspace SAE");
+      updater.updateDroitsGed();
       LOG.info("Fin de l'opération : Lot 130700 - Mise à jour du keyspace SAE");
 
    }

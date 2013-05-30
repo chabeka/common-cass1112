@@ -190,8 +190,7 @@ public class InsertionDonnees {
       LOG.info("Création des paramètres de maj du RND");
 
       ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
-            keyspace, "Parameters", StringSerializer.get(), StringSerializer
-                  .get());
+            keyspace, "Parameters", StringSerializer.get(), StringSerializer.get());
 
       checkAndAddRndParameter(cfTmpl, "VERSION_RND_NUMERO", "");
  
@@ -461,6 +460,21 @@ public class InsertionDonnees {
 
       cfTmpl.update(updater);
 
+   }
+
+   /**
+    * Ajout des droits spécifiques GED :
+    * <ul>
+    * <li>modification</li>
+    * <li>suppression</li>
+    * </ul>
+    */
+   public void addDroitsGed() {
+      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+            keyspace, "DroitActionUnitaire", StringSerializer.get(),
+            StringSerializer.get());
+      addActionUnitaire("modification", "modification", cfTmpl);
+      addActionUnitaire("suppression", "suppression", cfTmpl);
    }
 
 }

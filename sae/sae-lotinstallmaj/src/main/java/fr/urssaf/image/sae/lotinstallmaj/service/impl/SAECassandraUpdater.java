@@ -387,7 +387,7 @@ public class SAECassandraUpdater {
       donnees.addReferentielEvenementV2();
 
       donnees.addRndParameters();
-      
+
       // Initialisation du référentiel des métadonnées
       // suite au passage à un stockage du référentiel en bdd
       refMetaInitService.initialiseRefMeta(saeDao.getKeyspace());
@@ -395,6 +395,26 @@ public class SAECassandraUpdater {
       // On positionne la version à 5
       saeDao.setDatabaseVersion(VERSION_5);
 
+   }
+
+   /**
+    * Ajout des droits spécifiques GED :
+    * <ul>
+    * <li>modification</li>
+    * <li>suppression</li>
+    * </ul>
+    */
+   public void updateDroitsGed() {
+
+      LOG
+            .info("Mise à jour des droits GED pour ajouter modification et suppression");
+
+      // On se connecte au keyspace
+      saeDao.connectToKeySpace();
+
+      // Insertion de données
+      InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
+      donnees.addDroitsGed();
    }
 
 }
