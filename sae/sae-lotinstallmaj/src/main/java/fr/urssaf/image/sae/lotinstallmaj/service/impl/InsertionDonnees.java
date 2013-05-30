@@ -190,12 +190,14 @@ public class InsertionDonnees {
       LOG.info("Création des paramètres de maj du RND");
 
       ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
-            keyspace, "Parameters", StringSerializer.get(), StringSerializer.get());
+            keyspace, "Parameters", StringSerializer.get(), StringSerializer
+                  .get());
 
       checkAndAddRndParameter(cfTmpl, "VERSION_RND_NUMERO", "");
- 
+      checkAndAddRndParameter(cfTmpl, "VERSION_RND_DATE_MAJ", getRndDate());
+
    }
-   
+
    /**
     * Ajoute les paramètres nécessaires à la traçabilité SAE
     */
@@ -273,13 +275,13 @@ public class InsertionDonnees {
       }
 
    }
-   
+
    private void checkAndAddRndParameter(
          ColumnFamilyTemplate<String, String> cfTmpl, String subname,
          Object valeur) {
 
-      boolean inserted = checkAndAddValue(cfTmpl, "parametresRnd",
-            subname, valeur, StringSerializer.get(), ObjectSerializer.get());
+      boolean inserted = checkAndAddValue(cfTmpl, "parametresRnd", subname,
+            valeur, StringSerializer.get(), ObjectSerializer.get());
 
       if (!inserted) {
          LOG.info("Le paramètre de maj du RND {} existe déjà", subname);
@@ -337,6 +339,24 @@ public class InsertionDonnees {
       calendar.set(Calendar.YEAR, 2013);
       calendar.set(Calendar.MONTH, 0); // les numéros de mois commencent à 0
       calendar.set(Calendar.DAY_OF_MONTH, 31);
+      calendar.set(Calendar.HOUR_OF_DAY, 0);
+      calendar.set(Calendar.MINUTE, 0);
+      calendar.set(Calendar.SECOND, 0);
+      calendar.set(Calendar.MILLISECOND, 0);
+      return calendar.getTime();
+
+   }
+
+   private Date getRndDate() {
+
+      // On démarre la traçabilité SAE au 01/02/2013
+      // La dernière date des traitements est positionné au 31/01/2013
+      // Car les traitements font un J+1 à partir des valeurs de paramètres
+
+      Calendar calendar = Calendar.getInstance();
+      calendar.set(Calendar.YEAR, 1970);
+      calendar.set(Calendar.MONTH, 0); // les numéros de mois commencent à 0
+      calendar.set(Calendar.DAY_OF_MONTH, 1);
       calendar.set(Calendar.HOUR_OF_DAY, 0);
       calendar.set(Calendar.MINUTE, 0);
       calendar.set(Calendar.SECOND, 0);
@@ -453,6 +473,9 @@ public class InsertionDonnees {
       updater = cfTmpl.createUpdater("MAJ_VERSION_RND|OK");
       addColumn("JOURN_EVT", allInfos, StringSerializer.get(), ListSerializer
             .get(), updater);
+      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
+            ListSerializer.get(), updater);
+      cfTmpl.update(updater);
 
       updater = cfTmpl.createUpdater("DFCE_MODIF_DOC|OK");
       addColumn("JOURN_EVT", allInfos, StringSerializer.get(), ListSerializer
