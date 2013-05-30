@@ -267,6 +267,17 @@ java -Dlogback.configurationFile=@@SAE_HOME@@/sae-trace-executable/logback-sae-t
 
 
 // --------------------------------------------------------------------
+// Commandes de lancement de sae-rnd-executable
+// --------------------------------------------------------------------
+
+// Mettre à jour le RND en se synchronisant avec l'ADRN
+java -Dlogback.configurationFile=@@SAE_HOME@@/sae-rnd-executable/logback-sae-rnd-executable.xml -Doperation=MAJ_RND -jar @@SAE_HOME@@/sae-rnd-executable/sae-rnd-executable.jar MAJ_RND @@SAE_HOME@@/sae-config.properties
+
+// Mettre à jour les correspondances (modification des documents)
+java -Dlogback.configurationFile=@@SAE_HOME@@/sae-rnd-executable/logback-sae-rnd-executable.xml -Doperation=MAJ_CORRESPONDANCES_RND -jar @@SAE_HOME@@/sae-rnd-executable/sae-rnd-executable.jar MAJ_CORRESPONDANCES_RND @@SAE_HOME@@/sae-config.properties
+
+
+// --------------------------------------------------------------------
 // Les CRON à créer
 // --------------------------------------------------------------------
 
