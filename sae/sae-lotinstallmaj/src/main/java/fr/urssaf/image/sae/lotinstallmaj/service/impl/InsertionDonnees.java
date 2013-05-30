@@ -190,7 +190,7 @@ public class InsertionDonnees {
       LOG.info("Création des paramètres de maj du RND");
 
       ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
-            keyspace, "Rnd", StringSerializer.get(), StringSerializer
+            keyspace, "Parameters", StringSerializer.get(), StringSerializer
                   .get());
 
       checkAndAddRndParameter(cfTmpl, "VERSION_RND_NUMERO", "");
