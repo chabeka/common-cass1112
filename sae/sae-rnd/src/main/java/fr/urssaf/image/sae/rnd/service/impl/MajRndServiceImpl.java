@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,6 +60,8 @@ public class MajRndServiceImpl implements MajRndService {
       String trcPrefix = "lancer";
       LOGGER.debug(DEBUT_LOG, trcPrefix);
 
+      LOGGER.info("{} - Début de la synchronisation avec l'ADRN", trcPrefix);
+
       // Récupération de la version en cours dans le SAE
       // -----------------------------------------------
       VersionRnd versionRndSae;
@@ -71,8 +74,8 @@ public class MajRndServiceImpl implements MajRndService {
                      e);
          throw new MajRndException(e);
       }
-      LOGGER.debug("{} - Version en cours dans le SAE : {}", new String[] {
-            trcPrefix, versionRndSae.getVersionEnCours() });
+      LOGGER.info("{} - Version du RND en cours dans le SAE : {}", trcPrefix,
+            versionRndSae.getVersionEnCours());
 
       // Récupération de la version en cours dans l'ADRN
       // -----------------------------------------------
@@ -86,13 +89,14 @@ public class MajRndServiceImpl implements MajRndService {
                      e);
          throw new MajRndException(e);
       }
-      LOGGER.debug("{} - Version en cours dans l'ADRN : {}", new String[] {
-            trcPrefix, versionAdrn });
+      LOGGER.info("{} - Version du RND en cours dans l'ADRN : {}", trcPrefix,
+            versionAdrn);
 
       if (StringUtils.isBlank(versionAdrn)) {
          LOGGER
                .error("Une erreur s'est produite lors de la récupération de la version en cours dans l'ADRN : Version ADRN nulle");
-         throw new MajRndException("Une erreur s'est produite lors de la récupération de la version en cours dans l'ADRN : Version ADRN nulle");
+         throw new MajRndException(
+               "Une erreur s'est produite lors de la récupération de la version en cours dans l'ADRN : Version ADRN nulle");
       }
 
       // Mise à jour du RND dans le SAE
@@ -104,7 +108,7 @@ public class MajRndServiceImpl implements MajRndService {
 
          // Récupération du RND à partir de l'ADRN
          // --------------------------------------
-         LOGGER.debug("{} - Récupération du RND à partir de l'ADRN", trcPrefix);
+         LOGGER.info("{} - Récupération du RND à partir de l'ADRN", trcPrefix);
          List<TypeDocument> listeTypeDocs;
          try {
             listeTypeDocs = rndRecuperationService.getListeRnd(versionAdrn);
@@ -118,7 +122,7 @@ public class MajRndServiceImpl implements MajRndService {
 
          // Mise à jour de la BDD du SAE
          // ----------------------------
-         LOGGER.debug("{} - Mise à jour de la BDD du SAE", trcPrefix);
+         LOGGER.info("{} - Mise à jour de la BDD du SAE", trcPrefix);
          try {
             saeBddSupport.updateRnd(listeTypeDocs);
          } catch (SaeBddRuntimeException e) {
@@ -131,7 +135,7 @@ public class MajRndServiceImpl implements MajRndService {
 
          // Mise à jour de la BDD DFCE
          // --------------------------
-         LOGGER.debug("{} - Mise à jour de la BDD DFCE", trcPrefix);
+         LOGGER.info("{} - Mise à jour de la BDD DFCE", trcPrefix);
          try {
             dfceSupport.updateLifeCycleRule(listeTypeDocs);
          } catch (DfceRuntimeException e) {
@@ -144,7 +148,7 @@ public class MajRndServiceImpl implements MajRndService {
 
          // Récupération de la liste des correspondances
          // --------------------------------------------
-         LOGGER.debug("{} - Récupération de la liste des correspondances",
+         LOGGER.info("{} - Récupération de la liste des correspondances",
                trcPrefix);
          Map<String, String> listeCorrespondances;
          try {
@@ -160,8 +164,7 @@ public class MajRndServiceImpl implements MajRndService {
 
          // Mise à jour des correspondances dans la BDD du SAE
          // --------------------------------------------------
-         LOGGER.debug(
-               "{} - Mise à jour des correspondances dans la BDD du SAE",
+         LOGGER.info("{} - Mise à jour des correspondances dans la BDD du SAE",
                trcPrefix);
          try {
             saeBddSupport.updateCorrespondances(listeCorrespondances);
@@ -176,7 +179,7 @@ public class MajRndServiceImpl implements MajRndService {
          // Mise à jour des informations sur la version en cours dans le SAE
          // ----------------------------------------------------------------
          LOGGER
-               .debug(
+               .info(
                      "{} - Mise à jour des informations sur la version en cours dans le SAE",
                      trcPrefix);
          versionRndSae.setVersionEnCours(versionAdrn);
@@ -193,16 +196,17 @@ public class MajRndServiceImpl implements MajRndService {
 
          // Mise à jour des traces de la MAJ de la version du RND OK
          // --------------------------------------------------------
+         LOGGER.info("{} - Ecriture de la traçabilité", trcPrefix);
          ecrireTraces(TRACE_CODE_EVT_REUSSITE_MAJ_RND);
 
       } else {
-         LOGGER.debug("{} - Aucune mise à jour à effectuer", trcPrefix);
+         LOGGER.info("{} - Aucune mise à jour à effectuer", trcPrefix);
       }
 
       // GESTION DES CODES TEMPORAIRES
       // =============================
       // Récupération de la liste des codes temporaires
-      LOGGER.debug("{} - Récupération de la liste des codes temporaires",
+      LOGGER.info("{} - Récupération de la liste des codes temporaires",
             trcPrefix);
       List<TypeDocument> listeCodesTemporaires;
       try {
@@ -216,39 +220,54 @@ public class MajRndServiceImpl implements MajRndService {
          throw new MajRndException(e);
       }
 
-      // Mise à jour des types de documents dans la BDD du SAE en ajoutant
-      // les temporaires
-      LOGGER
-            .debug(
-                  "{} - Mise à jour des types de documents temporaires dans la BDD du SAE",
-                  trcPrefix);
-      try {
-         saeBddSupport.updateRnd(listeCodesTemporaires);
-      } catch (SaeBddRuntimeException e) {
-         LOGGER
-               .error(
-                     "Une erreur s'est produite lors de la MAJ des types de documents temporaires dans la BDD du SAE",
-                     e);
-         throw new MajRndException(e);
+      if (listeCodesTemporaires == null) {
+         LOGGER.info("{} - Nombre de codes temporaires trouvés : aucun",
+               trcPrefix);
+      } else {
+         LOGGER.info("{} - Nombre de codes temporaires trouvés : {}",
+               trcPrefix, listeCodesTemporaires.size());
       }
 
-      // Mise à jour des types de documents dans DFCE en ajoutant les
-      // temporaires
-      LOGGER
-            .debug(
-                  "{} - Mise à jour des types de documents dans DFCE en ajoutant les temporaires",
-                  trcPrefix);
-      try {
-         dfceSupport.updateLifeCycleRule(listeCodesTemporaires);
-      } catch (DfceRuntimeException e) {
+      // On traite les codes temporaires s'il y en a au moins 1
+      if (CollectionUtils.isNotEmpty(listeCodesTemporaires)) {
+
+         // Mise à jour des types de documents dans la BDD du SAE en ajoutant
+         // les temporaires
          LOGGER
-               .error(
-                     "Une erreur s'est produite lors de la MAJ des types de documents temporaires dans la BDD DFCE",
-                     e);
-         throw new MajRndException(e);
+               .info(
+                     "{} - Mise à jour des types de documents temporaires dans la BDD du SAE",
+                     trcPrefix);
+         try {
+            saeBddSupport.updateRnd(listeCodesTemporaires);
+         } catch (SaeBddRuntimeException e) {
+            LOGGER
+                  .error(
+                        "Une erreur s'est produite lors de la MAJ des types de documents temporaires dans la BDD du SAE",
+                        e);
+            throw new MajRndException(e);
+         }
+
+         // Mise à jour des types de documents dans DFCE en ajoutant les
+         // temporaires
+         LOGGER
+               .info(
+                     "{} - Mise à jour des types de documents dans DFCE en ajoutant les temporaires",
+                     trcPrefix);
+         try {
+            dfceSupport.updateLifeCycleRule(listeCodesTemporaires);
+         } catch (DfceRuntimeException e) {
+            LOGGER
+                  .error(
+                        "Une erreur s'est produite lors de la MAJ des types de documents temporaires dans la BDD DFCE",
+                        e);
+            throw new MajRndException(e);
+         }
+
+         // TODO : Traitement de mise à jour des correspondances
+
       }
 
-      // TODO : Traitement de mise à jour des correspondances
+      LOGGER.info("{} - Fin de la synchronisation avec l'ADRN", trcPrefix);
 
       LOGGER.debug(FIN_LOG, trcPrefix);
 
