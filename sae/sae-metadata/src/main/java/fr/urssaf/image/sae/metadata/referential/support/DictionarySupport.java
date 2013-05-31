@@ -133,8 +133,9 @@ public class DictionarySupport {
       List<Dictionary> list = new ArrayList<Dictionary>();
       for (ColumnFamilyResult<String, String> row : resultIterator) {
          if (row != null && row.hasResults()) {
-            Dictionary dict = new Dictionary(row.getKey(), new ArrayList<String>(row
-                  .getColumnNames()) );
+            ArrayList<String> valeurs = new ArrayList<String>(row
+                  .getColumnNames());
+            Dictionary dict = new Dictionary(row.getKey(), valeurs );
             list.add(dict);
          }
 
