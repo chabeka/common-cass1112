@@ -32,11 +32,17 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.xml.sax.SAXException;
 
+import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
+import fr.urssaf.image.sae.commons.service.ParametersService;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
+import fr.urssaf.image.sae.rnd.dao.support.RndSupport;
+import fr.urssaf.image.sae.rnd.modele.TypeCode;
+import fr.urssaf.image.sae.rnd.modele.TypeDocument;
 import fr.urssaf.image.sae.services.batch.model.ExitTraitement;
 import fr.urssaf.image.sae.services.capturemasse.SAECaptureMasseService;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
@@ -67,6 +73,15 @@ public class MetaDataPartielIntegrationTest {
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(MetaDataPartielIntegrationTest.class);
+   
+   @Autowired
+   private CassandraServerBean server;
+   @Autowired
+   private ParametersService parametersService;
+   @Autowired 
+   private RndSupport rndSupport;
+   @Autowired
+   private JobClockSupport jobClockSupport;
 
    @Before
    public void init() {
@@ -97,10 +112,25 @@ public class MetaDataPartielIntegrationTest {
             viExtrait.getIdUtilisateur(), viExtrait, roles, viExtrait
                   .getSaeDroits());
       AuthenticationContext.setAuthenticationToken(token);
+      
+      // Paramétrage du RND
+      parametersService.setVersionRndDateMaj(new Date());
+      parametersService.setVersionRndNumero("11.2");
+      
+      TypeDocument typeDocCree = new TypeDocument();
+      typeDocCree.setCloture(false);
+      typeDocCree.setCode("2.3.1.1.12");
+      typeDocCree.setCodeActivite("3");
+      typeDocCree.setCodeFonction("2");
+      typeDocCree.setDureeConservation(1825);
+      typeDocCree.setLibelle("Libellé 2.3.1.1.12");
+      typeDocCree.setType(TypeCode.ARCHIVABLE_AED);
+
+      rndSupport.ajouterRnd(typeDocCree, jobClockSupport.currentCLock());
    }
 
    @After
-   public void end() {
+   public void end() throws Exception {
       try {
          ecdeTestTools.cleanEcdeTestSommaire(ecdeTestSommaire);
       } catch (IOException e) {
@@ -108,6 +138,8 @@ public class MetaDataPartielIntegrationTest {
       }
 
       AuthenticationContext.setAuthenticationToken(null);
+      
+      server.resetData();
 
    }
 

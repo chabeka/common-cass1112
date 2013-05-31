@@ -23,8 +23,9 @@ import fr.urssaf.image.sae.mapping.constants.Constants;
 import fr.urssaf.image.sae.mapping.exception.InvalidSAETypeException;
 import fr.urssaf.image.sae.mapping.exception.MappingFromReferentialException;
 import fr.urssaf.image.sae.mapping.services.MappingDocumentService;
+import fr.urssaf.image.sae.rnd.exception.CodeRndInexistantException;
+import fr.urssaf.image.sae.rnd.service.RndService;
 import fr.urssaf.image.sae.services.controles.SAEControlesModificationService;
-import fr.urssaf.image.sae.services.enrichment.dao.RNDReferenceDAO;
 import fr.urssaf.image.sae.services.enrichment.xml.model.SAEArchivalMetadatas;
 import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.InvalidValueTypeAndFormatMetadataEx;
@@ -69,13 +70,14 @@ public class SAEModificationServiceImpl implements SAEModificationService {
    private MappingDocumentService mappingDocumentService;
 
    @Autowired
-   private RNDReferenceDAO rndReferenceDAO;
+   private RndService rndService;
 
    /**
     * {@inheritDoc}
     */
    @Override
-   public final void modification(UUID idArchive, List<UntypedMetadata> metadonnees)
+   public final void modification(UUID idArchive,
+         List<UntypedMetadata> metadonnees)
          throws InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
          DuplicatedMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
@@ -168,9 +170,10 @@ public class SAEModificationServiceImpl implements SAEModificationService {
       try {
          if (StringUtils.isNotBlank(codeRnd)) {
             Date date = (Date) getValue("SM_LIFE_CYCLE_REFERENCE_DATE", list);
-            String codeActivite = rndReferenceDAO.getActivityCodeByRnd(codeRnd);
-            String codeFonction = rndReferenceDAO.getFonctionCodeByRnd(codeRnd);
-            int duration = rndReferenceDAO.getStorageDurationByRnd(codeRnd);
+
+            String codeActivite = rndService.getCodeActivite(codeRnd);
+            String codeFonction = rndService.getCodeFonction(codeRnd);
+            int duration = rndService.getDureeConservation(codeRnd);
             Date dateFin = DateUtils.addDays(date, duration);
             String sDateFin = DateFormatUtils.format(dateFin,
                   Constants.DATE_PATTERN, Constants.DEFAULT_LOCAL);
@@ -185,10 +188,7 @@ public class SAEModificationServiceImpl implements SAEModificationService {
                   sDateFin));
 
          }
-      } catch (ReferentialRndException exception) {
-         throw new ModificationRuntimeException(exception);
-
-      } catch (UnknownCodeRndEx exception) {
+      } catch (CodeRndInexistantException exception) {
          throw new ModificationRuntimeException(exception);
       }
 

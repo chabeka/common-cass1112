@@ -7,22 +7,32 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
 import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
+import fr.urssaf.image.sae.commons.service.ParametersService;
+import fr.urssaf.image.sae.commons.support.ParametersSupport;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
+import fr.urssaf.image.sae.rnd.dao.support.RndSupport;
+import fr.urssaf.image.sae.rnd.modele.TypeCode;
+import fr.urssaf.image.sae.rnd.modele.TypeDocument;
+import fr.urssaf.image.sae.rnd.modele.VersionRnd;
 import fr.urssaf.image.sae.services.CommonsServices;
 import fr.urssaf.image.sae.services.enrichment.SAEEnrichmentMetadataService;
 import fr.urssaf.image.sae.services.enrichment.xml.model.SAEArchivalMetadatas;
@@ -59,7 +69,16 @@ public class SAEControlesCaptureServiceImplTest extends CommonsServices {
    @Autowired
    @Qualifier("saeEnrichmentMetadataService")
    SAEEnrichmentMetadataService saeEnrichmentMetadataService;
-
+   
+   @Autowired
+   private CassandraServerBean server;
+   @Autowired 
+   private RndSupport rndSupport;
+   @Autowired
+   private JobClockSupport jobClockSupport;
+   @Autowired
+   private ParametersService parametersService;
+   
    /**
     * @return Le service d'enrichment des metadonnées.
     */
@@ -92,6 +111,26 @@ public class SAEControlesCaptureServiceImplTest extends CommonsServices {
       this.saeControlesCaptureService = saeControlesCaptureService;
    }
 
+   /**
+    * Préparation données pour le RND
+    */
+   @Before
+   public final void preparationDonnees() {
+      TypeDocument typeDocCree = new TypeDocument();
+      typeDocCree.setCloture(false);
+      typeDocCree.setCode("2.3.1.1.12");
+      typeDocCree.setCodeActivite("3");
+      typeDocCree.setCodeFonction("2");
+      typeDocCree.setDureeConservation(1825);
+      typeDocCree.setLibelle("Libellé 2.3.1.1.12");
+      typeDocCree.setType(TypeCode.ARCHIVABLE_AED);
+
+      rndSupport.ajouterRnd(typeDocCree, jobClockSupport.currentCLock());
+      
+      parametersService.setVersionRndDateMaj(new Date());
+      parametersService.setVersionRndNumero("11.4");
+   }
+   
    /**
     * Test de la méthode
     * {@link fr.urssaf.image.sae.services.controles.impl.SAEControlesCaptureServiceImpl#checkUntypedMetadata(fr.urssaf.image.sae.bo.model.untyped.UntypedDocument)}
@@ -373,8 +412,9 @@ public class SAEControlesCaptureServiceImplTest extends CommonsServices {
    }
 
    @After
-   public void end() {
+   public void end() throws Exception {
       AuthenticationContext.setAuthenticationToken(null);
+      server.resetData();
    }
    
    private void initDroits() {

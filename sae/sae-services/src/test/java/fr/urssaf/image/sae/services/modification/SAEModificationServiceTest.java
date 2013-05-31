@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -26,12 +27,18 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
+import fr.urssaf.image.sae.commons.service.ParametersService;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestDocument;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
+import fr.urssaf.image.sae.rnd.dao.support.RndSupport;
+import fr.urssaf.image.sae.rnd.modele.TypeCode;
+import fr.urssaf.image.sae.rnd.modele.TypeDocument;
 import fr.urssaf.image.sae.services.SAEServiceTestProvider;
 import fr.urssaf.image.sae.services.capture.SAECaptureService;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
@@ -82,11 +89,20 @@ public class SAEModificationServiceTest {
 
    @Autowired
    private SAEServiceTestProvider testProvider;
+   
+   @Autowired
+   private CassandraServerBean server;
+   @Autowired
+   private ParametersService parametersService;
+   @Autowired 
+   private RndSupport rndSupport;
+   @Autowired
+   private JobClockSupport jobClockSupport;
 
    private UUID uuid = null;
 
    @After
-   public void end() {
+   public void end() throws Exception {
       if (uuid != null) {
 
          try {
@@ -100,6 +116,8 @@ public class SAEModificationServiceTest {
       AuthenticationContext.setAuthenticationToken(null);
 
       provider.closeConnexion();
+      
+      server.resetData();
    }
 
    @Before
@@ -131,6 +149,31 @@ public class SAEModificationServiceTest {
             viExtrait.getIdUtilisateur(), viExtrait, roles, viExtrait
                   .getSaeDroits());
       AuthenticationContext.setAuthenticationToken(token);
+      
+      // Paramétrage du RND
+      parametersService.setVersionRndDateMaj(new Date());
+      parametersService.setVersionRndNumero("11.2");
+      
+      TypeDocument typeDocCree = new TypeDocument();
+      typeDocCree.setCloture(false);
+      typeDocCree.setCode("5.1.2.1.5");
+      typeDocCree.setCodeActivite("1");
+      typeDocCree.setCodeFonction("5");
+      typeDocCree.setDureeConservation(1825);
+      typeDocCree.setLibelle("Libellé 5.1.2.1.5");
+      typeDocCree.setType(TypeCode.ARCHIVABLE_AED);
+
+      rndSupport.ajouterRnd(typeDocCree, jobClockSupport.currentCLock());
+      
+      typeDocCree.setCloture(false);
+      typeDocCree.setCode("2.3.1.1.12");
+      typeDocCree.setCodeActivite("3");
+      typeDocCree.setCodeFonction("1");
+      typeDocCree.setDureeConservation(1825);
+      typeDocCree.setLibelle("Libellé 2.3.1.1.12");
+      typeDocCree.setType(TypeCode.ARCHIVABLE_AED);
+      
+      rndSupport.ajouterRnd(typeDocCree, jobClockSupport.currentCLock());
    }
 
    @Test

@@ -25,12 +25,13 @@ import fr.urssaf.image.sae.droit.service.PrmdService;
 import fr.urssaf.image.sae.mapping.exception.InvalidSAETypeException;
 import fr.urssaf.image.sae.mapping.exception.MappingFromReferentialException;
 import fr.urssaf.image.sae.mapping.services.MappingDocumentService;
+import fr.urssaf.image.sae.rnd.exception.CodeRndInexistantException;
+import fr.urssaf.image.sae.rnd.service.RndService;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireDocumentNotFoundException;
 import fr.urssaf.image.sae.services.capturemasse.support.controle.CaptureMasseControleSupport;
 import fr.urssaf.image.sae.services.controles.SAEControlesCaptureService;
 import fr.urssaf.image.sae.services.controles.SaeControleMetadataService;
-import fr.urssaf.image.sae.services.enrichment.dao.RNDReferenceDAO;
 import fr.urssaf.image.sae.services.enrichment.dao.impl.SAEMetatadaFinderUtils;
 import fr.urssaf.image.sae.services.enrichment.xml.model.SAEArchivalMetadatas;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
@@ -42,7 +43,6 @@ import fr.urssaf.image.sae.services.exception.capture.RequiredArchivableMetadata
 import fr.urssaf.image.sae.services.exception.capture.RequiredStorageMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.UnknownHashCodeEx;
 import fr.urssaf.image.sae.services.exception.capture.UnknownMetadataEx;
-import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException;
 import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
@@ -73,7 +73,7 @@ public class CaptureMasseControleSupportImpl implements
    private PrmdService prmdService;
 
    @Autowired
-   private RNDReferenceDAO rndReferenceDAO;
+   private RndService rndService;
 
    /**
     * {@inheritDoc}
@@ -273,9 +273,9 @@ public class CaptureMasseControleSupportImpl implements
             saeMetadatas, SAEArchivalMetadatas.CODE_RND.getLongCode());
 
       try {
-         rndReferenceDAO.getTypeDocument(valeurMetadata);
-      } catch (ReferentialRndException e) {
-         throw new CaptureMasseRuntimeException(e);
+         rndService.getTypeDocument(valeurMetadata);
+      } catch (CodeRndInexistantException e) {
+         throw new UnknownCodeRndEx(e.getMessage(),e.getCause());
       }
 
       LOGGER.debug("{} - récupération du Vi", trcPrefix);

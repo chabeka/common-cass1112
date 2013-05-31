@@ -3,23 +3,31 @@ package fr.urssaf.image.sae.services.enrichment;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
 import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
+import fr.urssaf.image.sae.commons.service.ParametersService;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.mapping.exception.InvalidSAETypeException;
 import fr.urssaf.image.sae.mapping.exception.MappingFromReferentialException;
 import fr.urssaf.image.sae.mapping.services.MappingDocumentService;
+import fr.urssaf.image.sae.rnd.dao.support.RndSupport;
+import fr.urssaf.image.sae.rnd.modele.TypeCode;
+import fr.urssaf.image.sae.rnd.modele.TypeDocument;
 import fr.urssaf.image.sae.services.CommonsServices;
 import fr.urssaf.image.sae.services.controles.SAEControlesCaptureService;
 import fr.urssaf.image.sae.services.enrichment.xml.model.SAEArchivalMetadatas;
@@ -47,6 +55,15 @@ public class SAEEnrichmentMetadataServiceImplTest extends CommonsServices {
    @Autowired
    private MappingDocumentService mappingService;
 
+   @Autowired
+   private CassandraServerBean server;
+   @Autowired 
+   private RndSupport rndSupport;
+   @Autowired
+   private JobClockSupport jobClockSupport;
+   @Autowired
+   private ParametersService parametersService;
+   
    /**
     * @return Le service de mappingService
     */
@@ -76,6 +93,26 @@ public class SAEEnrichmentMetadataServiceImplTest extends CommonsServices {
    public final void setSaeEnrichmentMetadataService(
          SAEEnrichmentMetadataService saeEnrichmentMetadataService) {
       this.saeEnrichmentMetadataService = saeEnrichmentMetadataService;
+   }
+   
+   /**
+    * Préparation données pour le RND
+    */
+   @Before
+   public final void preparationDonnees() {
+      TypeDocument typeDocCree = new TypeDocument();
+      typeDocCree.setCloture(false);
+      typeDocCree.setCode("2.3.1.1.12");
+      typeDocCree.setCodeActivite("3");
+      typeDocCree.setCodeFonction("2");
+      typeDocCree.setDureeConservation(1825);
+      typeDocCree.setLibelle("Libellé 2.3.1.1.12");
+      typeDocCree.setType(TypeCode.ARCHIVABLE_AED);
+
+      rndSupport.ajouterRnd(typeDocCree, jobClockSupport.currentCLock());
+      
+      parametersService.setVersionRndDateMaj(new Date());
+      parametersService.setVersionRndNumero("11.4");
    }
 
    /**
@@ -119,8 +156,9 @@ public class SAEEnrichmentMetadataServiceImplTest extends CommonsServices {
    }
    
    @After
-   public void end() {
+   public void end() throws Exception {
       AuthenticationContext.setAuthenticationToken(null);
+      server.resetData();
    }
    
    private void initDroits() {

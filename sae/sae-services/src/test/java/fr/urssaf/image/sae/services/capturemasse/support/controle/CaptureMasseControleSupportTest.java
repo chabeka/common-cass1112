@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -22,15 +23,21 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.bo.model.bo.VirtualReferenceFile;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedVirtualDocument;
+import fr.urssaf.image.sae.commons.service.ParametersService;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
+import fr.urssaf.image.sae.rnd.dao.support.RndSupport;
+import fr.urssaf.image.sae.rnd.modele.TypeCode;
+import fr.urssaf.image.sae.rnd.modele.TypeDocument;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireDocumentNotFoundException;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
@@ -57,6 +64,15 @@ public class CaptureMasseControleSupportTest {
    private EcdeTestTools ecdeTestTools;
 
    private EcdeTestSommaire ecdeTestSommaire;
+   
+   @Autowired
+   private CassandraServerBean server;
+   @Autowired
+   private ParametersService parametersService;
+   @Autowired 
+   private RndSupport rndSupport;
+   @Autowired
+   private JobClockSupport jobClockSupport;
 
    @Before
    public void init() {
@@ -83,10 +99,25 @@ public class CaptureMasseControleSupportTest {
             viExtrait.getIdUtilisateur(), viExtrait, roles, viExtrait
                   .getSaeDroits());
       AuthenticationContext.setAuthenticationToken(token);
+      
+      // Paramétrage du RND
+      parametersService.setVersionRndDateMaj(new Date());
+      parametersService.setVersionRndNumero("11.2");
+      
+      TypeDocument typeDocCree = new TypeDocument();
+      typeDocCree.setCloture(false);
+      typeDocCree.setCode("2.3.1.1.12");
+      typeDocCree.setCodeActivite("3");
+      typeDocCree.setCodeFonction("2");
+      typeDocCree.setDureeConservation(1825);
+      typeDocCree.setLibelle("ATTESTATION DE VIGILANCE");
+      typeDocCree.setType(TypeCode.ARCHIVABLE_AED);
+      
+      rndSupport.ajouterRnd(typeDocCree, jobClockSupport.currentCLock());
    }
 
    @After
-   public void end() {
+   public void end() throws Exception {
       try {
          ecdeTestTools.cleanEcdeTestSommaire(ecdeTestSommaire);
       } catch (IOException e) {
@@ -94,6 +125,8 @@ public class CaptureMasseControleSupportTest {
       }
 
       AuthenticationContext.setAuthenticationToken(null);
+      
+      server.resetData();
    }
 
    @Test(expected = EmptyDocumentEx.class)

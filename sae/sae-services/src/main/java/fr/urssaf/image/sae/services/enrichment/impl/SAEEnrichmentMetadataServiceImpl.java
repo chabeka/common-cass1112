@@ -16,11 +16,14 @@ import org.springframework.stereotype.Service;
 import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
 import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
 import fr.urssaf.image.sae.bo.model.bo.SAEVirtualDocument;
+import fr.urssaf.image.sae.commons.exception.ParameterNotFoundException;
+import fr.urssaf.image.sae.commons.service.ParametersService;
 import fr.urssaf.image.sae.mapping.utils.Utils;
 import fr.urssaf.image.sae.metadata.exceptions.ReferentialException;
 import fr.urssaf.image.sae.metadata.referential.services.MetadataReferenceDAO;
+import fr.urssaf.image.sae.rnd.exception.CodeRndInexistantException;
+import fr.urssaf.image.sae.rnd.service.RndService;
 import fr.urssaf.image.sae.services.enrichment.SAEEnrichmentMetadataService;
-import fr.urssaf.image.sae.services.enrichment.dao.RNDReferenceDAO;
 import fr.urssaf.image.sae.services.enrichment.dao.impl.SAEMetatadaFinderUtils;
 import fr.urssaf.image.sae.services.enrichment.xml.model.SAEArchivalMetadatas;
 import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException;
@@ -42,27 +45,16 @@ public class SAEEnrichmentMetadataServiceImpl implements
       SAEEnrichmentMetadataService {
    private static final Logger LOGGER = LoggerFactory
          .getLogger(SAEEnrichmentMetadataServiceImpl.class);
+
    @Autowired
-   @Qualifier("rndReferenceDAO")
-   private RNDReferenceDAO rndReferenceDAO;
+   private RndService rndService;
+
+   @Autowired
+   private ParametersService parametersService;
+
    @Autowired
    @Qualifier("metadataReferenceDAO")
    private MetadataReferenceDAO metadataReferenceDAO;
-
-   /**
-    * @return Le service RND reference.
-    */
-   public final RNDReferenceDAO getRndReferenceDAO() {
-      return rndReferenceDAO;
-   }
-
-   /**
-    * @param rndReferenceDAO
-    *           : Le service RND reference.
-    */
-   public final void setRndReferenceDAO(RNDReferenceDAO rndReferenceDAO) {
-      this.rndReferenceDAO = rndReferenceDAO;
-   }
 
    /**
     * @return Le service metadataReferenceDAO.
@@ -124,20 +116,22 @@ public class SAEEnrichmentMetadataServiceImpl implements
     *            {@link ReferentialRndException}
     * @throws UnknownCodeRndEx
     *            {@link UnknownCodeRndEx}
+    * @throws CodeRndInexistantException
     */
    private void authorizedCodeRnd(String rndValue)
-         throws ReferentialRndException, UnknownCodeRndEx {
-      rndReferenceDAO.getActivityCodeByRnd(rndValue);
+         throws CodeRndInexistantException {
+      rndService.getTypeDocument(rndValue);
    }
 
    private void completedMetadatas(List<SAEMetadata> metadatas, String rndCode,
          String filePath, String fileName) throws ReferentialException,
-         ReferentialRndException, UnknownCodeRndEx, ParseException {
+         CodeRndInexistantException, ParseException, ParameterNotFoundException {
       // Traces debug - entrée méthode
       String prefixeTrc = "completedMetadatas()";
       LOGGER.debug("{} - Début", prefixeTrc);
       LOGGER.debug("{} - Code RND de référence : \"{}\"", prefixeTrc, rndCode);
       // Fin des traces debug - entrée méthode
+
       SAEMetadata saeMetadata = null;
       for (SAEArchivalMetadatas metadata : SAEArchivalMetadatas.values()) {
          saeMetadata = new SAEMetadata();
@@ -150,8 +144,7 @@ public class SAEEnrichmentMetadataServiceImpl implements
             saeMetadata.setShortCode(metadataReferenceDAO.getByLongCode(
                   SAEArchivalMetadatas.CODE_ACTIVITE.getLongCode())
                   .getShortCode());
-            String codeActiviteValue = rndReferenceDAO
-                  .getActivityCodeByRnd(rndCode);
+            String codeActiviteValue = rndService.getCodeActivite(rndCode);
 
             if (StringUtils.isNotBlank(codeActiviteValue)) {
 
@@ -160,8 +153,7 @@ public class SAEEnrichmentMetadataServiceImpl implements
                LOGGER
                      .debug(
                            "{} - Enrichissement des métadonnées : ajout de la métadonnée CodeActivite  valeur : {}",
-                           prefixeTrc, rndReferenceDAO
-                                 .getActivityCodeByRnd(rndCode));
+                           prefixeTrc, rndService.getCodeActivite(rndCode));
             }
 
          } else if (metadata.getLongCode().equals(
@@ -169,20 +161,19 @@ public class SAEEnrichmentMetadataServiceImpl implements
             saeMetadata.setShortCode(metadataReferenceDAO.getByLongCode(
                   SAEArchivalMetadatas.CODE_FONCTION.getLongCode())
                   .getShortCode());
-            saeMetadata.setValue(rndReferenceDAO.getFonctionCodeByRnd(rndCode));
+            saeMetadata.setValue(rndService.getCodeFonction(rndCode));
             metadatas.add(saeMetadata);
             LOGGER
                   .debug(
                         "{} - Enrichissement des métadonnées : ajout de la métadonnée CodeFonction   valeur : {}",
-                        prefixeTrc, rndReferenceDAO
-                              .getFonctionCodeByRnd(rndCode));
+                        prefixeTrc, rndService.getCodeFonction(rndCode));
          } else if (metadata.getLongCode().equals(
                SAEArchivalMetadatas.DATE_FIN_CONSERVATION.getLongCode())) {
             LOGGER
                   .debug(
                         "{} - Durée de conservation pour le code RND {} : {} (jours)",
                         new Object[] { prefixeTrc, rndCode,
-                              rndReferenceDAO.getStorageDurationByRnd(rndCode) });
+                              rndService.getDureeConservation(rndCode) });
             if (SAEMetatadaFinderUtils.dateMetadataFinder(metadatas,
                   SAEArchivalMetadatas.DATE_DEBUT_CONSERVATION.getLongCode()) == null) {
                LOGGER
@@ -191,7 +182,7 @@ public class SAEEnrichmentMetadataServiceImpl implements
                                  + "le calcule de DateFinConservation est basé sur la date du jour + Durée de conservation.",
                            prefixeTrc);
                Date dateFinConcervation = DateUtils.addDays(new Date(),
-                     rndReferenceDAO.getStorageDurationByRnd(rndCode));
+                     rndService.getDureeConservation(rndCode));
                LOGGER.debug("{} - Date de fin de conservation calculée : {}",
                      prefixeTrc, Utils.dateToString(dateFinConcervation));
                saeMetadata.setValue(dateFinConcervation);
@@ -199,8 +190,8 @@ public class SAEEnrichmentMetadataServiceImpl implements
                Date dateFinConcervation = DateUtils.addDays(
                      SAEMetatadaFinderUtils.dateMetadataFinder(metadatas,
                            SAEArchivalMetadatas.DATE_DEBUT_CONSERVATION
-                                 .getLongCode()), rndReferenceDAO
-                           .getStorageDurationByRnd(rndCode));
+                                 .getLongCode()), rndService
+                           .getDureeConservation(rndCode));
                saeMetadata.setValue(dateFinConcervation);
                LOGGER.debug("{} - Date de fin de conservation calculée : {}",
                      prefixeTrc, Utils.dateToString(dateFinConcervation));
@@ -276,23 +267,19 @@ public class SAEEnrichmentMetadataServiceImpl implements
                         prefixeTrc, saeMetadata.getValue());
          } else if (metadata.getLongCode().equals(
                SAEArchivalMetadatas.VERSION_RND.getLongCode())) {
-            if (SAEMetatadaFinderUtils.codeMetadataFinder(metadatas,
-                  SAEArchivalMetadatas.VERSION_RND.getLongCode()) == null) {
-               LOGGER
-                     .debug(
-                           "{} - La métadonnée VersionRND n'est pas spécifiée par l'application cliente",
-                           prefixeTrc);
-               saeMetadata.setShortCode(metadataReferenceDAO.getByLongCode(
-                     SAEArchivalMetadatas.VERSION_RND.getLongCode())
-                     .getShortCode());
-               saeMetadata.setValue(rndReferenceDAO.getTypeDocument(rndCode)
-                     .getVersionRnd());
-               metadatas.add(saeMetadata);
-               LOGGER
-                     .debug(
-                           "{} - Enrichissement des métadonnées : ajout de la métadonnée VersionRND valeur : {}",
-                           prefixeTrc, saeMetadata.getValue());
-            }
+
+            saeMetadata.setShortCode(metadataReferenceDAO.getByLongCode(
+                  SAEArchivalMetadatas.VERSION_RND.getLongCode())
+                  .getShortCode());
+
+            saeMetadata.setValue(parametersService.getVersionRndNumero());
+
+            metadatas.add(saeMetadata);
+            LOGGER
+                  .debug(
+                        "{} - Enrichissement des métadonnées : ajout de la métadonnée VersionRND valeur : {}",
+                        prefixeTrc, saeMetadata.getValue());
+
          } else if (metadata.getLongCode().equals(
                SAEArchivalMetadatas.NOM_FICHIER.getLongCode())) {
             if (SAEMetatadaFinderUtils.codeMetadataFinder(metadatas,
@@ -318,8 +305,8 @@ public class SAEEnrichmentMetadataServiceImpl implements
                            prefixeTrc, name);
             }
          }
-
       }
+
       // Traces debug - sortie méthode
       LOGGER.debug("{} - Sortie", prefixeTrc);
       // Fin des traces debug - sortie méthode
@@ -363,9 +350,7 @@ public class SAEEnrichmentMetadataServiceImpl implements
             LOGGER.debug("{} - Métadonnées après enrichissement : {}",
                   metadatas, metadatas.toString());
          }
-      } catch (ReferentialRndException e) {
-         throw new ReferentialRndException(e.getMessage(), e);
-      } catch (UnknownCodeRndEx e) {
+      } catch (CodeRndInexistantException e) {
          LOGGER.debug(
                "{} - Le code RND {} ne fait pas partie des codes autorisés",
                metadatas, rndValue);
@@ -373,6 +358,8 @@ public class SAEEnrichmentMetadataServiceImpl implements
       } catch (ParseException e) {
          throw new SAEEnrichmentEx(e.getMessage(), e);
       } catch (ReferentialException e) {
+         throw new SAEEnrichmentEx(e.getMessage(), e);
+      } catch (ParameterNotFoundException e) {
          throw new SAEEnrichmentEx(e.getMessage(), e);
       }
       // Traces debug - sortie méthode

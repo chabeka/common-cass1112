@@ -41,12 +41,18 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
+import fr.urssaf.image.sae.commons.service.ParametersService;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestDocument;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
+import fr.urssaf.image.sae.rnd.dao.support.RndSupport;
+import fr.urssaf.image.sae.rnd.modele.TypeCode;
+import fr.urssaf.image.sae.rnd.modele.TypeDocument;
 import fr.urssaf.image.sae.services.SAEServiceTestProvider;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureBadEcdeUrlEx;
@@ -64,8 +70,6 @@ import fr.urssaf.image.sae.services.exception.capture.UnknownHashCodeEx;
 import fr.urssaf.image.sae.services.exception.capture.UnknownMetadataEx;
 import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException;
 import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
-import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
-import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
 import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
@@ -87,12 +91,21 @@ public class SAECaptureServiceTest {
    private SAEServiceTestProvider testProvider;
 
    private UUID uuid;
-   
+
    private static String path;
 
    private static File ecdeRepertory;
 
    private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+
+   @Autowired
+   private CassandraServerBean server;
+   @Autowired
+   private ParametersService parametersService;
+   @Autowired
+   private RndSupport rndSupport;
+   @Autowired
+   private JobClockSupport jobClockSupport;
 
    @BeforeClass
    public static void beforeClass() throws IOException {
@@ -101,25 +114,28 @@ public class SAECaptureServiceTest {
 
       ecdeRepertory = new File(FilenameUtils.concat(SystemUtils
             .getJavaIoTmpDir().getAbsolutePath(), "ecde"));
-      path =new ClassPathResource("doc/attestation_consultation.pdf").getFile().getAbsolutePath();
+      path = new ClassPathResource("doc/attestation_consultation.pdf")
+            .getFile().getAbsolutePath();
       FileUtils.forceMkdir(ecdeRepertory);
       FileUtils.cleanDirectory(ecdeRepertory);
+
    }
 
    @AfterClass
    public static void afterClass() throws IOException {
 
       FileUtils.cleanDirectory(ecdeRepertory);
+
    }
 
    @SuppressWarnings("PMD.NullAssignment")
    @Before
-   public void before() {
+   public void before() throws Exception {
 
       // initialisation de l'uuid de l'archive
       uuid = null;
-      
-   // initialisation du contexte de sécurité
+
+      // initialisation du contexte de sécurité
       VIContenuExtrait viExtrait = new VIContenuExtrait();
       viExtrait.setCodeAppli("TESTS_UNITAIRES");
       viExtrait.setIdUtilisateur("UTILISATEUR TEST");
@@ -141,16 +157,35 @@ public class SAECaptureServiceTest {
             viExtrait.getIdUtilisateur(), viExtrait, roles, viExtrait
                   .getSaeDroits());
       AuthenticationContext.setAuthenticationToken(token);
+
+      // Paramétrage du RND
+
+      server.resetData();
+      parametersService.setVersionRndDateMaj(new Date());
+      parametersService.setVersionRndNumero("11.2");
+
+      TypeDocument typeDocCree = new TypeDocument();
+      typeDocCree.setCloture(false);
+      typeDocCree.setCode("2.3.1.1.12");
+      typeDocCree.setCodeActivite("3");
+      typeDocCree.setCodeFonction("2");
+      typeDocCree.setDureeConservation(1825);
+      typeDocCree.setLibelle("ATTESTATION DE VIGILANCE");
+      typeDocCree.setType(TypeCode.ARCHIVABLE_AED);
+
+      rndSupport.ajouterRnd(typeDocCree, jobClockSupport.currentCLock());
    }
 
    @After
-   public void after() throws ConnectionServiceEx, DeletionServiceEx {
+   public void after() throws Exception {
       // suppression de l'insertion
       if (uuid != null) {
          testProvider.deleteDocument(uuid);
       }
-      
+
       AuthenticationContext.setAuthenticationToken(null);
+
+      server.resetData();
    }
 
    @Test
@@ -396,7 +431,8 @@ public class SAECaptureServiceTest {
          InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
          DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
-         UnknownHashCodeEx, IOException, EmptyFileNameEx, MetadataValueNotInDictionaryEx {
+         UnknownHashCodeEx, IOException, EmptyFileNameEx,
+         MetadataValueNotInDictionaryEx {
 
       File srcFile = new File(
             "src/test/resources/doc/attestation_consultation.pdf");
@@ -417,7 +453,8 @@ public class SAECaptureServiceTest {
          InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
          DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
-         UnknownHashCodeEx, IOException, EmptyFileNameEx, MetadataValueNotInDictionaryEx {
+         UnknownHashCodeEx, IOException, EmptyFileNameEx,
+         MetadataValueNotInDictionaryEx {
 
       File srcFile = new File(
             "src/test/resources/doc/attestation_consultation.pdf");
@@ -438,7 +475,8 @@ public class SAECaptureServiceTest {
          InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
          DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
-         UnknownHashCodeEx, IOException, EmptyFileNameEx, MetadataValueNotInDictionaryEx {
+         UnknownHashCodeEx, IOException, EmptyFileNameEx,
+         MetadataValueNotInDictionaryEx {
 
       File srcFile = new File(
             "src/test/resources/doc/attestation_consultation.pdf");
@@ -460,7 +498,8 @@ public class SAECaptureServiceTest {
          InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
          DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
-         UnknownHashCodeEx, IOException, EmptyFileNameEx, MetadataValueNotInDictionaryEx {
+         UnknownHashCodeEx, IOException, EmptyFileNameEx,
+         MetadataValueNotInDictionaryEx {
 
       List<UntypedMetadata> metadatas = getListMetadata();
 
@@ -478,7 +517,8 @@ public class SAECaptureServiceTest {
          InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
          DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
-         UnknownHashCodeEx, IOException, EmptyFileNameEx, MetadataValueNotInDictionaryEx {
+         UnknownHashCodeEx, IOException, EmptyFileNameEx,
+         MetadataValueNotInDictionaryEx {
 
       List<UntypedMetadata> metadatas = getListMetadata();
 
@@ -496,7 +536,8 @@ public class SAECaptureServiceTest {
          InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
          DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
-         UnknownHashCodeEx, IOException, EmptyFileNameEx, MetadataValueNotInDictionaryEx {
+         UnknownHashCodeEx, IOException, EmptyFileNameEx,
+         MetadataValueNotInDictionaryEx {
 
       List<UntypedMetadata> metadatas = getListMetadata();
 
@@ -507,11 +548,12 @@ public class SAECaptureServiceTest {
       service.captureBinaire(metadatas, content, fileNameEmpty);
 
    }
-   
- /**
-  * Test permetant de vérifier que la capture fonctionne quand on lui passe un emplacement de fichier
-  */
-   
+
+   /**
+    * Test permetant de vérifier que la capture fonctionne quand on lui passe un
+    * emplacement de fichier
+    */
+
    @Test
    public void captureFileSuccess() throws SAECaptureServiceEx,
          ReferentialRndException, UnknownCodeRndEx, RequiredStorageMetadataEx,
@@ -521,8 +563,7 @@ public class SAECaptureServiceTest {
          UnknownHashCodeEx, IOException, CaptureBadEcdeUrlEx,
          CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx {
 
-      File srcFile = new File(
-            path);
+      File srcFile = new File(path);
 
       List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
 
@@ -564,21 +605,21 @@ public class SAECaptureServiceTest {
                   .loadDocumentFile(doc)));
    }
 
-   
    /**
     * Test permetant de tester la levée d'exception si le fichier est inexistant
-    * @throws UnknownHashCodeEx 
-    * @throws RequiredArchivableMetadataEx 
-    * @throws EmptyDocumentEx 
-    * @throws NotArchivableMetadataEx 
-    * @throws NotSpecifiableMetadataEx 
-    * @throws DuplicatedMetadataEx 
-    * @throws UnknownMetadataEx 
-    * @throws InvalidValueTypeAndFormatMetadataEx 
-    * @throws RequiredStorageMetadataEx 
-    * @throws FileNotFoundException 
-    * @throws UnknownCodeRndEx 
-    * @throws ReferentialRndException 
+    * 
+    * @throws UnknownHashCodeEx
+    * @throws RequiredArchivableMetadataEx
+    * @throws EmptyDocumentEx
+    * @throws NotArchivableMetadataEx
+    * @throws NotSpecifiableMetadataEx
+    * @throws DuplicatedMetadataEx
+    * @throws UnknownMetadataEx
+    * @throws InvalidValueTypeAndFormatMetadataEx
+    * @throws RequiredStorageMetadataEx
+    * @throws FileNotFoundException
+    * @throws UnknownCodeRndEx
+    * @throws ReferentialRndException
     * @throws SAECaptureServiceEx
     * @throws MetadataValueNotInDictionaryEx
     */
@@ -597,5 +638,5 @@ public class SAECaptureServiceTest {
       LOG.debug("document archivé alors que le fichier est inexistant:" + uuid);
       Assert.fail();
    }
-   
+
 }

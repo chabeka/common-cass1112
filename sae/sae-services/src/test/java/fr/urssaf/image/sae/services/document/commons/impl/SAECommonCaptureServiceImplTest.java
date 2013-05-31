@@ -3,6 +3,7 @@ package fr.urssaf.image.sae.services.document.commons.impl;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -12,12 +13,18 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
+import fr.urssaf.image.sae.commons.service.ParametersService;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.mapping.exception.InvalidSAETypeException;
 import fr.urssaf.image.sae.mapping.exception.MappingFromReferentialException;
+import fr.urssaf.image.sae.rnd.dao.support.RndSupport;
+import fr.urssaf.image.sae.rnd.modele.TypeCode;
+import fr.urssaf.image.sae.rnd.modele.TypeDocument;
 import fr.urssaf.image.sae.services.CommonsServices;
 import fr.urssaf.image.sae.services.document.commons.SAECommonCaptureService;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
@@ -50,6 +57,15 @@ public class SAECommonCaptureServiceImplTest extends CommonsServices {
    @Autowired
    @Qualifier("saeCommonCaptureService")
    SAECommonCaptureService saeCommonCaptureService;
+   
+   @Autowired
+   private CassandraServerBean server;
+   @Autowired
+   private ParametersService parametersService;
+   @Autowired 
+   private RndSupport rndSupport;
+   @Autowired
+   private JobClockSupport jobClockSupport;
 
    /**
     * @return Le service saeCommonCaptureService
@@ -91,11 +107,29 @@ public class SAECommonCaptureServiceImplTest extends CommonsServices {
             viExtrait.getIdUtilisateur(), viExtrait, roles, viExtrait
                   .getSaeDroits());
       AuthenticationContext.setAuthenticationToken(token);
+      
+      
+      // Paramétrage du RND
+      parametersService.setVersionRndDateMaj(new Date());
+      parametersService.setVersionRndNumero("11.4");
+      
+      TypeDocument typeDocCree = new TypeDocument();
+      typeDocCree.setCloture(false);
+      typeDocCree.setCode("2.3.1.1.12");
+      typeDocCree.setCodeActivite("3");
+      typeDocCree.setCodeFonction("2");
+      typeDocCree.setDureeConservation(1825);
+      typeDocCree.setLibelle("Libellé 2.3.1.1.12");
+      typeDocCree.setType(TypeCode.ARCHIVABLE_AED);
+
+      rndSupport.ajouterRnd(typeDocCree, jobClockSupport.currentCLock());
+      
    }
 
    @After
-   public void end() {
+   public void end() throws Exception {
       AuthenticationContext.setAuthenticationToken(null);
+      server.resetData();
    }
 
    /**

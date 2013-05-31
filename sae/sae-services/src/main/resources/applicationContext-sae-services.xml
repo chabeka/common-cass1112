@@ -34,7 +34,8 @@
 
    <import resource="applicationContext-sae-droit.xml" />
    <import resource="applicationContext-sae-services-security.xml" />
-   
+
    <import resource="applicationContext-sae-trace.xml" />
+   <import resource="applicationContext-sae-rnd.xml" />
 
 </beans>

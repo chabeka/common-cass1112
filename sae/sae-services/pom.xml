@@ -140,6 +140,13 @@
          <version>13.4.10.5-SNAPSHOT</version>
       </dependency>
 
+      <!-- SAE-RND -->
+      <dependency>
+         <groupId>fr.urssaf.image.sae</groupId>
+         <artifactId>sae-rnd</artifactId>
+         <version>13.4.10.5-SNAPSHOT</version>
+      </dependency>
+
       <!-- SPRING BATCH CASSANDRA -->
       <dependency>
          <groupId>fr.urssaf.image.commons</groupId>
