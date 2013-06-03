@@ -49,7 +49,9 @@ public class TraceContextFactoryTest {
                         + FilenameUtils.separatorsToUnix(cassandraFile
                               .getAbsolutePath()),
                   "sae.ecde.cheminFichierConfig=src/test/resources/config/ecdesources.xml",
-                  "sae.metadata.cache=6000");
+                  "sae.metadata.cache=6000",
+                  "sae.rnd.url=http://cer69imageint4.cer69.recouv:9007/services/duplication.php?WSDL",
+                  "sae.rnd.cache=6000");
 
       FileUtils.writeLines(saeResourceFile, lines);
 
