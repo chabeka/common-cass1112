@@ -160,6 +160,12 @@
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-services</artifactId>
          <version>13.4.10.5-SNAPSHOT</version>
+         <exclusions>
+            <exclusion>
+               <groupId>axis</groupId>
+               <artifactId>axis-wsdl4j</artifactId>
+            </exclusion>
+         </exclusions>
       </dependency>
 
       <!--  AXIS 2 -->
