@@ -17,8 +17,12 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.commons.exception.ParameterNotFoundException;
 import fr.urssaf.image.sae.commons.service.ParametersService;
+import fr.urssaf.image.sae.rnd.dao.support.RndSupport;
+import fr.urssaf.image.sae.rnd.modele.TypeCode;
+import fr.urssaf.image.sae.rnd.modele.TypeDocument;
 import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.EmptyDocumentEx;
@@ -89,6 +93,13 @@ public class TraitementServiceDatasJournalisationTest {
 
    @Autowired
    private TimeUUIDEtTimestampSupport timeUUIDSupport;
+   
+   @Autowired
+   private ParametersService parametersService;
+   @Autowired 
+   private RndSupport rndSupport;
+   @Autowired
+   private JobClockSupport jobClockSupport;
 
    @After
    public void after() throws Exception {
@@ -203,6 +214,21 @@ public class TraitementServiceDatasJournalisationTest {
          RequiredArchivableMetadataEx, UnknownHashCodeEx,
          ParameterNotFoundException {
 
+      // Paramétrage du RND
+      parametersService.setVersionRndDateMaj(new Date());
+      parametersService.setVersionRndNumero("11.2");
+      
+      TypeDocument typeDocCree = new TypeDocument();
+      typeDocCree.setCloture(false);
+      typeDocCree.setCode("7.7.8.8.1");
+      typeDocCree.setCodeActivite("7");
+      typeDocCree.setCodeFonction("7");
+      typeDocCree.setDureeConservation(1825);
+      typeDocCree.setLibelle("ATTESTATION DE VIGILANCE");
+      typeDocCree.setType(TypeCode.ARCHIVABLE_AED);
+      
+      rndSupport.ajouterRnd(typeDocCree, jobClockSupport.currentCLock());
+      
       create4Traces();
 
       paramService.setJournalisationEvtDate(DateUtils.addDays(DATE, -3));
