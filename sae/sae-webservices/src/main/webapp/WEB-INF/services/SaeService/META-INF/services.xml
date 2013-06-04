@@ -6,6 +6,7 @@
       l'ajout de nouvelles opérations
    -->
 <serviceGroup>
+    <!--
     <service name="SpringInit" class="fr.urssaf.image.sae.webservices.component.Axis2SpringContext">
         <description>This web service initializes Spring.</description>
         <parameter name="ServiceClass">fr.urssaf.image.sae.webservices.component.Axis2SpringContext
@@ -16,6 +17,7 @@
             <messageReceiver class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver"/>
         </operation>
     </service>
+    -->
     <service name="SaeService">
         <messageReceivers>
             <messageReceiver mep="http://www.w3.org/ns/wsdl/in-out" class="fr.urssaf.image.sae.webservices.skeleton.SaeServiceMessageReceiverInOut"/>
