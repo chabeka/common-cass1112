@@ -21,7 +21,6 @@
       <maven-source-plugin.version>2.1.2</maven-source-plugin.version>
       <maven-resources-plugin.version>2.5</maven-resources-plugin.version>
       <maven-javadoc-plugin.version>2.8.1</maven-javadoc-plugin.version>
-      <maven-release-plugin.version>2.2.1</maven-release-plugin.version>
       
       <!-- Version de la librarie sae-client-vi -->
       <sae-client-vi.version>1.0.0</sae-client-vi.version>
@@ -106,7 +105,75 @@
    </profiles>
 
    <build>
+      
       <plugins>
+      
+         <!--
+            On spécifie la version du JDK et l'encodage de caractères
+            des sources
+         -->
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>${maven-compiler-plugin.version}</version>
+            <configuration>
+               <source>1.6</source>
+               <target>1.6</target>
+               <encoding>${project.build.sourceEncoding}</encoding>
+            </configuration>
+         </plugin>
+
+         <!--
+            Dans le cas d'un packaging JAR, on demande que le JAR des
+            sources soit également généré
+         -->
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>${maven-source-plugin.version}</version>
+            <executions>
+               <execution>
+                  <id>bind-sources</id>
+                  <goals>
+                     <goal>jar</goal>
+                  </goals>
+               </execution>
+            </executions>
+         </plugin>
+
+         <!--
+            On spécifie l'encodage de caractères des ressources
+         -->
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-resources-plugin</artifactId>
+            <version>${maven-resources-plugin.version}</version>
+            <configuration>
+               <encoding>${project.build.sourceEncoding}</encoding>
+            </configuration>
+         </plugin>
+
+         <!--
+         On demande la génération de la Javadoc
+         -->
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>${maven-javadoc-plugin.version}</version>
+            <executions>
+               <execution>
+                  <id>attach-javadocs</id>
+                  <goals>
+                     <goal>jar</goal>
+                  </goals>
+               </execution>
+            </executions>
+            <configuration>
+               <quiet>true</quiet>
+            </configuration>
+         </plugin>
+      
+         <!-- Skip des TU -->
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
@@ -115,6 +182,7 @@
                <skipTests>true</skipTests>
             </configuration>
          </plugin>
+         
       </plugins>
    </build>
 
