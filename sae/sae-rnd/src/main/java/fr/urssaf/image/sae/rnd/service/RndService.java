@@ -6,7 +6,7 @@ import fr.urssaf.image.sae.rnd.modele.TypeDocument;
 /**
  * Service de récupération des propriété d'un type de document
  * 
- *
+ * 
  */
 public interface RndService {
 
@@ -41,8 +41,19 @@ public interface RndService {
     * @throws CodeRndInexistantException
     *            Exception levée si le code RND n'existe pas
     */
-   int getDureeConservation(String codeRnd) throws CodeRndInexistantException; 
-   
+   int getDureeConservation(String codeRnd) throws CodeRndInexistantException;
+
+   /**
+    * Vérifie si un code est clôturé ou non
+    * 
+    * @param codeRnd
+    *           le code RND a tester
+    * @return true si le code est clôturé
+    * @throws CodeRndInexistantException
+    *            Exception levée si le code RND n'existe pas
+    */
+   boolean isCloture(String codeRnd) throws CodeRndInexistantException;
+
    /**
     * Récupère le type de document associé à un RND
     * 
@@ -52,6 +63,7 @@ public interface RndService {
     * @throws CodeRndInexistantException
     *            Exception levée si le code RND n'existe pas
     */
-   TypeDocument getTypeDocument(String codeRnd) throws CodeRndInexistantException; 
-   
+   TypeDocument getTypeDocument(String codeRnd)
+         throws CodeRndInexistantException;
+
 }

@@ -120,7 +120,10 @@ public class SAEEnrichmentMetadataServiceImpl implements
     */
    private void authorizedCodeRnd(String rndValue)
          throws CodeRndInexistantException {
-      rndService.getTypeDocument(rndValue);
+      
+      if (rndService.isCloture(rndValue)) {
+         throw new CodeRndInexistantException("Le code RND " + rndValue + " est clôturé");
+      }
    }
 
    private void completedMetadatas(List<SAEMetadata> metadatas, String rndCode,

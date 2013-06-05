@@ -101,4 +101,15 @@ public class RndServiceImpl implements RndService {
       }
    }
 
+   @Override
+   public boolean isCloture(String codeRnd) throws CodeRndInexistantException {
+      try {
+         TypeDocument typeDoc = cacheRnd.getUnchecked(codeRnd);
+         return typeDoc.isCloture();
+      } catch (InvalidCacheLoadException e) {
+         throw new CodeRndInexistantException("Le code RND " + codeRnd
+               + " n'existe pas", e.getCause());
+      }
+   }
+
 }
