@@ -8,10 +8,16 @@
    
    
 
-   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+   <appender name="consoleInfo" class="ch.qos.logback.core.ConsoleAppender">
+      
+      <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+         <level>INFO</level>
+      </filter>
+      
       <encoder>
-         <pattern>${PATTERN}</pattern>
+         <pattern>%msg%n</pattern>
       </encoder>
+      
    </appender>
 
 
@@ -112,6 +118,12 @@
    </logger>
    -->
    
+   
+   <!-- Pour que les traces INFO du SAE apparaissent dans la console -->
+   <logger name="fr.urssaf.image.sae.rnd" level="INFO" additivity="false">
+      <appender-ref ref="log-file" />
+      <appender-ref ref="consoleInfo" />
+   </logger>
 
    <!-- Niveau general pour l'application -->
    <root level="INFO">
