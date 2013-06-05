@@ -1,8 +1,8 @@
 package fr.urssaf.image.sae.rnd.service.impl;
 
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.cassandra.cli.CliParser.newColumnFamily_return;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -45,8 +45,7 @@ public class RndServiceImpl implements RndService {
             TimeUnit.MINUTES).build(new CacheLoader<String, TypeDocument>() {
 
          @Override
-         public TypeDocument load(String codeRnd)
-               throws CodeRndInexistantException {
+         public TypeDocument load(String codeRnd) {
             return rndSupport.getRnd(codeRnd);
          }
 
@@ -60,7 +59,8 @@ public class RndServiceImpl implements RndService {
          TypeDocument typeDoc = cacheRnd.getUnchecked(codeRnd);
          return typeDoc.getCodeActivite();
       } catch (InvalidCacheLoadException e) {
-         throw new CodeRndInexistantException("Le code RND "+codeRnd+" n'existe pas", e.getCause());
+         throw new CodeRndInexistantException("Le code RND " + codeRnd
+               + " n'existe pas", e.getCause());
       }
 
    }
@@ -72,9 +72,10 @@ public class RndServiceImpl implements RndService {
          TypeDocument typeDoc = cacheRnd.getUnchecked(codeRnd);
          return typeDoc.getCodeFonction();
       } catch (InvalidCacheLoadException e) {
-         throw new CodeRndInexistantException("Le code RND "+codeRnd+" n'existe pas", e.getCause());
+         throw new CodeRndInexistantException("Le code RND " + codeRnd
+               + " n'existe pas", e.getCause());
       }
-    }
+   }
 
    @Override
    public final int getDureeConservation(String codeRnd)
@@ -83,7 +84,8 @@ public class RndServiceImpl implements RndService {
          TypeDocument typeDoc = cacheRnd.getUnchecked(codeRnd);
          return typeDoc.getDureeConservation();
       } catch (InvalidCacheLoadException e) {
-         throw new CodeRndInexistantException("Le code RND "+codeRnd+" n'existe pas", e.getCause());
+         throw new CodeRndInexistantException("Le code RND " + codeRnd
+               + " n'existe pas", e.getCause());
       }
 
    }
@@ -92,11 +94,10 @@ public class RndServiceImpl implements RndService {
    public final TypeDocument getTypeDocument(String codeRnd)
          throws CodeRndInexistantException {
       try {
-         TypeDocument typeDoc = new TypeDocument();
-         typeDoc = cacheRnd.getUnchecked(codeRnd);
-         return typeDoc;
+         return cacheRnd.getUnchecked(codeRnd);
       } catch (InvalidCacheLoadException e) {
-         throw new CodeRndInexistantException("Le code RND "+codeRnd+" n'existe pas", e.getCause());
+         throw new CodeRndInexistantException("Le code RND " + codeRnd
+               + " n'existe pas", e.getCause());
       }
    }
 

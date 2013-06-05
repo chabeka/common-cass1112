@@ -3,6 +3,7 @@ package fr.urssaf.image.sae.rnd.dao.support;
 import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,11 +65,16 @@ public class RndSupport {
          rndDao.ecritCodeActivite(Integer.valueOf(typeDoc.getCodeActivite()),
                updater, clock);
       }
-      // Le code fonction peut être null pour les types de document temporaire
-      if (typeDoc.getCodeFonction() != null) {
-         rndDao.ecritCodeFonction(Integer.valueOf(typeDoc.getCodeFonction()),
-               updater, clock);
+      // Si le code fonction est null, alors il s'agit d'un code temporaire et on le met à 0
+      String codeFonction = "0";
+      if (typeDoc.getCodeFonction() == null
+            && typeDoc.getType().equals(TypeCode.TEMPORAIRE)) {
+         codeFonction = "0";
+      } else {
+         codeFonction = typeDoc.getCodeFonction();         
       }
+      rndDao.ecritCodeFonction(Integer.valueOf(codeFonction), updater, clock);
+
       rndDao.ecritDureeConservation(Integer.valueOf(typeDoc
             .getDureeConservation()), updater, clock);
       rndDao.ecritLibelle(typeDoc.getLibelle(), updater, clock);
@@ -114,10 +120,16 @@ public class RndSupport {
 
          typeDoc.setCode(result.getKey());
          typeDoc.setCloture(result.getBoolean(rndDao.RND_CLOTURE));
-         typeDoc.setCodeActivite(result.getInteger(rndDao.RND_CODE_ACTIVITE)
-               .toString());
-         typeDoc.setCodeFonction(result.getInteger(rndDao.RND_CODE_FONCTION)
-               .toString());
+
+         // Code activité et code fonction peuvent être nul (ex code temporaire)
+         if (result.getInteger(rndDao.RND_CODE_ACTIVITE) != null) {
+            typeDoc.setCodeActivite(result.getInteger(rndDao.RND_CODE_ACTIVITE)
+                  .toString());
+         }
+         if (result.getInteger(rndDao.RND_CODE_FONCTION) != null) {
+            typeDoc.setCodeFonction(result.getInteger(rndDao.RND_CODE_FONCTION)
+                  .toString());
+         }
          typeDoc.setDureeConservation(result
                .getInteger(rndDao.RND_DUREE_CONSERVATION));
          typeDoc.setLibelle(result.getString(rndDao.RND_LIBELLE));
