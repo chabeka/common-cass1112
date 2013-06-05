@@ -328,6 +328,42 @@ public class CaptureUnitaireTestService {
       return resultat;
 
    }
+   
+   
+   /**
+    * Test d'appel à l'opération "archivageUnitaire" du service web SaeService.<br>
+    * On s'attend à récupérer une réponse sans erreur
+    * 
+    * @param urlServiceWeb
+    *           l'URL du service web SaeService
+    * @param formulaire
+    *           le formulaire
+    * @return les informations résultant de la capture unitaire
+    */
+   public final CaptureUnitaireResultat appelWsOpCaptureUnitaireReponseAttendue(
+         String urlServiceWeb, CaptureUnitaireFormulaire formulaire, ViFormulaire viParams) {
+
+      // Création de l'objet qui implémente l'interface WsTestListener
+      // et qui s'attend à recevoir une réponse
+      WsTestListener testAvecReponse = new WsTestListenerImplReponseAttendue();
+
+      // Appel de la méthode "générique" de test
+      CaptureUnitaireResultat resultat = appelWsOpCaptureUnitaire(
+            urlServiceWeb, ViStyle.VI_OK, viParams, formulaire, testAvecReponse);
+
+      // On considère que le test est en succès si aucune erreur renvoyé
+      ResultatTest resultatTest = formulaire.getResultats();
+      if ((resultat != null)
+            && (TestStatusEnum.NonLance.equals(resultatTest.getStatus()))) {
+         resultatTest.setStatus(TestStatusEnum.Succes);
+      } else {
+         resultatTest.setStatus(TestStatusEnum.Echec);
+      }
+
+      // Renvoie le résultat
+      return resultat;
+
+   }
 
    private DataHandler buildDataHandler(String urlEcde) {
 

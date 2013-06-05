@@ -572,6 +572,16 @@
          </CasTest>
          
          <CasTest>
+            <id>219</id>
+            <code>219-CaptureMasseID-OK-Tor-1000</code>
+            <description>
+               On vérifie que la capture de masse fonctionne correctement lorsque l’on intégre un fichier sommaire.xml contenant la balise suivante : som:restitutionUuids
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 219-CaptureMasseID-OK-Tor-1000" AND Siren: 0878871891</luceneExemple>
+         </CasTest>
+         
+         <CasTest>
             <id>220</id>
             <code>220-CaptureMasse-Avec-Hash-OK-Tor-10</code>
             <description>
@@ -1252,14 +1262,31 @@
          
          <CasTest>
             <id>1101</id>
-            <code>1101-Droits-Conformite-Recherche-Attestation</code>
+            <code>1101-Droits-Conformite-Archivage-Unitaire-ATT-VIGI</code>
             <description>
-               Non-régression pour "Attestations de vigilance" sur la recherche 
+               Test qui doit permettre de valider que la fonctionnalité d’archivage unitaire est autorisée sur un PRMD précis 
             </description>
             <implemente>true</implemente>
-            <luceneExemple>CodeRND:2.3.1.1.12 AND Siren:3090000001 AND DateCreation:20070401</luceneExemple>
+            <luceneExemple>Denomination:"Test 1101-Droits-Conformite-Archivage-Unitaire-ATT-VIGI"</luceneExemple>
          </CasTest>
-         
+         <CasTest>
+            <id>1102</id>
+            <code>1102-Droits-Conformite-Archivage-Masse -ATT-VIGI</code>
+            <description>
+               Permet de valider qu’une fonctionnalité d’archivage de masse est autorisée sur un PRMD précis. 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1102-Droits-Conformite-Archivage-Masse-ATT-VIGI"</luceneExemple>
+         </CasTest>         
+         <CasTest>
+            <id>1103</id>
+            <code>1103-Droits-Conformite-Archivage-ATT-VIGI</code>
+            <description>
+               Permet de valider que les fonctionnalités d’archivage unitaire et archivage de masse sont autorisées sur un PRMD précis.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1103-Droits-Conformite-Archivage-ATT-VIGI"</luceneExemple>
+         </CasTest>         
          <CasTest>
             <id>1104</id>
             <code>1104-Droits-Conformite-Recherche-ATT-VIGI</code>
