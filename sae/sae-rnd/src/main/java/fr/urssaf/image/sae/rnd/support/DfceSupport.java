@@ -19,29 +19,45 @@ public class DfceSupport {
 
    @Autowired
    private ServiceProviderSupportRnd serviceProviderSupport;
-   
+
    @Autowired
    private LifeCycleRuleSupport lifeCycleRuleSupport;
-   
+
    /**
     * Met à jour toute la CF LifeCycleRule de DFCE
-    * @param listeTypeDocs Liste des types de document à mettre à jour
-    * @throws DfceRuntimeException Exception levée lors de la mise à jour de la bdd DFCE 
+    * 
+    * @param listeTypeDocs
+    *           Liste des types de document à mettre à jour
+    * @throws DfceRuntimeException
+    *            Exception levée lors de la mise à jour de la bdd DFCE
     */
-   public final void updateLifeCycleRule(List<TypeDocument> listeTypeDocs) throws DfceRuntimeException {
-      
+   public final void updateLifeCycleRule(List<TypeDocument> listeTypeDocs)
+         throws DfceRuntimeException {
+
       try {
          serviceProviderSupport.connect();
-      
-         for (TypeDocument typeDocument : listeTypeDocs) {
-            lifeCycleRuleSupport.updateLifeCycleRule(typeDocument, serviceProviderSupport);
+      } catch (Exception e) {
+         throw new DfceRuntimeException(e);
+      }
+
+      for (TypeDocument typeDocument : listeTypeDocs) {
+         try {
+            lifeCycleRuleSupport.updateLifeCycleRule(typeDocument,
+                  serviceProviderSupport);
+         } catch (Exception e) {
+            throw new DfceRuntimeException(String.format(
+                  "Erreur sur la mise à jour du type de document %s dans DFCE",
+                  typeDocument.getCode()), e);
          }
-      
+
+      }
+
+      try {
          serviceProviderSupport.disconnect();
       } catch (Exception e) {
          throw new DfceRuntimeException(e);
       }
-      
+
    }
-   
+
 }

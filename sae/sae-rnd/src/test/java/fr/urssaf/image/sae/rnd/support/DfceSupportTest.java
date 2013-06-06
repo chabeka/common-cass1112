@@ -124,6 +124,43 @@ public class DfceSupportTest {
 
    }
 
+   /**
+    * JIRA CRTL-113<br>
+    * Ajout d'un log dans le DfceSupport pour savoir sur quel RND l'exception
+    * DFCE s'est produite
+    */
+   @Test
+   public void testUpdateLifeCycleRuleCodeExistantDureeDifferenteAvecExceptionDfce()
+         throws DfceRuntimeException, ObjectAlreadyExistsException {
+
+      initComposantsCodeExistantDureeDifferenteEtException();
+
+      List<TypeDocument> listeTypeDocs = new ArrayList<TypeDocument>();
+      TypeDocument typeDoc1 = new TypeDocument();
+      typeDoc1.setCloture(false);
+      typeDoc1.setCode("1.1.1.1.1");
+      typeDoc1.setCodeActivite("1");
+      typeDoc1.setCodeFonction("1");
+      typeDoc1.setDureeConservation(3000);
+      typeDoc1.setLibelle("libelle");
+      typeDoc1.setType(TypeCode.ARCHIVABLE_AED);
+
+      listeTypeDocs.add(typeDoc1);
+
+      try {
+         dfceSupport.updateLifeCycleRule(listeTypeDocs);
+         Assert.fail("Une exception DfceRuntimeException aurait dû être levée");
+
+      } catch (DfceRuntimeException ex) {
+         Assert
+               .assertEquals(
+                     "Le message de l'exception levée n'est pas celui attendu",
+                     "Erreur sur la mise à jour du type de document 1.1.1.1.1 dans DFCE",
+                     ex.getMessage());
+      }
+
+   }
+
    @Test
    public void testUpdateLifeCycleRuleCodeExistantDureeDifferente()
          throws DfceRuntimeException, ObjectAlreadyExistsException {
@@ -172,6 +209,13 @@ public class DfceSupportTest {
       initDfce();
       initLifeCycleRule(5000);
       initStorageAdministrationUpdate();
+      replay();
+   }
+
+   private void initComposantsCodeExistantDureeDifferenteEtException() {
+      initDfce();
+      initLifeCycleRule(5000);
+      initStorageAdministrationUpdateAvecExceptionJiraCRTL113();
       replay();
    }
 
@@ -225,6 +269,25 @@ public class DfceSupportTest {
                   .anyObject(String.class), EasyMock.anyInt(), EasyMock
                   .anyObject(LifeCycleLengthUnit.class))).andReturn(
             lifeCycleRule);
+   }
+
+   private void initStorageAdministrationUpdateAvecExceptionJiraCRTL113() {
+      // Réglage storageAdministrationService
+      // avec levée d'une exception
+      EasyMock.expect(
+            storageAdministrationService.getLifeCycleRule(EasyMock
+                  .anyObject(String.class))).andReturn(lifeCycleRule)
+            .anyTimes();
+
+      EasyMock
+            .expect(
+                  storageAdministrationService.updateLifeCycleRule(EasyMock
+                        .anyObject(String.class), EasyMock.anyInt(), EasyMock
+                        .anyObject(LifeCycleLengthUnit.class)))
+            .andThrow(
+                  new IllegalStateException(
+                        "no life cycle rule update can be made as long as previous rule history was not handled"));
+
    }
 
    private void checkLogsNouveauCode() {
