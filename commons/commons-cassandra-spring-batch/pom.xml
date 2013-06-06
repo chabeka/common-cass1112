@@ -23,7 +23,7 @@
       <maven-pmd-plugin.version>2.5</maven-pmd-plugin.version>
       
       <!-- Version de commons-cassandra -->
-      <commons-cassandra.version>0.0.5</commons-cassandra.version>
+      <commons-cassandra.version>0.0.6</commons-cassandra.version>
       
       <!-- Version des framework -->
       <junit.version>4.8.2</junit.version>
