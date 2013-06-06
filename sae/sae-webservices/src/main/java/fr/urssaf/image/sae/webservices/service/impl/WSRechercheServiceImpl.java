@@ -21,11 +21,12 @@ import fr.urssaf.image.sae.services.exception.search.MetaDataUnauthorizedToSearc
 import fr.urssaf.image.sae.services.exception.search.SAESearchServiceEx;
 import fr.urssaf.image.sae.services.exception.search.SyntaxLuceneEx;
 import fr.urssaf.image.sae.services.exception.search.UnknownLuceneMetadataEx;
+import fr.urssaf.image.sae.webservices.constantes.RechercheConstantes;
 import fr.urssaf.image.sae.webservices.exception.RechercheAxis2Fault;
 import fr.urssaf.image.sae.webservices.factory.ObjectTypeFactory;
 import fr.urssaf.image.sae.webservices.service.WSRechercheService;
 import fr.urssaf.image.sae.webservices.util.CollectionUtils;
-import fr.urssaf.image.sae.webservices.util.MessageRessourcesUtils;
+import fr.urssaf.image.sae.webservices.util.WsMessageRessourcesUtils;
 
 /**
  * Classe concrète pour le service de recherche.
@@ -42,6 +43,9 @@ public class WSRechercheServiceImpl implements WSRechercheService {
    @Autowired
    private SAEDocumentService documentService;
 
+   @Autowired
+   private WsMessageRessourcesUtils wsMessageRessourcesUtils;
+
    /**
     * {@inheritDoc}
     * 
@@ -54,8 +58,7 @@ public class WSRechercheServiceImpl implements WSRechercheService {
       LOG.debug("{} - Début", prefixeTrc);
       // Fin des traces debug - entrée méthode
 
-      int maxResult = Integer.parseInt(MessageRessourcesUtils.recupererMessage(
-            "max.lucene.results", null));
+      int maxResult = RechercheConstantes.NB_MAX_RESULTATS_RECHERCHE;
       LOG.debug(
             "{} - Le nombre maximum de documents à renvoyer dans les résultats de "
                   + "recherche au niveau de la couche webservice est {}",
@@ -121,8 +124,9 @@ public class WSRechercheServiceImpl implements WSRechercheService {
                   "{} - Début de la vérification : La requête de recherche est renseignée",
                   prefixeTrc);
       if (isEmpty(requeteLucene.trim())) {
-         throw new RechercheAxis2Fault(MessageRessourcesUtils.recupererMessage(
-               "search.lucene.videornull", null), "RequeteLuceneVideOuNull");
+         throw new RechercheAxis2Fault(wsMessageRessourcesUtils
+               .recupererMessage("search.lucene.videornull", null),
+               "RequeteLuceneVideOuNull");
       }
       LOG
             .debug(

@@ -31,7 +31,7 @@ import fr.urssaf.image.sae.webservices.exception.ModificationAxisFault;
 import fr.urssaf.image.sae.webservices.factory.ObjectTypeFactory;
 import fr.urssaf.image.sae.webservices.service.WSModificationService;
 import fr.urssaf.image.sae.webservices.service.factory.ObjectModificationFactory;
-import fr.urssaf.image.sae.webservices.util.MessageRessourcesUtils;
+import fr.urssaf.image.sae.webservices.util.WsMessageRessourcesUtils;
 
 /**
  * Classe d'implémentation de l'interface {@link WSModificationService}. Cette
@@ -46,6 +46,9 @@ public class WSModificationServiceImpl implements WSModificationService {
 
    @Autowired
    private SAEModificationService modificationService;
+
+   @Autowired
+   private WsMessageRessourcesUtils wsMessageRessourcesUtils;
 
    /**
     * {@inheritDoc}
@@ -67,8 +70,8 @@ public class WSModificationServiceImpl implements WSModificationService {
 
       } catch (ReferentialRndException exception) {
          throw new ModificationAxisFault("ErreurInterne",
-               MessageRessourcesUtils
-                     .recupererMessage("ws.capture.error", null), exception);
+               wsMessageRessourcesUtils.recupererMessage("ws.capture.error",
+                     null), exception);
 
       } catch (UnknownCodeRndEx exception) {
 
@@ -99,8 +102,8 @@ public class WSModificationServiceImpl implements WSModificationService {
 
       } catch (NotArchivableMetadataEx exception) {
          throw new ModificationAxisFault("ErreurInterneCapture",
-               MessageRessourcesUtils
-                     .recupererMessage("ws.capture.error", null), exception);
+               wsMessageRessourcesUtils.recupererMessage("ws.capture.error",
+                     null), exception);
 
       } catch (UnknownHashCodeEx exception) {
          throw new ModificationAxisFault("CaptureHashErreur", exception

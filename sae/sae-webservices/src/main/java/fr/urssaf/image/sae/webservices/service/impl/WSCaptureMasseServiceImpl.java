@@ -41,7 +41,7 @@ import fr.urssaf.image.sae.webservices.exception.CaptureAxisFault;
 import fr.urssaf.image.sae.webservices.impl.factory.ObjectStorageResponseFactory;
 import fr.urssaf.image.sae.webservices.service.WSCaptureMasseService;
 import fr.urssaf.image.sae.webservices.util.HostnameUtil;
-import fr.urssaf.image.sae.webservices.util.MessageRessourcesUtils;
+import fr.urssaf.image.sae.webservices.util.WsMessageRessourcesUtils;
 
 /**
  * Implémentation de {@link WSCaptureMasseService}<br>
@@ -66,6 +66,9 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
 
    @Autowired
    private SAEControleSupportService controleSupport;
+
+   @Autowired
+   private WsMessageRessourcesUtils wsMessageRessourcesUtils;
 
    /**
     * {@inheritDoc}
@@ -160,7 +163,7 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
 
       String hName = HostnameUtil.getHostname();
 
-      UUID id = checkEcdeUrl(ecdeUrl);
+      UUID uuid = checkEcdeUrl(ecdeUrl);
 
       Integer nbDoc = getNombreDoc(ecdeUrl);
 
@@ -168,7 +171,7 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
             .getContext().getAuthentication().getPrincipal();
 
       CaptureMasseParametres parametres = new CaptureMasseParametres(jobParam,
-            id, hName, callerIP, nbDoc, extrait);
+            uuid, hName, callerIP, nbDoc, extrait);
 
       // appel de la méthode d'insertion du job dans la pile des travaux
       traitementService.ajouterJobCaptureMasse(parametres);
@@ -176,7 +179,7 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
       // On prend acte de la demande,
       // le retour se fera via le fichier resultats.xml de l'ECDE
       return ObjectStorageResponseFactory
-            .createArchivageMasseAvecHashResponse(id.toString());
+            .createArchivageMasseAvecHashResponse(uuid.toString());
    }
 
    private UUID checkEcdeUrl(String ecdeUrl) throws CaptureAxisFault {
@@ -232,7 +235,7 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
 
          if ((nombreDocuments + nombreComposants == 0)
                || (nombreComposants > 0 && nombreDocuments > 0)) {
-            String message = MessageRessourcesUtils.recupererMessage(
+            String message = wsMessageRessourcesUtils.recupererMessage(
                   "capture.masse.sommaire.format.incorrect", null);
             throw new CaptureAxisFault("FormatSommaireIncorrect", message);
          } else if (nombreDocuments > 0) {

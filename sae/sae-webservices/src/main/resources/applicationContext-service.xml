@@ -13,6 +13,16 @@
 <!--   <security:global-method-security-->
 <!--      jsr250-annotations="enabled" />-->
 
+   <bean id="messageSource_sae_webservices"
+      class="fr.urssaf.image.sae.webservices.modele.WsMessageSource">
+      <property name="basenames">
+         <list>
+            <value>properties/validationMessages_sae_webservices</value>
+            <value>properties/exceptionMessages_sae_webservices</value>
+         </list>
+      </property>
+   </bean>
+
    <context:component-scan base-package="fr.urssaf.image.sae.webservices">
       <context:exclude-filter type="regex"
          expression="fr.urssaf.image.sae.webservices.security.*" />
@@ -21,16 +31,4 @@
    <bean id="documentService" factory-method="loadSAEDocumentService"
       factory-bean="SAEServiceManager" />
       
-   <bean id="messageSource_sae_webservices"
-      class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
-      <property name="basenames">
-         <list>
-            <value>/properties/validationMessages_sae_webservices</value>
-            <value>/properties/exceptionMessages_sae_webservices</value>
-            <value>/properties/constantes_sae_webservices</value>
-         </list>
-      </property>
-      <property name="cacheSeconds" value="0" />
-   </bean> 
-
 </beans>

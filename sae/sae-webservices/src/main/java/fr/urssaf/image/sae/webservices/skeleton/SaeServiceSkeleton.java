@@ -57,7 +57,7 @@ import fr.urssaf.image.sae.webservices.service.WSConsultationService;
 import fr.urssaf.image.sae.webservices.service.WSModificationService;
 import fr.urssaf.image.sae.webservices.service.WSRechercheService;
 import fr.urssaf.image.sae.webservices.service.WSSuppressionService;
-import fr.urssaf.image.sae.webservices.util.MessageRessourcesUtils;
+import fr.urssaf.image.sae.webservices.util.WsMessageRessourcesUtils;
 
 /**
  * Skeleton du web service coté serveur<br>
@@ -98,6 +98,9 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
 
    @Autowired
    private DfceInfoService dfceInfoService;
+
+   @Autowired
+   private WsMessageRessourcesUtils wsMessageRessourcesUtils;
 
    private static final String STOCKAGE_INDISPO = "StockageIndisponible";
    private static final String MES_STOCKAGE = "ws.dfce.stockage";
@@ -175,8 +178,8 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
 
             LOG.debug("{} - Sortie", prefixeTrc);
             setCodeHttp412();
-            throw new CaptureAxisFault(STOCKAGE_INDISPO, MessageRessourcesUtils
-                  .recupererMessage(MES_STOCKAGE, null));
+            throw new CaptureAxisFault(STOCKAGE_INDISPO,
+                  wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
 
          }
       } catch (CaptureAxisFault ex) {
@@ -225,8 +228,8 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
 
             LOG.debug("{} - Sortie", prefixeTrc);
             setCodeHttp412();
-            throw new CaptureAxisFault(STOCKAGE_INDISPO, MessageRessourcesUtils
-                  .recupererMessage(MES_STOCKAGE, null));
+            throw new CaptureAxisFault(STOCKAGE_INDISPO,
+                  wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
 
          }
       } catch (CaptureAxisFault ex) {
@@ -317,7 +320,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
             LOG.debug("{} - Sortie", prefixeTrc);
             setCodeHttp412();
             throw new RechercheAxis2Fault(STOCKAGE_INDISPO,
-                  MessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
+                  wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
 
          }
       } catch (RechercheAxis2Fault ex) {
@@ -363,7 +366,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
 
             LOG.debug("{} - Sortie", prefixeTrc);
             setCodeHttp412();
-            throw new ConsultationAxisFault(MessageRessourcesUtils
+            throw new ConsultationAxisFault(wsMessageRessourcesUtils
                   .recupererMessage(MES_STOCKAGE, null), STOCKAGE_INDISPO);
 
          }
@@ -412,7 +415,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
 
             LOG.debug("{} - Sortie", prefixeTrc);
             setCodeHttp412();
-            throw new ConsultationAxisFault(MessageRessourcesUtils
+            throw new ConsultationAxisFault(wsMessageRessourcesUtils
                   .recupererMessage(MES_STOCKAGE, null), STOCKAGE_INDISPO);
 
          }

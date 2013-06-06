@@ -17,18 +17,6 @@
    <bean id="applicationContext"
       class="org.apache.axis2.extensions.spring.receivers.ApplicationContextHolder" />
 
-   <bean id="messageSource_sae_webservices"
-      class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
-      <property name="basenames">
-         <list>
-            <value>properties/validationMessages_sae_webservices</value>
-            <value>properties/exceptionMessages_sae_webservices</value>
-            <value>properties/constantes_sae_webservices</value>
-         </list>
-      </property>
-      <property name="cacheSeconds" value="0" />
-   </bean>
-
    <!-- Chargement de la configuration ECDE -->
 
    <bean id="ecdeSourceManager" class="fr.urssaf.image.sae.ecde.EcdeSourceManagerImpl" />

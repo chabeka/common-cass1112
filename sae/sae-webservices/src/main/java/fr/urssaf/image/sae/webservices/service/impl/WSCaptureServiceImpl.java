@@ -48,7 +48,7 @@ import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.webservices.exception.CaptureAxisFault;
 import fr.urssaf.image.sae.webservices.service.WSCaptureService;
 import fr.urssaf.image.sae.webservices.service.factory.ObjectArchivageUnitaireFactory;
-import fr.urssaf.image.sae.webservices.util.MessageRessourcesUtils;
+import fr.urssaf.image.sae.webservices.util.WsMessageRessourcesUtils;
 
 /**
  * Implémentation de {@link WSCaptureService}<br>
@@ -58,15 +58,15 @@ import fr.urssaf.image.sae.webservices.util.MessageRessourcesUtils;
 @Service
 public class WSCaptureServiceImpl implements WSCaptureService {
 
-   
    private static final Logger LOG = LoggerFactory
          .getLogger(WSCaptureServiceImpl.class);
 
-   
    @Autowired
    private SAECaptureService captureService;
 
-   
+   @Autowired
+   private WsMessageRessourcesUtils wsMessageRessourcesUtils;
+
    /**
     * {@inheritDoc}
     * 
@@ -95,8 +95,7 @@ public class WSCaptureServiceImpl implements WSCaptureService {
 
       // Appel de la couche service, et transtypage des exceptions en SoapFault
       UUID uuid = capture(metadatas, ecdeURL);
-      LOG.debug("{} - UUID : \"{}\"",
-            prefixeTrc, uuid);
+      LOG.debug("{} - UUID : \"{}\"", prefixeTrc, uuid);
 
       // Construction de l'objet de réponse
       ArchivageUnitaireResponse response = ObjectArchivageUnitaireFactory
@@ -116,7 +115,6 @@ public class WSCaptureServiceImpl implements WSCaptureService {
 
    }
 
-   
    /**
     * {@inheritDoc}
     * 
@@ -134,19 +132,21 @@ public class WSCaptureServiceImpl implements WSCaptureService {
       ListeMetadonneeType listeMeta = request.getArchivageUnitairePJ()
             .getMetadonnees();
       verifListeMetaNonVide(listeMeta);
-      
+
       // Conversion de la liste des métadonnées d'un type vers un autre
       List<UntypedMetadata> metadatas = convertListeMeta(listeMeta);
-      
+
       // Est-ce l'application cliente nous a envoyé une URL ECDE ou
       // un contenu de fichier ?
       UUID uuid;
-      EcdeUrlType ecdeUrlType = request.getArchivageUnitairePJ().getArchivageUnitairePJRequestTypeChoice_type0().getEcdeUrl();
-      if (ecdeUrlType==null) {
-         
+      EcdeUrlType ecdeUrlType = request.getArchivageUnitairePJ()
+            .getArchivageUnitairePJRequestTypeChoice_type0().getEcdeUrl();
+      if (ecdeUrlType == null) {
+
          // On travaille avec un contenu
-         LOG.debug("{} - On a reçu un contenu et non pas une URL ECDE", prefixeTrc);
-         
+         LOG.debug("{} - On a reçu un contenu et non pas une URL ECDE",
+               prefixeTrc);
+
          // Lecture du nom du fichier associé au contenu
          String nomFichier = request.getArchivageUnitairePJ()
                .getArchivageUnitairePJRequestTypeChoice_type0().getDataFile()
@@ -155,8 +155,9 @@ public class WSCaptureServiceImpl implements WSCaptureService {
 
          // Vérifie que le nom du fichier est renseigné
          if (StringUtils.isBlank(nomFichier)) {
-            throw new CaptureAxisFault("NomFichierVide", MessageRessourcesUtils
-                  .recupererMessage("nomfichier.vide", null));
+            throw new CaptureAxisFault("NomFichierVide",
+                  wsMessageRessourcesUtils.recupererMessage("nomfichier.vide",
+                        null));
          }
 
          // Récupération du contenu du document
@@ -168,31 +169,32 @@ public class WSCaptureServiceImpl implements WSCaptureService {
          // Vérifie que le contenu du document n'est pas vide
          if (content == null || content.length == 0) {
             throw new CaptureAxisFault("CaptureFichierVide",
-                  MessageRessourcesUtils.recupererMessage(
+                  wsMessageRessourcesUtils.recupererMessage(
                         "capture.fichier.binaire.vide", null));
          }
-         
-         // Appel de la couche service, et transtypage des exceptions en SoapFault
+
+         // Appel de la couche service, et transtypage des exceptions en
+         // SoapFault
          uuid = capturePJ(metadatas, nomFichier, content);
-         
-         
+
       } else {
-         
+
          // On travaille avec une URL ECDE
-         LOG.debug("{} - On a reçu une URL ECDE et non pas un contenu", prefixeTrc);
-         
+         LOG.debug("{} - On a reçu une URL ECDE et non pas un contenu",
+               prefixeTrc);
+
          // Extraction de l'URL ECDE depuis l'objet de la couche web service
          URI ecdeURL = URI.create(ecdeUrlType.getEcdeUrlType().toString());
-         
-         // Appel de la couche service, et transtypage des exceptions en SoapFault
+
+         // Appel de la couche service, et transtypage des exceptions en
+         // SoapFault
          uuid = capture(metadatas, ecdeURL);
-         
+
       }
-      
+
       // Log l'UUID
-      LOG.debug("{} - UUID : \"{}\"",
-            prefixeTrc, uuid);
-      
+      LOG.debug("{} - UUID : \"{}\"", prefixeTrc, uuid);
+
       // Construction de l'objet de réponse
       ArchivageUnitairePJResponse response = ObjectArchivageUnitaireFactory
             .createArchivageUnitairePJResponse(uuid);
@@ -210,7 +212,6 @@ public class WSCaptureServiceImpl implements WSCaptureService {
       return response;
 
    }
-   
 
    private void verifListeMetaNonVide(ListeMetadonneeType listeMeta)
          throws CaptureAxisFault {
@@ -220,10 +221,10 @@ public class WSCaptureServiceImpl implements WSCaptureService {
                   "{} - Début de la vérification : La liste des métadonnées fournies par l'application n'est pas vide",
                   prefixeTrc);
       if (listeMeta.getMetadonnee() == null) {
-         LOG.debug("{} - {}", prefixeTrc, MessageRessourcesUtils
+         LOG.debug("{} - {}", prefixeTrc, wsMessageRessourcesUtils
                .recupererMessage("ws.capture.metadata.is.empty", null));
          throw new CaptureAxisFault("CaptureMetadonneesVide",
-               MessageRessourcesUtils.recupererMessage(
+               wsMessageRessourcesUtils.recupererMessage(
                      "ws.capture.metadata.is.empty", null));
       }
       LOG
@@ -232,8 +233,7 @@ public class WSCaptureServiceImpl implements WSCaptureService {
                   prefixeTrc);
    }
 
-   private List<UntypedMetadata> convertListeMeta(
-         ListeMetadonneeType listeMeta) {
+   private List<UntypedMetadata> convertListeMeta(ListeMetadonneeType listeMeta) {
 
       String prefixeTrc = "convertitListeMeta()";
 
@@ -293,7 +293,7 @@ public class WSCaptureServiceImpl implements WSCaptureService {
 
       } catch (ReferentialRndException e) {
 
-         throw new CaptureAxisFault("ErreurInterne", MessageRessourcesUtils
+         throw new CaptureAxisFault("ErreurInterne", wsMessageRessourcesUtils
                .recupererMessage("ws.capture.error", null), e);
 
       } catch (UnknownCodeRndEx e) {
@@ -317,17 +317,18 @@ public class WSCaptureServiceImpl implements WSCaptureService {
       } catch (SAECaptureServiceEx e) {
 
          throw new CaptureAxisFault("ErreurInterneCapture",
-               MessageRessourcesUtils
-                     .recupererMessage("ws.capture.error", null), e);
+               wsMessageRessourcesUtils.recupererMessage("ws.capture.error",
+                     null), e);
 
       } catch (NotArchivableMetadataEx e) {
 
          throw new CaptureAxisFault("ErreurInterneCapture",
-               MessageRessourcesUtils
-                     .recupererMessage("ws.capture.error", null), e);
-      }catch (MetadataValueNotInDictionaryEx e) {
+               wsMessageRessourcesUtils.recupererMessage("ws.capture.error",
+                     null), e);
+      } catch (MetadataValueNotInDictionaryEx e) {
 
-         throw new CaptureAxisFault("CaptureMetadonneesValeurNonValide", e.getMessage());
+         throw new CaptureAxisFault("CaptureMetadonneesValeurNonValide", e
+               .getMessage());
       }
 
    }
@@ -371,7 +372,7 @@ public class WSCaptureServiceImpl implements WSCaptureService {
 
       } catch (ReferentialRndException e) {
 
-         throw new CaptureAxisFault("ErreurInterne", MessageRessourcesUtils
+         throw new CaptureAxisFault("ErreurInterne", wsMessageRessourcesUtils
                .recupererMessage("ws.capture.error", null), e);
 
       } catch (UnknownCodeRndEx e) {
@@ -385,21 +386,22 @@ public class WSCaptureServiceImpl implements WSCaptureService {
       } catch (SAECaptureServiceEx e) {
 
          throw new CaptureAxisFault("ErreurInterneCapture",
-               MessageRessourcesUtils
-                     .recupererMessage("ws.capture.error", null), e);
+               wsMessageRessourcesUtils.recupererMessage("ws.capture.error",
+                     null), e);
 
       } catch (NotArchivableMetadataEx e) {
 
          throw new CaptureAxisFault("ErreurInterneCapture",
-               MessageRessourcesUtils
-                     .recupererMessage("ws.capture.error", null), e);
+               wsMessageRessourcesUtils.recupererMessage("ws.capture.error",
+                     null), e);
       } catch (EmptyFileNameEx e) {
 
-         throw new CaptureAxisFault("NomFichierVide", MessageRessourcesUtils
+         throw new CaptureAxisFault("NomFichierVide", wsMessageRessourcesUtils
                .recupererMessage("ws.capture.error", null), e);
-      }catch (MetadataValueNotInDictionaryEx e) {
+      } catch (MetadataValueNotInDictionaryEx e) {
 
-         throw new CaptureAxisFault("CaptureMetadonneesValeurNonValide", e.getMessage());
+         throw new CaptureAxisFault("CaptureMetadonneesValeurNonValide", e
+               .getMessage());
       }
    }
 
