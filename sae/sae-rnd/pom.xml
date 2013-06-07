@@ -1,11 +1,10 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
    <modelVersion>4.0.0</modelVersion>
 
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-rnd</artifactId>
-   <version>13.4.10.5-SNAPSHOT</version>
+   <version>13.4.10.5</version>
    <packaging>jar</packaging>
    <description>Module de la gestion des mises à jour du RND</description>
 
@@ -14,11 +13,11 @@
    <parent>
       <groupId>fr.urssaf.image.sae</groupId>
       <artifactId>sae</artifactId>
-      <version>13.4.10.5-SNAPSHOT</version>
+      <version>13.4.10.5</version>
    </parent>
 
    <properties>
-      <sae-version>13.4.10.5-SNAPSHOT</sae-version>
+      <sae-version>13.4.10.5</sae-version>
       <axis.version>1.4</axis.version>
       <jaxrpc.version>1.1.3_01</jaxrpc.version>
       <apache.commons-discovery.version>0.5</apache.commons-discovery.version>
