@@ -3,7 +3,6 @@ package fr.urssaf.image.sae.rnd.dao.support;
 import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,13 +64,14 @@ public class RndSupport {
          rndDao.ecritCodeActivite(Integer.valueOf(typeDoc.getCodeActivite()),
                updater, clock);
       }
-      // Si le code fonction est null, alors il s'agit d'un code temporaire et on le met à 0
+      // Si le code fonction est null, alors il s'agit d'un code temporaire et
+      // on le met à 0
       String codeFonction = "0";
       if (typeDoc.getCodeFonction() == null
             && typeDoc.getType().equals(TypeCode.TEMPORAIRE)) {
          codeFonction = "0";
       } else {
-         codeFonction = typeDoc.getCodeFonction();         
+         codeFonction = typeDoc.getCodeFonction();
       }
       rndDao.ecritCodeFonction(Integer.valueOf(codeFonction), updater, clock);
 

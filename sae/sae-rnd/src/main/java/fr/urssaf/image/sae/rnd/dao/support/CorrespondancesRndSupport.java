@@ -24,7 +24,6 @@ import fr.urssaf.image.commons.cassandra.helper.QueryResultConverter;
 import fr.urssaf.image.sae.rnd.dao.CorrespondancesDao;
 import fr.urssaf.image.sae.rnd.modele.Correspondance;
 import fr.urssaf.image.sae.rnd.modele.EtatCorrespondance;
-import fr.urssaf.image.sae.rnd.support.LifeCycleRuleSupport;
 
 /**
  * Support permettant d'effectuer les opérations d'écriture sur la CF
@@ -54,6 +53,8 @@ public class CorrespondancesRndSupport {
    }
 
    private static final int MAX_FIND_RESULT = 5000;
+   // Séparateur entre le code temporaire et la version pour la clé
+   private static final String SEPARATEUR = "@_@";
 
    /**
     * Création d'une ligne dans la CF CorrespondancesRnd
@@ -73,9 +74,13 @@ public class CorrespondancesRndSupport {
             trcPrefix, correspondance.getCodeTemporaire() });
       LOGGER.debug("{} - Correspondance code définitif : {}", new String[] {
             trcPrefix, correspondance.getCodeDefinitif() });
+      LOGGER.debug("{} - Correspondance version : {}", new String[] {
+            trcPrefix, correspondance.getVersionCourante() });
 
+      String idCorrespondance = correspondance.getCodeTemporaire() + SEPARATEUR + correspondance.getVersionCourante(); 
+      
       ColumnFamilyUpdater<String, String> updater = correspondancesDao
-            .getCfTmpl().createUpdater(correspondance.getCodeTemporaire());
+            .getCfTmpl().createUpdater(idCorrespondance);
 
       correspondancesDao.ecritCodeDefinitif(correspondance.getCodeDefinitif(),
             updater, clock);
@@ -138,7 +143,12 @@ public class CorrespondancesRndSupport {
       for (ColumnFamilyResult<String, String> row : resultIterator) {
 
          Correspondance correspondance = new Correspondance();
-         correspondance.setCodeTemporaire(row.getKey());
+         
+         String idCorrepondance = row.getKey();
+         String tabId[] = StringUtils.split(idCorrepondance, SEPARATEUR);
+         
+         correspondance.setCodeTemporaire(tabId[0]);
+         correspondance.setVersionCourante(tabId[1]);
          correspondance.setCodeDefinitif(row
                .getString(CorrespondancesDao.CORR_CODE_DEFINITIF));
          correspondance.setDateDebutMaj(row
@@ -159,16 +169,18 @@ public class CorrespondancesRndSupport {
     * 
     * @param codeTemporaire
     *           Code temporaire de la correspondance
+    * @param version La version courante           
     * @return {@link Correspondance}
     */
-   public final Correspondance find(String codeTemporaire) {
+   public final Correspondance find(String codeTemporaire, String version) {
 
       ColumnFamilyResult<String, String> result = correspondancesDao
-            .getCfTmpl().queryColumns(codeTemporaire);
+            .getCfTmpl().queryColumns(codeTemporaire + SEPARATEUR + version);
 
       if (result != null && result.hasResults()) {
          Correspondance correspondance = new Correspondance();
-         correspondance.setCodeTemporaire(result.getKey());
+         correspondance.setCodeTemporaire(codeTemporaire);
+         correspondance.setVersionCourante(version);
          correspondance.setCodeDefinitif(result
                .getString(CorrespondancesDao.CORR_CODE_DEFINITIF));
          correspondance.setDateDebutMaj(result

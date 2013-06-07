@@ -1,6 +1,5 @@
 package fr.urssaf.image.sae.rnd.service.impl;
 
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,7 +101,7 @@ public class RndServiceImpl implements RndService {
    }
 
    @Override
-   public boolean isCloture(String codeRnd) throws CodeRndInexistantException {
+   public final boolean isCloture(String codeRnd) throws CodeRndInexistantException {
       try {
          TypeDocument typeDoc = cacheRnd.getUnchecked(codeRnd);
          return typeDoc.isCloture();

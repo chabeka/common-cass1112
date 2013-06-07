@@ -113,11 +113,12 @@ public class SaeBddSupport {
     * 
     * @param listeCorrespondances
     *           Correspondances entre codes temporaires et code
+    * @param version la version en cours dans le SAE           
     * @throws SaeBddRuntimeException
     *            Exception levée lors de la mise à jour de la BDD
     */
    public final void updateCorrespondances(
-         Map<String, String> listeCorrespondances)
+         Map<String, String> listeCorrespondances, String version)
          throws SaeBddRuntimeException {
 
       try {
@@ -133,6 +134,7 @@ public class SaeBddSupport {
             correspondance.setCodeDefinitif(codeDefinitif);
             correspondance.setCodeTemporaire((String) codeTemporaire);
             correspondance.setEtat(EtatCorrespondance.CREATED);
+            correspondance.setVersionCourante(version);
             correspondancesRndSupport.ajouterCorrespondance(correspondance,
                   clockSupport.currentCLock());
 

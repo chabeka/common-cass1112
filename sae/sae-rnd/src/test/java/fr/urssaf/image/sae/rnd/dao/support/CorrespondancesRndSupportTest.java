@@ -46,6 +46,7 @@ public class CorrespondancesRndSupportTest {
       correspondance.setDateDebutMaj(new Date());
       correspondance.setDateFinMaj(new Date());
       correspondance.setEtat(EtatCorrespondance.CREATED);
+      correspondance.setVersionCourante("11.4");
 
       correspondancesRndSupport.ajouterCorrespondance(correspondance,
             jobClockSupport.currentCLock());
@@ -53,7 +54,7 @@ public class CorrespondancesRndSupportTest {
       Correspondance correspondanceTrouvee = null;
 
       try {
-         correspondanceTrouvee = correspondancesRndSupport.find("a.a.a.a.a");
+         correspondanceTrouvee = correspondancesRndSupport.find("a.a.a.a.a", "11.4");
          Assert.assertEquals("Les correspondances doivent être identiques",
                correspondanceTrouvee.getCodeTemporaire(), correspondance
                      .getCodeTemporaire());
@@ -65,7 +66,7 @@ public class CorrespondancesRndSupportTest {
       }
 
       try {
-         correspondanceTrouvee = correspondancesRndSupport.find("b.a.a.a.a");
+         correspondanceTrouvee = correspondancesRndSupport.find("b.a.a.a.a", "11.4");
          Assert.assertEquals("La correspondance doit être null", null,
                correspondanceTrouvee);
       } catch (Exception exception) {

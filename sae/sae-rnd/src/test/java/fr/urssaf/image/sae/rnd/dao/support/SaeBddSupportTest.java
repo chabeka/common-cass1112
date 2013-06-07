@@ -126,7 +126,7 @@ public class SaeBddSupportTest {
       rndSupport.ajouterRnd(typeDoc1, jobClockSupport.currentCLock());
       rndSupport.ajouterRnd(typeDoc2, jobClockSupport.currentCLock());
 
-      saeBddSupport.updateCorrespondances(listeCorrespondances);
+      saeBddSupport.updateCorrespondances(listeCorrespondances, "11.4");
 
       List<Correspondance> listeRecup = saeBddSupport.getAllCorrespondances();
 

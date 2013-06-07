@@ -48,7 +48,7 @@ public class MajCorrespondancesServiceTest {
 
       Map<String, String> listeCorrespondances = new TreeMap<String, String>();
       listeCorrespondances.put("1.1.1.1.1", "2.2.2.2.2");
-      saeBddSupport.updateCorrespondances(listeCorrespondances);
+      saeBddSupport.updateCorrespondances(listeCorrespondances, "11.4");
       
    }
 
@@ -61,9 +61,6 @@ public class MajCorrespondancesServiceTest {
    @Ignore
    @Test
    public void testLancer() throws Exception {
-
-
-
       majCorrespondancesService.lancer();
 
    }

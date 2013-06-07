@@ -1,15 +1,6 @@
 package fr.urssaf.image.sae.rnd.service;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
-import net.docubase.toolkit.model.reference.LifeCycleLengthUnit;
-import net.docubase.toolkit.model.reference.LifeCycleRule;
-import net.docubase.toolkit.service.ServiceProvider;
-import net.docubase.toolkit.service.administration.StorageAdministrationService;
 
 import org.easymock.EasyMock;
 import org.junit.After;
@@ -24,22 +15,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-
-import com.docubase.dfce.exception.ObjectAlreadyExistsException;
-
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
-import fr.urssaf.image.commons.dfce.service.DFCEConnectionService;
-import fr.urssaf.image.sae.commons.exception.ParameterNotFoundException;
-import fr.urssaf.image.sae.rnd.dao.support.RndSupport;
 import fr.urssaf.image.sae.rnd.dao.support.SaeBddSupport;
-import fr.urssaf.image.sae.rnd.exception.MajCorrespondancesException;
 import fr.urssaf.image.sae.rnd.exception.MajRndException;
 import fr.urssaf.image.sae.rnd.exception.RndRecuperationException;
 import fr.urssaf.image.sae.rnd.exception.SaeBddRuntimeException;
-import fr.urssaf.image.sae.rnd.modele.TypeCode;
-import fr.urssaf.image.sae.rnd.modele.TypeDocument;
 import fr.urssaf.image.sae.rnd.modele.VersionRnd;
 import fr.urssaf.image.sae.rnd.utils.SaeLogAppender;
 import fr.urssaf.image.sae.rnd.ws.adrn.service.RndRecuperationService;

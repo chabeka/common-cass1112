@@ -167,7 +167,7 @@ public class MajRndServiceImpl implements MajRndService {
          LOGGER.info("{} - Mise à jour des correspondances dans la BDD du SAE",
                trcPrefix);
          try {
-            saeBddSupport.updateCorrespondances(listeCorrespondances);
+            saeBddSupport.updateCorrespondances(listeCorrespondances, versionRndSae.getVersionEnCours());
          } catch (SaeBddRuntimeException e) {
             LOGGER
                   .error(

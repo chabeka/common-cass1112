@@ -19,7 +19,12 @@ public class Correspondance {
     * Le code définitif
     */
    private String codeDefinitif;
-
+   
+   /**
+    * La version en cours durant l'existence de ce code temporaire
+    */
+   private String versionCourante;
+   
    /**
     * La date de début de mise à jour du traitement de cette correspondance
     */
@@ -103,5 +108,19 @@ public class Correspondance {
     */
    public final void setEtat(EtatCorrespondance etat) {
       this.etat = etat;
+   }
+
+   /**
+    * @return the versionCourante
+    */
+   public final String getVersionCourante() {
+      return versionCourante;
+   }
+
+   /**
+    * @param versionCourante the versionCourante to set
+    */
+   public final void setVersionCourante(String versionCourante) {
+      this.versionCourante = versionCourante;
    }
 }
