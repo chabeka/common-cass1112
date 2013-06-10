@@ -257,7 +257,7 @@ public class JournalEvtServiceDatasTest {
             .export(calendar.getTime(), repertoire.getAbsolutePath(),
                   "6f5e4930-80cc-11e2-8759-005056c00008", "00000");
 
-      String sha1Attendu = "9d0bf360dee181cb3a51f512db52d57f18a8ea49";
+      String sha1Attendu = "61d37fcf05a3ea89ad02653a412e5147d8b8b9d6";
       String sha1Obtenu = calculeSha1(new File(path));
 
       FileUtils.deleteDirectory(repertoire);

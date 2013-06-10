@@ -137,6 +137,8 @@ public class JournalEvtServiceImpl implements JournalEvtService {
    private void writeTraces(File file, List<TraceJournalEvtIndex> listTraces,
          String idJournalPrecedent, String hashJournalPrecedent, Date date) {
 
+      String trcPrefix = "writeTraces()";
+
       FileOutputStream resultatsStream = null;
       final String resultatPath = file.getAbsolutePath();
       XMLEventWriter writer = null;
@@ -145,6 +147,8 @@ public class JournalEvtServiceImpl implements JournalEvtService {
          resultatsStream = new FileOutputStream(resultatPath);
          writer = loadWriter(resultatsStream);
          XMLEventFactory eventFactory = XMLEventFactory.newInstance();
+         LOGGER.debug("{} - Classe du XMLEventFactory: {}", trcPrefix,
+               eventFactory.getClass().getName());
          StaxUtils staxUtils = new StaxUtils(eventFactory, writer);
 
          traceFileSupport.ecrireEntete(staxUtils);
@@ -198,11 +202,17 @@ public class JournalEvtServiceImpl implements JournalEvtService {
     */
    private XMLEventWriter loadWriter(final FileOutputStream resultatsStream) {
 
+      String trcPrefix = "loadWriter()";
+
       final XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
+      LOGGER.debug("{} - Classe du XMLOutputFactory: {}", trcPrefix,
+            outputFactory.getClass().getName());
 
       try {
          final XMLEventWriter writer = outputFactory.createXMLEventWriter(
                resultatsStream, "UTF-8");
+         LOGGER.debug("{} - Classe du XMLEventWriter: {}", trcPrefix, writer
+               .getClass().getName());
          IndentingXMLEventWriter iWriter = new IndentingXMLEventWriter(writer);
          iWriter.setIndent(INDENTATION);
          return iWriter;

@@ -8,6 +8,8 @@ import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.StartDocument;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * 
  * 
@@ -173,9 +175,12 @@ public class StaxUtils {
     */
    public final void createTag(String name, String value, String prefix,
          String url) throws XMLStreamException {
-      // BatchMode
       addStartTag(name, prefix, url);
-      addValue(value);
+      if (value == null) {
+         addValue(StringUtils.EMPTY);
+      } else {
+         addValue(value);
+      }
       addEndTag(name, prefix, url);
    }
 }
