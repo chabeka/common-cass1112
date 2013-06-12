@@ -218,7 +218,7 @@ public class Test102Commons {
       valeursAttendues.add("DateDebutConservation", "2011-09-01");
       valeursAttendues.add("DateFinConservation", "2016-08-30");
       valeursAttendues.add("Denomination", denomination);
-      valeursAttendues.add("DureeConservation", "1825");
+      valeursAttendues.add("DureeConservation", "1095");
 
       testCommons.getRechercheTestService().verifieResultatRecherche(
             resultatRecherche, numeroResultatRecherche, resultatTest,

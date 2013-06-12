@@ -245,7 +245,7 @@ public class Test201Controller extends
       // valeursAttendues.add("DateFinConservation", ""); // non prédictible
       valeursAttendues.add("DateReception", StringUtils.EMPTY);
       valeursAttendues.add("Denomination", "Test 201-CaptureMasse-OK-Tor-10");
-      valeursAttendues.add("DureeConservation", "1825");
+      valeursAttendues.add("DureeConservation", "1095");
       valeursAttendues.add("FormatFichier", "fmt/354");
       valeursAttendues.add("Gel", "false");
       valeursAttendues.add("Hash", "a2f93f1f121ebba0faef2c0596f2f126eacae77b");

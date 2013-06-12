@@ -209,7 +209,7 @@ public class Test403Controller extends
       metaAttendues.add(new MetadonneeValeur("DateSignature", "2012-09-04"));
       metaAttendues.add(new MetadonneeValeur("Denomination",
             "Test 403-Consultation-OK-TouteMetadonneeConsultable"));
-      metaAttendues.add(new MetadonneeValeur("DureeConservation", "1825"));
+      metaAttendues.add(new MetadonneeValeur("DureeConservation", "1095"));
       metaAttendues.add(new MetadonneeValeur("FormatFichier", "fmt/354"));
       metaAttendues.add(new MetadonneeValeur("Gel", "false"));
       metaAttendues.add(new MetadonneeValeur("Hash",

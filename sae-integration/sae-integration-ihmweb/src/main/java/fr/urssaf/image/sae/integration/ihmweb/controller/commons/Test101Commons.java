@@ -273,7 +273,7 @@ public class Test101Commons {
             .getVersionRND());
       valeursAttendues.add("CodeFonction", "2");
       valeursAttendues.add("CodeActivite", "3");
-      valeursAttendues.add("DureeConservation", "1825");
+      valeursAttendues.add("DureeConservation", "1095");
       // valeursAttendues.add("DateDebutConservation",); // <= à vérifier
       // "à la main"
       // valeursAttendues.add("DateFinConservation",); // <= à vérifier

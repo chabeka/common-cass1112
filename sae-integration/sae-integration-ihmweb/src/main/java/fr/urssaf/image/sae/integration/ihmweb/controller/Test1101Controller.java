@@ -237,7 +237,7 @@ public class Test1101Controller extends
 //      valeursAttendues.add("DateFinConservation", "");
       valeursAttendues.add("DateReception", StringUtils.EMPTY);
       valeursAttendues.add("Denomination", "Test 1101-Droits-Conformite-Archivage-Unitaire-ATT-VIGI");
-      valeursAttendues.add("DureeConservation", "1825");
+      valeursAttendues.add("DureeConservation", "1095");
       valeursAttendues.add("FormatFichier", "fmt/354");
       valeursAttendues.add("Gel", "false");
       valeursAttendues.add("Hash", "d145ea8e0ca28b8c97deb0c2a550f0a969a322a3");
