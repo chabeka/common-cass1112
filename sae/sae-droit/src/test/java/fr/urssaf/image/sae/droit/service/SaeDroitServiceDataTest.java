@@ -25,6 +25,7 @@ import fr.urssaf.image.sae.droit.dao.model.Pagma;
 import fr.urssaf.image.sae.droit.dao.model.Pagmp;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.dao.model.ServiceContract;
+import fr.urssaf.image.sae.droit.dao.model.ServiceContractDatas;
 import fr.urssaf.image.sae.droit.dao.serializer.exception.ActionUnitaireReferenceException;
 import fr.urssaf.image.sae.droit.dao.serializer.exception.PagmaReferenceException;
 import fr.urssaf.image.sae.droit.dao.serializer.exception.PagmpReferenceException;
@@ -424,5 +425,109 @@ public class SaeDroitServiceDataTest {
 
       return prmd;
    }
+   // identique à celui de la classe support ContratServiceDataSupportTest
+   @Test
+   public void findAllCsTest(){
+      ServiceContract contract = new ServiceContract();
+      contract.setCodeClient("codeClient1");
+      contract.setDescription("description1");
+      contract.setLibelle("libelle1");
+      contract.setViDuree(Long.valueOf(61));
+      contract.setIdPki("pki 1");
+      contract.setVerifNommage(false);
+
+      contratSupport.create(contract, new Date().getTime());
+
+      contract = new ServiceContract();
+      contract.setCodeClient("codeClient2");
+      contract.setDescription("description2");
+      contract.setLibelle("libelle2");
+      contract.setViDuree(Long.valueOf(62));
+      contract.setIdPki("pki 1");
+      contract.setVerifNommage(false);
+
+      contratSupport.create(contract, new Date().getTime());
+
+      contract = new ServiceContract();
+      contract.setCodeClient("codeClient3");
+      contract.setDescription("description3");
+      contract.setLibelle("libelle3");
+      contract.setViDuree(Long.valueOf(63));
+      contract.setIdPki("pki 1");
+      contract.setVerifNommage(false);
+
+      contratSupport.create(contract, new Date().getTime());
+
+      List<ServiceContract> list = contratSupport.findAll(5);
+
+      Assert.assertEquals("vérification du nombre d'enregistrements", 3, list
+            .size());
+
+      for (int i = 1; i < 4; i++) {
+         String codeClient = "codeClient" + i;
+         String description = "description" + i;
+         String libelle = "libelle" + i;
+         Long duree = Long.valueOf(60 + i);
+
+         boolean found = false;
+         int index = 0;
+         while (!found && index < list.size()) {
+            if (codeClient.equals(list.get(index).getCodeClient())) {
+               Assert.assertEquals("la description doit etre valide",
+                     description, list.get(index).getDescription());
+               Assert.assertEquals("le libellé doit etre valide", libelle, list
+                     .get(index).getLibelle());
+               Assert.assertEquals("la durée doit etre valide", duree, list
+                     .get(index).getViDuree());
+               found = true;
+            }
+            index++;
+         }
+
+         Assert.assertTrue("le code " + libelle + " doit etre trouvé", found);
+      }
+   }
+   
+   @Test
+   public void getFullCsTest(){
+      creationContrat();
+      creationPagm();
+      creationPagma();
+      creationPagmp();
+      creationPrmd();
+      ServiceContractDatas fullCs = service.getFullContratService(CODE_CLIENT);
+      
+      Assert.assertEquals(fullCs.getCodeClient(), CODE_CLIENT);
+      Assert.assertEquals(fullCs.getDescription(), DESCRIPTION_CONTRAT);
+      Assert.assertEquals(fullCs.getLibelle(), LIBELLE_CONTRAT);
+      Assert.assertEquals(fullCs.getViDuree(), DUREE_CONTRAT);
+      Assert.assertNotNull(fullCs.getPagms());
+      for(Pagm pagm : fullCs.getPagms()){
+         Assert.assertEquals(pagm.getCode(), CODE_PAGM);
+         Assert.assertEquals(pagm.getDescription(), DESCRIPTION_PAGM);
+         Assert.assertEquals(pagm.getPagma(), CODE_PAGMA);
+         Assert.assertEquals(pagm.getPagmp(), CODE_PAGMP);
+      }
+      Assert.assertNotNull(fullCs.getPagmas());
+      for(Pagma pagma : fullCs.getPagmas()){
+         Assert.assertEquals(pagma.getCode(), CODE_PAGMA);
+         Assert.assertEquals(pagma.getActionUnitaires(), Arrays.asList(new String[] { CODE_ACTION_1 }));
+      }
+      Assert.assertNotNull(fullCs.getPagmps());  
+      for(Pagmp pagmp : fullCs.getPagmps()){
+         Assert.assertEquals(pagmp.getCode(), CODE_PAGMP);
+         Assert.assertEquals(pagmp.getDescription(), DESCRIPTION_PAGMP);
+         Assert.assertEquals(pagmp.getPrmd(), CODE_PRMD);
+      }
+      Assert.assertNotNull(fullCs.getPrmds());
+      for(Prmd prmd: fullCs.getPrmds()){
+         Assert.assertEquals(prmd.getCode(), CODE_PRMD);
+         Assert.assertEquals(prmd.getDescription(), DESCRIPTION_PRMD);
+         Assert.assertEquals(prmd.getLucene(), LUCENE_PRMD);
+         Assert.assertEquals(prmd.getBean(), BEAN1);
+      }
+   }
+   
 
 }
+

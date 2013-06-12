@@ -39,14 +39,25 @@ public class SaeActionUnitaireServiceImpl implements SaeActionUnitaireService {
 
    private static final String PREFIXE_AU = "/DroitActionUnitaire/";
 
-   @Autowired
    private ActionUnitaireSupport actionSupport;
 
-   @Autowired
    private JobClockSupport clockSupport;
 
-   @Autowired
    private CuratorFramework curatorClient;
+   
+   
+   /**
+    * constructeur
+    * @param action {@link ActionUnitaireSupport}
+    * @param clock {@link JobClockSupport}
+    * @param curator {@link CuratorFramework}
+    */   
+   @Autowired
+   public SaeActionUnitaireServiceImpl(ActionUnitaireSupport action, JobClockSupport clock, CuratorFramework curator){
+      this.actionSupport = action;
+      this.clockSupport = clock;
+      this.curatorClient = curator;
+   }
 
    /**
     * {@inheritDoc}

@@ -23,9 +23,18 @@ import fr.urssaf.image.sae.droit.dao.model.Pagma;
 @Component
 public class PagmaSupport {
 
-   @Autowired
    private PagmaDao dao;
-
+   
+   /**
+    * constructeur
+    * @param pagmaDao DAO associée au pagma
+    */
+   @Autowired
+   public PagmaSupport(PagmaDao pagmaDao){
+      this.dao = pagmaDao;
+   }
+   
+   
    /**
     * Méthode de création d'un ligne
     * 

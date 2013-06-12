@@ -28,8 +28,16 @@ public class PagmSupport {
 
    private final PagmSerializer pagmSerializer = PagmSerializer.get();
 
-   @Autowired
    private PagmDao dao;
+   
+   /**
+    * constructeur
+    * @param pagmDao DAO associée au pagm
+    */
+   @Autowired
+   public PagmSupport(PagmDao pagmDao){
+      this.dao = pagmDao;
+   }
 
    /**
     * Méthode de création d'un ligne

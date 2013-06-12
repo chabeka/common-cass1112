@@ -33,8 +33,17 @@ import fr.urssaf.image.sae.droit.dao.serializer.MapSerializer;
 @Component
 public class PrmdSupport {
 
-   @Autowired
+
    private PrmdDao dao;
+   
+   /**
+    * constructeur
+    * @param prmdDao DAO associée au PRMD
+    */
+   @Autowired
+   public PrmdSupport(PrmdDao prmdDao){
+      this.dao = prmdDao;
+   }
 
    /**
     * Méthode de création d'un ligne

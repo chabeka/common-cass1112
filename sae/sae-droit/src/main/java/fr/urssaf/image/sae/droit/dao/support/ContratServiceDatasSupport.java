@@ -26,23 +26,31 @@ import fr.urssaf.image.sae.droit.dao.model.ServiceContractDatas;
 @Component
 public class ContratServiceDatasSupport {
 
-   @Autowired
    private ContratServiceSupport contratSupport;
 
-   @Autowired
    private PagmSupport pagmSupport;
 
-   @Autowired
    private PagmaSupport pagmaSupport;
 
-   @Autowired
    private PagmpSupport pagmpSupport;
 
-   @Autowired
    private ActionUnitaireSupport actionSupport;
 
-   @Autowired
    private PrmdSupport prmdSupport;
+
+   @Autowired
+   public ContratServiceDatasSupport(ContratServiceSupport contratSupport,
+         PagmSupport pagmSupport, PagmaSupport pagmaSupport,
+         PagmpSupport pagmpSupport, ActionUnitaireSupport actionSupport,
+         PrmdSupport prmdSupport) {
+      this.contratSupport = contratSupport;
+      this.pagmSupport = pagmSupport;
+      this.pagmaSupport = pagmaSupport;
+      this.pagmpSupport = pagmpSupport;
+      this.actionSupport = actionSupport;
+      this.prmdSupport = prmdSupport;
+
+   }
 
    /**
     * Retourne la liste de tous les contrats de service et leur contenu complet
@@ -71,16 +79,7 @@ public class ContratServiceDatasSupport {
             contracts.size());
 
       for (ServiceContract contract : contracts) {
-         ServiceContractDatas data = new ServiceContractDatas(contract);
-
-         List<Pagm> pagms = pagmSupport.find(data.getCodeClient());
-         data.setPagms(pagms);
-
-         data.setPagmas(findPagmas(pagms));
-         data.setPagmps(findPagmps(pagms));
-         data.setActions(findActionsUnitaires(data.getPagmas()));
-         data.setPrmds(findPrmd(data.getPagmps()));
-         datas.add(data);
+         datas.add(getAllServiceContractDatas(contract));
       }
 
       return datas;
@@ -158,6 +157,29 @@ public class ContratServiceDatasSupport {
       }
 
       return prmds;
+   }
+
+   public ServiceContractDatas getCs(String id) {
+      ServiceContract contract = contratSupport.find(id);
+
+      return getAllServiceContractDatas(contract);
+
+   }
+
+   private ServiceContractDatas getAllServiceContractDatas(
+         ServiceContract contract) {
+
+      ServiceContractDatas data = new ServiceContractDatas(contract);
+
+      List<Pagm> pagms = pagmSupport.find(data.getCodeClient());
+      data.setPagms(pagms);
+
+      data.setPagmas(findPagmas(pagms));
+      data.setPagmps(findPagmps(pagms));
+      data.setActions(findActionsUnitaires(data.getPagmas()));
+      data.setPrmds(findPrmd(data.getPagmps()));
+
+      return data;
    }
 
 }

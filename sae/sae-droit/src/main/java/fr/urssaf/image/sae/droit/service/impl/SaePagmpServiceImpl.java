@@ -42,17 +42,28 @@ public class SaePagmpServiceImpl implements SaePagmpService {
 
    private static final String PREFIXE_PAGMP = "/DroitPagmp/";
 
-   @Autowired
    private CuratorFramework curatorClient;
 
-   @Autowired
    private PagmpSupport pagmpSupport;
 
-   @Autowired
    private PrmdSupport prmdSupport;
 
-   @Autowired
    private JobClockSupport clockSupport;
+   
+   /**
+    * constructeur
+    * @param pagmp {@link PagmpSupport}
+    * @param prmd {@link PrmdSupport}
+    * @param clock {@link JobClockSupport}
+    * @param curator {@link CuratorFramework}
+    */   
+   @Autowired
+   public SaePagmpServiceImpl(PagmpSupport pagmp, PrmdSupport prmd, JobClockSupport clock, CuratorFramework curator){
+      this.pagmpSupport = pagmp;
+      this.prmdSupport = prmd;
+      this.clockSupport = clock;
+      this.curatorClient = curator;
+   }
 
    /**
     * {@inheritDoc}

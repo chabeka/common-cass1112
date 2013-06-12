@@ -38,16 +38,30 @@ public class SaePrmdServiceImpl implements SaePrmdService {
    private static final String TRC_CREATE = "createPrmd()";
    private static final String TRC_EXISTS= "prmdExists()";
    
+   private static final String TRC_FIND= "getPrmd()";
+   
    private static final String PREFIXE_PRMD = "/DroitPrmd/";
 
-   @Autowired
    private PrmdSupport prmdSupport;
 
-   @Autowired
    private JobClockSupport clockSupport;
 
-   @Autowired
+   
    private CuratorFramework curatorClient;
+   
+   /**
+    * constructeur
+    * 
+    * @param prmd {@link PrmdSupport}
+    * @param clock {@link JobClockSupport}
+    * @param curator {@link CuratorFramework}
+    */   
+   @Autowired
+   public SaePrmdServiceImpl(PrmdSupport prmd, JobClockSupport clock, CuratorFramework curator){
+      this.prmdSupport = prmd;
+      this.clockSupport = clock;
+      this.curatorClient = curator;
+   }
 
    /**
     * {@inheritDoc}
@@ -133,5 +147,19 @@ public class SaePrmdServiceImpl implements SaePrmdService {
       }
 
    }
+   
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final Prmd getPrmd(String code) {
+
+      LOGGER.debug("{} - Début de la récupération du PRMD", TRC_FIND);
+      Prmd storedPrmd = prmdSupport.find(code);
+      LOGGER.debug("{} - Fin de la récupération du PRMD", TRC_FIND);
+
+      return storedPrmd;
+   }
+
 
 }

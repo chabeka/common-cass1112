@@ -10,6 +10,7 @@ import java.util.List;
 import fr.urssaf.image.sae.droit.dao.model.Pagm;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.dao.model.ServiceContract;
+import fr.urssaf.image.sae.droit.dao.model.ServiceContractDatas;
 import fr.urssaf.image.sae.droit.exception.ContratServiceNotFoundException;
 import fr.urssaf.image.sae.droit.exception.PagmNotFoundException;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
@@ -91,6 +92,24 @@ public class SaeDroitServiceSkipImpl implements SaeDroitService {
     */
    @Override
    public List<Pagm> getListePagm(String idContratService) {
+      return null;
+   }
+
+   
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public List<ServiceContract> findAllContractService(int maxResult) {
+
+      return null;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public ServiceContractDatas getFullContratService(String id) {
       return null;
    }
 

@@ -27,4 +27,14 @@ public interface SaePrmdService {
     * @return <b>true</b> si le PRMD existe, <b>false</b> sinon
     */
    boolean prmdExists(String code);
+   
+   /**
+    * Récupération d'un prmd 
+    *  
+    * @param code
+    *           code du PRMD
+    * @return {@link Prmd} trouvé
+    */
+   Prmd getPrmd(String code);
+   
 }

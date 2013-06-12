@@ -3,6 +3,11 @@
  */
 package fr.urssaf.image.sae.droit.service;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -91,4 +96,23 @@ public class SaePrmdServiceTest {
                .getMessage().contains("code"));
       }
    }
+  
+  @Test
+  public void getPrmdTest(){
+     Prmd prmd = new Prmd();
+
+     prmd.setCode("codePrmd");
+     prmd.setDescription("description Prmd");
+     prmd.setLucene("lucene Prmd");
+     prmd.setBean("bean1");
+     Map<String, List<String>> map = new HashMap<String, List<String>>();
+     map.put("cle1", Arrays.asList(new String[]{"valeur1"}));
+     prmd.setMetadata(map);
+
+     service.createPrmd(prmd);
+
+     Prmd storedPrmd = service.getPrmd("codePrmd");
+     Assert.assertEquals("les deux prmds doivent être identiques", storedPrmd,
+           prmd);
+  }
 }

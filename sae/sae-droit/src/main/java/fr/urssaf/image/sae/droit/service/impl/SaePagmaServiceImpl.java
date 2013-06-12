@@ -17,6 +17,8 @@ import fr.urssaf.image.sae.droit.dao.serializer.exception.ActionUnitaireReferenc
 import fr.urssaf.image.sae.droit.dao.serializer.exception.PagmaReferenceException;
 import fr.urssaf.image.sae.droit.dao.support.ActionUnitaireSupport;
 import fr.urssaf.image.sae.droit.dao.support.PagmaSupport;
+import fr.urssaf.image.sae.droit.dao.support.PagmpSupport;
+import fr.urssaf.image.sae.droit.dao.support.PrmdSupport;
 import fr.urssaf.image.sae.droit.exception.DroitRuntimeException;
 import fr.urssaf.image.sae.droit.service.SaePagmaService;
 import fr.urssaf.image.sae.droit.utils.ZookeeperUtils;
@@ -38,18 +40,31 @@ public class SaePagmaServiceImpl implements SaePagmaService {
 
    private static final String PREFIXE_PAGMA = "/DroitPagma/";
 
-   @Autowired
    private CuratorFramework curatorClient;
 
-   @Autowired
    private PagmaSupport pagmaSupport;
 
-   @Autowired
    private ActionUnitaireSupport actionSupport;
 
-   @Autowired
    private JobClockSupport clockSupport;
 
+   
+   /**
+    * constructeur
+    * @param action {@link ActionUnitaireSupport}
+    * @param pagma {@link PagmaSupport}
+    * @param clock {@link JobClockSupport}
+    * @param curator {@link CuratorFramework}
+    */   
+   @Autowired
+   public SaePagmaServiceImpl(ActionUnitaireSupport action, PagmaSupport pagma, JobClockSupport clock, CuratorFramework curator){
+      this.pagmaSupport = pagma;
+      this.actionSupport = action;
+      this.clockSupport = clock;
+      this.curatorClient = curator;
+   }
+
+   
    /**
     * {@inheritDoc}
     */

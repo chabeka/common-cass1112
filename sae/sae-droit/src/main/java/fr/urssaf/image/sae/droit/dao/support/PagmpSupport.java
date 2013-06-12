@@ -32,8 +32,16 @@ import fr.urssaf.image.sae.droit.dao.model.Pagmp;
 @Component
 public class PagmpSupport {
 
-   @Autowired
    private PagmpDao dao;
+   
+   /**
+    * constructeur
+    * @param pagmpDao DAO associée au pagmp
+    */
+   @Autowired
+   public PagmpSupport(PagmpDao pagmpDao){
+      this.dao = pagmpDao;
+   }
 
    /**
     * Méthode de création d'un ligne

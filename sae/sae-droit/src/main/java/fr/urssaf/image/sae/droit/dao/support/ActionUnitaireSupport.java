@@ -32,8 +32,18 @@ import fr.urssaf.image.sae.droit.dao.model.ActionUnitaire;
 @Component
 public class ActionUnitaireSupport {
 
-   @Autowired
    private ActionUnitaireDao dao;
+   
+   /**
+    * constructeur
+    * @param auDao DAO associée aux Actions unitaires 
+    */
+   @Autowired
+   public ActionUnitaireSupport(ActionUnitaireDao auDao){
+      this.dao = auDao;
+   }
+
+   
 
    /**
     * méthode de création d'une nouvelle ligne

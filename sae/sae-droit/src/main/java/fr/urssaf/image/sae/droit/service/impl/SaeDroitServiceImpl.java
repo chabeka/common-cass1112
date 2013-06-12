@@ -27,11 +27,13 @@ import fr.urssaf.image.sae.droit.dao.model.Pagma;
 import fr.urssaf.image.sae.droit.dao.model.Pagmp;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.dao.model.ServiceContract;
+import fr.urssaf.image.sae.droit.dao.model.ServiceContractDatas;
 import fr.urssaf.image.sae.droit.dao.serializer.exception.ActionUnitaireReferenceException;
 import fr.urssaf.image.sae.droit.dao.serializer.exception.PagmaReferenceException;
 import fr.urssaf.image.sae.droit.dao.serializer.exception.PagmpReferenceException;
 import fr.urssaf.image.sae.droit.dao.serializer.exception.PrmdReferenceException;
 import fr.urssaf.image.sae.droit.dao.support.ActionUnitaireSupport;
+import fr.urssaf.image.sae.droit.dao.support.ContratServiceDatasSupport;
 import fr.urssaf.image.sae.droit.dao.support.ContratServiceSupport;
 import fr.urssaf.image.sae.droit.dao.support.PagmSupport;
 import fr.urssaf.image.sae.droit.dao.support.PagmaSupport;
@@ -85,6 +87,8 @@ public class SaeDroitServiceImpl implements SaeDroitService {
    private final CuratorFramework curatorClient;
 
    private final JobClockSupport clockSupport;
+   
+   private final ContratServiceDatasSupport completeContratSupport;
 
    /**
     * Constructeur
@@ -110,7 +114,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
    public SaeDroitServiceImpl(final ContratServiceSupport contratSupport,
          final PagmSupport pagmSupport, final PagmaSupport pagmaSupport,
          final PagmpSupport pagmpSupport,
-         final ActionUnitaireSupport actionSupport,
+         final ActionUnitaireSupport actionSupport, final ContratServiceDatasSupport completeCsSupport,
          final PrmdSupport prmdSupport, final CuratorFramework curatorClient,
          final JobClockSupport clockSupport, CacheConfig cacheConfig) {
 
@@ -179,7 +183,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
                }
 
             });
-
+      this.completeContratSupport =completeCsSupport;
       this.contratSupport = contratSupport;
       this.pagmSupport = pagmSupport;
       this.curatorClient = curatorClient;
@@ -589,5 +593,24 @@ public class SaeDroitServiceImpl implements SaeDroitService {
       return pagms;
 
    }
+   
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public List<ServiceContract> findAllContractService(int maxResult) {
+
+      return contratSupport.findAll(maxResult);
+   }
+   
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public ServiceContractDatas getFullContratService(String id) {
+
+      return completeContratSupport.getCs(id);
+   }
+   
 
 }

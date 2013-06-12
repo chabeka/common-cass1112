@@ -7,6 +7,7 @@ import java.util.List;
 
 import fr.urssaf.image.sae.droit.dao.model.Pagm;
 import fr.urssaf.image.sae.droit.dao.model.ServiceContract;
+import fr.urssaf.image.sae.droit.dao.model.ServiceContractDatas;
 import fr.urssaf.image.sae.droit.exception.ContratServiceNotFoundException;
 import fr.urssaf.image.sae.droit.exception.PagmNotFoundException;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
@@ -81,5 +82,19 @@ public interface SaeDroitService {
     * @return la liste des PAGM du contrat de service
     */
    List<Pagm> getListePagm(String idContratService);
+   
+   /**
+    * Méthode permettant de récupérer N contrats de services
+    * @param maxResult nombre maximum de contrat de service à renvoyer
+    * @return Liste de {@link ServiceContract}
+    */
+   List<ServiceContract> findAllContractService(int maxResult);
+   
+   /**
+    * Retourne un contrat de service complet avec tous ses informations
+    * @param id code client du contrat de service
+    * @return {@link ServiceContractDatas}
+    */
+   ServiceContractDatas getFullContratService(String id);
 
 }

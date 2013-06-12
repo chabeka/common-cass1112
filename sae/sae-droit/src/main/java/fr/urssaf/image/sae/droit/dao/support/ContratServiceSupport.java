@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component;
 import fr.urssaf.image.commons.cassandra.helper.HectorIterator;
 import fr.urssaf.image.commons.cassandra.helper.QueryResultConverter;
 import fr.urssaf.image.sae.droit.dao.ContratServiceDao;
+import fr.urssaf.image.sae.droit.dao.PrmdDao;
 import fr.urssaf.image.sae.droit.dao.model.ServiceContract;
 import fr.urssaf.image.sae.droit.dao.serializer.ListSerializer;
 
@@ -35,9 +36,18 @@ import fr.urssaf.image.sae.droit.dao.serializer.ListSerializer;
 @Component
 public class ContratServiceSupport {
 
-   @Autowired
    private ContratServiceDao dao;
 
+   /**
+    * constructeur
+    * @param csDao DAO associée au Constrat de service
+    */
+   @Autowired
+   public ContratServiceSupport(ContratServiceDao csDao){
+      this.dao = csDao;
+   }
+
+   
    /**
     * Méthode de création d'une ligne
     * 
