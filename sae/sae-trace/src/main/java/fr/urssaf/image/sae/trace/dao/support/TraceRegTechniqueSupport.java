@@ -86,7 +86,7 @@ public class TraceRegTechniqueSupport {
       LOGGER.debug("{} - Début", prefix);
 
       // création de la trace
-      ColumnFamilyTemplate<UUID, String> tmpl = dao.getTechTmpl();
+      ColumnFamilyTemplate<UUID, String> tmpl = dao.getCfTmpl();
       ColumnFamilyUpdater<UUID, String> updater = tmpl.createUpdater(trace
             .getIdentifiant());
 
@@ -94,8 +94,8 @@ public class TraceRegTechniqueSupport {
       dao.writeColumnContexte(updater, trace.getContexte(), clock);
       dao.writeColumnTimestamp(updater, trace.getTimestamp(), clock);
 
-      if (StringUtils.isNotBlank(trace.getContrat())) {
-         dao.writeColumnContratService(updater, trace.getContrat(), clock);
+      if (StringUtils.isNotBlank(trace.getContratService())) {
+         dao.writeColumnContratService(updater, trace.getContratService(), clock);
       }
 
       if (CollectionUtils.isNotEmpty(trace.getPagms())) {
@@ -180,7 +180,7 @@ public class TraceRegTechniqueSupport {
     * @return la trace technique
     */
    public final TraceRegTechnique find(UUID identifiant) {
-      ColumnFamilyTemplate<UUID, String> tmpl = dao.getTechTmpl();
+      ColumnFamilyTemplate<UUID, String> tmpl = dao.getCfTmpl();
       ColumnFamilyResult<UUID, String> result = tmpl.queryColumns(identifiant);
 
       return getTraceRegTechniqueFromResult(result);
@@ -294,7 +294,7 @@ public class TraceRegTechniqueSupport {
                .getString(TraceRegTechniqueDao.COL_CONTEXTE));
          exploit
                .setCodeEvt(result.getString(TraceRegTechniqueDao.COL_CODE_EVT));
-         exploit.setContrat(result
+         exploit.setContratService(result
                .getString(TraceRegTechniqueDao.COL_CONTRAT_SERVICE));
          exploit.setLogin(result.getString(TraceRegTechniqueDao.COL_LOGIN));
          exploit.setStacktrace(result
@@ -323,7 +323,7 @@ public class TraceRegTechniqueSupport {
       // suppression de toutes les traces
       Mutator<UUID> mutator = dao.createMutator();
       while (iterator.hasNext()) {
-         dao.mutatorSuppressionTraceRegTechnique(mutator, iterator.next()
+         dao.mutatorSuppressionLigne(mutator, iterator.next()
                .getIdentifiant(), clock);
          result++;
       }

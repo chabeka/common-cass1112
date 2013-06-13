@@ -23,6 +23,7 @@ import me.prettyprint.hector.api.mutation.Mutator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import fr.urssaf.image.sae.commons.dao.AbstractDao;
 import fr.urssaf.image.sae.trace.dao.serializer.ListSerializer;
 import fr.urssaf.image.sae.trace.dao.serializer.MapSerializer;
 
@@ -31,7 +32,7 @@ import fr.urssaf.image.sae.trace.dao.serializer.MapSerializer;
  * 
  */
 @Repository
-public class TraceJournalEvtDao {
+public class TraceJournalEvtDao extends AbstractDao<UUID, String>{
 
    /** Date de création de la trace */
    public static final String COL_TIMESTAMP = "timestamp";
@@ -54,11 +55,8 @@ public class TraceJournalEvtDao {
    /** Informations complémentaires */
    public static final String COL_INFOS = "infos";
 
-   private static final int MAX_ATTRIBUTS = 100;
    public static final String REG_EXPLOIT_CFNAME = "TraceJournalEvt";
 
-   private final ColumnFamilyTemplate<UUID, String> journalEvtTmpl;
-   private final Keyspace keyspace;
 
    /**
     * Constructeur
@@ -68,14 +66,33 @@ public class TraceJournalEvtDao {
     */
    @Autowired
    public TraceJournalEvtDao(Keyspace keyspace) {
-
-      this.keyspace = keyspace;
-
-      journalEvtTmpl = new ThriftColumnFamilyTemplate<UUID, String>(keyspace,
-            REG_EXPLOIT_CFNAME, UUIDSerializer.get(), StringSerializer.get());
-
-      journalEvtTmpl.setCount(MAX_ATTRIBUTS);
+      super(keyspace);
    }
+   
+   /**
+    * @return le nom de la CF
+    */
+   @Override
+   public final String getColumnFamilyName() {
+      return REG_EXPLOIT_CFNAME;
+   }
+
+   /**
+    * @return le sérializer d'une colonne
+    */
+   @Override
+   public final Serializer<String> getColumnKeySerializer() {
+      return StringSerializer.get();
+   }
+
+   /**
+    * @return le sérializer de la clé d'une ligne
+    */
+   @Override
+   public final Serializer<UUID> getRowKeySerializer() {
+      return UUIDSerializer.get();
+   }
+
 
    /**
     * ajoute une colonne {@value TraceJournalEvtDao#COL_TIMESTAMP}
@@ -106,7 +123,7 @@ public class TraceJournalEvtDao {
          ColumnFamilyUpdater<UUID, String> updater, String value, long clock) {
       addColumn(updater, COL_CONTEXT, value, StringSerializer.get(), clock);
    }
-
+   
    /**
     * ajoute une colonne {@value TraceJournalEvtDao#COL_CODE_EVT}
     * 
@@ -183,53 +200,6 @@ public class TraceJournalEvtDao {
          ColumnFamilyUpdater<UUID, String> updater, Map<String, Object> value,
          long clock) {
       addColumn(updater, COL_INFOS, value, MapSerializer.get(), clock);
-   }
-
-   /**
-    * 
-    * @return Mutator de <code>TraceJournalEvt</code>
-    */
-   public final Mutator<UUID> createMutator() {
-
-      Mutator<UUID> mutator = HFactory.createMutator(keyspace, UUIDSerializer
-            .get());
-
-      return mutator;
-
-   }
-
-   /**
-    * Méthode de suppression d'une ligne TraceJournalEvt
-    * 
-    * @param mutator
-    *           Mutator de <code>TraceJournalEvt</code>
-    * @param code
-    *           identifiant de la trace
-    * @param clock
-    *           horloge de la suppression
-    */
-   public final void mutatorSuppressionRegExploitation(Mutator<UUID> mutator,
-         UUID code, long clock) {
-
-      mutator.addDeletion(code, REG_EXPLOIT_CFNAME, clock);
-   }
-
-   @SuppressWarnings("unchecked")
-   private void addColumn(ColumnFamilyUpdater<UUID, String> updater,
-         String colName, Object value, Serializer valueSerializer, long clock) {
-
-      HColumn<String, Object> column = HFactory.createColumn(colName, value,
-            StringSerializer.get(), valueSerializer);
-
-      column.setClock(clock);
-      updater.setColumn(column);
-   }
-
-   /**
-    * @return le CassandraTemplate de <code>TraceJournalEvt</code>
-    */
-   public final ColumnFamilyTemplate<UUID, String> getJournalEvtTmpl() {
-      return journalEvtTmpl;
    }
 
 }

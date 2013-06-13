@@ -118,7 +118,7 @@ public class DispatcheurServiceTechDatasTest {
       TraceRegTechnique trace = techService.lecture(result.get(0)
             .getIdentifiant());
       Assert.assertTrue("Le contrat de service ne doit pas être renseigné",
-            StringUtils.isEmpty(trace.getContrat()));
+            StringUtils.isEmpty(trace.getContratService()));
 
    }
 

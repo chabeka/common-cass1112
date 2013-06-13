@@ -83,7 +83,7 @@ public class TraceJournalEvtSupport {
       LOGGER.debug("{} - Début", prefix);
 
       // création de la trace
-      ColumnFamilyTemplate<UUID, String> tmpl = dao.getJournalEvtTmpl();
+      ColumnFamilyTemplate<UUID, String> tmpl = dao.getCfTmpl();
       ColumnFamilyUpdater<UUID, String> updater = tmpl.createUpdater(trace
             .getIdentifiant());
 
@@ -174,7 +174,7 @@ public class TraceJournalEvtSupport {
     * @return la trace de sécurité
     */
    public final TraceJournalEvt find(UUID identifiant) {
-      ColumnFamilyTemplate<UUID, String> tmpl = dao.getJournalEvtTmpl();
+      ColumnFamilyTemplate<UUID, String> tmpl = dao.getCfTmpl();
       ColumnFamilyResult<UUID, String> result = tmpl.queryColumns(identifiant);
 
       return getTraceJournalEvtFromResult(result);
@@ -315,8 +315,8 @@ public class TraceJournalEvtSupport {
       // suppression de toutes les traces
       Mutator<UUID> mutator = dao.createMutator();
       while (iterator.hasNext()) {
-         dao.mutatorSuppressionRegExploitation(mutator, iterator.next()
-               .getIdentifiant(), clock);
+         dao.mutatorSuppressionLigne(mutator, iterator.next().getIdentifiant(),
+               clock);
          result++;
       }
       mutator.execute();

@@ -125,7 +125,7 @@ public class TraceRegTechniqueSupportTest {
       Assert.assertEquals("le code evenement doit etre correcte", CODE_EVT,
             technique.getCodeEvt());
       Assert.assertEquals("le contrat doit etre correcte", CONTRAT, technique
-            .getContrat());
+            .getContratService());
       checkPagms(technique.getPagms());
       Assert.assertEquals("l'identifiant doit etre correcte", uuid, technique
             .getIdentifiant());
@@ -154,7 +154,7 @@ public class TraceRegTechniqueSupportTest {
       Assert.assertEquals("le code evenement doit etre correcte", CODE_EVT,
             index.getCodeEvt());
       Assert.assertEquals("le contrat doit etre correcte", CONTRAT, index
-            .getContrat());
+            .getContratService());
       checkPagms(index.getPagms());
       Assert.assertEquals("l'identifiant doit etre correcte", uuid, index
             .getIdentifiant());
@@ -178,7 +178,7 @@ public class TraceRegTechniqueSupportTest {
       TraceRegTechnique trace = new TraceRegTechnique(uuid, DATE);
       trace.setContexte(CONTEXTE);
       trace.setCodeEvt(CODE_EVT);
-      trace.setContrat(CONTRAT);
+      trace.setContratService(CONTRAT);
       trace.setPagms(PAGMS);
       trace.setLogin(LOGIN);
       trace.setInfos(INFOS);

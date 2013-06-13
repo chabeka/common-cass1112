@@ -23,6 +23,7 @@ import me.prettyprint.hector.api.mutation.Mutator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import fr.urssaf.image.sae.commons.dao.AbstractDao;
 import fr.urssaf.image.sae.trace.dao.serializer.ListSerializer;
 import fr.urssaf.image.sae.trace.dao.serializer.MapSerializer;
 
@@ -31,9 +32,8 @@ import fr.urssaf.image.sae.trace.dao.serializer.MapSerializer;
  * 
  */
 @Repository
-public class TraceRegSecuriteDao {
+public class TraceRegSecuriteDao extends AbstractDao<UUID, String>{
 
-   private static final int MAX_ATTRIBUTS = 100;
    public static final String REG_SECURITE_CFNAME = "TraceRegSecurite";
 
    /** Date de création de la trace */
@@ -57,9 +57,6 @@ public class TraceRegSecuriteDao {
    /** informations supplémentaires */
    public static final String COL_INFOS = "infos";
 
-   private final ColumnFamilyTemplate<UUID, String> secuTmpl;
-   private final Keyspace keyspace;
-
    /**
     * Constructeur
     * 
@@ -68,24 +65,31 @@ public class TraceRegSecuriteDao {
     */
    @Autowired
    public TraceRegSecuriteDao(Keyspace keyspace) {
-
-      this.keyspace = keyspace;
-
-      secuTmpl = new ThriftColumnFamilyTemplate<UUID, String>(keyspace,
-            REG_SECURITE_CFNAME, UUIDSerializer.get(), StringSerializer.get());
-
-      secuTmpl.setCount(MAX_ATTRIBUTS);
+      super(keyspace);
+   }
+   
+   /**
+    * @return le nom de la CF
+    */
+   @Override
+   public final String getColumnFamilyName() {
+      return REG_SECURITE_CFNAME;
    }
 
-   @SuppressWarnings("unchecked")
-   private void addColumn(ColumnFamilyUpdater<UUID, String> updater,
-         String colName, Object value, Serializer valueSerializer, long clock) {
+   /**
+    * @return le sérializer d'une colonne
+    */
+   @Override
+   public final Serializer<String> getColumnKeySerializer() {
+      return StringSerializer.get();
+   }
 
-      HColumn<String, Object> column = HFactory.createColumn(colName, value,
-            StringSerializer.get(), valueSerializer);
-
-      column.setClock(clock);
-      updater.setColumn(column);
+   /**
+    * @return le sérializer de la clé d'une ligne
+    */
+   @Override
+   public final Serializer<UUID> getRowKeySerializer() {
+      return UUIDSerializer.get();
    }
 
    /**
@@ -196,39 +200,4 @@ public class TraceRegSecuriteDao {
       addColumn(updater, COL_INFOS, value, MapSerializer.get(), clock);
    }
 
-   /**
-    * Méthode de suppression d'une ligne TraceRegSecurite
-    * 
-    * @param mutator
-    *           Mutator de <code>TraceRegSecurite</code>
-    * @param code
-    *           identifiant de la trace
-    * @param clock
-    *           horloge de la suppression
-    */
-   public final void mutatorSuppressionTraceRegSecurite(Mutator<UUID> mutator,
-         UUID code, long clock) {
-
-      mutator.addDeletion(code, REG_SECURITE_CFNAME, clock);
-   }
-
-   /**
-    * 
-    * @return Mutator de <code>TraceRegSecurite</code>
-    */
-   public final Mutator<UUID> createMutator() {
-
-      Mutator<UUID> mutator = HFactory.createMutator(keyspace, UUIDSerializer
-            .get());
-
-      return mutator;
-
-   }
-
-   /**
-    * @return le CassandraTemplate de <code>TraceRegSecurite</code>
-    */
-   public final ColumnFamilyTemplate<UUID, String> getSecuTmpl() {
-      return secuTmpl;
-   }
 }

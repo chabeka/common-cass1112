@@ -158,7 +158,7 @@ public class RegTechniqueServiceDatasTest {
       Assert.assertEquals("le code evenement doit etre correcte", CODE_EVT
             + suffixe, result.getCodeEvt());
       Assert.assertEquals("le contrat doit etre correcte", CONTRAT + suffixe,
-            result.getContrat());
+            result.getContratService());
       Assert.assertEquals("l'identifiant doit etre correcte", uuid, result
             .getIdentifiant());
       Assert.assertEquals("le login doit etre correcte", LOGIN + suffixe,
@@ -213,7 +213,7 @@ public class RegTechniqueServiceDatasTest {
             .buildUUIDFromDate(date), date);
       trace.setContexte(CONTEXTE + suffixe);
       trace.setCodeEvt(CODE_EVT + suffixe);
-      trace.setContrat(CONTRAT + suffixe);
+      trace.setContratService(CONTRAT + suffixe);
       trace.setLogin(LOGIN + suffixe);
       trace.setStacktrace(STACK + suffixe);
       trace.setInfos(INFOS);

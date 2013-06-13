@@ -83,7 +83,7 @@ public class TraceRegSecuriteSupport {
       LOGGER.debug("{} - Début", prefix);
 
       // création de la trace
-      ColumnFamilyTemplate<UUID, String> tmpl = dao.getSecuTmpl();
+      ColumnFamilyTemplate<UUID, String> tmpl = dao.getCfTmpl();
       ColumnFamilyUpdater<UUID, String> updater = tmpl.createUpdater(trace
             .getIdentifiant());
 
@@ -91,8 +91,9 @@ public class TraceRegSecuriteSupport {
       dao.writeColumnContexte(updater, trace.getContexte(), clock);
       dao.writeColumnTimestamp(updater, trace.getTimestamp(), clock);
 
-      if (StringUtils.isNotBlank(trace.getContrat())) {
-         dao.writeColumnContratService(updater, trace.getContrat(), clock);
+      if (StringUtils.isNotBlank(trace.getContratService())) {
+         dao.writeColumnContratService(updater, trace.getContratService(),
+               clock);
       }
 
       if (CollectionUtils.isNotEmpty(trace.getPagms())) {
@@ -173,7 +174,7 @@ public class TraceRegSecuriteSupport {
     * @return la trace de sécurité
     */
    public final TraceRegSecurite find(UUID identifiant) {
-      ColumnFamilyTemplate<UUID, String> tmpl = dao.getSecuTmpl();
+      ColumnFamilyTemplate<UUID, String> tmpl = dao.getCfTmpl();
       ColumnFamilyResult<UUID, String> result = tmpl.queryColumns(identifiant);
 
       return getTraceRegSecuriteFromResult(result);
@@ -290,7 +291,7 @@ public class TraceRegSecuriteSupport {
                .setCodeEvt(result.getString(TraceRegSecuriteDao.COL_CODE_EVT));
          securite.setContexte(result
                .getString(TraceRegSecuriteDao.COL_CONTEXTE));
-         securite.setContrat(result
+         securite.setContratService(result
                .getString(TraceRegSecuriteDao.COL_CONTRAT_SERVICE));
          securite.setLogin(result.getString(TraceRegSecuriteDao.COL_LOGIN));
 
@@ -315,8 +316,8 @@ public class TraceRegSecuriteSupport {
       // suppression de toutes les traces
       Mutator<UUID> mutator = dao.createMutator();
       while (iterator.hasNext()) {
-         dao.mutatorSuppressionTraceRegSecurite(mutator, iterator.next()
-               .getIdentifiant(), clock);
+         dao.mutatorSuppressionLigne(mutator, iterator.next().getIdentifiant(),
+               clock);
          result++;
       }
       mutator.execute();
