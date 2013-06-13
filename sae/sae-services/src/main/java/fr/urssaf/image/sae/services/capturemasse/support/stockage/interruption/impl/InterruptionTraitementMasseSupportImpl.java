@@ -10,6 +10,7 @@ import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
@@ -19,6 +20,7 @@ import fr.urssaf.image.sae.services.capturemasse.support.stockage.interruption.m
 import fr.urssaf.image.sae.services.capturemasse.support.stockage.interruption.util.InterruptionTraitementUtils;
 import fr.urssaf.image.sae.storage.dfce.manager.DFCEServicesManager;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
+import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 
 /**
  * 
@@ -35,6 +37,8 @@ public class InterruptionTraitementMasseSupportImpl implements
 
    private static final String CATCH = "AvoidCatchingThrowable";
 
+   private final StorageServiceProvider serviceProvider;
+
    /**
     * 
     * @param dfceManager
@@ -42,11 +46,16 @@ public class InterruptionTraitementMasseSupportImpl implements
     */
    @Autowired
    public InterruptionTraitementMasseSupportImpl(
-         final DFCEServicesManager dfceManager) {
+         final DFCEServicesManager dfceManager,
+         final @Qualifier("storageServiceProvider") StorageServiceProvider serviceProvider) {
 
       Assert.notNull(dfceManager, "'dfceManager' is required");
 
+      Assert.notNull(serviceProvider, "'serviceProvider' is required");
+
       this.dfceManager = dfceManager;
+      this.serviceProvider = serviceProvider;
+
    }
 
    /**
@@ -151,7 +160,10 @@ public class InterruptionTraitementMasseSupportImpl implements
             LOG.debug("{} - Tentative n°{}/{} de reconnexion à DFCE",
                   new Object[] { LOG_PREFIX, step, total });
 
-            dfceManager.getConnection();
+            dfceManager.getConnection(Boolean.TRUE);
+
+            // Reconnexion pour la couche storage
+            serviceProvider.openConnexion();
 
             // réussite de la connexion à DFCE
 
