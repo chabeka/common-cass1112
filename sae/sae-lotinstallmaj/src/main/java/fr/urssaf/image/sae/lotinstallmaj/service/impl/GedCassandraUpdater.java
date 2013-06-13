@@ -1,7 +1,5 @@
 package fr.urssaf.image.sae.lotinstallmaj.service.impl;
 
-import me.prettyprint.hector.api.Cluster;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

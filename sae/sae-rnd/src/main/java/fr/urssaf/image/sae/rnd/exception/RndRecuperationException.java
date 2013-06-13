@@ -18,6 +18,16 @@ public class RndRecuperationException extends Exception {
    public RndRecuperationException() {
       super();
    }
+   
+   /**
+    * Constructeur
+    * 
+    * @param exception
+    *           exception mère
+    */
+   public RndRecuperationException(Exception exception) {
+      super(exception);
+   }
 
    /**
     * Consttructeur avec un message et une cause données.

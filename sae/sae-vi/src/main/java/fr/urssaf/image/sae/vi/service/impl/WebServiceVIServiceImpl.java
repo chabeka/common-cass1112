@@ -25,7 +25,6 @@ import fr.urssaf.image.sae.droit.service.SaeDroitService;
 import fr.urssaf.image.sae.saml.data.SamlAssertionData;
 import fr.urssaf.image.sae.saml.exception.SamlExtractionException;
 import fr.urssaf.image.sae.saml.modele.SignatureVerificationResult;
-import fr.urssaf.image.sae.saml.service.SamlAssertionCreationService;
 import fr.urssaf.image.sae.saml.service.SamlAssertionExtractionService;
 import fr.urssaf.image.sae.vi.exception.VIAppliClientException;
 import fr.urssaf.image.sae.vi.exception.VIInvalideException;

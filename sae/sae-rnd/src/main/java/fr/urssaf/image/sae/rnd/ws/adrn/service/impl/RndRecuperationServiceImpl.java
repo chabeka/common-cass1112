@@ -76,9 +76,9 @@ public class RndRecuperationServiceImpl implements RndRecuperationService {
          return listeTypeDocs;
 
       } catch (ServiceException e) {
-         throw new RndRecuperationException(e.getMessage(), e.getCause());
+         throw new RndRecuperationException(e);
       } catch (RemoteException e) {
-         throw new RndRecuperationException(e.getMessage(), e.getCause());
+         throw new RndRecuperationException(e);
       }
    }
 
@@ -108,9 +108,9 @@ public class RndRecuperationServiceImpl implements RndRecuperationService {
          return listeCorresp;
 
       } catch (ServiceException e) {
-         throw new RndRecuperationException(e.getMessage(), e.getCause());
+         throw new RndRecuperationException(e);
       } catch (RemoteException e) {
-         throw new RndRecuperationException(e.getMessage(), e.getCause());
+         throw new RndRecuperationException(e);
       }
 
    }
@@ -136,9 +136,9 @@ public class RndRecuperationServiceImpl implements RndRecuperationService {
          return listeTypeDocuments;
 
       } catch (ServiceException e) {
-         throw new RndRecuperationException(e.getMessage(), e.getCause());
+         throw new RndRecuperationException(e);
       } catch (RemoteException e) {
-         throw new RndRecuperationException(e.getMessage(), e.getCause());
+         throw new RndRecuperationException(e);
       }
    }
 
@@ -155,9 +155,9 @@ public class RndRecuperationServiceImpl implements RndRecuperationService {
          return port.getLastNumVersion()[0];
 
       } catch (ServiceException e) {
-         throw new RndRecuperationException(e.getMessage(), e.getCause());
+         throw new RndRecuperationException(e);
       } catch (RemoteException e) {
-         throw new RndRecuperationException(e.getMessage(), e.getCause());
+         throw new RndRecuperationException(e);
       }
    }
 

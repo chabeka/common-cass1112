@@ -42,14 +42,14 @@ public final class PortailVIServiceImpl implements PortailVIService {
    private static final Logger LOGGER = LoggerFactory
          .getLogger(PortailVIServiceImpl.class);
 
-   private static final Schema schema;
+   private static final Schema SCHEMA;
    static {
       // Construction de l'objet Schema permettant la validation XSD des VI
       // générés dans la méthode creerVIpourPortailAPortail
       SchemaFactory schemaFactory = SchemaFactory
             .newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
       try {
-         schema = schemaFactory.newSchema(PortailVIServiceImpl.class
+         SCHEMA = schemaFactory.newSchema(PortailVIServiceImpl.class
                .getClassLoader().getResource(VIConfiguration.path()));
       } catch (SAXException e) {
          throw new IllegalStateException(e);
@@ -119,7 +119,7 @@ public final class PortailVIServiceImpl implements PortailVIService {
          Marshaller marshaller = context.createMarshaller();
          marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 
-         marshaller.setSchema(schema);
+         marshaller.setSchema(SCHEMA);
 
          marshaller.setEventHandler(eventHandler);
          StringWriter writer = new StringWriter();
@@ -191,7 +191,7 @@ public final class PortailVIServiceImpl implements PortailVIService {
          Unmarshaller unmarshaller = context.createUnmarshaller();
 
          unmarshaller.setEventHandler(eventHandler);
-         unmarshaller.setSchema(schema);
+         unmarshaller.setSchema(SCHEMA);
 
          InputStream input = new ByteArrayInputStream(xml.getBytes());
 

@@ -5,6 +5,7 @@ package fr.urssaf.image.sae.rnd.modele;
  * 
  * 
  */
+@SuppressWarnings("PMD.CyclomaticComplexity")
 public class TypeDocument {
 
    /**
