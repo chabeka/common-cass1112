@@ -31,7 +31,7 @@ public final class EcdeMessageRessourcesUtils {
     * 
     * @param message
     *           cle de l'exception contenu dans le fichier .properties
-    * @param object
+    * @param objects
     *           les paramètres du message
     * @return String message exception en question ou valeur
     */

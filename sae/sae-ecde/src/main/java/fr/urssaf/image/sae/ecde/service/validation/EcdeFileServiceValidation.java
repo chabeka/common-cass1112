@@ -24,8 +24,14 @@ import fr.urssaf.image.sae.ecde.modele.source.EcdeSource;
 @Component
 public class EcdeFileServiceValidation {
 
-   private EcdeMessageRessourcesUtils ecdeMessageRessourcesUtils;
+   private final EcdeMessageRessourcesUtils ecdeMessageRessourcesUtils;
 
+   /**
+    * Constructeur
+    * 
+    * @param ecdeMessageRessourcesUtils
+    *           l'objet de récupération des messages
+    */
    @Autowired
    public EcdeFileServiceValidation(
          EcdeMessageRessourcesUtils ecdeMessageRessourcesUtils) {
