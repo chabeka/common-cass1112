@@ -64,8 +64,7 @@ public class SAECaptureMasseServiceImpl implements SAECaptureMasseService {
    public final ExitTraitement captureMasse(final URI sommaireURL,
          final UUID idTraitement) {
 
-      ExitTraitement exitTraitement = new ExitTraitement();
-      exitTraitement = captureMasse(sommaireURL, idTraitement, null, null);
+      ExitTraitement exitTraitement = captureMasse(sommaireURL, idTraitement, null, null);
 
       return exitTraitement;
 

@@ -94,12 +94,10 @@ public class SaeControleMetadataServiceImpl implements
                   trcPrefix);
       if (CollectionUtils.isNotEmpty(errorsList)) {
          listeCodeLong = MetadataErrorUtils.buildLongCodeError(errorsList);
-         LOG.debug("{} - {}", trcPrefix, ResourceMessagesUtils
-               .loadMessage("capture.metadonnees.interdites",
-                     MetadataErrorUtils.buildLongCodeError(errorsList)));
-         throw new NotSpecifiableMetadataEx(ResourceMessagesUtils
-               .loadMessage("capture.metadonnees.interdites",
-                     MetadataErrorUtils.buildLongCodeError(errorsList)));
+         LOG.debug("{} - {}", trcPrefix, ResourceMessagesUtils.loadMessage(
+               "capture.metadonnees.interdites", listeCodeLong));
+         throw new NotSpecifiableMetadataEx(ResourceMessagesUtils.loadMessage(
+               "capture.metadonnees.interdites", listeCodeLong));
       }
       LOG
             .debug(
@@ -117,8 +115,7 @@ public class SaeControleMetadataServiceImpl implements
          LOG.debug("{} - {}", trcPrefix, ResourceMessagesUtils.loadMessage(
                META_OBLIGATOIRE, listeCodeLong));
          throw new RequiredArchivableMetadataEx(ResourceMessagesUtils
-               .loadMessage(META_OBLIGATOIRE,
-                     listeCodeLong));
+               .loadMessage(META_OBLIGATOIRE, listeCodeLong));
       }
       LOG
             .debug(
@@ -185,8 +182,7 @@ public class SaeControleMetadataServiceImpl implements
          LOG.debug("{} - {}", trcPrefix, ResourceMessagesUtils.loadMessage(
                META_OBLIGATOIRE, listeCodeLong));
          throw new RequiredArchivableMetadataEx(ResourceMessagesUtils
-               .loadMessage(META_OBLIGATOIRE,
-                     listeCodeLong));
+               .loadMessage(META_OBLIGATOIRE, listeCodeLong));
       }
       LOG
             .debug(
@@ -218,8 +214,8 @@ public class SaeControleMetadataServiceImpl implements
          listeCodeLong = MetadataErrorUtils.buildLongCodeError(errorsList);
          LOG.debug("{} - {}", trcPrefix, ResourceMessagesUtils.loadMessage(
                "metadata.not.in.dictionary", listeCodeLong));
-         throw new MetadataValueNotInDictionaryEx(ResourceMessagesUtils.loadMessage(
-               "metadata.not.in.dictionary", listeCodeLong));
+         throw new MetadataValueNotInDictionaryEx(ResourceMessagesUtils
+               .loadMessage("metadata.not.in.dictionary", listeCodeLong));
       }
       LOG
             .debug(

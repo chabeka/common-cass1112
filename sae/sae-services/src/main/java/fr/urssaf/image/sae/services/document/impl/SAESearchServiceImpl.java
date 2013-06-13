@@ -475,8 +475,8 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
       requeteTrim = prmdService.createLucene(requeteTrim, prmds);
 
       // conversion code court
-      List<SAEMetadata> listCodCourt = new ArrayList<SAEMetadata>();
-      List<SAEMetadata> listCodCourtConsult = new ArrayList<SAEMetadata>();
+      List<SAEMetadata> listCodCourt;
+      List<SAEMetadata> listCodCourtConsult;
 
       try {
 

@@ -61,6 +61,15 @@ public class SAEControlesCaptureServiceImpl implements
 
    @Autowired
    private SaeControleMetadataService controleService;
+   
+   private static final String LOG_DEBUT = "{} - début";
+   private static final String LOG_FIN = "{} - fin";
+   private static final String LOG_FIN_VERIF = "{} - Fin de la vérification : ";
+   private static final String LOG_DEBUT_VERIF = "{} - Début de la vérification : ";
+   private static final String LOG_HASH = "Equivalence entre le hash fourni en métadonnée et le hash recalculé à partir du fichier";
+   private static final String CAPTURE_HASH_ERREUR = "capture.hash.erreur";
+   private static final String CAPTURE_URL_ECDE_ERREUR = "capture.url.ecde.incorrecte";
+   
 
    /**
     * {@inheritDoc}
@@ -69,12 +78,12 @@ public class SAEControlesCaptureServiceImpl implements
          throws NotSpecifiableMetadataEx, RequiredArchivableMetadataEx {
       // Traces debug - entrée méthode
       String prefixeTrc = "checkSaeMetadataForCapture()";
-      LOGGER.debug("{} - Début", prefixeTrc);
+      LOGGER.debug(LOG_DEBUT, prefixeTrc);
 
       controleService.checkSaeMetadataForCapture(saeDocument.getMetadatas());
 
       // Traces debug - sortie méthode
-      LOGGER.debug("{} - Sortie", prefixeTrc);
+      LOGGER.debug(LOG_FIN, prefixeTrc);
       // Fin des traces debug - sortie méthode
    }
 
@@ -86,12 +95,12 @@ public class SAEControlesCaptureServiceImpl implements
          throws RequiredStorageMetadataEx {
       // Traces debug - entrée méthode
       String prefixeTrc = "checkSaeMetadataForCapture()";
-      LOGGER.debug("{} - Début", prefixeTrc);
+      LOGGER.debug(LOG_DEBUT, prefixeTrc);
 
       controleService.checkMetadataForStorage(sAEDocument.getMetadatas());
 
       // Traces debug - sortie méthode
-      LOGGER.debug("{} - Sortie", prefixeTrc);
+      LOGGER.debug(LOG_FIN, prefixeTrc);
       // Fin des traces debug - sortie méthode
    }
 
@@ -103,7 +112,7 @@ public class SAEControlesCaptureServiceImpl implements
          throws UnknownHashCodeEx {
       // Traces debug - entrée méthode
       String prefixeTrc = "checkHashCodeMetadataForStorage()";
-      LOGGER.debug("{} - Début", prefixeTrc);
+      LOGGER.debug(LOG_DEBUT, prefixeTrc);
       // Fin des traces debug - entrée méthode
       String hashCodeValue = SAEMetatadaFinderUtils.codeMetadataFinder(
             saeDocument.getMetadatas(), SAEArchivalMetadatas.HASH_CODE
@@ -118,7 +127,7 @@ public class SAEControlesCaptureServiceImpl implements
       // FIXME vérifier que l'algorithme passer fait partie d'une liste
       // pré-définit.
       String fileName = null;
-      byte[] content = null;
+      byte[] content;
       if (saeDocument.getFilePath() == null) {
          fileName = saeDocument.getFileName();
          content = saeDocument.getContent();
@@ -141,15 +150,15 @@ public class SAEControlesCaptureServiceImpl implements
                      "{} - L'algorithme du document à archiver est différent de SHA-1",
                      prefixeTrc);
          throw new UnknownHashCodeEx(ResourceMessagesUtils.loadMessage(
-               "capture.hash.erreur", fileName));
+               CAPTURE_HASH_ERREUR, fileName));
       }
-      LOGGER.debug("{} - Fin de la vérification : "
+      LOGGER.debug(LOG_FIN_VERIF
             + "Le type de hash est SHA-1", prefixeTrc);
       // FIXME à partir de l'algorithme calculer le hashCode.
       LOGGER
             .debug(
-                  "{} - Début de la vérification : "
-                        + "Equivalence entre le hash fourni en métadonnée et le hash recalculé à partir du fichier",
+                  LOG_DEBUT_VERIF
+                        + LOG_HASH,
                   prefixeTrc);
       if (!StringUtils.equalsIgnoreCase(DigestUtils.shaHex(content),
             hashCodeValue.trim())) {
@@ -158,16 +167,16 @@ public class SAEControlesCaptureServiceImpl implements
                new Object[] { prefixeTrc, hashCodeValue,
                      DigestUtils.shaHex(content) });
          throw new UnknownHashCodeEx(ResourceMessagesUtils.loadMessage(
-               "capture.hash.erreur", fileName));
+               CAPTURE_HASH_ERREUR, fileName));
       }
       LOGGER
             .debug(
-                  "{} - Fin de la vérification : "
-                        + "Equivalence entre le hash fourni en métadonnée et le hash recalculé à partir du fichier",
+                  LOG_FIN_VERIF
+                        + LOG_HASH,
                   prefixeTrc);
 
       // Traces debug - sortie méthode
-      LOGGER.debug("{} - Sortie", prefixeTrc);
+      LOGGER.debug(LOG_FIN, prefixeTrc);
       // Fin des traces debug - sortie méthode
    }
 
@@ -180,7 +189,7 @@ public class SAEControlesCaptureServiceImpl implements
          throws UnknownHashCodeEx {
       // Traces debug - entrée méthode
       String prefixeTrc = "checkHashCodeMetadataListForStorage()";
-      LOGGER.debug("{} - Début", prefixeTrc);
+      LOGGER.debug(LOG_DEBUT, prefixeTrc);
       // Fin des traces debug - entrée méthode
 
       String fileName = SAEMetatadaFinderUtils.codeMetadataFinder(saeMetadatas,
@@ -205,30 +214,30 @@ public class SAEControlesCaptureServiceImpl implements
                      "{} - L'algorithme du document à archiver est différent de SHA-1",
                      prefixeTrc);
          throw new UnknownHashCodeEx(ResourceMessagesUtils.loadMessage(
-               "capture.hash.erreur", fileName));
+               CAPTURE_HASH_ERREUR, fileName));
       }
-      LOGGER.debug("{} - Fin de la vérification : "
+      LOGGER.debug(LOG_FIN_VERIF
             + "Le type de hash est SHA-1", prefixeTrc);
       LOGGER
             .debug(
-                  "{} - Début de la vérification : "
-                        + "Equivalence entre le hash fourni en métadonnée et le hash recalculé à partir du fichier",
+                  LOG_DEBUT_VERIF
+                        + LOG_HASH,
                   prefixeTrc);
       if (!StringUtils.equalsIgnoreCase(refHash, hashCodeValue.trim())) {
          LOGGER.debug(
                "{} - Hash du document {} est différent que celui recalculé {}",
                new Object[] { prefixeTrc, refHash, hashCodeValue });
          throw new UnknownHashCodeEx(ResourceMessagesUtils.loadMessage(
-               "capture.hash.erreur", fileName));
+               CAPTURE_HASH_ERREUR, fileName));
       }
       LOGGER
             .debug(
-                  "{} - Fin de la vérification : "
-                        + "Equivalence entre le hash fourni en métadonnée et le hash recalculé à partir du fichier",
+                  LOG_FIN_VERIF
+                        + LOG_HASH,
                   prefixeTrc);
 
       // Traces debug - sortie méthode
-      LOGGER.debug("{} - Sortie", prefixeTrc);
+      LOGGER.debug(LOG_FIN, prefixeTrc);
       // Fin des traces debug - sortie méthode
    }
 
@@ -240,12 +249,12 @@ public class SAEControlesCaptureServiceImpl implements
          throws EmptyDocumentEx {
       // Traces debug - entrée méthode
       String prefixeTrc = "checkUntypedDocument()";
-      LOGGER.debug("{} - Début", prefixeTrc);
+      LOGGER.debug(LOG_DEBUT, prefixeTrc);
       // Fin des traces debug - entrée méthode
       File docFile = new File(untypedDocument.getFilePath());
       LOGGER
             .debug(
-                  "{} - Début de la vérification : "
+                  LOG_DEBUT_VERIF
                         + "La taille du document fournie par l'application cliente est supérieure à 0 octet",
                   prefixeTrc);
       if (docFile.exists()) {
@@ -258,11 +267,11 @@ public class SAEControlesCaptureServiceImpl implements
       }
       LOGGER
             .debug(
-                  "{} - Fin de la vérification : "
+                  LOG_FIN_VERIF
                         + "La taille du document fournie par l'application cliente est supérieure à 0 octet",
                   prefixeTrc);
       // Traces debug - sortie méthode
-      LOGGER.debug("{} - Sortie", prefixeTrc);
+      LOGGER.debug(LOG_FIN, prefixeTrc);
       // Fin des traces debug - sortie méthode
    }
 
@@ -276,12 +285,12 @@ public class SAEControlesCaptureServiceImpl implements
          MetadataValueNotInDictionaryEx {
       // Traces debug - entrée méthode
       String prefixeTrc = "checkUntypedDocument()";
-      LOGGER.debug("{} - Début", prefixeTrc);
+      LOGGER.debug(LOG_DEBUT, prefixeTrc);
       // Fin des traces debug - entrée méthode
 
       controleService.checkUntypedMetadatas(untypedDocument.getUMetadatas());
       // Traces debug - sortie méthode
-      LOGGER.debug("{} - Sortie", prefixeTrc);
+      LOGGER.debug(LOG_FIN, prefixeTrc);
       // Fin des traces debug - sortie méthode
    }
 
@@ -293,7 +302,7 @@ public class SAEControlesCaptureServiceImpl implements
       try {
          // Traces debug - entrée méthode
          String prefixeTrc = "checkBulkCaptureEcdeUrl()";
-         LOGGER.debug("{} - Début", prefixeTrc);
+         LOGGER.debug(LOG_DEBUT, prefixeTrc);
          LOGGER.debug("{} - Début des vérifications sur "
                + "l'URL ECDE envoyée au service de capture de masse",
                prefixeTrc);
@@ -350,14 +359,14 @@ public class SAEControlesCaptureServiceImpl implements
                      "{} - Fin des vérifications sur l'URL ECDE envoyée au service de capture de masse",
                      prefixeTrc);
          // Traces debug - sortie méthode
-         LOGGER.debug("{} - Sortie", prefixeTrc);
+         LOGGER.debug(LOG_FIN, prefixeTrc);
          // Fin des traces debug - sortie méthode
       } catch (EcdeBadURLException except) {
          throw new CaptureBadEcdeUrlEx(ResourceMessagesUtils.loadMessage(
-               "capture.url.ecde.incorrecte", urlEcde), except);
+               CAPTURE_URL_ECDE_ERREUR, urlEcde), except);
       } catch (EcdeBadURLFormatException except) {
          throw new CaptureBadEcdeUrlEx(ResourceMessagesUtils.loadMessage(
-               "capture.url.ecde.incorrecte", urlEcde), except);
+               CAPTURE_URL_ECDE_ERREUR, urlEcde), except);
       }
    }
 
@@ -366,7 +375,7 @@ public class SAEControlesCaptureServiceImpl implements
          throws CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx {
       // Traces debug - entrée méthode
       String prefixeTrc = "checkCaptureEcdeUrl()";
-      LOGGER.debug("{} - Début", prefixeTrc);
+      LOGGER.debug(LOG_DEBUT, prefixeTrc);
       // Fin des traces debug - entrée méthode
       try {
          LOGGER
@@ -382,13 +391,13 @@ public class SAEControlesCaptureServiceImpl implements
                      prefixeTrc);
       } catch (EcdeBadURLException badUrlEx) {
          throw new CaptureBadEcdeUrlEx(ResourceMessagesUtils.loadMessage(
-               "capture.url.ecde.incorrecte", urlEcde), badUrlEx);
+               CAPTURE_URL_ECDE_ERREUR, urlEcde), badUrlEx);
       } catch (EcdeBadURLFormatException e) {
          throw new CaptureBadEcdeUrlEx(ResourceMessagesUtils.loadMessage(
-               "capture.url.ecde.incorrecte", urlEcde), e);
+               CAPTURE_URL_ECDE_ERREUR, urlEcde), e);
       }
       // Traces debug - sortie méthode
-      LOGGER.debug("{} - Sortie", prefixeTrc);
+      LOGGER.debug(LOG_FIN, prefixeTrc);
       // Fin des traces debug - sortie méthode
    }
 
@@ -405,7 +414,7 @@ public class SAEControlesCaptureServiceImpl implements
          return new URI(url);
       } catch (URISyntaxException except) {
          throw new CaptureBadEcdeUrlEx(ResourceMessagesUtils.loadMessage(
-               "capture.url.ecde.incorrecte", url), except);
+               CAPTURE_URL_ECDE_ERREUR, url), except);
       }
    }
 
@@ -425,7 +434,7 @@ public class SAEControlesCaptureServiceImpl implements
       // Traces debug - entrée méthode
       String prefixeTrc = "checkExistingEcdeFile()";
       // Fin des traces debug - entrée méthode
-      LOGGER.debug("{} - Début", prefixeTrc);
+      LOGGER.debug(LOG_DEBUT, prefixeTrc);
       LOGGER
             .debug(
                   "{} - Début de la vérification sur l'existence du fichier pointé par l'URL ECDE ({})",
@@ -441,7 +450,7 @@ public class SAEControlesCaptureServiceImpl implements
                   "{} - Fin de la vérification sur l'existence du fichier pointé par l'URL ECDE ({})",
                   prefixeTrc, ecdeFile.getAbsoluteFile());
       // Traces debug - sortie méthode
-      LOGGER.debug("{} - Sortie", prefixeTrc);
+      LOGGER.debug(LOG_FIN, prefixeTrc);
       // Fin des traces debug - sortie méthode
    }
 
@@ -503,7 +512,7 @@ public class SAEControlesCaptureServiceImpl implements
 
       // Traces debug - entrée méthode
       String prefixeTrc = "checkSaeMetadataForCapture()";
-      LOGGER.debug("{} - Début", prefixeTrc);
+      LOGGER.debug(LOG_DEBUT, prefixeTrc);
 
       controleService.checkSaeMetadataForCapture(metadatas);
 

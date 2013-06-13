@@ -51,6 +51,10 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
    private static final String NUMERO_PAGE_DEBUT = "numeroPageDebut";
    private static final String NOMBRE_PAGES = "nombreDePages";
    private static final String METADONNEES = "metadonnees";
+   private static final String NON_INTEGRATED_DOCUMENTS = "nonIntegratedDocuments";
+   private static final String NON_INTEGRATED_VIRT_DOCS = "nonIntegratedVirtualDocuments";
+   private static final String ERREURS = "erreurs";
+   private static final String ERREUR = "erreur";
 
    private static final String NS_RES = "http://www.cirtil.fr/sae/resultatsXml";
    private static final String PX_RES = "";
@@ -216,8 +220,8 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
       IndexReference indexReference = new IndexReference(0, 0);
 
       if (isVirtual) {
-         staxUtils.addStartTag("nonIntegratedDocuments", PX_RES, PX_SOMRES);
-         staxUtils.addEndTag("nonIntegratedDocuments", PX_SOMRES, NS_SOMRES);
+         staxUtils.addStartTag(NON_INTEGRATED_DOCUMENTS, PX_RES, PX_SOMRES);
+         staxUtils.addEndTag(NON_INTEGRATED_DOCUMENTS, PX_SOMRES, NS_SOMRES);
       }
 
       while (reader.hasNext()) {
@@ -249,9 +253,9 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
       }
 
       if (!isVirtual) {
-         staxUtils.addStartTag("nonIntegratedVirtualDocuments", PX_RES,
+         staxUtils.addStartTag(NON_INTEGRATED_VIRT_DOCS, PX_RES,
                PX_SOMRES);
-         staxUtils.addEndTag("nonIntegratedVirtualDocuments", PX_SOMRES,
+         staxUtils.addEndTag(NON_INTEGRATED_VIRT_DOCS, PX_SOMRES,
                NS_SOMRES);
       }
 
@@ -267,7 +271,7 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
    private void endElement(final String name, final StaxUtils staxUtils)
          throws XMLStreamException {
       if ("documents".equals(name)) {
-         staxUtils.addEndTag("nonIntegratedDocuments", PX_RES, NS_RES);
+         staxUtils.addEndTag(NON_INTEGRATED_DOCUMENTS, PX_RES, NS_RES);
       } else if ("document".equals(name)) {
          staxUtils.addEndTag("nonIntegratedDocument", PX_SOMRES, NS_SOMRES);
       }
@@ -283,7 +287,7 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
    private void endElementVirtuel(final String name, final StaxUtils staxUtils)
          throws XMLStreamException {
       if ("documentsVirtuels".equals(name)) {
-         staxUtils.addEndTag("nonIntegratedVirtualDocuments", PX_RES, NS_RES);
+         staxUtils.addEndTag(NON_INTEGRATED_VIRT_DOCS, PX_RES, NS_RES);
       } else if ("documentVirtuel".equals(name)) {
          staxUtils.addEndTag("nonIntegratedVirtualDocument", PX_SOMRES,
                NS_SOMRES);
@@ -310,7 +314,7 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
       IndexReference reference = indexReference;
 
       if ("documents".equals(name)) {
-         staxUtils.addStartTag("nonIntegratedDocuments", PX_RES, NS_RES);
+         staxUtils.addStartTag(NON_INTEGRATED_DOCUMENTS, PX_RES, NS_RES);
 
       } else if ("document".equals(name)) {
          staxUtils.addStartTag("nonIntegratedDocument", PX_SOMRES, NS_SOMRES);
@@ -351,7 +355,7 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
       IndexReference reference = indexReference;
 
       if ("documentsVirtuels".equals(name)) {
-         staxUtils.addStartTag("nonIntegratedVirtualDocuments", PX_RES,
+         staxUtils.addStartTag(NON_INTEGRATED_VIRT_DOCS, PX_RES,
                PX_SOMRES);
 
       } else if ("documentVirtuel".equals(name)) {
@@ -523,7 +527,7 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
          final StaxUtils staxUtils, final XMLEvent xmlEvent)
          throws XMLStreamException {
 
-      staxUtils.addStartTag("erreurs", PX_SOMRES, NS_SOMRES);
+      staxUtils.addStartTag(ERREURS, PX_SOMRES, NS_SOMRES);
 
       if (erreur.getListIndex().contains(index)) {
 
@@ -533,7 +537,7 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
          for (int i = 0; i < erreur.getListIndex().size(); i++) {
             currIndex = erreur.getListIndex().get(i);
             if (index == currIndex.intValue()) {
-               staxUtils.addStartTag("erreur", PX_SOMRES, NS_SOMRES);
+               staxUtils.addStartTag(ERREUR, PX_SOMRES, NS_SOMRES);
 
                String code = erreur.getListCodes().get(i);
                String messageErreur = erreur.getListException().get(i)
@@ -552,12 +556,12 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
 
                staxUtils.createTag("code", code, PX_SOMRES, NS_SOMRES);
                staxUtils.createTag("libelle", message, PX_SOMRES, NS_SOMRES);
-               staxUtils.addEndTag("erreur", PX_SOMRES, NS_SOMRES);
+               staxUtils.addEndTag(ERREUR, PX_SOMRES, NS_SOMRES);
             }
          }
       }
 
-      staxUtils.addEndTag("erreurs", PX_SOMRES, NS_SOMRES);
+      staxUtils.addEndTag(ERREURS, PX_SOMRES, NS_SOMRES);
    }
 
    /**
@@ -569,7 +573,7 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
    private void addErreurVirtuelle(final CaptureMasseErreur erreur, int index,
          final StaxUtils staxUtils) throws XMLStreamException {
 
-      staxUtils.addStartTag("erreurs", PX_SOMRES, NS_SOMRES);
+      staxUtils.addStartTag(ERREURS, PX_SOMRES, NS_SOMRES);
 
       if (erreur.getListIndex().contains(index - 1)) {
 
@@ -577,7 +581,7 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
          for (int i = 0; i < erreur.getListIndex().size(); i++) {
             currIndex = erreur.getListIndex().get(i);
             if ((index - 1) == currIndex.intValue()) {
-               staxUtils.addStartTag("erreur", PX_SOMRES, NS_SOMRES);
+               staxUtils.addStartTag(ERREUR, PX_SOMRES, NS_SOMRES);
 
                String code = erreur.getListCodes().get(i);
                String messageErreur = erreur.getListException().get(i)
@@ -596,12 +600,12 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
 
                staxUtils.createTag("code", code, PX_SOMRES, NS_SOMRES);
                staxUtils.createTag("libelle", message, PX_SOMRES, NS_SOMRES);
-               staxUtils.addEndTag("erreur", PX_SOMRES, NS_SOMRES);
+               staxUtils.addEndTag(ERREUR, PX_SOMRES, NS_SOMRES);
             }
          }
       }
 
-      staxUtils.addEndTag("erreurs", PX_SOMRES, NS_SOMRES);
+      staxUtils.addEndTag(ERREURS, PX_SOMRES, NS_SOMRES);
    }
 
    /**
@@ -613,7 +617,7 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
    private void addErreurReference(final CaptureMasseErreur erreur, int index,
          final StaxUtils staxUtils) throws XMLStreamException {
 
-      staxUtils.addStartTag("erreurs", PX_SOMRES, NS_SOMRES);
+      staxUtils.addStartTag(ERREURS, PX_SOMRES, NS_SOMRES);
 
       if (erreur.getListRefIndex().contains(index)) {
 
@@ -621,7 +625,7 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
          for (int i = 0; i < erreur.getListRefIndex().size(); i++) {
             currIndex = erreur.getListRefIndex().get(i);
             if ((index) == currIndex.intValue()) {
-               staxUtils.addStartTag("erreur", PX_SOMRES, NS_SOMRES);
+               staxUtils.addStartTag(ERREUR, PX_SOMRES, NS_SOMRES);
 
                String code = erreur.getListCodes().get(i);
                String messageErreur = erreur.getListException().get(i)
@@ -640,12 +644,12 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
 
                staxUtils.createTag("code", code, PX_SOMRES, NS_SOMRES);
                staxUtils.createTag("libelle", message, PX_SOMRES, NS_SOMRES);
-               staxUtils.addEndTag("erreur", PX_SOMRES, NS_SOMRES);
+               staxUtils.addEndTag(ERREUR, PX_SOMRES, NS_SOMRES);
             }
          }
       }
 
-      staxUtils.addEndTag("erreurs", PX_SOMRES, NS_SOMRES);
+      staxUtils.addEndTag(ERREURS, PX_SOMRES, NS_SOMRES);
    }
 
    /**
