@@ -10,15 +10,12 @@ import fr.urssaf.image.sae.client.vi.exception.ViSignatureException;
 import fr.urssaf.image.sae.client.vi.util.ResourceUtils;
 
 /**
- * Configuration d'un {@link keyStore} par défaut à partir d'un .p12<br>
+ * Configuration d'un {@link KeyStore} à partir d'un PKCS#12 par défaut fourni
+ * dans le projet (convient uniquement pour des tests).<br>
  * <br>
- * <ul>
- * <li><b>p12</b>: PNR_Application_Test.p12</li>
- * <li><b>password</b>: QEtDiGuGuEnZ</li>
- * </ul>
- * 
  * Cette classe est un singleton<br>
- * l'unique instance est accessible avec la méthode {@link #getInstance()}
+ * L'unique instance est accessible avec la méthode {@link #getInstance()}
+ * 
  */
 public final class DefaultKeystore implements KeyStoreInterface {
 
@@ -62,8 +59,9 @@ public final class DefaultKeystore implements KeyStoreInterface {
    }
 
    /**
+    * Renvoie l'unique instance du KeyStore
     * 
-    * @return instance du keystore
+    * @return l'instance (unique) du keystore
     */
    public static KeyStoreInterface getInstance() {
 

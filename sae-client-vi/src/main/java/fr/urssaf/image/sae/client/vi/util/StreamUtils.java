@@ -12,7 +12,6 @@ import fr.urssaf.image.sae.client.vi.exception.ViSignatureException;
 /**
  * Classe utilitaires des object {@link InputStream}
  * 
- * 
  */
 public final class StreamUtils {
 
@@ -21,8 +20,8 @@ public final class StreamUtils {
    }
 
    /**
-    * instanciation d'uhe chaine de chaine de caractère en remplace dans le
-    * contenu d'un flux les éléments de la liste 'searchList' par les valeurs de
+    * Instanciation d'une chaîne de caractères en remplaçant dans le contenu
+    * d'un flux les éléments de la liste 'searchList' par les valeurs de
     * 'replacementList'<br>
     * <br>
     * La méthode appelle

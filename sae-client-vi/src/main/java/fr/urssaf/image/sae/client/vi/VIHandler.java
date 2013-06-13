@@ -22,9 +22,9 @@ import fr.urssaf.image.sae.client.vi.ws.SAML20Service;
 import fr.urssaf.image.sae.client.vi.ws.WSSecurityService;
 
 /**
- * Handler pour ajouter le Vecteur d'Identification dans l'en-tête SOAP<br>
- * . <br>
- * Ce handler est branché dans le fichier <code>axis2-pnr-sae-appelws.xml</code>
+ * Handler Axis2 pour ajouter le Vecteur d'Identification dans l'en-tête SOAP.<br>
+ * <br>
+ * Ce handler peut être branché dans la phase "MessageOut".
  * 
  */
 public class VIHandler extends AbstractHandler {
@@ -67,9 +67,7 @@ public class VIHandler extends AbstractHandler {
    /**
     * Création d'une balise WS-Security dans le header du SOAP<br>
     * <br>
-    * Insertion du VI dans cet balise WS-Security
-    * 
-    * {@inheritDoc}
+    * Insertion du VI dans cette balise WS-Security
     * 
     */
    public final InvocationResponse invoke(MessageContext msgCtx)
@@ -101,11 +99,11 @@ public class VIHandler extends AbstractHandler {
    }
 
    /**
-    * Génération de l'entete WSSE
+    * Génération de l'en-tête WSSE
     * 
     * @param msgCtx
     *           contexte du message
-    * @return l'entete à insérer dans le message
+    * @return l'en-tête à insérer dans le message
     */
    public final String genererEnTeteWsse(MessageContext msgCtx) {
 

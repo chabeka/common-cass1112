@@ -10,7 +10,6 @@ import fr.urssaf.image.sae.client.vi.util.StreamUtils;
 /**
  * Classe de service de WS Security
  * 
- * 
  */
 public class WSSecurityService {
 

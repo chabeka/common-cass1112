@@ -17,7 +17,6 @@ import fr.urssaf.image.sae.client.vi.util.StreamUtils;
 /**
  * Classe de service pour les jeton SAML 2.0
  * 
- * 
  */
 public class SAML20Service {
 
@@ -25,11 +24,11 @@ public class SAML20Service {
    private static final String PAGM = "security/pagm.xml";
 
    /**
-    * instanciation d'un jeton SAML 2.0 sur le format du fichier
+    * Instanciation d'un jeton SAML 2.0 sur le format du fichier
     * "security/saml20.xml"<br>
     * <br>
-    * Les valeurs entre [] sont remplacées par les valeurs passées en argument
-    * de la méthode
+    * Les valeurs entre crochets [] sont remplacées par les valeurs passées en
+    * argument de la méthode
     * 
     * @param issuer
     *           valeur de [ISSUER]

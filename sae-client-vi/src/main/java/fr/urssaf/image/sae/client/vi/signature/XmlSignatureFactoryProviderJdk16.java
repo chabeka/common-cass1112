@@ -5,6 +5,7 @@ import javax.xml.crypto.dsig.XMLSignatureFactory;
 /**
  * Classe permettant de récupérer la bonne version du
  * {@link XMLSignatureFactory} pour la jdk 1.6
+ * 
  */
 public class XmlSignatureFactoryProviderJdk16 implements
       XmlSignatureFactoryProvider {
@@ -12,7 +13,7 @@ public class XmlSignatureFactoryProviderJdk16 implements
    private final XMLSignatureFactory xmlSignatureFactory;
 
    /**
-    * constructeur
+    * Constructeur
     */
    public XmlSignatureFactoryProviderJdk16() {
       xmlSignatureFactory = XMLSignatureFactory.getInstance("DOM");

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package fr.urssaf.image.sae.client.vi.exception;
 
 /**
