@@ -151,7 +151,7 @@ public class TracesWsSupportTest {
                   .getCodeEvt());
       assertEquals(
             "Le contrat de service dans la trace (dans son index) est incorrect",
-            "CodeContratService", traceTechIndex.getContrat());
+            "CodeContratService", traceTechIndex.getContratService());
       checkPagms(traceTechIndex.getPagms());
       assertEquals("Le login dans la trace (dans son index) est incorrect",
             "LeIdUser", traceTechIndex.getLogin());
@@ -164,7 +164,7 @@ public class TracesWsSupportTest {
       assertEquals("Le code événement dans la trace est incorrect",
             TracesConstantes.CODE_EVT_WS_RECHERCHE_KO, trace.getCodeEvt());
       assertEquals("Le contrat de service dans la trace est incorrect",
-            "CodeContratService", trace.getContrat());
+            "CodeContratService", trace.getContratService());
       checkPagms(trace.getPagms());
       assertEquals("Le login dans la trace est incorrect", "LeIdUser", trace
             .getLogin());
@@ -214,7 +214,7 @@ public class TracesWsSupportTest {
       TraceRegTechniqueIndex traceTechIndex = tracesTechIndex.get(0);
 
       Assert.assertTrue("Le contrat de service ne devrait pas être renseigné",
-            StringUtils.isEmpty(traceTechIndex.getContrat()));
+            StringUtils.isEmpty(traceTechIndex.getContratService()));
       Assert.assertTrue("La liste des PAGM ne devrait pas être renseignée",
             CollectionUtils.isEmpty(traceTechIndex.getPagms()));
       Assert.assertTrue("Le login ne devrait pas être renseigné", StringUtils
@@ -224,7 +224,7 @@ public class TracesWsSupportTest {
             .getIdentifiant());
 
       Assert.assertTrue("Le contrat de service ne devrait pas être renseigné",
-            StringUtils.isEmpty(trace.getContrat()));
+            StringUtils.isEmpty(trace.getContratService()));
       Assert.assertTrue("La liste des PAGM ne devrait pas être renseignée",
             CollectionUtils.isEmpty(trace.getPagms()));
       Assert.assertTrue("Le login ne devrait pas être renseigné", StringUtils
@@ -372,7 +372,7 @@ public class TracesWsSupportTest {
                   .getCodeEvt());
       assertEquals(
             "Le contrat de service dans la trace (dans son index) est incorrect",
-            "CodeContratService", traceTechIndex.getContrat());
+            "CodeContratService", traceTechIndex.getContratService());
       checkPagms(traceTechIndex.getPagms());
       assertEquals("Le login dans la trace (dans son index) est incorrect",
             "LeIdUser", traceTechIndex.getLogin());
@@ -385,7 +385,7 @@ public class TracesWsSupportTest {
       assertEquals("Le code événement dans la trace est incorrect",
             TracesConstantes.CODE_EVT_CHARGE_CERT_ACRACINE, trace.getCodeEvt());
       assertEquals("Le contrat de service dans la trace est incorrect",
-            "CodeContratService", trace.getContrat());
+            "CodeContratService", trace.getContratService());
       checkPagms(trace.getPagms());
       assertEquals("Le login dans la trace est incorrect", "LeIdUser", trace
             .getLogin());
