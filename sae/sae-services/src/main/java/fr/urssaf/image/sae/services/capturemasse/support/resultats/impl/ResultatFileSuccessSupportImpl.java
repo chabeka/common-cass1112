@@ -415,6 +415,8 @@ public class ResultatFileSuccessSupportImpl implements
       String trcPrefix = "writeBody";
       LOGGER.debug("{} - début", trcPrefix);
 
+      String tagName = "documentsVirtuels";
+
       InputStream somStream = null;
       XMLEventReader reader = null;
 
@@ -422,12 +424,14 @@ public class ResultatFileSuccessSupportImpl implements
          somStream = new FileInputStream(sommaireFile);
          reader = StaxReadUtils.loadReader(somStream);
 
-                  List<CaptureMasseVirtualDocument> list = new ArrayList<CaptureMasseVirtualDocument>(
+         XMLEvent event = skipToTag(reader, tagName);
+
+         List<CaptureMasseVirtualDocument> list = new ArrayList<CaptureMasseVirtualDocument>(
                intDocuments);
          Collections.sort(list, new CaptureMasseVirtualDocumentComparateur());
          int index = 0;
          while (reader.hasNext()) {
-            XMLEvent event = reader.nextEvent();
+            event = reader.nextEvent();
             index = gererVirtualEvent(event, isVirtual, staxUtils, list, index);
          }
       } catch (FileNotFoundException exception) {
@@ -499,7 +503,7 @@ public class ResultatFileSuccessSupportImpl implements
    private int gererEndTagVirtuel(StaxWriteUtils staxUtils, String tagName,
          List<CaptureMasseVirtualDocument> intDocuments, int index)
          throws XMLStreamException {
-      
+
       int tempIndex = index;
       if ("documentsVirtuels".equals(tagName)) {
          staxUtils.addEndTag("integratedVirtualDocuments", PX_RES, NS_RES);
