@@ -38,6 +38,15 @@ public class ContratServiceDatasSupport {
 
    private PrmdSupport prmdSupport;
 
+   /**
+    * Constructeur
+    * @param contratSupport Support des contrats de Service
+    * @param pagmSupport Support des PAGM
+    * @param pagmaSupport Support des PAGMa
+    * @param pagmpSupport Support des PAGMp
+    * @param actionSupport Support des Actions unitaires
+    * @param prmdSupport Support des PRMD
+    */
    @Autowired
    public ContratServiceDatasSupport(ContratServiceSupport contratSupport,
          PagmSupport pagmSupport, PagmaSupport pagmaSupport,
@@ -59,7 +68,7 @@ public class ContratServiceDatasSupport {
     *           nombre maximum d'enregistrements à retourner
     * @return la liste des contrats de service
     */
-   public List<ServiceContractDatas> findAll(int maxKeysToRead) {
+   public final List<ServiceContractDatas> findAll(int maxKeysToRead) {
 
       List<ServiceContractDatas> list = null;
       List<ServiceContract> contracts = contratSupport.findAll(maxKeysToRead);
@@ -159,7 +168,12 @@ public class ContratServiceDatasSupport {
       return prmds;
    }
 
-   public ServiceContractDatas getCs(String id) {
+   /**
+    * Renvoie le CS
+    * @param id du CS
+    * @return le contrat de service
+    */
+   public final ServiceContractDatas getCs(String id) {
       ServiceContract contract = contratSupport.find(id);
 
       return getAllServiceContractDatas(contract);

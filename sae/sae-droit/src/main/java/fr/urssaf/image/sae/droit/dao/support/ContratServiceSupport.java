@@ -25,7 +25,6 @@ import org.springframework.stereotype.Component;
 import fr.urssaf.image.commons.cassandra.helper.HectorIterator;
 import fr.urssaf.image.commons.cassandra.helper.QueryResultConverter;
 import fr.urssaf.image.sae.droit.dao.ContratServiceDao;
-import fr.urssaf.image.sae.droit.dao.PrmdDao;
 import fr.urssaf.image.sae.droit.dao.model.ServiceContract;
 import fr.urssaf.image.sae.droit.dao.serializer.ListSerializer;
 
