@@ -51,8 +51,8 @@ public class RndServiceImpl implements RndService {
       });
    }
 
-   @SuppressWarnings ("PMD.PreserveStackTrace")
    @Override
+   @SuppressWarnings ("PMD.PreserveStackTrace")
    public final String getCodeActivite(String codeRnd)
          throws CodeRndInexistantException {
       try {
@@ -65,8 +65,8 @@ public class RndServiceImpl implements RndService {
 
    }
 
-   @SuppressWarnings ("PMD.PreserveStackTrace")
    @Override
+   @SuppressWarnings ("PMD.PreserveStackTrace")
    public final String getCodeFonction(String codeRnd)
          throws CodeRndInexistantException {
       try {
@@ -78,8 +78,8 @@ public class RndServiceImpl implements RndService {
       }
    }
 
-   @SuppressWarnings ("PMD.PreserveStackTrace")
    @Override
+   @SuppressWarnings ("PMD.PreserveStackTrace")
    public final int getDureeConservation(String codeRnd)
          throws CodeRndInexistantException {
       try {
@@ -92,8 +92,8 @@ public class RndServiceImpl implements RndService {
 
    }
 
-   @SuppressWarnings ("PMD.PreserveStackTrace")
    @Override
+   @SuppressWarnings ("PMD.PreserveStackTrace")
    public final TypeDocument getTypeDocument(String codeRnd)
          throws CodeRndInexistantException {
       try {
@@ -104,8 +104,8 @@ public class RndServiceImpl implements RndService {
       }
    }
 
-   @SuppressWarnings ("PMD.PreserveStackTrace")
    @Override
+   @SuppressWarnings ("PMD.PreserveStackTrace")
    public final boolean isCloture(String codeRnd) throws CodeRndInexistantException {
       try {
          TypeDocument typeDoc = cacheRnd.getUnchecked(codeRnd);

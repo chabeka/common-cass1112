@@ -13,6 +13,9 @@ import fr.urssaf.image.sae.rnd.ws.adrn.modele.RNDTypeDocument;
  * 
  */
 public class ConvertFactory {
+   
+   private static final int NB_JOUR_PAR_AN = 365;
+   private static final int NB_ANNEE_CONSERVATION_NON_ARCH = 3;
 
    /**
     * Transforme un objet de type RNDTypeDocument en TypeDocument
@@ -60,13 +63,13 @@ public class ConvertFactory {
       // Documents archivables (correspond aux docs qui vont actuellement au
       // CNA)
       if (rndTypeDoc.get_dureeArchivage() > 0) {
-         int dureeConservation = rndTypeDoc.get_dureeArchivage() * 365;
+         int dureeConservation = rndTypeDoc.get_dureeArchivage() * NB_JOUR_PAR_AN;
          typeDoc.setDureeConservation(dureeConservation);
          typeDoc.setType(TypeCode.ARCHIVABLE_AED);
       } else {
          // Documents non archivables (correspond aux docs qui vont actuellement
          // uniquement en GED)
-         typeDoc.setDureeConservation(3 * 365);
+         typeDoc.setDureeConservation(NB_ANNEE_CONSERVATION_NON_ARCH * NB_JOUR_PAR_AN);
          typeDoc.setType(TypeCode.NON_ARCHIVABLE_AED);
       }
 
