@@ -15,23 +15,40 @@ import fr.urssaf.image.sae.trace.model.TraceToCreate;
  */
 public class TraceRegSecurite extends Trace {
 
- 
    /** Contexte de la trace */
    private String contexte;
-   
-   
+
+   /**
+    * Constructeur
+    * 
+    * @param idTrace
+    *           l'identifiant unique à affecter à la trace
+    * @param timestamp
+    *           le timestamp à affecter à la trace
+    */
    public TraceRegSecurite(UUID idTrace, Date timestamp) {
       super(idTrace, timestamp);
    }
 
+   /**
+    * Constructeur
+    * 
+    * @param trace
+    *           trace d'origine
+    * @param listInfos
+    *           liste des clés des informations supplémentaires à récupérer
+    * @param idTrace
+    *           l'identifiant unique à affecter à la trace
+    * @param timestamp
+    *           le timestamp à affecter à la trace
+    */
    public TraceRegSecurite(TraceToCreate trace, List<String> listInfos,
          UUID idTrace, Date timestamp) {
-      
+
       super(trace, listInfos, idTrace, timestamp);
       this.contexte = trace.getContexte();
 
    }
-
 
    /**
     * @return le Contexte de la trace
