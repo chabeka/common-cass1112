@@ -3,10 +3,6 @@
  */
 package fr.urssaf.image.sae.trace.dao.model;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
 
 /**
  * Classe de modèle de la CF "TraceRegTechniqueIndex"
