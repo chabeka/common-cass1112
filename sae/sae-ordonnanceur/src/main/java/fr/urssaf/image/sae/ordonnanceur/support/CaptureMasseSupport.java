@@ -29,7 +29,7 @@ public class CaptureMasseSupport {
 
    private final EcdeSupport ecdeSupport;
    
-   private final String ECDE_URL= "ecdeUrl";
+   private static final String ECDE_URL= "ecdeUrl";
 
    /**
     * 
