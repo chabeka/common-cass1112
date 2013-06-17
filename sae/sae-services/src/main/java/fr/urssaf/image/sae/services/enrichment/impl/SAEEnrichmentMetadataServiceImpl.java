@@ -122,7 +122,7 @@ public class SAEEnrichmentMetadataServiceImpl implements
          throws CodeRndInexistantException {
       
       if (rndService.isCloture(rndValue)) {
-         throw new CodeRndInexistantException("Le code RND " + rndValue + " est clôturé");
+         throw new CodeRndInexistantException("Le code RND " + rndValue + " n'est pas autorisé à l'archivage (code clôturé).");
       }
    }
 
