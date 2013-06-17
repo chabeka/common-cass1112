@@ -611,6 +611,44 @@
             <luceneExempleList>Denomination:"Test 224-CaptureMasse-OK-RUM" AND RUM:"00000000000000000000000000000000000"</luceneExempleList>
             <luceneExempleList>Denomination:"Test 224-CaptureMasse-OK-RUM" AND RUM:"++345678901234567890123456789012345"</luceneExempleList>
          </CasTest>
+         <CasTest>
+            <id>225</id>
+            <code>225-CaptureMasse-OK-Virtuel-Sans-Hash</code>
+            <description>
+               On vérifie que la capture de masse fonctionne correctement avec des documents virtuels en mode de capture sans Hash.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 225-CaptureMasse-OK-Virtuel-Sans-Hash"</luceneExemple>
+         </CasTest>         
+
+         <CasTest>
+            <id>226</id>
+            <code>226-CaptureMasse-OK-Virtuel-Avec-Hash</code>
+            <description>
+               On vérifie que la capture de masse fonctionne correctement avec des documents virtuels en mode de capture avec Hash.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 226-CaptureMasse-OK-Virtuel-Avec-Hash"</luceneExemple>
+         </CasTest>         
+
+         <CasTest>
+            <id>227</id>
+            <code>227-CaptureMasse-OK-Virtuel-Gros-Volume</code>
+            <description>
+               On vérifie que la capture de masse fonctionne correctement lorsque l’on intègre un fichier sommaire.xml de 1000 pages sur un document de 33645 pages contenant la balise suivante : restitutionUuids=true
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 227-CaptureMasse-OK-Virtuel-Gros-Volume"</luceneExemple>
+         </CasTest>         
+         <CasTest>
+            <id>228</id>
+            <code>228-CaptureMasse-OK-Virtuel-Un-Document</code>
+            <description>
+               On vérifie la capture de masse fonctionne correctement lorsque l’on intègre un fichier sommaire.xml de 1 document virtuel.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 228-CaptureMasse-OK-Virtuel-Un-Document"</luceneExemple>
+         </CasTest>         
          
          <CasTest>
             <id>250</id>
@@ -875,6 +913,14 @@
                Ce test permet de vérifier que la nouvelle capture de masse avec hash fonctionne correctement en refusant d’exécuter une capture lorsque le hash fourni n’est pas autorisé.
             </description>
             <implemente>true</implemente>
+         </CasTest>
+         <CasTest>
+            <id>294</id>
+            <code>294-CaptureMasse-KO-Virtuel-Zero-Page</code>
+            <description>
+               Ce test permet de vérifier que la capture de masse en mode « tout ou rien » renvoie une erreur spécifique dans le fichier resultats.xml lorsque le fichier sommaire.xml référence un document virtuel de zéro page
+            </description>
+            <implemente>false</implemente>
          </CasTest>
       </CasTests>
 
