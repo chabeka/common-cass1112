@@ -12,6 +12,11 @@ public class TraceRegTechniqueIndex extends TraceIndex {
 
    /** Contexte de la trace */
    private String contexte;
+   
+   /**
+    * Code du contrat de service
+    */
+   private String contrat;
 
    /**
     * constructeur par défaut
@@ -29,6 +34,7 @@ public class TraceRegTechniqueIndex extends TraceIndex {
    public TraceRegTechniqueIndex(TraceRegTechnique exploitation) {
       super(exploitation);
       this.contexte = exploitation.getContexte();
+      this.contrat = exploitation.getContratService();
    }
 
    /**
@@ -44,6 +50,20 @@ public class TraceRegTechniqueIndex extends TraceIndex {
     */
    public final void setContexte(String contexte) {
       this.contexte = contexte;
+   }
+
+   /**
+    * @return the contrat
+    */
+   public String getContrat() {
+      return contrat;
+   }
+
+   /**
+    * @param contrat the contrat to set
+    */
+   public void setContrat(String contrat) {
+      this.contrat = contrat;
    }
 
 }

@@ -154,7 +154,7 @@ public class TraceRegTechniqueSupportTest {
       Assert.assertEquals("le code evenement doit etre correcte", CODE_EVT,
             index.getCodeEvt());
       Assert.assertEquals("le contrat doit etre correcte", CONTRAT, index
-            .getContratService());
+            .getContrat());
       checkPagms(index.getPagms());
       Assert.assertEquals("l'identifiant doit etre correcte", uuid, index
             .getIdentifiant());

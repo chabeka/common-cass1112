@@ -79,7 +79,7 @@ public final class TraceAssertUtils {
 
       // Le CS
       Assert.assertEquals("Le contrat de service est incorrect",
-            "TESTS_UNITAIRES", traceTechIndex.getContratService());
+            "TESTS_UNITAIRES", traceTechIndex.getContrat());
 
       // Les PAGM
       Assert.assertEquals("Les PAGM sont incorrects", Arrays.asList("TU_PAGM1",

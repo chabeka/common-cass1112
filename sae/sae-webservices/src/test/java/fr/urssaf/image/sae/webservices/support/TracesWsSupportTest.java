@@ -151,7 +151,7 @@ public class TracesWsSupportTest {
                   .getCodeEvt());
       assertEquals(
             "Le contrat de service dans la trace (dans son index) est incorrect",
-            "CodeContratService", traceTechIndex.getContratService());
+            "CodeContratService", traceTechIndex.getContrat());
       checkPagms(traceTechIndex.getPagms());
       assertEquals("Le login dans la trace (dans son index) est incorrect",
             "LeIdUser", traceTechIndex.getLogin());
@@ -214,7 +214,7 @@ public class TracesWsSupportTest {
       TraceRegTechniqueIndex traceTechIndex = tracesTechIndex.get(0);
 
       Assert.assertTrue("Le contrat de service ne devrait pas être renseigné",
-            StringUtils.isEmpty(traceTechIndex.getContratService()));
+            StringUtils.isEmpty(traceTechIndex.getContrat()));
       Assert.assertTrue("La liste des PAGM ne devrait pas être renseignée",
             CollectionUtils.isEmpty(traceTechIndex.getPagms()));
       Assert.assertTrue("Le login ne devrait pas être renseigné", StringUtils
@@ -372,7 +372,7 @@ public class TracesWsSupportTest {
                   .getCodeEvt());
       assertEquals(
             "Le contrat de service dans la trace (dans son index) est incorrect",
-            "CodeContratService", traceTechIndex.getContratService());
+            "CodeContratService", traceTechIndex.getContrat());
       checkPagms(traceTechIndex.getPagms());
       assertEquals("Le login dans la trace (dans son index) est incorrect",
             "LeIdUser", traceTechIndex.getLogin());

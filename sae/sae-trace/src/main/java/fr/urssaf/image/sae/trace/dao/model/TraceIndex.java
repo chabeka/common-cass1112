@@ -28,11 +28,6 @@ public class TraceIndex {
    private String login;
 
    /**
-    * Code du contrat de service
-    */
-   private String contratService;
-
-   /**
     * Code événement
     */
    private String codeEvt;
@@ -55,7 +50,6 @@ public class TraceIndex {
     */
    public TraceIndex(Trace exploitation) {
       this.codeEvt = exploitation.getCodeEvt();
-      this.contratService = exploitation.getContratService();
       this.pagms.addAll(exploitation.getPagms());
       this.identifiant = exploitation.getIdentifiant();
       this.login = exploitation.getLogin();
@@ -105,21 +99,6 @@ public class TraceIndex {
     */
    public final void setLogin(String login) {
       this.login = login;
-   }
-
-   /**
-    * @return le code du contrat de service
-    */
-   public final String getContratService() {
-      return contratService;
-   }
-
-   /**
-    * @param contratService
-    *           le code du contrat de service
-    */
-   public final void setContratService(String contratService) {
-      this.contratService = contratService;
    }
 
    /**

@@ -14,6 +14,11 @@ public class TraceRegSecuriteIndex extends TraceIndex {
    private String contexte;
 
    /**
+    * Code du contrat de service
+    */
+   private String contrat;
+   
+   /**
     * Constructeur par défaut
     */
    public TraceRegSecuriteIndex() {
@@ -29,6 +34,7 @@ public class TraceRegSecuriteIndex extends TraceIndex {
    public TraceRegSecuriteIndex(TraceRegSecurite exploitation) {
       super(exploitation);
       this.contexte = exploitation.getContexte();
+      this.contrat = exploitation.getContratService();
    }
 
    /**
@@ -46,4 +52,17 @@ public class TraceRegSecuriteIndex extends TraceIndex {
       this.contexte = contexte;
    }
 
+   /**
+    * @return the contrat
+    */
+   public String getContrat() {
+      return contrat;
+   }
+
+   /**
+    * @param contrat the contrat to set
+    */
+   public void setContrat(String contrat) {
+      this.contrat = contrat;
+   }
 }
