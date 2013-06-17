@@ -52,7 +52,7 @@ public class RndServiceImpl implements RndService {
    }
 
    @Override
-   @SuppressWarnings ("PMD.PreserveStackTrace")
+   @SuppressWarnings("PMD.PreserveStackTrace")
    public final String getCodeActivite(String codeRnd)
          throws CodeRndInexistantException {
       try {
@@ -60,13 +60,14 @@ public class RndServiceImpl implements RndService {
          return typeDoc.getCodeActivite();
       } catch (InvalidCacheLoadException e) {
          throw new CodeRndInexistantException("Le code RND " + codeRnd
-               + " n'existe pas", e.getCause());
+               + " n'est pas autorisé à l'archivage (code inexistant).", e
+               .getCause());
       }
 
    }
 
    @Override
-   @SuppressWarnings ("PMD.PreserveStackTrace")
+   @SuppressWarnings("PMD.PreserveStackTrace")
    public final String getCodeFonction(String codeRnd)
          throws CodeRndInexistantException {
       try {
@@ -74,12 +75,13 @@ public class RndServiceImpl implements RndService {
          return typeDoc.getCodeFonction();
       } catch (InvalidCacheLoadException e) {
          throw new CodeRndInexistantException("Le code RND " + codeRnd
-               + " n'existe pas", e.getCause());
+               + " n'est pas autorisé à l'archivage (code inexistant).", e
+               .getCause());
       }
    }
 
    @Override
-   @SuppressWarnings ("PMD.PreserveStackTrace")
+   @SuppressWarnings("PMD.PreserveStackTrace")
    public final int getDureeConservation(String codeRnd)
          throws CodeRndInexistantException {
       try {
@@ -87,32 +89,36 @@ public class RndServiceImpl implements RndService {
          return typeDoc.getDureeConservation();
       } catch (InvalidCacheLoadException e) {
          throw new CodeRndInexistantException("Le code RND " + codeRnd
-               + " n'existe pas", e.getCause());
+               + " n'est pas autorisé à l'archivage (code inexistant).", e
+               .getCause());
       }
 
    }
 
    @Override
-   @SuppressWarnings ("PMD.PreserveStackTrace")
+   @SuppressWarnings("PMD.PreserveStackTrace")
    public final TypeDocument getTypeDocument(String codeRnd)
          throws CodeRndInexistantException {
       try {
          return cacheRnd.getUnchecked(codeRnd);
       } catch (InvalidCacheLoadException e) {
          throw new CodeRndInexistantException("Le code RND " + codeRnd
-               + " n'existe pas", e.getCause());
+               + " n'est pas autorisé à l'archivage (code inexistant).", e
+               .getCause());
       }
    }
 
    @Override
-   @SuppressWarnings ("PMD.PreserveStackTrace")
-   public final boolean isCloture(String codeRnd) throws CodeRndInexistantException {
+   @SuppressWarnings("PMD.PreserveStackTrace")
+   public final boolean isCloture(String codeRnd)
+         throws CodeRndInexistantException {
       try {
          TypeDocument typeDoc = cacheRnd.getUnchecked(codeRnd);
          return typeDoc.isCloture();
       } catch (InvalidCacheLoadException e) {
          throw new CodeRndInexistantException("Le code RND " + codeRnd
-               + " n'existe pas", e.getCause());
+               + " n'est pas autorisé à l'archivage (code inexistant).", e
+               .getCause());
       }
    }
 
