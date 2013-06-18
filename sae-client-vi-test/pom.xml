@@ -23,7 +23,7 @@
       <maven-javadoc-plugin.version>2.8.1</maven-javadoc-plugin.version>
       
       <!-- Version de la librarie sae-client-vi -->
-      <sae-client-vi.version>1.0.0</sae-client-vi.version>
+      <sae-client-vi.version>1.0.1</sae-client-vi.version>
       
       <!-- Version des framework -->
       <junit.version>4.8.2</junit.version>

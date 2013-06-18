@@ -3,7 +3,6 @@ package fr.urssaf.image.sae.client.vi.test;
 import java.rmi.RemoteException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.ConfigurationContext;
@@ -21,28 +20,45 @@ import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.Consultation;
 import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.ConsultationRequestType;
 import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.ListeMetadonneeCodeType;
 import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.MetadonneeCodeType;
-import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.Suppression;
-import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.SuppressionRequestType;
+import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.PingSecureRequest;
+import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.PingSecureResponse;
 import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.UuidType;
 
 public class MethodCallsTest {
 
-   private static final String ERROR_END_POINT = "The endpoint reference (EPR) for the Operation not found";
+   private static final String URL_WS = "http://cer69-saeint3.cer69.recouv:8080/sae/services/SaeService/";
 
    @Test
-   public void testConsultation() {
+   public void testPingSecure() throws RemoteException {
+
+      SaeServiceStub service = getStub();
+
+      PingSecureRequest request = new PingSecureRequest();
+
+      PingSecureResponse response = service.pingSecure(request);
+
+      String pingString = response.getPingString();
+
+      Assert.assertEquals(
+            "Les services du SAE sécurisés par authentification sont en ligne",
+            pingString);
+
+   }
+
+   @Test
+   public void testConsultation() throws RemoteException {
       try {
          SaeServiceStub service = getStub();
 
          Consultation consultation = new Consultation();
          ConsultationRequestType type = new ConsultationRequestType();
          UuidType uuidType = new UuidType();
-         uuidType.setUuidType(UUID.randomUUID().toString());
+         uuidType.setUuidType("00000000-0000-0000-0000-000000000000");
          type.setIdArchive(uuidType);
 
          ListeMetadonneeCodeType listeType = new ListeMetadonneeCodeType();
          MetadonneeCodeType meta = new MetadonneeCodeType();
-         meta.setMetadonneeCodeType("IdTraitementMasseInterne");
+         meta.setMetadonneeCodeType("Siret");
          MetadonneeCodeType[] tabCode = new MetadonneeCodeType[] { meta };
          listeType.setMetadonneeCode(tabCode);
          type.setMetadonnees(listeType);
@@ -50,37 +66,13 @@ public class MethodCallsTest {
 
          service.consultation(consultation);
 
-      } catch (AxisFault exception) {
-         if (exception.getMessage().contains(ERROR_END_POINT)) {
-            Assert.fail("impossible de joindre le service demandé");
-         }
-         exception.printStackTrace();
+      } catch (AxisFault ex) {
 
-      } catch (RemoteException exception) {
-         Assert.fail("l'appel à échoué");
-      }
-   }
+         Assert
+               .assertEquals(
+                     "Il n'existe aucun document pour l'identifiant d'archivage '00000000-0000-0000-0000-000000000000'",
+                     ex.getMessage());
 
-   @Test
-   public void testSuppression() {
-      Suppression suppression = new Suppression();
-      SuppressionRequestType type = new SuppressionRequestType();
-      UuidType uuidType = new UuidType();
-      uuidType.setUuidType(UUID.randomUUID().toString());
-      type.setUuid(uuidType);
-      suppression.setSuppression(type);
-
-      try {
-         getStub().suppression(suppression);
-
-      } catch (AxisFault exception) {
-         if (exception.getMessage().contains(ERROR_END_POINT)) {
-            Assert.fail("impossible de joindre le service demandé");
-         }
-         exception.printStackTrace();
-
-      } catch (RemoteException exception) {
-         Assert.fail("erreur de connexion");
       }
    }
 
@@ -89,12 +81,8 @@ public class MethodCallsTest {
       ConfigurationContext configContext = ConfigurationContextFactory
             .createConfigurationContextFromFileSystem(null, null);
 
-      // Récupération de l'URL des services web SAE depuis le fichier
-      // properties
-      String urlServiceWeb = "http://hwi69devsaeweb.cer69.recouv/sae/services/SaeService/";
-
       // Création du Stub
-      SaeServiceStub service = new SaeServiceStub(configContext, urlServiceWeb);
+      SaeServiceStub service = new SaeServiceStub(configContext, URL_WS);
 
       KeyStoreInterface keystore = DefaultKeystore.getInstance();
       List<String> pagms = Arrays.asList("ROLE_TOUS;FULL");
