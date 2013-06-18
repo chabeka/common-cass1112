@@ -1,5 +1,7 @@
 package fr.urssaf.image.sae.metadata.referential.services;
 
+import java.util.List;
+
 import fr.urssaf.image.sae.metadata.exceptions.MetadataReferenceNotFoundException;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 
@@ -27,5 +29,18 @@ public interface SaeMetaDataService {
     */
    void modify(MetadataReference value)
          throws MetadataReferenceNotFoundException;
+   
+   /**
+    * Recherche d'une métadonnées
+    * @param codeLong code long de la métadonnée recherchée
+    * @return {@link MetadataReference}
+    */
+   MetadataReference find(String codeLong);
+   
+   /**
+    * Recherche de toutes les métadonnées
+    * @return List<{@link MetadataReference}>
+    */
+   List<MetadataReference> findAll();
 
 }

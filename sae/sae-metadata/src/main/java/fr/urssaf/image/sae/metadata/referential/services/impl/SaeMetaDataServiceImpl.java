@@ -1,5 +1,7 @@
 package fr.urssaf.image.sae.metadata.referential.services.impl;
 
+import java.util.List;
+
 import net.docubase.toolkit.model.ToolkitFactory;
 import net.docubase.toolkit.model.base.Base;
 import net.docubase.toolkit.model.base.BaseCategory;
@@ -169,5 +171,17 @@ public class SaeMetaDataServiceImpl implements SaeMetaDataService {
       }
 
    }
+
+   @Override
+   public MetadataReference find(String codeLong) {
+      return saeMetadatasupport.find(codeLong);
+   }
+
+   @Override
+   public List<MetadataReference> findAll() {
+      return saeMetadatasupport.findAll();
+   }
+   
+   
 
 }
