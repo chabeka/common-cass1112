@@ -78,7 +78,8 @@ public class SAML20Service {
             stream = ResourceUtils.loadResource(this, PAGM);
             xmlPagm = StreamUtils.createObject(stream,
                   new String[] { "[PAGM]" }, new String[] { role });
-            buffer.append(xmlPagm + "\n");
+            buffer.append(xmlPagm);
+            buffer.append('\n');
          }
 
          return buffer.toString();

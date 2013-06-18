@@ -19,8 +19,6 @@ import fr.urssaf.image.sae.client.vi.util.ResourceUtils;
  */
 public final class DefaultKeystore implements KeyStoreInterface {
 
-   private static String p12 = "PNR_Application_Test.p12";
-
    private final KeyStore keystore;
    private final String alias;
    private final String password;
@@ -28,7 +26,7 @@ public final class DefaultKeystore implements KeyStoreInterface {
    private DefaultKeystore() {
 
       ResourceBundle securityData = ResourceBundle.getBundle("security");
-      p12 = securityData.getString("fileName");
+      String p12 = securityData.getString("fileName");
       password = securityData.getString("password");
 
       try {

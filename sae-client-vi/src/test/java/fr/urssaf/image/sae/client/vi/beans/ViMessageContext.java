@@ -1,6 +1,3 @@
-/**
- * 
- */
 package fr.urssaf.image.sae.client.vi.beans;
 
 import org.apache.axis2.context.MessageContext;
@@ -10,10 +7,9 @@ import fr.urssaf.image.sae.client.vi.VIHandler;
 import fr.urssaf.image.sae.client.vi.signature.DefaultKeystore;
 
 /**
- * 
- * 
+ * Pour les TU
  */
-public class ViMessageContext extends MessageContext {
+public final class ViMessageContext extends MessageContext {
 
    /**
     * {@inheritDoc}

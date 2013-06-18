@@ -59,6 +59,7 @@ public class VIHandler extends AbstractHandler {
     */
    public VIHandler(KeyStoreInterface iKeyStore, List<String> pagms,
          String issuer) {
+      super();
       this.iKeyStore = iKeyStore;
       this.issuer = issuer;
       this.pagms = pagms;
@@ -69,6 +70,9 @@ public class VIHandler extends AbstractHandler {
     * <br>
     * Insertion du VI dans cette balise WS-Security
     * 
+    * @param msgCtx Axis2 MessageContext 
+    * @return Axis2 InvocationResponse
+    * @throws Axis2 exception
     */
    public final InvocationResponse invoke(MessageContext msgCtx)
          throws AxisFault {
