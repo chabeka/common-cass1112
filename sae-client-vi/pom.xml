@@ -8,8 +8,7 @@
 
    <name>sae-client-vi</name>
 
-   <description>Module utilitaire de génération des Token SAML pour
-      service SAE</description>
+   <description>Module utilitaire de génération des Token SAML pour les services SAE</description>
 
    <properties>
 
@@ -33,6 +32,8 @@
       <xml-apis.version>1.4.01</xml-apis.version>
       <xmlsec.version>1.5.1</xmlsec.version>
       <joda-time.version>1.6.2</joda-time.version>
+      <org.slf4j.version>1.7.5</org.slf4j.version>
+      <logback.version>1.0.13</logback.version>
 
    </properties>
 
@@ -143,6 +144,18 @@
          <artifactId>junit</artifactId>
          <version>${junit.version}</version>
          <scope>test</scope>
+      </dependency>
+      
+      <!-- SLF4J et Logback -->
+      <dependency>
+         <groupId>org.slf4j</groupId>
+         <artifactId>slf4j-api</artifactId>
+         <version>${org.slf4j.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>ch.qos.logback</groupId>
+         <artifactId>logback-classic</artifactId>
+         <version>${logback.version}</version>
       </dependency>
       
       <!-- AXIS 2 -->

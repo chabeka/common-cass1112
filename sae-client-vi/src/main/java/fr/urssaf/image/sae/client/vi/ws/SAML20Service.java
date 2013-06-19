@@ -8,6 +8,8 @@ import java.util.UUID;
 
 import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.urssaf.image.sae.client.vi.exception.XmlSignatureException;
 import fr.urssaf.image.sae.client.vi.signature.XmlSignature;
@@ -19,6 +21,9 @@ import fr.urssaf.image.sae.client.vi.util.StreamUtils;
  * 
  */
 public class SAML20Service {
+
+   private static final Logger LOGGER = LoggerFactory
+         .getLogger(SAML20Service.class);
 
    private static final String SAML_20 = "security/saml20.xml";
    private static final String PAGM = "security/pagm.xml";
@@ -48,7 +53,14 @@ public class SAML20Service {
          DateTime notAfter, DateTime notBefore, DateTime actual,
          UUID identifiant) {
 
+      LOGGER
+            .debug(
+                  "Génération d'une assertion SAML avec les paramètres suivants: issuer={}, roles={}, notAfter={}, notBefore={}, actual={}, identifiant={}",
+                  new Object[] { issuer, roles, notAfter, notBefore, actual,
+                        identifiant });
+
       String pagms = createPagm(roles);
+      LOGGER.debug("PAGM(s) retravaillé(s): {}", pagms);
 
       InputStream assertionStream = ResourceUtils.loadResource(this, SAML_20);
 
@@ -59,8 +71,11 @@ public class SAML20Service {
             notAfter.toString(), notBefore.toString(), identifiant.toString(),
             actual.toString() };
 
-      return StreamUtils.createObject(assertionStream, searchList,
+      String assertion = StreamUtils.createObject(assertionStream, searchList,
             replacementList);
+
+      LOGGER.debug("Assertion SAML générée: {}", assertion);
+      return assertion;
 
    }
 
@@ -69,6 +84,8 @@ public class SAML20Service {
     * @return
     */
    protected final String createPagm(List<String> roles) {
+
+      LOGGER.debug("Début du pré-traitement des PAGMs. Entrée={}", roles);
 
       InputStream stream = null;
       StringBuffer buffer = new StringBuffer();
@@ -82,7 +99,9 @@ public class SAML20Service {
             buffer.append('\n');
          }
 
-         return buffer.toString();
+         String pagmsOk = buffer.toString();
+         LOGGER.debug("Fin du pré-traitement des PAGMs. Sortie={}", pagmsOk);
+         return pagmsOk;
 
       } finally {
 
@@ -95,6 +114,7 @@ public class SAML20Service {
             exception.printStackTrace();
          }
       }
+
    }
 
    /**
@@ -131,9 +151,11 @@ public class SAML20Service {
          UUID identifiant, KeyStore keystore, String alias, String password)
          throws XmlSignatureException {
 
+      LOGGER.debug("Création d'une assertion SAML (pas encore signée)");
       String assertion = createAssertion20(issuer, roles, notAfter, notBefore,
             actual, identifiant);
 
+      LOGGER.debug("Signature d'une assertion SAML");
       return XmlSignature.signeXml(IOUtils.toInputStream(assertion), keystore,
             alias, password);
 

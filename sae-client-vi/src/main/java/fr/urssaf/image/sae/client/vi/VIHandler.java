@@ -13,6 +13,8 @@ import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.handlers.AbstractHandler;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.urssaf.image.sae.client.vi.exception.ViSignatureException;
 import fr.urssaf.image.sae.client.vi.exception.XmlSignatureException;
@@ -28,6 +30,9 @@ import fr.urssaf.image.sae.client.vi.ws.WSSecurityService;
  * 
  */
 public class VIHandler extends AbstractHandler {
+
+   private static final Logger LOGGER = LoggerFactory
+         .getLogger(VIHandler.class);
 
    public static final String KEYSPACE_GET_INSTANCE = "getInstance";
    public static final String KEY_KEYSTORE = "keystore";
@@ -45,13 +50,14 @@ public class VIHandler extends AbstractHandler {
     */
    public VIHandler() {
       super();
+      LOGGER.debug("Instanciation d'un VIHandler sans paramètre");
    }
 
    /**
     * Constructeur utilisé dans le code
     * 
     * @param iKeyStore
-    *           keystore à utilisé
+    *           keystore à utiliser
     * @param pagms
     *           liste des pagms
     * @param issuer
@@ -63,6 +69,10 @@ public class VIHandler extends AbstractHandler {
       this.iKeyStore = iKeyStore;
       this.issuer = issuer;
       this.pagms = pagms;
+      LOGGER
+            .debug(
+                  "Instanciation d'un VIHandler avec les paramètres suivants : issuer={}, pagms={}, iKeyStore={}",
+                  new Object[] { issuer, pagms, iKeyStore });
    }
 
    /**
@@ -70,9 +80,11 @@ public class VIHandler extends AbstractHandler {
     * <br>
     * Insertion du VI dans cette balise WS-Security
     * 
-    * @param msgCtx Axis2 MessageContext 
+    * @param msgCtx
+    *           Axis2 MessageContext
     * @return Axis2 InvocationResponse
-    * @throws Axis2 exception
+    * @throws Axis2
+    *            exception
     */
    public final InvocationResponse invoke(MessageContext msgCtx)
          throws AxisFault {
@@ -111,19 +123,29 @@ public class VIHandler extends AbstractHandler {
     */
    public final String genererEnTeteWsse(MessageContext msgCtx) {
 
+      LOGGER.debug("Début génération en-tête wsse");
+
       KeyStore keystore;
       String alias, password, mIssuer;
       List<String> mPagms;
 
       if (iKeyStore == null) {
 
+         LOGGER.debug("La construction du VIHandler a été faite par Axis2.");
+
          if (msgCtx.getParameter(KEY_KEYSTORE) == null) {
+
             // récupération du keystore par défaut
             keystore = DefaultKeystore.getInstance().getKeystore();
             alias = DefaultKeystore.getInstance().getAlias();
             password = DefaultKeystore.getInstance().getPassword();
             mIssuer = DEFAULT_ISSUER;
             mPagms = Arrays.asList(DEFAUL_PAGM);
+
+            LOGGER
+                  .debug(
+                        "Aucun KeyStore n'a été spécifié dans le MessageContext. On utilise le paramétrage par défaut: issuer={}, pagms={}, keystore={}",
+                        new Object[] { mIssuer, mPagms, keystore });
 
          } else {
             String className = (String) msgCtx.getParameter(KEY_KEYSTORE)
@@ -135,9 +157,19 @@ public class VIHandler extends AbstractHandler {
             mIssuer = (String) msgCtx.getParameter(KEY_ISSUER).getValue();
             String sPagms = (String) msgCtx.getParameter(KEY_PAGMS).getValue();
             mPagms = Arrays.asList(sPagms.split(","));
+
+            LOGGER
+                  .debug(
+                        "Un KeyStore a été spécifié dans le MessageContext. On l'utilise, ainsi que les autres informations du MessageContext: issuer={}, pagms={}, keystore={}",
+                        new Object[] { mIssuer, mPagms, keystore });
+
          }
 
       } else {
+
+         LOGGER
+               .debug("La construction du VIHandler a été faite manuellement via le constructeur.");
+
          keystore = iKeyStore.getKeystore();
          alias = iKeyStore.getAlias();
          password = iKeyStore.getPassword();
@@ -154,6 +186,12 @@ public class VIHandler extends AbstractHandler {
       DateTime notAfter = systemDate.plusHours(2);
       DateTime notBefore = systemDate.minusHours(2);
 
+      // Trace applicative
+      LOGGER
+            .debug(
+                  "Paramètres pour la génération l'assertion: heure système={}, identifiant={}, notAfter={}, notBefore={}",
+                  new Object[] { systemDate, identifiant, notAfter, notBefore });
+
       // Génération du VI
       String assertion;
       try {
@@ -164,6 +202,8 @@ public class VIHandler extends AbstractHandler {
                notAfter, notBefore, systemDate, identifiant, keystore, alias,
                password);
 
+         LOGGER.debug("Assertion générée: {}", assertion);
+
       } catch (XmlSignatureException exception) {
          throw new ViSignatureException(exception);
       }
@@ -171,8 +211,10 @@ public class VIHandler extends AbstractHandler {
       // Génération de l'en-tête WS-Security
       WSSecurityService wsService = new WSSecurityService();
       String wsseSecurity = wsService.createWSSEHeader(assertion, identifiant);
+      LOGGER.debug("En-tête WS-Security généré: {}", wsseSecurity);
 
       // Renvoie l'en-tête wsse
+      LOGGER.debug("Fin génération en-tête wsse");
       return wsseSecurity;
 
    }
