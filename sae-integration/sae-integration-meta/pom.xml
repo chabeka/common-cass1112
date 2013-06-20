@@ -35,7 +35,7 @@
       
       <!-- Version du SAE -->
       <commons-dfce.version>1.2.5-CRTL-1</commons-dfce.version>
-      <sae.version>13.4.10.5-SNAPSHOT</sae.version>
+      <sae.version>13.7.0.2-SNAPSHOT</sae.version>
       
    </properties>
 
