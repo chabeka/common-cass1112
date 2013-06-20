@@ -24,7 +24,7 @@
          <recherchable>true</recherchable>
          <estIndexee>false</estIndexee>
          <formatage />
-         <tailleMax>0</tailleMax>
+         <tailleMax>-1</tailleMax>
          <gereeParDfce>false</gereeParDfce>
          <typeDfce>String</typeDfce>
          <obligatoireStockage>false</obligatoireStockage>
