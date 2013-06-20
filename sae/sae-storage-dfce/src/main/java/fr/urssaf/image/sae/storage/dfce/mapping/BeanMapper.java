@@ -227,11 +227,13 @@ public final class BeanMapper {
     * @return Un document DFCE à partir d'un storageDocment.
     * @throws ParseException
     *            Exception si le parsing de la date ne se passe pas bien.
-    * @throws MetadonneeInexistante 
+    * @throws MetadonneeInexistante
+    *            Exception levée si la métadonnée n'exista pas dans DFCE
     */
    // CHECKSTYLE:OFF
    public static Document storageDocumentToDfceDocument(final Base baseDFCE,
-         final StorageDocument storageDocument) throws ParseException, MetadonneeInexistante {
+         final StorageDocument storageDocument) throws ParseException,
+         MetadonneeInexistante {
 
       Document document = createDocument(storageDocument.getMetadatas(),
             baseDFCE);
@@ -249,7 +251,8 @@ public final class BeanMapper {
     * @return Un document DFCE à partir d'un VirtualStorageDocment.
     * @throws ParseException
     *            Exception si le parsing de la date ne se passe pas bien.
-    * @throws MetadonneeInexistante 
+    * @throws MetadonneeInexistante
+    *            Exception levée si la métadonnée n'exista pas dans DFCE
     */
    public static Document virtualStorageDocumentToDfceDocument(
          final Base baseDFCE, final VirtualStorageDocument storageDocument)
