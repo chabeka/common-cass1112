@@ -22,6 +22,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 
+import fr.urssaf.image.sae.storage.dfce.exception.MetadonneeInexistante;
 import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
 import fr.urssaf.image.sae.storage.dfce.utils.Utils;
 import fr.urssaf.image.sae.storage.exception.StorageException;
@@ -226,10 +227,11 @@ public final class BeanMapper {
     * @return Un document DFCE à partir d'un storageDocment.
     * @throws ParseException
     *            Exception si le parsing de la date ne se passe pas bien.
+    * @throws MetadonneeInexistante 
     */
    // CHECKSTYLE:OFF
    public static Document storageDocumentToDfceDocument(final Base baseDFCE,
-         final StorageDocument storageDocument) throws ParseException {
+         final StorageDocument storageDocument) throws ParseException, MetadonneeInexistante {
 
       Document document = createDocument(storageDocument.getMetadatas(),
             baseDFCE);
@@ -247,10 +249,11 @@ public final class BeanMapper {
     * @return Un document DFCE à partir d'un VirtualStorageDocment.
     * @throws ParseException
     *            Exception si le parsing de la date ne se passe pas bien.
+    * @throws MetadonneeInexistante 
     */
    public static Document virtualStorageDocumentToDfceDocument(
          final Base baseDFCE, final VirtualStorageDocument storageDocument)
-         throws ParseException {
+         throws ParseException, MetadonneeInexistante {
 
       Document document = createDocument(storageDocument.getMetadatas(),
             baseDFCE);
@@ -259,7 +262,7 @@ public final class BeanMapper {
    }
 
    private static Document createDocument(List<StorageMetadata> metadatas,
-         Base baseDFCE) {
+         Base baseDFCE) throws MetadonneeInexistante {
       BaseCategory baseCategory = null;
       Date dateCreation = new Date();
       final Document document = ToolkitFactory.getInstance().createDocumentTag(
@@ -316,7 +319,14 @@ public final class BeanMapper {
          } else {
             baseCategory = baseDFCE.getBaseCategory(storageMetadata
                   .getShortCode().trim());
-            document.addCriterion(baseCategory, storageMetadata.getValue());
+
+            if (baseCategory != null) {
+               document.addCriterion(baseCategory, storageMetadata.getValue());
+            } else {
+               throw new MetadonneeInexistante("La métadonnée "
+                     + storageMetadata.getShortCode()
+                     + " n'existe pas dans DFCE");
+            }
          }
       }
 
