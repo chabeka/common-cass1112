@@ -5,12 +5,12 @@
    <parent>
       <groupId>fr.urssaf.image.sae</groupId>
       <artifactId>sae</artifactId>
-      <version>13.7.0.2</version>
+      <version>13.7.0.3-SNAPSHOT</version>
    </parent>
 
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-livrable</artifactId>
-   <version>13.7.0.2</version>
+   <version>13.7.0.3-SNAPSHOT</version>
 
    <packaging>pom</packaging>
 
