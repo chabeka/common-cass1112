@@ -286,57 +286,57 @@ public class Test224Controller extends
       
       if (numeroResultat==0) {
          
-         valeursAttendues.add("Denomination","Test 224-CaptureMasse-OK-RUM17");
+         valeursAttendues.add("Denomination","Test 224-CaptureMasse-OK-RUM");
          valeursAttendues.add("RUM","12345678901234567890123456789012345");
          valeursAttendues.add("NumeroRecours","1");
          
       } else if (numeroResultat==1) {
-         valeursAttendues.add("Denomination","Test 224-CaptureMasse-OK-RUM17");
+         valeursAttendues.add("Denomination","Test 224-CaptureMasse-OK-RUM");
          valeursAttendues.add("RUM","     678901234567890123456789012345");
          valeursAttendues.add("NumeroRecours","2");         
       } else if (numeroResultat==2) {
          
-         valeursAttendues.add("Denomination","Test 224-CaptureMasse-OK-RUM17");
+         valeursAttendues.add("Denomination","Test 224-CaptureMasse-OK-RUM");
          valeursAttendues.add("RUM"," 2345678901234567890     6789012345");
          valeursAttendues.add("NumeroRecours","3");         
       } else if (numeroResultat==3) {
          
-         valeursAttendues.add("Denomination","Test 224-CaptureMasse-OK-RUM17");
+         valeursAttendues.add("Denomination","Test 224-CaptureMasse-OK-RUM");
          valeursAttendues.add("RUM","??abc : d 12 ef");
          valeursAttendues.add("NumeroRecours","4");         
       } else if (numeroResultat==4) {
          
-         valeursAttendues.add("Denomination","Test 224-CaptureMasse-OK-RUM17");
+         valeursAttendues.add("Denomination","Test 224-CaptureMasse-OK-RUM");
          valeursAttendues.add("RUM","     ??abc : d 12 ef     ");
          valeursAttendues.add("NumeroRecours","5");         
       } else if (numeroResultat==5) {
          
-         valeursAttendues.add("Denomination","Test 224-CaptureMasse-OK-RUM17");
+         valeursAttendues.add("Denomination","Test 224-CaptureMasse-OK-RUM");
          valeursAttendues.add("RUM","98765432109876543210987654321098765");
          valeursAttendues.add("NumeroRecours","6");         
       } else if (numeroResultat==6) {
          
-         valeursAttendues.add("Denomination","Test 224-CaptureMasse-OK-RUM17");
+         valeursAttendues.add("Denomination","Test 224-CaptureMasse-OK-RUM");
          valeursAttendues.add("RUM","12345     12345     12345     00000");
          valeursAttendues.add("NumeroRecours","7");         
       } else if (numeroResultat==7) {
          
-         valeursAttendues.add("Denomination","Test 224-CaptureMasse-OK-RUM17");
+         valeursAttendues.add("Denomination","Test 224-CaptureMasse-OK-RUM");
          valeursAttendues.add("RUM","00000000001234567890123456789000000");
          valeursAttendues.add("NumeroRecours","8");        
       } else if (numeroResultat==8) {
          
-         valeursAttendues.add("Denomination","Test 224-CaptureMasse-OK-RUM17");
+         valeursAttendues.add("Denomination","Test 224-CaptureMasse-OK-RUM");
          valeursAttendues.add("RUM","                              12345");
          valeursAttendues.add("NumeroRecours","9");         
       }else if (numeroResultat==9) {
          
-         valeursAttendues.add("Denomination","Test 224-CaptureMasse-OK-RUM17");
+         valeursAttendues.add("Denomination","Test 224-CaptureMasse-OK-RUM");
          valeursAttendues.add("RUM","00000000000000000000000000000000000");
          valeursAttendues.add("NumeroRecours","10");         
       }else if (numeroResultat==10) {
          
-         valeursAttendues.add("Denomination","Test 224-CaptureMasse-OK-RUM17");
+         valeursAttendues.add("Denomination","Test 224-CaptureMasse-OK-RUM");
          valeursAttendues.add("RUM","++345678901234567890123456789012345");
          valeursAttendues.add("NumeroRecours","11");         
       }else {
