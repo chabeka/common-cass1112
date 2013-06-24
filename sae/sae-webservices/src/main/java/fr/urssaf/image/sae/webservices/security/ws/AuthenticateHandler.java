@@ -19,6 +19,8 @@ import org.w3c.dom.Element;
 import com.google.common.util.concurrent.UncheckedExecutionException;
 
 import fr.urssaf.image.sae.vi.exception.VIVerificationException;
+import fr.urssaf.image.sae.webservices.exception.ErreurInterneAxisFault;
+import fr.urssaf.image.sae.webservices.exception.ErreurInterneBddIndispoAxisFault;
 import fr.urssaf.image.sae.webservices.security.SecurityService;
 import fr.urssaf.image.sae.webservices.security.exception.SaeAccessDeniedAxisFault;
 import fr.urssaf.image.sae.webservices.security.exception.SaeCertificateAxisFault;
@@ -200,6 +202,14 @@ public class AuthenticateHandler {
                   + e.toString(), e);
 
             throw new SaeCertificateAxisFault(e);
+         } catch (Throwable ex) {
+            // Récupère toutes les autres erreurs, y compris les Runtime
+            // Permet de catcher par exemple les indisponibilités de la base Cassandra
+            if (hasHectorException(ex)) {
+               throw new ErreurInterneBddIndispoAxisFault(ex);
+            } else {
+               throw new ErreurInterneAxisFault(ex);
+            }
          }
 
       }
@@ -207,5 +217,28 @@ public class AuthenticateHandler {
       LOG.info(prefixeLog + "Le contexte de sécurité est en place");
 
    }
+   
+   /**
+    * Recherche une HectorException dans les causes de l'exception<br>
+    * Méthode récursive.  
+    * 
+    * @param ex l'exception dans laquelle recherche une HectorException
+    * @return true si on a trouvé une instance de HectorException dans les causes, false dans le cas contraire
+    */
+   private boolean hasHectorException(Throwable ex) {
+      
+      if (ex.getCause()==null) {
+         return Boolean.FALSE;
+      } else {
+         if (ex.getCause() instanceof HectorException) {
+            return Boolean.TRUE;
+         } else {
+            return hasHectorException(ex.getCause());
+         }
+      }
+      
+      
+   }
+   
 
 }
