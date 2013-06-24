@@ -61,18 +61,25 @@ public class LifeCycleRuleSupport {
          } else {
             // Si le code existe déjà et que la durée de conservation est
             // différente
+            LOGGER.debug("{} - Le code {} existe déjà", new String[] {
+                  trcPrefix, typeDoc.getCode() });
             int dureeLifeCycleRule = lifeCycleRule.getLifeCycleLength();
             int dureeTypeDoc = typeDoc.getDureeConservation();
             if (dureeTypeDoc != dureeLifeCycleRule) {
 
                serviceProviderSupport.getStorageAdministrationService()
-                     .updateLifeCycleRule(typeDoc.getCode(),
-                           dureeTypeDoc,
+                     .updateLifeCycleRule(typeDoc.getCode(), dureeTypeDoc,
                            LifeCycleLengthUnit.DAY);
                LOGGER
                      .info(
                            "{} - La durée de conservation du code {} a été modifiée ({} => {}) !",
-                           new String[] { trcPrefix, typeDoc.getCode(), Integer.toString(dureeLifeCycleRule), Integer.toString(dureeTypeDoc) });
+                           new String[] { trcPrefix, typeDoc.getCode(),
+                                 Integer.toString(dureeLifeCycleRule),
+                                 Integer.toString(dureeTypeDoc) });
+            } else {
+               LOGGER.debug(
+                     "{} - La durée de conservation du code {} est inchangée",
+                     new String[] { trcPrefix, typeDoc.getCode() });
             }
          }
       } catch (ObjectAlreadyExistsException objectExist) {

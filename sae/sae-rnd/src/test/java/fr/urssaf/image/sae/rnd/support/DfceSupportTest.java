@@ -8,6 +8,7 @@ import net.docubase.toolkit.model.reference.LifeCycleRule;
 import net.docubase.toolkit.service.ServiceProvider;
 import net.docubase.toolkit.service.administration.StorageAdministrationService;
 
+import org.apache.commons.lang.StringUtils;
 import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Assert;
@@ -305,7 +306,7 @@ public class DfceSupportTest {
       List<ILoggingEvent> loggingEvents = logAppender.getLoggingEvents();
 
       Assert.assertTrue("Message de log d'info doit être vide",
-            loggingEvents != null && loggingEvents.size() == 0);
+            loggingEvents != null && compteNbLogInfo(loggingEvents) == 0);
 
    }
 
@@ -316,9 +317,36 @@ public class DfceSupportTest {
             .assertTrue(
                   "Message de log d'info incorrect",
                   loggingEvents != null
-                        && loggingEvents.size() > 0
+                        && compteNbLogInfo(loggingEvents) == 1
                         && "updateLifeCycleRule - La durée de conservation du code 1.1.1.1.1 a été modifiée (5000 => 3000) !"
-                              .equals(loggingEvents.get(0)
-                                    .getFormattedMessage()));
+                              .equals(recupPremierLogInfo(loggingEvents)));
    }
+
+   private int compteNbLogInfo(List<ILoggingEvent> loggingEvents) {
+
+      int comptage = 0;
+      if (loggingEvents != null) {
+         for (ILoggingEvent loggingEvent : loggingEvents) {
+            if (loggingEvent.getLevel() == Level.INFO) {
+               comptage++;
+            }
+         }
+      }
+      return comptage;
+
+   }
+
+   private String recupPremierLogInfo(List<ILoggingEvent> loggingEvents) {
+      String result = StringUtils.EMPTY;
+      if (loggingEvents != null) {
+         for (ILoggingEvent loggingEvent : loggingEvents) {
+            if (loggingEvent.getLevel() == Level.INFO) {
+               result = loggingEvent.getFormattedMessage();
+               break;
+            }
+         }
+      }
+      return result;
+   }
+
 }
