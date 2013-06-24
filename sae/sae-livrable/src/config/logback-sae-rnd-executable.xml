@@ -120,13 +120,14 @@
    
    
    <!-- Pour que les traces INFO du SAE apparaissent dans la console -->
-   <logger name="fr.urssaf.image.sae.rnd" level="INFO" additivity="false">
+   <logger name="fr.urssaf.image.sae.rnd" additivity="false">
       <appender-ref ref="log-file" />
       <appender-ref ref="consoleInfo" />
+      <appender-ref ref="debug-file" />
    </logger>
 
    <!-- Niveau general pour l'application -->
-   <root level="INFO">
+   <root level="WARN">
       <appender-ref ref="log-file" />
       <appender-ref ref="debug-file" />
    </root>
