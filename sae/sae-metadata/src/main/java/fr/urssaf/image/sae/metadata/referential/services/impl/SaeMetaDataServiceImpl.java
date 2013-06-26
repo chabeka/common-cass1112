@@ -42,10 +42,7 @@ public class SaeMetaDataServiceImpl implements SaeMetaDataService {
    private final JobClockSupport clockSupport;
    private final CuratorFramework curator;
    private final ServiceProviderSupportMetadata serviceProviderSupport;
-
-   @Autowired
    private DfceConfig dfceConfig;
-
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(SaeMetaDataServiceImpl.class);
@@ -66,15 +63,19 @@ public class SaeMetaDataServiceImpl implements SaeMetaDataService {
     *           {@link CuratorFramework}
     * @param serviceProviderSupport
     *           {@link ServiceProviderSupport}
+    * @param dfceConfig
+    *           {@link DfceConfig}
     */
    @Autowired
    public SaeMetaDataServiceImpl(SaeMetadataSupport saeMetadataSupport,
          JobClockSupport clockSupport, CuratorFramework curator,
-         ServiceProviderSupportMetadata serviceProviderSupport) {
+         ServiceProviderSupportMetadata serviceProviderSupport,
+         DfceConfig dfceConfig) {
       this.saeMetadatasupport = saeMetadataSupport;
       this.clockSupport = clockSupport;
       this.curator = curator;
       this.serviceProviderSupport = serviceProviderSupport;
+      this.dfceConfig = dfceConfig;
    }
 
    @Override
@@ -107,7 +108,8 @@ public class SaeMetaDataServiceImpl implements SaeMetaDataService {
    }
 
    @Override
-   public final void modify(MetadataReference metadata) throws MetadataReferenceNotFoundException {
+   public final void modify(MetadataReference metadata)
+         throws MetadataReferenceNotFoundException {
       serviceProviderSupport.connect();
       LOGGER
             .debug("{} - Modification de la métadonnée", metadata.getLongCode());
@@ -125,16 +127,16 @@ public class SaeMetaDataServiceImpl implements SaeMetaDataService {
 
    private Base createBase(MetadataReference metadata) {
       Base base = serviceProviderSupport.getBaseAdministrationService()
-      .getBase( dfceConfig.getBasename());
+            .getBase(dfceConfig.getBasename());
       serviceProviderSupport.connect();
       final ToolkitFactory toolkit = ToolkitFactory.getInstance();
-      
+
       final Category categoryDfce = serviceProviderSupport
             .getStorageAdministrationService().findOrCreateCategory(
                   metadata.getShortCode(),
                   CategoryDataType.valueOf(StringUtils.upperCase(metadata
                         .getType())));
-      
+
       final BaseCategory baseCategory = toolkit.createBaseCategory(
             categoryDfce, metadata.getIsIndexed());
       baseCategory.setEnableDictionary(Boolean.FALSE);
@@ -147,7 +149,7 @@ public class SaeMetaDataServiceImpl implements SaeMetaDataService {
       baseCategory.setSingle(Boolean.FALSE);
       base.addBaseCategory(baseCategory);
       LOGGER.debug("Métadonné crééé dans DFCE");
-      
+
       return base;
    }
 
@@ -172,16 +174,20 @@ public class SaeMetaDataServiceImpl implements SaeMetaDataService {
 
    }
 
+   /**
+    * {@inheritDoc}
+    */
    @Override
-   public MetadataReference find(String codeLong) {
+   public final MetadataReference find(String codeLong) {
       return saeMetadatasupport.find(codeLong);
    }
 
+   /**
+    * {@inheritDoc}
+    */
    @Override
-   public List<MetadataReference> findAll() {
+   public final List<MetadataReference> findAll() {
       return saeMetadatasupport.findAll();
    }
-   
-   
 
 }
