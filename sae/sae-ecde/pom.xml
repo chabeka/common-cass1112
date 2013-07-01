@@ -5,12 +5,12 @@
    <parent>
       <groupId>fr.urssaf.image.sae</groupId>
       <artifactId>sae</artifactId>
-      <version>13.7.0.4</version>
+      <version>13.7.0.5-SNAPSHOT</version>
    </parent>
 
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-ecde</artifactId>
-   <version>13.7.0.4</version>
+   <version>13.7.0.5-SNAPSHOT</version>
    
    <packaging>jar</packaging>
    
