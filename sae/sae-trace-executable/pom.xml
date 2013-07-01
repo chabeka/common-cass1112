@@ -3,13 +3,13 @@
 
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-trace-executable</artifactId>
-   <version>13.7.0.4-SNAPSHOT</version>
+   <version>13.7.0.4</version>
    <packaging>jar</packaging>
 
    <parent>
       <groupId>fr.urssaf.image.sae</groupId>
       <artifactId>sae</artifactId>
-      <version>13.7.0.4-SNAPSHOT</version>
+      <version>13.7.0.4</version>
    </parent>
 
    <name>sae-trace-executable</name>
@@ -24,14 +24,14 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-trace</artifactId>
-         <version>13.7.0.4-SNAPSHOT</version>
+         <version>13.7.0.4</version>
       </dependency>
 
       <!-- SAE-SERVICES -->
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-services</artifactId>
-         <version>13.7.0.4-SNAPSHOT</version>
+         <version>13.7.0.4</version>
       </dependency>
 
       <!-- SPRING -->
