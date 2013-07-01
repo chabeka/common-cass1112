@@ -1,6 +1,6 @@
 <configuration>
    
-   <property name="LOGS_FOLDER" value="@@LOGS_PATH@@" />
+   <property name="LOGS_FOLDER" value="C:/hawai/logs/sae" />
    
    <property name="LOGS_FILENAME_PREFIXE" value="sae_rnd_executable" />
    
@@ -119,17 +119,11 @@
    -->
    
    
-   <!-- Pour que les traces INFO du SAE apparaissent dans la console -->
-   <logger name="fr.urssaf.image.sae.rnd" additivity="false">
-      <appender-ref ref="log-file" />
-      <appender-ref ref="consoleInfo" />
-      <appender-ref ref="debug-file" />
-   </logger>
-
    <!-- Niveau general pour l'application -->
-   <root level="WARN">
+   <root level="INFO">
       <appender-ref ref="log-file" />
       <appender-ref ref="debug-file" />
+      <appender-ref ref="consoleInfo" />
    </root>
    
    
