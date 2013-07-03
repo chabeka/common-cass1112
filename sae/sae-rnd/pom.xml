@@ -4,7 +4,7 @@
 
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-rnd</artifactId>
-   <version>13.7.0.5-SNAPSHOT</version>
+   <version>13.7.0.5</version>
    <packaging>jar</packaging>
    <description>Module de la gestion des mises à jour du RND</description>
 
@@ -13,7 +13,7 @@
    <parent>
       <groupId>fr.urssaf.image.sae</groupId>
       <artifactId>sae</artifactId>
-      <version>13.7.0.5-SNAPSHOT</version>
+      <version>13.7.0.5</version>
    </parent>
 
    <properties>
