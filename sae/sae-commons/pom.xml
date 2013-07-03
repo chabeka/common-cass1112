@@ -3,7 +3,7 @@
    <parent>
       <artifactId>sae</artifactId>
       <groupId>fr.urssaf.image.sae</groupId>
-      <version>13.7.0.5</version>
+      <version>13.7.0.6-SNAPSHOT</version>
    </parent>
 
    <modelVersion>4.0.0</modelVersion>
@@ -11,7 +11,7 @@
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-commons</artifactId>
    <name>sae-commons</name>
-   <version>13.7.0.5</version>
+   <version>13.7.0.6-SNAPSHOT</version>
 
    <dependencies>
       <!-- COMMONS-CASSANDRA -->
