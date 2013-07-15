@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang.time.DateUtils;
@@ -117,23 +118,33 @@ public class SAEModificationServiceImpl implements SAEModificationService {
       }
 
       LOG.debug("{} - vérification des métadonnées", trcPrefix);
-      controlesModificationService.checkSaeMetadataForUpdate(modifiedMetadatas);
-      controlesModificationService.checkSaeMetadataForDelete(deletedMetadatas);
-
-      modifiedMetadatas = completeMetadatas(modifiedMetadatas, document
-            .getMetadatas());
+      if (!CollectionUtils.isEmpty(modifiedMetadatas)) {
+         controlesModificationService
+               .checkSaeMetadataForUpdate(modifiedMetadatas);
+         modifiedMetadatas = completeMetadatas(modifiedMetadatas, document
+               .getMetadatas());
+      }
+      if (!CollectionUtils.isEmpty(deletedMetadatas)) {
+         controlesModificationService
+               .checkSaeMetadataForDelete(deletedMetadatas);
+      }
 
       try {
-         List<SAEMetadata> modifiedSaeMetadatas = mappingDocumentService
-               .untypedMetadatasToSaeMetadatas(modifiedMetadatas);
-         List<StorageMetadata> modifiedStorageMetas = mappingDocumentService
-               .saeMetadatasToStorageMetadatas(modifiedSaeMetadatas);
+         List<StorageMetadata> modifiedStorageMetas = new ArrayList<StorageMetadata>();
+         if (!CollectionUtils.isEmpty(modifiedMetadatas)) {
+            List<SAEMetadata> modifiedSaeMetadatas = mappingDocumentService
+                  .untypedMetadatasToSaeMetadatas(modifiedMetadatas);
+            modifiedStorageMetas = mappingDocumentService
+                  .saeMetadatasToStorageMetadatas(modifiedSaeMetadatas);
+         }
 
-         List<SAEMetadata> deletedSaeMetadatas = mappingDocumentService
-               .untypedMetadatasToSaeMetadatas(deletedMetadatas);
-         List<StorageMetadata> deletedStorageMetas = mappingDocumentService
-               .saeMetadatasToStorageMetadatas(deletedSaeMetadatas);
-
+         List<StorageMetadata> deletedStorageMetas = new ArrayList<StorageMetadata>();
+         if (!CollectionUtils.isEmpty(deletedMetadatas)) {
+            List<SAEMetadata> deletedSaeMetadatas = mappingDocumentService
+                  .untypedMetadatasToSaeMetadatas(deletedMetadatas);
+            deletedStorageMetas = mappingDocumentService
+                  .saeMetadatasToStorageMetadatas(deletedSaeMetadatas);
+         }
          documentService.updateStorageDocument(idArchive, modifiedStorageMetas,
                deletedStorageMetas);
 
