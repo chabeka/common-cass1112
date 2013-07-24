@@ -1,8 +1,7 @@
 package fr.urssaf.image.sae.client.vi.signature;
 
 /**
- * Factory de récupération de {@link XmlSignatureFactory} selon la version de
- * jdk d'execution
+ * Factory de récupération de {@link XmlSignatureFactory}
  * 
  */
 public final class XmlSignatureFactory {
@@ -16,6 +15,6 @@ public final class XmlSignatureFactory {
     * @return La factory ad'hoc selon la version de jdk d'exécution
     */
    public static XmlSignatureFactoryProvider getFactory() {
-      return new XmlSignatureFactoryProviderJdk16();
+      return new XmlSignatureFactoryProvider();
    }
 }

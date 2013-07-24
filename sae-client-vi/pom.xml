@@ -135,7 +135,50 @@
 
    </build>
 
+   <profiles>
+      
+      <!-- Profil de compilation en Java 1.5 -->
+      <profile>
+         <id>jdk_15</id>
+         <properties>
+            <target_classifier>jdk15</target_classifier>
+            <maven-jar-plugin.version>2.4</maven-jar-plugin.version>
+         </properties>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-compiler-plugin</artifactId>
+                  <version>${maven-compiler-plugin.version}</version>
+                  <configuration>
+                     <source>1.5</source>
+                     <target>1.5</target>
+                     <encoding>${project.build.sourceEncoding}</encoding>
+                  </configuration>
+               </plugin>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-jar-plugin</artifactId>
+                  <version>${maven-jar-plugin.version}</version>
+                  <executions>
+                     <execution>
+                        <phase>package</phase>
+                        <goals>
+                           <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                           <classifier>${target_classifier}</classifier>
+                        </configuration>
+                     </execution>
+                  </executions>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
+   </profiles>
    
+   
+
    <dependencies>
 
       <!-- JUnit -->
