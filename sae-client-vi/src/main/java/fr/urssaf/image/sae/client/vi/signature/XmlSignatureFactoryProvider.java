@@ -16,7 +16,7 @@ import fr.urssaf.image.sae.client.vi.exception.SaeClientViRuntimeException;
  */
 public class XmlSignatureFactoryProvider {
 
-   private String DEFAULT_PROVIDER = "org.jcp.xml.dsig.internal.dom.XMLDSigRI";
+   private static final String DEFAULT_PROVIDER = "org.jcp.xml.dsig.internal.dom.XMLDSigRI";
 
    private final XMLSignatureFactory xmlSignatureFactory;
 
