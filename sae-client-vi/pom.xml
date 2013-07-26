@@ -21,6 +21,7 @@
       <maven-resources-plugin.version>2.5</maven-resources-plugin.version>
       <maven-javadoc-plugin.version>2.8.1</maven-javadoc-plugin.version>
       <maven-release-plugin.version>2.2.1</maven-release-plugin.version>
+      <maven-jar-plugin.version>2.4</maven-jar-plugin.version>
       
       <!-- Version des framework -->
       <axis2.version>1.6.2</axis2.version>
@@ -52,39 +53,6 @@
       <plugins>
 
          <!--
-            On spécifie la version du JDK et l'encodage de caractères
-            des sources
-         -->
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <version>${maven-compiler-plugin.version}</version>
-            <configuration>
-               <source>1.6</source>
-               <target>1.6</target>
-               <encoding>${project.build.sourceEncoding}</encoding>
-            </configuration>
-         </plugin>
-
-         <!--
-            Dans le cas d'un packaging JAR, on demande que le JAR des
-            sources soit également généré
-         -->
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-source-plugin</artifactId>
-            <version>${maven-source-plugin.version}</version>
-            <executions>
-               <execution>
-                  <id>bind-sources</id>
-                  <goals>
-                     <goal>jar</goal>
-                  </goals>
-               </execution>
-            </executions>
-         </plugin>
-
-         <!--
             On spécifie l'encodage de caractères des ressources
          -->
          <plugin>
@@ -96,56 +64,104 @@
             </configuration>
          </plugin>
 
-         <!--
-         On demande la génération de la Javadoc
-         -->
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <version>${maven-javadoc-plugin.version}</version>
-            <executions>
-               <execution>
-                  <id>attach-javadocs</id>
-                  <goals>
-                     <goal>jar</goal>
-                  </goals>
-               </execution>
-            </executions>
-            <configuration>
-               <quiet>true</quiet>
-            </configuration>
-         </plugin>
-         
-         <!--
-         Pour la gestion des release
-         -->
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-release-plugin</artifactId>
-            <version>${maven-release-plugin.version}</version>
-            <configuration>
-               <preparationGoals>clean javadoc:jar install</preparationGoals>
-               <autoVersionSubmodules>true</autoVersionSubmodules>
-               <useReleaseProfile>false</useReleaseProfile>
-            </configuration>
-         </plugin>
-         
       </plugins>
-
 
    </build>
 
    <profiles>
       
-      <!-- Profil de compilation en Java 1.5 -->
+      <!-- Profil de compilation en Java 1.6 (par défaut) -->
       <profile>
-         <id>jdk_15</id>
-         <properties>
-            <target_classifier>jdk15</target_classifier>
-            <maven-jar-plugin.version>2.4</maven-jar-plugin.version>
-         </properties>
+         <id>jdk16</id>
+         <activation>
+            <activeByDefault>true</activeByDefault>
+         </activation>
          <build>
             <plugins>
+               
+               <!-- Compilation en Java 1.6 -->
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-compiler-plugin</artifactId>
+                  <version>${maven-compiler-plugin.version}</version>
+                  <configuration>
+                     <source>1.6</source>
+                     <target>1.6</target>
+                     <encoding>${project.build.sourceEncoding}</encoding>
+                  </configuration>
+               </plugin>
+               
+               <!-- Génération du JAR des sources -->
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-source-plugin</artifactId>
+                  <version>${maven-source-plugin.version}</version>
+                  <executions>
+                     <execution>
+                        <id>bind-sources</id>
+                        <goals>
+                           <goal>jar</goal>
+                        </goals>
+                     </execution>
+                  </executions>
+               </plugin>
+               
+               <!-- Génération de la javadoc -->
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-javadoc-plugin</artifactId>
+                  <version>${maven-javadoc-plugin.version}</version>
+                  <executions>
+                     <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                           <goal>jar</goal>
+                        </goals>
+                     </execution>
+                  </executions>
+                  <configuration>
+                     <quiet>true</quiet>
+                  </configuration>
+               </plugin>
+               
+               <!--
+               Pour la gestion des release
+               -->
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-release-plugin</artifactId>
+                  <version>${maven-release-plugin.version}</version>
+                  <configuration>
+                     <preparationGoals>clean javadoc:jar install</preparationGoals>
+                     <autoVersionSubmodules>true</autoVersionSubmodules>
+                     <useReleaseProfile>false</useReleaseProfile>
+                  </configuration>
+               </plugin>
+               
+            </plugins>
+         </build>
+      </profile>
+      
+      <!--
+         Profil pour Java 1.5
+      -->
+      <profile>
+         
+         <id>jdk15</id>
+         
+         <properties>
+            <target_classifier>jdk15</target_classifier>
+         </properties>
+         
+         <build>
+         
+            <plugins>
+               
+               <!--
+                  Compilation en Java 1.5 en utilisant une "vraie" JDK 1.5.
+                  Pour que cela fonctionne, il faut avoir défini la variable
+                  d'environnement JAVAC_15 avec le chemin complet de javac.
+               -->
                <plugin>
                   <groupId>org.apache.maven.plugins</groupId>
                   <artifactId>maven-compiler-plugin</artifactId>
@@ -154,14 +170,20 @@
                      <source>1.5</source>
                      <target>1.5</target>
                      <encoding>${project.build.sourceEncoding}</encoding>
+                     <compilerVersion>1.5</compilerVersion>
+                     <fork>true</fork>
+                     <executable>${JAVAC_15}</executable>
                   </configuration>
                </plugin>
+               
+               <!-- Ajout d'un classifier dans le nom du jar pour différencier le build en Java 1.5 -->
                <plugin>
                   <groupId>org.apache.maven.plugins</groupId>
                   <artifactId>maven-jar-plugin</artifactId>
                   <version>${maven-jar-plugin.version}</version>
                   <executions>
                      <execution>
+                        <id>default-jar</id>
                         <phase>package</phase>
                         <goals>
                            <goal>jar</goal>
@@ -172,6 +194,7 @@
                      </execution>
                   </executions>
                </plugin>
+               
             </plugins>
          </build>
       </profile>
