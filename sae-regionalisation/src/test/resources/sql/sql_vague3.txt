@@ -1,0 +1,521 @@
+# ############################################
+# Procédure stockée pour le changement de code orga
+# ############################################
+
+CREATE OR REPLACE FUNCTION vague3_transpo_codeOrga (codeOrga varchar(5)) RETURNS varchar(5) AS
+$$
+DECLARE
+  result varchar(5);
+BEGIN
+
+IF codeOrga='UR890' THEN 
+  result := 'UR267';
+ELSIF codeOrga='UR210' THEN 
+  result := 'UR267';
+ELSIF codeOrga='UR710' THEN 
+  result := 'UR267';
+ELSIF codeOrga='UR580' THEN 
+  result := 'UR267';
+ELSIF codeOrga='UR410' THEN 
+  result := 'UR247';
+ELSIF codeOrga='UR180' THEN 
+  result := 'UR247';
+ELSIF codeOrga='UR280' THEN 
+  result := 'UR247';
+ELSIF codeOrga='UR360' THEN 
+  result := 'UR247';
+ELSIF codeOrga='UR450' THEN 
+  result := 'UR247';
+ELSIF codeOrga='UR370' THEN 
+  result := 'UR247';
+ELSIF codeOrga='UR251' THEN 
+  result := 'UR437';
+ELSIF codeOrga='UR390' THEN 
+  result := 'UR437';
+ELSIF codeOrga='UR700' THEN 
+  result := 'UR437';
+ELSIF codeOrga='UR909' THEN 
+  result := 'UR437';
+ELSIF codeOrga='UR270' THEN 
+  result := 'UR237';
+ELSIF codeOrga='UR760' THEN 
+  result := 'UR237';
+ELSIF codeOrga='UR840' THEN 
+  result := 'UR937';
+ELSIF codeOrga='UR040' THEN 
+  result := 'UR937';
+ELSIF codeOrga='UR050' THEN 
+  result := 'UR937';
+ELSIF codeOrga='UR130' THEN 
+  result := 'UR937';
+ELSIF codeOrga='UR061' THEN 
+  result := 'UR937';
+ELSIF codeOrga='UR830' THEN 
+  result := 'UR937';
+ELSIF codeOrga='UR740' THEN 
+  result := 'UR827';
+ELSIF codeOrga='UR010' THEN 
+  result := 'UR827';
+ELSIF codeOrga='UR730' THEN 
+  result := 'UR827';
+ELSIF codeOrga='UR071' THEN 
+  result := 'UR827';
+ELSIF codeOrga='UR260' THEN 
+  result := 'UR827';
+ELSIF codeOrga='UR388' THEN 
+  result := 'UR827';
+ELSIF codeOrga='UR420' THEN 
+  result := 'UR827';
+ELSIF codeOrga='UR690' THEN 
+  result := 'UR827';
+ELSE
+  result = NULL;
+END IF;
+RETURN result;
+END;
+$$
+LANGUAGE 'plpgsql' STRICT;
+
+
+##############################################
+# Import des données extraites du SAE
+#
+# Cette table peut-être alimentée au fur et à
+# mesure que l'on extrait le fonds documentaire
+# de la production, puisque l'on est capable
+# de faire une extraction par mois d'archivage
+##############################################
+
+
+CREATE TABLE fonds_doc_prod_datas (
+  id_doc character varying(36) NOT NULL,
+  cog character varying(5),
+  cop character varying(5),
+  nce character varying(30),
+  nci character varying(30),
+  npe character varying(30),
+  CONSTRAINT fonds_doc_prod_datas_pkey PRIMARY KEY (id_doc)
+);
+
+COPY fonds_doc_prod_datas FROM 'C:\Divers\regio_vague_3\fonds_doc_prod\fonds_doc_AAAAMM.csv' WITH DELIMITER ';';
+# à répéter X fois
+
+# Vérification du nombre d'enregistrements importés
+# Le comptage doit correspondre à la somme du nombre de lignes des fichiers d'extraction
+SELECT COUNT(*) FROM fonds_doc_prod_datas;
+
+
+
+##############################################
+# Préparation de la table des traitements de
+# renumération
+##############################################
+
+# Suppression de la table de traitement précédente, si elle existe
+DROP TABLE IF EXISTS fonds_doc_prod;
+
+# Création de la table de traitement
+CREATE TABLE fonds_doc_prod (
+  id_doc character varying(36) NOT NULL,
+  cog character varying(5),
+  cop character varying(5),
+  nce character varying(30),
+  nci character varying(30),
+  npe character varying(30),
+  cog_renum character varying(5),
+  cop_renum character varying(5),
+  nce_renum character varying(30),
+  nci_renum character varying(30),
+  npe_renum character varying(30),
+  is_nce_renum boolean,
+  is_nci_renum boolean,
+  is_npe_renum boolean,
+  is_cop_renum boolean,
+  is_cog_renum boolean,
+  CONSTRAINT fonds_doc_prod_pkey PRIMARY KEY (id_doc)
+);
+
+# Copie de la table fonds_doc_prod_datas dans une nouvelle table fonds_doc_prod
+INSERT INTO fonds_doc_prod
+SELECT * FROM fonds_doc_prod_datas;  
+
+# Vérification visuelle
+SELECT *
+FROM fonds_doc_prod
+LIMIT 1000;
+
+# Vérification du nombre d'enregistrements importés
+# Le comptage doit correspondre à la somme du nombre de lignes des fichiers d'extraction
+SELECT COUNT(*) FROM fonds_doc_prod;
+
+
+
+
+##############################################
+# Import des fichiers V2 retravaillés
+# 
+# Import du fichier de renumérotation des 
+# numéros de compte externe 
+############################################## 
+
+
+# Suppression de la table précédente
+DROP TABLE IF EXISTS regionalisation_coti;
+
+
+# Création de la structure initiale
+CREATE TABLE regionalisation_coti
+(
+  code character varying(8),
+  old_cog character varying(3),
+  old_reference character varying(50),
+  new_reference character varying(50),
+  new_cog character varying(3)
+);
+
+
+# Import du fichier CSV
+COPY regionalisation_coti from 'C:\Divers\regio_vague_3/fichiers_V2/regionalisation_coti.csv' WITH DELIMITER '$';
+
+
+# Suppression du 1er champ inutile
+ALTER TABLE regionalisation_coti
+DROP COLUMN code;
+
+
+# Vérification visuelle
+SELECT * FROM regionalisation_coti LIMIT 1000;
+
+
+# Ajout d'un champ concaténant le texte "UR" ainsi que le code organisme sur 3 positions
+# afin de matcher la structure des données SAE 
+ALTER TABLE regionalisation_coti
+ADD COLUMN old_cog_avec_ur character varying(5);
+#
+UPDATE regionalisation_coti
+SET old_cog_avec_ur='UR' || old_cog;
+
+
+# Vérification visuelle
+SELECT * FROM regionalisation_coti LIMIT 1000;
+
+
+# Pré-analyse des cas particuliers
+# Cas des numéros de compte externes qui commencent par un trigramme différent du code organisme à régionaliser
+COPY (
+SELECT old_cog, SUBSTRING(old_reference,1,3) AS debut_old_reference, count(*) as nombre
+FROM regionalisation_coti
+WHERE SUBSTRING(old_reference,1,3)<>old_cog
+GROUP BY SUBSTRING(old_reference,1,3),old_cog
+ORDER BY old_cog, debut_old_reference, nombre
+)
+TO 'c:/divers/regio_vague_3/detection_anomalie_1.csv'
+WITH CSV HEADER;
+
+
+# Pré-analyse des cas particuliers
+# Cas des numéros de compte externes que l'on trouve dans le SAE avec un code organisme
+# différent de celui défini dans les fichiers V2
+COPY(
+SELECT cog,old_cog,nce,cop
+FROM fonds_doc_prod,regionalisation_coti
+WHERE (fonds_doc_prod.nce=regionalisation_coti.old_reference)
+AND (fonds_doc_prod.cog<>regionalisation_coti.old_cog_avec_ur)
+ORDER BY cog, old_cog, nce
+)
+TO 'c:/divers/regio_vague_3/detection_anomalie_2.csv'
+WITH CSV HEADER; 
+
+
+
+
+##############################################
+# Import des fichiers V2 retravaillés
+# 
+# Import du fichier de renumérotation des 
+# numéros de compte interne 
+##############################################
+
+
+# Suppression de la table précédente
+DROP TABLE IF EXISTS regionalisation_cpte;
+
+
+# Création de la structure initiale
+CREATE TABLE regionalisation_cpte
+(
+  code character varying(8),
+  old_cog character varying(3),
+  old_reference character varying(50),
+  new_reference character varying(50),
+  new_cog character varying(3)
+);
+
+
+# Import du fichier CSV
+COPY regionalisation_cpte from 'C:\Divers\regio_vague_3/fichiers_V2/regionalisation_cpte.csv' WITH DELIMITER '$';
+
+
+# Suppression du 1er champ inutile
+ALTER TABLE regionalisation_cpte
+DROP COLUMN code;
+
+
+# Vérification visuelle
+SELECT * FROM regionalisation_cpte LIMIT 1000;
+
+
+# Ajout d'un champ concaténant le texte "UR" ainsi que le code organisme sur 3 positions
+# afin de matcher la structure des données SAE 
+ALTER TABLE regionalisation_cpte
+ADD COLUMN old_cog_avec_ur character varying(5);
+#
+UPDATE regionalisation_cpte
+SET old_cog_avec_ur='UR' || old_cog;
+
+
+# Vérification visuelle
+SELECT * FROM regionalisation_cpte LIMIT 1000;
+
+
+
+##############################################
+# Import des fichiers V2 retravaillés
+# 
+# Import du fichier de renumérotation des 
+# numéros de personnes 
+##############################################
+
+
+# Suppression de la table précédente
+DROP TABLE IF EXISTS regionalisation_pers;
+
+
+# Création de la structure initiale
+CREATE TABLE regionalisation_pers
+(
+  code character varying(8),
+  old_cog character varying(3),
+  old_reference character varying(50),
+  new_reference character varying(50),
+  new_cog character varying(3)
+);
+
+
+# Import du fichier CSV
+COPY regionalisation_pers from 'C:\Divers\regio_vague_3/fichiers_V2/regionalisation_pers.csv' WITH DELIMITER '$';
+
+
+# Suppression du 1er champ inutile
+ALTER TABLE regionalisation_pers
+DROP COLUMN code;
+
+
+# Vérification visuelle
+SELECT * FROM regionalisation_pers LIMIT 1000;
+
+
+# Ajout d'un champ concaténant le texte "UR" ainsi que le code organisme sur 3 positions
+# afin de matcher la structure des données SAE 
+ALTER TABLE regionalisation_pers
+ADD COLUMN old_cog_avec_ur character varying(5);
+#
+UPDATE regionalisation_pers
+SET old_cog_avec_ur='UR' || old_cog;
+
+
+# Vérification visuelle
+SELECT * FROM regionalisation_pers LIMIT 1000;
+
+
+# Suppression des zéros préfixant les numéros de personne
+# Dans le SAE, on a stocké les numéros de personne en numérique
+UPDATE regionalisation_pers
+SET old_reference = CAST(CAST(old_reference AS INTEGER) AS VARCHAR);
+#  
+UPDATE regionalisation_pers
+SET new_reference = CAST(CAST(new_reference AS INTEGER) AS VARCHAR);
+
+
+# Vérification visuelle
+SELECT * FROM regionalisation_pers LIMIT 1000;
+
+
+
+
+
+##############################################
+# Changement des codes organismes
+##############################################
+
+
+# Changement des codes organismes gestionnaires (cog)
+UPDATE fonds_doc_prod
+SET cog_renum=vague3_transpo_codeOrga(cog);
+
+
+# Vérification visuelle
+SELECT *
+FROM fonds_doc_prod
+WHERE (cog_renum IS NOT NULL)
+LIMIT 1000;
+
+
+# Changement des codes organismes propriétaires (cop)  
+UPDATE fonds_doc_prod
+SET cop_renum=vague3_transpo_codeOrga(cop);
+
+
+# Vérification visuelle
+SELECT *
+FROM fonds_doc_prod
+WHERE (cop_renum IS NOT NULL)
+LIMIT 1000;
+
+
+# Mise à jour du flag indiquant si un changement de cog a eu lieu  
+UPDATE fonds_doc_prod
+SET is_cog_renum=true
+WHERE (cog_renum IS NOT NULL) AND (cog_renum<>'') AND (cog_renum<>cog);
+
+
+# Vérification visuelle
+SELECT *
+FROM fonds_doc_prod
+WHERE (is_cog_renum IS NOT NULL)
+LIMIT 1000;
+
+
+# Mise à jour du flag indiquant si un changement de cop a eu lieu  
+UPDATE fonds_doc_prod
+SET is_cop_renum=true
+WHERE (cop_renum IS NOT NULL) AND (cop_renum<>'') AND (cop_renum<>cop);
+
+
+# Vérification visuelle
+SELECT *
+FROM fonds_doc_prod
+WHERE (is_cop_renum IS NOT NULL)
+LIMIT 1000;
+
+
+
+# ############################################
+# Renumérotation nce
+# ############################################
+
+
+# Renumérotation
+UPDATE fonds_doc_prod
+SET nce_renum = sousRequete.new_reference, is_nce_renum=true
+FROM (SELECT new_reference, old_cog_avec_ur, old_reference
+      FROM regionalisation_coti) AS sousRequete
+WHERE (sousRequete.old_reference<>sousRequete.new_reference) AND 
+      (fonds_doc_prod.nce=sousRequete.old_reference) AND 
+      (fonds_doc_prod.cog=sousRequete.old_cog_avec_ur);
+
+
+# cas non standards
+# TODO: à étudier (exemple en vague 2 : les TGE de Paris)
+
+
+# Vérification visuelle
+SELECT *
+FROM fonds_doc_prod
+WHERE is_nce_renum=true
+LIMIT 1000;
+
+
+# Détection des anomalies
+# nce non renumérotés alors que le cog a changé
+SELECT *
+FROM fonds_doc_prod
+WHERE ((is_nce_renum IS NULL) OR (is_nce_renum=false))
+AND (is_cog_renum=true)
+
+
+# Détection des anomalies
+# nce renumérotés alors que le cog n'a pas changé
+SELECT *
+FROM fonds_doc_prod
+WHERE (is_nce_renum=true)
+AND ((is_cog_renum IS NULL) OR (is_cog_renum=false))
+
+
+
+
+# ############################################
+# Renumérotation nci
+# ############################################
+
+# Renumérotation
+UPDATE fonds_doc_prod
+SET nci_renum = sousRequete.new_reference, is_nci_renum=true
+FROM (SELECT new_reference, old_cog_avec_ur, old_reference
+      FROM regionalisation_cpte) AS sousRequete
+WHERE (sousRequete.old_reference<>sousRequete.new_reference) AND
+      (fonds_doc_prod.cog=sousRequete.old_cog_avec_ur) AND 
+      (fonds_doc_prod.nci=sousRequete.old_reference);
+
+
+# Vérification visuelle
+SELECT *
+FROM fonds_doc_prod
+WHERE is_nci_renum=true
+LIMIT 1000;
+
+
+# ############################################
+# Renumérotation npe
+# ############################################
+
+# Renumérotation
+UPDATE fonds_doc_prod
+SET npe_renum = sousRequete.new_reference, is_npe_renum=true
+FROM (SELECT new_reference, old_cog_avec_ur, old_reference
+      FROM regionalisation_pers) AS sousRequete
+WHERE (sousRequete.old_reference<>sousRequete.new_reference) AND
+      (fonds_doc_prod.cog=sousRequete.old_cog_avec_ur) AND 
+      (fonds_doc_prod.npe=sousRequete.old_reference);
+
+
+# Vérification visuelle
+SELECT *
+FROM fonds_doc_prod
+WHERE is_npe_renum=true
+LIMIT 1000;
+
+
+
+# ############################################
+# Vérification visuelle globale
+# ############################################
+
+SELECT *
+FROM fonds_doc_prod
+WHERE (is_nce_renum=true) OR (is_nci_renum=true) OR (is_npe_renum=true) OR (is_cog_renum=true) OR (is_cop_renum=true) 
+LIMIT 1000;
+
+
+
+# ############################################
+# Export des données pour le programme de
+# régionalisation SAE
+# ############################################
+
+# Export des documents dont il faut modifier au moins 1 métadonnée
+COPY(
+SELECT id_doc,nce_renum,nci_renum,npe_renum,cog_renum,cop_renum 
+FROM fonds_doc_prod
+WHERE (is_nce_renum=true) OR (is_nci_renum=true) OR (is_npe_renum=true) OR (is_cog_renum=true) OR (is_cop_renum=true)
+ORDER BY id_doc
+)
+TO 'c:/divers/regio_vague_3/docs_a_traiter.csv'
+WITH CSV DELIMITER ';';
+
+
+
+
+
+
+
