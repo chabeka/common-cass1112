@@ -46,14 +46,26 @@ public class ExtractionFondsDocProdPourPgSqlTest {
    @Autowired
    private Properties cassandraConf;
    
-   
-   // TODO: ATTENTION: VALEURS A CHANGER
+   /**
+    * Chemin du répertoire de sortie des fichiers CVS
+    * TODO: Adapter la valeur à son poste
+    */
    private static String CHEMINREP = "c:/divers";
+   
+   /**
+    * Premier mois d'archivage à sortir en CSV (format AAAAMM)
+    * TODO: Adapter la valeur selon les données que l'on veut sortir
+    */
    private int MIN_MOIS = 201001;
+   
+   /**
+    * Dernier mois d'archivage à sortir en CSV (format AAAAMM)
+    * TODO: Adapter la valeur selon les données que l'on veut sortir
+    */
    private int MAX_MOIS = 201307;
-   
-   
 
+   
+  
    @Test
    public void extraitFondsDoc() throws IOException {
 
