@@ -22,7 +22,7 @@
       <aspectj-maven-plugin.version>1.3</aspectj-maven-plugin.version>
 
       <!-- Version des dépendances -->
-      <commons.dfce.version>1.0.1-CRTL-1</commons.dfce.version>
+      <commons.dfce.version>1.2.5-CRTL-1</commons.dfce.version>
       <postgresql.version>9.1-901.jdbc4</postgresql.version>
       <org.springframework.version>3.0.5.RELEASE</org.springframework.version>
       <junit.version>4.8.2</junit.version>
@@ -368,61 +368,6 @@
          <groupId>net.sf.opencsv</groupId>
          <artifactId>opencsv</artifactId>
          <version>2.3</version>
-      </dependency>
-
-      <dependency>
-         <groupId>fr.urssaf.image.commons</groupId>
-         <artifactId>commons-cassandra</artifactId>
-         <version>0.0.4</version>
-      </dependency>
-
-      <!-- Accès CASSANDRA -->
-      <dependency>
-         <groupId>com.netflix.astyanax</groupId>
-         <artifactId>astyanax</artifactId>
-         <version>1.0.5</version>
-         <exclusions>
-            <exclusion>
-               <artifactId>cassandra-parent</artifactId>
-               <groupId>org.apache.cassandra</groupId>
-            </exclusion>
-            <exclusion>
-               <groupId>com.google.guava</groupId>
-               <artifactId>guava</artifactId>
-            </exclusion>
-            <exclusion>
-               <groupId>org.slf4j</groupId>
-               <artifactId>slf4j-api</artifactId>
-            </exclusion>
-            <exclusion>
-               <artifactId>cassandra-thrift</artifactId>
-               <groupId>org.apache.cassandra</groupId>
-            </exclusion>
-         </exclusions>
-      </dependency>
-      <dependency>
-         <groupId>org.cassandraunit</groupId>
-         <artifactId>cassandra-unit</artifactId>
-         <version>${cassandra-unit.version}</version>
-         <scope>compile</scope>
-         <exclusions>
-            <exclusion>
-               <groupId>org.slf4j</groupId>
-               <artifactId>slf4j-log4j12</artifactId>
-            </exclusion>
-            <exclusion>
-               <artifactId>cassandra-parent</artifactId>
-               <groupId>org.apache.cassandra</groupId>
-            </exclusion>
-            <exclusion>
-               <groupId>org.slf4j</groupId>
-               <artifactId>slf4j-api</artifactId>
-            </exclusion>
-            <exclusion>
-               <artifactId>cassandra-all</artifactId>
-               <groupId>org.apache.cassandra</groupId>
-            </exclusion>
-         </exclusions>
       </dependency>
 
    </dependencies>

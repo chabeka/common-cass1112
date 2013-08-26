@@ -167,9 +167,9 @@ public class BootStrap {
 
       } catch (IllegalArgumentException e) {
 
-         LOGGER.warn(e.getMessage());
+         LOGGER.warn("Une exception a été levée: {}", e);
 
-         return;
+         throw e;
       }
 
       try {

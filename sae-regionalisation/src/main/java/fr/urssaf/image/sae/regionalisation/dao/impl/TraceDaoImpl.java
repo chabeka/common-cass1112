@@ -57,7 +57,7 @@ public class TraceDaoImpl implements TraceDao {
          this.file = new File(repository, "suivi_" + uuid + ".log");
          boolean fileExist = file.exists();
          this.writer = new FileWriter(file, true);
-         
+
          if (!fileExist) {
             writer.write(Constants.ENTETE_OUT_REC);
             writer.write("\n");
@@ -106,31 +106,6 @@ public class TraceDaoImpl implements TraceDao {
 
       } catch (IOException e) {
          throw new ErreurTechniqueException(trace.getLineNumber(), e);
-      }
-
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final void addTraceRec(String requeteLucene, int lineNumber,
-         int documentCount, boolean maj) {
-
-      try {
-         Map<String, String> map = new HashMap<String, String>();
-         map.put(Constants.TRACE_LIGNE, String.valueOf(lineNumber));
-         map.put(Constants.TRACE_REQUETE_LUCENE, requeteLucene);
-         map.put(Constants.TRACE_DOC_COUNT, String.valueOf(documentCount));
-         map.put(Constants.TRACE_INDIC_MAJ, maj ? Constants.TRACE_UPDATE_TRUE
-               : Constants.TRACE_UPDATE_FALSE);
-
-         writer.write(StrSubstitutor.replace(Constants.TRACE_OUT_REC, map));
-         writer.write("\n");
-         writer.flush();
-
-      } catch (IOException e) {
-         throw new ErreurTechniqueException(lineNumber, e);
       }
 
    }

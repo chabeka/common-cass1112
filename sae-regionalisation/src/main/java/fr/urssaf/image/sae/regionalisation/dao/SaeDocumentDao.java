@@ -1,7 +1,8 @@
 package fr.urssaf.image.sae.regionalisation.dao;
 
-import java.util.List;
+import java.util.UUID;
 
+import net.docubase.toolkit.model.base.Base;
 import net.docubase.toolkit.model.document.Document;
 
 /**
@@ -12,15 +13,22 @@ import net.docubase.toolkit.model.document.Document;
 public interface SaeDocumentDao {
 
    /**
-    * Récupération de la liste des documents correspondants aux critères passés
-    * en paramètres.
-    * 
-    * @param lucene
-    *           requête lucène
-    * @return liste des documents correspondants aux critères de recherche
-    *         passés en paramètre
+    * Renvoie la base sur laquelle on travaille.<br>
+    * Cette base est nécessaire pour l'appel à la méthode {@link SaeDocumentDao#find(Base, UUID)}
+    * @return la base sur laquelle on travaille
     */
-   List<Document> getDocuments(String lucene);
+   Base getBase();
+   
+   
+   /**
+    * Renvoie le document dont l'identifiant est passé en argument
+    *
+    * @param base la base sur laquelle travailler
+    * @param idDoc l'identifiant unique du document
+    * @return l'objet Document
+    */
+   Document find(Base base, UUID idDoc);
+   
 
    /**
     * Mise à jour via DFCE du document passé en paramètre.

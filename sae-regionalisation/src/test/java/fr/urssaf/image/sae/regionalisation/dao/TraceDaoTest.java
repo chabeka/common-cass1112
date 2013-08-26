@@ -73,29 +73,4 @@ public class TraceDaoTest {
 
    }
 
-   @Test
-   public void addTraceRec() throws IOException {
-
-      String requeteLucene = "maRe<quete";
-
-      dao.addTraceRec(requeteLucene, 0, 2, true);
-
-      Map<String, String> map = new HashMap<String, String>();
-      map.put(Constants.TRACE_REQUETE_LUCENE, requeteLucene);
-      map.put(Constants.TRACE_LIGNE, "0");
-      map.put(Constants.TRACE_DOC_COUNT, "2");
-      map.put(Constants.TRACE_INDIC_MAJ, Constants.TRACE_UPDATE_TRUE);
-
-      String attendu = StrSubstitutor.replace(Constants.TRACE_OUT_REC, map);
-      List<String> lines = FileUtils.readLines(dao.getFile());
-
-      Assert.assertEquals(
-            "le nombre de ligne dans le fichier doit etre correct", 3, lines
-                  .size());
-
-      Assert.assertEquals("la ligne générée doit être correcte", attendu, lines
-            .get(2));
-
-   }
-
 }

@@ -33,23 +33,6 @@ public interface TraceDao {
    void addTraceMaj(Trace trace);
 
    /**
-    * Ajout d'une trace permettant de connaître le nombre de documents rattachés
-    * à un critère de recherche
-    * 
-    * @param requeteLucene
-    *           requete lucène qui entre en jeu dans la recherche
-    * @param lineNumber
-    *           numéro de ligne de l'enregistrement en cours de traitement
-    * @param documentCount
-    *           nombre de documents associés au critère de recherche
-    * @param maj
-    *           <code>true</code> si le mode est MISE_A_JOUR, <code>false</code>
-    *           si le mode est TIR_A_BLANC
-    */
-   void addTraceRec(String requeteLucene, int lineNumber, int documentCount,
-         boolean maj);
-
-   /**
     * @return le fichier où les données sont insérées
     */
    File getFile();

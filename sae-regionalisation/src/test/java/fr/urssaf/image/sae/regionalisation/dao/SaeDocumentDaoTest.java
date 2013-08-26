@@ -27,10 +27,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.docubase.dfce.exception.FrozenDocumentException;
-import com.docubase.dfce.exception.SearchQueryParseException;
 import com.docubase.dfce.exception.TagControlException;
 
-import fr.urssaf.image.sae.regionalisation.exception.ErreurTechniqueException;
 import fr.urssaf.image.sae.regionalisation.support.ServiceProviderSupport;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -175,54 +173,6 @@ public class SaeDocumentDaoTest {
 
       Assert.assertEquals("la métadonnée 'nne' du document est inattendue",
             "second value", document.getSingleCriterion(METADATA).getWord());
-
-   }
-
-   private void assertDocument(List<Document> documents, UUID uuid) {
-
-      for (Document document : documents) {
-
-         if (document.getUuid().equals(uuid)) {
-            return;
-         }
-      }
-
-      Assert.fail("le document n°" + uuid + " n'a pas été trouvé");
-
-   }
-
-   @Test
-   public void getDocuments() {
-
-      String lucene = "den:" + den;
-      List<Document> documents = dao.getDocuments(lucene);
-
-      Assert.assertEquals("le nombre de document est inattendu", 4, documents
-            .size());
-
-      for (UUID uuid : uuids) {
-         assertDocument(documents, uuid);
-      }
-   }
-
-   @Test
-   public void getDocuments_failure() {
-
-      String lucene = "badlucene";
-
-      try {
-         dao.getDocuments(lucene);
-
-         Assert
-               .fail("la méthode doit lever une exception de type ErreurTechniqueException");
-
-      } catch (ErreurTechniqueException e) {
-
-         Assert
-               .assertTrue(
-                     "la cause de l'exception doit de type SearchQueryParseException",
-                     e.getCause() instanceof SearchQueryParseException);
-      }
 
    }
 

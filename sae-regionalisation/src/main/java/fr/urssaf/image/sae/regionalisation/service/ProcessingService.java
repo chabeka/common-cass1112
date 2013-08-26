@@ -16,16 +16,16 @@ public interface ProcessingService {
     *           flag indiquant si le traitement est réel ou tir à blanc.
     * @param source
     *           fichier source de données
-    * @param lastRecord
-    *           dernier enregistrement à traiter
+    * @param idTraitement
+    *           identifiant unique du numéro de traitement
     * @param firstRecord
     *           premier enregistrement à traiter
-    * @param uuid
-    *           identifiant unique du numéro de traitement
+    * @param lastRecord
+    *           dernier enregistrement à traiter
     * @param dirPath
     *           chemin du répertoire dans lequel seront réalisés les fichiers de
     *           suivi d'execution
     */
-   void launchWithFile(boolean updateDatas, File source, String uuid,
+   void launchWithFile(boolean updateDatas, File source, String idTraitement,
          int firstRecord, int lastRecord, String dirPath);
 }

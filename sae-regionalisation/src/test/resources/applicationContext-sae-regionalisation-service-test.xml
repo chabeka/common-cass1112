@@ -35,45 +35,6 @@
       </constructor-arg>
    </bean>
 
-   <bean class="fr.urssaf.image.sae.regionalisation.bean.CassandraConfig"
-      id="cassandraConfig">
-      <property name="baseUuid">
-         <bean factory-bean="dfceConfiguration" factory-method="getProperty">
-            <constructor-arg value="cassandra.baseUuid" />
-         </bean>
-      </property>
-      <property name="cluster">
-         <bean factory-bean="dfceConfiguration" factory-method="getProperty">
-            <constructor-arg value="cassandra.cluster" />
-         </bean>
-      </property>
-      <property name="keyspace">
-         <bean factory-bean="dfceConfiguration" factory-method="getProperty">
-            <constructor-arg value="cassandra.keyspace" />
-         </bean>
-      </property>
-      <property name="password">
-         <bean factory-bean="dfceConfiguration" factory-method="getProperty">
-            <constructor-arg value="cassandra.password" />
-         </bean>
-      </property>
-      <property name="port">
-         <bean factory-bean="dfceConfiguration" factory-method="getProperty">
-            <constructor-arg value="cassandra.port" />
-         </bean>
-      </property>
-      <property name="servers">
-         <bean factory-bean="dfceConfiguration" factory-method="getProperty">
-            <constructor-arg value="cassandra.servers" />
-         </bean>
-      </property>
-      <property name="user">
-         <bean factory-bean="dfceConfiguration" factory-method="getProperty">
-            <constructor-arg value="cassandra.user" />
-         </bean>
-      </property>
-   </bean>
-
    <import resource="applicationContext-sae-regionalisation-service.xml" />
 
 </beans>
