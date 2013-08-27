@@ -59,9 +59,7 @@ public class TraceDaoImpl implements TraceDao {
          this.writer = new FileWriter(file, true);
 
          if (!fileExist) {
-            writer.write(Constants.ENTETE_OUT_REC);
-            writer.write("\n");
-            writer.write(Constants.ENTETE_OUT_MAJ);
+            writer.write(Constants.ENTETE_OUT_CSV);
             writer.write("\n");
          }
 

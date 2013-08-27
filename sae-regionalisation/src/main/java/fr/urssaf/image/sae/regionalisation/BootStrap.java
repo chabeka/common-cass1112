@@ -199,15 +199,16 @@ public class BootStrap {
                   new Object[] { args[MODE_ARG_INDEX], args[FIRST_ARG_INDEX],
                         args[LAST_ARG_INDEX], args[FILE_ARG_INDEX] });
 
-      service.launchWithFile(updateDatas, sourceFile, uuid, firstRecord,
-            lastRecord, dirPath);
+      int nbDocsTraites = service.launchWithFile(updateDatas, sourceFile, uuid,
+            firstRecord, lastRecord, dirPath);
 
       long timeEnd = new Date().getTime();
 
       long timeMs = timeEnd - timeStart;
       long timeMin = (timeMs / 1000) / 60;
 
-      LOGGER.info("la régionalisation est terminée en {} minutes", timeMin);
+      LOGGER.info("Nombre de documents mis à jour : {}", nbDocsTraites);
+      LOGGER.info("La régionalisation est terminée en {} minutes", timeMin);
    }
 
    /**

@@ -17,8 +17,6 @@ import fr.urssaf.image.sae.regionalisation.support.ServiceProviderSupport;
 
 /**
  * Classe implémentant le service {@link SaeDocumentDao}
- * 
- * 
  */
 @Repository
 public class SaeDocumentDaoImpl implements SaeDocumentDao {

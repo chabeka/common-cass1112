@@ -20,10 +20,10 @@ public class ProcessingServiceValidationTest {
       service = new ProcessingService() {
 
          @Override
-         public void launchWithFile(boolean updateDatas, File source,
+         public int launchWithFile(boolean updateDatas, File source,
                String uuid, int firstRecord, int lastRecord, String dirPath) {
             // pas d'implémentation
-
+            return 0; 
          }
 
       };

@@ -44,6 +44,17 @@ public interface ServiceProviderSupport {
    Base getBase();
 
    /**
+    * Renvoie la valeur de la métadonnées
+    * 
+    * @param document
+    *           le document
+    * @param key
+    *           le code de la métadonnée
+    * @return la valeur de la métadonnée
+    */
+   String getValeurCriterion(Document document, String key);
+
+   /**
     * Modifie la métadonnée d'un document
     * 
     * @param document
@@ -54,4 +65,5 @@ public interface ServiceProviderSupport {
     *           valeur de la métadonnée
     */
    void updateCriterion(Document document, String key, Object value);
+
 }

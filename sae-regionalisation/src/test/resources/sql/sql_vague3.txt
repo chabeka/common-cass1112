@@ -112,7 +112,7 @@ SELECT COUNT(*) FROM fonds_doc_prod_datas;
 ##############################################
 
 # Suppression de la table de traitement précédente, si elle existe
-DROP TABLE IF EXISTS fonds_doc_prod;
+DROP TABLE fonds_doc_prod;
 
 # Création de la table de traitement
 CREATE TABLE fonds_doc_prod (
@@ -137,7 +137,8 @@ CREATE TABLE fonds_doc_prod (
 
 # Copie de la table fonds_doc_prod_datas dans une nouvelle table fonds_doc_prod
 INSERT INTO fonds_doc_prod
-SELECT * FROM fonds_doc_prod_datas;  
+SELECT * FROM fonds_doc_prod_datas;
+# FAB1, sur cer69imageint10.cer69.recouv: 5 045 296 ms (1h24)
 
 # Vérification visuelle
 SELECT *
@@ -148,6 +149,8 @@ LIMIT 1000;
 # Le comptage doit correspondre à la somme du nombre de lignes des fichiers d'extraction
 SELECT COUNT(*) FROM fonds_doc_prod;
 
+# Optimisation
+VACUUM ANALYZE fonds_doc_prod;
 
 
 
@@ -160,7 +163,7 @@ SELECT COUNT(*) FROM fonds_doc_prod;
 
 
 # Suppression de la table précédente
-DROP TABLE IF EXISTS regionalisation_coti;
+DROP TABLE regionalisation_coti;
 
 
 # Création de la structure initiale
@@ -175,7 +178,8 @@ CREATE TABLE regionalisation_coti
 
 
 # Import du fichier CSV
-COPY regionalisation_coti from 'C:\Divers\regio_vague_3/fichiers_V2/regionalisation_coti.csv' WITH DELIMITER '$';
+# COPY regionalisation_coti from 'C:\Divers\regio_vague_3/fichiers_V2/regionalisation_coti.csv' WITH DELIMITER '$';
+COPY regionalisation_coti from '/tmp/regio_vague3/fab/fab1/regionalisation_coti.csv' WITH DELIMITER '$';
 
 
 # Suppression du 1er champ inutile
@@ -200,30 +204,68 @@ SET old_cog_avec_ur='UR' || old_cog;
 SELECT * FROM regionalisation_coti LIMIT 1000;
 
 
+# Optimisation
+VACUUM ANALYZE regionalisation_coti;
+
+
 # Pré-analyse des cas particuliers
 # Cas des numéros de compte externes qui commencent par un trigramme différent du code organisme à régionaliser
-COPY (
-SELECT old_cog, SUBSTRING(old_reference,1,3) AS debut_old_reference, count(*) as nombre
+
+DROP TABLE detection_anomalie1_etape1;
+
+DROP TABLE detection_anomalie1_etape2;
+
+SELECT *, SUBSTRING(old_reference,1,3) AS debut_old_reference
+INTO detection_anomalie1_etape1
 FROM regionalisation_coti
 WHERE SUBSTRING(old_reference,1,3)<>old_cog
-GROUP BY SUBSTRING(old_reference,1,3),old_cog
-ORDER BY old_cog, debut_old_reference, nombre
-)
-TO 'c:/divers/regio_vague_3/detection_anomalie_1.csv'
+ORDER BY old_cog, debut_old_reference
+
+SELECT * FROM detection_anomalie1_etape1 LIMIT 1000;
+
+SELECT old_cog, debut_old_reference, count(*) as nombre
+INTO detection_anomalie1_etape2
+FROM detection_anomalie1_etape1
+WHERE debut_old_reference<>old_cog
+GROUP BY debut_old_reference,old_cog
+ORDER BY old_cog, debut_old_reference, nombre;
+
+SELECT * FROM detection_anomalie1_etape1 LIMIT 1000;
+
+SELECT * FROM detection_anomalie1_etape2;
+
+SELECT SUM(nombre) FROM detection_anomalie1_etape2;
+
+COPY detection_anomalie1_etape1
+TO '/tmp/regio_vague3/sortie/detection_anomalie1_etape1.csv'
+WITH CSV HEADER; 
+
+COPY detection_anomalie1_etape2
+TO '/tmp/regio_vague3/sortie/detection_anomalie2_etape1.csv'
 WITH CSV HEADER;
+
+
 
 
 # Pré-analyse des cas particuliers
 # Cas des numéros de compte externes que l'on trouve dans le SAE avec un code organisme
 # différent de celui défini dans les fichiers V2
-COPY(
+
+DROP TABLE detection_anomalie2;
+
 SELECT cog,old_cog,nce,cop
+INTO detection_anomalie2
 FROM fonds_doc_prod,regionalisation_coti
 WHERE (fonds_doc_prod.nce=regionalisation_coti.old_reference)
 AND (fonds_doc_prod.cog<>regionalisation_coti.old_cog_avec_ur)
 ORDER BY cog, old_cog, nce
-)
-TO 'c:/divers/regio_vague_3/detection_anomalie_2.csv'
+
+SELECT COUNT(*) FROM detection_anomalie2;
+
+SELECT * FROM detection_anomalie2 LIMIT 1000;
+
+COPY detection_anomalie2
+TO '/tmp/regio_vague3/sortie/detection_anomalie_2.csv'
 WITH CSV HEADER; 
 
 
@@ -238,7 +280,7 @@ WITH CSV HEADER;
 
 
 # Suppression de la table précédente
-DROP TABLE IF EXISTS regionalisation_cpte;
+DROP TABLE regionalisation_cpte;
 
 
 # Création de la structure initiale
@@ -253,7 +295,7 @@ CREATE TABLE regionalisation_cpte
 
 
 # Import du fichier CSV
-COPY regionalisation_cpte from 'C:\Divers\regio_vague_3/fichiers_V2/regionalisation_cpte.csv' WITH DELIMITER '$';
+COPY regionalisation_cpte from '/tmp/regio_vague3/fab/fab1/regionalisation_cpte.csv' WITH DELIMITER '$';
 
 
 # Suppression du 1er champ inutile
@@ -278,6 +320,10 @@ SET old_cog_avec_ur='UR' || old_cog;
 SELECT * FROM regionalisation_cpte LIMIT 1000;
 
 
+# Optimisation
+VACUUM ANALYZE regionalisation_cpte;
+
+
 
 ##############################################
 # Import des fichiers V2 retravaillés
@@ -288,7 +334,7 @@ SELECT * FROM regionalisation_cpte LIMIT 1000;
 
 
 # Suppression de la table précédente
-DROP TABLE IF EXISTS regionalisation_pers;
+DROP TABLE regionalisation_pers;
 
 
 # Création de la structure initiale
@@ -303,7 +349,7 @@ CREATE TABLE regionalisation_pers
 
 
 # Import du fichier CSV
-COPY regionalisation_pers from 'C:\Divers\regio_vague_3/fichiers_V2/regionalisation_pers.csv' WITH DELIMITER '$';
+COPY regionalisation_pers from '/tmp/regio_vague3/fab/fab1/regionalisation_pers.csv' WITH DELIMITER '$';
 
 
 # Suppression du 1er champ inutile
@@ -341,7 +387,8 @@ SET new_reference = CAST(CAST(new_reference AS INTEGER) AS VARCHAR);
 SELECT * FROM regionalisation_pers LIMIT 1000;
 
 
-
+# Optimisation
+VACUUM ANALYZE regionalisation_pers;
 
 
 ##############################################
@@ -349,10 +396,13 @@ SELECT * FROM regionalisation_pers LIMIT 1000;
 ##############################################
 
 
+# TODO: trop long. faire tous les changements en une seule requete
+
+
 # Changement des codes organismes gestionnaires (cog)
 UPDATE fonds_doc_prod
 SET cog_renum=vague3_transpo_codeOrga(cog);
-
+# Temps de temps de traitement en FAB1 sur cer69imageint10: 10 452 167 ms (3h)
 
 # Vérification visuelle
 SELECT *
@@ -364,6 +414,7 @@ LIMIT 1000;
 # Changement des codes organismes propriétaires (cop)  
 UPDATE fonds_doc_prod
 SET cop_renum=vague3_transpo_codeOrga(cop);
+# Temps de temps de traitement en FAB1 sur cer69imageint10: 11 577 868 ms (3h10)
 
 
 # Vérification visuelle
@@ -377,6 +428,7 @@ LIMIT 1000;
 UPDATE fonds_doc_prod
 SET is_cog_renum=true
 WHERE (cog_renum IS NOT NULL) AND (cog_renum<>'') AND (cog_renum<>cog);
+# Temps de temps de traitement en FAB1 sur cer69imageint10: 3 528 397 ms (1h)
 
 
 # Vérification visuelle
@@ -390,6 +442,7 @@ LIMIT 1000;
 UPDATE fonds_doc_prod
 SET is_cop_renum=true
 WHERE (cop_renum IS NOT NULL) AND (cop_renum<>'') AND (cop_renum<>cop);
+# Temps de temps de traitement en FAB1 sur cer69imageint10: 3 501 979 ms (1h)
 
 
 # Vérification visuelle
@@ -413,6 +466,7 @@ FROM (SELECT new_reference, old_cog_avec_ur, old_reference
 WHERE (sousRequete.old_reference<>sousRequete.new_reference) AND 
       (fonds_doc_prod.nce=sousRequete.old_reference) AND 
       (fonds_doc_prod.cog=sousRequete.old_cog_avec_ur);
+# FAB1 sur cer69imageint10: Temps de traitement: 6 765 760 ms (2h), nb lignes modifiées: 1 507 670 
 
 
 # cas non standards
@@ -429,6 +483,7 @@ LIMIT 1000;
 # Détection des anomalies
 # nce non renumérotés alors que le cog a changé
 SELECT *
+INTO detection_anomalie_nce_non_renum
 FROM fonds_doc_prod
 WHERE ((is_nce_renum IS NULL) OR (is_nce_renum=false))
 AND (is_cog_renum=true)
@@ -436,11 +491,21 @@ AND (is_cog_renum=true)
 
 # Détection des anomalies
 # nce renumérotés alors que le cog n'a pas changé
+#
+DROP TABLE detection_anomalie_nce_non_renum;
+#
 SELECT *
+INTO detection_anomalie_nce_non_renum
 FROM fonds_doc_prod
-WHERE (is_nce_renum=true)
-AND ((is_cog_renum IS NULL) OR (is_cog_renum=false))
-
+WHERE ((is_nce_renum IS NULL) OR (is_nce_renum=false))
+AND (is_cog_renum=true);
+#
+SELECT COUNT(*)
+FROM detection_anomalie_nce_non_renum;
+#
+SELECT *
+FROM detection_anomalie_nce_non_renum
+LIMIT XXX;
 
 
 
@@ -456,6 +521,7 @@ FROM (SELECT new_reference, old_cog_avec_ur, old_reference
 WHERE (sousRequete.old_reference<>sousRequete.new_reference) AND
       (fonds_doc_prod.cog=sousRequete.old_cog_avec_ur) AND 
       (fonds_doc_prod.nci=sousRequete.old_reference);
+# FAB1 sur cer69imageint10: Temps de traitement: 850 298 ms (15 mn), nb lignes modifiées: 174 733 
 
 
 # Vérification visuelle
@@ -477,6 +543,7 @@ FROM (SELECT new_reference, old_cog_avec_ur, old_reference
 WHERE (sousRequete.old_reference<>sousRequete.new_reference) AND
       (fonds_doc_prod.cog=sousRequete.old_cog_avec_ur) AND 
       (fonds_doc_prod.npe=sousRequete.old_reference);
+# FAB1 sur cer69imageint10: Temps de traitement: 2 198 614 ms (35 mn), nb lignes modifiées: 616 970
 
 
 # Vérification visuelle
@@ -504,17 +571,28 @@ LIMIT 1000;
 # ############################################
 
 # Export des documents dont il faut modifier au moins 1 métadonnée
-COPY(
+
+DROP TABLE docs_a_traiter;
+
+
 SELECT id_doc,nce_renum,nci_renum,npe_renum,cog_renum,cop_renum 
+INTO docs_a_traiter
 FROM fonds_doc_prod
 WHERE (is_nce_renum=true) OR (is_nci_renum=true) OR (is_npe_renum=true) OR (is_cog_renum=true) OR (is_cop_renum=true)
-ORDER BY id_doc
-)
-TO 'c:/divers/regio_vague_3/docs_a_traiter.csv'
+ORDER BY id_doc;
+
+SELECT COUNT(*)
+FROM docs_a_traiter;
+# FAB1 : 1 517 305
+
+SELECT *
+FROM docs_a_traiter
+LIMIT 1000;
+
+COPY 
+docs_a_traiter
+TO '/tmp/regio_vague3/sortie/docs_a_traiter.csv'
 WITH CSV DELIMITER ';';
-
-
-
 
 
 

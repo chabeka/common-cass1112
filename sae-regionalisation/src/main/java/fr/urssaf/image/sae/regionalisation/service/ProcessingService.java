@@ -25,7 +25,9 @@ public interface ProcessingService {
     * @param dirPath
     *           chemin du répertoire dans lequel seront réalisés les fichiers de
     *           suivi d'execution
+    * @return le nombre de documents mis à jour
+    * 
     */
-   void launchWithFile(boolean updateDatas, File source, String idTraitement,
+   int launchWithFile(boolean updateDatas, File source, String idTraitement,
          int firstRecord, int lastRecord, String dirPath);
 }

@@ -4,11 +4,14 @@ import java.io.Serializable;
 
 import net.docubase.toolkit.model.base.Base;
 import net.docubase.toolkit.model.base.BaseCategory;
+import net.docubase.toolkit.model.document.Criterion;
 import net.docubase.toolkit.model.document.Document;
 import net.docubase.toolkit.service.ServiceProvider;
 import net.docubase.toolkit.service.ged.SearchService;
 import net.docubase.toolkit.service.ged.StoreService;
 
+import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -115,6 +118,21 @@ public class ServiceProviderSupportImpl implements ServiceProviderSupport {
          // fonctionne pas sur la version 1.1.0
          // document.updateCriterion(baseCategory, (Serializable) value);
 
+      }
+
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public String getValeurCriterion(Document document, String key) {
+
+      Criterion criterion = document.getSingleCriterion(key);
+      if (criterion == null) {
+         return StringUtils.EMPTY;
+      } else {
+         return ObjectUtils.toString(criterion.getWord());
       }
 
    }

@@ -14,21 +14,23 @@ public interface SaeDocumentDao {
 
    /**
     * Renvoie la base sur laquelle on travaille.<br>
-    * Cette base est nécessaire pour l'appel à la méthode {@link SaeDocumentDao#find(Base, UUID)}
+    * Cette base est nécessaire pour l'appel à la méthode
+    * {@link SaeDocumentDao#find(Base, UUID)}
+    * 
     * @return la base sur laquelle on travaille
     */
    Base getBase();
-   
-   
+
    /**
     * Renvoie le document dont l'identifiant est passé en argument
-    *
-    * @param base la base sur laquelle travailler
-    * @param idDoc l'identifiant unique du document
+    * 
+    * @param base
+    *           la base sur laquelle travailler
+    * @param idDoc
+    *           l'identifiant unique du document
     * @return l'objet Document
     */
    Document find(Base base, UUID idDoc);
-   
 
    /**
     * Mise à jour via DFCE du document passé en paramètre.
