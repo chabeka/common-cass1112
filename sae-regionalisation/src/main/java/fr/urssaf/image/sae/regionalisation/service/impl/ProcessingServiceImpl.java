@@ -7,9 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 import net.docubase.toolkit.model.base.Base;
@@ -32,8 +30,6 @@ import fr.urssaf.image.sae.regionalisation.support.ServiceProviderSupport;
 
 /**
  * Implémentation du service {@link ProcessingService}
- * 
- * 
  */
 @Service
 public class ProcessingServiceImpl implements ProcessingService {
@@ -190,6 +186,11 @@ public class ProcessingServiceImpl implements ProcessingService {
 
             currentIndex++;
 
+            if ((nbDocTraites == 1) || ((nbDocTraites % 5000) == 0)) {
+               LOGGER.info("{} - {} document(s) traité(s)", trcPrefixe,
+                     nbDocTraites);
+            }
+
          } while ((currentIndex <= lastRecord)
                && ((line = reader.readLine()) != null));
 
@@ -293,7 +294,7 @@ public class ProcessingServiceImpl implements ProcessingService {
       Document document = saeDocumentDao.find(base, idDoc);
       if (document == null) {
 
-         // TODO: gérer le cas du document non trouvé
+         // Anomalie: document non trouvé
          LOGGER.warn("Document non trouvé: {}", idDoc);
 
       } else {
@@ -312,53 +313,79 @@ public class ProcessingServiceImpl implements ProcessingService {
          Document document, String newNce, String newNci, String newNpe,
          String newCog, String newCop) {
 
-      // Initialise une liste d'objets traces
-      // qui sera persistée en fin de méthode
-      List<Trace> traces = new ArrayList<Trace>();
+      // Initialise l'objet de traçabilité des mises à jour
+      Trace traceMaj = new Trace();
+      traceMaj.setLineNumber(numeroLigne);
+      traceMaj.setModeMiseAjour(updateDatas);
+      traceMaj.setIdDocument(document.getUuid());
 
-      // Maj des métadonnées dans l'objet mémoire Document
-      updateMetadonnees(numeroLigne, document, "nce", newNce, traces);
-      updateMetadonnees(numeroLigne, document, "nci", newNci, traces);
-      updateMetadonnees(numeroLigne, document, "npe", newNpe, traces);
-      updateMetadonnees(numeroLigne, document, "cog", newCog, traces);
-      updateMetadonnees(numeroLigne, document, "cop", newCop, traces);
+      // nce
+      traceMaj.setNceAncienneValeur(serviceProviderSupport.getValeurCriterion(
+            document, "nce"));
+      if (StringUtils.isNotBlank(newNce)) {
+         traceMaj.setNceIsRenum(Boolean.TRUE);
+         serviceProviderSupport.updateCriterion(document, "nce", newNce);
+         traceMaj.setNceNouvelleValeurSiRenum(serviceProviderSupport
+               .getValeurCriterion(document, "nce"));
+      } else {
+         traceMaj.setNceIsRenum(Boolean.FALSE);
+      }
+
+      // nci
+      traceMaj.setNciAncienneValeur(serviceProviderSupport.getValeurCriterion(
+            document, "nci"));
+      if (StringUtils.isNotBlank(newNci)) {
+         traceMaj.setNciIsRenum(Boolean.TRUE);
+         serviceProviderSupport.updateCriterion(document, "nci", newNci);
+         traceMaj.setNciNouvelleValeurSiRenum(serviceProviderSupport
+               .getValeurCriterion(document, "nci"));
+      } else {
+         traceMaj.setNciIsRenum(Boolean.FALSE);
+      }
+
+      // npe
+      traceMaj.setNpeAncienneValeur(serviceProviderSupport.getValeurCriterion(
+            document, "npe"));
+      if (StringUtils.isNotBlank(newNpe)) {
+         traceMaj.setNpeIsRenum(Boolean.TRUE);
+         serviceProviderSupport.updateCriterion(document, "npe", newNpe);
+         traceMaj.setNpeNouvelleValeurSiRenum(serviceProviderSupport
+               .getValeurCriterion(document, "npe"));
+      } else {
+         traceMaj.setNpeIsRenum(Boolean.FALSE);
+      }
+
+      // cog
+      traceMaj.setCogAncienneValeur(serviceProviderSupport.getValeurCriterion(
+            document, "cog"));
+      if (StringUtils.isNotBlank(newCog)) {
+         traceMaj.setCogIsRenum(Boolean.TRUE);
+         serviceProviderSupport.updateCriterion(document, "cog", newCog);
+         traceMaj.setCogNouvelleValeurSiRenum(serviceProviderSupport
+               .getValeurCriterion(document, "cog"));
+      } else {
+         traceMaj.setCogIsRenum(Boolean.FALSE);
+      }
+
+      // cop
+      traceMaj.setCopAncienneValeur(serviceProviderSupport.getValeurCriterion(
+            document, "cop"));
+      if (StringUtils.isNotBlank(newCop)) {
+         traceMaj.setCopIsRenum(Boolean.TRUE);
+         serviceProviderSupport.updateCriterion(document, "cop", newCop);
+         traceMaj.setCopNouvelleValeurSiRenum(serviceProviderSupport
+               .getValeurCriterion(document, "cop"));
+      } else {
+         traceMaj.setCopIsRenum(Boolean.FALSE);
+      }
 
       // Effectue la mise à jour du document si demandé (pas tir à blanc)
       if (updateDatas) {
          saeDocumentDao.update(document);
       }
 
-      // Ecrit les traces de mises à jour
-      for (Trace trace : traces) {
-         traceDao.addTraceMaj(trace);
-      }
-
-   }
-
-   private void updateMetadonnees(int numeroLigne, Document document,
-         String codeMeta, String nouvelleValeur, List<Trace> traces) {
-
-      if (StringUtils.isNotBlank(nouvelleValeur)) {
-
-         Trace trace = new Trace();
-         trace.setIdDocument(document.getUuid());
-         trace.setLineNumber(numeroLigne);
-         trace.setMetaName(codeMeta);
-
-         String oldValeur = serviceProviderSupport.getValeurCriterion(document,
-               codeMeta);
-         trace.setOldValue(oldValeur);
-
-         serviceProviderSupport.updateCriterion(document, codeMeta,
-               nouvelleValeur);
-
-         String newValeur = serviceProviderSupport.getValeurCriterion(document,
-               codeMeta);
-         trace.setNewValue(newValeur);
-
-         traces.add(trace);
-
-      }
+      // Ecrit la trace de mise à jour du document
+      traceDao.addTraceMaj(traceMaj);
 
    }
 

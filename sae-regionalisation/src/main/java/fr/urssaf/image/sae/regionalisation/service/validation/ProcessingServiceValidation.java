@@ -18,7 +18,7 @@ public class ProcessingServiceValidation {
 
    private static final String CLASS = "fr.urssaf.image.sae.regionalisation.service.ProcessingService.";
 
-   private static final String FILE_METHOD = "execution(void " + CLASS
+   private static final String FILE_METHOD = "execution(int " + CLASS
          + "launchWithFile(*,*, *, *, *, *))"
          + "&& args(updateDatas,source, uuid, first, last, dirPath)";
 

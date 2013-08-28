@@ -42,55 +42,55 @@ public class ServiceProviderSupportTest {
 
    }
 
-   @Test
-   public void updateCriterion() {
-
-      Document document = ToolkitFactory.getInstance().createDocumentTag(
-            support.getBase());
-
-      Map<String, Object> metadatas = new HashMap<String, Object>();
-
-      metadatas.put("nne", "148032541101650");
-      metadatas.put("npe", "123856");
-      metadatas.put("den", "COUTURIER GINETTE");
-      metadatas.put("cv2", "4");
-      metadatas.put("scv", "11");
-      metadatas.put("nci", "719900");
-      metadatas.put("nce", "30148032541101600");
-      metadatas.put("srt", "12345678912345");
-      metadatas.put("psi", "4914736610005");
-      metadatas.put("nst", "000050221");
-      metadatas.put("nre", "20080798");
-      metadatas.put("nic", "57377");
-      metadatas.put("dre", Date.valueOf("2007-07-14"));
-      metadatas.put("apr", "ADELAIDE");
-      metadatas.put("atr", "ATTESTATIONS");
-      metadatas.put("cop", "UR750");
-      metadatas.put("cog", "UR42");
-      metadatas.put("sac", "CER69");
-      metadatas.put("nbp", 6);
-
-      for (Entry<String, Object> metadata : metadatas.entrySet()) {
-
-         support.updateCriterion(document, metadata.getKey(), metadata
-               .getValue());
-
-      }
-
-      // on vérifie que toutes les métadonnées modifiables soient bien prises en
-      // compte
-
-      Assert.assertEquals("le nombre de métadonnées est inattendu",
-            Constants.METADATAS.length, metadatas.size());
-
-      for (String code : Constants.METADATAS) {
-
-         if (!metadatas.containsKey(code)) {
-            Assert.fail("la métadonnée " + code + " n'est pas prise en compte");
-         }
-      }
-
-   }
+//   @Test
+//   public void updateCriterion() {
+//
+//      Document document = ToolkitFactory.getInstance().createDocumentTag(
+//            support.getBase());
+//
+//      Map<String, Object> metadatas = new HashMap<String, Object>();
+//
+//      metadatas.put("nne", "148032541101650");
+//      metadatas.put("npe", "123856");
+//      metadatas.put("den", "COUTURIER GINETTE");
+//      metadatas.put("cv2", "4");
+//      metadatas.put("scv", "11");
+//      metadatas.put("nci", "719900");
+//      metadatas.put("nce", "30148032541101600");
+//      metadatas.put("srt", "12345678912345");
+//      metadatas.put("psi", "4914736610005");
+//      metadatas.put("nst", "000050221");
+//      metadatas.put("nre", "20080798");
+//      metadatas.put("nic", "57377");
+//      metadatas.put("dre", Date.valueOf("2007-07-14"));
+//      metadatas.put("apr", "ADELAIDE");
+//      metadatas.put("atr", "ATTESTATIONS");
+//      metadatas.put("cop", "UR750");
+//      metadatas.put("cog", "UR42");
+//      metadatas.put("sac", "CER69");
+//      metadatas.put("nbp", 6);
+//
+//      for (Entry<String, Object> metadata : metadatas.entrySet()) {
+//
+//         support.updateCriterion(document, metadata.getKey(), metadata
+//               .getValue());
+//
+//      }
+//
+//      // on vérifie que toutes les métadonnées modifiables soient bien prises en
+//      // compte
+//
+//      Assert.assertEquals("le nombre de métadonnées est inattendu",
+//            Constants.METADATAS.length, metadatas.size());
+//
+//      for (String code : Constants.METADATAS) {
+//
+//         if (!metadatas.containsKey(code)) {
+//            Assert.fail("la métadonnée " + code + " n'est pas prise en compte");
+//         }
+//      }
+//
+//   }
 
    private static final String METADATA = "nne";
 

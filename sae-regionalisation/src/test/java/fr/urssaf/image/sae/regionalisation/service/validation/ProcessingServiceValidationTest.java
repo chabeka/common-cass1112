@@ -43,9 +43,7 @@ public class ProcessingServiceValidationTest {
          Assert.assertEquals("le message de l'exception est inattendu",
                "le paramètre fichier doit être renseigné", e.getMessage());
 
-      } catch (Throwable throwable) {
-         Assert.fail("le type d'exception levé n'est pas le bon");
-      }
+      } 
    }
 
    @Test

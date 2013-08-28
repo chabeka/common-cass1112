@@ -207,7 +207,7 @@ public class BootStrap {
       long timeMs = timeEnd - timeStart;
       long timeMin = (timeMs / 1000) / 60;
 
-      LOGGER.info("Nombre de documents mis à jour : {}", nbDocsTraites);
+      LOGGER.info("Nombre de documents traités : {}", nbDocsTraites);
       LOGGER.info("La régionalisation est terminée en {} minutes", timeMin);
    }
 
