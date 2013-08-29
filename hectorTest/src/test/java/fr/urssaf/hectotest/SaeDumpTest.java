@@ -2,18 +2,21 @@ package fr.urssaf.hectotest;
 
 import java.io.PrintStream;
 import java.util.HashMap;
+import java.util.UUID;
 
 import me.prettyprint.cassandra.connection.DynamicLoadBalancingPolicy;
 import me.prettyprint.cassandra.model.ConfigurableConsistencyLevel;
 import me.prettyprint.cassandra.model.CqlQuery;
 import me.prettyprint.cassandra.model.CqlRows;
 import me.prettyprint.cassandra.serializers.BytesArraySerializer;
+import me.prettyprint.cassandra.serializers.UUIDSerializer;
 import me.prettyprint.cassandra.service.CassandraHostConfigurator;
 import me.prettyprint.cassandra.service.FailoverPolicy;
 import me.prettyprint.hector.api.Cluster;
 import me.prettyprint.hector.api.HConsistencyLevel;
 import me.prettyprint.hector.api.Keyspace;
 import me.prettyprint.hector.api.factory.HFactory;
+import me.prettyprint.hector.api.mutation.Mutator;
 import me.prettyprint.hector.api.query.QueryResult;
 
 import org.junit.After;
@@ -47,15 +50,15 @@ public class SaeDumpTest {
       };
       String servers;
 
-      //servers = "cnp69saecas1:9160, cnp69saecas2:9160, cnp69saecas3:9160, cnp31saecas1.cer31.recouv:9160";
-      //servers = "hwi54saecas1.cve.recouv:9160";  // CNH
+      // servers = "cnp69saecas1:9160, cnp69saecas2:9160, cnp69saecas3:9160, cnp31saecas1.cer31.recouv:9160";
+      // servers = "hwi54saecas1.cve.recouv:9160"; // CNH
       servers = "cer69imageint9.cer69.recouv:9160";
-      //servers = "cer69imageint10.cer69.recouv:9160";
-      //servers = "10.203.34.39:9160";    // Noufnouf
-      //servers = "hwi69givnsaecas1.cer69.recouv:9160,hwi69givnsaecas2.cer69.recouv:9160";
-      //servers = "hwi69devsaecas1.cer69.recouv:9160,hwi69devsaecas2.cer69.recouv:9160";
-      //servers = "hwi69ginsaecas2.cer69.recouv:9160";
-      //servers = "cer69-saeint3:9160";
+      // servers = "cer69imageint10.cer69.recouv:9160";
+      // servers = "10.203.34.39:9160"; // Noufnouf
+      // servers = "hwi69givnsaecas1.cer69.recouv:9160,hwi69givnsaecas2.cer69.recouv:9160";
+      // servers = "hwi69devsaecas1.cer69.recouv:9160,hwi69devsaecas2.cer69.recouv:9160";
+      // servers = "hwi69ginsaecas2.cer69.recouv:9160";
+      // servers = "cer69-saeint3.cer69.recouv:9160";
 
       CassandraHostConfigurator hostConfigurator = new CassandraHostConfigurator(
             servers);
@@ -91,14 +94,17 @@ public class SaeDumpTest {
       // truncate("Parameters");
 
       // truncate("TraceDestinataire");
-      // truncate("TraceRegTechnique");
-      // truncate("TraceRegTechniqueIndex");
-      // truncate("TraceRegExploitation");
-      // truncate("TraceRegExploitationIndex");
-      // truncate("TraceRegSecurite");
-      // truncate("TraceRegSecuriteIndex");
-      // truncate("TraceJournalEvt");
-      // truncate("TraceJournalEvtIndex");
+
+//      truncate("TraceRegTechnique");
+//      truncate("TraceRegTechniqueIndex");
+//      truncate("TraceRegExploitation");
+//      truncate("TraceRegExploitationIndex");
+//      truncate("TraceRegSecurite");
+//      truncate("TraceRegSecuriteIndex");
+//      truncate("TraceJournalEvt");
+//      truncate("TraceJournalEvtIndex");
+      
+//      truncate("Rnd");
 
    }
 
@@ -188,49 +194,68 @@ public class SaeDumpTest {
    @Test
    public void testDumpTraceRegExploitation() throws Exception {
       dumper.printKeyInHex = false;
-      dumper.dumpCF("TraceRegExploitation", 5000);
+      dumper.dumpCF("TraceRegExploitation", 5000, true);
    }
 
    @Test
    public void testDumpTraceRegExploitationIndex() throws Exception {
       dumper.printKeyInHex = false;
-      dumper.dumpCF("TraceRegExploitationIndex", 1000);
+      dumper.dumpCF("TraceRegExploitationIndex", 1000, true);
    }
 
    @Test
    public void testDumpTraceRegSecurite() throws Exception {
       dumper.printKeyInHex = false;
-      dumper.dumpCF("TraceRegSecurite", 5000);
+      dumper.dumpCF("TraceRegSecurite", 5000, true);
    }
 
    @Test
    public void testDumpTraceRegSecuriteIndex() throws Exception {
       dumper.printKeyInHex = false;
-      dumper.dumpCF("TraceRegSecuriteIndex", 1000);
+      dumper.dumpCF("TraceRegSecuriteIndex", 1000, true);
    }
 
    @Test
    public void testDumpTraceRegTechnique() throws Exception {
       dumper.printKeyInHex = false;
-      dumper.dumpCF("TraceRegTechnique", 5000);
+      dumper.dumpCF("TraceRegTechnique", 5000, true);
    }
 
    @Test
    public void testDumpTraceRegTechniqueIndex() throws Exception {
       dumper.printKeyInHex = false;
-      dumper.dumpCF("TraceRegTechniqueIndex", 1000);
+      dumper.dumpCF("TraceRegTechniqueIndex", 1000, true);
    }
 
    @Test
    public void testDumpTraceJournalEvt() throws Exception {
       dumper.printKeyInHex = false;
-      dumper.dumpCF("TraceJournalEvt", 5000);
+      dumper.dumpCF("TraceJournalEvt", 5000, true);
    }
 
    @Test
    public void testDumpTraceJournalEvtIndex() throws Exception {
       dumper.printKeyInHex = false;
-      dumper.dumpCF("TraceJournalEvtIndex", 5000);
+      dumper.dumpCF("TraceJournalEvtIndex", 5000, true);
+   }
+   
+   @Test
+   public void testDumpRnd() throws Exception {
+      dumper.printKeyInHex = false;
+      dumper.dumpCF("Rnd", 2500, true);
+   }
+   
+   
+   @Test
+   public void deleteJobDansJobRequest() {
+      
+      UUID idJob = UUID.fromString("1ae1e290-eec7-11e2-a9e3-000c29aa49ae");
+      
+      Mutator<UUID> mutator = HFactory.createMutator(keyspace, UUIDSerializer
+            .get());
+      mutator.addDeletion(idJob, "JobRequest");
+      mutator.execute();
+      
    }
 
 }
