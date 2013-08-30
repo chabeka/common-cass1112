@@ -1098,6 +1098,38 @@
          </CasTest>
 
          <CasTest>
+            <id>319</id>
+            <code>319-Recherche-OK-Toutes-Metadonnes-Recherchable</code>
+            <description>
+               On vérifie que la recherche fonctionne sur toutes les métadonnées recherchables accompagnée d’une métadonnée indexée. La métadonnée indexée choisie pour nos tests est la dénomination.
+            </description>
+            <implemente>true</implemente>
+            <luceneExempleList>Denomination:"Test 319-Recherche-OK-Toutes-Meta-Recherchables" AND ApplicationProductrice:"ADELAIDE"</luceneExempleList>
+            <luceneExempleList>Denomination:"Test 319-Recherche-OK-Toutes-Meta-Recherchables" AND ApplicationTraitement:"ATTESTATIONS"</luceneExempleList>
+            <luceneExempleList>Denomination:"Test 319-Recherche-OK-Toutes-Meta-Recherchables" AND CodeActivite:3</luceneExempleList>
+            <luceneExempleList>Denomination:"Test 319-Recherche-OK-Toutes-Meta-Recherchables" AND CodeFonction:2</luceneExempleList>
+            <luceneExempleList>Denomination:"Test 319-Recherche-OK-Toutes-Meta-Recherchables" AND CodeOrganismeGestionnaire:CER69</luceneExempleList>
+            <luceneExempleList>Denomination:"Test 319-Recherche-OK-Toutes-Meta-Recherchables" AND CodeOrganismeProprietaire:UR750</luceneExempleList>
+            <luceneExempleList>Denomination:"Test 319-Recherche-OK-Toutes-Meta-Recherchables" AND CodeRND:2.3.1.1.12</luceneExempleList>            
+            <luceneExempleList>Denomination:"Test 319-Recherche-OK-Toutes-Meta-Recherchables" AND NniEmployeur:148032541101648</luceneExempleList>
+            <luceneExempleList>Denomination:"Test 319-Recherche-OK-Toutes-Meta-Recherchables" AND NumeroCompteExterne:30148032541101600</luceneExempleList>
+            <luceneExempleList>Denomination:"Test 319-Recherche-OK-Toutes-Meta-Recherchables" AND NumeroCompteInterne:719900</luceneExempleList>
+            <luceneExempleList>Denomination:"Test 319-Recherche-OK-Toutes-Meta-Recherchables" AND NumeroIntControle:57377</luceneExempleList>
+            <luceneExempleList>Denomination:"Test 319-Recherche-OK-Toutes-Meta-Recherchables" AND NumeroPersonne:123854</luceneExempleList>
+            <luceneExempleList>Denomination:"Test 319-Recherche-OK-Toutes-Meta-Recherchables" AND NumeroRecours:1</luceneExempleList>
+            <luceneExempleList>Denomination:"Test 319-Recherche-OK-Toutes-Meta-Recherchables" AND NumeroStructure:000050221</luceneExempleList>
+            <luceneExempleList>Denomination:"Test 319-Recherche-OK-Toutes-Meta-Recherchables" AND Periode:PERI</luceneExempleList>
+            <luceneExempleList>Denomination:"Test 319-Recherche-OK-Toutes-Meta-Recherchables" AND PseudoSiret:4914736610005</luceneExempleList>
+            <luceneExempleList>Denomination:"Test 319-Recherche-OK-Toutes-Meta-Recherchables" AND ReferenceDocumentaire:1234567890AZERTyuio1234567890</luceneExempleList>
+            <luceneExempleList>Denomination:"Test 319-Recherche-OK-Toutes-Meta-Recherchables" AND RUM:"24534Y8465435413Y012312356690123"</luceneExempleList>
+            <luceneExempleList>Denomination:"Test 319-Recherche-OK-Toutes-Meta-Recherchables" AND Siren:0123456789</luceneExempleList>
+            <luceneExempleList>Denomination:"Test 319-Recherche-OK-Toutes-Meta-Recherchables" AND Siret:12345678912345</luceneExempleList>
+            <luceneExempleList>Denomination:"Test 319-Recherche-OK-Toutes-Meta-Recherchables" AND SiteAcquisition:CER44</luceneExempleList>
+            <luceneExempleList>Denomination:"Test 319-Recherche-OK-Toutes-Meta-Recherchables" AND Titre:"Attestation de vigilance"</luceneExempleList>            
+         </CasTest>
+
+
+         <CasTest>
             <id>350</id>
             <code>350-Recherche-KO-SansAuthentification</code>
             <description>
@@ -1342,7 +1374,300 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 1104-Droits-Conformite-Recherche-ATT-VIGI"</luceneExemple>
          </CasTest>
+         <CasTest>
+            <id>1105a</id>
+            <code>1105-Droits-Conformite-Consultation-ATT-VIGI</code>
+            <description>
+               ce test permet de valider que que les opérations « consultation » et « consultationMTOM » fonctionnent correctement avec les droits de consultation autorisées sur un PRMD précis.
+            </description>
+            <implemente>true</implemente>
+         </CasTest>
          
+         <CasTest>
+            <id>1105b</id>
+            <code>1105-Droits-Conformite-Consultation-MTOM-ATT-VIGI</code>
+            <description>
+               ce test permet de valider que que les opérations « consultation » et « consultationMTOM » fonctionnent correctement avec les droits de consultation autorisées sur un PRMD précis.
+            </description>
+            <implemente>true</implemente>
+         </CasTest>
+         <CasTest>
+            <id>1106</id>
+            <code>1106-Droits-Conformite-All-ATT-VIGI</code>
+            <description>
+               ce test permet de valider toutes les fonctionnalités autorisées sur un PRMD précis. 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1106-Droits-Conformite-All-ATT-VIGI"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1107</id>
+            <code>1107-Droits-Conformite-Archivage-Unitaire-ATT-AEPL</code>
+            <description>
+               ce test permet de valider que la fonctionnalité d’archivage unitaire est autorisée sur un PRMD précis 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1107-Droits-Conformite-Archivage-Unitaire-ATT-AEPL"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1108</id>
+            <code>1108-Droits-Conformite-Archivage-Masse-ATT-AEPL</code>
+            <description>
+               ce test permet de valider que la fonctionnalité d’archivage de masse est autorisée sur un PRMD précis
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1108-Droits-Conformite-Archivage-Masse-ATT-AEPL"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1109</id>
+            <code>1109-Droits-Conformite-Archivage-ATT-AEPL</code>
+            <description>
+               ce test permet de valider que la fonctionnalité d’archivage, aussi bien l’archivage unitaire que l’archivage de masse, est autorisé sur un PRMD précis
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1109-Droits-Conformite-Archivage-ATT-AEPL"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1110</id>
+            <code>1110-Droits-Conformite-Recherche-ATT-AEPL</code>
+            <description>
+               ce test permet de valider que la fonctionnalité de recherche est autorisée sur un PRMD précis
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1110-Droits-Conformite-Recherche-ATT-AEPL"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1111a</id>
+            <code>1111-Droits-Conformite-Consultation-ATT-AEPL</code>
+            <description>
+               ce test permet de valider que la fonctionnalité de consultation est autorisée sur un PRMD précis
+            </description>
+            <implemente>true</implemente>
+         </CasTest>                       
+         <CasTest>
+            <id>1111b</id>
+            <code>1111-Droits-Conformite-Consultation-MTOM-ATT-AEPL</code>
+            <description>
+               ce test permet de valider que la fonctionnalité de consultation est autorisée sur un PRMD précis
+            </description>
+            <implemente>true</implemente>
+         </CasTest>
+         <CasTest>
+            <id>1112</id>
+            <code>1112-Droits-Conformite-All-ATT-AEPL</code>
+            <description>
+               ce test permet de valider toutes les fonctionnalités autorisées sur un PRMD précis
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1112-Droits-Conformite-All-ATT-AEPL"</luceneExemple>
+         </CasTest>         
+         <CasTest>
+            <id>1113</id>
+            <code>1113-Droits-Conformite-Archivage-Unitaire-UNE-META</code>
+            <description>
+               ce test permet de valider que la fonctionnalité d’archivage unitaire est autorisée sur un PRMD contenant une seule métadonnée.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1113-Droits-Conformite-Archivage-Unitaire-UNE-META" AND Siren:"3090000001"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1114</id>
+            <code>1114-Droits-Conformite-Archivage-Masse-UNE-META</code>
+            <description>
+               ce test permet de valider que la fonctionnalité d’archivage de masse est autorisée sur un PRMD contenant une seule métadonnée.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1114-Droits-Conformite-Archivage-Masse-UNE-META" AND Siren:"3090000001"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1115</id>
+            <code>1115-Droits-Conformite-Archivage-UNE-META</code>
+            <description>
+               ce test permet de valider que la fonctionnalité d’archivage unitaire est autorisée sur un PRMD contenant une seule métadonnée.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1115-Droits-Conformite-Archivage-UNE-META" AND Siren:"3090000001"</luceneExemple>
+         </CasTest>                  
+         <CasTest>
+            <id>1116</id>
+            <code>1116-Droits-Conformite-Recherche-UNE-META</code>
+            <description>
+               ce test permet de valider la fonctionnalité de recherche est autorisé sur un PRMD contenant une seule métadonnée.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1116-Droits-Conformite-Recherche-UNE-META"</luceneExemple>
+         </CasTest>                  
+         <CasTest>
+            <id>1117a</id>
+            <code>1117-Droits-Conformite-Consultation-UNE-META</code>
+            <description>
+               ce test permet de valider que la fonctionnalité de consultation est autorisé sur un PRMD contenant une seule métadonnée.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1116-Droits-Conformite-Recherche-UNE-META"</luceneExemple>
+         </CasTest>                  
+         <CasTest>
+            <id>1117b</id>
+            <code>1117-Droits-Conformite-Consultation-MTOM-UNE-META</code>
+            <description>
+               ce test permet de valider que la fonctionnalité de consultation est autorisé sur un PRMD contenant une seule métadonnée.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1116-Droits-Conformite-Recherche-UNE-META"</luceneExemple>
+         </CasTest>                  
+         <CasTest>
+            <id>1118</id>
+            <code>1118-Droits-Conformite-All-UNE-META</code>
+            <description>
+               ce test permet de valider toutes les fonctionnalités autorisées sur un PRMD précis
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1118-Droits-Conformite-All-UNE-META"</luceneExemple>
+         </CasTest>  
+         <CasTest>
+            <id>1119</id>
+            <code>1119-Droits-Conformite-Archivage-Unitaire-PLUSIEURS-META</code>
+            <description>
+               ce test permet de valider que la fonctionnalité d’archivage unitaire est autorisée sur un PRMD contenant plusieurs métadonnées.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1119-Droits-Conformite-Archivage-Unitaire-PLUSIEURS-META"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1120</id>
+            <code>1120-Droits-Conformite-Archivage-Masse-PLUSIEURS-META</code>
+            <description>
+               ce test permet de valider que la fonctionnalité d’archivage de masse est autorisée sur un PRMD contenant plusieurs métadonnées.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1120-Droits-Conformite-Archivage-Masse-PLUSIEURS-META"</luceneExemple>
+         </CasTest>  
+         <CasTest>
+            <id>1121</id>
+            <code>1121-Droits-Conformite-Archivage-PLUSIEURS-META</code>
+            <description>
+               ce test permet de valider que la fonctionnalité d’archivage, aussi bien l’archivage unitaire que l’archivage de masse, est autorisé sur un PRMD contenant plusieurs métadonnées.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1121-Droits-Conformite-Archivage-PLUSIEURS-META"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1122</id>
+            <code>1122-Droits-Conformite-Recherche-PLUSIEURS-META</code>
+            <description>
+               ce test permet de valider que la fonctionnalité de recherche est autorisé sur un PRMD contenant plusieurs métadonnées.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1122-Droits-Conformite-Recherche-PLUSIEURS-META"</luceneExemple>
+         </CasTest>           
+         <CasTest>
+            <id>1123a</id>
+            <code>1123-Droits-Conformite-Consultation-PLUSIEURS-META</code>
+            <description>
+               ce test permet de valider que la fonctionnalité de consultation est autorisé sur un PRMD contenant plusieurs métadonnées.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1123-Droits-Conformite-Consultation-PLUSIEURS-META"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1123b</id>
+            <code>1123-Droits-Conformite-Consultation-MTOM-PLUSIEURS-META</code>
+            <description>
+               ce test permet de valider que la fonctionnalité de consultation est autorisé sur un PRMD contenant plusieurs métadonnées.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1123-Droits-Conformite-Consultation-PLUSIEURS-META"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1124</id>
+            <code>1124-Droits-Conformite-All-PLUSIEURS-META</code>
+            <description>
+               ce test permet de valider toutes les fonctionnalités autorisées sur un PRMD contenant plusieurs métadonnées.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1124-Droits-Conformite-All-PLUSIEURS-META"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1127</id>
+            <code>1127-Droits-Conformite-Archivage-Unitaire-PRMD-DYNA</code>
+            <description>
+               ce test permet de valider la fonctionnalité d’archivage unitaire est autorisée sur un PRMD dynamique.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1127-Droits-Conformite-Archivage-Unitaire-PRMD-DYNA"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1128</id>
+            <code>1128-Droits-Conformite-Archivage-Masse-PRMD-DYNA </code>
+            <description>
+               ce test permet de valider que la fonctionnalité d’archivage de masse est autorisée sur un PRMD dynamique.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1128-Droits-Conformite-Archivage-Masse-PRMD-DYNA"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1129</id>
+            <code>1129-Droits-Conformite-Archivage-PRMD-DYNA</code>
+            <description>
+               ce test permet de valider que la fonctionnalité d’archivage, aussi bien l’archivage unitaire que l’archivage de masse, est autorisé sur un PRMD dynamique.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1129-Droits-Conformite-Archivage-PRMD-DYNA"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1130</id>
+            <code>1130-Droits-Conformite-Recherche-PRMD-DYNA</code>
+            <description>
+               ce test permet de valider que la fonctionnalité de recherche est autorisée sur un PRMD dynamique.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1130-Droits-Conformite-Recherche-PRMD-DYNA"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1131a</id>
+            <code>1131-Droits-Conformite-Consultation-PRMD-DYNA</code>
+            <description>
+               ce test permet de valider que la fonctionnalité de consultation est autorisée sur un PRMD dynamique.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1130-Droits-Conformite-Recherche-PRMD-DYNA"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1131b</id>
+            <code>1131-Droits-Conformite-Consultation-MTOM-PRMD-DYNA</code>
+            <description>
+               ce test permet de valider que la fonctionnalité de consultation est autorisée sur un PRMD dynamique.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1130-Droits-Conformite-Recherche-PRMD-DYNA"</luceneExemple>
+         </CasTest>         
+         <CasTest>
+            <id>1132</id>
+            <code>1132-Droits-Conformite-All-PRMD-DYNA</code>
+            <description>
+               ce test permet de valider toutes les fonctionnalités autorisées sur un PRMD dynamique. 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1132-Droits-Conformite-All-PRMD-DYNA"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1133</id>
+            <code>1133-Droits-Conformite-Plusieurs-PAGM</code>
+            <description>
+               ce test permet de valider que l’utilisation de 2 PAGM fonctionne dans notre test on testera la concaténation d’un PAGM qui autorise l’archivage unitaire et un archivage de masse
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1133-Droits-Conformite-Plusieurs-PAGM"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1134</id>
+            <code>1134-Droits-Conformite-Archivage-Masse-PRMD-DYNA-MULTI</code>
+            <description>
+               ce test permet de valider l’archivage de masse avec un PRMD dynamique sur plusieurs métadonnées dynamiques fonctionne bien
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1134-Droits-Conformite-Archivage-Masse-PRMD-DYNA-MULTI"</luceneExemple>
+         </CasTest>         
          <CasTest>
             <id>1150</id>
             <code>1150-Droits-Toutes-Actions-KO-CS-Inconnu</code>
@@ -1368,7 +1693,48 @@
             </description>
             <implemente>true</implemente>
          </CasTest>
-
+         <CasTest>
+            <id>1153</id>
+            <code>1153-Droits-Archivage-Masse-KO-PRMD-Innacessible</code>
+            <description>
+               ce test permet de vérifier l’application du contrôle du PRMD à partir d’un CS donné et d’un PAGM sur l’action unitaire archivage de masse fonctionne correctement
+            </description>
+            <implemente>true</implemente>
+         </CasTest>
+         <CasTest>
+            <id>1154</id>
+            <code>1154-Droits-Archivage-Masse-KO</code>
+            <description>
+               ce test permet de vérifier toutes les actions unitaires sachant que dans le PAGM que l’on utilise on n’a pas donné la possibilité d’utiliser l’archivage de masse.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1154-Droits-Archivage-Masse-KO"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1155</id>
+            <code>1155-Droits-Archivage-Masse-KO-PRMD-DYNA-INNACCESSIBLE</code>
+            <description>
+               ce test permet de valider l’archivage de masse avec un PRMD dynamique sur plusieurs métadonnées dynamiques refuse l’intégration de masse si une valeur dynamique ne respecte pas la contrainte.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1155-Droits-Archivage-Masse-KO-PRMD-DYNA-INNACCESSIBLE"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1156a</id>
+            <code>1156-Droits-Consultation-KO-PRMD-DYNA-INNACCESSIBLE</code>
+            <description>
+               ce test permet de valider la consultation avec un PRMD dynamique sur plusieurs métadonnées dynamiques. Aucune consultation réalisée si une valeur dynamique ne respecte pas la contrainte.
+            </description>
+            <implemente>true</implemente>
+         </CasTest>
+         <CasTest>
+            <id>1156b</id>
+            <code>1156-Droits-Consultation-KO-PRMD-DYNA-INNACCESSIBLE</code>
+            <description>
+               ce test permet de valider la consultation avec un PRMD dynamique sur plusieurs métadonnées dynamiques. Aucune consultation réalisée si une valeur dynamique ne respecte pas la contrainte.
+            </description>
+            <implemente>true</implemente>
+         </CasTest>
       </CasTests>
 
    </Categorie>

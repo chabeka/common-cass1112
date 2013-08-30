@@ -15,22 +15,25 @@ import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.TestFormulaireDrCmRe;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ViFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CodeMetadonneeList;
-import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeurList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.PagmList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTest;
 import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
+import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.ErreurType;
+import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.FichierType;
+import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.ListeErreurType;
+import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.NonIntegratedDocumentType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.comparator.ResultatRechercheComparator;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.comparator.ResultatRechercheComparator.TypeComparaison;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheResponse;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ResultatRechercheType;
 
 /**
- * 1102-Droits-Conformite-Archivage-Masse -ATT-VIGI
+ * 1153-Droits-Archivage-Masse-KO-PRMD-Innacessible
  */
 @Controller
-@RequestMapping(value = "test1102")
+@RequestMapping(value = "test1153")
 @SuppressWarnings( { "PMD.AvoidDuplicateLiterals" })
-public class Test1102Controller extends
+public class Test1153Controller extends
       AbstractTestWsController<TestFormulaireDrCmRe> {
 
    private static final int WAITED_COUNT = 10;
@@ -40,7 +43,7 @@ public class Test1102Controller extends
     */
    @Override
    protected final String getNumeroTest() {
-      return "1102";
+      return "1153";
    }
 
    /**
@@ -50,9 +53,11 @@ public class Test1102Controller extends
    protected String getNomVue() {
       return "testDrCmRe";
    }
-   
+
    private String getDebutUrlEcde() {
-      return getEcdeService().construitUrlEcde("SAE_INTEGRATION/20110822/Droit-1102-Droits-Conformite-Archivage-Masse-ATT-VIGI/");
+      return getEcdeService()
+            .construitUrlEcde(
+                  "SAE_INTEGRATION/20110822/Droit-1153-Droits-Archivage-Masse-KO-PRMD-Innacessible/");
    }
 
    /**
@@ -64,14 +69,16 @@ public class Test1102Controller extends
       TestFormulaireDrCmRe formulaire = new TestFormulaireDrCmRe();
       RechercheFormulaire formRecherche = formulaire.getRechercheFormulaire();
       formRecherche.getResultats().setStatus(TestStatusEnum.SansStatus);
-      
-      CaptureMasseFormulaire formCapture = formulaire.getCaptureMasseDeclenchement();
+
+      CaptureMasseFormulaire formCapture = formulaire
+            .getCaptureMasseDeclenchement();
       formCapture.setUrlSommaire(getDebutUrlEcde() + "sommaire.xml");
-      formCapture.setHash("23ec83cefdd26f30b68ecbbae1ce6cf6560bca44");
-      formCapture.setTypeHash("SHA-1");
+      // formCapture.setHash("23ec83cefdd26f30b68ecbbae1ce6cf6560bca44");
+      // formCapture.setTypeHash("SHA-1");
       formCapture.getResultats().setStatus(TestStatusEnum.SansStatus);
-      
-      CaptureMasseResultatFormulaire formResultat = formulaire.getCaptureMasseResultat();
+
+      CaptureMasseResultatFormulaire formResultat = formulaire
+            .getCaptureMasseResultat();
       formResultat.setUrlSommaire(getDebutUrlEcde() + "resultat.xml");
       formResultat.getResultats().setStatus(TestStatusEnum.SansStatus);
 
@@ -122,9 +129,9 @@ public class Test1102Controller extends
 
       } else if ("3".equals(etape)) {
 
-         recherche(formulaire.getUrlServiceWeb(), formulaire.getRechercheFormulaire(),
-               formulaire.getViFormulaire());
-      }  else {
+         recherche(formulaire.getUrlServiceWeb(), formulaire
+               .getRechercheFormulaire(), formulaire.getViFormulaire());
+      } else {
 
          throw new IntegrationRuntimeException("L'étape " + etape
                + " est inconnue !");
@@ -133,7 +140,6 @@ public class Test1102Controller extends
 
    }
 
-   
    private void etape1captureMasseAppelWs(String urlWebService,
          TestFormulaireDrCmRe formulaire) {
 
@@ -146,25 +152,40 @@ public class Test1102Controller extends
 
       // Appel de la méthode de test
       getCaptureMasseTestService().appelWsOpArchiMasseOKAttendu(urlWebService,
-            formulaire.getCaptureMasseDeclenchement(), formulaire.getViFormulaire());
+            formulaire.getCaptureMasseDeclenchement(),
+            formulaire.getViFormulaire());
 
    }
 
    private void etape2captureMasseResultats(
          CaptureMasseResultatFormulaire formulaire) {
 
-      getCaptureMasseTestService()
-            .testResultatsTdmReponseOKAttendue(formulaire);
+      ErreurType erreurType = new ErreurType();
+      erreurType.setCode("SAE-CA-BUL002");
+      erreurType
+            .setLibelle("Les droits présents dans le vecteur d'identification sont insuffisants pour effectuer l'action demandée ");
+      
+      ListeErreurType listeErreurType = new ListeErreurType();
+      listeErreurType.getErreur().add(erreurType);
+      
+      FichierType fichierType = new FichierType();
+      fichierType.setCheminEtNomDuFichier("doc1.PDF");
+
+      NonIntegratedDocumentType documentType = new NonIntegratedDocumentType();
+      documentType.setErreurs(listeErreurType);
+      documentType.setObjetNumerique(fichierType);
+
+      getCaptureMasseTestService().testResultatsTdmReponseKOAttendue(
+            formulaire, WAITED_COUNT, documentType, 2);
 
    }
-   
+
    private void recherche(String urlServiceWeb, RechercheFormulaire formulaire,
          ViFormulaire viParams) {
 
       // Initialise
       ResultatTest resultatTest = formulaire.getResultats();
 
-      // Résultats attendus
       int nbResultatsAttendus = WAITED_COUNT;
       boolean flagResultatsTronquesAttendu = false;
 
@@ -185,49 +206,12 @@ public class Test1102Controller extends
          Collections.sort(resultatsTries, new ResultatRechercheComparator(
                TypeComparaison.NumeroRecours));
 
-         // Vérifie chaque résultat
-         verifieResultatN(1, resultatsTries.get(0), resultatTest, "1");
-         verifieResultatN(2, resultatsTries.get(1), resultatTest, "2");
-         verifieResultatN(3, resultatsTries.get(2), resultatTest, "3");
-         verifieResultatN(4, resultatsTries.get(3), resultatTest, "4");
-         verifieResultatN(5, resultatsTries.get(4), resultatTest, "5");
-         verifieResultatN(6, resultatsTries.get(5), resultatTest, "6");
-         verifieResultatN(7, resultatsTries.get(6), resultatTest, "9");
-         verifieResultatN(8, resultatsTries.get(7), resultatTest, "10");
-
       }
 
       // On passe le test à OK si tous les contrôles sont passées
       if (!TestStatusEnum.Echec.equals(resultatTest.getStatus())) {
          resultatTest.setStatus(TestStatusEnum.Succes);
       }
-
-   }
-
-   private void verifieResultatN(int numeroResultatRecherche,
-         ResultatRechercheType resultatRecherche, ResultatTest resultatTest,
-         String numeroRecours) {
-
-      MetadonneeValeurList valeursAttendues = new MetadonneeValeurList();
-
-      
-      if(Arrays.asList(1,5,9).contains(numeroRecours)){
-         valeursAttendues.add("CodeRND", "2.3.1.1.12");
-      }else if(Arrays.asList(2,6,10).contains(numeroRecours)){
-         valeursAttendues.add("CodeRND", "2.3.1.1.8");
-      }else if(Arrays.asList(3,4,7,8).contains(numeroRecours)){
-         valeursAttendues.add("CodeRND", "2.3.1.1.3");  
-      }
-      valeursAttendues.add("ApplicationProductrice", "ADELAIDE");      
-      valeursAttendues.add("DateCreation", "2007-04-01");
-      valeursAttendues.add("Denomination",
-            "Test 1102-Droits-Conformite-Archivage-Masse-ATT-VIGI");
-      valeursAttendues.add("NumeroRecours", numeroRecours);
-      valeursAttendues.add("Siren", "3090000001");
-
-      getRechercheTestService().verifieResultatRecherche(resultatRecherche,
-            Integer.toString(numeroResultatRecherche), resultatTest,
-            valeursAttendues);
 
    }
 

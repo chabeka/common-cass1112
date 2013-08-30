@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -12,7 +11,6 @@ import fr.urssaf.image.sae.integration.ihmweb.constantes.SaeIntegrationConstante
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.TestWsRechercheFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ViFormulaire;
-import fr.urssaf.image.sae.integration.ihmweb.modele.CodeMetadonneeList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeurList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.PagmList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTest;
@@ -23,22 +21,22 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.R
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ResultatRechercheType;
 
 /**
- * 1104-Droits-Conformite-Recherche-ATT-VIGI
+ * 1116-Droits-Conformite-Recherche-UNE-META
  */
 @Controller
-@RequestMapping(value = "test1104")
+@RequestMapping(value = "test1116")
 @SuppressWarnings( { "PMD.AvoidDuplicateLiterals" })
-public class Test1104Controller extends
+public class Test1116Controller extends
       AbstractTestWsController<TestWsRechercheFormulaire> {
 
-   private static final int WAITED_COUNT = 8;
+   private static final int WAITED_COUNT = 10;
 
    /**
     * {@inheritDoc}
     */
    @Override
    protected final String getNumeroTest() {
-      return "1104";
+      return "1116";
    }
 
    /**
@@ -63,25 +61,15 @@ public class Test1104Controller extends
       // d'intégration
       formRecherche.setRequeteLucene(getCasTest().getLuceneExemple());
 
-      // Pas de métadonnées spécifiques à récupérer
-      CodeMetadonneeList codesMeta = new CodeMetadonneeList();
-      codesMeta.add("ApplicationProductrice");
-      codesMeta.add("CodeRND");
-      codesMeta.add("DateCreation");
-      codesMeta.add("Denomination");
-      codesMeta.add("NumeroRecours");
-      codesMeta.add("Siren");
-      formRecherche.setCodeMetadonnees(codesMeta);
-
       // Paramètres du VI
       ViFormulaire viForm = formulaire.getViFormulaire();
-      viForm.setIssuer("INT_CS_ATT_VIGI");
+      viForm.setIssuer("INT_CS_UNE_META");
       viForm.setRecipient(SaeIntegrationConstantes.VI_DEFAULT_RECIPIENT);
       viForm.setAudience(SaeIntegrationConstantes.VI_DEFAULT_AUDIENCE);
       viForm.setIdCertif("2");
       PagmList pagmList = new PagmList();
       viForm.setPagms(pagmList);
-      pagmList.add("INT_PAGM_ATT_VIGI_RECH");
+      pagmList.add("INT_PAGM_UNE_META_ALL");
 
       return formulaire;
 
@@ -127,11 +115,13 @@ public class Test1104Controller extends
          verifieResultatN(1, resultatsTries.get(0), resultatTest, "1");
          verifieResultatN(2, resultatsTries.get(1), resultatTest, "2");
          verifieResultatN(3, resultatsTries.get(2), resultatTest, "3");
-         verifieResultatN(4, resultatsTries.get(3), resultatTest, "5");
-         verifieResultatN(5, resultatsTries.get(4), resultatTest, "6");
-         verifieResultatN(6, resultatsTries.get(5), resultatTest, "7");
-         verifieResultatN(7, resultatsTries.get(6), resultatTest, "9");
-         verifieResultatN(8, resultatsTries.get(7), resultatTest, "10");
+         verifieResultatN(3, resultatsTries.get(3), resultatTest, "4");
+         verifieResultatN(4, resultatsTries.get(4), resultatTest, "5");
+         verifieResultatN(5, resultatsTries.get(5), resultatTest, "6");
+         verifieResultatN(6, resultatsTries.get(6), resultatTest, "7");
+         verifieResultatN(7, resultatsTries.get(7), resultatTest, "8");
+         verifieResultatN(7, resultatsTries.get(8), resultatTest, "9");
+         verifieResultatN(8, resultatsTries.get(9), resultatTest, "10");
 
       }
 
@@ -152,19 +142,10 @@ public class Test1104Controller extends
       valeursAttendues.add("ApplicationProductrice", "ADELAIDE");      
       valeursAttendues.add("DateCreation", "2007-04-01");
       valeursAttendues.add("Denomination",
-            "Test 1104-Droits-Conformite-Recherche-ATT-VIGI");
+            "Test 1116-Droits-Conformite-Recherche-UNE-META");
       valeursAttendues.add("NumeroRecours", numeroRecours);
-      valeursAttendues.add("Siren", "3090000001");
-      
-      if(ArrayUtils.contains(new Integer[]{1,5,9},numeroRecours)){
-         valeursAttendues.add("CodeRND", "2.3.1.1.12");
-      }
-      if(ArrayUtils.contains(new Integer[]{6,2,10},numeroRecours)){
-         valeursAttendues.add("CodeRND", "2.3.1.1.8");
-      }
-      if(ArrayUtils.contains(new Integer[]{3,7},numeroRecours)){
-         valeursAttendues.add("CodeRND", "2.3.1.1.3");
-      }
+      valeursAttendues.add("Siren", "3090000001");      
+      valeursAttendues.add("CodeRND", "2.3.1.1.13");
 
       getRechercheTestService().verifieResultatRecherche(resultatRecherche,
             Integer.toString(numeroResultatRecherche), resultatTest,

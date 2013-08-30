@@ -27,8 +27,6 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.security.ViStyle;
 public class Test1150Controller extends
       AbstractTestWsController<Test1150Formulaire> {
 
-   private static final int WAITED_COUNT = 8;
-
    /**
     * {@inheritDoc}
     */

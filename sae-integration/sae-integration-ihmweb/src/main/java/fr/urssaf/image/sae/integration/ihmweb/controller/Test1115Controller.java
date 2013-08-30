@@ -24,24 +24,25 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.comparator.ResultatRech
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.comparator.ResultatRechercheComparator.TypeComparaison;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheResponse;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ResultatRechercheType;
+import fr.urssaf.image.sae.integration.ihmweb.service.referentiels.ReferentielMetadonneesService;
 
 /**
- * 1101-Droits-Conformite-Recherche-Attestation
+ * 1115-Droits-Conformite-Archivage-UNE-META
  */
 @Controller
-@RequestMapping(value = "test1103")
+@RequestMapping(value = "test1115")
 @SuppressWarnings( { "PMD.AvoidDuplicateLiterals" })
-public class Test1103Controller extends
+public class Test1115Controller extends
       AbstractTestWsController<TestFormulaireDrCuCmRe> {
 
-   private static final int WAITED_COUNT = 10;
+   private static final int WAITED_COUNT = 11;
 
    /**
     * {@inheritDoc}
     */
    @Override
    protected final String getNumeroTest() {
-      return "1103";
+      return "1115";
    }
 
    /**
@@ -55,7 +56,7 @@ public class Test1103Controller extends
    private String getDebutUrlEcde() {
       return getEcdeService()
             .construitUrlEcde(
-                  "SAE_INTEGRATION/20110822/Droit-1103-Droits-Conformite-Archivage-ATT-VIGI/");
+                  "SAE_INTEGRATION/20110822/Droit-1115-Droits-Conformite-Archivage-UNE-META/");
    }
 
    /**
@@ -73,27 +74,25 @@ public class Test1103Controller extends
       captUnit
             .setUrlEcde(getEcdeService()
                   .construitUrlEcde(
-                        "SAE_INTEGRATION/20110822/Droit-1103-Droits-Conformite-Archivage-ATT-VIGI/documents/ADELPF_710_PSNV211157BPCA1L0000.pdf"));
+                        "SAE_INTEGRATION/20110822/Droit-1115-Droits-Conformite-Archivage-UNE-META/documents/ADELPF_710_PSNV211157BPCA1L0000.pdf"));
 
       // Le nom du fichier
       captUnit.setNomFichier("ADELPF_710_PSNV211157BPCA1L0000.pdf");
 
       // Les métadonnées
-      MetadonneeValeurList metadonnees = new MetadonneeValeurList();
-      captUnit.setMetadonnees(metadonnees);
-      metadonnees.add("ApplicationProductrice", "ADELAIDE");
-      metadonnees.add("CodeOrganismeGestionnaire", "CER69");
-      metadonnees.add("CodeOrganismeProprietaire", "UR750");
-      metadonnees.add("CodeRND", "2.3.1.1.12");
-      metadonnees.add("DateCreation", "2011-09-01");
-      metadonnees.add("Denomination",
-            "Test 1103-Droits-Conformite-Archivage-ATT-VIGI");
-      metadonnees.add("FormatFichier", "fmt/354");
-      metadonnees.add("Hash", "d145ea8e0ca28b8c97deb0c2a550f0a969a322a3");
-      metadonnees.add("NbPages", "2");
-      metadonnees.add("NumeroRecours", "11");
-      metadonnees.add("Titre", "Attestation de vigilance");
-      metadonnees.add("TypeHash", "SHA-1");
+
+      MetadonneeValeurList metasExemples = ReferentielMetadonneesService
+            .getMetadonneesExemplePourCapture();
+      captUnit.setMetadonnees(metasExemples);
+      metasExemples.modifieValeurMeta(
+            SaeIntegrationConstantes.META_CODE_ORG_PROPRIETAIRE, "UR750");
+      metasExemples.modifieValeurMeta(SaeIntegrationConstantes.META_HASH,
+            "d145ea8e0ca28b8c97deb0c2a550f0a969a322a3");
+      captUnit.getMetadonnees().add("Denomination",
+            "Test 1115-Droits-Conformite-Archivage-UNE-META");
+      captUnit.getMetadonnees().modifieValeurMeta("CodeRND", "2.3.1.1.13");
+      captUnit.getMetadonnees().add("NumeroRecours", "11");
+      captUnit.getMetadonnees().add("Siren", "3090000001");
 
       // capture de masse
 
@@ -129,12 +128,12 @@ public class Test1103Controller extends
 
       // Paramètres du VI
       ViFormulaire viForm = formulaire.getViFormulaire();
-      viForm.setIssuer("INT_CS_ATT_VIGI");
+      viForm.setIssuer("INT_CS_UNE_META");
       viForm.setRecipient(SaeIntegrationConstantes.VI_DEFAULT_RECIPIENT);
       viForm.setAudience(SaeIntegrationConstantes.VI_DEFAULT_AUDIENCE);
       PagmList pagmList = new PagmList();
       viForm.setPagms(pagmList);
-      pagmList.add("INT_PAGM_ATT_VIGI_ARCH");
+      pagmList.add("INT_PAGM_UNE_META_ARCH");
 
       return formulaire;
 
@@ -202,7 +201,7 @@ public class Test1103Controller extends
 
          etape2captureMasseAppelWs(formulaire.getUrlServiceWeb(), formulaire);
          PagmList pagmList = new PagmList();
-         pagmList.add("INT_PAGM_ATT_VIGI_RECH");
+         pagmList.add("INT_PAGM_UNE_META_RECH");
          formulaire.getViFormulaire().setPagms(pagmList);
 
       } else if ("3".equals(etape)) {
@@ -263,17 +262,12 @@ public class Test1103Controller extends
 
       MetadonneeValeurList valeursAttendues = new MetadonneeValeurList();
 
-      if (Arrays.asList(1, 5, 9, 11).contains(numeroRecours)) {
-         valeursAttendues.add("CodeRND", "2.3.1.1.12");
-      } else if (Arrays.asList(2, 6, 10).contains(numeroRecours)) {
-         valeursAttendues.add("CodeRND", "2.3.1.1.8");
-      } else if (Arrays.asList(3, 4, 7, 8).contains(numeroRecours)) {
-         valeursAttendues.add("CodeRND", "2.3.1.1.3");
-      }
+      
+      valeursAttendues.add("CodeRND", "2.3.1.1.13");
       valeursAttendues.add("ApplicationProductrice", "ADELAIDE");
-      valeursAttendues.add("DateCreation", "2007-04-01");
+      valeursAttendues.add("DateCreation", "2011-09-01");
       valeursAttendues.add("Denomination",
-            "Test 1103-Droits-Conformite-Archivage-ATT-VIGI");
+            "Test 1115-Droits-Conformite-Archivage-UNE-META");
       valeursAttendues.add("NumeroRecours", numeroRecours);
       valeursAttendues.add("Siren", "3090000001");
 

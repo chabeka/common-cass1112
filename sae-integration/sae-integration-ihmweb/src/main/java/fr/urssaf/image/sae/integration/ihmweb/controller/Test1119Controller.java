@@ -1,6 +1,5 @@
 package fr.urssaf.image.sae.integration.ihmweb.controller;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -16,14 +15,15 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTest;
 import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheResponse;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ResultatRechercheType;
+import fr.urssaf.image.sae.integration.ihmweb.service.referentiels.ReferentielMetadonneesService;
 
 /**
- * 1101-Droits-Conformite-Recherche-Attestation
+ * 1119-Droits-Conformite-Archivage-Unitaire-PLUSIEURS-META
  */
 @Controller
-@RequestMapping(value = "test1101")
+@RequestMapping(value = "test1119")
 @SuppressWarnings( { "PMD.AvoidDuplicateLiterals" })
-public class Test1101Controller extends
+public class Test1119Controller extends
       AbstractTestWsController<TestFormulaireDrCuRe> {
 
    /**
@@ -31,7 +31,7 @@ public class Test1101Controller extends
     */
    @Override
    protected final String getNumeroTest() {
-      return "1101";
+      return "1119";
    }
 
    /**
@@ -57,26 +57,24 @@ public class Test1101Controller extends
       captUnit
             .setUrlEcde(getEcdeService()
                   .construitUrlEcde(
-                        "SAE_INTEGRATION/20110822/Droit-1101-Droits-Conformite-Archivage-Unitaire-ATT-VIGI/documents/ADELPF_710_PSNV211157BPCA1L0000.pdf"));
+                        "SAE_INTEGRATION/20110822/Droit-1119-Droits-Conformite-Archivage-Unitaire-PLUSIEURS-META/documents/ADELPF_710_PSNV211157BPCA1L0000.pdf"));
 
       // Le nom du fichier
       captUnit.setNomFichier("ADELPF_710_PSNV211157BPCA1L0000.pdf");
 
       // Les métadonnées
-      MetadonneeValeurList metadonnees = new MetadonneeValeurList();
-      captUnit.setMetadonnees(metadonnees);
-      metadonnees.add("ApplicationProductrice", "ADELAIDE");
-      metadonnees.add("CodeOrganismeGestionnaire", "CER69");
-      metadonnees.add("CodeOrganismeProprietaire", "UR750");
-      metadonnees.add("CodeRND", "2.3.1.1.12");
-      metadonnees.add("DateCreation", "2011-09-01");
-      metadonnees.add("Denomination",
-            "Test 1101-Droits-Conformite-Archivage-Unitaire-ATT-VIGI");
-      metadonnees.add("FormatFichier", "fmt/354");
-      metadonnees.add("Hash", "d145ea8e0ca28b8c97deb0c2a550f0a969a322a3");
-      metadonnees.add("NbPages", "2");
-      metadonnees.add("Titre", "Attestation de vigilance");
-      metadonnees.add("TypeHash", "SHA-1");
+      MetadonneeValeurList metasExemples = ReferentielMetadonneesService
+            .getMetadonneesExemplePourCapture();
+      metasExemples.modifieValeurMeta(
+            SaeIntegrationConstantes.META_CODE_ORG_PROPRIETAIRE, "UR750");
+      metasExemples.modifieValeurMeta(SaeIntegrationConstantes.META_HASH,
+            "d145ea8e0ca28b8c97deb0c2a550f0a969a322a3");
+      captUnit.getMetadonnees().addAll(metasExemples);
+      captUnit.getMetadonnees().add("Denomination",
+            "Test 1119-Droits-Conformite-Archivage-Unitaire-PLUSIEURS-META");
+      captUnit.getMetadonnees().modifieValeurMeta("CodeRND", "2.3.1.1.12");
+      captUnit.getMetadonnees().add("NumeroRecours", "1");
+      captUnit.getMetadonnees().add("Siren", "3090000001");
 
       // formulaire de recherche
 
@@ -90,60 +88,24 @@ public class Test1101Controller extends
       // Pas de métadonnées spécifiques à récupérer
       CodeMetadonneeList codesMeta = new CodeMetadonneeList();
       codesMeta.add("ApplicationProductrice");
-      codesMeta.add("ApplicationTraitement");
-      codesMeta.add("CodeActivite");
-      codesMeta.add("CodeCategorieV2");
-      codesMeta.add("CodeFonction");
+      codesMeta.add("CodeRND");
+      codesMeta.add("DateCreation");
+      codesMeta.add("Denomination");
+      codesMeta.add("NumeroRecours");
+      codesMeta.add("Siren");
       codesMeta.add("CodeOrganismeGestionnaire");
       codesMeta.add("CodeOrganismeProprietaire");
-      codesMeta.add("CodeSousCategorieV2");
-      codesMeta.add("CodeRND");
-      codesMeta.add("ContratDeService");
-      codesMeta.add("DateArchivage");
-      codesMeta.add("DateCreation");
-      codesMeta.add("DateDebutConservation");
-      codesMeta.add("DateSignature");
-      codesMeta.add("DateFinConservation");
-      codesMeta.add("DateReception");
-      codesMeta.add("Denomination");
-      codesMeta.add("DureeConservation");
-      codesMeta.add("FormatFichier");
-      codesMeta.add("Gel");
-      codesMeta.add("Hash");
-      codesMeta.add("IdTraitementMasse");
-      codesMeta.add("IdTraitementMasseInterne");
-      codesMeta.add("NbPages");
-      codesMeta.add("NniEmployeur");
-      codesMeta.add("NomFichier");
-      codesMeta.add("NumeroCompteExterne");
-      codesMeta.add("NumeroCompteInterne");
-      codesMeta.add("NumeroIntControle");
-      codesMeta.add("NumeroPersonne");
-      codesMeta.add("NumeroRecours");
-      codesMeta.add("NumeroStructure");
-      codesMeta.add("Periode");
-      codesMeta.add("PseudoSiret");
-      codesMeta.add("Siren");
-      codesMeta.add("Siret");
-      codesMeta.add("SiteAcquisition");
-      codesMeta.add("TailleFichier");
-      codesMeta.add("Titre");
-      codesMeta.add("TracabilitePreArchivage");
-      codesMeta.add("TracabilitePostArchivage");
-      codesMeta.add("TypeHash");
-      codesMeta.add("VersionRND");
 
-      
       formRecherche.setCodeMetadonnees(codesMeta);
 
       // Paramètres du VI
       ViFormulaire viForm = formulaire.getViFormulaire();
-      viForm.setIssuer("INT_CS_ATT_VIGI");
+      viForm.setIssuer("INT_CS_PLUSIEURS_META");
       viForm.setRecipient(SaeIntegrationConstantes.VI_DEFAULT_RECIPIENT);
       viForm.setAudience(SaeIntegrationConstantes.VI_DEFAULT_AUDIENCE);
       PagmList pagmList = new PagmList();
       viForm.setPagms(pagmList);
-      pagmList.add("INT_PAGM_ATT_VIGI_ARCH_UNIT");
+      pagmList.add("INT_PAGM_PLUSIEURS_META_ARCH_UNIT");
 
       return formulaire;
 
@@ -159,7 +121,7 @@ public class Test1101Controller extends
       if ("1".equals(etape)) {
          etape1captureUnitaireAppelWs(formulaire);
          PagmList pagmList = new PagmList();
-         pagmList.add("INT_PAGM_ATT_VIGI_RECH");
+         pagmList.add("INT_PAGM_PLUSIEURS_META_RECH");
          formulaire.getViFormulaire().setPagms(pagmList);
       } else if ("2".equals(etape)) {
          recherche(formulaire.getUrlServiceWeb(), formulaire
@@ -173,9 +135,9 @@ public class Test1101Controller extends
       CaptureUnitaireFormulaire formCaptureEtp1 = formulaire.getCaptUnit();
 
       // Lance le test
-      getCaptureUnitaireTestService()
-            .appelWsOpCaptureUnitaireReponseAttendue(
-                  formulaire.getUrlServiceWeb(), formCaptureEtp1, formulaire.getViFormulaire());
+      getCaptureUnitaireTestService().appelWsOpCaptureUnitaireReponseAttendue(
+            formulaire.getUrlServiceWeb(), formCaptureEtp1,
+            formulaire.getViFormulaire());
    }
 
    private void recherche(String urlServiceWeb, RechercheFormulaire formulaire,
@@ -218,58 +180,23 @@ public class Test1101Controller extends
    private void verifieResultatN(int numeroResultatRecherche,
          ResultatRechercheType resultatRecherche, ResultatTest resultatTest) {
 
-
       MetadonneeValeurList valeursAttendues = new MetadonneeValeurList();
 
       valeursAttendues.add("ApplicationProductrice", "ADELAIDE");
-      valeursAttendues.add("ApplicationTraitement", StringUtils.EMPTY);
-      valeursAttendues.add("CodeActivite", "3");
-      valeursAttendues.add("CodeCategorieV2", StringUtils.EMPTY);
-      valeursAttendues.add("CodeFonction", "2");
-      valeursAttendues.add("CodeOrganismeGestionnaire", "CER69");
-      valeursAttendues.add("CodeOrganismeProprietaire", "UR750");
-      valeursAttendues.add("CodeRND", "2.3.1.1.12");
-      valeursAttendues.add("CodeSousCategorieV2",  StringUtils.EMPTY);
-      valeursAttendues.add("ContratDeService", "INT_CS_ATT_VIGI");
-//      valeursAttendues.add("DateArchivage", "");
       valeursAttendues.add("DateCreation", "2011-09-01");
-//      valeursAttendues.add("DateDebutConservation","" );
-//      valeursAttendues.add("DateFinConservation", "");
-      valeursAttendues.add("DateReception", StringUtils.EMPTY);
-      valeursAttendues.add("Denomination", "Test 1101-Droits-Conformite-Archivage-Unitaire-ATT-VIGI");
-      valeursAttendues.add("DureeConservation", "1095");
-      valeursAttendues.add("FormatFichier", "fmt/354");
-      valeursAttendues.add("Gel", "false");
-      valeursAttendues.add("Hash", "d145ea8e0ca28b8c97deb0c2a550f0a969a322a3");
-      valeursAttendues.add("IdTraitementMasse", StringUtils.EMPTY);
-      valeursAttendues.add("IdTraitementMasseInterne", StringUtils.EMPTY);
-      valeursAttendues.add("NbPages", "2");
-      valeursAttendues.add("NniEmployeur", StringUtils.EMPTY);
-      valeursAttendues.add("NomFichier", "ADELPF_710_PSNV211157BPCA1L0000.pdf");
-      valeursAttendues.add("NumeroCompteExterne", StringUtils.EMPTY);
-      valeursAttendues.add("NumeroCompteInterne", StringUtils.EMPTY);
-      valeursAttendues.add("NumeroIntControle", StringUtils.EMPTY);
-      valeursAttendues.add("NumeroPersonne", StringUtils.EMPTY);
-      valeursAttendues.add("NumeroRecours", StringUtils.EMPTY);
-      valeursAttendues.add("NumeroStructure", StringUtils.EMPTY);
-      valeursAttendues.add("Periode", StringUtils.EMPTY);
-      valeursAttendues.add("PseudoSiret", StringUtils.EMPTY);
-      valeursAttendues.add("Siren", StringUtils.EMPTY);
-      valeursAttendues.add("Siret", StringUtils.EMPTY);
-      valeursAttendues.add("SiteAcquisition", StringUtils.EMPTY);
-      valeursAttendues.add("TailleFichier", "28569");
-      valeursAttendues.add("Titre", "Attestation de vigilance");
-      valeursAttendues.add("TracabilitePreArchivage",
-            StringUtils.EMPTY);
-      valeursAttendues.add("TracabilitePostArchivage",
-            StringUtils.EMPTY);
-      valeursAttendues.add("TypeHash", "SHA-1");
-      valeursAttendues.add("VersionRND", "11.2");
+      valeursAttendues.add("Denomination",
+            "Test 1119-Droits-Conformite-Archivage-Unitaire-PLUSIEURS-META");
+      valeursAttendues.add("NumeroRecours", "1");
+      valeursAttendues.add("Siren", "3090000001");
+
+      valeursAttendues.add("CodeRND", "2.3.1.1.12");
+      valeursAttendues.add("CodeOrganismeProprietaire", "UR750");
+      valeursAttendues.add("CodeOrganismeGestionnaire", "CER69");
 
       getRechercheTestService().verifieResultatRecherche(resultatRecherche,
             Integer.toString(numeroResultatRecherche), resultatTest,
             valeursAttendues);
-     
+
    }
 
 }

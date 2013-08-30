@@ -264,6 +264,22 @@ public class CaptureMasseTestService {
       return appelWsOpArchiMasseTestLibre(urlWebService, formulaire);
 
    }
+   
+   /**
+    * appel de l'archivage de masse avec en attente aucune saop fault
+    * 
+    * @param urlWebService
+    *           adresse du WS
+    * @param viParam
+    *           Le paramètres du VI          
+    */
+   public final CaptureMasseResultat appelWsOpArchiMasseOKAttendu(
+         String urlWebService, CaptureMasseFormulaire formulaire, ViFormulaire viParams) {
+
+      // Fait la même chose que le test libre
+      return appelWsOpArchiMasseTestLibre(urlWebService, formulaire, viParams);
+
+   }
 
    /**
     * appel de l'archivage de masse avec en attente une saop fault dont on

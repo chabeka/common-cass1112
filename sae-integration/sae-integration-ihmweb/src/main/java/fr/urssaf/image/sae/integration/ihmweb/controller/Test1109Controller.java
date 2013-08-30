@@ -13,7 +13,7 @@ import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseResultatFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureUnitaireFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
-import fr.urssaf.image.sae.integration.ihmweb.formulaire.TestFormulaireDrCuCmRe;
+import fr.urssaf.image.sae.integration.ihmweb.formulaire.Test1109Formulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ViFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CodeMetadonneeList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeurList;
@@ -26,13 +26,13 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.R
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ResultatRechercheType;
 
 /**
- * 1101-Droits-Conformite-Recherche-Attestation
+ * 1109-Droits-Conformite-Archivage-ATT-AEPL
  */
 @Controller
-@RequestMapping(value = "test1103")
+@RequestMapping(value = "test1109")
 @SuppressWarnings( { "PMD.AvoidDuplicateLiterals" })
-public class Test1103Controller extends
-      AbstractTestWsController<TestFormulaireDrCuCmRe> {
+public class Test1109Controller extends
+      AbstractTestWsController<Test1109Formulaire> {
 
    private static final int WAITED_COUNT = 10;
 
@@ -41,7 +41,7 @@ public class Test1103Controller extends
     */
    @Override
    protected final String getNumeroTest() {
-      return "1103";
+      return "1109";
    }
 
    /**
@@ -55,16 +55,16 @@ public class Test1103Controller extends
    private String getDebutUrlEcde() {
       return getEcdeService()
             .construitUrlEcde(
-                  "SAE_INTEGRATION/20110822/Droit-1103-Droits-Conformite-Archivage-ATT-VIGI/");
+                  "SAE_INTEGRATION/20110822/Droit-1109-Droits-Conformite-Archivage-ATT-AEPL/");
    }
 
    /**
     * {@inheritDoc}
     */
    @Override
-   protected final TestFormulaireDrCuCmRe getFormulairePourGet() {
+   protected final Test1109Formulaire getFormulairePourGet() {
 
-      TestFormulaireDrCuCmRe formulaire = new TestFormulaireDrCuCmRe();
+      Test1109Formulaire formulaire = new Test1109Formulaire();
 
       // capture unitaire
       CaptureUnitaireFormulaire captUnit = formulaire.getCaptUnit();
@@ -73,7 +73,7 @@ public class Test1103Controller extends
       captUnit
             .setUrlEcde(getEcdeService()
                   .construitUrlEcde(
-                        "SAE_INTEGRATION/20110822/Droit-1103-Droits-Conformite-Archivage-ATT-VIGI/documents/ADELPF_710_PSNV211157BPCA1L0000.pdf"));
+                        "SAE_INTEGRATION/20110822/Droit-1109-Droits-Conformite-Archivage-ATT-AEPL/documents/ADELPF_710_PSNV211157BPCA1L0000.pdf"));
 
       // Le nom du fichier
       captUnit.setNomFichier("ADELPF_710_PSNV211157BPCA1L0000.pdf");
@@ -84,10 +84,10 @@ public class Test1103Controller extends
       metadonnees.add("ApplicationProductrice", "ADELAIDE");
       metadonnees.add("CodeOrganismeGestionnaire", "CER69");
       metadonnees.add("CodeOrganismeProprietaire", "UR750");
-      metadonnees.add("CodeRND", "2.3.1.1.12");
+      metadonnees.add("CodeRND", "2.3.1.1.13");
       metadonnees.add("DateCreation", "2011-09-01");
       metadonnees.add("Denomination",
-            "Test 1103-Droits-Conformite-Archivage-ATT-VIGI");
+            "Test 1109-Droits-Conformite-Archivage-ATT-AEPL");
       metadonnees.add("FormatFichier", "fmt/354");
       metadonnees.add("Hash", "d145ea8e0ca28b8c97deb0c2a550f0a969a322a3");
       metadonnees.add("NbPages", "2");
@@ -129,12 +129,12 @@ public class Test1103Controller extends
 
       // Paramètres du VI
       ViFormulaire viForm = formulaire.getViFormulaire();
-      viForm.setIssuer("INT_CS_ATT_VIGI");
+      viForm.setIssuer("INT_CS_ATT_AEPL");
       viForm.setRecipient(SaeIntegrationConstantes.VI_DEFAULT_RECIPIENT);
       viForm.setAudience(SaeIntegrationConstantes.VI_DEFAULT_AUDIENCE);
       PagmList pagmList = new PagmList();
       viForm.setPagms(pagmList);
-      pagmList.add("INT_PAGM_ATT_VIGI_ARCH");
+      pagmList.add("INT_PAGM_ATT_AEPL_ARCH");
 
       return formulaire;
 
@@ -193,7 +193,7 @@ public class Test1103Controller extends
     * {@inheritDoc}
     */
    @Override
-   protected final void doPost(TestFormulaireDrCuCmRe formulaire) {
+   protected final void doPost(Test1109Formulaire formulaire) {
 
       String etape = formulaire.getEtape();
       if ("1".equals(etape)) {
@@ -202,7 +202,7 @@ public class Test1103Controller extends
 
          etape2captureMasseAppelWs(formulaire.getUrlServiceWeb(), formulaire);
          PagmList pagmList = new PagmList();
-         pagmList.add("INT_PAGM_ATT_VIGI_RECH");
+         pagmList.add("INT_PAGM_ATT_AEPL_RECH");
          formulaire.getViFormulaire().setPagms(pagmList);
 
       } else if ("3".equals(etape)) {
@@ -222,7 +222,7 @@ public class Test1103Controller extends
 
    }
 
-   private void etape1captureUnitaireAppelWs(TestFormulaireDrCuCmRe formulaire) {
+   private void etape1captureUnitaireAppelWs(Test1109Formulaire formulaire) {
 
       // Initialise
       CaptureUnitaireFormulaire formCaptureEtp1 = formulaire.getCaptUnit();
@@ -234,7 +234,7 @@ public class Test1103Controller extends
    }
 
    private void etape2captureMasseAppelWs(String urlWebService,
-         TestFormulaireDrCuCmRe formulaire) {
+         Test1109Formulaire formulaire) {
 
       // Vide le résultat du test précédent de l'étape 2
       CaptureMasseResultatFormulaire formCaptMassRes = formulaire

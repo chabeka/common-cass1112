@@ -25,12 +25,12 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.R
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ResultatRechercheType;
 
 /**
- * 1102-Droits-Conformite-Archivage-Masse -ATT-VIGI
+ * 1120-Droits-Conformite-Archivage-Masse-PLUSIEURS-META
  */
 @Controller
-@RequestMapping(value = "test1102")
+@RequestMapping(value = "test1120")
 @SuppressWarnings( { "PMD.AvoidDuplicateLiterals" })
-public class Test1102Controller extends
+public class Test1120Controller extends
       AbstractTestWsController<TestFormulaireDrCmRe> {
 
    private static final int WAITED_COUNT = 10;
@@ -40,7 +40,7 @@ public class Test1102Controller extends
     */
    @Override
    protected final String getNumeroTest() {
-      return "1102";
+      return "1120";
    }
 
    /**
@@ -52,7 +52,7 @@ public class Test1102Controller extends
    }
    
    private String getDebutUrlEcde() {
-      return getEcdeService().construitUrlEcde("SAE_INTEGRATION/20110822/Droit-1102-Droits-Conformite-Archivage-Masse-ATT-VIGI/");
+      return getEcdeService().construitUrlEcde("SAE_INTEGRATION/20110822/Droit-1120-Droits-Conformite-Archivage-Masse-PLUSIEURS-META/");
    }
 
    /**
@@ -67,8 +67,8 @@ public class Test1102Controller extends
       
       CaptureMasseFormulaire formCapture = formulaire.getCaptureMasseDeclenchement();
       formCapture.setUrlSommaire(getDebutUrlEcde() + "sommaire.xml");
-      formCapture.setHash("23ec83cefdd26f30b68ecbbae1ce6cf6560bca44");
-      formCapture.setTypeHash("SHA-1");
+      //formCapture.setHash("23ec83cefdd26f30b68ecbbae1ce6cf6560bca44");
+      //formCapture.setTypeHash("SHA-1");
       formCapture.getResultats().setStatus(TestStatusEnum.SansStatus);
       
       CaptureMasseResultatFormulaire formResultat = formulaire.getCaptureMasseResultat();
@@ -91,12 +91,12 @@ public class Test1102Controller extends
 
       // Paramètres du VI
       ViFormulaire viForm = formulaire.getViFormulaire();
-      viForm.setIssuer("INT_CS_ATT_VIGI");
+      viForm.setIssuer("INT_CS_PLUSIEURS_META");
       viForm.setRecipient(SaeIntegrationConstantes.VI_DEFAULT_RECIPIENT);
       viForm.setAudience(SaeIntegrationConstantes.VI_DEFAULT_AUDIENCE);
       PagmList pagmList = new PagmList();
       viForm.setPagms(pagmList);
-      pagmList.add("INT_PAGM_ATT_VIGI_ARCH_MASSE");
+      pagmList.add("INT_PAGM_PLUSIEURS_META_ARCH_MASSE");
 
       return formulaire;
 
@@ -113,7 +113,7 @@ public class Test1102Controller extends
 
          etape1captureMasseAppelWs(formulaire.getUrlServiceWeb(), formulaire);
          PagmList pagmList = new PagmList();
-         pagmList.add("INT_PAGM_ATT_VIGI_RECH");
+         pagmList.add("INT_PAGM_PLUSIEURS_META_RECH");
          formulaire.getViFormulaire().setPagms(pagmList);
 
       } else if ("2".equals(etape)) {
@@ -192,8 +192,10 @@ public class Test1102Controller extends
          verifieResultatN(4, resultatsTries.get(3), resultatTest, "4");
          verifieResultatN(5, resultatsTries.get(4), resultatTest, "5");
          verifieResultatN(6, resultatsTries.get(5), resultatTest, "6");
-         verifieResultatN(7, resultatsTries.get(6), resultatTest, "9");
-         verifieResultatN(8, resultatsTries.get(7), resultatTest, "10");
+         verifieResultatN(7, resultatsTries.get(6), resultatTest, "7");
+         verifieResultatN(8, resultatsTries.get(7), resultatTest, "8");
+         verifieResultatN(8, resultatsTries.get(8), resultatTest, "9");
+         verifieResultatN(8, resultatsTries.get(9), resultatTest, "10");
 
       }
 
@@ -211,17 +213,11 @@ public class Test1102Controller extends
       MetadonneeValeurList valeursAttendues = new MetadonneeValeurList();
 
       
-      if(Arrays.asList(1,5,9).contains(numeroRecours)){
          valeursAttendues.add("CodeRND", "2.3.1.1.12");
-      }else if(Arrays.asList(2,6,10).contains(numeroRecours)){
-         valeursAttendues.add("CodeRND", "2.3.1.1.8");
-      }else if(Arrays.asList(3,4,7,8).contains(numeroRecours)){
-         valeursAttendues.add("CodeRND", "2.3.1.1.3");  
-      }
       valeursAttendues.add("ApplicationProductrice", "ADELAIDE");      
       valeursAttendues.add("DateCreation", "2007-04-01");
       valeursAttendues.add("Denomination",
-            "Test 1102-Droits-Conformite-Archivage-Masse-ATT-VIGI");
+            "Test 1120-Droits-Conformite-Archivage-Masse-PLUSIEURS-META");
       valeursAttendues.add("NumeroRecours", numeroRecours);
       valeursAttendues.add("Siren", "3090000001");
 

@@ -25,12 +25,12 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.R
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ResultatRechercheType;
 
 /**
- * 1102-Droits-Conformite-Archivage-Masse -ATT-VIGI
+ * 1108-Droits-Conformite-Archivage-Masse-ATT-AEPL
  */
 @Controller
-@RequestMapping(value = "test1102")
+@RequestMapping(value = "test1108")
 @SuppressWarnings( { "PMD.AvoidDuplicateLiterals" })
-public class Test1102Controller extends
+public class Test1108Controller extends
       AbstractTestWsController<TestFormulaireDrCmRe> {
 
    private static final int WAITED_COUNT = 10;
@@ -40,7 +40,7 @@ public class Test1102Controller extends
     */
    @Override
    protected final String getNumeroTest() {
-      return "1102";
+      return "1108";
    }
 
    /**
@@ -52,7 +52,7 @@ public class Test1102Controller extends
    }
    
    private String getDebutUrlEcde() {
-      return getEcdeService().construitUrlEcde("SAE_INTEGRATION/20110822/Droit-1102-Droits-Conformite-Archivage-Masse-ATT-VIGI/");
+      return getEcdeService().construitUrlEcde("SAE_INTEGRATION/20110822/Droit-1108-Droits-Conformite-Archivage-Masse-ATT-AEPL/");
    }
 
    /**
@@ -91,12 +91,12 @@ public class Test1102Controller extends
 
       // Paramètres du VI
       ViFormulaire viForm = formulaire.getViFormulaire();
-      viForm.setIssuer("INT_CS_ATT_VIGI");
+      viForm.setIssuer("INT_CS_ATT_AEPL");
       viForm.setRecipient(SaeIntegrationConstantes.VI_DEFAULT_RECIPIENT);
       viForm.setAudience(SaeIntegrationConstantes.VI_DEFAULT_AUDIENCE);
       PagmList pagmList = new PagmList();
       viForm.setPagms(pagmList);
-      pagmList.add("INT_PAGM_ATT_VIGI_ARCH_MASSE");
+      pagmList.add("INT_PAGM_ATT_AEPL_ARCH_MASSE");
 
       return formulaire;
 
@@ -113,7 +113,7 @@ public class Test1102Controller extends
 
          etape1captureMasseAppelWs(formulaire.getUrlServiceWeb(), formulaire);
          PagmList pagmList = new PagmList();
-         pagmList.add("INT_PAGM_ATT_VIGI_RECH");
+         pagmList.add("INT_PAGM_ATT_AEPL_RECH");
          formulaire.getViFormulaire().setPagms(pagmList);
 
       } else if ("2".equals(etape)) {
@@ -221,7 +221,7 @@ public class Test1102Controller extends
       valeursAttendues.add("ApplicationProductrice", "ADELAIDE");      
       valeursAttendues.add("DateCreation", "2007-04-01");
       valeursAttendues.add("Denomination",
-            "Test 1102-Droits-Conformite-Archivage-Masse-ATT-VIGI");
+            "Test 1108-Droits-Conformite-Archivage-Masse-ATT-AEPL");
       valeursAttendues.add("NumeroRecours", numeroRecours);
       valeursAttendues.add("Siren", "3090000001");
 

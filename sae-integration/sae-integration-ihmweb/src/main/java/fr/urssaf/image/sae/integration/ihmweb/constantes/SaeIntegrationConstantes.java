@@ -61,4 +61,11 @@ public final class SaeIntegrationConstantes {
     */
    public static final String VI_DEFAULT_PAGM = "ROLE_TOUS;FULL";
    
+
+   /**
+    * Le code long de la métadonnée CodeOrganismeProprietaire
+    */
+   public static final String META_CODE_ORG_PROPRIETAIRE = "CodeOrganismeProprietaire";
+
+   
 }
