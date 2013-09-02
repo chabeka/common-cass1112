@@ -107,19 +107,21 @@ public class SAEControlesModificationServiceTest extends CommonsServices {
    }
 
    
-   @Test(expected = DuplicatedMetadataEx.class)
-   public void testUpdateMetasDupliquee() throws ReferentialRndException,
-         UnknownCodeRndEx, InvalidValueTypeAndFormatMetadataEx,
-         UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
-         RequiredArchivableMetadataEx, NotArchivableMetadataEx,
-         UnknownHashCodeEx, NotModifiableMetadataEx {
-      List<UntypedMetadata> metadatas = Arrays.asList(new UntypedMetadata(
-            "Titre", "ceci est le titre"), new UntypedMetadata(
-            "NumeroCompteInterne", "123456"), new UntypedMetadata("Titre",
-            "ceci est le titre 2"));
-
-      service.checkSaeMetadataForUpdate(metadatas);
-   }
+// CE TEST N'EST PLUS VALABLE CAR LE CONTROLE DE DUPPLICATION A ETE DEPLACE
+// (pour prendre en compte la modif et le suppression en même temps)   
+//   @Test(expected = DuplicatedMetadataEx.class)
+//   public void testUpdateMetasDupliquee() throws ReferentialRndException,
+//         UnknownCodeRndEx, InvalidValueTypeAndFormatMetadataEx,
+//         UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
+//         RequiredArchivableMetadataEx, NotArchivableMetadataEx,
+//         UnknownHashCodeEx, NotModifiableMetadataEx {
+//      List<UntypedMetadata> metadatas = Arrays.asList(new UntypedMetadata(
+//            "Titre", "ceci est le titre"), new UntypedMetadata(
+//            "NumeroCompteInterne", "123456"), new UntypedMetadata("Titre",
+//            "ceci est le titre 2"));
+//
+//      service.checkSaeMetadataForUpdate(metadatas);
+//   }
 
    @Test(expected = InvalidValueTypeAndFormatMetadataEx.class)
    public void testUpdateTypeErrone() throws ReferentialRndException,

@@ -5,7 +5,11 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+
+import junit.framework.Assert;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
@@ -102,9 +106,25 @@ public class IgcMainTest {
 
       Collection<File> files = FileUtils.listFiles(CRL, null, true);
 
-      assertEquals("le nombre de téléchargements est incorrect", 15, files
-            .size());
+      Assert.assertTrue("erreur sur le nombre d'urls à télécharger", files
+            .size() > 3);
+      
+      List<String> crlUtiles = new ArrayList<String>();
+      crlUtiles.add("Pseudo_Appli.crl");
+      crlUtiles.add("Pseudo_ACOSS.crl");
+      crlUtiles.add("Pseudo_IGC_A.crl");
 
+      boolean trouve = false;
+      for (String crl : crlUtiles) {
+         trouve = false;
+         for (File file : files) {
+            if (file.getName().equals(crl)) {
+               trouve = true;
+            }
+         }
+         Assert.assertTrue("Le fichier " + crl + " doit être présent", trouve);
+      }
+           
    }
 
    @Test

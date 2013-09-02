@@ -89,12 +89,12 @@ public class SAEModificationServiceTest {
 
    @Autowired
    private SAEServiceTestProvider testProvider;
-   
+
    @Autowired
    private CassandraServerBean server;
    @Autowired
    private ParametersService parametersService;
-   @Autowired 
+   @Autowired
    private RndSupport rndSupport;
    @Autowired
    private JobClockSupport jobClockSupport;
@@ -116,7 +116,7 @@ public class SAEModificationServiceTest {
       AuthenticationContext.setAuthenticationToken(null);
 
       provider.closeConnexion();
-      
+
       server.resetData();
    }
 
@@ -149,11 +149,11 @@ public class SAEModificationServiceTest {
             viExtrait.getIdUtilisateur(), viExtrait, roles, viExtrait
                   .getSaeDroits());
       AuthenticationContext.setAuthenticationToken(token);
-      
+
       // Paramétrage du RND
       parametersService.setVersionRndDateMaj(new Date());
       parametersService.setVersionRndNumero("11.2");
-      
+
       TypeDocument typeDocCree = new TypeDocument();
       typeDocCree.setCloture(false);
       typeDocCree.setCode("5.1.2.1.5");
@@ -164,7 +164,7 @@ public class SAEModificationServiceTest {
       typeDocCree.setType(TypeCode.ARCHIVABLE_AED);
 
       rndSupport.ajouterRnd(typeDocCree, jobClockSupport.currentCLock());
-      
+
       typeDocCree.setCloture(false);
       typeDocCree.setCode("2.3.1.1.12");
       typeDocCree.setCodeActivite("3");
@@ -172,7 +172,7 @@ public class SAEModificationServiceTest {
       typeDocCree.setDureeConservation(1825);
       typeDocCree.setLibelle("Libellé 2.3.1.1.12");
       typeDocCree.setType(TypeCode.ARCHIVABLE_AED);
-      
+
       rndSupport.ajouterRnd(typeDocCree, jobClockSupport.currentCLock());
    }
 
@@ -205,6 +205,21 @@ public class SAEModificationServiceTest {
       } catch (Exception exception) {
          Assert.fail("une IllegalArgumentException est attendue");
       }
+   }
+
+   @Test(expected = DuplicatedMetadataEx.class)
+   public void testMetasDupliquee() throws ReferentialRndException,
+         UnknownCodeRndEx, InvalidValueTypeAndFormatMetadataEx,
+         UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
+         RequiredArchivableMetadataEx, NotArchivableMetadataEx,
+         UnknownHashCodeEx, NotModifiableMetadataEx, ModificationException {
+      List<UntypedMetadata> metadatas = Arrays.asList(new UntypedMetadata(
+            "Titre", "ceci est le titre"), new UntypedMetadata(
+            "NumeroCompteInterne", "123456"), new UntypedMetadata("Titre",
+            "ceci est le titre 2"));
+
+      saeModificationService.modification(UUID.randomUUID(),
+            metadatas);
    }
 
    @Test
