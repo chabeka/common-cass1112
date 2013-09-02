@@ -71,6 +71,16 @@ public interface SAEControlesModificationService {
     *            Au moins une des métadonnées n'est pas modifiable
     */
    void checkSaeMetadataForDelete(List<UntypedMetadata> metadatas)
-         throws NotModifiableMetadataEx;
+         throws NotModifiableMetadataEx, UnknownMetadataEx;
+
+   /**
+    * Réalise les contrôles des métadonnées lors de l'opération de modification
+    * (mise à jour ou suppression)
+    * 
+    * @param metadatas
+    *           Liste des métadonnées à vérifier
+    */
+   void checkSaeMetadataForModification(List<UntypedMetadata> metadatas)
+         throws DuplicatedMetadataEx;
 
 }

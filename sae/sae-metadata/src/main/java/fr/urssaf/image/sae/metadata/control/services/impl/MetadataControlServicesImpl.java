@@ -597,7 +597,7 @@ public class MetadataControlServicesImpl implements MetadataControlServices {
       List<MetadataError> errors = new ArrayList<MetadataError>();
       try {
          final Map<String, MetadataReference> references = referenceDAO
-               .getRequiredForArchivalMetadataReferences();
+               .getRequiredForStorageMetadataReferences();
 
          for (UntypedMetadata metadata : metadatas) {
 

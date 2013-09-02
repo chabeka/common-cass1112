@@ -117,39 +117,39 @@ public final class RefMetaInitialisationService {
             // Affectation des propriétés de l'objet à partir du fichier CSV
 
             // Code long
-            String longCode = readString(nextLine, 'A');
+            String longCode = readString(nextLine, "A");
             metadonnee.setLongCode(longCode);
 
             // Libellé
-            String label = readString(nextLine, 'B');
+            String label = readString(nextLine, "B");
             metadonnee.setLabel(label);
 
             // Description
-            String description = readString(nextLine, 'C');
+            String description = readString(nextLine, "C");
             metadonnee.setDescription(description);
 
             // Spécifiable à l'archivage
-            boolean isArchivable = readBoolean(nextLine, 'E');
+            boolean isArchivable = readBoolean(nextLine, "E");
             metadonnee.setArchivable(isArchivable);
 
             // Obligatoire à l'archivage
-            boolean requiredForArchival = readBoolean(nextLine, 'F');
+            boolean requiredForArchival = readBoolean(nextLine, "F");
             metadonnee.setRequiredForArchival(requiredForArchival);
 
             // Consultée par défaut
-            boolean defaultConsultable = readBoolean(nextLine, 'G');
+            boolean defaultConsultable = readBoolean(nextLine, "G");
             metadonnee.setDefaultConsultable(defaultConsultable);
 
             // Consultable
-            boolean consultable = readBoolean(nextLine, 'H');
+            boolean consultable = readBoolean(nextLine, "H");
             metadonnee.setConsultable(consultable);
 
             // Critère de recherche
-            boolean isSearchable = readBoolean(nextLine, 'I');
+            boolean isSearchable = readBoolean(nextLine, "I");
             metadonnee.setSearchable(isSearchable);
 
             // Indexée
-            boolean isIndexed = readBoolean(nextLine, 'J');
+            boolean isIndexed = readBoolean(nextLine, "J");
             metadonnee.setIsIndexed(isIndexed);
 
             // Formatage
@@ -157,11 +157,11 @@ public final class RefMetaInitialisationService {
             metadonnee.setPattern(pattern);
 
             // Taille maximum autorisée en archivage
-            int length = readInt(nextLine, 'L');
+            int length = readInt(nextLine, "L");
             metadonnee.setLength(length);
 
             // Nom du dictionnaire
-            String dictionaryName = readString(nextLine, 'O');
+            String dictionaryName = readString(nextLine, "O");
             metadonnee.setDictionaryName(dictionaryName);
 
             // Possède un dictionnaire ?
@@ -169,21 +169,27 @@ public final class RefMetaInitialisationService {
             metadonnee.setHasDictionary(hasDictionary);
 
             // Code court
-            String shortCode = readString(nextLine, 'T');
+            String shortCode = readString(nextLine, "T");
             metadonnee.setShortCode(shortCode);
 
             // Métadonnée gérée directement par DFCE
-            boolean isInternal = readBoolean(nextLine, 'U');
+            boolean isInternal = readBoolean(nextLine, "U");
             metadonnee.setInternal(isInternal);
 
             // Type DFCE
-            String typeDfce = readString(nextLine, 'W');
+            String typeDfce = readString(nextLine, "W");
             metadonnee.setType(typeDfce);
 
             // Obligatoire au stockage
-            boolean requiredForStorage = readBoolean(nextLine, 'Y');
+            boolean requiredForStorage = readBoolean(nextLine, "Y");
             metadonnee.setRequiredForStorage(requiredForStorage);
-
+            
+            // Modifiable par le client
+            boolean modifiableParClient = readBoolean(nextLine, "AA");
+            System.out.println(longCode + " : " + modifiableParClient);
+            
+            metadonnee.setModifiable(modifiableParClient);
+            
          }
 
       } catch (IOException e) {
@@ -195,30 +201,43 @@ public final class RefMetaInitialisationService {
 
    }
 
-   private int getIndiceColonne(char colonneExcel) {
+   private int getIndiceColonne(String colonneExcel) {
 
       // On fera commencer les indices à 0
       // code Ascii de A = 65
       // code Ascii de Z = 90
 
-      int codeAscii = (int) colonneExcel;
+      char colonne;
+      int codeAscii;
 
-      if ((codeAscii < (int) ('A')) || (codeAscii > (int) ('Z'))) {
-         throw new MajLotRuntimeException(
-               "Erreur de récupération de l'indice de colonne Excel");
+      if (colonneExcel.length() == 1) {
+         colonne = colonneExcel.charAt(0);
+         codeAscii = (int) colonne;
+         if ((codeAscii < (int) ('A')) || (codeAscii > (int) ('Z'))) {
+            throw new MajLotRuntimeException(
+                  "Erreur de récupération de l'indice de colonne Excel");
+         }
+          return codeAscii - (int) ('A');
       }
-
-      return codeAscii - (int) ('A');
-
+      
+      if (colonneExcel.length() == 2) {
+         colonne = colonneExcel.charAt(1);
+         codeAscii = (int) colonne;
+         return codeAscii  - (int) ('A') + 26; 
+      }
+      
+      throw new MajLotRuntimeException(
+      "Erreur de récupération de l'indice de colonne Excel");
+      
    }
 
-   private String readString(String[] nextLine, char colonneExcel) {
+   private String readString(String[] nextLine, String colonneExcel) {
 
       return StringUtils.trimToEmpty(nextLine[getIndiceColonne(colonneExcel)]);
 
    }
 
-   private boolean readBoolean(String[] nextLine, char colonneExcel) {
+   private boolean readBoolean(String[] nextLine, String colonneExcel) {
 
       String str = readString(nextLine, colonneExcel);
 
@@ -233,7 +252,7 @@ public final class RefMetaInitialisationService {
 
    }
 
-   private int readInt(String[] nextLine, char colonneExcel) {
+   private int readInt(String[] nextLine, String colonneExcel) {
 
       String str = readString(nextLine, colonneExcel);
 

@@ -101,7 +101,7 @@ public class RefMetaInitialisationServiceTest {
     * d'éviter les erreurs de saisie !
     */
    @Test
-   @Ignore("Ceci n'est pas un vrai TU")
+   //@Ignore("Ceci n'est pas un vrai TU")
    public void genereDatasetCassandraLocal() {
 
       List<MetadataReference> metadonnees = refMetaService.chargeFichierMeta();
@@ -193,6 +193,11 @@ public class RefMetaInitialisationServiceTest {
          dataSet.add("               <name>index</name>");
          dataSet.add(String.format("               <value>%s</value>",
                boolToStringForDataset(metadonnee.getIsIndexed())));
+         dataSet.add("            </column>");
+         dataSet.add("            <column>");
+         dataSet.add("               <name>update</name>");
+         dataSet.add(String.format("               <value>%s</value>",
+               boolToStringForDataset(metadonnee.isModifiable())));
          dataSet.add("            </column>");
          dataSet.add("         </row>");
          dataSet.add("");

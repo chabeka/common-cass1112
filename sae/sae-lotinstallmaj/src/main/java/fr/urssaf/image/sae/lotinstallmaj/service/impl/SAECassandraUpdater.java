@@ -32,6 +32,7 @@ public class SAECassandraUpdater {
    private static final int VERSION_3 = 3;
    private static final int VERSION_4 = 4;
    private static final int VERSION_5 = 5;
+   private static final int VERSION_6 = 6;
 
    private final String ksName;
    private final Cluster cluster;
@@ -394,6 +395,36 @@ public class SAECassandraUpdater {
 
       // On positionne la version à 5
       saeDao.setDatabaseVersion(VERSION_5);
+
+   }
+   
+   /**
+    * Version 5 :
+    * <ul>
+    * <li>ajout des CF de dictionnaire et métadonnées dans le keyspace "SAE"</li>
+    * <li>ajout des CF de mise à jour du RND dans le keyspace "SAE"</li>
+    * <li>MAJ du référentiel des événements</li>
+    * </ul>
+    */
+   public void updateToVersion6() {
+
+      long version = saeDao.getDatabaseVersion();
+      if (version >= VERSION_6) {
+         LOG.info("La base de données est déja en version " + version);
+         return;
+      }
+
+      LOG.info("Mise à jour du keyspace SAE en version 6");
+
+      // On se connecte au keyspace
+      saeDao.connectToKeySpace();
+
+      // Initialisation du référentiel des métadonnées
+      // suite au passage à un stockage du référentiel en bdd
+      refMetaInitService.initialiseRefMeta(saeDao.getKeyspace());
+
+      // On positionne la version à 6
+      saeDao.setDatabaseVersion(VERSION_6);
 
    }
 }

@@ -29,13 +29,22 @@ public class SAEControlesModificationServiceTest extends CommonsServices {
    @Autowired
    private SAEControlesModificationService service;
 
+   /*
+    * La liste des métadonnées à modifier ne doit pas être nulle
+    */
    @Test(expected = IllegalArgumentException.class)
-   public void testDeleteMetasObligatoires() throws NotModifiableMetadataEx {
+   public void testDeleteMetasObligatoires() throws NotModifiableMetadataEx,
+         UnknownMetadataEx {
       service.checkSaeMetadataForDelete(null);
    }
 
+   /*
+    * On ne peut pas supprimer des métas non supprimables (ie obligatoires au
+    * stockage) ou qui ne sont pas modifiables
+    */
    @Test(expected = NotModifiableMetadataEx.class)
-   public void testDeleteMetasNonSupprimable() throws NotModifiableMetadataEx {
+   public void testDeleteMetasNonSupprimable() throws NotModifiableMetadataEx,
+         UnknownMetadataEx {
       List<UntypedMetadata> list = Arrays.asList(new UntypedMetadata("Periode",
             null), new UntypedMetadata("Titre", null));
       service.checkSaeMetadataForDelete(list);
@@ -44,10 +53,12 @@ public class SAEControlesModificationServiceTest extends CommonsServices {
    @Test
    public void testDeleteMetasSucces() {
       List<UntypedMetadata> list = Arrays.asList(new UntypedMetadata("Periode",
-            null), new UntypedMetadata("CodeFonction", null));
+            null), new UntypedMetadata("Siren", null));
       try {
          service.checkSaeMetadataForDelete(list);
       } catch (NotModifiableMetadataEx exception) {
+         Assert.fail("erreur non attendue");
+      } catch (UnknownMetadataEx e) {
          Assert.fail("erreur non attendue");
       }
    }
@@ -61,10 +72,31 @@ public class SAEControlesModificationServiceTest extends CommonsServices {
       service.checkSaeMetadataForUpdate(null);
    }
 
+   /*
+    * On vérifie qu'une métadonnée inexistante ne peut pas être vidée
+    */
    @Test(expected = UnknownMetadataEx.class)
-   public void testUpdateMetasInexistante() throws ReferentialRndException,
-         UnknownCodeRndEx, InvalidValueTypeAndFormatMetadataEx,
-         UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
+   public void testUpdateMetasInexistanteDelete()
+         throws ReferentialRndException, UnknownCodeRndEx,
+         InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
+         DuplicatedMetadataEx, NotSpecifiableMetadataEx,
+         RequiredArchivableMetadataEx, NotArchivableMetadataEx,
+         UnknownHashCodeEx, NotModifiableMetadataEx {
+      List<UntypedMetadata> metadatas = Arrays.asList(new UntypedMetadata(
+            "Titre", "ceci est le titre"), new UntypedMetadata(
+            "codeInexistant", null));
+
+      service.checkSaeMetadataForDelete(metadatas);
+   }
+
+   /*
+    * On vérifie qu'une métadonnée inexistante ne peut pas être modifiée
+    */
+   @Test(expected = UnknownMetadataEx.class)
+   public void testUpdateMetasInexistanteUpdate()
+         throws ReferentialRndException, UnknownCodeRndEx,
+         InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
+         DuplicatedMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
          UnknownHashCodeEx, NotModifiableMetadataEx {
       List<UntypedMetadata> metadatas = Arrays.asList(new UntypedMetadata(
@@ -74,6 +106,7 @@ public class SAEControlesModificationServiceTest extends CommonsServices {
       service.checkSaeMetadataForUpdate(metadatas);
    }
 
+   
    @Test(expected = DuplicatedMetadataEx.class)
    public void testUpdateMetasDupliquee() throws ReferentialRndException,
          UnknownCodeRndEx, InvalidValueTypeAndFormatMetadataEx,
@@ -95,8 +128,8 @@ public class SAEControlesModificationServiceTest extends CommonsServices {
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
          UnknownHashCodeEx, NotModifiableMetadataEx {
       List<UntypedMetadata> metadatas = Arrays.asList(new UntypedMetadata(
-            "Titre", "ceci est le titre"), new UntypedMetadata(
-            "CodeFonction", "12as"));
+            "Titre", "ceci est le titre"), new UntypedMetadata("CodeFonction",
+            "12as"));
 
       service.checkSaeMetadataForUpdate(metadatas);
    }

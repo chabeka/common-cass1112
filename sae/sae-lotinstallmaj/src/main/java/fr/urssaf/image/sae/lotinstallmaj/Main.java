@@ -41,7 +41,6 @@ public final class Main {
       // traités.
       // On ne laisse que les arguments spécifiques à l'opération
       String[] argsSpecifiques = (String[]) ArrayUtils.remove(args, 0);
-      argsSpecifiques = (String[]) ArrayUtils.remove(args, 0);
 
       // Démarre l'opération
       majLotService.demarre(nomOperation, argsSpecifiques);

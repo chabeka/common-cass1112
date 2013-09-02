@@ -193,7 +193,7 @@ public interface MetadataControlServices {
          final List<UntypedMetadata> metadatas);
 
    /**
-    * Contrôle le type ,le format , la taille max de la valeur de chaque
+    * Contrôle le type, le format, la taille max de la valeur de chaque
     * métadonnées.
     * 
     * @param metadatas
@@ -214,8 +214,7 @@ public interface MetadataControlServices {
          final List<UntypedMetadata> metadatas);
 
    /**
-    * Contrôle que la liste des métadonnées sont autorisées à l'archivables lors
-    * de la capture.
+    * Contrôle que les métadonnées de liste peuvent être supprimée (non obligatoire au stockage)
     * 
     * @param metadatas
     *           : La liste des métadonnées

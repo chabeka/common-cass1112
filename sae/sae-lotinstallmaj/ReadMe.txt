@@ -167,5 +167,19 @@ Positionne le paramètre versionBDD de la CF Parameters à la valeur "5"
 
 Positionne à vide le paramètre VERSION_RND_NUMERO de la CF Rnd.
 
+// ------------------------------------------
+// 5) Lot 131100SAE
+// ------------------------------------------
 
+5.1) CASSANDRA_131100 
+
+sudo java -Dlogback.configurationFile=/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar /hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar /hawai/data/sae/sae-config.properties CASSANDRA_131100
+
+Met la base Cassandra du SAE en version 6
+
+Mise à jour de la CF Metadata (les options modifiables n'avaient pas été paramétrées dans le lot précédent)
+(référentiel 1.8 moins les nouvelles métadonnées)
+   - Metadata
+
+Positionne le paramètre versionBDD de la CF Parameters à la valeur "6"
 

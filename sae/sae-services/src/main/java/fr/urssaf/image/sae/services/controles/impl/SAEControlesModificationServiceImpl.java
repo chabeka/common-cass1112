@@ -54,22 +54,56 @@ public class SAEControlesModificationServiceImpl implements
    @Autowired
    private MappingDocumentService mappingService;
 
+   @Override
+   public final void checkSaeMetadataForModification(
+         List<UntypedMetadata> metadatas) throws DuplicatedMetadataEx {
+      String trcPrefix = "checkSaeMetadataForModification()";
+      LOG.debug("{} - début", trcPrefix);
+
+      String listeCodeLong;
+
+      LOG.debug("{} - vérification de la duplication des métadonnées",
+            trcPrefix);
+      List<MetadataError> errors = metadataCS.checkDuplicateMetadata(metadatas);
+      if (CollectionUtils.isNotEmpty(errors)) {
+         listeCodeLong = MetadataErrorUtils.buildLongCodeError(errors);
+         LOG.debug("{} - {}", trcPrefix, ResourceMessagesUtils.loadMessage(
+               "capture.metadonnees.doublon", listeCodeLong));
+         throw new DuplicatedMetadataEx(ResourceMessagesUtils.loadMessage(
+               "capture.metadonnees.doublon", listeCodeLong));
+      }
+
+      LOG.debug("{} - fin", trcPrefix);
+   }
+
    /**
     * {@inheritDoc}
+    * 
+    * @throws UnknownMetadataEx
     */
    @Override
    public final void checkSaeMetadataForDelete(List<UntypedMetadata> metadatas)
-         throws NotModifiableMetadataEx {
+         throws NotModifiableMetadataEx, UnknownMetadataEx {
       String trcPrefix = "checkSaeMetadataForDelete()";
       LOG.debug("{} - début", trcPrefix);
+
+      String listeCodeLong;
+
+      LOG.debug("{} - vérification de l'existence des métadonnées", trcPrefix);
+      List<MetadataError> errors = metadataCS
+            .checkExistingMetadataList(metadatas);
+      if (CollectionUtils.isNotEmpty(errors)) {
+         listeCodeLong = MetadataErrorUtils.buildLongCodeError(errors);
+         LOG.debug("{} - {}", trcPrefix, ResourceMessagesUtils.loadMessage(
+               "capture.metadonnees.inconnu", listeCodeLong));
+         throw new UnknownMetadataEx(ResourceMessagesUtils.loadMessage(
+               "capture.metadonnees.inconnu", listeCodeLong));
+      }
 
       LOG.debug(
             "{} - vérification de la possibilité de supprimer les métadonnées",
             trcPrefix);
-
-      String listeCodeLong;
-      List<MetadataError> errors = metadataCS
-            .checkSupprimableMetadatas(metadatas);
+      errors = metadataCS.checkSupprimableMetadatas(metadatas);
       if (CollectionUtils.isNotEmpty(errors)) {
          listeCodeLong = MetadataErrorUtils.buildLongCodeError(errors);
          LOG.debug("{} - {}", trcPrefix, ResourceMessagesUtils.loadMessage(
@@ -77,6 +111,8 @@ public class SAEControlesModificationServiceImpl implements
          throw new NotModifiableMetadataEx(ResourceMessagesUtils.loadMessage(
                "modification.metadonnees.non.supprimable", listeCodeLong));
       }
+
+      checkModifiables(metadatas);
 
       LOG.debug("{} - fin", trcPrefix);
 
@@ -106,17 +142,6 @@ public class SAEControlesModificationServiceImpl implements
                "capture.metadonnees.inconnu", listeCodeLong));
          throw new UnknownMetadataEx(ResourceMessagesUtils.loadMessage(
                "capture.metadonnees.inconnu", listeCodeLong));
-      }
-
-      LOG.debug("{} - vérification de la duplication des métadonnées",
-            trcPrefix);
-      errors = metadataCS.checkDuplicateMetadata(metadatas);
-      if (CollectionUtils.isNotEmpty(errors)) {
-         listeCodeLong = MetadataErrorUtils.buildLongCodeError(errors);
-         LOG.debug("{} - {}", trcPrefix, ResourceMessagesUtils.loadMessage(
-               "capture.metadonnees.doublon", listeCodeLong));
-         throw new DuplicatedMetadataEx(ResourceMessagesUtils.loadMessage(
-               "capture.metadonnees.doublon", listeCodeLong));
       }
 
       LOG.debug("{} - vérification des types et formats des métadonnées",

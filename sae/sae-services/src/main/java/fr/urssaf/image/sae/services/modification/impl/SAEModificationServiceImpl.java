@@ -105,6 +105,11 @@ public class SAEModificationServiceImpl implements SAEModificationService {
          throw new ModificationException(message);
       }
 
+      LOG.debug("{} - vérification non dupplication des métadonnées", trcPrefix);
+      if (!CollectionUtils.isEmpty(metadonnees)) {
+         controlesModificationService.checkSaeMetadataForModification(metadonnees);
+      }
+      
       LOG.debug("{} - Séparation des métadonnées en modifiées et supprimées",
             trcPrefix);
       List<UntypedMetadata> modifiedMetadatas = new ArrayList<UntypedMetadata>();
