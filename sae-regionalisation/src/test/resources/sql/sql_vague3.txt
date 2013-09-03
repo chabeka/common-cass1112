@@ -1,5 +1,6 @@
 # ############################################
-# Procédure stockée pour le changement de code orga
+# Procédure stockée pour la transposition des 
+# codes organismes
 # ############################################
 
 CREATE OR REPLACE FUNCTION vague3_transpo_codeOrga (codeOrga varchar(5)) RETURNS varchar(5) AS
@@ -75,6 +76,61 @@ RETURN result;
 END;
 $$
 LANGUAGE 'plpgsql' STRICT;
+
+
+
+# ############################################
+# Procédure stockée pour la mise à jour des  
+# codes organismes
+# ############################################
+
+CREATE OR REPLACE FUNCTION vague3_maj_codeOrga () RETURNS void AS
+$$
+DECLARE
+  ligne RECORD;
+  cogRenum VARCHAR(5);
+  copRenum VARCHAR(5);
+  isCogRenum BOOLEAN;
+  isCopRenum BOOLEAN;
+BEGIN
+
+  FOR ligne IN
+
+    SELECT id_doc, cog,cop
+    FROM fonds_doc_prod
+
+    LOOP
+
+    cogRenum := vague3_transpo_codeorga(ligne.cog);
+    copRenum := vague3_transpo_codeorga(ligne.cop);
+
+    IF (cogRenum IS NULL) THEN
+      isCogRenum := FALSE;
+    ELSE
+      isCogRenum := TRUE;
+    END IF;
+
+    IF (copRenum IS NULL) THEN
+      isCopRenum := FALSE;
+    ELSE
+      isCopRenum := TRUE;
+    END IF;
+    
+    -- RAISE NOTICE 'cog: %, cogRenum: %, isCogRenum: %, cop: %, copRenum: %, isCopRenum: %', ligne.cog, cogRenum, isCogRenum, ligne.cop, copRenum, isCopRenum;
+
+    UPDATE fonds_doc_prod
+    SET cog_renum=cogRenum, cop_renum=copRenum, is_cog_renum=isCogRenum, is_cop_renum=isCopRenum
+    WHERE id_doc=ligne.id_doc;
+
+
+  END LOOP;
+
+END;
+$$
+LANGUAGE 'plpgsql' STRICT;
+
+
+
 
 
 ##############################################
@@ -155,10 +211,7 @@ VACUUM ANALYZE fonds_doc_prod;
 
 
 ##############################################
-# Import des fichiers V2 retravaillés
-# 
-# Import du fichier de renumérotation des 
-# numéros de compte externe 
+# Import des fichiers V2 retravaillés - nce
 ############################################## 
 
 
@@ -272,10 +325,7 @@ WITH CSV HEADER;
 
 
 ##############################################
-# Import des fichiers V2 retravaillés
-# 
-# Import du fichier de renumérotation des 
-# numéros de compte interne 
+# Import des fichiers V2 retravaillés - nci
 ##############################################
 
 
@@ -326,10 +376,7 @@ VACUUM ANALYZE regionalisation_cpte;
 
 
 ##############################################
-# Import des fichiers V2 retravaillés
-# 
-# Import du fichier de renumérotation des 
-# numéros de personnes 
+# Import des fichiers V2 retravaillés - npe
 ##############################################
 
 
@@ -391,64 +438,19 @@ SELECT * FROM regionalisation_pers LIMIT 1000;
 VACUUM ANALYZE regionalisation_pers;
 
 
+
 ##############################################
 # Changement des codes organismes
 ##############################################
 
-
-# TODO: trop long. faire tous les changements en une seule requete
-
-
-# Changement des codes organismes gestionnaires (cog)
-UPDATE fonds_doc_prod
-SET cog_renum=vague3_transpo_codeOrga(cog);
-# Temps de temps de traitement en FAB1 sur cer69imageint10: 10 452 167 ms (3h)
-
-# Vérification visuelle
-SELECT *
-FROM fonds_doc_prod
-WHERE (cog_renum IS NOT NULL)
-LIMIT 1000;
-
-
-# Changement des codes organismes propriétaires (cop)  
-UPDATE fonds_doc_prod
-SET cop_renum=vague3_transpo_codeOrga(cop);
-# Temps de temps de traitement en FAB1 sur cer69imageint10: 11 577 868 ms (3h10)
+# Exécution de la procédure stockée
+SELECT vague3_maj_codeOrga();
+# Temps de temps de traitement en FAB1 sur cer69imageint10: 10 481 909 ms (3h)
 
 
 # Vérification visuelle
 SELECT *
 FROM fonds_doc_prod
-WHERE (cop_renum IS NOT NULL)
-LIMIT 1000;
-
-
-# Mise à jour du flag indiquant si un changement de cog a eu lieu  
-UPDATE fonds_doc_prod
-SET is_cog_renum=true
-WHERE (cog_renum IS NOT NULL) AND (cog_renum<>'') AND (cog_renum<>cog);
-# Temps de temps de traitement en FAB1 sur cer69imageint10: 3 528 397 ms (1h)
-
-
-# Vérification visuelle
-SELECT *
-FROM fonds_doc_prod
-WHERE (is_cog_renum IS NOT NULL)
-LIMIT 1000;
-
-
-# Mise à jour du flag indiquant si un changement de cop a eu lieu  
-UPDATE fonds_doc_prod
-SET is_cop_renum=true
-WHERE (cop_renum IS NOT NULL) AND (cop_renum<>'') AND (cop_renum<>cop);
-# Temps de temps de traitement en FAB1 sur cer69imageint10: 3 501 979 ms (1h)
-
-
-# Vérification visuelle
-SELECT *
-FROM fonds_doc_prod
-WHERE (is_cop_renum IS NOT NULL)
 LIMIT 1000;
 
 
