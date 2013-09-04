@@ -238,8 +238,13 @@ public class UpdateServiceImpl extends AbstractServices implements
             .getShortCode().equals(metadata.getShortCode())
             && !StorageTechnicalMetadatas.TYPE.getShortCode().equals(
                   metadata.getShortCode())) {
-         storedDocument.getSingleCriterion(metadata.getShortCode()).setWord(
-               (Serializable) metadata.getValue());
+         if (storedDocument.getSingleCriterion(metadata.getShortCode()) != null) {
+            storedDocument.getSingleCriterion(metadata.getShortCode()).setWord(
+                  (Serializable) metadata.getValue());
+         } else {
+            storedDocument.addCriterion(metadata.getShortCode(),
+                  (Serializable) metadata.getValue());
+         }
       }
 
       LOGGER.debug("{} - fin", trcPrefix);
