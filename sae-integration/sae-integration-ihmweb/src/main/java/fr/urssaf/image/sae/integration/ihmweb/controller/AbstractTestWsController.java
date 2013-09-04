@@ -19,6 +19,7 @@ import fr.urssaf.image.sae.integration.ihmweb.service.referentiels.ReferentielSo
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.CaptureMasseTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.CaptureUnitaireTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.ConsultationTestService;
+import fr.urssaf.image.sae.integration.ihmweb.service.tests.ModificationTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.RechercheTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.utils.TestsMetadonneesService;
 import fr.urssaf.image.sae.integration.ihmweb.utils.ControllerUtils;
@@ -68,6 +69,9 @@ public abstract class AbstractTestWsController<T extends TestWsParentFormulaire>
 
    @Autowired
    private RechercheTestService rechTestServ;
+   
+   @Autowired
+   private ModificationTestService modifTestServ;
 
    /**
     * Service utilitaires pour les tests du service web SaeService
@@ -151,6 +155,15 @@ public abstract class AbstractTestWsController<T extends TestWsParentFormulaire>
     */
    public final RechercheTestService getRechercheTestService() {
       return this.rechTestServ;
+   }
+   
+   /**
+    * Service des tests de la fonctionnalité "Modification"
+    * 
+    * @return Service des tests de la fonctionnalité "Modification"
+    */
+   public final ModificationTestService getModificationTestService() {
+      return this.modifTestServ;
    }
 
    /**

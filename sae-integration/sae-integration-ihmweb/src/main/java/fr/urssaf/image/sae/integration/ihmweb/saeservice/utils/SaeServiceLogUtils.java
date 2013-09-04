@@ -23,6 +23,7 @@ import fr.urssaf.image.sae.integration.ihmweb.exception.IntegrationRuntimeExcept
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureUnitaireFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ConsultationFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.formulaire.ModificationFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CaptureMasseResultat;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ConsultationResultat;
@@ -534,6 +535,24 @@ public final class SaeServiceLogUtils {
          log.appendLogLn("Le service n'a pas renvoyé d'erreur");
       }
 
+   }
+   
+   /**
+    * Ajoute, dans le log du résultat du test, les paramètres d'appel à
+    * l'opération "modification"
+    * 
+    * @param log
+    *           le log
+    * @param formulaire
+    *           l'objet formulaire contenant les propriétés d'appel
+    */
+   public static void logAppelModification(ResultatTestLog log,
+         ModificationFormulaire formulaire) {
+      log.appendLogLn("Appel de l'opération modification");
+      log.appendLogLn("Id du document : " + formulaire.getIdDocument());
+      log.appendLogLn("Métadonnées :");
+      logMetadonnees(log, formulaire.getMetadonnees());
+      log.appendLogNewLine();
    }
 
 }

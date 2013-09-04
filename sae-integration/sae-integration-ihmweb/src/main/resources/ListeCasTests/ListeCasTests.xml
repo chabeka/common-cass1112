@@ -1738,5 +1738,29 @@
       </CasTests>
 
    </Categorie>
+   
+   
+   <!-- ======================================================== -->
+   <!-- SAE - Modification -->
+   <!-- ======================================================== -->
+
+   <Categorie>
+
+      <Nom>SAI - Modification</Nom>
+      <Id>6</Id>
+      <CasTests>
+
+         <CasTest>
+            <id>1799</id>
+            <code>1799-SAI-Modification-TestLibre</code>
+            <description>
+               SAI - Test libre de la modification 
+            </description>
+            <implemente>true</implemente>
+         </CasTest>
+
+      </CasTests>
+
+   </Categorie>
 
 </Tests>

@@ -2,6 +2,7 @@ package fr.urssaf.image.sae.integration.ihmweb.saeservice.utils;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 
 import javax.activation.DataHandler;
 
@@ -34,6 +35,8 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.L
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.MetadonneeCodeType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.MetadonneeType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.MetadonneeValeurType;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.Modification;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ModificationRequestType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.Recherche;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheRequestType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RequeteRechercheType;
@@ -483,6 +486,36 @@ public final class SaeServiceObjectFactory {
 
       // fin
       return recherche;
+
+   }
+   
+   /**
+    * Construit un objet de requête pour l'opération "modification"
+    * 
+    * @param idDocument
+    *           l'identifiant unique du document à modifier
+    * @param metadonnees
+    *           les métadonnées à modifier
+    * @return l'objet pour la couche web service
+    */
+   public static Modification buildModificationRequest(
+         UUID idDocument, MetadonneeValeurList metadonnees) {
+
+      Modification modification = new Modification();
+
+      ModificationRequestType modificationReqType = new ModificationRequestType();
+
+      modification.setModification(modificationReqType);
+
+      // L'identifiant du document
+      modificationReqType.setUuid(buildUuid(idDocument.toString()));
+      
+      // Les métadonnées
+      ListeMetadonneeType listeMetadonneeType = buildListeMetadonnes(metadonnees);
+      modificationReqType.setMetadonnees(listeMetadonneeType);
+
+      // fin
+      return modification;
 
    }
 

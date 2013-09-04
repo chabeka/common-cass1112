@@ -449,6 +449,56 @@
          </xsd:element>
       </xsd:sequence>
    </xsd:complexType>
+   <xsd:complexType name="modificationRequestType">
+      <xsd:annotation>
+         <xsd:documentation>Paramètre d'entrée de l'opération 'archivage
+            unitaire'</xsd:documentation>
+      </xsd:annotation>
+      <xsd:sequence>
+         <xsd:element name="uuid" type="sae:uuidType">
+            <xsd:annotation>
+               <xsd:documentation>l'identifiant unique du document à
+                  modifier
+               </xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         <xsd:element name="metadonnees" type="sae:listeMetadonneeType">
+            <xsd:annotation>
+               <xsd:documentation>Les métadonnées. La liste peut être
+                  vide.</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+      </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="modificationResponseType">
+      <xsd:annotation>
+         <xsd:documentation>Retour de l'opération
+            'modification'.
+         </xsd:documentation>
+      </xsd:annotation>
+   </xsd:complexType>
+   <xsd:complexType name="suppressionRequestType">
+      <xsd:annotation>
+         <xsd:documentation>Paramètre d'entrée de l'opération 'archivage
+            unitaire'</xsd:documentation>
+      </xsd:annotation>
+      <xsd:sequence>
+         <xsd:element name="uuid" type="sae:uuidType">
+            <xsd:annotation>
+               <xsd:documentation>l'identifiant unique du document à
+                  supprimer
+               </xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+      </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="suppressionResponseType">
+      <xsd:annotation>
+         <xsd:documentation>Retour de l'opération
+            'suppression'.
+         </xsd:documentation>
+      </xsd:annotation>
+   </xsd:complexType>
    <xsd:complexType name="dataFileType">
       <xsd:sequence>
          <xsd:annotation>
@@ -505,4 +555,9 @@
    <xsd:element name="consultationResponse" type="sae:consultationResponseType" />
    <xsd:element name="consultationMTOM" type="sae:consultationMTOMRequestType" />
    <xsd:element name="consultationMTOMResponse" type="sae:consultationMTOMResponseType" />
+   <xsd:element name="modification" type="sae:modificationRequestType" />
+   <xsd:element name="modificationResponse" type="sae:modificationResponseType" />
+   <xsd:element name="suppression" type="sae:suppressionRequestType" />
+   <xsd:element name="suppressionResponse" type="sae:suppressionResponseType" />
+
 </xsd:schema>
