@@ -96,6 +96,9 @@
             <inherited>true</inherited>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>aspectj-maven-plugin</artifactId>
+            <configuration>
+               <argumentFileName>builddef-sae-webservices.lst</argumentFileName>
+            </configuration>
          </plugin>
 
       </plugins>

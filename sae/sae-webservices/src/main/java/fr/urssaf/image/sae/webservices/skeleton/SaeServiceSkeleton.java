@@ -49,7 +49,9 @@ import fr.urssaf.image.sae.exploitation.service.DfceInfoService;
 import fr.urssaf.image.sae.webservices.SaeService;
 import fr.urssaf.image.sae.webservices.exception.CaptureAxisFault;
 import fr.urssaf.image.sae.webservices.exception.ConsultationAxisFault;
+import fr.urssaf.image.sae.webservices.exception.ModificationAxisFault;
 import fr.urssaf.image.sae.webservices.exception.RechercheAxis2Fault;
+import fr.urssaf.image.sae.webservices.exception.SuppressionAxisFault;
 import fr.urssaf.image.sae.webservices.security.exception.SaeAccessDeniedAxisFault;
 import fr.urssaf.image.sae.webservices.service.WSCaptureMasseService;
 import fr.urssaf.image.sae.webservices.service.WSCaptureService;
@@ -509,27 +511,61 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
    @Override
    public ModificationResponse modificationSecure(Modification request)
          throws AxisFault {
-      String trcPrefix = "modificationSecure";
-      LOG.debug("{} - début", trcPrefix);
 
-      ModificationResponse response = modificationService.modification(request);
+      try {
 
-      LOG.debug("{} - fin", trcPrefix);
+         String trcPrefix = "modificationSecure";
+         LOG.debug("{} - début", trcPrefix);
 
-      return response;
+         ModificationResponse response = modificationService
+               .modification(request);
+
+         LOG.debug("{} - fin", trcPrefix);
+
+         return response;
+
+      } catch (ModificationAxisFault ex) {
+         logSoapFault(ex);
+         throw ex;
+      } catch (AccessDeniedException ex) {
+         throw new SaeAccessDeniedAxisFault(ex);
+      } catch (RuntimeException ex) {
+         logRuntimeException(ex);
+         throw new ModificationAxisFault(
+               "ErreurInterneModification",
+               "Une erreur interne à l'application est survenue lors de la modification",
+               ex);
+      }
    }
 
    @Override
    public SuppressionResponse suppressionSecure(Suppression request)
          throws AxisFault {
-      String trcPrefix = "suppressionSecure";
-      LOG.debug("{} - début", trcPrefix);
 
-      SuppressionResponse response = suppressionService.suppression(request);
+      try {
 
-      LOG.debug("{} - fin", trcPrefix);
+         String trcPrefix = "suppressionSecure";
+         LOG.debug("{} - début", trcPrefix);
 
-      return response;
+         SuppressionResponse response = suppressionService.suppression(request);
+
+         LOG.debug("{} - fin", trcPrefix);
+
+         return response;
+
+      } catch (SuppressionAxisFault ex) {
+         logSoapFault(ex);
+         throw ex;
+      } catch (AccessDeniedException ex) {
+         throw new SaeAccessDeniedAxisFault(ex);
+      } catch (RuntimeException ex) {
+         logRuntimeException(ex);
+         throw new SuppressionAxisFault(
+               "ErreurInterneSuppression",
+               "Une erreur interne à l'application est survenue lors de la suppression",
+               ex);
+      }
+
    }
 
 }
