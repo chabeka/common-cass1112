@@ -105,11 +105,14 @@ public class SAEModificationServiceImpl implements SAEModificationService {
          throw new ModificationException(message);
       }
 
-      LOG.debug("{} - vérification non dupplication des métadonnées", trcPrefix);
+      LOG
+            .debug("{} - vérification non dupplication des métadonnées",
+                  trcPrefix);
       if (!CollectionUtils.isEmpty(metadonnees)) {
-         controlesModificationService.checkSaeMetadataForModification(metadonnees);
+         controlesModificationService
+               .checkSaeMetadataForModification(metadonnees);
       }
-      
+
       LOG.debug("{} - Séparation des métadonnées en modifiées et supprimées",
             trcPrefix);
       List<UntypedMetadata> modifiedMetadatas = new ArrayList<UntypedMetadata>();
@@ -122,18 +125,28 @@ public class SAEModificationServiceImpl implements SAEModificationService {
          }
       }
 
+
       LOG.debug("{} - vérification des métadonnées", trcPrefix);
       if (!CollectionUtils.isEmpty(modifiedMetadatas)) {
          controlesModificationService
                .checkSaeMetadataForUpdate(modifiedMetadatas);
-         modifiedMetadatas = completeMetadatas(modifiedMetadatas, document
-               .getMetadatas());
+
       }
       if (!CollectionUtils.isEmpty(deletedMetadatas)) {
          controlesModificationService
                .checkSaeMetadataForDelete(deletedMetadatas);
       }
 
+      // Application des règles de gestion pour compléter les métadonnées (ex :
+      // enrichissement du code fonction, activité et
+      // date de fin si modification du code RND)
+      List<List<UntypedMetadata>> completedMetadatas = completeMetadatas(
+            modifiedMetadatas, deletedMetadatas, document.getMetadatas());
+
+      modifiedMetadatas = completedMetadatas.get(0);
+      deletedMetadatas = completedMetadatas.get(1);
+
+      
       try {
          List<StorageMetadata> modifiedStorageMetas = new ArrayList<StorageMetadata>();
          if (!CollectionUtils.isEmpty(modifiedMetadatas)) {
@@ -150,6 +163,7 @@ public class SAEModificationServiceImpl implements SAEModificationService {
             deletedStorageMetas = mappingDocumentService
                   .saeMetadatasToStorageMetadatas(deletedSaeMetadatas);
          }
+         
          documentService.updateStorageDocument(idArchive, modifiedStorageMetas,
                deletedStorageMetas);
 
@@ -170,16 +184,19 @@ public class SAEModificationServiceImpl implements SAEModificationService {
     * Vérifie les règles de gestion des métadonnées
     * 
     * @param modifiedMetadatas
-    *           la liste des métadonnées à supprimer
+    *           la liste des métadonnées à modifier
     * @return la nouvelle liste enrichie des métadonnées
     */
-   private List<UntypedMetadata> completeMetadatas(
-         List<UntypedMetadata> modifiedMetadatas, List<StorageMetadata> list) {
+   private List<List<UntypedMetadata>> completeMetadatas(
+         List<UntypedMetadata> modifiedMetadatas,
+         List<UntypedMetadata> deletedMetadatas, List<StorageMetadata> list) {
       String trcPrefix = "completeMetadatas";
       LOG.debug("{} - début", trcPrefix);
 
-      List<UntypedMetadata> returnedList = new ArrayList<UntypedMetadata>(
+      List<UntypedMetadata> returnedModifiedList = new ArrayList<UntypedMetadata>(
             modifiedMetadatas);
+      List<UntypedMetadata> returnedDeletedList = new ArrayList<UntypedMetadata>(
+            deletedMetadatas);
       String codeRnd = getValue(SAEArchivalMetadatas.CODE_RND.getLongCode(),
             modifiedMetadatas);
 
@@ -193,13 +210,19 @@ public class SAEModificationServiceImpl implements SAEModificationService {
             Date dateFin = DateUtils.addDays(date, duration);
             String sDateFin = DateFormatUtils.format(dateFin,
                   Constants.DATE_PATTERN, Constants.DEFAULT_LOCAL);
-            returnedList.add(new UntypedMetadata(
-                  SAEArchivalMetadatas.CODE_ACTIVITE.getLongCode(),
-                  codeActivite));
-            returnedList.add(new UntypedMetadata(
+            if (!StringUtils.isEmpty(codeActivite)) {
+               returnedModifiedList.add(new UntypedMetadata(
+                     SAEArchivalMetadatas.CODE_ACTIVITE.getLongCode(),
+                     codeActivite));
+            } else {
+               returnedDeletedList.add(new UntypedMetadata(
+                     SAEArchivalMetadatas.CODE_ACTIVITE.getLongCode(),
+                     codeActivite));
+            }
+            returnedModifiedList.add(new UntypedMetadata(
                   SAEArchivalMetadatas.CODE_FONCTION.getLongCode(),
                   codeFonction));
-            returnedList.add(new UntypedMetadata(
+            returnedModifiedList.add(new UntypedMetadata(
                   SAEArchivalMetadatas.DATE_FIN_CONSERVATION.getLongCode(),
                   sDateFin));
 
@@ -207,6 +230,10 @@ public class SAEModificationServiceImpl implements SAEModificationService {
       } catch (CodeRndInexistantException exception) {
          throw new ModificationRuntimeException(exception);
       }
+
+      List<List<UntypedMetadata>> returnedList = new ArrayList<List<UntypedMetadata>>();
+      returnedList.add(returnedModifiedList);
+      returnedList.add(returnedDeletedList);
 
       LOG.debug("{} - fin", trcPrefix);
       return returnedList;
