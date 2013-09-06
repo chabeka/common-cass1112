@@ -52,6 +52,12 @@
       <description>Appel du service web de modification</description>
       <path>/WEB-INF/tags/modification.tag</path>
    </tag-file>
+   
+   <tag-file>
+      <name>suppression</name>
+      <description>Appel du service web de suppression</description>
+      <path>/WEB-INF/tags/suppression.tag</path>
+   </tag-file>
 
    <tag-file>
       <name>resultatTest</name>

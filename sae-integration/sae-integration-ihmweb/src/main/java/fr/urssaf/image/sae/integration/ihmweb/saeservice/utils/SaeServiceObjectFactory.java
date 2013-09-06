@@ -40,6 +40,8 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.M
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.Recherche;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheRequestType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RequeteRechercheType;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.Suppression;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.SuppressionRequestType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.UuidType;
 
 /**
@@ -516,6 +518,32 @@ public final class SaeServiceObjectFactory {
 
       // fin
       return modification;
+
+   }
+   
+   /**
+    * Construit un objet de requête pour l'opération "modification"
+    * 
+    * @param idDocument
+    *           l'identifiant unique du document à modifier
+    * @param metadonnees
+    *           les métadonnées à modifier
+    * @return l'objet pour la couche web service
+    */
+   public static Suppression buildSuppressionRequest(
+         UUID idDocument) {
+
+      Suppression suppression = new Suppression();
+
+      SuppressionRequestType suppressionReqType = new SuppressionRequestType();
+
+      suppression.setSuppression(suppressionReqType);
+
+      // L'identifiant du document
+      suppressionReqType.setUuid(buildUuid(idDocument.toString()));
+      
+      // fin
+      return suppression;
 
    }
 

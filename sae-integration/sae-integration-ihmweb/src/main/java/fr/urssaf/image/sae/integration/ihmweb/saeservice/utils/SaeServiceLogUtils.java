@@ -25,6 +25,7 @@ import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureUnitaireFormulai
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ConsultationFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ModificationFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.formulaire.SuppressionFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CaptureMasseResultat;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ConsultationResultat;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeur;
@@ -552,6 +553,22 @@ public final class SaeServiceLogUtils {
       log.appendLogLn("Id du document : " + formulaire.getIdDocument());
       log.appendLogLn("Métadonnées :");
       logMetadonnees(log, formulaire.getMetadonnees());
+      log.appendLogNewLine();
+   }
+   
+   /**
+    * Ajoute, dans le log du résultat du test, les paramètres d'appel à
+    * l'opération "suppression"
+    * 
+    * @param log
+    *           le log
+    * @param formulaire
+    *           l'objet formulaire contenant les propriétés d'appel
+    */
+   public static void logAppelSuppression(ResultatTestLog log,
+         SuppressionFormulaire formulaire) {
+      log.appendLogLn("Appel de l'opération suppression");
+      log.appendLogLn("Id du document : " + formulaire.getIdDocument());
       log.appendLogNewLine();
    }
 

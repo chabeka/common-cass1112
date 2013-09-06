@@ -1762,5 +1762,28 @@
       </CasTests>
 
    </Categorie>
+   
+   <!-- ======================================================== -->
+   <!-- SAE - Suppression -->
+   <!-- ======================================================== -->
+
+   <Categorie>
+
+      <Nom>SAI - Suppression</Nom>
+      <Id>7</Id>
+      <CasTests>
+
+         <CasTest>
+            <id>1699</id>
+            <code>1699-SAI-Suppression-TestLibre</code>
+            <description>
+               SAI - Test libre de la suppression 
+            </description>
+            <implemente>true</implemente>
+         </CasTest>
+
+      </CasTests>
+
+   </Categorie>
 
 </Tests>

@@ -21,6 +21,7 @@ import fr.urssaf.image.sae.integration.ihmweb.service.tests.CaptureUnitaireTestS
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.ConsultationTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.ModificationTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.RechercheTestService;
+import fr.urssaf.image.sae.integration.ihmweb.service.tests.SuppressionTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.utils.TestsMetadonneesService;
 import fr.urssaf.image.sae.integration.ihmweb.utils.ControllerUtils;
 import fr.urssaf.image.sae.integration.ihmweb.utils.ModelUtils;
@@ -72,6 +73,10 @@ public abstract class AbstractTestWsController<T extends TestWsParentFormulaire>
    
    @Autowired
    private ModificationTestService modifTestServ;
+   
+   @Autowired
+   private SuppressionTestService suppressionTestServ;
+
 
    /**
     * Service utilitaires pour les tests du service web SaeService
@@ -166,6 +171,15 @@ public abstract class AbstractTestWsController<T extends TestWsParentFormulaire>
       return this.modifTestServ;
    }
 
+   /**
+    * Service des tests de la fonctionnalité "Suppression"
+    * 
+    * @return Service des tests de la fonctionnalité "Suppression"
+    */
+   public final SuppressionTestService getSuppressionTestService() {
+      return this.suppressionTestServ;
+   }
+   
    /**
     * Renvoie le numéro du test
     * 
