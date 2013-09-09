@@ -55,4 +55,17 @@
    </servlet-mapping>
    
    
+   <!-- Filtre pour Spring Security, pour vider le contexte de sécurité après un appel au service web SAE -->
+   
+   <filter>
+      <filter-name>filterChainProxy</filter-name>
+      <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+   </filter>
+  
+   <filter-mapping>
+      <filter-name>filterChainProxy</filter-name>
+      <url-pattern>/services/*</url-pattern>
+   </filter-mapping>
+  
+  
 </web-app>
