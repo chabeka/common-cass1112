@@ -41,6 +41,7 @@ import fr.urssaf.image.sae.rnd.modele.TypeCode;
 import fr.urssaf.image.sae.rnd.modele.TypeDocument;
 import fr.urssaf.image.sae.services.SAEServiceTestProvider;
 import fr.urssaf.image.sae.services.capture.SAECaptureService;
+import fr.urssaf.image.sae.services.exception.ArchiveInexistanteEx;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureBadEcdeUrlEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureEcdeUrlFileNotFoundEx;
@@ -57,8 +58,8 @@ import fr.urssaf.image.sae.services.exception.capture.UnknownMetadataEx;
 import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException;
 import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.services.exception.modification.ModificationException;
+import fr.urssaf.image.sae.services.exception.modification.NotModifiableMetadataEx;
 import fr.urssaf.image.sae.services.exception.suppression.SuppressionException;
-import fr.urssaf.image.sae.services.modification.exception.NotModifiableMetadataEx;
 import fr.urssaf.image.sae.services.suppression.SAESuppressionService;
 import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
@@ -212,14 +213,28 @@ public class SAEModificationServiceTest {
          UnknownCodeRndEx, InvalidValueTypeAndFormatMetadataEx,
          UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
-         UnknownHashCodeEx, NotModifiableMetadataEx, ModificationException {
+         UnknownHashCodeEx, NotModifiableMetadataEx, ModificationException,
+         ArchiveInexistanteEx, MetadataValueNotInDictionaryEx {
       List<UntypedMetadata> metadatas = Arrays.asList(new UntypedMetadata(
             "Titre", "ceci est le titre"), new UntypedMetadata(
             "NumeroCompteInterne", "123456"), new UntypedMetadata("Titre",
             "ceci est le titre 2"));
 
-      saeModificationService.modification(UUID.randomUUID(),
-            metadatas);
+      saeModificationService.modification(UUID.randomUUID(), metadatas);
+   }
+   
+   @Test(expected = ArchiveInexistanteEx.class)
+   public void testArchiveInexistante() throws ReferentialRndException,
+         UnknownCodeRndEx, InvalidValueTypeAndFormatMetadataEx,
+         UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
+         RequiredArchivableMetadataEx, NotArchivableMetadataEx,
+         UnknownHashCodeEx, NotModifiableMetadataEx, ModificationException,
+         ArchiveInexistanteEx, MetadataValueNotInDictionaryEx {
+      List<UntypedMetadata> metadatas = Arrays.asList(new UntypedMetadata(
+            "Titre", "ceci est le titre"), new UntypedMetadata(
+            "NumeroCompteInterne", "123456"));
+
+      saeModificationService.modification(UUID.randomUUID(), metadatas);
    }
 
    @Test
@@ -230,7 +245,7 @@ public class SAEModificationServiceTest {
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
          UnknownHashCodeEx, CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx,
          MetadataValueNotInDictionaryEx, NotModifiableMetadataEx,
-         ModificationException {
+         ModificationException, ArchiveInexistanteEx {
       EcdeTestDocument ecde = ecdeTestTools
             .buildEcdeTestDocument("attestation_consultation.pdf");
 

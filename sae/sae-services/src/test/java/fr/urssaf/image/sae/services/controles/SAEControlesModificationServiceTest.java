@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.services.CommonsServices;
+import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.InvalidValueTypeAndFormatMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.NotArchivableMetadataEx;
@@ -22,7 +23,7 @@ import fr.urssaf.image.sae.services.exception.capture.UnknownHashCodeEx;
 import fr.urssaf.image.sae.services.exception.capture.UnknownMetadataEx;
 import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException;
 import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
-import fr.urssaf.image.sae.services.modification.exception.NotModifiableMetadataEx;
+import fr.urssaf.image.sae.services.exception.modification.NotModifiableMetadataEx;
 
 public class SAEControlesModificationServiceTest extends CommonsServices {
 
@@ -34,7 +35,7 @@ public class SAEControlesModificationServiceTest extends CommonsServices {
     */
    @Test(expected = IllegalArgumentException.class)
    public void testDeleteMetasObligatoires() throws NotModifiableMetadataEx,
-         UnknownMetadataEx {
+         UnknownMetadataEx, RequiredArchivableMetadataEx {
       service.checkSaeMetadataForDelete(null);
    }
 
@@ -44,14 +45,14 @@ public class SAEControlesModificationServiceTest extends CommonsServices {
     */
    @Test(expected = NotModifiableMetadataEx.class)
    public void testDeleteMetasNonSupprimable() throws NotModifiableMetadataEx,
-         UnknownMetadataEx {
+         UnknownMetadataEx, RequiredArchivableMetadataEx {
       List<UntypedMetadata> list = Arrays.asList(new UntypedMetadata("Periode",
             null), new UntypedMetadata("Titre", null));
       service.checkSaeMetadataForDelete(list);
    }
 
    @Test
-   public void testDeleteMetasSucces() {
+   public void testDeleteMetasSucces() throws RequiredArchivableMetadataEx {
       List<UntypedMetadata> list = Arrays.asList(new UntypedMetadata("Periode",
             null), new UntypedMetadata("Siren", null));
       try {
@@ -68,7 +69,7 @@ public class SAEControlesModificationServiceTest extends CommonsServices {
          UnknownCodeRndEx, InvalidValueTypeAndFormatMetadataEx,
          UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
-         UnknownHashCodeEx, NotModifiableMetadataEx {
+         UnknownHashCodeEx, NotModifiableMetadataEx, MetadataValueNotInDictionaryEx {
       service.checkSaeMetadataForUpdate(null);
    }
 
@@ -98,7 +99,7 @@ public class SAEControlesModificationServiceTest extends CommonsServices {
          InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
          DuplicatedMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
-         UnknownHashCodeEx, NotModifiableMetadataEx {
+         UnknownHashCodeEx, NotModifiableMetadataEx, MetadataValueNotInDictionaryEx {
       List<UntypedMetadata> metadatas = Arrays.asList(new UntypedMetadata(
             "Titre", "ceci est le titre"), new UntypedMetadata(
             "codeInexistant", null));
@@ -128,7 +129,7 @@ public class SAEControlesModificationServiceTest extends CommonsServices {
          UnknownCodeRndEx, InvalidValueTypeAndFormatMetadataEx,
          UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
-         UnknownHashCodeEx, NotModifiableMetadataEx {
+         UnknownHashCodeEx, NotModifiableMetadataEx, MetadataValueNotInDictionaryEx {
       List<UntypedMetadata> metadatas = Arrays.asList(new UntypedMetadata(
             "Titre", "ceci est le titre"), new UntypedMetadata("CodeFonction",
             "12as"));
@@ -141,7 +142,7 @@ public class SAEControlesModificationServiceTest extends CommonsServices {
          UnknownCodeRndEx, InvalidValueTypeAndFormatMetadataEx,
          UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
-         UnknownHashCodeEx, NotModifiableMetadataEx {
+         UnknownHashCodeEx, NotModifiableMetadataEx, MetadataValueNotInDictionaryEx {
       List<UntypedMetadata> metadatas = Arrays.asList(new UntypedMetadata(
             "Titre", "ceci est le titre"), new UntypedMetadata("VersionRND",
             "12.2"));
@@ -154,7 +155,7 @@ public class SAEControlesModificationServiceTest extends CommonsServices {
          UnknownCodeRndEx, InvalidValueTypeAndFormatMetadataEx,
          UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
-         UnknownHashCodeEx, NotModifiableMetadataEx {
+         UnknownHashCodeEx, NotModifiableMetadataEx, MetadataValueNotInDictionaryEx {
       List<UntypedMetadata> metadatas = Arrays.asList(new UntypedMetadata(
             "Titre", "ceci est le titre"), new UntypedMetadata(
             "DateDebutConservation", "2010-04-04"));

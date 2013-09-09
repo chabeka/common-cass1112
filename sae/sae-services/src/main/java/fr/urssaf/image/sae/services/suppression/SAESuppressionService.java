@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import fr.urssaf.image.sae.services.exception.ArchiveInexistanteEx;
 import fr.urssaf.image.sae.services.exception.suppression.SuppressionException;
 
 /**
@@ -22,8 +23,11 @@ public interface SAESuppressionService {
     *           identifiant unique du document à supprimer
     * @throws SuppressionException
     *            Une erreur s'est produite lors de la suppression de l'archive
+    * @throws ArchiveInexistanteEx
+    *            Erreur lorsque le document à supprimer n'existe pas
     */
    @PreAuthorize("hasRole('suppression')")
-   void suppression(UUID idArchive) throws SuppressionException;
+   void suppression(UUID idArchive) throws SuppressionException,
+         ArchiveInexistanteEx;
 
 }

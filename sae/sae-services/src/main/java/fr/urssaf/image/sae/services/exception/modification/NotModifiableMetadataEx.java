@@ -1,7 +1,7 @@
 /**
  * 
  */
-package fr.urssaf.image.sae.services.modification.exception;
+package fr.urssaf.image.sae.services.exception.modification;
 
 /**
  * Erreur levée lorsqu'une métadonnée n'est pas modifiable

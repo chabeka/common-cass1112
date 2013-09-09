@@ -20,6 +20,7 @@ import fr.urssaf.image.sae.mapping.exception.MappingFromReferentialException;
 import fr.urssaf.image.sae.mapping.services.MappingDocumentService;
 import fr.urssaf.image.sae.metadata.control.services.MetadataControlServices;
 import fr.urssaf.image.sae.services.controles.SAEControlesModificationService;
+import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.InvalidValueTypeAndFormatMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.NotArchivableMetadataEx;
@@ -30,7 +31,7 @@ import fr.urssaf.image.sae.services.exception.capture.UnknownMetadataEx;
 import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException;
 import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.services.exception.modification.ModificationRuntimeException;
-import fr.urssaf.image.sae.services.modification.exception.NotModifiableMetadataEx;
+import fr.urssaf.image.sae.services.exception.modification.NotModifiableMetadataEx;
 import fr.urssaf.image.sae.services.util.MetadataErrorUtils;
 import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
 
@@ -80,10 +81,11 @@ public class SAEControlesModificationServiceImpl implements
     * {@inheritDoc}
     * 
     * @throws UnknownMetadataEx
+    * @throws RequiredArchivableMetadataEx 
     */
    @Override
    public final void checkSaeMetadataForDelete(List<UntypedMetadata> metadatas)
-         throws NotModifiableMetadataEx, UnknownMetadataEx {
+         throws NotModifiableMetadataEx, UnknownMetadataEx, RequiredArchivableMetadataEx {
       String trcPrefix = "checkSaeMetadataForDelete()";
       LOG.debug("{} - début", trcPrefix);
 
@@ -108,7 +110,7 @@ public class SAEControlesModificationServiceImpl implements
          listeCodeLong = MetadataErrorUtils.buildLongCodeError(errors);
          LOG.debug("{} - {}", trcPrefix, ResourceMessagesUtils.loadMessage(
                "modification.metadonnees.non.supprimable", listeCodeLong));
-         throw new NotModifiableMetadataEx(ResourceMessagesUtils.loadMessage(
+         throw new RequiredArchivableMetadataEx(ResourceMessagesUtils.loadMessage(
                "modification.metadonnees.non.supprimable", listeCodeLong));
       }
 
@@ -120,14 +122,14 @@ public class SAEControlesModificationServiceImpl implements
 
    /**
     * {@inheritDoc}
+    * @throws MetadataValueNotInDictionaryEx 
     */
    @Override
    public final void checkSaeMetadataForUpdate(List<UntypedMetadata> metadatas)
          throws InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
          DuplicatedMetadataEx, NotSpecifiableMetadataEx,
-         RequiredArchivableMetadataEx, NotArchivableMetadataEx,
-         ReferentialRndException, UnknownCodeRndEx, UnknownHashCodeEx,
-         NotModifiableMetadataEx {
+         RequiredArchivableMetadataEx, ReferentialRndException,
+         UnknownCodeRndEx, UnknownHashCodeEx, NotModifiableMetadataEx, MetadataValueNotInDictionaryEx {
       String trcPrefix = "checkSaeMetadataForUpdate";
       LOG.debug("{} - début", trcPrefix);
 
@@ -144,18 +146,8 @@ public class SAEControlesModificationServiceImpl implements
                "capture.metadonnees.inconnu", listeCodeLong));
       }
 
-      LOG.debug("{} - vérification des types et formats des métadonnées",
-            trcPrefix);
-      errors = metadataCS.checkMetadataListValueTypeAndFormat(metadatas);
-      if (CollectionUtils.isNotEmpty(errors)) {
-         listeCodeLong = MetadataErrorUtils.buildLongCodeError(errors);
-         LOG.debug("{} - {}", trcPrefix, ResourceMessagesUtils.loadMessage(
-               "capture.metadonnees.format.type.non.valide", listeCodeLong));
-         throw new InvalidValueTypeAndFormatMetadataEx(ResourceMessagesUtils
-               .loadMessage("capture.metadonnees.format.type.non.valide",
-                     listeCodeLong));
-      }
-
+      checkModifiables(metadatas);
+      
       try {
          LOG
                .debug(
@@ -168,9 +160,10 @@ public class SAEControlesModificationServiceImpl implements
          if (CollectionUtils.isNotEmpty(errors)) {
             listeCodeLong = MetadataErrorUtils.buildLongCodeError(errors);
             LOG.debug("{} - {}", trcPrefix, ResourceMessagesUtils.loadMessage(
-                  "capture.metadonnees.interdites", listeCodeLong));
-            throw new NotArchivableMetadataEx(ResourceMessagesUtils
-                  .loadMessage("capture.metadonnees.interdites", listeCodeLong));
+                  "modification.metadonnees.non.modifiable", listeCodeLong));
+            throw new NotModifiableMetadataEx(ResourceMessagesUtils
+                  .loadMessage("modification.metadonnees.non.modifiable",
+                        listeCodeLong));
          }
       } catch (MappingFromReferentialException exception) {
          throw new ModificationRuntimeException(exception);
@@ -179,8 +172,31 @@ public class SAEControlesModificationServiceImpl implements
          throw new ModificationRuntimeException(exception);
       }
 
-      checkModifiables(metadatas);
-
+      LOG.debug("{} - vérification des types et formats des métadonnées",
+            trcPrefix);
+      errors = metadataCS.checkMetadataListValueTypeAndFormat(metadatas);
+      if (CollectionUtils.isNotEmpty(errors)) {
+         listeCodeLong = MetadataErrorUtils.buildLongCodeError(errors);
+         LOG.debug("{} - {}", trcPrefix, ResourceMessagesUtils.loadMessage(
+               "capture.metadonnees.format.type.non.valide", listeCodeLong));
+         throw new InvalidValueTypeAndFormatMetadataEx(ResourceMessagesUtils
+               .loadMessage("capture.metadonnees.format.type.non.valide",
+                     listeCodeLong));
+      }
+      
+      LOG.debug("{} - vérification des valeurs des métadonnées avec dictionnaire",
+            trcPrefix);
+      errors = metadataCS.checkMetadataListValueFromDictionary(metadatas);
+      if (CollectionUtils.isNotEmpty(errors)) {
+         listeCodeLong = MetadataErrorUtils.buildLongCodeError(errors);
+         LOG.debug("{} - {}", trcPrefix, ResourceMessagesUtils.loadMessage(
+               "metadata.not.in.dictionary", listeCodeLong));
+         throw new MetadataValueNotInDictionaryEx(ResourceMessagesUtils
+               .loadMessage("metadata.not.in.dictionary",
+                     listeCodeLong));
+      }
+      
+      
       LOG.debug("{} - fin", trcPrefix);
    }
 

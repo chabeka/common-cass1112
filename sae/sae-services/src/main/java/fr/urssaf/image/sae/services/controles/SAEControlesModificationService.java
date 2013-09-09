@@ -6,6 +6,7 @@ package fr.urssaf.image.sae.services.controles;
 import java.util.List;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
+import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.InvalidValueTypeAndFormatMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.NotArchivableMetadataEx;
@@ -15,7 +16,7 @@ import fr.urssaf.image.sae.services.exception.capture.UnknownHashCodeEx;
 import fr.urssaf.image.sae.services.exception.capture.UnknownMetadataEx;
 import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException;
 import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
-import fr.urssaf.image.sae.services.modification.exception.NotModifiableMetadataEx;
+import fr.urssaf.image.sae.services.exception.modification.NotModifiableMetadataEx;
 
 /**
  * Service permettant de réaliser des contrôles sur le document avant sa
@@ -53,13 +54,16 @@ public interface SAEControlesModificationService {
     *            Une erreur a été soulevée lors de la vérification du HASH
     * @throws NotModifiableMetadataEx
     *            Au moins une des métadonnées n'est pas modifiable
+    * @throws MetadataValueNotInDictionaryEx
+    *            La valeurs d'au moins une des métadonnées n'est pas dans le
+    *            dictionnaire
     */
    void checkSaeMetadataForUpdate(List<UntypedMetadata> metadatas)
          throws InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
          DuplicatedMetadataEx, NotSpecifiableMetadataEx,
-         RequiredArchivableMetadataEx, NotArchivableMetadataEx,
-         ReferentialRndException, UnknownCodeRndEx, UnknownHashCodeEx,
-         NotModifiableMetadataEx;
+         RequiredArchivableMetadataEx, ReferentialRndException,
+         UnknownCodeRndEx, UnknownHashCodeEx, NotModifiableMetadataEx,
+         MetadataValueNotInDictionaryEx;
 
    /**
     * Réalise les contrôles des métadonnées à supprimer du document avant sa
@@ -69,9 +73,11 @@ public interface SAEControlesModificationService {
     *           Liste des métadonnées à vérifier
     * @throws NotModifiableMetadataEx
     *            Au moins une des métadonnées n'est pas modifiable
+    * @throws RequiredArchivableMetadataEx
     */
    void checkSaeMetadataForDelete(List<UntypedMetadata> metadatas)
-         throws NotModifiableMetadataEx, UnknownMetadataEx;
+         throws NotModifiableMetadataEx, UnknownMetadataEx,
+         RequiredArchivableMetadataEx;
 
    /**
     * Réalise les contrôles des métadonnées lors de l'opération de modification

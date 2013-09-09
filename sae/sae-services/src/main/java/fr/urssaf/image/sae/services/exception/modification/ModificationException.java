@@ -14,6 +14,16 @@ public class ModificationException extends Exception {
    /**
     * Constructeur
     * 
+    * @param exception
+    *           exception mère
+    */
+   public ModificationException(Exception exception) {
+      super(exception);
+   }
+   
+   /**
+    * Constructeur
+    * 
     * @param message
     *           message d'origine
     */

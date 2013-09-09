@@ -15,6 +15,8 @@ import fr.cirtil.www.saeservice.ListeMetadonneeType;
 import fr.cirtil.www.saeservice.Modification;
 import fr.cirtil.www.saeservice.ModificationResponse;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
+import fr.urssaf.image.sae.services.exception.ArchiveInexistanteEx;
+import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.InvalidValueTypeAndFormatMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.NotArchivableMetadataEx;
@@ -25,8 +27,9 @@ import fr.urssaf.image.sae.services.exception.capture.UnknownMetadataEx;
 import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException;
 import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.services.exception.modification.ModificationException;
+import fr.urssaf.image.sae.services.exception.modification.NotModifiableMetadataEx;
 import fr.urssaf.image.sae.services.modification.SAEModificationService;
-import fr.urssaf.image.sae.services.modification.exception.NotModifiableMetadataEx;
+import fr.urssaf.image.sae.webservices.exception.CaptureAxisFault;
 import fr.urssaf.image.sae.webservices.exception.ModificationAxisFault;
 import fr.urssaf.image.sae.webservices.factory.ObjectTypeFactory;
 import fr.urssaf.image.sae.webservices.service.WSModificationService;
@@ -75,35 +78,29 @@ public class WSModificationServiceImpl implements WSModificationService {
 
       } catch (UnknownCodeRndEx exception) {
 
-         throw new ModificationAxisFault("CaptureCodeRndInterdit", exception
-               .getMessage(), exception);
+         throw new ModificationAxisFault("ModificationCodeRndInterdit",
+               exception.getMessage(), exception);
 
       } catch (InvalidValueTypeAndFormatMetadataEx exception) {
          throw new ModificationAxisFault(
-               "CaptureMetadonneesFormatTypeNonValide", exception.getMessage(),
-               exception);
+               "ModificationMetadonneeFormatTypeNonValide", exception
+                     .getMessage(), exception);
 
       } catch (UnknownMetadataEx exception) {
-         throw new ModificationAxisFault("CaptureMetadonneesInconnu", exception
-               .getMessage(), exception);
+         throw new ModificationAxisFault("ModificationMetadonneeInconnue",
+               exception.getMessage(), exception);
 
       } catch (DuplicatedMetadataEx exception) {
-         throw new ModificationAxisFault("CaptureMetadonneesDoublon", exception
-               .getMessage(), exception);
+         throw new ModificationAxisFault("ModificationMetadonneeDoublon",
+               exception.getMessage(), exception);
 
       } catch (NotSpecifiableMetadataEx exception) {
-         throw new ModificationAxisFault("CaptureMetadonneesInterdites",
+         throw new ModificationAxisFault("ModificationMetadonneeNonModifiable",
                exception.getMessage(), exception);
 
       } catch (RequiredArchivableMetadataEx exception) {
-         throw new ModificationAxisFault(
-               "CaptureMetadonneesArchivageObligatoire",
+         throw new ModificationAxisFault("ModificationMetadonneeObligatoire",
                exception.getMessage(), exception);
-
-      } catch (NotArchivableMetadataEx exception) {
-         throw new ModificationAxisFault("ErreurInterneCapture",
-               wsMessageRessourcesUtils.recupererMessage("ws.capture.error",
-                     null), exception);
 
       } catch (UnknownHashCodeEx exception) {
          throw new ModificationAxisFault("CaptureHashErreur", exception
@@ -116,6 +113,14 @@ public class WSModificationServiceImpl implements WSModificationService {
       } catch (ModificationException exception) {
          throw new ModificationAxisFault("ErreurInterneModification", exception
                .getMessage(), exception);
+
+      } catch (ArchiveInexistanteEx exception) {
+         throw new ModificationAxisFault("ModificationArchiveNonTrouvee",
+               exception.getMessage(), exception);
+         
+      } catch (MetadataValueNotInDictionaryEx exception) {
+         throw new ModificationAxisFault("ModificationMetadonneeDictionnaire",
+               exception.getMessage(), exception);
       }
 
       ModificationResponse response = ObjectModificationFactory

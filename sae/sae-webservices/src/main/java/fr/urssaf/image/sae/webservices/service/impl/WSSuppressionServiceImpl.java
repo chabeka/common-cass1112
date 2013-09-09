@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import fr.cirtil.www.saeservice.Suppression;
 import fr.cirtil.www.saeservice.SuppressionResponse;
 import fr.cirtil.www.saeservice.SuppressionResponseType;
+import fr.urssaf.image.sae.services.exception.ArchiveInexistanteEx;
 import fr.urssaf.image.sae.services.exception.suppression.SuppressionException;
 import fr.urssaf.image.sae.services.suppression.SAESuppressionService;
 import fr.urssaf.image.sae.webservices.exception.SuppressionAxisFault;
@@ -50,6 +51,9 @@ public class WSSuppressionServiceImpl implements WSSuppressionService {
       } catch (SuppressionException exception) {
          throw new SuppressionAxisFault("ErreurInterneSuppression", exception
                .getMessage(), exception);
+      } catch (ArchiveInexistanteEx exception) {
+         throw new SuppressionAxisFault("SuppressionArchiveNonTrouvee",
+               exception.getMessage(), exception);
       }
 
       SuppressionResponseType responseType = new SuppressionResponseType();

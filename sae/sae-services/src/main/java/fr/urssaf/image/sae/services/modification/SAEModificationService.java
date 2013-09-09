@@ -9,6 +9,9 @@ import java.util.UUID;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
+import fr.urssaf.image.sae.rnd.exception.CodeRndInexistantException;
+import fr.urssaf.image.sae.services.exception.ArchiveInexistanteEx;
+import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.InvalidValueTypeAndFormatMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.NotArchivableMetadataEx;
@@ -19,7 +22,7 @@ import fr.urssaf.image.sae.services.exception.capture.UnknownMetadataEx;
 import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException;
 import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.services.exception.modification.ModificationException;
-import fr.urssaf.image.sae.services.modification.exception.NotModifiableMetadataEx;
+import fr.urssaf.image.sae.services.exception.modification.NotModifiableMetadataEx;
 
 /**
  * Service permettant de réaliser des modifications sur les documents
@@ -66,13 +69,19 @@ public interface SAEModificationService {
     *            au moins une des métadonnées n'est pas modifiable
     * @throws ModificationException
     *            une erreur a été soulevée lors de la modification du document
+    * @throws ArchiveInexistanteEx
+    *            Le document à modifier n'a pas été trouvé
+    * @throws MetadataValueNotInDictionaryEx
+    *            La valeur d'au moins une des métadannées n'appartient pas au
+    *            dictionnaire rattaché
     */
    @PreAuthorize("hasRole('modification')")
    void modification(UUID idArchive, List<UntypedMetadata> metadonnees)
          throws InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
          DuplicatedMetadataEx, NotSpecifiableMetadataEx,
-         RequiredArchivableMetadataEx, NotArchivableMetadataEx,
-         ReferentialRndException, UnknownCodeRndEx, UnknownHashCodeEx,
-         NotModifiableMetadataEx, ModificationException;
+         RequiredArchivableMetadataEx, ReferentialRndException,
+         UnknownCodeRndEx, UnknownHashCodeEx, NotModifiableMetadataEx,
+         ModificationException, ArchiveInexistanteEx,
+         MetadataValueNotInDictionaryEx;
 
 }

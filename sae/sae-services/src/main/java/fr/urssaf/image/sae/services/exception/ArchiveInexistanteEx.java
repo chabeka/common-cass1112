@@ -5,7 +5,7 @@ package fr.urssaf.image.sae.services.exception;
  * 
  *
  */
-public class MetadataValueNotInDictionaryEx extends Exception{
+public class ArchiveInexistanteEx extends Exception{
    
    /**
     * 
@@ -16,7 +16,7 @@ public class MetadataValueNotInDictionaryEx extends Exception{
     * Constructeur
     * @param message message d'origine
     */
-   public MetadataValueNotInDictionaryEx(String message){
+   public ArchiveInexistanteEx(String message){
       super(message);
    }
    
@@ -24,7 +24,7 @@ public class MetadataValueNotInDictionaryEx extends Exception{
     * Constructeur
     * @param exception exception d'origine
     */
-   public MetadataValueNotInDictionaryEx(Exception exception){
+   public ArchiveInexistanteEx(Exception exception){
       super(exception);
    }
 }

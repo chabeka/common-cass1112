@@ -16,6 +16,7 @@ import fr.cirtil.www.saeservice.Suppression;
 import fr.cirtil.www.saeservice.SuppressionRequestType;
 import fr.cirtil.www.saeservice.SuppressionResponse;
 import fr.cirtil.www.saeservice.UuidType;
+import fr.urssaf.image.sae.services.exception.ArchiveInexistanteEx;
 import fr.urssaf.image.sae.services.exception.suppression.SuppressionException;
 import fr.urssaf.image.sae.services.suppression.SAESuppressionService;
 
@@ -35,7 +36,8 @@ public class SuppressionTest {
    }
 
    @Test
-   public void testSuppression() throws SuppressionException, AxisFault {
+   public void testSuppression() throws SuppressionException, AxisFault,
+         ArchiveInexistanteEx {
 
       Suppression request = new Suppression();
       SuppressionRequestType type = new SuppressionRequestType();

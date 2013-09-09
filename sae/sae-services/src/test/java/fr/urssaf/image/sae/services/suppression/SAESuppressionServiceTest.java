@@ -40,6 +40,7 @@ import fr.urssaf.image.sae.rnd.modele.TypeCode;
 import fr.urssaf.image.sae.rnd.modele.TypeDocument;
 import fr.urssaf.image.sae.services.SAEServiceTestProvider;
 import fr.urssaf.image.sae.services.capture.SAECaptureService;
+import fr.urssaf.image.sae.services.exception.ArchiveInexistanteEx;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureBadEcdeUrlEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureEcdeUrlFileNotFoundEx;
@@ -168,12 +169,14 @@ public class SAESuppressionServiceTest {
          saeSuppressionService.suppression(uuid);
          Assert.fail("une erreur est attendue");
 
-      } catch (SuppressionException exception) {
+      } catch (ArchiveInexistanteEx exception) {
          Assert.assertEquals("le message d'erreur doit être correct",
                StringUtils.replace(
                      "le document {0} n'existe pas. Suppression impossible",
                      "{0}", uuid.toString()), exception.getMessage());
 
+      } catch (SuppressionException e) {
+         Assert.fail("une ArchiveInexistanteEx est attendue");
       }
    }
 
@@ -185,7 +188,7 @@ public class SAESuppressionServiceTest {
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
          UnknownHashCodeEx, CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx,
          MetadataValueNotInDictionaryEx, SearchingServiceEx,
-         SuppressionException {
+         SuppressionException, ArchiveInexistanteEx {
       EcdeTestDocument ecde = ecdeTestTools
             .buildEcdeTestDocument("attestation_consultation.pdf");
 
