@@ -127,10 +127,10 @@ public class MainValidation {
       /*
        * if
        * (MajLotServiceImpl.DFCE_110_CASSANDRA.equalsIgnoreCase(nomOperation))
-       * return; if
-       * (MajLotServiceImpl.DFCE_110_INDEX_DATES.equalsIgnoreCase(nomOperation))
        * return;
        */
+      if (MajLotServiceImpl.DFCE_INDEX_DATES.equalsIgnoreCase(nomOperation))
+         return;
       if (MajLotServiceImpl.META_SEPA.equalsIgnoreCase(nomOperation))
          return;
       if (MajLotServiceImpl.META_130400.equalsIgnoreCase(nomOperation))
