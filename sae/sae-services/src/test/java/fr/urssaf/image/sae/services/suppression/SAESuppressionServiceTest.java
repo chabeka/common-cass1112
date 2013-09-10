@@ -83,12 +83,12 @@ public class SAESuppressionServiceTest {
 
    @Autowired
    private SAEServiceTestProvider testProvider;
-   
+
    @Autowired
    private CassandraServerBean server;
    @Autowired
    private ParametersService parametersService;
-   @Autowired 
+   @Autowired
    private RndSupport rndSupport;
    @Autowired
    private JobClockSupport jobClockSupport;
@@ -98,7 +98,7 @@ public class SAESuppressionServiceTest {
       AuthenticationContext.setAuthenticationToken(null);
 
       provider.closeConnexion();
-      
+
       server.resetData();
    }
 
@@ -129,11 +129,11 @@ public class SAESuppressionServiceTest {
             viExtrait.getIdUtilisateur(), viExtrait, roles, viExtrait
                   .getSaeDroits());
       AuthenticationContext.setAuthenticationToken(token);
-      
+
       // Paramétrage du RND
       parametersService.setVersionRndDateMaj(new Date());
       parametersService.setVersionRndNumero("11.2");
-      
+
       TypeDocument typeDocCree = new TypeDocument();
       typeDocCree.setCloture(false);
       typeDocCree.setCode("2.3.1.1.12");
@@ -170,10 +170,14 @@ public class SAESuppressionServiceTest {
          Assert.fail("une erreur est attendue");
 
       } catch (ArchiveInexistanteEx exception) {
-         Assert.assertEquals("le message d'erreur doit être correct",
-               StringUtils.replace(
-                     "le document {0} n'existe pas. Suppression impossible",
-                     "{0}", uuid.toString()), exception.getMessage());
+         Assert
+               .assertEquals(
+                     "le message d'erreur doit être correct",
+                     StringUtils
+                           .replace(
+                                 "Il n'existe aucun document pour l'identifiant d'archivage {0}",
+                                 "{0}", uuid.toString()), exception
+                           .getMessage());
 
       } catch (SuppressionException e) {
          Assert.fail("une ArchiveInexistanteEx est attendue");
