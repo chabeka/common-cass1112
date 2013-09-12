@@ -65,6 +65,7 @@
          <xsd:element name="obligatoireStockage" type="xsd:boolean" />
          <xsd:element name="aUnDico" type="xsd:boolean" />
          <xsd:element name="nomDico" type="xsd:string" />
+         <xsd:element name="modifiable" type="xsd:boolean" minOccurs="0" />
       </xsd:sequence>
    </xsd:complexType>
    

@@ -2,7 +2,7 @@
 // Ce fichier a été généré par l'implémentation de référence JavaTM Architecture for XML Binding (JAXB), v2.2.5-2 
 // Voir <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
 // Toute modification apportée à ce fichier sera perdue lors de la recompilation du schéma source. 
-// Généré le : 2013.04.15 à 10:47:58 AM CEST 
+// Généré le : 2013.09.12 à 05:03:21 PM CEST 
 //
 
 
@@ -42,6 +42,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="obligatoireStockage" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
  *         &lt;element name="aUnDico" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
  *         &lt;element name="nomDico" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="modifiable" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -68,7 +69,8 @@ import javax.xml.bind.annotation.XmlType;
     "typeDfce",
     "obligatoireStockage",
     "aUnDico",
-    "nomDico"
+    "nomDico",
+    "modifiable"
 })
 // CHECKSTYLE:OFF
 @SuppressWarnings("all")
@@ -99,6 +101,7 @@ public class MetadonneeType {
     protected boolean aUnDico;
     @XmlElement(required = true)
     protected String nomDico;
+    protected Boolean modifiable;
 
     /**
      * Obtient la valeur de la propriété codeCourt.
@@ -434,6 +437,30 @@ public class MetadonneeType {
      */
     public void setNomDico(String value) {
         this.nomDico = value;
+    }
+
+    /**
+     * Obtient la valeur de la propriété modifiable.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Boolean }
+     *     
+     */
+    public Boolean isModifiable() {
+        return modifiable;
+    }
+
+    /**
+     * Définit la valeur de la propriété modifiable.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Boolean }
+     *     
+     */
+    public void setModifiable(Boolean value) {
+        this.modifiable = value;
     }
 
 }

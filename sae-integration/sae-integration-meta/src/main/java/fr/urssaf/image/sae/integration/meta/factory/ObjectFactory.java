@@ -34,6 +34,7 @@ public final class ObjectFactory {
       metaDest.setHasDictionary(metaSource.isAUnDico());
       metaDest.setDictionaryName(metaSource.getNomDico());
       metaDest.setIsIndexed(metaSource.isEstIndexee());
+      metaDest.setModifiable(metaSource.isModifiable());
 
       return metaDest;
 

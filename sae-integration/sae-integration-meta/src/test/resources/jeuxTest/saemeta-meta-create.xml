@@ -13,10 +13,10 @@
    <metadonneesCreation>
    
       <metadonnee>
-         <codeCourt>tes01</codeCourt>
-         <codeLong>Test01</codeLong>
-         <libelle>Libellé de Test01</libelle>
-         <description>Description de Test01</description>
+         <codeCourt>tes04</codeCourt>
+         <codeLong>Test04</codeLong>
+         <libelle>Libellé de Test04</libelle>
+         <description>Description de Test04</description>
          <specifiableArchivage>true</specifiableArchivage>
          <obligatoireArchivage>false</obligatoireArchivage>
          <consulteeParDefaut>false</consulteeParDefaut>
@@ -30,6 +30,28 @@
          <obligatoireStockage>false</obligatoireStockage>
          <aUnDico>false</aUnDico>
          <nomDico />
+      </metadonnee>
+      
+      
+      <metadonnee>
+         <codeCourt>tes05</codeCourt>
+         <codeLong>Test05</codeLong>
+         <libelle>Libellé de Test05</libelle>
+         <description>Description de Test05</description>
+         <specifiableArchivage>true</specifiableArchivage>
+         <obligatoireArchivage>false</obligatoireArchivage>
+         <consulteeParDefaut>false</consulteeParDefaut>
+         <consultable>true</consultable>
+         <recherchable>true</recherchable>
+         <estIndexee>false</estIndexee>
+         <formatage />
+         <tailleMax>-1</tailleMax>
+         <gereeParDfce>false</gereeParDfce>
+         <typeDfce>String</typeDfce>
+         <obligatoireStockage>false</obligatoireStockage>
+         <aUnDico>false</aUnDico>
+         <nomDico />
+         <modifiable>true</modifiable>
       </metadonnee>
       
    </metadonneesCreation>
