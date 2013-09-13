@@ -200,7 +200,8 @@ public final class SaeServiceObjectFactory {
       return uuidType;
 
    }
-
+   
+   
    /**
     * Construit un objet de requête pour l'opération "archivageUnitaire"
     * 
@@ -510,8 +511,12 @@ public final class SaeServiceObjectFactory {
       modification.setModification(modificationReqType);
 
       // L'identifiant du document
-      modificationReqType.setUuid(buildUuid(idDocument.toString()));
-      
+      if (idDocument==null) {
+         throw new IntegrationRuntimeException("L'identifiant du document à modifier doit obligatoirement être renseigné");
+      } else {
+         modificationReqType.setUuid(buildUuid(idDocument.toString()));
+      }
+         
       // Les métadonnées
       ListeMetadonneeType listeMetadonneeType = buildListeMetadonnes(metadonnees);
       modificationReqType.setMetadonnees(listeMetadonneeType);
@@ -540,7 +545,11 @@ public final class SaeServiceObjectFactory {
       suppression.setSuppression(suppressionReqType);
 
       // L'identifiant du document
-      suppressionReqType.setUuid(buildUuid(idDocument.toString()));
+      if (idDocument==null) {
+         throw new IntegrationRuntimeException("L'identifiant du document à supprimer doit obligatoirement être renseigné");
+      } else {
+         suppressionReqType.setUuid(buildUuid(idDocument.toString()));
+      }
       
       // fin
       return suppression;
