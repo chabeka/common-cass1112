@@ -1,5 +1,7 @@
 package fr.urssaf.image.sae.ordonnanceur.service.impl;
 
+import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -17,6 +19,8 @@ import fr.urssaf.image.sae.ordonnanceur.service.DecisionService;
 import fr.urssaf.image.sae.ordonnanceur.service.JobFailureService;
 import fr.urssaf.image.sae.ordonnanceur.support.CaptureMasseSupport;
 import fr.urssaf.image.sae.ordonnanceur.support.DFCESupport;
+import fr.urssaf.image.sae.ordonnanceur.support.TraceOrdoSupport;
+import fr.urssaf.image.sae.ordonnanceur.util.ListeUtils;
 import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 
@@ -34,10 +38,23 @@ public class DecisionServiceImpl implements DecisionService {
 
    private final JobFailureService jobFailureService;
 
+   private final TraceOrdoSupport traceOrdoSupport;
+
    private static final Logger LOG = LoggerFactory
          .getLogger(DecisionServiceImpl.class);
 
    private static final String PREFIX_LOG = "ordonnanceur()";
+
+   /**
+    * Liste des URL ECDE qui ont été tracées comme indisponibles
+    */
+   private final List<URI> listeUrlCaptureMasseIndispo = new ArrayList<URI>();
+
+   /**
+    * Nombre maximal d'éléments à stocker dans la liste
+    * listeUrlCaptureMasseIndispo
+    */
+   private static final int NB_MAX_CAPTURE_MASSE_INDISPO = 500;
 
    /**
     * 
@@ -47,14 +64,18 @@ public class DecisionServiceImpl implements DecisionService {
     *           service de DFCE
     * @param jobFailureService
     *           service pour le traitement en échec
+    * @param traceOrdoSupport
+    *           support pour l'écriture de la traçabilité
     */
    @Autowired
    public DecisionServiceImpl(CaptureMasseSupport captureMasseSupport,
-         DFCESupport dfceSuppport, JobFailureService jobFailureService) {
+         DFCESupport dfceSuppport, JobFailureService jobFailureService,
+         TraceOrdoSupport traceOrdoSupport) {
 
       this.captureMasseSupport = captureMasseSupport;
       this.dfceSuppport = dfceSuppport;
       this.jobFailureService = jobFailureService;
+      this.traceOrdoSupport = traceOrdoSupport;
    }
 
    /**
@@ -110,11 +131,17 @@ public class DecisionServiceImpl implements DecisionService {
          throw new AucunJobALancerException();
       }
 
-      // on renvoie la capture en masse en attente avec l'identifiant le plus
-      // ancien
-      // la liste est déjà triée
+      // Si on arrive jusque là, on sélectionne le job à lancer,
+      // c'est à dire le plus ancien dans la pile
+      JobQueue jobAlancer = jobInstances.get(0);
 
-      return jobInstances.get(0);
+      // Si le job à lancer est une capture de masse, on
+      // vérifie que l'ECDE est accessible
+      controleDispoEcdeCaptureMasse(jobAlancer);
+
+      // renvoie du job à lancer
+      return jobAlancer;
+
    }
 
    private List<JobQueue> filtrerTraitementMasseFailure(
@@ -141,6 +168,45 @@ public class DecisionServiceImpl implements DecisionService {
             });
 
       return jobMasse;
+   }
+
+   private void controleDispoEcdeCaptureMasse(JobQueue jobAlancer)
+         throws AucunJobALancerException {
+
+      if ((captureMasseSupport.isCaptureMasse(jobAlancer))
+            && (!captureMasseSupport.isEcdeUpJobCaptureMasse(jobAlancer))) {
+
+         URI urlEcde = captureMasseSupport.extractUrlEcde(jobAlancer);
+
+         // On écrit la trace qu'une seule fois pour éviter une
+         // redondance inutile
+         if (!listeUrlCaptureMasseIndispo.contains(urlEcde)) {
+
+            // Maintien une liste de moins de n éléments
+            // pour éviter une occupation mémoire inutile
+            ListeUtils.nettoieListeSiBesoin(listeUrlCaptureMasseIndispo,
+                  NB_MAX_CAPTURE_MASSE_INDISPO);
+
+            // Trace applicative sur le serveur dans un fichier log
+            LOG.error("L'URL ECDE pointée par le job de capture de masse "
+                  + jobAlancer.getIdJob() + " n'est pas disponible : "
+                  + urlEcde.toString());
+
+            // Trace générale au niveau de la plateforme
+            traceOrdoSupport.ecritTraceUrlEcdeNonDispo(jobAlancer.getIdJob(),
+                  urlEcde);
+
+            // Ajout de l'URL à la liste de celle déjà tracée en erreur
+            listeUrlCaptureMasseIndispo.add(urlEcde);
+
+         }
+
+         // Lève l'exception indiquant à l'appelant qu'il n'y a aucun traitement
+         // à lancer
+         throw new AucunJobALancerException();
+
+      }
+
    }
 
 }

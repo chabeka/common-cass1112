@@ -16,5 +16,8 @@
       factory-method="load">
       <constructor-arg ref="ecdeConfigFile" />
    </bean>
+   
+   <!-- importation du contexte du composant sae-ecde  -->
+   <import resource="applicationContext-sae-ecde.xml" />
 
 </beans>

@@ -422,6 +422,10 @@ public class SAECassandraUpdater {
       // Initialisation du référentiel des métadonnées
       // suite au passage à un stockage du référentiel en bdd
       refMetaInitService.initialiseRefMeta(saeDao.getKeyspace());
+      
+      // Enrichissement du référentiel des événements
+      InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
+      donnees.addReferentielEvenementV3();
 
       // On positionne la version à 6
       saeDao.setDatabaseVersion(VERSION_6);

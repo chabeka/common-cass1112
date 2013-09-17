@@ -500,4 +500,31 @@ public class InsertionDonnees {
       addActionUnitaire("suppression", "suppression", cfTmpl);
    }
 
+   /**
+    * Référentiel des événements en V3 Ajout de l'évenement ORDO_ECDE_DISPO|KO
+    */
+   public void addReferentielEvenementV3() {
+
+      LOG.info("Mise à jour du référentiel des événements");
+
+      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+            keyspace, "TraceDestinataire", StringSerializer.get(),
+            StringSerializer.get());
+
+      ColumnFamilyUpdater<String, String> updater;
+
+      List<String> allInfos = Arrays.asList("all_infos");
+
+      // ORDO_ECDE_DISPO|KO
+      // dans le registre de surveillance technique avec all_infos
+      // dans le registre d'exploitation avec all_infos
+      updater = cfTmpl.createUpdater("ORDO_ECDE_DISPO|KO");
+      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
+            ListSerializer.get(), updater);
+      addColumn("REG_EXPLOITATION", allInfos, StringSerializer.get(),
+            ListSerializer.get(), updater);
+      cfTmpl.update(updater);
+
+   }
+
 }

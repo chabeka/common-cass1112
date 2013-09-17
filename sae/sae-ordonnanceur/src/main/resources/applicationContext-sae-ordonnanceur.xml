@@ -50,5 +50,9 @@
       <property name="tpsMaxReservation" value="${sae.piletravaux.seuilCheckReservation}" />
       <property name="tpsMaxTraitement" value="${sae.piletravaux.seuilCheckEncours}" />
    </bean>
+   
+   
+   <!-- Fichier de contexte de l'artéfact sae-trace -->
+   <import resource="applicationContext-sae-trace.xml" />
 
 </beans>

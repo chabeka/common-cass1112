@@ -11,6 +11,8 @@ import java.util.Date;
 import java.util.Locale;
 
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import fr.urssaf.image.sae.ecde.exception.EcdeRuntimeException;
@@ -23,6 +25,9 @@ import fr.urssaf.image.sae.ecde.modele.source.EcdeSources;
  * 
  */
 public class EcdeTestTools {
+
+   private static final Logger LOGGER = LoggerFactory
+         .getLogger(EcdeTestTools.class);
 
    @Autowired
    private EcdeSources ecdeSources;
@@ -81,6 +86,9 @@ public class EcdeTestTools {
       }
 
       // Valeur de retour
+      LOGGER.debug("Tests unitaires ECDE: répertoire de capture de masse créé: "
+            + repTrait + " (URL ECDE du sommaire associé: " + uri.toString()
+            + ")");
       EcdeTestSommaire ecdeTestSommaire = new EcdeTestSommaire();
       ecdeTestSommaire.setRepEcde(repTrait);
       ecdeTestSommaire.setUrlEcde(uri);
@@ -212,6 +220,7 @@ public class EcdeTestTools {
          throws IOException {
       File parent = ecdeTestSommaire.getRepEcde().getParentFile()
             .getParentFile().getParentFile();
+      LOGGER.debug("Tests unitaires ECDE: suppression du répertoire " + parent.getAbsolutePath());
       FileUtils.deleteDirectory(parent);
    }
 

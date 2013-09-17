@@ -23,42 +23,6 @@
       <property name="tpsMaxTraitement" value="${sae.piletravaux.seuilCheckEncours}" />
    </bean>
 
-   <!-- configuration de ECDE -->
-
-   <bean id="ecdeSource1" class="fr.urssaf.image.sae.ecde.modele.source.EcdeSource">
-
-      <constructor-arg value="ecde.cer69.recouv" />
-      <constructor-arg value="base" />
-      <property name="local" value="true" />
-
-   </bean>
-
-   <bean id="ecdeSource2" class="fr.urssaf.image.sae.ecde.modele.source.EcdeSource">
-
-      <constructor-arg value="ecde.cer44.recouv" />
-      <constructor-arg value="base" />
-      <property name="local" value="false" />
-
-   </bean>
-
-   <bean id="ecdeSource3" class="fr.urssaf.image.sae.ecde.modele.source.EcdeSource">
-
-      <constructor-arg value="ecde.cer34.recouv" />
-      <constructor-arg value="base" />
-      <property name="local" value="true" />
-
-   </bean>
-
-   <bean id="ecdeSources" class="fr.urssaf.image.sae.ecde.modele.source.EcdeSources">
-      <property name="sources">
-         <array>
-            <ref bean="ecdeSource1" />
-            <ref bean="ecdeSource2" />
-            <ref bean="ecdeSource3" />
-         </array>
-      </property>
-   </bean>
-
    <!-- configuration de lancement du traitement de capture en masse -->
 
    <bean id="captureMasseLauncher" factory-bean="serviceMockFactory"
@@ -68,5 +32,28 @@
 
    <bean id="DFCESupportImpl" factory-bean="serviceMockFactory"
       factory-method="createDFCESupport" />
-
+   
+   
+   <!-- ECDE -->
+   
+   <bean id="ecdeTestTools"
+      class="fr.urssaf.image.sae.ecde.util.test.EcdeTestTools" />
+      
+   <bean id="ecdeTestConfig"
+      class="fr.urssaf.image.sae.ecde.util.test.EcdeTestConfig" />
+   
+   <bean id="ecdeSources"
+         factory-bean="ecdeTestConfig"
+         factory-method="load">
+   </bean>
+   
+   <import resource="applicationContext-sae-ecde.xml" />
+   
+   
+   <!-- Traçabilité -->
+   
+   <bean id="DispatcheurServiceImpl" factory-bean="serviceMockFactory"
+      factory-method="createDispatcheurService" />
+   
+      
 </beans>

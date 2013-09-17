@@ -29,4 +29,14 @@ public class OrdonnanceurRuntimeException extends RuntimeException {
       super(message, cause);
    }
 
+   /**
+    * Constructeur
+    * 
+    * @param message
+    *           le message de l'exception
+    */
+   public OrdonnanceurRuntimeException(String message) {
+      super(message);
+   }
+
 }

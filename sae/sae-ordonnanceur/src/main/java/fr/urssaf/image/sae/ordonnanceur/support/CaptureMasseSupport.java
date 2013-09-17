@@ -11,6 +11,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import fr.urssaf.image.sae.ordonnanceur.exception.OrdonnanceurRuntimeException;
 import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 
@@ -28,8 +29,8 @@ public class CaptureMasseSupport {
    public static final String CAPTURE_MASSE_JN = "capture_masse";
 
    private final EcdeSupport ecdeSupport;
-   
-   private static final String ECDE_URL= "ecdeUrl";
+
+   private static final String ECDE_URL = "ecdeUrl";
 
    /**
     * 
@@ -121,7 +122,15 @@ public class CaptureMasseSupport {
       return jobCaptureMasse;
    }
 
-   private boolean isCaptureMasse(JobQueue jobRequest) {
+   /**
+    * Indique si le job passé en paramètre est un job de type "capture de masse"
+    * 
+    * @param jobRequest
+    *           le job
+    * @return true si le job est une capture de masse, false dans le cas
+    *         contraire
+    */
+   public final boolean isCaptureMasse(JobQueue jobRequest) {
 
       boolean isCaptureMasse = CAPTURE_MASSE_JN.equals(jobRequest.getType());
 
@@ -135,27 +144,19 @@ public class CaptureMasseSupport {
       return isCaptureMasse;
    }
 
-   private boolean isLocal(JobQueue jobRequest) {
+   private boolean isLocal(JobQueue jobQueue) {
 
       // Dans le cadre d'une capture de masse seule l'url ECDE du sommaire est
       // sérializée dans les paramètres
-      String ecdeUrl = StringUtils.EMPTY;
-      if (StringUtils.isNotBlank(jobRequest.getParameters())) {
-         ecdeUrl = jobRequest.getParameters();
-      } else {
-         if (MapUtils.isNotEmpty(jobRequest.getJobParameters())) {
-            ecdeUrl = jobRequest.getJobParameters().get(ECDE_URL);
-         }
-      }
+      URI ecdeUrl = extractUrlEcde(jobQueue);
 
       boolean isLocal = false;
 
       if (ecdeUrl != null) {
 
          try {
-            URI ecdeURL = URI.create(ecdeUrl);
 
-            isLocal = ecdeSupport.isLocal(ecdeURL);
+            isLocal = ecdeSupport.isLocal(ecdeUrl);
 
          } catch (IllegalArgumentException e) {
 
@@ -169,6 +170,62 @@ public class CaptureMasseSupport {
       }
 
       return isLocal;
+   }
+
+   /**
+    * Extrait l'URL ECDE pointé par un job de capture de masse
+    * 
+    * @param jobQueue
+    *           le job de capture de masse
+    * @return l'URL ECDE pointé par le job de capture de masse
+    */
+   public final URI extractUrlEcde(JobQueue jobQueue) {
+
+      String ecdeUrl = StringUtils.EMPTY;
+
+      if (StringUtils.isNotBlank(jobQueue.getParameters())) {
+         ecdeUrl = jobQueue.getParameters();
+      } else {
+         if (MapUtils.isNotEmpty(jobQueue.getJobParameters())) {
+            ecdeUrl = jobQueue.getJobParameters().get(ECDE_URL);
+         }
+      }
+
+      URI ecdeUri = null;
+      if (ecdeUrl != null) {
+         ecdeUri = URI.create(ecdeUrl);
+      }
+
+      return ecdeUri;
+
+   }
+
+   /**
+    * Vérifie que l'ECDE pointé par le job de capture de masse transmis en
+    * paramètre soit disponible.<br>
+    * <br>
+    * La méthode lève une exception runtime si le job passé en paramètre n'est
+    * pas un job de capture de masse.
+    * 
+    * @param jobQueue
+    *           un job de capture de masse
+    * @return true si l'ECDE est disponible, false dans le cas contraire
+    */
+   public final boolean isEcdeUpJobCaptureMasse(JobQueue jobQueue) {
+
+      // Vérifie que le job est bien un job de capture de masse
+      if (!isCaptureMasse(jobQueue)) {
+         throw new OrdonnanceurRuntimeException(
+               "Mauvaise utilisation du contrôle de la disponibilité de l'ECDE: le job contrôlé n'est pas un job de capture de masse (id: "
+                     + jobQueue.getIdJob() + ")");
+      }
+
+      // Extrait l'URL ECDE des paramètres du job
+      URI ecdeUrl = extractUrlEcde(jobQueue);
+
+      // Vérifie si l'ECDE est disponble
+      return ecdeSupport.isEcdeDisponible(ecdeUrl);
+
    }
 
 }

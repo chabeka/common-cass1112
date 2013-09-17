@@ -1,5 +1,7 @@
 package fr.urssaf.image.sae.ordonnanceur.service;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,13 +13,17 @@ import junit.framework.Assert;
 import org.apache.commons.lang.exception.NestableException;
 import org.easymock.EasyMock;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
+import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.ordonnanceur.exception.AucunJobALancerException;
+import fr.urssaf.image.sae.ordonnanceur.exception.OrdonnanceurRuntimeException;
 import fr.urssaf.image.sae.ordonnanceur.support.DFCESupport;
 import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
@@ -33,9 +39,9 @@ public class DecisionServiceTest {
 
    private static final String CAPTURE_MASSE_JN = "capture_masse";
 
-   private static final String CER69_SOMMAIRE = "ecde://ecde.cer69.recouv/sommaire.xml";
+   private static final String CER44_SOMMAIRE = "ecde://ecde.cer44.recouv/CS/20130916/02/sommaire.xml";
 
-   private static final String CER44_SOMMAIRE = "ecde://ecde.cer44.recouv/sommaire.xml";
+   private EcdeTestSommaire ecdeTestSommaire;
 
    @Autowired
    private DecisionService decisionService;
@@ -46,10 +52,37 @@ public class DecisionServiceTest {
    @Autowired
    private JobFailureService jobFailureService;
 
+   @Autowired
+   private EcdeTestTools ecdeTestTools;
+
+   @Before
+   public void before() {
+
+      // Création d'un répertoire ECDE permettant d'y déposer un sommaire.xml
+      ecdeTestSommaire = ecdeTestTools.buildEcdeTestSommaire();
+
+      // Dépôt d'un sommaire.xml vide dans ce répertoire
+      // On n'aura besoin que de vérifier sa présence
+      File fileSom = new File(ecdeTestSommaire.getRepEcde(), "sommaire.xml");
+      try {
+         fileSom.createNewFile();
+      } catch (IOException e) {
+         throw new OrdonnanceurRuntimeException(e);
+      }
+
+   }
+
    @After
    public void after() {
 
       EasyMock.reset(dfceSuppport);
+
+      try {
+         ecdeTestTools.cleanEcdeTestSommaire(ecdeTestSommaire);
+      } catch (IOException e) {
+         // rien à faire
+      }
+
    }
 
    @Test
@@ -67,8 +100,10 @@ public class DecisionServiceTest {
       List<JobQueue> jobsEnAttente = new ArrayList<JobQueue>();
 
       JobQueue job1 = createJob(CAPTURE_MASSE_JN, CER44_SOMMAIRE);
-      JobQueue job2 = createJob(CAPTURE_MASSE_JN, CER69_SOMMAIRE);
-      JobQueue job3 = createJob(CAPTURE_MASSE_JN, CER69_SOMMAIRE);
+      JobQueue job2 = createJob(CAPTURE_MASSE_JN, ecdeTestSommaire.getUrlEcde()
+            .toString());
+      JobQueue job3 = createJob(CAPTURE_MASSE_JN, ecdeTestSommaire.getUrlEcde()
+            .toString());
       JobQueue job4 = createJob(CAPTURE_MASSE_JN, CER44_SOMMAIRE);
 
       // ajout de deux échecs pour le job 2
@@ -87,18 +122,20 @@ public class DecisionServiceTest {
 
       Assert.assertEquals("le traitement attendu est le job2", job2.getIdJob(),
             job.getIdJob());
-      
 
       EasyMock.verify(dfceSuppport);
 
    }
 
    /**
-    * test permettant de vérifier le traitement des parametres passés sous la forme d'un jobParameter
+    * test permettant de vérifier le traitement des parametres passés sous la
+    * forme d'un jobParameter
+    * 
     * @throws AucunJobALancerException
     */
    @Test
-   public void decisionService_JobParamsuccess() throws AucunJobALancerException {
+   public void decisionService_JobParamsuccess()
+         throws AucunJobALancerException {
 
       EasyMock.expect(dfceSuppport.isDfceUp()).andReturn(true);
 
@@ -111,8 +148,8 @@ public class DecisionServiceTest {
 
       List<JobQueue> jobsEnAttente = new ArrayList<JobQueue>();
 
-      HashMap param = new HashMap<String,String>();
-      param.put("ecdeUrl", CER69_SOMMAIRE);
+      Map<String, String> param = new HashMap<String, String>();
+      param.put("ecdeUrl", ecdeTestSommaire.getUrlEcde().toString());
       JobQueue job5 = createJobWithJobParam(CAPTURE_MASSE_JN, param);
 
       jobsEnAttente.add(job5);
@@ -122,12 +159,11 @@ public class DecisionServiceTest {
 
       Assert.assertEquals("le traitement attendu est le job2", job5.getIdJob(),
             job.getIdJob());
-      
 
       EasyMock.verify(dfceSuppport);
 
    }
-   
+
    /**
     * DFCE est down
     * 
@@ -144,7 +180,8 @@ public class DecisionServiceTest {
 
       List<JobQueue> jobsEnAttente = new ArrayList<JobQueue>();
 
-      jobsEnAttente.add(createJob(CAPTURE_MASSE_JN, CER69_SOMMAIRE));
+      jobsEnAttente.add(createJob(CAPTURE_MASSE_JN, ecdeTestSommaire
+            .getUrlEcde().toString()));
 
       decisionService.trouverJobALancer(jobsEnAttente, jobsEnCours);
 
@@ -222,7 +259,8 @@ public class DecisionServiceTest {
 
       List<JobQueue> jobsEnAttente = new ArrayList<JobQueue>();
 
-      jobsEnAttente.add(createJob(CAPTURE_MASSE_JN, CER69_SOMMAIRE));
+      jobsEnAttente.add(createJob(CAPTURE_MASSE_JN, ecdeTestSommaire
+            .getUrlEcde().toString()));
 
       decisionService.trouverJobALancer(jobsEnAttente, jobsEnCours);
 
@@ -235,7 +273,8 @@ public class DecisionServiceTest {
    public void decisionService_failure_noJobEnAttente_maxAnomalie()
          throws AucunJobALancerException {
 
-      JobQueue job = createJob(CAPTURE_MASSE_JN, CER69_SOMMAIRE);
+      JobQueue job = createJob(CAPTURE_MASSE_JN, ecdeTestSommaire.getUrlEcde()
+            .toString());
 
       jobFailureService.ajouterEchec(job.getIdJob(), new NestableException(
             "echec n°1"));
@@ -260,8 +299,9 @@ public class DecisionServiceTest {
 
       return job;
    }
-   
-   private JobQueue createJobWithJobParam(String type, Map<String,String> parameters) {
+
+   private JobQueue createJobWithJobParam(String type,
+         Map<String, String> parameters) {
 
       JobQueue job = createJob(type);
       job.setJobParameters(parameters);

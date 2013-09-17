@@ -1,6 +1,8 @@
 package fr.urssaf.image.sae.ordonnanceur.service.impl;
 
 import org.easymock.EasyMock;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.ordonnanceur.service.CoordinationService;
@@ -9,6 +11,8 @@ import fr.urssaf.image.sae.ordonnanceur.service.JobFailureService;
 import fr.urssaf.image.sae.ordonnanceur.service.JobService;
 import fr.urssaf.image.sae.ordonnanceur.support.DFCESupport;
 import fr.urssaf.image.sae.ordonnanceur.support.TraitementLauncherSupport;
+import fr.urssaf.image.sae.trace.model.TraceToCreate;
+import fr.urssaf.image.sae.trace.service.DispatcheurService;
 
 /**
  * Implémentation des Mocks des services
@@ -86,6 +90,28 @@ public class ServiceMockFactory {
       JobFailureService service = EasyMock.createMock(JobFailureService.class);
 
       return service;
+   }
+
+   /**
+    * Création d'un "faux" dispatcheur de trace
+    * 
+    * @return le "faux" dispatcheur de trace
+    */
+   public final DispatcheurService createDispatcheurService() {
+
+      return new DispatcheurService() {
+
+         private final Logger logger = LoggerFactory.getLogger(this.getClass());
+         
+         @Override
+         public void ajouterTrace(TraceToCreate trace) {
+
+            logger.debug("Appel du faux dispatcheur pour tracer l'événement {}",
+                  trace.getCodeEvt());
+
+         }
+      };
+
    }
 
 }
