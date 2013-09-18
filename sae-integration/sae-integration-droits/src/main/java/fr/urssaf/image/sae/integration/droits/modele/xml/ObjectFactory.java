@@ -2,7 +2,7 @@
 // Ce fichier a été généré par l'implémentation de référence JavaTM Architecture for XML Binding (JAXB), v2.2.5-2 
 // Voir <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
 // Toute modification apportée à ce fichier sera perdue lors de la recompilation du schéma source. 
-// Généré le : 2013.01.16 à 02:11:30 PM CET 
+// Généré le : 2013.09.17 à 04:50:06 PM CEST 
 //
 
 
@@ -17,7 +17,7 @@ import javax.xml.namespace.QName;
 /**
  * This object contains factory methods for each 
  * Java content interface and Java element interface 
- * generated in the fr.urssaf.image.sae.integration.droits.modele.xml package. 
+ * generated in the fr.urssaf.image.sae.ihm.web.exploit.droit package. 
  * <p>An ObjectFactory allows you to programatically 
  * construct new instances of the Java representation 
  * for XML content. The Java representation of XML 
@@ -36,7 +36,7 @@ public class ObjectFactory {
     private final static QName _Droit_QNAME = new QName("http://www.cirtil.fr/saeIntegration/droit", "droit");
 
     /**
-     * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: fr.urssaf.image.sae.integration.droits.modele.xml
+     * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: fr.urssaf.image.sae.ihm.web.exploit.droit
      * 
      */
     public ObjectFactory() {
@@ -168,6 +168,14 @@ public class ObjectFactory {
      */
     public AjoutPagmType createAjoutPagmType() {
         return new AjoutPagmType();
+    }
+
+    /**
+     * Create an instance of {@link ListeModifPrmdType }
+     * 
+     */
+    public ListeModifPrmdType createListeModifPrmdType() {
+        return new ListeModifPrmdType();
     }
 
     /**

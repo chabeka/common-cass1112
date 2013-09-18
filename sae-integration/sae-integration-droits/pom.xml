@@ -4,7 +4,7 @@
    
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-integration-droits</artifactId>
-   <version>12.11.11.2-SNAPSHOT</version>
+   <version>13.7.0.6-SNAPSHOT</version>
    
    <name>sae-integration-droits</name>
    
@@ -33,7 +33,7 @@
       <spring.framework.version>3.0.5.RELEASE</spring.framework.version>
       
       <!-- Version du SAE -->
-      <sae.version>12.11.11.2-SNAPSHOT</sae.version>
+      <sae.version>13.7.0.6-SNAPSHOT</sae.version>
       
    </properties>
 

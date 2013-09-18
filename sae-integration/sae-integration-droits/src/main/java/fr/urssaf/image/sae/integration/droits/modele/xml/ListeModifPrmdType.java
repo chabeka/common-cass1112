@@ -16,16 +16,16 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Classe Java pour ListeValeursType complex type.
+ * <p>Classe Java pour ListeModifPrmdType complex type.
  * 
  * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  * 
  * <pre>
- * &lt;complexType name="ListeValeursType">
+ * &lt;complexType name="ListeModifPrmdType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="valeur" type="{http://www.w3.org/2001/XMLSchema}string" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="prmd" type="{http://www.cirtil.fr/saeIntegration/droit}PrmdType" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -35,42 +35,42 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ListeValeursType", propOrder = {
-    "valeur"
+@XmlType(name = "ListeModifPrmdType", propOrder = {
+    "prmd"
 })
 // CHECKSTYLE:OFF
 @SuppressWarnings("all")
-public class ListeValeursType {
+public class ListeModifPrmdType {
 
-    protected List<String> valeur;
+    protected List<PrmdType> prmd;
 
     /**
-     * Gets the value of the valeur property.
+     * Gets the value of the prmd property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the valeur property.
+     * This is why there is not a <CODE>set</CODE> method for the prmd property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getValeur().add(newItem);
+     *    getPrmd().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link String }
+     * {@link PrmdType }
      * 
      * 
      */
-    public List<String> getValeur() {
-        if (valeur == null) {
-            valeur = new ArrayList<String>();
+    public List<PrmdType> getPrmd() {
+        if (prmd == null) {
+            prmd = new ArrayList<PrmdType>();
         }
-        return this.valeur;
+        return this.prmd;
     }
 
 }
