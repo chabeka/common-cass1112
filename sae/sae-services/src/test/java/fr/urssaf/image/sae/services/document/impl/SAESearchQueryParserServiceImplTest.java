@@ -877,8 +877,7 @@ public class SAESearchQueryParserServiceImplTest {
       parse(attendu);
 
    }
-   
-   
+
    /**
     * Cas d'utilisation : un espace entre la métadonnée et le deux-points<br>
     * Résultat attendu : le parser doit fonctionner et remplacer la requête
@@ -898,8 +897,7 @@ public class SAESearchQueryParserServiceImplTest {
       parse(attendu);
 
    }
-   
-   
+
    /**
     * Cas d'utilisation : un espace entre les métadonnée et les deux-points<br>
     * Résultat attendu : le parser doit fonctionner et remplacer la requête
@@ -910,19 +908,21 @@ public class SAESearchQueryParserServiceImplTest {
 
       SAESearchQueryParserResult attendu = new SAESearchQueryParserResult();
 
-      attendu.setRequeteOrigine("Denomination :Valeur OR Denomination :\"Valeur avec espace\"");
+      attendu
+            .setRequeteOrigine("Denomination :Valeur OR Denomination :\"Valeur avec espace\"");
 
-      attendu.setRequeteCodeCourts("den :Valeur OR den :\"Valeur avec espace\"");
+      attendu
+            .setRequeteCodeCourts("den :Valeur OR den :\"Valeur avec espace\"");
 
       attendu.getMetaUtilisees().put("Denomination", "den");
 
       parse(attendu);
 
    }
-   
-   
+
    /**
-    * Cas d'utilisation : un espace entre le deux-points et la valeur de la métadonnée<br>
+    * Cas d'utilisation : un espace entre le deux-points et la valeur de la
+    * métadonnée<br>
     * Résultat attendu : le parser doit fonctionner et remplacer la requête
     */
    @Test
@@ -940,8 +940,7 @@ public class SAESearchQueryParserServiceImplTest {
       parse(attendu);
 
    }
-   
-   
+
    /**
     * Cas d'utilisation : combinaison cas 46 et 48<br>
     * Résultat attendu : le parser doit fonctionner et remplacer la requête
@@ -952,9 +951,30 @@ public class SAESearchQueryParserServiceImplTest {
 
       SAESearchQueryParserResult attendu = new SAESearchQueryParserResult();
 
-      attendu.setRequeteOrigine("Denomination: Valeur OR Denomination :\"Valeur avec espace\"");
+      attendu
+            .setRequeteOrigine("Denomination: Valeur OR Denomination :\"Valeur avec espace\"");
 
-      attendu.setRequeteCodeCourts("den: Valeur OR den :\"Valeur avec espace\"");
+      attendu
+            .setRequeteCodeCourts("den: Valeur OR den :\"Valeur avec espace\"");
+
+      attendu.getMetaUtilisees().put("Denomination", "den");
+
+      parse(attendu);
+
+   }
+
+   /**
+    * Cas d'utilisation : un espace échappé à la fin de la requête
+    */
+   @Test
+   public void cas50() throws SyntaxLuceneEx, SAESearchServiceEx,
+         SAESearchQueryParseException {
+
+      SAESearchQueryParserResult attendu = new SAESearchQueryParserResult();
+
+      attendu.setRequeteOrigine("Denomination:123\\ ");
+
+      attendu.setRequeteCodeCourts("den:123\\ ");
 
       attendu.getMetaUtilisees().put("Denomination", "den");
 

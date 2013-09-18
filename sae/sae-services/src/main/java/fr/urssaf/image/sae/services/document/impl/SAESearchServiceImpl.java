@@ -45,6 +45,7 @@ import fr.urssaf.image.sae.services.exception.search.UnknownLuceneMetadataEx;
 import fr.urssaf.image.sae.services.messages.ServiceMessageHandler;
 import fr.urssaf.image.sae.services.util.FormatUtils;
 import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
+import fr.urssaf.image.sae.services.util.SAESearchUtil;
 import fr.urssaf.image.sae.storage.dfce.utils.Utils;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.QueryParseServiceEx;
@@ -65,7 +66,7 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
       SAESearchService {
    private static final Logger LOG = LoggerFactory
          .getLogger(SAESearchServiceImpl.class);
-   
+
    @Autowired
    private MetadataReferenceDAO metaRefD;
 
@@ -457,7 +458,7 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
                         : buildMessageFromList(listMetaDesired));
 
       // Trim la requête de recherche
-      String requeteTrim = StringUtils.trim(requete);
+      String requeteTrim = SAESearchUtil.trimRequeteClient(requete);
       LOG.debug("{} - Requête de recherche après trim : {}", prefixeTrc,
             requeteTrim);
 
@@ -554,4 +555,5 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
       return listUntypedDocument;
 
    }
+
 }
