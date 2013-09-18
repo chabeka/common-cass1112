@@ -18,6 +18,14 @@ public interface SaePrmdService {
     *           PRMD à créer
     */
    void createPrmd(Prmd prmd);
+   
+   /**
+    * Modification d'un PRMD
+    * 
+    * @param prmd
+    *           PRMD à modifier
+    */
+   void modifyPrmd(Prmd prmd);
 
    /**
     * Vérifie si le prmd existe ou non

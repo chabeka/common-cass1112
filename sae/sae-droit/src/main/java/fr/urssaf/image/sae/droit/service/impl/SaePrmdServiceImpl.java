@@ -36,28 +36,31 @@ public class SaePrmdServiceImpl implements SaePrmdService {
          .getLogger(SaePrmdServiceImpl.class);
 
    private static final String TRC_CREATE = "createPrmd()";
-   private static final String TRC_EXISTS= "prmdExists()";
-   
-   private static final String TRC_FIND= "getPrmd()";
-   
+   private static final String TRC_EXISTS = "prmdExists()";
+
+   private static final String TRC_FIND = "getPrmd()";
+
    private static final String PREFIXE_PRMD = "/DroitPrmd/";
 
    private PrmdSupport prmdSupport;
 
    private JobClockSupport clockSupport;
 
-   
    private CuratorFramework curatorClient;
-   
+
    /**
     * constructeur
     * 
-    * @param prmd {@link PrmdSupport}
-    * @param clock {@link JobClockSupport}
-    * @param curator {@link CuratorFramework}
-    */   
+    * @param prmd
+    *           {@link PrmdSupport}
+    * @param clock
+    *           {@link JobClockSupport}
+    * @param curator
+    *           {@link CuratorFramework}
+    */
    @Autowired
-   public SaePrmdServiceImpl(PrmdSupport prmd, JobClockSupport clock, CuratorFramework curator){
+   public SaePrmdServiceImpl(PrmdSupport prmd, JobClockSupport clock,
+         CuratorFramework curator) {
       this.prmdSupport = prmd;
       this.clockSupport = clock;
       this.curatorClient = curator;
@@ -90,6 +93,30 @@ public class SaePrmdServiceImpl implements SaePrmdService {
       }
    }
 
+   @Override
+   public void modifyPrmd(Prmd prmd) {
+      String resourceName = PREFIXE_PRMD + prmd.getCode();
+
+      ZookeeperMutex mutex = ZookeeperUtils.createMutex(curatorClient,
+            resourceName);
+      try {
+         LOGGER.debug("{} - Lock Zookeeper", TRC_CREATE);
+         ZookeeperUtils.acquire(mutex, resourceName);
+
+         LOGGER.debug("{} - Vérification PRMD existant", TRC_CREATE);
+         checkPrmdExistant(prmd);
+
+         LOGGER.debug("{} - Création PRMD", TRC_CREATE);
+         prmdSupport.create(prmd, clockSupport.currentCLock());
+
+         checkLock(mutex, prmd);
+
+      } finally {
+         mutex.release();
+      }
+
+   }
+
    /**
     * {@inheritDoc}
     */
@@ -103,7 +130,7 @@ public class SaePrmdServiceImpl implements SaePrmdService {
       if (storedPrmd != null) {
          exists = true;
       }
-      
+
       LOGGER.debug("{} - Fin de recherche du PRMD", TRC_EXISTS);
 
       return exists;
@@ -127,6 +154,25 @@ public class SaePrmdServiceImpl implements SaePrmdService {
       }
 
    }
+   
+   /**
+    * Vérifie si le PRMD n'existe pas. Si c'est le cas renvoie une exception
+    * {@link DroitRuntimeException}
+    * 
+    * @param prmd
+    *           le PRMD a modifier
+    */
+   private void checkPrmdExistant(Prmd prmd) {
+
+      if (!prmdExists(prmd.getCode())) {
+
+         LOGGER.warn("{} - Le PRMD à modifier {} n'existe pas dans la "
+               + "famille de colonnes DroitPRMD", CHECK, prmd.getCode());
+         throw new DroitRuntimeException(PRMD + prmd.getCode()
+               + " à modifier n'existe pas dans la " + "famille de colonnes DroitPRMD");
+      }
+
+   }
 
    private void checkLock(ZookeeperMutex mutex, Prmd prmd) {
 
@@ -147,7 +193,7 @@ public class SaePrmdServiceImpl implements SaePrmdService {
       }
 
    }
-   
+
    /**
     * {@inheritDoc}
     */
@@ -160,6 +206,5 @@ public class SaePrmdServiceImpl implements SaePrmdService {
 
       return storedPrmd;
    }
-
 
 }
