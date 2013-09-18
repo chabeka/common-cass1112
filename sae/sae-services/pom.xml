@@ -70,11 +70,15 @@
 
    <build>
       <plugins>
+         
          <!-- COMPILATION ASPECT -->
          <plugin>
             <inherited>true</inherited>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>aspectj-maven-plugin</artifactId>
+            <configuration>
+               <argumentFileName>builddef-sae-services.lst</argumentFileName>
+            </configuration>
          </plugin>
          
       </plugins>
