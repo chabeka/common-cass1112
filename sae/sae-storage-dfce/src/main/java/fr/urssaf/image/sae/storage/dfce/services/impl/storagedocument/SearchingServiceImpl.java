@@ -55,8 +55,12 @@ public class SearchingServiceImpl extends AbstractServices implements
    public final StorageDocuments searchStorageDocumentByLuceneCriteria(
          final LuceneCriteria luceneCriteria) throws SearchingServiceEx,
          QueryParseServiceEx {
+      String prefixTrace = "searchStorageDocumentByLuceneCriteria()";
       final List<StorageDocument> storageDocuments = new ArrayList<StorageDocument>();
       try {
+
+         LOG.debug("{} - Requête Lucene envoyée à DFCE: \"{}\"", prefixTrace,
+               luceneCriteria.getLuceneQuery());
 
          SortedSearchQuery paramSearchQuery = new SortedQueryImpl(
                luceneCriteria.getLuceneQuery(), luceneCriteria.getLimit(), 0,
