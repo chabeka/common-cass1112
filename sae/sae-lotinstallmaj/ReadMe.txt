@@ -183,3 +183,15 @@ Mise à jour de la CF Metadata (les options modifiables n'avaient pas été para
 
 Positionne le paramètre versionBDD de la CF Parameters à la valeur "6"
 
+
+
+// -----------------------------------------------------------------
+// 5bis) Lot 131100SAE - Rattrapage d'indexation des dates systèmes
+// -----------------------------------------------------------------
+
+sudo java -Dlogback.configurationFile=/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar /hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar /hawai/data/sae/sae-config.properties DFCE_INDEX_DATES
+
+Rattrapage de l'indexation des métadonnées systèmes DFCE SM_CREATION_DATE, SM_ARCHIVAGE_DATE et SM_MODIFICATION_DATE.
+
+
+
