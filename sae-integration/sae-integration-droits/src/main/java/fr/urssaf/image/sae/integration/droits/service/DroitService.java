@@ -412,70 +412,75 @@ public final class DroitService {
 
    }
 
-   
    private void traitementModifPrmdExistant(DroitType droitType) {
 
-      int nbPrmd = droitType.getListeModifPrmd().getPrmd().size();
-      LOG.info("Nombre de PRMD à modifier contenus dans le fichier : {}",
-            nbPrmd);
-      if (nbPrmd > 0) {
+      if ((droitType.getListeModifPrmd() != null)
+            && (CollectionUtils.isNotEmpty(droitType.getListeModifPrmd()
+                  .getPrmd()))) {
 
-         // Trace
-         LOG.info("Traitement de modification des PRMD");
-
-         // Boucle sur la liste des PRMD
-         for (PrmdType prmdType : droitType.getListeModifPrmd().getPrmd()) {
-
-            // Init boucle
-            String codePrmd = prmdType.getCode();
+         int nbPrmd = droitType.getListeModifPrmd().getPrmd().size();
+         LOG.info("Nombre de PRMD à modifier contenus dans le fichier : {}",
+               nbPrmd);
+         if (nbPrmd > 0) {
 
             // Trace
-            LOG.info("Modification du PRMD \"{}\"", codePrmd);
+            LOG.info("Traitement de modification des PRMD");
 
-            // On regarde si le PRMD existe déjà
-            // Si non, on passe au PRMD suivant
-            // Si oui, on le modifie
-            boolean prmdExists = saePrmdService.prmdExists(codePrmd);
-            if (!prmdExists) {
+            // Boucle sur la liste des PRMD
+            for (PrmdType prmdType : droitType.getListeModifPrmd().getPrmd()) {
 
-               String message = StringUtils
-                     .replace(
-                           "Le PRMD {0} n'existe pas dans la base. Modification impossible.",
-                           "{0}", codePrmd);
+               // Init boucle
+               String codePrmd = prmdType.getCode();
 
                // Trace
-               LOG.info(message);
+               LOG.info("Modification du PRMD \"{}\"", codePrmd);
 
+               // On regarde si le PRMD existe déjà
+               // Si non, on passe au PRMD suivant
+               // Si oui, on le modifie
+               boolean prmdExists = saePrmdService.prmdExists(codePrmd);
+               if (!prmdExists) {
 
-            } else {
+                  String message = StringUtils
+                        .replace(
+                              "Le PRMD {0} n'existe pas dans la base. Modification impossible.",
+                              "{0}", codePrmd);
 
-               // Création d'un objet Prmd à passer ensuite au service de
-               // création
-               // des PRMD de sae-droit
-               Prmd prmd = ObjectFactory.createPrmd(prmdType);
+                  // Trace
+                  LOG.info(message);
 
-               // Traces
-               logPrmd(prmd);
+               } else {
 
-               // Appel du service de sae-droit pour créer les PRMD
-               LOG.debug("Appel du service de sae-droit pour modifier le PRMD");
-               saePrmdService.modifyPrmd(prmd);
+                  // Création d'un objet Prmd à passer ensuite au service de
+                  // création
+                  // des PRMD de sae-droit
+                  Prmd prmd = ObjectFactory.createPrmd(prmdType);
 
-               // Trace
-               LOG.debug("Traitement de modification du PRMD \"{}\" terminé",
-                     codePrmd);
+                  // Traces
+                  logPrmd(prmd);
+
+                  // Appel du service de sae-droit pour créer les PRMD
+                  LOG
+                        .debug("Appel du service de sae-droit pour modifier le PRMD");
+                  saePrmdService.modifyPrmd(prmd);
+
+                  // Trace
+                  LOG.debug(
+                        "Traitement de modification du PRMD \"{}\" terminé",
+                        codePrmd);
+
+               }
 
             }
 
+            // Trace
+            LOG.info("Traitement de modification des PRMD terminé");
+
          }
-
-         // Trace
-         LOG.info("Traitement de modification des PRMD terminé");
-
       }
 
    }
-   
+
    private Pagm traitementPreliminairePagm(PagmType pagmType) {
 
       // Création de l'objet Pagm requis par le service de sae-droit
