@@ -3,7 +3,7 @@
  * SaeServiceCallbackHandler.java
  *
  * This file was auto-generated from WSDL
- * by the Apache Axis2 version: 1.6.1  Built on : Aug 31, 2011 (12:22:40 CEST)
+ * by the Apache Axis2 version: 1.6.2  Built on : Apr 17, 2012 (05:33:49 IST)
  */
 
     package sae.client.demo.webservice.modele;
@@ -45,6 +45,22 @@
 
         
            /**
+            * auto generated Axis2 call back method for archivageMasseAvecHash method
+            * override this method for handling normal response from archivageMasseAvecHash operation
+            */
+           public void receiveResultarchivageMasseAvecHash(
+                    sae.client.demo.webservice.modele.SaeServiceStub.ArchivageMasseAvecHashResponse result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from archivageMasseAvecHash operation
+           */
+            public void receiveErrorarchivageMasseAvecHash(java.lang.Exception e) {
+            }
+                
+           /**
             * auto generated Axis2 call back method for archivageUnitairePJ method
             * override this method for handling normal response from archivageUnitairePJ operation
             */
@@ -74,6 +90,22 @@
            * override this method for handling error response from recherche operation
            */
             public void receiveErrorrecherche(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for suppression method
+            * override this method for handling normal response from suppression operation
+            */
+           public void receiveResultsuppression(
+                    sae.client.demo.webservice.modele.SaeServiceStub.SuppressionResponse result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from suppression operation
+           */
+            public void receiveErrorsuppression(java.lang.Exception e) {
             }
                 
            /**
@@ -170,6 +202,22 @@
            * override this method for handling error response from archivageMasse operation
            */
             public void receiveErrorarchivageMasse(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for modification method
+            * override this method for handling normal response from modification operation
+            */
+           public void receiveResultmodification(
+                    sae.client.demo.webservice.modele.SaeServiceStub.ModificationResponse result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from modification operation
+           */
+            public void receiveErrormodification(java.lang.Exception e) {
             }
                 
 

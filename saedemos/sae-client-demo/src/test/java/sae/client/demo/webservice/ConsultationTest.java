@@ -41,7 +41,9 @@ public class ConsultationTest {
    public void consultation_success() throws RemoteException {
       
       // Identifiant unique d'archivage de l'archive que l'on veut consulter
-      String idArchive = "1261E8B1-B1AF-4562-82DF-3268C888E9AB";
+      // On part ici du principe que le document existe, un autre test permet
+      // d'illuster le cas où le document n'existe pas
+      String idArchive = "991d7027-6b1b-43a3-b0a3-b22cdf117193";
       
       // Construction du Stub
       SaeServiceStub saeService = StubFactory.createStubAvecAuthentification();
@@ -191,7 +193,9 @@ public class ConsultationTest {
    public void consultation_avecMeta_success() throws RemoteException {
       
       // Identifiant unique d'archivage de l'archive que l'on veut consulter
-      String idArchive = "1261E8B1-B1AF-4562-82DF-3268C888E9AB";
+      // On part ici du principe que le document existe, un autre test permet
+      // d'illuster le cas où le document n'existe pas
+      String idArchive = "991d7027-6b1b-43a3-b0a3-b22cdf117193";
       
       // Métadonnées souhaitées en retour de la consultation
       List<String> codesMetasSouhaites = new ArrayList<String>();

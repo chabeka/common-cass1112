@@ -5,36 +5,59 @@ import java.io.StringWriter;
 import java.security.KeyStore;
 import java.util.UUID;
 
-import org.apache.axiom.soap.SOAPEnvelope;
 import org.apache.axiom.soap.SOAPHeader;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.handlers.AbstractHandler;
-import org.apache.rampart.util.Axis2Util;
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
-import org.w3c.dom.Document;
 
 import sae.client.demo.webservice.security.signature.DefaultKeystore;
 import sae.client.demo.webservice.security.signature.exception.XmlSignatureException;
 import sae.client.demo.webservice.security.ws.SAML20Service;
 import sae.client.demo.webservice.security.ws.WSSecurityService;
 
-
-
 /**
- * Handler pour ajouter le Vecteur d'Identification dans l'en-tête SOAP<br>.
+ * Handler Axis2 pour ajouter le Vecteur d'Identification dans l'en-tête SOAP.<br>
  * <br>
- * Ce handler est branché dans le fichier <code>axis2.xml</code>
+ * Ce handler peut être branché dans la phase "MessageOut".
  * 
  */
 public class VIHandler extends AbstractHandler {
 
-   
+   private String issuer = "SaeDemos";
+
+   private String pagm = "ROLE_TOUS;FULL";
+
+   /**
+    * Constructeur par défaut
+    */
+   public VIHandler() {
+
+   }
+
+   /**
+    * Constructeur
+    * 
+    * @param issuer
+    *           l'issuer à spécifier dans le VI
+    * @param pagm
+    *           le pagm à spécifier dans le VI
+    */
+   public VIHandler(String issuer, String pagm) {
+      if (StringUtils.isNotBlank(issuer)) {
+         this.issuer = issuer;
+      }
+      if (StringUtils.isNotBlank(pagm)) {
+         this.pagm = pagm;
+      }
+   }
+
    /**
     * Création d'une balise WS-Security dans le header du SOAP<br>
     * <br>
     * Insertion du VI dans cet balise WS-Security
-    *  
+    * 
     * {@inheritDoc}
     * 
     */
@@ -42,45 +65,34 @@ public class VIHandler extends AbstractHandler {
    public final InvocationResponse invoke(MessageContext msgCtx)
          throws AxisFault {
 
-      // Ajout de l'en-tête WS-Security chargé depuis un fichier de ressource XML
+      // Ajout de l'en-tête WS-Security chargé depuis un fichier de ressource
+      // XML
       try {
-         
+
          // Génération de l'en-tête wsse
          String wsse = genererEnTeteWsse();
-         
-         // Insertion du VI dans l'en-tête SOAP
-         
-         // Récupération de l'objet SoapEnvelope
-         Document doc = Axis2Util.getDocumentFromSOAPEnvelope(
-               msgCtx.getEnvelope(), 
-               true);
-         SOAPEnvelope soapEnv = (SOAPEnvelope) doc.getDocumentElement();
-         msgCtx.setEnvelope(soapEnv);
-         soapEnv.build();
-         
-         // Ajout du WSSE incluant le VI dans l'en-tête SOAP
-         SOAPHeader soapHeader = soapEnv.getHeader();
-         soapHeader.addChild(
-               org.apache.axis2.util.XMLUtils.toOM(
-                     new StringReader(wsse)));
-         soapEnv.build();
-         
-         // Sérialisation du SOAP
-         StringWriter sWriter = new StringWriter(); 
-         soapEnv.serialize(sWriter);
-         
+
+         SOAPHeader soapHeader = msgCtx.getEnvelope().getHeader();
+
+         soapHeader.addChild(org.apache.axis2.util.XMLUtils
+               .toOM(new StringReader(wsse)));
+
+         soapHeader.build();
+
+         StringWriter sWriter = new StringWriter();
+         msgCtx.getEnvelope().serialize(sWriter);
+
       } catch (Exception e) {
          throw new IllegalStateException(e);
       }
-      
+
       // fin
       return InvocationResponse.CONTINUE;
-      
+
    }
-   
-   
+
    private String genererEnTeteWsse() {
-      
+
       // récupération du keystore par défaut
       KeyStore keystore = DefaultKeystore.getInstance().getKeystore();
       String alias = DefaultKeystore.getInstance().getAlias();
@@ -100,33 +112,21 @@ public class VIHandler extends AbstractHandler {
       try {
 
          SAML20Service assertionService = new SAML20Service();
-         
-         assertion = assertionService.createAssertion20(
-               "SaeIntegration",
-               "ROLE_TOUS;FULL", 
-               notAfter,
-               notBefore, 
-               systemDate, 
-               identifiant, 
-               keystore, 
-               alias, 
-               password);
-         
+
+         assertion = assertionService.createAssertion20(issuer, pagm, notAfter,
+               notBefore, systemDate, identifiant, keystore, alias, password);
+
       } catch (XmlSignatureException e) {
          throw new IllegalStateException(e);
       }
-      
-      
-      // Génération de l'en-tête WS-Security
-      WSSecurityService wsService = new WSSecurityService() ;
-      String wsseSecurity = wsService.createWSSEHeader(
-            assertion, identifiant);
 
-      
+      // Génération de l'en-tête WS-Security
+      WSSecurityService wsService = new WSSecurityService();
+      String wsseSecurity = wsService.createWSSEHeader(assertion, identifiant);
+
       // Renvoie l'en-tête wsse
       return wsseSecurity;
-      
-      
+
    }
-   
+
 }

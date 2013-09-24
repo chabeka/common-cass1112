@@ -15,6 +15,8 @@ import org.apache.axis2.databinding.types.URI.MalformedURIException;
 
 import sae.client.demo.exception.DemoRuntimeException;
 import sae.client.demo.webservice.modele.SaeServiceStub.ArchivageMasse;
+import sae.client.demo.webservice.modele.SaeServiceStub.ArchivageMasseAvecHash;
+import sae.client.demo.webservice.modele.SaeServiceStub.ArchivageMasseAvecHashRequestType;
 import sae.client.demo.webservice.modele.SaeServiceStub.ArchivageMasseRequestType;
 import sae.client.demo.webservice.modele.SaeServiceStub.ArchivageUnitaire;
 import sae.client.demo.webservice.modele.SaeServiceStub.ArchivageUnitairePJ;
@@ -33,9 +35,13 @@ import sae.client.demo.webservice.modele.SaeServiceStub.ListeMetadonneeType;
 import sae.client.demo.webservice.modele.SaeServiceStub.MetadonneeCodeType;
 import sae.client.demo.webservice.modele.SaeServiceStub.MetadonneeType;
 import sae.client.demo.webservice.modele.SaeServiceStub.MetadonneeValeurType;
+import sae.client.demo.webservice.modele.SaeServiceStub.Modification;
+import sae.client.demo.webservice.modele.SaeServiceStub.ModificationRequestType;
 import sae.client.demo.webservice.modele.SaeServiceStub.Recherche;
 import sae.client.demo.webservice.modele.SaeServiceStub.RechercheRequestType;
 import sae.client.demo.webservice.modele.SaeServiceStub.RequeteRechercheType;
+import sae.client.demo.webservice.modele.SaeServiceStub.Suppression;
+import sae.client.demo.webservice.modele.SaeServiceStub.SuppressionRequestType;
 import sae.client.demo.webservice.modele.SaeServiceStub.UuidType;
 
 /**
@@ -43,208 +49,181 @@ import sae.client.demo.webservice.modele.SaeServiceStub.UuidType;
  */
 public class Axis2ObjectFactory {
 
-   
    public static ArchivageUnitaire contruitParamsEntreeArchivageUnitaire(
-         String urlEcdeFichier,
-         HashMap<String,String> metadonnees) {
-      
-      
-      ArchivageUnitaire archivageUnitaire = 
-         new ArchivageUnitaire();
+         String urlEcdeFichier, HashMap<String, String> metadonnees) {
 
-      ArchivageUnitaireRequestType archivageUnitaireRequest = 
-         new ArchivageUnitaireRequestType();  
-      
+      ArchivageUnitaire archivageUnitaire = new ArchivageUnitaire();
+
+      ArchivageUnitaireRequestType archivageUnitaireRequest = new ArchivageUnitaireRequestType();
+
       archivageUnitaire.setArchivageUnitaire(archivageUnitaireRequest);
-      
-      
+
       // URL ECDE
       EcdeUrlType ecdeUrl = buildEcdeUrl(urlEcdeFichier);
       archivageUnitaireRequest.setEcdeUrl(ecdeUrl);
-      
+
       // Métadonnées
-      ListeMetadonneeType listeMetadonnee = buildListeMeta(metadonnees); 
+      ListeMetadonneeType listeMetadonnee = buildListeMeta(metadonnees);
       archivageUnitaireRequest.setMetadonnees(listeMetadonnee);
-      
+
       // Renvoie du paramètre d'entrée de l'opération archivageUnitaire
       return archivageUnitaire;
-      
+
    }
-   
-   
-   public static Consultation contruitParamsEntreeConsultation(
-         String idArchive) {
-      
-      return contruitParamsEntreeConsultation(idArchive,null);
-      
+
+   public static Consultation contruitParamsEntreeConsultation(String idArchive) {
+
+      return contruitParamsEntreeConsultation(idArchive, null);
+
    }
-   
-   
-   
+
    public static ConsultationMTOM contruitParamsEntreeConsultationMTOM(
          String idArchive) {
-      
-      return contruitParamsEntreeConsultationMTOM(idArchive,null);
-      
+
+      return contruitParamsEntreeConsultationMTOM(idArchive, null);
+
    }
    
    
-   public static Consultation contruitParamsEntreeConsultation(
-         String idArchive,
-         List<String> codesMetasSouhaites) {
-      
-      Consultation consultation = 
-         new Consultation();
-      
-      ConsultationRequestType consultationRequest = 
-         new ConsultationRequestType();
-      
-      consultation.setConsultation(
-            consultationRequest);
-      
-      // L'identifiant unique de l'archivage
+   private static UuidType buildUuid(String id) {
       UuidType uuid = new UuidType();
-      uuid.setUuidType(idArchive);
-      consultationRequest.setIdArchive(uuid);
-      
+      uuid.setUuidType(id);
+      return uuid;
+   }
+
+   public static Consultation contruitParamsEntreeConsultation(
+         String idArchive, List<String> codesMetasSouhaites) {
+
+      Consultation consultation = new Consultation();
+
+      ConsultationRequestType consultationRequest = new ConsultationRequestType();
+
+      consultation.setConsultation(consultationRequest);
+
+      // L'identifiant unique de l'archivage
+      consultationRequest.setIdArchive(buildUuid(idArchive));
+
       // Les codes des métadonnées souhaitées
-      if ((codesMetasSouhaites!=null) && (codesMetasSouhaites.size()>0)) {
-         
-         MetadonneeCodeType[] arrMetadonneeCode = new MetadonneeCodeType[codesMetasSouhaites.size()];
-         
+      if ((codesMetasSouhaites != null) && (codesMetasSouhaites.size() > 0)) {
+
+         MetadonneeCodeType[] arrMetadonneeCode = new MetadonneeCodeType[codesMetasSouhaites
+               .size()];
+
          MetadonneeCodeType metadonneeCode;
-         for(int i=0;i<codesMetasSouhaites.size();i++) {
+         for (int i = 0; i < codesMetasSouhaites.size(); i++) {
             metadonneeCode = new MetadonneeCodeType();
             metadonneeCode.setMetadonneeCodeType(codesMetasSouhaites.get(i));
-            arrMetadonneeCode[i] = metadonneeCode; 
+            arrMetadonneeCode[i] = metadonneeCode;
          }
-         
+
          ListeMetadonneeCodeType listeMetadonneeCode = new ListeMetadonneeCodeType();
          consultationRequest.setMetadonnees(listeMetadonneeCode);
          listeMetadonneeCode.setMetadonneeCode(arrMetadonneeCode);
-         
+
       }
-      
+
       // Renvoie du paramètre d'entrée de l'opération consultation
       return consultation;
-      
+
    }
-   
-   
-   
+
    public static ConsultationMTOM contruitParamsEntreeConsultationMTOM(
-         String idArchive,
-         List<String> codesMetasSouhaites) {
-      
-      ConsultationMTOM consultation = 
-         new ConsultationMTOM();
-      
-      ConsultationMTOMRequestType consultationRequest = 
-         new ConsultationMTOMRequestType();
-      
-      consultation.setConsultationMTOM(
-            consultationRequest);
-      
-      // L'identifiant unique de l'archivage
-      UuidType uuid = new UuidType();
-      uuid.setUuidType(idArchive);
-      consultationRequest.setIdArchive(uuid);
-      
+         String idArchive, List<String> codesMetasSouhaites) {
+
+      ConsultationMTOM consultation = new ConsultationMTOM();
+
+      ConsultationMTOMRequestType consultationRequest = new ConsultationMTOMRequestType();
+
+      consultation.setConsultationMTOM(consultationRequest);
+
+      // L'identifiant unique de l'archive
+      consultationRequest.setIdArchive(buildUuid(idArchive));
+
       // Les codes des métadonnées souhaitées
-      if ((codesMetasSouhaites!=null) && (codesMetasSouhaites.size()>0)) {
-         
-         MetadonneeCodeType[] arrMetadonneeCode = new MetadonneeCodeType[codesMetasSouhaites.size()];
-         
+      if ((codesMetasSouhaites != null) && (codesMetasSouhaites.size() > 0)) {
+
+         MetadonneeCodeType[] arrMetadonneeCode = new MetadonneeCodeType[codesMetasSouhaites
+               .size()];
+
          MetadonneeCodeType metadonneeCode;
-         for(int i=0;i<codesMetasSouhaites.size();i++) {
+         for (int i = 0; i < codesMetasSouhaites.size(); i++) {
             metadonneeCode = new MetadonneeCodeType();
             metadonneeCode.setMetadonneeCodeType(codesMetasSouhaites.get(i));
-            arrMetadonneeCode[i] = metadonneeCode; 
+            arrMetadonneeCode[i] = metadonneeCode;
          }
-         
+
          ListeMetadonneeCodeType listeMetadonneeCode = new ListeMetadonneeCodeType();
          consultationRequest.setMetadonnees(listeMetadonneeCode);
          listeMetadonneeCode.setMetadonneeCode(arrMetadonneeCode);
-         
+
       }
-      
+
       // Renvoie du paramètre d'entrée de l'opération consultation
       return consultation;
-      
+
    }
-   
-   
-   
+
    /**
     * Transformation des objets "pratiques" en objets Axis2 pour un appel de
-    * service web 
+    * service web
     * 
-    * @param requeteRecherche la requête de recherche
-    * @param codesMetasSouhaitess les codes de métadonnées souhaitées
-    *                             dans les résultats de recherche.
+    * @param requeteRecherche
+    *           la requête de recherche
+    * @param codesMetasSouhaitess
+    *           les codes de métadonnées souhaitées dans les résultats de
+    *           recherche.
     * 
     * @return le paramètre d'entrée pour l'opération "recherche"
     */
    public static Recherche contruitParamsEntreeRecherche(
-         String requeteRecherche,
-         List<String> codesMetasSouhaitess) {
-    
-      
-      Recherche recherche = 
-         new Recherche();
-      
-      RechercheRequestType rechercheRequest = 
-         new RechercheRequestType(); 
-      
+         String requeteRecherche, List<String> codesMetasSouhaitess) {
+
+      Recherche recherche = new Recherche();
+
+      RechercheRequestType rechercheRequest = new RechercheRequestType();
+
       recherche.setRecherche(rechercheRequest);
 
-      
       // Requête de recherche
       RequeteRechercheType requeteRechercheObj = new RequeteRechercheType();
       requeteRechercheObj.setRequeteRechercheType(requeteRecherche);
       rechercheRequest.setRequete(requeteRechercheObj);
-      
+
       // Codes des métadonnées souhaitées dans les résultats de recherche
       ListeMetadonneeCodeType listeMetadonneeCode = new ListeMetadonneeCodeType();
       rechercheRequest.setMetadonnees(listeMetadonneeCode);
-      if ((codesMetasSouhaitess!=null) && (codesMetasSouhaitess.size()>0)) {
-         
-         MetadonneeCodeType[] arrMetadonneeCode = new MetadonneeCodeType[codesMetasSouhaitess.size()];
-         
+      if ((codesMetasSouhaitess != null) && (codesMetasSouhaitess.size() > 0)) {
+
+         MetadonneeCodeType[] arrMetadonneeCode = new MetadonneeCodeType[codesMetasSouhaitess
+               .size()];
+
          MetadonneeCodeType metadonneeCode;
-         for(int i=0;i<codesMetasSouhaitess.size();i++) {
+         for (int i = 0; i < codesMetasSouhaitess.size(); i++) {
             metadonneeCode = new MetadonneeCodeType();
             metadonneeCode.setMetadonneeCodeType(codesMetasSouhaitess.get(i));
-            arrMetadonneeCode[i] = metadonneeCode; 
+            arrMetadonneeCode[i] = metadonneeCode;
          }
-         
+
          listeMetadonneeCode.setMetadonneeCode(arrMetadonneeCode);
-         
-      }
-      else {
+
+      } else {
          listeMetadonneeCode.setMetadonneeCode(null);
       }
-      
-      
+
       // Renvoie du paramètre d'entrée de l'opération recherche
-      return recherche ;
-      
+      return recherche;
+
    }
-   
-   
+
    public static ArchivageMasse contruitParamsEntreeArchivageMasse(
          String urlEcdeSommaire) {
-      
-      
-      ArchivageMasse archivageMasse = 
-         new ArchivageMasse() ;
-      
-      ArchivageMasseRequestType archivageMasseRequest = 
-         new ArchivageMasseRequestType();
-      
-      archivageMasse.setArchivageMasse(
-            archivageMasseRequest);
-      
+
+      ArchivageMasse archivageMasse = new ArchivageMasse();
+
+      ArchivageMasseRequestType archivageMasseRequest = new ArchivageMasseRequestType();
+
+      archivageMasse.setArchivageMasse(archivageMasseRequest);
+
       // URL ECDE du sommaire
       EcdeUrlSommaireType ecdeUrlSommaireObj = new EcdeUrlSommaireType();
       archivageMasseRequest.setUrlSommaire(ecdeUrlSommaireObj);
@@ -255,16 +234,14 @@ public class Axis2ObjectFactory {
          throw new DemoRuntimeException(e);
       }
       ecdeUrlSommaireObj.setEcdeUrlSommaireType(ecdeUriSommaireUri);
-      
+
       // Renvoie du paramètre d'entrée de l'opération archivageMasse
       return archivageMasse;
-      
+
    }
-   
-   
-   
+
    private static EcdeUrlType buildEcdeUrl(String urlEcde) {
-      
+
       EcdeUrlType ecdeUrl = new EcdeUrlType();
       URI uriEcdeFichier;
       try {
@@ -273,94 +250,81 @@ public class Axis2ObjectFactory {
          throw new DemoRuntimeException(e);
       }
       ecdeUrl.setEcdeUrlType(uriEcdeFichier);
-      
+
       return ecdeUrl;
-      
+
    }
-   
-   
-   
-   private static ListeMetadonneeType buildListeMeta(HashMap<String,String> metadonnees) {
-      
-      ListeMetadonneeType listeMetadonnee = new ListeMetadonneeType(); 
-      
+
+   private static ListeMetadonneeType buildListeMeta(
+         Map<String, String> metadonnees) {
+
+      ListeMetadonneeType listeMetadonnee = new ListeMetadonneeType();
+
       MetadonneeType metadonnee;
       MetadonneeCodeType metaCode;
       MetadonneeValeurType metaValeur;
       String code;
       String valeur;
-      for (Map.Entry<String, String> entry: metadonnees.entrySet()) {
-         
+      for (Map.Entry<String, String> entry : metadonnees.entrySet()) {
+
          code = entry.getKey();
          valeur = entry.getValue();
-         
+
          metadonnee = new MetadonneeType();
-         
+
          metaCode = new MetadonneeCodeType();
          metaCode.setMetadonneeCodeType(code);
          metadonnee.setCode(metaCode);
-         
+
          metaValeur = new MetadonneeValeurType();
          metaValeur.setMetadonneeValeurType(valeur);
          metadonnee.setValeur(metaValeur);
-         
-         listeMetadonnee.addMetadonnee(metadonnee);
-         
-      }
-      
-      return listeMetadonnee;
-      
-   }
-   
-   
-   
-   public static ArchivageUnitairePJ contruitParamsEntreeArchivageUnitairePJavecUrlEcde(
-         String urlEcdeFichier,
-         HashMap<String,String> metadonnees) {
-      
-      
-      ArchivageUnitairePJ archivageUnitairePJ = 
-         new ArchivageUnitairePJ();
 
-      ArchivageUnitairePJRequestType archivageUnitairePJRequest = 
-         new ArchivageUnitairePJRequestType();  
-      
+         listeMetadonnee.addMetadonnee(metadonnee);
+
+      }
+
+      return listeMetadonnee;
+
+   }
+
+   public static ArchivageUnitairePJ contruitParamsEntreeArchivageUnitairePJavecUrlEcde(
+         String urlEcdeFichier, HashMap<String, String> metadonnees) {
+
+      ArchivageUnitairePJ archivageUnitairePJ = new ArchivageUnitairePJ();
+
+      ArchivageUnitairePJRequestType archivageUnitairePJRequest = new ArchivageUnitairePJRequestType();
+
       archivageUnitairePJ.setArchivageUnitairePJ(archivageUnitairePJRequest);
-      
-      
+
       // URL ECDE
       EcdeUrlType ecdeUrl = buildEcdeUrl(urlEcdeFichier);
       ArchivageUnitairePJRequestTypeChoice_type0 choice = new ArchivageUnitairePJRequestTypeChoice_type0();
-      archivageUnitairePJRequest.setArchivageUnitairePJRequestTypeChoice_type0(choice);
+      archivageUnitairePJRequest
+            .setArchivageUnitairePJRequestTypeChoice_type0(choice);
       choice.setEcdeUrl(ecdeUrl);
-      
+
       // Métadonnées
-      ListeMetadonneeType listeMetadonnee = buildListeMeta(metadonnees); 
+      ListeMetadonneeType listeMetadonnee = buildListeMeta(metadonnees);
       archivageUnitairePJRequest.setMetadonnees(listeMetadonnee);
 
       // Renvoie du paramètre d'entrée de l'opération archivageUnitairePJ
       return archivageUnitairePJ;
-      
-   }
-   
-   
-   
-   public static ArchivageUnitairePJ contruitParamsEntreeArchivageUnitairePJavecContenu(
-         String nomFichier,
-         InputStream contenu,
-         HashMap<String,String> metadonnees) {
-      
-      
-      ArchivageUnitairePJ archivageUnitairePJ = 
-         new ArchivageUnitairePJ();
 
-      ArchivageUnitairePJRequestType archivageUnitairePJRequest = 
-         new ArchivageUnitairePJRequestType();  
-      
+   }
+
+   public static ArchivageUnitairePJ contruitParamsEntreeArchivageUnitairePJavecContenu(
+         String nomFichier, InputStream contenu,
+         HashMap<String, String> metadonnees) {
+
+      ArchivageUnitairePJ archivageUnitairePJ = new ArchivageUnitairePJ();
+
+      ArchivageUnitairePJRequestType archivageUnitairePJRequest = new ArchivageUnitairePJRequestType();
+
       archivageUnitairePJ.setArchivageUnitairePJ(archivageUnitairePJRequest);
-      
+
       // Nom et contenu du fichier
-      DataFileType dataFile = new DataFileType() ;
+      DataFileType dataFile = new DataFileType();
       dataFile.setFileName(nomFichier);
       byte[] contenuBytes;
       try {
@@ -372,16 +336,85 @@ public class Axis2ObjectFactory {
       DataHandler dataHandler = new DataHandler(byteArray);
       dataFile.setFile(dataHandler);
       ArchivageUnitairePJRequestTypeChoice_type0 choice = new ArchivageUnitairePJRequestTypeChoice_type0();
-      archivageUnitairePJRequest.setArchivageUnitairePJRequestTypeChoice_type0(choice);
+      archivageUnitairePJRequest
+            .setArchivageUnitairePJRequestTypeChoice_type0(choice);
       choice.setDataFile(dataFile);
-      
+
       // Métadonnées
-      ListeMetadonneeType listeMetadonnee = buildListeMeta(metadonnees); 
+      ListeMetadonneeType listeMetadonnee = buildListeMeta(metadonnees);
       archivageUnitairePJRequest.setMetadonnees(listeMetadonnee);
 
       // Renvoie du paramètre d'entrée de l'opération archivageUnitairePJ
       return archivageUnitairePJ;
-      
+
+   }
+
+   public static ArchivageMasseAvecHash contruitParamsEntreeArchivageMasseAvecHash(
+         String urlEcdeSommaire, String typeHash, String hash) {
+
+      ArchivageMasseAvecHash archivageMasseAvecHash = new ArchivageMasseAvecHash();
+
+      ArchivageMasseAvecHashRequestType archivageMasseAvecHashRequest = new ArchivageMasseAvecHashRequestType();
+
+      archivageMasseAvecHash
+            .setArchivageMasseAvecHash(archivageMasseAvecHashRequest);
+
+      // URL ECDE du sommaire
+      EcdeUrlSommaireType ecdeUrlSommaireObj = new EcdeUrlSommaireType();
+      archivageMasseAvecHashRequest.setUrlSommaire(ecdeUrlSommaireObj);
+      URI ecdeUriSommaireUri;
+      try {
+         ecdeUriSommaireUri = new URI(urlEcdeSommaire);
+      } catch (MalformedURIException e) {
+         throw new DemoRuntimeException(e);
+      }
+      ecdeUrlSommaireObj.setEcdeUrlSommaireType(ecdeUriSommaireUri);
+
+      // Le hash et le type de hash
+      archivageMasseAvecHashRequest.setTypeHash(typeHash);
+      archivageMasseAvecHashRequest.setHash(hash);
+
+      // Renvoie du paramètre d'entrée de l'opération archivageMasse
+      return archivageMasseAvecHash;
+
+   }
+
+   public static Suppression contruitParamsEntreeSuppression(String idArchive) {
+
+      Suppression suppression = new Suppression();
+
+      SuppressionRequestType suppressionRequest = new SuppressionRequestType();
+
+      suppression.setSuppression(suppressionRequest);
+
+      // L'identifiant unique de l'archive
+      suppressionRequest.setUuid(buildUuid(idArchive));
+
+      // Renvoie du paramètre d'entrée de l'opération suppression
+      return suppression;
+
    }
    
+   
+   public static Modification contruitParamsEntreeModification(
+         String idArchive, Map<String, String> metadonnees) {
+
+      Modification modification = new Modification();
+
+      ModificationRequestType modificationRequest = new ModificationRequestType();
+
+      modification.setModification(modificationRequest);
+
+      // Identifiant de l'archive
+      modificationRequest.setUuid(buildUuid(idArchive));
+      
+      // Métadonnées
+      ListeMetadonneeType listeMetadonnee = buildListeMeta(metadonnees);
+      modificationRequest.setMetadonnees(listeMetadonnee);
+
+      // Renvoie du paramètre d'entrée de l'opération archivageUnitaire
+      return modification;
+
+   }
+
 }

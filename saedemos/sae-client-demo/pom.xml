@@ -7,7 +7,7 @@
    
    <groupId>fr.urssaf.image.saedemos</groupId>
    <artifactId>sae-client-demo</artifactId>
-   <version>12.05.10-SNAPSHOT</version>
+   <version>13.11.00-SNAPSHOT</version>
    
    <name>sae-client-demo</name>
    
@@ -22,6 +22,7 @@
       <rampart.version>1.6.2</rampart.version>
       <apache.commons-io.version>2.0.1</apache.commons-io.version>
       <apache.commons-lang.version>2.6</apache.commons-lang.version>
+      <joda-time.version>1.6.2</joda-time.version>
       
    </properties>
 
@@ -147,20 +148,6 @@
       </dependency>
       
       
-      <!-- Apache Rampart -->
-      <dependency>
-         <groupId>org.apache.rampart</groupId>
-         <artifactId>rampart-core</artifactId>
-         <version>${rampart.version}</version>
-         <exclusions>
-            <exclusion>
-               <groupId>commons-lang</groupId>
-               <artifactId>commons-lang</artifactId>
-            </exclusion>
-         </exclusions>
-      </dependency>
-      
-
       <!-- Apache Commons -->
       <dependency>
          <groupId>commons-io</groupId>
@@ -171,6 +158,14 @@
          <groupId>commons-lang</groupId>
          <artifactId>commons-lang</artifactId>
          <version>${apache.commons-lang.version}</version>
+      </dependency>
+      
+      
+      <!-- JodaTime -->
+      <dependency>
+         <groupId>joda-time</groupId>
+         <artifactId>joda-time</artifactId>
+         <version>${joda-time.version}</version>
       </dependency>
 
 
