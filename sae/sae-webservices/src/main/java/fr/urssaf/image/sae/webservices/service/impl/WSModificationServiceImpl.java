@@ -62,8 +62,12 @@ public class WSModificationServiceImpl implements WSModificationService {
       String trcPrefix = "modification";
       LOGGER.debug("{} - début", trcPrefix);
 
-      List<UntypedMetadata> metas = convertListeMetasWebServiceToService(request
-            .getModification().getMetadonnees());
+      // Vérification que la liste des métadonnées n'est pas vide
+      ListeMetadonneeType listeMeta = request.getModification()
+            .getMetadonnees();
+      verifListeMetaNonVide(listeMeta);
+
+      List<UntypedMetadata> metas = convertListeMetasWebServiceToService(listeMeta);
 
       String uuid = request.getModification().getUuid().getUuidType();
       UUID idArchive = UUID.fromString(uuid);
@@ -117,7 +121,7 @@ public class WSModificationServiceImpl implements WSModificationService {
       } catch (ArchiveInexistanteEx exception) {
          throw new ModificationAxisFault("ModificationArchiveNonTrouvee",
                exception.getMessage(), exception);
-         
+
       } catch (MetadataValueNotInDictionaryEx exception) {
          throw new ModificationAxisFault("ModificationMetadonneeDictionnaire",
                exception.getMessage(), exception);
@@ -141,4 +145,25 @@ public class WSModificationServiceImpl implements WSModificationService {
       }
 
    }
+
+   private void verifListeMetaNonVide(ListeMetadonneeType listeMeta)
+         throws ModificationAxisFault {
+      String prefixeTrc = "verifListeMetaNonVide()";
+      LOGGER
+            .debug(
+                  "{} - Début de la vérification : La liste des métadonnées fournies par l'application n'est pas vide",
+                  prefixeTrc);
+      if (listeMeta.getMetadonnee() == null) {
+         LOGGER.debug("{} - {}", prefixeTrc, wsMessageRessourcesUtils
+               .recupererMessage("ws.modification.metadata.is.empty", null));
+         throw new ModificationAxisFault("ModificationMetadonneesVide",
+               wsMessageRessourcesUtils.recupererMessage(
+                     "ws.modification.metadata.is.empty", null));
+      }
+      LOGGER
+            .debug(
+                  "{} - Fin de la vérification : La liste des métadonnées fournies par l'application n'est pas vide",
+                  prefixeTrc);
+   }
+
 }
