@@ -81,9 +81,6 @@ public class SaeMetaDataServiceImpl implements SaeMetaDataService {
    @Override
    public final void create(MetadataReference metadata) {
 
-      String resourceName = PREFIXE_META + metadata.getShortCode();
-
-      ZookeeperMutex mutex = ZookeeperUtils.createMutex(curator, resourceName);
       LOGGER.debug("{} - Création de la métadonnée dans DFCE", metadata
             .getLongCode());
       serviceProviderSupport.connect();
@@ -93,34 +90,34 @@ public class SaeMetaDataServiceImpl implements SaeMetaDataService {
 
       // si l'insertion dans DFCE s'est bien passé on créé la métadonné dans le
       // SAE
-      try {
+      LOGGER.debug("{} - Création de la Métadonnée", TRC_CREATE);
+      saeMetadatasupport.create(metadata, clockSupport.currentCLock());
 
-         LOGGER.debug("{} - Lock Zookeeper", TRC_CREATE);
-         ZookeeperUtils.acquire(mutex, resourceName);
-         LOGGER.debug("{} - Création de la Métadonnée", TRC_CREATE);
-         saeMetadatasupport.create(metadata, clockSupport.currentCLock());
-
-         checkLock(mutex, metadata);
-
-      } finally {
-         mutex.release();
-      }
    }
 
    @Override
    public final void modify(MetadataReference metadata)
          throws MetadataReferenceNotFoundException {
-      serviceProviderSupport.connect();
+
       LOGGER
             .debug("{} - Modification de la métadonnée", metadata.getLongCode());
-      serviceProviderSupport.getBaseAdministrationService().updateBase(
-            createBase(metadata));
-      // On vérifie si la métadonnée que la métadonné existe si ce n'est pas le
+      serviceProviderSupport.connect();
+
+      // On vérifie que la métadonné existe si ce n'est pas le
       // cas on sort en exception
       MetadataReference meta = saeMetadatasupport.find(metadata.getLongCode());
       if (meta == null) {
          throw new MetadataReferenceNotFoundException(metadata.getLongCode());
       } else {
+
+         // Si la métadonnée est une méta système, on n'appelle pas la
+         // modification
+         // dans DFCE
+         if (!metadata.isInternal()) {
+            serviceProviderSupport.getBaseAdministrationService().updateBase(
+                  createBase(metadata));
+         }
+
          saeMetadatasupport.create(metadata, clockSupport.currentCLock());
       }
    }
@@ -141,11 +138,12 @@ public class SaeMetaDataServiceImpl implements SaeMetaDataService {
             categoryDfce, metadata.getIsIndexed());
       baseCategory.setEnableDictionary(Boolean.FALSE);
       baseCategory.setMaximumValues(MAX_VALUES);
-      if (metadata.isRequiredForStorage()) {
-         baseCategory.setMinimumValues(1);
-      } else {
-         baseCategory.setMinimumValues(0);
-      }
+      // On met toujours la valeur min à 0 (même si la méta à ajouter est
+      // requise au stockage) car on considère qu'on est sur une
+      // mise à jour de base DFCE et dans ce cas, on ne peut pas ajouter de
+      // métadonnée obligatoire (cf doc toolkit). La partie métadonnée
+      // obligatoire est donc gérée uniquement par la surcouche SAE.
+      baseCategory.setMinimumValues(0);
       baseCategory.setSingle(Boolean.FALSE);
       base.addBaseCategory(baseCategory);
       LOGGER.debug("Métadonné crééé dans DFCE");
