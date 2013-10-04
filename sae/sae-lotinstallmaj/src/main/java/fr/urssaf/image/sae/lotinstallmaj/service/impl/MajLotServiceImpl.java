@@ -19,14 +19,10 @@ import net.docubase.toolkit.service.administration.StorageAdministrationService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.batch.core.JobParametersInvalidException;
-import org.springframework.batch.core.launch.JobInstanceAlreadyExistsException;
-import org.springframework.batch.core.launch.NoSuchJobException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
-import com.docubase.dfce.commons.jobs.JobUtils;
 import com.thoughtworks.xstream.XStream;
 
 import fr.urssaf.image.sae.lotinstallmaj.exception.MajLotRuntimeException;
@@ -57,8 +53,7 @@ public final class MajLotServiceImpl implements MajLotService {
    public static final String DFCE_130700 = "DFCE_130700";
    public static final String CASSANDRA_DROITS_GED = "CASSANDRA_DROITS_GED";
    public static final String CREATION_GED = "CREATION_GED";
-   public static final String DFCE_INDEX_DATES = "DFCE_INDEX_DATES";
-
+   
    public static final int DUREE_1825 = 1825;
    public static final int DUREE_1643 = 1643;
 
@@ -110,10 +105,6 @@ public final class MajLotServiceImpl implements MajLotService {
       } else if (CASSANDRA_121110.equalsIgnoreCase(nomOperation)) {
 
          updateCassandra120910();
-
-      } else if (DFCE_INDEX_DATES.equalsIgnoreCase(nomOperation)) {
-
-         updateDfceIndexMetadonneesSystemesDate();
 
       } else if (META_SEPA.equalsIgnoreCase(nomOperation)) {
 
@@ -328,38 +319,6 @@ public final class MajLotServiceImpl implements MajLotService {
             .info("Début de l'opération : Lot 130700 - Mise à jour du keyspace SAE");
       gedUpdater.updateAuthorizationAccess();
       LOG.info("Fin de l'opération : Lot 130700 - Mise à jour du keyspace SAE");
-
-   }
-
-   /**
-    * Indexation pour les métadonnées système qui n'étaient pas indexées en
-    * 1.0.1
-    */
-
-   private void updateDfceIndexMetadonneesSystemesDate() {
-
-      LOG
-            .info("Début de l'opération : Indexation dans DFCE des métadonnées systèmes de type Date");
-
-      // Connection à DFCE
-      connectDfce();
-
-      String parameters = "category.names=SM_CREATION_DATE|SM_ARCHIVAGE_DATE|"
-            + "SM_MODIFICATION_DATE, timestamp=" + System.currentTimeMillis();
-      try {
-         serviceProvider.getJobAdministrationService().start(
-               JobUtils.INDEX_CATEGORIES_JOB, parameters);
-
-         LOG
-               .info("Fin de l'opération : Indexation dans DFCE des métadonnées systèmes de type Date");
-
-      } catch (NoSuchJobException e) {
-         LOG.error("échec indexation", e);
-      } catch (JobInstanceAlreadyExistsException e) {
-         LOG.error("échec indexation", e);
-      } catch (JobParametersInvalidException e) {
-         LOG.error("échec indexation", e);
-      }
 
    }
 
