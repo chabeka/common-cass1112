@@ -17,7 +17,6 @@
    </parent>
 
    <properties>
-      <sae-version>13.4.10.5</sae-version>
       <axis.version>1.4</axis.version>
       <jaxrpc.version>1.1.3_01</jaxrpc.version>
       <apache.commons-discovery.version>0.5</apache.commons-discovery.version>
@@ -48,14 +47,14 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-trace</artifactId>
-         <version>${sae-version}</version>
+         <version>13.7.0.7-SNAPSHOT</version>
       </dependency>
 
       <!-- SAE - Commons -->
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-commons</artifactId>
-         <version>${sae-version}</version>
+         <version>13.7.0.7-SNAPSHOT</version>
       </dependency>
 
       <dependency>
@@ -112,7 +111,7 @@
       <dependency>
          <groupId>org.aspectj</groupId>
          <artifactId>aspectjrt</artifactId>
-         <version>1.6.7</version>
+         <version>${aspectj.version}</version>
       </dependency>
 
 
