@@ -34,7 +34,7 @@
       <jcl-over-slf4j.version>1.6.1</jcl-over-slf4j.version>
       
       <!-- Version du SAE -->
-      <sae.version>13.7.0.5</sae.version>
+      <sae.version>13.7.0.6</sae.version>
       
    </properties>
 
