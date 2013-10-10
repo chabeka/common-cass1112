@@ -5,12 +5,12 @@
    <parent>
       <groupId>fr.urssaf.image.sae</groupId>
       <artifactId>sae</artifactId>
-      <version>13.7.0.7-SNAPSHOT</version>
+      <version>13.11.0.1</version>
    </parent>
 
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-igcmaj</artifactId>
-   <version>13.7.0.7-SNAPSHOT</version>
+   <version>13.11.0.1</version>
    
    <name>sae-igcmaj</name>
    
@@ -63,7 +63,7 @@ Le programme peut par exemple être exécuté sous forme de tâche planifiée, a
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-igc</artifactId>
-         <version>13.7.0.7-SNAPSHOT</version>
+         <version>13.11.0.1</version>
       </dependency>
       
    </dependencies>
