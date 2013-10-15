@@ -10,14 +10,12 @@ psql -d NOM_BDD -a -v ON_ERROR_STOP=1 -f c:/tmp/regio/sql_vague3.sql --username=
 // Sous Linux
 // ----------------------
 
-psql -d NOM_BDD -a -v ON_ERROR_STOP=1 -f /tmp/regio/sql_vague3.sql --username=regio > /tmp/regio/sql_resultats_regio.txt 2>&1 &
+psql -d NOM_BDD -a -v ON_ERROR_STOP=1 -f /tmp/regio/sql_vague3.sql --username=postgres > /tmp/regio/sql_resultats_regio.txt 2>&1 &
 
 => remplacer NOM_BDD par le nom de la base de donnees
-=> créer un rôle de connexion "regio" avec le mot de passe "regio" 
-=> attribuer la bdd à regio, ainsi que les tables déjà présentes
 => créer un fichier /root/.pgpass
 => y mettre la ligne suivante :
-	localhost:5432:regio_fab3:regio:regio
+	localhost:5432:NOM_BDD:postgres:LE_MDP_DE_POSTGRES
 => éditer le fichier pg_hba.conf (/var/lib/pgsql/9.3/data)
 => commenter la ligne :
 	host    all             all             127.0.0.1/32            ident

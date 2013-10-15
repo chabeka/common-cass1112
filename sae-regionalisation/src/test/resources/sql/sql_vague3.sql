@@ -22,7 +22,7 @@
 # ############################################
 */
 
--- Activation de la prise de mesure du temps d'exécution de chaque reqûete
+-- Activation de la prise de mesure du temps d'exécution de chaque requête
 \timing
 
 
