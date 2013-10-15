@@ -29,6 +29,14 @@
 
 /*
 # ############################################
+# Sort le timestamp du début du traitement 
+# ############################################
+*/
+select current_timestamp;
+
+
+/*
+# ############################################
 # Procédure stockée pour la transposition des 
 # codes organismes
 # ############################################
@@ -649,6 +657,14 @@ WITH CSV DELIMITER ';';
 
 -- Sortie des comptages
 SELECT * FROM comptages;
+
+
+/*
+# ############################################
+# Sort le timestamp de la fin du traitement 
+# ############################################
+*/
+select current_timestamp;
 
 
 
