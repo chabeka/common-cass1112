@@ -11,6 +11,10 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.Period;
+import org.joda.time.format.PeriodFormatter;
+import org.joda.time.format.PeriodFormatterBuilder;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -68,17 +72,35 @@ public class ExtractionFondsDocProdPourPgSqlTest {
     * Date de début pour la sortie en CSV (format AAAAMMJJ)
     * TODO: Adapter la valeur selon les données que l'on veut sortir
     */
-   private int MIN_DATE = 20120505;
+   private int MIN_DATE = 20120101;
    
    /**
     * Date de fin de la sortir en CSV (format AAAAMMJJ)
     * TODO: Adapter la valeur selon les données que l'on veut sortir
     */
-   private int MAX_DATE = 20120507;   
+   private int MAX_DATE = 20130731;
+   
+   private static PeriodFormatter PERIOD_FORMATTER = new PeriodFormatterBuilder()
+      .appendHours()
+      .appendSuffix("h", "h")
+      .appendSeparator(" ")
+      .appendMinutes()
+      .appendSuffix("mn", "mn")
+      .appendSeparator(" ")
+      .appendSeconds()
+      .appendSuffix("s", "s")
+      .appendSeparator(" ")
+      .appendMillis()
+      .appendSuffix("ms", "ms")
+      .toFormatter();
   
    @Test
    public void extraitFondsDocUnFichierParMois() throws IOException {
 
+      // Timestamp courant pour le calcul du temps d'exécution
+      DateTime dateDebut = new DateTime();
+      System.out.println("Début du traitement: " + dateDebut.toString("dd/MM/yyyy hh'h'mm ss's' SSS'ms'"));
+      
       // Liste des métadonnées que l'on va lire
       List<String> reqMetas = new ArrayList<String>();
       reqMetas.add("SM_BASE_ID");
@@ -195,6 +217,12 @@ public class ExtractionFondsDocProdPourPgSqlTest {
          closeWriters(writers);
          cassandraSupport.disconnect();
       }
+      
+      // Timestamp courant pour le calcul du temps d'exécution
+      DateTime dateFin = new DateTime();
+      System.out.println("Fin du traitement: " + dateFin.toString("dd/MM/yyyy hh'h'mm ss's' SSS'ms'"));
+      Period tempsExec = new Period(dateDebut, dateFin);
+      System.out.println("Temps d'exécution: " + tempsExec.toString(PERIOD_FORMATTER));
 
    }
    
@@ -239,6 +267,10 @@ public class ExtractionFondsDocProdPourPgSqlTest {
    @Test
    public void extraitFondsDoc() throws IOException {
 
+      // Timestamp courant pour le calcul du temps d'exécution
+      DateTime dateDebut = new DateTime();
+      System.out.println("Début du traitement: " + dateDebut.toString("dd/MM/yyyy hh'h'mm ss's' SSS'ms'"));
+      
       // Liste des métadonnées que l'on va lire
       List<String> reqMetas = new ArrayList<String>();
       reqMetas.add("SM_BASE_ID");
@@ -286,6 +318,7 @@ public class ExtractionFondsDocProdPourPgSqlTest {
          
          File fichier = new File(CHEMINREP, "fonds_doc.csv");
          Writer writer = new FileWriter(fichier);
+         writers.put("all", writer);
          
          while (iterator.hasNext()) {
             map = iterator.next();
@@ -355,6 +388,12 @@ public class ExtractionFondsDocProdPourPgSqlTest {
          closeWriters(writers);
          cassandraSupport.disconnect();
       }
+      
+      // Timestamp courant pour le calcul du temps d'exécution
+      DateTime dateFin = new DateTime();
+      System.out.println("Fin du traitement: " + dateFin.toString("dd/MM/yyyy hh'h'mm ss's' SSS'ms'"));
+      Period tempsExec = new Period(dateDebut, dateFin);
+      System.out.println("Temps d'exécution: " + tempsExec.toString(PERIOD_FORMATTER));
 
    }   
 }
