@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -26,7 +27,7 @@ public class ExportFileTest {
    @Ignore
    @Test
    public void generateFile() {
-      File mainDirectory = new File("c:/datas");
+      File mainDirectory = new File("S:/produits/Qualite/Projet_ae/Documentation refonte/Refonte/Régionalisation/Vague 3 (fin 2013)/Fichiers de fusion à blanc (FAB)/FAB2");
       Reader reader = null;
       CSVReader csvReader = null;
       Writer fileWriter = null;
@@ -34,6 +35,14 @@ public class ExportFileTest {
 
       for (File directory : mainDirectory.listFiles()) {
          for (File file : directory.listFiles()) {
+            if (
+                  (StringUtils.equals(file.getName(),"regionalisation_coti.csv")) || 
+                  (StringUtils.equals(file.getName(),"regionalisation_cpte.csv")) || 
+                  (StringUtils.equals(file.getName(),"regionalisation_pers.csv"))
+                  ) {
+               continue;
+            }
+            System.out.println("Fichier comptabilisé : " + file.getAbsolutePath());
             try {
                reader = new FileReader(file);
                csvReader = new CSVReader(reader, '$');
