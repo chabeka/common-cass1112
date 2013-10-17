@@ -140,6 +140,10 @@ public class Dumper {
       return total;
    }
 
+   public void dumpCF(String CFName, int count) throws Exception {
+      dumpCF(CFName, count, false);
+   }
+
    /**
     * Dump une column family
     * 
@@ -147,12 +151,18 @@ public class Dumper {
     * @param count
     * @throws Exception
     */
-   public void dumpCF(String CFName, int count) throws Exception {
-      dumpCF_slice(CFName, new byte[0], new byte[0], count);
+   public void dumpCF(String CFName, int count, boolean siAuMoinsUneCol)
+         throws Exception {
+      dumpCF_slice(CFName, new byte[0], new byte[0], count, siAuMoinsUneCol);
    }
 
    public void dumpCF_slice(String CFName, byte[] sliceStart, byte[] sliceEnd,
          int count) throws Exception {
+      dumpCF_slice(CFName, sliceStart, sliceEnd, count, false);
+   }
+
+   public void dumpCF_slice(String CFName, byte[] sliceStart, byte[] sliceEnd,
+         int count, boolean siAuMoinsUneCol) throws Exception {
       BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
       RangeSlicesQuery<byte[], byte[], byte[]> rangeSlicesQuery = HFactory
             .createRangeSlicesQuery(keyspace, bytesSerializer, bytesSerializer,
@@ -164,7 +174,11 @@ public class Dumper {
       rangeSlicesQuery.setRowCount(count);
       QueryResult<OrderedRows<byte[], byte[], byte[]>> result = rangeSlicesQuery
             .execute();
-      dumpQueryResult(result);
+      dumpQueryResult(result, siAuMoinsUneCol);
+   }
+
+   public void dumpCF(String CFName, byte[] key) throws Exception {
+      dumpCF(CFName, key, false);
    }
 
    /**
@@ -174,8 +188,9 @@ public class Dumper {
     * @param key
     * @throws Exception
     */
-   public void dumpCF(String CFName, byte[] key) throws Exception {
-      dumpCF_slice(CFName, key, new byte[0], new byte[0], 1000);
+   public void dumpCF(String CFName, byte[] key, boolean siAuMoinsUneCol)
+         throws Exception {
+      dumpCF_slice(CFName, key, new byte[0], new byte[0], 1000, siAuMoinsUneCol);
    }
 
    public byte[] getColumnValue(String CFName, byte[] key, byte[] columnName) {
@@ -199,7 +214,7 @@ public class Dumper {
     * @throws Exception
     */
    public void dumpCF_slice(String CFName, byte[] key, byte[] sliceStart,
-         byte[] sliceEnd, int count) throws Exception {
+         byte[] sliceEnd, int count, boolean siAuMoinsUneCol) throws Exception {
       BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
       RangeSlicesQuery<byte[], byte[], byte[]> rangeSlicesQuery = HFactory
             .createRangeSlicesQuery(keyspace, bytesSerializer, bytesSerializer,
@@ -209,61 +224,94 @@ public class Dumper {
       rangeSlicesQuery.setRange(sliceStart, sliceEnd, false, count);
       QueryResult<OrderedRows<byte[], byte[], byte[]>> result = rangeSlicesQuery
             .execute();
-      dumpQueryResult(result);
+      dumpQueryResult(result, siAuMoinsUneCol);
    }
 
    public void dumpCF(String CFName, String key) throws Exception {
-      dumpCF(CFName, key.getBytes());
+      dumpCF(CFName, key.getBytes(), false);
+   }
+
+   public void dumpCF(String CFName, String key, boolean siAuMoinsUneCol)
+         throws Exception {
+      dumpCF(CFName, key.getBytes(), siAuMoinsUneCol);
    }
 
    public void dumpCF_StartKey(String CFName, byte[] startKey, int count)
          throws Exception {
+      dumpCF_StartKey(CFName, startKey, count, false);
+   }
+
+   public void dumpCF_StartKey(String CFName, byte[] startKey, int count,
+         boolean siAuMoinsUneCol) throws Exception {
       List<byte[]> keys = getKeys(CFName, startKey, count);
       for (byte[] key : keys) {
-         dumpCF(CFName, key);
+         dumpCF(CFName, key, siAuMoinsUneCol);
       }
    }
 
-   void dumpCqlQueryResult(QueryResult<CqlRows<byte[], byte[], byte[]>> result)
-         throws Exception {
+   public void dumpCqlQueryResult(
+         QueryResult<CqlRows<byte[], byte[], byte[]>> result) throws Exception {
+      dumpCqlQueryResult(result, false);
+   }
+
+   public void dumpCqlQueryResult(
+         QueryResult<CqlRows<byte[], byte[], byte[]>> result,
+         boolean siAuMoinsUneCol) throws Exception {
       CqlRows<byte[], byte[], byte[]> orderedRows = result.get();
       if (orderedRows != null) {
          sysout.println("Count " + orderedRows.getCount());
-         dumpRows(orderedRows);
+         dumpRows(orderedRows, siAuMoinsUneCol);
       } else {
          sysout.println("Pas de résultat trouvé");
       }
    }
 
    private void dumpQueryResult(
-         QueryResult<OrderedRows<byte[], byte[], byte[]>> result)
-         throws Exception {
+         QueryResult<OrderedRows<byte[], byte[], byte[]>> result,
+         boolean siAuMoinsUneCol) throws Exception {
       OrderedRows<byte[], byte[], byte[]> orderedRows = result.get();
       sysout.println("Count " + orderedRows.getCount());
       sysout.println();
-      dumpRows(orderedRows);
+      long nbRowsAvecCols = dumpRows(orderedRows, siAuMoinsUneCol);
       sysout.println();
       sysout.println("Count " + orderedRows.getCount());
+      sysout.println("Count des lignes avec au moins 1 colonne : "
+            + nbRowsAvecCols);
    }
 
-   private void dumpRows(Iterable<Row<byte[], byte[], byte[]>> orderedRows)
-         throws Exception {
+   private long dumpRows(Iterable<Row<byte[], byte[], byte[]>> orderedRows,
+         boolean siAuMoinsUneCol) throws Exception {
+      int result = 0;
       for (Row<byte[], byte[], byte[]> row : orderedRows) {
-         if (printKeyInHex) {
-            String key = ConvertHelper.getHexString(row.getKey());
-            sysout.println("Key (hex) : " + key);
-         } else if (printKeyInLong) {
-            Long key = LongSerializer.get().fromBytes(row.getKey());
-            sysout.println("Key (long) : " + key);
-         } else {
-            String key = ConvertHelper.getReadableUTF8String(row.getKey());
-            sysout.println("Key : " + key);
-         }
+
          ColumnSlice<byte[], byte[]> columnSlice = row.getColumnSlice();
          List<HColumn<byte[], byte[]>> columns = columnSlice.getColumns();
-         dumpColumns(columns);
-         sysout.println();
+
+         if (columns.size() > 0) {
+            result++;
+         }
+
+         if ((!siAuMoinsUneCol) || (siAuMoinsUneCol && (columns.size() > 0))) {
+
+            if (printKeyInHex) {
+               String key = ConvertHelper.getHexString(row.getKey());
+               sysout.println("Key (hex) : " + key);
+            } else if (printKeyInLong) {
+               Long key = LongSerializer.get().fromBytes(row.getKey());
+               sysout.println("Key (long) : " + key);
+            } else {
+               String key = ConvertHelper.getReadableUTF8String(row.getKey());
+               sysout.println("Key : " + key);
+            }
+
+            dumpColumns(columns);
+            
+            sysout.println();
+
+         }
+         
       }
+      return result;
    }
 
    private void dumpColumns(List<HColumn<byte[], byte[]>> columns)
