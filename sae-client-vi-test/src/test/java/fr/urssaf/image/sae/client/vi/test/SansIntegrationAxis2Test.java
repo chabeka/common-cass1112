@@ -10,18 +10,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.urssaf.image.sae.client.vi.VIHandler;
-import fr.urssaf.image.sae.client.vi.signature.DefaultKeystore;
 import fr.urssaf.image.sae.client.vi.signature.KeyStoreInterface;
+import fr.urssaf.image.sae.webservices.security.MyKeyStore;
 
 /**
  * Exemple d'utilisation du générateur de VI sans utiliser le VIHandler via le
  * framework Axis2, mais en appelant "manuellement" la méthode de génération du
  * VI.
  */
-public class AssertionSansAxis2Test {
+public class SansIntegrationAxis2Test {
 
    private static final Logger LOGGER = LoggerFactory
-         .getLogger(AssertionSansAxis2Test.class);
+         .getLogger(SansIntegrationAxis2Test.class);
 
    /**
     * Ceci n'est pas un vrai TU, cette méthode sert à générer des VI pour les
@@ -32,7 +32,7 @@ public class AssertionSansAxis2Test {
    public void genereAssertionSansInvokeAxis2() {
 
       // Le magasin de certificats
-      KeyStoreInterface keystore = DefaultKeystore.getInstance();
+      KeyStoreInterface keystore = new MyKeyStore();
 
       // Identifiant du contrat de service
       String issuer = "IdContratService";
