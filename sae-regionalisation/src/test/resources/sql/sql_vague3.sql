@@ -422,6 +422,35 @@ WHERE (sousRequete.old_reference<>sousRequete.new_reference) AND
       (fonds_doc_prod.npe=sousRequete.old_reference);
 
 
+/*
+# ############################################
+# Transformation des champs vides en champ
+# null pour garantir un export sans quote
+# pour les valeurs vides (problème survenu
+# lors des tests de régio)
+# ############################################
+*/
+
+UPDATE fonds_doc_prod
+SET cog_renum=null
+WHERE cog_renum='';
+
+UPDATE fonds_doc_prod
+SET cop_renum=null
+WHERE cop_renum='';
+
+UPDATE fonds_doc_prod
+SET nce_renum=null
+WHERE nce_renum='';
+
+UPDATE fonds_doc_prod
+SET nci_renum=null
+WHERE nci_renum='';
+
+UPDATE fonds_doc_prod
+SET npe_renum=null
+WHERE npe_renum='';
+
 
 /*
 # ############################################
