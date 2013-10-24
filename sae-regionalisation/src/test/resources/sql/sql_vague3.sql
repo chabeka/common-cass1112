@@ -365,6 +365,7 @@ SELECT *
 INTO nce_detection_anomalie_nce_non_renum_cog_change
 FROM fonds_doc_prod
 WHERE ((is_nce_renum IS NULL) OR (is_nce_renum=false))
+AND ((nce IS NOT NULL) AND (nce<>''))
 AND (is_cog_renum=true);
 
 COPY nce_detection_anomalie_nce_non_renum_cog_change
