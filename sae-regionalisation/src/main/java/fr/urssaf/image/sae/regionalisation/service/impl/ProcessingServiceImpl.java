@@ -288,7 +288,12 @@ public class ProcessingServiceImpl implements ProcessingService {
       String newNci = tabLigne[2];
       String newNpe = tabLigne[3];
       String newCog = tabLigne[4];
-      String newCop = tabLigne[5];
+      String newCop;
+      if (tabLigne.length>=6) {
+         newCop = tabLigne[5];
+      } else {
+         newCop = StringUtils.EMPTY;
+      }
 
       // Récupération du document depuis DFCE
       Document document = saeDocumentDao.find(base, idDoc);
