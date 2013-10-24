@@ -120,7 +120,7 @@ public class ProcessingServiceImpl implements ProcessingService {
                   countTentatives);
 
             // Exécute le traitement de régionalisation
-            processFile(updateDatas, source, firstRecord, lastRecord);
+            processFile(updateDatas, source, lastRecord);
 
             // Si aucune exception, alors cette tentative a réussi
             success = true;
@@ -148,8 +148,7 @@ public class ProcessingServiceImpl implements ProcessingService {
 
    }
 
-   private void processFile(boolean updateDatas, File source, int firstRecord,
-         int lastRecord) {
+   private void processFile(boolean updateDatas, File source, int lastRecord) {
 
       // Pour les traces applicatives
       String trcPrefixe = "processFile()";
@@ -173,7 +172,7 @@ public class ProcessingServiceImpl implements ProcessingService {
          // Se déplace jusqu'à la première ligne à traiter
          int currentIndex = 0;
          String line = StringUtils.EMPTY;
-         while (currentIndex < firstRecord
+         while (currentIndex < currentRecord
                && (line = reader.readLine()) != null) {
             currentIndex++;
          }
@@ -182,16 +181,16 @@ public class ProcessingServiceImpl implements ProcessingService {
          // à traiter ou la fin du fichier
          do {
 
-            processDocument(updateDatas, base, line, currentIndex);
+            processDocument(updateDatas, base, line, currentRecord);
 
-            currentIndex++;
+            currentRecord++;
 
             if ((nbDocTraites == 1) || ((nbDocTraites % 5000) == 0)) {
                LOGGER.info("{} - {} document(s) traité(s)", trcPrefixe,
                      nbDocTraites);
             }
 
-         } while ((currentIndex <= lastRecord)
+         } while ((currentRecord <= lastRecord)
                && ((line = reader.readLine()) != null));
 
       } catch (FileNotFoundException ex) {
