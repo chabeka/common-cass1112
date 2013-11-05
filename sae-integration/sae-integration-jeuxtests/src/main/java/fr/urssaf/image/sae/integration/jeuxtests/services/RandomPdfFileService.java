@@ -2,12 +2,16 @@ package fr.urssaf.image.sae.integration.jeuxtests.services;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -116,5 +120,32 @@ public class RandomPdfFileService {
       }
       
    }
+   
+   
+   public void genererFichierDesSha1(
+         String repertoireFichiersPdf,
+         String repertoireSortieFichierDesSha1) throws IOException {
+      
+      File repertoire = new File(repertoireFichiersPdf);
+      
+      Collection<File> fichiers = FileUtils.listFiles(
+            repertoire, new String[] { "pdf", "PDF"}, false);
+      
+      FileInputStream fis;
+      List<NomFichierEtSha1> listeSha1 = new ArrayList<NomFichierEtSha1>();
+      for (File file : fichiers) {
+         fis = new FileInputStream(file);
+         listeSha1.add(
+               new NomFichierEtSha1(
+                     file.getName(), 
+                     DigestUtils.shaHex(fis))
+               );
+      }
+      
+      ecrireListeSha1DansFichier(repertoireSortieFichierDesSha1, listeSha1);
+      
+   }
+   
+   
    
 }

@@ -71,6 +71,9 @@ public final class SommaireService {
          // En-tête 
          ecritureSommaire_EnTete(writer, avecRestitutionId);
          
+         // Début du noeud documents
+         ecritureSommaire_NoeudDocumentsDebut(writer);
+         
          // Pour chaque document
          for (int i=1;i<=nbDocs;i++) {
             
@@ -93,6 +96,8 @@ public final class SommaireService {
          }
          
          // Pied de XML
+         ecritureSommaire_NoeudDocumentsFin(writer);
+         ecritureSommaire_NoeudDocVirtuVide(writer);
          ecritureSommaire_Pied(writer);
          
       }
@@ -165,6 +170,9 @@ public final class SommaireService {
          // En-tête 
          ecritureSommaire_EnTete(writer, avecRestitutionId);
          
+         // Début du noeud documents
+         ecritureSommaire_NoeudDocumentsDebut(writer);
+         
          // Pour chaque document
          for (int i=1;i<=nbDocs;i++) {
             
@@ -196,6 +204,8 @@ public final class SommaireService {
          }
          
          // Pied de XML
+         ecritureSommaire_NoeudDocumentsFin(writer);
+         ecritureSommaire_NoeudDocVirtuVide(writer);
          ecritureSommaire_Pied(writer);
          
       }
@@ -226,17 +236,33 @@ public final class SommaireService {
       if (avecRestitutionId) {
          writer.write("   <som:restitutionUuids>true</som:restitutionUuids>"); writer.write("\r\n");
       }
-      writer.write("   <som:documents>"); writer.write("\r\n");
       
+      
+   }
+   
+   
+   private void ecritureSommaire_NoeudDocumentsDebut(
+         FileWriterWithEncoding writer) throws IOException {
+      writer.write("   <som:documents>"); writer.write("\r\n");
+   }
+   
+   private void ecritureSommaire_NoeudDocumentsFin(
+         FileWriterWithEncoding writer) throws IOException {
+      writer.write("   </som:documents>"); writer.write("\r\n");
    }
    
    
    private void ecritureSommaire_Pied(
          FileWriterWithEncoding writer) throws IOException {
       
-      writer.write("   </som:documents>"); writer.write("\r\n");
-      writer.write("   <som:documentsVirtuels />"); writer.write("\r\n");
       writer.write("</som:sommaire>"); writer.write("\r\n");
+      
+   }
+   
+   private void ecritureSommaire_NoeudDocVirtuVide(
+         FileWriterWithEncoding writer) throws IOException {
+      
+      writer.write("   <som:documentsVirtuels />"); writer.write("\r\n");
       
    }
    
@@ -260,6 +286,29 @@ public final class SommaireService {
       writer.write("         <somres:objetNumerique>"); writer.write("\r\n");
       writer.write("            <somres:cheminEtNomDuFichier>" + objNumCheminEtNomFichier + "</somres:cheminEtNomDuFichier>"); writer.write("\r\n");
       writer.write("         </somres:objetNumerique>"); writer.write("\r\n");
+      
+      // Les métadonnées
+      ecritureSommaire_NoeudMetadonnees(writer, hash, denomination, siren, sirenAleatoire,
+            indiceDoc, applicationTraitement, avecNumeroRecours, dateCreation);
+      
+      // Fin du document
+      writer.write("         <somres:numeroPageDebut>1</somres:numeroPageDebut>"); writer.write("\r\n");
+      writer.write("         <somres:nombreDePages>1</somres:nombreDePages>"); writer.write("\r\n");
+      writer.write("      </somres:document>"); writer.write("\r\n");
+      
+   }
+   
+   
+   private void ecritureSommaire_NoeudMetadonnees(
+         FileWriterWithEncoding writer,
+         String hash,
+         String denomination,
+         String siren,
+         boolean sirenAleatoire,
+         int indiceDoc,
+         String applicationTraitement,
+         boolean avecNumeroRecours,
+         String dateCreation) throws IOException {
       
       // Début métadonnées
       writer.write("         <somres:metadonnees>"); writer.write("\r\n");
@@ -363,11 +412,6 @@ public final class SommaireService {
       // Fin des métadonnées
       writer.write("         </somres:metadonnees>"); writer.write("\r\n");
       
-      // Fin du document
-      writer.write("         <somres:numeroPageDebut>1</somres:numeroPageDebut>"); writer.write("\r\n");
-      writer.write("         <somres:nombreDePages>1</somres:nombreDePages>"); writer.write("\r\n");
-      writer.write("      </somres:document>"); writer.write("\r\n");
-      
    }
    
    
@@ -391,6 +435,185 @@ public final class SommaireService {
       }
       
       return result;
+      
+   }
+   
+   
+   public void genereSommaireDocumentVirtuel(
+         int nbIndexationsParFichier,
+         String cheminEcritureFichierSommaire,
+         String cheminFichierDesSha1,
+         String denomination,
+         String siren,
+         boolean sirenAleatoire,
+         String applicationTraitement,
+         boolean avecNumeroRecours,
+         String dateCreation,
+         boolean avecRestitutionId,
+         int nombreDePagesParIndexation,
+         boolean avecIndexationSurToutesLesPages,
+         int nbPagesTotalParFichier) throws IOException {
+      
+      File fileSommaire = new File(cheminEcritureFichierSommaire);
+      
+      // Lecture du fichier texte contenant les SHA-1
+      File fileSha1 = new File(cheminFichierDesSha1);
+      List<NomFichierEtSha1> listeSha1 = lireListeSha1DepuisFichier(fileSha1);
+
+      int indiceDoc = 1;
+      
+      FileWriterWithEncoding writer = new FileWriterWithEncoding(
+            fileSommaire,"UTF-8", false);
+      try {
+       
+         // En-tête 
+         ecritureSommaire_EnTete(writer, avecRestitutionId);
+         
+         // Début des documents virtuels
+         ecritureSommaire_NoeudDocumentsVirtuelsDebut(writer);
+         
+         // Pour chaque document virtuel
+         for (NomFichierEtSha1 nomFichierEtSha1: listeSha1) {
+            
+            // Initialise le numéro de la page
+            int numeroPageDebut = 1;
+            
+            // Ecriture du début noeud documentVirtuel
+            ecritureSommaire_NoeudDocumentVirtuelDebut(writer,nomFichierEtSha1.getNomFichier());
+            
+            // Ecriture de chaque composant
+            for (int i=1;i<=nbIndexationsParFichier;i++) {
+               
+               // Trace écran
+               if ((i==1) || ((i%100)==0) || (i==nbIndexationsParFichier)) {
+                  System.out.println(i + "/" + nbIndexationsParFichier);
+               }
+               
+               // Ecriture du début du noeud composant
+               ecritureSommaire_NoeudComposantDebut(writer);
+               
+               // Ecriture des métadonnées
+               ecritureSommaire_NoeudMetadonnees(writer, nomFichierEtSha1.getSha1(), denomination, 
+                     siren, sirenAleatoire, indiceDoc, applicationTraitement, avecNumeroRecours, 
+                     dateCreation);
+               
+               // Ecriture des numéros de page
+               ecritureSommaire_NoeudsPages(writer, numeroPageDebut, nombreDePagesParIndexation);
+               numeroPageDebut += nombreDePagesParIndexation;
+               
+               // Ecriture de la fin du noeud composant
+               ecritureSommaire_NoeudComposantFin(writer);
+               
+               // Augmente l'indice du document pour la méta NumeroRecours
+               indiceDoc++;
+               
+            }
+            
+            // Ajoute éventuellement un composant qui indexe toutes les pages
+            if (avecIndexationSurToutesLesPages) {
+               
+               // Ecriture du début du noeud composant
+               ecritureSommaire_NoeudComposantDebut(writer);
+               
+               // Ecriture des métadonnées
+               ecritureSommaire_NoeudMetadonnees(writer, nomFichierEtSha1.getSha1(), denomination, 
+                     siren, sirenAleatoire, indiceDoc, applicationTraitement, avecNumeroRecours, 
+                     dateCreation);
+               
+               // Ecriture des numéros de page
+               ecritureSommaire_NoeudsPages(writer, 1, nbPagesTotalParFichier);
+               numeroPageDebut += nombreDePagesParIndexation;
+               
+               // Ecriture de la fin du noeud composant
+               ecritureSommaire_NoeudComposantFin(writer);
+               
+               // Augmente l'indice du document pour la méta NumeroRecours
+               indiceDoc++;
+               
+            }
+            
+            // Ecriture de la fin noeud documentVirtuel
+            ecritureSommaire_NoeudDocumentVirtuelFin(writer);
+            
+         }
+         
+         // Fin des documents virtuels
+         ecritureSommaire_NoeudDocumentsVirtuelsFin(writer);
+         
+         // Pied de XML
+         ecritureSommaire_Pied(writer);
+         
+      }
+      finally {
+         writer.close();
+      }
+      
+   }
+   
+   private void ecritureSommaire_NoeudDocumentsVirtuelsDebut(
+         FileWriterWithEncoding writer) throws IOException {
+      
+      writer.write("   <som:documents />"); writer.write("\r\n"); 
+      writer.write("\r\n");
+      
+      writer.write("   <som:documentsVirtuels>"); writer.write("\r\n"); 
+      writer.write("\r\n");
+      
+   }
+   
+   private void ecritureSommaire_NoeudDocumentsVirtuelsFin(
+         FileWriterWithEncoding writer) throws IOException {
+      
+      writer.write("   </som:documentsVirtuels>"); writer.write("\r\n"); 
+      writer.write("\r\n");
+      
+   }
+   
+   private void ecritureSommaire_NoeudDocumentVirtuelDebut(
+         FileWriterWithEncoding writer,
+         String nomFichier) throws IOException {
+      
+      writer.write("      <somres:documentVirtuel>"); writer.write("\r\n");
+      writer.write("         <somres:objetNumerique>"); writer.write("\r\n");
+      writer.write("            <somres:cheminEtNomDuFichier>" + nomFichier + "</somres:cheminEtNomDuFichier>"); writer.write("\r\n");
+      writer.write("         </somres:objetNumerique>"); writer.write("\r\n");
+      writer.write("\r\n");
+      writer.write("         <somres:composants>"); writer.write("\r\n");
+      writer.write("\r\n");
+
+   }
+   
+   private void ecritureSommaire_NoeudDocumentVirtuelFin(
+         FileWriterWithEncoding writer) throws IOException {
+      
+      writer.write("\r\n");
+      writer.write("         </somres:composants>"); writer.write("\r\n");
+      writer.write("      </somres:documentVirtuel>"); writer.write("\r\n");
+      writer.write("\r\n");
+      
+   }
+   
+   private void ecritureSommaire_NoeudComposantDebut(
+         FileWriterWithEncoding writer) throws IOException {
+      
+      writer.write("            <somres:composant>"); writer.write("\r\n");
+      
+   }
+   
+   private void ecritureSommaire_NoeudComposantFin(
+         FileWriterWithEncoding writer) throws IOException {
+      
+      writer.write("            </somres:composant>"); writer.write("\r\n");
+      
+   }
+   
+   private void ecritureSommaire_NoeudsPages(
+         FileWriterWithEncoding writer, 
+         int numeroPageDebut, 
+         int nombrePages) throws IOException {
+      
+      writer.write("               <somres:numeroPageDebut>" + numeroPageDebut + "</somres:numeroPageDebut>"); writer.write("\r\n");
+      writer.write("               <somres:nombreDePages>" + nombrePages + "</somres:nombreDePages>"); writer.write("\r\n");
       
    }
    

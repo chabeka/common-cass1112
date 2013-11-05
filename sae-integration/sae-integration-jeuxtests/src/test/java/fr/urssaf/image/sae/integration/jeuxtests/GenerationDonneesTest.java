@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import fr.urssaf.image.sae.integration.jeuxtests.services.RandomPdfFileService;
 import fr.urssaf.image.sae.integration.jeuxtests.services.SommaireService;
 
 /**
@@ -113,6 +114,56 @@ public class GenerationDonneesTest {
             avecNumeroRecours,
             dateCreation,
             avecRestitutionId);
+      
+   }
+   
+   
+   @Test
+   public void genererFichierDesSha1() throws IOException {
+      
+      RandomPdfFileService service = new RandomPdfFileService();
+      
+      service.genererFichierDesSha1(
+            "C:/Divers/doc_virtuel/", 
+            "C:/divers");
+      
+   }
+   
+   
+   @Test
+   @Ignore
+   public void sommaire_document_virtuel() throws IOException {
+      
+      SommaireService service = new SommaireService();
+      
+      int nbIndexationsParFichier = 43;
+      String cheminEcritureFichierSommaire = "C:/divers/sommaire.xml";
+      String cheminFichierDesSha1 = "C:/divers/_sha1.properties";
+      String denomination = "Test XXX doc virt";
+      String siren = null;
+      boolean sirenAleatoire = true;
+      String applicationTraitement = "ATTESTATIONS";
+      boolean avecNumeroRecours = true; 
+      String dateCreation = "2013-11-05";
+      boolean avecRestitutionId = false;
+      int nombreDePagesParIndexation = 1;
+      boolean avecIndexationSurToutesLesPages = true;
+      int nbPagesTotalParFichier = 43;
+      
+      service.genereSommaireDocumentVirtuel(
+            nbIndexationsParFichier,
+            cheminEcritureFichierSommaire,
+            cheminFichierDesSha1,
+            denomination,
+            siren,
+            sirenAleatoire,
+            applicationTraitement,
+            avecNumeroRecours,
+            dateCreation,
+            avecRestitutionId,
+            nombreDePagesParIndexation,
+            avecIndexationSurToutesLesPages,
+            nbPagesTotalParFichier);
       
    }
    
