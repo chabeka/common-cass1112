@@ -216,7 +216,7 @@ public class Test102Commons {
 
       MetadonneeValeurList valeursAttendues = new MetadonneeValeurList();
       valeursAttendues.add("DateDebutConservation", "2011-09-01");
-      valeursAttendues.add("DateFinConservation", "2016-08-30");
+      valeursAttendues.add("DateFinConservation", "2014-08-31");
       valeursAttendues.add("Denomination", denomination);
       valeursAttendues.add("DureeConservation", "1095");
 

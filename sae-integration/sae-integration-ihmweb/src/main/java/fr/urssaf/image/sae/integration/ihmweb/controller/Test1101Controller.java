@@ -264,7 +264,7 @@ public class Test1101Controller extends
       valeursAttendues.add("TracabilitePostArchivage",
             StringUtils.EMPTY);
       valeursAttendues.add("TypeHash", "SHA-1");
-      valeursAttendues.add("VersionRND", "11.2");
+      valeursAttendues.add("VersionRND", getTestConfig().getVersionRND());
 
       getRechercheTestService().verifieResultatRecherche(resultatRecherche,
             Integer.toString(numeroResultatRecherche), resultatTest,

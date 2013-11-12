@@ -7,6 +7,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import fr.urssaf.image.sae.integration.ihmweb.constantes.SaeIntegrationConstantes;
 import fr.urssaf.image.sae.integration.ihmweb.exception.IntegrationRuntimeException;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureUnitaireFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ConsultationFormulaire;
@@ -195,7 +196,7 @@ public class Test403Controller extends
       metaAttendues.add(new MetadonneeValeur("CodeSousCategorieV2",
             StringUtils.EMPTY));
       metaAttendues.add(new MetadonneeValeur("ContratDeService",
-            "CS_ANCIEN_SYSTEME"));
+            SaeIntegrationConstantes.VI_DEFAULT_ISSUER));
       // metaAttendues.add(new MetadonneeValeur("DateArchivage", "")); // => non
       // prédictible
       metaAttendues.add(new MetadonneeValeur("DateCourrierV2", "2013-03-13"));

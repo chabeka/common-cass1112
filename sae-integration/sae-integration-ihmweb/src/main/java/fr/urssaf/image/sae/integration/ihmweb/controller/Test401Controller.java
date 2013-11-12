@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import fr.urssaf.image.sae.integration.ihmweb.constantes.SaeIntegrationConstantes;
 import fr.urssaf.image.sae.integration.ihmweb.exception.IntegrationRuntimeException;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureUnitaireFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ConsultationFormulaire;
@@ -175,7 +176,7 @@ public class Test401Controller extends AbstractTestWsController<Test401Formulair
                formConsult.getResultats(), 
                metas, 
                "ContratDeService", 
-               "CS_ANCIEN_SYSTEME");
+               SaeIntegrationConstantes.VI_DEFAULT_ISSUER);
          // DateArchivage => à vérifier manuellement
 //       getTestsMetasService().verifiePresenceEtValeurAvecLog(
 //             formConsult.getResultats(), 

@@ -215,7 +215,7 @@ public class Test220Controller extends
 
       String numeroResultatRecherche = Integer.toString(numeroRecours);
       valeursAttendues.add("Denomination", "Test 220-CaptureMasse-Avec-Hash-OK-Tor-10");
-      valeursAttendues.add("IdTraitementMasseInterne","");
+      // valeursAttendues.add("IdTraitementMasseInterne",""); // TODO IdTraitementMasseInterne
 
       getRechercheTestService().verifieResultatRecherche(resultatRecherche,
             numeroResultatRecherche, resultatTest, valeursAttendues);
@@ -228,11 +228,12 @@ public class Test220Controller extends
       // Les codes des métadonnées attendues
       CodeMetadonneeList codeMetaAttendues = new CodeMetadonneeList();
       codeMetaAttendues.add("Denomination");
-      codeMetaAttendues.add("IdTraitementMasseInterne");
+      // codeMetaAttendues.add("IdTraitementMasseInterne");
       
       // Valeurs des métadonnées attendues
       List<MetadonneeValeur> valeursMetaAttendus = new ArrayList<MetadonneeValeur>();
       valeursMetaAttendus.add(new MetadonneeValeur("Denomination","Test 220-CaptureMasse-Avec-Hash-OK-Tor-10"));
+      // TODO : vérifier IdTraitementMasseInterne 
       //valeursMetaAttendus.add(new MetadonneeValeur("IdTraitementMasseInterne",""));
       
       // Appel du service de vérification

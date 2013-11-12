@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import fr.urssaf.image.sae.integration.ihmweb.constantes.SaeIntegrationConstantes;
 import fr.urssaf.image.sae.integration.ihmweb.exception.IntegrationRuntimeException;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureUnitaireFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ConsultationFormulaire;
@@ -288,7 +289,7 @@ public class Test101Commons {
       valeursAttendues.add("FormatFichier", "fmt/354");
       valeursAttendues.add("TailleFichier", "56587");
       valeursAttendues.add("IdTraitementMasse", StringUtils.EMPTY);
-      valeursAttendues.add("ContratDeService", "CS_ANCIEN_SYSTEME");
+      valeursAttendues.add("ContratDeService", SaeIntegrationConstantes.VI_DEFAULT_ISSUER);
       valeursAttendues.add("DateSignature", StringUtils.EMPTY);
       valeursAttendues.add("JetonDePreuve", StringUtils.EMPTY);
       valeursAttendues.add("RUM", StringUtils.EMPTY);
@@ -355,7 +356,7 @@ public class Test101Commons {
                formConsult.getResultats(), metas, "TailleFichier", "56587");
          testCommons.getTestsMetasService().verifiePresenceEtValeurAvecLog(
                formConsult.getResultats(), metas, "ContratDeService",
-               "CS_ANCIEN_SYSTEME");
+               SaeIntegrationConstantes.VI_DEFAULT_ISSUER);
 
          // DateArchivage à vérifier à la main
          // getTestsMetasService().verifiePresenceEtValeurAvecLog(

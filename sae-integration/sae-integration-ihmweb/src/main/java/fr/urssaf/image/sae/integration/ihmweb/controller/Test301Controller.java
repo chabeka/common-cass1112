@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import fr.urssaf.image.sae.integration.ihmweb.constantes.SaeIntegrationConstantes;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.TestWsRechercheFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CodeMetadonneeList;
@@ -144,7 +145,8 @@ public class Test301Controller extends
       valeursAttendues.add("NomFichier", "doc1.PDF");
       valeursAttendues.add("FormatFichier", "fmt/354");
       valeursAttendues.add("TailleFichier", "56587");
-      valeursAttendues.add("ContratDeService", "CS_ANCIEN_SYSTEME");
+      valeursAttendues.add("ContratDeService", 
+            SaeIntegrationConstantes.VI_DEFAULT_ISSUER);
       // valeursAttendues.add("DateArchivage",); // <= à vérifier manuellement
 
       getRechercheTestService().verifieResultatRecherche(resultatRecherche,
@@ -169,7 +171,8 @@ public class Test301Controller extends
       valeursAttendues.add("NomFichier", "doc4.PDF");
       valeursAttendues.add("FormatFichier", "fmt/354");
       valeursAttendues.add("TailleFichier", "48637");
-      valeursAttendues.add("ContratDeService", "CS_ANCIEN_SYSTEME");
+      valeursAttendues.add("ContratDeService", 
+            SaeIntegrationConstantes.VI_DEFAULT_ISSUER);
       // valeursAttendues.add("DateArchivage",); // <= à vérifier manuellement
 
       getRechercheTestService().verifieResultatRecherche(resultatRecherche,
@@ -194,7 +197,8 @@ public class Test301Controller extends
       valeursAttendues.add("NomFichier", "doc7.PDF");
       valeursAttendues.add("FormatFichier", "fmt/354");
       valeursAttendues.add("TailleFichier", "48646");
-      valeursAttendues.add("ContratDeService", "CS_ANCIEN_SYSTEME");
+      valeursAttendues.add("ContratDeService", 
+            SaeIntegrationConstantes.VI_DEFAULT_ISSUER);
       // valeursAttendues.add("DateArchivage",); // <= à vérifier manuellement
 
       getRechercheTestService().verifieResultatRecherche(resultatRecherche,
@@ -219,7 +223,8 @@ public class Test301Controller extends
       valeursAttendues.add("NomFichier", "doc11.PDF");
       valeursAttendues.add("FormatFichier", "fmt/354");
       valeursAttendues.add("TailleFichier", "59459");
-      valeursAttendues.add("ContratDeService", "CS_ANCIEN_SYSTEME");
+      valeursAttendues.add("ContratDeService", 
+            SaeIntegrationConstantes.VI_DEFAULT_ISSUER);
       // valeursAttendues.add("DateArchivage",); // <= à vérifier manuellement
 
       getRechercheTestService().verifieResultatRecherche(resultatRecherche,
@@ -244,7 +249,8 @@ public class Test301Controller extends
       valeursAttendues.add("NomFichier", "doc70.PDF");
       valeursAttendues.add("FormatFichier", "fmt/354");
       valeursAttendues.add("TailleFichier", "47308");
-      valeursAttendues.add("ContratDeService", "CS_ANCIEN_SYSTEME");
+      valeursAttendues.add("ContratDeService", 
+            SaeIntegrationConstantes.VI_DEFAULT_ISSUER);
       // valeursAttendues.add("DateArchivage",); // <= à vérifier manuellement
 
       getRechercheTestService().verifieResultatRecherche(resultatRecherche,
@@ -269,7 +275,8 @@ public class Test301Controller extends
       valeursAttendues.add("NomFichier", "doc77.PDF");
       valeursAttendues.add("FormatFichier", "fmt/354");
       valeursAttendues.add("TailleFichier", "58555");
-      valeursAttendues.add("ContratDeService", "CS_ANCIEN_SYSTEME");
+      valeursAttendues.add("ContratDeService", 
+            SaeIntegrationConstantes.VI_DEFAULT_ISSUER);
       // valeursAttendues.add("DateArchivage",); // <= à vérifier manuellement
 
       getRechercheTestService().verifieResultatRecherche(resultatRecherche,
@@ -294,7 +301,8 @@ public class Test301Controller extends
       valeursAttendues.add("NomFichier", "doc132.PDF");
       valeursAttendues.add("FormatFichier", "fmt/354");
       valeursAttendues.add("TailleFichier", "46887");
-      valeursAttendues.add("ContratDeService", "CS_ANCIEN_SYSTEME");
+      valeursAttendues.add("ContratDeService", 
+            SaeIntegrationConstantes.VI_DEFAULT_ISSUER);
       // valeursAttendues.add("DateArchivage",); // <= à vérifier manuellement
 
       getRechercheTestService().verifieResultatRecherche(resultatRecherche,

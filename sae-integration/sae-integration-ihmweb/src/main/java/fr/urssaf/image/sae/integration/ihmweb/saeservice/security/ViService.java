@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
+import fr.urssaf.image.sae.integration.ihmweb.constantes.SaeIntegrationConstantes;
 import fr.urssaf.image.sae.integration.ihmweb.exception.IntegrationRuntimeException;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ViFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.PagmList;
@@ -38,10 +39,6 @@ public class ViService {
    
    private static final String DEFAULT_ID_CERTIF = "1";
    
-   private static final String DEFAULT_RECIPIENT = "urn:URSSAF";
-   private static final String DEFAULT_AUDIENCE = "http://sae.urssaf.fr";
-   private static final String DEFAULT_ISSUER = "CS_DEV_TOUTES_ACTIONS";
-   private static final String[] DEFAULT_PAGM = new String[] {"PAGM_TOUTES_ACTIONS"};
    private static final String DEFAULT_METHODAUTHN2 = "urn:oasis:names:tc:SAML:2.0:ac:classes:unspecified";
    
    private CertificatService certificatService;
@@ -153,11 +150,11 @@ public class ViService {
       
       if ((viParams==null) || (StringUtils.isBlank(viParams.getIssuer()))) {
          
-         issuer = DEFAULT_ISSUER;
-         recipient = DEFAULT_RECIPIENT;
-         audience = DEFAULT_AUDIENCE;
+         issuer = SaeIntegrationConstantes.VI_DEFAULT_ISSUER;
+         recipient = SaeIntegrationConstantes.VI_DEFAULT_RECIPIENT;
+         audience = SaeIntegrationConstantes.VI_DEFAULT_AUDIENCE;
 
-         pagm = DEFAULT_PAGM ;
+         pagm = new String[] {SaeIntegrationConstantes.VI_DEFAULT_PAGM} ;
          
          idCertif = DEFAULT_ID_CERTIF; 
          
@@ -449,12 +446,12 @@ public class ViService {
       
       String assertionId = UUID.randomUUID().toString();
       String issuer = StringUtils.EMPTY;
-      String recipient = DEFAULT_RECIPIENT;
-      String audience = DEFAULT_AUDIENCE;
+      String recipient = SaeIntegrationConstantes.VI_DEFAULT_RECIPIENT;
+      String audience = SaeIntegrationConstantes.VI_DEFAULT_AUDIENCE;
       String authnInstant = defaultAuthnInstant(systemDate);
       String notOnOrAfter = defaultNotOnOrAfter(systemDate);
       String notBefore = defaultNotBefore(systemDate);
-      String[] pagm = DEFAULT_PAGM ;
+      String[] pagm = new String[] {SaeIntegrationConstantes.VI_DEFAULT_PAGM} ;
       String methodAuthn2 = DEFAULT_METHODAUTHN2;
       String idCertif = DEFAULT_ID_CERTIF; 
       
@@ -497,7 +494,7 @@ public class ViService {
       //   <saml2:Issuer>SaeIntegration</saml2:Issuer>
       // par
       //   <saml2:Issuer>SaeIntegration2</saml2:Issuer>
-      String searchString = "<saml2:Issuer>" + DEFAULT_ISSUER + "</saml2:Issuer>";
+      String searchString = "<saml2:Issuer>" + SaeIntegrationConstantes.VI_DEFAULT_ISSUER + "</saml2:Issuer>";
       String replacement = "<saml2:Issuer>SaeIntegration2</saml2:Issuer>";
       vi = StringUtils.replaceOnce(vi, searchString, replacement);
       
@@ -522,13 +519,13 @@ public class ViService {
       // Appel de la méthode générant un VI OK
       DateTime systemDate = new DateTime();
       String assertionId = UUID.randomUUID().toString();
-      String issuer = DEFAULT_ISSUER;
-      String recipient = DEFAULT_RECIPIENT;
-      String audience = DEFAULT_AUDIENCE;
+      String issuer = SaeIntegrationConstantes.VI_DEFAULT_ISSUER;
+      String recipient = SaeIntegrationConstantes.VI_DEFAULT_RECIPIENT;
+      String audience = SaeIntegrationConstantes.VI_DEFAULT_AUDIENCE;
       String authnInstant = defaultAuthnInstant(systemDate);
       String notOnOrAfter = systemDate.minusHours(1).toString();
       String notBefore = systemDate.minusHours(2).toString();
-      String[] pagm = DEFAULT_PAGM ;
+      String[] pagm = new String[] {SaeIntegrationConstantes.VI_DEFAULT_PAGM} ;
       String methodAuthn2 = DEFAULT_METHODAUTHN2;
       String idCertif = DEFAULT_ID_CERTIF;
       String vi = generationVi(
@@ -565,13 +562,13 @@ public class ViService {
       // Appel de la méthode générant un VI OK
       DateTime systemDate = new DateTime();
       String assertionId = UUID.randomUUID().toString();
-      String issuer = DEFAULT_ISSUER;
-      String recipient = DEFAULT_RECIPIENT;
+      String issuer = SaeIntegrationConstantes.VI_DEFAULT_ISSUER;
+      String recipient = SaeIntegrationConstantes.VI_DEFAULT_RECIPIENT;
       String audience = "http://service.inexistant.fr"; // Service visé qui n'existe pas
       String authnInstant = defaultAuthnInstant(systemDate);
       String notOnOrAfter = defaultNotOnOrAfter(systemDate);
       String notBefore = defaultNotBefore(systemDate);
-      String[] pagm = DEFAULT_PAGM ;
+      String[] pagm = new String[] {SaeIntegrationConstantes.VI_DEFAULT_PAGM} ;
       String methodAuthn2 = DEFAULT_METHODAUTHN2;
       String idCertif = DEFAULT_ID_CERTIF;
       String vi = generationVi(
@@ -608,13 +605,13 @@ public class ViService {
       // Appel de la méthode générant un VI OK
       DateTime systemDate = new DateTime();
       String assertionId = UUID.randomUUID().toString();
-      String issuer = DEFAULT_ISSUER;
-      String recipient = DEFAULT_RECIPIENT;
-      String audience = DEFAULT_AUDIENCE;
+      String issuer = SaeIntegrationConstantes.VI_DEFAULT_ISSUER;
+      String recipient = SaeIntegrationConstantes.VI_DEFAULT_RECIPIENT;
+      String audience = SaeIntegrationConstantes.VI_DEFAULT_AUDIENCE;
       String authnInstant = defaultAuthnInstant(systemDate);
       String notOnOrAfter = defaultNotOnOrAfter(systemDate);
       String notBefore = defaultNotBefore(systemDate);
-      String[] pagm = DEFAULT_PAGM ;
+      String[] pagm = new String[] {SaeIntegrationConstantes.VI_DEFAULT_PAGM} ;
       String methodAuthn2 = "urn:methode:inexistante"; // Méthode d'authentification inconnue du SAE
       String idCertif = DEFAULT_ID_CERTIF;
       String vi = generationVi(
@@ -651,9 +648,9 @@ public class ViService {
       // Appel de la méthode générant un VI OK
       DateTime systemDate = new DateTime();
       String assertionId = UUID.randomUUID().toString();
-      String issuer = DEFAULT_ISSUER;
-      String recipient = DEFAULT_RECIPIENT;
-      String audience = DEFAULT_AUDIENCE;
+      String issuer = SaeIntegrationConstantes.VI_DEFAULT_ISSUER;
+      String recipient = SaeIntegrationConstantes.VI_DEFAULT_RECIPIENT;
+      String audience = SaeIntegrationConstantes.VI_DEFAULT_AUDIENCE;
       String authnInstant = defaultAuthnInstant(systemDate);
       String notOnOrAfter = defaultNotOnOrAfter(systemDate);
       String notBefore = defaultNotBefore(systemDate);

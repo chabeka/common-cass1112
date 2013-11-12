@@ -241,7 +241,7 @@ public class Test206Controller extends
       valeursAttendues.add("DateCourrierV2", "2013-03-13");
       valeursAttendues.add("DateCreation", "2011-09-05");
       valeursAttendues.add("DateDebutConservation", "2011-09-02");
-      valeursAttendues.add("DateFinConservation", "2016-08-31");
+      valeursAttendues.add("DateFinConservation", "2014-09-01");
       valeursAttendues.add("DateReception", "2011-09-01");
       valeursAttendues.add("DateSignature", "2012-09-04");
       valeursAttendues.add("Denomination",

@@ -42,7 +42,7 @@
       <apache.commons-io.version>2.0.1</apache.commons-io.version>
       <apache.commons-collections.version>3.2.1</apache.commons-collections.version>
       
-      <sae.version>13.7.0.6-SNAPSHOT</sae.version>
+      <sae.version>13.7.0.7-SNAPSHOT</sae.version>
       
    </properties>
 

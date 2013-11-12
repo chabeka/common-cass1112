@@ -54,12 +54,12 @@ public final class SaeIntegrationConstantes {
    /**
     * Pour les VI : issuer par défaut
     */
-   public static final String VI_DEFAULT_ISSUER = "SaeIntegration";
+   public static final String VI_DEFAULT_ISSUER = "CS_DEV_TOUTES_ACTIONS";
    
    /**
     * Pour les VI : PAGM par défaut
     */
-   public static final String VI_DEFAULT_PAGM = "ROLE_TOUS;FULL";
+   public static final String VI_DEFAULT_PAGM = "PAGM_TOUTES_ACTIONS";
    
 
    /**

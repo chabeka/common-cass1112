@@ -236,7 +236,7 @@
       <namespace>urn:sae:faultcodes</namespace>
       <prefixe>sae</prefixe>
       <localPart>CaptureCodeRndInterdit</localPart>
-      <message>Le type de document %s n'est pas autorisé à l'archivage.</message>
+      <message>Le code RND %s n'est pas autorisé à l'archivage (code inexistant).</message>
    </SoapFault>
    
    <SoapFault>

@@ -9,6 +9,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import fr.urssaf.image.sae.integration.ihmweb.constantes.SaeIntegrationConstantes;
 import fr.urssaf.image.sae.integration.ihmweb.exception.IntegrationRuntimeException;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseResultatFormulaire;
@@ -238,7 +239,8 @@ public class Test201Controller extends
       valeursAttendues.add("CodeOrganismeGestionnaire", "CER69");
       valeursAttendues.add("CodeOrganismeProprietaire", "UR750");
       valeursAttendues.add("CodeRND", "2.3.1.1.12");
-      valeursAttendues.add("ContratDeService", "CS_ANCIEN_SYSTEME");
+      valeursAttendues.add("ContratDeService", 
+            SaeIntegrationConstantes.VI_DEFAULT_ISSUER);
       // valeursAttendues.add("DateArchivage", ""); // non prédictible
       valeursAttendues.add("DateCreation", "2011-09-08");
       // valeursAttendues.add("DateDebutConservation", ""); // non prédictible
