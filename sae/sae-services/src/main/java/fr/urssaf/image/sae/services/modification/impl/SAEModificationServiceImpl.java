@@ -33,7 +33,6 @@ import fr.urssaf.image.sae.services.exception.ArchiveInexistanteEx;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.InvalidValueTypeAndFormatMetadataEx;
-import fr.urssaf.image.sae.services.exception.capture.NotArchivableMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.NotSpecifiableMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.RequiredArchivableMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.UnknownHashCodeEx;
@@ -236,7 +235,7 @@ public class SAEModificationServiceImpl extends AbstractSAEServices implements
             Date dateFin = DateUtils.addDays(date, duration);
             String sDateFin = DateFormatUtils.format(dateFin,
                   Constants.DATE_PATTERN, Constants.DEFAULT_LOCAL);
-            if (!StringUtils.isEmpty(codeActivite)) {
+            if (StringUtils.isNotEmpty(codeActivite)) {
                returnedModifiedList.add(new UntypedMetadata(
                      SAEArchivalMetadatas.CODE_ACTIVITE.getLongCode(),
                      codeActivite));
@@ -245,6 +244,7 @@ public class SAEModificationServiceImpl extends AbstractSAEServices implements
                      SAEArchivalMetadatas.CODE_ACTIVITE.getLongCode(),
                      codeActivite));
             }
+            
             returnedModifiedList.add(new UntypedMetadata(
                   SAEArchivalMetadatas.CODE_FONCTION.getLongCode(),
                   codeFonction));

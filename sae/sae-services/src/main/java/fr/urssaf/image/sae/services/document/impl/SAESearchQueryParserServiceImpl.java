@@ -329,7 +329,7 @@ public class SAESearchQueryParserServiceImpl implements
 
       // replacer les codes longs par les codes courts
       // et mémoriser la métadonnées que l'on vient de détecter
-      if (codeCourt != null && codeCourt != StringUtils.EMPTY) {
+      if (StringUtils.isNotEmpty(codeCourt)) {
 
          LOG.debug("{} - Remplacement du code long par le code court.",
                prefixeTrc);

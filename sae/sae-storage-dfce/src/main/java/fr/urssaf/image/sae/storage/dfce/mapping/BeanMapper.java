@@ -323,12 +323,13 @@ public final class BeanMapper {
             baseCategory = baseDFCE.getBaseCategory(storageMetadata
                   .getShortCode().trim());
 
-            if (baseCategory != null) {
-               document.addCriterion(baseCategory, storageMetadata.getValue());
-            } else {
+            if (baseCategory == null) {
                throw new MetadonneeInexistante("La métadonnée "
                      + storageMetadata.getShortCode()
                      + " n'existe pas dans DFCE");
+            
+            } else {
+               document.addCriterion(baseCategory, storageMetadata.getValue());
             }
          }
       }

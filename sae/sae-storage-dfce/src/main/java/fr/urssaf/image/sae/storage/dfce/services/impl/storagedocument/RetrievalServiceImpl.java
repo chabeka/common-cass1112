@@ -61,13 +61,15 @@ public class RetrievalServiceImpl extends AbstractServices implements
          searchingService.setSearchingServiceParameter(getDfceService());
          StorageDocument storageDoc = searchingService
                .searchStorageDocumentByUUIDCriteria(uUIDCriteria);
-         if (storageDoc != null) {
-            LOG.debug("{} - Le document a été trouvé dans le stockage",
-                  prefixeTrc);
-         } else {
+         if (storageDoc == null) {
             LOG.debug("{} - Le document n'a pas été trouvé dans le stockage",
                   prefixeTrc);
+
+         } else {
+            LOG.debug("{} - Le document a été trouvé dans le stockage",
+                  prefixeTrc);
          }
+         
          LOG.debug("{} - Sortie", prefixeTrc);
          return storageDoc;
 

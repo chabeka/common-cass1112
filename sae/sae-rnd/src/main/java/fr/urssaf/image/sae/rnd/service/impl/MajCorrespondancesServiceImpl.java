@@ -53,7 +53,10 @@ public class MajCorrespondancesServiceImpl implements MajCorrespondancesService 
                   listeCorrespondances.size());
          }
 
-         if (!CollectionUtils.isEmpty(listeCorrespondances)) {
+         if (CollectionUtils.isEmpty(listeCorrespondances)) {
+            LOGGER.info("{} - Aucun traitement à réaliser", trcPrefix);
+
+         } else {
 
             for (Correspondance correspondance : listeCorrespondances) {
 
@@ -74,8 +77,6 @@ public class MajCorrespondancesServiceImpl implements MajCorrespondancesService 
                // TODO : passer l'état à FAILURE ou SUCCES et mettre la date de
                // fin
             }
-         } else {
-            LOGGER.info("{} - Aucun traitement à réaliser", trcPrefix);
          }
 
       } catch (SaeBddRuntimeException e) {

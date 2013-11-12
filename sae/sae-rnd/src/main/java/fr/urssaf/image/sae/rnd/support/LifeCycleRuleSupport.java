@@ -65,7 +65,12 @@ public class LifeCycleRuleSupport {
                   trcPrefix, typeDoc.getCode() });
             int dureeLifeCycleRule = lifeCycleRule.getLifeCycleLength();
             int dureeTypeDoc = typeDoc.getDureeConservation();
-            if (dureeTypeDoc != dureeLifeCycleRule) {
+            
+            if (dureeTypeDoc == dureeLifeCycleRule) {
+               LOGGER.debug(
+                     "{} - La durée de conservation du code {} est inchangée",
+                     new String[] { trcPrefix, typeDoc.getCode() });
+            } else {
 
                serviceProviderSupport.getStorageAdministrationService()
                      .updateLifeCycleRule(typeDoc.getCode(), dureeTypeDoc,
@@ -76,10 +81,6 @@ public class LifeCycleRuleSupport {
                            new String[] { trcPrefix, typeDoc.getCode(),
                                  Integer.toString(dureeLifeCycleRule),
                                  Integer.toString(dureeTypeDoc) });
-            } else {
-               LOGGER.debug(
-                     "{} - La durée de conservation du code {} est inchangée",
-                     new String[] { trcPrefix, typeDoc.getCode() });
             }
          }
       } catch (ObjectAlreadyExistsException objectExist) {

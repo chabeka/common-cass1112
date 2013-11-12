@@ -119,21 +119,21 @@ public class RndSupport {
          typeDoc = new TypeDocument();
 
          typeDoc.setCode(result.getKey());
-         typeDoc.setCloture(result.getBoolean(rndDao.RND_CLOTURE));
+         typeDoc.setCloture(result.getBoolean(RndDao.RND_CLOTURE));
 
          // Code activité et code fonction peuvent être nul (ex code temporaire)
-         if (result.getInteger(rndDao.RND_CODE_ACTIVITE) != null) {
-            typeDoc.setCodeActivite(result.getInteger(rndDao.RND_CODE_ACTIVITE)
+         if (result.getInteger(RndDao.RND_CODE_ACTIVITE) != null) {
+            typeDoc.setCodeActivite(result.getInteger(RndDao.RND_CODE_ACTIVITE)
                   .toString());
          }
-         if (result.getInteger(rndDao.RND_CODE_FONCTION) != null) {
-            typeDoc.setCodeFonction(result.getInteger(rndDao.RND_CODE_FONCTION)
+         if (result.getInteger(RndDao.RND_CODE_FONCTION) != null) {
+            typeDoc.setCodeFonction(result.getInteger(RndDao.RND_CODE_FONCTION)
                   .toString());
          }
          typeDoc.setDureeConservation(result
-               .getInteger(rndDao.RND_DUREE_CONSERVATION));
-         typeDoc.setLibelle(result.getString(rndDao.RND_LIBELLE));
-         typeDoc.setType(TypeCode.valueOf(result.getString(rndDao.RND_TYPE)));
+               .getInteger(RndDao.RND_DUREE_CONSERVATION));
+         typeDoc.setLibelle(result.getString(RndDao.RND_LIBELLE));
+         typeDoc.setType(TypeCode.valueOf(result.getString(RndDao.RND_TYPE)));
       }
       return typeDoc;
    }
