@@ -88,7 +88,7 @@ public class EcdeControleSupportImpl implements EcdeControleSupport {
       if ("SHA-1".equals(typeHash)) {
 
          // récupération du contenu pour le calcul du HASH
-         byte[] content = null;
+         byte[] content;
          try {
             content = FileUtils.readFileToByteArray(sommaire);
          } catch (IOException e) {

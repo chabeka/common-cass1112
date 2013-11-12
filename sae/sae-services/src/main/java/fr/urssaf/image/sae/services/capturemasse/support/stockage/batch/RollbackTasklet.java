@@ -103,8 +103,7 @@ public class RollbackTasklet implements Tasklet {
              * à mesure. Il faut donc toujours récupérer le 1er élément de la
              * liste.
              */
-            CaptureMasseIntegratedDocument intDoc = listIntegDocs
-                  .toArray(new CaptureMasseIntegratedDocument[0])[0];
+            CaptureMasseIntegratedDocument intDoc = listIntegDocs.peek();
             // UUID strDocumentID = listIntegDocs.toArray(new UUID[0])[0];
             UUID strDocumentID = intDoc.getIdentifiant();
 

@@ -45,7 +45,7 @@ public class SaeComposantsReader
       InitializingBean {
 
    private static final Log LOGGER = LogFactory
-         .getLog(StaxEventItemReader.class);
+         .getLog(SaeComposantsReader.class);
 
    private FragmentEventReader fragmentReader;
 

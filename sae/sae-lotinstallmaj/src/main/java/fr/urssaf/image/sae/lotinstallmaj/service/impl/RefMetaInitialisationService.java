@@ -186,7 +186,7 @@ public final class RefMetaInitialisationService {
             
             // Modifiable par le client
             boolean modifiableParClient = readBoolean(nextLine, "AA");
-            System.out.println(longCode + " : " + modifiableParClient);
+            LOG.debug(longCode + " : " + modifiableParClient);
             
             metadonnee.setModifiable(modifiableParClient);
             

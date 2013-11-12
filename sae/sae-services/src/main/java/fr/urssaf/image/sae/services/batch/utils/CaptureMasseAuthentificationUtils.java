@@ -80,7 +80,8 @@ public final class CaptureMasseAuthentificationUtils {
          lRoles.add(ROLE_RECHERCHE);
       }
 
-      String[] roles = lRoles.toArray(new String[0]);
+      String[] roles = new String[lRoles.size()];
+      lRoles.toArray(roles);
       viExtrait.getSaeDroits().put(ROLE_RECHERCHE, prmdList);
 
       token = AuthenticationFactory.createAuthentication(viExtrait

@@ -1,16 +1,15 @@
 package fr.urssaf.image.sae.ecde.modele.source;
 
-
-
+import java.util.Arrays;
 
 /***
  * 
- * Classe permettant de recuperer un tableau de EcdeSource
- * <br> à savoir EcdeSource[]
- *
+ * Classe permettant de recuperer un tableau de EcdeSource <br>
+ * à savoir EcdeSource[]
+ * 
  */
 public class EcdeSources {
-   
+
    /*
     * Objet sources
     */
@@ -20,15 +19,15 @@ public class EcdeSources {
     * @return the sources
     */
    public final EcdeSource[] getSources() {
-      return sources;
+      return Arrays.copyOf(sources, sources.length);
    }
 
    /**
-    * @param sources the sources to set
+    * @param sources
+    *           the sources to set
     */
    public final void setSources(EcdeSource[] sources) {
-      this.sources = sources;
+      this.sources = Arrays.copyOf(sources, sources.length);
    }
-   
 
 }

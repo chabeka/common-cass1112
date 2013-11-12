@@ -71,7 +71,7 @@ public class SAEControleSupportServiceImpl implements SAEControleSupportService 
       if (StringUtils.equalsIgnoreCase("SHA-1", typeHash)) {
 
          // récupération du contenu pour le calcul du HASH
-         byte[] content = null;
+         byte[] content;
          try {
             content = FileUtils.readFileToByteArray(sommaire);
          } catch (IOException e) {

@@ -424,7 +424,8 @@ public class ResultatFileSuccessSupportImpl implements
          somStream = new FileInputStream(sommaireFile);
          reader = StaxReadUtils.loadReader(somStream);
 
-         XMLEvent event = skipToTag(reader, tagName);
+         XMLEvent event;
+         skipToTag(reader, tagName);
 
          List<CaptureMasseVirtualDocument> list = new ArrayList<CaptureMasseVirtualDocument>(
                intDocuments);

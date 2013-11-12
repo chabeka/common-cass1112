@@ -139,7 +139,7 @@ public class RollbackVirtualTasklet implements Tasklet {
              * liste.
              */
             CaptureMasseVirtualDocument intDoc = listIntegDocs
-                  .toArray(new CaptureMasseVirtualDocument[0])[0];
+                  .peek();
             // UUID strDocumentID = listIntegDocs.toArray(new UUID[0])[0];
             UUID strDocumentID = intDoc.getUuid();
 

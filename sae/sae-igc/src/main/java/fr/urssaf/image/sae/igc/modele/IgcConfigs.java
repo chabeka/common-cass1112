@@ -16,21 +16,21 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 public class IgcConfigs {
 
    @XStreamImplicit(itemFieldName = "IgcConfig")
-   private List<IgcConfig> igcConfigs;
+   private List<IgcConfig> igcListConfigs;
 
    
    /**
     * @return the igcConfigs
     */
    public final List<IgcConfig> getIgcConfigs() {
-      return igcConfigs;
+      return igcListConfigs;
    }
 
    /**
     * @param igcConfigs the igcConfigs to set
     */
    public final void setIgcConfigs(List<IgcConfig> igcConfigs) {
-      this.igcConfigs = igcConfigs;
+      this.igcListConfigs = igcConfigs;
    }
    
 }

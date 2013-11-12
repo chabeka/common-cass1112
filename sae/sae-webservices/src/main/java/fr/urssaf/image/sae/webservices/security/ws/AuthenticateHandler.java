@@ -187,12 +187,11 @@ public class AuthenticateHandler {
             LOG.warn(prefixeLog
                   + "Erreur lors de la mise en place de l'authentification : "
                   + e.toString(), e);
-            
-            if (e.getCause() != null
-                  && e.getCause() instanceof UncheckedExecutionException
-                  && e.getCause().getCause() != null
+
+            if (e.getCause() instanceof UncheckedExecutionException
                   && e.getCause().getCause() instanceof HectorException) {
-               throw new AxisFault("La base de données est temporairement inaccessible", e);
+               throw new AxisFault(
+                     "La base de données est temporairement inaccessible", e);
             }
 
             throw new VIVerificationAxisFault(e);
@@ -204,7 +203,8 @@ public class AuthenticateHandler {
             throw new SaeCertificateAxisFault(e);
          } catch (Throwable ex) {
             // Récupère toutes les autres erreurs, y compris les Runtime
-            // Permet de catcher par exemple les indisponibilités de la base Cassandra
+            // Permet de catcher par exemple les indisponibilités de la base
+            // Cassandra
             if (hasHectorException(ex)) {
                throw new ErreurInterneBddIndispoAxisFault(ex);
             } else {
@@ -217,17 +217,19 @@ public class AuthenticateHandler {
       LOG.info(prefixeLog + "Le contexte de sécurité est en place");
 
    }
-   
+
    /**
     * Recherche une HectorException dans les causes de l'exception<br>
-    * Méthode récursive.  
+    * Méthode récursive.
     * 
-    * @param ex l'exception dans laquelle recherche une HectorException
-    * @return true si on a trouvé une instance de HectorException dans les causes, false dans le cas contraire
+    * @param ex
+    *           l'exception dans laquelle recherche une HectorException
+    * @return true si on a trouvé une instance de HectorException dans les
+    *         causes, false dans le cas contraire
     */
    private boolean hasHectorException(Throwable ex) {
-      
-      if (ex.getCause()==null) {
+
+      if (ex.getCause() == null) {
          return Boolean.FALSE;
       } else {
          if (ex.getCause() instanceof HectorException) {
@@ -236,9 +238,7 @@ public class AuthenticateHandler {
             return hasHectorException(ex.getCause());
          }
       }
-      
-      
+
    }
-   
 
 }

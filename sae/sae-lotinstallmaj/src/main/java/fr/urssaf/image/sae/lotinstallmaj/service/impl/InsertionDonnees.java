@@ -211,14 +211,14 @@ public class InsertionDonnees {
 
       Date debutTracabilite = getTracabiliteDerniereDateTraitee();
 
-      checkAndAddTracabiliteParameter(cfTmpl, "PURGE_TECH_DUREE", new Integer(
+      checkAndAddTracabiliteParameter(cfTmpl, "PURGE_TECH_DUREE", Integer.valueOf(
             10));
-      checkAndAddTracabiliteParameter(cfTmpl, "PURGE_SECU_DUREE", new Integer(
+      checkAndAddTracabiliteParameter(cfTmpl, "PURGE_SECU_DUREE", Integer.valueOf(
             10));
       checkAndAddTracabiliteParameter(cfTmpl, "PURGE_EXPLOIT_DUREE",
-            new Integer(10));
+            Integer.valueOf(10));
       checkAndAddTracabiliteParameter(cfTmpl, "PURGE_EVT_DUREE",
-            new Integer(10));
+            Integer.valueOf(10));
 
       checkAndAddTracabiliteParameter(cfTmpl, "PURGE_TECH_IS_RUNNING",
             Boolean.FALSE);

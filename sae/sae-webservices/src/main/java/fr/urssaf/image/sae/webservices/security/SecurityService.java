@@ -2,6 +2,7 @@ package fr.urssaf.image.sae.webservices.security;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -113,7 +114,9 @@ public class SecurityService {
 
       logVI(viExtrait);
 
-      String[] roles = viExtrait.getSaeDroits().keySet().toArray(new String[0]);
+      Set<String> rolesSet = viExtrait.getSaeDroits().keySet();
+      String[] roles = new String[rolesSet.size()];
+      rolesSet.toArray(roles);
 
       AuthenticationToken authentication = AuthenticationFactory
             .createAuthentication(viExtrait.getIdUtilisateur(), viExtrait,
