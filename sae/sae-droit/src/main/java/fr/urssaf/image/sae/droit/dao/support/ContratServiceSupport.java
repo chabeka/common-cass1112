@@ -35,7 +35,7 @@ import fr.urssaf.image.sae.droit.dao.serializer.ListSerializer;
 @Component
 public class ContratServiceSupport {
 
-   private ContratServiceDao dao;
+   private final ContratServiceDao dao;
 
    /**
     * constructeur

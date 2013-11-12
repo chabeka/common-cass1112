@@ -23,7 +23,7 @@ import fr.urssaf.image.sae.droit.dao.model.Pagma;
 @Component
 public class PagmaSupport {
 
-   private PagmaDao dao;
+   private final PagmaDao dao;
    
    /**
     * constructeur

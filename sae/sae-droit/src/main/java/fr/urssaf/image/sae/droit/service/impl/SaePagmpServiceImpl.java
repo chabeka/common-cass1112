@@ -42,13 +42,13 @@ public class SaePagmpServiceImpl implements SaePagmpService {
 
    private static final String PREFIXE_PAGMP = "/DroitPagmp/";
 
-   private CuratorFramework curatorClient;
+   private final CuratorFramework curatorClient;
 
-   private PagmpSupport pagmpSupport;
+   private final PagmpSupport pagmpSupport;
 
-   private PrmdSupport prmdSupport;
+   private final PrmdSupport prmdSupport;
 
-   private JobClockSupport clockSupport;
+   private final JobClockSupport clockSupport;
    
    /**
     * constructeur

@@ -92,9 +92,9 @@ public interface SaeDroitService {
    
    /**
     * Retourne un contrat de service complet avec tous ses informations
-    * @param id code client du contrat de service
+    * @param idClient code client du contrat de service
     * @return {@link ServiceContractDatas}
     */
-   ServiceContractDatas getFullContratService(String id);
+   ServiceContractDatas getFullContratService(String idClient);
 
 }

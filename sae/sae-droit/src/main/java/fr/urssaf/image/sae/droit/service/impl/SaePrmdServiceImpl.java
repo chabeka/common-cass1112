@@ -42,11 +42,11 @@ public class SaePrmdServiceImpl implements SaePrmdService {
 
    private static final String PREFIXE_PRMD = "/DroitPrmd/";
 
-   private PrmdSupport prmdSupport;
+   private final PrmdSupport prmdSupport;
 
-   private JobClockSupport clockSupport;
+   private final JobClockSupport clockSupport;
 
-   private CuratorFramework curatorClient;
+   private final CuratorFramework curatorClient;
 
    /**
     * constructeur

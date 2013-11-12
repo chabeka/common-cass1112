@@ -38,13 +38,13 @@ public class SaePagmaServiceImpl implements SaePagmaService {
 
    private static final String PREFIXE_PAGMA = "/DroitPagma/";
 
-   private CuratorFramework curatorClient;
+   private final CuratorFramework curatorClient;
 
-   private PagmaSupport pagmaSupport;
+   private final PagmaSupport pagmaSupport;
 
-   private ActionUnitaireSupport actionSupport;
+   private final ActionUnitaireSupport actionSupport;
 
-   private JobClockSupport clockSupport;
+   private final JobClockSupport clockSupport;
 
    
    /**

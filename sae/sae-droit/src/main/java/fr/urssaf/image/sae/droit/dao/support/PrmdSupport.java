@@ -34,7 +34,7 @@ import fr.urssaf.image.sae.droit.dao.serializer.MapSerializer;
 public class PrmdSupport {
 
 
-   private PrmdDao dao;
+   private final PrmdDao dao;
    
    /**
     * constructeur

@@ -39,11 +39,11 @@ public class SaeActionUnitaireServiceImpl implements SaeActionUnitaireService {
 
    private static final String PREFIXE_AU = "/DroitActionUnitaire/";
 
-   private ActionUnitaireSupport actionSupport;
+   private final ActionUnitaireSupport actionSupport;
 
-   private JobClockSupport clockSupport;
+   private final JobClockSupport clockSupport;
 
-   private CuratorFramework curatorClient;
+   private final CuratorFramework curatorClient;
    
    
    /**

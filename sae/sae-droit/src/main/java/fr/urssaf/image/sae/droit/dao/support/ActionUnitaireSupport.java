@@ -32,7 +32,7 @@ import fr.urssaf.image.sae.droit.dao.model.ActionUnitaire;
 @Component
 public class ActionUnitaireSupport {
 
-   private ActionUnitaireDao dao;
+   private final ActionUnitaireDao dao;
    
    /**
     * constructeur

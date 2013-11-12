@@ -40,7 +40,7 @@ public class SaeDroitServiceValidation {
          + "&& args(idClient)";
 
    private static final String ADD_PAGM_METHOD = "execution(void fr.urssaf.image.sae.droit.service.SaeDroitService.addPagmContratService(*,*))"
-         + "&& args(id, pagm)";;
+         + "&& args(idClient, pagm)";;
 
    /**
     * Validation de la méthode loadSaeDroits(String, List)
@@ -163,9 +163,9 @@ public class SaeDroitServiceValidation {
     *           liste des pagms
     */
    @Before(ADD_PAGM_METHOD)
-   public final void checkAddPagm(final String id, Pagm pagm) {
+   public final void checkAddPagm(final String idClient, Pagm pagm) {
 
-      if (StringUtils.isEmpty(id)) {
+      if (StringUtils.isEmpty(idClient)) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
                ARG_REQUIRED, "identifiant client"));
       }

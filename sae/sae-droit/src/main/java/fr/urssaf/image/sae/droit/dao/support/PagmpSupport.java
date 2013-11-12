@@ -32,7 +32,7 @@ import fr.urssaf.image.sae.droit.dao.model.Pagmp;
 @Component
 public class PagmpSupport {
 
-   private PagmpDao dao;
+   private final PagmpDao dao;
    
    /**
     * constructeur

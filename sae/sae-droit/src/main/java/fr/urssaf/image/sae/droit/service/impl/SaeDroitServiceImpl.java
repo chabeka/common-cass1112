@@ -607,9 +607,9 @@ public class SaeDroitServiceImpl implements SaeDroitService {
     * {@inheritDoc}
     */
    @Override
-   public ServiceContractDatas getFullContratService(String id) {
+   public ServiceContractDatas getFullContratService(String idClient) {
 
-      return completeContratSupport.getCs(id);
+      return completeContratSupport.getCs(idClient);
    }
    
 

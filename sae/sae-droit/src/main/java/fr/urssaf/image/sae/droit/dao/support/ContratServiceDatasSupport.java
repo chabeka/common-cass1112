@@ -26,17 +26,17 @@ import fr.urssaf.image.sae.droit.dao.model.ServiceContractDatas;
 @Component
 public class ContratServiceDatasSupport {
 
-   private ContratServiceSupport contratSupport;
+   private final ContratServiceSupport contratSupport;
 
-   private PagmSupport pagmSupport;
+   private final PagmSupport pagmSupport;
 
-   private PagmaSupport pagmaSupport;
+   private final PagmaSupport pagmaSupport;
 
-   private PagmpSupport pagmpSupport;
+   private final PagmpSupport pagmpSupport;
 
-   private ActionUnitaireSupport actionSupport;
+   private final ActionUnitaireSupport actionSupport;
 
-   private PrmdSupport prmdSupport;
+   private final PrmdSupport prmdSupport;
 
    /**
     * Constructeur
@@ -170,11 +170,11 @@ public class ContratServiceDatasSupport {
 
    /**
     * Renvoie le CS
-    * @param id du CS
+    * @param ident identifiant du CS
     * @return le contrat de service
     */
-   public final ServiceContractDatas getCs(String id) {
-      ServiceContract contract = contratSupport.find(id);
+   public final ServiceContractDatas getCs(String ident) {
+      ServiceContract contract = contratSupport.find(ident);
 
       return getAllServiceContractDatas(contract);
 

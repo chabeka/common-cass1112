@@ -28,7 +28,7 @@ public class PagmSupport {
 
    private final PagmSerializer pagmSerializer = PagmSerializer.get();
 
-   private PagmDao dao;
+   private final PagmDao dao;
    
    /**
     * constructeur
