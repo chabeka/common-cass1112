@@ -30,28 +30,28 @@ public class ArchivageMasseAvecHashTest {
       //  - Un répertoire de traitement a été créé dans l'ECDE dans la bonne arborescence
       //    par l'application cliente.
       //    Dans cet exemple :
-      //      [RacineEcdeDuMontageNfsCoteClient]/le_contrat_service/20120120/Traitement004_ArchivageMasseAvecHashAvecHash
+      //      [RacineEcdeDuMontageNfsCoteClient]/CS_DEV_TOUTES_ACTIONS/20120120/Traitement002_ArchivageMasse
       //  - Le fichier sommaire.xml a été déposé dans ce répertoire.
       //    Exemple :
-      //      [RacineEcdeDuMontageNfsCoteClient]/le_contrat_service/20120120/Traitement004_ArchivageMasseAvecHash/sommaire.xml
+      //      [RacineEcdeDuMontageNfsCoteClient]/CS_DEV_TOUTES_ACTIONS/20120120/Traitement002_ArchivageMasse/sommaire.xml
       //  - Les fichiers à archiver, référencés dans sommaire.xml, ont été déposés dans
       //    le sous-répertoire "documents" du répertoire de traitement.
       //    Dans cet exemple :
-      //     [RacineEcdeDuMontageNfsCoteClient]/le_contrat_service/20120120/Traitement004_ArchivageMasseAvecHash/documents/attestation1.pdf
-      //     [RacineEcdeDuMontageNfsCoteClient]/le_contrat_service/20120120/Traitement004_ArchivageMasseAvecHash/documents/attestation2.pdf
+      //     [RacineEcdeDuMontageNfsCoteClient]/CS_DEV_TOUTES_ACTIONS/20120120/Traitement002_ArchivageMasse/documents/attestation1.pdf
+      //     [RacineEcdeDuMontageNfsCoteClient]/CS_DEV_TOUTES_ACTIONS/20120120/Traitement002_ArchivageMasse/documents/attestation2.pdf
       //  - Le hash SHA-1 du sommaire.xml a été calculé 
       // 
       // L'URL ECDE correspondant au sommaire.xml est :
-      //  => ecde://cer69-ecdeint.cer69.recouv/le_contrat_service/20120120/Traitement004_ArchivageMasseAvecHash/sommaire.xml
+      //  => ecde://cer69-saeint3.cer69.recouv/CS_DEV_TOUTES_ACTIONS/20120120/Traitement002_ArchivageMasse/sommaire.xml
       // Le hash SHA-1 du sommaire.xml est :
-      //  => 97e5ea774a7510384b04d0d10e68da955588e11d
+      //  => bbf4df5e743c1dace7f50034c4f3863d9a9f0d43
       
       // URL ECDE du fichier sommaire.xml
-      String urlEcdeSommaire = "ecde://cer69-ecdeint.cer69.recouv/le_contrat_service/20120120/Traitement004_ArchivageMasseAvecHash/sommaire.xml";
+      String urlEcdeSommaire = "ecde://cer69-saeint3.cer69.recouv/CS_DEV_TOUTES_ACTIONS/20120120/Traitement002_ArchivageMasse/sommaire.xml";
       
       // Hash SHA-1 du fichier sommaire.xml
       String typeHash = "SHA-1";
-      String hash = "97e5ea774a7510384b04d0d10e68da955588e11d";
+      String hash = "bbf4df5e743c1dace7f50034c4f3863d9a9f0d43";
       
       // Construction du Stub
       SaeServiceStub saeService = StubFactory.createStubAvecAuthentification();
@@ -83,14 +83,14 @@ public class ArchivageMasseAvecHashTest {
     * Le SAE renvoie la SoapFault suivante :<br>
     * <ul>
     *    <li>Code : sae:HashSommaireIncorrect</li>
-    *    <li>Message : Le hash du fichier sommaire.xml attendu : HASHPASBON est différent de celui obtenu : 97e5ea774a7510384b04d0d10e68da955588e11d (type de hash : SHA-1)</li>
+    *    <li>Message : Le hash du fichier sommaire.xml attendu : HASHPASBON est différent de celui obtenu : bbf4df5e743c1dace7f50034c4f3863d9a9f0d43 (type de hash : SHA-1)</li>
     * </ul>
     */
    @Test
    public void archivageMasse_failure() {
       
       // URL ECDE du fichier sommaire.xml
-      String urlEcdeSommaire = "ecde://cer69-ecdeint.cer69.recouv/le_contrat_service/20120120/Traitement004_ArchivageMasseAvecHash/sommaire.xml";
+      String urlEcdeSommaire = "ecde://cer69-saeint3.cer69.recouv/CS_DEV_TOUTES_ACTIONS/20120120/Traitement002_ArchivageMasse/sommaire.xml";
       
       // Hash SHA-1 du fichier sommaire.xml.
       // Le hash est faux
@@ -125,7 +125,7 @@ public class ArchivageMasseAvecHashTest {
                "urn:sae:faultcodes",
                "sae",
                "HashSommaireIncorrect",
-               "Le hash du fichier sommaire.xml attendu : HASHPASBON est différent de celui obtenu : 97e5ea774a7510384b04d0d10e68da955588e11d (type de hash : SHA-1)");
+               "Le hash du fichier sommaire.xml attendu : HASHPASBON est différent de celui obtenu : bbf4df5e743c1dace7f50034c4f3863d9a9f0d43 (type de hash : SHA-1)");
          
       } catch (RemoteException exception) {
          

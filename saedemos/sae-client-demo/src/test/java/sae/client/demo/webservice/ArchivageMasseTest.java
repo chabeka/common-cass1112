@@ -29,21 +29,21 @@ public class ArchivageMasseTest {
       //  - Un répertoire de traitement a été créé dans l'ECDE dans la bonne arborescence
       //    par l'application cliente.
       //    Dans cet exemple :
-      //      [RacineEcdeDuMontageNfsCoteClient]/le_contrat_service/20120120/Traitement002_ArchivageMasse
+      //      [RacineEcdeDuMontageNfsCoteClient]/CS_DEV_TOUTES_ACTIONS/20120120/Traitement002_ArchivageMasse
       //  - Le fichier sommaire.xml a été déposé dans ce répertoire.
       //    Exemple :
-      //      [RacineEcdeDuMontageNfsCoteClient]/le_contrat_service/20120120/Traitement002_ArchivageMasse/sommaire.xml
+      //      [RacineEcdeDuMontageNfsCoteClient]/CS_DEV_TOUTES_ACTIONS/20120120/Traitement002_ArchivageMasse/sommaire.xml
       //  - Les fichiers à archiver, référencés dans sommaire.xml, ont été déposés dans
       //    le sous-répertoire "documents" du répertoire de traitement.
       //    Dans cet exemple :
-      //     [RacineEcdeDuMontageNfsCoteClient]/le_contrat_service/20120120/Traitement002_ArchivageMasse/documents/attestation1.pdf
-      //     [RacineEcdeDuMontageNfsCoteClient]/le_contrat_service/20120120/Traitement002_ArchivageMasse/documents/attestation2.pdf
+      //     [RacineEcdeDuMontageNfsCoteClient]/CS_DEV_TOUTES_ACTIONS/20120120/Traitement002_ArchivageMasse/documents/attestation1.pdf
+      //     [RacineEcdeDuMontageNfsCoteClient]/CS_DEV_TOUTES_ACTIONS/20120120/Traitement002_ArchivageMasse/documents/attestation2.pdf
       // 
       // L'URL ECDE correspondant au sommaire.xml est :
-      //  => ecde://cer69-ecdeint.cer69.recouv/le_contrat_service/20120120/Traitement002_ArchivageMasse/sommaire.xml 
+      //  => ecde://cer69-saeint3.cer69.recouv/CS_DEV_TOUTES_ACTIONS/20120120/Traitement002_ArchivageMasse/sommaire.xml 
       
       // URL ECDE du fichier sommaire.xml
-      String urlEcdeSommaire = "ecde://cer69-ecdeint.cer69.recouv/le_contrat_service/20120120/Traitement002_ArchivageMasse/sommaire.xml";
+      String urlEcdeSommaire = "ecde://cer69-saeint3.cer69.recouv/CS_DEV_TOUTES_ACTIONS/20120120/Traitement002_ArchivageMasse/sommaire.xml";
       
       // Construction du Stub
       SaeServiceStub saeService = StubFactory.createStubAvecAuthentification();
@@ -73,7 +73,7 @@ public class ArchivageMasseTest {
     * Le SAE renvoie la SoapFault suivante :<br>
     * <ul>
     *    <li>Code : sae:CaptureUrlEcdeFichierIntrouvable</li>
-    *    <li>Message : Le fichier pointé par l'URL ECDE est introuvable (ecde://cer69-ecdeint.cer69.recouv/le_contrat_service/20120120/TraitementInexistant/sommaire.xml)</li>
+    *    <li>Message : Le fichier pointé par l'URL ECDE est introuvable (ecde://cer69-saeint3.cer69.recouv/CS_DEV_TOUTES_ACTIONS/20120120/TraitementInexistant/sommaire.xml)</li>
     * </ul>
     */
    @Test
@@ -81,7 +81,7 @@ public class ArchivageMasseTest {
       
       // URL ECDE du fichier sommaire.xml
       // Elle pointe sur un fichier inexistant
-      String urlEcdeSommaire = "ecde://cer69-ecdeint.cer69.recouv/le_contrat_service/20120120/TraitementInexistant/sommaire.xml";
+      String urlEcdeSommaire = "ecde://cer69-saeint3.cer69.recouv/CS_DEV_TOUTES_ACTIONS/20120120/TraitementInexistant/sommaire.xml";
       
       // Construction du Stub
       SaeServiceStub saeService = StubFactory.createStubAvecAuthentification();
@@ -111,7 +111,7 @@ public class ArchivageMasseTest {
                "urn:sae:faultcodes",
                "sae",
                "CaptureUrlEcdeFichierIntrouvable",
-               "Le fichier pointé par l'URL ECDE est introuvable (ecde://cer69-ecdeint.cer69.recouv/le_contrat_service/20120120/TraitementInexistant/sommaire.xml)");
+               "Le fichier pointé par l'URL ECDE est introuvable (ecde://cer69-saeint3.cer69.recouv/CS_DEV_TOUTES_ACTIONS/20120120/TraitementInexistant/sommaire.xml)");
          
       } catch (RemoteException exception) {
          
