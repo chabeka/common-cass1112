@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -14,9 +15,11 @@ import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseResultatFor
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ConsultationFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.TestStockageMasseAllFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.modele.CaptureMasseResultat;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CodeMetadonneeList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeur;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeurList;
+import fr.urssaf.image.sae.integration.ihmweb.modele.ModeConsultationEnum;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTest;
 import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.comparator.ResultatRechercheComparator;
@@ -91,6 +94,8 @@ public class Test220Controller extends
       
       ConsultationFormulaire formConsult = formulaire.getConsultFormulaire();
       
+      formConsult.setModeConsult(ModeConsultationEnum.NouveauServiceAvecMtom);
+      
       CodeMetadonneeList codeMetaConsult = new CodeMetadonneeList();
       formConsult.setCodeMetadonnees(codeMetaConsult);
       codeMetaConsult.add("Denomination");
@@ -140,16 +145,27 @@ public class Test220Controller extends
    private void etape1captureMasseAppelWs(String urlWebService,
          TestStockageMasseAllFormulaire formulaire) {
 
-      // Vide le résultat du test précédent de l'étape 2
-      CaptureMasseResultatFormulaire formCaptMassRes = formulaire
-            .getCaptureMasseResultat();
-      formCaptMassRes.getResultats().clear();
-      formCaptMassRes.setUrlSommaire(formulaire.getCaptureMasseDeclenchement()
-            .getUrlSommaire());
+      // Vide le résultat du test précédent de l'étape 2 (lecture ECDE)
+      formulaire.getCaptureMasseResultat().getResultats().clear();
+      formulaire.getCaptureMasseResultat().setUrlSommaire(
+            formulaire.getCaptureMasseDeclenchement().getUrlSommaire());
+      
+      // Vide le résultat du test précédent de l'étape 3 (recherche)
+      formulaire.getRechFormulaire().getResultats().clear();
+      
+      // Vide le résultat du test précédent de l'étape 4 (consultation)
+      formulaire.getConsultFormulaire().getResultats().clear();
+      
+      // Vide le résultat du test précédent de l'étape 5 (comptages dfce)
+      formulaire.getComptagesFormulaire().getResultats().clear();
+      formulaire.getComptagesFormulaire().setIdTdm(StringUtils.EMPTY);
 
       // Appel de la méthode de test
-      getCaptureMasseTestService().appelWsOpArchiMasseOKAttendu(urlWebService,
-            formulaire.getCaptureMasseDeclenchement());
+      CaptureMasseResultat cmResult = getCaptureMasseTestService().appelWsOpArchiMasseOKAttendu(
+            urlWebService, formulaire.getCaptureMasseDeclenchement());
+      
+      // Stocke l'id du tdm renvoyé par la méthode
+      formulaire.getComptagesFormulaire().setIdTdm(cmResult.getIdTraitement());
 
    }
 
@@ -190,8 +206,8 @@ public class Test220Controller extends
          }
          
          
-         // Au mieux, si le test est OK, on le passe "A contrôler", car
-         // certaines métadonnées doivent être vérifiées à la main
+         // Si les vérifs sont OK jusque là, le test passe en OK car
+         // tout a été vérifié
          if (!TestStatusEnum.Echec.equals(formulaire.getRechFormulaire()
                .getResultats().getStatus())) {
 
@@ -199,7 +215,7 @@ public class Test220Controller extends
                   results[0].getIdArchive().getUuidType());
 
             formulaire.getRechFormulaire().getResultats().setStatus(
-                  TestStatusEnum.AControler);
+                  TestStatusEnum.Succes);
          }
 
       }
@@ -215,10 +231,11 @@ public class Test220Controller extends
 
       String numeroResultatRecherche = Integer.toString(numeroRecours);
       valeursAttendues.add("Denomination", "Test 220-CaptureMasse-Avec-Hash-OK-Tor-10");
-      // valeursAttendues.add("IdTraitementMasseInterne",""); // TODO IdTraitementMasseInterne
+      valeursAttendues.add("NumeroRecours", numeroResultatRecherche);
 
       getRechercheTestService().verifieResultatRecherche(resultatRecherche,
             numeroResultatRecherche, resultatTest, valeursAttendues);
+      
    }
    
    
@@ -228,13 +245,13 @@ public class Test220Controller extends
       // Les codes des métadonnées attendues
       CodeMetadonneeList codeMetaAttendues = new CodeMetadonneeList();
       codeMetaAttendues.add("Denomination");
-      // codeMetaAttendues.add("IdTraitementMasseInterne");
+      codeMetaAttendues.add("IdTraitementMasseInterne");
       
       // Valeurs des métadonnées attendues
       List<MetadonneeValeur> valeursMetaAttendus = new ArrayList<MetadonneeValeur>();
       valeursMetaAttendus.add(new MetadonneeValeur("Denomination","Test 220-CaptureMasse-Avec-Hash-OK-Tor-10"));
-      // TODO : vérifier IdTraitementMasseInterne 
-      //valeursMetaAttendus.add(new MetadonneeValeur("IdTraitementMasseInterne",""));
+      valeursMetaAttendus.add(new MetadonneeValeur("IdTraitementMasseInterne",
+            formulaire.getComptagesFormulaire().getIdTdm()));
       
       // Appel du service de vérification
       getConsultationTestService()
@@ -249,7 +266,7 @@ public class Test220Controller extends
       // car tout a pu être vérifié
       ResultatTest resultatTest = formulaire.getConsultFormulaire().getResultats();
       if (!TestStatusEnum.Echec.equals(resultatTest.getStatus())) {
-         resultatTest.setStatus(TestStatusEnum.AControler);
+         resultatTest.setStatus(TestStatusEnum.Succes);
       }
       
    }
