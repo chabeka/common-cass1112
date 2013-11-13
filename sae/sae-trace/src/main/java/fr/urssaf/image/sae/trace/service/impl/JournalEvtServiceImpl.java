@@ -5,12 +5,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.UUID;
 
 import javanet.staxutils.IndentingXMLEventWriter;
 
@@ -21,7 +18,6 @@ import javax.xml.stream.XMLStreamException;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
-import org.apache.commons.lang.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,13 +26,12 @@ import org.springframework.stereotype.Service;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvt;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndex;
+import fr.urssaf.image.sae.trace.dao.support.AbstractTraceSupport;
 import fr.urssaf.image.sae.trace.dao.support.TraceJournalEvtSupport;
 import fr.urssaf.image.sae.trace.exception.TraceRuntimeException;
-import fr.urssaf.image.sae.trace.model.PurgeType;
 import fr.urssaf.image.sae.trace.service.JournalEvtService;
 import fr.urssaf.image.sae.trace.service.support.LoggerSupport;
 import fr.urssaf.image.sae.trace.service.support.TraceFileSupport;
-import fr.urssaf.image.sae.trace.utils.DateRegUtils;
 import fr.urssaf.image.sae.trace.utils.StaxUtils;
 
 /**
@@ -46,7 +41,9 @@ import fr.urssaf.image.sae.trace.utils.StaxUtils;
  * 
  */
 @Service
-public class JournalEvtServiceImpl implements JournalEvtService {
+public class JournalEvtServiceImpl extends
+      AbstractTraceServiceImpl<TraceJournalEvt, TraceJournalEvtIndex> implements
+      JournalEvtService {
 
    private static final String FIN_LOG = "{} - Fin";
    private static final String DEBUT_LOG = "{} - Début";
@@ -96,7 +93,7 @@ public class JournalEvtServiceImpl implements JournalEvtService {
       String trcPrefix = "export()";
       LOGGER.debug(DEBUT_LOG, trcPrefix);
 
-      List<TraceJournalEvtIndex> listTraces = support.findByDate(date);
+      List<TraceJournalEvtIndex> listTraces = getSupport().findByDate(date);
 
       String path = null;
       String sDate = DateFormatUtils.format(date, PATTERN_DATE);
@@ -226,142 +223,31 @@ public class JournalEvtServiceImpl implements JournalEvtService {
     * {@inheritDoc}
     */
    @Override
-   public final List<TraceJournalEvtIndex> lecture(Date dateDebut,
-         Date dateFin, int limite, boolean reversed) {
-      String prefix = "lecture()";
-      LOGGER.debug(DEBUT_LOG, prefix);
-
-      List<Date> dates = DateRegUtils.getListFromDates(dateDebut, dateFin);
-      LOGGER.debug("{} - Liste des dates à regarder : {}", prefix, dates);
-
-      List<TraceJournalEvtIndex> value = null;
-      List<TraceJournalEvtIndex> list;
-      if (reversed) {
-         list = findReversedOrder(dates, limite);
-      } else {
-         list = findNormalOrder(dates, limite);
-      }
-
-      if (CollectionUtils.isNotEmpty(list)) {
-         value = list;
-      }
-
-      LOGGER.debug(FIN_LOG, prefix);
-
-      return value;
+   public JobClockSupport getClockSupport() {
+      return clockSupport;
    }
 
    /**
     * {@inheritDoc}
     */
    @Override
-   public final TraceJournalEvt lecture(UUID identifiant) {
-      return support.find(identifiant);
+   public Logger getLogger() {
+      return LOGGER;
    }
 
    /**
     * {@inheritDoc}
     */
    @Override
-   public final void purge(Date date) {
-      String prefix = "purge()";
-      LOGGER.debug(DEBUT_LOG, prefix);
-
-      Date dateIndex = DateUtils.truncate(date, Calendar.DATE);
-
-      loggerSupport.logPurgeJourneeDebut(LOGGER, prefix, PurgeType.PURGE_EVT,
-            DateRegUtils.getJournee(date));
-      long nbTracesPurgees = support.delete(dateIndex, clockSupport
-            .currentCLock());
-      loggerSupport.logPurgeJourneeFin(LOGGER, prefix, PurgeType.PURGE_EVT,
-            DateRegUtils.getJournee(date), nbTracesPurgees);
-
-      LOGGER.debug(FIN_LOG, prefix);
-
-   }
-
-   private List<TraceJournalEvtIndex> findNormalOrder(List<Date> dates,
-         int limite) {
-      int index = 0;
-      int countLeft = limite;
-      List<TraceJournalEvtIndex> result;
-      List<TraceJournalEvtIndex> values = new ArrayList<TraceJournalEvtIndex>();
-      Date currentDate, startDate, endDate;
-
-      do {
-         currentDate = dates.get(index);
-         startDate = DateRegUtils.getStartDate(currentDate, dates.get(0));
-         endDate = DateRegUtils.getEndDate(currentDate, dates
-               .get(dates.size() - 1));
-
-         result = support.findByDates(startDate, endDate, countLeft, false);
-
-         if (CollectionUtils.isNotEmpty(result)) {
-            values.addAll(result);
-            countLeft = limite - values.size();
-         }
-         index++;
-      } while (index < dates.size() && countLeft > 0
-            && !DateUtils.isSameDay(dates.get(0), dates.get(dates.size() - 1)));
-
-      return values;
-   }
-
-   private List<TraceJournalEvtIndex> findReversedOrder(List<Date> dates,
-         int limite) {
-
-      int index = dates.size() - 1;
-      int countLeft = limite;
-      List<TraceJournalEvtIndex> result;
-      List<TraceJournalEvtIndex> values = new ArrayList<TraceJournalEvtIndex>();
-      Date currentDate, startDate, endDate;
-
-      do {
-         currentDate = dates.get(index);
-         startDate = DateRegUtils.getStartDate(currentDate, dates.get(0));
-         endDate = DateRegUtils.getEndDate(currentDate, dates
-               .get(dates.size() - 1));
-
-         result = support.findByDates(startDate, endDate, countLeft, true);
-
-         if (CollectionUtils.isNotEmpty(result)) {
-            values.addAll(result);
-            countLeft = limite - values.size();
-         }
-         index--;
-      } while (index >= 0 && countLeft > 0
-            && !DateUtils.isSameDay(dates.get(0), dates.get(dates.size() - 1)));
-
-      return values;
+   public LoggerSupport getLoggerSupport() {
+      return loggerSupport;
    }
 
    /**
     * {@inheritDoc}
     */
    @Override
-   public final boolean hasRecords(Date date) {
-
-      String trcPrefix = "hasRecords()";
-      LOGGER.debug(DEBUT_LOG, trcPrefix);
-
-      Date beginDate = DateUtils.truncate(date, Calendar.DATE);
-      Date endDate = DateUtils.addDays(beginDate, 1);
-      endDate = DateUtils.addMilliseconds(endDate, -1);
-
-      List<TraceJournalEvtIndex> list = lecture(beginDate, endDate, 1, false);
-
-      boolean hasRecords = CollectionUtils.isNotEmpty(list);
-
-      if (!hasRecords) {
-         LOGGER.info("{} - Aucune trace trouvée pour la journée du {}",
-               new Object[] {
-                     trcPrefix,
-                     new SimpleDateFormat("yyyy-MM-dd", Locale.FRENCH)
-                           .format(date) });
-      }
-
-      LOGGER.debug(FIN_LOG, trcPrefix);
-      return hasRecords;
+   public AbstractTraceSupport<TraceJournalEvt, TraceJournalEvtIndex> getSupport() {
+      return support;
    }
-
 }

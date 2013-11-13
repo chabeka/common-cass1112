@@ -3,19 +3,9 @@
  */
 package fr.urssaf.image.sae.trace.dao;
 
-import java.util.UUID;
-
-import me.prettyprint.cassandra.serializers.StringSerializer;
-import me.prettyprint.cassandra.serializers.UUIDSerializer;
-import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
-import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
-import me.prettyprint.cassandra.service.template.ThriftColumnFamilyTemplate;
 import me.prettyprint.hector.api.Keyspace;
 import me.prettyprint.hector.api.Serializer;
-import me.prettyprint.hector.api.beans.HColumn;
-import me.prettyprint.hector.api.factory.HFactory;
 import me.prettyprint.hector.api.mutation.Mutator;
-import me.prettyprint.hector.api.query.SliceQuery;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -28,13 +18,10 @@ import fr.urssaf.image.sae.trace.dao.serializer.TraceRegTechniqueIndexSerializer
  * 
  */
 @Repository
-public class TraceRegTechniqueIndexDao {
+public class TraceRegTechniqueIndexDao extends
+      AbstractTraceIndexDao<TraceRegTechniqueIndex> {
 
-   private static final int MAX_ATTRIBUTS = 100;
    public static final String REG_TECHNIQUE_INDEX_CFNAME = "TraceRegTechniqueIndex";
-
-   private final ColumnFamilyTemplate<String, UUID> techIndexTmpl;
-   private final Keyspace keyspace;
 
    /**
     * Constructeur
@@ -44,59 +31,7 @@ public class TraceRegTechniqueIndexDao {
     */
    @Autowired
    public TraceRegTechniqueIndexDao(Keyspace keyspace) {
-
-      this.keyspace = keyspace;
-
-      techIndexTmpl = new ThriftColumnFamilyTemplate<String, UUID>(keyspace,
-            REG_TECHNIQUE_INDEX_CFNAME, StringSerializer.get(), UUIDSerializer
-                  .get());
-
-      techIndexTmpl.setCount(MAX_ATTRIBUTS);
-   }
-
-   @SuppressWarnings("unchecked")
-   private void addColumn(ColumnFamilyUpdater<String, UUID> updater,
-         UUID colName, Object value, Serializer valueSerializer, long clock) {
-
-      HColumn<UUID, Object> column = HFactory.createColumn(colName, value,
-            UUIDSerializer.get(), valueSerializer);
-
-      column.setClock(clock);
-      updater.setColumn(column);
-
-   }
-
-   /**
-    * ajoute une colonne <b>name</b>
-    * 
-    * @param updater
-    *           updater de <b>TraceRegTechniqueIndex</b>
-    * @param name
-    *           nom de la colonne
-    * @param value
-    *           valeur de la colonne
-    * @param clock
-    *           horloge de la colonne
-    */
-   public final void writeColumn(ColumnFamilyUpdater<String, UUID> updater,
-         UUID name, TraceRegTechniqueIndex value, long clock) {
-      addColumn(updater, name, value, TraceRegTechniqueIndexSerializer.get(),
-            clock);
-   }
-
-   /**
-    * 
-    * @return SliceQuery de <code>TraceRegTechniqueIndex</code>
-    */
-   public final SliceQuery<String, UUID, TraceRegTechniqueIndex> createSliceQuery() {
-
-      SliceQuery<String, UUID, TraceRegTechniqueIndex> sliceQuery = HFactory
-            .createSliceQuery(keyspace, StringSerializer.get(), UUIDSerializer
-                  .get(), TraceRegTechniqueIndexSerializer.get());
-
-      sliceQuery.setColumnFamily(REG_TECHNIQUE_INDEX_CFNAME);
-
-      return sliceQuery;
+      super(keyspace);
    }
 
    /**
@@ -112,41 +47,23 @@ public class TraceRegTechniqueIndexDao {
    public final void mutatorSuppressionTraceRegTechniqueIndex(
          Mutator<String> mutator, String code, long clock) {
 
-      mutator.addDeletion(code, REG_TECHNIQUE_INDEX_CFNAME, clock);
+      mutatorSuppressionLigne(mutator, code, clock);
    }
 
    /**
-    * 
-    * @return Mutator de <code>TraceRegTechniqueIndex</code>
+    * {@inheritDoc}
     */
-   public final Mutator<String> createMutator() {
-
-      Mutator<String> mutator = HFactory.createMutator(keyspace,
-            StringSerializer.get());
-
-      return mutator;
-
+   @Override
+   public String getColumnFamilyName() {
+      return REG_TECHNIQUE_INDEX_CFNAME;
    }
 
    /**
-    * Création du ColumnFamilyUpdater
-    * 
-    * @param journee
-    *           la journée, au format obtenu de {@link #getJournee(Date)}
-    * @return le ColumnFamilyUpdater
+    * {@inheritDoc}
     */
-   public final ColumnFamilyUpdater<String, UUID> createUpdater(String journee) {
-      return techIndexTmpl.createUpdater(journee);
-   }
-
-   /**
-    * Flush les mises à jour
-    * 
-    * @param updater
-    *           l'updater de la CF
-    */
-   public final void update(ColumnFamilyUpdater<String, UUID> updater) {
-      techIndexTmpl.update(updater);
+   @Override
+   public Serializer<TraceRegTechniqueIndex> getValueSerializer() {
+      return TraceRegTechniqueIndexSerializer.get();
    }
 
 }

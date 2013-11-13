@@ -9,7 +9,6 @@ import java.util.UUID;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
-import fr.urssaf.image.sae.rnd.exception.CodeRndInexistantException;
 import fr.urssaf.image.sae.services.exception.ArchiveInexistanteEx;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;

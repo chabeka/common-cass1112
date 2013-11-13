@@ -23,7 +23,6 @@ import fr.urssaf.image.sae.services.controles.SAEControlesModificationService;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.InvalidValueTypeAndFormatMetadataEx;
-import fr.urssaf.image.sae.services.exception.capture.NotArchivableMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.NotSpecifiableMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.RequiredArchivableMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.UnknownHashCodeEx;
