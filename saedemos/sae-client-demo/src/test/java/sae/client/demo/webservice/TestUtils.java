@@ -9,8 +9,11 @@ import org.apache.axis2.AxisFault;
 /**
  * Méthodes utilitaires pour les tests
  */
-public class TestUtils {
+public final class TestUtils {
 
+   private TestUtils() {
+      // Constructeur privé
+   }
    
    /**
     * Fait un sysout d'informations sur l'AxisFault passée en paramètre

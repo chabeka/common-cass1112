@@ -22,7 +22,7 @@ import sae.client.demo.webservice.security.MyKeyStore;
 /**
  * Factory de création du Stub pour appeler le service web SaeService
  */
-public class StubFactory {
+public final class StubFactory {
 
    /**
     * Nom du fichier properties contenant l'URL du service web SAE
@@ -47,6 +47,10 @@ public class StubFactory {
    private static final List<String> VI_PAGMS = Arrays
          .asList("PAGM_TOUTES_ACTIONS");
 
+   private StubFactory() {
+      // Constructeur privé
+   }
+
    /**
     * Lecture dans le fichier properties de l'URL pointant sur le service web
     * SAE
@@ -67,10 +71,6 @@ public class StubFactory {
    /**
     * Création d'un Stub paramétré avec l'authentification au service web du SAE
     * 
-    * @param issuer
-    *           l'issuer à mettre dans le VI
-    * @param pagm
-    *           le pagm à mettre dans le VI
     * @return le Stub
     */
    public static SaeServiceStub createStubAvecAuthentification() {

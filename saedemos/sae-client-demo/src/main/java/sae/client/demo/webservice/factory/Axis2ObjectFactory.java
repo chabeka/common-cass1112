@@ -2,7 +2,6 @@ package sae.client.demo.webservice.factory;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,10 +46,24 @@ import sae.client.demo.webservice.modele.SaeServiceStub.UuidType;
 /**
  * Construction d'objets du modèle Axis2
  */
-public class Axis2ObjectFactory {
+public final class Axis2ObjectFactory {
 
+   private Axis2ObjectFactory() {
+      // constructeur privé
+   }
+
+   /**
+    * Transformation des objets "pratiques" en objets Axis2 pour un appel de
+    * service web
+    * 
+    * @param urlEcdeFichier
+    *           l'URL ECDE du fichier à archiver
+    * @param metadonnees
+    *           les métadonnées à associer au fichier
+    * @return le paramètre d'entrée de l'opération "archivageUnitaire"
+    */
    public static ArchivageUnitaire contruitParamsEntreeArchivageUnitaire(
-         String urlEcdeFichier, HashMap<String, String> metadonnees) {
+         String urlEcdeFichier, Map<String, String> metadonnees) {
 
       ArchivageUnitaire archivageUnitaire = new ArchivageUnitaire();
 
@@ -71,26 +84,52 @@ public class Axis2ObjectFactory {
 
    }
 
+   /**
+    * Transformation des objets "pratiques" en objets Axis2 pour un appel de
+    * service web
+    * 
+    * @param idArchive
+    *           l'identifiant unique du document que l'on veut consulter
+    * @return le paramètre d'entrée de l'opération "consultation"
+    */
    public static Consultation contruitParamsEntreeConsultation(String idArchive) {
 
       return contruitParamsEntreeConsultation(idArchive, null);
 
    }
 
+   /**
+    * Transformation des objets "pratiques" en objets Axis2 pour un appel de
+    * service web
+    * 
+    * @param idArchive
+    *           l'identifiant unique du document que l'on veut consulter
+    * @return le paramètre d'entrée de l'opération "consultationMTOM"
+    */
    public static ConsultationMTOM contruitParamsEntreeConsultationMTOM(
          String idArchive) {
 
       return contruitParamsEntreeConsultationMTOM(idArchive, null);
 
    }
-   
-   
-   private static UuidType buildUuid(String id) {
-      UuidType uuid = new UuidType();
-      uuid.setUuidType(id);
-      return uuid;
+
+   private static UuidType buildUuid(String uuid) {
+      UuidType uuidType = new UuidType();
+      uuidType.setUuidType(uuid);
+      return uuidType;
    }
 
+   /**
+    * Transformation des objets "pratiques" en objets Axis2 pour un appel de
+    * service web
+    * 
+    * @param idArchive
+    *           l'identifiant unique du document que l'on veut consulter
+    * @param codesMetasSouhaites
+    *           la liste des métadonnées que l'on souhaite en retour du service
+    *           web
+    * @return le paramètre d'entrée de l'opération "consultation"
+    */
    public static Consultation contruitParamsEntreeConsultation(
          String idArchive, List<String> codesMetasSouhaites) {
 
@@ -104,7 +143,7 @@ public class Axis2ObjectFactory {
       consultationRequest.setIdArchive(buildUuid(idArchive));
 
       // Les codes des métadonnées souhaitées
-      if ((codesMetasSouhaites != null) && (codesMetasSouhaites.size() > 0)) {
+      if ((codesMetasSouhaites != null) && (!codesMetasSouhaites.isEmpty())) {
 
          MetadonneeCodeType[] arrMetadonneeCode = new MetadonneeCodeType[codesMetasSouhaites
                .size()];
@@ -127,6 +166,17 @@ public class Axis2ObjectFactory {
 
    }
 
+   /**
+    * Transformation des objets "pratiques" en objets Axis2 pour un appel de
+    * service web
+    * 
+    * @param idArchive
+    *           l'identifiant unique du document que l'on veut consulter
+    * @param codesMetasSouhaites
+    *           la liste des métadonnées que l'on souhaite en retour du service
+    *           web
+    * @return le paramètre d'entrée de l'opération "consultationMTOM"
+    */
    public static ConsultationMTOM contruitParamsEntreeConsultationMTOM(
          String idArchive, List<String> codesMetasSouhaites) {
 
@@ -140,7 +190,7 @@ public class Axis2ObjectFactory {
       consultationRequest.setIdArchive(buildUuid(idArchive));
 
       // Les codes des métadonnées souhaitées
-      if ((codesMetasSouhaites != null) && (codesMetasSouhaites.size() > 0)) {
+      if ((codesMetasSouhaites != null) && (!codesMetasSouhaites.isEmpty())) {
 
          MetadonneeCodeType[] arrMetadonneeCode = new MetadonneeCodeType[codesMetasSouhaites
                .size()];
@@ -169,14 +219,14 @@ public class Axis2ObjectFactory {
     * 
     * @param requeteRecherche
     *           la requête de recherche
-    * @param codesMetasSouhaitess
+    * @param codesMetasSouhaites
     *           les codes de métadonnées souhaitées dans les résultats de
     *           recherche.
     * 
     * @return le paramètre d'entrée pour l'opération "recherche"
     */
    public static Recherche contruitParamsEntreeRecherche(
-         String requeteRecherche, List<String> codesMetasSouhaitess) {
+         String requeteRecherche, List<String> codesMetasSouhaites) {
 
       Recherche recherche = new Recherche();
 
@@ -192,15 +242,15 @@ public class Axis2ObjectFactory {
       // Codes des métadonnées souhaitées dans les résultats de recherche
       ListeMetadonneeCodeType listeMetadonneeCode = new ListeMetadonneeCodeType();
       rechercheRequest.setMetadonnees(listeMetadonneeCode);
-      if ((codesMetasSouhaitess != null) && (codesMetasSouhaitess.size() > 0)) {
+      if ((codesMetasSouhaites != null) && (!codesMetasSouhaites.isEmpty())) {
 
-         MetadonneeCodeType[] arrMetadonneeCode = new MetadonneeCodeType[codesMetasSouhaitess
+         MetadonneeCodeType[] arrMetadonneeCode = new MetadonneeCodeType[codesMetasSouhaites
                .size()];
 
          MetadonneeCodeType metadonneeCode;
-         for (int i = 0; i < codesMetasSouhaitess.size(); i++) {
+         for (int i = 0; i < codesMetasSouhaites.size(); i++) {
             metadonneeCode = new MetadonneeCodeType();
-            metadonneeCode.setMetadonneeCodeType(codesMetasSouhaitess.get(i));
+            metadonneeCode.setMetadonneeCodeType(codesMetasSouhaites.get(i));
             arrMetadonneeCode[i] = metadonneeCode;
          }
 
@@ -215,6 +265,14 @@ public class Axis2ObjectFactory {
 
    }
 
+   /**
+    * Transformation des objets "pratiques" en objets Axis2 pour un appel de
+    * service web
+    * 
+    * @param urlEcdeSommaire
+    *           l'URL ECDE du fichier sommaire.xml
+    * @return le paramètre d'entrée pour l'opération "archivageMasse"
+    */
    public static ArchivageMasse contruitParamsEntreeArchivageMasse(
          String urlEcdeSommaire) {
 
@@ -288,8 +346,18 @@ public class Axis2ObjectFactory {
 
    }
 
+   /**
+    * Transformation des objets "pratiques" en objets Axis2 pour un appel de
+    * service web
+    * 
+    * @param urlEcdeFichier
+    *           l'URL ECDE du fichier à archiver
+    * @param metadonnees
+    *           les métadonnées à associer au fichier
+    * @return le paramètre d'entrée de l'opération "archivageUnitairePJ"
+    */
    public static ArchivageUnitairePJ contruitParamsEntreeArchivageUnitairePJavecUrlEcde(
-         String urlEcdeFichier, HashMap<String, String> metadonnees) {
+         String urlEcdeFichier, Map<String, String> metadonnees) {
 
       ArchivageUnitairePJ archivageUnitairePJ = new ArchivageUnitairePJ();
 
@@ -313,9 +381,21 @@ public class Axis2ObjectFactory {
 
    }
 
+   /**
+    * Transformation des objets "pratiques" en objets Axis2 pour un appel de
+    * service web
+    * 
+    * @param nomFichier
+    *           le nom du fichier à archiver
+    * @param contenu
+    *           le flux pointant vers le fichier à archiver
+    * @param metadonnees
+    *           les métadonnées à associer au fichier
+    * @return le paramètre d'entrée de l'opération "archivageUnitairePJ"
+    */
    public static ArchivageUnitairePJ contruitParamsEntreeArchivageUnitairePJavecContenu(
          String nomFichier, InputStream contenu,
-         HashMap<String, String> metadonnees) {
+         Map<String, String> metadonnees) {
 
       ArchivageUnitairePJ archivageUnitairePJ = new ArchivageUnitairePJ();
 
@@ -349,6 +429,18 @@ public class Axis2ObjectFactory {
 
    }
 
+   /**
+    * Transformation des objets "pratiques" en objets Axis2 pour un appel de
+    * service web
+    * 
+    * @param urlEcdeSommaire
+    *           l'URL ECDE du sommaire.xml
+    * @param typeHash
+    *           le type de hash
+    * @param hash
+    *           le hash
+    * @return le paramètre d'entrée de l'opération "archivageMasseAvecHash"
+    */
    public static ArchivageMasseAvecHash contruitParamsEntreeArchivageMasseAvecHash(
          String urlEcdeSommaire, String typeHash, String hash) {
 
@@ -379,6 +471,14 @@ public class Axis2ObjectFactory {
 
    }
 
+   /**
+    * Transformation des objets "pratiques" en objets Axis2 pour un appel de
+    * service web
+    * 
+    * @param idArchive
+    *           l'identifiant du document à supprimer
+    * @return le paramètre d'entrée de l'opération "suppression"
+    */
    public static Suppression contruitParamsEntreeSuppression(String idArchive) {
 
       Suppression suppression = new Suppression();
@@ -394,8 +494,17 @@ public class Axis2ObjectFactory {
       return suppression;
 
    }
-   
-   
+
+   /**
+    * Transformation des objets "pratiques" en objets Axis2 pour un appel de
+    * service web
+    * 
+    * @param idArchive
+    *           l'identifiant unique du document à modifier
+    * @param metadonnees
+    *           les modifications de métadonnées
+    * @return le paramètre d'entrée de l'opération "modification"
+    */
    public static Modification contruitParamsEntreeModification(
          String idArchive, Map<String, String> metadonnees) {
 
@@ -407,7 +516,7 @@ public class Axis2ObjectFactory {
 
       // Identifiant de l'archive
       modificationRequest.setUuid(buildUuid(idArchive));
-      
+
       // Métadonnées
       ListeMetadonneeType listeMetadonnee = buildListeMeta(metadonnees);
       modificationRequest.setMetadonnees(listeMetadonnee);

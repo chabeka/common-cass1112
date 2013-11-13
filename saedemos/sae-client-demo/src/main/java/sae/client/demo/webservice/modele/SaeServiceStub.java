@@ -14,7 +14,9 @@
         */
 
         
-        public class SaeServiceStub extends org.apache.axis2.client.Stub
+// CHECKSTYLE:OFF
+@SuppressWarnings("all")
+public class SaeServiceStub extends org.apache.axis2.client.Stub
         {
         protected org.apache.axis2.description.AxisOperation[] _operations;
 
