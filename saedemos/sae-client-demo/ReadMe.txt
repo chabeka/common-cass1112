@@ -1,7 +1,7 @@
 // -------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------
 // PENSER A MODIFIER L'URL DU SERVICE WEB SaeService DANS LE FICHIER SUIVANT :
-//     src/main/resources/sae.client.demo.webservice
+//     src/main/resources/sae.client.demo.properties
 // -------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------
 
@@ -17,7 +17,10 @@ Contient les classes générées par le plug-in Maven pour le framework Axis2, f
 
 
 - Package sae.client.demo.webservice.security
-Contient la mécanique de génération du Vecteur d'Identification, c'est à dire de l'Assertion SAML 2.0 signée électroniquement et insérée dans l'en-tête SOAP du message de request.
+Contient une classe exposant le certificat de signature du Vecteur d'Identification.
+Un objet de cette classe est requis pour l'utilisation de la librairie sae-client-vi
+fournie par la MOE SAE et permettant la génération du Vecteur d'Identification, ainsi
+que sa signature électronique.
 
 
 
@@ -25,11 +28,12 @@ Contient la mécanique de génération du Vecteur d'Identification, c'est à dir
 // Partie src/main/resources
 // ------------------------------------------
 
-- Fichier certificat/ApplicationTestSAE.p12
-Magasin de certificat contenant la clé privée pour signer électroniquement l'assertion SAML, ainsi que sa clé publique associée, ainsi que toutes les clés publiques de la chaîne de certification
+- Fichier ApplicationTestSAE.p12
+Magasin de certificat contenant la clé privée pour signer électroniquement le Vecteur d'Identification, 
+ainsi que sa clé publique associée, ainsi que toutes les clés publiques de la chaîne de certification
 
-- Fichiers security/*
-Requis pour la mécanique de génération du Vecteur d'Identification
+- Fichiers sae-client-demo-security.properties
+Fichier de configuration contenant les informations d'accès au magasin ApplicationTestSAE.p12
 
 - Fichier sae-client-demo.properties
 Fichier de configuration contenant l'URL d'accès au service web SaeService

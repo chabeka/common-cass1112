@@ -16,6 +16,9 @@
       <!-- Encodage de caractères -->
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       
+      <!-- Version de la librarie sae-client-vi -->
+      <sae-client-vi.version>1.0.3</sae-client-vi.version>
+      
       <!-- Version des framework -->
       <junit.version>4.8.2</junit.version>
       <axis2.version>1.6.2</axis2.version>
@@ -116,7 +119,7 @@
 
    <dependencies>
 
-      <!-- junit -->
+      <!-- JUnit -->
       <dependency>
          <groupId>junit</groupId>
          <artifactId>junit</artifactId>
@@ -124,8 +127,20 @@
          <scope>test</scope>
       </dependency>
       
+      <!--
+         sae-client-vi
+         
+         Librairie fournie par la MOE SAE pour générer le Vecteur d'Identification
+         qui permet l'authentification des applications clientes auprès du SAE.
+      -->
+      <dependency>
+         <groupId>fr.urssaf.image</groupId>
+         <artifactId>sae-client-vi</artifactId>
+         <version>${sae-client-vi.version}</version>
+      </dependency>
       
-      <!-- axis2 -->
+      
+      <!-- Axis2 -->
       <dependency>
          <groupId>org.apache.axis2</groupId>
          <artifactId>axis2</artifactId>

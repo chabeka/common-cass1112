@@ -50,8 +50,7 @@ public class ModificationTest {
             idArchive, metadonnees);
       
       // Construction du Stub
-      SaeServiceStub saeService = StubFactory.createStubAvecAuthentification(
-            "CS_DEV_TOUTES_ACTIONS", "PAGM_TOUTES_ACTIONS");
+      SaeServiceStub saeService = StubFactory.createStubAvecAuthentification();
       
       // Appel du service web de modification
       saeService.modification(paramsEntree);
@@ -95,8 +94,7 @@ public class ModificationTest {
             idArchive, metadonnees);
       
       // Construction du Stub
-      SaeServiceStub saeService = StubFactory.createStubAvecAuthentification(
-            "CS_DEV_TOUTES_ACTIONS", "PAGM_TOUTES_ACTIONS");
+      SaeServiceStub saeService = StubFactory.createStubAvecAuthentification();
       
       // Appel de l'opération modification
       try {
@@ -158,8 +156,7 @@ public class ModificationTest {
             idArchive, metadonnees);
       
       // Construction du Stub
-      SaeServiceStub saeService = StubFactory.createStubAvecAuthentification(
-            "CS_DEV_TOUTES_ACTIONS", "PAGM_TOUTES_ACTIONS");
+      SaeServiceStub saeService = StubFactory.createStubAvecAuthentification();
       
       // Appel de l'opération modification
       try {

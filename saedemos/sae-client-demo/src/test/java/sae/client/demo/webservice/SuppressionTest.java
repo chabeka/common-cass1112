@@ -29,11 +29,10 @@ public class SuppressionTest {
       // Identifiant unique d'archivage de l'archive que l'on veut supprimer
       // On part ici du principe que le document existe, un autre test permet
       // d'illuster le cas où le document n'existe pas
-      String idArchive = "2066417C-6CF3-44DE-A161-36840AB72E49";
+      String idArchive = "C5DFE657-730F-4EA9-8DA0-DC18D0EDA38E";
       
       // Construction du Stub
-      SaeServiceStub saeService = StubFactory.createStubAvecAuthentification(
-            "CS_DEV_TOUTES_ACTIONS", "PAGM_TOUTES_ACTIONS");
+      SaeServiceStub saeService = StubFactory.createStubAvecAuthentification();
       
       // Construction du paramètre d'entrée de l'opération suppression, 
       //  avec les objets modèle générés par Axis2.
@@ -66,8 +65,7 @@ public class SuppressionTest {
       String idArchive = "00000000-0000-0000-0000-000000000000";
       
       // Construction du Stub
-      SaeServiceStub saeService = StubFactory.createStubAvecAuthentification(
-            "CS_DEV_TOUTES_ACTIONS", "PAGM_TOUTES_ACTIONS");
+      SaeServiceStub saeService = StubFactory.createStubAvecAuthentification();
       
       // Construction du paramètre d'entrée de l'opération suppression, 
       //  avec les objets modèle générés par Axis2.
