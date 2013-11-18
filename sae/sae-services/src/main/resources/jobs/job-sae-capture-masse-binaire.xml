@@ -16,7 +16,7 @@
 
          <tasklet ref="checkFileSommaireTasklet">
             <listeners>
-               <listener ref="checkFileSommaireListener" />
+               <listener ref="checkStateAfterStepListener" />
             </listeners>
          </tasklet>
 
@@ -39,7 +39,7 @@
       <step id="controleFormatSommaireStep">
          <tasklet ref="checkFormatFileSommaireTasklet">
             <listeners>
-               <listener ref="checkFormatFileSommaireListener" />
+               <listener ref="checkStateAfterStepListener" />
             </listeners>
          </tasklet>
 
@@ -135,7 +135,7 @@
                <listener ref="resultatsFileSuccessListener" />
             </listeners>
          </tasklet>
-         
+
          <next on="*" to="finTraitement" />
       </step>
 
@@ -205,7 +205,6 @@
                writer="virtualStorageDocumentWriter" commit-interval="1000" />
             <listeners>
                <listener ref="enrichissementVirtualStorageDocumentProcessor" />
-               <listener ref="controleDocumentVirtuelListener" />
                <listener ref="virtualStockageListener" />
                <listener ref="virtualStorageDocumentWriter" />
             </listeners>
@@ -243,7 +242,7 @@
                <listener ref="resultatsFileSuccessListener" />
             </listeners>
          </tasklet>
-         
+
          <next on="*" to="finTraitement" />
       </step>
 

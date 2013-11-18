@@ -4,7 +4,6 @@
 package fr.urssaf.image.sae.services.capturemasse.support.sommaire.batch;
 
 import java.io.File;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
@@ -13,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.scope.context.ChunkContext;
-import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +23,7 @@ import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireF
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireHashException;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireTypeHashException;
 import fr.urssaf.image.sae.services.capturemasse.support.sommaire.SommaireFormatValidationSupport;
+import fr.urssaf.image.sae.services.capturemasse.tasklet.AbstractCaptureMasseTasklet;
 import fr.urssaf.image.sae.services.controles.SAEControleSupportService;
 import fr.urssaf.image.sae.services.util.XmlReadUtils;
 
@@ -33,7 +32,7 @@ import fr.urssaf.image.sae.services.util.XmlReadUtils;
  * 
  */
 @Component
-public class CheckFormatFileSommaireTasklet implements Tasklet {
+public class CheckFormatFileSommaireTasklet extends AbstractCaptureMasseTasklet {
 
    @Autowired
    private SommaireFormatValidationSupport validationSupport;
@@ -50,7 +49,6 @@ public class CheckFormatFileSommaireTasklet implements Tasklet {
     * {@inheritDoc}
     */
    @Override
-   @SuppressWarnings("unchecked")
    public final RepeatStatus execute(final StepContribution contribution,
          final ChunkContext chunkContext) {
 
@@ -101,29 +99,19 @@ public class CheckFormatFileSommaireTasklet implements Tasklet {
 
       } catch (CaptureMasseSommaireFormatValidationException e) {
          final Exception exception = new Exception(e.getMessage());
-         ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) chunkContext
-               .getStepContext().getStepExecution().getJobExecution()
-               .getExecutionContext().get(Constantes.DOC_EXCEPTION);
-         exceptions.add(exception);
+         getExceptionErreurListe(chunkContext).add(exception);
 
       } catch (CaptureMasseRuntimeException e) {
          final Exception exception = new Exception(e.getMessage());
-         ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) chunkContext
-               .getStepContext().getStepExecution().getJobExecution()
-               .getExecutionContext().get(Constantes.DOC_EXCEPTION);
-         exceptions.add(exception);
+         getExceptionErreurListe(chunkContext).add(exception);
+      
       } catch (CaptureMasseSommaireHashException e) {
          final Exception exception = new Exception(e.getMessage());
-         ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) chunkContext
-               .getStepContext().getStepExecution().getJobExecution()
-               .getExecutionContext().get(Constantes.DOC_EXCEPTION);
-         exceptions.add(exception);
+         getExceptionErreurListe(chunkContext).add(exception);
+      
       } catch (CaptureMasseSommaireTypeHashException e) {
          final Exception exception = new Exception(e.getMessage());
-         ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) chunkContext
-               .getStepContext().getStepExecution().getJobExecution()
-               .getExecutionContext().get(Constantes.DOC_EXCEPTION);
-         exceptions.add(exception);
+         getExceptionErreurListe(chunkContext).add(exception);
       }
 
       LOGGER.debug("{} - Fin de méthode", TRC_EXEC);

@@ -5,23 +5,15 @@ package fr.urssaf.image.sae.services.capturemasse.support.stockage.batch;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.batch.core.ExitStatus;
-import org.springframework.batch.core.StepExecution;
-import org.springframework.batch.core.annotation.AfterStep;
-import org.springframework.batch.core.annotation.BeforeStep;
-import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
-import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
 import fr.urssaf.image.sae.services.capturemasse.support.stockage.multithreading.InsertionPoolThreadVirtualExecutor;
 import fr.urssaf.image.sae.services.capturemasse.support.stockage.multithreading.InsertionVirtualRunnable;
 import fr.urssaf.image.sae.storage.dfce.constants.Constants;
@@ -36,7 +28,8 @@ import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
  * 
  */
 @Component
-public class VirtualStorageDocumentWriter implements
+public class VirtualStorageDocumentWriter extends
+      AbstractDocumentWriterListener implements
       ItemWriter<VirtualStorageDocument> {
 
    private static final Logger LOGGER = LoggerFactory
@@ -49,104 +42,7 @@ public class VirtualStorageDocumentWriter implements
    @Qualifier("storageServiceProvider")
    private StorageServiceProvider serviceProvider;
 
-   private StepExecution stepExecution;
-
    private static final String CATCH = "AvoidCatchingThrowable";
-
-   private static final String UNCHECKED = "unchecked";
-
-   /**
-    * initialisation du context
-    * 
-    * @param stepExecution
-    *           context de l'étape
-    */
-   @SuppressWarnings( { UNCHECKED, CATCH })
-   @BeforeStep
-   public final void init(StepExecution stepExecution) {
-
-      String trcPrefix = "init()";
-
-      this.stepExecution = stepExecution;
-
-      try {
-         serviceProvider.openConnexion();
-
-         /* nous sommes obligés de récupérer les throwable pour les erreurs DFCE */
-      } catch (Throwable e) {
-
-         LOGGER.warn("{} - erreur de connexion à DFCE", trcPrefix, e);
-
-         ExecutionContext jobExecution = stepExecution.getJobExecution()
-               .getExecutionContext();
-         ConcurrentLinkedQueue<String> codes = (ConcurrentLinkedQueue<String>) jobExecution
-               .get(Constantes.CODE_EXCEPTION);
-         ConcurrentLinkedQueue<Integer> index = (ConcurrentLinkedQueue<Integer>) jobExecution
-               .get(Constantes.INDEX_EXCEPTION);
-         ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) jobExecution
-               .get(Constantes.DOC_EXCEPTION);
-
-         codes.add(Constantes.ERR_BUL001);
-         index.add(0);
-         exceptions.add(new Exception(e.getMessage()));
-
-         stepExecution.setExitStatus(new ExitStatus("FAILED_NO_ROLLBACK"));
-
-         throw new CaptureMasseRuntimeException(e);
-      }
-
-      LOGGER.debug("{} - ouverture de la connexion DFCE", trcPrefix);
-   }
-
-   /**
-    * Action executée après le step
-    * 
-    * @param stepExecution
-    *           le stepExecution
-    * @return un status de sortie
-    */
-   @AfterStep
-   @SuppressWarnings( { UNCHECKED, CATCH })
-   public final ExitStatus end(final StepExecution stepExecution) {
-
-      String trcPrefix = "end()";
-
-      // pour l'instant nous avons fait le choix de propager l'erreur
-      // pour ne pas la cacher et attérir dans un état en erreur
-
-      ExitStatus exitStatus = stepExecution.getExitStatus();
-
-      try {
-         serviceProvider.closeConnexion();
-
-         /* nous sommes obligés de récupérer les throwable pour les erreurs DFCE */
-      } catch (Throwable e) {
-
-         LOGGER.warn("{} - erreur lors de la fermeture de la base de données",
-               trcPrefix, e);
-
-         ConcurrentLinkedQueue<String> codes = (ConcurrentLinkedQueue<String>) stepExecution
-               .getJobExecution().getExecutionContext().get(
-                     Constantes.CODE_EXCEPTION);
-
-         ConcurrentLinkedQueue<Integer> index = (ConcurrentLinkedQueue<Integer>) stepExecution
-               .getJobExecution().getExecutionContext().get(
-                     Constantes.INDEX_EXCEPTION);
-
-         ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) stepExecution
-               .getJobExecution().getExecutionContext().get(
-                     Constantes.DOC_EXCEPTION);
-
-         codes.add(Constantes.ERR_BUL001);
-         index.add(0);
-         exceptions.add(new Exception(e.getMessage()));
-
-         exitStatus = ExitStatus.FAILED;
-      }
-
-      return exitStatus;
-
-   }
 
    /**
     * {@inheritDoc}
@@ -163,7 +59,7 @@ public class VirtualStorageDocumentWriter implements
       for (VirtualStorageDocument storageDocument : Utils
             .nullSafeIterable(items)) {
 
-         command = new InsertionVirtualRunnable(this.stepExecution
+         command = new InsertionVirtualRunnable(getStepExecution()
                .getReadCount()
                + index, storageDocument, this);
 
@@ -223,6 +119,22 @@ public class VirtualStorageDocumentWriter implements
 
       }
 
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   protected final Logger getLogger() {
+      return LOGGER;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   protected final StorageServiceProvider getServiceProvider() {
+      return serviceProvider;
    }
 
 }

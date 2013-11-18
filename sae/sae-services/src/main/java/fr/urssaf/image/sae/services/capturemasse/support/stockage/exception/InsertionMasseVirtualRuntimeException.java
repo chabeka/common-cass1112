@@ -8,13 +8,12 @@ import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageDocument;
  * 
  * 
  */
-public class InsertionMasseVirtualRuntimeException extends RuntimeException {
+public class InsertionMasseVirtualRuntimeException extends
+      AbstractInsertionMasseRuntimeException {
 
    private static final long serialVersionUID = 1L;
 
-   private final int index;
    private final VirtualStorageDocument storageDocument;
-   private final Exception cause;
 
    /**
     * 
@@ -27,17 +26,8 @@ public class InsertionMasseVirtualRuntimeException extends RuntimeException {
     */
    public InsertionMasseVirtualRuntimeException(int index,
          VirtualStorageDocument storageDocument, Exception cause) {
-      super(cause);
-      this.index = index;
+      super(index, cause);
       this.storageDocument = storageDocument;
-      this.cause = cause;
-   }
-
-   /**
-    * @return index dans le sommaire où l'insertion a échoué
-    */
-   public final int getIndex() {
-      return index;
    }
 
    /**
@@ -45,14 +35,6 @@ public class InsertionMasseVirtualRuntimeException extends RuntimeException {
     */
    public final VirtualStorageDocument getStorageDocument() {
       return storageDocument;
-   }
-
-   /**
-    * @return cause de l'échec
-    */
-   @Override
-   public final Exception getCause() {
-      return cause;
    }
 
 }

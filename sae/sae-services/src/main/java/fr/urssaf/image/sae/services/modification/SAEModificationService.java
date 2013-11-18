@@ -13,7 +13,6 @@ import fr.urssaf.image.sae.services.exception.ArchiveInexistanteEx;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.InvalidValueTypeAndFormatMetadataEx;
-import fr.urssaf.image.sae.services.exception.capture.NotArchivableMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.NotSpecifiableMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.RequiredArchivableMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.UnknownHashCodeEx;
@@ -56,8 +55,6 @@ public interface SAEModificationService {
     * @throws RequiredArchivableMetadataEx
     *            Au moins une des métadonnées requises à l'archivage n'est pas
     *            présente
-    * @throws NotArchivableMetadataEx
-    *            au moins une des métadonnées n'est pas archivable
     * @throws ReferentialRndException
     *            une erreur a eu lieu lors de la récupération des RND
     * @throws UnknownCodeRndEx

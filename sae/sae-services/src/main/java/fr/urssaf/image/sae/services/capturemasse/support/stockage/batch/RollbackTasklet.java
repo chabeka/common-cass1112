@@ -4,7 +4,6 @@
 package fr.urssaf.image.sae.services.capturemasse.support.stockage.batch;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -26,36 +25,21 @@ import fr.urssaf.image.sae.services.capturemasse.model.CaptureMasseIntegratedDoc
 import fr.urssaf.image.sae.services.capturemasse.support.stockage.multithreading.InsertionPoolThreadExecutor;
 import fr.urssaf.image.sae.services.capturemasse.support.stockage.rollback.RollbackSupport;
 import fr.urssaf.image.sae.services.document.SAEDocumentService;
-import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
-import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedToConsultEx;
-import fr.urssaf.image.sae.services.exception.search.MetaDataUnauthorizedToSearchEx;
-import fr.urssaf.image.sae.services.exception.search.SAESearchServiceEx;
-import fr.urssaf.image.sae.services.exception.search.SyntaxLuceneEx;
-import fr.urssaf.image.sae.services.exception.search.UnknownLuceneMetadataEx;
 
 /**
  * Tasklet pour le rollback
  * 
  */
 @Component
-public class RollbackTasklet implements Tasklet {
+public class RollbackTasklet extends AbstractRollbackTasklet implements Tasklet {
 
    /**
     * 
     */
-   private static final String ERREUR_RECHERCHE = "{} - Erreur lors de la recherche des documents restants à rollbacker";
-
    private static final Logger LOGGER = LoggerFactory
          .getLogger(RollbackTasklet.class);
 
    private static final String TRC_ROLLBACK = "rollbacktasklet()";
-
-   private static final String TRC_FIND = "trouverDocumentsRestants()";
-
-   /**
-    * Nombre max d'éléments renvoyés
-    */
-   private static final int MAX_RESULT = 10;
 
    @Autowired
    private RollbackSupport support;
@@ -249,36 +233,6 @@ public class RollbackTasklet implements Tasklet {
    }
 
    /**
-    * @param idTraitement
-    */
-   private List<UntypedDocument> trouverDocumentsRestants(String idTraitement) {
-
-      String requete = "IdTraitementMasseInterne:" + idTraitement;
-      List<String> metadata = new ArrayList<String>();
-
-      List<UntypedDocument> listDocs = null;
-
-      try {
-         listDocs = documentService.search(requete, metadata, MAX_RESULT);
-      } catch (MetaDataUnauthorizedToSearchEx e) {
-         LOGGER.info(ERREUR_RECHERCHE, TRC_FIND, e);
-      } catch (MetaDataUnauthorizedToConsultEx e) {
-         LOGGER.info(ERREUR_RECHERCHE, TRC_FIND, e);
-      } catch (UnknownDesiredMetadataEx e) {
-         LOGGER.info(ERREUR_RECHERCHE, TRC_FIND, e);
-      } catch (UnknownLuceneMetadataEx e) {
-         LOGGER.info(ERREUR_RECHERCHE, TRC_FIND, e);
-      } catch (SyntaxLuceneEx e) {
-         LOGGER.info(ERREUR_RECHERCHE, TRC_FIND, e);
-      } catch (SAESearchServiceEx e) {
-         LOGGER.info(ERREUR_RECHERCHE, TRC_FIND, e);
-      }
-
-      return listDocs;
-
-   }
-
-   /**
     * @param listDocs
     * @return
     */
@@ -311,6 +265,22 @@ public class RollbackTasklet implements Tasklet {
          }
       }
       return list;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   protected final SAEDocumentService getDocumentService() {
+      return documentService;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   protected final Logger getLogger() {
+      return LOGGER;
    }
 
 }

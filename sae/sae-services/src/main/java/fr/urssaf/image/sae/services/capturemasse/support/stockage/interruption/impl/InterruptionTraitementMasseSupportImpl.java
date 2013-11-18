@@ -43,6 +43,8 @@ public class InterruptionTraitementMasseSupportImpl implements
     * 
     * @param dfceManager
     *           ensemble des services de manipulation DFCE
+    * @param serviceProvider
+    *           le provider de service
     */
    @Autowired
    public InterruptionTraitementMasseSupportImpl(

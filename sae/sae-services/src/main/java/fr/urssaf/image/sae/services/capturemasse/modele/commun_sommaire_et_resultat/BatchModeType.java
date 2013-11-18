@@ -38,8 +38,8 @@ public enum BatchModeType {
         return name();
     }
 
-    public static BatchModeType fromValue(String v) {
-        return valueOf(v);
+    public static BatchModeType fromValue(String value) {
+        return valueOf(value);
     }
 
 }

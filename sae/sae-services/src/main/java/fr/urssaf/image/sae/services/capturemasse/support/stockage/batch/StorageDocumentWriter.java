@@ -4,22 +4,14 @@
 package fr.urssaf.image.sae.services.capturemasse.support.stockage.batch;
 
 import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.batch.core.ExitStatus;
-import org.springframework.batch.core.StepExecution;
-import org.springframework.batch.core.annotation.AfterStep;
-import org.springframework.batch.core.annotation.BeforeStep;
-import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
-import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
 import fr.urssaf.image.sae.services.capturemasse.support.stockage.multithreading.InsertionPoolThreadExecutor;
 import fr.urssaf.image.sae.services.capturemasse.support.stockage.multithreading.InsertionRunnable;
 import fr.urssaf.image.sae.storage.dfce.constants.Constants;
@@ -34,7 +26,8 @@ import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
  * 
  */
 @Component
-public class StorageDocumentWriter implements ItemWriter<StorageDocument> {
+public class StorageDocumentWriter extends AbstractDocumentWriterListener
+      implements ItemWriter<StorageDocument> {
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(StorageDocumentWriter.class);
@@ -46,109 +39,8 @@ public class StorageDocumentWriter implements ItemWriter<StorageDocument> {
    @Qualifier("storageServiceProvider")
    private StorageServiceProvider serviceProvider;
 
-   private StepExecution stepExecution;
-
    private static final String TRC_INSERT = "StorageDocumentWriter()";
-
-   private static final String TRC_END = "end()";
-
-   private static final String TRC_INIT = "init()";
-
-   private static final String UNCHECKED = "unchecked";
-
    private static final String CATCH = "AvoidCatchingThrowable";
-
-   /**
-    * initialisation du context
-    * 
-    * @param stepExecution
-    *           context de l'étape
-    */
-   @SuppressWarnings( { UNCHECKED, CATCH })
-   @BeforeStep
-   public final void init(StepExecution stepExecution) {
-
-      this.stepExecution = stepExecution;
-
-      try {
-         serviceProvider.openConnexion();
-
-         /* nous sommes obligés de récupérer les throwable pour les erreurs DFCE */
-      } catch (Throwable e) {
-
-         LOGGER.warn("{} - erreur de connexion à DFCE", TRC_INIT, e);
-
-         ExecutionContext jobExecution = stepExecution.getJobExecution()
-               .getExecutionContext();
-         ConcurrentLinkedQueue<String> codes = (ConcurrentLinkedQueue<String>) jobExecution
-               .get(Constantes.CODE_EXCEPTION);
-         ConcurrentLinkedQueue<Integer> index = (ConcurrentLinkedQueue<Integer>) jobExecution
-               .get(Constantes.INDEX_EXCEPTION);
-         ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) jobExecution
-               .get(Constantes.DOC_EXCEPTION);
-
-         codes.add(Constantes.ERR_BUL001);
-         index.add(0);
-         exceptions.add(new Exception(e.getMessage()));
-
-         stepExecution.setExitStatus(new ExitStatus("FAILED_NO_ROLLBACK"));
-
-         throw new CaptureMasseRuntimeException(e);
-      }
-
-      LOGGER.debug("{} - ouverture de la connexion DFCE", TRC_INSERT);
-   }
-
-   /**
-    * Action executée après le step
-    * 
-    * @param stepExecution
-    *           le stepExecution
-    * @return un status de sortie
-    */
-   @SuppressWarnings(CATCH)
-   @AfterStep
-   public final ExitStatus end(final StepExecution stepExecution) {
-
-      // pour l'instant nous avons fait le choix de propager l'erreur
-      // pour ne pas la cacher et attérir dans un état en erreur
-
-      ExitStatus exitStatus = stepExecution.getExitStatus();
-
-      try {
-         serviceProvider.closeConnexion();
-
-         /* nous sommes obligés de récupérer les throwable pour les erreurs DFCE */
-      } catch (Throwable e) {
-
-         LOGGER.warn("{} - erreur lors de la fermeture de la base de données",
-               TRC_END, e);
-
-         @SuppressWarnings(UNCHECKED)
-         ConcurrentLinkedQueue<String> codes = (ConcurrentLinkedQueue<String>) stepExecution
-               .getJobExecution().getExecutionContext().get(
-                     Constantes.CODE_EXCEPTION);
-
-         @SuppressWarnings(UNCHECKED)
-         ConcurrentLinkedQueue<Integer> index = (ConcurrentLinkedQueue<Integer>) stepExecution
-               .getJobExecution().getExecutionContext().get(
-                     Constantes.INDEX_EXCEPTION);
-
-         @SuppressWarnings(UNCHECKED)
-         ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) stepExecution
-               .getJobExecution().getExecutionContext().get(
-                     Constantes.DOC_EXCEPTION);
-
-         codes.add(Constantes.ERR_BUL001);
-         index.add(0);
-         exceptions.add(new Exception(e.getMessage()));
-
-         exitStatus = ExitStatus.FAILED;
-      }
-
-      return exitStatus;
-
-   }
 
    /**
     * {@inheritDoc}
@@ -162,7 +54,7 @@ public class StorageDocumentWriter implements ItemWriter<StorageDocument> {
 
       for (StorageDocument storageDocument : Utils.nullSafeIterable(items)) {
 
-         command = new InsertionRunnable(this.stepExecution.getReadCount()
+         command = new InsertionRunnable(getStepExecution().getReadCount()
                + index, storageDocument, this);
 
          poolExecutor.execute(command);
@@ -210,5 +102,21 @@ public class StorageDocumentWriter implements ItemWriter<StorageDocument> {
 
       }
 
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   protected final Logger getLogger() {
+      return LOGGER;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   protected final StorageServiceProvider getServiceProvider() {
+      return serviceProvider;
    }
 }

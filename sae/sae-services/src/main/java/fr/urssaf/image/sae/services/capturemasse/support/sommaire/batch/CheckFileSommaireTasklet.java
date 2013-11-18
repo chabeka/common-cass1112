@@ -6,12 +6,10 @@ package fr.urssaf.image.sae.services.capturemasse.support.sommaire.batch;
 import java.io.File;
 import java.net.URI;
 import java.util.Map;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.scope.context.ChunkContext;
-import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +21,7 @@ import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeEx
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireEcdeURLException;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireFileNotFoundException;
 import fr.urssaf.image.sae.services.capturemasse.support.ecde.EcdeSommaireFileSupport;
+import fr.urssaf.image.sae.services.capturemasse.tasklet.AbstractCaptureMasseTasklet;
 import fr.urssaf.image.sae.services.controles.SAEControleSupportService;
 
 /**
@@ -30,7 +29,7 @@ import fr.urssaf.image.sae.services.controles.SAEControleSupportService;
  * 
  */
 @Component
-public class CheckFileSommaireTasklet implements Tasklet {
+public class CheckFileSommaireTasklet extends AbstractCaptureMasseTasklet {
 
    @Autowired
    private EcdeSommaireFileSupport fileSupport;
@@ -49,7 +48,7 @@ public class CheckFileSommaireTasklet implements Tasklet {
             .getJobParameters();
 
       final String urlEcde = (String) parameters.get(Constantes.SOMMAIRE);
-      
+
       final StepExecution stepExecution = chunkContext.getStepContext()
             .getStepExecution();
       final ExecutionContext context = stepExecution.getJobExecution()
@@ -63,9 +62,9 @@ public class CheckFileSommaireTasklet implements Tasklet {
          final File sommaire = fileSupport.convertURLtoFile(uriEcde);
 
          controleSupport.checkEcdeWrite(sommaire);
-         
+
          context.put(Constantes.SOMMAIRE_FILE, sommaire.getAbsolutePath());
-         
+
       } catch (CaptureMasseSommaireEcdeURLException exception) {
          addException(chunkContext, exception);
 
@@ -77,20 +76,15 @@ public class CheckFileSommaireTasklet implements Tasklet {
 
       } catch (CaptureMasseRuntimeException exception) {
          addException(chunkContext, exception);
-      } 
+      }
 
       return RepeatStatus.FINISHED;
    }
 
-   private void addException(ChunkContext chunkContext,
-         Exception paramException) {
+   private void addException(ChunkContext chunkContext, Exception paramException) {
       final Exception exception = new Exception(paramException.getMessage());
-      
-      @SuppressWarnings("unchecked")
-      ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) chunkContext
-            .getStepContext().getStepExecution().getJobExecution()
-            .getExecutionContext().get(Constantes.DOC_EXCEPTION);
-      exceptions.add(exception);
-      
+
+      getExceptionErreurListe(chunkContext).add(exception);
+
    }
 }

@@ -7,13 +7,13 @@ import java.io.File;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.batch.core.StepExecution;
-import org.springframework.batch.core.annotation.BeforeStep;
+import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.bo.model.bo.VirtualReferenceFile;
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
+import fr.urssaf.image.sae.services.capturemasse.listener.AbstractListener;
 import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageReference;
 
 /**
@@ -22,24 +22,11 @@ import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageReference
  * 
  */
 @Component
-public class ConvertVirtualReferenceFileProcessor implements
-      ItemProcessor<VirtualReferenceFile, VirtualStorageReference> {
+public class ConvertVirtualReferenceFileProcessor extends AbstractListener
+      implements ItemProcessor<VirtualReferenceFile, VirtualStorageReference> {
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(ConvertVirtualReferenceFileProcessor.class);
-
-   private StepExecution stepExecution;
-
-   /**
-    * réalisé avant le step
-    * 
-    * @param stepExecution
-    *           le stepExecution
-    */
-   @BeforeStep
-   public final void init(final StepExecution stepExecution) {
-      this.stepExecution = stepExecution;
-   }
 
    /**
     * {@inheritDoc}
@@ -50,7 +37,7 @@ public class ConvertVirtualReferenceFileProcessor implements
       String trcPrefix = "process";
       LOGGER.debug("{} - début", trcPrefix);
 
-      String path = (String) stepExecution.getJobExecution()
+      String path = (String) getStepExecution().getJobExecution()
             .getExecutionContext().get(Constantes.SOMMAIRE_FILE);
       File sommaire = new File(path);
       File ecdeDirectory = sommaire.getParentFile();
@@ -64,4 +51,16 @@ public class ConvertVirtualReferenceFileProcessor implements
       return reference;
    }
 
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   protected final ExitStatus specificAfterStepOperations() {
+      return getStepExecution().getExitStatus();
+   }
+
+   @Override
+   protected void specificInitOperations() {
+      // rien à faire
+   }
 }

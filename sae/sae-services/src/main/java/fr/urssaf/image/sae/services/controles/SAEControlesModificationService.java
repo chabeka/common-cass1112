@@ -9,7 +9,6 @@ import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.InvalidValueTypeAndFormatMetadataEx;
-import fr.urssaf.image.sae.services.exception.capture.NotArchivableMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.NotSpecifiableMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.RequiredArchivableMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.UnknownHashCodeEx;
@@ -44,8 +43,6 @@ public interface SAEControlesModificationService {
     * @throws RequiredArchivableMetadataEx
     *            Au moins une des métadonnées requises à l'archivage n'est pas
     *            présente
-    * @throws NotArchivableMetadataEx
-    *            Au moins une des métadonnées n'est pas archivable
     * @throws ReferentialRndException
     *            Une erreur a eu lieu lors de la récupération des RND
     * @throws UnknownCodeRndEx
@@ -74,6 +71,9 @@ public interface SAEControlesModificationService {
     * @throws NotModifiableMetadataEx
     *            Au moins une des métadonnées n'est pas modifiable
     * @throws RequiredArchivableMetadataEx
+    *            métadonnée obligatoire à l'archivage non présente
+    * @throws UnknownMetadataEx
+    *            métadonnée inconnue
     */
    void checkSaeMetadataForDelete(List<UntypedMetadata> metadatas)
          throws NotModifiableMetadataEx, UnknownMetadataEx,
@@ -85,6 +85,8 @@ public interface SAEControlesModificationService {
     * 
     * @param metadatas
     *           Liste des métadonnées à vérifier
+    * @throws DuplicatedMetadataEx
+    *            métadonnée présente au moins deux fois dans la liste
     */
    void checkSaeMetadataForModification(List<UntypedMetadata> metadatas)
          throws DuplicatedMetadataEx;

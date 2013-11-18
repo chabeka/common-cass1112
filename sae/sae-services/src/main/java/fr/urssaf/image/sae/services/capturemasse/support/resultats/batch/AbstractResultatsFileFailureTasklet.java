@@ -11,7 +11,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
-import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 
 import fr.urssaf.image.sae.services.capturemasse.common.CaptureMasseErreur;
@@ -19,12 +18,14 @@ import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
 import fr.urssaf.image.sae.services.capturemasse.support.resultats.ResultatsFileEchecSupport;
 import fr.urssaf.image.sae.services.capturemasse.support.sommaire.SommaireFormatValidationSupport;
 import fr.urssaf.image.sae.services.capturemasse.support.xsd.XsdValidationSupport;
+import fr.urssaf.image.sae.services.capturemasse.tasklet.AbstractCaptureMasseTasklet;
 
 /**
  * Classe abstraite de gestion de l'écriture des fichiers de résultat en erreur
  * 
  */
-public abstract class AbstractResultatsFileFailureTasklet implements Tasklet {
+public abstract class AbstractResultatsFileFailureTasklet extends
+      AbstractCaptureMasseTasklet {
 
    private static final String LIBELLE_BUL003 = "La capture de masse en mode "
          + "\"Tout ou rien\" a été interrompue. Une procédure d'exploitation a été "
@@ -34,29 +35,26 @@ public abstract class AbstractResultatsFileFailureTasklet implements Tasklet {
     * {@inheritDoc}
     */
    @Override
+   @SuppressWarnings("PMD.AvoidThrowingRawExceptionTypes")
+   /*
+    * Alerte PMD car nous avons obligation de caster l'erreur afin de pouvoir
+    * l'exploiter plus tard
+    */
    public final RepeatStatus execute(StepContribution contribution,
          ChunkContext chunkContext) throws Exception {
 
+      CaptureMasseErreur erreur = new CaptureMasseErreur();
+      erreur.setListCodes(new ArrayList<String>(
+            getCodesErreurListe(chunkContext)));
+      erreur.setListException(new ArrayList<Exception>(
+            getExceptionErreurListe(chunkContext)));
+      erreur.setListIndex(new ArrayList<Integer>(
+            getIndexErreurListe(chunkContext)));
+      erreur.setListRefIndex(new ArrayList<Integer>(
+            getIndexReferenceListe(chunkContext)));
+
       final Map<String, Object> map = chunkContext.getStepContext()
             .getJobExecutionContext();
-      @SuppressWarnings("unchecked")
-      ConcurrentLinkedQueue<String> codes = (ConcurrentLinkedQueue<String>) map
-            .get(Constantes.CODE_EXCEPTION);
-      @SuppressWarnings("unchecked")
-      ConcurrentLinkedQueue<Integer> index = (ConcurrentLinkedQueue<Integer>) map
-            .get(Constantes.INDEX_EXCEPTION);
-      @SuppressWarnings("unchecked")
-      ConcurrentLinkedQueue<Integer> refIndex = (ConcurrentLinkedQueue<Integer>) map
-            .get(Constantes.INDEX_REF_EXCEPTION);
-      @SuppressWarnings("unchecked")
-      ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) map
-            .get(Constantes.DOC_EXCEPTION);
-
-      CaptureMasseErreur erreur = new CaptureMasseErreur();
-      erreur.setListCodes(new ArrayList<String>(codes));
-      erreur.setListException(new ArrayList<Exception>(exceptions));
-      erreur.setListIndex(new ArrayList<Integer>(index));
-      erreur.setListRefIndex(new ArrayList<Integer>(refIndex));
 
       final String pathSommaire = (String) map.get(Constantes.SOMMAIRE_FILE);
       File sommaireFile = new File(pathSommaire);
