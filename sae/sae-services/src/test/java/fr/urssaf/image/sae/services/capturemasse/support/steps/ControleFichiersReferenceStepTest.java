@@ -189,6 +189,8 @@ public class ControleFichiersReferenceStepTest {
             new ConcurrentLinkedQueue<Exception>());
       context.put(Constantes.INDEX_REF_EXCEPTION,
             new ConcurrentLinkedQueue<Integer>());
+      context
+            .put(Constantes.SOMMAIRE, ecdeTestSommaire.getUrlEcde().toString());
 
       JobExecution execution = launcher.launchStep("controleFichiersReference",
             jobParameters, context);

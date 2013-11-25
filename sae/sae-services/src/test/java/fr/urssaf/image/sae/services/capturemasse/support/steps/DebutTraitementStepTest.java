@@ -87,6 +87,8 @@ public class DebutTraitementStepTest {
             new ConcurrentLinkedQueue<Exception>());
       contextParam.put(Constantes.INDEX_REF_EXCEPTION,
             new ConcurrentLinkedQueue<Integer>());
+      contextParam.put(Constantes.SOMMAIRE, ecdeTestSommaire.getUrlEcde()
+            .toString());
 
       JobExecution execution = launcher.launchStep("controleDocuments",
             jobParameters, contextParam);

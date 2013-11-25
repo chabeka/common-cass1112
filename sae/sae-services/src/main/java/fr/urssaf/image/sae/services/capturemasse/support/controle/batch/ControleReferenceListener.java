@@ -3,24 +3,20 @@
  */
 package fr.urssaf.image.sae.services.capturemasse.support.controle.batch;
 
-import java.util.concurrent.ConcurrentLinkedQueue;
-
 import javax.xml.bind.JAXBElement;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.ExitStatus;
-import org.springframework.batch.core.StepExecution;
-import org.springframework.batch.core.annotation.AfterStep;
 import org.springframework.batch.core.annotation.BeforeProcess;
-import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.core.annotation.OnProcessError;
 import org.springframework.batch.core.annotation.OnReadError;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
+import fr.urssaf.image.sae.services.capturemasse.listener.AbstractListener;
 import fr.urssaf.image.sae.services.capturemasse.modele.commun_sommaire_et_resultat.FichierType;
 
 /**
@@ -28,26 +24,10 @@ import fr.urssaf.image.sae.services.capturemasse.modele.commun_sommaire_et_resul
  * 
  */
 @Component
-public class ControleReferenceListener {
+public class ControleReferenceListener extends AbstractListener {
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(ControleReferenceListener.class);
-
-   private StepExecution stepExecution;
-
-   /**
-    * réalisé avant le step
-    * 
-    * @param stepExecution
-    *           le stepExecution
-    */
-   @BeforeStep
-   public final void init(final StepExecution stepExecution) {
-      this.stepExecution = stepExecution;
-      this.stepExecution.getExecutionContext().put(Constantes.CTRL_INDEX, -1);
-      this.stepExecution.getExecutionContext().put(Constantes.CTRL_REF_INDEX,
-            -1);
-   }
 
    /**
     * Erreur de transformation
@@ -58,24 +38,15 @@ public class ControleReferenceListener {
     *           exception levée
     */
    @OnProcessError
-   @SuppressWarnings( { "unchecked", "PMD.AvoidThrowingRawExceptionTypes" })
+   @SuppressWarnings( { "PMD.AvoidThrowingRawExceptionTypes" })
    public final void logProcessError(
          final JAXBElement<FichierType> fichierType, final Exception exception) {
 
-      ExecutionContext context = stepExecution.getJobExecution()
-            .getExecutionContext();
-
-      ConcurrentLinkedQueue<String> listCodes = (ConcurrentLinkedQueue<String>) context
-            .get(Constantes.CODE_EXCEPTION);
-      ConcurrentLinkedQueue<Integer> listIndex = (ConcurrentLinkedQueue<Integer>) context
-            .get(Constantes.INDEX_REF_EXCEPTION);
-      ConcurrentLinkedQueue<Exception> listExceptions = (ConcurrentLinkedQueue<Exception>) context
-            .get(Constantes.DOC_EXCEPTION);
-
-      listCodes.add(Constantes.ERR_BUL002);
-      listIndex.add(stepExecution.getExecutionContext().getInt(
-            Constantes.CTRL_REF_INDEX));
-      listExceptions.add(new Exception(exception.getMessage()));
+      getCodesErreurListe().add(Constantes.ERR_BUL002);
+      getIndexReferenceErreurListe().add(
+            getStepExecution().getExecutionContext().getInt(
+                  Constantes.CTRL_REF_INDEX));
+      getExceptionErreurListe().add(new Exception(exception.getMessage()));
 
       LOGGER
             .warn(
@@ -91,10 +62,9 @@ public class ControleReferenceListener {
     *           le document
     */
    @BeforeProcess
-   public final void beforeProcess(
-         final JAXBElement<FichierType> untypedType) {
+   public final void beforeProcess(final JAXBElement<FichierType> untypedType) {
 
-      ExecutionContext context = stepExecution.getExecutionContext();
+      ExecutionContext context = getStepExecution().getExecutionContext();
 
       int valeur = context.getInt(Constantes.CTRL_REF_INDEX);
       valeur++;
@@ -102,8 +72,6 @@ public class ControleReferenceListener {
       context.put(Constantes.CTRL_REF_INDEX, valeur);
 
    }
-   
-
 
    /**
     * erreur au moment du read
@@ -112,45 +80,36 @@ public class ControleReferenceListener {
     *           exception levée
     */
    @OnReadError
-   @SuppressWarnings( { "unchecked", "PMD.AvoidThrowingRawExceptionTypes" })
+   @SuppressWarnings( { "PMD.AvoidThrowingRawExceptionTypes" })
    public final void logReadError(final Exception exception) {
       LOGGER.warn("une erreur interne à l'application est survenue "
             + "lors du traitement de la capture de masse", exception);
 
-      ExecutionContext context = stepExecution.getJobExecution()
-            .getExecutionContext();
-      ConcurrentLinkedQueue<String> listCodes = (ConcurrentLinkedQueue<String>) context
-            .get(Constantes.CODE_EXCEPTION);
-      ConcurrentLinkedQueue<Integer> listIndex = (ConcurrentLinkedQueue<Integer>) context
-            .get(Constantes.INDEX_REF_EXCEPTION);
-      ConcurrentLinkedQueue<Exception> listExceptions = (ConcurrentLinkedQueue<Exception>) context
-            .get(Constantes.DOC_EXCEPTION);
-
-      listCodes.add(Constantes.ERR_BUL001);
-      listIndex.add(0);
-      listExceptions.add(new Exception(exception.getMessage()));
+      getCodesErreurListe().add(Constantes.ERR_BUL001);
+      getIndexReferenceErreurListe().add(0);
+      getExceptionErreurListe().add(new Exception(exception.getMessage()));
 
    }
-   
-   /**
-    * Méthode réalisée à la fin du step
-    * 
-    * @param stepExecution
-    *           le StepExecution
-    * @return le status de sortie
-    */
-   @SuppressWarnings("unchecked")
-   @AfterStep
-   public final ExitStatus end(final StepExecution stepExecution) {
+
+   @Override
+   protected ExitStatus specificAfterStepOperations() {
       ExitStatus exitStatus = ExitStatus.FAILED;
 
-      ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) stepExecution
-            .getJobExecution().getExecutionContext().get(
-                  Constantes.DOC_EXCEPTION);
-      if (CollectionUtils.isEmpty(exceptions)) {
+      if (CollectionUtils.isEmpty(getExceptionErreurListe())) {
          exitStatus = ExitStatus.COMPLETED;
       }
 
       return exitStatus;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   protected void specificInitOperations() {
+      getStepExecution().getExecutionContext().put(Constantes.CTRL_INDEX, -1);
+      getStepExecution().getExecutionContext().put(Constantes.CTRL_REF_INDEX,
+            -1);
+
    }
 }

@@ -4,19 +4,7 @@
 package fr.urssaf.image.sae.services.capturemasse.support.resultats.impl;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 
-import javanet.staxutils.IndentingXMLEventWriter;
-
-import javax.xml.stream.XMLEventFactory;
-import javax.xml.stream.XMLEventReader;
-import javax.xml.stream.XMLEventWriter;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
@@ -24,13 +12,17 @@ import javax.xml.stream.events.XMLEvent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.services.capturemasse.common.CaptureMasseErreur;
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
+import fr.urssaf.image.sae.services.capturemasse.exception.EcdePermissionException;
+import fr.urssaf.image.sae.services.capturemasse.listener.EcdeConnexionConfiguration;
 import fr.urssaf.image.sae.services.capturemasse.support.resultats.ResultatsFileEchecSupport;
-import fr.urssaf.image.sae.services.util.StaxUtils;
+import fr.urssaf.image.sae.services.capturemasse.utils.StaxUtils;
+import fr.urssaf.image.sae.services.util.XmlReader;
 
 /**
  * Implémentation du support {@link ResultatsFileEchecSupport}
@@ -38,13 +30,6 @@ import fr.urssaf.image.sae.services.util.StaxUtils;
  */
 @Component
 public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport {
-
-   /**
-    * 
-    */
-   private static final String ERREUR_FLUX = "erreur de fermeture du flux ";
-
-   private static final String INDENTATION = "    ";
 
    private static final String CHEMIN_FICHIER = "cheminEtNomDuFichier";
    private static final String OBJET_NUMERIQUE = "objetNumerique";
@@ -63,6 +48,12 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(ResultatsFileEchecSupportImpl.class);
+
+   @Autowired
+   private EcdeConnexionConfiguration configuration;
+
+   @Autowired
+   private StaxUtils staxUtils;
 
    /**
     * {@inheritDoc}
@@ -92,61 +83,37 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
       LOGGER.debug(
             "{} - Début de création du fichier (resultats.xml en erreur)",
             trcPrefix);
+      File resultats = new File(sommaireFile.getParentFile(), "resultats.xml");
 
-      FileInputStream sommaireStream = null;
-      FileOutputStream resultatsStream = null;
-      final String resultatPath = ecdeDirectory.getAbsolutePath()
-            + File.separator + "resultats.xml";
-      XMLEventReader reader = null;
-      XMLEventWriter writer = null;
+      XmlReader reader = new XmlReader(sommaireFile);
+      Throwable storedEx = null;
+      int index = 0;
+      boolean writeFinished = false;
 
-      try {
-         sommaireStream = new FileInputStream(sommaireFile);
-         resultatsStream = new FileOutputStream(resultatPath);
-         reader = openSommaire(sommaireStream);
-         writer = loadWriter(resultatsStream);
+      while (index < configuration.getNbreEssaiMax() && !writeFinished) {
 
-         ecrireFichierResultat(reader, writer, nombreDocsTotal, erreur,
-               isVirtual);
+         try {
+            reader.initStream();
+            staxUtils.initStream(resultats);
 
-      } catch (FileNotFoundException e) {
-         throw new CaptureMasseRuntimeException(e);
+            ecrireFichierResultat(reader, nombreDocsTotal, erreur, isVirtual);
 
-      } catch (XMLStreamException e) {
-         throw new CaptureMasseRuntimeException(e);
+            writeFinished = true;
 
-      } finally {
-         if (writer != null) {
-            try {
-               writer.close();
-            } catch (XMLStreamException e) {
-               LOGGER.debug(ERREUR_FLUX + resultatPath);
-            }
+         } catch (EcdePermissionException exception) {
+            storedEx = exception.getCause();
+
+         } finally {
+
+            staxUtils.closeAll();
+            reader.closeStream();
          }
 
-         if (reader != null) {
-            try {
-               reader.close();
-            } catch (XMLStreamException e) {
-               LOGGER.debug(ERREUR_FLUX + sommaireFile.getAbsolutePath());
-            }
-         }
+         index++;
+      }
 
-         if (resultatsStream != null) {
-            try {
-               resultatsStream.close();
-            } catch (IOException e) {
-               LOGGER.debug(ERREUR_FLUX + resultatPath);
-            }
-         }
-
-         if (sommaireStream != null) {
-            try {
-               sommaireStream.close();
-            } catch (IOException e) {
-               LOGGER.debug(ERREUR_FLUX + sommaireFile.getAbsolutePath());
-            }
-         }
+      if (!writeFinished) {
+         throw new CaptureMasseRuntimeException(storedEx);
       }
 
       LOGGER.debug("{} - Fin de création du fichier (resultats.xml en erreur)",
@@ -155,62 +122,17 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
    }
 
    /**
-    * Ouvre le fichier sommaire et renvoie le reader
-    * 
-    * @param stream
-    * @return
-    */
-   private XMLEventReader openSommaire(final InputStream stream) {
-      final XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
-
-      try {
-         return xmlInputFactory.createXMLEventReader(stream);
-
-      } catch (XMLStreamException e) {
-         throw new CaptureMasseRuntimeException(e);
-      }
-   }
-
-   /**
-    * créé le writer pour le fichier résultats.xml
-    * 
-    * @param resultatsStream
-    * @return
-    */
-   private XMLEventWriter loadWriter(final FileOutputStream resultatsStream) {
-
-      final XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
-
-      try {
-         final XMLEventWriter writer = outputFactory
-               .createXMLEventWriter(resultatsStream);
-         IndentingXMLEventWriter iWriter = new IndentingXMLEventWriter(writer);
-         iWriter.setIndent(INDENTATION);
-         return iWriter;
-
-      } catch (XMLStreamException e) {
-         throw new CaptureMasseRuntimeException(e);
-      }
-   }
-
-   /**
     * Ecriture du fichier resultats.xml
     * 
-    * @param rootSommaire
-    * @param writer
-    * @param erreur
-    * @throws XMLStreamException
+    * @param reader
+    * @param nombreDocs
+    * @param isVirtual
     */
-   private void ecrireFichierResultat(final XMLEventReader reader,
-         final XMLEventWriter writer, final int nombreDocs,
-         final CaptureMasseErreur erreur, boolean isVirtual)
-         throws XMLStreamException {
+   private void ecrireFichierResultat(final XmlReader reader,
+         final int nombreDocs, final CaptureMasseErreur erreur,
+         boolean isVirtual) {
 
-      final XMLEventFactory eventFactory = XMLEventFactory.newInstance();
-
-      StaxUtils staxUtils = new StaxUtils(eventFactory, writer);
-
-      ecrireEntete(staxUtils, nombreDocs, isVirtual);
+      ecrireEntete(nombreDocs, isVirtual);
 
       XMLEvent xmlEvent = null;
       StartElement startElement;
@@ -233,11 +155,10 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
             name = startElement.getName().getLocalPart();
 
             if (isVirtual) {
-               indexReference = startTagVirtuel(name, staxUtils, reader,
-                     erreur, indexReference);
-            } else {
-               indexReference = startTag(name, staxUtils, reader, erreur,
+               indexReference = startTagVirtuel(name, reader, erreur,
                      indexReference);
+            } else {
+               indexReference = startTag(name, reader, erreur, indexReference);
             }
 
          } else if (xmlEvent.isEndElement()) {
@@ -245,18 +166,16 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
             name = endElement.getName().getLocalPart();
 
             if (isVirtual) {
-               endElementVirtuel(name, staxUtils);
+               endElementVirtuel(name);
             } else {
-               endElement(name, staxUtils);
+               endElement(name);
             }
          }
       }
 
       if (!isVirtual) {
-         staxUtils.addStartTag(NON_INTEGRATED_VIRT_DOCS, PX_RES,
-               PX_SOMRES);
-         staxUtils.addEndTag(NON_INTEGRATED_VIRT_DOCS, PX_SOMRES,
-               NS_SOMRES);
+         staxUtils.addStartTag(NON_INTEGRATED_VIRT_DOCS, PX_RES, PX_SOMRES);
+         staxUtils.addEndTag(NON_INTEGRATED_VIRT_DOCS, PX_SOMRES, NS_SOMRES);
       }
 
       staxUtils.addEndTag("resultats", PX_RES, NS_RES);
@@ -265,11 +184,9 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
    /**
     * 
     * @param name
-    * @param staxUtils
     * @throws XMLStreamException
     */
-   private void endElement(final String name, final StaxUtils staxUtils)
-         throws XMLStreamException {
+   private void endElement(final String name) {
       if ("documents".equals(name)) {
          staxUtils.addEndTag(NON_INTEGRATED_DOCUMENTS, PX_RES, NS_RES);
       } else if ("document".equals(name)) {
@@ -281,11 +198,9 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
    /**
     * 
     * @param name
-    * @param staxUtils
     * @throws XMLStreamException
     */
-   private void endElementVirtuel(final String name, final StaxUtils staxUtils)
-         throws XMLStreamException {
+   private void endElementVirtuel(final String name) {
       if ("documentsVirtuels".equals(name)) {
          staxUtils.addEndTag(NON_INTEGRATED_VIRT_DOCS, PX_RES, NS_RES);
       } else if ("documentVirtuel".equals(name)) {
@@ -300,16 +215,13 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
    /**
     * 
     * @param name
-    * @param staxUtils
     * @param reader
     * @param erreur
     * @param index
     * @throws XMLStreamException
     */
-   private IndexReference startTag(final String name,
-         final StaxUtils staxUtils, final XMLEventReader reader,
-         final CaptureMasseErreur erreur, final IndexReference indexReference)
-         throws XMLStreamException {
+   private IndexReference startTag(final String name, final XmlReader reader,
+         final CaptureMasseErreur erreur, final IndexReference indexReference) {
 
       IndexReference reference = indexReference;
 
@@ -325,10 +237,10 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
       } else if (CHEMIN_FICHIER.equals(name)) {
          staxUtils.addStartTag(CHEMIN_FICHIER, PX_SOMRES, NS_SOMRES);
          final XMLEvent xmlEvent = reader.peek();
-         gestionValeur(xmlEvent, staxUtils);
+         gestionValeur(xmlEvent);
          staxUtils.addEndElement(CHEMIN_FICHIER, PX_SOMRES, NS_SOMRES);
          staxUtils.addEndElement(OBJET_NUMERIQUE, PX_SOMRES, NS_SOMRES);
-         addErreur(erreur, indexReference.getDocIndex(), staxUtils, xmlEvent);
+         addErreur(erreur, indexReference.getDocIndex(), xmlEvent);
 
          int value = indexReference.getDocIndex() + 1;
          reference = new IndexReference(value, indexReference.getRefIndex());
@@ -341,22 +253,19 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
    /**
     * 
     * @param name
-    * @param staxUtils
     * @param reader
     * @param erreur
     * @param index
     * @throws XMLStreamException
     */
    private IndexReference startTagVirtuel(final String name,
-         final StaxUtils staxUtils, final XMLEventReader reader,
-         final CaptureMasseErreur erreur, final IndexReference indexReference)
-         throws XMLStreamException {
+         final XmlReader reader, final CaptureMasseErreur erreur,
+         final IndexReference indexReference) {
 
       IndexReference reference = indexReference;
 
       if ("documentsVirtuels".equals(name)) {
-         staxUtils.addStartTag(NON_INTEGRATED_VIRT_DOCS, PX_RES,
-               PX_SOMRES);
+         staxUtils.addStartTag(NON_INTEGRATED_VIRT_DOCS, PX_RES, PX_SOMRES);
 
       } else if ("documentVirtuel".equals(name)) {
          staxUtils.addStartElement("nonIntegratedVirtualDocument", PX_SOMRES,
@@ -366,18 +275,18 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
          staxUtils.addStartTag(OBJET_NUMERIQUE, PX_SOMRES, NS_SOMRES);
          staxUtils.addStartTag(CHEMIN_FICHIER, PX_SOMRES, NS_SOMRES);
          final XMLEvent xmlEvent = reader.peek();
-         gestionValeur(xmlEvent, staxUtils);
+         gestionValeur(xmlEvent);
          staxUtils.addEndTag(CHEMIN_FICHIER, PX_SOMRES, NS_SOMRES);
          staxUtils.addEndTag(OBJET_NUMERIQUE, PX_SOMRES, NS_SOMRES);
 
          int value = indexReference.getDocIndex() + 1;
          reference = new IndexReference(value, indexReference.getRefIndex());
       } else if (NUMERO_PAGE_DEBUT.equals(name)) {
-         addErreurVirtuelle(erreur, indexReference.getDocIndex(), staxUtils);
+         addErreurVirtuelle(erreur, indexReference.getDocIndex());
 
          staxUtils.addStartTag(NUMERO_PAGE_DEBUT, PX_SOMRES, NS_SOMRES);
          XMLEvent xmlEvent = reader.peek();
-         gestionValeur(xmlEvent, staxUtils);
+         gestionValeur(xmlEvent);
          staxUtils.addEndTag(NUMERO_PAGE_DEBUT, PX_SOMRES, NS_SOMRES);
 
          int value = indexReference.getDocIndex() + 1;
@@ -386,17 +295,17 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
       } else if (NOMBRE_PAGES.equals(name)) {
          staxUtils.addStartTag(NOMBRE_PAGES, PX_SOMRES, NS_SOMRES);
          XMLEvent xmlEvent = reader.peek();
-         gestionValeur(xmlEvent, staxUtils);
+         gestionValeur(xmlEvent);
          staxUtils.addEndTag(NOMBRE_PAGES, PX_SOMRES, NS_SOMRES);
 
       } else if (METADONNEES.equals(name)) {
-         addMetadatas(erreur, indexReference.getDocIndex(), staxUtils, reader);
+         addMetadatas(erreur, indexReference.getDocIndex(), reader);
 
       } else if ("composant".equals(name)) {
          staxUtils.addStartTag(name, PX_SOMRES, NS_SOMRES);
 
       } else if ("composants".equals(name)) {
-         addErreurReference(erreur, indexReference.getRefIndex(), staxUtils);
+         addErreurReference(erreur, indexReference.getRefIndex());
          staxUtils.addStartTag(name, PX_SOMRES, NS_SOMRES);
          reference = new IndexReference(indexReference.getDocIndex(),
                indexReference.getRefIndex() + 1);
@@ -408,12 +317,11 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
    /**
     * @param erreur
     * @param index
-    * @param staxUtils
     * @param reader
     * @throws XMLStreamException
     */
    private void addMetadatas(CaptureMasseErreur erreur, int index,
-         StaxUtils staxUtils, XMLEventReader reader) throws XMLStreamException {
+         XmlReader reader) {
 
       if (erreur.getListIndex().contains(index)) {
          staxUtils.addStartTag(METADONNEES, PX_SOMRES, NS_SOMRES);
@@ -427,7 +335,7 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
          reader.nextEvent();
 
          if (erreur.getListIndex().contains(index)) {
-            gestionElement(xmlEvent, staxUtils);
+            gestionElement(xmlEvent);
          }
 
          xmlEvent = reader.peek();
@@ -443,11 +351,9 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
 
    /**
     * @param xmlEvent
-    * @param staxUtils
     * @throws XMLStreamException
     */
-   private void gestionElement(XMLEvent xmlEvent, StaxUtils staxUtils)
-         throws XMLStreamException {
+   private void gestionElement(XMLEvent xmlEvent) {
 
       if (xmlEvent.isStartElement()) {
          String name = xmlEvent.asStartElement().getName().getLocalPart();
@@ -465,11 +371,9 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
    }
 
    /**
-    * @param staxUtils
     * @throws XMLStreamException
     */
-   private void ecrireEntete(StaxUtils staxUtils, int nombreDocs,
-         boolean isVirtual) throws XMLStreamException {
+   private void ecrireEntete(int nombreDocs, boolean isVirtual) {
 
       String countVirtual, countStandard;
       if (isVirtual) {
@@ -504,8 +408,7 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
 
    }
 
-   private void gestionValeur(XMLEvent xmlEvent, StaxUtils staxUtils)
-         throws XMLStreamException {
+   private void gestionValeur(XMLEvent xmlEvent) {
 
       if (!xmlEvent.isCharacters()) {
          throw new CaptureMasseRuntimeException(
@@ -519,13 +422,10 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
    /**
     * 
     * @param erreur
-    * @param staxUtils
     * @param xmlEvent
-    * @throws XMLStreamException
     */
    private void addErreur(final CaptureMasseErreur erreur, int index,
-         final StaxUtils staxUtils, final XMLEvent xmlEvent)
-         throws XMLStreamException {
+         final XMLEvent xmlEvent) {
 
       staxUtils.addStartTag(ERREURS, PX_SOMRES, NS_SOMRES);
 
@@ -567,11 +467,9 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
    /**
     * 
     * @param erreur
-    * @param staxUtils
     * @throws XMLStreamException
     */
-   private void addErreurVirtuelle(final CaptureMasseErreur erreur, int index,
-         final StaxUtils staxUtils) throws XMLStreamException {
+   private void addErreurVirtuelle(final CaptureMasseErreur erreur, int index) {
 
       staxUtils.addStartTag(ERREURS, PX_SOMRES, NS_SOMRES);
 
@@ -611,11 +509,9 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
    /**
     * 
     * @param erreur
-    * @param staxUtils
     * @throws XMLStreamException
     */
-   private void addErreurReference(final CaptureMasseErreur erreur, int index,
-         final StaxUtils staxUtils) throws XMLStreamException {
+   private void addErreurReference(final CaptureMasseErreur erreur, int index) {
 
       staxUtils.addStartTag(ERREURS, PX_SOMRES, NS_SOMRES);
 

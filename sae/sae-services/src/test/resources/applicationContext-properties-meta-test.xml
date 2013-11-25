@@ -14,7 +14,7 @@
       src/test/resources/config/test-sae-cassandra-config.properties
    -->
 
-   <bean id="resourceSaeConfig" class="org.springframework.core.io.ClassPathResource">
+   <bean id="resourceSaeConfig" class="org.springframework.core.io.ClassPathResource" >
       <constructor-arg value="config/test-sae-config-meta.properties" />
    </bean>
    
@@ -55,6 +55,13 @@
    <bean id="dfceConnectionService"
       class="fr.urssaf.image.commons.dfce.service.impl.DFCEConnectionServiceImpl">
       <constructor-arg ref="dfceConnection" />
+   </bean>
+
+
+   <bean
+      class="fr.urssaf.image.sae.services.capturemasse.listener.EcdeConnexionConfiguration">
+      <property name="delaiAttenteMs" value="${sae.dfce.delai.attente}" />
+      <property name="nbreEssaiMax" value="${sae.dfce.nombre.essai}" />
    </bean>
 
 </beans>

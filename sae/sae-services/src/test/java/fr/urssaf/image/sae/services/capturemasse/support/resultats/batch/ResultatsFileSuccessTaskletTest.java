@@ -52,7 +52,7 @@ public class ResultatsFileSuccessTaskletTest {
    private JobLauncherTestUtils launcher;
 
    private EcdeTestSommaire ecdeTestSommaire;
-   
+
    @Autowired
    private InsertionPoolThreadExecutor executor;
 
@@ -80,7 +80,14 @@ public class ResultatsFileSuccessTaskletTest {
       context.put(Constantes.RESTITUTION_UUIDS, false);
 
       File sommaire = new File(ecdeTestSommaire.getRepEcde(), "sommaire.xml");
+      ClassPathResource resSommaire = new ClassPathResource(
+            "sommaire/sommaire_success.xml");
+      FileOutputStream fos = new FileOutputStream(sommaire);
+      IOUtils.copy(resSommaire.getInputStream(), fos);
+
       context.put(Constantes.SOMMAIRE_FILE, sommaire.getAbsolutePath());
+      context
+            .put(Constantes.SOMMAIRE, ecdeTestSommaire.getUrlEcde().toString());
 
       JobExecution execution = launcher.launchStep("finSucces", context);
 
@@ -110,7 +117,7 @@ public class ResultatsFileSuccessTaskletTest {
          Assert.fail("le fichier resultats.xml doit etre valide");
       }
    }
-   
+
    @Test
    public void testLancementAvecUUIDDansResultat() throws Exception {
 
@@ -120,11 +127,13 @@ public class ResultatsFileSuccessTaskletTest {
       context.put(Constantes.RESTITUTION_UUIDS, true);
 
       File sommaire = new File(ecdeTestSommaire.getRepEcde(), "sommaire.xml");
-      ClassPathResource resSommaire = new ClassPathResource("sommaire/sommaire_success.xml");
+      ClassPathResource resSommaire = new ClassPathResource(
+            "sommaire/sommaire_success.xml");
       FileOutputStream fos = new FileOutputStream(sommaire);
       IOUtils.copy(resSommaire.getInputStream(), fos);
-     
+
       context.put(Constantes.SOMMAIRE_FILE, sommaire.getAbsolutePath());
+      context.put(Constantes.SOMMAIRE, ecdeTestSommaire.getUrlEcde().toString());
 
       // Liste des documents intégrés
       CaptureMasseIntegratedDocument doc1 = new CaptureMasseIntegratedDocument();
@@ -142,9 +151,8 @@ public class ResultatsFileSuccessTaskletTest {
       executor.getIntegratedDocuments().add(doc1);
       executor.getIntegratedDocuments().add(doc2);
       executor.getIntegratedDocuments().add(doc3);
-      
+
       JobExecution execution = launcher.launchStep("finSucces", context);
-      
 
       File resultatsFile = new File(ecdeTestSommaire.getRepEcde(),
             "resultats.xml");

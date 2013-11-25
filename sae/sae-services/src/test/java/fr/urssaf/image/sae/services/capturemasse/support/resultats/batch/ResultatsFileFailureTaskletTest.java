@@ -71,6 +71,7 @@ public class ResultatsFileFailureTaskletTest {
 
       ExecutionContext context = new ExecutionContext();
       context.put(Constantes.SOMMAIRE_FILE, sommaire.getAbsolutePath());
+      context.put(Constantes.SOMMAIRE, testSommaire.getUrlEcde().toString());
 
       ConcurrentLinkedQueue<String> codes = new ConcurrentLinkedQueue<String>();
       codes.add(Constantes.ERR_BUL002);

@@ -11,6 +11,7 @@ import java.util.UUID;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Assert;
@@ -57,8 +58,9 @@ public class ResultatsFileSuccessVirtualTaskletTest {
    private InsertionPoolThreadVirtualExecutor executor;
 
    @Before
-   public void init() {
+   public void init() throws IOException {
       ecdeTestSommaire = ecdeTestTools.buildEcdeTestSommaire();
+      initDatas();
    }
 
    @After
@@ -77,7 +79,8 @@ public class ResultatsFileSuccessVirtualTaskletTest {
 
       context.put(Constantes.DOC_COUNT, 3);
       context.put(Constantes.RESTITUTION_UUIDS, false);
-
+      context
+            .put(Constantes.SOMMAIRE, ecdeTestSommaire.getUrlEcde().toString());
       File sommaire = new File(ecdeTestSommaire.getRepEcde(), "sommaire.xml");
       context.put(Constantes.SOMMAIRE_FILE, sommaire.getAbsolutePath());
 
@@ -125,7 +128,8 @@ public class ResultatsFileSuccessVirtualTaskletTest {
       IOUtils.copy(resSommaire.getInputStream(), fos);
 
       context.put(Constantes.SOMMAIRE_FILE, sommaire.getAbsolutePath());
-
+      context
+            .put(Constantes.SOMMAIRE, ecdeTestSommaire.getUrlEcde().toString());
       // Liste des documents intégrés
       CaptureMasseVirtualDocument doc1 = new CaptureMasseVirtualDocument();
       doc1.setUuid(UUID.randomUUID());
@@ -167,6 +171,12 @@ public class ResultatsFileSuccessVirtualTaskletTest {
          e.printStackTrace();
          Assert.fail("le fichier resultats.xml doit etre valide");
       }
+   }
+
+   private void initDatas() throws IOException {
+      File sommaire = new File(ecdeTestSommaire.getRepEcde(), "sommaire.xml");
+      ClassPathResource resSommaire = new ClassPathResource("sommaire.xml");
+      FileUtils.copyURLToFile(resSommaire.getURL(), sommaire);
    }
 
 }

@@ -20,6 +20,8 @@ import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
 public abstract class AbstractListener {
 
    private StepExecution stepExecution;
+   private static final ExitStatus FAILED_FIN_BLOQUANT = new ExitStatus(
+         "FAILED_FIN_BLOQUANT");
 
    /**
     * initialisation de variables
@@ -36,13 +38,20 @@ public abstract class AbstractListener {
    /**
     * Méthode déclenchée à la fin du step
     * 
-    * @param stepExecution le stepExecution
+    * @param stepExecution
+    *           le stepExecution
     * @return le status de sortie
     */
    @AfterStep
    public final ExitStatus afterStep(StepExecution stepExecution) {
       this.stepExecution = stepExecution;
-      return specificAfterStepOperations();
+
+      ExitStatus exitStatus = stepExecution.getExitStatus();
+      if (!FAILED_FIN_BLOQUANT.equals(exitStatus)) {
+         exitStatus = specificAfterStepOperations();
+      }
+
+      return exitStatus;
    }
 
    /**
@@ -79,6 +88,18 @@ public abstract class AbstractListener {
             .getExecutionContext();
       return (ConcurrentLinkedQueue<Exception>) jobExecution
             .get(Constantes.DOC_EXCEPTION);
+   }
+
+   /**
+    * @return la liste des index des références des erreurs stockée dans le
+    *         contexte d'execution du job
+    */
+   @SuppressWarnings("unchecked")
+   protected final ConcurrentLinkedQueue<Integer> getIndexReferenceErreurListe() {
+      ExecutionContext jobExecution = getStepExecution().getJobExecution()
+            .getExecutionContext();
+      return (ConcurrentLinkedQueue<Integer>) jobExecution
+            .get(Constantes.INDEX_REF_EXCEPTION);
    }
 
    /**

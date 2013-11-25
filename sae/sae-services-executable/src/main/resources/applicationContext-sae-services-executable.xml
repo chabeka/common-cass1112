@@ -12,12 +12,11 @@
 
 
    <!-- Chargement des fichiers properties -->
-   <bean
-      class="fr.urssaf.image.sae.commons.factory.PropertiesFactory"
+   <bean class="fr.urssaf.image.sae.commons.factory.PropertiesFactory"
       factory-method="load">
       <constructor-arg ref="saeConfigResource" />
    </bean>
-   
+
    <!-- service des traitements de masse  -->
    <import resource="applicationContext-sae-traitement-masse.xml" />
    <import resource="applicationContext-sae-capture-masse-item.xml" />
@@ -37,13 +36,20 @@
       factory-method="load">
       <constructor-arg ref="ecdeConfigFile" />
    </bean>
-   
+
    <!-- Création du bean de connexion à DFCE pour les métadonnées -->
-   <bean id="dfceConfig" class="fr.urssaf.image.sae.metadata.referential.model.DfceConfig">
+   <bean id="dfceConfig"
+      class="fr.urssaf.image.sae.metadata.referential.model.DfceConfig">
       <property name="urlToolkit" value="${db.urlToolkit}" />
       <property name="login" value="${db.login}" />
       <property name="password" value="${db.password}" />
       <property name="basename" value="${db.baseName}" />
+   </bean>
+
+   <bean
+      class="fr.urssaf.image.sae.services.capturemasse.listener.EcdeConnexionConfiguration">
+      <property name="delaiAttenteMs" value="${sae.dfce.delai.attente}" />
+      <property name="nbreEssaiMax" value="${sae.dfce.nombre.essai}" />
    </bean>
 
    <!--  importation des contextes -->

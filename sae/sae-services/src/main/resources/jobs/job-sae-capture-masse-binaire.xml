@@ -27,11 +27,14 @@
       <step id="debutTraitement">
          <tasklet ref="debutTraitementFlagTasklet">
             <listeners>
+               <listener ref="checkEcdePermissionBeforeStepListener" />
                <listener ref="debutTraitementFlagListener" />
+               <listener ref="checkEcdePermissionAfterStepListener" />
             </listeners>
          </tasklet>
 
          <next on="FAILED" to="finBloquant" />
+         <next on="FAILED_FIN_BLOQUANT" to="finBloquant" />
          <next on="*" to="controleFormatSommaireStep" />
 
       </step>
@@ -39,22 +42,28 @@
       <step id="controleFormatSommaireStep">
          <tasklet ref="checkFormatFileSommaireTasklet">
             <listeners>
+               <listener ref="checkEcdePermissionBeforeStepListener" />
                <listener ref="checkStateAfterStepListener" />
+               <listener ref="checkEcdePermissionAfterStepListener" />
             </listeners>
          </tasklet>
 
          <next on="FAILED" to="finBloquant" />
+         <next on="FAILED_FIN_BLOQUANT" to="finBloquant" />
          <next on="*" to="compteElements" />
       </step>
 
       <step id="compteElements">
          <tasklet ref="countSommaireDocumentsTasklet">
             <listeners>
+               <listener ref="checkEcdePermissionBeforeStepListener" />
                <listener ref="countSommaireDocumentsListener" />
+               <listener ref="checkEcdePermissionAfterStepListener" />
             </listeners>
          </tasklet>
 
          <next on="FAILED" to="finBloquant" />
+         <next on="FAILED_FIN_BLOQUANT" to="finBloquant" />
          <next on="DOCS" to="controleDocuments" />
          <next on="VDOCS" to="controleFichiersReference" />
 
@@ -69,13 +78,16 @@
             <chunk reader="sommaireReader" processor="compositeControlProcessor"
                writer="emptyWriter" commit-interval="1000" />
             <listeners>
+               <listener ref="checkEcdePermissionBeforeStepListener" />
                <listener ref="controleListener" />
                <listener ref="controleDocumentListener" />
                <listener ref="controleSommaireDocumentProcessor" />
+               <listener ref="checkEcdePermissionAfterStepListener" />
             </listeners>
          </tasklet>
 
          <next on="FAILED" to="finErreur" />
+         <next on="FAILED_FIN_BLOQUANT" to="finBloquant" />
          <next on="*" to="persistanceDocuments" />
       </step>
 
@@ -86,15 +98,18 @@
             <chunk reader="sommaireReader" processor="compositeProcessorControlePersistance"
                writer="storageDocumentWriter" commit-interval="5" />
             <listeners>
+               <listener ref="checkEcdePermissionBeforeStepListener" />
                <listener ref="storageDocumentWriter" />
                <listener ref="controleStorageDocumentProcessor" />
                <listener ref="stockageListener" />
                <listener ref="enrichissementStorageDocumentProcessor" />
+               <listener ref="checkEcdePermissionAfterStepListener" />
             </listeners>
          </tasklet>
 
 
          <next on="FAILED" to="rollback" />
+         <next on="FAILED_FIN_BLOQUANT" to="finBloquant" />
          <next on="FAILED_NO_ROLLBACK" to="finErreur" />
          <next on="*" to="finSucces" />
       </step>
@@ -122,27 +137,35 @@
       <step id="finErreur">
          <tasklet ref="resultatsFileFailureTasklet">
             <listeners>
+               <listener ref="checkEcdePermissionBeforeStepListener" />
                <listener ref="resultatsFileFailureListener" />
+               <listener ref="checkEcdePermissionAfterStepListener" />
             </listeners>
          </tasklet>
 
+         <next on="FAILED_FIN_BLOQUANT" to="finBloquant" />
          <next on="*" to="finTraitement" />
       </step>
 
       <step id="finSucces">
          <tasklet ref="resultatsFileSuccessTasklet">
             <listeners>
+               <listener ref="checkEcdePermissionBeforeStepListener" />
                <listener ref="resultatsFileSuccessListener" />
+               <listener ref="checkEcdePermissionAfterStepListener" />
             </listeners>
          </tasklet>
 
+         <next on="FAILED_FIN_BLOQUANT" to="finBloquant" />
          <next on="*" to="finTraitement" />
       </step>
 
       <step id="finTraitement">
          <tasklet ref="finTraitementFlagTasklet">
             <listeners>
+               <listener ref="checkEcdePermissionBeforeStepListener" />
                <listener ref="finTraitementFlagListener" />
+               <listener ref="checkEcdePermissionAfterStepListener" />
             </listeners>
          </tasklet>
       </step>
@@ -154,12 +177,15 @@
             <chunk reader="fichierReferenceReader" processor="controleFichierReferenceProcessor"
                writer="virtualReferenceFileWriter" commit-interval="1" />
             <listeners>
+               <listener ref="checkEcdePermissionBeforeStepListener" />
                <listener ref="controleReferenceListener" />
                <listener ref="controleSommaireObjetNumeriqueProcessor" />
+               <listener ref="checkEcdePermissionAfterStepListener" />
             </listeners>
          </tasklet>
 
          <next on="FAILED" to="finErreurVirtuel" />
+         <next on="FAILED_FIN_BLOQUANT" to="finBloquant" />
          <next on="*" to="controleDocumentsVirtuels" />
       </step>
 
@@ -169,12 +195,15 @@
             <chunk reader="composantsReader" processor="controleComposantProcessor"
                writer="emptyWriter" commit-interval="1000" />
             <listeners>
+               <listener ref="checkEcdePermissionBeforeStepListener" />
                <listener ref="controleListener" />
                <listener ref="controleDocumentVirtuelListener" />
+               <listener ref="checkEcdePermissionAfterStepListener" />
             </listeners>
          </tasklet>
 
          <next on="FAILED" to="finErreurVirtuel" />
+         <next on="FAILED_FIN_BLOQUANT" to="finBloquant" />
          <next on="*" to="persistanceFichiersReference" />
       </step>
 
@@ -185,15 +214,18 @@
                writer="virtualStorageReferenceWriter" commit-interval="1" />
 
             <listeners>
+               <listener ref="checkEcdePermissionBeforeStepListener" />
                <listener ref="convertVirtualReferenceFileProcessor" />
                <listener ref="controleReferenceListener" />
                <listener ref="virtualStorageReferenceFileWriterListener" />
+               <listener ref="checkEcdePermissionAfterStepListener" />
             </listeners>
 
          </tasklet>
 
 
          <next on="FAILED" to="rollbackVirtuel" />
+         <next on="FAILED_FIN_BLOQUANT" to="finBloquant" />
          <next on="FAILED_NO_ROLLBACK" to="finErreurVirtuel" />
          <next on="*" to="persistanceDocumentsVirtuels" />
       </step>
@@ -204,14 +236,17 @@
             <chunk reader="composantsReader" processor="persistanceDocumentsVirtuelsProcessor"
                writer="virtualStorageDocumentWriter" commit-interval="1000" />
             <listeners>
+               <listener ref="checkEcdePermissionBeforeStepListener" />
                <listener ref="enrichissementVirtualStorageDocumentProcessor" />
                <listener ref="virtualStockageListener" />
                <listener ref="virtualStorageDocumentWriter" />
+               <listener ref="checkEcdePermissionAfterStepListener" />
             </listeners>
          </tasklet>
 
 
          <next on="FAILED" to="rollbackVirtuel" />
+         <next on="FAILED_FIN_BLOQUANT" to="finBloquant" />
          <next on="FAILED_NO_ROLLBACK" to="finErreurVirtuel" />
          <next on="*" to="finSuccesVirtuel" />
       </step>
@@ -231,7 +266,14 @@
 
       <!-- Ecriture du fichier résultat en erreur -->
       <step id="finErreurVirtuel">
-         <tasklet ref="resultatsVirtualFileFailureTasklet" />
+         <tasklet ref="resultatsVirtualFileFailureTasklet">
+            <listeners>
+               <listener ref="checkEcdePermissionBeforeStepListener" />
+               <listener ref="checkEcdePermissionAfterStepListener" />
+            </listeners>
+         </tasklet>
+         
+         <next on="FAILED_FIN_BLOQUANT" to="finBloquant" />
          <next on="*" to="finTraitement" />
       </step>
 
@@ -239,10 +281,13 @@
       <step id="finSuccesVirtuel">
          <tasklet ref="resultatsVirtualFileSuccessTasklet">
             <listeners>
+               <listener ref="checkEcdePermissionBeforeStepListener" />
                <listener ref="resultatsFileSuccessListener" />
+               <listener ref="checkEcdePermissionAfterStepListener" />
             </listeners>
          </tasklet>
 
+         <next on="FAILED_FIN_BLOQUANT" to="finBloquant" />
          <next on="*" to="finTraitement" />
       </step>
 

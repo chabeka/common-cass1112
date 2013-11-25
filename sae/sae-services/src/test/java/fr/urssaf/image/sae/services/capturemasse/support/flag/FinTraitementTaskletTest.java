@@ -8,6 +8,7 @@ import java.io.IOException;
 
 import junit.framework.Assert;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,6 +18,7 @@ import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -37,8 +39,9 @@ public class FinTraitementTaskletTest {
    private EcdeTestSommaire ecdeTestSommaire;
 
    @Before
-   public void init() {
+   public void init() throws IOException {
       ecdeTestSommaire = ecdeTestTools.buildEcdeTestSommaire();
+      initDatas();
    }
 
    @After
@@ -58,6 +61,8 @@ public class FinTraitementTaskletTest {
 
       ExecutionContext context = new ExecutionContext();
       context.put(Constantes.SOMMAIRE_FILE, sommaireFilePath);
+      context
+            .put(Constantes.SOMMAIRE, ecdeTestSommaire.getUrlEcde().toString());
 
       JobExecution execution = launcher.launchStep("finTraitement", context);
 
@@ -65,4 +70,9 @@ public class FinTraitementTaskletTest {
             ExitStatus.COMPLETED, execution.getExitStatus());
    }
 
+   private void initDatas() throws IOException {
+      File sommaire = new File(ecdeTestSommaire.getRepEcde(), "sommaire.xml");
+      ClassPathResource resSommaire = new ClassPathResource("sommaire.xml");
+      FileUtils.copyURLToFile(resSommaire.getURL(), sommaire);
+   }
 }

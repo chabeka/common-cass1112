@@ -8,7 +8,7 @@
         http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
    <!--
-   Chargement des 3 fichiers de configuration du SAE :
+      Chargement des 3 fichiers de configuration du SAE :
       src/test/resources/config/test-sae-config.properties
       src/test/resources/config/test-sae-dfce-config.properties
       src/test/resources/config/test-sae-cassandra-config.properties
@@ -17,7 +17,7 @@
    <bean id="resourceSaeConfig" class="org.springframework.core.io.ClassPathResource">
       <constructor-arg value="config/test-sae-config.properties" />
    </bean>
-   
+
    <bean class="java.io.File" id="fileSaeConfig">
       <constructor-arg>
          <bean factory-bean="resourceSaeConfig" factory-method="getURI" />
@@ -34,7 +34,7 @@
       factory-method="load">
       <constructor-arg ref="saeConfigResource" />
    </bean>
-   
+
    <bean id="dfceConfig" factory-bean="dfceConfigFactory"
       factory-method="createDfceConfig">
 
@@ -56,8 +56,12 @@
       class="fr.urssaf.image.commons.dfce.service.impl.DFCEConnectionServiceImpl">
       <constructor-arg ref="dfceConnection" />
    </bean>
-   
-   
-   
+
+
+   <bean
+      class="fr.urssaf.image.sae.services.capturemasse.listener.EcdeConnexionConfiguration">
+      <property name="delaiAttenteMs" value="${sae.dfce.delai.attente}" />
+      <property name="nbreEssaiMax" value="${sae.dfce.nombre.essai}" />
+   </bean>
 
 </beans>

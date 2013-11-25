@@ -90,14 +90,18 @@ public class CheckFileFormatSommaireTaskletTest {
       FileOutputStream fos = new FileOutputStream(sommaire);
       IOUtils.copy(resSommaire.getInputStream(), fos);
 
-      context.put(Constantes.SOMMAIRE, ecdeTestSommaire.getUrlEcde());
+      context
+            .put(Constantes.SOMMAIRE, ecdeTestSommaire.getUrlEcde().toString());
       context.put(Constantes.SOMMAIRE_FILE, sommaire.getAbsolutePath());
 
       Map<String, JobParameter> mapParameter = new HashMap<String, JobParameter>();
 
-      context.put(Constantes.CODE_EXCEPTION, new ConcurrentLinkedQueue<String>());
-      context.put(Constantes.INDEX_EXCEPTION, new ConcurrentLinkedQueue<Integer>());
-      context.put(Constantes.INDEX_REF_EXCEPTION, new ConcurrentLinkedQueue<Integer>());
+      context.put(Constantes.CODE_EXCEPTION,
+            new ConcurrentLinkedQueue<String>());
+      context.put(Constantes.INDEX_EXCEPTION,
+            new ConcurrentLinkedQueue<Integer>());
+      context.put(Constantes.INDEX_REF_EXCEPTION,
+            new ConcurrentLinkedQueue<Integer>());
       context.put(Constantes.DOC_EXCEPTION,
             new ConcurrentLinkedQueue<Exception>());
 
@@ -190,8 +194,8 @@ public class CheckFileFormatSommaireTaskletTest {
       List<StepExecution> list = new ArrayList<StepExecution>(steps);
 
       StepExecution step = list.get(0);
-      Assert.assertEquals("status FAILED attendu", ExitStatus.FAILED, step
-            .getExitStatus());
+      Assert.assertEquals("status FAILED_FIN_BLOQUANT attendu",
+            "FAILED_FIN_BLOQUANT", step.getExitStatus().getExitCode());
 
       ExecutionContext executionContext = execution.getExecutionContext();
       @SuppressWarnings("unchecked")

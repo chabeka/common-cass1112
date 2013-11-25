@@ -83,6 +83,8 @@ public class ControleDocumentsStepTest {
             new ConcurrentLinkedQueue<Exception>());
       context.put(Constantes.INDEX_REF_EXCEPTION,
             new ConcurrentLinkedQueue<Integer>());
+      context
+            .put(Constantes.SOMMAIRE, ecdeTestSommaire.getUrlEcde().toString());
 
       JobExecution execution = launcher.launchStep("controleDocuments",
             jobParameters, context);

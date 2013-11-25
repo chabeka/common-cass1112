@@ -87,6 +87,7 @@ public class ResultatsVirtualFileFailureTaskletTest {
       context.put(Constantes.CODE_EXCEPTION, codes);
 
       context.put(Constantes.DOC_COUNT, 3);
+      context.put(Constantes.SOMMAIRE, testSommaire.getUrlEcde().toString());
 
       launcher.launchStep("finErreurVirtuel", context);
 

@@ -63,12 +63,12 @@ public class ControleComposantsStepTest {
 
    @Autowired
    private SaeListVirtualReferenceFile saeListVirtualReferenceFile;
-   
+
    @Autowired
    private CassandraServerBean server;
    @Autowired
    private ParametersService parametersService;
-   @Autowired 
+   @Autowired
    private RndSupport rndSupport;
    @Autowired
    private JobClockSupport jobClockSupport;
@@ -99,11 +99,11 @@ public class ControleComposantsStepTest {
             viExtrait.getIdUtilisateur(), viExtrait, roles, viExtrait
                   .getSaeDroits());
       AuthenticationContext.setAuthenticationToken(token);
-      
+
       // Paramétrage du RND
       parametersService.setVersionRndDateMaj(new Date());
       parametersService.setVersionRndNumero("11.2");
-      
+
       TypeDocument typeDocCree = new TypeDocument();
       typeDocCree.setCloture(false);
       typeDocCree.setCode("2.3.1.1.8");
@@ -112,7 +112,7 @@ public class ControleComposantsStepTest {
       typeDocCree.setDureeConservation(1825);
       typeDocCree.setLibelle("ATTESTATION DE MARCHE PUBLIC");
       typeDocCree.setType(TypeCode.ARCHIVABLE_AED);
-      
+
       rndSupport.ajouterRnd(typeDocCree, jobClockSupport.currentCLock());
    }
 
@@ -127,7 +127,7 @@ public class ControleComposantsStepTest {
       }
 
       AuthenticationContext.setAuthenticationToken(null);
-      
+
       server.resetData();
    }
 
@@ -155,6 +155,8 @@ public class ControleComposantsStepTest {
             new ConcurrentLinkedQueue<Exception>());
       context.put(Constantes.INDEX_REF_EXCEPTION,
             new ConcurrentLinkedQueue<Integer>());
+      context
+            .put(Constantes.SOMMAIRE, ecdeTestSommaire.getUrlEcde().toString());
 
       JobExecution execution = launcher.launchStep("controleDocumentsVirtuels",
             jobParameters, context);
@@ -197,6 +199,8 @@ public class ControleComposantsStepTest {
             new ConcurrentLinkedQueue<Exception>());
       context.put(Constantes.INDEX_REF_EXCEPTION,
             new ConcurrentLinkedQueue<Integer>());
+      context
+            .put(Constantes.SOMMAIRE, ecdeTestSommaire.getUrlEcde().toString());
 
       VirtualReferenceFile ref = new VirtualReferenceFile();
       ref.setHash("4bf2ddbd82d5fd38e821e6aae434ac989972a044");
@@ -248,6 +252,8 @@ public class ControleComposantsStepTest {
             new ConcurrentLinkedQueue<Exception>());
       context.put(Constantes.INDEX_REF_EXCEPTION,
             new ConcurrentLinkedQueue<Integer>());
+      context
+            .put(Constantes.SOMMAIRE, ecdeTestSommaire.getUrlEcde().toString());
 
       VirtualReferenceFile ref = new VirtualReferenceFile();
       ref.setHash("4bf2ddbd82d5fd38e821e6aae434ac989972a043");

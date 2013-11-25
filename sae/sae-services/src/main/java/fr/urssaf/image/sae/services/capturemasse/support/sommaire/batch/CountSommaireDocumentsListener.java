@@ -7,37 +7,31 @@ import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.ExitStatus;
-import org.springframework.batch.core.StepExecution;
-import org.springframework.batch.core.annotation.AfterStep;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
+import fr.urssaf.image.sae.services.capturemasse.listener.AbstractListener;
 
 /**
  * Listener de la tasklet de vérification du fichier sommaire.xml
  * 
  */
 @Component
-public class CountSommaireDocumentsListener {
+public class CountSommaireDocumentsListener extends AbstractListener {
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(CountSommaireDocumentsListener.class);
 
    /**
-    * réalisé après le step
-    * 
-    * @param stepExecution
-    *           le step Execution
-    * @return un status de sortie
+    * {@inheritDoc}
     */
-   @AfterStep
-   public final ExitStatus afterStep(final StepExecution stepExecution) {
-
+   @Override
+   protected ExitStatus specificAfterStepOperations() {
       ExitStatus exitStatus;
 
-      if (CollectionUtils.isNotEmpty(stepExecution.getFailureExceptions())) {
+      if (CollectionUtils.isNotEmpty(getStepExecution().getFailureExceptions())) {
 
-         for (Throwable throwable : stepExecution.getFailureExceptions()) {
+         for (Throwable throwable : getStepExecution().getFailureExceptions()) {
             LOGGER
                   .warn(
                         "Erreur lors de l'étape de comptage des éléments du fichier sommaire.xml",
@@ -47,12 +41,18 @@ public class CountSommaireDocumentsListener {
          exitStatus = ExitStatus.FAILED;
 
       } else {
-         String redirect = stepExecution.getExecutionContext().getString(
+         String redirect = getStepExecution().getExecutionContext().getString(
                Constantes.COUNT_DIRECTION);
 
          exitStatus = new ExitStatus(redirect);
       }
 
       return exitStatus;
+   }
+
+   @Override
+   protected void specificInitOperations() {
+      // rien à faire
+
    }
 }
