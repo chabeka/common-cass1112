@@ -9,7 +9,9 @@ package fr.urssaf.image.sae.droit.cache;
  */
 public class CacheConfig {
 
-   private int droitsCacheDuration = 30;
+   private static final int CACHE_DURATION = 30;
+
+   private int droitsCacheDuration = CACHE_DURATION;
 
    /**
     * @return the droitsCacheDuration

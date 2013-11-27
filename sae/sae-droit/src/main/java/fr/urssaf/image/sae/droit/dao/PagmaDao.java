@@ -4,25 +4,22 @@
 package fr.urssaf.image.sae.droit.dao;
 
 import me.prettyprint.cassandra.serializers.StringSerializer;
-import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
-import me.prettyprint.cassandra.service.template.ThriftColumnFamilyTemplate;
 import me.prettyprint.hector.api.Keyspace;
 import me.prettyprint.hector.api.Serializer;
-import me.prettyprint.hector.api.beans.HColumn;
-import me.prettyprint.hector.api.factory.HFactory;
-import me.prettyprint.hector.api.mutation.Mutator;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
+import fr.urssaf.image.sae.commons.dao.AbstractDao;
 
 /**
  * Service DAO de la famille de colonnes "DroitPagma"
  * 
  */
 @Repository
-public class PagmaDao {
+public class PagmaDao extends AbstractDao<String, String> {
 
    public static final String PAGMA_AU = "actionsUnitaires";
 
@@ -30,58 +27,15 @@ public class PagmaDao {
 
    public static final int MAX_ATTRIBUTS = 100;
 
-   private final ColumnFamilyTemplate<String, String> pagmaTmpl;
-
-   private final Keyspace keyspace;
-
    /**
+    * Constructeur
     * 
     * @param keyspace
     *           Keyspace utilisé par la pile des travaux
     */
    @Autowired
    public PagmaDao(Keyspace keyspace) {
-
-      this.keyspace = keyspace;
-
-      pagmaTmpl = new ThriftColumnFamilyTemplate<String, String>(keyspace,
-            PAGMA_CFNAME, StringSerializer.get(), StringSerializer.get());
-
-      pagmaTmpl.setCount(MAX_ATTRIBUTS);
-
-   }
-
-   /**
-    * 
-    * @return CassandraTemplate de <code>DroitPagma</code>
-    */
-   public final ColumnFamilyTemplate<String, String> getPagmaTmpl() {
-
-      return this.pagmaTmpl;
-   }
-
-   /**
-    * 
-    * @return Mutator de <code>DroitPagma</code>
-    */
-   public final Mutator<String> createMutator() {
-
-      Mutator<String> mutator = HFactory.createMutator(keyspace,
-            StringSerializer.get());
-
-      return mutator;
-
-   }
-
-   private void addColumn(ColumnFamilyUpdater<String, String> updater,
-         String colName, Serializer<String> nameSerializer,
-         Serializer<String> valueSerializer, long clock) {
-
-      HColumn<String, String> column = HFactory.createColumn(colName,
-            StringUtils.EMPTY, nameSerializer, valueSerializer);
-
-      column.setClock(clock);
-      updater.setColumn(column);
+      super(keyspace);
 
    }
 
@@ -98,33 +52,33 @@ public class PagmaDao {
    public final void ecritActionUnitaire(
          ColumnFamilyUpdater<String, String> updater, String colName, long clock) {
 
-      addColumn(updater, colName, StringSerializer.get(), StringSerializer.get(),
+      addColumn(updater, colName, StringUtils.EMPTY, StringSerializer.get(),
             clock);
 
    }
 
    /**
-    * Suppression d'un Pagma
-    * 
-    * @param mutator
-    *           Mutator de <code>PAGMA</code>
-    * @param code
-    *           identifiant du PAGMA
-    * @param clock
-    *           horloge de la suppression
+    * {@inheritDoc}
     */
-   public final void mutatorSuppressionPagma(Mutator<String> mutator,
-         String code, long clock) {
-
-      mutator.addDeletion(code, PAGMA_CFNAME, clock);
-
+   @Override
+   public final String getColumnFamilyName() {
+      return PAGMA_CFNAME;
    }
 
    /**
-    * @return the keyspace
+    * {@inheritDoc}
     */
-   public final Keyspace getKeyspace() {
-      return keyspace;
+   @Override
+   public final Serializer<String> getColumnKeySerializer() {
+      return StringSerializer.get();
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final Serializer<String> getRowKeySerializer() {
+      return StringSerializer.get();
    }
 
 }

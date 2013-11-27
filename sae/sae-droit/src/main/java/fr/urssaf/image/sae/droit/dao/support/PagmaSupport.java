@@ -24,17 +24,18 @@ import fr.urssaf.image.sae.droit.dao.model.Pagma;
 public class PagmaSupport {
 
    private final PagmaDao dao;
-   
+
    /**
     * constructeur
-    * @param pagmaDao DAO associée au pagma
+    * 
+    * @param pagmaDao
+    *           DAO associée au pagma
     */
    @Autowired
-   public PagmaSupport(PagmaDao pagmaDao){
+   public PagmaSupport(PagmaDao pagmaDao) {
       this.dao = pagmaDao;
    }
-   
-   
+
    /**
     * Méthode de création d'un ligne
     * 
@@ -45,13 +46,13 @@ public class PagmaSupport {
     */
    public final void create(Pagma pagma, long clock) {
 
-      ColumnFamilyUpdater<String, String> updater = dao.getPagmaTmpl()
+      ColumnFamilyUpdater<String, String> updater = dao.getCfTmpl()
             .createUpdater(pagma.getCode());
 
       for (String code : pagma.getActionUnitaires()) {
          dao.ecritActionUnitaire(updater, code, clock);
       }
-      dao.getPagmaTmpl().update(updater);
+      dao.getCfTmpl().update(updater);
 
    }
 
@@ -67,7 +68,7 @@ public class PagmaSupport {
 
       Mutator<String> mutator = dao.createMutator();
 
-      dao.mutatorSuppressionPagma(mutator, code, clock);
+      dao.mutatorSuppressionLigne(mutator, code, clock);
 
       mutator.execute();
    }
@@ -81,8 +82,8 @@ public class PagmaSupport {
     */
    public final Pagma find(String code) {
 
-      ColumnFamilyResult<String, String> result = dao.getPagmaTmpl()
-            .queryColumns(code);
+      ColumnFamilyResult<String, String> result = dao.getCfTmpl().queryColumns(
+            code);
 
       Pagma pagma = getPagmaFromResult(result);
 

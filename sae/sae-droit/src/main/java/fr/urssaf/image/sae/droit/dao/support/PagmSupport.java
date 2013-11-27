@@ -29,13 +29,15 @@ public class PagmSupport {
    private final PagmSerializer pagmSerializer = PagmSerializer.get();
 
    private final PagmDao dao;
-   
+
    /**
     * constructeur
-    * @param pagmDao DAO associée au pagm
+    * 
+    * @param pagmDao
+    *           DAO associée au pagm
     */
    @Autowired
-   public PagmSupport(PagmDao pagmDao){
+   public PagmSupport(PagmDao pagmDao) {
       this.dao = pagmDao;
    }
 
@@ -51,12 +53,12 @@ public class PagmSupport {
     */
    public final void create(String idClient, Pagm pagm, long clock) {
 
-      ColumnFamilyUpdater<String, String> updater = dao.getPagmTmpl()
+      ColumnFamilyUpdater<String, String> updater = dao.getCfTmpl()
             .createUpdater(idClient);
 
       dao.ecritPagm(updater, pagm, clock);
 
-      dao.getPagmTmpl().update(updater);
+      dao.getCfTmpl().update(updater);
 
    }
 
@@ -72,7 +74,7 @@ public class PagmSupport {
 
       Mutator<String> mutator = dao.createMutator();
 
-      dao.mutatorSuppressionPagm(mutator, code, clock);
+      dao.mutatorSuppressionLigne(mutator, code, clock);
 
       mutator.execute();
    }
@@ -86,17 +88,17 @@ public class PagmSupport {
     */
    public final List<Pagm> find(String code) {
 
-      ColumnFamilyResult<String, String> result = dao.getPagmTmpl()
-            .queryColumns(code);
+      ColumnFamilyResult<String, String> result = dao.getCfTmpl().queryColumns(
+            code);
 
       Collection<String> colNames = result.getColumnNames();
 
       List<Pagm> pagms = null;
-      
+
       if (CollectionUtils.isNotEmpty(colNames)) {
          pagms = new ArrayList<Pagm>(colNames.size());
       }
-      
+
       for (String name : colNames) {
 
          byte[] bResult = result.getByteArray(name);

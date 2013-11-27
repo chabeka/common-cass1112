@@ -7,18 +7,14 @@ import java.util.List;
 import java.util.Map;
 
 import me.prettyprint.cassandra.serializers.StringSerializer;
-import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
-import me.prettyprint.cassandra.service.template.ThriftColumnFamilyTemplate;
 import me.prettyprint.hector.api.Keyspace;
 import me.prettyprint.hector.api.Serializer;
-import me.prettyprint.hector.api.beans.HColumn;
-import me.prettyprint.hector.api.factory.HFactory;
-import me.prettyprint.hector.api.mutation.Mutator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import fr.urssaf.image.sae.commons.dao.AbstractDao;
 import fr.urssaf.image.sae.droit.dao.serializer.MapSerializer;
 
 /**
@@ -26,7 +22,7 @@ import fr.urssaf.image.sae.droit.dao.serializer.MapSerializer;
  * 
  */
 @Repository
-public class PrmdDao {
+public class PrmdDao extends AbstractDao<String, String> {
 
    public static final String PRMD_DESCRIPTION = "description";
 
@@ -40,71 +36,15 @@ public class PrmdDao {
 
    public static final int MAX_ATTRIBUTS = 100;
 
-   private final ColumnFamilyTemplate<String, String> prmdTmpl;
-
-   private final Keyspace keyspace;
-
    /**
+    * Constructeur
     * 
     * @param keyspace
     *           Keyspace utilisé par la pile des travaux
     */
    @Autowired
    public PrmdDao(Keyspace keyspace) {
-
-      this.keyspace = keyspace;
-
-      prmdTmpl = new ThriftColumnFamilyTemplate<String, String>(keyspace,
-            PRMD_CFNAME, StringSerializer.get(), StringSerializer.get());
-
-      prmdTmpl.setCount(MAX_ATTRIBUTS);
-
-   }
-
-   /**
-    * 
-    * @return CassandraTemplate de <code>DroitPagmp</code>
-    */
-   public final ColumnFamilyTemplate<String, String> getPrmdTmpl() {
-
-      return this.prmdTmpl;
-   }
-
-   /**
-    * 
-    * @return Mutator de <code>DroitPagmp</code>
-    */
-   public final Mutator<String> createMutator() {
-
-      Mutator<String> mutator = HFactory.createMutator(keyspace,
-            StringSerializer.get());
-
-      return mutator;
-
-   }
-
-   private void addColumn(ColumnFamilyUpdater<String, String> updater,
-         String colName, String value, Serializer<String> nameSerializer,
-         Serializer<String> valueSerializer, long clock) {
-
-      HColumn<String, String> column = HFactory.createColumn(colName, value,
-            nameSerializer, valueSerializer);
-
-      column.setClock(clock);
-      updater.setColumn(column);
-
-   }
-
-   private void addMapColumn(ColumnFamilyUpdater<String, String> updater,
-         String colName, Map<String, List<String>> value,
-         Serializer<String> nameSerializer,
-         Serializer<Map<String, List<String>>> valueSerializer, long clock) {
-
-      HColumn<String, Map<String, List<String>>> column = HFactory.createColumn(
-            colName, value, nameSerializer, valueSerializer);
-
-      column.setClock(clock);
-      updater.setColumn(column);
+      super(keyspace);
 
    }
 
@@ -121,8 +61,7 @@ public class PrmdDao {
    public final void ecritDescription(
          ColumnFamilyUpdater<String, String> updater, String value, long clock) {
 
-      addColumn(updater, PRMD_DESCRIPTION, value, StringSerializer.get(),
-            StringSerializer.get(), clock);
+      addColumn(updater, PRMD_DESCRIPTION, value, StringSerializer.get(), clock);
 
    }
 
@@ -139,8 +78,7 @@ public class PrmdDao {
    public final void ecritLucene(ColumnFamilyUpdater<String, String> updater,
          String value, long clock) {
 
-      addColumn(updater, PRMD_LUCENE, value, StringSerializer.get(),
-            StringSerializer.get(), clock);
+      addColumn(updater, PRMD_LUCENE, value, StringSerializer.get(), clock);
 
    }
 
@@ -157,8 +95,7 @@ public class PrmdDao {
    public final void ecritMetaData(ColumnFamilyUpdater<String, String> updater,
          Map<String, List<String>> value, long clock) {
 
-      addMapColumn(updater, PRMD_METADATA, value, StringSerializer.get(),
-            MapSerializer.get(), clock);
+      addColumn(updater, PRMD_METADATA, value, MapSerializer.get(), clock);
 
    }
 
@@ -172,35 +109,34 @@ public class PrmdDao {
     * @param clock
     *           horloge de la colonne
     */
-   public final void ecritBean(ColumnFamilyUpdater<String, String> updater,
-         String value, long clock) {
+   public final void ecritBean(
+         ColumnFamilyUpdater<String, String> updater, String value, long clock) {
 
-      addColumn(updater, PRMD_BEAN, value, StringSerializer.get(),
-            StringSerializer.get(), clock);
-
-   }
-
-   /**
-    * Suppression d'un Prmd
-    * 
-    * @param mutator
-    *           Mutator de <code>Prmd</code>
-    * @param code
-    *           identifiant de l'action unitaire
-    * @param clock
-    *           horloge de la suppression
-    */
-   public final void mutatorSuppressionPrmd(Mutator<String> mutator,
-         String code, long clock) {
-
-      mutator.addDeletion(code, PRMD_CFNAME, clock);
+      addColumn(updater, PRMD_BEAN, value, StringSerializer.get(), clock);
 
    }
 
    /**
-    * @return the keyspace
+    * {@inheritDoc}
     */
-   public final Keyspace getKeyspace() {
-      return keyspace;
+   @Override
+   public final String getColumnFamilyName() {
+      return PRMD_CFNAME;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final Serializer<String> getColumnKeySerializer() {
+      return StringSerializer.get();
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final Serializer<String> getRowKeySerializer() {
+      return StringSerializer.get();
    }
 }

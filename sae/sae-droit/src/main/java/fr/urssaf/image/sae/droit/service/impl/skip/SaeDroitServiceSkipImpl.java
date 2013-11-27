@@ -27,7 +27,7 @@ public class SaeDroitServiceSkipImpl implements SaeDroitService {
     * {@inheritDoc}
     */
    @Override
-   public boolean contratServiceExists(String idClient) {
+   public final boolean contratServiceExists(String idClient) {
       return false;
    }
 
@@ -45,13 +45,13 @@ public class SaeDroitServiceSkipImpl implements SaeDroitService {
     * {@inheritDoc}
     */
    @Override
-   public SaeDroits loadSaeDroits(String idClient, List<String> pagms)
+   public final SaeDroits loadSaeDroits(String idClient, List<String> pagms)
          throws ContratServiceNotFoundException, PagmNotFoundException {
       SaeDroits saeDroits = new SaeDroits();
-      
+
       SaePrmd saePrmd = new SaePrmd();
       saePrmd.setValues(new HashMap<String, String>());
-      
+
       Prmd prmd = new Prmd();
       prmd.setCode("prmd_default");
       prmd.setDescription("PRMD par défaut");
@@ -59,15 +59,15 @@ public class SaeDroitServiceSkipImpl implements SaeDroitService {
       prmd.setMetadata(null);
       prmd.setBean("permitAll");
       saePrmd.setPrmd(prmd);
-      
+
       List<SaePrmd> prmds = new ArrayList<SaePrmd>();
       prmds.add(saePrmd);
-      
+
       saeDroits.put("consultation", prmds);
       saeDroits.put("recherche", prmds);
       saeDroits.put("archivage_unitaire", prmds);
       saeDroits.put("archivage_masse", prmds);
-      
+
       return saeDroits;
    }
 
@@ -75,7 +75,7 @@ public class SaeDroitServiceSkipImpl implements SaeDroitService {
     * {@inheritDoc}
     */
    @Override
-   public ServiceContract getServiceContract(String idClient) {
+   public final ServiceContract getServiceContract(String idClient) {
       return null;
    }
 
@@ -83,7 +83,7 @@ public class SaeDroitServiceSkipImpl implements SaeDroitService {
     * {@inheritDoc}
     */
    @Override
-   public void addPagmContratService(String idContratService, Pagm pagm) {
+   public final void addPagmContratService(String idContratService, Pagm pagm) {
       /* Rien à faire */
    }
 
@@ -91,17 +91,7 @@ public class SaeDroitServiceSkipImpl implements SaeDroitService {
     * {@inheritDoc}
     */
    @Override
-   public List<Pagm> getListePagm(String idContratService) {
-      return null;
-   }
-
-   
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public List<ServiceContract> findAllContractService(int maxResult) {
-
+   public final List<Pagm> getListePagm(String idContratService) {
       return null;
    }
 
@@ -109,7 +99,16 @@ public class SaeDroitServiceSkipImpl implements SaeDroitService {
     * {@inheritDoc}
     */
    @Override
-   public ServiceContractDatas getFullContratService(String idClient) {
+   public final List<ServiceContract> findAllContractService(int maxResult) {
+
+      return null;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final ServiceContractDatas getFullContratService(String idClient) {
       return null;
    }
 

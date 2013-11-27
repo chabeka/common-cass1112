@@ -24,14 +24,16 @@ import me.prettyprint.hector.api.mutation.Mutator;
 public abstract class AbstractDao<CFT, CT> {
 
    /** Nombre maximum de colonnes à retourner */
-   private static final int MAX_ATTRIBUTS = 100;
+   public static final int MAX_ATTRIBUTS = 100;
 
    private final Keyspace keyspace;
    private final ColumnFamilyTemplate<CFT, CT> cfTmpl;
 
    /**
     * Constructeur
-    * @param keyspace keyspace utilisé
+    * 
+    * @param keyspace
+    *           keyspace utilisé
     */
    public AbstractDao(Keyspace keyspace) {
       this.keyspace = keyspace;

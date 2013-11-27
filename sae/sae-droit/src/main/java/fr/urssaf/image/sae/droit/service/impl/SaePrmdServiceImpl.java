@@ -94,7 +94,7 @@ public class SaePrmdServiceImpl implements SaePrmdService {
    }
 
    @Override
-   public void modifyPrmd(Prmd prmd) {
+   public final void modifyPrmd(Prmd prmd) {
       String resourceName = PREFIXE_PRMD + prmd.getCode();
 
       ZookeeperMutex mutex = ZookeeperUtils.createMutex(curatorClient,
@@ -154,7 +154,7 @@ public class SaePrmdServiceImpl implements SaePrmdService {
       }
 
    }
-   
+
    /**
     * Vérifie si le PRMD n'existe pas. Si c'est le cas renvoie une exception
     * {@link DroitRuntimeException}
@@ -169,7 +169,8 @@ public class SaePrmdServiceImpl implements SaePrmdService {
          LOGGER.warn("{} - Le PRMD à modifier {} n'existe pas dans la "
                + "famille de colonnes DroitPRMD", CHECK, prmd.getCode());
          throw new DroitRuntimeException(PRMD + prmd.getCode()
-               + " à modifier n'existe pas dans la " + "famille de colonnes DroitPRMD");
+               + " à modifier n'existe pas dans la "
+               + "famille de colonnes DroitPRMD");
       }
 
    }

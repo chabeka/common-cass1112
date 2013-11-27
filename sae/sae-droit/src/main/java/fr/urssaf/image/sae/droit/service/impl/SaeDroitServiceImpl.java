@@ -87,7 +87,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
    private final CuratorFramework curatorClient;
 
    private final JobClockSupport clockSupport;
-   
+
    private final ContratServiceDatasSupport completeContratSupport;
 
    /**
@@ -109,12 +109,17 @@ public class SaeDroitServiceImpl implements SaeDroitService {
     *           connexion à Zookeeper
     * @param clockSupport
     *           support pour la gestion de l'horloge CASSANDRA
+    * @param completeCsSupport
+    *           support du contrat de service
+    * @param cacheConfig
+    *           configuration du cache
     */
    @Autowired
    public SaeDroitServiceImpl(final ContratServiceSupport contratSupport,
          final PagmSupport pagmSupport, final PagmaSupport pagmaSupport,
          final PagmpSupport pagmpSupport,
-         final ActionUnitaireSupport actionSupport, final ContratServiceDatasSupport completeCsSupport,
+         final ActionUnitaireSupport actionSupport,
+         final ContratServiceDatasSupport completeCsSupport,
          final PrmdSupport prmdSupport, final CuratorFramework curatorClient,
          final JobClockSupport clockSupport, CacheConfig cacheConfig) {
 
@@ -183,7 +188,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
                }
 
             });
-      this.completeContratSupport =completeCsSupport;
+      this.completeContratSupport = completeCsSupport;
       this.contratSupport = contratSupport;
       this.pagmSupport = pagmSupport;
       this.curatorClient = curatorClient;
@@ -513,7 +518,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
     * {@inheritDoc}
     */
    @Override
-   public ServiceContract getServiceContract(String idClient) {
+   public final ServiceContract getServiceContract(String idClient) {
       try {
          return contratsCache.getUnchecked(idClient);
       } catch (InvalidCacheLoadException e) {
@@ -526,7 +531,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
     * {@inheritDoc}
     */
    @Override
-   public void addPagmContratService(String idContratService, Pagm pagm) {
+   public final void addPagmContratService(String idContratService, Pagm pagm) {
       try {
          contratsCache.getUnchecked(idContratService);
       } catch (InvalidCacheLoadException e) {
@@ -580,7 +585,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
     * {@inheritDoc}
     */
    @Override
-   public List<Pagm> getListePagm(String idContratService) {
+   public final List<Pagm> getListePagm(String idContratService) {
 
       List<Pagm> pagms;
 
@@ -593,24 +598,23 @@ public class SaeDroitServiceImpl implements SaeDroitService {
       return pagms;
 
    }
-   
+
    /**
     * {@inheritDoc}
     */
    @Override
-   public List<ServiceContract> findAllContractService(int maxResult) {
+   public final List<ServiceContract> findAllContractService(int maxResult) {
 
       return contratSupport.findAll(maxResult);
    }
-   
+
    /**
     * {@inheritDoc}
     */
    @Override
-   public ServiceContractDatas getFullContratService(String idClient) {
+   public final ServiceContractDatas getFullContratService(String idClient) {
 
       return completeContratSupport.getCs(idClient);
    }
-   
 
 }

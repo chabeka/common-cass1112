@@ -19,7 +19,7 @@ public class PrmdControlePermitAll implements PrmdControle {
     * {@inheritDoc}
     */
    @Override
-   public String createLucene(Map<String, String> parametres) {
+   public final String createLucene(Map<String, String> parametres) {
       return null;
    }
 
@@ -27,7 +27,7 @@ public class PrmdControlePermitAll implements PrmdControle {
     * {@inheritDoc}
     */
    @Override
-   public boolean isPermitted(List<UntypedMetadata> metadatas,
+   public final boolean isPermitted(List<UntypedMetadata> metadatas,
          Map<String, String> values) {
       return true;
    }

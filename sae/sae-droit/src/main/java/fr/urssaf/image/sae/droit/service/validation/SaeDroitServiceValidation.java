@@ -159,8 +159,8 @@ public class SaeDroitServiceValidation {
     * 
     * @param idClient
     *           identifiant client
-    * @param pagms
-    *           liste des pagms
+    * @param pagm
+    *           le pagm
     */
    @Before(ADD_PAGM_METHOD)
    public final void checkAddPagm(final String idClient, Pagm pagm) {
