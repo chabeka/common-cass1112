@@ -165,13 +165,13 @@
    <!-- Configuration SVN pour le plug-in maven-release -->
    <scm>
       <url>
-        scm:svn:svn://cer69-svn.cer69.recouv/image/java/branches/hectorTest-branchee-0.0.2-SNAPSHOT
+        scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/hectorTest/
       </url>
       <developerConnection>
-         scm:svn:svn://cer69-svn.cer69.recouv/image/java/branches/hectorTest-branchee-0.0.2-SNAPSHOT
+         scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/hectorTest/
       </developerConnection>
       <connection>
-         scm:svn:svn://cer69-svn.cer69.recouv/image/java/branches/hectorTest-branchee-0.0.2-SNAPSHOT
+         scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/hectorTest/
       </connection>
    </scm>
 
