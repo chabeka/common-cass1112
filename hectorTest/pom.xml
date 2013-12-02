@@ -1,11 +1,10 @@
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <modelVersion>4.0.0</modelVersion>
    <groupId>hectorTest</groupId>
    <artifactId>hectorTest</artifactId>
    <packaging>jar</packaging>
-   <version>0.0.1-SNAPSHOT</version>
+   <version>0.0.1</version>
    <name>hectorTest</name>
    <url>http://maven.apache.org</url>
 
@@ -166,13 +165,13 @@
    <!-- Configuration SVN pour le plug-in maven-release -->
    <scm>
       <url>
-        scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/hectorTest/
+        scm:svn:svn://cer69-svn.cer69.recouv/image/java/tags/hectorTest-0.0.1
       </url>
       <developerConnection>
-         scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/hectorTest/
+         scm:svn:svn://cer69-svn.cer69.recouv/image/java/tags/hectorTest-0.0.1
       </developerConnection>
       <connection>
-         scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/hectorTest/
+         scm:svn:svn://cer69-svn.cer69.recouv/image/java/tags/hectorTest-0.0.1
       </connection>
    </scm>
 
