@@ -545,7 +545,7 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
-               <argLine>-Xmx700m -XX:MaxPermSize=700m -verbose:gc -XX:+UseSerialGC -XX:-UseConcMarkSweepGC</argLine>
+               <argLine>-Xmx700m -XX:MaxPermSize=700m -XX:+UseSerialGC -XX:-UseConcMarkSweepGC</argLine>
             </configuration>
          </plugin>
 
