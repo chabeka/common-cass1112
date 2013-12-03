@@ -1,4 +1,7 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project 
+   xmlns="http://maven.apache.org/POM/4.0.0" 
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
    <modelVersion>4.0.0</modelVersion>
 
@@ -9,7 +12,6 @@
    <packaging>pom</packaging>
 
    <name>sae</name>
-
 
    <properties>
 
@@ -82,9 +84,7 @@
          <version>${commons.dfce}</version> </dependency>
       -->
 
-
-
-
+      
       <!--
          =========================================================
          Version des framework/dépendances
@@ -201,6 +201,8 @@
       <apache.commons-lang.version>2.6</apache.commons-lang.version>
       <apache.commons-codec.version>1.4</apache.commons-codec.version>
       <apache.commons-compress.version>1.4.1</apache.commons-compress.version>
+      
+      
 
       <!--
          Modèles de dépendance : <dependency>
@@ -399,8 +401,9 @@
       <module>sae-bo</module>
       <module>sae-igc</module>
       <module>sae-saml</module>
-      <module>sae-vi</module>
+      <module>sae-format</module>
       <module>sae-storage</module>
+      <module>sae-vi</module>
       <module>sae-storage-dfce</module>
       <module>sae-ecde</module>
       <module>sae-metadata</module>
@@ -424,7 +427,7 @@
 
       <!-- Le module du livrable -->
       <module>sae-livrable</module>
-
+      
    </modules>
 
    <!-- Configuration SVN pour le plug-in maven-release -->
