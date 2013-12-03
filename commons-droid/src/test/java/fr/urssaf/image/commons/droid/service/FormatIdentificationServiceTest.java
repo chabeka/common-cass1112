@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.List;
@@ -43,7 +44,7 @@ public class FormatIdentificationServiceTest {
    }
 
    @Test
-   public void test_Texte() {
+   public void test_Texte() throws IOException {
 
       String cheminFichier = getRessourceFilePath("/jeuTest/FichierTexte.txt");
       File file = new File(cheminFichier);
@@ -56,7 +57,7 @@ public class FormatIdentificationServiceTest {
    }
 
    @Test
-   public void test_Word2003() {
+   public void test_Word2003() throws IOException {
 
       String cheminFichier = getRessourceFilePath("/jeuTest/FichierWord.doc");
       File file = new File(cheminFichier);
@@ -69,7 +70,7 @@ public class FormatIdentificationServiceTest {
    }
 
    @Test
-   public void test_Xml() {
+   public void test_Xml() throws IOException {
 
       String cheminFichier = getRessourceFilePath("/jeuTest/FichierXml1.xml");
       File file = new File(cheminFichier);
@@ -82,7 +83,7 @@ public class FormatIdentificationServiceTest {
    }
 
    @Test
-   public void test_Xml_SansEnTete() {
+   public void test_Xml_SansEnTete() throws IOException {
 
       String cheminFichier = getRessourceFilePath("/jeuTest/FichierXml2.xml");
       File file = new File(cheminFichier);
@@ -94,7 +95,7 @@ public class FormatIdentificationServiceTest {
    }
 
    @Test
-   public void test_FichierPdf() {
+   public void test_FichierPdf() throws IOException {
 
       String cheminFichier = getRessourceFilePath("/jeuTest/pdfa1b.pdf");
       File file = new File(cheminFichier);
@@ -107,7 +108,7 @@ public class FormatIdentificationServiceTest {
    }
 
    @Test
-   public void test_ArchiveGzip() {
+   public void test_ArchiveGzip() throws IOException {
 
       String cheminFichier = getRessourceFilePath("/jeuTest/pdfa1b.pdf.gz");
       File file = new File(cheminFichier);
@@ -120,7 +121,7 @@ public class FormatIdentificationServiceTest {
    }
 
    @Test
-   public void test_ArchiveTar() {
+   public void test_ArchiveTar() throws IOException {
 
       String cheminFichier = getRessourceFilePath("/jeuTest/pdfa1b.tar");
       File file = new File(cheminFichier);
@@ -133,7 +134,7 @@ public class FormatIdentificationServiceTest {
    }
 
    @Test
-   public void test_ArchiveZip() {
+   public void test_ArchiveZip() throws IOException {
 
       String cheminFichier = getRessourceFilePath("/jeuTest/pdfa1b.zip");
       File file = new File(cheminFichier);
@@ -147,7 +148,7 @@ public class FormatIdentificationServiceTest {
 
    @Test
    @Ignore("Ceci n'est pas un vrai TU")
-   public void analyseRepertoire() {
+   public void analyseRepertoire() throws IOException {
 
       // Chemin du répertoire à tester
 

@@ -58,14 +58,18 @@ public class FormatIdentificationServiceImpl implements
 
    /**
     * {@inheritDoc}
+    * @throws IOException 
     */
    @Override
-   public final String identifie(File file) {
+   public final String identifie(File file) throws IOException {
       return identifie(file, false);
    }
 
-   private String identifie(File file, boolean analyserContenuArchives) {
+   private String identifie(File file, boolean analyserContenuArchives) throws IOException {
 
+      // Préparation des données nécessaires au moteur d'identification
+      IdentificationRequest request = prepareIdentification(file);
+      
       // L'implémentation est FORTEMENT inspirée de :
       // uk.gov.nationalarchives.droid.submitter.SubmissionGateway
       // (droid-results)
@@ -78,52 +82,55 @@ public class FormatIdentificationServiceImpl implements
 
       // Le résultat
       String idPronom;
-
-      // Préparation des données nécessaires au moteur d'identification
-      IdentificationRequest request = prepareIdentification(file);
-
-      // Identification à l'aide des signatures binaires
-      IdentificationResultCollection results = droidAnalyseSupport
-            .handleSignatures(request);
-
-      // Traitement des formats de type "conteneurs"
-      IdentificationResultCollection containerResults = droidAnalyseSupport
-            .handleContainer(request, results);
-
-      // Selon si on a trouvé quelque chose en format "conteneur"
-      // if (containerResults == null) {
-      if ((containerResults == null)
-            || (CollectionUtils.isEmpty(containerResults.getResults()))) {
-
-         // no container results - process the normal results.
-         results = droidAnalyseSupport.handleExtensions(request, results);
-
-         // Are we processing archive formats?
-         if (analyserContenuArchives) {
-
-            // handleArchive(request, results);
-            throw new FormatIdentificationRuntimeException(
-                  "L'analyse au sein des archives n'est pas implémentée");
-
-         } else { // just process the results so far:
-
-            idPronom = droidAnalyseSupport.handleResult(request, results);
-
+      
+      try {
+         
+         // Identification à l'aide des signatures binaires
+         IdentificationResultCollection results = droidAnalyseSupport
+               .handleSignatures(request);
+   
+         // Traitement des formats de type "conteneurs"
+         IdentificationResultCollection containerResults = droidAnalyseSupport
+               .handleContainer(request, results);
+   
+         // Selon si on a trouvé quelque chose en format "conteneur"
+         // if (containerResults == null) {
+         if ((containerResults == null)
+               || (CollectionUtils.isEmpty(containerResults.getResults()))) {
+   
+            // no container results - process the normal results.
+            results = droidAnalyseSupport.handleExtensions(request, results);
+   
+            // Are we processing archive formats?
+            if (analyserContenuArchives) {
+   
+               // handleArchive(request, results);
+               throw new FormatIdentificationRuntimeException(
+                     "L'analyse au sein des archives n'est pas implémentée");
+   
+            } else { // just process the results so far:
+   
+               idPronom = droidAnalyseSupport.handleResult(request, results);
+   
+            }
+   
+         } else { // we have possible container formats:
+   
+            containerResults = droidAnalyseSupport.handleExtensions(request,
+                  containerResults);
+            idPronom = droidAnalyseSupport.handleResult(request, containerResults);
+   
          }
-
-      } else { // we have possible container formats:
-
-         containerResults = droidAnalyseSupport.handleExtensions(request,
-               containerResults);
-         idPronom = droidAnalyseSupport.handleResult(request, containerResults);
-
+   
+         // Trace
+         LOGGER.debug(
+               "{}, Identification du format par Droid. Format trouvé : {}",
+               request.getFileName(), idPronom);
       }
-
-      // Trace
-      LOGGER.debug(
-            "{}, Identification du format par Droid. Format trouvé : {}",
-            request.getFileName(), idPronom);
-
+      finally {
+         request.close();
+      }
+      
       // Renvoie du format identifié
       return idPronom;
 
@@ -147,16 +154,22 @@ public class FormatIdentificationServiceImpl implements
       IdentificationRequest request = new FileSystemIdentificationRequest(
             metaData, identifier);
 
-      InputStream inputStream;
+      InputStream inputStream = null;
       try {
          inputStream = new FileInputStream(file);
+         request.open(inputStream);
       } catch (FileNotFoundException ex) {
          throw new FormatIdentificationRuntimeException(ex);
-      }
-      try {
-         request.open(inputStream);
       } catch (IOException ex) {
          throw new FormatIdentificationRuntimeException(ex);
+      } finally {
+         if (inputStream != null) {
+            try {
+               inputStream.close();
+            } catch (IOException e) {
+               LOGGER.info(e.getMessage());
+            }
+         }
       }
 
       return request;
