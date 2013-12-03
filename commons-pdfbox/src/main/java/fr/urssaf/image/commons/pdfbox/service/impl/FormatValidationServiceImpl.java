@@ -16,6 +16,7 @@ import org.apache.pdfbox.preflight.exception.SyntaxValidationException;
 import org.apache.pdfbox.preflight.parser.PreflightParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.commons.pdfbox.exception.FormatValidationException;
 import fr.urssaf.image.commons.pdfbox.service.FormatValidationService;
@@ -23,6 +24,7 @@ import fr.urssaf.image.commons.pdfbox.service.FormatValidationService;
 /**
  * Service de validation d'un format de fichier
  */
+@Service
 public final class FormatValidationServiceImpl implements
       FormatValidationService {
 
