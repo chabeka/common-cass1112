@@ -33,6 +33,9 @@ public class SAECassandraUpdater {
    private static final int VERSION_4 = 4;
    private static final int VERSION_5 = 5;
    private static final int VERSION_6 = 6;
+   private static final int VERSION_7 = 7;
+   
+   private static final String REFERENTIEL_FORMAT= "ReferentielFormat";
 
    private final String ksName;
    private final Cluster cluster;
@@ -431,4 +434,59 @@ public class SAECassandraUpdater {
       saeDao.setDatabaseVersion(VERSION_6);
 
    }
+   
+   
+   /**
+    * Version 7 : Ajout d'une column family dans le Keyspace "SAE"<br> :
+    *    <ul>
+    *       <li>ReferentielFormat</li>
+    *    </ul>   
+    *        
+    */
+   public final void updateToVersion7() {
+
+      long version = saeDao.getDatabaseVersion();
+      
+      if (version >= VERSION_7) {
+         LOG.info("La base de données est déja en version " + version);
+         return;
+      }
+
+      LOG.info("Mise à jour du keyspace SAE en version 7 pour référentiel des formats");
+
+      // Si le KeySpace SAE n'existe pas, on quitte
+      // En effet, il aurait du être créé lors de l'install du lot SAE-140400
+      KeyspaceDefinition keyspaceDef = saeDao.describeKeyspace();
+      if (keyspaceDef == null) {
+         throw new MajLotRuntimeException("Le Keyspace " + ksName
+               + " n'existe pas !");
+      }
+
+      // On se connecte au keyspace
+      saeDao.connectToKeySpace();
+
+      // Liste contenant la définition des column families à créer
+      List<ColumnFamilyDefinition> cfDefs = new ArrayList<ColumnFamilyDefinition>();
+
+      // ReferentielFormat
+      cfDefs.add(HFactory.createColumnFamilyDefinition(ksName,
+            REFERENTIEL_FORMAT, ComparatorType.BYTESTYPE));
+
+      // Création des CF
+      saeCassandraService.createColumnFamilyFromList(cfDefs, true);
+
+      // ajout des actions unitaires de base
+      InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
+      donnees.addDroits();
+
+      // On positionne la version à 7
+      saeDao.setDatabaseVersion(VERSION_7);
+
+   }
+
+   
+   
+   
+   
+   
 }
