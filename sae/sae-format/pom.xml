@@ -1,0 +1,192 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>fr.urssaf.image.sae</groupId>
+  <artifactId>sae-format</artifactId>
+  <version>13.11.0.2-SNAPSHOT</version>
+  <packaging>jar</packaging>
+  <description>Gestion du référentiel des formats et service d'identification et de validation.</description>
+
+  <name>sae-format</name>
+  <url>http://maven.apache.org</url>
+  
+  <parent>
+      <groupId>fr.urssaf.image.sae</groupId>
+      <artifactId>sae</artifactId>
+      <version>13.11.0.2-SNAPSHOT</version>
+   </parent>  
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+  
+   <build>
+      <plugins>
+         <!-- COMPILATION ASPECT -->
+         <plugin>
+            <inherited>true</inherited>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>aspectj-maven-plugin</artifactId>
+            <executions>
+               <execution>
+                  <goals>
+                     <goal>compile</goal>
+                  </goals>
+               </execution>
+            </executions>
+
+         </plugin>
+
+      </plugins>
+   </build>
+
+  <!-- Ajout des dépendances -->
+   <dependencies>
+   
+      <!-- COMMONS DFCE -->
+      <dependency>
+         <groupId>fr.urssaf.image.commons</groupId>
+         <artifactId>commons-dfce</artifactId>
+         <version>${commons.dfce}</version>
+      </dependency>
+      
+      <!-- sae-commons -->
+      <dependency>
+         <groupId>fr.urssaf.image.sae</groupId>
+         <artifactId>sae-commons</artifactId>
+         <version>13.11.0.2-SNAPSHOT</version>
+      </dependency>
+
+      <!-- JODA TIME  -->
+      <dependency>
+         <groupId>joda-time</groupId>
+         <artifactId>joda-time</artifactId>
+         <version>${joda-time.version}</version>
+      </dependency>
+
+      <!-- JASPECT -->
+      <dependency>
+         <groupId>org.aspectj</groupId>
+         <artifactId>aspectjrt</artifactId>
+         <version>${aspectj.version}</version>
+      </dependency>
+
+      <!-- COMMONS CASSANDRA -->
+      <!-- 
+           La dépendance commons-cassandra donne l’accès aux connections à une base Cassandra 
+           et permet de réutiliser les serializers déjà définis pour la manipulation des familles de colonnes.
+       -->
+      <dependency>
+         <groupId>fr.urssaf.image.commons</groupId>
+         <artifactId>commons-cassandra</artifactId>
+         <version>${commons.cassandra}</version>
+      </dependency>
+   
+      <dependency>
+         <groupId>commons-lang</groupId>
+         <artifactId>commons-lang</artifactId>
+         <version>${apache.commons-lang.version}</version>
+      </dependency>
+      
+      <!--  
+           La dépendance commons-pdfbox permet d’appeler 
+           le mécanisme de validation pour un document PDF/A-1b -->
+      <dependency>
+         <groupId>fr.urssaf.image.commons</groupId>
+         <artifactId>commons-pdfbox</artifactId>
+         <version>0.0.1-SNAPSHOT</version>
+      </dependency>
+      
+      <!-- 
+           La dépendance commons-droid permet d’appeler le mécanisme d’identification d’un fichier quelconque.
+           Commons-droid nous renvoit un identifiant pour chaque type de document  
+      -->
+      <dependency>
+         <groupId>fr.urssaf.image.commons</groupId>
+         <artifactId>commons-droid</artifactId>
+         <version>0.0.1-SNAPSHOT</version>
+      </dependency>
+        
+      
+      <!-- GUAVA pour la mise en cache  -->
+      <dependency>
+         <groupId>com.google.guava</groupId>
+         <artifactId>guava</artifactId>
+         <version>${guava.version}</version>
+      </dependency>
+      
+      <!-- SPRING -->
+      <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-beans</artifactId>
+         <version>${spring.framework.version}</version>
+      </dependency>
+
+      <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-context</artifactId>
+         <version>${spring.framework.version}</version>
+      </dependency>
+
+      <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-test</artifactId>
+         <version>${spring.framework.version}</version>
+         <scope>test</scope>
+      </dependency>
+      <!-- FIN SPRING -->
+      
+       <!-- COMMONS APACHE -->
+      <dependency>
+         <groupId>commons-collections</groupId>
+         <artifactId>commons-collections</artifactId>
+         <version>${apache.commons-collections.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>commons-codec</groupId>
+         <artifactId>commons-codec</artifactId>
+         <version>${apache.commons-codec.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>commons-lang</groupId>
+         <artifactId>commons-lang</artifactId>
+         <version>${apache.commons-lang.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>commons-io</groupId>
+         <artifactId>commons-io</artifactId>
+         <version>${apache.commons-io.version}</version> 
+      </dependency>
+
+      <!-- STAX -->
+      <dependency>
+         <groupId>net.java.dev.stax-utils</groupId>
+         <artifactId>stax-utils</artifactId>
+         <version>20060502</version>
+         <exclusions>
+            <exclusion>
+               <groupId>com.bea.xml</groupId>
+               <artifactId>jsr173-ri</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+      
+      <!-- GUAVA (pour le cache) -->
+      <dependency>
+         <groupId>com.google.guava</groupId>
+         <artifactId>guava</artifactId>
+         <version>12.0</version>
+      </dependency>  
+      
+      <!-- EasyMock -->
+      <dependency>
+         <groupId>org.easymock</groupId>
+         <artifactId>easymock</artifactId>
+         <version>${easymock.version}</version>
+         <scope>test</scope>
+      </dependency>  
+      
+   </dependencies>
+  
+</project>
