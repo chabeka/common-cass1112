@@ -91,19 +91,20 @@ public class ValidationServiceImplTest {
       }
    }
 
-//   @Ignore
-//   @Test
-//   public void validateFileValidatorIntrouvable() throws FileNotFoundException,
-//         FormatValidationException {
-//      // un test avec une erreur dans le validator à bien été fait. -> faire le
-//      // test et modifier le dataSet
-//      // try {
-//      // pdfaValidator.validateFile(file);
-//      // } catch (ValidatorInitialisationException except) {
-//      // Assert.assertEquals(MESSAGE_ERRONE,
-//      // "Impossible d'initialiser le validateur.", except.getMessage());
-//      // }
-//   }
+   // @Ignore
+   // @Test
+   // public void validateFileValidatorIntrouvable() throws
+   // FileNotFoundException,
+   // FormatValidationException {
+   // // un test avec une erreur dans le validator à bien été fait. -> faire le
+   // // test et modifier le dataSet
+   // // try {
+   // // pdfaValidator.validateFile(file);
+   // // } catch (ValidatorInitialisationException except) {
+   // // Assert.assertEquals(MESSAGE_ERRONE,
+   // // "Impossible d'initialiser le validateur.", except.getMessage());
+   // // }
+   // }
 
    /******************************************************/
    /******************************************************/
@@ -123,26 +124,21 @@ public class ValidationServiceImplTest {
       Assert.assertNull(result.getDetails());
    }
 
-   @Test
+   @Test(expected = FileNotFoundException.class)
    public void validateStreamFailureDocErrone() throws UnknownFormatException,
          ValidatorInitialisationException, IOException {
       InputStream inputStream = null;
-      try {
-         inputStream = new FileInputStream(docErrone);
-         validationService.validateStream(FMT354, inputStream);
-      } catch (FileNotFoundException except) {
-         Assert.assertEquals(MESSAGE_ERRONE,
-               "src\\test\\resources\\validation\\Test.word (Le fichier spécifié est introuvable)", except
-                     .getMessage());
-      }
+      inputStream = new FileInputStream(docErrone);
+      validationService.validateStream(FMT354, inputStream);
    }
 
    @Test
-   public void validateStreamFailure() throws UnknownFormatException, ValidatorInitialisationException, IOException  {
+   public void validateStreamFailure() throws UnknownFormatException,
+         ValidatorInitialisationException, IOException {
 
       InputStream inputStream = new FileInputStream(doc);
-      ValidationResult result = validationService
-            .validateStream(FMT354, inputStream);
+      ValidationResult result = validationService.validateStream(FMT354,
+            inputStream);
 
       Assert.assertNotNull(result);
 
@@ -151,7 +147,8 @@ public class ValidationServiceImplTest {
    }
 
    @Test
-   public void validationStreamFormatInexistant() throws ValidatorInitialisationException, IOException  {
+   public void validationStreamFormatInexistant()
+         throws ValidatorInitialisationException, IOException {
 
       try {
          InputStream inputStream = new FileInputStream(doc);

@@ -99,19 +99,13 @@ public class PDFAValidatorImplTest {
       inputStream.close();
    }
 
-   @Test
+   @Test(expected = IOException.class)
    public void validateStreamFailureDocErrone()
          throws FormatValidationException, IOException {
       InputStream inputStream = null;
       try {
          inputStream = new FileInputStream(docErrone);
          pdfaValidator.validateStream(inputStream);
-      } catch (IOException except) {
-         Assert
-               .assertEquals(
-                     MESSAGE_ERRONE,
-                     "src\\test\\resources\\validation\\Test.word (Le fichier spécifié est introuvable)",
-                     except.getMessage());
       } finally {
          if (inputStream != null) {
             inputStream.close();
