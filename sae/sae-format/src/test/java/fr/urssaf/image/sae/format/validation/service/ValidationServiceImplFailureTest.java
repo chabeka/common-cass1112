@@ -31,7 +31,7 @@ public class ValidationServiceImplFailureTest {
    private ValidationServiceImpl validationService;
 
    private final File file = new File(
-         "src/test/ressources/validation/PdfaValide.pdf");
+         "src/test/resources/validation/PdfaValide.pdf");
 
    
    private static final String MESS_EXCEPT_ERRONE = "Le message de l'exception est incorrect";

@@ -33,10 +33,10 @@ public class PDFAValidatorImplTest {
    private PdfaValidatorImpl pdfaValidator;
 
    private final File file = new File(
-         "src/test/ressources/validation/PdfaValide.pdf");
+         "src/test/resources/validation/PdfaValide.pdf");
    private final File docErrone = new File(
-         "src/test/ressources/validation/Test.word");
-   private final File doc = new File("src/test/ressources/validation/Test.doc");
+         "src/test/resources/validation/Test.word");
+   private final File doc = new File("src/test/resources/validation/Test.doc");
    private static final String RESULTAT_ERRONE = "résultat erroné";
    private static final String MESSAGE_ERRONE = "Message erroné";
 
@@ -110,7 +110,7 @@ public class PDFAValidatorImplTest {
          Assert
                .assertEquals(
                      MESSAGE_ERRONE,
-                     "src\\test\\ressources\\validation\\Test.word (Le fichier spécifié est introuvable)",
+                     "src\\test\\resources\\validation\\Test.word (Le fichier spécifié est introuvable)",
                      except.getMessage());
       } finally {
          if (inputStream != null) {

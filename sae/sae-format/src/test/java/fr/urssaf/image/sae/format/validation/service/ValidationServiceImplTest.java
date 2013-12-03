@@ -34,10 +34,10 @@ public class ValidationServiceImplTest {
    private ValidationServiceImpl validationService;
 
    private final File file = new File(
-         "src/test/ressources/validation/PdfaValide.pdf");
+         "src/test/resources/validation/PdfaValide.pdf");
    private final File docErrone = new File(
-         "src/test/ressources/validation/Test.word");
-   private final File doc = new File("src/test/ressources/validation/Test.doc");
+         "src/test/resources/validation/Test.word");
+   private final File doc = new File("src/test/resources/validation/Test.doc");
    private static final String RESULTAT_ERRONE = "résultat erroné";
    private static final String MESSAGE_ERRONE = "Message erroné";
    private static final String FMT354 = "fmt/354";
@@ -132,7 +132,7 @@ public class ValidationServiceImplTest {
          validationService.validateStream(FMT354, inputStream);
       } catch (FileNotFoundException except) {
          Assert.assertEquals(MESSAGE_ERRONE,
-               "src\\test\\ressources\\validation\\Test.word (Le fichier spécifié est introuvable)", except
+               "src\\test\\resources\\validation\\Test.word (Le fichier spécifié est introuvable)", except
                      .getMessage());
       }
    }

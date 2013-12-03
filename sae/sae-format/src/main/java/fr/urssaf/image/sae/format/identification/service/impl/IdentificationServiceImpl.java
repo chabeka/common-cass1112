@@ -20,7 +20,6 @@ import fr.urssaf.image.sae.format.referentiel.exceptions.ReferentielRuntimeExcep
 import fr.urssaf.image.sae.format.referentiel.model.FormatFichier;
 import fr.urssaf.image.sae.format.referentiel.service.impl.ReferentielFormatServiceImpl;
 import fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler;
-import fr.urssaf.image.sae.format.validation.exceptions.ValidatorInitialisationException;
 
 /**
  * 
@@ -99,13 +98,9 @@ public class IdentificationServiceImpl implements IdentificationService {
 
          identificationResult = identifyFile(idFormat, createdFile);
 
-         boolean suppression = createdFile.delete();
-         if (!suppression) {
-            throw new IdentificationRuntimeException(SaeFormatMessageHandler
-                  .getMessage("erreur.identification.convert.stream.to.file"));
-         } else {
-            return identificationResult;
-         }
+         FileUtils.forceDelete(createdFile);
+
+         return identificationResult;
 
       } catch (IOException except) {
          throw new IdentificationRuntimeException(SaeFormatMessageHandler

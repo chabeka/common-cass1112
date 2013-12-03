@@ -12,7 +12,7 @@ import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.format.referentiel.dao.support.ReferentielFormatSupport;
 import fr.urssaf.image.sae.format.referentiel.exceptions.ReferentielRuntimeException;
 import fr.urssaf.image.sae.format.referentiel.model.FormatFichier;
-import fr.urssaf.image.sae.format.utils.UtilsTest;
+import fr.urssaf.image.sae.format.utils.Utils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-format-test.xml" })
@@ -47,7 +47,7 @@ public class ParamReferentielTest {
    @Test
    public void refFormatSupportCreateClockNull() {
       try {
-         FormatFichier refFormat = UtilsTest.genererRefFormatPdfa();
+         FormatFichier refFormat = Utils.genererRefFormatPdfa();
 
          refFormatSupport.create(refFormat, null);
 
@@ -64,7 +64,7 @@ public class ParamReferentielTest {
    @Test
    public void refFormatSupportCreateRefFormatParamManquant() {
       try {
-         FormatFichier refFormat = UtilsTest.getRefFormParamObligManquant();
+         FormatFichier refFormat = Utils.getRefFormParamObligManquant();
 
          refFormatSupport.create(refFormat, Long.valueOf(15));
 

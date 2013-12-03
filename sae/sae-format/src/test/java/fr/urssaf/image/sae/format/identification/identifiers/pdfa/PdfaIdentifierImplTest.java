@@ -31,7 +31,7 @@ public class PdfaIdentifierImplTest {
    @Autowired
    private PdfaIdentifierImpl pdfaIdentifier;
 
-   private final File file = new File("src/test/ressources/identification/PdfaValide.pdf");
+   private final File file = new File("src/test/resources/identification/PdfaValide.pdf");
    
    private static final String MESSAGE_ERRONE = "message erroné";
    private static final String RESULTAT_ERRONE = "résultat erroné";

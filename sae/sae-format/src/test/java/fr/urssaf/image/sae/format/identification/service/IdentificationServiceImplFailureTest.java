@@ -31,7 +31,7 @@ public class IdentificationServiceImplFailureTest {
    private IdentificationServiceImpl identificationService;
 
    private final File file = new File(
-         "src/test/ressources/identification/PdfaValide.pdf");
+         "src/test/resources/identification/PdfaValide.pdf");
 
    
    private static final String MESS_EXCEPT_ERRONE = "Le message de l'exception est incorrect";

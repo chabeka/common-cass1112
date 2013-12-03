@@ -7,7 +7,7 @@ import fr.urssaf.image.sae.format.referentiel.model.FormatFichier;
  * Classe utilitaire pour les tests.
  *
  */
-public final class UtilsTest {
+public final class Utils {
 
    /**
     * genere le referentiel format du PDFA/A-1b
@@ -54,7 +54,7 @@ public final class UtilsTest {
    }
    
    
-   private UtilsTest() {
+   private Utils() {
       // cette classe ne doit pas etre instancié.
    }
 }

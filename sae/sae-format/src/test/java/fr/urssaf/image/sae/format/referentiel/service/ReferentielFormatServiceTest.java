@@ -13,7 +13,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.format.referentiel.exceptions.ReferentielRuntimeException;
 import fr.urssaf.image.sae.format.referentiel.model.FormatFichier;
-import fr.urssaf.image.sae.format.utils.UtilsTest;
+import fr.urssaf.image.sae.format.utils.Utils;
 
 /**
  * 
@@ -85,7 +85,7 @@ public class ReferentielFormatServiceTest {
    public void createFailureParamObligManquant()
          throws ReferentielRuntimeException {
       try {
-         FormatFichier refFormat = UtilsTest.getRefFormParamObligManquant(); // idFormat
+         FormatFichier refFormat = Utils.getRefFormParamObligManquant(); // idFormat
                                                                              // et
                                                                              // description
          refFormatService.addFormat(refFormat);
@@ -105,7 +105,7 @@ public class ReferentielFormatServiceTest {
    public void createSuccess() throws ReferentielRuntimeException,
          UnknownFormatException {
 
-      FormatFichier refFormat = UtilsTest.genererRefFormatLambda();
+      FormatFichier refFormat = Utils.genererRefFormatLambda();
       // idFormat : lambda
       String idFormat = refFormat.getIdFormat();
       Assert.assertEquals("lambda", idFormat);
@@ -135,7 +135,7 @@ public class ReferentielFormatServiceTest {
    @Test
    public void deleteSucess() throws ReferentielRuntimeException {
       try {
-         FormatFichier refFormat = UtilsTest.genererRefFormatLambda();
+         FormatFichier refFormat = Utils.genererRefFormatLambda();
          // idFormat : lambda
          String idFormat = refFormat.getIdFormat();
          Assert.assertEquals("lambda", idFormat);

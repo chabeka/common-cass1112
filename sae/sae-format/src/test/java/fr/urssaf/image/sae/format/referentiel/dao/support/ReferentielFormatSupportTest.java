@@ -15,7 +15,7 @@ import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.format.referentiel.exceptions.ReferentielRuntimeException;
 import fr.urssaf.image.sae.format.referentiel.model.FormatFichier;
-import fr.urssaf.image.sae.format.utils.UtilsTest;
+import fr.urssaf.image.sae.format.utils.Utils;
 
 /**
  * 
@@ -81,7 +81,7 @@ public class ReferentielFormatSupportTest {
    @Test
    public void createFailureParamObligManquant() {
       try {   
-         FormatFichier refFormat = UtilsTest.getRefFormParamObligManquant();   // idFormat et description
+         FormatFichier refFormat = Utils.getRefFormParamObligManquant();   // idFormat et description
          refFormatSupport.create(refFormat, jobClock.currentCLock());
          
          Assert.fail("Une exception IllegalArgumentException aurait dû être levée");
@@ -95,7 +95,7 @@ public class ReferentielFormatSupportTest {
    @Test
    public void createSuccess() throws UnknownFormatException {
       
-      FormatFichier refFormat = UtilsTest.genererRefFormatLambda();
+      FormatFichier refFormat = Utils.genererRefFormatLambda();
       // idFormat : lambda
       String idFormat = refFormat.getIdFormat();
       Assert.assertEquals("lambda", idFormat);
@@ -119,7 +119,7 @@ public class ReferentielFormatSupportTest {
    @Test
    public void deleteSuccessAvecFindVerif() throws ReferentielRuntimeException {
       try {   
-            FormatFichier refFormat = UtilsTest.genererRefFormatLambda();
+            FormatFichier refFormat = Utils.genererRefFormatLambda();
             // idFormat : lambda
             String idFormat = refFormat.getIdFormat();
             Assert.assertEquals("lambda", idFormat);
