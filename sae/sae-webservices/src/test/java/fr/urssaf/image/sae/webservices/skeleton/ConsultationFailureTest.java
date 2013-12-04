@@ -127,7 +127,7 @@ public class ConsultationFailureTest {
 
          assertAxisFault(fault,
                "Une erreur s'est produite lors de la consultation",
-               "ConsultationErreur", "sae");
+               "ErreurInterneConsultation", "sae");
 
       }
    }

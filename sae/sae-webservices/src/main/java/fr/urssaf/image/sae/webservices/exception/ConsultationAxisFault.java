@@ -31,7 +31,7 @@ public class ConsultationAxisFault extends AxisFault {
 
       super("Une erreur s'est produite lors de la consultation",
             SoapFaultCodeFactory.createSoapFaultCode("urn:sae:faultcodes",
-                  "ConsultationErreur", "sae"), cause);
+                  "ErreurInterneConsultation", "sae"), cause);
 
    }
 
