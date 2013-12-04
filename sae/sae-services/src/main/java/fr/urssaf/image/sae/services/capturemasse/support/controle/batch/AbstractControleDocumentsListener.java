@@ -40,7 +40,7 @@ public abstract class AbstractControleDocumentsListener extends
                   Constantes.CTRL_INDEX));
       getExceptionErreurListe().add(new Exception(exception.getMessage()));
 
-      getLogger().warn(
+      getLogger().error(
             "une erreur est survenue lors des controles des documents",
             exception);
 
