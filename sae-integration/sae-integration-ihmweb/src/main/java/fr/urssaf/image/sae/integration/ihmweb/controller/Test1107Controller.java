@@ -228,9 +228,9 @@ public class Test1107Controller extends
       valeursAttendues.add("CodeFonction", "2");
       valeursAttendues.add("CodeOrganismeGestionnaire", "CER69");
       valeursAttendues.add("CodeOrganismeProprietaire", "UR750");
-      valeursAttendues.add("CodeRND", "2.3.1.1.12");
+      valeursAttendues.add("CodeRND", "2.3.1.1.13");
       valeursAttendues.add("CodeSousCategorieV2",  StringUtils.EMPTY);
-      valeursAttendues.add("ContratDeService", "INT_CS_ATT_VIGI");
+      valeursAttendues.add("ContratDeService", "INT_CS_ATT_AEPL");
 //      valeursAttendues.add("DateArchivage", "");
       valeursAttendues.add("DateCreation", "2011-09-01");
 //      valeursAttendues.add("DateDebutConservation","" );

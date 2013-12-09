@@ -27,7 +27,6 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.comparator.ResultatRech
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.comparator.ResultatRechercheComparator.TypeComparaison;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheResponse;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ResultatRechercheType;
-import fr.urssaf.image.sae.integration.ihmweb.service.referentiels.ReferentielMetadonneesService;
 
 /**
  * 1106-Droits-Conformite-All-ATT-VIGI
@@ -83,22 +82,25 @@ public class Test1106Controller extends
             .setUrlEcde(getEcdeService()
                   .construitUrlEcde(
                         "SAE_INTEGRATION/20110822/Droit-1106-Droits-Conformite-All-ATT-VIGI/documents/ADELPF_710_PSNV211157BPCA1L0000.pdf"));
-      // Des métadonnées exemples
-      formCapture.setNomFichier("ADELPF_710_PSNV211157BPCA1L0000.pdf");
-      MetadonneeValeurList metasExemples = ReferentielMetadonneesService
-            .getMetadonneesExemplePourCapture();
-      metasExemples.modifieValeurMeta(SaeIntegrationConstantes.META_CODE_ORG_PROPRIETAIRE,
-            "UR750");
-      metasExemples.modifieValeurMeta(SaeIntegrationConstantes.META_HASH,
-      "d145ea8e0ca28b8c97deb0c2a550f0a969a322a3");
-      formCapture.getMetadonnees().addAll(metasExemples);
-      formCapture.getMetadonnees().add("Denomination",
+      
+      // Les métadonnées
+      MetadonneeValeurList metadonnees = new MetadonneeValeurList();
+      formCapture.setMetadonnees(metadonnees);
+      metadonnees.add("ApplicationProductrice", "ADELAIDE");
+      metadonnees.add("CodeOrganismeGestionnaire", "CER69");
+      metadonnees.add("CodeOrganismeProprietaire", "UR750");
+      metadonnees.add("CodeRND", "2.3.1.1.12");
+      metadonnees.add("DateCreation", "2007-04-01");
+      metadonnees.add("Denomination",
             "Test 1106-Droits-Conformite-All-ATT-VIGI");
-      formCapture.getMetadonnees().add("NumeroRecours",
-      "11");
+      metadonnees.add("FormatFichier", "fmt/354");
+      metadonnees.add("Hash", "d145ea8e0ca28b8c97deb0c2a550f0a969a322a3");
+      metadonnees.add("NbPages", "2");
+      metadonnees.add("NumeroRecours", "11");
+      metadonnees.add("Siren", "3090000001");
+      metadonnees.add("Titre", "Attestation de vigilance");
+      metadonnees.add("TypeHash", "SHA-1");
       
-      
-
       // Valeurs initiales des formulaires pour la capture de masse
       // Formulaire pour l'appel au WS de capture de masse
       CaptureMasseFormulaire formCaptMasseDecl = formulaire
@@ -246,10 +248,9 @@ public class Test1106Controller extends
          verifieResultatN(6, resultatsTries.get(5), resultatTest, "6");
          verifieResultatN(7, resultatsTries.get(6), resultatTest, "7");
          verifieResultatN(8, resultatsTries.get(7), resultatTest, "8");
-         verifieResultatN(8, resultatsTries.get(8), resultatTest, "9");
-         verifieResultatN(8, resultatsTries.get(9), resultatTest, "10");
-         verifieResultatN(8, resultatsTries.get(10), resultatTest, "11");
-         verifieResultatN(8, resultatsTries.get(11), resultatTest, "12");
+         verifieResultatN(9, resultatsTries.get(8), resultatTest, "9");
+         verifieResultatN(10, resultatsTries.get(9), resultatTest, "10");
+         verifieResultatN(11, resultatsTries.get(10), resultatTest, "11");
 
       }
 

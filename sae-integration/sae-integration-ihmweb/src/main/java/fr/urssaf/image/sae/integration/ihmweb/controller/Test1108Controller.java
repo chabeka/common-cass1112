@@ -192,8 +192,8 @@ public class Test1108Controller extends
          verifieResultatN(4, resultatsTries.get(3), resultatTest, "4");
          verifieResultatN(5, resultatsTries.get(4), resultatTest, "5");
          verifieResultatN(6, resultatsTries.get(5), resultatTest, "6");
-         verifieResultatN(7, resultatsTries.get(6), resultatTest, "9");
-         verifieResultatN(8, resultatsTries.get(7), resultatTest, "10");
+         verifieResultatN(7, resultatsTries.get(6), resultatTest, "7");
+         verifieResultatN(8, resultatsTries.get(7), resultatTest, "8");
 
       }
 

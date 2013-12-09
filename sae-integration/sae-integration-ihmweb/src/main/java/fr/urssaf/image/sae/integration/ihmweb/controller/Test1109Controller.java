@@ -34,7 +34,7 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.R
 public class Test1109Controller extends
       AbstractTestWsController<Test1109Formulaire> {
 
-   private static final int WAITED_COUNT = 10;
+   private static final int WAITED_COUNT = 11;
 
    /**
     * {@inheritDoc}
@@ -85,13 +85,14 @@ public class Test1109Controller extends
       metadonnees.add("CodeOrganismeGestionnaire", "CER69");
       metadonnees.add("CodeOrganismeProprietaire", "UR750");
       metadonnees.add("CodeRND", "2.3.1.1.13");
-      metadonnees.add("DateCreation", "2011-09-01");
+      metadonnees.add("DateCreation", "2007-04-01");
       metadonnees.add("Denomination",
             "Test 1109-Droits-Conformite-Archivage-ATT-AEPL");
       metadonnees.add("FormatFichier", "fmt/354");
       metadonnees.add("Hash", "d145ea8e0ca28b8c97deb0c2a550f0a969a322a3");
       metadonnees.add("NbPages", "2");
       metadonnees.add("NumeroRecours", "11");
+      metadonnees.add("Siren", "3090000001");
       metadonnees.add("Titre", "Attestation de vigilance");
       metadonnees.add("TypeHash", "SHA-1");
 
@@ -273,7 +274,7 @@ public class Test1109Controller extends
       valeursAttendues.add("ApplicationProductrice", "ADELAIDE");
       valeursAttendues.add("DateCreation", "2007-04-01");
       valeursAttendues.add("Denomination",
-            "Test 1103-Droits-Conformite-Archivage-ATT-VIGI");
+            "Test 1109-Droits-Conformite-Archivage-ATT-AEPL");
       valeursAttendues.add("NumeroRecours", numeroRecours);
       valeursAttendues.add("Siren", "3090000001");
 

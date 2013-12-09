@@ -34,7 +34,7 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.R
 public class Test1103Controller extends
       AbstractTestWsController<TestFormulaireDrCuCmRe> {
 
-   private static final int WAITED_COUNT = 10;
+   private static final int WAITED_COUNT = 11;
 
    /**
     * {@inheritDoc}
@@ -85,7 +85,7 @@ public class Test1103Controller extends
       metadonnees.add("CodeOrganismeGestionnaire", "CER69");
       metadonnees.add("CodeOrganismeProprietaire", "UR750");
       metadonnees.add("CodeRND", "2.3.1.1.12");
-      metadonnees.add("DateCreation", "2011-09-01");
+      metadonnees.add("DateCreation", "2007-04-01");
       metadonnees.add("Denomination",
             "Test 1103-Droits-Conformite-Archivage-ATT-VIGI");
       metadonnees.add("FormatFichier", "fmt/354");
@@ -94,6 +94,8 @@ public class Test1103Controller extends
       metadonnees.add("NumeroRecours", "11");
       metadonnees.add("Titre", "Attestation de vigilance");
       metadonnees.add("TypeHash", "SHA-1");
+      metadonnees.add("Siren", "3090000001");
+      
 
       // capture de masse
 
