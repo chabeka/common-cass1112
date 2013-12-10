@@ -103,9 +103,9 @@ public class PagmSupportTest {
 
       support.create(ID_CLIENT, pagm, new Date().getTime());
 
-      support.delete(CODE1, new Date().getTime());
+      support.delete(ID_CLIENT, CODE1, new Date().getTime());
 
-      List<Pagm> res = support.find(CODE1);
+      List<Pagm> res = support.find(ID_CLIENT);
 
       Assert.assertTrue("aucune référence pagm ne doit être trouvée",
             res == null || res.isEmpty());

@@ -52,4 +52,43 @@ public class SaePrmd {
       this.values = values;
    }
 
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final boolean equals(Object obj) {
+      boolean areEquals = false;
+
+      if (obj instanceof SaePrmd) {
+         SaePrmd saePrmd = (SaePrmd) obj;
+         areEquals = prmd.getBean().equals(saePrmd.getPrmd().getBean())
+               && prmd.getCode().equals(saePrmd.getPrmd().getCode())
+               && prmd.getDescription().equals(
+                     saePrmd.getPrmd().getDescription())
+               && prmd.getLucene().equals(saePrmd.getPrmd().getLucene())
+               && prmd.getMetadata().equals(saePrmd.getPrmd().getMetadata());
+
+         if (!(values == null && saePrmd.getValues() == null)) {
+            if (values != null && saePrmd.getValues() != null) {
+               areEquals = areEquals
+                     && values.keySet().size() == saePrmd.getValues().keySet()
+                           .size()
+                     && values.keySet().containsAll(
+                           saePrmd.getValues().keySet());
+            }
+         }
+
+      }
+
+      return areEquals;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final int hashCode() {
+      return super.hashCode();
+   }
+
 }

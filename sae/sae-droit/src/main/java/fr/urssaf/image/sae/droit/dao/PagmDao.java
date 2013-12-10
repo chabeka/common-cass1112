@@ -7,6 +7,9 @@ import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
 import me.prettyprint.hector.api.Keyspace;
 import me.prettyprint.hector.api.Serializer;
+import me.prettyprint.hector.api.beans.HColumn;
+import me.prettyprint.hector.api.factory.HFactory;
+import me.prettyprint.hector.api.mutation.Mutator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -22,17 +25,7 @@ import fr.urssaf.image.sae.droit.dao.serializer.PagmSerializer;
 @Repository
 public class PagmDao extends AbstractDao<String, String> {
 
-   public static final String PAGM_PAGMA = "pagma";
-
-   public static final String PAGM_PAGMP = "pagmp";
-
-   public static final String PAGM_DESCRIPTION = "description";
-
-   public static final String PAGM_PARAMETRES = "parametres";
-
    public static final String PAGM_CFNAME = "DroitPagm";
-
-   public static final int MAX_ATTRIBUTS = 100;
 
    /**
     * 
@@ -63,16 +56,47 @@ public class PagmDao extends AbstractDao<String, String> {
    }
 
    /**
-    * {@inheritDoc}
+    * ajoute une nouvelle ligne avec utilisation d'un mutator
+    * 
+    * @param idContratService
+    *           Identifiant du contrat de service (clé de la ligne)
+    * @param pagm
+    *           pagm à créer
+    * @param clock
+    *           horloge de la colonne
+    * @param mutator
+    *           Mutator
     */
-   @Override
-   public final String getColumnFamilyName() {
-      return PAGM_CFNAME;
+   public final void mutatorEcritPagm(String idContratService, Pagm pagm,
+         long clock, Mutator<String> mutator) {
+      addColumnWithMutator(idContratService, pagm.getCode(), pagm,
+            PagmSerializer.get(), clock, mutator);
    }
 
    /**
-    * {@inheritDoc}
+    * Suppression d'un PAGM
+    * 
+    * @param mutator
+    *           Mutator de <code>Pagm</code>
+    * @param idContratService
+    *           Identifiant du contrat de service auquel le PAGM est rattaché
+    * @param codePagm
+    *           identifiant du Pagm à supprimer
+    * @param clock
+    *           horloge de la suppression
     */
+   public final void mutatorSuppressionPagm(Mutator<String> mutator,
+         String idContratService, String codePagm, long clock) {
+      this
+            .mutatorSuppressionColonne(mutator, idContratService, codePagm,
+                  clock);
+   }
+
+   @Override
+   public String getColumnFamilyName() {
+      return PAGM_CFNAME;
+   }
+
    @Override
    public final Serializer<String> getColumnKeySerializer() {
       return StringSerializer.get();

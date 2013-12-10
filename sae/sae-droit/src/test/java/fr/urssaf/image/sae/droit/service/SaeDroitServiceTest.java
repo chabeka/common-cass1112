@@ -16,6 +16,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.droit.dao.model.Pagm;
 import fr.urssaf.image.sae.droit.dao.model.ServiceContract;
+import fr.urssaf.image.sae.droit.model.SaePagm;
 import fr.urssaf.image.sae.droit.utils.ResourceMessagesUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -67,8 +68,8 @@ public class SaeDroitServiceTest {
 
       try {
 
-         List<Pagm> list = new ArrayList<Pagm>();
-         list.add(new Pagm());
+         List<SaePagm> list = new ArrayList<SaePagm>();
+         list.add(new SaePagm());
 
          service.createContratService(null, list);
          Assert.fail(EXCEPTION_ATTENDUE);
@@ -90,8 +91,8 @@ public class SaeDroitServiceTest {
          contract.setDescription("description");
          contract.setLibelle("libellé");
          contract.setViDuree(Long.valueOf(12));
-         List<Pagm> list = new ArrayList<Pagm>();
-         list.add(new Pagm());
+         List<SaePagm> list = new ArrayList<SaePagm>();
+         list.add(new SaePagm());
 
          service.createContratService(contract, list);
          Assert.fail(EXCEPTION_ATTENDUE);
@@ -113,9 +114,8 @@ public class SaeDroitServiceTest {
          contract.setCodeClient("codeClient");
          contract.setLibelle("libellé");
          contract.setViDuree(Long.valueOf(12));
-         List<Pagm> list = new ArrayList<Pagm>();
-         list.add(new Pagm());
-
+         List<SaePagm> list = new ArrayList<SaePagm>();
+         list.add(new SaePagm());
          service.createContratService(contract, list);
          Assert.fail(EXCEPTION_ATTENDUE);
 
@@ -136,8 +136,8 @@ public class SaeDroitServiceTest {
          contract.setCodeClient("codeClient");
          contract.setDescription("description");
          contract.setViDuree(Long.valueOf(12));
-         List<Pagm> list = new ArrayList<Pagm>();
-         list.add(new Pagm());
+         List<SaePagm> list = new ArrayList<SaePagm>();
+         list.add(new SaePagm());
 
          service.createContratService(contract, list);
          Assert.fail(EXCEPTION_ATTENDUE);
@@ -159,8 +159,8 @@ public class SaeDroitServiceTest {
          contract.setCodeClient("codeClient");
          contract.setDescription("description");
          contract.setLibelle("libellé");
-         List<Pagm> list = new ArrayList<Pagm>();
-         list.add(new Pagm());
+         List<SaePagm> list = new ArrayList<SaePagm>();
+         list.add(new SaePagm());
 
          service.createContratService(contract, list);
          Assert.fail(EXCEPTION_ATTENDUE);
@@ -205,8 +205,8 @@ public class SaeDroitServiceTest {
          contract.setDescription("description");
          contract.setLibelle("libellé");
          contract.setViDuree(Long.valueOf(12));
-         List<Pagm> list = new ArrayList<Pagm>();
-         list.add(new Pagm());
+         List<SaePagm> list = new ArrayList<SaePagm>();
+         list.add(new SaePagm());
 
          service.createContratService(contract, list);
          Assert.fail(EXCEPTION_ATTENDUE);
@@ -230,8 +230,8 @@ public class SaeDroitServiceTest {
          contract.setDescription("description");
          contract.setLibelle("libellé");
          contract.setViDuree(Long.valueOf(12));
-         List<Pagm> list = new ArrayList<Pagm>();
-         list.add(new Pagm());
+         List<SaePagm> list = new ArrayList<SaePagm>();
+         list.add(new SaePagm());
          contract.setIdPki("pki");
          contract.setVerifNommage(true);
 

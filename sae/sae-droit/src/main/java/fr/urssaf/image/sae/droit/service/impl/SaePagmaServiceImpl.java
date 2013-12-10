@@ -18,6 +18,7 @@ import fr.urssaf.image.sae.droit.dao.serializer.exception.PagmaReferenceExceptio
 import fr.urssaf.image.sae.droit.dao.support.ActionUnitaireSupport;
 import fr.urssaf.image.sae.droit.dao.support.PagmaSupport;
 import fr.urssaf.image.sae.droit.exception.DroitRuntimeException;
+import fr.urssaf.image.sae.droit.exception.PagmaNotFoundException;
 import fr.urssaf.image.sae.droit.service.SaePagmaService;
 import fr.urssaf.image.sae.droit.utils.ZookeeperUtils;
 
@@ -30,8 +31,10 @@ import fr.urssaf.image.sae.droit.utils.ZookeeperUtils;
 @Component
 public class SaePagmaServiceImpl implements SaePagmaService {
 
-   private static final String CHECK = "checkPagmaNotExists";
+   private static final String CHECK_NOT_EXISTS = "checkPagmaNotExists";
+   private static final String CHECK_EXISTS = "checkPagmaNotExists";
    private static final String TRC_CREATE = "createPagma";
+   private static final String TRC_MODIFIER = "modifierPagma";
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(SaePagmaServiceImpl.class);
@@ -95,6 +98,51 @@ public class SaePagmaServiceImpl implements SaePagmaService {
 
    }
 
+   
+   /**
+    * {@inheritDoc}
+    * @throws PagmaNotFoundException 
+    */
+   @Override
+   public void modifierPagma(Pagma pagma) throws PagmaNotFoundException {
+      LOGGER.debug("{} - Début de la modification du pagma {}", TRC_MODIFIER, pagma.getCode());
+      
+      String resourceName = PREFIXE_PAGMA + pagma.getCode();
+
+      ZookeeperMutex mutex = ZookeeperUtils.createMutex(curatorClient,
+            resourceName);
+      try {
+         ZookeeperUtils.acquire(mutex, resourceName);
+
+         LOGGER.debug("{} - Vérification que le pagma {} existe", TRC_MODIFIER, pagma.getCode());
+         checkPagmaExists(pagma);
+         LOGGER.debug("{} - vérification que les actions unitaires rattachées au pagma {} existent", TRC_MODIFIER, pagma.getCode());
+         checkActionsUnitairesExist(pagma);
+
+         pagmaSupport.create(pagma, clockSupport.currentCLock());
+
+         checkLock(mutex, pagma);
+
+         LOGGER.debug("{} - Fin de la création du pagma {}", TRC_MODIFIER, pagma.getCode());
+        
+      } finally {
+         mutex.release();
+      }
+      
+   }
+   
+   /**
+    * {@inheritDoc} 
+    */
+   @Override
+   public boolean isPagmaExiste(Pagma pagma) {
+      if (pagmaSupport.find(pagma.getCode()) != null) {
+         return true;
+      } else {
+         return false;
+      }
+   }
+   
    private void checkLock(ZookeeperMutex mutex, Pagma pagma) {
       if (!ZookeeperUtils.isLock(mutex)) {
 
@@ -144,11 +192,34 @@ public class SaePagmaServiceImpl implements SaePagmaService {
          LOGGER
                .warn(
                      "{} - Le PAGMa {} existe déjà dans la famille de colonne DroitPagma",
-                     CHECK, pagma.getCode());
+                     CHECK_NOT_EXISTS, pagma.getCode());
          throw new PagmaReferenceException("Le PAGMa " + pagma.getCode()
                + " existe déjà dans la famille de colonne DroitPagma");
       }
 
    }
+
+
+   
+   /**
+    * Vérifie si PAGMa existe bien en base CASSANDRA. Si ce n'est pas le cas soulève une
+    * {@link PagmaReferenceException}
+    * 
+    * @param pagma
+    *           la pagma qui doit être modifié
+    * @throws PagmaNotFoundException 
+    */
+   private void checkPagmaExists(Pagma pagma) throws PagmaNotFoundException {
+      if (pagmaSupport.find(pagma.getCode()) == null) {
+         LOGGER
+               .warn(
+                     "{} - Le PAGMa {} n'existe pas dans la famille de colonne DroitPagma",
+                     CHECK_EXISTS, pagma.getCode());
+         throw new PagmaNotFoundException("Le PAGMa " + pagma.getCode()
+               + " n'existe pas dans la famille de colonne DroitPagma");
+      }
+
+   }
+
 
 }

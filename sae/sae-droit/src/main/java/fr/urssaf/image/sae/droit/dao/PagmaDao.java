@@ -7,6 +7,7 @@ import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
 import me.prettyprint.hector.api.Keyspace;
 import me.prettyprint.hector.api.Serializer;
+import me.prettyprint.hector.api.mutation.Mutator;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +21,6 @@ import fr.urssaf.image.sae.commons.dao.AbstractDao;
  */
 @Repository
 public class PagmaDao extends AbstractDao<String, String> {
-
-   public static final String PAGMA_AU = "actionsUnitaires";
 
    public static final String PAGMA_CFNAME = "DroitPagma";
 
@@ -40,7 +39,7 @@ public class PagmaDao extends AbstractDao<String, String> {
    }
 
    /**
-    * ajoute une colonne Action unitaire
+    * Ajoute une colonne Action unitaire
     * 
     * @param updater
     *           updater de <code>DroitPagma</code>
@@ -58,8 +57,23 @@ public class PagmaDao extends AbstractDao<String, String> {
    }
 
    /**
-    * {@inheritDoc}
+    * Ajoute une colonne Action unitaire avec utilisation mutator
+    * 
+    * @param code
+    *           le code du PAGMa
+    * @param action
+    *           l'action unitaire
+    * @param clock
+    *           horloge de la colonne
+    * @param mutator
+    *           le mutator
     */
+   public final void ecritActionUnitaire(String code, String action,
+         long clock, Mutator<String> mutator) {
+      addColumnWithMutator(code, action, "", StringSerializer.get(), clock,
+            mutator);
+   }
+
    @Override
    public final String getColumnFamilyName() {
       return PAGMA_CFNAME;

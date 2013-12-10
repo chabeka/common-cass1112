@@ -72,6 +72,34 @@ public abstract class AbstractDao<CFT, CT> {
    }
 
    /**
+    * Ajout d'une colonne avec utilisation d'un Mutator
+    * 
+    * @param <VT>
+    *           Type de la valeur
+    * @param cfUpdater
+    *           Updater de la column family
+    * @param colName
+    *           nom de la colonne à ajouter
+    * @param value
+    *           valeur à insérer dans la colonne
+    * @param valueSerializer
+    *           serializer de la valeur
+    * @param clock
+    *           horloge de la création
+    */
+   public final <VT> void addColumnWithMutator(CFT code, CT colName, VT value,
+         Serializer<VT> valueSerializer, long clock, Mutator<CFT> mutator) {
+
+      HColumn<CT, VT> column = HFactory.createColumn(colName, value,
+            getColumnKeySerializer(), valueSerializer);
+
+      column.setClock(clock);
+
+      mutator.addInsertion(code, getColumnFamilyName(), column);
+
+   }
+
+   /**
     * Suppression d'une ligne de la column family
     * 
     * @param mutator
@@ -145,5 +173,12 @@ public abstract class AbstractDao<CFT, CT> {
     * @return le serialiseur de la clé des lignes de la column family
     */
    public abstract Serializer<CFT> getRowKeySerializer();
+
+   /**
+    * @return the maxAttributs
+    */
+   public final int getMaxAttributs() {
+      return MAX_ATTRIBUTS;
+   }
 
 }

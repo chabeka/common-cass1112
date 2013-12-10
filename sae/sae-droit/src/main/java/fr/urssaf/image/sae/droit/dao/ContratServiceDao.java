@@ -27,8 +27,6 @@ public class ContratServiceDao extends AbstractDao<String, String> {
 
    public static final String CS_CFNAME = "DroitContratService";
 
-   public static final int MAX_CS_ATTIBUTS = 100;
-
    /** code de l'organisme client lié au contrat de service */
    public static final String CS_LIBELLE = "libelle";
 

@@ -34,8 +34,6 @@ public class PrmdDao extends AbstractDao<String, String> {
 
    public static final String PRMD_CFNAME = "DroitPrmd";
 
-   public static final int MAX_ATTRIBUTS = 100;
-
    /**
     * Constructeur
     * 
@@ -109,8 +107,8 @@ public class PrmdDao extends AbstractDao<String, String> {
     * @param clock
     *           horloge de la colonne
     */
-   public final void ecritBean(
-         ColumnFamilyUpdater<String, String> updater, String value, long clock) {
+   public final void ecritBean(ColumnFamilyUpdater<String, String> updater,
+         String value, long clock) {
 
       addColumn(updater, PRMD_BEAN, value, StringSerializer.get(), clock);
 

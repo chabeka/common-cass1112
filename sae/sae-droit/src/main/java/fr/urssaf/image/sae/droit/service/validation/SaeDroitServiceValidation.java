@@ -12,6 +12,7 @@ import org.aspectj.lang.annotation.Before;
 
 import fr.urssaf.image.sae.droit.dao.model.Pagm;
 import fr.urssaf.image.sae.droit.dao.model.ServiceContract;
+import fr.urssaf.image.sae.droit.model.SaePagm;
 import fr.urssaf.image.sae.droit.utils.ResourceMessagesUtils;
 
 /**
@@ -31,7 +32,7 @@ public class SaeDroitServiceValidation {
          + "&& args(idClient, pagms)";
 
    private static final String CREATE_METHOD = "execution(void fr.urssaf.image.sae.droit.service.SaeDroitService.createContratService(*,*))"
-         + "&& args(contrat, pagms)";
+         + "&& args(contrat, listeSaePagms)";
 
    private static final String CHECK_METHOD = "execution(boolean fr.urssaf.image.sae.droit.service.SaeDroitService.contratServiceExists(*))"
          + "&& args(idClient)";
@@ -75,7 +76,7 @@ public class SaeDroitServiceValidation {
     *           liste des pagms
     */
    @Before(CREATE_METHOD)
-   public final void checkCreate(ServiceContract contrat, List<Pagm> pagms) {
+   public final void checkCreate(ServiceContract contrat, List<SaePagm> listeSaePagms) {
 
       if (contrat == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
@@ -102,7 +103,7 @@ public class SaeDroitServiceValidation {
                ARG_REQUIRED, "durée contrat"));
       }
 
-      if (CollectionUtils.isEmpty(pagms)) {
+      if (CollectionUtils.isEmpty(listeSaePagms)) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
                ARG_REQUIRED, "liste des pagms"));
       }

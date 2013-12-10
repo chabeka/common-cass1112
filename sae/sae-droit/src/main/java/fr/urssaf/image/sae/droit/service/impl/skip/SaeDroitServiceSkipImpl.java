@@ -10,10 +10,11 @@ import java.util.List;
 import fr.urssaf.image.sae.droit.dao.model.Pagm;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.dao.model.ServiceContract;
-import fr.urssaf.image.sae.droit.dao.model.ServiceContractDatas;
 import fr.urssaf.image.sae.droit.exception.ContratServiceNotFoundException;
 import fr.urssaf.image.sae.droit.exception.PagmNotFoundException;
+import fr.urssaf.image.sae.droit.model.SaeContratService;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
+import fr.urssaf.image.sae.droit.model.SaePagm;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.droit.service.SaeDroitService;
 
@@ -27,7 +28,7 @@ public class SaeDroitServiceSkipImpl implements SaeDroitService {
     * {@inheritDoc}
     */
    @Override
-   public final boolean contratServiceExists(String idClient) {
+   public boolean contratServiceExists(String idClient) {
       return false;
    }
 
@@ -36,7 +37,7 @@ public class SaeDroitServiceSkipImpl implements SaeDroitService {
     */
    @Override
    public void createContratService(ServiceContract serviceContract,
-         List<Pagm> pagms) {
+         List<SaePagm> listeSaePagm) {
       /* Rien à faire */
 
    }
@@ -45,7 +46,7 @@ public class SaeDroitServiceSkipImpl implements SaeDroitService {
     * {@inheritDoc}
     */
    @Override
-   public final SaeDroits loadSaeDroits(String idClient, List<String> pagms)
+   public SaeDroits loadSaeDroits(String idClient, List<String> pagms)
          throws ContratServiceNotFoundException, PagmNotFoundException {
       SaeDroits saeDroits = new SaeDroits();
 
@@ -75,7 +76,7 @@ public class SaeDroitServiceSkipImpl implements SaeDroitService {
     * {@inheritDoc}
     */
    @Override
-   public final ServiceContract getServiceContract(String idClient) {
+   public ServiceContract getServiceContract(String idClient) {
       return null;
    }
 
@@ -83,23 +84,7 @@ public class SaeDroitServiceSkipImpl implements SaeDroitService {
     * {@inheritDoc}
     */
    @Override
-   public final void addPagmContratService(String idContratService, Pagm pagm) {
-      /* Rien à faire */
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final List<Pagm> getListePagm(String idContratService) {
-      return null;
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final List<ServiceContract> findAllContractService(int maxResult) {
+   public List<ServiceContract> findAllContractService(int maxResult) {
 
       return null;
    }
@@ -108,7 +93,48 @@ public class SaeDroitServiceSkipImpl implements SaeDroitService {
     * {@inheritDoc}
     */
    @Override
-   public final ServiceContractDatas getFullContratService(String idClient) {
+   public SaeContratService getFullContratService(String idClient) {
+      return null;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void ajouterPagmContratService(String idContratService, SaePagm pagm) {
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void modifierPagmContratService(String idContratService, SaePagm pagm) {
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void supprimerPagmContratService(String idContratService,
+         String codePagm) {
+
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public List<SaePagm> getListeSaePagm(String idContratService) {
+      
+      return null;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public List<SaeContratService> findAllSaeContractService(int maxResult) {
+   
       return null;
    }
 

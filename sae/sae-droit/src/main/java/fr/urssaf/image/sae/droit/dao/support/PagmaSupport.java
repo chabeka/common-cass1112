@@ -57,6 +57,22 @@ public class PagmaSupport {
    }
 
    /**
+    * Méthode de création d'un ligne avec Mutator
+    * 
+    * @param pagma
+    *           propriétés du PAGMa à créer
+    * @param clock
+    *           horloge de la création
+    */
+   public final void create(Pagma pagma, long clock, Mutator<String> mutator) {
+
+      for (String action : pagma.getActionUnitaires()) {
+         dao.ecritActionUnitaire(pagma.getCode(), action, clock, mutator);
+      }
+
+   }
+
+   /**
     * Méthode de suppression d'une ligne
     * 
     * @param code
@@ -71,6 +87,20 @@ public class PagmaSupport {
       dao.mutatorSuppressionLigne(mutator, code, clock);
 
       mutator.execute();
+   }
+
+   /**
+    * Méthode de suppression d'une ligne avec Mutator en paramètre
+    * 
+    * @param code
+    *           identifiant du PAGMa
+    * @param clock
+    *           horloge de suppression
+    * @param mutator
+    *           Mutator
+    */
+   public final void delete(String code, long clock, Mutator<String> mutator) {
+      dao.mutatorSuppressionLigne(mutator, code, clock);
    }
 
    /**

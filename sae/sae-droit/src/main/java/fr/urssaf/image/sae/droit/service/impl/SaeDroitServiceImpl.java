@@ -7,6 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import me.prettyprint.cassandra.serializers.StringSerializer;
+import me.prettyprint.hector.api.Keyspace;
+import me.prettyprint.hector.api.factory.HFactory;
+import me.prettyprint.hector.api.mutation.Mutator;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,13 +32,11 @@ import fr.urssaf.image.sae.droit.dao.model.Pagma;
 import fr.urssaf.image.sae.droit.dao.model.Pagmp;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.dao.model.ServiceContract;
-import fr.urssaf.image.sae.droit.dao.model.ServiceContractDatas;
 import fr.urssaf.image.sae.droit.dao.serializer.exception.ActionUnitaireReferenceException;
 import fr.urssaf.image.sae.droit.dao.serializer.exception.PagmaReferenceException;
 import fr.urssaf.image.sae.droit.dao.serializer.exception.PagmpReferenceException;
 import fr.urssaf.image.sae.droit.dao.serializer.exception.PrmdReferenceException;
 import fr.urssaf.image.sae.droit.dao.support.ActionUnitaireSupport;
-import fr.urssaf.image.sae.droit.dao.support.ContratServiceDatasSupport;
 import fr.urssaf.image.sae.droit.dao.support.ContratServiceSupport;
 import fr.urssaf.image.sae.droit.dao.support.PagmSupport;
 import fr.urssaf.image.sae.droit.dao.support.PagmaSupport;
@@ -44,7 +47,11 @@ import fr.urssaf.image.sae.droit.exception.ContratServiceReferenceException;
 import fr.urssaf.image.sae.droit.exception.DroitRuntimeException;
 import fr.urssaf.image.sae.droit.exception.PagmNotFoundException;
 import fr.urssaf.image.sae.droit.exception.PagmReferenceException;
+import fr.urssaf.image.sae.droit.model.SaeContratService;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
+import fr.urssaf.image.sae.droit.model.SaePagm;
+import fr.urssaf.image.sae.droit.model.SaePagma;
+import fr.urssaf.image.sae.droit.model.SaePagmp;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.droit.service.SaeDroitService;
 import fr.urssaf.image.sae.droit.utils.ZookeeperUtils;
@@ -83,12 +90,14 @@ public class SaeDroitServiceImpl implements SaeDroitService {
 
    private final ContratServiceSupport contratSupport;
    private final PagmSupport pagmSupport;
+   private final PagmaSupport pagmaSupport;
+   private final PagmpSupport pagmpSupport;
 
    private final CuratorFramework curatorClient;
 
    private final JobClockSupport clockSupport;
 
-   private final ContratServiceDatasSupport completeContratSupport;
+   private final Keyspace keyspace;
 
    /**
     * Constructeur
@@ -109,19 +118,15 @@ public class SaeDroitServiceImpl implements SaeDroitService {
     *           connexion à Zookeeper
     * @param clockSupport
     *           support pour la gestion de l'horloge CASSANDRA
-    * @param completeCsSupport
-    *           support du contrat de service
-    * @param cacheConfig
-    *           configuration du cache
     */
    @Autowired
    public SaeDroitServiceImpl(final ContratServiceSupport contratSupport,
          final PagmSupport pagmSupport, final PagmaSupport pagmaSupport,
          final PagmpSupport pagmpSupport,
          final ActionUnitaireSupport actionSupport,
-         final ContratServiceDatasSupport completeCsSupport,
          final PrmdSupport prmdSupport, final CuratorFramework curatorClient,
-         final JobClockSupport clockSupport, CacheConfig cacheConfig) {
+         final JobClockSupport clockSupport, CacheConfig cacheConfig,
+         Keyspace keyspace) {
 
       contratsCache = CacheBuilder.newBuilder().expireAfterWrite(
             cacheConfig.getDroitsCacheDuration(), TimeUnit.MINUTES).build(
@@ -188,11 +193,13 @@ public class SaeDroitServiceImpl implements SaeDroitService {
                }
 
             });
-      this.completeContratSupport = completeCsSupport;
       this.contratSupport = contratSupport;
       this.pagmSupport = pagmSupport;
+      this.pagmaSupport = pagmaSupport;
+      this.pagmpSupport = pagmpSupport;
       this.curatorClient = curatorClient;
       this.clockSupport = clockSupport;
+      this.keyspace = keyspace;
    }
 
    /**
@@ -273,7 +280,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
     */
    @Override
    public final void createContratService(ServiceContract serviceContract,
-         List<Pagm> pagms) {
+         List<SaePagm> listeSaePagms) {
 
       LOGGER.debug("{} - Debut de la création du contrat de service",
             TRC_CREATE);
@@ -292,20 +299,14 @@ public class SaeDroitServiceImpl implements SaeDroitService {
                      "{} - Vérification que le contrat de service {} n'est pas préexistant",
                      TRC_CREATE, serviceContract.getCodeClient());
          checkContratServiceInexistant(serviceContract);
-         LOGGER.debug("{} - Vérification que le Pagm est inexistant",
-               TRC_CREATE);
-         checkPagmInexistant(serviceContract);
-         LOGGER.debug("{} - vérification que les pagmas et pagmps existent",
-               TRC_CREATE);
-         checkPagmsExist(pagms);
 
          contratSupport.create(serviceContract, clockSupport.currentCLock());
-         for (Pagm currentPagm : pagms) {
-            pagmSupport.create(serviceContract.getCodeClient(), currentPagm,
-                  clockSupport.currentCLock());
+
+         for (SaePagm saePagm : listeSaePagms) {
+            ajouterPagmContratService(serviceContract.getCodeClient(), saePagm);
          }
 
-         checkLock(mutex, serviceContract, pagms);
+         checkLock(mutex, serviceContract, listeSaePagms);
 
          LOGGER.debug("{} - Fin de la création du contrat de service",
                TRC_CREATE);
@@ -338,7 +339,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
     * @param mutex
     */
    private void checkLock(ZookeeperMutex mutex, ServiceContract contrat,
-         List<Pagm> pagms) {
+         List<SaePagm> listeSaePagm) {
       if (!ZookeeperUtils.isLock(mutex)) {
 
          String codeContrat = contrat.getCodeClient();
@@ -365,7 +366,8 @@ public class SaeDroitServiceImpl implements SaeDroitService {
                   + " a déjà été créé");
          }
 
-         if (pagmList.size() != pagms.size() || !pagmList.containsAll(pagms)) {
+         if (pagmList.size() != listeSaePagm.size()
+               || !pagmList.containsAll(listeSaePagm)) {
             throw new DroitRuntimeException(
                   "Les pagms rattachés au contrat de service " + codeContrat
                         + " ont déjà été créés");
@@ -460,65 +462,10 @@ public class SaeDroitServiceImpl implements SaeDroitService {
    }
 
    /**
-    * vérifie si le contrat de service est pré existant pour le Pagm. Si c'est
-    * le cas, levée d'une {@link RuntimeException}
-    * 
-    * @param serviceContract
-    *           le contrat de service
-    */
-   private void checkPagmInexistant(ServiceContract serviceContract) {
-      try {
-         pagmsCache.getUnchecked(serviceContract.getCodeClient());
-         LOGGER.warn("{} - Le Pagm du contrat de service {} existe déjà dans "
-               + "la famille de colonne DroitPagm", CHECK_PAGM, serviceContract
-               .getCodeClient());
-         throw new DroitRuntimeException(MESSAGE_CONTRAT
-               + serviceContract.getCodeClient()
-               + " existe déjà dans la famille de colonne DroitPagm");
-      } catch (InvalidCacheLoadException e) {
-         LOGGER.debug("{} - aucune référence au pagm du contrat de service "
-               + " trouvée dans la famille de colonne DroitPagm."
-               + " On continue le traitement", CHECK_PAGM, serviceContract
-               .getCodeClient());
-      }
-
-   }
-
-   /**
-    * vérifie si tous les PAGMa et PAGMp d'une {@link RuntimeException}
-    * 
-    * @param serviceContract
-    *           le contrat de service
-    */
-   private void checkPagmsExist(List<Pagm> pagms) {
-
-      for (Pagm pagm : pagms) {
-
-         try {
-            pagmasCache.getUnchecked(pagm.getPagma());
-
-         } catch (InvalidCacheLoadException e) {
-            throw new PagmaReferenceException("Le pagma " + pagm.getPagma()
-                  + " n'a pas été trouvé "
-                  + "dans la famille de colonne DroitPagma", e);
-         }
-
-         try {
-            pagmpsCache.getUnchecked(pagm.getPagmp());
-
-         } catch (InvalidCacheLoadException e) {
-            throw new PagmpReferenceException("Le pagmp " + pagm.getPagmp()
-                  + " n'a pas été trouvé "
-                  + "dans la famille de colonne DroitPagmp", e);
-         }
-      }
-   }
-
-   /**
     * {@inheritDoc}
     */
    @Override
-   public final ServiceContract getServiceContract(String idClient) {
+   public ServiceContract getServiceContract(String idClient) {
       try {
          return contratsCache.getUnchecked(idClient);
       } catch (InvalidCacheLoadException e) {
@@ -531,79 +478,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
     * {@inheritDoc}
     */
    @Override
-   public final void addPagmContratService(String idContratService, Pagm pagm) {
-      try {
-         contratsCache.getUnchecked(idContratService);
-      } catch (InvalidCacheLoadException e) {
-         throw new ContratServiceReferenceException(MESSAGE_CONTRAT
-               + idContratService + " n'existe pas", e);
-      }
-
-      try {
-         List<Pagm> pagms = pagmsCache.getUnchecked(idContratService);
-         if (pagms.contains(pagm)) {
-            throw new PagmReferenceException(MESSAGE_PAGM + pagm.getCode()
-                  + " existe déjà");
-         } else {
-            LOGGER
-                  .debug(
-                        "le pagm {} est inexistant, on peut l'ajouter au contrat de service",
-                        pagm.getCode());
-         }
-
-      } catch (InvalidCacheLoadException e) {
-         LOGGER
-               .debug(
-                     "impossible de trouver des pagms associés au contrat de service {}, on peut ajouter le pagm {}",
-                     idContratService, pagm.getCode());
-      }
-
-      String lockName = PREFIXE_CONTRAT + idContratService;
-
-      ZookeeperMutex mutex = ZookeeperUtils
-            .createMutex(curatorClient, lockName);
-
-      try {
-
-         ZookeeperUtils.acquire(mutex, lockName);
-         pagmSupport
-               .create(idContratService, pagm, clockSupport.currentCLock());
-
-      } finally {
-         mutex.release();
-      }
-
-      // Recharge immédiatement le cache des PAGM du CS, pour intégrer
-      // le nouveau PAGM que l'on vient juste de créer.
-      // Attention : cette mise à jour de cache valable que pour le serveur
-      // en cours.
-      pagmsCache.invalidate(idContratService);
-
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final List<Pagm> getListePagm(String idContratService) {
-
-      List<Pagm> pagms;
-
-      try {
-         pagms = pagmsCache.getUnchecked(idContratService);
-      } catch (InvalidCacheLoadException e) {
-         pagms = new ArrayList<Pagm>();
-      }
-
-      return pagms;
-
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final List<ServiceContract> findAllContractService(int maxResult) {
+   public List<ServiceContract> findAllContractService(int maxResult) {
 
       return contratSupport.findAll(maxResult);
    }
@@ -612,9 +487,395 @@ public class SaeDroitServiceImpl implements SaeDroitService {
     * {@inheritDoc}
     */
    @Override
-   public final ServiceContractDatas getFullContratService(String idClient) {
+   public List<SaeContratService> findAllSaeContractService(int maxResult) {
 
-      return completeContratSupport.getCs(idClient);
+      List<ServiceContract> listeCs = contratSupport.findAll(maxResult);
+      List<SaeContratService> listeSaeCs = new ArrayList<SaeContratService>();
+      SaeContratService saeCs;
+      for (ServiceContract serviceContract : listeCs) {
+         saeCs = getFullContratService(serviceContract.getCodeClient());
+         listeSaeCs.add(saeCs);
+      }
+      return listeSaeCs;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public SaeContratService getFullContratService(String idClient) {
+
+      ServiceContract contrat = contratsCache.getUnchecked(idClient);
+
+      List<SaePagm> listeSaePagm = this.getListeSaePagm(idClient);
+
+      List<SaePrmd> listeSaePrmd = this.findPrmd(listeSaePagm);
+
+      SaeContratService cs = new SaeContratService();
+      cs.setCodeClient(contrat.getCodeClient());
+      cs.setDescription(contrat.getDescription());
+      cs.setIdCertifClient(contrat.getIdCertifClient());
+      cs.setIdPki(contrat.getIdPki());
+      cs.setLibelle(contrat.getLibelle());
+      cs.setListCertifsClient(contrat.getListCertifsClient());
+      cs.setListPki(contrat.getListPki());
+      cs.setViDuree(contrat.getViDuree());
+      cs.setVerifNommage(contrat.isVerifNommage());
+      cs.setSaePagms(listeSaePagm);
+      cs.setSaePrmds(listeSaePrmd);
+
+      return cs;
+   }
+
+   private List<SaePrmd> findPrmd(List<SaePagm> saePagms) {
+      List<String> listeCodes = new ArrayList<String>();
+
+      for (SaePagm saePagm : saePagms) {
+         String codePrmd = saePagm.getPagmp().getPrmd();
+         if (!listeCodes.contains(codePrmd)) {
+            listeCodes.add(codePrmd);
+         }
+      }
+
+      List<SaePrmd> saePrmds = new ArrayList<SaePrmd>(listeCodes.size());
+      Prmd prmd;
+      for (String code : listeCodes) {
+         try {
+            prmd = prmdsCache.getUnchecked(code);
+         } catch (InvalidCacheLoadException e) {
+            throw new PrmdReferenceException("Le PRMD " + code
+                  + " n'a pas été trouvé dans la famille de colonne DroitPrmd",
+                  e);
+         }
+         SaePrmd saePrmd = new SaePrmd();
+         saePrmd.setPrmd(prmd);
+         saePrmds.add(saePrmd);
+      }
+
+      return saePrmds;
+   }
+
+   /**
+    * 
+    * @return Mutator </code>
+    */
+   private final Mutator<String> createMutator() {
+
+      Mutator<String> mutator = HFactory.createMutator(keyspace,
+            StringSerializer.get());
+
+      return mutator;
+
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public List<SaePagm> getListeSaePagm(String idContratService) {
+
+      List<SaePagm> listeSaePagm = new ArrayList<SaePagm>();
+      List<Pagm> pagms;
+      try {
+         pagms = pagmsCache.getUnchecked(idContratService);
+      } catch (InvalidCacheLoadException e) {
+         pagms = new ArrayList<Pagm>();
+      }
+
+      for (Pagm pagm : pagms) {
+
+         Pagma pagma = pagmasCache.getUnchecked(pagm.getPagma());
+         SaePagma saePagma = new SaePagma();
+         saePagma.setCode(pagma.getCode());
+         saePagma.setActionUnitaires(pagma.getActionUnitaires());
+
+         Pagmp pagmp = pagmpsCache.getUnchecked(pagm.getPagmp());
+         SaePagmp saePagmp = new SaePagmp();
+         saePagmp.setCode(pagmp.getCode());
+         saePagmp.setDescription(pagmp.getDescription());
+         saePagmp.setPrmd(pagmp.getPrmd());
+
+         SaePagm saePagm = new SaePagm();
+         saePagm.setCode(pagm.getCode());
+         saePagm.setDescription(pagm.getDescription());
+         saePagm.setPagma(saePagma);
+         saePagm.setPagmp(saePagmp);
+
+         listeSaePagm.add(saePagm);
+      }
+
+      return listeSaePagm;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void ajouterPagmContratService(String idContratService,
+         SaePagm saePagm) {
+
+      // Vérification de l'existence du contrat de service
+      testExistenceCS(idContratService);
+
+      // Vérification de la non existence du PAGM à créer
+      try {
+         List<Pagm> pagms = pagmsCache.getUnchecked(idContratService);
+         boolean pagmExist = false;
+         for (Pagm pagm : pagms) {
+            if (pagm.getCode().equals(saePagm.getCode())) {
+               pagmExist = true;
+            }
+         }
+
+         if (pagmExist) {
+            throw new PagmReferenceException(MESSAGE_PAGM + saePagm.getCode()
+                  + " existe déjà");
+         } else {
+            LOGGER
+                  .debug(
+                        "le pagm {} est inexistant, on peut l'ajouter au contrat de service",
+                        saePagm.getCode());
+         }
+
+      } catch (InvalidCacheLoadException e) {
+         LOGGER
+               .debug(
+                     "impossible de trouver des pagms associés au contrat de service {}, on peut ajouter le pagm {}",
+                     idContratService, saePagm.getCode());
+      }
+
+      // Création du Mutator
+      Mutator<String> mutator = createMutator();
+
+      // Préparation de la création du PAGM
+      creerPagm(idContratService, saePagm, mutator);
+
+      // Execution de la création
+      mutator.execute();
+
+      // Recharge immédiatement les caches, pour intégrer
+      // le nouveau PAGM que l'on vient juste de créer.
+      // Attention : cette mise à jour de cache valable que pour le serveur
+      // en cours.
+      pagmsCache.invalidate(idContratService);
+      pagmasCache.invalidate(saePagm.getPagma().getCode());
+      pagmpsCache.invalidate(saePagm.getPagmp().getCode());
+
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void supprimerPagmContratService(String idContratService,
+         String codePagm) {
+
+      // Vérification de l'existence du contrat de service
+      testExistenceCS(idContratService);
+
+      // Vérification de l'existence du PAGM à supprimer
+      try {
+         List<Pagm> pagms = pagmsCache.getUnchecked(idContratService);
+         Pagm pagmASupprimer = null;
+         boolean pagmExist = false;
+         for (Pagm pagm : pagms) {
+            if (pagm.getCode().equals(codePagm)) {
+               pagmExist = true;
+               pagmASupprimer = pagm;
+            }
+         }
+
+         if (pagmExist) {
+            LOGGER.debug("le pagm {} existe, suppression possible", codePagm);
+
+            // Création du Mutator
+            Mutator<String> mutator = createMutator();
+
+            // Préparation de la suppression du PAGM
+            supprimerPagm(idContratService, pagmASupprimer, mutator);
+
+            // Execution de la suppression
+            mutator.execute();
+
+            // Recharge immédiatement le cache des PAGM du CS, pour intégrer
+            // le nouveau PAGM que l'on vient juste de créer.
+            // Attention : cette mise à jour de cache valable que pour le
+            // serveur en cours.
+            pagmsCache.invalidate(idContratService);
+            pagmasCache.invalidate(pagmASupprimer.getPagma());
+            pagmpsCache.invalidate(pagmASupprimer.getPagmp());
+
+         } else {
+            LOGGER.debug(
+                  "le pagm {} n'existe pas, aucune suppression à effectuer",
+                  codePagm);
+         }
+
+      } catch (InvalidCacheLoadException e) {
+         LOGGER
+               .debug(
+                     "impossible de trouver des pagms associés au contrat de service {}, aucune suppression à effectuer",
+                     idContratService);
+      }
+
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void modifierPagmContratService(String idContratService,
+         SaePagm saePagm) {
+
+      // Vérification de l'existence du contrat de service
+      testExistenceCS(idContratService);
+
+      // Vérification de l'existence du PAGM à modifier
+      try {
+         List<Pagm> pagms = pagmsCache.getUnchecked(idContratService);
+         Pagm pagmASupprimer = null;
+         boolean pagmExist = false;
+         for (Pagm pagm : pagms) {
+            if (pagm.getCode().equals(saePagm.getCode())) {
+               pagmExist = true;
+               pagmASupprimer = pagm;
+            }
+         }
+
+         if (pagmExist) {
+            LOGGER.debug("le pagm {} existe, modification possible", saePagm
+                  .getCode());
+
+            // Création du Mutator
+            Mutator<String> mutator = createMutator();
+
+            // Préparation de la suppression du PAGM
+            supprimerPagm(idContratService, pagmASupprimer, mutator);
+            pagmsCache.invalidate(idContratService);
+            pagmasCache.invalidate(saePagm.getPagma().getCode());
+            pagmpsCache.invalidate(saePagm.getPagmp().getCode());
+
+            // Préparation de l'ajout du PAGM
+            creerPagm(idContratService, saePagm, mutator);
+
+            // Execution de la suppression
+            mutator.execute();
+
+            // Recharge immédiatement le cache des PAGM du CS, pour intégrer
+            // le nouveau PAGM que l'on vient juste de créer.
+            // Attention : cette mise à jour de cache valable que pour le
+            // serveur en cours.
+            pagmsCache.invalidate(idContratService);
+
+         } else {
+            LOGGER.debug(
+                  "le pagm {} n'existe pas, aucune modification à effectuer",
+                  saePagm.getCode());
+         }
+
+      } catch (InvalidCacheLoadException e) {
+         LOGGER
+               .debug(
+                     "impossible de trouver des pagms associés au contrat de service {}, aucune modification à effectuer",
+                     idContratService);
+      }
+
+   }
+
+   /**
+    * Préparation de la création d'un PAGM avec Mutator
+    * 
+    * @param idContratService
+    *           L'identifiant du contrat de service
+    * @param saePagm
+    *           Le PAGM à créer
+    * @param mutator
+    *           Mutator
+    */
+   private void creerPagm(String idContratService, SaePagm saePagm,
+         Mutator<String> mutator) {
+
+      // Ajout du PAGMa
+      SaePagma saePagma = saePagm.getPagma();
+      Pagma pagma = new Pagma();
+      pagma.setActionUnitaires(saePagma.getActionUnitaires());
+      pagma.setCode(saePagma.getCode());
+      pagmaSupport.create(pagma, clockSupport.currentCLock(), mutator);
+
+      // Ajout du PAGMp
+      SaePagmp saePagmp = saePagm.getPagmp();
+      Pagmp pagmp = new Pagmp();
+      pagmp.setCode(saePagmp.getCode());
+      pagmp.setDescription(saePagmp.getDescription());
+      pagmp.setPrmd(saePagmp.getPrmd());
+      pagmpSupport.create(pagmp, clockSupport.currentCLock(), mutator);
+
+      // Ajout du PAGM
+      Pagm pagm = new Pagm();
+      pagm.setCode(saePagm.getCode());
+      pagm.setDescription(saePagm.getDescription());
+      pagm.setPagma(saePagm.getPagma().getCode());
+      pagm.setPagmp(saePagm.getPagmp().getCode());
+      pagmSupport.create(idContratService, pagm, clockSupport.currentCLock(),
+            mutator);
+
+   }
+
+   /**
+    * Préparation de la création d'un PAGM avec Mutator
+    * 
+    * @param idContratService
+    *           L'identifiant du contrat de service
+    * @param saePagm
+    *           Le PAGM à créer
+    * @param mutator
+    *           Mutator
+    */
+   private void supprimerPagm(String idContratService, Pagm pagmASupprimer,
+         Mutator<String> mutator) {
+
+      try {
+         Pagma pagma = pagmasCache.getUnchecked(pagmASupprimer.getPagma());
+         // Suppression du PAGMa
+         pagmaSupport.delete(pagma.getCode(), clockSupport.currentCLock(),
+               mutator);
+      } catch (InvalidCacheLoadException e) {
+         LOGGER
+               .debug(
+                     "Pas de PAGMa pour le pagm {}, aucune suppression de PAGMa à effectuer",
+                     pagmASupprimer.getCode());
+      }
+      try {
+         Pagmp pagmp = pagmpsCache.getUnchecked(pagmASupprimer.getPagmp());
+         // Ajout du PAGMp
+         pagmpSupport.delete(pagmp.getCode(), clockSupport.currentCLock(),
+               mutator);
+      } catch (InvalidCacheLoadException e) {
+         LOGGER
+               .debug(
+                     "Pas de PAGMp pour le pagm {}, aucune suppression de PAGMp à effectuer",
+                     pagmASupprimer.getCode());
+      }
+
+      pagmSupport.delete(idContratService, pagmASupprimer.getCode(),
+            clockSupport.currentCLock(), mutator);
+
+   }
+
+   /**
+    * Teste l'existence du CS
+    * 
+    * @param idContratService
+    *           Identifiant du CS
+    */
+   private void testExistenceCS(String idContratService) {
+      // Vérification de l'existence du contrat de service
+      try {
+         contratsCache.getUnchecked(idContratService);
+      } catch (InvalidCacheLoadException e) {
+         throw new ContratServiceReferenceException(MESSAGE_CONTRAT
+               + idContratService + " n'existe pas", e);
+      }
    }
 
 }

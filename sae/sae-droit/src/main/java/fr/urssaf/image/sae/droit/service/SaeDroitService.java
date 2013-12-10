@@ -7,10 +7,11 @@ import java.util.List;
 
 import fr.urssaf.image.sae.droit.dao.model.Pagm;
 import fr.urssaf.image.sae.droit.dao.model.ServiceContract;
-import fr.urssaf.image.sae.droit.dao.model.ServiceContractDatas;
 import fr.urssaf.image.sae.droit.exception.ContratServiceNotFoundException;
 import fr.urssaf.image.sae.droit.exception.PagmNotFoundException;
+import fr.urssaf.image.sae.droit.model.SaeContratService;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
+import fr.urssaf.image.sae.droit.model.SaePagm;
 
 /**
  * Service de manipulation des droits du SAE
@@ -37,14 +38,16 @@ public interface SaeDroitService {
          throws ContratServiceNotFoundException, PagmNotFoundException;
 
    /**
-    * Création d'un nouveau contrat de service
+    * Création d'un nouveau contrat de service (création dans
+    * DroitContratService, DroitPagm, DroitPagma, DroitPagmp)
     * 
     * @param serviceContract
     *           propriétés du contrat de service à créer
-    * @param pagms
+    * @param listeSaePagm
     *           les PAGM liés au contrat de service à créer
     */
-   void createContratService(ServiceContract serviceContract, List<Pagm> pagms);
+   void createContratService(ServiceContract serviceContract,
+         List<SaePagm> listeSaePagm);
 
    /**
     * Vérifie si le contrat de service existe ou non
@@ -65,14 +68,31 @@ public interface SaeDroitService {
    ServiceContract getServiceContract(String idClient);
 
    /**
-    * Référence le PAGM pour le contrat de service avec l'identifiant donné
+    * Méthode permettant de récupérer N contrats de services
     * 
-    * @param idContratService
-    *           identifiant du contrat de service
-    * @param pagm
-    *           pagm à référencer
+    * @param maxResult
+    *           nombre maximum de contrat de service à renvoyer
+    * @return Liste de {@link ServiceContract}
     */
-   void addPagmContratService(String idContratService, Pagm pagm);
+   List<ServiceContract> findAllContractService(int maxResult);
+
+   /**
+    * Méthode permettant de récupérer N contrat de service complet
+    * 
+    * @param maxResult
+    *           nombre maximum de contrat de service à renvoyer
+    * @return Liste de {@link SaeContratService}
+    */
+   List<SaeContratService> findAllSaeContractService(int maxResult);
+
+   /**
+    * Retourne un contrat de service complet avec tous ses informations
+    * 
+    * @param id
+    *           code client du contrat de service
+    * @return {@link SaeContratService}
+    */
+   SaeContratService getFullContratService(String id);
 
    /**
     * Retourne la liste des PAGM d'un contrat de service
@@ -81,20 +101,40 @@ public interface SaeDroitService {
     *           l'identifiant du contrat de service
     * @return la liste des PAGM du contrat de service
     */
-   List<Pagm> getListePagm(String idContratService);
-   
+   List<SaePagm> getListeSaePagm(String idContratService);
+
    /**
-    * Méthode permettant de récupérer N contrats de services
-    * @param maxResult nombre maximum de contrat de service à renvoyer
-    * @return Liste de {@link ServiceContract}
+    * Ajout d'un PAGM à un contrat de service. Cette fonctionnalité créer une
+    * nouvelle ligne dans DroitPagm ainsi que dans DroitPagma et DroitPagmp
+    * 
+    * @param idContratService
+    *           Identifiant du contrat de service auquel appartient le PAGM
+    * @param pagm
+    *           PAGM à ajouter
     */
-   List<ServiceContract> findAllContractService(int maxResult);
-   
+   void ajouterPagmContratService(String idContratService, SaePagm saePagm);
+
    /**
-    * Retourne un contrat de service complet avec tous ses informations
-    * @param idClient code client du contrat de service
-    * @return {@link ServiceContractDatas}
+    * Suppression d'un PAGM d'un contrat de service. Cette fonctionnalité
+    * supprime les lignes dans DroitPagm ainsi que dans DroitPagma et DroitPagmp
+    * 
+    * @param idContratService
+    *           Identifiant du contrat de service auquel appartient le PAGM
+    * @param codePagm
+    *           Le code du PAGM à supprimer
     */
-   ServiceContractDatas getFullContratService(String idClient);
+   void supprimerPagmContratService(String idContratService, String codePagm);
+
+   /**
+    * Modification d'un PAGM d'un contrat de service donné. Cette fonctionnalité
+    * permet de modifier les PAGM, PAGMa et PAGMp. Elle supprime et crée un
+    * nouveau PAGM.
+    * 
+    * @param idContratService
+    *           Identifiant du contrat de service auquel appartient le PAGM
+    * @param pagm
+    *           PAGM à modifier
+    */
+   void modifierPagmContratService(String idContratService, SaePagm saePagm);
 
 }

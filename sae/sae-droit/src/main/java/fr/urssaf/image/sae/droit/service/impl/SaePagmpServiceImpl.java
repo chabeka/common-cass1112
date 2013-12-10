@@ -12,6 +12,7 @@ import com.netflix.curator.framework.CuratorFramework;
 
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.commons.zookeeper.ZookeeperMutex;
+import fr.urssaf.image.sae.droit.dao.model.Pagma;
 import fr.urssaf.image.sae.droit.dao.model.Pagmp;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.dao.serializer.exception.PagmpReferenceException;
@@ -19,6 +20,7 @@ import fr.urssaf.image.sae.droit.dao.serializer.exception.PrmdReferenceException
 import fr.urssaf.image.sae.droit.dao.support.PagmpSupport;
 import fr.urssaf.image.sae.droit.dao.support.PrmdSupport;
 import fr.urssaf.image.sae.droit.exception.DroitRuntimeException;
+import fr.urssaf.image.sae.droit.exception.PagmpNotFoundException;
 import fr.urssaf.image.sae.droit.service.SaePagmpService;
 import fr.urssaf.image.sae.droit.utils.ZookeeperUtils;
 
@@ -34,6 +36,7 @@ public class SaePagmpServiceImpl implements SaePagmpService {
    private static final String CHECK = "checkPagmpInexistant";
    
    private static final String TRC_CREATE = "createPagmp()";
+   private static final String TRC_MODIFIER = "modifierPagmp()";
    
    private static final String PAGMP = "Le PAGMp ";
 
@@ -95,6 +98,51 @@ public class SaePagmpServiceImpl implements SaePagmpService {
       }
    }
 
+   
+   /**
+    * {@inheritDoc}
+    * @throws PagmpNotFoundException 
+    */
+   @Override
+   public final void modifierPagmp(Pagmp pagmp) throws PagmpNotFoundException {
+
+      LOGGER.debug("{} - Début de la modification du pagmp {}", TRC_MODIFIER, pagmp.getCode());
+      String resourceName = PREFIXE_PAGMP + pagmp.getCode();
+
+      ZookeeperMutex mutex = ZookeeperUtils.createMutex(curatorClient,
+            resourceName);
+      try {
+         ZookeeperUtils.acquire(mutex, resourceName);
+
+         LOGGER.debug("{} - Vérification que le pagmp {} existe bien", TRC_MODIFIER, pagmp.getCode());
+         checkPagmpExistant(pagmp);
+         LOGGER.debug("{} - Vérification que le prmd rattaché au pagmp {} existe", TRC_MODIFIER, pagmp.getCode());
+         checkPrmdExiste(pagmp);
+
+         pagmpSupport.create(pagmp, clockSupport.currentCLock());
+
+         checkLock(mutex, pagmp);
+         
+         LOGGER.debug("{} - Fin de la modification du pagmp {}", TRC_MODIFIER, pagmp.getCode());
+      
+      } finally {
+         mutex.release();
+      }
+   }
+   
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public boolean isPagmpExiste(Pagmp pagmp) {
+      Pagmp storedPagmp = pagmpSupport.find(pagmp.getCode());
+      if (storedPagmp != null) {
+         return true;
+      } else {
+         return false;
+      }
+   }
+   
    /**
     * Vérifie que le pagmp n'existe pas. S'il existe, une exception est levée
     * 
@@ -116,6 +164,29 @@ public class SaePagmpServiceImpl implements SaePagmpService {
 
    }
 
+   
+   /**
+    * Vérifie que le pagmp existe déjà. S'il n'existe pas, une exception est levée
+    * 
+    * @param pagmp
+    *           le pagmp à modifier
+    * @throws PagmpNotFoundException 
+    */
+   private void checkPagmpExistant(Pagmp pagmp) throws PagmpNotFoundException {
+
+      Pagmp storedPagmp = pagmpSupport.find(pagmp.getCode());
+
+      if (storedPagmp == null) {
+         LOGGER
+               .warn(
+                     "{} - Le PAGMp {} n'existe pas dans la famille de colonne DroitPagmp",
+                     CHECK, pagmp.getCode());
+         throw new PagmpNotFoundException(PAGMP + pagmp.getCode()
+               + " n'existe pas dans la famille de colonne DroitPagmp");
+      }
+
+   }
+   
    /**
     * Vérifie que le Prmd existe. Si ce n'est pas le cas, exception
     * {@link PrmdReferenceException} levée

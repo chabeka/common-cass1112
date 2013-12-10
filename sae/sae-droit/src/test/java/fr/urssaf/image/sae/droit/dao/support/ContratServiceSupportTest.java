@@ -26,7 +26,10 @@ import fr.urssaf.image.sae.droit.dao.model.Pagma;
 import fr.urssaf.image.sae.droit.dao.model.Pagmp;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.dao.model.ServiceContract;
-import fr.urssaf.image.sae.droit.dao.model.ServiceContractDatas;
+import fr.urssaf.image.sae.droit.model.SaeContratService;
+import fr.urssaf.image.sae.droit.model.SaePagm;
+import fr.urssaf.image.sae.droit.model.SaePrmd;
+import fr.urssaf.image.sae.droit.service.SaeDroitService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-droit-test.xml" })
@@ -55,7 +58,7 @@ public class ContratServiceSupportTest {
    private ActionUnitaireSupport actionSupport;
 
    @Autowired
-   private ContratServiceDatasSupport serviceDatasSupport;
+   private SaeDroitService saeDroitService;
 
    private static final String[] CONTRAT_1_LISTE_PAGM = new String[] {
          "consultRecherchePermitAll", "capturesMasseUnitaireDenyAll",
@@ -95,7 +98,7 @@ public class ContratServiceSupportTest {
 
    @Test
    public void getAll() {
-      List<ServiceContractDatas> datas = serviceDatasSupport.findAll(100);
+      List<ServiceContract> datas = saeDroitService.findAllContractService(100);
 
       Assert.assertEquals("le nombre de contrat attendu doit etre correct", 2,
             datas.size());
@@ -105,16 +108,16 @@ public class ContratServiceSupportTest {
    }
 
    /**
-    * @param serviceContractDatas
+    * @param serviceContract
     */
-   private void checkValues(ServiceContractDatas serviceContractDatas) {
+   private void checkValues(ServiceContract serviceContract) {
       List<String> pagms;
       List<String> pagmas;
       List<String> actions;
       List<String> pagmps;
       List<String> prmds;
 
-      if ("CODE_CLIENT_1".equals(serviceContractDatas.getCodeClient())) {
+      if ("CODE_CLIENT_1".equals(serviceContract.getCodeClient())) {
          pagms = Arrays.asList(CONTRAT_1_LISTE_PAGM);
          pagmas = Arrays.asList(CONTRAT_1_LISTE_PAGMA);
          pagmps = Arrays.asList(CONTRAT_1_LISTE_PAGMP);
@@ -122,26 +125,25 @@ public class ContratServiceSupportTest {
          prmds = Arrays.asList(CONTRAT_1_LISTE_PRMD);
 
          Assert.assertEquals("La description du CS est incorrecte",
-               "code contrat numero 1", serviceContractDatas.getDescription());
+               "code contrat numero 1", serviceContract.getDescription());
          Assert.assertEquals("Le libellé du CS est incorrecte",
-               "libelle du code client 1", serviceContractDatas.getLibelle());
+               "libelle du code client 1", serviceContract.getLibelle());
          Assert.assertEquals("La durée de vie d'un VI est incorret", new Long(
-               120), serviceContractDatas.getViDuree());
+               120), serviceContract.getViDuree());
          Assert.assertEquals("L'identifiant de la PKI est incorrect", "pki 1",
-               serviceContractDatas.getIdPki());
+               serviceContract.getIdPki());
          Assert
                .assertEquals(
                      "Le flag de vérification du nom du certificat applicatif est incorrect",
-                     false, serviceContractDatas.isVerifNommage());
+                     false, serviceContract.isVerifNommage());
          Assert.assertEquals(
                "L'identifiant du certificat applicatif client est incorrect",
-               null, serviceContractDatas.getIdCertifClient());
+               null, serviceContract.getIdCertifClient());
          Assert.assertTrue("La liste des PKI devrait être vide",
-               CollectionUtils.isEmpty(serviceContractDatas.getListPki()));
+               CollectionUtils.isEmpty(serviceContract.getListPki()));
          Assert.assertTrue(
                "La liste des certificats clients devrait être vide",
-               CollectionUtils.isEmpty(serviceContractDatas
-                     .getListCertifsClient()));
+               CollectionUtils.isEmpty(serviceContract.getListCertifsClient()));
 
       } else {
          pagms = Arrays.asList(CONTRAT_2_LISTE_PAGM);
@@ -151,106 +153,92 @@ public class ContratServiceSupportTest {
          prmds = Arrays.asList(CONTRAT_2_LISTE_PRMD);
 
          Assert.assertEquals("La description du CS est incorrecte",
-               "code contrat numero 2", serviceContractDatas.getDescription());
+               "code contrat numero 2", serviceContract.getDescription());
          Assert.assertEquals("Le libellé du CS est incorrecte",
-               "libelle du code client 2", serviceContractDatas.getLibelle());
+               "libelle du code client 2", serviceContract.getLibelle());
          Assert.assertEquals("La durée de vie d'un VI est incorret", new Long(
-               240), serviceContractDatas.getViDuree());
+               240), serviceContract.getViDuree());
          Assert.assertEquals("L'identifiant de la PKI est incorrect", "pki 2",
-               serviceContractDatas.getIdPki());
+               serviceContract.getIdPki());
          Assert
                .assertEquals(
                      "Le flag de vérification du nom du certificat applicatif est incorrect",
-                     true, serviceContractDatas.isVerifNommage());
+                     true, serviceContract.isVerifNommage());
          Assert.assertEquals(
                "L'identifiant du certificat applicatif client est incorrect",
-               "id certif client 2", serviceContractDatas.getIdCertifClient());
+               "id certif client 2", serviceContract.getIdCertifClient());
 
          Assert.assertFalse("La liste des PKI ne devrait pas être vide",
-               CollectionUtils.isEmpty(serviceContractDatas.getListPki()));
+               CollectionUtils.isEmpty(serviceContract.getListPki()));
          Assert.assertEquals("Le nombre de PKI dans la liste est incorrect", 2,
-               serviceContractDatas.getListPki().size());
+               serviceContract.getListPki().size());
          Assert.assertEquals("La 1ère PKI de la liste est incorrect", "pki 2",
-               serviceContractDatas.getListPki().get(0));
+               serviceContract.getListPki().get(0));
          Assert.assertEquals("La 2ème PKI de la liste est incorrect",
-               "pki 2.1", serviceContractDatas.getListPki().get(1));
+               "pki 2.1", serviceContract.getListPki().get(1));
 
          Assert.assertFalse(
                "La liste des certificats clients ne devrait pas être vide",
-               CollectionUtils.isEmpty(serviceContractDatas
-                     .getListCertifsClient()));
+               CollectionUtils.isEmpty(serviceContract.getListCertifsClient()));
          Assert.assertEquals(
                "Le nombre de certificats clients dans la liste est incorrect",
-               2, serviceContractDatas.getListCertifsClient().size());
+               2, serviceContract.getListCertifsClient().size());
          Assert.assertEquals(
                "Le 1er certificat client de la liste est incorrect",
-               "id certif client 2", serviceContractDatas
-                     .getListCertifsClient().get(0));
+               "id certif client 2", serviceContract.getListCertifsClient()
+                     .get(0));
          Assert.assertEquals(
                "Le 2ème certificat client de la liste est incorrect",
-               "id certif client 2.1", serviceContractDatas
-                     .getListCertifsClient().get(1));
+               "id certif client 2.1", serviceContract.getListCertifsClient()
+                     .get(1));
 
       }
 
       // vérification que tous les pagms sont bien présents
+      SaeContratService saeCs = saeDroitService
+            .getFullContratService(serviceContract.getCodeClient());
       Assert.assertEquals(
             "le nombre de pagm doit etre correct pour le code client "
-                  + serviceContractDatas.getCodeClient(), pagms.size(),
-            serviceContractDatas.getPagms().size());
-      for (Pagm pagm : serviceContractDatas.getPagms()) {
+                  + serviceContract.getCodeClient(), pagms.size(), saeCs
+                  .getSaePagms().size());
+      for (SaePagm pagm : saeCs.getSaePagms()) {
          Assert.assertTrue("le pagm " + pagm.getCode()
                + " doit etre présent dans la liste du contrat de service "
-               + serviceContractDatas.getCodeClient(), pagms.contains(pagm
-               .getCode()));
-      }
+               + serviceContract.getCodeClient(), pagms
+               .contains(pagm.getCode()));
 
-      // vérification que tous les pagmas sont présents
-      Assert.assertEquals(
-            "le nombre de pagma doit etre correct pour le code client "
-                  + serviceContractDatas.getCodeClient(), pagmas.size(),
-            serviceContractDatas.getPagmas().size());
-      for (Pagma pagma : serviceContractDatas.getPagmas()) {
-         Assert.assertTrue("le pagma " + pagma.getCode()
+         // vérification que tous les pagmas sont présents
+         Assert.assertTrue("le pagma " + pagm.getPagma().getCode()
                + " doit etre présent dans la liste du contrat de service "
-               + serviceContractDatas.getCodeClient(), pagmas.contains(pagma
-               .getCode()));
-      }
+               + serviceContract.getCodeClient(), pagmas.contains(pagm
+               .getPagma().getCode()));
 
-      // vérification que tous les pagmps sont présents
-      Assert.assertEquals(
-            "le nombre de pagmp doit etre correct pour le code client "
-                  + serviceContractDatas.getCodeClient(), pagmps.size(),
-            serviceContractDatas.getPagmps().size());
-      for (Pagmp pagmp : serviceContractDatas.getPagmps()) {
-         Assert.assertTrue("le pagmp " + pagmp.getCode()
+         // vérification que tous les pagmps sont présents
+         Assert.assertTrue("le pagmp " + pagm.getPagmp().getCode()
                + " doit etre présent dans la liste du contrat de service "
-               + serviceContractDatas.getCodeClient(), pagmps.contains(pagmp
-               .getCode()));
-      }
+               + serviceContract.getCodeClient(), pagmps.contains(pagm
+               .getPagmp().getCode()));
 
-      // vérification que tous les prmds sont présents
-      Assert.assertEquals(
-            "le nombre de prmd doit etre correct pour le code client "
-                  + serviceContractDatas.getCodeClient(), prmds.size(),
-            serviceContractDatas.getPrmds().size());
-      for (Prmd prmd : serviceContractDatas.getPrmds()) {
-         Assert.assertTrue("le prmd " + prmd.getCode()
-               + " doit etre présent dans la liste du contrat de service "
-               + serviceContractDatas.getCodeClient(), prmds.contains(prmd
-               .getCode()));
-      }
+         // vérification que tous les prmds sont présents
+         List<SaePrmd> saePrmd = saeCs.getSaePrmds();
+         Assert.assertEquals(
+               "le nombre de prmd doit etre correct pour le code client "
+                     + serviceContract.getCodeClient(), prmds.size(), saePrmd
+                     .size());
+         for (SaePrmd prmd : saePrmd) {
+            Assert.assertTrue("le prmd " + prmd.getPrmd().getCode()
+                  + " doit etre présent dans la liste du contrat de service "
+                  + serviceContract.getCodeClient(), prmds.contains(prmd
+                  .getPrmd().getCode()));
+         }
 
-      // vérification que toutes les actions unitaires sont présentes
-      Assert.assertEquals(
-            "le nombre d'actions unitaires doit etre correct pour le code client "
-                  + serviceContractDatas.getCodeClient(), actions.size(),
-            serviceContractDatas.getActions().size());
-      for (ActionUnitaire action : serviceContractDatas.getActions()) {
-         Assert.assertTrue("l'action " + action.getCode()
-               + " doit etre présent dans la liste du contrat de service "
-               + serviceContractDatas.getCodeClient(), actions.contains(action
-               .getCode()));
+         // vérification que toutes les actions unitaires sont présentes
+         for (String action : pagm.getPagma().getActionUnitaires()) {
+            Assert.assertTrue("l'action " + action
+                  + " doit etre présent dans la liste du contrat de service "
+                  + serviceContract.getCodeClient(), actions.contains(action));
+         }
+
       }
 
    }

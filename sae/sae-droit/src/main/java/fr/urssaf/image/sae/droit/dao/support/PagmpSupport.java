@@ -5,6 +5,7 @@ package fr.urssaf.image.sae.droit.dao.support;
 
 import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
+import me.prettyprint.hector.api.mutation.Mutator;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,9 +52,40 @@ public class PagmpSupport extends AbstractSupport<Pagmp, String, String> {
    }
 
    /**
+    * Méthode de création d'un ligne avec Mutator
+    * 
+    * @param pagmp
+    *           propriétés du PAGMp à créer
+    * @param clock
+    *           horloge de la création
+    * @param mutator
+    *           Mutator
+    */
+   public final void create(Pagmp pagmp, long clock, Mutator<String> mutator) {
+      dao.ecritDescription(pagmp.getCode(), pagmp.getDescription(), clock,
+            mutator);
+      dao.ecritPrmd(pagmp.getCode(), pagmp.getPrmd(), clock, mutator);
+   }
+
+   /**
+    * Méthode de suppression d'une ligne avec Murator en paramètre
+    * 
+    * @param code
+    *           identifiant du PAGMp
+    * @param clock
+    *           horloge de suppression
+    * @param mutator
+    *           Mutator
+    */
+   public final void delete(String code, long clock, Mutator<String> mutator) {
+      dao.mutatorSuppressionLigne(mutator, code, clock);
+   }
+
+   /**
     * {@inheritDoc}
     */
-   protected final Pagmp getObjectFromResult(ColumnFamilyResult<String, String> result) {
+   protected final Pagmp getObjectFromResult(
+         ColumnFamilyResult<String, String> result) {
 
       Pagmp pagmp = null;
 

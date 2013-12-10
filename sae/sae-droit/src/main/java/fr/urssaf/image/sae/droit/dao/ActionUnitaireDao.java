@@ -22,8 +22,6 @@ public class ActionUnitaireDao extends AbstractDao<String, String> {
 
    public static final String AU_CFNAME = "DroitActionUnitaire";
 
-   public static final int MAX_AU_ATTIBUTS = 100;
-
    public static final String AU_DESCRIPTION = "description";
 
    /**

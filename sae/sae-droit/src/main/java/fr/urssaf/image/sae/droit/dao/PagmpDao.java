@@ -7,6 +7,7 @@ import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
 import me.prettyprint.hector.api.Keyspace;
 import me.prettyprint.hector.api.Serializer;
+import me.prettyprint.hector.api.mutation.Mutator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -25,8 +26,6 @@ public class PagmpDao extends AbstractDao<String, String> {
    public static final String PAGMP_PRMD = "prmd";
 
    public static final String PAGMP_CFNAME = "DroitPagmp";
-
-   public static final int MAX_ATTRIBUTS = 100;
 
    /**
     * 
@@ -56,6 +55,22 @@ public class PagmpDao extends AbstractDao<String, String> {
    }
 
    /**
+    * ajoute une colonne {@value #PAGMP_PRMD}
+    * 
+    * @param updater
+    *           updater de <code>DroitActionUnitaire</code>
+    * @param value
+    *           valeur de la colonne
+    * @param clock
+    *           horloge de la colonne
+    */
+   public final void ecritPrmd(String code, String prmd, long clock,
+         Mutator<String> mutator) {
+      addColumnWithMutator(code, PAGMP_PRMD, prmd, StringSerializer.get(),
+            clock, mutator);
+   }
+
+   /**
     * ajoute une colonne {@value #PAGM_DESCRIPTION}
     * 
     * @param updater
@@ -67,15 +82,29 @@ public class PagmpDao extends AbstractDao<String, String> {
     */
    public final void ecritDescription(
          ColumnFamilyUpdater<String, String> updater, String value, long clock) {
-
       addColumn(updater, PAGMP_DESCRIPTION, value, StringSerializer.get(),
             clock);
-
    }
 
    /**
-    * {@inheritDoc}
+    * ajoute une colonne {@value #PAGM_DESCRIPTION} avec utilisation d'un
+    * mutator
+    * 
+    * @param code
+    *           le code du PAGMp
+    * @param description
+    *           la description du PAGMp
+    * @param clock
+    *           horloge de la colonne
+    * @param mutator
+    *           Mutator
     */
+   public final void ecritDescription(String code, String description,
+         long clock, Mutator<String> mutator) {
+      addColumnWithMutator(code, PAGMP_DESCRIPTION, description,
+            StringSerializer.get(), clock, mutator);
+   }
+
    @Override
    public final String getColumnFamilyName() {
       return PAGMP_CFNAME;

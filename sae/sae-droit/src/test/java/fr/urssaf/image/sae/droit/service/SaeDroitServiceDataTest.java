@@ -25,7 +25,6 @@ import fr.urssaf.image.sae.droit.dao.model.Pagma;
 import fr.urssaf.image.sae.droit.dao.model.Pagmp;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.dao.model.ServiceContract;
-import fr.urssaf.image.sae.droit.dao.model.ServiceContractDatas;
 import fr.urssaf.image.sae.droit.dao.serializer.exception.ActionUnitaireReferenceException;
 import fr.urssaf.image.sae.droit.dao.serializer.exception.PagmaReferenceException;
 import fr.urssaf.image.sae.droit.dao.serializer.exception.PagmpReferenceException;
@@ -39,7 +38,11 @@ import fr.urssaf.image.sae.droit.dao.support.PrmdSupport;
 import fr.urssaf.image.sae.droit.exception.ContratServiceNotFoundException;
 import fr.urssaf.image.sae.droit.exception.ContratServiceReferenceException;
 import fr.urssaf.image.sae.droit.exception.PagmNotFoundException;
+import fr.urssaf.image.sae.droit.model.SaeContratService;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
+import fr.urssaf.image.sae.droit.model.SaePagm;
+import fr.urssaf.image.sae.droit.model.SaePagma;
+import fr.urssaf.image.sae.droit.model.SaePagmp;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -425,9 +428,10 @@ public class SaeDroitServiceDataTest {
 
       return prmd;
    }
+
    // identique à celui de la classe support ContratServiceDataSupportTest
    @Test
-   public void findAllCsTest(){
+   public void findAllCsTest() {
       ServiceContract contract = new ServiceContract();
       contract.setCodeClient("codeClient1");
       contract.setDescription("description1");
@@ -487,47 +491,45 @@ public class SaeDroitServiceDataTest {
          Assert.assertTrue("le code " + libelle + " doit etre trouvé", found);
       }
    }
-   
+
    @Test
-   public void getFullCsTest(){
+   public void getFullCsTest() {
       creationContrat();
       creationPagm();
       creationPagma();
       creationPagmp();
       creationPrmd();
-      ServiceContractDatas fullCs = service.getFullContratService(CODE_CLIENT);
-      
-      Assert.assertEquals(fullCs.getCodeClient(), CODE_CLIENT);
-      Assert.assertEquals(fullCs.getDescription(), DESCRIPTION_CONTRAT);
-      Assert.assertEquals(fullCs.getLibelle(), LIBELLE_CONTRAT);
-      Assert.assertEquals(fullCs.getViDuree(), DUREE_CONTRAT);
-      Assert.assertNotNull(fullCs.getPagms());
-      for(Pagm pagm : fullCs.getPagms()){
+      SaeContratService fullCs = service.getFullContratService(CODE_CLIENT);
+
+      Assert.assertEquals(fullCs.getCodeClient(),
+            CODE_CLIENT);
+      Assert.assertEquals(fullCs.getDescription(),
+            DESCRIPTION_CONTRAT);
+      Assert.assertEquals(fullCs.getLibelle(),
+            LIBELLE_CONTRAT);
+      Assert.assertEquals(fullCs.getViDuree(),
+            DUREE_CONTRAT);
+      Assert.assertNotNull(fullCs.getSaePagms());
+      for (SaePagm pagm : fullCs.getSaePagms()) {
          Assert.assertEquals(pagm.getCode(), CODE_PAGM);
          Assert.assertEquals(pagm.getDescription(), DESCRIPTION_PAGM);
-         Assert.assertEquals(pagm.getPagma(), CODE_PAGMA);
-         Assert.assertEquals(pagm.getPagmp(), CODE_PAGMP);
+
+         SaePagma saePagma = new SaePagma();
+         saePagma.setActionUnitaires(Arrays
+               .asList(new String[] { CODE_ACTION_1 }));
+         saePagma.setCode(CODE_PAGMA);
+         pagm.getPagma().equals(saePagma);
+         Assert.assertEquals(pagm.getPagma(), saePagma);
+
+         SaePagmp saePagmp = new SaePagmp();
+         saePagmp.setCode(CODE_PAGMP);
+         saePagmp.setDescription(DESCRIPTION_PAGMP);
+
+         saePagmp.setPrmd(CODE_PRMD);
+         Assert.assertEquals(pagm.getPagmp(), saePagmp);
+
       }
-      Assert.assertNotNull(fullCs.getPagmas());
-      for(Pagma pagma : fullCs.getPagmas()){
-         Assert.assertEquals(pagma.getCode(), CODE_PAGMA);
-         Assert.assertEquals(pagma.getActionUnitaires(), Arrays.asList(new String[] { CODE_ACTION_1 }));
-      }
-      Assert.assertNotNull(fullCs.getPagmps());  
-      for(Pagmp pagmp : fullCs.getPagmps()){
-         Assert.assertEquals(pagmp.getCode(), CODE_PAGMP);
-         Assert.assertEquals(pagmp.getDescription(), DESCRIPTION_PAGMP);
-         Assert.assertEquals(pagmp.getPrmd(), CODE_PRMD);
-      }
-      Assert.assertNotNull(fullCs.getPrmds());
-      for(Prmd prmd: fullCs.getPrmds()){
-         Assert.assertEquals(prmd.getCode(), CODE_PRMD);
-         Assert.assertEquals(prmd.getDescription(), DESCRIPTION_PRMD);
-         Assert.assertEquals(prmd.getLucene(), LUCENE_PRMD);
-         Assert.assertEquals(prmd.getBean(), BEAN1);
-      }
+
    }
-   
 
 }
-

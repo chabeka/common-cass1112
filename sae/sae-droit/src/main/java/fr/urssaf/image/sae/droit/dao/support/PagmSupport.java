@@ -63,27 +63,62 @@ public class PagmSupport {
    }
 
    /**
+    * Méthode de création d'un ligne avec utilisation d'un mutator
+    * 
+    * @param idClient
+    *           identifiant du client
+    * @param pagm
+    *           propriétés du PAGM à créer
+    * @param clock
+    *           horloge de la création
+    */
+   public final void create(String idClient, Pagm pagm, long clock,
+         Mutator<String> mutator) {
+
+      dao.mutatorEcritPagm(idClient, pagm, clock, mutator);
+   }
+
+   /**
     * Méthode de suppression d'une ligne
     * 
-    * @param code
-    *           identifiant du PAGM
+    * @param idContratService
+    *           identifiant du contrat de service auquel est rattaché le PAGM
+    * @param codePagm
+    *           Identifiant du PAGM à supprimer
     * @param clock
     *           horloge de suppression
     */
-   public final void delete(String code, long clock) {
+   public final void delete(String idContratService, String codePagm, long clock) {
 
       Mutator<String> mutator = dao.createMutator();
 
-      dao.mutatorSuppressionLigne(mutator, code, clock);
+      dao.mutatorSuppressionPagm(mutator, idContratService, codePagm, clock);
 
       mutator.execute();
+   }
+
+   /**
+    * Méthode de suppression d'une ligne avec mutator en paramètre
+    * 
+    * @param idContratService
+    *           Identifiant du contrat de service auquel le PAGM est rattaché
+    * @param codePagm
+    *           identifiant du Pagm à supprimer
+    * @param clock
+    *           horloge de suppression
+    * @param mutator
+    *           Mutator
+    */
+   public final void delete(String idContratService, String codePagm,
+         long clock, Mutator<String> mutator) {
+      dao.mutatorSuppressionPagm(mutator, idContratService, codePagm, clock);
    }
 
    /**
     * Méthode de lecture d'une ligne
     * 
     * @param code
-    *           identifiant du PAGM
+    *           identifiant du Contrat de service
     * @return la liste des PAGM correspondant à l'identifiant passé en paramètre
     */
    public final List<Pagm> find(String code) {

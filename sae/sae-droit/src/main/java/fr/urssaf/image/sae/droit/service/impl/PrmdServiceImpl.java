@@ -191,11 +191,14 @@ public class PrmdServiceImpl implements PrmdService {
       try {
          controle = context.getBean(prmd.getBean(), PrmdControle.class);
 
+         Map<String, String> valeurs;
          if (values == null) {
-            values = new HashMap<String, String>();
+            valeurs = new HashMap<String, String>();
+         } else {
+            valeurs = values;
          }
 
-         match = controle.isPermitted(metadatas, values);
+         match = controle.isPermitted(metadatas, valeurs);
 
       } catch (BeansException e) {
          LOGGER.warn("{} - Aucune fonction {} n'existe pour le Prmd {}",
