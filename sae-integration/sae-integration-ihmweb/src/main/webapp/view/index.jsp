@@ -16,7 +16,6 @@
 
 <p><br /></p>
 
-<p><a href="listeCsPrmd.do">Liste des Contrats Service et PRMD</a></p>
 <p><br /></p>
 
 <p><a href="refMetas.do">Référentiel des métadonnées</a></p>
