@@ -1,7 +1,12 @@
 package fr.urssaf.image.sae.integration.ihmweb.formulaire;
 
 /**
- * Classe de formulaire pour le test 105
+ * Classe de formulaire pour les tests contenant les blocs suivants :
+ * <ul>
+ *    <li>Droits</li>
+ *    <li>Capture unitaire</li>
+ *    <li>Consultation</li>
+ * </ul>
  */
 public class TestFormulaireDrCuCo extends TestWsParentFormulaire {
 

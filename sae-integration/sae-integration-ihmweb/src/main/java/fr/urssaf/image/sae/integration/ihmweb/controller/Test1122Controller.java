@@ -25,7 +25,6 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.R
  */
 @Controller
 @RequestMapping(value = "test1122")
-@SuppressWarnings( { "PMD.AvoidDuplicateLiterals" })
 public class Test1122Controller extends
       AbstractTestWsController<TestWsRechercheFormulaire> {
 
@@ -69,7 +68,7 @@ public class Test1122Controller extends
       viForm.setIdCertif("2");
       PagmList pagmList = new PagmList();
       viForm.setPagms(pagmList);
-      pagmList.add("INT_PAGM_PLUSIEURS_META_ALL");
+      pagmList.add("INT_PAGM_PLUSIEURS_META_ARCH");
 
       return formulaire;
 

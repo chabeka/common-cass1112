@@ -69,7 +69,7 @@ public class Test1116Controller extends
       viForm.setIdCertif("2");
       PagmList pagmList = new PagmList();
       viForm.setPagms(pagmList);
-      pagmList.add("INT_PAGM_UNE_META_ALL");
+      pagmList.add("INT_PAGM_UNE_META_ARCH");
 
       return formulaire;
 

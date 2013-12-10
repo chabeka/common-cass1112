@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import fr.urssaf.image.sae.integration.ihmweb.controller.commons.TestDrCuCoCommons;
+import fr.urssaf.image.sae.integration.ihmweb.controller.commons.Test1131Commons;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.TestFormulaireDrCuCo;
 
 /**
@@ -12,12 +12,11 @@ import fr.urssaf.image.sae.integration.ihmweb.formulaire.TestFormulaireDrCuCo;
  */
 @Controller
 @RequestMapping(value = "test1131a")
-@SuppressWarnings( { "PMD.AvoidDuplicateLiterals" })
 public class Test1131aController extends
       AbstractTestWsController<TestFormulaireDrCuCo> {
    
    @Autowired
-   private TestDrCuCoCommons testCommons;
+   private Test1131Commons testCommons;
 
    /**
     * {@inheritDoc}
