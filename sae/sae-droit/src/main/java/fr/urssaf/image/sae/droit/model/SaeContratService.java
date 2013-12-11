@@ -5,7 +5,8 @@ import java.util.List;
 import fr.urssaf.image.sae.droit.dao.model.ServiceContract;
 
 /**
- * Classe représentant les contrats de service
+ * Classe représentant un contrat de service complet
+ * 
  * 
  */
 public class SaeContratService extends ServiceContract {

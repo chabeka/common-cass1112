@@ -119,7 +119,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
     * @param clockSupport
     *           support pour la gestion de l'horloge CASSANDRA
     * @param cacheConfig
-    *           configuration du cache
+    *           Configuration des différents caches
     * @param keyspace
     *           keyspace utilisé
     */

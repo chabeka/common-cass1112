@@ -27,7 +27,7 @@ public interface SaePagmaService {
     * @param pagma
     *           PAGMa à modifier
     * @throws PagmaNotFoundException
-    *            Exception levée si le pagma n'est pas trouvé
+    *            Exception levée si le PAGMa à modifier n'existe pas
     */
    void modifierPagma(Pagma pagma) throws PagmaNotFoundException;
 
