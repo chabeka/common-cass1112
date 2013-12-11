@@ -12,7 +12,6 @@ import com.netflix.curator.framework.CuratorFramework;
 
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.commons.zookeeper.ZookeeperMutex;
-import fr.urssaf.image.sae.droit.dao.model.Pagma;
 import fr.urssaf.image.sae.droit.dao.model.Pagmp;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.dao.serializer.exception.PagmpReferenceException;
@@ -134,13 +133,10 @@ public class SaePagmpServiceImpl implements SaePagmpService {
     * {@inheritDoc}
     */
    @Override
-   public boolean isPagmpExiste(Pagmp pagmp) {
+   public final boolean isPagmpExiste(Pagmp pagmp) {
       Pagmp storedPagmp = pagmpSupport.find(pagmp.getCode());
-      if (storedPagmp != null) {
-         return true;
-      } else {
-         return false;
-      }
+      
+      return storedPagmp!=null;
    }
    
    /**

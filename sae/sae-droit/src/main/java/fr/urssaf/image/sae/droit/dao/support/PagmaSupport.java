@@ -63,6 +63,8 @@ public class PagmaSupport {
     *           propriétés du PAGMa à créer
     * @param clock
     *           horloge de la création
+    * @param mutator
+    *           mutator de la ligne de Pagma
     */
    public final void create(Pagma pagma, long clock, Mutator<String> mutator) {
 

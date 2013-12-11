@@ -57,12 +57,14 @@ public class PagmpDao extends AbstractDao<String, String> {
    /**
     * ajoute une colonne {@value #PAGMP_PRMD}
     * 
-    * @param updater
-    *           updater de <code>DroitActionUnitaire</code>
-    * @param value
-    *           valeur de la colonne
+    * @param code
+    *           code de la ligne
+    * @param prmd
+    *           PRMD
     * @param clock
-    *           horloge de la colonne
+    *           horloge de la création
+    * @param mutator
+    *           mutator de la colonne Pagmp
     */
    public final void ecritPrmd(String code, String prmd, long clock,
          Mutator<String> mutator) {

@@ -3,7 +3,6 @@
  */
 package fr.urssaf.image.sae.droit.service;
 
-import fr.urssaf.image.sae.droit.dao.model.Pagma;
 import fr.urssaf.image.sae.droit.dao.model.Pagmp;
 import fr.urssaf.image.sae.droit.exception.PagmpNotFoundException;
 

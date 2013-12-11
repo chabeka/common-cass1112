@@ -72,7 +72,7 @@ public class SaeDroitServiceValidation {
     * 
     * @param contrat
     *           contrat de service
-    * @param pagms
+    * @param listeSaePagms
     *           liste des pagms
     */
    @Before(CREATE_METHOD)

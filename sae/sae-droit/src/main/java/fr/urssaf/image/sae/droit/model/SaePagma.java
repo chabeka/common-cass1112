@@ -2,8 +2,11 @@ package fr.urssaf.image.sae.droit.model;
 
 import java.util.List;
 
-import fr.urssaf.image.sae.droit.dao.model.Pagma;
-
+/**
+ * Classe représentant les PAGMa
+ * 
+ *
+ */
 public class SaePagma {
 
    /**
@@ -19,7 +22,7 @@ public class SaePagma {
    /**
     * @return the code
     */
-   public String getCode() {
+   public final String getCode() {
       return code;
    }
 
@@ -27,14 +30,14 @@ public class SaePagma {
     * @param code
     *           the code to set
     */
-   public void setCode(String code) {
+   public final void setCode(String code) {
       this.code = code;
    }
 
    /**
     * @return the actionUnitaires
     */
-   public List<String> getActionUnitaires() {
+   public final List<String> getActionUnitaires() {
       return actionUnitaires;
    }
 
@@ -42,7 +45,7 @@ public class SaePagma {
     * @param actionUnitaires
     *           the actionUnitaires to set
     */
-   public void setActionUnitaires(List<String> actionUnitaires) {
+   public final void setActionUnitaires(List<String> actionUnitaires) {
       this.actionUnitaires = actionUnitaires;
    }
 

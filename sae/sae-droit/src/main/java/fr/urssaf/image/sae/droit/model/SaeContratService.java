@@ -4,9 +4,12 @@ import java.util.List;
 
 import fr.urssaf.image.sae.droit.dao.model.ServiceContract;
 
+/**
+ * Classe représentant les contrats de service
+ * 
+ */
 public class SaeContratService extends ServiceContract {
 
-  
    /**
     * Liste des PAGM du contrat de service
     */
@@ -16,32 +19,34 @@ public class SaeContratService extends ServiceContract {
     * Liste des Prmd rattachés au contrat de service
     */
    private List<SaePrmd> saePrmds;
-   
+
    /**
-    * @return the saePagms
+    * @return la liste des pagms
     */
-   public List<SaePagm> getSaePagms() {
+   public final List<SaePagm> getSaePagms() {
       return saePagms;
    }
 
    /**
-    * @param saePagms the saePagms to set
+    * @param saePagms
+    *           la liste des pagms
     */
-   public void setSaePagms(List<SaePagm> saePagms) {
+   public final void setSaePagms(List<SaePagm> saePagms) {
       this.saePagms = saePagms;
    }
 
    /**
-    * @return the saePrmd
+    * @return la liste des prmds
     */
-   public List<SaePrmd> getSaePrmds() {
+   public final List<SaePrmd> getSaePrmds() {
       return saePrmds;
    }
 
    /**
-    * @param saePrmd the saePrmd to set
+    * @param saePrmds
+    *           la liste des prmds
     */
-   public void setSaePrmds(List<SaePrmd> saePrmds) {
+   public final void setSaePrmds(List<SaePrmd> saePrmds) {
       this.saePrmds = saePrmds;
    }
 

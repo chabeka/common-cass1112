@@ -21,18 +21,21 @@ public interface SaePagmaService {
    void createPagma(Pagma pagma);
 
    /**
-    * Modification d'un PAGMa 
-    * Le PAGMa doit exister On ne peut modifier que la
+    * Modification d'un PAGMa Le PAGMa doit exister On ne peut modifier que la
     * liste des actions unitaires mais pas le code du PAGMa
     * 
     * @param pagma
     *           PAGMa à modifier
+    * @throws PagmaNotFoundException
+    *            Exception levée si le pagma n'est pas trouvé
     */
    void modifierPagma(Pagma pagma) throws PagmaNotFoundException;
 
    /**
     * Teste l'existence en base du PAGMa
-    * @param pagma le pagma à tester
+    * 
+    * @param pagma
+    *           le pagma à tester
     * @return true si le pagma existe
     */
    boolean isPagmaExiste(Pagma pagma);

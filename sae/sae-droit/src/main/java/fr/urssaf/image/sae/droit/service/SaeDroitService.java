@@ -5,7 +5,6 @@ package fr.urssaf.image.sae.droit.service;
 
 import java.util.List;
 
-import fr.urssaf.image.sae.droit.dao.model.Pagm;
 import fr.urssaf.image.sae.droit.dao.model.ServiceContract;
 import fr.urssaf.image.sae.droit.exception.ContratServiceNotFoundException;
 import fr.urssaf.image.sae.droit.exception.PagmNotFoundException;
@@ -109,7 +108,7 @@ public interface SaeDroitService {
     * 
     * @param idContratService
     *           Identifiant du contrat de service auquel appartient le PAGM
-    * @param pagm
+    * @param saePagm
     *           PAGM à ajouter
     */
    void ajouterPagmContratService(String idContratService, SaePagm saePagm);
@@ -132,7 +131,7 @@ public interface SaeDroitService {
     * 
     * @param idContratService
     *           Identifiant du contrat de service auquel appartient le PAGM
-    * @param pagm
+    * @param saePagm
     *           PAGM à modifier
     */
    void modifierPagmContratService(String idContratService, SaePagm saePagm);

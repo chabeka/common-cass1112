@@ -118,6 +118,10 @@ public class SaeDroitServiceImpl implements SaeDroitService {
     *           connexion à Zookeeper
     * @param clockSupport
     *           support pour la gestion de l'horloge CASSANDRA
+    * @param cacheConfig
+    *           configuration du cache
+    * @param keyspace
+    *           keyspace utilisé
     */
    @Autowired
    public SaeDroitServiceImpl(final ContratServiceSupport contratSupport,
@@ -465,7 +469,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
     * {@inheritDoc}
     */
    @Override
-   public ServiceContract getServiceContract(String idClient) {
+   public final ServiceContract getServiceContract(String idClient) {
       try {
          return contratsCache.getUnchecked(idClient);
       } catch (InvalidCacheLoadException e) {
@@ -478,7 +482,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
     * {@inheritDoc}
     */
    @Override
-   public List<ServiceContract> findAllContractService(int maxResult) {
+   public final List<ServiceContract> findAllContractService(int maxResult) {
 
       return contratSupport.findAll(maxResult);
    }
@@ -487,7 +491,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
     * {@inheritDoc}
     */
    @Override
-   public List<SaeContratService> findAllSaeContractService(int maxResult) {
+   public final List<SaeContratService> findAllSaeContractService(int maxResult) {
 
       List<ServiceContract> listeCs = contratSupport.findAll(maxResult);
       List<SaeContratService> listeSaeCs = new ArrayList<SaeContratService>();
@@ -503,7 +507,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
     * {@inheritDoc}
     */
    @Override
-   public SaeContratService getFullContratService(String idClient) {
+   public final SaeContratService getFullContratService(String idClient) {
 
       ServiceContract contrat = contratsCache.getUnchecked(idClient);
 
@@ -559,7 +563,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
     * 
     * @return Mutator </code>
     */
-   private final Mutator<String> createMutator() {
+   private Mutator<String> createMutator() {
 
       Mutator<String> mutator = HFactory.createMutator(keyspace,
             StringSerializer.get());
@@ -572,7 +576,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
     * {@inheritDoc}
     */
    @Override
-   public List<SaePagm> getListeSaePagm(String idContratService) {
+   public final List<SaePagm> getListeSaePagm(String idContratService) {
 
       List<SaePagm> listeSaePagm = new ArrayList<SaePagm>();
       List<Pagm> pagms;
@@ -611,7 +615,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
     * {@inheritDoc}
     */
    @Override
-   public void ajouterPagmContratService(String idContratService,
+   public final void ajouterPagmContratService(String idContratService,
          SaePagm saePagm) {
 
       // Vérification de l'existence du contrat de service
@@ -667,7 +671,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
     * {@inheritDoc}
     */
    @Override
-   public void supprimerPagmContratService(String idContratService,
+   public final void supprimerPagmContratService(String idContratService,
          String codePagm) {
 
       // Vérification de l'existence du contrat de service
@@ -724,7 +728,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
     * {@inheritDoc}
     */
    @Override
-   public void modifierPagmContratService(String idContratService,
+   public final void modifierPagmContratService(String idContratService,
          SaePagm saePagm) {
 
       // Vérification de l'existence du contrat de service

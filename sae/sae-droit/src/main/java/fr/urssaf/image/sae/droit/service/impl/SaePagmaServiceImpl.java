@@ -104,7 +104,7 @@ public class SaePagmaServiceImpl implements SaePagmaService {
     * @throws PagmaNotFoundException 
     */
    @Override
-   public void modifierPagma(Pagma pagma) throws PagmaNotFoundException {
+   public final void modifierPagma(Pagma pagma) throws PagmaNotFoundException {
       LOGGER.debug("{} - Début de la modification du pagma {}", TRC_MODIFIER, pagma.getCode());
       
       String resourceName = PREFIXE_PAGMA + pagma.getCode();
@@ -135,12 +135,9 @@ public class SaePagmaServiceImpl implements SaePagmaService {
     * {@inheritDoc} 
     */
    @Override
-   public boolean isPagmaExiste(Pagma pagma) {
-      if (pagmaSupport.find(pagma.getCode()) != null) {
-         return true;
-      } else {
-         return false;
-      }
+   public final boolean isPagmaExiste(Pagma pagma) {
+      Pagma pagmaTemp = pagmaSupport.find(pagma.getCode());
+      return pagmaTemp!=null;
    }
    
    private void checkLock(ZookeeperMutex mutex, Pagma pagma) {

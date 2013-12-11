@@ -71,6 +71,8 @@ public class PagmSupport {
     *           propriétés du PAGM à créer
     * @param clock
     *           horloge de la création
+    * @param mutator
+    *           mutator de la ligne de pagm
     */
    public final void create(String idClient, Pagm pagm, long clock,
          Mutator<String> mutator) {

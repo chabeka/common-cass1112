@@ -37,7 +37,7 @@ public class SaePagm {
    /**
     * @return the code
     */
-   public String getCode() {
+   public final String getCode() {
       return code;
    }
 
@@ -45,14 +45,14 @@ public class SaePagm {
     * @param code
     *           the code to set
     */
-   public void setCode(String code) {
+   public final void setCode(String code) {
       this.code = code;
    }
 
    /**
     * @return the description
     */
-   public String getDescription() {
+   public final String getDescription() {
       return description;
    }
 
@@ -60,14 +60,14 @@ public class SaePagm {
     * @param description
     *           the description to set
     */
-   public void setDescription(String description) {
+   public final void setDescription(String description) {
       this.description = description;
    }
 
    /**
     * @return the pagma
     */
-   public SaePagma getPagma() {
+   public final SaePagma getPagma() {
       return pagma;
    }
 
@@ -75,14 +75,14 @@ public class SaePagm {
     * @param pagma
     *           the pagma to set
     */
-   public void setPagma(SaePagma pagma) {
+   public final void setPagma(SaePagma pagma) {
       this.pagma = pagma;
    }
 
    /**
     * @return the pagmp
     */
-   public SaePagmp getPagmp() {
+   public final SaePagmp getPagmp() {
       return pagmp;
    }
 
@@ -90,14 +90,14 @@ public class SaePagm {
     * @param pagmp
     *           the pagmp to set
     */
-   public void setPagmp(SaePagmp pagmp) {
+   public final void setPagmp(SaePagmp pagmp) {
       this.pagmp = pagmp;
    }
 
    /**
     * @return the parametres
     */
-   public Map<String, String> getParametres() {
+   public final Map<String, String> getParametres() {
       return parametres;
    }
 
@@ -105,7 +105,7 @@ public class SaePagm {
     * @param parametres
     *           the parametres to set
     */
-   public void setParametres(Map<String, String> parametres) {
+   public final void setParametres(Map<String, String> parametres) {
       this.parametres = parametres;
    }
 

@@ -1,8 +1,11 @@
 package fr.urssaf.image.sae.droit.model;
 
-import fr.urssaf.image.sae.droit.dao.model.Pagmp;
-import fr.urssaf.image.sae.droit.dao.model.Prmd;
 
+/**
+ * Classe représentant les PAGMp
+ * 
+ *
+ */
 public class SaePagmp {
 
    /** 
@@ -23,42 +26,42 @@ public class SaePagmp {
    /**
     * @return the code
     */
-   public String getCode() {
+   public final String getCode() {
       return code;
    }
 
    /**
     * @param code the code to set
     */
-   public void setCode(String code) {
+   public final void setCode(String code) {
       this.code = code;
    }
 
    /**
     * @return the description
     */
-   public String getDescription() {
+   public final String getDescription() {
       return description;
    }
 
    /**
     * @param description the description to set
     */
-   public void setDescription(String description) {
+   public final void setDescription(String description) {
       this.description = description;
    }
 
    /**
     * @return the prmd
     */
-   public String getPrmd() {
+   public final String getPrmd() {
       return prmd;
    }
 
    /**
     * @param prmd the prmd to set
     */
-   public void setPrmd(String prmd) {
+   public final void setPrmd(String prmd) {
       this.prmd = prmd;
    }
 

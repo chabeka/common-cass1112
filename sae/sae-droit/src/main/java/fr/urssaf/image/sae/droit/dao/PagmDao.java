@@ -7,8 +7,6 @@ import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
 import me.prettyprint.hector.api.Keyspace;
 import me.prettyprint.hector.api.Serializer;
-import me.prettyprint.hector.api.beans.HColumn;
-import me.prettyprint.hector.api.factory.HFactory;
 import me.prettyprint.hector.api.mutation.Mutator;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,7 +91,7 @@ public class PagmDao extends AbstractDao<String, String> {
    }
 
    @Override
-   public String getColumnFamilyName() {
+   public final String getColumnFamilyName() {
       return PAGM_CFNAME;
    }
 
