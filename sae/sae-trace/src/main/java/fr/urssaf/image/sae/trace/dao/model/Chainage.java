@@ -108,7 +108,12 @@ public class Chainage {
     *           the dateFin to set
     */
    public final void setDateFin(Date dateFin) {
-      this.dateFin = new Date(dateFin.getTime());
+      this.dateFin = null;
+      if (dateFin != null) {
+         this.dateFin = new Date(dateFin.getTime());
+      }
+      
+      
    }
 
    /**

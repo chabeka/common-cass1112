@@ -77,7 +77,7 @@ public class DfceTrace {
     *           the dateEvt to set
     */
    public final void setDateEvt(Date dateEvt) {
-      this.dateEvt = new Date(dateEvt.getTime());
+      this.dateEvt = getDateCopy(dateEvt);
    }
 
    /**
@@ -108,5 +108,13 @@ public class DfceTrace {
     */
    public final void setLogin(String login) {
       this.login = login;
+   }
+
+   private Date getDateCopy(Date date) {
+      Date tDate = null;
+      if (date != null) {
+         tDate = new Date(date.getTime());
+      }
+      return tDate;
    }
 }

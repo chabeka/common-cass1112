@@ -63,8 +63,9 @@ public class Journal {
       this.date = new Date(date.getTime());
       this.identifiant = identifiant;
       this.nomFichier = nomFichier;
-      this.dateDebutEvt = new Date(dateDebutEvt.getTime());
-      this.dateFinEvt = new Date(dateFinEvt.getTime());
+
+      this.dateDebutEvt = getDateCopy(dateDebutEvt);
+      this.dateFinEvt = getDateCopy(dateFinEvt);
    }
 
    /**
@@ -124,7 +125,7 @@ public class Journal {
     *           the dateDebutEvt to set
     */
    public final void setDateDebutEvt(Date dateDebutEvt) {
-      this.dateDebutEvt = new Date(dateDebutEvt.getTime());
+      this.dateDebutEvt = getDateCopy(dateDebutEvt);
    }
 
    /**
@@ -139,7 +140,15 @@ public class Journal {
     *           the dateFinEvt to set
     */
    public final void setDateFinEvt(Date dateFinEvt) {
-      this.dateFinEvt = new Date(dateFinEvt.getTime());
+      this.dateFinEvt = getDateCopy(dateFinEvt);
+   }
+
+   private Date getDateCopy(Date date) {
+      Date tDate = null;
+      if (date != null) {
+         tDate = new Date(date.getTime());
+      }
+      return tDate;
    }
 
 }

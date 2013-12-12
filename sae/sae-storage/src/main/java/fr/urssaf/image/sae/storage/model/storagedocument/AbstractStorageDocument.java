@@ -134,7 +134,7 @@ public abstract class AbstractStorageDocument {
 	 *            : date de creation.
 	 */
 	public final void setCreationDate(final Date creationDate) {
-		this.creationDate = creationDate;
+		this.creationDate = getDateCopy(creationDate);
 	}
 
 	/**
@@ -208,6 +208,15 @@ public abstract class AbstractStorageDocument {
       }
 
       return tContent;
+   }
+   
+   private Date getDateCopy(Date date) {
+      Date tDate = null;
+      if (date != null) {
+         tDate = new Date(date.getTime());
+      }
+      
+      return tDate;
    }
 
 }

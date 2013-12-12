@@ -46,7 +46,15 @@ public class VersionRnd {
     *           the dateMiseAJour to set
     */
    public final void setDateMiseAJour(Date dateMiseAJour) {
-      this.dateMiseAJour = new Date(dateMiseAJour.getTime());
+      this.dateMiseAJour = getDateCopy(dateMiseAJour);
    }
 
+   private Date getDateCopy(Date date) {
+      Date tDate = null;
+      if (date != null) {
+         tDate = new Date(date.getTime());
+      }
+
+      return tDate;
+   }
 }

@@ -82,7 +82,7 @@ public class Correspondance {
     *           the dateDebutMaj to set
     */
    public final void setDateDebutMaj(Date dateDebutMaj) {
-      this.dateDebutMaj = new Date(dateDebutMaj.getTime());
+      this.dateDebutMaj = getDateCopy(dateDebutMaj);
    }
 
    /**
@@ -97,7 +97,7 @@ public class Correspondance {
     *           the dateFinMaj to set
     */
    public final void setDateFinMaj(Date dateFinMaj) {
-      this.dateFinMaj = new Date(dateFinMaj.getTime());
+      this.dateFinMaj = getDateCopy(dateFinMaj);
    }
 
    /**
@@ -128,5 +128,14 @@ public class Correspondance {
     */
    public final void setVersionCourante(String versionCourante) {
       this.versionCourante = versionCourante;
+   }
+   
+   private Date getDateCopy(Date date) {
+      Date tDate = null;
+      if (date != null) {
+         tDate = new Date(date.getTime());
+      }
+      
+      return tDate;
    }
 }

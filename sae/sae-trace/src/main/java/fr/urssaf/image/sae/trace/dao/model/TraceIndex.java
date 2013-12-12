@@ -83,7 +83,7 @@ public class TraceIndex {
     *           la date de création de la trace
     */
    public final void setTimestamp(Date timestamp) {
-      this.timestamp = new Date(timestamp.getTime());
+      this.timestamp = getDateCopy(timestamp);
    }
 
    /**
@@ -129,6 +129,14 @@ public class TraceIndex {
     */
    public final void setCodeEvt(String codeEvt) {
       this.codeEvt = codeEvt;
+   }
+
+   private Date getDateCopy(Date date) {
+      Date tDate = null;
+      if (date != null) {
+         tDate = new Date(date.getTime());
+      }
+      return tDate;
    }
 
 }

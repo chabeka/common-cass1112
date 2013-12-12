@@ -55,7 +55,10 @@ public class DebutTraitementFlag {
     *           Date de début du traitement de capture de masse
     */
    public final void setStartDate(final Date startDate) {
-      this.startDate = new Date(startDate.getTime());
+      this.startDate = null;
+      if (startDate != null) {
+         this.startDate = new Date(startDate.getTime());
+      }
    }
 
    /**

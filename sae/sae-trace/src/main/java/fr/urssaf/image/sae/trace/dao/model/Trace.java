@@ -74,7 +74,7 @@ public class Trace {
          this.pagms.addAll(trace.getPagms());
       }
       this.login = trace.getLogin();
-      this.timestamp = new Date(timestamp.getTime());
+      this.timestamp =getDateCopy(timestamp);
       this.identifiant = idTrace;
 
       if (CollectionUtils.isNotEmpty(listInfos)
@@ -185,6 +185,16 @@ public class Trace {
     */
    public final void setInfos(Map<String, Object> infos) {
       this.infos = infos;
+   }
+   
+
+
+   private Date getDateCopy(Date date) {
+      Date tDate = null;
+      if (date != null) {
+         tDate = new Date(date.getTime());
+      }
+      return tDate;
    }
    
 }
