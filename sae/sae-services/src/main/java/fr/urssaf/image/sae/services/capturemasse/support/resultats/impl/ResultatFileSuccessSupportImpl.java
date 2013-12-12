@@ -290,8 +290,9 @@ public class ResultatFileSuccessSupportImpl implements
             + File.separator + "resultats.xml";
       final File resultats = new File(pathResultats);
 
+      FileOutputStream output = null;
       try {
-         FileOutputStream output = new FileOutputStream(resultats);
+         output = new FileOutputStream(resultats);
 
          final Resource classPath = getContext().getResource(
                "classpath:xsd_som_res/resultats.xsd");
@@ -308,7 +309,9 @@ public class ResultatFileSuccessSupportImpl implements
             throw new CaptureMasseRuntimeException(e);
          } finally {
             try {
-               output.close();
+               if (output != null) {
+                  output.close();
+               }
             } catch (IOException e) {
                LOGGER.info("erreur de fermeture de flux", e);
             }

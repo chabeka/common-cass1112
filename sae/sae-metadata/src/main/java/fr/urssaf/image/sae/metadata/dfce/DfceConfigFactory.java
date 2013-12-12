@@ -1,11 +1,14 @@
 package fr.urssaf.image.sae.metadata.dfce;
 
+import java.io.Closeable;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Component;
@@ -18,6 +21,9 @@ import fr.urssaf.image.sae.metadata.referential.model.DfceConfig;
  */
 @Component
 public final class DfceConfigFactory {
+
+   private static final Logger LOGGER = LoggerFactory
+         .getLogger(DfceConfigFactory.class);
 
    /**
     * Methode permettant de créer un objet DfceConfig.
@@ -44,14 +50,18 @@ public final class DfceConfigFactory {
 
             dfceConfig = createDfceConfig(propDfce);
          }
-         inputStream.close();
-         return dfceConfig;
+
       } catch (IOException exception) {
 
          // Une erreur non prévue s'est produite lors de la création de la
          // configuration d'accès à DFCE.
          throw new RuntimeException(exception);
+
+      } finally {
+         closeStream(inputStream);
       }
+
+      return dfceConfig;
    }
 
    /**
@@ -64,11 +74,29 @@ public final class DfceConfigFactory {
       Properties props = new Properties();
       ClassPathResource dfceClassResource = new ClassPathResource(
             filePathDfceConf);
-      FileInputStream fileInputStream = new FileInputStream(dfceClassResource
-            .getFile());
-      props.load(fileInputStream);
-      fileInputStream.close();
+      FileInputStream fileInputStream = null;
+
+      try {
+         fileInputStream = new FileInputStream(dfceClassResource.getFile());
+         props.load(fileInputStream);
+
+      } finally {
+         closeStream(fileInputStream);
+      }
+
       return props;
+   }
+
+   private void closeStream(Closeable stream) {
+      String trcPrefix = "closeStream()";
+
+      if (stream != null) {
+         try {
+            stream.close();
+         } catch (IOException exception) {
+            LOGGER.info("{} - Impossible de fermer le flux", trcPrefix);
+         }
+      }
    }
 
    /**

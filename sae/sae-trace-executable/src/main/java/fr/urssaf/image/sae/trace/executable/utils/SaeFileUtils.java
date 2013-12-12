@@ -4,6 +4,7 @@
 package fr.urssaf.image.sae.trace.executable.utils;
 
 import java.io.BufferedOutputStream;
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -46,12 +47,14 @@ public final class SaeFileUtils {
       GZIPOutputStream outStream = null;
       InputStream inStream = null;
       String zipPath = path + ".gz";
+      FileOutputStream fileStream = null;
+      BufferedOutputStream bufStream = null;
 
       try {
          inStream = new FileInputStream(path);
-
-         outStream = new GZIPOutputStream(new BufferedOutputStream(
-               new FileOutputStream(zipPath)));
+         fileStream = new FileOutputStream(zipPath);
+         bufStream = new BufferedOutputStream(fileStream);
+         outStream = new GZIPOutputStream(bufStream);
 
          byte[] rBytes = new byte[BUFFER_SIZE];
          int len;
@@ -69,23 +72,44 @@ public final class SaeFileUtils {
 
       } finally {
 
-         if (inStream != null) {
-            try {
-               inStream.close();
-            } catch (IOException exception) {
-               LOGGER.info("{} - impossible de fermer le flux lecture",
-                     trcPrefix);
-            }
-         }
+         closeStream(inStream, trcPrefix,
+               "{} - impossible de fermer le flux lecture");
 
          if (outStream != null) {
             try {
                outStream.finish();
                outStream.close();
             } catch (IOException exception) {
-               LOGGER.info("{} - impossible de fermer le flux d'écriture",
+               LOGGER.info(
+                     "{} - impossible de fermer le flux d'écriture du zip",
                      trcPrefix);
             }
+         }
+
+         closeStream(bufStream, trcPrefix,
+               "{} - Impossible de fermer le flux d'écriture de buffer");
+         closeStream(fileStream, trcPrefix,
+               "{} - Impossible de fermer le flux d'écriture du fichier");
+      }
+   }
+
+   /**
+    * Ferme le flux
+    * 
+    * @param stream
+    *           le flux à fermer
+    * @param trcPrefix
+    *           le méthode appelante
+    * @param logMessage
+    *           le message de log en cas d'erreur
+    */
+   private static void closeStream(Closeable stream, String trcPrefix,
+         String logMessage) {
+      if (stream != null) {
+         try {
+            stream.close();
+         } catch (IOException exception) {
+            LOGGER.info(logMessage, trcPrefix);
          }
       }
    }
