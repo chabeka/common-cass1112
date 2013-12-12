@@ -61,7 +61,7 @@ public class Chainage {
       super();
       this.hash = hash;
       this.algoHash = algoHash;
-      this.dateFin = new Date(dateFin.getTime());
+      this.dateFin = getDateCopy(dateFin);
       this.uuidPrecedentJournal = uuidPrecedentJournal;
       this.hashRecalcule = hashRecalcule;
    }
@@ -100,7 +100,7 @@ public class Chainage {
     * @return the dateFin
     */
    public final Date getDateFin() {
-      return dateFin;
+      return getDateCopy(dateFin);
    }
 
    /**
@@ -108,12 +108,7 @@ public class Chainage {
     *           the dateFin to set
     */
    public final void setDateFin(Date dateFin) {
-      this.dateFin = null;
-      if (dateFin != null) {
-         this.dateFin = new Date(dateFin.getTime());
-      }
-      
-      
+      this.dateFin = getDateCopy(dateFin);
    }
 
    /**
@@ -144,6 +139,14 @@ public class Chainage {
     */
    public final void setHashRecalcule(String hashRecalcule) {
       this.hashRecalcule = hashRecalcule;
+   }
+
+   private Date getDateCopy(Date date) {
+      Date tDate = null;
+      if (date != null) {
+         tDate = new Date(date.getTime());
+      }
+      return tDate;
    }
 
 }

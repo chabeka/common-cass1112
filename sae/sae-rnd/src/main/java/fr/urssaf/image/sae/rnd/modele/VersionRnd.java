@@ -38,7 +38,7 @@ public class VersionRnd {
     * @return the dateMiseAJour
     */
    public final Date getDateMiseAJour() {
-      return dateMiseAJour;
+      return getDateCopy(dateMiseAJour);
    }
 
    /**

@@ -36,7 +36,7 @@ public class JobHistory {
     * @return the date
     */
    public final Date getDate() {
-      return date;
+      return getDateCopy(date);
    }
 
    /**
@@ -44,10 +44,15 @@ public class JobHistory {
     *           the date to set
     */
    public final void setDate(Date date) {
-      this.date = null;
+      this.date = getDateCopy(date);
+   }
+
+   private Date getDateCopy(Date date) {
+      Date tDate = null;
       if (date != null) {
-         this.date = new Date(date.getTime());
+         tDate = new Date(date.getTime());
       }
+      return tDate;
    }
 
 }

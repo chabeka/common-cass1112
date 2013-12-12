@@ -74,7 +74,7 @@ public class Correspondance {
     * @return the dateDebutMaj
     */
    public final Date getDateDebutMaj() {
-      return dateDebutMaj;
+      return getDateCopy(dateDebutMaj);
    }
 
    /**
@@ -89,7 +89,7 @@ public class Correspondance {
     * @return the dateFinMaj
     */
    public final Date getDateFinMaj() {
-      return dateFinMaj;
+      return getDateCopy(dateFinMaj);
    }
 
    /**
@@ -129,13 +129,13 @@ public class Correspondance {
    public final void setVersionCourante(String versionCourante) {
       this.versionCourante = versionCourante;
    }
-   
+
    private Date getDateCopy(Date date) {
       Date tDate = null;
       if (date != null) {
          tDate = new Date(date.getTime());
       }
-      
+
       return tDate;
    }
 }

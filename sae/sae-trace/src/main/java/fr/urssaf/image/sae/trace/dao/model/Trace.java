@@ -51,7 +51,7 @@ public class Trace {
     */
    public Trace(UUID idTrace, Date timestamp) {
       this.identifiant = idTrace;
-      this.timestamp = new Date(timestamp.getTime());
+      this.timestamp = getDateCopy(timestamp);
    }
 
    /**
@@ -105,7 +105,7 @@ public class Trace {
     * @return la Date de création de la trace
     */
    public final Date getTimestamp() {
-      return timestamp;
+      return getDateCopy(timestamp);
    }
 
    /**

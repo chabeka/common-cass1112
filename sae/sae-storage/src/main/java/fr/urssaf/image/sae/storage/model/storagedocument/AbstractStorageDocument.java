@@ -74,7 +74,7 @@ public abstract class AbstractStorageDocument {
 	 */
 	@SuppressWarnings("PMD.MethodReturnsInternalArray")
 	public final byte[] getContent() {
-		return content;
+		return getByteArrayCopy(content);
 	}
 
 	/**
@@ -126,7 +126,7 @@ public abstract class AbstractStorageDocument {
 	 * @return : date de creation.
 	 */
 	public final Date getCreationDate() {
-		return creationDate;
+		return getDateCopy(creationDate);
 	}
 
 	/**

@@ -60,7 +60,7 @@ public class Journal {
    public Journal(Date date, UUID identifiant, String nomFichier,
          Date dateDebutEvt, Date dateFinEvt) {
       super();
-      this.date = new Date(date.getTime());
+      this.date = getDateCopy(date);
       this.identifiant = identifiant;
       this.nomFichier = nomFichier;
 
@@ -72,7 +72,7 @@ public class Journal {
     * @return the date
     */
    public final Date getDate() {
-      return date;
+      return getDateCopy(date);
    }
 
    /**
@@ -117,7 +117,7 @@ public class Journal {
     * @return the dateDebutEvt
     */
    public final Date getDateDebutEvt() {
-      return dateDebutEvt;
+      return getDateCopy(dateDebutEvt);
    }
 
    /**
@@ -132,7 +132,7 @@ public class Journal {
     * @return the dateFinEvt
     */
    public final Date getDateFinEvt() {
-      return dateFinEvt;
+      return getDateCopy(dateFinEvt);
    }
 
    /**

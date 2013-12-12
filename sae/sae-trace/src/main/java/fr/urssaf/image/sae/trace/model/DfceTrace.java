@@ -69,7 +69,7 @@ public class DfceTrace {
     * @return the dateEvt
     */
    public final Date getDateEvt() {
-      return dateEvt;
+      return getDateCopy(dateEvt);
    }
 
    /**

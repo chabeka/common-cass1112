@@ -32,7 +32,7 @@ public abstract class AbstractDocument {
    @SuppressWarnings("PMD.MethodReturnsInternalArray")
    public final byte[] getContent() {
       // Pas de clone pour des raisons de performance.
-      return content;
+      return getByteArrayCopy(content);
    }
 
    /**

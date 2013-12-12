@@ -47,7 +47,7 @@ public class DebutTraitementFlag {
     * @return Date de début du traitement de capture de masse
     */
    public final Date getStartDate() {
-      return startDate;
+      return getDateCopy(startDate);
    }
 
    /**
@@ -55,10 +55,7 @@ public class DebutTraitementFlag {
     *           Date de début du traitement de capture de masse
     */
    public final void setStartDate(final Date startDate) {
-      this.startDate = null;
-      if (startDate != null) {
-         this.startDate = new Date(startDate.getTime());
-      }
+      this.startDate = getDateCopy(startDate);
    }
 
    /**
@@ -76,4 +73,11 @@ public class DebutTraitementFlag {
       this.hostInfo = hostInfo;
    }
 
+   private Date getDateCopy(Date date) {
+      Date tDate = null;
+      if (date !=  null) {
+         tDate = new Date(date.getTime());
+      }
+      return tDate;
+   }
 }

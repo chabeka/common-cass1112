@@ -75,7 +75,7 @@ public class TraceIndex {
     * @return la date de création de la trace
     */
    public final Date getTimestamp() {
-      return timestamp;
+      return getDateCopy(timestamp);
    }
 
    /**
