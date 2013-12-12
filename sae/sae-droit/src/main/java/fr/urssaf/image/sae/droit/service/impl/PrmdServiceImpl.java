@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
@@ -256,11 +257,13 @@ public class PrmdServiceImpl implements PrmdService {
          parametres = new HashMap<String, List<String>>();
       }
 
-      Iterator<String> keyIterator = parametres.keySet().iterator();
+      Iterator<Entry<String, List<String>>> iterator = parametres.entrySet()
+            .iterator();
+      // Iterator<String> keyIterator = parametres.keySet().iterator();
       String key;
-      while (keyIterator.hasNext() && match) {
+      while (iterator.hasNext() && match) {
 
-         key = keyIterator.next();
+         key = iterator.next().getKey();
 
          boolean metaStatic = containsIgnoreCase(metaValues.keySet(), key)
                && containsIgnoreCase(parametres.get(key), metaValues.get(key
@@ -320,8 +323,9 @@ public class PrmdServiceImpl implements PrmdService {
       String requete = prmd.getLucene();
       if (MapUtils.isNotEmpty(values)) {
 
-         for (String key : values.keySet()) {
-            requete = requete.replace("<%" + key + "%>", values.get(key));
+         for (Entry<String, String> entry : values.entrySet()) {
+            requete = requete.replace("<%" + entry.getKey() + "%>", values
+                  .get(entry.getKey()));
          }
       }
 

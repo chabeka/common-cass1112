@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.Map.Entry;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -71,11 +71,12 @@ public class SaeBddSupport {
     * 
     * @param versionRnd
     *           Version à mettre à jour
-    * @throws SaeBddRuntimeException 
+    * @throws SaeBddRuntimeException
     * @throws SaeBddRuntimeException
     *            Exception levée lors de la mise à jour de la BDD
     */
-   public final void updateVersionRnd(VersionRnd versionRnd) throws SaeBddRuntimeException {
+   public final void updateVersionRnd(VersionRnd versionRnd)
+         throws SaeBddRuntimeException {
       try {
          parametersService.setVersionRndDateMaj(versionRnd.getDateMiseAJour());
          parametersService.setVersionRndNumero(versionRnd.getVersionEnCours());
@@ -113,7 +114,8 @@ public class SaeBddSupport {
     * 
     * @param listeCorrespondances
     *           Correspondances entre codes temporaires et code
-    * @param version la version en cours dans le SAE           
+    * @param version
+    *           la version en cours dans le SAE
     * @throws SaeBddRuntimeException
     *            Exception levée lors de la mise à jour de la BDD
     */
@@ -123,10 +125,14 @@ public class SaeBddSupport {
 
       try {
 
-         Set<String> listeCodesTemporaires = listeCorrespondances.keySet();
-         Iterator<String> iterateur = listeCodesTemporaires.iterator();
-         while (iterateur.hasNext()) {
-            Object codeTemporaire = iterateur.next();
+         // Set<String> listeCodesTemporaires = listeCorrespondances.keySet();
+         // Iterator<String> iterateur = listeCodesTemporaires.iterator();
+
+         Iterator<Entry<String, String>> iterator = listeCorrespondances
+               .entrySet().iterator();
+
+         while (iterator.hasNext()) {
+            Object codeTemporaire = iterator.next().getKey();
             String codeDefinitif = listeCorrespondances.get(codeTemporaire);
 
             // Ajout de la ligne dans la table des correspondances
