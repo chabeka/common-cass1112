@@ -14,15 +14,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.netflix.curator.framework.CuratorFramework;
-
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
-import fr.urssaf.image.commons.zookeeper.ZookeeperMutex;
-import fr.urssaf.image.sae.commons.utils.ZookeeperUtils;
 import fr.urssaf.image.sae.metadata.dfce.ServiceProviderSupportMetadata;
-import fr.urssaf.image.sae.metadata.exceptions.MetadataReferenceException;
 import fr.urssaf.image.sae.metadata.exceptions.MetadataReferenceNotFoundException;
-import fr.urssaf.image.sae.metadata.exceptions.MetadataRuntimeException;
 import fr.urssaf.image.sae.metadata.referential.model.DfceConfig;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 import fr.urssaf.image.sae.metadata.referential.services.SaeMetaDataService;
@@ -40,7 +34,6 @@ public class SaeMetaDataServiceImpl implements SaeMetaDataService {
 
    private final SaeMetadataSupport saeMetadatasupport;
    private final JobClockSupport clockSupport;
-   private final CuratorFramework curator;
    private final ServiceProviderSupportMetadata serviceProviderSupport;
    private DfceConfig dfceConfig;
 
@@ -48,7 +41,6 @@ public class SaeMetaDataServiceImpl implements SaeMetaDataService {
          .getLogger(SaeMetaDataServiceImpl.class);
 
    private static final int MAX_VALUES = 1;
-   private static final String PREFIXE_META = "/DroitMeta/";
 
    private static final String TRC_CREATE = "create()";
 
@@ -59,8 +51,6 @@ public class SaeMetaDataServiceImpl implements SaeMetaDataService {
     *           la classe support
     * @param clockSupport
     *           {@link JobClockSupport}
-    * @param curator
-    *           {@link CuratorFramework}
     * @param serviceProviderSupport
     *           {@link ServiceProviderSupport}
     * @param dfceConfig
@@ -68,12 +58,11 @@ public class SaeMetaDataServiceImpl implements SaeMetaDataService {
     */
    @Autowired
    public SaeMetaDataServiceImpl(SaeMetadataSupport saeMetadataSupport,
-         JobClockSupport clockSupport, CuratorFramework curator,
+         JobClockSupport clockSupport,
          ServiceProviderSupportMetadata serviceProviderSupport,
          DfceConfig dfceConfig) {
       this.saeMetadatasupport = saeMetadataSupport;
       this.clockSupport = clockSupport;
-      this.curator = curator;
       this.serviceProviderSupport = serviceProviderSupport;
       this.dfceConfig = dfceConfig;
    }
@@ -149,27 +138,6 @@ public class SaeMetaDataServiceImpl implements SaeMetaDataService {
       LOGGER.debug("Métadonné crééé dans DFCE");
 
       return base;
-   }
-
-   private void checkLock(ZookeeperMutex mutex, MetadataReference metadata) {
-
-      if (!ZookeeperUtils.isLock(mutex)) {
-
-         MetadataReference storedMeta = saeMetadatasupport.find(metadata
-               .getLongCode());
-
-         if (storedMeta == null) {
-            throw new MetadataReferenceException("La métadonnée "
-                  + metadata.getLongCode() + " n'a pas été créé");
-         }
-
-         if (!storedMeta.equals(metadata)) {
-            throw new MetadataRuntimeException("La métadonnée "
-                  + metadata.getLongCode() + " a déjà été créé");
-         }
-
-      }
-
    }
 
    /**
