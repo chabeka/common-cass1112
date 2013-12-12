@@ -1,7 +1,10 @@
 package fr.urssaf.image.sae.storage.model.storagedocument;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+
+import org.apache.commons.lang.ArrayUtils;
 
 /**
  * Classe abstraite contenant les attributs communs des différents types de
@@ -82,7 +85,7 @@ public abstract class AbstractStorageDocument {
 	 */
 	@SuppressWarnings("PMD.ArrayIsStoredDirectly")
 	public final void setContent(final byte[] content) {
-		this.content = content;
+		this.content = getByteArrayCopy(content);
 	}
 
 	/**
@@ -163,7 +166,7 @@ public abstract class AbstractStorageDocument {
 	public AbstractStorageDocument(final List<StorageMetadata> metadatas,
 			final byte[] content, final String filePath) {
 		this.metadatas = metadatas;
-		this.content = content;
+		this.content = getByteArrayCopy(content);
 		this.filePath = filePath;
 	}
 
@@ -189,6 +192,22 @@ public abstract class AbstractStorageDocument {
     */
    public final void setFileName(String fileName) {
       this.fileName = fileName;
+   }
+   
+   /**
+    * Retourne un nouveau tableau de byte à partir de celui passé en paramètre
+    * 
+    * @param fileContent
+    *           le contenu
+    * @return le nouvel objet contenant les mêmes données que l'objet d'origine
+    */
+   private byte[] getByteArrayCopy(byte[] fileContent) {
+      byte[] tContent = null;
+      if (ArrayUtils.isNotEmpty(fileContent)) {
+         tContent = Arrays.copyOf(fileContent, fileContent.length);
+      }
+
+      return tContent;
    }
 
 }

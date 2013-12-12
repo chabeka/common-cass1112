@@ -1,6 +1,9 @@
 package fr.urssaf.image.sae.bo.model;
 
+import java.util.Arrays;
 import java.util.UUID;
+
+import org.apache.commons.lang.ArrayUtils;
 
 /**
  * Classe abstraite contenant les éléments communs des objets métiers et objets
@@ -39,7 +42,8 @@ public abstract class AbstractDocument {
    @SuppressWarnings("PMD.ArrayIsStoredDirectly")
    public final void setContent(final byte[] fileContent) {
       // Pas de clone pour des raisons de performance.
-      this.content = fileContent;
+      this.content = getByteArrayCopy(fileContent);
+
    }
 
    /**
@@ -73,7 +77,7 @@ public abstract class AbstractDocument {
    @SuppressWarnings("PMD.ArrayIsStoredDirectly")
    public AbstractDocument(final byte[] fileContent) {
       // Pas de clone pour des raisons de performance.
-      this.content = fileContent;
+      this.content = getByteArrayCopy(fileContent);
 
    }
 
@@ -88,7 +92,7 @@ public abstract class AbstractDocument {
    @SuppressWarnings("PMD.ArrayIsStoredDirectly")
    public AbstractDocument(final byte[] fileContent, final String filePath) {
       // Pas de clone pour des raisons de performance.
-      this.content = fileContent;
+      this.content = getByteArrayCopy(fileContent);
       this.filePath = filePath;
 
    }
@@ -108,11 +112,11 @@ public abstract class AbstractDocument {
          final byte[] fileContent) {
       // Pas de clone pour des raisons de performance.
       this.filePath = filePath;
-      this.content = fileContent;
+      this.content = getByteArrayCopy(fileContent);
       this.fileName = fileName;
 
    }
-   
+
    /**
     * Construit un objet de type {@link AbstractDocument}.
     * 
@@ -122,10 +126,9 @@ public abstract class AbstractDocument {
     *           : Le nom du fichier.
     */
    @SuppressWarnings("PMD.ArrayIsStoredDirectly")
-   public AbstractDocument(String fileName,
-         final byte[] fileContent) {
+   public AbstractDocument(String fileName, final byte[] fileContent) {
       // Pas de clone pour des raisons de performance.
-      this.content = fileContent;
+      this.content = getByteArrayCopy(fileContent);
       this.fileName = fileName;
    }
 
@@ -163,5 +166,21 @@ public abstract class AbstractDocument {
     */
    public final void setFileName(String fileName) {
       this.fileName = fileName;
+   }
+
+   /**
+    * Retourne un nouveau tableau de byte à partir de celui passé en paramètre
+    * 
+    * @param fileContent
+    *           le contenu
+    * @return le nouvel objet contenant les mêmes données que l'objet d'origine
+    */
+   private byte[] getByteArrayCopy(byte[] fileContent) {
+      byte[] tContent = null;
+      if (ArrayUtils.isNotEmpty(fileContent)) {
+         tContent = Arrays.copyOf(fileContent, fileContent.length);
+      }
+
+      return tContent;
    }
 }

@@ -61,7 +61,7 @@ public class Chainage {
       super();
       this.hash = hash;
       this.algoHash = algoHash;
-      this.dateFin = dateFin;
+      this.dateFin = new Date(dateFin.getTime());
       this.uuidPrecedentJournal = uuidPrecedentJournal;
       this.hashRecalcule = hashRecalcule;
    }
@@ -108,7 +108,7 @@ public class Chainage {
     *           the dateFin to set
     */
    public final void setDateFin(Date dateFin) {
-      this.dateFin = dateFin;
+      this.dateFin = new Date(dateFin.getTime());
    }
 
    /**

@@ -4,8 +4,11 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 
 import javax.activation.DataSource;
+
+import org.apache.commons.lang.ArrayUtils;
 
 /**
  * Implémentation du DataSource pour le service de consultation en MTOM, pour
@@ -28,7 +31,7 @@ public final class ConsultationDataSource implements DataSource {
    @SuppressWarnings("PMD.ArrayIsStoredDirectly")
    public ConsultationDataSource(byte[] content, String typeMime) {
 
-      this.content = content;
+      this.content = getByteArrayCopy(content);
 
       this.typeMime = typeMime;
 
@@ -66,6 +69,22 @@ public final class ConsultationDataSource implements DataSource {
    public OutputStream getOutputStream() throws IOException {
       // inutilisé
       return null;
+   }
+
+   /**
+    * Retourne un nouveau tableau de byte à partir de celui passé en paramètre
+    * 
+    * @param fileContent
+    *           le contenu
+    * @return le nouvel objet contenant les mêmes données que l'objet d'origine
+    */
+   private byte[] getByteArrayCopy(byte[] fileContent) {
+      byte[] tContent = null;
+      if (ArrayUtils.isNotEmpty(fileContent)) {
+         tContent = Arrays.copyOf(fileContent, fileContent.length);
+      }
+
+      return tContent;
    }
 
 }

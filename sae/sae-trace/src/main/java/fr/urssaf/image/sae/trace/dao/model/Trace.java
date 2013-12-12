@@ -51,7 +51,7 @@ public class Trace {
     */
    public Trace(UUID idTrace, Date timestamp) {
       this.identifiant = idTrace;
-      this.timestamp = timestamp;
+      this.timestamp = new Date(timestamp.getTime());
    }
 
    /**
@@ -74,7 +74,7 @@ public class Trace {
          this.pagms.addAll(trace.getPagms());
       }
       this.login = trace.getLogin();
-      this.timestamp = timestamp;
+      this.timestamp = new Date(timestamp.getTime());
       this.identifiant = idTrace;
 
       if (CollectionUtils.isNotEmpty(listInfos)

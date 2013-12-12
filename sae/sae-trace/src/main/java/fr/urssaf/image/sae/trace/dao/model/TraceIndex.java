@@ -8,7 +8,7 @@ import java.util.UUID;
 /**
  * Classe de modèle générique pour les CF des traces
  * 
- *
+ * 
  */
 public class TraceIndex {
 
@@ -83,7 +83,7 @@ public class TraceIndex {
     *           la date de création de la trace
     */
    public final void setTimestamp(Date timestamp) {
-      this.timestamp = timestamp;
+      this.timestamp = new Date(timestamp.getTime());
    }
 
    /**

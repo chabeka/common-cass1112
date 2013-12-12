@@ -44,7 +44,7 @@ public class JobHistory {
     *           the date to set
     */
    public final void setDate(Date date) {
-      this.date = date;
+      this.date = new Date(date.getTime());
    }
 
 }

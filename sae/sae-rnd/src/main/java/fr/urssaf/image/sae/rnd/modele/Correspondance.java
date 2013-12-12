@@ -19,12 +19,12 @@ public class Correspondance {
     * Le code définitif
     */
    private String codeDefinitif;
-   
+
    /**
     * La version en cours durant l'existence de ce code temporaire
     */
    private String versionCourante;
-   
+
    /**
     * La date de début de mise à jour du traitement de cette correspondance
     */
@@ -48,7 +48,8 @@ public class Correspondance {
    }
 
    /**
-    * @param codeTemporaire the codeTemporaire to set
+    * @param codeTemporaire
+    *           the codeTemporaire to set
     */
    public final void setCodeTemporaire(String codeTemporaire) {
       this.codeTemporaire = codeTemporaire;
@@ -62,7 +63,8 @@ public class Correspondance {
    }
 
    /**
-    * @param codeDefinitif the codeDefinitif to set
+    * @param codeDefinitif
+    *           the codeDefinitif to set
     */
    public final void setCodeDefinitif(String codeDefinitif) {
       this.codeDefinitif = codeDefinitif;
@@ -76,10 +78,11 @@ public class Correspondance {
    }
 
    /**
-    * @param dateDebutMaj the dateDebutMaj to set
+    * @param dateDebutMaj
+    *           the dateDebutMaj to set
     */
    public final void setDateDebutMaj(Date dateDebutMaj) {
-      this.dateDebutMaj = dateDebutMaj;
+      this.dateDebutMaj = new Date(dateDebutMaj.getTime());
    }
 
    /**
@@ -90,10 +93,11 @@ public class Correspondance {
    }
 
    /**
-    * @param dateFinMaj the dateFinMaj to set
+    * @param dateFinMaj
+    *           the dateFinMaj to set
     */
    public final void setDateFinMaj(Date dateFinMaj) {
-      this.dateFinMaj = dateFinMaj;
+      this.dateFinMaj = new Date(dateFinMaj.getTime());
    }
 
    /**
@@ -104,7 +108,8 @@ public class Correspondance {
    }
 
    /**
-    * @param etat the etat to set
+    * @param etat
+    *           the etat to set
     */
    public final void setEtat(EtatCorrespondance etat) {
       this.etat = etat;
@@ -118,7 +123,8 @@ public class Correspondance {
    }
 
    /**
-    * @param versionCourante the versionCourante to set
+    * @param versionCourante
+    *           the versionCourante to set
     */
    public final void setVersionCourante(String versionCourante) {
       this.versionCourante = versionCourante;

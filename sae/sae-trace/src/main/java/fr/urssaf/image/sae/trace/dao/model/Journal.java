@@ -60,11 +60,11 @@ public class Journal {
    public Journal(Date date, UUID identifiant, String nomFichier,
          Date dateDebutEvt, Date dateFinEvt) {
       super();
-      this.date = date;
+      this.date = new Date(date.getTime());
       this.identifiant = identifiant;
       this.nomFichier = nomFichier;
-      this.dateDebutEvt = dateDebutEvt;
-      this.dateFinEvt = dateFinEvt;
+      this.dateDebutEvt = new Date(dateDebutEvt.getTime());
+      this.dateFinEvt = new Date(dateFinEvt.getTime());
    }
 
    /**
@@ -79,7 +79,7 @@ public class Journal {
     *           the date to set
     */
    public final void setDate(Date date) {
-      this.date = date;
+      this.date = new Date(date.getTime());
    }
 
    /**
@@ -124,7 +124,7 @@ public class Journal {
     *           the dateDebutEvt to set
     */
    public final void setDateDebutEvt(Date dateDebutEvt) {
-      this.dateDebutEvt = dateDebutEvt;
+      this.dateDebutEvt = new Date(dateDebutEvt.getTime());
    }
 
    /**
@@ -139,7 +139,7 @@ public class Journal {
     *           the dateFinEvt to set
     */
    public final void setDateFinEvt(Date dateFinEvt) {
-      this.dateFinEvt = dateFinEvt;
+      this.dateFinEvt = new Date(dateFinEvt.getTime());
    }
 
 }

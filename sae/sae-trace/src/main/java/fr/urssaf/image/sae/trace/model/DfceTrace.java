@@ -4,11 +4,10 @@ import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
-
 /**
  * Trace générique créée par DFCE
  * 
- *
+ * 
  */
 public class DfceTrace {
    /**
@@ -78,7 +77,7 @@ public class DfceTrace {
     *           the dateEvt to set
     */
    public final void setDateEvt(Date dateEvt) {
-      this.dateEvt = dateEvt;
+      this.dateEvt = new Date(dateEvt.getTime());
    }
 
    /**
