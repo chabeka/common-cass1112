@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -73,24 +74,8 @@ public final class XmlReadUtils {
          throw new CaptureMasseRuntimeException(e);
 
       } finally {
-
-         if (reader != null) {
-            try {
-               reader.close();
-            } catch (XMLStreamException e) {
-               LOGGER.debug("erreur de fermeture du reader "
-                     + file.getAbsolutePath());
-            }
-         }
-
-         if (stream != null) {
-            try {
-               stream.close();
-            } catch (IOException e) {
-               LOGGER.debug("erreur de fermeture du flux "
-                     + file.getAbsolutePath());
-            }
-         }
+         closeReader(reader, file);
+         closeStream(stream, file);
       }
 
       return nbreElem;
@@ -135,7 +120,7 @@ public final class XmlReadUtils {
                   }
                } else {
                   return null;
-               }             
+               }
             }
          }
          // Si la balise n'est pas trouvée
@@ -147,23 +132,29 @@ public final class XmlReadUtils {
          throw new CaptureMasseRuntimeException(e);
 
       } finally {
+         closeReader(reader, file);
+         closeStream(stream, file);
+      }
+   }
 
-         if (reader != null) {
-            try {
-               reader.close();
-            } catch (XMLStreamException e) {
-               LOGGER.debug("erreur de fermeture du reader "
-                     + file.getAbsolutePath());
-            }
+   private static void closeReader(XMLEventReader reader, File file) {
+      if (reader != null) {
+         try {
+            reader.close();
+         } catch (XMLStreamException e) {
+            LOGGER.debug("erreur de fermeture du reader "
+                  + file.getAbsolutePath());
          }
+      }
+   }
 
-         if (stream != null) {
-            try {
-               stream.close();
-            } catch (IOException e) {
-               LOGGER.debug("erreur de fermeture du flux "
-                     + file.getAbsolutePath());
-            }
+   private static void closeStream(InputStream stream, File file) {
+      if (stream != null) {
+         try {
+            stream.close();
+         } catch (IOException e) {
+            LOGGER.debug("erreur de fermeture du flux "
+                  + file.getAbsolutePath());
          }
       }
    }

@@ -45,35 +45,8 @@ public class EcdeTestTools {
     */
    public final EcdeTestSommaire buildEcdeTestSommaire() {
 
-      // Récupération du point de montage de l'ECDE pour les TU
-      File pointMontageTu = null;
-      for (EcdeSource ecde : ecdeSources.getSources()) {
-         if (EcdeTestConfig.DNS_ECDE_TU.equals(ecde.getHost())) {
-            pointMontageTu = ecde.getBasePath();
-         }
-      }
-      if (pointMontageTu == null) {
-         throw new EcdeRuntimeException(
-               "Impossible de retrouver le point de montage de l'ECDE "
-                     + EcdeTestConfig.DNS_ECDE_TU);
-      }
-
-      // Création du répertoire unique de traitement
       String sousRepTraitement = "/1/20110101/".concat(buildRandom());
-      File repTrait = new File(pointMontageTu, sousRepTraitement);
-      try {
-         FileUtils.forceMkdir(repTrait);
-      } catch (IOException e) {
-         throw new EcdeRuntimeException(e);
-      }
-
-      // Création du sous-répertoire documents
-      File repDoc = new File(repTrait, "documents");
-      try {
-         FileUtils.forceMkdir(repDoc);
-      } catch (IOException e) {
-         throw new EcdeRuntimeException(e);
-      }
+      File repTrait = creationArchitecture(sousRepTraitement);
 
       // Construction de l'URL ECDE pointant vers un fichier
       // sommaire.xml pour l'instant inexistant
@@ -86,9 +59,11 @@ public class EcdeTestTools {
       }
 
       // Valeur de retour
-      LOGGER.debug("Tests unitaires ECDE: répertoire de capture de masse créé: "
-            + repTrait + " (URL ECDE du sommaire associé: " + uri.toString()
-            + ")");
+      LOGGER
+            .debug("Tests unitaires ECDE: répertoire de capture de masse créé: "
+                  + repTrait
+                  + " (URL ECDE du sommaire associé: "
+                  + uri.toString() + ")");
       EcdeTestSommaire ecdeTestSommaire = new EcdeTestSommaire();
       ecdeTestSommaire.setRepEcde(repTrait);
       ecdeTestSommaire.setUrlEcde(uri);
@@ -113,35 +88,9 @@ public class EcdeTestTools {
     */
    public final EcdeTestDocument buildEcdeTestDocument(String nomDuFichierDoc) {
 
-      // Récupération du point de montage de l'ECDE pour les TU
-      File pointMontageTu = null;
-      for (EcdeSource ecde : ecdeSources.getSources()) {
-         if (EcdeTestConfig.DNS_ECDE_TU.equals(ecde.getHost())) {
-            pointMontageTu = ecde.getBasePath();
-         }
-      }
-      if (pointMontageTu == null) {
-         throw new EcdeRuntimeException(
-               "Impossible de retrouver le point de montage de l'ECDE "
-                     + EcdeTestConfig.DNS_ECDE_TU);
-      }
-
-      // Création du répertoire unique de traitement
       String sousRepTraitement = "/1/20110101/".concat(buildRandom());
-      File repTrait = new File(pointMontageTu, sousRepTraitement);
-      try {
-         FileUtils.forceMkdir(repTrait);
-      } catch (IOException e) {
-         throw new EcdeRuntimeException(e);
-      }
-
-      // Création du sous-répertoire documents
+      File repTrait = creationArchitecture(sousRepTraitement);
       File repDoc = new File(repTrait, "documents");
-      try {
-         FileUtils.forceMkdir(repDoc);
-      } catch (IOException e) {
-         throw new EcdeRuntimeException(e);
-      }
 
       // Construction de l'URL ECDE pointant vers le chemin du fichier document
       URI uri;
@@ -158,6 +107,39 @@ public class EcdeTestTools {
       ecdeTestDocument.setUrlEcdeDocument(uri);
       return ecdeTestDocument;
 
+   }
+
+   private File creationArchitecture(String sousRepTraitement) {
+      // Récupération du point de montage de l'ECDE pour les TU
+      File pointMontageTu = null;
+      for (EcdeSource ecde : ecdeSources.getSources()) {
+         if (EcdeTestConfig.DNS_ECDE_TU.equals(ecde.getHost())) {
+            pointMontageTu = ecde.getBasePath();
+         }
+      }
+      if (pointMontageTu == null) {
+         throw new EcdeRuntimeException(
+               "Impossible de retrouver le point de montage de l'ECDE "
+                     + EcdeTestConfig.DNS_ECDE_TU);
+      }
+
+      // Création du répertoire unique de traitement
+      File repTrait = new File(pointMontageTu, sousRepTraitement);
+      try {
+         FileUtils.forceMkdir(repTrait);
+      } catch (IOException e) {
+         throw new EcdeRuntimeException(e);
+      }
+
+      // Création du sous-répertoire documents
+      File repDoc = new File(repTrait, "documents");
+      try {
+         FileUtils.forceMkdir(repDoc);
+      } catch (IOException e) {
+         throw new EcdeRuntimeException(e);
+      }
+
+      return repTrait;
    }
 
    /**
@@ -220,7 +202,8 @@ public class EcdeTestTools {
          throws IOException {
       File parent = ecdeTestSommaire.getRepEcde().getParentFile()
             .getParentFile().getParentFile();
-      LOGGER.debug("Tests unitaires ECDE: suppression du répertoire " + parent.getAbsolutePath());
+      LOGGER.debug("Tests unitaires ECDE: suppression du répertoire "
+            + parent.getAbsolutePath());
       FileUtils.deleteDirectory(parent);
    }
 
