@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -36,6 +37,15 @@ import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageDocument;
  */
 @SuppressWarnings("PMD.CyclomaticComplexity")
 public final class BeanMapper {
+
+   /**
+    * Liste des métadonnées pour lesquelles ne réaliser aucun traitement
+    */
+   private static final List<String> metasWithoutProcess = Arrays.asList(
+         StorageTechnicalMetadatas.NOM_FICHIER.getShortCode(),
+         StorageTechnicalMetadatas.TYPE_HASH.getShortCode(),
+         StorageTechnicalMetadatas.DATE_ARCHIVE.getShortCode(),
+         StorageTechnicalMetadatas.DOCUMENT_VIRTUEL.getShortCode());
 
    /**
     * Permet de convertir un {@link Document} en {@link StorageDocument}.<br/>
@@ -270,6 +280,7 @@ public final class BeanMapper {
       Date dateCreation = new Date();
       final Document document = ToolkitFactory.getInstance().createDocumentTag(
             baseDFCE);
+
       for (StorageMetadata storageMetadata : Utils.nullSafeIterable(metadatas)) {
 
          // ici on exclut toutes les métadonnées techniques
@@ -299,9 +310,7 @@ public final class BeanMapper {
                            .getShortCode())) {
             document.setLifeCycleReferenceDate((Date) storageMetadata
                   .getValue());
-         } else if (technical.getShortCode().equals(
-               StorageTechnicalMetadatas.NOM_FICHIER.getShortCode())) {
-            // On ne fait rien
+         
          } else if (technical.getShortCode().equals(
                StorageTechnicalMetadatas.HASH.getShortCode())) {
             // On ne fait rien
@@ -310,16 +319,7 @@ public final class BeanMapper {
             storageMetadata.setValue(StringUtils
                   .lowerCase((String) storageMetadata.getValue()));
 
-         } else if (technical.getShortCode().equals(
-               StorageTechnicalMetadatas.TYPE_HASH.getShortCode())) {
-            // On ne fait rien
-         } else if (technical.getShortCode().equals(
-               StorageTechnicalMetadatas.DATE_ARCHIVE.getShortCode())) {
-            // On ne fait rien
-         } else if (technical.getShortCode().equals(
-               StorageTechnicalMetadatas.DOCUMENT_VIRTUEL.getShortCode())) {
-            // On ne fait rien
-         } else {
+         } else if (!metasWithoutProcess.contains(technical.getShortCode())) {
             baseCategory = baseDFCE.getBaseCategory(storageMetadata
                   .getShortCode().trim());
 
@@ -327,7 +327,7 @@ public final class BeanMapper {
                throw new MetadonneeInexistante("La métadonnée "
                      + storageMetadata.getShortCode()
                      + " n'existe pas dans DFCE");
-            
+
             } else {
                document.addCriterion(baseCategory, storageMetadata.getValue());
             }
