@@ -222,20 +222,20 @@ public class AuthenticateHandler {
     * Recherche une HectorException dans les causes de l'exception<br>
     * Méthode récursive.
     * 
-    * @param ex
+    * @param exception
     *           l'exception dans laquelle recherche une HectorException
     * @return true si on a trouvé une instance de HectorException dans les
     *         causes, false dans le cas contraire
     */
-   private boolean hasHectorException(Throwable ex) {
+   private boolean hasHectorException(Throwable exception) {
 
-      if (ex.getCause() == null) {
+      if (exception.getCause() == null) {
          return Boolean.FALSE;
       } else {
-         if (ex.getCause() instanceof HectorException) {
+         if (exception.getCause() instanceof HectorException) {
             return Boolean.TRUE;
          } else {
-            return hasHectorException(ex.getCause());
+            return hasHectorException(exception.getCause());
          }
       }
 

@@ -64,12 +64,14 @@ public class WebServiceVIServiceImpl implements WebServiceVIService {
     * 
     * @param droitService
     *           service permettant de réaliser les opérations sur les droits
+    * @param validateService
+    *           service de validation
     * 
     */
    @Autowired
    public WebServiceVIServiceImpl(SaeDroitService droitService,
-         WebServiceVIValidateService validateService,
-         ContratServiceSupport support) {
+         WebServiceVIValidateService validateService) {
+
       extractService = new SamlAssertionExtractionService();
 
       this.validateService = validateService;
@@ -171,7 +173,8 @@ public class WebServiceVIServiceImpl implements WebServiceVIService {
       extrait.setSaeDroits(saeDroits);
       extrait.setIdUtilisateur(data.getAssertionParams().getSubjectId2());
       extrait.setCodeAppli(issuer);
-      extrait.getPagms().addAll(data.getAssertionParams().getCommonsParams().getPagm());
+      extrait.getPagms().addAll(
+            data.getAssertionParams().getCommonsParams().getPagm());
 
       // Renvoie du résultat
       return extrait;

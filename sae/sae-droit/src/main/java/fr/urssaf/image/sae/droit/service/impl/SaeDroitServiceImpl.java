@@ -515,20 +515,20 @@ public class SaeDroitServiceImpl implements SaeDroitService {
 
       List<SaePrmd> listeSaePrmd = this.findPrmd(listeSaePagm);
 
-      SaeContratService cs = new SaeContratService();
-      cs.setCodeClient(contrat.getCodeClient());
-      cs.setDescription(contrat.getDescription());
-      cs.setIdCertifClient(contrat.getIdCertifClient());
-      cs.setIdPki(contrat.getIdPki());
-      cs.setLibelle(contrat.getLibelle());
-      cs.setListCertifsClient(contrat.getListCertifsClient());
-      cs.setListPki(contrat.getListPki());
-      cs.setViDuree(contrat.getViDuree());
-      cs.setVerifNommage(contrat.isVerifNommage());
-      cs.setSaePagms(listeSaePagm);
-      cs.setSaePrmds(listeSaePrmd);
+      SaeContratService saeContrat = new SaeContratService();
+      saeContrat.setCodeClient(contrat.getCodeClient());
+      saeContrat.setDescription(contrat.getDescription());
+      saeContrat.setIdCertifClient(contrat.getIdCertifClient());
+      saeContrat.setIdPki(contrat.getIdPki());
+      saeContrat.setLibelle(contrat.getLibelle());
+      saeContrat.setListCertifsClient(contrat.getListCertifsClient());
+      saeContrat.setListPki(contrat.getListPki());
+      saeContrat.setViDuree(contrat.getViDuree());
+      saeContrat.setVerifNommage(contrat.isVerifNommage());
+      saeContrat.setSaePagms(listeSaePagm);
+      saeContrat.setSaePrmds(listeSaePrmd);
 
-      return cs;
+      return saeContrat;
    }
 
    private List<SaePrmd> findPrmd(List<SaePagm> saePagms) {

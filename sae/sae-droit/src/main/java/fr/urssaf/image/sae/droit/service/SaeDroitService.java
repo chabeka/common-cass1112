@@ -87,11 +87,11 @@ public interface SaeDroitService {
    /**
     * Retourne un contrat de service complet avec tous ses informations
     * 
-    * @param id
+    * @param ident
     *           code client du contrat de service
     * @return {@link SaeContratService}
     */
-   SaeContratService getFullContratService(String id);
+   SaeContratService getFullContratService(String ident);
 
    /**
     * Retourne la liste des PAGM d'un contrat de service

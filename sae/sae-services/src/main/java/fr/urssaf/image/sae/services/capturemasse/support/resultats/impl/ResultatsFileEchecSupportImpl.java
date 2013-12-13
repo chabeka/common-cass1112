@@ -63,8 +63,7 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
          final File sommaireFile, final CaptureMasseErreur erreur,
          final int nombreDocsTotal) {
 
-      writeResultatsFile(ecdeDirectory, sommaireFile, erreur, nombreDocsTotal,
-            false);
+      writeResultatsFile(sommaireFile, erreur, nombreDocsTotal, false);
 
    }
 
@@ -75,7 +74,7 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
     * @param nombreDocsTotal
     * @param isVirtual
     */
-   private void writeResultatsFile(File ecdeDirectory, File sommaireFile,
+   private void writeResultatsFile(File sommaireFile,
          CaptureMasseErreur erreur, int nombreDocsTotal, boolean isVirtual) {
 
       String trcPrefix = "writeResultatsFile()";
@@ -555,8 +554,7 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
    public final void writeVirtualResultatsFile(File ecdeDirectory,
          File sommaireFile, CaptureMasseErreur erreur, int totalDocuments) {
 
-      writeResultatsFile(ecdeDirectory, sommaireFile, erreur, totalDocuments,
-            true);
+      writeResultatsFile(sommaireFile, erreur, totalDocuments, true);
 
    }
 

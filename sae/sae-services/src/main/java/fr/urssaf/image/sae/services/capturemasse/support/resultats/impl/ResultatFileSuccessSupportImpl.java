@@ -436,7 +436,7 @@ public class ResultatFileSuccessSupportImpl implements
          int index = 0;
          while (reader.hasNext()) {
             event = reader.nextEvent();
-            index = gererVirtualEvent(event, isVirtual, staxUtils, list, index);
+            index = gererVirtualEvent(event, staxUtils, list, index);
          }
       } catch (FileNotFoundException exception) {
          throw new CaptureMasseRuntimeException(exception);
@@ -476,8 +476,7 @@ public class ResultatFileSuccessSupportImpl implements
     * @param intDocuments
     * @throws XMLStreamException
     */
-   private int gererVirtualEvent(XMLEvent event, boolean isVirtual,
-         StaxWriteUtils staxUtils,
+   private int gererVirtualEvent(XMLEvent event, StaxWriteUtils staxUtils,
          List<CaptureMasseVirtualDocument> intDocuments, int index)
          throws XMLStreamException {
 

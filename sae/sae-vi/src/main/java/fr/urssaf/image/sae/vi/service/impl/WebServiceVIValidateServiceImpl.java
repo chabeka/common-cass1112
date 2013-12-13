@@ -258,14 +258,14 @@ public class WebServiceVIValidateServiceImpl implements
          String messageErreur) throws VICertificatException {
 
       boolean found = false;
-      int i = 0;
+      int index = 0;
       Pattern pattern;
       Matcher matcher;
-      while (!found && i < regexps.size()) {
-         pattern = Pattern.compile(regexps.get(i));
+      while (!found && index < regexps.size()) {
+         pattern = Pattern.compile(regexps.get(index));
          matcher = pattern.matcher(value);
          found = matcher.find();
-         i++;
+         index++;
       }
 
       if (!found) {

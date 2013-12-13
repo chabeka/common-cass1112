@@ -96,7 +96,7 @@ public class SamlSignatureValidateService {
       }
 
       // Vérifications sur le certificat lui-même
-      verifierCertificatClePublique(publicKeyNatif, signVerifParams);
+      verifierCertificatClePublique(publicKeyNatif);
 
       // Vérifications de la partie cryptographie de la signature
       verifierCryptographie(signature, publicKeyNatif);
@@ -151,8 +151,7 @@ public class SamlSignatureValidateService {
    }
 
    private void verifierCertificatClePublique(
-         java.security.cert.X509Certificate certificat,
-         SamlSignatureVerifParams signVerifParams)
+         java.security.cert.X509Certificate certificat)
          throws SamlSignatureValidateException {
 
       // Vérifie que le certificat ne soit pas auto-signé
