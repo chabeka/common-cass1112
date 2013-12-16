@@ -7,6 +7,8 @@ import java.io.File;
 import java.net.URI;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.scope.context.ChunkContext;
@@ -20,6 +22,7 @@ import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseEcdeWrite
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireEcdeURLException;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireFileNotFoundException;
+import fr.urssaf.image.sae.services.capturemasse.listener.EcdeConnexionConfiguration;
 import fr.urssaf.image.sae.services.capturemasse.support.ecde.EcdeSommaireFileSupport;
 import fr.urssaf.image.sae.services.capturemasse.tasklet.AbstractCaptureMasseTasklet;
 import fr.urssaf.image.sae.services.controles.SAEControleSupportService;
@@ -31,11 +34,17 @@ import fr.urssaf.image.sae.services.controles.SAEControleSupportService;
 @Component
 public class CheckFileSommaireTasklet extends AbstractCaptureMasseTasklet {
 
+   private static final Logger LOGGER = LoggerFactory
+         .getLogger(CheckFileSommaireTasklet.class);
+
    @Autowired
    private EcdeSommaireFileSupport fileSupport;
 
    @Autowired
    private SAEControleSupportService controleSupport;
+
+   @Autowired
+   private EcdeConnexionConfiguration configuration;
 
    /**
     * {@inheritDoc}
@@ -56,26 +65,45 @@ public class CheckFileSommaireTasklet extends AbstractCaptureMasseTasklet {
 
       context.put(Constantes.SOMMAIRE, urlEcde);
 
-      try {
-         final URI uriEcde = new URI(urlEcde);
+      int index = 0;
+      boolean checked = false;
+      Exception storedException = null;
+      while (index < configuration.getNbreEssaiMax() && !checked) {
+         try {
+            final URI uriEcde = new URI(urlEcde);
 
-         final File sommaire = fileSupport.convertURLtoFile(uriEcde);
+            final File sommaire = fileSupport.convertURLtoFile(uriEcde);
 
-         controleSupport.checkEcdeWrite(sommaire);
+            controleSupport.checkEcdeWrite(sommaire);
 
-         context.put(Constantes.SOMMAIRE_FILE, sommaire.getAbsolutePath());
+            context.put(Constantes.SOMMAIRE_FILE, sommaire.getAbsolutePath());
 
-      } catch (CaptureMasseSommaireEcdeURLException exception) {
-         addException(chunkContext, exception);
+            checked = true;
 
-      } catch (CaptureMasseSommaireFileNotFoundException exception) {
-         addException(chunkContext, exception);
+         } catch (CaptureMasseSommaireEcdeURLException exception) {
+            storedException = exception;
 
-      } catch (CaptureMasseEcdeWriteFileException exception) {
-         addException(chunkContext, exception);
+         } catch (CaptureMasseSommaireFileNotFoundException exception) {
+            storedException = exception;
 
-      } catch (CaptureMasseRuntimeException exception) {
-         addException(chunkContext, exception);
+         } catch (CaptureMasseEcdeWriteFileException exception) {
+            storedException = exception;
+
+         } catch (CaptureMasseRuntimeException exception) {
+            storedException = exception;
+         } finally {
+
+            if (!checked) {
+               pause(index);
+            }
+            
+            index++;
+
+         }
+      }
+
+      if (!checked) {
+         addException(chunkContext, storedException);
       }
 
       return RepeatStatus.FINISHED;
@@ -86,5 +114,28 @@ public class CheckFileSommaireTasklet extends AbstractCaptureMasseTasklet {
 
       getExceptionErreurListe(chunkContext).add(exception);
 
+   }
+
+   private void pause(int index) {
+
+      String trcPrefix = "pause()";
+
+      if (index < configuration.getNbreEssaiMax() - 1) {
+         try {
+            Thread.sleep(configuration.getDelaiAttenteMs());
+
+         } catch (InterruptedException interruptedException) {
+            LOGGER.info("impossible d'endormir le process");
+         }
+
+         LOGGER
+               .info(
+                     "{} - La tentative {} de connexion à l'ECDE échouée. Nouvel essai dans {} ms.",
+                     new Object[] { trcPrefix, index + 1,
+                           configuration.getDelaiAttenteMs() });
+      } else {
+         LOGGER.info("{} - La tentative {} de connexion à l'ECDE échouée.",
+               new Object[] { trcPrefix, index + 1 });
+      }
    }
 }
