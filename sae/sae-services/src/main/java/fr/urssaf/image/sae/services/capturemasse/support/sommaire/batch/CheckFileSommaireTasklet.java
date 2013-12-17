@@ -96,7 +96,7 @@ public class CheckFileSommaireTasklet extends AbstractCaptureMasseTasklet {
             if (!checked) {
                pause(index);
             }
-            
+
             index++;
 
          }
@@ -129,12 +129,12 @@ public class CheckFileSommaireTasklet extends AbstractCaptureMasseTasklet {
          }
 
          LOGGER
-               .info(
+               .warn(
                      "{} - La tentative {} de connexion à l'ECDE échouée. Nouvel essai dans {} ms.",
                      new Object[] { trcPrefix, index + 1,
                            configuration.getDelaiAttenteMs() });
       } else {
-         LOGGER.info("{} - La tentative {} de connexion à l'ECDE échouée.",
+         LOGGER.warn("{} - La tentative {} de connexion à l'ECDE échouée.",
                new Object[] { trcPrefix, index + 1 });
       }
    }

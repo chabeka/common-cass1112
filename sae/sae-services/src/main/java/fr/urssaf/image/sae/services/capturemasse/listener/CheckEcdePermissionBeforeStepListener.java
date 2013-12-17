@@ -118,12 +118,12 @@ public class CheckEcdePermissionBeforeStepListener {
          }
 
          LOGGER
-               .info(
+               .warn(
                      "{} - La tentative {} de connexion à l'ECDE échouée. Nouvel essai dans {} ms.",
                      new Object[] { trcPrefix, index + 1,
                            config.getDelaiAttenteMs() });
       } else {
-         LOGGER.info("{} - La tentative {} de connexion à l'ECDE échouée.",
+         LOGGER.warn("{} - La tentative {} de connexion à l'ECDE échouée.",
                new Object[] { trcPrefix, index + 1 });
       }
    }
