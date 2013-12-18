@@ -3,6 +3,8 @@
  */
 package fr.urssaf.image.sae.droit.dao.support;
 
+import java.util.Arrays;
+
 import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
 
@@ -54,23 +56,20 @@ public class ContratServiceSupport extends
             clock);
       dao.ecritViDuree(updaterJobRequest, contratService.getViDuree(), clock);
 
-      if (StringUtils.isNotEmpty(contratService.getIdPki())) {
-         dao.ecritIdPki(updaterJobRequest, contratService.getIdPki(), clock);
-      }
-
-      if (contratService.getIdCertifClient() != null) {
-         dao.ecritCert(updaterJobRequest, contratService.getIdCertifClient(),
+      if (CollectionUtils.isNotEmpty(contratService.getListPki())) {
+         dao.ecritListePki(updaterJobRequest, contratService.getListPki(),
                clock);
+      } else if (StringUtils.isNotEmpty(contratService.getIdPki())) {
+         dao.ecritListePki(updaterJobRequest, Arrays.asList(contratService
+               .getIdPki()), clock);
       }
 
       if (CollectionUtils.isNotEmpty(contratService.getListCertifsClient())) {
          dao.ecritListeCert(updaterJobRequest, contratService
                .getListCertifsClient(), clock);
-      }
-
-      if (CollectionUtils.isNotEmpty(contratService.getListPki())) {
-         dao.ecritListePki(updaterJobRequest, contratService.getListPki(),
-               clock);
+      } else if (contratService.getIdCertifClient() != null) {
+         dao.ecritListeCert(updaterJobRequest, Arrays.asList(contratService
+               .getIdCertifClient()), clock);
       }
 
       dao.ecritFlagControlNommage(updaterJobRequest, contratService
