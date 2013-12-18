@@ -8,6 +8,7 @@ import java.util.List;
 
 import junit.framework.Assert;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -70,8 +71,11 @@ public class ContratServiceDatasSupportTest {
             res.getDescription());
       Assert.assertEquals("la durée doit être correcte", VI_DUREE, res
             .getViDuree());
+      Assert.assertTrue("La liste des pki doit contenir 1 et 1 seul élément",
+            CollectionUtils.isNotEmpty(res.getListPki())
+                  && res.getListPki().size() == 1);
       Assert.assertEquals("l'identifiant de la pki doit être correct", ID_PKI,
-            res.getIdPki());
+            res.getListPki().get(0));
       Assert.assertFalse("la vérification doit être désactivée", res
             .isVerifNommage());
 

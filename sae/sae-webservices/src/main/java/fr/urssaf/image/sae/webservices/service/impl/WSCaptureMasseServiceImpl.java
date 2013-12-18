@@ -95,7 +95,9 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
       VIContenuExtrait extrait = (VIContenuExtrait) SecurityContextHolder
             .getContext().getAuthentication().getPrincipal();
 
-      CaptureMasseParametres parametres = new CaptureMasseParametres(ecdeUrl,
+      HashMap<String, String> params = new HashMap<String, String>();
+      params.put(Constantes.ECDE_URL, ecdeUrl);
+      CaptureMasseParametres parametres = new CaptureMasseParametres(params,
             identifiant, hName, callerIP, nbDoc, extrait);
 
       // appel de la méthode d'insertion du job dans la pile des travaux

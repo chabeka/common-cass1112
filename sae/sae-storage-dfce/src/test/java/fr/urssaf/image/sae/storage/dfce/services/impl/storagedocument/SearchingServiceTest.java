@@ -7,8 +7,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.Assert;
+import net.docubase.toolkit.model.ToolkitFactory;
+import net.docubase.toolkit.model.document.Document;
+import net.docubase.toolkit.model.search.SearchQuery;
+import net.docubase.toolkit.model.search.SearchResult;
+import net.docubase.toolkit.service.ged.SearchService;
 
 import org.junit.Test;
+
+import com.docubase.dfce.exception.ExceededSearchLimitException;
+import com.docubase.dfce.exception.SearchQueryParseException;
 
 import fr.urssaf.image.sae.storage.dfce.data.constants.Constants;
 import fr.urssaf.image.sae.storage.dfce.data.model.DesiredMetaData;
@@ -61,30 +69,50 @@ public class SearchingServiceTest extends StorageServices {
 	public void searchDocumentByUUIDWithDesiredMetaData()
 			throws SearchingServiceEx, InsertionServiceEx, IOException,
 			ParseException, DeletionServiceEx, ConnectionServiceEx {
-			// Initialisation des jeux de données UUID
-		StorageDocument document = getMockData(getInsertionService());
-		// Initialisation des jeux de données Metadata
-		final DesiredMetaData metaDataFromXml = getXmlDataService()
-				.desiredMetaDataReader(
-						new File(Constants.XML_FILE_DESIRED_MDATA[0]));
-		List<StorageMetadata> desiredMetadatas = DocumentForTestMapper
-				.saeMetaDataXmlToStorageMetaData(metaDataFromXml)
-				.getMetadatas();
+		
+	   SearchService searchService = getDfceServicesManager().getDFCEService().getSearchService();
 
-		UUIDCriteria uuidCriteria = new UUIDCriteria(document.getUuid(),
-				desiredMetadatas);
-		Assert.assertNotNull(
-				"Le resultat de recherche :",
-				getSearchingService().searchStorageDocumentByUUIDCriteria(
-						uuidCriteria).getUuid());
-		Assert.assertTrue(
-				"Les deux listes des métaData doivent être identique : ",
-				CheckDataUtils.checkDesiredMetaDatas(
-						desiredMetadatas,
-						getSearchingService().searchMetaDatasByUUIDCriteria(
-								uuidCriteria).getMetadatas()));
-		// Suppression du document insert
-		destroyMockTest(document.getUuid(), getDeletionService());
+	   try {
+         SearchQuery query = ToolkitFactory.getInstance().createMultibaseQuery("SM_FILE_UUID:2f52d1d4-297f-4ca5-8a85-7ca13d283dda");
+         SearchResult search = searchService.search(query);
+         
+         for (Document doc : search.getDocuments()) {
+            System.out.println(doc.getUuid());
+         }
+         
+      } catch (ExceededSearchLimitException exception) {
+         // TODO Auto-generated catch block
+         exception.printStackTrace();
+      } catch (SearchQueryParseException exception) {
+         // TODO Auto-generated catch block
+         exception.printStackTrace();
+      }
+	   
+	   
+//	   // Initialisation des jeux de données UUID
+//		StorageDocument document = getMockData(getInsertionService());
+//		// Initialisation des jeux de données Metadata
+//		final DesiredMetaData metaDataFromXml = getXmlDataService()
+//				.desiredMetaDataReader(
+//						new File(Constants.XML_FILE_DESIRED_MDATA[0]));
+//		List<StorageMetadata> desiredMetadatas = DocumentForTestMapper
+//				.saeMetaDataXmlToStorageMetaData(metaDataFromXml)
+//				.getMetadatas();
+//
+//		UUIDCriteria uuidCriteria = new UUIDCriteria(document.getUuid(),
+//				desiredMetadatas);
+//		Assert.assertNotNull(
+//				"Le resultat de recherche :",
+//				getSearchingService().searchStorageDocumentByUUIDCriteria(
+//						uuidCriteria).getUuid());
+//		Assert.assertTrue(
+//				"Les deux listes des métaData doivent être identique : ",
+//				CheckDataUtils.checkDesiredMetaDatas(
+//						desiredMetadatas,
+//						getSearchingService().searchMetaDatasByUUIDCriteria(
+//								uuidCriteria).getMetadatas()));
+//		// Suppression du document insert
+//		destroyMockTest(document.getUuid(), getDeletionService());
 	}
 
 	/**

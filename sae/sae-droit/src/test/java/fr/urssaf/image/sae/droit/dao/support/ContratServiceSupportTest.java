@@ -130,7 +130,7 @@ public class ContratServiceSupportTest {
                "libelle du code client 1", serviceContract.getLibelle());
          Assert.assertEquals("La durée de vie d'un VI est incorret", new Long(
                120), serviceContract.getViDuree());
-         Assert.assertEquals("L'identifiant de la PKI est incorrect", "pki 1",
+         Assert.assertEquals("L'identifiant de la PKI est incorrect", null,
                serviceContract.getIdPki());
          Assert
                .assertEquals(
@@ -139,8 +139,11 @@ public class ContratServiceSupportTest {
          Assert.assertEquals(
                "L'identifiant du certificat applicatif client est incorrect",
                null, serviceContract.getIdCertifClient());
-         Assert.assertTrue("La liste des PKI devrait être vide",
-               CollectionUtils.isEmpty(serviceContract.getListPki()));
+         Assert.assertTrue("La liste des PKI doit contenir 1 élément",
+               !CollectionUtils.isEmpty(serviceContract.getListPki())
+                     && serviceContract.getListPki().size() == 1);
+         Assert.assertEquals("la pki doit etre correcte", "pki 1",
+               serviceContract.getListPki().get(0));
          Assert.assertTrue(
                "La liste des certificats clients devrait être vide",
                CollectionUtils.isEmpty(serviceContract.getListCertifsClient()));
@@ -158,7 +161,8 @@ public class ContratServiceSupportTest {
                "libelle du code client 2", serviceContract.getLibelle());
          Assert.assertEquals("La durée de vie d'un VI est incorret", new Long(
                240), serviceContract.getViDuree());
-         Assert.assertEquals("L'identifiant de la PKI est incorrect", "pki 2",
+         
+         Assert.assertEquals("L'identifiant de la PKI est incorrect", null,
                serviceContract.getIdPki());
          Assert
                .assertEquals(
@@ -166,7 +170,7 @@ public class ContratServiceSupportTest {
                      true, serviceContract.isVerifNommage());
          Assert.assertEquals(
                "L'identifiant du certificat applicatif client est incorrect",
-               "id certif client 2", serviceContract.getIdCertifClient());
+               null, serviceContract.getIdCertifClient());
 
          Assert.assertFalse("La liste des PKI ne devrait pas être vide",
                CollectionUtils.isEmpty(serviceContract.getListPki()));

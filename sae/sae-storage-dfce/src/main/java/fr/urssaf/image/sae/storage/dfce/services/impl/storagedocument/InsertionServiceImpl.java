@@ -139,7 +139,9 @@ public class InsertionServiceImpl extends AbstractServices implements
          // conversion du storageDoc en DFCE Document
          Document docDfce = BeanMapper.storageDocumentToDfceDocument(
                getBaseDFCE(), storageDoc);
-
+         
+         docDfce.setUuid(storageDoc.getUuid());
+        
          // ici on récupère le contenu du fichier.
          byte[] docContentByte = storageDoc.getContent();
          InputStream docContent = new ByteArrayInputStream(docContentByte);
