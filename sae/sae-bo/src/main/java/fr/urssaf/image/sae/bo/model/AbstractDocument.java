@@ -32,7 +32,7 @@ public abstract class AbstractDocument {
    @SuppressWarnings("PMD.MethodReturnsInternalArray")
    public final byte[] getContent() {
       // Pas de clone pour des raisons de performance.
-      return getByteArrayCopy(content);
+      return content;
    }
 
    /**
@@ -42,7 +42,7 @@ public abstract class AbstractDocument {
    @SuppressWarnings("PMD.ArrayIsStoredDirectly")
    public final void setContent(final byte[] fileContent) {
       // Pas de clone pour des raisons de performance.
-      this.content = getByteArrayCopy(fileContent);
+      this.content = fileContent;
 
    }
 
@@ -77,7 +77,7 @@ public abstract class AbstractDocument {
    @SuppressWarnings("PMD.ArrayIsStoredDirectly")
    public AbstractDocument(final byte[] fileContent) {
       // Pas de clone pour des raisons de performance.
-      this.content = getByteArrayCopy(fileContent);
+      this.content = fileContent;
 
    }
 
@@ -92,7 +92,7 @@ public abstract class AbstractDocument {
    @SuppressWarnings("PMD.ArrayIsStoredDirectly")
    public AbstractDocument(final byte[] fileContent, final String filePath) {
       // Pas de clone pour des raisons de performance.
-      this.content = getByteArrayCopy(fileContent);
+      this.content = fileContent;
       this.filePath = filePath;
 
    }
@@ -112,7 +112,7 @@ public abstract class AbstractDocument {
          final byte[] fileContent) {
       // Pas de clone pour des raisons de performance.
       this.filePath = filePath;
-      this.content = getByteArrayCopy(fileContent);
+      this.content = fileContent;
       this.fileName = fileName;
 
    }
@@ -128,7 +128,7 @@ public abstract class AbstractDocument {
    @SuppressWarnings("PMD.ArrayIsStoredDirectly")
    public AbstractDocument(String fileName, final byte[] fileContent) {
       // Pas de clone pour des raisons de performance.
-      this.content = getByteArrayCopy(fileContent);
+      this.content = fileContent;
       this.fileName = fileName;
    }
 
@@ -166,21 +166,5 @@ public abstract class AbstractDocument {
     */
    public final void setFileName(String fileName) {
       this.fileName = fileName;
-   }
-
-   /**
-    * Retourne un nouveau tableau de byte à partir de celui passé en paramètre
-    * 
-    * @param fileContent
-    *           le contenu
-    * @return le nouvel objet contenant les mêmes données que l'objet d'origine
-    */
-   private byte[] getByteArrayCopy(byte[] fileContent) {
-      byte[] tContent = null;
-      if (ArrayUtils.isNotEmpty(fileContent)) {
-         tContent = Arrays.copyOf(fileContent, fileContent.length);
-      }
-
-      return tContent;
    }
 }

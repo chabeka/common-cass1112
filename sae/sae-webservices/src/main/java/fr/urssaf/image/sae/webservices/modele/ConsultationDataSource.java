@@ -31,7 +31,7 @@ public final class ConsultationDataSource implements DataSource {
    @SuppressWarnings("PMD.ArrayIsStoredDirectly")
    public ConsultationDataSource(byte[] content, String typeMime) {
 
-      this.content = getByteArrayCopy(content);
+      this.content = content;
 
       this.typeMime = typeMime;
 
@@ -69,22 +69,6 @@ public final class ConsultationDataSource implements DataSource {
    public OutputStream getOutputStream() throws IOException {
       // inutilisé
       return null;
-   }
-
-   /**
-    * Retourne un nouveau tableau de byte à partir de celui passé en paramètre
-    * 
-    * @param fileContent
-    *           le contenu
-    * @return le nouvel objet contenant les mêmes données que l'objet d'origine
-    */
-   private byte[] getByteArrayCopy(byte[] fileContent) {
-      byte[] tContent = null;
-      if (ArrayUtils.isNotEmpty(fileContent)) {
-         tContent = Arrays.copyOf(fileContent, fileContent.length);
-      }
-
-      return tContent;
    }
 
 }

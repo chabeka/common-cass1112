@@ -74,7 +74,7 @@ public abstract class AbstractStorageDocument {
 	 */
 	@SuppressWarnings("PMD.MethodReturnsInternalArray")
 	public final byte[] getContent() {
-		return getByteArrayCopy(content);
+		return content;
 	}
 
 	/**
@@ -85,7 +85,7 @@ public abstract class AbstractStorageDocument {
 	 */
 	@SuppressWarnings("PMD.ArrayIsStoredDirectly")
 	public final void setContent(final byte[] content) {
-		this.content = getByteArrayCopy(content);
+		this.content = content;
 	}
 
 	/**
@@ -166,7 +166,7 @@ public abstract class AbstractStorageDocument {
 	public AbstractStorageDocument(final List<StorageMetadata> metadatas,
 			final byte[] content, final String filePath) {
 		this.metadatas = metadatas;
-		this.content = getByteArrayCopy(content);
+		this.content = content;
 		this.filePath = filePath;
 	}
 
@@ -192,22 +192,6 @@ public abstract class AbstractStorageDocument {
     */
    public final void setFileName(String fileName) {
       this.fileName = fileName;
-   }
-   
-   /**
-    * Retourne un nouveau tableau de byte à partir de celui passé en paramètre
-    * 
-    * @param fileContent
-    *           le contenu
-    * @return le nouvel objet contenant les mêmes données que l'objet d'origine
-    */
-   private byte[] getByteArrayCopy(byte[] fileContent) {
-      byte[] tContent = null;
-      if (ArrayUtils.isNotEmpty(fileContent)) {
-         tContent = Arrays.copyOf(fileContent, fileContent.length);
-      }
-
-      return tContent;
    }
    
    private Date getDateCopy(Date date) {
