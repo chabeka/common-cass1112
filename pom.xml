@@ -4,7 +4,7 @@
 
    <groupId>fr.urssaf.image.commons</groupId>
    <artifactId>commons-dfce</artifactId>
-   <version>1.2.7-CRTL-1</version>
+   <version>1.2.7-CRTL-2-SNAPSHOT</version>
 
    <name>commons-dfce</name>
 
@@ -24,11 +24,11 @@
 
       <!-- numéro de version des dépendances de DFCE -->
       <dfce.serialization>1.2.0</dfce.serialization>
-      <dfce.toolkit.client>1.2.7</dfce.toolkit.client>
-      <dfce.toolkit.pojo>1.2.7</dfce.toolkit.pojo>
-      <dfce.pojo>1.2.7</dfce.pojo>
-      <dfce.toolkit.service>1.2.7</dfce.toolkit.service>
-      <dfce.commons>1.2.7</dfce.commons>
+      <dfce.toolkit.client>1.2.7-P1</dfce.toolkit.client>
+      <dfce.toolkit.pojo>1.2.7-P1</dfce.toolkit.pojo>
+      <dfce.pojo>1.2.7-P1</dfce.pojo>
+      <dfce.toolkit.service>1.2.7-P1</dfce.toolkit.service>
+      <dfce.commons>1.2.7-P1</dfce.commons>
 
       <!-- Autres versions -->
       <junit.version>4.8.2</junit.version>
