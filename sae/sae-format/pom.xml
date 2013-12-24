@@ -35,7 +35,9 @@
                   </goals>
                </execution>
             </executions>
-
+            <configuration>
+               <argumentFileName>builddef-sae-format.lst</argumentFileName>
+            </configuration>
          </plugin>
 
       </plugins>
