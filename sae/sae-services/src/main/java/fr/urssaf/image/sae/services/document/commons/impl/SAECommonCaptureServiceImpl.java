@@ -2,6 +2,7 @@ package fr.urssaf.image.sae.services.document.commons.impl;
 
 import java.util.List;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +12,10 @@ import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
+import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.droit.service.PrmdService;
+import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.mapping.exception.InvalidSAETypeException;
 import fr.urssaf.image.sae.mapping.exception.MappingFromReferentialException;
 import fr.urssaf.image.sae.mapping.services.MappingDocumentService;
@@ -34,6 +37,7 @@ import fr.urssaf.image.sae.services.exception.capture.UnknownMetadataEx;
 import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException;
 import fr.urssaf.image.sae.services.exception.enrichment.SAEEnrichmentEx;
 import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
+import fr.urssaf.image.sae.services.exception.format.validation.ValidationExceptionInvalidFile;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
@@ -49,14 +53,14 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 public class SAECommonCaptureServiceImpl implements SAECommonCaptureService {
    private static final Logger LOGGER = LoggerFactory
          .getLogger(SAECommonCaptureServiceImpl.class);
-   
+
    @Autowired
    @Qualifier("saeControlesCaptureService")
    private SAEControlesCaptureService controlesService;
 
    @Autowired
    private MappingDocumentService mappingService;
-   
+
    @Autowired
    @Qualifier("saeEnrichmentMetadataService")
    private SAEEnrichmentMetadataService enrichmentService;
@@ -74,7 +78,9 @@ public class SAECommonCaptureServiceImpl implements SAECommonCaptureService {
          InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
          DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
          RequiredArchivableMetadataEx, SAEEnrichmentEx, UnknownHashCodeEx,
-         ReferentialRndException, UnknownCodeRndEx, SAECaptureServiceEx, MetadataValueNotInDictionaryEx {
+         ReferentialRndException, UnknownCodeRndEx, SAECaptureServiceEx,
+         MetadataValueNotInDictionaryEx, UnknownFormatException,
+         ValidationExceptionInvalidFile {
       // Traces debug - entrée méthode
       String prefixeTrc = "buildStorageDocumentForCapture()";
       LOGGER.debug("{} - Début", prefixeTrc);
@@ -96,6 +102,9 @@ public class SAECommonCaptureServiceImpl implements SAECommonCaptureService {
 
    /**
     * {@inheritDoc}
+    * 
+    * @throws ValidationExceptionInvalidFile
+    * @throws UnknownFormatException
     */
    @Override
    public final StorageDocument buildBinaryStorageDocumentForCapture(
@@ -104,7 +113,9 @@ public class SAECommonCaptureServiceImpl implements SAECommonCaptureService {
          EmptyFileNameEx, DuplicatedMetadataEx, NotArchivableMetadataEx,
          EmptyDocumentEx, RequiredArchivableMetadataEx, SAEEnrichmentEx,
          UnknownHashCodeEx, ReferentialRndException, UnknownCodeRndEx,
-         NotSpecifiableMetadataEx, SAECaptureServiceEx, MetadataValueNotInDictionaryEx {
+         NotSpecifiableMetadataEx, SAECaptureServiceEx,
+         MetadataValueNotInDictionaryEx, UnknownFormatException,
+         ValidationExceptionInvalidFile {
 
       // Traces debug - entrée méthode
       String prefixeTrc = "buildBinaryStorageDocumentForCapture()";
@@ -123,13 +134,91 @@ public class SAECommonCaptureServiceImpl implements SAECommonCaptureService {
    }
 
    // Construction du StorageDocument pour la capture
+   // private StorageDocument buildStorageDocument(
+   // UntypedDocument untypedDocument, String prefixeTrc)
+   // throws NotSpecifiableMetadataEx, RequiredArchivableMetadataEx,
+   // UnknownMetadataEx, DuplicatedMetadataEx,
+   // InvalidValueTypeAndFormatMetadataEx, SAEEnrichmentEx,
+   // ReferentialRndException, UnknownCodeRndEx, UnknownHashCodeEx,
+   // RequiredStorageMetadataEx, SAECaptureServiceEx,
+   // MetadataValueNotInDictionaryEx {
+   //
+   // SAEDocument saeDocument = null;
+   // StorageDocument storageDocument = null;
+   //
+   // try {
+   //
+   // controlesService.checkUntypedMetadata(untypedDocument);
+   // LOGGER
+   // .debug(
+   // "{} - Fin des contrôles sur (UntypedDocument et UntypedMetadata)",
+   // prefixeTrc);
+   //
+   // LOGGER.debug("{} - Début de vérification des droits", prefixeTrc);
+   // AuthenticationToken token = (AuthenticationToken) AuthenticationContext
+   // .getAuthenticationToken();
+   //         
+   //         
+   // List<SaePrmd> prmds =
+   // token.getDetails().getSaeDroits().get("archivage_unitaire");
+   // boolean isPermitted = prmdService.isPermitted(untypedDocument
+   // .getUMetadatas(), prmds);
+   //
+   // if (!isPermitted) {
+   // throw new AccessDeniedException(
+   // "Le document est refusé à l'arhivage car les droits sont insuffisants");
+   // }
+   //
+   // LOGGER.debug("{} - Fin de vérification des droits", prefixeTrc);
+   // LOGGER
+   // .debug(
+   // "{} - Début de la conversion de UntypedDocument vers SaeDocument",
+   // prefixeTrc);
+   // saeDocument = mappingService
+   // .untypedDocumentToSaeDocument(untypedDocument);
+   // LOGGER.debug(
+   // "{} - Fin de la conversion de UntypedDocument vers SaeDocument",
+   // prefixeTrc);
+   // if (saeDocument != null) {
+   // LOGGER.debug(
+   // "{} - Début des contrôles sur (SaeDocument  et SaeMetadata)",
+   // prefixeTrc);
+   // controlesService.checkSaeMetadataForCapture(saeDocument);
+   // controlesService.checkHashCodeMetadataForStorage(saeDocument);
+   // enrichmentService.enrichmentMetadata(saeDocument);
+   // controlesService.checkSaeMetadataForStorage(saeDocument);
+   // LOGGER.debug(
+   // "{} - Fin des contrôles sur (SaeDocument  et SaeMetadata)",
+   // prefixeTrc);
+   // LOGGER
+   // .debug(
+   // "{} - Début de la conversion de SaeDocument vers StorageDocument",
+   // prefixeTrc);
+   // storageDocument = mappingService
+   // .saeDocumentToStorageDocument(saeDocument);
+   // LOGGER
+   // .debug(
+   // "{} - Fin de la conversion de SaeDocument vers StorageDocument",
+   // prefixeTrc);
+   // }
+   // } catch (InvalidSAETypeException e) {
+   // throw new SAECaptureServiceEx(e);
+   // } catch (MappingFromReferentialException e) {
+   // throw new SAECaptureServiceEx(e);
+   // }
+   // return storageDocument;
+   //
+   // }
+
    private StorageDocument buildStorageDocument(
          UntypedDocument untypedDocument, String prefixeTrc)
          throws NotSpecifiableMetadataEx, RequiredArchivableMetadataEx,
          UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, SAEEnrichmentEx,
          ReferentialRndException, UnknownCodeRndEx, UnknownHashCodeEx,
-         RequiredStorageMetadataEx, SAECaptureServiceEx, MetadataValueNotInDictionaryEx {
+         RequiredStorageMetadataEx, SAECaptureServiceEx,
+         MetadataValueNotInDictionaryEx, UnknownFormatException,
+         ValidationExceptionInvalidFile {
 
       SAEDocument saeDocument = null;
       StorageDocument storageDocument = null;
@@ -143,9 +232,12 @@ public class SAECommonCaptureServiceImpl implements SAECommonCaptureService {
                      prefixeTrc);
 
          LOGGER.debug("{} - Début de vérification des droits", prefixeTrc);
+
          AuthenticationToken token = (AuthenticationToken) AuthenticationContext
                .getAuthenticationToken();
-         List<SaePrmd> prmds = token.getDetails().get("archivage_unitaire");
+
+         List<SaePrmd> prmds = token.getDetails().getSaeDroits().get(
+               "archivage_unitaire");
          boolean isPermitted = prmdService.isPermitted(untypedDocument
                .getUMetadatas(), prmds);
 
@@ -164,7 +256,35 @@ public class SAECommonCaptureServiceImpl implements SAECommonCaptureService {
          LOGGER.debug(
                "{} - Fin de la conversion de UntypedDocument vers SaeDocument",
                prefixeTrc);
+
          if (saeDocument != null) {
+            LOGGER.debug("{} - Début des contrôles sur le format");
+            // Vérification de la validation des formats.
+            // récupération de la liste des profils de contrôle
+            // Map<String, Set<FormatControlProfil>> mapsFormatControlProfil =
+            // token
+            // .getDetails().getControlProfilMap();
+            // Iterator iterator = mapsFormatControlProfil.iterator();
+            // FormatControlProfil formatControlProfil = null;
+            // List<FormatControlProfil> listFormatControlProfil = new
+            // ArrayList<FormatControlProfil>();
+            // while (iterator.hasNext()) {
+            // formatControlProfil = (FormatControlProfil) iterator.next();
+            // listFormatControlProfil.add(formatControlProfil);
+            // }
+
+            // Vérification de la validation des formats.
+            // récupération de la liste des profils de contrôle
+            List<FormatControlProfil> listFormatControlProfil = token
+                  .getDetails().getListControlProfil();
+            if (listFormatControlProfil != null
+                  && !listFormatControlProfil.isEmpty()) {
+               controlesService.checkFormat(saeDocument,
+                     listFormatControlProfil);
+               
+            }
+            LOGGER.debug("{} - Fin des contrôles sur le format");
+
             LOGGER.debug(
                   "{} - Début des contrôles sur (SaeDocument  et SaeMetadata)",
                   prefixeTrc);
@@ -175,6 +295,7 @@ public class SAECommonCaptureServiceImpl implements SAECommonCaptureService {
             LOGGER.debug(
                   "{} - Fin des contrôles sur (SaeDocument  et SaeMetadata)",
                   prefixeTrc);
+
             LOGGER
                   .debug(
                         "{} - Début de la conversion de SaeDocument vers StorageDocument",

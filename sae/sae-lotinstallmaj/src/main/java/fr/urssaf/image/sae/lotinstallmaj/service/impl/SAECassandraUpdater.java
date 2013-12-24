@@ -35,7 +35,9 @@ public class SAECassandraUpdater {
    private static final int VERSION_6 = 6;
    private static final int VERSION_7 = 7;
    
-   private static final String REFERENTIEL_FORMAT= "ReferentielFormat";
+   private static final String REFERENTIEL_FORMAT = "ReferentielFormat";
+   private static final String DROIT_PAGMF = "DroitPagmf";
+   private static final String DROIT_FORMAT_CONTROL_PROFIL = "DroitFormatControlProfil";
 
    private final String ksName;
    private final Cluster cluster;
@@ -470,7 +472,15 @@ public class SAECassandraUpdater {
 
       // ReferentielFormat
       cfDefs.add(HFactory.createColumnFamilyDefinition(ksName,
-            REFERENTIEL_FORMAT, ComparatorType.BYTESTYPE));
+            REFERENTIEL_FORMAT, ComparatorType.UTF8TYPE));
+      // DroitPagmf
+      cfDefs.add(HFactory.createColumnFamilyDefinition(ksName, DROIT_PAGMF,
+            ComparatorType.UTF8TYPE));
+
+      // DroitFormatControlProfil
+      cfDefs.add(HFactory.createColumnFamilyDefinition(ksName, DROIT_FORMAT_CONTROL_PROFIL,
+            ComparatorType.UTF8TYPE));
+      
 
       // Création des CF
       saeCassandraService.createColumnFamilyFromList(cfDefs, true);

@@ -1,7 +1,9 @@
 package fr.urssaf.image.sae.services.controles.impl;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -20,9 +22,18 @@ import org.springframework.stereotype.Service;
 import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
 import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
+import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
+import fr.urssaf.image.sae.droit.dao.model.FormatProfil;
 import fr.urssaf.image.sae.ecde.exception.EcdeBadURLException;
 import fr.urssaf.image.sae.ecde.exception.EcdeBadURLFormatException;
 import fr.urssaf.image.sae.ecde.service.EcdeServices;
+import fr.urssaf.image.sae.format.exception.UnknownFormatException;
+import fr.urssaf.image.sae.format.identification.exceptions.IdentifierInitialisationException;
+import fr.urssaf.image.sae.format.identification.identifiers.model.IdentificationResult;
+import fr.urssaf.image.sae.format.identification.service.IdentificationService;
+import fr.urssaf.image.sae.format.validation.exceptions.ValidatorInitialisationException;
+import fr.urssaf.image.sae.format.validation.service.ValidationService;
+import fr.urssaf.image.sae.format.validation.validators.model.ValidationResult;
 import fr.urssaf.image.sae.services.controles.SAEControlesCaptureService;
 import fr.urssaf.image.sae.services.controles.SaeControleMetadataService;
 import fr.urssaf.image.sae.services.enrichment.dao.impl.SAEMetatadaFinderUtils;
@@ -41,27 +52,38 @@ import fr.urssaf.image.sae.services.exception.capture.RequiredStorageMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.SAECaptureServiceRuntimeException;
 import fr.urssaf.image.sae.services.exception.capture.UnknownHashCodeEx;
 import fr.urssaf.image.sae.services.exception.capture.UnknownMetadataEx;
+import fr.urssaf.image.sae.services.exception.format.identification.FormatIdentificationRuntimeException;
+import fr.urssaf.image.sae.services.exception.format.validation.ValidationExceptionInvalidFile;
 import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
 import fr.urssaf.image.sae.services.util.WriteUtils;
 
 /**
  *Classe de contrôle pour la capture unitaire et la capture en masse.
  * 
- * @author rhofir.
- */
+ * */
 @Service
 @Qualifier("saeControlesCaptureService")
 public class SAEControlesCaptureServiceImpl implements
       SAEControlesCaptureService {
    private static final Logger LOGGER = LoggerFactory
          .getLogger(SAEControlesCaptureServiceImpl.class);
-   
+
    @Autowired
    private EcdeServices ecdeServices;
 
    @Autowired
    private SaeControleMetadataService controleService;
    
+   /**
+    * nécessaire pour les méthodes identifyFile
+    * pour la validation des formats de fichiers.
+    */
+   @Autowired 
+   private IdentificationService identificationService; 
+   
+   @Autowired
+   private ValidationService validationService;
+
    private static final String LOG_DEBUT = "{} - début";
    private static final String LOG_FIN = "{} - fin";
    private static final String LOG_FIN_VERIF = "{} - Fin de la vérification : ";
@@ -69,7 +91,6 @@ public class SAEControlesCaptureServiceImpl implements
    private static final String LOG_HASH = "Equivalence entre le hash fourni en métadonnée et le hash recalculé à partir du fichier";
    private static final String CAPTURE_HASH_ERREUR = "capture.hash.erreur";
    private static final String CAPTURE_URL_ECDE_ERREUR = "capture.url.ecde.incorrecte";
-   
 
    /**
     * {@inheritDoc}
@@ -152,14 +173,9 @@ public class SAEControlesCaptureServiceImpl implements
          throw new UnknownHashCodeEx(ResourceMessagesUtils.loadMessage(
                CAPTURE_HASH_ERREUR, fileName));
       }
-      LOGGER.debug(LOG_FIN_VERIF
-            + "Le type de hash est SHA-1", prefixeTrc);
+      LOGGER.debug(LOG_FIN_VERIF + "Le type de hash est SHA-1", prefixeTrc);
       // FIXME à partir de l'algorithme calculer le hashCode.
-      LOGGER
-            .debug(
-                  LOG_DEBUT_VERIF
-                        + LOG_HASH,
-                  prefixeTrc);
+      LOGGER.debug(LOG_DEBUT_VERIF + LOG_HASH, prefixeTrc);
       if (!StringUtils.equalsIgnoreCase(DigestUtils.shaHex(content),
             hashCodeValue.trim())) {
          LOGGER.debug(
@@ -169,11 +185,7 @@ public class SAEControlesCaptureServiceImpl implements
          throw new UnknownHashCodeEx(ResourceMessagesUtils.loadMessage(
                CAPTURE_HASH_ERREUR, fileName));
       }
-      LOGGER
-            .debug(
-                  LOG_FIN_VERIF
-                        + LOG_HASH,
-                  prefixeTrc);
+      LOGGER.debug(LOG_FIN_VERIF + LOG_HASH, prefixeTrc);
 
       // Traces debug - sortie méthode
       LOGGER.debug(LOG_FIN, prefixeTrc);
@@ -216,13 +228,8 @@ public class SAEControlesCaptureServiceImpl implements
          throw new UnknownHashCodeEx(ResourceMessagesUtils.loadMessage(
                CAPTURE_HASH_ERREUR, fileName));
       }
-      LOGGER.debug(LOG_FIN_VERIF
-            + "Le type de hash est SHA-1", prefixeTrc);
-      LOGGER
-            .debug(
-                  LOG_DEBUT_VERIF
-                        + LOG_HASH,
-                  prefixeTrc);
+      LOGGER.debug(LOG_FIN_VERIF + "Le type de hash est SHA-1", prefixeTrc);
+      LOGGER.debug(LOG_DEBUT_VERIF + LOG_HASH, prefixeTrc);
       if (!StringUtils.equalsIgnoreCase(refHash, hashCodeValue.trim())) {
          LOGGER.debug(
                "{} - Hash du document {} est différent que celui recalculé {}",
@@ -230,11 +237,7 @@ public class SAEControlesCaptureServiceImpl implements
          throw new UnknownHashCodeEx(ResourceMessagesUtils.loadMessage(
                CAPTURE_HASH_ERREUR, fileName));
       }
-      LOGGER
-            .debug(
-                  LOG_FIN_VERIF
-                        + LOG_HASH,
-                  prefixeTrc);
+      LOGGER.debug(LOG_FIN_VERIF + LOG_HASH, prefixeTrc);
 
       // Traces debug - sortie méthode
       LOGGER.debug(LOG_FIN, prefixeTrc);
@@ -283,6 +286,7 @@ public class SAEControlesCaptureServiceImpl implements
          throws UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, RequiredArchivableMetadataEx,
          MetadataValueNotInDictionaryEx {
+      
       // Traces debug - entrée méthode
       String prefixeTrc = "checkUntypedDocument()";
       LOGGER.debug(LOG_DEBUT, prefixeTrc);
@@ -519,6 +523,176 @@ public class SAEControlesCaptureServiceImpl implements
       // Traces debug - sortie méthode
       LOGGER.debug("{} - Sortie", prefixeTrc);
       // Fin des traces debug - sortie méthode
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void checkFormat(SAEDocument saeDocument, List<FormatControlProfil> controlProfilSet)
+         throws UnknownFormatException, ValidationExceptionInvalidFile {
+
+      // Sélection du profil
+      FormatControlProfil formatControlProfil = selectProfil(saeDocument, controlProfilSet);
+      
+      // Application de l'identification
+      applyIdentification(saeDocument, formatControlProfil);
+      
+      // Application de la validation
+      applyValidation(saeDocument, formatControlProfil);
+   }
+   
+   /**
+    * Application de l'identification pour la validation des formats.
+    * @throws UnknownFormatException 
+    */
+   private void applyIdentification(SAEDocument saeDocument, FormatControlProfil formatControlProfil) throws UnknownFormatException {
+     try{ 
+      if (formatControlProfil != null) {
+         // récupération du formatProfil
+         FormatProfil formatProfil = formatControlProfil.getControlProfil();
+         
+         // Application de l'identification
+         // si formatIdentif est true alors identification
+         if (formatProfil != null && formatProfil.isFormatIdentification()) {
+            
+            // il faut tester les valeurs renvoyées par
+            // getFilePath et getContent de SAEDocument
+            // pour savoir si c'est un fichier ou un flux
+            // afin d'appeller la méthode d'identification
+            
+            // appel a identifyFile sinon identifyStream
+            String filePath = saeDocument.getFilePath();
+            IdentificationResult result = null;
+            if ( StringUtils.isBlank(saeDocument.getFilePath()) ) {
+               File fichier = new File(filePath);
+               result = identificationService.identifyFile(formatProfil.getFileFormat(), fichier);
+            }
+            if ( saeDocument.getContent() != null ) {
+               InputStream inputStream = new ByteArrayInputStream(saeDocument.getContent());
+               result = identificationService.identifyStream(formatProfil.getFileFormat(), inputStream);
+            }
+            
+            // si isIdentified alors le fichier est correctement identifié.
+            // si l'identification échoue, alors exception levée.
+            if (!result.isIdentified()) {
+               throw new UnknownFormatException(ResourceMessagesUtils.loadMessage("capture.format.identification"));
+            }
+         }
+      }
+      } catch(IdentifierInitialisationException except) {
+         throw new FormatIdentificationRuntimeException(except);
+      } catch(IOException except) {
+         throw new FormatIdentificationRuntimeException(except);
+      }
+   }
+   
+   /**
+    * Application de la validation pour la validation des formats.
+    * @throws UnknownFormatException 
+    */
+   private void applyValidation(SAEDocument saeDocument, FormatControlProfil formatControlProfil) throws ValidationExceptionInvalidFile, UnknownFormatException {
+     try{ 
+      if (formatControlProfil != null) {
+         // récupération du formatProfil
+         FormatProfil formatProfil = formatControlProfil.getControlProfil();
+         
+         // Application de la validation
+         // si formatValid est true alors validation
+         if (formatProfil != null && formatProfil.isFormatValidation()) {
+            
+            // il faut tester les valeurs renvoyées par
+            // getFilePath et getContent de SAEDocument
+            // pour savoir si c'est un fichier ou un flux
+            // afin d'appeller la méthode d'identification
+            
+            // appel a identifyFile sinon identifyStream
+            String filePath = saeDocument.getFilePath();
+            ValidationResult result = null;
+            if ( StringUtils.isBlank(saeDocument.getFilePath()) ) {
+               File fichier = new File(filePath);
+               result = validationService.validateFile(formatProfil.getFileFormat(), fichier);
+            }
+            if ( saeDocument.getContent() != null ) {
+               InputStream inputStream = new ByteArrayInputStream(saeDocument.getContent());
+               result = validationService.validateStream(formatProfil.getFileFormat(), inputStream);
+            }
+            
+            // si isValid alors le fichier est jugé conforme.
+            
+            // on teste la valeur du paramètre formatValidationMode
+            String validationMode = formatProfil.getFormatValidationMode();
+            if( StringUtils.equalsIgnoreCase(validationMode, "STRICT") ) {
+               // dans ce cas on léve une exception
+               // fichier à archiver n'est pas conforme au format de fichier fournis
+               throw new ValidationExceptionInvalidFile(ResourceMessagesUtils.loadMessage("capture.format.validation"));
+            } else {
+               LOGGER.debug("Détail de la validation : " + result.getDetails());
+            }
+         }
+      }
+      } catch(ValidatorInitialisationException except) {
+         throw new ValidationExceptionInvalidFile(except);
+      } catch(IOException except) {
+         throw new ValidationExceptionInvalidFile(except);
+      }
+   }
+   
+   
+
+   /**
+    * Selection du profil à partir de l'ensemble des profils de contrôle dont le "formatCode" 
+    * correspond à la valeur de la métadonnée "FormatFichier".    * 
+    * 
+    * @param saeDocument
+    *          le SAEDocument
+    * @param controlProfilSet
+    *          liste des profils de controle contenu dans le VIContenuExtrait
+    * @return
+    */
+   private FormatControlProfil selectProfil(SAEDocument saeDocument, List<FormatControlProfil> controlProfilSet) {
+      
+      List<SAEMetadata> listSaeMetadata = saeDocument.getMetadatas();
+
+      boolean trouve = false;
+      int i = 0;
+      String valeur = null;
+      do { // récupération de la valeur de la métadonnéé "FormatFichier"
+         SAEMetadata saeMetada = listSaeMetadata.get(i);
+         if (StringUtils.equalsIgnoreCase(saeMetada.getLongCode(),
+               "FormatFichier")) {
+            trouve = true;
+            valeur = (String) saeMetada.getValue();
+         }
+         i++;
+      } while (!trouve);
+      
+      FormatControlProfil formatControlProfil = getFormatControlProfil(valeur,controlProfilSet);
+      return formatControlProfil;
+      
+   }
+
+   private FormatControlProfil getFormatControlProfil(String formatCode,
+         List<FormatControlProfil> controlProfilSet) {
+      
+      FormatControlProfil formatControlProf = null;
+      for (FormatControlProfil formatControlProfil : controlProfilSet) {
+         if (StringUtils.equalsIgnoreCase(formatControlProfil.getFormatCode(),
+               formatCode)) {
+            return formatControlProfil;
+         }
+      }
+      return formatControlProf;
+      
+//      Iterator iterator = controlProfilSet.iterator();
+//      FormatControlProfil formatControlProfil = null;
+//      while (iterator.hasNext()) {
+//         formatControlProfil = (FormatControlProfil) iterator.next();
+//         if (StringUtils.equalsIgnoreCase(formatControlProfil.getFormatCode(),
+//               valeur)) {
+//            return formatControlProfil;
+//         }
+//      }
    }
 
 }

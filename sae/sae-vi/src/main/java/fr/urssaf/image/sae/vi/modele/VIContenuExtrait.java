@@ -3,6 +3,7 @@ package fr.urssaf.image.sae.vi.modele;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 
 /**
@@ -20,8 +21,27 @@ public class VIContenuExtrait {
    private String idUtilisateur;
 
    private SaeDroits saeDroits;
-   
+
    private List<String> pagms = new ArrayList<String>();
+   
+   // Note : Utilisation d'un Set et non d'une liste pour éviter les doublons.
+   private List<FormatControlProfil> listControlProfil = new ArrayList<FormatControlProfil>();
+
+   /**
+    * @return the listControlProfil
+    */
+   public List<FormatControlProfil> getListControlProfil() {
+      return listControlProfil;
+   }
+
+   /**
+    * @param listControlProfil
+    *           the listControlProfil to set
+    */
+   public void setListControlProfil(
+         List<FormatControlProfil> listControlProfil) {
+      this.listControlProfil = listControlProfil;
+   }
 
    /**
     * 
@@ -76,6 +96,7 @@ public class VIContenuExtrait {
 
    /**
     * Le ou les PAGM
+    * 
     * @return Le ou les PAGM
     */
    public List<String> getPagms() {
@@ -84,7 +105,9 @@ public class VIContenuExtrait {
 
    /**
     * Le ou les PAGM
-    * @param pagms Le ou les PAGM
+    * 
+    * @param pagms
+    *           Le ou les PAGM
     */
    public void setPagms(List<String> pagms) {
       this.pagms = pagms;

@@ -10,12 +10,16 @@
    <bean
       class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
       <property name="locations">
-         <value>classpath:config/cassandra-local.properties</value>
+         <list>
+            <value>config/sae-config.properties</value>
+            <value>classpath:config/cassandra-local.properties</value>
+         </list>
       </property>
    </bean>
 
    <import resource="applicationContext-sae-droit.xml" />
 
-   <bean id="prmdControleTest" class="fr.urssaf.image.sae.droit.controle.PrmdControleTestImpl" />
-   
+   <bean id="prmdControleTest"
+      class="fr.urssaf.image.sae.droit.controle.PrmdControleTestImpl" />
+
 </beans>

@@ -403,6 +403,7 @@
       <module>sae-saml</module>
       <module>sae-format</module>
       <module>sae-storage</module>
+      <module>sae-droit</module>
       <module>sae-vi</module>
       <module>sae-storage-dfce</module>
       <module>sae-ecde</module>
@@ -410,7 +411,7 @@
       <module>sae-mapping</module>
       <module>sae-pile-travaux</module>
       <module>sae-services</module>
-      <module>sae-droit</module>
+      
       <module>sae-trace</module>
       <module>sae-trace-executable</module>
       <module>sae-commons</module>

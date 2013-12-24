@@ -37,6 +37,7 @@ import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestDocument;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
+import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.model.SAEMockMetadata;
 import fr.urssaf.image.sae.services.QueriesReferenceDAO;
 import fr.urssaf.image.sae.services.SAEServiceTestProvider;
@@ -59,6 +60,7 @@ import fr.urssaf.image.sae.services.exception.capture.UnknownMetadataEx;
 import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedToConsultEx;
 import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException;
 import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
+import fr.urssaf.image.sae.services.exception.format.validation.ValidationExceptionInvalidFile;
 import fr.urssaf.image.sae.services.exception.search.MetaDataUnauthorizedToSearchEx;
 import fr.urssaf.image.sae.services.exception.search.SAESearchServiceEx;
 import fr.urssaf.image.sae.services.exception.search.SyntaxLuceneEx;
@@ -172,7 +174,7 @@ public class SAESearchServiceImplDatasTest {
          UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
          EmptyDocumentEx, RequiredArchivableMetadataEx,
          NotArchivableMetadataEx, UnknownHashCodeEx, CaptureBadEcdeUrlEx,
-         CaptureEcdeUrlFileNotFoundEx, IOException, MetadataValueNotInDictionaryEx {
+         CaptureEcdeUrlFileNotFoundEx, IOException, MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile, UnknownFormatException {
 
       // insertion d'un document
       ecde = ecdeTestTools

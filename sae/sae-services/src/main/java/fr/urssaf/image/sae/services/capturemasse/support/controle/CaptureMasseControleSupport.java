@@ -5,11 +5,14 @@ package fr.urssaf.image.sae.services.capturemasse.support.controle;
 
 import java.io.File;
 
+import org.antlr.grammar.v3.ANTLRv3Parser.throwsSpec_return;
+
 import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
 import fr.urssaf.image.sae.bo.model.bo.SAEVirtualDocument;
 import fr.urssaf.image.sae.bo.model.bo.VirtualReferenceFile;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedVirtualDocument;
+import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireDocumentNotFoundException;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
@@ -21,6 +24,7 @@ import fr.urssaf.image.sae.services.exception.capture.RequiredStorageMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.UnknownHashCodeEx;
 import fr.urssaf.image.sae.services.exception.capture.UnknownMetadataEx;
 import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
+import fr.urssaf.image.sae.services.exception.format.validation.ValidationExceptionInvalidFile;
 
 /**
  * Composant de contrôle des règles métier sur les métadonnées et les fichiers
@@ -79,13 +83,15 @@ public interface CaptureMasseControleSupport {
     * @throws UnknownCodeRndEx
     *            La métadonnée codeRND n'existe pas
     * @throws MetadataValueNotInDictionaryEx la valeur donnée n'est pas présente dans la liste des valeurs autorisées
+    * @throws UnknownFormatException : le format du fichier est inconnu.
+    * @throws ValidationExceptionInvalidFile : le fichier est invalide par rapport au format de fichier spécifié.
     */
    void controleSAEDocument(UntypedDocument document, File ecdeDirectory)
          throws CaptureMasseSommaireDocumentNotFoundException, EmptyDocumentEx,
          UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx, UnknownCodeRndEx,
-         MetadataValueNotInDictionaryEx;
+         MetadataValueNotInDictionaryEx, UnknownFormatException, ValidationExceptionInvalidFile;
 
    /**
     * Service permettant de contrôler le fichier et les métadonnées d'un

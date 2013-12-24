@@ -27,6 +27,7 @@ import fr.cirtil.www.saeservice.EcdeUrlType;
 import fr.cirtil.www.saeservice.ListeMetadonneeType;
 import fr.cirtil.www.saeservice.MetadonneeType;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
+import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.metadata.utils.Utils;
 import fr.urssaf.image.sae.services.capture.SAECaptureService;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
@@ -45,6 +46,7 @@ import fr.urssaf.image.sae.services.exception.capture.UnknownHashCodeEx;
 import fr.urssaf.image.sae.services.exception.capture.UnknownMetadataEx;
 import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException;
 import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
+import fr.urssaf.image.sae.services.exception.format.validation.ValidationExceptionInvalidFile;
 import fr.urssaf.image.sae.webservices.exception.CaptureAxisFault;
 import fr.urssaf.image.sae.webservices.service.WSCaptureService;
 import fr.urssaf.image.sae.webservices.service.factory.ObjectArchivageUnitaireFactory;
@@ -329,6 +331,14 @@ public class WSCaptureServiceImpl implements WSCaptureService {
 
          throw new CaptureAxisFault("CaptureMetadonneesValeurNonValide", e
                .getMessage());
+      } catch (UnknownFormatException except) {
+
+         throw new CaptureAxisFault("FormatFichierInconnu", except
+               .getMessage());
+      } catch (ValidationExceptionInvalidFile except) {
+
+         throw new CaptureAxisFault("FormatFichierNonConforme", except
+               .getMessage());
       }
 
    }
@@ -401,6 +411,14 @@ public class WSCaptureServiceImpl implements WSCaptureService {
       } catch (MetadataValueNotInDictionaryEx e) {
 
          throw new CaptureAxisFault("CaptureMetadonneesValeurNonValide", e
+               .getMessage());
+      } catch (UnknownFormatException except) {
+
+         throw new CaptureAxisFault("FormatFichierInconnu", except
+               .getMessage());
+      } catch (ValidationExceptionInvalidFile except) {
+
+         throw new CaptureAxisFault("FormatFichierNonConforme", except
                .getMessage());
       }
    }

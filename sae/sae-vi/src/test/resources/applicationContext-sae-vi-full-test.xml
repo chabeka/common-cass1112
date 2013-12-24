@@ -12,7 +12,10 @@
    <bean
       class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
       <property name="locations">
-         <value>classpath:config/cassandra-local.properties</value>
+         <list>
+            <value>config/sae-config.properties</value>
+            <value>classpath:config/cassandra-local.properties</value>
+         </list>
       </property>
    </bean>
 
@@ -20,6 +23,6 @@
       le scan devra être modifié une fois que les classes dépréciées
       seront supprimées
    -->
-   <import resource="applicationContext-sae-vi-full.xml"/>
+   <import resource="applicationContext-sae-vi-full.xml" />
 
 </beans>

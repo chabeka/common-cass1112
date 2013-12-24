@@ -15,6 +15,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import fr.urssaf.image.sae.bo.model.bo.VirtualReferenceFile;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedVirtualDocument;
+import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireDocumentNotFoundException;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
@@ -26,6 +27,7 @@ import fr.urssaf.image.sae.services.exception.capture.RequiredStorageMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.UnknownHashCodeEx;
 import fr.urssaf.image.sae.services.exception.capture.UnknownMetadataEx;
 import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
+import fr.urssaf.image.sae.services.exception.format.validation.ValidationExceptionInvalidFile;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })
@@ -40,7 +42,7 @@ public class CaptureMasseControleSupportValidationTest {
          DuplicatedMetadataEx, InvalidValueTypeAndFormatMetadataEx,
          NotSpecifiableMetadataEx, RequiredArchivableMetadataEx,
          UnknownHashCodeEx, CaptureMasseSommaireDocumentNotFoundException,
-         MetadataValueNotInDictionaryEx {
+         MetadataValueNotInDictionaryEx, UnknownFormatException, ValidationExceptionInvalidFile {
 
       support.controleSAEDocument(null, new File(""));
       Assert.fail("sortie aspect attendue");
@@ -52,7 +54,7 @@ public class CaptureMasseControleSupportValidationTest {
          DuplicatedMetadataEx, InvalidValueTypeAndFormatMetadataEx,
          NotSpecifiableMetadataEx, RequiredArchivableMetadataEx,
          UnknownHashCodeEx, CaptureMasseSommaireDocumentNotFoundException,
-         MetadataValueNotInDictionaryEx {
+         MetadataValueNotInDictionaryEx, UnknownFormatException, ValidationExceptionInvalidFile {
       support.controleSAEDocument(new UntypedDocument(), null);
       Assert.fail("sortie aspect attendue");
 

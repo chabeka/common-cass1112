@@ -35,6 +35,7 @@ import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
+import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.rnd.dao.support.RndSupport;
 import fr.urssaf.image.sae.rnd.modele.TypeCode;
 import fr.urssaf.image.sae.rnd.modele.TypeDocument;
@@ -48,6 +49,7 @@ import fr.urssaf.image.sae.services.exception.capture.RequiredArchivableMetadata
 import fr.urssaf.image.sae.services.exception.capture.UnknownHashCodeEx;
 import fr.urssaf.image.sae.services.exception.capture.UnknownMetadataEx;
 import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
+import fr.urssaf.image.sae.services.exception.format.validation.ValidationExceptionInvalidFile;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
 import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
@@ -135,7 +137,7 @@ public class CaptureMasseControleSupportTest {
          EmptyDocumentEx, UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx,
-         MetadataValueNotInDictionaryEx {
+         MetadataValueNotInDictionaryEx, UnknownFormatException, ValidationExceptionInvalidFile {
 
       File repertoireEcdeTraitement = ecdeTestSommaire.getRepEcde();
       File fileSommaire = new File(repertoireEcdeTraitement, "sommaire.xml");
@@ -162,7 +164,7 @@ public class CaptureMasseControleSupportTest {
          EmptyDocumentEx, UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx,
-         MetadataValueNotInDictionaryEx {
+         MetadataValueNotInDictionaryEx, UnknownFormatException, ValidationExceptionInvalidFile {
 
       File repEcde = ecdeTestSommaire.getRepEcde();
       File fileSommaire = new File(repEcde, "sommaire.xml");
@@ -193,7 +195,7 @@ public class CaptureMasseControleSupportTest {
          EmptyDocumentEx, UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx,
-         MetadataValueNotInDictionaryEx {
+         MetadataValueNotInDictionaryEx, UnknownFormatException, ValidationExceptionInvalidFile {
 
       File repEcde = ecdeTestSommaire.getRepEcde();
       File fileSommaire = new File(repEcde, "sommaire.xml");
@@ -224,7 +226,7 @@ public class CaptureMasseControleSupportTest {
          EmptyDocumentEx, UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx,
-         MetadataValueNotInDictionaryEx {
+         MetadataValueNotInDictionaryEx, UnknownFormatException, ValidationExceptionInvalidFile {
 
       File repertoireEcdeTraitement = ecdeTestSommaire.getRepEcde();
       File fileSommaire = new File(repertoireEcdeTraitement, "sommaire.xml");
@@ -256,7 +258,7 @@ public class CaptureMasseControleSupportTest {
          EmptyDocumentEx, UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx,
-         MetadataValueNotInDictionaryEx {
+         MetadataValueNotInDictionaryEx, UnknownFormatException, ValidationExceptionInvalidFile {
 
       File repertoireEcdeTraitement = ecdeTestSommaire.getRepEcde();
       File fileSommaire = new File(repertoireEcdeTraitement, "sommaire.xml");
@@ -289,7 +291,7 @@ public class CaptureMasseControleSupportTest {
          UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx,
-         MetadataValueNotInDictionaryEx {
+         MetadataValueNotInDictionaryEx, UnknownFormatException, ValidationExceptionInvalidFile {
 
       File repertoireEcdeTraitement = ecdeTestSommaire.getRepEcde();
       File fileSommaire = new File(repertoireEcdeTraitement, "sommaire.xml");
@@ -322,7 +324,7 @@ public class CaptureMasseControleSupportTest {
          UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx,
-         MetadataValueNotInDictionaryEx {
+         MetadataValueNotInDictionaryEx, UnknownFormatException, ValidationExceptionInvalidFile {
 
       File repertoireEcdeTraitement = ecdeTestSommaire.getRepEcde();
       File fileSommaire = new File(repertoireEcdeTraitement, "sommaire.xml");
@@ -355,7 +357,7 @@ public class CaptureMasseControleSupportTest {
          EmptyDocumentEx, UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx,
-         MetadataValueNotInDictionaryEx {
+         MetadataValueNotInDictionaryEx, UnknownFormatException, ValidationExceptionInvalidFile {
 
       File repertoireEcdeTraitement = ecdeTestSommaire.getRepEcde();
       File fileSommaire = new File(repertoireEcdeTraitement, "sommaire.xml");
@@ -387,7 +389,7 @@ public class CaptureMasseControleSupportTest {
          EmptyDocumentEx, UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx,
-         MetadataValueNotInDictionaryEx {
+         MetadataValueNotInDictionaryEx, UnknownFormatException, ValidationExceptionInvalidFile {
 
       File repertoireEcdeTraitement = ecdeTestSommaire.getRepEcde();
       File fileSommaire = new File(repertoireEcdeTraitement, "sommaire.xml");
@@ -416,7 +418,7 @@ public class CaptureMasseControleSupportTest {
 
    @Test
    public void testControleSAEDocumentSuccess()
-         throws MetadataValueNotInDictionaryEx {
+         throws MetadataValueNotInDictionaryEx, UnknownFormatException, ValidationExceptionInvalidFile {
 
       try {
          File repertoireEcdeTraitement = ecdeTestSommaire.getRepEcde();

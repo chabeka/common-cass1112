@@ -37,5 +37,7 @@
 
    <import resource="applicationContext-sae-trace.xml" />
    <import resource="applicationContext-sae-rnd.xml" />
+   
+   <import resource="applicationContext-sae-format.xml" />
 
 </beans>

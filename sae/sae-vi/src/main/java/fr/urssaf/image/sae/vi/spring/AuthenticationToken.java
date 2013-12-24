@@ -6,6 +6,7 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 
 import fr.urssaf.image.sae.droit.model.SaeDroits;
+import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 
 /**
  * Classe modèle du jeton d'authentification héritant de
@@ -39,13 +40,20 @@ public class AuthenticationToken extends AnonymousAuthenticationToken {
    private static final long serialVersionUID = 1L;
 
    /**
-    * renvoie {@link ActionsUnitaires} de l'authenfication
+    * renvoie {@link VIContenuExtrait} de l'authenfication
     * 
     * {@inheritDoc}
     */
+//    @Override
+//    public final SaeDroits getDetails() {
+//    return (SaeDroits) super.getDetails();
+//    }
    @Override
-   public final SaeDroits getDetails() {
-      return (SaeDroits) super.getDetails();
+   public final VIContenuExtrait getDetails() {
+      VIContenuExtrait viContenuExtrait = new VIContenuExtrait();
+      viContenuExtrait.setSaeDroits((SaeDroits) super.getDetails());
+      //return (VIContenuExtrait) super.getDetails();
+      return viContenuExtrait;
    }
 
 }

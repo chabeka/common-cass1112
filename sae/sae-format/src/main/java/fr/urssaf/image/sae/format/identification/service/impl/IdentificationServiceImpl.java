@@ -75,7 +75,7 @@ public class IdentificationServiceImpl implements IdentificationService {
          // S'il n'est pas possible de récupérer une instance de
          // l'identificateur
          throw new IdentifierInitialisationException(SaeFormatMessageHandler
-               .getMessage("erreur.recup.identif"));
+               .getMessage("erreur.recup.identif"), except);
       } catch (ReferentielRuntimeException except) {
          throw new IdentificationRuntimeException(except.getMessage(), except);
       }

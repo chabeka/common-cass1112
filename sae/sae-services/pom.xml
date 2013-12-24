@@ -150,6 +150,13 @@
          <artifactId>sae-rnd</artifactId>
          <version>13.11.0.2-SNAPSHOT</version>
       </dependency>
+      
+      <!-- SAE-RND -->
+      <dependency>
+         <groupId>fr.urssaf.image.sae</groupId>
+         <artifactId>sae-format</artifactId>
+         <version>13.11.0.2-SNAPSHOT</version>
+      </dependency>
 
       <!-- SPRING BATCH CASSANDRA -->
       <dependency>

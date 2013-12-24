@@ -8,8 +8,7 @@
 		http://www.springframework.org/schema/context 
 		http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-
-    <import resource="applicationContext-properties-meta-test.xml" />
+   <import resource="applicationContext-properties-meta-test.xml" />
 
    <import resource="applicationContext-sae-services.xml" />
    <import resource="storageConnectionParameter.xml" />

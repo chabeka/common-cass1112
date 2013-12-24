@@ -20,6 +20,7 @@ import fr.urssaf.image.sae.commons.service.ParametersService;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
+import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.mapping.exception.InvalidSAETypeException;
 import fr.urssaf.image.sae.mapping.exception.MappingFromReferentialException;
 import fr.urssaf.image.sae.rnd.dao.support.RndSupport;
@@ -41,6 +42,7 @@ import fr.urssaf.image.sae.services.exception.capture.UnknownMetadataEx;
 import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException;
 import fr.urssaf.image.sae.services.exception.enrichment.SAEEnrichmentEx;
 import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
+import fr.urssaf.image.sae.services.exception.format.validation.ValidationExceptionInvalidFile;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
 import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
@@ -135,7 +137,7 @@ public class SAECommonCaptureServiceImplTest extends CommonsServices {
    /**
     * Test de la méthode
     * {@link fr.urssaf.image.sae.services.document.commons.SAECommonCaptureService#buildStorageDocumentForCapture(UntypedDocument)}
-    * .
+    * . 
     */
    @Test
    public final void buildStorageDocumentForCapture()
@@ -146,7 +148,7 @@ public class SAECommonCaptureServiceImplTest extends CommonsServices {
          NotSpecifiableMetadataEx, EmptyDocumentEx,
          RequiredArchivableMetadataEx, MappingFromReferentialException,
          InvalidSAETypeException, UnknownHashCodeEx, ReferentialRndException,
-         UnknownCodeRndEx, MetadataValueNotInDictionaryEx {
+         UnknownCodeRndEx, MetadataValueNotInDictionaryEx, UnknownFormatException, ValidationExceptionInvalidFile {
 
       UntypedDocument untypedDocument = getUntypedDocumentMockData();
       saeCommonCaptureService.buildStorageDocumentForCapture(untypedDocument);

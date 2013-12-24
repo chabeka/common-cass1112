@@ -10,7 +10,10 @@
    <bean
       class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
       <property name="locations">
-         <value>classpath:config/cassandra-local.properties</value>
+         <list>
+            <value>config/sae-config.properties</value>
+            <value>classpath:config/cassandra-local.properties</value>
+         </list>
       </property>
    </bean>
 
@@ -20,5 +23,5 @@
       class="fr.urssaf.image.sae.droit.controle.PrmdControleTestImpl" />
 
    <bean class="fr.urssaf.image.sae.droit.cache.CacheConfig" id="cacheConfig" />
-   
+
 </beans>

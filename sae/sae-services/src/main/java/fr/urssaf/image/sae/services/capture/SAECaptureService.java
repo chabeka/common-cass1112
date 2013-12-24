@@ -8,6 +8,7 @@ import java.util.UUID;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
+import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureBadEcdeUrlEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureEcdeUrlFileNotFoundEx;
@@ -24,6 +25,7 @@ import fr.urssaf.image.sae.services.exception.capture.UnknownHashCodeEx;
 import fr.urssaf.image.sae.services.exception.capture.UnknownMetadataEx;
 import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException;
 import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
+import fr.urssaf.image.sae.services.exception.format.validation.ValidationExceptionInvalidFile;
 
 /**
  * Service pour l'opération : capture unitaire
@@ -78,7 +80,11 @@ public interface SAECaptureService {
     * @throws CaptureEcdeUrlFileNotFoundEx
     *            {@link CaptureEcdeUrlFileNotFoundEx}
     * @throws MetadataValueNotInDictionaryEx
-    *            {@link MetadataValueNotInDictionaryEx}            
+    *            {@link MetadataValueNotInDictionaryEx}
+    * @throws UnknownFormatException
+    *            {@link UnknownFormatException}
+    * @throws ValidationExceptionInvalidFile
+    *            {@link ValidationExceptionInvalidFile}
     * 
     */
    @PreAuthorize("hasRole('archivage_unitaire')")
@@ -88,7 +94,9 @@ public interface SAECaptureService {
          DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
          ReferentialRndException, UnknownCodeRndEx, UnknownHashCodeEx,
-         CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx;
+         CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx,
+         MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile,
+         UnknownFormatException;
 
    /**
     * 
@@ -135,6 +143,10 @@ public interface SAECaptureService {
     *            {@link EmptyFileNameEx}
     * @throws MetadataValueNotInDictionaryEx
     *            {@link MetadataValueNotInDictionaryEx}
+    * @throws UnknownFormatException
+    *            {@link UnknownFormatException}
+    * @throws ValidationExceptionInvalidFile
+    *            {@link ValidationExceptionInvalidFile}
     */
    @PreAuthorize("hasRole('archivage_unitaire')")
    UUID captureBinaire(List<UntypedMetadata> metadatas, byte[] content,
@@ -143,7 +155,8 @@ public interface SAECaptureService {
          UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
          EmptyDocumentEx, RequiredArchivableMetadataEx,
          NotArchivableMetadataEx, ReferentialRndException, UnknownCodeRndEx,
-         UnknownHashCodeEx, EmptyFileNameEx, MetadataValueNotInDictionaryEx;
+         UnknownHashCodeEx, EmptyFileNameEx, MetadataValueNotInDictionaryEx,
+         UnknownFormatException, ValidationExceptionInvalidFile;
 
    /**
     * 
@@ -184,7 +197,11 @@ public interface SAECaptureService {
     * @throws FileNotFoundException
     *            {@link FileNotFoundException}
     * @throws MetadataValueNotInDictionaryEx
-    *             {@link MetadataValueNotInDictionaryEx}
+    *            {@link MetadataValueNotInDictionaryEx}
+    * @throws UnknownFormatException
+    *            {@link UnknownFormatException}
+    * @throws ValidationExceptionInvalidFile
+    *            {@link ValidationExceptionInvalidFile}
     */
    @PreAuthorize("hasRole('archivage_unitaire')")
    UUID captureFichier(List<UntypedMetadata> metadatas, String path)
@@ -193,6 +210,7 @@ public interface SAECaptureService {
          DuplicatedMetadataEx, NotSpecifiableMetadataEx,
          NotArchivableMetadataEx, ReferentialRndException, UnknownCodeRndEx,
          EmptyDocumentEx, RequiredArchivableMetadataEx, UnknownHashCodeEx,
-         FileNotFoundException, MetadataValueNotInDictionaryEx;
+         FileNotFoundException, MetadataValueNotInDictionaryEx,
+         ValidationExceptionInvalidFile, UnknownFormatException;
 
 }

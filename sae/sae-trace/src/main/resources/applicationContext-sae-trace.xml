@@ -23,4 +23,13 @@
    <import resource="classpath*:/applicationContext-commons-cassandra.xml" />
    <import resource="classpath*:/applicationContext-sae-commons.xml" />
    
+   <!-- Fichiers nécessaires pour la compatibilité des formats des fichiers -->
+   <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" >
+    <property name="locations">
+        <list>
+            <value>classpath*:/identification/pdfaCompatibleFormat.properties</value>
+        </list>
+    </property>
+   </bean>
+   
 </beans>

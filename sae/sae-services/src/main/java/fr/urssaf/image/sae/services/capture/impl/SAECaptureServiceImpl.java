@@ -21,6 +21,7 @@ import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.ecde.exception.EcdeBadURLException;
 import fr.urssaf.image.sae.ecde.exception.EcdeBadURLFormatException;
 import fr.urssaf.image.sae.ecde.service.EcdeServices;
+import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.metadata.utils.Utils;
 import fr.urssaf.image.sae.services.capture.SAECaptureService;
 import fr.urssaf.image.sae.services.controles.SAEControlesCaptureService;
@@ -42,6 +43,7 @@ import fr.urssaf.image.sae.services.exception.capture.UnknownMetadataEx;
 import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException;
 import fr.urssaf.image.sae.services.exception.enrichment.SAEEnrichmentEx;
 import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
+import fr.urssaf.image.sae.services.exception.format.validation.ValidationExceptionInvalidFile;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.model.connection.StorageConnectionParameter;
@@ -104,7 +106,7 @@ public class SAECaptureServiceImpl implements SAECaptureService {
          DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
          ReferentialRndException, UnknownCodeRndEx, UnknownHashCodeEx,
-         CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx {
+         CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile, UnknownFormatException {
       // Traces debug - entrée méthode
       String prefixeTrc = "capture()";
       LOG.debug("{} - Début", prefixeTrc);
@@ -136,6 +138,8 @@ public class SAECaptureServiceImpl implements SAECaptureService {
     * @throws ReferentialRndException 
     * @throws FileNotFoundException 
     * @throws MetadataValueNotInDictionaryEx
+    * @throws ValidationExceptionInvalidFile 
+    * @throws UnknownFormatException 
     */
    @Override
    public final UUID captureFichier(List<UntypedMetadata> metadatas, String path)
@@ -143,7 +147,7 @@ public class SAECaptureServiceImpl implements SAECaptureService {
          InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
          DuplicatedMetadataEx, NotSpecifiableMetadataEx,
          NotArchivableMetadataEx, ReferentialRndException, UnknownCodeRndEx,
-         EmptyDocumentEx, RequiredArchivableMetadataEx, UnknownHashCodeEx, FileNotFoundException,MetadataValueNotInDictionaryEx {
+         EmptyDocumentEx, RequiredArchivableMetadataEx, UnknownHashCodeEx, FileNotFoundException,MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile, UnknownFormatException {
       // Traces debug - entrée méthode
       String prefixeTrc = "capture()";
       LOG.debug("{} - Début", prefixeTrc);
@@ -176,7 +180,7 @@ public class SAECaptureServiceImpl implements SAECaptureService {
          UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
          EmptyDocumentEx, RequiredArchivableMetadataEx,
          NotArchivableMetadataEx, ReferentialRndException, UnknownCodeRndEx,
-         UnknownHashCodeEx, EmptyFileNameEx, MetadataValueNotInDictionaryEx {
+         UnknownHashCodeEx, EmptyFileNameEx, MetadataValueNotInDictionaryEx, UnknownFormatException, ValidationExceptionInvalidFile {
 
       // Traces debug - entrée méthode
       String prefixeTrc = "captureBinaire()";
@@ -349,13 +353,15 @@ public class SAECaptureServiceImpl implements SAECaptureService {
     * @throws UnknownHashCodeEx
     * @throws NotSpecifiableMetadataEx
     * @throws MetadataValueNotInDictionaryEx
+    * @throws ValidationExceptionInvalidFile 
+    * @throws UnknownFormatException 
     */
    private UUID insertDocument(List<UntypedMetadata> metadatas, File file)
          throws SAECaptureServiceEx, ReferentialRndException, UnknownCodeRndEx,
          RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx,
          UnknownMetadataEx, DuplicatedMetadataEx, NotArchivableMetadataEx,
          EmptyDocumentEx, RequiredArchivableMetadataEx, UnknownHashCodeEx,
-         NotSpecifiableMetadataEx, MetadataValueNotInDictionaryEx {
+         NotSpecifiableMetadataEx, MetadataValueNotInDictionaryEx, UnknownFormatException, ValidationExceptionInvalidFile {
 
       // instanciation d'un UntypedDocument
       UntypedDocument untypedDocument = createUntypedDocument(metadatas, file);

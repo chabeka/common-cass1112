@@ -67,6 +67,8 @@ public class SAEControlesCaptureServiceImplMetaTest {
          InvalidValueTypeAndFormatMetadataEx, SAECaptureServiceEx, IOException,
          ParseException, RequiredArchivableMetadataEx, URISyntaxException,
          DictionaryNotFoundException, ResourceException {
+      
+      
       ClassPathResource ressource = new ClassPathResource("PDF/doc1.PDF");
       List<UntypedMetadata> metas = new ArrayList<UntypedMetadata>();
       metas.add(new UntypedMetadata("CodeRND", "1.6"));

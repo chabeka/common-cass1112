@@ -470,7 +470,7 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
       LOG.debug("{} - Récupération des droits", prefixeTrc);
       AuthenticationToken token = (AuthenticationToken) AuthenticationContext
             .getAuthenticationToken();
-      List<SaePrmd> prmds = token.getDetails().get("recherche");
+      List<SaePrmd> prmds = token.getDetails().getSaeDroits().get("recherche");
       LOG.debug("{} - Ajustage de la requete avec les éléments des droits",
             prefixeTrc);
       requeteTrim = prmdService.createLucene(requeteTrim, prmds);

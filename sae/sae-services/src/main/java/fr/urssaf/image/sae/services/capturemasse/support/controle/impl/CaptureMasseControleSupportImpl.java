@@ -20,8 +20,10 @@ import fr.urssaf.image.sae.bo.model.bo.VirtualReferenceFile;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedVirtualDocument;
+import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.droit.service.PrmdService;
+import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.mapping.exception.InvalidSAETypeException;
 import fr.urssaf.image.sae.mapping.exception.MappingFromReferentialException;
 import fr.urssaf.image.sae.mapping.services.MappingDocumentService;
@@ -44,6 +46,7 @@ import fr.urssaf.image.sae.services.exception.capture.RequiredStorageMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.UnknownHashCodeEx;
 import fr.urssaf.image.sae.services.exception.capture.UnknownMetadataEx;
 import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
+import fr.urssaf.image.sae.services.exception.format.validation.ValidationExceptionInvalidFile;
 import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
@@ -76,7 +79,7 @@ public class CaptureMasseControleSupportImpl implements
    private RndService rndService;
 
    /**
-    * {@inheritDoc}
+    * {@inheritDoc} 
     */
    @Override
    public final void controleSAEDocument(final UntypedDocument document,
@@ -85,7 +88,7 @@ public class CaptureMasseControleSupportImpl implements
          UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx, UnknownCodeRndEx,
-         MetadataValueNotInDictionaryEx {
+         MetadataValueNotInDictionaryEx, UnknownFormatException, ValidationExceptionInvalidFile {
 
       final File file = getFichierSiExiste(document, ecdeDirectory);
 
@@ -112,6 +115,19 @@ public class CaptureMasseControleSupportImpl implements
       saeDocument.setFilePath(path);
 
       controleService.checkHashCodeMetadataForStorage(saeDocument);
+
+      // Vérif des formats
+      // Attention : contrôle des formats pendant le traitement des contrôles
+      // Certes, pertes de performances car les fichiers sont relus dans l'etape
+      // de stockage
+      // néanmoins, evite le rollback en cas de format incorrect
+      // à savoir, la vérif des formats ne sera activé que pour les clients à
+      // risques.
+      AuthenticationToken token = (AuthenticationToken) SecurityContextHolder
+            .getContext().getAuthentication();
+      List<FormatControlProfil> listControlProfil = token.getDetails()
+            .getListControlProfil();
+      controleService.checkFormat(saeDocument, listControlProfil);
 
       controleSAEMetadataList(document.getUMetadatas(), saeDocument
             .getMetadatas());
@@ -256,8 +272,8 @@ public class CaptureMasseControleSupportImpl implements
     * {@inheritDoc}
     */
    @Override
-   public final void controleSAEVirtualDocumentStockage(SAEVirtualDocument document)
-         throws RequiredStorageMetadataEx {
+   public final void controleSAEVirtualDocumentStockage(
+         SAEVirtualDocument document) throws RequiredStorageMetadataEx {
       String trcPrefix = "controleSAEVirtualDocumentStockage()";
       LOGGER.debug("{} - début", trcPrefix);
 
@@ -275,13 +291,14 @@ public class CaptureMasseControleSupportImpl implements
       try {
          rndService.getTypeDocument(valeurMetadata);
       } catch (CodeRndInexistantException e) {
-         throw new UnknownCodeRndEx(e.getMessage(),e.getCause());
+         throw new UnknownCodeRndEx(e.getMessage(), e.getCause());
       }
 
       LOGGER.debug("{} - récupération du Vi", trcPrefix);
       AuthenticationToken token = (AuthenticationToken) SecurityContextHolder
             .getContext().getAuthentication();
-      List<SaePrmd> prmds = token.getDetails().get("archivage_masse");
+      List<SaePrmd> prmds = token.getDetails().getSaeDroits().get(
+            "archivage_masse");
 
       LOGGER.debug("{} - vérification des droits", trcPrefix);
       boolean isPermitted = prmdService.isPermitted(metadatas, prmds);

@@ -10,8 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.urssaf.image.sae.droit.exception.ContratServiceNotFoundException;
-import fr.urssaf.image.sae.droit.exception.PagmNotFoundException;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
+import fr.urssaf.image.sae.droit.model.SaeDroitsEtFormat;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.droit.service.impl.skip.SaeDroitServiceSkipImpl;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
@@ -54,12 +54,16 @@ public final class CaptureMasseAuthentificationUtils {
       SaeDroitServiceSkipImpl impl = new SaeDroitServiceSkipImpl();
       SaeDroits saeDroits = new SaeDroits();
       try {
-         saeDroits = impl.loadSaeDroits("CS_ANCIEN_SYSTEME", pagms);
+         //---------------------------------------------
+         SaeDroitsEtFormat saeDroitsEtFormat = new SaeDroitsEtFormat();
+         saeDroitsEtFormat = impl.loadSaeDroits("CS_ANCIEN_SYSTEME", pagms);
+         
+         saeDroits = saeDroitsEtFormat.getSaeDroits();
+         
+         //saeDroits = impl.loadSaeDroits("CS_ANCIEN_SYSTEME", pagms);
       } catch (ContratServiceNotFoundException e) {
          LOG.warn("impossible de créer un accès total");
-      } catch (PagmNotFoundException e) {
-         LOG.warn("impossible de créer un accès total");
-      }
+      } 
 
       List<SaePrmd> prmdList = saeDroits.get(ROLE_RECHERCHE);
 

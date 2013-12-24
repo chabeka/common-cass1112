@@ -19,16 +19,16 @@ import fr.urssaf.image.sae.droit.dao.model.ServiceContract;
 import fr.urssaf.image.sae.droit.dao.support.ContratServiceSupport;
 import fr.urssaf.image.sae.droit.exception.ContratServiceNotFoundException;
 import fr.urssaf.image.sae.droit.exception.ContratServiceReferenceException;
-import fr.urssaf.image.sae.droit.exception.PagmNotFoundException;
-import fr.urssaf.image.sae.droit.model.SaeDroits;
+import fr.urssaf.image.sae.droit.exception.FormatControlProfilNotFoundException;
+import fr.urssaf.image.sae.droit.model.SaeDroitsEtFormat;
 import fr.urssaf.image.sae.droit.service.SaeDroitService;
 import fr.urssaf.image.sae.saml.data.SamlAssertionData;
 import fr.urssaf.image.sae.saml.exception.SamlExtractionException;
 import fr.urssaf.image.sae.saml.modele.SignatureVerificationResult;
+import fr.urssaf.image.sae.saml.service.SamlAssertionCreationService;
 import fr.urssaf.image.sae.saml.service.SamlAssertionExtractionService;
 import fr.urssaf.image.sae.vi.exception.VIAppliClientException;
 import fr.urssaf.image.sae.vi.exception.VIInvalideException;
-import fr.urssaf.image.sae.vi.exception.VIPagmIncorrectException;
 import fr.urssaf.image.sae.vi.exception.VIVerificationException;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.vi.modele.VISignVerifParams;
@@ -70,8 +70,8 @@ public class WebServiceVIServiceImpl implements WebServiceVIService {
     */
    @Autowired
    public WebServiceVIServiceImpl(SaeDroitService droitService,
-         WebServiceVIValidateService validateService) {
-
+         WebServiceVIValidateService validateService,
+         ContratServiceSupport support) {
       extractService = new SamlAssertionExtractionService();
 
       this.validateService = validateService;
@@ -153,31 +153,57 @@ public class WebServiceVIServiceImpl implements WebServiceVIService {
       }
       validateService.validateCertificates(contract, result);
 
-      // Extraction des PAGM du VI
-      SaeDroits saeDroits;
+      /*--------------- Gestion des Formats -----------------------*/
+      VIContenuExtrait viContenuExtrait = new VIContenuExtrait();
       try {
-         saeDroits = this.droitService.loadSaeDroits(issuer, pagms);
+         //-----------------------------------------------
+         //this.droitService.loadSaeDroits(issuer, pagms, viContenuExtrait);
+         SaeDroitsEtFormat saeDroitsEtFormat = this.droitService.loadSaeDroits(issuer, pagms);
+         viContenuExtrait.setSaeDroits(saeDroitsEtFormat.getSaeDroits());
+         viContenuExtrait.setListControlProfil(saeDroitsEtFormat.getListFormatControlProfil());
+         //--------------------------------------
 
-      } catch (ContratServiceNotFoundException exception) {
+      } catch (FormatControlProfilNotFoundException except) {
+         throw new VIInvalideException(except.getMessage(), except);
+      }
+      catch (ContratServiceNotFoundException exception) {
          throw new VIAppliClientException(issuer);
-
-      } catch (PagmNotFoundException exception) {
-         throw new VIPagmIncorrectException(exception.getMessage());
 
       } catch (RuntimeException exception) {
          throw new VIInvalideException(exception.getMessage(), exception);
       }
-
       // instanciation de la valeur retour
-      VIContenuExtrait extrait = new VIContenuExtrait();
-      extrait.setSaeDroits(saeDroits);
-      extrait.setIdUtilisateur(data.getAssertionParams().getSubjectId2());
-      extrait.setCodeAppli(issuer);
-      extrait.getPagms().addAll(
+      viContenuExtrait.setIdUtilisateur(data.getAssertionParams()
+            .getSubjectId2());
+      viContenuExtrait.setCodeAppli(issuer);
+      viContenuExtrait.getPagms().addAll(
             data.getAssertionParams().getCommonsParams().getPagm());
 
       // Renvoie du résultat
-      return extrait;
+      return viContenuExtrait;
+      /*--------------- Fin gestion des Formats -----------------------*/
+      
+      
+
+      // Extraction des PAGM du VI
+      // SaeDroits saeDroits;
+      // try {
+      // saeDroits = this.droitService.loadSaeDroits(issuer, pagms);
+      //
+      // } catch (ContratServiceNotFoundException exception) {
+      // throw new VIAppliClientException(issuer);
+      //
+      // } catch (RuntimeException exception) {
+      // throw new VIInvalideException(exception.getMessage(), exception);
+      // }
+      // instanciation de la valeur retour
+      // VIContenuExtrait extrait = new VIContenuExtrait();
+      // extrait.setSaeDroits(saeDroits);
+      // extrait.setIdUtilisateur(data.getAssertionParams().getSubjectId2());
+      // extrait.setCodeAppli(issuer);
+      // extrait.getPagms().addAll(data.getAssertionParams().getCommonsParams().getPagm());
+      // Renvoie du résultat
+      // return extrait;
 
    }
 }

@@ -5,6 +5,8 @@ import java.util.List;
 import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
 import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
+import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
+import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureBadEcdeUrlEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureEcdeUrlFileNotFoundEx;
@@ -18,11 +20,11 @@ import fr.urssaf.image.sae.services.exception.capture.RequiredArchivableMetadata
 import fr.urssaf.image.sae.services.exception.capture.RequiredStorageMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.UnknownHashCodeEx;
 import fr.urssaf.image.sae.services.exception.capture.UnknownMetadataEx;
+import fr.urssaf.image.sae.services.exception.format.validation.ValidationExceptionInvalidFile;
 
 /**
  * Classe de contrôle pour la capture unitaire et la capture en masse.
  * 
- * @author rhofir.
  */
 public interface SAEControlesCaptureService {
 
@@ -210,5 +212,18 @@ public interface SAEControlesCaptureService {
     */
    void checkHashCodeMetadataListForStorage(List<SAEMetadata> saeMetadatas,
          String refHash) throws UnknownHashCodeEx;
+   
+   /**
+    * Méthode chargée d'appeler le service de contrôle des formats.
+    * 
+    * @param saeDocument
+    *          classe representant un document - paramètre obligatoire
+    * @param listControlProfil
+    *          Liste des profils de contrôle à appliquer
+    * @throws UnknownFormatException : Le format est inconnu du référentiel des formats.
+    * @throws ValidationExceptionInvalidFile : Erreur dans la validation du fichier.
+    */
+   void checkFormat(SAEDocument saeDocument, List<FormatControlProfil> listControlProfil) throws UnknownFormatException, ValidationExceptionInvalidFile;
+   
 
 }
