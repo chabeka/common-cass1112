@@ -29,7 +29,9 @@
                   </goals>
                </execution>
             </executions>
-
+            <configuration>
+               <argumentFileName>builddef-sae-droit.lst</argumentFileName>
+            </configuration>
          </plugin>
 
       </plugins>

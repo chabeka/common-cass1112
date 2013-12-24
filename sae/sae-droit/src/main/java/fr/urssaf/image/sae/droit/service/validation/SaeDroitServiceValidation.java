@@ -30,6 +30,9 @@ public class SaeDroitServiceValidation {
 
    private static final String LOAD_METHOD = "execution(fr.urssaf.image.sae.droit.model.SaeDroits fr.urssaf.image.sae.droit.service.SaeDroitService.loadSaeDroits(*,*))"
          + "&& args(idClient, pagms)";
+   
+   private static final String LOAD_METHOD_2 = "execution(fr.urssaf.image.sae.droit.model.SaeDroitsEtFormat fr.urssaf.image.sae.droit.service.SaeDroitService.loadSaeDroits(*,*))"
+      + "&& args(idClient, pagms)";
 
    private static final String CREATE_METHOD = "execution(void fr.urssaf.image.sae.droit.service.SaeDroitService.createContratService(*,*))"
          + "&& args(contrat, listeSaePagms)";
@@ -53,6 +56,20 @@ public class SaeDroitServiceValidation {
     */
    @Before(LOAD_METHOD)
    public final void checkLoad(final String idClient, List<String> pagms) {
+
+      if (StringUtils.isEmpty(idClient)) {
+         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
+               ARG_REQUIRED, "identifiant client"));
+      }
+
+      if (CollectionUtils.isEmpty(pagms)) {
+         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
+               ARG_REQUIRED, "liste des pagms"));
+      }
+
+   }
+   @Before(LOAD_METHOD_2)
+   public final void checkLoad2(final String idClient, List<String> pagms) {
 
       if (StringUtils.isEmpty(idClient)) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(

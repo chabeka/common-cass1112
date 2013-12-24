@@ -3,9 +3,12 @@
  */
 package fr.urssaf.image.sae.droit.model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
 
 /**
  * Classe d'un ensemble de droits du SAE. Chaque droit du SAE a une AU associée
@@ -19,5 +22,6 @@ public class SaeDroits extends HashMap<String, List<SaePrmd>> implements
 
    private static final long serialVersionUID = -5913141404840013369L;
 
+  
 
 }

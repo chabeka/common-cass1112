@@ -20,4 +20,26 @@ public class DroitRuntimeException extends RuntimeException {
    public DroitRuntimeException(String message) {
       super(message);
    }
+   
+   /**
+    * Constructeur
+    * 
+    * @param message
+    *           message d'origine
+    * @param cause
+    *           cause de l'exception
+    */
+   public DroitRuntimeException(String message, Throwable cause) {
+      super(message, cause);
+   }
+
+   /**
+    * Constructeur
+    * 
+    * @param cause
+    *           la cause de l'exception
+    */
+   public DroitRuntimeException(Throwable cause) {
+      super(cause);
+   }
 }

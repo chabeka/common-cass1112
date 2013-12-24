@@ -7,9 +7,9 @@ import java.util.List;
 
 import fr.urssaf.image.sae.droit.dao.model.ServiceContract;
 import fr.urssaf.image.sae.droit.exception.ContratServiceNotFoundException;
-import fr.urssaf.image.sae.droit.exception.PagmNotFoundException;
+import fr.urssaf.image.sae.droit.exception.FormatControlProfilNotFoundException;
+import fr.urssaf.image.sae.droit.model.SaeDroitsEtFormat;
 import fr.urssaf.image.sae.droit.model.SaeContratService;
-import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePagm;
 
 /**
@@ -25,16 +25,21 @@ public interface SaeDroitService {
     *           code de l'application cliente du service
     * @param pagms
     *           liste des PAGM
-    * @return la liste des droits du SAE résultatnt de la transformation des
-    *         PAGM passés en paramètre
+    * @param viContenu
+    *           Objet qui sera stocké dans le contexte de sécurité
     * @throws ContratServiceNotFoundException
     *            exception levée si le contrat de service n'est pas trouvé
-    * @throws PagmNotFoundException
-    *            exception levée si un PAGM fourni n'est pas rattaché au contrat
-    *            de service
+    * @throws FormatControlProfilNotFoundException
+    *            formatControlProfil inexistant
     */
-   SaeDroits loadSaeDroits(String idClient, List<String> pagms)
-         throws ContratServiceNotFoundException, PagmNotFoundException;
+   // SaeDroits loadSaeDroits(String idClient, List<String> pagms)
+   // throws ContratServiceNotFoundException, PagmNotFoundException;
+   // void loadSaeDroits(String idClient, List<String> pagms, VIContenuExtrait
+   // viContenu)
+   // throws ContratServiceNotFoundException;
+   SaeDroitsEtFormat loadSaeDroits(String idClient, List<String> pagms)
+         throws ContratServiceNotFoundException,
+         FormatControlProfilNotFoundException;
 
    /**
     * Création d'un nouveau contrat de service (création dans

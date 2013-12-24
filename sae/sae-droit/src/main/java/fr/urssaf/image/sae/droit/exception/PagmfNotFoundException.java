@@ -4,12 +4,12 @@
 package fr.urssaf.image.sae.droit.exception;
 
 /**
- * Classe mère des exceptions non runtime levée par sae-droit
+ * 
  * 
  */
-public class DroitGeneralException extends Exception {
+public class PagmfNotFoundException extends RuntimeException {
 
-   private static final long serialVersionUID = 5421108891055222031L;
+   private static final long serialVersionUID = -2787691464718590500L;
 
    /**
     * constructeur
@@ -17,7 +17,7 @@ public class DroitGeneralException extends Exception {
     * @param message
     *           message de l'exception
     */
-   public DroitGeneralException(String message) {
+   public PagmfNotFoundException(String message) {
       super(message);
    }
 
@@ -29,7 +29,7 @@ public class DroitGeneralException extends Exception {
     * @param cause
     *           cause mère
     */
-   public DroitGeneralException(String message, Throwable cause) {
+   public PagmfNotFoundException(String message, Throwable cause) {
       super(message, cause);
    }
    
@@ -39,8 +39,7 @@ public class DroitGeneralException extends Exception {
     * @param cause
     *           cause mère
     */
-   public DroitGeneralException(Throwable cause) {
+   public PagmfNotFoundException(Throwable cause) {
       super(cause);
    }
-
 }

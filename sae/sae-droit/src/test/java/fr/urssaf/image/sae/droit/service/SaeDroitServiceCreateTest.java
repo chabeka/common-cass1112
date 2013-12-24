@@ -23,12 +23,14 @@ import com.google.common.cache.CacheLoader.InvalidCacheLoadException;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
+import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
+import fr.urssaf.image.sae.droit.dao.model.FormatProfil;
 import fr.urssaf.image.sae.droit.dao.model.Pagm;
 import fr.urssaf.image.sae.droit.dao.model.Pagma;
 import fr.urssaf.image.sae.droit.dao.model.Pagmp;
-import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.dao.model.ServiceContract;
 import fr.urssaf.image.sae.droit.dao.support.ContratServiceSupport;
+import fr.urssaf.image.sae.droit.dao.support.FormatControlProfilSupport;
 import fr.urssaf.image.sae.droit.dao.support.PagmSupport;
 import fr.urssaf.image.sae.droit.dao.support.PagmaSupport;
 import fr.urssaf.image.sae.droit.dao.support.PagmpSupport;
@@ -36,8 +38,8 @@ import fr.urssaf.image.sae.droit.exception.DroitRuntimeException;
 import fr.urssaf.image.sae.droit.exception.PagmReferenceException;
 import fr.urssaf.image.sae.droit.model.SaePagm;
 import fr.urssaf.image.sae.droit.model.SaePagma;
+import fr.urssaf.image.sae.droit.model.SaePagmf;
 import fr.urssaf.image.sae.droit.model.SaePagmp;
-import fr.urssaf.image.sae.droit.model.SaePrmd;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-droit-test.xml" })
@@ -61,6 +63,9 @@ public class SaeDroitServiceCreateTest {
 
    @Autowired
    private PagmpSupport pagmpSupport;
+
+   @Autowired
+   private FormatControlProfilSupport formatControlProfilSupport;
 
    @Autowired
    private JobClockSupport clockSupport;
@@ -164,12 +169,32 @@ public class SaeDroitServiceCreateTest {
       pagmp.setDescription("description pagmp");
       pagmp.setPrmd("codePrmd");
 
+      SaePagmf pagmf = new SaePagmf();
+      pagmf.setCodePagmf("pagmf");
+      pagmf.setDescription("description pagmf");
+      pagmf.setFormatProfile("formatProfile");
+
+      FormatProfil formatProfil = new FormatProfil();
+      formatProfil.setFileFormat("fmt/354");
+      formatProfil.setFormatIdentification(true);
+      formatProfil.setFormatValidation(true);
+      formatProfil.setFormatValidationMode("STRICT");
+
+      FormatControlProfil formatControlProfil = new FormatControlProfil();
+      formatControlProfil.setFormatCode("formatProfile");
+      formatControlProfil.setDescription("description");
+      formatControlProfil.setControlProfil(formatProfil);
+
+      formatControlProfilSupport.create(formatControlProfil, clockSupport
+            .currentCLock());
+
       List<SaePagm> listeSaePagm = new ArrayList<SaePagm>();
       SaePagm saePagm = new SaePagm();
       saePagm.setCode("codePagm");
       saePagm.setDescription("description pagm");
       saePagm.setPagma(pagma);
       saePagm.setPagmp(pagmp);
+      saePagm.setPagmf(pagmf);
       listeSaePagm.add(saePagm);
 
       service.createContratService(serviceContract, listeSaePagm);
@@ -185,8 +210,18 @@ public class SaeDroitServiceCreateTest {
             "les deux listes de pagms doivent avoir la meme longueur",
             listeSaePagm.size(), storedSaePagm.size());
 
-      Assert.assertTrue("les pagm stockés doivent être identiques",
-            listeSaePagm.containsAll(storedSaePagm));
+      Assert.assertEquals("les pagm stockés doivent être identiques",
+            listeSaePagm.get(0).getCode(), storedSaePagm.get(0).getCode());
+      Assert.assertEquals("les pagm stockés doivent être identiques",
+            listeSaePagm.get(0).getDescription(), storedSaePagm.get(0)
+                  .getDescription());
+      Assert.assertEquals("les pagm stockés doivent être identiques",
+            listeSaePagm.get(0).getPagma(), storedSaePagm.get(0).getPagma());
+      Assert.assertEquals("les pagm stockés doivent être identiques",
+            listeSaePagm.get(0).getPagmf().getCodePagmf(), storedSaePagm.get(0)
+                  .getPagmf().getCodePagmf());
+      Assert.assertEquals("les pagm stockés doivent être identiques",
+            listeSaePagm.get(0).getPagmp(), storedSaePagm.get(0).getPagmp());
 
    }
 
@@ -211,7 +246,6 @@ public class SaeDroitServiceCreateTest {
       pagmp.setPrmd("codePrmd");
       pagmpSupport.create(pagmp, clockSupport.currentCLock());
 
-
       List<SaePagm> listeSaePagm = new ArrayList<SaePagm>();
       SaePagm saePagm = new SaePagm();
       saePagm.setCode("codePagm");
@@ -229,7 +263,8 @@ public class SaeDroitServiceCreateTest {
 
       service.createContratService(serviceContract, listeSaePagm);
 
-      service.ajouterPagmContratService(serviceContract.getCodeClient(), saePagm);
+      service.ajouterPagmContratService(serviceContract.getCodeClient(),
+            saePagm);
 
    }
 
@@ -246,7 +281,6 @@ public class SaeDroitServiceCreateTest {
 
       contratSupport.create(serviceContract, clockSupport.currentCLock());
 
-      
       SaePagma pagma = new SaePagma();
       SaePagmp pagmp = new SaePagmp();
       pagma.setActionUnitaires(Arrays
@@ -304,7 +338,6 @@ public class SaeDroitServiceCreateTest {
       pagmp.setCode("codePagmp");
       pagmp.setDescription("description pagmp");
       pagmp.setPrmd("codePrmd");
-      
 
       SaePagm saePagm = new SaePagm();
       saePagm.setCode("codePagm");
@@ -377,7 +410,7 @@ public class SaeDroitServiceCreateTest {
       pagmp.setCode("codePagmp");
       pagmp.setDescription("description pagmp");
       pagmp.setPrmd("codePrmd");
-      
+
       SaePagm saePagm = new SaePagm();
       saePagm.setCode("codePagm");
       saePagm.setDescription("description pagm");

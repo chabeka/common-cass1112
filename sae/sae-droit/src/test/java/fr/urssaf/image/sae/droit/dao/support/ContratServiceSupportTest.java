@@ -128,8 +128,8 @@ public class ContratServiceSupportTest {
                "code contrat numero 1", serviceContract.getDescription());
          Assert.assertEquals("Le libellé du CS est incorrecte",
                "libelle du code client 1", serviceContract.getLibelle());
-         Assert.assertEquals("La durée de vie d'un VI est incorret", new Long(
-               120), serviceContract.getViDuree());
+         Assert.assertEquals("La durée de vie d'un VI est incorret", Long
+               .valueOf(120), serviceContract.getViDuree());
          Assert.assertEquals("L'identifiant de la PKI est incorrect", null,
                serviceContract.getIdPki());
          Assert
@@ -159,9 +159,8 @@ public class ContratServiceSupportTest {
                "code contrat numero 2", serviceContract.getDescription());
          Assert.assertEquals("Le libellé du CS est incorrecte",
                "libelle du code client 2", serviceContract.getLibelle());
-         Assert.assertEquals("La durée de vie d'un VI est incorret", new Long(
-               240), serviceContract.getViDuree());
-         
+         Assert.assertEquals("La durée de vie d'un VI est incorret", Long
+               .valueOf(240), serviceContract.getViDuree());
          Assert.assertEquals("L'identifiant de la PKI est incorrect", null,
                serviceContract.getIdPki());
          Assert

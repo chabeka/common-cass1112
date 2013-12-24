@@ -28,6 +28,11 @@ public class SaePagm {
     * PAGMp rattaché au PAGM
     */
    private SaePagmp pagmp;
+   
+   /**
+    * PAGMf rattaché au PAGM
+    */
+   private SaePagmf pagmf;
 
    /**
     * valeurs des paramètres dynamiques du PRMD associé
@@ -121,7 +126,8 @@ public class SaePagm {
          areEquals = code.equals(pagm.getCode())
                && description.equals(pagm.getDescription())
                && pagma.equals(pagm.getPagma())
-               && pagmp.equals(pagm.getPagmp());
+               && pagmp.equals(pagm.getPagmp())
+               && pagmf.equals(pagm.getPagmf());
 
          if (!(parametres == null && pagm.getParametres() == null)) {
             if (parametres != null && pagm.getParametres() != null) {
@@ -151,7 +157,7 @@ public class SaePagm {
 
       return "code : " + code + "\n" + "description : " + description + "\n"
             + "pagma : " + pagma + "\n" + "pagmp : " + pagmp + "\n"
-            + "liste des parametres :\n" + buffer.toString();
+            + "liste des parametres :\n" +  buffer.toString() + "pagmf : " + pagmf + "\n";
    }
 
    /**
@@ -160,6 +166,20 @@ public class SaePagm {
    @Override
    public final int hashCode() {
       return super.hashCode();
+   }
+
+   /**
+    * @return the pagmf
+    */
+   public SaePagmf getPagmf() {
+      return pagmf;
+   }
+
+   /**
+    * @param pagmf the pagmf to set
+    */
+   public void setPagmf(SaePagmf pagmf) {
+      this.pagmf = pagmf;
    }
 
 }

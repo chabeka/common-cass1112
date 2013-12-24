@@ -12,6 +12,7 @@ import me.prettyprint.hector.api.Keyspace;
 import me.prettyprint.hector.api.factory.HFactory;
 import me.prettyprint.hector.api.mutation.Mutator;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +28,10 @@ import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.commons.zookeeper.ZookeeperMutex;
 import fr.urssaf.image.sae.droit.cache.CacheConfig;
 import fr.urssaf.image.sae.droit.dao.model.ActionUnitaire;
+import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
 import fr.urssaf.image.sae.droit.dao.model.Pagm;
 import fr.urssaf.image.sae.droit.dao.model.Pagma;
+import fr.urssaf.image.sae.droit.dao.model.Pagmf;
 import fr.urssaf.image.sae.droit.dao.model.Pagmp;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.dao.model.ServiceContract;
@@ -38,22 +41,28 @@ import fr.urssaf.image.sae.droit.dao.serializer.exception.PagmpReferenceExceptio
 import fr.urssaf.image.sae.droit.dao.serializer.exception.PrmdReferenceException;
 import fr.urssaf.image.sae.droit.dao.support.ActionUnitaireSupport;
 import fr.urssaf.image.sae.droit.dao.support.ContratServiceSupport;
+import fr.urssaf.image.sae.droit.dao.support.FormatControlProfilSupport;
 import fr.urssaf.image.sae.droit.dao.support.PagmSupport;
 import fr.urssaf.image.sae.droit.dao.support.PagmaSupport;
+import fr.urssaf.image.sae.droit.dao.support.PagmfSupport;
 import fr.urssaf.image.sae.droit.dao.support.PagmpSupport;
 import fr.urssaf.image.sae.droit.dao.support.PrmdSupport;
 import fr.urssaf.image.sae.droit.exception.ContratServiceNotFoundException;
 import fr.urssaf.image.sae.droit.exception.ContratServiceReferenceException;
 import fr.urssaf.image.sae.droit.exception.DroitRuntimeException;
-import fr.urssaf.image.sae.droit.exception.PagmNotFoundException;
+import fr.urssaf.image.sae.droit.exception.FormatControlProfilNotFoundException;
 import fr.urssaf.image.sae.droit.exception.PagmReferenceException;
+import fr.urssaf.image.sae.droit.exception.PagmfNotFoundException;
 import fr.urssaf.image.sae.droit.model.SaeContratService;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
+import fr.urssaf.image.sae.droit.model.SaeDroitsEtFormat;
 import fr.urssaf.image.sae.droit.model.SaePagm;
 import fr.urssaf.image.sae.droit.model.SaePagma;
+import fr.urssaf.image.sae.droit.model.SaePagmf;
 import fr.urssaf.image.sae.droit.model.SaePagmp;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.droit.service.SaeDroitService;
+import fr.urssaf.image.sae.droit.utils.ResourceMessagesUtils;
 import fr.urssaf.image.sae.droit.utils.ZookeeperUtils;
 
 /**
@@ -66,7 +75,6 @@ import fr.urssaf.image.sae.droit.utils.ZookeeperUtils;
 public class SaeDroitServiceImpl implements SaeDroitService {
 
    private static final String CHECK_CONTRAT = "checkContratServiceInexistant";
-   private static final String CHECK_PAGM = "checkPagmInexistant";
    private static final String TRC_LOAD = "loadSaeDroits()";
    private static final String TRC_CREATE = "createContratService()";
 
@@ -85,6 +93,8 @@ public class SaeDroitServiceImpl implements SaeDroitService {
    private final LoadingCache<String, List<Pagm>> pagmsCache;
    private final LoadingCache<String, Pagma> pagmasCache;
    private final LoadingCache<String, Pagmp> pagmpsCache;
+   private final LoadingCache<String, Pagmf> pagmfsCache;
+   private final LoadingCache<String, FormatControlProfil> formatControlProfilsCache;
    private final LoadingCache<String, Prmd> prmdsCache;
    private final LoadingCache<String, ActionUnitaire> actionsCache;
 
@@ -92,6 +102,8 @@ public class SaeDroitServiceImpl implements SaeDroitService {
    private final PagmSupport pagmSupport;
    private final PagmaSupport pagmaSupport;
    private final PagmpSupport pagmpSupport;
+   private final PagmfSupport pagmfSupport;
+   private final FormatControlProfilSupport formatControlProfilSupport;
 
    private final CuratorFramework curatorClient;
 
@@ -114,6 +126,10 @@ public class SaeDroitServiceImpl implements SaeDroitService {
     *           support pour les actions unitaires
     * @param prmdSupport
     *           support pour les prmd
+    * @param pagmfSupport
+    *           support pour les pagmf
+    * @param formControlProfilSupport
+    *           support pour les profils de contrôle
     * @param curatorClient
     *           connexion à Zookeeper
     * @param clockSupport
@@ -126,7 +142,8 @@ public class SaeDroitServiceImpl implements SaeDroitService {
    @Autowired
    public SaeDroitServiceImpl(final ContratServiceSupport contratSupport,
          final PagmSupport pagmSupport, final PagmaSupport pagmaSupport,
-         final PagmpSupport pagmpSupport,
+         final PagmpSupport pagmpSupport, final PagmfSupport pagmfSupport,
+         final FormatControlProfilSupport formControlProfilSupport,
          final ActionUnitaireSupport actionSupport,
          final PrmdSupport prmdSupport, final CuratorFramework curatorClient,
          final JobClockSupport clockSupport, CacheConfig cacheConfig,
@@ -176,6 +193,28 @@ public class SaeDroitServiceImpl implements SaeDroitService {
 
             });
 
+      pagmfsCache = CacheBuilder.newBuilder().expireAfterWrite(
+            cacheConfig.getDroitsCacheDuration(), TimeUnit.MINUTES).build(
+            new CacheLoader<String, Pagmf>() {
+
+               @Override
+               public Pagmf load(String identifiant) {
+                  return pagmfSupport.find(identifiant);
+               }
+
+            });
+
+      formatControlProfilsCache = CacheBuilder.newBuilder().expireAfterWrite(
+            cacheConfig.getDroitsCacheDuration(), TimeUnit.MINUTES).build(
+            new CacheLoader<String, FormatControlProfil>() {
+
+               @Override
+               public FormatControlProfil load(String identifiant) {
+                  return formControlProfilSupport.find(identifiant);
+               }
+
+            });
+
       actionsCache = CacheBuilder.newBuilder().expireAfterWrite(
             cacheConfig.getDroitsCacheDuration(), TimeUnit.MINUTES).build(
             new CacheLoader<String, ActionUnitaire>() {
@@ -197,10 +236,13 @@ public class SaeDroitServiceImpl implements SaeDroitService {
                }
 
             });
+
       this.contratSupport = contratSupport;
       this.pagmSupport = pagmSupport;
       this.pagmaSupport = pagmaSupport;
       this.pagmpSupport = pagmpSupport;
+      this.pagmfSupport = pagmfSupport;
+      this.formatControlProfilSupport = formControlProfilSupport;
       this.curatorClient = curatorClient;
       this.clockSupport = clockSupport;
       this.keyspace = keyspace;
@@ -209,9 +251,80 @@ public class SaeDroitServiceImpl implements SaeDroitService {
    /**
     * {@inheritDoc}
     */
+   // @Override
+   // public final SaeDroits loadSaeDroits(String idClient, List<String> pagms)
+   // throws ContratServiceNotFoundException, PagmNotFoundException {
+   //
+   // LOGGER.debug("{} - Vérification de l'existence du contrat de service {}",
+   // TRC_LOAD, idClient);
+   //
+   // try {
+   // contratsCache.getUnchecked(idClient);
+   // } catch (InvalidCacheLoadException e) {
+   // throw new ContratServiceNotFoundException(
+   // "Aucun contrat de service n'a été trouvé "
+   // + " pour l'identifiant " + idClient, e);
+   // }
+   //
+   // List<Pagm> listPagm;
+   // LOGGER
+   // .debug(
+   // "{} - Vérification ques des pagms sont associés au contrat de service {}",
+   // TRC_LOAD, idClient);
+   // try {
+   // listPagm = pagmsCache.getUnchecked(idClient);
+   // } catch (InvalidCacheLoadException e) {
+   // // initialisation de la liste à vide, afin d'avoir une liste de
+   // // référence
+   // listPagm = new ArrayList<Pagm>();
+   // }
+   //
+   // SaeDroits saeDroits = new SaeDroits();
+   //
+   // LOGGER
+   // .debug(
+   // "{} - Pour chaque pagm, on vérifie que les pagma et pagmp associés existent",
+   // TRC_LOAD);
+   // for (String codePagm : pagms) {
+   // Pagm pagm = checkPagmExists(codePagm, listPagm, idClient);
+   //
+   // Pagma pagma;
+   // try {
+   // pagma = pagmasCache.getUnchecked(pagm.getPagma());
+   // } catch (InvalidCacheLoadException e) {
+   // throw new PagmaReferenceException(
+   // "Le PAGMa "
+   // + pagm.getPagma()
+   // + " n'a pas été trouvé dans la famille de colonne DroitPagma",
+   // e);
+   // }
+   //
+   // Prmd prmd = getPrmd(pagm.getPagmp());
+   //
+   // for (String codeAction : pagma.getActionUnitaires()) {
+   // try {
+   // actionsCache.getUnchecked(codeAction);
+   // } catch (InvalidCacheLoadException e) {
+   // throw new ActionUnitaireReferenceException("L'action unitaire "
+   // + codeAction + " n'a pas été trouvée "
+   // + "dans la famille de colonne DroitActionUnitaire", e);
+   // }
+   //
+   // gererPrmd(saeDroits, codeAction, prmd, pagm);
+   //
+   // }
+   //
+   // }
+   //
+   // return saeDroits;
+   // }
+
    @Override
-   public final SaeDroits loadSaeDroits(String idClient, List<String> pagms)
-         throws ContratServiceNotFoundException, PagmNotFoundException {
+   public final SaeDroitsEtFormat loadSaeDroits(String idClient,
+         List<String> pagms) throws ContratServiceNotFoundException,
+         FormatControlProfilNotFoundException {
+
+      SaeDroitsEtFormat saeDroitEtFormat = new SaeDroitsEtFormat();
 
       LOGGER.debug("{} - Vérification de l'existence du contrat de service {}",
             TRC_LOAD, idClient);
@@ -269,12 +382,36 @@ public class SaeDroitServiceImpl implements SaeDroitService {
             }
 
             gererPrmd(saeDroits, codeAction, prmd, pagm);
-
+            // ------------------------
+            saeDroitEtFormat.setSaeDroits(saeDroits);
          }
 
-      }
+         // récupération des Pagmf à partir du PAGM donné.
+         // Remarque un PAGMF peut ne pas exister dans ce cas on continue le
+         // traitement et on ne remonte pas d'exception.
+         Pagmf pagmf = getPagmf(pagm.getPagmf());
+         if (pagmf != null) {
+            // Récupération du formatControlProfil
+            FormatControlProfil formatControlProfil = getFormatControlProfil(pagmf
+                  .getCodeFormatControlProfil());
+            // NB : Si le formatControlProfil n'existe pas une exception
+            // FormatControlProfilNotFoundException est levée.
 
-      return saeDroits;
+            // ajout au viContenu. La clé à ajouter est le code du Pagm et le
+            // profile est ajouté à la liste de profile de contrôle
+            // Set<FormatControlProfil> setFormat = getListFormatControlProfil(
+            // viContenu, pagm.getCode());
+            // setFormat.add(formatControlProfil);
+            // viContenu.getControlProfilMap().put(pagm.getCode(), setFormat);
+
+            // ajout du formatControlProfil
+            List<FormatControlProfil> listFormatControlProfil = saeDroitEtFormat
+                  .getListFormatControlProfil();
+            listFormatControlProfil.add(formatControlProfil);
+            saeDroitEtFormat.setListFormatControlProfil(listFormatControlProfil);
+         }
+      }
+      return saeDroitEtFormat;
    }
 
    /**
@@ -376,13 +513,11 @@ public class SaeDroitServiceImpl implements SaeDroitService {
                   "Les pagms rattachés au contrat de service " + codeContrat
                         + " ont déjà été créés");
          }
-
       }
-
    }
 
    private Pagm checkPagmExists(String codePagm, List<Pagm> listPagm,
-         String idClient) throws PagmNotFoundException {
+         String idClient) {
 
       Pagm pagm = null;
       boolean found = false;
@@ -396,7 +531,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
       }
 
       if (!found) {
-         throw new PagmNotFoundException("Aucun PAGM '" + codePagm
+         throw new PagmfNotFoundException("Aucun PAGM '" + codePagm
                + "' n'a été trouvé pour le contrat de service " + idClient);
       }
 
@@ -419,7 +554,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
          prmd = prmdsCache.getUnchecked(pagmp.getPrmd());
       } catch (InvalidCacheLoadException e) {
          throw new PrmdReferenceException("Le PRMD " + pagmp.getPrmd()
-               + " n'a pas été trouvé dans la famille de colonne DroitPagma", e);
+               + " n'a pas été trouvé dans la famille de colonne DroitPrmd", e);
       }
 
       return prmd;
@@ -605,6 +740,15 @@ public class SaeDroitServiceImpl implements SaeDroitService {
          saePagm.setPagma(saePagma);
          saePagm.setPagmp(saePagmp);
 
+         if (pagm.getPagmf() != null) {
+            Pagmf pagmf = getPagmf(pagm.getPagmf());
+            SaePagmf saePagmf = new SaePagmf();
+            saePagmf.setCodePagmf(pagmf.getCodePagmf());
+            saePagmf.setDescription(pagmf.getDescription());
+            saePagmf.setFormatProfile(pagmf.getCodeFormatControlProfil());
+            saePagm.setPagmf(saePagmf);
+         }
+
          listeSaePagm.add(saePagm);
       }
 
@@ -664,6 +808,10 @@ public class SaeDroitServiceImpl implements SaeDroitService {
       pagmsCache.invalidate(idContratService);
       pagmasCache.invalidate(saePagm.getPagma().getCode());
       pagmpsCache.invalidate(saePagm.getPagmp().getCode());
+      if (saePagm.getPagmf() != null
+            && !StringUtils.isBlank(saePagm.getPagmf().getCodePagmf())) {
+         pagmfsCache.invalidate(saePagm.getPagmf().getCodePagmf());
+      }
 
    }
 
@@ -708,6 +856,9 @@ public class SaeDroitServiceImpl implements SaeDroitService {
             pagmsCache.invalidate(idContratService);
             pagmasCache.invalidate(pagmASupprimer.getPagma());
             pagmpsCache.invalidate(pagmASupprimer.getPagmp());
+            if (pagmASupprimer.getPagmf() != null) {
+               pagmfsCache.invalidate(pagmASupprimer.getPagmf());
+            }
 
          } else {
             LOGGER.debug(
@@ -758,6 +909,10 @@ public class SaeDroitServiceImpl implements SaeDroitService {
             pagmsCache.invalidate(idContratService);
             pagmasCache.invalidate(saePagm.getPagma().getCode());
             pagmpsCache.invalidate(saePagm.getPagmp().getCode());
+            if (saePagm.getPagmf() != null
+                  && !StringUtils.isBlank(saePagm.getPagmf().getCodePagmf())) {
+               pagmfsCache.invalidate(saePagm.getPagmf().getCodePagmf());
+            }
 
             // Préparation de l'ajout du PAGM
             creerPagm(idContratService, saePagm, mutator);
@@ -814,12 +969,26 @@ public class SaeDroitServiceImpl implements SaeDroitService {
       pagmp.setPrmd(saePagmp.getPrmd());
       pagmpSupport.create(pagmp, clockSupport.currentCLock(), mutator);
 
+      // Ajout du PAGMf
+      SaePagmf saePagmf = saePagm.getPagmf();
+      if (saePagmf != null) {
+         Pagmf pagmf = new Pagmf();
+         pagmf.setCodePagmf(saePagmf.getCodePagmf());
+         pagmf.setDescription(saePagmf.getDescription());
+         pagmf.setCodeFormatControlProfil(saePagmf.getFormatProfile());
+
+         pagmfSupport.create(pagmf, clockSupport.currentCLock());
+      }
+
       // Ajout du PAGM
       Pagm pagm = new Pagm();
       pagm.setCode(saePagm.getCode());
       pagm.setDescription(saePagm.getDescription());
       pagm.setPagma(saePagm.getPagma().getCode());
       pagm.setPagmp(saePagm.getPagmp().getCode());
+      if (saePagm.getPagmf() != null) {
+         pagm.setPagmf(saePagm.getPagmf().getCodePagmf());
+      }
       pagmSupport.create(idContratService, pagm, clockSupport.currentCLock(),
             mutator);
 
@@ -860,6 +1029,24 @@ public class SaeDroitServiceImpl implements SaeDroitService {
                      "Pas de PAGMp pour le pagm {}, aucune suppression de PAGMp à effectuer",
                      pagmASupprimer.getCode());
       }
+      try {
+         Pagmf pagmf = getPagmf(pagmASupprimer.getPagmf());
+         // Suppresion du PAGMf
+         if (pagmf != null) {
+            pagmfSupport.delete(pagmf.getCodePagmf(), clockSupport
+                  .currentCLock());
+         }
+      } catch (PagmfNotFoundException e) {
+         LOGGER
+               .debug(
+                     "Pas de PAGMf pour le pagm {}, aucune suppression de PAGMf à effectuer",
+                     pagmASupprimer.getCode());
+      } catch (InvalidCacheLoadException e) {
+         LOGGER
+               .debug(
+                     "Pas de PAGMf pour le pagm {}, aucune suppression de PAGMf à effectuer",
+                     pagmASupprimer.getCode());
+      }
 
       pagmSupport.delete(idContratService, pagmASupprimer.getCode(),
             clockSupport.currentCLock(), mutator);
@@ -881,5 +1068,85 @@ public class SaeDroitServiceImpl implements SaeDroitService {
                + idContratService + " n'existe pas", e);
       }
    }
+
+   /**
+    * Récupération du Pagmf
+    * 
+    * @param codePagmf
+    *           code
+    * @return PAGMF
+    */
+   private Pagmf getPagmf(String codePagmf) {
+
+      Pagmf pagmf = null;
+      try {
+         if (!StringUtils.isBlank(codePagmf)) {
+            pagmf = pagmfsCache.getUnchecked(codePagmf);
+         }
+
+      } catch (InvalidCacheLoadException e) {
+         LOGGER
+               .debug(
+                     "Le PAGMf "
+                           + codePagmf
+                           + " n'a pas été trouvé dans la famille de colonne DroitPagmf",
+                     e);
+      }
+      return pagmf;
+   }
+
+   /**
+    * Récupération du FormatControlProfil à partir de son code
+    * 
+    * @param codeFormatControlProfil
+    *           code
+    * @return FormatControlProfil
+    * @throws FormatControlProfilNotFoundException
+    *            : formatControlProfilInexistant
+    */
+   private FormatControlProfil getFormatControlProfil(
+         String codeFormatControlProfil)
+         throws FormatControlProfilNotFoundException {
+
+      FormatControlProfil formatControlProfil;
+      try {
+         formatControlProfil = formatControlProfilsCache
+               .getUnchecked(codeFormatControlProfil);
+      } catch (InvalidCacheLoadException e) {
+         throw new FormatControlProfilNotFoundException(ResourceMessagesUtils
+               .loadMessage("erreur.format.control.profil.not.found",
+                     codeFormatControlProfil), e);
+      }
+      return formatControlProfil;
+   }
+
+   /**
+    * Recupère l'ensemble des formatsControlProfil à partir d'une cle de la Map
+    * contenu dans le ViContenuExtrait.
+    * 
+    * 
+    * @param viConten
+    *           VIContenuExtrait
+    * @param cle
+    *           cle dans la Map
+    */
+   // private Set<FormatControlProfil> getListFormatControlProfil(
+   // VIContenuExtrait viConten, String cle) {
+   //
+   // Iterator<Entry<String, Set<FormatControlProfil>>> iterator = viConten
+   // .getControlProfilMap().entrySet().iterator();
+   // Set<FormatControlProfil> setFormat = null;
+   // while (iterator.hasNext()) {
+   // Map.Entry<String, Set<FormatControlProfil>> entry = (Map.Entry<String,
+   // Set<FormatControlProfil>>) iterator
+   // .next();
+   // String key = (String) entry.getKey();
+   // if (StringUtils.equalsIgnoreCase(cle, key)) {
+   // setFormat = (Set<FormatControlProfil>) entry.getValue();
+   // return setFormat;
+   // }
+   // }
+   // return setFormat;
+   // }
 
 }

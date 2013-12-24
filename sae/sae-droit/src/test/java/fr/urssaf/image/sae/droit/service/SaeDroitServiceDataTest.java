@@ -20,8 +20,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.sae.droit.dao.model.ActionUnitaire;
+import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
+import fr.urssaf.image.sae.droit.dao.model.FormatProfil;
 import fr.urssaf.image.sae.droit.dao.model.Pagm;
 import fr.urssaf.image.sae.droit.dao.model.Pagma;
+import fr.urssaf.image.sae.droit.dao.model.Pagmf;
 import fr.urssaf.image.sae.droit.dao.model.Pagmp;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.dao.model.ServiceContract;
@@ -31,17 +34,22 @@ import fr.urssaf.image.sae.droit.dao.serializer.exception.PagmpReferenceExceptio
 import fr.urssaf.image.sae.droit.dao.serializer.exception.PrmdReferenceException;
 import fr.urssaf.image.sae.droit.dao.support.ActionUnitaireSupport;
 import fr.urssaf.image.sae.droit.dao.support.ContratServiceSupport;
+import fr.urssaf.image.sae.droit.dao.support.FormatControlProfilSupport;
 import fr.urssaf.image.sae.droit.dao.support.PagmSupport;
 import fr.urssaf.image.sae.droit.dao.support.PagmaSupport;
+import fr.urssaf.image.sae.droit.dao.support.PagmfSupport;
 import fr.urssaf.image.sae.droit.dao.support.PagmpSupport;
 import fr.urssaf.image.sae.droit.dao.support.PrmdSupport;
 import fr.urssaf.image.sae.droit.exception.ContratServiceNotFoundException;
 import fr.urssaf.image.sae.droit.exception.ContratServiceReferenceException;
-import fr.urssaf.image.sae.droit.exception.PagmNotFoundException;
+import fr.urssaf.image.sae.droit.exception.FormatControlProfilNotFoundException;
+import fr.urssaf.image.sae.droit.exception.PagmfNotFoundException;
 import fr.urssaf.image.sae.droit.model.SaeContratService;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
+import fr.urssaf.image.sae.droit.model.SaeDroitsEtFormat;
 import fr.urssaf.image.sae.droit.model.SaePagm;
 import fr.urssaf.image.sae.droit.model.SaePagma;
+import fr.urssaf.image.sae.droit.model.SaePagmf;
 import fr.urssaf.image.sae.droit.model.SaePagmp;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 
@@ -63,6 +71,10 @@ public class SaeDroitServiceDataTest {
    private static final String CODE_PAGMP = "pagmpCode";
 
    private static final String CODE_PAGMA = "pagmaCode";
+   
+   private static final String CODE_PAGMF = "pagmfCode";
+   
+   private static final String CODE_PAGMF_2 = "pagmfCode2";
 
    private static final String DESCRIPTION_PAGM = "description pagm";
 
@@ -119,9 +131,15 @@ public class SaeDroitServiceDataTest {
 
    @Autowired
    private PagmaSupport pagmaSupport;
+   
+   @Autowired
+   private PagmfSupport pagmfSupport;
 
    @Autowired
    private PrmdSupport prmdSupport;
+   
+   @Autowired
+   private FormatControlProfilSupport formatControlProfilSupport;
 
    @Autowired
    private ActionUnitaireSupport actionSupport;
@@ -147,15 +165,15 @@ public class SaeDroitServiceDataTest {
 
    @Test(expected = ContratServiceNotFoundException.class)
    public void testContratServiceInexistant()
-         throws ContratServiceNotFoundException, PagmNotFoundException {
+         throws ContratServiceNotFoundException, PagmfNotFoundException, FormatControlProfilNotFoundException {
 
       service.loadSaeDroits("test1", Arrays.asList(new String[] { "pagm1" }));
 
    }
 
-   @Test(expected = PagmNotFoundException.class)
+   @Test(expected = PagmfNotFoundException.class)
    public void testPagmInexistant() throws ContratServiceNotFoundException,
-         PagmNotFoundException {
+         PagmfNotFoundException, FormatControlProfilNotFoundException {
       creationContrat();
 
       service.loadSaeDroits(CODE_CLIENT, Arrays
@@ -164,7 +182,7 @@ public class SaeDroitServiceDataTest {
 
    @Test(expected = PagmaReferenceException.class)
    public void testPagmaInexistant() throws ContratServiceNotFoundException,
-         PagmNotFoundException {
+         PagmfNotFoundException, FormatControlProfilNotFoundException {
       creationContrat();
       creationPagm();
 
@@ -174,7 +192,7 @@ public class SaeDroitServiceDataTest {
 
    @Test(expected = PagmpReferenceException.class)
    public void testPagmpInexistant() throws ContratServiceNotFoundException,
-         PagmNotFoundException {
+         PagmfNotFoundException, FormatControlProfilNotFoundException {
       creationContrat();
       creationPagm();
       creationPagma();
@@ -185,7 +203,7 @@ public class SaeDroitServiceDataTest {
 
    @Test(expected = PrmdReferenceException.class)
    public void testPrmdInexistant() throws ContratServiceNotFoundException,
-         PagmNotFoundException {
+         PagmfNotFoundException, FormatControlProfilNotFoundException {
       creationContrat();
       creationPagm();
       creationPagma();
@@ -197,7 +215,7 @@ public class SaeDroitServiceDataTest {
 
    @Test(expected = ActionUnitaireReferenceException.class)
    public void testActionInexistant() throws ContratServiceNotFoundException,
-         PagmNotFoundException {
+         PagmfNotFoundException, FormatControlProfilNotFoundException {
       creationContrat();
       creationPagm();
       creationPagma();
@@ -210,16 +228,23 @@ public class SaeDroitServiceDataTest {
 
    @Test
    public void testSucces() throws ContratServiceNotFoundException,
-         PagmNotFoundException {
+         PagmfNotFoundException, FormatControlProfilNotFoundException {
       creationContrat();
       creationPagm();
       creationPagma();
       creationPagmp();
+      creationPagmf();
+      
       Prmd prmd = creationPrmd();
       creationActionUnitaire();
 
-      SaeDroits droits = service.loadSaeDroits(CODE_CLIENT, Arrays
+      SaeDroitsEtFormat saeDroitsEtFormat = service.loadSaeDroits(CODE_CLIENT, Arrays
             .asList(new String[] { CODE_PAGM }));
+      Assert.assertNotNull(saeDroitsEtFormat);
+      SaeDroits droits = saeDroitsEtFormat.getSaeDroits();
+      
+//      SaeDroits droits = service.loadSaeDroits(CODE_CLIENT, Arrays
+//            .asList(new String[] { CODE_PAGM }));
       Assert.assertTrue("l'action unitaire doit exister : " + CODE_ACTION_1,
             droits.containsKey(CODE_ACTION_1));
 
@@ -228,6 +253,9 @@ public class SaeDroitServiceDataTest {
       Assert.assertEquals("1 seul PRMD", 1, saePrmds.size());
 
       comparerPrmd(prmd, saePrmds.get(0).getPrmd());
+      
+      List<FormatControlProfil> formats = saeDroitsEtFormat.getListFormatControlProfil();
+      Assert.assertEquals("Plusieurs formatControlProfil", 1, formats.size());
 
    }
 
@@ -247,7 +275,7 @@ public class SaeDroitServiceDataTest {
 
    @Test
    public void testSuccesPlusieursPagm()
-         throws ContratServiceNotFoundException, PagmNotFoundException {
+         throws ContratServiceNotFoundException, PagmfNotFoundException, FormatControlProfilNotFoundException {
       creationContrat();
       creationPagm();
       creationPagm2();
@@ -259,9 +287,16 @@ public class SaeDroitServiceDataTest {
       Prmd prmd2 = creationPrmd2();
       creationActionUnitaire();
       creationActionUnitaire2();
+      creationPagmf();
+      creationPagmf2();
 
-      SaeDroits droits = service.loadSaeDroits(CODE_CLIENT, Arrays
+//      SaeDroits droits = service.loadSaeDroits(CODE_CLIENT, Arrays
+//            .asList(new String[] { CODE_PAGM, CODE_PAGM_2 }));
+      
+      SaeDroitsEtFormat saeDroitsEtFormat = service.loadSaeDroits(CODE_CLIENT, Arrays
             .asList(new String[] { CODE_PAGM, CODE_PAGM_2 }));
+      Assert.assertNotNull(saeDroitsEtFormat);
+      SaeDroits droits = saeDroitsEtFormat.getSaeDroits();
 
       Assert.assertEquals("2 clés présentes ", 2, droits.keySet().size());
 
@@ -288,6 +323,9 @@ public class SaeDroitServiceDataTest {
       saePrmds = droits.get(CODE_ACTION_2);
       Assert.assertEquals("1 seul PRMD", 1, saePrmds.size());
       comparerPrmd(prmd2, saePrmds.get(0).getPrmd());
+      
+      List<FormatControlProfil> formats = saeDroitsEtFormat.getListFormatControlProfil();
+      Assert.assertEquals("1 formatControlProfil", 2, formats.size());
    }
 
    @Test(expected = ContratServiceReferenceException.class)
@@ -350,6 +388,7 @@ public class SaeDroitServiceDataTest {
       pagm.setDescription(DESCRIPTION_PAGM);
       pagm.setPagma(CODE_PAGMA);
       pagm.setPagmp(CODE_PAGMP);
+      pagm.setPagmf(CODE_PAGMF);
 
       pagmSupport.create(CODE_CLIENT, pagm, new Date().getTime());
 
@@ -361,6 +400,7 @@ public class SaeDroitServiceDataTest {
       pagm.setDescription(DESCRIPTION_PAGM_2);
       pagm.setPagma(CODE_PAGMA_2);
       pagm.setPagmp(CODE_PAGMP_2);
+      pagm.setPagmf(CODE_PAGMF_2);
 
       pagmSupport.create(CODE_CLIENT, pagm, new Date().getTime());
 
@@ -428,6 +468,68 @@ public class SaeDroitServiceDataTest {
 
       return prmd;
    }
+   
+   private void creationPagmf() throws FormatControlProfilNotFoundException {
+      creationFormatControlProfil();
+      
+      Pagmf pagmf = new Pagmf();
+
+      pagmf.setCodePagmf(CODE_PAGMF);
+      pagmf.setDescription("description");
+      pagmf.setCodeFormatControlProfil("formatProfile");
+      
+      pagmfSupport.create(pagmf, new Date().getTime());
+   }
+   
+   private void creationFormatControlProfil() {
+      FormatControlProfil format = new FormatControlProfil();
+      format.setDescription("description");
+      format.setFormatCode("formatProfile");
+      FormatProfil controlProfil = creationFormatProfil();
+      format.setControlProfil(controlProfil);
+      
+      formatControlProfilSupport.create(format, new Date().getTime());
+   }
+   
+   private FormatProfil creationFormatProfil() {
+      FormatProfil formatProfil = new FormatProfil();
+      formatProfil.setFileFormat("fmt/354");
+      formatProfil.setFormatIdentification(true);
+      formatProfil.setFormatValidation(true);
+      formatProfil.setFormatValidationMode("STRICT");
+      return formatProfil;
+   }
+   
+   private void creationPagmf2() throws FormatControlProfilNotFoundException {
+      creationFormatControlProfil2();
+      
+      Pagmf pagmf = new Pagmf();
+
+      pagmf.setCodePagmf(CODE_PAGMF_2);
+      pagmf.setDescription("description");
+      pagmf.setCodeFormatControlProfil("formatProfile");
+      
+      pagmfSupport.create(pagmf, new Date().getTime());
+   }
+   
+   private void creationFormatControlProfil2() {
+      FormatControlProfil format = new FormatControlProfil();
+      format.setDescription("description");
+      format.setFormatCode("formatProfile");
+      FormatProfil controlProfil = creationFormatProfil2();
+      format.setControlProfil(controlProfil);
+      
+      formatControlProfilSupport.create(format, new Date().getTime());
+   }
+   
+   private FormatProfil creationFormatProfil2() {
+      FormatProfil formatProfil = new FormatProfil();
+      formatProfil.setFileFormat("fmt/354");
+      formatProfil.setFormatIdentification(true);
+      formatProfil.setFormatValidation(true);
+      formatProfil.setFormatValidationMode("MONITOR");
+      return formatProfil;
+   }
 
    // identique à celui de la classe support ContratServiceDataSupportTest
    @Test
@@ -493,11 +595,12 @@ public class SaeDroitServiceDataTest {
    }
 
    @Test
-   public void getFullCsTest() {
+   public void getFullCsTest() throws FormatControlProfilNotFoundException {
       creationContrat();
       creationPagm();
       creationPagma();
       creationPagmp();
+      creationPagmf();
       creationPrmd();
       SaeContratService fullCs = service.getFullContratService(CODE_CLIENT);
 
@@ -527,7 +630,14 @@ public class SaeDroitServiceDataTest {
 
          saePagmp.setPrmd(CODE_PRMD);
          Assert.assertEquals(pagm.getPagmp(), saePagmp);
-
+         
+         SaePagmf saePagmf = new SaePagmf();
+         saePagmf.setCodePagmf(CODE_PAGMF);
+         saePagmf.setDescription("description");
+         saePagmf.setFormatProfile("formatProfile");
+         Assert.assertEquals(pagm.getPagmf().getCodePagmf(), saePagmf.getCodePagmf());
+         Assert.assertEquals(pagm.getPagmf().getDescription(), saePagmf.getDescription());
+         Assert.assertEquals(pagm.getPagmf().getFormatProfile(), saePagmf.getFormatProfile());
       }
 
    }
