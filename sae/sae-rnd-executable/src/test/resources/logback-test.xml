@@ -6,16 +6,19 @@
       </encoder>
    </appender>
    
-   <logger name="org.opensaml" level="WARN" />
-   <logger name="org.apache.xml" level="WARN" />
    <logger name="org.springframework" level="WARN" />
-   <logger name="org.cassandraunit" level="WARN" />
    <logger name="org.apache.cassandra" level="WARN" />
-   <logger name="me.prettyprint.cassandra" level="WARN" />
+   <logger name="org.cassandraunit" level="WARN" />
+   <logger name="me.prettyprint" level="WARN" />
+   <logger name="com.netflix.curator" level="WARN" />
    <logger name="org.apache.zookeeper" level="WARN" />
    <logger name="uk.gov.nationalarchives" level="WARN" />
    
-   <root level="DEBUG">
+   <logger name="fr.urssaf.image.commons" level="INFO" />
+   
+   <logger name="fr.urssaf.image.sae" level="INFO" />
+   
+   <root level="debug">
       <appender-ref ref="console" />
    </root>
 
