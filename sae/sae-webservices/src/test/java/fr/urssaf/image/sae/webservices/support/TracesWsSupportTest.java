@@ -329,7 +329,7 @@ public class TracesWsSupportTest {
 
       AuthenticationToken authentication = AuthenticationFactory
             .createAuthentication(viExtrait.getIdUtilisateur(), viExtrait,
-                  roles, viExtrait.getSaeDroits());
+                  roles);
 
       AuthenticationContext.setAuthenticationToken(authentication);
 

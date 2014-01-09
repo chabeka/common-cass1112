@@ -20,6 +20,9 @@ public class Pagm {
    /** domaine d'action (PAGMp) du PAGM */
    private String pagmp;
 
+   /** droit pour les formats de fichiers (PAGMf) du PAGM */
+   private String pagmf;
+
    /** description du PAGM */
    private String description;
 
@@ -54,6 +57,21 @@ public class Pagm {
     */
    public final void setPagma(String pagma) {
       this.pagma = pagma;
+   }
+
+   /**
+    * @return le droit des formats de fichiers (PAGMf) du PAGM
+    */
+   public final String getPagmf() {
+      return pagmf;
+   }
+
+   /**
+    * @param pagma
+    *           le droit des formats de fichiers (PAGMf) du PAGM
+    */
+   public final void setPagmf(String pagmf) {
+      this.pagmf = pagmf;
    }
 
    /**
@@ -113,6 +131,7 @@ public class Pagm {
          areEquals = code.equals(pagm.getCode())
                && description.equals(pagm.getDescription())
                && pagma.equals(pagm.getPagma())
+               && pagmf.equals(pagm.getPagmf())
                && pagmp.equals(pagm.getPagmp())
                && parametres.keySet().size() == pagm.getParametres().keySet()
                      .size()
@@ -137,8 +156,9 @@ public class Pagm {
       }
 
       return "code : " + code + "\n" + "description : " + description + "\n"
-            + "pagma : " + pagma + "\n" + "pagmp : " + pagmp + "\n"
-            + "liste des parametres :\n" + buffer.toString();
+            + "pagma : " + pagma + "\n" + "pagmf : " + pagmf + "\n"
+            + "pagmp : " + pagmp + "\n" + "liste des parametres :\n"
+            + buffer.toString();
    }
 
    /**

@@ -75,32 +75,6 @@ public class SaeDroitServiceSkipImpl implements SaeDroitService {
       return saeDroitsEtFormat;
    }
 
-//   public final SaeDroits loadSaeDroits(String idClient, List<String> pagms)
-//         throws ContratServiceNotFoundException {
-//      SaeDroits saeDroits = new SaeDroits();
-//
-//      SaePrmd saePrmd = new SaePrmd();
-//      saePrmd.setValues(new HashMap<String, String>());
-//
-//      Prmd prmd = new Prmd();
-//      prmd.setCode("prmd_default");
-//      prmd.setDescription("PRMD par défaut");
-//      prmd.setLucene(null);
-//      prmd.setMetadata(null);
-//      prmd.setBean("permitAll");
-//      saePrmd.setPrmd(prmd);
-//
-//      List<SaePrmd> prmds = new ArrayList<SaePrmd>();
-//      prmds.add(saePrmd);
-//
-//      saeDroits.put("consultation", prmds);
-//      saeDroits.put("recherche", prmds);
-//      saeDroits.put("archivage_unitaire", prmds);
-//      saeDroits.put("archivage_masse", prmds);
-//
-//      return saeDroits;
-//   }
-
    /**
     * {@inheritDoc}
     */

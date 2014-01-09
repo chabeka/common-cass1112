@@ -5,8 +5,6 @@ package fr.urssaf.image.sae.services.capturemasse.support.controle;
 
 import java.io.File;
 
-import org.antlr.grammar.v3.ANTLRv3Parser.throwsSpec_return;
-
 import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
 import fr.urssaf.image.sae.bo.model.bo.SAEVirtualDocument;
 import fr.urssaf.image.sae.bo.model.bo.VirtualReferenceFile;

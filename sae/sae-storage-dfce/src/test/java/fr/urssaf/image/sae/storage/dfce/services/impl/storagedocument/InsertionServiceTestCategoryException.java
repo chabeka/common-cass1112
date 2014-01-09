@@ -9,9 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import net.docubase.toolkit.model.ToolkitFactory;
 import net.docubase.toolkit.model.base.Base;
-import net.docubase.toolkit.model.document.Document;
 import net.docubase.toolkit.service.ServiceProvider;
 import net.docubase.toolkit.service.administration.BaseAdministrationService;
 
@@ -34,7 +32,6 @@ import fr.urssaf.image.sae.storage.dfce.data.constants.Constants;
 import fr.urssaf.image.sae.storage.dfce.data.model.SaeDocument;
 import fr.urssaf.image.sae.storage.dfce.mapping.DocumentForTestMapper;
 import fr.urssaf.image.sae.storage.dfce.services.CommonsServices;
-import fr.urssaf.image.sae.storage.dfce.utils.TraceAssertUtils;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
@@ -53,9 +50,6 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-storage-dfce-mock-test.xml" })
 public class InsertionServiceTestCategoryException extends CommonsServices {
-
-   @Autowired
-   private TraceAssertUtils traceAssertUtils;
 
    @Autowired
    private CassandraServerBean cassandraServerBean;
@@ -93,12 +87,10 @@ public class InsertionServiceTestCategoryException extends CommonsServices {
       String[] roles = new String[] { "archivage_unitaire" };
       saePrmds.add(saePrmd);
       saeDroits.put("archivage_unitaire", saePrmds);
-
       viExtrait.setSaeDroits(saeDroits);
 
       AuthenticationToken token = AuthenticationFactory.createAuthentication(
-            viExtrait.getIdUtilisateur(), viExtrait, roles, viExtrait
-                  .getSaeDroits());
+            viExtrait.getIdUtilisateur(), viExtrait, roles);
       AuthenticationContext.setAuthenticationToken(token);
 
    }

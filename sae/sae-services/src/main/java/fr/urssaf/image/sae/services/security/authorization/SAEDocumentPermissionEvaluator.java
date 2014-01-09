@@ -54,7 +54,7 @@ public class SAEDocumentPermissionEvaluator implements PermissionEvaluator {
          @SuppressWarnings("unchecked")
          List<UntypedMetadata> metadatas = (List<UntypedMetadata>) domain;
 
-         hasPermission = prmdService.isPermitted(metadatas, token.getDetails().getSaeDroits()
+         hasPermission = prmdService.isPermitted(metadatas, token.getSaeDroits()
                .get(permission));
       }
 

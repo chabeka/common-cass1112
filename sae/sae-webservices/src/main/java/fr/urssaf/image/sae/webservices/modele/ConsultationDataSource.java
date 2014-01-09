@@ -4,11 +4,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
 
 import javax.activation.DataSource;
-
-import org.apache.commons.lang.ArrayUtils;
 
 /**
  * Implémentation du DataSource pour le service de consultation en MTOM, pour

@@ -298,28 +298,29 @@ public class ResultatFileSuccessSupportImpl implements
                "classpath:xsd_som_res/resultats.xsd");
          URL xsdSchema;
 
-         try {
-            xsdSchema = classPath.getURL();
-            JAXBUtils.marshal(resultat, output, xsdSchema);
-         } catch (IOException e) {
-            throw new CaptureMasseRuntimeException(e);
-         } catch (JAXBException e) {
-            throw new CaptureMasseRuntimeException(e);
-         } catch (SAXException e) {
-            throw new CaptureMasseRuntimeException(e);
-         } finally {
-            try {
-               if (output != null) {
-                  output.close();
-               }
-            } catch (IOException e) {
-               LOGGER.info("erreur de fermeture de flux", e);
-            }
-         }
+         xsdSchema = classPath.getURL();
+         JAXBUtils.marshal(resultat, output, xsdSchema);
 
       } catch (FileNotFoundException e) {
          throw new CaptureMasseRuntimeException(e);
 
+      } catch (IOException e) {
+         throw new CaptureMasseRuntimeException(e);
+
+      } catch (JAXBException e) {
+         throw new CaptureMasseRuntimeException(e);
+
+      } catch (SAXException e) {
+         throw new CaptureMasseRuntimeException(e);
+
+      } finally {
+         try {
+            if (output != null) {
+               output.close();
+            }
+         } catch (IOException e) {
+            LOGGER.info("erreur de fermeture de flux", e);
+         }
       }
 
    }

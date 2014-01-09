@@ -2,7 +2,6 @@ package fr.urssaf.image.sae.services.document.commons.impl;
 
 import java.util.List;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -133,83 +132,6 @@ public class SAECommonCaptureServiceImpl implements SAECommonCaptureService {
       return storageDocument;
    }
 
-   // Construction du StorageDocument pour la capture
-   // private StorageDocument buildStorageDocument(
-   // UntypedDocument untypedDocument, String prefixeTrc)
-   // throws NotSpecifiableMetadataEx, RequiredArchivableMetadataEx,
-   // UnknownMetadataEx, DuplicatedMetadataEx,
-   // InvalidValueTypeAndFormatMetadataEx, SAEEnrichmentEx,
-   // ReferentialRndException, UnknownCodeRndEx, UnknownHashCodeEx,
-   // RequiredStorageMetadataEx, SAECaptureServiceEx,
-   // MetadataValueNotInDictionaryEx {
-   //
-   // SAEDocument saeDocument = null;
-   // StorageDocument storageDocument = null;
-   //
-   // try {
-   //
-   // controlesService.checkUntypedMetadata(untypedDocument);
-   // LOGGER
-   // .debug(
-   // "{} - Fin des contrôles sur (UntypedDocument et UntypedMetadata)",
-   // prefixeTrc);
-   //
-   // LOGGER.debug("{} - Début de vérification des droits", prefixeTrc);
-   // AuthenticationToken token = (AuthenticationToken) AuthenticationContext
-   // .getAuthenticationToken();
-   //         
-   //         
-   // List<SaePrmd> prmds =
-   // token.getDetails().getSaeDroits().get("archivage_unitaire");
-   // boolean isPermitted = prmdService.isPermitted(untypedDocument
-   // .getUMetadatas(), prmds);
-   //
-   // if (!isPermitted) {
-   // throw new AccessDeniedException(
-   // "Le document est refusé à l'arhivage car les droits sont insuffisants");
-   // }
-   //
-   // LOGGER.debug("{} - Fin de vérification des droits", prefixeTrc);
-   // LOGGER
-   // .debug(
-   // "{} - Début de la conversion de UntypedDocument vers SaeDocument",
-   // prefixeTrc);
-   // saeDocument = mappingService
-   // .untypedDocumentToSaeDocument(untypedDocument);
-   // LOGGER.debug(
-   // "{} - Fin de la conversion de UntypedDocument vers SaeDocument",
-   // prefixeTrc);
-   // if (saeDocument != null) {
-   // LOGGER.debug(
-   // "{} - Début des contrôles sur (SaeDocument  et SaeMetadata)",
-   // prefixeTrc);
-   // controlesService.checkSaeMetadataForCapture(saeDocument);
-   // controlesService.checkHashCodeMetadataForStorage(saeDocument);
-   // enrichmentService.enrichmentMetadata(saeDocument);
-   // controlesService.checkSaeMetadataForStorage(saeDocument);
-   // LOGGER.debug(
-   // "{} - Fin des contrôles sur (SaeDocument  et SaeMetadata)",
-   // prefixeTrc);
-   // LOGGER
-   // .debug(
-   // "{} - Début de la conversion de SaeDocument vers StorageDocument",
-   // prefixeTrc);
-   // storageDocument = mappingService
-   // .saeDocumentToStorageDocument(saeDocument);
-   // LOGGER
-   // .debug(
-   // "{} - Fin de la conversion de SaeDocument vers StorageDocument",
-   // prefixeTrc);
-   // }
-   // } catch (InvalidSAETypeException e) {
-   // throw new SAECaptureServiceEx(e);
-   // } catch (MappingFromReferentialException e) {
-   // throw new SAECaptureServiceEx(e);
-   // }
-   // return storageDocument;
-   //
-   // }
-
    private StorageDocument buildStorageDocument(
          UntypedDocument untypedDocument, String prefixeTrc)
          throws NotSpecifiableMetadataEx, RequiredArchivableMetadataEx,
@@ -236,7 +158,7 @@ public class SAECommonCaptureServiceImpl implements SAECommonCaptureService {
          AuthenticationToken token = (AuthenticationToken) AuthenticationContext
                .getAuthenticationToken();
 
-         List<SaePrmd> prmds = token.getDetails().getSaeDroits().get(
+         List<SaePrmd> prmds = token.getSaeDroits().get(
                "archivage_unitaire");
          boolean isPermitted = prmdService.isPermitted(untypedDocument
                .getUMetadatas(), prmds);
@@ -276,7 +198,7 @@ public class SAECommonCaptureServiceImpl implements SAECommonCaptureService {
             // Vérification de la validation des formats.
             // récupération de la liste des profils de contrôle
             List<FormatControlProfil> listFormatControlProfil = token
-                  .getDetails().getListControlProfil();
+                  .getListFormatControlProfil();
             if (listFormatControlProfil != null
                   && !listFormatControlProfil.isEmpty()) {
                controlesService.checkFormat(saeDocument,

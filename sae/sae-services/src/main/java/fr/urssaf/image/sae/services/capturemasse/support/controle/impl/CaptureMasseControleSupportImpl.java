@@ -125,8 +125,7 @@ public class CaptureMasseControleSupportImpl implements
       // risques.
       AuthenticationToken token = (AuthenticationToken) SecurityContextHolder
             .getContext().getAuthentication();
-      List<FormatControlProfil> listControlProfil = token.getDetails()
-            .getListControlProfil();
+      List<FormatControlProfil> listControlProfil = token.getListFormatControlProfil();
       controleService.checkFormat(saeDocument, listControlProfil);
 
       controleSAEMetadataList(document.getUMetadatas(), saeDocument
@@ -297,7 +296,7 @@ public class CaptureMasseControleSupportImpl implements
       LOGGER.debug("{} - récupération du Vi", trcPrefix);
       AuthenticationToken token = (AuthenticationToken) SecurityContextHolder
             .getContext().getAuthentication();
-      List<SaePrmd> prmds = token.getDetails().getSaeDroits().get(
+      List<SaePrmd> prmds = token.getSaeDroits().get(
             "archivage_masse");
 
       LOGGER.debug("{} - vérification des droits", trcPrefix);

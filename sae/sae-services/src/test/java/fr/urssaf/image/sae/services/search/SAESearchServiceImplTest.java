@@ -75,8 +75,7 @@ public class SAESearchServiceImplTest {
       saeDroits.put("recherche", saePrmds);
       viExtrait.setSaeDroits(saeDroits);
       AuthenticationToken token = AuthenticationFactory.createAuthentication(
-            viExtrait.getIdUtilisateur(), viExtrait, roles, viExtrait
-                  .getSaeDroits());
+            viExtrait.getIdUtilisateur(), viExtrait, roles);
       AuthenticationContext.setAuthenticationToken(token);
    }
    

@@ -237,13 +237,13 @@ public class PingSecureTest {
       AuthenticationToken authentification = AuthenticationContext
             .getAuthenticationToken();
 
-      List<String> actions = new ArrayList<String>(authentification.getDetails().getSaeDroits().keySet());
+      List<String> actions = new ArrayList<String>(authentification.getSaeDroits().keySet());
 
       assertEquals("le nombre d'actions unitaires est incorrect", 4, actions
             .size());
 
-      for (String action : authentification.getDetails().getSaeDroits().keySet()) {
-         List<SaePrmd> prmds = authentification.getDetails().getSaeDroits().get(action);
+      for (String action : authentification.getSaeDroits().keySet()) {
+         List<SaePrmd> prmds = authentification.getSaeDroits().get(action);
          assertEquals("nombre de prmd attendus incorrects pour " + action, 1,
                prmds.size());
          assertEquals("prmd attendu incorrect", PRMD_FULL, prmds.get(0)

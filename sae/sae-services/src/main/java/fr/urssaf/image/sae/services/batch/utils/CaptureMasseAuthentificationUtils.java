@@ -89,7 +89,7 @@ public final class CaptureMasseAuthentificationUtils {
       viExtrait.getSaeDroits().put(ROLE_RECHERCHE, prmdList);
 
       token = AuthenticationFactory.createAuthentication(viExtrait
-            .getIdUtilisateur(), viExtrait, roles, viExtrait.getSaeDroits());
+            .getIdUtilisateur(), viExtrait, roles);
 
       return token;
    }

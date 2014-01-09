@@ -28,8 +28,7 @@ import fr.urssaf.image.sae.webservices.security.exception.SaeAccessDeniedAxisFau
 import fr.urssaf.image.sae.webservices.util.XMLStreamUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-service-test.xml"
-                                  })
+@ContextConfiguration(locations = { "/applicationContext-service-test.xml" })
 @SuppressWarnings( { "PMD.MethodNamingConventions" })
 public class ArchivageUnitaireTest {
 
@@ -81,7 +80,8 @@ public class ArchivageUnitaireTest {
    }
 
    @Test
-   public void archivageUnitaire_success() throws CaptureAxisFault, SaeAccessDeniedAxisFault {
+   public void archivageUnitaire_success() throws CaptureAxisFault,
+         SaeAccessDeniedAxisFault {
 
       createMock();
 
@@ -120,10 +120,10 @@ public class ArchivageUnitaireTest {
                .getFaultCode().getNamespaceURI());
       }
    }
-   
-   
+
    @Test
-   public void archivageUnitaire_Failure_metadataNotInDict() throws CaptureAxisFault, SaeAccessDeniedAxisFault{
+   public void archivageUnitaire_Failure_metadataNotInDict()
+         throws CaptureAxisFault, SaeAccessDeniedAxisFault {
       List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
       metadatas.add(EasyMock.anyObject(UntypedMetadata.class));
 
@@ -131,23 +131,28 @@ public class ArchivageUnitaireTest {
          EasyMock
                .expect(
                      captureService.capture(metadatas, EasyMock
-                           .anyObject(URI.class))).andThrow(new MetadataValueNotInDictionaryEx("La valeur de la métadonnée uneMetadonnée est incorrecte : elle n’est pas comprise dans le dictionnaire de données associé"));
+                           .anyObject(URI.class)))
+               .andThrow(
+                     new MetadataValueNotInDictionaryEx(
+                           "La valeur de la métadonnée uneMetadonnée est incorrecte : elle n’est pas comprise dans le dictionnaire de données associé"));
       } catch (Exception e) {
          throw new NestableRuntimeException(e);
       }
 
       EasyMock.replay(captureService);
-      
-      ArchivageUnitaire request = createArchivageMasseResponse("src/test/resources/request/archivageUnitaire_FailureMetadataValueNotInDict.xml");
-      try{
-      ArchivageUnitaireResponseType response = skeleton
-      .archivageUnitaireSecure(request).getArchivageUnitaireResponse();
-      }catch(CaptureAxisFault e){
-         Assert.assertEquals("La valeur de la métadonnée uneMetadonnée est incorrecte : elle n’est pas comprise dans le dictionnaire de données associé", e.getMessage());
-      }
-      
-   }
-   
 
+      ArchivageUnitaire request = createArchivageMasseResponse("src/test/resources/request/archivageUnitaire_FailureMetadataValueNotInDict.xml");
+      try {
+         skeleton.archivageUnitaireSecure(request)
+               .getArchivageUnitaireResponse();
+         Assert.fail("Erreur CaptureAxisFault attendue");
+      } catch (CaptureAxisFault e) {
+         Assert
+               .assertEquals(
+                     "La valeur de la métadonnée uneMetadonnée est incorrecte : elle n’est pas comprise dans le dictionnaire de données associé",
+                     e.getMessage());
+      }
+
+   }
 
 }

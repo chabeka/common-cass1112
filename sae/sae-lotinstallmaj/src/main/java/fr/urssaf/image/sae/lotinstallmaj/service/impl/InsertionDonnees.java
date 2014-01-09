@@ -24,7 +24,9 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.urssaf.image.sae.lotinstallmaj.modele.FormatProfil;
 import fr.urssaf.image.sae.lotinstallmaj.modele.Pagm;
+import fr.urssaf.image.sae.lotinstallmaj.serializer.FormatProfilSerializer;
 import fr.urssaf.image.sae.lotinstallmaj.serializer.ListSerializer;
 import fr.urssaf.image.sae.lotinstallmaj.serializer.PagmSerializer;
 
@@ -211,14 +213,14 @@ public class InsertionDonnees {
 
       Date debutTracabilite = getTracabiliteDerniereDateTraitee();
 
-      checkAndAddTracabiliteParameter(cfTmpl, "PURGE_TECH_DUREE", Integer.valueOf(
-            10));
-      checkAndAddTracabiliteParameter(cfTmpl, "PURGE_SECU_DUREE", Integer.valueOf(
-            10));
-      checkAndAddTracabiliteParameter(cfTmpl, "PURGE_EXPLOIT_DUREE",
-            Integer.valueOf(10));
-      checkAndAddTracabiliteParameter(cfTmpl, "PURGE_EVT_DUREE",
-            Integer.valueOf(10));
+      checkAndAddTracabiliteParameter(cfTmpl, "PURGE_TECH_DUREE", Integer
+            .valueOf(10));
+      checkAndAddTracabiliteParameter(cfTmpl, "PURGE_SECU_DUREE", Integer
+            .valueOf(10));
+      checkAndAddTracabiliteParameter(cfTmpl, "PURGE_EXPLOIT_DUREE", Integer
+            .valueOf(10));
+      checkAndAddTracabiliteParameter(cfTmpl, "PURGE_EVT_DUREE", Integer
+            .valueOf(10));
 
       checkAndAddTracabiliteParameter(cfTmpl, "PURGE_TECH_IS_RUNNING",
             Boolean.FALSE);
@@ -525,6 +527,67 @@ public class InsertionDonnees {
             ListSerializer.get(), updater);
       cfTmpl.update(updater);
 
+   }
+
+   /**
+    * Les profils de controle pour les formats.<br/>
+    * Ajout de 3 éléments pour le format fmt/354:
+    * <ul>
+    * <li>Identification seule</li>
+    * <li>Validation seule</li>
+    * <li>Identification et validation</li>
+    * </ul>
+    */
+   public void addFormatControleProfil() {
+      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+            keyspace, "DroitFormatControlProfil", StringSerializer.get(),
+            StringSerializer.get());
+
+      ColumnFamilyUpdater<String, String> updater;
+
+      updater = cfTmpl.createUpdater("IDENT_FMT_354");
+      addColumn(
+            "description",
+            "format de controle gérant exclusivement l'identification du fmt/354",
+            StringSerializer.get(), StringSerializer.get(), updater);
+
+      FormatProfil profil = new FormatProfil();
+      profil.setFileFormat("fmt/354");
+      profil.setFormatIdentification(true);
+      profil.setFormatValidation(false);
+      profil.setFormatValidationMode("STRICT");
+      addColumn("controlProfil", profil, StringSerializer.get(),
+            FormatProfilSerializer.get(), updater);
+      cfTmpl.update(updater);
+
+      updater = cfTmpl.createUpdater("VALID_FMT_354");
+      addColumn("description",
+            "format de controle gérant exclusivement la validation du fmt/354",
+            StringSerializer.get(), StringSerializer.get(), updater);
+
+      profil = new FormatProfil();
+      profil.setFileFormat("fmt/354");
+      profil.setFormatIdentification(false);
+      profil.setFormatValidation(true);
+      profil.setFormatValidationMode("STRICT");
+      addColumn("controlProfil", profil, StringSerializer.get(),
+            FormatProfilSerializer.get(), updater);
+      cfTmpl.update(updater);
+
+      updater = cfTmpl.createUpdater("VALID_FMT_354");
+      addColumn("description",
+            "format de controle gérant exclusivement la validation du fmt/354",
+            StringSerializer.get(), StringSerializer.get(), updater);
+
+      updater = cfTmpl.createUpdater("IDENT_VALID_FMT_354");
+      profil = new FormatProfil();
+      profil.setFileFormat("fmt/354");
+      profil.setFormatIdentification(true);
+      profil.setFormatValidation(true);
+      profil.setFormatValidationMode("STRICT");
+      addColumn("controlProfil", profil, StringSerializer.get(),
+            FormatProfilSerializer.get(), updater);
+      cfTmpl.update(updater);
    }
 
 }

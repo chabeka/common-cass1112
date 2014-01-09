@@ -3,9 +3,7 @@
  */
 package fr.urssaf.image.sae.storage.dfce.utils;
 
-import net.docubase.toolkit.model.ToolkitFactory;
 import net.docubase.toolkit.model.base.Base;
-import net.docubase.toolkit.model.document.Document;
 import net.docubase.toolkit.service.ServiceProvider;
 import net.docubase.toolkit.service.administration.BaseAdministrationService;
 

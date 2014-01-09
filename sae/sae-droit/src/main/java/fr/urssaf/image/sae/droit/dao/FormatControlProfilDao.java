@@ -84,8 +84,7 @@ public class FormatControlProfilDao extends AbstractDao<String, String> {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
                "erreur.control.profil.obligatoire", variable.toString()));
       }
-    
-      
+
       if (formatProfil != null) {
          boolean validation = formatProfil.isFormatValidation();
          String validationMode = formatProfil.getFormatValidationMode();
@@ -105,9 +104,11 @@ public class FormatControlProfilDao extends AbstractDao<String, String> {
          }
       }
 
-
       // écrire des colonnes
-      writeColumnFormatCode(updater, formatCode, clock);
+
+      // TODO Valider la mise en commentaire. Normalement, il s'agit de la clé
+      // de la ligne
+      // writeColumnFormatCode(updater, formatCode, clock);
       writeColumnFormatDescription(updater, description, clock);
 
       writeColumnControlProfil(updater, formatProfil, clock);
@@ -131,21 +132,21 @@ public class FormatControlProfilDao extends AbstractDao<String, String> {
             FormatProfilSerializer.get(), clock);
    }
 
-   /**
-    * ajoute une colonne {@value FormatControlProfilDao#COL_CODEPROFIL}
-    * 
-    * @param updater
-    *           updater de {@link FormatControlProfil}
-    * @param value
-    *           valeur de la colonne
-    * @param clock
-    *           horloge de la colonne
-    */
-   private void writeColumnFormatCode(
-         ColumnFamilyUpdater<String, String> updater, String value, Long clock) {
-      addColumn(updater, Constantes.COL_CODEPROFIL, value, StringSerializer
-            .get(), clock);
-   }
+   // /**
+   // * ajoute une colonne {@value FormatControlProfilDao#COL_CODEPROFIL}
+   // *
+   // * @param updater
+   // * updater de {@link FormatControlProfil}
+   // * @param value
+   // * valeur de la colonne
+   // * @param clock
+   // * horloge de la colonne
+   // */
+   // private void writeColumnFormatCode(
+   // ColumnFamilyUpdater<String, String> updater, String value, Long clock) {
+   // addColumn(updater, Constantes.COL_CODEPROFIL, value, StringSerializer
+   // .get(), clock);
+   // }
 
    /**
     * ajoute une colonne {@value FormatControlProfilDao#COL_DESCRIPTION}
@@ -195,7 +196,7 @@ public class FormatControlProfilDao extends AbstractDao<String, String> {
                   .loadMessage("erreur.param.obligatoire.null", variable
                         .toString()));
          }
-         
+
          mutator.addDeletion(codeFormatProfil, Constantes.DROIT_FORMAT_CONTROL,
                clock);
       } catch (Exception except) {

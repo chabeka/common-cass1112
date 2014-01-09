@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 
+import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 
@@ -32,28 +33,29 @@ public class AuthenticationToken extends AnonymousAuthenticationToken {
     *           information supplémentaires sur l'authentification courante
     */
    public AuthenticationToken(String key, Object principal,
-         List<GrantedAuthority> authorities, SaeDroits details) {
+         List<GrantedAuthority> authorities) {
       super(key, principal, authorities);
-      this.setDetails(details);
    }
 
    private static final long serialVersionUID = 1L;
 
    /**
-    * renvoie {@link VIContenuExtrait} de l'authenfication
-    * 
-    * {@inheritDoc}
+    * @return les droits {@link SaeDroits} de l'authentification
     */
-//    @Override
-//    public final SaeDroits getDetails() {
-//    return (SaeDroits) super.getDetails();
-//    }
-   @Override
-   public final VIContenuExtrait getDetails() {
-      VIContenuExtrait viContenuExtrait = new VIContenuExtrait();
-      viContenuExtrait.setSaeDroits((SaeDroits) super.getDetails());
-      //return (VIContenuExtrait) super.getDetails();
-      return viContenuExtrait;
+   public SaeDroits getSaeDroits() {
+      return getViContenuExtrait().getSaeDroits();
+   }
+
+   /**
+    * @return la liste des controles de profil pour les formats {@link List
+    *         <FormatControlProfil>}
+    */
+   public List<FormatControlProfil> getListFormatControlProfil() {
+      return getViContenuExtrait().getListControlProfil();
+   }
+
+   private VIContenuExtrait getViContenuExtrait() {
+      return (VIContenuExtrait) getPrincipal();
    }
 
 }

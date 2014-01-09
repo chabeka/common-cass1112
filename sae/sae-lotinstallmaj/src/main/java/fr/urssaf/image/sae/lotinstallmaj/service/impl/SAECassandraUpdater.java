@@ -485,8 +485,9 @@ public class SAECassandraUpdater {
       // Création des CF
       saeCassandraService.createColumnFamilyFromList(cfDefs, true);
 
-      // ajout des actions unitaires de base
+      // ajout données pour le controle du format FMT/354
       InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
+      donnees.addFormatControleProfil();
       donnees.addDroits();
 
       // On positionne la version à 7

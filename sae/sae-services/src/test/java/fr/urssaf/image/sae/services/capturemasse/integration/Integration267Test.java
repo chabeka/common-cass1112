@@ -132,8 +132,7 @@ public class Integration267Test {
       saeDroits.put("archivage_masse", saePrmds);
       viExtrait.setSaeDroits(saeDroits);
       AuthenticationToken token = AuthenticationFactory.createAuthentication(
-            viExtrait.getIdUtilisateur(), viExtrait, roles, viExtrait
-                  .getSaeDroits());
+            viExtrait.getIdUtilisateur(), viExtrait, roles);
       AuthenticationContext.setAuthenticationToken(token);
       
       // Paramétrage du RND

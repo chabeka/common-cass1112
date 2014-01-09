@@ -180,8 +180,7 @@ public class SAEEnrichmentMetadataServiceImplTest extends CommonsServices {
       saeDroits.put("capture_masse", saePrmds);
       viExtrait.setSaeDroits(saeDroits);
       AuthenticationToken token = AuthenticationFactory.createAuthentication(
-            viExtrait.getIdUtilisateur(), viExtrait, roles, viExtrait
-                  .getSaeDroits());
+            viExtrait.getIdUtilisateur(), viExtrait, roles);
       AuthenticationContext.setAuthenticationToken(token);
    }
 }

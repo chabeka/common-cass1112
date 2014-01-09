@@ -115,8 +115,7 @@ public class SAEConsultationServiceDroitsTest {
       saeDroits.put("recherche", saePrmds);
       viExtrait.setSaeDroits(saeDroits);
       AuthenticationToken token = AuthenticationFactory.createAuthentication(
-            viExtrait.getIdUtilisateur(), viExtrait, roles, viExtrait
-                  .getSaeDroits());
+            viExtrait.getIdUtilisateur(), viExtrait, roles);
       AuthenticationContext.setAuthenticationToken(token);
       uuid = capture();
 
@@ -148,8 +147,7 @@ public class SAEConsultationServiceDroitsTest {
       saeDroits.put("consultation", saePrmds);
       viExtrait.setSaeDroits(saeDroits);
       AuthenticationToken token = AuthenticationFactory.createAuthentication(
-            viExtrait.getIdUtilisateur(), viExtrait, roles, viExtrait
-                  .getSaeDroits());
+            viExtrait.getIdUtilisateur(), viExtrait, roles);
       AuthenticationContext.setAuthenticationToken(token);
       AuthenticationContext.getAuthenticationToken();
       uuid = capture();
@@ -182,8 +180,7 @@ public class SAEConsultationServiceDroitsTest {
       saeDroits.put("consultation", saePrmds);
       viExtrait.setSaeDroits(saeDroits);
       AuthenticationToken token = AuthenticationFactory.createAuthentication(
-            viExtrait.getIdUtilisateur(), viExtrait, roles, viExtrait
-                  .getSaeDroits());
+            viExtrait.getIdUtilisateur(), viExtrait, roles);
       AuthenticationContext.setAuthenticationToken(token);
       AuthenticationContext.getAuthenticationToken();
       uuid = capture();

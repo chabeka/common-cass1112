@@ -128,8 +128,7 @@ public class SAESuppressionServiceTest {
       saeDroits.put("archivage_unitaire", saePrmds);
       viExtrait.setSaeDroits(saeDroits);
       AuthenticationToken token = AuthenticationFactory.createAuthentication(
-            viExtrait.getIdUtilisateur(), viExtrait, roles, viExtrait
-                  .getSaeDroits());
+            viExtrait.getIdUtilisateur(), viExtrait, roles);
       AuthenticationContext.setAuthenticationToken(token);
 
       // Paramétrage du RND
@@ -194,7 +193,8 @@ public class SAESuppressionServiceTest {
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
          UnknownHashCodeEx, CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx,
          MetadataValueNotInDictionaryEx, SearchingServiceEx,
-         SuppressionException, ArchiveInexistanteEx, ValidationExceptionInvalidFile, UnknownFormatException {
+         SuppressionException, ArchiveInexistanteEx,
+         ValidationExceptionInvalidFile, UnknownFormatException {
       EcdeTestDocument ecde = ecdeTestTools
             .buildEcdeTestDocument("attestation_consultation.pdf");
 

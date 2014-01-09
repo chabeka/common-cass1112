@@ -120,7 +120,7 @@ public class SecurityService {
 
       AuthenticationToken authentication = AuthenticationFactory
             .createAuthentication(viExtrait.getIdUtilisateur(), viExtrait,
-                  roles, viExtrait.getSaeDroits());
+                  roles);
 
       AuthenticationContext.setAuthenticationToken(authentication);
    }
@@ -143,14 +143,16 @@ public class SecurityService {
             }
          }
          LOG.info(sBufferMsgLog.toString());
+
+         // LOG du code application
+         LOG
+               .info(prefixeLog + "Code application : "
+                     + viExtrait.getCodeAppli());
+
+         // LOG de l'identifiant utilisateur
+         LOG.info(prefixeLog + "Identifiant utilisateur : "
+               + viExtrait.getIdUtilisateur());
       }
-
-      // LOG du code application
-      LOG.info(prefixeLog + "Code application : " + viExtrait.getCodeAppli());
-
-      // LOG de l'identifiant utilisateur
-      LOG.info(prefixeLog + "Identifiant utilisateur : "
-            + viExtrait.getIdUtilisateur());
 
    }
 

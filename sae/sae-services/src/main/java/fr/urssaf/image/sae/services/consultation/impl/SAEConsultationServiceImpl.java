@@ -153,7 +153,7 @@ public class SAEConsultationServiceImpl extends AbstractSAEServices implements
                LOG.debug("{} - Récupération des droits", prefixeTrc);
                AuthenticationToken token = (AuthenticationToken) SecurityContextHolder
                      .getContext().getAuthentication();
-               List<SaePrmd> saePrmds = token.getDetails().getSaeDroits().get("consultation");
+               List<SaePrmd> saePrmds = token.getSaeDroits().get("consultation");
                LOG.debug("{} - Vérification des droits", prefixeTrc);
                boolean isPermitted = prmdService.isPermitted(untypedDocument
                      .getUMetadatas(), saePrmds);
