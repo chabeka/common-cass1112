@@ -32,6 +32,7 @@
       <maven-assembly-plugin.version>2.2.2</maven-assembly-plugin.version>
       <maven-surefire-plugin.version>2.12</maven-surefire-plugin.version>
       <maven-replacer-plugin.version>1.3.6</maven-replacer-plugin.version>
+      <wagon-webdav.version>1.0-beta-2</wagon-webdav.version>
 
 
       <!--
@@ -579,6 +580,14 @@
          </plugins>
 
       </pluginManagement>
+      
+      <extensions>
+         <extension>
+           <groupId>org.apache.maven.wagon</groupId>
+           <artifactId>wagon-webdav</artifactId>
+           <version>${wagon-webdav.version}</version>
+         </extension>
+      </extensions>
 
    </build>
 
@@ -645,12 +654,12 @@
       <repository>
          <id>nexus</id>
          <name>Releases</name>
-         <url>http://cer69-nexus.cer69.recouv:8081/nexus/content/repositories/releases</url>
+         <url>dav:http://cer69-nexus.cer69.recouv:8081/nexus/content/repositories/releases</url>
       </repository>
       <snapshotRepository>
          <id>nexus</id>
          <name>Snapshots</name>
-         <url>http://cer69-nexus.cer69.recouv:8081/nexus/content/repositories/snapshots</url>
+         <url>dav:http://cer69-nexus.cer69.recouv:8081/nexus/content/repositories/snapshots</url>
          <uniqueVersion>false</uniqueVersion>
       </snapshotRepository>
    </distributionManagement>
