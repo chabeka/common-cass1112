@@ -33,6 +33,7 @@
       <maven-surefire-plugin.version>2.12</maven-surefire-plugin.version>
       <maven-replacer-plugin.version>1.3.6</maven-replacer-plugin.version>
       <wagon-webdav.version>1.0-beta-2</wagon-webdav.version>
+      <maven-deploy-plugin.version>2.8.1</maven-deploy-plugin.version>
 
 
       <!--
@@ -548,6 +549,19 @@
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
                <argLine>-Xmx700m -XX:MaxPermSize=700m -XX:+UseSerialGC -XX:-UseConcMarkSweepGC</argLine>
+            </configuration>
+         </plugin>
+         
+         <!--
+         Déploiement réalisé uniquement à la fin du build de tous
+         les modules, et pas module par module.
+         -->
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-deploy-plugin</artifactId>
+            <version>${maven-deploy-plugin.version}</version>
+            <configuration>
+               <deployAtEnd>true</deployAtEnd>
             </configuration>
          </plugin>
 
