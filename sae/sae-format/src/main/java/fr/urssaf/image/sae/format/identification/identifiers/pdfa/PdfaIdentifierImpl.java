@@ -89,7 +89,7 @@ public class PdfaIdentifierImpl implements Identifier {
             // Récupération de tous les types compatibles à partir de l'idFormat
             List<String> compatibles = saeFormatCompatible.getFormatsCompatibles(Constantes.FMT_354);
             if (!CollectionUtils.isEmpty(compatibles)) {
-               compatible = compatibles.contains(idFormat) ;
+               compatible = compatibles.contains(puuid) ;
             }
             
             if (compatible) {

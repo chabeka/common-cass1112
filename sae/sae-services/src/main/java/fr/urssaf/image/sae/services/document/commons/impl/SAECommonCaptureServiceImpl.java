@@ -181,19 +181,6 @@ public class SAECommonCaptureServiceImpl implements SAECommonCaptureService {
 
          if (saeDocument != null) {
             LOGGER.debug("{} - Début des contrôles sur le format");
-            // Vérification de la validation des formats.
-            // récupération de la liste des profils de contrôle
-            // Map<String, Set<FormatControlProfil>> mapsFormatControlProfil =
-            // token
-            // .getDetails().getControlProfilMap();
-            // Iterator iterator = mapsFormatControlProfil.iterator();
-            // FormatControlProfil formatControlProfil = null;
-            // List<FormatControlProfil> listFormatControlProfil = new
-            // ArrayList<FormatControlProfil>();
-            // while (iterator.hasNext()) {
-            // formatControlProfil = (FormatControlProfil) iterator.next();
-            // listFormatControlProfil.add(formatControlProfil);
-            // }
 
             // Vérification de la validation des formats.
             // récupération de la liste des profils de contrôle

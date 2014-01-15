@@ -9,10 +9,8 @@
 
    <!-- Gestion de message à partir d'un fichier properties -->
    <bean id="messageSource_sae_format"
-      class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
-      <property name="basename">
-         <value>i18n/sae_format_messages_fr_FR</value>
-      </property>
+      class="org.springframework.context.support.ResourceBundleMessageSource">
+      <property name="basename" value="i18n.sae_format_messages" />
    </bean>
 
    <context:component-scan base-package="fr.urssaf.image.sae.format" />
