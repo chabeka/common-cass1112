@@ -86,6 +86,24 @@
          <version>${commons.dfce}</version> </dependency>
       -->
 
+      <commons-pdfbox>0.0.1-SNAPSHOT</commons-pdfbox>
+      
+      <!--
+         Modèle de dépendance : <dependency>
+         <groupId>fr.urssaf.image.commons</groupId>
+         <artifactId>commons-pdfbox</artifactId>
+         <version>${commons-pfdbox}</version> </dependency>
+      -->
+      
+      <commons-droid>0.0.1-SNAPSHOT</commons-droid>
+      
+      <!--
+         Modèle de dépendance : <dependency>
+         <groupId>fr.urssaf.image.commons</groupId>
+         <artifactId>commons-droid</artifactId>
+         <version>${commons-droid}</version> </dependency>
+      -->
+      
       
       <!--
          =========================================================

@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,18 +59,20 @@ public class FormatIdentificationServiceImpl implements
 
    /**
     * {@inheritDoc}
-    * @throws IOException 
+    * 
+    * @throws IOException
     */
    @Override
    public final String identifie(File file) throws IOException {
       return identifie(file, false);
    }
 
-   private String identifie(File file, boolean analyserContenuArchives) throws IOException {
+   private String identifie(File file, boolean analyserContenuArchives)
+         throws IOException {
 
       // Préparation des données nécessaires au moteur d'identification
       IdentificationRequest request = prepareIdentification(file);
-      
+
       // L'implémentation est FORTEMENT inspirée de :
       // uk.gov.nationalarchives.droid.submitter.SubmissionGateway
       // (droid-results)
@@ -82,55 +85,61 @@ public class FormatIdentificationServiceImpl implements
 
       // Le résultat
       String idPronom;
-      
+
       try {
-         
+
          // Identification à l'aide des signatures binaires
          IdentificationResultCollection results = droidAnalyseSupport
                .handleSignatures(request);
-   
+
          // Traitement des formats de type "conteneurs"
          IdentificationResultCollection containerResults = droidAnalyseSupport
                .handleContainer(request, results);
-   
+
          // Selon si on a trouvé quelque chose en format "conteneur"
          // if (containerResults == null) {
          if ((containerResults == null)
                || (CollectionUtils.isEmpty(containerResults.getResults()))) {
-   
+
             // no container results - process the normal results.
             results = droidAnalyseSupport.handleExtensions(request, results);
-   
+
             // Are we processing archive formats?
             if (analyserContenuArchives) {
-   
+
                // handleArchive(request, results);
                throw new FormatIdentificationRuntimeException(
                      "L'analyse au sein des archives n'est pas implémentée");
-   
+
             } else { // just process the results so far:
-   
+
                idPronom = droidAnalyseSupport.handleResult(request, results);
-   
+
             }
-   
+
          } else { // we have possible container formats:
-   
+
             containerResults = droidAnalyseSupport.handleExtensions(request,
                   containerResults);
-            idPronom = droidAnalyseSupport.handleResult(request, containerResults);
-   
+            idPronom = droidAnalyseSupport.handleResult(request,
+                  containerResults);
+
          }
-   
+
          // Trace
          LOGGER.debug(
                "{}, Identification du format par Droid. Format trouvé : {}",
                request.getFileName(), idPronom);
-      }
-      finally {
+      } finally {
          request.close();
       }
-      
+
+      // si le code pronom n'est pas trouvé, il y a un soucis. Exception
+      if (StringUtils.isEmpty(idPronom)) {
+         throw new FormatIdentificationRuntimeException(
+               "Le code pronom n'a pas pu être déterminé");
+      }
+
       // Renvoie du format identifié
       return idPronom;
 

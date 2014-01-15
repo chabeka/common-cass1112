@@ -204,7 +204,7 @@ public class FormatIdentificationServiceTest {
             idPronom = formatIdService.identifie(file);
 
             sbResult.append(String.format("%s;%s", cheminFichier, idPronom));
-            
+
             if (StringUtils.equalsIgnoreCase(idPronom, "fmt/354")) {
                nbFmt354++;
             }
@@ -221,8 +221,18 @@ public class FormatIdentificationServiceTest {
       }
 
       LOGGER.debug("Nombre fmt/354 : {}", nbFmt354);
-      LOGGER.debug("Nombre autres : {}", files.size()-nbFmt354);
+      LOGGER.debug("Nombre autres : {}", files.size() - nbFmt354);
       LOGGER.debug("Résumé du résultat en CSV : \r\n{}", sbResult);
+
+   }
+
+   @Test(expected = FormatIdentificationRuntimeException.class)
+   public void test_sansIdPronom() throws IOException {
+
+      String cheminFichier = getRessourceFilePath("/jeuTest/idPronomInexistant.pdf");
+      File file = new File(cheminFichier);
+
+      formatIdService.identifie(file);
 
    }
 

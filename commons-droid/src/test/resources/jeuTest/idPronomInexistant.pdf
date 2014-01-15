@@ -1,0 +1,12 @@
+#cassandra.startlocal=false
+cassandra.hosts=cer69imageint9.cer69.recouv:9160
+#cassandra.hosts=hwi69devsaecas1.cer69.recouv:9160;hwi69devsaecas2.cer69.recouv:9160
+#cassandra.hosts=cer69-saeint2.cer69.recouv:9160
+cassandra.username=
+cassandra.password=
+cassandra.keyspace=SAE
+cassandra.dataset=
+zookeeper.startlocal=false
+zookeeper.hosts=cer69-ds4int.cer69.recouv:2181
+#zookeeper.hosts=cer69-saeint2.cer69.recouv:2181
+zookeeper.namespace=SAE
