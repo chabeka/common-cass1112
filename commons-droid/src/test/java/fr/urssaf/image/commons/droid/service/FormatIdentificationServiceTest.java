@@ -82,15 +82,13 @@ public class FormatIdentificationServiceTest {
 
    }
 
-   @Test
+   @Test(expected = FormatIdentificationRuntimeException.class)
    public void test_Xml_SansEnTete() throws IOException {
 
       String cheminFichier = getRessourceFilePath("/jeuTest/FichierXml2.xml");
       File file = new File(cheminFichier);
 
-      String idPronom = formatIdService.identifie(file);
-
-      assertNull("Le format identifié n'est pas celui attendu", idPronom);
+      formatIdService.identifie(file);
 
    }
 
@@ -223,16 +221,6 @@ public class FormatIdentificationServiceTest {
       LOGGER.debug("Nombre fmt/354 : {}", nbFmt354);
       LOGGER.debug("Nombre autres : {}", files.size() - nbFmt354);
       LOGGER.debug("Résumé du résultat en CSV : \r\n{}", sbResult);
-
-   }
-
-   @Test(expected = FormatIdentificationRuntimeException.class)
-   public void test_sansIdPronom() throws IOException {
-
-      String cheminFichier = getRessourceFilePath("/jeuTest/idPronomInexistant.pdf");
-      File file = new File(cheminFichier);
-
-      formatIdService.identifie(file);
 
    }
 
