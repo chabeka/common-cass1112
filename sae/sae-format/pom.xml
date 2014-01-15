@@ -97,7 +97,7 @@
       <dependency>
          <groupId>fr.urssaf.image.commons</groupId>
          <artifactId>commons-pdfbox</artifactId>
-         <version>0.0.1-SNAPSHOT</version>
+         <version>${commons-pdfbox}</version>
       </dependency>
       
       <!-- 
@@ -107,7 +107,7 @@
       <dependency>
          <groupId>fr.urssaf.image.commons</groupId>
          <artifactId>commons-droid</artifactId>
-         <version>0.0.1-SNAPSHOT</version>
+         <version>${commons-droid}</version>
       </dependency>
         
       
@@ -173,13 +173,6 @@
             </exclusion>
          </exclusions>
       </dependency>
-      
-      <!-- GUAVA (pour le cache) -->
-      <dependency>
-         <groupId>com.google.guava</groupId>
-         <artifactId>guava</artifactId>
-         <version>12.0</version>
-      </dependency>  
       
       <!-- EasyMock -->
       <dependency>
