@@ -87,7 +87,7 @@ public class PdfaIdentifierImplTest {
          throws IdentificationRuntimeException, IOException {
 
       File file = new File(
-            "src/test/resources/identification/PdfaCompatible.pdf");
+            "src/test/resources/identification/pdfaCompatible.pdf");
       IdentificationResult identificationResult = pdfaIdentifier.identifyFile(
             "fmt/354", file);
 
@@ -159,7 +159,7 @@ public class PdfaIdentifierImplTest {
    @Test
    public void identifyStreamSuccessCompatiblefmt18() throws IOException {
       File file = new File(
-            "src/test/resources/identification/PdfaCompatible.pdf");
+            "src/test/resources/identification/pdfaCompatible.pdf");
       InputStream inputStream = new FileInputStream(file);
 
       IdentificationResult identificationResult = pdfaIdentifier
