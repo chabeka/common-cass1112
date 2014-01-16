@@ -36,10 +36,6 @@ public final class JobsMain {
     */
    public static void main(String[] args) throws Throwable {
 
-//      args = new String[2];
-//      args[0] = "c:/hawai/data/sae/sae-config.properties";
-//      args[1] = "PURGE_PILE_TRAVAUX";
-
       // 2 arguments attendus
       if (args == null || ArrayUtils.getLength(args) == 0) {
          LOG

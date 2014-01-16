@@ -10,7 +10,7 @@
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-jobs-executable</artifactId>
    <name>sae-jobs-executable</name>
-   <version>0.0.1-SNAPSHOT</version>
+   <version>13.11.0.2-SNAPSHOT</version>
    <description>Opération sur les jobs</description>
    
    <dependencies>
