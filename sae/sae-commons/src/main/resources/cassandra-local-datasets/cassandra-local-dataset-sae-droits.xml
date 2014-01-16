@@ -37,6 +37,10 @@
          <name>DroitPrmd</name>
          <comparatorType>BytesType</comparatorType>
       </columnFamily>
+      <columnFamily>
+         <name>ReferentielFormat</name>
+         <comparatorType>BytesType</comparatorType>
+      </columnFamily>
 
 
       <!-- Gestion des formats -->
@@ -76,6 +80,41 @@
             <column>
                <name>formatProfile</name>
                <value>INT_FORMAT_PROFIL_ATT_VIGI</value>
+            </column>
+         </row>
+      </columnFamily>
+      
+      <columnFamily>
+         <name>ReferentielFormat</name>
+         <keyType>UTF8Type</keyType>
+         <comparatorType>UTF8Type</comparatorType>
+         <defaultColumnValueType>UTF8Type</defaultColumnValueType>
+
+         <row>
+            <key>fmt/354</key>
+            <column>
+               <name>description</name>
+               <value>Fichier PDF conforme PDF/A-1b</value>
+            </column>
+            <column>
+               <name>extension</name>
+               <value>Pdf</value>
+            </column>
+            <column>
+               <name>identifieur</name>
+               <value>pdfaIdentifierImpl</value>
+            </column>
+            <column>
+               <name>typeMime</name>
+               <value>application/pdf</value>
+            </column>
+            <column>
+               <name>validator</name>
+               <value>pdfaValidatorImpl</value>
+            </column>
+            <column>
+               <name>visualisable</name>
+               <value>bytes(01)</value>
             </column>
          </row>
       </columnFamily>
