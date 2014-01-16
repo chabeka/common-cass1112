@@ -162,7 +162,6 @@ public class JobRequestDao {
       HColumn<String, Object> column = HFactory.createColumn(colName, value,
             nameSerializer, valueSerializer);
 
-      column.setTtl(TTL);
       column.setClock(clock);
       updater.setColumn(column);
 

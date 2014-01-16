@@ -103,7 +103,6 @@ public class JobsQueueDao {
       HColumn<UUID, Object> column = HFactory.createColumn(colName, value,
             nameSerializer, valueSerializer);
 
-      column.setTtl(TTL);
       column.setClock(clock);
       updater.setColumn(column);
 

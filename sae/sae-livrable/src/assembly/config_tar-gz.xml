@@ -43,6 +43,14 @@
       <fileSet>
          <directory>src/config/</directory>
          <includes>
+            <include>logback-sae-jobs-executable.xml</include>
+         </includes>
+         <outputDirectory>sae-jobs-executable</outputDirectory>
+      </fileSet>
+      
+      <fileSet>
+         <directory>src/config/</directory>
+         <includes>
             <include>logback-sae-services-executable.xml</include>
          </includes>
          <outputDirectory>sae-services-executable</outputDirectory>
@@ -81,6 +89,14 @@
       </source>
       <outputDirectory>sae-dfce-admin-exploit</outputDirectory>
       <destName>sae-dfce-admin-exploit.jar</destName>
+    </file>
+    
+    <file>
+      <source>
+         ${project.parent.basedir}/sae-jobs-executable/target/sae-jobs-executable-${version}.jar
+      </source>
+      <outputDirectory>sae-jobs-executable</outputDirectory>
+      <destName>sae-jobs-executable.jar</destName>
     </file>
     
     <file>

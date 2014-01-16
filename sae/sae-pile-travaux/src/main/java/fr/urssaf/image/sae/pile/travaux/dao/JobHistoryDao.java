@@ -85,7 +85,6 @@ public class JobHistoryDao {
       HColumn<UUID, String> column = HFactory.createColumn(colName, value,
             nameSerializer, valueSerializer);
 
-      column.setTtl(TTL);
       column.setClock(clock);
       updater.setColumn(column);
 

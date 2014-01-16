@@ -74,10 +74,10 @@ public abstract class AbstractDao<CFT, CT> {
    /**
     * Ajout d'une colonne avec utilisation d'un Mutator
     * 
+    * @param code
+    *           clé de la ligne
     * @param <VT>
     *           Type de la valeur
-    * @param cfUpdater
-    *           Updater de la column family
     * @param colName
     *           nom de la colonne à ajouter
     * @param value
@@ -86,6 +86,7 @@ public abstract class AbstractDao<CFT, CT> {
     *           serializer de la valeur
     * @param clock
     *           horloge de la création
+    * @param mutator mutator de la column family           
     */
    public final <VT> void addColumnWithMutator(CFT code, CT colName, VT value,
          Serializer<VT> valueSerializer, long clock, Mutator<CFT> mutator) {
