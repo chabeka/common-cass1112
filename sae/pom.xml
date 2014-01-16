@@ -445,6 +445,7 @@
       <module>sae-dfce-admin-exploit</module>
       <module>sae-ordonnanceur</module>
       <module>sae-lotinstallmaj</module>
+      <module>sae-jobs-executable</module>
 
       <!-- Le module du livrable -->
       <module>sae-livrable</module>
