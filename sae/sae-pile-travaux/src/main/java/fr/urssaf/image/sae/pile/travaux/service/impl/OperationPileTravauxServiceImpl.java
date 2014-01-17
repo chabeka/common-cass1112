@@ -49,12 +49,8 @@ public class OperationPileTravauxServiceImpl implements
    @Autowired
    private Keyspace keyspace;
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see
-    * fr.urssaf.image.sae.pile.travaux.service.OperationPileTravauxService#purger
-    * (java.util.Date)
+   /**
+    * {@inheritDoc}
     */
    @Override
    public final void purger(Date dateMax) {
