@@ -73,22 +73,19 @@ public class IgcConfigServiceValidate {
     * 
     * <ul>
     * 
-    * <li>{@link IgcConfig#getRepertoireACRacines()} doit être renseigné</li>
-    * <li>{@link IgcConfig#getRepertoireACRacines()} le chemin du répertoire
-    * doit exister</li>
-    * <li>{@link IgcConfig#getRepertoireCRLs()} doit être renseigné</li>
-    * <li>{@link IgcConfig#getRepertoireCRLs()} le chemin du répertoire doit
-    * exister</li>
-    * <li>{@link IgcConfig#getUrlsTelechargementCRLs()} doit contenir au moins
-    * une URL</li>
+    * <li>{@link IgcConfig#getAcRacine()} doit être renseigné</li>
+    * <li>{@link IgcConfig#getAcRacine()} le chemin du répertoire doit exister</li>
+    * <li>{@link IgcConfig#getCrlsRep()} doit être renseigné</li>
+    * <li>{@link IgcConfig#getCrlsRep()} le chemin du répertoire doit exister</li>
+    * <li>{@link IgcConfig#getUrlList()} doit contenir au moins une URL</li>
     * 
     * </ul>
     * 
     * @param pathConfig
     *           chemin de configuration
     *           {@link IgcConfigService#loadConfig(String)}
-    * @param igcConfig
-    *           instance de de {@link IgcConfig} en sortie de la méthode
+    * @param igcConfigs
+    *           instance de de {@link IgcConfigs} en sortie de la méthode
     * @throws IgcConfigException
     *            une exception est levée sur l'instance de {@link IgcConfig} en
     *            sortie
