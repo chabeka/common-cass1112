@@ -44,10 +44,11 @@ public class ParamFormatControlProfil {
          + "&& args(code)";
 
    /**
-    * Vérification des paramètres de la méthode "create" de la classe
-    * {@link FormatControlProfilSupport} Vérification de l'objet obligatoire
-    * Profil donné en paramètre<br>
-    * ainsi que de l'heure
+    * Vérification des paramètres de la méthode
+    * {@link fr.urssaf.image.sae.droit.dao.support.FormatControlProfilSupport#create(FormatControlProfil, long)}
+    * <br>
+    * Vérification de l'objet obligatoire Profil donné en paramètre ainsi que de
+    * l'heure
     * 
     * @param profil
     *           : le profil à ajouter
@@ -67,10 +68,10 @@ public class ParamFormatControlProfil {
    }
 
    /**
-    * Vérification des paramètres de la méthode "delete" de la classe
-    * {@link FormatControlProfilSupport} Vérification du String code donné en
-    * paramètre<br>
-    * ainsi que de l'heure
+    * Vérification des paramètres de la méthode
+    * {@link fr.urssaf.image.sae.droit.dao.support.FormatControlProfilSupport#delete(String, Long)}
+    * <br>
+    * Vérification du String code donné en paramètre ainsi que de l'heure
     * 
     * @param code
     *           le code du controle profil à supprimer
@@ -90,9 +91,10 @@ public class ParamFormatControlProfil {
    }
 
    /**
-    * Vérification des paramètres de la méthode "find" de la classe
-    * {@link FormatControlProfilSupport} Vérification du String code donné en
-    * paramètre<br>
+    * Vérification des paramètres de la méthode
+    * {@link fr.urssaf.image.sae.droit.dao.support.FormatControlProfilSupport#find(String)}
+    * <br>
+    * Vérification du String code donné en paramètre
     * 
     * @param code
     *           le code du controle profil à recuperer
@@ -112,9 +114,11 @@ public class ParamFormatControlProfil {
    /********************************************** SERVICE ******************************************/
 
    /**
-    * Vérification des paramètres de la méthode "addFormatControlProfil" de la
-    * classe {@link FormatControlProfilService} Vérification des attributs
-    * obligatoires de l'objet FormatControlProfil donné en paramètre
+    * Vérification des paramètres de la méthode
+    * {@link fr.urssaf.image.sae.droit.service.FormatControlProfilService#addFormatControlProfil(FormatControlProfil)}
+    * <br>
+    * Vérification des attributs obligatoires de l'objet
+    * {@link FormatControlProfil} donné en paramètre
     * 
     * @param formatControlProfil
     *           le formatControlProfil à ajouter
@@ -139,9 +143,10 @@ public class ParamFormatControlProfil {
    }
 
    /**
-    * Vérification des paramètres de la méthode "deleteFormatControlProfil" de
-    * la classe {@link FormatControlProfilService} Le codeFormatControlProfil ne
-    * doit n'y être vide ni null.
+    * Vérification des paramètres de la méthode
+    * {@link fr.urssaf.image.sae.droit.service.FormatControlProfilService#deleteFormatControlProfil(String)}
+    * <br>
+    * Le codeFormatControlProfil ne doit n'y être vide ni null.
     * 
     * @param codeFormatControlProfil
     *           le code du formatControlProfil à supprimer
@@ -156,9 +161,10 @@ public class ParamFormatControlProfil {
    }
 
    /**
-    * Vérification des paramètres de la méthode "getFormatControlProfil" de la
-    * classe {@link FormatControlProfilService} Vérification du String
-    * codeFormatControlProfil donné en paramètre<br>
+    * Vérification des paramètres de la méthode
+    * {@link fr.urssaf.image.sae.droit.service.FormatControlProfilService#getFormatControlProfil(String)}
+    * <br>
+    * Vérification du String codeFormatControlProfil donné en paramètre
     * 
     * @param codeFormatControlProfil
     *           le FormatControlProfil à recuperer
@@ -210,9 +216,9 @@ public class ParamFormatControlProfil {
                               .loadMessage("erreur.param.format.valid.mode.obligatoire"));
                }
             } else {
-               if (!StringUtils.isBlank(validationMode) &&
-                     !( Constantes.AUCUN.equalsIgnoreCase(validationMode)
-                     || Constantes.NONE.equalsIgnoreCase(validationMode))) {
+               if (!StringUtils.isBlank(validationMode)
+                     && !(Constantes.AUCUN.equalsIgnoreCase(validationMode) || Constantes.NONE
+                           .equalsIgnoreCase(validationMode))) {
                   variable.add(Constantes.FORMAT_VALIDATION_MODE);
                }
             }

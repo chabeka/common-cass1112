@@ -25,8 +25,6 @@ public interface SaeDroitService {
     *           code de l'application cliente du service
     * @param pagms
     *           liste des PAGM
-    * @param viContenu
-    *           Objet qui sera stocké dans le contexte de sécurité
     * @throws ContratServiceNotFoundException
     *            exception levée si le contrat de service n'est pas trouvé
     * @throws FormatControlProfilNotFoundException

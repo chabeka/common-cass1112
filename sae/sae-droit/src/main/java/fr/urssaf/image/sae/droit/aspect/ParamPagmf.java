@@ -42,10 +42,11 @@ public class ParamPagmf {
          + "&& args(code)";
 
    /**
-    * Vérification des paramètres de la méthode "create" de la classe
-    * {@link PagmfSupport} Vérification de l'objet obligatoire Pagmf donné en
-    * paramètre<br>
-    * ainsi que de l'heure
+    * Vérification des paramètres de la méthode
+    * {@link fr.urssaf.image.sae.droit.dao.support.PagmfSupport#create(Pagmf, long)}
+    * <br>
+    * Vérification de l'objet obligatoire Pagmf donné en paramètre ainsi que de
+    * l'heure
     * 
     * @param pagmf
     *           : le pagmf à ajouter
@@ -65,9 +66,10 @@ public class ParamPagmf {
    }
 
    /**
-    * Vérification des paramètres de la méthode "delete" de la classe
-    * {@link PagmfSupport} Vérification du String codePagmf donné en paramètre<br>
-    * ainsi que de l'heure
+    * Vérification des paramètres de la méthode
+    * {@link fr.urssaf.image.sae.droit.dao.support.PagmfSupport#delete(String, Long)}
+    * <br>
+    * Vérification du String codePagmf donné en paramètre ainsi que de l'heure
     * 
     * @param code
     *           le code du pagmf à supprimer
@@ -87,8 +89,9 @@ public class ParamPagmf {
    }
 
    /**
-    * Vérification des paramètres de la méthode "find" de la classe
-    * {@link PagmfSupport} Vérification du String codePagmf donné en paramètre<br>
+    * Vérification des paramètres de la méthode
+    * {@link fr.urssaf.image.sae.droit.dao.support.PagmfSupport#find(String)}<br>
+    * Vérification du String codePagmf donné en paramètre
     * 
     * @param code
     *           le code du pagmf à recuperer
@@ -108,9 +111,10 @@ public class ParamPagmf {
    /********************************************** SERVICE ******************************************/
 
    /**
-    * Vérification des paramètres de la méthode "addPagmf" de la classe
-    * {@link SaePagmfService} Vérification des attributs obligatoires de l'objet
-    * Pagmf donné en paramètre
+    * Vérification des paramètres de la méthode
+    * {@link fr.urssaf.image.sae.droit.service.SaePagmfService#addPagmf(Pagmf)}<br>
+    * Vérification des attributs obligatoires de l'objet Pagmf donné en
+    * paramètre
     * 
     * @param pagmf
     *           le Pagmf à ajouter
@@ -133,8 +137,10 @@ public class ParamPagmf {
    }
 
    /**
-    * Vérification des paramètres de la méthode "deletePagmf" de la classe
-    * {@link SaePagmfService} Le codePagmf ne doit n'y être vide ni null.
+    * Vérification des paramètres de la méthode
+    * {@link fr.urssaf.image.sae.droit.service.SaePagmfService#deletePagmf(String)}
+    * <br>
+    * Le codePagmf ne doit n'y être vide ni null.
     * 
     * @param codePagmf
     *           le Pagmf à supprimer
@@ -149,9 +155,9 @@ public class ParamPagmf {
    }
 
    /**
-    * Vérification des paramètres de la méthode "getPagmf" de la classe
-    * {@link SaePagmfService} Vérification du String codePagmf donné en
-    * paramètre<br>
+    * Vérification des paramètres de la méthode
+    * {@link fr.urssaf.image.sae.droit.service.SaePagmfService#getPagmf(String)}<br>
+    * Vérification du String codePagmf donné en paramètre
     * 
     * @param codePagmf
     *           le Pagmf à recuperer

@@ -63,7 +63,7 @@ public class ContratServiceDao extends AbstractDao<String, String> {
    }
 
    /**
-    * ajoute une colonne {@value #CS_CODE_CLIENT}
+    * ajoute une colonne {@value #CS_LIBELLE}
     * 
     * @param updater
     *           updater de <code>DroitContratService</code>
@@ -183,7 +183,7 @@ public class ContratServiceDao extends AbstractDao<String, String> {
    }
 
    /**
-    * ajoute une colonne {@value #CS_CERT}
+    * ajoute une colonne {@value #CS_VERIF_NOMMAGE}
     * 
     * @param updater
     *           updater de <code>DroitContratService</code>

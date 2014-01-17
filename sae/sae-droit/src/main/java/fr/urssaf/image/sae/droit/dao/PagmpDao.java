@@ -73,7 +73,7 @@ public class PagmpDao extends AbstractDao<String, String> {
    }
 
    /**
-    * ajoute une colonne {@value #PAGM_DESCRIPTION}
+    * ajoute une colonne {@value #PAGMP_DESCRIPTION}
     * 
     * @param updater
     *           updater de <code>DroitActionUnitaire</code>
@@ -89,7 +89,7 @@ public class PagmpDao extends AbstractDao<String, String> {
    }
 
    /**
-    * ajoute une colonne {@value #PAGM_DESCRIPTION} avec utilisation d'un
+    * ajoute une colonne {@value #PAGMP_DESCRIPTION} avec utilisation d'un
     * mutator
     * 
     * @param code
