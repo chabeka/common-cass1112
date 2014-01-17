@@ -19,7 +19,7 @@ import fr.urssaf.image.sae.format.utils.Constantes;
 import fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler;
 
 /**
- * DAO permettant de réaliser les opérations de base d’écriture, lecture,
+ * DAO permettant de réaliser les opérations de base d'écriture, lecture,
  * modification et suppression sans prendre en compte les règles fonctionnelles.
  * 
  */
@@ -38,23 +38,24 @@ public class ReferentielFormatDao extends AbstractDao<String, String> {
    }
 
    /**
-    * Ajoute un nouveau format de fichier {@link FormatFichier}.
+    * Ajoute un nouveau format de fichier
+    * {@link fr.urssaf.image.sae.format.referentiel.model.FormatFichier}.
     * 
     * @param idFormat
     *           Identifiant CIRTIL du format de fichier - obligatoire
     * @param typeMime
     *           Le type-mime du format de fichier - non obligatoire
     * @param extension
-    *           L’extension du fichier - non obligatoire
+    *           L'extension du fichier - non obligatoire
     * @param description
     *           Une description générale du format de fichier - obligatoire
     * @param visualisable
-    *           Indicateur d’affichage à l’écran - obligatoire
+    *           Indicateur d'affichage à l'écran - obligatoire
     * @param validator
     *           Nom de la fonction de validation à appeler si le format doit
     *           être validé - obligatoire
     * @param identification
-    *           Nom de la fonction d’identification à appeler si le format doit
+    *           Nom de la fonction d'identification à appeler si le format doit
     *           être identifié - obligatoire
     * @param updater
     *           : necessaire pour Cassandra
@@ -93,7 +94,7 @@ public class ReferentielFormatDao extends AbstractDao<String, String> {
           *               <ul>
           *               <li>Il existe une erreur dans les paramètres qui ont
           *               été fournis à la méthode</li>
-          *               <li>La valeur d’un ou plusieurs paramètres
+          *               <li>La valeur d'un ou plusieurs paramètres
           *               obligatoires est nulle ou vide.</li>
           *               </ul>
           */
@@ -116,7 +117,8 @@ public class ReferentielFormatDao extends AbstractDao<String, String> {
     * ajoute une colonne {@value ReferentielFormatDao#COL_IDFORMAT}
     * 
     * @param updater
-    *           updater de {@link FormatFichier}
+    *           updater de
+    *           {@link fr.urssaf.image.sae.format.referentiel.model.FormatFichier}
     * @param value
     *           valeur de la colonne
     * @param clock
@@ -132,7 +134,8 @@ public class ReferentielFormatDao extends AbstractDao<String, String> {
     * ajoute une colonne {@value ReferentielFormatDao#COL_TYPEMIME}
     * 
     * @param updater
-    *           updater de {@link FormatFichier}
+    *           updater de
+    *           {@link fr.urssaf.image.sae.format.referentiel.model.FormatFichier}
     * @param value
     *           valeur de la colonne
     * @param clock
@@ -148,7 +151,8 @@ public class ReferentielFormatDao extends AbstractDao<String, String> {
     * ajoute une colonne {@value ReferentielFormatDao#COL_EXTENSION}
     * 
     * @param updater
-    *           updater de {@link FormatFichier}
+    *           updater de
+    *           {@link fr.urssaf.image.sae.format.referentiel.model.FormatFichier}
     * @param value
     *           valeur de la colonne
     * @param clock
@@ -164,7 +168,8 @@ public class ReferentielFormatDao extends AbstractDao<String, String> {
     * ajoute une colonne {@value ReferentielFormatDao#COL_DESCRIPTION}
     * 
     * @param updater
-    *           updater de {@link FormatFichier}
+    *           updater de
+    *           {@link fr.urssaf.image.sae.format.referentiel.model.FormatFichier}
     * @param value
     *           valeur de la colonne
     * @param clock
@@ -180,7 +185,8 @@ public class ReferentielFormatDao extends AbstractDao<String, String> {
     * ajoute une colonne {@value ReferentielFormatDao#COL_VISUALISABLE}
     * 
     * @param updater
-    *           updater de {@link FormatFichier}
+    *           updater de
+    *           {@link fr.urssaf.image.sae.format.referentiel.model.FormatFichier}
     * @param value
     *           valeur de la colonne
     * @param clock
@@ -196,7 +202,8 @@ public class ReferentielFormatDao extends AbstractDao<String, String> {
     * ajoute une colonne {@value ReferentielFormatDao#COL_VALIDATOR}
     * 
     * @param updater
-    *           updater de {@link FormatFichier}
+    *           updater de
+    *           {@link fr.urssaf.image.sae.format.referentiel.model.FormatFichier}
     * @param value
     *           valeur de la colonne
     * @param clock
@@ -212,7 +219,8 @@ public class ReferentielFormatDao extends AbstractDao<String, String> {
     * ajoute une colonne {@value ReferentielFormatDao#COL_IDENTIFIEUR}
     * 
     * @param updater
-    *           updater de {@link FormatFichier}
+    *           updater de
+    *           {@link fr.urssaf.image.sae.format.referentiel.model.FormatFichier}
     * @param value
     *           valeur de la colonne
     * @param clock
@@ -225,10 +233,12 @@ public class ReferentielFormatDao extends AbstractDao<String, String> {
    }
 
    /**
-    * Méthode de suppression d'une ligne {@link FormatFichier}
+    * Méthode de suppression d'une ligne
+    * {@link fr.urssaf.image.sae.format.referentiel.model.FormatFichier}
     * 
     * @param mutator
-    *           Mutator de {@link FormatFichier}
+    *           Mutator de
+    *           {@link fr.urssaf.image.sae.format.referentiel.model.FormatFichier}
     * @param idFormat
     *           identifiant du format
     * @param clock
