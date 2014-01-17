@@ -1,7 +1,6 @@
 package fr.urssaf.image.sae.format.validation.validators.pdfa;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.List;
 
@@ -24,7 +23,7 @@ public class PdfaValidatorImpl implements Validator {
 
    @Override
    public final ValidationResult validateFile(File file)
-         throws FileNotFoundException, FormatValidationException {
+         throws FormatValidationException {
 
       ValidationResult validResult;
 

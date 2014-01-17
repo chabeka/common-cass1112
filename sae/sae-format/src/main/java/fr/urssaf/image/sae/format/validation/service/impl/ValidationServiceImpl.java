@@ -1,21 +1,27 @@
 package fr.urssaf.image.sae.format.validation.service.impl;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.google.common.cache.CacheLoader.InvalidCacheLoadException;
+import com.google.common.util.concurrent.UncheckedExecutionException;
 
 import fr.urssaf.image.commons.pdfbox.exception.FormatValidationException;
 import fr.urssaf.image.sae.format.context.SaeFormatApplicationContext;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.format.referentiel.exceptions.ReferentielRuntimeException;
 import fr.urssaf.image.sae.format.referentiel.model.FormatFichier;
-import fr.urssaf.image.sae.format.referentiel.service.impl.ReferentielFormatServiceImpl;
+import fr.urssaf.image.sae.format.referentiel.service.ReferentielFormatService;
 import fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler;
 import fr.urssaf.image.sae.format.validation.exceptions.ValidationRuntimeException;
 import fr.urssaf.image.sae.format.validation.exceptions.ValidatorInitialisationException;
@@ -31,15 +37,45 @@ import fr.urssaf.image.sae.format.validation.validators.model.ValidationResult;
 public class ValidationServiceImpl implements ValidationService {
 
    /**
+    * Définition de caches permettant de ne pas recharger à chaque fois les
+    * services à partir de l'applicationContext
+    */
+   private final LoadingCache<String, Validator> validators;
+
+   /**
     * Service permettant d’interroger le référentiel des formats
     */
+   private ReferentielFormatService referentielFormatService;
+
+   /**
+    * Contructeur
+    * 
+    * @param referentielFormatService
+    *           le service de référentiel des formats
+    * @param cacheDuration
+    *           la durée de cache pour les formats
+    */
    @Autowired
-   private ReferentielFormatServiceImpl referentielFormatService;
+   public ValidationServiceImpl(
+         ReferentielFormatService referentielFormatService,
+         @Value("${sae.referentiel.format.cache}") int cacheDuration) {
+      this.referentielFormatService = referentielFormatService;
+
+      // Mise en cache
+      validators = CacheBuilder.newBuilder().refreshAfterWrite(cacheDuration,
+            TimeUnit.MINUTES).build(new CacheLoader<String, Validator>() {
+
+         @Override
+         public Validator load(String identifiant) {
+            return SaeFormatApplicationContext.getApplicationContext().getBean(
+                  identifiant, Validator.class);
+         }
+      });
+   }
 
    @Override
    public final ValidationResult validateFile(String idFormat, File file)
-         throws UnknownFormatException, ValidatorInitialisationException,
-         FileNotFoundException {
+         throws UnknownFormatException, ValidatorInitialisationException {
 
       ValidationResult validResult;
 
@@ -50,18 +86,23 @@ public class ValidationServiceImpl implements ValidationService {
 
          // On utilise l’application contexte pour récupérer une instance du
          // validateur
-         Validator validator = SaeFormatApplicationContext
-               .getApplicationContext().getBean(refFormat.getValidator(),
-                     Validator.class);
+         Validator validator = validators
+               .getUnchecked(refFormat.getValidator());
 
          // On appel la méthode validateFile(file)
          validResult = validator.validateFile(file);
 
-      } catch (NoSuchBeanDefinitionException except) {
+      } catch (InvalidCacheLoadException except) {
          throw new ValidatorInitialisationException(SaeFormatMessageHandler
                .getMessage("erreur.init.validator"), except);
+
+      } catch (UncheckedExecutionException except) {
+         throw new ValidatorInitialisationException(SaeFormatMessageHandler
+               .getMessage("erreur.init.validator"), except);
+
       } catch (ReferentielRuntimeException except) {
          throw new ValidationRuntimeException(except.getMessage(), except);
+
       } catch (FormatValidationException except) {
          throw new ValidationRuntimeException(except.getMessage(), except);
       }

@@ -7,7 +7,6 @@ import org.apache.commons.lang.StringUtils;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 
-import fr.urssaf.image.sae.format.referentiel.exceptions.ReferentielRuntimeException;
 import fr.urssaf.image.sae.format.referentiel.model.FormatFichier;
 import fr.urssaf.image.sae.format.utils.Constantes;
 import fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler;
@@ -21,7 +20,7 @@ public class ParamReferentiel {
 
    /********************************************************* SERVICE *********************************************************************************/
 
-   private static final String REF_FORMAT_SERVICE_ADDFORMAT = "execution(* fr.urssaf.image.sae.format.referentiel.service.ReferentielFormatService.addNewFormat(*))"
+   private static final String REF_FORMAT_SERVICE_ADDFORMAT = "execution(* fr.urssaf.image.sae.format.referentiel.service.ReferentielFormatService.addFormat(*))"
          + "&& args(refFormat)";
 
    private static final String REF_FORMAT_SERVICE_DELETEFORMAT = "execution(* fr.urssaf.image.sae.format.referentiel.service.ReferentielFormatService.deleteFormat(*))"
@@ -30,7 +29,9 @@ public class ParamReferentiel {
    private static final String REF_FORMAT_SERVICE_GETFORMAT = "execution(* fr.urssaf.image.sae.format.referentiel.service.ReferentielFormatService.getFormat(*))"
          + "&& args(idFormat)";
 
-   
+   private static final String REF_FORMAT_SERVICE_EXISTS = "execution(* fr.urssaf.image.sae.format.referentiel.service.ReferentielFormatService.exists(*))"
+         + "&& args(idFormat)";
+
    /********************************************************* DAO + SUPPORT *********************************************************************************/
 
    private static final String REF_FORMAT_SUPPORT_CREATE = "execution(* fr.urssaf.image.sae.format.referentiel.dao.support.ReferentielFormatSupport.create(*,*))"
@@ -42,7 +43,6 @@ public class ParamReferentiel {
    private static final String REF_FORMAT_SUPPORT_FIND = "execution(* fr.urssaf.image.sae.format.referentiel.dao.support.ReferentielFormatSupport.find(*))"
          + "&& args(idFormat)";
 
-   
    /**
     * Vérification des paramètres de la méthode "addNewFormat" de la classe
     * ReferentielFormatService Vérification des attributs obligatoires de
@@ -55,14 +55,13 @@ public class ParamReferentiel {
    public final void validAddNewFormat(FormatFichier refFormat) {
 
       if (refFormat == null) {
-         throw new ReferentielRuntimeException(SaeFormatMessageHandler
-               .getMessage(Constantes.PARAM_OBLIGATOIRE,
-                     Constantes.REFERENTIEL_FORMAT));
+         throw new IllegalArgumentException(SaeFormatMessageHandler.getMessage(
+               Constantes.PARAM_OBLIGATOIRE, Constantes.REFERENTIEL_FORMAT));
       } else {
          List<String> variable = getAttributsNull(refFormat, Long.valueOf(1));
 
          if (!variable.isEmpty()) {
-            throw new ReferentielRuntimeException(
+            throw new IllegalArgumentException(
                   SaeFormatMessageHandler.getMessage(
                         Constantes.PARAM_OBLIGATOIRE, variable.toString()));
          }
@@ -82,8 +81,8 @@ public class ParamReferentiel {
    public final void validDeleteFormat(String idFormat) {
 
       if (StringUtils.isBlank(idFormat))
-         throw new ReferentielRuntimeException(SaeFormatMessageHandler
-               .getMessage(Constantes.PARAM_OBLIGATOIRE, Constantes.IDFORMAT));
+         throw new IllegalArgumentException(SaeFormatMessageHandler.getMessage(
+               Constantes.PARAM_OBLIGATOIRE, Constantes.IDFORMAT));
 
    }
 
@@ -100,11 +99,29 @@ public class ParamReferentiel {
    public final void validGetFormat(String idFormat) {
 
       if (StringUtils.isBlank(idFormat)) {
-         throw new ReferentielRuntimeException(SaeFormatMessageHandler
-               .getMessage(Constantes.PARAM_OBLIGATOIRE, Constantes.IDFORMAT));
+         throw new IllegalArgumentException(SaeFormatMessageHandler.getMessage(
+               Constantes.PARAM_OBLIGATOIRE, Constantes.IDFORMAT));
       }
    }
-   
+
+   /**
+    * Vérification des paramètres de la méthode "getFormat" de la classe
+    * ReferentielFormatService Vérification du String idFormat donné en
+    * paramètre<br>
+    * 
+    * @param idFormat
+    *           le referentielFormat à recuperer
+    * 
+    */
+   @Before(REF_FORMAT_SERVICE_EXISTS)
+   public final void validExists(String idFormat) {
+
+      if (StringUtils.isBlank(idFormat)) {
+         throw new IllegalArgumentException(SaeFormatMessageHandler.getMessage(
+               Constantes.PARAM_OBLIGATOIRE, Constantes.IDFORMAT));
+      }
+   }
+
    /**
     * Vérification des paramètres de la méthode "create" de la classe
     * ReferentielFormatSupport Vérification de l'objet obligatoire
@@ -218,8 +235,5 @@ public class ParamReferentiel {
       }
       return variable;
    }
-
-
-  
 
 }

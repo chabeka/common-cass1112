@@ -482,7 +482,7 @@ public class CaptureMasseControleSupportTest {
       list.add(new UntypedMetadata("TypeHash", "SHA-1"));
       list.add(new UntypedMetadata("TracabilitePreArchivage", "P"));
       list.add(new UntypedMetadata("ApplicationProductrice", "GED"));
-      list.add(new UntypedMetadata("FormatFichier", "fmt/18"));
+      list.add(new UntypedMetadata("FormatFichier", "fmt/354"));
       list.add(new UntypedMetadata("NbPages", "2"));
       list.add(new UntypedMetadata("CodeOrganismeProprietaire", "UR030"));
       list.add(new UntypedMetadata("CodeOrganismeGestionnaire", "UR030"));

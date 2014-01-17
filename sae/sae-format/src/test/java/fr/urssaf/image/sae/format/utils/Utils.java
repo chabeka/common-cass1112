@@ -5,13 +5,14 @@ import fr.urssaf.image.sae.format.referentiel.model.FormatFichier;
 /**
  * 
  * Classe utilitaire pour les tests.
- *
+ * 
  */
 public final class Utils {
 
    /**
     * genere le referentiel format du PDFA/A-1b
-    * @return
+    * 
+    * @return le format de fichier pdfa
     */
    public static FormatFichier genererRefFormatPdfa() {
       FormatFichier refFormat = new FormatFichier();
@@ -24,22 +25,26 @@ public final class Utils {
       refFormat.setIdentificateur("PdfaIdentifierImpl");
       return refFormat;
    }
-   
+
+   /**
+    * @return le format de fichier avec param obligatoire manquant
+    */
    public static FormatFichier getRefFormParamObligManquant() {
       FormatFichier refFormat = new FormatFichier();
-      //refFormat.setIdFormat("1");
+      // refFormat.setIdFormat("1");
       refFormat.setTypeMime("typeMime");
       refFormat.setExtension("extension");
-      //refFormat.setDescription("desc");
+      // refFormat.setDescription("desc");
       refFormat.setVisualisable(true);
       refFormat.setValidator("validator");
       refFormat.setIdentificateur("identificateur");
       return refFormat;
    }
-   
+
    /**
     * genere le referentiel format lambda simplement pour les tests
-    * @return
+    * 
+    * @return un format de fichier lambda
     */
    public static FormatFichier genererRefFormatLambda() {
       FormatFichier refFormat = new FormatFichier();
@@ -52,8 +57,7 @@ public final class Utils {
       refFormat.setIdentificateur("LambdaIdentifierImpl");
       return refFormat;
    }
-   
-   
+
    private Utils() {
       // cette classe ne doit pas etre instancié.
    }

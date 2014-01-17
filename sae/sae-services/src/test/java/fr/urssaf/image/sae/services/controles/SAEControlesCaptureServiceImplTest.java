@@ -25,14 +25,15 @@ import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.commons.service.ParametersService;
-import fr.urssaf.image.sae.commons.support.ParametersSupport;
+import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
+import fr.urssaf.image.sae.droit.dao.model.FormatProfil;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
+import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.rnd.dao.support.RndSupport;
 import fr.urssaf.image.sae.rnd.modele.TypeCode;
 import fr.urssaf.image.sae.rnd.modele.TypeDocument;
-import fr.urssaf.image.sae.rnd.modele.VersionRnd;
 import fr.urssaf.image.sae.services.CommonsServices;
 import fr.urssaf.image.sae.services.enrichment.SAEEnrichmentMetadataService;
 import fr.urssaf.image.sae.services.enrichment.xml.model.SAEArchivalMetadatas;
@@ -49,6 +50,7 @@ import fr.urssaf.image.sae.services.exception.capture.UnknownMetadataEx;
 import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException;
 import fr.urssaf.image.sae.services.exception.enrichment.SAEEnrichmentEx;
 import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
+import fr.urssaf.image.sae.services.exception.format.validation.ValidationExceptionInvalidFile;
 import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
@@ -69,16 +71,16 @@ public class SAEControlesCaptureServiceImplTest extends CommonsServices {
    @Autowired
    @Qualifier("saeEnrichmentMetadataService")
    SAEEnrichmentMetadataService saeEnrichmentMetadataService;
-   
+
    @Autowired
    private CassandraServerBean server;
-   @Autowired 
+   @Autowired
    private RndSupport rndSupport;
    @Autowired
    private JobClockSupport jobClockSupport;
    @Autowired
    private ParametersService parametersService;
-   
+
    /**
     * @return Le service d'enrichment des metadonnées.
     */
@@ -126,16 +128,17 @@ public class SAEControlesCaptureServiceImplTest extends CommonsServices {
       typeDocCree.setType(TypeCode.ARCHIVABLE_AED);
 
       rndSupport.ajouterRnd(typeDocCree, jobClockSupport.currentCLock());
-      
+
       parametersService.setVersionRndDateMaj(new Date());
       parametersService.setVersionRndNumero("11.4");
    }
-   
+
    /**
     * Test de la méthode
     * {@link fr.urssaf.image.sae.services.controles.impl.SAEControlesCaptureServiceImpl#checkUntypedMetadata(fr.urssaf.image.sae.bo.model.untyped.UntypedDocument)}
     * .
-    * @throws MetadataValueNotInDictionaryEx 
+    * 
+    * @throws MetadataValueNotInDictionaryEx
     */
    @Test
    public final void checkUntypedMetadata() throws UnknownMetadataEx,
@@ -150,7 +153,8 @@ public class SAEControlesCaptureServiceImplTest extends CommonsServices {
     * Test de la méthode
     * {@link fr.urssaf.image.sae.services.controles.impl.SAEControlesCaptureServiceImpl#checkUntypedMetadata(fr.urssaf.image.sae.bo.model.untyped.UntypedDocument)}
     * .
-    * @throws MetadataValueNotInDictionaryEx 
+    * 
+    * @throws MetadataValueNotInDictionaryEx
     */
    @Test(expected = DuplicatedMetadataEx.class)
    public final void checkDuplicatedMetadataFailed() throws UnknownMetadataEx,
@@ -167,7 +171,8 @@ public class SAEControlesCaptureServiceImplTest extends CommonsServices {
     * Test de la méthode
     * {@link fr.urssaf.image.sae.services.controles.impl.SAEControlesCaptureServiceImpl#checkUntypedMetadata(fr.urssaf.image.sae.bo.model.untyped.UntypedDocument)}
     * .
-    * @throws MetadataValueNotInDictionaryEx 
+    * 
+    * @throws MetadataValueNotInDictionaryEx
     */
    @Test(expected = UnknownMetadataEx.class)
    public final void checkUnknownMetadataFailed() throws UnknownMetadataEx,
@@ -184,13 +189,15 @@ public class SAEControlesCaptureServiceImplTest extends CommonsServices {
     * Test de la méthode
     * {@link fr.urssaf.image.sae.services.controles.impl.SAEControlesCaptureServiceImpl#checkUntypedMetadata(fr.urssaf.image.sae.bo.model.untyped.UntypedDocument)}
     * .
-    * @throws MetadataValueNotInDictionaryEx 
+    * 
+    * @throws MetadataValueNotInDictionaryEx
     */
    @Test(expected = InvalidValueTypeAndFormatMetadataEx.class)
    public final void checkInvalidValueTypeAndFormatMetadataFailed()
          throws UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, SAECaptureServiceEx, IOException,
-         ParseException, RequiredArchivableMetadataEx, MetadataValueNotInDictionaryEx {
+         ParseException, RequiredArchivableMetadataEx,
+         MetadataValueNotInDictionaryEx {
       UntypedDocument untypedDocument = getUntypedDocumentMockData();
       untypedDocument.getUMetadatas().add(
             new UntypedMetadata("DateReception", "12121"));
@@ -365,9 +372,9 @@ public class SAEControlesCaptureServiceImplTest extends CommonsServices {
          throws RequiredStorageMetadataEx, SAECaptureServiceEx, IOException,
          ParseException, SAEEnrichmentEx, ReferentialRndException,
          UnknownCodeRndEx {
-      
+
       initDroits();
-      
+
       SAEDocument saeDocument = getSAEDocumentMockData();
       SAEMetadata saeMetadataToRemove = null;
       saeEnrichmentMetadataService.enrichmentMetadata(saeDocument);
@@ -386,6 +393,34 @@ public class SAEControlesCaptureServiceImplTest extends CommonsServices {
 
    /**
     * Test de la méthode
+    * {@link fr.urssaf.image.sae.services.controles.impl.SAEControlesCaptureServiceImpl#checkFormat(SAEDocument, List)}
+    * 
+    * @throws ValidationExceptionInvalidFile
+    * @throws UnknownFormatException
+    */
+   @Test(expected = UnknownFormatException.class)
+   public final void checkMetaFormatFichierFailed() throws SAECaptureServiceEx,
+         IOException, ParseException, UnknownHashCodeEx,
+         UnknownFormatException, ValidationExceptionInvalidFile {
+      SAEDocument saeDocument = getSAEDocumentMockData();
+      for (SAEMetadata saeMetadata : saeDocument.getMetadatas()) {
+         if ("FormatFichier".equalsIgnoreCase(saeMetadata.getLongCode())) {
+            saeMetadata.setValue("fmt/18");
+            break;
+         }
+      }
+
+      List<FormatControlProfil> listControlProfil = new ArrayList<FormatControlProfil>();
+      FormatControlProfil profil = new FormatControlProfil();
+      profil.setControlProfil(new FormatProfil());
+      profil.setDescription("description");
+      profil.setFormatCode("fmt/354");
+      listControlProfil.add(profil);
+      saeControlesCaptureService.checkFormat(saeDocument, listControlProfil);
+   }
+
+   /**
+    * Test de la méthode
     * {@link fr.urssaf.image.sae.services.controles.impl.SAEControlesCaptureServiceImpl#checkSaeMetadataForStorage(fr.urssaf.image.sae.bo.model.bo.SAEDocument)}
     * .
     */
@@ -394,9 +429,9 @@ public class SAEControlesCaptureServiceImplTest extends CommonsServices {
          throws RequiredStorageMetadataEx, SAECaptureServiceEx, IOException,
          ParseException, SAEEnrichmentEx, ReferentialRndException,
          UnknownCodeRndEx {
-      
+
       initDroits();
-      
+
       SAEDocument saeDocument = getSAEDocumentMockData();
       SAEMetadata saeMetadataToRemove = null;
       saeEnrichmentMetadataService.enrichmentMetadata(saeDocument);
@@ -416,7 +451,7 @@ public class SAEControlesCaptureServiceImplTest extends CommonsServices {
       AuthenticationContext.setAuthenticationToken(null);
       server.resetData();
    }
-   
+
    private void initDroits() {
       VIContenuExtrait viExtrait = new VIContenuExtrait();
       viExtrait.setCodeAppli("TESTS_UNITAIRES");

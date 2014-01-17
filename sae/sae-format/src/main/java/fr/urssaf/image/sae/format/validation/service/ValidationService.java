@@ -1,7 +1,6 @@
 package fr.urssaf.image.sae.format.validation.service;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -27,13 +26,10 @@ public interface ValidationService {
     *            : Le format n’existe pas en base
     * @throws ValidatorInitialisationException
     *            : Impossible d’initialiser le validateur
-    * @throws FileNotFoundException
-    *            : Le fichier passé en paramètre est introuvable.
     * 
     */
    ValidationResult validateFile(String idFormat, File file)
-         throws UnknownFormatException, ValidatorInitialisationException,
-         FileNotFoundException;
+         throws UnknownFormatException, ValidatorInitialisationException;
 
    /**
     * Opération de validation d’un flux.
@@ -47,10 +43,13 @@ public interface ValidationService {
     *            : Le format n’existe pas en base
     * @throws ValidatorInitialisationException
     *            : Impossible d’initialiser le validateur
-    * @throws IOException : Exception levée sur la fermeture du flux (après écriture du fichier temp)
+    * @throws IOException
+    *            : Exception levée sur la fermeture du flux (après écriture du
+    *            fichier temp)
     * 
     */
    ValidationResult validateStream(String idFormat, InputStream stream)
-         throws UnknownFormatException, ValidatorInitialisationException, IOException;
+         throws UnknownFormatException, ValidatorInitialisationException,
+         IOException;
 
 }

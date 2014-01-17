@@ -1,7 +1,6 @@
 package fr.urssaf.image.sae.format.validation.validators;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 import fr.urssaf.image.commons.pdfbox.exception.FormatValidationException;
@@ -19,14 +18,11 @@ public interface Validator {
     *           à valider - paramètre obligatoire.
     * @return Objet contenant le résultat de la validation (
     *         {@link ValidationResult})
-    * @throws FileNotFoundException
-    *            : Le fichier passé en paramètre est introuvable.
     * @throws FormatValidationException
     *            : Le fichier passé en paramètre est introuvable.
     * 
     */
-   ValidationResult validateFile(File file) throws FileNotFoundException,
-         FormatValidationException;
+   ValidationResult validateFile(File file) throws FormatValidationException;
 
    /**
     * Opération de validation d’un flux.

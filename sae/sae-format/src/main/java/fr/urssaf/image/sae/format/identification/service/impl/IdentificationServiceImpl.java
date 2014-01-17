@@ -3,11 +3,19 @@ package fr.urssaf.image.sae.format.identification.service.impl;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.google.common.cache.CacheLoader.InvalidCacheLoadException;
+import com.google.common.util.concurrent.UncheckedExecutionException;
 
 import fr.urssaf.image.sae.format.context.SaeFormatApplicationContext;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
@@ -18,7 +26,7 @@ import fr.urssaf.image.sae.format.identification.identifiers.model.Identificatio
 import fr.urssaf.image.sae.format.identification.service.IdentificationService;
 import fr.urssaf.image.sae.format.referentiel.exceptions.ReferentielRuntimeException;
 import fr.urssaf.image.sae.format.referentiel.model.FormatFichier;
-import fr.urssaf.image.sae.format.referentiel.service.impl.ReferentielFormatServiceImpl;
+import fr.urssaf.image.sae.format.referentiel.service.ReferentielFormatService;
 import fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler;
 
 /**
@@ -30,10 +38,41 @@ import fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler;
 public class IdentificationServiceImpl implements IdentificationService {
 
    /**
+    * Définition de caches permettant de ne pas recharger à chaque fois les
+    * services à partir de l'applicationContext
+    */
+   private final LoadingCache<String, Identifier> identifiers;
+
+   /**
     * Service permettant d’interroger le référentiel des formats
     */
+   private final ReferentielFormatService referentielFormatService;
+
+   /**
+    * Contructeur
+    * 
+    * @param referentielFormatService
+    *           le service de référentiel des formats
+    * @param cacheDuration
+    *           la durée de cache pour les formats
+    */
    @Autowired
-   private ReferentielFormatServiceImpl referentielFormatService;
+   public IdentificationServiceImpl(
+         ReferentielFormatService referentielFormatService,
+         @Value("${sae.referentiel.format.cache}") int cacheDuration) {
+      this.referentielFormatService = referentielFormatService;
+
+      // Mise en cache
+      identifiers = CacheBuilder.newBuilder().refreshAfterWrite(cacheDuration,
+            TimeUnit.MINUTES).build(new CacheLoader<String, Identifier>() {
+
+         @Override
+         public Identifier load(String identifiant) {
+            return SaeFormatApplicationContext.getApplicationContext().getBean(
+                  identifiant, Identifier.class);
+         }
+      });
+   }
 
    @Override
    public final IdentificationResult identifyFile(String idFormat, File fichier)
@@ -48,13 +87,14 @@ public class IdentificationServiceImpl implements IdentificationService {
          // partir du référentiel des formats
          format = referentielFormatService.getFormat(idFormat);
 
-         if (format != null) {
+         if (format != null
+               && StringUtils.isNotBlank(format.getIdentificateur())) {
+
             String identificateur = format.getIdentificateur();
 
             // On utilise l'application contexte pour récupérer une instance de
             // l'identificateur
-            identifier = SaeFormatApplicationContext.getApplicationContext()
-                  .getBean(identificateur, Identifier.class);
+            identifier = identifiers.getUnchecked(identificateur);
 
             // On appel la méthode identifyFile en passant en paramètre le
             // fichier et l'idFormat
@@ -71,11 +111,14 @@ public class IdentificationServiceImpl implements IdentificationService {
                   .getMessage("erreur.recup.identif"));
          }
 
-      } catch (NoSuchBeanDefinitionException except) {
-         // S'il n'est pas possible de récupérer une instance de
-         // l'identificateur
+      } catch (InvalidCacheLoadException except) {
          throw new IdentifierInitialisationException(SaeFormatMessageHandler
-               .getMessage("erreur.recup.identif"), except);
+               .getMessage("erreur.recup.identif"));
+
+      } catch (UncheckedExecutionException except) {
+         throw new IdentifierInitialisationException(SaeFormatMessageHandler
+               .getMessage("erreur.recup.identif"));
+
       } catch (ReferentielRuntimeException except) {
          throw new IdentificationRuntimeException(except.getMessage(), except);
       }

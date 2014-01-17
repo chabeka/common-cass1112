@@ -59,7 +59,9 @@ public class ValidationServiceImplTest {
          ValidatorInitialisationException {
       try {
          validationService.validateFile(FMT354, docErrone);
-      } catch (FileNotFoundException except) {
+         Assert.fail("exception attendue");
+
+      } catch (IllegalArgumentException except) {
          Assert.assertEquals(MESSAGE_ERRONE,
                "Le fichier passé en paramètre est introuvable.", except
                      .getMessage());

@@ -80,6 +80,9 @@ public class ReferentielFormatServiceImpl implements ReferentielFormatService {
       });
    }
 
+   /**
+    * {@inheritDoc}
+    */
    @Override
    public final void addFormat(FormatFichier refFormat) {
 
@@ -87,6 +90,9 @@ public class ReferentielFormatServiceImpl implements ReferentielFormatService {
 
    }
 
+   /**
+    * {@inheritDoc}
+    */
    @Override
    public final void deleteFormat(String idFormat)
          throws UnknownFormatException {
@@ -94,6 +100,9 @@ public class ReferentielFormatServiceImpl implements ReferentielFormatService {
       refFormatSupport.delete(idFormat, clockSupport.currentCLock());
    }
 
+   /**
+    * {@inheritDoc}
+    */
    @Override
    public final FormatFichier getFormat(String idFormat)
          throws UnknownFormatException {
@@ -112,11 +121,37 @@ public class ReferentielFormatServiceImpl implements ReferentielFormatService {
       }
    }
 
+   /**
+    * {@inheritDoc}
+    */
    @Override
    public final List<FormatFichier> getAllFormat() {
 
       return refFormatSupport.findAll();
 
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final boolean exists(String idFormat) {
+
+      boolean found = false;
+
+      try {
+         formats.getUnchecked(idFormat);
+         found = true;
+
+      } catch (InvalidCacheLoadException e) {
+         LOGGER.debug(SaeFormatMessageHandler.getMessage(
+               "erreur.no.format.found", idFormat));
+
+      } catch (UncheckedExecutionException e) {
+         throw new ReferentielRuntimeException(e);
+      }
+
+      return found;
    }
 
 }

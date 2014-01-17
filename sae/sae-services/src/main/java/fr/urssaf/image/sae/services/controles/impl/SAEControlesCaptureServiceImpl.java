@@ -31,6 +31,7 @@ import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.format.identification.exceptions.IdentifierInitialisationException;
 import fr.urssaf.image.sae.format.identification.identifiers.model.IdentificationResult;
 import fr.urssaf.image.sae.format.identification.service.IdentificationService;
+import fr.urssaf.image.sae.format.referentiel.service.ReferentielFormatService;
 import fr.urssaf.image.sae.format.validation.exceptions.ValidatorInitialisationException;
 import fr.urssaf.image.sae.format.validation.service.ValidationService;
 import fr.urssaf.image.sae.format.validation.validators.model.ValidationResult;
@@ -83,6 +84,9 @@ public class SAEControlesCaptureServiceImpl implements
 
    @Autowired
    private ValidationService validationService;
+
+   @Autowired
+   ReferentielFormatService referentielFormatService;
 
    private static final String LOG_DEBUT = "{} - début";
    private static final String LOG_FIN = "{} - fin";
@@ -533,8 +537,18 @@ public class SAEControlesCaptureServiceImpl implements
          List<FormatControlProfil> controlProfilSet)
          throws UnknownFormatException, ValidationExceptionInvalidFile {
 
+      String fileFormat = findMetadataValue("FormatFichier", saeDocument
+            .getMetadatas());
+
+      // Vérification que la métadonnée FormatFichier fait bien partie des
+      // valeurs disponibles dans le référentiel des formats
+      if (!referentielFormatService.exists(fileFormat)) {
+         throw new UnknownFormatException(ResourceMessagesUtils
+               .loadMessage("capture.format.identification"));
+      }
+
       // Sélection du profil
-      FormatControlProfil formatControlProfil = selectProfil(saeDocument,
+      FormatControlProfil formatControlProfil = selectProfil(fileFormat,
             controlProfilSet);
 
       // Application de l'identification
@@ -663,32 +677,17 @@ public class SAEControlesCaptureServiceImpl implements
     * Selection du profil à partir de l'ensemble des profils de contrôle dont le
     * "formatCode" correspond à la valeur de la métadonnée "FormatFichier". *
     * 
-    * @param saeDocument
-    *           le SAEDocument
+    * @param formatFichier
+    *           le format du fichier
     * @param controlProfilSet
     *           liste des profils de controle contenu dans le VIContenuExtrait
     * @return
     */
-   private FormatControlProfil selectProfil(SAEDocument saeDocument,
+   private FormatControlProfil selectProfil(String formatFichier,
          List<FormatControlProfil> controlProfilSet) {
 
-      List<SAEMetadata> listSaeMetadata = saeDocument.getMetadatas();
-
-      boolean trouve = false;
-      int i = 0;
-      String valeur = null;
-      do { // récupération de la valeur de la métadonnéé "FormatFichier"
-         SAEMetadata saeMetada = listSaeMetadata.get(i);
-         if (StringUtils.equalsIgnoreCase(saeMetada.getLongCode(),
-               "FormatFichier")) {
-            trouve = true;
-            valeur = (String) saeMetada.getValue();
-         }
-         i++;
-      } while (!trouve);
-
-      FormatControlProfil formatControlProfil = getFormatControlProfil(valeur,
-            controlProfilSet);
+      FormatControlProfil formatControlProfil = getFormatControlProfil(
+            formatFichier, controlProfilSet);
       return formatControlProfil;
 
    }
@@ -705,6 +704,24 @@ public class SAEControlesCaptureServiceImpl implements
          }
       }
       return formatControlProf;
+   }
+
+   private String findMetadataValue(String metaName,
+         List<SAEMetadata> listSaeMetadata) {
+      int index = 0;
+      String valeur = null;
+      boolean trouve = false;
+
+      do { // récupération de la valeur de la métadonnéé "FormatFichier"
+         SAEMetadata saeMetada = listSaeMetadata.get(index);
+         if (StringUtils.equalsIgnoreCase(saeMetada.getLongCode(), metaName)) {
+            trouve = true;
+            valeur = (String) saeMetada.getValue();
+         }
+         index++;
+      } while (!trouve && index < listSaeMetadata.size());
+
+      return valeur;
    }
 
 }

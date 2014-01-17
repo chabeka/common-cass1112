@@ -5,7 +5,6 @@ import java.util.Locale;
 import org.springframework.context.MessageSource;
 
 import fr.urssaf.image.sae.format.context.SaeFormatApplicationContext;
-import fr.urssaf.image.sae.format.utils.Constantes;
 
 /**
  * Permet de lire le fichier properites : sae_format_messages.properties.

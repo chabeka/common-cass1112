@@ -51,4 +51,14 @@ public interface ReferentielFormatService {
     */
    List<FormatFichier> getAllFormat();
 
+   /**
+    * @param idFormat
+    *           identifiant du format
+    * @return <ul>
+    *         <li><b>true</b> si l'identifiant du format existe en base</li>
+    *         <li><b>false</b> sinon</li>
+    *         </ul>
+    */
+   boolean exists(String idFormat);
+
 }

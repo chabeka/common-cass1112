@@ -12,7 +12,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.pdfbox.exception.FormatValidationException;
-import fr.urssaf.image.sae.format.referentiel.exceptions.ReferentielRuntimeException;
 import fr.urssaf.image.sae.format.validation.exceptions.ValidationRuntimeException;
 import fr.urssaf.image.sae.format.validation.validators.Validator;
 import fr.urssaf.image.sae.format.validation.validators.pdfa.PdfaValidatorImpl;
@@ -46,7 +45,8 @@ public class ParamValidationTest {
       try {
          validator.validateFile(null);
          Assert.fail(MESSAGE_REF_RUNTIME);
-      } catch (ReferentielRuntimeException ex) {
+      
+      } catch (IllegalArgumentException ex) {
          Assert
                .assertEquals(
                      MESSAGE_EXCEPT_INCORRECT,
@@ -64,7 +64,7 @@ public class ParamValidationTest {
          validator.validateFile(fichierTest);
          Assert
                .fail("Une exception FileNotFoundException aurait dû être levée");
-      } catch (FileNotFoundException ex) {
+      } catch (IllegalArgumentException ex) {
          Assert.assertEquals(MESSAGE_EXCEPT_INCORRECT,
                "Le fichier pass\u00E9 en param\u00E8tre est introuvable.", ex
                      .getMessage());
@@ -77,7 +77,7 @@ public class ParamValidationTest {
       try {
          validator.validateStream(null);
          Assert.fail(MESSAGE_REF_RUNTIME);
-      } catch (ReferentielRuntimeException ex) {
+      } catch (IllegalArgumentException ex) {
          Assert
                .assertEquals(
                      MESSAGE_EXCEPT_INCORRECT,
@@ -99,7 +99,7 @@ public class ParamValidationTest {
       try {
          pdfaValidator.validateFile(null);
          Assert.fail(MESSAGE_REF_RUNTIME);
-      } catch (ReferentielRuntimeException ex) {
+      } catch (IllegalArgumentException ex) {
          Assert
                .assertEquals(
                      MESSAGE_EXCEPT_INCORRECT,
@@ -117,7 +117,7 @@ public class ParamValidationTest {
          pdfaValidator.validateFile(fichierTest);
          Assert
                .fail("Une exception FileNotFoundException aurait dû être levée");
-      } catch (FileNotFoundException ex) {
+      } catch (IllegalArgumentException ex) {
          Assert.assertEquals(MESSAGE_EXCEPT_INCORRECT,
                "Le fichier pass\u00E9 en param\u00E8tre est introuvable.", ex
                      .getMessage());
@@ -130,7 +130,7 @@ public class ParamValidationTest {
       try {
          pdfaValidator.validateStream(null);
          Assert.fail(MESSAGE_REF_RUNTIME);
-      } catch (ReferentielRuntimeException ex) {
+      } catch (IllegalArgumentException ex) {
          Assert
                .assertEquals(
                      MESSAGE_EXCEPT_INCORRECT,
