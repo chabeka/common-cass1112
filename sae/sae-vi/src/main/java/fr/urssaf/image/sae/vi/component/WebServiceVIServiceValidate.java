@@ -46,7 +46,7 @@ public class WebServiceVIServiceValidate {
 
    /**
     * Vérification des paramètres d'entrée de la méthode
-    * {@link fr.urssaf.image.sae.vi.service.WebServiceVIService#creerVIpourServiceWeb}
+    * {@link fr.urssaf.image.sae.vi.service.WebServiceVICreateService#creerVIpourServiceWeb}
     * <br>
     * <ul>
     * <li>pagm : doit avoir au moins un droit renseigné</li>

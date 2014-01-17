@@ -32,7 +32,7 @@ public class WebServiceVIValidateServiceValidate {
 
    /**
     * Vérification des paramètres d'entrée de la méthode
-    * {@link fr.urssaf.image.sae.vi.service.WebServiceVIService#creerVIpourServiceWeb}
+    * {@link fr.urssaf.image.sae.vi.service.WebServiceVIValidateService#validateCertificates}
     * <br>
     * <ul>
     * <li>pagm : doit avoir au moins un droit renseigné</li>
@@ -42,8 +42,10 @@ public class WebServiceVIValidateServiceValidate {
     * <li>password: doit être renseigné</li>
     * </ul>
     * 
-    * @param joinPoint
-    *           point de jointure de la méthode
+    * @param contract
+    *           le contrat de service
+    * @param result
+    *           certificat client utilisé pour signer le VI
     */
    @Before(CERTIFICATS)
    public final void validateCertificates(ServiceContract contract,

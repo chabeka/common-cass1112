@@ -23,14 +23,10 @@ public class AuthenticationToken extends AnonymousAuthenticationToken {
     * 
     * @param key
     *           to identify if this object made by an authorised client
-    * 
     * @param principal
     *           the principal
     * @param authorities
     *           the authorities granted to the principal
-    * 
-    * @param details
-    *           information supplémentaires sur l'authentification courante
     */
    public AuthenticationToken(String key, Object principal,
          List<GrantedAuthority> authorities) {

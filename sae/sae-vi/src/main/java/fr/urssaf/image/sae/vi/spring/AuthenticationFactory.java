@@ -25,8 +25,6 @@ public final class AuthenticationFactory {
     *           {@link AuthenticationToken#getPrincipal()}
     * @param roles
     *           liste des roles applicatifs
-    * @param actionsUnitaires
-    *           liste des actions unitaires
     * @return instance de {@link AuthenticationToken}
     */
    public static AuthenticationToken createAuthentication(String key,
