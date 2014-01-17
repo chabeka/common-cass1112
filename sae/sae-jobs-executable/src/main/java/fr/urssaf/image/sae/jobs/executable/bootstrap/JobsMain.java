@@ -24,6 +24,8 @@ public final class JobsMain {
 
    private static final String CONFIGURATION_FILE = "/applicationContext-sae-jobs-executable.xml";
 
+   private static final String MESSAGE_ARGUMENTS_MANQUANTS = "Le chemin complet du fichier de configuration générale du SAE doit être renseigné, ainsi que la méthode à invoquer.";
+
    private JobsMain() {
 
    }
@@ -38,18 +40,8 @@ public final class JobsMain {
 
       // 2 arguments attendus
       if (args == null || ArrayUtils.getLength(args) == 0) {
-         LOG
-               .error("Le chemin complet du fichier de configuration générale du SAE doit être renseigné, ainsi que la méthode à invoquer.");
-         throw new IllegalArgumentException(
-               "Le chemin complet du fichier de configuration générale du SAE doit être renseigné, ainsi que la méthode à invoquer.");
-      }
-
-      if (ArrayUtils.getLength(args) < 2) {
-         LOG
-               .error("Le chemin complet du fichier de configuration générale du SAE doit être renseigné, ainsi que la méthode à invoquer.");
-
-         throw new IllegalArgumentException(
-               "Le chemin complet du fichier de configuration générale du SAE doit être renseigné, ainsi que la méthode à invoquer.");
+         LOG.error(MESSAGE_ARGUMENTS_MANQUANTS);
+         throw new IllegalArgumentException(MESSAGE_ARGUMENTS_MANQUANTS);
       }
 
       if (ArrayUtils.getLength(args) > 0 && StringUtils.isBlank(args[0])) {
@@ -68,8 +60,8 @@ public final class JobsMain {
 
       String saeConfiguration = args[0];
       // Existence du fichier de configuration
-      File f = new File(saeConfiguration);
-      if (f.exists()) {
+      File ficSaeConf = new File(saeConfiguration);
+      if (ficSaeConf.exists()) {
 
          String nomMethode = args[1];
          if ("PURGE_PILE_TRAVAUX".equals(nomMethode)) {
