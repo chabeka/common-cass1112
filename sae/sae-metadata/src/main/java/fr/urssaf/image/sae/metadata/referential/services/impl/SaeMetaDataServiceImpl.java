@@ -52,7 +52,7 @@ public class SaeMetaDataServiceImpl implements SaeMetaDataService {
     * @param clockSupport
     *           {@link JobClockSupport}
     * @param serviceProviderSupport
-    *           {@link ServiceProviderSupport}
+    *           {@link ServiceProviderSupportMetadata}
     * @param dfceConfig
     *           {@link DfceConfig}
     */
