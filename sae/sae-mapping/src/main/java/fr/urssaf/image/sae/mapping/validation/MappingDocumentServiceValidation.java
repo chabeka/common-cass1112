@@ -161,8 +161,7 @@ public class MappingDocumentServiceValidation {
    /**
     * 
     * Valide l'argument de la méthode
-    * {@link MappingDocumentService#untypedVirtualDocumentToSaeVirtualDocument(fr.urssaf.image.sae.bo.model.untyped.UntypedVirtualDocument)}
-    * <br />
+    * {@link fr.urssaf.image.sae.mapping.services.MappingDocumentService#untypedVirtualDocumentToSaeVirtualDocument}
     * 
     * @param document
     *           : Le document à transformer
@@ -179,7 +178,8 @@ public class MappingDocumentServiceValidation {
 
    /**
     * Valide l'argument de la méthode
-    * {@link MappingDocumentService#saeMetadatasToStorageMetadatas(List)}
+    * {@link fr.urssaf.image.sae.mapping.services.MappingDocumentService#saeMetadatasToStorageMetadatas
+    * saeMetadatasToStorageMetadatas}
     * 
     * @param metadatas
     *           la liste des métadonnées
