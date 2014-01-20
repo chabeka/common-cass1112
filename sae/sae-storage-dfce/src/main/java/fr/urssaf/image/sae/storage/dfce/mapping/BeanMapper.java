@@ -310,7 +310,7 @@ public final class BeanMapper {
                            .getShortCode())) {
             document.setLifeCycleReferenceDate((Date) storageMetadata
                   .getValue());
-         
+
          } else if (technical.getShortCode().equals(
                StorageTechnicalMetadatas.HASH.getShortCode())) {
             // On ne fait rien
@@ -472,7 +472,7 @@ public final class BeanMapper {
    /**
     * Transforme un objet {@link StorageReferenceFile} en {@link FileReference}
     * 
-    * @param fileReference
+    * @param referenceFile
     *           le fichier de référence métier
     * @return le fichier de référence DFCE
     */
