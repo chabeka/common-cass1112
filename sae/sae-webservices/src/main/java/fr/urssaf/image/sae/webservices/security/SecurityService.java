@@ -82,7 +82,7 @@ public class SecurityService {
     * <ul>
     * <li>Credentials : empty</li>
     * <li>Principal : {@link VIContenuExtrait#getIdUtilisateur()}</li>
-    * <li>Authorities : {@link VIContenuExtrait#getPagm()}</li>
+    * <li>Authorities : {@link VIContenuExtrait#getPagms()}</li>
     * </ul>
     * 
     * @param identification

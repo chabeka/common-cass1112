@@ -101,7 +101,7 @@ public class IgcService {
     * 
     * Chargement des certificats d'AC racines<br>
     * Les certificats sont récupérés dans le repertoire indiqué par
-    * {@link IgcConfig#getRepertoireACRacines()}<br>
+    * {@link IgcConfig#getAcRacine()}<br>
     * Tous les fichier de type *.pem sont chargés en mémoire<br>
     * <br>
     * Une exception {@link IllegalArgumentException} est levée avec le message
@@ -183,7 +183,7 @@ public class IgcService {
     * <br>
     * Lors de l'instanciation les CRL sont de nouveau chargés<br>
     * Les CRL sont récupérés dans le répertoire indiqué par
-    * {@link IgcConfig#getRepertoireCRLs()}<br>
+    * {@link IgcConfig#getCrlsRep()}<br>
     * Tous les fichiers de ce répertoire sont ainsi chargés
     * 
     * 
