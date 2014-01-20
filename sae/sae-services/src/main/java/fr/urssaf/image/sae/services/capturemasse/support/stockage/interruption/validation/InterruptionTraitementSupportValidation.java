@@ -81,8 +81,7 @@ public class InterruptionTraitementSupportValidation {
 
    /**
     * Validation des méthodes de
-    * {@link fr.urssaf.image.sae.storage.dfce.services.support.InterruptionTraitementSupport#interruption(DateTime,InterruptionTraitementConfig)}
-    * <br>
+    * {@link fr.urssaf.image.sae.services.capturemasse.support.stockage.interruption.InterruptionTraitementMasseSupport#interruption}
     * 
     * @param currentDate
     *           doit être renseigné
@@ -109,8 +108,7 @@ public class InterruptionTraitementSupportValidation {
 
    /**
     * Validation des méthodes de
-    * {@link fr.urssaf.image.sae.storage.dfce.services.support.InterruptionTraitementSupport#hasInterrupted(DateTime, InterruptionTraitementConfig)}
-    * <br>
+    * {@link fr.urssaf.image.sae.services.capturemasse.support.stockage.interruption.InterruptionTraitementMasseSupport#interruption}
     * 
     * @param currentDate
     *           doit être renseigné

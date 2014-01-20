@@ -36,12 +36,12 @@ public final class LocalTimeUtils {
 
    /**
     * 
-    * Vérification que l'heure est au format {@value #TIME_PATTERN}<br>
+    * Vérification que l'heure est au format interne à cette clase<br>
     * 
     * @param time
     *           heure pour qui on veut vérifier le format
-    * @return <code>true</code> si <code>time</code> est au format
-    *         {@value #TIME_PATTERN} <code>faux</code> sinon
+    * @return <code>true</code> si <code>time</code> est au format attendu,
+    *         <code>faux</code> sinon
     */
    public static boolean isValidate(String time) {
 
@@ -65,7 +65,7 @@ public final class LocalTimeUtils {
    }
 
    /**
-    * Transforme une chaine de caractère au format {@value #TIME_PATTERN}<br>
+    * Transforme une chaine de caractère dans un format interne à cette classe<br>
     * 
     * @param time
     *           heure à parser

@@ -36,7 +36,7 @@ public abstract class AbstractPoolThreadExecutor<BOT, CAPT> extends
    private Boolean isInterrupted;
    private final InterruptionTraitementMasseSupport support;
    private final InterruptionTraitementConfig config;
-   
+
    /**
     * Constructeur
     * 
@@ -183,7 +183,7 @@ public abstract class AbstractPoolThreadExecutor<BOT, CAPT> extends
     *           le document en erreur
     * @param exception
     *           exception source
-    * @return
+    * @return l'erreur spécifique
     */
    protected abstract AbstractInsertionMasseRuntimeException createError(
          int index, BOT document, InterruptionTraitementException exception);
