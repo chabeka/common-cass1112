@@ -48,7 +48,7 @@ public class TraceRegTechniqueDao extends AbstractTraceDao {
    }
 
    /**
-    * ajoute une colonne {@value TraceRegTechniqueDao#COL_CONTEXTE}
+    * ajoute une colonne {@value #COL_CONTEXTE}
     * 
     * @param updater
     *           updater de <b>TraceRegTechnique</b>
@@ -63,7 +63,7 @@ public class TraceRegTechniqueDao extends AbstractTraceDao {
    }
 
    /**
-    * ajoute une colonne {@value TraceRegTechniqueDao#COL_STACKTRACE}
+    * ajoute une colonne {@value #COL_STACKTRACE}
     * 
     * @param updater
     *           updater de <b>TraceRegSecurite</b>

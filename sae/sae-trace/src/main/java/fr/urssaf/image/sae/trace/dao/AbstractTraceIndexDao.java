@@ -3,7 +3,6 @@
  */
 package fr.urssaf.image.sae.trace.dao;
 
-import java.sql.Date;
 import java.util.UUID;
 
 import me.prettyprint.cassandra.serializers.StringSerializer;
@@ -33,10 +32,6 @@ public abstract class AbstractTraceIndexDao<VT> extends
    }
 
    /**
-    * @param <VT>
-    *           le type de la valeur
-    * @param valueSerializer
-    *           le serializer de la valeur
     * @return le SliceQuery
     */
    public final SliceQuery<String, UUID, VT> createSliceQuery() {
@@ -71,7 +66,8 @@ public abstract class AbstractTraceIndexDao<VT> extends
     * Création du ColumnFamilyUpdater
     * 
     * @param journee
-    *           la journée, au format obtenu de {@link #getJournee(Date)}
+    *           la journée, au format obtenu de
+    *           {@link fr.urssaf.image.sae.trace.utils.DateRegUtils#getJournee}
     * @return le ColumnFamilyUpdater
     */
    public final ColumnFamilyUpdater<String, UUID> createUpdater(String journee) {

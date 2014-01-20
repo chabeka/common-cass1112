@@ -21,10 +21,10 @@ import fr.urssaf.image.sae.trace.dao.serializer.MapSerializer;
  * 
  */
 public abstract class AbstractTraceDao extends AbstractDao<UUID, String> {
-   
+
    /** Date de création de la trace */
    public static final String COL_TIMESTAMP = "timestamp";
-   
+
    /** code de l'événement */
    public static final String COL_CODE_EVT = "codeEvt";
 
@@ -67,7 +67,7 @@ public abstract class AbstractTraceDao extends AbstractDao<UUID, String> {
    }
 
    /**
-    * ajoute une colonne {@value AbstractTraceDao#COL_CODE_EVT}
+    * ajoute une colonne {@value #COL_CODE_EVT}
     * 
     * @param updater
     *           updater
@@ -82,7 +82,7 @@ public abstract class AbstractTraceDao extends AbstractDao<UUID, String> {
    }
 
    /**
-    * ajoute une colonne {@value AbstractTraceDao#COL_CONTRAT_SERVICE}
+    * ajoute une colonne {@value #COL_CONTRAT_SERVICE}
     * 
     * @param updater
     *           updater
@@ -98,7 +98,7 @@ public abstract class AbstractTraceDao extends AbstractDao<UUID, String> {
    }
 
    /**
-    * ajoute une colonne {@value AbstractTraceDao#COL_PAGMS}
+    * ajoute une colonne {@value #COL_PAGMS}
     * 
     * @param updater
     *           updater
@@ -114,7 +114,7 @@ public abstract class AbstractTraceDao extends AbstractDao<UUID, String> {
    }
 
    /**
-    * ajoute une colonne {@value AbstractTraceDao#COL_LOGIN}
+    * ajoute une colonne {@value #COL_LOGIN}
     * 
     * @param updater
     *           updater
@@ -129,7 +129,7 @@ public abstract class AbstractTraceDao extends AbstractDao<UUID, String> {
    }
 
    /**
-    * ajoute une colonne {@value AbstractTraceDao#COL_INFOS}
+    * ajoute une colonne {@value #COL_INFOS}
     * 
     * @param updater
     *           updater
@@ -143,9 +143,9 @@ public abstract class AbstractTraceDao extends AbstractDao<UUID, String> {
          long clock) {
       addColumn(updater, COL_INFOS, value, MapSerializer.get(), clock);
    }
-   
+
    /**
-    * ajoute une colonne {@value AbstractTraceDao#COL_TIMESTAMP}
+    * ajoute une colonne {@value #COL_TIMESTAMP}
     * 
     * @param updater
     *           updater
@@ -159,5 +159,4 @@ public abstract class AbstractTraceDao extends AbstractDao<UUID, String> {
       addColumn(updater, COL_TIMESTAMP, value, DateSerializer.get(), clock);
    }
 
-   
 }

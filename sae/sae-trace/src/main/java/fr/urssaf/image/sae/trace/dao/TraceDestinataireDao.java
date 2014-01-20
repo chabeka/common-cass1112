@@ -72,8 +72,7 @@ public class TraceDestinataireDao {
    }
 
    /**
-    * Ajoute une colonne {@value TraceDestinataireDao#COL_HIST_ARCHIVE} à la
-    * ligne donnée
+    * Ajoute une colonne {@value #COL_HIST_ARCHIVE} à la ligne donnée
     * 
     * @param updater
     *           updater de <b>TraceDestinataire</b>
@@ -100,8 +99,7 @@ public class TraceDestinataireDao {
    }
 
    /**
-    * Ajoute une colonne {@value TraceDestinataireDao#COL_HIST_EVT} à la ligne
-    * donnée
+    * Ajoute une colonne {@value #COL_HIST_EVT} à la ligne donnée
     * 
     * @param updater
     *           updater de <b>TraceDestinataire</b>
@@ -127,8 +125,7 @@ public class TraceDestinataireDao {
    }
 
    /**
-    * Ajoute une colonne {@value TraceDestinataireDao#COL_REG_EXPLOIT} à la
-    * ligne donnée
+    * Ajoute une colonne {@value #COL_REG_EXPLOIT} à la ligne donnée
     * 
     * @param updater
     *           updater de <b>TraceDestinataire</b>
@@ -154,8 +151,7 @@ public class TraceDestinataireDao {
    }
 
    /**
-    * Ajoute une colonne {@value TraceDestinataireDao#COL_REG_SECURITE} à la
-    * ligne donnée
+    * Ajoute une colonne {@value #COL_REG_SECURITE} à la ligne donnée
     * 
     * @param updater
     *           updater de <b>TraceDestinataire</b> <li></li> <li>
@@ -181,8 +177,7 @@ public class TraceDestinataireDao {
    }
 
    /**
-    * Ajoute une colonne {@value TraceDestinataireDao#COL_JOURN_EVT} à la
-    * ligne donnée
+    * Ajoute une colonne {@value #COL_JOURN_EVT} à la ligne donnée
     * 
     * @param updater
     *           updater de <b>TraceDestinataire</b>
@@ -203,13 +198,11 @@ public class TraceDestinataireDao {
          refValues = value;
       }
 
-      addColumn(updater, COL_JOURN_EVT, refValues, ListSerializer.get(),
-            clock);
+      addColumn(updater, COL_JOURN_EVT, refValues, ListSerializer.get(), clock);
    }
-   
+
    /**
-    * Ajoute une colonne {@value TraceDestinataireDao#COL_REG_TECHNIQUE} à la
-    * ligne donnée
+    * Ajoute une colonne {@value #COL_REG_TECHNIQUE} à la ligne donnée
     * 
     * @param updater
     *           updater de <b>TraceDestinataire</b>
@@ -251,7 +244,6 @@ public class TraceDestinataireDao {
    }
 
    /**
-    * 
     * @return Mutator de <code>TraceDestinataire</code>
     */
    public final Mutator<String> createMutator() {

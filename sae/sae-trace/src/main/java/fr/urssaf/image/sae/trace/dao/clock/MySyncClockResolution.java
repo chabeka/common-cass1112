@@ -5,7 +5,9 @@ import me.prettyprint.hector.api.ClockResolution;
 
 /**
  * Synchronized Microseconds divisé par 10 resolution used to create clocks.<br>
- * Un copier/collé de {@link MicrosecondsSyncClockResolution}<br>
+ * Un copier/collé de
+ * {@link me.prettyprint.cassandra.service.clock.MicrosecondsSyncClockResolution}
+ * <br>
  * TODO : à mettre dans commons-cassandra
  */
 public final class MySyncClockResolution extends AbstractClockResolution

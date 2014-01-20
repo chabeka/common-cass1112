@@ -43,9 +43,9 @@ public class TraceRegSecuriteDao extends AbstractTraceDao {
    public final String getColumnFamilyName() {
       return REG_SECURITE_CFNAME;
    }
-   
+
    /**
-    * ajoute une colonne {@value TraceRegSecuriteDao#COL_CONTEXTE}
+    * ajoute une colonne {@value #COL_CONTEXTE}
     * 
     * @param updater
     *           updater de <b>TraceRegSecurite</b>

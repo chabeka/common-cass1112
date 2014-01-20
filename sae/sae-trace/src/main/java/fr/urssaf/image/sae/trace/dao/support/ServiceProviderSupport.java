@@ -62,26 +62,29 @@ public class ServiceProviderSupport {
 
       return serviceProvider.getRecordManagerService();
    }
-   
+
    /**
-    * Renvoie le service d'accès aux journaux 
-    * @return le {@ling ArchiveService}
+    * Renvoie le service d'accès aux journaux
+    * 
+    * @return le {@link ArchiveService}
     */
    public final ArchiveService getArchiveService() {
       return serviceProvider.getArchiveService();
    }
-   
+
    /**
     * Renvoie le service de recherche
-    * @return le {@ling SearchService}
+    * 
+    * @return le {@link SearchService}
     */
    public final SearchService getSearchService() {
       return serviceProvider.getSearchService();
    }
-   
+
    /**
     * Renvoie le service d'accès aux contenus
-    * @return le {@ling StoreService}
+    * 
+    * @return le {@link StoreService}
     */
    public final StoreService getStoreService() {
       return serviceProvider.getStoreService();

@@ -45,7 +45,7 @@ public class TraceJournalEvtDao extends AbstractTraceDao {
    }
 
    /**
-    * ajoute une colonne {@value TraceJournalEvtDao#COL_CONTEXT}
+    * ajoute une colonne {@value #COL_CONTEXT}
     * 
     * @param updater
     *           updater de <b>TraceJournalEvt</b>
