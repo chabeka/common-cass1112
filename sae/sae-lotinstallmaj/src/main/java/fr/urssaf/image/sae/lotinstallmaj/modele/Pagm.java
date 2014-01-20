@@ -67,7 +67,7 @@ public class Pagm {
    }
 
    /**
-    * @param pagma
+    * @param pagmf
     *           le droit des formats de fichiers (PAGMf) du PAGM
     */
    public final void setPagmf(String pagmf) {
