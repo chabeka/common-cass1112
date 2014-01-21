@@ -141,4 +141,12 @@ public class SaeDroitServiceSkipImpl implements SaeDroitService {
       return null;
    }
 
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public List<String> findAllCodeClientCs(int maxResult) {
+      return null;
+   }
+
 }

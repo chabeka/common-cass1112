@@ -4,6 +4,8 @@
 package fr.urssaf.image.sae.droit.service.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -12,6 +14,7 @@ import me.prettyprint.hector.api.Keyspace;
 import me.prettyprint.hector.api.factory.HFactory;
 import me.prettyprint.hector.api.mutation.Mutator;
 
+import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -620,6 +623,20 @@ public class SaeDroitServiceImpl implements SaeDroitService {
    public final List<ServiceContract> findAllContractService(int maxResult) {
 
       return contratSupport.findAll(maxResult);
+   }
+   
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final List<String> findAllCodeClientCs(int maxResult) {
+      List<ServiceContract> listeSC = contratSupport.findAll(maxResult);
+      List<String> listeCodesClient = new ArrayList<String>();
+      for (ServiceContract serviceContract : listeSC) {
+         listeCodesClient.add(serviceContract.getCodeClient());
+      }
+      Collections.sort(listeCodesClient);
+      return listeCodesClient;
    }
 
    /**

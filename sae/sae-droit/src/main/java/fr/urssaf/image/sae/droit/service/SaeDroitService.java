@@ -79,6 +79,15 @@ public interface SaeDroitService {
    List<ServiceContract> findAllContractService(int maxResult);
 
    /**
+    * Méthode permettant de récupérer la liste des codes clients de tous les CS
+    * 
+    * @param maxResult
+    *           nombre maximum de contrat de service à renvoyer
+    * @return La liste des codes clients
+    */
+   List<String> findAllCodeClientCs(int maxResult);
+
+   /**
     * Méthode permettant de récupérer N contrat de service complet
     * 
     * @param maxResult
