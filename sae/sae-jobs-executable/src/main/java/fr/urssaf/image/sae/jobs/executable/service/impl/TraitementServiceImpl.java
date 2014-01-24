@@ -33,8 +33,8 @@ public class TraitementServiceImpl implements TraitementService {
    @Autowired
    private JobsConfiguration jobsConfiguration;
    
-   /* (non-Javadoc)
-    * @see fr.urssaf.image.sae.jobs.executable.service.TraitementService#purger()
+   /**
+    * Purge les jobs et leur historique
     */
    public void purger() {
 
