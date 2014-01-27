@@ -29,6 +29,7 @@
       <property name="login" value="tata" />
       <property name="password" value="tata" />
       <property name="basename" value="tata" />
+      <property name="timeOut" value="10000" />
    </bean>
    
    

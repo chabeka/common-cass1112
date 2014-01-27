@@ -138,6 +138,8 @@ public final class DfceConfigFactory {
 
       dfceConfig.setUrlToolkit(urlToolkit);
 
+      dfceConfig.setTimeOut(Integer.parseInt(props.getProperty("db.timeout")));
+
       return dfceConfig;
 
    }

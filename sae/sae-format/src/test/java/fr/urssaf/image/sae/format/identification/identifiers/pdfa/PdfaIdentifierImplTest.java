@@ -1,6 +1,7 @@
 package fr.urssaf.image.sae.format.identification.identifiers.pdfa;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -12,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import de.schlichtherle.io.FileInputStream;
 import fr.urssaf.image.sae.format.identification.exceptions.IdentificationRuntimeException;
 import fr.urssaf.image.sae.format.identification.identifiers.model.IdentificationResult;
 import fr.urssaf.image.sae.format.model.EtapeEtResultat;

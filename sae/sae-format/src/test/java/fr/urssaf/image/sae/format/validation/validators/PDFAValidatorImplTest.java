@@ -1,6 +1,7 @@
 package fr.urssaf.image.sae.format.validation.validators;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import de.schlichtherle.io.FileInputStream;
 import fr.urssaf.image.commons.pdfbox.exception.FormatValidationException;
 import fr.urssaf.image.sae.format.validation.validators.model.ValidationResult;
 import fr.urssaf.image.sae.format.validation.validators.pdfa.PdfaValidatorImpl;

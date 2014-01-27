@@ -25,6 +25,7 @@ import com.docubase.dfce.exception.TagControlException;
 import fr.urssaf.image.sae.storage.dfce.utils.Utils;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.model.connection.StorageConnectionParameter;
+import fr.urssaf.image.sae.storage.model.connection.StorageHost;
 
 /**
  * Service pour fournir des méthodes communes pour les tests de l'artefact<br>
@@ -50,16 +51,16 @@ public class SAEServiceTestProvider {
     */
    @Autowired
    public SAEServiceTestProvider(
-         @Qualifier("storageConnectionParameter") StorageConnectionParameter connection)
-         throws ConnectionServiceEx {
+         @Qualifier("storageConnectionParameter") StorageConnectionParameter connection,
+         StorageHost storageHost) throws ConnectionServiceEx {
 
       Assert.notNull(connection);
 
       this.serviceProvider = ServiceProvider.newServiceProvider();
 
       this.serviceProvider.connect(connection.getStorageUser().getLogin(),
-            connection.getStorageUser().getPassword(), Utils
-                  .buildUrlForConnection(connection));
+            connection.getStorageUser().getPassword(),
+            Utils.buildUrlForConnection(connection), storageHost.getTimeOut());
 
       this.base = serviceProvider.getBaseAdministrationService().getBase(
             connection.getStorageBase().getBaseName());
@@ -162,8 +163,10 @@ public class SAEServiceTestProvider {
          }
 
          InputStream docContent = new ByteArrayInputStream(content);
-         return serviceProvider.getStoreService().storeDocument(document,
-               documentTitle, documentType, docContent).getUuid();
+         return serviceProvider
+               .getStoreService()
+               .storeDocument(document, documentTitle, documentType, docContent)
+               .getUuid();
 
       } catch (TagControlException e) {
          throw new NestableRuntimeException(e);

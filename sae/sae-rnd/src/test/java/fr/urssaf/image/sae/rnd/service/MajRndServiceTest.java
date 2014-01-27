@@ -128,10 +128,9 @@ public class MajRndServiceTest {
       Assert.assertNotNull(typeDoc3);
 
       // On vérifie que la durée de conservation du 1er doc a été passée à 300
-      Assert
-            .assertEquals(
-                  "Le type de doc 1.1.1.1.1 doit avoir une durée de conservation à 300",
-                  300, typeDoc1.getDureeConservation());
+      Assert.assertEquals(
+            "Le type de doc 1.1.1.1.1 doit avoir une durée de conservation à 300",
+            300, typeDoc1.getDureeConservation());
 
       // On vérifie que le code "1.1.1.1.1" a été passé à clôturé suite à la
       // mise à jour des correspondances
@@ -144,8 +143,8 @@ public class MajRndServiceTest {
 
       // Version du RND dans l'ADRN
       // --------------------------
-      EasyMock.expect(rndRecuperationService.getVersionCourante()).andReturn(
-            "11.5").anyTimes();
+      EasyMock.expect(rndRecuperationService.getVersionCourante())
+            .andReturn("11.5").anyTimes();
 
       // Liste des types de documents de l'ADRN
       // --------------------------------------
@@ -178,10 +177,11 @@ public class MajRndServiceTest {
       typeDoc3.setType(TypeCode.ARCHIVABLE_AED);
       listeTypeDoc.add(typeDoc3);
 
-      EasyMock.expect(
-            rndRecuperationService
-                  .getListeRnd(EasyMock.anyObject(String.class))).andReturn(
-            listeTypeDoc).anyTimes();
+      EasyMock
+            .expect(
+                  rndRecuperationService.getListeRnd(EasyMock
+                        .anyObject(String.class))).andReturn(listeTypeDoc)
+            .anyTimes();
 
       // Le 1er document sera déjà dans le RND du SAE mais avec la propriété
       // sur la durée de conservation différente, il sera donc ajouté (écrase)
@@ -203,10 +203,11 @@ public class MajRndServiceTest {
       // -------------------------
       Map<String, String> listeCorrespondances = new TreeMap<String, String>();
       listeCorrespondances.put("1.1.1.1.1", "2.2.2.2.2");
-      EasyMock.expect(
-            rndRecuperationService.getListeCorrespondances(EasyMock
-                  .anyObject(String.class))).andReturn(listeCorrespondances)
-            .anyTimes();
+      EasyMock
+            .expect(
+                  rndRecuperationService.getListeCorrespondances(EasyMock
+                        .anyObject(String.class)))
+            .andReturn(listeCorrespondances).anyTimes();
 
       // Liste des codes temporaires
       // ---------------------------
@@ -226,15 +227,16 @@ public class MajRndServiceTest {
 
    private void initComposantsDFCE() throws ObjectAlreadyExistsException {
       // Réglage dfce
-      serviceProvider.connect(EasyMock.anyObject(String.class), EasyMock
-            .anyObject(String.class), EasyMock.anyObject(String.class));
+      serviceProvider.connect(EasyMock.anyObject(String.class),
+            EasyMock.anyObject(String.class), EasyMock.anyObject(String.class),
+            EasyMock.anyInt());
       EasyMock.expectLastCall().anyTimes();
       serviceProvider.disconnect();
       EasyMock.expectLastCall().anyTimes();
       EasyMock.expect(serviceProvider.getStorageAdministrationService())
             .andReturn(storageAdministrationService).anyTimes();
-      EasyMock.expect(dfceConnectionService.openConnection()).andReturn(
-            serviceProvider).anyTimes();
+      EasyMock.expect(dfceConnectionService.openConnection())
+            .andReturn(serviceProvider).anyTimes();
 
       // 1er appel, on retourne une durée de conservation différente de celle du
       // type de doc 1 à mettre à jour donc la méthode updateLifeCycleRule doit
@@ -244,37 +246,43 @@ public class MajRndServiceTest {
 
       // 2ème appel, on retourne une durée de conservation égale à celle
       // du type de doc 2 à mettre à jour donc rien ne doit être fait
-      EasyMock.expect(lifeCycleRule.getLifeCycleLength()).andReturn(400).times(
-            2);
+      EasyMock.expect(lifeCycleRule.getLifeCycleLength()).andReturn(400)
+            .times(2);
 
       // Il n'y aura pas de 3ème appel car le 3ème doc ne sera pas présent dans
       // la CF LifeCycleRule
 
       // Les 2 premiers appels on retourne un lifeCylcleRule
-      EasyMock.expect(
-            storageAdministrationService.getLifeCycleRule(EasyMock
-                  .anyObject(String.class))).andReturn(lifeCycleRule).times(1);
-      EasyMock.expect(
-            storageAdministrationService.getLifeCycleRule(EasyMock
-                  .anyObject(String.class))).andReturn(lifeCycleRule).times(1);
+      EasyMock
+            .expect(
+                  storageAdministrationService.getLifeCycleRule(EasyMock
+                        .anyObject(String.class))).andReturn(lifeCycleRule)
+            .times(1);
+      EasyMock
+            .expect(
+                  storageAdministrationService.getLifeCycleRule(EasyMock
+                        .anyObject(String.class))).andReturn(lifeCycleRule)
+            .times(1);
 
       // Le 3ème appel, on retourne null, donc la méthode createNewLifeCycleRule
       // doit être appelée
-      EasyMock.expect(
-            storageAdministrationService.getLifeCycleRule(EasyMock
-                  .anyObject(String.class))).andReturn(null).times(1);
+      EasyMock
+            .expect(
+                  storageAdministrationService.getLifeCycleRule(EasyMock
+                        .anyObject(String.class))).andReturn(null).times(1);
 
       EasyMock.expect(
-            storageAdministrationService.createNewLifeCycleRule(EasyMock
-                  .anyObject(String.class), EasyMock.anyInt(), EasyMock
-                  .anyObject(LifeCycleLengthUnit.class))).andReturn(
+            storageAdministrationService.createNewLifeCycleRule(
+                  EasyMock.anyObject(String.class), EasyMock.anyInt(),
+                  EasyMock.anyObject(LifeCycleLengthUnit.class))).andReturn(
             lifeCycleRule);
 
-      EasyMock.expect(
-            storageAdministrationService.updateLifeCycleRule(EasyMock
-                  .anyObject(String.class), EasyMock.anyInt(), EasyMock
-                  .anyObject(LifeCycleLengthUnit.class))).andReturn(
-            lifeCycleRule).anyTimes();
+      EasyMock
+            .expect(
+                  storageAdministrationService.updateLifeCycleRule(
+                        EasyMock.anyObject(String.class), EasyMock.anyInt(),
+                        EasyMock.anyObject(LifeCycleLengthUnit.class)))
+            .andReturn(lifeCycleRule).anyTimes();
 
       EasyMock.replay(serviceProvider, dfceConnectionService,
             storageAdministrationService, lifeCycleRule);
@@ -292,17 +300,15 @@ public class MajRndServiceTest {
       Assert.assertTrue(logContains(loggingEvents,
             "ajouterRnd - Ajout du code : 2.1.1.1.1"));
 
-      Assert
-            .assertTrue(logContains(
-                  loggingEvents,
-                  "updateLifeCycleRule - La durée de conservation du code 1.1.1.1.1 a été modifiée (3000 => 300) !"));
+      Assert.assertTrue(logContains(
+            loggingEvents,
+            "updateLifeCycleRule - La durée de conservation du code 1.1.1.1.1 a été modifiée (3000 => 300) !"));
 
       Assert.assertTrue(logContains(loggingEvents,
             "updateLifeCycleRule - Ajout du code : 3.1.1.1.1"));
 
-      Assert
-            .assertTrue(logContains(loggingEvents,
-                  "ajouterCorrespondance - Ajout de la correspondance : 1.1.1.1.1 / 2.2.2.2.2"));
+      Assert.assertTrue(logContains(loggingEvents,
+            "ajouterCorrespondance - Ajout de la correspondance : 1.1.1.1.1 / 2.2.2.2.2"));
 
    }
 

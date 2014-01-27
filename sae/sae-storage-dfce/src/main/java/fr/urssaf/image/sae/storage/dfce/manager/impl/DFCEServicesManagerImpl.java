@@ -103,7 +103,8 @@ public class DFCEServicesManagerImpl implements DFCEServicesManager {
                dfceService = ServiceProvider.newServiceProvider();
                dfceService.connect(cnxParameters.getStorageUser().getLogin(),
                      cnxParameters.getStorageUser().getPassword(), Utils
-                           .buildUrlForConnection(cnxParameters));
+                           .buildUrlForConnection(cnxParameters), cnxParameters
+                           .getStorageHost().getTimeOut());
             } else {
                LOGGER.debug(
                      "{} - Réutilisation de la connexion existante à DFCE",
@@ -111,9 +112,9 @@ public class DFCEServicesManagerImpl implements DFCEServicesManager {
             }
          }
       } catch (Exception except) {
-         throw new ConnectionServiceEx(StorageMessageHandler
-               .getMessage(Constants.CNT_CODE_ERROR), except.getMessage(),
-               except);
+         throw new ConnectionServiceEx(
+               StorageMessageHandler.getMessage(Constants.CNT_CODE_ERROR),
+               except.getMessage(), except);
       }
    }
 

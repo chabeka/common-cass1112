@@ -23,6 +23,7 @@
       <property name="hostPort" value="${db.hostPort}" />
       <property name="contextRoot" value="${db.contextRoot}" />
       <property name="secure" value="${db.secure}" />
+      <property name="timeOut" value="${db.timeout}" />
    </bean>
    <bean id="storageUser"
       class="fr.urssaf.image.sae.storage.model.connection.StorageUser">

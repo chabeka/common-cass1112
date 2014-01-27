@@ -153,11 +153,10 @@ public class DfceSupportTest {
          Assert.fail("Une exception DfceRuntimeException aurait dû être levée");
 
       } catch (DfceRuntimeException ex) {
-         Assert
-               .assertEquals(
-                     "Le message de l'exception levée n'est pas celui attendu",
-                     "Erreur sur la mise à jour du type de document 1.1.1.1.1 dans DFCE",
-                     ex.getMessage());
+         Assert.assertEquals(
+               "Le message de l'exception levée n'est pas celui attendu",
+               "Erreur sur la mise à jour du type de document 1.1.1.1.1 dans DFCE",
+               ex.getMessage());
       }
 
    }
@@ -199,9 +198,10 @@ public class DfceSupportTest {
       initDfce();
       initLifeCycleRule(3000);
       // Réglage storageAdministrationService
-      EasyMock.expect(
-            storageAdministrationService.getLifeCycleRule(EasyMock
-                  .anyObject(String.class))).andReturn(lifeCycleRule)
+      EasyMock
+            .expect(
+                  storageAdministrationService.getLifeCycleRule(EasyMock
+                        .anyObject(String.class))).andReturn(lifeCycleRule)
             .anyTimes();
       replay();
    }
@@ -227,15 +227,16 @@ public class DfceSupportTest {
 
    private void initDfce() {
       // Réglage dfce
-      serviceProvider.connect(EasyMock.anyObject(String.class), EasyMock
-            .anyObject(String.class), EasyMock.anyObject(String.class));
+      serviceProvider.connect(EasyMock.anyObject(String.class),
+            EasyMock.anyObject(String.class), EasyMock.anyObject(String.class),
+            EasyMock.anyInt());
       EasyMock.expectLastCall().anyTimes();
       serviceProvider.disconnect();
       EasyMock.expectLastCall().anyTimes();
       EasyMock.expect(serviceProvider.getStorageAdministrationService())
             .andReturn(storageAdministrationService).anyTimes();
-      EasyMock.expect(dfceConnectionService.openConnection()).andReturn(
-            serviceProvider).anyTimes();
+      EasyMock.expect(dfceConnectionService.openConnection())
+            .andReturn(serviceProvider).anyTimes();
    }
 
    private void initLifeCycleRule(int duree) {
@@ -247,44 +248,47 @@ public class DfceSupportTest {
    private void initStorageAdministrationCreate()
          throws ObjectAlreadyExistsException {
       // Réglage storageAdministrationService
-      EasyMock.expect(
-            storageAdministrationService.getLifeCycleRule(EasyMock
-                  .anyObject(String.class))).andReturn(null).anyTimes();
+      EasyMock
+            .expect(
+                  storageAdministrationService.getLifeCycleRule(EasyMock
+                        .anyObject(String.class))).andReturn(null).anyTimes();
 
       EasyMock.expect(
-            storageAdministrationService.createNewLifeCycleRule(EasyMock
-                  .anyObject(String.class), EasyMock.anyInt(), EasyMock
-                  .anyObject(LifeCycleLengthUnit.class))).andReturn(
+            storageAdministrationService.createNewLifeCycleRule(
+                  EasyMock.anyObject(String.class), EasyMock.anyInt(),
+                  EasyMock.anyObject(LifeCycleLengthUnit.class))).andReturn(
             lifeCycleRule);
    }
 
    private void initStorageAdministrationUpdate() {
       // Réglage storageAdministrationService
-      EasyMock.expect(
-            storageAdministrationService.getLifeCycleRule(EasyMock
-                  .anyObject(String.class))).andReturn(lifeCycleRule)
+      EasyMock
+            .expect(
+                  storageAdministrationService.getLifeCycleRule(EasyMock
+                        .anyObject(String.class))).andReturn(lifeCycleRule)
             .anyTimes();
 
       EasyMock.expect(
-            storageAdministrationService.updateLifeCycleRule(EasyMock
-                  .anyObject(String.class), EasyMock.anyInt(), EasyMock
-                  .anyObject(LifeCycleLengthUnit.class))).andReturn(
+            storageAdministrationService.updateLifeCycleRule(
+                  EasyMock.anyObject(String.class), EasyMock.anyInt(),
+                  EasyMock.anyObject(LifeCycleLengthUnit.class))).andReturn(
             lifeCycleRule);
    }
 
    private void initStorageAdministrationUpdateAvecExceptionJiraCRTL113() {
       // Réglage storageAdministrationService
       // avec levée d'une exception
-      EasyMock.expect(
-            storageAdministrationService.getLifeCycleRule(EasyMock
-                  .anyObject(String.class))).andReturn(lifeCycleRule)
+      EasyMock
+            .expect(
+                  storageAdministrationService.getLifeCycleRule(EasyMock
+                        .anyObject(String.class))).andReturn(lifeCycleRule)
             .anyTimes();
 
       EasyMock
             .expect(
-                  storageAdministrationService.updateLifeCycleRule(EasyMock
-                        .anyObject(String.class), EasyMock.anyInt(), EasyMock
-                        .anyObject(LifeCycleLengthUnit.class)))
+                  storageAdministrationService.updateLifeCycleRule(
+                        EasyMock.anyObject(String.class), EasyMock.anyInt(),
+                        EasyMock.anyObject(LifeCycleLengthUnit.class)))
             .andThrow(
                   new IllegalStateException(
                         "no life cycle rule update can be made as long as previous rule history was not handled"));
@@ -294,7 +298,8 @@ public class DfceSupportTest {
    private void checkLogsNouveauCode() {
       List<ILoggingEvent> loggingEvents = logAppender.getLoggingEvents();
 
-      Assert.assertTrue("Message de log d'info incorrect",
+      Assert.assertTrue(
+            "Message de log d'info incorrect",
             loggingEvents != null
                   && loggingEvents.size() > 0
                   && "updateLifeCycleRule - Ajout du code : 1.1.1.1.1"
@@ -313,13 +318,12 @@ public class DfceSupportTest {
    private void checkLogsCodeExistantDureeDifferente() {
       List<ILoggingEvent> loggingEvents = logAppender.getLoggingEvents();
 
-      Assert
-            .assertTrue(
-                  "Message de log d'info incorrect",
-                  loggingEvents != null
-                        && compteNbLogInfo(loggingEvents) == 1
-                        && "updateLifeCycleRule - La durée de conservation du code 1.1.1.1.1 a été modifiée (5000 => 3000) !"
-                              .equals(recupPremierLogInfo(loggingEvents)));
+      Assert.assertTrue(
+            "Message de log d'info incorrect",
+            loggingEvents != null
+                  && compteNbLogInfo(loggingEvents) == 1
+                  && "updateLifeCycleRule - La durée de conservation du code 1.1.1.1.1 a été modifiée (5000 => 3000) !"
+                        .equals(recupPremierLogInfo(loggingEvents)));
    }
 
    private int compteNbLogInfo(List<ILoggingEvent> loggingEvents) {
