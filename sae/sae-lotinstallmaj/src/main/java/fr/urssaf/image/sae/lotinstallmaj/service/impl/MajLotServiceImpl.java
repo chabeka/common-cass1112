@@ -54,7 +54,7 @@ public final class MajLotServiceImpl implements MajLotService {
    public static final String DFCE_130700 = "DFCE_130700";
    public static final String CASSANDRA_DROITS_GED = "CASSANDRA_DROITS_GED";
    public static final String CREATION_GED = "CREATION_GED";
-   
+
    public static final int DUREE_1825 = 1825;
    public static final int DUREE_1643 = 1643;
 
@@ -162,7 +162,7 @@ public final class MajLotServiceImpl implements MajLotService {
    private void connectDfce() {
 
       serviceProvider.connect(dfceConfig.getLogin(), dfceConfig.getPassword(),
-            dfceConfig.getUrlToolkit());
+            dfceConfig.getUrlToolkit(), dfceConfig.getTimeOut());
 
    }
 
@@ -173,8 +173,7 @@ public final class MajLotServiceImpl implements MajLotService {
    private void updateCodeActivite() {
 
       // Log
-      LOG
-            .info("Début de l'opération : Modification de la structure de la base DFCE pour rendre la métadonnée CodeActivite non obligatoire");
+      LOG.info("Début de l'opération : Modification de la structure de la base DFCE pour rendre la métadonnée CodeActivite non obligatoire");
 
       // Connection à DFCE
       connectDfce();
@@ -196,15 +195,13 @@ public final class MajLotServiceImpl implements MajLotService {
          baseService.updateBase(base);
 
          // Log
-         LOG
-               .info("Mise à jour effectuée avec succès : le CodeActivite n'est plus obligatoire");
+         LOG.info("Mise à jour effectuée avec succès : le CodeActivite n'est plus obligatoire");
 
       } else {
 
          // Le code activité n'est pas obligatoire (maj déjà effectuée, ou
          // nouvelle base)
-         LOG
-               .info("Rien à faire : la métadonnée CodeActivite est déjà en non obligatoire ");
+         LOG.info("Rien à faire : la métadonnée CodeActivite est déjà en non obligatoire ");
 
       }
 
@@ -216,8 +213,7 @@ public final class MajLotServiceImpl implements MajLotService {
    private void updateDureeConservation() {
 
       // Log
-      LOG
-            .info("Début de l'opération : Modification de la durée de conservation du type de document 3.1.3.1.1 (1643 -> 1825)");
+      LOG.info("Début de l'opération : Modification de la durée de conservation du type de document 3.1.3.1.1 (1643 -> 1825)");
 
       // Connection à DFCE
       connectDfce();
@@ -232,8 +228,7 @@ public final class MajLotServiceImpl implements MajLotService {
       if (dureeConservation == DUREE_1825) {
 
          // La durée de conservation est déjà bonne
-         LOG
-               .info("Rien à faire : la durée de conservation de 3.1.3.1.1 est déjà bonne (1825)");
+         LOG.info("Rien à faire : la durée de conservation de 3.1.3.1.1 est déjà bonne (1825)");
 
       } else {
 
@@ -283,8 +278,7 @@ public final class MajLotServiceImpl implements MajLotService {
     * version 4
     */
    private void updateCassandra130400() {
-      LOG
-            .info("Début de l'opération : Lot 130400 - Mise à jour du keyspace SAE");
+      LOG.info("Début de l'opération : Lot 130400 - Mise à jour du keyspace SAE");
       updater.updateToVersion4();
       LOG.info("Fin de l'opération : Lot 130400 - Mise à jour du keyspace SAE");
    }
@@ -295,8 +289,7 @@ public final class MajLotServiceImpl implements MajLotService {
     */
    private void updateCassandra130700() {
 
-      LOG
-            .info("Début de l'opération : Lot 130700 - Mise à jour du keyspace SAE");
+      LOG.info("Début de l'opération : Lot 130700 - Mise à jour du keyspace SAE");
       updater.updateToVersion5();
       LOG.info("Fin de l'opération : Lot 130700 - Mise à jour du keyspace SAE");
 
@@ -308,13 +301,12 @@ public final class MajLotServiceImpl implements MajLotService {
     */
    private void updateCassandra131100() {
 
-      LOG
-            .info("Début de l'opération : Lot 131100 - Mise à jour du keyspace SAE");
+      LOG.info("Début de l'opération : Lot 131100 - Mise à jour du keyspace SAE");
       updater.updateToVersion6();
       LOG.info("Fin de l'opération : Lot 131100 - Mise à jour du keyspace SAE");
 
    }
-   
+
    /**
     * Pour lot 140400 du SAE : mise à jour du keyspace "SAE" dans cassandra.<br>
     * Ajout de la Colonne Family ReferentielFormat.
@@ -332,8 +324,7 @@ public final class MajLotServiceImpl implements MajLotService {
     */
    private void updateCassandraDroitsGed() {
 
-      LOG
-            .info("Début de l'opération : Lot 130700 - Mise à jour du keyspace SAE");
+      LOG.info("Début de l'opération : Lot 130700 - Mise à jour du keyspace SAE");
       gedUpdater.updateAuthorizationAccess();
       LOG.info("Fin de l'opération : Lot 130700 - Mise à jour du keyspace SAE");
 
@@ -431,8 +422,7 @@ public final class MajLotServiceImpl implements MajLotService {
             "Début de l'opération : Création des nouvelles métadonnées ({})",
             nomOperation);
 
-      LOG
-            .debug("Lecture du fichier XML contenant les métadonnées à ajouter - Début");
+      LOG.debug("Lecture du fichier XML contenant les métadonnées à ajouter - Début");
       XStream xStream = new XStream();
       xStream.processAnnotations(DataBaseModel.class);
       Reader reader = null;
@@ -444,8 +434,7 @@ public final class MajLotServiceImpl implements MajLotService {
          DataBaseModel model = DataBaseModel.class
                .cast(xStream.fromXML(reader));
 
-         LOG
-               .debug("Lecture du fichier XML contenant les métadonnées à ajouter - Fin");
+         LOG.debug("Lecture du fichier XML contenant les métadonnées à ajouter - Fin");
 
          // connexion a DFCE
          connectDfce();
@@ -474,11 +463,11 @@ public final class MajLotServiceImpl implements MajLotService {
                baseCategory.setMinimumValues(category.getMinimumValues());
                baseCategory.setSingle(category.isSingle());
                baseCategories.add(baseCategory);
-               LOG.info("La métadonnée {} va être ajoutée.", category
-                     .getDescriptif());
+               LOG.info("La métadonnée {} va être ajoutée.",
+                     category.getDescriptif());
             } else {
-               LOG.info("La métadonnée {} existe déjà.", category
-                     .getDescriptif());
+               LOG.info("La métadonnée {} existe déjà.",
+                     category.getDescriptif());
             }
          }
 
@@ -513,8 +502,7 @@ public final class MajLotServiceImpl implements MajLotService {
          serviceProvider.disconnect();
       }
 
-      LOG
-            .info("Fin de l'opération : Création des nouvelles métadonnées (META_130400)");
+      LOG.info("Fin de l'opération : Création des nouvelles métadonnées (META_130400)");
    }
 
    /**
@@ -523,8 +511,7 @@ public final class MajLotServiceImpl implements MajLotService {
     */
    private void updateDFCE130700() {
 
-      LOG
-            .info("Début de l'opération : Lot 130700 - Mise à jour du schéma DFCE");
+      LOG.info("Début de l'opération : Lot 130700 - Mise à jour du schéma DFCE");
       DFCECassandraUpdater dfceUpdater = new DFCECassandraUpdater(
             cassandraConfig);
       dfceUpdater.updateToVersion110();
