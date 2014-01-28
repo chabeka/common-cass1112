@@ -34,11 +34,11 @@ public class DFCEConnectionServiceImpl implements DFCEConnectionService {
 
       ServiceProvider dfceService = ServiceProvider.newServiceProvider();
 
-      dfceService.connect(this.dfceConnection.getLogin(), this.dfceConnection
-            .getPassword(), ObjectUtils.toString(this.dfceConnection
-            .getServerUrl()));
+      dfceService.connect(this.dfceConnection.getLogin(),
+            this.dfceConnection.getPassword(),
+            ObjectUtils.toString(this.dfceConnection.getServerUrl()),
+            this.dfceConnection.getTimeout());
 
       return dfceService;
    }
-
 }

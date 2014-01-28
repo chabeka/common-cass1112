@@ -53,4 +53,10 @@ public final class DFCEConnectionParameter {
     */
    public static final String DFCE_SECURE = "db.secure";
 
+   /**
+    * Paramètre {@value #DFCE_TIMEOUT} indiquant le paramètre de configuration
+    * du timeout de connexion à DFCE
+    */
+   public static final String DFCE_TIMEOUT = "db.timeout";
+
 }

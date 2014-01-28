@@ -13,6 +13,7 @@ import java.net.URL;
  * <li><code>login</code>: login de connexion à DFCE</li>
  * <li><code>password</code>: mot de passe de connexion à DFCE</li>
  * <li><code>serverUrl</code>: URL de connexion à DFCE</li>
+ * <li><code>timeout</code>: le timeout de la connexion à DFCE</li>
  * </ul>
  * 
  */
@@ -23,6 +24,8 @@ public class DFCEConnection {
    private String password;
 
    private URL serverUrl;
+
+   private int timeout;
 
    /**
     * @return the login
@@ -67,6 +70,21 @@ public class DFCEConnection {
     */
    public final void setServerUrl(URL serverUrl) {
       this.serverUrl = serverUrl;
+   }
+
+   /**
+    * @return le timeout de connexion
+    */
+   public final int getTimeout() {
+      return timeout;
+   }
+
+   /**
+    * @param timeout
+    *           le timeout de connexion
+    */
+   public final void setTimeout(int timeout) {
+      this.timeout = timeout;
    }
 
 }

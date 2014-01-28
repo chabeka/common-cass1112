@@ -42,6 +42,9 @@ public class DFCEConnectionFactoryTest {
 
       Assert.assertEquals("la valeur de l'url est inattendue", URL_VALUE,
             ObjectUtils.toString(dfceConnection.getServerUrl()));
+
+      Assert.assertEquals("la valeur du timeout est inattendue", 30000,
+            dfceConnection.getTimeout());
    }
 
    @Test
@@ -54,8 +57,7 @@ public class DFCEConnectionFactoryTest {
          DFCEConnectionFactory
                .createDFCEConnectionBySAEConfiguration(saeConfiguration);
 
-         Assert
-               .fail("Une exception DFCEConfigurationFileRuntimeException doit être levée");
+         Assert.fail("Une exception DFCEConfigurationFileRuntimeException doit être levée");
 
       } catch (DFCEConfigurationFileRuntimeException e) {
 
@@ -76,8 +78,7 @@ public class DFCEConnectionFactoryTest {
          DFCEConnectionFactory
                .createDFCEConnectionBySAEConfiguration(saeProperties);
 
-         Assert
-               .fail("Une exception DFCEConfigurationFileRuntimeException doit être levée");
+         Assert.fail("Une exception DFCEConfigurationFileRuntimeException doit être levée");
 
       } catch (DFCEConfigurationParameterNotFoundRuntimeException e) {
 
@@ -105,6 +106,9 @@ public class DFCEConnectionFactoryTest {
 
       Assert.assertEquals("la valeur de l'url est inattendue", URL_VALUE,
             ObjectUtils.toString(dfceConnection.getServerUrl()));
+
+      Assert.assertEquals("la valeur du timeout est inattendue", 30000,
+            dfceConnection.getTimeout());
    }
 
    @Test
@@ -123,8 +127,11 @@ public class DFCEConnectionFactoryTest {
             PASSWORD_VALUE, dfceConnection.getPassword());
 
       Assert.assertEquals("la valeur de l'url est inattendue",
-            URL_SECURE_VALUE, ObjectUtils.toString(dfceConnection
-                  .getServerUrl()));
+            URL_SECURE_VALUE,
+            ObjectUtils.toString(dfceConnection.getServerUrl()));
+
+      Assert.assertEquals("la valeur du timeout est inattendue", 30000,
+            dfceConnection.getTimeout());
    }
 
    @Test(expected = DFCEConfigurationParameterBadFormatRuntimeException.class)
@@ -148,8 +155,7 @@ public class DFCEConnectionFactoryTest {
          DFCEConnectionFactory
                .createDFCEConnectionByDFCEConfiguration(dfceConfiguration);
 
-         Assert
-               .fail("Une exception DFCEConfigurationFileRuntimeException doit être levée");
+         Assert.fail("Une exception DFCEConfigurationFileRuntimeException doit être levée");
 
       } catch (DFCEConfigurationFileRuntimeException e) {
 

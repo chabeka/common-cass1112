@@ -151,6 +151,14 @@ public final class DFCEConnectionFactory {
 
       dfceConnection.setServerUrl(serverUrl);
 
+      try {
+         String timeOut = dfceProperties.getProperty(
+               DFCEConnectionParameter.DFCE_TIMEOUT, "180000");
+         dfceConnection.setTimeout(Integer.parseInt(timeOut));
+      } catch (NumberFormatException exception) {
+         throw new DFCEConfigurationRuntimeException(exception);
+      }
+
       return dfceConnection;
 
    }
