@@ -24,9 +24,6 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * dictionnaire.</li>
  * <li>descriptif : Le descriptif de la catégorie.</li>
  * </ul>
- * 
- * @author akenore, rhofir.
- * 
  */
 @XStreamAlias("category")
 public class SaeCategory {

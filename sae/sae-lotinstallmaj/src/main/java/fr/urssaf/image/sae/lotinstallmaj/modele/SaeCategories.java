@@ -15,11 +15,7 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
  * <ul>
  * <li>categories : Les catégories</li>
  * </ul>
- * 
- * @author rhofir.
- * 
  */
-
 @XStreamAlias("categories")
 public class SaeCategories {
    @XStreamImplicit(itemFieldName = "category")
