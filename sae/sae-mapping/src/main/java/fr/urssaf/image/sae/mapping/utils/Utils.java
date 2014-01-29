@@ -14,9 +14,6 @@ import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 
 /**
  * Cette classe contient des méthodes utilitaires
- * 
- * @author akenore
- * 
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class Utils {

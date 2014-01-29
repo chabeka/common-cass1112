@@ -11,9 +11,6 @@ import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.UUIDCrit
 
 /**
  * Interface qui fournit des services de construction des objets métiers.
- * 
- * @author akenore
- * 
  */
 public interface BuildService {
 

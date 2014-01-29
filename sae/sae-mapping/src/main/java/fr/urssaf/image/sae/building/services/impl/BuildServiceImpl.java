@@ -20,9 +20,6 @@ import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.UUIDCrit
 
 /**
  * Classe qui fournit des services de construction des objets métiers.
- * 
- * @author akenore
- * 
  */
 @Service
 @Qualifier("buildService")

@@ -1,8 +1,6 @@
 package fr.urssaf.image.sae.mapping.exception;
 /**
  * 
- * @author akenore
- *
  */
 public class MappingFromReferentialException extends Exception {
 

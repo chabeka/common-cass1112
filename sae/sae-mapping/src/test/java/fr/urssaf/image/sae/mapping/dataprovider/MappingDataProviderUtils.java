@@ -15,10 +15,7 @@ import fr.urssaf.image.sae.mapping.utils.Utils;
 import fr.urssaf.image.sae.metadata.utils.XStreamHelper;
 
 /**
- * 
- * @author classe fournissant les services de lecture des fichiers xml de test.
- * 
- * 
+ * Classe fournissant les services de lecture des fichiers xml de test.
  */
 public final class MappingDataProviderUtils {
 

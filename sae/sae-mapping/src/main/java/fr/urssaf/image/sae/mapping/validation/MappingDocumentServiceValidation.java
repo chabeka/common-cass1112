@@ -19,9 +19,6 @@ import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
  * Fournit des méthodes de validation des arguments des services de l'interface
  * {@link fr.urssaf.image.sae.mapping.services.MappingDocumentService
  * MappingDocumentService}
- * 
- * @author akenore
- * 
  */
 @Aspect
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")

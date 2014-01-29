@@ -17,11 +17,7 @@ import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageDocument;
 /**
  * Interface qui fournit des services de conversion entre objet du modèle et
  * objet technique de stockage.
- * 
- * @author akenore
- * 
  */
-
 public interface MappingDocumentService {
    /**
     * Service de conversion d’un objet de type SAEDocument vers un objet de

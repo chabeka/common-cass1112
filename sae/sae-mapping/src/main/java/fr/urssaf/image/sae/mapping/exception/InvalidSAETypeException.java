@@ -1,8 +1,7 @@
 package fr.urssaf.image.sae.mapping.exception;
+
 /**
  * 
- * @author akenore
- *
  */
 public class InvalidSAETypeException extends Exception {
 

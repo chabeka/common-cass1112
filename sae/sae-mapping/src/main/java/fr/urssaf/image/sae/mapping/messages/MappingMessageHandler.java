@@ -7,9 +7,6 @@ import fr.urssaf.image.sae.metadata.constants.Constants;
 
 /**
  * Fournit des services qui retournent un message à partir de sa clés .
- * 
- * @author akenore
- * 
  */
 public final class MappingMessageHandler {
 	private static final MessageSource MESSAGE_SOURCES;

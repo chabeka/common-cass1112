@@ -4,8 +4,6 @@ import java.io.File;
 
 /**
  * Cette classe contient la liste des constantes utilisées dans l'application.
- * 
- * @author akenore.
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class Constants {

@@ -5,8 +5,6 @@ import java.util.Locale;
 
 /**
  * Cette classe contient la liste des constantes utilisées dans l'application.
- * 
- * @author akenore, rhofir.
  */
 public final class Constants {
 

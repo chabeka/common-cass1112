@@ -14,9 +14,6 @@ import fr.urssaf.image.sae.mapping.messages.MappingMessageHandler;
 /**
  * Fournit des méthodes de validation des arguments des services de l'interface
  * {@link fr.urssaf.image.sae.building.services.BuildService BuildService}
- * 
- * @author akenore
- * 
  */
 @Aspect
 public class BuildServiceValidation {
