@@ -13,8 +13,6 @@ import fr.urssaf.image.sae.ecde.exception.EcdeBadURLFormatException;
  * 
  * Elle permettra d'unifier les différents services.
  * Par conséquent pour les clients de l'ECDE celle ci representera une vision unique.
- * 
- * @author lbaadj
  */
 public interface EcdeServices {
 
