@@ -41,6 +41,7 @@
       <property name="login" value="${db.login}" />
       <property name="password" value="${db.password}" />
       <property name="basename" value="${db.baseName}" />
+      <property name="timeOut" value="${db.timeout}" />
    </bean>
 
    <import resource="applicationContext-logwarn-aspect.xml" />
