@@ -10,11 +10,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
  * <ul>
  * <li>longCode : Le code long de la métadonnée.</li>
  * </ul>
- * 
- * @author akenore
- * 
  */
-
 public class MetadataError extends SAEError {
 
 	private String longCode;

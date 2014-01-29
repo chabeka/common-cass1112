@@ -14,9 +14,6 @@ import fr.urssaf.image.sae.bo.model.AbstractMetadata;
  * <li>longCode : Le code long de la métadonnée.</li>
  * <li>value : La valeur de la métadonnée.</li>
  * </ul>
- * 
- * @author akenore
- * 
  */
 public class UntypedMetadata extends AbstractMetadata {
 

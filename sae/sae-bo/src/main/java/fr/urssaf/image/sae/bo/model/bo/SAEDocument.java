@@ -15,9 +15,6 @@ import fr.urssaf.image.sae.bo.model.AbstractDocument;
  * <ul>
  * <li>metadatas : La liste des métadonnées métiers.</li>
  * </ul>
- * 
- * @author akenore
- * 
  */
 public class SAEDocument extends AbstractDocument {
    private List<SAEMetadata> metadatas;

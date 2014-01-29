@@ -1,9 +1,6 @@
 package fr.urssaf.image.sae.bo.model;
 
-import java.util.Arrays;
 import java.util.UUID;
-
-import org.apache.commons.lang.ArrayUtils;
 
 /**
  * Classe abstraite contenant les éléments communs des objets métiers et objets
@@ -14,9 +11,6 @@ import org.apache.commons.lang.ArrayUtils;
  * <li>uuid :L'identifiant unique d’un document.</li>
  * <li>filePath :Le chemin absolu du fichier.</li>
  * </ul>
- * 
- * @author akenore
- * 
  */
 @SuppressWarnings("PMD.AbstractClassWithoutAbstractMethod")
 public abstract class AbstractDocument {

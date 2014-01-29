@@ -6,7 +6,6 @@ package fr.urssaf.image.sae.bo.model;
  * <ul>
  * <li>longCode : Le code long de la métadonnée.</li>
  * </ul>
- * @author akenore.
  */
 public class AbstractMetadata {
 	/**

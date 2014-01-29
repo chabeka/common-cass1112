@@ -11,9 +11,6 @@ import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
  * <ul>
  * <li>desiredSAEMetadatas : La liste des métadonnées métiers.</li>
  * </ul>
- * 
- * @author akenore
- * 
  */
 @SuppressWarnings("PMD.LongVariable")
 public class AbstractSAECriteria {

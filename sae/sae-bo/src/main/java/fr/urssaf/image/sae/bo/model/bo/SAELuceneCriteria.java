@@ -14,9 +14,6 @@ import fr.urssaf.image.sae.bo.model.AbstractSAECriteria;
  * <li>limit : Le nombre de SAEDocument à retourner après la recherche.</li>
  * <li>luceneQuery : La requête lucene.</li>
  * </ul>
- * 
- * @author akenore
- * 
  */
 public class SAELuceneCriteria extends AbstractSAECriteria {
 	private String luceneQuery;

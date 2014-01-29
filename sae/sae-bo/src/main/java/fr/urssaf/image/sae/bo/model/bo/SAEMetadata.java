@@ -14,9 +14,6 @@ import fr.urssaf.image.sae.bo.model.AbstractMetadata;
  * <li>shortCode : Le code court de la métadonnée.</li>
  * <li>value : La valeur de la métadonnée.</li>
  * </ul>
- * 
- * @author akenore
- * 
  */
 public class SAEMetadata extends AbstractMetadata {
 	private String shortCode;

@@ -3,8 +3,6 @@ package fr.urssaf.image.sae.bo.model;
 /**
  * Énumération contenant tous les types manipulés dans le SAE.
  * 
- * @author akenore
- * 
  */
 public enum SAEMetadataType {
 	// Le type String

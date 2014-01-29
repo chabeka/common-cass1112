@@ -10,11 +10,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
  * <li>code : Le code de l'erreur</li>
  * <li>message : Le Le message qui accompagne l'erreur.</li>
  * </ul>
- * 
- * @author akenore
- * 
  */
-
 public class SAEError {
 	private String code;
 	private String message;

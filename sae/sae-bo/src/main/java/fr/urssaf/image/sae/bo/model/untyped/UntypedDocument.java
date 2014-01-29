@@ -14,9 +14,6 @@ import fr.urssaf.image.sae.bo.model.AbstractDocument;
  * <ul>
  * <li>uMetadatas : La liste des métadonnées non typées.</li>
  * </ul>
- * 
- * @author akenore
- * 
  */
 public class UntypedDocument extends AbstractDocument {
    private List<UntypedMetadata> uMetadatas;
