@@ -3,19 +3,19 @@
    xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0"
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
-   
+
    <id>data_sae</id>
-   
+
    <formats>
       <format>tar.gz</format>
    </formats>
-   
+
    <includeBaseDirectory>false</includeBaseDirectory>
-   
+
    <fileSets>
-      
+
       <fileSet>
-        
+
          <directory>src/config/</directory>
          <includes>
             <include>LifeCycleRule.xml</include>
@@ -23,7 +23,7 @@
          </includes>
          <outputDirectory>sae-dfce-admin-exploit</outputDirectory>
       </fileSet>
-      
+
       <fileSet>
          <directory>src/config/</directory>
          <includes>
@@ -31,7 +31,7 @@
          </includes>
          <outputDirectory>sae-dfce-admin-exploit</outputDirectory>
       </fileSet>
-      
+
       <fileSet>
          <directory>src/config/</directory>
          <includes>
@@ -39,7 +39,7 @@
          </includes>
          <outputDirectory>sae-dfce-admin-exploit</outputDirectory>
       </fileSet>
-            
+
       <fileSet>
          <directory>src/config/</directory>
          <includes>
@@ -47,7 +47,7 @@
          </includes>
          <outputDirectory>sae-jobs-executable</outputDirectory>
       </fileSet>
-      
+
       <fileSet>
          <directory>src/config/</directory>
          <includes>
@@ -55,7 +55,7 @@
          </includes>
          <outputDirectory>sae-services-executable</outputDirectory>
       </fileSet>
-      
+
       <fileSet>
          <directory>src/config/</directory>
          <includes>
@@ -63,7 +63,7 @@
          </includes>
          <outputDirectory>sae-trace-executable</outputDirectory>
       </fileSet>
-      
+
       <fileSet>
          <directory>src/config/</directory>
          <includes>
@@ -80,65 +80,50 @@
          <outputDirectory>scripts</outputDirectory>
       </fileSet>
    </fileSets>
-   
-   <files>
-   
-    <file>
-      <source>
-         ${project.parent.basedir}/sae-dfce-admin-exploit/target/sae-dfce-admin-exploit-${version}.jar
-      </source>
-      <outputDirectory>sae-dfce-admin-exploit</outputDirectory>
-      <destName>sae-dfce-admin-exploit.jar</destName>
-    </file>
-    
-    <file>
-      <source>
-         ${project.parent.basedir}/sae-jobs-executable/target/sae-jobs-executable-${version}.jar
-      </source>
-      <outputDirectory>sae-jobs-executable</outputDirectory>
-      <destName>sae-jobs-executable.jar</destName>
-    </file>
-    
-    <file>
-      <source>
-         ${project.parent.basedir}/sae-services-executable/target/sae-services-executable-${version}.jar
-      </source>
-      <outputDirectory>sae-services-executable</outputDirectory>
-      <destName>sae-services-executable.jar</destName>
-    </file>
-    
-    <file>
-      <source>
-         ${project.parent.basedir}/sae-trace-executable/target/sae-trace-executable-${version}.jar
-      </source>
-      <outputDirectory>sae-trace-executable</outputDirectory>
-      <destName>sae-trace-executable.jar</destName>
-    </file>
-    
-    <file>
-      <source>
-         ${project.parent.basedir}/sae-rnd-executable/target/sae-rnd-executable-${version}.jar
-      </source>
-      <outputDirectory>sae-rnd-executable</outputDirectory>
-      <destName>sae-rnd-executable.jar</destName>
-    </file>
-    
-  </files>
 
-   <dependencySets>
-      
-      <!-- La dépendance se trouve dans le pom.xml -->
-      <!-- Désactivé pour l'instant, car DFCE 1.1.0 n'a pas été intégré au SAE -->
-      <!--
-      <dependencySet>
-         <includes>
-            <include>com.docubase:dfce-migration-from-1.0.1-to-1.1.0</include>
-         </includes>
-         <outputDirectory>dfce-migration</outputDirectory>
-         <outputFileNameMapping>dfce-migration-from-1.0.1-to-1.1.0.jar</outputFileNameMapping>
-      </dependencySet>
-      -->
-   </dependencySets>
-   
+   <files>
+
+      <file>
+         <source>
+            ${project.parent.basedir}/sae-dfce-admin-exploit/target/sae-dfce-admin-exploit-${version}.jar
+         </source>
+         <outputDirectory>sae-dfce-admin-exploit</outputDirectory>
+         <destName>sae-dfce-admin-exploit.jar</destName>
+      </file>
+
+      <file>
+         <source>
+            ${project.parent.basedir}/sae-jobs-executable/target/sae-jobs-executable-${version}.jar
+         </source>
+         <outputDirectory>sae-jobs-executable</outputDirectory>
+         <destName>sae-jobs-executable.jar</destName>
+      </file>
+
+      <file>
+         <source>
+            ${project.parent.basedir}/sae-services-executable/target/sae-services-executable-${version}.jar
+         </source>
+         <outputDirectory>sae-services-executable</outputDirectory>
+         <destName>sae-services-executable.jar</destName>
+      </file>
+
+      <file>
+         <source>
+            ${project.parent.basedir}/sae-trace-executable/target/sae-trace-executable-${version}.jar
+         </source>
+         <outputDirectory>sae-trace-executable</outputDirectory>
+         <destName>sae-trace-executable.jar</destName>
+      </file>
+
+      <file>
+         <source>
+            ${project.parent.basedir}/sae-rnd-executable/target/sae-rnd-executable-${version}.jar
+         </source>
+         <outputDirectory>sae-rnd-executable</outputDirectory>
+         <destName>sae-rnd-executable.jar</destName>
+      </file>
+
+   </files>
+
 </assembly>
 
