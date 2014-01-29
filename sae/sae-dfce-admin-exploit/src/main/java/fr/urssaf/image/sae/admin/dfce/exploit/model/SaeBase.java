@@ -17,9 +17,6 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * <li>baseDescription : Le descriptif de la base</li>
  * <li>categories :Les catégories</li>
  * </ul>
- * 
- * @author akenore, rhofir.
- * 
  */
 @XStreamAlias("base")
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
