@@ -10,8 +10,6 @@ import fr.urssaf.image.sae.model.UntypedDocumentMockData;
 
 /**
  * Fournit des méthodes de désérialisation
- * 
- * @author rhofir
  */
 public interface XmlMockDataService {
    /**

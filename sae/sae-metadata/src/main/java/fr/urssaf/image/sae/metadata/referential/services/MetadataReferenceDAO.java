@@ -8,9 +8,6 @@ import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 /**
  * Fournit des services de manipulation des métadonnées de référentiel des
  * métadonnées.
- * 
- * @author akenore
- * 
  */
 public interface MetadataReferenceDAO {
 

@@ -3,8 +3,6 @@ package fr.urssaf.image.sae.metadata.rules;
 /**
  * Classe abstraite représentant une unité de règle
  * 
- * @author akenore
- * 
  * @param <T>
  *            : Type générique
  * @param <E>

@@ -10,9 +10,6 @@ import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 
 /**
  * Fournit les services de contrôle des métadonnées.
- * 
- * @author akenore
- * 
  */
 @SuppressWarnings("PMD.TooManyMethods")
 public interface MetadataControlServices {

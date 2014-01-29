@@ -29,9 +29,6 @@ import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.UUIDCrit
 
 /**
  * Classe de test pour les services de consultation.
- * 
- * @author Rhofir, Kenore.
- * 
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class RetrievalServiceTest extends StorageServices {

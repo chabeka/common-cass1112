@@ -5,8 +5,6 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 /**
  * Classe qui représente un document mock test
- * 
- *@@author Rhofir
  */
 @XStreamAlias("document")
 public class SAEDocumentMockData {

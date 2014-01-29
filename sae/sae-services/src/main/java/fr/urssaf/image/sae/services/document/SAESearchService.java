@@ -13,9 +13,7 @@ import fr.urssaf.image.sae.services.exception.search.SyntaxLuceneEx;
 import fr.urssaf.image.sae.services.exception.search.UnknownLuceneMetadataEx;
 
 /**
- * Fournit l’ensemble des services pour la recherche.<BR />
- * 
- * @author lbaadj.
+ * Fournit l’ensemble des services pour la recherche.
  */
 public interface SAESearchService {
 

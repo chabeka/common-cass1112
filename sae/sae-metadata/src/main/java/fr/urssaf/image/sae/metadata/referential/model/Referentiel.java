@@ -8,9 +8,6 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 /**
  * Classe permettant de sérialiser les métadonnées du référentiel
- * 
- * @author projet
- * 
  */
 @Deprecated
 @XStreamAlias("referentiel")

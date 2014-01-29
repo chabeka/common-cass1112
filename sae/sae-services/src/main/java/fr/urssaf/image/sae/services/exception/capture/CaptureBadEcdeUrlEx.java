@@ -3,8 +3,6 @@ package fr.urssaf.image.sae.services.exception.capture;
 
 /**
  * Exception levée lorsque l'URL ECDE fournit à un des services de capture est incorrecte.
- * 
- * @author rhofir.
  */
 public class CaptureBadEcdeUrlEx extends Exception {
    private static final long serialVersionUID = 1L;

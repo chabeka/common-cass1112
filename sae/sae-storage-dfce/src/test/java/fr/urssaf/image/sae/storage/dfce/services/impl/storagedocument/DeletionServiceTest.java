@@ -38,8 +38,6 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
  * Classe de test du service
  * {@link fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument.DeletionServiceImpl
  * DeletionService}
- * 
- * @author rhofir, kenore.
  */
 public class DeletionServiceTest extends StorageServices {
 

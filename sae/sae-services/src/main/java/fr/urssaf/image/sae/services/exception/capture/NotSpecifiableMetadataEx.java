@@ -5,8 +5,6 @@ package fr.urssaf.image.sae.services.exception.capture;
 
 /**
  * Exception est levée si les métadonnées spécifiables sont présentes.
- * 
- * @author rhofir.
  */
 public class NotSpecifiableMetadataEx extends Exception {
    private static final long serialVersionUID = 1L;

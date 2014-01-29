@@ -20,9 +20,6 @@ import fr.urssaf.image.sae.metadata.test.dataprovider.MetadataDataProviderUtils;
  * 
  * Cette classe permet de tester le service
  * {@link MetadataControlServices#checkConsultableMetadata(List)}
- * 
- * @author akenore
- * 
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-metadata-test.xml" })

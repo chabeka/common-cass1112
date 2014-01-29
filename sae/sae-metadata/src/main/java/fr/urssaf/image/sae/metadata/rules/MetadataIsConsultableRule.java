@@ -6,8 +6,6 @@ import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 
 /**
- * 
- * @author akenore
  *
  */
 @Component

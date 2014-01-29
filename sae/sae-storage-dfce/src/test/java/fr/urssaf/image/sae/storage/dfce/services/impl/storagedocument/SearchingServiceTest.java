@@ -33,11 +33,7 @@ import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.UUIDCrit
 
 /**
  * Classe de test des services de recherche.
- * 
- * @author Rhofir, aknore.
- * 
  */
-
 public class SearchingServiceTest extends StorageServices {
 
 	/**

@@ -6,9 +6,6 @@ package fr.urssaf.image.sae.services.exception.capture;
 /**
  * Exception est levée lors de la vérification de l’existence des métadonnées
  * dans le référentiel.
- * 
- * @author rhofir.
- * 
  */
 public class UnknownMetadataEx extends Exception {
    private static final long serialVersionUID = 1L;

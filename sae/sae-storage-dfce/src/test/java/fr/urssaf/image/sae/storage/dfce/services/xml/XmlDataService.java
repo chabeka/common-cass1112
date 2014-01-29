@@ -10,9 +10,6 @@ import fr.urssaf.image.sae.storage.dfce.data.model.SaeDocument;
 
 /**
  * Fournit un service de désérialisation de la base
- * 
- * @author akenore
- * 
  */
 public interface XmlDataService {
 	/**

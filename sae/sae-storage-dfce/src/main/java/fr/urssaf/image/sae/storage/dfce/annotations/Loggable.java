@@ -14,9 +14,6 @@ import fr.urssaf.image.sae.storage.dfce.messages.LogLevel;
  * <li>
  * LogLevel : Le niveau de logging.</li>
  * </ul>
- * 
- * @author akenore
- * 
  */
 @Retention(RUNTIME)
 @Target(METHOD)

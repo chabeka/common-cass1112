@@ -37,11 +37,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
  * <li>isIndexed : True si la métadonnée est indexée. False sinon</li>
  * <li>modifiable : True si la métadonnée est modifiable. False sinon</li>
  * </ul>
- * 
- * @author akenore
- * 
  */
-
 @SuppressWarnings( { "PMD.LongVariable", "PMD.TooManyFields" })
 public class MetadataReference implements Serializable {
 

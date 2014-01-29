@@ -8,8 +8,6 @@ import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 
 /**
  * Service d’enrichissement des métadonnées.
- * 
- *@author rhofir.
  */
 public interface SAEEnrichmentMetadataService {
    /**

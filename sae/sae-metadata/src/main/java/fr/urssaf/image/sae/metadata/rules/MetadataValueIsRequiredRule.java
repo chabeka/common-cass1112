@@ -8,9 +8,6 @@ import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 /**
  * Cette règle permet de determine si la valeur d'une métadonnée définie comme
  * obligatoire est bien enrichie.
- * 
- * @author akenore
- * 
  */
 @Component
 public class MetadataValueIsRequiredRule extends

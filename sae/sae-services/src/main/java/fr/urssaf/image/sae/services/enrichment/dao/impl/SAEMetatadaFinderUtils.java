@@ -11,8 +11,6 @@ import fr.urssaf.image.sae.services.enrichment.xml.model.SAEArchivalMetadatas;
 /**
  * Classe utilitaire pour la recherche des métadonnées à partir d'une liste de
  * SAEMetadta.
- * 
- * @author Rhofir
  */
 public final class SAEMetatadaFinderUtils {
 

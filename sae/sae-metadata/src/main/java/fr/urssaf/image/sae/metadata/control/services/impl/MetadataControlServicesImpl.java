@@ -30,9 +30,6 @@ import fr.urssaf.image.sae.metadata.utils.Utils;
 /**
  * Classe qui implémente les sevices de l'interface
  * {@link MetadataControlServices}
- * 
- * @author akenore
- * 
  */
 @Service
 @Qualifier("metadataControlServices")

@@ -44,8 +44,6 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 /**
  * Classe concrète pour le service commun pour les services de Capture unitaire
  * et Capture en masse.
- * 
- * @author rhofir.
  */
 @Service
 @Qualifier("saeCommonCaptureService")

@@ -35,8 +35,6 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 /**
  * Classe concrète pour l’enrichissement des métadonnées.
- * 
- * @author rhofir.
  */
 @Service
 @Qualifier("saeEnrichmentMetadataService")

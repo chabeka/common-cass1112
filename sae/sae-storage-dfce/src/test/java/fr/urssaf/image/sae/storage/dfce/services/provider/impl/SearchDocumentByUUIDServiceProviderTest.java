@@ -13,9 +13,6 @@ import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.UUIDCrit
 /**
  * Classe permettant de tester la recherche d'un document dans la
  * base.
- * 
- * @author akenore
- * 
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class SearchDocumentByUUIDServiceProviderTest extends

@@ -7,8 +7,6 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 /**
  * Classe réprésentant une metadonnée de test
- * 
- * @author rhofir
  */
 @XStreamAlias("query")
 public class SAEQueryData {

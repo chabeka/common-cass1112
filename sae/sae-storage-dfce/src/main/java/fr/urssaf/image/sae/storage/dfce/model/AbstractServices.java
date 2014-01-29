@@ -22,9 +22,6 @@ import fr.urssaf.image.sae.storage.model.connection.StorageConnectionParameter;
  * Attribut storageBase : Classe concrète contenant le nom de la base de
  * stockage</li>
  * </ul>
- * 
- * @author akenore,rhofir.
- * 
  */
 @SuppressWarnings("PMD.AbstractClassWithoutAbstractMethod")
 public abstract class AbstractServices {

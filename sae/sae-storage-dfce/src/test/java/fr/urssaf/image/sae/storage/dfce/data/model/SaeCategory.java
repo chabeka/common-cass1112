@@ -10,9 +10,6 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * <li>value : La valeur de la ctégorie
  * <li>
  * </ul>
- * 
- * @author akenore, rhofir.
- * 
  */
 @XStreamAlias("category")
 public class SaeCategory {

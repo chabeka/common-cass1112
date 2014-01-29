@@ -9,9 +9,6 @@ import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 /**
  * Classe permettant de tester la validation par aspect du paramètre du service
  * d'insertion.
- * 
- * @author akenore
- * 
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class StorageServiceProviderTest extends CommonsServicesProvider {

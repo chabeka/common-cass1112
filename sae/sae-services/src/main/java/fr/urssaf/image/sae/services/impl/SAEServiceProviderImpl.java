@@ -15,8 +15,6 @@ import fr.urssaf.image.sae.storage.dfce.annotations.FacadePattern;
  * <li>{@link fr.urssaf.image.sae.services.document.impl.SAESearchServiceImpl}</li>
  * <li>{@link fr.urssaf.image.sae.services.consultation.impl.SAEConsultationServiceImpl}</li>
  * <ul>
- * 
- * @author akenore,rhofir.
  */
 @Service
 @Qualifier("saeServiceProvider")

@@ -7,9 +7,6 @@ import fr.urssaf.image.sae.services.exception.search.SAESearchServiceEx;
 
 /**
  * Fournit des services de manipulation des requêtes pour les tests unitaires.
- * 
- * @author rhofir
- * 
  */
 public interface QueriesReferenceDAO {
 

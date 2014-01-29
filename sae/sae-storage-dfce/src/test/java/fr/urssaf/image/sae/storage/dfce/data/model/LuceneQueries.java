@@ -9,7 +9,6 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 /**
- * @author akenore
  * 
  */
 @XStreamAlias("luceneQueries")

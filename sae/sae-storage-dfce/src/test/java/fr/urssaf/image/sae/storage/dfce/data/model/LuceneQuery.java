@@ -5,9 +5,6 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 /**
  * Cette classe contient les éléments nécessaires pour réaliser les tests
  * unitaires du service de recherche de lucene.
- * 
- * @author akenore
- * 
  */
 @XStreamAlias("luceneQuery")
 public class LuceneQuery {

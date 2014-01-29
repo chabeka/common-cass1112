@@ -14,9 +14,6 @@ import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
  * <li>{@link fr.urssaf.image.sae.services.consultation.SAEConsultationService
  * Consultation} : Implementation de la consultation.</li>
  * </ul>
- * 
- * @author akenore,rhofir.
- * 
  */
 @SuppressWarnings( { "PMD.AbstractClassWithoutAbstractMethod",
       "PMD.LongVariable" })

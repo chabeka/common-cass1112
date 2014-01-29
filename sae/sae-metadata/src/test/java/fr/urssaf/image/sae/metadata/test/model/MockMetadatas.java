@@ -7,9 +7,6 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 /**
  * Classe representant une liste de métadonnées.
- * 
- * @author akenore
- * 
  */
 @XStreamAlias("metadatas")
 public class MockMetadatas {

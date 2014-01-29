@@ -10,8 +10,6 @@ import com.thoughtworks.xstream.XStream;
 
 /**
  * Factorise du code relatif à l'utilisation de XStream.
- * 
- * @author akenore
  */
 public final class XStreamHelper {
 

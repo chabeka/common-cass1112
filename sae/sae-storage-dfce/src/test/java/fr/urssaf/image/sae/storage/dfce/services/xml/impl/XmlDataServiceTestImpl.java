@@ -20,9 +20,6 @@ import fr.urssaf.image.sae.storage.dfce.services.xml.XmlDataService;
 
 /**
  * Fournit des méthodes de désérialisation
- * 
- * @author akenore, rhofir
- * 
  */
 @Service
 @Qualifier("xmlDataService")

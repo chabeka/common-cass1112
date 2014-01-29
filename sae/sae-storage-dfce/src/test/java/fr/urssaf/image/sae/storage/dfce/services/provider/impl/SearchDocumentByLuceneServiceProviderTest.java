@@ -16,9 +16,6 @@ import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.LuceneCr
 
 /**
  * Classe permettant de tester la recherche d'un document dans la base.
- * 
- * @author akenore, rhofir.
- * 
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class SearchDocumentByLuceneServiceProviderTest extends

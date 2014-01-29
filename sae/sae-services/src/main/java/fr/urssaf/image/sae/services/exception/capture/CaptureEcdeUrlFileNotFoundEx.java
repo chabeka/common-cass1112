@@ -3,8 +3,6 @@ package fr.urssaf.image.sae.services.exception.capture;
 /**
  * Exception levée lorsque l’URL ECDE fournit à un des services de capture
  * pointe sur un fichier inexistant.
- * 
- * @author rhofir.
  */
 public class CaptureEcdeUrlFileNotFoundEx extends Exception {
    private static final long serialVersionUID = 1L;

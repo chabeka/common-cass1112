@@ -59,8 +59,6 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 /**
  * Classe permettant de tester le service de contrôle.
- * 
- * @author Rhofir
  */
 @SuppressWarnings("all")
 public class SAEControlesCaptureServiceImplTest extends CommonsServices {

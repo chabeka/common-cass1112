@@ -10,8 +10,6 @@ import org.springframework.util.Assert;
 
 /**
  * Le context de l'application
- * @author akenore
- *
  */
 @Component
 public final class MetadataApplicationContext {

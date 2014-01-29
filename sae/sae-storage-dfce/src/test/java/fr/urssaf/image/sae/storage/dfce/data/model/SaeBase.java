@@ -16,9 +16,6 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * filePath : Le chemin du fichier xml</li>
  * <li>saeCategories : Les catégories de la base.</li>
  * </ul>
- * 
- * @author akenore, rhofir.
- * 
  */
 @XStreamAlias("base")
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")

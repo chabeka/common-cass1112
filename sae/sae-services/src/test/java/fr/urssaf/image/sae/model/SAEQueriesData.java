@@ -7,8 +7,6 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 /**
  * Classe représentant une liste de requêtes.
- * 
- * @author rhofir
  */
 @XStreamAlias("queries")
 public class SAEQueriesData {

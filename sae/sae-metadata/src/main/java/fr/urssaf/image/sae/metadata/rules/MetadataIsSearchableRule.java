@@ -7,8 +7,6 @@ import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 
 /**
  * 
- * @author akenore
- *
  */
 @Component
 public class MetadataIsSearchableRule extends AbstractLeafRule<SAEMetadata, MetadataReference> {

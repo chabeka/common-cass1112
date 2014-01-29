@@ -19,9 +19,6 @@ import fr.urssaf.image.sae.services.exception.search.SAESearchServiceEx;
 /**
  * Classe qui implémente l'interface {@link QueriesReferenceDAO}
  * MetadataReferenceService}
- * 
- * @author rhofir
- * 
  */
 @Service
 @Qualifier("queriesReferenceDAO")

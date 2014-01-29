@@ -8,9 +8,6 @@ import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 
 /**
  * Fournit un service de désérialisation de la base
- * 
- * @author akenore
- * 
  */
 @Deprecated
 public interface XmlDataService {

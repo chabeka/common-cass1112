@@ -13,8 +13,6 @@ import fr.urssaf.image.sae.metadata.constants.Constants;
 
 /**
  * Factorise du code relatif � l'utilisation de XStream.
- * 
- * @author akenore
  */
 public final class XStreamHelper {
 

@@ -8,8 +8,6 @@ import fr.urssaf.image.sae.model.SAEQueryData;
 
 /**
  * Fournit des méthodes de désérialisation
- * 
- * @author rhofir
  */
 public interface XmlQueryDataService {
    /**

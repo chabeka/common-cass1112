@@ -16,9 +16,6 @@ import fr.urssaf.image.sae.metadata.messages.MetadataMessageHandler;
 /**
  * Fournit des méthodes de validation des arguments des services de controle des
  * métadonnées.par aspect.
- * 
- * @author akenore
- * 
  */
 @SuppressWarnings( { "PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods" })
 @Aspect

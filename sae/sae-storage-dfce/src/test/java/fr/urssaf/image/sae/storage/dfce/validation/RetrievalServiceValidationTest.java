@@ -7,9 +7,6 @@ import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
 
 /**
  * Test les aspects pour la validation.
- * 
- * @author rhofir, kenore.
- * 
  */
 public class RetrievalServiceValidationTest extends StorageServices {
 	/**

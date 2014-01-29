@@ -30,11 +30,7 @@ import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.LuceneCr
 
 /**
  * Classe de test des services de recherche.
- * 
- * @author Rhofir, aknore.
- * 
  */
-
 public class LuceneSimpleQueryTest extends StorageServices {
    /**
     * Test de recherche par requête Lucene.

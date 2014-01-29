@@ -2,8 +2,6 @@ package fr.urssaf.image.sae.services.enrichment.xml.model;
 
 /**
  * Énumération contenant la listes erreurs.<br/>
- * 
- * @author rhofir.
  */
 public enum SAEBulkErrors {
    // TECHNICALERROR

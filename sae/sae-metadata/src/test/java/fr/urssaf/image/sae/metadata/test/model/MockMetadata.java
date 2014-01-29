@@ -4,9 +4,6 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 /**
  * Classe réprésentant une metadonnées de test
- * 
- * @author akenore
- * 
  */
 @XStreamAlias("metadata")
 public class MockMetadata {

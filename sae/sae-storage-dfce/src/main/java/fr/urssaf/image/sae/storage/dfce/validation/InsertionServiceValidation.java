@@ -13,11 +13,7 @@ import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageReference
 /**
  * Fournit des méthodes de validation des arguments des services d'insertion par
  * aspect.
- * 
- * @author akenore
- * 
  */
-
 @Aspect
 public class InsertionServiceValidation {
    // Code erreur.

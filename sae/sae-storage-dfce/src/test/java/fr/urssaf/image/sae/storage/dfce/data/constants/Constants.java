@@ -2,9 +2,6 @@ package fr.urssaf.image.sae.storage.dfce.data.constants;
 
 /**
  * Classe des constantes utilisés dans les tests.
- * 
- * @author akenore
- * 
  */
 @SuppressWarnings("PMD.LongVariable")
 public final class Constants {

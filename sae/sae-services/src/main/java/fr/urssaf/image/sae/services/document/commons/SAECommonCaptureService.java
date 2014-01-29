@@ -22,8 +22,6 @@ import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 
 /**
  * Service commun pour l’archivage unitaire et l’archivage en masse.
- * 
- *@author rhofir, lbaadj.
  */
 public interface SAECommonCaptureService {
 

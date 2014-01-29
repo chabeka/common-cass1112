@@ -14,10 +14,7 @@ import fr.urssaf.image.sae.metadata.rules.UntypedMetadataValueLengthRule;
 import fr.urssaf.image.sae.metadata.rules.UntypedMetadataValueTypeRule;
 
 /**
- * classe qui fournit des instances de règles
- * 
- * @author projet
- * 
+ * Classe qui fournit des instances de règles
  */
 @Component
 @Qualifier("ruleFactory")

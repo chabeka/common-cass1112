@@ -3,8 +3,6 @@ package fr.urssaf.image.sae.services.exception.capture;
 /**
  * Exception levée lorsque l'URL ECDE fournie au service de capture pointe sur
  * un répertoire de traitement pour lequel le SAE n'a pas les droits d’écriture.
- * 
- * @author rhofir.
  */
 public class CaptureEcdeWriteFileEx extends Exception {
    private static final long serialVersionUID = 1L;

@@ -7,9 +7,6 @@ import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 /**
  * Cette règle permet de determine si la métadonnées d'un document de SAE à
  * belle et bien une correspondance dans le référentiel des métadonnées.
- * 
- * @author akenore
- * 
  */
 @Component
 public class MetadataExistingRule extends

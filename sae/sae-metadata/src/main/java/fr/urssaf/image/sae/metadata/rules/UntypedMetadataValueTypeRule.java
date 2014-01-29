@@ -11,8 +11,6 @@ import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 /**
  * Cette règle permet de determine si la valeur d'une métadonnée respect bien le
  * motif.
- * 
- * @author akenore
  */
 @Component
 public class UntypedMetadataValueTypeRule extends

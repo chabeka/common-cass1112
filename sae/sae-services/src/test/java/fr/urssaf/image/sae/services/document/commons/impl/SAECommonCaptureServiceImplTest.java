@@ -51,8 +51,6 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 /***
  * Classe de test pour le service commun de capture en masse et capture
  * unitaire.
- * 
- * @author Rhofir
  */
 @SuppressWarnings("all")
 public class SAECommonCaptureServiceImplTest extends CommonsServices {

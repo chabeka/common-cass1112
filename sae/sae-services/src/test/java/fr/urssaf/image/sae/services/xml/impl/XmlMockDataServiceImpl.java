@@ -22,9 +22,6 @@ import fr.urssaf.image.sae.services.XmlMockDataService;
 
 /**
  * Fournit des méthodes de désérialisation
- * 
- * @author rhofir
- * 
  */
 @Service
 @Qualifier("xmlMockDataService")

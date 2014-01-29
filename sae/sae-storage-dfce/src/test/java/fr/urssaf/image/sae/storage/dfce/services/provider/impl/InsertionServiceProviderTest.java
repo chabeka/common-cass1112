@@ -17,9 +17,6 @@ import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageReference
 
 /**
  * Classe permettant de test l'insertion d'un document en base.
- * 
- * @author akenore
- * 
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class InsertionServiceProviderTest extends CommonsServicesProvider {

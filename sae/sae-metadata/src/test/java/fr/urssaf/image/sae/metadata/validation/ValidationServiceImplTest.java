@@ -15,8 +15,6 @@ import fr.urssaf.image.sae.metadata.referential.services.SAEConvertMetadataServi
 
 /**
  * 
- * @author akenore
- * 
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-metadata-test.xml" })

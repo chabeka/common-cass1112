@@ -20,9 +20,6 @@ import fr.urssaf.image.sae.metadata.utils.XStreamHelper;
 
 /**
  * Fournit des méthodes de désérialisation
- * 
- * @author akenore
- * 
  */
 @Service
 @Qualifier("xmlDataService")

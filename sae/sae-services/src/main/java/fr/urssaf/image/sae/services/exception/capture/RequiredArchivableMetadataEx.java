@@ -1,10 +1,8 @@
 package fr.urssaf.image.sae.services.exception.capture;
 
 /**
- *Exception est levée lors du contrôle de présence des métadonnées
+ * Exception est levée lors du contrôle de présence des métadonnées
  * obligatoires.
- * 
- *@author rhofir.
  */
 public class RequiredArchivableMetadataEx extends Exception {
    private static final long serialVersionUID = 1L;

@@ -16,9 +16,6 @@ import fr.urssaf.image.sae.storage.dfce.services.StorageServices;
 /**
  * Cette clase contient les tests des services de gestion du fichier xml contenant les
  * données sur la base SAE.
- * 
- * @author akenore, rhofir.
- * 
  */
 public class SaeDocumentProviderTest extends StorageServices {
    @Test

@@ -6,8 +6,6 @@ package fr.urssaf.image.sae.services.exception.capture;
 
 /**
  * Exception est levée lors de la vérification de duplication des métadonnées.
- * 
- * @author rhofir.
  */
 public class DuplicatedMetadataEx extends Exception {
    private static final long serialVersionUID = 1L;

@@ -13,8 +13,6 @@ import java.lang.annotation.Target;
  * pattern</li>
  * <li>comment : permet d'ajouter un commentaire</li>
  * </ul>
- * 
- * @author akenore
  */
 @Retention(RUNTIME)
 @Target( { java.lang.annotation.ElementType.TYPE })

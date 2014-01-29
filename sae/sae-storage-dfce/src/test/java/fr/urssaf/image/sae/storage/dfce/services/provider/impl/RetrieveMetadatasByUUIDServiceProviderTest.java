@@ -17,9 +17,6 @@ import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.UUIDCrit
 /**
  * Classe permettant de test la récupération des métadonnées d'un document en
  * base.
- * 
- * @author akenore
- * 
  */
 public class RetrieveMetadatasByUUIDServiceProviderTest extends
 		CommonsServicesProvider {

@@ -14,11 +14,7 @@ import fr.urssaf.image.sae.storage.dfce.utils.Utils;
  *<ul>
  * <li>saeCategories : les catégories.</li>
  * </ul>
- * 
- * @author akenore,rhofir.
- * 
  */
-
 @XStreamAlias("categories")
 public class SaeCategories {
    @XStreamImplicit(itemFieldName = "category")

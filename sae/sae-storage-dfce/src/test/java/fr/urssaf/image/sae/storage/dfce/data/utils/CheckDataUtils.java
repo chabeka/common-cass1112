@@ -16,8 +16,6 @@ import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 /**
  * Classe utilitaire proposant des services de contrôle des éléments des
  * documents DFCE et ceux des documents SAE.
- * 
- *@author rhofir, kenore
  */
 public final class CheckDataUtils {
 

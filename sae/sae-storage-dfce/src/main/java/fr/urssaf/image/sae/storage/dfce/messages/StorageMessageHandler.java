@@ -8,9 +8,6 @@ import fr.urssaf.image.sae.storage.dfce.context.StorageApplicationContext;
 
 /**
  * Fournit des services qui retournent un message à partir de sa clés .
- * 
- * @author akenore
- * 
  */
 public final class StorageMessageHandler { 
   

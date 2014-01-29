@@ -4,8 +4,6 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 /**
  * Classe représentant une métadonnée de test
- * 
- * @author rhofir
  */
 @XStreamAlias("metadata")
 public class SAEMockMetadata {

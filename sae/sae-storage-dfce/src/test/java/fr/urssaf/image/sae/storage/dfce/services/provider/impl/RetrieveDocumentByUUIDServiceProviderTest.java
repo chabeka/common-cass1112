@@ -12,8 +12,6 @@ import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.UUIDCriteria;
 /**
  * Classe permettant de test la récupération d'un document en base.
- * @author akenore
- *
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class RetrieveDocumentByUUIDServiceProviderTest extends

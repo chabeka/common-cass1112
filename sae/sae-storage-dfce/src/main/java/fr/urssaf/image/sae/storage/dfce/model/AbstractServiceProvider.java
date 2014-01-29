@@ -13,9 +13,6 @@ import fr.urssaf.image.sae.storage.dfce.manager.DFCEServicesManager;
  * storageConnectionParameter : Classe concrète contenant les paramètres de
  * connexion à la base de stockage</li>
  * </ul>
- * 
- * @author akenore, rhofir.
- * 
  */
 @SuppressWarnings("PMD.AbstractClassWithoutAbstractMethod")
 public abstract class AbstractServiceProvider extends AbstractServices {

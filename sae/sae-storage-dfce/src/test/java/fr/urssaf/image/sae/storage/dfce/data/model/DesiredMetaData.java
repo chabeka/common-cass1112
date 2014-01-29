@@ -16,9 +16,6 @@ import fr.urssaf.image.sae.storage.dfce.utils.Utils;
  * <li>
  * codes : Les codes court des métadonnées souhaitées.</li>
  * </ul>
- * 
- * @author akenore
- * 
  */
 @XStreamAlias("desiredMetaDatas")
 public class DesiredMetaData {

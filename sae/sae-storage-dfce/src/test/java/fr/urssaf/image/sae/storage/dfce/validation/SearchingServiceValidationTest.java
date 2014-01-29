@@ -13,11 +13,7 @@ import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.LuceneCr
 
 /**
  * Test les aspects pour la validation.
- * 
- * @author rhofir, kenore.
- * 
  */
-
 public class SearchingServiceValidationTest extends
       StorageServices {
    /**

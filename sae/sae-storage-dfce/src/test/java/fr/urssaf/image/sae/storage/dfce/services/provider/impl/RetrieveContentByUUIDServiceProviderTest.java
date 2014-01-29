@@ -13,8 +13,6 @@ import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.UUIDCrit
 
 /**
  * Classe permettant de test la récupération du contenue d'un document en base.
- * @author akenore
- *
  */
 public class RetrieveContentByUUIDServiceProviderTest extends
 		CommonsServicesProvider {

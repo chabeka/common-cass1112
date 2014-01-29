@@ -30,9 +30,6 @@ import fr.urssaf.image.sae.storage.services.storagedocument.SearchingService;
 
 /**
  * Implémente les services de l'interface {@link RetrievalService}.
- * 
- * @author akenore
- * 
  */
 @Service
 @Qualifier("retrievalService")

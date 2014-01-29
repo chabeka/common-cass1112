@@ -9,9 +9,6 @@ import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 /**
  * Cette règle permet de determine si la longueur de la valeur d'une métadonnée
  * est inférieur ou égal à la longueur définie.
- * 
- * @author akenore
- * 
  */
 @Component
 public class UntypedMetadataValueLengthRule extends

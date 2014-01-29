@@ -11,11 +11,7 @@ import fr.urssaf.image.sae.storage.dfce.messages.StorageMessageHandler;
 /**
  * Fournit des méthodes de validation des arguments des services de suppression
  * par aspect.
- * 
- * @author akenore, Rhofir
- * 
  */
-
 @Aspect
 public class DeletionServiceValidation {
    // Code erreur.

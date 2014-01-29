@@ -5,9 +5,6 @@ import net.docubase.toolkit.service.ServiceProvider;
 
 /**
  * Permet de fabriquer et détruire les services DFCE.
- * 
- * @author akenore
- * 
  */
 public interface DFCEServicesManager {
    /**

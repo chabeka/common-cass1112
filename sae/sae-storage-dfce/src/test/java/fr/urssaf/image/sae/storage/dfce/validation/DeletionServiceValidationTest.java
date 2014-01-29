@@ -12,9 +12,6 @@ import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 
 /**
  * Test les aspects pour la validation.
- * 
- * @author rhofir, kenore.
- * 
  */
 public class DeletionServiceValidationTest extends
       StorageServices {

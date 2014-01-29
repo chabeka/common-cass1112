@@ -5,9 +5,6 @@ package fr.urssaf.image.sae.services.exception.capture;
 
 /**
  * Exception est levée lors de la vérification du hash code.
- * 
- * @author rhofir.
- * 
  */
 public class UnknownHashCodeEx extends Exception {
    private static final long serialVersionUID = 1L;

@@ -5,10 +5,6 @@ import com.docubase.dfce.commons.indexation.SystemFieldName;
 /**
  * Énumération contenant la listes des couples (code long ,code court) des
  * métadonnées gérées par DFCE.
- * 
- * 
- * @author akenore
- * 
  */
 public enum StorageTechnicalMetadatas {
 	// Titre du document

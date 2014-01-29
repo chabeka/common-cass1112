@@ -18,8 +18,6 @@ import fr.urssaf.image.sae.metadata.referential.services.XmlDataService;
 
 /**
  * Contient les tests de désérialisation du referentiel des métadonnées
- * 
- * @author akenore
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-metadata-test.xml" })

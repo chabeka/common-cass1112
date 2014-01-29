@@ -11,9 +11,6 @@ import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.UUIDCrit
 /**
  * Fournit des méthodes de validation des arguments des services de recherche
  * par aspect.
- * 
- * @author akenore
- * 
  */
 @Aspect
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")

@@ -13,11 +13,7 @@ import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 /**
  * Fournit des méthodes de validation des arguments des services de suppression
  * par aspect.
- * 
- * @author akenore, Rhofir
- * 
  */
-
 @Aspect
 public class UpdateServiceValidation {
    // Code erreur.

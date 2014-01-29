@@ -21,9 +21,6 @@ import fr.urssaf.image.sae.metadata.test.dataprovider.MetadataDataProviderUtils;
 /**
  * Cette classe permet de tester le service
  * {@link MetadataControlServices#checkArchivableMetadata(fr.urssaf.image.sae.bo.model.bo.SAEDocument)}
- * 
- * @author akenore
- * 
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-metadata-test.xml" })

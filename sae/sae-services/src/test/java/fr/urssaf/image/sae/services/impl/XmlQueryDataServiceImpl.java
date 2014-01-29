@@ -20,9 +20,6 @@ import fr.urssaf.image.sae.services.XmlQueryDataService;
 
 /**
  * Fournit des méthodes de désérialisation
- * 
- * @author rhofir
- * 
  */
 @Service
 @Qualifier("xmlQueryDataService")
