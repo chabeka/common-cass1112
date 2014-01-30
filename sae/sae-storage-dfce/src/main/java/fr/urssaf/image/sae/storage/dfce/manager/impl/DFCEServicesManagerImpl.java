@@ -8,12 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import fr.urssaf.image.commons.dfce.model.DFCEConnection;
 import fr.urssaf.image.sae.storage.dfce.constants.Constants;
 import fr.urssaf.image.sae.storage.dfce.manager.DFCEServicesManager;
 import fr.urssaf.image.sae.storage.dfce.messages.StorageMessageHandler;
-import fr.urssaf.image.sae.storage.dfce.utils.Utils;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
-import fr.urssaf.image.sae.storage.model.connection.StorageConnectionParameter;
 
 /**
  * Permet de fabriquer et détruire les services DFCE.
@@ -27,7 +26,7 @@ public class DFCEServicesManagerImpl implements DFCEServicesManager {
          .getLogger(DFCEServicesManagerImpl.class);
 
    @Autowired
-   private StorageConnectionParameter cnxParameters;
+   private DFCEConnection cnxParameters;
 
    private ServiceProvider dfceService;
 
@@ -50,15 +49,14 @@ public class DFCEServicesManagerImpl implements DFCEServicesManager {
     * @param cnxParameters
     *           the cnxParameters to set
     */
-   public final void setCnxParameters(
-         final StorageConnectionParameter cnxParameters) {
+   public final void setCnxParameters(final DFCEConnection cnxParameters) {
       this.cnxParameters = cnxParameters;
    }
 
    /**
     * @return the cnxParameters
     */
-   public final StorageConnectionParameter getCnxParameters() {
+   public final DFCEConnection getCnxParameters() {
       return cnxParameters;
    }
 
@@ -101,10 +99,9 @@ public class DFCEServicesManagerImpl implements DFCEServicesManager {
                      "{} - Etablissement d'une nouvelle connexion à DFCE",
                      prefixLog);
                dfceService = ServiceProvider.newServiceProvider();
-               dfceService.connect(cnxParameters.getStorageUser().getLogin(),
-                     cnxParameters.getStorageUser().getPassword(), Utils
-                           .buildUrlForConnection(cnxParameters), cnxParameters
-                           .getStorageHost().getTimeOut());
+               dfceService.connect(cnxParameters.getLogin(), cnxParameters
+                     .getPassword(), cnxParameters.getServerUrl().toString(),
+                     cnxParameters.getTimeout());
             } else {
                LOGGER.debug(
                      "{} - Réutilisation de la connexion existante à DFCE",
@@ -112,9 +109,9 @@ public class DFCEServicesManagerImpl implements DFCEServicesManager {
             }
          }
       } catch (Exception except) {
-         throw new ConnectionServiceEx(
-               StorageMessageHandler.getMessage(Constants.CNT_CODE_ERROR),
-               except.getMessage(), except);
+         throw new ConnectionServiceEx(StorageMessageHandler
+               .getMessage(Constants.CNT_CODE_ERROR), except.getMessage(),
+               except);
       }
    }
 

@@ -15,9 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
+import fr.urssaf.image.commons.dfce.model.DFCEConnection;
 import fr.urssaf.image.sae.metadata.dfce.ServiceProviderSupportMetadata;
 import fr.urssaf.image.sae.metadata.exceptions.MetadataReferenceNotFoundException;
-import fr.urssaf.image.sae.metadata.referential.model.DfceConfig;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 import fr.urssaf.image.sae.metadata.referential.services.SaeMetaDataService;
 import fr.urssaf.image.sae.metadata.referential.support.SaeMetadataSupport;
@@ -35,7 +35,7 @@ public class SaeMetaDataServiceImpl implements SaeMetaDataService {
    private final SaeMetadataSupport saeMetadatasupport;
    private final JobClockSupport clockSupport;
    private final ServiceProviderSupportMetadata serviceProviderSupport;
-   private DfceConfig dfceConfig;
+   private DFCEConnection dfceConfig;
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(SaeMetaDataServiceImpl.class);
@@ -60,7 +60,7 @@ public class SaeMetaDataServiceImpl implements SaeMetaDataService {
    public SaeMetaDataServiceImpl(SaeMetadataSupport saeMetadataSupport,
          JobClockSupport clockSupport,
          ServiceProviderSupportMetadata serviceProviderSupport,
-         DfceConfig dfceConfig) {
+         DFCEConnection dfceConfig) {
       this.saeMetadatasupport = saeMetadataSupport;
       this.clockSupport = clockSupport;
       this.serviceProviderSupport = serviceProviderSupport;
@@ -113,7 +113,7 @@ public class SaeMetaDataServiceImpl implements SaeMetaDataService {
 
    private Base createBase(MetadataReference metadata) {
       Base base = serviceProviderSupport.getBaseAdministrationService()
-            .getBase(dfceConfig.getBasename());
+            .getBase(dfceConfig.getBaseName());
       serviceProviderSupport.connect();
       final ToolkitFactory toolkit = ToolkitFactory.getInstance();
 

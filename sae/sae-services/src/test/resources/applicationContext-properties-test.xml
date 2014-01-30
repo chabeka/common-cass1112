@@ -35,17 +35,6 @@
       <constructor-arg ref="saeConfigResource" />
    </bean>
 
-   <bean id="dfceConfig" factory-bean="dfceConfigFactory"
-      factory-method="createDfceConfig">
-
-      <!--
-         NB : le bean saeConfigResource est injecté manuellement dans la
-         méthode Main.main
-      -->
-      <constructor-arg ref="saeConfigResource" />
-
-   </bean>
-
    <bean id="dfceConnection"
       class="fr.urssaf.image.commons.dfce.manager.DFCEConnectionFactory"
       factory-method="createDFCEConnectionByDFCEConfiguration">

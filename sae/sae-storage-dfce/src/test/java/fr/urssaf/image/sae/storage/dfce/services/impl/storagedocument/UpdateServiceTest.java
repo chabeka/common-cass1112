@@ -13,7 +13,10 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
@@ -22,7 +25,7 @@ import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.storage.dfce.data.constants.Constants;
 import fr.urssaf.image.sae.storage.dfce.data.model.SaeDocument;
 import fr.urssaf.image.sae.storage.dfce.mapping.DocumentForTestMapper;
-import fr.urssaf.image.sae.storage.dfce.services.StorageServices;
+import fr.urssaf.image.sae.storage.dfce.services.CommonsServices;
 import fr.urssaf.image.sae.storage.dfce.utils.TraceAssertUtils;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
@@ -42,7 +45,12 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
  * InsertionService}
  * 
  */
-public class UpdateServiceTest extends StorageServices {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "/applicationContext-sae-storage-dfce-test.xml" })
+public class UpdateServiceTest {
+
+   @Autowired
+   private CommonsServices commonsServices;
 
    @Autowired
    private TraceAssertUtils traceAssertUtils;
@@ -51,7 +59,8 @@ public class UpdateServiceTest extends StorageServices {
    private CassandraServerBean cassandraServerBean;
 
    @Before
-   public void before() {
+   public void before() throws ConnectionServiceEx {
+      commonsServices.initServicesParameters();
 
       // Initialisation des droits
 
@@ -87,6 +96,8 @@ public class UpdateServiceTest extends StorageServices {
    @After
    public void after() throws Exception {
 
+      commonsServices.closeServicesParameters();
+
       AuthenticationContext.setAuthenticationToken(null);
 
       cassandraServerBean.resetData();
@@ -108,15 +119,16 @@ public class UpdateServiceTest extends StorageServices {
    public void modifDocument() throws IOException, ParseException,
          InsertionServiceEx, ConnectionServiceEx, UpdateServiceEx,
          SearchingServiceEx {
-      getDfceServicesManager().getConnection();
-      getInsertionService().setInsertionServiceParameter(
-            getDfceServicesManager().getDFCEService());
-      final SaeDocument saeDocument = getXmlDataService().saeDocumentReader(
-            new File(Constants.XML_PATH_DOC_WITHOUT_ERROR[0]));
+      commonsServices.getDfceServicesManager().getConnection();
+      commonsServices.getInsertionService().setInsertionServiceParameter(
+            commonsServices.getDfceServicesManager().getDFCEService());
+      final SaeDocument saeDocument = commonsServices.getXmlDataService()
+            .saeDocumentReader(
+                  new File(Constants.XML_PATH_DOC_WITHOUT_ERROR[0]));
       final StorageDocument storageDocument = DocumentForTestMapper
             .saeDocumentXmlToStorageDocument(saeDocument);
-      final StorageDocument firstDocument = getInsertionService()
-            .insertStorageDocument(storageDocument);
+      final StorageDocument firstDocument = commonsServices
+            .getInsertionService().insertStorageDocument(storageDocument);
 
       Assert
             .assertNotNull("l'uuid doit etre non null", firstDocument.getUuid());
@@ -126,10 +138,11 @@ public class UpdateServiceTest extends StorageServices {
       List<StorageMetadata> modifMetas = Arrays.asList(new StorageMetadata(
             "apr", "SAE"));
 
-      getUpdateService().updateStorageDocument(firstDocument.getUuid(),
-            modifMetas, delMetas);
+      commonsServices.getUpdateService().updateStorageDocument(
+            firstDocument.getUuid(), modifMetas, delMetas);
 
-      StorageDocument storedDoc = getSearchingService()
+      StorageDocument storedDoc = commonsServices
+            .getSearchingService()
             .searchStorageDocumentByUUIDCriteria(
                   new UUIDCriteria(firstDocument.getUuid(), Arrays.asList(
                         new StorageMetadata("itm"), new StorageMetadata("apr"))));

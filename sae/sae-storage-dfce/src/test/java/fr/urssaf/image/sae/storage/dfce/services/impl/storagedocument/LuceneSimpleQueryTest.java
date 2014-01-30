@@ -12,15 +12,22 @@ import java.util.Map;
 
 import junit.framework.Assert;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.storage.dfce.data.constants.Constants;
 import fr.urssaf.image.sae.storage.dfce.data.model.LuceneQueries;
 import fr.urssaf.image.sae.storage.dfce.data.model.LuceneQuery;
 import fr.urssaf.image.sae.storage.dfce.data.model.SaeDocument;
 import fr.urssaf.image.sae.storage.dfce.mapping.DocumentForTestMapper;
-import fr.urssaf.image.sae.storage.dfce.services.StorageServices;
+import fr.urssaf.image.sae.storage.dfce.services.CommonsServices;
+import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.exception.QueryParseServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
@@ -31,7 +38,24 @@ import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.LuceneCr
 /**
  * Classe de test des services de recherche.
  */
-public class LuceneSimpleQueryTest extends StorageServices {
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "/applicationContext-sae-storage-dfce-test.xml" })
+public class LuceneSimpleQueryTest {
+
+   @Autowired
+   private CommonsServices commonsServices;
+
+   @Before
+   public void init() throws ConnectionServiceEx {
+      commonsServices.initServicesParameters();
+   }
+
+   @After
+   public void end() {
+      commonsServices.closeServicesParameters();
+   }
+
    /**
     * Test de recherche par requête Lucene.
     */
@@ -42,9 +66,9 @@ public class LuceneSimpleQueryTest extends StorageServices {
       createStorageDocument();
       final Map<String, LuceneCriteria> queries = buildQueries("wildcard");
       for (Map.Entry<String, LuceneCriteria> query : queries.entrySet()) {
-         Assert.assertTrue(query.getKey(), getSearchingService()
-               .searchStorageDocumentByLuceneCriteria(query.getValue())
-               .getAllStorageDocuments().size() > 0);
+         Assert.assertTrue(query.getKey(), commonsServices
+               .getSearchingService().searchStorageDocumentByLuceneCriteria(
+                     query.getValue()).getAllStorageDocuments().size() > 0);
       }
    }
 
@@ -61,11 +85,13 @@ public class LuceneSimpleQueryTest extends StorageServices {
     */
    private void createStorageDocument() throws FileNotFoundException,
          IOException, ParseException, InsertionServiceEx {
-      final SaeDocument saeDocument = getXmlDataService().saeDocumentReader(
-            new File(Constants.XML_PATH_DOC_WITHOUT_ERROR[0]));
+      final SaeDocument saeDocument = commonsServices.getXmlDataService()
+            .saeDocumentReader(
+                  new File(Constants.XML_PATH_DOC_WITHOUT_ERROR[0]));
       final StorageDocument storageDocument = DocumentForTestMapper
             .saeDocumentXmlToStorageDocument(saeDocument);
-      getInsertionService().insertStorageDocument(storageDocument);
+      commonsServices.getInsertionService().insertStorageDocument(
+            storageDocument);
    }
 
    /**
@@ -78,9 +104,9 @@ public class LuceneSimpleQueryTest extends StorageServices {
       final Map<String, LuceneCriteria> queries = buildQueries("simple");
       createStorageDocument();
       for (Map.Entry<String, LuceneCriteria> query : queries.entrySet()) {
-         Assert.assertTrue(query.getKey(), getSearchingService()
-               .searchStorageDocumentByLuceneCriteria(query.getValue())
-               .getAllStorageDocuments().size() > 0);
+         Assert.assertTrue(query.getKey(), commonsServices
+               .getSearchingService().searchStorageDocumentByLuceneCriteria(
+                     query.getValue()).getAllStorageDocuments().size() > 0);
       }
    }
 
@@ -94,9 +120,9 @@ public class LuceneSimpleQueryTest extends StorageServices {
       createStorageDocument();
       final Map<String, LuceneCriteria> queries = buildQueries("range");
       for (Map.Entry<String, LuceneCriteria> query : queries.entrySet()) {
-         Assert.assertTrue(query.getKey(), getSearchingService()
-               .searchStorageDocumentByLuceneCriteria(query.getValue())
-               .getAllStorageDocuments().size() > 0);
+         Assert.assertTrue(query.getKey(), commonsServices
+               .getSearchingService().searchStorageDocumentByLuceneCriteria(
+                     query.getValue()).getAllStorageDocuments().size() > 0);
       }
    }
 
@@ -110,9 +136,9 @@ public class LuceneSimpleQueryTest extends StorageServices {
       createStorageDocument();
       final Map<String, LuceneCriteria> queries = buildQueries("withOperatorAnd");
       for (Map.Entry<String, LuceneCriteria> query : queries.entrySet()) {
-         Assert.assertTrue(query.getKey(), getSearchingService()
-               .searchStorageDocumentByLuceneCriteria(query.getValue())
-               .getAllStorageDocuments().size() > 0);
+         Assert.assertTrue(query.getKey(), commonsServices
+               .getSearchingService().searchStorageDocumentByLuceneCriteria(
+                     query.getValue()).getAllStorageDocuments().size() > 0);
       }
    }
 
@@ -126,9 +152,9 @@ public class LuceneSimpleQueryTest extends StorageServices {
       createStorageDocument();
       final Map<String, LuceneCriteria> queries = buildQueries("withOperatorOr");
       for (Map.Entry<String, LuceneCriteria> query : queries.entrySet()) {
-         Assert.assertTrue(query.getKey(), getSearchingService()
-               .searchStorageDocumentByLuceneCriteria(query.getValue())
-               .getAllStorageDocuments().size() > 0);
+         Assert.assertTrue(query.getKey(), commonsServices
+               .getSearchingService().searchStorageDocumentByLuceneCriteria(
+                     query.getValue()).getAllStorageDocuments().size() > 0);
       }
    }
 
@@ -142,9 +168,9 @@ public class LuceneSimpleQueryTest extends StorageServices {
       createStorageDocument();
       final Map<String, LuceneCriteria> queries = buildQueries("withOperatorAndOr");
       for (Map.Entry<String, LuceneCriteria> query : queries.entrySet()) {
-         Assert.assertTrue(query.getKey(), getSearchingService()
-               .searchStorageDocumentByLuceneCriteria(query.getValue())
-               .getAllStorageDocuments().size() > 0);
+         Assert.assertTrue(query.getKey(), commonsServices
+               .getSearchingService().searchStorageDocumentByLuceneCriteria(
+                     query.getValue()).getAllStorageDocuments().size() > 0);
       }
    }
 
@@ -158,9 +184,9 @@ public class LuceneSimpleQueryTest extends StorageServices {
       createStorageDocument();
       final Map<String, LuceneCriteria> queries = buildQueries("withOperatorNot");
       for (Map.Entry<String, LuceneCriteria> query : queries.entrySet()) {
-         Assert.assertTrue(query.getKey(), getSearchingService()
-               .searchStorageDocumentByLuceneCriteria(query.getValue())
-               .getAllStorageDocuments().size() > 0);
+         Assert.assertTrue(query.getKey(), commonsServices
+               .getSearchingService().searchStorageDocumentByLuceneCriteria(
+                     query.getValue()).getAllStorageDocuments().size() > 0);
       }
 
    }
@@ -182,8 +208,8 @@ public class LuceneSimpleQueryTest extends StorageServices {
    public Map<String, LuceneCriteria> buildQueries(final String queryType)
          throws InsertionServiceEx, IOException, ParseException {
       createStorageDocument();
-      final LuceneQueries queries = getXmlDataService().queriesReader(
-            new File(Constants.XML_FILE_QUERIES[0]));
+      final LuceneQueries queries = commonsServices.getXmlDataService()
+            .queriesReader(new File(Constants.XML_FILE_QUERIES[0]));
       final Map<String, LuceneCriteria> luceneCriteria = new HashMap<String, LuceneCriteria>();
       for (LuceneQuery query : queries.getLuceneQuery()) {
          if (query.getQueryType().equals(queryType)) {

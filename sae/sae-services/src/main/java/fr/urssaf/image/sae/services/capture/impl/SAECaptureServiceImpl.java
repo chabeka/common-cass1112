@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import fr.urssaf.image.commons.dfce.model.DFCEConnection;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.ecde.exception.EcdeBadURLException;
@@ -46,7 +47,6 @@ import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.services.exception.format.validation.ValidationExceptionInvalidFile;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
-import fr.urssaf.image.sae.storage.model.connection.StorageConnectionParameter;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 
@@ -83,8 +83,8 @@ public class SAECaptureServiceImpl implements SAECaptureService {
    @Autowired
    public SAECaptureServiceImpl(
          @Qualifier("storageServiceProvider") StorageServiceProvider serviceProvider,
-         @Qualifier("storageConnectionParameter") StorageConnectionParameter connectionParam,
-         EcdeServices ecdeServices, SAECommonCaptureService commonsService) {
+         DFCEConnection connectionParam, EcdeServices ecdeServices,
+         SAECommonCaptureService commonsService) {
 
       Assert.notNull(serviceProvider);
       Assert.notNull(connectionParam);
@@ -106,7 +106,9 @@ public class SAECaptureServiceImpl implements SAECaptureService {
          DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
          ReferentialRndException, UnknownCodeRndEx, UnknownHashCodeEx,
-         CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile, UnknownFormatException {
+         CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx,
+         MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile,
+         UnknownFormatException {
       // Traces debug - entrée méthode
       String prefixeTrc = "capture()";
       LOG.debug("{} - Début", prefixeTrc);
@@ -117,7 +119,7 @@ public class SAECaptureServiceImpl implements SAECaptureService {
       controlesService.checkCaptureEcdeUrl(ecdeURL.toString());
       // chargement du document de l'ECDE
       File ecdeFile = loadEcdeFile(ecdeURL);
-          
+
       UUID uuid = insertDocument(metadatas, ecdeFile);
       // Traces debug - sortie méthode
       LOG.debug("{} - Valeur de retour archiveId: \"{}\"", prefixeTrc, uuid);
@@ -127,19 +129,19 @@ public class SAECaptureServiceImpl implements SAECaptureService {
       return uuid;
 
    }
-   
-   
+
    /**
     * {@inheritDoc}
-    * @throws UnknownHashCodeEx 
-    * @throws RequiredArchivableMetadataEx 
-    * @throws EmptyDocumentEx 
-    * @throws UnknownCodeRndEx 
-    * @throws ReferentialRndException 
-    * @throws FileNotFoundException 
+    * 
+    * @throws UnknownHashCodeEx
+    * @throws RequiredArchivableMetadataEx
+    * @throws EmptyDocumentEx
+    * @throws UnknownCodeRndEx
+    * @throws ReferentialRndException
+    * @throws FileNotFoundException
     * @throws MetadataValueNotInDictionaryEx
-    * @throws ValidationExceptionInvalidFile 
-    * @throws UnknownFormatException 
+    * @throws ValidationExceptionInvalidFile
+    * @throws UnknownFormatException
     */
    @Override
    public final UUID captureFichier(List<UntypedMetadata> metadatas, String path)
@@ -147,7 +149,9 @@ public class SAECaptureServiceImpl implements SAECaptureService {
          InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
          DuplicatedMetadataEx, NotSpecifiableMetadataEx,
          NotArchivableMetadataEx, ReferentialRndException, UnknownCodeRndEx,
-         EmptyDocumentEx, RequiredArchivableMetadataEx, UnknownHashCodeEx, FileNotFoundException,MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile, UnknownFormatException {
+         EmptyDocumentEx, RequiredArchivableMetadataEx, UnknownHashCodeEx,
+         FileNotFoundException, MetadataValueNotInDictionaryEx,
+         ValidationExceptionInvalidFile, UnknownFormatException {
       // Traces debug - entrée méthode
       String prefixeTrc = "capture()";
       LOG.debug("{} - Début", prefixeTrc);
@@ -180,7 +184,8 @@ public class SAECaptureServiceImpl implements SAECaptureService {
          UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
          EmptyDocumentEx, RequiredArchivableMetadataEx,
          NotArchivableMetadataEx, ReferentialRndException, UnknownCodeRndEx,
-         UnknownHashCodeEx, EmptyFileNameEx, MetadataValueNotInDictionaryEx, UnknownFormatException, ValidationExceptionInvalidFile {
+         UnknownHashCodeEx, EmptyFileNameEx, MetadataValueNotInDictionaryEx,
+         UnknownFormatException, ValidationExceptionInvalidFile {
 
       // Traces debug - entrée méthode
       String prefixeTrc = "captureBinaire()";
@@ -188,9 +193,10 @@ public class SAECaptureServiceImpl implements SAECaptureService {
       LOG.debug("{} - Liste des métadonnées : \"{}\"", prefixeTrc,
             buildMessageFromList(metadatas));
       LOG.debug("{} - Nom du fichier : \"{}\"", prefixeTrc, fileName);
-      if ( content != null ) {
-         LOG.debug("{} - Taille du contenu du fichier : \"{}\"", prefixeTrc, content);
-      }   
+      if (content != null) {
+         LOG.debug("{} - Taille du contenu du fichier : \"{}\"", prefixeTrc,
+               content);
+      }
       // Fin des traces debug - entrée méthode
 
       controlesService.checkBinaryContent(content);
@@ -330,16 +336,16 @@ public class SAECaptureServiceImpl implements SAECaptureService {
       }
       return toStrBuilder.toString();
    }
-   
-   
+
    /**
-    * Méthode commune à captureFile et capture permettant d'archiver un document qui provient soit de l'ECDE soit d'un emplacement donné
-    * @param metadatas 
-    *                   Liste des métadonnées
-    * @param file 
-    *                   fichier à archiver
-    * @return UUID
-    *                   L'uuid de l'archivage
+    * Méthode commune à captureFile et capture permettant d'archiver un document
+    * qui provient soit de l'ECDE soit d'un emplacement donné
+    * 
+    * @param metadatas
+    *           Liste des métadonnées
+    * @param file
+    *           fichier à archiver
+    * @return UUID L'uuid de l'archivage
     * @throws SAECaptureServiceEx
     * @throws ReferentialRndException
     * @throws UnknownCodeRndEx
@@ -353,15 +359,16 @@ public class SAECaptureServiceImpl implements SAECaptureService {
     * @throws UnknownHashCodeEx
     * @throws NotSpecifiableMetadataEx
     * @throws MetadataValueNotInDictionaryEx
-    * @throws ValidationExceptionInvalidFile 
-    * @throws UnknownFormatException 
+    * @throws ValidationExceptionInvalidFile
+    * @throws UnknownFormatException
     */
    private UUID insertDocument(List<UntypedMetadata> metadatas, File file)
          throws SAECaptureServiceEx, ReferentialRndException, UnknownCodeRndEx,
          RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx,
          UnknownMetadataEx, DuplicatedMetadataEx, NotArchivableMetadataEx,
          EmptyDocumentEx, RequiredArchivableMetadataEx, UnknownHashCodeEx,
-         NotSpecifiableMetadataEx, MetadataValueNotInDictionaryEx, UnknownFormatException, ValidationExceptionInvalidFile {
+         NotSpecifiableMetadataEx, MetadataValueNotInDictionaryEx,
+         UnknownFormatException, ValidationExceptionInvalidFile {
 
       // instanciation d'un UntypedDocument
       UntypedDocument untypedDocument = createUntypedDocument(metadatas, file);

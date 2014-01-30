@@ -14,31 +14,6 @@
       <property name="location"
          value="classpath:config/sae-services-test.properties" />
    </bean>
-   <!--Instantiation du bean de connexion à la base DFCE -->
-   <bean id="storageBase"
-      class="fr.urssaf.image.sae.storage.model.connection.StorageBase">
-      <property name="baseName" value="${db.baseName}" />
-   </bean>
-   <!--Valorisation des paramètres à partir du fichier properties. -->
-   <bean id="storageHost"
-      class="fr.urssaf.image.sae.storage.model.connection.StorageHost">
-      <property name="hostName" value="${db.hostName}" />
-      <property name="hostPort" value="${db.hostPort}" />
-      <property name="contextRoot" value="${db.contextRoot}" />
-      <property name="secure" value="${db.secure}" />
-      <property name="timeOut" value="${db.timeout}" />
-   </bean>
-   <bean id="storageUser"
-      class="fr.urssaf.image.sae.storage.model.connection.StorageUser">
-      <property name="login" value="${db.login}" />
-      <property name="password" value="${db.password}" />
-   </bean>
-   <bean id="storageConnectionParameter"
-      class="fr.urssaf.image.sae.storage.model.connection.StorageConnectionParameter">
-      <property name="storageBase" ref="storageBase" />
-      <property name="storageHost" ref="storageHost" />
-      <property name="storageUser" ref="storageUser" />
-   </bean>
 
 
 

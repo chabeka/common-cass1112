@@ -16,7 +16,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
@@ -27,7 +30,7 @@ import fr.urssaf.image.sae.storage.dfce.data.model.SaeDocument;
 import fr.urssaf.image.sae.storage.dfce.data.utils.CheckDataUtils;
 import fr.urssaf.image.sae.storage.dfce.exception.DocumentTypeException;
 import fr.urssaf.image.sae.storage.dfce.mapping.DocumentForTestMapper;
-import fr.urssaf.image.sae.storage.dfce.services.StorageServices;
+import fr.urssaf.image.sae.storage.dfce.services.CommonsServices;
 import fr.urssaf.image.sae.storage.dfce.utils.TraceAssertUtils;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
@@ -48,7 +51,12 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
  * InsertionService}
  * 
  */
-public class InsertionServiceTest extends StorageServices {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "/applicationContext-sae-storage-dfce-test.xml" })
+public class InsertionServiceTest {
+
+   @Autowired
+   private CommonsServices commonsServices;
 
    @Autowired
    private TraceAssertUtils traceAssertUtils;
@@ -59,7 +67,9 @@ public class InsertionServiceTest extends StorageServices {
    private static final String PDF1 = "src/test/resources/PDF/doc1.PDF";
 
    @Before
-   public void before() {
+   public void before() throws ConnectionServiceEx {
+
+      commonsServices.initServicesParameters();
 
       // Initialisation des droits
 
@@ -89,7 +99,7 @@ public class InsertionServiceTest extends StorageServices {
 
    @After
    public void after() throws Exception {
-
+      commonsServices.closeServicesParameters();
       AuthenticationContext.setAuthenticationToken(null);
 
       cassandraServerBean.resetData();
@@ -110,19 +120,20 @@ public class InsertionServiceTest extends StorageServices {
    public void insertOneDocument() throws IOException, ParseException,
          InsertionServiceEx, ConnectionServiceEx {
 
-      final SaeDocument saeDocument = getXmlDataService().saeDocumentReader(
-            new File(Constants.XML_PATH_DOC_WITHOUT_ERROR[0]));
+      final SaeDocument saeDocument = commonsServices.getXmlDataService()
+            .saeDocumentReader(
+                  new File(Constants.XML_PATH_DOC_WITHOUT_ERROR[0]));
 
       final StorageDocument storageDocument = DocumentForTestMapper
             .saeDocumentXmlToStorageDocument(saeDocument);
 
-      getDfceServicesManager().getConnection();
+      commonsServices.getDfceServicesManager().getConnection();
 
-      getInsertionService().setInsertionServiceParameter(
-            getDfceServicesManager().getDFCEService());
+      commonsServices.getInsertionService().setInsertionServiceParameter(
+            commonsServices.getDfceServicesManager().getDFCEService());
 
-      final StorageDocument firstDocument = getInsertionService()
-            .insertStorageDocument(storageDocument);
+      final StorageDocument firstDocument = commonsServices
+            .getInsertionService().insertStorageDocument(storageDocument);
 
       Assert.assertNotNull(firstDocument);
 
@@ -145,17 +156,18 @@ public class InsertionServiceTest extends StorageServices {
    @Test
    public void insertTwiceSameDocument() throws IOException, ParseException,
          InsertionServiceEx, ConnectionServiceEx {
-      getDfceServicesManager().getConnection();
-      getInsertionService().setInsertionServiceParameter(
-            getDfceServicesManager().getDFCEService());
-      final SaeDocument saeDocument = getXmlDataService().saeDocumentReader(
-            new File(Constants.XML_PATH_DOC_WITHOUT_ERROR[0]));
+      commonsServices.getDfceServicesManager().getConnection();
+      commonsServices.getInsertionService().setInsertionServiceParameter(
+            commonsServices.getDfceServicesManager().getDFCEService());
+      final SaeDocument saeDocument = commonsServices.getXmlDataService()
+            .saeDocumentReader(
+                  new File(Constants.XML_PATH_DOC_WITHOUT_ERROR[0]));
       final StorageDocument storageDocument = DocumentForTestMapper
             .saeDocumentXmlToStorageDocument(saeDocument);
-      final StorageDocument firstDocument = getInsertionService()
-            .insertStorageDocument(storageDocument);
-      final StorageDocument secondDocument = getInsertionService()
-            .insertStorageDocument(storageDocument);
+      final StorageDocument firstDocument = commonsServices
+            .getInsertionService().insertStorageDocument(storageDocument);
+      final StorageDocument secondDocument = commonsServices
+            .getInsertionService().insertStorageDocument(storageDocument);
       // si la valeur de la comparaison est égale à 1, c'est que les deux UUID
       // sont différent.
       Assert.assertEquals(
@@ -182,18 +194,19 @@ public class InsertionServiceTest extends StorageServices {
    @Test
    public void insertStorageDocument() throws IOException, ParseException,
          StorageException, NoSuchAlgorithmException {
-      final SaeDocument saeDocument = getXmlDataService().saeDocumentReader(
-            new File(Constants.XML_PATH_DOC_WITHOUT_ERROR[0]));
+      final SaeDocument saeDocument = commonsServices.getXmlDataService()
+            .saeDocumentReader(
+                  new File(Constants.XML_PATH_DOC_WITHOUT_ERROR[0]));
       final StorageDocument storageDocument = DocumentForTestMapper
             .saeDocumentXmlToStorageDocument(saeDocument);
-      final StorageDocument document = getInsertionService()
+      final StorageDocument document = commonsServices.getInsertionService()
             .insertStorageDocument(storageDocument);
       Assert.assertNotNull("UUID après insertion ne doit pas être null ",
             document.getUuid());
       final UUIDCriteria uuid = new UUIDCriteria(document.getUuid(), null);
       Assert.assertTrue("Les deux SHA1 doivent être identique", CheckDataUtils
-            .checkDocumentSha1(storageDocument.getContent(),
-                  getRetrievalService().retrieveStorageDocumentContentByUUID(
+            .checkDocumentSha1(storageDocument.getContent(), commonsServices
+                  .getRetrievalService().retrieveStorageDocumentContentByUUID(
                         uuid)));
    }
 
@@ -210,13 +223,15 @@ public class InsertionServiceTest extends StorageServices {
          ParseException, StorageException, NoSuchAlgorithmException {
 
       try {
-         getInsertionService().setInsertionServiceParameter(
-               getDfceServicesManager().getDFCEService());
-         final SaeDocument saeDocument = getXmlDataService().saeDocumentReader(
-               new File(Constants.XML_PATH_DOC_WITH_ERROR[7]));
+         commonsServices.getInsertionService().setInsertionServiceParameter(
+               commonsServices.getDfceServicesManager().getDFCEService());
+         final SaeDocument saeDocument = commonsServices.getXmlDataService()
+               .saeDocumentReader(
+                     new File(Constants.XML_PATH_DOC_WITH_ERROR[7]));
          final StorageDocument storageDocument = DocumentForTestMapper
                .saeDocumentXmlToStorageDocument(saeDocument);
-         getInsertionService().insertStorageDocument(storageDocument);
+         commonsServices.getInsertionService().insertStorageDocument(
+               storageDocument);
 
          Assert.fail("une exception est attendue");
 
@@ -253,14 +268,15 @@ public class InsertionServiceTest extends StorageServices {
       VirtualStorageReference reference = new VirtualStorageReference();
       reference.setFilePath(file.getAbsolutePath());
 
-      StorageReferenceFile storageReference = getInsertionService()
-            .insertStorageReference(reference);
+      StorageReferenceFile storageReference = commonsServices
+            .getInsertionService().insertStorageReference(reference);
 
       Assert.assertNotNull("UUID après insertion ne doit pas être null ",
             storageReference.getUuid());
 
-      final SaeDocument saeDocument = getXmlDataService().saeDocumentReader(
-            new File(Constants.XML_PATH_DOC_WITHOUT_ERROR[0]));
+      final SaeDocument saeDocument = commonsServices.getXmlDataService()
+            .saeDocumentReader(
+                  new File(Constants.XML_PATH_DOC_WITHOUT_ERROR[0]));
       final StorageDocument storageDocument = DocumentForTestMapper
             .saeDocumentXmlToStorageDocument(saeDocument);
 
@@ -271,14 +287,14 @@ public class InsertionServiceTest extends StorageServices {
       document.setFileName("doc1_1_2.PDF");
       document.setReferenceFile(storageReference);
 
-      UUID docUuid = getInsertionService().insertVirtualStorageDocument(
-            document);
+      UUID docUuid = commonsServices.getInsertionService()
+            .insertVirtualStorageDocument(document);
 
       final UUIDCriteria uuid = new UUIDCriteria(docUuid, null);
       Assert.assertTrue("Les deux SHA1 doivent être identique", CheckDataUtils
             .checkDocumentSha1(FileUtils.readFileToByteArray(file),
-                  getRetrievalService().retrieveStorageDocumentContentByUUID(
-                        uuid)));
+                  commonsServices.getRetrievalService()
+                        .retrieveStorageDocumentContentByUUID(uuid)));
    }
 
 }

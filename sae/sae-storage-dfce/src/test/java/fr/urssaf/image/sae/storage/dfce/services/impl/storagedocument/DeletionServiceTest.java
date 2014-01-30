@@ -13,14 +13,17 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.storage.dfce.data.constants.Constants;
-import fr.urssaf.image.sae.storage.dfce.services.StorageServices;
+import fr.urssaf.image.sae.storage.dfce.services.CommonsServices;
 import fr.urssaf.image.sae.storage.dfce.utils.TraceAssertUtils;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
@@ -39,7 +42,22 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
  * {@link fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument.DeletionServiceImpl
  * DeletionService}
  */
-public class DeletionServiceTest extends StorageServices {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "/applicationContext-sae-storage-dfce-test.xml" })
+public class DeletionServiceTest {
+
+   @Autowired
+   private CommonsServices commonsServices;
+
+   @Before
+   public void init() throws ConnectionServiceEx {
+      commonsServices.initServicesParameters();
+   }
+
+   @After
+   public void end() {
+      commonsServices.closeServicesParameters();
+   }
 
    @Autowired
    private TraceAssertUtils traceAssertUtils;
@@ -103,16 +121,18 @@ public class DeletionServiceTest extends StorageServices {
          ParseException, RetrievalServiceEx {
 
       // Initialisation des jeux de données UUID
-      final StorageDocument storageDoc = getMockData(getInsertionService());
+      final StorageDocument storageDoc = commonsServices
+            .getMockData(commonsServices.getInsertionService());
       final UUIDCriteria uuidCriteria = new UUIDCriteria(storageDoc.getUuid(),
             new ArrayList<StorageMetadata>());
       try {
-         getDeletionService().deleteStorageDocument(uuidCriteria.getUuid());
+         commonsServices.getDeletionService().deleteStorageDocument(
+               uuidCriteria.getUuid());
       } catch (DeletionServiceEx e) {
          Assert.assertTrue("La suppression a échoué " + e.getMessage(), true);
       }
-      Assert.assertNull(getRetrievalService().retrieveStorageDocumentByUUID(
-            uuidCriteria));
+      Assert.assertNull(commonsServices.getRetrievalService()
+            .retrieveStorageDocumentByUUID(uuidCriteria));
 
       // Vérifie la traçabilité
       traceAssertUtils.verifieAucuneTraceDansRegistres();
@@ -133,10 +153,11 @@ public class DeletionServiceTest extends StorageServices {
    @Ignore("034c37dd-7b45-4b11-be63-fe639d90df68 car ce document est gele A revoir")
    public void rollBack() throws InsertionServiceEx, IOException,
          ParseException, DeletionServiceEx {
-      getMockData(getInsertionService());
+      commonsServices.getMockData(commonsServices.getInsertionService());
       try {
          // ID process.
-         getDeletionService().rollBack(Constants.ID_PROCESS_TEST);
+         commonsServices.getDeletionService().rollBack(
+               Constants.ID_PROCESS_TEST);
 
       } catch (DeletionServiceEx e) {
          Assert.fail("La suppression a échoué " + e.getMessage());

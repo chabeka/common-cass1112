@@ -13,19 +13,7 @@
       factory-method="load">
       <constructor-arg ref="saeConfigResource" />
    </bean>
-
-   <!-- Création des beans de connexion à DFCE pour les services de la couche storage -->
-   <import resource="applicationContext-storageConnectionParameter.xml" />
    
-   <!-- Création du bean de connexion à DFCE pour les métadonnées -->
-   <bean id="dfceConfig" class="fr.urssaf.image.sae.metadata.referential.model.DfceConfig">
-      <property name="urlToolkit" value="${db.urlToolkit}" />
-      <property name="login" value="${db.login}" />
-      <property name="password" value="${db.password}" />
-      <property name="basename" value="${db.baseName}" />
-      <property name="timeOut" value="${db.timeout}" />
-   </bean>
-
    <!-- Création des beans de la configuration ECDE -->
    <bean id="ecdeSourceManager" class="fr.urssaf.image.sae.ecde.EcdeSourceManagerImpl" />
    <bean id="ecdeConfigFile" class="java.io.File">

@@ -6,20 +6,19 @@
    -->
 
   
-   <!-- 
+
    <Environment name="SAE_Fichier_Configuration" type="java.lang.String"
-      value="C:/hawai/data/sae/sae-config.properties" />
- -->
+      value="D:/hawai/data/sae/sae-config.properties" />
      
    
       
    <!-- 
    Configuration Windows (poste de developpeur) (exemple)
-   -->
+   
    
      
    <Environment name="SAE_Fichier_Configuration" type="java.lang.String"
       value="c:/appl/sae/sae-config.properties" />
-    
+-->    
 
 </Context>

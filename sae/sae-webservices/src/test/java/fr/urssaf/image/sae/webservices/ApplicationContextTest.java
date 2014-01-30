@@ -1,5 +1,7 @@
 package fr.urssaf.image.sae.webservices;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URISyntaxException;
 
 import javax.naming.NamingException;
@@ -9,6 +11,7 @@ import org.junit.Test;
 import org.opensaml.util.resource.ResourceException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.jndi.SimpleNamingContextBuilder;
 
 /**
@@ -21,10 +24,11 @@ public class ApplicationContextTest {
     * 
     * @throws NamingException
     * @throws IllegalStateException
+    * @throws IOException
     */
    @Test
    public void creationContexteTest() throws IllegalStateException,
-         NamingException, ResourceException, URISyntaxException {
+         NamingException, ResourceException, URISyntaxException, IOException {
 
       // Simulation JNDI
       simuleJndi();
@@ -40,12 +44,15 @@ public class ApplicationContextTest {
 
    }
 
-   private void simuleJndi() throws IllegalStateException, NamingException {
+   private void simuleJndi() throws IllegalStateException, NamingException,
+         IOException {
 
-      String config = "src/test/resources/config/test-sae-config.properties";
-
+      String config = "config/test-sae-config.properties";
+      ClassPathResource classPathResource = new ClassPathResource(config);
+      File file = new File(classPathResource.getURI());
       SimpleNamingContextBuilder builder = new SimpleNamingContextBuilder();
-      builder.bind("java:comp/env/SAE_Fichier_Configuration", config);
+      builder.bind("java:comp/env/SAE_Fichier_Configuration", file
+            .getAbsolutePath());
       builder.activate();
 
    }

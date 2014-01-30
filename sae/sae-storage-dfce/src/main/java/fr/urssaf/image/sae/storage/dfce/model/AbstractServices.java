@@ -2,8 +2,10 @@ package fr.urssaf.image.sae.storage.dfce.model;
 
 import net.docubase.toolkit.model.base.Base;
 import net.docubase.toolkit.service.ServiceProvider;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import fr.urssaf.image.sae.storage.model.connection.StorageConnectionParameter;
+
+import fr.urssaf.image.commons.dfce.model.DFCEConnection;
 
 /**
  * Classe abstraite contenant les attributs communs de toutes les
@@ -30,7 +32,7 @@ public abstract class AbstractServices {
 	private ServiceProvider dfceService;
 
 	@Autowired
-	private StorageConnectionParameter cnxParameters;
+	private DFCEConnection cnxParameters;
 	/**
 	 * @param dfceService
 	 *            : Les services DFCE.
@@ -51,7 +53,7 @@ public abstract class AbstractServices {
 	/**
 	 * @return Les paramètres de connection
 	 */
-	public final StorageConnectionParameter getCnxParameters() {
+	public final DFCEConnection getCnxParameters() {
 		return cnxParameters;
 	}
 
@@ -60,7 +62,7 @@ public abstract class AbstractServices {
 	 *            Les paramètres de connection
 	 */
 	public final void setCnxParameters(
-			final StorageConnectionParameter cnxParameters) {
+			final DFCEConnection cnxParameters) {
 		this.cnxParameters = cnxParameters;
 	}
 	
@@ -69,7 +71,7 @@ public abstract class AbstractServices {
 	    */
 	   public final Base getBaseDFCE() {
 	      return dfceService.getBaseAdministrationService().getBase(
-	    		  cnxParameters.getStorageBase().getBaseName());
+	    		  cnxParameters.getBaseName());
 	   }
 
 }

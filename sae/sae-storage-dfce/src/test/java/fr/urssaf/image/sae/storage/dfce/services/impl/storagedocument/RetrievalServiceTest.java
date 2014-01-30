@@ -11,14 +11,17 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.sae.storage.dfce.data.constants.Constants;
 import fr.urssaf.image.sae.storage.dfce.data.model.SaeDocument;
 import fr.urssaf.image.sae.storage.dfce.data.utils.CheckDataUtils;
 import fr.urssaf.image.sae.storage.dfce.mapping.DocumentForTestMapper;
-import fr.urssaf.image.sae.storage.dfce.services.StorageServices;
+import fr.urssaf.image.sae.storage.dfce.services.CommonsServices;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
@@ -30,29 +33,27 @@ import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.UUIDCrit
 /**
  * Classe de test pour les services de consultation.
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "/applicationContext-sae-storage-dfce-test.xml" })
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public class RetrievalServiceTest extends StorageServices {
+public class RetrievalServiceTest {
 
    @Autowired
-   private CassandraServerBean serverBean;
+   private CommonsServices commonsServices;
 
-   /**
-    * Permet d'initialiser le service RetrievalService
-    * 
-    * @throws ConnectionServiceEx
-    */
    @Before
    public void init() throws ConnectionServiceEx {
-      getDfceServicesManager().getConnection();
-      getRetrievalService().setRetrievalServiceParameter(
-            getDfceServicesManager().getDFCEService());
-
+      commonsServices.initServicesParameters();
    }
 
    @After
    public void end() throws Exception {
+      commonsServices.closeServicesParameters();
       serverBean.resetData();
    }
+
+   @Autowired
+   private CassandraServerBean serverBean;
 
    /**
     * Test de consultation par UUID
@@ -65,21 +66,24 @@ public class RetrievalServiceTest extends StorageServices {
    public void retrieveStorageDocumentByUUID() throws RetrievalServiceEx,
          InsertionServiceEx, IOException, ParseException, DeletionServiceEx,
          ConnectionServiceEx {
-      getDfceServicesManager().getConnection();
-      getInsertionService().setInsertionServiceParameter(
-            getDfceServicesManager().getDFCEService());
-      getRetrievalService().setRetrievalServiceParameter(
-            getDfceServicesManager().getDFCEService());
-      getDeletionService().setDeletionServiceParameter(
-            getDfceServicesManager().getDFCEService());
+      commonsServices.getDfceServicesManager().getConnection();
+      commonsServices.getInsertionService().setInsertionServiceParameter(
+            commonsServices.getDfceServicesManager().getDFCEService());
+      commonsServices.getRetrievalService().setRetrievalServiceParameter(
+            commonsServices.getDfceServicesManager().getDFCEService());
+      commonsServices.getDeletionService().setDeletionServiceParameter(
+            commonsServices.getDfceServicesManager().getDFCEService());
       // Initialisation des jeux de données UUID
-      final StorageDocument document = getMockData(getInsertionService());
+      final StorageDocument document = commonsServices
+            .getMockData(commonsServices.getInsertionService());
       final UUIDCriteria uuidCriteria = new UUIDCriteria(document.getUuid(),
             new ArrayList<StorageMetadata>());
       Assert.assertNotNull("Récupération d'un StorageDocument par uuid :",
-            getRetrievalService().retrieveStorageDocumentByUUID(uuidCriteria));
+            commonsServices.getRetrievalService()
+                  .retrieveStorageDocumentByUUID(uuidCriteria));
       // Suppression du document insert
-      destroyMockTest(document.getUuid(), getDeletionService());
+      commonsServices.destroyMockTest(document.getUuid(), commonsServices
+            .getDeletionService());
    }
 
    /**
@@ -94,20 +98,22 @@ public class RetrievalServiceTest extends StorageServices {
          ParseException, DeletionServiceEx, NoSuchAlgorithmException,
          ConnectionServiceEx {
       // Injection de jeu de donnée.
-      final SaeDocument saeDocument = getXmlDataService().saeDocumentReader(
-            new File(Constants.XML_PATH_DOC_WITHOUT_ERROR[1]));
+      final SaeDocument saeDocument = commonsServices.getXmlDataService()
+            .saeDocumentReader(
+                  new File(Constants.XML_PATH_DOC_WITHOUT_ERROR[1]));
       final StorageDocument storageDocument = DocumentForTestMapper
             .saeDocumentXmlToStorageDocument(saeDocument);
-      final StorageDocument document = getInsertionService()
+      final StorageDocument document = commonsServices.getInsertionService()
             .insertStorageDocument(storageDocument);
 
       final UUIDCriteria uuidCriteria = new UUIDCriteria(document.getUuid(),
             new ArrayList<StorageMetadata>());
-      final byte[] content = getRetrievalService()
+      final byte[] content = commonsServices.getRetrievalService()
             .retrieveStorageDocumentContentByUUID(uuidCriteria);
       Assert.assertNotNull(
             "Le contenue du document récupérer doit être non null", content);
-      destroyMockTest(document.getUuid(), getDeletionService());
+      commonsServices.destroyMockTest(document.getUuid(), commonsServices
+            .getDeletionService());
    }
 
    /**
@@ -122,16 +128,18 @@ public class RetrievalServiceTest extends StorageServices {
          throws RetrievalServiceEx, DeletionServiceEx, InsertionServiceEx,
          IOException, ParseException, ConnectionServiceEx {
       // Injection de jeu de donnée.
-      final SaeDocument saeDocument = getXmlDataService().saeDocumentReader(
-            new File(Constants.XML_PATH_DOC_WITHOUT_ERROR[1]));
+      final SaeDocument saeDocument = commonsServices.getXmlDataService()
+            .saeDocumentReader(
+                  new File(Constants.XML_PATH_DOC_WITHOUT_ERROR[1]));
       final StorageDocument storageDocument = DocumentForTestMapper
             .saeDocumentXmlToStorageDocument(saeDocument);
-      final StorageDocument document = getInsertionService()
+      final StorageDocument document = commonsServices.getInsertionService()
             .insertStorageDocument(storageDocument);
       final UUIDCriteria uuidCriteria = new UUIDCriteria(document.getUuid(),
             new ArrayList<StorageMetadata>());
-      final List<StorageMetadata> storageMetadatas = getRetrievalService()
-            .retrieveStorageDocumentMetaDatasByUUID(uuidCriteria);
+      final List<StorageMetadata> storageMetadatas = commonsServices
+            .getRetrievalService().retrieveStorageDocumentMetaDatasByUUID(
+                  uuidCriteria);
 
       Assert.assertNotNull(
             "La liste des Métadonnées récupérer doit être non null : ",
@@ -143,6 +151,7 @@ public class RetrievalServiceTest extends StorageServices {
             CheckDataUtils.checkMetaDatas(storageDocument.getMetadatas(),
                   storageMetadatas));
       // Suppression du document insert
-      destroyMockTest(document.getUuid(), getDeletionService());
+      commonsServices.destroyMockTest(document.getUuid(), commonsServices
+            .getDeletionService());
    }
 }

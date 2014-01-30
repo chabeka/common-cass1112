@@ -15,17 +15,14 @@ import net.docubase.toolkit.service.ServiceProvider;
 
 import org.apache.commons.lang.exception.NestableRuntimeException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 import com.docubase.dfce.exception.FrozenDocumentException;
 import com.docubase.dfce.exception.TagControlException;
 
-import fr.urssaf.image.sae.storage.dfce.utils.Utils;
+import fr.urssaf.image.commons.dfce.model.DFCEConnection;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
-import fr.urssaf.image.sae.storage.model.connection.StorageConnectionParameter;
-import fr.urssaf.image.sae.storage.model.connection.StorageHost;
 
 /**
  * Service pour fournir des méthodes communes pour les tests de l'artefact<br>
@@ -50,20 +47,19 @@ public class SAEServiceTestProvider {
     *            une exception est levée lors de l'ouverture de la connexion
     */
    @Autowired
-   public SAEServiceTestProvider(
-         @Qualifier("storageConnectionParameter") StorageConnectionParameter connection,
-         StorageHost storageHost) throws ConnectionServiceEx {
+   public SAEServiceTestProvider(DFCEConnection dfceConnection)
+         throws ConnectionServiceEx {
 
-      Assert.notNull(connection);
+      Assert.notNull(dfceConnection);
 
       this.serviceProvider = ServiceProvider.newServiceProvider();
 
-      this.serviceProvider.connect(connection.getStorageUser().getLogin(),
-            connection.getStorageUser().getPassword(),
-            Utils.buildUrlForConnection(connection), storageHost.getTimeOut());
+      this.serviceProvider.connect(dfceConnection.getLogin(), dfceConnection
+            .getPassword(), dfceConnection.getServerUrl().toString(),
+            dfceConnection.getTimeout());
 
       this.base = serviceProvider.getBaseAdministrationService().getBase(
-            connection.getStorageBase().getBaseName());
+            dfceConnection.getBaseName());
    }
 
    /**
@@ -163,10 +159,8 @@ public class SAEServiceTestProvider {
          }
 
          InputStream docContent = new ByteArrayInputStream(content);
-         return serviceProvider
-               .getStoreService()
-               .storeDocument(document, documentTitle, documentType, docContent)
-               .getUuid();
+         return serviceProvider.getStoreService().storeDocument(document,
+               documentTitle, documentType, docContent).getUuid();
 
       } catch (TagControlException e) {
          throw new NestableRuntimeException(e);

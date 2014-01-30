@@ -7,34 +7,48 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.storage.dfce.data.constants.Constants;
 import fr.urssaf.image.sae.storage.dfce.data.model.SaeDocument;
 import fr.urssaf.image.sae.storage.dfce.manager.DFCEServicesManager;
 import fr.urssaf.image.sae.storage.dfce.mapping.DocumentForTestMapper;
 import fr.urssaf.image.sae.storage.dfce.services.xml.XmlDataService;
+import fr.urssaf.image.sae.storage.dfce.utils.Utils;
+import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
+import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocuments;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.UUIDCriteria;
+import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 import fr.urssaf.image.sae.storage.services.storagedocument.DeletionService;
 import fr.urssaf.image.sae.storage.services.storagedocument.InsertionService;
+import fr.urssaf.image.sae.storage.services.storagedocument.RetrievalService;
+import fr.urssaf.image.sae.storage.services.storagedocument.SearchingService;
+import fr.urssaf.image.sae.storage.services.storagedocument.UpdateService;
 
 /**
  * Classe de base pour les tests unitaires.
  * 
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-storage-dfce-test.xml" })
-@SuppressWarnings( { "PMD.ExcessiveImports", "PMD.LongVariable",
-      "AbstractClassWithoutAbstractMethod" })
-public abstract class CommonsServices {
+@Component
+@Scope(BeanDefinition.SCOPE_PROTOTYPE)
+public class CommonsServices {
+
+   private StorageDocuments storageDocuments;
+   private StorageDocument storageDocument;
+   private List<StorageMetadata> storageMetadatas;
+
+   @Autowired
+   @Qualifier("storageServiceProvider")
+   private StorageServiceProvider serviceProvider;
+
    @Autowired
    @Qualifier("xmlDataService")
    private XmlDataService xmlDataService;
@@ -43,14 +57,51 @@ public abstract class CommonsServices {
    @Qualifier("dfceServicesManager")
    private DFCEServicesManager dfceServicesManager;
 
+   @Autowired
+   @Qualifier("insertionService")
+   private InsertionService insertionService;
+   @Autowired
+   @Qualifier("retrievalService")
+   private RetrievalService retrievalService;
+   @Autowired
+   @Qualifier("searchingService")
+   private SearchingService searchingService;
+   @Autowired
+   @Qualifier("deletionService")
+   private DeletionService deletionService;
+   @Autowired
+   private UpdateService updateService;
+
    /**
-    * 
-    * @param dfceServices
-    *           : Les services DFCE
+    * @return : Le service d'insertion.
     */
-   public final void setDfceServicesManager(
-         final DFCEServicesManager dfceServices) {
-      this.dfceServicesManager = dfceServices;
+   public final InsertionService getInsertionService() {
+      return insertionService;
+   }
+
+   /**
+    * @return Le service de suppression.
+    */
+   public final DeletionService getDeletionService() {
+      return deletionService;
+   }
+
+   /**
+    * Ferme la connexion. {@inheritDoc}
+    */
+
+   /**
+    * @return Le service de récupération de document DFCE.
+    */
+   public final RetrievalService getRetrievalService() {
+      return retrievalService;
+   }
+
+   /**
+    * @return Le service de recherche.
+    */
+   public final SearchingService getSearchingService() {
+      return searchingService;
    }
 
    /**
@@ -66,14 +117,6 @@ public abstract class CommonsServices {
     */
    public final XmlDataService getXmlDataService() {
       return xmlDataService;
-   }
-
-   /**
-    * @param xmlDataService
-    *           : Le service de gestion du fichier xml.
-    */
-   public final void setXmlDataService(final XmlDataService xmlDataService) {
-      this.xmlDataService = xmlDataService;
    }
 
    /**
@@ -99,5 +142,143 @@ public abstract class CommonsServices {
       final UUIDCriteria uuidCriteria = new UUIDCriteria(uuid,
             desiredStorageMetadatas);
       deletionService.deleteStorageDocument(uuidCriteria.getUuid());
+   }
+
+   /**
+    * @return the updateService
+    */
+   public final UpdateService getUpdateService() {
+      return updateService;
+   }
+
+   /**
+    * Initialise les paramètres pour les services.
+    * 
+    * @throws ConnectionServiceEx
+    *            Exception lévée lorsque la connexion n'aboutie pas.
+    */
+   public final void initServicesParameters() throws ConnectionServiceEx {
+      getDfceServicesManager().getConnection();
+      getInsertionService().setInsertionServiceParameter(
+            getDfceServicesManager().getDFCEService());
+      getRetrievalService().setRetrievalServiceParameter(
+            getDfceServicesManager().getDFCEService());
+      getDeletionService().setDeletionServiceParameter(
+            getDfceServicesManager().getDFCEService());
+      getSearchingService().setSearchingServiceParameter(
+            getDfceServicesManager().getDFCEService());
+      getUpdateService().setUpdateServiceParameter(
+            getDfceServicesManager().getDFCEService());
+   }
+
+   /**
+    * Libère les ressources
+    */
+   public final void closeServicesParameters() {
+      getDfceServicesManager().closeConnection();
+   }
+
+   /**
+    * @return La façade de services
+    */
+   public final StorageServiceProvider getServiceProvider() {
+      return serviceProvider;
+   }
+
+   public void initStorageDocumens() throws IOException, ParseException {
+      setStorageDocuments(getStorageDocumentsFromXml());
+      setStorageDocument(getStorageDocumentFromXml());
+   }
+
+   /**
+    * 
+    * @return La liste des storageDocuments à partir des fichier de xml.
+    * @throws IOException
+    *            Exception levée lorsque le fichier xml n'existe pas.
+    * @throws ParseException
+    *            Exception levée lorsque le parsing n'abouti pas.
+    */
+   @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
+   private StorageDocuments getStorageDocumentsFromXml() throws IOException,
+         ParseException {
+      List<StorageDocument> storageDoc = new ArrayList<StorageDocument>();
+      File files[] = new File[Constants.XML_PATH_DOC_WITHOUT_ERROR.length];
+      int numFile = 0;
+      for (String pathFile : Constants.XML_PATH_DOC_WITHOUT_ERROR) {
+         files[numFile] = new File(pathFile);
+         numFile++;
+      }
+      // Récupération des fichiers de tests désérialisé.
+      final List<SaeDocument> saeDocuments = getXmlDataService()
+            .saeDocumentsReader(files);
+      // Mapping entre les fichiers de tests et les StorageDocument
+      for (SaeDocument saeDocument : Utils.nullSafeIterable(saeDocuments)) {
+         storageDoc.add(DocumentForTestMapper
+               .saeDocumentXmlToStorageDocument(saeDocument));
+      }
+      StorageDocuments storDocuments = new StorageDocuments(storageDoc);
+
+      return storDocuments;
+   }
+
+   /**
+    * 
+    * @return
+    * @throws IOException
+    *            Exception levée lorsque le fichier xml n'existe pas.
+    * @throws ParseException
+    *            Exception levée lorsque le parsing n'abouti pas.
+    */
+   private StorageDocument getStorageDocumentFromXml() throws IOException,
+         ParseException {
+      final SaeDocument saeDocument = getXmlDataService().saeDocumentReader(
+            new File(Constants.XML_PATH_DOC_WITHOUT_ERROR[0]));
+      return DocumentForTestMapper.saeDocumentXmlToStorageDocument(saeDocument);
+   }
+
+   /**
+    * @param storageDocuments
+    *           : Un document de test.
+    */
+   public final void setStorageDocuments(final StorageDocuments storageDocuments) {
+      this.storageDocuments = storageDocuments;
+   }
+
+   /**
+    * @return Un document de test.
+    */
+   public final StorageDocuments getStorageDocuments() {
+      return storageDocuments;
+   }
+
+   /**
+    * @param storageDocument
+    *           : Le storageDocument à partir du fichier xml.
+    */
+   public final void setStorageDocument(final StorageDocument storageDocument) {
+      this.storageDocument = storageDocument;
+   }
+
+   /**
+    * @return Le storageDocument à partir du fichier xml.
+    */
+   public final StorageDocument getStorageDocument() {
+      return storageDocument;
+   }
+
+   /**
+    * @param storageMetadatas
+    *           the storageMetadatas to set
+    */
+   public final void setStorageMetadatas(
+         final List<StorageMetadata> storageMetadatas) {
+      this.storageMetadatas = storageMetadatas;
+   }
+
+   /**
+    * @return the storageMetadatas
+    */
+   public final List<StorageMetadata> getStorageMetadatas() {
+      return storageMetadatas;
    }
 }
