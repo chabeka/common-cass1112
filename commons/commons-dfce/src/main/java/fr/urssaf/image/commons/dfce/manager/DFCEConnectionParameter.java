@@ -59,4 +59,28 @@ public final class DFCEConnectionParameter {
     */
    public static final String DFCE_TIMEOUT = "db.timeout";
 
+   /**
+    * Paramètre {@value #DFCE_BASE_NAME} indiquant le paramètre de configuration
+    * du nom de la base DFCE
+    */
+   public static final String DFCE_BASE_NAME = "db.baseName";
+
+   /**
+    * Paramètre {@value #DFCE_CHECK_HASH} indiquant le paramètre de
+    * configuration de vérification du HASH
+    */
+   public static final String DFCE_CHECK_HASH = "db.checkHash";
+
+   /**
+    * Paramètre {@value #DFCE_DIGEST_ALGO} indiquant le paramètre de
+    * configuration de nom du hash utilisé pour la vérification
+    */
+   public static final String DFCE_DIGEST_ALGO = "db.digestAlgo";
+
+   /**
+    * Paramètre {@value #DFCE_URL_TOOLKIT} indiquant le paramètre de
+    * configuration de l'adresse du toolkit
+    */
+   public static final String DFCE_URL_TOOLKIT = "db.urlToolkit";
+
 }

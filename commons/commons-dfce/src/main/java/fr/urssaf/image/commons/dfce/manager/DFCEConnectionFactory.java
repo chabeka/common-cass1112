@@ -128,14 +128,17 @@ public final class DFCEConnectionFactory {
       // HOSTNAME
       String hostName = dfceProperties
             .getProperty(DFCEConnectionParameter.DFCE_HOSTNAME);
+      dfceConnection.setHostName(hostName);
 
       // HOSTPORT
       int hostPort = Integer.parseInt(dfceProperties
             .getProperty(DFCEConnectionParameter.DFCE_HOSTPORT));
+      dfceConnection.setHostPort(hostPort);
 
       // CONTEXTROOT
       String contextRoot = dfceProperties
             .getProperty(DFCEConnectionParameter.DFCE_CONTEXTROOT);
+      dfceConnection.setContextRoot(contextRoot);
 
       // SECURE
       boolean secure = Boolean.parseBoolean(dfceProperties
@@ -158,6 +161,23 @@ public final class DFCEConnectionFactory {
       } catch (NumberFormatException exception) {
          throw new DFCEConfigurationRuntimeException(exception);
       }
+
+      dfceConnection.setUrlToolkit(dfceProperties
+            .getProperty(DFCEConnectionParameter.DFCE_URL_TOOLKIT));
+
+      dfceConnection.setBaseName(dfceProperties
+            .getProperty(DFCEConnectionParameter.DFCE_BASE_NAME));
+
+      boolean checkHash = false;
+      String valCheckHash = dfceProperties
+            .getProperty(DFCEConnectionParameter.DFCE_CHECK_HASH);
+      if (StringUtils.isNotBlank(valCheckHash)) {
+         checkHash = Boolean.valueOf(valCheckHash);
+      }
+      dfceConnection.setCheckHash(checkHash);
+
+      dfceConnection.setDigestAlgo(dfceProperties
+            .getProperty(DFCEConnectionParameter.DFCE_DIGEST_ALGO));
 
       return dfceConnection;
 

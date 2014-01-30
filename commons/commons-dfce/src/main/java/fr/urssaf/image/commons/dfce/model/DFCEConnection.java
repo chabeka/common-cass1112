@@ -3,88 +3,202 @@ package fr.urssaf.image.commons.dfce.model;
 import java.net.URL;
 
 /**
- * Paramètre de connexion à DFCE<br>
- * . Ces parmètres sont utilisés lors de l'appel de la méthode
- * {@link net.docubase.toolkit.service.ServiceProvider#connect(String, String, String)}
- * <br>
- * <br>
- * Les paramètres sont :
- * <ul>
- * <li><code>login</code>: login de connexion à DFCE</li>
- * <li><code>password</code>: mot de passe de connexion à DFCE</li>
- * <li><code>serverUrl</code>: URL de connexion à DFCE</li>
- * <li><code>timeout</code>: le timeout de la connexion à DFCE</li>
- * </ul>
- * 
+ * Objet contenant l'ensemble du paramétrage concernant DFCE
  */
-public class DFCEConnection {
+public final class DFCEConnection {
 
    private String login;
-
    private String password;
+   private String baseName;
+   private boolean checkHash;
+   private String digestAlgo;
 
+   private String contextRoot;
+   private boolean secure;
    private URL serverUrl;
-
    private int timeout;
+   private String urlToolkit;
+   private String hostName;
+   private int hostPort;
 
    /**
-    * @return the login
+    * @return le login de connexion à DFCE
     */
-   public final String getLogin() {
+   public String getLogin() {
       return login;
    }
 
    /**
     * @param login
-    *           the login to set
+    *           le login de connexion à DFCE
     */
-   public final void setLogin(String login) {
+   public void setLogin(String login) {
       this.login = login;
    }
 
    /**
-    * @return the password
+    * @return le mot de passe de connexion à DFCE
     */
-   public final String getPassword() {
+   public String getPassword() {
       return password;
    }
 
    /**
     * @param password
-    *           the password to set
+    *           le mot de passe de connexion à DFCE
     */
-   public final void setPassword(String password) {
+   public void setPassword(String password) {
       this.password = password;
    }
 
    /**
-    * @return the serverUrl
+    * @return le nom de la base DFCE
     */
-   public final URL getServerUrl() {
+   public String getBaseName() {
+      return baseName;
+   }
+
+   /**
+    * @param baseName
+    *           le nom de la base DFCE
+    */
+   public void setBaseName(String baseName) {
+      this.baseName = baseName;
+   }
+
+   /**
+    * @return l'indicateur de vérification du Hash
+    */
+   public boolean isCheckHash() {
+      return checkHash;
+   }
+
+   /**
+    * @param checkHash
+    *           l'indicateur de vérification du Hash
+    */
+   public void setCheckHash(boolean checkHash) {
+      this.checkHash = checkHash;
+   }
+
+   /**
+    * @return l'algo de vérification du hash
+    */
+   public String getDigestAlgo() {
+      return digestAlgo;
+   }
+
+   /**
+    * @param digestAlgo
+    *           l'algo de vérification du hash
+    */
+   public void setDigestAlgo(String digestAlgo) {
+      this.digestAlgo = digestAlgo;
+   }
+
+   /**
+    * @return le context racine
+    */
+   public String getContextRoot() {
+      return contextRoot;
+   }
+
+   /**
+    * @param contextRoot
+    *           le context racine
+    */
+   public void setContextRoot(String contextRoot) {
+      this.contextRoot = contextRoot;
+   }
+
+   /**
+    * @return l'indicateur de sécurisation de la connexion
+    */
+   public boolean getSecure() {
+      return secure;
+   }
+
+   /**
+    * @param secure
+    *           l'indicateur de sécurisation de la connexion
+    */
+   public void setSecure(boolean secure) {
+      this.secure = secure;
+   }
+
+   /**
+    * @return l'URL de DFCE
+    */
+   public URL getServerUrl() {
       return serverUrl;
    }
 
    /**
     * @param serverUrl
-    *           the serverUrl to set
+    *           l'URL de DFCE
     */
-   public final void setServerUrl(URL serverUrl) {
+   public void setServerUrl(URL serverUrl) {
       this.serverUrl = serverUrl;
    }
 
    /**
-    * @return le timeout de connexion
+    * @return le timeout de la connexion
     */
-   public final int getTimeout() {
+   public int getTimeout() {
       return timeout;
    }
 
    /**
     * @param timeout
-    *           le timeout de connexion
+    *           le timeout de la connexion
     */
-   public final void setTimeout(int timeout) {
+   public void setTimeout(int timeout) {
       this.timeout = timeout;
+   }
+
+   /**
+    * @return l'URL du toolkit DFCE
+    */
+   public String getUrlToolkit() {
+      return urlToolkit;
+   }
+
+   /**
+    * @param urlToolkit
+    *           l'URL du toolkit DFCE
+    */
+   public void setUrlToolkit(String urlToolkit) {
+      this.urlToolkit = urlToolkit;
+   }
+
+   /**
+    * @return le nom de la machine hote
+    */
+   public String getHostName() {
+      return hostName;
+   }
+
+   /**
+    * @param hostName
+    *           le nom de la machine hote
+    */
+   public void setHostName(String hostName) {
+      this.hostName = hostName;
+   }
+
+   /**
+    * @return le port de la machine hote
+    */
+   public int getHostPort() {
+      return hostPort;
+   }
+
+   /**
+    * @param hostPort
+    *           le port de la machine hote
+    */
+   public void setHostPort(int hostPort) {
+      this.hostPort = hostPort;
    }
 
 }

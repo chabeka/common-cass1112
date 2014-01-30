@@ -25,6 +25,24 @@ public class DFCEConnectionFactoryTest {
 
    private static final String EXPECTED_MESSAGE = "le message de l'exception est inattendu";
 
+   private static final String HOST_NAME = "cer69-ds4int";
+
+   private static final int HOST_PORT = 8080;
+
+   private static final String CONTEXT_ROOT = "/dfce-webapp/toolkit/";
+
+   private static final boolean SECURE = false;
+
+   private static final int TIMEOUT = 30000;
+
+   private static final String URL_TOOLKIT = "http://cer69-ds4int.cer69.recouv:8080/dfce-webapp/toolkit/";
+
+   private static final boolean CHECK_HASH = true;
+
+   private static final String DIGEST_ALGO = "SHA-1";
+
+   private static final String BASE_NAME = "SAE-TEST";
+
    @Test
    public void createDFCEConnectionBySAEConfiguration_success() {
 
@@ -43,8 +61,33 @@ public class DFCEConnectionFactoryTest {
       Assert.assertEquals("la valeur de l'url est inattendue", URL_VALUE,
             ObjectUtils.toString(dfceConnection.getServerUrl()));
 
-      Assert.assertEquals("la valeur du timeout est inattendue", 30000,
+      Assert.assertEquals("la valeur du timeout est inattendue", TIMEOUT,
             dfceConnection.getTimeout());
+
+      Assert.assertEquals("la valeur du hostname est inattendue", HOST_NAME,
+            dfceConnection.getHostName());
+
+      Assert.assertEquals("la valeur du hostport est inattendue", HOST_PORT,
+            dfceConnection.getHostPort());
+
+      Assert.assertEquals("la valeur du contextroot est inattendue",
+            CONTEXT_ROOT, dfceConnection.getContextRoot());
+
+      Assert.assertEquals("la valeur secure est inattendue", SECURE,
+            dfceConnection.getSecure());
+
+      Assert.assertEquals("la valeur de l'url toolkit est inattendue",
+            URL_TOOLKIT, dfceConnection.getUrlToolkit());
+
+      Assert.assertEquals("la valeur de checkHash est inattendue", CHECK_HASH,
+            dfceConnection.isCheckHash());
+
+      Assert.assertEquals("la valeur de digestAlgo est inattendue",
+            DIGEST_ALGO, dfceConnection.getDigestAlgo());
+
+      Assert.assertEquals("la valeur de baseName est inattendue", BASE_NAME,
+            dfceConnection.getBaseName());
+
    }
 
    @Test
@@ -57,7 +100,8 @@ public class DFCEConnectionFactoryTest {
          DFCEConnectionFactory
                .createDFCEConnectionBySAEConfiguration(saeConfiguration);
 
-         Assert.fail("Une exception DFCEConfigurationFileRuntimeException doit être levée");
+         Assert
+               .fail("Une exception DFCEConfigurationFileRuntimeException doit être levée");
 
       } catch (DFCEConfigurationFileRuntimeException e) {
 
@@ -78,7 +122,8 @@ public class DFCEConnectionFactoryTest {
          DFCEConnectionFactory
                .createDFCEConnectionBySAEConfiguration(saeProperties);
 
-         Assert.fail("Une exception DFCEConfigurationFileRuntimeException doit être levée");
+         Assert
+               .fail("Une exception DFCEConfigurationFileRuntimeException doit être levée");
 
       } catch (DFCEConfigurationParameterNotFoundRuntimeException e) {
 
@@ -107,8 +152,32 @@ public class DFCEConnectionFactoryTest {
       Assert.assertEquals("la valeur de l'url est inattendue", URL_VALUE,
             ObjectUtils.toString(dfceConnection.getServerUrl()));
 
-      Assert.assertEquals("la valeur du timeout est inattendue", 30000,
+      Assert.assertEquals("la valeur du timeout est inattendue", TIMEOUT,
             dfceConnection.getTimeout());
+
+      Assert.assertEquals("la valeur du hostname est inattendue", HOST_NAME,
+            dfceConnection.getHostName());
+
+      Assert.assertEquals("la valeur du hostport est inattendue", HOST_PORT,
+            dfceConnection.getHostPort());
+
+      Assert.assertEquals("la valeur du contextroot est inattendue",
+            CONTEXT_ROOT, dfceConnection.getContextRoot());
+
+      Assert.assertEquals("la valeur secure est inattendue", SECURE,
+            dfceConnection.getSecure());
+
+      Assert.assertEquals("la valeur de l'url toolkit est inattendue",
+            URL_TOOLKIT, dfceConnection.getUrlToolkit());
+
+      Assert.assertEquals("la valeur de checkHash est inattendue", CHECK_HASH,
+            dfceConnection.isCheckHash());
+
+      Assert.assertEquals("la valeur de digestAlgo est inattendue",
+            DIGEST_ALGO, dfceConnection.getDigestAlgo());
+
+      Assert.assertEquals("la valeur de baseName est inattendue", BASE_NAME,
+            dfceConnection.getBaseName());
    }
 
    @Test
@@ -127,11 +196,35 @@ public class DFCEConnectionFactoryTest {
             PASSWORD_VALUE, dfceConnection.getPassword());
 
       Assert.assertEquals("la valeur de l'url est inattendue",
-            URL_SECURE_VALUE,
-            ObjectUtils.toString(dfceConnection.getServerUrl()));
+            URL_SECURE_VALUE, ObjectUtils.toString(dfceConnection
+                  .getServerUrl()));
 
-      Assert.assertEquals("la valeur du timeout est inattendue", 30000,
+      Assert.assertEquals("la valeur du timeout est inattendue", TIMEOUT,
             dfceConnection.getTimeout());
+
+      Assert.assertEquals("la valeur du hostname est inattendue", HOST_NAME,
+            dfceConnection.getHostName());
+
+      Assert.assertEquals("la valeur du hostport est inattendue", HOST_PORT,
+            dfceConnection.getHostPort());
+
+      Assert.assertEquals("la valeur du contextroot est inattendue",
+            CONTEXT_ROOT, dfceConnection.getContextRoot());
+
+      Assert.assertEquals("la valeur secure est inattendue", SECURE,
+            dfceConnection.getSecure());
+
+      Assert.assertEquals("la valeur de l'url toolkit est inattendue",
+            URL_TOOLKIT, dfceConnection.getUrlToolkit());
+
+      Assert.assertEquals("la valeur de checkHash est inattendue", CHECK_HASH,
+            dfceConnection.isCheckHash());
+
+      Assert.assertEquals("la valeur de digestAlgo est inattendue",
+            DIGEST_ALGO, dfceConnection.getDigestAlgo());
+
+      Assert.assertEquals("la valeur de baseName est inattendue", BASE_NAME,
+            dfceConnection.getBaseName());
    }
 
    @Test(expected = DFCEConfigurationParameterBadFormatRuntimeException.class)
@@ -155,7 +248,8 @@ public class DFCEConnectionFactoryTest {
          DFCEConnectionFactory
                .createDFCEConnectionByDFCEConfiguration(dfceConfiguration);
 
-         Assert.fail("Une exception DFCEConfigurationFileRuntimeException doit être levée");
+         Assert
+               .fail("Une exception DFCEConfigurationFileRuntimeException doit être levée");
 
       } catch (DFCEConfigurationFileRuntimeException e) {
 
