@@ -21,8 +21,11 @@ import org.springframework.util.CollectionUtils;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.sae.droit.dao.model.ActionUnitaire;
+import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
+import fr.urssaf.image.sae.droit.dao.model.FormatProfil;
 import fr.urssaf.image.sae.droit.dao.model.Pagm;
 import fr.urssaf.image.sae.droit.dao.model.Pagma;
+import fr.urssaf.image.sae.droit.dao.model.Pagmf;
 import fr.urssaf.image.sae.droit.dao.model.Pagmp;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.dao.model.ServiceContract;
@@ -55,6 +58,12 @@ public class ContratServiceSupportTest {
    private PagmpSupport pagmpSupport;
 
    @Autowired
+   private PagmfSupport pagmfSupport;
+
+   @Autowired
+   private FormatControlProfilSupport formatControlProfilSupport;
+
+   @Autowired
    private ActionUnitaireSupport actionSupport;
 
    @Autowired
@@ -81,6 +90,15 @@ public class ContratServiceSupportTest {
          "permitAll", "denyAll" };
    private static final String[] CONTRAT_2_LISTE_PAGMP = new String[] { "permitAll" };
 
+   private static final String[] CONTRAT_1_LISTE_FCP = new String[] { "codeFcp1",
+         "codeFcp2" };
+   private static final String[] CONTRAT_2_LISTE_FCP = new String[] { "codeFcp3" };
+
+   private static final String[] CONTRAT_1_LISTE_PAGMF = new String[] {
+         "codePagmf1", "codePagmf2" };
+
+   private static final String[] CONTRAT_2_LISTE_PAGMF = new String[] { "codePagmf3" };
+
    @After
    public void end() throws Exception {
       cassandraServer.resetData();
@@ -92,6 +110,8 @@ public class ContratServiceSupportTest {
       createPagma();
       createPrmd();
       createPagmp();
+      createFcp();
+      createPagmf();
       createContrats();
       createPagm();
    }
@@ -113,16 +133,20 @@ public class ContratServiceSupportTest {
    private void checkValues(ServiceContract serviceContract) {
       List<String> pagms;
       List<String> pagmas;
+      List<String> pagmfs;
       List<String> actions;
       List<String> pagmps;
       List<String> prmds;
+      List<String> fcps;
 
       if ("CODE_CLIENT_1".equals(serviceContract.getCodeClient())) {
          pagms = Arrays.asList(CONTRAT_1_LISTE_PAGM);
          pagmas = Arrays.asList(CONTRAT_1_LISTE_PAGMA);
          pagmps = Arrays.asList(CONTRAT_1_LISTE_PAGMP);
+         pagmfs = Arrays.asList(CONTRAT_1_LISTE_PAGMF);
          actions = Arrays.asList(CONTRAT_1_LISTE_ACTIONS_UNITAIRES);
          prmds = Arrays.asList(CONTRAT_1_LISTE_PRMD);
+         fcps = Arrays.asList(CONTRAT_1_LISTE_FCP);
 
          Assert.assertEquals("La description du CS est incorrecte",
                "code contrat numero 1", serviceContract.getDescription());
@@ -152,8 +176,10 @@ public class ContratServiceSupportTest {
          pagms = Arrays.asList(CONTRAT_2_LISTE_PAGM);
          pagmas = Arrays.asList(CONTRAT_2_LISTE_PAGMA);
          pagmps = Arrays.asList(CONTRAT_2_LISTE_PAGMP);
+         pagmfs = Arrays.asList(CONTRAT_2_LISTE_PAGMF);
          actions = Arrays.asList(CONTRAT_2_LISTE_ACTIONS_UNITAIRES);
          prmds = Arrays.asList(CONTRAT_2_LISTE_PRMD);
+         fcps = Arrays.asList(CONTRAT_2_LISTE_FCP);
 
          Assert.assertEquals("La description du CS est incorrecte",
                "code contrat numero 2", serviceContract.getDescription());
@@ -216,6 +242,12 @@ public class ContratServiceSupportTest {
                + serviceContract.getCodeClient(), pagmas.contains(pagm
                .getPagma().getCode()));
 
+         // vérification que tous les pagmfs sont présents
+         Assert.assertTrue("le pagmf " + pagm.getPagmf().getCodePagmf()
+               + " doit etre présent dans la liste du contrat de service "
+               + serviceContract.getCodeClient(), pagmfs.contains(pagm
+               .getPagmf().getCodePagmf()));
+
          // vérification que tous les pagmps sont présents
          Assert.assertTrue("le pagmp " + pagm.getPagmp().getCode()
                + " doit etre présent dans la liste du contrat de service "
@@ -233,6 +265,22 @@ public class ContratServiceSupportTest {
                   + " doit etre présent dans la liste du contrat de service "
                   + serviceContract.getCodeClient(), prmds.contains(prmd
                   .getPrmd().getCode()));
+         }
+
+         // vérification que tous les profils de contrôle de format sont
+         // présents
+         List<FormatControlProfil> listeFcp = saeCs.getFormatControlProfils();
+         Assert
+               .assertEquals(
+                     "le nombre de profils de contrôle de format doit etre correct pour le code client "
+                           + serviceContract.getCodeClient(), fcps.size(),
+                     listeFcp.size());
+         for (FormatControlProfil fcp : listeFcp) {
+            Assert.assertTrue("le profil de contrôle de format "
+                  + fcp.getFormatCode()
+                  + " doit etre présent dans la liste du contrat de service "
+                  + serviceContract.getCodeClient(), fcps.contains(fcp
+                  .getFormatCode()));
          }
 
          // vérification que toutes les actions unitaires sont présentes
@@ -291,6 +339,53 @@ public class ContratServiceSupportTest {
       pagma.setCode("captureEnMasse");
       pagmaSupport.create(pagma, new Date().getTime());
 
+   }
+
+   private void createFcp() {
+
+      FormatProfil formatProfil = new FormatProfil();
+      formatProfil.setFileFormat("fileFormat");
+      formatProfil.setFormatIdentification(true);
+      formatProfil.setFormatValidation(true);
+      formatProfil.setFormatValidationMode("STRICT");
+
+      FormatControlProfil fcp = new FormatControlProfil();
+      fcp.setControlProfil(formatProfil);
+      fcp.setFormatCode("codeFcp1");
+      fcp.setDescription("Description fcp 1");
+      formatControlProfilSupport.create(fcp, new Date().getTime());
+
+      fcp = new FormatControlProfil();
+      fcp.setControlProfil(formatProfil);
+      fcp.setFormatCode("codeFcp2");
+      fcp.setDescription("Description fcp 2");
+      formatControlProfilSupport.create(fcp, new Date().getTime());
+      
+      fcp = new FormatControlProfil();
+      fcp.setControlProfil(formatProfil);
+      fcp.setFormatCode("codeFcp3");
+      fcp.setDescription("Description fcp 3");
+      formatControlProfilSupport.create(fcp, new Date().getTime());
+   }
+
+   private void createPagmf() {
+      Pagmf pagmf = new Pagmf();
+      pagmf.setCodeFormatControlProfil("codeFcp1");
+      pagmf.setCodePagmf("codePagmf1");
+      pagmf.setDescription("Description Pagmf 1");
+      pagmfSupport.create(pagmf, new Date().getTime());
+
+      pagmf = new Pagmf();
+      pagmf.setCodeFormatControlProfil("codeFcp2");
+      pagmf.setCodePagmf("codePagmf2");
+      pagmf.setDescription("Description Pagmf 2");
+      pagmfSupport.create(pagmf, new Date().getTime());
+
+      pagmf = new Pagmf();
+      pagmf.setCodeFormatControlProfil("codeFcp3");
+      pagmf.setCodePagmf("codePagmf3");
+      pagmf.setDescription("Description Pagmf 3");
+      pagmfSupport.create(pagmf, new Date().getTime());
    }
 
    private void createPrmd() {
@@ -353,6 +448,7 @@ public class ContratServiceSupportTest {
       pagm.setDescription("consultation et recherche et autorisation sur tout");
       pagm.setPagma("consultRecherche");
       pagm.setPagmp("permitAll");
+      pagm.setPagmf("codePagmf1");
       pagmSupport.create("CODE_CLIENT_1", pagm, new Date().getTime());
 
       pagm = new Pagm();
@@ -360,6 +456,7 @@ public class ContratServiceSupportTest {
       pagm.setDescription("capture masse et unitaires refusées sur tout");
       pagm.setPagma("capturesMasseUnitaire");
       pagm.setPagmp("denyAll");
+      pagm.setPagmf("codePagmf2");
       pagmSupport.create("CODE_CLIENT_1", pagm, new Date().getTime());
 
       pagm = new Pagm();
@@ -367,6 +464,7 @@ public class ContratServiceSupportTest {
       pagm.setDescription("consultations refusées sur tout");
       pagm.setPagma("consult");
       pagm.setPagmp("denyAll");
+      pagm.setPagmf("codePagmf2");
       pagmSupport.create("CODE_CLIENT_1", pagm, new Date().getTime());
 
       pagm = new Pagm();
@@ -374,6 +472,7 @@ public class ContratServiceSupportTest {
       pagm.setDescription("captureEnMasse autorisée sur tout");
       pagm.setPagma("captureEnMasse");
       pagm.setPagmp("permitAll");
+      pagm.setPagmf("codePagmf3");
       pagmSupport.create("CODE_CLIENT_2", pagm, new Date().getTime());
 
    }

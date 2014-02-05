@@ -128,6 +128,21 @@ public class PagmfSupport {
       }
    }
 
+   
+   /**
+    * Méthode de suppression d'une ligne avec Murator en paramètre
+    * 
+    * @param code
+    *           identifiant du PAGMf
+    * @param clock
+    *           horloge de suppression
+    * @param mutator
+    *           Mutator
+    */
+   public final void delete(String code, long clock, Mutator<String> mutator) {
+      pagmfDao.mutatorSuppressionLigne(mutator, code, clock);
+   }
+   
    /**
     * Récupération des informations associées à un {@link Pagmf}
     * 

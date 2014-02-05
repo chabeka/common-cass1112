@@ -18,7 +18,7 @@ public class SaeDroitsEtFormat {
    /**
     * @return the saeDroits
     */
-   public SaeDroits getSaeDroits() {
+   public final SaeDroits getSaeDroits() {
       return saeDroits;
    }
 
@@ -26,14 +26,14 @@ public class SaeDroitsEtFormat {
     * @param saeDroits
     *           the saeDroits to set
     */
-   public void setSaeDroits(SaeDroits saeDroits) {
+   public final void setSaeDroits(SaeDroits saeDroits) {
       this.saeDroits = saeDroits;
    }
 
    /**
     * @return the listFormatControlProfil
     */
-   public List<FormatControlProfil> getListFormatControlProfil() {
+   public final List<FormatControlProfil> getListFormatControlProfil() {
       return listFormatControlProfil;
    }
 
@@ -41,7 +41,7 @@ public class SaeDroitsEtFormat {
     * @param listFormatControlProfil
     *           the listFormatControlProfil to set
     */
-   public void setListFormatControlProfil(
+   public final void setListFormatControlProfil(
          List<FormatControlProfil> listFormatControlProfil) {
       this.listFormatControlProfil = listFormatControlProfil;
    }

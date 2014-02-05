@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import com.google.common.cache.CacheBuilder;
@@ -47,6 +48,8 @@ public class ValidationServiceImpl implements ValidationService {
     */
    private ReferentielFormatService referentielFormatService;
 
+   private ApplicationContext applicationContext;
+
    /**
     * Contructeur
     * 
@@ -58,16 +61,17 @@ public class ValidationServiceImpl implements ValidationService {
    @Autowired
    public ValidationServiceImpl(
          ReferentielFormatService referentielFormatService,
-         @Value("${sae.referentiel.format.cache}") int cacheDuration) {
+         @Value("${sae.referentiel.format.cache}") int cacheDuration,
+         ApplicationContext applicationContext) {
       this.referentielFormatService = referentielFormatService;
-
+      this.applicationContext = applicationContext;
       // Mise en cache
       validators = CacheBuilder.newBuilder().refreshAfterWrite(cacheDuration,
             TimeUnit.MINUTES).build(new CacheLoader<String, Validator>() {
 
          @Override
          public Validator load(String identifiant) {
-            return SaeFormatApplicationContext.getApplicationContext().getBean(
+            return ValidationServiceImpl.this.applicationContext.getBean(
                   identifiant, Validator.class);
          }
       });

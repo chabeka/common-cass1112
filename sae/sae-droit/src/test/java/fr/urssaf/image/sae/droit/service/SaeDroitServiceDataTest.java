@@ -65,6 +65,8 @@ public class SaeDroitServiceDataTest {
    private static final String DESCRIPTION_ACTION_1 = "description action unitaire 1";
 
    private static final String DESCRIPTION_PAGMP = "description pagmp";
+   
+   private static final String DESCRIPTION_PAGMF = "description pagmf";
 
    private static final String DESCRIPTION_PAGMP_2 = "description pagmp 2";
 
@@ -475,7 +477,7 @@ public class SaeDroitServiceDataTest {
       Pagmf pagmf = new Pagmf();
 
       pagmf.setCodePagmf(CODE_PAGMF);
-      pagmf.setDescription("description");
+      pagmf.setDescription(DESCRIPTION_PAGMF);
       pagmf.setCodeFormatControlProfil("formatProfile");
       
       pagmfSupport.create(pagmf, new Date().getTime());
@@ -506,7 +508,7 @@ public class SaeDroitServiceDataTest {
       Pagmf pagmf = new Pagmf();
 
       pagmf.setCodePagmf(CODE_PAGMF_2);
-      pagmf.setDescription("description");
+      pagmf.setDescription(DESCRIPTION_PAGMF);
       pagmf.setCodeFormatControlProfil("formatProfile");
       
       pagmfSupport.create(pagmf, new Date().getTime());
@@ -633,11 +635,10 @@ public class SaeDroitServiceDataTest {
          
          SaePagmf saePagmf = new SaePagmf();
          saePagmf.setCodePagmf(CODE_PAGMF);
-         saePagmf.setDescription("description");
+         saePagmf.setDescription(DESCRIPTION_PAGMF);
          saePagmf.setFormatProfile("formatProfile");
-         Assert.assertEquals(pagm.getPagmf().getCodePagmf(), saePagmf.getCodePagmf());
-         Assert.assertEquals(pagm.getPagmf().getDescription(), saePagmf.getDescription());
-         Assert.assertEquals(pagm.getPagmf().getFormatProfile(), saePagmf.getFormatProfile());
+         Assert.assertEquals(pagm.getPagmf(), saePagmf);
+         
       }
 
    }

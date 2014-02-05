@@ -9,6 +9,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import com.google.common.cache.CacheBuilder;
@@ -47,6 +48,7 @@ public class IdentificationServiceImpl implements IdentificationService {
     * Service permettant d’interroger le référentiel des formats
     */
    private final ReferentielFormatService referentielFormatService;
+   private final ApplicationContext applicationContext;
 
    /**
     * Contructeur
@@ -59,16 +61,17 @@ public class IdentificationServiceImpl implements IdentificationService {
    @Autowired
    public IdentificationServiceImpl(
          ReferentielFormatService referentielFormatService,
-         @Value("${sae.referentiel.format.cache}") int cacheDuration) {
+         @Value("${sae.referentiel.format.cache}") int cacheDuration,
+         ApplicationContext applicationContext) {
       this.referentielFormatService = referentielFormatService;
-
+      this.applicationContext = applicationContext;
       // Mise en cache
       identifiers = CacheBuilder.newBuilder().refreshAfterWrite(cacheDuration,
             TimeUnit.MINUTES).build(new CacheLoader<String, Identifier>() {
 
          @Override
          public Identifier load(String identifiant) {
-            return SaeFormatApplicationContext.getApplicationContext().getBean(
+            return IdentificationServiceImpl.this.applicationContext.getBean(
                   identifiant, Identifier.class);
          }
       });

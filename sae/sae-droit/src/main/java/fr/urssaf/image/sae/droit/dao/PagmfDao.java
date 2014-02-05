@@ -29,7 +29,6 @@ import fr.urssaf.image.sae.droit.utils.ResourceMessagesUtils;
 @Repository
 public class PagmfDao extends AbstractDao<String, String> {
 
-   @Autowired
    private FormatControlProfilSupport formatControlProfilSupport;
 
    /**
@@ -39,8 +38,9 @@ public class PagmfDao extends AbstractDao<String, String> {
     *           Keyspace utilisé
     */
    @Autowired
-   public PagmfDao(Keyspace keyspace) {
+   public PagmfDao(Keyspace keyspace, FormatControlProfilSupport formatControlProfilSupport) {
       super(keyspace);
+      this.formatControlProfilSupport = formatControlProfilSupport;
    }
 
    /**

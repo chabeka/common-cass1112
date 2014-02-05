@@ -265,7 +265,7 @@ public class ReferentielFormatSupport {
             if (row != null && row.hasResults()) {
 
                FormatFichier referentielFormat = getRefFormatFromResult(row,
-                     null);
+                     row.getKey());
                list.add(referentielFormat);
             }
          }

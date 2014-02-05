@@ -12,15 +12,15 @@ import org.springframework.util.Assert;
 @Component
 public final class SaeFormatApplicationContext {
 
-   private static ApplicationContext ctx;
+   @Autowired
+   private ApplicationContext ctx;
 
    /**
     * Méthode d'accès à l'instance {@link ApplicationContext} de l'application
     * 
     * @return contexte de l'application
     */
-   public static ApplicationContext getApplicationContext() {
-      Assert.notNull(ctx, "ApplicationContext not initialized ");
+   public ApplicationContext getApplicationContext() {
       return ctx;
    }
    
@@ -36,7 +36,7 @@ public final class SaeFormatApplicationContext {
        setContext(context);
     }
 
-   private static  void setContext(final ApplicationContext context) {
+   private void setContext(final ApplicationContext context) {
        ctx = context;
    }
 

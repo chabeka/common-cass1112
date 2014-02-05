@@ -46,6 +46,7 @@ public class TraitementServiceImpl implements TraitementService {
       
       operationPileTravauxService.purger(dateMaxSuppression);
       
+      
    }
 
 }

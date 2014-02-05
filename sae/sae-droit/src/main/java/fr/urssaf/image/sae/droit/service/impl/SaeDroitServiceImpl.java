@@ -4,7 +4,6 @@
 package fr.urssaf.image.sae.droit.service.impl;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -14,7 +13,6 @@ import me.prettyprint.hector.api.Keyspace;
 import me.prettyprint.hector.api.factory.HFactory;
 import me.prettyprint.hector.api.mutation.Mutator;
 
-import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -106,7 +104,6 @@ public class SaeDroitServiceImpl implements SaeDroitService {
    private final PagmaSupport pagmaSupport;
    private final PagmpSupport pagmpSupport;
    private final PagmfSupport pagmfSupport;
-   private final FormatControlProfilSupport formatControlProfilSupport;
 
    private final CuratorFramework curatorClient;
 
@@ -245,7 +242,6 @@ public class SaeDroitServiceImpl implements SaeDroitService {
       this.pagmaSupport = pagmaSupport;
       this.pagmpSupport = pagmpSupport;
       this.pagmfSupport = pagmfSupport;
-      this.formatControlProfilSupport = formControlProfilSupport;
       this.curatorClient = curatorClient;
       this.clockSupport = clockSupport;
       this.keyspace = keyspace;
@@ -666,6 +662,8 @@ public class SaeDroitServiceImpl implements SaeDroitService {
       List<SaePagm> listeSaePagm = this.getListeSaePagm(idClient);
 
       List<SaePrmd> listeSaePrmd = this.findPrmd(listeSaePagm);
+      
+      List<FormatControlProfil> listeFormatControlProfil = this.getListeFcp(listeSaePagm);
 
       SaeContratService saeContrat = new SaeContratService();
       saeContrat.setCodeClient(contrat.getCodeClient());
@@ -679,10 +677,41 @@ public class SaeDroitServiceImpl implements SaeDroitService {
       saeContrat.setVerifNommage(contrat.isVerifNommage());
       saeContrat.setSaePagms(listeSaePagm);
       saeContrat.setSaePrmds(listeSaePrmd);
+      saeContrat.setFormatControlProfils(listeFormatControlProfil);
 
       return saeContrat;
    }
 
+   private List<FormatControlProfil> getListeFcp(List<SaePagm> saePagms) {
+      List<String> listeCodes = new ArrayList<String>();
+
+      for (SaePagm saePagm : saePagms) {
+         if (saePagm.getPagmf() != null) {
+            String codeFcp = saePagm.getPagmf().getFormatProfile();
+            if (!listeCodes.contains(codeFcp)) {
+               listeCodes.add(codeFcp);
+            }
+         }
+         
+      }
+
+      List<FormatControlProfil> listeFcp = new ArrayList<FormatControlProfil>(listeCodes.size());
+      FormatControlProfil fcp;
+      for (String code : listeCodes) {
+         try {
+            fcp = formatControlProfilsCache.getUnchecked(code);
+         } catch (InvalidCacheLoadException e) {
+            throw new PrmdReferenceException("Le profil de contrôle de format " + code
+                  + " n'a pas été trouvé dans la famille de colonne DroitFormatControlProfil",
+                  e);
+         }
+         listeFcp.add(fcp);
+      }
+
+      return listeFcp;
+   }
+   
+   
    private List<SaePrmd> findPrmd(List<SaePagm> saePagms) {
       List<String> listeCodes = new ArrayList<String>();
 
@@ -1047,23 +1076,16 @@ public class SaeDroitServiceImpl implements SaeDroitService {
                      pagmASupprimer.getCode());
       }
       try {
-         Pagmf pagmf = getPagmf(pagmASupprimer.getPagmf());
-         // Suppresion du PAGMf
-         if (pagmf != null) {
-            pagmfSupport.delete(pagmf.getCodePagmf(), clockSupport
-                  .currentCLock());
-         }
-      } catch (PagmfNotFoundException e) {
-         LOGGER
-               .debug(
-                     "Pas de PAGMf pour le pagm {}, aucune suppression de PAGMf à effectuer",
-                     pagmASupprimer.getCode());
+         Pagmf pagmf = pagmfsCache.getUnchecked(pagmASupprimer.getPagmf());
+         // Ajout du PAGMf
+         pagmfSupport.delete(pagmf.getCodePagmf(), clockSupport.currentCLock(),
+               mutator);
       } catch (InvalidCacheLoadException e) {
          LOGGER
                .debug(
                      "Pas de PAGMf pour le pagm {}, aucune suppression de PAGMf à effectuer",
                      pagmASupprimer.getCode());
-      }
+      }      
 
       pagmSupport.delete(idContratService, pagmASupprimer.getCode(),
             clockSupport.currentCLock(), mutator);

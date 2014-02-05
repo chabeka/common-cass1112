@@ -12,12 +12,32 @@ import fr.urssaf.image.sae.droit.exception.FormatControlProfilNotFoundException;
 public interface FormatControlProfilService {
 
    /**
+    * Teste l'existence d'un profil de contrôle de format
+    * 
+    * @param code
+    *           code du profil de contrôle
+    * @return true si le profile existe, false sinon
+    */
+   boolean formatControlProfilExists(String code);
+
+   /**
     * Crée un nouveau profil de contrôle.
     * 
     * @param formatControlProfil
     *           le profil de contrôle à créer.
     */
    void addFormatControlProfil(FormatControlProfil formatControlProfil);
+
+   /**
+    * Modification d'un profil de contrôle existant
+    * 
+    * @param formatControlProfil
+    *           le profil de contrôle à modifier
+    * @throws FormatControlProfilNotFoundException
+    *            Exception levée si le profil n'existe pas
+    */
+   void modifyFormatControlProfil(FormatControlProfil formatControlProfil)
+         throws FormatControlProfilNotFoundException;
 
    /**
     * Supprimer un profil de contrôle.

@@ -2,6 +2,7 @@ package fr.urssaf.image.sae.droit.model;
 
 import java.util.List;
 
+import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
 import fr.urssaf.image.sae.droit.dao.model.ServiceContract;
 
 /**
@@ -20,6 +21,11 @@ public class SaeContratService extends ServiceContract {
     * Liste des Prmd rattachés au contrat de service
     */
    private List<SaePrmd> saePrmds;
+
+   /**
+    * Liste des profils de contrôle du format rattachés au contrat de service
+    */
+   private List<FormatControlProfil> formatControlProfils;
 
    /**
     * @return la liste des pagms
@@ -49,6 +55,21 @@ public class SaeContratService extends ServiceContract {
     */
    public final void setSaePrmds(List<SaePrmd> saePrmds) {
       this.saePrmds = saePrmds;
+   }
+
+   /**
+    * @return the formatControlProfils
+    */
+   public final List<FormatControlProfil> getFormatControlProfils() {
+      return formatControlProfils;
+   }
+
+   /**
+    * @param formatControlProfils the formatControlProfils to set
+    */
+   public final void setFormatControlProfils(
+         List<FormatControlProfil> formatCtrlProfils) {
+      this.formatControlProfils = formatCtrlProfils;
    }
 
 }

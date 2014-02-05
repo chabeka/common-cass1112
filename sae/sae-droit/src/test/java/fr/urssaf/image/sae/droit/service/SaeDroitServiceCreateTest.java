@@ -33,6 +33,7 @@ import fr.urssaf.image.sae.droit.dao.support.ContratServiceSupport;
 import fr.urssaf.image.sae.droit.dao.support.FormatControlProfilSupport;
 import fr.urssaf.image.sae.droit.dao.support.PagmSupport;
 import fr.urssaf.image.sae.droit.dao.support.PagmaSupport;
+import fr.urssaf.image.sae.droit.dao.support.PagmfSupport;
 import fr.urssaf.image.sae.droit.dao.support.PagmpSupport;
 import fr.urssaf.image.sae.droit.exception.DroitRuntimeException;
 import fr.urssaf.image.sae.droit.exception.PagmReferenceException;
@@ -63,6 +64,9 @@ public class SaeDroitServiceCreateTest {
 
    @Autowired
    private PagmpSupport pagmpSupport;
+
+   @Autowired
+   private PagmfSupport pagmfSupport;
 
    @Autowired
    private FormatControlProfilSupport formatControlProfilSupport;
@@ -332,18 +336,34 @@ public class SaeDroitServiceCreateTest {
 
       SaePagma pagma = new SaePagma();
       SaePagmp pagmp = new SaePagmp();
+      SaePagmf pagmf = new SaePagmf();
       pagma.setActionUnitaires(Arrays
             .asList(new String[] { "archivage_unitaire" }));
       pagma.setCode("codePagma");
       pagmp.setCode("codePagmp");
       pagmp.setDescription("description pagmp");
       pagmp.setPrmd("codePrmd");
+      pagmf.setCodePagmf("codePagmf");
+      pagmf.setDescription("description pagmf");
+      FormatControlProfil fcp = new FormatControlProfil();
+      fcp.setFormatCode("codeFormatProfile");
+      fcp.setDescription("description fcp");
+      FormatProfil controlProfil = new FormatProfil();
+      controlProfil.setFileFormat("formatFichier");
+      controlProfil.setFormatIdentification(false);
+      controlProfil.setFormatValidation(true);
+      controlProfil.setFormatValidationMode("STRICT");
+      fcp.setControlProfil(controlProfil);
+
+      formatControlProfilSupport.create(fcp, clockSupport.currentCLock());
+      pagmf.setFormatProfile("codeFormatProfile");
 
       SaePagm saePagm = new SaePagm();
       saePagm.setCode("codePagm");
       saePagm.setDescription("description pagm");
       saePagm.setPagma(pagma);
       saePagm.setPagmp(pagmp);
+      saePagm.setPagmf(pagmf);
 
       service.ajouterPagmContratService("codeClient", saePagm);
 
@@ -360,13 +380,19 @@ public class SaeDroitServiceCreateTest {
             "La description du PAGMp doit être - description pagmp -",
             "description pagmp", listeSaePagm.get(0).getPagmp()
                   .getDescription());
+      Assert.assertEquals(
+            "Le code du profil de format du PAGMf doit être codeFormatProfile",
+            "codeFormatProfile", listeSaePagm.get(0).getPagmf()
+                  .getFormatProfile());
 
       // Modification de saePagm
       pagma.setCode("codePagmaModifie");
-      pagmp.setDescription("descritpion pagmp modifiée");
+      pagmp.setDescription("description pagmp modifiée");
+      pagmf.setDescription("description pagmf modifiée");
       saePagm.setDescription("description pagm modifiée");
       saePagm.setPagma(pagma);
       saePagm.setPagmp(pagmp);
+      saePagm.setPagmf(pagmf);
 
       service.modifierPagmContratService("codeClient", saePagm);
 
@@ -383,10 +409,13 @@ public class SaeDroitServiceCreateTest {
       Assert.assertEquals("Le code du PAGMa doit être codePagma",
             "codePagmaModifie", listeSaePagm.get(0).getPagma().getCode());
       Assert.assertEquals(
-            "La description du PAGMp doit être - descritpion pagmp modifiée -",
-            "descritpion pagmp modifiée", listeSaePagm.get(0).getPagmp()
+            "La description du PAGMp doit être - description pagmp modifiée -",
+            "description pagmp modifiée", listeSaePagm.get(0).getPagmp()
                   .getDescription());
-
+      Assert.assertEquals(
+            "La description du PAGMf doit être - description pagmf modifiée -",
+            "description pagmf modifiée", listeSaePagm.get(0).getPagmf()
+                  .getDescription());
    }
 
    @Test
@@ -404,6 +433,7 @@ public class SaeDroitServiceCreateTest {
 
       SaePagma pagma = new SaePagma();
       SaePagmp pagmp = new SaePagmp();
+      SaePagmf pagmf = new SaePagmf();
       pagma.setActionUnitaires(Arrays
             .asList(new String[] { "archivage_unitaire" }));
       pagma.setCode("codePagma");
@@ -411,11 +441,26 @@ public class SaeDroitServiceCreateTest {
       pagmp.setDescription("description pagmp");
       pagmp.setPrmd("codePrmd");
 
+      pagmf.setCodePagmf("codePagmf");
+      pagmf.setDescription("description pagmf");
+      FormatControlProfil fcp = new FormatControlProfil();
+      fcp.setFormatCode("codeFormatProfile");
+      fcp.setDescription("description fcp");
+      FormatProfil controlProfil = new FormatProfil();
+      controlProfil.setFileFormat("formatFichier");
+      controlProfil.setFormatIdentification(false);
+      controlProfil.setFormatValidation(true);
+      controlProfil.setFormatValidationMode("STRICT");
+      fcp.setControlProfil(controlProfil);
+      formatControlProfilSupport.create(fcp, clockSupport.currentCLock());
+      pagmf.setFormatProfile("codeFormatProfile");
+
       SaePagm saePagm = new SaePagm();
       saePagm.setCode("codePagm");
       saePagm.setDescription("description pagm");
       saePagm.setPagma(pagma);
       saePagm.setPagmp(pagmp);
+      saePagm.setPagmf(pagmf);
 
       service.ajouterPagmContratService("codeClient", saePagm);
 
@@ -432,6 +477,10 @@ public class SaeDroitServiceCreateTest {
             "La description du PAGMp doit être - description pagmp -",
             "description pagmp", listeSaePagm.get(0).getPagmp()
                   .getDescription());
+      Assert.assertEquals(
+            "Le code du profil de format du PAGMf doit être codeFormatProfile",
+            "codeFormatProfile", listeSaePagm.get(0).getPagmf()
+                  .getFormatProfile());
 
       service.supprimerPagmContratService("codeClient", "codePagm");
 

@@ -171,14 +171,14 @@ public class SaePagm {
    /**
     * @return the pagmf
     */
-   public SaePagmf getPagmf() {
+   public final SaePagmf getPagmf() {
       return pagmf;
    }
 
    /**
     * @param pagmf the pagmf to set
     */
-   public void setPagmf(SaePagmf pagmf) {
+   public final void setPagmf(SaePagmf pagmf) {
       this.pagmf = pagmf;
    }
 

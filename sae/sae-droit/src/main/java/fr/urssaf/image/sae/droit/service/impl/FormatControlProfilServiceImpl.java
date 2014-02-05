@@ -18,6 +18,7 @@ import com.google.common.util.concurrent.UncheckedExecutionException;
 
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
+import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.dao.support.FormatControlProfilSupport;
 import fr.urssaf.image.sae.droit.exception.DroitRuntimeException;
 import fr.urssaf.image.sae.droit.exception.FormatControlProfilNotFoundException;
@@ -76,6 +77,25 @@ public class FormatControlProfilServiceImpl implements
             });
    }
 
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final boolean formatControlProfilExists(String code) {
+
+      try {
+         formatsControlProfil.getUnchecked(code);
+         return true;
+      } catch (InvalidCacheLoadException e) {
+         return false;
+      } catch (UncheckedExecutionException e) {
+         throw new DroitRuntimeException(e);
+      }
+   }
+
+   /**
+    * {@inheritDoc}
+    */
    @Override
    public final void addFormatControlProfil(
          FormatControlProfil formatControlProfil) {
@@ -85,6 +105,25 @@ public class FormatControlProfilServiceImpl implements
 
    }
 
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final void modifyFormatControlProfil(
+         FormatControlProfil formatControlProfil)
+         throws FormatControlProfilNotFoundException {
+      if (formatControlProfilExists(formatControlProfil.getFormatCode())) {
+         addFormatControlProfil(formatControlProfil);
+      } else {
+         throw new FormatControlProfilNotFoundException(ResourceMessagesUtils
+               .loadMessage("erreur.format.control.profil.not.found",
+                     formatControlProfil.getFormatCode()));
+      }
+   }
+
+   /**
+    * {@inheritDoc}
+    */
    @Override
    public final void deleteFormatControlProfil(String codeFormatControlProfil)
          throws FormatControlProfilNotFoundException {
@@ -93,6 +132,9 @@ public class FormatControlProfilServiceImpl implements
             .currentCLock());
    }
 
+   /**
+    * {@inheritDoc}
+    */
    @Override
    public final FormatControlProfil getFormatControlProfil(
          String codeFormatControlProfil)

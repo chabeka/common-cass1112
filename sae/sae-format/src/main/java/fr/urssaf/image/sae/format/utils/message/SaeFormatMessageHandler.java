@@ -2,23 +2,26 @@ package fr.urssaf.image.sae.format.utils.message;
 
 import java.util.Locale;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
-
-import fr.urssaf.image.sae.format.context.SaeFormatApplicationContext;
+import org.springframework.stereotype.Component;
 
 /**
  * Permet de lire le fichier properites : sae_format_messages.properties.
  * 
  * Pour la gestion de messages simples et messages d'exception.
  */
+@Component
 public final class SaeFormatMessageHandler {
 
-   private static final MessageSource MESSAGE_SOURCES;
+   private static MessageSource MESSAGE_SOURCES;
 
-   static {
+   @Autowired
+   public SaeFormatMessageHandler(
+         @Qualifier("messageSource_sae_format") MessageSource messageSource) {
       // Récupération du contexte pour les fichiers properties
-      MESSAGE_SOURCES = SaeFormatApplicationContext.getApplicationContext()
-            .getBean("messageSource_sae_format", MessageSource.class);
+      MESSAGE_SOURCES = messageSource;
    }
 
    /**
@@ -66,10 +69,5 @@ public final class SaeFormatMessageHandler {
          final String firstValueKey, final Object secondValueKey) {
       return MESSAGE_SOURCES.getMessage(messageKey, new Object[] {
             firstValueKey, secondValueKey }, Locale.getDefault());
-   }
-
-   /** Cette classe n'est pas faite pour être instanciée. */
-   private SaeFormatMessageHandler() {
-      assert false;
    }
 }
