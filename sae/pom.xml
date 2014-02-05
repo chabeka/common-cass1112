@@ -446,6 +446,7 @@
       <module>sae-ordonnanceur</module>
       <module>sae-lotinstallmaj</module>
       <module>sae-jobs-executable</module>
+      <module>sae-documents-executable</module>
 
       <!-- Le module du livrable -->
       <module>sae-livrable</module>
