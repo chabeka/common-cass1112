@@ -1,7 +1,6 @@
 package fr.urssaf.image.sae.documents.executable.aspect;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,7 +8,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.Assert;
-
 import net.docubase.toolkit.model.document.impl.DocumentImpl;
 
 import org.junit.Test;
@@ -43,22 +41,23 @@ public class ParamFormatFichierTest {
          Assert
                .assertEquals(
                      "Le message de l'exception est incorrect",
-                     "La valeur d'un ou plusieurs paramètres obligatoires est nulle ou vide : [idFormat, stream, document, metadonnees].",
+                     "La valeur d'un ou plusieurs paramètres obligatoires est nulle ou vide : [idFormat, file, document, metadonnees].",
                      ex.getMessage());
       }
    }
-   
+
    @Test
    public void testValidIdentifierFichierIdFormatNullStreamNullDocumentNull() {
       try {
-         formatFichierService.identifierFichier(null, null, null, new ArrayList<String>());
+         formatFichierService.identifierFichier(null, null, null,
+               new ArrayList<String>());
          Assert
                .fail("Une exception ParametreRuntimeException aurait dû être levée");
       } catch (ParametreRuntimeException ex) {
          Assert
                .assertEquals(
                      "Le message de l'exception est incorrect",
-                     "La valeur d'un ou plusieurs paramètres obligatoires est nulle ou vide : [idFormat, stream, document].",
+                     "La valeur d'un ou plusieurs paramètres obligatoires est nulle ou vide : [idFormat, file, document].",
                      ex.getMessage());
       }
    }
@@ -66,24 +65,25 @@ public class ParamFormatFichierTest {
    @Test
    public void testValidIdentifierFichierIdFormatNullStreamNull() {
       try {
-         formatFichierService.identifierFichier(null, null, new DocumentImpl(), new ArrayList<String>());
+         formatFichierService.identifierFichier(null, null, new DocumentImpl(),
+               new ArrayList<String>());
          Assert
                .fail("Une exception ParametreRuntimeException aurait dû être levée");
       } catch (ParametreRuntimeException ex) {
          Assert
                .assertEquals(
                      "Le message de l'exception est incorrect",
-                     "La valeur d'un ou plusieurs paramètres obligatoires est nulle ou vide : [idFormat, stream].",
+                     "La valeur d'un ou plusieurs paramètres obligatoires est nulle ou vide : [idFormat, file].",
                      ex.getMessage());
       }
    }
 
    @Test
-   public void testValidIdentifierFichierIdFormatNull() throws FileNotFoundException {
-      FileInputStream streamPdf = new FileInputStream(file);
-
+   public void testValidIdentifierFichierIdFormatNull()
+         throws FileNotFoundException {
       try {
-         formatFichierService.identifierFichier(null, streamPdf, new DocumentImpl(), new ArrayList<String>());
+         formatFichierService.identifierFichier(null, file, new DocumentImpl(),
+               new ArrayList<String>());
          Assert
                .fail("Une exception ParametreRuntimeException aurait dû être levée");
       } catch (ParametreRuntimeException ex) {
@@ -94,14 +94,16 @@ public class ParamFormatFichierTest {
                      ex.getMessage());
       }
    }
-   
+
    @Test
-   public void testValidIdentifierFichierMetadonneesNonAutorisees() throws FileNotFoundException {
-      FileInputStream streamPdf = new FileInputStream(file);
-      List<String> metadonnees = Arrays.asList(new String[] { "SM_DIGEST_ALGORITHM", "SM_VERSION", "SM_MODIFICATION_DATE" });
+   public void testValidIdentifierFichierMetadonneesNonAutorisees()
+         throws FileNotFoundException {
+      List<String> metadonnees = Arrays.asList(new String[] {
+            "SM_DIGEST_ALGORITHM", "SM_VERSION", "SM_MODIFICATION_DATE" });
 
       try {
-         formatFichierService.identifierFichier("fmt/354", streamPdf, new DocumentImpl(), metadonnees);
+         formatFichierService.identifierFichier("fmt/354", file,
+               new DocumentImpl(), metadonnees);
          Assert
                .fail("Une exception ParametreRuntimeException aurait dû être levée");
       } catch (ParametreRuntimeException ex) {
@@ -112,9 +114,11 @@ public class ParamFormatFichierTest {
                      ex.getMessage());
       }
    }
-   
+
    @Test
-   public void testValidValiderFichierIdFormatNullStreamNull() throws UnknownFormatException, ValidatorInitialisationException, IOException {
+   public void testValidValiderFichierIdFormatNullStreamNull()
+         throws UnknownFormatException, ValidatorInitialisationException,
+         IOException {
       try {
          formatFichierService.validerFichier(null, null);
          Assert
@@ -123,17 +127,17 @@ public class ParamFormatFichierTest {
          Assert
                .assertEquals(
                      "Le message de l'exception est incorrect",
-                     "La valeur d'un ou plusieurs paramètres obligatoires est nulle ou vide : [idFormat, stream].",
+                     "La valeur d'un ou plusieurs paramètres obligatoires est nulle ou vide : [idFormat, file].",
                      ex.getMessage());
       }
    }
 
    @Test
-   public void testValidValiderFichierIdFormatNull() throws UnknownFormatException, ValidatorInitialisationException, IOException {
-      FileInputStream streamPdf = new FileInputStream(file);
-      
+   public void testValidValiderFichierIdFormatNull()
+         throws UnknownFormatException, ValidatorInitialisationException,
+         IOException {
       try {
-         formatFichierService.validerFichier(null, streamPdf);
+         formatFichierService.validerFichier(null, file);
          Assert
                .fail("Une exception ParametreRuntimeException aurait dû être levée");
       } catch (ParametreRuntimeException ex) {

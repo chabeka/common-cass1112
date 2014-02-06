@@ -1,8 +1,9 @@
 package fr.urssaf.image.sae.documents.executable.multithreading;
 
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 
+import net.docubase.toolkit.model.document.Document;
 import fr.urssaf.image.sae.documents.executable.exception.FormatValidationRuntimeException;
 import fr.urssaf.image.sae.documents.executable.service.FormatFichierService;
 import fr.urssaf.image.sae.documents.executable.utils.Constantes;
@@ -10,7 +11,6 @@ import fr.urssaf.image.sae.documents.executable.utils.MetadataUtils;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.format.validation.exceptions.ValidatorInitialisationException;
 import fr.urssaf.image.sae.format.validation.validators.model.ValidationResult;
-import net.docubase.toolkit.model.document.Document;
 
 /**
  * Thread de validation du format de fichiers.
@@ -23,9 +23,9 @@ public class FormatRunnable implements Runnable {
    private Document document;
 
    /**
-    * Contenu du fichier.
+    * Fichier.
     */
-   private InputStream stream;
+   private File file;
 
    /**
     * Service permettant de réaliser des opérations de contrôle de format sur
@@ -43,16 +43,16 @@ public class FormatRunnable implements Runnable {
     * 
     * @param document
     *           document DFCE
-    * @param stream
-    *           contenu du fichier
+    * @param file
+    *           fichier
     * @param formatService
     *           service de contrôle de format sur les fichiers
     */
-   public FormatRunnable(final Document document, final InputStream stream,
+   public FormatRunnable(final Document document, final File file,
          final FormatFichierService formatService) {
       super();
       setDocument(document);
-      setStream(stream);
+      setFile(file);
       setFormatService(formatService);
    }
 
@@ -62,9 +62,10 @@ public class FormatRunnable implements Runnable {
    @Override
    public void run() throws FormatValidationRuntimeException {
       // lance la validation du fichier
-      String idFormat = MetadataUtils.getMetadataByCd(getDocument(), Constantes.METADONNEES_FORMAT_FICHIER).toString();
+      String idFormat = MetadataUtils.getMetadataByCd(getDocument(),
+            Constantes.METADONNEES_FORMAT_FICHIER).toString();
       try {
-         this.resultat = getFormatService().validerFichier(idFormat, getStream());
+         this.resultat = getFormatService().validerFichier(idFormat, getFile());
       } catch (UnknownFormatException e) {
          throw new FormatValidationRuntimeException(e);
       } catch (ValidatorInitialisationException e) {
@@ -94,22 +95,22 @@ public class FormatRunnable implements Runnable {
    }
 
    /**
-    * Permet de récupérer le contenu du fichier.
+    * Permet de récupérer le fichier.
     * 
-    * @return InputStream
+    * @return File
     */
-   public final InputStream getStream() {
-      return stream;
+   public final File getFile() {
+      return file;
    }
 
    /**
-    * Permet de modifier le contenu du fichier.
+    * Permet de modifier le fichier.
     * 
-    * @param stream
-    *           contenu du fichier.
+    * @param file
+    *           fichier.
     */
-   public final void setStream(final InputStream stream) {
-      this.stream = stream;
+   public final void setFile(final File file) {
+      this.file = file;
    }
 
    /**

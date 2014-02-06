@@ -12,19 +12,9 @@
 
    <import resource="classpath*:/applicationContext-sae-documents-executable.xml" />
 
-   <bean id="saeConfigResource" class="java.io.File">
+   <bean id="saeConfigResource" class="org.springframework.core.io.FileSystemResource">
       <constructor-arg
          value="src/test/resources/config/sae-config-test.properties" />
-   </bean>
-   
-   <bean
-      class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-      <property name="locations">
-         <list>
-            <value>config/sae-config-test.properties</value>
-            <value>config/cassandra-local.properties</value>
-         </list>
-      </property>
    </bean>
 
 </beans>

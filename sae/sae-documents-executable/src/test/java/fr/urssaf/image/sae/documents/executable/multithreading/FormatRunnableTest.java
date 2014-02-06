@@ -1,7 +1,6 @@
 package fr.urssaf.image.sae.documents.executable.multithreading;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Date;
@@ -47,10 +46,8 @@ public class FormatRunnableTest {
    
    @Test
    public void run() throws FileNotFoundException, IOException {
-      FileInputStream streamPdf = new FileInputStream(file);
-      
       try {
-         FormatRunnable runnable = new FormatRunnable(createDocument("fmt/354"), streamPdf, formatFichierService);
+         FormatRunnable runnable = new FormatRunnable(createDocument("fmt/354"), file, formatFichierService);
          runnable.run();
          
          Assert.assertNotNull("L'objet ValidationResult n'aurait pas du être null", runnable.getResultat());
@@ -58,60 +55,47 @@ public class FormatRunnableTest {
       } catch (FormatValidationRuntimeException ex) {
          Assert.fail("L'exception FormatValidationRuntimeException n'aurait pas dû être levée");
       }
-      
-      streamPdf.close();
    }
    
    @Test
    public void runWithUnknownFormatException() throws FileNotFoundException, IOException {
-      FileInputStream streamPdf = new FileInputStream(file);
-      
       try {
-         FormatRunnable runnable = new FormatRunnable(createDocument("idFormat"), streamPdf, formatFichierService);
+         FormatRunnable runnable = new FormatRunnable(createDocument("idFormat"), file, formatFichierService);
          runnable.run();
          
          Assert.fail("L'exception FormatValidationRuntimeException aurait dû être levée");
       } catch (FormatValidationRuntimeException ex) {
          Assert.assertEquals("Une UnknownFormatException aurait du être levée", "fr.urssaf.image.sae.format.exception.UnknownFormatException: Aucun format n'a été trouvé avec l'identifiant : idFormat.", ex.getMessage());
       }
-      
-      streamPdf.close();
    }
    
    @Test
    public void runWithValidatorInitialisationException() throws FileNotFoundException, IOException {
-      FileInputStream streamPdf = new FileInputStream(file);
-      
       try {
-         FormatRunnable runnable = new FormatRunnable(createDocument("format1"), streamPdf, formatFichierService);
+         FormatRunnable runnable = new FormatRunnable(createDocument("format1"), file, formatFichierService);
          runnable.run();
          
          Assert.fail("L'exception FormatValidationRuntimeException aurait dû être levée");
       } catch (FormatValidationRuntimeException ex) {
          Assert.assertEquals("Une ValidatorInitialisationException aurait du être levée", "fr.urssaf.image.sae.format.validation.exceptions.ValidatorInitialisationException: Il n'est pas possible de récupérer une instance du validateur.", ex.getMessage());
       }
-      
-      streamPdf.close();
    }
    
    @Test
    public void runWithIOException() throws FileNotFoundException, UnknownFormatException, ValidatorInitialisationException, IOException {
-      FileInputStream streamPdf = new FileInputStream(file);
       String idFormat = "fmt/354";
       
       FormatFichierService mockService = EasyMock.createNiceMock(FormatFichierService.class);
-      EasyMock.expect(mockService.validerFichier(idFormat, streamPdf)).andThrow(new IOException("Ceci est un test"));
+      EasyMock.expect(mockService.validerFichier(idFormat, file)).andThrow(new IOException("Ceci est un test"));
       EasyMock.replay(mockService);
       
       try {
-         FormatRunnable runnable = new FormatRunnable(createDocument(idFormat), streamPdf, mockService);
+         FormatRunnable runnable = new FormatRunnable(createDocument(idFormat), file, mockService);
          runnable.run();
          
          Assert.fail("L'exception FormatValidationRuntimeException aurait dû être levée");
       } catch (FormatValidationRuntimeException ex) {
          Assert.assertEquals("Une IOException aurait du être levée", "java.io.IOException: Ceci est un test", ex.getMessage());
       }
-      
-      streamPdf.close();
    }
 }

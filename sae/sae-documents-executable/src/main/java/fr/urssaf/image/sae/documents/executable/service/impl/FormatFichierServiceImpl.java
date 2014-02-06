@@ -1,15 +1,16 @@
 package fr.urssaf.image.sae.documents.executable.service.impl;
 
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
+
+import net.docubase.toolkit.model.document.Document;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import net.docubase.toolkit.model.document.Document;
 import fr.urssaf.image.sae.documents.executable.service.FormatFichierService;
 import fr.urssaf.image.sae.documents.executable.utils.MetadataUtils;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
@@ -56,27 +57,36 @@ public class FormatFichierServiceImpl implements FormatFichierService {
     * {@inheritDoc}
     */
    @Override
-   public final boolean identifierFichier(final String idFormat, final InputStream stream,
-         final Document document, final List<String> metadonnees) {
+   public final boolean identifierFichier(final String idFormat,
+         final File file, final Document document,
+         final List<String> metadonnees) {
       String trcPrefix = "identifierFichier()";
       boolean identificationOK;
 
       try {
          final IdentificationResult identificationResult = getIdentificationService()
-               .identifyStream(idFormat, stream);
+               .identifyFile(idFormat, file);
          if (!identificationResult.isIdentified()) {
-            final String metaToLog = MetadataUtils.getMetadatasForLog(document, metadonnees);
+            final String metaToLog = MetadataUtils.getMetadatasForLog(document,
+                  metadonnees);
             final String resultatIdent = formatIdentificationResult(identificationResult);
-            
-            LOGGER.warn("{} - Document non identifié : {} - Metadonnées {} - {}", new Object[] {
-                  trcPrefix, document.getUuid(), metaToLog, resultatIdent });
+
+            LOGGER.warn(
+                  "{} - Document non identifié : {} - Metadonnées {} - {}",
+                  new Object[] { trcPrefix, document.getUuid(), metaToLog,
+                        resultatIdent });
          }
          identificationOK = identificationResult.isIdentified();
       } catch (UnknownFormatException e) {
-         LOGGER.error("{} - Format inconnu : {}", new Object[] { trcPrefix, e.getMessage() });
+         LOGGER.error("{} - Format inconnu : {}", new Object[] { trcPrefix,
+               e.getMessage() });
          identificationOK = false;
       } catch (IdentifierInitialisationException e) {
          LOGGER.error("{} - Impossible d'initialiser l'identificateur : {}",
+               new Object[] { trcPrefix, e.getMessage() });
+         identificationOK = false;
+      } catch (IOException e) {
+         LOGGER.error("{} - Impossible d'accèder au fichier : {}",
                new Object[] { trcPrefix, e.getMessage() });
          identificationOK = false;
       }
@@ -85,10 +95,13 @@ public class FormatFichierServiceImpl implements FormatFichierService {
 
    /**
     * Methode permettant de formatter le résultat de l'identification.
-    * @param identificationResult résultat de l'identification
+    * 
+    * @param identificationResult
+    *           résultat de l'identification
     * @return String
     */
-   private String formatIdentificationResult(final IdentificationResult identificationResult) {
+   private String formatIdentificationResult(
+         final IdentificationResult identificationResult) {
       final StringBuffer buffer = new StringBuffer();
       boolean first = true;
       for (EtapeEtResultat etape : identificationResult.getDetails()) {
@@ -107,10 +120,10 @@ public class FormatFichierServiceImpl implements FormatFichierService {
     * {@inheritDoc}
     */
    @Override
-   public final ValidationResult validerFichier(final String idFormat, final InputStream stream)
-         throws UnknownFormatException, ValidatorInitialisationException,
-         IOException {
-      return getValidationService().validateStream(idFormat, stream);
+   public final ValidationResult validerFichier(final String idFormat,
+         final File file) throws UnknownFormatException,
+         ValidatorInitialisationException, IOException {
+      return getValidationService().validateFile(idFormat, file);
    }
 
    /**

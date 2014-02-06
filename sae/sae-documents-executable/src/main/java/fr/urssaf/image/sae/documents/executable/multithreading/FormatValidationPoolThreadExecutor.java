@@ -94,6 +94,11 @@ public class FormatValidationPoolThreadExecutor extends ThreadPoolExecutor {
       if (getNombreTraites() % getPasExecution() == 0) {
          LOGGER.info("{} documents validés", getNombreTraites());
       }
+
+      // supprime le fichier temporaire
+      if (formatRunnable.getFile() != null) {
+         formatRunnable.getFile().delete();
+      }
    }
 
    /**

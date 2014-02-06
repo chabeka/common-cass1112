@@ -58,6 +58,12 @@ public class FormatValidationParametres {
    private int taillePasExecution;
 
    /**
+    * Chemin du répertoire temporaire. Peut être non renseigné. Si c'est le cas,
+    * on prendra le répertoire temporaire de l'OS.
+    */
+   private String cheminRepertoireTemporaire;
+
+   /**
     * Permet de récupérer le mode de vérification choisit pour les fichiers.
     * 
     * @return {@link MODE_VERIFICATION} mode de vérification
@@ -197,4 +203,25 @@ public class FormatValidationParametres {
    public final void setTaillePasExecution(final int taillePasExecution) {
       this.taillePasExecution = taillePasExecution;
    }
+
+   /**
+    * Permet de récupérer le chemin du répertoire temporaire.
+    * 
+    * @return String
+    */
+   public final String getCheminRepertoireTemporaire() {
+      return cheminRepertoireTemporaire;
+   }
+
+   /**
+    * Permet de modifier le chemin du répertoire temporaire.
+    * 
+    * @param cheminRepertoireTemporaire
+    *           chemin du répertoire temporaire
+    */
+   public final void setCheminRepertoireTemporaire(
+         final String cheminRepertoireTemporaire) {
+      this.cheminRepertoireTemporaire = cheminRepertoireTemporaire;
+   }
+
 }

@@ -22,8 +22,26 @@
       class="fr.urssaf.image.commons.dfce.service.impl.DFCEConnectionServiceImpl">
       <constructor-arg ref="dfceConnection" />
    </bean>
-
-   <import resource="classpath*:/applicationContext-commons-dfce-connection.xml" />
+   
+   <!-- 
+      Ne pas importer le fichier de conf par defaut de commons-dfce-connection.xml
+      Celui-ci injecte un bean saeConfigResource qui est un java.io.File
+      Dans notre application, il faut que ce bean soit un org.springframework.core.io.FileSystemResource
+    -->   
+   <!--import resource="classpath*:/applicationContext-commons-dfce-connection.xml" /-->
+   <!--Instantiation du bean de connexion à la base DFCE -->
+   <bean id="dfceConnection"
+      class="fr.urssaf.image.commons.dfce.manager.DFCEConnectionFactory"
+      factory-method="createDFCEConnectionBySAEConfigurationResource">
+      <constructor-arg ref="saeConfigResource" />
+   </bean>
+   
+   <!-- Chargement des fichiers properties -->
+   <bean class="fr.urssaf.image.sae.commons.factory.PropertiesFactory"
+      factory-method="load">
+      <constructor-arg ref="saeConfigResource" />
+   </bean>
+   
    <import resource="classpath*:/applicationContext-sae-format.xml" />
 
 </beans>

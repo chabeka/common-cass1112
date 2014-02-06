@@ -1,7 +1,7 @@
 package fr.urssaf.image.sae.documents.executable.service;
 
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
@@ -24,8 +24,8 @@ public interface FormatFichierService {
     * 
     * @param idFormat
     *           Code du format
-    * @param stream
-    *           Stream du fichier à identifier
+    * @param file
+    *           fichier à identifier
     * @param document
     *           Informations sur le document
     * @param metadonnees
@@ -36,16 +36,16 @@ public interface FormatFichierService {
     *         <li><b>false</b> : il ne l'est pas</li>
     *         </ul>
     */
-   boolean identifierFichier(String idFormat, InputStream stream,
-         Document document, List<String> metadonnees);
+   boolean identifierFichier(String idFormat, File file, Document document,
+         List<String> metadonnees);
 
    /**
     * Réalise la validation du fichier.
     * 
     * @param idFormat
     *           Code du format
-    * @param stream
-    *           Stream du fichier à valider
+    * @param file
+    *           fichier à valider
     * @return {@link ValidationResult} - Résultat de la validation
     * @throws UnknownFormatException
     *            Le format de fichier demandé n'existe pas
@@ -55,7 +55,7 @@ public interface FormatFichierService {
     *            Exception levée sur la fermeture du flux (après écriture du
     *            fichier temp)
     */
-   ValidationResult validerFichier(String idFormat, InputStream stream)
+   ValidationResult validerFichier(String idFormat, File file)
          throws UnknownFormatException, ValidatorInitialisationException,
          IOException;
 }

@@ -1,6 +1,6 @@
 package fr.urssaf.image.sae.documents.executable.aspect;
 
-import java.io.InputStream;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,34 +23,34 @@ public class ParamFormatFichier {
 
    /********************************************************* SERVICE *********************************************************************************/
    private static final String FORMAT_SERVICE_IDENTIFIERFICHIER = "execution(* fr.urssaf.image.sae.documents.executable.service.FormatFichierService.identifierFichier(*,*,*,*))"
-         + "&& args(idFormat,stream,document,metadonnees)";
+         + "&& args(idFormat,file,document,metadonnees)";
 
    private static final String FORMAT_SERVICE_VALIDERFICHIER = "execution(* fr.urssaf.image.sae.documents.executable.service.FormatFichierService.validerFichier(*,*))"
-         + "&& args(idFormat,stream)";
+         + "&& args(idFormat,file)";
 
    /**
     * Vérification des paramètres de la méthode "identifierFichier" de la classe
     * FormatFichierService. Vérification du String idFormat donné en paramètre<br>
-    * Vérification du InputStream stream donné en paramètre<br>
+    * Vérification du File file donné en paramètre<br>
     * Vérification du Document document donné en paramètre<br>
     * 
     * @param idFormat
     *           identifiant du format
-    * @param stream
-    *           contenu du fichier
+    * @param file
+    *           fichier
     * @param Document
     *           document DFCE
     */
    @Before(FORMAT_SERVICE_IDENTIFIERFICHIER)
    public final void validIdentifierFichierFromFormatFichierService(
-         String idFormat, InputStream stream, Document document, List<String> metadonnees) {
+         String idFormat, File file, Document document, List<String> metadonnees) {
       List<String> param = new ArrayList<String>();
 
       if (StringUtils.isBlank(idFormat)) {
          param.add(Constantes.IDFORMAT);
       }
-      if (stream == null) {
-         param.add(Constantes.STREAM);
+      if (file == null) {
+         param.add(Constantes.FILE);
       }
       if (document == null) {
          param.add(Constantes.DOCUMENT);
@@ -65,10 +65,13 @@ public class ParamFormatFichier {
                      Constantes.PARAM_OBLIGATOIRE, param.toString()));
       } else {
          // verifie la liste des metadonnees
-         List<String> metasNonAutorisees = MetadataUtils.checkMetadonneesNonAutorisees(metadonnees);
+         List<String> metasNonAutorisees = MetadataUtils
+               .checkMetadonneesNonAutorisees(metadonnees);
          if (!metasNonAutorisees.isEmpty()) {
-            throw new ParametreRuntimeException(SaeDocumentsExecutableMessageHandler.getMessage(
-                  Constantes.PARAM_METADONNEES_NON_AUTORISEES, metasNonAutorisees.toString()));
+            throw new ParametreRuntimeException(
+                  SaeDocumentsExecutableMessageHandler.getMessage(
+                        Constantes.PARAM_METADONNEES_NON_AUTORISEES,
+                        metasNonAutorisees.toString()));
          }
       }
    }
@@ -76,23 +79,23 @@ public class ParamFormatFichier {
    /**
     * Vérification des paramètres de la méthode "validerFichier" de la classe
     * FormatFichierService. Vérification du String idFormat donné en paramètre<br>
-    * Vérification du InputStream stream donné en paramètre<br>
+    * Vérification du File file donné en paramètre<br>
     * 
     * @param idFormat
     *           identifiant du format
-    * @param stream
-    *           contenu du fichier
+    * @param file
+    *           fichier
     */
    @Before(FORMAT_SERVICE_VALIDERFICHIER)
    public final void validValiderFichierFromFormatFichierService(
-         String idFormat, InputStream stream) {
+         String idFormat, File file) {
       List<String> param = new ArrayList<String>();
 
       if (StringUtils.isBlank(idFormat)) {
          param.add(Constantes.IDFORMAT);
       }
-      if (stream == null) {
-         param.add(Constantes.STREAM);
+      if (file == null) {
+         param.add(Constantes.FILE);
       }
 
       if (!param.isEmpty()) {
