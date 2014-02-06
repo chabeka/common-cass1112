@@ -200,9 +200,9 @@ public class ParamReferentiel {
       }
       if (referentielFormat != null) {
          String description = referentielFormat.getDescription();
-         String identification = referentielFormat.getIdentificateur();
+         //String identification = referentielFormat.getIdentificateur();
          String idFormat = referentielFormat.getIdFormat();
-         String validator = referentielFormat.getValidator();
+         //String validator = referentielFormat.getValidator();
          Boolean visualisable = referentielFormat.isVisualisable();
 
          if (StringUtils.isBlank(idFormat)) {
@@ -214,12 +214,12 @@ public class ParamReferentiel {
          if (visualisable == null) {
             variable.add(Constantes.VISUALISABLE);
          }
-         if (StringUtils.isBlank(validator)) {
-            variable.add(Constantes.VALIDATOR);
-         }
-         if (StringUtils.isBlank(identification)) {
-            variable.add(Constantes.IDENTIFICATION);
-         }
+//         if (StringUtils.isBlank(validator)) {
+//            variable.add(Constantes.VALIDATOR);
+//         }
+//         if (StringUtils.isBlank(identification)) {
+//            variable.add(Constantes.IDENTIFICATION);
+//         }
       }
       return variable;
    }
