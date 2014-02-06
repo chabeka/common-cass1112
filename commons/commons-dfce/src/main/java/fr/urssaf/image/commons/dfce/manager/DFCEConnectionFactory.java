@@ -77,6 +77,41 @@ public final class DFCEConnectionFactory {
 
    /**
     * 
+    * @param dfceConfigurationResource
+    *           l'objet Resource contenant le fichier de properties DFCE
+    * @return configuration DFCE
+    */
+   public static DFCEConnection createDFCEConnectionBySAEConfigurationResource(
+         AbstractResource dfceConfigurationResource) {
+
+      Validate.notNull(dfceConfigurationResource,
+            "'dfceConfigurationResource' is required");
+      
+      Properties saeProperties;
+      try {
+         saeProperties = PropertiesUtils.load(dfceConfigurationResource
+               .getInputStream());
+      } catch (IOException e) {
+         throw new DFCEConfigurationRuntimeException(e);
+      }
+
+      // récupération de la valeur du chemin complet du fichier de configuration
+      String dfceConfigResource = saeProperties
+            .getProperty(DFCEConnectionParameter.DFCE_CONFIG);
+
+      if (StringUtils.isBlank(dfceConfigResource)) {
+         throw new DFCEConfigurationParameterNotFoundRuntimeException(
+               DFCEConnectionParameter.DFCE_CONFIG);
+      }
+
+      DFCEConnection dfceConnection = createDFCEConnectionByDFCEConfiguration(new File(
+            dfceConfigResource));
+
+      return dfceConnection;
+   }
+
+   /**
+    * 
     * @param dfceConfiguration
     *           chemin complet du fichier de configuration de DFCE
     * @return configuration DFCE
