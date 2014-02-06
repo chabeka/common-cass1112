@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -18,7 +17,6 @@ import com.google.common.cache.CacheLoader.InvalidCacheLoadException;
 import com.google.common.util.concurrent.UncheckedExecutionException;
 
 import fr.urssaf.image.commons.pdfbox.exception.FormatValidationException;
-import fr.urssaf.image.sae.format.context.SaeFormatApplicationContext;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.format.referentiel.exceptions.ReferentielRuntimeException;
 import fr.urssaf.image.sae.format.referentiel.model.FormatFichier;
@@ -118,31 +116,41 @@ public class ValidationServiceImpl implements ValidationService {
          InputStream stream) throws UnknownFormatException,
          ValidatorInitialisationException, IOException {
 
+      ValidationResult validResult;
+      
       try {
-         ValidationResult identificationResult;
-         File createdFile;
-         createdFile = File.createTempFile(SaeFormatMessageHandler
-               .getMessage("file.generated"), SaeFormatMessageHandler
-               .getMessage("extension.file"));
+         // On récupère le validateur à utiliser pour l’IdFormat donnée
+         // à partir du référentiel des formats.
+         FormatFichier refFormat = referentielFormatService.getFormat(idFormat);
 
-         FileUtils.copyInputStreamToFile(stream, createdFile);
+         // On utilise l’application contexte pour récupérer une instance du
+         // validateur
+         Validator validator = validators
+               .getUnchecked(refFormat.getValidator());
 
-         identificationResult = validateFile(idFormat, createdFile);
-         boolean suppression = createdFile.delete();
-         if (!suppression) {
-            throw new ValidationRuntimeException(SaeFormatMessageHandler
-                  .getMessage("erreur.validation.convert.stream.to.file"));
-         } else {
-            return identificationResult;
-         }
-      } catch (IOException except) {
-         throw new ValidationRuntimeException(SaeFormatMessageHandler
-               .getMessage("erreur.validation.convert.stream.to.file"), except);
+         // On appel la méthode validateStream(file)
+         validResult = validator.validateStream(stream);
+         
+      } catch (InvalidCacheLoadException except) {
+         throw new ValidatorInitialisationException(SaeFormatMessageHandler
+               .getMessage("erreur.init.validator"), except);
+
+      } catch (UncheckedExecutionException except) {
+         throw new ValidatorInitialisationException(SaeFormatMessageHandler
+               .getMessage("erreur.init.validator"), except);
+
+      } catch (ReferentielRuntimeException except) {
+         throw new ValidationRuntimeException(except.getMessage(), except);
+
+      } catch (FormatValidationException except) {
+         throw new ValidationRuntimeException(except.getMessage(), except);
       } finally {
          if (stream != null) {
             stream.close();
          }
       }
+      
+      return validResult; // savoir si valide-> isValid
 
    }
 

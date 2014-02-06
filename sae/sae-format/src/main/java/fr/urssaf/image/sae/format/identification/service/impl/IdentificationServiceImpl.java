@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,7 +17,6 @@ import com.google.common.cache.LoadingCache;
 import com.google.common.cache.CacheLoader.InvalidCacheLoadException;
 import com.google.common.util.concurrent.UncheckedExecutionException;
 
-import fr.urssaf.image.sae.format.context.SaeFormatApplicationContext;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.format.identification.exceptions.IdentificationRuntimeException;
 import fr.urssaf.image.sae.format.identification.exceptions.IdentifierInitialisationException;
@@ -133,26 +131,46 @@ public class IdentificationServiceImpl implements IdentificationService {
          InputStream stream) throws UnknownFormatException,
          IdentifierInitialisationException {
 
+      FormatFichier format;
+      Identifier identifier;
+      IdentificationResult identifResult;
       try {
-         File createdFile;
-         IdentificationResult identificationResult;
+         format = referentielFormatService.getFormat(idFormat);
+   
+         if (format != null
+               && StringUtils.isNotBlank(format.getIdentificateur())) {
+   
+            String identificateur = format.getIdentificateur();
+   
+            // On utilise l'application contexte pour récupérer une instance de
+            // l'identificateur
+            identifier = identifiers.getUnchecked(identificateur);
+   
+            // On appel la méthode identifyStream en passant en paramètre le
+            // stream et l'idFormat
+            identifResult = identifier.identifyStream(idFormat, stream);
+   
+            // En retour on récupère et on renvoi un objet
+            // IdentificationResult
+            // contenant le résultat de l'identification et une liste des
+            // traces.
+            return identifResult;
+   
+         } else {
+            throw new IdentifierInitialisationException(SaeFormatMessageHandler
+                  .getMessage("erreur.recup.identif"));
+         }
+      } catch (InvalidCacheLoadException except) {
+         throw new IdentifierInitialisationException(SaeFormatMessageHandler
+               .getMessage("erreur.recup.identif"));
 
-         createdFile = File.createTempFile(SaeFormatMessageHandler
-               .getMessage("file.generated"), SaeFormatMessageHandler
-               .getMessage("extension.file"));
-         FileUtils.copyInputStreamToFile(stream, createdFile);
+      } catch (UncheckedExecutionException except) {
+         throw new IdentifierInitialisationException(SaeFormatMessageHandler
+               .getMessage("erreur.recup.identif"));
 
-         identificationResult = identifyFile(idFormat, createdFile);
-
-         FileUtils.forceDelete(createdFile);
-
-         return identificationResult;
-
-      } catch (IOException except) {
-         throw new IdentificationRuntimeException(SaeFormatMessageHandler
-               .getMessage("erreur.identification.convert.stream.to.file"),
-               except);
-      }
+      } catch (ReferentielRuntimeException except) {
+         throw new IdentificationRuntimeException(except.getMessage(), except);
+      }   
    }
 
 }
