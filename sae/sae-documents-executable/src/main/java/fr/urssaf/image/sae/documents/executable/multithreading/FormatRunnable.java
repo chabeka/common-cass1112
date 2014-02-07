@@ -60,7 +60,7 @@ public class FormatRunnable implements Runnable {
     * {@inheritDoc}
     */
    @Override
-   public void run() throws FormatValidationRuntimeException {
+   public final void run() throws FormatValidationRuntimeException {
       // lance la validation du fichier
       String idFormat = MetadataUtils.getMetadataByCd(getDocument(),
             Constantes.METADONNEES_FORMAT_FICHIER).toString();

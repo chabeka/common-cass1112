@@ -23,21 +23,21 @@ public final class SaeDocumentsExecutableApplicationContext {
       Assert.notNull(ctx, "ApplicationContext not initialized ");
       return ctx;
    }
-   
-   /**
-     * injection de l'instance {@link ApplicationContext}<br>
-     * 
-     * @param context
-     *           contexte de l'application
-     */
-    @Autowired
-    public void setStorageApplicationContext(final ApplicationContext context) {
-       Assert.notNull(context, "'context' is required ");
-       setContext(context);
-    }
 
-   private static  void setContext(final ApplicationContext context) {
-       ctx = context;
+   /**
+    * injection de l'instance {@link ApplicationContext}<br>
+    * 
+    * @param context
+    *           contexte de l'application
+    */
+   @Autowired
+   public void setStorageApplicationContext(final ApplicationContext context) {
+      Assert.notNull(context, "'context' is required ");
+      setContext(context);
+   }
+
+   private static void setContext(final ApplicationContext context) {
+      ctx = context;
    }
 
 }

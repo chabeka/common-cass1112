@@ -17,8 +17,10 @@ public final class SaeDocumentsExecutableMessageHandler {
 
    static {
       // Récupération du contexte pour les fichiers properties
-      MESSAGE_SOURCES = SaeDocumentsExecutableApplicationContext.getApplicationContext()
-            .getBean("messageSource_sae_documents_executable", MessageSource.class);
+      MESSAGE_SOURCES = SaeDocumentsExecutableApplicationContext
+            .getApplicationContext()
+            .getBean("messageSource_sae_documents_executable",
+                  MessageSource.class);
    }
 
    /**

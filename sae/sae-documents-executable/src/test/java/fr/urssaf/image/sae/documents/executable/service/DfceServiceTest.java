@@ -21,38 +21,49 @@ public class DfceServiceTest {
 
    @Autowired
    private DfceService dfceService;
-   
+
    @Before
    public void ouvrirConnexion() {
       dfceService.ouvrirConnexion();
    }
-   
+
    @After
    public void fermerConnexion() {
       dfceService.fermerConnexion();
    }
-   
+
    @Test
    public void executerRequete() {
-      Iterator<Document> resultat = dfceService.executerRequete("srt:41882050200023");
-      
-      Assert.assertNotNull("La liste des documents retrouvés ne doit pas être null", resultat);
-      Assert.assertTrue("La liste des documents retrouvés ne contient pas d'éléments", resultat.hasNext());
-      Assert.assertNotNull("Le document retrouvé ne doit pas être null", resultat.next());
+      Iterator<Document> resultat = dfceService
+            .executerRequete("srt:41882050200023");
+
+      Assert.assertNotNull(
+            "La liste des documents retrouvés ne doit pas être null", resultat);
+      Assert.assertTrue(
+            "La liste des documents retrouvés ne contient pas d'éléments",
+            resultat.hasNext());
+      Assert.assertNotNull("Le document retrouvé ne doit pas être null",
+            resultat.next());
    }
-   
+
    @Test
    public void recupererContenu() {
-      Iterator<Document> resultat = dfceService.executerRequete("srt:41882050200023");
-      
-      Assert.assertNotNull("La liste des documents retrouvés ne doit pas être null", resultat);
-      Assert.assertTrue("La liste des documents retrouvés ne contient pas d'éléments", resultat.hasNext());
+      Iterator<Document> resultat = dfceService
+            .executerRequete("srt:41882050200023");
+
+      Assert.assertNotNull(
+            "La liste des documents retrouvés ne doit pas être null", resultat);
+      Assert.assertTrue(
+            "La liste des documents retrouvés ne contient pas d'éléments",
+            resultat.hasNext());
       Document document = resultat.next();
-      Assert.assertNotNull("Le document retrouvé ne doit pas être null", document);
-      
+      Assert.assertNotNull("Le document retrouvé ne doit pas être null",
+            document);
+
       InputStream stream = dfceService.recupererContenu(document);
-      Assert.assertNotNull("Le contenu du fichier récupéré ne doit pas être null", stream);
-      
+      Assert.assertNotNull(
+            "Le contenu du fichier récupéré ne doit pas être null", stream);
+
       try {
          stream.close();
       } catch (IOException e) {

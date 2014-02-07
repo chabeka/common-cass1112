@@ -1,6 +1,7 @@
 package fr.urssaf.image.sae.documents.executable.utils;
 
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 /**
  * Cette classe contient les constantes utilisées dans SAE-DOCUMENTS-EXECUTABLE.
@@ -32,7 +33,7 @@ public final class Constantes {
    public static final long CONVERT_MILLISECONDS_TO_MINUTES = 60 * 1000;
 
    public static final SimpleDateFormat FORMATTER_DATE = new SimpleDateFormat(
-         "yyyy-mm-dd");
+         "yyyy-mm-dd", Locale.FRENCH);
 
    /** Cette classe n'est pas faite pour être instanciée. */
    private Constantes() {

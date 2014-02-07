@@ -22,7 +22,8 @@ public class ParamDfceTest {
    public void validExecuterRequeteRequeteLuceneNull() {
       try {
          dfceService.executerRequete(null);
-         Assert.fail("Une exception ParametreRuntimeException aurait dû être levée");
+         Assert
+               .fail("Une exception ParametreRuntimeException aurait dû être levée");
       } catch (ParametreRuntimeException ex) {
          Assert
                .assertEquals(
@@ -31,12 +32,13 @@ public class ParamDfceTest {
                      ex.getMessage());
       }
    }
-   
+
    @Test
    public void validRecupererContenuDocumentNull() {
       try {
          dfceService.recupererContenu(null);
-         Assert.fail("Une exception ParametreRuntimeException aurait dû être levée");
+         Assert
+               .fail("Une exception ParametreRuntimeException aurait dû être levée");
       } catch (ParametreRuntimeException ex) {
          Assert
                .assertEquals(

@@ -11,7 +11,7 @@ import net.docubase.toolkit.model.document.Document;
  * Cette classe contient les methodes pour récupérer les métadonnées du document
  * DFCE.
  */
-public class MetadataUtils {
+public final class MetadataUtils {
 
    /** Cette classe n'est pas faite pour être instanciée. */
    private MetadataUtils() {
@@ -29,7 +29,7 @@ public class MetadataUtils {
     *           code
     * @return Object
     */
-   public static final Object getMetadataByCd(final Document document,
+   public static Object getMetadataByCd(final Document document,
          final String code) {
       Object value = "";
       if (!document.getCriterions(code).isEmpty()) {
@@ -43,11 +43,11 @@ public class MetadataUtils {
     * 
     * @param document
     *           document DFCE
-    * @param code
-    *           code
+    * @param metadonnees
+    *           metadonnees
     * @return String
     */
-   public static final String getMetadatasForLog(final Document document,
+   public static String getMetadatasForLog(final Document document,
          final List<String> metadonnees) {
       final StringBuffer buffer = new StringBuffer();
       boolean first = true;
@@ -81,7 +81,7 @@ public class MetadataUtils {
     *           valeur
     * @return Object
     */
-   private static final Object formatValeur(final Object value) {
+   private static Object formatValeur(final Object value) {
       Object retour;
       if (value != null && value.getClass().isAssignableFrom(Date.class)) {
          retour = Constantes.FORMATTER_DATE.format((Date) value);
@@ -102,7 +102,7 @@ public class MetadataUtils {
     *           code
     * @return Object
     */
-   public static final Object getSystemMetadataByCd(final Document document,
+   public static Object getSystemMetadataByCd(final Document document,
          final String code) {
       Object value = null;
       if ("SM_TITLE".equals(code)) {
@@ -133,7 +133,7 @@ public class MetadataUtils {
     *           liste de métadonnées
     * @return List<String>
     */
-   public static final List<String> checkMetadonneesNonAutorisees(
+   public static List<String> checkMetadonneesNonAutorisees(
          final List<String> metadonnees) {
       List<String> erreurs = new ArrayList<String>();
       List<String> metasNonAutorisees = Arrays

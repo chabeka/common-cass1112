@@ -1,5 +1,6 @@
 package fr.urssaf.image.sae.documents.executable.multithreading;
 
+import java.io.File;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -63,9 +64,8 @@ public class FormatValidationPoolThreadExecutor extends ThreadPoolExecutor {
     * {@inheritDoc}
     */
    @Override
-   protected void afterExecute(final Runnable runnable,
+   protected final void afterExecute(final Runnable runnable,
          final Throwable throwable) {
-      String trcPrefix = "afterExecute()";
       super.afterExecute(runnable, throwable);
 
       final FormatRunnable formatRunnable = (FormatRunnable) runnable;
@@ -74,21 +74,16 @@ public class FormatValidationPoolThreadExecutor extends ThreadPoolExecutor {
       final String metaToLog = MetadataUtils.getMetadatasForLog(formatRunnable
             .getDocument(), metadonnees);
 
-      if (throwable != null) {
-         nombreDocsErreur++;
-
-         LOGGER
-               .error(
-                     "{} - Erreur de validation du document {} - Metadonnées {} - {}",
-                     new Object[] { trcPrefix, idDocument, metaToLog,
-                           throwable.getMessage() });
-      } else if (!formatRunnable.getResultat().isValid()) {
+      if ((throwable == null) && (!formatRunnable.getResultat().isValid())) {
          nombreDocsErreur++;
          final String resultatDetail = formatResultatDetails(formatRunnable);
-         LOGGER
-               .warn("{} - Document non valide {} - Metadonnées {} - {}",
-                     new Object[] { trcPrefix, idDocument, metaToLog,
-                           resultatDetail });
+         LOGGER.warn("{} ; {} ; {}", new Object[] { idDocument, metaToLog,
+               resultatDetail });
+      } else if (throwable != null) {
+         nombreDocsErreur++;
+
+         LOGGER.error("{} ; {} ; {}", new Object[] { idDocument, metaToLog,
+               throwable.getMessage() });
       }
       nombreTraites++;
       if (getNombreTraites() % getPasExecution() == 0) {
@@ -97,7 +92,13 @@ public class FormatValidationPoolThreadExecutor extends ThreadPoolExecutor {
 
       // supprime le fichier temporaire
       if (formatRunnable.getFile() != null) {
-         formatRunnable.getFile().delete();
+         File file = formatRunnable.getFile();
+         LOGGER.debug("Suppression du fichier temporaire {}", file
+               .getAbsolutePath());
+         if (!file.delete()) {
+            LOGGER.error("Impossible de supprimer le fichier temporaire {}",
+                  file.getAbsolutePath());
+         }
       }
    }
 

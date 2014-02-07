@@ -17,8 +17,9 @@ public class TraitementServiceTest {
 
    @Autowired
    private TraitementService traitementService;
-   
-   private FormatValidationParametres createParametres(String requeteLucene, MODE_VERIFICATION mode) {
+
+   private FormatValidationParametres createParametres(String requeteLucene,
+         MODE_VERIFICATION mode) {
       FormatValidationParametres parametres = new FormatValidationParametres();
       parametres.setModeVerification(mode);
       parametres.setRequeteLucene(requeteLucene);
@@ -29,45 +30,48 @@ public class TraitementServiceTest {
       parametres.setMetadonnees(new ArrayList<String>());
       return parametres;
    }
-   
+
    @Test
    public void identifierValiderFichiersIdentification() {
-      
+
       // cas d'identification valide
-      FormatValidationParametres parametres = createParametres("iti:73132b50-d404-11e2-9df1-005056c00008", 
+      FormatValidationParametres parametres = createParametres(
+            "iti:73132b50-d404-11e2-9df1-005056c00008",
             MODE_VERIFICATION.IDENTIFICATION);
       traitementService.identifierValiderFichiers(parametres);
-      
+
       // cas d'identification non valide
-      parametres = createParametres("srt:41882050200023", 
+      parametres = createParametres("srt:41882050200023",
             MODE_VERIFICATION.IDENTIFICATION);
       traitementService.identifierValiderFichiers(parametres);
    }
 
    @Test
    public void identifierValiderFichiersValidation() {
-      
+
       // cas de validation (document non valide)
-      FormatValidationParametres parametres = createParametres("iti:73132b50-d404-11e2-9df1-005056c00008", 
+      FormatValidationParametres parametres = createParametres(
+            "iti:73132b50-d404-11e2-9df1-005056c00008",
             MODE_VERIFICATION.VALIDATION);
       traitementService.identifierValiderFichiers(parametres);
-      
+
       // cas de validation (unknown format)
-      parametres = createParametres("srt:41882050200023", 
+      parametres = createParametres("srt:41882050200023",
             MODE_VERIFICATION.VALIDATION);
       traitementService.identifierValiderFichiers(parametres);
    }
-   
+
    @Test
    public void identifierValiderFichiersIdentValidation() {
-      
+
       // cas d'identification et validation (document non valide)
-      FormatValidationParametres parametres = createParametres("iti:73132b50-d404-11e2-9df1-005056c00008", 
+      FormatValidationParametres parametres = createParametres(
+            "iti:73132b50-d404-11e2-9df1-005056c00008",
             MODE_VERIFICATION.IDENT_VALID);
       traitementService.identifierValiderFichiers(parametres);
-      
+
       // cas d'identification et validation (unknown format)
-      parametres = createParametres("srt:41882050200023", 
+      parametres = createParametres("srt:41882050200023",
             MODE_VERIFICATION.IDENT_VALID);
       traitementService.identifierValiderFichiers(parametres);
    }

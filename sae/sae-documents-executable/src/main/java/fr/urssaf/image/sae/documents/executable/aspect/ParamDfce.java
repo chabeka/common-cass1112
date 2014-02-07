@@ -13,7 +13,6 @@ import fr.urssaf.image.sae.documents.executable.exception.ParametreRuntimeExcept
 import fr.urssaf.image.sae.documents.executable.utils.Constantes;
 import fr.urssaf.image.sae.documents.executable.utils.messages.SaeDocumentsExecutableMessageHandler;
 
-
 /**
  * Classe de validation des paramètres obligatoires.
  */
@@ -22,10 +21,10 @@ public class ParamDfce {
 
    /********************************************************* SERVICE *********************************************************************************/
    private static final String DFCE_SERVICE_EXECUTERREQUETE = "execution(* fr.urssaf.image.sae.documents.executable.service.DfceService.executerRequete(*))"
-      + "&& args(requeteLucene)";
+         + "&& args(requeteLucene)";
 
    private static final String DFCE_SERVICE_RECUPERERCONTENU = "execution(* fr.urssaf.image.sae.documents.executable.service.DfceService.recupererContenu(*))"
-      + "&& args(document)";
+         + "&& args(document)";
 
    /**
     * Vérification des paramètres de la méthode "executerRequete" de la classe
@@ -41,10 +40,11 @@ public class ParamDfce {
       if (StringUtils.isBlank(requeteLucene)) {
          param.add(Constantes.REQUETELUCENE);
       }
-      
+
       if (!param.isEmpty()) {
-         throw new ParametreRuntimeException(SaeDocumentsExecutableMessageHandler.getMessage(
-               Constantes.PARAM_OBLIGATOIRE, param.toString()));
+         throw new ParametreRuntimeException(
+               SaeDocumentsExecutableMessageHandler.getMessage(
+                     Constantes.PARAM_OBLIGATOIRE, param.toString()));
       }
    }
 
@@ -62,10 +62,11 @@ public class ParamDfce {
       if (document == null) {
          param.add(Constantes.DOCUMENT);
       }
-      
+
       if (!param.isEmpty()) {
-         throw new ParametreRuntimeException(SaeDocumentsExecutableMessageHandler.getMessage(
-               Constantes.PARAM_OBLIGATOIRE, param.toString()));
+         throw new ParametreRuntimeException(
+               SaeDocumentsExecutableMessageHandler.getMessage(
+                     Constantes.PARAM_OBLIGATOIRE, param.toString()));
       }
    }
 }

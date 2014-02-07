@@ -11,6 +11,8 @@ import net.docubase.toolkit.service.ServiceProvider;
 import net.docubase.toolkit.service.ged.SearchService;
 import net.docubase.toolkit.service.ged.StoreService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,12 @@ import fr.urssaf.image.sae.documents.executable.service.DfceService;
  */
 @Service
 public class DfceServiceImpl implements DfceService {
+
+   /**
+    * Logger de la classe.
+    */
+   private static final Logger LOGGER = LoggerFactory
+         .getLogger(DfceServiceImpl.class);
 
    /**
     * Service permettant de réaliser la connexion à DFCE.
@@ -47,6 +55,7 @@ public class DfceServiceImpl implements DfceService {
     */
    @Override
    public final void ouvrirConnexion() {
+      LOGGER.debug("Ouverture de la connexion à DFCE");
       this.serviceProvider = getDfceConnectionService().openConnection();
    }
 
@@ -55,6 +64,7 @@ public class DfceServiceImpl implements DfceService {
     */
    @Override
    public final void fermerConnexion() {
+      LOGGER.debug("Fermeture de la connexion à DFCE");
       getServiceProvider().disconnect();
    }
 
@@ -63,6 +73,7 @@ public class DfceServiceImpl implements DfceService {
     */
    @Override
    public final Iterator<Document> executerRequete(final String requeteLucene) {
+      LOGGER.debug("Exécution de la requête lunèce : {}", requeteLucene);
       final SearchService searchService = getServiceProvider()
             .getSearchService();
       final Base base = getServiceProvider().getBaseAdministrationService()
@@ -77,6 +88,8 @@ public class DfceServiceImpl implements DfceService {
     */
    @Override
    public final InputStream recupererContenu(final Document document) {
+      LOGGER.debug("Récupération du contenu du document : {}", document
+            .getUuid());
       final StoreService storeService = getServiceProvider().getStoreService();
       return storeService.getDocumentFile(document);
    }

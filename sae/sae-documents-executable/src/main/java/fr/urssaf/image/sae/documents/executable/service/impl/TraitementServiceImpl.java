@@ -59,13 +59,10 @@ public class TraitementServiceImpl implements TraitementService {
    public final void identifierValiderFichiers(
          final FormatValidationParametres parametres) {
       long startTime = System.currentTimeMillis();
+      LOGGER.debug("Lancement du traitement d'identification et de validation");
       getDfceService().ouvrirConnexion();
       final String requeteLucene = parametres.getRequeteLucene();
-      final List<String> metadonnees = parametres.getMetadonnees();
-      // initialise la liste de metadonnees si la liste est vide
-      if (metadonnees.isEmpty()) {
-         Collections.addAll(metadonnees, Constantes.METADONNEES_DEFAULT);
-      }
+      final List<String> metadonnees = getMetadonnees(parametres);
       // execution de la requete dfce
       final Iterator<Document> iteratorDoc = getDfceService().executerRequete(
             requeteLucene);
@@ -76,9 +73,8 @@ public class TraitementServiceImpl implements TraitementService {
 
       int nbDocTraites = 0;
       int nbDocErreurIdent = 0;
-      while (iteratorDoc.hasNext()
-            && (nbDocTraites < parametres.getNombreMaxDocs())
-            && (!isTempsMaximumAtteind(parametres, startTime))) {
+      while (isTraitementTermine(parametres, startTime, iteratorDoc,
+            nbDocTraites)) {
          // recupereation du contenu du document
          final Document document = iteratorDoc.next();
          final InputStream stream = getDfceService().recupererContenu(document);
@@ -90,43 +86,32 @@ public class TraitementServiceImpl implements TraitementService {
             // creation du fichier temporaire
             file = createTmpFile(parametres, stream);
 
-            if (parametres.getModeVerification() != MODE_VERIFICATION.VALIDATION) {
-               if (!getFormatFichierService().identifierFichier(idFormat, file,
-                     document, metadonnees)) {
-                  nbDocErreurIdent++;
-               }
+            if (!lancerIdentifierFichier(parametres, metadonnees, document,
+                  idFormat, file)) {
+               nbDocErreurIdent++;
             }
 
-            if (parametres.getModeVerification() != MODE_VERIFICATION.IDENTIFICATION) {
-               final FormatRunnable runnable = new FormatRunnable(document,
-                     file, getFormatFichierService());
-               executor.execute(runnable);
-            }
+            lancerValiderFichier(parametres, executor, document, file);
 
             nbDocTraites++;
 
-            if (parametres.getModeVerification() != MODE_VERIFICATION.VALIDATION) {
-               if (nbDocTraites % parametres.getTaillePasExecution() == 0) {
-                  LOGGER.info("{} documents identifiés", nbDocTraites);
-               }
-            }
+            // trace l'avancement de l'identification
+            tracerIdentification(parametres, nbDocTraites);
 
-            if (parametres.getModeVerification() == MODE_VERIFICATION.IDENTIFICATION) {
-               // dans le cas de l'identification simple, la suppression du
-               // fichier se fait directement
-               // dans le cas de la validation ou identification et validation,
-               // le fichier sera supprimé à la fin du thread
-               if (file != null) {
-                  file.delete();
+            if ((parametres.getModeVerification() == MODE_VERIFICATION.IDENTIFICATION)
+                  && (file != null)) {
+               LOGGER.debug("Suppression du fichier temporaire {}", file
+                     .getAbsolutePath());
+               if (!file.delete()) {
+                  LOGGER.error(
+                        "Impossible de supprimer le fichier temporaire {}",
+                        file.getAbsolutePath());
                }
             }
          } catch (IOException e) {
             LOGGER.error(
                   "Erreur de conversion du stream en fichier temporaire : {}",
                   e.getMessage());
-            if (file != null) {
-               file.delete();
-            }
          }
       }
 
@@ -139,6 +124,100 @@ public class TraitementServiceImpl implements TraitementService {
       LOGGER.info("{} documents en erreur d'identification", nbDocErreurIdent);
       LOGGER.info("{} documents en erreur de validation", executor
             .getNombreDocsErreur());
+   }
+
+   /**
+    * Methode permettant de récupérer la liste des métadonnées en paramètres. Si
+    * la liste est vide, on initalise la liste avec les métadonnées par défaut.
+    * 
+    * @param parametres
+    *           paramètres
+    * @return List<String>
+    */
+   private List<String> getMetadonnees(
+         final FormatValidationParametres parametres) {
+      final List<String> metadonnees = parametres.getMetadonnees();
+      // initialise la liste de metadonnees si la liste est vide
+      if (metadonnees.isEmpty()) {
+         Collections.addAll(metadonnees, Constantes.METADONNEES_DEFAULT);
+      }
+      return metadonnees;
+   }
+
+   /**
+    * Methode permettant de lancer l'identification d'un fichier.
+    * 
+    * @param parametres
+    *           parameters
+    * @param metadonnees
+    *           metadonnees
+    * @param document
+    *           document
+    * @param idFormat
+    *           format
+    * @param file
+    *           fichier
+    * @return boolean
+    */
+   private boolean lancerIdentifierFichier(
+         final FormatValidationParametres parametres,
+         final List<String> metadonnees, final Document document,
+         final String idFormat, File file) {
+      boolean identificationOk = true;
+      if ((parametres.getModeVerification() != MODE_VERIFICATION.VALIDATION)
+            && (!getFormatFichierService().identifierFichier(idFormat, file,
+                  document, metadonnees))) {
+         identificationOk = false;
+      }
+      return identificationOk;
+   }
+
+   /**
+    * Methode permettant de lancer la validation d'un fichier.
+    * 
+    * @param parametres
+    *           parameters
+    * @param executor
+    *           executeur de thread
+    * @param document
+    *           document
+    * @param file
+    *           fichier
+    * @return boolean
+    */
+   private void lancerValiderFichier(
+         final FormatValidationParametres parametres,
+         final FormatValidationPoolThreadExecutor executor,
+         final Document document, File file) {
+      if (parametres.getModeVerification() != MODE_VERIFICATION.IDENTIFICATION) {
+         final FormatRunnable runnable = new FormatRunnable(document, file,
+               getFormatFichierService());
+         executor.execute(runnable);
+      }
+   }
+
+   /**
+    * Methode permettant de vérifier le traitement est terminé. Pour se faire,
+    * il faut vérifier qu'il y a encore des documents à traiter, et qu'on a pas
+    * atteind le nombre max de documents, et qu'on a pas atteind le temps
+    * maximum.
+    * 
+    * @param parametres
+    *           parametres
+    * @param startTime
+    *           heure de début en millisecondes
+    * @param iteratorDoc
+    *           iterateur de document
+    * @param nbDocTraites
+    *           nombre de doc traités
+    * @return
+    */
+   private boolean isTraitementTermine(
+         final FormatValidationParametres parametres, long startTime,
+         final Iterator<Document> iteratorDoc, int nbDocTraites) {
+      return iteratorDoc.hasNext()
+            && (nbDocTraites < parametres.getNombreMaxDocs())
+            && (!isTempsMaximumAtteind(parametres, startTime));
    }
 
    /**
@@ -195,10 +274,28 @@ public class TraitementServiceImpl implements TraitementService {
                repertoireTemporaire);
          fos = new FileOutputStream(tmpFile);
          IOUtils.copy(stream, fos);
+         LOGGER.debug("Création du fichier temporaire {}", tmpFile
+               .getAbsolutePath());
          return tmpFile;
       } finally {
          IOUtils.closeQuietly(stream);
          IOUtils.closeQuietly(fos);
+      }
+   }
+
+   /**
+    * Methode permettant de tracer l'avancement de l'identification.
+    * 
+    * @param parametres
+    *           parametres
+    * @param nbDocTraites
+    *           nombre de documents traités
+    */
+   private void tracerIdentification(
+         final FormatValidationParametres parametres, int nbDocTraites) {
+      if ((parametres.getModeVerification() != MODE_VERIFICATION.VALIDATION)
+            && (nbDocTraites % parametres.getTaillePasExecution() == 0)) {
+         LOGGER.info("{} documents identifiés", nbDocTraites);
       }
    }
 

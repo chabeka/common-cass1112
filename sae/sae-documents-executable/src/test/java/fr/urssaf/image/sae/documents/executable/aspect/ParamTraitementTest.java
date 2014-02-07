@@ -25,7 +25,8 @@ public class ParamTraitementTest {
    public void validIdentifierValiderFichiersParametresNull() {
       try {
          traitementService.identifierValiderFichiers(null);
-         Assert.fail("Une exception ParametreRuntimeException aurait dû être levée");
+         Assert
+               .fail("Une exception ParametreRuntimeException aurait dû être levée");
       } catch (ParametreRuntimeException ex) {
          Assert
                .assertEquals(
@@ -34,15 +35,17 @@ public class ParamTraitementTest {
                      ex.getMessage());
       }
    }
-   
+
    @Test
    public void validIdentifierValiderFichiersMetadonneesNonAutorisees() {
       FormatValidationParametres parametres = new FormatValidationParametres();
-      parametres.setMetadonnees(Arrays.asList(new String[] { "dco", "SM_LIFE_CYCLE_REFERENCE_DATE", "gel", "SM_DIGEST" }));
-      
+      parametres.setMetadonnees(Arrays.asList(new String[] { "dco",
+            "SM_LIFE_CYCLE_REFERENCE_DATE", "gel", "SM_DIGEST" }));
+
       try {
          traitementService.identifierValiderFichiers(parametres);
-         Assert.fail("Une exception ParametreRuntimeException aurait dû être levée");
+         Assert
+               .fail("Une exception ParametreRuntimeException aurait dû être levée");
       } catch (ParametreRuntimeException ex) {
          Assert
                .assertEquals(

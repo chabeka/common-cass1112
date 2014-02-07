@@ -60,7 +60,11 @@ public class FormatFichierServiceImpl implements FormatFichierService {
    public final boolean identifierFichier(final String idFormat,
          final File file, final Document document,
          final List<String> metadonnees) {
-      String trcPrefix = "identifierFichier()";
+      LOGGER
+            .debug(
+                  "Identification du fichier {} situé dans le répertoire {} au format {}",
+                  new Object[] { document.getUuid(), file.getAbsolutePath(),
+                        idFormat });
       boolean identificationOK;
 
       try {
@@ -71,23 +75,20 @@ public class FormatFichierServiceImpl implements FormatFichierService {
                   metadonnees);
             final String resultatIdent = formatIdentificationResult(identificationResult);
 
-            LOGGER.warn(
-                  "{} - Document non identifié : {} - Metadonnées {} - {}",
-                  new Object[] { trcPrefix, document.getUuid(), metaToLog,
-                        resultatIdent });
+            LOGGER.warn("{} ; {} ; {}", new Object[] { document.getUuid(),
+                  metaToLog, resultatIdent });
          }
          identificationOK = identificationResult.isIdentified();
       } catch (UnknownFormatException e) {
-         LOGGER.error("{} - Format inconnu : {}", new Object[] { trcPrefix,
-               e.getMessage() });
+         LOGGER.error("Format inconnu : {}", new Object[] { e.getMessage() });
          identificationOK = false;
       } catch (IdentifierInitialisationException e) {
-         LOGGER.error("{} - Impossible d'initialiser l'identificateur : {}",
-               new Object[] { trcPrefix, e.getMessage() });
+         LOGGER.error("Impossible d'initialiser l'identificateur : {}",
+               new Object[] { e.getMessage() });
          identificationOK = false;
       } catch (IOException e) {
-         LOGGER.error("{} - Impossible d'accèder au fichier : {}",
-               new Object[] { trcPrefix, e.getMessage() });
+         LOGGER.error("Impossible d'accèder au fichier : {}", new Object[] { e
+               .getMessage() });
          identificationOK = false;
       }
       return identificationOK;
@@ -123,6 +124,8 @@ public class FormatFichierServiceImpl implements FormatFichierService {
    public final ValidationResult validerFichier(final String idFormat,
          final File file) throws UnknownFormatException,
          ValidatorInitialisationException, IOException {
+      LOGGER.debug("Validation du fichier {} au format {}", new Object[] {
+            file.getAbsolutePath(), idFormat });
       return getValidationService().validateFile(idFormat, file);
    }
 

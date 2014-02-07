@@ -38,8 +38,10 @@ public class ParamFormatFichier {
     *           identifiant du format
     * @param file
     *           fichier
-    * @param Document
+    * @param document
     *           document DFCE
+    * @param metadonnees
+    *           metadonnées
     */
    @Before(FORMAT_SERVICE_IDENTIFIERFICHIER)
    public final void validIdentifierFichierFromFormatFichierService(
@@ -59,11 +61,7 @@ public class ParamFormatFichier {
          param.add(Constantes.METADONNEES);
       }
 
-      if (!param.isEmpty()) {
-         throw new ParametreRuntimeException(
-               SaeDocumentsExecutableMessageHandler.getMessage(
-                     Constantes.PARAM_OBLIGATOIRE, param.toString()));
-      } else {
+      if (param.isEmpty()) {
          // verifie la liste des metadonnees
          List<String> metasNonAutorisees = MetadataUtils
                .checkMetadonneesNonAutorisees(metadonnees);
@@ -73,6 +71,10 @@ public class ParamFormatFichier {
                         Constantes.PARAM_METADONNEES_NON_AUTORISEES,
                         metasNonAutorisees.toString()));
          }
+      } else {
+         throw new ParametreRuntimeException(
+               SaeDocumentsExecutableMessageHandler.getMessage(
+                     Constantes.PARAM_OBLIGATOIRE, param.toString()));
       }
    }
 

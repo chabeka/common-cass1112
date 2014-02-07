@@ -20,6 +20,8 @@
    
    <logger name="fr.urssaf.image.sae.format" level="WARN" />
    
+   <logger name="fr.urssaf.image.sae.documents.executable" level="INFO" />
+   
    <root level="debug">
       <appender-ref ref="console" />
    </root>
