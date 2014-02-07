@@ -78,12 +78,12 @@ public class ReferentielFormatDao extends AbstractDao<String, String> {
       if (visualisable == null) {
          variable.add("visualisable");
       }
-      if (StringUtils.isBlank(validator)) {
-         variable.add("validator");
-      }
-      if (StringUtils.isBlank(identification)) {
-         variable.add("identification");
-      }
+//      if (StringUtils.isBlank(validator)) {
+//         variable.add("validator");
+//      }
+//      if (StringUtils.isBlank(identification)) {
+//         variable.add("identification");
+//      }
       if (clock == null || clock <= 0) {
          variable.add("clock");
       }
