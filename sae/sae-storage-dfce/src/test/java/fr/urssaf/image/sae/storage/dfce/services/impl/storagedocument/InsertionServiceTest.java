@@ -1,5 +1,6 @@
 package fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -205,9 +206,10 @@ public class InsertionServiceTest {
             document.getUuid());
       final UUIDCriteria uuid = new UUIDCriteria(document.getUuid(), null);
       Assert.assertTrue("Les deux SHA1 doivent être identique", CheckDataUtils
-            .checkDocumentSha1(storageDocument.getContent(), commonsServices
-                  .getRetrievalService().retrieveStorageDocumentContentByUUID(
-                        uuid)));
+            .checkDocumentSha1(storageDocument.getContent().getInputStream(),
+                  new ByteArrayInputStream(commonsServices
+                        .getRetrievalService()
+                        .retrieveStorageDocumentContentByUUID(uuid))));
    }
 
    /**
@@ -292,9 +294,10 @@ public class InsertionServiceTest {
 
       final UUIDCriteria uuid = new UUIDCriteria(docUuid, null);
       Assert.assertTrue("Les deux SHA1 doivent être identique", CheckDataUtils
-            .checkDocumentSha1(FileUtils.readFileToByteArray(file),
-                  commonsServices.getRetrievalService()
-                        .retrieveStorageDocumentContentByUUID(uuid)));
+            .checkDocumentSha1(FileUtils.openInputStream(file),
+                  new ByteArrayInputStream(commonsServices
+                        .getRetrievalService()
+                        .retrieveStorageDocumentContentByUUID(uuid))));
    }
 
 }

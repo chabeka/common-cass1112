@@ -13,7 +13,7 @@ import javax.activation.DataSource;
  */
 public final class ConsultationDataSource implements DataSource {
 
-   private final byte[] content;
+   private final InputStream content;
 
    private final String typeMime;
 
@@ -26,7 +26,7 @@ public final class ConsultationDataSource implements DataSource {
     *           le type pronom, pour le convertir en type MIME par la suite
     */
    @SuppressWarnings("PMD.ArrayIsStoredDirectly")
-   public ConsultationDataSource(byte[] content, String typeMime) {
+   public ConsultationDataSource(InputStream content, String typeMime) {
 
       this.content = content;
 
@@ -47,7 +47,7 @@ public final class ConsultationDataSource implements DataSource {
     */
    @Override
    public InputStream getInputStream() throws IOException {
-      return new ByteArrayInputStream(content);
+      return content;
    }
 
    /**

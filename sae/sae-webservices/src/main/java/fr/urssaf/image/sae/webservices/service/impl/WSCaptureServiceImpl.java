@@ -166,18 +166,10 @@ public class WSCaptureServiceImpl implements WSCaptureService {
          DataHandler dataHandler = request.getArchivageUnitairePJ()
                .getArchivageUnitairePJRequestTypeChoice_type0().getDataFile()
                .getFile();
-         byte[] content = convertToByteArray(dataHandler);
-
-         // Vérifie que le contenu du document n'est pas vide
-         if (content == null || content.length == 0) {
-            throw new CaptureAxisFault("CaptureFichierVide",
-                  wsMessageRessourcesUtils.recupererMessage(
-                        "capture.fichier.binaire.vide", null));
-         }
 
          // Appel de la couche service, et transtypage des exceptions en
          // SoapFault
-         uuid = capturePJ(metadatas, nomFichier, content);
+         uuid = capturePJ(metadatas, nomFichier, dataHandler);
 
       } else {
 
@@ -333,8 +325,7 @@ public class WSCaptureServiceImpl implements WSCaptureService {
                .getMessage());
       } catch (UnknownFormatException except) {
 
-         throw new CaptureAxisFault("FormatFichierInconnu", except
-               .getMessage());
+         throw new CaptureAxisFault("FormatFichierInconnu", except.getMessage());
       } catch (ValidationExceptionInvalidFile except) {
 
          throw new CaptureAxisFault("FormatFichierNonConforme", except
@@ -344,7 +335,7 @@ public class WSCaptureServiceImpl implements WSCaptureService {
    }
 
    private UUID capturePJ(List<UntypedMetadata> metadatas, String fileName,
-         byte[] content) throws CaptureAxisFault {
+         DataHandler content) throws CaptureAxisFault {
       try {
          return captureService.captureBinaire(metadatas, content, fileName);
       } catch (RequiredStorageMetadataEx e) {
@@ -414,8 +405,7 @@ public class WSCaptureServiceImpl implements WSCaptureService {
                .getMessage());
       } catch (UnknownFormatException except) {
 
-         throw new CaptureAxisFault("FormatFichierInconnu", except
-               .getMessage());
+         throw new CaptureAxisFault("FormatFichierInconnu", except.getMessage());
       } catch (ValidationExceptionInvalidFile except) {
 
          throw new CaptureAxisFault("FormatFichierNonConforme", except

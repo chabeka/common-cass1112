@@ -1,7 +1,9 @@
 package fr.urssaf.image.sae.storage.dfce.utils;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
 
 import junit.framework.Assert;
@@ -24,6 +26,22 @@ import org.junit.Test;
 public class HashUtilsTest {
 
    private byte[] data;
+
+   @Test
+   public void testHash() throws IOException, NoSuchAlgorithmException {
+
+      File file = new File("src/test/resources/PDF/doc1.PDF");
+      byte[] contentByte = FileUtils.readFileToByteArray(file);
+      InputStream stream = new FileInputStream(file);
+
+      String hashByte = HashUtils.hashHex(contentByte, "SHA-1");
+      String hashStream = HashUtils.hashHex(stream, "SHA-1");
+
+      stream.close();
+
+      System.out.println(hashByte == hashStream);
+
+   }
 
    @Before
    public void before() throws IOException {
@@ -52,6 +70,33 @@ public class HashUtilsTest {
 
       Assert.assertEquals("le calcul de SHA-1 est incorrect", expectedHash,
             actualHash);
+
+   }
+
+   @Test
+   public void testSha1InputStream() {
+      String expectedHash = "a2f93f1f121ebba0faef2c0596f2f126eacae77b";
+      File file = new File("src/test/resources/PDF/doc1.PDF");
+      InputStream stream = null;
+
+      try {
+         stream = new FileInputStream(file);
+         String actualHash = HashUtils.hashHex(stream, "SHA-1");
+
+         Assert.assertEquals("le hash est incoorect", expectedHash, actualHash);
+
+      } catch (Exception e) {
+         Assert.fail("aucune erreur attendue");
+
+      } finally {
+         if (stream != null) {
+            try {
+               stream.close();
+            } catch (IOException e) {
+               e.printStackTrace();
+            }
+         }
+      }
 
    }
 

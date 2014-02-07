@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import javax.activation.DataHandler;
+
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -70,7 +72,7 @@ public class SAECaptureServiceValidationTest {
 
          @Override
          public UUID captureBinaire(List<UntypedMetadata> metadatas,
-               byte[] content, String fileName)  {
+               DataHandler content, String fileName)  {
             
             return null;
          }
@@ -96,6 +98,7 @@ public class SAECaptureServiceValidationTest {
       } catch (IllegalArgumentException e) {
          fail("les arguments en entrée doivent être valides");
       }
+      
 
    }
 

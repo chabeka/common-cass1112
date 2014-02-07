@@ -1,16 +1,18 @@
 package fr.urssaf.image.sae.services.controles.impl;
 
-import java.io.ByteArrayInputStream;
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.io.FileUtils;
+import javax.activation.DataHandler;
+
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -19,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import de.schlichtherle.io.FileInputStream;
 import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
 import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
@@ -57,6 +60,7 @@ import fr.urssaf.image.sae.services.exception.format.identification.FormatIdenti
 import fr.urssaf.image.sae.services.exception.format.validation.ValidationExceptionInvalidFile;
 import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
 import fr.urssaf.image.sae.services.util.WriteUtils;
+import fr.urssaf.image.sae.storage.dfce.utils.HashUtils;
 
 /**
  *Classe de contrôle pour la capture unitaire et la capture en masse.
@@ -68,6 +72,8 @@ public class SAEControlesCaptureServiceImpl implements
       SAEControlesCaptureService {
    private static final Logger LOGGER = LoggerFactory
          .getLogger(SAEControlesCaptureServiceImpl.class);
+
+   private static final List<String> ALGO_HASH = Arrays.asList("SHA-1");
 
    @Autowired
    private EcdeServices ecdeServices;
@@ -151,45 +157,21 @@ public class SAEControlesCaptureServiceImpl implements
             algoHashCode);
       // FIXME vérifier que l'algorithme passer fait partie d'une liste
       // pré-définit.
-      String fileName = null;
-      byte[] content;
-      if (saeDocument.getFilePath() == null) {
-         fileName = saeDocument.getFileName();
-         content = saeDocument.getContent();
-      } else {
-         fileName = FilenameUtils.getBaseName(saeDocument.getFilePath());
-         File docFile = new File(saeDocument.getFilePath());
-         try {
-            content = FileUtils.readFileToByteArray(docFile);
-         } catch (IOException e) {
-            throw new SAECaptureServiceRuntimeException(e);
-         }
-      }
 
-      // File docFile = new File(saeDocument.getFilePath());
-      LOGGER.debug("{} - Début de la vérification : Le type de hash est SHA-1",
-            prefixeTrc);
-      if (!"SHA-1".equals(algoHashCode)) {
-         LOGGER
-               .debug(
-                     "{} - L'algorithme du document à archiver est différent de SHA-1",
-                     prefixeTrc);
-         throw new UnknownHashCodeEx(ResourceMessagesUtils.loadMessage(
-               CAPTURE_HASH_ERREUR, fileName));
+      InputStream content = null;
+      String fileName = getFileName(saeDocument);
+
+      try {
+         content = getInputStream(saeDocument);
+
+         checkHashCode(algoHashCode, fileName);
+
+         // FIXME à partir de l'algorithme calculer le hashCode.
+         checkHashValue(content, hashCodeValue, fileName, algoHashCode);
+
+      } finally {
+         close(content, fileName);
       }
-      LOGGER.debug(LOG_FIN_VERIF + "Le type de hash est SHA-1", prefixeTrc);
-      // FIXME à partir de l'algorithme calculer le hashCode.
-      LOGGER.debug(LOG_DEBUT_VERIF + LOG_HASH, prefixeTrc);
-      if (!StringUtils.equalsIgnoreCase(DigestUtils.shaHex(content),
-            hashCodeValue.trim())) {
-         LOGGER.debug(
-               "{} - Hash du document {} est différent que celui recalculé {}",
-               new Object[] { prefixeTrc, hashCodeValue,
-                     DigestUtils.shaHex(content) });
-         throw new UnknownHashCodeEx(ResourceMessagesUtils.loadMessage(
-               CAPTURE_HASH_ERREUR, fileName));
-      }
-      LOGGER.debug(LOG_FIN_VERIF + LOG_HASH, prefixeTrc);
 
       // Traces debug - sortie méthode
       LOGGER.debug(LOG_FIN, prefixeTrc);
@@ -222,17 +204,8 @@ public class SAEControlesCaptureServiceImpl implements
             algoHashCode);
 
       // File docFile = new File(saeDocument.getFilePath());
-      LOGGER.debug("{} - Début de la vérification : Le type de hash est SHA-1",
-            prefixeTrc);
-      if (!"SHA-1".equals(algoHashCode)) {
-         LOGGER
-               .debug(
-                     "{} - L'algorithme du document à archiver est différent de SHA-1",
-                     prefixeTrc);
-         throw new UnknownHashCodeEx(ResourceMessagesUtils.loadMessage(
-               CAPTURE_HASH_ERREUR, fileName));
-      }
-      LOGGER.debug(LOG_FIN_VERIF + "Le type de hash est SHA-1", prefixeTrc);
+      checkHashCode(algoHashCode, fileName);
+
       LOGGER.debug(LOG_DEBUT_VERIF + LOG_HASH, prefixeTrc);
       if (!StringUtils.equalsIgnoreCase(refHash, hashCodeValue.trim())) {
          LOGGER.debug(
@@ -469,7 +442,7 @@ public class SAEControlesCaptureServiceImpl implements
    public final void checkUntypedBinaryDocument(UntypedDocument untypedDocument)
          throws EmptyDocumentEx, EmptyFileNameEx {
 
-      byte[] content = untypedDocument.getContent();
+      DataHandler content = untypedDocument.getContent();
       String fileName = untypedDocument.getFileName();
 
       checkBinaryContent(content);
@@ -485,9 +458,33 @@ public class SAEControlesCaptureServiceImpl implements
     * @throws EmptyDocumentEx
     *            erreur levée lorsquele document est vide
     */
-   public final void checkBinaryContent(byte[] content) throws EmptyDocumentEx {
+   public final void checkBinaryContent(DataHandler content)
+         throws EmptyDocumentEx {
+      String trcPrefix = "checkBinaryContent()";
+      boolean isOk = true;
+      InputStream stream = null;
 
-      if (content == null || content.length == 0) {
+      try {
+         stream = content.getInputStream();
+         if (stream.read() == -1) {
+            isOk = false;
+         }
+
+      } catch (IOException exception) {
+         LOGGER.warn("{} - Erreur de lecture du flux", trcPrefix, exception);
+         isOk = false;
+
+      } finally {
+         if (stream != null) {
+            try {
+               stream.close();
+            } catch (IOException e) {
+               LOGGER.warn("{} - Impossible de fermer le flux", trcPrefix);
+            }
+         }
+      }
+
+      if (!isOk) {
          throw new EmptyDocumentEx(ResourceMessagesUtils
                .loadMessage("capture.fichier.binaire.vide"));
       }
@@ -588,8 +585,8 @@ public class SAEControlesCaptureServiceImpl implements
                         .getFileFormat(), fichier);
                }
                if (saeDocument.getContent() != null) {
-                  InputStream inputStream = new ByteArrayInputStream(
-                        saeDocument.getContent());
+                  InputStream inputStream = saeDocument.getContent()
+                        .getInputStream();
                   result = identificationService.identifyStream(formatProfil
                         .getFileFormat(), inputStream);
                }
@@ -640,8 +637,8 @@ public class SAEControlesCaptureServiceImpl implements
                         .getFileFormat(), fichier);
                }
                if (saeDocument.getContent() != null) {
-                  InputStream inputStream = new ByteArrayInputStream(
-                        saeDocument.getContent());
+                  InputStream inputStream = saeDocument.getContent()
+                        .getInputStream();
                   result = validationService.validateStream(formatProfil
                         .getFileFormat(), inputStream);
                }
@@ -722,6 +719,122 @@ public class SAEControlesCaptureServiceImpl implements
       } while (!trouve && index < listSaeMetadata.size());
 
       return valeur;
+   }
+
+   private void close(Closeable closeable, String name) {
+      String trcPrefixe = "close()";
+
+      if (closeable != null) {
+         try {
+            closeable.close();
+
+         } catch (IOException e) {
+            LOGGER.info("{} - Impossible de fermer le flux {}", new Object[] {
+                  trcPrefixe, name });
+         }
+      }
+   }
+
+   /**
+    * Récupère le stream du document
+    * 
+    * @param saeDocument
+    *           le document SAE
+    * @return le stream du contenu
+    */
+   private InputStream getInputStream(SAEDocument saeDocument) {
+      InputStream content;
+
+      try {
+         if (saeDocument.getFilePath() == null) {
+            content = saeDocument.getContent().getInputStream();
+
+         } else {
+            File docFile = new File(saeDocument.getFilePath());
+            content = new FileInputStream(docFile);
+         }
+
+      } catch (IOException e) {
+         throw new SAECaptureServiceRuntimeException(e);
+      }
+
+      return content;
+   }
+
+   /**
+    * @param saeDocument
+    *           le document SAE
+    * @return le nom du fichier
+    */
+   private String getFileName(SAEDocument saeDocument) {
+      String fileName = null;
+      if (saeDocument.getFilePath() == null) {
+         fileName = saeDocument.getFileName();
+      } else {
+         fileName = FilenameUtils.getBaseName(saeDocument.getFilePath());
+      }
+
+      return fileName;
+   }
+
+   private void checkHashCode(String algoHashCode, String fileName)
+         throws UnknownHashCodeEx {
+      String prefixeTrc = "checkHashCode()";
+
+      LOGGER.debug("{} - Début de la vérification : Le type de hash est SHA-1",
+            prefixeTrc);
+
+      if (!ALGO_HASH.contains(algoHashCode)) {
+         LOGGER
+               .debug(
+                     "{} - L'algorithme du document à archiver est différent de SHA-1",
+                     prefixeTrc);
+         throw new UnknownHashCodeEx(ResourceMessagesUtils.loadMessage(
+               CAPTURE_HASH_ERREUR, fileName));
+      }
+      LOGGER.debug(LOG_FIN_VERIF + "Le type de hash est SHA-1", prefixeTrc);
+   }
+
+   /**
+    * Vérifie la valeur du hash par rapport à un hash calculé en direct
+    * 
+    * @param content
+    *           le stream du contenu
+    * @param hashCodeValue
+    *           la valeur de référence
+    * @param fileName
+    *           le nom du fichier
+    * @param algoHash
+    *           algo de hash
+    * @throws UnknownHashCodeEx
+    *            erreur levée si le code calculé est différent de celui de
+    *            référence
+    */
+   private void checkHashValue(InputStream content, String hashCodeValue,
+         String fileName, String algoHash) throws UnknownHashCodeEx {
+      String prefixeTrc = "checkHashValue()";
+
+      LOGGER.debug(LOG_DEBUT_VERIF + LOG_HASH, prefixeTrc);
+      String hashCalculated = null;
+
+      try {
+         hashCalculated = HashUtils.hashHex(content, algoHash);
+
+      } catch (IOException exception) {
+         throw new SAECaptureServiceRuntimeException(exception);
+
+      } catch (NoSuchAlgorithmException exception) {
+         throw new SAECaptureServiceRuntimeException(exception);
+      }
+
+      if (!StringUtils.equalsIgnoreCase(hashCalculated, hashCodeValue.trim())) {
+         LOGGER.debug(
+               "{} - Hash du document {} est différent que celui recalculé {}",
+               new Object[] { prefixeTrc, hashCodeValue, hashCalculated });
+         throw new UnknownHashCodeEx(ResourceMessagesUtils.loadMessage(
+               CAPTURE_HASH_ERREUR, fileName));
+      }
+      LOGGER.debug(LOG_FIN_VERIF + LOG_HASH, prefixeTrc);
    }
 
 }

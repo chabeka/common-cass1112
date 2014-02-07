@@ -1,5 +1,7 @@
 package fr.urssaf.image.sae.storage.dfce.utils;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -12,6 +14,11 @@ import org.springframework.util.Assert;
  * 
  */
 public final class HashUtils {
+
+   /**
+    * taille du buffer de lecture
+    */
+   private static final int BUFFER_SIZE = 1024;
 
    private HashUtils() {
 
@@ -33,8 +40,8 @@ public final class HashUtils {
     *           un tableau de byte
     * @param digestAlgo
     *           algorithme de hachage, doit être renseigné
-    *           
-    * @return string          
+    * 
+    * @return string
     * @throws NoSuchAlgorithmException
     *            l'algorithme de hachage n'est pas prise en compte
     */
@@ -50,5 +57,49 @@ public final class HashUtils {
 
       return hash;
 
+   }
+
+   /**
+    * * Calcul le hash d'un stream.<br>
+    * <br>
+    * Les algorithmes du hash prises en compte
+    * <ul>
+    * <li>MD5</li>
+    * <li>SHA-1</li>
+    * <li>SHA-256</li>
+    * <li>SHA-384</li>
+    * <li>SHA-512</li>
+    * </ul>
+    * 
+    * @param stream
+    *           le stream dont il faut calculer le hash
+    * @param digestAlgo
+    *           algo de hashage
+    * @return le hashalgorithme de hachage, doit être renseigné
+    * 
+    * @throws NoSuchAlgorithmException
+    *            l'algorithme de hachage n'est pas prise en compte
+    * @throws IOException
+    *            erreur lors de la lecture du flux
+    */
+   public static String hashHex(InputStream stream, String digestAlgo)
+         throws NoSuchAlgorithmException, IOException {
+
+      // BufferedInputStream bufferedInputStream = null;
+
+      MessageDigest digest;
+      // bufferedInputStream = new BufferedInputStream(stream);
+      digest = MessageDigest.getInstance(digestAlgo);
+      byte[] buffer = new byte[1024];
+      int read = stream.read(buffer, 0, BUFFER_SIZE);
+
+      while (read > -1) {
+         digest.update(buffer, 0, read);
+         read = stream.read(buffer, 0, BUFFER_SIZE);
+      }
+
+      return Hex.encodeHexString(digest.digest());
+
+      // bufferedInputStream.close();
    }
 }

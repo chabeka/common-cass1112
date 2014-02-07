@@ -8,8 +8,6 @@ import java.util.UUID;
 import javax.activation.DataHandler;
 
 import org.apache.axis2.databinding.utils.ConverterUtil;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.codec.binary.StringUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.springframework.util.Assert;
 
@@ -109,7 +107,7 @@ public final class ObjectTypeFactory {
     * @return instance de {@link ObjetNumeriqueConsultationType}
     */
    public static ObjetNumeriqueConsultationType createObjetNumeriqueConsultationType(
-         byte[] content) {
+        DataHandler content) {
 
       Assert.notNull(content, "content is required");
 
@@ -117,10 +115,7 @@ public final class ObjectTypeFactory {
       ObjetNumeriqueConsultationTypeChoice_type0 choice = new ObjetNumeriqueConsultationTypeChoice_type0();
       objetNumerique.setObjetNumeriqueConsultationTypeChoice_type0(choice);
 
-      DataHandler contenu = ConverterUtil.convertToDataHandler(StringUtils
-            .newStringUtf8(Base64.encodeBase64(content, false)));
-
-      choice.setContenu(contenu);
+      choice.setContenu(content);
 
       return objetNumerique;
    }

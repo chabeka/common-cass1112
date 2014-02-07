@@ -300,8 +300,8 @@ public class SAEConsultationServiceTest {
             "src/test/resources/doc/attestation_consultation.pdf");
 
       assertTrue("le contenu n'est pas attendu", IOUtils.contentEquals(
-            FileUtils.openInputStream(expectedContent),
-            new ByteArrayInputStream(untypedDocument.getContent())));
+            FileUtils.openInputStream(expectedContent), untypedDocument
+                  .getContent().getInputStream()));
    }
 
    private static void assertMetadata(UntypedMetadata metadata,

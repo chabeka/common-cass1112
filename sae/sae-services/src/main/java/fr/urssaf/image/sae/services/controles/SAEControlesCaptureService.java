@@ -2,6 +2,8 @@ package fr.urssaf.image.sae.services.controles;
 
 import java.util.List;
 
+import javax.activation.DataHandler;
+
 import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
 import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
@@ -185,9 +187,10 @@ public interface SAEControlesCaptureService {
     * @param content
     *           le contenu du fichier
     * 
-    * @throws EmptyDocumentEx exception levée si le document est vide
+    * @throws EmptyDocumentEx
+    *            exception levée si le document est vide
     */
-   void checkBinaryContent(byte[] content) throws EmptyDocumentEx;
+   void checkBinaryContent(DataHandler content) throws EmptyDocumentEx;
 
    /**
     * Permet de vérifier que le nom de fichier est bien renseigné.
@@ -195,7 +198,8 @@ public interface SAEControlesCaptureService {
     * @param fileName
     *           le nom du fichier
     * 
-    * @throws EmptyFileNameEx exception levée si le document est vide
+    * @throws EmptyFileNameEx
+    *            exception levée si le document est vide
     */
    void checkBinaryFileName(String fileName) throws EmptyFileNameEx;
 
@@ -212,18 +216,21 @@ public interface SAEControlesCaptureService {
     */
    void checkHashCodeMetadataListForStorage(List<SAEMetadata> saeMetadatas,
          String refHash) throws UnknownHashCodeEx;
-   
+
    /**
     * Méthode chargée d'appeler le service de contrôle des formats.
     * 
     * @param saeDocument
-    *          classe representant un document - paramètre obligatoire
+    *           classe representant un document - paramètre obligatoire
     * @param listControlProfil
-    *          Liste des profils de contrôle à appliquer
-    * @throws UnknownFormatException : Le format est inconnu du référentiel des formats.
-    * @throws ValidationExceptionInvalidFile : Erreur dans la validation du fichier.
+    *           Liste des profils de contrôle à appliquer
+    * @throws UnknownFormatException
+    *            : Le format est inconnu du référentiel des formats.
+    * @throws ValidationExceptionInvalidFile
+    *            : Erreur dans la validation du fichier.
     */
-   void checkFormat(SAEDocument saeDocument, List<FormatControlProfil> listControlProfil) throws UnknownFormatException, ValidationExceptionInvalidFile;
-   
+   void checkFormat(SAEDocument saeDocument,
+         List<FormatControlProfil> listControlProfil)
+         throws UnknownFormatException, ValidationExceptionInvalidFile;
 
 }

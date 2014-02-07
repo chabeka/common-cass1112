@@ -7,6 +7,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
+import javax.activation.DataHandler;
+
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.slf4j.Logger;
@@ -179,7 +181,7 @@ public class SAECaptureServiceImpl implements SAECaptureService {
 
    @Override
    public final UUID captureBinaire(List<UntypedMetadata> metadatas,
-         byte[] content, String fileName) throws SAECaptureServiceEx,
+         DataHandler content, String fileName) throws SAECaptureServiceEx,
          RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx,
          UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
          EmptyDocumentEx, RequiredArchivableMetadataEx,

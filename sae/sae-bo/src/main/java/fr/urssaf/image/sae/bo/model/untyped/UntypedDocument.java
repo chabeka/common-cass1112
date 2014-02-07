@@ -2,8 +2,11 @@ package fr.urssaf.image.sae.bo.model.untyped;
 
 import java.util.List;
 
+import javax.activation.DataHandler;
+
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+
 import fr.urssaf.image.sae.bo.model.AbstractDocument;
 
 /**
@@ -50,7 +53,7 @@ public class UntypedDocument extends AbstractDocument {
     * @param metadatas
     *           : La liste des métadonnées non typés.
     */
-   public UntypedDocument(final String filePath, final byte[] content,
+   public UntypedDocument(final String filePath, final DataHandler content,
          final List<UntypedMetadata> metadatas) {
       super(content, filePath);
       this.uMetadatas = metadatas;
@@ -64,7 +67,7 @@ public class UntypedDocument extends AbstractDocument {
     * @param metadatas
     *           : La liste des métadonnées non typés.
     */
-   public UntypedDocument(final byte[] content,
+   public UntypedDocument(final DataHandler content,
          final List<UntypedMetadata> metadatas) {
       super(content);
       this.uMetadatas = metadatas;
@@ -82,8 +85,8 @@ public class UntypedDocument extends AbstractDocument {
     * @param metadatas
     *           : La liste des métadonnées non typés.
     */
-   public UntypedDocument(final byte[] content, final String filePath, final String fileName,
-         final List<UntypedMetadata> metadatas) {
+   public UntypedDocument(final DataHandler content, final String filePath,
+         final String fileName, final List<UntypedMetadata> metadatas) {
       super(filePath, fileName, content);
       this.uMetadatas = metadatas;
    }
@@ -98,7 +101,7 @@ public class UntypedDocument extends AbstractDocument {
     * @param metadatas
     *           : La liste des métadonnées non typés.
     */
-   public UntypedDocument(final byte[] content, final String fileName,
+   public UntypedDocument(final DataHandler content, final String fileName,
          final List<UntypedMetadata> metadatas) {
       super(fileName, content);
       this.uMetadatas = metadatas;

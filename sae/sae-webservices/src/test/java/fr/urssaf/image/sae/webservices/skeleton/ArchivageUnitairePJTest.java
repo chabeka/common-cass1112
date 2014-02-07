@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import javax.activation.DataHandler;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.axis2.AxisFault;
@@ -81,7 +82,7 @@ public class ArchivageUnitairePJTest {
       List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
       metadatas.add(EasyMock.anyObject(UntypedMetadata.class));
 
-      byte[] content = EasyMock.notNull();
+      DataHandler content = EasyMock.notNull();
 
       try {
 

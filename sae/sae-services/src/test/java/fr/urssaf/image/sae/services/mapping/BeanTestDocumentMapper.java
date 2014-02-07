@@ -6,12 +6,17 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.activation.DataHandler;
+
+import org.apache.commons.io.FileUtils;
+
 import com.google.common.io.Files;
 
 import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
 import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
+import fr.urssaf.image.sae.commons.utils.InputStreamSource;
 import fr.urssaf.image.sae.model.SAEDocumentMockData;
 import fr.urssaf.image.sae.model.SAEMockMetadata;
 import fr.urssaf.image.sae.storage.dfce.utils.Utils;
@@ -58,9 +63,12 @@ public final class BeanTestDocumentMapper {
          // }
          metadatas.add(new SAEMetadata(codeMetaData, value));
       }
+
+      InputStreamSource source = new InputStreamSource(FileUtils
+            .openInputStream(new File(saeDocumentMockData.getFilePath())));
       saeDocument.setMetadatas(metadatas);
-      saeDocument.setContent(Files.toByteArray(new File(saeDocumentMockData
-            .getFilePath())));
+      DataHandler dataHandler = new DataHandler(source);
+      saeDocument.setContent(dataHandler);
       saeDocument.setFilePath(saeDocumentMockData.getFilePath());
       return saeDocument;
    }
@@ -94,8 +102,9 @@ public final class BeanTestDocumentMapper {
       }
       untypedDocument.setUMetadatas(metadatas);
       untypedDocument.setFilePath(saeDocumentMockData.getFilePath());
-      untypedDocument.setContent(Files.toByteArray(new File(saeDocumentMockData
-            .getFilePath())));
+      DataHandler dataHandler = new DataHandler(new InputStreamSource(FileUtils
+            .openInputStream(new File(saeDocumentMockData.getFilePath()))));
+      untypedDocument.setContent(dataHandler);
       return untypedDocument;
    }
 

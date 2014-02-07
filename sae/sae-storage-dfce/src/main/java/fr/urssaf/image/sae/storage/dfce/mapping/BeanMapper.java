@@ -10,6 +10,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.activation.DataHandler;
+
 import net.docubase.toolkit.model.ToolkitFactory;
 import net.docubase.toolkit.model.base.Base;
 import net.docubase.toolkit.model.base.BaseCategory;
@@ -20,9 +22,9 @@ import net.docubase.toolkit.model.reference.impl.FileReferenceImpl;
 import net.docubase.toolkit.service.ServiceProvider;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 
+import fr.urssaf.image.sae.commons.utils.InputStreamSource;
 import fr.urssaf.image.sae.storage.dfce.exception.MetadonneeInexistante;
 import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
 import fr.urssaf.image.sae.storage.dfce.utils.Utils;
@@ -217,7 +219,8 @@ public final class BeanMapper {
          if (forConsultation) {
             final InputStream docContent = serviceDFCE.getStoreService()
                   .getDocumentFile(document);
-            storageDocument.setContent(IOUtils.toByteArray(docContent));
+            InputStreamSource source = new InputStreamSource(docContent);
+            storageDocument.setContent(new DataHandler(source));
          }
          storageDocument.setCreationDate(document.getCreationDate());
          storageDocument.setTitle(document.getTitle());

@@ -2,6 +2,8 @@ package fr.urssaf.image.sae.storage.dfce.services;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -280,5 +282,26 @@ public class CommonsServices {
     */
    public final List<StorageMetadata> getStorageMetadatas() {
       return storageMetadatas;
+   }
+
+   /**
+    * Copie du stream dans les flux indiqués
+    * 
+    * @param inputStream
+    *           inputstream
+    * @param outputStream
+    *           liste des outputstream
+    * @throws IOException
+    */
+   public void copyStream(InputStream inputStream, OutputStream... outputStreams)
+         throws IOException {
+      int val;
+
+      while ((val = inputStream.read()) != -1) {
+         for (OutputStream outputStream : outputStreams) {
+            outputStream.write(val);
+         }
+      }
+
    }
 }

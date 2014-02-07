@@ -1,7 +1,11 @@
 package fr.urssaf.image.sae.services.capture.validation;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.util.List;
+
+import javax.activation.DataHandler;
 
 import org.apache.commons.lang.StringUtils;
 import org.aspectj.lang.annotation.Aspect;
@@ -67,16 +71,31 @@ public class SAECaptureServiceValidation {
     * @throws EmptyFileNameEx 
     */
    @Before(CAPTURE_BINAIRE_METHOD)
-   public final void captureBinaire(List<UntypedMetadata> metadatas, byte[] content, String fileName) throws EmptyDocumentEx, EmptyFileNameEx {
+   public final void captureBinaire(List<UntypedMetadata> metadatas, DataHandler content, String fileName) throws EmptyDocumentEx, EmptyFileNameEx {
 
       if (StringUtils.isBlank(fileName)) {
          throw new EmptyFileNameEx(ResourceMessagesUtils.loadMessage(
                "nomfichier.vide"));
       }
       
-      if (content == null || content.length == 0) {
+      if (content == null) {
          throw new EmptyDocumentEx(ResourceMessagesUtils.loadMessage(
                "capture.fichier.binaire.vide"));
+      }
+      
+      try {
+         InputStream stream = content.getInputStream();
+      
+         if (stream == null) {
+            throw new EmptyDocumentEx(ResourceMessagesUtils.loadMessage(
+            "capture.fichier.binaire.vide"));
+         }
+         
+         stream.close();
+         
+      } catch (IOException e) {
+         throw new EmptyDocumentEx(ResourceMessagesUtils.loadMessage(
+         "capture.fichier.binaire.vide"));
       }
 
       if (CollectionUtils.isEmpty(metadatas)) {

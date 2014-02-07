@@ -6,6 +6,8 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.activation.DataHandler;
+
 import junit.framework.Assert;
 
 import org.apache.commons.io.FileUtils;
@@ -21,6 +23,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
+import fr.urssaf.image.sae.commons.utils.InputStreamSource;
 import fr.urssaf.image.sae.metadata.exceptions.DictionaryNotFoundException;
 import fr.urssaf.image.sae.metadata.exceptions.MetadataRuntimeException;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
@@ -67,14 +70,14 @@ public class SAEControlesCaptureServiceImplMetaTest {
          InvalidValueTypeAndFormatMetadataEx, SAECaptureServiceEx, IOException,
          ParseException, RequiredArchivableMetadataEx, URISyntaxException,
          DictionaryNotFoundException, ResourceException {
-      
-      
+
       ClassPathResource ressource = new ClassPathResource("PDF/doc1.PDF");
       List<UntypedMetadata> metas = new ArrayList<UntypedMetadata>();
       metas.add(new UntypedMetadata("CodeRND", "1.6"));
       metas.add(new UntypedMetadata("Hash", "hash"));
-      UntypedDocument untypedDocument = new UntypedDocument(FileUtils
-            .readFileToByteArray(ressource.getFile()), metas);
+      DataHandler dataHandler = new DataHandler(new InputStreamSource(FileUtils
+            .openInputStream(ressource.getFile())));
+      UntypedDocument untypedDocument = new UntypedDocument(dataHandler, metas);
       try {
          saeControlesCaptureService.checkUntypedMetadata(untypedDocument);
       } catch (MetadataValueNotInDictionaryEx ex) {
@@ -115,8 +118,9 @@ public class SAEControlesCaptureServiceImplMetaTest {
       metas.add(new UntypedMetadata("CodeRND", "1.1"));
       metas.add(new UntypedMetadata("Hash", "hash"));
       metas.add(new UntypedMetadata("Siret", "siret"));
-      UntypedDocument untypedDocument = new UntypedDocument(FileUtils
-            .readFileToByteArray(ressource.getFile()), metas);
+      DataHandler dataHandler = new DataHandler(new InputStreamSource(FileUtils
+            .openInputStream(ressource.getFile())));
+      UntypedDocument untypedDocument = new UntypedDocument(dataHandler, metas);
       saeControlesCaptureService.checkUntypedMetadata(untypedDocument);
    }
 

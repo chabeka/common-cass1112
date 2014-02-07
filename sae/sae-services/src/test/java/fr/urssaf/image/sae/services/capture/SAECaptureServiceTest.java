@@ -2,6 +2,7 @@ package fr.urssaf.image.sae.services.capture;
 
 import static org.junit.Assert.fail;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -15,6 +16,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+
+import javax.activation.DataHandler;
 
 import net.docubase.toolkit.model.document.Criterion;
 import net.docubase.toolkit.model.document.Document;
@@ -41,10 +44,13 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.sun.istack.ByteArrayDataSource;
+
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.commons.service.ParametersService;
+import fr.urssaf.image.sae.commons.utils.InputStreamSource;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
@@ -196,7 +202,8 @@ public class SAECaptureServiceTest {
          DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
          UnknownHashCodeEx, IOException, CaptureBadEcdeUrlEx,
-         CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile, UnknownFormatException {
+         CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx,
+         ValidationExceptionInvalidFile, UnknownFormatException {
 
       EcdeTestDocument ecde = ecdeTestTools
             .buildEcdeTestDocument("attestation_consultation.pdf");
@@ -262,7 +269,8 @@ public class SAECaptureServiceTest {
          DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
          UnknownHashCodeEx, IOException, CaptureBadEcdeUrlEx,
-         CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile, UnknownFormatException {
+         CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx,
+         ValidationExceptionInvalidFile, UnknownFormatException {
 
       EcdeTestDocument ecde = ecdeTestTools
             .buildEcdeTestDocument("attestation_consultation.pdf");
@@ -433,7 +441,8 @@ public class SAECaptureServiceTest {
          DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
          UnknownHashCodeEx, IOException, EmptyFileNameEx,
-         MetadataValueNotInDictionaryEx, UnknownFormatException, ValidationExceptionInvalidFile {
+         MetadataValueNotInDictionaryEx, UnknownFormatException,
+         ValidationExceptionInvalidFile {
 
       File srcFile = new File(
             "src/test/resources/doc/attestation_consultation.pdf");
@@ -455,7 +464,8 @@ public class SAECaptureServiceTest {
          DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
          UnknownHashCodeEx, IOException, EmptyFileNameEx,
-         MetadataValueNotInDictionaryEx, UnknownFormatException, ValidationExceptionInvalidFile {
+         MetadataValueNotInDictionaryEx, UnknownFormatException,
+         ValidationExceptionInvalidFile {
 
       File srcFile = new File(
             "src/test/resources/doc/attestation_consultation.pdf");
@@ -465,7 +475,10 @@ public class SAECaptureServiceTest {
 
       String fileNameEmpty = null;
       byte[] content = new byte[16384];
-      service.captureBinaire(metadatas, content, fileNameEmpty);
+      ByteArrayInputStream stream = new ByteArrayInputStream(content);
+      InputStreamSource source = new InputStreamSource(stream);
+      DataHandler dataHandler = new DataHandler(source);
+      service.captureBinaire(metadatas, dataHandler, fileNameEmpty);
 
       fail("Le message d'erreur : Le nom du fichier est vide.");
    }
@@ -477,7 +490,8 @@ public class SAECaptureServiceTest {
          DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
          UnknownHashCodeEx, IOException, EmptyFileNameEx,
-         MetadataValueNotInDictionaryEx, UnknownFormatException, ValidationExceptionInvalidFile {
+         MetadataValueNotInDictionaryEx, UnknownFormatException,
+         ValidationExceptionInvalidFile {
 
       File srcFile = new File(
             "src/test/resources/doc/attestation_consultation.pdf");
@@ -485,9 +499,12 @@ public class SAECaptureServiceTest {
       String hash = DigestUtils.shaHex(new FileInputStream(srcFile));
       metadatas.add(new UntypedMetadata("Hash", hash));
 
-      String fileNameEmpty = "          ";
       byte[] content = new byte[16384];
-      service.captureBinaire(metadatas, content, fileNameEmpty);
+      ByteArrayInputStream stream = new ByteArrayInputStream(content);
+      InputStreamSource source = new InputStreamSource(stream);
+      DataHandler dataHandler = new DataHandler(source);
+      String fileNameEmpty = "          ";
+      service.captureBinaire(metadatas, dataHandler, fileNameEmpty);
 
       fail("Le message d'erreur : Le nom du fichier est vide.");
    }
@@ -500,15 +517,19 @@ public class SAECaptureServiceTest {
          DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
          UnknownHashCodeEx, IOException, EmptyFileNameEx,
-         MetadataValueNotInDictionaryEx, UnknownFormatException, ValidationExceptionInvalidFile {
+         MetadataValueNotInDictionaryEx, UnknownFormatException,
+         ValidationExceptionInvalidFile {
 
       List<UntypedMetadata> metadatas = getListMetadata();
 
       String fileNameEmpty = "NomSansExtension";
       byte[] content = new byte[16384];
+      ByteArrayInputStream stream = new ByteArrayInputStream(content);
+      InputStreamSource source = new InputStreamSource(stream);
+      DataHandler dataHandler = new DataHandler(source);
       String hash = DigestUtils.shaHex(content);
       metadatas.add(new UntypedMetadata("Hash", hash));
-      service.captureBinaire(metadatas, content, fileNameEmpty);
+      service.captureBinaire(metadatas, dataHandler, fileNameEmpty);
 
    }
 
@@ -519,15 +540,19 @@ public class SAECaptureServiceTest {
          DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
          UnknownHashCodeEx, IOException, EmptyFileNameEx,
-         MetadataValueNotInDictionaryEx, UnknownFormatException, ValidationExceptionInvalidFile {
+         MetadataValueNotInDictionaryEx, UnknownFormatException,
+         ValidationExceptionInvalidFile {
 
       List<UntypedMetadata> metadatas = getListMetadata();
 
       String fileNameEmpty = "NomExtension.pdf";
       byte[] content = new byte[16];
+      ByteArrayDataSource source = new ByteArrayDataSource(content,
+            "application/octet-stream");
+      DataHandler dataHandler = new DataHandler(source);
       String hash = DigestUtils.shaHex(content);
       metadatas.add(new UntypedMetadata("Hash", hash));
-      service.captureBinaire(metadatas, content, fileNameEmpty);
+      service.captureBinaire(metadatas, dataHandler, fileNameEmpty);
 
    }
 
@@ -538,23 +563,28 @@ public class SAECaptureServiceTest {
          DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
          UnknownHashCodeEx, IOException, EmptyFileNameEx,
-         MetadataValueNotInDictionaryEx, UnknownFormatException, ValidationExceptionInvalidFile {
+         MetadataValueNotInDictionaryEx, UnknownFormatException,
+         ValidationExceptionInvalidFile {
 
       List<UntypedMetadata> metadatas = getListMetadata();
 
       String fileNameEmpty = "NomExtension.pdf";
       byte[] content = new byte[0];
+      ByteArrayInputStream stream = new ByteArrayInputStream(content);
+      InputStreamSource source = new InputStreamSource(stream);
+      DataHandler dataHandler = new DataHandler(source);
       String hash = DigestUtils.shaHex(content);
       metadatas.add(new UntypedMetadata("Hash", hash));
-      service.captureBinaire(metadatas, content, fileNameEmpty);
+      service.captureBinaire(metadatas, dataHandler, fileNameEmpty);
 
    }
 
    /**
     * Test permetant de vérifier que la capture fonctionne quand on lui passe un
     * emplacement de fichier
-    * @throws UnknownFormatException 
-    * @throws ValidationExceptionInvalidFile 
+    * 
+    * @throws UnknownFormatException
+    * @throws ValidationExceptionInvalidFile
     */
 
    @Test
@@ -564,7 +594,8 @@ public class SAECaptureServiceTest {
          DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
          UnknownHashCodeEx, IOException, CaptureBadEcdeUrlEx,
-         CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile, UnknownFormatException {
+         CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx,
+         ValidationExceptionInvalidFile, UnknownFormatException {
 
       File srcFile = new File(path);
 
@@ -625,8 +656,8 @@ public class SAECaptureServiceTest {
     * @throws ReferentialRndException
     * @throws SAECaptureServiceEx
     * @throws MetadataValueNotInDictionaryEx
-    * @throws UnknownFormatException 
-    * @throws ValidationExceptionInvalidFile 
+    * @throws UnknownFormatException
+    * @throws ValidationExceptionInvalidFile
     */
    @Test(expected = FileNotFoundException.class)
    public void fileNotFoundExceptionTest() throws SAECaptureServiceEx,
@@ -635,7 +666,8 @@ public class SAECaptureServiceTest {
          UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
          NotArchivableMetadataEx, EmptyDocumentEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx,
-         MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile, UnknownFormatException {
+         MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile,
+         UnknownFormatException {
       String path = FileUtils.getTempDirectoryPath();
       List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
       uuid = service.captureFichier(metadatas, path

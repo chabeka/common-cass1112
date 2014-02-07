@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.Map.Entry;
 
+import javax.activation.DataHandler;
+
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
@@ -58,7 +60,7 @@ public class BuildServiceImpl implements BuildService {
 	 * {@inheritDoc}
 	 */
 	@SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
-	public final UntypedDocument buildUntypedDocument(final byte[] content,
+	public final UntypedDocument buildUntypedDocument(final DataHandler content,
 			final Map<String, String> metadatas) {
 		final List<UntypedMetadata> uMetadatas = new ArrayList<UntypedMetadata>();
 		for (Entry<String, String> uMetadata : Utils.nullSafeMap(metadatas)

@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.activation.DataHandler;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.axiom.attachments.ByteArrayDataSource;
 import org.apache.axiom.util.base64.Base64Utils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -90,7 +91,8 @@ public class ConsultationTest {
       File expectedContent = new File(
             "src/test/resources/storage/attestation.pdf");
 
-      document.setContent(FileUtils.readFileToByteArray(expectedContent));
+      document.setContent(new DataHandler(new ByteArrayDataSource(FileUtils
+            .readFileToByteArray(expectedContent))));
       List<UntypedMetadata> untypedMetadatas = new ArrayList<UntypedMetadata>();
 
       UntypedMetadata metadata1 = new UntypedMetadata();
@@ -105,12 +107,12 @@ public class ConsultationTest {
 
       document.setUMetadatas(untypedMetadatas);
 
-//      ConsultParams consultParams = new ConsultParams(UUID
-//            .fromString("cc4a5ec1-788d-4b41-baa8-d349947865bf"));
-      
+      // ConsultParams consultParams = new ConsultParams(UUID
+      // .fromString("cc4a5ec1-788d-4b41-baa8-d349947865bf"));
+
       EasyMock.expect(
-            documentService.consultation(EasyMock.anyObject(ConsultParams.class)))
-            .andReturn(document);
+            documentService.consultation(EasyMock
+                  .anyObject(ConsultParams.class))).andReturn(document);
 
       EasyMock.replay(documentService);
 

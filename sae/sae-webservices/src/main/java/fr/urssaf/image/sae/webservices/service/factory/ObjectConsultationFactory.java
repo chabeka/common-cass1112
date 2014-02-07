@@ -1,5 +1,6 @@
 package fr.urssaf.image.sae.webservices.service.factory;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.activation.DataHandler;
@@ -57,7 +58,7 @@ public final class ObjectConsultationFactory {
     * @return instance de {@link ConsultationResponse}
     */
    public static ConsultationResponse createConsultationResponse(
-         byte[] content, List<MetadonneeType> metadonnees) {
+         DataHandler content, List<MetadonneeType> metadonnees) {
 
       Assert.notNull(content, "content is required");
 
@@ -111,14 +112,21 @@ public final class ObjectConsultationFactory {
     * @return instance de {@link ConsultationMTOMResponse}
     */
    public static ConsultationMTOMResponse createConsultationMTOMResponse(
-         byte[] content, List<MetadonneeType> metadonnees, String typeMime) {
+         DataHandler content, List<MetadonneeType> metadonnees, String typeMime) {
 
       Assert.notNull(content, "content is required");
 
       ConsultationMTOMResponse responseMTOM = new ConsultationMTOMResponse();
       ConsultationMTOMResponseType responseMTOMType = new ConsultationMTOMResponseType();
 
-      DataSource dataSource = new ConsultationDataSource(content, typeMime);
+      DataSource dataSource;
+      try {
+         dataSource = new ConsultationDataSource(content.getInputStream(),
+               typeMime);
+
+      } catch (IOException e) {
+         throw new RuntimeException(e);
+      }
       DataHandler dataHandler = new DataHandler(dataSource);
 
       responseMTOMType.setContenu(dataHandler);

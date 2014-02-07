@@ -1,9 +1,12 @@
 package fr.urssaf.image.sae.mapping.services.impl;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.text.ParseException;
 import java.util.List;
+
+import javax.activation.DataHandler;
 
 import junit.framework.Assert;
 
@@ -20,6 +23,7 @@ import fr.urssaf.image.sae.bo.model.bo.VirtualReferenceFile;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedVirtualDocument;
+import fr.urssaf.image.sae.commons.utils.InputStreamSource;
 import fr.urssaf.image.sae.mapping.dataprovider.MappingDataProviderUtils;
 import fr.urssaf.image.sae.mapping.exception.InvalidSAETypeException;
 import fr.urssaf.image.sae.mapping.exception.MappingFromReferentialException;
@@ -56,8 +60,10 @@ public class MappingDocumentServiceTest {
          throws FileNotFoundException {
       List<UntypedMetadata> metadatas = null;
       final byte[] content = "fichier Test".getBytes();
+      DataHandler dataHandler = new DataHandler(new InputStreamSource(
+            new ByteArrayInputStream(content)));
       metadatas = MappingDataProviderUtils.getUntypedMetadata(xmlfile);
-      return new UntypedDocument(content, metadatas);
+      return new UntypedDocument(dataHandler, metadatas);
    }
 
    /**

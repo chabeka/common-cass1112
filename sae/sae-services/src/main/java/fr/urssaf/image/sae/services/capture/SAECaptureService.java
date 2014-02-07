@@ -5,6 +5,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
+import javax.activation.DataHandler;
+
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
@@ -149,7 +151,7 @@ public interface SAECaptureService {
     *            {@link ValidationExceptionInvalidFile}
     */
    @PreAuthorize("hasRole('archivage_unitaire')")
-   UUID captureBinaire(List<UntypedMetadata> metadatas, byte[] content,
+   UUID captureBinaire(List<UntypedMetadata> metadatas, DataHandler content,
          String fileName) throws SAECaptureServiceEx,
          RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx,
          UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,

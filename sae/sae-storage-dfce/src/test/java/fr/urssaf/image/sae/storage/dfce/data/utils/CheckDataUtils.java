@@ -1,6 +1,7 @@
 package fr.urssaf.image.sae.storage.dfce.data.utils;
 
-import java.io.UnsupportedEncodingException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.List;
@@ -27,16 +28,17 @@ public final class CheckDataUtils {
     * @param secondSaeDocument
     *           : Deuxième document un de type {@link byte}
     * @return boolean True si les deux sha1 sont identique sinon false
-    * @throws UnsupportedEncodingException
-    *            Exception levé quand l'encodage n'est pas supporter.
     * @throws NoSuchAlgorithmException
     *            Exception levé quand l'algorthme n'est pas supporter.
+    * @throws IOException
     */
-   public static boolean checkDocumentSha1(final byte[] firstSaeDocument,
-        final byte[] secondSaeDocument) throws NoSuchAlgorithmException,
-         UnsupportedEncodingException {
-      Assert.assertNotNull("firstSaeDocument ne doit pas être null", firstSaeDocument);
-      Assert.assertNotNull("secondSaeDocument ne doit pas être null", secondSaeDocument);
+   public static boolean checkDocumentSha1(final InputStream firstSaeDocument,
+         final InputStream secondSaeDocument) throws NoSuchAlgorithmException,
+         IOException {
+      Assert.assertNotNull("firstSaeDocument ne doit pas être null",
+            firstSaeDocument);
+      Assert.assertNotNull("secondSaeDocument ne doit pas être null",
+            secondSaeDocument);
       return DigestUtils.shaHex(firstSaeDocument).equals(
             DigestUtils.shaHex(secondSaeDocument));
    }
@@ -50,8 +52,9 @@ public final class CheckDataUtils {
     *           : Deuxième liste des métadonnées.
     * @return true si les deux listes sont identique sinon false
     */
-   public static boolean checkMetaDatas(final List<StorageMetadata> entryMetadatas,
-       final  List<StorageMetadata> desiredMetadatas) {
+   public static boolean checkMetaDatas(
+         final List<StorageMetadata> entryMetadatas,
+         final List<StorageMetadata> desiredMetadatas) {
       Assert.assertNotNull("entryMetadatas ne doit pas être null",
             entryMetadatas);
       Assert.assertNotNull("desiredMetadatas  ne doit pas être null",
@@ -83,9 +86,9 @@ public final class CheckDataUtils {
     *           : Deuxième liste des métadonnées.
     * @return true si les deux listes sont identique sinon false
     */
-   public static boolean checkDesiredMetaDatas(final 
-         List<StorageMetadata> entryMetadatas,
-       final  List<StorageMetadata> desiredMetadatas) {
+   public static boolean checkDesiredMetaDatas(
+         final List<StorageMetadata> entryMetadatas,
+         final List<StorageMetadata> desiredMetadatas) {
       Assert.assertNotNull("EntryMetadatas ne doit pas être null",
             entryMetadatas);
       Assert.assertNotNull("DesiredMetadatas  ne doit pas être null",
@@ -124,7 +127,7 @@ public final class CheckDataUtils {
     * @return true si les deux objets sont identiques.
     */
    private static boolean compareTwoObjects(final Object firstObject,
-		   final  Object secondObject) {
+         final Object secondObject) {
       boolean isSame = true;
       if (firstObject instanceof Integer) {
          if (firstObject.hashCode() != Integer.valueOf((String) secondObject)

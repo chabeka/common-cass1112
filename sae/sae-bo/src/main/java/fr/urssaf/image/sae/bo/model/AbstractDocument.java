@@ -2,6 +2,8 @@ package fr.urssaf.image.sae.bo.model;
 
 import java.util.UUID;
 
+import javax.activation.DataHandler;
+
 /**
  * Classe abstraite contenant les éléments communs des objets métiers et objets
  * conteneurs.<br/>
@@ -15,7 +17,7 @@ import java.util.UUID;
 @SuppressWarnings("PMD.AbstractClassWithoutAbstractMethod")
 public abstract class AbstractDocument {
    // Les attributs
-   private byte[] content;
+   private DataHandler content;
    private UUID uuid;
    private String filePath;
    private String fileName;
@@ -24,7 +26,7 @@ public abstract class AbstractDocument {
     * @return Le contenu d’un document
     */
    @SuppressWarnings("PMD.MethodReturnsInternalArray")
-   public final byte[] getContent() {
+   public final DataHandler getContent() {
       // Pas de clone pour des raisons de performance.
       return content;
    }
@@ -34,7 +36,7 @@ public abstract class AbstractDocument {
     *           : Le contenu d’un document.
     */
    @SuppressWarnings("PMD.ArrayIsStoredDirectly")
-   public final void setContent(final byte[] fileContent) {
+   public final void setContent(final DataHandler fileContent) {
       // Pas de clone pour des raisons de performance.
       this.content = fileContent;
 
@@ -69,7 +71,7 @@ public abstract class AbstractDocument {
     *           : Le contenu d’un document.
     */
    @SuppressWarnings("PMD.ArrayIsStoredDirectly")
-   public AbstractDocument(final byte[] fileContent) {
+   public AbstractDocument(final DataHandler fileContent) {
       // Pas de clone pour des raisons de performance.
       this.content = fileContent;
 
@@ -84,7 +86,7 @@ public abstract class AbstractDocument {
     *           : Le chemin absolu du fichier.
     */
    @SuppressWarnings("PMD.ArrayIsStoredDirectly")
-   public AbstractDocument(final byte[] fileContent, final String filePath) {
+   public AbstractDocument(final DataHandler fileContent, final String filePath) {
       // Pas de clone pour des raisons de performance.
       this.content = fileContent;
       this.filePath = filePath;
@@ -103,7 +105,7 @@ public abstract class AbstractDocument {
     */
    @SuppressWarnings("PMD.ArrayIsStoredDirectly")
    public AbstractDocument(final String filePath, final String fileName,
-         final byte[] fileContent) {
+         final DataHandler fileContent) {
       // Pas de clone pour des raisons de performance.
       this.filePath = filePath;
       this.content = fileContent;
@@ -120,7 +122,7 @@ public abstract class AbstractDocument {
     *           : Le nom du fichier.
     */
    @SuppressWarnings("PMD.ArrayIsStoredDirectly")
-   public AbstractDocument(String fileName, final byte[] fileContent) {
+   public AbstractDocument(String fileName, final DataHandler fileContent) {
       // Pas de clone pour des raisons de performance.
       this.content = fileContent;
       this.fileName = fileName;

@@ -3,6 +3,7 @@ package fr.urssaf.image.sae.webservices.skeleton;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.activation.DataHandler;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.axis2.AxisFault;
@@ -97,7 +98,7 @@ public class ArchivageUnitairePJFailureTest {
 
       List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
       metadatas.add(EasyMock.anyObject(UntypedMetadata.class));
-      byte[] content = EasyMock.notNull();
+      DataHandler content = EasyMock.notNull();
 
       try {
          EasyMock.expect(

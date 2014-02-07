@@ -2,6 +2,8 @@ package fr.urssaf.image.sae.bo.model.bo;
 
 import java.util.List;
 
+import javax.activation.DataHandler;
+
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
@@ -49,7 +51,8 @@ public class SAEDocument extends AbstractDocument {
     * @param saeMetadatas
     *           : La liste des métadonnées métiers.
     */
-   public SAEDocument(final byte[] content, final List<SAEMetadata> saeMetadatas) {
+   public SAEDocument(final DataHandler content,
+         final List<SAEMetadata> saeMetadatas) {
       super(content);
       this.metadatas = saeMetadatas;
    }
@@ -66,8 +69,8 @@ public class SAEDocument extends AbstractDocument {
     * @param metadatas
     *           : La liste des métadonnées non typés.
     */
-   public SAEDocument(final String filePath, final byte[] content, final String fileName,
-         final List<SAEMetadata> metadatas) {
+   public SAEDocument(final String filePath, final DataHandler content,
+         final String fileName, final List<SAEMetadata> metadatas) {
       super(filePath, fileName, content);
       this.metadatas = metadatas;
    }
@@ -82,7 +85,7 @@ public class SAEDocument extends AbstractDocument {
     * @param saeMetadatas
     *           : La liste des métadonnées métiers.
     */
-   public SAEDocument(final String filePath, final byte[] content,
+   public SAEDocument(final String filePath, final DataHandler content,
          final List<SAEMetadata> saeMetadatas) {
       super(content, filePath);
       this.metadatas = saeMetadatas;

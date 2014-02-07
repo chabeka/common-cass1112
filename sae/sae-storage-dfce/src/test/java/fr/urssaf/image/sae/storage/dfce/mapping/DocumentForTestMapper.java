@@ -1,15 +1,18 @@
 package fr.urssaf.image.sae.storage.dfce.mapping;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.activation.DataHandler;
+import javax.activation.FileDataSource;
+
 import org.junit.Assert;
 
-import com.google.common.io.Files;
-
+import fr.urssaf.image.sae.commons.utils.InputStreamSource;
 import fr.urssaf.image.sae.storage.dfce.data.constants.Constants;
 import fr.urssaf.image.sae.storage.dfce.data.model.DesiredMetaData;
 import fr.urssaf.image.sae.storage.dfce.data.model.SaeCategory;
@@ -20,6 +23,11 @@ import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 
 /**
  * Fournit des méthodes statiques pour mapper les objets {@StorageDocument
+ * 
+ * 
+ * 
+ * 
+ * 
  * 
  * 
  * } et des objets et les objets {@link SaeDocument}
@@ -70,8 +78,8 @@ public final class DocumentForTestMapper {
       storageDocument.setMetadatas(metadatas);
       storageDocument.setFilePath(new File(saeDocument.getBase().getFilePath())
             .toString());
-      storageDocument.setContent(Files.toByteArray(new File(saeDocument
-            .getBase().getFilePath())));
+      storageDocument.setContent(new DataHandler(new FileDataSource(new File(
+            saeDocument.getBase().getFilePath()))));
       return storageDocument;
    }
 

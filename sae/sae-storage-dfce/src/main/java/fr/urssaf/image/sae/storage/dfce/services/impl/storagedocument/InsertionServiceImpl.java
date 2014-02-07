@@ -1,19 +1,22 @@
 package fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument;
 
-import java.io.ByteArrayInputStream;
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.UUID;
+
+import javax.activation.DataHandler;
+import javax.activation.FileDataSource;
 
 import net.docubase.toolkit.model.base.Base;
 import net.docubase.toolkit.model.document.Document;
 import net.docubase.toolkit.model.reference.FileReference;
 import net.docubase.toolkit.service.ServiceProvider;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -100,9 +103,9 @@ public class InsertionServiceImpl extends AbstractServices implements
                getBaseDFCE(), storageDocument);
 
          // ici on récupère le contenu du fichier.
-         byte[] docContentByte = FileUtils.readFileToByteArray(new File(
-               storageDocument.getFilePath()));
-         final InputStream docContent = new ByteArrayInputStream(docContentByte);
+         File fileContent = new File(storageDocument.getFilePath());
+         final DataHandler docContent = new DataHandler(new FileDataSource(
+               fileContent));
 
          // ici on récupère le nom et l'extension du fichier
          final String[] file = BeanMapper.findFileNameAndExtension(
@@ -113,8 +116,8 @@ public class InsertionServiceImpl extends AbstractServices implements
                new Object[] { TRC_INSERT, file[0], file[1] });
          LOGGER.debug("{} - Début insertion du document dans DFCE", TRC_INSERT);
 
-         StorageDocument retour = insertDocumentInStorage(docDfce,
-               docContentByte, docContent, file, storageDocument.getMetadatas());
+         StorageDocument retour = insertDocumentInStorage(docDfce, docContent,
+               file, storageDocument.getMetadatas());
 
          return retour;
       } catch (Exception except) {
@@ -139,12 +142,11 @@ public class InsertionServiceImpl extends AbstractServices implements
          // conversion du storageDoc en DFCE Document
          Document docDfce = BeanMapper.storageDocumentToDfceDocument(
                getBaseDFCE(), storageDoc);
-         
+
          docDfce.setUuid(storageDoc.getUuid());
-        
+
          // ici on récupère le contenu du fichier.
-         byte[] docContentByte = storageDoc.getContent();
-         InputStream docContent = new ByteArrayInputStream(docContentByte);
+         DataHandler docContent = storageDoc.getContent();
 
          // ici on récupère le nom et l'extension du fichier
          String[] file = new String[] {
@@ -156,8 +158,8 @@ public class InsertionServiceImpl extends AbstractServices implements
                new Object[] { TRC_INSERT, file[0], file[1] });
          LOGGER.debug("{} - Début insertion du document dans DFCE", TRC_INSERT);
 
-         StorageDocument retour = insertDocumentInStorage(docDfce,
-               docContentByte, docContent, file, storageDoc.getMetadatas());
+         StorageDocument retour = insertDocumentInStorage(docDfce, docContent,
+               file, storageDoc.getMetadatas());
          return retour;
       } catch (Exception except) {
 
@@ -217,8 +219,8 @@ public class InsertionServiceImpl extends AbstractServices implements
    }
 
    private StorageDocument insertDocumentInStorage(Document docDfce,
-         byte[] docContentByte, InputStream documentContent, String[] file,
-         List<StorageMetadata> datas) throws InsertionServiceEx {
+         DataHandler documentContent, String[] file, List<StorageMetadata> datas)
+         throws InsertionServiceEx {
 
       // Traces debug - entrée méthode
       LOGGER.debug("{} - Début", TRC_INSERT);
@@ -229,6 +231,8 @@ public class InsertionServiceImpl extends AbstractServices implements
       checkDocumentType(datas);
 
       LOGGER.debug("{} - Fin de vérification du type de document", TRC_INSERT);
+
+      InputStream inputStream = null;
 
       try {
 
@@ -270,15 +274,16 @@ public class InsertionServiceImpl extends AbstractServices implements
             } else {
 
                // on recalcule le hash
-               digest = HashUtils.hashHex(docContentByte, digestAlgo);
-               LOGGER.debug("{} - Hash recalculé : {}", TRC_INSERT, digest);
+               digest = checkHash(documentContent, digestAlgo, file[0]);
             }
 
          }
 
+         inputStream = documentContent.getInputStream();
+
          // Appel de l'API DFCE pour l'archivage du document
          Document docArchive = insertStorageDocument(docDfce, file[0], file[1],
-               digest, documentContent, hashMeta, typeHashMeta);
+               digest, inputStream, hashMeta, typeHashMeta);
 
          // Trace
          LOGGER.debug("{} - Document inséré dans DFCE (UUID: {})", TRC_INSERT,
@@ -302,6 +307,8 @@ public class InsertionServiceImpl extends AbstractServices implements
          throw new InsertionServiceEx(StorageMessageHandler
                .getMessage(Constants.INS_CODE_ERROR), except.getMessage(),
                except);
+      } finally {
+         close(inputStream, file[0]);
       }
 
    }
@@ -400,5 +407,37 @@ public class InsertionServiceImpl extends AbstractServices implements
       LOGGER.debug("{} - fin", trcPrefix);
 
       return uuid;
+   }
+
+   private String checkHash(DataHandler documentContent, String digestAlgo,
+         String fileName) throws IOException, NoSuchAlgorithmException {
+
+      InputStream stream = null;
+
+      String digest;
+      try {
+         stream = documentContent.getInputStream();
+         digest = HashUtils.hashHex(stream, digestAlgo);
+         LOGGER.debug("{} - Hash recalculé : {}", TRC_INSERT, digest);
+      } finally {
+         close(stream, fileName);
+      }
+
+      return digest;
+   }
+
+   private void close(Closeable closeable, String name) {
+      String trcPrefix = "close()";
+
+      if (closeable != null) {
+
+         try {
+            closeable.close();
+
+         } catch (IOException e) {
+            LOGGER.info("{} - Erreur de fermeture du flux {}", new Object[] {
+                  trcPrefix, name });
+         }
+      }
    }
 }

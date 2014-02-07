@@ -4,16 +4,27 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.fail;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.activation.DataHandler;
+import javax.activation.FileDataSource;
+
+import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import de.schlichtherle.io.FileInputStream;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
+import fr.urssaf.image.sae.storage.dfce.utils.HashUtils;
 import fr.urssaf.image.sae.webservices.exception.ConsultationAxisFault;
 
 /**
@@ -250,6 +261,25 @@ public class WSConsultationServiceImplTest {
          checkSoapFaultErreurInterne(fault);
 
       }
+
+   }
+
+   @Test
+   public void testHash() throws IOException, NoSuchAlgorithmException {
+      ClassPathResource resource = new ClassPathResource(
+            "storage/attestation.pdf");
+      File file = resource.getFile();
+
+      byte[] content = FileUtils.readFileToByteArray(file);
+      InputStream stream = new DataHandler(new FileDataSource(file))
+            .getInputStream();
+
+      String contentHash = HashUtils.hashHex(content, "SHA-1");
+      System.out.println(contentHash);
+      String streamHash = HashUtils.hashHex(stream, "SHA-1");
+      System.out.println(streamHash);
+      stream.close();
+      System.out.println(streamHash);
 
    }
 

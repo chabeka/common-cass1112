@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.activation.DataHandler;
+
 import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.LuceneCriteria;
@@ -54,7 +56,7 @@ public interface BuildService {
 	 * @return un objet de type {@link UntypedDocument}
 	 */
 	@SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
-	UntypedDocument buildUntypedDocument(final byte[] content,
+	UntypedDocument buildUntypedDocument(final DataHandler content,
 			final Map<String, String> metadatas);
 
 }
