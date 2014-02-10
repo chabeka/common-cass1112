@@ -82,6 +82,7 @@ public class TraitementServiceImpl implements TraitementService {
                Constantes.METADONNEES_FORMAT_FICHIER).toString();
 
          File file = null;
+         boolean identificationValid = true;
          try {
             // creation du fichier temporaire
             file = createTmpFile(parametres, stream);
@@ -89,16 +90,17 @@ public class TraitementServiceImpl implements TraitementService {
             if (!lancerIdentifierFichier(parametres, metadonnees, document,
                   idFormat, file)) {
                nbDocErreurIdent++;
+               identificationValid = false;
             }
 
-            lancerValiderFichier(parametres, executor, document, file);
+            lancerValiderFichier(parametres, executor, document, file, identificationValid);
 
             nbDocTraites++;
 
             // trace l'avancement de l'identification
             tracerIdentification(parametres, nbDocTraites);
 
-            if ((parametres.getModeVerification() == MODE_VERIFICATION.IDENTIFICATION)
+            if (((parametres.getModeVerification() == MODE_VERIFICATION.IDENTIFICATION) || !identificationValid)
                   && (file != null)) {
                LOGGER.debug("Suppression du fichier temporaire {}", file
                      .getAbsolutePath());
@@ -124,6 +126,9 @@ public class TraitementServiceImpl implements TraitementService {
       LOGGER.info("{} documents en erreur d'identification", nbDocErreurIdent);
       LOGGER.info("{} documents en erreur de validation", executor
             .getNombreDocsErreur());
+
+      // ferme la connexion a dfce
+      getDfceService().fermerConnexion();
    }
 
    /**
@@ -183,13 +188,16 @@ public class TraitementServiceImpl implements TraitementService {
     *           document
     * @param file
     *           fichier
+    * @param identificationValid
+    *           flag indiquant si l'identification est valide ou non
     * @return boolean
     */
    private void lancerValiderFichier(
          final FormatValidationParametres parametres,
          final FormatValidationPoolThreadExecutor executor,
-         final Document document, File file) {
-      if (parametres.getModeVerification() != MODE_VERIFICATION.IDENTIFICATION) {
+         final Document document, File file, final boolean identificationValid) {
+      if ((parametres.getModeVerification() != MODE_VERIFICATION.IDENTIFICATION)
+            && (identificationValid)) {
          final FormatRunnable runnable = new FormatRunnable(document, file,
                getFormatFichierService());
          executor.execute(runnable);
@@ -241,7 +249,7 @@ public class TraitementServiceImpl implements TraitementService {
          // maximum
          final long dureeCouranteMinute = (System.currentTimeMillis() - startTime)
                / Constantes.CONVERT_MILLISECONDS_TO_MINUTES;
-         tempsMaxAtteind = (dureeCouranteMinute < parametres
+         tempsMaxAtteind = (dureeCouranteMinute >= parametres
                .getTempsMaxTraitement());
       }
       return tempsMaxAtteind;

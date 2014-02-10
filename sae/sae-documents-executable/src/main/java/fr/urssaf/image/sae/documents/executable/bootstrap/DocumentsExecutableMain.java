@@ -31,7 +31,7 @@ public class DocumentsExecutableMain {
 
    public static final String VERIFICATION_FORMAT = "VERIFICATION_FORMAT";
 
-   public static final String[] AVAIBLE_SERVICES = new String[] { VERIFICATION_FORMAT };
+   protected static final String[] AVAIBLE_SERVICES = new String[] { VERIFICATION_FORMAT };
 
    private final String configLocation;
 
@@ -112,7 +112,17 @@ public class DocumentsExecutableMain {
       ApplicationContext context = ContextFactory.createSAEApplicationContext(
             this.configLocation, saeConfiguration);
 
-      executeService(service, context, parametres);
+      try {
+         executeService(service, context, parametres);
+      } catch (Throwable throwable) { // NOPMD Par Cédric le 10/02/2014 11:30 :
+                                      // On veut récupérer tous les types
+                                      // d'exceptions
+         LOGGER.error(
+               "Une erreur s'est produite lors du traitement " + service,
+               throwable);
+      } finally {
+         ((ClassPathXmlApplicationContext) context).close();
+      }
    }
 
    /**
@@ -241,20 +251,8 @@ public class DocumentsExecutableMain {
     */
    protected final void verifierFormat(final ApplicationContext context,
          final FormatValidationParametres parametres) {
-
-      try {
-         TraitementService traitementService = context
-               .getBean(TraitementService.class);
-         traitementService.identifierValiderFichiers(parametres);
-      } catch (RuntimeException e) {
-         LOGGER
-               .error(
-                     "Une erreur s'est produite lors de l'exécution du traitement : {}",
-                     e.getMessage());
-         throw e;
-      } finally {
-         ((ClassPathXmlApplicationContext) context).close();
-      }
-
+      TraitementService traitementService = context
+            .getBean(TraitementService.class);
+      traitementService.identifierValiderFichiers(parametres);
    }
 }
