@@ -10,5 +10,7 @@
    <bean id="permitAll"
       class="fr.urssaf.image.sae.droit.controle.impl.skip.PrmdControlePermitAll" />
 
-   <bean class="fr.urssaf.image.sae.droit.cache.CacheConfig" id="cacheConfig" />
+   <bean class="fr.urssaf.image.sae.droit.cache.CacheConfig" id="cacheConfig">
+      <property name="droitsCacheDuration" value="${sae.droits.cache}" />
+   </bean>
 </beans>

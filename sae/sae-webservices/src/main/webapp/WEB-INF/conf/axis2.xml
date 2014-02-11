@@ -27,13 +27,11 @@
 
    <parameter name="EnableChildFirstClassLoading">false</parameter>
 
-   <!--Uncomment if you want to enable file caching for attachments -->
-   <!--
-      parameter name="cacheAttachments">true</parameter> <parameter
-      name="attachmentDIR"></parameter> <parameter
-      name="sizeThreshold">4000</parameter
-   -->
-
+   <!--Uncomment if you want to enable file caching for attachments
+   <parameter name="cacheAttachments">true</parameter> 
+   <parameter name="attachmentDIR">d:/ws/tmp</parameter>
+   <parameter name="sizeThreshold">4</parameter>
+ -->
    <!--
       Uncomment if you want to plugin your own attachments lifecycle
       implementation

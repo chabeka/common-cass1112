@@ -4,22 +4,13 @@
 package fr.urssaf.image.sae.droit.service.impl;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
-import com.google.common.cache.CacheLoader.InvalidCacheLoadException;
-import com.google.common.util.concurrent.UncheckedExecutionException;
 
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.droit.dao.model.Pagmf;
 import fr.urssaf.image.sae.droit.dao.support.PagmfSupport;
-import fr.urssaf.image.sae.droit.exception.DroitRuntimeException;
 import fr.urssaf.image.sae.droit.exception.PagmfNotFoundException;
 import fr.urssaf.image.sae.droit.service.SaePagmfService;
 import fr.urssaf.image.sae.droit.utils.ResourceMessagesUtils;
@@ -37,11 +28,6 @@ public class SaePagmfServiceImpl implements SaePagmfService {
    private final JobClockSupport clockSupport;
 
    /**
-    * Gestion du cache
-    */
-   private final LoadingCache<String, Pagmf> pagmfs;
-
-   /**
     * Constructeur
     * 
     * @param pagmfSup
@@ -50,28 +36,13 @@ public class SaePagmfServiceImpl implements SaePagmfService {
     *           l'horloge {@link JobClockSupport}
     * @param value
     *           durée du cache
-    * 
-    *           Récupération du conteneur de clockSupport
-    * 
-    *           sae.pagmf.cache à définir dans un fichier tel
-    *           sae-config.properties dans src/test/resources/config
     */
    @Autowired
    public SaePagmfServiceImpl(PagmfSupport pagmfSup,
-         JobClockSupport clockSupport, @Value("${sae.pagmf.cache}") int value) {
+         JobClockSupport clockSupport) {
 
       this.pagmfSupport = pagmfSup;
       this.clockSupport = clockSupport;
-
-      // Mise en cache
-      pagmfs = CacheBuilder.newBuilder().refreshAfterWrite(value,
-            TimeUnit.MINUTES).build(new CacheLoader<String, Pagmf>() {
-
-         @Override
-         public Pagmf load(String identifiant) {
-            return pagmfSupport.find(identifiant);
-         }
-      });
    }
 
    @Override
@@ -88,16 +59,14 @@ public class SaePagmfServiceImpl implements SaePagmfService {
    @Override
    public final Pagmf getPagmf(String code) {
 
-      Pagmf pagmf;
-      try {
-         pagmf = pagmfs.getUnchecked(code);
-         return pagmf;
-      } catch (InvalidCacheLoadException e) {
+      Pagmf pagmf = pagmfSupport.find(code);
+
+      if (pagmf == null) {
          throw new PagmfNotFoundException(ResourceMessagesUtils.loadMessage(
-               "erreur.no.pagmf.found", code), e);
-      } catch (UncheckedExecutionException e) {
-         throw new DroitRuntimeException(e);
+               "erreur.no.pagmf.found", code));
       }
+
+      return pagmf;
    }
 
    @Override

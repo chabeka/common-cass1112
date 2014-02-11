@@ -51,10 +51,9 @@ public class TraceContextFactoryTest {
                   "sae.ecde.cheminFichierConfig=src/test/resources/config/ecdesources.xml",
                   "sae.metadata.cache=6000",
                   "sae.rnd.url=http://cer69imageint4.cer69.recouv:9007/services/duplication.php?WSDL",
-                  "sae.rnd.cache=6000",
-                  "sae.referentiel.format.cache=1000",
+                  "sae.rnd.cache=6000", "sae.referentiel.format.cache=1000",
                   "sae.format.control.profil.cache=1000",
-                  "sae.pagmf.cache=1000");
+                  "sae.droits.cache=1000");
 
       FileUtils.writeLines(saeResourceFile, lines);
 

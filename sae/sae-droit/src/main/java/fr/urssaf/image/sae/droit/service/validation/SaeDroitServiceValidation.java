@@ -28,9 +28,6 @@ public class SaeDroitServiceValidation {
     */
    private static final String ARG_REQUIRED = "argument.required";
 
-   private static final String LOAD_METHOD = "execution(fr.urssaf.image.sae.droit.model.SaeDroits fr.urssaf.image.sae.droit.service.SaeDroitService.loadSaeDroits(*,*))"
-         + "&& args(idClient, pagms)";
-
    private static final String LOAD_METHOD_2 = "execution(fr.urssaf.image.sae.droit.model.SaeDroitsEtFormat fr.urssaf.image.sae.droit.service.SaeDroitService.loadSaeDroits(*,*))"
          + "&& args(idClient, pagms)";
 
@@ -46,30 +43,7 @@ public class SaeDroitServiceValidation {
    private static final String ADD_PAGM_METHOD = "execution(void fr.urssaf.image.sae.droit.service.SaeDroitService.addPagmContratService(*,*))"
          + "&& args(idClient, pagm)";;
 
-   /**
-    * Validation de la méthode loadSaeDroits(String, List)
-    * 
-    * @param idClient
-    *           identifiant client
-    * @param pagms
-    *           liste des pagms
-    */
-   @Before(LOAD_METHOD)
-   public final void checkLoad(final String idClient, List<String> pagms) {
-
-      if (StringUtils.isEmpty(idClient)) {
-         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               ARG_REQUIRED, "identifiant client"));
-      }
-
-      if (CollectionUtils.isEmpty(pagms)) {
-         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               ARG_REQUIRED, "liste des pagms"));
-      }
-
-   }
-
-   /**
+  /**
     * Validation de la méthode loadSaeDroits
     * 
     * @param idClient

@@ -247,77 +247,6 @@ public class SaeDroitServiceImpl implements SaeDroitService {
       this.keyspace = keyspace;
    }
 
-   /**
-    * {@inheritDoc}
-    */
-   // @Override
-   // public final SaeDroits loadSaeDroits(String idClient, List<String> pagms)
-   // throws ContratServiceNotFoundException, PagmNotFoundException {
-   //
-   // LOGGER.debug("{} - Vérification de l'existence du contrat de service {}",
-   // TRC_LOAD, idClient);
-   //
-   // try {
-   // contratsCache.getUnchecked(idClient);
-   // } catch (InvalidCacheLoadException e) {
-   // throw new ContratServiceNotFoundException(
-   // "Aucun contrat de service n'a été trouvé "
-   // + " pour l'identifiant " + idClient, e);
-   // }
-   //
-   // List<Pagm> listPagm;
-   // LOGGER
-   // .debug(
-   // "{} - Vérification ques des pagms sont associés au contrat de service {}",
-   // TRC_LOAD, idClient);
-   // try {
-   // listPagm = pagmsCache.getUnchecked(idClient);
-   // } catch (InvalidCacheLoadException e) {
-   // // initialisation de la liste à vide, afin d'avoir une liste de
-   // // référence
-   // listPagm = new ArrayList<Pagm>();
-   // }
-   //
-   // SaeDroits saeDroits = new SaeDroits();
-   //
-   // LOGGER
-   // .debug(
-   // "{} - Pour chaque pagm, on vérifie que les pagma et pagmp associés existent",
-   // TRC_LOAD);
-   // for (String codePagm : pagms) {
-   // Pagm pagm = checkPagmExists(codePagm, listPagm, idClient);
-   //
-   // Pagma pagma;
-   // try {
-   // pagma = pagmasCache.getUnchecked(pagm.getPagma());
-   // } catch (InvalidCacheLoadException e) {
-   // throw new PagmaReferenceException(
-   // "Le PAGMa "
-   // + pagm.getPagma()
-   // + " n'a pas été trouvé dans la famille de colonne DroitPagma",
-   // e);
-   // }
-   //
-   // Prmd prmd = getPrmd(pagm.getPagmp());
-   //
-   // for (String codeAction : pagma.getActionUnitaires()) {
-   // try {
-   // actionsCache.getUnchecked(codeAction);
-   // } catch (InvalidCacheLoadException e) {
-   // throw new ActionUnitaireReferenceException("L'action unitaire "
-   // + codeAction + " n'a pas été trouvée "
-   // + "dans la famille de colonne DroitActionUnitaire", e);
-   // }
-   //
-   // gererPrmd(saeDroits, codeAction, prmd, pagm);
-   //
-   // }
-   //
-   // }
-   //
-   // return saeDroits;
-   // }
-
    @Override
    public final SaeDroitsEtFormat loadSaeDroits(String idClient,
          List<String> pagms) throws ContratServiceNotFoundException,
@@ -407,7 +336,8 @@ public class SaeDroitServiceImpl implements SaeDroitService {
             List<FormatControlProfil> listFormatControlProfil = saeDroitEtFormat
                   .getListFormatControlProfil();
             listFormatControlProfil.add(formatControlProfil);
-            saeDroitEtFormat.setListFormatControlProfil(listFormatControlProfil);
+            saeDroitEtFormat
+                  .setListFormatControlProfil(listFormatControlProfil);
          }
       }
       return saeDroitEtFormat;
@@ -620,7 +550,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
 
       return contratSupport.findAll(maxResult);
    }
-   
+
    /**
     * {@inheritDoc}
     */
@@ -662,8 +592,9 @@ public class SaeDroitServiceImpl implements SaeDroitService {
       List<SaePagm> listeSaePagm = this.getListeSaePagm(idClient);
 
       List<SaePrmd> listeSaePrmd = this.findPrmd(listeSaePagm);
-      
-      List<FormatControlProfil> listeFormatControlProfil = this.getListeFcp(listeSaePagm);
+
+      List<FormatControlProfil> listeFormatControlProfil = this
+            .getListeFcp(listeSaePagm);
 
       SaeContratService saeContrat = new SaeContratService();
       saeContrat.setCodeClient(contrat.getCodeClient());
@@ -692,17 +623,20 @@ public class SaeDroitServiceImpl implements SaeDroitService {
                listeCodes.add(codeFcp);
             }
          }
-         
+
       }
 
-      List<FormatControlProfil> listeFcp = new ArrayList<FormatControlProfil>(listeCodes.size());
+      List<FormatControlProfil> listeFcp = new ArrayList<FormatControlProfil>(
+            listeCodes.size());
       FormatControlProfil fcp;
       for (String code : listeCodes) {
          try {
             fcp = formatControlProfilsCache.getUnchecked(code);
          } catch (InvalidCacheLoadException e) {
-            throw new PrmdReferenceException("Le profil de contrôle de format " + code
-                  + " n'a pas été trouvé dans la famille de colonne DroitFormatControlProfil",
+            throw new PrmdReferenceException(
+                  "Le profil de contrôle de format "
+                        + code
+                        + " n'a pas été trouvé dans la famille de colonne DroitFormatControlProfil",
                   e);
          }
          listeFcp.add(fcp);
@@ -710,8 +644,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
 
       return listeFcp;
    }
-   
-   
+
    private List<SaePrmd> findPrmd(List<SaePagm> saePagms) {
       List<String> listeCodes = new ArrayList<String>();
 
@@ -1085,7 +1018,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
                .debug(
                      "Pas de PAGMf pour le pagm {}, aucune suppression de PAGMf à effectuer",
                      pagmASupprimer.getCode());
-      }      
+      }
 
       pagmSupport.delete(idContratService, pagmASupprimer.getCode(),
             clockSupport.currentCLock(), mutator);
