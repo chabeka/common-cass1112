@@ -10,6 +10,7 @@ import fr.urssaf.image.sae.documents.executable.utils.Constantes;
 import fr.urssaf.image.sae.documents.executable.utils.MetadataUtils;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.format.validation.exceptions.ValidatorInitialisationException;
+import fr.urssaf.image.sae.format.validation.exceptions.ValidatorUnhandledException;
 import fr.urssaf.image.sae.format.validation.validators.model.ValidationResult;
 
 /**
@@ -71,6 +72,8 @@ public class FormatRunnable implements Runnable {
       } catch (ValidatorInitialisationException e) {
          throw new FormatValidationRuntimeException(e);
       } catch (IOException e) {
+         throw new FormatValidationRuntimeException(e);
+      } catch (ValidatorUnhandledException e) {
          throw new FormatValidationRuntimeException(e);
       }
    }

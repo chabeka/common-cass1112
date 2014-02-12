@@ -77,12 +77,12 @@ public class FormatValidationPoolThreadExecutor extends ThreadPoolExecutor {
       if ((throwable == null) && (!formatRunnable.getResultat().isValid())) {
          nombreDocsErreur++;
          final String resultatDetail = formatResultatDetails(formatRunnable);
-         LOGGER.warn("{} ; {} ; {}", new Object[] { idDocument, metaToLog,
+         LOGGER.warn("{} ; {} ; {} ; {}", new Object[] { "VALID", idDocument, metaToLog,
                resultatDetail });
       } else if (throwable != null) {
          nombreDocsErreur++;
 
-         LOGGER.error("{} ; {} ; {}", new Object[] { idDocument, metaToLog,
+         LOGGER.error("{} ; {} ; {} ; {}", new Object[] { "VALID", idDocument, metaToLog,
                throwable.getMessage() });
       }
       nombreTraites++;

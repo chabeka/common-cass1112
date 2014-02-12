@@ -21,6 +21,7 @@ import fr.urssaf.image.sae.documents.executable.exception.FormatValidationRuntim
 import fr.urssaf.image.sae.documents.executable.service.FormatFichierService;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.format.validation.exceptions.ValidatorInitialisationException;
+import fr.urssaf.image.sae.format.validation.exceptions.ValidatorUnhandledException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-documents-executable-test.xml" })
@@ -102,7 +103,8 @@ public class FormatRunnableTest {
 
    @Test
    public void runWithIOException() throws FileNotFoundException,
-         UnknownFormatException, ValidatorInitialisationException, IOException {
+         UnknownFormatException, ValidatorInitialisationException, IOException,
+         ValidatorUnhandledException {
       String idFormat = "fmt/354";
 
       FormatFichierService mockService = EasyMock

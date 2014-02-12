@@ -21,6 +21,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import fr.urssaf.image.sae.documents.executable.utils.Constantes;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.format.validation.exceptions.ValidatorInitialisationException;
+import fr.urssaf.image.sae.format.validation.exceptions.ValidatorUnhandledException;
 import fr.urssaf.image.sae.format.validation.validators.model.ValidationResult;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -92,7 +93,8 @@ public class FormatFichierServiceTest {
 
    @Test
    public void validerFichier() throws UnknownFormatException,
-         ValidatorInitialisationException, IOException {
+         ValidatorInitialisationException, IOException,
+         ValidatorUnhandledException {
       ValidationResult validationResult = formatFichierService.validerFichier(
             "fmt/354", file);
       Assert.assertNotNull(

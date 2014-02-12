@@ -6,6 +6,7 @@ import java.util.List;
 
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.format.validation.exceptions.ValidatorInitialisationException;
+import fr.urssaf.image.sae.format.validation.exceptions.ValidatorUnhandledException;
 import fr.urssaf.image.sae.format.validation.validators.model.ValidationResult;
 
 import net.docubase.toolkit.model.document.Document;
@@ -54,8 +55,11 @@ public interface FormatFichierService {
     * @throws IOException
     *            Exception levée sur la fermeture du flux (après écriture du
     *            fichier temp)
+    * @throws ValidatorUnhandledException
+    *            Exception levée lorsque la validation d'un document ne peut
+    *            être effectuée à cause d'un plantage du validateur
     */
    ValidationResult validerFichier(String idFormat, File file)
          throws UnknownFormatException, ValidatorInitialisationException,
-         IOException;
+         IOException, ValidatorUnhandledException;
 }

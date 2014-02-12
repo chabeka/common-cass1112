@@ -20,6 +20,7 @@ import fr.urssaf.image.sae.documents.executable.exception.ParametreRuntimeExcept
 import fr.urssaf.image.sae.documents.executable.service.FormatFichierService;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.format.validation.exceptions.ValidatorInitialisationException;
+import fr.urssaf.image.sae.format.validation.exceptions.ValidatorUnhandledException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-documents-executable-test.xml" })
@@ -118,7 +119,7 @@ public class ParamFormatFichierTest {
    @Test
    public void testValidValiderFichierIdFormatNullStreamNull()
          throws UnknownFormatException, ValidatorInitialisationException,
-         IOException {
+         IOException, ValidatorUnhandledException {
       try {
          formatFichierService.validerFichier(null, null);
          Assert
@@ -135,7 +136,7 @@ public class ParamFormatFichierTest {
    @Test
    public void testValidValiderFichierIdFormatNull()
          throws UnknownFormatException, ValidatorInitialisationException,
-         IOException {
+         IOException, ValidatorUnhandledException {
       try {
          formatFichierService.validerFichier(null, file);
          Assert

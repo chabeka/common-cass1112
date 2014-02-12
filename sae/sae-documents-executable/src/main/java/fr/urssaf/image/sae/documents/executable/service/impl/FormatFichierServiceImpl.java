@@ -19,6 +19,7 @@ import fr.urssaf.image.sae.format.identification.identifiers.model.Identificatio
 import fr.urssaf.image.sae.format.identification.service.IdentificationService;
 import fr.urssaf.image.sae.format.model.EtapeEtResultat;
 import fr.urssaf.image.sae.format.validation.exceptions.ValidatorInitialisationException;
+import fr.urssaf.image.sae.format.validation.exceptions.ValidatorUnhandledException;
 import fr.urssaf.image.sae.format.validation.service.ValidationService;
 import fr.urssaf.image.sae.format.validation.validators.model.ValidationResult;
 
@@ -75,8 +76,8 @@ public class FormatFichierServiceImpl implements FormatFichierService {
                   metadonnees);
             final String resultatIdent = formatIdentificationResult(identificationResult);
 
-            LOGGER.warn("{} ; {} ; {}", new Object[] { document.getUuid(),
-                  metaToLog, resultatIdent });
+            LOGGER.warn("{} ; {} ; {} ; {}", new Object[] { "IDENT",
+                  document.getUuid(), metaToLog, resultatIdent });
          }
          identificationOK = identificationResult.isIdentified();
       } catch (UnknownFormatException e) {
@@ -123,7 +124,8 @@ public class FormatFichierServiceImpl implements FormatFichierService {
    @Override
    public final ValidationResult validerFichier(final String idFormat,
          final File file) throws UnknownFormatException,
-         ValidatorInitialisationException, IOException {
+         ValidatorInitialisationException, IOException,
+         ValidatorUnhandledException {
       LOGGER.debug("Validation du fichier {} au format {}", new Object[] {
             file.getAbsolutePath(), idFormat });
       return getValidationService().validateFile(idFormat, file);
