@@ -16,6 +16,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.format.validation.exceptions.ValidatorInitialisationException;
+import fr.urssaf.image.sae.format.validation.exceptions.ValidatorUnhandledException;
 import fr.urssaf.image.sae.format.validation.service.impl.ValidationServiceImpl;
 import fr.urssaf.image.sae.format.validation.validators.model.ValidationResult;
 
@@ -44,7 +45,8 @@ public class ValidationServiceImplTest {
 
    @Test
    public void validationFileSuccess() throws FileNotFoundException,
-         UnknownFormatException, ValidatorInitialisationException {
+         UnknownFormatException, ValidatorInitialisationException,
+         ValidatorUnhandledException {
 
       ValidationResult result = validationService.validateFile(FMT354, file);
 
@@ -56,7 +58,7 @@ public class ValidationServiceImplTest {
 
    @Test
    public void validateFileFailureDocErrone() throws UnknownFormatException,
-         ValidatorInitialisationException {
+         ValidatorInitialisationException, ValidatorUnhandledException {
       try {
          validationService.validateFile(FMT354, docErrone);
          Assert.fail("exception attendue");
@@ -70,7 +72,8 @@ public class ValidationServiceImplTest {
 
    @Test
    public void validateFileFailure() throws FileNotFoundException,
-         UnknownFormatException, ValidatorInitialisationException {
+         UnknownFormatException, ValidatorInitialisationException,
+         ValidatorUnhandledException {
 
       ValidationResult result = validationService.validateFile(FMT354, doc);
 
@@ -82,7 +85,7 @@ public class ValidationServiceImplTest {
 
    @Test
    public void validationFileFormatInexistant() throws FileNotFoundException,
-         ValidatorInitialisationException {
+         ValidatorInitialisationException, ValidatorUnhandledException {
 
       try {
          validationService.validateFile(FMT354, doc);
@@ -114,7 +117,8 @@ public class ValidationServiceImplTest {
    /******************************************************/
    @Test
    public void validationStreamSuccess() throws UnknownFormatException,
-         ValidatorInitialisationException, IOException {
+         ValidatorInitialisationException, IOException,
+         ValidatorUnhandledException {
 
       InputStream inputStream = new FileInputStream(file);
       ValidationResult result = validationService.validateStream(FMT354,
@@ -128,7 +132,8 @@ public class ValidationServiceImplTest {
 
    @Test(expected = FileNotFoundException.class)
    public void validateStreamFailureDocErrone() throws UnknownFormatException,
-         ValidatorInitialisationException, IOException {
+         ValidatorInitialisationException, IOException,
+         ValidatorUnhandledException {
       InputStream inputStream = null;
       inputStream = new FileInputStream(docErrone);
       validationService.validateStream(FMT354, inputStream);
@@ -136,7 +141,8 @@ public class ValidationServiceImplTest {
 
    @Test
    public void validateStreamFailure() throws UnknownFormatException,
-         ValidatorInitialisationException, IOException {
+         ValidatorInitialisationException, IOException,
+         ValidatorUnhandledException {
 
       InputStream inputStream = new FileInputStream(doc);
       ValidationResult result = validationService.validateStream(FMT354,
@@ -150,7 +156,8 @@ public class ValidationServiceImplTest {
 
    @Test
    public void validationStreamFormatInexistant()
-         throws ValidatorInitialisationException, IOException {
+         throws ValidatorInitialisationException, IOException,
+         ValidatorUnhandledException {
 
       try {
          InputStream inputStream = new FileInputStream(doc);

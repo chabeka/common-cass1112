@@ -15,6 +15,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.pdfbox.exception.FormatValidationException;
+import fr.urssaf.image.sae.format.validation.exceptions.ValidatorUnhandledException;
 import fr.urssaf.image.sae.format.validation.validators.model.ValidationResult;
 import fr.urssaf.image.sae.format.validation.validators.pdfa.PdfaValidatorImpl;
 
@@ -42,7 +43,7 @@ public class PDFAValidatorImplTest {
 
    @Test
    public void validateFileSuccess() throws FileNotFoundException,
-         FormatValidationException {
+         FormatValidationException, ValidatorUnhandledException {
 
       ValidationResult result = pdfaValidator.validateFile(file);
 
@@ -53,7 +54,8 @@ public class PDFAValidatorImplTest {
    }
 
    @Test
-   public void validateFileFailureDocErrone() throws FormatValidationException {
+   public void validateFileFailureDocErrone() throws FormatValidationException,
+         ValidatorUnhandledException {
       try {
          pdfaValidator.validateFile(docErrone);
          Assert.fail("exception attendue");
@@ -67,7 +69,7 @@ public class PDFAValidatorImplTest {
 
    @Test
    public void validateFileFailure() throws FileNotFoundException,
-         FormatValidationException {
+         FormatValidationException, ValidatorUnhandledException {
 
       ValidationResult result = pdfaValidator.validateFile(doc);
 
@@ -85,7 +87,7 @@ public class PDFAValidatorImplTest {
 
    @Test
    public void validateStreamSuccess() throws FormatValidationException,
-         IOException {
+         IOException, ValidatorUnhandledException {
 
       InputStream inputStream = new FileInputStream(file);
 
@@ -101,7 +103,8 @@ public class PDFAValidatorImplTest {
 
    @Test(expected = IOException.class)
    public void validateStreamFailureDocErrone()
-         throws FormatValidationException, IOException {
+         throws FormatValidationException, IOException,
+         ValidatorUnhandledException {
       InputStream inputStream = null;
       try {
          inputStream = new FileInputStream(docErrone);
@@ -115,7 +118,7 @@ public class PDFAValidatorImplTest {
 
    @Test
    public void validateStreamFailure() throws FormatValidationException,
-         IOException {
+         IOException, ValidatorUnhandledException {
 
       InputStream inputStream = new FileInputStream(doc);
       ValidationResult result = pdfaValidator.validateStream(inputStream);

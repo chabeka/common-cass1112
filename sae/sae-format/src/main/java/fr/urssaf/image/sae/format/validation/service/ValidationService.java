@@ -6,6 +6,7 @@ import java.io.InputStream;
 
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.format.validation.exceptions.ValidatorInitialisationException;
+import fr.urssaf.image.sae.format.validation.exceptions.ValidatorUnhandledException;
 import fr.urssaf.image.sae.format.validation.validators.model.ValidationResult;
 
 /**
@@ -26,10 +27,13 @@ public interface ValidationService {
     *            : Le format n’existe pas en base
     * @throws ValidatorInitialisationException
     *            : Impossible d’initialiser le validateur
-    * 
+    * @throws ValidatorUnhandledException
+    *            : Le fichier passé en paramètre ne peut pas être validé par le
+    *            validateur.
     */
    ValidationResult validateFile(String idFormat, File file)
-         throws UnknownFormatException, ValidatorInitialisationException;
+         throws UnknownFormatException, ValidatorInitialisationException,
+         ValidatorUnhandledException;
 
    /**
     * Opération de validation d’un flux.
@@ -46,10 +50,12 @@ public interface ValidationService {
     * @throws IOException
     *            : Exception levée sur la fermeture du flux (après écriture du
     *            fichier temp)
-    * 
+    * @throws ValidatorUnhandledException
+    *            : Le flux passé en paramètre ne peut pas être validé par le
+    *            validateur.
     */
    ValidationResult validateStream(String idFormat, InputStream stream)
          throws UnknownFormatException, ValidatorInitialisationException,
-         IOException;
+         IOException, ValidatorUnhandledException;
 
 }

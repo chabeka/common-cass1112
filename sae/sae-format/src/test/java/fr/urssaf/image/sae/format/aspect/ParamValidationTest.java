@@ -13,6 +13,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.pdfbox.exception.FormatValidationException;
 import fr.urssaf.image.sae.format.validation.exceptions.ValidationRuntimeException;
+import fr.urssaf.image.sae.format.validation.exceptions.ValidatorUnhandledException;
 import fr.urssaf.image.sae.format.validation.validators.Validator;
 import fr.urssaf.image.sae.format.validation.validators.pdfa.PdfaValidatorImpl;
 
@@ -32,7 +33,6 @@ public class ParamValidationTest {
    @Autowired
    private PdfaValidatorImpl pdfaValidator;
 
-
    /********************************************************************************************************************************/
    /********************************************************************************************************************************/
    /********************************************************************************************************************************/
@@ -41,24 +41,21 @@ public class ParamValidationTest {
    @Test
    public void validatorValidateFileFileNull()
          throws ValidationRuntimeException, FileNotFoundException,
-         FormatValidationException {
+         FormatValidationException, ValidatorUnhandledException {
       try {
          validator.validateFile(null);
          Assert.fail(MESSAGE_REF_RUNTIME);
-      
+
       } catch (IllegalArgumentException ex) {
-         Assert
-               .assertEquals(
-                     MESSAGE_EXCEPT_INCORRECT,
-                     FICHIER_OBLIG_NUL,
-                     ex.getMessage());
+         Assert.assertEquals(MESSAGE_EXCEPT_INCORRECT, FICHIER_OBLIG_NUL, ex
+               .getMessage());
       }
    }
 
    @Test
    public void validatorValidateFileFileNotExist()
          throws ValidationRuntimeException, FileNotFoundException,
-         FormatValidationException {
+         FormatValidationException, ValidatorUnhandledException {
       try {
          File fichierTest = new File(TEST);
          validator.validateFile(fichierTest);
@@ -73,16 +70,13 @@ public class ParamValidationTest {
 
    @Test
    public void validatorValidateStreamNull() throws ValidationRuntimeException,
-         FormatValidationException {
+         FormatValidationException, ValidatorUnhandledException {
       try {
          validator.validateStream(null);
          Assert.fail(MESSAGE_REF_RUNTIME);
       } catch (IllegalArgumentException ex) {
-         Assert
-               .assertEquals(
-                     MESSAGE_EXCEPT_INCORRECT,
-                     STREAM_OBLIG_NUL,
-                     ex.getMessage());
+         Assert.assertEquals(MESSAGE_EXCEPT_INCORRECT, STREAM_OBLIG_NUL, ex
+               .getMessage());
       }
    }
 
@@ -95,23 +89,20 @@ public class ParamValidationTest {
    @Test
    public void pdfaValidatorValidateFileFileNull()
          throws ValidationRuntimeException, FileNotFoundException,
-         FormatValidationException {
+         FormatValidationException, ValidatorUnhandledException {
       try {
          pdfaValidator.validateFile(null);
          Assert.fail(MESSAGE_REF_RUNTIME);
       } catch (IllegalArgumentException ex) {
-         Assert
-               .assertEquals(
-                     MESSAGE_EXCEPT_INCORRECT,
-                     FICHIER_OBLIG_NUL,
-                     ex.getMessage());
+         Assert.assertEquals(MESSAGE_EXCEPT_INCORRECT, FICHIER_OBLIG_NUL, ex
+               .getMessage());
       }
    }
 
    @Test
    public void pdfaValidatorValidateFileFileNotExist()
          throws ValidationRuntimeException, FileNotFoundException,
-         FormatValidationException {
+         FormatValidationException, ValidatorUnhandledException {
       try {
          File fichierTest = new File(TEST);
          pdfaValidator.validateFile(fichierTest);
@@ -126,16 +117,14 @@ public class ParamValidationTest {
 
    @Test
    public void pdfaValidatorValidateStreamNull()
-         throws ValidationRuntimeException, FormatValidationException {
+         throws ValidationRuntimeException, FormatValidationException,
+         ValidatorUnhandledException {
       try {
          pdfaValidator.validateStream(null);
          Assert.fail(MESSAGE_REF_RUNTIME);
       } catch (IllegalArgumentException ex) {
-         Assert
-               .assertEquals(
-                     MESSAGE_EXCEPT_INCORRECT,
-                     STREAM_OBLIG_NUL,
-                     ex.getMessage());
+         Assert.assertEquals(MESSAGE_EXCEPT_INCORRECT, STREAM_OBLIG_NUL, ex
+               .getMessage());
       }
    }
 

@@ -14,6 +14,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.format.identification.exceptions.IdentificationRuntimeException;
 import fr.urssaf.image.sae.format.validation.exceptions.ValidatorInitialisationException;
+import fr.urssaf.image.sae.format.validation.exceptions.ValidatorUnhandledException;
 import fr.urssaf.image.sae.format.validation.service.impl.ValidationServiceImpl;
 
 /**
@@ -33,14 +34,13 @@ public class ValidationServiceImplFailureTest {
    private final File file = new File(
          "src/test/resources/validation/PdfaValide.pdf");
 
-   
    private static final String MESS_EXCEPT_ERRONE = "Le message de l'exception est incorrect";
    private static final String FMT_354 = "fmt/354";
-   
-   
+
    @Test
    public void valideServiceFailureBeanIntrouvable()
-         throws IdentificationRuntimeException, UnknownFormatException, IOException {
+         throws IdentificationRuntimeException, UnknownFormatException,
+         IOException, ValidatorUnhandledException {
 
       try {
          validationService.validateFile(FMT_354, file);
@@ -48,12 +48,13 @@ public class ValidationServiceImplFailureTest {
                .fail("Une exception IdentifierInitialisationException aurait dû être levée");
 
       } catch (ValidatorInitialisationException ex) {
-         Assert.assertEquals(MESS_EXCEPT_ERRONE,
-               "Il n'est pas possible de récupérer une instance du validateur.", ex
-                     .getMessage());
+         Assert
+               .assertEquals(
+                     MESS_EXCEPT_ERRONE,
+                     "Il n'est pas possible de récupérer une instance du validateur.",
+                     ex.getMessage());
       }
 
    }
 
-   
 }

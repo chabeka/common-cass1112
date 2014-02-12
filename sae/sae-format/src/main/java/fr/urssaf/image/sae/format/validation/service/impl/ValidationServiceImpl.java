@@ -24,6 +24,7 @@ import fr.urssaf.image.sae.format.referentiel.service.ReferentielFormatService;
 import fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler;
 import fr.urssaf.image.sae.format.validation.exceptions.ValidationRuntimeException;
 import fr.urssaf.image.sae.format.validation.exceptions.ValidatorInitialisationException;
+import fr.urssaf.image.sae.format.validation.exceptions.ValidatorUnhandledException;
 import fr.urssaf.image.sae.format.validation.service.ValidationService;
 import fr.urssaf.image.sae.format.validation.validators.Validator;
 import fr.urssaf.image.sae.format.validation.validators.model.ValidationResult;
@@ -77,7 +78,8 @@ public class ValidationServiceImpl implements ValidationService {
 
    @Override
    public final ValidationResult validateFile(String idFormat, File file)
-         throws UnknownFormatException, ValidatorInitialisationException {
+         throws UnknownFormatException, ValidatorInitialisationException,
+         ValidatorUnhandledException {
 
       ValidationResult validResult;
 
@@ -114,10 +116,11 @@ public class ValidationServiceImpl implements ValidationService {
    @Override
    public final ValidationResult validateStream(String idFormat,
          InputStream stream) throws UnknownFormatException,
-         ValidatorInitialisationException, IOException {
+         ValidatorInitialisationException, IOException,
+         ValidatorUnhandledException {
 
       ValidationResult validResult;
-      
+
       try {
          // On récupère le validateur à utiliser pour l’IdFormat donnée
          // à partir du référentiel des formats.
@@ -130,7 +133,7 @@ public class ValidationServiceImpl implements ValidationService {
 
          // On appel la méthode validateStream(file)
          validResult = validator.validateStream(stream);
-         
+
       } catch (InvalidCacheLoadException except) {
          throw new ValidatorInitialisationException(SaeFormatMessageHandler
                .getMessage("erreur.init.validator"), except);
@@ -149,7 +152,7 @@ public class ValidationServiceImpl implements ValidationService {
             stream.close();
          }
       }
-      
+
       return validResult; // savoir si valide-> isValid
 
    }

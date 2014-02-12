@@ -36,6 +36,7 @@ import fr.urssaf.image.sae.format.identification.identifiers.model.Identificatio
 import fr.urssaf.image.sae.format.identification.service.IdentificationService;
 import fr.urssaf.image.sae.format.referentiel.service.ReferentielFormatService;
 import fr.urssaf.image.sae.format.validation.exceptions.ValidatorInitialisationException;
+import fr.urssaf.image.sae.format.validation.exceptions.ValidatorUnhandledException;
 import fr.urssaf.image.sae.format.validation.service.ValidationService;
 import fr.urssaf.image.sae.format.validation.validators.model.ValidationResult;
 import fr.urssaf.image.sae.services.controles.SAEControlesCaptureService;
@@ -667,7 +668,9 @@ public class SAEControlesCaptureServiceImpl implements
          throw new ValidationExceptionInvalidFile(except);
       } catch (IOException except) {
          throw new ValidationExceptionInvalidFile(except);
-      }
+      } catch (ValidatorUnhandledException except) {
+         throw new ValidationExceptionInvalidFile(except);
+      } 
    }
 
    /**
