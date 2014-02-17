@@ -112,7 +112,7 @@ public class ParamFormatControlProfilTest {
          Assert
                .assertEquals(
                      MESSAGE_EXCEPT_INCORRECT,
-                     "La valeur d'un ou plusieurs paramètres obligatoires est nulle ou vide : [formatValidationMode].",
+                     "Le mode de validation ne doit pas être renseigné.",
                      except.getMessage());
       }
    }
@@ -160,7 +160,7 @@ public class ParamFormatControlProfilTest {
          Assert
                .assertEquals(
                      MESSAGE_EXCEPT_INCORRECT,
-                     "La valeur d'un ou plusieurs paramètres obligatoires est nulle ou vide : [formatValidationMode].",
+                     "Le mode de validation ne doit pas être renseigné.",
                      except.getMessage());
       }
    }
