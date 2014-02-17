@@ -6,7 +6,7 @@ import java.io.IOException;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class BavariaIsartorSommaireGeneratorTest {
+public class SommaireGeneratorTest {
 
    @Test
    @Ignore
@@ -15,8 +15,8 @@ public class BavariaIsartorSommaireGeneratorTest {
       File repEcde = new File(
             "G:/pmareche/sae_dev/ecde/ecde_local/CS/20140214/Bavaria");
 
-      BavariaIsartorSommaireGenerator service = new BavariaIsartorSommaireGenerator(repEcde);
-      service.genereSommaireBaravia();
+      SommaireGenerator service = new SommaireGenerator(repEcde);
+      service.genereSommaire();
 
    }
    
@@ -27,8 +27,20 @@ public class BavariaIsartorSommaireGeneratorTest {
       File repEcde = new File(
             "G:/pmareche/sae_dev/ecde/ecde_local/CS/20140214/Isartor");
 
-      BavariaIsartorSommaireGenerator service = new BavariaIsartorSommaireGenerator(repEcde);
-      service.genereSommaireBaravia();
+      SommaireGenerator service = new SommaireGenerator(repEcde);
+      service.genereSommaire();
+
+   }
+   
+   @Test
+   @Ignore
+   public void prod01() throws IOException {
+
+      File repEcde = new File(
+            "G:/pmareche/sae_dev/ecde/ecde_local/CS/20140214/SAE-Prod-01");
+
+      SommaireGenerator service = new SommaireGenerator(repEcde);
+      service.genereSommaire();
 
    }
 

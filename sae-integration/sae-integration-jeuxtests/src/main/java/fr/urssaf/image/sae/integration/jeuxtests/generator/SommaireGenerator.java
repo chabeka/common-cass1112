@@ -10,14 +10,14 @@ import org.apache.commons.lang.StringUtils;
 
 import fr.urssaf.image.sae.integration.jeuxtests.utils.SommaireUtils;
 
-public class BavariaIsartorSommaireGenerator {
+public class SommaireGenerator {
 
    private File fileSommaire;
    private File repertoireDocuments;
 
    private FileWriterWithEncoding writer;
 
-   public BavariaIsartorSommaireGenerator(File ecdeRepertoireTraitementBavaria) {
+   public SommaireGenerator(File ecdeRepertoireTraitementBavaria) {
 
       fileSommaire = new File(ecdeRepertoireTraitementBavaria, "sommaire.xml");
 
@@ -26,7 +26,7 @@ public class BavariaIsartorSommaireGenerator {
 
    }
 
-   public void genereSommaireBaravia() throws IOException {
+   public void genereSommaire() throws IOException {
 
       boolean avecRestitutionId = false;
 
@@ -39,13 +39,9 @@ public class BavariaIsartorSommaireGenerator {
          // Début du noeud documents
          SommaireUtils.ecritureSommaire_NoeudDocumentsDebut(writer);
 
-         // Traite chaque sous-répertoire de documents
-         for (File sousRepertoire : repertoireDocuments.listFiles()) {
-            if (sousRepertoire.isDirectory()) {
-               traiteRepertoire(sousRepertoire);
-            }
-         }
-
+         // Traite le répertoire documents
+         traiteRepertoire(repertoireDocuments);
+         
          // Pied de XML
          SommaireUtils.ecritureSommaire_NoeudDocumentsFin(writer);
          SommaireUtils.ecritureSommaire_NoeudDocVirtuVide(writer);
