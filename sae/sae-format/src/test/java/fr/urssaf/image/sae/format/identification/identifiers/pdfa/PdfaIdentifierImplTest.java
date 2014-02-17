@@ -10,6 +10,7 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -179,6 +180,70 @@ public class PdfaIdentifierImplTest {
             .isIdentified());
 
       inputStream.close();
+
+   }
+
+   @Test
+   public void identifyStreamSuccessCompatiblefmt276() throws IOException {
+
+      ClassPathResource resource = new ClassPathResource(
+            "identification/Pardes13_Rez02.pdf");
+
+      InputStream inputStream = resource.getInputStream();
+
+      try {
+
+         IdentificationResult identificationResult = pdfaIdentifier
+               .identifyStream("fmt/354", inputStream);
+
+         EtapeEtResultat etape0 = identificationResult.getDetails().get(0);
+         EtapeEtResultat etape1 = identificationResult.getDetails().get(1);
+
+         Assert.assertEquals("PUUID : fmt/276", etape0.getResultat());
+
+         Assert.assertEquals(RESULTAT_ERRONE, PUUID_DIFF_IDFORMAT, etape1
+               .getResultat());
+
+         Assert.assertTrue("Le fichier aurait dû être identifié",
+               identificationResult.isIdentified());
+
+      } finally {
+         if (inputStream != null) {
+            inputStream.close();
+         }
+      }
+
+   }
+
+   @Test
+   public void identifyStreamSuccessCompatiblefmt20() throws IOException {
+
+      ClassPathResource resource = new ClassPathResource(
+            "identification/pardes14_Jid02_reduced.pdf");
+
+      InputStream inputStream = resource.getInputStream();
+
+      try {
+
+         IdentificationResult identificationResult = pdfaIdentifier
+               .identifyStream("fmt/354", inputStream);
+
+         EtapeEtResultat etape0 = identificationResult.getDetails().get(0);
+         EtapeEtResultat etape1 = identificationResult.getDetails().get(1);
+
+         Assert.assertEquals("PUUID : fmt/20", etape0.getResultat());
+
+         Assert.assertEquals(RESULTAT_ERRONE, PUUID_DIFF_IDFORMAT, etape1
+               .getResultat());
+
+         Assert.assertTrue("Le fichier aurait dû être identifié",
+               identificationResult.isIdentified());
+
+      } finally {
+         if (inputStream != null) {
+            inputStream.close();
+         }
+      }
 
    }
 
