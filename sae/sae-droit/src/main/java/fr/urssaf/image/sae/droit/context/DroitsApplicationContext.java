@@ -22,7 +22,18 @@ import org.springframework.util.Assert;
 @Component
 public final class DroitsApplicationContext {
 
-   private static ApplicationContext ctx;
+   @Autowired
+   private ApplicationContext ctx;
+
+   /**
+    * Méthode d'accès à l'instance {@link ApplicationContext} de l'application
+    * 
+    * @return contexte de l'application
+    */
+   public ApplicationContext getApplicationContext() {
+      Assert.notNull(ctx, "ApplicationContext not initialized ");
+      return ctx;
+   }
 
    /**
     * injection de l'instance {@link ApplicationContext}<br>
@@ -31,23 +42,13 @@ public final class DroitsApplicationContext {
     *           contexte de l'application, ne doit pas être null
     */
    @Autowired
-   public void setServicesApplicationContext(ApplicationContext context) {
+   public void setServicesApplicationContext(final ApplicationContext context) {
       Assert.notNull(context, "'context' is required ");
       setContext(context);
    }
 
-   private static void setContext(ApplicationContext context) {
+   private void setContext(final ApplicationContext context) {
       ctx = context;
-   }
-
-   /**
-    * Méthode d'accès à l'instance {@link ApplicationContext} de l'application
-    * 
-    * @return contexte de l'application
-    */
-   public static ApplicationContext getApplicationContext() {
-      Assert.notNull(ctx, "ApplicationContext not initialized ");
-      return ctx;
    }
 
 }

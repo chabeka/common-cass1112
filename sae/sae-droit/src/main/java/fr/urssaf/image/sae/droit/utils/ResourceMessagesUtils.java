@@ -5,9 +5,10 @@ package fr.urssaf.image.sae.droit.utils;
 
 import java.util.Locale;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
-
-import fr.urssaf.image.sae.droit.context.DroitsApplicationContext;
+import org.springframework.stereotype.Component;
 
 /**
  * Classe utilitaire pour formater les messages.<br>
@@ -21,19 +22,19 @@ import fr.urssaf.image.sae.droit.context.DroitsApplicationContext;
  * </pre>
  * 
  */
+@Component
 public final class ResourceMessagesUtils {
    
-      private ResourceMessagesUtils() {
+      private static MessageSource MESSAGE_SOURCES;
+
+      @Autowired
+      public ResourceMessagesUtils(
+            @Qualifier("messageSource_sae_droits") MessageSource messageSource) {
+         // Récupération du contexte pour les fichiers properties
+         MESSAGE_SOURCES = messageSource;
       }
-
-      private static MessageSource messageSource;
-
-      static {
-
-         messageSource = DroitsApplicationContext.getApplicationContext()
-               .getBean("messageSource_sae_droits", MessageSource.class);
-      }
-
+      
+      
       /**
        * charge un message
        * 
@@ -44,7 +45,7 @@ public final class ResourceMessagesUtils {
        * @return message formaté
        */
       public static String loadMessage(String code, Object... args) {
-         return messageSource.getMessage(code, args, Locale.getDefault());
+         return MESSAGE_SOURCES.getMessage(code, args, Locale.getDefault());
       }
 
    }

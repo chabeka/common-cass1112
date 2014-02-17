@@ -128,14 +128,14 @@ public class ParamFormatControlProfil {
          FormatControlProfil formatControlProfil) {
 
       if (formatControlProfil == null) {
-         throw new DroitRuntimeException(ResourceMessagesUtils.loadMessage(
+         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
                Constantes.PARAM_OBLIGATOIRE, "formatControlProfil"));
       } else {
          List<String> variable = getAttributsNull(formatControlProfil, Long
                .valueOf(1));
 
          if (!variable.isEmpty()) {
-            throw new DroitRuntimeException(ResourceMessagesUtils.loadMessage(
+            throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
                   Constantes.PARAM_OBLIGATOIRE, variable.toString()));
          }
       }
@@ -155,7 +155,7 @@ public class ParamFormatControlProfil {
    public final void deleteFormatControlProfil(String codeFormatControlProfil) {
 
       if (StringUtils.isBlank(codeFormatControlProfil))
-         throw new DroitRuntimeException(ResourceMessagesUtils.loadMessage(
+         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
                Constantes.PARAM_OBLIGATOIRE, "codeFormatControlProfil"));
 
    }
@@ -174,7 +174,7 @@ public class ParamFormatControlProfil {
    public final void getFormatControlProfil(String codeFormatControlProfil) {
 
       if (StringUtils.isBlank(codeFormatControlProfil)) {
-         throw new DroitRuntimeException(ResourceMessagesUtils.loadMessage(
+         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
                Constantes.PARAM_OBLIGATOIRE, "codeFormatControlProfil"));
       }
    }
@@ -219,7 +219,9 @@ public class ParamFormatControlProfil {
                if (!StringUtils.isBlank(validationMode)
                      && !(Constantes.AUCUN.equalsIgnoreCase(validationMode) || Constantes.NONE
                            .equalsIgnoreCase(validationMode))) {
-                  variable.add(Constantes.FORMAT_VALIDATION_MODE);
+                  throw new IllegalArgumentException(
+                        ResourceMessagesUtils
+                              .loadMessage("erreur.param.format.valid.mode.renseigne"));
                }
             }
          }
