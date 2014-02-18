@@ -47,7 +47,7 @@
          ========================================== commons-cassandra
          ==========================================
       -->
-      <commons.cassandra>0.0.6</commons.cassandra>
+      <commons.cassandra>0.0.7-SNAPSHOT</commons.cassandra>
 
       <!--
          Modèle de dépendance : <dependency>

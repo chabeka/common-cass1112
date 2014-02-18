@@ -18,7 +18,7 @@ public final class PagmSerializer extends JacksonSerializer<Pagm> {
     * @param clazz
     */
    private PagmSerializer(Class<Pagm> clazz) {
-      super(clazz);
+      super(clazz, false);
    }
 
    /**
