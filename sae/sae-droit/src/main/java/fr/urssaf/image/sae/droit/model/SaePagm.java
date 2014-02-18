@@ -28,7 +28,7 @@ public class SaePagm {
     * PAGMp rattaché au PAGM
     */
    private SaePagmp pagmp;
-   
+
    /**
     * PAGMf rattaché au PAGM
     */
@@ -126,8 +126,15 @@ public class SaePagm {
          areEquals = code.equals(pagm.getCode())
                && description.equals(pagm.getDescription())
                && pagma.equals(pagm.getPagma())
-               && pagmp.equals(pagm.getPagmp())
-               && pagmf.equals(pagm.getPagmf());
+               && pagmp.equals(pagm.getPagmp());
+
+         if (!(pagmf == null && pagm.getPagmf() == null)) {
+            if (pagmf != null && pagm.getPagmf() != null) {
+               areEquals = areEquals && pagmf.equals(pagm.getPagmf());
+            } else {
+               return false;
+            }
+         }
 
          if (!(parametres == null && pagm.getParametres() == null)) {
             if (parametres != null && pagm.getParametres() != null) {
@@ -136,6 +143,8 @@ public class SaePagm {
                            .keySet().size()
                      && parametres.keySet().containsAll(
                            pagm.getParametres().keySet());
+            } else {
+               return false;
             }
          }
       }
@@ -151,13 +160,21 @@ public class SaePagm {
    @Override
    public final String toString() {
       StringBuffer buffer = new StringBuffer();
-      for (String key : parametres.keySet()) {
-         buffer.append(key + " = " + parametres.get(key) + "\n");
+      if (parametres != null) {
+         for (String key : parametres.keySet()) {
+            buffer.append(key + " = " + parametres.get(key) + "\n");
+         }
       }
 
-      return "code : " + code + "\n" + "description : " + description + "\n"
-            + "pagma : " + pagma + "\n" + "pagmp : " + pagmp + "\n"
-            + "liste des parametres :\n" +  buffer.toString() + "pagmf : " + pagmf + "\n";
+      String message = "code : " + code + "\n" + "description : " + description
+            + "\n" + "pagma : " + pagma + "\n" + "pagmp : " + pagmp + "\n"
+            + "liste des parametres :\n" + buffer.toString();
+
+      if (pagmf != null) {
+         message += "pagmf : " + pagmf + "\n";
+      }
+
+      return message;
    }
 
    /**
@@ -176,7 +193,8 @@ public class SaePagm {
    }
 
    /**
-    * @param pagmf the pagmf to set
+    * @param pagmf
+    *           the pagmf to set
     */
    public final void setPagmf(SaePagmf pagmf) {
       this.pagmf = pagmf;

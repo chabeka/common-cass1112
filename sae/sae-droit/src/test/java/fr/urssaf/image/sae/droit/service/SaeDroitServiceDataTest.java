@@ -3,10 +3,12 @@
  */
 package fr.urssaf.image.sae.droit.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -642,5 +644,85 @@ public class SaeDroitServiceDataTest {
       }
 
    }
-
+   
+   
+   @Test
+   public void egaliteSaePagm() {
+ 
+      // Test égalité OK
+      SaePagm saePagm1 = new SaePagm();
+      saePagm1.setCode("codePagm");
+      saePagm1.setDescription("description1");
+      SaePagma pagma = new SaePagma();
+      List<String> actionUnitaires = new ArrayList<String>();
+      actionUnitaires.add("action1");
+      actionUnitaires.add("action2");
+      pagma.setActionUnitaires(actionUnitaires);
+      pagma.setCode("codePagma");
+      saePagm1.setPagma(pagma);
+      SaePagmf pagmf = new SaePagmf();
+      pagmf.setCodePagmf("codePagmf");
+      pagmf.setDescription("description");
+      pagmf.setFormatProfile("formatProfile");
+      saePagm1.setPagmf(pagmf);
+      SaePagmp pagmp = new SaePagmp();
+      pagmp.setCode("codePagmp");
+      pagmp.setDescription("description");
+      pagmp.setPrmd("prmd");
+      saePagm1.setPagmp(pagmp);
+      Map<String,String> parametres = new HashMap<String,String>();
+      parametres.put("key", "value");
+      saePagm1.setParametres(parametres);
+      
+      SaePagm saePagm2 = new SaePagm();
+      saePagm2.setCode("codePagm");
+      saePagm2.setDescription("description1");
+      SaePagma pagma2 = new SaePagma();
+      List<String> actionUnitaires2 = new ArrayList<String>();
+      actionUnitaires2.add("action1");
+      actionUnitaires2.add("action2");
+      pagma2.setActionUnitaires(actionUnitaires2);
+      pagma2.setCode("codePagma");
+      saePagm2.setPagma(pagma2);
+      SaePagmf pagmf2 = new SaePagmf();
+      pagmf2.setCodePagmf("codePagmf");
+      pagmf2.setDescription("description");
+      pagmf2.setFormatProfile("formatProfile");
+      saePagm2.setPagmf(pagmf2);
+      SaePagmp pagmp2 = new SaePagmp();
+      pagmp2.setCode("codePagmp");
+      pagmp2.setDescription("description");
+      pagmp2.setPrmd("prmd");
+      saePagm2.setPagmp(pagmp2);
+      Map<String,String> parametres2 = new HashMap<String,String>();
+      parametres2.put("key", "value");
+      saePagm2.setParametres(parametres2);
+      
+      Assert.assertEquals(saePagm1, saePagm2);
+      Assert.assertTrue("les 2 saePagm doivent être identiques", saePagm1.equals(saePagm2));
+      
+      // Test Pagmf null
+      saePagm1.setPagmf(null);
+      Assert.assertFalse("les 2 saePagm doivent être différents", saePagm1.equals(saePagm2));
+      saePagm2.setPagmf(null);
+      Assert.assertTrue("les 2 saePagm doivent être identiques", saePagm1.equals(saePagm2));
+      
+     // Codes Différents
+      saePagm1.setPagmf(pagmf);
+      saePagm2.setPagmf(pagmf2);
+      saePagm1.setCode("codeDiff");
+      Assert.assertFalse("les 2 saePagm doivent être différents", saePagm1.equals(saePagm2));
+      
+      // Descriptions différentes
+      saePagm1.setCode("codePagm");
+      saePagm1.setDescription("descriptionDiff");
+      Assert.assertFalse("les 2 saePagm doivent être différents", saePagm1.equals(saePagm2));
+      
+      // Pagma différents
+      saePagm1.setDescription("description");
+      pagma.setCode("codeDiff");
+      saePagm1.setPagma(pagma);
+      Assert.assertFalse("les 2 saePagm doivent être différents", saePagm1.equals(saePagm2));
+      
+   }
 }

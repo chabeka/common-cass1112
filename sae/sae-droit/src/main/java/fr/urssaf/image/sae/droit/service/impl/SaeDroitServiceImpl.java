@@ -372,8 +372,21 @@ public class SaeDroitServiceImpl implements SaeDroitService {
 
          contratSupport.create(serviceContract, clockSupport.currentCLock());
 
-         for (SaePagm saePagm : listeSaePagms) {
-            ajouterPagmContratService(serviceContract.getCodeClient(), saePagm);
+         try {
+            for (SaePagm saePagm : listeSaePagms) {
+               ajouterPagmContratService(serviceContract.getCodeClient(),
+                     saePagm);
+            }
+         } catch (PagmReferenceException e) {
+            // Suppression du CS si les PAGM n'ont pas été créés
+            contratSupport.delete(serviceContract.getCodeClient(), clockSupport
+                  .currentCLock());
+            throw new DroitRuntimeException(e);
+         } catch (DroitRuntimeException e) {
+            // Suppression du CS si les PAGM n'ont pas été créés
+            contratSupport.delete(serviceContract.getCodeClient(), clockSupport
+                  .currentCLock());
+            throw new DroitRuntimeException(e);
          }
 
          checkLock(mutex, serviceContract, listeSaePagms);
