@@ -112,7 +112,7 @@ public class SaeDroitServiceCreateTest {
 
    }
 
-   @Test(expected = PagmReferenceException.class)
+   @Test(expected = DroitRuntimeException.class)
    public void testCreatePagmDejaExistant() {
       ServiceContract serviceContract = new ServiceContract();
       serviceContract.setCodeClient("codeClient");
