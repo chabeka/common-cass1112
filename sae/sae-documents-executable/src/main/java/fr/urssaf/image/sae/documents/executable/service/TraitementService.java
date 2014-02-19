@@ -12,6 +12,7 @@ public interface TraitementService {
     * 
     * @param parametres
     *           Les paramètres concernant le traitement
+    * @return int nombre de documents traités
     */
-   void identifierValiderFichiers(FormatValidationParametres parametres);
+   int identifierValiderFichiers(FormatValidationParametres parametres);
 }

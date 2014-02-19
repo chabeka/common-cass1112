@@ -56,7 +56,7 @@ public class TraitementServiceImpl implements TraitementService {
     * {@inheritDoc}
     */
    @Override
-   public final void identifierValiderFichiers(
+   public final int identifierValiderFichiers(
          final FormatValidationParametres parametres) {
       long startTime = System.currentTimeMillis();
       LOGGER.debug("Lancement du traitement d'identification et de validation");
@@ -127,6 +127,8 @@ public class TraitementServiceImpl implements TraitementService {
 
       // ferme la connexion a dfce
       getDfceService().fermerConnexion();
+      
+      return nbDocTraites;
    }
 
    /**

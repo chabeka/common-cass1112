@@ -3,9 +3,12 @@ package fr.urssaf.image.sae.documents.executable.bootstrap;
 import java.io.IOException;
 import java.util.Properties;
 
+import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
+import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
@@ -13,11 +16,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.documents.executable.model.FormatValidationParametres;
 import fr.urssaf.image.sae.documents.executable.model.FormatValidationParametres.MODE_VERIFICATION;
+import fr.urssaf.image.sae.documents.executable.service.TraitementService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-documents-executable-test.xml" })
 public class DocumentsExecutableMainTest {
-
+   
    @Test
    public void verifierConfFichierParamAucunParametre() {
       DocumentsExecutableMain main = new DocumentsExecutableMain(
@@ -240,22 +244,38 @@ public class DocumentsExecutableMainTest {
 
    @Test
    @DirtiesContext
-   public void executeToutOk() {
-      DocumentsExecutableMain main = new DocumentsExecutableMain(
-            "/applicationContext-sae-documents-executable-test.xml");
-      ClassPathResource configSae = new ClassPathResource(
-            "/config/sae-config-test.properties");
+   public void executeService() throws IOException {
+      DocumentsExecutableMain main = new DocumentsExecutableMain("/applicationContext-sae-documents-executable-test.xml");
       ClassPathResource fichierParametrage = new ClassPathResource(
             "/config/formatValidation.properties");
+      
+      Properties properties = new Properties();
+      if (!main.chargerFichierParam(fichierParametrage.getFile().getAbsolutePath(), properties)) {
+         Assert.fail("Le fichier de paramètrage aurait du être trouvé");
+      }
 
+      FormatValidationParametres parametres = new FormatValidationParametres();
+      if (!main.verifierConfFichierParam(properties, parametres)) {
+         Assert.fail("Le fichier de paramètrage n'est pas correct");
+      }
+      
+      // creation du mock
+      TraitementService traitementService = EasyMock.createNiceMock(TraitementService.class);
+      EasyMock.expect(traitementService.identifierValiderFichiers(parametres)).andReturn(10);
+      EasyMock.replay(traitementService);
+      
+      // creation d'un contexte spring specifique
+      GenericApplicationContext genericContext = new GenericApplicationContext();
+      BeanDefinitionBuilder beanDefinition = BeanDefinitionBuilder.genericBeanDefinition(TraitementService.class);
+      genericContext.registerBeanDefinition("traitementService", beanDefinition.getBeanDefinition());
+      genericContext.getBeanFactory().registerSingleton("traitementService", traitementService);
+      genericContext.refresh();
+      
       try {
-         main.execute(new String[] {
-               DocumentsExecutableMain.VERIFICATION_FORMAT,
-               configSae.getFile().getAbsolutePath(),
-               fichierParametrage.getFile().getAbsolutePath() });
-      } catch (IOException e) {
+         main.executeService(DocumentsExecutableMain.VERIFICATION_FORMAT, genericContext, parametres);
+      } catch (Throwable e) {
          Assert
-               .fail("Le fichier de configuration du SAE ou le fichier de paramètrage aurait du être trouvé");
+               .fail("Une erreur non prévu s'est produite: " + e.getMessage());
       }
    }
 }
