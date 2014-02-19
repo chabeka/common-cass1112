@@ -132,7 +132,7 @@ public class DocumentsExecutableMain {
     *           chemin du fichier de paramètrage
     * @return Properties
     */
-   private boolean chargerFichierParam(final String pathFichierParam,
+   protected boolean chargerFichierParam(final String pathFichierParam,
          final Properties properties) {
       boolean chargementOk = true;
       InputStream stream = null;
