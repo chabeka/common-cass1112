@@ -67,37 +67,39 @@ public class FormatValidationPoolThreadExecutor extends ThreadPoolExecutor {
    protected final void afterExecute(final Runnable runnable,
          final Throwable throwable) {
       super.afterExecute(runnable, throwable);
-
-      final FormatRunnable formatRunnable = (FormatRunnable) runnable;
-      final String idDocument = formatRunnable.getDocument().getUuid()
-            .toString();
-      final String metaToLog = MetadataUtils.getMetadatasForLog(formatRunnable
-            .getDocument(), metadonnees);
-
-      if ((throwable == null) && (!formatRunnable.getResultat().isValid())) {
-         nombreDocsErreur++;
-         final String resultatDetail = formatResultatDetails(formatRunnable);
-         LOGGER.warn("{} ; {} ; {} ; {}", new Object[] { "VALID", idDocument, metaToLog,
-               resultatDetail });
-      } else if (throwable != null) {
-         nombreDocsErreur++;
-
-         LOGGER.error("{} ; {} ; {} ; {}", new Object[] { "VALID", idDocument, metaToLog,
-               throwable.getMessage() });
-      }
-      nombreTraites++;
-      if (getNombreTraites() % getPasExecution() == 0) {
-         LOGGER.info("{} documents validés", getNombreTraites());
-      }
-
-      // supprime le fichier temporaire
-      if (formatRunnable.getFile() != null) {
-         File file = formatRunnable.getFile();
-         LOGGER.debug("Suppression du fichier temporaire {}", file
-               .getAbsolutePath());
-         if (!file.delete()) {
-            LOGGER.error("Impossible de supprimer le fichier temporaire {}",
-                  file.getAbsolutePath());
+      
+      synchronized (this) {
+         final FormatRunnable formatRunnable = (FormatRunnable) runnable;
+         final String idDocument = formatRunnable.getDocument().getUuid()
+               .toString();
+         final String metaToLog = MetadataUtils.getMetadatasForLog(formatRunnable
+               .getDocument(), metadonnees);
+   
+         if ((throwable == null) && (!formatRunnable.getResultat().isValid())) {
+            nombreDocsErreur++;
+            final String resultatDetail = formatResultatDetails(formatRunnable);
+            LOGGER.warn("{} ; {} ; {} ; {}", new Object[] { "VALID", idDocument, metaToLog,
+                  resultatDetail });
+         } else if (throwable != null) {
+            nombreDocsErreur++;
+   
+            LOGGER.error("{} ; {} ; {} ; {}", new Object[] { "VALID", idDocument, metaToLog,
+                  throwable.getMessage() });
+         }
+         nombreTraites++;
+         if (getNombreTraites() % getPasExecution() == 0) {
+            LOGGER.info("{} documents validés", getNombreTraites());
+         }
+   
+         // supprime le fichier temporaire
+         if (formatRunnable.getFile() != null) {
+            File file = formatRunnable.getFile();
+            LOGGER.debug("Suppression du fichier temporaire {}", file
+                  .getAbsolutePath());
+            if (!file.delete()) {
+               LOGGER.error("Impossible de supprimer le fichier temporaire {}",
+                     file.getAbsolutePath());
+            }
          }
       }
    }
