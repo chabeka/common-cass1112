@@ -17,6 +17,7 @@ import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.metadata.dfce.ServiceProviderSupportMetadata;
 import fr.urssaf.image.sae.metadata.exceptions.DictionaryNotFoundException;
+import fr.urssaf.image.sae.metadata.exceptions.MetadataRuntimeException;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 import fr.urssaf.image.sae.metadata.referential.services.SaeMetaDataService;
 import fr.urssaf.image.sae.metadata.referential.support.SaeMetadataSupport;
@@ -113,6 +114,60 @@ public class SaeMetadataSupportTest {
    @Test
    public void modifyMetaTest(){
       
+   }
+   
+   @Test(expected=MetadataRuntimeException.class)
+   public void createSameShortCode() {
+      
+      MetadataReference metaDest = new MetadataReference();
+
+      metaDest.setArchivable(Boolean.TRUE);
+      metaDest.setConsultable(Boolean.TRUE);
+      metaDest.setDefaultConsultable(Boolean.FALSE);
+      metaDest.setDescription("meta test");
+      metaDest.setInternal(Boolean.TRUE);
+      metaDest.setLabel("creation Meta");
+      metaDest.setLength(10);
+      metaDest.setLongCode("metadonne4");
+      metaDest.setPattern(StringUtils.EMPTY);
+      metaDest.setRequiredForArchival(Boolean.FALSE);
+      metaDest.setRequiredForStorage(Boolean.FALSE);
+      metaDest.setSearchable(Boolean.TRUE);
+      metaDest.setShortCode("meta2");
+      metaDest.setType("Srting");
+      metaDest.setHasDictionary(Boolean.FALSE);
+      metaDest.setDictionaryName(StringUtils.EMPTY);
+      metaDest.setIsIndexed(Boolean.TRUE);
+      
+      
+      try {
+         metaSupport.create(metaDest, clock.currentCLock());
+      } catch (Exception e) {
+         Assert.fail("erreur non attendue");
+      }
+      
+      metaDest = new MetadataReference();
+
+      metaDest.setArchivable(Boolean.TRUE);
+      metaDest.setConsultable(Boolean.TRUE);
+      metaDest.setDefaultConsultable(Boolean.FALSE);
+      metaDest.setDescription("meta test");
+      metaDest.setInternal(Boolean.TRUE);
+      metaDest.setLabel("creation Meta");
+      metaDest.setLength(10);
+      metaDest.setLongCode("metadonne3");
+      metaDest.setPattern(StringUtils.EMPTY);
+      metaDest.setRequiredForArchival(Boolean.FALSE);
+      metaDest.setRequiredForStorage(Boolean.FALSE);
+      metaDest.setSearchable(Boolean.TRUE);
+      metaDest.setShortCode("meta2");
+      metaDest.setType("Srting");
+      metaDest.setHasDictionary(Boolean.FALSE);
+      metaDest.setDictionaryName(StringUtils.EMPTY);
+      metaDest.setIsIndexed(Boolean.TRUE);
+      
+      
+      metaSupport.create(metaDest, clock.currentCLock());
    }
    
 }

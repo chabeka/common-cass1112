@@ -7,6 +7,9 @@ import java.text.MessageFormat;
  */
 @SuppressWarnings("PMD")
 public class DictionaryNotFoundException extends RuntimeException {
+
+   private static final long serialVersionUID = 1L;
+
    /**
     * Constructeur
     * 

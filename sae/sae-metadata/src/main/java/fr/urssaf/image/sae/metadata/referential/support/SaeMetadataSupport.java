@@ -2,6 +2,7 @@ package fr.urssaf.image.sae.metadata.referential.support;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListResourceBundle;
 
 import me.prettyprint.cassandra.serializers.BytesArraySerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.commons.cassandra.helper.HectorIterator;
 import fr.urssaf.image.commons.cassandra.helper.QueryResultConverter;
+import fr.urssaf.image.sae.metadata.exceptions.MetadataRuntimeException;
 import fr.urssaf.image.sae.metadata.referential.dao.SaeMetadataDao;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 
@@ -54,6 +56,8 @@ public class SaeMetadataSupport {
     *           le timestamp de l'opération
     */
    public final void create(MetadataReference metadata, long clock) {
+
+      checkCodeCourt(metadata.getShortCode());
 
       ColumnFamilyUpdater<String, String> updater = saeMetadataDao.getCfTmpl()
             .createUpdater(metadata.getLongCode());
@@ -262,5 +266,23 @@ public class SaeMetadataSupport {
       }
 
       return value;
+   }
+
+   private void checkCodeCourt(String codeCourt) {
+      List<MetadataReference> metadatas = findAll();
+      boolean found = false;
+      int index = 0;
+
+      while (!found && index < metadatas.size()) {
+         if (codeCourt.equalsIgnoreCase(metadatas.get(index).getShortCode())) {
+            found = true;
+         }
+
+         index++;
+      }
+
+      if (found) {
+         throw new MetadataRuntimeException("Code court déjà existant");
+      }
    }
 }
