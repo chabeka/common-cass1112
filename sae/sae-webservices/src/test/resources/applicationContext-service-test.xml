@@ -51,6 +51,10 @@
    <!-- mock pour le lancement des traitements de masse -->
    <bean id="traitementAsynchroneService" factory-bean="SAEServiceFactory"
       factory-method="createTraitementAsynchroneService" />
+      
+   <!-- mock pour le service de recuperation des metadonnées -->
+   <bean id="metadataService" factory-bean="SAEServiceFactory"
+      factory-method="createMetadataService" />
 
    <bean id="ecdeControleSupport"
       class="fr.urssaf.image.sae.services.capturemasse.support.ecde.impl.EcdeControleSupportImpl" />

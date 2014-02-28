@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
@@ -15,6 +16,7 @@ import fr.urssaf.image.sae.services.metadata.MetadataService;
  * un singleton et peut être accédée via l'annotation @Autowired
  */
 @Service
+@Qualifier("metadataService")
 public class MetadataServiceImpl implements MetadataService {
 
    /**
