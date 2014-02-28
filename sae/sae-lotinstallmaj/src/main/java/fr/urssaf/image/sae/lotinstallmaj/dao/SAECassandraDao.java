@@ -156,7 +156,7 @@ public class SAECassandraDao {
    public final long getDatabaseVersion() {
 
       List<ColumnFamilyDefinition> listCFD = getColumnFamilyDefintion();
-      if (!listCFD.contains("Parameters"))
+      if (!containColumnFamily(listCFD, "Parameters"))
          return 0;
 
       // On lit la version dans la base de données
@@ -183,6 +183,28 @@ public class SAECassandraDao {
          returnList = ksDef.getCfDefs();
       }
       return returnList;
+   }
+
+   /**
+    * Methode permettant de vérifier si la liste des ColumnFamilyDefinition
+    * contient la columnFamily recherchée.
+    * 
+    * @param columnsFamilyDef
+    *           liste des ColumnFamilyDefinition
+    * @param columnFamilyName
+    *           columnFamily recherchée
+    * @return boolean : true si on a trouvé la columnFamily, false sinon
+    */
+   public final boolean containColumnFamily(
+         final List<ColumnFamilyDefinition> columnsFamilyDef, final String columnFamilyName) {
+      boolean columnFamilyPresent = false;
+      for (ColumnFamilyDefinition columnFamilyDef : columnsFamilyDef) {
+         if (columnFamilyDef.getName().equals(columnFamilyName)) {
+            columnFamilyPresent = true;
+            break;
+         }
+      }
+      return columnFamilyPresent;
    }
 
    /**

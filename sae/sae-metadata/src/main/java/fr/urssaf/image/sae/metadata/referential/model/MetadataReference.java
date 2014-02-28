@@ -36,6 +36,8 @@ import org.apache.commons.lang.builder.ToStringStyle;
  * <li>dictionaryName : nom du dictionnaire associé</li>
  * <li>isIndexed : True si la métadonnée est indexée. False sinon</li>
  * <li>modifiable : True si la métadonnée est modifiable. False sinon</li>
+ * <li>clientAvailable : True si la métadonnée est mise à disposition des
+ * clients. False sinon</li>
  * </ul>
  */
 @SuppressWarnings( { "PMD.LongVariable", "PMD.TooManyFields" })
@@ -63,6 +65,7 @@ public class MetadataReference implements Serializable {
    private String dictionaryName;
    private Boolean isIndexed;
    private Boolean modifiable;
+   private Boolean clientAvailable;
 
    /**
     * @return Le code court
@@ -221,7 +224,8 @@ public class MetadataReference implements Serializable {
                   requiredForStorage).append("requiredForArchival",
                   requiredForArchival).append("defaultConsultable",
                   defaultConsultable).append("searchable", searchable).append(
-                  "internal", internal).toString();
+                  "internal", internal).append("clientAvailable",
+                  clientAvailable).toString();
    }
 
    /**
@@ -367,5 +371,24 @@ public class MetadataReference implements Serializable {
     */
    public final void setModifiable(Boolean modifiable) {
       this.modifiable = modifiable;
+   }
+
+   /**
+    * Permet de récuperer l'indicateur de mise à disposition client.
+    * 
+    * @return indicateur de mise à disposition client
+    */
+   public final Boolean isClientAvailable() {
+      return clientAvailable;
+   }
+
+   /**
+    * Permet de modifier l'indicateur de mise à disposition client.
+    * 
+    * @param clientAvailable
+    *           indicateur de mise à disposition client
+    */
+   public final void setClientAvailable(final Boolean clientAvailable) {
+      this.clientAvailable = clientAvailable;
    }
 }

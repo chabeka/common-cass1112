@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import me.prettyprint.cassandra.serializers.BooleanSerializer;
 import me.prettyprint.cassandra.serializers.LongSerializer;
 import me.prettyprint.cassandra.serializers.ObjectSerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
@@ -42,6 +43,8 @@ public class InsertionDonnees {
    private static final String DESCRIPTION = "description";
 
    private static final int DEFAULT_CONSERVATION = 7200;
+
+   private static final String DISPO = "dispo";
 
    private final Keyspace keyspace;
 
@@ -590,4 +593,36 @@ public class InsertionDonnees {
       cfTmpl.update(updater);
    }
 
+   /**
+    * Ajout de la colonne 'dispo' pour chaque metadonnée fournit en paramètre.
+    * 
+    * @param listeRows
+    *           liste des codes long des métadonnée
+    */
+   public void addColumnClientAvailableMetadata(List<String> listeRows) {
+      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+            keyspace, "Metadata", StringSerializer.get(), StringSerializer
+                  .get());
+
+      for (String rowName : listeRows) {
+         ColumnFamilyUpdater<String, String> updater = cfTmpl
+               .createUpdater(rowName);
+
+         Collection<String> columnNames = cfTmpl.queryColumns(rowName)
+               .getColumnNames();
+
+         if (!columnNames.contains(DISPO)) {
+            LOG.info("Ajout de la colonne {} pour la métadonnée {}", DISPO,
+                  rowName);
+            HColumn<String, Boolean> column = HFactory.createColumn(DISPO, Boolean.TRUE,
+                  StringSerializer.get(), BooleanSerializer.get());
+            updater.setColumn(column);
+            cfTmpl.update(updater);
+         } else {
+            LOG.info("Le colonne {} existe déjà pour la métadonnée {} ", DISPO,
+                  rowName);
+         }
+
+      }
+   }
 }

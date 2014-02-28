@@ -2,7 +2,6 @@ package fr.urssaf.image.sae.metadata.referential.support;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListResourceBundle;
 
 import me.prettyprint.cassandra.serializers.BytesArraySerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
@@ -111,6 +110,9 @@ public class SaeMetadataSupport {
 
       Boolean modifiable = getBooleanValue(metadata.isModifiable());
       saeMetadataDao.ecritModifiable(modifiable, updater, clock);
+
+      Boolean clientAvailable = getBooleanValue(metadata.isClientAvailable());
+      saeMetadataDao.ecritMisADisposition(clientAvailable, updater, clock);
 
       saeMetadataDao.getCfTmpl().update(updater);
    }
@@ -244,6 +246,9 @@ public class SaeMetadataSupport {
 
          Boolean update = getBooleanValue(result, SaeMetadataDao.META_UPDATE);
          meta.setModifiable(update);
+
+         Boolean dispo = getBooleanValue(result, SaeMetadataDao.META_DISPO);
+         meta.setClientAvailable(dispo);
 
       }
       return meta;

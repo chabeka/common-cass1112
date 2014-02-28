@@ -37,6 +37,7 @@ public class SaeMetadataDao extends AbstractDao<String, String> {
    public static final String META_HAS_DICT = "hasDict";
    public static final String META_DICT_NAME = "dictName";
    public static final String META_INDEXED = "index";
+   public static final String META_DISPO = "dispo";
 
    public static final String METADATA_CFNAME = "Metadata";
    public static final String META_UPDATE = "update";
@@ -332,6 +333,22 @@ public class SaeMetadataDao extends AbstractDao<String, String> {
    public final void ecritModifiable(Boolean index,
          ColumnFamilyUpdater<String, String> updater, long clock) {
       addColumn(updater, META_UPDATE, index, BooleanSerializer.get(), clock);
+   }
+
+   /**
+    * Ecrit la valeur de la propriété dispo
+    * 
+    * @param clientAvailable
+    *           Indique si la métadonnée est mis à disposition du client
+    * @param updater
+    *           {@link ColumnFamilyUpdater}
+    * @param clock
+    *           le timestamp d'écriture
+    */
+   public final void ecritMisADisposition(Boolean clientAvailable,
+         ColumnFamilyUpdater<String, String> updater, long clock) {
+      addColumn(updater, META_DISPO, clientAvailable, BooleanSerializer.get(),
+            clock);
    }
 
 }
