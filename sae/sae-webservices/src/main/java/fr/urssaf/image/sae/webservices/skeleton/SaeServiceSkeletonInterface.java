@@ -22,6 +22,8 @@ import fr.cirtil.www.saeservice.PingSecureRequest;
 import fr.cirtil.www.saeservice.PingSecureResponse;
 import fr.cirtil.www.saeservice.Recherche;
 import fr.cirtil.www.saeservice.RechercheResponse;
+import fr.cirtil.www.saeservice.RecuperationMetadonnees;
+import fr.cirtil.www.saeservice.RecuperationMetadonneesResponse;
 import fr.cirtil.www.saeservice.Suppression;
 import fr.cirtil.www.saeservice.SuppressionResponse;
 import fr.urssaf.image.sae.webservices.security.exception.SaeAccessDeniedAxisFault;
@@ -168,4 +170,15 @@ public interface SaeServiceSkeletonInterface {
    ModificationResponse modificationSecure(Modification request)
          throws AxisFault;
 
+   /**
+    * endpoint de la récupération des métadonnées.
+    * 
+    * @param request
+    *           request du web service
+    * @return reponse du web service
+    * @throws AxisFault
+    *            exception levée dans la consommation du web service
+    */
+   RecuperationMetadonneesResponse recuperationMetadonneesSecure(
+         RecuperationMetadonnees request) throws AxisFault;
 }

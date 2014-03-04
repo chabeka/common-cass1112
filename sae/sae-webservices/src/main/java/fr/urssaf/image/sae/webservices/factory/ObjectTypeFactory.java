@@ -21,6 +21,7 @@ import fr.cirtil.www.saeservice.ConsultationResponse;
 import fr.cirtil.www.saeservice.ListeMetadonneeCodeType;
 import fr.cirtil.www.saeservice.ListeMetadonneeType;
 import fr.cirtil.www.saeservice.MetadonneeCodeType;
+import fr.cirtil.www.saeservice.MetadonneeDispoType;
 import fr.cirtil.www.saeservice.MetadonneeType;
 import fr.cirtil.www.saeservice.MetadonneeValeurType;
 import fr.cirtil.www.saeservice.ObjetNumeriqueConsultationType;
@@ -29,6 +30,7 @@ import fr.cirtil.www.saeservice.ResultatRechercheType;
 import fr.cirtil.www.saeservice.UrlConsultationDirecteType;
 import fr.cirtil.www.saeservice.UuidType;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
+import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 
 /**
  * Classe d'instanciation du modèle généré par le web service. <br>
@@ -107,7 +109,7 @@ public final class ObjectTypeFactory {
     * @return instance de {@link ObjetNumeriqueConsultationType}
     */
    public static ObjetNumeriqueConsultationType createObjetNumeriqueConsultationType(
-        DataHandler content) {
+         DataHandler content) {
 
       Assert.notNull(content, "content is required");
 
@@ -385,4 +387,75 @@ public final class ObjectTypeFactory {
       return responseMTOM;
    }
 
+   /**
+    * instanciation de la classe {@link MetadonneeDispoType}
+    * 
+    * <pre>
+    *  &lt;xsd:complexType name="metadonneeDispoType">
+    *    ...
+    *    &lt;xsd:sequence>
+    *       &lt;xsd:element name="codeLong" type="xsd:string">
+    *       ...
+    *       &lt;/xsd:element>
+    *       &lt;xsd:element name="libelle" type="xsd:string">
+    *       ...  
+    *       &lt;/xsd:element>
+    *       &lt;/xsd:element>
+    *       &lt;xsd:element name="description" type="xsd:string">
+    *       ...  
+    *       &lt;/xsd:element>
+    *       &lt;/xsd:element>
+    *       &lt;xsd:element name="format" type="xsd:string">
+    *       ...  
+    *       &lt;/xsd:element>
+    *       &lt;/xsd:element>
+    *       &lt;xsd:element name="formatage" type="xsd:string">
+    *       ...  
+    *       &lt;/xsd:element>
+    *       &lt;/xsd:element>
+    *       &lt;xsd:element name="specifiableArchivage" type="xsd:boolean">
+    *       ...  
+    *       &lt;/xsd:element>
+    *       &lt;xsd:element name="obligatoireArchivage" type="xsd:boolean">
+    *       ...  
+    *       &lt;/xsd:element>
+    *       &lt;xsd:element name="tailleMax" type="xsd:int">
+    *       ...  
+    *       &lt;/xsd:element>
+    *       &lt;xsd:element name="critereRecherche" type="xsd:boolean">
+    *       ...  
+    *       &lt;/xsd:element>
+    *       &lt;xsd:element name="indexation" type="xsd:boolean">
+    *       ...  
+    *       &lt;/xsd:element>
+    *       &lt;xsd:element name="modifiable" type="xsd:boolean">
+    *       ...  
+    *       &lt;/xsd:element>
+    *    &lt;/xsd:sequence>
+    *  &lt;/xsd:complexType>
+    * </pre>
+    * 
+    * @param metadataReference
+    *           metadonnées de référence
+    * @return instance de {@link MetadonneeDispoType}
+    */
+   public static MetadonneeDispoType createMetadonneeDispoType(
+         MetadataReference metadataReference) {
+
+      MetadonneeDispoType metaDonnee = new MetadonneeDispoType();
+      metaDonnee.setCodeLong(metadataReference.getLongCode());
+      metaDonnee.setLibelle(metadataReference.getLabel());
+      metaDonnee.setDescription(metadataReference.getDescription());
+      metaDonnee.setFormat(metadataReference.getType());
+      metaDonnee.setFormatage(metadataReference.getPattern());
+      metaDonnee.setSpecifiableArchivage(metadataReference.isArchivable());
+      metaDonnee.setObligatoireArchivage(metadataReference
+            .isRequiredForArchival());
+      metaDonnee.setTailleMax(metadataReference.getLength());
+      metaDonnee.setCritereRecherche(metadataReference.isSearchable());
+      metaDonnee.setIndexation(metadataReference.getIsIndexed());
+      metaDonnee.setModifiable(metadataReference.isModifiable());
+
+      return metaDonnee;
+   }
 }

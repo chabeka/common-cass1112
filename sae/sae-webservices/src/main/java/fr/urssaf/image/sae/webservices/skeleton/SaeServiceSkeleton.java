@@ -43,12 +43,15 @@ import fr.cirtil.www.saeservice.PingSecureRequest;
 import fr.cirtil.www.saeservice.PingSecureResponse;
 import fr.cirtil.www.saeservice.Recherche;
 import fr.cirtil.www.saeservice.RechercheResponse;
+import fr.cirtil.www.saeservice.RecuperationMetadonnees;
+import fr.cirtil.www.saeservice.RecuperationMetadonneesResponse;
 import fr.cirtil.www.saeservice.Suppression;
 import fr.cirtil.www.saeservice.SuppressionResponse;
 import fr.urssaf.image.sae.exploitation.service.DfceInfoService;
 import fr.urssaf.image.sae.webservices.SaeService;
 import fr.urssaf.image.sae.webservices.exception.CaptureAxisFault;
 import fr.urssaf.image.sae.webservices.exception.ConsultationAxisFault;
+import fr.urssaf.image.sae.webservices.exception.ErreurInterneAxisFault;
 import fr.urssaf.image.sae.webservices.exception.ModificationAxisFault;
 import fr.urssaf.image.sae.webservices.exception.RechercheAxis2Fault;
 import fr.urssaf.image.sae.webservices.exception.SuppressionAxisFault;
@@ -56,6 +59,7 @@ import fr.urssaf.image.sae.webservices.security.exception.SaeAccessDeniedAxisFau
 import fr.urssaf.image.sae.webservices.service.WSCaptureMasseService;
 import fr.urssaf.image.sae.webservices.service.WSCaptureService;
 import fr.urssaf.image.sae.webservices.service.WSConsultationService;
+import fr.urssaf.image.sae.webservices.service.WSMetadataService;
 import fr.urssaf.image.sae.webservices.service.WSModificationService;
 import fr.urssaf.image.sae.webservices.service.WSRechercheService;
 import fr.urssaf.image.sae.webservices.service.WSSuppressionService;
@@ -97,6 +101,9 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
 
    @Autowired
    private WSSuppressionService suppressionService;
+
+   @Autowired
+   private WSMetadataService metadataService;
 
    @Autowired
    private DfceInfoService dfceInfoService;
@@ -566,6 +573,33 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
                ex);
       }
 
+   }
+
+   @Override
+   public RecuperationMetadonneesResponse recuperationMetadonneesSecure(
+         RecuperationMetadonnees request) throws AxisFault {
+
+      try {
+
+         String trcPrefix = "recuperationMetadonneesSecure";
+         LOG.debug("{} - début", trcPrefix);
+
+         RecuperationMetadonneesResponse response = metadataService
+               .recupererMetadonnees();
+
+         LOG.debug("{} - fin", trcPrefix);
+
+         return response;
+
+      } catch (ErreurInterneAxisFault ex) {
+         logSoapFault(ex);
+         throw ex;
+      } catch (AccessDeniedException ex) {
+         throw new SaeAccessDeniedAxisFault(ex);
+      } catch (RuntimeException ex) {
+         logRuntimeException(ex);
+         throw new ErreurInterneAxisFault(ex);
+      }
    }
 
 }
