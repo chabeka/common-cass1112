@@ -540,6 +540,118 @@
          </xsd:choice>
       </xsd:sequence>
    </xsd:complexType>
+   <xsd:element name="recuperationMetadonnees">
+      <xsd:annotation>
+         <xsd:documentation>Paramètre d'entrée de l'opération 
+         'recuperationMetadonnees'</xsd:documentation>
+      </xsd:annotation>
+      <xsd:complexType />
+   </xsd:element>
+   <xsd:complexType name="metadonneeDispoType">
+      <xsd:annotation>
+         <xsd:documentation>Une métadonnée définie par un ensemble
+            de propriété (code long, libellé, description, format,
+            formatage, spécifiable à l'archivage, obligatoire à 
+            l'archivage, taille max, critère de recherche, indexation,
+            modifiable)</xsd:documentation>
+      </xsd:annotation>
+      <xsd:sequence>
+         <xsd:element name="codeLong" type="xsd:string">
+            <xsd:annotation>
+               <xsd:documentation>Le code long de la métadonnée (identifiant
+                  unique)</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         <xsd:element name="libelle" type="xsd:string">
+            <xsd:annotation>
+               <xsd:documentation>Le libellé de la métadonnée
+               </xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         <xsd:element name="description" type="xsd:string">
+            <xsd:annotation>
+               <xsd:documentation>La description de la métadonnée
+               </xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         <xsd:element name="format" type="xsd:string">
+            <xsd:annotation>
+               <xsd:documentation>Le format attendue pour cette métadonnée
+               (String, Integer, Date, Boolean)</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         <xsd:element name="formatage" type="xsd:string">
+            <xsd:annotation>
+               <xsd:documentation>Le formatage attendue pour cette métadonnée
+               (yyyy-mm-dd,...)
+               </xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         <xsd:element name="specifiableArchivage" type="xsd:boolean">
+            <xsd:annotation>
+               <xsd:documentation>Flag indiquant si cette métadonnée est
+               spécifiable à l'archivage</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         <xsd:element name="obligatoireArchivage" type="xsd:boolean">
+            <xsd:annotation>
+               <xsd:documentation>Flag indiquant si cette métadonnée est
+               obligatoire à l'archivage</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         <xsd:element name="tailleMax" type="xsd:int">
+            <xsd:annotation>
+               <xsd:documentation>Taille maximul de la métadonnée
+               </xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         <xsd:element name="critereRecherche" type="xsd:boolean">
+            <xsd:annotation>
+               <xsd:documentation>Flag indiquant si cette métadonnée peut
+               être utilisé comme critère de recherche</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         <xsd:element name="indexation" type="xsd:boolean">
+            <xsd:annotation>
+               <xsd:documentation>Flag indiquant si cette métadonnée est
+               indexée</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         <xsd:element name="modifiable" type="xsd:boolean">
+            <xsd:annotation>
+               <xsd:documentation>Flag indiquant si cette métadonnée est
+               modifiable par le client</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+      </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="listeMetadonneeDispoType">
+      <xsd:annotation>
+         <xsd:documentation>Une liste de métadonnées disponible pour le client</xsd:documentation>
+      </xsd:annotation>
+      <xsd:sequence>
+         <xsd:element name="metadonnee" type="sae:metadonneeDispoType"
+            minOccurs="0" maxOccurs="unbounded">
+            <xsd:annotation>
+               <xsd:documentation>Les métadonnées disponibles pour le client</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+      </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="recuperationMetadonneesResponseType">
+      <xsd:sequence>
+         <xsd:annotation>
+            <xsd:documentation>Valeur de retour de l'opération
+               'recuperationMetadonnees'</xsd:documentation>
+         </xsd:annotation>
+         <xsd:element name="metadonnees" type="sae:listeMetadonneeDispoType">
+            <xsd:annotation>
+               <xsd:documentation>Les métadonnées disponible pour le client
+               </xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+      </xsd:sequence>
+   </xsd:complexType>
    <xsd:element name="archivageUnitaire" type="sae:archivageUnitaireRequestType" />
    <xsd:element name="archivageUnitaireResponse" type="sae:archivageUnitaireResponseType" />
    <xsd:element name="archivageUnitairePJ" type="sae:archivageUnitairePJRequestType" />
@@ -559,5 +671,6 @@
    <xsd:element name="modificationResponse" type="sae:modificationResponseType" />
    <xsd:element name="suppression" type="sae:suppressionRequestType" />
    <xsd:element name="suppressionResponse" type="sae:suppressionResponseType" />
+   <xsd:element name="recuperationMetadonneesResponse" type="sae:recuperationMetadonneesResponseType" />
 
 </xsd:schema>

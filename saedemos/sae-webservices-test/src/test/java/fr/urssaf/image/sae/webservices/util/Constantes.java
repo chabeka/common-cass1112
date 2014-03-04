@@ -19,8 +19,8 @@ public class Constantes {
    
    public static final String ROLE_TOUS = "ROLE_TOUS";
    
-   public static final String DEFAULT_ISSUER = "TESTS_UNITAIRES";
+   public static final String DEFAULT_ISSUER = "CS_DEV_TOUTES_ACTIONS";
    
-   public static final String DEFAULT_PAGM = "ROLE_TOUS;FULL";
+   public static final String DEFAULT_PAGM = "PAGM_TOUTES_ACTIONS";
    
 }

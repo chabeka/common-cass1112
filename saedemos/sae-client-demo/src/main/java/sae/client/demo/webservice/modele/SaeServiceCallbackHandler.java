@@ -175,6 +175,22 @@ public class SaeServiceCallbackHandler{
             }
                 
            /**
+            * auto generated Axis2 call back method for recuperationMetadonnees method
+            * override this method for handling normal response from recuperationMetadonnees operation
+            */
+           public void receiveResultrecuperationMetadonnees(
+                    sae.client.demo.webservice.modele.SaeServiceStub.RecuperationMetadonneesResponse result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from recuperationMetadonnees operation
+           */
+            public void receiveErrorrecuperationMetadonnees(java.lang.Exception e) {
+            }
+                
+           /**
             * auto generated Axis2 call back method for consultationMTOM method
             * override this method for handling normal response from consultationMTOM operation
             */

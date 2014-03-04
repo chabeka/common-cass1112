@@ -105,7 +105,7 @@ public class ArchivageUnitairePJFailureTest {
       putMetadata("ApplicationProductrice", "ADELAIDE");
       putMetadata("CodeOrganismeProprietaire", "CER69");
       putMetadata("CodeOrganismeGestionnaire", "UR750");
-      putMetadata("VersionRND", "11.1");
+      //putMetadata("VersionRND", "11.1");
       putMetadata("NbPages", "2");
       putMetadata("FormatFichier", "fmt/354");
       putMetadata("DateCreation", "2012-01-01");
@@ -184,7 +184,7 @@ public class ArchivageUnitairePJFailureTest {
       Collection<Metadata> clone = CollectionUtils.disjunction(metadatasRef
             .values(), new ArrayList());
 
-      clone.add(ObjectModelFactory.createMetadata("VersionRND", "15.6"));
+      //clone.add(ObjectModelFactory.createMetadata("VersionRND", "15.6"));
 
       clone.add(ObjectModelFactory.createMetadata("CodeOrganismeGestionnaire",
             "UR44"));
@@ -200,7 +200,7 @@ public class ArchivageUnitairePJFailureTest {
          SoapTestUtils
                .assertAxisFault(
                      fault,
-                     "La ou les métadonnées suivantes sont renseignées plusieurs fois : CodeOrganismeGestionnaire, VersionRND",
+                     "La ou les métadonnées suivantes sont renseignées plusieurs fois : CodeOrganismeGestionnaire",
                      "CaptureMetadonneesDoublon", SoapTestUtils.SAE_NAMESPACE,
                      SoapTestUtils.SAE_PREFIX);
 
@@ -508,7 +508,7 @@ public class ArchivageUnitairePJFailureTest {
          metadatas.add(ObjectModelFactory.createMetadata(
                "CodeOrganismeGestionnaire", "UR750"));
          metadatas.add(ObjectModelFactory.createMetadata("CodeRND", "2.3.1.1.12"));
-         metadatas.add(ObjectModelFactory.createMetadata("VersionRND", "11.1"));
+         //metadatas.add(ObjectModelFactory.createMetadata("VersionRND", "11.1"));
          metadatas.add(ObjectModelFactory.createMetadata("NbPages", "2"));
          metadatas.add(ObjectModelFactory.createMetadata("FormatFichier",
                "fmt/354"));
@@ -557,7 +557,7 @@ public class ArchivageUnitairePJFailureTest {
          metadatas.add(ObjectModelFactory.createMetadata(
                "CodeOrganismeGestionnaire", "UR750"));
          metadatas.add(ObjectModelFactory.createMetadata("CodeRND", "2.3.1.1.12"));
-         metadatas.add(ObjectModelFactory.createMetadata("VersionRND", "11.1"));
+         //metadatas.add(ObjectModelFactory.createMetadata("VersionRND", "11.1"));
          metadatas.add(ObjectModelFactory.createMetadata("NbPages", "2"));
          metadatas.add(ObjectModelFactory.createMetadata("FormatFichier",
                "fmt/354"));

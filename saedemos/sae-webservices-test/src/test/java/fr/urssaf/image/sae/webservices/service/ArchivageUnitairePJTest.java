@@ -43,6 +43,7 @@ import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.MetadonneeType;
 import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.MetadonneeValeurType;
 import fr.urssaf.image.sae.webservices.service.factory.ObjectModelFactory;
 import fr.urssaf.image.sae.webservices.service.model.Metadata;
+import fr.urssaf.image.sae.webservices.util.Constantes;
 
 
 /**
@@ -98,7 +99,7 @@ public class ArchivageUnitairePJTest {
       metadatas.add(ObjectModelFactory.createMetadata(
             "CodeOrganismeGestionnaire", "UR750"));
       metadatas.add(ObjectModelFactory.createMetadata("CodeRND", "2.3.1.1.12"));
-      metadatas.add(ObjectModelFactory.createMetadata("VersionRND", "11.1"));
+      //metadatas.add(ObjectModelFactory.createMetadata("VersionRND", "11.1"));
       metadatas.add(ObjectModelFactory.createMetadata("NbPages", "2"));
       metadatas.add(ObjectModelFactory.createMetadata("FormatFichier",
             "fmt/354"));
@@ -137,7 +138,7 @@ public class ArchivageUnitairePJTest {
       expectedMetadatas.put("CodeRND", "2.3.1.1.12");
       expectedMetadatas.put("NomFichier", "NomFichier.txt");
       expectedMetadatas.put("FormatFichier", "fmt/354");
-      expectedMetadatas.put("ContratDeService", "TESTS_UNITAIRES");
+      expectedMetadatas.put("ContratDeService", "CS_DEV_TOUTES_ACTIONS");
       expectedMetadatas.put("Hash", att_hash);
       expectedMetadatas.put("TailleFichier", ""+contenu.length);
 
@@ -177,7 +178,7 @@ public class ArchivageUnitairePJTest {
       metadatas.add(ObjectModelFactory.createMetadata(
             "CodeOrganismeGestionnaire", "UR750"));
       metadatas.add(ObjectModelFactory.createMetadata("CodeRND", "2.3.1.1.12"));
-      metadatas.add(ObjectModelFactory.createMetadata("VersionRND", "11.1"));
+      //metadatas.add(ObjectModelFactory.createMetadata("VersionRND", "11.1"));
       metadatas.add(ObjectModelFactory.createMetadata("NbPages", "2"));
       metadatas.add(ObjectModelFactory.createMetadata("FormatFichier",
             "fmt/354"));
@@ -218,7 +219,7 @@ public class ArchivageUnitairePJTest {
       expectedMetadatas.put("CodeRND", "2.3.1.1.12");
       expectedMetadatas.put("NomFichier", "attestation.pdf");
       expectedMetadatas.put("FormatFichier", "fmt/354");
-      expectedMetadatas.put("ContratDeService", "TESTS_UNITAIRES");
+      expectedMetadatas.put("ContratDeService", Constantes.DEFAULT_ISSUER);
       expectedMetadatas.put("Hash", hash);
       expectedMetadatas.put("TailleFichier", Long.toString(FileUtils
             .sizeOf(srcFile)));
@@ -284,7 +285,7 @@ public class ArchivageUnitairePJTest {
       expectedMetadatas.put("CodeRND", "2.3.1.1.12");
       expectedMetadatas.put("NomFichier", "NomFichier.txt");
       expectedMetadatas.put("FormatFichier", "fmt/354");
-      expectedMetadatas.put("ContratDeService", "TESTS_UNITAIRES");
+      expectedMetadatas.put("ContratDeService", Constantes.DEFAULT_ISSUER);
       expectedMetadatas.put("Hash", att_hash);
       expectedMetadatas.put("TailleFichier", "73791");
 
@@ -335,14 +336,14 @@ public class ArchivageUnitairePJTest {
       meta4.setValeur(valeur4);
       listeMetaType.addMetadonnee(meta4);
       
-      MetadonneeType meta5 = new MetadonneeType();
+      /*MetadonneeType meta5 = new MetadonneeType();
       MetadonneeCodeType code5 = new MetadonneeCodeType();
       code5.setMetadonneeCodeType("VersionRND");
       meta5.setCode(code5);
       MetadonneeValeurType valeur5 = new MetadonneeValeurType();
       valeur5.setMetadonneeValeurType("11.1");
       meta5.setValeur(valeur5);
-      listeMetaType.addMetadonnee(meta5);
+      listeMetaType.addMetadonnee(meta5);*/
       
       MetadonneeType meta6 = new MetadonneeType();
       MetadonneeCodeType code6 = new MetadonneeCodeType();

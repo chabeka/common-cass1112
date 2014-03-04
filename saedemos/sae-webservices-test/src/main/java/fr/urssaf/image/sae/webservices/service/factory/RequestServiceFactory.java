@@ -32,9 +32,13 @@ import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.ListeMetadonneeType
 import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.MetadonneeCodeType;
 import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.MetadonneeType;
 import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.MetadonneeValeurType;
+import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.Modification;
+import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.ModificationRequestType;
 import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.Recherche;
 import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.RechercheRequestType;
 import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.RequeteRechercheType;
+import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.Suppression;
+import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.SuppressionRequestType;
 import fr.urssaf.image.sae.webservices.modele.SaeServiceStub.UuidType;
 import fr.urssaf.image.sae.webservices.service.model.Metadata;
 
@@ -356,5 +360,65 @@ public final class RequestServiceFactory {
 
    }
    
+   /**
+    * 
+    * @param uuid
+    *           L'identifiant unique d'archivage de l'archive à modifier
+    * @param metadonnees
+    *           Les métadonnées.
+    * @return instance de {@link Modification}
+    */
+   public static Modification createModification(String uuid, Collection<Metadata> metadonnees) {
 
+      Modification request = new Modification();
+
+      ModificationRequestType requestType = new ModificationRequestType();
+
+      ListeMetadonneeType listeMetadonnee = new ListeMetadonneeType();
+      
+      UuidType uuidType = new UuidType();
+      uuidType.setUuidType(uuid);
+
+      for (Metadata metadonnee : metadonnees) {
+
+         MetadonneeType type = ObjectModeleFactory.createMetadonneeType();
+
+         MetadonneeCodeType codeType = ObjectModeleFactory
+               .createMetadonneeCodeType(metadonnee.getCode());
+         type.setCode(codeType);
+
+         MetadonneeValeurType valeurType = ObjectModeleFactory
+               .createMetadonneeValeurType(metadonnee.getValue());
+         type.setValeur(valeurType);
+
+         listeMetadonnee.addMetadonnee(type);
+      }
+
+      requestType.setMetadonnees(listeMetadonnee);
+      requestType.setUuid(uuidType);
+      request.setModification(requestType);
+
+      return request;
+   }
+   
+   /**
+    * 
+    * @param uuid
+    *           L'identifiant unique d'archivage de l'archive à consulter
+    * @return instance de {@link Suppression}
+    */
+   public static Suppression createSuppression(String uuid) {
+
+      Suppression request = new Suppression();
+
+      SuppressionRequestType requestType = new SuppressionRequestType();
+      UuidType uuidType = new UuidType();
+      uuidType.setUuidType(uuid);
+
+      requestType.setUuid(uuidType);
+
+      request.setSuppression(requestType);
+
+      return request;
+   }
 }

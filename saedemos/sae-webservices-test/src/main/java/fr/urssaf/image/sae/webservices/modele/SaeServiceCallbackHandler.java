@@ -95,6 +95,22 @@ public class SaeServiceCallbackHandler{
             }
                 
            /**
+            * auto generated Axis2 call back method for suppression method
+            * override this method for handling normal response from suppression operation
+            */
+           public void receiveResultsuppression(
+                    fr.urssaf.image.sae.webservices.modele.SaeServiceStub.SuppressionResponse result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from suppression operation
+           */
+            public void receiveErrorsuppression(java.lang.Exception e) {
+            }
+                
+           /**
             * auto generated Axis2 call back method for ping method
             * override this method for handling normal response from ping operation
             */
@@ -159,6 +175,22 @@ public class SaeServiceCallbackHandler{
             }
                 
            /**
+            * auto generated Axis2 call back method for recuperationMetadonnees method
+            * override this method for handling normal response from recuperationMetadonnees operation
+            */
+           public void receiveResultrecuperationMetadonnees(
+                    fr.urssaf.image.sae.webservices.modele.SaeServiceStub.RecuperationMetadonneesResponse result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from recuperationMetadonnees operation
+           */
+            public void receiveErrorrecuperationMetadonnees(java.lang.Exception e) {
+            }
+                
+           /**
             * auto generated Axis2 call back method for consultationMTOM method
             * override this method for handling normal response from consultationMTOM operation
             */
@@ -188,6 +220,22 @@ public class SaeServiceCallbackHandler{
            * override this method for handling error response from archivageMasse operation
            */
             public void receiveErrorarchivageMasse(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for modification method
+            * override this method for handling normal response from modification operation
+            */
+           public void receiveResultmodification(
+                    fr.urssaf.image.sae.webservices.modele.SaeServiceStub.ModificationResponse result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from modification operation
+           */
+            public void receiveErrormodification(java.lang.Exception e) {
             }
                 
 

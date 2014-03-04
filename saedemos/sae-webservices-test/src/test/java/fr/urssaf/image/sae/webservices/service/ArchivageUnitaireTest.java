@@ -89,7 +89,7 @@ public class ArchivageUnitaireTest {
       metadatas.add(ObjectModelFactory.createMetadata(
             "CodeOrganismeGestionnaire", "UR750"));
       metadatas.add(ObjectModelFactory.createMetadata("CodeRND", "2.3.1.1.12"));
-      metadatas.add(ObjectModelFactory.createMetadata("VersionRND", "11.1"));
+      //metadatas.add(ObjectModelFactory.createMetadata("VersionRND", "11.1"));
       metadatas.add(ObjectModelFactory.createMetadata("NbPages", "2"));
       metadatas.add(ObjectModelFactory.createMetadata("FormatFichier",
             "fmt/354"));
@@ -167,7 +167,7 @@ public class ArchivageUnitaireTest {
       metadatas.add(ObjectModelFactory.createMetadata(
             "CodeOrganismeGestionnaire", "UR750"));
       metadatas.add(ObjectModelFactory.createMetadata("CodeRND", "2.3.1.1.12"));
-      metadatas.add(ObjectModelFactory.createMetadata("VersionRND", "11.1"));
+      //metadatas.add(ObjectModelFactory.createMetadata("VersionRND", "11.1"));
       metadatas.add(ObjectModelFactory.createMetadata("NbPages", "2"));
       metadatas.add(ObjectModelFactory.createMetadata("FormatFichier",
             "fmt/354"));
@@ -220,7 +220,7 @@ public class ArchivageUnitaireTest {
       metadatas.add(ObjectModelFactory.createMetadata(
             "CodeOrganismeGestionnaire", "UR750"));
       metadatas.add(ObjectModelFactory.createMetadata("CodeRND", "2.3.1.1.12"));
-      metadatas.add(ObjectModelFactory.createMetadata("VersionRND", "11.1"));
+      //metadatas.add(ObjectModelFactory.createMetadata("VersionRND", "11.1"));
       metadatas.add(ObjectModelFactory.createMetadata("NbPages", "2"));
       metadatas.add(ObjectModelFactory.createMetadata("FormatFichier",
             "fmt/354"));
@@ -278,7 +278,7 @@ public class ArchivageUnitaireTest {
       metadatas.add(ObjectModelFactory.createMetadata(
             "CodeOrganismeGestionnaire", "UR750"));
       metadatas.add(ObjectModelFactory.createMetadata("CodeRND", "2.3.1.1.12"));
-      metadatas.add(ObjectModelFactory.createMetadata("VersionRND", "11.1"));
+      //metadatas.add(ObjectModelFactory.createMetadata("VersionRND", "11.1"));
       metadatas.add(ObjectModelFactory.createMetadata("NbPages", "2"));
       metadatas.add(ObjectModelFactory.createMetadata("FormatFichier",
             "fmt/354"));
