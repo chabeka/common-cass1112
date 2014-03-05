@@ -1,6 +1,7 @@
 package fr.urssaf.image.sae.droit.aspect;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -9,7 +10,6 @@ import org.aspectj.lang.annotation.Before;
 
 import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
 import fr.urssaf.image.sae.droit.dao.model.FormatProfil;
-import fr.urssaf.image.sae.droit.exception.DroitRuntimeException;
 import fr.urssaf.image.sae.droit.utils.Constantes;
 import fr.urssaf.image.sae.droit.utils.EnumValidationMode;
 import fr.urssaf.image.sae.droit.utils.ResourceMessagesUtils;
@@ -135,8 +135,9 @@ public class ParamFormatControlProfil {
                .valueOf(1));
 
          if (!variable.isEmpty()) {
-            throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-                  Constantes.PARAM_OBLIGATOIRE, variable.toString()));
+            throw new IllegalArgumentException(ResourceMessagesUtils
+                  .loadMessage(Constantes.PARAM_OBLIGATOIRE, variable
+                        .toString()));
          }
       }
 
@@ -182,6 +183,8 @@ public class ParamFormatControlProfil {
    private List<String> getAttributsNull(FormatControlProfil profil, Long clock) {
 
       List<String> variable = new ArrayList<String>();
+      List<String> doNotValidateList = Arrays.asList(Constantes.AUCUN.toUpperCase(),
+            Constantes.NONE.toUpperCase());
 
       if (profil == null) {
          variable.add("profil");
@@ -203,13 +206,14 @@ public class ParamFormatControlProfil {
          if (formatProfil == null) {
             variable.add(Constantes.COL_CONTROLPROFIL);
          }
+
          if (formatProfil != null) {
             boolean validation = formatProfil.isFormatValidation();
+            boolean identification = formatProfil.isFormatIdentification();
             String validationMode = formatProfil.getFormatValidationMode();
-            if (validation) {
-               if ((!StringUtils.isBlank(validationMode) && !EnumValidationMode
-                     .contains(validationMode))
-                     || StringUtils.isBlank(validationMode)) {
+
+            if (validation || identification) {
+               if (!EnumValidationMode.contains(validationMode)) {
 
                   throw new IllegalArgumentException(
                         ResourceMessagesUtils
@@ -217,8 +221,8 @@ public class ParamFormatControlProfil {
                }
             } else {
                if (!StringUtils.isBlank(validationMode)
-                     && !(Constantes.AUCUN.equalsIgnoreCase(validationMode) || Constantes.NONE
-                           .equalsIgnoreCase(validationMode))) {
+                     && !doNotValidateList.contains(StringUtils
+                           .upperCase(validationMode))) {
                   throw new IllegalArgumentException(
                         ResourceMessagesUtils
                               .loadMessage("erreur.param.format.valid.mode.renseigne"));

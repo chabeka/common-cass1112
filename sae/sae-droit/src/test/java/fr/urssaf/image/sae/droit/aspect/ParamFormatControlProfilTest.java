@@ -23,11 +23,12 @@ import fr.urssaf.image.sae.droit.exception.FormatControlProfilNotFoundException;
 public class ParamFormatControlProfilTest {
 
    private static final String MESSAGE_PARAM_FORMAT_RUNTIME = "Une exception IllegalArgumentException aurait dû être levée";
+   private static final String MESSAGE_PARAM_NO_RUNTIME = "Aucune exception n'aurait du être levée";
    private static final String MESSAGE_EXCEPT_INCORRECT = "Le message de l'exception est incorrect";
-   
+
    private static final String DESCRIPTION = "description";
    private static final String CODE = "code";
-   
+
    private static final String MESSAGE_EXCEPT = "La valeur d'un ou plusieurs paramètres obligatoires est nulle ou vide : ";
    private static final String FORMAT_PROFIL = "[formatProfile].";
 
@@ -107,13 +108,10 @@ public class ParamFormatControlProfilTest {
          format.setControlProfil(formatProfil);
          formatControlProfilSupport.create(format, Long.valueOf(1));
 
-         Assert.fail(MESSAGE_PARAM_FORMAT_RUNTIME);
+         Assert.assertNotNull(formatControlProfilSupport.find(CODE));
+
       } catch (IllegalArgumentException except) {
-         Assert
-               .assertEquals(
-                     MESSAGE_EXCEPT_INCORRECT,
-                     "Le mode de validation ne doit pas être renseigné.",
-                     except.getMessage());
+         Assert.fail(MESSAGE_PARAM_NO_RUNTIME);
       }
    }
 
@@ -148,7 +146,7 @@ public class ParamFormatControlProfilTest {
          format.setFormatCode(CODE);
 
          FormatProfil formatProfil = new FormatProfil();
-         formatProfil.setFormatIdentification(true);
+         formatProfil.setFormatIdentification(false);
          formatProfil.setFormatValidation(false);
          formatProfil.setFormatValidationMode("Monitor");
 
@@ -157,16 +155,39 @@ public class ParamFormatControlProfilTest {
 
          Assert.fail(MESSAGE_PARAM_FORMAT_RUNTIME);
       } catch (IllegalArgumentException except) {
-         Assert
-               .assertEquals(
-                     MESSAGE_EXCEPT_INCORRECT,
-                     "Le mode de validation ne doit pas être renseigné.",
-                     except.getMessage());
+         Assert.assertEquals(MESSAGE_EXCEPT_INCORRECT,
+               "Le mode de validation ne doit pas être renseigné.", except
+                     .getMessage());
       }
    }
 
    @Test
-   public void createSuccessValidationModeFalse()
+   public void createFailureIdentificationModeFalse()
+         throws FormatControlProfilNotFoundException {
+
+      try {
+         FormatControlProfil format = new FormatControlProfil();
+         format.setDescription(DESCRIPTION);
+         format.setFormatCode(CODE);
+
+         FormatProfil formatProfil = new FormatProfil();
+         formatProfil.setFormatIdentification(true);
+         formatProfil.setFormatValidation(false);
+         formatProfil.setFormatValidationMode(null);
+         format.setControlProfil(formatProfil);
+
+         formatControlProfilSupport.create(format, Long.valueOf(1));
+         Assert.fail(MESSAGE_PARAM_FORMAT_RUNTIME);
+      } catch (IllegalArgumentException except) {
+         Assert.assertEquals(MESSAGE_EXCEPT_INCORRECT,
+               "Le mode de validation n'est pas STRICT ou MONITOR.", except
+                     .getMessage());
+      }
+
+   }
+
+   @Test
+   public void createSuccessIdentificationModeMonitor()
          throws FormatControlProfilNotFoundException {
 
       FormatControlProfil format = new FormatControlProfil();
@@ -176,12 +197,11 @@ public class ParamFormatControlProfilTest {
       FormatProfil formatProfil = new FormatProfil();
       formatProfil.setFormatIdentification(true);
       formatProfil.setFormatValidation(false);
-      formatProfil.setFormatValidationMode(null);
+      formatProfil.setFormatValidationMode("Monitor");
       format.setControlProfil(formatProfil);
 
       formatControlProfilSupport.create(format, Long.valueOf(1));
       Assert.assertNotNull(formatControlProfilSupport.find(CODE));
-      
    }
 
    @Test
@@ -193,7 +213,7 @@ public class ParamFormatControlProfilTest {
       format.setFormatCode(CODE);
 
       FormatProfil formatProfil = new FormatProfil();
-      formatProfil.setFormatIdentification(true);
+      formatProfil.setFormatIdentification(false);
       formatProfil.setFormatValidation(false);
       formatProfil.setFormatValidationMode("NONE");
       format.setControlProfil(formatProfil);
@@ -209,11 +229,8 @@ public class ParamFormatControlProfilTest {
          formatControlProfilSupport.delete(null, Long.valueOf(1));
          Assert.fail(MESSAGE_PARAM_FORMAT_RUNTIME);
       } catch (IllegalArgumentException except) {
-         Assert
-               .assertEquals(
-                     MESSAGE_EXCEPT_INCORRECT,
-                     MESSAGE_EXCEPT + FORMAT_PROFIL,
-                     except.getMessage());
+         Assert.assertEquals(MESSAGE_EXCEPT_INCORRECT, MESSAGE_EXCEPT
+               + FORMAT_PROFIL, except.getMessage());
       }
    }
 
@@ -224,11 +241,8 @@ public class ParamFormatControlProfilTest {
          formatControlProfilSupport.delete("", Long.valueOf(1));
          Assert.fail(MESSAGE_PARAM_FORMAT_RUNTIME);
       } catch (IllegalArgumentException except) {
-         Assert
-               .assertEquals(
-                     MESSAGE_EXCEPT_INCORRECT,
-                     MESSAGE_EXCEPT + FORMAT_PROFIL,
-                     except.getMessage());
+         Assert.assertEquals(MESSAGE_EXCEPT_INCORRECT, MESSAGE_EXCEPT
+               + FORMAT_PROFIL, except.getMessage());
       }
    }
 
@@ -239,11 +253,8 @@ public class ParamFormatControlProfilTest {
          formatControlProfilSupport.delete("     ", Long.valueOf(1));
          Assert.fail(MESSAGE_PARAM_FORMAT_RUNTIME);
       } catch (IllegalArgumentException except) {
-         Assert
-               .assertEquals(
-                     MESSAGE_EXCEPT_INCORRECT,
-                     MESSAGE_EXCEPT + FORMAT_PROFIL,
-                     except.getMessage());
+         Assert.assertEquals(MESSAGE_EXCEPT_INCORRECT, MESSAGE_EXCEPT
+               + FORMAT_PROFIL, except.getMessage());
       }
    }
 
@@ -253,11 +264,8 @@ public class ParamFormatControlProfilTest {
          formatControlProfilSupport.find(null);
          Assert.fail(MESSAGE_PARAM_FORMAT_RUNTIME);
       } catch (IllegalArgumentException except) {
-         Assert
-               .assertEquals(
-                     MESSAGE_EXCEPT_INCORRECT,
-                     MESSAGE_EXCEPT + FORMAT_PROFIL,
-                     except.getMessage());
+         Assert.assertEquals(MESSAGE_EXCEPT_INCORRECT, MESSAGE_EXCEPT
+               + FORMAT_PROFIL, except.getMessage());
       }
    }
 
@@ -267,11 +275,8 @@ public class ParamFormatControlProfilTest {
          formatControlProfilSupport.find("");
          Assert.fail(MESSAGE_PARAM_FORMAT_RUNTIME);
       } catch (IllegalArgumentException except) {
-         Assert
-               .assertEquals(
-                     MESSAGE_EXCEPT_INCORRECT,
-                     MESSAGE_EXCEPT + FORMAT_PROFIL,
-                     except.getMessage());
+         Assert.assertEquals(MESSAGE_EXCEPT_INCORRECT, MESSAGE_EXCEPT
+               + FORMAT_PROFIL, except.getMessage());
       }
    }
 
@@ -281,11 +286,8 @@ public class ParamFormatControlProfilTest {
          formatControlProfilSupport.find("     ");
          Assert.fail(MESSAGE_PARAM_FORMAT_RUNTIME);
       } catch (IllegalArgumentException except) {
-         Assert
-               .assertEquals(
-                     MESSAGE_EXCEPT_INCORRECT,
-                     MESSAGE_EXCEPT + FORMAT_PROFIL,
-                     except.getMessage());
+         Assert.assertEquals(MESSAGE_EXCEPT_INCORRECT, MESSAGE_EXCEPT
+               + FORMAT_PROFIL, except.getMessage());
       }
    }
 

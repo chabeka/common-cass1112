@@ -27,6 +27,7 @@ import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
 import fr.urssaf.image.sae.droit.dao.model.FormatProfil;
+import fr.urssaf.image.sae.droit.utils.EnumValidationMode;
 import fr.urssaf.image.sae.ecde.exception.EcdeBadURLException;
 import fr.urssaf.image.sae.ecde.exception.EcdeBadURLFormatException;
 import fr.urssaf.image.sae.ecde.service.EcdeServices;
@@ -594,9 +595,14 @@ public class SAEControlesCaptureServiceImpl implements
 
                // si isIdentified alors le fichier est correctement identifié.
                // si l'identification échoue, alors exception levée.
-               if (!result.isIdentified()) {
+               if (!result.isIdentified()
+                     && EnumValidationMode.STRICT.toString().equalsIgnoreCase(
+                           formatProfil.getFormatValidationMode())) {
                   throw new UnknownFormatException(ResourceMessagesUtils
                         .loadMessage("capture.format.identification"));
+               } else if (!result.isIdentified()) {
+                  LOGGER.debug("Détail de l'identification : "
+                        + result.getDetails());
                }
             }
          }
@@ -670,7 +676,7 @@ public class SAEControlesCaptureServiceImpl implements
          throw new ValidationExceptionInvalidFile(except);
       } catch (ValidatorUnhandledException except) {
          throw new ValidationExceptionInvalidFile(except);
-      } 
+      }
    }
 
    /**
