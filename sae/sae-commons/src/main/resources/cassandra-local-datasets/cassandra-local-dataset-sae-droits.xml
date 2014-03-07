@@ -117,6 +117,25 @@
                <value>bytes(01)</value>
             </column>
          </row>
+         <row>
+            <key>crtl/1</key>
+            <column>
+               <name>description</name>
+               <value>Format des fichiers zip pour les archivages des journaux</value>
+            </column>
+            <column>
+               <name>extension</name>
+               <value>zip</value>
+            </column>
+            <column>
+               <name>typeMime</name>
+               <value>application/octet-stream</value>
+            </column>
+            <column>
+               <name>visualisable</name>
+               <value>bytes(00)</value>
+            </column>
+         </row>
       </columnFamily>
 
    </columnFamilies>
