@@ -92,6 +92,8 @@ public class SAECaptureServiceTest {
    private static final Logger LOG = LoggerFactory
          .getLogger(SAECaptureServiceTest.class);
 
+   private static final String UNKNOWN_ERROR = "erreur de type UnknownFormatException attendue";
+
    @Autowired
    private SAECaptureService service;
 
@@ -228,7 +230,7 @@ public class SAECaptureServiceTest {
       metadatas.add(new UntypedMetadata("ApplicationProductrice", "ADELAIDE"));
       metadatas.add(new UntypedMetadata("CodeOrganismeProprietaire", "CER69"));
       metadatas.add(new UntypedMetadata("CodeOrganismeGestionnaire", "UR750"));
-      metadatas.add(new UntypedMetadata("FormatFichier", "fmt/1354"));
+      metadatas.add(new UntypedMetadata("FormatFichier", "fmt/354"));
       metadatas.add(new UntypedMetadata("NbPages", "2"));
       metadatas.add(new UntypedMetadata("DateCreation", "2012-01-01"));
       metadatas.add(new UntypedMetadata("TypeHash", "SHA-1"));
@@ -260,6 +262,107 @@ public class SAECaptureServiceTest {
       Assert.assertTrue("le contenu n'est pas attendu", IOUtils.contentEquals(
             FileUtils.openInputStream(srcFile), testProvider
                   .loadDocumentFile(doc)));
+   }
+
+   @Test
+   public void captureErreurFormat() throws IOException {
+
+      EcdeTestDocument ecde = ecdeTestTools
+            .buildEcdeTestDocument("attestation_consultation.pdf");
+
+      File repertoireEcde = ecde.getRepEcdeDocuments();
+      URI urlEcdeDocument = ecde.getUrlEcdeDocument();
+
+      LOG.debug("CAPTURE UNITAIRE ECDE TEMP: "
+            + repertoireEcde.getAbsoluteFile());
+      File fileDoc = new File(repertoireEcde, "attestation_consultation.pdf");
+      ClassPathResource resDoc = new ClassPathResource(
+            "doc/attestation_consultation.pdf");
+      FileOutputStream fos = new FileOutputStream(fileDoc);
+      IOUtils.copy(resDoc.getInputStream(), fos);
+
+      File srcFile = new File(
+            "src/test/resources/doc/attestation_consultation.pdf");
+
+      List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
+
+      // liste des métadonnées obligatoires
+      metadatas.add(new UntypedMetadata("ApplicationProductrice", "ADELAIDE"));
+      metadatas.add(new UntypedMetadata("CodeOrganismeProprietaire", "CER69"));
+      metadatas.add(new UntypedMetadata("CodeOrganismeGestionnaire", "UR750"));
+      metadatas.add(new UntypedMetadata("FormatFichier", "fmt/1354"));
+      metadatas.add(new UntypedMetadata("NbPages", "2"));
+      metadatas.add(new UntypedMetadata("DateCreation", "2012-01-01"));
+      metadatas.add(new UntypedMetadata("TypeHash", "SHA-1"));
+      String hash = DigestUtils.shaHex(new FileInputStream(srcFile));
+      metadatas.add(new UntypedMetadata("Hash", StringUtils.upperCase(hash)));
+      metadatas.add(new UntypedMetadata("CodeRND", "2.3.1.1.12"));
+      metadatas.add(new UntypedMetadata("Titre", "Attestation de vigilance"));
+
+      // liste des métadonnées non obligatoires
+      metadatas.add(new UntypedMetadata("DateReception", "1999-11-25"));
+      metadatas.add(new UntypedMetadata("DateDebutConservation", "2011-09-02"));
+
+      try {
+         uuid = service.capture(metadatas, urlEcdeDocument);
+         Assert.fail(UNKNOWN_ERROR);
+
+      } catch (SAECaptureServiceEx e) {
+         Assert.fail(UNKNOWN_ERROR);
+
+      } catch (ReferentialRndException e) {
+         Assert.fail(UNKNOWN_ERROR);
+
+      } catch (UnknownCodeRndEx e) {
+         Assert.fail(UNKNOWN_ERROR);
+
+      } catch (RequiredStorageMetadataEx e) {
+         Assert.fail(UNKNOWN_ERROR);
+
+      } catch (InvalidValueTypeAndFormatMetadataEx e) {
+         Assert.fail(UNKNOWN_ERROR);
+
+      } catch (UnknownMetadataEx e) {
+         Assert.fail(UNKNOWN_ERROR);
+
+      } catch (DuplicatedMetadataEx e) {
+         Assert.fail(UNKNOWN_ERROR);
+
+      } catch (NotSpecifiableMetadataEx e) {
+         Assert.fail(UNKNOWN_ERROR);
+
+      } catch (EmptyDocumentEx e) {
+         Assert.fail(UNKNOWN_ERROR);
+
+      } catch (RequiredArchivableMetadataEx e) {
+         Assert.fail(UNKNOWN_ERROR);
+
+      } catch (NotArchivableMetadataEx e) {
+         Assert.fail(UNKNOWN_ERROR);
+
+      } catch (UnknownHashCodeEx e) {
+         Assert.fail(UNKNOWN_ERROR);
+
+      } catch (CaptureBadEcdeUrlEx e) {
+         Assert.fail(UNKNOWN_ERROR);
+
+      } catch (CaptureEcdeUrlFileNotFoundEx e) {
+         Assert.fail(UNKNOWN_ERROR);
+
+      } catch (MetadataValueNotInDictionaryEx e) {
+         Assert.fail(UNKNOWN_ERROR);
+
+      } catch (ValidationExceptionInvalidFile e) {
+         Assert.fail(UNKNOWN_ERROR);
+
+      } catch (UnknownFormatException e) {
+         Assert
+               .assertEquals(
+                     "le message d'erreur attendu est incorrect",
+                     "Le format du fichier n'existe pas dans le référentiel : fmt/1354",
+                     e.getMessage());
+      }
+
    }
 
    @Test(expected = CaptureEcdeUrlFileNotFoundEx.class)
@@ -379,7 +482,7 @@ public class SAECaptureServiceTest {
                   .get(7).getWord(), DATE_FORMAT));
 
       // TEST sur métadonnée : FormatFichier
-      assertMetadata(criterions.get(8), "ffi", "fmt/1354");
+      assertMetadata(criterions.get(8), "ffi", "fmt/354");
 
       // TEST sur métadonnée : NbPages
       assertMetadata(criterions.get(9), "nbp", 2);
@@ -419,7 +522,7 @@ public class SAECaptureServiceTest {
       metadatas.add(new UntypedMetadata("ApplicationProductrice", "ADELAIDE"));
       metadatas.add(new UntypedMetadata("CodeOrganismeProprietaire", "CER69"));
       metadatas.add(new UntypedMetadata("CodeOrganismeGestionnaire", "UR750"));
-      metadatas.add(new UntypedMetadata("FormatFichier", "fmt/1354"));
+      metadatas.add(new UntypedMetadata("FormatFichier", "fmt/354"));
       metadatas.add(new UntypedMetadata("NbPages", "2"));
       metadatas.add(new UntypedMetadata("DateCreation", "2012-01-01"));
       metadatas.add(new UntypedMetadata("TypeHash", "SHA-1"));
@@ -605,7 +708,7 @@ public class SAECaptureServiceTest {
       metadatas.add(new UntypedMetadata("ApplicationProductrice", "ADELAIDE"));
       metadatas.add(new UntypedMetadata("CodeOrganismeProprietaire", "CER69"));
       metadatas.add(new UntypedMetadata("CodeOrganismeGestionnaire", "UR750"));
-      metadatas.add(new UntypedMetadata("FormatFichier", "fmt/1354"));
+      metadatas.add(new UntypedMetadata("FormatFichier", "fmt/354"));
       metadatas.add(new UntypedMetadata("NbPages", "2"));
       metadatas.add(new UntypedMetadata("DateCreation", "2012-01-01"));
       metadatas.add(new UntypedMetadata("TypeHash", "SHA-1"));

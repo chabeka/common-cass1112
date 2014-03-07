@@ -542,19 +542,21 @@ public class SAEControlesCaptureServiceImpl implements
       // Vérification que la métadonnée FormatFichier fait bien partie des
       // valeurs disponibles dans le référentiel des formats
       if (!referentielFormatService.exists(fileFormat)) {
-         throw new UnknownFormatException(ResourceMessagesUtils
-               .loadMessage("capture.format.identification"));
+         throw new UnknownFormatException(ResourceMessagesUtils.loadMessage(
+               "capture.format.format.inconnnu", fileFormat));
       }
 
-      // Sélection du profil
-      FormatControlProfil formatControlProfil = selectProfil(fileFormat,
-            controlProfilSet);
+      if (controlProfilSet != null && !controlProfilSet.isEmpty()) {
+         // Sélection du profil
+         FormatControlProfil formatControlProfil = selectProfil(fileFormat,
+               controlProfilSet);
 
-      // Application de l'identification
-      applyIdentification(saeDocument, formatControlProfil);
+         // Application de l'identification
+         applyIdentification(saeDocument, formatControlProfil);
 
-      // Application de la validation
-      applyValidation(saeDocument, formatControlProfil);
+         // Application de la validation
+         applyValidation(saeDocument, formatControlProfil);
+      }
    }
 
    /**

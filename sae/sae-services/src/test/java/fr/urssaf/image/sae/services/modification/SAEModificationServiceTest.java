@@ -272,7 +272,7 @@ public class SAEModificationServiceTest {
       metadatas.add(new UntypedMetadata("ApplicationProductrice", "ADELAIDE"));
       metadatas.add(new UntypedMetadata("CodeOrganismeProprietaire", "CER69"));
       metadatas.add(new UntypedMetadata("CodeOrganismeGestionnaire", "UR750"));
-      metadatas.add(new UntypedMetadata("FormatFichier", "fmt/1354"));
+      metadatas.add(new UntypedMetadata("FormatFichier", "fmt/354"));
       metadatas.add(new UntypedMetadata("NbPages", "2"));
       metadatas.add(new UntypedMetadata("DateCreation", "2012-01-01"));
       metadatas.add(new UntypedMetadata("TypeHash", "SHA-1"));

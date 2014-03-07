@@ -156,8 +156,7 @@ public class SAECommonCaptureServiceImpl implements SAECommonCaptureService {
          AuthenticationToken token = (AuthenticationToken) AuthenticationContext
                .getAuthenticationToken();
 
-         List<SaePrmd> prmds = token.getSaeDroits().get(
-               "archivage_unitaire");
+         List<SaePrmd> prmds = token.getSaeDroits().get("archivage_unitaire");
          boolean isPermitted = prmdService.isPermitted(untypedDocument
                .getUMetadatas(), prmds);
 
@@ -184,12 +183,9 @@ public class SAECommonCaptureServiceImpl implements SAECommonCaptureService {
             // récupération de la liste des profils de contrôle
             List<FormatControlProfil> listFormatControlProfil = token
                   .getListFormatControlProfil();
-            if (listFormatControlProfil != null
-                  && !listFormatControlProfil.isEmpty()) {
-               controlesService.checkFormat(saeDocument,
-                     listFormatControlProfil);
-               
-            }
+
+            controlesService.checkFormat(saeDocument, listFormatControlProfil);
+
             LOGGER.debug("{} - Fin des contrôles sur le format");
 
             LOGGER.debug(
