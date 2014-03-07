@@ -609,7 +609,14 @@ public class SAEControlesCaptureServiceImpl implements
             }
          }
       } catch (IdentifierInitialisationException except) {
-         throw new FormatIdentificationRuntimeException(except);
+         if (EnumValidationMode.MONITOR.toString()
+               .equalsIgnoreCase(
+                     formatControlProfil.getControlProfil()
+                           .getFormatValidationMode())) {
+            LOGGER.info("Erreur lors de l'identification", except);
+         } else {
+            throw new FormatIdentificationRuntimeException(except);
+         }
       } catch (IOException except) {
          throw new FormatIdentificationRuntimeException(except);
       }
