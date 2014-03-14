@@ -20,6 +20,7 @@
 
    <properties>
       <axiom.version>1.2.12</axiom.version>
+      <sonar.exclusions>fr/cirtil/www/saeservice/*.java,fr/urssaf/image/sae/webservices/skeleton/SaeServiceMessageReceiverInOut.java</sonar.exclusions>
    </properties>
 
    <profiles>
@@ -100,7 +101,7 @@
                <argumentFileName>builddef-sae-webservices.lst</argumentFileName>
             </configuration>
          </plugin>
-
+         
       </plugins>
 
    </build>

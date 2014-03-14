@@ -13,6 +13,10 @@
    <version>13.11.0.2-SNAPSHOT</version>
 
    <name>sae-vi</name>
+   
+   <properties>
+      <sonar.exclusions>fr/urssaf/image/sae/vi/schema/*.java</sonar.exclusions>
+   </properties>
 
    <build>
       <plugins>

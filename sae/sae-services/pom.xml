@@ -15,7 +15,10 @@
    <name>sae-services</name>
 
    <description>Archive contenant les services capture, capture en masse, recherche, consultation.</description>
-
+   
+   <properties>
+      <sonar.exclusions>fr/urssaf/image/sae/services/capturemasse/modele/commun_sommaire_et_resultat/*.java,fr/urssaf/image/sae/services/capturemasse/modele/resultats/*.java,fr/urssaf/image/sae/services/capturemasse/modele/sommaire/*.java</sonar.exclusions>
+   </properties>
 
    <profiles>
       <profile>
