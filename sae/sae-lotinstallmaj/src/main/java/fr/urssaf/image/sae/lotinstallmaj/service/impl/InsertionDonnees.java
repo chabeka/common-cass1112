@@ -533,6 +533,54 @@ public class InsertionDonnees {
    }
 
    /**
+    * Référentiel des événements en V4 
+    * Ajout des évenements IGC_LOAD_CRLS|KO,
+    * WS_LOAD_CRLS|KO, ERREUR_IDENT_FORMAT_FICHIER|INFO et
+    * ERREUR_VALID_FORMAT_FICHIER |INFO
+    */
+   public void addReferentielEvenementV4() {
+
+      LOG.info("Mise à jour du référentiel des événements");
+
+      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+            keyspace, "TraceDestinataire", StringSerializer.get(),
+            StringSerializer.get());
+
+      ColumnFamilyUpdater<String, String> updater;
+
+      List<String> allInfos = Arrays.asList("all_infos");
+
+      // IGC_LOAD_CRLS|KO
+      // dans le registre de surveillance technique avec all_infos
+      updater = cfTmpl.createUpdater("IGC_LOAD_CRLS|KO");
+      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
+            ListSerializer.get(), updater);
+      cfTmpl.update(updater);
+
+      // WS_LOAD_CRLS|KO
+      // dans le registre de surveillance technique avec all_infos
+      updater = cfTmpl.createUpdater("WS_LOAD_CRLS|KO");
+      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
+            ListSerializer.get(), updater);
+      cfTmpl.update(updater);
+
+      // ERREUR_IDENT_FORMAT_FICHIER|INFO
+      // dans le registre de surveillance technique avec all_infos
+      updater = cfTmpl.createUpdater("ERREUR_IDENT_FORMAT_FICHIER|INFO");
+      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
+            ListSerializer.get(), updater);
+      cfTmpl.update(updater);
+
+      // ERREUR_VALID_FORMAT_FICHIER|INFO
+      // dans le registre de surveillance technique avec all_infos
+      updater = cfTmpl.createUpdater("ERREUR_VALID_FORMAT_FICHIER|INFO");
+      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
+            ListSerializer.get(), updater);
+      cfTmpl.update(updater);
+
+   }
+
+   /**
     * Les profils de controle pour les formats.<br/>
     * Ajout de 3 éléments pour le format fmt/354:
     * <ul>
@@ -614,8 +662,9 @@ public class InsertionDonnees {
          if (!columnNames.contains(DISPO)) {
             LOG.info("Ajout de la colonne {} pour la métadonnée {}", DISPO,
                   rowName);
-            HColumn<String, Boolean> column = HFactory.createColumn(DISPO, Boolean.TRUE,
-                  StringSerializer.get(), BooleanSerializer.get());
+            HColumn<String, Boolean> column = HFactory
+                  .createColumn(DISPO, Boolean.TRUE, StringSerializer.get(),
+                        BooleanSerializer.get());
             updater.setColumn(column);
             cfTmpl.update(updater);
          } else {
@@ -625,35 +674,5 @@ public class InsertionDonnees {
 
       }
    }
-   
-   /**
-    * Référentiel des événements en V4.
-    * Ajout de l'évenement ERREUR_IDENT_FORMAT_FICHIER|INFO, et ERREUR_VALID_FORMAT_FICHIER |INFO
-    */
-   public void addReferentielEvenementV4() {
 
-      LOG.info("Mise à jour du référentiel des événements");
-
-      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
-            keyspace, "TraceDestinataire", StringSerializer.get(),
-            StringSerializer.get());
-
-      ColumnFamilyUpdater<String, String> updater;
-
-      List<String> allInfos = Arrays.asList("all_infos");
-
-      // ERREUR_IDENT_FORMAT_FICHIER|INFO
-      // dans le registre de surveillance technique avec all_infos
-      updater = cfTmpl.createUpdater("ERREUR_IDENT_FORMAT_FICHIER|INFO");
-      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
-            ListSerializer.get(), updater);
-      cfTmpl.update(updater);
-      
-      // ERREUR_VALID_FORMAT_FICHIER|INFO
-      // dans le registre de surveillance technique avec all_infos
-      updater = cfTmpl.createUpdater("ERREUR_VALID_FORMAT_FICHIER|INFO");
-      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
-            ListSerializer.get(), updater);
-      cfTmpl.update(updater);
-   }
 }
