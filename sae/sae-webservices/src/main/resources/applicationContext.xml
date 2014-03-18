@@ -35,9 +35,11 @@
       <constructor-arg ref="ecdeConfigFile" />
    </bean>
    
-  <import resource="applicationContext-logwarn-aspect.xml" />
+
+   <import resource="applicationContext-logwarn-aspect.xml" />
    <import resource="applicationContext-sae-trace.xml" />
    <import resource="applicationContext-sae-rnd.xml" />
+
    <import resource="applicationContext-security.xml" />
    <import resource="applicationContext-service.xml" />
    <import resource="applicationContext-sae-services.xml" />

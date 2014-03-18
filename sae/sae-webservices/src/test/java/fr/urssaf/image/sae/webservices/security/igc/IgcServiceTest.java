@@ -10,9 +10,15 @@ import java.net.URL;
 import java.security.cert.CRLException;
 import java.security.cert.CertificateException;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+import junit.framework.Assert;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -28,6 +34,11 @@ import fr.urssaf.image.sae.igc.exception.IgcDownloadException;
 import fr.urssaf.image.sae.igc.modele.IgcConfig;
 import fr.urssaf.image.sae.igc.modele.IgcConfigs;
 import fr.urssaf.image.sae.igc.modele.IssuerList;
+import fr.urssaf.image.sae.trace.dao.model.TraceRegTechnique;
+import fr.urssaf.image.sae.trace.dao.model.TraceRegTechniqueIndex;
+import fr.urssaf.image.sae.trace.service.DispatcheurService;
+import fr.urssaf.image.sae.trace.service.RegTechniqueService;
+import fr.urssaf.image.sae.trace.utils.HostnameUtil;
 import fr.urssaf.image.sae.webservices.component.IgcConfigUtils;
 import fr.urssaf.image.sae.webservices.security.igc.exception.LoadCertifsAndCrlException;
 import fr.urssaf.image.sae.webservices.support.TracesWsSupport;
@@ -54,6 +65,9 @@ public class IgcServiceTest {
 
    @Autowired
    private TracesWsSupport tracesWsSupport;
+
+   @Autowired
+   private RegTechniqueService regTechnique;
 
    static {
 
@@ -207,7 +221,36 @@ public class IgcServiceTest {
 
       try {
          igcService.getInstanceCertifsAndCrl();
-         fail(FAIL_MSG);
+
+         // Plus d'exception mais on doit trouver une trace
+         // fail(FAIL_MSG);
+         // Vérification présence de la trace
+         Date dateFin = new Date();
+         Date dateDebut = DateUtils.addDays(dateFin, -1);
+         List<TraceRegTechniqueIndex> listeTrace = regTechnique.lecture(
+               dateDebut, dateFin, 10, false);
+         boolean traceTrouve = false;
+         for (TraceRegTechniqueIndex traceRegTechniqueIndex : listeTrace) {
+            TraceRegTechnique trace = regTechnique
+                  .lecture(traceRegTechniqueIndex.getIdentifiant());
+            if ("WS_LOAD_CRLS|KO".equals(trace.getCodeEvt())) {
+
+               traceTrouve = true;
+               Assert.assertEquals("Contexte incorrect", "ChargementCRL",
+                     trace.getContexte());
+
+               Assert
+                     .assertEquals("saeServeurHostname incorrect", HostnameUtil
+                           .getHostname(), trace.getInfos().get(
+                           "saeServeurHostname"));
+               Assert.assertTrue("CRL incorrect", StringUtils.contains(trace
+                     .getInfos().get("fichiers").toString(),
+                     "sae_webservices_igcservice"));
+            }
+         }
+         
+         Assert.assertTrue("Une trace de type WS_LOAD_CRLS|KO doit être trouvée", traceTrouve);
+
       } catch (LoadCertifsAndCrlException e) {
          LOG.debug(e.getCause().getMessage());
          assertTrue(

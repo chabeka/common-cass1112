@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
@@ -29,6 +31,9 @@ import org.springframework.stereotype.Service;
 import fr.urssaf.image.sae.igc.modele.IgcConfig;
 import fr.urssaf.image.sae.igc.modele.IgcConfigs;
 import fr.urssaf.image.sae.igc.util.TextUtils;
+import fr.urssaf.image.sae.trace.model.TraceToCreate;
+import fr.urssaf.image.sae.trace.service.DispatcheurService;
+import fr.urssaf.image.sae.trace.utils.HostnameUtil;
 import fr.urssaf.image.sae.webservices.security.SecurityUtils;
 import fr.urssaf.image.sae.webservices.security.igc.exception.LoadCertifsAndCrlException;
 import fr.urssaf.image.sae.webservices.security.igc.modele.CertifsAndCrl;
@@ -119,7 +124,7 @@ public class IgcService {
 
       List<String> certificats = new ArrayList<String>();
 
-      List<File> fichiersAcRacine = new ArrayList<File>();
+      List<String> fichiersAcRacine = new ArrayList<String>();
 
       for (IgcConfig igcConfig : igcConfigs.getIgcConfigs()) {
 
@@ -130,7 +135,7 @@ public class IgcService {
                   .getAcRacine());
 
             File crt = new File(igcConfig.getAcRacine());
-            fichiersAcRacine.add(crt);
+            fichiersAcRacine.add(crt.getAbsolutePath());
             input = new FileInputStream(crt);
 
             try {
@@ -243,12 +248,14 @@ public class IgcService {
          }
 
          List<X509CRL> crls = new ArrayList<X509CRL>();
-         List<File> fichiersCrl = new ArrayList<File>();
+         List<String> fichiersCrl = new ArrayList<String>();
+         List<String> fichiersErreurCrl = new ArrayList<String>();
 
          for (IgcConfig igcConfig : igcConfigs.getIgcConfigs()) {
 
             // Chargement des fichiers .crl dans des objets X509CRL
-            crls.addAll(loadCRLResources(igcConfig.getCrlsRep(), fichiersCrl));
+            crls.addAll(loadCRLResources(igcConfig.getCrlsRep(), fichiersCrl,
+                  fichiersErreurCrl));
 
          }
 
@@ -267,7 +274,12 @@ public class IgcService {
 
          // Trace l'événement
          // "WS - Chargement en mémoire des CRL"
-         tracesWsSupport.traceChargementCRL(fichiersCrl);
+         if (fichiersCrl.size() > 0) {
+            tracesWsSupport.traceChargementCRL(fichiersCrl);
+         }
+         if (fichiersErreurCrl.size() > 0) {
+            tracesWsSupport.traceErreurChargementCRL(fichiersErreurCrl);
+         }
 
       }
    }
@@ -278,7 +290,8 @@ public class IgcService {
    }
 
    private static List<X509CRL> loadCRLResources(String repertoireCRLs,
-         List<File> fichiersCrl) throws LoadCertifsAndCrlException {
+         List<String> fichiersCrl, List<String> fichiersErreurCrl)
+         throws LoadCertifsAndCrlException {
 
       FileSystemResource repCRLs = new FileSystemResource(repertoireCRLs);
       List<Resource> resources = ResourceUtils.loadResources(repCRLs,
@@ -290,24 +303,26 @@ public class IgcService {
 
          try {
             LOG.debug("loading CRL:" + crl.getFilename());
-            fichiersCrl.add(crl.getFile());
+
             InputStream input = crl.getInputStream();
 
             try {
                crls.add(SecurityUtils.loadCRL(input));
+               fichiersCrl.add(crl.getFile().getAbsolutePath());
             } catch (GeneralSecurityException e) {
-               LOG.error(
-                     "erreur de chargement du fichier CRL: " + crl.getURI(), e);
-               throw new LoadCertifsAndCrlException(CRL_ERROR, e);
+               LOG.error("erreur de chargement du fichier CRL : "
+                     + crl.getURI(), e);
+               fichiersErreurCrl.add(crl.getFile().getAbsolutePath());
+
             } finally {
 
                input.close();
             }
          } catch (IOException e) {
 
-            LOG.error("erreur de chargement du fichier CRL: "
+            LOG.error("erreur de chargement du fichier CRL : "
                   + crl.getFilename(), e);
-            throw new LoadCertifsAndCrlException(CRL_ERROR, e);
+            fichiersErreurCrl.add(crl.getFilename());
          }
 
       }

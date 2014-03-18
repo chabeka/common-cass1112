@@ -44,4 +44,9 @@ public final class TracesConstantes {
     */
    public static final String CODE_EVT_CHARGE_CRL = "WS_LOAD_CRLS|OK";
 
+   /**
+    * Le code de l'événement d'échec du chargement des CRL
+    */
+   public static final String CODE_EVT_ECHEC_CHARGE_CRL = "WS_LOAD_CRLS|KO";
+   
 }

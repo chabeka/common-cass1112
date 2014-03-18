@@ -25,6 +25,7 @@ public interface SaeDroitService {
     *           code de l'application cliente du service
     * @param pagms
     *           liste des PAGM
+    * @return {@link SaeDroitsEtFormat} liste de droits
     * @throws ContratServiceNotFoundException
     *            exception levée si le contrat de service n'est pas trouvé
     * @throws FormatControlProfilNotFoundException

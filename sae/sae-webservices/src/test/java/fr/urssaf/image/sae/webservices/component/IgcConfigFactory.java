@@ -4,13 +4,14 @@ import java.io.File;
 import java.net.URL;
 import java.util.Arrays;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import fr.urssaf.image.sae.igc.exception.IgcDownloadException;
 import fr.urssaf.image.sae.igc.modele.IgcConfig;
 import fr.urssaf.image.sae.igc.modele.IgcConfigs;
 import fr.urssaf.image.sae.igc.modele.IssuerList;
 import fr.urssaf.image.sae.igc.modele.URLList;
 import fr.urssaf.image.sae.igc.service.IgcDownloadService;
-import fr.urssaf.image.sae.igc.service.impl.IgcDownloadServiceImpl;
 
 /**
  * Classe d'instance de {@link IgcConfig}
@@ -22,8 +23,10 @@ public final class IgcConfigFactory {
    public static final String DOWNLOAD_URL = "http://cer69idxpkival1.cer69.recouv/";
 
    private IgcConfigFactory() {
-
    }
+
+   @Autowired
+   private IgcDownloadService igcDownloadService;
 
    public static final File DIRECTORY;
 
@@ -63,16 +66,19 @@ public final class IgcConfigFactory {
     * 
     * @return instance de {@link IgcConfig}
     * @throws IgcDownloadException
-    *            exception lors du téléchargement des crl
+    *            exception lors du tÃ©lÃ©chargement des crl
     */
-   public static IgcConfigs createIgcConfig() throws IgcDownloadException {
+   // public static IgcConfigs createIgcConfig() throws IgcDownloadException {
+   public IgcConfigs createIgcConfig() throws IgcDownloadException {
 
       IgcConfigs igcConfigs = new IgcConfigs();
 
       IgcConfig igcConfig = new IgcConfig();
 
       IssuerList issuerList = new IssuerList();
-      issuerList.setIssuers(Arrays.asList(new String[] { "CN=AC Applications,O=ACOSS,L=Paris,ST=France,C=FR" }));
+      issuerList
+            .setIssuers(Arrays
+                  .asList(new String[] { "CN=AC Applications,O=ACOSS,L=Paris,ST=France,C=FR" }));
       igcConfig.setIssuerList(issuerList);
 
       igcConfig.setPkiIdent(ID_PKI);
@@ -86,15 +92,15 @@ public final class IgcConfigFactory {
 
       igcConfig.setUrlList(urlList);
 
-      // téléchargement d'une AC racine
+      // tÃ©lÃ©chargement d'une AC racine
       IgcConfigUtils.download(CERTIFICAT, new File(AC_RACINE.getAbsolutePath()
             + "/" + CERTIFICAT.getFile()));
 
       igcConfigs.setIgcConfigs(Arrays.asList(new IgcConfig[] { igcConfig }));
 
-      // téléchargement des CRL
-      IgcDownloadService downaloadService = new IgcDownloadServiceImpl();
-      downaloadService.telechargeCRLs(igcConfigs);
+      // tÃ©lÃ©chargement des CRL
+      // IgcDownloadService downaloadService = new IgcDownloadServiceImpl();
+      igcDownloadService.telechargeCRLs(igcConfigs);
 
       return igcConfigs;
 

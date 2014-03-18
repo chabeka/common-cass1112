@@ -20,6 +20,10 @@ import org.apache.commons.lang.SystemUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.thoughtworks.xstream.converters.ConversionException;
 import com.thoughtworks.xstream.io.StreamException;
@@ -29,9 +33,12 @@ import fr.urssaf.image.sae.igc.modele.IgcConfigs;
 import fr.urssaf.image.sae.igc.util.ConfigurationUtils;
 
 @SuppressWarnings( { "PMD.MethodNamingConventions" })
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = "/applicationContext-sae-igc-test.xml")
 public class IgcConfigServiceImplTest {
-
-   private static IgcConfigServiceImpl service;
+   
+   @Autowired
+   private IgcConfigServiceImpl service;
 
    private static final String FAIL_MESSAGE = "le test doit échouer";
 
@@ -44,8 +51,6 @@ public class IgcConfigServiceImplTest {
 
    @BeforeClass
    public static void beforeClass() throws IOException {
-
-      service = new IgcConfigServiceImpl();
 
       File directory = new File(DIRECTORY);
       FileUtils.forceMkdir(directory);

@@ -10,8 +10,6 @@ import javax.activation.DataHandler;
 
 import org.apache.commons.io.FileUtils;
 
-import com.google.common.io.Files;
-
 import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
 import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
@@ -19,6 +17,7 @@ import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.commons.utils.InputStreamSource;
 import fr.urssaf.image.sae.model.SAEDocumentMockData;
 import fr.urssaf.image.sae.model.SAEMockMetadata;
+import fr.urssaf.image.sae.model.SaeDocument;
 import fr.urssaf.image.sae.storage.dfce.utils.Utils;
 
 /**

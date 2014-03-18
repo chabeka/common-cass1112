@@ -170,7 +170,7 @@ public class TracesWsSupport {
     *           la liste des fichiers des certificats d'AC racine
     */
    @SuppressWarnings("PMD.AvoidCatchingThrowable")
-   public final void traceChargementCertAcRacine(List<File> fichiers) {
+   public final void traceChargementCertAcRacine(List<String> fichiers) {
 
       try {
 
@@ -194,7 +194,7 @@ public class TracesWsSupport {
     *           la liste des fichiers des CRL
     */
    @SuppressWarnings("PMD.AvoidCatchingThrowable")
-   public final void traceChargementCRL(List<File> fichiers) {
+   public final void traceChargementCRL(List<String> fichiers) {
 
       try {
 
@@ -210,8 +210,33 @@ public class TracesWsSupport {
 
    }
 
+
+   /**
+    * Trace l'événement du chargement des CRL
+    * 
+    * @param fichiers
+    *           la liste des fichiers des CRL
+    */
+   @SuppressWarnings("PMD.AvoidCatchingThrowable")
+   public final void traceErreurChargementCRL(List<String> fichiers) {
+
+      try {
+
+         traceChargementFichiers(TracesConstantes.CODE_EVT_ECHEC_CHARGE_CRL,
+               "ChargementCRL", fichiers);
+
+      } catch (Throwable ex) {
+         LOG
+               .error(
+                     "Une erreur est survenue lors de la traçabilité du chargement des CRL",
+                     ex);
+      }
+
+   }
+   
+   
    private void traceChargementFichiers(String codeEvt, String contexte,
-         List<File> fichiers) {
+         List<String> fichiers) {
 
       // Instantiation de l'objet TraceToCreate
       TraceToCreate traceToCreate = new TraceToCreate();
@@ -232,11 +257,7 @@ public class TracesWsSupport {
       traceToCreate.getInfos().put("saeServeurIP", HostnameUtil.getIP());
 
       // Info supplémentaire : Liste des fichiers des certificats d'AC racine
-      List<String> cheminsFichier = new ArrayList<String>();
-      for (File file : fichiers) {
-         cheminsFichier.add(file.getAbsolutePath());
-      }
-      traceToCreate.getInfos().put("fichiers", cheminsFichier);
+      traceToCreate.getInfos().put("fichiers", fichiers);
 
       // Appel du dispatcheur
       dispatcheurService.ajouterTrace(traceToCreate);

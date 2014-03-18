@@ -344,8 +344,7 @@ public class TracesWsSupportTest {
       String fichier2 = "/rep1/fichier2.crt";
       String fichier3 = "/rep2/fichier3.crt";
 
-      List<File> fichiers = Arrays.asList(new File(fichier1),
-            new File(fichier2), new File(fichier3));
+      List<String> fichiers = Arrays.asList(fichier1, fichier2, fichier3);
 
       authentifie();
 
@@ -402,9 +401,7 @@ public class TracesWsSupportTest {
       assertEquals("L'information supplémentaire saeServeurIP est incorrect",
             saeServeurIP, trace.getInfos().get("saeServeurIP"));
       assertEquals("L'information supplémentaire fichiers est incorrect",
-            Arrays.asList(new File(fichier1).getAbsolutePath(), new File(
-                  fichier2).getAbsolutePath(), new File(fichier3)
-                  .getAbsolutePath()), trace.getInfos().get("fichiers"));
+            fichiers, trace.getInfos().get("fichiers"));
 
    }
 

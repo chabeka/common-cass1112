@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.springframework.core.io.Resource;
+import org.springframework.stereotype.Service;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -16,6 +17,7 @@ import fr.urssaf.image.sae.igc.service.IgcConfigService;
 /**
  * Classe d'implémentation de {@link IgcConfigService}
  */
+@Service
 public final class IgcConfigServiceImpl implements IgcConfigService {
 
    /**

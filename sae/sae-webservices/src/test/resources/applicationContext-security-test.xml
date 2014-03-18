@@ -15,10 +15,16 @@
 
    <bean id="igcConfigResource" abstract="true" />
 
-   <bean id="igcConfig"
-      class="fr.urssaf.image.sae.webservices.component.IgcConfigFactory"
-      factory-method="createIgcConfig" />
-
-
+<!--   <bean id="igcConfig"-->
+<!--      class="fr.urssaf.image.sae.webservices.component.IgcConfigFactory"-->
+<!--      factory-method="createIgcConfig" />-->
+      
+      
+   <bean id="igcDownloadService" class="fr.urssaf.image.sae.igc.service.impl.IgcDownloadServiceImpl" />
+   <bean id="igcConfigFactory" class="fr.urssaf.image.sae.webservices.component.IgcConfigFactory" />
+   
+   <bean id="igcConfig" factory-bean="igcConfigFactory"
+      factory-method="createIgcConfig">
+   </bean>      
 
 </beans:beans>

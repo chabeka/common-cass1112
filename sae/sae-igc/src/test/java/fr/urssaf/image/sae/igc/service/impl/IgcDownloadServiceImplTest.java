@@ -7,6 +7,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -16,26 +17,40 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.SystemUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.igc.exception.IgcDownloadException;
 import fr.urssaf.image.sae.igc.modele.IgcConfig;
 import fr.urssaf.image.sae.igc.modele.IgcConfigs;
 import fr.urssaf.image.sae.igc.modele.URLList;
+import fr.urssaf.image.sae.trace.dao.model.TraceRegTechnique;
+import fr.urssaf.image.sae.trace.dao.model.TraceRegTechniqueIndex;
+import fr.urssaf.image.sae.trace.service.RegTechniqueService;
+import fr.urssaf.image.sae.trace.utils.HostnameUtil;
 
 @SuppressWarnings( { "PMD.MethodNamingConventions",
       "PMD.VariableNamingConventions" })
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = "/applicationContext-sae-igc-test.xml")
 public class IgcDownloadServiceImplTest {
 
    private static final Logger LOG = LoggerFactory
          .getLogger(IgcDownloadServiceImplTest.class);
 
+   @Autowired
    private IgcDownloadServiceImpl service;
+
+   @Autowired
+   private RegTechniqueService regTechnique;
 
    private final static File DIRECTORY;
 
@@ -68,12 +83,6 @@ public class IgcDownloadServiceImplTest {
 
       FileUtils.deleteDirectory(DIRECTORY);
 
-   }
-
-   @Before
-   public void before() {
-
-      this.service = new IgcDownloadServiceImpl();
    }
 
    @Test
@@ -147,7 +156,7 @@ public class IgcDownloadServiceImplTest {
 
    }
 
-   @Test(expected = IgcDownloadException.class)
+   @Test
    public void telechargeCRLs_failure() throws IgcDownloadException,
          MalformedURLException {
 
@@ -168,6 +177,26 @@ public class IgcDownloadServiceImplTest {
       configs.setIgcConfigs(Arrays.asList(new IgcConfig[] { igcConfig }));
 
       service.telechargeCRLs(configs);
+
+      // Vérification présence de la trace
+      Date dateFin = new Date();
+      Date dateDebut = DateUtils.addDays(dateFin, -1);
+      List<TraceRegTechniqueIndex> listeTrace = regTechnique.lecture(dateDebut,
+            dateFin, 1, false);
+      for (TraceRegTechniqueIndex traceRegTechniqueIndex : listeTrace) {
+         TraceRegTechnique trace = regTechnique.lecture(traceRegTechniqueIndex
+               .getIdentifiant());
+         Assert.assertEquals("Code évenement incorrect", "IGC_LOAD_CRLS|KO",
+               trace.getCodeEvt());
+
+         Assert.assertEquals("Contexte incorrect", "telechargerCRLs", trace
+               .getContexte());
+
+         Assert.assertEquals("saeServeurHostname incorrect", HostnameUtil.getHostname(), trace.getInfos().get("saeServeurHostname"));
+         Assert.assertEquals("CRL incorrect", "http://download.oracle.com/javase/6/docs/api/", trace.getInfos().get("fichier"));
+         Assert.assertEquals("PKI incorrect", "PKI_TEST", trace.getInfos().get("pki"));
+         
+      }
 
    }
 }

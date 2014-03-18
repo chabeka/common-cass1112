@@ -36,9 +36,12 @@ public class PagmfDao extends AbstractDao<String, String> {
     * 
     * @param keyspace
     *           Keyspace utilisé
+    * @param formatControlProfilSupport
+    *           Le support des controles de profil de format
     */
    @Autowired
-   public PagmfDao(Keyspace keyspace, FormatControlProfilSupport formatControlProfilSupport) {
+   public PagmfDao(Keyspace keyspace,
+         FormatControlProfilSupport formatControlProfilSupport) {
       super(keyspace);
       this.formatControlProfilSupport = formatControlProfilSupport;
    }
@@ -52,10 +55,11 @@ public class PagmfDao extends AbstractDao<String, String> {
     *           : necessaire pour Cassandra
     * @param clock
     *           : heure d'enregistrement
-    * @throws FormatControlProfilNotFoundException : format de controle profil est inexistant          
+    * @throws FormatControlProfilNotFoundException
+    *            : format de controle profil est inexistant
     */
    public final void addPagmf(ColumnFamilyUpdater<String, String> updater,
-         Pagmf pagmf, Long clock) throws FormatControlProfilNotFoundException{
+         Pagmf pagmf, Long clock) throws FormatControlProfilNotFoundException {
 
       if (pagmf == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils
@@ -122,8 +126,8 @@ public class PagmfDao extends AbstractDao<String, String> {
     * @param clock
     *           horloge de la suppression
     */
-   public final void deletePagmf(Mutator<String> mutator,
-         String codePagmf, long clock) {
+   public final void deletePagmf(Mutator<String> mutator, String codePagmf,
+         long clock) {
 
       List<String> variable = new ArrayList<String>();
       if (StringUtils.isBlank(codePagmf)) {
