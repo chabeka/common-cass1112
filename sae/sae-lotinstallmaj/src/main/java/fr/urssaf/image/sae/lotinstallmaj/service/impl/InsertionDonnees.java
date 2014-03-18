@@ -625,4 +625,35 @@ public class InsertionDonnees {
 
       }
    }
+   
+   /**
+    * Référentiel des événements en V4.
+    * Ajout de l'évenement ERREUR_IDENT_FORMAT_FICHIER|INFO, et ERREUR_VALID_FORMAT_FICHIER |INFO
+    */
+   public void addReferentielEvenementV4() {
+
+      LOG.info("Mise à jour du référentiel des événements");
+
+      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+            keyspace, "TraceDestinataire", StringSerializer.get(),
+            StringSerializer.get());
+
+      ColumnFamilyUpdater<String, String> updater;
+
+      List<String> allInfos = Arrays.asList("all_infos");
+
+      // ERREUR_IDENT_FORMAT_FICHIER|INFO
+      // dans le registre de surveillance technique avec all_infos
+      updater = cfTmpl.createUpdater("ERREUR_IDENT_FORMAT_FICHIER|INFO");
+      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
+            ListSerializer.get(), updater);
+      cfTmpl.update(updater);
+      
+      // ERREUR_VALID_FORMAT_FICHIER|INFO
+      // dans le registre de surveillance technique avec all_infos
+      updater = cfTmpl.createUpdater("ERREUR_VALID_FORMAT_FICHIER|INFO");
+      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
+            ListSerializer.get(), updater);
+      cfTmpl.update(updater);
+   }
 }

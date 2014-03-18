@@ -502,6 +502,9 @@ public class SAECassandraUpdater {
       // ajout de la colonne dispo pour les metadonnées
       List<String> listeRows = getRowsToUpdateMetaForVersion7("metadata140400.txt");
       donnees.addColumnClientAvailableMetadata(listeRows);
+      
+      // Enrichissement du référentiel des événements
+      donnees.addReferentielEvenementV4();
 
       // On positionne la version à 7
       saeDao.setDatabaseVersion(VERSION_7);
