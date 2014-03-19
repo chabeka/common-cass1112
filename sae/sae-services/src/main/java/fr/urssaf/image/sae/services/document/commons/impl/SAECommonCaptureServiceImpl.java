@@ -90,8 +90,7 @@ public class SAECommonCaptureServiceImpl implements SAECommonCaptureService {
                   prefixeTrc);
       controlesService.checkUntypedDocument(untypedDocument);
 
-      StorageDocument storageDocument = buildStorageDocument(untypedDocument,
-            prefixeTrc);
+      StorageDocument storageDocument = buildStorageDocument(untypedDocument);
 
       return storageDocument;
 
@@ -124,14 +123,12 @@ public class SAECommonCaptureServiceImpl implements SAECommonCaptureService {
             .debug("{} - Début des contrôles sur (UntypedDocument)", prefixeTrc);
       controlesService.checkUntypedBinaryDocument(untypedDocument);
 
-      StorageDocument storageDocument = buildStorageDocument(untypedDocument,
-            prefixeTrc);
+      StorageDocument storageDocument = buildStorageDocument(untypedDocument);
 
       return storageDocument;
    }
 
-   private StorageDocument buildStorageDocument(
-         UntypedDocument untypedDocument, String prefixeTrc)
+   private StorageDocument buildStorageDocument(UntypedDocument untypedDocument)
          throws NotSpecifiableMetadataEx, RequiredArchivableMetadataEx,
          UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, SAEEnrichmentEx,
@@ -142,6 +139,7 @@ public class SAECommonCaptureServiceImpl implements SAECommonCaptureService {
 
       SAEDocument saeDocument = null;
       StorageDocument storageDocument = null;
+      String prefixeTrc = "buildStorageDocument()";
 
       try {
 
@@ -177,7 +175,7 @@ public class SAECommonCaptureServiceImpl implements SAECommonCaptureService {
                prefixeTrc);
 
          if (saeDocument != null) {
-            LOGGER.debug("{} - Début des contrôles sur le format");
+            LOGGER.debug("{} - Début des contrôles sur le format", prefixeTrc);
 
             // Vérification de la validation des formats.
             // récupération de la liste des profils de contrôle
@@ -186,7 +184,7 @@ public class SAECommonCaptureServiceImpl implements SAECommonCaptureService {
 
             controlesService.checkFormat(saeDocument, listFormatControlProfil);
 
-            LOGGER.debug("{} - Fin des contrôles sur le format");
+            LOGGER.debug("{} - Fin des contrôles sur le format", prefixeTrc);
 
             LOGGER.debug(
                   "{} - Début des contrôles sur (SaeDocument  et SaeMetadata)",

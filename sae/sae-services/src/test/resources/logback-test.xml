@@ -12,7 +12,9 @@
    <logger name="me.prettyprint" level="WARN" />
    <logger name="com.netflix.curator" level="WARN" />
    <logger name="org.apache.zookeeper" level="WARN" />
+   
    <logger name="uk.gov.nationalarchives" level="WARN" />
+   <logger name="org.apache.pdfbox" level="WARN" />
    
    <logger name="fr.urssaf.image.commons" level="INFO" />
    

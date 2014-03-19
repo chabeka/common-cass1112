@@ -391,34 +391,6 @@ public class SAEControlesCaptureServiceImplTest extends CommonsServices {
 
    /**
     * Test de la méthode
-    * {@link fr.urssaf.image.sae.services.controles.impl.SAEControlesCaptureServiceImpl#checkFormat(SAEDocument, List)}
-    * 
-    * @throws ValidationExceptionInvalidFile
-    * @throws UnknownFormatException
-    */
-   @Test(expected = UnknownFormatException.class)
-   public final void checkMetaFormatFichierFailed() throws SAECaptureServiceEx,
-         IOException, ParseException, UnknownHashCodeEx,
-         UnknownFormatException, ValidationExceptionInvalidFile {
-      SAEDocument saeDocument = getSAEDocumentMockData();
-      for (SAEMetadata saeMetadata : saeDocument.getMetadatas()) {
-         if ("FormatFichier".equalsIgnoreCase(saeMetadata.getLongCode())) {
-            saeMetadata.setValue("fmt/18");
-            break;
-         }
-      }
-
-      List<FormatControlProfil> listControlProfil = new ArrayList<FormatControlProfil>();
-      FormatControlProfil profil = new FormatControlProfil();
-      profil.setControlProfil(new FormatProfil());
-      profil.setDescription("description");
-      profil.setFormatCode("fmt/354");
-      listControlProfil.add(profil);
-      saeControlesCaptureService.checkFormat(saeDocument, listControlProfil);
-   }
-
-   /**
-    * Test de la méthode
     * {@link fr.urssaf.image.sae.services.controles.impl.SAEControlesCaptureServiceImpl#checkSaeMetadataForStorage(fr.urssaf.image.sae.bo.model.bo.SAEDocument)}
     * .
     */
