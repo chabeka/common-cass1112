@@ -120,15 +120,15 @@ public class IgcDownloadServiceImpl implements IgcDownloadService {
                   // définitif mais pas dans le répertoire temporaire
                   for (String crl : tabCRLDef) {
                      if (!listeCRLTemp.contains(crl)) {
-                        File crlToDelete = new File(repCrls + "\\" + crl);
+                        File crlToDelete = new File(repCrls + "/" + crl);
                         crlToDelete.delete();
                      }
                   }
                   // Copie de tous les fichiers du répertoire temporaire au
                   // répertoire définitif
                   for (String crl : tabCRLTemp) {
-                     File source = new File(repTemp + "\\" + crl);
-                     File destination = new File(repCrls + "\\" + crl);
+                     File source = new File(repTemp + "/" + crl);
+                     File destination = new File(repCrls + "/" + crl);
                      // source.renameTo(destination);
                      copier(source, destination);
                   }
