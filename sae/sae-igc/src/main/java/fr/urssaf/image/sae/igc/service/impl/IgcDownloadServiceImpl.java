@@ -84,7 +84,7 @@ public class IgcDownloadServiceImpl implements IgcDownloadService {
                   String[] listeCRL = repertoire.list();
 
                   for (String crl : listeCRL) {
-                     InputStream input = new FileInputStream(repTemp + "\\"
+                     InputStream input = new FileInputStream(repTemp + "/"
                            + crl);
                      CertificateFactory certifFactory;
                      try {
