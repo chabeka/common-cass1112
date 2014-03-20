@@ -1,7 +1,5 @@
 package fr.urssaf.image.sae.format.identification.identifiers.pdfa;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -14,7 +12,9 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.format.identification.exceptions.IdentificationRuntimeException;
+import fr.urssaf.image.sae.format.identification.exceptions.IdentifierInitialisationException;
 import fr.urssaf.image.sae.format.identification.identifiers.model.IdentificationResult;
 import fr.urssaf.image.sae.format.model.EtapeEtResultat;
 
@@ -32,217 +32,248 @@ public class PdfaIdentifierImplTest {
    @Autowired
    private PdfaIdentifierImpl pdfaIdentifier;
 
-   private static final String MESSAGE_ERRONE = "message erroné";
-   private static final String RESULTAT_ERRONE = "résultat erroné";
-   private static final String ETAPE1 = "Etape 1 : R\u00E9cup\u00E9ration du PUUID à partir de DROID.";
-   private static final String ETAPE2 = "Etape 2 : Comparaison du PUUID avec idFormat.";
-   private static final String PUUID_FMT354 = "PUUID : fmt/354";
-   private static final String PUUID_FMT18 = "PUUID : fmt/18";
-   private static final String PUUID_DIFF_IDFORMAT = "PUUID différent de IDFORMAT mais fait partie de la liste des formats compatibles.";
-
+   /**
+    * Cas de test : Identification PDF/A1b pour un fichier qui va être détecté
+    * par Droid comme un fmt/354.<br>
+    * <br>
+    * Résultat attendu : L'identification est positive, et le détail de
+    * l'identification précise que Droid a détecté un fmt/354 (pas de passage
+    * par les formats compatibles)
+    */
    @Test
-   public void identifyFileFailureIdFormatErrone()
-         throws IdentificationRuntimeException, IOException {
+   public void identifyFile_success() throws IOException {
 
-      File file = new File("src/test/resources/identification/PdfaValide.pdf");
-      IdentificationResult identificationResult = pdfaIdentifier.identifyFile(
-            "idFormat", file);
+      // Récupération du fichier de test depuis les ressources
+      ClassPathResource ressource = new ClassPathResource(
+            "/identification/fmt-354.pdf");
 
-      EtapeEtResultat etape0 = identificationResult.getDetails().get(0);
-      EtapeEtResultat etape1 = identificationResult.getDetails().get(1);
-      Assert.assertEquals(MESSAGE_ERRONE, ETAPE1, etape0.getEtape());
-      Assert.assertEquals(RESULTAT_ERRONE, PUUID_FMT354, etape0.getResultat());
+      // Appel de la méthode à tester
+      IdentificationResult result = pdfaIdentifier.identifyFile("fmt/354",
+            ressource.getFile());
 
-      Assert.assertEquals(MESSAGE_ERRONE, ETAPE2, etape1.getEtape());
-      Assert.assertEquals(RESULTAT_ERRONE, "PUUID diff\u00E9rent de IDFORMAT.",
-            etape1.getResultat());
+      // Vérifications
 
-      Assert.assertEquals(RESULTAT_ERRONE, false, identificationResult
+      // Résultat final : le fichier est identifié
+      Assert.assertTrue("Le fichier aurait dû être identifié", result
             .isIdentified());
+
+      // Détails, 1ère étape : DROID renvoie fmt/354
+      EtapeEtResultat etape1 = result.getDetails().get(0);
+      Assert.assertEquals(
+            "L'étape 1 de l'identification en correspond pas à l'attendu",
+            "Etape 1 : Récupération du PUUID à partir de DROID.", etape1
+                  .getEtape());
+      Assert.assertEquals(
+            "L'étape 1 de l'identification en correspond pas à l'attendu",
+            "PUUID : fmt/354", etape1.getResultat());
+
+      // Détails, 2ème étape : Le format identifié par DROID est directement le
+      // fmt/354
+      EtapeEtResultat etape2 = result.getDetails().get(1);
+      Assert.assertEquals(
+            "L'étape 2 de l'identification en correspond pas à l'attendu",
+            "Etape 2 : Comparaison du PUUID avec idFormat.", etape2.getEtape());
+      Assert.assertEquals(
+            "L'étape 2 de l'identification en correspond pas à l'attendu",
+            "PUUID = IDFORMAT.", etape2.getResultat());
 
    }
 
+   /**
+    * Cas de test : Identification PDF/A1b pour un stream qui va être détecté
+    * par Droid comme un fmt/18, qui est dans la liste des formats compatibles
+    * au fmt/354.<br>
+    * <br>
+    * Résultat attendu : L'identification est positive, et le détail de
+    * l'identification précise que l'algo est passé par les formats compatibles.
+    */
    @Test
-   public void identifyFileSuccess() throws IdentificationRuntimeException,
+   public void identifyStream_success_CompatibleFmt18()
+         throws IdentifierInitialisationException, UnknownFormatException,
          IOException {
-      File file = new File("src/test/resources/identification/PdfaValide.pdf");
-      IdentificationResult identificationResult = pdfaIdentifier.identifyFile(
-            "fmt/354", file);
 
-      EtapeEtResultat etape0 = identificationResult.getDetails().get(0);
-      EtapeEtResultat etape1 = identificationResult.getDetails().get(1);
-      Assert.assertEquals(MESSAGE_ERRONE, ETAPE1, etape0.getEtape());
-      Assert.assertEquals(RESULTAT_ERRONE, PUUID_FMT354, etape0.getResultat());
-
-      Assert.assertEquals(MESSAGE_ERRONE, ETAPE2, etape1.getEtape());
-      Assert.assertEquals(RESULTAT_ERRONE, "PUUID = IDFORMAT.", etape1
-            .getResultat());
-
-      Assert.assertEquals(RESULTAT_ERRONE, true, identificationResult
-            .isIdentified());
+      identifyStream_success_compatible("/identification/fmt-18.pdf", "fmt/18");
 
    }
 
+   /**
+    * Cas de test : Identification PDF/A1b pour un stream qui va être détecté
+    * par Droid comme un fmt/95, qui est dans la liste des formats compatibles
+    * au fmt/354.<br>
+    * <br>
+    * Résultat attendu : L'identification est positive, et le détail de
+    * l'identification précise que l'algo est passé par les formats compatibles.
+    */
    @Test
-   public void identifyFileSuccessCompatiblefmt18()
-         throws IdentificationRuntimeException, IOException {
+   public void identifyStream_success_CompatibleFmt95()
+         throws IdentifierInitialisationException, UnknownFormatException,
+         IOException {
 
-      File file = new File(
-            "src/test/resources/identification/pdfaCompatible.pdf");
-      IdentificationResult identificationResult = pdfaIdentifier.identifyFile(
-            "fmt/354", file);
-
-      EtapeEtResultat etape0 = identificationResult.getDetails().get(0);
-      EtapeEtResultat etape1 = identificationResult.getDetails().get(1);
-
-      Assert.assertEquals(MESSAGE_ERRONE, ETAPE1, etape0.getEtape());
-      Assert.assertEquals(RESULTAT_ERRONE, PUUID_FMT18, etape0.getResultat());
-
-      Assert.assertEquals(MESSAGE_ERRONE, ETAPE2, etape1.getEtape());
-      Assert.assertEquals(RESULTAT_ERRONE, PUUID_DIFF_IDFORMAT, etape1
-            .getResultat());
-
-      Assert.assertEquals(RESULTAT_ERRONE, true, identificationResult
-            .isIdentified());
+      identifyStream_success_compatible("/identification/fmt-95.pdf", "fmt/95");
 
    }
 
-   /*************************************************************************************************************************/
-   /********************************** STREAM **********************************************************/
-   /*************************************************************************************************************************/
+   /**
+    * Cas de test : Identification PDF/A1b pour un stream qui va être détecté
+    * par Droid comme un fmt/276, qui est dans la liste des formats compatibles
+    * au fmt/354.<br>
+    * <br>
+    * Résultat attendu : L'identification est positive, et le détail de
+    * l'identification précise que l'algo est passé par les formats compatibles.
+    */
    @Test
-   public void identifyStreamFailureIdFormatErrone() throws IOException {
-      File file = new File("src/test/resources/identification/PdfaValide.pdf");
-      InputStream inputStream = new FileInputStream(file);
+   public void identifyStream_success_CompatibleFmt276()
+         throws IdentifierInitialisationException, UnknownFormatException,
+         IOException {
 
-      IdentificationResult identificationResult = pdfaIdentifier
-            .identifyStream("idFormat", inputStream);
-
-      EtapeEtResultat etape0 = identificationResult.getDetails().get(0);
-      EtapeEtResultat etape1 = identificationResult.getDetails().get(1);
-      Assert.assertEquals(MESSAGE_ERRONE, ETAPE1, etape0.getEtape());
-      Assert.assertEquals(RESULTAT_ERRONE, PUUID_FMT354, etape0.getResultat());
-
-      Assert.assertEquals(MESSAGE_ERRONE, ETAPE2, etape1.getEtape());
-      Assert.assertEquals(RESULTAT_ERRONE, "PUUID diff\u00E9rent de IDFORMAT.",
-            etape1.getResultat());
-
-      Assert.assertEquals(RESULTAT_ERRONE, false, identificationResult
-            .isIdentified());
-
-      inputStream.close();
+      identifyStream_success_compatible("/identification/fmt-276.pdf",
+            "fmt/276");
 
    }
 
+   /**
+    * Cas de test : Identification PDF/A1b pour un stream qui va être détecté
+    * par Droid comme un fmt/20, qui est dans la liste des formats compatibles
+    * au fmt/354.<br>
+    * <br>
+    * Résultat attendu : L'identification est positive, et le détail de
+    * l'identification précise que l'algo est passé par les formats compatibles.
+    */
    @Test
-   public void identifyStreamSuccess() throws IOException {
-      File file = new File("src/test/resources/identification/PdfaValide.pdf");
-      InputStream inputStream = new FileInputStream(file);
+   public void identifyStream_success_CompatibleFmt20()
+         throws IdentifierInitialisationException, UnknownFormatException,
+         IOException {
 
-      IdentificationResult identificationResult = pdfaIdentifier
-            .identifyStream("fmt/354", inputStream);
-
-      EtapeEtResultat etape0 = identificationResult.getDetails().get(0);
-      EtapeEtResultat etape1 = identificationResult.getDetails().get(1);
-      Assert.assertEquals(MESSAGE_ERRONE, ETAPE1, etape0.getEtape());
-      Assert.assertEquals(RESULTAT_ERRONE, PUUID_FMT354, etape0.getResultat());
-
-      Assert.assertEquals(MESSAGE_ERRONE, ETAPE2, etape1.getEtape());
-      Assert.assertEquals(RESULTAT_ERRONE, "PUUID = IDFORMAT.", etape1
-            .getResultat());
-
-      Assert.assertEquals(RESULTAT_ERRONE, true, identificationResult
-            .isIdentified());
-
-      inputStream.close();
-   }
-
-   @Test
-   public void identifyStreamSuccessCompatiblefmt18() throws IOException {
-      File file = new File(
-            "src/test/resources/identification/pdfaCompatible.pdf");
-      InputStream inputStream = new FileInputStream(file);
-
-      IdentificationResult identificationResult = pdfaIdentifier
-            .identifyStream("fmt/354", inputStream);
-
-      EtapeEtResultat etape0 = identificationResult.getDetails().get(0);
-      EtapeEtResultat etape1 = identificationResult.getDetails().get(1);
-
-      Assert.assertEquals(MESSAGE_ERRONE, ETAPE1, etape0.getEtape());
-      Assert.assertEquals(RESULTAT_ERRONE, PUUID_FMT18, etape0.getResultat());
-
-      Assert.assertEquals(MESSAGE_ERRONE, ETAPE2, etape1.getEtape());
-      Assert.assertEquals(RESULTAT_ERRONE, PUUID_DIFF_IDFORMAT, etape1
-            .getResultat());
-
-      Assert.assertEquals(RESULTAT_ERRONE, true, identificationResult
-            .isIdentified());
-
-      inputStream.close();
+      identifyStream_success_compatible("/identification/fmt-20.pdf", "fmt/20");
 
    }
 
-   @Test
-   public void identifyStreamSuccessCompatiblefmt276() throws IOException {
+   private void identifyStream_success_compatible(String fichierRessource,
+         String idFormatDetecteDroid) throws IdentifierInitialisationException,
+         UnknownFormatException, IOException {
 
-      ClassPathResource resource = new ClassPathResource(
-            "identification/Pardes13_Rez02.pdf");
+      ClassPathResource ressource = new ClassPathResource(fichierRessource);
+      InputStream inputStream = ressource.getInputStream();
 
-      InputStream inputStream = resource.getInputStream();
-
+      IdentificationResult result;
       try {
-
-         IdentificationResult identificationResult = pdfaIdentifier
-               .identifyStream("fmt/354", inputStream);
-
-         EtapeEtResultat etape0 = identificationResult.getDetails().get(0);
-         EtapeEtResultat etape1 = identificationResult.getDetails().get(1);
-
-         Assert.assertEquals("PUUID : fmt/276", etape0.getResultat());
-
-         Assert.assertEquals(RESULTAT_ERRONE, PUUID_DIFF_IDFORMAT, etape1
-               .getResultat());
-
-         Assert.assertTrue("Le fichier aurait dû être identifié",
-               identificationResult.isIdentified());
-
+         // Appel de la méthode à tester
+         result = pdfaIdentifier.identifyStream("fmt/354", inputStream);
       } finally {
          if (inputStream != null) {
             inputStream.close();
          }
       }
 
+      // Vérifications
+
+      // Résultat final : le fichier est identifié
+      Assert.assertTrue("Le fichier aurait dû être identifié", result
+            .isIdentified());
+
+      // Détails, 1ère étape : DROID renvoie fmt/95
+      EtapeEtResultat etape1 = result.getDetails().get(0);
+      Assert.assertEquals(
+            "L'étape 1 de l'identification en correspond pas à l'attendu",
+            "Etape 1 : Récupération du PUUID à partir de DROID.", etape1
+                  .getEtape());
+      Assert.assertEquals(
+            "L'étape 1 de l'identification en correspond pas à l'attendu",
+            String.format("PUUID : %s", idFormatDetecteDroid), etape1
+                  .getResultat());
+
+      // Détails, 2ème étape : Le format identifié par DROID fait partie des
+      // formats compatibles
+      EtapeEtResultat etape2 = result.getDetails().get(1);
+      Assert.assertEquals(
+            "L'étape 2 de l'identification en correspond pas à l'attendu",
+            "Etape 2 : Comparaison du PUUID avec idFormat.", etape2.getEtape());
+      Assert
+            .assertEquals(
+                  "L'étape 2 de l'identification en correspond pas à l'attendu",
+                  "PUUID différent de IDFORMAT mais fait partie de la liste des formats compatibles.",
+                  etape2.getResultat());
+
    }
 
+   /**
+    * Cas de test : Identification PDF/A1b pour un fichier qui va être détecté
+    * par Droid comme un fmt/40 (qui ne fait pas partie des format
+    * scompatibles).<br>
+    * <br>
+    * Résultat attendu : L'identification est négative.
+    */
    @Test
-   public void identifyStreamSuccessCompatiblefmt20() throws IOException {
+   public void identifyFile_success_NonCompatible() throws IOException {
 
-      ClassPathResource resource = new ClassPathResource(
-            "identification/pardes14_Jid02_reduced.pdf");
+      // Récupération du fichier de test depuis les ressources
+      ClassPathResource ressource = new ClassPathResource(
+            "/identification/fmt-40.doc");
 
-      InputStream inputStream = resource.getInputStream();
+      // Appel de la méthode à tester
+      IdentificationResult result = pdfaIdentifier.identifyFile("fmt/354",
+            ressource.getFile());
 
+      // Vérifications
+
+      // Résultat final : le fichier n'est pas identifié
+      Assert.assertFalse("Le fichier n'aurait pas dû être identifié", result
+            .isIdentified());
+
+      // Détails, 1ère étape : DROID renvoie fmt/40
+      EtapeEtResultat etape1 = result.getDetails().get(0);
+      Assert.assertEquals(
+            "L'étape 1 de l'identification en correspond pas à l'attendu",
+            "Etape 1 : Récupération du PUUID à partir de DROID.", etape1
+                  .getEtape());
+      Assert.assertEquals(
+            "L'étape 1 de l'identification en correspond pas à l'attendu",
+            "PUUID : fmt/40", etape1.getResultat());
+
+      // Détails, 2ème étape : Le format identifié par DROID est directement le
+      // fmt/354
+      EtapeEtResultat etape2 = result.getDetails().get(1);
+      Assert.assertEquals(
+            "L'étape 2 de l'identification en correspond pas à l'attendu",
+            "Etape 2 : Comparaison du PUUID avec idFormat.", etape2.getEtape());
+      Assert
+            .assertEquals(
+                  "L'étape 2 de l'identification en correspond pas à l'attendu",
+                  "PUUID différent de IDFORMAT et ne fait pas partie de la liste des formats compatibles.",
+                  etape2.getResultat());
+
+   }
+
+   /**
+    * Cas de test : Appel de l'identifier PDF/A1b sur un identifiant de format
+    * différent de fmt/354<br>
+    * <br>
+    * Résultat attendu : Levée d'une RuntimeException avec un message précis
+    */
+   @Test
+   public void identifyFile_failure_NonFmt354() throws IOException {
+
+      // Récupération du fichier de test depuis les ressources
+      ClassPathResource ressource = new ClassPathResource(
+            "/identification/fmt-354.pdf");
+
+      // Appel de la méthode à tester
       try {
 
-         IdentificationResult identificationResult = pdfaIdentifier
-               .identifyStream("fmt/354", inputStream);
+         pdfaIdentifier.identifyFile("NonFmt354", ressource.getFile());
 
-         EtapeEtResultat etape0 = identificationResult.getDetails().get(0);
-         EtapeEtResultat etape1 = identificationResult.getDetails().get(1);
+         Assert
+               .fail("Une exception IdentificationRuntimeException aurait dû être levée");
 
-         Assert.assertEquals("PUUID : fmt/20", etape0.getResultat());
+      } catch (IdentificationRuntimeException ex) {
 
-         Assert.assertEquals(RESULTAT_ERRONE, PUUID_DIFF_IDFORMAT, etape1
-               .getResultat());
+         // Vérification du message
+         Assert
+               .assertEquals(
+                     "Le message de l'exception est incorrect",
+                     "Erreur technique: Le bean d'identification des PDF/A 1b (fmt/354) a été sollicité pour identifier un autre format (NonFmt354)",
+                     ex.getMessage());
 
-         Assert.assertTrue("Le fichier aurait dû être identifié",
-               identificationResult.isIdentified());
-
-      } finally {
-         if (inputStream != null) {
-            inputStream.close();
-         }
       }
 
    }

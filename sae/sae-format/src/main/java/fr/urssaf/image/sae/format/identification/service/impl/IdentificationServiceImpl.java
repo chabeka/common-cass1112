@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -30,11 +32,17 @@ import fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler;
 
 /**
  * 
- * Implémentation du processus d’identification d’un flux ou d’un fichier.
+ * Implémentation du processus d'identification d'un flux ou d'un fichier.
  * 
  */
 @Service
 public class IdentificationServiceImpl implements IdentificationService {
+
+   private static final String LOG_DEBUT = "{} - Début";
+   private static final String LOG_FIN = "{} - Fin";
+
+   private static final Logger LOGGER = LoggerFactory
+         .getLogger(IdentificationServiceImpl.class);
 
    /**
     * Définition de caches permettant de ne pas recharger à chaque fois les
@@ -43,9 +51,10 @@ public class IdentificationServiceImpl implements IdentificationService {
    private final LoadingCache<String, Identifier> identifiers;
 
    /**
-    * Service permettant d’interroger le référentiel des formats
+    * Service permettant d'interroger le référentiel des formats
     */
    private final ReferentielFormatService referentielFormatService;
+
    private final ApplicationContext applicationContext;
 
    /**
@@ -55,122 +64,203 @@ public class IdentificationServiceImpl implements IdentificationService {
     *           le service de référentiel des formats
     * @param cacheDuration
     *           la durée de cache pour les formats
+    * @param applicationContext
+    *           Le contexte Spring
+    * 
     */
    @Autowired
    public IdentificationServiceImpl(
          ReferentielFormatService referentielFormatService,
          @Value("${sae.referentiel.format.cache}") int cacheDuration,
          ApplicationContext applicationContext) {
+
       this.referentielFormatService = referentielFormatService;
       this.applicationContext = applicationContext;
-      // Mise en cache
+
+      // Gestion d'un cache contenant les beans d'identification
       identifiers = CacheBuilder.newBuilder().refreshAfterWrite(cacheDuration,
             TimeUnit.MINUTES).build(new CacheLoader<String, Identifier>() {
 
          @Override
          public Identifier load(String identifiant) {
+            LOGGER
+                  .debug(
+                        "Charge dans le cache l'objet d'identification dont le nom du bean est \"{}\"",
+                        identifiant);
             return IdentificationServiceImpl.this.applicationContext.getBean(
                   identifiant, Identifier.class);
          }
       });
+
    }
 
+   /**
+    * {@inheritDoc}
+    */
    @Override
    public final IdentificationResult identifyFile(String idFormat, File fichier)
          throws IdentifierInitialisationException, UnknownFormatException,
          IOException {
 
-      FormatFichier format;
-      Identifier identifier;
-      IdentificationResult identifResult;
-      try {
-         // On récupère l'identificateur à utiliser pour l'idFormat donné à
-         // partir du référentiel des formats
-         format = referentielFormatService.getFormat(idFormat);
+      // Traces debug - entrée méthode
+      String prefixeTrc = "identifyFile()";
+      LOGGER.debug(LOG_DEBUT, prefixeTrc);
 
-         if (format != null
-               && StringUtils.isNotBlank(format.getIdentificateur())) {
+      // On récupère le nom du bean qui doit réaliser l'identification
+      String nomBeanIdentifier = lectureNomBeanIdentifier(idFormat);
 
-            String identificateur = format.getIdentificateur();
+      // On récupère le bean correspondant
+      Identifier identifier = recupereBeanIdentifier(nomBeanIdentifier);
 
-            // On utilise l'application contexte pour récupérer une instance de
-            // l'identificateur
-            identifier = identifiers.getUnchecked(identificateur);
+      // On appel la méthode identifyFile en passant en paramètre le
+      // fichier et l'idFormat
+      LOGGER.debug("{} - Exécution de l'identification", prefixeTrc);
+      IdentificationResult identifResult = identifier.identifyFile(idFormat,
+            fichier);
+      LOGGER.debug("{} - L'identification a été réalisée. Résultat: {}",
+            prefixeTrc, identifResult.isIdentified());
 
-            // On appel la méthode identifyFile en passant en paramètre le
-            // fichier et l'idFormat
-            identifResult = identifier.identifyFile(idFormat, fichier);
+      // Traces debug - sortie méthode
+      LOGGER.debug(LOG_FIN, prefixeTrc);
 
-            // En retour on récupère et on renvoi un objet
-            // IdentificationResult
-            // contenant le résultat de l'identification et une liste des
-            // traces.
-            return identifResult;
-
-         } else {
-            throw new IdentifierInitialisationException(SaeFormatMessageHandler
-                  .getMessage("erreur.recup.identif"));
-         }
-
-      } catch (InvalidCacheLoadException except) {
-         throw new IdentifierInitialisationException(SaeFormatMessageHandler
-               .getMessage("erreur.recup.identif"));
-
-      } catch (UncheckedExecutionException except) {
-         throw new IdentifierInitialisationException(SaeFormatMessageHandler
-               .getMessage("erreur.recup.identif"));
-
-      } catch (ReferentielRuntimeException except) {
-         throw new IdentificationRuntimeException(except.getMessage(), except);
-      }
+      // En retour on récupère et on renvoi un objet IdentificationResult
+      // contenant le résultat de l'identification et une liste des traces.
+      return identifResult;
 
    }
 
+   /**
+    * {@inheritDoc}
+    */
    @Override
    public final IdentificationResult identifyStream(String idFormat,
          InputStream stream) throws UnknownFormatException,
          IdentifierInitialisationException {
 
-      FormatFichier format;
-      Identifier identifier;
-      IdentificationResult identifResult;
+      // Traces debug - entrée méthode
+      String prefixeTrc = "identifyStream()";
+      LOGGER.debug(LOG_DEBUT, prefixeTrc);
+
+      // On récupère le nom du bean qui doit réaliser l'identification
+      String nomBeanIdentifier = lectureNomBeanIdentifier(idFormat);
+
+      // On récupère le bean correspondant
+      Identifier identifier = recupereBeanIdentifier(nomBeanIdentifier);
+
+      // On appel la méthode identifyStream en passant en paramètre le
+      // stream et l'idFormat
+      IdentificationResult identifResult = identifier.identifyStream(idFormat,
+            stream);
+
+      // Traces debug - sortie méthode
+      LOGGER.debug(LOG_FIN, prefixeTrc);
+
+      // En retour on récupère et on renvoi un objet
+      // IdentificationResult
+      // contenant le résultat de l'identification et une liste des
+      // traces.
+      return identifResult;
+
+   }
+
+   private String lectureNomBeanIdentifier(String idFormat)
+         throws UnknownFormatException, IdentifierInitialisationException {
+
+      // Traces debug - entrée méthode
+      String prefixeTrc = "lectureNomBeanIdentifier()";
+      LOGGER.debug(LOG_DEBUT, prefixeTrc);
+
+      // Récupération de l'objet définissant le format du fichier depuis le
+      // référentiel des formats
+      LOGGER
+            .debug(
+                  "{} - Interrogation du référentiel des formats pour récupérer la défintion du format {}",
+                  prefixeTrc, idFormat);
+      FormatFichier formatFichier;
       try {
-         format = referentielFormatService.getFormat(idFormat);
-   
-         if (format != null
-               && StringUtils.isNotBlank(format.getIdentificateur())) {
-   
-            String identificateur = format.getIdentificateur();
-   
-            // On utilise l'application contexte pour récupérer une instance de
-            // l'identificateur
-            identifier = identifiers.getUnchecked(identificateur);
-   
-            // On appel la méthode identifyStream en passant en paramètre le
-            // stream et l'idFormat
-            identifResult = identifier.identifyStream(idFormat, stream);
-   
-            // En retour on récupère et on renvoi un objet
-            // IdentificationResult
-            // contenant le résultat de l'identification et une liste des
-            // traces.
-            return identifResult;
-   
-         } else {
-            throw new IdentifierInitialisationException(SaeFormatMessageHandler
-                  .getMessage("erreur.recup.identif"));
-         }
-      } catch (InvalidCacheLoadException except) {
-         throw new IdentifierInitialisationException(SaeFormatMessageHandler
-               .getMessage("erreur.recup.identif"));
-
-      } catch (UncheckedExecutionException except) {
-         throw new IdentifierInitialisationException(SaeFormatMessageHandler
-               .getMessage("erreur.recup.identif"));
-
+         formatFichier = referentielFormatService.getFormat(idFormat);
       } catch (ReferentielRuntimeException except) {
          throw new IdentificationRuntimeException(except.getMessage(), except);
-      }   
+      }
+
+      // L'objet formatFichier est forcément non null, car sinon la méthode
+      // getFormat doit lever
+      // une exception UnknownFormatException. On fait tout de même une
+      // vérification en cas d'anomalie
+      // de fonctionnement dans la méthode getFormat
+      if (formatFichier == null) {
+         throw new IdentifierInitialisationException(
+               String
+                     .format(
+                           "Erreur technique: Le format %s n'existe pas dans le référentiel des formats, et le référentiel des formats n'a pas remonté l'erreur",
+                           idFormat));
+      } else {
+
+         // Cas normal si le format existe dans le référentiel
+
+         // On lit le nom du bean de l'objet d'identification
+         String nomBean = formatFichier.getIdentificateur();
+
+         // On vérifie que le nom du bean est renseigné
+         if (StringUtils.isBlank(nomBean)) {
+
+            // Le nom du bean n'est pas renseigné => on lève une exception
+            throw new IdentifierInitialisationException(
+                  String
+                        .format(
+                              "Le nom du bean permettant de réaliser l'identification du format %s n'est pas renseigné dans le référentiel des formats",
+                              idFormat));
+
+         } else {
+
+            // Trace applicative
+            LOGGER
+                  .debug(
+                        "{} - Le nom du bean qui va réaliser l'identification est \"{}\"",
+                        prefixeTrc, nomBean);
+
+            // Traces debug - sortie méthode
+            LOGGER.debug(LOG_FIN, prefixeTrc);
+
+            // On renvoie le nom du bean
+            return nomBean;
+
+         }
+
+      }
+
+   }
+
+   private Identifier recupereBeanIdentifier(String nomBeanIdentifier)
+         throws IdentifierInitialisationException {
+
+      // Traces debug - entrée méthode
+      String prefixeTrc = "recupereBeanIdentifier()";
+      LOGGER.debug(LOG_DEBUT, prefixeTrc);
+
+      // Récupère l'objet du cache
+      LOGGER
+            .debug(
+                  "{} - Lecture du cache pour récupérer l'objet qui va réaliser l'identification",
+                  prefixeTrc);
+      Identifier identifier;
+      try {
+         identifier = identifiers.getUnchecked(nomBeanIdentifier);
+      } catch (InvalidCacheLoadException ex) {
+         throw new IdentifierInitialisationException(SaeFormatMessageHandler
+               .getMessage("erreur.recup.identif"), ex);
+
+      } catch (UncheckedExecutionException ex) {
+         throw new IdentifierInitialisationException(SaeFormatMessageHandler
+               .getMessage("erreur.recup.identif"), ex);
+      }
+
+      // Traces debug - sortie méthode
+      LOGGER.debug(LOG_FIN, prefixeTrc);
+
+      // Renvoie l'objet d'identification
+      return identifier;
+
    }
 
 }

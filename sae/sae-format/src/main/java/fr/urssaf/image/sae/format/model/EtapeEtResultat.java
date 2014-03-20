@@ -11,30 +11,58 @@ public class EtapeEtResultat {
    private String resultat;
 
    /**
-    * @return the resultat
+    * Constructeur par défaut
+    */
+   public EtapeEtResultat() {
+      // Constructeur par défaut
+   }
+
+   /**
+    * Constructeur
+    * 
+    * @param etape
+    *           Le libellé de l'étape
+    * @param resultat
+    *           Des informations sur le résultat de l'étape
+    */
+   public EtapeEtResultat(String etape, String resultat) {
+      this.etape = etape;
+      this.resultat = resultat;
+   }
+
+   /**
+    * Des informations sur le résultat de l'étape
+    * 
+    * @return Des informations sur le résultat de l'étape
     */
    public final String getResultat() {
       return resultat;
    }
 
    /**
+    * Des informations sur le résultat de l'étape
+    * 
     * @param resultat
-    *           the resultat to set
+    *           Des informations sur le résultat de l'étape
     */
    public final void setResultat(String resultat) {
       this.resultat = resultat;
    }
 
    /**
-    * @return the etape
+    * Le libellé de l'étape
+    * 
+    * @return Le libellé de l'étape
     */
    public final String getEtape() {
       return etape;
    }
 
    /**
+    * Le libellé de l'étape
+    * 
     * @param etape
-    *           the etape to set
+    *           Le libellé de l'étape
     */
    public final void setEtape(String etape) {
       this.etape = etape;

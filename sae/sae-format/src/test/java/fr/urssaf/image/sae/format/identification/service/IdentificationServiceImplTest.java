@@ -1,24 +1,20 @@
 package fr.urssaf.image.sae.format.identification.service;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
 import junit.framework.Assert;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
-import fr.urssaf.image.sae.format.identification.exceptions.IdentificationRuntimeException;
 import fr.urssaf.image.sae.format.identification.exceptions.IdentifierInitialisationException;
 import fr.urssaf.image.sae.format.identification.identifiers.model.IdentificationResult;
 import fr.urssaf.image.sae.format.identification.service.impl.IdentificationServiceImpl;
-import fr.urssaf.image.sae.format.model.EtapeEtResultat;
 
 /**
  * 
@@ -34,224 +30,128 @@ public class IdentificationServiceImplTest {
    @Autowired
    private IdentificationServiceImpl identificationService;
 
-   private final File file = new File(
-         "src/test/resources/identification/PdfaValide.pdf");
-
-   private final File doc = new File(
-         "src/test/resources/identification/doc.pdf");
-   
-   private static final String MESS_EXCEPT_ERRONE = "Le message de l'exception est incorrect";
-   private static final String FMT_354 = "fmt/354";
-   private static final String PUUID_FMT_354 =   "PUUID : fmt/354";
-   private static final String MESS_ERRONE = "message erroné";
-   private static final String RESULT_ERRONE = "resultat erroné";
-   private static final String ETAPE_1 = "Etape 1 : R\u00E9cup\u00E9ration du PUUID à partir de DROID.";
-   private static final String ETAPE_2 = "Etape 2 : Comparaison du PUUID avec idFormat.";
-   private static final String PUUID_EGAL_IDFORMAT = "PUUID = IDFORMAT.";
-   
-
+   /**
+    * Cas de test : on demande l'identification fmt/354 sur un fichier PDF/A1b
+    * valide.<br>
+    * <br>
+    * Résultat attendu : l'identification a réussi.
+    */
    @Test
-   public void identifyServiceFailureIdFormatErrone()
-         throws IdentificationRuntimeException, UnknownFormatException,
-         IdentifierInitialisationException, IOException {
+   public void identifyFile_success_idOK_surFichier()
+         throws IdentifierInitialisationException, UnknownFormatException,
+         IOException {
 
-      try {
-         identificationService.identifyFile("idFormat", file);
-         Assert
-               .fail("Une exception UnknownFormatException aurait dû être levée");
+      // Récupération du fichier de test depuis les ressources
+      ClassPathResource ressource = new ClassPathResource(
+            "/identification/fmt-354.pdf");
 
-      } catch (UnknownFormatException ex) {
-         Assert.assertEquals(MESS_EXCEPT_ERRONE,
-               "Aucun format n'a été trouvé avec l'identifiant : idFormat.", ex
-                     .getMessage());
-      }
-
-   }
-
-   @Test
-   public void identifyServiceSuccessFmt354()
-         throws IdentificationRuntimeException,
-         IdentifierInitialisationException, UnknownFormatException, IOException {
-
+      // Appel de la méthode à tester
       IdentificationResult result = identificationService.identifyFile(
-            FMT_354, file);
+            "fmt/354", ressource.getFile());
 
-      EtapeEtResultat etape0 = result.getDetails().get(0);
-      EtapeEtResultat etape1 = result.getDetails().get(1);
-      Assert.assertEquals(MESS_ERRONE,
-            ETAPE_1,
-            etape0.getEtape());
-      Assert.assertEquals(RESULT_ERRONE, PUUID_FMT_354, etape0
-            .getResultat());
+      // Vérifications
+      // On vérifie uniquement que le fichier a été identifié, la partie détails
+      // dépend
+      // du bean utilisé pour faire l'identification. Cette dernière est donc
+      // testé dans
+      // la classe de test du bean en question
+      Assert.assertTrue("Le fichier aurait dû être identifié", result
+            .isIdentified());
 
-      Assert.assertEquals(MESS_ERRONE,
-            ETAPE_2, etape1.getEtape());
-      Assert.assertEquals(RESULT_ERRONE, PUUID_EGAL_IDFORMAT, etape1
-            .getResultat());
-
-      Assert.assertEquals(RESULT_ERRONE, true, result.isIdentified());
    }
 
+   /**
+    * Cas de test : on demande l'identification fmt/354 sur un flux PDF/A1b
+    * valide.<br>
+    * <br>
+    * Résultat attendu : l'identification a réussi.
+    */
    @Test
-   public void identifyServiceSuccessFmtCompatible18()
-         throws IdentificationRuntimeException,
-         IdentifierInitialisationException, UnknownFormatException, IOException {
-      try {
-         identificationService.identifyFile("fmt/18", file);
-      } catch (UnknownFormatException ex) {
-         Assert.assertEquals(MESS_EXCEPT_ERRONE,
-               "Aucun format n'a été trouvé avec l'identifiant : fmt/18.", ex
-                     .getMessage());
-      }
+   public void identifyFile_success_idOK_surFlux()
+         throws IdentifierInitialisationException, UnknownFormatException,
+         IOException {
+
+      // Récupération du fichier de test depuis les ressources
+      ClassPathResource ressource = new ClassPathResource(
+            "/identification/fmt-354.pdf");
+
+      // Appel de la méthode à tester
+      IdentificationResult result = identificationService.identifyStream(
+            "fmt/354", ressource.getInputStream());
+
+      // Vérifications
+      // On vérifie uniquement que le fichier a été identifié, la partie détails
+      // dépend
+      // du bean utilisé pour faire l'identification. Cette dernière est donc
+      // testé dans
+      // la classe de test du bean en question
+      Assert.assertTrue("Le fichier aurait dû être identifié", result
+            .isIdentified());
+
    }
 
+   /**
+    * Cas de test : on demande l'identification fmt/354 sur un fichier Word.<br>
+    * <br>
+    * Résultat attendu : l'identification échoue.
+    */
    @Test
-   public void identifyServiceSuccessFmtCompatible95()
-         throws IdentificationRuntimeException,
-         IdentifierInitialisationException, UnknownFormatException, IOException {
+   public void identifyFile_success_idKO()
+         throws IdentifierInitialisationException, UnknownFormatException,
+         IOException {
 
-      try {
-         identificationService.identifyFile("fmt/95", file);
-      } catch (UnknownFormatException ex) {
-         Assert.assertEquals(MESS_EXCEPT_ERRONE,
-               "Aucun format n'a été trouvé avec l'identifiant : fmt/95.", ex
-                     .getMessage());
-      }
-   }
+      // Récupération du fichier de test depuis les ressources
+      ClassPathResource ressource = new ClassPathResource(
+            "/identification/fmt-40.doc");
 
-   @Test
-   public void identifyFileServiceCompatibleFmt95()
-         throws IdentificationRuntimeException,
-         IdentifierInitialisationException, UnknownFormatException, IOException {
-
+      // Appel de la méthode à tester
       IdentificationResult result = identificationService.identifyFile(
-            FMT_354, doc);
+            "fmt/354", ressource.getFile());
 
-      EtapeEtResultat etape0 = result.getDetails().get(0);
-      EtapeEtResultat etape1 = result.getDetails().get(1);
-      Assert.assertEquals(MESS_ERRONE,
-            ETAPE_1,
-            etape0.getEtape());
-      Assert.assertEquals(RESULT_ERRONE, PUUID_FMT_354, etape0
-            .getResultat());
-
-      Assert.assertEquals(MESS_ERRONE,
-            ETAPE_2, etape1.getEtape());
-      Assert.assertEquals(RESULT_ERRONE, PUUID_EGAL_IDFORMAT, etape1
-            .getResultat());
-
-      Assert.assertEquals(RESULT_ERRONE, true, result.isIdentified());
+      // Vérifications
+      // On vérifie uniquement que le fichier a été identifié, la partie détails
+      // dépend
+      // du bean utilisé pour faire l'identification. Cette dernière est donc
+      // testé dans
+      // la classe de test du bean en question
+      Assert.assertFalse("Le fichier n'aurait pas dû être identifié", result
+            .isIdentified());
 
    }
 
-   /*************************************************************************************************************************/
-   /**********************************
-    * STREAM
-    * 
-    * @throws IOException
-    *            *
-    *********************************************************/
+   /**
+    * Cas de test : on demande l'identification d'un format inexistant dans le
+    * référentiel des formats.<br>
+    * <br>
+    * Résultat attendu : Levée d'une exception avec un message précis
+    */
    @Test
-   public void identifyStreamServiceFailureIdFormatErrone()
-         throws IdentificationRuntimeException, UnknownFormatException,
-         IdentifierInitialisationException, IOException {
-      InputStream inputStream = new FileInputStream(file);
+   public void identifyFile_failure_idFormatInexistant()
+         throws IdentifierInitialisationException, UnknownFormatException,
+         IOException {
+
+      // Récupération du fichier de test depuis les ressources
+      ClassPathResource ressource = new ClassPathResource(
+            "/identification/fmt-354.pdf");
+
+      // Appel de la méthode à tester
       try {
-         identificationService.identifyStream("idFormat", inputStream);
+
+         identificationService.identifyFile("fmt/Inexistant", ressource
+               .getFile());
+
+         Assert.fail("On exception aurait dû être levée.");
+
+      } catch (UnknownFormatException ex) {
+
          Assert
-               .fail("Une exception IllegalArgumentException aurait dû être levée");
+               .assertEquals(
+                     "Le message de l'exception est incorrect",
+                     "Aucun format n'a été trouvé avec l'identifiant : fmt/Inexistant.",
+                     ex.getMessage());
 
-      } catch (UnknownFormatException ex) {
-         inputStream.close();
-         Assert.assertEquals(MESS_EXCEPT_ERRONE,
-               "Aucun format n'a été trouvé avec l'identifiant : idFormat.", ex
-                     .getMessage());
-      } finally {
-         inputStream.close();
-      }
-   }
-
-   @Test
-   public void identifyStreamServiceSuccessFmt354()
-         throws IdentificationRuntimeException,
-         IdentifierInitialisationException, UnknownFormatException, IOException {
-      InputStream inputStream = null;
-      try {
-         inputStream = new FileInputStream(file);
-         IdentificationResult result = identificationService.identifyStream(
-               FMT_354, inputStream);
-
-         EtapeEtResultat etape0 = result.getDetails().get(0);
-         EtapeEtResultat etape1 = result.getDetails().get(1);
-         Assert.assertEquals(MESS_ERRONE,
-               ETAPE_1,
-               etape0.getEtape());
-         Assert.assertEquals(RESULT_ERRONE, PUUID_FMT_354, etape0
-               .getResultat());
-
-         Assert.assertEquals(MESS_ERRONE,
-               ETAPE_2, etape1
-                     .getEtape());
-         Assert.assertEquals(RESULT_ERRONE, PUUID_EGAL_IDFORMAT, etape1
-               .getResultat());
-
-         Assert.assertEquals(RESULT_ERRONE, true, result.isIdentified());
-      } finally {
-         if (inputStream != null) {
-            inputStream.close();
-         }
       }
 
    }
 
-   @Test
-   public void identifyStreamServiceFailureFmtCompatible18()
-         throws IdentificationRuntimeException,
-         IdentifierInitialisationException, UnknownFormatException, IOException {
-
-      InputStream inputStream = new FileInputStream(file);
-      try {
-         identificationService.identifyStream("fmt/18", inputStream);
-
-      } catch (UnknownFormatException ex) {
-         Assert.assertEquals(MESS_EXCEPT_ERRONE,
-               "Aucun format n'a été trouvé avec l'identifiant : fmt/18.", ex
-                     .getMessage());
-      } finally {
-         inputStream.close();
-      }
-   }
-
-   @Test
-   public void identifyStreamServiceCompatibleFmt95()
-         throws IdentificationRuntimeException,
-         IdentifierInitialisationException, UnknownFormatException, IOException {
-
-      InputStream inputStream = new FileInputStream(doc);
-      
-      try {
-         IdentificationResult result = identificationService.identifyStream(
-               FMT_354, inputStream);
-   
-         EtapeEtResultat etape0 = result.getDetails().get(0);
-         EtapeEtResultat etape1 = result.getDetails().get(1);
-         Assert.assertEquals(MESS_ERRONE,
-               ETAPE_1,
-               etape0.getEtape());
-         Assert.assertEquals(RESULT_ERRONE, PUUID_FMT_354, etape0
-               .getResultat());
-   
-         Assert.assertEquals(MESS_ERRONE,
-               ETAPE_2, etape1.getEtape());
-         Assert.assertEquals(RESULT_ERRONE, PUUID_EGAL_IDFORMAT, etape1
-               .getResultat());
-   
-         Assert.assertEquals(RESULT_ERRONE, true, result.isIdentified());
-      } finally {
-         if (inputStream != null) {
-            inputStream.close();
-         }
-      }
-
-   }
 }

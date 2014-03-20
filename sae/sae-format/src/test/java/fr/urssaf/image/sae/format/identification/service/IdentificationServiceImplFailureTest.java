@@ -1,6 +1,5 @@
 package fr.urssaf.image.sae.format.identification.service;
 
-import java.io.File;
 import java.io.IOException;
 
 import junit.framework.Assert;
@@ -8,6 +7,7 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -30,30 +30,28 @@ public class IdentificationServiceImplFailureTest {
    @Autowired
    private IdentificationServiceImpl identificationService;
 
-   private final File file = new File(
-         "src/test/resources/identification/PdfaValide.pdf");
-
-   
-   private static final String MESS_EXCEPT_ERRONE = "Le message de l'exception est incorrect";
-   private static final String FMT_354 = "fmt/354";
-   
-   
    @Test
    public void identifyServiceFailureBeanIntrouvable()
-         throws IdentificationRuntimeException, UnknownFormatException, IOException {
+         throws IdentificationRuntimeException, UnknownFormatException,
+         IOException {
+
+      // Récupération du fichier de test depuis les ressources
+      ClassPathResource ressource = new ClassPathResource(
+            "/identification/fmt-354.pdf");
 
       try {
-         identificationService.identifyFile(FMT_354, file);
+         identificationService.identifyFile("fmt/354", ressource.getFile());
          Assert
                .fail("Une exception IdentifierInitialisationException aurait dû être levée");
 
       } catch (IdentifierInitialisationException ex) {
-         Assert.assertEquals(MESS_EXCEPT_ERRONE,
-               "Il n'est pas possible de récupérer une instance de l'identificateur.", ex
-                     .getMessage());
+         Assert
+               .assertEquals(
+                     "Le message de l'exception est incorrect",
+                     "Il n'est pas possible de récupérer une instance de l'identificateur.",
+                     ex.getMessage());
       }
 
    }
 
-   
 }
