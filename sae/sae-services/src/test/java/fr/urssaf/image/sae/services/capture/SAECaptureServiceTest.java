@@ -92,8 +92,6 @@ public class SAECaptureServiceTest {
    private static final Logger LOG = LoggerFactory
          .getLogger(SAECaptureServiceTest.class);
 
-   private static final String UNKNOWN_ERROR = "erreur de type UnknownFormatException attendue";
-
    @Autowired
    private SAECaptureService service;
 
@@ -264,7 +262,15 @@ public class SAECaptureServiceTest {
                   .loadDocumentFile(doc)));
    }
 
+   /**
+    * Cas de test : On tente un archivage unitaire en passant dans la métadonnée
+    * FormatFichier un identifiant de format qui n'existe pas dans le
+    * référentiel des formats.<br>
+    * Résultat attendu : A DEFINIR (Redmine 5391)
+    * 
+    */
    @Test
+   @Ignore("A réactiver lors du traitement du Redmine 5391")
    public void captureErreurFormat() throws IOException {
 
       EcdeTestDocument ecde = ecdeTestTools
@@ -305,55 +311,88 @@ public class SAECaptureServiceTest {
 
       try {
          uuid = service.capture(metadatas, urlEcdeDocument);
-         Assert.fail(UNKNOWN_ERROR);
+         Assert
+               .fail("On attendait une exception UnknownFormatException alors que l'archivage a fonctionné");
 
       } catch (SAECaptureServiceEx e) {
-         Assert.fail(UNKNOWN_ERROR);
+         Assert
+               .fail("On attendait une exception UnknownFormatException alors qu'on a obtenu : "
+                     + e.toString());
 
       } catch (ReferentialRndException e) {
-         Assert.fail(UNKNOWN_ERROR);
+         Assert
+               .fail("On attendait une exception UnknownFormatException alors qu'on a obtenu : "
+                     + e.toString());
 
       } catch (UnknownCodeRndEx e) {
-         Assert.fail(UNKNOWN_ERROR);
+         Assert
+               .fail("On attendait une exception UnknownFormatException alors qu'on a obtenu : "
+                     + e.toString());
 
       } catch (RequiredStorageMetadataEx e) {
-         Assert.fail(UNKNOWN_ERROR);
+         Assert
+               .fail("On attendait une exception UnknownFormatException alors qu'on a obtenu : "
+                     + e.toString());
 
       } catch (InvalidValueTypeAndFormatMetadataEx e) {
-         Assert.fail(UNKNOWN_ERROR);
+         Assert
+               .fail("On attendait une exception UnknownFormatException alors qu'on a obtenu : "
+                     + e.toString());
 
       } catch (UnknownMetadataEx e) {
-         Assert.fail(UNKNOWN_ERROR);
+         Assert
+               .fail("On attendait une exception UnknownFormatException alors qu'on a obtenu : "
+                     + e.toString());
 
       } catch (DuplicatedMetadataEx e) {
-         Assert.fail(UNKNOWN_ERROR);
+         Assert
+               .fail("On attendait une exception UnknownFormatException alors qu'on a obtenu : "
+                     + e.toString());
 
       } catch (NotSpecifiableMetadataEx e) {
-         Assert.fail(UNKNOWN_ERROR);
+         Assert
+               .fail("On attendait une exception UnknownFormatException alors qu'on a obtenu : "
+                     + e.toString());
 
       } catch (EmptyDocumentEx e) {
-         Assert.fail(UNKNOWN_ERROR);
+         Assert
+               .fail("On attendait une exception UnknownFormatException alors qu'on a obtenu : "
+                     + e.toString());
 
       } catch (RequiredArchivableMetadataEx e) {
-         Assert.fail(UNKNOWN_ERROR);
+         Assert
+               .fail("On attendait une exception UnknownFormatException alors qu'on a obtenu : "
+                     + e.toString());
 
       } catch (NotArchivableMetadataEx e) {
-         Assert.fail(UNKNOWN_ERROR);
+         Assert
+               .fail("On attendait une exception UnknownFormatException alors qu'on a obtenu : "
+                     + e.toString());
 
       } catch (UnknownHashCodeEx e) {
-         Assert.fail(UNKNOWN_ERROR);
+         Assert
+               .fail("On attendait une exception UnknownFormatException alors qu'on a obtenu : "
+                     + e.toString());
 
       } catch (CaptureBadEcdeUrlEx e) {
-         Assert.fail(UNKNOWN_ERROR);
+         Assert
+               .fail("On attendait une exception UnknownFormatException alors qu'on a obtenu : "
+                     + e.toString());
 
       } catch (CaptureEcdeUrlFileNotFoundEx e) {
-         Assert.fail(UNKNOWN_ERROR);
+         Assert
+               .fail("On attendait une exception UnknownFormatException alors qu'on a obtenu : "
+                     + e.toString());
 
       } catch (MetadataValueNotInDictionaryEx e) {
-         Assert.fail(UNKNOWN_ERROR);
+         Assert
+               .fail("On attendait une exception UnknownFormatException alors qu'on a obtenu : "
+                     + e.toString());
 
       } catch (ValidationExceptionInvalidFile e) {
-         Assert.fail(UNKNOWN_ERROR);
+         Assert
+               .fail("On attendait une exception UnknownFormatException alors qu'on a obtenu : "
+                     + e.toString());
 
       } catch (UnknownFormatException e) {
          Assert
