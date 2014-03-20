@@ -174,7 +174,7 @@ public class IdentificationServiceImpl implements IdentificationService {
       // référentiel des formats
       LOGGER
             .debug(
-                  "{} - Interrogation du référentiel des formats pour récupérer la défintion du format {}",
+                  "{} - Interrogation du référentiel des formats pour récupérer la définition du format {}",
                   prefixeTrc, idFormat);
       FormatFichier formatFichier;
       try {

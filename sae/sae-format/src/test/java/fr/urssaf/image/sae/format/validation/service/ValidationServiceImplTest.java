@@ -1,16 +1,14 @@
 package fr.urssaf.image.sae.format.validation.service;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 
 import junit.framework.Assert;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -34,139 +32,212 @@ public class ValidationServiceImplTest {
    @Autowired
    private ValidationServiceImpl validationService;
 
-   private final File file = new File(
-         "src/test/resources/validation/PdfaValide.pdf");
-   private final File docErrone = new File(
-         "src/test/resources/validation/Test.word");
-   private final File doc = new File("src/test/resources/validation/Test.doc");
-   private static final String RESULTAT_ERRONE = "résultat erroné";
-   private static final String MESSAGE_ERRONE = "Message erroné";
-   private static final String FMT354 = "fmt/354";
-
+   /**
+    * Cas de test : on demande la validation fmt/354 sur un fichier PDF/A1b
+    * valide.<br>
+    * <br>
+    * Résultat attendu : la validation a réussi.
+    */
    @Test
-   public void validationFileSuccess() throws FileNotFoundException,
-         UnknownFormatException, ValidatorInitialisationException,
-         ValidatorUnhandledException {
+   public void validateFile_success_FichierValide()
+         throws UnknownFormatException, ValidatorInitialisationException,
+         ValidatorUnhandledException, IOException {
 
-      ValidationResult result = validationService.validateFile(FMT354, file);
+      boolean avecFile = Boolean.TRUE;
+      validateFileOuStream_success_FichierValide(avecFile);
 
+   }
+
+   /**
+    * Cas de test : on demande la validation fmt/354 sur un flux PDF/A1b valide.<br>
+    * <br>
+    * Résultat attendu : la validation a réussi.
+    */
+   @Test
+   public void validateStream_success_FichierValide()
+         throws UnknownFormatException, ValidatorInitialisationException,
+         ValidatorUnhandledException, IOException {
+
+      boolean avecFile = Boolean.FALSE;
+      validateFileOuStream_success_FichierValide(avecFile);
+
+   }
+
+   private void validateFileOuStream_success_FichierValide(boolean avecFile)
+         throws UnknownFormatException, ValidatorInitialisationException,
+         ValidatorUnhandledException, IOException {
+
+      // Récupération du fichier de test depuis les ressources
+      ClassPathResource ressource = new ClassPathResource(
+            "/validation/PdfaValide.pdf");
+
+      // Appel de la méthode à tester
+      ValidationResult result;
+      if (avecFile) {
+         result = validationService
+               .validateFile("fmt/354", ressource.getFile());
+      } else {
+         result = validationService.validateStream("fmt/354", ressource
+               .getInputStream());
+      }
+
+      // Vérifications
       Assert.assertNotNull(result);
-
-      Assert.assertEquals(RESULTAT_ERRONE, true, result.isValid());
+      Assert.assertTrue("Le fichier aurait dû être validé", result.isValid());
       Assert.assertNull(result.getDetails());
+
    }
 
+   /**
+    * Cas de test : on demande la validation fmt/354 sur un fichier PDF/A1b non
+    * valide.<br>
+    * <br>
+    * Résultat attendu : Le fichier n'est pas validé.
+    */
    @Test
-   public void validateFileFailureDocErrone() throws UnknownFormatException,
-         ValidatorInitialisationException, ValidatorUnhandledException {
-      try {
-         validationService.validateFile(FMT354, docErrone);
-         Assert.fail("exception attendue");
+   public void validateFile_succes_FichierNonValide()
+         throws UnknownFormatException, ValidatorInitialisationException,
+         ValidatorUnhandledException, IOException {
 
-      } catch (IllegalArgumentException except) {
-         Assert.assertEquals(MESSAGE_ERRONE,
-               "Le fichier passé en paramètre est introuvable.", except
-                     .getMessage());
+      boolean avecFile = Boolean.TRUE;
+      validateFileOuFlux_succes_FichierNonValide(avecFile);
+
+   }
+
+   /**
+    * Cas de test : on demande la validation fmt/354 sur un flux PDF/A1b non
+    * valide.<br>
+    * <br>
+    * Résultat attendu : Le fichier n'est pas validé.
+    */
+   @Test
+   public void validateStream_succes_FichierNonValide()
+         throws UnknownFormatException, ValidatorInitialisationException,
+         ValidatorUnhandledException, IOException {
+
+      boolean avecFile = Boolean.FALSE;
+      validateFileOuFlux_succes_FichierNonValide(avecFile);
+
+   }
+
+   private void validateFileOuFlux_succes_FichierNonValide(boolean avecFile)
+         throws UnknownFormatException, ValidatorInitialisationException,
+         ValidatorUnhandledException, IOException {
+
+      // Récupération du fichier de test depuis les ressources
+      ClassPathResource ressource = new ClassPathResource(
+            "/validation/Test.doc");
+
+      // Appel de la méthode à tester
+      ValidationResult result;
+      if (avecFile) {
+         result = validationService
+               .validateFile("fmt/354", ressource.getFile());
+      } else {
+         result = validationService.validateStream("fmt/354", ressource
+               .getInputStream());
       }
-   }
 
-   @Test
-   public void validateFileFailure() throws FileNotFoundException,
-         UnknownFormatException, ValidatorInitialisationException,
-         ValidatorUnhandledException {
-
-      ValidationResult result = validationService.validateFile(FMT354, doc);
-
+      // Vérifications
       Assert.assertNotNull(result);
+      Assert.assertFalse("Le fichier n'aurait pas dû être validé", result
+            .isValid());
+      Assert
+            .assertTrue(
+                  "On aurait dû avoir des traces dans les détails de l'échec de validation",
+                  result.getDetails().size() > 0);
 
-      Assert.assertEquals(RESULTAT_ERRONE, false, result.isValid());
-      Assert.assertEquals(true, result.getDetails().size() > 0);
    }
 
+   /**
+    * Cas de test : on demande la validation fmt/354 sur un fichier qui n'existe
+    * pas<br>
+    * <br>
+    * Résultat attendu : Levée d'une exception avec un message précis
+    */
    @Test
-   public void validationFileFormatInexistant() throws FileNotFoundException,
-         ValidatorInitialisationException, ValidatorUnhandledException {
-
-      try {
-         validationService.validateFile(FMT354, doc);
-      } catch (UnknownFormatException except) {
-         Assert.assertEquals(MESSAGE_ERRONE,
-               "Aucun format n'a été trouvé avec l'identifiant : 34", except
-                     .getMessage());
-      }
-   }
-
-   // @Ignore
-   // @Test
-   // public void validateFileValidatorIntrouvable() throws
-   // FileNotFoundException,
-   // FormatValidationException {
-   // // un test avec une erreur dans le validator à bien été fait. -> faire le
-   // // test et modifier le dataSet
-   // // try {
-   // // pdfaValidator.validateFile(file);
-   // // } catch (ValidatorInitialisationException except) {
-   // // Assert.assertEquals(MESSAGE_ERRONE,
-   // // "Impossible d'initialiser le validateur.", except.getMessage());
-   // // }
-   // }
-
-   /******************************************************/
-   /******************************************************/
-   /*** STREAM ********************************************/
-   /******************************************************/
-   @Test
-   public void validationStreamSuccess() throws UnknownFormatException,
-         ValidatorInitialisationException, IOException,
-         ValidatorUnhandledException {
-
-      InputStream inputStream = new FileInputStream(file);
-      ValidationResult result = validationService.validateStream(FMT354,
-            inputStream);
-
-      Assert.assertNotNull(result);
-
-      Assert.assertEquals(RESULTAT_ERRONE, true, result.isValid());
-      Assert.assertNull(result.getDetails());
-   }
-
-   @Test(expected = FileNotFoundException.class)
-   public void validateStreamFailureDocErrone() throws UnknownFormatException,
-         ValidatorInitialisationException, IOException,
-         ValidatorUnhandledException {
-      InputStream inputStream = null;
-      inputStream = new FileInputStream(docErrone);
-      validationService.validateStream(FMT354, inputStream);
-   }
-
-   @Test
-   public void validateStreamFailure() throws UnknownFormatException,
-         ValidatorInitialisationException, IOException,
-         ValidatorUnhandledException {
-
-      InputStream inputStream = new FileInputStream(doc);
-      ValidationResult result = validationService.validateStream(FMT354,
-            inputStream);
-
-      Assert.assertNotNull(result);
-
-      Assert.assertEquals(RESULTAT_ERRONE, false, result.isValid());
-      Assert.assertEquals(true, result.getDetails().size() > 0);
-   }
-
-   @Test
-   public void validationStreamFormatInexistant()
-         throws ValidatorInitialisationException, IOException,
+   public void validateFile_failure_FichierInexistant()
+         throws UnknownFormatException, ValidatorInitialisationException,
          ValidatorUnhandledException {
 
       try {
-         InputStream inputStream = new FileInputStream(doc);
-         validationService.validateStream(FMT354, inputStream);
-      } catch (UnknownFormatException except) {
-         Assert.assertEquals(MESSAGE_ERRONE,
-               "Aucun format n'a été trouvé avec l'identifiant : 34", except
+
+         validationService.validateFile("fmt/354",
+               new File("fichierInexistant"));
+
+         Assert.fail("Une exception aurait dû être levée.");
+
+      } catch (IllegalArgumentException ex) {
+
+         Assert.assertEquals("Le message de l'exception est incorrect",
+               "Le fichier passé en paramètre est introuvable.", ex
                      .getMessage());
+
       }
+   }
+
+   /**
+    * Cas de test : on demande la validation d'un fichier par rapport à un
+    * format qui n'existe pas dans le référentiel des formats<br>
+    * <br>
+    * Résultat attendu : Levée d'une exception avec un message spécifique
+    */
+   @Test
+   public void validateFile_failure_FormatInexistantDansReferentielFormats()
+         throws ValidatorInitialisationException, ValidatorUnhandledException,
+         IOException {
+
+      boolean avecFile = Boolean.TRUE;
+      validateFileOuStream_failure_FormatInexistantDansReferentielFormats(avecFile);
+
+   }
+
+   /**
+    * Cas de test : on demande la validation d'un flux par rapport à un format
+    * qui n'existe pas dans le référentiel des formats<br>
+    * <br>
+    * Résultat attendu : Levée d'une exception avec un message spécifique
+    */
+   @Test
+   public void validateStream_failure_FormatInexistantDansReferentielFormats()
+         throws ValidatorInitialisationException, ValidatorUnhandledException,
+         IOException {
+
+      boolean avecFile = Boolean.FALSE;
+      validateFileOuStream_failure_FormatInexistantDansReferentielFormats(avecFile);
+
+   }
+
+   private void validateFileOuStream_failure_FormatInexistantDansReferentielFormats(
+         boolean avecFile) throws ValidatorInitialisationException,
+         ValidatorUnhandledException, IOException {
+
+      // Récupération du fichier de test depuis les ressources
+      ClassPathResource ressource = new ClassPathResource(
+            "/validation/PdfaValide.pdf");
+
+      try {
+
+         if (avecFile) {
+            validationService.validateFile("fmt/Inexistant", ressource
+                  .getFile());
+         } else {
+            validationService.validateStream("fmt/Inexistant", ressource
+                  .getInputStream());
+         }
+
+         Assert.fail("Une exception aurait dû être levée.");
+
+      } catch (UnknownFormatException ex) {
+
+         Assert
+               .assertEquals(
+                     "Le message de l'exception est incorrect",
+                     "Aucun format n'a été trouvé avec l'identifiant : fmt/Inexistant.",
+                     ex.getMessage());
+
+      }
+
    }
 
 }

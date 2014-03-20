@@ -73,6 +73,8 @@ public final class PdfaIdentifierImpl implements Identifier {
 
       // Appel de la sous-méthode qui ne travaille que sur le fmt/354
       IdentificationResult result = identifyFile(fichier);
+      LOGGER.debug("{} - Résultat de l'identification: {}", prefixeTrc, result
+            .isIdentified());
 
       // Traces debug - sortie méthode
       LOGGER.debug(LOG_FIN, prefixeTrc);

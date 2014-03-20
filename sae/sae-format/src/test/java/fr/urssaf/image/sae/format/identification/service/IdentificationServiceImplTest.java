@@ -140,7 +140,7 @@ public class IdentificationServiceImplTest {
          identificationService.identifyFile("fmt/Inexistant", ressource
                .getFile());
 
-         Assert.fail("On exception aurait dû être levée.");
+         Assert.fail("Une exception aurait dû être levée.");
 
       } catch (UnknownFormatException ex) {
 
