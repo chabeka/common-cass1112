@@ -14,6 +14,7 @@ public class IdentificationResult {
 
    private boolean identified;
    private List<EtapeEtResultat> listEtapEtResultat;
+   private String idFormatReconnu;
 
    /**
     * Méthode permettant de savoir si le fichier ou flux a été correctement
@@ -58,4 +59,22 @@ public class IdentificationResult {
       this.listEtapEtResultat = listEtapEtResultat;
    }
 
+   /**
+    * Méthode permettant d'avoir l'identifiant du format reconnu.
+    * 
+    * @return String : identifiant pronom du format reconnu
+    */
+   public final String getIdFormatReconnu() {
+      return idFormatReconnu;
+   }
+
+   /**
+    * Méthode permettant d'avoir l'identifiant du format reconnu.
+    * 
+    * @param idFormatReconnu
+    *           identifiant pronom du format reconnu
+    */
+   public final void setIdFormatReconnu(String idFormatReconnu) {
+      this.idFormatReconnu = idFormatReconnu;
+   }
 }

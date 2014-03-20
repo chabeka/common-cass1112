@@ -120,6 +120,7 @@ public final class PdfaIdentifierImpl implements Identifier {
 
          // Résultat de l'identification => OK
          identificationResult.setIdentified(Boolean.TRUE);
+         identificationResult.setIdFormatReconnu(puuid);
 
       } else {
 
@@ -177,6 +178,7 @@ public final class PdfaIdentifierImpl implements Identifier {
                                  .getMessage("identify.file.puuid.diff.id.format.mais.compatible")));
 
                identificationResult.setIdentified(Boolean.TRUE);
+               identificationResult.setIdFormatReconnu(puuid);
 
             } else {
 
@@ -195,6 +197,7 @@ public final class PdfaIdentifierImpl implements Identifier {
                                  .getMessage("identify.file.puuid.diff.id.format.non.compatible")));
 
                identificationResult.setIdentified(Boolean.FALSE);
+               identificationResult.setIdFormatReconnu(puuid);
 
             }
 
