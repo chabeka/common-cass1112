@@ -105,105 +105,121 @@ public final class PdfaIdentifierImpl implements Identifier {
       LOGGER.debug("{} - Identifiant PRONOM détecté par DROID : {}",
             prefixeTrc, puuid);
       listeEtapeResult.add(new EtapeEtResultat(SaeFormatMessageHandler
-            .getMessage("identify.file.etape1"), PUUID.concat(puuid)));
+            .getMessage("identify.file.etape1"), String.format("%s%s", PUUID,
+            puuid)));
 
-      // Etape 2: Comparaison du résultat de DROID avec "fmt/354"
-      if (StringUtils.equalsIgnoreCase(Constantes.FMT_354, puuid)) {
+      // On poursuit l'algo uniquement si Droid a réussi à identifier le fichier
+      if (StringUtils.isBlank(puuid)) {
 
-         // On a une égalité entre le format détecté par DROID et le format
-         // en entrée de la méthode
-         LOGGER
-               .debug(
-                     "{} - L'identifiant PRONOM détecté par DROID ({}) correspond directement à {}",
-                     new Object[] { prefixeTrc, puuid, Constantes.FMT_354 });
-         listeEtapeResult.add(new EtapeEtResultat(SaeFormatMessageHandler
-               .getMessage("identify.file.etape2"), PUUID_EGAL_IDFORMAT));
-
-         // Résultat de l'identification => OK
-         identificationResult.setIdentified(Boolean.TRUE);
-         identificationResult.setIdFormatReconnu(puuid);
+         // Droid n'a pas réussi à identifier le fichier => l'identification
+         // n'est pas valide
+         LOGGER.debug("{} - Droid n'a pas réussi à identifier le fichier",
+               prefixeTrc);
+         identificationResult.setIdentified(Boolean.FALSE);
 
       } else {
 
-         // Le format détecté par DROID est différent du format d'entrée de
-         // la méthode. On va regarder s'ils sont compatibles.
-         LOGGER
-               .debug(
-                     "{} - L'identifiant PRONOM détecté par DROID ({}) n'est pas identique à {}. On cherche dans les formats compatibles.",
-                     new Object[] { prefixeTrc, puuid, Constantes.FMT_354 });
+         // Etape 2: Comparaison du résultat de DROID avec "fmt/354"
+         if (StringUtils.equalsIgnoreCase(Constantes.FMT_354, puuid)) {
 
-         // Récupération de tous les types compatibles à partir de l'idFormat
-         List<String> compatibles = saeFormatCompatible
-               .getFormatsCompatibles(Constantes.FMT_354);
-
-         // Contrôle technique: vérifie que la liste des formats compatibles
-         // n'est pas vide
-         if (CollectionUtils.isEmpty(compatibles)) {
-
-            // Erreur technique, on est censé avoir paramétré des formats
-            // compatibles
-
+            // On a une égalité entre le format détecté par DROID et le format
+            // en entrée de la méthode
             LOGGER
                   .debug(
-                        "{} - La liste des identifiants de formats compatibles est vide",
-                        prefixeTrc);
+                        "{} - L'identifiant PRONOM détecté par DROID ({}) correspond directement à {}",
+                        new Object[] { prefixeTrc, puuid, Constantes.FMT_354 });
+            listeEtapeResult.add(new EtapeEtResultat(SaeFormatMessageHandler
+                  .getMessage("identify.file.etape2"), PUUID_EGAL_IDFORMAT));
 
-            throw new IdentificationRuntimeException(
-                  "Erreur technique: la liste des formats compatibles au fmt/354 est vide.");
+            // Résultat de l'identification => OK
+            identificationResult.setIdentified(Boolean.TRUE);
+            identificationResult.setIdFormatReconnu(puuid);
 
          } else {
 
-            // Il y a une liste de formats compatibles
+            // Le format détecté par DROID est différent du format d'entrée de
+            // la méthode. On va regarder s'ils sont compatibles.
+            LOGGER
+                  .debug(
+                        "{} - L'identifiant PRONOM détecté par DROID ({}) n'est pas identique à {}. On cherche dans les formats compatibles.",
+                        new Object[] { prefixeTrc, puuid, Constantes.FMT_354 });
 
-            LOGGER.debug(
-                  "{} - Liste des identifiants de format compatibles : {}",
-                  prefixeTrc, compatibles);
+            // Récupération de tous les types compatibles à partir de l'idFormat
+            List<String> compatibles = saeFormatCompatible
+                  .getFormatsCompatibles(Constantes.FMT_354);
 
-            // Recherche du format détecté par Droid dans la liste des formats
-            // comptabiles
-            boolean compatible = compatibles.contains(puuid);
-            if (compatible) {
+            // Contrôle technique: vérifie que la liste des formats compatibles
+            // n'est pas vide
+            if (CollectionUtils.isEmpty(compatibles)) {
 
-               // Le format détecté par Droid est compatible
+               // Erreur technique, on est censé avoir paramétré des formats
+               // compatibles
 
                LOGGER
                      .debug(
-                           "{} - L'identifiant de format détecté par DROID ({}) fait partie de la liste des identifiants compatibles avec {}",
-                           new Object[] { prefixeTrc, puuid, Constantes.FMT_354 });
+                           "{} - La liste des identifiants de formats compatibles est vide",
+                           prefixeTrc);
 
-               listeEtapeResult
-                     .add(new EtapeEtResultat(
-                           SaeFormatMessageHandler
-                                 .getMessage("identify.file.etape2"),
-                           SaeFormatMessageHandler
-                                 .getMessage("identify.file.puuid.diff.id.format.mais.compatible")));
-
-               identificationResult.setIdentified(Boolean.TRUE);
-               identificationResult.setIdFormatReconnu(puuid);
+               throw new IdentificationRuntimeException(
+                     "Erreur technique: la liste des formats compatibles au fmt/354 est vide.");
 
             } else {
 
-               // Le format détecté par Droid n'est pas compatible
+               // Il y a une liste de formats compatibles
 
-               LOGGER
-                     .debug(
-                           "{} - L'identifiant de format détecté par DROID ({}) ne fait pas partie de la liste des identifiants compatibles avec {}",
-                           new Object[] { prefixeTrc, puuid, Constantes.FMT_354 });
+               LOGGER.debug(
+                     "{} - Liste des identifiants de format compatibles : {}",
+                     prefixeTrc, compatibles);
 
-               listeEtapeResult
-                     .add(new EtapeEtResultat(
-                           SaeFormatMessageHandler
-                                 .getMessage("identify.file.etape2"),
-                           SaeFormatMessageHandler
-                                 .getMessage("identify.file.puuid.diff.id.format.non.compatible")));
+               // Recherche du format détecté par Droid dans la liste des
+               // formats
+               // comptabiles
+               boolean compatible = compatibles.contains(puuid);
+               if (compatible) {
 
-               identificationResult.setIdentified(Boolean.FALSE);
-               identificationResult.setIdFormatReconnu(puuid);
+                  // Le format détecté par Droid est compatible
+
+                  LOGGER
+                        .debug(
+                              "{} - L'identifiant de format détecté par DROID ({}) fait partie de la liste des identifiants compatibles avec {}",
+                              new Object[] { prefixeTrc, puuid,
+                                    Constantes.FMT_354 });
+
+                  listeEtapeResult
+                        .add(new EtapeEtResultat(
+                              SaeFormatMessageHandler
+                                    .getMessage("identify.file.etape2"),
+                              SaeFormatMessageHandler
+                                    .getMessage("identify.file.puuid.diff.id.format.mais.compatible")));
+
+                  identificationResult.setIdentified(Boolean.TRUE);
+                  identificationResult.setIdFormatReconnu(puuid);
+
+               } else {
+
+                  // Le format détecté par Droid n'est pas compatible
+
+                  LOGGER
+                        .debug(
+                              "{} - L'identifiant de format détecté par DROID ({}) ne fait pas partie de la liste des identifiants compatibles avec {}",
+                              new Object[] { prefixeTrc, puuid,
+                                    Constantes.FMT_354 });
+
+                  listeEtapeResult
+                        .add(new EtapeEtResultat(
+                              SaeFormatMessageHandler
+                                    .getMessage("identify.file.etape2"),
+                              SaeFormatMessageHandler
+                                    .getMessage("identify.file.puuid.diff.id.format.non.compatible")));
+
+                  identificationResult.setIdentified(Boolean.FALSE);
+                  identificationResult.setIdFormatReconnu(puuid);
+
+               }
 
             }
 
          }
-
       }
 
       // Renvoie le résultat de l'identification

@@ -712,6 +712,101 @@ public class SAEControlesCaptureFormatSupportTest {
    }
 
    /**
+    * Cas de test : Identification Monitor d'un PDF/A 1b non valide avec un
+    * chemin de fichier<br>
+    * Résultat attendu : aucun erreur de la méthode checkFormat
+    */
+   @Test
+   public final void checkFormat_success_PdfIdentMonitorSurCheminFichier()
+         throws UnknownFormatException, ValidationExceptionInvalidFile {
+
+      // Construit l'objet Document avec le minimum requis pour le test
+      SAEDocument saeDocument = buildSaeDocument();
+      ajouteMeta(saeDocument, "FormatFichier", "fmt/354");
+      definitCheminFichierDansDocument(saeDocument,
+            "controleFormat/document_word.doc");
+
+      // Construction du profil de contrôle
+      List<FormatControlProfil> listControlProfil = new ArrayList<FormatControlProfil>();
+      boolean avecIdent = Boolean.TRUE;
+      boolean avecValid = Boolean.FALSE;
+      boolean modeStrict = Boolean.FALSE;
+      ajoutProfilPdf(listControlProfil, avecIdent, avecValid, modeStrict);
+
+      // Appel de la méthode à tester
+      ControleFormatSucces resultatControle = controleFormatSupport
+            .checkFormat(saeDocument, listControlProfil);
+
+      // Vérification du résultat attendu
+      Assert
+            .assertEquals(
+                  "L'identifiant du format du profil de contrôle à appliquer n'est pas juste",
+                  "fmt/354", resultatControle.getIdFormatDuProfilControle());
+      Assert.assertTrue("L'identification devrait être activée",
+            resultatControle.isIdentificationActivee());
+      Assert.assertTrue("L'identification aurait dû être réalisée",
+            resultatControle.isIdentificationRealisee());
+      Assert.assertTrue("L'identification aurait dû échoué en mode monitor",
+            resultatControle.isIdentificationEchecMonitor());
+      Assert.assertFalse("La validation ne devrait pas être activée",
+            resultatControle.isValidationActivee());
+      Assert.assertFalse("La validation n'aurait pas dû être réalisée",
+            resultatControle.isValidationRealisee());
+      Assert.assertFalse(
+            "La validation n'aurait pas dû échoué en mode monitor",
+            resultatControle.isValidationEchecMonitor());
+      Assert.assertFalse(resultatControle.isSurFlux());
+
+   }
+
+   /**
+    * Cas de test : Validation Monitor d'un PDF/A 1b non valide avec un chemin
+    * de fichier<br>
+    * Résultat attendu : aucun erreur de la méthode checkFormat
+    */
+   @Test
+   public final void checkFormat_success_PdfValidMonitorSurCheminFichier()
+         throws UnknownFormatException, ValidationExceptionInvalidFile {
+
+      // Construit l'objet Document avec le minimum requis pour le test
+      SAEDocument saeDocument = buildSaeDocument();
+      ajouteMeta(saeDocument, "FormatFichier", "fmt/354");
+      definitCheminFichierDansDocument(saeDocument,
+            "controleFormat/document_word.doc");
+
+      // Construction du profil de contrôle
+      List<FormatControlProfil> listControlProfil = new ArrayList<FormatControlProfil>();
+      boolean avecIdent = Boolean.FALSE;
+      boolean avecValid = Boolean.TRUE;
+      boolean modeStrict = Boolean.FALSE;
+      ajoutProfilPdf(listControlProfil, avecIdent, avecValid, modeStrict);
+
+      // Appel de la méthode à tester
+      ControleFormatSucces resultatControle = controleFormatSupport
+            .checkFormat(saeDocument, listControlProfil);
+
+      // Vérification du résultat attendu
+      Assert
+            .assertEquals(
+                  "L'identifiant du format du profil de contrôle à appliquer n'est pas juste",
+                  "fmt/354", resultatControle.getIdFormatDuProfilControle());
+      Assert.assertFalse("L'identification ne devrait pas être activée",
+            resultatControle.isIdentificationActivee());
+      Assert.assertFalse("L'identification n'aurait pas dû être réalisée",
+            resultatControle.isIdentificationRealisee());
+      Assert.assertFalse(
+            "L'identification n'aurait pas dû échoué en mode monitor",
+            resultatControle.isIdentificationEchecMonitor());
+      Assert.assertTrue("La validation devrait être activée", resultatControle
+            .isValidationActivee());
+      Assert.assertTrue("La validation aurait dû être réalisée",
+            resultatControle.isValidationRealisee());
+      Assert.assertTrue("La validation aurait dû échoué en mode monitor",
+            resultatControle.isValidationEchecMonitor());
+
+   }
+
+   /**
     * Cas de test : Identification et validation Monitor d'un PDF/A 1b non
     * valide avec un chemin de fichier<br>
     * Résultat attendu : aucun erreur de la méthode checkFormat
@@ -726,8 +821,7 @@ public class SAEControlesCaptureFormatSupportTest {
       definitCheminFichierDansDocument(saeDocument,
             "controleFormat/document_word.doc");
 
-      // Construit une liste avec 1 profil d'identification et de validation
-      // monitor du PDF/A 1b
+      // Construction du profil de contrôle
       List<FormatControlProfil> listControlProfil = new ArrayList<FormatControlProfil>();
       boolean avecIdent = Boolean.TRUE;
       boolean avecValid = Boolean.TRUE;
@@ -756,6 +850,149 @@ public class SAEControlesCaptureFormatSupportTest {
       Assert.assertTrue("La validation aurait dû échoué en mode monitor",
             resultatControle.isValidationEchecMonitor());
       Assert.assertFalse(resultatControle.isSurFlux());
+
+   }
+
+   /**
+    * Cas de test : Identification Monitor d'un PDF/A 1b non identifiable avec
+    * un chemin de fichier<br>
+    * Résultat attendu : aucun erreur de la méthode checkFormat
+    */
+   @Test
+   public final void checkFormat_success_PdfNonIdentifiable_IdentMonitorSurCheminFichier()
+         throws UnknownFormatException, ValidationExceptionInvalidFile {
+
+      // Construit l'objet Document avec le minimum requis pour le test
+      SAEDocument saeDocument = buildSaeDocument();
+      ajouteMeta(saeDocument, "FormatFichier", "fmt/354");
+      definitCheminFichierDansDocument(saeDocument,
+            "controleFormat/non_identifie_fichier_texte_renomme_en_pdf.pdf");
+
+      // Construction du profil de contrôle
+      List<FormatControlProfil> listControlProfil = new ArrayList<FormatControlProfil>();
+      boolean avecIdent = Boolean.TRUE;
+      boolean avecValid = Boolean.FALSE;
+      boolean modeStrict = Boolean.FALSE;
+      ajoutProfilPdf(listControlProfil, avecIdent, avecValid, modeStrict);
+
+      // Appel de la méthode à tester
+      ControleFormatSucces resultatControle = controleFormatSupport
+            .checkFormat(saeDocument, listControlProfil);
+
+      // Vérification du résultat attendu
+      Assert
+            .assertEquals(
+                  "L'identifiant du format du profil de contrôle à appliquer n'est pas juste",
+                  "fmt/354", resultatControle.getIdFormatDuProfilControle());
+      Assert.assertTrue("L'identification devrait être activée",
+            resultatControle.isIdentificationActivee());
+      Assert.assertTrue("L'identification aurait dû être réalisée",
+            resultatControle.isIdentificationRealisee());
+      Assert.assertTrue("L'identification aurait dû échoué en mode monitor",
+            resultatControle.isIdentificationEchecMonitor());
+      Assert.assertFalse("La validation ne devrait pas être activée",
+            resultatControle.isValidationActivee());
+      Assert.assertFalse("La validation n'aurait pas dû être réalisée",
+            resultatControle.isValidationRealisee());
+      Assert.assertFalse(
+            "La validation n'aurait pas dû échoué en mode monitor",
+            resultatControle.isValidationEchecMonitor());
+      Assert.assertFalse(resultatControle.isSurFlux());
+
+   }
+
+   /**
+    * Cas de test : Identification et Validation Monitor d'un PDF/A 1b non
+    * identifiable avec un chemin de fichier<br>
+    * Résultat attendu : aucun erreur de la méthode checkFormat
+    */
+   @Test
+   public final void checkFormat_success_PdfNonIdentifiable_IdentValidMonitorSurCheminFichier()
+         throws UnknownFormatException, ValidationExceptionInvalidFile {
+
+      // Construit l'objet Document avec le minimum requis pour le test
+      SAEDocument saeDocument = buildSaeDocument();
+      ajouteMeta(saeDocument, "FormatFichier", "fmt/354");
+      definitCheminFichierDansDocument(saeDocument,
+            "controleFormat/non_identifie_fichier_texte_renomme_en_pdf.pdf");
+
+      // Construction du profil de contrôle
+      List<FormatControlProfil> listControlProfil = new ArrayList<FormatControlProfil>();
+      boolean avecIdent = Boolean.TRUE;
+      boolean avecValid = Boolean.TRUE;
+      boolean modeStrict = Boolean.FALSE;
+      ajoutProfilPdf(listControlProfil, avecIdent, avecValid, modeStrict);
+
+      // Appel de la méthode à tester
+      ControleFormatSucces resultatControle = controleFormatSupport
+            .checkFormat(saeDocument, listControlProfil);
+
+      // Vérification du résultat attendu
+      Assert
+            .assertEquals(
+                  "L'identifiant du format du profil de contrôle à appliquer n'est pas juste",
+                  "fmt/354", resultatControle.getIdFormatDuProfilControle());
+      Assert.assertTrue("L'identification devrait être activée",
+            resultatControle.isIdentificationActivee());
+      Assert.assertTrue("L'identification aurait dû être réalisée",
+            resultatControle.isIdentificationRealisee());
+      Assert.assertTrue("L'identification aurait dû échoué en mode monitor",
+            resultatControle.isIdentificationEchecMonitor());
+      Assert.assertTrue("La validation devrait être activée", resultatControle
+            .isValidationActivee());
+      Assert.assertTrue("La validation aurait dû être réalisée",
+            resultatControle.isValidationRealisee());
+      Assert.assertTrue("La validation aurait dû échoué en mode monitor",
+            resultatControle.isValidationEchecMonitor());
+      Assert.assertFalse(resultatControle.isSurFlux());
+
+   }
+
+   /**
+    * Cas de test : Identification Strict d'un PDF/A 1b non identifiable avec un
+    * chemin de fichier<br>
+    * Résultat attendu : Levée d'une exception UnknownFormatException
+    */
+   @Test
+   public final void checkFormat_success_PdfNonIdentifiable_IdentStrictSurCheminFichier()
+         throws UnknownFormatException, ValidationExceptionInvalidFile {
+
+      // Construit l'objet Document avec le minimum requis pour le test
+      SAEDocument saeDocument = buildSaeDocument();
+      ajouteMeta(saeDocument, "FormatFichier", "fmt/354");
+      definitCheminFichierDansDocument(saeDocument,
+            "controleFormat/non_identifie_fichier_texte_renomme_en_pdf.pdf");
+
+      // Construction du profil de contrôle
+      List<FormatControlProfil> listControlProfil = new ArrayList<FormatControlProfil>();
+      boolean avecIdent = Boolean.TRUE;
+      boolean avecValid = Boolean.FALSE;
+      boolean modeStrict = Boolean.TRUE;
+      ajoutProfilPdf(listControlProfil, avecIdent, avecValid, modeStrict);
+
+      // Appel de la méthode à tester
+      try {
+
+         controleFormatSupport.checkFormat(saeDocument, listControlProfil);
+
+         // Le test échoue si on arrive ici : on aurait dû avoir une exception
+         Assert.fail("On aurait dû avoir une levée d'exception");
+
+      } catch (UnknownFormatException e) {
+
+         // Contrôle le message de l'exception
+         Assert.assertEquals(
+               "Le message de l'exception n'est pas celui attendu",
+               "Le fichier à archiver ne correspond pas au format spécifié.", e
+                     .getMessage());
+
+      } catch (ValidationExceptionInvalidFile e) {
+
+         Assert
+               .fail("L'exception attendue était une UnknownFormatException alors qu'on a obtenu : "
+                     + e);
+
+      }
 
    }
 

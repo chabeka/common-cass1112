@@ -199,8 +199,8 @@ public class PdfaIdentifierImplTest {
 
    /**
     * Cas de test : Identification PDF/A1b pour un fichier qui va être détecté
-    * par Droid comme un fmt/40 (qui ne fait pas partie des format
-    * scompatibles).<br>
+    * par Droid comme un fmt/40 (qui ne fait pas partie des formats
+    * compatibles).<br>
     * <br>
     * Résultat attendu : L'identification est négative.
     */
@@ -307,7 +307,34 @@ public class PdfaIdentifierImplTest {
       // Vérifications
 
       // Résultat final : le fichier ne doit pas être identifié
-      Assert.assertFalse("Le fichier aurait dû être identifié", result
+      Assert.assertFalse("Le fichier n'aurait pas dû être identifié", result
+            .isIdentified());
+
+   }
+
+   /**
+    * Cas de test : Identification PDF/A1b pour un fichier dont Droid n'arrive
+    * pas à déterminer le code Pronom<br>
+    * <br>
+    * Résultat attendu : L'identification est négative, et surtout sans plantage<br>
+    * <br>
+    * Ce cas couvre le ticket Redmine 5415
+    */
+   @Test
+   public void identifyFile_success_NonIdentifie() throws IOException {
+
+      // Récupération du fichier de test depuis les ressources
+      ClassPathResource ressource = new ClassPathResource(
+            "/identification/non_identifie_fichier_texte_renomme_en_pdf.pdf");
+
+      // Appel de la méthode à tester
+      IdentificationResult result = pdfaIdentifier.identifyFile("fmt/354",
+            ressource.getFile());
+
+      // Vérifications
+
+      // Résultat final : le fichier ne doit pas être identifié
+      Assert.assertFalse("Le fichier n'aurait pas dû être identifié", result
             .isIdentified());
 
    }
