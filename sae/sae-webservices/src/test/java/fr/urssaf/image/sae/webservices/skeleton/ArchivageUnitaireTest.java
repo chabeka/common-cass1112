@@ -22,6 +22,7 @@ import fr.cirtil.www.saeservice.ArchivageUnitaire;
 import fr.cirtil.www.saeservice.ArchivageUnitaireResponseType;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.services.capture.SAECaptureService;
+import fr.urssaf.image.sae.services.capture.model.CaptureResult;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.webservices.exception.CaptureAxisFault;
 import fr.urssaf.image.sae.webservices.security.exception.SaeAccessDeniedAxisFault;
@@ -65,13 +66,15 @@ public class ArchivageUnitaireTest {
 
       List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
       metadatas.add(EasyMock.anyObject(UntypedMetadata.class));
+      CaptureResult captureResult = new CaptureResult();
+      captureResult.setIdDoc(UUID
+            .fromString("110E8400-E29B-11D4-A716-446655440000"));
 
       try {
          EasyMock
                .expect(
                      captureService.capture(metadatas, EasyMock
-                           .anyObject(URI.class))).andReturn(
-                     UUID.fromString("110E8400-E29B-11D4-A716-446655440000"));
+                           .anyObject(URI.class))).andReturn(captureResult);
       } catch (Exception e) {
          throw new NestableRuntimeException(e);
       }

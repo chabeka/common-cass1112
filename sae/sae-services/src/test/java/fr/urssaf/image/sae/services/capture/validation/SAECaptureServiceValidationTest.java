@@ -6,7 +6,6 @@ import static org.junit.Assert.fail;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import javax.activation.DataHandler;
 
@@ -20,6 +19,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.services.capture.SAECaptureService;
+import fr.urssaf.image.sae.services.capture.model.CaptureResult;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureBadEcdeUrlEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureEcdeUrlFileNotFoundEx;
@@ -47,7 +47,7 @@ public class SAECaptureServiceValidationTest {
    private static List<UntypedMetadata> metadatas;
 
    private static URI ecdeURL;
-   
+
    @BeforeClass
    public static void beforeClass() {
 
@@ -65,20 +65,22 @@ public class SAECaptureServiceValidationTest {
       service = new SAECaptureService() {
 
          @Override
-         public UUID capture(List<UntypedMetadata> metadatas, URI ecdeURL) {
+         public CaptureResult capture(List<UntypedMetadata> metadatas,
+               URI ecdeURL) {
 
             return null;
          }
 
          @Override
-         public UUID captureBinaire(List<UntypedMetadata> metadatas,
-               DataHandler content, String fileName)  {
-            
+         public CaptureResult captureBinaire(List<UntypedMetadata> metadatas,
+               DataHandler content, String fileName) {
+
             return null;
          }
 
          @Override
-         public UUID captureFichier(List<UntypedMetadata> metadatas, String path){
+         public CaptureResult captureFichier(List<UntypedMetadata> metadatas,
+               String path) {
             return null;
          }
       };
@@ -90,7 +92,9 @@ public class SAECaptureServiceValidationTest {
          UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
          EmptyDocumentEx, RequiredArchivableMetadataEx,
          NotArchivableMetadataEx, ReferentialRndException, UnknownCodeRndEx,
-         UnknownHashCodeEx, CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile, UnknownFormatException {
+         UnknownHashCodeEx, CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx,
+         MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile,
+         UnknownFormatException {
 
       try {
          service.capture(metadatas, ecdeURL);
@@ -98,7 +102,6 @@ public class SAECaptureServiceValidationTest {
       } catch (IllegalArgumentException e) {
          fail("les arguments en entrée doivent être valides");
       }
-      
 
    }
 
@@ -108,7 +111,9 @@ public class SAECaptureServiceValidationTest {
          UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
          EmptyDocumentEx, RequiredArchivableMetadataEx,
          NotArchivableMetadataEx, ReferentialRndException, UnknownCodeRndEx,
-         UnknownHashCodeEx, CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile, UnknownFormatException {
+         UnknownHashCodeEx, CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx,
+         MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile,
+         UnknownFormatException {
 
       assertCapture_failure_metadatas(service, null);
       assertCapture_failure_metadatas(service, new ArrayList<UntypedMetadata>());
@@ -122,7 +127,9 @@ public class SAECaptureServiceValidationTest {
          DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
          ReferentialRndException, UnknownCodeRndEx, UnknownHashCodeEx,
-         CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile, UnknownFormatException {
+         CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx,
+         MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile,
+         UnknownFormatException {
 
       try {
 
@@ -143,7 +150,9 @@ public class SAECaptureServiceValidationTest {
          UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
          EmptyDocumentEx, RequiredArchivableMetadataEx,
          NotArchivableMetadataEx, ReferentialRndException, UnknownCodeRndEx,
-         UnknownHashCodeEx, CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile, UnknownFormatException {
+         UnknownHashCodeEx, CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx,
+         MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile,
+         UnknownFormatException {
 
       try {
 

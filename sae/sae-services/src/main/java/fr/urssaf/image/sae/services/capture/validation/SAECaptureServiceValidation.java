@@ -26,11 +26,11 @@ import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
 @Aspect
 public class SAECaptureServiceValidation {
 
-   private static final String CAPTURE_METHOD = "execution(java.util.UUID fr.urssaf.image.sae.services.capture.SAECaptureService.capture(*,*))"
+   private static final String CAPTURE_METHOD = "execution(fr.urssaf.image.sae.services.capture.model.CaptureResult fr.urssaf.image.sae.services.capture.SAECaptureService.capture(*,*))"
          + "&& args(metadatas,ecdeURL)";
-   
-   private static final String CAPTURE_BINAIRE_METHOD = "execution(java.util.UUID fr.urssaf.image.sae.services.capture.SAECaptureService.captureBinaire(*,*,*))"
-      + "&& args(metadatas, content, fileName)";
+
+   private static final String CAPTURE_BINAIRE_METHOD = "execution(fr.urssaf.image.sae.services.capture.model.CaptureResult fr.urssaf.image.sae.services.capture.SAECaptureService.captureBinaire(*,*,*))"
+         + "&& args(metadatas, content, fileName)";
 
    /**
     * Methode permettant de venir verifier si les paramétres d'entree de la
@@ -56,7 +56,7 @@ public class SAECaptureServiceValidation {
       }
 
    }
-   
+
    /**
     * Methode permettant de venir verifier si les paramétres d'entree de la
     * methode captureBinaire de l'interface SAECaptureService sont bien correct.
@@ -67,35 +67,37 @@ public class SAECaptureServiceValidation {
     *           contenu du fichier numérique à archiver doit non null
     * @param fileName
     *           nom du fichier numérique à archiver doit non null
-    * @throws EmptyDocumentEx 
-    * @throws EmptyFileNameEx 
+    * @throws EmptyDocumentEx
+    * @throws EmptyFileNameEx
     */
    @Before(CAPTURE_BINAIRE_METHOD)
-   public final void captureBinaire(List<UntypedMetadata> metadatas, DataHandler content, String fileName) throws EmptyDocumentEx, EmptyFileNameEx {
+   public final void captureBinaire(List<UntypedMetadata> metadatas,
+         DataHandler content, String fileName) throws EmptyDocumentEx,
+         EmptyFileNameEx {
 
       if (StringUtils.isBlank(fileName)) {
-         throw new EmptyFileNameEx(ResourceMessagesUtils.loadMessage(
-               "nomfichier.vide"));
+         throw new EmptyFileNameEx(ResourceMessagesUtils
+               .loadMessage("nomfichier.vide"));
       }
-      
+
       if (content == null) {
-         throw new EmptyDocumentEx(ResourceMessagesUtils.loadMessage(
-               "capture.fichier.binaire.vide"));
+         throw new EmptyDocumentEx(ResourceMessagesUtils
+               .loadMessage("capture.fichier.binaire.vide"));
       }
-      
+
       try {
          InputStream stream = content.getInputStream();
-      
+
          if (stream == null) {
-            throw new EmptyDocumentEx(ResourceMessagesUtils.loadMessage(
-            "capture.fichier.binaire.vide"));
+            throw new EmptyDocumentEx(ResourceMessagesUtils
+                  .loadMessage("capture.fichier.binaire.vide"));
          }
-         
+
          stream.close();
-         
+
       } catch (IOException e) {
-         throw new EmptyDocumentEx(ResourceMessagesUtils.loadMessage(
-         "capture.fichier.binaire.vide"));
+         throw new EmptyDocumentEx(ResourceMessagesUtils
+               .loadMessage("capture.fichier.binaire.vide"));
       }
 
       if (CollectionUtils.isEmpty(metadatas)) {
@@ -104,5 +106,5 @@ public class SAECaptureServiceValidation {
       }
 
    }
-   
+
 }

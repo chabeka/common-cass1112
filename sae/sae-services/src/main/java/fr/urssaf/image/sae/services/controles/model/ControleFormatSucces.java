@@ -15,6 +15,8 @@ public final class ControleFormatSucces {
    private boolean validationRealisee;
    private boolean validationEchecMonitor;
    private boolean surFlux;
+   private String idFormatReconnu;
+   private String detailEchecValidation;
 
    /**
     * L'identifiant du format du profil de contrôle à appliquer
@@ -180,6 +182,44 @@ public final class ControleFormatSucces {
     */
    public void setSurFlux(boolean surFlux) {
       this.surFlux = surFlux;
+   }
+
+   /**
+    * Identifiant du format reconnu
+    * 
+    * @return Identifiant du format reconnu
+    */
+   public String getIdFormatReconnu() {
+      return idFormatReconnu;
+   }
+
+   /**
+    * Identifiant du format reconnu
+    * 
+    * @param idFormatReconnu
+    *           Identifiant du format reconnu
+    */
+   public void setIdFormatReconnu(String idFormatReconnu) {
+      this.idFormatReconnu = idFormatReconnu;
+   }
+
+   /**
+    * Détail des échecs de validation
+    * 
+    * @return Détail des échecs de validation
+    */
+   public String getDetailEchecValidation() {
+      return detailEchecValidation;
+   }
+
+   /**
+    * Détail des échecs de validation
+    * 
+    * @param detailEchecValidation
+    *           Détail des échecs de validation
+    */
+   public void setDetailEchecValidation(String detailEchecValidation) {
+      this.detailEchecValidation = detailEchecValidation;
    }
 
 }

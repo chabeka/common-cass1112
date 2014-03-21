@@ -55,6 +55,10 @@
    <!-- mock pour le service de recuperation des metadonnées -->
    <bean id="metadataService" factory-bean="SAEServiceFactory"
       factory-method="createMetadataService" />
+      
+   <!-- mock pour le support pour les traces des controles -->
+   <bean id="tracesControlesSupport" factory-bean="SAEServiceFactory"
+      factory-method="createTracesControlesSupport" />
 
    <bean id="ecdeControleSupport"
       class="fr.urssaf.image.sae.services.capturemasse.support.ecde.impl.EcdeControleSupportImpl" />

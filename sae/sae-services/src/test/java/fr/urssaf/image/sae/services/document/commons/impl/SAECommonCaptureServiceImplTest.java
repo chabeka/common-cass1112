@@ -27,6 +27,7 @@ import fr.urssaf.image.sae.rnd.dao.support.RndSupport;
 import fr.urssaf.image.sae.rnd.modele.TypeCode;
 import fr.urssaf.image.sae.rnd.modele.TypeDocument;
 import fr.urssaf.image.sae.services.CommonsServices;
+import fr.urssaf.image.sae.services.capture.model.CaptureResult;
 import fr.urssaf.image.sae.services.document.commons.SAECommonCaptureService;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
@@ -57,12 +58,12 @@ public class SAECommonCaptureServiceImplTest extends CommonsServices {
    @Autowired
    @Qualifier("saeCommonCaptureService")
    SAECommonCaptureService saeCommonCaptureService;
-   
+
    @Autowired
    private CassandraServerBean server;
    @Autowired
    private ParametersService parametersService;
-   @Autowired 
+   @Autowired
    private RndSupport rndSupport;
    @Autowired
    private JobClockSupport jobClockSupport;
@@ -106,12 +107,11 @@ public class SAECommonCaptureServiceImplTest extends CommonsServices {
       AuthenticationToken token = AuthenticationFactory.createAuthentication(
             viExtrait.getIdUtilisateur(), viExtrait, roles);
       AuthenticationContext.setAuthenticationToken(token);
-      
-      
+
       // Paramétrage du RND
       parametersService.setVersionRndDateMaj(new Date());
       parametersService.setVersionRndNumero("11.4");
-      
+
       TypeDocument typeDocCree = new TypeDocument();
       typeDocCree.setCloture(false);
       typeDocCree.setCode("2.3.1.1.12");
@@ -122,7 +122,7 @@ public class SAECommonCaptureServiceImplTest extends CommonsServices {
       typeDocCree.setType(TypeCode.ARCHIVABLE_AED);
 
       rndSupport.ajouterRnd(typeDocCree, jobClockSupport.currentCLock());
-      
+
    }
 
    @After
@@ -134,7 +134,7 @@ public class SAECommonCaptureServiceImplTest extends CommonsServices {
    /**
     * Test de la méthode
     * {@link fr.urssaf.image.sae.services.document.commons.SAECommonCaptureService#buildStorageDocumentForCapture(UntypedDocument)}
-    * . 
+    * .
     */
    @Test
    public final void buildStorageDocumentForCapture()
@@ -145,10 +145,13 @@ public class SAECommonCaptureServiceImplTest extends CommonsServices {
          NotSpecifiableMetadataEx, EmptyDocumentEx,
          RequiredArchivableMetadataEx, MappingFromReferentialException,
          InvalidSAETypeException, UnknownHashCodeEx, ReferentialRndException,
-         UnknownCodeRndEx, MetadataValueNotInDictionaryEx, UnknownFormatException, ValidationExceptionInvalidFile {
+         UnknownCodeRndEx, MetadataValueNotInDictionaryEx,
+         UnknownFormatException, ValidationExceptionInvalidFile {
 
       UntypedDocument untypedDocument = getUntypedDocumentMockData();
-      saeCommonCaptureService.buildStorageDocumentForCapture(untypedDocument);
+      CaptureResult captureResult = new CaptureResult();
+      saeCommonCaptureService.buildStorageDocumentForCapture(untypedDocument,
+            captureResult);
    }
 
 }

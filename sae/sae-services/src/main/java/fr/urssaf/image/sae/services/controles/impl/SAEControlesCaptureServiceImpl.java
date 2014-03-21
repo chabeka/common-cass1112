@@ -32,6 +32,7 @@ import fr.urssaf.image.sae.ecde.service.EcdeServices;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.services.controles.SAEControlesCaptureService;
 import fr.urssaf.image.sae.services.controles.SaeControleMetadataService;
+import fr.urssaf.image.sae.services.controles.model.ControleFormatSucces;
 import fr.urssaf.image.sae.services.controles.support.SAEControlesCaptureFormatSupport;
 import fr.urssaf.image.sae.services.enrichment.dao.impl.SAEMetatadaFinderUtils;
 import fr.urssaf.image.sae.services.enrichment.xml.model.SAEArchivalMetadatas;
@@ -512,8 +513,8 @@ public class SAEControlesCaptureServiceImpl implements
     * {@inheritDoc}
     */
    @Override
-   public void checkFormat(SAEDocument saeDocument,
-         List<FormatControlProfil> controlProfilSet)
+   public ControleFormatSucces checkFormat(String contexte,
+         SAEDocument saeDocument, List<FormatControlProfil> controlProfilSet)
          throws UnknownFormatException, ValidationExceptionInvalidFile {
 
       // Traces debug - entrée méthode
@@ -521,10 +522,12 @@ public class SAEControlesCaptureServiceImpl implements
       LOGGER.debug(LOG_DEBUT, prefixeTrc);
 
       // Appel du support
-      controleFormatSupport.checkFormat(saeDocument, controlProfilSet);
+      ControleFormatSucces retour = controleFormatSupport.checkFormat(contexte,
+            saeDocument, controlProfilSet);
 
       // Traces debug - sortie méthode
       LOGGER.debug(LOG_FIN, prefixeTrc);
+      return retour;
 
    }
 

@@ -229,7 +229,7 @@ public class SAESuppressionServiceTest {
       metadatas.add(new UntypedMetadata("DateReception", "1999-11-25"));
       metadatas.add(new UntypedMetadata("DateDebutConservation", "2011-09-02"));
 
-      UUID uuid = insertService.capture(metadatas, urlEcdeDocument);
+      UUID uuid = insertService.capture(metadatas, urlEcdeDocument).getIdDoc();
 
       Document document = testProvider.searchDocument(uuid);
 

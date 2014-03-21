@@ -27,6 +27,7 @@ import fr.urssaf.image.sae.ecde.service.EcdeServices;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.metadata.utils.Utils;
 import fr.urssaf.image.sae.services.capture.SAECaptureService;
+import fr.urssaf.image.sae.services.capture.model.CaptureResult;
 import fr.urssaf.image.sae.services.controles.SAEControlesCaptureService;
 import fr.urssaf.image.sae.services.document.commons.SAECommonCaptureService;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
@@ -102,8 +103,8 @@ public class SAECaptureServiceImpl implements SAECaptureService {
     * {@inheritDoc}
     */
    @Override
-   public final UUID capture(List<UntypedMetadata> metadatas, URI ecdeURL)
-         throws SAECaptureServiceEx, RequiredStorageMetadataEx,
+   public final CaptureResult capture(List<UntypedMetadata> metadatas,
+         URI ecdeURL) throws SAECaptureServiceEx, RequiredStorageMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
          DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
@@ -113,6 +114,7 @@ public class SAECaptureServiceImpl implements SAECaptureService {
          UnknownFormatException {
       // Traces debug - entrée méthode
       String prefixeTrc = "capture()";
+      CaptureResult result = new CaptureResult();
       LOG.debug("{} - Début", prefixeTrc);
       LOG.debug("{} - Liste des métadonnées : \"{}\"", prefixeTrc,
             buildMessageFromList(metadatas));
@@ -122,13 +124,14 @@ public class SAECaptureServiceImpl implements SAECaptureService {
       // chargement du document de l'ECDE
       File ecdeFile = loadEcdeFile(ecdeURL);
 
-      UUID uuid = insertDocument(metadatas, ecdeFile);
+      UUID uuid = insertDocument(metadatas, ecdeFile, result);
+      result.setIdDoc(uuid);
       // Traces debug - sortie méthode
       LOG.debug("{} - Valeur de retour archiveId: \"{}\"", prefixeTrc, uuid);
       LOG.debug("{} - Sortie", prefixeTrc);
       // Fin des traces debug - sortie méthode
 
-      return uuid;
+      return result;
 
    }
 
@@ -146,8 +149,8 @@ public class SAECaptureServiceImpl implements SAECaptureService {
     * @throws UnknownFormatException
     */
    @Override
-   public final UUID captureFichier(List<UntypedMetadata> metadatas, String path)
-         throws SAECaptureServiceEx, RequiredStorageMetadataEx,
+   public final CaptureResult captureFichier(List<UntypedMetadata> metadatas,
+         String path) throws SAECaptureServiceEx, RequiredStorageMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
          DuplicatedMetadataEx, NotSpecifiableMetadataEx,
          NotArchivableMetadataEx, ReferentialRndException, UnknownCodeRndEx,
@@ -156,6 +159,7 @@ public class SAECaptureServiceImpl implements SAECaptureService {
          ValidationExceptionInvalidFile, UnknownFormatException {
       // Traces debug - entrée méthode
       String prefixeTrc = "capture()";
+      CaptureResult result = new CaptureResult();
       LOG.debug("{} - Début", prefixeTrc);
       LOG.debug("{} - Liste des métadonnées : \"{}\"", prefixeTrc,
             buildMessageFromList(metadatas));
@@ -164,7 +168,8 @@ public class SAECaptureServiceImpl implements SAECaptureService {
       File file = new File(path);
       UUID uuid;
       if (file.exists()) {
-         uuid = insertDocument(metadatas, file);
+         uuid = insertDocument(metadatas, file, result);
+         result.setIdDoc(uuid);
       } else {
          LOG.debug("{} - Fichier inexistant: \"{}\"", prefixeTrc, path);
          throw new FileNotFoundException("Le fichier à archiver n'existe pas");
@@ -175,12 +180,12 @@ public class SAECaptureServiceImpl implements SAECaptureService {
       LOG.debug("{} - Sortie", prefixeTrc);
       // Fin des traces debug - sortie méthode
 
-      return uuid;
+      return result;
 
    }
 
    @Override
-   public final UUID captureBinaire(List<UntypedMetadata> metadatas,
+   public final CaptureResult captureBinaire(List<UntypedMetadata> metadatas,
          DataHandler content, String fileName) throws SAECaptureServiceEx,
          RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx,
          UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
@@ -191,6 +196,7 @@ public class SAECaptureServiceImpl implements SAECaptureService {
 
       // Traces debug - entrée méthode
       String prefixeTrc = "captureBinaire()";
+      CaptureResult result = new CaptureResult();
       LOG.debug("{} - Début", prefixeTrc);
       LOG.debug("{} - Liste des métadonnées : \"{}\"", prefixeTrc,
             buildMessageFromList(metadatas));
@@ -211,8 +217,8 @@ public class SAECaptureServiceImpl implements SAECaptureService {
       // appel du service commun d'archivage dans la capture unitaire
       StorageDocument storageDoc;
       try {
-         storageDoc = commonsService
-               .buildBinaryStorageDocumentForCapture(untypedDocument);
+         storageDoc = commonsService.buildBinaryStorageDocumentForCapture(
+               untypedDocument, result);
 
       } catch (SAEEnrichmentEx e) {
          throw new SAECaptureServiceEx(e);
@@ -220,12 +226,13 @@ public class SAECaptureServiceImpl implements SAECaptureService {
 
       // archivage du document dans DFCE
       UUID uuid = insererBinaryStorageDocument(storageDoc);
+      result.setIdDoc(uuid);
       // Traces debug - sortie méthode
       LOG.debug("{} - Valeur de retour archiveId: \"{}\"", prefixeTrc, uuid);
       LOG.debug("{} - Sortie", prefixeTrc);
       // Fin des traces debug - sortie méthode
 
-      return uuid;
+      return result;
    }
 
    /**
@@ -347,6 +354,8 @@ public class SAECaptureServiceImpl implements SAECaptureService {
     *           Liste des métadonnées
     * @param file
     *           fichier à archiver
+    * @param captureResult
+    *           résultat de la capture
     * @return UUID L'uuid de l'archivage
     * @throws SAECaptureServiceEx
     * @throws ReferentialRndException
@@ -364,11 +373,12 @@ public class SAECaptureServiceImpl implements SAECaptureService {
     * @throws ValidationExceptionInvalidFile
     * @throws UnknownFormatException
     */
-   private UUID insertDocument(List<UntypedMetadata> metadatas, File file)
-         throws SAECaptureServiceEx, ReferentialRndException, UnknownCodeRndEx,
-         RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx,
-         UnknownMetadataEx, DuplicatedMetadataEx, NotArchivableMetadataEx,
-         EmptyDocumentEx, RequiredArchivableMetadataEx, UnknownHashCodeEx,
+   private UUID insertDocument(List<UntypedMetadata> metadatas, File file,
+         CaptureResult captureResult) throws SAECaptureServiceEx,
+         ReferentialRndException, UnknownCodeRndEx, RequiredStorageMetadataEx,
+         InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
+         DuplicatedMetadataEx, NotArchivableMetadataEx, EmptyDocumentEx,
+         RequiredArchivableMetadataEx, UnknownHashCodeEx,
          NotSpecifiableMetadataEx, MetadataValueNotInDictionaryEx,
          UnknownFormatException, ValidationExceptionInvalidFile {
 
@@ -377,8 +387,8 @@ public class SAECaptureServiceImpl implements SAECaptureService {
       // appel du service commun d'archivage dans la capture unitaire
       StorageDocument storageDoc;
       try {
-         storageDoc = commonsService
-               .buildStorageDocumentForCapture(untypedDocument);
+         storageDoc = commonsService.buildStorageDocumentForCapture(
+               untypedDocument, captureResult);
       } catch (SAEEnrichmentEx e) {
          throw new SAECaptureServiceEx(e);
       }

@@ -9,6 +9,7 @@ import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
+import fr.urssaf.image.sae.services.controles.model.ControleFormatSucces;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureBadEcdeUrlEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureEcdeUrlFileNotFoundEx;
@@ -220,16 +221,19 @@ public interface SAEControlesCaptureService {
    /**
     * Méthode chargée d'appeler le service de contrôle des formats.
     * 
+    * @param contexte
+    *           contexte d'appel de la vérification du format
     * @param saeDocument
     *           classe representant un document - paramètre obligatoire
     * @param listControlProfil
     *           Liste des profils de contrôle à appliquer
+    * @return Résultat du controle de format
     * @throws UnknownFormatException
     *            : Le format est inconnu du référentiel des formats.
     * @throws ValidationExceptionInvalidFile
     *            : Erreur dans la validation du fichier.
     */
-   void checkFormat(SAEDocument saeDocument,
+   ControleFormatSucces checkFormat(String contexte, SAEDocument saeDocument,
          List<FormatControlProfil> listControlProfil)
          throws UnknownFormatException, ValidationExceptionInvalidFile;
 

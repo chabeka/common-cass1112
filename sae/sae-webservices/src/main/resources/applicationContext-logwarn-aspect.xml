@@ -21,6 +21,9 @@
       
       <aop:pointcut id="buildOrClearMDCPointCut"
          expression="execution(public * fr.urssaf.image.sae.webservices.skeleton.*SkeletonInterface.*(..))" />
+         
+      <aop:pointcut id="checkFormatCaptureServicePointcut"
+         expression="execution(public * fr.urssaf.image.sae.services.capture.SAECaptureService.capture*(..))" />
       
       
       <aop:aspect id="logWarnSkeletonAspect" ref="logWarnSkeletonAspect">
@@ -32,6 +35,9 @@
          <aop:after-returning method="clearLogContext" pointcut-ref="buildOrClearMDCPointCut"/>
       </aop:aspect>
       
+      <aop:aspect id="checkFormatCaptureServiceAspect" ref="checkFormatCaptureServiceAspect">
+         <aop:after-returning method="checkFormatErrorForCapture" returning="retour" pointcut-ref="checkFormatCaptureServicePointcut"/>
+      </aop:aspect>
       
    </aop:config>
 

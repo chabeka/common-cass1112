@@ -189,7 +189,7 @@ public class SAECaptureServiceDroitsTest {
       metadatas.add(new UntypedMetadata("DateReception", "1999-11-25"));
       metadatas.add(new UntypedMetadata("DateDebutConservation", "2011-09-02"));
 
-      uuid = service.capture(metadatas, urlEcdeDocument);
+      uuid = service.capture(metadatas, urlEcdeDocument).getIdDoc();
       
       Assert.fail("exception attendue");
    }

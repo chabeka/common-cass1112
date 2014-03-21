@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.MDC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ import fr.urssaf.image.sae.format.validation.exceptions.ValidatorUnhandledExcept
 import fr.urssaf.image.sae.format.validation.service.ValidationService;
 import fr.urssaf.image.sae.format.validation.validators.model.ValidationResult;
 import fr.urssaf.image.sae.services.controles.model.ControleFormatSucces;
+import fr.urssaf.image.sae.services.controles.traces.TracesControlesSupport;
 import fr.urssaf.image.sae.services.exception.format.FormatRuntimeException;
 import fr.urssaf.image.sae.services.exception.format.identification.FormatIdentificationRuntimeException;
 import fr.urssaf.image.sae.services.exception.format.validation.ValidationExceptionInvalidFile;
@@ -56,9 +58,14 @@ public final class SAEControlesCaptureFormatSupport {
    @Autowired
    private ReferentielFormatService referentielFormatService;
 
+   @Autowired
+   private TracesControlesSupport tracesSupport;
+
    /**
     * Méthode chargée d'appeler le service de contrôle des formats.
     * 
+    * @param contexte
+    *           contexte d'appel de la vérification du format
     * @param saeDocument
     *           Objet représentant un document
     * @param controlProfilSet
@@ -69,8 +76,8 @@ public final class SAEControlesCaptureFormatSupport {
     * @throws ValidationExceptionInvalidFile
     *            Erreur dans la validation du fichier.
     */
-   public ControleFormatSucces checkFormat(SAEDocument saeDocument,
-         List<FormatControlProfil> controlProfilSet)
+   public ControleFormatSucces checkFormat(String contexte,
+         SAEDocument saeDocument, List<FormatControlProfil> controlProfilSet)
          throws UnknownFormatException, ValidationExceptionInvalidFile {
 
       // Traces debug - entrée méthode
@@ -168,8 +175,8 @@ public final class SAEControlesCaptureFormatSupport {
                            prefixeTrc);
 
                // Appel de la sous-méthode qui réalise l'identification
-               applyIdentification(saeDocument, formatProfil, isCheminFichier,
-                     resultatControle);
+               applyIdentification(contexte, saeDocument, formatProfil,
+                     isCheminFichier, resultatControle);
 
             } else {
                LOGGER
@@ -191,8 +198,8 @@ public final class SAEControlesCaptureFormatSupport {
                            prefixeTrc);
 
                // Appel de la sous-méthode qui réalise la validation
-               applyValidation(saeDocument, formatProfil, isCheminFichier,
-                     resultatControle);
+               applyValidation(contexte, saeDocument, formatProfil,
+                     isCheminFichier, resultatControle);
 
             } else {
                LOGGER
@@ -218,7 +225,7 @@ public final class SAEControlesCaptureFormatSupport {
 
    }
 
-   private void applyIdentification(SAEDocument saeDocument,
+   private void applyIdentification(String contexte, SAEDocument saeDocument,
          FormatProfil formatProfil, boolean isCheminFichier,
          ControleFormatSucces resultatControle) throws UnknownFormatException {
 
@@ -270,6 +277,12 @@ public final class SAEControlesCaptureFormatSupport {
             String validationMode = formatProfil.getFormatValidationMode();
             if (EnumValidationMode.STRICT.toString().equalsIgnoreCase(
                   validationMode)) {
+               // avant de levée l'exception, on trace dans le registre
+               // de surveillance technique
+               String idTraitement = (String) MDC.get("log_contexte_uuid");
+               tracesSupport.traceErreurIdentFormatFichier(contexte,
+                     formatProfil.getFileFormat(), result.getIdFormatReconnu(),
+                     idTraitement);
                throw new UnknownFormatException(MESSAGE_EXCEPTION);
             } else {
                LOGGER
@@ -277,7 +290,7 @@ public final class SAEControlesCaptureFormatSupport {
                            "{} - L'identification a échoué en mode Monitor, on ne lève pas d'exception",
                            prefixeTrc);
                resultatControle.setIdentificationEchecMonitor(Boolean.TRUE);
-               // TODO Tracer dans le registre de surveillance technique
+               resultatControle.setIdFormatReconnu(result.getIdFormatReconnu());
             }
 
          }
@@ -286,6 +299,8 @@ public final class SAEControlesCaptureFormatSupport {
          if (EnumValidationMode.MONITOR.toString().equalsIgnoreCase(
                formatProfil.getFormatValidationMode())) {
             LOGGER.info("Erreur lors de l'identification", except);
+            resultatControle.setIdentificationEchecMonitor(Boolean.TRUE);
+            resultatControle.setIdFormatReconnu("NON_RECONNU");
          } else {
             throw new FormatIdentificationRuntimeException(except);
          }
@@ -298,7 +313,7 @@ public final class SAEControlesCaptureFormatSupport {
 
    }
 
-   private void applyValidation(SAEDocument saeDocument,
+   private void applyValidation(String contexte, SAEDocument saeDocument,
          FormatProfil formatProfil, boolean isCheminFichier,
          ControleFormatSucces resultatControle)
          throws ValidationExceptionInvalidFile, UnknownFormatException {
@@ -366,6 +381,12 @@ public final class SAEControlesCaptureFormatSupport {
          String validationMode = formatProfil.getFormatValidationMode();
          if (EnumValidationMode.STRICT.toString().equalsIgnoreCase(
                validationMode)) {
+            // avant de levée l'exception, on trace dans le registre
+            // de surveillance technique
+            String idTraitement = (String) MDC.get("log_contexte_uuid");
+
+            tracesSupport.traceErreurValidFormatFichier(contexte, formatProfil
+                  .getFileFormat(), formatDetails(result), idTraitement);
             throw new UnknownFormatException(MESSAGE_EXCEPTION);
          } else {
             LOGGER
@@ -373,7 +394,7 @@ public final class SAEControlesCaptureFormatSupport {
                         "{} - La validation a échoué en mode Monitor, on ne lève pas d'exception",
                         prefixeTrc);
             resultatControle.setValidationEchecMonitor(Boolean.TRUE);
-            // TODO Tracer dans le registre de surveillance technique
+            resultatControle.setDetailEchecValidation(formatDetails(result));
          }
 
       }
@@ -381,6 +402,22 @@ public final class SAEControlesCaptureFormatSupport {
       // Traces debug - sortie méthode
       LOGGER.debug(LOG_FIN, prefixeTrc);
 
+   }
+
+   /**
+    * Méthode permettant de formatter le détail de la validation.
+    * 
+    * @param result
+    *           résultat de la validation
+    * @return String
+    */
+   private String formatDetails(ValidationResult result) {
+      StringBuffer buffer = new StringBuffer();
+      for (String detail : result.getDetails()) {
+         buffer.append(detail);
+         buffer.append("\n");
+      }
+      return buffer.toString();
    }
 
    /**

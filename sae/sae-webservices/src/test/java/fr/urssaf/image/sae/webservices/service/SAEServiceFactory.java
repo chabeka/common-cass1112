@@ -8,6 +8,7 @@ import fr.urssaf.image.sae.services.batch.TraitementAsynchroneService;
 import fr.urssaf.image.sae.services.capture.SAECaptureService;
 import fr.urssaf.image.sae.services.controles.SAEControleSupportService;
 import fr.urssaf.image.sae.services.controles.SAEControlesCaptureService;
+import fr.urssaf.image.sae.services.controles.traces.TracesControlesSupport;
 import fr.urssaf.image.sae.services.metadata.MetadataService;
 import fr.urssaf.image.sae.services.modification.SAEModificationService;
 import fr.urssaf.image.sae.services.suppression.SAESuppressionService;
@@ -101,7 +102,7 @@ public class SAEServiceFactory {
 
       return service;
    }
-   
+
    /**
     * 
     * @return instance de MetadataService
@@ -111,5 +112,17 @@ public class SAEServiceFactory {
       MetadataService service = EasyMock.createMock(MetadataService.class);
 
       return service;
+   }
+
+   /**
+    * 
+    * @return instance de TracesControlesSupport
+    */
+   public final TracesControlesSupport createTracesControlesSupport() {
+
+      TracesControlesSupport support = EasyMock
+            .createMock(TracesControlesSupport.class);
+
+      return support;
    }
 }

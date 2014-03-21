@@ -46,7 +46,7 @@ public class CaptureSupport {
 
       try {
          List<UntypedMetadata> metadatas = getMetadatas(date, zipFile);
-         return saeCaptureService.captureFichier(metadatas, zipPath);
+         return saeCaptureService.captureFichier(metadatas, zipPath).getIdDoc();
 
       } catch (Exception exception) {
          throw new TraceExecutableException(exception);

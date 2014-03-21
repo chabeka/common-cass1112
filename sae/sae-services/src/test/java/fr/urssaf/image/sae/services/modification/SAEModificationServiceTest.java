@@ -286,7 +286,7 @@ public class SAEModificationServiceTest {
       metadatas.add(new UntypedMetadata("DateReception", "1999-11-25"));
       metadatas.add(new UntypedMetadata("DateDebutConservation", "2011-09-02"));
 
-      uuid = insertService.capture(metadatas, urlEcdeDocument);
+      uuid = insertService.capture(metadatas, urlEcdeDocument).getIdDoc();
 
       Assert.assertNotNull("le document doit être créé", uuid);
 

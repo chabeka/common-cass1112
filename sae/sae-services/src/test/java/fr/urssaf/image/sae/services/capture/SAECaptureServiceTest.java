@@ -241,7 +241,7 @@ public class SAECaptureServiceTest {
       metadatas.add(new UntypedMetadata("DateReception", "1999-11-25"));
       metadatas.add(new UntypedMetadata("DateDebutConservation", "2011-09-02"));
 
-      uuid = service.capture(metadatas, urlEcdeDocument);
+      uuid = service.capture(metadatas, urlEcdeDocument).getIdDoc();
       LOG.debug("document archivé dans DFCE:" + uuid);
       Document doc = testProvider.searchDocument(uuid);
 
@@ -310,7 +310,7 @@ public class SAECaptureServiceTest {
       metadatas.add(new UntypedMetadata("DateDebutConservation", "2011-09-02"));
 
       try {
-         uuid = service.capture(metadatas, urlEcdeDocument);
+         uuid = service.capture(metadatas, urlEcdeDocument).getIdDoc();
          Assert
                .fail("On attendait une exception UnknownFormatException alors que l'archivage a fonctionné");
 
@@ -760,7 +760,7 @@ public class SAECaptureServiceTest {
       metadatas.add(new UntypedMetadata("DateReception", "1999-11-25"));
       metadatas.add(new UntypedMetadata("DateDebutConservation", "2011-09-02"));
 
-      uuid = service.captureFichier(metadatas, path);
+      uuid = service.captureFichier(metadatas, path).getIdDoc();
       LOG.debug("document archivé dans DFCE:" + uuid);
       Document doc = testProvider.searchDocument(uuid);
 
@@ -812,8 +812,8 @@ public class SAECaptureServiceTest {
          UnknownFormatException {
       String path = FileUtils.getTempDirectoryPath();
       List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
-      uuid = service.captureFichier(metadatas, path
-            .concat("FichierInexistant.pdf"));
+      uuid = service.captureFichier(metadatas,
+            path.concat("FichierInexistant.pdf")).getIdDoc();
       LOG.debug("document archivé alors que le fichier est inexistant:" + uuid);
       Assert.fail();
    }

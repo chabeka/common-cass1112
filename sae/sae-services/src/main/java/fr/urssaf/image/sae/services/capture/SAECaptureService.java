@@ -3,7 +3,6 @@ package fr.urssaf.image.sae.services.capture;
 import java.io.FileNotFoundException;
 import java.net.URI;
 import java.util.List;
-import java.util.UUID;
 
 import javax.activation.DataHandler;
 
@@ -11,6 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
+import fr.urssaf.image.sae.services.capture.model.CaptureResult;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureBadEcdeUrlEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureEcdeUrlFileNotFoundEx;
@@ -44,7 +44,8 @@ public interface SAECaptureService {
     *           liste des métadonnées à archiver
     * @param ecdeURL
     *           url ECDE du fichier numérique à archiver
-    * @return Identifiant unique du document dans le SAE
+    * @return CaptureResult : objet contenant l'identifiant unique du document
+    *         dans le SAE
     * 
     * 
     * 
@@ -90,7 +91,7 @@ public interface SAECaptureService {
     * 
     */
    @PreAuthorize("hasRole('archivage_unitaire')")
-   UUID capture(List<UntypedMetadata> metadatas, URI ecdeURL)
+   CaptureResult capture(List<UntypedMetadata> metadatas, URI ecdeURL)
          throws SAECaptureServiceEx, RequiredStorageMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
          DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
@@ -112,7 +113,8 @@ public interface SAECaptureService {
     * @param fileName
     *           nom du fichier à archiver. Sera stocké dans les metadatas
     * 
-    * @return Identifiant unique du document dans le SAE
+    * @return CaptureResult : objet contenant l'identifiant unique du document
+    *         dans le SAE
     * 
     * 
     * 
@@ -151,8 +153,8 @@ public interface SAECaptureService {
     *            {@link ValidationExceptionInvalidFile}
     */
    @PreAuthorize("hasRole('archivage_unitaire')")
-   UUID captureBinaire(List<UntypedMetadata> metadatas, DataHandler content,
-         String fileName) throws SAECaptureServiceEx,
+   CaptureResult captureBinaire(List<UntypedMetadata> metadatas,
+         DataHandler content, String fileName) throws SAECaptureServiceEx,
          RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx,
          UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
          EmptyDocumentEx, RequiredArchivableMetadataEx,
@@ -169,7 +171,8 @@ public interface SAECaptureService {
     * @param path
     *           chemin absolu du fichier
     * 
-    * @return l'identifiant du fichier
+    * @return CaptureResult : objet contenant l'identifiant unique du document
+    *         dans le SAE
     * 
     * @throws SAECaptureServiceEx
     *            exception levée lors de la capture
@@ -206,7 +209,7 @@ public interface SAECaptureService {
     *            {@link ValidationExceptionInvalidFile}
     */
    @PreAuthorize("hasRole('archivage_unitaire')")
-   UUID captureFichier(List<UntypedMetadata> metadatas, String path)
+   CaptureResult captureFichier(List<UntypedMetadata> metadatas, String path)
          throws SAECaptureServiceEx, RequiredStorageMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
          DuplicatedMetadataEx, NotSpecifiableMetadataEx,

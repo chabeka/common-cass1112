@@ -18,7 +18,9 @@ import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.mapping.exception.InvalidSAETypeException;
 import fr.urssaf.image.sae.mapping.exception.MappingFromReferentialException;
 import fr.urssaf.image.sae.mapping.services.MappingDocumentService;
+import fr.urssaf.image.sae.services.capture.model.CaptureResult;
 import fr.urssaf.image.sae.services.controles.SAEControlesCaptureService;
+import fr.urssaf.image.sae.services.controles.model.ControleFormatSucces;
 import fr.urssaf.image.sae.services.document.commons.SAECommonCaptureService;
 import fr.urssaf.image.sae.services.enrichment.SAEEnrichmentMetadataService;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
@@ -71,13 +73,13 @@ public class SAECommonCaptureServiceImpl implements SAECommonCaptureService {
    @SuppressWarnings("PMD.OnlyOneReturn")
    @Override
    public final StorageDocument buildStorageDocumentForCapture(
-         UntypedDocument untypedDocument) throws RequiredStorageMetadataEx,
-         InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
-         DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
-         RequiredArchivableMetadataEx, SAEEnrichmentEx, UnknownHashCodeEx,
-         ReferentialRndException, UnknownCodeRndEx, SAECaptureServiceEx,
-         MetadataValueNotInDictionaryEx, UnknownFormatException,
-         ValidationExceptionInvalidFile {
+         UntypedDocument untypedDocument, CaptureResult captureResult)
+         throws RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx,
+         UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
+         EmptyDocumentEx, RequiredArchivableMetadataEx, SAEEnrichmentEx,
+         UnknownHashCodeEx, ReferentialRndException, UnknownCodeRndEx,
+         SAECaptureServiceEx, MetadataValueNotInDictionaryEx,
+         UnknownFormatException, ValidationExceptionInvalidFile {
       // Traces debug - entrée méthode
       String prefixeTrc = "buildStorageDocumentForCapture()";
       LOGGER.debug("{} - Début", prefixeTrc);
@@ -90,7 +92,8 @@ public class SAECommonCaptureServiceImpl implements SAECommonCaptureService {
                   prefixeTrc);
       controlesService.checkUntypedDocument(untypedDocument);
 
-      StorageDocument storageDocument = buildStorageDocument(untypedDocument);
+      StorageDocument storageDocument = buildStorageDocument(untypedDocument,
+            captureResult);
 
       return storageDocument;
 
@@ -104,14 +107,14 @@ public class SAECommonCaptureServiceImpl implements SAECommonCaptureService {
     */
    @Override
    public final StorageDocument buildBinaryStorageDocumentForCapture(
-         UntypedDocument untypedDocument) throws RequiredStorageMetadataEx,
-         InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
-         EmptyFileNameEx, DuplicatedMetadataEx, NotArchivableMetadataEx,
-         EmptyDocumentEx, RequiredArchivableMetadataEx, SAEEnrichmentEx,
-         UnknownHashCodeEx, ReferentialRndException, UnknownCodeRndEx,
-         NotSpecifiableMetadataEx, SAECaptureServiceEx,
-         MetadataValueNotInDictionaryEx, UnknownFormatException,
-         ValidationExceptionInvalidFile {
+         UntypedDocument untypedDocument, CaptureResult captureResult)
+         throws RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx,
+         UnknownMetadataEx, EmptyFileNameEx, DuplicatedMetadataEx,
+         NotArchivableMetadataEx, EmptyDocumentEx,
+         RequiredArchivableMetadataEx, SAEEnrichmentEx, UnknownHashCodeEx,
+         ReferentialRndException, UnknownCodeRndEx, NotSpecifiableMetadataEx,
+         SAECaptureServiceEx, MetadataValueNotInDictionaryEx,
+         UnknownFormatException, ValidationExceptionInvalidFile {
 
       // Traces debug - entrée méthode
       String prefixeTrc = "buildBinaryStorageDocumentForCapture()";
@@ -123,12 +126,14 @@ public class SAECommonCaptureServiceImpl implements SAECommonCaptureService {
             .debug("{} - Début des contrôles sur (UntypedDocument)", prefixeTrc);
       controlesService.checkUntypedBinaryDocument(untypedDocument);
 
-      StorageDocument storageDocument = buildStorageDocument(untypedDocument);
+      StorageDocument storageDocument = buildStorageDocument(untypedDocument,
+            captureResult);
 
       return storageDocument;
    }
 
-   private StorageDocument buildStorageDocument(UntypedDocument untypedDocument)
+   private StorageDocument buildStorageDocument(
+         UntypedDocument untypedDocument, CaptureResult captureResult)
          throws NotSpecifiableMetadataEx, RequiredArchivableMetadataEx,
          UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, SAEEnrichmentEx,
@@ -182,7 +187,20 @@ public class SAECommonCaptureServiceImpl implements SAECommonCaptureService {
             List<FormatControlProfil> listFormatControlProfil = token
                   .getListFormatControlProfil();
 
-            controlesService.checkFormat(saeDocument, listFormatControlProfil);
+            ControleFormatSucces retour = controlesService.checkFormat(
+                  "captureUnitaire", saeDocument, listFormatControlProfil);
+
+            // récupération du retour du checkFormat
+            captureResult.setIdentificationActivee(retour
+                  .isIdentificationActivee());
+            captureResult.setIdentificationEchecMonitor(retour
+                  .isIdentificationEchecMonitor());
+            captureResult.setIdFormatReconnu(retour.getIdFormatReconnu());
+            captureResult.setValidationActivee(retour.isValidationActivee());
+            captureResult.setValidationEchecMonitor(retour
+                  .isValidationEchecMonitor());
+            captureResult.setDetailEchecValidation(retour
+                  .getDetailEchecValidation());
 
             LOGGER.debug("{} - Fin des contrôles sur le format", prefixeTrc);
 

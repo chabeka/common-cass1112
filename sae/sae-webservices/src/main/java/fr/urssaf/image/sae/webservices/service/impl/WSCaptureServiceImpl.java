@@ -251,7 +251,7 @@ public class WSCaptureServiceImpl implements WSCaptureService {
    private UUID capture(List<UntypedMetadata> metadatas, URI ecdeURL)
          throws CaptureAxisFault {
       try {
-         return captureService.capture(metadatas, ecdeURL);
+         return captureService.capture(metadatas, ecdeURL).getIdDoc();
       } catch (RequiredStorageMetadataEx e) {
 
          throw new CaptureAxisFault("ErreurInterneCapture", e.getMessage(), e);
@@ -337,7 +337,8 @@ public class WSCaptureServiceImpl implements WSCaptureService {
    private UUID capturePJ(List<UntypedMetadata> metadatas, String fileName,
          DataHandler content) throws CaptureAxisFault {
       try {
-         return captureService.captureBinaire(metadatas, content, fileName);
+         return captureService.captureBinaire(metadatas, content, fileName)
+               .getIdDoc();
       } catch (RequiredStorageMetadataEx e) {
 
          throw new CaptureAxisFault("ErreurInterneCapture", e.getMessage(), e);

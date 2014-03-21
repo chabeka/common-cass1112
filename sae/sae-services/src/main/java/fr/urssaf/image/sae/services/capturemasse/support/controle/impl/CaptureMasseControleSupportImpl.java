@@ -29,11 +29,14 @@ import fr.urssaf.image.sae.mapping.exception.MappingFromReferentialException;
 import fr.urssaf.image.sae.mapping.services.MappingDocumentService;
 import fr.urssaf.image.sae.rnd.exception.CodeRndInexistantException;
 import fr.urssaf.image.sae.rnd.service.RndService;
+import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireDocumentNotFoundException;
 import fr.urssaf.image.sae.services.capturemasse.support.controle.CaptureMasseControleSupport;
+import fr.urssaf.image.sae.services.capturemasse.support.controle.model.CaptureMasseControlResult;
 import fr.urssaf.image.sae.services.controles.SAEControlesCaptureService;
 import fr.urssaf.image.sae.services.controles.SaeControleMetadataService;
+import fr.urssaf.image.sae.services.controles.model.ControleFormatSucces;
 import fr.urssaf.image.sae.services.enrichment.dao.impl.SAEMetatadaFinderUtils;
 import fr.urssaf.image.sae.services.enrichment.xml.model.SAEArchivalMetadatas;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
@@ -79,17 +82,21 @@ public class CaptureMasseControleSupportImpl implements
    private RndService rndService;
 
    /**
-    * {@inheritDoc} 
+    * {@inheritDoc}
     */
    @Override
-   public final void controleSAEDocument(final UntypedDocument document,
-         final File ecdeDirectory)
+   public final CaptureMasseControlResult controleSAEDocument(
+         final UntypedDocument document, final File ecdeDirectory)
          throws CaptureMasseSommaireDocumentNotFoundException, EmptyDocumentEx,
          UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx, UnknownCodeRndEx,
-         MetadataValueNotInDictionaryEx, UnknownFormatException, ValidationExceptionInvalidFile {
+         MetadataValueNotInDictionaryEx, UnknownFormatException,
+         ValidationExceptionInvalidFile {
+      String trcPrefix = "controleSAEDocument()";
+      LOGGER.debug("{} - début", trcPrefix);
 
+      CaptureMasseControlResult result = new CaptureMasseControlResult();
       final File file = getFichierSiExiste(document, ecdeDirectory);
 
       controleFichierNonVide(file);
@@ -125,12 +132,26 @@ public class CaptureMasseControleSupportImpl implements
       // risques.
       AuthenticationToken token = (AuthenticationToken) SecurityContextHolder
             .getContext().getAuthentication();
-      List<FormatControlProfil> listControlProfil = token.getListFormatControlProfil();
-      controleService.checkFormat(saeDocument, listControlProfil);
+      List<FormatControlProfil> listControlProfil = token
+            .getListFormatControlProfil();
+      ControleFormatSucces retour = controleService.checkFormat(
+            Constantes.CONTEXTE_CAPTURE_MASSE, saeDocument, listControlProfil);
+
+      result.setIdentificationActivee(retour.isIdentificationActivee());
+      result.setIdentificationEchecMonitor(retour
+            .isIdentificationEchecMonitor());
+      result.setIdFormatReconnu(retour.getIdFormatReconnu());
+      result.setValidationActivee(retour.isValidationActivee());
+      result.setValidationEchecMonitor(retour.isValidationEchecMonitor());
+      result.setDetailEchecValidation(retour.getDetailEchecValidation());
+      // document.get
 
       controleSAEMetadataList(document.getUMetadatas(), saeDocument
             .getMetadatas());
 
+      LOGGER.debug("{} - fin", trcPrefix);
+
+      return result;
    }
 
    /**
@@ -296,8 +317,7 @@ public class CaptureMasseControleSupportImpl implements
       LOGGER.debug("{} - récupération du Vi", trcPrefix);
       AuthenticationToken token = (AuthenticationToken) SecurityContextHolder
             .getContext().getAuthentication();
-      List<SaePrmd> prmds = token.getSaeDroits().get(
-            "archivage_masse");
+      List<SaePrmd> prmds = token.getSaeDroits().get("archivage_masse");
 
       LOGGER.debug("{} - vérification des droits", trcPrefix);
       boolean isPermitted = prmdService.isPermitted(metadatas, prmds);

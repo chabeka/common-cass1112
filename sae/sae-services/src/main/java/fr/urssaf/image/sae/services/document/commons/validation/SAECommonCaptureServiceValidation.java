@@ -5,6 +5,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
+import fr.urssaf.image.sae.services.capture.model.CaptureResult;
 import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
 
 /**
@@ -20,8 +21,8 @@ public class SAECommonCaptureServiceValidation {
    private static final String SAE_COMMON_CAPTURE_CLASS = "fr.urssaf.image.sae.services.document.commons.SAECommonCaptureService.";
    private static final String PARAM_SEARCH = "execution(fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument "
          + SAE_COMMON_CAPTURE_CLASS
-         + "buildBinaryStorageDocumentForCapture(*))"
-         + "&& args(untypedDocument)";
+         + "buildBinaryStorageDocumentForCapture(*,*))"
+         + "&& args(untypedDocument,captureResult)";
 
    /**
     * Vérifie les paramètres d'entrée de la méthode
@@ -30,10 +31,12 @@ public class SAECommonCaptureServiceValidation {
     * 
     * @param untypedDocument
     *           : representant un document à archiver.
+    * @param captureResult
+    *           : résultat de la capture
     */
    @Before(PARAM_SEARCH)
    public final void buildBinaryStorageDocumentForCapture(
-         UntypedDocument untypedDocument) {
+         UntypedDocument untypedDocument, CaptureResult captureResult) {
       Validate.notNull(untypedDocument, ResourceMessagesUtils.loadMessage(
             "argument.required", "'untypedDocument'"));
    }

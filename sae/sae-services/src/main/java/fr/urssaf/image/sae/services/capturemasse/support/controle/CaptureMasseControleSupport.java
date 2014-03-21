@@ -12,6 +12,7 @@ import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedVirtualDocument;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireDocumentNotFoundException;
+import fr.urssaf.image.sae.services.capturemasse.support.controle.model.CaptureMasseControlResult;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.EmptyDocumentEx;
@@ -58,6 +59,8 @@ public interface CaptureMasseControleSupport {
     *           Modèle métier du document
     * @param ecdeDirectory
     *           chemin absolu du répertoire de traitement de l'ECDE
+    * @return CaptureMasseControlResult résultat des controles sur la capture de
+    *         masse
     * @throws CaptureMasseSommaireDocumentNotFoundException
     *            Le fichier du document n'existe pas dans l'ECDE
     * @throws EmptyDocumentEx
@@ -80,16 +83,23 @@ public interface CaptureMasseControleSupport {
     *            reconnu par le SAE
     * @throws UnknownCodeRndEx
     *            La métadonnée codeRND n'existe pas
-    * @throws MetadataValueNotInDictionaryEx la valeur donnée n'est pas présente dans la liste des valeurs autorisées
-    * @throws UnknownFormatException : le format du fichier est inconnu.
-    * @throws ValidationExceptionInvalidFile : le fichier est invalide par rapport au format de fichier spécifié.
+    * @throws MetadataValueNotInDictionaryEx
+    *            la valeur donnée n'est pas présente dans la liste des valeurs
+    *            autorisées
+    * @throws UnknownFormatException
+    *            : le format du fichier est inconnu.
+    * @throws ValidationExceptionInvalidFile
+    *            : le fichier est invalide par rapport au format de fichier
+    *            spécifié.
     */
-   void controleSAEDocument(UntypedDocument document, File ecdeDirectory)
+   CaptureMasseControlResult controleSAEDocument(UntypedDocument document,
+         File ecdeDirectory)
          throws CaptureMasseSommaireDocumentNotFoundException, EmptyDocumentEx,
          UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx, UnknownCodeRndEx,
-         MetadataValueNotInDictionaryEx, UnknownFormatException, ValidationExceptionInvalidFile;
+         MetadataValueNotInDictionaryEx, UnknownFormatException,
+         ValidationExceptionInvalidFile;
 
    /**
     * Service permettant de contrôler le fichier et les métadonnées d'un

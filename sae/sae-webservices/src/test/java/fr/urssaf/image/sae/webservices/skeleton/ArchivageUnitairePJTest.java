@@ -23,6 +23,7 @@ import fr.cirtil.www.saeservice.ArchivageUnitairePJ;
 import fr.cirtil.www.saeservice.ArchivageUnitairePJResponseType;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.services.capture.SAECaptureService;
+import fr.urssaf.image.sae.services.capture.model.CaptureResult;
 import fr.urssaf.image.sae.webservices.util.XMLStreamUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -60,13 +61,15 @@ public class ArchivageUnitairePJTest {
 
       List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
       metadatas.add(EasyMock.anyObject(UntypedMetadata.class));
+      CaptureResult captureResult = new CaptureResult();
+      captureResult.setIdDoc(UUID
+            .fromString("110E8400-E29B-11D4-A716-446655440000"));
 
       try {
          EasyMock
                .expect(
                      captureService.capture(metadatas, EasyMock
-                           .anyObject(URI.class))).andReturn(
-                     UUID.fromString("110E8400-E29B-11D4-A716-446655440000"));
+                           .anyObject(URI.class))).andReturn(captureResult);
       } catch (Exception e) {
          throw new NestableRuntimeException(e);
       }
@@ -81,6 +84,9 @@ public class ArchivageUnitairePJTest {
 
       List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
       metadatas.add(EasyMock.anyObject(UntypedMetadata.class));
+      CaptureResult captureResult = new CaptureResult();
+      captureResult.setIdDoc(UUID
+            .fromString("110E8400-E29B-11D4-A716-446655440000"));
 
       DataHandler content = EasyMock.notNull();
 
@@ -88,8 +94,7 @@ public class ArchivageUnitairePJTest {
 
          EasyMock.expect(
                captureService.captureBinaire(metadatas, content, EasyMock
-                     .anyObject(String.class))).andReturn(
-               UUID.fromString("110E8400-E29B-11D4-A716-446655440000"));
+                     .anyObject(String.class))).andReturn(captureResult);
       } catch (Exception e) {
          throw new NestableRuntimeException(e);
       }

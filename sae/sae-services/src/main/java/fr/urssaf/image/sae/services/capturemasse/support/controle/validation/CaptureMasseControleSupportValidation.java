@@ -24,9 +24,9 @@ import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
 @Aspect
 public class CaptureMasseControleSupportValidation {
 
-  private static final String ARGUMENT_REQUIRED = "argument.required";
+   private static final String ARGUMENT_REQUIRED = "argument.required";
 
-   private static final String CONTROLE = "execution(void fr.urssaf.image.sae.services.capturemasse.support.controle.CaptureMasseControleSupport.controleSAEDocument(*,*))"
+   private static final String CONTROLE = "execution(fr.urssaf.image.sae.services.capturemasse.support.controle.model.CaptureMasseControlResult fr.urssaf.image.sae.services.capturemasse.support.controle.CaptureMasseControleSupport.controleSAEDocument(*,*))"
          + " && args(document,ecdeDirectory)";
 
    private static final String CONTROLE_STCK = "execution(void fr.urssaf.image.sae.services.capturemasse.support.controle.CaptureMasseControleSupport.controleSAEDocumentStockage(*))"

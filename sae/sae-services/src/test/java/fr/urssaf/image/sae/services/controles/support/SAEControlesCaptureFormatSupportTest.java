@@ -121,7 +121,7 @@ public class SAEControlesCaptureFormatSupportTest {
 
       // Appel de la méthode à tester
       ControleFormatSucces resultatControle = controleFormatSupport
-            .checkFormat(saeDocument, listControlProfil);
+            .checkFormat("junit", saeDocument, listControlProfil);
 
       // Vérification du résultat attendu
       Assert
@@ -168,7 +168,7 @@ public class SAEControlesCaptureFormatSupportTest {
       try {
 
          // Appel de la méthode
-         controleFormatSupport.checkFormat(saeDocument, listControlProfil);
+         controleFormatSupport.checkFormat("junit", saeDocument, listControlProfil);
 
          // Le test échoue si on arrive ici : on aurait dû avoir une exception
          Assert.fail("On aurait dû avoir une levée d'exception");
@@ -216,7 +216,7 @@ public class SAEControlesCaptureFormatSupportTest {
       try {
 
          // Appel de la méthode
-         controleFormatSupport.checkFormat(saeDocument, listControlProfil);
+         controleFormatSupport.checkFormat("junit", saeDocument, listControlProfil);
 
          // Le test échoue si on arrive ici : on aurait dû avoir une exception
          Assert.fail("On aurait dû avoir une levée d'exception");
@@ -259,7 +259,7 @@ public class SAEControlesCaptureFormatSupportTest {
 
       // Appel de la méthode à tester
       ControleFormatSucces resultatControle = controleFormatSupport
-            .checkFormat(saeDocument, listControlProfil);
+            .checkFormat("junit", saeDocument, listControlProfil);
 
       // Vérification du résultat attendu
       Assert
@@ -311,7 +311,7 @@ public class SAEControlesCaptureFormatSupportTest {
       try {
 
          // Appel de la méthode
-         controleFormatSupport.checkFormat(saeDocument, listControlProfil);
+         controleFormatSupport.checkFormat("junit", saeDocument, listControlProfil);
 
          // Le test échoue si on arrive ici : on aurait dû avoir une exception
          Assert.fail("On aurait dû avoir une levée d'exception");
@@ -391,7 +391,7 @@ public class SAEControlesCaptureFormatSupportTest {
 
       // Appel de la méthode à tester
       ControleFormatSucces resultatControle = controleFormatSupport
-            .checkFormat(saeDocument, listControlProfil);
+            .checkFormat("junit", saeDocument, listControlProfil);
 
       // Vérification du résultat attendu
       Assert
@@ -466,7 +466,7 @@ public class SAEControlesCaptureFormatSupportTest {
 
       // Appel de la méthode à tester
       ControleFormatSucces resultatControle = controleFormatSupport
-            .checkFormat(saeDocument, listControlProfil);
+            .checkFormat("junit", saeDocument, listControlProfil);
 
       // Vérification du résultat attendu
       Assert
@@ -543,7 +543,7 @@ public class SAEControlesCaptureFormatSupportTest {
 
       // Appel de la méthode à tester
       ControleFormatSucces resultatControle = controleFormatSupport
-            .checkFormat(saeDocument, listControlProfil);
+            .checkFormat("junit", saeDocument, listControlProfil);
 
       // Vérification du résultat attendu
       Assert
@@ -592,7 +592,7 @@ public class SAEControlesCaptureFormatSupportTest {
       try {
 
          // Appel de la méthode
-         controleFormatSupport.checkFormat(saeDocument, listControlProfil);
+         controleFormatSupport.checkFormat("junit", saeDocument, listControlProfil);
 
          // Le test échoue si on arrive ici : on aurait dû avoir une exception
          Assert.fail("On aurait dû avoir une levée d'exception");
@@ -639,7 +639,7 @@ public class SAEControlesCaptureFormatSupportTest {
       try {
 
          // Appel de la méthode
-         controleFormatSupport.checkFormat(saeDocument, listControlProfil);
+         controleFormatSupport.checkFormat("junit", saeDocument, listControlProfil);
 
          // Le test échoue si on arrive ici : on aurait dû avoir une exception
          Assert.fail("On aurait dû avoir une levée d'exception");
@@ -688,7 +688,7 @@ public class SAEControlesCaptureFormatSupportTest {
       try {
 
          // Appel de la méthode
-         controleFormatSupport.checkFormat(saeDocument, listControlProfil);
+         controleFormatSupport.checkFormat("junit", saeDocument, listControlProfil);
 
          // Le test échoue si on arrive ici : on aurait dû avoir une exception
          Assert.fail("On aurait dû avoir une levée d'exception");
@@ -735,7 +735,7 @@ public class SAEControlesCaptureFormatSupportTest {
 
       // Appel de la méthode à tester
       ControleFormatSucces resultatControle = controleFormatSupport
-            .checkFormat(saeDocument, listControlProfil);
+            .checkFormat("junit", saeDocument, listControlProfil);
 
       // Vérification du résultat attendu
       Assert
@@ -783,7 +783,7 @@ public class SAEControlesCaptureFormatSupportTest {
 
       // Appel de la méthode à tester
       ControleFormatSucces resultatControle = controleFormatSupport
-            .checkFormat(saeDocument, listControlProfil);
+            .checkFormat("junit", saeDocument, listControlProfil);
 
       // Vérification du résultat attendu
       Assert
@@ -830,7 +830,7 @@ public class SAEControlesCaptureFormatSupportTest {
 
       // Appel de la méthode à tester
       ControleFormatSucces resultatControle = controleFormatSupport
-            .checkFormat(saeDocument, listControlProfil);
+            .checkFormat("junit", saeDocument, listControlProfil);
 
       // Vérification du résultat attendu
       Assert
@@ -877,7 +877,7 @@ public class SAEControlesCaptureFormatSupportTest {
 
       // Appel de la méthode à tester
       ControleFormatSucces resultatControle = controleFormatSupport
-            .checkFormat(saeDocument, listControlProfil);
+            .checkFormat("junit", saeDocument, listControlProfil);
 
       // Vérification du résultat attendu
       Assert
@@ -925,7 +925,7 @@ public class SAEControlesCaptureFormatSupportTest {
 
       // Appel de la méthode à tester
       ControleFormatSucces resultatControle = controleFormatSupport
-            .checkFormat(saeDocument, listControlProfil);
+            .checkFormat("junit", saeDocument, listControlProfil);
 
       // Vérification du résultat attendu
       Assert
@@ -973,7 +973,7 @@ public class SAEControlesCaptureFormatSupportTest {
       // Appel de la méthode à tester
       try {
 
-         controleFormatSupport.checkFormat(saeDocument, listControlProfil);
+         controleFormatSupport.checkFormat("junit", saeDocument, listControlProfil);
 
          // Le test échoue si on arrive ici : on aurait dû avoir une exception
          Assert.fail("On aurait dû avoir une levée d'exception");

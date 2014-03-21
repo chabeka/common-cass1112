@@ -2,6 +2,7 @@ package fr.urssaf.image.sae.services.document.commons;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
+import fr.urssaf.image.sae.services.capture.model.CaptureResult;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.EmptyDocumentEx;
@@ -39,6 +40,8 @@ public interface SAECommonCaptureService {
     * @param untypedDocument
     *           : Classe représentant un document non typé
     *           {@link StorageDocument}
+    * @param captureResult
+    *           résultat de la capture
     * @return Classe représentant un document archivable.
     * @throws RequiredStorageMetadataEx
     *            {@link RequiredStorageMetadataEx}.
@@ -74,13 +77,14 @@ public interface SAECommonCaptureService {
     *            {@link ValidationExceptionInvalidFile}
     */
    StorageDocument buildStorageDocumentForCapture(
-         UntypedDocument untypedDocument) throws RequiredStorageMetadataEx,
-         InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
-         DuplicatedMetadataEx, NotArchivableMetadataEx, EmptyDocumentEx,
-         RequiredArchivableMetadataEx, SAEEnrichmentEx, UnknownHashCodeEx,
-         ReferentialRndException, UnknownCodeRndEx, NotSpecifiableMetadataEx,
-         SAECaptureServiceEx, MetadataValueNotInDictionaryEx,
-         UnknownFormatException, ValidationExceptionInvalidFile;
+         UntypedDocument untypedDocument, CaptureResult captureResult)
+         throws RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx,
+         UnknownMetadataEx, DuplicatedMetadataEx, NotArchivableMetadataEx,
+         EmptyDocumentEx, RequiredArchivableMetadataEx, SAEEnrichmentEx,
+         UnknownHashCodeEx, ReferentialRndException, UnknownCodeRndEx,
+         NotSpecifiableMetadataEx, SAECaptureServiceEx,
+         MetadataValueNotInDictionaryEx, UnknownFormatException,
+         ValidationExceptionInvalidFile;
 
    /**
     * Cette méthode permet de construire un StorageDocument à partir d’un
@@ -96,6 +100,8 @@ public interface SAECommonCaptureService {
     * @param untypedDocument
     *           : Classe représentant un document non typé
     *           {@link StorageDocument}
+    * @param captureResult
+    *           résultat de la capture
     * @return Classe représentant un document archivable.
     * @throws RequiredStorageMetadataEx
     *            {@link RequiredStorageMetadataEx}.
@@ -134,13 +140,13 @@ public interface SAECommonCaptureService {
     * 
     */
    StorageDocument buildBinaryStorageDocumentForCapture(
-         UntypedDocument untypedDocument) throws RequiredStorageMetadataEx,
-         InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
-         EmptyFileNameEx, DuplicatedMetadataEx, NotArchivableMetadataEx,
-         EmptyDocumentEx, RequiredArchivableMetadataEx, SAEEnrichmentEx,
-         UnknownHashCodeEx, ReferentialRndException, UnknownCodeRndEx,
-         NotSpecifiableMetadataEx, SAECaptureServiceEx,
-         MetadataValueNotInDictionaryEx, UnknownFormatException,
-         ValidationExceptionInvalidFile;
+         UntypedDocument untypedDocument, CaptureResult captureResult)
+         throws RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx,
+         UnknownMetadataEx, EmptyFileNameEx, DuplicatedMetadataEx,
+         NotArchivableMetadataEx, EmptyDocumentEx,
+         RequiredArchivableMetadataEx, SAEEnrichmentEx, UnknownHashCodeEx,
+         ReferentialRndException, UnknownCodeRndEx, NotSpecifiableMetadataEx,
+         SAECaptureServiceEx, MetadataValueNotInDictionaryEx,
+         UnknownFormatException, ValidationExceptionInvalidFile;
 
 }

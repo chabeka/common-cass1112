@@ -80,7 +80,7 @@ public class TracesServicesSupport {
             traceToCreate.setCodeEvt(Constantes.TRACE_CODE_EVT_ECHEC_CM);
 
             // Contexte
-            traceToCreate.setContexte("captureMasse");
+            traceToCreate.setContexte(Constantes.CONTEXTE_CAPTURE_MASSE);
 
             // Le détail des exceptions survenues
             String exceptionsAsString = buildStackTrace(jobExecution);

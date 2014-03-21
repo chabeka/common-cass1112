@@ -143,6 +143,11 @@ public final class Constantes {
    public static final String COUNT_DIRECTION = "capture.masse.count.element.redirection";
 
    /**
+    * Traçabilité : contexte pour la capture de masse
+    */
+   public static final String CONTEXTE_CAPTURE_MASSE = "captureMasse";
+
+   /**
     * Constructeur
     */
    private Constantes() {
