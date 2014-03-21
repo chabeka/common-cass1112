@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -132,12 +131,6 @@ public class FormatIdentificationServiceImpl implements
                request.getFileName(), idPronom);
       } finally {
          request.close();
-      }
-
-      // si le code pronom n'est pas trouvé, il y a un soucis. Exception
-      if (StringUtils.isEmpty(idPronom)) {
-         throw new FormatIdentificationRuntimeException(
-               "Le code pronom n'a pas pu être déterminé");
       }
 
       // Renvoie du format identifié

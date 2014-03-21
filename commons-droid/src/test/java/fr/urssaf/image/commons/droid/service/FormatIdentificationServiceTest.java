@@ -1,7 +1,6 @@
 package fr.urssaf.image.commons.droid.service;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,6 +10,7 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -82,16 +82,6 @@ public class FormatIdentificationServiceTest {
 
    }
 
-   @Test(expected = FormatIdentificationRuntimeException.class)
-   public void test_Xml_SansEnTete() throws IOException {
-
-      String cheminFichier = getRessourceFilePath("/jeuTest/FichierXml2.xml");
-      File file = new File(cheminFichier);
-
-      formatIdService.identifie(file);
-
-   }
-
    @Test
    public void test_FichierPdf() throws IOException {
 
@@ -141,6 +131,25 @@ public class FormatIdentificationServiceTest {
 
       assertEquals("Le format identifié n'est pas celui attendu", "x-fmt/263",
             idPronom);
+
+   }
+
+   /**
+    * Cas de test : Identification d'un fichier pour lequel Droid ne peut pas
+    * déterminer le code Pronom.<br>
+    * <br>
+    * Résultat attendu : l'identifiant Pronom renvoyé est vide, pas de levée
+    * d'exception
+    */
+   @Test
+   public void test_IdPronomNonTrouve() throws IOException {
+
+      String cheminFichier = getRessourceFilePath("/jeuTest/non_identifie_fichier_texte_renomme_en_pdf.pdf");
+      File file = new File(cheminFichier);
+
+      String idPronom = formatIdService.identifie(file);
+
+      Assert.assertNull("L'identifiant Pronom devrait être null", idPronom);
 
    }
 
