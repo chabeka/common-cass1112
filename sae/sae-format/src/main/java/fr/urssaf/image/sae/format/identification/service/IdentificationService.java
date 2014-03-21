@@ -9,51 +9,57 @@ import fr.urssaf.image.sae.format.identification.exceptions.IdentifierInitialisa
 import fr.urssaf.image.sae.format.identification.identifiers.model.IdentificationResult;
 
 /**
- * Interface décrivant les opérations d’identification possibles.
+ * Interface décrivant les opérations d'identification possibles.
  * 
  */
 public interface IdentificationService {
 
    /**
-    * Méthode permettant d’identifier un fichier.
+    * Méthode permettant d'identifier un fichier.
     * 
     * @param idFormat
     *           Identifiant du format souhaité. <br>
-    *           C’est en générale la valeur se trouvant au niveau des
-    *           métadonnées « FormatFichier »<br>
+    *           C'est en générale la valeur se trouvant au niveau des
+    *           métadonnées "FormatFichier"<br>
     *           Paramètre obligatoire.
     * @param fichier
     *           Le fichier à identifier Paramètre obligatoire.
-    * @return Objet contenant le résultat de l’identification
+    * @return Objet contenant le résultat de l'identification
     * @throws UnknownFormatException
-    *            : Le format demandé n’existe pas en base
+    *            Le format demandé n’existe pas en base
     * @throws IdentifierInitialisationException
-    *            : Impossible d’instancier l’identificateur
+    *            Impossible d’instancier l'identificateur
     * @throws IOException
-    *            : Une exception s’est produite au niveau de l’outil
-    *            d’identification           
+    *            Une exception s'est produite au niveau de l'outil
+    *            d'identification
     */
    IdentificationResult identifyFile(String idFormat, File fichier)
-   throws IdentifierInitialisationException, UnknownFormatException, IOException;
+         throws IdentifierInitialisationException, UnknownFormatException,
+         IOException;
 
    /**
     * Identifie un flux.
     * 
     * @param idFormat
     *           Identifiant du format souhaité. <br>
-    *           C’est en générale la valeur se trouvant au niveau des
-    *           métadonnées « FormatFichier »<br>
+    *           C'est en générale la valeur se trouvant au niveau des
+    *           métadonnées "FormatFichier"<br>
     *           Paramètre obligatoire.
     * @param stream
-    *           Un flux correspondant au « fichier » à identifier -Paramètre
+    *           Un flux correspondant au "fichier" à identifier -Paramètre
     *           obligatoire.
-    * @return Objet contenant le résultat de l’identification
+    * @param nomFichier
+    *           Le nom du fichier correspondant au flux. Un des points
+    *           importants est l'extension du fichier, car elle est utilisée par
+    *           le processus d'identification
+    * @return Objet contenant le résultat de l'identification
     * @throws UnknownFormatException
-    *            : Le format demandé n’existe pas en base<br>
+    *            Le format demandé n'existe pas en base
     * @throws IdentifierInitialisationException
-    *            : Impossible d’instancier l’identificateur<br>
+    *            Impossible d'instancier l'identificateur
     */
-   IdentificationResult identifyStream(String idFormat, InputStream stream)
-         throws UnknownFormatException, IdentifierInitialisationException;
+   IdentificationResult identifyStream(String idFormat, InputStream stream,
+         String nomFichier) throws UnknownFormatException,
+         IdentifierInitialisationException;
 
 }

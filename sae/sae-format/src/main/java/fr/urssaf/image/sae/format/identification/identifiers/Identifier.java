@@ -13,17 +13,18 @@ import fr.urssaf.image.sae.format.identification.identifiers.model.Identificatio
 public interface Identifier {
 
    /**
-    * Méthode permettant d’identifier un fichier
+    * Identifie un fichier.
     * 
     * @param idFormat
-    *           : Identifiant du format souhaité. C’est en générale la valeur<br>
-    *           se trouvant au niveau des métadonnées « FormatFichier » <br>
+    *           Identifiant du format souhaité. C'est en général la valeur<br>
+    *           se trouvant au niveau des métadonnées "FormatFichier"<br>
     *           Paramètre obligatoire.
     * @param fichier
-    *           : Le fichier à identifier - paramètre obligatoire
+    *           Le fichier à identifier - paramètre obligatoire
     * 
-    * @return Objet contenant le résultat de l’identification
-    * @exception IOException : exception liée au fichier
+    * @return Objet contenant le résultat de l'identification
+    * @exception IOException
+    *               exception liée au fichier
     */
    IdentificationResult identifyFile(String idFormat, File fichier)
          throws IOException;
@@ -32,15 +33,20 @@ public interface Identifier {
     * Identifie un flux.
     * 
     * @param idFormat
-    *           : Identifiant du format souhaité. C’est en générale la valeur<br>
-    *           se trouvant au niveau des métadonnées « FormatFichier » <br>
+    *           Identifiant du format souhaité. C'est en générale la valeur<br>
+    *           se trouvant au niveau des métadonnées "FormatFichier"<br>
     *           Paramètre obligatoire.
     * @param stream
-    *           : Un flux correspondant au "fichier" à identifier - paramètre
+    *           Un flux correspondant au "fichier" à identifier - paramètre
     *           obligatoire
+    * @param nomFichier
+    *           Le nom du fichier correspondant au flux. Un des points
+    *           importants est l'extension du fichier, car elle est utilisée par
+    *           le processus d'identification
     * 
-    * @return Objet contenant le résultat de l’identification
+    * @return Objet contenant le résultat de l'identification
     */
-   IdentificationResult identifyStream(String idFormat, InputStream stream);
+   IdentificationResult identifyStream(String idFormat, InputStream stream,
+         String nomFichier);
 
 }

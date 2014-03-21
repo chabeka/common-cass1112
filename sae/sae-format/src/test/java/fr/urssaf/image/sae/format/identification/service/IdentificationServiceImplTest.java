@@ -77,7 +77,7 @@ public class IdentificationServiceImplTest {
 
       // Appel de la méthode à tester
       IdentificationResult result = identificationService.identifyStream(
-            "fmt/354", ressource.getInputStream());
+            "fmt/354", ressource.getInputStream(), "fmt-354.pdf");
 
       // Vérifications
       // On vérifie uniquement que le fichier a été identifié, la partie détails

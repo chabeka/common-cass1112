@@ -134,7 +134,7 @@ public class IdentificationServiceImpl implements IdentificationService {
     */
    @Override
    public final IdentificationResult identifyStream(String idFormat,
-         InputStream stream) throws UnknownFormatException,
+         InputStream stream, String nomFichier) throws UnknownFormatException,
          IdentifierInitialisationException {
 
       // Traces debug - entrée méthode
@@ -150,7 +150,7 @@ public class IdentificationServiceImpl implements IdentificationService {
       // On appel la méthode identifyStream en passant en paramètre le
       // stream et l'idFormat
       IdentificationResult identifResult = identifier.identifyStream(idFormat,
-            stream);
+            stream, nomFichier);
 
       // Traces debug - sortie méthode
       LOGGER.debug(LOG_FIN, prefixeTrc);

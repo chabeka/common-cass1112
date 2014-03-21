@@ -13,7 +13,6 @@ import fr.urssaf.image.sae.format.referentiel.exceptions.ReferentielRuntimeExcep
 import fr.urssaf.image.sae.format.utils.Constantes;
 import fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler;
 
-
 /**
  * Classe de validation des paramètres obligatoires.
  * 
@@ -21,21 +20,17 @@ import fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler;
 @Aspect
 public class ParamIdentification {
 
-   
-   /********************************************************* SERVICE *********************************************************************************/
    private static final String IDENTIFIER_SERVICE_IDENTIFYFILE = "execution(* fr.urssaf.image.sae.format.identification.service.IdentificationService.identifyFile(*,*))"
-      + "&& args(idFormat,fichier)";
+         + "&& args(idFormat,fichier)";
 
-   private static final String IDENTIFIER_SERVICE_IDENTIFYSTREAM = "execution(* fr.urssaf.image.sae.format.identification.service.IdentificationService.identifyStream(*,*))"
-      + "&& args(idFormat,stream)";
+   private static final String IDENTIFIER_SERVICE_IDENTIFYSTREAM = "execution(* fr.urssaf.image.sae.format.identification.service.IdentificationService.identifyStream(*,*,*))"
+         + "&& args(idFormat,stream,nomFichier)";
 
-  
-   /********************************************************* DAO + SUPPORT *********************************************************************************/
    private static final String IDENTIFIER_IDENTIFYFILE = "execution(* fr.urssaf.image.sae.format.identification.identifiers.Identifier.identifyFile(*,*))"
-      + "&& args(idFormat,fichier)";
+         + "&& args(idFormat,fichier)";
 
-   private static final String IDENTIFIER_IDENTIFYSTREAM = "execution(* fr.urssaf.image.sae.format.identification.identifiers.Identifier.identifyStream(*,*))"
-      + "&& args(idFormat,stream)";
+   private static final String IDENTIFIER_IDENTIFYSTREAM = "execution(* fr.urssaf.image.sae.format.identification.identifiers.Identifier.identifyStream(*,*,*))"
+         + "&& args(idFormat,stream,nomFichier)";
 
    /**
     * Vérification des paramètres de la méthode "identifyFile" de la classe
@@ -61,14 +56,16 @@ public class ParamIdentification {
     *           identifiant du format souhaité
     * @param stream
     *           le flux à identifier
+    * @param nomFichier
+    *           le nom du fichier correspondant au stream
     */
    @Before(IDENTIFIER_SERVICE_IDENTIFYSTREAM)
    public final void validIdentifyStreamFromIdentifierService(String idFormat,
-         InputStream stream) {
+         InputStream stream, String nomFichier) {
 
-      genererExceptionStream(idFormat, stream);
+      genererExceptionStream(idFormat, stream, nomFichier);
    }
-   
+
    /**
     * Vérification des paramètres de la méthode "identifyFile" de la classe
     * Identifier Vérification du String idFormat donné en paramètre<br>
@@ -92,12 +89,15 @@ public class ParamIdentification {
     *           identifiant du format souhaité
     * @param stream
     *           le flux à identifier
+    * @param nomFichier
+    *           le nom du fichier correspondant au stream
     */
    @Before(IDENTIFIER_IDENTIFYSTREAM)
-   public final void identifyStream(String idFormat, InputStream stream) {
-      genererExceptionStream(idFormat, stream);
+   public final void identifyStream(String idFormat, InputStream stream,
+         String nomFichier) {
+      genererExceptionStream(idFormat, stream, nomFichier);
    }
-   
+
    private void genererExceptionFile(String idFormat, File file) {
 
       List<String> param = new ArrayList<String>();
@@ -109,12 +109,13 @@ public class ParamIdentification {
          param.add(Constantes.FICHIER);
       }
       if (!param.isEmpty()) {
-         throw new ReferentielRuntimeException(SaeFormatMessageHandler.getMessage(
-               Constantes.PARAM_OBLIGATOIRE, param.toString()));
+         throw new ReferentielRuntimeException(SaeFormatMessageHandler
+               .getMessage(Constantes.PARAM_OBLIGATOIRE, param.toString()));
       }
    }
-   
-   private void genererExceptionStream(String idFormat, InputStream stream) {
+
+   private void genererExceptionStream(String idFormat, InputStream stream,
+         String nomFichier) {
 
       List<String> param = new ArrayList<String>();
 
@@ -124,10 +125,13 @@ public class ParamIdentification {
       if (stream == null) {
          param.add(Constantes.STREAM);
       }
+      if (nomFichier == null) {
+         param.add(Constantes.NOMFICHIER);
+      }
       if (!param.isEmpty()) {
-         throw new ReferentielRuntimeException(SaeFormatMessageHandler.getMessage(
-               Constantes.PARAM_OBLIGATOIRE, param.toString()));
+         throw new ReferentielRuntimeException(SaeFormatMessageHandler
+               .getMessage(Constantes.PARAM_OBLIGATOIRE, param.toString()));
       }
    }
-   
+
 }

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -215,7 +216,7 @@ public final class PdfaIdentifierImpl implements Identifier {
     */
    @Override
    public IdentificationResult identifyStream(String idFormat,
-         InputStream stream) {
+         InputStream stream, String nomFichier) {
 
       // TODO commons-droid devrait proposer un service d'identification par
       // Flux
@@ -223,6 +224,10 @@ public final class PdfaIdentifierImpl implements Identifier {
       // Traces debug - entrée méthode
       String prefixeTrc = "identifyStream()";
       LOGGER.debug(LOG_DEBUT, prefixeTrc);
+      LOGGER
+            .debug(
+                  "{} - Demande d'identification d'un flux avec le nom de fichier \"{}\" par rapport à l'identifiant de format {}",
+                  new Object[] { prefixeTrc, nomFichier, idFormat });
 
       // Contrôle de idFormat => seule la valeur fmt/354 est autorisée
       checkIdFormat(idFormat);
@@ -230,10 +235,19 @@ public final class PdfaIdentifierImpl implements Identifier {
       try {
 
          // Création d'un fichier temporaire dans lequel on écrit le flux
+         // Récupère l'extension à partir du nom du fichier passé en paramètre
+         String extension = FilenameUtils.getExtension(nomFichier);
+         if (StringUtils.isBlank(extension)) {
+            extension = "tmp";
+         }
+         extension = ".".concat(extension);
+         // Création d'un fichier temporaire vide avec un nom unique
          File createdFile = File.createTempFile("sae_identifyStream_pdfa_",
-               ".tmp");
+               extension);
+         // Ecrit le flux à identifié dans le fichier temporaire
          FileUtils.copyInputStreamToFile(stream, createdFile);
-         stream.close();
+         // stream.close();
+         // Trace applicative
          LOGGER.debug("{} - Fichier temporaire généré : {}", prefixeTrc,
                createdFile.getAbsolutePath());
 

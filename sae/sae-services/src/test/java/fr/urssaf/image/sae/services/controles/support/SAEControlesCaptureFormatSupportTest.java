@@ -92,6 +92,7 @@ public class SAEControlesCaptureFormatSupportTest {
       ByteArrayDataSource bads = new ByteArrayDataSource(data, "typeMIME");
       DataHandler dataHandler = new DataHandler(bads);
       saeDocument.setContent(dataHandler);
+      saeDocument.setFileName(resource.getFilename());
    }
 
    private void definitCheminFichierDansDocument(SAEDocument saeDocument,

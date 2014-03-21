@@ -158,7 +158,8 @@ public class PdfaIdentifierImplTest {
       IdentificationResult result;
       try {
          // Appel de la méthode à tester
-         result = pdfaIdentifier.identifyStream("fmt/354", inputStream);
+         result = pdfaIdentifier.identifyStream("fmt/354", inputStream,
+               fichierRessource);
       } finally {
          if (inputStream != null) {
             inputStream.close();
@@ -275,6 +276,39 @@ public class PdfaIdentifierImplTest {
                      ex.getMessage());
 
       }
+
+   }
+
+   /**
+    * Cas de test : Identification PDF/A1b pour un stream issu d'un fichier
+    * texte qui doit être détecté par Droid comme un x-fmt/111.<br>
+    * Pour cela, Droid a besoin de connaître l'extension du fichier qu'il
+    * analyse, sinon pour ce cas il n'est pas capable de déterminer le code
+    * Pronom (cas du fichier texte).<br>
+    * Or, l'analyse par Stream passe par l'écriture d'un fichier temporaire,
+    * dont l'extension doit être la même que celle du fichier dont a été tiré le
+    * stream.<br>
+    * Ce test couvre le problème décrit dans le Redmine 5416.<br>
+    * <br>
+    * Résultat attendu : L'identification est négative, et surtout sans plantage
+    */
+   @Test
+   public void identifyStream_success_FichierTexte_LextensionCompte()
+         throws IOException {
+
+      // Récupération du fichier de test depuis les ressources
+      ClassPathResource ressource = new ClassPathResource(
+            "/identification/x-fmt-111.txt");
+
+      // Appel de la méthode à tester
+      IdentificationResult result = pdfaIdentifier.identifyStream("fmt/354",
+            ressource.getInputStream(), "x-fmt-111.txt");
+
+      // Vérifications
+
+      // Résultat final : le fichier ne doit pas être identifié
+      Assert.assertFalse("Le fichier aurait dû être identifié", result
+            .isIdentified());
 
    }
 

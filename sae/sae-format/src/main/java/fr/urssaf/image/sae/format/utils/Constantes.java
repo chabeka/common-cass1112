@@ -53,6 +53,7 @@ public final class Constantes {
    public static final String FILE_NOT_FOUND = "erreur.file.not.found";
    public static final String FICHIER = "fichier";
    public static final String STREAM = "stream";
+   public static final String NOMFICHIER = "nomFichier";
    
    public static final String FMT_354 = "fmt/354";
 

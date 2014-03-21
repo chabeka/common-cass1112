@@ -248,7 +248,7 @@ public final class SAEControlesCaptureFormatSupport {
             // On travaille avec un flux
             InputStream inputStream = saeDocument.getContent().getInputStream();
             result = identificationService.identifyStream(formatProfil
-                  .getFileFormat(), inputStream);
+                  .getFileFormat(), inputStream, saeDocument.getFileName());
             resultatControle.setIdentificationRealisee(Boolean.TRUE);
 
          }
