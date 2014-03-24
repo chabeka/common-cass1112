@@ -1,7 +1,7 @@
 /**
  * 
  */
-package fr.urssaf.image.sae.services.util;
+package fr.urssaf.image.sae.services.capturemasse.utils;
 
 import java.io.InputStream;
 
@@ -29,8 +29,8 @@ import org.springframework.oxm.Unmarshaller;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
+import fr.urssaf.image.sae.services.capturemasse.model.SaeComposantVirtuelType;
 import fr.urssaf.image.sae.services.capturemasse.modele.commun_sommaire_et_resultat.ComposantDocumentVirtuelType;
-import fr.urssaf.image.sae.services.model.SaeComposantVirtuelType;
 
 /**
  * Classe permettant de réaliser la lecture du fichier sommaire.xml dans le cas

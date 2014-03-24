@@ -92,6 +92,49 @@
    </build>
 
 
-   <dependencies />
+   <dependencies>
+   
+      <!-- SPRING -->
+      <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-beans</artifactId>
+         <version>${spring.framework.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-context</artifactId>
+         <version>${spring.framework.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-test</artifactId>
+         <version>${spring.framework.version}</version>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-oxm</artifactId>
+         <version>${spring.framework.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-tx</artifactId>
+         <version>${spring.framework.version}</version>
+      </dependency>
+
+      <!-- Spring Batch -->
+      <dependency>
+         <groupId>org.springframework.batch</groupId>
+         <artifactId>spring-batch-core</artifactId>
+         <version>${spring.batch.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.springframework.batch</groupId>
+         <artifactId>spring-batch-test</artifactId>
+         <version>${spring.batch.version}</version>
+         <scope>test</scope>
+      </dependency>
+   
+   </dependencies>
 
 </project>

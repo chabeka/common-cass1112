@@ -1,7 +1,7 @@
 /**
  * 
  */
-package fr.urssaf.image.sae.services.model;
+package fr.urssaf.image.sae.services.capturemasse.model;
 
 import fr.urssaf.image.sae.services.capturemasse.modele.commun_sommaire_et_resultat.ComposantDocumentVirtuelType;
 
