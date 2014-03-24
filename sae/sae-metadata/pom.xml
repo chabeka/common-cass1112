@@ -103,6 +103,9 @@
             <inherited>true</inherited>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>aspectj-maven-plugin</artifactId>
+            <configuration>
+               <argumentFileName>builddef-sae-metadata.lst</argumentFileName>
+            </configuration>
          </plugin>
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>

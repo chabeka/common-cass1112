@@ -74,8 +74,8 @@ public class SaeMetaDataServiceImpl implements SaeMetaDataService {
             .getLongCode());
       serviceProviderSupport.connect();
       // création de la métadonnée dans DFCE
-      serviceProviderSupport.getBaseAdministrationService().updateBase(
-            createBase(metadata));
+      Base base = createBase(metadata);
+      serviceProviderSupport.getBaseAdministrationService().updateBase(base);
 
       // si l'insertion dans DFCE s'est bien passé on créé la métadonné dans le
       // SAE
