@@ -87,31 +87,29 @@ public final class SAEControlesCaptureFormatSupport {
       // Objet de résultat
       ControleFormatSucces resultatControle = new ControleFormatSucces();
 
+      // Récupère la valeur de la métadonnée "FormatFichier"
+      LOGGER.debug("{} - Lecture de la métadonnée FormatFichier", prefixeTrc);
+      String fileFormat = findMetadataValue("FormatFichier", saeDocument
+            .getMetadatas());
+      if (StringUtils.isBlank(fileFormat)) {
+         throw new UnknownFormatException(
+               "La métadonnée FormatFichier n'est pas renseignée : impossible de continuer le contrôle sur le format de fichier");
+      }
+      LOGGER.debug("{} - Valeur de la métadonnée FormatFichier : {}",
+            prefixeTrc, fileFormat);
+
+      // Vérifie que le format existe dans le référentiel des formats
+      LOGGER
+            .debug(
+                  "{} - Vérifie que la valeur de la métadonnée FormatFichier existe dans le référentiel des formats",
+                  prefixeTrc);
+      if (!referentielFormatService.exists(fileFormat)) {
+         throw new UnknownFormatException(ResourceMessagesUtils.loadMessage(
+               "capture.format.format.inconnnu", fileFormat));
+      }
+
       // On ne continue que s'il y a au moins 1 profil de contrôle dans la liste
       if (CollectionUtils.isNotEmpty(controlProfilSet)) {
-
-         // Récupère la valeur de la métadonnée "FormatFichier"
-         LOGGER
-               .debug("{} - Lecture de la métadonnée FormatFichier", prefixeTrc);
-         String fileFormat = findMetadataValue("FormatFichier", saeDocument
-               .getMetadatas());
-         if (StringUtils.isBlank(fileFormat)) {
-            throw new UnknownFormatException(
-                  "La métadonnée FormatFichier n'est pas renseignée : impossible de continuer le contrôle sur le format de fichier");
-         }
-         LOGGER.debug("{} - Valeur de la métadonnée FormatFichier : {}",
-               prefixeTrc, fileFormat);
-
-         // Vérification que la métadonnée FormatFichier fait bien partie des
-         // valeurs disponibles dans le référentiel des formats
-         LOGGER
-               .debug(
-                     "{} - Vérifie que la valeur de la métadonnée FormatFichier existe dans le référentiel des formats",
-                     prefixeTrc);
-         if (!referentielFormatService.exists(fileFormat)) {
-            throw new UnknownFormatException(ResourceMessagesUtils.loadMessage(
-                  "capture.format.format.inconnnu", fileFormat));
-         }
 
          // Sélection du profil
          LOGGER.debug(

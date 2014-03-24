@@ -266,11 +266,10 @@ public class SAECaptureServiceTest {
     * Cas de test : On tente un archivage unitaire en passant dans la métadonnée
     * FormatFichier un identifiant de format qui n'existe pas dans le
     * référentiel des formats.<br>
-    * Résultat attendu : A DEFINIR (Redmine 5391)
+    * Résultat attendu : Exception de type UnknownFormatException
     * 
     */
    @Test
-   @Ignore("A réactiver lors du traitement du Redmine 5391")
    public void captureErreurFormat() throws IOException {
 
       EcdeTestDocument ecde = ecdeTestTools

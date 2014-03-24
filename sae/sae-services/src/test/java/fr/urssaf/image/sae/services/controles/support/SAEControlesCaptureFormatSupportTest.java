@@ -115,6 +115,7 @@ public class SAEControlesCaptureFormatSupportTest {
 
       // Construit l'objet Document avec le minimum requis pour le test
       SAEDocument saeDocument = buildSaeDocument();
+      ajouteMeta(saeDocument, "FormatFichier", "fmt/354");
 
       // Construit une liste de profil vide, cad le mininum requis pour le test
       List<FormatControlProfil> listControlProfil = new ArrayList<FormatControlProfil>();
@@ -168,7 +169,8 @@ public class SAEControlesCaptureFormatSupportTest {
       try {
 
          // Appel de la méthode
-         controleFormatSupport.checkFormat("junit", saeDocument, listControlProfil);
+         controleFormatSupport.checkFormat("junit", saeDocument,
+               listControlProfil);
 
          // Le test échoue si on arrive ici : on aurait dû avoir une exception
          Assert.fail("On aurait dû avoir une levée d'exception");
@@ -216,7 +218,8 @@ public class SAEControlesCaptureFormatSupportTest {
       try {
 
          // Appel de la méthode
-         controleFormatSupport.checkFormat("junit", saeDocument, listControlProfil);
+         controleFormatSupport.checkFormat("junit", saeDocument,
+               listControlProfil);
 
          // Le test échoue si on arrive ici : on aurait dû avoir une exception
          Assert.fail("On aurait dû avoir une levée d'exception");
@@ -228,6 +231,52 @@ public class SAEControlesCaptureFormatSupportTest {
                .assertEquals(
                      "Le message de l'exception n'est pas celui attendu",
                      "Le format du fichier n'existe pas dans le référentiel : fmt/inexistant",
+                     e.getMessage());
+
+      } catch (ValidationExceptionInvalidFile e) {
+
+         Assert
+               .fail("L'exception attendue était une UnknownFormatException alors qu'on a obtenu : "
+                     + e);
+
+      }
+
+   }
+
+   /**
+    * Cas de test : La métadonnée FormatFichier fait référence à un format de
+    * fichier inexistant dans le référentiel des formats. De plus, aucun profil
+    * de contrôle n'est passé à la méthode<br>
+    * Résultat attendu : Levée d'une exception UnknownFormatException avec un
+    * message précis.
+    */
+   @Test
+   public final void checkFormat_failure_FormatInexistantDansReferentiel2() {
+
+      // Construit l'objet Document avec le minimum requis pour le test
+      SAEDocument saeDocument = buildSaeDocument();
+      ajouteMeta(saeDocument, "FormatFichier", "fmt/inexistant2");
+
+      // Construit une liste de profil avec au moins 1 profil
+      List<FormatControlProfil> listControlProfil = new ArrayList<FormatControlProfil>();
+
+      // Appel de la méthode à tester
+      try {
+
+         // Appel de la méthode
+         controleFormatSupport.checkFormat("junit", saeDocument,
+               listControlProfil);
+
+         // Le test échoue si on arrive ici : on aurait dû avoir une exception
+         Assert.fail("On aurait dû avoir une levée d'exception");
+
+      } catch (UnknownFormatException e) {
+
+         // Contrôle le message de l'exception
+         Assert
+               .assertEquals(
+                     "Le message de l'exception n'est pas celui attendu",
+                     "Le format du fichier n'existe pas dans le référentiel : fmt/inexistant2",
                      e.getMessage());
 
       } catch (ValidationExceptionInvalidFile e) {
@@ -311,7 +360,8 @@ public class SAEControlesCaptureFormatSupportTest {
       try {
 
          // Appel de la méthode
-         controleFormatSupport.checkFormat("junit", saeDocument, listControlProfil);
+         controleFormatSupport.checkFormat("junit", saeDocument,
+               listControlProfil);
 
          // Le test échoue si on arrive ici : on aurait dû avoir une exception
          Assert.fail("On aurait dû avoir une levée d'exception");
@@ -592,7 +642,8 @@ public class SAEControlesCaptureFormatSupportTest {
       try {
 
          // Appel de la méthode
-         controleFormatSupport.checkFormat("junit", saeDocument, listControlProfil);
+         controleFormatSupport.checkFormat("junit", saeDocument,
+               listControlProfil);
 
          // Le test échoue si on arrive ici : on aurait dû avoir une exception
          Assert.fail("On aurait dû avoir une levée d'exception");
@@ -639,7 +690,8 @@ public class SAEControlesCaptureFormatSupportTest {
       try {
 
          // Appel de la méthode
-         controleFormatSupport.checkFormat("junit", saeDocument, listControlProfil);
+         controleFormatSupport.checkFormat("junit", saeDocument,
+               listControlProfil);
 
          // Le test échoue si on arrive ici : on aurait dû avoir une exception
          Assert.fail("On aurait dû avoir une levée d'exception");
@@ -688,7 +740,8 @@ public class SAEControlesCaptureFormatSupportTest {
       try {
 
          // Appel de la méthode
-         controleFormatSupport.checkFormat("junit", saeDocument, listControlProfil);
+         controleFormatSupport.checkFormat("junit", saeDocument,
+               listControlProfil);
 
          // Le test échoue si on arrive ici : on aurait dû avoir une exception
          Assert.fail("On aurait dû avoir une levée d'exception");
@@ -973,7 +1026,8 @@ public class SAEControlesCaptureFormatSupportTest {
       // Appel de la méthode à tester
       try {
 
-         controleFormatSupport.checkFormat("junit", saeDocument, listControlProfil);
+         controleFormatSupport.checkFormat("junit", saeDocument,
+               listControlProfil);
 
          // Le test échoue si on arrive ici : on aurait dû avoir une exception
          Assert.fail("On aurait dû avoir une levée d'exception");
