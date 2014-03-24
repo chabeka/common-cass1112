@@ -59,7 +59,6 @@ import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException
 import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.services.exception.format.validation.ValidationExceptionInvalidFile;
 import fr.urssaf.image.sae.services.exception.suppression.SuppressionException;
-import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
@@ -105,7 +104,9 @@ public class SAESuppressionServiceTest {
    }
 
    @Before
-   public void init() throws ConnectionServiceEx {
+   public void init() throws Exception {
+
+      server.resetData();
 
       provider.openConnexion();
 
