@@ -3,16 +3,8 @@
  */
 package fr.urssaf.image.sae.utils;
 
-import javax.xml.bind.JAXBElement;
-
 import org.easymock.EasyMock;
-import org.springframework.batch.item.ItemProcessor;
 
-import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
-import fr.urssaf.image.sae.services.capturemasse.modele.commun_sommaire_et_resultat.DocumentType;
-import fr.urssaf.image.sae.services.capturemasse.support.controle.CaptureMasseControleSupport;
-import fr.urssaf.image.sae.services.capturemasse.support.stockage.interruption.InterruptionTraitementMasseSupport;
-import fr.urssaf.image.sae.services.controles.SAEControleSupportService;
 import fr.urssaf.image.sae.services.document.SAEDocumentService;
 import fr.urssaf.image.sae.services.enrichment.SAEEnrichmentMetadataService;
 import fr.urssaf.image.sae.storage.dfce.manager.DFCEServicesManager;
@@ -33,15 +25,6 @@ public class MockFactoryBean {
     */
    public final StorageDocumentService createStorageDocumentService() {
       return EasyMock.createMock(StorageDocumentService.class);
-   }
-
-   /**
-    * création d'un mock de CaptureMasseControleSupport
-    * 
-    * @return un mock CaptureMasseControleSupport
-    */
-   public final CaptureMasseControleSupport createCaptureMasseControleSupport() {
-      return EasyMock.createMock(CaptureMasseControleSupport.class);
    }
 
    /**
@@ -85,38 +68,12 @@ public class MockFactoryBean {
    }
 
    /**
-    * création d'un mock {@link ItemProcessor}
-    * 
-    * @return un mock ItemProcessor
-    */
-   @SuppressWarnings("unchecked")
-   public final ItemProcessor<JAXBElement<DocumentType>, UntypedDocument> createConvertSommaireProcessor() {
-      return EasyMock.createMock(ItemProcessor.class);
-   }
-
-   /**
     * création d'un mock {@link SAEDocumentService}
     * 
     * @return un mock SAEDocumentService
     */
    public final SAEDocumentService createSaeDocumentService() {
       return EasyMock.createMock(SAEDocumentService.class);
-   }
-
-   /**
-    * 
-    * @return instance de {@link InterruptionTraitementMasseSupport}
-    */
-   public final InterruptionTraitementMasseSupport createInterruptionTraitementMasseSupport() {
-      return EasyMock.createMock(InterruptionTraitementMasseSupport.class);
-   }
-
-   /**
-    * 
-    * @return instance de {@link SAEControleSupportService}
-    */
-   public final SAEControleSupportService createControleSupportService() {
-      return EasyMock.createMock(SAEControleSupportService.class);
    }
 
 }

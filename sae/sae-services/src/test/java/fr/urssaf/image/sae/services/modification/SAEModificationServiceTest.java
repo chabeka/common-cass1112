@@ -65,7 +65,6 @@ import fr.urssaf.image.sae.services.exception.modification.NotModifiableMetadata
 import fr.urssaf.image.sae.services.exception.suppression.SuppressionException;
 import fr.urssaf.image.sae.services.suppression.SAESuppressionService;
 import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
-import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
@@ -125,8 +124,10 @@ public class SAEModificationServiceTest {
    }
 
    @Before
-   public void init() throws ConnectionServiceEx {
+   public void init() throws Exception {
 
+      server.resetData();
+      
       provider.openConnexion();
 
       VIContenuExtrait viExtrait = new VIContenuExtrait();

@@ -46,11 +46,4 @@
       <constructor-arg ref="dfceConnection" />
    </bean>
 
-
-   <bean
-      class="fr.urssaf.image.sae.services.capturemasse.listener.EcdeConnexionConfiguration">
-      <property name="delaiAttenteMs" value="${sae.dfce.delai.attente}" />
-      <property name="nbreEssaiMax" value="${sae.dfce.nombre.essai}" />
-   </bean>
-
 </beans>

@@ -19,12 +19,4 @@
    <import resource="applicationContext-sae-mapping.xml" />
    <import resource="applicationContext-sae-ecde-test.xml" />
    
-   <import resource="applicationContext-sae-capture-masse-item.xml" />
-   <import resource="jobs/job-sae-capture-masse-binaire.xml" />
-   <import resource="applicationContext-sae-services-capture-masse-test.xml" />
-   
-   <bean
-      id="traceAssertUtils"
-      class="fr.urssaf.image.sae.services.capturemasse.utils.TraceAssertUtils" />
-   
 </beans>
