@@ -29,8 +29,8 @@ import fr.urssaf.image.sae.services.capturemasse.support.flag.DebutTraitementFla
 import fr.urssaf.image.sae.services.capturemasse.support.flag.FinTraitementFlagSupport;
 import fr.urssaf.image.sae.services.capturemasse.support.flag.model.DebutTraitementFlag;
 import fr.urssaf.image.sae.services.capturemasse.support.resultats.ResultatsFileEchecSupport;
+import fr.urssaf.image.sae.services.capturemasse.utils.XmlReadUtils;
 import fr.urssaf.image.sae.services.capturemasse.verification.VerificationSupport;
-import fr.urssaf.image.sae.services.util.XmlReadUtils;
 
 /**
  * Classe d'implémentation du serivce {@link VerificationSupport}

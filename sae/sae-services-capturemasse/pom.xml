@@ -94,7 +94,29 @@
 
    <dependencies>
    
-      <!-- SPRING -->
+      <!-- SAE -->
+      <dependency>
+         <groupId>fr.urssaf.image.sae</groupId>
+         <artifactId>sae-pile-travaux</artifactId>
+         <version>13.11.0.2-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+         <groupId>fr.urssaf.image.sae</groupId>
+         <artifactId>sae-mapping</artifactId>
+         <version>13.11.0.2-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+         <groupId>fr.urssaf.image.sae</groupId>
+         <artifactId>sae-ecde</artifactId>
+         <version>13.11.0.2-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+         <groupId>fr.urssaf.image.sae</groupId>
+         <artifactId>sae-format</artifactId>
+         <version>13.11.0.2-SNAPSHOT</version>
+      </dependency>
+   
+      <!-- Spring -->
       <dependency>
          <groupId>org.springframework</groupId>
          <artifactId>spring-beans</artifactId>
@@ -134,7 +156,14 @@
          <version>${spring.batch.version}</version>
          <scope>test</scope>
       </dependency>
-   
+      
+      <!-- Apache Commons -->
+      <dependency>
+         <groupId>commons-lang</groupId>
+         <artifactId>commons-lang</artifactId>
+         <version>${apache.commons-lang.version}</version>
+      </dependency>
+      
    </dependencies>
 
 </project>

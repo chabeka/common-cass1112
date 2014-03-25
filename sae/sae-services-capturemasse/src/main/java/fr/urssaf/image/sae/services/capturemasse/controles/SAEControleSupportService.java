@@ -1,7 +1,7 @@
 /**
  * 
  */
-package fr.urssaf.image.sae.services.controles;
+package fr.urssaf.image.sae.services.capturemasse.controles;
 
 import java.io.File;
 

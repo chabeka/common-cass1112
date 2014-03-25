@@ -1,4 +1,4 @@
-package fr.urssaf.image.sae.services.manager;
+package fr.urssaf.image.sae.services.capturemasse;
 
 import org.easymock.EasyMock;
 

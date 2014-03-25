@@ -1,7 +1,7 @@
 /**
  * 
  */
-package fr.urssaf.image.sae.services.controles.impl;
+package fr.urssaf.image.sae.services.capturemasse.controles.impl;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,12 +13,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import fr.urssaf.image.sae.services.capturemasse.controles.SAEControleSupportService;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseEcdeWriteFileException;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireHashException;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireTypeHashException;
-import fr.urssaf.image.sae.services.controles.SAEControleSupportService;
-import fr.urssaf.image.sae.services.util.WriteUtils;
 
 /**
  * Implémentation du support {@link SAEControleSupportService}

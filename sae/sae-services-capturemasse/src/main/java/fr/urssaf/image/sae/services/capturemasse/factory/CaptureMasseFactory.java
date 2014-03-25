@@ -24,7 +24,7 @@ import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireF
 import fr.urssaf.image.sae.services.capturemasse.modele.commun_sommaire_et_resultat.DocumentType;
 import fr.urssaf.image.sae.services.capturemasse.modele.commun_sommaire_et_resultat.FichierType;
 import fr.urssaf.image.sae.services.capturemasse.support.ecde.EcdeSommaireFileSupport;
-import fr.urssaf.image.sae.services.util.SaeComposantsReader;
+import fr.urssaf.image.sae.services.capturemasse.utils.SaeComposantsReader;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageDocument;
 

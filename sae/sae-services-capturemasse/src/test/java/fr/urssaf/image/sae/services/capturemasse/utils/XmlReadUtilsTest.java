@@ -1,4 +1,4 @@
-package fr.urssaf.image.sae.utils;
+package fr.urssaf.image.sae.services.capturemasse.utils;
 
 import java.io.File;
 import java.io.IOException;
