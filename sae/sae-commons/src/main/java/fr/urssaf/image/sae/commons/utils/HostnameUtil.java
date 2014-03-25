@@ -1,4 +1,4 @@
-package fr.urssaf.image.sae.services.util;
+package fr.urssaf.image.sae.commons.utils;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
