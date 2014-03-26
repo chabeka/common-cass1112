@@ -52,33 +52,6 @@
       class="fr.urssaf.image.sae.ecde.util.test.EcdeTestTools" />
    
    
-   
-   <!-- Configuration du délai d'attente pour les tentatives d'écriture sur l'ECDE -->
-   <bean
-      class="fr.urssaf.image.sae.services.capturemasse.listener.EcdeConnexionConfiguration">
-      <property name="delaiAttenteMs" value="${sae.dfce.delai.attente}" />
-      <property name="nbreEssaiMax" value="${sae.dfce.nombre.essai}" />
-   </bean>
-   
-   
-   <!-- Configuration du pool de thread de la capture de masse -->
-   <bean id="insertionPoolConfiguration"
-      class="fr.urssaf.image.sae.services.capturemasse.support.stockage.multithreading.InsertionPoolConfiguration">
-      <property name="corePoolSize" value="20" />
-   </bean>
-   
-   
-   <!-- Configuration de la pause de la capture de masse (redémarrage des Tomcat) -->
-   <bean id="captureMasseConfigSpring"
-      class="fr.urssaf.image.sae.services.capturemasse.support.stockage.interruption.model.InterruptionTraitementConfig">
-      <qualifier value="interruption_capture_masse" />
-      <property name="start" value="02:00:00" />
-      <property name="delay" value="60" />
-      <property name="tentatives" value="2" />
-   </bean>
-   
-   
-
    <!-- Les beans pour SpringBatch sur Cassandra -->
    
    <bean id="jobInstanceDao"

@@ -22,6 +22,7 @@
    -->
 
    <!-- Beans Spring Batch sur Cassandra -->
+   <import resource="applicationContext-commons-cassandra-spring-batch.xml" />
    <import resource="applicationContext-sae-services-capturemasse-sb.xml" />
    
    <!-- Tout le reste -->

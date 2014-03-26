@@ -32,7 +32,5 @@
       <property name="jobRepository" ref="jobRepository" />
    </bean>
    
-   <bean id="transactionManager"
-      class="org.springframework.batch.support.transaction.ResourcelessTransactionManager" />
-      
+   
 </beans>

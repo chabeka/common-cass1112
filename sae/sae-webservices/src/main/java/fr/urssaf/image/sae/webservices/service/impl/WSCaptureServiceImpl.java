@@ -1,7 +1,5 @@
 package fr.urssaf.image.sae.webservices.service.impl;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,7 +8,6 @@ import java.util.UUID;
 
 import javax.activation.DataHandler;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
@@ -319,17 +316,20 @@ public class WSCaptureServiceImpl implements WSCaptureService {
          throw new CaptureAxisFault("ErreurInterneCapture",
                wsMessageRessourcesUtils.recupererMessage("ws.capture.error",
                      null), e);
+
       } catch (MetadataValueNotInDictionaryEx e) {
 
          throw new CaptureAxisFault("CaptureMetadonneesValeurNonValide", e
-               .getMessage());
-      } catch (UnknownFormatException except) {
+               .getMessage(), e);
 
-         throw new CaptureAxisFault("FormatFichierInconnu", except.getMessage());
-      } catch (ValidationExceptionInvalidFile except) {
+      } catch (UnknownFormatException e) {
 
-         throw new CaptureAxisFault("FormatFichierNonConforme", except
-               .getMessage());
+         throw new CaptureAxisFault("FormatFichierInconnu", e.getMessage(), e);
+
+      } catch (ValidationExceptionInvalidFile e) {
+
+         throw new CaptureAxisFault("FormatFichierNonConforme", e.getMessage(),
+               e);
       }
 
    }
@@ -396,21 +396,24 @@ public class WSCaptureServiceImpl implements WSCaptureService {
          throw new CaptureAxisFault("ErreurInterneCapture",
                wsMessageRessourcesUtils.recupererMessage("ws.capture.error",
                      null), e);
+
       } catch (EmptyFileNameEx e) {
 
          throw new CaptureAxisFault("NomFichierVide", wsMessageRessourcesUtils
                .recupererMessage("ws.capture.error", null), e);
+
       } catch (MetadataValueNotInDictionaryEx e) {
 
          throw new CaptureAxisFault("CaptureMetadonneesValeurNonValide", e
                .getMessage());
-      } catch (UnknownFormatException except) {
 
-         throw new CaptureAxisFault("FormatFichierInconnu", except.getMessage());
-      } catch (ValidationExceptionInvalidFile except) {
+      } catch (UnknownFormatException e) {
 
-         throw new CaptureAxisFault("FormatFichierNonConforme", except
-               .getMessage());
+         throw new CaptureAxisFault("FormatFichierInconnu", e.getMessage(), e);
+
+      } catch (ValidationExceptionInvalidFile e) {
+
+         throw new CaptureAxisFault("FormatFichierNonConforme", e.getMessage());
       }
    }
 
@@ -438,22 +441,4 @@ public class WSCaptureServiceImpl implements WSCaptureService {
       return toStrBuilder.toString();
    }
 
-   /**
-    * Permet de convertir un objet DataHandler en tableau de byte
-    */
-   private byte[] convertToByteArray(DataHandler dataHandler) {
-      if (dataHandler == null) {
-         return new byte[0];
-      } else {
-         try {
-            InputStream inputStream;
-            inputStream = dataHandler.getInputStream();
-            byte[] content = IOUtils.toByteArray(inputStream);
-
-            return content;
-         } catch (IOException e) {
-            throw new RuntimeException(e);
-         }
-      }
-   }
 }

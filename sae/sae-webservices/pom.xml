@@ -173,11 +173,14 @@
                <groupId>axis</groupId>
                <artifactId>axis-wsdl4j</artifactId>
             </exclusion>
-            <exclusion>
-               <groupId>commons-lang</groupId>
-               <artifactId>commons-lang</artifactId>
-            </exclusion>
          </exclusions>
+      </dependency>
+      
+      <!-- Capture de masse -->
+      <dependency>
+         <groupId>fr.urssaf.image.sae</groupId>
+         <artifactId>sae-services-capturemasse</artifactId>
+         <version>13.11.0.2-SNAPSHOT</version>
       </dependency>
 
       <!--  AXIS 2 -->
