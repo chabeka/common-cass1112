@@ -223,6 +223,12 @@
          <groupId>fr.urssaf.image.commons</groupId>
          <artifactId>commons-cassandra-spring-batch</artifactId>
          <version>${commons.cassandra.spring.batch}</version>
+         <exclusions>
+            <exclusion>
+               <groupId>commons-lang</groupId>
+               <artifactId>commons-lang</artifactId>
+            </exclusion>
+         </exclusions>
       </dependency>
    
       <!-- Spring -->
