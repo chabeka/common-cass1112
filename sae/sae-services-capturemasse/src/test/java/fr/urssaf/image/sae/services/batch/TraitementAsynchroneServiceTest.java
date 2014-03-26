@@ -35,7 +35,7 @@ import fr.urssaf.image.sae.services.capturemasse.SAECaptureMasseService;
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-traitement-masse-test.xml" })
+@ContextConfiguration(locations = { "/applicationContext-sae-services-capturemasse-test.xml" })
 @SuppressWarnings("PMD.MethodNamingConventions")
 @DirtiesContext
 public class TraitementAsynchroneServiceTest {

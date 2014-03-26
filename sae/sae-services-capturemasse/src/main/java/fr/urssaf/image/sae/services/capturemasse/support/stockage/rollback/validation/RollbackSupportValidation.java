@@ -8,8 +8,6 @@ import java.util.UUID;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 
-import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
-
 /**
  * Classe de validation des arguments en entrée des implémentations du service
  * {@link fr.urssaf.image.sae.services.capturemasse.support.stockage.rollback.RollbackSupport}
@@ -18,6 +16,8 @@ import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
  */
 @Aspect
 public class RollbackSupportValidation {
+
+   private static final String ARGUMENT_REQUIRED = "L'argument '%s' doit être renseigné ou être non null.";
 
    private static final String ROLLBACK_METHOD = "execution(void fr.urssaf.image.sae.services.capturemasse.support.stockage.rollback.RollbackSupport.rollback(*))"
          + " && args(identifiant)";
@@ -33,8 +33,8 @@ public class RollbackSupportValidation {
    public final void checkRollback(final UUID identifiant) {
 
       if (identifiant == null) {
-         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "identifiant"));
+         throw new IllegalArgumentException(String.format(ARGUMENT_REQUIRED,
+               "identifiant"));
       }
 
    }

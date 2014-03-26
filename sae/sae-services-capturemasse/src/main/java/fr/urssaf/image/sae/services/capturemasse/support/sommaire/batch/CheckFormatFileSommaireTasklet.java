@@ -18,14 +18,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
+import fr.urssaf.image.sae.services.capturemasse.controles.SAEControleSupportService;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireFormatValidationException;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireHashException;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireTypeHashException;
 import fr.urssaf.image.sae.services.capturemasse.support.sommaire.SommaireFormatValidationSupport;
 import fr.urssaf.image.sae.services.capturemasse.tasklet.AbstractCaptureMasseTasklet;
-import fr.urssaf.image.sae.services.controles.SAEControleSupportService;
-import fr.urssaf.image.sae.services.util.XmlReadUtils;
+import fr.urssaf.image.sae.services.capturemasse.utils.XmlReadUtils;
 
 /**
  * Tasklet de vérification du format de fichier sommaire.xml

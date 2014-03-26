@@ -51,9 +51,9 @@ import fr.urssaf.image.sae.services.capturemasse.modele.commun_sommaire_et_resul
 import fr.urssaf.image.sae.services.capturemasse.modele.resultats.ObjectFactory;
 import fr.urssaf.image.sae.services.capturemasse.modele.resultats.ResultatsType;
 import fr.urssaf.image.sae.services.capturemasse.support.resultats.ResultatFileSuccessSupport;
-import fr.urssaf.image.sae.services.util.CaptureMasseIntegratedDocumentComparateur;
-import fr.urssaf.image.sae.services.util.CaptureMasseVirtualDocumentComparateur;
-import fr.urssaf.image.sae.services.util.JAXBUtils;
+import fr.urssaf.image.sae.services.capturemasse.utils.CaptureMasseIntegratedDocumentComparateur;
+import fr.urssaf.image.sae.services.capturemasse.utils.CaptureMasseVirtualDocumentComparateur;
+import fr.urssaf.image.sae.services.capturemasse.utils.JAXBUtils;
 
 /**
  * Implémentation du support {@link ResultatFileSuccessSupport}

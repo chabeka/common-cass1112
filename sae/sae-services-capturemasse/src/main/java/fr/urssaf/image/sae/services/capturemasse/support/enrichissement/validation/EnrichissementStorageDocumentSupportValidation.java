@@ -7,7 +7,6 @@ import org.apache.commons.lang.StringUtils;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 
-import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageDocument;
 
@@ -20,7 +19,7 @@ import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageDocument;
 @Aspect
 public class EnrichissementStorageDocumentSupportValidation {
 
-   private static final String ARGUMENT_REQUIRED = "argument.required";
+   private static final String ARGUMENT_REQUIRED = "L'argument '%s' doit être renseigné ou être non null.";
 
    private static final String ENRICHMENT = "execution(fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument fr.urssaf.image.sae.services.capturemasse.support.enrichissement.EnrichissementStorageDocumentSupport.enrichirDocument(*,*))"
          + " && args(document,uuid)";
@@ -42,13 +41,13 @@ public class EnrichissementStorageDocumentSupportValidation {
          String uuid) {
 
       if (document == null) {
-         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               ARGUMENT_REQUIRED, "document"));
+         throw new IllegalArgumentException(String.format(ARGUMENT_REQUIRED,
+               "document"));
       }
 
       if (StringUtils.isBlank(uuid)) {
-         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               ARGUMENT_REQUIRED, "uuid"));
+         throw new IllegalArgumentException(String.format(ARGUMENT_REQUIRED,
+               "uuid"));
       }
    }
 
@@ -66,13 +65,13 @@ public class EnrichissementStorageDocumentSupportValidation {
          final VirtualStorageDocument document, String uuid) {
 
       if (document == null) {
-         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               ARGUMENT_REQUIRED, "document virtuel"));
+         throw new IllegalArgumentException(String.format(ARGUMENT_REQUIRED,
+               "document virtuel"));
       }
-      
+
       if (StringUtils.isEmpty(uuid)) {
-         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               ARGUMENT_REQUIRED, "identifiant unique du process"));
+         throw new IllegalArgumentException(String.format(ARGUMENT_REQUIRED,
+               "identifiant unique du process"));
       }
    }
 }

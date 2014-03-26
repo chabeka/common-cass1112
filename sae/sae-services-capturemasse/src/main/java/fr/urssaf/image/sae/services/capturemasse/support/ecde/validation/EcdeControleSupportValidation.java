@@ -8,8 +8,6 @@ import java.io.File;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 
-import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
-
 /**
  * Classe de validation des arguments en entrée des implémentations du service
  * {@link fr.urssaf.image.sae.services.capturemasse.support.ecde.EcdeControleSupport}
@@ -18,6 +16,8 @@ import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
  */
 @Aspect
 public class EcdeControleSupportValidation {
+
+   private static final String ARGUMENT_REQUIRED = "L'argument '%s' doit être renseigné ou être non null.";
 
    private static final String CHECK_METHOD = "execution(void fr.urssaf.image.sae.services.capturemasse.support.ecde.EcdeControleSupport.checkEcdeWrite(*))"
          + " && args(sommaireFile)";
@@ -34,8 +34,8 @@ public class EcdeControleSupportValidation {
    public final void checkEcdeWrite(final File sommaireFile) {
 
       if (sommaireFile == null) {
-         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "sommaireFile"));
+         throw new IllegalArgumentException(String.format(ARGUMENT_REQUIRED,
+               "sommaireFile"));
       }
 
    }

@@ -9,7 +9,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 
 import fr.urssaf.image.sae.services.capturemasse.common.CaptureMasseErreur;
-import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
 
 /**
  * Validation des arguments en entrée des implémentations du service
@@ -20,7 +19,7 @@ import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
 @Aspect
 public class ResultatsFileEchecSupportValidation {
 
-  private static final String ARGUMENT_REQUIRED = "argument.required";
+   private static final String ARGUMENT_REQUIRED = "L'argument '%s' doit être renseigné ou être non null.";
 
    private static final String WRITE_METHOD = "execution(void fr.urssaf.image.sae.services.capturemasse.support.resultats.ResultatsFileEchecSupport.writeResultatsFile(*,*,*,*))"
          + " && args(ecdeDirectory,sommaireFile,erreur, nombreDocsTotal)";
@@ -47,18 +46,18 @@ public class ResultatsFileEchecSupportValidation {
          final int nombreDocsTotal) {
 
       if (ecdeDirectory == null) {
-         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               ARGUMENT_REQUIRED, "ecdeDirectory"));
+         throw new IllegalArgumentException(String.format(ARGUMENT_REQUIRED,
+               "ecdeDirectory"));
       }
 
       if (sommaireFile == null) {
-         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               ARGUMENT_REQUIRED, "sommaireFile"));
+         throw new IllegalArgumentException(String.format(ARGUMENT_REQUIRED,
+               "sommaireFile"));
       }
 
       if (erreur == null) {
-         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               ARGUMENT_REQUIRED, "erreur"));
+         throw new IllegalArgumentException(String.format(ARGUMENT_REQUIRED,
+               "erreur"));
       }
 
    }
@@ -82,18 +81,18 @@ public class ResultatsFileEchecSupportValidation {
          final int nombreDocsTotal) {
 
       if (ecdeDirectory == null) {
-         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               ARGUMENT_REQUIRED, "ecdeDirectory"));
+         throw new IllegalArgumentException(String.format(ARGUMENT_REQUIRED,
+               "ecdeDirectory"));
       }
 
       if (sommaireFile == null) {
-         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               ARGUMENT_REQUIRED, "sommaireFile"));
+         throw new IllegalArgumentException(String.format(ARGUMENT_REQUIRED,
+               "sommaireFile"));
       }
 
       if (erreur == null) {
-         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               ARGUMENT_REQUIRED, "erreur"));
+         throw new IllegalArgumentException(String.format(ARGUMENT_REQUIRED,
+               "erreur"));
       }
 
    }

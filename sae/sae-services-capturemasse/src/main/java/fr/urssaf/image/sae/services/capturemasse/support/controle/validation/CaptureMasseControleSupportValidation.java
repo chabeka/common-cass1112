@@ -13,7 +13,6 @@ import fr.urssaf.image.sae.bo.model.bo.SAEVirtualDocument;
 import fr.urssaf.image.sae.bo.model.bo.VirtualReferenceFile;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedVirtualDocument;
-import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
 
 /**
  * Validation des arguments passés en paramètre des implémentations du service
@@ -24,7 +23,7 @@ import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
 @Aspect
 public class CaptureMasseControleSupportValidation {
 
-   private static final String ARGUMENT_REQUIRED = "argument.required";
+   private static final String ARGUMENT_REQUIRED = "L'argument '%s' doit être renseigné ou être non null.";
 
    private static final String CONTROLE = "execution(fr.urssaf.image.sae.services.capturemasse.support.controle.model.CaptureMasseControlResult fr.urssaf.image.sae.services.capturemasse.support.controle.CaptureMasseControleSupport.controleSAEDocument(*,*))"
          + " && args(document,ecdeDirectory)";
@@ -55,13 +54,13 @@ public class CaptureMasseControleSupportValidation {
          final File ecdeDirectory) {
 
       if (document == null) {
-         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               ARGUMENT_REQUIRED, "document"));
+         throw new IllegalArgumentException(String.format(ARGUMENT_REQUIRED,
+               "document"));
       }
 
       if (ecdeDirectory == null) {
-         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               ARGUMENT_REQUIRED, "ecdeDirectory"));
+         throw new IllegalArgumentException(String.format(ARGUMENT_REQUIRED,
+               "ecdeDirectory"));
       }
 
    }
@@ -77,8 +76,8 @@ public class CaptureMasseControleSupportValidation {
    public final void checkControleDocumentStorage(final SAEDocument document) {
 
       if (document == null) {
-         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               ARGUMENT_REQUIRED, "document"));
+         throw new IllegalArgumentException(String.format(ARGUMENT_REQUIRED,
+               "document"));
       }
 
    }
@@ -97,13 +96,13 @@ public class CaptureMasseControleSupportValidation {
          final File ecdeDirectory) {
 
       if (reference == null) {
-         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               ARGUMENT_REQUIRED, "fichier de référence"));
+         throw new IllegalArgumentException(String.format(ARGUMENT_REQUIRED,
+               "fichier de référence"));
       }
 
       if (ecdeDirectory == null) {
-         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               ARGUMENT_REQUIRED, "ecdeDirectory"));
+         throw new IllegalArgumentException(String.format(ARGUMENT_REQUIRED,
+               "ecdeDirectory"));
       }
 
    }
@@ -120,13 +119,13 @@ public class CaptureMasseControleSupportValidation {
          final UntypedVirtualDocument document) {
 
       if (document == null) {
-         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               ARGUMENT_REQUIRED, "document virtuel"));
+         throw new IllegalArgumentException(String.format(ARGUMENT_REQUIRED,
+               "document virtuel"));
       }
 
       if (document.getReference() == null) {
-         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               ARGUMENT_REQUIRED, "fichier de référence du document"));
+         throw new IllegalArgumentException(String.format(ARGUMENT_REQUIRED,
+               "fichier de référence du document"));
       }
 
    }
@@ -143,8 +142,8 @@ public class CaptureMasseControleSupportValidation {
          final SAEVirtualDocument document) {
 
       if (document == null) {
-         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               ARGUMENT_REQUIRED, "document virtuel"));
+         throw new IllegalArgumentException(String.format(ARGUMENT_REQUIRED,
+               "document virtuel"));
       }
 
    }

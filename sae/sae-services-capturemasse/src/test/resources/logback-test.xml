@@ -21,6 +21,7 @@
    <logger name="fr.urssaf.image.sae.services" level="INFO" />
    <logger name="fr.urssaf.image.sae.storage" level="INFO" />
    <logger name="fr.urssaf.image.sae.ecde" level="INFO" />
+   <logger name="fr.urssaf.image.sae.trace" level="INFO" />
    
    <root level="debug">
       <appender-ref ref="console" />

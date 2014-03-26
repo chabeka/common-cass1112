@@ -59,9 +59,7 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {
-      "/applicationContext-sae-services-test.xml",
-      "/applicationContext-sae-services-integration-test.xml" })
+@ContextConfiguration(locations = { "/applicationContext-sae-services-capturemasse-test.xml" })
 public class Integration207Test {
 
    @Autowired
@@ -86,12 +84,12 @@ public class Integration207Test {
 
    @Autowired
    private TraceAssertUtils traceAssertUtils;
-   
+
    @Autowired
    private CassandraServerBean server;
    @Autowired
    private ParametersService parametersService;
-   @Autowired 
+   @Autowired
    private RndSupport rndSupport;
    @Autowired
    private JobClockSupport jobClockSupport;
@@ -130,11 +128,11 @@ public class Integration207Test {
       AuthenticationToken token = AuthenticationFactory.createAuthentication(
             viExtrait.getIdUtilisateur(), viExtrait, roles);
       AuthenticationContext.setAuthenticationToken(token);
-      
+
       // Paramétrage du RND
       parametersService.setVersionRndDateMaj(new Date());
       parametersService.setVersionRndNumero("11.2");
-      
+
       TypeDocument typeDocCree = new TypeDocument();
       typeDocCree.setCloture(false);
       typeDocCree.setCode("2.3.1.1.12");
@@ -143,7 +141,7 @@ public class Integration207Test {
       typeDocCree.setDureeConservation(1825);
       typeDocCree.setLibelle("ATTESTATION DE VIGILANCE");
       typeDocCree.setType(TypeCode.ARCHIVABLE_AED);
-      
+
       rndSupport.ajouterRnd(typeDocCree, jobClockSupport.currentCLock());
    }
 
@@ -159,8 +157,8 @@ public class Integration207Test {
 
       AuthenticationContext.setAuthenticationToken(null);
 
-      logger.detachAppender(logAppender);    
-      
+      logger.detachAppender(logAppender);
+
       server.resetData();
    }
 

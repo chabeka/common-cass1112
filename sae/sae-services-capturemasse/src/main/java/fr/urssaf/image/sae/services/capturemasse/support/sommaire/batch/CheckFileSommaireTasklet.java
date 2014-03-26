@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
+import fr.urssaf.image.sae.services.capturemasse.controles.SAEControleSupportService;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseEcdeWriteFileException;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireEcdeURLException;
@@ -25,7 +26,6 @@ import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireF
 import fr.urssaf.image.sae.services.capturemasse.listener.EcdeConnexionConfiguration;
 import fr.urssaf.image.sae.services.capturemasse.support.ecde.EcdeSommaireFileSupport;
 import fr.urssaf.image.sae.services.capturemasse.tasklet.AbstractCaptureMasseTasklet;
-import fr.urssaf.image.sae.services.controles.SAEControleSupportService;
 
 /**
  * Tasklet pour la vérification du fichier sommaire.xml

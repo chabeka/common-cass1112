@@ -10,8 +10,6 @@ import org.apache.commons.lang.StringUtils;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 
-import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
-
 /**
  * Classe de validation des arguments en entrée des implémentations du service
  * {@link fr.urssaf.image.sae.services.capturemasse.SAECaptureMasseService}. La
@@ -21,12 +19,13 @@ import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
 @Aspect
 public class SAECaptureMasseServiceValidation {
 
+   private static final String ARGUMENT_REQUIRED = "L'argument '%s' doit être renseigné ou être non null.";
+
    private static final String CAPTURE_METHOD = "execution(fr.urssaf.image.sae.services.batch.model.ExitTraitement fr.urssaf.image.sae.services.capturemasse.SAECaptureMasseService.captureMasse(*,*))"
          + " && args(sommaireURL, idTraitement)";
-   
-   private static final String CAPTURE_METHOD_HASH = "execution(fr.urssaf.image.sae.services.batch.model.ExitTraitement fr.urssaf.image.sae.services.capturemasse.SAECaptureMasseService.captureMasse(*,*,*,*))"
-      + " && args(sommaireURL, idTraitement, hash, typeHash)";
 
+   private static final String CAPTURE_METHOD_HASH = "execution(fr.urssaf.image.sae.services.batch.model.ExitTraitement fr.urssaf.image.sae.services.capturemasse.SAECaptureMasseService.captureMasse(*,*,*,*))"
+         + " && args(sommaireURL, idTraitement, hash, typeHash)";
 
    /**
     * permet de vérifier que l'ensemble des paramètres de la méthode
@@ -42,15 +41,16 @@ public class SAECaptureMasseServiceValidation {
    public final void captureMasse(final URI sommaireURL, final UUID idTraitement) {
 
       if (sommaireURL == null) {
-         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "sommaireURL"));
+         throw new IllegalArgumentException(String.format(ARGUMENT_REQUIRED,
+               "sommaireURL"));
       }
 
       if (idTraitement == null) {
-         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "idTraitement"));
+         throw new IllegalArgumentException(String.format(ARGUMENT_REQUIRED,
+               "idTraitement"));
       }
    }
+
    /**
     * permet de vérifier que l'ensemble des paramètres de la méthode
     * captureMasse de SAECaptureMasseService possède tous les arguments
@@ -61,19 +61,20 @@ public class SAECaptureMasseServiceValidation {
     * @param idTraitement
     *           identifiant du traitement
     * @param hash
-    *          le hash du fichier sommaire.xml
+    *           le hash du fichier sommaire.xml
     * @param typeHash
-    *          Algorithme de hash utilisé
+    *           Algorithme de hash utilisé
     */
    @Before(CAPTURE_METHOD_HASH)
-   public final void captureMasse(final URI sommaireURL, final UUID idTraitement, final String hash, final String typeHash) {
-      
+   public final void captureMasse(final URI sommaireURL,
+         final UUID idTraitement, final String hash, final String typeHash) {
+
       captureMasse(sommaireURL, idTraitement);
       // controle des paramètres supplémentaires
-      if(hash!=null && StringUtils.isBlank(typeHash)){
-         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "typeHash"));
-      }      
+      if (hash != null && StringUtils.isBlank(typeHash)) {
+         throw new IllegalArgumentException(String.format(ARGUMENT_REQUIRED,
+               "typeHash"));
+      }
    }
-   
+
 }

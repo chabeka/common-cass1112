@@ -22,7 +22,7 @@ import fr.urssaf.image.sae.services.capturemasse.exception.EcdePermissionExcepti
 import fr.urssaf.image.sae.services.capturemasse.listener.EcdeConnexionConfiguration;
 import fr.urssaf.image.sae.services.capturemasse.support.resultats.ResultatsFileEchecSupport;
 import fr.urssaf.image.sae.services.capturemasse.utils.StaxUtils;
-import fr.urssaf.image.sae.services.util.XmlReader;
+import fr.urssaf.image.sae.services.capturemasse.utils.XmlReader;
 
 /**
  * Implémentation du support {@link ResultatsFileEchecSupport}

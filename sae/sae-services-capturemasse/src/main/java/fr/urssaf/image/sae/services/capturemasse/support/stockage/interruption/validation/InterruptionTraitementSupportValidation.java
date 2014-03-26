@@ -8,7 +8,7 @@ import org.aspectj.lang.annotation.Before;
 import org.joda.time.DateTime;
 
 import fr.urssaf.image.sae.services.capturemasse.support.stockage.interruption.model.InterruptionTraitementConfig;
-import fr.urssaf.image.sae.services.util.LocalTimeUtils;
+import fr.urssaf.image.sae.services.capturemasse.utils.LocalTimeUtils;
 
 /**
  * Classe de validation des arguments en entrée des implémentations du service

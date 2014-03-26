@@ -16,10 +16,10 @@ import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import fr.urssaf.image.sae.commons.utils.HostnameUtil;
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
 import fr.urssaf.image.sae.services.capturemasse.support.flag.DebutTraitementFlagSupport;
 import fr.urssaf.image.sae.services.capturemasse.support.flag.model.DebutTraitementFlag;
-import fr.urssaf.image.sae.services.util.HostnameUtil;
 
 /**
  * Tasklet d'écriture du fichier fin_traitement.flag

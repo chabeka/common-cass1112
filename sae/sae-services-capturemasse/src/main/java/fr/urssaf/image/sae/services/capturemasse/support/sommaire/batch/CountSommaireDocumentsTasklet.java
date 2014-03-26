@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
-import fr.urssaf.image.sae.services.util.XmlReadUtils;
+import fr.urssaf.image.sae.services.capturemasse.utils.XmlReadUtils;
 
 /**
  * Tasklet permettant de récupérer le nombre de documents présents dans le

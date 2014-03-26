@@ -8,8 +8,6 @@ import java.io.File;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 
-import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
-
 /**
  * Validation des arguments passés en entrée de l'implémentation du service
  * {@link fr.urssaf.image.sae.services.capturemasse.support.resultats.ResultatsFileEchecBloquantSupport}
@@ -18,6 +16,8 @@ import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
  */
 @Aspect
 public class ResultatsFileEchecBloquantSupportValidation {
+
+   private static final String ARGUMENT_REQUIRED = "L'argument '%s' doit être renseigné ou être non null.";
 
    private static final String CHECK_METHOD = "execution(void fr.urssaf.image.sae.services.capturemasse.support.resultats.ResultatsFileEchecBloquantSupport.writeResultatsFile(*,*))"
          + " && args(ecdeDirectory,erreur)";
@@ -36,13 +36,13 @@ public class ResultatsFileEchecBloquantSupportValidation {
          final Exception erreur) {
 
       if (ecdeDirectory == null) {
-         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "ecdeDirectory"));
+         throw new IllegalArgumentException(String.format(ARGUMENT_REQUIRED,
+               "ecdeDirectory"));
       }
 
       if (erreur == null) {
-         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "erreur"));
+         throw new IllegalArgumentException(String.format(ARGUMENT_REQUIRED,
+               "erreur"));
       }
    }
 }

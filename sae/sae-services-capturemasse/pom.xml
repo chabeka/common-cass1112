@@ -95,10 +95,17 @@
    <dependencies>
    
       <!-- SAE -->
+      <!--
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-pile-travaux</artifactId>
          <version>13.11.0.2-SNAPSHOT</version>
+         <exclusions>
+            <exclusion>
+               <groupId>javax.xml.stream</groupId>
+               <artifactId>stax-api</artifactId>
+            </exclusion>
+         </exclusions>
       </dependency>
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
@@ -114,6 +121,108 @@
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-format</artifactId>
          <version>13.11.0.2-SNAPSHOT</version>
+         <exclusions>
+            <exclusion>
+               <groupId>stax</groupId>
+               <artifactId>stax</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>net.java.dev.stax-utils</groupId>
+               <artifactId>stax-utils</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+      <dependency>
+         <groupId>fr.urssaf.image.sae</groupId>
+         <artifactId>sae-trace</artifactId>
+         <version>13.11.0.2-SNAPSHOT</version>
+         <exclusions>
+            <exclusion>
+               <groupId>javax.xml.stream</groupId>
+               <artifactId>stax-api</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>stax</groupId>
+               <artifactId>stax</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.codehaus.woodstox</groupId>
+               <artifactId>stax2-api</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>net.java.dev.stax-utils</groupId>
+               <artifactId>stax-utils</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+      <dependency>
+         <groupId>fr.urssaf.image.sae</groupId>
+         <artifactId>sae-rnd</artifactId>
+         <version>13.11.0.2-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+         <groupId>fr.urssaf.image.sae</groupId>
+         <artifactId>sae-storage-dfce</artifactId>
+         <version>13.11.0.2-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+         <groupId>fr.urssaf.image.sae</groupId>
+         <artifactId>sae-services</artifactId>
+         <version>13.11.0.2-SNAPSHOT</version>
+         <exclusions>
+            <exclusion>
+               <groupId>net.java.dev.stax-utils</groupId>
+               <artifactId>stax-utils</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+      -->
+      <dependency>
+         <groupId>fr.urssaf.image.sae</groupId>
+         <artifactId>sae-pile-travaux</artifactId>
+         <version>13.11.0.2-SNAPSHOT</version>
+         <exclusions>
+            <exclusion>
+               <groupId>javax.xml.stream</groupId>
+               <artifactId>stax-api</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+      <dependency>
+         <groupId>fr.urssaf.image.sae</groupId>
+         <artifactId>sae-services</artifactId>
+         <version>13.11.0.2-SNAPSHOT</version>
+         <exclusions>
+            <exclusion>
+               <groupId>javax.xml.stream</groupId>
+               <artifactId>stax-api</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>net.java.dev.stax-utils</groupId>
+               <artifactId>stax-utils</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>stax</groupId>
+               <artifactId>stax</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>xerces</groupId>
+               <artifactId>xercesImpl</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.codehaus.woodstox</groupId>
+               <artifactId>wstx-asl</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+
+
+      
+      <!-- commons-cassandra-spring-batch -->
+      <dependency>
+         <groupId>fr.urssaf.image.commons</groupId>
+         <artifactId>commons-cassandra-spring-batch</artifactId>
+         <version>${commons.cassandra.spring.batch}</version>
       </dependency>
    
       <!-- Spring -->
@@ -162,6 +271,32 @@
          <groupId>commons-lang</groupId>
          <artifactId>commons-lang</artifactId>
          <version>${apache.commons-lang.version}</version>
+      </dependency>
+      
+      <!-- Easymock -->
+      <dependency>
+         <groupId>org.easymock</groupId>
+         <artifactId>easymock</artifactId>
+         <version>${easymock.version}</version>
+         <scope>test</scope>
+      </dependency>
+      
+      <!-- Lecture/Ecriture de XML -->
+      <dependency>
+         <groupId>org.codehaus.woodstox</groupId>
+         <artifactId>woodstox-core-asl</artifactId>
+         <version>4.1.2</version>
+      </dependency>
+      <dependency>
+         <groupId>net.java.dev.stax-utils</groupId>
+         <artifactId>stax-utils</artifactId>
+         <version>20060502</version>
+         <exclusions>
+            <exclusion>
+               <groupId>com.bea.xml</groupId>
+               <artifactId>jsr173-ri</artifactId>
+            </exclusion>
+         </exclusions>
       </dependency>
       
    </dependencies>

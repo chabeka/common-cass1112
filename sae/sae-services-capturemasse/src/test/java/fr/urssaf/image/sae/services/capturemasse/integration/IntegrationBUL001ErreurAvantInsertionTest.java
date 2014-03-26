@@ -75,9 +75,7 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {
-      "/applicationContext-sae-services-test.xml",
-      "/applicationContext-sae-services-integration-test.xml" })
+@ContextConfiguration(locations = { "/applicationContext-sae-services-capturemasse-test.xml" })
 public class IntegrationBUL001ErreurAvantInsertionTest {
 
    private static final String MESSAGE_ERREUR = "erreur ouverture base";
@@ -112,12 +110,12 @@ public class IntegrationBUL001ErreurAvantInsertionTest {
 
    @Autowired
    private TraceAssertUtils traceAssertUtils;
-   
+
    @Autowired
    private CassandraServerBean server;
    @Autowired
    private ParametersService parametersService;
-   @Autowired 
+   @Autowired
    private RndSupport rndSupport;
    @Autowired
    private JobClockSupport jobClockSupport;
@@ -157,11 +155,11 @@ public class IntegrationBUL001ErreurAvantInsertionTest {
       AuthenticationToken token = AuthenticationFactory.createAuthentication(
             viExtrait.getIdUtilisateur(), viExtrait, roles);
       AuthenticationContext.setAuthenticationToken(token);
-      
+
       // Paramétrage du RND
       parametersService.setVersionRndDateMaj(new Date());
       parametersService.setVersionRndNumero("11.4");
-      
+
       TypeDocument typeDocCree = new TypeDocument();
       typeDocCree.setCloture(false);
       typeDocCree.setCode("2.3.1.1.12");
@@ -187,7 +185,7 @@ public class IntegrationBUL001ErreurAvantInsertionTest {
       logger.detachAppender(logAppenderSae);
 
       AuthenticationContext.setAuthenticationToken(null);
-      
+
       server.resetData();
    }
 

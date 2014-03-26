@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+   xsi:schemaLocation="
+		http://www.springframework.org/schema/beans	
+		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+   
+   <!-- Chargement des fichiers Properties de la partie test -->
+   <bean 
+      class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+      <property name="locations">
+         <list>
+            <value>config/test-sae-config.properties</value>
+            <value>config/test-sae-dfce-config.properties</value>
+            <value>config/test-sae-cassandra-config.properties</value>
+         </list>
+      </property>
+   </bean>
+   
+   
+   <!-- Configuration d'accès à DFCE -->
+   <bean id="dfceConnection"
+      class="fr.urssaf.image.commons.dfce.manager.DFCEConnectionFactory"
+      factory-method="createDFCEConnectionByDFCEConfiguration">
+      <constructor-arg value="${sae.dfce.cheminFichierConfig}" />
+   </bean>
+
+   <bean id="dfceConnectionService"
+      class="fr.urssaf.image.commons.dfce.service.impl.DFCEConnectionServiceImpl">
+      <constructor-arg ref="dfceConnection" />
+   </bean>
+   
+   
+   <!-- Configuration des ECDE -->
+   
+   <bean id="ecdeTestConfig"
+      class="fr.urssaf.image.sae.ecde.util.test.EcdeTestConfig" />
+   
+   <bean id="ecdeSources"
+         factory-bean="ecdeTestConfig"
+         factory-method="load">
+   </bean>
+   
+   <bean id="ecdeTestTools"
+      class="fr.urssaf.image.sae.ecde.util.test.EcdeTestTools" />
+   
+   
+   
+   <!-- Configuration du délai d'attente pour les tentatives d'écriture sur l'ECDE -->
+   <bean
+      class="fr.urssaf.image.sae.services.capturemasse.listener.EcdeConnexionConfiguration">
+      <property name="delaiAttenteMs" value="${sae.dfce.delai.attente}" />
+      <property name="nbreEssaiMax" value="${sae.dfce.nombre.essai}" />
+   </bean>
+   
+   
+   <!-- Configuration du pool de thread de la capture de masse -->
+   <bean id="insertionPoolConfiguration"
+      class="fr.urssaf.image.sae.services.capturemasse.support.stockage.multithreading.InsertionPoolConfiguration">
+      <property name="corePoolSize" value="20" />
+   </bean>
+   
+   
+   <!-- Configuration de la pause de la capture de masse (redémarrage des Tomcat) -->
+   <bean id="captureMasseConfigSpring"
+      class="fr.urssaf.image.sae.services.capturemasse.support.stockage.interruption.model.InterruptionTraitementConfig">
+      <qualifier value="interruption_capture_masse" />
+      <property name="start" value="02:00:00" />
+      <property name="delay" value="60" />
+      <property name="tentatives" value="2" />
+   </bean>
+   
+   
+   <!-- Bean de factory pour les mocks -->
+   
+   <bean id="mockFactory" class="fr.urssaf.image.sae.utils.MockFactoryBean" />
+   
+   
+   
+   <!-- Mock le service StorageDocumentService -->
+   <bean id="storageDocumentService" factory-bean="mockFactory"
+      factory-method="createStorageDocumentService" primary="true">
+      <qualifier value="storageDocumentService" />
+   </bean>
+   
+   
+   <!-- Mock l'accès à DFCE (service StorageServiceProvider) -->
+   <bean id="provider" factory-bean="mockFactory" factory-method="createStorageServiceProvider"
+      primary="true">
+      <qualifier value="storageServiceProvider" />
+   </bean>
+   
+   
+   <!-- Mock le service SAEDocumentService -->
+   <bean id="saeDocumentService"
+      class="fr.urssaf.image.sae.services.capturemasse.SAEDocumentTestImpl"
+      primary="true" />
+   
+   
+   <!-- Les beans pour SpringBatch sur Cassandra -->
+   
+   <bean
+      id="jobInstanceDao"
+      class="org.springframework.batch.core.repository.dao.MapJobInstanceDao" />
+
+   <bean
+      id="stepExecutionDao"
+      class="fr.urssaf.image.sae.utils.SaeStepExecutionDao" />
+
+   <bean
+      id="jobExecutionDao"
+      class="fr.urssaf.image.sae.utils.SaeJobExecutionDao" />
+      
+   <bean id="executionContextDao" class="org.springframework.batch.core.repository.dao.MapExecutionContextDao" />
+   
+   <bean id="jobRepository"
+      class="org.springframework.batch.core.repository.support.SimpleJobRepository">
+      <constructor-arg ref="jobInstanceDao" />
+      <constructor-arg ref="stepExecutionDao" />
+      <constructor-arg ref="jobExecutionDao" />
+      <constructor-arg ref="executionContextDao" />
+   </bean>
+   
+   <bean id="jobLauncher"
+      class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
+      <property name="jobRepository" ref="jobRepository" />
+   </bean>
+   
+   <bean id="transactionManager"
+      class="org.springframework.batch.support.transaction.ResourcelessTransactionManager" />
+      
+   <bean id="launcher" class="org.springframework.batch.test.JobLauncherTestUtils">
+      <property name="job" ref="capture_masse" />
+   </bean>
+   
+   
+   <!-- Bean pour vérifier les traces -->
+   <bean
+      id="traceAssertUtils"
+      class="fr.urssaf.image.sae.services.capturemasse.utils.TraceAssertUtils" />
+
+  
+   <!-- Reprise du fichier applicationContext de la partie main -->
+   <import resource="applicationContext-sae-services-capturemasse-main.xml" />
+   
+</beans>

@@ -8,8 +8,6 @@ import java.io.File;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 
-import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
-
 /**
  * Validation des arguments passés en paramètre des implémentations de
  * {@link fr.urssaf.image.sae.services.capturemasse.support.flag.FinTraitementFlagSupport}
@@ -19,24 +17,26 @@ import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
 @Aspect
 public class FinTraitementFlagSupportValidation {
 
+   private static final String ARGUMENT_REQUIRED = "L'argument '%s' doit être renseigné ou être non null.";
+
    private static final String WRITE_METHOD = "execution(void fr.urssaf.image.sae.services.capturemasse.support.flag.FinTraitementFlagSupport.writeFinTraitementFlag(*))"
-      + " && args(ecdeDirectory)";
+         + " && args(ecdeDirectory)";
 
-/**
- * permet de vérifier que l'ensemble des paramètres de la méthode
- * checkEcdeWrite possède tous les arguments renseignés
- * 
- * @param ecdeDirectory
- *           chemin absolu du fichier sommaire.xml pour un traitement de
- *           masse
- */
-@Before(WRITE_METHOD)
-public final void checkWrite(final File ecdeDirectory) {
+   /**
+    * permet de vérifier que l'ensemble des paramètres de la méthode
+    * checkEcdeWrite possède tous les arguments renseignés
+    * 
+    * @param ecdeDirectory
+    *           chemin absolu du fichier sommaire.xml pour un traitement de
+    *           masse
+    */
+   @Before(WRITE_METHOD)
+   public final void checkWrite(final File ecdeDirectory) {
 
-   if (ecdeDirectory == null) {
-      throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-            "argument.required", "ecdeDirectory"));
+      if (ecdeDirectory == null) {
+         throw new IllegalArgumentException(String.format(ARGUMENT_REQUIRED,
+               "ecdeDirectory"));
+      }
+
    }
-   
-}
 }

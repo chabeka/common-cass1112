@@ -9,8 +9,6 @@ import org.apache.commons.lang.StringUtils;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 
-import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
-
 /**
  * Validation des paramètres passés en arguments des implémentations de
  * {@link fr.urssaf.image.sae.services.capturemasse.support.sommaire.SommaireFormatValidationSupport}
@@ -19,6 +17,8 @@ import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
  */
 @Aspect
 public class SommaireFormatValidationSupportValidation {
+
+   private static final String ARGUMENT_REQUIRED = "L'argument '%s' doit être renseigné ou être non null.";
 
    private static final String CONTROLES_METHOD = "execution(void fr.urssaf.image.sae.services.capturemasse.support.sommaire.SommaireFormatValidationSupport.validationSommaire(*))"
          + " && args(sommaireFile)";
@@ -36,8 +36,8 @@ public class SommaireFormatValidationSupportValidation {
    public final void checkValidationSommaire(final File sommaireFile) {
 
       if (sommaireFile == null) {
-         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "sommaireFile"));
+         throw new IllegalArgumentException(String.format(ARGUMENT_REQUIRED,
+               "sommaireFile"));
       }
 
    }
@@ -56,13 +56,13 @@ public class SommaireFormatValidationSupportValidation {
          final String batchMode) {
 
       if (sommaireFile == null) {
-         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "sommaireFile"));
+         throw new IllegalArgumentException(String.format(ARGUMENT_REQUIRED,
+               "sommaireFile"));
       }
 
       if (StringUtils.isBlank(batchMode)) {
-         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "batchMode"));
+         throw new IllegalArgumentException(String.format(ARGUMENT_REQUIRED,
+               "batchMode"));
       }
 
    }

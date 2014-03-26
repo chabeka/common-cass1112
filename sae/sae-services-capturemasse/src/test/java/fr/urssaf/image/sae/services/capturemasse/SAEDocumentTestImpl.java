@@ -1,7 +1,7 @@
 /**
  * 
  */
-package fr.urssaf.image.sae.services.consultation.impl;
+package fr.urssaf.image.sae.services.capturemasse;
 
 import java.util.List;
 import java.util.UUID;

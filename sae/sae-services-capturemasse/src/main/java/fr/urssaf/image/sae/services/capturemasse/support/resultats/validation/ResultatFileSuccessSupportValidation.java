@@ -12,7 +12,6 @@ import org.aspectj.lang.annotation.Before;
 
 import fr.urssaf.image.sae.services.capturemasse.model.CaptureMasseIntegratedDocument;
 import fr.urssaf.image.sae.services.capturemasse.model.CaptureMasseVirtualDocument;
-import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
 
 /**
  * Validation des arguments en entrée des implémentations du service
@@ -23,7 +22,7 @@ import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
 @Aspect
 public class ResultatFileSuccessSupportValidation {
 
-   private static final String ARGUMENT_REQUIRED = "argument.required";
+   private static final String ARGUMENT_REQUIRED = "L'argument '%s' doit être renseigné ou être non null.";
 
    private static final String CHECK_METHOD = "execution(void fr.urssaf.image.sae.services.capturemasse.support.resultats.ResultatFileSuccessSupport.writeResultatsFile(*,*,*,*,*))"
          + " && args(ecdeDirectory,integDocs,documentsCount,restitutionUuids,sommaireFile)";
@@ -57,18 +56,18 @@ public class ResultatFileSuccessSupportValidation {
          final File sommaireFile) {
 
       if (ecdeDirectory == null) {
-         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               ARGUMENT_REQUIRED, "ecdeDirectory"));
+         throw new IllegalArgumentException(String.format(ARGUMENT_REQUIRED,
+               "ecdeDirectory"));
       }
 
       if (documentsCount < 0) {
-         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               ARGUMENT_REQUIRED, "documentsCount"));
+         throw new IllegalArgumentException(String.format(ARGUMENT_REQUIRED,
+               "documentsCount"));
       }
 
       if (restitutionUuids && sommaireFile == null) {
-         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               ARGUMENT_REQUIRED, "documentsCount"));
+         throw new IllegalArgumentException(String.format(ARGUMENT_REQUIRED,
+               "documentsCount"));
       }
 
    }
@@ -99,23 +98,23 @@ public class ResultatFileSuccessSupportValidation {
          final File sommaireFile) {
 
       if (ecdeDirectory == null) {
-         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               ARGUMENT_REQUIRED, "ecdeDirectory"));
+         throw new IllegalArgumentException(String.format(ARGUMENT_REQUIRED,
+               "ecdeDirectory"));
       }
 
       if (restitutionUuids && CollectionUtils.isEmpty(integDocs)) {
-         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               ARGUMENT_REQUIRED, "liste des documents intégrés"));
+         throw new IllegalArgumentException(String.format(ARGUMENT_REQUIRED,
+               "liste des documents intégrés"));
       }
 
       if (documentsCount < 0) {
-         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               ARGUMENT_REQUIRED, "documentsCount"));
+         throw new IllegalArgumentException(String.format(ARGUMENT_REQUIRED,
+               "documentsCount"));
       }
 
       if (restitutionUuids && sommaireFile == null) {
-         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               ARGUMENT_REQUIRED, "fichier sommaire"));
+         throw new IllegalArgumentException(String.format(ARGUMENT_REQUIRED,
+               "fichier sommaire"));
       }
 
    }

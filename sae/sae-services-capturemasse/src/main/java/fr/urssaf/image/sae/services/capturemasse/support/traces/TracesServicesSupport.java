@@ -17,9 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import fr.urssaf.image.sae.commons.utils.HostnameUtil;
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
 import fr.urssaf.image.sae.services.capturemasse.utils.StatutCaptureUtils;
-import fr.urssaf.image.sae.services.util.HostnameUtil;
 import fr.urssaf.image.sae.trace.model.TraceToCreate;
 import fr.urssaf.image.sae.trace.service.DispatcheurService;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;

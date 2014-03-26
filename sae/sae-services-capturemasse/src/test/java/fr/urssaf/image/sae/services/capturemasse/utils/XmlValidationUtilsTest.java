@@ -14,8 +14,6 @@ import org.junit.Test;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-import fr.urssaf.image.sae.services.util.XmlValidationUtils;
-
 @SuppressWarnings("PMD.MethodNamingConventions")
 public class XmlValidationUtilsTest {
 

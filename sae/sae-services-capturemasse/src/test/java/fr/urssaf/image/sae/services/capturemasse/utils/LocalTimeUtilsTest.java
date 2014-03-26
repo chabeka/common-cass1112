@@ -1,4 +1,4 @@
-package fr.urssaf.image.sae.utils;
+package fr.urssaf.image.sae.services.capturemasse.utils;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -8,8 +8,6 @@ import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
 import org.junit.Assert;
 import org.junit.Test;
-
-import fr.urssaf.image.sae.services.util.LocalTimeUtils;
 
 @SuppressWarnings("PMD.MethodNamingConventions")
 public class LocalTimeUtilsTest {

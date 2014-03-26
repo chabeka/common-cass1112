@@ -16,9 +16,9 @@ import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedVirtualDocument;
+import fr.urssaf.image.sae.services.capturemasse.model.SaeComposantVirtuelType;
 import fr.urssaf.image.sae.services.capturemasse.model.SaeListVirtualReferenceFile;
 import fr.urssaf.image.sae.services.capturemasse.modele.commun_sommaire_et_resultat.MetadonneeType;
-import fr.urssaf.image.sae.services.model.SaeComposantVirtuelType;
 
 /**
  * ItemProcessor permettant de transformer un objet <b>composant</b> d'un modèle

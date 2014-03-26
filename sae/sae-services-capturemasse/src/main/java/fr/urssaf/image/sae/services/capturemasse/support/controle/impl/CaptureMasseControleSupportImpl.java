@@ -50,7 +50,6 @@ import fr.urssaf.image.sae.services.exception.capture.UnknownHashCodeEx;
 import fr.urssaf.image.sae.services.exception.capture.UnknownMetadataEx;
 import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.services.exception.format.validation.ValidationExceptionInvalidFile;
-import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 /**
@@ -224,10 +223,10 @@ public class CaptureMasseControleSupportImpl implements
       LOGGER.debug("{} - Début", PREFIXE_TRC);
 
       if (documentFile.length() == 0) {
-         LOGGER.debug("{} - {}", PREFIXE_TRC, ResourceMessagesUtils
-               .loadMessage("capture.fichier.vide", documentFile.getName()));
-         throw new EmptyDocumentEx("Le fichier à archiver est vide ("
-               + documentFile.getName() + ")");
+         LOGGER.debug("{} - Le fichier à archiver est vide ({})", PREFIXE_TRC,
+               documentFile.getName());
+         throw new EmptyDocumentEx(String.format(
+               "Le fichier à archiver est vide (%s)", documentFile.getName()));
       }
 
       LOGGER.debug("{} - Sortie", PREFIXE_TRC);

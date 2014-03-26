@@ -8,7 +8,6 @@ import org.aspectj.lang.annotation.Before;
 
 import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
 import fr.urssaf.image.sae.bo.model.bo.SAEVirtualDocument;
-import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
 
 /**
  * Validation des arguments passés en paramètre des implémentations de
@@ -18,6 +17,8 @@ import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
  */
 @Aspect
 public class EnrichissementMetadonneeSupportValidation {
+
+   private static final String ARGUMENT_REQUIRED = "L'argument '%s' doit être renseigné ou être non null.";
 
    private static final String ENRICHMENT = "execution(void fr.urssaf.image.sae.services.capturemasse.support.enrichissement.EnrichissementMetadonneeSupport.enrichirMetadonnee(*))"
          + " && args(document)";
@@ -34,10 +35,9 @@ public class EnrichissementMetadonneeSupportValidation {
     */
    @Before(ENRICHMENT)
    public final void checkWrite(final SAEDocument document) {
-
       if (document == null) {
-         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "document"));
+         throw new IllegalArgumentException(String.format(ARGUMENT_REQUIRED,
+               "document"));
       }
    }
 
@@ -50,10 +50,9 @@ public class EnrichissementMetadonneeSupportValidation {
     */
    @Before(ENRICHMENT_VRTL)
    public final void checkWriteVrtl(final SAEVirtualDocument document) {
-
       if (document == null) {
-         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "argument.required", "document virtuel"));
+         throw new IllegalArgumentException(String.format(ARGUMENT_REQUIRED,
+               "document virtuel"));
       }
    }
 }

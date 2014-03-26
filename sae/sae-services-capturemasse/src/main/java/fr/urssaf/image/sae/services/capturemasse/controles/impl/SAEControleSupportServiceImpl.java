@@ -18,6 +18,7 @@ import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseEcdeWrite
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireHashException;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireTypeHashException;
+import fr.urssaf.image.sae.services.util.WriteUtils;
 
 /**
  * Implémentation du support {@link SAEControleSupportService}

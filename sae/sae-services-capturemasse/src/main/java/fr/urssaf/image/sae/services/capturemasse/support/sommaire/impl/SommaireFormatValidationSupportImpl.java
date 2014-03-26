@@ -25,7 +25,7 @@ import org.xml.sax.SAXException;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireFormatValidationException;
 import fr.urssaf.image.sae.services.capturemasse.support.sommaire.SommaireFormatValidationSupport;
-import fr.urssaf.image.sae.services.util.XmlValidationUtils;
+import fr.urssaf.image.sae.services.capturemasse.utils.XmlValidationUtils;
 
 /**
  * Implémentation du support {@link SommaireFormatValidationSupport}
