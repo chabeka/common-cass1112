@@ -51,6 +51,12 @@
          <groupId>fr.urssaf.image.commons</groupId>
          <artifactId>commons-dfce</artifactId>
          <version>${commons.dfce}</version>
+         <exclusions>
+            <exclusion>
+               <groupId>commons-lang</groupId>
+               <artifactId>commons-lang</artifactId>
+            </exclusion>
+         </exclusions>
       </dependency>
       
       <!-- sae-commons -->
@@ -83,6 +89,12 @@
          <groupId>fr.urssaf.image.commons</groupId>
          <artifactId>commons-cassandra</artifactId>
          <version>${commons.cassandra}</version>
+         <exclusions>
+            <exclusion>
+               <groupId>commons-lang</groupId>
+               <artifactId>commons-lang</artifactId>
+            </exclusion>
+         </exclusions>
       </dependency>
    
       <dependency>
@@ -103,6 +115,10 @@
                <groupId>log4j</groupId>
                <artifactId>log4j</artifactId>
             </exclusion>
+            <exclusion>
+               <groupId>commons-lang</groupId>
+               <artifactId>commons-lang</artifactId>
+            </exclusion>
          </exclusions>
       </dependency>
       
@@ -118,6 +134,10 @@
             <exclusion>
                <groupId>log4j</groupId>
                <artifactId>log4j</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>commons-lang</groupId>
+               <artifactId>commons-lang</artifactId>
             </exclusion>
          </exclusions>
       </dependency>
