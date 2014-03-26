@@ -61,7 +61,9 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-services-capturemasse-test.xml" })
+@ContextConfiguration(locations = {
+      "/applicationContext-sae-services-capturemasse-test.xml",
+      "/applicationContext-sae-services-capturemasse-test-integration.xml" })
 public class IntegrationErreurFormatTest {
 
    private static final String LOG_WARN = "Aucun document du sommaire ne sera intégré dans le SAE.";

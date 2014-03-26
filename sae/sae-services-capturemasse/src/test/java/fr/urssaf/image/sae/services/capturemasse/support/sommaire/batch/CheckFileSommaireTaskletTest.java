@@ -42,7 +42,7 @@ import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
  * 
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(value = { "/applicationContext-sae-services-test.xml" })
+@ContextConfiguration(value = { "/applicationContext-sae-services-capturemasse-test.xml" })
 public class CheckFileSommaireTaskletTest {
 
    @Autowired
@@ -82,9 +82,12 @@ public class CheckFileSommaireTaskletTest {
 
       JobParameters jobParameters = new JobParameters(parameters);
       ExecutionContext context = new ExecutionContext();
-      context.put(Constantes.CODE_EXCEPTION, new ConcurrentLinkedQueue<String>());
-      context.put(Constantes.INDEX_EXCEPTION, new ConcurrentLinkedQueue<Integer>());
-      context.put(Constantes.INDEX_REF_EXCEPTION, new ConcurrentLinkedQueue<Integer>());
+      context.put(Constantes.CODE_EXCEPTION,
+            new ConcurrentLinkedQueue<String>());
+      context.put(Constantes.INDEX_EXCEPTION,
+            new ConcurrentLinkedQueue<Integer>());
+      context.put(Constantes.INDEX_REF_EXCEPTION,
+            new ConcurrentLinkedQueue<Integer>());
       context.put(Constantes.DOC_EXCEPTION,
             new ConcurrentLinkedQueue<Exception>());
 
@@ -128,9 +131,12 @@ public class CheckFileSommaireTaskletTest {
       JobParameters jobParameters = new JobParameters(parameters);
 
       ExecutionContext contextParam = new ExecutionContext();
-      contextParam.put(Constantes.CODE_EXCEPTION, new ConcurrentLinkedQueue<String>());
-      contextParam.put(Constantes.INDEX_EXCEPTION, new ConcurrentLinkedQueue<Integer>());
-      contextParam.put(Constantes.INDEX_REF_EXCEPTION, new ConcurrentLinkedQueue<Integer>());
+      contextParam.put(Constantes.CODE_EXCEPTION,
+            new ConcurrentLinkedQueue<String>());
+      contextParam.put(Constantes.INDEX_EXCEPTION,
+            new ConcurrentLinkedQueue<Integer>());
+      contextParam.put(Constantes.INDEX_REF_EXCEPTION,
+            new ConcurrentLinkedQueue<Integer>());
       contextParam.put(Constantes.DOC_EXCEPTION,
             new ConcurrentLinkedQueue<Exception>());
 
@@ -169,9 +175,12 @@ public class CheckFileSommaireTaskletTest {
       JobParameters jobParameters = new JobParameters(parameters);
 
       ExecutionContext contextParam = new ExecutionContext();
-      contextParam.put(Constantes.CODE_EXCEPTION, new ConcurrentLinkedQueue<String>());
-      contextParam.put(Constantes.INDEX_EXCEPTION, new ConcurrentLinkedQueue<Integer>());
-      contextParam.put(Constantes.INDEX_REF_EXCEPTION, new ConcurrentLinkedQueue<Integer>());
+      contextParam.put(Constantes.CODE_EXCEPTION,
+            new ConcurrentLinkedQueue<String>());
+      contextParam.put(Constantes.INDEX_EXCEPTION,
+            new ConcurrentLinkedQueue<Integer>());
+      contextParam.put(Constantes.INDEX_REF_EXCEPTION,
+            new ConcurrentLinkedQueue<Integer>());
       contextParam.put(Constantes.DOC_EXCEPTION,
             new ConcurrentLinkedQueue<Exception>());
 

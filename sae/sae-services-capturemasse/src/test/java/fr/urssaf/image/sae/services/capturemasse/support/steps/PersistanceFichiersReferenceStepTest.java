@@ -52,8 +52,9 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(value = { "/applicationContext-sae-services-test.xml",
-      "/applicationContext-sae-services-integration-test.xml" })
+@ContextConfiguration(value = {
+      "/applicationContext-sae-services-capturemasse-test.xml",
+      "/applicationContext-sae-services-capturemasse-test-integration.xml" })
 public class PersistanceFichiersReferenceStepTest {
 
    @Autowired
@@ -272,7 +273,7 @@ public class PersistanceFichiersReferenceStepTest {
       File documents = new File(ecdeTestSommaire.getRepEcde(), "documents");
       documents.mkdir();
       File attestation = new File(documents, "attestation1.pdf");
-      ClassPathResource resPdf = new ClassPathResource("PDF/doc1.PDF");
+      ClassPathResource resPdf = new ClassPathResource("doc1.PDF");
       FileOutputStream fosPdf = new FileOutputStream(attestation);
 
       IOUtils.copy(resPdf.getInputStream(), fosPdf);
@@ -383,7 +384,7 @@ public class PersistanceFichiersReferenceStepTest {
       File documents = new File(ecdeTestSommaire.getRepEcde(), "documents");
       documents.mkdir();
       File attestation = new File(documents, "attestation1.pdf");
-      ClassPathResource resPdf = new ClassPathResource("PDF/doc1.PDF");
+      ClassPathResource resPdf = new ClassPathResource("doc1.PDF");
       FileOutputStream fosPdf = new FileOutputStream(attestation);
 
       IOUtils.copy(resPdf.getInputStream(), fosPdf);

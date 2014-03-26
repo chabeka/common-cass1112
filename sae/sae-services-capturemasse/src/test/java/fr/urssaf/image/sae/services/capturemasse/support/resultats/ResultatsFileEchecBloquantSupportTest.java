@@ -22,7 +22,7 @@ import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireFormatValidationException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })
+@ContextConfiguration(locations = { "/applicationContext-sae-services-capturemasse-test.xml" })
 public class ResultatsFileEchecBloquantSupportTest {
 
    @Autowired

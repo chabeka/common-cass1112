@@ -24,8 +24,8 @@ import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentServi
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
-      "/applicationContext-sae-services-mock-storagedocument.xml",
-      "/applicationContext-sae-services-test.xml" })
+      "/applicationContext-sae-services-capturemasse-test-mock-storagedocument.xml",
+      "/applicationContext-sae-services-capturemasse-test.xml" })
 @SuppressWarnings("PMD.MethodNamingConventions")
 public class InsertionPoolThreadExecutorTest {
 
@@ -122,7 +122,8 @@ public class InsertionPoolThreadExecutorTest {
    }
 
    @Test
-   public void execute_success_interruption() throws InsertionServiceEx, InterruptionTraitementException {
+   public void execute_success_interruption() throws InsertionServiceEx,
+         InterruptionTraitementException {
 
       int count = 1000;
 
@@ -132,7 +133,7 @@ public class InsertionPoolThreadExecutorTest {
                   .anyObject(DateTime.class), EasyMock
                   .anyObject(InterruptionTraitementConfig.class))).andReturn(
             true).times(count);
-      
+
       interruptionSupport.interruption(EasyMock.anyObject(DateTime.class),
             EasyMock.anyObject(InterruptionTraitementConfig.class));
 
@@ -141,8 +142,6 @@ public class InsertionPoolThreadExecutorTest {
             storageDocumentService.insertStorageDocument(EasyMock
                   .anyObject(StorageDocument.class))).andReturn(DOCUMENT)
             .times(count);
-      
-      
 
       EasyMock.replay(interruptionSupport);
       EasyMock.replay(storageDocumentService);
@@ -164,7 +163,7 @@ public class InsertionPoolThreadExecutorTest {
       EasyMock.verify(storageDocumentService);
 
    }
-   
+
    @Test
    public void execute_failure_interruption()
          throws InterruptionTraitementException, InsertionServiceEx {

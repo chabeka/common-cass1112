@@ -19,8 +19,6 @@ import fr.urssaf.image.sae.services.capturemasse.support.controle.model.CaptureM
 import fr.urssaf.image.sae.services.capturemasse.support.stockage.multithreading.InsertionPoolThreadExecutor;
 import fr.urssaf.image.sae.services.capturemasse.support.stockage.multithreading.InsertionRunnable;
 import fr.urssaf.image.sae.services.controles.traces.TracesControlesSupport;
-import fr.urssaf.image.sae.storage.dfce.constants.Constants;
-import fr.urssaf.image.sae.storage.dfce.messages.StorageMessageHandler;
 import fr.urssaf.image.sae.storage.dfce.utils.Utils;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
@@ -101,15 +99,13 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
          return retour;
       } catch (Exception except) {
 
-         throw new InsertionServiceEx(StorageMessageHandler
-               .getMessage(Constants.INS_CODE_ERROR), except.getMessage(),
+         throw new InsertionServiceEx("SAE-ST-INS001", except.getMessage(),
                except);
 
          /* nous sommes obligés de récupérer les throwable pour les erreurs DFCE */
       } catch (Throwable except) {
 
-         throw new InsertionServiceEx(StorageMessageHandler
-               .getMessage(Constants.INS_CODE_ERROR), except.getMessage(),
+         throw new InsertionServiceEx("SAE-ST-INS001", except.getMessage(),
                except);
 
       }

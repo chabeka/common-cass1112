@@ -23,7 +23,7 @@ import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(value = { "/applicationContext-sae-services-test.xml" })
+@ContextConfiguration(value = { "/applicationContext-sae-services-capturemasse-test.xml" })
 public class ControleStepsNFSTest {
 
    @Autowired
@@ -52,67 +52,67 @@ public class ControleStepsNFSTest {
    public void debutTraitementTest() {
       nfsConnexionTest("debutTraitement");
    }
-   
+
    @Test
    public void controleFormatSommaireStepTest() {
       nfsConnexionTest("controleFormatSommaireStep");
    }
-   
+
    @Test
    public void compteElementsTest() {
       nfsConnexionTest("compteElements");
    }
-   
+
    @Test
    public void controleDocumentsTest() {
       nfsConnexionTest("controleDocuments");
    }
-   
+
    @Test
    public void persistanceDocumentsTest() {
       nfsConnexionTest("persistanceDocuments");
    }
-   
+
    @Test
    public void finSuccesTest() {
       nfsConnexionTest("finSucces");
    }
-   
+
    @Test
    public void finTraitementTest() {
       nfsConnexionTest("finTraitement");
    }
-   
+
    @Test
    public void controleFichiersReferenceTest() {
       nfsConnexionTest("controleFichiersReference");
    }
-   
+
    @Test
    public void controleDocumentsVirtuelsTest() {
       nfsConnexionTest("controleDocumentsVirtuels");
    }
-   
+
    @Test
    public void persistanceFichiersReferenceTest() {
       nfsConnexionTest("persistanceFichiersReference");
    }
-   
+
    @Test
    public void finErreurTest() {
       nfsConnexionTest("finErreur");
    }
-   
+
    @Test
    public void persistanceDocumentsVirtuelsTest() {
       nfsConnexionTest("persistanceDocumentsVirtuels");
    }
-   
+
    @Test
    public void finErreurVirtuelTest() {
       nfsConnexionTest("finErreurVirtuel");
    }
-   
+
    @Test
    public void finSuccesVirtuelTest() {
       nfsConnexionTest("finSuccesVirtuel");

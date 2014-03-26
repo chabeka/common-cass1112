@@ -33,7 +33,7 @@ import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
 import fr.urssaf.image.sae.services.capturemasse.utils.XmlValidationUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })
+@ContextConfiguration(locations = { "/applicationContext-sae-services-capturemasse-test.xml" })
 public class ResultatsVirtualFileFailureTaskletTest {
 
    @Autowired

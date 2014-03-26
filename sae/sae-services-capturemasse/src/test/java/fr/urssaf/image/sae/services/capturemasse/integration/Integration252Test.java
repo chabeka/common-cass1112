@@ -61,7 +61,9 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-services-capturemasse-test.xml" })
+@ContextConfiguration(locations = {
+      "/applicationContext-sae-services-capturemasse-test.xml",
+      "/applicationContext-sae-services-capturemasse-test-integration.xml" })
 public class Integration252Test {
 
    private static final String LOG_WARN = "La ou les métadonnées suivantes, obligatoires lors de l'archivage, ne sont pas renseignées : ApplicationProductrice, CodeOrganismeGestionnaire, CodeOrganismeProprietaire, CodeRND, DateCreation, FormatFichier, Hash, NbPages, Titre, TypeHash";

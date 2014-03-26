@@ -31,7 +31,7 @@ import fr.urssaf.image.sae.services.capturemasse.common.CaptureMasseErreur;
 import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })
+@ContextConfiguration(locations = { "/applicationContext-sae-services-capturemasse-test.xml" })
 public class ResultatsFileEchecSupportTest {
 
    @Autowired

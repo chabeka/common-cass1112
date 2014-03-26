@@ -21,8 +21,8 @@ import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
-      "/applicationContext-sae-services-test.xml",
-      "/applicationContext-sae-services-mock-storagedocument.xml" })
+      "/applicationContext-sae-services-capturemasse-test.xml",
+      "/applicationContext-sae-services-capturemasse-test-mock-storagedocument.xml" })
 public class EnrichissementMetadonneeSupportTest {
 
    @Autowired
@@ -91,7 +91,7 @@ public class EnrichissementMetadonneeSupportTest {
       support.enrichirMetadonnee(document);
 
    }
-   
+
    @Test
    public void testEnrichirMetadonneesVirtuellesObligatoire() {
 

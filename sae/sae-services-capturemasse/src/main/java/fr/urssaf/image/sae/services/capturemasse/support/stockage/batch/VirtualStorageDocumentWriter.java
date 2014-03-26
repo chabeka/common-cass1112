@@ -16,8 +16,6 @@ import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.services.capturemasse.support.stockage.multithreading.InsertionPoolThreadVirtualExecutor;
 import fr.urssaf.image.sae.services.capturemasse.support.stockage.multithreading.InsertionVirtualRunnable;
-import fr.urssaf.image.sae.storage.dfce.constants.Constants;
-import fr.urssaf.image.sae.storage.dfce.messages.StorageMessageHandler;
 import fr.urssaf.image.sae.storage.dfce.utils.Utils;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageDocument;
@@ -106,15 +104,13 @@ public class VirtualStorageDocumentWriter extends
 
       } catch (Exception except) {
 
-         throw new InsertionServiceEx(StorageMessageHandler
-               .getMessage(Constants.INS_CODE_ERROR), except.getMessage(),
+         throw new InsertionServiceEx("SAE-ST-INS001", except.getMessage(),
                except);
 
          /* nous sommes obligés de récupérer les throwable pour les erreurs DFCE */
       } catch (Throwable except) {
 
-         throw new InsertionServiceEx(StorageMessageHandler
-               .getMessage(Constants.INS_CODE_ERROR), except.getMessage(),
+         throw new InsertionServiceEx("SAE-ST-INS001", except.getMessage(),
                except);
 
       }

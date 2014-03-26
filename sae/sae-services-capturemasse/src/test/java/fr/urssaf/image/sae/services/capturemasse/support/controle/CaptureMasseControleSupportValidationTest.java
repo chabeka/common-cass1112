@@ -30,7 +30,7 @@ import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.services.exception.format.validation.ValidationExceptionInvalidFile;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })
+@ContextConfiguration(locations = { "/applicationContext-sae-services-capturemasse-test.xml" })
 public class CaptureMasseControleSupportValidationTest {
 
    @Autowired
@@ -42,7 +42,8 @@ public class CaptureMasseControleSupportValidationTest {
          DuplicatedMetadataEx, InvalidValueTypeAndFormatMetadataEx,
          NotSpecifiableMetadataEx, RequiredArchivableMetadataEx,
          UnknownHashCodeEx, CaptureMasseSommaireDocumentNotFoundException,
-         MetadataValueNotInDictionaryEx, UnknownFormatException, ValidationExceptionInvalidFile {
+         MetadataValueNotInDictionaryEx, UnknownFormatException,
+         ValidationExceptionInvalidFile {
 
       support.controleSAEDocument(null, new File(""));
       Assert.fail("sortie aspect attendue");
@@ -54,7 +55,8 @@ public class CaptureMasseControleSupportValidationTest {
          DuplicatedMetadataEx, InvalidValueTypeAndFormatMetadataEx,
          NotSpecifiableMetadataEx, RequiredArchivableMetadataEx,
          UnknownHashCodeEx, CaptureMasseSommaireDocumentNotFoundException,
-         MetadataValueNotInDictionaryEx, UnknownFormatException, ValidationExceptionInvalidFile {
+         MetadataValueNotInDictionaryEx, UnknownFormatException,
+         ValidationExceptionInvalidFile {
       support.controleSAEDocument(new UntypedDocument(), null);
       Assert.fail("sortie aspect attendue");
 

@@ -63,8 +63,8 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(value = {
-      "/applicationContext-sae-services-integration-test.xml",
-      "/applicationContext-sae-services-test.xml" })
+      "/applicationContext-sae-services-capturemasse-test.xml",
+      "/applicationContext-sae-services-capturemasse-test-integration.xml" })
 public class PersistanceDocumentsVirtuelsStepTest {
 
    @Autowired
@@ -86,12 +86,12 @@ public class PersistanceDocumentsVirtuelsStepTest {
 
    @Autowired
    private SaeListVirtualReferenceFile saeListVirtualReferenceFile;
-   
+
    @Autowired
    private CassandraServerBean server;
    @Autowired
    private ParametersService parametersService;
-   @Autowired 
+   @Autowired
    private RndSupport rndSupport;
    @Autowired
    private JobClockSupport jobClockSupport;
@@ -121,11 +121,11 @@ public class PersistanceDocumentsVirtuelsStepTest {
       AuthenticationToken token = AuthenticationFactory.createAuthentication(
             viExtrait.getIdUtilisateur(), viExtrait, roles);
       AuthenticationContext.setAuthenticationToken(token);
-      
+
       // Paramétrage du RND
       parametersService.setVersionRndDateMaj(new Date());
       parametersService.setVersionRndNumero("11.2");
-      
+
       TypeDocument typeDocCree = new TypeDocument();
       typeDocCree.setCloture(false);
       typeDocCree.setCode("2.3.1.1.8");
@@ -134,7 +134,7 @@ public class PersistanceDocumentsVirtuelsStepTest {
       typeDocCree.setDureeConservation(1825);
       typeDocCree.setLibelle("ATTESTATION DE MARCHE PUBLIC");
       typeDocCree.setType(TypeCode.ARCHIVABLE_AED);
-      
+
       rndSupport.ajouterRnd(typeDocCree, jobClockSupport.currentCLock());
    }
 
@@ -150,7 +150,7 @@ public class PersistanceDocumentsVirtuelsStepTest {
 
       saeListCaptureMasseReferenceFile.clear();
       saeListVirtualReferenceFile.clear();
-      
+
       server.resetData();
    }
 
@@ -306,7 +306,7 @@ public class PersistanceDocumentsVirtuelsStepTest {
       File documents = new File(ecdeTestSommaire.getRepEcde(), "documents");
       documents.mkdir();
       File attestation = new File(documents, "attestation1.pdf");
-      ClassPathResource resPdf = new ClassPathResource("PDF/doc1.PDF");
+      ClassPathResource resPdf = new ClassPathResource("doc1.PDF");
       FileOutputStream fosPdf = new FileOutputStream(attestation);
 
       IOUtils.copy(resPdf.getInputStream(), fosPdf);
@@ -380,7 +380,7 @@ public class PersistanceDocumentsVirtuelsStepTest {
       File documents = new File(ecdeTestSommaire.getRepEcde(), "documents");
       documents.mkdir();
       File attestation = new File(documents, "attestation1.pdf");
-      ClassPathResource resPdf = new ClassPathResource("PDF/doc1.PDF");
+      ClassPathResource resPdf = new ClassPathResource("doc1.PDF");
       FileOutputStream fosPdf = new FileOutputStream(attestation);
 
       IOUtils.copy(resPdf.getInputStream(), fosPdf);

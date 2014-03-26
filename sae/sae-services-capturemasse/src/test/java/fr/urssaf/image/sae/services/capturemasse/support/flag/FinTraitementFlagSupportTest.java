@@ -29,7 +29,7 @@ import fr.urssaf.image.sae.utils.LogUtils;
 import fr.urssaf.image.sae.utils.SaeLogAppender;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })
+@ContextConfiguration(locations = { "/applicationContext-sae-services-capturemasse-test.xml" })
 public class FinTraitementFlagSupportTest {
 
    @Autowired

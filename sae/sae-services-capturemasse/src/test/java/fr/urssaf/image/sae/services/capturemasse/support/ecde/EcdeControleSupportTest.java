@@ -28,7 +28,7 @@ import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireT
 import fr.urssaf.image.sae.services.exception.capture.SAECaptureServiceRuntimeException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })
+@ContextConfiguration(locations = { "/applicationContext-sae-services-capturemasse-test.xml" })
 public class EcdeControleSupportTest {
 
    @Autowired
@@ -84,27 +84,35 @@ public class EcdeControleSupportTest {
       }
 
    }
+
    /**
-    * Test vérifiant la levée d'exception en cas d'utilisation d'un algo autre que le SHA-1
+    * Test vérifiant la levée d'exception en cas d'utilisation d'un algo autre
+    * que le SHA-1
+    * 
     * @throws CaptureMasseSommaireHashException
     * @throws CaptureMasseSommaireTypeHashException
     * @throws IOException
     */
-   @Test(expected=CaptureMasseSommaireTypeHashException.class)
-   public void testNotSha1File() throws CaptureMasseSommaireHashException, CaptureMasseSommaireTypeHashException, IOException{
-      
+   @Test(expected = CaptureMasseSommaireTypeHashException.class)
+   public void testNotSha1File() throws CaptureMasseSommaireHashException,
+         CaptureMasseSommaireTypeHashException, IOException {
+
       ClassPathResource sommaireFile = new ClassPathResource("sommaire.xml");
       support.checkHash(sommaireFile.getFile(), "123456", "TOTO");
    }
-   
+
    /**
-    * Test vérifiant la levée d'exception en cas d'impossibilité de lecture du fichier. Dans ce test le fichier sommaire n'existe pas à l'emplacment indiqué
+    * Test vérifiant la levée d'exception en cas d'impossibilité de lecture du
+    * fichier. Dans ce test le fichier sommaire n'existe pas à l'emplacment
+    * indiqué
+    * 
     * @throws CaptureMasseSommaireHashException
     * @throws CaptureMasseSommaireTypeHashException
     * @throws IOException
     */
-   @Test(expected=SAECaptureServiceRuntimeException.class)
-   public void testNoFileExist() throws CaptureMasseSommaireHashException, CaptureMasseSommaireTypeHashException, IOException{
+   @Test(expected = SAECaptureServiceRuntimeException.class)
+   public void testNoFileExist() throws CaptureMasseSommaireHashException,
+         CaptureMasseSommaireTypeHashException, IOException {
       File repEcde = ecdeTestSommaire.getRepEcde();
       File fileSommaire = new File(repEcde, "sommaire.xml");
       support.checkHash(fileSommaire, "123456", "SHA-1");
@@ -112,26 +120,31 @@ public class EcdeControleSupportTest {
 
    /**
     * Test vérifiant la levée d'exception en cas de Hash différent
+    * 
     * @throws CaptureMasseSommaireHashException
     * @throws CaptureMasseSommaireTypeHashException
     * @throws IOException
     */
-   @Test(expected=CaptureMasseSommaireHashException.class)
-   public void testIncorrectHash() throws CaptureMasseSommaireHashException, CaptureMasseSommaireTypeHashException, IOException{
+   @Test(expected = CaptureMasseSommaireHashException.class)
+   public void testIncorrectHash() throws CaptureMasseSommaireHashException,
+         CaptureMasseSommaireTypeHashException, IOException {
       ClassPathResource sommaireFile = new ClassPathResource("sommaire.xml");
       support.checkHash(sommaireFile.getFile(), "123456", "SHA-1");
    }
-   
+
    /**
     * Test vérifiant le comportement normal, hash et algo sont valides
+    * 
     * @throws CaptureMasseSommaireHashException
     * @throws CaptureMasseSommaireTypeHashException
     * @throws IOException
     */
    @Test
-   public void testCorrectHash() throws CaptureMasseSommaireHashException, CaptureMasseSommaireTypeHashException, IOException{
+   public void testCorrectHash() throws CaptureMasseSommaireHashException,
+         CaptureMasseSommaireTypeHashException, IOException {
       ClassPathResource sommaireFile = new ClassPathResource("sommaire.xml");
-      support.checkHash(sommaireFile.getFile(), "d1c0f4497241a9a0317d50783dcdbba8417af804", "SHA-1");
+      support.checkHash(sommaireFile.getFile(),
+            "d1c0f4497241a9a0317d50783dcdbba8417af804", "SHA-1");
    }
-   
+
 }

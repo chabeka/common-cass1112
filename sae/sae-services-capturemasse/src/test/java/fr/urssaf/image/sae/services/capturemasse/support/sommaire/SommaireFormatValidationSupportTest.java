@@ -23,7 +23,7 @@ import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireFormatValidationException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })
+@ContextConfiguration(locations = { "/applicationContext-sae-services-capturemasse-test.xml" })
 public class SommaireFormatValidationSupportTest {
 
    @Autowired
@@ -78,11 +78,9 @@ public class SommaireFormatValidationSupportTest {
 
       } catch (CaptureMasseSommaireFormatValidationException e) {
 
-         Assert
-               .assertEquals(
-                     "le message de l'exception est inattendu",
-                     "Aucun document du sommaire ne sera intégré dans le SAE.",
-                     e.getMessage());
+         Assert.assertEquals("le message de l'exception est inattendu",
+               "Aucun document du sommaire ne sera intégré dans le SAE.", e
+                     .getMessage());
       }
 
    }

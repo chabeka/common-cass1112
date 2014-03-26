@@ -28,7 +28,7 @@ import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.services.capturemasse.support.flag.model.DebutTraitementFlag;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })
+@ContextConfiguration(locations = { "/applicationContext-sae-services-capturemasse-test.xml" })
 public class DebutTraitementFlagSupportTest {
 
    @Autowired
@@ -132,7 +132,7 @@ public class DebutTraitementFlagSupportTest {
 
       Properties properties = new Properties();
       InputStream stream = null;
-      
+
       try {
          stream = FileUtils.openInputStream(fileFlag);
          properties.load(stream);
@@ -157,7 +157,7 @@ public class DebutTraitementFlagSupportTest {
                      .getProperty("hostnameServeurAppli")));
          Assert.assertTrue("la valeur hostIP doit exister", StringUtils
                .isNotBlank(properties.getProperty("hostIP")));
-      
+
       } finally {
          if (stream != null) {
             try {

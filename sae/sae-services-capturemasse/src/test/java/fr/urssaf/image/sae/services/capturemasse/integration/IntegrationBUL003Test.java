@@ -72,7 +72,9 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-services-capturemasse-test.xml" })
+@ContextConfiguration(locations = {
+      "/applicationContext-sae-services-capturemasse-test.xml",
+      "/applicationContext-sae-services-capturemasse-test-integration.xml" })
 public class IntegrationBUL003Test {
 
    private static final String ERREUR_ATTENDUE = "La capture de masse en mode "

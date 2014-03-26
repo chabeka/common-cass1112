@@ -72,8 +72,8 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
-      "/applicationContext-sae-services-test.xml",
-      "/applicationContext-sae-services-integration-test.xml" })
+      "/applicationContext-sae-services-capturemasse-test.xml",
+      "/applicationContext-sae-services-capturemasse-test-integration.xml" })
 public class IntegrationRollBack11DocRechercheRollFailureTest {
 
    /**
@@ -107,12 +107,12 @@ public class IntegrationRollBack11DocRechercheRollFailureTest {
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(IntegrationRollBack11DocRechercheRollFailureTest.class);
-   
+
    @Autowired
    private CassandraServerBean server;
    @Autowired
    private ParametersService parametersService;
-   @Autowired 
+   @Autowired
    private RndSupport rndSupport;
    @Autowired
    private JobClockSupport jobClockSupport;
@@ -145,11 +145,11 @@ public class IntegrationRollBack11DocRechercheRollFailureTest {
       AuthenticationToken token = AuthenticationFactory.createAuthentication(
             viExtrait.getIdUtilisateur(), viExtrait, roles);
       AuthenticationContext.setAuthenticationToken(token);
-      
+
       // Paramétrage du RND
       parametersService.setVersionRndDateMaj(new Date());
       parametersService.setVersionRndNumero("11.2");
-      
+
       TypeDocument typeDocCree = new TypeDocument();
       typeDocCree.setCloture(false);
       typeDocCree.setCode("2.3.1.1.12");
@@ -158,7 +158,7 @@ public class IntegrationRollBack11DocRechercheRollFailureTest {
       typeDocCree.setDureeConservation(1825);
       typeDocCree.setLibelle("ATTESTATION DE VIGILANCE");
       typeDocCree.setType(TypeCode.ARCHIVABLE_AED);
-      
+
       rndSupport.ajouterRnd(typeDocCree, jobClockSupport.currentCLock());
    }
 
@@ -176,7 +176,7 @@ public class IntegrationRollBack11DocRechercheRollFailureTest {
             .getTarget();
 
       EasyMock.reset(provider, storageDocumentService, impl);
-      
+
       server.resetData();
    }
 

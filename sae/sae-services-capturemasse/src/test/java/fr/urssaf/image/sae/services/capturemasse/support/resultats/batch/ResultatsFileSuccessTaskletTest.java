@@ -38,7 +38,7 @@ import fr.urssaf.image.sae.services.capturemasse.model.CaptureMasseIntegratedDoc
 import fr.urssaf.image.sae.services.capturemasse.support.stockage.multithreading.InsertionPoolThreadExecutor;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })
+@ContextConfiguration(locations = { "/applicationContext-sae-services-capturemasse-test.xml" })
 @DirtiesContext
 public class ResultatsFileSuccessTaskletTest {
 
@@ -133,7 +133,8 @@ public class ResultatsFileSuccessTaskletTest {
       IOUtils.copy(resSommaire.getInputStream(), fos);
 
       context.put(Constantes.SOMMAIRE_FILE, sommaire.getAbsolutePath());
-      context.put(Constantes.SOMMAIRE, ecdeTestSommaire.getUrlEcde().toString());
+      context
+            .put(Constantes.SOMMAIRE, ecdeTestSommaire.getUrlEcde().toString());
 
       // Liste des documents intégrés
       CaptureMasseIntegratedDocument doc1 = new CaptureMasseIntegratedDocument();

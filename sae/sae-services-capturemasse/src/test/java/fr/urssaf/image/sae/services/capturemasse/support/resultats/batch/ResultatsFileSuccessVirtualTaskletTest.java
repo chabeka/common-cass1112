@@ -39,7 +39,7 @@ import fr.urssaf.image.sae.services.capturemasse.model.CaptureMasseVirtualDocume
 import fr.urssaf.image.sae.services.capturemasse.support.stockage.multithreading.InsertionPoolThreadVirtualExecutor;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })
+@ContextConfiguration(locations = { "/applicationContext-sae-services-capturemasse-test.xml" })
 @DirtiesContext
 public class ResultatsFileSuccessVirtualTaskletTest {
 

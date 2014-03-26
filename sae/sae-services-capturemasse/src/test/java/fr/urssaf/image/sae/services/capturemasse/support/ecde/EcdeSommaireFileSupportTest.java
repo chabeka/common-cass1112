@@ -23,7 +23,7 @@ import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireE
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireFileNotFoundException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })
+@ContextConfiguration(locations = { "/applicationContext-sae-services-capturemasse-test.xml" })
 public class EcdeSommaireFileSupportTest {
 
    @Autowired

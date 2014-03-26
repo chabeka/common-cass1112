@@ -28,7 +28,7 @@ import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(value = { "/applicationContext-sae-services-test.xml" })
+@ContextConfiguration(value = { "/applicationContext-sae-services-capturemasse-test.xml" })
 public class CountSommaireDocumentStepTest {
 
    @Autowired
@@ -58,7 +58,8 @@ public class CountSommaireDocumentStepTest {
 
       // création de l'arbo
       File sommaire = new File(ecdeTestSommaire.getRepEcde(), "sommaire.xml");
-      ClassPathResource resSommaire = new ClassPathResource("sommaire/sommaire_success.xml");
+      ClassPathResource resSommaire = new ClassPathResource(
+            "sommaire/sommaire_success.xml");
       FileOutputStream fos = null;
 
       try {
@@ -70,11 +71,11 @@ public class CountSommaireDocumentStepTest {
                .toString());
          context.put(Constantes.SOMMAIRE_FILE, sommaire.getAbsolutePath());
 
-         JobExecution execution = launcher.launchStep("compteElements",
-               context);
+         JobExecution execution = launcher
+               .launchStep("compteElements", context);
 
-         Assert.assertEquals("le step doit etre completed",
-               new ExitStatus("DOCS"), execution.getExitStatus());
+         Assert.assertEquals("le step doit etre completed", new ExitStatus(
+               "DOCS"), execution.getExitStatus());
 
          int nbreDocs = execution.getExecutionContext().getInt(
                Constantes.DOC_COUNT);

@@ -14,8 +14,6 @@ import fr.urssaf.image.sae.services.capturemasse.support.stockage.interruption.I
 import fr.urssaf.image.sae.services.capturemasse.support.stockage.interruption.exception.InterruptionTraitementException;
 import fr.urssaf.image.sae.services.capturemasse.support.stockage.interruption.model.InterruptionTraitementConfig;
 import fr.urssaf.image.sae.services.capturemasse.support.stockage.rollback.RollbackSupport;
-import fr.urssaf.image.sae.storage.dfce.constants.Constants;
-import fr.urssaf.image.sae.storage.dfce.messages.StorageMessageHandler;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 
@@ -72,8 +70,7 @@ public class RollbackSupportImpl implements RollbackSupport {
          /* récupération des erreurs de DFCE */
       } catch (Throwable throwable) {
 
-         throw new DeletionServiceEx(StorageMessageHandler
-               .getMessage(Constants.DEL_CODE_ERROR), throwable.getMessage(),
+         throw new DeletionServiceEx("SAE-ST-DEL001", throwable.getMessage(),
                throwable);
       }
 

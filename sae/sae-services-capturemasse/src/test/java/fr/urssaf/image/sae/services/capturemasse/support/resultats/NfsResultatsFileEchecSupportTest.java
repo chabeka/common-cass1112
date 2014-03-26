@@ -37,8 +37,8 @@ import fr.urssaf.image.sae.services.capturemasse.utils.StaxUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
-      "/applicationContext-sae-services-test.xml",
-      "/applicationContext-properties-stax-test.xml" })
+      "/applicationContext-sae-services-capturemasse-test.xml",
+      "/applicationContext-sae-services-capturemasse-test-mock-stax.xml" })
 public class NfsResultatsFileEchecSupportTest {
 
    @Autowired

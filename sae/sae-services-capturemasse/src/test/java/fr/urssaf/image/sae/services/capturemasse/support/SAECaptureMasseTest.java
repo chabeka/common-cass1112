@@ -44,7 +44,7 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })
+@ContextConfiguration(locations = { "/applicationContext-sae-services-capturemasse-test.xml" })
 public class SAECaptureMasseTest {
 
    @Autowired
@@ -136,22 +136,17 @@ public class SAECaptureMasseTest {
    }
 
    @Test
-   public void testLancementSommaireErroneHashCodeErrone() {
+   public void testLancementSommaireErroneHashCodeErrone() throws IOException {
 
-      try {
-         File sommaire = new File(testSommaire.getRepEcde(), "sommaire.xml");
-         ClassPathResource resSommaire = new ClassPathResource(
-               "sommaire/sommaire_failure_HashIncorrect.xml");
-         FileUtils.copyURLToFile(resSommaire.getURL(), sommaire);
+      File sommaire = new File(testSommaire.getRepEcde(), "sommaire.xml");
+      ClassPathResource resSommaire = new ClassPathResource(
+            "sommaire/sommaire_failure_HashIncorrect.xml");
+      FileUtils.copyURLToFile(resSommaire.getURL(), sommaire);
 
-         File repDocuments = new File(testSommaire.getRepEcde(), "documents");
-         ClassPathResource resAttestation1 = new ClassPathResource("doc1.PDF");
-         File fileAttestation1 = new File(repDocuments, "doc1.PDF");
-         FileUtils.copyURLToFile(resAttestation1.getURL(), fileAttestation1);
-
-      } catch (Exception e) {
-         Assert.fail("pas d'erreur attendue");
-      }
+      File repDocuments = new File(testSommaire.getRepEcde(), "documents");
+      ClassPathResource resAttestation1 = new ClassPathResource("doc1.PDF");
+      File fileAttestation1 = new File(repDocuments, "doc1.PDF");
+      FileUtils.copyURLToFile(resAttestation1.getURL(), fileAttestation1);
 
       ExitTraitement exitTraitement = service.captureMasse(testSommaire
             .getUrlEcde(), UUID.randomUUID());

@@ -32,7 +32,7 @@ import fr.urssaf.image.sae.services.capturemasse.model.CaptureMasseIntegratedDoc
 import fr.urssaf.image.sae.services.capturemasse.model.CaptureMasseVirtualDocument;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })
+@ContextConfiguration(locations = { "/applicationContext-sae-services-capturemasse-test.xml" })
 public class ResultatFileSuccessSupportTest {
 
    @Autowired
@@ -222,8 +222,7 @@ public class ResultatFileSuccessSupportTest {
       File ecdeDirectory = ecdeTestSommaire.getRepEcde();
 
       try {
-         support
-               .writeVirtualResultatsFile(ecdeDirectory, null, -1, true, null);
+         support.writeVirtualResultatsFile(ecdeDirectory, null, -1, true, null);
          Assert.fail("exception IllegalArgumentException attendue");
 
       } catch (IllegalArgumentException exception) {

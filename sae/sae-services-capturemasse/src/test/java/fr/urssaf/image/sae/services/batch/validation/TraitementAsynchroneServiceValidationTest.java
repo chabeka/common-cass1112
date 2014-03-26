@@ -15,7 +15,7 @@ import fr.urssaf.image.sae.services.batch.exception.JobNonReserveException;
 import fr.urssaf.image.sae.services.batch.model.CaptureMasseParametres;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })
+@ContextConfiguration(locations = { "/applicationContext-sae-services-capturemasse-test.xml" })
 @SuppressWarnings("PMD.MethodNamingConventions")
 public class TraitementAsynchroneServiceValidationTest {
 

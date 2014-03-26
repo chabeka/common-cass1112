@@ -55,9 +55,9 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
-      "/applicationContext-sae-services-test.xml",
-      "/applicationContext-sae-services-integration-test.xml",
-      "/applicationContext-sae-traitement-masse-writer-test.xml" })
+      "/applicationContext-sae-services-capturemasse-test.xml",
+      "/applicationContext-sae-services-capturemasse-test-integration.xml",
+      "/applicationContext-sae-services-capturemasse-test-writer.xml" })
 public class MetaDataPartielIntegrationTest {
 
    private static final SimpleDateFormat FORMAT = new SimpleDateFormat(
@@ -73,12 +73,12 @@ public class MetaDataPartielIntegrationTest {
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(MetaDataPartielIntegrationTest.class);
-   
+
    @Autowired
    private CassandraServerBean server;
    @Autowired
    private ParametersService parametersService;
-   @Autowired 
+   @Autowired
    private RndSupport rndSupport;
    @Autowired
    private JobClockSupport jobClockSupport;
@@ -111,11 +111,11 @@ public class MetaDataPartielIntegrationTest {
       AuthenticationToken token = AuthenticationFactory.createAuthentication(
             viExtrait.getIdUtilisateur(), viExtrait, roles);
       AuthenticationContext.setAuthenticationToken(token);
-      
+
       // Paramétrage du RND
       parametersService.setVersionRndDateMaj(new Date());
       parametersService.setVersionRndNumero("11.2");
-      
+
       TypeDocument typeDocCree = new TypeDocument();
       typeDocCree.setCloture(false);
       typeDocCree.setCode("2.3.1.1.12");
@@ -137,7 +137,7 @@ public class MetaDataPartielIntegrationTest {
       }
 
       AuthenticationContext.setAuthenticationToken(null);
-      
+
       server.resetData();
 
    }

@@ -75,7 +75,9 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-services-capturemasse-test.xml" })
+@ContextConfiguration(locations = {
+      "/applicationContext-sae-services-capturemasse-test.xml",
+      "/applicationContext-sae-services-capturemasse-test-integration.xml" })
 public class IntegrationBUL001ErreurAvantInsertionTest {
 
    private static final String MESSAGE_ERREUR = "erreur ouverture base";

@@ -56,7 +56,7 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })
+@ContextConfiguration(locations = { "/applicationContext-sae-services-capturemasse-test.xml" })
 public class CaptureMasseControleSupportTest {
 
    @Autowired
@@ -66,12 +66,12 @@ public class CaptureMasseControleSupportTest {
    private EcdeTestTools ecdeTestTools;
 
    private EcdeTestSommaire ecdeTestSommaire;
-   
+
    @Autowired
    private CassandraServerBean server;
    @Autowired
    private ParametersService parametersService;
-   @Autowired 
+   @Autowired
    private RndSupport rndSupport;
    @Autowired
    private JobClockSupport jobClockSupport;
@@ -100,11 +100,11 @@ public class CaptureMasseControleSupportTest {
       AuthenticationToken token = AuthenticationFactory.createAuthentication(
             viExtrait.getIdUtilisateur(), viExtrait, roles);
       AuthenticationContext.setAuthenticationToken(token);
-      
+
       // Paramétrage du RND
       parametersService.setVersionRndDateMaj(new Date());
       parametersService.setVersionRndNumero("11.2");
-      
+
       TypeDocument typeDocCree = new TypeDocument();
       typeDocCree.setCloture(false);
       typeDocCree.setCode("2.3.1.1.12");
@@ -113,7 +113,7 @@ public class CaptureMasseControleSupportTest {
       typeDocCree.setDureeConservation(1825);
       typeDocCree.setLibelle("ATTESTATION DE VIGILANCE");
       typeDocCree.setType(TypeCode.ARCHIVABLE_AED);
-      
+
       rndSupport.ajouterRnd(typeDocCree, jobClockSupport.currentCLock());
    }
 
@@ -126,7 +126,7 @@ public class CaptureMasseControleSupportTest {
       }
 
       AuthenticationContext.setAuthenticationToken(null);
-      
+
       server.resetData();
    }
 
@@ -136,7 +136,8 @@ public class CaptureMasseControleSupportTest {
          EmptyDocumentEx, UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx,
-         MetadataValueNotInDictionaryEx, UnknownFormatException, ValidationExceptionInvalidFile {
+         MetadataValueNotInDictionaryEx, UnknownFormatException,
+         ValidationExceptionInvalidFile {
 
       File repertoireEcdeTraitement = ecdeTestSommaire.getRepEcde();
       File fileSommaire = new File(repertoireEcdeTraitement, "sommaire.xml");
@@ -163,7 +164,8 @@ public class CaptureMasseControleSupportTest {
          EmptyDocumentEx, UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx,
-         MetadataValueNotInDictionaryEx, UnknownFormatException, ValidationExceptionInvalidFile {
+         MetadataValueNotInDictionaryEx, UnknownFormatException,
+         ValidationExceptionInvalidFile {
 
       File repEcde = ecdeTestSommaire.getRepEcde();
       File fileSommaire = new File(repEcde, "sommaire.xml");
@@ -194,7 +196,8 @@ public class CaptureMasseControleSupportTest {
          EmptyDocumentEx, UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx,
-         MetadataValueNotInDictionaryEx, UnknownFormatException, ValidationExceptionInvalidFile {
+         MetadataValueNotInDictionaryEx, UnknownFormatException,
+         ValidationExceptionInvalidFile {
 
       File repEcde = ecdeTestSommaire.getRepEcde();
       File fileSommaire = new File(repEcde, "sommaire.xml");
@@ -225,7 +228,8 @@ public class CaptureMasseControleSupportTest {
          EmptyDocumentEx, UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx,
-         MetadataValueNotInDictionaryEx, UnknownFormatException, ValidationExceptionInvalidFile {
+         MetadataValueNotInDictionaryEx, UnknownFormatException,
+         ValidationExceptionInvalidFile {
 
       File repertoireEcdeTraitement = ecdeTestSommaire.getRepEcde();
       File fileSommaire = new File(repertoireEcdeTraitement, "sommaire.xml");
@@ -257,7 +261,8 @@ public class CaptureMasseControleSupportTest {
          EmptyDocumentEx, UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx,
-         MetadataValueNotInDictionaryEx, UnknownFormatException, ValidationExceptionInvalidFile {
+         MetadataValueNotInDictionaryEx, UnknownFormatException,
+         ValidationExceptionInvalidFile {
 
       File repertoireEcdeTraitement = ecdeTestSommaire.getRepEcde();
       File fileSommaire = new File(repertoireEcdeTraitement, "sommaire.xml");
@@ -290,7 +295,8 @@ public class CaptureMasseControleSupportTest {
          UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx,
-         MetadataValueNotInDictionaryEx, UnknownFormatException, ValidationExceptionInvalidFile {
+         MetadataValueNotInDictionaryEx, UnknownFormatException,
+         ValidationExceptionInvalidFile {
 
       File repertoireEcdeTraitement = ecdeTestSommaire.getRepEcde();
       File fileSommaire = new File(repertoireEcdeTraitement, "sommaire.xml");
@@ -323,7 +329,8 @@ public class CaptureMasseControleSupportTest {
          UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx,
-         MetadataValueNotInDictionaryEx, UnknownFormatException, ValidationExceptionInvalidFile {
+         MetadataValueNotInDictionaryEx, UnknownFormatException,
+         ValidationExceptionInvalidFile {
 
       File repertoireEcdeTraitement = ecdeTestSommaire.getRepEcde();
       File fileSommaire = new File(repertoireEcdeTraitement, "sommaire.xml");
@@ -356,7 +363,8 @@ public class CaptureMasseControleSupportTest {
          EmptyDocumentEx, UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx,
-         MetadataValueNotInDictionaryEx, UnknownFormatException, ValidationExceptionInvalidFile {
+         MetadataValueNotInDictionaryEx, UnknownFormatException,
+         ValidationExceptionInvalidFile {
 
       File repertoireEcdeTraitement = ecdeTestSommaire.getRepEcde();
       File fileSommaire = new File(repertoireEcdeTraitement, "sommaire.xml");
@@ -388,7 +396,8 @@ public class CaptureMasseControleSupportTest {
          EmptyDocumentEx, UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx,
-         MetadataValueNotInDictionaryEx, UnknownFormatException, ValidationExceptionInvalidFile {
+         MetadataValueNotInDictionaryEx, UnknownFormatException,
+         ValidationExceptionInvalidFile {
 
       File repertoireEcdeTraitement = ecdeTestSommaire.getRepEcde();
       File fileSommaire = new File(repertoireEcdeTraitement, "sommaire.xml");
@@ -417,7 +426,8 @@ public class CaptureMasseControleSupportTest {
 
    @Test
    public void testControleSAEDocumentSuccess()
-         throws MetadataValueNotInDictionaryEx, UnknownFormatException, ValidationExceptionInvalidFile {
+         throws MetadataValueNotInDictionaryEx, UnknownFormatException,
+         ValidationExceptionInvalidFile {
 
       try {
          File repertoireEcdeTraitement = ecdeTestSommaire.getRepEcde();

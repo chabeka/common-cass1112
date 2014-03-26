@@ -20,8 +20,8 @@ import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentServi
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
-      "/applicationContext-sae-services-test.xml",
-      "/applicationContext-sae-services-mock-storagedocument.xml" })
+      "/applicationContext-sae-services-capturemasse-test.xml",
+      "/applicationContext-sae-services-capturemasse-test-mock-storagedocument.xml" })
 public class RollbackSupportTest {
 
    @Autowired

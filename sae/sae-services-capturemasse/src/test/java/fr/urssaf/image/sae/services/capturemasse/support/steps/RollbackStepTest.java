@@ -36,8 +36,8 @@ import fr.urssaf.image.sae.storage.services.storagedocument.DeletionService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(value = {
-      "/applicationContext-sae-services-dfce-mock.xml",
-      "/applicationContext-sae-services-test.xml" })
+      "/applicationContext-sae-services-capturemasse-test-mock-deletion.xml",
+      "/applicationContext-sae-services-capturemasse-test.xml" })
 @SuppressWarnings("PMD.MethodNamingConventions")
 public class RollbackStepTest {
 
@@ -49,10 +49,9 @@ public class RollbackStepTest {
    @Autowired
    @Qualifier("deletionService")
    private DeletionService deletionService;
-   
+
    @Autowired
    private InsertionPoolThreadExecutor executor;
-
 
    @After
    public void after() {
@@ -133,11 +132,12 @@ public class RollbackStepTest {
    public void rollback_success_integrated_documents_empty()
          throws DeletionServiceEx {
 
-      //ConcurrentLinkedQueue<UUID> listIntegDocs = new ConcurrentLinkedQueue<UUID>();
+      // ConcurrentLinkedQueue<UUID> listIntegDocs = new
+      // ConcurrentLinkedQueue<UUID>();
 
       ExecutionContext executionContext = new ExecutionContext();
-      //executionContext.put(Constantes.INTEG_DOCS, listIntegDocs);
-      executionContext.put(Constantes.NB_INTEG_DOCS, 3);      
+      // executionContext.put(Constantes.INTEG_DOCS, listIntegDocs);
+      executionContext.put(Constantes.NB_INTEG_DOCS, 3);
 
       JobExecution execution = launcher.launchStep(STEP_NAME, jobParameters,
             executionContext);
@@ -148,14 +148,18 @@ public class RollbackStepTest {
       Assert.assertEquals("le nom de l'étape est incorrect", STEP_NAME,
             rollbackStep.getStepName());
 
-      //Assert.assertEquals("le nombre d'items lus est inattendu", listIntegDocs.size(), rollbackStep.getReadCount());
-      Assert.assertEquals("le nombre d'items lus est inattendu", 0, rollbackStep.getReadCount());
+      // Assert.assertEquals("le nombre d'items lus est inattendu",
+      // listIntegDocs.size(), rollbackStep.getReadCount());
+      Assert.assertEquals("le nombre d'items lus est inattendu", 0,
+            rollbackStep.getReadCount());
 
       Assert.assertEquals("le nombre de commit est inattendu", 1, rollbackStep
             .getCommitCount());
 
-      //Assert.assertEquals("le nombre d'items écrit est inattendu", listIntegDocs.size(), rollbackStep.getWriteCount());
-      Assert.assertEquals("le nombre d'items écrit est inattendu", 0, rollbackStep.getWriteCount());
+      // Assert.assertEquals("le nombre d'items écrit est inattendu",
+      // listIntegDocs.size(), rollbackStep.getWriteCount());
+      Assert.assertEquals("le nombre d'items écrit est inattendu", 0,
+            rollbackStep.getWriteCount());
 
    }
 
@@ -163,13 +167,14 @@ public class RollbackStepTest {
    public void rollback_failure() throws DeletionServiceEx {
 
       /*
-      ConcurrentLinkedQueue<UUID> listIntegDocs = new ConcurrentLinkedQueue<UUID>();
+       * ConcurrentLinkedQueue<UUID> listIntegDocs = new
+       * ConcurrentLinkedQueue<UUID>();
+       * 
+       * listIntegDocs.add(UUID.randomUUID());
+       * listIntegDocs.add(UUID.randomUUID());
+       * listIntegDocs.add(UUID.randomUUID());
+       */
 
-      listIntegDocs.add(UUID.randomUUID());
-      listIntegDocs.add(UUID.randomUUID());
-      listIntegDocs.add(UUID.randomUUID());
-      */
-      
       // Liste des documents intégrés
       CaptureMasseIntegratedDocument doc1 = new CaptureMasseIntegratedDocument();
       doc1.setDocumentFile(null);
@@ -186,7 +191,6 @@ public class RollbackStepTest {
       executor.getIntegratedDocuments().add(doc1);
       executor.getIntegratedDocuments().add(doc2);
       executor.getIntegratedDocuments().add(doc3);
-      
 
       deletionService.deleteStorageDocument(EasyMock.anyObject(UUID.class));
 
@@ -203,8 +207,8 @@ public class RollbackStepTest {
       EasyMock.replay(deletionService);
 
       ExecutionContext executionContext = new ExecutionContext();
-      //executionContext.put(Constantes.INTEG_DOCS, listIntegDocs);
-      executionContext.put(Constantes.NB_INTEG_DOCS, 3);  
+      // executionContext.put(Constantes.INTEG_DOCS, listIntegDocs);
+      executionContext.put(Constantes.NB_INTEG_DOCS, 3);
 
       JobExecution execution = launcher.launchStep(STEP_NAME, jobParameters,
             executionContext);
