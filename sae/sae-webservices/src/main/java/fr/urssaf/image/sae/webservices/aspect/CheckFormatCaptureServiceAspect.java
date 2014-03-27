@@ -71,7 +71,7 @@ public class CheckFormatCaptureServiceAspect {
       }
 
       if (captureResult.isValidationActivee()
-            && captureResult.isIdentificationEchecMonitor()) {
+            && captureResult.isValidationEchecMonitor()) {
          tracesSupport.traceErreurValidFormatFichier(contexte, formatFichier,
                captureResult.getDetailEchecValidation(), captureResult
                      .getIdDoc().toString(), idTraitement);

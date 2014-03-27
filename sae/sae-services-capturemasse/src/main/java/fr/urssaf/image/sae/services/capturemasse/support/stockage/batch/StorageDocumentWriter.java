@@ -171,7 +171,7 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
                }
 
                if (resultat.isValidationActivee()
-                     && resultat.isIdentificationEchecMonitor()) {
+                     && resultat.isValidationEchecMonitor()) {
                   tracesSupport.traceErreurValidFormatFichier(contexte,
                         formatFichier, resultat.getDetailEchecValidation(),
                         retour.getUuid().toString(), idTraitement);
