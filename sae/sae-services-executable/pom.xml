@@ -75,7 +75,11 @@
          <artifactId>sae-services</artifactId>
          <version>13.11.0.2-SNAPSHOT</version>
       </dependency>
-      
+      <dependency>
+         <groupId>fr.urssaf.image.sae</groupId>
+         <artifactId>sae-services-capturemasse</artifactId>
+         <version>13.11.0.2-SNAPSHOT</version>
+      </dependency>
 
       <!-- SPRING -->
 
