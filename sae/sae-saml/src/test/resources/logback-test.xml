@@ -9,6 +9,8 @@
    <logger name="org.opensaml" level="WARN" />
    <logger name="org.apache.xml" level="WARN" />
    
+   <logger name="fr.urssaf.image.sae.saml" level="WARN" />
+   
    <root level="debug">
       <appender-ref ref="console" />
    </root>

@@ -13,7 +13,18 @@
    <logger name="org.apache.cassandra" level="WARN" />
    <logger name="me.prettyprint.cassandra" level="WARN" />
    <logger name="org.apache.zookeeper" level="WARN" />
+   <logger name="com.netflix.curator" level="WARN" />
    <logger name="uk.gov.nationalarchives" level="WARN" />
+
+   <logger name="fr.urssaf.image.commons.cassandra" level="WARN" />
+   <logger name="fr.urssaf.image.commons.zookeeper" level="WARN" />
+   
+   <logger name="fr.urssaf.image.sae.trace" level="WARN" />
+   <logger name="fr.urssaf.image.sae.commons" level="WARN" />
+   <logger name="fr.urssaf.image.sae.services" level="WARN" />
+   <logger name="fr.urssaf.image.sae.storage.dfce" level="WARN" />
+   <logger name="fr.urssaf.image.sae.rnd" level="WARN" />
+   
    
    <root level="DEBUG">
       <appender-ref ref="console" />

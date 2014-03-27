@@ -14,9 +14,10 @@
    <logger name="org.apache.zookeeper" level="WARN" />
    <logger name="uk.gov.nationalarchives" level="WARN" />
    
-   <logger name="fr.urssaf.image.commons" level="INFO" />
+   <logger name="fr.urssaf.image.commons.cassandra" level="WARN" />
+   <logger name="fr.urssaf.image.commons.zookeeper" level="WARN" />
    
-   <logger name="fr.urssaf.image.sae" level="INFO" />
+   <logger name="fr.urssaf.image.sae.rnd" level="WARN" />
    
    <root level="debug">
       <appender-ref ref="console" />

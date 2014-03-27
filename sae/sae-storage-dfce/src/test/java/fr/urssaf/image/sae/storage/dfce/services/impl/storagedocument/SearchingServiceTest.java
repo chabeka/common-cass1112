@@ -98,9 +98,9 @@ public class SearchingServiceTest {
                "SM_FILE_UUID:2f52d1d4-297f-4ca5-8a85-7ca13d283dda");
          SearchResult search = searchService.search(query);
 
-         for (Document doc : search.getDocuments()) {
-            System.out.println(doc.getUuid());
-         }
+//         for (Document doc : search.getDocuments()) {
+//            System.out.println(doc.getUuid());
+//         }
 
       } catch (ExceededSearchLimitException exception) {
          // TODO Auto-generated catch block

@@ -12,10 +12,10 @@
    <logger name="me.prettyprint.cassandra" level="WARN" />
    <logger name="com.netflix.curator" level="WARN" />
    <logger name="org.cassandraunit" level="WARN" />
-   
    <logger name="uk.gov.nationalarchives.droid" level="WARN" />
    <logger name="org.apache.pdfbox" level="WARN" />
    
+   <logger name="fr.urssaf.image.sae.format" level="WARN" />
    <logger name="fr.urssaf.image.commons" level="WARN" />
    
    <root level="debug">

@@ -12,20 +12,23 @@
    <logger name="me.prettyprint" level="WARN" />
    <logger name="com.netflix.curator" level="WARN" />
    <logger name="org.apache.zookeeper" level="WARN" />
-   
    <logger name="uk.gov.nationalarchives" level="WARN" />
    <logger name="org.apache.pdfbox" level="WARN" />
    
-   <logger name="fr.urssaf.image.commons" level="INFO" />
+   <logger name="fr.urssaf.image.commons.cassandra" level="WARN" />
+   <logger name="fr.urssaf.image.commons.zookeeper" level="WARN" />
+   <logger name="fr.urssaf.image.commons.pdfbox" level="WARN" />
+   <logger name="fr.urssaf.image.commons.droid" level="WARN" />
    
-   <logger name="fr.urssaf.image.sae.commons" level="INFO" />
-   <logger name="fr.urssaf.image.sae.services" level="INFO" />
-   <logger name="fr.urssaf.image.sae.storage" level="INFO" />
-   <logger name="fr.urssaf.image.sae.ecde" level="INFO" />
-   <logger name="fr.urssaf.image.sae.trace" level="INFO" />
-   <logger name="fr.urssaf.image.sae.rnd" level="INFO" />
-   <logger name="fr.urssaf.image.sae.droit" level="INFO" />
-   <logger name="fr.urssaf.image.sae.format" level="INFO" />
+   <logger name="fr.urssaf.image.sae.services" level="WARN" />
+   <logger name="fr.urssaf.image.sae.commons" level="WARN" />
+   <logger name="fr.urssaf.image.sae.storage" level="WARN" />
+   <logger name="fr.urssaf.image.sae.ecde" level="WARN" />
+   <logger name="fr.urssaf.image.sae.trace" level="WARN" />
+   <logger name="fr.urssaf.image.sae.rnd" level="WARN" />
+   <logger name="fr.urssaf.image.sae.droit" level="WARN" />
+   <logger name="fr.urssaf.image.sae.format" level="WARN" />
+   
    
    <root level="debug">
       <appender-ref ref="console" />

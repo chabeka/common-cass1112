@@ -31,15 +31,24 @@ public class HashUtilsTest {
    public void testHash() throws IOException, NoSuchAlgorithmException {
 
       File file = new File("src/test/resources/PDF/doc1.PDF");
+
       byte[] contentByte = FileUtils.readFileToByteArray(file);
-      InputStream stream = new FileInputStream(file);
-
       String hashByte = HashUtils.hashHex(contentByte, "SHA-1");
-      String hashStream = HashUtils.hashHex(stream, "SHA-1");
 
-      stream.close();
+      String hashStream;
+      InputStream stream = new FileInputStream(file);
+      try {
+         hashStream = HashUtils.hashHex(stream, "SHA-1");
+      } finally {
+         if (stream != null) {
+            stream.close();
+         }
+      }
 
-      System.out.println(hashByte == hashStream);
+      Assert
+            .assertTrue(
+                  "Les hash calculés sur le stream et le tableau d'octets sont différents",
+                  hashByte.equals(hashStream));
 
    }
 

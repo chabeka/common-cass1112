@@ -12,8 +12,20 @@
    <logger name="me.prettyprint.cassandra" level="WARN" />
    <logger name="com.netflix.curator" level="WARN" />
    <logger name="org.cassandraunit" level="WARN" />
+   <logger name="org.apache.commons" level="WARN" />
    
-   <logger name="fr.urssaf.image.commons" level="WARN" />
+   <logger name="fr.urssaf.image.commons.cassandra" level="WARN" />
+   <logger name="fr.urssaf.image.commons.zookeeper" level="WARN" />
+   
+   <!--
+   Attention: Il faut activer au minimum le niveau INFO
+   Les TU vérifient en effet que certaines traces sont bien produites.
+   -->
+   <logger name="fr.urssaf.image.sae.rnd" level="INFO" />
+
+   <logger name="fr.urssaf.image.sae.commons" level="WARN" />
+   <logger name="fr.urssaf.image.sae.trace" level="WARN" />
+   
    
    <root level="debug">
       <appender-ref ref="console" />

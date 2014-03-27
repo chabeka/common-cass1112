@@ -16,7 +16,12 @@
    <logger name="com.netflix.curator" level="WARN" />
    
    <logger name="fr.urssaf.image.commons.cassandra" level="WARN" />
-      
+   <logger name="fr.urssaf.image.commons.zookeeper" level="WARN" />
+
+   <logger name="fr.urssaf.image.sae.storage.dfce" level="WARN" />
+   <logger name="fr.urssaf.image.sae.trace" level="WARN" />
+   
+
    <root level="DEBUG">
       <appender-ref ref="console" />
    </root>
