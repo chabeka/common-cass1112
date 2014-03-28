@@ -544,6 +544,30 @@
          <version>${guava.version}</version>
       </dependency>
       -->
+      
+      
+      <!--
+      ==========================================
+      Javassist
+      
+      http://www.javassist.org/
+      
+      On embarque Javassist par transitivité,
+      on fixe la version pour résoudre les conflits
+      de version.
+      ==========================================
+      -->
+      <javassist.version>3.18.1-GA</javassist.version>
+      
+      <!--
+      Modèles de dépendance :
+      
+      <dependency>
+         <groupId>org.javassist</groupId>
+         <artifactId>javassist</artifactId>
+         <version>${javassist.version}</version>
+      </dependency>
+      -->
 
 
    </properties>
