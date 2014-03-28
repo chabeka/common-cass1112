@@ -1785,5 +1785,101 @@
       </CasTests>
 
    </Categorie>
+   
+   <!-- ======================================================== -->
+   <!-- Formats -->
+   <!-- ======================================================== -->
+   
+   <Categorie>
+
+      <Nom>Formats</Nom>
+      <Id>8</Id>
+      <CasTests>
+
+         <CasTest>
+            <id>1802</id>
+            <code>1802-FCP-CU-OK-NonIdentification-NonValidation-FMT354-OK</code>
+            <description>
+               Ce test permet de vérifier que le SAE fonctionne correctement suite à l’intégration de la gestion des profiles de contrôle des formats sans identification et sans validation
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1802-FCP-CU-OK-NonIdentification-NonValidation-FMT354"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1803a</id>
+            <code>1803-1-FCP-CU-OK-Identification-NonValidation-Monitor-FMT354-OK</code>
+            <description>
+               Ce test permet de vérifier que le SAE fonctionne correctement suite à l’intégration de la gestion des profiles de contrôle des formats avec identification et sans validation en mode monitor. Avec un fichier validé par Droid en FMT354 ou équivalent.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1803-1-FCP-CU-OK-Identification-NonValidation-Monitor-FMT354-OK"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1803b</id>
+            <code>1803-2-FCP-CU-OK-Identification-NonValidation-Monitor-FMT354-KO</code>
+            <description>
+               Ce test permet de vérifier que le SAE fonctionne correctement suite à l’intégration de la gestion des profiles de contrôle des formats avec identification et sans validation en mode monitor. Avec un fichier non validé par Droid en FMT354 ou équivalent.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1803-2-FCP-CU-OK-Identification-NonValidation-Monitor-FMT354-KO"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1804a</id>
+            <code>1804-1-FCP-CU-OK-Identification-NonValidation-Strict-FMT354-OK</code>
+            <description>
+               Ce test permet de vérifier que le SAE fonctionne correctement suite à l’intégration de la gestion des profiles de contrôle des formats avec identification et sans validation en mode Strict avec un fichier dont le format est compatible en identification.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1804-1-FCP-CU-OK-Identification-NonValidation-Strict-FMT354-OK"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1804b</id>
+            <code>1804-2-FCP-CU-OK-Identification-NonValidation-Strict-FMT354-KO</code>
+            <description>
+               Ce test permet de vérifier que le SAE fonctionne correctement suite à l’intégration de la gestion des profiles de contrôle des formats avec identification et sans validation en mode Strict.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1804-2-FCP-CU-OK-Identification-NonValidation-Strict-FMT354-KO"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1805a</id>
+            <code>1805-1-FCP-CU-OK-Identification-Validation-Monitor-FMT354-OK</code>
+            <description>
+               Ce test permet de vérifier que le SAE fonctionne correctement suite à l’intégration de la gestion des profiles de contrôle des formats avec identification et avec validation en mode Monitor. Avec un fichier valide droid et pdfbox.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1805-1-FCP-CU-OK-Identification-Validation-Monitor-FMT354-OK"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1805b</id>
+            <code>1805-2-FCP-CU-OK-Identification-Validation-Monitor-FMT354-KO</code>
+            <description>
+               Ce test permet de vérifier que le SAE fonctionne correctement suite à l’intégration de la gestion des profiles de contrôle des formats avec identification et avec validation en mode Monitor. Avec un fichier valide droid et non valide Pdfbox.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1805-2-FCP-CU-OK-Identification-Validation-Monitor-FMT354-KO"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1806a</id>
+            <code>1806-1-FCP-CU-OK-Identification-Validation-Strict -FMT354-OK</code>
+            <description>
+               Ce test permet de vérifier que le SAE fonctionne correctement suite à l’intégration de la gestion des profiles de contrôle des formats avec identification et avec validation en modeStrict. Avec un fichier valide droid et pdfbox.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1806-1-FCP-CU-OK-Identification-Validation-Strict-FMT354-OK"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1806b</id>
+            <code>1806-2-FCP-CU-OK-Identification-Validation-Strict-FMT354-KO</code>
+            <description>
+               Ce test permet de vérifier que le SAE fonctionne correctement suite à l’intégration de la gestion des profiles de contrôle des formats avec identification et avec validation en mode Monitor. Avec un fichier valide droid et non valide Pdfbox.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1806-2-FCP-CU-OK-Identification-Validation-Strict-FMT354-KO"</luceneExemple>
+         </CasTest>
+
+      </CasTests>
+
+   </Categorie>
 
 </Tests>

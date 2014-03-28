@@ -319,12 +319,20 @@
       <message>Le hash du fichier sommaire.xml attendu : b0f0405142d6211270a583c4b60852a5 est différent de celui obtenu : %s (type de hash : SHA-1)</message>
    </SoapFault>
    
-      <SoapFault>
+   <SoapFault>
       <id>sae_TypeHashIncorrect</id>
       <namespace>urn:sae:faultcodes</namespace>
       <prefixe>sae</prefixe>
       <localPart>TypeHashSommaireIncorrect</localPart>
       <message>Le type de hash %s n'est pas autorisé</message>
+   </SoapFault>
+   
+   <SoapFault>
+      <id>sae_FormatFichierInconnu</id>
+      <namespace>urn:sae:faultcodes</namespace>
+      <prefixe>sae</prefixe>
+      <localPart>FormatFichierInconnu</localPart>
+      <message>Le fichier à archiver ne correspond pas au format spécifié.</message>
    </SoapFault>
    
 </SoapFaults>

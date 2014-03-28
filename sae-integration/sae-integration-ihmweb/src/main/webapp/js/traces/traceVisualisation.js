@@ -24,7 +24,7 @@ function createTraceTable(jsonData){
                     '<td>{codeEvt}</td>',
                     '<td>{[new Date(values.timestamp).toLocaleString()]}</td>',
                     '<td><tpl if="contexte!=null">{contexte}</tpl></td>',
-                    '<td><tpl if="contrat!=null">{contrat}</tpl></td>',
+                    '<td><tpl if="contratService!=null">{contratService}</tpl></td>',
                     '<td>',
                        '<tpl for="pagms">',
                        '<div>{.}</div>',

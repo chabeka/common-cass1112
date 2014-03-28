@@ -101,6 +101,12 @@
       <description>Paramètres du VI</description>
       <path>/WEB-INF/tags/vi.tag</path>
    </tag-file>
+   
+   <tag-file>
+      <name>lienRegistreSurvTec</name>
+      <description>Ajout d'un lien vers le registre de surveillance technique</description>
+      <path>/WEB-INF/tags/lienRegistreSurvTec.tag</path>
+   </tag-file>
 
    <function>
       <name>booleanToOuiNon</name>
