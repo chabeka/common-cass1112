@@ -9,7 +9,6 @@
   <description>Gestion du référentiel des formats et service d'identification et de validation.</description>
 
   <name>sae-format</name>
-  <url>http://maven.apache.org</url>
   
   <parent>
       <groupId>fr.urssaf.image.sae</groupId>
@@ -17,14 +16,14 @@
       <version>13.11.0.2-SNAPSHOT</version>
    </parent>  
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
+   <properties>
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+   </properties>
   
    <build>
       <plugins>
          
-         <!-- COMPILATION ASPECT -->
+         <!-- Compilation Aspect -->
          <plugin>
             <inherited>true</inherited>
             <groupId>org.codehaus.mojo</groupId>
@@ -44,10 +43,9 @@
       </plugins>
    </build>
 
-  <!-- Ajout des dépendances -->
-   <dependencies>
+  <dependencies>
    
-      <!-- COMMONS DFCE -->
+      <!-- commons-dfce -->
       <dependency>
          <groupId>fr.urssaf.image.commons</groupId>
          <artifactId>commons-dfce</artifactId>
@@ -68,14 +66,69 @@
          </exclusions>
       </dependency>
       
-      <!-- sae-commons -->
+      <!-- commons-cassandra -->
+      <dependency>
+         <groupId>fr.urssaf.image.commons</groupId>
+         <artifactId>commons-cassandra</artifactId>
+         <version>${commons.cassandra}</version>
+         <exclusions>
+            <exclusion>
+               <groupId>commons-lang</groupId>
+               <artifactId>commons-lang</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+      
+      <!-- commons-pdfbox -->
+      <dependency>
+         <groupId>fr.urssaf.image.commons</groupId>
+         <artifactId>commons-pdfbox</artifactId>
+         <version>${commons-pdfbox}</version>
+         <exclusions>
+            <exclusion>
+               <groupId>log4j</groupId>
+               <artifactId>log4j</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>commons-lang</groupId>
+               <artifactId>commons-lang</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+      
+      <!-- commons-droid -->
+      <dependency>
+         <groupId>fr.urssaf.image.commons</groupId>
+         <artifactId>commons-droid</artifactId>
+         <version>${commons-droid}</version>
+         <exclusions>
+            <exclusion>
+               <groupId>log4j</groupId>
+               <artifactId>log4j</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>commons-lang</groupId>
+               <artifactId>commons-lang</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>commons-beanutils</groupId>
+               <artifactId>commons-beanutils-core</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>commons-collections</groupId>
+               <artifactId>commons-collections</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+      
+      <!-- SAE -->
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-commons</artifactId>
          <version>13.11.0.2-SNAPSHOT</version>
       </dependency>
 
-      <!-- JODA TIME  -->
+      <!-- Joda Time  -->
       <dependency>
          <groupId>joda-time</groupId>
          <artifactId>joda-time</artifactId>
@@ -94,98 +147,37 @@
          <version>${aspectj.version}</version>
       </dependency>
 
-      <!-- COMMONS CASSANDRA -->
-      <!-- 
-           La dépendance commons-cassandra donne l’accès aux connections à une base Cassandra 
-           et permet de réutiliser les serializers déjà définis pour la manipulation des familles de colonnes.
-       -->
-      <dependency>
-         <groupId>fr.urssaf.image.commons</groupId>
-         <artifactId>commons-cassandra</artifactId>
-         <version>${commons.cassandra}</version>
-         <exclusions>
-            <exclusion>
-               <groupId>commons-lang</groupId>
-               <artifactId>commons-lang</artifactId>
-            </exclusion>
-         </exclusions>
-      </dependency>
-   
-      <dependency>
-         <groupId>commons-lang</groupId>
-         <artifactId>commons-lang</artifactId>
-         <version>${apache.commons-lang.version}</version>
-      </dependency>
-      
-      <!--  
-           La dépendance commons-pdfbox permet d’appeler 
-           le mécanisme de validation pour un document PDF/A-1b -->
-      <dependency>
-         <groupId>fr.urssaf.image.commons</groupId>
-         <artifactId>commons-pdfbox</artifactId>
-         <version>${commons-pdfbox}</version>
-         <exclusions>
-            <exclusion>
-               <groupId>log4j</groupId>
-               <artifactId>log4j</artifactId>
-            </exclusion>
-            <exclusion>
-               <groupId>commons-lang</groupId>
-               <artifactId>commons-lang</artifactId>
-            </exclusion>
-         </exclusions>
-      </dependency>
-      
-      <!-- 
-           La dépendance commons-droid permet d’appeler le mécanisme d’identification d’un fichier quelconque.
-           Commons-droid nous renvoit un identifiant pour chaque type de document  
-      -->
-      <dependency>
-         <groupId>fr.urssaf.image.commons</groupId>
-         <artifactId>commons-droid</artifactId>
-         <version>${commons-droid}</version>
-         <exclusions>
-            <exclusion>
-               <groupId>log4j</groupId>
-               <artifactId>log4j</artifactId>
-            </exclusion>
-            <exclusion>
-               <groupId>commons-lang</groupId>
-               <artifactId>commons-lang</artifactId>
-            </exclusion>
-         </exclusions>
-      </dependency>
-        
-      
-      <!-- GUAVA pour la mise en cache  -->
+      <!-- Guava -->
       <dependency>
          <groupId>com.google.guava</groupId>
          <artifactId>guava</artifactId>
          <version>${guava.version}</version>
       </dependency>
-      
-      <!-- SPRING -->
+   
+      <!-- Spring -->
       <dependency>
          <groupId>org.springframework</groupId>
          <artifactId>spring-beans</artifactId>
          <version>${spring.framework.version}</version>
       </dependency>
-
       <dependency>
          <groupId>org.springframework</groupId>
          <artifactId>spring-context</artifactId>
          <version>${spring.framework.version}</version>
       </dependency>
-
       <dependency>
          <groupId>org.springframework</groupId>
          <artifactId>spring-test</artifactId>
          <version>${spring.framework.version}</version>
          <scope>test</scope>
       </dependency>
-      <!-- FIN SPRING -->
-      
-       <!-- COMMONS APACHE -->
+   
+      <!-- Apache Commons -->
+      <dependency>
+         <groupId>commons-lang</groupId>
+         <artifactId>commons-lang</artifactId>
+         <version>${apache.commons-lang.version}</version>
+      </dependency>
       <dependency>
          <groupId>commons-collections</groupId>
          <artifactId>commons-collections</artifactId>
@@ -206,8 +198,13 @@
          <artifactId>commons-io</artifactId>
          <version>${apache.commons-io.version}</version> 
       </dependency>
+      <dependency>
+         <groupId>commons-beanutils</groupId>
+         <artifactId>commons-beanutils</artifactId>
+         <version>${apache.commons-beanutils.version}</version>
+      </dependency>
 
-      <!-- STAX -->
+      <!-- Stax -->
       <dependency>
          <groupId>net.java.dev.stax-utils</groupId>
          <artifactId>stax-utils</artifactId>

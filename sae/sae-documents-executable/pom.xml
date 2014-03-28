@@ -15,21 +15,7 @@
    
    <dependencies>
    
-      <!-- sae-format -->
-      <dependency>
-         <groupId>fr.urssaf.image.sae</groupId>
-         <artifactId>sae-format</artifactId>
-         <version>13.11.0.2-SNAPSHOT</version>
-      </dependency>
-      
-      <!-- sae-commons -->
-      <dependency>
-         <groupId>fr.urssaf.image.sae</groupId>
-         <artifactId>sae-commons</artifactId>
-         <version>13.11.0.2-SNAPSHOT</version>
-      </dependency>
-      
-      <!-- COMMONS DFCE -->
+      <!-- commons-dfce -->
       <dependency>
          <groupId>fr.urssaf.image.commons</groupId>
          <artifactId>commons-dfce</artifactId>
@@ -46,6 +32,18 @@
          </exclusions>
       </dependency>
       
+      <!-- SAE -->
+      <dependency>
+         <groupId>fr.urssaf.image.sae</groupId>
+         <artifactId>sae-format</artifactId>
+         <version>13.11.0.2-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+         <groupId>fr.urssaf.image.sae</groupId>
+         <artifactId>sae-commons</artifactId>
+         <version>13.11.0.2-SNAPSHOT</version>
+      </dependency>
+      
       <!-- AspectJ -->
       <dependency>
          <groupId>org.aspectj</groupId>
@@ -58,12 +56,24 @@
          <version>${aspectj.version}</version>
       </dependency>
       
-      <!-- EASYMOCK -->
+      <!-- EasyMock -->
       <dependency>
          <groupId>org.easymock</groupId>
          <artifactId>easymock</artifactId>
          <version>${easymock.version}</version>
          <scope>test</scope>
+      </dependency>
+      
+      <!-- Apache Commons -->
+      <dependency>
+         <groupId>commons-collections</groupId>
+         <artifactId>commons-collections</artifactId>
+         <version>${apache.commons-collections.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>commons-beanutils</groupId>
+         <artifactId>commons-beanutils</artifactId>
+         <version>${apache.commons-beanutils.version}</version>
       </dependency>
       
    </dependencies>
@@ -72,7 +82,7 @@
 
       <plugins>
          
-         <!-- COMPILATION ASPECT -->
+         <!-- Compilation Aspect -->
          <plugin>
             <inherited>true</inherited>
             <groupId>org.codehaus.mojo</groupId>
@@ -125,6 +135,20 @@
                            <artifact>org.aspectj:aspectjrt</artifact>
                            <excludes>
                               <exclude>org/aspectj/**</exclude>
+                           </excludes>
+                        </filter>
+                        <!--
+                        Exclusion de 4 classes qui ont été copiées/collées de
+                        commons-collection vers commons-beanutils
+                        https://issues.apache.org/jira/browse/BEANUTILS-278
+                        -->
+                        <filter>
+                           <artifact>commons-beanutils:commons-beanutils</artifact>
+                           <excludes>
+                              <exclude>org/apache/commons/collections/ArrayStack.class</exclude>
+                              <exclude>org/apache/commons/collections/Buffer.class</exclude>
+                              <exclude>org/apache/commons/collections/BufferUnderflowException.class</exclude>
+                              <exclude>org/apache/commons/collections/FastHashMap*.class</exclude>
                            </excludes>
                         </filter>
                      </filters>

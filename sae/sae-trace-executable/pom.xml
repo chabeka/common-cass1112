@@ -21,21 +21,19 @@
 
    <dependencies>
       
-      <!-- SAE-TRACE -->
+      <!-- SAE -->
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-trace</artifactId>
          <version>13.11.0.2-SNAPSHOT</version>
       </dependency>
-
-      <!-- SAE-SERVICES -->
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-services</artifactId>
          <version>13.11.0.2-SNAPSHOT</version>
       </dependency>
 
-      <!-- SPRING -->
+      <!-- Spring -->
       <dependency>
          <groupId>org.springframework</groupId>
          <artifactId>spring-test</artifactId>
@@ -55,14 +53,14 @@
          <version>${aspectj.version}</version>
       </dependency>
 
-      <!-- COMMONS-APACHE -->
+      <!-- Apache Commons -->
       <dependency>
          <groupId>org.apache.commons</groupId>
          <artifactId>commons-compress</artifactId>
          <version>${apache.commons-compress.version}</version>
       </dependency>
 
-      <!-- EASYMOCK -->
+      <!-- EasyMock -->
       <dependency>
          <groupId>org.easymock</groupId>
          <artifactId>easymock</artifactId>
@@ -75,7 +73,7 @@
    <build>
       <plugins>
 
-         <!-- COMPILATION ASPECT -->
+         <!-- Compilation Aspect -->
          <plugin>
             <inherited>true</inherited>
             <groupId>org.codehaus.mojo</groupId>
@@ -87,7 +85,9 @@
                   </goals>
                </execution>
             </executions>
-
+            <configuration>
+               <argumentFileName>builddef-sae-trace-executable</argumentFileName>
+            </configuration>
          </plugin>
 
          <plugin>
@@ -126,6 +126,20 @@
                            <artifact>org.aspectj:aspectjrt</artifact>
                            <excludes>
                               <exclude>org/aspectj/**</exclude>
+                           </excludes>
+                        </filter>
+                        <!--
+                        Exclusion de 4 classes qui ont été copiées/collées de
+                        commons-collection vers commons-beanutils
+                        https://issues.apache.org/jira/browse/BEANUTILS-278
+                        -->
+                        <filter>
+                           <artifact>commons-beanutils:commons-beanutils</artifact>
+                           <excludes>
+                              <exclude>org/apache/commons/collections/ArrayStack.class</exclude>
+                              <exclude>org/apache/commons/collections/Buffer.class</exclude>
+                              <exclude>org/apache/commons/collections/BufferUnderflowException.class</exclude>
+                              <exclude>org/apache/commons/collections/FastHashMap*.class</exclude>
                            </excludes>
                         </filter>
                      </filters>
