@@ -20,6 +20,7 @@
    </properties>
 
    <dependencies>
+      
       <!-- SAE-TRACE -->
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
@@ -41,6 +42,18 @@
          <version>${spring.framework.version}</version>
          <scope>test</scope>
       </dependency>
+      
+      <!-- AspectJ -->
+      <dependency>
+         <groupId>org.aspectj</groupId>
+         <artifactId>aspectjrt</artifactId>
+         <version>${aspectj.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.aspectj</groupId>
+         <artifactId>aspectjweaver</artifactId>
+         <version>${aspectj.version}</version>
+      </dependency>
 
       <!-- COMMONS-APACHE -->
       <dependency>
@@ -56,8 +69,6 @@
          <version>${easymock.version}</version>
          <scope>test</scope>
       </dependency>
-
-
 
    </dependencies>
 
@@ -103,6 +114,18 @@
                               <exclude>META-INF/*.SF</exclude>
                               <exclude>META-INF/*.DSA</exclude>
                               <exclude>META-INF/*.RSA</exclude>
+                           </excludes>
+                        </filter>
+                        <!--
+                        Toutes les classes de org.aspectj:aspectjrt sont reprises
+                        dans le jar org.aspectj:aspectjweaver
+                        Néanmoins, il faut inclure les 2 jar dans les dépendances.
+                        L'exclusion des classes se fait donc au niveau de Shade. 
+                        -->
+                        <filter>
+                           <artifact>org.aspectj:aspectjrt</artifact>
+                           <excludes>
+                              <exclude>org/aspectj/**</exclude>
                            </excludes>
                         </filter>
                      </filters>

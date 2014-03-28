@@ -28,6 +28,20 @@
                      <goal>shade</goal>
                   </goals>
                   <configuration>
+                     <filters>
+                        <!--
+                        Toutes les classes de org.aspectj:aspectjrt sont reprises
+                        dans le jar org.aspectj:aspectjweaver
+                        Néanmoins, il faut inclure les 2 jar dans les dépendances.
+                        L'exclusion des classes se fait donc au niveau de Shade. 
+                        -->
+                        <filter>
+                           <artifact>org.aspectj:aspectjrt</artifact>
+                           <excludes>
+                              <exclude>org/aspectj/**</exclude>
+                           </excludes>
+                        </filter>
+                     </filters>
                      <transformers>
                         <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                            <mainClass>fr.urssaf.image.sae.lotinstallmaj.Main</mainClass>
@@ -91,19 +105,16 @@
          <artifactId>spring-core</artifactId>
          <version>${spring.framework.version}</version>
       </dependency>
-
       <dependency>
          <groupId>org.springframework</groupId>
          <artifactId>spring-context</artifactId>
          <version>${spring.framework.version}</version>
       </dependency>
-
       <dependency>
          <groupId>org.springframework</groupId>
          <artifactId>spring-beans</artifactId>
          <version>${spring.framework.version}</version>
       </dependency>
-      
       <dependency>
          <groupId>org.springframework</groupId>
          <artifactId>spring-test</artifactId>
@@ -111,10 +122,15 @@
          <scope>test</scope>
       </dependency>
 
-      <!-- JASPECT -->
+      <!-- AspectJ -->
       <dependency>
          <groupId>org.aspectj</groupId>
          <artifactId>aspectjrt</artifactId>
+         <version>${aspectj.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.aspectj</groupId>
+         <artifactId>aspectjweaver</artifactId>
          <version>${aspectj.version}</version>
       </dependency>
 
@@ -130,6 +146,16 @@
          <groupId>fr.urssaf.image.commons</groupId>
          <artifactId>commons-dfce</artifactId>
          <version>${commons.dfce}</version>
+         <exclusions>
+            <exclusion>
+               <groupId>org.aspectj</groupId>
+               <artifactId>aspectjrt</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.aspectj</groupId>
+               <artifactId>aspectjweaver</artifactId>
+            </exclusion>
+         </exclusions>
       </dependency>
 
       <!-- COMMONS CASSANDRA -->
@@ -139,6 +165,7 @@
          <version>${commons.cassandra}</version>
       </dependency>
       
+      <!-- EasyMock -->
       <dependency>
          <groupId>org.easymock</groupId>
          <artifactId>easymock</artifactId>
@@ -146,12 +173,6 @@
          <scope>test</scope>
       </dependency>
       
-      <dependency>
-         <groupId>aspectj</groupId>
-         <artifactId>aspectjweaver</artifactId>
-         <version>1.5.2</version>
-      </dependency>
-   
       <!-- Open CSV -->
       <dependency>
          <groupId>net.sf.opencsv</groupId>

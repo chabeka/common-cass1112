@@ -17,6 +17,24 @@
    <name>sae-ecde</name>
    
    <description>Services de manipulation de l'ECDE</description>
+   
+   <build>
+      <plugins>
+         <!-- COMPILATION ASPECT -->
+         <plugin>
+            <inherited>true</inherited>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>aspectj-maven-plugin</artifactId>
+            <executions>
+               <execution>
+                  <goals>
+                     <goal>compile</goal>
+                  </goals>
+               </execution>
+            </executions>
+         </plugin>
+      </plugins>
+   </build>
 
    <dependencies>
 
@@ -51,12 +69,7 @@
          <artifactId>aspectjrt</artifactId>
          <version>${aspectj.version}</version>
       </dependency>
-      <dependency>
-         <groupId>org.aspectj</groupId>
-         <artifactId>aspectjweaver</artifactId>
-         <version>${aspectj.version}</version>
-      </dependency>
-
+      
       <!-- Apache Commons -->
       <dependency>
          <groupId>commons-io</groupId>
