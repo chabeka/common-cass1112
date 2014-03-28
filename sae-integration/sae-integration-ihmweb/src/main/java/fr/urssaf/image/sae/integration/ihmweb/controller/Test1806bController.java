@@ -132,14 +132,6 @@ public class Test1806bController extends
       getCaptureUnitaireTestService().appelWsOpCaptureUnitaireSoapFault(
             formulaire.getUrlServiceWeb(), formCaptureEtp1, ViStyle.VI_OK,
             formulaire.getViFormulaire(), "sae_FormatFichierInconnu", null);
-
-      // Si le test n'est pas en échec, alors on peut le passer a "A controler",
-      // car il faut vérifier que l'on trouve dans les logs de debug des traces
-      // d'identification
-      ResultatTest resultatTest = formCaptureEtp1.getResultats();
-      if (!TestStatusEnum.Echec.equals(resultatTest.getStatus())) {
-         resultatTest.setStatus(TestStatusEnum.AControler);
-      }
    }
 
    private void recherche(String urlServiceWeb, RechercheFormulaire formulaire,
