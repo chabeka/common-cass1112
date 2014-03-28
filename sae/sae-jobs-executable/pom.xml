@@ -15,15 +15,28 @@
    
    <dependencies>
    
+      <!-- SAE -->
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-pile-travaux</artifactId>
          <version>13.11.0.2-SNAPSHOT</version>
       </dependency>
       
+      <!-- AspectJ -->
+      <dependency>
+         <groupId>org.aspectj</groupId>
+         <artifactId>aspectjrt</artifactId>
+         <version>${aspectj.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.aspectj</groupId>
+         <artifactId>aspectjweaver</artifactId>
+         <version>${aspectj.version}</version>
+      </dependency>
+      
    </dependencies>
    
-      <build>
+   <build>
 
       <plugins>
          <plugin>
@@ -50,6 +63,18 @@
                               <exclude>META-INF/*.SF</exclude>
                               <exclude>META-INF/*.DSA</exclude>
                               <exclude>META-INF/*.RSA</exclude>
+                           </excludes>
+                        </filter>
+                        <!--
+                        Toutes les classes de org.aspectj:aspectjrt sont reprises
+                        dans le jar org.aspectj:aspectjweaver
+                        Néanmoins, il faut inclure les 2 jar dans les dépendances.
+                        L'exclusion des classes se fait donc au niveau de Shade. 
+                        -->
+                        <filter>
+                           <artifact>org.aspectj:aspectjrt</artifact>
+                           <excludes>
+                              <exclude>org/aspectj/**</exclude>
                            </excludes>
                         </filter>
                      </filters>

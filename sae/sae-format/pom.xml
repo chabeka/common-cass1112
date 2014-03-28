@@ -23,6 +23,7 @@
   
    <build>
       <plugins>
+         
          <!-- COMPILATION ASPECT -->
          <plugin>
             <inherited>true</inherited>
@@ -56,6 +57,14 @@
                <groupId>commons-lang</groupId>
                <artifactId>commons-lang</artifactId>
             </exclusion>
+            <exclusion>
+               <groupId>org.aspectj</groupId>
+               <artifactId>aspectjrt</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.aspectj</groupId>
+               <artifactId>aspectjweaver</artifactId>
+            </exclusion>
          </exclusions>
       </dependency>
       
@@ -73,10 +82,15 @@
          <version>${joda-time.version}</version>
       </dependency>
 
-      <!-- JASPECT -->
+      <!-- AspectJ -->
       <dependency>
          <groupId>org.aspectj</groupId>
          <artifactId>aspectjrt</artifactId>
+         <version>${aspectj.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.aspectj</groupId>
+         <artifactId>aspectjweaver</artifactId>
          <version>${aspectj.version}</version>
       </dependency>
 
