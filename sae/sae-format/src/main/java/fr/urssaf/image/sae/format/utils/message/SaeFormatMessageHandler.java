@@ -17,6 +17,12 @@ public final class SaeFormatMessageHandler {
 
    private static MessageSource MESSAGE_SOURCES;
 
+   /**
+    * Constructeur
+    * 
+    * @param messageSource
+    *           l'object d'accès aux messages
+    */
    @Autowired
    public SaeFormatMessageHandler(
          @Qualifier("messageSource_sae_format") MessageSource messageSource) {
@@ -28,7 +34,7 @@ public final class SaeFormatMessageHandler {
     * Récupére un message à partir de sa clé.
     * 
     * @param messageKey
-    *           : La clé du message
+    *           La clé du message
     * @return Le message avec les valeurs substituées.
     */
    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
@@ -41,9 +47,9 @@ public final class SaeFormatMessageHandler {
     * Récupére un message.
     * 
     * @param messageKey
-    *           : La clé du message
+    *           La clé du message
     * @param valueKey
-    *           : La valeur de substitution
+    *           La valeur de substitution
     * @return Le message avec les valeurs substituées.
     */
    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
@@ -57,11 +63,11 @@ public final class SaeFormatMessageHandler {
     * Récupére un message.
     * 
     * @param messageKey
-    *           : La clé du message
+    *           La clé du message
     * @param firstValueKey
-    *           : La valeur de substitution.
+    *           La valeur de substitution.
     * @param secondValueKey
-    *           : La valeur de substitution
+    *           La valeur de substitution
     * @return Le message avec les valeurs substituées.
     */
    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
