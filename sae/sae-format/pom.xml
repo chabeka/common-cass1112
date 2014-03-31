@@ -126,6 +126,10 @@
                <groupId>javassist</groupId>
                <artifactId>javassist</artifactId>
             </exclusion>
+            <exclusion>
+               <groupId>bouncycastle</groupId>
+               <artifactId>bcprov-jdk14</artifactId>
+            </exclusion>
          </exclusions>
       </dependency>
       
@@ -250,7 +254,18 @@
          <artifactId>javassist</artifactId>
          <version>${javassist.version}</version>
       </dependency>
-           
+      
+      <!--
+      Bouncy Castle Cryptography APIs
+      Dépendance par transitivité, on fixe la version pour gérer
+      les conflits de versions.
+      -->
+      <dependency>
+         <groupId>bouncycastle</groupId>
+         <artifactId>bcprov-jdk16</artifactId>
+         <version>${bcprov-jdk16.version}</version>
+      </dependency>
+      
    </dependencies>
   
 </project>

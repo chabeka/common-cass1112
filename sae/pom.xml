@@ -568,6 +568,30 @@
          <version>${javassist.version}</version>
       </dependency>
       -->
+      
+      
+      <!--
+      ==========================================
+      Bouncy Castle Cryptography APIs
+      
+      http://www.bouncycastle.org/java.html
+      
+      On embarque Bouncy Castle par transitivité,
+      on fixe la version pour résoudre les conflits
+      de version.
+      ==========================================
+      -->
+      <bcprov-jdk16.version>140</bcprov-jdk16.version>
+      
+      <!--
+      Modèles de dépendance :
+      
+      <dependency>
+         <groupId>bouncycastle</groupId>
+         <artifactId>bcprov-jdk16</artifactId>
+         <version>${bcprov-jdk16.version}</version>
+      </dependency>
+      -->
 
 
    </properties>
