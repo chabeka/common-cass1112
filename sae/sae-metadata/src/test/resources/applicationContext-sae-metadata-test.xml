@@ -12,32 +12,11 @@
       <property name="locations">
          <list>
             <value>config/sae-config.properties</value>
-            <value>config/cassandra-local.properties</value>
-            <value>config/commons-config.properties</value>
+            <value>config/sae-cassandra-config.properties</value>
          </list>
       </property>
    </bean>
-
-   <bean id="resourceSaeConfig" class="org.springframework.core.io.ClassPathResource">
-      <constructor-arg value="config/commons-config.properties" />
-   </bean>
-   <bean id="dfceConfigFile" class="org.springframework.core.io.ClassPathResource">
-      <constructor-arg value="config/commons-dfce.properties" />
-   </bean>
-
-   <bean class="java.io.File" id="fileSaeConfig">
-      <constructor-arg>
-         <bean factory-bean="resourceSaeConfig" factory-method="getURI" />
-      </constructor-arg>
-   </bean>
-
-   <bean id="saeConfigResource" class="org.springframework.core.io.FileSystemResource">
-      <constructor-arg>
-         <bean factory-bean="fileSaeConfig" factory-method="getAbsolutePath" />
-      </constructor-arg>
-   </bean>
-
-
+   
    <bean id="dfceConnection"
       class="fr.urssaf.image.commons.dfce.manager.DFCEConnectionFactory"
       factory-method="createDFCEConnectionByDFCEConfiguration">
