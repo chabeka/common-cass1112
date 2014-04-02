@@ -16,6 +16,22 @@
 
    <task:annotation-driven />
    
+   <bean
+      class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+      <property name="locations">
+         <list>
+            <bean class="org.springframework.core.io.FileSystemResource">
+               <constructor-arg>
+                  <bean class="org.springframework.jndi.JndiObjectFactoryBean">
+                     <property name="jndiName" value="java:comp/env/IHM_TEST_CONFIG" />
+                     <property name="resourceRef" value="false" />
+                  </bean>
+               </constructor-arg>
+            </bean>
+         </list>
+      </property>
+   </bean>
+   
    <!--
    <import resource="classpath*:/applicationContext-commons-cassandra.xml" />
    -->
@@ -59,23 +75,6 @@
       </property>
       <property name="cacheSeconds" value="0" />
    </bean>
-
-   <bean
-      class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-      <property name="locations">
-         <list>
-            <bean class="org.springframework.core.io.FileSystemResource">
-               <constructor-arg>
-                  <bean class="org.springframework.jndi.JndiObjectFactoryBean">
-                     <property name="jndiName" value="java:comp/env/IHM_TEST_CONFIG" />
-                     <property name="resourceRef" value="false" />
-                  </bean>
-               </constructor-arg>
-            </bean>
-         </list>
-      </property>
-   </bean>
-
 
    <bean id="testConfig"
       class="fr.urssaf.image.sae.integration.ihmweb.config.TestConfig">

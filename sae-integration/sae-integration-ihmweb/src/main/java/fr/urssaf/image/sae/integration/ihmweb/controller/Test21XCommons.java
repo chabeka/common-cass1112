@@ -42,7 +42,7 @@ public class Test21XCommons {
    
    private String getDebutUrlEcde(String numTest) {
       if("215".equals(numTest)){
-         COUNT_WAITED = 100000;
+         COUNT_WAITED = 1;
       return testCommons.getEcdeService().construitUrlEcde("SAE_INTEGRATION/20110822/CaptureMasse-215-CaptureMasse-OK-Tor-100000/");
       }else if("216".equals(numTest)){
          COUNT_WAITED = 300000;
