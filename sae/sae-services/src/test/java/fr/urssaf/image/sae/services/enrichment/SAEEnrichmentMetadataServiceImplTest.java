@@ -11,8 +11,11 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
@@ -28,7 +31,6 @@ import fr.urssaf.image.sae.mapping.services.MappingDocumentService;
 import fr.urssaf.image.sae.rnd.dao.support.RndSupport;
 import fr.urssaf.image.sae.rnd.modele.TypeCode;
 import fr.urssaf.image.sae.rnd.modele.TypeDocument;
-import fr.urssaf.image.sae.services.CommonsServices;
 import fr.urssaf.image.sae.services.controles.SAEControlesCaptureService;
 import fr.urssaf.image.sae.services.enrichment.xml.model.SAEArchivalMetadatas;
 import fr.urssaf.image.sae.services.exception.capture.RequiredStorageMetadataEx;
@@ -36,34 +38,39 @@ import fr.urssaf.image.sae.services.exception.capture.SAECaptureServiceEx;
 import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException;
 import fr.urssaf.image.sae.services.exception.enrichment.SAEEnrichmentEx;
 import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
+import fr.urssaf.image.sae.utils.MockFactoryBean;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
 import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
-@SuppressWarnings("all")
-public class SAEEnrichmentMetadataServiceImplTest extends CommonsServices {
-   
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })
+public class SAEEnrichmentMetadataServiceImplTest {
+
    @Autowired
    @Qualifier("saeEnrichmentMetadataService")
    private SAEEnrichmentMetadataService saeEnrichmentMetadataService;
-   
+
    @Autowired
    @Qualifier("saeControlesCaptureService")
    private SAEControlesCaptureService controlesCaptureService;
-   
+
    @Autowired
    private MappingDocumentService mappingService;
 
    @Autowired
    private CassandraServerBean server;
-   @Autowired 
+
+   @Autowired
    private RndSupport rndSupport;
+
    @Autowired
    private JobClockSupport jobClockSupport;
+
    @Autowired
    private ParametersService parametersService;
-   
+
    /**
     * @return Le service de mappingService
     */
@@ -94,7 +101,7 @@ public class SAEEnrichmentMetadataServiceImplTest extends CommonsServices {
          SAEEnrichmentMetadataService saeEnrichmentMetadataService) {
       this.saeEnrichmentMetadataService = saeEnrichmentMetadataService;
    }
-   
+
    /**
     * Préparation données pour le RND
     */
@@ -110,7 +117,7 @@ public class SAEEnrichmentMetadataServiceImplTest extends CommonsServices {
       typeDocCree.setType(TypeCode.ARCHIVABLE_AED);
 
       rndSupport.ajouterRnd(typeDocCree, jobClockSupport.currentCLock());
-      
+
       parametersService.setVersionRndDateMaj(new Date());
       parametersService.setVersionRndNumero("11.4");
    }
@@ -125,11 +132,12 @@ public class SAEEnrichmentMetadataServiceImplTest extends CommonsServices {
          IOException, ParseException, SAEEnrichmentEx, InvalidSAETypeException,
          MappingFromReferentialException, ReferentialRndException,
          UnknownCodeRndEx, RequiredStorageMetadataEx {
-      
+
       initDroits();
-      
+
       SAEDocument saeDocument = mappingService
-            .untypedDocumentToSaeDocument(getUntypedDocumentMockData());
+            .untypedDocumentToSaeDocument(MockFactoryBean
+                  .getUntypedDocumentMockData());
       saeEnrichmentMetadataService.enrichmentMetadata(saeDocument);
       Assert.assertNotNull(saeDocument);
       controlesCaptureService.checkSaeMetadataForStorage(saeDocument);
@@ -144,7 +152,7 @@ public class SAEEnrichmentMetadataServiceImplTest extends CommonsServices {
    public final void enrichmentMetadataFailed() throws SAECaptureServiceEx,
          IOException, ParseException, SAEEnrichmentEx, ReferentialRndException,
          UnknownCodeRndEx {
-      SAEDocument saeDocument = getSAEDocumentMockData();
+      SAEDocument saeDocument = MockFactoryBean.getSAEDocumentMockData();
       for (SAEMetadata saeMetadata : saeDocument.getMetadatas()) {
          if (saeMetadata.getLongCode().equals(
                SAEArchivalMetadatas.CODE_RND.getLongCode())) {
@@ -154,13 +162,13 @@ public class SAEEnrichmentMetadataServiceImplTest extends CommonsServices {
       }
       saeEnrichmentMetadataService.enrichmentMetadata(saeDocument);
    }
-   
+
    @After
    public void end() throws Exception {
       AuthenticationContext.setAuthenticationToken(null);
       server.resetData();
    }
-   
+
    private void initDroits() {
       VIContenuExtrait viExtrait = new VIContenuExtrait();
       viExtrait.setCodeAppli("TESTS_UNITAIRES");

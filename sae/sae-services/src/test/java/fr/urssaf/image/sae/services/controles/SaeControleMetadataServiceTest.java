@@ -5,18 +5,20 @@ package fr.urssaf.image.sae.services.controles;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import fr.urssaf.image.sae.services.CommonsServices;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * Classe permettant de tester le service de contrôle.
- * 
  */
-public class SaeControleMetadataServiceTest extends CommonsServices {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })
+public class SaeControleMetadataServiceTest {
 
    @Autowired
-   SaeControleMetadataService service;
+   private SaeControleMetadataService service;
 
    @Test
    public void testStorageMetaObligatoire() {
@@ -28,8 +30,10 @@ public class SaeControleMetadataServiceTest extends CommonsServices {
          Assert.assertTrue("le message doit etre correct", exception
                .getMessage().contains("liste des métadonnées"));
 
-      } catch (Exception exception) {
-         Assert.fail(IllegalArgumentException.class.getName() + " attendue");
+      } catch (Exception ex) {
+         Assert
+               .fail("On attendait une IllegalArgumentException alors qu'on a obtenu: "
+                     + ex.toString());
       }
    }
 

@@ -10,8 +10,11 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
@@ -26,7 +29,6 @@ import fr.urssaf.image.sae.mapping.exception.MappingFromReferentialException;
 import fr.urssaf.image.sae.rnd.dao.support.RndSupport;
 import fr.urssaf.image.sae.rnd.modele.TypeCode;
 import fr.urssaf.image.sae.rnd.modele.TypeDocument;
-import fr.urssaf.image.sae.services.CommonsServices;
 import fr.urssaf.image.sae.services.capture.model.CaptureResult;
 import fr.urssaf.image.sae.services.document.commons.SAECommonCaptureService;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
@@ -44,6 +46,7 @@ import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException
 import fr.urssaf.image.sae.services.exception.enrichment.SAEEnrichmentEx;
 import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.services.exception.format.validation.ValidationExceptionInvalidFile;
+import fr.urssaf.image.sae.utils.MockFactoryBean;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
 import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
@@ -53,8 +56,9 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
  * Classe de test pour le service commun de capture en masse et capture
  * unitaire.
  */
-@SuppressWarnings("all")
-public class SAECommonCaptureServiceImplTest extends CommonsServices {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })
+public class SAECommonCaptureServiceImplTest {
    @Autowired
    @Qualifier("saeCommonCaptureService")
    SAECommonCaptureService saeCommonCaptureService;
@@ -148,7 +152,8 @@ public class SAECommonCaptureServiceImplTest extends CommonsServices {
          UnknownCodeRndEx, MetadataValueNotInDictionaryEx,
          UnknownFormatException, ValidationExceptionInvalidFile {
 
-      UntypedDocument untypedDocument = getUntypedDocumentMockData();
+      UntypedDocument untypedDocument = MockFactoryBean
+            .getUntypedDocumentMockData();
       CaptureResult captureResult = new CaptureResult();
       saeCommonCaptureService.buildStorageDocumentForCapture(untypedDocument,
             captureResult);

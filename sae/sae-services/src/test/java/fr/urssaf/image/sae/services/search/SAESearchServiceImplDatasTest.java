@@ -39,7 +39,6 @@ import fr.urssaf.image.sae.ecde.util.test.EcdeTestDocument;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.model.SAEMockMetadata;
-import fr.urssaf.image.sae.services.QueriesReferenceDAO;
 import fr.urssaf.image.sae.services.SAEServiceTestProvider;
 import fr.urssaf.image.sae.services.capture.SAECaptureService;
 import fr.urssaf.image.sae.services.document.SAESearchService;
@@ -94,10 +93,6 @@ public class SAESearchServiceImplDatasTest {
    @Autowired
    @Qualifier("saeSearchService")
    private SAESearchService saeSearchService;
-
-   @Autowired
-   @Qualifier("queriesReferenceDAO")
-   private QueriesReferenceDAO queriesReferenceDAO;
 
    @Autowired
    private CassandraServerBean bean;

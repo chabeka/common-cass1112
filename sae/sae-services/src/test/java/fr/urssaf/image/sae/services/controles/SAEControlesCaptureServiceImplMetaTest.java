@@ -71,7 +71,7 @@ public class SAEControlesCaptureServiceImplMetaTest {
          ParseException, RequiredArchivableMetadataEx, URISyntaxException,
          DictionaryNotFoundException, ResourceException {
 
-      ClassPathResource ressource = new ClassPathResource("PDF/doc1.PDF");
+      ClassPathResource ressource = new ClassPathResource("doc/doc1.PDF");
       List<UntypedMetadata> metas = new ArrayList<UntypedMetadata>();
       metas.add(new UntypedMetadata("CodeRND", "1.6"));
       metas.add(new UntypedMetadata("Hash", "hash"));
@@ -112,7 +112,7 @@ public class SAEControlesCaptureServiceImplMetaTest {
          ParseException, RequiredArchivableMetadataEx, URISyntaxException,
          MetadataValueNotInDictionaryEx, ResourceException {
 
-      ClassPathResource ressource = new ClassPathResource("PDF/doc1.PDF");
+      ClassPathResource ressource = new ClassPathResource("doc/doc1.PDF");
 
       List<UntypedMetadata> metas = new ArrayList<UntypedMetadata>();
       metas.add(new UntypedMetadata("CodeRND", "1.1"));

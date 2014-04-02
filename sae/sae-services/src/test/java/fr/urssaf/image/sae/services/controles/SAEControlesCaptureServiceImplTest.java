@@ -15,8 +15,11 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
@@ -25,16 +28,12 @@ import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.commons.service.ParametersService;
-import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
-import fr.urssaf.image.sae.droit.dao.model.FormatProfil;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
-import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.rnd.dao.support.RndSupport;
 import fr.urssaf.image.sae.rnd.modele.TypeCode;
 import fr.urssaf.image.sae.rnd.modele.TypeDocument;
-import fr.urssaf.image.sae.services.CommonsServices;
 import fr.urssaf.image.sae.services.enrichment.SAEEnrichmentMetadataService;
 import fr.urssaf.image.sae.services.enrichment.xml.model.SAEArchivalMetadatas;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
@@ -50,8 +49,8 @@ import fr.urssaf.image.sae.services.exception.capture.UnknownMetadataEx;
 import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException;
 import fr.urssaf.image.sae.services.exception.enrichment.SAEEnrichmentEx;
 import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
-import fr.urssaf.image.sae.services.exception.format.validation.ValidationExceptionInvalidFile;
 import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
+import fr.urssaf.image.sae.utils.MockFactoryBean;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
 import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
@@ -60,22 +59,27 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 /**
  * Classe permettant de tester le service de contrôle.
  */
-@SuppressWarnings("all")
-public class SAEControlesCaptureServiceImplTest extends CommonsServices {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })
+public class SAEControlesCaptureServiceImplTest {
+
    @Autowired
    @Qualifier("saeControlesCaptureService")
-   SAEControlesCaptureService saeControlesCaptureService;
+   private SAEControlesCaptureService saeControlesCaptureService;
 
    @Autowired
    @Qualifier("saeEnrichmentMetadataService")
-   SAEEnrichmentMetadataService saeEnrichmentMetadataService;
+   private SAEEnrichmentMetadataService saeEnrichmentMetadataService;
 
    @Autowired
    private CassandraServerBean server;
+
    @Autowired
    private RndSupport rndSupport;
+
    @Autowired
    private JobClockSupport jobClockSupport;
+
    @Autowired
    private ParametersService parametersService;
 
@@ -143,7 +147,8 @@ public class SAEControlesCaptureServiceImplTest extends CommonsServices {
          DuplicatedMetadataEx, InvalidValueTypeAndFormatMetadataEx,
          SAECaptureServiceEx, IOException, ParseException,
          RequiredArchivableMetadataEx, MetadataValueNotInDictionaryEx {
-      UntypedDocument untypedDocument = getUntypedDocumentMockData();
+      UntypedDocument untypedDocument = MockFactoryBean
+            .getUntypedDocumentMockData();
       saeControlesCaptureService.checkUntypedMetadata(untypedDocument);
    }
 
@@ -159,7 +164,8 @@ public class SAEControlesCaptureServiceImplTest extends CommonsServices {
          DuplicatedMetadataEx, InvalidValueTypeAndFormatMetadataEx,
          SAECaptureServiceEx, IOException, ParseException,
          RequiredArchivableMetadataEx, MetadataValueNotInDictionaryEx {
-      UntypedDocument untypedDocument = getUntypedDocumentMockData();
+      UntypedDocument untypedDocument = MockFactoryBean
+            .getUntypedDocumentMockData();
       untypedDocument.getUMetadatas().add(
             new UntypedMetadata("DateCreation", "2012-01-01"));
       saeControlesCaptureService.checkUntypedMetadata(untypedDocument);
@@ -177,7 +183,8 @@ public class SAEControlesCaptureServiceImplTest extends CommonsServices {
          DuplicatedMetadataEx, InvalidValueTypeAndFormatMetadataEx,
          SAECaptureServiceEx, IOException, ParseException,
          RequiredArchivableMetadataEx, MetadataValueNotInDictionaryEx {
-      UntypedDocument untypedDocument = getUntypedDocumentMockData();
+      UntypedDocument untypedDocument = MockFactoryBean
+            .getUntypedDocumentMockData();
       untypedDocument.getUMetadatas().add(
             new UntypedMetadata("DateCreat", "2012-01-01"));
       saeControlesCaptureService.checkUntypedMetadata(untypedDocument);
@@ -196,7 +203,8 @@ public class SAEControlesCaptureServiceImplTest extends CommonsServices {
          InvalidValueTypeAndFormatMetadataEx, SAECaptureServiceEx, IOException,
          ParseException, RequiredArchivableMetadataEx,
          MetadataValueNotInDictionaryEx {
-      UntypedDocument untypedDocument = getUntypedDocumentMockData();
+      UntypedDocument untypedDocument = MockFactoryBean
+            .getUntypedDocumentMockData();
       untypedDocument.getUMetadatas().add(
             new UntypedMetadata("DateReception", "12121"));
       saeControlesCaptureService.checkUntypedMetadata(untypedDocument);
@@ -211,7 +219,7 @@ public class SAEControlesCaptureServiceImplTest extends CommonsServices {
    public final void checkSaeMetadataForCapture()
          throws NotSpecifiableMetadataEx, RequiredArchivableMetadataEx,
          SAECaptureServiceEx, IOException, ParseException {
-      SAEDocument saeDocument = getSAEDocumentMockData();
+      SAEDocument saeDocument = MockFactoryBean.getSAEDocumentMockData();
       saeControlesCaptureService.checkSaeMetadataForCapture(saeDocument);
    }
 
@@ -224,7 +232,7 @@ public class SAEControlesCaptureServiceImplTest extends CommonsServices {
    public final void notSpecifiableMetadataFailed()
          throws NotSpecifiableMetadataEx, RequiredArchivableMetadataEx,
          SAECaptureServiceEx, IOException, ParseException {
-      SAEDocument saeDocument = getSAEDocumentMockData();
+      SAEDocument saeDocument = MockFactoryBean.getSAEDocumentMockData();
       saeDocument.getMetadatas().add(new SAEMetadata("CodeFonction", "100"));
       saeControlesCaptureService.checkSaeMetadataForCapture(saeDocument);
    }
@@ -238,7 +246,7 @@ public class SAEControlesCaptureServiceImplTest extends CommonsServices {
    public final void requiredArchivableMetadataFailed()
          throws NotSpecifiableMetadataEx, RequiredArchivableMetadataEx,
          SAECaptureServiceEx, IOException, ParseException {
-      SAEDocument saeDocument = getSAEDocumentMockData();
+      SAEDocument saeDocument = MockFactoryBean.getSAEDocumentMockData();
       SAEMetadata saeMetadata = null;
       for (SAEMetadata metadata : saeDocument.getMetadatas()) {
          if (StorageTechnicalMetadatas.TITRE.getLongCode().equals(
@@ -261,7 +269,7 @@ public class SAEControlesCaptureServiceImplTest extends CommonsServices {
    public final void saeCaptureFailed() throws NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, SAECaptureServiceEx, IOException,
          ParseException {
-      SAEDocument saeDocument = getSAEDocumentMockData();
+      SAEDocument saeDocument = MockFactoryBean.getSAEDocumentMockData();
       saeDocument.setMetadatas(null);
       saeControlesCaptureService.checkSaeMetadataForCapture(saeDocument);
    }
@@ -279,7 +287,7 @@ public class SAEControlesCaptureServiceImplTest extends CommonsServices {
 
       initDroits();
 
-      SAEDocument saeDocument = getSAEDocumentMockData();
+      SAEDocument saeDocument = MockFactoryBean.getSAEDocumentMockData();
       saeEnrichmentMetadataService.enrichmentMetadata(saeDocument);
       saeControlesCaptureService.checkSaeMetadataForStorage(saeDocument);
    }
@@ -293,7 +301,7 @@ public class SAEControlesCaptureServiceImplTest extends CommonsServices {
    public final void checkHashCodeMetadataForStorageFailed()
          throws SAECaptureServiceEx, IOException, ParseException,
          UnknownHashCodeEx {
-      SAEDocument saeDocument = getSAEDocumentMockData();
+      SAEDocument saeDocument = MockFactoryBean.getSAEDocumentMockData();
       for (SAEMetadata saeMetadata : saeDocument.getMetadatas()) {
          if (saeMetadata.getLongCode().equals(
                SAEArchivalMetadatas.HASH_CODE.getLongCode())) {
@@ -313,7 +321,7 @@ public class SAEControlesCaptureServiceImplTest extends CommonsServices {
    public final void checkAlogoHashMetadataForStorageFailed()
          throws SAECaptureServiceEx, IOException, ParseException,
          UnknownHashCodeEx {
-      SAEDocument saeDocument = getSAEDocumentMockData();
+      SAEDocument saeDocument = MockFactoryBean.getSAEDocumentMockData();
       for (SAEMetadata saeMetadata : saeDocument.getMetadatas()) {
          if (saeMetadata.getLongCode().equals(
                SAEArchivalMetadatas.TYPE_HASH.getLongCode())) {
@@ -333,7 +341,7 @@ public class SAEControlesCaptureServiceImplTest extends CommonsServices {
    public final void checkHashCodeMetadataForStorage()
          throws SAECaptureServiceEx, IOException, ParseException,
          UnknownHashCodeEx {
-      SAEDocument saeDocument = getSAEDocumentMockData();
+      SAEDocument saeDocument = MockFactoryBean.getSAEDocumentMockData();
       saeControlesCaptureService.checkHashCodeMetadataForStorage(saeDocument);
    }
 
@@ -344,7 +352,7 @@ public class SAEControlesCaptureServiceImplTest extends CommonsServices {
 
       try {
 
-         SAEDocument saeDocument = getSAEDocumentMockData();
+         SAEDocument saeDocument = MockFactoryBean.getSAEDocumentMockData();
          saeDocument.setFilePath("src/test/resources/PDF/doc_inconnu.PDF");
          saeControlesCaptureService
                .checkHashCodeMetadataForStorage(saeDocument);
@@ -373,7 +381,7 @@ public class SAEControlesCaptureServiceImplTest extends CommonsServices {
 
       initDroits();
 
-      SAEDocument saeDocument = getSAEDocumentMockData();
+      SAEDocument saeDocument = MockFactoryBean.getSAEDocumentMockData();
       SAEMetadata saeMetadataToRemove = null;
       saeEnrichmentMetadataService.enrichmentMetadata(saeDocument);
       for (SAEMetadata saeMetadata : saeDocument.getMetadatas()) {
@@ -402,7 +410,7 @@ public class SAEControlesCaptureServiceImplTest extends CommonsServices {
 
       initDroits();
 
-      SAEDocument saeDocument = getSAEDocumentMockData();
+      SAEDocument saeDocument = MockFactoryBean.getSAEDocumentMockData();
       SAEMetadata saeMetadataToRemove = null;
       saeEnrichmentMetadataService.enrichmentMetadata(saeDocument);
       for (SAEMetadata saeMetadata : saeDocument.getMetadatas()) {
@@ -444,4 +452,5 @@ public class SAEControlesCaptureServiceImplTest extends CommonsServices {
             viExtrait.getIdUtilisateur(), viExtrait, roles);
       AuthenticationContext.setAuthenticationToken(token);
    }
+
 }

@@ -13,7 +13,7 @@ import fr.urssaf.image.sae.services.exception.search.SyntaxLuceneEx;
 import fr.urssaf.image.sae.services.exception.search.UnknownLuceneMetadataEx;
 
 /**
- * Fournit l’ensemble des services pour la recherche.
+ * Fournit l'ensemble des services pour la recherche.
  */
 public interface SAESearchService {
 
@@ -21,7 +21,7 @@ public interface SAESearchService {
     * Service pour l'opération <b>Recherche</b>
     * 
     * @param requete
-    *           : requete LuceneCriteria
+    *           requete LuceneCriteria
     * @param listMetaDesired
     *           liste des metaDonnees desirée
     * @return Une liste de document de type {@link UntypedDocument}.
@@ -53,11 +53,11 @@ public interface SAESearchService {
     * Service pour l'opération <b>Recherche</b>
     * 
     * @param requete
-    *           : requete LuceneCriteria
+    *           requete LuceneCriteria
     * @param listMetaDesired
     *           liste des metaDonnees desirée
     * @param maxResult
-    *           : nombre maximum de résultat renvoyé.<i>attention : ne pas
+    *           nombre maximum de résultat renvoyé.<i>attention : ne pas
     *           dépasser 5000 sous peine de saturation mémoire</i>
     * @return Une liste de document de type {@link UntypedDocument}.
     * @throws SAESearchServiceEx

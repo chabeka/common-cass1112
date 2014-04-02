@@ -60,8 +60,8 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
  * Fournit l'implémentation des services pour la recherche.
  */
 @Service
-@Qualifier("saeSearchService")
 @SuppressWarnings( { "PMD.LongVariable", "PMD.ExcessiveImports" })
+@Qualifier("saeSearchService")
 public class SAESearchServiceImpl extends AbstractSAEServices implements
       SAESearchService {
    private static final Logger LOG = LoggerFactory
