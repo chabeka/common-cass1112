@@ -156,13 +156,13 @@ public class Test1104Controller extends
       valeursAttendues.add("NumeroRecours", numeroRecours);
       valeursAttendues.add("Siren", "3090000001");
       
-      if(ArrayUtils.contains(new Integer[]{1,5,9},numeroRecours)){
+      if(ArrayUtils.contains(new String[]{"1","5","9"},numeroRecours)){
          valeursAttendues.add("CodeRND", "2.3.1.1.12");
       }
-      if(ArrayUtils.contains(new Integer[]{6,2,10},numeroRecours)){
+      if(ArrayUtils.contains(new String[]{"6","2","10"},numeroRecours)){
          valeursAttendues.add("CodeRND", "2.3.1.1.8");
       }
-      if(ArrayUtils.contains(new Integer[]{3,7},numeroRecours)){
+      if(ArrayUtils.contains(new String[]{"3","7"},numeroRecours)){
          valeursAttendues.add("CodeRND", "2.3.1.1.3");
       }
 

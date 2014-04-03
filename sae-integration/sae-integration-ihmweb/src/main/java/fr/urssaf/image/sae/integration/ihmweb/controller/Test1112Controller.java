@@ -239,9 +239,9 @@ public class Test1112Controller extends
          verifieResultatN(6, resultatsTries.get(5), resultatTest, "6");
          verifieResultatN(7, resultatsTries.get(6), resultatTest, "7");
          verifieResultatN(8, resultatsTries.get(7), resultatTest, "8");
-         verifieResultatN(8, resultatsTries.get(8), resultatTest, "9");
-         verifieResultatN(8, resultatsTries.get(9), resultatTest, "10");
-         verifieResultatN(8, resultatsTries.get(10), resultatTest, "11");
+         verifieResultatN(9, resultatsTries.get(8), resultatTest, "9");
+         verifieResultatN(10, resultatsTries.get(9), resultatTest, "10");
+         verifieResultatN(11, resultatsTries.get(10), resultatTest, "11");
 
       }
 
@@ -270,19 +270,24 @@ public class Test1112Controller extends
 
       
       valeursAttendues.add("ApplicationProductrice", "ADELAIDE");      
-      valeursAttendues.add("DateCreation", "2007-04-01");
       valeursAttendues.add("Denomination",
             "Test 1112-Droits-Conformite-All-ATT-AEPL");
       valeursAttendues.add("NumeroRecours", numeroRecours);
-      valeursAttendues.add("Siren", "3090000001");
       
-      if(ArrayUtils.contains(new Integer[]{1,5,9,7,11},numeroRecours)){
+      if(ArrayUtils.contains(new String[]{"1","5","9","7","11"},numeroRecours)){
          valeursAttendues.add("CodeRND", "2.3.1.1.13");
       }
-      if(ArrayUtils.contains(new Integer[]{4,6,2,8,10},numeroRecours)){
+      if(ArrayUtils.contains(new String[]{"4","6","2","8","10"},numeroRecours)){
          valeursAttendues.add("CodeRND", "1.2.1.C.X");
       }
       
+      if (ArrayUtils.contains(new String[]{"11"},numeroRecours)) {
+         valeursAttendues.add("DateCreation", "2011-09-01");
+         valeursAttendues.add("Siren", "");
+      } else {
+         valeursAttendues.add("DateCreation", "2007-04-01");
+         valeursAttendues.add("Siren", "3090000001");
+      }
 
       getRechercheTestService().verifieResultatRecherche(resultatRecherche,
             Integer.toString(numeroResultatRecherche), resultatTest,

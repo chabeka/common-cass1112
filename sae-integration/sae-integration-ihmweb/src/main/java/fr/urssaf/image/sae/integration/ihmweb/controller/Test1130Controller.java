@@ -12,6 +12,7 @@ import fr.urssaf.image.sae.integration.ihmweb.constantes.SaeIntegrationConstante
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.TestWsRechercheFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ViFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.modele.CodeMetadonneeList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeurList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.PagmList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTest;
@@ -30,7 +31,7 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.R
 public class Test1130Controller extends
       AbstractTestWsController<TestWsRechercheFormulaire> {
 
-   private static final int WAITED_COUNT = 10;
+   private static final int WAITED_COUNT = 2;
 
    /**
     * {@inheritDoc}
@@ -61,6 +62,16 @@ public class Test1130Controller extends
       // Requête de recherche correspondant au jeu de test inséré en base
       // d'intégration
       formRecherche.setRequeteLucene(getCasTest().getLuceneExemple());
+      
+      // Pas de métadonnées spécifiques à récupérer
+      CodeMetadonneeList codesMeta = new CodeMetadonneeList();
+      codesMeta.add("ApplicationProductrice");
+      codesMeta.add("CodeRND");
+      codesMeta.add("DateCreation");
+      codesMeta.add("Denomination");
+      codesMeta.add("NumeroRecours");
+      codesMeta.add("Siren");
+      formRecherche.setCodeMetadonnees(codesMeta);
 
       // Paramètres du VI
       ViFormulaire viForm = formulaire.getViFormulaire();
@@ -113,17 +124,8 @@ public class Test1130Controller extends
                TypeComparaison.NumeroRecours));
 
          // Vérifie chaque résultat
-         verifieResultatN(1, resultatsTries.get(0), resultatTest, "1");
-         verifieResultatN(2, resultatsTries.get(1), resultatTest, "2");
-         verifieResultatN(3, resultatsTries.get(2), resultatTest, "3");
-         verifieResultatN(3, resultatsTries.get(3), resultatTest, "4");
-         verifieResultatN(4, resultatsTries.get(4), resultatTest, "5");
-         verifieResultatN(5, resultatsTries.get(5), resultatTest, "6");
-         verifieResultatN(6, resultatsTries.get(6), resultatTest, "7");
-         verifieResultatN(7, resultatsTries.get(7), resultatTest, "8");
-         verifieResultatN(7, resultatsTries.get(8), resultatTest, "9");
-         verifieResultatN(8, resultatsTries.get(9), resultatTest, "10");
-
+         verifieResultatN(1, resultatsTries.get(0), resultatTest, "3");
+         verifieResultatN(2, resultatsTries.get(1), resultatTest, "7");
       }
 
       // On passe le test à OK si tous les contrôles sont passées
@@ -139,11 +141,11 @@ public class Test1130Controller extends
 
       MetadonneeValeurList valeursAttendues = new MetadonneeValeurList();
 
-      if (ArrayUtils.contains(new Integer[] { 3, 7 }, numeroRecours)) {
+      if (ArrayUtils.contains(new String[] { "3", "7" }, numeroRecours)) {
          valeursAttendues.add("ApplicationProductrice", "ADELAIDE");
          valeursAttendues.add("DateCreation", "2007-04-01");
          valeursAttendues.add("Denomination",
-               "Test 1122-Droits-Conformite-Recherche-PLUSIEURS-META");
+               "Test 1130-Droits-Conformite-Recherche-PRMD-DYNA");
          valeursAttendues.add("Siren", "3090000001");
          valeursAttendues.add("CodeRND", "2.3.1.1.12");
       }

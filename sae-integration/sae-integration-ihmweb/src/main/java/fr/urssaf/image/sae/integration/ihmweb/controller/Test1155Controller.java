@@ -18,7 +18,6 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_r
 import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.FichierType;
 import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.ListeErreurType;
 import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.NonIntegratedDocumentType;
-import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheResponse;
 
 /**
  * 1155-Droits-Archivage-Masse-KO-PRMD-DYNA-INNACCESSIBLE
@@ -29,7 +28,7 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.R
 public class Test1155Controller extends
       AbstractTestWsController<TestFormulaireDrCmRe> {
 
-   private static final int WAITED_COUNT = 0;
+   private static final int WAITED_COUNT = 10;
 
    /**
     * {@inheritDoc}
@@ -46,9 +45,11 @@ public class Test1155Controller extends
    protected String getNomVue() {
       return "testDrCmRe";
    }
-   
+
    private String getDebutUrlEcde() {
-      return getEcdeService().construitUrlEcde("SAE_INTEGRATION/20110822/Droit-1155-Droits-Archivage-Masse-KO-PRMD-DYNA-INNACCESSIBLE/");
+      return getEcdeService()
+            .construitUrlEcde(
+                  "SAE_INTEGRATION/20110822/Droit-1155-Droits-Archivage-Masse-KO-PRMD-DYNA-INNACCESSIBLE/");
    }
 
    /**
@@ -60,14 +61,16 @@ public class Test1155Controller extends
       TestFormulaireDrCmRe formulaire = new TestFormulaireDrCmRe();
       RechercheFormulaire formRecherche = formulaire.getRechercheFormulaire();
       formRecherche.getResultats().setStatus(TestStatusEnum.SansStatus);
-      
-      CaptureMasseFormulaire formCapture = formulaire.getCaptureMasseDeclenchement();
+
+      CaptureMasseFormulaire formCapture = formulaire
+            .getCaptureMasseDeclenchement();
       formCapture.setUrlSommaire(getDebutUrlEcde() + "sommaire.xml");
-      //formCapture.setHash("23ec83cefdd26f30b68ecbbae1ce6cf6560bca44");
-      //formCapture.setTypeHash("SHA-1");
+      // formCapture.setHash("23ec83cefdd26f30b68ecbbae1ce6cf6560bca44");
+      // formCapture.setTypeHash("SHA-1");
       formCapture.getResultats().setStatus(TestStatusEnum.SansStatus);
-      
-      CaptureMasseResultatFormulaire formResultat = formulaire.getCaptureMasseResultat();
+
+      CaptureMasseResultatFormulaire formResultat = formulaire
+            .getCaptureMasseResultat();
       formResultat.setUrlSommaire(getDebutUrlEcde() + "resultat.xml");
       formResultat.getResultats().setStatus(TestStatusEnum.SansStatus);
 
@@ -118,9 +121,9 @@ public class Test1155Controller extends
 
       } else if ("3".equals(etape)) {
 
-         recherche(formulaire.getUrlServiceWeb(), formulaire.getRechercheFormulaire(),
-               formulaire.getViFormulaire());
-      }  else {
+         recherche(formulaire.getUrlServiceWeb(), formulaire
+               .getRechercheFormulaire(), formulaire.getViFormulaire());
+      } else {
 
          throw new IntegrationRuntimeException("L'étape " + etape
                + " est inconnue !");
@@ -129,7 +132,6 @@ public class Test1155Controller extends
 
    }
 
-   
    private void etape1captureMasseAppelWs(String urlWebService,
          TestFormulaireDrCmRe formulaire) {
 
@@ -142,7 +144,8 @@ public class Test1155Controller extends
 
       // Appel de la méthode de test
       getCaptureMasseTestService().appelWsOpArchiMasseOKAttendu(urlWebService,
-            formulaire.getCaptureMasseDeclenchement(), formulaire.getViFormulaire());
+            formulaire.getCaptureMasseDeclenchement(),
+            formulaire.getViFormulaire());
 
    }
 
@@ -151,11 +154,11 @@ public class Test1155Controller extends
 
       ErreurType erreurType = new ErreurType();
       erreurType.setCode("SAE-CA-BUL002");
-      erreurType.setLibelle("Le document doc1.PDF n'a pas été archivé. ");
-      
+      erreurType.setLibelle("Le document doc1.PDF n'a pas été archivé. Détails : Le document est refusé à l'archivage car les droits sont insuffisants");
+
       ListeErreurType listeErreurType = new ListeErreurType();
       listeErreurType.getErreur().add(erreurType);
-      
+
       FichierType fichierType = new FichierType();
       fichierType.setCheminEtNomDuFichier("doc1.PDF");
 
@@ -167,7 +170,7 @@ public class Test1155Controller extends
             formulaire, WAITED_COUNT, documentType, 2);
 
    }
-   
+
    private void recherche(String urlServiceWeb, RechercheFormulaire formulaire,
          ViFormulaire viParams) {
 
@@ -175,13 +178,13 @@ public class Test1155Controller extends
       ResultatTest resultatTest = formulaire.getResultats();
 
       // Appel de la méthode de test
-      RechercheResponse response = getRechercheTestService().appelWsOpRechercheReponseCorrecteAttendue      
-            (urlServiceWeb, formulaire, 0,
-            false, null, viParams);
-      
+      getRechercheTestService().appelWsOpRechercheReponseCorrecteAttendue(
+            urlServiceWeb, formulaire, 0, false, null, viParams);
 
+      // On passe le test à OK si tous les contrôles sont passées
+      if (!TestStatusEnum.Echec.equals(resultatTest.getStatus())) {
+         resultatTest.setStatus(TestStatusEnum.Succes);
+      }
    }
-
-
 
 }

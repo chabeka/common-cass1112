@@ -22,7 +22,6 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeurList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.PagmList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTest;
 import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
-import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.ErreurType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.comparator.ResultatRechercheComparator;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.comparator.ResultatRechercheComparator.TypeComparaison;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheResponse;
@@ -53,7 +52,7 @@ public class Test1154Controller extends
       return "testDrCuCmReCo";
    }
 
-   private static final int WAITED_COUNT = 0;
+   private static final int WAITED_COUNT = 1;
 
    /**
     * {@inheritDoc}
@@ -156,8 +155,8 @@ public class Test1154Controller extends
 
       } else if ("3".equals(etape)) {
 
-         captureMasseEtape2LectureResultats(formulaire
-               .getCaptureMasseResultat());
+         captureMasseEtape2LectureResultats(formulaire.getCaptureMasseDeclenchement().getUrlSommaire(),
+               formulaire.getCaptureMasseResultat());
 
       } else if ("4".equals(etape)) {
 
@@ -207,17 +206,11 @@ public class Test1154Controller extends
 
    }
 
-   private void captureMasseEtape2LectureResultats(
-         CaptureMasseResultatFormulaire formulaire) {
-
-      ErreurType erreurType = new ErreurType();
-      erreurType.setCode("sae:DroitsInsuffisants");
-      erreurType
-            .setLibelle("Les droits présents dans le vecteur d'identification sont insuffisants pour effectuer l'action demandée ");
-
-      getCaptureMasseTestService().testResultatsTdmReponseKOAttendue(
-            formulaire, erreurType);
-
+   private void captureMasseEtape2LectureResultats(String urlEcde,
+         CaptureMasseResultatFormulaire captureMasseResultat) {
+      
+      getCaptureMasseTestService().testResultatsTdmReponseAucunFichierAttendu(
+            captureMasseResultat, urlEcde);
    }
 
    private void recherche(String urlWebService, RechercheFormulaire rechForm,
@@ -268,12 +261,12 @@ public class Test1154Controller extends
       MetadonneeValeurList valeursAttendues = new MetadonneeValeurList();
 
       valeursAttendues.add("ApplicationProductrice", "ADELAIDE");
+      valeursAttendues.add("CodeOrganismeProprietaire", "UR750");
+      valeursAttendues.add("CodeOrganismeGestionnaire", "CER69");
+      valeursAttendues.add("CodeRND", "2.3.1.1.12");
       valeursAttendues.add("DateCreation", "2011-09-01");
       valeursAttendues.add("Denomination",
             "Test 1154-Droits-Archivage-Masse-KO");
-      valeursAttendues.add("NumeroRecours", numeroRecours);
-
-      valeursAttendues.add("CodeRND", "2.3.1.1.12");
 
       getRechercheTestService().verifieResultatRecherche(resultatRecherche,
             Integer.toString(numeroResultatRecherche), resultatTest,

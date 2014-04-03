@@ -11,6 +11,7 @@ import fr.urssaf.image.sae.integration.ihmweb.constantes.SaeIntegrationConstante
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.TestWsRechercheFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ViFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.modele.CodeMetadonneeList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeurList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.PagmList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTest;
@@ -29,7 +30,7 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.R
 public class Test1116Controller extends
       AbstractTestWsController<TestWsRechercheFormulaire> {
 
-   private static final int WAITED_COUNT = 10;
+   private static final int WAITED_COUNT = 9;
 
    /**
     * {@inheritDoc}
@@ -60,6 +61,16 @@ public class Test1116Controller extends
       // Requête de recherche correspondant au jeu de test inséré en base
       // d'intégration
       formRecherche.setRequeteLucene(getCasTest().getLuceneExemple());
+      
+      // Pas de métadonnées spécifiques à récupérer
+      CodeMetadonneeList codesMeta = new CodeMetadonneeList();
+      codesMeta.add("ApplicationProductrice");
+      codesMeta.add("CodeRND");
+      codesMeta.add("DateCreation");
+      codesMeta.add("Denomination");
+      codesMeta.add("NumeroRecours");
+      codesMeta.add("Siren");
+      formRecherche.setCodeMetadonnees(codesMeta);
 
       // Paramètres du VI
       ViFormulaire viForm = formulaire.getViFormulaire();
@@ -69,7 +80,7 @@ public class Test1116Controller extends
       viForm.setIdCertif("2");
       PagmList pagmList = new PagmList();
       viForm.setPagms(pagmList);
-      pagmList.add("INT_PAGM_UNE_META_ARCH");
+      pagmList.add("INT_PAGM_UNE_META_RECH");
 
       return formulaire;
 
@@ -115,13 +126,12 @@ public class Test1116Controller extends
          verifieResultatN(1, resultatsTries.get(0), resultatTest, "1");
          verifieResultatN(2, resultatsTries.get(1), resultatTest, "2");
          verifieResultatN(3, resultatsTries.get(2), resultatTest, "3");
-         verifieResultatN(3, resultatsTries.get(3), resultatTest, "4");
-         verifieResultatN(4, resultatsTries.get(4), resultatTest, "5");
-         verifieResultatN(5, resultatsTries.get(5), resultatTest, "6");
-         verifieResultatN(6, resultatsTries.get(6), resultatTest, "7");
-         verifieResultatN(7, resultatsTries.get(7), resultatTest, "8");
-         verifieResultatN(7, resultatsTries.get(8), resultatTest, "9");
-         verifieResultatN(8, resultatsTries.get(9), resultatTest, "10");
+         verifieResultatN(4, resultatsTries.get(3), resultatTest, "4");
+         verifieResultatN(5, resultatsTries.get(4), resultatTest, "5");
+         verifieResultatN(6, resultatsTries.get(5), resultatTest, "6");
+         verifieResultatN(7, resultatsTries.get(6), resultatTest, "7");
+         verifieResultatN(8, resultatsTries.get(7), resultatTest, "9");
+         verifieResultatN(9, resultatsTries.get(8), resultatTest, "10");
 
       }
 

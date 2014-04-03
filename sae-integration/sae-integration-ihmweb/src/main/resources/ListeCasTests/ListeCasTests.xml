@@ -1588,6 +1588,24 @@
             <luceneExemple>Denomination:"Test 1124-Droits-Conformite-All-PLUSIEURS-META"</luceneExemple>
          </CasTest>
          <CasTest>
+            <id>1125</id>
+            <code>1125-Droits-Conformite-Recherche-PRMD</code>
+            <description>
+               Ce test permet de valider que la fonctionnalité de recherche renvoie bien les documents autorisés sur un PRMD.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1125-Droits-Conformite-Recherche-PRMD"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1126</id>
+            <code>1126-Droits-Conformite-Consultation-PRMD</code>
+            <description>
+               Ce test permet de valider que la fonctionnalité de consultation est autorisé sur un PRMD alors que la requête renvoie plus de documents.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1126-Droits-Conformite-Consultation-PRMD"</luceneExemple>
+         </CasTest>
+         <CasTest>
             <id>1127</id>
             <code>1127-Droits-Conformite-Archivage-Unitaire-PRMD-DYNA</code>
             <description>
@@ -1700,6 +1718,7 @@
                ce test permet de vérifier l’application du contrôle du PRMD à partir d’un CS donné et d’un PAGM sur l’action unitaire archivage de masse fonctionne correctement
             </description>
             <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1153-Droits-Archivage-Masse-KO-PRMD-Innacessible"</luceneExemple>
          </CasTest>
          <CasTest>
             <id>1154</id>

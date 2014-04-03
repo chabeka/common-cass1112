@@ -1,9 +1,5 @@
 package fr.urssaf.image.sae.integration.ihmweb.controller;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -22,10 +18,7 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_r
 import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.FichierType;
 import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.ListeErreurType;
 import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.NonIntegratedDocumentType;
-import fr.urssaf.image.sae.integration.ihmweb.saeservice.comparator.ResultatRechercheComparator;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.comparator.ResultatRechercheComparator.TypeComparaison;
-import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheResponse;
-import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ResultatRechercheType;
 
 /**
  * 1153-Droits-Archivage-Masse-KO-PRMD-Innacessible
@@ -36,7 +29,7 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.R
 public class Test1153Controller extends
       AbstractTestWsController<TestFormulaireDrCmRe> {
 
-   private static final int WAITED_COUNT = 10;
+   private static final int WAITED_COUNT = 0;
 
    /**
     * {@inheritDoc}
@@ -190,23 +183,11 @@ public class Test1153Controller extends
       boolean flagResultatsTronquesAttendu = false;
 
       // Appel de la méthode de test
-      RechercheResponse response = getRechercheTestService()
+      getRechercheTestService()
             .appelWsOpRechercheReponseCorrecteAttendue(urlServiceWeb,
                   formulaire, nbResultatsAttendus,
                   flagResultatsTronquesAttendu, TypeComparaison.NumeroRecours,
                   viParams);
-
-      // Vérifications en profondeur
-      if ((response != null)
-            && (!TestStatusEnum.Echec.equals(resultatTest.getStatus()))) {
-
-         // Tri les résultats par ordre croissant de DateCreation
-         List<ResultatRechercheType> resultatsTries = Arrays.asList(response
-               .getRechercheResponse().getResultats().getResultat());
-         Collections.sort(resultatsTries, new ResultatRechercheComparator(
-               TypeComparaison.NumeroRecours));
-
-      }
 
       // On passe le test à OK si tous les contrôles sont passées
       if (!TestStatusEnum.Echec.equals(resultatTest.getStatus())) {

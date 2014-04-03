@@ -127,13 +127,13 @@ public class Test1110Controller extends
          verifieResultatN(1, resultatsTries.get(0), resultatTest, "1");
          verifieResultatN(2, resultatsTries.get(1), resultatTest, "2");
          verifieResultatN(3, resultatsTries.get(2), resultatTest, "3");
-         verifieResultatN(3, resultatsTries.get(3), resultatTest, "4");
-         verifieResultatN(4, resultatsTries.get(4), resultatTest, "5");
-         verifieResultatN(5, resultatsTries.get(5), resultatTest, "6");
-         verifieResultatN(6, resultatsTries.get(6), resultatTest, "7");
-         verifieResultatN(7, resultatsTries.get(7), resultatTest, "8");
-         verifieResultatN(7, resultatsTries.get(8), resultatTest, "9");
-         verifieResultatN(8, resultatsTries.get(9), resultatTest, "10");
+         verifieResultatN(4, resultatsTries.get(3), resultatTest, "4");
+         verifieResultatN(5, resultatsTries.get(4), resultatTest, "5");
+         verifieResultatN(6, resultatsTries.get(5), resultatTest, "6");
+         verifieResultatN(7, resultatsTries.get(6), resultatTest, "7");
+         verifieResultatN(8, resultatsTries.get(7), resultatTest, "8");
+         verifieResultatN(9, resultatsTries.get(8), resultatTest, "9");
+         verifieResultatN(10, resultatsTries.get(9), resultatTest, "10");
 
       }
 
@@ -158,10 +158,10 @@ public class Test1110Controller extends
       valeursAttendues.add("NumeroRecours", numeroRecours);
       valeursAttendues.add("Siren", "3090000001");
       
-      if(ArrayUtils.contains(new Integer[]{1,3,5,7,9},numeroRecours)){
+      if(ArrayUtils.contains(new String[]{"1","3","5","7","9"},numeroRecours)){
          valeursAttendues.add("CodeRND", "2.3.1.1.13");
       }
-      if(ArrayUtils.contains(new Integer[]{6,2,4,8,10},numeroRecours)){
+      if(ArrayUtils.contains(new String[]{"6","2","4","8","10"},numeroRecours)){
          valeursAttendues.add("CodeRND", "1.2.1.C.X");
       }
 
