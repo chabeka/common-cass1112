@@ -38,7 +38,6 @@ import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestDocument;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
-import fr.urssaf.image.sae.model.SAEMockMetadata;
 import fr.urssaf.image.sae.services.SAEServiceTestProvider;
 import fr.urssaf.image.sae.services.capture.SAECaptureService;
 import fr.urssaf.image.sae.services.document.SAESearchService;
@@ -168,7 +167,9 @@ public class SAESearchServiceImplDatasTest {
          UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
          EmptyDocumentEx, RequiredArchivableMetadataEx,
          NotArchivableMetadataEx, UnknownHashCodeEx, CaptureBadEcdeUrlEx,
-         CaptureEcdeUrlFileNotFoundEx, IOException, MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile, UnknownFormatException {
+         CaptureEcdeUrlFileNotFoundEx, IOException,
+         MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile,
+         UnknownFormatException {
 
       // insertion d'un document
       ecde = ecdeTestTools
