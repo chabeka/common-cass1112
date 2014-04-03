@@ -38,7 +38,6 @@ import fr.urssaf.image.sae.services.document.impl.AbstractSAEServices;
 import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
 import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedToConsultEx;
 import fr.urssaf.image.sae.services.exception.consultation.SAEConsultationServiceException;
-import fr.urssaf.image.sae.services.factory.SAEStorageFactory;
 import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
@@ -335,7 +334,7 @@ public class SAEConsultationServiceImpl extends AbstractSAEServices implements
       }
 
       for (String shortCode : keyList) {
-         metadatas.add(SAEStorageFactory.createStorageMetadata(shortCode));
+         metadatas.add(new StorageMetadata(shortCode));
       }
 
       return metadatas;

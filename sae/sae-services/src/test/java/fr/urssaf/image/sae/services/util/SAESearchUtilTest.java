@@ -1,4 +1,4 @@
-package fr.urssaf.image.sae.utils;
+package fr.urssaf.image.sae.services.util;
 
 import org.junit.Assert;
 import org.junit.Test;
