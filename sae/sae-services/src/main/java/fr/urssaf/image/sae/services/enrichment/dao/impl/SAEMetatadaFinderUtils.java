@@ -22,7 +22,6 @@ public final class SAEMetatadaFinderUtils {
     *           : Le code cherché
     * @return Le code long métier correspondant à la métadonnéee cherché.
     */
-   @SuppressWarnings("PMD.OnlyOneReturn")
    public static SAEArchivalMetadatas metadtaFinder(final String longCode) {
       for (SAEArchivalMetadatas metadata : SAEArchivalMetadatas.values()) {
          if (metadata.getLongCode().equalsIgnoreCase(longCode)) {
@@ -60,7 +59,6 @@ public final class SAEMetatadaFinderUtils {
     *           : Le code court cherché
     * @return Le type métier correspondant au type cherché.
     */
-   @SuppressWarnings("PMD.OnlyOneReturn")
    private static SAEArchivalMetadatas metadataFinder(final String longCode) {
       for (SAEArchivalMetadatas technical : SAEArchivalMetadatas.values()) {
          if (technical.getLongCode().equals(longCode)) {
@@ -91,8 +89,6 @@ public final class SAEMetatadaFinderUtils {
       }
       return metadataValue;
    }
-
-   
 
    /**
     * Récupére la valeur de la métadonnée.

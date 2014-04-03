@@ -50,6 +50,7 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 @Service
 @Qualifier("saeCommonCaptureService")
 public class SAECommonCaptureServiceImpl implements SAECommonCaptureService {
+
    private static final Logger LOGGER = LoggerFactory
          .getLogger(SAECommonCaptureServiceImpl.class);
 
@@ -70,7 +71,6 @@ public class SAECommonCaptureServiceImpl implements SAECommonCaptureService {
    /**
     * {@inheritDoc}
     */
-   @SuppressWarnings("PMD.OnlyOneReturn")
    @Override
    public final StorageDocument buildStorageDocumentForCapture(
          UntypedDocument untypedDocument, CaptureResult captureResult)

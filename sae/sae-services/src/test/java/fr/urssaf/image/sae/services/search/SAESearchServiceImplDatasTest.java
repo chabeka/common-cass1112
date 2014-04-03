@@ -8,7 +8,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import net.docubase.toolkit.model.document.Document;
@@ -29,7 +28,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.sae.bo.model.bo.SAELuceneCriteria;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
@@ -63,7 +61,6 @@ import fr.urssaf.image.sae.services.exception.search.MetaDataUnauthorizedToSearc
 import fr.urssaf.image.sae.services.exception.search.SAESearchServiceEx;
 import fr.urssaf.image.sae.services.exception.search.SyntaxLuceneEx;
 import fr.urssaf.image.sae.services.exception.search.UnknownLuceneMetadataEx;
-import fr.urssaf.image.sae.storage.dfce.utils.Utils;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
 import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
@@ -71,7 +68,6 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })
-@SuppressWarnings( { "PMD", "unused" })
 public class SAESearchServiceImplDatasTest {
 
    @Autowired
@@ -81,10 +77,6 @@ public class SAESearchServiceImplDatasTest {
    private SAEServiceTestProvider testProvider;
 
    private UUID uuid;
-
-   private static File ecdeRepertory;
-
-   private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
    @Autowired
    private EcdeTestTools ecdeTestTools;

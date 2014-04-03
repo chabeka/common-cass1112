@@ -254,7 +254,7 @@ public class SAEModificationServiceImpl extends AbstractSAEServices implements
 
          }
       } catch (CodeRndInexistantException e) {
-         throw new UnknownCodeRndEx(e.getMessage());
+         throw new UnknownCodeRndEx(e.getMessage(), e);
       }
 
       List<List<UntypedMetadata>> returnedList = new ArrayList<List<UntypedMetadata>>();

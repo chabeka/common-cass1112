@@ -152,7 +152,7 @@ public class SAEControlesModificationServiceImpl implements
       checkModifiables(metadatas);
 
       try {
-         
+
          LOG.debug("{} - vérification des types et formats des métadonnées",
                trcPrefix);
          errors = metadataCS.checkMetadataListValueTypeAndFormat(metadatas);
@@ -164,7 +164,7 @@ public class SAEControlesModificationServiceImpl implements
                   .loadMessage("capture.metadonnees.format.type.non.valide",
                         listeCodeLong));
          }
-         
+
          LOG
                .debug(
                      "{} - vérification de la possibilité d'archiver les métadonnées",
@@ -185,9 +185,9 @@ public class SAEControlesModificationServiceImpl implements
          throw new ModificationRuntimeException(exception);
 
       } catch (InvalidSAETypeException exception) {
-         throw new InvalidValueTypeAndFormatMetadataEx(exception.getMessage());
+         throw new InvalidValueTypeAndFormatMetadataEx(exception.getMessage(),
+               exception);
       }
-
 
       LOG.debug(
             "{} - vérification des valeurs des métadonnées avec dictionnaire",

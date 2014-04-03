@@ -89,7 +89,6 @@ public final class XStreamHelper {
     * @return l'objet
     * 
     */
-   @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
    public static <T> T parse(final InputStreamReader pXmlFile,
          final Charset pXmlCharset, final Class<T> pResultClass,
          final XStream pXStream) {

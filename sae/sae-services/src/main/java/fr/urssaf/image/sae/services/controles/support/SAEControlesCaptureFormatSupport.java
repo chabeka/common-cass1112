@@ -413,7 +413,7 @@ public final class SAEControlesCaptureFormatSupport {
       StringBuffer buffer = new StringBuffer();
       for (String detail : result.getDetails()) {
          buffer.append(detail);
-         buffer.append("\n");
+         buffer.append('\n');
       }
       return buffer.toString();
    }

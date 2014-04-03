@@ -85,10 +85,11 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })
-@SuppressWarnings("PMD.MethodNamingConventions")
 public class SAECaptureServiceTest {
+
    @Autowired
    private EcdeTestTools ecdeTestTools;
+
    private static final Logger LOG = LoggerFactory
          .getLogger(SAECaptureServiceTest.class);
 
@@ -108,10 +109,13 @@ public class SAECaptureServiceTest {
 
    @Autowired
    private CassandraServerBean server;
+
    @Autowired
    private ParametersService parametersService;
+
    @Autowired
    private RndSupport rndSupport;
+
    @Autowired
    private JobClockSupport jobClockSupport;
 
@@ -136,7 +140,6 @@ public class SAECaptureServiceTest {
 
    }
 
-   @SuppressWarnings("PMD.NullAssignment")
    @Before
    public void before() throws Exception {
 

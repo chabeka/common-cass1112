@@ -60,10 +60,10 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
  * Fournit l'implémentation des services pour la recherche.
  */
 @Service
-@SuppressWarnings( { "PMD.LongVariable", "PMD.ExcessiveImports" })
 @Qualifier("saeSearchService")
 public class SAESearchServiceImpl extends AbstractSAEServices implements
       SAESearchService {
+
    private static final Logger LOG = LoggerFactory
          .getLogger(SAESearchServiceImpl.class);
 
@@ -308,7 +308,6 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
     * @throws ReferentialException
     * @throws SAESearchServiceEx
     */
-   @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
    private List<SAEMetadata> recupererListCodCourtByLongCode(
          List<String> listMetaDesired) throws SAESearchServiceEx {
       // si liste metadonnées désirée est vide alors recup la liste par default
@@ -339,7 +338,6 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
     * @throws ReferentialException
     * @throws SAESearchServiceEx
     */
-   @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
    private List<SAEMetadata> recupererListDefaultMetadatas()
          throws SAESearchServiceEx {
       // si liste metadonnées désirée est vide alors recup la liste par default

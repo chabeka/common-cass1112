@@ -66,10 +66,11 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })
-@SuppressWarnings("PMD.MethodNamingConventions")
 public class SAECaptureServiceDroitsTest {
+
    @Autowired
    private EcdeTestTools ecdeTestTools;
+
    private static final Logger LOG = LoggerFactory
          .getLogger(SAECaptureServiceDroitsTest.class);
 
@@ -101,7 +102,6 @@ public class SAECaptureServiceDroitsTest {
       FileUtils.cleanDirectory(ecdeRepertory);
    }
 
-   @SuppressWarnings("PMD.NullAssignment")
    @Before
    public void before() {
 
@@ -144,14 +144,15 @@ public class SAECaptureServiceDroitsTest {
       AuthenticationContext.setAuthenticationToken(null);
    }
 
-   @Test(expected=AccessDeniedException.class)
+   @Test(expected = AccessDeniedException.class)
    public void captureAccessDenied() throws SAECaptureServiceEx,
          ReferentialRndException, UnknownCodeRndEx, RequiredStorageMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
          DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
          UnknownHashCodeEx, IOException, CaptureBadEcdeUrlEx,
-         CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile, UnknownFormatException {
+         CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx,
+         ValidationExceptionInvalidFile, UnknownFormatException {
 
       EcdeTestDocument ecde = ecdeTestTools
             .buildEcdeTestDocument("attestation_consultation.pdf");
@@ -190,7 +191,7 @@ public class SAECaptureServiceDroitsTest {
       metadatas.add(new UntypedMetadata("DateDebutConservation", "2011-09-02"));
 
       uuid = service.capture(metadatas, urlEcdeDocument).getIdDoc();
-      
+
       Assert.fail("exception attendue");
    }
 

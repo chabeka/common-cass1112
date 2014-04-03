@@ -15,9 +15,8 @@ import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
  * Consultation} : Implementation de la consultation.</li>
  * </ul>
  */
-@SuppressWarnings( { "PMD.AbstractClassWithoutAbstractMethod",
-      "PMD.LongVariable" })
 public abstract class AbstractSAEServices {
+
    @Autowired
    @Qualifier("storageServiceProvider")
    private StorageServiceProvider storageServiceProvider;

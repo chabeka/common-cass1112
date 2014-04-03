@@ -33,7 +33,6 @@ import fr.urssaf.image.sae.storage.dfce.annotations.FacadePattern;
  */
 @Service
 @Qualifier("saeDocumentService")
-@SuppressWarnings( { "PMD.AvoidDuplicateLiterals", "PMD.LongVariable" })
 @FacadePattern(participants = { SAECaptureServiceImpl.class,
       SAEConsultationServiceImpl.class, SAESearchServiceImpl.class }, comment = "Fournit les services des classes participantes")
 public class SAEDocumentServiceImpl implements SAEDocumentService {

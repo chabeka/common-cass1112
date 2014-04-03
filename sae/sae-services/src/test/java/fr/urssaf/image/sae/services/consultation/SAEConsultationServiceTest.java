@@ -50,7 +50,6 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })
-@SuppressWarnings("PMD.MethodNamingConventions")
 public class SAEConsultationServiceTest {
 
    private static final Logger LOG = LoggerFactory
@@ -65,7 +64,6 @@ public class SAEConsultationServiceTest {
 
    private UUID uuid;
 
-   @SuppressWarnings("PMD.NullAssignment")
    @Before
    public void before() {
 

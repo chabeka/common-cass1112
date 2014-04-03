@@ -20,7 +20,6 @@ import fr.urssaf.image.sae.services.exception.consultation.SAEConsultationServic
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })
-@SuppressWarnings("PMD.MethodNamingConventions")
 public class SAEConsultationServiceValidationTest {
 
    private SAEConsultationService service;

@@ -220,13 +220,13 @@ public class SAEControlesCaptureServiceImpl implements
                   LOG_DEBUT_VERIF
                         + "La taille du document fournie par l'application cliente est supérieure à 0 octet",
                   prefixeTrc);
-      if (docFile.exists()) {
-         if (docFile.length() == 0) {
-            LOGGER.debug("{} - {}", prefixeTrc, ResourceMessagesUtils
-                  .loadMessage("capture.fichier.vide", docFile.getName()));
-            throw new EmptyDocumentEx(ResourceMessagesUtils.loadMessage(
-                  "capture.fichier.vide", docFile.getName()));
-         }
+      if (docFile.exists() && (docFile.length() == 0)) {
+
+         LOGGER.debug("{} - {}", prefixeTrc, ResourceMessagesUtils.loadMessage(
+               "capture.fichier.vide", docFile.getName()));
+         throw new EmptyDocumentEx(ResourceMessagesUtils.loadMessage(
+               "capture.fichier.vide", docFile.getName()));
+
       }
       LOGGER
             .debug(

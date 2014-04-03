@@ -39,7 +39,6 @@ import fr.urssaf.image.sae.services.exception.format.validation.ValidationExcept
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })
-@SuppressWarnings("PMD.MethodNamingConventions")
 public class SAECaptureServiceValidationTest {
 
    private SAECaptureService service;

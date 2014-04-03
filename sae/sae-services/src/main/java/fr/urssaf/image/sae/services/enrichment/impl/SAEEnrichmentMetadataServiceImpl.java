@@ -38,7 +38,6 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
  */
 @Service
 @Qualifier("saeEnrichmentMetadataService")
-@SuppressWarnings( { "PMD.CyclomaticComplexity", "PMD.LongVariable" })
 public class SAEEnrichmentMetadataServiceImpl implements
       SAEEnrichmentMetadataService {
    private static final Logger LOGGER = LoggerFactory
@@ -118,9 +117,10 @@ public class SAEEnrichmentMetadataServiceImpl implements
     */
    private void authorizedCodeRnd(String rndValue)
          throws CodeRndInexistantException {
-      
+
       if (rndService.isCloture(rndValue)) {
-         throw new CodeRndInexistantException("Le code RND " + rndValue + " n'est pas autorisé à l'archivage (code clôturé).");
+         throw new CodeRndInexistantException("Le code RND " + rndValue
+               + " n'est pas autorisé à l'archivage (code clôturé).");
       }
    }
 
@@ -281,39 +281,38 @@ public class SAEEnrichmentMetadataServiceImpl implements
                         "{} - Enrichissement des métadonnées : ajout de la métadonnée VersionRND valeur : {}",
                         prefixeTrc, saeMetadata.getValue());
 
-         } else if (metadata.getLongCode().equals(
-               SAEArchivalMetadatas.NOM_FICHIER.getLongCode())) {
-            if (SAEMetatadaFinderUtils.codeMetadataFinder(metadatas,
-                  SAEArchivalMetadatas.NOM_FICHIER.getLongCode()) == null) {
-               LOGGER
-                     .debug(
-                           "{} - La métadonnée NOM_FICHIER n'est pas spécifiée par l'application cliente",
-                           prefixeTrc);
-               saeMetadata.setShortCode(metadataReferenceDAO.getByLongCode(
-                     SAEArchivalMetadatas.NOM_FICHIER.getLongCode())
-                     .getShortCode());
-               String name = "";
-               if (StringUtils.isEmpty(filePath)) {
-                  name = fileName;
-               } else {
-                  name = FilenameUtils.getBaseName(filePath);
-               }
-               saeMetadata.setValue(name);
-               metadatas.add(saeMetadata);
-               LOGGER
-                     .debug(
-                           "{} - Enrichissement des métadonnées : ajout du nom de fichier valeur : {}",
-                           prefixeTrc, name);
+         } else if ((metadata.getLongCode()
+               .equals(SAEArchivalMetadatas.NOM_FICHIER.getLongCode()))
+               && (SAEMetatadaFinderUtils.codeMetadataFinder(metadatas,
+                     SAEArchivalMetadatas.NOM_FICHIER.getLongCode()) == null)) {
+
+            LOGGER
+                  .debug(
+                        "{} - La métadonnée NOM_FICHIER n'est pas spécifiée par l'application cliente",
+                        prefixeTrc);
+            saeMetadata.setShortCode(metadataReferenceDAO.getByLongCode(
+                  SAEArchivalMetadatas.NOM_FICHIER.getLongCode())
+                  .getShortCode());
+            String name = "";
+            if (StringUtils.isEmpty(filePath)) {
+               name = fileName;
+            } else {
+               name = FilenameUtils.getBaseName(filePath);
             }
+            saeMetadata.setValue(name);
+            metadatas.add(saeMetadata);
+            LOGGER
+                  .debug(
+                        "{} - Enrichissement des métadonnées : ajout du nom de fichier valeur : {}",
+                        prefixeTrc, name);
          }
+
       }
 
       // Traces debug - sortie méthode
       LOGGER.debug("{} - Sortie", prefixeTrc);
       // Fin des traces debug - sortie méthode
    }
-
-   // CHECKSTYLE:ON
 
    private void completedMetadatas(List<SAEMetadata> metadatas,
          String docFileName, String docFilePath)

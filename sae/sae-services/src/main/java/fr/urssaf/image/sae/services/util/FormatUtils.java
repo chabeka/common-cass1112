@@ -8,9 +8,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-
-import fr.urssaf.image.sae.metadata.utils.Utils;
 
 /**
  * Classe utilitaire.
@@ -30,18 +29,27 @@ public final class FormatUtils {
     * @return Une Chaîne de code erreur.
     */
    public static String formattingDisplayList(List<String> listCodeErrors) {
+
       StringBuilder builder = new StringBuilder();
-      listCodeErrors = new ArrayList<String>(
-            new HashSet<String>(listCodeErrors));
-      Collections.sort(listCodeErrors);
-      int index = 0;
-      for (String value : Utils.nullSafeIterable(listCodeErrors)) {
-         builder.append(value);
-         if (index < listCodeErrors.size() - 1) {
-            builder.append(", ");
+
+      if (CollectionUtils.isNotEmpty(listCodeErrors)) {
+
+         List<String> listCodeErrorsTri = new ArrayList<String>(
+               new HashSet<String>(listCodeErrors));
+
+         Collections.sort(listCodeErrorsTri);
+
+         int index = 0;
+         for (String value : listCodeErrorsTri) {
+            builder.append(value);
+            if (index < listCodeErrorsTri.size() - 1) {
+               builder.append(", ");
+            }
+            index++;
          }
-         index++;
+
       }
+
       return builder.toString();
 
    }
@@ -58,7 +66,6 @@ public final class FormatUtils {
     *           : La date à convertir
     * @return chaîne à partir d'une date
     */
-   @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
    public static String dateToString(final Date date) {
       String newDate = StringUtils.EMPTY;
       if (date != null) {

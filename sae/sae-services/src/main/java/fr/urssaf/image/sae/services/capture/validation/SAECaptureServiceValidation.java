@@ -97,7 +97,7 @@ public class SAECaptureServiceValidation {
 
       } catch (IOException e) {
          throw new EmptyDocumentEx(ResourceMessagesUtils
-               .loadMessage("capture.fichier.binaire.vide"));
+               .loadMessage("capture.fichier.binaire.vide"), e);
       }
 
       if (CollectionUtils.isEmpty(metadatas)) {
