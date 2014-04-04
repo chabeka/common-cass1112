@@ -187,11 +187,14 @@ Positionne le paramètre versionBDD de la CF Parameters à la valeur "6"
 // 6) Lot 140400SAE
 // ------------------------------------------
 
-5.1) CASSANDRA_140400
+6.1) CASSANDRA_140400
+
 sudo java -Dlogback.configurationFile=/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar /hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar /hawai/data/sae/sae-config.properties CASSANDRA_140400
 
 Met la base Cassandra du SAE en version 7
 
 Mise à jour des référentiels des évenements
+
+Ajout de la colonne dispo dans la CF Metadata (disponible client)
 
 Positionne le paramètre versionBDD de la CF Parameters à la valeur "7"
