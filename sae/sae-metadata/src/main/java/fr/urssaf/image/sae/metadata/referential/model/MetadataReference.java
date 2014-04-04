@@ -66,6 +66,8 @@ public class MetadataReference implements Serializable {
    private Boolean isIndexed;
    private Boolean modifiable;
    private Boolean clientAvailable;
+   private Boolean leftTrimable;
+   private Boolean rightTrimable;
 
    /**
     * @return Le code court
@@ -225,7 +227,8 @@ public class MetadataReference implements Serializable {
                   requiredForArchival).append("defaultConsultable",
                   defaultConsultable).append("searchable", searchable).append(
                   "internal", internal).append("clientAvailable",
-                  clientAvailable).toString();
+                  clientAvailable).append("leftTrim", leftTrimable).append(
+                  "rightTrim", rightTrimable).toString();
    }
 
    /**
@@ -390,5 +393,35 @@ public class MetadataReference implements Serializable {
     */
    public final void setClientAvailable(final Boolean clientAvailable) {
       this.clientAvailable = clientAvailable;
+   }
+
+   /**
+    * @return the leftTrimable
+    */
+   public final Boolean isLeftTrimable() {
+      return leftTrimable;
+   }
+
+   /**
+    * @param leftTrimable
+    *           the leftTrimable to set
+    */
+   public final void setLeftTrimable(Boolean leftTrimable) {
+      this.leftTrimable = leftTrimable;
+   }
+
+   /**
+    * @return the rightTrimable
+    */
+   public final Boolean isRightTrimable() {
+      return rightTrimable;
+   }
+
+   /**
+    * @param rightTrimable
+    *           the rightTrimable to set
+    */
+   public final void setRightTrimable(Boolean rightTrimable) {
+      this.rightTrimable = rightTrimable;
    }
 }

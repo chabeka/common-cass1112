@@ -2,7 +2,6 @@ package fr.urssaf.image.sae.webservices.security.igc;
 
 import org.springframework.core.io.FileSystemResource;
 
-import fr.urssaf.image.sae.igc.exception.IgcConfigException;
 import fr.urssaf.image.sae.igc.modele.IgcConfig;
 import fr.urssaf.image.sae.igc.modele.IgcConfigs;
 

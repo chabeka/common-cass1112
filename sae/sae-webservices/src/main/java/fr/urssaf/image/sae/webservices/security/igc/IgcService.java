@@ -13,8 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
@@ -31,9 +29,6 @@ import org.springframework.stereotype.Service;
 import fr.urssaf.image.sae.igc.modele.IgcConfig;
 import fr.urssaf.image.sae.igc.modele.IgcConfigs;
 import fr.urssaf.image.sae.igc.util.TextUtils;
-import fr.urssaf.image.sae.trace.model.TraceToCreate;
-import fr.urssaf.image.sae.trace.service.DispatcheurService;
-import fr.urssaf.image.sae.trace.utils.HostnameUtil;
 import fr.urssaf.image.sae.webservices.security.SecurityUtils;
 import fr.urssaf.image.sae.webservices.security.igc.exception.LoadCertifsAndCrlException;
 import fr.urssaf.image.sae.webservices.security.igc.modele.CertifsAndCrl;

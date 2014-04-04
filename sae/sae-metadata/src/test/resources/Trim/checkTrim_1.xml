@@ -6,7 +6,8 @@
 	</metadata>
 	<metadata>
 		<longCode>Denomination</longCode>
-		<shortCode>per</shortCode>
+		<shortCode>den</shortCode>
+        <value>  Denomination      </value>
 	</metadata>
 
 </metadatas>

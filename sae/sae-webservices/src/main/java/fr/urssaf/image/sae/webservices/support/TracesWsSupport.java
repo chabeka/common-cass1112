@@ -1,7 +1,5 @@
 package fr.urssaf.image.sae.webservices.support;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.axis2.context.MessageContext;

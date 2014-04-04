@@ -25,6 +25,7 @@ import de.schlichtherle.io.FileInputStream;
 import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
 import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
+import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
 import fr.urssaf.image.sae.ecde.exception.EcdeBadURLException;
 import fr.urssaf.image.sae.ecde.exception.EcdeBadURLFormatException;
@@ -111,8 +112,9 @@ public class SAEControlesCaptureServiceImpl implements
       String prefixeTrc = "checkSaeMetadataForCapture()";
       LOGGER.debug(LOG_DEBUT, prefixeTrc);
 
-      controleService.checkMetadataForStorage(sAEDocument.getMetadatas());
-
+      List<SAEMetadata> metadatas = controleService.checkMetadataForStorage(sAEDocument.getMetadatas());
+      sAEDocument.setMetadatas(metadatas);
+      
       // Traces debug - sortie méthode
       LOGGER.debug(LOG_FIN, prefixeTrc);
       // Fin des traces debug - sortie méthode

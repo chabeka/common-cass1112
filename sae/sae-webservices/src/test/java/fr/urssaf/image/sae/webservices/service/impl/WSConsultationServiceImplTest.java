@@ -22,7 +22,6 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import de.schlichtherle.io.FileInputStream;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.storage.dfce.utils.HashUtils;
 import fr.urssaf.image.sae.webservices.exception.ConsultationAxisFault;

@@ -38,6 +38,8 @@ public class SaeMetadataDao extends AbstractDao<String, String> {
    public static final String META_DICT_NAME = "dictName";
    public static final String META_INDEXED = "index";
    public static final String META_DISPO = "dispo";
+   public static final String META_LEFT_TRIM = "leftTrim";
+   public static final String META_RIGHT_TRIM = "rightTrim";
 
    public static final String METADATA_CFNAME = "Metadata";
    public static final String META_UPDATE = "update";
@@ -137,6 +139,36 @@ public class SaeMetadataDao extends AbstractDao<String, String> {
       addColumn(updater, META_REQ_STOR, reqStor, BooleanSerializer.get(), clock);
    }
 
+   /**
+    * Ecrit la valeur de la colonne leftTrim
+    * 
+    * @param leftTrim
+    *           Indique si métadonnée à trimer à gauche
+    * @param updater
+    *           {@link ColumnFamilyUpdater}
+    * @param clock
+    *           le timestamp d'écriture
+    */
+   public final void ecritLeftTrim(Boolean leftTrim,
+         ColumnFamilyUpdater<String, String> updater, long clock) {
+      addColumn(updater, META_LEFT_TRIM, leftTrim, BooleanSerializer.get(), clock);
+   }
+
+   /**
+    * Ecrit la valeur de la colonne rightTrim
+    * 
+    * @param rightTrim
+    *           Indique si métadonnée à trimer à droite
+    * @param updater
+    *           {@link ColumnFamilyUpdater}
+    * @param clock
+    *           le timestamp d'écriture
+    */
+   public final void ecritRightTrim(Boolean rightTrim,
+         ColumnFamilyUpdater<String, String> updater, long clock) {
+      addColumn(updater, META_RIGHT_TRIM, rightTrim, BooleanSerializer.get(), clock);
+   }
+   
    /**
     * Ecrit longeur de la métadonnée
     * 

@@ -82,6 +82,6 @@ public interface SaeControleMetadataService {
     *            exception levée lorsqu'une métadonnée obligatoire au stockage
     *            n'est pas présente
     */
-   void checkMetadataForStorage(List<SAEMetadata> metadatas)
+   List<SAEMetadata> checkMetadataForStorage(List<SAEMetadata> metadatas)
          throws RequiredStorageMetadataEx;
 }

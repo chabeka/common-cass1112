@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,9 @@ import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 import fr.urssaf.image.sae.metadata.referential.services.DictionaryService;
 import fr.urssaf.image.sae.metadata.referential.services.MetadataReferenceDAO;
 import fr.urssaf.image.sae.metadata.utils.Utils;
+import fr.urssaf.image.sae.trace.model.TraceToCreate;
+import fr.urssaf.image.sae.trace.service.DispatcheurService;
+import fr.urssaf.image.sae.trace.utils.HostnameUtil;
 
 /**
  * Classe qui implémente les sevices de l'interface
@@ -45,6 +50,17 @@ public class MetadataControlServicesImpl implements MetadataControlServices {
 
    @Autowired
    private DictionaryService dictionaryService;
+
+   @Autowired
+   private DispatcheurService dispatcheurService;
+
+   /**
+    * Traçabilité : le code de l'événement pour le trim de métadonnées
+    */
+   private static final String TRACE_CODE_EVT_TRIM_METADATA = "META_VAL_ESPACE|INFO";
+
+   private static final Logger LOGGER = LoggerFactory
+         .getLogger(MetadataControlServicesImpl.class);
 
    /**
     * {@inheritDoc}
@@ -614,6 +630,80 @@ public class MetadataControlServicesImpl implements MetadataControlServices {
       }
 
       return errors;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final List<SAEMetadata> trimMetadata(List<SAEMetadata> metadatas) {
+      final Map<String, MetadataReference> referenceLeft = referenceDAO
+            .getLeftTrimableMetadataReference();
+      final Map<String, MetadataReference> referenceRight = referenceDAO
+            .getRightTrimableMetadataReference();
+
+      List<SAEMetadata> metadatasTrim = new ArrayList<SAEMetadata>();
+
+      // Parcourir et trimer
+
+      for (SAEMetadata metadata : metadatas) {
+         SAEMetadata trimMeta = new SAEMetadata();
+         trimMeta.setShortCode(metadata.getShortCode());
+         trimMeta.setLongCode(metadata.getLongCode());
+         trimMeta.setValue(metadata.getValue());
+         boolean trim = false;
+         if (Utils.isRequired(referenceLeft, metadata.getLongCode())) {
+            trimMeta.setValue(trimMeta.getValue().toString().replaceAll("^\\s+", ""));
+            trim = true;
+         }
+         if (Utils.isRequired(referenceRight, metadata.getLongCode())) {
+            trimMeta.setValue(trimMeta.getValue().toString().replaceAll("\\s+$", ""));
+            trim = true;
+         }
+
+         if (trim && !metadata.getValue().equals(trimMeta.getValue())) {
+            ecrireTraces(metadata.getLongCode(), metadata.getValue().toString(), trimMeta
+                  .getValue().toString(), metadatas);
+         }
+
+         metadatasTrim.add(trimMeta);
+      }
+      return metadatasTrim;
+   }
+
+ 
+   private void ecrireTraces(String metaCode, String metaValeur,
+         String valeurTrim, List<SAEMetadata> listeMeta) {
+      // Instantiation de l'objet TraceToCreate
+      TraceToCreate traceToCreate = new TraceToCreate();
+
+      // Code de l'événement
+      traceToCreate.setCodeEvt(TRACE_CODE_EVT_TRIM_METADATA);
+
+      // Contexte
+      traceToCreate.setContexte("controleMetadatas");
+
+      // Info supplémentaire : Hostname et IP du serveur sur lequel tourne
+      // ce code
+      traceToCreate.getInfos().put("saeServeurHostname",
+            HostnameUtil.getHostname());
+      traceToCreate.getInfos().put("saeServeurIP", HostnameUtil.getIP());
+
+      traceToCreate.getInfos().put("metaCode", metaCode);
+      traceToCreate.getInfos().put("metaValeur", "\"" + metaValeur + "\"");
+      traceToCreate.getInfos().put("metaValeurTrim", "\"" + valeurTrim + "\"");
+      String liste = "[";
+      for (SAEMetadata meta : listeMeta) {
+         liste = liste.concat("(" + meta.getLongCode() + ":" + meta.getValue()
+               + ");");
+      }
+      liste = StringUtils.left(liste, liste.length() - 1).concat("]");
+
+      traceToCreate.getInfos().put("metaListeComplete", liste);
+
+      // Appel du dispatcheur
+      dispatcheurService.ajouterTrace(traceToCreate);
+
    }
 
 }

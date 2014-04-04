@@ -47,17 +47,36 @@ public class SaeMetadataSupport {
    }
 
    /**
-    * Créé ou modifie la métadonné
+    * Créé la métadonnée
     * 
     * @param metadata
-    *           l'objet métadonné
+    *           l'objet métadonnée
     * @param clock
     *           le timestamp de l'opération
     */
    public final void create(MetadataReference metadata, long clock) {
 
-      checkCodeCourt(metadata.getShortCode());
+      checkCodeCourtInexistant(metadata.getShortCode());
 
+      createMetadata(metadata, clock);
+   }
+
+   /**
+    * Modifie la métadonnée
+    * 
+    * @param metadata
+    *           l'objet métadonnée
+    * @param clock
+    *           le timestamp de l'opération
+    */
+   public final void modify(MetadataReference metadata, long clock) {
+
+      checkCodeCourtExistant(metadata.getShortCode());
+
+      createMetadata(metadata, clock);
+   }
+   
+   private void createMetadata(MetadataReference metadata, long clock) {
       ColumnFamilyUpdater<String, String> updater = saeMetadataDao.getCfTmpl()
             .createUpdater(metadata.getLongCode());
 
@@ -69,6 +88,12 @@ public class SaeMetadataSupport {
 
       Boolean requiredStor = getBooleanValue(metadata.isRequiredForStorage());
       saeMetadataDao.ecritRequiredStorage(requiredStor, updater, clock);
+      
+      Boolean leftTrim = getBooleanValue(metadata.isLeftTrimable());
+      saeMetadataDao.ecritLeftTrim(leftTrim, updater, clock);
+
+      Boolean rightTrim = getBooleanValue(metadata.isRightTrimable());
+      saeMetadataDao.ecritRightTrim(rightTrim, updater, clock);
 
       int length = -1;
       if (metadata.getLength() >= 0) {
@@ -216,6 +241,14 @@ public class SaeMetadataSupport {
                SaeMetadataDao.META_REQ_STOR);
          meta.setRequiredForStorage(requiredStor);
 
+         Boolean leftTrim = getBooleanValue(result,
+               SaeMetadataDao.META_LEFT_TRIM);
+         meta.setLeftTrimable(leftTrim);
+         
+         Boolean rightTrim = getBooleanValue(result,
+               SaeMetadataDao.META_RIGHT_TRIM);
+         meta.setRightTrimable(rightTrim);
+         
          Boolean searchable = getBooleanValue(result,
                SaeMetadataDao.META_SEARCH);
          meta.setSearchable(searchable);
@@ -273,7 +306,7 @@ public class SaeMetadataSupport {
       return value;
    }
 
-   private void checkCodeCourt(String codeCourt) {
+   private void checkCodeCourtInexistant(String codeCourt) {
       List<MetadataReference> metadatas = findAll();
       boolean found = false;
       int index = 0;
@@ -288,6 +321,24 @@ public class SaeMetadataSupport {
 
       if (found) {
          throw new MetadataRuntimeException("Code court déjà existant");
+      }
+   }
+   
+   private void checkCodeCourtExistant(String codeCourt) {
+      List<MetadataReference> metadatas = findAll();
+      boolean found = false;
+      int index = 0;
+
+      while (!found && index < metadatas.size()) {
+         if (codeCourt.equalsIgnoreCase(metadatas.get(index).getShortCode())) {
+            found = true;
+         }
+
+         index++;
+      }
+
+      if (!found) {
+         throw new MetadataRuntimeException("Code court inexistant");
       }
    }
 }

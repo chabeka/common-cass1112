@@ -47,6 +47,15 @@ public final class Constants {
    public static final File MODIFIABLE_FILE_2 = new File(
          "src/test/resources/Modifiable/checkModifiable_2.xml");
 
+   // Fichier pour test la méthode trimMetadata
+   @SuppressWarnings("PMD.LongVariable")
+   public static final File TRIM_FILE_1 = new File(
+         "src/test/resources/Trim/checkTrim_1.xml");
+   // Fichier pour test la méthode trimMetadata
+   @SuppressWarnings("PMD.LongVariable")
+   public static final File TRIM_FILE_2 = new File(
+         "src/test/resources/Trim/checkTrim_2.xml");
+
    // Fichier pour test la méthode checkDuplicateMetadata
    public static final File DUPLICATE_FILE_1 = new File(
          "src/test/resources/Duplicate/checkDuplicate_1.xml");

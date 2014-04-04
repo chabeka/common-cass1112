@@ -107,7 +107,7 @@ public class SaeMetaDataServiceImpl implements SaeMetaDataService {
                   createBase(metadata));
          }
 
-         saeMetadatasupport.create(metadata, clockSupport.currentCLock());
+         saeMetadatasupport.modify(metadata, clockSupport.currentCLock());
       }
    }
 

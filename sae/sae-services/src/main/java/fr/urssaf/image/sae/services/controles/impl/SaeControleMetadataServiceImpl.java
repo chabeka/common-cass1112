@@ -49,8 +49,8 @@ public class SaeControleMetadataServiceImpl implements
     * {@inheritDoc}
     */
    @Override
-   public final void checkMetadataForStorage(List<SAEMetadata> metadatas)
-         throws RequiredStorageMetadataEx {
+   public final List<SAEMetadata> checkMetadataForStorage(
+         List<SAEMetadata> metadatas) throws RequiredStorageMetadataEx {
       String trcPrefix = "checkMetadataForStorage";
       LOG.debug("{} - début", trcPrefix);
 
@@ -72,7 +72,13 @@ public class SaeControleMetadataServiceImpl implements
             + "Les métadonnées obligatoire lors du stockage sont présentes",
             trcPrefix);
 
+      // Trim des métadonnées
+      LOG.debug("{} - Début du trim des métadonnées concernées", trcPrefix);
+      metadatas = metadataCS.trimMetadata(metadatas);
+      LOG.debug("{} - Fin du trim des métadonnées concernées", trcPrefix);
+
       LOG.debug("{} - fin", trcPrefix);
+      return metadatas;
    }
 
    /**

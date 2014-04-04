@@ -110,4 +110,18 @@ public interface MetadataReferenceDAO {
    Map<String, MetadataReference> getModifiableMetadataReferences()
          throws ReferentialException;
 
+   /**
+    * Charge les métadonnées qui doivent être trimées à gauche
+    * 
+    * @return la liste des métadonnées à trimer à gauche
+    */
+   Map<String, MetadataReference> getLeftTrimableMetadataReference();
+
+   /**
+    * Charge les métadonnées qui doivent être trimées à droite
+    * 
+    * @return la liste des métadonnées à trimer à droite
+    */
+   Map<String, MetadataReference> getRightTrimableMetadataReference();
+
 }

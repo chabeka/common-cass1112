@@ -36,6 +36,8 @@ public class FormatIdentificationRuntimeException extends RuntimeException {
    /**
     * Constructeur
     * 
+    * @param message
+    *           message d'origine
     * @param cause
     *           cause d'origine
     */

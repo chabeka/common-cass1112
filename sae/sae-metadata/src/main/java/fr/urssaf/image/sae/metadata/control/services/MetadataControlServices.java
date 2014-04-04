@@ -211,7 +211,8 @@ public interface MetadataControlServices {
          final List<UntypedMetadata> metadatas);
 
    /**
-    * Contrôle que les métadonnées de liste peuvent être supprimée (non obligatoire au stockage)
+    * Contrôle que les métadonnées de liste peuvent être supprimée (non
+    * obligatoire au stockage)
     * 
     * @param metadatas
     *           : La liste des métadonnées
@@ -219,4 +220,15 @@ public interface MetadataControlServices {
     */
    List<MetadataError> checkSupprimableMetadatas(
          final List<UntypedMetadata> metadatas);
+
+ 
+   /**
+    * Trim gauche et/ou droite des métadonnées dont le paramétrage le demande
+    * 
+    * @param metadatas
+    *           liste des métadonnées
+    * @return la liste des métadonnées trimées
+    */  
+   List<SAEMetadata> trimMetadata(List<SAEMetadata> metadatas);
+
 }

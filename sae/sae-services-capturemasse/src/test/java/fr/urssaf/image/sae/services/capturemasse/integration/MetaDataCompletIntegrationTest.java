@@ -88,7 +88,7 @@ public class MetaDataCompletIntegrationTest {
    public void init() {
       ecdeTestSommaire = ecdeTestTools.buildEcdeTestSommaire();
 
-      LOGGER.debug("initialisation du répertoire de traitetement :"
+      LOGGER.debug("initialisation du répertoire de traitement :"
             + ecdeTestSommaire.getRepEcde());
 
       // initialisation du contexte de sécurité

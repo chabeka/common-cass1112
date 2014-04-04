@@ -41,7 +41,7 @@ public class SAEServiceTestProvider {
    /**
     * initialise la façade des services de sae-storage
     * 
-    * @param connection
+    * @param dfceConnection
     *           connection à DFCE
     * @throws ConnectionServiceEx
     *            une exception est levée lors de l'ouverture de la connexion

@@ -36,7 +36,6 @@ import fr.urssaf.image.sae.igc.modele.IgcConfigs;
 import fr.urssaf.image.sae.igc.modele.IssuerList;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegTechnique;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegTechniqueIndex;
-import fr.urssaf.image.sae.trace.service.DispatcheurService;
 import fr.urssaf.image.sae.trace.service.RegTechniqueService;
 import fr.urssaf.image.sae.trace.utils.HostnameUtil;
 import fr.urssaf.image.sae.webservices.component.IgcConfigUtils;

@@ -577,6 +577,13 @@ public class InsertionDonnees {
       addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
             ListSerializer.get(), updater);
       cfTmpl.update(updater);
+      
+      // META_VAL_ESPACE|INFO
+      // dans le registre de surveillance technique avec all_infos
+      updater = cfTmpl.createUpdater("META_VAL_ESPACE|INFO");
+      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
+            ListSerializer.get(), updater);
+      cfTmpl.update(updater);
 
    }
 
