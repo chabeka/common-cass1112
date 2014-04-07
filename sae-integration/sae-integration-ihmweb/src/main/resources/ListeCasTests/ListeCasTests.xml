@@ -1746,14 +1746,6 @@
             </description>
             <implemente>true</implemente>
          </CasTest>
-         <CasTest>
-            <id>1156b</id>
-            <code>1156-Droits-Consultation-KO-PRMD-DYNA-INNACCESSIBLE</code>
-            <description>
-               ce test permet de valider la consultation avec un PRMD dynamique sur plusieurs métadonnées dynamiques. Aucune consultation réalisée si une valeur dynamique ne respecte pas la contrainte.
-            </description>
-            <implemente>true</implemente>
-         </CasTest>
       </CasTests>
 
    </Categorie>
@@ -1995,6 +1987,111 @@
             </description>
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 1813-FCP-CM-OK-NonIdentification-Validation-Monitor-FMT354"</luceneExemple>
+         </CasTest>
+
+      </CasTests>
+
+   </Categorie>
+   
+   <!-- ======================================================== -->
+   <!-- PKI -->
+   <!-- ======================================================== -->
+
+   <Categorie>
+
+      <Nom>PKI</Nom>
+      <Id>9</Id>
+      <CasTests>
+
+         <CasTest>
+            <id>1201</id>
+            <code>1201-PKI-Verification-OK-Nom-Certificat-OK-Flag-OK</code>
+            <description>
+               Ce test permet de valider le bon fonctionnement d’une action unitaire telle que l’archivage de masse quand on utilise la PKI : PKI_TEST_AC_RACINE et le certificat applicatif APPLICATION_TEST_1  et qu’on effectue le contrôle du certificat applicatif
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1201-PKI-Verification-OK-Nom-Certificat-OK-Flag-OK"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1202</id>
+            <code>1202-PKI-Verification-OK-Nom-Certificat-KO-Flag-OK</code>
+            <description>
+               Ce test permet de valider le bon fonctionnement d’une action unitaire telle que l’archivage de masse quand on utilise la PKI : PKI_TEST_AC_RACINE et le certificat applicatif APPLICATION_TEST_2 qui n’existe pas et qu’on effectue le contrôle du certificat applicatif
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1202-PKI-Verification-OK-Nom-Certificat-KO-Flag-OK"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1203</id>
+            <code>1203-PKI-Verification-OK-Nom-Certificat-KO-Flag-KO</code>
+            <description>
+               Ce test permet de valider le bon fonctionnement d’une action unitaire telle que l’archivage de masse quand on utilise la PKI : PKI_TEST_AC_RACINE et le certificat applicatif APPLICATION_TEST_3 qui n’existe pas et qu’on effectue le contrôle du certificat applicatif
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1203-PKI-Verification-OK-Nom-Certificat-KO-Flag-KO"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1204</id>
+            <code>1204-PKI-CS-ANCIEN-SYSTEME-VI-OK</code>
+            <description>
+               Ce test permet de valider le bon fonctionnement d’une action unitaire telle que l’archivage de masse quand on utilise le contrat de service CS_ANCIEN_SYSTEME et qu’on signe le VI avec l’IGC de validation AED CN=PNR_Application_Test
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1204-PKI-CS-ANCIEN-SYSTEME-VI-OK"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1205</id>
+            <code>1205-PKI-CS-PLUSIEURS-CERTIFICATS-APPLICATIFS</code>
+            <description>
+               Ce test permet de valider le bon fonctionnement d’une action unitaire telle que l’archivage de masse quand on utilise un contrat de service avec plusieurs certificats applicatifs. 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1205-PKI-CS-PLUSIEURS-CERTIFICATS-APPLICATIFS"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1251</id>
+            <code>1251-PKI-Verification-KO-Nom-Certificat-CS-OK-Flag-OK</code>
+            <description>
+               Ce test permet de valider le bon fonctionnement d’une action unitaire telle que l’archivage de masse quand le VI utilise une autre PKI que celle du contrat de service. 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1251-PKI-Verification-KO-Nom-Certificat-CS-OK-Flag-OK"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1252</id>
+            <code>1252-PKI-Verification-KO-Nom-Certificat-CS-OK-Flag-KO</code>
+            <description>
+               Ce test permet de valider le bon fonctionnement d’une action unitaire telle que l’archivage de masse quand le VI utilise une autre PKI que celle du contrat de service. 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1252-PKI-Verification-KO-Nom-Certificat-CS-OK-Flag-KO"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1253</id>
+            <code>1253-PKI-Verification-KO-Nom-Certificat-VI-OK-Flag-OK</code>
+            <description>
+               Ce test permet de valider le bon fonctionnement d’une action unitaire telle que l’archivage de masse quand le VI utilise une autre PKI que celle du contrat de service. 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1253-PKI-Verification-KO-Nom-Certificat-VI-OK-Flag-OK"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1254</id>
+            <code>1254-PKI-Verification-KO-Nom-Certificat-VI-OK-Flag-KO</code>
+            <description>
+               Ce test permet de valider le bon fonctionnement d’une action unitaire telle que l’archivage de masse quand le VI utilise une autre PKI que celle du contrat de service. 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1254-PKI-Verification-KO-Nom-Certificat-VI-OK-Flag-KO"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1255</id>
+            <code>1255-PKI-CS-ANCIEN-SYSTEME-VI-KO</code>
+            <description>
+               Ce test permet de valider le bon fonctionnement d’une action unitaire telle que l’archivage de masse quand on utilise le contrat de service CS_ANCIEN_SYSTEME et qu’on signe le VI avec une IGC autre que celle de validation AED CN=PNR_Application_Test 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1255-PKI-CS-ANCIEN-SYSTEME-VI-KO"</luceneExemple>
          </CasTest>
 
       </CasTests>

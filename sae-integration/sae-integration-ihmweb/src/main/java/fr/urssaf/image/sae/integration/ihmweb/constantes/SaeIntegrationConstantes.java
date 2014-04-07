@@ -67,5 +67,18 @@ public final class SaeIntegrationConstantes {
     */
    public static final String META_CODE_ORG_PROPRIETAIRE = "CodeOrganismeProprietaire";
 
+   /**
+    * PKI de l'application de test du PNR provenant de l'IGC de validation AED.
+    */
+   public static final String PKI_IGC_AED_PNR_APPLI_TEST = "1";
    
+   /**
+    * PKI de l'application de test du SAE provenant de l'IGC de validation AED.
+    */
+   public static final String PKI_IGC_AED_APPLI_TEST_SAE = "2";
+   
+   /**
+    * PKI de l'application de test 1 provenant de l'IGC de la cellule d'intégration.
+    */
+   public static final String PKI_IGC_CELL_INTEG_APPLI_TEST_1 = "3";
 }
