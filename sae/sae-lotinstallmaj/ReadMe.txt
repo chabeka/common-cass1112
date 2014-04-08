@@ -196,5 +196,6 @@ Met la base Cassandra du SAE en version 7
 Mise à jour des référentiels des évenements
 
 Ajout de la colonne dispo dans la CF Metadata (disponible client)
+Ajout des colonnes trim gauche et trim droite dans la CF Metadata
 
 Positionne le paramètre versionBDD de la CF Parameters à la valeur "7"

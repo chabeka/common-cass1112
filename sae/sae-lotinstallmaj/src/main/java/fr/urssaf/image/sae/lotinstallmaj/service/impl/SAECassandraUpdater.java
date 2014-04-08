@@ -40,7 +40,7 @@ public class SAECassandraUpdater {
    private static final int VERSION_5 = 5;
    private static final int VERSION_6 = 6;
    private static final int VERSION_7 = 7;
-   
+
    private static final String REFERENTIEL_FORMAT = "ReferentielFormat";
    private static final String DROIT_PAGMF = "DroitPagmf";
    private static final String DROIT_FORMAT_CONTROL_PROFIL = "DroitFormatControlProfil";
@@ -57,7 +57,7 @@ public class SAECassandraUpdater {
 
    @Autowired
    private RefMetaInitialisationService refMetaInitService;
-   
+
    @Autowired
    private ApplicationContext context;
 
@@ -411,7 +411,7 @@ public class SAECassandraUpdater {
       saeDao.setDatabaseVersion(VERSION_5);
 
    }
-   
+
    /**
     * Version 5 :
     * <ul>
@@ -436,7 +436,7 @@ public class SAECassandraUpdater {
       // Initialisation du référentiel des métadonnées
       // suite au passage à un stockage du référentiel en bdd
       refMetaInitService.initialiseRefMeta(saeDao.getKeyspace());
-      
+
       // Enrichissement du référentiel des événements
       InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
       donnees.addReferentielEvenementV3();
@@ -445,25 +445,26 @@ public class SAECassandraUpdater {
       saeDao.setDatabaseVersion(VERSION_6);
 
    }
-   
-   
+
    /**
-    * Version 7 : Ajout d'une column family dans le Keyspace "SAE"<br> :
-    *    <ul>
-    *       <li>ReferentielFormat</li>
-    *    </ul>   
-    *        
+    * Version 7 : Ajout d'une column family dans le Keyspace "SAE"<br>
+    * :
+    * <ul>
+    * <li>ReferentielFormat</li>
+    * </ul>
+    * 
     */
    public final void updateToVersion7() {
 
       long version = saeDao.getDatabaseVersion();
-      
+
       if (version >= VERSION_7) {
          LOG.info("La base de données est déja en version " + version);
          return;
       }
 
-      LOG.info("Mise à jour du keyspace SAE en version 7 pour référentiel des formats");
+      LOG
+            .info("Mise à jour du keyspace SAE en version 7 pour référentiel des formats");
 
       // Si le KeySpace SAE n'existe pas, on quitte
       // En effet, il aurait du être créé lors de l'install du lot SAE-140400
@@ -487,9 +488,8 @@ public class SAECassandraUpdater {
             ComparatorType.UTF8TYPE));
 
       // DroitFormatControlProfil
-      cfDefs.add(HFactory.createColumnFamilyDefinition(ksName, DROIT_FORMAT_CONTROL_PROFIL,
-            ComparatorType.UTF8TYPE));
-      
+      cfDefs.add(HFactory.createColumnFamilyDefinition(ksName,
+            DROIT_FORMAT_CONTROL_PROFIL, ComparatorType.UTF8TYPE));
 
       // Création des CF
       saeCassandraService.createColumnFamilyFromList(cfDefs, true);
@@ -498,11 +498,14 @@ public class SAECassandraUpdater {
       InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
       donnees.addFormatControleProfil();
       donnees.addDroits();
-      
-      // ajout de la colonne dispo pour les metadonnées
-      List<String> listeRows = getRowsToUpdateMetaForVersion7("metadata140400.txt");
-      donnees.addColumnClientAvailableMetadata(listeRows);
-      
+
+      // ajout de la colonne dispo et trim gauche/droite pour les metadonnées
+      refMetaInitService.initialiseRefMeta(saeDao.getKeyspace());
+
+      // List<String> listeRows =
+      // getRowsToUpdateMetaForVersion7("metadata140400.txt");
+      // donnees.addColumnClientAvailableMetadata(listeRows);
+
       // Enrichissement du référentiel des événements
       donnees.addReferentielEvenementV4();
 
@@ -528,13 +531,14 @@ public class SAECassandraUpdater {
       try {
          stream = context.getResource(fichierlisteMeta).getInputStream();
          reader = new BufferedReader(new InputStreamReader(stream));
-         
-         // on lit le fichier ligne à ligne 
+
+         // on lit le fichier ligne à ligne
          // (en principe, il n'y a qu'une ligne)
          String ligne;
-         while ((ligne=reader.readLine())!=null){
+         while ((ligne = reader.readLine()) != null) {
             // pour chaque ligne, on recupere chaque code long
-            // (pour info, sur chaque ligne, les codes long sont séparés par des virgules)
+            // (pour info, sur chaque ligne, les codes long sont séparés par des
+            // virgules)
             Collections.addAll(listeCodeLong, ligne.split(","));
          }
       } catch (IOException e) {
@@ -559,8 +563,5 @@ public class SAECassandraUpdater {
       }
       return listeCodeLong;
    }
-   
-   
-   
-   
+
 }

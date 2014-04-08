@@ -62,13 +62,13 @@ public final class RefMetaInitialisationService {
       // On compare les métadonnées chargées depuis le fichier CSV
       // avec les métadonnées du dernier fichier XML qui stockait le
       // référentiel des métadonnées avant le passage en bdd
-      verification1(metadonnees);
+      // verification1(metadonnees);
 
       // Vérification #2
       // On compare les métadonnées chargées depuis le fichier CSV
       // avec la définition de la structure de base DFCE stockée en
       // fichier XML
-      verification2(metadonnees);
+      // verification2(metadonnees);
 
       // Enregistrement des métadonnées en base de données
       persisteMetadonnees(keyspace, metadonnees);
@@ -81,11 +81,12 @@ public final class RefMetaInitialisationService {
 
    protected List<MetadataReference> chargeFichierMeta() {
 
+      LOG.info("Chargement du fichier de métadonnées");
       // L'objet de résultat de la méthode
       List<MetadataReference> metadonneesAcreer = new ArrayList<MetadataReference>();
 
       // Chargement du fichier CSV du référentiel des métadonnées
-      ClassPathResource resource = new ClassPathResource("Metadonnees.1.8.txt");
+      ClassPathResource resource = new ClassPathResource("Metadonnees.1.9.txt");
       CSVReader reader;
       try {
          reader = new CSVReader(new InputStreamReader(
@@ -103,6 +104,7 @@ public final class RefMetaInitialisationService {
 
          // Boucle sur la liste des lignes
          String[] nextLine;
+
          while ((nextLine = reader.readNext()) != null) {
 
             // Saute les lignes vides (dues à l'export Excel)
@@ -119,38 +121,47 @@ public final class RefMetaInitialisationService {
             // Code long
             String longCode = readString(nextLine, "A");
             metadonnee.setLongCode(longCode);
+            LOG.info("METADONNEE : " + longCode);
 
             // Libellé
             String label = readString(nextLine, "B");
             metadonnee.setLabel(label);
+            // LOG.info("lib : " + label);
 
             // Description
             String description = readString(nextLine, "C");
             metadonnee.setDescription(description);
+            // LOG.info("description : " + description);
 
             // Spécifiable à l'archivage
             boolean isArchivable = readBoolean(nextLine, "E");
             metadonnee.setArchivable(isArchivable);
+            // LOG.info("isArchivable : " + isArchivable);
 
             // Obligatoire à l'archivage
             boolean requiredForArchival = readBoolean(nextLine, "F");
             metadonnee.setRequiredForArchival(requiredForArchival);
+            // LOG.info("requiredForArchival : " + requiredForArchival);
 
             // Consultée par défaut
             boolean defaultConsultable = readBoolean(nextLine, "G");
             metadonnee.setDefaultConsultable(defaultConsultable);
+            // LOG.info("defaultConsultable : " + defaultConsultable);
 
             // Consultable
             boolean consultable = readBoolean(nextLine, "H");
             metadonnee.setConsultable(consultable);
+            // LOG.info("consultable : " + consultable);
 
             // Critère de recherche
             boolean isSearchable = readBoolean(nextLine, "I");
             metadonnee.setSearchable(isSearchable);
+            // LOG.info("isSearchable : " + isSearchable);
 
             // Indexée
             boolean isIndexed = readBoolean(nextLine, "J");
             metadonnee.setIsIndexed(isIndexed);
+            // LOG.info("isIndexed : " + isIndexed);
 
             // Formatage
             String pattern = ""; // TODO K
@@ -159,37 +170,58 @@ public final class RefMetaInitialisationService {
             // Taille maximum autorisée en archivage
             int length = readInt(nextLine, "L");
             metadonnee.setLength(length);
+            // LOG.info("length : " + length);
 
             // Nom du dictionnaire
             String dictionaryName = readString(nextLine, "O");
             metadonnee.setDictionaryName(dictionaryName);
+            // LOG.info("dictionaryName : " + dictionaryName);
 
             // Possède un dictionnaire ?
             boolean hasDictionary = StringUtils.isNotBlank(dictionaryName);
             metadonnee.setHasDictionary(hasDictionary);
+            // LOG.info("hasDictionary : " + hasDictionary);
+
+            // Diffusable client
+            boolean dispo = readBoolean(nextLine, "Q");
+            // LOG.debug(longCode + " : " + dispo);
+            metadonnee.setClientAvailable(dispo);
 
             // Code court
             String shortCode = readString(nextLine, "T");
             metadonnee.setShortCode(shortCode);
+            // LOG.info("shortCode : " + shortCode);
 
             // Métadonnée gérée directement par DFCE
             boolean isInternal = readBoolean(nextLine, "U");
             metadonnee.setInternal(isInternal);
+            // LOG.info("isInternal : " + isInternal);
 
             // Type DFCE
             String typeDfce = readString(nextLine, "W");
             metadonnee.setType(typeDfce);
+            // LOG.info("typeDfce : " + typeDfce);
 
             // Obligatoire au stockage
             boolean requiredForStorage = readBoolean(nextLine, "Y");
             metadonnee.setRequiredForStorage(requiredForStorage);
-            
+            // LOG.info("requiredForStorage : " + requiredForStorage);
+
             // Modifiable par le client
             boolean modifiableParClient = readBoolean(nextLine, "AA");
-            LOG.debug(longCode + " : " + modifiableParClient);
-            
             metadonnee.setModifiable(modifiableParClient);
-            
+            // LOG.info("modifiableParClient : " + modifiableParClient);
+
+            // Trim à gauche
+            boolean trimGauche = readBoolean(nextLine, "AC");
+            metadonnee.setLeftTrimable(trimGauche);
+            // LOG.info("trimGauche : " + trimGauche);
+
+            // Trim à droite
+            boolean trimDroite = readBoolean(nextLine, "AD");
+            metadonnee.setRightTrimable(trimDroite);
+            // LOG.debug(trimDroite + " : " + trimDroite);
+
          }
 
       } catch (IOException e) {
@@ -217,18 +249,18 @@ public final class RefMetaInitialisationService {
             throw new MajLotRuntimeException(
                   "Erreur de récupération de l'indice de colonne Excel");
          }
-          return codeAscii - (int) ('A');
+         return codeAscii - (int) ('A');
       }
-      
+
       if (colonneExcel.length() == 2) {
          colonne = colonneExcel.charAt(1);
          codeAscii = (int) colonne;
-         return codeAscii  - (int) ('A') + 26; 
+         return codeAscii - (int) ('A') + 26;
       }
-      
+
       throw new MajLotRuntimeException(
-      "Erreur de récupération de l'indice de colonne Excel");
-      
+            "Erreur de récupération de l'indice de colonne Excel");
+
    }
 
    private String readString(String[] nextLine, String colonneExcel) {
@@ -460,6 +492,7 @@ public final class RefMetaInitialisationService {
    private void persisteMetadonnees(Keyspace keyspace,
          List<MetadataReference> metadonnees) {
 
+      LOG.info("Persistence des métadonnées");
       // Instantiation de la DAO, de son support, et du support des clock
       // Cassandra
 
@@ -475,8 +508,13 @@ public final class RefMetaInitialisationService {
             clockConfiguration);
 
       // Création des métadonnées en base Cassandra uniquement (pas dans DFCE)
+
       for (MetadataReference metadonnee : metadonnees) {
-         metaSupport.create(metadonnee, clockSupport.currentCLock());
+         if (metaSupport.find(metadonnee.getLongCode()) != null) {
+            metaSupport.modify(metadonnee, clockSupport.currentCLock());
+         } else {
+            metaSupport.create(metadonnee, clockSupport.currentCLock());
+         }
       }
 
    }
