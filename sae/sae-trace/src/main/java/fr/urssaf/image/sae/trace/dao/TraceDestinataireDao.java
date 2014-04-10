@@ -7,18 +7,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.prettyprint.cassandra.serializers.StringSerializer;
-import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
-import me.prettyprint.cassandra.service.template.ThriftColumnFamilyTemplate;
 import me.prettyprint.hector.api.Keyspace;
 import me.prettyprint.hector.api.Serializer;
-import me.prettyprint.hector.api.beans.HColumn;
-import me.prettyprint.hector.api.factory.HFactory;
 import me.prettyprint.hector.api.mutation.Mutator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import fr.urssaf.image.sae.commons.dao.AbstractDao;
 import fr.urssaf.image.sae.trace.dao.serializer.ListSerializer;
 
 /**
@@ -26,9 +23,9 @@ import fr.urssaf.image.sae.trace.dao.serializer.ListSerializer;
  * 
  */
 @Repository
-public class TraceDestinataireDao {
+public class TraceDestinataireDao extends AbstractDao<String, String> {
 
-   private static final int MAX_ATTRIBUTS = 100;
+
    public static final String DEST_CFNAME = "TraceDestinataire";
 
    public static final String COL_HIST_EVT = "HIST_EVENEMENT";
@@ -38,9 +35,6 @@ public class TraceDestinataireDao {
    public static final String COL_REG_TECHNIQUE = "REG_TECHNIQUE";
    public static final String COL_JOURN_EVT = "JOURN_EVT";
 
-   private final ColumnFamilyTemplate<String, String> destTmpl;
-
-   private final Keyspace keyspace;
 
    /**
     * Constructeur
@@ -50,25 +44,7 @@ public class TraceDestinataireDao {
     */
    @Autowired
    public TraceDestinataireDao(Keyspace keyspace) {
-
-      this.keyspace = keyspace;
-
-      destTmpl = new ThriftColumnFamilyTemplate<String, String>(keyspace,
-            DEST_CFNAME, StringSerializer.get(), StringSerializer.get());
-
-      destTmpl.setCount(MAX_ATTRIBUTS);
-   }
-
-   @SuppressWarnings("unchecked")
-   private void addColumn(ColumnFamilyUpdater<String, String> updater,
-         String colName, Object value, Serializer valueSerializer, long clock) {
-
-      HColumn<String, Object> column = HFactory.createColumn(colName, value,
-            StringSerializer.get(), valueSerializer);
-
-      column.setClock(clock);
-      updater.setColumn(column);
-
+      super(keyspace);
    }
 
    /**
@@ -243,23 +219,19 @@ public class TraceDestinataireDao {
       mutator.addDeletion(code, DEST_CFNAME, clock);
    }
 
-   /**
-    * @return Mutator de <code>TraceDestinataire</code>
-    */
-   public final Mutator<String> createMutator() {
-
-      Mutator<String> mutator = HFactory.createMutator(keyspace,
-            StringSerializer.get());
-
-      return mutator;
-
+   @Override
+   public String getColumnFamilyName() {
+      return DEST_CFNAME;
    }
 
-   /**
-    * @return le CassandraTemplate de <code>TraceDestinataire</code>
-    */
-   public final ColumnFamilyTemplate<String, String> getDestTmpl() {
-      return destTmpl;
+   @Override
+   public Serializer<String> getColumnKeySerializer() {
+      return StringSerializer.get();
+   }
+
+   @Override
+   public Serializer<String> getRowKeySerializer() {
+      return StringSerializer.get();
    }
 
 }

@@ -3,18 +3,27 @@
  */
 package fr.urssaf.image.sae.trace.dao.support;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import me.prettyprint.cassandra.serializers.BytesArraySerializer;
+import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
+import me.prettyprint.cassandra.service.template.ColumnFamilyResultWrapper;
 import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
+import me.prettyprint.hector.api.beans.OrderedRows;
+import me.prettyprint.hector.api.factory.HFactory;
 import me.prettyprint.hector.api.mutation.Mutator;
+import me.prettyprint.hector.api.query.QueryResult;
+import me.prettyprint.hector.api.query.RangeSlicesQuery;
 
 import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +32,8 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.cache.CacheLoader.InvalidCacheLoadException;
 
+import fr.urssaf.image.commons.cassandra.helper.HectorIterator;
+import fr.urssaf.image.commons.cassandra.helper.QueryResultConverter;
 import fr.urssaf.image.sae.trace.dao.TraceDestinataireDao;
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
 import fr.urssaf.image.sae.trace.dao.serializer.ListSerializer;
@@ -36,6 +47,7 @@ import fr.urssaf.image.sae.trace.exception.TraceRuntimeException;
 public class TraceDestinataireSupport {
 
    private static final int LIFE_DURATION = 10;
+   private static final int MAX_FIND_RESULT = 5000;
 
    private final TraceDestinataireDao dao;
 
@@ -71,7 +83,7 @@ public class TraceDestinataireSupport {
     *           horloge de la création
     */
    public final void create(TraceDestinataire trace, long clock) {
-      ColumnFamilyTemplate<String, String> tmpl = dao.getDestTmpl();
+      ColumnFamilyTemplate<String, String> tmpl = dao.getCfTmpl();
       ColumnFamilyUpdater<String, String> updater = tmpl.createUpdater(trace
             .getCodeEvt());
 
@@ -118,7 +130,7 @@ public class TraceDestinataireSupport {
    }
 
    private TraceDestinataire findById(String code) {
-      ColumnFamilyTemplate<String, String> tmpl = dao.getDestTmpl();
+      ColumnFamilyTemplate<String, String> tmpl = dao.getCfTmpl();
       ColumnFamilyResult<String, String> result = tmpl.queryColumns(code);
 
       TraceDestinataire trace = getTraceDestinataireFromResult(result);
@@ -184,6 +196,39 @@ public class TraceDestinataireSupport {
       }
 
       return trace;
+
+   }
+   
+   public final List<TraceDestinataire> findAll() {
+
+      BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
+      RangeSlicesQuery<String, String, byte[]> rangeSlicesQuery = HFactory
+            .createRangeSlicesQuery(dao.getKeyspace(),
+                  StringSerializer.get(), StringSerializer.get(),
+                  bytesSerializer);
+      rangeSlicesQuery.setColumnFamily(dao.getColumnFamilyName());
+      rangeSlicesQuery.setRange(StringUtils.EMPTY, StringUtils.EMPTY, false,
+            MAX_FIND_RESULT);
+      QueryResult<OrderedRows<String, String, byte[]>> queryResult = rangeSlicesQuery
+            .execute();
+
+      // On convertit le résultat en ColumnFamilyResultWrapper pour faciliter
+      // son utilisation
+      QueryResultConverter<String, String, byte[]> converter = new QueryResultConverter<String, String, byte[]>();
+      ColumnFamilyResultWrapper<String, String> result = converter
+            .getColumnFamilyResultWrapper(queryResult, StringSerializer.get(),
+                  StringSerializer.get(), bytesSerializer);
+
+      // On itère sur le résultat
+      HectorIterator<String, String> resultIterator = new HectorIterator<String, String>(
+            result);
+      List<TraceDestinataire> list = new ArrayList<TraceDestinataire>();
+      for (ColumnFamilyResult<String, String> row : resultIterator) {
+
+         list.add(getTraceDestinataireFromResult(row));
+
+      }
+      return list;
 
    }
 

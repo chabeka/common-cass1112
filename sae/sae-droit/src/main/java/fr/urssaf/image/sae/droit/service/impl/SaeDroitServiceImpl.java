@@ -600,7 +600,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
    @Override
    public final SaeContratService getFullContratService(String idClient) {
 
-      ServiceContract contrat = contratsCache.getUnchecked(idClient);
+      ServiceContract contrat = getServiceContract(idClient);
 
       List<SaePagm> listeSaePagm = this.getListeSaePagm(idClient);
 
