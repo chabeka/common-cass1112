@@ -1,9 +1,12 @@
 package fr.urssaf.image.sae.integration.ihmweb.service.dfce;
 
+import java.util.Iterator;
 import java.util.UUID;
 
+import net.docubase.toolkit.model.ToolkitFactory;
 import net.docubase.toolkit.model.base.Base;
-import net.docubase.toolkit.model.search.SearchResult;
+import net.docubase.toolkit.model.document.Document;
+import net.docubase.toolkit.model.search.SearchQuery;
 import net.docubase.toolkit.service.ServiceProvider;
 import net.docubase.toolkit.service.ged.SearchService;
 
@@ -18,7 +21,7 @@ import fr.urssaf.image.sae.integration.ihmweb.exception.IntegrationException;
  */
 @Service
 public class DfceService {
-
+   
    @Autowired
    private TestConfig testConfig;
 
@@ -38,7 +41,7 @@ public class DfceService {
       try {
 
          // Le résultat de la méthode à renvoyer
-         long result;
+         long result = 0;
 
          // Création du ServiceProvider
          ServiceProvider serviceProvider = ServiceProvider.newServiceProvider();
@@ -63,16 +66,16 @@ public class DfceService {
             String requeteLucene = String.format("iti:%s", idTdm.toString());
 
             // Lancement de la recherche
-            int nbMaxElements = Integer.MAX_VALUE;
-            SearchResult searchResult;
-            searchResult = searchService.search(requeteLucene, nbMaxElements,
-                  base);
+            SearchQuery searchQuery = ToolkitFactory.getInstance()
+               .createMonobaseQuery(requeteLucene, base);
+
+            Iterator<Document> iteratorDoc = searchService
+               .createDocumentIterator(searchQuery);
 
             // Compte le nombre de résultats obtenus
-            if (searchResult == null) {
-               result = 0;
-            } else {
-               result = searchResult.getTotalHits();
+            while (iteratorDoc.hasNext()) {
+               iteratorDoc.next();
+               result++;
             }
 
             // Renvoie du résultat

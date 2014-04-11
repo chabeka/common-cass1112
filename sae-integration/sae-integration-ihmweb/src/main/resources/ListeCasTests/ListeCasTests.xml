@@ -589,7 +589,17 @@
             </description>
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 220-CaptureMasse-Avec-Hash-OK-Tor-10"</luceneExemple>
-         </CasTest>         
+         </CasTest>
+         
+         <CasTest>
+            <id>221</id>
+            <code>221-CaptureMasseID-OK-Tor-50000</code>
+            <description>
+               <![CDATA[Ce test permet de vérifier que la capture de masse fonctionne correctement lorsque l’on intégre un fichier sommaire.xml de 50000 documents contenant la balise suivante : <som:restitutionUuids>true</som:restitutionUuids>]]>
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 221-CaptureMasseID-OK-Tor-50000" AND NumeroRecours: 2</luceneExemple>
+         </CasTest>      
          
          
          <CasTest>

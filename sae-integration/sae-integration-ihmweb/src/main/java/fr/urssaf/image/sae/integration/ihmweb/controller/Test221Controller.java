@@ -18,35 +18,35 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeur;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeurList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTest;
 import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
-import fr.urssaf.image.sae.integration.ihmweb.saeservice.comparator.ResultatRechercheComparator.TypeComparaison;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheResponse;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ResultatRechercheType;
 
 /**
- * 203-CaptureMasse-OK-Tor-10-repertoire-slash
+ * 221-CaptureMasseID-OK-Tor-50000
  */
 @Controller
-@RequestMapping(value = "test203")
-public class Test203Controller extends
+@RequestMapping(value = "test221")
+public class Test221Controller extends
       AbstractTestWsController<TestStockageMasseAllFormulaire> {
-
-   
-   /**
-    * Nombre d'occurence attendu
-    */
-   private static final int COUNT_WAITED = 10;
 
    /**
     * {@inheritDoc}
     */
    @Override
    protected final String getNumeroTest() {
-      return "203";
+      return "221";
    }
    
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   protected String getNomVue() {
+      return "testCmReCo";
+   }
    
    private String getDebutUrlEcde() {
-      return getEcdeService().construitUrlEcde("SAE_INTEGRATION/20110822/CaptureMasse-203-CaptureMasse-OK-Tor-10-repertoire-slash/");
+      return getEcdeService().construitUrlEcde("SAE_INTEGRATION/20110822/CaptureMasse-221-CaptureMasseID-OK-Tor-50000/");
    }
 
    /**
@@ -54,7 +54,6 @@ public class Test203Controller extends
     */
    @Override
    protected final TestStockageMasseAllFormulaire getFormulairePourGet() {
-
       TestStockageMasseAllFormulaire formulaire = new TestStockageMasseAllFormulaire();
 
       // Initialise le formulaire de capture de masse
@@ -78,12 +77,9 @@ public class Test203Controller extends
       
       CodeMetadonneeList codeMetadonneeList = new CodeMetadonneeList();
       rechFormulaire.setCodeMetadonnees(codeMetadonneeList);
-      codeMetadonneeList.add("CodeRND");
-      codeMetadonneeList.add("DateArchivage");
-      codeMetadonneeList.add("Hash");
-      codeMetadonneeList.add("NomFichier");
+      codeMetadonneeList.add("Denomination");
       codeMetadonneeList.add("NumeroRecours");
-
+      
       
       // Initialise le formulaire de consultation
       
@@ -92,11 +88,11 @@ public class Test203Controller extends
       CodeMetadonneeList codeMetaConsult = new CodeMetadonneeList();
       formConsult.setCodeMetadonnees(codeMetaConsult);
       codeMetaConsult.add("Denomination");
-      codeMetaConsult.add("Hash");
+      codeMetaConsult.add("NumeroRecours");
+      
       
       
       return formulaire;
-
    }
 
    /**
@@ -168,54 +164,50 @@ public class Test203Controller extends
    }
 
    private void etape3Recherche(TestStockageMasseAllFormulaire formulaire) {
+      
       RechercheResponse response = getRechercheTestService()
             .appelWsOpRechercheReponseCorrecteAttendue(
                   formulaire.getUrlServiceWeb(),
-                  formulaire.getRechFormulaire(), COUNT_WAITED, false,
-                  TypeComparaison.NumeroRecours);
+                  formulaire.getRechFormulaire(), 1, false, null);
 
       if (!TestStatusEnum.Echec.equals(formulaire.getRechFormulaire()
             .getResultats().getStatus())) {
 
          ResultatRechercheType results[] = response.getRechercheResponse()
                .getResultats().getResultat();
-
-         int i = 0;
-         while (i < results.length
-               && !TestStatusEnum.Echec.equals(formulaire.getRechFormulaire()
-                     .getResultats().getStatus())) {
-
-            testMetaDonnees(formulaire.getRechFormulaire().getResultats(),
-                  results[i], i + 1);
-
-            i++;
-         }
-
-         if (!TestStatusEnum.Echec.equals(formulaire.getRechFormulaire()
-               .getResultats().getStatus())) {
+         
+         ResultatTest resultatTest = formulaire.getRechFormulaire().getResultats();
+         
+         verifieResultat(results[0],resultatTest,0);
+         
+         if (!TestStatusEnum.Echec.equals(resultatTest.getStatus())) {
 
             formulaire.getConsultFormulaire().setIdArchivage(
                   results[0].getIdArchive().getUuidType());
 
-            formulaire.getRechFormulaire().getResultats().setStatus(
-                  TestStatusEnum.AControler);
+            resultatTest.setStatus(TestStatusEnum.Succes);
          }
 
       }
 
    }
-
-   private void testMetaDonnees(ResultatTest resultatTest,
-         ResultatRechercheType resultatRecherche, int index) {
+   
+   
+   private void verifieResultat(
+         ResultatRechercheType resultatRecherche,
+         ResultatTest resultatTest,
+         int index) {
+      
       MetadonneeValeurList valeursAttendues = new MetadonneeValeurList();
 
-      String numeroResultatRecherche = "1";
+      String numeroResultatRecherche = Integer.toString(index+1);
 
-      valeursAttendues.add("CodeRND", "2.3.1.1.12");
-      valeursAttendues.add("Hash", "a2f93f1f121ebba0faef2c0596f2f126eacae77b");
+      valeursAttendues.add("Denomination", "Test 221-CaptureMasseID-OK-Tor-50000");
+      valeursAttendues.add("NumeroRecours", "2");
 
       getRechercheTestService().verifieResultatRecherche(resultatRecherche,
             numeroResultatRecherche, resultatTest, valeursAttendues);
+      
    }
 
    private void etape4Consultation(TestStockageMasseAllFormulaire formulaire) {
@@ -223,19 +215,19 @@ public class Test203Controller extends
       // Les codes des métadonnées attendues
       CodeMetadonneeList codeMetaAttendues = new CodeMetadonneeList();
       codeMetaAttendues.add("Denomination");
-      codeMetaAttendues.add("Hash");
+      codeMetaAttendues.add("NumeroRecours");
       
       // Valeurs des métadonnées attendues
       List<MetadonneeValeur> valeursMetaAttendus = new ArrayList<MetadonneeValeur>();
-      valeursMetaAttendus.add(new MetadonneeValeur("Denomination","Test 203-CaptureMasse-OK-Tor-10-repertoire-slash"));
-      valeursMetaAttendus.add(new MetadonneeValeur("Hash","a2f93f1f121ebba0faef2c0596f2f126eacae77b"));
+      valeursMetaAttendus.add(new MetadonneeValeur("Denomination","Test 221-CaptureMasseID-OK-Tor-50000"));
+      valeursMetaAttendus.add(new MetadonneeValeur("NumeroRecours","2"));
       
       // Appel du service de vérification
       getConsultationTestService()
             .appelWsOpConsultationReponseCorrecteAttendue(
                   formulaire.getUrlServiceWeb(),
                   formulaire.getConsultFormulaire(),
-                  "a2f93f1f121ebba0faef2c0596f2f126eacae77b",
+                  null,
                   codeMetaAttendues,
                   valeursMetaAttendus);
       
@@ -247,7 +239,7 @@ public class Test203Controller extends
       }
       
    }
-
+   
    private void etape5Comptages(TestStockageMasseAllFormulaire formulaire) {
 
       // Récupération de l'objet ResultatTest
@@ -260,7 +252,7 @@ public class Test203Controller extends
 
       // Appel du service de comptages
       getCaptureMasseTestService().comptages(idTdm, resultatTest,
-            new Long(COUNT_WAITED));
+            new Long(50000));
 
       // Passe le test en OK si pas KO
       if (!TestStatusEnum.Echec.equals(resultatTest.getStatus())) {
@@ -268,5 +260,4 @@ public class Test203Controller extends
       }
 
    }
-
 }

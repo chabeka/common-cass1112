@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import fr.urssaf.image.sae.integration.ihmweb.config.TestConfig;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.TestWsParentFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CasTest;
+import fr.urssaf.image.sae.integration.ihmweb.modele.ecde.EcdeTest;
+import fr.urssaf.image.sae.integration.ihmweb.modele.ecde.EcdeTests;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.service.SaeServiceTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.ecde.EcdeService;
 import fr.urssaf.image.sae.integration.ihmweb.service.referentiels.ReferentielCasTestService;
@@ -76,6 +78,9 @@ public abstract class AbstractTestWsController<T extends TestWsParentFormulaire>
    
    @Autowired
    private SuppressionTestService suppressionTestServ;
+   
+   @Autowired
+   private EcdeTests ecdeTests;
 
 
    /**
@@ -295,6 +300,25 @@ public abstract class AbstractTestWsController<T extends TestWsParentFormulaire>
       return testConfig;
    }
    
-   
+   /**
+    * Renvoie l'objet décrivant le test injecté.
+    * 
+    * @return EcdeTest
+    */
+   public final EcdeTest getEcdeTest() {
+      EcdeTest retour = null;
+      
+      // recupère le cas de test
+      CasTest casTest = getCasTest();
+      
+      // parcours la liste test injecté pour trouvé le bon
+      for (EcdeTest testCourant : ecdeTests.getListTests()) {
+         if (testCourant.getName().equals(casTest.getCode())) {
+            retour = testCourant;
+            break;
+         }
+      }
+      return retour;
+   }
 
 }

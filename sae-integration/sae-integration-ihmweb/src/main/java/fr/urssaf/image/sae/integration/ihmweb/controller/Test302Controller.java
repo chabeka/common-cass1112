@@ -3,11 +3,13 @@ package fr.urssaf.image.sae.integration.ihmweb.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import fr.urssaf.image.sae.integration.ihmweb.formulaire.ComptagesTdmFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.Test302Formulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CodeMetadonneeList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTest;
 import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
+import fr.urssaf.image.sae.integration.ihmweb.modele.ecde.EcdeTest;
 
 /**
  * 302-Recherche-OK-Tronquee
@@ -48,6 +50,16 @@ public class Test302Controller extends
       // Pas de métadonnées spécifiques à récupérer
       CodeMetadonneeList codesMeta = new CodeMetadonneeList();
       formRecherche.setCodeMetadonnees(codesMeta);
+      
+      // on récupère l'url de l'ecde a partir du numéro de test
+      EcdeTest ecdeTest = getEcdeTest();
+      if (ecdeTest != null) {
+         // initialise l'identifiant de traitement de masse en lisant le fichier 
+         // debut_traitement.flag
+         String idTdm = getCaptureMasseTestService().readIdTdmInDebutTrait(ecdeTest.getUrl());
+         ComptagesTdmFormulaire formComptage = formulaire.getComptagesFormulaire();
+         formComptage.setIdTdm(idTdm);
+      }
 
       return formulaire;
 

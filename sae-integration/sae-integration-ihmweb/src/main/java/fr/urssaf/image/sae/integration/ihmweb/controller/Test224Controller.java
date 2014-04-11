@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import fr.urssaf.image.sae.integration.ihmweb.exception.IntegrationRuntimeException;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseResultatFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.formulaire.ComptagesTdmFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ConsultationFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.Test224Formulaire;
@@ -81,6 +82,7 @@ public class Test224Controller extends
       CodeMetadonneeList codeMetadonneeList = new CodeMetadonneeList();
       codeMetadonneeList.add("Denomination");
       codeMetadonneeList.add("RUM");
+      codeMetadonneeList.add("NumeroRecours");
       
       for(int i=0; i< getCasTest().getLuceneExempleList().size(); i++){
          RechercheFormulaire formulaireRecherche = new RechercheFormulaire(formulaire);
@@ -97,6 +99,7 @@ public class Test224Controller extends
       formConsult.setCodeMetadonnees(codeMetaConsult);
       codeMetaConsult.add("Denomination");
       codeMetaConsult.add("RUM");
+      codeMetaConsult.add("NumeroRecours");
       
 
       return formulaire;
@@ -125,6 +128,14 @@ public class Test224Controller extends
       } else if ("2".equals(etape)) {
 
          etape2captureMasseResultats(formulaire.getCaptureMasseResultat());
+         
+         // initialise l'identifiant de traitement de masse en lisant le fichier
+         // debut_traitement.flag
+         String idTdm = getCaptureMasseTestService().readIdTdmInDebutTrait(
+               formulaire.getCaptureMasseDeclenchement().getUrlSommaire());
+         ComptagesTdmFormulaire formComptage = formulaire
+               .getComptagesFormulaire();
+         formComptage.setIdTdm(idTdm);
 
       } else if ("3".equals(etape)) {
 

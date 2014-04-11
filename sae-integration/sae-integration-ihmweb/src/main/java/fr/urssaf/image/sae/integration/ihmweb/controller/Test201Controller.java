@@ -13,6 +13,7 @@ import fr.urssaf.image.sae.integration.ihmweb.constantes.SaeIntegrationConstante
 import fr.urssaf.image.sae.integration.ihmweb.exception.IntegrationRuntimeException;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseResultatFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.formulaire.ComptagesTdmFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ConsultationFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.TestStockageMasseAllFormulaire;
@@ -46,12 +47,12 @@ public class Test201Controller extends
    protected final String getNumeroTest() {
       return "201";
    }
-   
-   
+
    private String getDebutUrlEcde() {
-      return getEcdeService().construitUrlEcde("SAE_INTEGRATION/20110822/CaptureMasse-201-CaptureMasse-OK-Tor-10/");
+      return getEcdeService()
+            .construitUrlEcde(
+                  "SAE_INTEGRATION/20110822/CaptureMasse-201-CaptureMasse-OK-Tor-10/");
    }
-   
 
    /**
     * {@inheritDoc}
@@ -62,7 +63,7 @@ public class Test201Controller extends
       TestStockageMasseAllFormulaire formulaire = new TestStockageMasseAllFormulaire();
 
       // Initialise le formulaire de capture de masse
-      
+
       CaptureMasseFormulaire formCapture = formulaire
             .getCaptureMasseDeclenchement();
       formCapture.setUrlSommaire(getDebutUrlEcde() + "sommaire.xml");
@@ -73,13 +74,11 @@ public class Test201Controller extends
       formResultat.setUrlSommaire(getDebutUrlEcde() + "resultat.xml");
       formResultat.getResultats().setStatus(TestStatusEnum.SansStatus);
 
-      
       // Initialise le formulaire de recherche
-      
+
       RechercheFormulaire rechFormulaire = formulaire.getRechFormulaire();
-      rechFormulaire
-            .setRequeteLucene(getCasTest().getLuceneExemple());
-      
+      rechFormulaire.setRequeteLucene(getCasTest().getLuceneExemple());
+
       CodeMetadonneeList codeMetadonneeList = new CodeMetadonneeList();
       rechFormulaire.setCodeMetadonnees(codeMetadonneeList);
       codeMetadonneeList.add("CodeActivite");
@@ -104,17 +103,15 @@ public class Test201Controller extends
       codeMetadonneeList.add("Titre");
       codeMetadonneeList.add("TypeHash");
       codeMetadonneeList.add("VersionRND");
-      
-      
+
       // Initialise le formulaire de consultation
-      
+
       ConsultationFormulaire formConsult = formulaire.getConsultFormulaire();
-      
+
       CodeMetadonneeList codeMetaConsult = new CodeMetadonneeList();
       formConsult.setCodeMetadonnees(codeMetaConsult);
       codeMetaConsult.add("Denomination");
       codeMetaConsult.add("Hash");
-      
 
       return formulaire;
 
@@ -134,6 +131,14 @@ public class Test201Controller extends
       } else if ("2".equals(etape)) {
 
          etape2captureMasseResultats(formulaire.getCaptureMasseResultat());
+
+         // initialise l'identifiant de traitement de masse en lisant le fichier
+         // debut_traitement.flag
+         String idTdm = getCaptureMasseTestService().readIdTdmInDebutTrait(
+               formulaire.getCaptureMasseDeclenchement().getUrlSommaire());
+         ComptagesTdmFormulaire formComptage = formulaire
+               .getComptagesFormulaire();
+         formComptage.setIdTdm(idTdm);
 
       } else if ("3".equals(etape)) {
 
@@ -181,8 +186,7 @@ public class Test201Controller extends
    }
 
    private void etape3Recherche(TestStockageMasseAllFormulaire formulaire) {
-      
-      
+
       // Appel le service de test de la recherche
       RechercheResponse response = getRechercheTestService()
             .appelWsOpRechercheReponseCorrecteAttendue(
@@ -191,7 +195,7 @@ public class Test201Controller extends
                   TypeComparaison.NumeroRecours);
 
       ResultatTest resultatTest = formulaire.getRechFormulaire().getResultats();
-      
+
       if (!TestStatusEnum.Echec.equals(resultatTest.getStatus())) {
 
          ResultatRechercheType results[] = response.getRechercheResponse()
@@ -202,13 +206,12 @@ public class Test201Controller extends
                .getRechercheResponse().getResultats().getResultat());
          Collections.sort(resultatsTries, new ResultatRechercheComparator(
                TypeComparaison.NumeroRecours));
-         
+
          // Vérifie chaque résultat
-         for (int i=0;i<COUNT_WAITED;i++) {
-            verifieResultat(resultatsTries.get(i), resultatTest, i+1);
+         for (int i = 0; i < COUNT_WAITED; i++) {
+            verifieResultat(resultatsTries.get(i), resultatTest, i + 1);
          }
-         
-         
+
          // Au mieux, si le test est OK, on le passe "A contrôler", car
          // certaines métadonnées doivent être vérifiées à la main
          if (!TestStatusEnum.Echec.equals(formulaire.getRechFormulaire()
@@ -225,11 +228,9 @@ public class Test201Controller extends
 
    }
 
-   private void verifieResultat(
-         ResultatRechercheType resultatRecherche,
-         ResultatTest resultatTest,
-         int numeroRecours) {
-      
+   private void verifieResultat(ResultatRechercheType resultatRecherche,
+         ResultatTest resultatTest, int numeroRecours) {
+
       MetadonneeValeurList valeursAttendues = new MetadonneeValeurList();
 
       String numeroResultatRecherche = Integer.toString(numeroRecours);
@@ -239,7 +240,7 @@ public class Test201Controller extends
       valeursAttendues.add("CodeOrganismeGestionnaire", "CER69");
       valeursAttendues.add("CodeOrganismeProprietaire", "UR750");
       valeursAttendues.add("CodeRND", "2.3.1.1.12");
-      valeursAttendues.add("ContratDeService", 
+      valeursAttendues.add("ContratDeService",
             SaeIntegrationConstantes.VI_DEFAULT_ISSUER);
       // valeursAttendues.add("DateArchivage", ""); // non prédictible
       valeursAttendues.add("DateCreation", "2011-09-08");
@@ -251,7 +252,8 @@ public class Test201Controller extends
       valeursAttendues.add("FormatFichier", "fmt/354");
       valeursAttendues.add("Gel", "false");
       valeursAttendues.add("Hash", "a2f93f1f121ebba0faef2c0596f2f126eacae77b");
-      // valeursAttendues.add("IdTraitementMasseInterne", ""); // Non prédictible
+      // valeursAttendues.add("IdTraitementMasseInterne", ""); // Non
+      // prédictible
       valeursAttendues.add("NomFichier", "doc1.PDF");
       valeursAttendues.add("NumeroRecours", Integer.toString(numeroRecours));
       valeursAttendues.add("Titre", "Attestation de vigilance");
@@ -261,37 +263,37 @@ public class Test201Controller extends
       getRechercheTestService().verifieResultatRecherche(resultatRecherche,
             numeroResultatRecherche, resultatTest, valeursAttendues);
    }
-   
-   
 
    private void etape4Consultation(TestStockageMasseAllFormulaire formulaire) {
-      
+
       // Les codes des métadonnées attendues
       CodeMetadonneeList codeMetaAttendues = new CodeMetadonneeList();
       codeMetaAttendues.add("Denomination");
       codeMetaAttendues.add("Hash");
-      
+
       // Valeurs des métadonnées attendues
       List<MetadonneeValeur> valeursMetaAttendus = new ArrayList<MetadonneeValeur>();
-      valeursMetaAttendus.add(new MetadonneeValeur("Denomination","Test 201-CaptureMasse-OK-Tor-10"));
-      valeursMetaAttendus.add(new MetadonneeValeur("Hash","a2f93f1f121ebba0faef2c0596f2f126eacae77b"));
-      
+      valeursMetaAttendus.add(new MetadonneeValeur("Denomination",
+            "Test 201-CaptureMasse-OK-Tor-10"));
+      valeursMetaAttendus.add(new MetadonneeValeur("Hash",
+            "a2f93f1f121ebba0faef2c0596f2f126eacae77b"));
+
       // Appel du service de vérification
       getConsultationTestService()
             .appelWsOpConsultationReponseCorrecteAttendue(
                   formulaire.getUrlServiceWeb(),
                   formulaire.getConsultFormulaire(),
                   "a2f93f1f121ebba0faef2c0596f2f126eacae77b",
-                  codeMetaAttendues,
-                  valeursMetaAttendus);
-      
+                  codeMetaAttendues, valeursMetaAttendus);
+
       // Si le test n'est pas en échec, alors on peut le passer en succès,
       // car tout a pu être vérifié
-      ResultatTest resultatTest = formulaire.getConsultFormulaire().getResultats();
+      ResultatTest resultatTest = formulaire.getConsultFormulaire()
+            .getResultats();
       if (!TestStatusEnum.Echec.equals(resultatTest.getStatus())) {
          resultatTest.setStatus(TestStatusEnum.Succes);
       }
-      
+
    }
 
    private void etape5Comptages(TestStockageMasseAllFormulaire formulaire) {

@@ -1,10 +1,14 @@
 package fr.urssaf.image.sae.integration.ihmweb.service.tests;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Properties;
 import java.util.UUID;
 
 import org.apache.axis2.AxisFault;
@@ -264,17 +268,18 @@ public class CaptureMasseTestService {
       return appelWsOpArchiMasseTestLibre(urlWebService, formulaire);
 
    }
-   
+
    /**
     * appel de l'archivage de masse avec en attente aucune saop fault
     * 
     * @param urlWebService
     *           adresse du WS
     * @param viParam
-    *           Le paramètres du VI          
+    *           Le paramètres du VI
     */
    public final CaptureMasseResultat appelWsOpArchiMasseOKAttendu(
-         String urlWebService, CaptureMasseFormulaire formulaire, ViFormulaire viParams) {
+         String urlWebService, CaptureMasseFormulaire formulaire,
+         ViFormulaire viParams) {
 
       // Fait la même chose que le test libre
       return appelWsOpArchiMasseTestLibre(urlWebService, formulaire, viParams);
@@ -311,7 +316,6 @@ public class CaptureMasseTestService {
 
    }
 
-   
    /**
     * appel de l'archivage de masse avec en attente une saop fault dont on
     * fournit le code
@@ -326,7 +330,8 @@ public class CaptureMasseTestService {
     *           arguments de la soapFault
     */
    public final void appelWsOpArchiMasseSoapFaultAttendue(String urlWebService,
-         CaptureMasseFormulaire formulaire, ViFormulaire viParams, String soapFault, String[] args) {
+         CaptureMasseFormulaire formulaire, ViFormulaire viParams,
+         String soapFault, String[] args) {
 
       // Création de l'objet qui implémente l'interface WsTestListener
       // et qui ne s'attend pas à un quelconque résultat (test libre)
@@ -341,6 +346,7 @@ public class CaptureMasseTestService {
             testLibre);
 
    }
+
    /**
     * Regarde les résultats d'un traitement de masse
     * 
@@ -1104,6 +1110,40 @@ public class CaptureMasseTestService {
 
       return result;
 
+   }
+
+   /**
+    * Methode permettant d'aller lire l'identifiant de traitement de masse dans
+    * le fichier debut_traitement.flag.
+    * 
+    * @param urlEcdeSommaire
+    *           url du fichier sommaire de l'ecde
+    * @return String : identifiant du traitement de masse
+    */
+   public String readIdTdmInDebutTrait(String urlEcdeSommaire) {
+
+      String idTdm = "";
+
+      // Récupère le fichier de début de traitement
+      String cheminFichierDebutFlag = getCheminFichierDebutFlag(urlEcdeSommaire);
+
+      File fileDebutFlag = new File(cheminFichierDebutFlag);
+
+      // test de la présence du fichier debut_traitement.flag
+      if (fileDebutFlag.exists()) {
+
+         Properties propFichierDebutFlag = new Properties();
+         try {
+            propFichierDebutFlag.load(new FileInputStream(fileDebutFlag));
+            idTdm = (String) propFichierDebutFlag.get("idTraitementMasse");
+
+         } catch (FileNotFoundException e) {
+            // nothing to do
+         } catch (IOException e) {
+            // nothing to do
+         }
+      }
+      return idTdm;
    }
 
 }

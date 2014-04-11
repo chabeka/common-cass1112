@@ -57,7 +57,7 @@ public class Test301Controller extends
 
       // Pas de métadonnées spécifiques à récupérer
       CodeMetadonneeList codesMeta = new CodeMetadonneeList();
-      /**codesMeta.add("CodeOrganismeGestionnaire");
+      codesMeta.add("CodeOrganismeGestionnaire");
       codesMeta.add("CodeOrganismeProprietaire");
       codesMeta.add("CodeRND");
       codesMeta.add("ContratDeService");
@@ -69,7 +69,7 @@ public class Test301Controller extends
       codesMeta.add("NomFichier");
       codesMeta.add("TailleFichier");
       codesMeta.add("Titre");
-      codesMeta.add("NumeroRecours");**/
+      codesMeta.add("NumeroRecours");
       formRecherche.setCodeMetadonnees(codesMeta);
 
       return formulaire;
@@ -145,6 +145,7 @@ public class Test301Controller extends
       valeursAttendues.add("NomFichier", "doc1.PDF");
       valeursAttendues.add("FormatFichier", "fmt/354");
       valeursAttendues.add("TailleFichier", "56587");
+      valeursAttendues.add("NumeroRecours", "1");
       valeursAttendues.add("ContratDeService", 
             SaeIntegrationConstantes.VI_DEFAULT_ISSUER);
       // valeursAttendues.add("DateArchivage",); // <= à vérifier manuellement
@@ -171,6 +172,7 @@ public class Test301Controller extends
       valeursAttendues.add("NomFichier", "doc4.PDF");
       valeursAttendues.add("FormatFichier", "fmt/354");
       valeursAttendues.add("TailleFichier", "48637");
+      valeursAttendues.add("NumeroRecours", "2");
       valeursAttendues.add("ContratDeService", 
             SaeIntegrationConstantes.VI_DEFAULT_ISSUER);
       // valeursAttendues.add("DateArchivage",); // <= à vérifier manuellement
@@ -197,6 +199,7 @@ public class Test301Controller extends
       valeursAttendues.add("NomFichier", "doc7.PDF");
       valeursAttendues.add("FormatFichier", "fmt/354");
       valeursAttendues.add("TailleFichier", "48646");
+      valeursAttendues.add("NumeroRecours", "3");
       valeursAttendues.add("ContratDeService", 
             SaeIntegrationConstantes.VI_DEFAULT_ISSUER);
       // valeursAttendues.add("DateArchivage",); // <= à vérifier manuellement
@@ -223,6 +226,7 @@ public class Test301Controller extends
       valeursAttendues.add("NomFichier", "doc11.PDF");
       valeursAttendues.add("FormatFichier", "fmt/354");
       valeursAttendues.add("TailleFichier", "59459");
+      valeursAttendues.add("NumeroRecours", "4");
       valeursAttendues.add("ContratDeService", 
             SaeIntegrationConstantes.VI_DEFAULT_ISSUER);
       // valeursAttendues.add("DateArchivage",); // <= à vérifier manuellement
@@ -249,6 +253,7 @@ public class Test301Controller extends
       valeursAttendues.add("NomFichier", "doc70.PDF");
       valeursAttendues.add("FormatFichier", "fmt/354");
       valeursAttendues.add("TailleFichier", "47308");
+      valeursAttendues.add("NumeroRecours", "5");
       valeursAttendues.add("ContratDeService", 
             SaeIntegrationConstantes.VI_DEFAULT_ISSUER);
       // valeursAttendues.add("DateArchivage",); // <= à vérifier manuellement
@@ -275,6 +280,7 @@ public class Test301Controller extends
       valeursAttendues.add("NomFichier", "doc77.PDF");
       valeursAttendues.add("FormatFichier", "fmt/354");
       valeursAttendues.add("TailleFichier", "58555");
+      valeursAttendues.add("NumeroRecours", "6");
       valeursAttendues.add("ContratDeService", 
             SaeIntegrationConstantes.VI_DEFAULT_ISSUER);
       // valeursAttendues.add("DateArchivage",); // <= à vérifier manuellement
@@ -301,6 +307,7 @@ public class Test301Controller extends
       valeursAttendues.add("NomFichier", "doc132.PDF");
       valeursAttendues.add("FormatFichier", "fmt/354");
       valeursAttendues.add("TailleFichier", "46887");
+      valeursAttendues.add("NumeroRecours", "7");
       valeursAttendues.add("ContratDeService", 
             SaeIntegrationConstantes.VI_DEFAULT_ISSUER);
       // valeursAttendues.add("DateArchivage",); // <= à vérifier manuellement
