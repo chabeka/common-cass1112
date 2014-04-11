@@ -1022,10 +1022,12 @@ public class SaeDroitServiceImpl implements SaeDroitService {
                      pagmASupprimer.getCode());
       }
       try {
-         Pagmf pagmf = pagmfsCache.getUnchecked(pagmASupprimer.getPagmf());
-         // Ajout du PAGMf
-         pagmfSupport.delete(pagmf.getCodePagmf(), clockSupport.currentCLock(),
-               mutator);
+         if (pagmASupprimer.getPagmf() != null) {
+            Pagmf pagmf = pagmfsCache.getUnchecked(pagmASupprimer.getPagmf());
+            // Ajout du PAGMf
+            pagmfSupport.delete(pagmf.getCodePagmf(), clockSupport
+                  .currentCLock(), mutator);
+         }
       } catch (InvalidCacheLoadException e) {
          LOGGER
                .debug(
