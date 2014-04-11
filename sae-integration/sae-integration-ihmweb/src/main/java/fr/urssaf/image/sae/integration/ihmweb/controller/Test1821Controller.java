@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import fr.urssaf.image.sae.integration.ihmweb.constantes.SaeIntegrationConstantes;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseResultatFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.formulaire.ComptagesTdmFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ConsultationFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.TestFormulaireFcpCmReCo;
@@ -127,16 +128,20 @@ public class Test1821Controller extends
       String etape = formulaire.getEtape();
       if ("1".equals(etape)) {
          etape1captureMasseAppelWs(formulaire);
-         // PagmList pagmList = new PagmList();
-         // pagmList.add("INT_PAGM_ATT_VIGI_RECH");
-         // formulaire.getViFormulaire().setPagms(pagmList);
       } else if ("2".equals(etape)) {
 
          etape2captureMasseResultats(formulaire.getCaptureMasseResultat());
 
+         // initialise l'identifiant de traitement de masse en lisant le fichier
+         // debut_traitement.flag
+         String idTdm = getCaptureMasseTestService().readIdTdmInDebutTrait(
+               formulaire.getCaptureMasseDeclenchement().getUrlSommaire());
+         ComptagesTdmFormulaire formComptage = formulaire
+               .getComptagesFormulaire();
+         formComptage.setIdTdm(idTdm);
+
       } else if ("3".equals(etape)) {
-         recherche(formulaire.getUrlServiceWeb(), formulaire
-               .getRechercheFormulaire(), formulaire.getViFormulaire());
+         recherche(formulaire);
       } else if ("4".equals(etape)) {
 
          etape4consultation(formulaire);
@@ -168,11 +173,11 @@ public class Test1821Controller extends
             .testResultatsTdmReponseOKAttendue(formulaire);
    }
 
-   private void recherche(String urlServiceWeb, RechercheFormulaire formulaire,
-         ViFormulaire viParams) {
+   private void recherche(TestFormulaireFcpCmReCo formulaire) {
 
       // Initialise
-      ResultatTest resultatTest = formulaire.getResultats();
+      ResultatTest resultatTest = formulaire.getRechercheFormulaire()
+            .getResultats();
 
       // Résultats attendus
       int nbResultatsAttendus = 10;
@@ -180,9 +185,9 @@ public class Test1821Controller extends
 
       // Appel de la méthode de test
       RechercheResponse response = getRechercheTestService()
-            .appelWsOpRechercheReponseCorrecteAttendue(urlServiceWeb,
-                  formulaire, nbResultatsAttendus,
-                  flagResultatsTronquesAttendu, null);
+            .appelWsOpRechercheReponseCorrecteAttendue(
+                  formulaire.getUrlServiceWeb(), formulaire.getRechercheFormulaire(),
+                  nbResultatsAttendus, flagResultatsTronquesAttendu, null);
 
       // Vérifications en profondeur
       if ((response != null)
@@ -209,6 +214,12 @@ public class Test1821Controller extends
 
       // On passe le test à OK si tous les contrôles sont passées
       if (!TestStatusEnum.Echec.equals(resultatTest.getStatus())) {
+
+         ResultatRechercheType results[] = response.getRechercheResponse()
+            .getResultats().getResultat();
+         formulaire.getConsultation().setIdArchivage(
+               results[0].getIdArchive().getUuidType());
+
          resultatTest.setStatus(TestStatusEnum.Succes);
       }
    }
@@ -227,13 +238,13 @@ public class Test1821Controller extends
             valeursAttendues);
 
    }
-   
+
    private void etape4consultation(TestFormulaireFcpCmReCo formulaire) {
 
       // Initialise
       ConsultationFormulaire formConsult = formulaire.getConsultation();
       ResultatTest resultatTestConsult = formConsult.getResultats();
-      
+
       // Le SHA-1 attendu
       String sha1attendu = null;
       String idArchivageDemande = formConsult.getIdArchivage();
@@ -247,8 +258,9 @@ public class Test1821Controller extends
       // Valeurs des métadonnées attendues après l'appel à la consult
       List<MetadonneeValeur> metaAttendues = new ArrayList<MetadonneeValeur>();
       metaAttendues.add(new MetadonneeValeur("CodeRND", "2.3.1.1.12"));
-      metaAttendues.add(new MetadonneeValeur("Hash", "108acacac3cafc1efe4178b49cef5d9ff767bb7b"));
-      
+      metaAttendues.add(new MetadonneeValeur("Hash",
+            "108acacac3cafc1efe4178b49cef5d9ff767bb7b"));
+
       // Lance le test
       getConsultationTestService()
             .appelWsOpConsultationReponseCorrecteAttendue(
@@ -262,7 +274,7 @@ public class Test1821Controller extends
       }
 
    }
-   
+
    private void etape5Comptages(TestFormulaireFcpCmReCo formulaire) {
 
       // Récupération de l'objet ResultatTest
@@ -274,8 +286,7 @@ public class Test1821Controller extends
       String idTdm = formulaire.getComptagesFormulaire().getIdTdm();
 
       // Appel du service de comptages
-      getCaptureMasseTestService().comptages(idTdm, resultatTest,
-            new Long(10));
+      getCaptureMasseTestService().comptages(idTdm, resultatTest, new Long(10));
 
       // Passe le test en OK si pas KO
       if (!TestStatusEnum.Echec.equals(resultatTest.getStatus())) {

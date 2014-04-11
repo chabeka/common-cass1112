@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import fr.urssaf.image.sae.integration.ihmweb.constantes.SaeIntegrationConstantes;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseResultatFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.formulaire.ComptagesTdmFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ConsultationFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.TestFormulaireFcpCmReCo;
@@ -127,16 +128,20 @@ public class Test1822aController extends
       String etape = formulaire.getEtape();
       if ("1".equals(etape)) {
          etape1captureMasseAppelWs(formulaire);
-         // PagmList pagmList = new PagmList();
-         // pagmList.add("INT_PAGM_ATT_VIGI_RECH");
-         // formulaire.getViFormulaire().setPagms(pagmList);
       } else if ("2".equals(etape)) {
 
          etape2captureMasseResultats(formulaire.getCaptureMasseResultat());
+         
+         // initialise l'identifiant de traitement de masse en lisant le fichier
+         // debut_traitement.flag
+         String idTdm = getCaptureMasseTestService().readIdTdmInDebutTrait(
+               formulaire.getCaptureMasseDeclenchement().getUrlSommaire());
+         ComptagesTdmFormulaire formComptage = formulaire
+               .getComptagesFormulaire();
+         formComptage.setIdTdm(idTdm);
 
       } else if ("3".equals(etape)) {
-         recherche(formulaire.getUrlServiceWeb(), formulaire
-               .getRechercheFormulaire(), formulaire.getViFormulaire());
+         recherche(formulaire);
       } else if ("4".equals(etape)) {
 
          etape4consultation(formulaire);
@@ -175,11 +180,10 @@ public class Test1822aController extends
       }
    }
 
-   private void recherche(String urlServiceWeb, RechercheFormulaire formulaire,
-         ViFormulaire viParams) {
+   private void recherche(TestFormulaireFcpCmReCo formulaire) {
 
       // Initialise
-      ResultatTest resultatTest = formulaire.getResultats();
+      ResultatTest resultatTest = formulaire.getRechercheFormulaire().getResultats();
 
       // Résultats attendus
       int nbResultatsAttendus = 10;
@@ -187,8 +191,8 @@ public class Test1822aController extends
 
       // Appel de la méthode de test
       RechercheResponse response = getRechercheTestService()
-            .appelWsOpRechercheReponseCorrecteAttendue(urlServiceWeb,
-                  formulaire, nbResultatsAttendus,
+            .appelWsOpRechercheReponseCorrecteAttendue(formulaire.getUrlServiceWeb(),
+                  formulaire.getRechercheFormulaire(), nbResultatsAttendus,
                   flagResultatsTronquesAttendu, null);
 
       // Vérifications en profondeur
@@ -216,6 +220,12 @@ public class Test1822aController extends
 
       // On passe le test à OK si tous les contrôles sont passées
       if (!TestStatusEnum.Echec.equals(resultatTest.getStatus())) {
+         
+         ResultatRechercheType results[] = response.getRechercheResponse()
+            .getResultats().getResultat();
+         formulaire.getConsultation().setIdArchivage(
+            results[0].getIdArchive().getUuidType());
+         
          resultatTest.setStatus(TestStatusEnum.Succes);
       }
    }

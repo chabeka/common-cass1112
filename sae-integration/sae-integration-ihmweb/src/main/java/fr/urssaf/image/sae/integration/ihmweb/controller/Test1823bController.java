@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import fr.urssaf.image.sae.integration.ihmweb.constantes.SaeIntegrationConstantes;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseResultatFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.formulaire.ComptagesTdmFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.TestFormulaireFcpCmReCo;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ViFormulaire;
@@ -111,12 +112,17 @@ public class Test1823bController extends
       String etape = formulaire.getEtape();
       if ("1".equals(etape)) {
          etape1captureMasseAppelWs(formulaire);
-         // PagmList pagmList = new PagmList();
-         // pagmList.add("INT_PAGM_ATT_VIGI_RECH");
-         // formulaire.getViFormulaire().setPagms(pagmList);
       } else if ("2".equals(etape)) {
 
          etape2captureMasseResultats(formulaire.getCaptureMasseResultat());
+         
+         // initialise l'identifiant de traitement de masse en lisant le fichier
+         // debut_traitement.flag
+         String idTdm = getCaptureMasseTestService().readIdTdmInDebutTrait(
+               formulaire.getCaptureMasseDeclenchement().getUrlSommaire());
+         ComptagesTdmFormulaire formComptage = formulaire
+               .getComptagesFormulaire();
+         formComptage.setIdTdm(idTdm);
 
       } else if ("3".equals(etape)) {
          recherche(formulaire.getUrlServiceWeb(), formulaire
