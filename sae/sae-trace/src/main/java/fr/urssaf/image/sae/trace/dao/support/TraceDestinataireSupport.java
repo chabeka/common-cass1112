@@ -198,14 +198,18 @@ public class TraceDestinataireSupport {
       return trace;
 
    }
-   
+
+   /**
+    * Retourne l'ensemble des destinataires des traces
+    * 
+    * @return l'ensemble des destinataires des traces
+    */
    public final List<TraceDestinataire> findAll() {
 
       BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
       RangeSlicesQuery<String, String, byte[]> rangeSlicesQuery = HFactory
-            .createRangeSlicesQuery(dao.getKeyspace(),
-                  StringSerializer.get(), StringSerializer.get(),
-                  bytesSerializer);
+            .createRangeSlicesQuery(dao.getKeyspace(), StringSerializer.get(),
+                  StringSerializer.get(), bytesSerializer);
       rangeSlicesQuery.setColumnFamily(dao.getColumnFamilyName());
       rangeSlicesQuery.setRange(StringUtils.EMPTY, StringUtils.EMPTY, false,
             MAX_FIND_RESULT);

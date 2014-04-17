@@ -30,14 +30,18 @@ public class TraceDestinataireServiceImpl implements TraceDestinaireService {
          .getLogger(TraceDestinataireServiceImpl.class);
 
    private TraceDestinataireSupport destSupport;
-   
+
+   /**
+    * Constructeur
+    * 
+    * @param destSupport
+    *           Support de la classe DAO TraceRegTechniqueDao
+    */
    @Autowired
    public TraceDestinataireServiceImpl(TraceDestinataireSupport destSupport) {
       super();
       this.destSupport = destSupport;
    }
-
-
 
    /**
     * {@inheritDoc}
