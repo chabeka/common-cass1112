@@ -479,23 +479,21 @@ public class SAECassandraUpdater {
 
       // Liste contenant la définition des column families à créer
       List<ColumnFamilyDefinition> cfDefs = new ArrayList<ColumnFamilyDefinition>();
-
       // ReferentielFormat
       cfDefs.add(HFactory.createColumnFamilyDefinition(ksName,
             REFERENTIEL_FORMAT, ComparatorType.UTF8TYPE));
       // DroitPagmf
       cfDefs.add(HFactory.createColumnFamilyDefinition(ksName, DROIT_PAGMF,
             ComparatorType.UTF8TYPE));
-
       // DroitFormatControlProfil
       cfDefs.add(HFactory.createColumnFamilyDefinition(ksName,
             DROIT_FORMAT_CONTROL_PROFIL, ComparatorType.UTF8TYPE));
-
       // Création des CF
       saeCassandraService.createColumnFamilyFromList(cfDefs, true);
 
       // ajout données pour le controle du format FMT/354
       InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
+      donnees.addReferentielFormat();
       donnees.addFormatControleProfil();
       donnees.addDroits();
 

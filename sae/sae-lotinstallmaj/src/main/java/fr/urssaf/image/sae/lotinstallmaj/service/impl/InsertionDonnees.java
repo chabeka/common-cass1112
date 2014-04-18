@@ -533,8 +533,7 @@ public class InsertionDonnees {
    }
 
    /**
-    * Référentiel des événements en V4 
-    * Ajout des évenements IGC_LOAD_CRLS|KO,
+    * Référentiel des événements en V4 Ajout des évenements IGC_LOAD_CRLS|KO,
     * WS_LOAD_CRLS|KO, ERREUR_IDENT_FORMAT_FICHIER|INFO et
     * ERREUR_VALID_FORMAT_FICHIER |INFO
     */
@@ -577,13 +576,93 @@ public class InsertionDonnees {
       addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
             ListSerializer.get(), updater);
       cfTmpl.update(updater);
-      
+
       // META_VAL_ESPACE|INFO
       // dans le registre de surveillance technique avec all_infos
       updater = cfTmpl.createUpdater("META_VAL_ESPACE|INFO");
       addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
             ListSerializer.get(), updater);
       cfTmpl.update(updater);
+
+   }
+
+   /**
+    * Ajout des données dans le référentiel des formats :
+    * - fmt/354
+    * - crtl/1
+    */
+   public void addReferentielFormat() {
+      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+            keyspace, "ReferentielFormat", StringSerializer.get(),
+            StringSerializer.get());
+
+      ColumnFamilyUpdater<String, String> updater;
+
+      updater = cfTmpl.createUpdater("fmt/354");
+      addColumn(
+            "idFormat",
+            "fmt/354",
+            StringSerializer.get(), StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn(
+            "description",
+            "PDF/A 1b",
+            StringSerializer.get(), StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn(
+            "extension",
+            "pdf",
+            StringSerializer.get(), StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn(
+            "identifieur",
+            "pdfaIdentifierImpl",
+            StringSerializer.get(), StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn(
+            "typeMime",
+            "application/pdf",
+            StringSerializer.get(), StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn(
+            "validator",
+            "pdfaValidatorImpl",
+            StringSerializer.get(), StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn(
+            "visualisable",
+            Boolean.TRUE,
+            StringSerializer.get(), BooleanSerializer.get(), updater);
+      cfTmpl.update(updater);
+      
+      
+      updater = cfTmpl.createUpdater("crtl/1");
+      addColumn(
+            "idFormat",
+            "crtl/1",
+            StringSerializer.get(), StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn(
+            "description",
+            "Journal SAE, XML basé sur XSD, compressé en tar.gz",
+            StringSerializer.get(), StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn(
+            "extension",
+            "tar.gz",
+            StringSerializer.get(), StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn(
+            "typeMime",
+            "application/x-gzip",
+            StringSerializer.get(), StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+     addColumn(
+            "visualisable",
+            Boolean.FALSE,
+            StringSerializer.get(), BooleanSerializer.get(), updater);
+      cfTmpl.update(updater);
+
 
    }
 

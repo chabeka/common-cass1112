@@ -195,6 +195,13 @@ Met la base Cassandra du SAE en version 7
 
 Mise à jour des référentiels des évenements
 
+Ajout de la CF ReferentielFormat
+Mise à jour du référentiel des formats (fmt/354 et crtl/1)
+
+Ajout de la CF DroitPagmf
+Ajout de la CF DroitFormatControlProfil (et mise à jour concernant le format fmt/354)
+Ajout des données pour le controle du format FMT/354
+
 Ajout de la colonne dispo dans la CF Metadata (disponible client)
 Ajout des colonnes trim gauche et trim droite dans la CF Metadata
 
