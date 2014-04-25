@@ -27,6 +27,14 @@ public class ConsultationFormulaire extends GenericForm {
    public ConsultationFormulaire(TestWsParentFormulaire parent) {
       super(parent);
    }
+   
+   /**
+    * Constructeur
+    * 
+    */
+   public ConsultationFormulaire() {
+      super();
+   }
 
    /**
     * Les résultats de l'appel à l'opération

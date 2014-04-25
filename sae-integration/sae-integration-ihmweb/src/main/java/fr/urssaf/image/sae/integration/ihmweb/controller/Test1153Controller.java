@@ -169,7 +169,7 @@ public class Test1153Controller extends
       documentType.setObjetNumerique(fichierType);
 
       getCaptureMasseTestService().testResultatsTdmReponseKOAttendue(
-            formulaire, WAITED_COUNT, documentType, 2);
+            formulaire, 10, documentType, 2);
 
    }
 

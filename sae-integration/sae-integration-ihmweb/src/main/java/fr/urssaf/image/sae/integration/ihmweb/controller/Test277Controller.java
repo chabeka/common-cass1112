@@ -8,9 +8,7 @@ import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseResultatFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.TestStockageMasseAllFormulaire;
-import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTest;
 import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
-import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.ErreurType;
 
 /**
  * 277-CaptureMasse-Pile-KO-ExeIntrouvable
@@ -72,15 +70,12 @@ public class Test277Controller extends
 
       } else if ("2".equals(etape)) {
 
-         etape2captureMasseResultats(formulaire.getCaptureMasseResultat());
+         etape2captureMasseResultats(formulaire.getCaptureMasseDeclenchement()
+               .getUrlSommaire(), formulaire.getCaptureMasseResultat());
 
       } else if ("3".equals(etape)) {
 
          etape3Recherche(formulaire);
-
-      } else if ("4".equals(etape)) {
-
-         etape4Comptages(formulaire);
 
       } else {
 
@@ -107,16 +102,10 @@ public class Test277Controller extends
 
    }
 
-   private void etape2captureMasseResultats(
+   private void etape2captureMasseResultats(String urlEcde,
          CaptureMasseResultatFormulaire formulaire) {
 
-      ErreurType erreurType = new ErreurType();
-      erreurType.setCode("SAE-EC-SOM001");
-      erreurType.setLibelle("Le fichier sommaire n'est pas valide. Détails : "
-            + "Aucun document du sommaire ne sera intégré dans le SAE.");
-
-      getCaptureMasseTestService().testResultatsTdmReponseKOAttendue(
-            formulaire, erreurType);
+      getCaptureMasseTestService().testResultatsTdmReponseAucunFichierAttendu(formulaire, urlEcde);
 
    }
 
@@ -125,27 +114,6 @@ public class Test277Controller extends
       getRechercheTestService().appelWsOpRechercheReponseCorrecteAttendue(
             formulaire.getUrlServiceWeb(), formulaire.getRechFormulaire(), 0,
             false, null);
-
-   }
-   
-   private void etape4Comptages(TestStockageMasseAllFormulaire formulaire) {
-
-      // Récupération de l'objet ResultatTest
-      ResultatTest resultatTest = formulaire.getComptagesFormulaire()
-            .getResultats();
-      resultatTest.clear();
-
-      // Lecture de l'identifiant du traitement de masse
-      String idTdm = formulaire.getComptagesFormulaire().getIdTdm();
-
-      // Appel du service de comptages
-      getCaptureMasseTestService().comptages(idTdm, resultatTest,
-            new Long(0));
-
-      // Passe le test en OK si pas KO
-      if (!TestStatusEnum.Echec.equals(resultatTest.getStatus())) {
-         resultatTest.setStatus(TestStatusEnum.Succes);
-      }
 
    }
    

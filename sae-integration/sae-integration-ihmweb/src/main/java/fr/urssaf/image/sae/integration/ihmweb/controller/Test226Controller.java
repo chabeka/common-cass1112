@@ -37,7 +37,7 @@ public class Test226Controller extends
       Test22xFormulaire formulaire = testCommons.getFormulairePourGet(getNumeroTest()) ;
       formulaire.getCaptureMasseDeclenchement().setAvecHash(Boolean.TRUE);
       formulaire.getCaptureMasseDeclenchement().setTypeHash("SHA-1");
-      formulaire.getCaptureMasseDeclenchement().setHash("3d36fb80047226bb995012d6e41c5887786b2482");
+      formulaire.getCaptureMasseDeclenchement().setHash("1992ea6c7a5761f302df88aee9339f0cd0cdeb42");
       
       return formulaire;
 
@@ -50,6 +50,6 @@ public class Test226Controller extends
    protected final void doPost(Test22xFormulaire formulaire) {
 
       testCommons.doPost(formulaire, getNumeroTest());
-
+ 
    }
 }

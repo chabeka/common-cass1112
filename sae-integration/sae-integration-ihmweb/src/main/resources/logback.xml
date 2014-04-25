@@ -8,7 +8,7 @@
    
    
    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-      <file>c:/logs/logs_appli_integration.log</file>
+      <file>C:/sae/integration/logs/logs_appli_integration.log</file>
       
       <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
       
@@ -28,7 +28,7 @@
    <!--
    <logger name="fr.urssaf.image.sae" level="debug"/>
    -->
-
+   
    <root level="warn">
       <appender-ref ref="STDOUT" />
       <appender-ref ref="FILE" />

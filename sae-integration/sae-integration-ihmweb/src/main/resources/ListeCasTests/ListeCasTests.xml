@@ -658,7 +658,17 @@
             </description>
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 228-CaptureMasse-OK-Virtuel-Un-Document"</luceneExemple>
-         </CasTest>         
+         </CasTest>
+         <CasTest>
+            <id>229</id>
+            <code>229-CaptureMasse-OK-Virtuel-Un-Document-Complet</code>
+            <description>
+               Ce test permet de vérifier que la capture de masse fonctionne correctement lorsque l’on intègre un fichier sommaire.xml de 5000 pages. Ces documents virtuels sont intégrés 2 pages par 2 pages et le dernier document contient la totalité des pages du document pdf d’origine.
+            </description>
+            <implemente>true</implemente>
+            <luceneExempleList>Denomination:"Test 229-CaptureMasse-OK-Virtuel-Un-Document-Complet" AND NumeroRecours:"1"</luceneExempleList>
+            <luceneExempleList>Denomination:"Test 229-CaptureMasse-OK-Virtuel-Un-Document-Complet" AND NumeroRecours:"2501"</luceneExempleList>
+         </CasTest>  
          
          <CasTest>
             <id>250</id>

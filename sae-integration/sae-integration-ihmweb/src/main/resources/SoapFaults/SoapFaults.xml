@@ -324,7 +324,7 @@
       <namespace>urn:sae:faultcodes</namespace>
       <prefixe>sae</prefixe>
       <localPart>HashSommaireIncorrect</localPart>
-      <message>Le hash du fichier sommaire.xml attendu : b0f0405142d6211270a583c4b60852a5 est différent de celui obtenu : %s (type de hash : SHA-1)</message>
+      <message>Le hash du fichier sommaire.xml attendu : %s est différent de celui obtenu : %s (type de hash : SHA-1)</message>
    </SoapFault>
    
    <SoapFault>
@@ -341,6 +341,14 @@
       <prefixe>sae</prefixe>
       <localPart>FormatFichierInconnu</localPart>
       <message>Le fichier à archiver ne correspond pas au format spécifié.</message>
+   </SoapFault>
+   
+   <SoapFault>
+      <id>sae_FormatSommaireIncorrect</id>
+      <namespace>urn:sae:faultcodes</namespace>
+      <prefixe>sae</prefixe>
+      <localPart>FormatSommaireIncorrect</localPart>
+      <message>Le format du fichier sommaire.xml est incorrect</message>
    </SoapFault>
    
 </SoapFaults>

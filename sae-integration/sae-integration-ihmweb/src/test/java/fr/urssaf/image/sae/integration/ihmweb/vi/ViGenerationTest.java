@@ -59,7 +59,7 @@ public class ViGenerationTest {
     * 
     */
    @Test
-   @Ignore("Ce n'est pas un TU, mais un moyen de générer des VI")
+   //@Ignore("Ce n'est pas un TU, mais un moyen de générer des VI")
    public void generationViAA() {
       
       try {
@@ -67,14 +67,14 @@ public class ViGenerationTest {
          DateTime systemDate = new DateTime();
          
          String assertionId = UUID.randomUUID().toString();
-         String issuer = "SaeIntegration";
+         String issuer = "CS_TEST_CEDRIC";
          String recipient = "urn:URSSAF";
          String audience = "http://sae.urssaf.fr";
          String authnInstant = systemDate.toString();
          String notOnOrAfter = systemDate.plusYears(200).toString();
          String notBefore = systemDate.minusHours(2).toString();
          String methodAuthn = "urn:oasis:names:tc:SAML:2.0:ac:classes:unspecified";
-         String[] pagm = new String[] {"ROLE_TOUS;FULL"} ;
+         String[] pagm = new String[] {"PAGM_TEST_CEDRIC_IDENT_VALID_MONITOR"} ;
          
          String assertionNonSignee = getAssertionNonSignee(
                assertionId,

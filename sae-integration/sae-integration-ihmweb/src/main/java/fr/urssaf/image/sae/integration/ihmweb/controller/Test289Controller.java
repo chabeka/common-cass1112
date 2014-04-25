@@ -7,7 +7,6 @@ import fr.urssaf.image.sae.integration.ihmweb.exception.IntegrationRuntimeExcept
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseResultatFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.TestStockageMasseAllFormulaire;
-import fr.urssaf.image.sae.integration.ihmweb.modele.CaptureMasseResultat;
 import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
 
 /**
@@ -85,7 +84,8 @@ public class Test289Controller extends
             .getUrlSommaire());
 
       // Appel de la méthode de test
-      String[] result = new String[]{"cb6aeec078aaf21bc0239c716797bee01d68120c"};
+      String[] result = new String[]{ formulaire.getCaptureMasseDeclenchement().getHash(), 
+            "e1125566773cdd60022dd71d4fe7149b110e1060"};
       getCaptureMasseTestService().appelWsOpArchiMasseSoapFaultAttendue(urlWebService,
             formulaire.getCaptureMasseDeclenchement(),"sae_HashSommaireIncorrect", result);
 

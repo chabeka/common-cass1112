@@ -19,7 +19,6 @@
 	<sae:urlServiceWeb />
 
 	<form:hidden path="etape" />
-
 	<sae:captureMasse numeroEtape="1"
 		objetFormulaire="${formulaire.captureMasseDeclenchement}"
 		pathFormulaire="captureMasseDeclenchement" />
@@ -28,12 +27,21 @@
 		objetFormulaire="${formulaire.captureMasseResultat}"
 		pathFormulaire="captureMasseResultat" />
 
-	<sae:recherche
-	   numeroEtape="3"
-	   pathFormulaire="rechFormulaire"
-		objetFormulaire="${formulaire.rechFormulaire}"
-		notesSpecifiques="En cas d'un résultat \"A contrôler\", il faut vérifier manuellement les métadonnées suivantes : DateArchivage, DateDebutConservation, DateFinConservation, IdTraitementMasseInterne."
-   />
+<c:forEach items="${formulaire.rechFormulaireList}" var="rech" varStatus="i">
+	<sae:recherche numeroEtape="3.${i.index}" pathFormulaire="rechFormulaireList[${i.index}]"
+		objetFormulaire="${rech}" />
+		
+</c:forEach>
+
+	
+	
+<c:forEach items="${formulaire.consultFormulaireList}" var="consult" varStatus="j">
+	<sae:consultation numeroEtape="4.${j.index}" pathFormulaire="consultFormulaireList[${j.index}]"
+		objetFormulaire="${consult}" />
+</c:forEach>
+	
+	<sae:comptagesTdm numeroEtape="5" pathFormulaire="comptagesFormulaire"
+      objetFormulaire="${formulaire.comptagesFormulaire}" />
 
 	<sae:soapMessages objetFormulaire="${formulaire.soapFormulaire}" />
 

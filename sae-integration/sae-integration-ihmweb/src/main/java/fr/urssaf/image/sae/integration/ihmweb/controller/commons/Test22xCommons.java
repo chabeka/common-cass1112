@@ -5,16 +5,17 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.integration.ihmweb.exception.IntegrationRuntimeException;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseResultatFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.formulaire.ComptagesTdmFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ConsultationFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.Test22xFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.modele.CaptureMasseResultat;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CodeMetadonneeList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeur;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeurList;
@@ -171,7 +172,7 @@ public class Test22xCommons {
 
       } else if ("2".equals(etape)) {
 
-         etape2captureMasseResultats(formulaire.getCaptureMasseResultat());
+         etape2captureMasseResultats(formulaire);
 
       } else if ("3".equals(etape)) {
 
@@ -216,17 +217,35 @@ public class Test22xCommons {
             .getUrlSommaire());
 
       // Appel de la méthode de test
-      testCommons.getCaptureMasseTestService().appelWsOpArchiMasseOKAttendu(
-            urlWebService, formulaire.getCaptureMasseDeclenchement());
+      CaptureMasseResultat cmResult = testCommons.getCaptureMasseTestService()
+            .appelWsOpArchiMasseOKAttendu(urlWebService,
+                  formulaire.getCaptureMasseDeclenchement());
 
+      // Si pas d'erreur, on pré-remplit le formulaire de l'étape 3
+      if ((cmResult != null) && (cmResult.isAppelAvecHashSommaire())
+            && (formulaire.getComptagesFormulaire() != null)) {
+         formulaire.getComptagesFormulaire().setIdTdm(
+               cmResult.getIdTraitement());
+      }
    }
 
    private void etape2captureMasseResultats(
-         CaptureMasseResultatFormulaire formulaire) {
+         Test22xFormulaire formulaire) {
 
       testCommons.getCaptureMasseTestService()
-            .testResultatsTdmReponseOKAttendue(formulaire);
+            .testResultatsTdmReponseOKAttendue(formulaire.getCaptureMasseResultat());
 
+      CaptureMasseFormulaire formCapture = formulaire
+         .getCaptureMasseDeclenchement();
+      if (!formCapture.getAvecHash()) {
+         // initialise l'identifiant de traitement de masse en lisant le fichier
+         // debut_traitement.flag
+         String idTdm = testCommons.getCaptureMasseTestService().readIdTdmInDebutTrait(
+               formCapture.getUrlSommaire());
+         ComptagesTdmFormulaire formComptage = formulaire
+               .getComptagesFormulaire();
+         formComptage.setIdTdm(idTdm);
+      }
    }
 
    private void etape3Recherche(Test22xFormulaire formulaire, String numeroTest) {
@@ -275,24 +294,22 @@ public class Test22xCommons {
          ResultatTest resultatTest, String numeroTest) {
 
       MetadonneeValeurList valeursAttendues = new MetadonneeValeurList();
-      if("225".equals(numeroTest)){
+      if ("225".equals(numeroTest)) {
          valeursAttendues.add("Denomination",
                "Test 225-CaptureMasse-OK-Virtuel-Sans-Hash");
       }
-      if("226".equals(numeroTest)){
+      if ("226".equals(numeroTest)) {
          valeursAttendues.add("Denomination",
                "Test 226-CaptureMasse-OK-Virtuel-Avec-Hash");
       }
-      if("227".equals(numeroTest)){
+      if ("227".equals(numeroTest)) {
          valeursAttendues.add("Denomination",
                "Test 227-CaptureMasse-OK-Virtuel-Gros-Volume");
       }
-      if("228".equals(numeroTest)){
+      if ("228".equals(numeroTest)) {
          valeursAttendues.add("Denomination",
                "Test 228-CaptureMasse-OK-Virtuel-Un-Document");
       }
-
-      
       
       Integer count = 0;
       for (ResultatRechercheType r : resultatRecherche) {
@@ -301,45 +318,43 @@ public class Test22xCommons {
          count++;
       }
    }
-   
-   private List<MetadonneeValeur> getValeurAttendu(String numeroTest){
+
+   private List<MetadonneeValeur> getValeurAttendu(String numeroTest) {
       List<MetadonneeValeur> valeursMetaAttendus = new ArrayList<MetadonneeValeur>();
-      
-      if("225".equals(numeroTest)){
-            valeursMetaAttendus.add(new MetadonneeValeur("Denomination",
-            "Test 225-CaptureMasse-OK-Virtuel-Sans-Hash"));
-      }
-      if("226".equals(numeroTest)){
+
+      if ("225".equals(numeroTest)) {
          valeursMetaAttendus.add(new MetadonneeValeur("Denomination",
-         "Test 226-CaptureMasse-OK-Virtuel-Avec-Hash"));
+               "Test 225-CaptureMasse-OK-Virtuel-Sans-Hash"));
       }
-      if("227".equals(numeroTest)){
+      if ("226".equals(numeroTest)) {
          valeursMetaAttendus.add(new MetadonneeValeur("Denomination",
-         "Test 227-CaptureMasse-OK-Virtuel-Gros-Volume"));
-         valeursMetaAttendus.add(new MetadonneeValeur("NumeroRecours",
-         "1"));
+               "Test 226-CaptureMasse-OK-Virtuel-Avec-Hash"));
       }
-      if("228".equals(numeroTest)){
+      if ("227".equals(numeroTest)) {
          valeursMetaAttendus.add(new MetadonneeValeur("Denomination",
-         "Test 228-CaptureMasse-OK-Virtuel-Un-Document"));
-         valeursMetaAttendus.add(new MetadonneeValeur("NumeroRecours",
-         "1"));
+               "Test 227-CaptureMasse-OK-Virtuel-Gros-Volume"));
+         valeursMetaAttendus.add(new MetadonneeValeur("NumeroRecours", "1"));
+      }
+      if ("228".equals(numeroTest)) {
+         valeursMetaAttendus.add(new MetadonneeValeur("Denomination",
+               "Test 228-CaptureMasse-OK-Virtuel-Un-Document"));
+         valeursMetaAttendus.add(new MetadonneeValeur("NumeroRecours", "1"));
       }
       return valeursMetaAttendus;
    }
 
-   private void etape4Consultation(Test22xFormulaire formulaire, String numeroTest) {
+   private void etape4Consultation(Test22xFormulaire formulaire,
+         String numeroTest) {
 
       // Valeurs des métadonnées attendues
-      
 
       // Appel du service de vérification
       testCommons.getConsultationTestService()
             .appelWsOpConsultationReponseCorrecteAttendue(
                   formulaire.getUrlServiceWeb(),
-                  formulaire.getConsultationFormulaire(),
-                  null,
-                  getMetaListConsultation(numeroTest), getValeurAttendu(numeroTest));
+                  formulaire.getConsultationFormulaire(), null,
+                  getMetaListConsultation(numeroTest),
+                  getValeurAttendu(numeroTest));
 
       // Si le test n'est pas en échec, alors on peut le passer en succès,
       // car tout a pu être vérifié

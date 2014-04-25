@@ -161,8 +161,7 @@ public class Test1124Controller extends
 
       } else if ("4".equals(etape)) {
 
-         recherche(formulaire.getUrlServiceWeb(), formulaire.getRecherche(),
-               formulaire.getViFormulaire());
+         recherche(formulaire);
 
       } else if ("5".equals(etape)) {
 
@@ -214,15 +213,14 @@ public class Test1124Controller extends
 
    }
 
-   private void recherche(String urlWebService, RechercheFormulaire rechForm,
-         ViFormulaire viParams) {
+   private void recherche(TestFormulaireAll formulaire) {
 
       // Initialise
-      ResultatTest resultatTest = rechForm.getResultats();
+      ResultatTest resultatTest = formulaire.getRecherche().getResultats();
 
       RechercheResponse response = getRechercheTestService()
-            .appelWsOpRechercheReponseCorrecteAttendue(urlWebService, rechForm,
-                  WAITED_COUNT, false, TypeComparaison.NumeroRecours, viParams);
+            .appelWsOpRechercheReponseCorrecteAttendue(formulaire.getUrlServiceWeb(), formulaire.getRecherche(),
+                  WAITED_COUNT, false, TypeComparaison.NumeroRecours, formulaire.getViFormulaire());
 
       // Vérifications en profondeur
       if ((response != null)
@@ -252,6 +250,11 @@ public class Test1124Controller extends
       // On passe le test à OK si tous les contrôles sont passées
       if (!TestStatusEnum.Echec.equals(resultatTest.getStatus())) {
          resultatTest.setStatus(TestStatusEnum.Succes);
+         
+         ResultatRechercheType results[] = response.getRechercheResponse()
+            .getResultats().getResultat();
+         formulaire.getConsultation().setIdArchivage(
+               results[0].getIdArchive().getUuidType());
       }
 
    }
