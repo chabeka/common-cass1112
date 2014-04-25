@@ -491,10 +491,16 @@ public class SAECassandraUpdater {
       // Création des CF
       saeCassandraService.createColumnFamilyFromList(cfDefs, true);
 
-      // ajout données pour le controle du format FMT/354
+      // Insertion des données initiales 
       InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
+      
+      // Les formats reconnus dans le référentiel des formats
       donnees.addReferentielFormat();
+      
+      // Profils de contrôle du fmt/354
       donnees.addFormatControleProfil();
+      
+      // ???
       donnees.addDroits();
 
       // ajout de la colonne dispo et trim gauche/droite pour les metadonnées

@@ -45,7 +45,7 @@ public final class MajLotServiceImpl implements MajLotService {
    public static final String CASSANDRA_120510 = "CASSANDRA_120510";
    public static final String CASSANDRA_120512 = "CASSANDRA_120512";
    public static final String CASSANDRA_121110 = "CASSANDRA_121110";
-   public static final String CASSANDRA_140400 = "CASSANDRA_140400";
+   public static final String CASSANDRA_140700 = "CASSANDRA_140700";
    public static final String META_SEPA = "META_SEPA";
    public static final String META_130400 = "META_130400";
    public static final String CASSANDRA_130400 = "CASSANDRA_130400";
@@ -132,9 +132,9 @@ public final class MajLotServiceImpl implements MajLotService {
 
          updateCassandra131100();
 
-      } else if (CASSANDRA_140400.equalsIgnoreCase(nomOperation)) {
+      } else if (CASSANDRA_140700.equalsIgnoreCase(nomOperation)) {
 
-         updateCassandra140400();
+         updateCassandra140700();
 
       } else if (CASSANDRA_DROITS_GED.equalsIgnoreCase(nomOperation)) {
 
@@ -316,13 +316,12 @@ public final class MajLotServiceImpl implements MajLotService {
    }
 
    /**
-    * Pour lot 140400 du SAE : mise à jour du keyspace "SAE" dans cassandra.<br>
-    * Ajout de la Colonne Family ReferentielFormat.
-    * 
+    * Pour lot 140700 du SAE : mise à jour du keyspace "SAE" dans cassandra, en
+    * version 7
     */
-   private void updateCassandra140400() {
+   private void updateCassandra140700() {
       LOG
-            .info("Début de l'opération : mise à jour du keyspace SAE pour le lot 140400 - Référentiel des formats");
+            .info("Début de l'opération : mise à jour du keyspace SAE pour le lot 140700 - Référentiel des formats");
       // Récupération de la chaîne de connexion au cluster cassandra
       updater.updateToVersion7();
       LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
