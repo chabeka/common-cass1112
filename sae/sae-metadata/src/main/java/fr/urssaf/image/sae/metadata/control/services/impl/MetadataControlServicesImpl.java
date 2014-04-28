@@ -654,10 +654,12 @@ public class MetadataControlServicesImpl implements MetadataControlServices {
          boolean trim = false;
          if (Utils.isRequired(referenceLeft, metadata.getLongCode())) {
             trimMeta.setValue(trimMeta.getValue().toString().replaceAll("^\\s+", ""));
+            trimMeta.setValue(trimMeta.getValue().toString().replaceAll("^[\r\n]+", ""));
             trim = true;
          }
          if (Utils.isRequired(referenceRight, metadata.getLongCode())) {
             trimMeta.setValue(trimMeta.getValue().toString().replaceAll("\\s+$", ""));
+            trimMeta.setValue(trimMeta.getValue().toString().replaceAll("[\r\n]+$", ""));
             trim = true;
          }
 

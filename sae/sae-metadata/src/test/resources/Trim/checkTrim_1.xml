@@ -7,7 +7,9 @@
 	<metadata>
 		<longCode>Denomination</longCode>
 		<shortCode>den</shortCode>
-        <value>  Denomination      </value>
+        <value>
+          Denomination      
+        </value>
 	</metadata>
 
 </metadatas>
