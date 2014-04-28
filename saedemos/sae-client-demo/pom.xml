@@ -30,6 +30,8 @@
       
       <!-- Version des framework -->
       <junit.version>4.8.2</junit.version>
+      <org.slf4j.version>1.7.5</org.slf4j.version>
+      <logback.version>1.0.13</logback.version>
       <apache.commons-lang.version>2.6</apache.commons-lang.version>
       <axis2.version>1.6.2</axis2.version>
       <xml-apis.version>1.4.01</xml-apis.version>
@@ -180,6 +182,18 @@
          <artifactId>junit</artifactId>
          <version>${junit.version}</version>
          <scope>test</scope>
+      </dependency>
+      
+      <!-- SLF4J et Logback -->
+      <dependency>
+         <groupId>org.slf4j</groupId>
+         <artifactId>slf4j-api</artifactId>
+         <version>${org.slf4j.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>ch.qos.logback</groupId>
+         <artifactId>logback-classic</artifactId>
+         <version>${logback.version}</version>
       </dependency>
       
       <!-- Apache Commons -->
