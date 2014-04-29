@@ -30,6 +30,7 @@ public final class IgcMain {
       this.contextConfig = contextConfig;
    }
 
+   public static final String CONFIG_EMPTY = "Il faut préciser, dans la ligne de commande, le chemin complet des fichiers de configuration du SAE et de l'IGC";
    public static final String SAE_CONFIG_EMPTY = "Il faut préciser, dans la ligne de commande, le chemin complet du fichier de configuration du SAE";
    public static final String IGC_CONFIG_EMPTY = "Il faut préciser, dans la ligne de commande, le chemin complet du fichier de configuration de l'IGC";
 
@@ -56,10 +57,14 @@ public final class IgcMain {
 
    protected final void execute(String args[]) {
 
-      if (ArrayUtils.isEmpty(args) || !StringUtils.isNotBlank(args[0])) {
+      if (ArrayUtils.isEmpty(args) || ArrayUtils.getLength(args) != 2) {
+         throw new IllegalArgumentException(CONFIG_EMPTY);
+      }
+
+      if (!StringUtils.isNotBlank(args[0])) {
          throw new IllegalArgumentException(SAE_CONFIG_EMPTY);
       }
-      if (ArrayUtils.isEmpty(args) || !StringUtils.isNotBlank(args[1])) {
+      if (!StringUtils.isNotBlank(args[1])) {
          throw new IllegalArgumentException(IGC_CONFIG_EMPTY);
       }
 

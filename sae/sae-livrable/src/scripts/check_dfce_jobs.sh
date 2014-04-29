@@ -90,4 +90,14 @@ if ! grep -q "fin du traitement de la purge pour le type PURGE_SECURITE" "$LOG_D
     ERRNO+=1
 fi
 
+
+#
+# ============ Analyses des logs sae-rnd-executable.jar ============ 
+#
+
+if ! grep -q "Fin de la synchronisation avec l'ADRN" "$LOG_DIR/sae_rnd_executable-MAJ_RND.log"; then
+    error "Erreur dans la mise à jour du RND"
+    ERRNO+=1
+fi
+
 exit $ERRNO

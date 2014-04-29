@@ -1,9 +1,11 @@
 <configuration>
    
-   
-   <property name="PATTERN" value="%d %p [%c] %m%n" />
-   <property name="LOGS_FOLDER" value="${java.io.tmpdir}" />
+   <property name="LOGS_FOLDER" value="@@LOGS_PATH@@" />
+
    <property name="LOGS_FILENAME_PREFIXE" value="sae-igcmaj" />
+
+   <property name="PATTERN" value="%d %p [%c] %m%n" />
+   
    
 
    <!-- Sortie console -->
@@ -48,6 +50,12 @@
       
    </appender>
    
+   
+   <logger name="org.springframework" level="WARN" />
+   <logger name="me.prettyprint" level="WARN" />
+   <logger name="com.netflix" level="WARN" />
+   <logger name="org.apache.zookeeper" level="WARN" />
+   <logger name="org.springframework" level="WARN" />
    
    <!-- Configuration racine -->
    <root level="INFO">

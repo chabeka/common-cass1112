@@ -27,7 +27,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.igc.exception.IgcConfigException;
-import fr.urssaf.image.sae.igc.exception.IgcDownloadException;
 import fr.urssaf.image.sae.igcmaj.exception.IgcMainException;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegTechnique;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegTechniqueIndex;
@@ -128,7 +127,7 @@ public class IgcMainTest {
             CRL.getAbsolutePath(), "http://cer69idxpkival1.cer69.recouv/*.crl");
 
       String[] args = new String[] {
-            "src/test/resources/commons-config.properties", pathConfigFile };
+            "src/test/resources/sae-config.properties", pathConfigFile };
 
       instance.execute(args);
 
@@ -175,7 +174,7 @@ public class IgcMainTest {
       } catch (IllegalArgumentException e) {
 
          assertEquals("message de l'exception incorrect",
-               IgcMain.SAE_CONFIG_EMPTY, e.getMessage());
+               IgcMain.CONFIG_EMPTY, e.getMessage());
       }
    }
 
@@ -201,7 +200,7 @@ public class IgcMainTest {
 
       try {
          String[] args = new String[] {
-               "src/test/resources/commons-config.properties", pathConfigFile };
+               "src/test/resources/sae-config.properties", pathConfigFile };
 
          instance.execute(args);
          
@@ -224,7 +223,7 @@ public class IgcMainTest {
             "http://download.oracle.com/javase/6/docs/api/");
 
       String[] args = new String[] {
-            "src/test/resources/commons-config.properties", pathConfigFile };
+            "src/test/resources/sae-config.properties", pathConfigFile };
 
       instance.execute(args);
 
