@@ -116,27 +116,50 @@ public class IgcDownloadServiceImpl implements IgcDownloadService {
                   // Liste des éléments du répertoire définitif
                   File repertoireDef = new File(repCrls);
                   String[] tabCRLDef = repertoireDef.list();
-                  // Suppression des éléménts présents dans le répertoire
+                  // Suppression des éléments présents dans le répertoire
                   // définitif mais pas dans le répertoire temporaire
                   for (String crl : tabCRLDef) {
                      if (!listeCRLTemp.contains(crl)) {
                         File crlToDelete = new File(repCrls + "/" + crl);
+                        try {
                         crlToDelete.delete();
+                        } catch (Exception e) {
+                           System.out.println("exeption");
+                          System.out.println(e.getMessage());
+                        }
+                        
                      }
                   }
                   // Copie de tous les fichiers du répertoire temporaire au
                   // répertoire définitif
                   for (String crl : tabCRLTemp) {
+                     LOG.debug("Copie du fichier : " + crl);
+                     System.out.println("Copie du fichier : " + crl);
                      File source = new File(repTemp + "/" + crl);
                      File destination = new File(repCrls + "/" + crl);
-                     // source.renameTo(destination);
-                     copier(source, destination);
+                     boolean res = copier(source, destination);
+                     if (!res) {
+                        LOG.debug("Fichier non copié");
+                     }
                   }
                }
 
                // Suppression du répertoire temporaire
                File repToDelete = new File(repTemp);
-               repToDelete.delete();
+               String[] tabCRLToDelete = repToDelete.list();
+               if (tabCRLToDelete != null) {
+                  List<String> listeCRLToDelete = Arrays.asList(tabCRLToDelete);
+                  for (String crlToDelete : listeCRLToDelete) {
+                     File source = new File(repTemp + "/" + crlToDelete);
+                     if (source.exists()) {
+                        source.delete();
+                     }
+                  }
+               }
+               
+               if (repToDelete.exists()) {
+                  repToDelete.delete();
+               }
             }
 
          } else {
