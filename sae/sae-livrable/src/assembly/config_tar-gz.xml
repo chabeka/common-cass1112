@@ -67,6 +67,14 @@
       <fileSet>
          <directory>src/config/</directory>
          <includes>
+            <include>logback-sae-igcmaj.xml</include>
+         </includes>
+         <outputDirectory>sae-igcmaj</outputDirectory>
+      </fileSet>
+
+      <fileSet>
+         <directory>src/config/</directory>
+         <includes>
             <include>logback-sae-rnd-executable.xml</include>
          </includes>
          <outputDirectory>sae-rnd-executable</outputDirectory>
@@ -115,6 +123,12 @@
          <destName>sae-trace-executable.jar</destName>
       </file>
 
+       <file>
+         <source>${project.parent.basedir}/sae-igcmaj/target/sae-igcmaj-${version}.jar</source>
+         <outputDirectory>sae-igcmaj</outputDirectory>
+         <destName>sae-igcmaj-exe.jar</destName>
+       </file>
+       
       <file>
          <source>
             ${project.parent.basedir}/sae-rnd-executable/target/sae-rnd-executable-${version}.jar

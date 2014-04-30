@@ -33,14 +33,6 @@
       <fileSet>
          <directory>src/config/</directory>
          <includes>
-            <include>logback-sae-igcmaj.xml</include>
-         </includes>
-         <outputDirectory>sae-igcmaj</outputDirectory>
-      </fileSet>
-      
-      <fileSet>
-         <directory>src/config/</directory>
-         <includes>
             <include>logback-sae-ordonnanceur.xml</include>
          </includes>
          <outputDirectory>sae-ordonnanceur</outputDirectory>
@@ -122,12 +114,6 @@
          <source>${project.parent.basedir}/sae-webservices/target/sae-webservices-${version}.war</source>
          <outputDirectory/>
          <destName>sae.war</destName>
-       </file>
-       
-       <file>
-         <source>${project.parent.basedir}/sae-igcmaj/target/sae-igcmaj-${version}.jar</source>
-         <outputDirectory/>
-         <destName>sae-igcmaj-exe.jar</destName>
        </file>
        
        
