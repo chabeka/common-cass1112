@@ -901,6 +901,49 @@
          </CasTest>
          
          <CasTest>
+            <id>282</id>
+            <code>282-CaptureMasse-Pile-KO-ArretDFCE-Lecture</code>
+            <description>
+               Ce test permet de vérifier que la capture de masse en mode « tout ou rien » avec gestion des traitements dans une pile réagisse correctement lors de l’arrêt brutal de DFCE, avant que la capture de masse ait démarré le stockage des documents.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 282-CaptureMasse-Pile-KO-ArretDFCE-Lecture"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>283</id>
+            <code>283-CaptureMasse-Pile-KO-ArretDFCE-Stockage</code>
+            <description>
+               Ce test permet de vérifier que la capture de masse en mode « tout ou rien » avec gestion des traitements dans une pile réagisse correctement lors de l’arrêt brutal de DFCE, après que la capture de masse ait démarrée le stockage des documents.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 283-CaptureMasse-Pile-KO-ArretDFCE-Stockage"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>285</id>
+            <code>285-CaptureMasse-KO-Lancement-Manuel-Job-NonReserve</code>
+            <description>
+               Ce test permet de vérifier que le lancement manuel de sae-services-executable.jar sur un job non réservé  provoque une erreur qui apparaît dans les logs du SAE.
+            </description>
+            <implemente>true</implemente>
+         </CasTest>
+         <CasTest>
+            <id>286</id>
+            <code>286-CaptureMasse-Pile-KO-Reste-Reserve</code>
+            <description>
+               Ce test permet de vérifier que, lorsqu’un job reste à l’état « Réservé » trop longtemps, un log de niveau ERROR est écrit dans le fichier de log de l’ordonnanceur.
+            </description>
+            <implemente>true</implemente>
+         </CasTest>
+         <CasTest>
+            <id>287</id>
+            <code>287-CaptureMasse-Pile-KO-Reste-EnCours</code>
+            <description>
+               Ce test permet de vérifier que, lorsqu’un job reste à l’état « En cours » trop longtemps, un log de niveau ERROR est écrit dans le fichier de log de l’ordonnanceur.
+            </description>
+            <implemente>true</implemente>
+         </CasTest>
+         
+         <CasTest>
             <id>288</id>
             <code>288-CaptureMasse-KO-Format-XML-KO</code>
             <description>

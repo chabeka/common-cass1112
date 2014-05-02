@@ -330,7 +330,7 @@ public class RechercheTestService {
                wsVerifieRetourMetaParDefaut(resultatTest, resultats);
 
             }
-         } else if (nbResultatsAttendus == 0 && resultats == null) {
+         } else if ((nbResultatsAttendus == null || nbResultatsAttendus == 0) && resultats == null) {
             log.appendLogLn("Aucun résultat attendu, aucun résultat retourné");
             resultatTest.setStatus(TestStatusEnum.Succes);
          }
