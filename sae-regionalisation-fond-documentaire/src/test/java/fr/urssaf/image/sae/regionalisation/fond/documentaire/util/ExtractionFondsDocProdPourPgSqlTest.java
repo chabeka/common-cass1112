@@ -58,8 +58,8 @@ public class ExtractionFondsDocProdPourPgSqlTest {
       // TODO: à adapter selon le besoin
       String repertoireSortie = "c:/divers";
       int dateArchivageDebut = 20120101;
-      int dateArchivageFin = 20130931;
-      boolean unFichierParMois = true;
+      int dateArchivageFin = 20140505;
+      boolean unFichierParMois = false;
       
       
       // Timestamp courant pour le calcul du temps d'exécution
