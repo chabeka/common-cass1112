@@ -31,6 +31,7 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.SoapFault;
 import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
 import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.ErreurType;
 import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.NonIntegratedDocumentType;
+import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.NonIntegratedVirtualDocumentType;
 import fr.urssaf.image.sae.integration.ihmweb.modele.somres.resultats.ResultatsType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ArchivageMasse;
@@ -557,6 +558,77 @@ public class CaptureMasseTestService {
 
       }
    }
+   
+   /**
+    * Regarde les résultats d'un traitement de masse
+    * 
+    * @param formulaire
+    *           le formulaire
+    * @param notIntegratedVirtualDocuments
+    *           le nombre de documents non intégrés attendu
+    * @param documentType
+    *           erreur attendue pour le document donné
+    * @param indexNumVirtualDoc
+    *           index du document contenant l'erreur
+    * @param indexComposant
+    *           index du composant dans le document contenant l'erreur
+    */
+   public final void testResultatsTdmReponseVirtualDocumentKOAttendue(
+         CaptureMasseResultatFormulaire formulaire, int notIntegratedVirtualDocuments,
+         NonIntegratedVirtualDocumentType documentType, int indexNumVirtualDoc, int indexComposant) {
+
+      processReponseVirtualDocumentKoAttendue(formulaire, notIntegratedVirtualDocuments,
+            documentType, indexNumVirtualDoc, indexComposant);
+   }
+   
+   private void processReponseVirtualDocumentKoAttendue(
+         CaptureMasseResultatFormulaire formulaire, int notIntegratedVirtualDocuments,
+         NonIntegratedVirtualDocumentType documentType, int indexNumVirtualDoc, int indexComposant) {
+      boolean fileExists = fileResultatExists(formulaire);
+
+      if (fileExists) {
+
+         String urlSommaire = formulaire.getUrlSommaire();
+         String cheminFichierResultatsXml = getCheminFichierResultatsXml(urlSommaire);
+         ResultatTestLog log = formulaire.getResultats().getLog();
+         ResultatsType objResultatXml = ecdeService
+               .chargeResultatsXml(cheminFichierResultatsXml);
+
+         String startFilePath = getCheminFichierDebutFlag(formulaire
+               .getUrlSommaire());
+
+         // Affiche dans le log un résumé du fichier resultats.xml
+         SaeServiceLogUtils.logResultatsXml(formulaire.getResultats(),
+               objResultatXml, cheminFichierResultatsXml, startFilePath);
+
+         if (objResultatXml.getNonIntegratedVirtualDocumentsCount() != notIntegratedVirtualDocuments) {
+            formulaire.getResultats().setStatus(TestStatusEnum.Echec);
+            log.appendLogLn("Le nombre de documents virtuels non intégrés est de "
+                  + objResultatXml.getNonIntegratedDocumentsCount()
+                  + " alors que nous en attendions " + notIntegratedVirtualDocuments);
+
+         } else if (objResultatXml.getNonIntegratedVirtualDocuments() == null
+               || objResultatXml.getNonIntegratedVirtualDocuments()
+                     .getNonIntegratedVirtualDocument() == null
+               || objResultatXml.getNonIntegratedVirtualDocuments()
+                     .getNonIntegratedVirtualDocument().size() < indexNumVirtualDoc) {
+            formulaire.getResultats().setStatus(TestStatusEnum.Echec);
+            log
+                  .appendLogLn("Aucun document virtuel non intégré listé ou index de document erroné");
+         } else {
+            if (Integer.MIN_VALUE != indexNumVirtualDoc) {
+               findNonIntegratedVirtualDocument(formulaire, documentType,
+                     objResultatXml.getNonIntegratedVirtualDocuments()
+                           .getNonIntegratedVirtualDocument(), indexNumVirtualDoc);
+            } else {
+               findNonIntegratedVirtualDocument(formulaire, documentType, 
+                     objResultatXml.getNonIntegratedVirtualDocuments()
+                           .getNonIntegratedVirtualDocument(), 0);
+            }
+         }
+
+      }
+   }
 
    /**
     * Regarde les résultats d'un traitement de masse
@@ -710,6 +782,41 @@ public class CaptureMasseTestService {
       }
 
    }
+   
+   /**
+    * Vérification qu'aucun fichier fin de traitement n'a été créé
+    * 
+    * @param captureMasseResultat
+    *           formulaire
+    * @param urlEcde
+    *           url ecde du fichier sommaire.xml
+    */
+   public final void testResultatsTdmReponseEnCours(
+         CaptureMasseResultatFormulaire captureMasseResultat, String urlEcde) {
+
+      String startFlagFilePath = getCheminFichierDebutFlag(urlEcde);
+      String endFlagFilePath = getCheminFichierFlag(urlEcde);
+      ResultatTestLog log = captureMasseResultat.getResultats().getLog();
+      
+      // test de la présence du fichier debut_traitement.flag
+      boolean fileExists = testFileExists(startFlagFilePath, log,
+            captureMasseResultat);
+
+      if (fileExists) {
+         fileExists = testFileExists(endFlagFilePath, log,
+               captureMasseResultat);
+         if (!fileExists) {
+            captureMasseResultat.getResultats().setStatus(TestStatusEnum.Succes);
+         } else {
+            log.appendLogLn("Un fichier de fin de traitement est présent sur " + urlEcde);
+            captureMasseResultat.getResultats().setStatus(TestStatusEnum.Echec);
+         }
+         
+      } else {
+         log.appendLogLn("Pas de fichier de traitement présent sur " + urlEcde);
+         captureMasseResultat.getResultats().setStatus(TestStatusEnum.Echec);
+      }
+   }
 
    /**
     * @param formulaire
@@ -745,6 +852,100 @@ public class CaptureMasseTestService {
          }
 
          NonIntegratedDocumentType found = nonIntegratedDocument.get(index);
+
+         if (found == null) {
+            formulaire.getResultats().getLog().appendLogLn(
+                  "Impossible de trouver l'erreur correspondant au fichier");
+            formulaire.getResultats().setStatus(TestStatusEnum.Echec);
+
+         } else {
+            boolean hasError = false;
+            int i = 0;
+            String label;
+            List<ErreurType> listErreurs = found.getErreurs().getErreur();
+            while (!hasError && i < listErreurs.size()) {
+               label = mapErreurs.get(listErreurs.get(i).getCode());
+               if (label == null
+                     || !label
+                           .equalsIgnoreCase(listErreurs.get(i).getLibelle())) {
+                  hasError = true;
+               }
+
+               i++;
+            }
+
+            if (hasError) {
+               formulaire
+                     .getResultats()
+                     .getLog()
+                     .appendLogLn(
+                           "Impossible de trouver toutes les erreurs dans le document non intégré");
+
+               formulaire.getResultats().getLog().appendLogLn(
+                     "erreurs attendues : ");
+
+               for (ErreurType erreurType : documentType.getErreurs()
+                     .getErreur()) {
+                  formulaire.getResultats().getLog().appendLogLn(
+                        "code : " + erreurType.getCode() + "  /  libellé : "
+                              + erreurType.getLibelle());
+               }
+
+               formulaire.getResultats().getLog().appendLogLn(
+                     "erreurs obtenues : ");
+
+               for (ErreurType erreurType : found.getErreurs().getErreur()) {
+                  formulaire.getResultats().getLog().appendLogLn(
+                        "code : " + erreurType.getCode() + "  /  libellé : "
+                              + erreurType.getLibelle());
+               }
+
+               formulaire.getResultats().setStatus(TestStatusEnum.Echec);
+            } else {
+               formulaire.getResultats().getLog().appendLogLn(
+                     "Toutes les erreurs attendues ont été trouvées");
+               formulaire.getResultats().setStatus(TestStatusEnum.Succes);
+            }
+         }
+
+      }
+
+   }
+   
+   /**
+    * @param formulaire
+    *           formulaire affiché
+    * @param documentType
+    *           erreur attendue
+    * @param nonIntegratedDocument
+    *           liste des documents non intégrée
+    * @param indexNumVirtualDoc
+    *           n° de document où doit se trouver l'erreur.
+    */
+   private void findNonIntegratedVirtualDocument(
+         CaptureMasseResultatFormulaire formulaire,
+         NonIntegratedVirtualDocumentType documentType,
+         List<NonIntegratedVirtualDocumentType> nonIntegratedVirtualDocument, int indexNumVirtualDoc) {
+
+      if (documentType == null
+            || documentType.getObjetNumerique() == null
+            || StringUtils.isBlank(documentType.getObjetNumerique()
+                  .getCheminEtNomDuFichier())
+            || documentType.getErreurs() == null
+            || documentType.getErreurs().getErreur() == null
+            || documentType.getErreurs().getErreur().isEmpty()) {
+         formulaire.getResultats().getLog().appendLogLn(
+               "L'objet d'erreur attendu est incomplet");
+         formulaire.getResultats().setStatus(TestStatusEnum.Echec);
+
+      } else {
+
+         HashMap<String, String> mapErreurs = new HashMap<String, String>();
+         for (ErreurType erreurType : documentType.getErreurs().getErreur()) {
+            mapErreurs.put(erreurType.getCode(), erreurType.getLibelle());
+         }
+
+         NonIntegratedVirtualDocumentType found = nonIntegratedVirtualDocument.get(indexNumVirtualDoc);
 
          if (found == null) {
             formulaire.getResultats().getLog().appendLogLn(

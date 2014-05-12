@@ -983,7 +983,8 @@
             <description>
                Ce test permet de vérifier que la capture de masse en mode « tout ou rien » renvoie une erreur spécifique dans le fichier resultats.xml lorsque le fichier sommaire.xml référence un document virtuel de zéro page
             </description>
-            <implemente>false</implemente>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 294-CaptureMasse-KO-Virtuel-Zero-Page"</luceneExemple>
          </CasTest>
       </CasTests>
 

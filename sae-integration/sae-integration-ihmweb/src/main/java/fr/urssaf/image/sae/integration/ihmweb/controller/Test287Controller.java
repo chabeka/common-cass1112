@@ -99,7 +99,7 @@ public class Test287Controller extends
          CaptureMasseResultatFormulaire formulaire) {
 
       getCaptureMasseTestService()
-            .testResultatsTdmReponseAucunFichierAttendu(formulaire, urlEcde);
+            .testResultatsTdmReponseEnCours(formulaire, urlEcde);
 
    }
 }

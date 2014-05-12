@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import fr.urssaf.image.sae.integration.ihmweb.exception.IntegrationRuntimeException;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseResultatFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.formulaire.ComptagesTdmFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.Test294Formulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTest;
@@ -13,10 +14,8 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
 import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.ErreurType;
 import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.FichierType;
 import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.ListeErreurType;
-import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.NonIntegratedDocumentType;
 import fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.NonIntegratedVirtualDocumentType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.comparator.ResultatRechercheComparator.TypeComparaison;
-import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheResponse;
 
 /**
  * 294-CaptureMasse-KO-Virtuel-Zero-Page
@@ -90,6 +89,14 @@ public class Test294Controller extends
       } else if ("2".equals(etape)) {
 
          etape2captureMasseResultats(formulaire.getCaptureMasseResultat());
+         
+         // initialise l'identifiant de traitement de masse en lisant le fichier
+         // debut_traitement.flag
+         String idTdm = getCaptureMasseTestService().readIdTdmInDebutTrait(
+               formulaire.getCaptureMasseDeclenchement().getUrlSommaire());
+         ComptagesTdmFormulaire formComptage = formulaire
+               .getComptagesFormulaire();
+         formComptage.setIdTdm(idTdm);
 
       } else if ("3".equals(etape)) {
 
@@ -127,21 +134,22 @@ public class Test294Controller extends
    private void etape2captureMasseResultats(
          CaptureMasseResultatFormulaire formulaire) {
 
+      ErreurType erreurType = new ErreurType();
+      erreurType.setCode("SAE-CA-BUL001");
+      erreurType.setLibelle("Une erreur interne à l'application est survenue lors de la capture du document virtuel. Détails : start page must be > endPage, acutal : startPage = 1, endPage = 0");
+      
+      ListeErreurType listeErreurType = new ListeErreurType();
+      listeErreurType.getErreur().add(erreurType);
       
       FichierType fichierType = new FichierType();
-      fichierType.setCheminEtNomDuFichier("doc_taille_zero.txt");
+      fichierType.setCheminEtNomDuFichier("doc1.PDF");
       
-      ErreurType error = new ErreurType();
-      error.setCode("SAE-CA-BUL001");
-      error.setCode("Une erreur interne à  l'application est survenue lors de la capture du document virtuel.");
-      ListeErreurType listeErreurType = new ListeErreurType();
-      listeErreurType.getErreur().add(error);
-
       NonIntegratedVirtualDocumentType documentType = new NonIntegratedVirtualDocumentType();
-//      documentType.getComposants().getComposant().setErreurs(listeErreurType);
-//      documentType.setObjetNumerique(fichierType);
-//      getCaptureMasseTestService()
-//            .testResultatsTdmReponseKOAttendue(formulaire, 1, documentType, 0);
+      documentType.setErreurs(listeErreurType);
+      documentType.setObjetNumerique(fichierType);
+
+      getCaptureMasseTestService()
+            .testResultatsTdmReponseVirtualDocumentKOAttendue(formulaire, 1, documentType, 0, 0);
 
    }
 
@@ -149,7 +157,7 @@ public class Test294Controller extends
       
       
       // Appel le service de test de la recherche
-      RechercheResponse response = getRechercheTestService()
+      getRechercheTestService()
             .appelWsOpRechercheReponseCorrecteAttendue(
                   formulaire.getUrlServiceWeb(),
                   formulaire.getRechFormulaire(), COUNT_WAITED, false,
@@ -157,21 +165,9 @@ public class Test294Controller extends
 
       ResultatTest resultatTest = formulaire.getRechFormulaire().getResultats();
       
-         if (!TestStatusEnum.Echec.equals(resultatTest.getStatus())) {
-
-         
-         
-         // Au mieux, si le test est OK, on le passe "A contrôler", car
-         // certaines métadonnées doivent être vérifiées à la main
-         if (null!=response
-               .getRechercheResponse().getResultats()) {
-
-            formulaire.getRechFormulaire().getResultats().setStatus(
-                  TestStatusEnum.Echec);
-         }
-
+      if (!TestStatusEnum.Echec.equals(resultatTest.getStatus())) {
+         resultatTest.setStatus(TestStatusEnum.Succes);
       }
-
    }
 
 

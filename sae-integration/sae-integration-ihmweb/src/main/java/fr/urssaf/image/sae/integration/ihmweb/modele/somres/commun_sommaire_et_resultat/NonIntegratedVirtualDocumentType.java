@@ -51,6 +51,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "nonIntegratedVirtualDocumentType", propOrder = {
     "objetNumerique",
+    "erreurs",
     "composants"
 })
 // CHECKSTYLE:OFF
@@ -59,6 +60,8 @@ public class NonIntegratedVirtualDocumentType {
 
     @XmlElement(required = true)
     protected FichierType objetNumerique;
+    @XmlElement(required = false)
+    protected ListeErreurType erreurs;
     @XmlElement(required = true)
     protected NonIntegratedVirtualDocumentType.Composants composants;
 
@@ -84,6 +87,30 @@ public class NonIntegratedVirtualDocumentType {
      */
     public void setObjetNumerique(FichierType value) {
         this.objetNumerique = value;
+    }
+    
+    /**
+     * Obtient la valeur de la propriété erreurs.
+     * 
+     * @return
+     *     possible object is
+     *     {@link ListeErreurType }
+     *     
+     */
+    public ListeErreurType getErreurs() {
+        return erreurs;
+    }
+
+    /**
+     * Définit la valeur de la propriété erreurs.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link ListeErreurType }
+     *     
+     */
+    public void setErreurs(ListeErreurType value) {
+        this.erreurs = value;
     }
 
     /**
