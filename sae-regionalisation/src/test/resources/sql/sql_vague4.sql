@@ -90,7 +90,7 @@ CREATE UNLOGGED TABLE fonds_doc_prod (
 );
 
 -- Import du fichier CSV, optimisation avec FREEZE
-COPY fonds_doc_prod(id_doc,cog,cog_renum,is_cog_renum,cop,cop_renum,is_cop_renum,nce,nci,npe) FROM '/tmp/regio/fonds_doc.csv' WITH DELIMITER ';' FREEZE;
+COPY fonds_doc_prod(id_doc,cog,cog_renum,is_cog_renum,cop,cop_renum,is_cop_renum,nce,nci,npe) FROM '/tmp/regio/fonds_doc.csv' WITH DELIMITER ';' NULL '' FREEZE;
 
 -- Fin de la transaction
 END TRANSACTION;
