@@ -64,7 +64,7 @@ public class Test405Controller extends
       metadonnees.add("DateCreation", "2011-09-01");
       metadonnees.add("Denomination",
             "Test 405-Consultation-OK-TypeMime-MTOM-autre-pdf");
-      metadonnees.add("FormatFichier", "fmt/59");
+      metadonnees.add("FormatFichier", "crtl/1");
       metadonnees.add("Hash", "a2f93f1f121ebba0faef2c0596f2f126eacae77b");
       metadonnees.add("NbPages", "2");
       metadonnees.add("Titre", "Attestation de vigilance");
