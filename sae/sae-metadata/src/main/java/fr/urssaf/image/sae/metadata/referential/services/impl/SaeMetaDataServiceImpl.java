@@ -156,4 +156,20 @@ public class SaeMetaDataServiceImpl implements SaeMetaDataService {
       return saeMetadatasupport.findAll();
    }
 
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final List<MetadataReference> findAllMetadatasConsultables() {
+      return saeMetadatasupport.findMetadatasConsultables();
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final List<MetadataReference> findAllMetadatasRecherchables() {
+      return saeMetadatasupport.findMetadatasRecherchables();
+   }
+
 }

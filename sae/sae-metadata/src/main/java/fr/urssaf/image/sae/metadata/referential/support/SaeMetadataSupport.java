@@ -75,7 +75,7 @@ public class SaeMetadataSupport {
 
       createMetadata(metadata, clock);
    }
-   
+
    private void createMetadata(MetadataReference metadata, long clock) {
       ColumnFamilyUpdater<String, String> updater = saeMetadataDao.getCfTmpl()
             .createUpdater(metadata.getLongCode());
@@ -88,7 +88,7 @@ public class SaeMetadataSupport {
 
       Boolean requiredStor = getBooleanValue(metadata.isRequiredForStorage());
       saeMetadataDao.ecritRequiredStorage(requiredStor, updater, clock);
-      
+
       Boolean leftTrim = getBooleanValue(metadata.isLeftTrimable());
       saeMetadataDao.ecritLeftTrim(leftTrim, updater, clock);
 
@@ -149,6 +149,66 @@ public class SaeMetadataSupport {
     */
    public final List<MetadataReference> findAll() {
 
+      ColumnFamilyResultWrapper<String, String> result = getAllMetadatas();
+
+      // On itère sur le résultat
+      HectorIterator<String, String> resultIterator = new HectorIterator<String, String>(
+            result);
+      List<MetadataReference> list = new ArrayList<MetadataReference>();
+      for (ColumnFamilyResult<String, String> row : resultIterator) {
+
+         list.add(getMetadataFromResult(row));
+
+      }
+      return list;
+
+   }
+
+   /**
+    * Récupère toutes les métadonnées recherchables
+    * 
+    * @return la liste des métadonnées recherchables
+    */
+   public final List<MetadataReference> findMetadatasRecherchables() {
+      ColumnFamilyResultWrapper<String, String> result = getAllMetadatas();
+
+      // On itère sur le résultat et on ne récupère que les métadonnées
+      // recherchable
+      HectorIterator<String, String> resultIterator = new HectorIterator<String, String>(
+            result);
+      List<MetadataReference> list = new ArrayList<MetadataReference>();
+      for (ColumnFamilyResult<String, String> row : resultIterator) {
+         MetadataReference meta = getMetadataFromResult(row);
+         if (meta.isSearchable()) {
+            list.add(getMetadataFromResult(row));
+         }
+      }
+      return list;
+   }
+
+   /**
+    * Récupère la liste des métadonnées consultables
+    * 
+    * @return la liste des métadonnées consultables
+    */
+   public final List<MetadataReference> findMetadatasConsultables() {
+      ColumnFamilyResultWrapper<String, String> result = getAllMetadatas();
+
+      // On itère sur le résultat et on ne récupère que les métadonnées
+      // recherchable
+      HectorIterator<String, String> resultIterator = new HectorIterator<String, String>(
+            result);
+      List<MetadataReference> list = new ArrayList<MetadataReference>();
+      for (ColumnFamilyResult<String, String> row : resultIterator) {
+         MetadataReference meta = getMetadataFromResult(row);
+         if (meta.isConsultable()) {
+            list.add(getMetadataFromResult(row));
+         }
+      }
+      return list;
+   }
+
+   private ColumnFamilyResultWrapper<String, String> getAllMetadatas() {
       BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
       RangeSlicesQuery<String, String, byte[]> rangeSlicesQuery = HFactory
             .createRangeSlicesQuery(saeMetadataDao.getKeyspace(),
@@ -166,18 +226,7 @@ public class SaeMetadataSupport {
       ColumnFamilyResultWrapper<String, String> result = converter
             .getColumnFamilyResultWrapper(queryResult, StringSerializer.get(),
                   StringSerializer.get(), bytesSerializer);
-
-      // On itère sur le résultat
-      HectorIterator<String, String> resultIterator = new HectorIterator<String, String>(
-            result);
-      List<MetadataReference> list = new ArrayList<MetadataReference>();
-      for (ColumnFamilyResult<String, String> row : resultIterator) {
-
-         list.add(getMetadataFromResult(row));
-
-      }
-      return list;
-
+      return result;
    }
 
    /**
@@ -244,11 +293,11 @@ public class SaeMetadataSupport {
          Boolean leftTrim = getBooleanValue(result,
                SaeMetadataDao.META_LEFT_TRIM);
          meta.setLeftTrimable(leftTrim);
-         
+
          Boolean rightTrim = getBooleanValue(result,
                SaeMetadataDao.META_RIGHT_TRIM);
          meta.setRightTrimable(rightTrim);
-         
+
          Boolean searchable = getBooleanValue(result,
                SaeMetadataDao.META_SEARCH);
          meta.setSearchable(searchable);
@@ -323,7 +372,7 @@ public class SaeMetadataSupport {
          throw new MetadataRuntimeException("Code court déjà existant");
       }
    }
-   
+
    private void checkCodeCourtExistant(String codeCourt) {
       List<MetadataReference> metadatas = findAll();
       boolean found = false;

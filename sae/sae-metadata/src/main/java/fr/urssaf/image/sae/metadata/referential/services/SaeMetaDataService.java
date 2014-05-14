@@ -29,18 +29,35 @@ public interface SaeMetaDataService {
     */
    void modify(MetadataReference value)
          throws MetadataReferenceNotFoundException;
-   
+
    /**
     * Recherche d'une métadonnées
-    * @param codeLong code long de la métadonnée recherchée
+    * 
+    * @param codeLong
+    *           code long de la métadonnée recherchée
     * @return {@link MetadataReference}
     */
    MetadataReference find(String codeLong);
-   
+
    /**
     * Recherche de toutes les métadonnées
+    * 
     * @return List<{@link MetadataReference}>
     */
    List<MetadataReference> findAll();
+
+   /**
+    * Recherche de toutes les métadonnées recherchables
+    * 
+    * @return List<{@link MetadataReference}>
+    */
+   List<MetadataReference> findAllMetadatasRecherchables();
+
+   /**
+    * Recherche de toutes les métadonnées consultables
+    * 
+    * @return List<{@link MetadataReference}>
+    */
+   List<MetadataReference> findAllMetadatasConsultables();
 
 }
