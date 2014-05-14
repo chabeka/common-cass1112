@@ -17,6 +17,8 @@
       <slf4j-api.version>1.6.4</slf4j-api.version>
       <logback.version>1.0.0</logback.version>
       <hector.version>1.0-3</hector.version>
+      <commons-cassandra-spring-batch.version>0.0.6</commons-cassandra-spring-batch.version>
+      <sae.version>13.11.0.2-SNAPSHOT</sae.version>
    </properties>
 
 
@@ -27,7 +29,7 @@
       <dependency>
          <groupId>fr.urssaf.image.commons</groupId>
          <artifactId>commons-cassandra-spring-batch</artifactId>
-         <version>0.0.6-SNAPSHOT</version>
+         <version>${commons-cassandra-spring-batch.version}</version>
          <exclusions>
             <exclusion>
                <groupId>org.springframework.batch</groupId>
@@ -40,6 +42,19 @@
             <exclusion>
                <groupId>org.springframework.batch</groupId>
                <artifactId>spring-batch-admin-resources</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+      
+      <!-- SAE - Objet utilisé dans le contexte Spring batch -->
+      <dependency>
+         <groupId>fr.urssaf.image.sae</groupId>
+         <artifactId>sae-services-capturemasse</artifactId>
+         <version>${sae.version}</version>
+         <exclusions>
+            <exclusion>
+               <groupId>fr.urssaf.image.sae</groupId>
+               <artifactId>sae-format</artifactId>
             </exclusion>
          </exclusions>
       </dependency>
