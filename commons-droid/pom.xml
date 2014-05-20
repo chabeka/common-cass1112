@@ -30,7 +30,7 @@
       <jcl-over-slf4j.version>1.6.1</jcl-over-slf4j.version>
       <log4j-over-slf4j.version>1.6.1</log4j-over-slf4j.version>
       <spring.framework.version>3.0.5.RELEASE</spring.framework.version>      
-      <droid.version>6.2-SNAPSHOT</droid.version>
+      <droid.version>6.3</droid.version>
 
    </properties>
    
