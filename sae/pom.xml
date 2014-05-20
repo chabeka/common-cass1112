@@ -46,7 +46,7 @@
       commons-cassandra
       ==========================================
       -->
-      <commons.cassandra>0.0.7-SNAPSHOT</commons.cassandra>
+      <commons.cassandra>0.0.7</commons.cassandra>
 
       <!--
       Modèle de dépendance :
@@ -100,7 +100,7 @@
       commons-pdfbox
       ==========================================
       -->
-      <commons-pdfbox>0.0.1-SNAPSHOT</commons-pdfbox>
+      <commons-pdfbox>0.0.1</commons-pdfbox>
 
       <!--
       Modèle de dépendance :
@@ -118,7 +118,7 @@
       commons-droid
       ==========================================
       -->
-      <commons-droid>0.0.1-SNAPSHOT</commons-droid>
+      <commons-droid>0.0.1</commons-droid>
 
       <!--
       Modèle de dépendance :
