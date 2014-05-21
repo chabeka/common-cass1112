@@ -981,13 +981,14 @@ public class SaeDroitServiceImpl implements SaeDroitService {
       if (saePagm.getPagmf() != null) {
          pagm.setPagmf(saePagm.getPagmf().getCodePagmf());
       }
+      pagm.setParametres(saePagm.getParametres());
       pagmSupport.create(idContratService, pagm, clockSupport.currentCLock(),
             mutator);
 
    }
 
    /**
-    * Préparation de la création d'un PAGM avec Mutator
+    * Préparation de la suppression d'un PAGM avec Mutator
     * 
     * @param idContratService
     *           L'identifiant du contrat de service
