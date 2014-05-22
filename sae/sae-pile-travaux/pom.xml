@@ -2,13 +2,13 @@
    <parent>
       <artifactId>sae</artifactId>
       <groupId>fr.urssaf.image.sae</groupId>
-      <version>14.7.0.1</version>
+      <version>14.7.0.2-SNAPSHOT</version>
    </parent>
    <modelVersion>4.0.0</modelVersion>
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-pile-travaux</artifactId>
    <name>sae-pile-travaux</name>
-   <version>14.7.0.1</version>
+   <version>14.7.0.2-SNAPSHOT</version>
    <description>Gestion de la pile des travaux pour les traitements de masse</description>
 
    <build>
@@ -64,7 +64,7 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-vi</artifactId>
-         <version>14.7.0.1</version>
+         <version>14.7.0.2-SNAPSHOT</version>
       </dependency>
 
       <!-- EASYMOCK -->
