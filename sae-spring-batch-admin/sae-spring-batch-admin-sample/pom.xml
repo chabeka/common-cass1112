@@ -18,7 +18,7 @@
       <logback.version>1.0.0</logback.version>
       <hector.version>1.0-3</hector.version>
       <commons-cassandra-spring-batch.version>0.0.6</commons-cassandra-spring-batch.version>
-      <sae.version>13.11.0.2-SNAPSHOT</sae.version>
+      <sae.version>14.7.0.1</sae.version>
    </properties>
 
 
