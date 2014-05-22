@@ -1,17 +1,16 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
    <modelVersion>4.0.0</modelVersion>
 
    <parent>
       <groupId>fr.urssaf.image.sae</groupId>
       <artifactId>sae</artifactId>
-      <version>13.11.0.2-SNAPSHOT</version>
+      <version>14.7.0.1</version>
    </parent>
 
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-services</artifactId>
-   <version>13.11.0.2-SNAPSHOT</version>
+   <version>14.7.0.1</version>
 
    <name>sae-services</name>
 
@@ -39,52 +38,52 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-bo</artifactId>
-         <version>13.11.0.2-SNAPSHOT</version>
+         <version>14.7.0.1</version>
       </dependency>
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-format</artifactId>
-         <version>13.11.0.2-SNAPSHOT</version>
+         <version>14.7.0.1</version>
       </dependency>
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-rnd</artifactId>
-         <version>13.11.0.2-SNAPSHOT</version>
+         <version>14.7.0.1</version>
       </dependency>
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-ecde</artifactId>
-         <version>13.11.0.2-SNAPSHOT</version>
+         <version>14.7.0.1</version>
       </dependency>
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-metadata</artifactId>
-         <version>13.11.0.2-SNAPSHOT</version>
+         <version>14.7.0.1</version>
       </dependency>
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-mapping</artifactId>
-         <version>13.11.0.2-SNAPSHOT</version>
+         <version>14.7.0.1</version>
       </dependency>
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-droit</artifactId>
-         <version>13.11.0.2-SNAPSHOT</version>
+         <version>14.7.0.1</version>
       </dependency>
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-vi</artifactId>
-         <version>13.11.0.2-SNAPSHOT</version>
+         <version>14.7.0.1</version>
       </dependency>
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-storage</artifactId>
-         <version>13.11.0.2-SNAPSHOT</version>
+         <version>14.7.0.1</version>
       </dependency>
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-storage-dfce</artifactId>
-         <version>13.11.0.2-SNAPSHOT</version>
+         <version>14.7.0.1</version>
       </dependency>
 
       <!-- Spring -->

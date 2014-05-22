@@ -3,14 +3,14 @@
    <parent>
       <artifactId>sae</artifactId>
       <groupId>fr.urssaf.image.sae</groupId>
-      <version>13.11.0.2-SNAPSHOT</version>
+      <version>14.7.0.1</version>
    </parent>
    
    <modelVersion>4.0.0</modelVersion>
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-documents-executable</artifactId>
    <name>sae-documents-executable</name>
-   <version>13.11.0.2-SNAPSHOT</version>
+   <version>14.7.0.1</version>
    <description>Module gérant les différents traitements concernant les documents</description>
    
    <dependencies>
@@ -36,12 +36,12 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-format</artifactId>
-         <version>13.11.0.2-SNAPSHOT</version>
+         <version>14.7.0.1</version>
       </dependency>
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-commons</artifactId>
-         <version>13.11.0.2-SNAPSHOT</version>
+         <version>14.7.0.1</version>
       </dependency>
       
       <!-- AspectJ -->
