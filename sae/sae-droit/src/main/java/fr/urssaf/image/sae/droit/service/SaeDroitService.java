@@ -8,6 +8,7 @@ import java.util.List;
 import fr.urssaf.image.sae.droit.dao.model.ServiceContract;
 import fr.urssaf.image.sae.droit.exception.ContratServiceNotFoundException;
 import fr.urssaf.image.sae.droit.exception.FormatControlProfilNotFoundException;
+import fr.urssaf.image.sae.droit.exception.PagmNotFoundException;
 import fr.urssaf.image.sae.droit.model.SaeDroitsEtFormat;
 import fr.urssaf.image.sae.droit.model.SaeContratService;
 import fr.urssaf.image.sae.droit.model.SaePagm;
@@ -30,6 +31,8 @@ public interface SaeDroitService {
     *            exception levée si le contrat de service n'est pas trouvé
     * @throws FormatControlProfilNotFoundException
     *            formatControlProfil inexistant
+    * @throws PagmNotFoundException 
+    *            exception levée si le pagm n'est pas trouvé
     */
    // SaeDroits loadSaeDroits(String idClient, List<String> pagms)
    // throws ContratServiceNotFoundException, PagmNotFoundException;
@@ -38,7 +41,7 @@ public interface SaeDroitService {
    // throws ContratServiceNotFoundException;
    SaeDroitsEtFormat loadSaeDroits(String idClient, List<String> pagms)
          throws ContratServiceNotFoundException,
-         FormatControlProfilNotFoundException;
+         FormatControlProfilNotFoundException, PagmNotFoundException;
 
    /**
     * Création d'un nouveau contrat de service (création dans

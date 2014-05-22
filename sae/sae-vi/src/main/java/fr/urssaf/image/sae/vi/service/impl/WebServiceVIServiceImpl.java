@@ -20,6 +20,7 @@ import fr.urssaf.image.sae.droit.dao.support.ContratServiceSupport;
 import fr.urssaf.image.sae.droit.exception.ContratServiceNotFoundException;
 import fr.urssaf.image.sae.droit.exception.ContratServiceReferenceException;
 import fr.urssaf.image.sae.droit.exception.FormatControlProfilNotFoundException;
+import fr.urssaf.image.sae.droit.exception.PagmNotFoundException;
 import fr.urssaf.image.sae.droit.model.SaeDroitsEtFormat;
 import fr.urssaf.image.sae.droit.service.SaeDroitService;
 import fr.urssaf.image.sae.saml.data.SamlAssertionData;
@@ -29,6 +30,7 @@ import fr.urssaf.image.sae.saml.service.SamlAssertionCreationService;
 import fr.urssaf.image.sae.saml.service.SamlAssertionExtractionService;
 import fr.urssaf.image.sae.vi.exception.VIAppliClientException;
 import fr.urssaf.image.sae.vi.exception.VIInvalideException;
+import fr.urssaf.image.sae.vi.exception.VIPagmIncorrectException;
 import fr.urssaf.image.sae.vi.exception.VIVerificationException;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.vi.modele.VISignVerifParams;
@@ -168,6 +170,9 @@ public class WebServiceVIServiceImpl implements WebServiceVIService {
       }
       catch (ContratServiceNotFoundException exception) {
          throw new VIAppliClientException(issuer);
+
+      } catch (PagmNotFoundException exception) {
+         throw new VIPagmIncorrectException(exception.getMessage(), exception);
 
       } catch (RuntimeException exception) {
          throw new VIInvalideException(exception.getMessage(), exception);

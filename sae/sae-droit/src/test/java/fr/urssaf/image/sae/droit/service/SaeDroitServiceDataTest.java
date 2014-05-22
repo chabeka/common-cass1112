@@ -45,7 +45,7 @@ import fr.urssaf.image.sae.droit.dao.support.PrmdSupport;
 import fr.urssaf.image.sae.droit.exception.ContratServiceNotFoundException;
 import fr.urssaf.image.sae.droit.exception.ContratServiceReferenceException;
 import fr.urssaf.image.sae.droit.exception.FormatControlProfilNotFoundException;
-import fr.urssaf.image.sae.droit.exception.PagmfNotFoundException;
+import fr.urssaf.image.sae.droit.exception.PagmNotFoundException;
 import fr.urssaf.image.sae.droit.model.SaeContratService;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaeDroitsEtFormat;
@@ -169,15 +169,15 @@ public class SaeDroitServiceDataTest {
 
    @Test(expected = ContratServiceNotFoundException.class)
    public void testContratServiceInexistant()
-         throws ContratServiceNotFoundException, PagmfNotFoundException, FormatControlProfilNotFoundException {
+         throws ContratServiceNotFoundException, PagmNotFoundException, FormatControlProfilNotFoundException {
 
       service.loadSaeDroits("test1", Arrays.asList(new String[] { "pagm1" }));
 
    }
 
-   @Test(expected = PagmfNotFoundException.class)
+   @Test(expected = PagmNotFoundException.class)
    public void testPagmInexistant() throws ContratServiceNotFoundException,
-         PagmfNotFoundException, FormatControlProfilNotFoundException {
+         PagmNotFoundException, FormatControlProfilNotFoundException {
       creationContrat();
 
       service.loadSaeDroits(CODE_CLIENT, Arrays
@@ -186,7 +186,7 @@ public class SaeDroitServiceDataTest {
 
    @Test(expected = PagmaReferenceException.class)
    public void testPagmaInexistant() throws ContratServiceNotFoundException,
-         PagmfNotFoundException, FormatControlProfilNotFoundException {
+         PagmNotFoundException, FormatControlProfilNotFoundException {
       creationContrat();
       creationPagm();
 
@@ -196,7 +196,7 @@ public class SaeDroitServiceDataTest {
 
    @Test(expected = PagmpReferenceException.class)
    public void testPagmpInexistant() throws ContratServiceNotFoundException,
-         PagmfNotFoundException, FormatControlProfilNotFoundException {
+         PagmNotFoundException, FormatControlProfilNotFoundException {
       creationContrat();
       creationPagm();
       creationPagma();
@@ -207,7 +207,7 @@ public class SaeDroitServiceDataTest {
 
    @Test(expected = PrmdReferenceException.class)
    public void testPrmdInexistant() throws ContratServiceNotFoundException,
-         PagmfNotFoundException, FormatControlProfilNotFoundException {
+         PagmNotFoundException, FormatControlProfilNotFoundException {
       creationContrat();
       creationPagm();
       creationPagma();
@@ -219,7 +219,7 @@ public class SaeDroitServiceDataTest {
 
    @Test(expected = ActionUnitaireReferenceException.class)
    public void testActionInexistant() throws ContratServiceNotFoundException,
-         PagmfNotFoundException, FormatControlProfilNotFoundException {
+         PagmNotFoundException, FormatControlProfilNotFoundException {
       creationContrat();
       creationPagm();
       creationPagma();
@@ -232,7 +232,7 @@ public class SaeDroitServiceDataTest {
 
    @Test
    public void testSucces() throws ContratServiceNotFoundException,
-         PagmfNotFoundException, FormatControlProfilNotFoundException {
+         PagmNotFoundException, FormatControlProfilNotFoundException {
       creationContrat();
       creationPagm();
       creationPagma();
@@ -279,7 +279,7 @@ public class SaeDroitServiceDataTest {
 
    @Test
    public void testSuccesPlusieursPagm()
-         throws ContratServiceNotFoundException, PagmfNotFoundException, FormatControlProfilNotFoundException {
+         throws ContratServiceNotFoundException, PagmNotFoundException, FormatControlProfilNotFoundException {
       creationContrat();
       creationPagm();
       creationPagm2();

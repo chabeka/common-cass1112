@@ -53,7 +53,7 @@ import fr.urssaf.image.sae.droit.exception.ContratServiceReferenceException;
 import fr.urssaf.image.sae.droit.exception.DroitRuntimeException;
 import fr.urssaf.image.sae.droit.exception.FormatControlProfilNotFoundException;
 import fr.urssaf.image.sae.droit.exception.PagmReferenceException;
-import fr.urssaf.image.sae.droit.exception.PagmfNotFoundException;
+import fr.urssaf.image.sae.droit.exception.PagmNotFoundException;
 import fr.urssaf.image.sae.droit.model.SaeContratService;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaeDroitsEtFormat;
@@ -250,7 +250,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
    @Override
    public final SaeDroitsEtFormat loadSaeDroits(String idClient,
          List<String> pagms) throws ContratServiceNotFoundException,
-         FormatControlProfilNotFoundException {
+         FormatControlProfilNotFoundException, PagmNotFoundException {
 
       SaeDroitsEtFormat saeDroitEtFormat = new SaeDroitsEtFormat();
 
@@ -459,7 +459,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
    }
 
    private Pagm checkPagmExists(String codePagm, List<Pagm> listPagm,
-         String idClient) {
+         String idClient) throws PagmNotFoundException {
 
       Pagm pagm = null;
       boolean found = false;
@@ -473,7 +473,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
       }
 
       if (!found) {
-         throw new PagmfNotFoundException("Aucun PAGM '" + codePagm
+         throw new PagmNotFoundException("Aucun PAGM '" + codePagm
                + "' n'a été trouvé pour le contrat de service " + idClient);
       }
 

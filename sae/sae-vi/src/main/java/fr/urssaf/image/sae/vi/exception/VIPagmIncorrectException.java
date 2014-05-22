@@ -19,6 +19,16 @@ public class VIPagmIncorrectException extends VIVerificationException {
    public VIPagmIncorrectException(String message) {
       super(message);
    }
+   
+   /**
+    * Constructeur
+    * 
+    * @param msg le message de l'exception
+    * @param cause la cause de l'exception
+    */
+   public VIPagmIncorrectException(String msg, Throwable cause) {
+      super(msg,cause);
+   }
 
    /**
     * 

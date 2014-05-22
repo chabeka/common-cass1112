@@ -21,7 +21,7 @@ import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.exception.ContratServiceNotFoundException;
 import fr.urssaf.image.sae.droit.exception.FormatControlProfilNotFoundException;
-import fr.urssaf.image.sae.droit.exception.PagmfNotFoundException;
+import fr.urssaf.image.sae.droit.exception.PagmNotFoundException;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaeDroitsEtFormat;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
@@ -77,7 +77,7 @@ public class PrmdServicePermitAllTest {
 
    @Test
    public void testLoadSaeDroits() throws ContratServiceNotFoundException,
-         PagmfNotFoundException, FormatControlProfilNotFoundException {
+         PagmNotFoundException, FormatControlProfilNotFoundException {
 
       SaeDroitsEtFormat saeDroitsEtFormat = droitService.loadSaeDroits(META_1, Arrays
             .asList("TOUS"));
