@@ -6,8 +6,15 @@
 	<bean id="cassandraPlaceholderProperties" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="locations">
 			<list>
-				<value>classpath*:/datasource.properties</value>
-			</list>
+               <bean class="org.springframework.core.io.FileSystemResource">
+                  <constructor-arg>
+                     <bean class="org.springframework.jndi.JndiObjectFactoryBean">
+                        <property name="jndiName" value="java:comp/env/SAE_Fichier_Configuration_Cassandra" />
+                        <property name="resourceRef" value="false" />
+                     </bean>
+                  </constructor-arg>
+               </bean>
+            </list>
 		</property>
 		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
 		<property name="ignoreResourceNotFound" value="true" />
