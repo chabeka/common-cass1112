@@ -184,12 +184,12 @@ Mise à jour de la CF Metadata (les options modifiables n'avaient pas été para
 Positionne le paramètre versionBDD de la CF Parameters à la valeur "6"
 
 // ------------------------------------------
-// 6) Lot 140400SAE
+// 6) Lot 140700SAE
 // ------------------------------------------
 
-6.1) CASSANDRA_140400
+6.1) CASSANDRA_140700
 
-sudo java -Dlogback.configurationFile=/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar /hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar /hawai/data/sae/sae-config.properties CASSANDRA_140400
+sudo java -Dlogback.configurationFile=/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar /hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar /hawai/data/sae/sae-config.properties CASSANDRA_140700
 
 Met la base Cassandra du SAE en version 7
 
