@@ -1856,6 +1856,24 @@
             </description>
             <implemente>true</implemente>
          </CasTest>
+         <CasTest>
+            <id>1600</id>
+            <code>1600-Ged-Technique-OK-Suppression-Doc-Existant</code>
+            <description>
+               Ce test permet de vérifier que le document a bien été supprimé. On commencera par stocker un document, vérifier que ce document est bien présent. Puis on le supprimera et on vérifiera qu’il a bien disparu.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1600-Ged-Technique-OK-Suppression-Doc-Existant"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1601</id>
+            <code>1601-Ged-Technique-OK-Suppression-Doc-Existant-Arret-DFCE</code>
+            <description>
+               Ce test permet de vérifier que le document n’a pas été supprimé car DFCE est arrêté. On commencera par stocker un document, vérifier que ce document est bien présent. Puis on tentera de le supprimer et on vérifiera qu’il est toujours bien présent. 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1601-Ged-Technique-OK-Suppression-Doc-Existant-Arret-DFCE"</luceneExemple>
+         </CasTest>
 
       </CasTests>
 

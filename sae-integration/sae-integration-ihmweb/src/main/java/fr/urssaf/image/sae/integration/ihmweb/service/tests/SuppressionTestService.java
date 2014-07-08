@@ -10,14 +10,19 @@ import fr.urssaf.image.sae.integration.ihmweb.formulaire.SuppressionFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ViFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTest;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTestLog;
+import fr.urssaf.image.sae.integration.ihmweb.modele.SoapFault;
+import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.Suppression;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.security.ViStyle;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.utils.SaeServiceLogUtils;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.utils.SaeServiceObjectFactory;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.utils.SaeServiceStubUtils;
+import fr.urssaf.image.sae.integration.ihmweb.service.referentiels.ReferentielSoapFaultService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.listeners.WsTestListener;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.listeners.impl.WsTestListenerImplLibre;
+import fr.urssaf.image.sae.integration.ihmweb.service.tests.listeners.impl.WsTestListenerImplReponseAttendue;
+import fr.urssaf.image.sae.integration.ihmweb.service.tests.listeners.impl.WsTestListenerImplSoapFault;
 
 /**
  * Service de tests de l'opération "suppression" du service SaeService
@@ -27,11 +32,16 @@ public class SuppressionTestService {
 
    @Autowired
    private SaeServiceStubUtils saeServiceStubUtils;
+   
+   @Autowired
+   private ReferentielSoapFaultService refSoapFault;
 
-   private void appelWsOpSuppression(String urlServiceWeb, ViStyle viStyle,
+   private boolean appelWsOpSuppression(String urlServiceWeb, ViStyle viStyle,
          ViFormulaire viParams, SuppressionFormulaire formulaire,
          WsTestListener wsListener) {
 
+      boolean suppressionOK = true;
+      
       // Initialise la valeur de retour
       // CaptureUnitaireResultat result = new CaptureUnitaireResultat();
 
@@ -73,6 +83,8 @@ public class SuppressionTestService {
          wsListener.onSoapFault(resultatTest, fault, service
                ._getServiceClient().getServiceContext()
                .getConfigurationContext(), formulaire.getParent());
+         
+         suppressionOK = false;
 
       } catch (RemoteException e) {
 
@@ -81,11 +93,13 @@ public class SuppressionTestService {
                ._getServiceClient().getServiceContext()
                .getConfigurationContext(), formulaire.getParent());
 
+         suppressionOK = false;
       }
 
       // Ajoute le timestamp en 1ère ligne du log
       log.insertTimestamp();
 
+      return suppressionOK;
    }
 
    /**
@@ -128,4 +142,71 @@ public class SuppressionTestService {
 
    }
 
+   /**
+    * Test avec reponse attendue de l'appel à l'opération "suppression" du service web
+    * SaeService.<br>
+    * 
+    * @param urlServiceWeb
+    *           l'URL du service web SaeService
+    * @param formulaire
+    *           le formulaire
+    * @param viParams
+    *           les paramètres du VI
+    */
+   public final void appelWsOpSuppressionReponseAttendue(
+         String urlServiceWeb, SuppressionFormulaire formulaire, ViFormulaire viParams) {
+
+      // Création de l'objet qui implémente l'interface WsTestListener
+      // et qui s'attend à recevoir une réponse
+      WsTestListener testAvecReponse = new WsTestListenerImplReponseAttendue();
+
+      // Appel de la méthode "générique" de test
+      boolean resultat = appelWsOpSuppression(urlServiceWeb, ViStyle.VI_OK, viParams, formulaire,
+            testAvecReponse);
+
+      // On considère que le test est en succès si aucune erreur renvoyé
+      ResultatTest resultatTest = formulaire.getResultats();
+      if (resultat) {
+         resultatTest.setStatus(TestStatusEnum.Succes);
+      } 
+   }
+
+   /**
+    * Test de l'appel à l'opération "suppression" du service web
+    * SaeService.<br>
+    * On s'attend à obtenir une SoapFault.
+    * 
+    * @param urlServiceWeb
+    *           l'URL du service web SaeService
+    * @param formulaire
+    *           le formulaire
+    * @param viParams
+    *           les paramètres du VI
+    * @param idSoapFaultAttendu
+    *           l'identifiant de la SoapFault attendu dans le référentiel des
+    *           SoapFault
+    * @param argsMsgSoapFault
+    *           les arguments pour le String.format du message de la SoapFault
+    *           attendue
+    */
+   public final void appelWsOpSuppressionSoapFault(
+         String urlServiceWeb, SuppressionFormulaire formulaire, ViFormulaire viParams,
+         String idSoapFaultAttendu, final Object[] argsMsgSoapFault) {
+
+      // Création de l'objet qui implémente l'interface WsTestListener
+      // et qui s'attend à recevoir une certaine SoapFault
+      SoapFault faultAttendue = refSoapFault.findSoapFault(idSoapFaultAttendu);
+      WsTestListener listener = new WsTestListenerImplSoapFault(faultAttendue,
+            argsMsgSoapFault);
+
+      // Appel de la méthode "générique" de test
+      boolean resultat = appelWsOpSuppression(urlServiceWeb, ViStyle.VI_OK, viParams, formulaire,
+            listener);
+      
+      // On considère que le test est en succès si aucune erreur renvoyé
+      ResultatTest resultatTest = formulaire.getResultats();
+      if (!resultat) {
+         resultatTest.setStatus(TestStatusEnum.Succes);
+      } 
+   }
 }

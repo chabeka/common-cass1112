@@ -351,4 +351,12 @@
       <message>Le format du fichier sommaire.xml est incorrect</message>
    </SoapFault>
    
+   <SoapFault>
+      <id>sae_ErreurInterneSuppression</id>
+      <namespace>urn:sae:faultcodes</namespace>
+      <prefixe>sae</prefixe>
+      <localPart>ErreurInterneSuppression</localPart>
+      <message>%s</message>
+   </SoapFault>
+   
 </SoapFaults>
