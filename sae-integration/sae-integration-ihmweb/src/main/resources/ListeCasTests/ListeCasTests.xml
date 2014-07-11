@@ -1833,6 +1833,43 @@
             </description>
             <implemente>true</implemente>
          </CasTest>
+         <CasTest>
+            <id>1700</id>
+            <code>1700-Ged-Technique-OK-Modification-Valeur-Meta</code>
+            <description>
+               Le but de ce test est de vérifier qu’il est possible de modifier la valeur d’une métadonnée standard. Si la métadonnée a déjà une valeur celle-ci sera écrasée. On effectuera donc l’opération de capture unitaire puis une modification et enfin une recherche afin de vérifier que la modification a bien été prise en compte.
+            </description>
+            <implemente>true</implemente>
+            <luceneExempleList>Denomination:"Test 1700-Ged-Technique-OK-Modification-Meta"</luceneExempleList>
+            <luceneExempleList>Denomination:"Test 1700-Ged-Technique-Modifiee"</luceneExempleList>
+         </CasTest>
+         <CasTest>
+            <id>1701</id>
+            <code>1701-Ged-Technique-OK-Suppression-Valeur-Meta</code>
+            <description>
+               Le but de ce test est de vérifier qu’il est possible d’enlever sans remettre une valeur à une métadonnée standard. En d’autres termes vider la métadonnée. On effectuera donc l’opération de capture unitaire puis une suppression et enfin une recherche afin de vérifier que la suppression a bien été prise en compte.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1701-Ged-Technique-OK-Meta-Retrait-Valeur"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1702</id>
+            <code>1702-Ged-Technique-OK-Modification-Valeur-Meta-Avec-Regle</code>
+            <description>
+               Le but de ce test est de vérifier qu’il est possible de modifier la valeur d’une métadonnée qui a une règle de gestion. On effectuera donc l’opération de capture unitaire puis une modification du CodeRND. Enfin on lancera une recherche afin de vérifier que la modification des métadonnées impactées par la règle de gestion a bien été faite.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1702-Ged-Technique-OK-Modification-Valeur-Meta-Avec-Regle"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1703</id>
+            <code>1703-Ged-Technique-OK-Ajout-Valeur-Meta-Vide</code>
+            <description>
+               Le but de ce test est de vérifier qu’il est possible d’ajouter une valeur à une métadonnée vide pour un document donné. 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1703-Ged-Technique-OK-Ajout-Valeur-Meta-Vide"</luceneExemple>
+         </CasTest>
 
       </CasTests>
 

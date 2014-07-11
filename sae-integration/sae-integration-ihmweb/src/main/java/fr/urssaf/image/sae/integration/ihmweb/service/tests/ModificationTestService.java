@@ -10,6 +10,7 @@ import fr.urssaf.image.sae.integration.ihmweb.formulaire.ModificationFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ViFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTest;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTestLog;
+import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.Modification;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.security.ViStyle;
@@ -18,6 +19,7 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.utils.SaeServiceObjectF
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.utils.SaeServiceStubUtils;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.listeners.WsTestListener;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.listeners.impl.WsTestListenerImplLibre;
+import fr.urssaf.image.sae.integration.ihmweb.service.tests.listeners.impl.WsTestListenerImplReponseAttendue;
 
 /**
  * Service de tests de l'opération "modification" du service SaeService
@@ -28,9 +30,11 @@ public class ModificationTestService {
    @Autowired
    private SaeServiceStubUtils saeServiceStubUtils;
 
-   private void appelWsOpModification(String urlServiceWeb, ViStyle viStyle,
+   private boolean appelWsOpModification(String urlServiceWeb, ViStyle viStyle,
          ViFormulaire viParams, ModificationFormulaire formulaire,
          WsTestListener wsListener) {
+      
+      boolean modificationOK = true;
 
       // Initialise la valeur de retour
       // CaptureUnitaireResultat result = new CaptureUnitaireResultat();
@@ -74,6 +78,8 @@ public class ModificationTestService {
          wsListener.onSoapFault(resultatTest, fault, service
                ._getServiceClient().getServiceContext()
                .getConfigurationContext(), formulaire.getParent());
+         
+         modificationOK = false;
 
       } catch (RemoteException e) {
 
@@ -82,11 +88,13 @@ public class ModificationTestService {
                ._getServiceClient().getServiceContext()
                .getConfigurationContext(), formulaire.getParent());
 
+         modificationOK = false;
       }
 
       // Ajoute le timestamp en 1ère ligne du log
       log.insertTimestamp();
 
+      return modificationOK;
    }
 
    /**
@@ -129,4 +137,32 @@ public class ModificationTestService {
 
    }
 
+   /**
+    * Test avec reponse attendue de l'appel à l'opération "modification" du service web
+    * SaeService.<br>
+    * 
+    * @param urlServiceWeb
+    *           l'URL du service web SaeService
+    * @param formulaire
+    *           le formulaire
+    * @param viParams
+    *           les paramètres du VI
+    */
+   public final void appelWsOpModificationReponseAttendue(
+         String urlServiceWeb, ModificationFormulaire formulaire, ViFormulaire viParams) {
+
+      // Création de l'objet qui implémente l'interface WsTestListener
+      // et qui s'attend à recevoir une réponse
+      WsTestListener testAvecReponse = new WsTestListenerImplReponseAttendue();
+
+      // Appel de la méthode "générique" de test
+      boolean resultat = appelWsOpModification(urlServiceWeb, ViStyle.VI_OK, viParams, formulaire,
+            testAvecReponse);
+
+      // On considère que le test est en succès si aucune erreur renvoyé
+      ResultatTest resultatTest = formulaire.getResultats();
+      if (resultat) {
+         resultatTest.setStatus(TestStatusEnum.Succes);
+      } 
+   }
 }
