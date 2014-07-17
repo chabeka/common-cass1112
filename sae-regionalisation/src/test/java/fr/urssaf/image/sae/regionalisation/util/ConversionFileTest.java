@@ -15,11 +15,11 @@ import org.junit.Test;
 public class ConversionFileTest {
 
    @Test
-   @Ignore
+   //@Ignore
    public void generateFile() throws IOException {
 
       File parentDirectory = new File(
-            "S:/produits/Qualite/Projet_ae/Documentation refonte/Refonte/Régionalisation/Vague 3 (fin 2013)/Fichiers de fusion à blanc (FAB)/FAB1");
+            "S:/REFERENTIEL/03- SI/SAE/PROJETS TECHNIQUES OU FONCTIONNELS/Régionalisation/Vague 4 (mi 2014)/Fichiers de fusion à blanc (FAB)/FAB3");
 
       regroupFiles(parentDirectory);
 

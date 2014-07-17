@@ -24,10 +24,10 @@ import au.com.bytecode.opencsv.CSVReader;
 
 public class ExportFileTest {
 
-   @Ignore
+   //@Ignore
    @Test
    public void generateFile() {
-      File mainDirectory = new File("S:/produits/Qualite/Projet_ae/Documentation refonte/Refonte/Régionalisation/Vague 3 (fin 2013)/Fichiers de fusion à blanc (FAB)/FAB2");
+      File mainDirectory = new File("S:/REFERENTIEL/03- SI/SAE/PROJETS TECHNIQUES OU FONCTIONNELS/Régionalisation/Vague 4 (mi 2014)/Fichiers de fusion à blanc (FAB)/FAB3");
       Reader reader = null;
       CSVReader csvReader = null;
       Writer fileWriter = null;
