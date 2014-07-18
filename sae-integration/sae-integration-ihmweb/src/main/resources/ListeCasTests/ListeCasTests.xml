@@ -1870,6 +1870,34 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 1703-Ged-Technique-OK-Ajout-Valeur-Meta-Vide"</luceneExemple>
          </CasTest>
+         <CasTest>
+            <id>1704</id>
+            <code>1704-Ged-Technique-OK-Ajout-Valeur-Meta-Vide-Dico</code>
+            <description>
+               Le but de ce test est de vérifier qu’il est possible d’ajouter une valeur à une métadonnée vide pour un document donné. La particularité de ce test par rapport au précédent c’est que la métadonnée à laquelle on donne une valeur a un dictionnaire. 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1704-Ged-Technique-OK-Ajout-Valeur-Meta-Vide-Dico"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1705</id>
+            <code>1705-Ged-Technique-OK-Suppression-Valeur-Meta-Vide</code>
+            <description>
+               Le but de ce test est de vérifier que le cas de suppression d’une valeur non renseigné est géré. 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1705-Ged-Technique-OK-Suppression-Valeur-Meta-Vide"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1750</id>
+            <code>1750-Ged-Technique-KO-Modification-Meta-Interdite</code>
+            <description>
+               Le but de ce test est de vérifier qu’il n’est pas possible de modifier certaines métadonnées telles que le Hash, le Type de Hash. Dans notre test nous prendrons le Type de Hash.
+               On effectuera donc l’opération de capture unitaire puis une tentative de modification de la métadonnée TypeHash. 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1750-Ged-Technique-KO-Modification-Valeur-Meta-Interdite"</luceneExemple>
+         </CasTest>
 
       </CasTests>
 

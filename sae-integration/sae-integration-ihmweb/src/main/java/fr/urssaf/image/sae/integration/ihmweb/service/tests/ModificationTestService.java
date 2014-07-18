@@ -10,6 +10,7 @@ import fr.urssaf.image.sae.integration.ihmweb.formulaire.ModificationFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ViFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTest;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTestLog;
+import fr.urssaf.image.sae.integration.ihmweb.modele.SoapFault;
 import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.Modification;
@@ -17,9 +18,11 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.security.ViStyle;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.utils.SaeServiceLogUtils;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.utils.SaeServiceObjectFactory;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.utils.SaeServiceStubUtils;
+import fr.urssaf.image.sae.integration.ihmweb.service.referentiels.ReferentielSoapFaultService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.listeners.WsTestListener;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.listeners.impl.WsTestListenerImplLibre;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.listeners.impl.WsTestListenerImplReponseAttendue;
+import fr.urssaf.image.sae.integration.ihmweb.service.tests.listeners.impl.WsTestListenerImplSoapFault;
 
 /**
  * Service de tests de l'opération "modification" du service SaeService
@@ -29,6 +32,9 @@ public class ModificationTestService {
 
    @Autowired
    private SaeServiceStubUtils saeServiceStubUtils;
+   
+   @Autowired
+   private ReferentielSoapFaultService refSoapFault;
 
    private boolean appelWsOpModification(String urlServiceWeb, ViStyle viStyle,
          ViFormulaire viParams, ModificationFormulaire formulaire,
@@ -164,5 +170,38 @@ public class ModificationTestService {
       if (resultat) {
          resultatTest.setStatus(TestStatusEnum.Succes);
       } 
+   }
+      
+   
+   /**
+    * Test d'appel à l'opération "consultation" du service web SaeService.<br>
+    * On s'attend à récupérer une SoapFault
+    * 
+    * @param urlServiceWeb
+    *           l'URL du service web SaeService
+    * @param formulaire
+    *           le formulaire
+    * @param viStyle
+    *           le type de VI à générer
+    * @param idSoapFaultAttendu
+    *           l'identifiant de la SoapFault attendu dans le référentiel des
+    *           SoapFault
+    * @param argsMsgSoapFault
+    *           les arguments pour le String.format du message de la SoapFault
+    *           attendue
+    */
+   public final void appelWsOpModificationSoapFault(String urlServiceWeb,
+         ModificationFormulaire formulaire, ViStyle viStyle,
+         String idSoapFaultAttendu, final Object[] argsMsgSoapFault) {
+
+      // Création de l'objet qui implémente l'interface WsTestListener
+      // et qui s'attend à recevoir une certaine SoapFault
+      SoapFault faultAttendue = refSoapFault.findSoapFault(idSoapFaultAttendu);
+      WsTestListener testAuth = new WsTestListenerImplSoapFault(faultAttendue,
+            argsMsgSoapFault);
+
+      // Appel de la méthode "générique" de test
+      appelWsOpModification(urlServiceWeb, viStyle, null, formulaire, testAuth);
+
    }
 }
