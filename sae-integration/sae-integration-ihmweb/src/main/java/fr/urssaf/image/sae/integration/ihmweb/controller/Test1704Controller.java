@@ -147,7 +147,7 @@ public class Test1704Controller extends
             .appelWsOpCaptureUnitaireReponseAttendue(
                   formulaire.getUrlServiceWeb(), formCaptureEtp1, formulaire.getViFormulaire());
       
-      // Si le test n'est pas en échec, alors on peut initialiser l'id du document à supprimer
+      // Si le test n'est pas en échec, alors on peut initialiser l'id du document à modifier
       if (!TestStatusEnum.Echec.equals(formulaire.getCaptureUnitaire().getResultats().getStatus())) {
          formulaire.getModification().setIdDocument(UUID.fromString(resultat.getIdArchivage()));
       }

@@ -1898,6 +1898,16 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 1750-Ged-Technique-KO-Modification-Valeur-Meta-Interdite"</luceneExemple>
          </CasTest>
+         <CasTest>
+            <id>1751</id>
+            <code>1751-Ged-Technique-KO-Suppression-Valeur-Meta-Interdite</code>
+            <description>
+               Le but de ce test est de vérifier qu’il n’est pas possible de supprimer une métadonnée obligatoire à l’archivage. Dans notre exemple nous prendrons le Titre. 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"1751-Ged-Technique-KO-Suppression-Valeur-Meta-Interdite"</luceneExemple>
+         </CasTest>
+
 
       </CasTests>
 

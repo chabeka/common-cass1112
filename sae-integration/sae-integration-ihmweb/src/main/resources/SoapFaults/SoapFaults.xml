@@ -367,5 +367,13 @@
       <message>La ou les métadonnées suivantes ne sont pas modifiables : %s</message>
    </SoapFault>
    
+   <SoapFault>
+      <id>sae_ModificationMetadonneeObligatoire</id>
+      <namespace>urn:sae:faultcodes</namespace>
+      <prefixe>sae</prefixe>
+      <localPart>ModificationMetadonneeObligatoire</localPart>
+      <message>La ou les métadonnées suivantes ne peuvent pas être vides : %s</message>
+   </SoapFault>
+   
    
 </SoapFaults>

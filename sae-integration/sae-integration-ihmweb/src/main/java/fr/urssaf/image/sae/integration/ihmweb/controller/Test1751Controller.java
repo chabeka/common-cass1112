@@ -9,7 +9,7 @@ import fr.urssaf.image.sae.integration.ihmweb.constantes.SaeIntegrationConstante
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureUnitaireFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ModificationFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
-import fr.urssaf.image.sae.integration.ihmweb.formulaire.Test1750Formulaire;
+import fr.urssaf.image.sae.integration.ihmweb.formulaire.Test1751Formulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ViFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CaptureUnitaireResultat;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CodeMetadonneeList;
@@ -19,28 +19,28 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.security.ViStyle;
 
 /**
- * 1750-Ged-Technique-KO-Modification-Valeur-Meta-Interdite
+ * 1751-Ged-Technique-KO-Suppression-Valeur-Meta-Interdite
  */
 @Controller
-@RequestMapping(value = "test1750")
-public class Test1750Controller extends
-      AbstractTestWsController<Test1750Formulaire> {
+@RequestMapping(value = "test1751")
+public class Test1751Controller extends
+      AbstractTestWsController<Test1751Formulaire> {
 
    /**
     * {@inheritDoc}
     */
    @Override
    protected final String getNumeroTest() {
-      return "1750";
+      return "1751";
    }
 
    /**
     * {@inheritDoc}
     */
    @Override
-   protected final Test1750Formulaire getFormulairePourGet() {
+   protected final Test1751Formulaire getFormulairePourGet() {
 
-      Test1750Formulaire formulaire = new Test1750Formulaire();
+      Test1751Formulaire formulaire = new Test1751Formulaire();
 
       // capture unitaire
       CaptureUnitaireFormulaire captUnit = formulaire.getCaptureUnitaire();
@@ -49,7 +49,7 @@ public class Test1750Controller extends
       captUnit
             .setUrlEcde(getEcdeService()
                   .construitUrlEcde(
-                        "SAE_INTEGRATION/20110822/Ged-Technique-1750-Ged-Technique-KO-Modification-Valeur-Meta-Interdite/documents/doc1.PDF"));
+                        "SAE_INTEGRATION/20110822/Ged-Technique-1751-Ged-Technique-KO-Suppression-Valeur-Meta-Interdite/documents/doc1.PDF"));
 
       // Le nom du fichier
       captUnit.setNomFichier("doc1.PDF");
@@ -63,7 +63,7 @@ public class Test1750Controller extends
       metadonnees.add("CodeRND", "2.3.1.1.12");
       metadonnees.add("DateCreation", "2011-09-05");
       metadonnees.add("Denomination",
-            "Test 1750-Ged-Technique-KO-Modification-Valeur-Meta-Interdite");
+            "Test 1751-Ged-Technique-KO-Suppression-Meta-Interdire");
       metadonnees.add("FormatFichier", "fmt/354");
       metadonnees.add("Hash", "a2f93f1f121ebba0faef2c0596f2f126eacae77b");
       metadonnees.add("NbPages", "2");
@@ -89,7 +89,7 @@ public class Test1750Controller extends
 
       // Les métadonnées
       MetadonneeValeurList metaModif = new MetadonneeValeurList();
-      metaModif.add("TypeHash", "TypeHashModifie");
+      metaModif.add("Titre", "");
       formModification.setMetadonnees(metaModif);
 
       // Paramètres du VI
@@ -109,7 +109,7 @@ public class Test1750Controller extends
     * {@inheritDoc}
     */
    @Override
-   protected final void doPost(Test1750Formulaire formulaire) {
+   protected final void doPost(Test1751Formulaire formulaire) {
       String etape = formulaire.getEtape();
 
       if ("1".equals(etape)) {
@@ -120,7 +120,7 @@ public class Test1750Controller extends
       }
    }
 
-   private void etape1captureUnitaireAppelWs(Test1750Formulaire formulaire) {
+   private void etape1captureUnitaireAppelWs(Test1751Formulaire formulaire) {
 
       // Initialise
       CaptureUnitaireFormulaire formCaptureEtp1 = formulaire
@@ -147,8 +147,8 @@ public class Test1750Controller extends
       // Appel de la méthode de test
       getModificationTestService().appelWsOpModificationSoapFault(
             urlWebService, formulaire, ViStyle.VI_OK,
-            "sae_ModificationMetadonneeNonModifiable",
-            new Object[] { "TypeHash" });
+            "sae_ModificationMetadonneeObligatoire",
+            new Object[] { "Titre" });
 
    }
 
