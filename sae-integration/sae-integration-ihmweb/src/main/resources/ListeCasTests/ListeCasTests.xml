@@ -1905,7 +1905,25 @@
                Le but de ce test est de vérifier qu’il n’est pas possible de supprimer une métadonnée obligatoire à l’archivage. Dans notre exemple nous prendrons le Titre. 
             </description>
             <implemente>true</implemente>
-            <luceneExemple>Denomination:"1751-Ged-Technique-KO-Suppression-Valeur-Meta-Interdite"</luceneExemple>
+            <luceneExemple>Denomination:"Test 1751-Ged-Technique-KO-Suppression-Valeur-Meta-Interdite"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1753</id>
+            <code>1753-Ged-Technique-KO-Ajout-Valeur-Format-Non-Autorise</code>
+            <description>
+               Le but de ce test est de vérifier qu’il n’est pas possible d’ajouter une valeur à une métadonnée d’un document archivé en ne respectant pas le format. Dans notre exemple nous prendrons la DateCourrierV2 que nous tenterons de renseigner dans un format autre que le format yyyy-mm-dd 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1753-Ged-Technique-KO-Ajout-Valeur-Format-Non-Autorise"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1755</id>
+            <code>1755-Ged-Technique-KO-Modification-Valeur-Format-Non-Autorise</code>
+            <description>
+               Le but de ce test est de vérifier qu’il n’est pas possible de modifier une valeur à une métadonnée d’un document archivé en ne respectant pas le format. Dans notre exemple nous prendrons la DateCourrierV2 que nous tenterons de modifier dans un format autre que le format yyyy-mm-dd 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1755-Ged-Technique-KO-Modification-Valeur-Format-Non-Autorise"</luceneExemple>
          </CasTest>
 
 

@@ -375,5 +375,13 @@
       <message>La ou les métadonnées suivantes ne peuvent pas être vides : %s</message>
    </SoapFault>
    
+   <SoapFault>
+      <id>sae_ModificationMetadonneeFormatTypeNonValide</id>
+      <namespace>urn:sae:faultcodes</namespace>
+      <prefixe>sae</prefixe>
+      <localPart>ModificationMetadonneeFormatTypeNonValide</localPart>
+      <message>Le type ou le format des métadonnées suivantes n'est pas valide : %s</message>
+   </SoapFault>
+   
    
 </SoapFaults>

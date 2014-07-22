@@ -9,7 +9,8 @@ import fr.urssaf.image.sae.integration.ihmweb.constantes.SaeIntegrationConstante
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureUnitaireFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ModificationFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
-import fr.urssaf.image.sae.integration.ihmweb.formulaire.Test1751Formulaire;
+
+import fr.urssaf.image.sae.integration.ihmweb.formulaire.Test1755Formulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ViFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CaptureUnitaireResultat;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CodeMetadonneeList;
@@ -19,28 +20,28 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.security.ViStyle;
 
 /**
- * 1751-Ged-Technique-KO-Suppression-Valeur-Meta-Interdite
+ * 1755-Ged-Technique-KO-Ajout-Valeur-Format-Non-Autorise
  */
 @Controller
-@RequestMapping(value = "test1751")
-public class Test1751Controller extends
-      AbstractTestWsController<Test1751Formulaire> {
+@RequestMapping(value = "test1755")
+public class Test1755Controller extends
+      AbstractTestWsController<Test1755Formulaire> {
 
    /**
     * {@inheritDoc}
     */
    @Override
    protected final String getNumeroTest() {
-      return "1751";
+      return "1755";
    }
 
    /**
     * {@inheritDoc}
     */
    @Override
-   protected final Test1751Formulaire getFormulairePourGet() {
+   protected final Test1755Formulaire getFormulairePourGet() {
 
-      Test1751Formulaire formulaire = new Test1751Formulaire();
+      Test1755Formulaire formulaire = new Test1755Formulaire();
 
       // capture unitaire
       CaptureUnitaireFormulaire captUnit = formulaire.getCaptureUnitaire();
@@ -49,7 +50,7 @@ public class Test1751Controller extends
       captUnit
             .setUrlEcde(getEcdeService()
                   .construitUrlEcde(
-                        "SAE_INTEGRATION/20110822/Ged-Technique-1751-Ged-Technique-KO-Suppression-Valeur-Meta-Interdite/documents/doc1.PDF"));
+                        "SAE_INTEGRATION/20110822/Ged-Technique-1755-Ged-Technique-KO-Modification-Valeur-Format-Non-Autorise/documents/doc1.PDF"));
 
       // Le nom du fichier
       captUnit.setNomFichier("doc1.PDF");
@@ -62,8 +63,9 @@ public class Test1751Controller extends
       metadonnees.add("CodeOrganismeProprietaire", "UR750");
       metadonnees.add("CodeRND", "2.3.1.1.12");
       metadonnees.add("DateCreation", "2011-09-05");
+      metadonnees.add("DateCourrierV2", "2013-09-03");
       metadonnees.add("Denomination",
-            "Test 1751-Ged-Technique-KO-Suppression-Valeur-Meta-Interdite");
+            "Test 1755-Ged-Technique-KO-Modification-Valeur-Format-Non-Autorise");
       metadonnees.add("FormatFichier", "fmt/354");
       metadonnees.add("Hash", "a2f93f1f121ebba0faef2c0596f2f126eacae77b");
       metadonnees.add("NbPages", "2");
@@ -78,8 +80,7 @@ public class Test1751Controller extends
       RechercheFormulaire rechFormulaire = formulaire.getRechFormulaire();
 
       CodeMetadonneeList codeMetadonneeList = new CodeMetadonneeList();
-      // codeMetadonneeList.add("Periode");
-
+     
       rechFormulaire.setRequeteLucene(getCasTest().getLuceneExemple());
       rechFormulaire.setCodeMetadonnees(codeMetadonneeList);
 
@@ -89,7 +90,7 @@ public class Test1751Controller extends
 
       // Les métadonnées
       MetadonneeValeurList metaModif = new MetadonneeValeurList();
-      metaModif.add("Titre", "");
+      metaModif.add("DateCourrierV2", "21-07-2014");
       formModification.setMetadonnees(metaModif);
 
       // Paramètres du VI
@@ -109,7 +110,7 @@ public class Test1751Controller extends
     * {@inheritDoc}
     */
    @Override
-   protected final void doPost(Test1751Formulaire formulaire) {
+   protected final void doPost(Test1755Formulaire formulaire) {
       String etape = formulaire.getEtape();
 
       if ("1".equals(etape)) {
@@ -120,7 +121,7 @@ public class Test1751Controller extends
       }
    }
 
-   private void etape1captureUnitaireAppelWs(Test1751Formulaire formulaire) {
+   private void etape1captureUnitaireAppelWs(Test1755Formulaire formulaire) {
 
       // Initialise
       CaptureUnitaireFormulaire formCaptureEtp1 = formulaire
@@ -147,8 +148,8 @@ public class Test1751Controller extends
       // Appel de la méthode de test
       getModificationTestService().appelWsOpModificationSoapFault(
             urlWebService, formulaire, ViStyle.VI_OK,
-            "sae_ModificationMetadonneeObligatoire",
-            new Object[] { "Titre" });
+            "sae_ModificationMetadonneeFormatTypeNonValide",
+            new Object[] { "DateCourrierV2" });
 
    }
 
