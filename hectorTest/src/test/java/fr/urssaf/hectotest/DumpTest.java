@@ -871,5 +871,49 @@ public class DumpTest {
       dumper.printColumnNameInHex = true;
       dumper.dumpCF("SystemEventLogByTimeSerialized", 50);
    }
+   
+   @Test
+   public void testProvoquerSoapFaultErreurInterneConsultation() throws Exception {
+
+      // Suppression du contenu du document dans la CF "Documents"
+      // pour provoquer une erreur DFCE non gérée par le SAE
+      // et donc pour provoquer la SoapFault SAE d'erreur interne à la consultation
+
+      // Modifier ici l'UUID du document
+      String uuid = "1F86D287-E0C5-4857-9C49-06AF584E1199";
+      
+      byte[] fileUuid = uuidToFileUUID(uuid);
+      if (fileUuid == null)
+         throw new Exception("Pas de fileUUID trouvé pour cet uuid : " + uuid);
+      String stringFileUuid = ConvertHelper.getReadableUTF8String(fileUuid);
+      
+      String key = stringFileUuid.toLowerCase();
+      System.out.println("fileUUID key: " + key);
+
+      StringSerializer stringSerializer = StringSerializer.get();
+      BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
+      RangeSlicesQuery<String, String, byte[]> rangeSlicesQuery = HFactory
+            .createRangeSlicesQuery(keyspace, stringSerializer,
+                  stringSerializer, bytesSerializer);
+      rangeSlicesQuery.setColumnFamily("Documents");
+      rangeSlicesQuery.setKeys(key, key);
+      rangeSlicesQuery.setRange("chunk_0", "chunk_9", false, 1000);
+      QueryResult<OrderedRows<String, String, byte[]>> result = rangeSlicesQuery
+            .execute();
+      OrderedRows<String, String, byte[]> orderedRows = result.get();
+
+      // On ne reçoit normalement qu'une seule ligne
+      Row<String, String, byte[]> row = orderedRows.getByKey(key);
+      if (row == null)
+         throw new IllegalArgumentException(
+               "On n'a pas trouvé de fichier dont l'uuid est " + fileUuid);
+
+      // Suppression de la ligne
+      Mutator<String> mutator = HFactory.createMutator(keyspace,
+            StringSerializer.get());
+      mutator.addDeletion(key, "Documents");
+      mutator.execute();
+
+   }
 
 }
