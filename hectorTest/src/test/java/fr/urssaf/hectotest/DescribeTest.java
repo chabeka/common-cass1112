@@ -99,6 +99,14 @@ public class DescribeTest {
       System.out.println("  ComparatorType: " + cfDef.getComparatorType().getClassName());
       // System.out.println("  ComparatorTypeAlias: " + cfDef.getComparatorTypeAlias());
       System.out.println("  CompactionStrategy: " + cfDef.getCompactionStrategy());
+      if (cfDef.getCompactionStrategyOptions().isEmpty()) {
+         System.out.println("  CompactionStrategyOptions: aucune");
+      } else {
+         for (Map.Entry<String,String> entry: cfDef.getCompactionStrategyOptions().entrySet()) {
+            System.out.println("  CompactionStrategyOptions :");
+            System.out.println("    " + entry.getKey() + "=" + entry.getValue());
+         }
+      }
       System.out.println("  GC Grace Seconds: " + cfDef.getGcGraceSeconds());
       System.out.println("  Read Repair Chance: " + cfDef.getReadRepairChance());
    }
