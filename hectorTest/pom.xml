@@ -1,36 +1,39 @@
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   
    <modelVersion>4.0.0</modelVersion>
+   
    <groupId>hectorTest</groupId>
    <artifactId>hectorTest</artifactId>
    <packaging>jar</packaging>
    <version>0.0.2-SNAPSHOT</version>
+   
    <name>hectorTest</name>
-   <url>http://maven.apache.org</url>
-
+   
    <properties>
+      
+      <!-- Encodage de caractères -->
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+      <!-- Version des plug-ins Maven -->
       <maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
       <maven-source-plugin.version>2.1.2</maven-source-plugin.version>
       <maven-resources-plugin.version>2.5</maven-resources-plugin.version>
-      <maven-javadoc-plugin.version>2.8.1</maven-javadoc-plugin.version>
-      <sonar-maven-plugin.version>1.0-beta-2</sonar-maven-plugin.version>
-      <maven-release-plugin.version>2.2.1</maven-release-plugin.version>
-      <maven-pmd-plugin.version>2.5</maven-pmd-plugin.version>
-      <maven-shade-plugin.version>1.4</maven-shade-plugin.version>
-      <maven-antrun-plugin.version>1.6</maven-antrun-plugin.version>
-      <maven-assembly-plugin.version>2.2.2</maven-assembly-plugin.version>
       <maven-surefire-plugin.version>2.12</maven-surefire-plugin.version>
-      <maven-replacer-plugin.version>1.3.6</maven-replacer-plugin.version>
-
+      
+      <!-- Version des framework -->
+      <junit.version>4.8.2</junit.version>
+      <org.slf4j.version>1.6.1</org.slf4j.version>
+      <logback.version>0.9.30</logback.version>
+      <hector.version>1.0-3</hector.version>
+      <libthrift.version>0.6.1</libthrift.version>
+      <apache.commons-collections.version>3.2.1</apache.commons-collections.version>
+      
    </properties>
 
    <build>
       <plugins>
 
-         <!--
-            On spécifie la version du JDK et l'encodage de caractères
-            des sources
-         -->
+         <!-- On spécifie la version du JDK et l'encodage de caractères des sources -->
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-compiler-plugin</artifactId>
@@ -38,15 +41,12 @@
             <configuration>
                <source>1.6</source>
                <target>1.6</target>
-               <encoding>UTF-8</encoding>
+               <encoding>${project.build.sourceEncoding}</encoding>
             </configuration>
          </plugin>
 
 
-         <!--
-            Dans le cas d'un packaging JAR, on demande que le JAR des
-            sources soit également généré
-         -->
+         <!-- Dans le cas d'un packaging JAR, on demande que le JAR des sources soit également généré -->
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-source-plugin</artifactId>
@@ -62,190 +62,77 @@
          </plugin>
 
 
-         <!--
-            On spécifie l'encodage de caractères des ressources
-         -->
+         <!-- On spécifie l'encodage de caractères des ressources -->
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-resources-plugin</artifactId>
             <version>${maven-resources-plugin.version}</version>
             <configuration>
-               <encoding>UTF-8</encoding>
+               <encoding>${project.build.sourceEncoding}</encoding>
             </configuration>
          </plugin>
-
-
-         <!--
-         On demande la génération de la Javadoc
-         -->
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <version>${maven-javadoc-plugin.version}</version>
-            <executions>
-               <execution>
-                  <id>attach-javadocs</id>
-                  <goals>
-                     <goal>jar</goal>
-                  </goals>
-               </execution>
-            </executions>
-            <configuration>
-               <quiet>true</quiet>
-            </configuration>
-         </plugin>
-
-
-         <!--
-            On spécifie la version du plugin Maven pour Sonar
-         -->
-         <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>sonar-maven-plugin</artifactId>
-            <version>${sonar-maven-plugin.version}</version>
-         </plugin>
-
-
-         <!--
-         Pour la gestion des release
-         -->
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-release-plugin</artifactId>
-            <version>${maven-release-plugin.version}</version>
-            <configuration>
-               <preparationGoals>clean javadoc:jar install</preparationGoals>
-               <autoVersionSubmodules>true</autoVersionSubmodules>
-               <useReleaseProfile>false</useReleaseProfile>
-            </configuration>
-         </plugin>
-
-         <!-- Configuration mémoire pour les TU -->
+         
+         <!-- Skip tests -->
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
+            <version>${maven-surefire-plugin.version}</version>
             <configuration>
-               <argLine>-Xmx700m -XX:MaxPermSize=700m -verbose:gc
-                  -XX:+UseSerialGC -XX:-UseConcMarkSweepGC</argLine>
+               <skipTests>true</skipTests>
             </configuration>
          </plugin>
 
       </plugins>
 
 
-      <pluginManagement>
-
-         <plugins>
-
-            <!-- COMPILATION ASPECT -->
-            <plugin>
-               <groupId>org.codehaus.mojo</groupId>
-               <artifactId>aspectj-maven-plugin</artifactId>
-               <version>${aspectj-maven-plugin.version}</version>
-               <configuration>
-                  <source>1.6</source>
-                  <Xlint>ignore</Xlint>
-               </configuration>
-               <executions>
-                  <execution>
-                     <goals>
-                        <goal>compile</goal>
-                        <goal>test-compile</goal>
-                     </goals>
-                  </execution>
-               </executions>
-            </plugin>
-
-         </plugins>
-
-      </pluginManagement>
-
    </build>
 
-   <!-- Configuration SVN pour le plug-in maven-release -->
-   <scm>
-      <url>
-        scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/hectorTest/
-      </url>
-      <developerConnection>
-         scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/hectorTest/
-      </developerConnection>
-      <connection>
-         scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/hectorTest/
-      </connection>
-   </scm>
-
-   <!--
-      On indique l'URL des repository Nexus, pour les versions Snapshots
-      et Releases des artéfacts
-   -->
-   <distributionManagement>
-      <repository>
-         <id>nexus</id>
-         <name>Releases</name>
-         <url>http://cer69-nexus.cer69.recouv:8081/nexus/content/repositories/releases</url>
-      </repository>
-      <snapshotRepository>
-         <id>nexus</id>
-         <name>Snapshots</name>
-         <url>http://cer69-nexus.cer69.recouv:8081/nexus/content/repositories/snapshots</url>
-         <uniqueVersion>false</uniqueVersion>
-      </snapshotRepository>
-   </distributionManagement>
-
-
    <dependencies>
+      
+      <!-- JUnit -->
+      <dependency>
+         <groupId>junit</groupId>
+         <artifactId>junit</artifactId>
+         <version>${junit.version}</version>
+         <scope>test</scope>
+      </dependency>
+      
+      <!-- SLF4J et Logback -->
+      <dependency>
+         <groupId>org.slf4j</groupId>
+         <artifactId>slf4j-api</artifactId>
+         <version>${org.slf4j.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>ch.qos.logback</groupId>
+         <artifactId>logback-classic</artifactId>
+         <version>${logback.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>ch.qos.logback</groupId>
+         <artifactId>logback-core</artifactId>
+         <version>${logback.version}</version>
+      </dependency>
+      
+      <!-- Hector -->
       <dependency>
          <groupId>me.prettyprint</groupId>
-         <artifactId>hector</artifactId>
-         <version>1.0-3</version>
-         <type>pom</type>
-      </dependency>
-      <!--
-         On indique la version de libthrift explicitement pour
-         désactiver slf4j-log4j
-      -->
-      <dependency>
-         <groupId>org.apache.thrift</groupId>
-         <artifactId>libthrift</artifactId>
-         <version>0.6.1</version>
-         <exclusions>
-            <exclusion>
-               <groupId>org.slf4j</groupId>
-               <artifactId>slf4j-log4j12</artifactId>
-            </exclusion>
-         </exclusions>
+         <artifactId>hector-core</artifactId>
+         <version>${hector.version}</version>
       </dependency>
       <dependency>
          <groupId>me.prettyprint</groupId>
          <artifactId>hector-object-mapper</artifactId>
          <version>3.0-01</version>
       </dependency>
-      <dependency>
-         <groupId>me.prettyprint</groupId>
-         <artifactId>hector-core</artifactId>
-         <version>1.0-3</version>
-      </dependency>
-      <dependency>
-         <groupId>junit</groupId>
-         <artifactId>junit</artifactId>
-         <version>4.8.1</version>
-         <scope>test</scope>
-      </dependency>
-      <dependency>
-         <groupId>ch.qos.logback</groupId>
-         <artifactId>logback-classic</artifactId>
-         <version>0.9.30</version>
-      </dependency>
-      <dependency>
-         <groupId>org.slf4j</groupId>
-         <artifactId>slf4j-api</artifactId>
-         <version>1.6.3</version>
-      </dependency>
+      
+      <!-- Apache Commons -->
       <dependency>
          <groupId>commons-collections</groupId>
          <artifactId>commons-collections</artifactId>
-         <version>3.2.1</version>
+         <version>${apache.commons-collections.version}</version>
       </dependency>
+      
    </dependencies>
+   
 </project>
