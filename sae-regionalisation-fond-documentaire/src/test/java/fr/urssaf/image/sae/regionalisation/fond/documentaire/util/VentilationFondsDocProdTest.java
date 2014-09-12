@@ -16,7 +16,6 @@ import java.util.Properties;
 import java.util.TreeMap;
 
 import org.apache.commons.lang.StringUtils;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,6 +84,7 @@ public class VentilationFondsDocProdTest {
       reqMetas.add("SM_DOCUMENT_TYPE");
       reqMetas.add("SM_TITLE");
       reqMetas.add("SM_SIZE");
+      reqMetas.add("ffi");
       
       // Création du répertoire de sortie s'il n'existe pas déjà
       File rep = new File(CHEMINREP);
@@ -183,6 +183,9 @@ public class VentilationFondsDocProdTest {
                writer.write(";");
                //17
                writer.write(StringUtils.trimToEmpty(map.get("SM_SIZE")));
+               writer.write("\n");
+               //18
+               writer.write(StringUtils.trimToEmpty(map.get("ffi")));
                writer.write("\n");
                
                nbDocsSortis++;
