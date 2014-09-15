@@ -145,7 +145,7 @@ Les fichiers ci-dessous sont installés dans @@SAE_HOME@@/sae-rnd-executable/
 // Commande de lancement de sae-igcmaj-exe.jar
 // --------------------------------------------------------------------
 
-java -jar -Dlogback.configurationFile=@@SAE_HOME@@/sae-igcmaj/logback-sae-igcmaj.xml @@SAE_HOME@@/sae-igcmaj/sae-igcmaj-executable.jar @@SAE_HOME@@/sae-config.properties @@SAE_HOME@@/sae-igc-config.xml
+java -jar -Dlogback.configurationFile=@@SAE_HOME@@/sae-igcmaj/logback-sae-igcmaj.xml @@SAE_HOME@@/sae-igcmaj/sae-igcmaj-exe.jar @@SAE_HOME@@/sae-config.properties @@SAE_HOME@@/sae-igc-config.xml
 
 
 
