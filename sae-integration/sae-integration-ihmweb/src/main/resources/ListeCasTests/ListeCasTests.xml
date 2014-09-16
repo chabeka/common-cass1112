@@ -1191,7 +1191,17 @@
             <luceneExempleList>Denomination:"Test 319-Recherche-OK-Toutes-Meta-Recherchables" AND SiteAcquisition:CER44</luceneExempleList>
             <luceneExempleList>Denomination:"Test 319-Recherche-OK-Toutes-Meta-Recherchables" AND Titre:"Attestation de vigilance"</luceneExempleList>            
          </CasTest>
-
+         
+         <CasTest>
+            <id>320</id>
+            <code>320-Recherche-OK-TrimGauche</code>
+            <description>
+               Ce test permet de vérifier que la fonction TRIM à gauche fonctionne correctement lorsqu'une valeur de métadonnée est précisée avec un espace à gauche.
+            </description>
+            <implemente>true</implemente>
+            <luceneExempleList>Denomination:"Test 320-Recherche-OK-TrimGauche" AND NouvelleMetaTrimGauche:"valeur"</luceneExempleList>
+            <luceneExempleList>Denomination:"Test 320-Recherche-OK-TrimGauche" AND NouvelleMetaTrimGauche:" valeur"</luceneExempleList>
+         </CasTest>
 
          <CasTest>
             <id>350</id>

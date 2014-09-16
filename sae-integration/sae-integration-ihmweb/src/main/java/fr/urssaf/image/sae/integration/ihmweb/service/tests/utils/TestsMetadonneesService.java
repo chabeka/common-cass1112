@@ -7,6 +7,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import fr.urssaf.image.sae.integration.ihmweb.exception.IntegrationRuntimeException;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CodeMetadonneeList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeDefinition;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeur;
@@ -224,9 +225,9 @@ public final class TestsMetadonneesService {
       sBuffer.append("Erreur sur la métadonnée ");
       sBuffer.append(code);
       sBuffer.append(" : on attendait la valeur \"");
-      if(valeurAttendue.length()>50){
-         sBuffer.append(valeurAttendue.substring(0, 50) +"...");
-      }else{
+      if (valeurAttendue.length() > 50) {
+         sBuffer.append(valeurAttendue.substring(0, 50) + "...");
+      } else {
          sBuffer.append(valeurAttendue);
       }
       sBuffer.append('\"');
@@ -248,9 +249,9 @@ public final class TestsMetadonneesService {
             resultatTest.setStatus(TestStatusEnum.Echec);
 
             sBuffer.append(" alors que la valeur obtenue est \"");
-            if(meta.getValeur().length()>50){
-               sBuffer.append(meta.getValeur().substring(0, 50) +"...");
-            }else{
+            if (meta.getValeur().length() > 50) {
+               sBuffer.append(meta.getValeur().substring(0, 50) + "...");
+            } else {
                sBuffer.append(meta.getValeur());
             }
             sBuffer.append("\".");
@@ -287,6 +288,13 @@ public final class TestsMetadonneesService {
          for (String code : codes) {
 
             metadonnee = refMetasService.findMeta(code);
+            if (metadonnee == null) {
+               throw new IntegrationRuntimeException(
+                     String
+                           .format(
+                                 "La métadonnée \"%s\" n'a pas été retrouvée dans le référentiel des métadonnées (fichier XML contenu dans l'IHM de test)",
+                                 code));
+            }
             if (!metadonnee.isConsultable()) {
 
                resultatTest.setStatus(TestStatusEnum.Echec);

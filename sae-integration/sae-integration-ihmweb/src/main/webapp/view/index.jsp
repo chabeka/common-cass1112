@@ -39,9 +39,7 @@
 <p><a href="escapeXml.do">Conversion de chaînes XML</a></p>
 <p><br /></p>
 
-<p><br /></p>
-<p><a href="traceVisualisation.do">Traçabilité : Registre de surveillance technique</a></p>
-<p><a href="journalVisualisation.do">Traçabilité : Journal des événements</a></p>
+
 <p><br /><br /><br /><br /></p>
 
 </body>
