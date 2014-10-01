@@ -271,6 +271,56 @@ public class SaeServiceMessageReceiverInOut extends
                            "http://www.cirtil.fr/saeService",
                            "recuperationMetadonnees"));
 
+            } else
+
+               if ("transfert".equals(methodName)) {
+
+                  fr.cirtil.www.saeservice.TransfertResponse transfertResponse31 = null;
+                  fr.cirtil.www.saeservice.Transfert wrappedParam = (fr.cirtil.www.saeservice.Transfert) fromOM(
+                        msgContext.getEnvelope().getBody().getFirstElement(),
+                        fr.cirtil.www.saeservice.Transfert.class,
+                        getEnvelopeNamespaces(msgContext.getEnvelope()));
+                  
+                  transfertResponse31 =
+
+                  skel.transfertSecure(wrappedParam);
+
+                  envelope = toEnvelope(getSOAPFactory(msgContext),
+                        transfertResponse31, false,
+                        new javax.xml.namespace.QName(
+                              "http://www.cirtil.fr/saeService",
+                              "transfert"));
+
+            } else
+
+               if ("consultationAffichable".equals(methodName)) {
+
+                  fr.cirtil.www.saeservice.ConsultationAffichableResponse consultationAffichableResponse31 = null;
+                  fr.cirtil.www.saeservice.ConsultationAffichable wrappedParam = (fr.cirtil.www.saeservice.ConsultationAffichable) fromOM(
+                        msgContext.getEnvelope().getBody().getFirstElement(),
+                        fr.cirtil.www.saeservice.ConsultationAffichable.class,
+                        getEnvelopeNamespaces(msgContext.getEnvelope()));
+                  
+                  // NE PAS ENLEVER CE CODE :
+                  // Gestion automatique du MTOM : 
+                  // Si le client ne specifie pas le flag MTOM, le MTOM sera actif
+                  // Il faut que le client specifie qu'il ne veut pas utiliser le MTOM pour qu'il n'y ait pas d'optimisation MTOM
+                  if (wrappedParam.getConsultationAffichable().isOptimisationMTOMSpecified() && wrappedParam.getConsultationAffichable().getOptimisationMTOM() == false) {
+                     msgContext.setDoingMTOM(false);
+                  } else {
+                     msgContext.setDoingMTOM(true);
+                  }
+                  
+                  consultationAffichableResponse31 =
+
+                  skel.consultationAffichableSecure(wrappedParam);
+
+                  envelope = toEnvelope(getSOAPFactory(msgContext),
+                        consultationAffichableResponse31, false,
+                        new javax.xml.namespace.QName(
+                              "http://www.cirtil.fr/saeService",
+                              "consultationAffichable"));
+
             } else {
                throw new java.lang.RuntimeException("method not found");
             }
@@ -819,6 +869,62 @@ public class SaeServiceMessageReceiverInOut extends
       fr.cirtil.www.saeservice.RecuperationMetadonneesResponse wrappedElement = new fr.cirtil.www.saeservice.RecuperationMetadonneesResponse();
       return wrappedElement;
    }
+   
+   private org.apache.axiom.soap.SOAPEnvelope toEnvelope(
+         org.apache.axiom.soap.SOAPFactory factory,
+         fr.cirtil.www.saeservice.TransfertResponse param,
+         boolean optimizeContent, javax.xml.namespace.QName methodQName)
+         throws org.apache.axis2.AxisFault {
+      try {
+         org.apache.axiom.soap.SOAPEnvelope emptyEnvelope = factory
+               .getDefaultEnvelope();
+
+         emptyEnvelope
+               .getBody()
+               .addChild(
+                     param
+                           .getOMElement(
+                                 fr.cirtil.www.saeservice.TransfertResponse.MY_QNAME,
+                                 factory));
+
+         return emptyEnvelope;
+      } catch (org.apache.axis2.databinding.ADBException e) {
+         throw org.apache.axis2.AxisFault.makeFault(e);
+      }
+   }
+
+   private fr.cirtil.www.saeservice.TransfertResponse wrapTransfert() {
+      fr.cirtil.www.saeservice.TransfertResponse wrappedElement = new fr.cirtil.www.saeservice.TransfertResponse();
+      return wrappedElement;
+   }
+   
+   private org.apache.axiom.soap.SOAPEnvelope toEnvelope(
+         org.apache.axiom.soap.SOAPFactory factory,
+         fr.cirtil.www.saeservice.ConsultationAffichableResponse param,
+         boolean optimizeContent, javax.xml.namespace.QName methodQName)
+         throws org.apache.axis2.AxisFault {
+      try {
+         org.apache.axiom.soap.SOAPEnvelope emptyEnvelope = factory
+               .getDefaultEnvelope();
+
+         emptyEnvelope
+               .getBody()
+               .addChild(
+                     param
+                           .getOMElement(
+                                 fr.cirtil.www.saeservice.ConsultationAffichableResponse.MY_QNAME,
+                                 factory));
+
+         return emptyEnvelope;
+      } catch (org.apache.axis2.databinding.ADBException e) {
+         throw org.apache.axis2.AxisFault.makeFault(e);
+      }
+   }
+
+   private fr.cirtil.www.saeservice.ConsultationAffichableResponse wrapConsultationAffichable() {
+      fr.cirtil.www.saeservice.ConsultationAffichableResponse wrappedElement = new fr.cirtil.www.saeservice.ConsultationAffichableResponse();
+      return wrappedElement;
+   }
 
    /**
     * get the default envelope
@@ -996,6 +1102,34 @@ public class SaeServiceMessageReceiverInOut extends
                .equals(type)) {
 
             return fr.cirtil.www.saeservice.RecuperationMetadonneesResponse.Factory
+                  .parse(param.getXMLStreamReaderWithoutCaching());
+
+         }
+         if (fr.cirtil.www.saeservice.Transfert.class
+               .equals(type)) {
+
+            return fr.cirtil.www.saeservice.Transfert.Factory
+                  .parse(param.getXMLStreamReaderWithoutCaching());
+
+         }
+         if (fr.cirtil.www.saeservice.TransfertResponse.class
+               .equals(type)) {
+
+            return fr.cirtil.www.saeservice.TransfertResponse.Factory
+                  .parse(param.getXMLStreamReaderWithoutCaching());
+
+         }
+         if (fr.cirtil.www.saeservice.ConsultationAffichable.class
+               .equals(type)) {
+
+            return fr.cirtil.www.saeservice.ConsultationAffichable.Factory
+                  .parse(param.getXMLStreamReaderWithoutCaching());
+
+         }
+         if (fr.cirtil.www.saeservice.ConsultationAffichableResponse.class
+               .equals(type)) {
+
+            return fr.cirtil.www.saeservice.ConsultationAffichableResponse.Factory
                   .parse(param.getXMLStreamReaderWithoutCaching());
 
          }

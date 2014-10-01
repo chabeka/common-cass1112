@@ -126,6 +126,26 @@
       métadonnées disponible pour le client</wsdl:documentation>
       <wsdl:part name="output" element="sae:recuperationMetadonneesResponse"/>
    </wsdl:message>
+   <wsdl:message name="transfertRequestMessage">
+      <wsdl:documentation>Message contenant la demande de transfert
+         de documents de la GNT vers la GNS</wsdl:documentation>
+      <wsdl:part name="input" element="sae:transfert"/>
+   </wsdl:message>
+   <wsdl:message name="transfertResponseMessage">
+      <wsdl:documentation>Message contenant le résultat du
+         transfert de documents de la GNT vers la GNS</wsdl:documentation>
+      <wsdl:part name="output" element="sae:transfertResponse"/>
+   </wsdl:message>
+   <wsdl:message name="consultationAffichableRequestMessage">
+      <wsdl:documentation>Message de demande d'une consultation de
+         documents SAE dans un format affichable</wsdl:documentation>
+      <wsdl:part name="input" element="sae:consultationAffichable"/>
+   </wsdl:message>
+   <wsdl:message name="consultationAffichableResponseMessage">
+      <wsdl:documentation>Message contenant le résultat de la
+         consultation de documents au SAE dans un format affichable</wsdl:documentation>
+      <wsdl:part name="output" element="sae:consultationAffichableResponse"/>
+   </wsdl:message>
 	<wsdl:portType name="SaeServicePortType">
 		<wsdl:operation name="Ping" parameterOrder="input">
 			<wsdl:documentation>Opération de test de la disponibilité du
@@ -198,6 +218,18 @@
          métadonnées disponible pour le client</wsdl:documentation>
          <wsdl:input message="tns:recuperationMetadonneesRequestMessage"/>
          <wsdl:output message="tns:recuperationMetadonneesResponseMessage"/>
+      </wsdl:operation>
+      <wsdl:operation name="transfert" parameterOrder="input">
+         <wsdl:documentation>Opération de transfert d'un document de la
+         GNT vers la GNS</wsdl:documentation>
+         <wsdl:input message="tns:transfertRequestMessage"/>
+         <wsdl:output message="tns:transfertResponseMessage"/>
+      </wsdl:operation>
+      <wsdl:operation name="consultationAffichable" parameterOrder="input">
+         <wsdl:documentation>Opération de consultationAffichable d'un document
+         sur le SAE</wsdl:documentation>
+         <wsdl:input message="tns:consultationAffichableRequestMessage"/>
+         <wsdl:output message="tns:consultationAffichableResponseMessage"/>
       </wsdl:operation>
 	</wsdl:portType>
 	<wsdl:binding name="SaeServiceSoapBinding" type="sae:SaeServicePortType">
@@ -323,6 +355,28 @@
          <wsdl:documentation>Service de récupération des métadonnées
          disponible pour le client</wsdl:documentation>
          <soap:operation soapAction="recuperationMetadonnees"/>
+         <wsdl:input>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="transfert">
+         <wsdl:documentation>Service de transfert unitaire de document
+         </wsdl:documentation>
+         <soap:operation soapAction="transfert"/>
+         <wsdl:input>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="consultationAffichable">
+         <wsdl:documentation>Service de consultationMTOM documentaire du
+            SAE dans un format affichable</wsdl:documentation>
+         <soap:operation soapAction="consultationAffichable"/>
          <wsdl:input>
             <soap:body use="literal"/>
          </wsdl:input>

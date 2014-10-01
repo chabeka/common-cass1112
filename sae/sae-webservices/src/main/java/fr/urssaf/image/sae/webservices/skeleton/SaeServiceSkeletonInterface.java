@@ -11,6 +11,8 @@ import fr.cirtil.www.saeservice.ArchivageUnitairePJ;
 import fr.cirtil.www.saeservice.ArchivageUnitairePJResponse;
 import fr.cirtil.www.saeservice.ArchivageUnitaireResponse;
 import fr.cirtil.www.saeservice.Consultation;
+import fr.cirtil.www.saeservice.ConsultationAffichable;
+import fr.cirtil.www.saeservice.ConsultationAffichableResponse;
 import fr.cirtil.www.saeservice.ConsultationMTOM;
 import fr.cirtil.www.saeservice.ConsultationMTOMResponse;
 import fr.cirtil.www.saeservice.ConsultationResponse;
@@ -26,6 +28,8 @@ import fr.cirtil.www.saeservice.RecuperationMetadonnees;
 import fr.cirtil.www.saeservice.RecuperationMetadonneesResponse;
 import fr.cirtil.www.saeservice.Suppression;
 import fr.cirtil.www.saeservice.SuppressionResponse;
+import fr.cirtil.www.saeservice.Transfert;
+import fr.cirtil.www.saeservice.TransfertResponse;
 import fr.urssaf.image.sae.webservices.security.exception.SaeAccessDeniedAxisFault;
 
 /**
@@ -181,4 +185,27 @@ public interface SaeServiceSkeletonInterface {
     */
    RecuperationMetadonneesResponse recuperationMetadonneesSecure(
          RecuperationMetadonnees request) throws AxisFault;
+   
+   /**
+    * endpoint du transfert de document
+    * 
+    * @param request
+    *           request du web service
+    * @return reponse du web service
+    * @throws AxisFault
+    *            exception levée dans la consommation du web service
+    */
+   TransfertResponse transfertSecure(Transfert request) throws AxisFault;
+   
+   /**
+    * endpoint de consultation dans un format affichable
+    * 
+    * @param request
+    *           request du web service
+    * @return reponse du web service
+    * @throws AxisFault
+    *            exception levée lors de la consultation
+    */
+   ConsultationAffichableResponse consultationAffichableSecure(ConsultationAffichable request)
+         throws AxisFault;
 }

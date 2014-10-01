@@ -652,6 +652,79 @@
          </xsd:element>
       </xsd:sequence>
    </xsd:complexType>
+   <xsd:complexType name="transfertRequestType">
+      <xsd:annotation>
+         <xsd:documentation>Paramètre d'entrée de l'opération 'transfert'</xsd:documentation>
+      </xsd:annotation>
+      <xsd:sequence>
+         <xsd:element name="uuid" type="sae:uuidType">
+            <xsd:annotation>
+               <xsd:documentation>l'identifiant unique du document à
+                  transferer
+               </xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+      </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="transfertResponseType">
+      <xsd:annotation>
+         <xsd:documentation>Retour de l'opération
+            'transfert'.
+         </xsd:documentation>
+      </xsd:annotation>
+   </xsd:complexType>
+   <xsd:complexType name="consultationAffichableRequestType">
+      <xsd:sequence>
+         <xsd:annotation>
+            <xsd:documentation>Paramètre d'entrée de l'opération
+               'consultationAffichable'</xsd:documentation>
+         </xsd:annotation>
+         <xsd:element name="idArchive" type="sae:uuidType">
+            <xsd:annotation>
+               <xsd:documentation>L'identifiant unique d'archivage de
+                  l'archive à consulter</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         <xsd:element name="metadonnees" type="sae:listeMetadonneeCodeType"
+            minOccurs="0">
+            <xsd:annotation>
+               <xsd:documentation>La liste des codes des métadonnées
+                  voulues</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         <xsd:element name="optimisationMTOM" type="xsd:boolean" minOccurs="0">
+            <xsd:annotation>
+               <xsd:documentation>Activation de l'optimisation MTOM</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         <xsd:element name="numeroPage" type="xsd:int" minOccurs="0">
+            <xsd:annotation>
+               <xsd:documentation>Numero de page</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         <xsd:element name="nombrePage" type="xsd:int" minOccurs="0">
+            <xsd:annotation>
+               <xsd:documentation>Nombre de page</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+      </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="consultationAffichableResponseType">
+      <xsd:sequence>
+         <xsd:annotation>
+            <xsd:documentation>Valeur de retour de l'opération
+               'consultationAffichable'</xsd:documentation>
+         </xsd:annotation>
+         <xsd:element name="contenu" type="xsd:base64Binary" />
+         <xsd:element name="metadonnees" type="sae:listeMetadonneeType">
+            <xsd:annotation>
+               <xsd:documentation>Les métadonnées associées à l'archive,
+                  sous forme d'une liste de paire clé/valeur
+               </xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+      </xsd:sequence>
+   </xsd:complexType>
    <xsd:element name="archivageUnitaire" type="sae:archivageUnitaireRequestType" />
    <xsd:element name="archivageUnitaireResponse" type="sae:archivageUnitaireResponseType" />
    <xsd:element name="archivageUnitairePJ" type="sae:archivageUnitairePJRequestType" />
@@ -672,5 +745,9 @@
    <xsd:element name="suppression" type="sae:suppressionRequestType" />
    <xsd:element name="suppressionResponse" type="sae:suppressionResponseType" />
    <xsd:element name="recuperationMetadonneesResponse" type="sae:recuperationMetadonneesResponseType" />
+   <xsd:element name="transfert" type="sae:transfertRequestType" />
+   <xsd:element name="transfertResponse" type="sae:transfertResponseType" />
+   <xsd:element name="consultationAffichable" type="sae:consultationAffichableRequestType" />
+   <xsd:element name="consultationAffichableResponse" type="sae:consultationAffichableResponseType" />
 
 </xsd:schema>
