@@ -9,7 +9,7 @@
   <properties>
         <org.slf4j.version>1.6.1</org.slf4j.version>
         <logback.version>0.9.30</logback.version>
-        <commons.pdfbox.version>0.0.1-SNAPSHOT</commons.pdfbox.version>
+        <commons.pdfbox.version>0.0.1</commons.pdfbox.version>
         <junit.version>4.8.2</junit.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
