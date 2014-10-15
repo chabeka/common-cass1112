@@ -127,7 +127,7 @@ public class SAEModificationServiceTest {
    public void init() throws Exception {
 
       server.resetData();
-      
+
       provider.openConnexion();
 
       VIContenuExtrait viExtrait = new VIContenuExtrait();
@@ -163,7 +163,7 @@ public class SAEModificationServiceTest {
       typeDocCree.setCode("5.1.2.1.5");
       typeDocCree.setCodeActivite("1");
       typeDocCree.setCodeFonction("5");
-      typeDocCree.setDureeConservation(1825);
+      typeDocCree.setDureeConservation(1095);
       typeDocCree.setLibelle("Libellé 5.1.2.1.5");
       typeDocCree.setType(TypeCode.ARCHIVABLE_AED);
 
@@ -173,7 +173,7 @@ public class SAEModificationServiceTest {
       typeDocCree.setCode("2.3.1.1.12");
       typeDocCree.setCodeActivite("3");
       typeDocCree.setCodeFonction("1");
-      typeDocCree.setDureeConservation(1825);
+      typeDocCree.setDureeConservation(1095);
       typeDocCree.setLibelle("Libellé 2.3.1.1.12");
       typeDocCree.setType(TypeCode.ARCHIVABLE_AED);
 
@@ -211,7 +211,8 @@ public class SAEModificationServiceTest {
       }
    }
 
-   // Ne peut pas être réalisé en l'état car le test de l'existence de l'archive se fait désormais avant
+   // Ne peut pas être réalisé en l'état car le test de l'existence de l'archive
+   // se fait désormais avant
    // la vérification des métas en double, il faudrait donc utiliser des mocks.
    @Ignore
    @Test(expected = DuplicatedMetadataEx.class)
@@ -228,7 +229,7 @@ public class SAEModificationServiceTest {
 
       saeModificationService.modification(UUID.randomUUID(), metadatas);
    }
-   
+
    @Test(expected = ArchiveInexistanteEx.class)
    public void testArchiveInexistante() throws ReferentialRndException,
          UnknownCodeRndEx, InvalidValueTypeAndFormatMetadataEx,
@@ -243,6 +244,24 @@ public class SAEModificationServiceTest {
       saeModificationService.modification(UUID.randomUUID(), metadatas);
    }
 
+   /**
+    * 
+    * NB: A date du commit 16/09/2014, il y a un souci sur ce test, car :
+    * <ul>
+    * <li>
+    * d'une part, côté DFCE, la date de fin de conservation n'est pas calculée
+    * au moment du stockage. Il est donc techniquement possible d'archiver un
+    * document dont la date de fin de conservation se situe dans le passé</li>
+    * <li>
+    * d'autre part, côté DFCE, lors de l'appel à l'API de changement de type de
+    * document, il y a un calcul de la date de fin de conservation, et une
+    * erreur est levée si cette date est dans le passé"java.lang.IllegalArgumentException: new final date has to be in the future, actual : Mon Sep 01 02:00:00 CEST 2014"
+    * </li>
+    * </ul>
+    * Donc pour que ce TU passe, il faut pour le moment s'assurer que la mise à
+    * jour du code RND donne une date de fin de conservation dans le futur.
+    * 
+    */
    @Test
    public void modificationSucces() throws IOException, SAECaptureServiceEx,
          ReferentialRndException, UnknownCodeRndEx, RequiredStorageMetadataEx,
@@ -251,7 +270,9 @@ public class SAEModificationServiceTest {
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
          UnknownHashCodeEx, CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx,
          MetadataValueNotInDictionaryEx, NotModifiableMetadataEx,
-         ModificationException, ArchiveInexistanteEx, ValidationExceptionInvalidFile, UnknownFormatException {
+         ModificationException, ArchiveInexistanteEx,
+         ValidationExceptionInvalidFile, UnknownFormatException {
+
       EcdeTestDocument ecde = ecdeTestTools
             .buildEcdeTestDocument("attestation_consultation.pdf");
 
@@ -285,7 +306,7 @@ public class SAEModificationServiceTest {
 
       // liste des métadonnées non obligatoires
       metadatas.add(new UntypedMetadata("DateReception", "1999-11-25"));
-      metadatas.add(new UntypedMetadata("DateDebutConservation", "2011-09-02"));
+      metadatas.add(new UntypedMetadata("DateDebutConservation", "2013-09-02"));
 
       uuid = insertService.capture(metadatas, urlEcdeDocument).getIdDoc();
 
