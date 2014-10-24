@@ -1,5 +1,6 @@
 package fr.urssaf.image.sae.integration.ihmweb.saeservice.utils;
 
+import java.math.BigInteger;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
@@ -24,6 +25,8 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.A
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ArchivageUnitairePJRequestTypeChoice_type0;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ArchivageUnitaireRequestType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.Consultation;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ConsultationAffichable;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ConsultationAffichableRequestType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ConsultationMTOM;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ConsultationMTOMRequestType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ConsultationRequestType;
@@ -42,6 +45,8 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.R
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RequeteRechercheType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.Suppression;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.SuppressionRequestType;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.Transfert;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.TransfertRequestType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.UuidType;
 
 /**
@@ -200,8 +205,7 @@ public final class SaeServiceObjectFactory {
       return uuidType;
 
    }
-   
-   
+
    /**
     * Construit un objet de requête pour l'opération "archivageUnitaire"
     * 
@@ -391,8 +395,8 @@ public final class SaeServiceObjectFactory {
     * 
     * @param idArchivage
     *           l'identifiant d'archivage
-    * @param la
-    *           liste des codes des métadonnées souhaitées
+    * @param codeMetadonnees
+    *           la liste des codes des métadonnées souhaitées
     * @return l'objet pour la couche WebService
     */
    public static Consultation buildConsultationRequest(String idArchivage,
@@ -427,8 +431,8 @@ public final class SaeServiceObjectFactory {
     * 
     * @param idArchivage
     *           l'identifiant d'archivage
-    * @param la
-    *           liste des codes des métadonnées souhaitées
+    * @param codeMetadonnees
+    *           la liste des codes des métadonnées souhaitées
     * @return l'objet pour la couche WebService
     */
    public static ConsultationMTOM buildConsultationMTOMRequest(
@@ -453,6 +457,62 @@ public final class SaeServiceObjectFactory {
          consultationReqType.setMetadonnees(codesMetadonnees);
       }
 
+      // fin
+      return consultation;
+
+   }
+   
+  
+   /**
+    * Construit un objet de requête pour le service web "consultationAffichable"
+    * 
+    * @param idArchivage
+    *           l'identifiant d'archivage
+    * @param codeMetadonnees
+    *           la liste des codes des métadonnées souhaitées
+    * @return l'objet pour la couche WebService
+    */
+   public static ConsultationAffichable buildConsultationAffichableRequest(
+         String idArchivage, CodeMetadonneeList codeMetadonnees,
+         String optimisationMTOM, Integer numeroPage, Integer nombrePages) {
+
+      ConsultationAffichable consultation = new ConsultationAffichable();
+
+      ConsultationAffichableRequestType consultationReqType = new ConsultationAffichableRequestType();
+
+      consultation.setConsultationAffichable(consultationReqType);
+
+      // UUID
+      UuidType uuid = SaeServiceObjectFactory.buildUuid(idArchivage);
+      consultationReqType.setIdArchive(uuid);
+
+      // Les codes des métadonnées souhaitées
+      // Les métadonnées ne sont ajoutées que SI au moins 1 métadonnée est
+      // demandée
+      if (!CollectionUtils.isEmpty(codeMetadonnees)) {
+         ListeMetadonneeCodeType codesMetadonnees = SaeServiceObjectFactory
+               .buildListeCodesMetadonnes(codeMetadonnees);
+         consultationReqType.setMetadonnees(codesMetadonnees);
+      }
+
+      // Optimisation MTOM
+      
+      if (optimisationMTOM == "true") {
+         consultationReqType.setOptimisationMTOM(true);
+      } else if (optimisationMTOM == "false") {
+         consultationReqType.setOptimisationMTOM(false);
+      }
+      
+      // Numero de page
+      if (numeroPage != null) {
+         consultationReqType.setNumeroPage(BigInteger.valueOf(numeroPage.intValue()));
+      }
+      
+      // Nombre de pages
+      if (numeroPage != null) {
+         consultationReqType.setNombrePages(BigInteger.valueOf(nombrePages.intValue()));
+      }
+      
       // fin
       return consultation;
 
@@ -491,7 +551,7 @@ public final class SaeServiceObjectFactory {
       return recherche;
 
    }
-   
+
    /**
     * Construit un objet de requête pour l'opération "modification"
     * 
@@ -501,8 +561,8 @@ public final class SaeServiceObjectFactory {
     *           les métadonnées à modifier
     * @return l'objet pour la couche web service
     */
-   public static Modification buildModificationRequest(
-         UUID idDocument, MetadonneeValeurList metadonnees) {
+   public static Modification buildModificationRequest(UUID idDocument,
+         MetadonneeValeurList metadonnees) {
 
       Modification modification = new Modification();
 
@@ -511,12 +571,13 @@ public final class SaeServiceObjectFactory {
       modification.setModification(modificationReqType);
 
       // L'identifiant du document
-      if (idDocument==null) {
-         throw new IntegrationRuntimeException("L'identifiant du document à modifier doit obligatoirement être renseigné");
+      if (idDocument == null) {
+         throw new IntegrationRuntimeException(
+               "L'identifiant du document à modifier doit obligatoirement être renseigné");
       } else {
          modificationReqType.setUuid(buildUuid(idDocument.toString()));
       }
-         
+
       // Les métadonnées
       ListeMetadonneeType listeMetadonneeType = buildListeMetadonnes(metadonnees);
       modificationReqType.setMetadonnees(listeMetadonneeType);
@@ -525,18 +586,15 @@ public final class SaeServiceObjectFactory {
       return modification;
 
    }
-   
+
    /**
     * Construit un objet de requête pour l'opération "modification"
     * 
     * @param idDocument
     *           l'identifiant unique du document à modifier
-    * @param metadonnees
-    *           les métadonnées à modifier
     * @return l'objet pour la couche web service
     */
-   public static Suppression buildSuppressionRequest(
-         UUID idDocument) {
+   public static Suppression buildSuppressionRequest(UUID idDocument) {
 
       Suppression suppression = new Suppression();
 
@@ -545,14 +603,43 @@ public final class SaeServiceObjectFactory {
       suppression.setSuppression(suppressionReqType);
 
       // L'identifiant du document
-      if (idDocument==null) {
-         throw new IntegrationRuntimeException("L'identifiant du document à supprimer doit obligatoirement être renseigné");
+      if (idDocument == null) {
+         throw new IntegrationRuntimeException(
+               "L'identifiant du document à supprimer doit obligatoirement être renseigné");
       } else {
          suppressionReqType.setUuid(buildUuid(idDocument.toString()));
       }
-      
+
       // fin
       return suppression;
+
+   }
+
+   /**
+    * Construit un objet de requête pour l'opération "transfert"
+    * 
+    * @param idDocument
+    *           l'identifiant unique du document à transférer
+    * @return l'objet pour la couche web service
+    */
+   public static Transfert buildTransfertRequest(UUID idDocument) {
+
+      Transfert transfert = new Transfert();
+
+      TransfertRequestType transfertReqType = new TransfertRequestType();
+
+      transfert.setTransfert(transfertReqType);
+
+      // L'identifiant du document
+      if (idDocument == null) {
+         throw new IntegrationRuntimeException(
+               "L'identifiant du document à transférer doit obligatoirement être renseigné");
+      } else {
+         transfertReqType.setUuid(buildUuid(idDocument.toString()));
+      }
+
+      // fin
+      return transfert;
 
    }
 

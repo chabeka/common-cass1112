@@ -18,10 +18,9 @@
 
 	<sae:urlServiceWeb />
 
-   
-	<sae:suppression  numeroEtape="unique"
-		objetFormulaire="${formulaire.suppression}"
-		pathFormulaire="suppression" />
+	<sae:transfert numeroEtape="unique"
+		objetFormulaire="${formulaire.transfert}"
+		pathFormulaire="transfert" />   
 		
 	<sae:soapMessages objetFormulaire="${formulaire.soapFormulaire}" />
    

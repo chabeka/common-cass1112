@@ -42,6 +42,12 @@
    </tag-file>
 
    <tag-file>
+      <name>consultationAffichable</name>
+      <description>Appel du service web de consultationAffichable</description>
+      <path>/WEB-INF/tags/consultationAffichable.tag</path>
+   </tag-file>
+   
+   <tag-file>
       <name>recherche</name>
       <description>Appel du service web de recherche</description>
       <path>/WEB-INF/tags/recherche.tag</path>
@@ -59,6 +65,12 @@
       <path>/WEB-INF/tags/suppression.tag</path>
    </tag-file>
 
+   <tag-file>
+      <name>transfert</name>
+      <description>Appel du service web de transfert</description>
+      <path>/WEB-INF/tags/transfert.tag</path>
+   </tag-file>
+   
    <tag-file>
       <name>resultatTest</name>
       <description>Résultat d'un test</description>

@@ -1392,6 +1392,27 @@
 
    </Categorie>
    
+      <!-- ======================================================== -->
+   <!-- Consultation affichable-->
+   <!-- ======================================================== -->
+
+   <Categorie>
+
+      <Nom>Consultation affichable</Nom>
+      <Id>11</Id>
+      <CasTests>
+
+         <CasTest>
+            <id>2099</id>
+            <code>2099-Consultation affichable-TestLibre</code>
+            <description>
+               Test libre de la consultation affichable => pas de résultat attendu 
+            </description>
+            <implemente>true</implemente>
+         </CasTest>
+      </CasTests>
+   </Categorie>
+   
    <!-- ======================================================== -->
    <!-- Droits -->
    <!-- ======================================================== -->
@@ -1978,6 +1999,29 @@
             <luceneExemple>Denomination:"Test 1601-Ged-Technique-OK-Suppression-Doc-Existant-Arret-DFCE"</luceneExemple>
          </CasTest>
 
+      </CasTests>
+
+   </Categorie>
+   
+   <!-- ======================================================== -->
+   <!-- SAE - Transfert -->
+   <!-- ======================================================== -->
+
+   <Categorie>
+
+      <Nom>SAI - Transfert</Nom>
+      <Id>10</Id>
+      <CasTests>
+
+         <CasTest>
+            <id>1999</id>
+            <code>1999-SAI-Transfert-TestLibre</code>
+            <description>
+               SAI - Test libre du transfert 
+            </description>
+            <implemente>true</implemente>
+         </CasTest>
+ 
       </CasTests>
 
    </Categorie>

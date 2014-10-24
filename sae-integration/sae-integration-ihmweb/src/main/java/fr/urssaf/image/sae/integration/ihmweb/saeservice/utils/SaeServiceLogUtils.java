@@ -22,10 +22,12 @@ import fr.urssaf.image.sae.integration.ihmweb.constantes.SaeIntegrationConstante
 import fr.urssaf.image.sae.integration.ihmweb.exception.IntegrationRuntimeException;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureUnitaireFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.formulaire.ConsultationAffichableFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ConsultationFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ModificationFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.SuppressionFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.formulaire.TransfertFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CaptureMasseResultat;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ConsultationResultat;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeur;
@@ -139,7 +141,7 @@ public final class SaeServiceLogUtils {
 
    /**
     * Ajoute, dans le log du résultat du test, un résultat de l'opération
-    * "consultation" ou "consultationMTOM"
+    * "consultation" ou "consultationMTOM" ou "consultationAffichable"
     * 
     * @param resultatTest
     *           les résultats du test à mettre à jour
@@ -362,6 +364,36 @@ public final class SaeServiceLogUtils {
 
       log.appendLogNewLine();
    }
+   
+   /**
+    * Ajoute, dans le log du résultat du test, les paramètres d'appel à
+    * l'opération "consultationAffichable"
+    * 
+    * @param log
+    *           le log
+    * @param formulaire
+    *           l'objet formulaire contenant les propriétés d'appel
+    */
+   public static void logAppelConsultationAffichable(ResultatTestLog log,
+         ConsultationAffichableFormulaire formulaire) {
+      log.appendLogLn("Appel de l'opération consultationAffichable");
+      log.appendLogLn("Paramètres : ");
+      log.appendLogLn("optimisation MTOM : " + formulaire.getOptimisationMTOM());
+      log.appendLogLn("Id archivage : " + formulaire.getIdArchivage());
+      log.appendLogLn("Métadonnées : ");
+
+      if (CollectionUtils.isEmpty(formulaire.getCodeMetadonnees())) {
+         log.appendLogLn("non spécifiées");
+      } else {
+         log
+               .appendLogLn(StringUtils.join(formulaire.getCodeMetadonnees(),
+                     ','));
+      }
+      log.appendLogLn("Numero page : " + formulaire.getNumeroPage());
+      log.appendLogLn("Nombre de pages : " + formulaire.getNombrePages());
+
+      log.appendLogNewLine();
+   }
 
    /**
     * Ajoute, dans le log du résultat du test, les paramètres d'appel à
@@ -568,6 +600,22 @@ public final class SaeServiceLogUtils {
    public static void logAppelSuppression(ResultatTestLog log,
          SuppressionFormulaire formulaire) {
       log.appendLogLn("Appel de l'opération suppression");
+      log.appendLogLn("Id du document : " + formulaire.getIdDocument());
+      log.appendLogNewLine();
+   }
+   
+   /**
+    * Ajoute, dans le log du résultat du test, les paramètres d'appel à
+    * l'opération "transfert"
+    * 
+    * @param log
+    *           le log
+    * @param formulaire
+    *           l'objet formulaire contenant les propriétés d'appel
+    */
+   public static void logAppelTransfert(ResultatTestLog log,
+         TransfertFormulaire formulaire) {
+      log.appendLogLn("Appel de l'opération transfert");
       log.appendLogLn("Id du document : " + formulaire.getIdDocument());
       log.appendLogNewLine();
    }

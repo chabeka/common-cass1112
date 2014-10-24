@@ -20,10 +20,12 @@ import fr.urssaf.image.sae.integration.ihmweb.service.referentiels.ReferentielMe
 import fr.urssaf.image.sae.integration.ihmweb.service.referentiels.ReferentielSoapFaultService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.CaptureMasseTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.CaptureUnitaireTestService;
+import fr.urssaf.image.sae.integration.ihmweb.service.tests.ConsultationAffichableTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.ConsultationTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.ModificationTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.RechercheTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.SuppressionTestService;
+import fr.urssaf.image.sae.integration.ihmweb.service.tests.TransfertTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.utils.TestsMetadonneesService;
 import fr.urssaf.image.sae.integration.ihmweb.utils.ControllerUtils;
 import fr.urssaf.image.sae.integration.ihmweb.utils.ModelUtils;
@@ -63,6 +65,9 @@ public abstract class AbstractTestWsController<T extends TestWsParentFormulaire>
 
    @Autowired
    private ConsultationTestService consultTestServ;
+   
+   @Autowired
+   private ConsultationAffichableTestService consultAffichableTestServ;
 
    @Autowired
    private CaptureUnitaireTestService captUnitTestServ;
@@ -78,6 +83,9 @@ public abstract class AbstractTestWsController<T extends TestWsParentFormulaire>
    
    @Autowired
    private SuppressionTestService suppressionTestServ;
+   
+   @Autowired
+   private TransfertTestService transfertTestServ;
    
    @Autowired
    private EcdeTests ecdeTests;
@@ -139,6 +147,16 @@ public abstract class AbstractTestWsController<T extends TestWsParentFormulaire>
    }
 
    /**
+    * Service des tests de l'opération "consultationAffichable" du service web SaeService
+    * 
+    * @return Service des tests de l'opération "consultationAffichable" du service web
+    *         SaeService
+    */
+   public final ConsultationAffichableTestService getConsultationAffichableTestService() {
+      return consultAffichableTestServ;
+   }
+   
+   /**
     * Service des tests de l'opération "capture unitaire" du service web
     * SaeService
     * 
@@ -183,6 +201,15 @@ public abstract class AbstractTestWsController<T extends TestWsParentFormulaire>
     */
    public final SuppressionTestService getSuppressionTestService() {
       return this.suppressionTestServ;
+   }
+   
+   /**
+    * Service des tests de la fonctionnalité "Transfert"
+    * 
+    * @return Service des tests de la fonctionnalité "Suppression"
+    */
+   public final TransfertTestService getTransfertTestService() {
+      return this.transfertTestServ;
    }
    
    /**

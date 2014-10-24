@@ -18,13 +18,12 @@
 
 	<sae:urlServiceWeb />
 
-   
-	<sae:suppression  numeroEtape="unique"
-		objetFormulaire="${formulaire.suppression}"
-		pathFormulaire="suppression" />
-		
+	<sae:consultationAffichable numeroEtape="unique"
+		objetFormulaire="${formulaire.consultationAffichable}"
+		pathFormulaire="consultationAffichable" />
+
 	<sae:soapMessages objetFormulaire="${formulaire.soapFormulaire}" />
-   
+
 </form:form>
 
 <p><br />
