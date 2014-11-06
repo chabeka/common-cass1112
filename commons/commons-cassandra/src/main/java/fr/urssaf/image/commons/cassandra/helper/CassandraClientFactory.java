@@ -1,13 +1,10 @@
 package fr.urssaf.image.commons.cassandra.helper;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Properties;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.DisposableBean;
-
-import me.prettyprint.cassandra.connection.DynamicLoadBalancingPolicy;
 import me.prettyprint.cassandra.model.ConfigurableConsistencyLevel;
 import me.prettyprint.cassandra.service.CassandraHostConfigurator;
 import me.prettyprint.cassandra.service.FailoverPolicy;
@@ -15,6 +12,13 @@ import me.prettyprint.hector.api.Cluster;
 import me.prettyprint.hector.api.HConsistencyLevel;
 import me.prettyprint.hector.api.Keyspace;
 import me.prettyprint.hector.api.factory.HFactory;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.core.io.AbstractResource;
+
+import fr.urssaf.image.commons.cassandra.exception.CassandraConfigurationException;
 
 /**
  * Factory pour récupérer une connexion à cassandra.
@@ -24,12 +28,45 @@ import me.prettyprint.hector.api.factory.HFactory;
 public final class CassandraClientFactory implements DisposableBean  {
 
    private static final Logger LOG = LoggerFactory.getLogger(CassandraClientFactory.class);
+   
+   
+   private final static String CASSANDRA_START_LOCAL = "cassandra.startlocal";
+   private final static String CASSANDRA_HOSTS = "cassandra.hosts";
+   private final static String CASSANDRA_USERNAME = "cassandra.username";
+   private final static String CASSANDRA_PASSWORD = "cassandra.password";
+   private final static String CASSANDRA_KEYSPACE = "cassandra.keyspace";
+   private final static String CASSANDRA_DATASET = "cassandra.dataset";
 
    // En mode "cassandra local" uniquement. Unité : milli-secondes
    private static final int DELAY_BETWEEN_RETRIES = 1000;
 
    private Cluster cluster;
    private Keyspace keyspace;
+   
+   public CassandraClientFactory(AbstractResource cassandraConfigResource) throws InterruptedException{
+      
+      Properties cassandraProp = new Properties();
+
+      try {
+         cassandraProp.load(cassandraConfigResource.getInputStream());
+      } catch (IOException e) {
+         throw new CassandraConfigurationException(e);
+      }
+      
+      String hosts = cassandraProp.getProperty(CASSANDRA_HOSTS);
+      String dataset = cassandraProp.getProperty(CASSANDRA_DATASET);
+      String userName = cassandraProp.getProperty(CASSANDRA_USERNAME);
+      String password = cassandraProp.getProperty(CASSANDRA_PASSWORD);
+      String keyspaceName = cassandraProp.getProperty(CASSANDRA_KEYSPACE); 
+      Boolean startLocal = Boolean.valueOf(cassandraProp.getProperty(CASSANDRA_START_LOCAL));
+      
+      CassandraServerBean cassandraServer = new CassandraServerBean();
+      cassandraServer.setDataSet(dataset);
+      cassandraServer.setHosts(hosts);
+      cassandraServer.setStartLocal(startLocal);
+
+      initCassandra(cassandraServer, keyspaceName, userName, password);
+   }
    
    /**
     * 
@@ -48,6 +85,20 @@ public final class CassandraClientFactory implements DisposableBean  {
     * @throws InterruptedException     Ou nous a demandé de nous arrêter alors on s'arrête
     */
    public CassandraClientFactory(CassandraServerBean cassandraServer,
+         String keyspaceName, String userName, String password) throws InterruptedException {
+      initCassandra(cassandraServer, keyspaceName, userName, password);
+   }
+   
+   /**
+    * Méthode factorisation : initilisation connection cassandra
+    * 
+    * @param cassandraServer
+    * @param keyspaceName
+    * @param userName
+    * @param password
+    * @throws InterruptedException
+    */
+   private void initCassandra(CassandraServerBean cassandraServer,
          String keyspaceName, String userName, String password) throws InterruptedException {
       LOG.debug("Creation d'un client cassandra utilisant les serveurs suivants : " + cassandraServer.getHosts());
       ConfigurableConsistencyLevel ccl = new ConfigurableConsistencyLevel();
