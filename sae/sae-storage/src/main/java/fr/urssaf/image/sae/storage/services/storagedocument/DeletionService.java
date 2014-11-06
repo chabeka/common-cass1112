@@ -53,4 +53,16 @@ public interface DeletionService {
     */
    <T> void setDeletionServiceParameter(T parameter);
 
+   /**
+    * Réalise suppresion d'un StorageDocument, suite à un transfert,
+    * à partir du critère UUID.
+    * 
+    * @param uuid
+    *           identifiant unique du document
+    *           
+    * @throws DeletionServiceEx
+    *            Exception levée en cas d'erreur de suppression de l'archive
+    */
+   void deleteStorageDocForTransfert(UUID uuid) throws DeletionServiceEx;
+   
 }

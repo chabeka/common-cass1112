@@ -234,4 +234,16 @@ public interface StorageDocumentService {
          List<StorageMetadata> modifiedMetadatas,
          List<StorageMetadata> deletedMetadatas) throws UpdateServiceEx;
 
+   /**
+    * Réalise suppresion d'un StorageDocument, suite à un transfert,
+    * à partir du critère UUID. Idem {@link #deleteStorageDocument(UUID)} en rajoutant une 
+    * trace correspondant au transfert de document.
+    * 
+    * @param uuid
+    *           identifiant unique du document
+    *           
+    * @throws DeletionServiceEx
+    *            Exception levée en cas d'erreur de suppression de l'archive
+    */
+   void deleteStorageDocumentTraceTransfert(UUID uuid) throws DeletionServiceEx;
 }
