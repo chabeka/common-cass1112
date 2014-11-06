@@ -697,12 +697,12 @@
                <xsd:documentation>Activation de l'optimisation MTOM</xsd:documentation>
             </xsd:annotation>
          </xsd:element>
-         <xsd:element name="numeroPage" type="xsd:integer" minOccurs="0">
+         <xsd:element name="numeroPage" type="xsd:int" minOccurs="0">
             <xsd:annotation>
                <xsd:documentation>Numero de page</xsd:documentation>
             </xsd:annotation>
          </xsd:element>
-         <xsd:element name="nombrePages" type="xsd:integer" minOccurs="0">
+         <xsd:element name="nombrePages" type="xsd:int" minOccurs="0">
             <xsd:annotation>
                <xsd:documentation>Nombre de pages</xsd:documentation>
             </xsd:annotation>

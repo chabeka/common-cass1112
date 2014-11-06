@@ -1,6 +1,5 @@
 package fr.urssaf.image.sae.integration.ihmweb.saeservice.utils;
 
-import java.math.BigInteger;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
@@ -505,12 +504,12 @@ public final class SaeServiceObjectFactory {
       
       // Numero de page
       if (numeroPage != null) {
-         consultationReqType.setNumeroPage(BigInteger.valueOf(numeroPage.intValue()));
+         consultationReqType.setNumeroPage(numeroPage.intValue());
       }
       
       // Nombre de pages
       if (numeroPage != null) {
-         consultationReqType.setNombrePages(BigInteger.valueOf(nombrePages.intValue()));
+         consultationReqType.setNombrePages(nombrePages.intValue());
       }
       
       // fin

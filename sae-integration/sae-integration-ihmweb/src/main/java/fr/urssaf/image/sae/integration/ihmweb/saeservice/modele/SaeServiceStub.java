@@ -4575,7 +4575,7 @@ public class SaeServiceStub extends org.apache.axis2.client.Stub
                         */
 
                         
-                                    protected java.math.BigInteger localNumeroPage ;
+                                    protected int localNumeroPage ;
                                 
                            /*  This tracker boolean wil be used to detect whether the user called the set method
                           *   for this attribute. It will be used to determine whether to include this field
@@ -4591,9 +4591,9 @@ public class SaeServiceStub extends org.apache.axis2.client.Stub
 
                            /**
                            * Auto generated getter method
-                           * @return java.math.BigInteger
+                           * @return int
                            */
-                           public  java.math.BigInteger getNumeroPage(){
+                           public  int getNumeroPage(){
                                return localNumeroPage;
                            }
 
@@ -4603,8 +4603,11 @@ public class SaeServiceStub extends org.apache.axis2.client.Stub
                                * Auto generated setter method
                                * @param param NumeroPage
                                */
-                               public void setNumeroPage(java.math.BigInteger param){
-                            localNumeroPageTracker = param != null;
+                               public void setNumeroPage(int param){
+                            
+                                       // setting primitive attribute tracker to true
+                                       localNumeroPageTracker =
+                                       param != java.lang.Integer.MIN_VALUE;
                                    
                                             this.localNumeroPage=param;
                                     
@@ -4617,7 +4620,7 @@ public class SaeServiceStub extends org.apache.axis2.client.Stub
                         */
 
                         
-                                    protected java.math.BigInteger localNombrePages ;
+                                    protected int localNombrePages ;
                                 
                            /*  This tracker boolean wil be used to detect whether the user called the set method
                           *   for this attribute. It will be used to determine whether to include this field
@@ -4633,9 +4636,9 @@ public class SaeServiceStub extends org.apache.axis2.client.Stub
 
                            /**
                            * Auto generated getter method
-                           * @return java.math.BigInteger
+                           * @return int
                            */
-                           public  java.math.BigInteger getNombrePages(){
+                           public  int getNombrePages(){
                                return localNombrePages;
                            }
 
@@ -4645,8 +4648,11 @@ public class SaeServiceStub extends org.apache.axis2.client.Stub
                                * Auto generated setter method
                                * @param param NombrePages
                                */
-                               public void setNombrePages(java.math.BigInteger param){
-                            localNombrePagesTracker = param != null;
+                               public void setNombrePages(int param){
+                            
+                                       // setting primitive attribute tracker to true
+                                       localNombrePagesTracker =
+                                       param != java.lang.Integer.MIN_VALUE;
                                    
                                             this.localNombrePages=param;
                                     
@@ -4741,36 +4747,26 @@ public class SaeServiceStub extends org.apache.axis2.client.Stub
                                     namespace = "http://www.cirtil.fr/saeService";
                                     writeStartElement(null, namespace, "numeroPage", xmlWriter);
                              
-
-                                          if (localNumeroPage==null){
-                                              // write the nil attribute
-                                              
-                                                     throw new org.apache.axis2.databinding.ADBException("numeroPage cannot be null!!");
-                                                  
-                                          }else{
-
-                                        
-                                                   xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localNumeroPage));
-                                            
-                                          }
+                                               if (localNumeroPage==java.lang.Integer.MIN_VALUE) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("numeroPage cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localNumeroPage));
+                                               }
                                     
                                    xmlWriter.writeEndElement();
                              } if (localNombrePagesTracker){
                                     namespace = "http://www.cirtil.fr/saeService";
                                     writeStartElement(null, namespace, "nombrePages", xmlWriter);
                              
-
-                                          if (localNombrePages==null){
-                                              // write the nil attribute
-                                              
-                                                     throw new org.apache.axis2.databinding.ADBException("nombrePages cannot be null!!");
-                                                  
-                                          }else{
-
-                                        
-                                                   xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localNombrePages));
-                                            
-                                          }
+                                               if (localNombrePages==java.lang.Integer.MIN_VALUE) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("nombrePages cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localNombrePages));
+                                               }
                                     
                                    xmlWriter.writeEndElement();
                              }
@@ -4986,21 +4982,15 @@ public class SaeServiceStub extends org.apache.axis2.client.Stub
                                       elementList.add(new javax.xml.namespace.QName("http://www.cirtil.fr/saeService",
                                                                       "numeroPage"));
                                  
-                                        if (localNumeroPage != null){
-                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localNumeroPage));
-                                        } else {
-                                           throw new org.apache.axis2.databinding.ADBException("numeroPage cannot be null!!");
-                                        }
-                                    } if (localNombrePagesTracker){
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localNumeroPage));
+                            } if (localNombrePagesTracker){
                                       elementList.add(new javax.xml.namespace.QName("http://www.cirtil.fr/saeService",
                                                                       "nombrePages"));
                                  
-                                        if (localNombrePages != null){
-                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localNombrePages));
-                                        } else {
-                                           throw new org.apache.axis2.databinding.ADBException("nombrePages cannot be null!!");
-                                        }
-                                    }
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localNombrePages));
+                            }
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
             
@@ -5145,7 +5135,7 @@ public class SaeServiceStub extends org.apache.axis2.client.Stub
                                     java.lang.String content = reader.getElementText();
                                     
                                               object.setNumeroPage(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInteger(content));
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
                                               
                                         reader.next();
                                     
@@ -5153,6 +5143,8 @@ public class SaeServiceStub extends org.apache.axis2.client.Stub
                                 
                                     else {
                                         
+                                               object.setNumeroPage(java.lang.Integer.MIN_VALUE);
+                                           
                                     }
                                 
                                     
@@ -5169,7 +5161,7 @@ public class SaeServiceStub extends org.apache.axis2.client.Stub
                                     java.lang.String content = reader.getElementText();
                                     
                                               object.setNombrePages(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInteger(content));
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
                                               
                                         reader.next();
                                     
@@ -5177,6 +5169,8 @@ public class SaeServiceStub extends org.apache.axis2.client.Stub
                                 
                                     else {
                                         
+                                               object.setNombrePages(java.lang.Integer.MIN_VALUE);
+                                           
                                     }
                                   
                             while (!reader.isStartElement() && !reader.isEndElement())
