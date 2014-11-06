@@ -95,19 +95,67 @@ public final class DFCEConnectionFactory {
          throw new DFCEConfigurationRuntimeException(e);
       }
 
-      // récupération de la valeur du chemin complet du fichier de configuration
-      String dfceConfigResource = saeProperties
-            .getProperty(DFCEConnectionParameter.DFCE_CONFIG);
-
-      if (StringUtils.isBlank(dfceConfigResource)) {
-         throw new DFCEConfigurationParameterNotFoundRuntimeException(
-               DFCEConnectionParameter.DFCE_CONFIG);
-      }
-
-      DFCEConnection dfceConnection = createDFCEConnectionByDFCEConfiguration(new File(
-            dfceConfigResource));
-
+      return createDFCEConnectionBySAEConfiguration(saeProperties);
+   }
+   
+   /**
+    * Factorisation code creation connection dfce transfert
+    * @param saeProperties
+    * @return
+    */
+   private static DFCEConnection createDFCEConnectionTransfertBySAEConf(
+         Properties saeProperties){
+      
+      //-- chemin complet du fichier de configuration
+      String pathConfDfceTransfert = saeProperties
+         .getProperty(DFCEConnectionParameter.TRANSFERT_DFCE_CONFIG);
+      
+      //-- Dans tous les cas on créé une connexion dfce
+      DFCEConnection dfceConnection = new DFCEConnection();
+      if (StringUtils.isNotBlank(pathConfDfceTransfert)) {
+         dfceConnection = createDFCEConnectionByDFCEConfiguration(new File(pathConfDfceTransfert));
+      } 
       return dfceConnection;
+   }
+   
+   /**
+    * Création connection dfce transfert
+    * 
+    * @param dfceConfigurationResource
+    *           l'objet Resource contenant le fichier de properties DFCE
+    * @return configuration DFCE
+    */
+   public static DFCEConnection createDFCEConnectionTransfertBySAEConfigurationResource(AbstractResource dfceConfResource) {
+      
+      Validate.notNull(dfceConfResource, "'dfceConfResource' is required");
+      
+      Properties saeProperties;
+      try {
+         saeProperties = PropertiesUtils.load(dfceConfResource.getInputStream());
+      } catch (IOException e) {
+         throw new DFCEConfigurationRuntimeException(e);
+      }
+      return createDFCEConnectionTransfertBySAEConf(saeProperties);
+   }
+   
+   /**
+    * Création connection dfce transfert
+    * 
+    * @param dfceConfig le fichier de properties DFCE de transfert
+    * @return object connection DFCE
+    */
+   public static DFCEConnection createDFCEConnectionTransfertBySAEConfiguration(
+         File dfceConfig) {
+      
+      Validate.notNull(dfceConfig, "'dfceConfig' is required");
+      
+      Properties saeProperties;
+      try {
+         saeProperties = PropertiesUtils.load(dfceConfig);
+      } catch (IOException e) {
+         throw new DFCEConfigurationRuntimeException(e);
+      }
+      return createDFCEConnectionTransfertBySAEConf(saeProperties);
    }
 
    /**
@@ -131,7 +179,6 @@ public final class DFCEConnectionFactory {
       DFCEConnection dfceConnection = createDFCEConnectionByDFCEConfiguration(dfceProperties);
 
       return dfceConnection;
-
    }
 
    /**
@@ -244,7 +291,5 @@ public final class DFCEConnectionFactory {
       DFCEConnection dfceConnection = createDFCEConnectionByDFCEConfiguration(dfceProperties);
 
       return dfceConnection;
-
    }
-
 }

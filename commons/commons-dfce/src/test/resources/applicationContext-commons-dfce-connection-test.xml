@@ -21,5 +21,4 @@
          value="src/test/resources/config/sae-config-test.properties" />
    </bean>
 
-
 </beans>
