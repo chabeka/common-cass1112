@@ -46,6 +46,7 @@ public class SAEConsultationServiceDroitsTest {
    private SAEConsultationService service;
 
    @Autowired
+   @Qualifier("SAEServiceTestProvider")
    private SAEServiceTestProvider testProvider;
 
    private UUID uuid;

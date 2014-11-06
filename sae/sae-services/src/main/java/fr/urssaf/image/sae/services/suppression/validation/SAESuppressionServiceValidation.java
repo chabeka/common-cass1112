@@ -9,10 +9,10 @@ import org.aspectj.lang.annotation.Before;
 import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
 
 /**
- * Classe SAESearchServiceValidation
+ * Classe SAESuppressionServiceValidation
  * 
  * Classe de validation des arguments en entrée des implementations du service
- * SAESearchService
+ * SAESuppressionService
  * 
  */
 @Aspect

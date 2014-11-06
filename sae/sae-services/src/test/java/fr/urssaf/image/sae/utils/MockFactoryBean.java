@@ -3,10 +3,13 @@ package fr.urssaf.image.sae.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.easymock.EasyMock;
+
 import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
 import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
+import fr.urssaf.image.sae.storage.services.storagedocument.StorageTransfertService;
 
 public class MockFactoryBean {
 
@@ -61,7 +64,13 @@ public class MockFactoryBean {
       metadatas.add(new SAEMetadata("CodeOrganismeGestionnaire", "UR030"));
 
       return doc;
-
    }
-
+//   
+//   /**
+//    * @return Mock instance de {@link StorageTransfertService}
+//    */
+//   public static StorageTransfertService createStorageTransfertService() {
+//      StorageTransfertService service = EasyMock.createMock(StorageTransfertService.class);
+//      return service;
+//   }
 }

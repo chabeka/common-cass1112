@@ -40,6 +40,7 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -97,6 +98,7 @@ public class SAECaptureServiceTest {
    private SAECaptureService service;
 
    @Autowired
+   @Qualifier("SAEServiceTestProvider")
    private SAEServiceTestProvider testProvider;
 
    private UUID uuid;

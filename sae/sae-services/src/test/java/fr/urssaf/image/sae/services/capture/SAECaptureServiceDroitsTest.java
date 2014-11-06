@@ -28,6 +28,7 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.context.ContextConfiguration;
@@ -78,6 +79,7 @@ public class SAECaptureServiceDroitsTest {
    private SAECaptureService service;
 
    @Autowired
+   @Qualifier("SAEServiceTestProvider")
    private SAEServiceTestProvider testProvider;
 
    private UUID uuid;

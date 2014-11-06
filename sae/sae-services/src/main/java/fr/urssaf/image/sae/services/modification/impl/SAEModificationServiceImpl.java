@@ -16,6 +16,7 @@ import org.apache.commons.lang.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
@@ -66,6 +67,7 @@ public class SAEModificationServiceImpl extends AbstractSAEServices implements
          .getLogger(SAEModificationServiceImpl.class);
 
    @Autowired
+   @Qualifier("storageDocumentService")
    private StorageDocumentService documentService;
 
    @Autowired
