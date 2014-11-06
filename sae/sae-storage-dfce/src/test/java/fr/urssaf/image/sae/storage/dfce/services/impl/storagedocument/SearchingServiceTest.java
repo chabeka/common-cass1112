@@ -72,9 +72,11 @@ public class SearchingServiceTest {
             .getInsertionService());
       UUIDCriteria uuidCriteria = new UUIDCriteria(document.getUuid(),
             new ArrayList<StorageMetadata>());
-      Assert.assertNotNull("Recupération d'un document par UUID :",
-            commonsServices.getSearchingService()
-                  .searchStorageDocumentByUUIDCriteria(uuidCriteria).getUuid());
+      
+      
+      StorageDocument storeDoc = commonsServices.getSearchingService().searchStorageDocumentByUUIDCriteria(uuidCriteria);
+      
+      Assert.assertNotNull("Recupération d'un document par UUID :", storeDoc.getUuid());
       commonsServices.destroyMockTest(document.getUuid(), commonsServices
             .getDeletionService());
    }

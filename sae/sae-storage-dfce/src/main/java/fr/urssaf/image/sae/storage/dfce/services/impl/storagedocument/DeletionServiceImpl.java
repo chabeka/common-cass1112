@@ -18,6 +18,7 @@ import fr.urssaf.image.sae.storage.dfce.constants.Constants;
 import fr.urssaf.image.sae.storage.dfce.messages.LogLevel;
 import fr.urssaf.image.sae.storage.dfce.messages.StorageMessageHandler;
 import fr.urssaf.image.sae.storage.dfce.model.AbstractServices;
+import fr.urssaf.image.sae.storage.dfce.support.StorageDocumentServiceSupport;
 import fr.urssaf.image.sae.storage.dfce.support.TracesDfceSupport;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.exception.QueryParseServiceEx;
@@ -43,6 +44,9 @@ public class DeletionServiceImpl extends AbstractServices implements
 
    @Autowired
    private TracesDfceSupport tracesSupport;
+   
+   @Autowired
+   private StorageDocumentServiceSupport storageDocumentServiceSupport;
 
    /**
     * @param searchingService
@@ -66,28 +70,10 @@ public class DeletionServiceImpl extends AbstractServices implements
    @ServiceChecked
    public final void deleteStorageDocument(final UUID uuid)
          throws DeletionServiceEx {
-      // Traces debug - entrée méthode
-      String prefixeTrc = "deleteStorageDocument()";
-      LOGGER.debug("{} - Début", prefixeTrc);
-      // Fin des traces debug - entrée méthode
-      try {
-         LOGGER.debug("{} - UUID à supprimer : {}", prefixeTrc, uuid);
-         getDfceService().getStoreService().deleteDocument(uuid);
-
-         // Trace l'événement "Suppression d'un document de DFCE"
-         tracesSupport.traceSuppressionDocumentDeDFCE(uuid);
-
-         LOGGER.debug("{} - Sortie", prefixeTrc);
-
-      } catch (FrozenDocumentException frozenExcept) {
-         LOGGER
-               .debug(
-                     "{} - Une exception a été levée lors de la suppression du document : {}",
-                     prefixeTrc, frozenExcept.getMessage());
-         throw new DeletionServiceEx(StorageMessageHandler
-               .getMessage(Constants.DEL_CODE_ERROR),
-               frozenExcept.getMessage(), frozenExcept);
-      }
+      
+      //-- Suppression du ducument
+      storageDocumentServiceSupport.deleteStorageDocument(getDfceService(), 
+            getCnxParameters(), uuid, LOGGER, tracesSupport);
    }
 
    /**
@@ -128,5 +114,35 @@ public class DeletionServiceImpl extends AbstractServices implements
     */
    public final <T> void setDeletionServiceParameter(final T parameter) {
       setDfceService((ServiceProvider) parameter);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void deleteStorageDocForTransfert(UUID uuid) throws DeletionServiceEx {
+
+      //-- Traces debug - entrée méthode
+      String prefixeTrc = "deleteStorageDocForTransfert()";
+      LOGGER.debug("{} - Début", prefixeTrc);
+      //-- Fin des traces debug - entrée méthode
+      try {
+         LOGGER.debug("{} - UUID à transférer : {}", prefixeTrc, uuid);
+         getDfceService().getStoreService().deleteDocument(uuid);
+
+         //-- Trace l'événement "Suppression d'un document de DFCE"
+         tracesSupport.traceTransfertDocumentDeDFCE(uuid);
+
+         LOGGER.debug("{} - Sortie", prefixeTrc);
+
+      } catch (FrozenDocumentException frozenExcept) {
+         LOGGER
+               .debug(
+                     "{} - Une exception a été levée lors du transfert du document : {}",
+                     prefixeTrc, frozenExcept.getMessage());
+         throw new DeletionServiceEx(StorageMessageHandler
+               .getMessage(Constants.DEL_CODE_ERROR),
+               frozenExcept.getMessage(), frozenExcept);
+      }
    }
 }

@@ -141,6 +141,42 @@ public class DeletionServiceTest {
             "SHA-1");
 
    }
+   
+   /**
+    * Test du service :
+    * {@link fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument.DeletionServiceImpl#deleteStorageDocForTransfer(fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.UUIDCriteria)
+    * deleteStorageDocument}
+    * 
+    * @throws ConnectionServiceEx
+    *            ConnectionServiceEx Exception lévée lorsque la connexion
+    *            n'aboutie pas.
+    * @throws RetrievalServiceEx
+    */
+   @Test
+   public void deleteStorageDocForTransfer() throws InsertionServiceEx, IOException,
+   ParseException, RetrievalServiceEx {
+      
+      //-- Initialisation des jeux de données UUID
+      final StorageDocument storageDoc = commonsServices
+      .getMockData(commonsServices.getInsertionService());
+      final UUIDCriteria uuidCriteria = new UUIDCriteria(storageDoc.getUuid(),
+            new ArrayList<StorageMetadata>());
+      try {
+         commonsServices.getDeletionService()
+            .deleteStorageDocForTransfert(uuidCriteria.getUuid());
+      } catch (DeletionServiceEx e) {
+         Assert.assertTrue("La suppression a échoué " + e.getMessage(), true);
+      }
+      Assert.assertNull(commonsServices.getRetrievalService()
+            .retrieveStorageDocumentByUUID(uuidCriteria));
+      
+      //-- Vérifie la traçabilité
+      traceAssertUtils.verifieAucuneTraceDansRegistres();
+      traceAssertUtils.verifieTraceDepotEtSuppressionPourTransfertDfceDansJournalSae(
+            storageDoc.getUuid(), "a2f93f1f121ebba0faef2c0596f2f126eacae77b",
+      "SHA-1");
+      
+   }
 
    /**
     * Test du service :

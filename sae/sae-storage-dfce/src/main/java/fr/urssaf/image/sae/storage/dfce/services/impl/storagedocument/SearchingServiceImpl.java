@@ -12,6 +12,7 @@ import net.docubase.toolkit.service.ServiceProvider;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,7 @@ import fr.urssaf.image.sae.storage.dfce.mapping.BeanMapper;
 import fr.urssaf.image.sae.storage.dfce.messages.LogLevel;
 import fr.urssaf.image.sae.storage.dfce.messages.StorageMessageHandler;
 import fr.urssaf.image.sae.storage.dfce.model.AbstractServices;
+import fr.urssaf.image.sae.storage.dfce.support.StorageDocumentServiceSupport;
 import fr.urssaf.image.sae.storage.dfce.utils.Utils;
 import fr.urssaf.image.sae.storage.exception.QueryParseServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
@@ -47,6 +49,9 @@ public class SearchingServiceImpl extends AbstractServices implements
    private static final Logger LOG = LoggerFactory
          .getLogger(SearchingServiceImpl.class);
 
+   @Autowired
+   private StorageDocumentServiceSupport storageServiceSupport;
+   
    /**
     * {@inheritDoc}
     */
@@ -102,45 +107,17 @@ public class SearchingServiceImpl extends AbstractServices implements
    /**
     * {@inheritDoc}
     */
+   @Override
    @Loggable(LogLevel.TRACE)
    @ServiceChecked
-   public final StorageDocument searchStorageDocumentByUUIDCriteria(
-         final UUIDCriteria uUIDCriteria) throws SearchingServiceEx {
-      try {
-         // Traces debug - entrée méthode
-         String prefixeTrc = "searchStorageDocumentByUUIDCriteria()";
-         LOG.debug("{} - Début", prefixeTrc);
-         LOG.debug("{} - UUIDCriteria du document à consulter: {}", prefixeTrc,
-               uUIDCriteria.toString());
-         // Fin des traces debug - entrée méthode
-         LOG.debug("{} - Début de la recherche dans DFCE", prefixeTrc);
-         final Document docDfce = getDfceService().getSearchService()
-               .getDocumentByUUID(getBaseDFCE(), uUIDCriteria.getUuid());
-         LOG.debug("{} - Fin de la recherche dans DFCE", prefixeTrc);
-         StorageDocument storageDoc = null;
-
-         if (docDfce != null) {
-            storageDoc = BeanMapper.dfceDocumentToStorageDocument(docDfce,
-                  uUIDCriteria.getDesiredStorageMetadatas(), getDfceService(),
-                  true);
-         }
-         LOG.debug("{} - Sortie", prefixeTrc);
-         return storageDoc;
-
-      } catch (StorageException srcSerEx) {
-         throw new SearchingServiceEx(StorageMessageHandler
-               .getMessage(Constants.SRH_CODE_ERROR), srcSerEx.getMessage(),
-               srcSerEx);
-      } catch (IOException ioExcept) {
-         throw new SearchingServiceEx(StorageMessageHandler
-               .getMessage(Constants.SRH_CODE_ERROR), ioExcept.getMessage(),
-               ioExcept);
-      } catch (Exception except) {
-         throw new SearchingServiceEx(StorageMessageHandler
-               .getMessage(Constants.SRH_CODE_ERROR), except.getMessage(),
-               except);
-      }
+   public StorageDocument searchStorageDocumentByUUIDCriteria(UUIDCriteria uUIDCriteria) 
+      throws SearchingServiceEx {
+      
+      //-- Recherche du document
+      return storageServiceSupport.searchStorageDocumentByUUIDCriteria(getDfceService(), 
+            getCnxParameters(), uUIDCriteria, LOG);
    }
+
 
    /**
     * {@inheritDoc}
@@ -173,7 +150,6 @@ public class SearchingServiceImpl extends AbstractServices implements
     */
    public final <T> void setSearchingServiceParameter(final T parameter) {
       setDfceService((ServiceProvider) parameter);
-
    }
 
 }

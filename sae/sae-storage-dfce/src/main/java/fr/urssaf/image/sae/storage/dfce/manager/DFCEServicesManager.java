@@ -1,5 +1,6 @@
 package fr.urssaf.image.sae.storage.dfce.manager;
 
+import fr.urssaf.image.commons.dfce.model.DFCEConnection;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import net.docubase.toolkit.service.ServiceProvider;
 
@@ -13,6 +14,13 @@ public interface DFCEServicesManager {
     * 
     */
    ServiceProvider getDFCEService();
+   
+   
+   /**
+    * 
+    * @return Object pramarètres de connection à DFCE
+    */
+   DFCEConnection getCnxParameters();
 
    /**
     * Etablit la connexion avec DFCE, de manière synchronized. Si une connexion

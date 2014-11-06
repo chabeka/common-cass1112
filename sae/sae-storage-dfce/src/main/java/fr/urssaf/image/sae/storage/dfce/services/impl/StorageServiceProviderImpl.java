@@ -13,14 +13,14 @@ import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentServi
  * Fournit la façade des implementations des services
  * {@link fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument.StorageDocumentServiceImpl}
  */
-@Service
+@Service("storageServiceProvider")
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-@Qualifier("storageServiceProvider")
 public class StorageServiceProviderImpl extends AbstractServiceProvider
       implements StorageServiceProvider {
-   @SuppressWarnings("PMD.LongVariable")
+   
    @Autowired
    @Qualifier("storageDocumentService")
+   @SuppressWarnings("PMD.LongVariable")
    private StorageDocumentService storageDocumentService;
 
    /**
@@ -38,7 +38,7 @@ public class StorageServiceProviderImpl extends AbstractServiceProvider
     *           : la façade des services d'insertion ,de recherche,récupération
     */
    @SuppressWarnings("PMD.LongVariable")
-   public final void setStorageDocumentService(
+   public void setStorageDocumentService(
          final StorageDocumentService storageDocumentService) {
       this.storageDocumentService = storageDocumentService;
    }
@@ -58,7 +58,6 @@ public class StorageServiceProviderImpl extends AbstractServiceProvider
     */
    public final void closeConnexion() {
       getDfceServicesManager().closeConnection();
-
    }
 
 }

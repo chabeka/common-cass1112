@@ -84,5 +84,10 @@ public final class Constants {
     * Traçabilité : code de l'événément "Modification d'un document dans DFCE"
     */
    public static final String TRACE_CODE_EVT_MODIF_DOC_DFCE = "DFCE_MODIF_DOC|OK";
+   
+   /**
+    * Traçabilité : code de l'événément "Transfert d'un document vers la GNS"
+    */
+   public static final String TRACE_CODE_EVT_TRANSFERT_DOC_DFCE = "DFCE_TRANSFERT_DOC|OK";
 
 }

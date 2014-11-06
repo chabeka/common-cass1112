@@ -27,8 +27,12 @@ public class TracesDfceSupport {
    private static final Logger LOGGER = LoggerFactory
          .getLogger(TracesDfceSupport.class);
 
-   @Autowired
    private DispatcheurService dispatcheurService;
+   
+   @Autowired
+   public TracesDfceSupport(DispatcheurService dispatcheurService) {
+      this.dispatcheurService = dispatcheurService;
+   }
 
    /**
     * Trace l'événement "Dépôt d'un document dans DFCE"
@@ -278,4 +282,57 @@ public class TracesDfceSupport {
 
    }
 
+   /**
+    * Trace l'événement "Transfert de document vers la GNS"
+    * 
+    * @param idDoc
+    *           l'identifiant unique DFCE du document transféré
+    */
+   @SuppressWarnings("PMD.AvoidCatchingThrowable")
+   public final void traceTransfertDocumentDeDFCE(UUID idDoc) {
+
+      // On fait un try/catch(Throwable) pour la traçabilité ne fasse pas
+      // planter cette méthode
+      try {
+
+         // Traces
+         String prefix = "traceTransfertDocumentDeDFCE()";
+         LOGGER.debug("{} - Début", prefix);
+
+         // Instantiation de l'objet TraceToCreate
+         TraceToCreate traceToCreate = new TraceToCreate();
+
+         // Code de l'événement
+         traceToCreate
+               .setCodeEvt(Constants.TRACE_CODE_EVT_TRANSFERT_DOC_DFCE);
+
+         // Contexte
+         traceToCreate.setContexte("TransfertDocumentDeDFCE");
+
+         // Contrat de service et login
+         setInfosAuth(traceToCreate);
+
+         // Info supplémentaire : Hostname et IP du serveur sur lequel tourne
+         // ce code
+         traceToCreate.getInfos().put("saeServeurHostname",
+               HostnameUtil.getHostname());
+         traceToCreate.getInfos().put("saeServeurIP", HostnameUtil.getIP());
+
+         // Info supplémentaire : identifiant d'archivage
+         traceToCreate.getInfos().put("idDoc", idDoc.toString());
+
+         // Appel du dispatcheur
+         dispatcheurService.ajouterTrace(traceToCreate);
+
+         // Traces
+         LOGGER.debug("{} - Fin", prefix);
+
+      } catch (Throwable ex) {
+         LOGGER
+               .error(
+                     "Une erreur s'est produite lors de l'écriture de la trace de transfert d'un document vers la GNS",
+                     ex);
+      }
+
+   }
 }

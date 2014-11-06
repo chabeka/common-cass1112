@@ -25,10 +25,14 @@ public class DFCEServicesManagerImpl implements DFCEServicesManager {
    private static final Logger LOGGER = LoggerFactory
          .getLogger(DFCEServicesManagerImpl.class);
 
-   @Autowired
    private DFCEConnection cnxParameters;
 
    private ServiceProvider dfceService;
+   
+   @Autowired
+   public DFCEServicesManagerImpl(DFCEConnection dfceConnection) {
+      cnxParameters = dfceConnection;
+   }
 
    /**
     * @param service
@@ -108,10 +112,9 @@ public class DFCEServicesManagerImpl implements DFCEServicesManager {
                      prefixLog);
             }
          }
-      } catch (Exception except) {
+      } catch (Exception e) {
          throw new ConnectionServiceEx(StorageMessageHandler
-               .getMessage(Constants.CNT_CODE_ERROR), except.getMessage(),
-               except);
+               .getMessage(Constants.CNT_CODE_ERROR), e.getMessage(), e);
       }
    }
 

@@ -4,8 +4,10 @@ import net.docubase.toolkit.model.base.Base;
 import net.docubase.toolkit.service.ServiceProvider;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import fr.urssaf.image.commons.dfce.model.DFCEConnection;
+import fr.urssaf.image.sae.storage.dfce.support.StorageDocumentServiceSupport;
 
 /**
  * Classe abstraite contenant les attributs communs de toutes les
@@ -32,6 +34,7 @@ public abstract class AbstractServices {
 	private ServiceProvider dfceService;
 
 	@Autowired
+	@Qualifier(value="dfceConnection")
 	private DFCEConnection cnxParameters;
 	/**
 	 * @param dfceService
@@ -61,17 +64,16 @@ public abstract class AbstractServices {
 	 * @param cnxParameters
 	 *            Les paramètres de connection
 	 */
-	public final void setCnxParameters(
+	public void setCnxParameters(
 			final DFCEConnection cnxParameters) {
 		this.cnxParameters = cnxParameters;
 	}
 	
-	 /**
-	    * @return Une occurrence de la base DFCE.
-	    */
-	   public final Base getBaseDFCE() {
-	      return dfceService.getBaseAdministrationService().getBase(
-	    		  cnxParameters.getBaseName());
-	   }
+	/**
+	 * @return Une occurrence de la base DFCE.
+	 */
+   public final Base getBaseDFCE() {
+      return StorageDocumentServiceSupport.getBaseDFCE(dfceService, cnxParameters);
+   }
 
 }

@@ -42,8 +42,7 @@ import fr.urssaf.image.sae.storage.services.storagedocument.UpdateService;
  * </ul>
  * 
  */
-@Service
-@Qualifier("storageDocumentService")
+@Service("storageDocumentService")
 @FacadePattern(participants = { InsertionServiceImpl.class,
       RetrievalServiceImpl.class, SearchingServiceImpl.class,
       DeletionServiceImpl.class }, comment = "Fournit les services des classes participantes")
@@ -263,6 +262,15 @@ public class StorageDocumentServiceImpl extends AbstractServiceProvider
       updateService.updateStorageDocument(uuid, modifiedMetadatas,
             deletedMetadatas);
 
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void deleteStorageDocumentTraceTransfert(final UUID uuid) throws DeletionServiceEx {
+      deletionService.setDeletionServiceParameter(getDfceService());
+      deletionService.deleteStorageDocForTransfert(uuid);
    }
 
 }

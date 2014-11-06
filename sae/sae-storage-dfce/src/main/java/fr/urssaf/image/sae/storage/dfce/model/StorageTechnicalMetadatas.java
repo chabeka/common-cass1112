@@ -31,8 +31,7 @@ public enum StorageTechnicalMetadatas {
 	// TailleFichier
 	TAILLE_FICHIER("TailleFichier", SystemFieldName.SM_SIZE.toString()),
 	// L'extension du fichier.
-	EXTENSION_FICHIER("ExtensionFichierDFCE", SystemFieldName.SM_EXTENSION
-			.toString()),
+	EXTENSION_FICHIER("ExtensionFichierDFCE", SystemFieldName.SM_EXTENSION.toString()),
 	// ObjectType
 	DOCUMENT_VIRTUEL("DocumentVirtuel", SystemFieldName.SM_VIRTUAL.toString()),
 	// startPage
@@ -41,6 +40,10 @@ public enum StorageTechnicalMetadatas {
 	END_PAGE("EndPage", SystemFieldName.SM_END_PAGE.toString()),
 	// DateArchivage
 	DATE_ARCHIVE("DateArchivage", SystemFieldName.SM_ARCHIVAGE_DATE.toString()),
+	// DateArchivageGNT
+	DATE_ARCHIVE_GNT("DateArchivageGNT", "dag"),
+	// TracabilitePreArchivage
+	TRACABILITE_PRE_ARCHIVAGE("TracabilitePreArchivage", "tpa"),
 	// version number
 	VERSION_NUMBER("VersionNumber", SystemFieldName.SM_VERSION.toString()),
 	// DateModification

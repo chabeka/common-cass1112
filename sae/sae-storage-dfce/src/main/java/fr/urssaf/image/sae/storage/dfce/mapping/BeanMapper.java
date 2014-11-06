@@ -222,10 +222,12 @@ public final class BeanMapper {
             InputStreamSource source = new InputStreamSource(docContent);
             storageDocument.setContent(new DataHandler(source));
          }
+         String filename = document.getFilename() + "." + document.getExtension();
          storageDocument.setCreationDate(document.getCreationDate());
          storageDocument.setTitle(document.getTitle());
          storageDocument.setUuid(document.getUuid());
          storageDocument.setMetadatas(listMetaData);
+         storageDocument.setFileName(filename);
       }
       return storageDocument;
    }

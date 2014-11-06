@@ -1,12 +1,9 @@
 package fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument;
 
-import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.NoSuchAlgorithmException;
-import java.util.List;
 import java.util.UUID;
 
 import javax.activation.DataHandler;
@@ -19,36 +16,30 @@ import net.docubase.toolkit.service.ServiceProvider;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.docubase.dfce.exception.TagControlException;
-
 import fr.urssaf.image.sae.storage.dfce.annotations.Loggable;
 import fr.urssaf.image.sae.storage.dfce.annotations.ServiceChecked;
 import fr.urssaf.image.sae.storage.dfce.bo.DocumentsTypeList;
 import fr.urssaf.image.sae.storage.dfce.constants.Constants;
-import fr.urssaf.image.sae.storage.dfce.exception.DocumentTypeException;
 import fr.urssaf.image.sae.storage.dfce.mapping.BeanMapper;
 import fr.urssaf.image.sae.storage.dfce.messages.LogLevel;
 import fr.urssaf.image.sae.storage.dfce.messages.StorageMessageHandler;
 import fr.urssaf.image.sae.storage.dfce.model.AbstractServices;
 import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
+import fr.urssaf.image.sae.storage.dfce.support.StorageDocumentServiceSupport;
 import fr.urssaf.image.sae.storage.dfce.support.TracesDfceSupport;
-import fr.urssaf.image.sae.storage.dfce.utils.HashUtils;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
-import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageReferenceFile;
 import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageReference;
 import fr.urssaf.image.sae.storage.services.storagedocument.DeletionService;
 import fr.urssaf.image.sae.storage.services.storagedocument.InsertionService;
-import fr.urssaf.image.sae.storage.util.StorageMetadataUtils;
 
 /**
  * Implémente les services de l'interface {@link InsertionService}.
@@ -65,12 +56,15 @@ public class InsertionServiceImpl extends AbstractServices implements
    @Autowired
    @Qualifier("deletionService")
    private DeletionService deletionService;
-
-   @Autowired
-   private TracesDfceSupport tracesSupport;
-
+   
    @Autowired
    private DocumentsTypeList typeList;
+   
+   @Autowired
+   private TracesDfceSupport tracesSupport;
+   
+   @Autowired
+   private StorageDocumentServiceSupport storageDocumentServiceSupport;
 
    /**
     * @return : Le service de suppression
@@ -98,16 +92,16 @@ public class InsertionServiceImpl extends AbstractServices implements
          final StorageDocument storageDocument) throws InsertionServiceEx {
 
       try {
-         // conversion du storageDocument en DFCE Document
+         //-- conversion du storageDocument en DFCE Document
          Document docDfce = BeanMapper.storageDocumentToDfceDocument(
                getBaseDFCE(), storageDocument);
 
-         // ici on récupère le contenu du fichier.
+         //-- ici on récupère le contenu du fichier.
          File fileContent = new File(storageDocument.getFilePath());
          final DataHandler docContent = new DataHandler(new FileDataSource(
                fileContent));
 
-         // ici on récupère le nom et l'extension du fichier
+         //-- ici on récupère le nom et l'extension du fichier
          final String[] file = BeanMapper.findFileNameAndExtension(
                storageDocument, StorageTechnicalMetadatas.NOM_FICHIER
                      .getShortCode().toString());
@@ -115,18 +109,16 @@ public class InsertionServiceImpl extends AbstractServices implements
                + "ajout de la métadonnée NomFichier valeur : {}.{}",
                new Object[] { TRC_INSERT, file[0], file[1] });
          LOGGER.debug("{} - Début insertion du document dans DFCE", TRC_INSERT);
+         
+         return storageDocumentServiceSupport.insertDocumentInStorage(getDfceService(), 
+               getCnxParameters(), typeList, docDfce, docContent, file, storageDocument.getMetadatas(), tracesSupport);
 
-         StorageDocument retour = insertDocumentInStorage(docDfce, docContent,
-               file, storageDocument.getMetadatas());
-
-         return retour;
       } catch (Exception except) {
 
          throw new InsertionServiceEx(StorageMessageHandler
                .getMessage(Constants.INS_CODE_ERROR), except.getMessage(),
                except);
       }
-
    }
 
    /**
@@ -137,180 +129,17 @@ public class InsertionServiceImpl extends AbstractServices implements
    public final StorageDocument insertBinaryStorageDocument(
          StorageDocument storageDoc) throws InsertionServiceEx {
 
-      try {
-
-         // conversion du storageDoc en DFCE Document
-         Document docDfce = BeanMapper.storageDocumentToDfceDocument(
-               getBaseDFCE(), storageDoc);
-
-         docDfce.setUuid(storageDoc.getUuid());
-
-         // ici on récupère le contenu du fichier.
-         DataHandler docContent = storageDoc.getContent();
-
-         // ici on récupère le nom et l'extension du fichier
-         String[] file = new String[] {
-               FilenameUtils.getBaseName(storageDoc.getFileName()),
-               FilenameUtils.getExtension(storageDoc.getFileName()) };
-
-         LOGGER.debug("{} - Enrichissement des métadonnées : "
-               + "ajout de la métadonnée NomFichier valeur : {}.{}",
-               new Object[] { TRC_INSERT, file[0], file[1] });
-         LOGGER.debug("{} - Début insertion du document dans DFCE", TRC_INSERT);
-
-         StorageDocument retour = insertDocumentInStorage(docDfce, docContent,
-               file, storageDoc.getMetadatas());
-         return retour;
-      } catch (Exception except) {
-
-         throw new InsertionServiceEx(StorageMessageHandler
-               .getMessage(Constants.INS_CODE_ERROR), except.getMessage(),
-               except);
-      }
+      //-- Insertion du document
+      return storageDocumentServiceSupport.insertBinaryStorageDocument(getDfceService(), 
+            getCnxParameters(), typeList, storageDoc, LOGGER, tracesSupport);
    }
 
-   private void checkDocumentType(List<StorageMetadata> metadatas)
-         throws DocumentTypeException {
-
-      String docType = StorageMetadataUtils.valueMetadataFinder(metadatas,
-            StorageTechnicalMetadatas.TYPE.getShortCode());
-
-      if (!typeList.getTypes().contains(docType)) {
-         throw new DocumentTypeException(
-               StringUtils
-                     .replace(
-                           "Impossible d'insérer le document, son type n'est pas valide : {} ne fait pas partie des type référencés",
-                           "{}", docType));
-      }
-
-   }
-
-   protected final Document insertStorageDocument(Document document,
-         String originalFilename, String extension, String digest,
-         InputStream inputStream, String hashPourTrace, String typeHashPourTrace)
-         throws TagControlException {
-
-      Document doc;
-
-      if (StringUtils.isEmpty(digest)) {
-
-         doc = getDfceService().getStoreService().storeDocument(document,
-               originalFilename, extension, inputStream);
-
-      } else {
-
-         doc = getDfceService().getStoreService().storeDocument(document,
-               originalFilename, extension, digest, inputStream);
-      }
-
-      // Trace l'événement "Dépôt d'un document dans DFCE"
-      tracesSupport.traceDepotDocumentDansDFCE(doc.getUuid(), hashPourTrace,
-            typeHashPourTrace, doc.getArchivageDate());
-
-      return doc;
-   }
 
    /**
     * {@inheritDoc}
     */
    public final <T> void setInsertionServiceParameter(final T parameter) {
       setDfceService((ServiceProvider) parameter);
-
-   }
-
-   private StorageDocument insertDocumentInStorage(Document docDfce,
-         DataHandler documentContent, String[] file, List<StorageMetadata> datas)
-         throws InsertionServiceEx {
-
-      // Traces debug - entrée méthode
-      LOGGER.debug("{} - Début", TRC_INSERT);
-
-      LOGGER
-            .debug("{} - Début de vérification du type de document", TRC_INSERT);
-
-      checkDocumentType(datas);
-
-      LOGGER.debug("{} - Fin de vérification du type de document", TRC_INSERT);
-
-      InputStream inputStream = null;
-
-      try {
-
-         // Récupère le hash et le type de hash des métadonnées
-         // Ces 2 informations sont obligatoires à l'archivage
-         String hashMeta = StringUtils.trim(StorageMetadataUtils
-               .valueMetadataFinder(datas, StorageTechnicalMetadatas.HASH
-                     .getShortCode()));
-         String typeHashMeta = StorageMetadataUtils.valueMetadataFinder(datas,
-               StorageTechnicalMetadatas.TYPE_HASH.getShortCode());
-
-         // Détermine le hash qu'il faut passer à DFCE pour qu'il le vérifie
-         // lors de l'archivage
-         String digest = null;
-         if (this.getCnxParameters().isCheckHash()) {
-
-            // on récupère le paramètre général de l'algorithme de hachage des
-            // documents dans DFCE
-            String digestAlgo = this.getCnxParameters().getDigestAlgo();
-            LOGGER
-                  .debug(
-                        "{} - Algo de hash requis par DFCE pour la vérification du hash à l'archivage : {}",
-                        TRC_INSERT, digestAlgo);
-
-            // Soit on utilise le hash présent dans les métadonnées, car l'algo
-            // de hash
-            // présent dans les métadonnées est identique à l'algo de hash
-            // requis par DFCE,
-            // soit on doit recalculer le hash avec l'algo requis par DFCE
-            if (StringUtils.isNotEmpty(digestAlgo)
-                  && StringUtils.equals(typeHashMeta, digestAlgo)
-                  && StringUtils.isNotEmpty(hashMeta)) {
-
-               // on récupère la valeur du hash contenu dans les métadonnées
-               digest = hashMeta;
-               LOGGER.debug("{} - Hash récupéré des métadonnées : {}",
-                     TRC_INSERT, digest);
-
-            } else {
-
-               // on recalcule le hash
-               digest = checkHash(documentContent, digestAlgo, file[0]);
-            }
-
-         }
-
-         inputStream = documentContent.getInputStream();
-
-         // Appel de l'API DFCE pour l'archivage du document
-         Document docArchive = insertStorageDocument(docDfce, file[0], file[1],
-               digest, inputStream, hashMeta, typeHashMeta);
-
-         // Trace
-         LOGGER.debug("{} - Document inséré dans DFCE (UUID: {})", TRC_INSERT,
-               docArchive.getUuid());
-         LOGGER.debug("{} - Fin insertion du document dans DFCE", TRC_INSERT);
-         LOGGER.debug("{} - Sortie", TRC_INSERT);
-
-         // Mapping d'objet pour passer l'objet Document de DFCE à l'objet
-         // StorageDocument
-         return BeanMapper.dfceDocumentToStorageDocument(docArchive, null,
-               getDfceService(), false);
-
-      } catch (TagControlException tagCtrlEx) {
-
-         throw new InsertionServiceEx(StorageMessageHandler
-               .getMessage(Constants.INS_CODE_ERROR), tagCtrlEx.getMessage(),
-               tagCtrlEx);
-
-      } catch (Exception except) {
-
-         throw new InsertionServiceEx(StorageMessageHandler
-               .getMessage(Constants.INS_CODE_ERROR), except.getMessage(),
-               except);
-      } finally {
-         close(inputStream, file[0]);
-      }
-
    }
 
    /**
@@ -409,35 +238,5 @@ public class InsertionServiceImpl extends AbstractServices implements
       return uuid;
    }
 
-   private String checkHash(DataHandler documentContent, String digestAlgo,
-         String fileName) throws IOException, NoSuchAlgorithmException {
 
-      InputStream stream = null;
-
-      String digest;
-      try {
-         stream = documentContent.getInputStream();
-         digest = HashUtils.hashHex(stream, digestAlgo);
-         LOGGER.debug("{} - Hash recalculé : {}", TRC_INSERT, digest);
-      } finally {
-         close(stream, fileName);
-      }
-
-      return digest;
-   }
-
-   private void close(Closeable closeable, String name) {
-      String trcPrefix = "close()";
-
-      if (closeable != null) {
-
-         try {
-            closeable.close();
-
-         } catch (IOException e) {
-            LOGGER.info("{} - Erreur de fermeture du flux {}", new Object[] {
-                  trcPrefix, name });
-         }
-      }
-   }
 }
