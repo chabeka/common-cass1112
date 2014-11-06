@@ -14,6 +14,7 @@ import net.docubase.toolkit.model.ToolkitFactory;
 import net.docubase.toolkit.model.recordmanager.RMSystemEvent;
 import net.docubase.toolkit.service.ged.RecordManagerService;
 
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrSubstitutor;
 import org.slf4j.Logger;
@@ -83,29 +84,36 @@ public class DispatcheurServiceImpl implements DispatcheurService {
    private static final List<String> JOURN_AUTORISES = Arrays
          .asList(TraceDestinataireDao.COL_JOURN_EVT);
 
-   @Autowired
    private JobClockSupport clockSupport;
 
-   @Autowired
    private TraceDestinataireSupport destSupport;
 
-   @Autowired
    private TraceRegSecuriteSupport secuSupport;
 
-   @Autowired
    private TraceRegExploitationSupport exploitSupport;
 
-   @Autowired
    private TraceRegTechniqueSupport techSupport;
 
-   @Autowired
    private TraceJournalEvtSupport evtSupport;
 
-   @Autowired
    private ServiceProviderSupport providerSupport;
 
-   @Autowired
    private TimeUUIDEtTimestampSupport timeUUIDSupport;
+   
+   @Autowired
+   public DispatcheurServiceImpl(JobClockSupport clockSupport, TraceDestinataireSupport destSupport,
+         TraceRegSecuriteSupport secuSupport, TraceRegTechniqueSupport techSupport, TraceRegExploitationSupport exploitSupport,
+         TraceJournalEvtSupport evtSupport, ServiceProviderSupport providerSupport, TimeUUIDEtTimestampSupport timeUUIDSupport) {
+
+      this.clockSupport = clockSupport;
+      this.destSupport = destSupport;
+      this.secuSupport = secuSupport;
+      this.techSupport = techSupport;
+      this.exploitSupport = exploitSupport;
+      this.evtSupport = evtSupport;
+      this.providerSupport = providerSupport;
+      this.timeUUIDSupport = timeUUIDSupport;
+   }
 
    /**
     * {@inheritDoc}
@@ -240,7 +248,18 @@ public class DispatcheurServiceImpl implements DispatcheurService {
          LOGGER.debug("{} - ajout d'une trace journal des événements", prefix);
          TraceJournalEvt traceTechnique = new TraceJournalEvt(trace, list,
                idTrace, timestampTrace);
-         evtSupport.create(traceTechnique, clockSupport.currentCLock());
+         
+         final String KEY_ID_DOC = "idDoc";
+         long currentCLock = clockSupport.currentCLock();
+         evtSupport.create(traceTechnique, currentCLock);
+         
+         Map<String, Object> mapInfos = trace.getInfos();
+         if(MapUtils.isNotEmpty(mapInfos)){
+            if(mapInfos.containsKey(KEY_ID_DOC)){
+               String idDoc = String.valueOf(mapInfos.get(KEY_ID_DOC));
+               evtSupport.addIndexDoc(traceTechnique, idDoc, currentCLock);
+            }
+         }
 
       } else {
          throw new IllegalArgumentException(StringUtils.replace(

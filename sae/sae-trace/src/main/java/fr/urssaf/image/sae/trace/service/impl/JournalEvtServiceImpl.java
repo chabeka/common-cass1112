@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 import javanet.staxutils.IndentingXMLEventWriter;
 
@@ -26,6 +27,7 @@ import org.springframework.stereotype.Service;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvt;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndex;
+import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndexDoc;
 import fr.urssaf.image.sae.trace.dao.support.AbstractTraceSupport;
 import fr.urssaf.image.sae.trace.dao.support.TraceJournalEvtSupport;
 import fr.urssaf.image.sae.trace.exception.TraceRuntimeException;
@@ -249,5 +251,14 @@ public class JournalEvtServiceImpl extends
    @Override
    public AbstractTraceSupport<TraceJournalEvt, TraceJournalEvtIndex> getSupport() {
       return support;
+   }
+   
+   /**
+    * Récupérartion de la listes des traces par identifiant unique du document.
+    * @param idDoc
+    * @return
+    */
+   public List<TraceJournalEvtIndexDoc> getTraceJournalEvtByIdDoc(UUID idDoc){
+      return support.findByIdDoc(idDoc);
    }
 }
