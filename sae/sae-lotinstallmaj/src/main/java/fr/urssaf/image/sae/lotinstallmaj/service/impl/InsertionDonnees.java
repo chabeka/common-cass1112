@@ -495,6 +495,7 @@ public class InsertionDonnees {
     * <ul>
     * <li>modification</li>
     * <li>suppression</li>
+    * <li>transfert</li>
     * </ul>
     */
    public void addDroitsGed() {
@@ -503,6 +504,7 @@ public class InsertionDonnees {
             StringSerializer.get());
       addActionUnitaire("modification", "modification", cfTmpl);
       addActionUnitaire("suppression", "suppression", cfTmpl);
+      addActionUnitaire("transfert", "transfert", cfTmpl);
    }
 
    /**
@@ -587,9 +589,44 @@ public class InsertionDonnees {
    }
 
    /**
+    * Référentiel des événements en V5 Ajout des évenements :
+    * <li>DFCE_TRANSFERT_DOC|OK</li>
+    * <li>WS_TRANSFERT|KO</li>
+    * 
+    * @since 06/10/2014
+    * @author Michael PAMBO OGNANA
+    */
+   public void addReferentielEvenementV5() {
+      
+      LOG.info("Mise à jour du référentiel des événements");
+     
+      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+            keyspace, "TraceDestinataire", StringSerializer.get(),
+            StringSerializer.get());
+      
+      ColumnFamilyUpdater<String, String> updater;
+
+      List<String> allInfos = Arrays.asList("all_infos");
+      
+      //-- DFCE_TRANSFERT_DOC|OK
+      // dans le registre de surveillance technique avec all_infos
+      updater = cfTmpl.createUpdater("DFCE_TRANSFERT_DOC|OK");
+      addColumn("JOURN_EVT", allInfos, StringSerializer.get(),
+            ListSerializer.get(), updater);
+      cfTmpl.update(updater);
+      
+      //-- WS_TRANSFERT|KO
+      // dans le registre de surveillance technique avec all_infos
+      updater = cfTmpl.createUpdater("WS_TRANSFERT|KO");
+      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
+            ListSerializer.get(), updater);
+      cfTmpl.update(updater);
+   }
+   
+   /**
     * Ajout des données dans le référentiel des formats :
-    * - fmt/354
-    * - crtl/1
+    * <li>fmt/354</li>
+    * <li>crtl/1</li>
     */
    public void addReferentielFormat() {
       ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(

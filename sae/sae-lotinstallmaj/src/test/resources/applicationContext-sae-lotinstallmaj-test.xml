@@ -8,33 +8,39 @@
       http://www.springframework.org/schema/context 
       http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
+   <!-- sae-config.properties -->
+   <bean id="saeConfigResource" class="org.springframework.core.io.FileSystemResource">
+      <constructor-arg
+         value="src/test/resources/config/test-sae-config.properties" />
+   </bean>
 
-   <context:property-placeholder location="classpath:config/cassandra-local.properties"/>
-   <context:property-placeholder location="classpath:saelotinstall-dfce-config.properties"/>
-   
-   
+   <!-- Chargement des fichiers properties -->
+   <bean class="fr.urssaf.image.sae.commons.factory.PropertiesFactory"
+      factory-method="load">
+      <constructor-arg ref="saeConfigResource" />
+   </bean>
+
+   <!-- Création du bean de connexion à DFCE -->
+   <bean id="dfceConfig"
+      class="fr.urssaf.image.commons.dfce.manager.DFCEConnectionFactory"
+      factory-method="createDFCEConnectionByDFCEConfigurationResource">
+      <constructor-arg>
+         <bean class="org.springframework.core.io.FileSystemResource">
+            <constructor-arg value="${sae.dfce.cheminFichierConfig}" />
+         </bean>
+      </constructor-arg>
+   </bean>
+
    <bean id="configCassandra"
       class="fr.urssaf.image.sae.lotinstallmaj.modele.CassandraConfig">
       <property name="hosts" value="${cassandra.hosts}" />
       <property name="login" value="${cassandra.username}" />
       <property name="password" value="${cassandra.password}" />
       <property name="keyspaceName" value="${cassandra.keyspace}" />
-	  <property name="timeout" value="${cassandra.timeout}" />
+      <property name="timeout" value="${cassandra.timeout}" />
    </bean>
-   
-   
-   <bean id="dfceConfig"
-      class="fr.urssaf.image.sae.lotinstallmaj.modele.DfceConfig">
-      <property name="urlToolkit" value="toto" />
-      <property name="login" value="tata" />
-      <property name="password" value="tata" />
-      <property name="basename" value="tata" />
-      <property name="timeOut" value="10000" />
-   </bean>
-   
-   
+      
    <context:component-scan base-package="fr.urssaf.image.sae.lotinstallmaj" />
-   
 
    <!--Gestion de message à partir d'un fichier -->
    <bean id="messageSource_sae_lotservice"

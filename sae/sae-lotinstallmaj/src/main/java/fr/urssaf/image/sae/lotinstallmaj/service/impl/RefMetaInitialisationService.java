@@ -80,14 +80,17 @@ public final class RefMetaInitialisationService {
    }
 
    protected List<MetadataReference> chargeFichierMeta() {
+      
+      String nomFichierMetas = "Metadonnees.2.0.txt";
 
-      LOG.info("Chargement du fichier de métadonnées");
+      LOG.info(String.format("Chargement du fichier de métadonnées: %s",nomFichierMetas));
       // L'objet de résultat de la méthode
       List<MetadataReference> metadonneesAcreer = new ArrayList<MetadataReference>();
 
       // Chargement du fichier CSV du référentiel des métadonnées
-      ClassPathResource resource = new ClassPathResource("Metadonnees.1.9.txt");
+      ClassPathResource resource = new ClassPathResource(nomFichierMetas);
       CSVReader reader;
+      
       try {
          reader = new CSVReader(new InputStreamReader(
                resource.getInputStream(), Charset.forName("UTF-8")), '\t');
@@ -220,7 +223,12 @@ public final class RefMetaInitialisationService {
             // Trim à droite
             boolean trimDroite = readBoolean(nextLine, "AD");
             metadonnee.setRightTrimable(trimDroite);
-            // LOG.debug(trimDroite + " : " + trimDroite);
+            // LOG.debug("trimDroite : " + trimDroite);
+            
+            // Transferable
+            boolean transferable = readBoolean(nextLine, "AE");
+            metadonnee.setTransferable(transferable);
+             LOG.debug("transferable : " + transferable);
 
          }
 
@@ -367,7 +375,7 @@ public final class RefMetaInitialisationService {
       List<String> lignesGenerees = genereFichierXmlAncienneVersionRefMeta(metadonnees);
 
       compareDeuxListeLignes("1",
-            "refmeta/MetadataReferential_Lot130400_ameliore.xml",
+            "refmeta/MetadataReferential_Lot141200_ameliore.xml",
             lignesGenerees);
 
    }
@@ -413,8 +421,8 @@ public final class RefMetaInitialisationService {
          if (!lignesOriginales.get(i).equals(lignesGenerees.get(i))) {
             throw new MajLotRuntimeException("La vérification interne #"
                   + numeroVerif + " a échoué sur la ligne " + (i + 1)
-                  + ". Ligne d'origine : " + lignesOriginales.get(i)
-                  + ". Ligne regénérée : " + lignesGenerees.get(i));
+                  + ". Ligne d'origine : '" + lignesOriginales.get(i)+ "'"
+                  + ". Ligne regénérée : '" + lignesGenerees.get(i)  + "'");
          }
       }
 
@@ -484,7 +492,7 @@ public final class RefMetaInitialisationService {
 
       List<String> lignesGenerees = genereFichierXmlAncienneVersionBaseDfce(metadonnees);
 
-      compareDeuxListeLignes("1", "refmeta/saeBase_Lot130400_ameliore.xml",
+      compareDeuxListeLignes("2", "refmeta/saeBase_Lot141200_ameliore.xml",
             lignesGenerees);
 
    }

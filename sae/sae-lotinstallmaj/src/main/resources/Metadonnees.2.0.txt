@@ -1,0 +1,59 @@
+REFERENTIEL DES METADONNEES DU SAE																														
+Code Metadonnees	Libellé	Description	Format	Spécifiable lors de l'archivage	Obligatoire à l'archivage	Consultée par défaut	Consultable	Critère de recherche	Indexée	Formatage	Taille maximum autorisée en archivage	Exemple de valeur	Liste de valeurs fermée	Nom du dictionnaire	Annuaire	Diffusable clients	Enrichissement par le SAE	Détails de l'enrichissement	Code interne	Métadonnée gérée directement par DFCE	Acc?s via l'API DFCE	Type DFCE	Multi-valuée	Obligatoire au stockage	Date dernière MAJ	Modifiable	RG modif	Trim gauche	Trim droite	Transférable
+Titre	Titre du document 	Titre du document	Alphanumérique	oui	oui	oui	oui	oui	non		100					oui	NON		SM_TITLE	oui		String	non	oui		oui		oui	oui	oui
+Periode	Période	Correspond à la période V2	Alphanumérique	oui	non	non	oui	oui	non		4					oui	NON		per	non		String	non	non		oui		oui	oui	oui
+Siren	Siren	Numéro de SIREN V2	Numérique	oui	non	non	oui	oui	oui		10					oui	NON		srn	non		String	non	non		oui		oui	oui	oui
+NniEmployeur	NNI employeur	Numéro National d'Identification ou Numéro de sécurité sociale de l'Employeur	Numérique	oui	non	non	oui	oui	oui		15					oui	NON		nne	non		String	non	non		oui		oui	oui	oui
+NumeroPersonne	Numéro de personne	Numéro de personne (V2)	Numérique	oui	non	non	oui	oui	oui		7					oui	NON		npe	non		String	non	non		oui		oui	oui	oui
+Denomination	Dénomination du compte	Dénomination du compte (provient de la raison sociale V2)	Alphanumérique	oui	non	non	oui	oui	oui							oui	NON		den	non		String	non	non		oui		oui	oui	oui
+CodeCategorieV2	Code catégorie V2	Code catégorie V2	Numérique	oui	non	non	oui	non	non		1					oui	NON		cv2	non		String	non	non		oui		oui	oui	oui
+CodeSousCategorieV2	Code sous catégorie V2	Code sous catégorie V2	Numérique	oui	non	non	oui	non	non		2					oui	NON		scv	non		String	non	non		oui		oui	oui	oui
+NumeroCompteInterne	Numéro de compte interne	Numéro de compte interne V2	Numérique	oui	non	non	oui	oui	oui		7					oui	NON		nci	non		String	non	non		oui		oui	oui	oui
+NumeroCompteExterne	Numéro de compte externe	Numéro de compte externe V2	Numérique	oui	non	non	oui	oui	oui		18					oui	NON		nce	non		String	non	non		oui		oui	oui	oui
+Siret	Numéro de siret	Numéro de Siret V2	Numérique	oui	non	non	oui	oui	oui		14					oui	NON		srt	non		String	non	non		oui		oui	oui	oui
+PseudoSiret	Numéro de pseudosiret	Numéro de Pseudo Siret V2	Alphanumérique	oui	non	non	oui	oui	oui		14					oui	NON		psi	non		String	non	non		oui		oui	oui	oui
+NumeroStructure	Numéro de structure	Numéro de structure V2	Numérique	oui	non	non	oui	oui	non		10					oui	NON		nst	non		String	non	non		oui		oui	oui	oui
+NumeroRecours	Numéro de recours	Numéro de recours	Alphanumérique	oui	non	non	oui	oui	oui		15					oui	NON		nre	non		String	non	non		oui		oui	oui	oui
+NumeroIntControle	Numéro interne contrôle	Numéro interne contrôle	Numérique	oui	non	non	oui	oui	oui		6					oui	NON		nic	non		String	non	non		oui		oui	oui	oui
+DateCreation	Date création	Date de création du document au niveau de l'application émettrice	Date	oui	oui	oui	oui	oui	oui	yyyy-mm-dd	10					oui	NON		SM_CREATION_DATE	oui		Date	non	oui		oui	oui	non	non	oui
+DateReception	Date réception	Date à laquelle le document a été reçu pour un courrier par exemple	Date	oui	non	oui	oui	oui	non	yyyy-mm-dd	10					oui	NON		dre	non		Date	non	non		oui		non	non	oui
+ApplicationProductrice	Application Productrice du document	Code de l'application qui a produit le document (pour un document WATT issu du scan, ce sera la chaine d'acquisition)	Alphanumérique	oui	oui	non	oui	oui	non		15		oui			oui	NON		apr	non		String	non	oui		non		oui	oui	oui
+ApplicationTraitement	Application traitant le document	Code de la dernière application qui a fait des traitements sur le document avant archivage c'est-à-dire celle qui a versé le document	Alphanumérique	oui	non	non	oui	oui	non		15		oui			oui	NON		atr	non		String	non	non		non		oui	oui	oui
+CodeOrganismeProprietaire	Code organisme propriétaire	Code organisme propriétaire du document Cf. Liste des organismes	Alphanumérique	oui	oui	oui	oui	oui	non		5		oui			oui	NON		cop	non		String	non	oui		oui		oui	oui	oui
+CodeOrganismeGestionnaire	Code organisme gestionnaire	Code organisme gestionnaire de la pièce Cf. Liste des organismes	Alphanumérique	oui	oui	oui	oui	oui	non		5		oui			oui	NON		cog	non		String	non	oui		oui		oui	oui	oui
+SiteAcquisition	Site acquisition	Code site du lieu d'acquisition dans le cas d'une numérisation Cf. Liste des organismes	Alphanumérique	oui	non	non	oui	oui	non		5					oui	NON		sac	non		String	non	non		oui		oui	oui	oui
+CodeRND	Code référentiel nationale de document	Code issu d'un référentiel permettant de typer nationalement un document	Alphanumérique	oui	oui	oui	oui	oui	non		14		oui			oui	NON		SM_DOCUMENT_TYPE	oui		String	non	oui		oui		oui	oui	oui
+VersionRND	Version de Code RND	Numéro permettant d'identifier la version de provenance du code RND renseigné précédemment	Alphanumérique	non	non	non	oui	non	non		10					non	Oui		vrn	non		String	non	oui		non		non	non	oui
+CodeFonction	Code fonction RFP	Code de la fonction/domaine RFP	Numérique	non	non	non	oui	oui	non		2		oui			oui	Oui		dom	non		String	non	non		non		non	non	oui
+CodeActivite	Code Activité RFP	Code de l'activité RFP	Numérique	non	non	non	oui	oui	non		2		oui			oui	Oui		act	non		String	non	non		non		non	non	oui
+DureeConservation	Durée de conservation	Durée de conservation de l'archive au terme duquel l'archive n'est plus accessible en jours	Numérique	non	non	non	oui	non	non							oui	Non		dco	oui		Integer	non	non		non		non	non	oui
+DateDebutConservation	Date début conservation	Date de début de la durée de conservation.	Date	oui	non	non	oui	oui	oui	yyyy-mm-dd	10					oui	Oui		SM_LIFE_CYCLE_REFERENCE_DATE	oui		Date	non	oui		non	non	non	non	non
+DateFinConservation	Date fin conservation	Date de fin de la durée de conservation	Date	non	non	non	oui	oui	non	yyyy-mm-dd	10					oui	Oui		dfc	non		Date	non	oui		non		non	non	oui
+Gel	Gel	Gel de l'archive permettant de ne pas détruire l'archive 	Booléen	non	non	non	oui	non	non	true|false			oui			non	Oui		gel	oui		Boolean	non	non		non	non	non	non	non
+TracabilitePreArchivage	Traçabilité pré archivage	Traçabilité en amont du SAE, surtout utilisée dans le cas de la chaine d'acquisition	Alphanumérique	oui	non	non	oui	non	non							non	NON		tpa	non		String	non	non		non		oui	oui	oui
+TracabilitePostArchivage	Tracabilite post archivage	Traçabilité contenue dans le système d'archive, lié à la vie de l'archive	Alphanumérique	non	non	non	oui	non	non							non	NON		toa	oui		String	non	non		non		non	non	non
+Hash	Hash du fichier	Hash du fichier	Alphanumérique	oui	oui	oui	oui	non	non							oui	NON		SM_DIGEST	oui		String	non	oui		non		oui	oui	oui
+TypeHash	Type de hash utilisé	Identifiant de l'algorithme de hachage utilisé pour calculer le Hash du fichier	Alphanumérique	oui	oui	non	oui	non	non		15		oui			oui	NON		SM_DIGEST_ALGORITHM	oui		String	non	oui		non		oui	oui	oui
+NbPages	Nombre de pages	Nombre de pages du document	Numérique	oui	oui	non	oui	non	non							oui	NON		nbp	non		Integer	non	oui		non		non	non	oui
+NomFichier	Nom du fichier	Nom du fichier physique avec extension lié au document	Alphanumérique	non	non	oui	oui	non	non		30					oui	Oui		nfi	oui		String	non	non		non		non	non	oui
+FormatFichier	Format de fichier	Identifiant PRONOM (Cf. Référentiel PRONOM)	Alphanumérique	oui	oui	oui	oui	non	non		15		oui			oui	NON		ffi	non		String	non	oui		non		oui	oui	oui
+TailleFichier	Taille du fichier	Taille du fichier en octets	Numérique	non	non	oui	oui	non	non							oui	Oui		SM_SIZE	oui		Long	non	non		non		non	non	non
+IdTraitementMasseInterne	Identifiant interne du traitement de masse	Identifiant permettant de gérer le rollback sur les traitements de masse	Alphanumérique	non	non	non	oui	oui	oui		20					non	NON		iti	non		String	non	non		non		non	non	oui
+IdTraitementMasse	Identifiant client du traitement de masse	Identifiant permettant de gérer les traitements de masse pour l'application cliente	Alphanumérique	oui	non	non	oui	oui	oui		20					oui	NON		itm	non		String	non	non		non		oui	oui	oui
+DocumentVirtuel	Information indiquant si le document est virtuel ou non	Information indiquant si le document est virtuel ou non	Booléen	non	non	non	non	non	non							non	Oui		SM_VIRTUAL	oui		Boolean	non	oui		non	non	non	non	non
+StartPage	Page de début	Pour un document virtuel, il s'agit de la page de départ dans le document container	Numérique	non	non	non	non	non	non							non	NON		SM_START_PAGE	oui		Integer	non	non		non		non	non	non
+EndPage	Page de fin	Pour un document virtuel, il s'agit de la page de fin dans le document container	Numérique	non	non	non	non	non	non							non	NON		SM_END_PAGE	oui		Integer	non	non		non		non	non	non
+ContratDeService	Contrat de Service	Identifiant du contrat de service utilisé pour archiver le document	Alphanumérique	non	non	oui	oui	oui	non				oui			non	Oui		cse	non		String	non	oui		non		non	non	oui
+DateArchivage	Date archivage	Date à laquelle le document a été archivé dans le SAE	Date	non	non	oui	oui	oui	oui	yyyy-mm-dd	10					oui	Oui		SM_ARCHIVAGE_DATE	oui		Date	non	oui		non		non	non	non
+VersionNumber	Numéro de la version consultée	Numéro de la version consultée du document	Alphanumérique	non	non	non	non	non	non							non	NON		SM_VERSION	oui		Integer	non	non		non		non	non	non
+DateModification	Date modification (DFCE)	Date modification (DFCE)	Date	non	non	non	non	non	oui	yyyy-mm-dd	10					non	NON		SM_MODIFICATION_DATE	oui		Date	non	non		non		non	non	non
+JetonDePreuve	Identifiant du jeton de preuve issu d'une vérification de signature(s) électronique(s)	Identifiant du jeton de preuve renvoyé par les services de signature lors d'une demande de vérification de signature(s) électronique(s).	Alphanumérique	oui	non	non	oui	non	non							oui	NON		jdp	non		String	non	non		non		oui	oui	oui
+RUM	Référence Unique de Mandat	Référence Unique de Mandat	Alphanumérique	oui	non	non	oui	oui	oui		35					oui	NON		rum	non		String	non	non		oui		non	non	oui
+DateSignature	Date de signature	Date de signature	Date	oui	non	non	oui	oui	non	yyyy-mm-dd	10					oui	NON		dsi	non		Date	non	non		non		non	non	oui
+ReferenceDocumentaire	Référence documentaire	Référence documentaire. Utilisée pour l'instant dans les mandats SEPA	Alphanum?rique	oui	non	non	oui	oui	oui		30					oui	NON		rdo	non		String	non	non		oui		oui	oui	oui
+DateCourrierV2	Date du courrier V2	Date du courrier V2 (enregistrement AAAA colonne 438 à 446)	Date	oui	non	non	oui	oui	non	yyyy-mm-dd	10					oui	NON		dcr	non		Date	non	non		oui		non	non	oui
+RIBA	Index RSI V2	Index RSI V2 (enregistrement BAAU colonne 28 à 47)	Alphanumérique	oui	non	non	oui	oui	oui		20					oui	NON		rib	non		String	non	non		oui		oui	oui	oui
+CodeProduitV2	Code produit V2	Code produit V2	Alphanumérique	oui	non	non	oui	oui	non		5					oui	NON		cpr	non		String	non	non		oui		oui	oui	oui
+CodeTraitementV2	Code traitement V2	Code traitement V2	Alphanumérique	oui	non	non	oui	oui	non		8					oui	NON		ctr	non		String	non	non		oui		oui	oui	oui
+CodePartenaire	Code partenaire	Code du partenaire de l'organisme (ex : huissier)	Alphanumérique	oui	non	non	oui	oui	non		7	700 + code huissier sur 4 caractères			oui	oui	non		cpa	non		String	non	non		oui		oui	oui	oui
+DateArchivageGNT	Date archivage dans la GED technique	Date à laquelle le document a été archivé dans la GED technique	Date	non	non	non	oui	oui	non	yyyy-mm-dd	10				non	oui	oui		dag	non		Date	non	non		non		non	non	oui

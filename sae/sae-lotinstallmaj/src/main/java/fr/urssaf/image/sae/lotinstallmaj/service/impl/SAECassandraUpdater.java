@@ -40,6 +40,7 @@ public class SAECassandraUpdater {
    private static final int VERSION_5 = 5;
    private static final int VERSION_6 = 6;
    private static final int VERSION_7 = 7;
+   private static final int VERSION_8 = 8;
 
    private static final String REFERENTIEL_FORMAT = "ReferentielFormat";
    private static final String DROIT_PAGMF = "DroitPagmf";
@@ -518,6 +519,47 @@ public class SAECassandraUpdater {
 
    }
 
+   /**
+    * Version 8 :
+    * <li>MAJ du référentiel des événements</li>
+    */
+   public void updateToVersion8() {
+
+      long version = saeDao.getDatabaseVersion();
+      if (version >= VERSION_8) {
+         LOG.info("La base de données est déja en version " + version);
+         return;
+      }
+
+      LOG.info("Mise à jour du keyspace SAE en version 8");
+
+      //-- On se connecte au keyspace
+      saeDao.connectToKeySpace();
+
+      //-- Initialisation du référentiel des métadonnées
+      // suite au passage à un stockage du référentiel en bdd
+      refMetaInitService.initialiseRefMeta(saeDao.getKeyspace());
+      
+      
+      //-- Liste contenant la définition des column families à créer
+      List<ColumnFamilyDefinition> cfDefs = new ArrayList<ColumnFamilyDefinition>();
+      
+      //-- TraceJournalEvtIndexDoc
+      cfDefs.add(HFactory.createColumnFamilyDefinition(ksName,
+            "TraceJournalEvtIndexDoc", ComparatorType.UUIDTYPE));
+
+      //-- Création des CF
+      saeCassandraService.createColumnFamilyFromList(cfDefs, true);
+
+      //-- Enrichissement du référentiel des événements
+      InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
+      donnees.addTracabiliteParameters();
+      donnees.addReferentielEvenementV5();
+
+      // On positionne la version à 8
+      saeDao.setDatabaseVersion(VERSION_8);
+   }
+   
    /**
     * Methode permettant de lire le fichier passé en entrée et de retourner la
     * liste des codes long des Metadata. Cette liste servira pour l'ajout d'une

@@ -8,7 +8,6 @@ import java.util.List;
 import junit.framework.Assert;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +29,7 @@ public class RefMetaInitialisationServiceTest {
 
       List<MetadataReference> metadonnees = refMetaService.chargeFichierMeta();
 
-      Assert.assertEquals("Le nombre de métadonnées attendu est incorrect", 55,
+      Assert.assertEquals("Le nombre de métadonnées attendu est incorrect", 57,
             metadonnees.size());
 
    }
@@ -43,15 +42,15 @@ public class RefMetaInitialisationServiceTest {
       List<String> lignes = refMetaService
             .genereFichierXmlAncienneVersionRefMeta(metadonnees);
 
-      // Ecriture dans un fichier temporaire, pour mieux visualiser
-      // try {
-      // File fileTemp = new File("c:/divers/refmeta_verif1.xml");
-      // FileUtils.writeLines(fileTemp, lignes);
-      // } catch (IOException e) {
-      // throw new MajLotRuntimeException(e);
-      // }
+       //Ecriture dans un fichier temporaire, pour mieux visualiser
+       try {
+       File fileTemp = new File("c:/divers/refmeta_verif1.xml");
+       FileUtils.writeLines(fileTemp, lignes);
+       } catch (IOException e) {
+       throw new MajLotRuntimeException(e);
+       }
 
-      Assert.assertEquals("Le nombre de lignes attendu est incorrect", 883,
+      Assert.assertEquals("Le nombre de lignes attendu est incorrect", 915,
             lignes.size());
 
    }
@@ -72,15 +71,17 @@ public class RefMetaInitialisationServiceTest {
       List<String> lignes = refMetaService
             .genereFichierXmlAncienneVersionBaseDfce(metadonnees);
 
-      // Ecriture dans un fichier temporaire, pour mieux visualiser
-      // try {
-      // File fileTemp = new File("c:/divers/refmeta_verif2.xml");
-      // FileUtils.writeLines(fileTemp, lignes);
-      // } catch (IOException e) {
-      // throw new MajLotRuntimeException(e);
-      // }
+       //Ecriture dans un fichier temporaire, pour mieux visualiser
+//       try {
+//       File fileTemp = new File("c:/divers/refmeta_verif2.xml");
+//       FileUtils.writeLines(fileTemp, lignes);
+//       } catch (IOException e) {
+//       throw new MajLotRuntimeException(e);
+//       }
+      
+     // int nbLignes = nb meta internal * 10 + 7;
 
-      Assert.assertEquals("Le nombre de lignes attendu est incorrect", 387,
+      Assert.assertEquals("Le nombre de lignes attendu est incorrect", 407,
             lignes.size());
 
    }

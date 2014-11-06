@@ -206,3 +206,20 @@ Ajout de la colonne dispo dans la CF Metadata (disponible client)
 Ajout des colonnes trim gauche et trim droite dans la CF Metadata
 
 Positionne le paramètre versionBDD de la CF Parameters à la valeur "7"
+
+
+// ------------------------------------------
+// 7) Lot 141200SAE
+// ------------------------------------------
+
+sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj-14.7.0.3-SNAPSHOT.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_141200
+
+Met la base Cassandra du SAE en version 8
+
+Ajout action unitaire transfert
+Ajout évènements transfert DFCE_TRANSFERT_DOC|OK WS_TRANSFERT|KO
+Ajout de la CF TraceJournalEvtIndexDoc
+
+Positionne le paramètre versionBDD de la CF Parameters à la valeur "8"
+
+
