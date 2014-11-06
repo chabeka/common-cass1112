@@ -49,4 +49,9 @@ public final class TracesConstantes {
     */
    public static final String CODE_EVT_ECHEC_CHARGE_CRL = "WS_LOAD_CRLS|KO";
    
+   /**
+    * Le code de l'événement échec du transfert de document
+    */
+   public static final String CODE_EVT_WS_TRANSFERT_KO = "WS_TRANSFERT|KO";
+   
 }

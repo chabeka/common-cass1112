@@ -107,6 +107,13 @@
    </build>
 
    <dependencies>
+      
+      <!-- Apache commons -->
+      <dependency>
+         <groupId>commons-codec</groupId>
+         <artifactId>commons-codec</artifactId>
+         <version>${apache.commons-codec.version}</version>
+      </dependency>
 
       <!-- Pont entre SLF4J et Apache commons-logging -->
       <dependency>
@@ -203,6 +210,10 @@
             <exclusion>
                <groupId>commons-logging</groupId>
                <artifactId>commons-logging</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>commons-codec</groupId>
+               <artifactId>commons-codec</artifactId>
             </exclusion>
          </exclusions>
       </dependency>

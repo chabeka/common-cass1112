@@ -92,6 +92,8 @@ public class TracesWsSupport {
          result = TracesConstantes.CODE_EVT_WS_CONSULTATION_KO;
       } else if ("recherche".equals(nomOperation)) {
          result = TracesConstantes.CODE_EVT_WS_RECHERCHE_KO;
+      } else if ("transfert".equals(nomOperation)) {
+         result = TracesConstantes.CODE_EVT_WS_TRANSFERT_KO;
       }
 
       return result;

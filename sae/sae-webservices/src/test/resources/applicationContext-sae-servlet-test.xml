@@ -17,7 +17,7 @@
    <bean id="dfceConnection"
       class="fr.urssaf.image.commons.dfce.manager.DFCEConnectionFactory"
       factory-method="createDFCEConnectionByDFCEConfiguration">
-      <constructor-arg value="${sae.dfce.cheminFichierConfig}" />
+      <constructor-arg type="java.io.File" value="${sae.dfce.cheminFichierConfig}" />
    </bean>
    
 </beans>

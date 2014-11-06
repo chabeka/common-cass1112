@@ -22,4 +22,15 @@
       </constructor-arg>
    </bean>
 
+   <!--Instantiation du bean de connexion à la base DFCE transfert -->
+   <bean id="dfceConnectionTransfert" autowire-candidate="false"
+      class="fr.urssaf.image.commons.dfce.manager.DFCEConnectionFactory"
+      factory-method="createDFCEConnectionTransfertBySAEConfigurationResource">
+      <constructor-arg>
+         <bean class="org.springframework.core.io.FileSystemResource">
+            <constructor-arg value="${sae.dfce.transfert.cheminFichierConfig}" />
+         </bean>
+      </constructor-arg>
+   </bean>
+
 </beans>

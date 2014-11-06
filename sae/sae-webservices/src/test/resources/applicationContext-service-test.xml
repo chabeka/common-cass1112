@@ -23,7 +23,7 @@
    <import resource="applicationContext-sae-trace.xml" />
 
    <import resource="applicationContext-service.xml" />
-
+   
    <!-- mock pour consultation et recherche -->
    <bean id="saeServiceProvider"
       class="fr.urssaf.image.sae.webservices.service.SAEServiceProviderImpl">
@@ -59,6 +59,10 @@
    <!-- mock pour le support pour les traces des controles -->
    <bean id="tracesControlesSupport" factory-bean="SAEServiceFactory"
       factory-method="createTracesControlesSupport" />
+      
+   <!-- mock pour le support pour les traces des controles -->
+   <bean id="transfertService" factory-bean="SAEServiceFactory"
+      factory-method="createSAETransfertService" />
 
    <bean id="ecdeControleSupport"
       class="fr.urssaf.image.sae.services.capturemasse.support.ecde.impl.EcdeControleSupportImpl" />
@@ -66,5 +70,4 @@
    <!-- Services necessaires à la consultation des etats des services  -->
    <context:component-scan
       base-package="fr.urssaf.image.sae.webservices.dfceservice.test" />
-
 </beans>

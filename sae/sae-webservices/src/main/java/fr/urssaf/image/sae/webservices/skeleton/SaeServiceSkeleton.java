@@ -69,6 +69,7 @@ import fr.urssaf.image.sae.webservices.exception.ErreurInterneAxisFault;
 import fr.urssaf.image.sae.webservices.exception.ModificationAxisFault;
 import fr.urssaf.image.sae.webservices.exception.RechercheAxis2Fault;
 import fr.urssaf.image.sae.webservices.exception.SuppressionAxisFault;
+import fr.urssaf.image.sae.webservices.exception.TransfertAxisFault;
 import fr.urssaf.image.sae.webservices.security.exception.SaeAccessDeniedAxisFault;
 import fr.urssaf.image.sae.webservices.service.WSCaptureMasseService;
 import fr.urssaf.image.sae.webservices.service.WSCaptureService;
@@ -77,6 +78,7 @@ import fr.urssaf.image.sae.webservices.service.WSMetadataService;
 import fr.urssaf.image.sae.webservices.service.WSModificationService;
 import fr.urssaf.image.sae.webservices.service.WSRechercheService;
 import fr.urssaf.image.sae.webservices.service.WSSuppressionService;
+import fr.urssaf.image.sae.webservices.service.WSTransfertService;
 import fr.urssaf.image.sae.webservices.util.WsMessageRessourcesUtils;
 
 /**
@@ -115,6 +117,9 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
 
    @Autowired
    private WSSuppressionService suppressionService;
+   
+   @Autowired
+   private WSTransfertService transfertService;
 
    @Autowired
    private WSMetadataService metadataService;
@@ -636,22 +641,22 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
          String trcPrefix = "transfertSecure";
          LOG.debug("{} - début", trcPrefix);
 
-         // TODO : methode non implementee qui renvoie toujours OK donc pas de soap:fault 
-         TransfertResponse response = new TransfertResponse();
-         response.setTransfertResponse(new TransfertResponseType());
+         //-- Transfert du document 
+         TransfertResponse response = transfertService.transfert(request);
 
          LOG.debug("{} - fin", trcPrefix);
 
          return response;
 
-      } /*catch (ErreurInterneAxisFault ex) {
-         logSoapFault(ex);
-         throw ex;
-      }*/ catch (AccessDeniedException ex) {
+      } catch (TransfertAxisFault e) {
+         logSoapFault(e);
+         throw e;
+      }  catch (AccessDeniedException ex) {
          throw new SaeAccessDeniedAxisFault(ex);
-      } catch (RuntimeException ex) {
-         logRuntimeException(ex);
-         throw new ErreurInterneAxisFault(ex);
+      } catch (RuntimeException e) {
+         logRuntimeException(e);
+         String erreur = "Une erreur interne à l'application est survenue lors du transfert";
+         throw new TransfertAxisFault("ErreurInterneTransfert", erreur, e);
       }
    }
    

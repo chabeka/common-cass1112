@@ -12,6 +12,7 @@ import fr.urssaf.image.sae.services.controles.traces.TracesControlesSupport;
 import fr.urssaf.image.sae.services.metadata.MetadataService;
 import fr.urssaf.image.sae.services.modification.SAEModificationService;
 import fr.urssaf.image.sae.services.suppression.SAESuppressionService;
+import fr.urssaf.image.sae.services.transfert.SAETransfertService;
 
 /**
  * Implémentation des Mocks des services SAE
@@ -124,5 +125,17 @@ public class SAEServiceFactory {
             .createMock(TracesControlesSupport.class);
 
       return support;
+   }
+   
+   /**
+    * 
+    * @return instance de SAETransfertService
+    */
+   public final SAETransfertService createSAETransfertService() {
+      
+      SAETransfertService transfertSce = EasyMock
+      .createMock(SAETransfertService.class);
+      
+      return transfertSce;
    }
 }
