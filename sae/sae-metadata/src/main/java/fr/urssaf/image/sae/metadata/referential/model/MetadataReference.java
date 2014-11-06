@@ -68,6 +68,7 @@ public class MetadataReference implements Serializable {
    private Boolean clientAvailable;
    private Boolean leftTrimable;
    private Boolean rightTrimable;
+   private Boolean transferable;
 
    /**
     * @return Le code court
@@ -423,5 +424,19 @@ public class MetadataReference implements Serializable {
     */
    public final void setRightTrimable(Boolean rightTrimable) {
       this.rightTrimable = rightTrimable;
+   }
+
+   /**
+    * @param transferable the transferable to set
+    */
+   public final void setTransferable(Boolean transferable) {
+      this.transferable = transferable;
+   }
+
+   /**
+    * @return the transferable
+    */
+   public final Boolean getTransferable() {
+      return transferable;
    }
 }

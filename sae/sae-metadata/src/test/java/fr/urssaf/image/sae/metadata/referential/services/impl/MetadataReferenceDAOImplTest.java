@@ -842,5 +842,39 @@ public class MetadataReferenceDAOImplTest {
             "SM_DOCUMENT_TYPE", metadata.getShortCode());
 
    }
+   
+   /**
+    * Permet de tester la récupération des métadonnées transférables
+    * du reférentiel.
+    * 
+    * @throws IOException
+    *            Exception levée lorsqu'il y'a un dysfonctionnement.
+    * @throws ReferentialException
+    *            Exception levée lorsqu'il y'a un dysfonctionnement.
+    */
+   @Test
+   public void getTransferableMetadataReference() throws ReferentialException {
+      
+      Map<String, MetadataReference> metadonnees = referenceDAO
+         .getTransferableMetadataReference();
+
+      Assert
+      .assertEquals(
+            "Le nombre de métadonnées transférables attendues est incorrect",
+            42, metadonnees.size());
+
+      for (Map.Entry<String, MetadataReference> metadata : metadonnees
+            .entrySet()) {
+         Assert.assertTrue(metadata.getValue().getTransferable());
+      }
+      
+      String metaNonTrouve = "Métadonnéee %s non trouvée";
+
+      Assert.assertTrue(String.format(metaNonTrouve, "Periode"), metadonnees
+            .containsKey("Periode"));
+      
+      Assert.assertFalse(String.format(metaNonTrouve, "DateArchivage"), metadonnees
+            .containsKey("DateArchivage"));
+   }
 
 }

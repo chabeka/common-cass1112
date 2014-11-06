@@ -123,5 +123,14 @@ public interface MetadataReferenceDAO {
     * @return la liste des métadonnées à trimer à droite
     */
    Map<String, MetadataReference> getRightTrimableMetadataReference();
-
+   
+   /**
+    * Charge les des métadonnées qui sont transférables
+    * 
+    * @return la liste des métadonnées transférables
+    * @throws ReferentialException
+    *            Exception levée lorsqu'un dysfonctionnement survient.
+    */
+   Map<String, MetadataReference> getTransferableMetadataReference()
+         throws ReferentialException;
 }

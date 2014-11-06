@@ -65,14 +65,10 @@ public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
    /**
     * {@inheritDoc}
     */
-   @Deprecated
    public final Map<String, MetadataReference> getAllMetadataReferences() {
-
       synchronized (this) {
-
          return metadataReference.getUnchecked(MetaType.ALL_METADATAS);
       }
-
    }
 
    /**
@@ -208,8 +204,7 @@ public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
     *           un objet de type {@link MetadataReferenceDAOImpl}
     */
    @Autowired
-   public MetadataReferenceDAOImpl(
-         @Value("${sae.metadata.cache}") int cacheDuration) {
+   public MetadataReferenceDAOImpl(@Value("${sae.metadata.cache}") int cacheDuration) {
       metadataReference = CacheBuilder.newBuilder().refreshAfterWrite(
             cacheDuration, TimeUnit.MINUTES).build(
             new CacheLoader<MetaType, Map<String, MetadataReference>>() {
@@ -285,6 +280,24 @@ public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
          }
       }
       return archMetas;
+   }
+   
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final Map<String, MetadataReference> getTransferableMetadataReference() 
+         throws ReferentialException {
+      final Map<String, MetadataReference> transMetas = new HashMap<String, MetadataReference>();
+      final Map<String, MetadataReference> referentiel = this.metadataReference
+         .getUnchecked(MetaType.ALL_METADATAS);
+      for (Map.Entry<String, MetadataReference> metaData : Utils.nullSafeMap(
+            referentiel).entrySet()) {
+         if (metaData.getValue().getTransferable()) {
+            transMetas.put(metaData.getKey(), metaData.getValue());
+         }
+      }
+      return transMetas;
    }
 
 }

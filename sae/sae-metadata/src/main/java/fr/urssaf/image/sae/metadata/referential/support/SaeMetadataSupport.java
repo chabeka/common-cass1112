@@ -138,6 +138,9 @@ public class SaeMetadataSupport {
 
       Boolean clientAvailable = getBooleanValue(metadata.isClientAvailable());
       saeMetadataDao.ecritMisADisposition(clientAvailable, updater, clock);
+      
+      Boolean transferable = getBooleanValue(metadata.getTransferable());
+      saeMetadataDao.ecritTransferable(transferable, updater, clock);
 
       saeMetadataDao.getCfTmpl().update(updater);
    }
@@ -319,8 +322,7 @@ public class SaeMetadataSupport {
          Boolean hasDict = getBooleanValue(result, SaeMetadataDao.META_HAS_DICT);
          meta.setHasDictionary(hasDict);
 
-         Boolean internal = getBooleanValue(result,
-               SaeMetadataDao.META_INTERNAL);
+         Boolean internal = getBooleanValue(result, SaeMetadataDao.META_INTERNAL);
          meta.setInternal(internal);
 
          Boolean indexed = getBooleanValue(result, SaeMetadataDao.META_INDEXED);
@@ -331,6 +333,9 @@ public class SaeMetadataSupport {
 
          Boolean dispo = getBooleanValue(result, SaeMetadataDao.META_DISPO);
          meta.setClientAvailable(dispo);
+         
+         Boolean transferable = getBooleanValue(result, SaeMetadataDao.META_TRANSF);
+         meta.setTransferable(transferable);
 
       }
       return meta;

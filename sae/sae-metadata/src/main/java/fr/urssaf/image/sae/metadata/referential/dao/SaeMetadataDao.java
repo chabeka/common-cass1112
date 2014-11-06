@@ -44,6 +44,8 @@ public class SaeMetadataDao extends AbstractDao<String, String> {
    public static final String METADATA_CFNAME = "Metadata";
    public static final String META_UPDATE = "update";
 
+   public static final String META_TRANSF = "transf";
+
    /**
     * Contructeur
     * 
@@ -380,6 +382,22 @@ public class SaeMetadataDao extends AbstractDao<String, String> {
    public final void ecritMisADisposition(Boolean clientAvailable,
          ColumnFamilyUpdater<String, String> updater, long clock) {
       addColumn(updater, META_DISPO, clientAvailable, BooleanSerializer.get(),
+            clock);
+   }
+   
+   /**
+    * Ecrit la valeur de la propriété transf
+    * 
+    * @param transferable
+    *           Indique si la métadonnée est transférable
+    * @param updater
+    *           {@link ColumnFamilyUpdater}
+    * @param clock
+    *           le timestamp d'écriture
+    */
+   public final void ecritTransferable(Boolean transferable,
+         ColumnFamilyUpdater<String, String> updater, long clock) {
+      addColumn(updater, META_TRANSF, transferable, BooleanSerializer.get(),
             clock);
    }
 

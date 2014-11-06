@@ -83,6 +83,7 @@ public class SaeMetadataSupportTest {
       metaDest.setHasDictionary(Boolean.FALSE);
       metaDest.setDictionaryName(StringUtils.EMPTY);
       metaDest.setIsIndexed(Boolean.TRUE);
+      metaDest.setTransferable(Boolean.TRUE);
       
       
       metaSupport.create(metaDest, clock.currentCLock());
@@ -98,7 +99,7 @@ public class SaeMetadataSupportTest {
       Assert.assertEquals("obligatoire à l'archivage faux",metaDest.isRequiredForArchival(), metafind.isRequiredForArchival());
       Assert.assertEquals("obligatoire au stockage faux",metaDest.isRequiredForStorage(), metafind.isRequiredForStorage());
       Assert.assertEquals("valeur interne faux",metaDest.isInternal(), metafind.isInternal());
-      Assert.assertEquals("recherchable faux",metaDest.isSearchable(), metafind.isSearchable());
+      Assert.assertEquals("transferable faux",metaDest.getTransferable(), metafind.getTransferable());
    }
    
    /**
