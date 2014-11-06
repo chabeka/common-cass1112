@@ -101,6 +101,10 @@
                <name>rightTrim</name>
                <value>bytes(00)</value>
             </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
+            </column>         
          </row>
 
          <row>
@@ -184,6 +188,10 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
             </column>
          </row>
 
@@ -269,6 +277,10 @@
                <name>rightTrim</name>
                <value>bytes(00)</value>
             </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
+            </column>
          </row>
 
          <row>
@@ -352,7 +364,11 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
-            </column>            
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
+            </column>        
          </row>
 
          <row>
@@ -436,7 +452,11 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
-            </column>            
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
+            </column>          
          </row>
 
          <row>
@@ -600,7 +620,11 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
-            </column>            
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
+            </column>           
          </row>
 
          <row>
@@ -684,7 +708,11 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
-            </column>            
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
+            </column>        
          </row>
 
          <row>
@@ -768,7 +796,11 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
-            </column>            
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
+            </column>          
          </row>
 
          <row>
@@ -852,7 +884,11 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
-            </column>            
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
+            </column>           
          </row>
 
          <row>
@@ -936,6 +972,10 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
             </column>            
          </row>
 
@@ -1020,7 +1060,11 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
-            </column>            
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
+            </column>      
          </row>
 
          <row>
@@ -1104,7 +1148,11 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
-            </column>            
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
+            </column>           
          </row>
 
          <row>
@@ -1188,7 +1236,11 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
-            </column>            
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
+            </column>   
          </row>
 
          <row>
@@ -1272,7 +1324,11 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
-            </column>            
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
+            </column>         
          </row>
 
          <row>
@@ -1356,6 +1412,10 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
             </column>            
          </row>
 
@@ -1440,7 +1500,11 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
-            </column>            
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
+            </column>    
          </row>
 
          <row>
@@ -1524,7 +1588,11 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
-            </column>            
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
+            </column>         
          </row>
 
          <row>
@@ -1608,7 +1676,11 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
-            </column>            
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
+            </column>        
          </row>
 
          <row>
@@ -1692,7 +1764,11 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
-            </column>            
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
+            </column>    
          </row>
 
          <row>
@@ -1776,7 +1852,11 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
-            </column>            
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
+            </column>        
          </row>
 
          <row>
@@ -1860,7 +1940,11 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
-            </column>            
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
+            </column>          
          </row>
 
          <row>
@@ -1944,7 +2028,11 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
-            </column>            
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
+            </column>
          </row>
 
          <row>
@@ -2028,7 +2116,11 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
-            </column>            
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
+            </column>      
          </row>
 
          <row>
@@ -2109,10 +2201,14 @@
                <name>leftTrim</name>
                <value>bytes(00)</value>
             </column>
-            <column>
+             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
-            </column>            
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
+            </column>        
          </row>
 
          <row>
@@ -2196,7 +2292,11 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
-            </column>            
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
+            </column>        
          </row>
 
          <row>
@@ -2276,7 +2376,11 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
-            </column>            
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(00)</value>
+            </column>       
          </row>
 
          <row>
@@ -2360,7 +2464,11 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
-            </column>            
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(00)</value>
+            </column>        
          </row>
 
          <row>
@@ -2444,7 +2552,11 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
-            </column>            
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
+            </column>      
          </row>
 
          <row>
@@ -2524,7 +2636,11 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
-            </column>            
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(00)</value>
+            </column>      
          </row>
 
          <row>
@@ -2604,7 +2720,11 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
-            </column>            
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(00)</value>
+            </column>   
          </row>
 
          <row>
@@ -2684,7 +2804,11 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
-            </column>            
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(00)</value>
+            </column>    
          </row>
 
          <row>
@@ -2764,7 +2888,11 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
-            </column>            
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
+            </column>     
          </row>
 
          <row>
@@ -2848,7 +2976,11 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
-            </column>            
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
+            </column>   
          </row>
 
          <row>
@@ -2928,7 +3060,11 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
-            </column>            
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
+            </column>      
          </row>
 
          <row>
@@ -3012,7 +3148,11 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
-            </column>            
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
+            </column>   
          </row>
 
          <row>
@@ -3096,7 +3236,11 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
-            </column>            
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
+            </column>   
          </row>
 
          <row>
@@ -3176,7 +3320,11 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
-            </column>            
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(00)</value>
+            </column>       
          </row>
 
          <row>
@@ -3260,7 +3408,11 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
-            </column>            
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
+            </column>   
          </row>
 
          <row>
@@ -3344,7 +3496,11 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
-            </column>            
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
+            </column>    
          </row>
 
          <row>
@@ -3424,7 +3580,11 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
-            </column>            
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(00)</value>
+            </column>       
          </row>
 
          <row>
@@ -3504,7 +3664,11 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
-            </column>            
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(00)</value>
+            </column>  
          </row>
 
          <row>
@@ -3583,6 +3747,10 @@
             </column>
             <column>
                <name>rightTrim</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>transf</name>
                <value>bytes(00)</value>
             </column>            
          </row>
@@ -3664,7 +3832,11 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
-            </column>            
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
+            </column>          
          </row>
 
          <row>
@@ -3748,7 +3920,11 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
-            </column>            
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(00)</value>
+            </column>       
          </row>
 
          <row>
@@ -3828,7 +4004,11 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
-            </column>            
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(00)</value>
+            </column>           
          </row>
 
          <row>
@@ -3912,7 +4092,11 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
-            </column>            
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(00)</value>
+            </column>        
          </row>
 
          <row>
@@ -3992,7 +4176,11 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
-            </column>            
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
+            </column>        
          </row>
 
          <row>
@@ -4076,7 +4264,11 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
-            </column>            
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
+            </column>         
          </row>
 
          <row>
@@ -4160,7 +4352,11 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
-            </column>            
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
+            </column>          
          </row>
 
          <row>
@@ -4244,7 +4440,11 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
-            </column>            
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
+            </column>         
          </row>
 
          <row>
@@ -4328,7 +4528,11 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
-            </column>            
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
+            </column>           
          </row>
 
          <row>
@@ -4412,7 +4616,11 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
-            </column>            
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
+            </column>       
          </row>
 
          <row>
@@ -4496,7 +4704,11 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
-            </column>            
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
+            </column>          
          </row>
 
          <row>
@@ -4580,7 +4792,11 @@
             <column>
                <name>rightTrim</name>
                <value>bytes(00)</value>
-            </column>            
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
+            </column>          
          </row>
 
       </columnFamily>

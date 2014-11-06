@@ -49,6 +49,13 @@
             </column>
          </row>
          <row>
+            <key>DFCE_TRANSFERT_DOC|OK</key>
+            <column>
+               <name>JOURN_EVT</name>
+               <value>&lt;?xml version=&quot;1.0&quot; ?&gt;&lt;java.util.Arrays_-ArrayList&gt;&lt;a class=&quot;string-array&quot;&gt;&lt;string&gt;all_infos&lt;/string&gt;&lt;/a&gt;&lt;/java.util.Arrays_-ArrayList&gt;</value>
+            </column>
+         </row>
+         <row>
             <key>MAJ_VERSION_RND|OK</key>
             <column>
                <name>JOURN_EVT</name>
@@ -57,6 +64,13 @@
          </row>
           <row>
             <key>WS_RECHERCHE|KO</key>
+            <column>
+               <name>REG_TECHNIQUE</name>
+               <value>&lt;?xml version=&quot;1.0&quot; ?&gt;&lt;java.util.Arrays_-ArrayList&gt;&lt;a class=&quot;string-array&quot;&gt;&lt;string&gt;all_infos&lt;/string&gt;&lt;/a&gt;&lt;/java.util.Arrays_-ArrayList&gt;</value>
+            </column>
+         </row>        
+	     <row>
+            <key>WS_TRANSFERT|KO</key>
             <column>
                <name>REG_TECHNIQUE</name>
                <value>&lt;?xml version=&quot;1.0&quot; ?&gt;&lt;java.util.Arrays_-ArrayList&gt;&lt;a class=&quot;string-array&quot;&gt;&lt;string&gt;all_infos&lt;/string&gt;&lt;/a&gt;&lt;/java.util.Arrays_-ArrayList&gt;</value>
@@ -131,6 +145,10 @@
                <value>{"login":"NON_RENSEIGNE","identifiant":"5c69da80-7250-14b7-aaa2-005056c00008","codeEvt":"WS_RECHERCHE|KO","contexte":"recherche","contratService":"CS_ANCIEN_SYSTEME","pagms":["ACCES_FULL_PAGM"],"timestamp":1371455158407}</value>
             </column>
          </row>
+      </columnFamily>
+      <columnFamily>
+         <name>TraceJournalEvtIndexDoc</name>
+         <comparatorType>UUIDType</comparatorType>
       </columnFamily>
    
    </columnFamilies>
