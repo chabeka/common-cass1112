@@ -84,7 +84,7 @@ public class JobClockSupportImpl implements JobClockSupport {
 
          if ((columnClock - actualClock) > clockConfiguration
                .getMaxTimeSynchroError()) {
-            throw new ClockSynchronizationException(actualClock, columnClock);
+            throw new ClockSynchronizationException(columnClock, actualClock);
          }
 
          if ((columnClock - actualClock) > clockConfiguration
