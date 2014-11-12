@@ -508,7 +508,7 @@ public final class SaeServiceObjectFactory {
       }
       
       // Nombre de pages
-      if (numeroPage != null) {
+      if (nombrePages != null) {
          consultationReqType.setNombrePages(nombrePages.intValue());
       }
       
