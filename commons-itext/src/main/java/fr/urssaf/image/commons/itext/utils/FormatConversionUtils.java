@@ -66,7 +66,7 @@ public final class FormatConversionUtils {
          // on initialise le numero de page de fin a la derniere page
          numeroPageFin = nbPagesTotal;
          if ((-nombrePages.intValue()) < nbPagesTotal) {
-            numeroPageDebut = nbPagesTotal + nombrePages.intValue();
+            numeroPageDebut = nbPagesTotal + nombrePages.intValue() + 1;
          } else {
             numeroPageDebut = 1;
          }
@@ -78,7 +78,7 @@ public final class FormatConversionUtils {
             && nombrePages.intValue() > 0) {
          // cas ou on demande d'une page avec un nombre de pages positif
          numeroPageDebut = numeroPage.intValue();
-         if ((numeroPage.intValue() + nombrePages.intValue()) < nbPagesTotal) {
+         if ((numeroPage.intValue() + nombrePages.intValue()) <= nbPagesTotal) {
             numeroPageFin = numeroPage.intValue() + nombrePages.intValue() - 1;
          } else {
             numeroPageFin = nbPagesTotal;
@@ -87,7 +87,7 @@ public final class FormatConversionUtils {
             && nombrePages.intValue() < 0) {
          // cas ou on demande d'une page avec un nombre de pages negatif
          numeroPageFin = numeroPage.intValue();
-         if (numeroPage.intValue() + nombrePages.intValue() > 1) {
+         if (numeroPage.intValue() + nombrePages.intValue() >= 1) {
             numeroPageDebut = numeroPage.intValue() + nombrePages.intValue()
                   + 1;
          } else {
