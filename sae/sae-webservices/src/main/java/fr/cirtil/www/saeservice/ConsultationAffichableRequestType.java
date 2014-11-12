@@ -188,20 +188,20 @@
                             
 
                         /**
-                        * field for NombrePage
+                        * field for NombrePages
                         */
 
                         
-                                    protected int localNombrePage ;
+                                    protected int localNombrePages ;
                                 
                            /*  This tracker boolean wil be used to detect whether the user called the set method
                           *   for this attribute. It will be used to determine whether to include this field
                            *   in the serialized XML
                            */
-                           protected boolean localNombrePageTracker = false ;
+                           protected boolean localNombrePagesTracker = false ;
 
-                           public boolean isNombrePageSpecified(){
-                               return localNombrePageTracker;
+                           public boolean isNombrePagesSpecified(){
+                               return localNombrePagesTracker;
                            }
 
                            
@@ -210,23 +210,23 @@
                            * Auto generated getter method
                            * @return int
                            */
-                           public  int getNombrePage(){
-                               return localNombrePage;
+                           public  int getNombrePages(){
+                               return localNombrePages;
                            }
 
                            
                         
                             /**
                                * Auto generated setter method
-                               * @param param NombrePage
+                               * @param param NombrePages
                                */
-                               public void setNombrePage(int param){
+                               public void setNombrePages(int param){
                             
                                        // setting primitive attribute tracker to true
-                                       localNombrePageTracker =
+                                       localNombrePagesTracker =
                                        param != java.lang.Integer.MIN_VALUE;
                                    
-                                            this.localNombrePage=param;
+                                            this.localNombrePages=param;
                                     
 
                                }
@@ -328,16 +328,16 @@
                                                }
                                     
                                    xmlWriter.writeEndElement();
-                             } if (localNombrePageTracker){
+                             } if (localNombrePagesTracker){
                                     namespace = "http://www.cirtil.fr/saeService";
-                                    writeStartElement(null, namespace, "nombrePage", xmlWriter);
+                                    writeStartElement(null, namespace, "nombrePages", xmlWriter);
                              
-                                               if (localNombrePage==java.lang.Integer.MIN_VALUE) {
+                                               if (localNombrePages==java.lang.Integer.MIN_VALUE) {
                                            
-                                                         throw new org.apache.axis2.databinding.ADBException("nombrePage cannot be null!!");
+                                                         throw new org.apache.axis2.databinding.ADBException("nombrePages cannot be null!!");
                                                       
                                                } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localNombrePage));
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localNombrePages));
                                                }
                                     
                                    xmlWriter.writeEndElement();
@@ -556,12 +556,12 @@
                                  
                                 elementList.add(
                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localNumeroPage));
-                            } if (localNombrePageTracker){
+                            } if (localNombrePagesTracker){
                                       elementList.add(new javax.xml.namespace.QName("http://www.cirtil.fr/saeService",
-                                                                      "nombrePage"));
+                                                                      "nombrePages"));
                                  
                                 elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localNombrePage));
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localNombrePages));
                             }
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
@@ -710,11 +710,11 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.cirtil.fr/saeService","nombrePage").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.cirtil.fr/saeService","nombrePages").equals(reader.getName())){
                                 
                                     java.lang.String content = reader.getElementText();
                                     
-                                              object.setNombrePage(
+                                              object.setNombrePages(
                                                     org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
                                               
                                         reader.next();
@@ -723,7 +723,7 @@
                                 
                                     else {
                                         
-                                               object.setNombrePage(java.lang.Integer.MIN_VALUE);
+                                               object.setNombrePages(java.lang.Integer.MIN_VALUE);
                                            
                                     }
                                   

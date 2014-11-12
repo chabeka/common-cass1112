@@ -1,15 +1,20 @@
 package fr.urssaf.image.sae.services.consultation.impl;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.activation.DataHandler;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.apache.commons.mail.ByteArrayDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +27,10 @@ import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.droit.service.PrmdService;
+import fr.urssaf.image.sae.format.conversion.exceptions.ConversionParametrageException;
+import fr.urssaf.image.sae.format.conversion.exceptions.ConvertisseurInitialisationException;
+import fr.urssaf.image.sae.format.conversion.service.ConversionService;
+import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.mapping.exception.InvalidSAETypeException;
 import fr.urssaf.image.sae.mapping.exception.MappingFromReferentialException;
 import fr.urssaf.image.sae.mapping.services.MappingDocumentService;
@@ -37,8 +46,10 @@ import fr.urssaf.image.sae.services.consultation.model.ConsultParams;
 import fr.urssaf.image.sae.services.document.impl.AbstractSAEServices;
 import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
 import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedToConsultEx;
+import fr.urssaf.image.sae.services.exception.consultation.SAEConsultationAffichableParametrageException;
 import fr.urssaf.image.sae.services.exception.consultation.SAEConsultationServiceException;
 import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
+import fr.urssaf.image.sae.services.util.UntypedMetadataFinderUtils;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
@@ -72,6 +83,12 @@ public class SAEConsultationServiceImpl extends AbstractSAEServices implements
    private PrmdService prmdService;
 
    private final MappingDocumentService mappingService;
+
+   /**
+    * Service permettant de réaliser la conversion des documents.
+    */
+   @Autowired
+   private ConversionService conversionService;
 
    /**
     * attribution des paramètres de l'implémentation
@@ -152,7 +169,8 @@ public class SAEConsultationServiceImpl extends AbstractSAEServices implements
                LOG.debug("{} - Récupération des droits", prefixeTrc);
                AuthenticationToken token = (AuthenticationToken) SecurityContextHolder
                      .getContext().getAuthentication();
-               List<SaePrmd> saePrmds = token.getSaeDroits().get("consultation");
+               List<SaePrmd> saePrmds = token.getSaeDroits()
+                     .get("consultation");
                LOG.debug("{} - Vérification des droits", prefixeTrc);
                boolean isPermitted = prmdService.isPermitted(untypedDocument
                      .getUMetadatas(), saePrmds);
@@ -188,6 +206,126 @@ public class SAEConsultationServiceImpl extends AbstractSAEServices implements
 
             throw new SAEConsultationServiceException(e);
 
+         }
+      } catch (ConnectionServiceEx e) {
+
+         throw new SAEConsultationServiceException(e);
+      }
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final UntypedDocument consultationAffichable(ConsultParams consultParams)
+         throws SAEConsultationServiceException, UnknownDesiredMetadataEx,
+         MetaDataUnauthorizedToConsultEx,
+         SAEConsultationAffichableParametrageException {
+
+      UUID idArchive = consultParams.getIdArchive();
+
+      // Traces debug - entrée méthode
+      String prefixeTrc = "consultationAffichable()";
+      LOG.debug("{} - Début", prefixeTrc);
+      LOG.debug("{} - UUID envoyé par l'application cliente : {}", prefixeTrc,
+            idArchive);
+      // Fin des traces debug - entrée méthode
+      try {
+         this.getStorageServiceProvider().openConnexion();
+
+         try {
+
+            ConsultParams params = new ConsultParams(consultParams
+                  .getIdArchive(), new ArrayList<String>(referenceDAO
+                  .getAllMetadataReferences().keySet()));
+
+            List<StorageMetadata> allMeta = manageMetaData(params);
+
+            List<String> metadatas = manageMetaDataNames(consultParams);
+
+            LOG.debug("{} - Liste des métadonnées consultable : \"{}\"",
+                  prefixeTrc, buildMessageFromList(metadatas));
+
+            UUIDCriteria uuidCriteria = new UUIDCriteria(idArchive, allMeta);
+
+            StorageDocument storageDocument = this.getStorageServiceProvider()
+                  .getStorageDocumentService().retrieveStorageDocumentByUUID(
+                        uuidCriteria);
+
+            UntypedDocument untypedDocument = null;
+
+            if (storageDocument != null) {
+               untypedDocument = this.mappingService
+                     .storageDocumentToUntypedDocument(storageDocument);
+
+               LOG.debug("{} - Récupération des droits", prefixeTrc);
+               AuthenticationToken token = (AuthenticationToken) SecurityContextHolder
+                     .getContext().getAuthentication();
+               List<SaePrmd> saePrmds = token.getSaeDroits()
+                     .get("consultation");
+               LOG.debug("{} - Vérification des droits", prefixeTrc);
+               boolean isPermitted = prmdService.isPermitted(untypedDocument
+                     .getUMetadatas(), saePrmds);
+
+               if (!isPermitted) {
+                  throw new AccessDeniedException(
+                        "Le document est refusé à la consultation car les droits sont insuffisants");
+               }
+
+               // recuperation de l'identifiant de format
+               String idFormat = UntypedMetadataFinderUtils
+                     .valueMetadataFinder(untypedDocument.getUMetadatas(),
+                           "FormatFichier");
+
+               List<UntypedMetadata> list = filterMetadatas(metadatas,
+                     untypedDocument.getUMetadatas());
+               untypedDocument.setUMetadatas(list);
+
+               // recupere le train de byte au format natif
+               final InputStream inputContent = untypedDocument.getContent()
+                     .getInputStream();
+               byte[] byteArray = org.apache.commons.io.IOUtils.toByteArray(inputContent);
+
+               // conversion du fichier
+               byte[] fichierConverti = conversionService.convertirFichier(
+                     idFormat, byteArray, consultParams.getNumeroPage(),
+                     consultParams.getNombrePages());
+               
+               // remplacement du fichier d'origine par le fichier converti
+               // TODO : voir comment remplacer le application/pdf
+               ByteArrayDataSource dataSource = new ByteArrayDataSource(fichierConverti, "application/pdf");
+               DataHandler dataHandler = new DataHandler(dataSource);
+               untypedDocument.setContent(dataHandler);
+            }
+
+            LOG.debug("{} - Sortie", prefixeTrc);
+            // Fin des traces debug - sortie méthode
+            return untypedDocument;
+
+         } catch (RetrievalServiceEx e) {
+
+            throw new SAEConsultationServiceException(e);
+
+         } catch (ReferentialException e) {
+
+            throw new SAEConsultationServiceException(e);
+
+         } catch (InvalidSAETypeException e) {
+
+            throw new SAEConsultationServiceException(e);
+
+         } catch (MappingFromReferentialException e) {
+
+            throw new SAEConsultationServiceException(e);
+
+         } catch (IOException ex) {
+            throw new SAEConsultationServiceException(ex);
+         } catch (ConvertisseurInitialisationException ex) {
+            throw new SAEConsultationServiceException(ex);
+         } catch (UnknownFormatException ex) {
+            throw new SAEConsultationServiceException(ex);
+         } catch (ConversionParametrageException ex) {
+            throw new SAEConsultationAffichableParametrageException(ex.getMessage(), ex);
          }
       } catch (ConnectionServiceEx e) {
 

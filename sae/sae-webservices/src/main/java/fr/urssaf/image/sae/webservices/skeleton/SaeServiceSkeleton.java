@@ -10,16 +10,12 @@
 package fr.urssaf.image.sae.webservices.skeleton;
 
 import java.io.IOException;
-import java.io.InputStream;
 
-import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.axiom.attachments.ByteArrayDataSource;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.transport.http.HTTPConstants;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,14 +34,9 @@ import fr.cirtil.www.saeservice.ArchivageUnitaireResponse;
 import fr.cirtil.www.saeservice.Consultation;
 import fr.cirtil.www.saeservice.ConsultationAffichable;
 import fr.cirtil.www.saeservice.ConsultationAffichableResponse;
-import fr.cirtil.www.saeservice.ConsultationAffichableResponseType;
 import fr.cirtil.www.saeservice.ConsultationMTOM;
 import fr.cirtil.www.saeservice.ConsultationMTOMResponse;
 import fr.cirtil.www.saeservice.ConsultationResponse;
-import fr.cirtil.www.saeservice.ListeMetadonneeType;
-import fr.cirtil.www.saeservice.MetadonneeCodeType;
-import fr.cirtil.www.saeservice.MetadonneeType;
-import fr.cirtil.www.saeservice.MetadonneeValeurType;
 import fr.cirtil.www.saeservice.Modification;
 import fr.cirtil.www.saeservice.ModificationResponse;
 import fr.cirtil.www.saeservice.PingRequest;
@@ -133,18 +124,6 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
    private static final String STOCKAGE_INDISPO = "StockageIndisponible";
    private static final String MES_STOCKAGE = "ws.dfce.stockage";
    
-   private static final InputStream FICHIER_BOUCHON = Thread.currentThread().getContextClassLoader().getResourceAsStream("doc1.PDF");
- 
-   private static final byte[] CONTENU_BOUCHON;
-   static {
-      try {
-         CONTENU_BOUCHON = IOUtils.toByteArray(FICHIER_BOUCHON);
-      } catch (Exception ex) {
-         throw new RuntimeException(ex);
-      }
-   }
-
-
    /**
     * Instanciation du service {@link SaeService}
     * 
@@ -547,7 +526,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
    }
 
    @Override
-   public ModificationResponse modificationSecure(Modification request)
+   public final ModificationResponse modificationSecure(Modification request)
          throws AxisFault {
 
       try {
@@ -577,7 +556,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
    }
 
    @Override
-   public SuppressionResponse suppressionSecure(Suppression request)
+   public final SuppressionResponse suppressionSecure(Suppression request)
          throws AxisFault {
 
       try {
@@ -607,7 +586,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
    }
 
    @Override
-   public RecuperationMetadonneesResponse recuperationMetadonneesSecure(
+   public final RecuperationMetadonneesResponse recuperationMetadonneesSecure(
          RecuperationMetadonnees request) throws AxisFault {
 
       try {
@@ -661,7 +640,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
    }
    
    @Override
-   public ConsultationAffichableResponse consultationAffichableSecure(ConsultationAffichable request) throws AxisFault {
+   public final ConsultationAffichableResponse consultationAffichableSecure(ConsultationAffichable request) throws AxisFault {
       try {
 
          // Traces debug - entrée méthode
@@ -672,40 +651,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
          boolean dfceUp = dfceInfoService.isDfceUp();
          if (dfceUp) {
 
-            // TODO : methode non implementee qui renvoie toujours le meme document
-            ConsultationAffichableResponse response = new ConsultationAffichableResponse();
-            response.setConsultationAffichableResponse(new ConsultationAffichableResponseType());
-            
-            // TODO : code a supprimer (penser a virer le fichier doc1.PDF et la variable static FICHIER_BOUCHON, et CONTENU_BOUCHON)
-            // charge le fichier
-            DataHandler contenu = new DataHandler(new ByteArrayDataSource(CONTENU_BOUCHON));
-            response.getConsultationAffichableResponse().setContenu(contenu);
-            // affecte des metadonnees
-            response.getConsultationAffichableResponse().setMetadonnees(new ListeMetadonneeType());
-            MetadonneeType metaTitre = new MetadonneeType();
-            metaTitre.setCode(new MetadonneeCodeType());
-            metaTitre.getCode().setMetadonneeCodeType("Titre");
-            metaTitre.setValeur(new MetadonneeValeurType());
-            metaTitre.getValeur().setMetadonneeValeurType("Attestation de vigilance");
-            response.getConsultationAffichableResponse().getMetadonnees().addMetadonnee(metaTitre);
-            MetadonneeType metaDateCreation = new MetadonneeType();
-            metaDateCreation.setCode(new MetadonneeCodeType());
-            metaDateCreation.getCode().setMetadonneeCodeType("DateCreation");
-            metaDateCreation.setValeur(new MetadonneeValeurType());
-            metaDateCreation.getValeur().setMetadonneeValeurType("2011-09-08");
-            response.getConsultationAffichableResponse().getMetadonnees().addMetadonnee(metaDateCreation);
-            MetadonneeType metaFormat = new MetadonneeType();
-            metaFormat.setCode(new MetadonneeCodeType());
-            metaFormat.getCode().setMetadonneeCodeType("FormatFichier");
-            metaFormat.setValeur(new MetadonneeValeurType());
-            metaFormat.getValeur().setMetadonneeValeurType("fmt/354");
-            response.getConsultationAffichableResponse().getMetadonnees().addMetadonnee(metaFormat);
-            MetadonneeType metaAppliProd = new MetadonneeType();
-            metaAppliProd.setCode(new MetadonneeCodeType());
-            metaAppliProd.getCode().setMetadonneeCodeType("ApplicationProductrice");
-            metaAppliProd.setValeur(new MetadonneeValeurType());
-            metaAppliProd.getValeur().setMetadonneeValeurType("ADELAIDE");
-            response.getConsultationAffichableResponse().getMetadonnees().addMetadonnee(metaAppliProd);            
+            ConsultationAffichableResponse response = consultation.consultationAffichable(request);
 
             // Traces debug - sortie méthode
             LOG.debug("{} - Sortie", prefixeTrc);

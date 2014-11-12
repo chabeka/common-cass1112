@@ -553,8 +553,11 @@ public class SAECassandraUpdater {
 
       //-- Enrichissement du référentiel des événements
       InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
-      donnees.addTracabiliteParameters();
+      //donnees.addTracabiliteParameters();
       donnees.addReferentielEvenementV5();
+      
+      // Ajout du format fmt/353
+      donnees.addReferentielFormatV2();
 
       // On positionne la version à 8
       saeDao.setDatabaseVersion(VERSION_8);

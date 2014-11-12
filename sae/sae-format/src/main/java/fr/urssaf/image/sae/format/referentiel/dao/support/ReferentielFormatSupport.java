@@ -84,6 +84,7 @@ public class ReferentielFormatSupport {
       String typeMime = referentielFormat.getTypeMime();
       String validator = referentielFormat.getValidator();
       Boolean visualisable = referentielFormat.isVisualisable();
+      String convertisseur = referentielFormat.getConvertisseur();
 
       String opeRefFormatPrefix = "ajouterRefFormat";
       LOGGER.debug(DEBUT_LOG, opeRefFormatPrefix);
@@ -94,7 +95,8 @@ public class ReferentielFormatSupport {
             .getCfTmpl().createUpdater(idFormat);
 
       referentielFormatDao.addNewFormat(updater, idFormat, typeMime, extension,
-            description, visualisable, validator, identification, clock);
+            description, visualisable, validator, identification,
+            convertisseur, clock);
 
       referentielFormatDao.getCfTmpl().update(updater);
 
@@ -218,6 +220,9 @@ public class ReferentielFormatSupport {
 
          refFormat.setIdentificateur(result
                .getString(Constantes.COL_IDENTIFIEUR));
+
+         refFormat.setConvertisseur(result
+               .getString(Constantes.COL_CONVERTISSEUR));
 
       }
       // Erreur levée quand le format demandé n’existe pas au sein du

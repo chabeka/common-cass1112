@@ -702,6 +702,54 @@ public class InsertionDonnees {
 
 
    }
+   
+   /**
+    * Ajout des données dans le référentiel des formats en V2 :
+    * <li>fmt/353</li>
+    */
+   public void addReferentielFormatV2() {
+      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+            keyspace, "ReferentielFormat", StringSerializer.get(),
+            StringSerializer.get());
+
+      ColumnFamilyUpdater<String, String> updater;
+      
+      LOG.info("Mise à jour du référentiel des formats");
+
+      updater = cfTmpl.createUpdater("fmt/353");
+      addColumn(
+            "idFormat",
+            "fmt/353",
+            StringSerializer.get(), StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn(
+            "description",
+            "Fichier TIFF",
+            StringSerializer.get(), StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn(
+            "extension",
+            "tif",
+            StringSerializer.get(), StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn(
+            "typeMime",
+            "image/tiff",
+            StringSerializer.get(), StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn(
+            "visualisable",
+            Boolean.FALSE,
+            StringSerializer.get(), BooleanSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn(
+            "convertisseur",
+            "tiffToPdfConvertisseurImpl",
+            StringSerializer.get(), StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      LOG.info("Format ajouté : fmt/353");
+
+   }
 
    /**
     * Les profils de controle pour les formats.<br/>

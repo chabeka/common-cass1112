@@ -16,6 +16,7 @@ import fr.urssaf.image.sae.services.consultation.SAEConsultationService;
 import fr.urssaf.image.sae.services.consultation.model.ConsultParams;
 import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
 import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedToConsultEx;
+import fr.urssaf.image.sae.services.exception.consultation.SAEConsultationAffichableParametrageException;
 import fr.urssaf.image.sae.services.exception.consultation.SAEConsultationServiceException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -41,6 +42,15 @@ public class SAEConsultationServiceValidationTest {
          public UntypedDocument consultation(ConsultParams consultParams)
                throws SAEConsultationServiceException,
                UnknownDesiredMetadataEx, MetaDataUnauthorizedToConsultEx {
+            return null;
+         }
+
+         @Override
+         public UntypedDocument consultationAffichable(
+               ConsultParams consultParams)
+               throws SAEConsultationServiceException,
+               UnknownDesiredMetadataEx, MetaDataUnauthorizedToConsultEx,
+               SAEConsultationAffichableParametrageException {
             return null;
          }
 
@@ -103,6 +113,60 @@ public class SAEConsultationServiceValidationTest {
       try {
          ConsultParams consultParams = new ConsultParams(null);
          service.consultation(consultParams);
+         fail("l'argument idArchive doit être renseigné");
+      } catch (IllegalArgumentException e) {
+         assertEquals("message d'exception non attendu",
+               "L'argument 'idArchive' doit être renseigné ou être non null.",
+               e.getMessage());
+      }
+
+   }
+
+   @Test
+   public void consultationAffichable_success()
+         throws SAEConsultationServiceException, UnknownDesiredMetadataEx,
+         MetaDataUnauthorizedToConsultEx,
+         SAEConsultationAffichableParametrageException {
+
+      ConsultParams consultParams = new ConsultParams(UUID
+            .fromString("3ae2e9ba-6e81-4c0e-a6b4-3ed64adc76a0"));
+
+      try {
+         service.consultationAffichable(consultParams);
+
+      } catch (IllegalArgumentException e) {
+         fail("les arguments en entrée doivent être valides");
+      }
+
+   }
+
+   @Test
+   public void consultationAffichable_failure_consultParams_null()
+         throws SAEConsultationServiceException, UnknownDesiredMetadataEx,
+         MetaDataUnauthorizedToConsultEx,
+         SAEConsultationAffichableParametrageException {
+
+      try {
+         service.consultationAffichable((ConsultParams) null);
+         fail("l'argument consultParams doit être renseigné");
+      } catch (IllegalArgumentException e) {
+         assertEquals(
+               "message d'exception non attendu",
+               "L'argument 'consultParams' doit être renseigné ou être non null.",
+               e.getMessage());
+      }
+
+   }
+
+   @Test
+   public void consultationAffichable_failure_consultParams_notNull_idArchiveNull()
+         throws SAEConsultationServiceException, UnknownDesiredMetadataEx,
+         MetaDataUnauthorizedToConsultEx,
+         SAEConsultationAffichableParametrageException {
+
+      try {
+         ConsultParams consultParams = new ConsultParams(null);
+         service.consultationAffichable(consultParams);
          fail("l'argument idArchive doit être renseigné");
       } catch (IllegalArgumentException e) {
          assertEquals("message d'exception non attendu",

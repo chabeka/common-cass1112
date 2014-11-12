@@ -38,7 +38,7 @@
    <import resource="classpath*:/applicationContext-commons-droid.xml" />
    <import resource="classpath*:/applicationContext-commons-pdfbox.xml" />
    <import resource="classpath*:/applicationContext-sae-commons.xml" />
-
+   <import resource="classpath*:/applicationContext-commons-itext.xml" />
 
 
 </beans>

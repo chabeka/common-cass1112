@@ -88,7 +88,8 @@ public class TracesWsSupport {
             || "archivageMasseAvecHash".equals(nomOperation)) {
          result = TracesConstantes.CODE_EVT_WS_ARCHIVAGE_MASSE_KO;
       } else if ("consultation".equals(nomOperation)
-            || "consultationMTOM".equals(nomOperation)) {
+            || "consultationMTOM".equals(nomOperation)
+            || "consultationAffichable".equals(nomOperation)) {
          result = TracesConstantes.CODE_EVT_WS_CONSULTATION_KO;
       } else if ("recherche".equals(nomOperation)) {
          result = TracesConstantes.CODE_EVT_WS_RECHERCHE_KO;

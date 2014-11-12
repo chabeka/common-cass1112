@@ -9,6 +9,8 @@ import javax.activation.DataSource;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.util.Assert;
 
+import fr.cirtil.www.saeservice.ConsultationAffichableResponse;
+import fr.cirtil.www.saeservice.ConsultationAffichableResponseType;
 import fr.cirtil.www.saeservice.ConsultationMTOMResponse;
 import fr.cirtil.www.saeservice.ConsultationMTOMResponseType;
 import fr.cirtil.www.saeservice.ConsultationResponse;
@@ -147,4 +149,51 @@ public final class ObjectConsultationFactory {
       return responseMTOM;
    }
 
+   /**
+    * instanciation de {@link ConsultationAffichableResponse}.<br>
+    * Implementation de {@link ConsultationAffichableResponseType}
+    * 
+    * @param content
+    *           valeur de <code>objetNumeriqueType</code> non vide
+    * @param metadonnees
+    *           valeur de <code>listeMetadonneeType</code>
+    * @param typeMime
+    *           le type MIME à associer à la pièce jointe
+    * @return instance de {@link ConsultationAffichableResponse}
+    */
+   public static ConsultationAffichableResponse createConsultationAffichableResponse(
+         DataHandler content, List<MetadonneeType> metadonnees, String typeMime) {
+
+      Assert.notNull(content, "content is required");
+
+      ConsultationAffichableResponse responseAffichable = new ConsultationAffichableResponse();
+      ConsultationAffichableResponseType responseAffichableType = new ConsultationAffichableResponseType();
+
+      DataSource dataSource;
+      try {
+         dataSource = new ConsultationDataSource(content.getInputStream(),
+               typeMime);
+
+      } catch (IOException e) {
+         throw new RuntimeException(e);
+      }
+      DataHandler dataHandler = new DataHandler(dataSource);
+
+      responseAffichableType.setContenu(dataHandler);
+
+      ListeMetadonneeType listeMetadonnee = new ListeMetadonneeType();
+
+      if (CollectionUtils.isNotEmpty(metadonnees)) {
+
+         for (MetadonneeType metadonnee : metadonnees) {
+
+            listeMetadonnee.addMetadonnee(metadonnee);
+         }
+
+      }
+
+      responseAffichableType.setMetadonnees(listeMetadonnee);
+      responseAffichable.setConsultationAffichableResponse(responseAffichableType);
+      return responseAffichable;
+   }
 }

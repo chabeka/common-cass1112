@@ -1,6 +1,8 @@
 package fr.urssaf.image.sae.webservices.service;
 
 import fr.cirtil.www.saeservice.Consultation;
+import fr.cirtil.www.saeservice.ConsultationAffichable;
+import fr.cirtil.www.saeservice.ConsultationAffichableResponse;
 import fr.cirtil.www.saeservice.ConsultationMTOM;
 import fr.cirtil.www.saeservice.ConsultationMTOMResponse;
 import fr.cirtil.www.saeservice.ConsultationResponse;
@@ -46,8 +48,7 @@ public interface WSConsultationService {
     */
    ConsultationResponse consultation(Consultation request)
          throws ConsultationAxisFault;
-   
-   
+
    /**
     * 
     * Service pour l'opération <b>ConsultationMTOM</b>
@@ -73,7 +74,8 @@ public interface WSConsultationService {
     * </pre>
     * 
     * @param request
-    *           Requête de consultationMTOM du service web <b>ConsultationMTOM</b>
+    *           Requête de consultationMTOM du service web
+    *           <b>ConsultationMTOM</b>
     * @return Réponse du service web <b>ConsultationMTOM</b>
     * 
     * @throws ConsultationAxisFault
@@ -81,5 +83,40 @@ public interface WSConsultationService {
     */
    ConsultationMTOMResponse consultationMTOM(ConsultationMTOM request)
          throws ConsultationAxisFault;
-   
+
+   /**
+    * 
+    * Service pour l'opération <b>ConsultationAffichable</b>
+    * 
+    * <pre>
+    * &lt;wsdl:operation name="consultationAffichable">
+    *    &lt;wsdl:documentation>Service de consultation d'un document dans un format affichable</wsdl:documentation>
+    *    ...      
+    * &lt;/wsdl:operation>
+    * </pre>
+    * 
+    * La requête correspond à :
+    * 
+    * <pre>
+    *   &lt;xsd:element name="consultationAffichable"
+    *       type="sae:ConsultationAffichableRequestType"/>
+    * </pre>
+    * 
+    * La réponse correspond à :
+    * 
+    * <pre>
+    * &lt;wsdl:message name="ConsultationAffichableResponseMessage">
+    * </pre>
+    * 
+    * @param request
+    *           Requête de ConsultationAffichable du service web
+    *           <b>ConsultationAffichable</b>
+    * @return Réponse du service web <b>ConsultationAffichable</b>
+    * 
+    * @throws ConsultationAxisFault
+    *            Une exception est levée lors de la ConsultationAffichable
+    */
+   ConsultationAffichableResponse consultationAffichable(
+         ConsultationAffichable request) throws ConsultationAxisFault;
+
 }

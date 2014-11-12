@@ -652,9 +652,9 @@
                     <xsd:documentation>Numero de page</xsd:documentation>
                 </xsd:annotation>
             </xsd:element>
-            <xsd:element minOccurs="0" name="nombrePage" type="xsd:int">
+            <xsd:element minOccurs="0" name="nombrePages" type="xsd:int">
                 <xsd:annotation>
-                    <xsd:documentation>Nombre de page</xsd:documentation>
+                    <xsd:documentation>Nombre de pages</xsd:documentation>
                 </xsd:annotation>
             </xsd:element>
         </xsd:sequence>

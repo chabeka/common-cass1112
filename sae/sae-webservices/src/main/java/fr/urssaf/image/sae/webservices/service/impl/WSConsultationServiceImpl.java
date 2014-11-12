@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import fr.cirtil.www.saeservice.Consultation;
+import fr.cirtil.www.saeservice.ConsultationAffichable;
+import fr.cirtil.www.saeservice.ConsultationAffichableResponse;
 import fr.cirtil.www.saeservice.ConsultationMTOM;
 import fr.cirtil.www.saeservice.ConsultationMTOMResponse;
 import fr.cirtil.www.saeservice.ConsultationResponse;
@@ -23,6 +25,7 @@ import fr.urssaf.image.sae.services.consultation.model.ConsultParams;
 import fr.urssaf.image.sae.services.document.SAEDocumentService;
 import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
 import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedToConsultEx;
+import fr.urssaf.image.sae.services.exception.consultation.SAEConsultationAffichableParametrageException;
 import fr.urssaf.image.sae.services.exception.consultation.SAEConsultationServiceException;
 import fr.urssaf.image.sae.webservices.exception.ConsultationAxisFault;
 import fr.urssaf.image.sae.webservices.factory.ObjectTypeFactory;
@@ -147,6 +150,70 @@ public final class WSConsultationServiceImpl implements WSConsultationService {
 
    }
 
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public ConsultationAffichableResponse consultationAffichable(
+         ConsultationAffichable request) throws ConsultationAxisFault {
+
+      // Traces debug - entrée méthode
+      String prefixeTrc = "consultationAffichable()";
+      LOG.debug("{} - Début", prefixeTrc);
+      // Fin des traces debug - entrée méthode
+
+      // Lecture de l'UUID depuis l'objet de requête de la couche ws
+      UUID uuid = UUID.fromString(request.getConsultationAffichable().getIdArchive()
+            .getUuidType());
+      LOG.debug("{} - UUID envoyé par l'application cliente : {}", prefixeTrc,
+            uuid);
+
+      // Lecture des métadonnées depuis l'objet de requête de la couche ws
+      ListeMetadonneeCodeType listeMetaWs = request.getConsultationAffichable()
+            .getMetadonnees();
+      
+      // Convertit la liste des métadonnées de l'objet de la couche ws vers un
+      // objet plus exploitable
+      List<String> listeMetas = convertListeMetasWebServiceToService(listeMetaWs);
+      
+      // recuperation du numero de page et du nombre de pages
+      Integer numeroPage = null;
+      Integer nombrePages = null;
+      if (request.getConsultationAffichable().isNumeroPageSpecified()) {
+         numeroPage = Integer.valueOf(request.getConsultationAffichable().getNumeroPage());
+      }
+      if (request.getConsultationAffichable().isNombrePagesSpecified()) {
+         nombrePages = Integer.valueOf(request.getConsultationAffichable().getNombrePages());
+      }
+
+      // Ajout de la métadonnée FormatFichier si besoin
+      // Pour pouvoir récupérer le type MIME par la suite
+      boolean fmtFicAjoute = ajouteSiBesoinMetadonneeFormatFichier(listeMetas);
+
+      // Appel de la méthode de consultation affichable
+      // Cette méthode se charge des vérifications et de la levée des AxisFault
+      UntypedDocument untypedDocument = consultationAffichable(uuid, listeMetas, numeroPage, nombrePages);
+
+      // Récupération du type MIME et suppression si besoin de FormatFichier
+      String typeMime = typeMimeDepuisFormatFichier(untypedDocument
+            .getUMetadatas(), fmtFicAjoute);
+
+      // Conversion de l'objet UntypedDocument en un objet de la couche web
+      // service
+      List<MetadonneeType> metadatas = convertListeMetasServiceToWebService(untypedDocument
+            .getUMetadatas());
+      
+      ConsultationAffichableResponse response = ObjectConsultationFactory
+            .createConsultationAffichableResponse(untypedDocument.getContent(),
+                  metadatas, typeMime);
+
+      // Traces debug - sortie méthode
+      LOG.debug("{} - Sortie", prefixeTrc);
+
+      // Renvoie l'objet de réponse de la couche web service
+      return response;
+   }
+
    private UntypedDocument consultationCommune(UUID uuid, List<String> listMetas)
          throws ConsultationAxisFault {
 
@@ -192,6 +259,58 @@ public final class WSConsultationServiceImpl implements WSConsultationService {
       } catch (MetaDataUnauthorizedToConsultEx e) {
          throw new ConsultationAxisFault(e.getMessage(),
                "ConsultationMetadonneesNonAutorisees", e);
+      }
+
+   }
+   
+   private UntypedDocument consultationAffichable(UUID uuid, List<String> listMetas, Integer numeroPage, Integer nombrePages)
+         throws ConsultationAxisFault {
+
+      // Traces debug - entrée méthode
+      String prefixeTrc = "consultationAffichable()";
+      LOG.debug("{} - Début", prefixeTrc);
+      // Fin des traces debug - entrée méthode
+
+      try {
+
+         // Appel de la couche service
+         ConsultParams consultParams = new ConsultParams(uuid, listMetas, numeroPage, nombrePages);
+         UntypedDocument untypedDocument = saeService
+               .consultationAffichable(consultParams);
+
+         // Regarde si l'archive a été retrouvée dans le SAE. Si ce n'est pas le
+         // cas, on lève la SoapFault correspondante
+         if (untypedDocument == null) {
+            LOG
+                  .debug(
+                        "{} - L'archive demandée n'a pas été retrouvée dans le SAE ({})",
+                        prefixeTrc, uuid);
+            throw new ConsultationAxisFault(
+                  "Il n'existe aucun document pour l'identifiant d'archivage '"
+                        + uuid + "'", "ArchiveNonTrouvee");
+
+         } else {
+
+            // Traces debug - sortie méthode
+            LOG.debug("{} - Sortie", prefixeTrc);
+
+            // Renvoie le UntypedDocument
+            return untypedDocument;
+
+         }
+
+      } catch (SAEConsultationServiceException e) {
+         throw new ConsultationAxisFault(e);
+
+      } catch (UnknownDesiredMetadataEx e) {
+         throw new ConsultationAxisFault(e.getMessage(),
+               "ConsultationMetadonneesInexistante", e);
+      } catch (MetaDataUnauthorizedToConsultEx e) {
+         throw new ConsultationAxisFault(e.getMessage(),
+               "ConsultationMetadonneesNonAutorisees", e);
+      } catch (SAEConsultationAffichableParametrageException e) {
+         throw new ConsultationAxisFault(e.getMessage(),
+               "ConsultationAffichableParametrageIncorrect", e);
       }
 
    }

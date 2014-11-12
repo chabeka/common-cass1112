@@ -14,6 +14,7 @@ public class FormatFichier {
    private boolean visualisable;
    private String validator;
    private String identificateur;
+   private String convertisseur;
 
    /**
     * @return Identifiant du format de fichier défini par le CIRTIL
@@ -123,6 +124,27 @@ public class FormatFichier {
     */
    public final void setIdentificateur(String identificateur) {
       this.identificateur = identificateur;
+   }
+
+   /**
+    * Getter sur le convertisseur.
+    * 
+    * @return Le nom du bean à utiliser pour effectuer une conversion dans un
+    *         format affichable
+    */
+   public final String getConvertisseur() {
+      return convertisseur;
+   }
+
+   /**
+    * Setter sur le convertisseur.
+    * 
+    * @param convertisseur
+    *           nom du bean à utiliser pour effectuer une conversion dans un
+    *           format affichable
+    */
+   public final void setConvertisseur(String convertisseur) {
+      this.convertisseur = convertisseur;
    }
 
 }

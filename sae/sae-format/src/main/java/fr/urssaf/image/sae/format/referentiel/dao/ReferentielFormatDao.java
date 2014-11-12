@@ -53,10 +53,13 @@ public class ReferentielFormatDao extends AbstractDao<String, String> {
     *           Indicateur d'affichage à l'écran - obligatoire
     * @param validator
     *           Nom de la fonction de validation à appeler si le format doit
-    *           être validé - obligatoire
+    *           être validé - facultatif
     * @param identification
     *           Nom de la fonction d'identification à appeler si le format doit
-    *           être identifié - obligatoire
+    *           être identifié - facultatif
+    * @param conversion
+    *           Nom de la fonction de conversion à appeler si le format n'est
+    *           pas un format affichable - facultatif
     * @param updater
     *           : necessaire pour Cassandra
     * @param clock
@@ -65,7 +68,7 @@ public class ReferentielFormatDao extends AbstractDao<String, String> {
    public final void addNewFormat(ColumnFamilyUpdater<String, String> updater,
          String idFormat, String typeMime, String extension,
          String description, Boolean visualisable, String validator,
-         String identification, Long clock) {
+         String identification, String conversion, Long clock) {
 
       List<String> variable = new ArrayList<String>();
 
@@ -78,12 +81,12 @@ public class ReferentielFormatDao extends AbstractDao<String, String> {
       if (visualisable == null) {
          variable.add("visualisable");
       }
-//      if (StringUtils.isBlank(validator)) {
-//         variable.add("validator");
-//      }
-//      if (StringUtils.isBlank(identification)) {
-//         variable.add("identification");
-//      }
+      // if (StringUtils.isBlank(validator)) {
+      // variable.add("validator");
+      // }
+      // if (StringUtils.isBlank(identification)) {
+      // variable.add("identification");
+      // }
       if (clock == null || clock <= 0) {
          variable.add("clock");
       }
@@ -110,6 +113,7 @@ public class ReferentielFormatDao extends AbstractDao<String, String> {
       writeColumnVisualisable(updater, visualisable, clock);
       writeColumnValidator(updater, validator, clock);
       writeColumnIdentification(updater, identification, clock);
+      writeColumnConvertisseur(updater, conversion, clock);
 
    }
 
@@ -229,6 +233,23 @@ public class ReferentielFormatDao extends AbstractDao<String, String> {
    private void writeColumnIdentification(
          ColumnFamilyUpdater<String, String> updater, String value, Long clock) {
       addColumn(updater, Constantes.COL_IDENTIFIEUR, value, StringSerializer
+            .get(), clock);
+   }
+   
+   /**
+    * ajoute une colonne {@value ReferentielFormatDao#COL_CONVERTISSEUR}
+    * 
+    * @param updater
+    *           updater de
+    *           {@link fr.urssaf.image.sae.format.referentiel.model.FormatFichier}
+    * @param value
+    *           valeur de la colonne
+    * @param clock
+    *           horloge de la colonne
+    */
+   private void writeColumnConvertisseur(
+         ColumnFamilyUpdater<String, String> updater, String value, Long clock) {
+      addColumn(updater, Constantes.COL_CONVERTISSEUR, value, StringSerializer
             .get(), clock);
    }
 

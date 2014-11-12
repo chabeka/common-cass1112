@@ -49,6 +49,20 @@ public class ReferentielFormatSupportTest {
       Assert.assertEquals("FIND - Erreur dans le boolean visualisable.", true, refFormatTrouve.isVisualisable());
       Assert.assertEquals("FIND - Erreur dans le validateur.", "pdfaValidatorImpl", refFormatTrouve.getValidator());
       Assert.assertEquals("FIND - Erreur dans l'identifieur.", "pdfaIdentifierImpl", refFormatTrouve.getIdentificateur());
+      Assert.assertNull("FIND - Erreur dans le convertisseur.", refFormatTrouve.getConvertisseur());
+      
+      idFormat = "fmt/353";
+      
+      refFormatTrouve = refFormatSupport.find(idFormat);          
+      Assert.assertNotNull(refFormatTrouve);  
+      
+      Assert.assertEquals("FIND - Erreur dans l'idFormat.", "fmt/353", refFormatTrouve.getIdFormat());
+      Assert.assertEquals("FIND - Erreur dans l'extension.", "TIF", refFormatTrouve.getExtension());
+      Assert.assertEquals("FIND - Erreur dans le typeMime.", "image/tiff", refFormatTrouve.getTypeMime());
+      Assert.assertEquals("FIND - Erreur dans le boolean visualisable.", false, refFormatTrouve.isVisualisable());
+      Assert.assertNull("FIND - Erreur dans le validateur.", refFormatTrouve.getValidator());
+      Assert.assertNull("FIND - Erreur dans l'identifieur.", refFormatTrouve.getIdentificateur());
+      Assert.assertEquals("FIND - Erreur dans le convertisseur.", "tiffToPdfConvertisseurImpl", refFormatTrouve.getConvertisseur());
    }
    
    @Test
@@ -72,7 +86,7 @@ public class ReferentielFormatSupportTest {
       List<FormatFichier> listRefFormatTrouve = refFormatSupport.findAll();          
       Assert.assertNotNull(listRefFormatTrouve);  
      
-      Assert.assertEquals("Le nombre d'éléments est incorrect.", 1, listRefFormatTrouve.size());
+      Assert.assertEquals("Le nombre d'éléments est incorrect.", 2, listRefFormatTrouve.size());
    }
    
    
@@ -113,7 +127,7 @@ public class ReferentielFormatSupportTest {
       Assert.assertEquals("FIND - Erreur dans le boolean visualisable.", true, refFormatTrouve.isVisualisable());
       Assert.assertEquals("FIND - Erreur dans le validateur.", "LambdaValidatorImpl", refFormatTrouve.getValidator());
       Assert.assertEquals("FIND - Erreur dans l'identifieur.", "LambdaIdentifierImpl", refFormatTrouve.getIdentificateur());
-      
+      Assert.assertEquals("FIND - Erreur dans le convertisseur.", "LambdaConvertisseurImpl", refFormatTrouve.getConvertisseur());
    }
    
    @Test

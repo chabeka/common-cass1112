@@ -1,6 +1,7 @@
 package fr.urssaf.image.sae.webservices.service.impl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.fail;
 
@@ -15,14 +16,32 @@ import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.mail.ByteArrayDataSource;
+import org.easymock.EasyMock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.cirtil.www.saeservice.ConsultationAffichable;
+import fr.cirtil.www.saeservice.ConsultationAffichableRequestType;
+import fr.cirtil.www.saeservice.ConsultationAffichableResponse;
+import fr.cirtil.www.saeservice.ListeMetadonneeCodeType;
+import fr.cirtil.www.saeservice.MetadonneeCodeType;
+import fr.cirtil.www.saeservice.MetadonneeType;
+import fr.cirtil.www.saeservice.UuidType;
+import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
+import fr.urssaf.image.sae.services.consultation.model.ConsultParams;
+import fr.urssaf.image.sae.services.document.SAEDocumentService;
+import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
+import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedToConsultEx;
+import fr.urssaf.image.sae.services.exception.consultation.SAEConsultationAffichableParametrageException;
+import fr.urssaf.image.sae.services.exception.consultation.SAEConsultationServiceException;
 import fr.urssaf.image.sae.storage.dfce.utils.HashUtils;
 import fr.urssaf.image.sae.webservices.exception.ConsultationAxisFault;
 
@@ -37,6 +56,10 @@ public class WSConsultationServiceImplTest {
 
    @Autowired
    private WSConsultationServiceImpl consultService;
+   
+   @Autowired
+   @Qualifier("documentService")
+   private SAEDocumentService saeService;
 
    private static final String FORMAT_FICHIER = "FormatFichier";
 
@@ -282,4 +305,185 @@ public class WSConsultationServiceImplTest {
 
    }
 
+   @Test
+   public void consultationAffichable_doc_inexistant() throws ConsultationAxisFault {
+      
+      ConsultationAffichable request = new ConsultationAffichable();
+      request.setConsultationAffichable(new ConsultationAffichableRequestType());
+      request.getConsultationAffichable().setIdArchive(new UuidType());
+      request.getConsultationAffichable().getIdArchive().setUuidType("00000000-0000-0000-0000-000000000000");
+      
+      try {
+         consultService.consultationAffichable(request);
+         fail("C'est l'exception ConsultationAxisFault qui est attendue");
+      } catch (ConsultationAxisFault ex) {
+         assertEquals("Le message d'erreur n'est pas celui attendu", "Il n'existe aucun document pour l'identifiant d'archivage '00000000-0000-0000-0000-000000000000'", ex.getMessage());
+         assertEquals("La partie local du code de l'erreur n'est pas le bon", "ArchiveNonTrouvee", ex.getFaultCode().getLocalPart());
+      }
+      
+      EasyMock.reset(saeService);
+   }
+   
+   @Test
+   public void consultationAffichable_metadonnee_inexistante() throws ConsultationAxisFault, SAEConsultationServiceException, UnknownDesiredMetadataEx, MetaDataUnauthorizedToConsultEx, SAEConsultationAffichableParametrageException {
+      
+      ConsultationAffichable request = new ConsultationAffichable();
+      request.setConsultationAffichable(new ConsultationAffichableRequestType());
+      request.getConsultationAffichable().setIdArchive(new UuidType());
+      request.getConsultationAffichable().getIdArchive().setUuidType("00000000-0000-0000-0000-000000000000");
+      request.getConsultationAffichable().setMetadonnees(new ListeMetadonneeCodeType());
+      MetadonneeCodeType meta = new MetadonneeCodeType();
+      meta.setMetadonneeCodeType("meta-inexistante");
+      request.getConsultationAffichable().getMetadonnees().addMetadonneeCode(meta);
+      
+      EasyMock.expect(saeService.consultationAffichable((ConsultParams) EasyMock.anyObject())).andThrow(new UnknownDesiredMetadataEx("test-unitaire : metadonnee inexistante"));
+      
+      EasyMock.replay(saeService);
+      
+      try {
+         consultService.consultationAffichable(request);
+         fail("C'est l'exception ConsultationAxisFault qui est attendue");
+      } catch (ConsultationAxisFault ex) {
+         assertEquals("Le message d'erreur n'est pas celui attendu", "test-unitaire : metadonnee inexistante", ex.getMessage());
+         assertEquals("La cause de l'exception n'est pas la bonne", UnknownDesiredMetadataEx.class.getName(), ex.getCause().getClass().getName());
+         assertEquals("La partie local du code de l'erreur n'est pas le bon", "ConsultationMetadonneesInexistante", ex.getFaultCode().getLocalPart());
+      }
+      
+      EasyMock.reset(saeService);
+   }
+   
+   @Test
+   public void consultationAffichable_metadonnee_non_autorisee() throws ConsultationAxisFault, SAEConsultationServiceException, UnknownDesiredMetadataEx, MetaDataUnauthorizedToConsultEx, SAEConsultationAffichableParametrageException {
+      
+      ConsultationAffichable request = new ConsultationAffichable();
+      request.setConsultationAffichable(new ConsultationAffichableRequestType());
+      request.getConsultationAffichable().setIdArchive(new UuidType());
+      request.getConsultationAffichable().getIdArchive().setUuidType("00000000-0000-0000-0000-000000000000");
+      request.getConsultationAffichable().setMetadonnees(new ListeMetadonneeCodeType());
+      MetadonneeCodeType meta = new MetadonneeCodeType();
+      meta.setMetadonneeCodeType("meta-non-autorisee");
+      request.getConsultationAffichable().getMetadonnees().addMetadonneeCode(meta);
+      
+      EasyMock.expect(saeService.consultationAffichable((ConsultParams) EasyMock.anyObject())).andThrow(new MetaDataUnauthorizedToConsultEx("test-unitaire : metadonnee non autorisee"));
+      
+      EasyMock.replay(saeService);
+      
+      try {
+         consultService.consultationAffichable(request);
+         fail("C'est l'exception ConsultationAxisFault qui est attendue");
+      } catch (ConsultationAxisFault ex) {
+         assertEquals("Le message d'erreur n'est pas celui attendu", "test-unitaire : metadonnee non autorisee", ex.getMessage());
+         assertEquals("La cause de l'exception n'est pas la bonne", MetaDataUnauthorizedToConsultEx.class.getName(), ex.getCause().getClass().getName());
+         assertEquals("La partie local du code de l'erreur n'est pas le bon", "ConsultationMetadonneesNonAutorisees", ex.getFaultCode().getLocalPart());
+      }
+      
+      EasyMock.reset(saeService);
+   }
+   
+   @Test
+   public void consultationAffichable_erreur_parametrage() throws ConsultationAxisFault, SAEConsultationServiceException, UnknownDesiredMetadataEx, MetaDataUnauthorizedToConsultEx, SAEConsultationAffichableParametrageException {
+      
+      ConsultationAffichable request = new ConsultationAffichable();
+      request.setConsultationAffichable(new ConsultationAffichableRequestType());
+      request.getConsultationAffichable().setIdArchive(new UuidType());
+      request.getConsultationAffichable().getIdArchive().setUuidType("00000000-0000-0000-0000-000000000000");
+      request.getConsultationAffichable().setMetadonnees(new ListeMetadonneeCodeType());
+      MetadonneeCodeType meta = new MetadonneeCodeType();
+      meta.setMetadonneeCodeType("FormatFichier");
+      request.getConsultationAffichable().getMetadonnees().addMetadonneeCode(meta);
+      request.getConsultationAffichable().setNumeroPage(1);
+      request.getConsultationAffichable().setNombrePages(0);
+      
+      EasyMock.expect(saeService.consultationAffichable((ConsultParams) EasyMock.anyObject())).andThrow(new SAEConsultationAffichableParametrageException("test-unitaire : parametrage incorrect"));
+      
+      EasyMock.replay(saeService);
+      
+      try {
+         consultService.consultationAffichable(request);
+         fail("C'est l'exception ConsultationAxisFault qui est attendue");
+      } catch (ConsultationAxisFault ex) {
+         assertEquals("Le message d'erreur n'est pas celui attendu", "test-unitaire : parametrage incorrect", ex.getMessage());
+         assertEquals("La cause de l'exception n'est pas la bonne", SAEConsultationAffichableParametrageException.class.getName(), ex.getCause().getClass().getName());
+         assertEquals("La partie local du code de l'erreur n'est pas le bon", "ConsultationAffichableParametrageIncorrect", ex.getFaultCode().getLocalPart());
+      }
+      
+      EasyMock.reset(saeService);
+   }
+   
+   @Test
+   public void consultationAffichable_exception_consultation() throws ConsultationAxisFault, SAEConsultationServiceException, UnknownDesiredMetadataEx, MetaDataUnauthorizedToConsultEx, SAEConsultationAffichableParametrageException {
+      
+      ConsultationAffichable request = new ConsultationAffichable();
+      request.setConsultationAffichable(new ConsultationAffichableRequestType());
+      request.getConsultationAffichable().setIdArchive(new UuidType());
+      request.getConsultationAffichable().getIdArchive().setUuidType("00000000-0000-0000-0000-000000000000");
+      request.getConsultationAffichable().setMetadonnees(new ListeMetadonneeCodeType());
+      MetadonneeCodeType meta = new MetadonneeCodeType();
+      meta.setMetadonneeCodeType("FormatFichier");
+      request.getConsultationAffichable().getMetadonnees().addMetadonneeCode(meta);
+      
+      EasyMock.expect(saeService.consultationAffichable((ConsultParams) EasyMock.anyObject())).andThrow(new SAEConsultationServiceException(new Exception("test-unitaire : exception de consultation")));
+      
+      EasyMock.replay(saeService);
+      
+      try {
+         consultService.consultationAffichable(request);
+         fail("C'est l'exception ConsultationAxisFault qui est attendue");
+      } catch (ConsultationAxisFault ex) {
+         assertEquals("Le message d'erreur n'est pas celui attendu", "Une erreur s'est produite lors de la consultation", ex.getMessage());
+         assertEquals("La cause de l'exception n'est pas la bonne", SAEConsultationServiceException.class.getName(), ex.getCause().getClass().getName());
+         assertEquals("La partie local du code de l'erreur n'est pas le bon", "ErreurInterneConsultation", ex.getFaultCode().getLocalPart());
+      }
+      
+      EasyMock.reset(saeService);
+   }
+   
+   @Test
+   public void consultationAffichable_success() throws SAEConsultationServiceException, UnknownDesiredMetadataEx, MetaDataUnauthorizedToConsultEx, SAEConsultationAffichableParametrageException, IOException {
+      
+      ConsultationAffichable request = new ConsultationAffichable();
+      request.setConsultationAffichable(new ConsultationAffichableRequestType());
+      request.getConsultationAffichable().setIdArchive(new UuidType());
+      request.getConsultationAffichable().getIdArchive().setUuidType("00000000-0000-0000-0000-000000000000");
+      request.getConsultationAffichable().setMetadonnees(new ListeMetadonneeCodeType());
+      MetadonneeCodeType meta = new MetadonneeCodeType();
+      meta.setMetadonneeCodeType(FORMAT_FICHIER);
+      request.getConsultationAffichable().getMetadonnees().addMetadonneeCode(meta);
+      
+      UntypedDocument doc = new UntypedDocument();
+      List<UntypedMetadata> listeMetas = new ArrayList<UntypedMetadata>();
+      listeMetas.add(new UntypedMetadata(FORMAT_FICHIER, "fmt/353"));
+      doc.setUMetadatas(listeMetas);
+      String contenu = "mon-fichier";
+      ByteArrayDataSource rawData= new ByteArrayDataSource(contenu.getBytes(), "application/octet-stream");
+      DataHandler fileContent = new DataHandler(rawData);
+      doc.setContent(fileContent);
+      
+      EasyMock.expect(saeService.consultationAffichable((ConsultParams) EasyMock.anyObject())).andReturn(doc);
+      
+      EasyMock.replay(saeService);
+      
+      try {
+         ConsultationAffichableResponse reponse = consultService.consultationAffichable(request);
+         assertNotNull("La reponse ne doit pas etre null", reponse);
+         assertNotNull("L'objet ConsultationAffichableResponse ne doit pas etre null", reponse.getConsultationAffichableResponse());
+         assertNotNull("L'objet ListeMetadonneeType ne doit pas etre null", reponse.getConsultationAffichableResponse().getMetadonnees());
+         assertNotNull("Le tableau de metadonnees ne doit pas etre null", reponse.getConsultationAffichableResponse().getMetadonnees().getMetadonnee());
+         assertEquals("Le nombre d'éléments dans la liste des métadonnées n'est pas correct", 1, reponse.getConsultationAffichableResponse().getMetadonnees().getMetadonnee().length);
+         MetadonneeType valeurMeta = reponse.getConsultationAffichableResponse().getMetadonnees().getMetadonnee()[0];
+         assertNotNull("L'objet MetadonneeType ne doit pas etre null", valeurMeta);
+         assertEquals("Le code de la metadonnee n'est pas celui attendu", FORMAT_FICHIER, valeurMeta.getCode().getMetadonneeCodeType());
+         assertEquals("La valeur de la metadonnee n'est pas celle attendu", "fmt/353", valeurMeta.getValeur().getMetadonneeValeurType());
+         assertNotNull("L'objet DataHandler ne doit pas etre null", reponse.getConsultationAffichableResponse().getContenu());
+         DataHandler dataHandler = reponse.getConsultationAffichableResponse().getContenu();
+         final InputStream stream = dataHandler.getInputStream();
+         byte[] byteArray = IOUtils.toByteArray(stream);
+         assertEquals("Le contenu n'est pas celui attendu", contenu, new String(byteArray));
+         
+      } catch (ConsultationAxisFault ex) {
+         fail("La consultation aurait du bien se passer");
+      }
+      
+      EasyMock.reset(saeService);
+   }
 }

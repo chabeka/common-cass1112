@@ -8,6 +8,7 @@ import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.services.consultation.model.ConsultParams;
 import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
 import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedToConsultEx;
+import fr.urssaf.image.sae.services.exception.consultation.SAEConsultationAffichableParametrageException;
 import fr.urssaf.image.sae.services.exception.consultation.SAEConsultationServiceException;
 
 /**
@@ -56,4 +57,29 @@ public interface SAEConsultationService {
    UntypedDocument consultation(ConsultParams consultParams)
          throws SAEConsultationServiceException, UnknownDesiredMetadataEx,
          MetaDataUnauthorizedToConsultEx;
+
+   /**
+    * Service de consultation d’un document du SAE entier ou en partie dans un
+    * format affichable.
+    * 
+    * @param consultParams
+    *           Objet regroupant les paramètres nécessaires à la consultation
+    * @return Document correspondant à l'identifiant, peut-être null si
+    *         l'identifiant n'existe pas dans le SAE
+    * @throws SAEConsultationServiceException
+    *            une exception est levée lors de la consultation
+    * @throws MetaDataUnauthorizedToConsultEx
+    *            une exception est levée lorsque la metadata n'est pas
+    *            consultable
+    * @throws UnknownDesiredMetadataEx
+    *            une exception est levée lorsque la metadata est inconnue
+    * @throws SAEConsultationAffichableParametrageException
+    *            une exception est levée lorsque le paramétrage pour le
+    *            découpage du fichier est incorrect
+    */
+   @PreAuthorize("hasRole('consultation')")
+   UntypedDocument consultationAffichable(ConsultParams consultParams)
+         throws SAEConsultationServiceException, UnknownDesiredMetadataEx,
+         MetaDataUnauthorizedToConsultEx,
+         SAEConsultationAffichableParametrageException;
 }

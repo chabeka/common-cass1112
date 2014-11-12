@@ -23,6 +23,7 @@ public final class Utils {
       refFormat.setVisualisable(true);
       refFormat.setValidator("PdfaValidatorImpl");
       refFormat.setIdentificateur("PdfaIdentifierImpl");
+      refFormat.setConvertisseur(null);
       return refFormat;
    }
 
@@ -38,6 +39,7 @@ public final class Utils {
       refFormat.setVisualisable(true);
       refFormat.setValidator("validator");
       refFormat.setIdentificateur("identificateur");
+      refFormat.setConvertisseur("convertisseur");
       return refFormat;
    }
 
@@ -55,6 +57,7 @@ public final class Utils {
       refFormat.setVisualisable(true);
       refFormat.setValidator("LambdaValidatorImpl");
       refFormat.setIdentificateur("LambdaIdentifierImpl");
+      refFormat.setConvertisseur("LambdaConvertisseurImpl");
       return refFormat;
    }
 

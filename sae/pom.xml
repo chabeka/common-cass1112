@@ -129,6 +129,22 @@
       </dependency>
       -->
 
+      <!--
+      ==========================================
+      commons-itext
+      ==========================================
+      -->
+      <commons-itext>0.0.1-SNAPSHOT</commons-itext>
+      
+      <!--
+      Modèle de dépendance :
+      
+      <dependency>
+         <groupId>fr.urssaf.image.commons</groupId>
+         <artifactId>commons-itext</artifactId>
+         <version>${commons-itext}</version>
+      </dependency>
+      -->
 
       <!--
       =========================================================

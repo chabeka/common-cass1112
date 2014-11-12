@@ -16,6 +16,7 @@ import fr.urssaf.image.sae.services.document.SAEDocumentService;
 import fr.urssaf.image.sae.services.document.SAESearchService;
 import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
 import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedToConsultEx;
+import fr.urssaf.image.sae.services.exception.consultation.SAEConsultationAffichableParametrageException;
 import fr.urssaf.image.sae.services.exception.consultation.SAEConsultationServiceException;
 import fr.urssaf.image.sae.services.exception.search.MetaDataUnauthorizedToSearchEx;
 import fr.urssaf.image.sae.services.exception.search.SAESearchServiceEx;
@@ -87,5 +88,16 @@ public class SAEDocumentServiceImpl implements SAEDocumentService {
          MetaDataUnauthorizedToConsultEx, UnknownDesiredMetadataEx,
          UnknownLuceneMetadataEx, SyntaxLuceneEx, SAESearchServiceEx {
       return saeSearchService.search(requete, listMetaDesired, maxResult);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final UntypedDocument consultationAffichable(ConsultParams consultParams)
+         throws SAEConsultationServiceException, UnknownDesiredMetadataEx,
+         MetaDataUnauthorizedToConsultEx,
+         SAEConsultationAffichableParametrageException {
+      return saeConsultationService.consultationAffichable(consultParams);
    }
 }

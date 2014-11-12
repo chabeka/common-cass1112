@@ -39,6 +39,30 @@
                <value>pdfaIdentifierImpl</value>
             </column>
          </row>
+         
+         <row>
+            <key>fmt/353</key>
+            <column>
+               <name>typeMime</name>
+               <value>image/tiff</value>
+            </column>
+            <column>
+               <name>extension</name>
+               <value>TIF</value>
+            </column>
+            <column>
+               <name>description</name>
+               <value>Fichier TIFF</value>
+            </column>
+            <column>
+               <name>visualisable</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>convertisseur</name>
+               <value>tiffToPdfConvertisseurImpl</value>
+            </column>
+         </row>
       </columnFamily>
    </columnFamilies>
 </keyspace>
