@@ -24,6 +24,22 @@
       </property>
    </bean>
    
+   <!-- Configuration d'accès à Cassandra -->
+   <bean id="resourceSaeConfig" class="org.springframework.core.io.ClassPathResource">
+      <constructor-arg value="config/test-sae-config.properties" />
+   </bean>
+
+   <bean class="java.io.File" id="fileSaeConfig">
+      <constructor-arg>
+         <bean factory-bean="resourceSaeConfig" factory-method="getURI" />
+      </constructor-arg>
+   </bean>
+
+   <bean id="saeConfigResource" class="org.springframework.core.io.FileSystemResource">
+      <constructor-arg>
+         <bean factory-bean="fileSaeConfig" factory-method="getAbsolutePath" />
+      </constructor-arg>
+   </bean>
    
    <!-- Configuration d'accès à DFCE -->
    <bean id="dfceConnection"
@@ -35,6 +51,12 @@
    <bean id="dfceConnectionService"
       class="fr.urssaf.image.commons.dfce.service.impl.DFCEConnectionServiceImpl">
       <constructor-arg ref="dfceConnection" />
+   </bean>
+   
+   <bean id="dfceConnectionTransfert" autowire-candidate="false"
+      class="fr.urssaf.image.commons.dfce.manager.DFCEConnectionFactory"
+      factory-method="createDFCEConnectionTransfertBySAEConf">
+      <constructor-arg value="saeConfigResource" />
    </bean>
    
    

@@ -30,30 +30,8 @@
 	  <constructor-arg ref="tracesDfceTransfert" />
    </bean>
    
-   <!-- Config Cassandra transfert --><!--    
-   <bean id="resCassandraTransfertConfig" class="org.springframework.core.io.ClassPathResource">
-      <constructor-arg value="${sae.cassandra.transfert.cheminFichierConfig}" />
-   </bean>
-     
-   <bean class="java.io.File" id="fileCassandraTransfertConfig">
-      <constructor-arg>
-         <bean factory-bean="resCassandraTransfertConfig" factory-method="getURI" />
-      </constructor-arg>
-   </bean>
-    
-   <bean id="cassandraTransfertConfigResource" class="org.springframework.core.io.FileSystemResource">
-      <constructor-arg>
-         <bean factory-bean="fileCassandraTransfertConfig" factory-method="getAbsolutePath" />
-      </constructor-arg>
-   </bean>
-
-   -->
    <bean id="transfertCassandraClientFactory" class="fr.urssaf.image.commons.cassandra.helper.CassandraClientFactory">
-      <constructor-arg>
-         <bean class="org.springframework.core.io.FileSystemResource">
-            <constructor-arg value="${sae.cassandra.transfert.cheminFichierConfig}" />
-         </bean>
-      </constructor-arg>
+      <constructor-arg ref="saeConfigResource" />
    </bean>
 
    <!-- Keyspace Transfert -->

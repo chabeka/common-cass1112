@@ -13,6 +13,7 @@ import fr.urssaf.image.sae.services.consultation.model.ConsultParams;
 import fr.urssaf.image.sae.services.document.SAEDocumentService;
 import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
 import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedToConsultEx;
+import fr.urssaf.image.sae.services.exception.consultation.SAEConsultationAffichableParametrageException;
 import fr.urssaf.image.sae.services.exception.consultation.SAEConsultationServiceException;
 import fr.urssaf.image.sae.services.exception.search.MetaDataUnauthorizedToSearchEx;
 import fr.urssaf.image.sae.services.exception.search.SAESearchServiceEx;
@@ -141,6 +142,30 @@ public class SAEDocumentTestImpl implements SAEDocumentService {
       }
 
       return (List<UntypedDocument>) object;
+   }
+   
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final UntypedDocument consultationAffichable(
+         ConsultParams consultParams) throws SAEConsultationServiceException,
+         UnknownDesiredMetadataEx, MetaDataUnauthorizedToConsultEx,
+         SAEConsultationAffichableParametrageException {
+
+      Object object = getResult(consultParamsResult, consultParamsIndex);
+
+      if (object == null) {
+         return null;
+      } else if (object instanceof SAEConsultationServiceException) {
+         throw (SAEConsultationServiceException) object;
+      } else if (object instanceof UnknownDesiredMetadataEx) {
+         throw (UnknownDesiredMetadataEx) object;
+      } else if (object instanceof MetaDataUnauthorizedToConsultEx) {
+         throw (MetaDataUnauthorizedToConsultEx) object;
+      }
+
+      return (UntypedDocument) object;
    }
 
    /**

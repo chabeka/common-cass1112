@@ -23,6 +23,12 @@
       factory-method="load">
       <constructor-arg ref="ecdeConfigFile" />
    </bean>
+   
+   <bean id="dfceConnectionTransfert" autowire-candidate="false"
+      class="fr.urssaf.image.commons.dfce.manager.DFCEConnectionFactory"
+      factory-method="createDFCEConnectionTransfertBySAEConfigurationResource">
+      <constructor-arg ref="saeConfigResource" />
+   </bean>
 
    <!-- Importation des contextes des composants techniques -->
    <import resource="applicationContext-commons-cassandra.xml" />

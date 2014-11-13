@@ -49,6 +49,12 @@
       class="fr.urssaf.image.commons.dfce.service.impl.DFCEConnectionServiceImpl">
       <constructor-arg ref="dfceConnection" />
    </bean>
+   
+   <bean id="dfceConnectionTransfert" autowire-candidate="false"
+      class="fr.urssaf.image.commons.dfce.manager.DFCEConnectionFactory"
+      factory-method="createDFCEConnectionTransfertBySAEConfigurationResource">
+      <constructor-arg ref="saeConfigResource" />
+   </bean>
 
    <import resource="applicationContext-commons-cassandra.xml" />
    <!--  importation des contextes -->

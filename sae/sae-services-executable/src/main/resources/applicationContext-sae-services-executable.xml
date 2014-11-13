@@ -27,6 +27,11 @@
       <constructor-arg ref="ecdeConfigFile" />
    </bean>
 
+   <bean id="dfceConnectionTransfert" autowire-candidate="false"
+      class="fr.urssaf.image.commons.dfce.manager.DFCEConnectionFactory"
+      factory-method="createDFCEConnectionTransfertBySAEConfigurationResource">
+      <constructor-arg ref="saeConfigResource" />
+   </bean>  
    
    <!--  Importation des contextes Spring des autres artéfacts -->
    <import resource="applicationContext-sae-storage-dfce.xml" />
