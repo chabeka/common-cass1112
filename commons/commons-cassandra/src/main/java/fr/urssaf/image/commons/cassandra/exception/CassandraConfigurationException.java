@@ -19,5 +19,11 @@ public class CassandraConfigurationException extends RuntimeException {
       super(cause);
    }
 
-
+   /**
+    * 
+    * @param message : message a renvoyer
+    */
+   public CassandraConfigurationException(String message) {
+      super(message);
+   }
 }

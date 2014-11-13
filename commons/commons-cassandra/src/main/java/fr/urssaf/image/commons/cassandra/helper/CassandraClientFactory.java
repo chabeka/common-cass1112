@@ -1,5 +1,6 @@
 package fr.urssaf.image.commons.cassandra.helper;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
@@ -13,12 +14,14 @@ import me.prettyprint.hector.api.HConsistencyLevel;
 import me.prettyprint.hector.api.Keyspace;
 import me.prettyprint.hector.api.factory.HFactory;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.core.io.AbstractResource;
 
 import fr.urssaf.image.commons.cassandra.exception.CassandraConfigurationException;
+import fr.urssaf.image.commons.cassandra.model.NoConnectionKeyspace;
 
 /**
  * Factory pour récupérer une connexion à cassandra.
@@ -29,6 +32,7 @@ public final class CassandraClientFactory implements DisposableBean  {
 
    private static final Logger LOG = LoggerFactory.getLogger(CassandraClientFactory.class);
    
+   private final static String SAE_CONFIG_CASSANDRA_TRANSFERT_CONFIG = "sae.cassandra.transfert.cheminFichierConfig";
    
    private final static String CASSANDRA_START_LOCAL = "cassandra.startlocal";
    private final static String CASSANDRA_HOSTS = "cassandra.hosts";
@@ -42,30 +46,56 @@ public final class CassandraClientFactory implements DisposableBean  {
 
    private Cluster cluster;
    private Keyspace keyspace;
-   
-   public CassandraClientFactory(AbstractResource cassandraConfigResource) throws InterruptedException{
+
+   /**
+    * Constructeur utilisé pour le transfert.
+    * @param saeConfigResource prend en parametres le fichier de configuration du sae.
+    * @throws InterruptedException
+    */
+   public CassandraClientFactory(AbstractResource saeConfigResource) throws InterruptedException{
       
-      Properties cassandraProp = new Properties();
+      Properties saeProperties = new Properties();
 
       try {
-         cassandraProp.load(cassandraConfigResource.getInputStream());
+         saeProperties.load(saeConfigResource.getInputStream());
       } catch (IOException e) {
          throw new CassandraConfigurationException(e);
       }
       
-      String hosts = cassandraProp.getProperty(CASSANDRA_HOSTS);
-      String dataset = cassandraProp.getProperty(CASSANDRA_DATASET);
-      String userName = cassandraProp.getProperty(CASSANDRA_USERNAME);
-      String password = cassandraProp.getProperty(CASSANDRA_PASSWORD);
-      String keyspaceName = cassandraProp.getProperty(CASSANDRA_KEYSPACE); 
-      Boolean startLocal = Boolean.valueOf(cassandraProp.getProperty(CASSANDRA_START_LOCAL));
-      
-      CassandraServerBean cassandraServer = new CassandraServerBean();
-      cassandraServer.setDataSet(dataset);
-      cassandraServer.setHosts(hosts);
-      cassandraServer.setStartLocal(startLocal);
+      String pathConfCassandraTransfert = saeProperties
+            .getProperty(SAE_CONFIG_CASSANDRA_TRANSFERT_CONFIG);
+   
+      // on teste si la connexion de transfert est configuree ou non
+      if (StringUtils.isNotBlank(pathConfCassandraTransfert)) {
+         
+         // la connexion cassandra de transfert est configuree
+         // on initialise les objets
+         Properties cassandraProp = new Properties();
 
-      initCassandra(cassandraServer, keyspaceName, userName, password);
+         try {
+            cassandraProp.load(new FileInputStream(pathConfCassandraTransfert));
+         } catch (IOException e) {
+            throw new CassandraConfigurationException(e);
+         }
+         
+         String hosts = cassandraProp.getProperty(CASSANDRA_HOSTS);
+         String dataset = cassandraProp.getProperty(CASSANDRA_DATASET);
+         String userName = cassandraProp.getProperty(CASSANDRA_USERNAME);
+         String password = cassandraProp.getProperty(CASSANDRA_PASSWORD);
+         String keyspaceName = cassandraProp.getProperty(CASSANDRA_KEYSPACE); 
+         Boolean startLocal = Boolean.valueOf(cassandraProp.getProperty(CASSANDRA_START_LOCAL));
+         
+         CassandraServerBean cassandraServer = new CassandraServerBean();
+         cassandraServer.setDataSet(dataset);
+         cassandraServer.setHosts(hosts);
+         cassandraServer.setStartLocal(startLocal);
+
+         initCassandra(cassandraServer, keyspaceName, userName, password);
+      } else {
+         // on est dans le cas ou la connexion de transfert n'est pas configuree
+         // on utilise un keyspace bidon
+         keyspace = new NoConnectionKeyspace();
+      }
    }
    
    /**
