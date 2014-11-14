@@ -729,16 +729,19 @@ public class SaeDroitServiceImpl implements SaeDroitService {
          SaePagm saePagm = new SaePagm();
          saePagm.setCode(pagm.getCode());
          saePagm.setDescription(pagm.getDescription());
+         saePagm.setParametres(pagm.getParametres());
          saePagm.setPagma(saePagma);
          saePagm.setPagmp(saePagmp);
 
          if (pagm.getPagmf() != null) {
             Pagmf pagmf = getPagmf(pagm.getPagmf());
-            SaePagmf saePagmf = new SaePagmf();
-            saePagmf.setCodePagmf(pagmf.getCodePagmf());
-            saePagmf.setDescription(pagmf.getDescription());
-            saePagmf.setFormatProfile(pagmf.getCodeFormatControlProfil());
-            saePagm.setPagmf(saePagmf);
+            if (pagmf != null) {
+               SaePagmf saePagmf = new SaePagmf();
+               saePagmf.setCodePagmf(pagmf.getCodePagmf());
+               saePagmf.setDescription(pagmf.getDescription());
+               saePagmf.setFormatProfile(pagmf.getCodeFormatControlProfil());
+               saePagm.setPagmf(saePagmf);
+            }
          }
 
          listeSaePagm.add(saePagm);
@@ -1074,11 +1077,11 @@ public class SaeDroitServiceImpl implements SaeDroitService {
 
       } catch (InvalidCacheLoadException e) {
          LOGGER
-               .debug(
-                     "Le PAGMf "
-                           + codePagmf
-                           + " n'a pas été trouvé dans la famille de colonne DroitPagmf",
-                     e);
+         .debug(
+               "Le PAGMf "
+                     + codePagmf
+                     + " n'a pas été trouvé dans la famille de colonne DroitPagmf",
+               e);
       }
       return pagmf;
    }
