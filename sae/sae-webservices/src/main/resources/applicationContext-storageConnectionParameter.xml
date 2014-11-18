@@ -26,11 +26,7 @@
    <bean id="dfceConnectionTransfert" autowire-candidate="false"
       class="fr.urssaf.image.commons.dfce.manager.DFCEConnectionFactory"
       factory-method="createDFCEConnectionTransfertBySAEConfigurationResource">
-      <constructor-arg>
-         <bean class="org.springframework.core.io.FileSystemResource">
-            <constructor-arg value="${sae.dfce.transfert.cheminFichierConfig}" />
-         </bean>
-      </constructor-arg>
+      <constructor-arg type="org.springframework.core.io.AbstractResource" ref="saeConfigResource" />
    </bean>
 
 </beans>

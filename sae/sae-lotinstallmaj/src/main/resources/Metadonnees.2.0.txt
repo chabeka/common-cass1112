@@ -26,7 +26,7 @@ CodeRND	Code référentiel nationale de document	Code issu d'un référentiel pe
 VersionRND	Version de Code RND	Numéro permettant d'identifier la version de provenance du code RND renseigné précédemment	Alphanumérique	non	non	non	oui	non	non		10					non	Oui		vrn	non		String	non	oui		non		non	non	oui
 CodeFonction	Code fonction RFP	Code de la fonction/domaine RFP	Numérique	non	non	non	oui	oui	non		2		oui			oui	Oui		dom	non		String	non	non		non		non	non	oui
 CodeActivite	Code Activité RFP	Code de l'activité RFP	Numérique	non	non	non	oui	oui	non		2		oui			oui	Oui		act	non		String	non	non		non		non	non	oui
-DureeConservation	Durée de conservation	Durée de conservation de l'archive au terme duquel l'archive n'est plus accessible en jours	Numérique	non	non	non	oui	non	non							oui	Non		dco	oui		Integer	non	non		non		non	non	oui
+DureeConservation	Durée de conservation	Durée de conservation de l'archive au terme duquel l'archive n'est plus accessible en jours	Numérique	non	non	non	oui	non	non							oui	Non		dco	oui		Integer	non	non		non		non	non	non
 DateDebutConservation	Date début conservation	Date de début de la durée de conservation.	Date	oui	non	non	oui	oui	oui	yyyy-mm-dd	10					oui	Oui		SM_LIFE_CYCLE_REFERENCE_DATE	oui		Date	non	oui		non	non	non	non	non
 DateFinConservation	Date fin conservation	Date de fin de la durée de conservation	Date	non	non	non	oui	oui	non	yyyy-mm-dd	10					oui	Oui		dfc	non		Date	non	oui		non		non	non	oui
 Gel	Gel	Gel de l'archive permettant de ne pas détruire l'archive 	Booléen	non	non	non	oui	non	non	true|false			oui			non	Oui		gel	oui		Boolean	non	non		non	non	non	non	non
