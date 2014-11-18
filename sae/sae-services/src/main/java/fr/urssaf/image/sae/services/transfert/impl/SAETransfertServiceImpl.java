@@ -16,7 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
+import org.apache.commons.lang.StringUtils;
 
 import fr.urssaf.image.sae.metadata.exceptions.ReferentialException;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
@@ -198,7 +198,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
     * 
     */
    private List<StorageMetadata> getTransferableStorageMeta() throws ReferentialException{
-      //-- Récupération de la liste des méta transférablesdu référentiel
+      //-- Récupération de la liste des méta transférables du référentiel
       Map<String, MetadataReference> transferables = metadataReferenceDAO.getTransferableMetadataReference();
       
       Set<Entry<String, MetadataReference>> data = transferables.entrySet();
@@ -207,6 +207,12 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
       for (Map.Entry<String, MetadataReference> entry : data){
          metas.add(new StorageMetadata(entry.getValue().getShortCode()));
       }
+      
+      //-- La métadonnée DateArchivage ne fait pas partie des métadonnées transférable, mais nous en avons besoin pour
+      // calculer la date d'archivage en GNT
+      // on l'ajoute donc a la liste
+      metas.add(new StorageMetadata(StorageTechnicalMetadatas.DATE_ARCHIVE.getShortCode()));
+      
       return metas;
    }
    
@@ -223,14 +229,16 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
    private void updateMetaDocumentForTransfert(StorageDocument document) throws ReferentialException, TransfertException {
 
       //-- Ajout métadonnée "DateArchivageGNT"
-      String dateArchivage = StorageMetadataUtils.valueMetadataFinder(document.getMetadatas(), StorageTechnicalMetadatas.DATE_ARCHIVE.getShortCode());
+      Object dateArchivage = StorageMetadataUtils.valueObjectMetadataFinder(document.getMetadatas(), StorageTechnicalMetadatas.DATE_ARCHIVE.getShortCode());
       StorageMetadata dateArchivageGNT = new StorageMetadata(StorageTechnicalMetadatas.DATE_ARCHIVE_GNT.getShortCode(), dateArchivage);
       document.getMetadatas().add(dateArchivageGNT);
       
       //-- Suppression des métadonnées vides (impératif api dfce)
+      // Supprime aussi la métadonnée DateArchivage qui est non transférable
       List<StorageMetadata> metadata = document.getMetadatas();
       for (int i =0; i<metadata.size(); i++) {
-         if(metadata.get(i).getValue() == null || metadata.get(i).getValue().equals("")) {
+         if(metadata.get(i).getValue() == null || metadata.get(i).getValue().equals("") 
+               || metadata.get(i).getShortCode().equals(StorageTechnicalMetadatas.DATE_ARCHIVE.getShortCode())) {
             metadata.remove(i);
             i--;
          }
