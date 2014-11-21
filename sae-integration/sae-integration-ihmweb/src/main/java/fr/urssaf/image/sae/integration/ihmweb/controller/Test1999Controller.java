@@ -5,8 +5,6 @@ import java.util.UUID;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import fr.urssaf.image.sae.integration.ihmweb.formulaire.SuppressionFormulaire;
-import fr.urssaf.image.sae.integration.ihmweb.formulaire.TestWsSuppressionFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.TestWsTransfertFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.TransfertFormulaire;
 
@@ -31,13 +29,9 @@ public class Test1999Controller extends
     */
    @Override
    protected final TestWsTransfertFormulaire getFormulairePourGet() {
-
       TestWsTransfertFormulaire formulaire = new TestWsTransfertFormulaire();
-
       TransfertFormulaire formTransfert = formulaire.getTransfert();
-
       formTransfert.setIdDocument(UUID.randomUUID());
-
       return formulaire;
 
    }
@@ -51,11 +45,9 @@ public class Test1999Controller extends
    }
 
    private void transfert(String urlWebService, TransfertFormulaire formulaire) {
-
       // Appel de la méthode de test
       getTransfertTestService().appelWsOpTransfertTestLibre(urlWebService,
             formulaire);
-
    }
 
 }

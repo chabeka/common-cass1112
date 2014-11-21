@@ -8,6 +8,25 @@ public class TestWsTransfertFormulaire extends TestWsParentFormulaire {
 
    private final TransfertFormulaire transfert = new TransfertFormulaire(
          this);
+   
+   private final CaptureUnitaireFormulaire captureUnitaire = new CaptureUnitaireFormulaire(
+         this);
+
+   private final RechercheFormulaire recherche = new RechercheFormulaire(this);
+   
+   private final RechercheFormulaire rechercheGns = new RechercheFormulaire(this);
+
+   public CaptureUnitaireFormulaire getCaptureUnitaire() {
+      return captureUnitaire;
+   }
+
+   public RechercheFormulaire getRecherche() {
+      return recherche;
+   }
+
+   public RechercheFormulaire getRechercheGns() {
+      return rechercheGns;
+   }
 
    /**
     * Le sous-formulaire pour l'appel à l'opération "transfert"

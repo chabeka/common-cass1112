@@ -199,13 +199,6 @@ public class TransfertTestService {
             argsMsgSoapFault);
 
       // Appel de la méthode "générique" de test
-      boolean resultat = appelWsOpTransfert(urlServiceWeb, ViStyle.VI_OK, viParams, formulaire,
-            listener);
-      
-      // On considère que le test est en succès si aucune erreur renvoyé
-      ResultatTest resultatTest = formulaire.getResultats();
-      if (!resultat) {
-         resultatTest.setStatus(TestStatusEnum.Succes);
-      } 
+      appelWsOpTransfert(urlServiceWeb, ViStyle.VI_OK, viParams, formulaire, listener);
    }
 }

@@ -383,5 +383,13 @@
       <message>Le type ou le format des métadonnées suivantes n'est pas valide : %s</message>
    </SoapFault>
    
+   <SoapFault>
+      <id>sae_ArchiveNonTrouveeTransfert</id>
+      <namespace>urn:sae:faultcodes</namespace>
+      <prefixe>sae</prefixe>
+      <localPart>ArchiveNonTrouvee</localPart>
+      <message>Le document %s n'existe pas. Transfert impossible.</message>
+   </SoapFault>
+   
    
 </SoapFaults>

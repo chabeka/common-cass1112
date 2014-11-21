@@ -81,6 +81,9 @@
       <property name="urlSaeService">
          <value>${config.urlSaeService}</value>
       </property>
+      <property name="urlSaeServiceGns">
+         <value>${config.urlSaeServiceGns}</value>
+      </property>
       <property name="dnsEcde">
          <value>${config.dnsEcde}</value>
       </property>

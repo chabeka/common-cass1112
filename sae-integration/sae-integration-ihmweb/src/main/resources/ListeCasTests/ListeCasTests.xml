@@ -2014,8 +2014,43 @@
       <CasTests>
 
          <CasTest>
+            <id>1901</id>
+            <code>1901-TRANSFERT-OK</code>
+            <description>
+               Le but de ce test est de voir que toutes les informations attendues sont justes, particulièrement la mise à jour des registres et la création des nouvelles métadonnées.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1901-TRANSFERT-OK"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1950</id>
+            <code>1950-T-KO-RECHERCHE-KO</code>
+            <description>
+               L’UUID passé en paramètre pour le transfert de la GNT vers la GNS est inexistant ainsi la recherche va échouer et le transfert ne va pas pouvoir se faire.
+            </description>
+            <implemente>true</implemente>
+         </CasTest>
+         <CasTest>
+            <id>1951</id>
+            <code>1951-T-KO-STOCKAGE-GNS-KO</code>
+            <description>
+               Ce test consiste à lancer un transfert vers la base GNS hors-service.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1951-Transfert-KO-STOCKAGE-GNS-KO"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1952</id>
+            <code>1952-T-KO-SUPPRESSION-GNT-KO</code>
+            <description>
+               Ce test consiste à lancer un transfert qui ira jusqu’à la copie du document dans la GNS mais qui n’arrivera pas à supprimer le document dans la GNT.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:" Test 1952-Transfert-KO-Suppression-GNT-KO"</luceneExemple>
+         </CasTest>
+         <CasTest>
             <id>1999</id>
-            <code>1999-SAI-Transfert-TestLibre</code>
+            <code>1999-SAI-TRANSFERT-TestLibre</code>
             <description>
                SAI - Test libre du transfert 
             </description>
@@ -2322,7 +2357,6 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 1255-PKI-CS-ANCIEN-SYSTEME-VI-KO"</luceneExemple>
          </CasTest>
-
       </CasTests>
 
    </Categorie>

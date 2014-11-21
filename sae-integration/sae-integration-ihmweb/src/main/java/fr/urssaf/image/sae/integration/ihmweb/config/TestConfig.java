@@ -7,6 +7,7 @@ package fr.urssaf.image.sae.integration.ihmweb.config;
 public class TestConfig {
 
    private String urlSaeService;
+   private String urlSaeServiceGns;
    private String dnsEcde;
    private String versionRND;
    private String cmCompareRepRef;
@@ -29,12 +30,31 @@ public class TestConfig {
 
    
    /**
-    * L'URL du service web SaeService
+    * Set l'URL du service web SaeService
     * 
     * @param urlSaeService L'URL du service web SaeService
     */
    public final void setUrlSaeService(String urlSaeService) {
       this.urlSaeService = urlSaeService;
+   }
+   
+   
+   /**
+    * L'URL du service web SaeService
+    * 
+    * @return L'URL du service web SaeService GNS
+    */
+   public final String getUrlSaeServiceGns() {
+      return urlSaeServiceGns;
+   }
+   
+   /**
+    * Set l'URL du service web SaeService GNS
+    * 
+    * @param urlSaeService L'URL du service web SaeService GNS
+    */
+   public final void setUrlSaeServiceGns(String urlSaeServiceGns) {
+      this.urlSaeServiceGns = urlSaeServiceGns;
    }
 
 
