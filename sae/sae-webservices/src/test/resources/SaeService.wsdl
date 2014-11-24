@@ -146,6 +146,18 @@
          consultation de documents au SAE dans un format affichable</wsdl:documentation>
       <wsdl:part name="output" element="sae:consultationAffichableResponse"/>
    </wsdl:message>
+   <wsdl:message name="rechercheNbResRequestMessage">
+      <wsdl:documentation>Message de demande d'une recherche
+         documentaire sur le SAE (avec retour du nombre de résultats)
+      </wsdl:documentation>
+      <wsdl:part name="input" element="sae:rechercheNbRes" />
+   </wsdl:message>
+   <wsdl:message name="rechercheNbResResponseMessage">
+      <wsdl:documentation>Message contenant le résultat d'une recherche
+         documentaire sur le SAE (avec retour du nombre de résultats)
+      </wsdl:documentation>
+      <wsdl:part name="output" element="sae:rechercheNbResResponse" />
+   </wsdl:message>
 	<wsdl:portType name="SaeServicePortType">
 		<wsdl:operation name="Ping" parameterOrder="input">
 			<wsdl:documentation>Opération de test de la disponibilité du
@@ -230,6 +242,12 @@
          sur le SAE</wsdl:documentation>
          <wsdl:input message="tns:consultationAffichableRequestMessage"/>
          <wsdl:output message="tns:consultationAffichableResponseMessage"/>
+      </wsdl:operation>
+      <wsdl:operation name="rechercheNbRes" parameterOrder="input">
+         <wsdl:documentation>Opération de recherche documentaire sur le SAE
+            (avec retour du nombre de résultats)</wsdl:documentation>
+         <wsdl:input message="tns:rechercheNbResRequestMessage" />
+         <wsdl:output message="tns:rechercheNbResResponseMessage" />
       </wsdl:operation>
 	</wsdl:portType>
 	<wsdl:binding name="SaeServiceSoapBinding" type="sae:SaeServicePortType">
@@ -382,6 +400,17 @@
          </wsdl:input>
          <wsdl:output>
             <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="rechercheNbRes">
+         <wsdl:documentation>Service de recherche documentaire sur le SAE
+            (avec retour du nombre de résultats)</wsdl:documentation>
+         <soap:operation soapAction="rechercheNbRes" />
+         <wsdl:input>
+            <soap:body use="literal" />
+         </wsdl:input>
+         <wsdl:output>
+            <soap:body use="literal" />
          </wsdl:output>
       </wsdl:operation>
 	</wsdl:binding>

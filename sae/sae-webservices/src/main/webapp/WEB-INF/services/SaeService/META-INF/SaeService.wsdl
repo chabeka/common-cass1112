@@ -41,6 +41,13 @@
     <wsdl:part name="input" element="tns:modification">
     </wsdl:part>
   </wsdl:message>
+  <wsdl:message name="rechercheNbResRequestMessage">
+<wsdl:documentation>Message de demande d'une recherche
+         documentaire sur le SAE (avec retour du nombre de résultats)
+      </wsdl:documentation>
+    <wsdl:part name="input" element="tns:rechercheNbRes">
+    </wsdl:part>
+  </wsdl:message>
   <wsdl:message name="rechercheRequestMessage">
 <wsdl:documentation>Message de demande d'une recherche
          documentaire sur le SAE</wsdl:documentation>
@@ -129,6 +136,13 @@
 <wsdl:documentation>Message de demande pour archiver un document
          unique</wsdl:documentation>
     <wsdl:part name="input" element="tns:archivageUnitairePJ">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="rechercheNbResResponseMessage">
+<wsdl:documentation>Message contenant le résultat d'une recherche
+         documentaire sur le SAE (avec retour du nombre de résultats)
+      </wsdl:documentation>
+    <wsdl:part name="output" element="tns:rechercheNbResResponse">
     </wsdl:part>
   </wsdl:message>
   <wsdl:message name="consultationResponseMessage">
@@ -287,6 +301,14 @@
       <wsdl:output message="tns:consultationAffichableResponseMessage">
     </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="rechercheNbRes" parameterOrder="input">
+<wsdl:documentation>Opération de recherche documentaire sur le SAE
+            (avec retour du nombre de résultats)</wsdl:documentation>
+      <wsdl:input message="tns:rechercheNbResRequestMessage">
+    </wsdl:input>
+      <wsdl:output message="tns:rechercheNbResResponseMessage">
+    </wsdl:output>
+    </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="SaeServiceSoapBinding" type="tns:SaeServicePortType">
     <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
@@ -433,6 +455,17 @@
 <wsdl:documentation>Service de consultationMTOM documentaire du
             SAE dans un format affichable</wsdl:documentation>
       <soap:operation soapAction="consultationAffichable"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="rechercheNbRes">
+<wsdl:documentation>Service de recherche documentaire sur le SAE
+            (avec retour du nombre de résultats)</wsdl:documentation>
+      <soap:operation soapAction="rechercheNbRes"/>
       <wsdl:input>
         <soap:body use="literal"/>
       </wsdl:input>

@@ -1,6 +1,7 @@
 package fr.urssaf.image.sae.webservices.service.impl;
 
 import static fr.urssaf.image.sae.webservices.service.factory.ObjectRechercheFactory.createRechercheResponse;
+import static fr.urssaf.image.sae.webservices.service.factory.ObjectRechercheFactory.createRechercheNbResResponse;
 import static org.apache.commons.lang.StringUtils.isEmpty;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import fr.cirtil.www.saeservice.MetadonneeCodeType;
 import fr.cirtil.www.saeservice.Recherche;
+import fr.cirtil.www.saeservice.RechercheNbResResponse;
 import fr.cirtil.www.saeservice.RechercheResponse;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.services.document.SAEDocumentService;
@@ -81,6 +83,63 @@ public class WSRechercheServiceImpl implements WSRechercheService {
          }
 
          response = createRechercheResponse(untypedDocuments, resultatTronque);
+
+      } catch (SAESearchServiceEx except) {
+         throw new RechercheAxis2Fault(except.getMessage(),
+               "ErreurInterneRecherche", except);
+      } catch (MetaDataUnauthorizedToSearchEx except) {
+         throw new RechercheAxis2Fault(except.getMessage(),
+               "RechercheMetadonneesInterdite", except);
+      } catch (MetaDataUnauthorizedToConsultEx except) {
+         throw new RechercheAxis2Fault(except.getMessage(),
+               "ConsultationMetadonneesInterdite", except);
+      } catch (UnknownDesiredMetadataEx except) {
+         throw new RechercheAxis2Fault(except.getMessage(),
+               "ConsultationMetadonneesInconnues", except);
+      } catch (UnknownLuceneMetadataEx except) {
+         throw new RechercheAxis2Fault(except.getMessage(),
+               "RechercheMetadonneesInconnues", except);
+      } catch (SyntaxLuceneEx except) {
+         throw new RechercheAxis2Fault(except.getMessage(),
+               "SyntaxeLuceneNonValide", except);
+      } catch (RechercheAxis2Fault except) {
+         throw new RechercheAxis2Fault(except.getMessage(),
+               "RequeteLuceneVideOuNull", except);
+      }
+      LOG.debug("{} - Sortie", prefixeTrc);
+      return response;
+   }
+   
+   /**
+    * {@inheritDoc}
+    * 
+    * */
+   @Override
+   public RechercheNbResResponse searchWithNbRes(Recherche request) throws RechercheAxis2Fault {
+      
+      //-- Traces debug - entrée méthode
+      String prefixeTrc = "search()";
+      LOG.debug("{} - Début", prefixeTrc);
+
+      int maxResult = RechercheConstantes.NB_MAX_RESULTATS_RECHERCHE;
+      LOG.debug(
+            "{} - Le nombre maximum de documents à renvoyer dans les résultats de "
+                  + "recherche au niveau de la couche webservice est {}",
+            prefixeTrc, maxResult);
+      boolean resultatTronque = false;
+      RechercheNbResResponse response;
+      String requeteLucene = VIDE;
+      try {
+         requeteLucene = recupererReqLucene(request);
+         checkNotNull(requeteLucene);
+         List<String> listMDDesired = recupererListMDDesired(recupererListMDSearch(request));
+         List<UntypedDocument> untypedDocuments = documentService.search(requeteLucene, listMDDesired);
+         if (untypedDocuments.size() > maxResult) {
+            resultatTronque = true;
+            String mssg = "{} - Les résultats de recherche sont tronqués à {} résultats";
+            LOG.debug(mssg, prefixeTrc, maxResult);
+         }
+         response = createRechercheNbResResponse(untypedDocuments, resultatTronque);
 
       } catch (SAESearchServiceEx except) {
          throw new RechercheAxis2Fault(except.getMessage(),

@@ -44,6 +44,7 @@ import fr.cirtil.www.saeservice.PingResponse;
 import fr.cirtil.www.saeservice.PingSecureRequest;
 import fr.cirtil.www.saeservice.PingSecureResponse;
 import fr.cirtil.www.saeservice.Recherche;
+import fr.cirtil.www.saeservice.RechercheNbResResponse;
 import fr.cirtil.www.saeservice.RechercheResponse;
 import fr.cirtil.www.saeservice.RecuperationMetadonnees;
 import fr.cirtil.www.saeservice.RecuperationMetadonneesResponse;
@@ -51,7 +52,6 @@ import fr.cirtil.www.saeservice.Suppression;
 import fr.cirtil.www.saeservice.SuppressionResponse;
 import fr.cirtil.www.saeservice.Transfert;
 import fr.cirtil.www.saeservice.TransfertResponse;
-import fr.cirtil.www.saeservice.TransfertResponseType;
 import fr.urssaf.image.sae.exploitation.service.DfceInfoService;
 import fr.urssaf.image.sae.webservices.SaeService;
 import fr.urssaf.image.sae.webservices.exception.CaptureAxisFault;
@@ -680,4 +680,35 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
       }
    }
 
+   @Override
+   public RechercheNbResResponse rechercheNbResSecure(Recherche request)
+         throws AxisFault {
+      try {
+         //-- Traces debug - entrée méthode
+         String prefixeTrc = "Opération rechercheNbResSecure()";
+         LOG.debug("{} - Début", prefixeTrc);
+         
+         if(dfceInfoService.isDfceUp()){
+            RechercheNbResResponse response = search.searchWithNbRes(request);
+            //-- Traces debug - sortie méthode
+            LOG.debug("{} - Sortie", prefixeTrc);
+            
+            return response;
+         } else {
+   
+            LOG.debug("{} - Sortie", prefixeTrc);
+            setCodeHttp412();
+            throw new RechercheAxis2Fault(STOCKAGE_INDISPO,
+                  wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
+         }
+      } catch (RechercheAxis2Fault ex) {
+         logSoapFault(ex);
+         throw ex;
+      } catch (RuntimeException ex) {
+         logRuntimeException(ex);
+         throw new RechercheAxis2Fault(
+               "Une erreur interne à l'application est survenue lors de la recherche.",
+               "ErreurInterneRecherche", ex);
+      }
+   }
 }

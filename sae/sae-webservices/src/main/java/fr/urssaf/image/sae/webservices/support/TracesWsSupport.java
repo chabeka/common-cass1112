@@ -95,10 +95,11 @@ public class TracesWsSupport {
          result = TracesConstantes.CODE_EVT_WS_RECHERCHE_KO;
       } else if ("transfert".equals(nomOperation)) {
          result = TracesConstantes.CODE_EVT_WS_TRANSFERT_KO;
+      } else if ("rechercheNbRes".equals(nomOperation)) {
+         result = TracesConstantes.CODE_EVT_WS_RECHERCHE_KO;
       }
 
       return result;
-
    }
 
    protected final void traceEchec(String codeEvt, String nomOperation,

@@ -23,6 +23,7 @@ import fr.cirtil.www.saeservice.PingResponse;
 import fr.cirtil.www.saeservice.PingSecureRequest;
 import fr.cirtil.www.saeservice.PingSecureResponse;
 import fr.cirtil.www.saeservice.Recherche;
+import fr.cirtil.www.saeservice.RechercheNbResResponse;
 import fr.cirtil.www.saeservice.RechercheResponse;
 import fr.cirtil.www.saeservice.RecuperationMetadonnees;
 import fr.cirtil.www.saeservice.RecuperationMetadonneesResponse;
@@ -208,4 +209,15 @@ public interface SaeServiceSkeletonInterface {
     */
    ConsultationAffichableResponse consultationAffichableSecure(ConsultationAffichable request)
          throws AxisFault;
+   
+   /**
+    * Endpoint de la recherche de documents avec retour du nombre de résultats
+    * 
+    * @param request
+    *           request du web service
+    * @return Instance de RechercheNbResResponse contenant le résultat de la recherche
+    * @throws AxisFault
+    *            exception levée lors de la recherche
+    */
+   RechercheNbResResponse rechercheNbResSecure(Recherche request) throws AxisFault;
 }

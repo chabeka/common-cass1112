@@ -671,6 +671,90 @@
             </xsd:element>
         </xsd:sequence>
     </xsd:complexType>
+    <xsd:simpleType name="requeteRechercheNbResType">
+        <xsd:annotation>
+            <xsd:documentation>Une requête de recherche (chaîne non vide)
+         </xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:minLength value="1"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:complexType name="resultatRechercheNbResType">
+        <xsd:annotation>
+            <xsd:documentation>Un résultat de la recherche de documents
+            (avec retour du nombre de résultats)</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="idArchive" type="sae:uuidType">
+                <xsd:annotation>
+                    <xsd:documentation>L'identifiant unique d'archivage
+               </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="metadonnees" type="sae:listeMetadonneeType">
+                <xsd:annotation>
+                    <xsd:documentation>La liste des métadonnées associées
+               </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="listeResultatRechercheNbResType">
+        <xsd:annotation>
+            <xsd:documentation>Liste de résultat d'une recherche de
+            documents</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element maxOccurs="unbounded" minOccurs="0" name="resultat" type="sae:resultatRechercheType">
+                <xsd:annotation>
+                    <xsd:documentation>Les résultats de la recherche
+               </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="rechercheNbResRequestType">
+        <xsd:sequence>
+            <xsd:element name="requete" type="sae:requeteRechercheNbResType">
+                <xsd:annotation>
+                    <xsd:documentation>La requête de recherche
+               </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="metadonnees" type="sae:listeMetadonneeCodeType">
+                <xsd:annotation>
+                    <xsd:documentation>La liste des codes des métadonnées
+                  voulues</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="rechercheNbResResponseType">
+        <xsd:sequence>
+            <xsd:element name="resultats" type="sae:listeResultatRechercheNbResType">
+                <xsd:annotation>
+                    <xsd:documentation>Les résultats de la recherche. La
+                  liste peut être vide si aucun document n'a été
+                  retrouvé</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="nbResultats" type="xsd:int">
+                <xsd:annotation>
+                    <xsd:documentation>Le nombre de résultats correspondant à
+                  la requête de recherche
+      </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="resultatTronque" type="xsd:boolean">
+                <xsd:annotation>
+                    <xsd:documentation>Flag indiquant si la liste de
+                  résultats a été automatiquement tronquée car trop
+                  volumineuse</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
     <xsd:element name="archivageUnitaire" type="sae:archivageUnitaireRequestType"/>
     <xsd:element name="archivageUnitaireResponse" type="sae:archivageUnitaireResponseType"/>
     <xsd:element name="archivageUnitairePJ" type="sae:archivageUnitairePJRequestType"/>
@@ -694,4 +778,6 @@
     <xsd:element name="transfertResponse" type="sae:transfertResponseType"/>
     <xsd:element name="consultationAffichable" type="sae:consultationAffichableRequestType"/>
     <xsd:element name="consultationAffichableResponse" type="sae:consultationAffichableResponseType"/>
+    <xsd:element name="rechercheNbRes" type="sae:rechercheNbResRequestType"/>
+    <xsd:element name="rechercheNbResResponse" type="sae:rechercheNbResResponseType"/>
 </xsd:schema>

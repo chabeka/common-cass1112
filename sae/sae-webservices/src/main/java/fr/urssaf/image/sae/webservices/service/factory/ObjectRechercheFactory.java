@@ -7,8 +7,11 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
 import fr.cirtil.www.saeservice.ListeMetadonneeType;
+import fr.cirtil.www.saeservice.ListeResultatRechercheNbResType;
 import fr.cirtil.www.saeservice.ListeResultatRechercheType;
 import fr.cirtil.www.saeservice.MetadonneeType;
+import fr.cirtil.www.saeservice.RechercheNbResResponse;
+import fr.cirtil.www.saeservice.RechercheNbResResponseType;
 import fr.cirtil.www.saeservice.RechercheResponse;
 import fr.cirtil.www.saeservice.RechercheResponseType;
 import fr.cirtil.www.saeservice.ResultatRechercheType;
@@ -80,20 +83,82 @@ public final class ObjectRechercheFactory {
                List<MetadonneeType> metadonnees = createListMetadonneeType(storageDocument);
 
                if (CollectionUtils.isNotEmpty(metadonnees)) {
-
                   for (MetadonneeType metaDonnee : metadonnees) {
-
                      listeMetadonnee.addMetadonnee(metaDonnee);
                   }
                }
                resultatRecherche.setMetadonnees(listeMetadonnee);
                resultatsType.addResultat(resultatRecherche);
             }
-
       }
       responseType.setResultats(resultatsType);
       responseType.setResultatTronque(resultatTronque);
       response.setRechercheResponse(responseType);
+      return response;
+   }
+   
+   /**
+    * instanciation de {@link RechercheNbResResponse}.<br>
+    * Implementation de {@link RechercheNbResResponseType}
+    * 
+    * <pre>
+    * &lt;xsd:complexType name="rechercheNbResResponseType">
+    *    &lt;xsd:sequence>
+    *       &lt;xsd:element name="resultats" type="sae:listeResultatRechercheType">
+    *       ...       
+    *       &lt;/xsd:element>
+    *       &lt;xsd:element name="resultatTronque" type="xsd:boolean">
+    *       ...
+    *       &lt;/xsd:element>
+    *    &lt;/xsd:sequence>
+    * &lt;/xsd:complexType>
+    * </pre>
+    * 
+    * @param untypedDocuments
+    *           valeur de <code>listeResultatRechercheType</code>
+    * @param resultatTronque
+    *           valeur de <code>resultatTronque</code>
+    * @return instance de {@link RechercheResponse}
+    */
+   public static RechercheNbResResponse createRechercheNbResResponse(
+         List<UntypedDocument> untypedDocuments, boolean resultatTronque) {
+      
+      RechercheNbResResponse response = new RechercheNbResResponse();
+      RechercheNbResResponseType responseType = new RechercheNbResResponseType();
+      ListeResultatRechercheNbResType resultatsType = new ListeResultatRechercheNbResType();
+      
+      resultatsType.setResultat(new ResultatRechercheType[]{});
+      
+      if (CollectionUtils.isNotEmpty(untypedDocuments)) {
+         int taille = untypedDocuments.size();
+         if (resultatTronque){
+            taille = untypedDocuments.size() - 1;
+         }
+         for(int i = 0; i< taille ; i++) {            
+            UntypedDocument storageDocument = untypedDocuments.get(i);
+            ResultatRechercheType resultatRecherche = ObjectTypeFactory
+            .createResultatRechercheType();
+            
+            resultatRecherche.setIdArchive(ObjectTypeFactory
+                  .createUuidType(storageDocument.getUuid()));
+            ListeMetadonneeType listeMetadonnee = ObjectTypeFactory
+            .createListeMetadonneeType();
+            
+            List<MetadonneeType> metadonnees = createListMetadonneeType(storageDocument);
+            
+            if (CollectionUtils.isNotEmpty(metadonnees)) {
+               for (MetadonneeType metaDonnee : metadonnees) {
+                  listeMetadonnee.addMetadonnee(metaDonnee);
+               }
+            }
+            resultatRecherche.setMetadonnees(listeMetadonnee);
+            resultatsType.addResultat(resultatRecherche);
+         }
+      }
+      responseType.setResultats(resultatsType);
+      responseType.setNbResultats(untypedDocuments.size());
+      responseType.setResultatTronque(resultatTronque);
+      response.setRechercheNbResResponse(responseType);
       return response;
    }
 
