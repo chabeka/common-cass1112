@@ -36,6 +36,11 @@ public class Journal {
    private Date dateFinEvt;
 
    /**
+    * Taille
+    */
+   private long taille;
+
+   /**
     * Constructeur
     */
    public Journal() {
@@ -55,10 +60,12 @@ public class Journal {
     *           Date de début des évenements stockés dans le journal
     * @param dateFinEvt
     *           Date de fin des évenements stockés dans le journal
+    * @param taille
+    *           Taille du journal
     * 
     */
    public Journal(Date date, UUID identifiant, String nomFichier,
-         Date dateDebutEvt, Date dateFinEvt) {
+         Date dateDebutEvt, Date dateFinEvt, long taille) {
       super();
       this.date = getDateCopy(date);
       this.identifiant = identifiant;
@@ -66,6 +73,7 @@ public class Journal {
 
       this.dateDebutEvt = getDateCopy(dateDebutEvt);
       this.dateFinEvt = getDateCopy(dateFinEvt);
+      this.taille = taille;
    }
 
    /**
@@ -149,6 +157,21 @@ public class Journal {
          tDate = new Date(date.getTime());
       }
       return tDate;
+   }
+
+   /**
+    * @return the taille
+    */
+   public long getTaille() {
+      return taille;
+   }
+
+   /**
+    * @param taille
+    *           the taille to set
+    */
+   public void setTaille(long taille) {
+      this.taille = taille;
    }
 
 }

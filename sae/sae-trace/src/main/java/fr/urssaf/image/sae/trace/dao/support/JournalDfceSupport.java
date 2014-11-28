@@ -98,7 +98,7 @@ public class JournalDfceSupport {
                   "LOG_ARCHIVE_END_DATE").getWord();
 
             Journal journal = new Journal(doc.getArchivageDate(), uuid,
-                  nomFichier, dateDebutEvt, dateFinEvt);
+                  nomFichier, dateDebutEvt, dateFinEvt, doc.getSize());
             listeJournal.add(journal);
          }
       }
@@ -167,9 +167,9 @@ public class JournalDfceSupport {
                   "LOG_ARCHIVE_BEGIN_DATE").getWord();
             Date dateFinEvt = (Date) document.getSingleCriterion(
                   "LOG_ARCHIVE_END_DATE").getWord();
-
+                        
             Journal journal = new Journal(document.getCreationDate(), document
-                  .getUuid(), nomFichier, dateDebutEvt, dateFinEvt);
+                  .getUuid(), nomFichier, dateDebutEvt, dateFinEvt, document.getSize());
 
             listeJournal.add(journal);
 
@@ -225,19 +225,24 @@ public class JournalDfceSupport {
     * 
     * @param idJournal
     *           L'identifiant unique du journal
-    * @return Contenu du journal
+    * @return Contenu du journal ou null si le document n'existe pas
     */
    public final byte[] getContent(UUID idJournal) {
       Base base = serviceProvider.getArchiveService().getLogsArchiveBase();
       Document doc = serviceProvider.getSearchService().getDocumentByUUID(base,
             idJournal);
-      InputStream inStream = serviceProvider.getStoreService().getDocumentFile(
+      if (doc != null) {
+         InputStream inStream = serviceProvider.getStoreService().getDocumentFile(
             doc);
-      try {
-         return IOUtils.toByteArray(inStream);
-      } catch (IOException e) {
-         throw new TraceRuntimeException(e);
+         try {
+            return IOUtils.toByteArray(inStream);
+         } catch (IOException e) {
+            throw new TraceRuntimeException(e);
+         }
+      } else {
+         return null;
       }
+     
    }
 
    /**

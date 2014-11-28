@@ -98,7 +98,7 @@ public class JournalSaeSupport {
             Date dateDebutEvt = sdf.parse(dateTmp);
 
             Journal journal = new Journal(document.getCreationDate(), document
-                  .getUuid(), nomFichier, dateDebutEvt, dateDebutEvt);
+                  .getUuid(), nomFichier, dateDebutEvt, dateDebutEvt, document.getSize());
             listeJournal.add(journal);
          }
          return listeJournal;

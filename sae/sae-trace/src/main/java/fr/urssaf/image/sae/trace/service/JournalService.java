@@ -84,7 +84,7 @@ public interface JournalService {
     * 
     * @param uuidJournal
     *           Identifiant unique du journal
-    * @return Contenu du journal
+    * @return Contenu du journal ou null si le document n'existe pas
     */
    byte[] recupererContenuJournalDfce(UUID uuidJournal);
 
