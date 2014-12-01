@@ -3,7 +3,7 @@
 
   <groupId>fr.urssaf.image.sae</groupId>
   <artifactId>sae-format</artifactId>
-  <version>15.1.0.2-SNAPSHOT</version>
+  <version>15.1.0.2</version>
   <packaging>jar</packaging>
   <description>Gestion du référentiel des formats et service d'identification et de validation.</description>
 
@@ -12,7 +12,7 @@
   <parent>
       <groupId>fr.urssaf.image.sae</groupId>
       <artifactId>sae</artifactId>
-      <version>15.1.0.2-SNAPSHOT</version>
+      <version>15.1.0.2</version>
    </parent>  
 
    <properties>
@@ -136,7 +136,7 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-commons</artifactId>
-         <version>15.1.0.2-SNAPSHOT</version>
+         <version>15.1.0.2</version>
       </dependency>
 
       <!-- Joda Time  -->
