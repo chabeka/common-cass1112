@@ -46,9 +46,10 @@ public final class MajLotServiceImpl implements MajLotService {
    public static final String CASSANDRA_120512 = "CASSANDRA_120512";
    public static final String CASSANDRA_121110 = "CASSANDRA_121110";
    public static final String CASSANDRA_140700 = "CASSANDRA_140700";
-   public static final String CASSANDRA_141200 = "CASSANDRA_141200";
+   public static final String CASSANDRA_150100 = "CASSANDRA_150100";
    public static final String META_SEPA = "META_SEPA";
    public static final String META_130400 = "META_130400";
+   public static final String META_150100 = "META_150100";
    public static final String CASSANDRA_130400 = "CASSANDRA_130400";
    public static final String CASSANDRA_130700 = "CASSANDRA_130700";
    public static final String CASSANDRA_131100 = "CASSANDRA_131100";
@@ -137,9 +138,14 @@ public final class MajLotServiceImpl implements MajLotService {
 
          updateCassandra140700();
 
-      } else if (CASSANDRA_141200.equalsIgnoreCase(nomOperation)) {
+      } else if (CASSANDRA_150100.equalsIgnoreCase(nomOperation)) {
 
-         updateCassandra141200();
+         updateCassandra150100();
+
+      } else if (META_150100.equalsIgnoreCase(nomOperation)) {
+         // Pour lot 150100 du SAE : Ajout de la métadonnée
+         // CodePartenaire et DateArchivageGNT
+         updateMeta("meta150100.xml", "META_150100");
 
       } else if (CASSANDRA_DROITS_GED.equalsIgnoreCase(nomOperation)) {
 
@@ -333,10 +339,10 @@ public final class MajLotServiceImpl implements MajLotService {
    }
    
    /**
-    * Pour lot 141200 du SAE : mise à jour du keyspace "SAE" dans cassandra, en
+    * Pour lot 150100 du SAE : mise à jour du keyspace "SAE" dans cassandra, en
     * version 8
     */
-   private void updateCassandra141200() {
+   private void updateCassandra150100() {
       LOG
       .info("Début de l'opération : mise à jour du keyspace SAE pour le lot 141200");
       // Récupération de la chaîne de connexion au cluster cassandra
@@ -531,7 +537,7 @@ public final class MajLotServiceImpl implements MajLotService {
       }
 
       LOG
-            .info("Fin de l'opération : Création des nouvelles métadonnées (META_130400)");
+            .info("Fin de l'opération : Création des nouvelles métadonnées ({})", nomOperation);
    }
 
    /**

@@ -375,7 +375,7 @@ public final class RefMetaInitialisationService {
       List<String> lignesGenerees = genereFichierXmlAncienneVersionRefMeta(metadonnees);
 
       compareDeuxListeLignes("1",
-            "refmeta/MetadataReferential_Lot141200_ameliore.xml",
+            "refmeta/MetadataReferential_Lot150100_ameliore.xml",
             lignesGenerees);
 
    }
@@ -492,7 +492,7 @@ public final class RefMetaInitialisationService {
 
       List<String> lignesGenerees = genereFichierXmlAncienneVersionBaseDfce(metadonnees);
 
-      compareDeuxListeLignes("2", "refmeta/saeBase_Lot141200_ameliore.xml",
+      compareDeuxListeLignes("2", "refmeta/saeBase_Lot150100_ameliore.xml",
             lignesGenerees);
 
    }
