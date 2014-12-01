@@ -5,12 +5,12 @@
    <parent>
       <groupId>fr.urssaf.image.sae</groupId>
       <artifactId>sae</artifactId>
-      <version>15.1.0.2</version>
+      <version>15.1.0.3-SNAPSHOT</version>
    </parent>
 
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-webservices</artifactId>
-   <version>15.1.0.2</version>
+   <version>15.1.0.3-SNAPSHOT</version>
    
    <name>sae-webservices</name>
    
@@ -137,7 +137,7 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-trace</artifactId>
-         <version>15.1.0.2</version>
+         <version>15.1.0.3-SNAPSHOT</version>
          <exclusions>
             <exclusion>
                <groupId>commons-logging</groupId>
@@ -150,14 +150,14 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-vi</artifactId>
-         <version>15.1.0.2</version>
+         <version>15.1.0.3-SNAPSHOT</version>
       </dependency>
 
       <!-- SAE IGC -->
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-igc</artifactId>
-         <version>15.1.0.2</version>
+         <version>15.1.0.3-SNAPSHOT</version>
          <exclusions>
             <exclusion>
                <groupId>commons-logging</groupId>
@@ -174,7 +174,7 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-services</artifactId>
-         <version>15.1.0.2</version>
+         <version>15.1.0.3-SNAPSHOT</version>
          <exclusions>
             <exclusion>
                <groupId>axis</groupId>
@@ -187,7 +187,7 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-services-capturemasse</artifactId>
-         <version>15.1.0.2</version>
+         <version>15.1.0.3-SNAPSHOT</version>
       </dependency>
 
       <!--  AXIS 2 -->
