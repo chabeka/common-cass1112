@@ -16,6 +16,7 @@ import java.util.Properties;
 import java.util.TreeMap;
 
 import org.apache.commons.lang.StringUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +41,7 @@ import fr.urssaf.image.sae.regionalisation.fond.documentaire.support.CassandraSu
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-regionalisation-cassandra-test.xml" })
-//@Ignore
+@Ignore
 public class VentilationFondsDocProdTest {
 
    private DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh'h'mm ss's'");
