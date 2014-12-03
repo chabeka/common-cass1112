@@ -49,6 +49,14 @@
       <fileSet>
          <directory>src/config/</directory>
          <includes>
+            <include>sae-dfce-transfert-config.properties</include>
+         </includes>
+         <outputDirectory />
+      </fileSet>
+      
+      <fileSet>
+         <directory>src/config/</directory>
+         <includes>
             <include>sae-config.properties</include>
          </includes>
          <outputDirectory />
@@ -90,6 +98,14 @@
          <directory>src/config/</directory>
          <includes>
             <include>sae-cassandra-config.properties</include>
+         </includes>
+         <outputDirectory />
+      </fileSet>
+      
+      <fileSet>
+         <directory>src/config/</directory>
+         <includes>
+            <include>sae-cassandra-transfert-config.properties</include>
          </includes>
          <outputDirectory />
       </fileSet>
