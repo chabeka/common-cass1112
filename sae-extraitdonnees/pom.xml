@@ -125,7 +125,6 @@
                      <goal>shade</goal>
                   </goals>
                   <configuration>
-                     <finalName>sae-extraitdonnees</finalName>
                      <artifactSet>
                         <excludes>
                            <exclude>commons-logging:commons-logging:jar:</exclude>
