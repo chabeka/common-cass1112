@@ -1,0 +1,306 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+
+   <groupId>fr.urssaf.image.sae</groupId>
+   <artifactId>sae-extraitdonnees</artifactId>
+   <version>0.0.1-SNAPSHOT</version>
+   
+   <packaging>jar</packaging>
+
+   <name>sae-extraitdonnees</name>
+
+   <properties>
+
+      <!-- Encodage de caractères -->
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+      
+      <!-- Version des plug-ins Maven -->
+      <maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
+      <maven-source-plugin.version>2.1.2</maven-source-plugin.version>
+      <maven-resources-plugin.version>2.5</maven-resources-plugin.version>
+      <maven-javadoc-plugin.version>2.8.1</maven-javadoc-plugin.version>
+      <maven-shade-plugin.version>1.4</maven-shade-plugin.version>
+      
+      <!-- Versions des frameworks -->
+      
+      <junit.version>4.8.2</junit.version>
+      
+      <org.springframework.version>3.0.5.RELEASE</org.springframework.version>
+      
+      <astyanax.version>1.0.5</astyanax.version>
+      <cassandra.version>1.0.6</cassandra.version>
+
+      <org.slf4j.version>1.6.4</org.slf4j.version>
+      <logback.version>1.0.0</logback.version>
+      <jcl-over-slf4j.version>1.6.4</jcl-over-slf4j.version>
+      <log4j-over-slf4j.version>1.6.4</log4j-over-slf4j.version>
+      
+      <guava.version>12.0</guava.version>
+      
+      <apache.commons-io.version>2.0.1</apache.commons-io.version>
+      <apache.commons-cli.version>1.2</apache.commons-cli.version>
+
+   </properties>
+
+
+   <build>
+
+      <plugins>
+
+         <!--
+            On spécifie la version du JDK et l'encodage de caractères
+            des sources
+         -->
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>${maven-compiler-plugin.version}</version>
+            <configuration>
+               <source>1.6</source>
+               <target>1.6</target>
+               <encoding>${project.build.sourceEncoding}</encoding>
+            </configuration>
+         </plugin>
+
+         <!--
+            Dans le cas d'un packaging JAR, on demande que le JAR des
+            sources soit également généré
+         -->
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>${maven-source-plugin.version}</version>
+            <executions>
+               <execution>
+                  <id>bind-sources</id>
+                  <goals>
+                     <goal>jar</goal>
+                  </goals>
+               </execution>
+            </executions>
+         </plugin>
+
+         <!--
+            On spécifie l'encodage de caractères des ressources
+         -->
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-resources-plugin</artifactId>
+            <version>${maven-resources-plugin.version}</version>
+            <configuration>
+               <encoding>${project.build.sourceEncoding}</encoding>
+            </configuration>
+         </plugin>
+
+         <!--
+         On demande la génération de la Javadoc
+         -->
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>${maven-javadoc-plugin.version}</version>
+            <executions>
+               <execution>
+                  <id>attach-javadocs</id>
+                  <goals>
+                     <goal>jar</goal>
+                  </goals>
+               </execution>
+            </executions>
+            <configuration>
+               <quiet>true</quiet>
+            </configuration>
+         </plugin>
+         
+         <!-- Shade pour la génération du jar exécutable -->
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <version>${maven-shade-plugin.version}</version>
+            <executions>
+               <execution>
+                  <phase>package</phase>
+                  <goals>
+                     <goal>shade</goal>
+                  </goals>
+                  <configuration>
+                     <finalName>sae-extraitdonnees</finalName>
+                     <artifactSet>
+                        <excludes>
+                           <exclude>commons-logging:commons-logging:jar:</exclude>
+                        </excludes>
+                     </artifactSet>
+                     <transformers>
+                        <transformer
+                           implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                           <mainClass>fr.urssaf.image.sae.extraitdonnees.bootstrap.BootStrap</mainClass>
+                        </transformer>
+                        <transformer
+                           implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                           <resource>META-INF/spring.handlers</resource>
+                        </transformer>
+                        <transformer
+                           implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                           <resource>META-INF/spring.schemas</resource>
+                        </transformer>
+                     </transformers>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+
+      </plugins>
+
+
+   </build>
+
+   <dependencies>
+
+      <!-- JUnit -->
+      <dependency>
+         <groupId>junit</groupId>
+         <artifactId>junit</artifactId>
+         <version>${junit.version}</version>
+         <scope>test</scope>
+      </dependency>
+
+
+      <!-- SLF4J et Logback -->
+      <dependency>
+         <groupId>org.slf4j</groupId>
+         <artifactId>slf4j-api</artifactId>
+         <version>${org.slf4j.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>ch.qos.logback</groupId>
+         <artifactId>logback-classic</artifactId>
+         <version>${logback.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>ch.qos.logback</groupId>
+         <artifactId>logback-core</artifactId>
+         <version>${logback.version}</version>
+      </dependency>
+      
+      
+      <!-- Ponts vers SLF4J -->
+      <dependency>
+         <groupId>org.slf4j</groupId>
+         <artifactId>jcl-over-slf4j</artifactId>
+         <version>${jcl-over-slf4j.version}</version>
+         <scope>runtime</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.slf4j</groupId>
+         <artifactId>log4j-over-slf4j</artifactId>
+         <version>${log4j-over-slf4j.version}</version>
+         <scope>runtime</scope>
+      </dependency>
+      
+      
+      <!-- Spring -->
+      <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-core</artifactId>
+         <version>${org.springframework.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-context</artifactId>
+         <version>${org.springframework.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-beans</artifactId>
+         <version>${org.springframework.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-test</artifactId>
+         <version>${org.springframework.version}</version>
+         <scope>test</scope>
+      </dependency>
+      
+      
+      <!-- Astyanax -->
+      <dependency>
+         <groupId>com.netflix.astyanax</groupId>
+         <artifactId>astyanax</artifactId>
+         <version>${astyanax.version}</version>
+         <exclusions>
+            <exclusion>
+               <artifactId>cassandra-parent</artifactId>
+               <groupId>org.apache.cassandra</groupId>
+            </exclusion>
+            <exclusion>
+               <groupId>com.google.guava</groupId>
+               <artifactId>guava</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.slf4j</groupId>
+               <artifactId>slf4j-api</artifactId>
+            </exclusion>
+            <exclusion>
+               <artifactId>cassandra-thrift</artifactId>
+               <groupId>org.apache.cassandra</groupId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+
+
+      <!-- Cassandra -->
+      <dependency>
+         <artifactId>cassandra-all</artifactId>
+         <groupId>org.apache.cassandra</groupId>
+         <version>${cassandra.version}</version>
+         <exclusions>
+            <exclusion>
+               <groupId>org.slf4j</groupId>
+               <artifactId>slf4j-api</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.slf4j</groupId>
+               <artifactId>slf4j-log4j12</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>com.google.guava</groupId>
+               <artifactId>guava</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>commons-cli</groupId>
+               <artifactId>commons-cli</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>log4j</groupId>
+               <artifactId>log4j</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.mortbay.jetty</groupId>
+               <artifactId>servlet-api</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+      
+      <!-- Guava -->
+      <dependency>
+         <groupId>com.google.guava</groupId>
+         <artifactId>guava</artifactId>
+         <version>${guava.version}</version>
+      </dependency>
+      
+      <!-- Apache Commons -->
+      <dependency>
+         <groupId>commons-io</groupId>
+         <artifactId>commons-io</artifactId>
+         <version>${apache.commons-io.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>commons-cli</groupId>
+         <artifactId>commons-cli</artifactId>
+         <version>${apache.commons-cli.version}</version>
+      </dependency>
+
+   </dependencies>
+   
+</project>
