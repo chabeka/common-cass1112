@@ -24,6 +24,23 @@ public class DfceService {
    
    @Autowired
    private TestConfig testConfig;
+   
+   private ServiceProvider serviceProvider;
+   
+   /**
+    * Etablie une connexion dfce et
+    * @return
+    */
+   public ServiceProvider getConnectedServiceProvider(){
+      if(serviceProvider == null){
+         serviceProvider = ServiceProvider.newServiceProvider();
+   
+         //-- Etablit la connexion à DFCE
+         serviceProvider.connect(testConfig.getDfceLogin(), testConfig
+               .getDfcePassword(), testConfig.getDfceServeurUrl());
+      }
+      return serviceProvider;
+   }
 
    /**
     * Compte le nombre de documents à partir d'un id de traitement de masse
@@ -43,12 +60,8 @@ public class DfceService {
          // Le résultat de la méthode à renvoyer
          long result = 0;
 
-         // Création du ServiceProvider
-         ServiceProvider serviceProvider = ServiceProvider.newServiceProvider();
-
-         // Etablit la connexion à DFCE
-         serviceProvider.connect(testConfig.getDfceLogin(), testConfig
-               .getDfcePassword(), testConfig.getDfceServeurUrl());
+         //-- Création du ServiceProvider et ouverture de la connexion dfce
+         ServiceProvider serviceProvider = getConnectedServiceProvider();
          try {
 
             // Récupération des services de recherche

@@ -1,3 +1,51 @@
+.pad15{
+	padding: 15px;
+}
+
+.col-sm-3{
+	padding-right : 0px;
+}
+
+.col-sm-9 input{
+	margin-bottom: 10px;
+}
+
+.form-control{
+	font-size: 13px;
+}
+
+.marginBottom20{
+	margin-bottom: 20px;
+}
+
+textarea.form-control {
+	margin-top: 5px;
+}
+	
+.btn.submit{
+	width: 33%;
+	margin-left: 20px;
+}
+
+h4.etape{
+	padding-top: 40px;
+	padding-bottom: 10px;
+	margin-bottom: 20px;
+	text-transform: uppercase;
+	border-bottom: 1px solid #eee;
+}
+
+.blod{
+	font-weight: bold;
+}
+.bgcolor1{
+	background: color:#3ebaba;
+}
+
+.titre{
+	color:#3ebaba;
+}
+
 .titre1 {
 	font-size:18pt;
 	text-decoration: underline;
@@ -12,8 +60,7 @@
 
 
 .titre3 {
-   font-size:13pt;
-   text-decoration: underline;
+   font-size:11.6pt;
    font-weight: bold;
 }
 

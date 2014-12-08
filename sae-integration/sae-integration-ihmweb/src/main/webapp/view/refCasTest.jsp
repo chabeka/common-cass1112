@@ -8,7 +8,8 @@
 	<title>SAE - Intégration - Référentiel des cas de tests</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<!-- Twitter boootstrap -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" />
+	<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css" />
+	<link rel="stylesheet" type="text/css" href="css/style.css"  />
 
 </head>
 <body>
@@ -16,7 +17,7 @@
 		<table width="100%">
 			<tr>
 				<td style="width: 75%">
-				<h1>SAE - Intégration - Référentiel des cas de tests</h1>
+				<h1 class="titre">SAE - Intégration - Référentiel des cas de tests</h1>
 				</td>
 				<td style="width: 25%" align="right"><a href="index.do">&lt;&lt;&nbsp;Retour à l&apos;accueil </a></td>
 			</tr>
@@ -30,7 +31,7 @@
 		<c:forEach var="categorie" items="${listeTests.categorie}">
 		
 			<table class="table table-bordered">
-				<tr style="font-weight: bold; background-color: #3ebaba;">
+				<tr  class="blod bgcolor1">
 					<td style="width: 15%">Catégorie</td>
 					<td style="width: 15%">Code</td>
 					<td style="width: 60%">Description</td>

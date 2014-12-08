@@ -51,7 +51,7 @@ public class Test1951Controller extends
       captUnit
             .setUrlEcde(getEcdeService()
                   .construitUrlEcde(
-                        "SAE_INTEGRATION/20110822/Transfert-1901-Transfert-OK/documents/doc1.PDF"));
+                        "SAE_INTEGRATION/20110822/Transfert-1951-T-KO-STOCKAGE-GNS-KO/documents/doc1.PDF"));
 
       // Le nom du fichier
       captUnit.setNomFichier("doc1.PDF");

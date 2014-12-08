@@ -391,5 +391,12 @@
       <message>Le document %s n'existe pas. Transfert impossible.</message>
    </SoapFault>
    
-   
+   <SoapFault>
+      <id>sae_ErreurInterneTransfert</id>
+      <namespace>urn:sae:faultcodes</namespace>
+      <prefixe>sae</prefixe>
+      <localPart>ErreurInterneTransfert</localPart>
+      <message>Une erreur s'est produite lors du transfert. Transfert impossible.</message>
+   </SoapFault>
+      
 </SoapFaults>

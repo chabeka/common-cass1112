@@ -7,31 +7,31 @@
 <%@ taglib uri="/WEB-INF/tld/sae_integration.tld" prefix="sae" %>
 
 
-<p style="font-weight:bold;text-decoration:underline;">Paramètres du VI</p>
+<h4 class="etape text-primary">Parametres du VI</h4>
 
 <table border=0 cellpadding=2>
    <tr valign="top">
       <td>
          <table border=0 cellpadding=2>
             <tr>
-               <td>Identifiant du CS (<i>issuer</i>):</td>
-               <td><form:input path='${pathFormulaire}.issuer' cssStyle="width:150pt;" /></td>
-               <td>(exemple : "SaeIntegration")</td>
+               <td><label>Identifiant du CS (<i>issuer</i>):</label></td>
+               <td><form:input class="form-control" path='${pathFormulaire}.issuer' cssStyle="width:250px;" /></td>
+               <td><h6>(Ex: "SaeIntegration")</h6></td>
             </tr>
             <tr>
-               <td>Identifiant de l'organisme fournisseur (<i>recipient</i>):</td>
-               <td><form:input path='${pathFormulaire}.recipient' cssStyle="width:150pt;" /></td>
-               <td>(exemple : "urn:URSSAF")</td>
+               <td><label>Identifiant de l'organisme fournisseur (<i>recipient</i>):</label></td>
+               <td><form:input class="form-control" path='${pathFormulaire}.recipient' cssStyle="width:250px;" /></td>
+               <td><h6>(Ex: "urn:URSSAF")</h6></td>
             </tr>
             <tr>
-               <td>Identifiant du service visé (<i>audience</i>):</td>
-               <td><form:input path='${pathFormulaire}.audience' cssStyle="width:150pt;" /></td>
-               <td>(exemple : "http://sae.urssaf.fr")</td>
+               <td><label>Identifiant du service vis&eacute; (<i>audience</i>):</label></td>
+               <td><form:input class="form-control" path='${pathFormulaire}.audience' cssStyle="width:250px;" /></td>
+               <td><h6>(Ex: "http://sae.urssaf.fr")</h6></td>
             </tr>
             <tr>
-               <td valign="top">Liste des PAGM :</td>
-               <td><form:textarea path="${pathFormulaire}.pagms" cssStyle="width:150pt;height:60px;" /></td>
-               <td>(exemple : <br />PAGM_A<br />PAGM_B)</td>
+               <td valign="top"><label>Liste des PAGM :</label></td>
+               <td><form:textarea class="form-control" path="${pathFormulaire}.pagms" cssStyle="width:250px;height:70px;" /></td>
+               <td><h6>(Ex: <br />PAGM_A<br />PAGM_B)</h6></td>
             </tr>
          </table>
       </td>
@@ -39,21 +39,21 @@
       <td>
          <table border=0 cellpadding=2>
             <tr>
-               <td>VI non valide avant (NotBefore):</td>
-               <td>personnalisation non implémentée</td>
+               <td><label>VI non valide avant (NotBefore):</label></td>
+               <td>personnalisation non impl&eacute;ment&eacute;e</td>
                <td>&nbsp;</td>
             </tr>
             <tr>
-               <td>VI plus valide après (NotOnOrAfter):</td>
-               <td>personnalisation non implémentée</td>
+               <td><label>VI plus valide apr&egrave;s (NotOnOrAfter):</label></td>
+               <td>personnalisation non impl&eacute;ment&eacute;e</td>
                <td>&nbsp;</td>
             </tr>
             <tr>
-               <td>PKCS#12 à utiliser pour signer le VI:</td>
-               <td><form:select path="${pathFormulaire}.idCertif">
+               <td><label>PKCS#12 &agrave; utiliser pour signer le VI:</label></td>
+               <td><form:select class="form-control" path="${pathFormulaire}.idCertif">
                   <form:option value="1">IGC AED (val), CN=PNR_Application_Test</form:option>
                   <form:option value="2">IGC AED (val), CN=ApplicationTestSAE</form:option>
-                  <form:option value="3">IGC cellule intégration, CN=APPLICATION_TEST_1</form:option>
+                  <form:option value="3">IGC cellule intï¿½gration, CN=APPLICATION_TEST_1</form:option>
                </form:select></td>
                <td>&nbsp;</td>
             </tr>
@@ -61,6 +61,3 @@
       </td>
    </tr>
 </table>
-
-
-<hr />

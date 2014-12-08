@@ -23,19 +23,19 @@
 
 <table border=0 cellpadding=3>
   <tr>
-     <td class="titre3">Résultats:</td>
+     <td class="titre3">RESULTATS</td>
      <td style="width:20px;">&nbsp;</td>
      <sae:statusTest objetStatus="${objetResultats.status}"/>
   </tr>
 </table>
 
 
-<table border=0 cellpadding=4 style="width:100%;">
+<table border=0 cellpadding=4 style="width:100%;margin-bottom: 20px;" >
    <tr>
-      <td style="width:75%;">
-         <form:textarea path="${pathResultats}.log" cssStyle="width:100%;height:${heightOk};" readonly="true" />
+      <td>
+         <form:textarea class="form-control" path="${pathResultats}.log" cssStyle="width:100%;height:${heightOk};" readonly="true" />
       </td>
-      <td style="width:25%; vertical-align:top;">
+      <td style="width:20%; vertical-align:top;">
          <c:forEach var="lien" items="${objetResultats.liens}">
             <a class="lienCas" href="<c:out value="${lien.url}" />">
                <c:out value="${lien.texte}" />

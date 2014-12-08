@@ -2,9 +2,17 @@ package fr.urssaf.image.sae.integration.ihmweb.controller;
 
 import java.util.UUID;
 
+import net.docubase.toolkit.model.base.Base;
+import net.docubase.toolkit.model.document.Document;
+import net.docubase.toolkit.service.ServiceProvider;
+import net.docubase.toolkit.service.ged.SearchService;
+import net.docubase.toolkit.service.ged.StoreService;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import fr.urssaf.image.sae.integration.ihmweb.config.TestConfig;
 import fr.urssaf.image.sae.integration.ihmweb.constantes.SaeIntegrationConstantes;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureUnitaireFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
@@ -19,6 +27,7 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTest;
 import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheResponse;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ResultatRechercheType;
+import fr.urssaf.image.sae.integration.ihmweb.service.dfce.DfceService;
 
 /**
  * 1952-Transfert-KO-Suppression-GNT-KO
@@ -28,6 +37,13 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.R
 public class Test1952Controller extends
       AbstractTestWsController<TestWsTransfertFormulaire> {
 
+   
+   @Autowired
+   DfceService dfceService;
+   
+   @Autowired
+   private TestConfig testConfig;
+   
    /**
     * {@inheritDoc}
     */
@@ -51,7 +67,7 @@ public class Test1952Controller extends
       captUnit
             .setUrlEcde(getEcdeService()
                   .construitUrlEcde(
-                        "SAE_INTEGRATION/20110822/Transfert-1901-Transfert-OK/documents/doc1.PDF"));
+                        "SAE_INTEGRATION/20110822/Transfert-1952-T-KO-SUPPRESSION-GNT-KO/documents/doc1.PDF"));
 
       // Le nom du fichier
       captUnit.setNomFichier("doc1.PDF");
@@ -121,7 +137,10 @@ public class Test1952Controller extends
          etape1captureUnitaireAppelWs(formulaire);
       } 
       else if ("2".equals(etape)) {
-         //TODO GEL DU DOC
+         //-- On gel le documents
+         freezeDocument(formulaire.getTransfert().getIdDocument());
+         
+         //-- On transfert le document
          transfert(formulaire.getUrlServiceWeb(), formulaire.getTransfert(), formulaire.getViFormulaire());
          PagmList pagmList = new PagmList();
          pagmList.add("INT_PAGM_CS_RECHERCHE");
@@ -156,14 +175,16 @@ public class Test1952Controller extends
    }
 
    private void transfert(String urlWebService, TransfertFormulaire formulaire, ViFormulaire viParams) {
-      //-- Appel de la méthode de test
-      getTransfertTestService().appelWsOpTransfertReponseAttendue(urlWebService, formulaire, viParams);
+      //-- Appel de la méthode de transfert
+      String refSoapFault = "sae_ErreurInterneTransfert";
+      String[] args = new String[] {formulaire.getIdDocument().toString()};
+      getTransfertTestService().appelWsOpTransfertSoapFault(urlWebService, formulaire, viParams, refSoapFault, args);
    }
    
    private void rechercheGNT(String urlServiceWeb, RechercheFormulaire formulaire) {
 
       // Résultats attendus
-      int nbResultatsAttendus = 0;
+      int nbResultatsAttendus = 1;
 
       // Appel de la méthode de test
       getRechercheTestService()
@@ -177,7 +198,7 @@ public class Test1952Controller extends
       ResultatTest resultatTest = formulaire.getResultats();
 
       // Résultats attendus
-      int nbResultatsAttendus = 1;
+      int nbResultatsAttendus = 0;
 
       // Appel de la méthode de test
       RechercheResponse response = getRechercheTestService()
@@ -215,5 +236,31 @@ public class Test1952Controller extends
       getRechercheTestService().verifieResultatRecherche(resultatRecherche,
             Integer.toString(numeroResultatRecherche), resultatTest,
             valeursAttendues);
+   }
+   
+   /**
+    * Gel d'un document
+    * 
+    * @param UUID du document
+    */
+   public void freezeDocument(UUID uuidDoc) {
+      
+      //-- Ouverture de la connexion à DFCE"
+      ServiceProvider serviceProvider = dfceService.getConnectedServiceProvider();
+      
+      try{
+         String baseDfce = testConfig.getDfceBase();
+         final SearchService searchService = serviceProvider.getSearchService();
+         final Base base = serviceProvider.getBaseAdministrationService().getBase(baseDfce);
+         
+         //--Recuperation du document
+         final Document doc = searchService.getDocumentByUUID(base, uuidDoc);
+         
+         //--Gel le document 
+         final StoreService storeService = serviceProvider.getStoreService();
+         storeService.freezeDocument(doc);
+      } finally {
+         serviceProvider.disconnect(); 
+      }
    }
 }

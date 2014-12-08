@@ -7,14 +7,15 @@
 	<title>SAE - Intégration - Liste des tests</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<!-- Twitter boootstrap -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" />
+	<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css" />
+	<link rel="stylesheet" type="text/css" href="css/style.css"  />
 </head>
 <body>
 	<div class="container">
 		<div class="row">
 			<table width="100%">
 				<tr>
-					<td><h1>SAE - Intégration - Liste des tests</h1></td>
+					<td><h1 class="titre">SAE - Intégration - Liste des tests</h1></td>
 					<td align="right"><a href="index.do">&lt;&lt;&nbsp;Retour à l&apos;accueil </a></td>
 				</tr>
 			</table>

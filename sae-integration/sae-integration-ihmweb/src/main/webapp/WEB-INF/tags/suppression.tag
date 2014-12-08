@@ -7,36 +7,21 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib uri="/WEB-INF/tld/sae_integration.tld" prefix="sae" %>
 
-<p id="etape-${numeroEtape}" style="font-weight:bold;text-decoration:underline;">
+<h4 id="etape-${numeroEtape}" class="etape text-primary">
 Etape <c:out value="${numeroEtape}"/> : Appel du service web de suppression
-</p>
+</h4>
 
+<div class="row">
+	<div class="col-md-6">
+		<label>ID DU DOCUMENT</label>
+		<form:input class="form-control" path="${pathFormulaire}.idDocument" cssStyle="width:100%;" readonly="${readonly}" />
+	</div>
+	<div class="col-md-6">
+		<sae:resultatTest objetResultats="${objetFormulaire.resultats}"
+			pathResultats="${pathFormulaire}.resultats" height="190pt" />
+	</div>
 
-<table border=0 cellspacing=3 cellpadding=3 style="width:100%;">
-   <tr style="vertical-align:top;">
-      <td style="width:50%;">
-         <table border=0 cellspacing=3 cellpadding=3 style="width:100%;">
-            <tr>
-               <td>Id du document:</td>
-               <td>
-                  <form:input path="${pathFormulaire}.idDocument" cssStyle="width:100%;" readonly="${readonly}" />
-               </td>
-            </tr>
-         </table>
-      </td>
-      <td style="width:50%;border-left-width:2px;border-left-color:black;border-left-style:solid;">
-         <sae:resultatTest
-            objetResultats="${objetFormulaire.resultats}"
-            pathResultats="${pathFormulaire}.resultats"
-            height="190pt" />
-      </td>
-   </tr>
-</table>
-
-<input
-   style="width:100%;"
-   type="submit"
-   value="Appel du service web de suppression"
-   onclick="javascript:document.getElementById('etape').value='<c:out value="${numeroEtape}"/>'"  />
-
-<hr />
+	<input class="btn btn-primary submit" type="submit"
+	   value="Appel du service web de suppression"
+	   onclick="javascript:document.getElementById('etape').value='<c:out value="${numeroEtape}"/>'"  />
+</div>

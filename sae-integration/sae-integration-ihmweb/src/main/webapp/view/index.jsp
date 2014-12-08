@@ -2,20 +2,15 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>SAE - Intégration</title>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<!-- 
-<link href="css/style.css" rel="stylesheet" type="text/css" />
--->
-<!-- Twitter boootstrap -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" />
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css" />
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
-
+	<title>SAE - Intégration</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<!-- Twitter boootstrap -->
+	<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css" />
+	<link rel="stylesheet" type="text/css" href="css/style.css"  />
 </head>
 <body>
 	<div class="container">
-		<h1 style="color:#3ebaba;">SAE - Intégration</h1>
+		<h1 class="titre">SAE - Intégration</h1>
 		<div class="row">
 			<table class="table table-bordered">
 				<tbody>

@@ -2046,7 +2046,7 @@
                Ce test consiste à lancer un transfert qui ira jusqu’à la copie du document dans la GNS mais qui n’arrivera pas à supprimer le document dans la GNT.
             </description>
             <implemente>true</implemente>
-            <luceneExemple>Denomination:" Test 1952-Transfert-KO-Suppression-GNT-KO"</luceneExemple>
+            <luceneExemple>Denomination:"Test 1952-Transfert-KO-Suppression-GNT-KO"</luceneExemple>
          </CasTest>
          <CasTest>
             <id>1999</id>

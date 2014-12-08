@@ -4,21 +4,15 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<p style="font-weight: bold; text-decoration: underline;">Echanges
-Web-Services</p>
+<h4 class="etape text-primary">Echanges Web-Services</h4>
 
-
-<table border="0" cellspacing="3" cellpadding="3" style="width: 100%;">
-	<tr style="vertical-align: top;">
-		<td style="width: 50%;" align="right">Message Envoyé : <br />
-		 <textarea rows="15" cols="50" readonly="readonly" style="text-align:left;"><c:out value="${objetFormulaire.messageOut}" /></textarea>
-		</td>
-		<td
-			style="width: 50%; border-left-width: 2px; border-left-color: black; border-left-style: solid;">
-		Message reçu :<br />
-		<textarea rows="15" cols="50" readonly="readonly"><c:out value="${objetFormulaire.messageIn}" /></textarea>
-      </td>
-	</tr>
-</table>
-
-<hr />
+<div class="row marginBottom20">
+	<div class="col-md-6">
+		<label>MESSAGE ENVOYE</label>
+		<textarea class="form-control" rows="15" cols="50" readonly="readonly"><c:out value="${objetFormulaire.messageOut}" /></textarea>
+	</div>
+	<div class="col-md-6">
+		<label>MESSAGE RECU</label>
+		<textarea class="form-control" rows="15" cols="50" readonly="readonly"><c:out value="${objetFormulaire.messageIn}" /></textarea>
+	</div>
+</div>

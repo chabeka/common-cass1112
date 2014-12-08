@@ -7,29 +7,22 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib uri="/WEB-INF/tld/sae_integration.tld" prefix="sae" %>
 
-<p id="etape-${numeroEtape}" style="font-weight:bold;text-decoration:underline;">
-Etape <c:out value="${numeroEtape}"/> : Lecture du résultat d'un traitement de masse sur l'ECDE
-</p>
+<h4 id="etape-${numeroEtape}" class="etape text-primary">
+Etape <c:out value="${numeroEtape}"/> : Lecture du r&eacute;sultat d'un traitement de masse sur l'ECDE
+</h4>
 
-
-<table border=0 cellspacing=3 cellpadding=3 style="width:100%;">
-   <tr style="vertical-align:top;">
-      <td style="width:50%;">
-         <p>Emplacement du fichier sommaire.xml (URL ECDE) :</p>
-         <p><form:input path="${pathFormulaire}.urlSommaire" cssStyle="width:100%;" readonly="${readonly}" /></p>
-      </td>
-      <td style="width:50%;border-left-width:2px;border-left-color:black;border-left-style:solid;">
-         <sae:resultatTest
-            objetResultats="${objetFormulaire.resultats}"
-            pathResultats="${pathFormulaire}.resultats" />
-      </td>
-   </tr>
-</table>
-
-<input
-   style="width:100%;"
-   type="submit"
-   value="Lecture du résultats du traitement de masse"
-   onclick="javascript:document.getElementById('etape').value='<c:out value="${numeroEtape}"/>'" />
-
-<hr />
+<div class="row">
+	<div class="col-md-6">
+		<div class="form-group">
+			<label>Emplacement du fichier sommaire.xml (URL ECDE) :</label>
+         	<form:input class="form-control" path="${pathFormulaire}.urlSommaire" cssStyle="width:100%;" readonly="${readonly}" />
+      	</div>
+	</div>
+	<div class="col-md-6">
+		<sae:resultatTest objetResultats="${objetFormulaire.resultats}"
+			pathResultats="${pathFormulaire}.resultats" height="190pt" />
+	</div>
+	<input class="btn btn-primary submit" type="submit"
+	   value="Lecture du r&eacute;sultat du traitement de masse"
+	   onclick="javascript:document.getElementById('etape').value='<c:out value="${numeroEtape}"/>'" />
+</div>

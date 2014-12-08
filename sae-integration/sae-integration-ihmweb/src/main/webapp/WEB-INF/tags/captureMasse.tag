@@ -7,48 +7,34 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib uri="/WEB-INF/tld/sae_integration.tld" prefix="sae" %>
 
-<p id="etape-${numeroEtape}" style="font-weight:bold;text-decoration:underline;">
+<h4 id="etape-${numeroEtape}" class="etape text-primary">
 Etape <c:out value="${numeroEtape}"/> : Appel du service web de capture de masse
-</p>
+</h4>
 
+<div class="row">
+	<div class="col-md-6">
+		<div class="form-group">
+			<label>URL Sommaire</label>
+			<form:input class="form-control" path="${pathFormulaire}.urlSommaire" cssStyle="width:100%;" readonly="${readonly}" />
+		</div>
+		<div class="form-group">
+			<form:checkbox label="Avec hash du sommaire" path="${pathFormulaire}.avecHash" />
+		</div>
+		<div class="form-group">
+			<label>HASH</label>
+			<form:input class="form-control" path="${pathFormulaire}.hash" cssStyle="width:100%;" readonly="${readonly}" />
+		</div>
+		<div class="form-group">
+			<label>TYPE HASH</label>
+			<form:input class="form-control" path="${pathFormulaire}.typeHash" cssStyle="width:100%;" readonly="${readonly}" />
+		</div>
+	</div>
+	<div class="col-md-6">
+		<sae:resultatTest objetResultats="${objetFormulaire.resultats}"
+			pathResultats="${pathFormulaire}.resultats" height="190pt" />
+	</div>
 
-<table border=0 cellspacing=3 cellpadding=3 style="width:100%;">
-   <tr style="vertical-align:top;">
-      <td style="width:50%;">
-         <table border=0 cellspacing=3 cellpadding=3 style="width:100%;">
-            <tr>
-               <td style="width:20%;">URL Sommaire:</td>
-               <td style="width:80%;">
-                  <form:input path="${pathFormulaire}.urlSommaire" cssStyle="width:100%;" readonly="${readonly}" />
-               </td>
-            </tr>
-            <tr>
-               <td colspan="2">
-                  <form:checkbox label="avec hash du sommaire" path="${pathFormulaire}.avecHash" />
-               </td>
-            </tr>
-            <tr>
-               <td>Hash:</td>
-               <td><form:input path="${pathFormulaire}.hash" cssStyle="width:100%;" readonly="${readonly}" /></td>
-            </tr>
-            <tr>
-               <td>Type de hash:</td>
-               <td><form:input path="${pathFormulaire}.typeHash" cssStyle="width:100%;" readonly="${readonly}" /></td>
-            </tr>
-         </table>
-      </td>
-      <td style="width:50%;border-left-width:2px;border-left-color:black;border-left-style:solid;">
-         <sae:resultatTest
-            objetResultats="${objetFormulaire.resultats}"
-            pathResultats="${pathFormulaire}.resultats" />
-      </td>
-   </tr>
-</table>
-
-<input
-   style="width:100%;"
-   type="submit"
-   value="Appel du service web de capture de masse"
-   onclick="javascript:document.getElementById('etape').value='<c:out value="${numeroEtape}"/>'"  />
-
-<hr />
+	<input class="btn btn-primary submit" type="submit"
+	   value="Appel du service web de capture de masse"
+	   onclick="javascript:document.getElementById('etape').value='<c:out value="${numeroEtape}"/>'"  />
+</div>

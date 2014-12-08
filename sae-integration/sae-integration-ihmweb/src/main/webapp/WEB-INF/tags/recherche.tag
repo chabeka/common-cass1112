@@ -9,12 +9,11 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="/WEB-INF/tld/sae_integration.tld" prefix="sae" %>
 
-<p id="etape-${numeroEtape}" style="font-weight:bold;text-decoration:underline;">
+<h4 id="etape-${numeroEtape}" class="etape text-primary">
 Etape <c:out value="${numeroEtape}"/> : Appel du service web de recherche
-</p>
+</h4>
 
-
-
+<div class="row">
 <c:if test="${fn:length(notesSpecifiques) > 0}" >
 
    <table border=0 cellpadding=0 cellspacing=0>
@@ -28,36 +27,33 @@ Etape <c:out value="${numeroEtape}"/> : Appel du service web de recherche
    
 </c:if>
 
-<table border=0 cellspacing=3 cellpadding=3 style="width:100%;">
-   <tr style="vertical-align:top;">
-      <td style="width:50%;">
-         <table border=0 cellspacing=3 cellpadding=3 style="width:100%;">
-            <tr style="vertical-align:top;">
-               <td style="width:20%;">Requête LUCENE:</td>
-               <td style="width:80%;">
-                  <form:textarea path="${pathFormulaire}.requeteLucene" cssStyle="width:100%;height:130px;" readonly="${readonly}" />
-               </td>
-            </tr>
-            <tr style="vertical-align:top;">
-               <td>Code des métadonnées souhaitées :</td>
-               <td>
-                  <form:textarea path="${pathFormulaire}.codeMetadonnees" cssStyle="width:100%;height:130px;" readonly="${readonly}" />
-               </td>
-            </tr>
-         </table>
-      </td>
-      <td style="width:50%;border-left-width:2px;border-left-color:black;border-left-style:solid;">
-         <sae:resultatTest
-            objetResultats="${objetFormulaire.resultats}"
+<div class="row">
+	<div class="col-md-6">
+		<div class="form-group">
+    		<label class="col-sm-3 control-label">REQUETE LUCENE</label>
+    		<div class="col-sm-9">
+    			<form:textarea path="${pathFormulaire}.requeteLucene" class="form-control" cssStyle="height:132px;" readonly="${readonly}" />
+  			</div>
+  		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">CODES METAS SOUHAITES</label>
+			<div class="col-sm-9">
+				<form:textarea path="${pathFormulaire}.codeMetadonnees" class="form-control" cssStyle="height:132px;margin-top:10px;" readonly="${readonly}" />
+			</div>
+		</div>  		
+	</div>
+	<div class="col-md-6">
+		<div class="form-group">
+			<sae:resultatTest objetResultats="${objetFormulaire.resultats}"
             pathResultats="${pathFormulaire}.resultats" />
-      </td>
-   </tr>
-</table>
+		</div> 
+	</div>
+</div>
 
 <input
-   style="width:100%;"
+   class="btn btn-primary submit" 
    type="submit"
    value="Appel du service web de recherche"
    onclick="javascript:document.getElementById('etape').value='<c:out value="${numeroEtape}"/>'"  />
 
-<hr />
+</div>
