@@ -174,7 +174,7 @@ public class SAEModificationServiceImpl extends AbstractSAEServices implements
             List<StorageMetadata> deletedStorageMetas = new ArrayList<StorageMetadata>();
             if (!CollectionUtils.isEmpty(deletedMetadatas)) {
                List<SAEMetadata> deletedSaeMetadatas = mappingDocumentService
-                     .untypedMetadatasToSaeMetadatas(deletedMetadatas);
+                     .nullSafeUntypedMetadatasToSaeMetadatas(deletedMetadatas);
                deletedStorageMetas = mappingDocumentService
                      .saeMetadatasToStorageMetadatas(deletedSaeMetadatas);
             }

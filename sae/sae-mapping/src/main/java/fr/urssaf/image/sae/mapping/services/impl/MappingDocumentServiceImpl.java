@@ -226,6 +226,36 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
     * {@inheritDoc}
     */
    @Override
+   public List<SAEMetadata> nullSafeUntypedMetadatasToSaeMetadatas(
+         List<UntypedMetadata> metadatas) throws InvalidSAETypeException,
+         MappingFromReferentialException {
+      final List<SAEMetadata> saeMetadatas = new ArrayList<SAEMetadata>();
+      for (UntypedMetadata metadata : Utils.nullSafeIterable(metadatas)) {
+         try {
+            final MetadataReference reference = referenceDAO
+                  .getByLongCode(metadata.getLongCode());
+            if (StringUtils.isEmpty(metadata.getValue())) {
+               saeMetadatas.add(new SAEMetadata(reference.getLongCode(),
+                     reference.getShortCode(), null));
+            } else {
+               saeMetadatas.add(new SAEMetadata(reference.getLongCode(),
+                     reference.getShortCode(), Utils.conversionToObject(
+                           metadata.getValue(), reference)));
+            }
+         } catch (ParseException parseExcept) {
+            throw new InvalidSAETypeException(parseExcept);
+         } catch (ReferentialException refExcpt) {
+            throw new MappingFromReferentialException(refExcpt);
+         }
+      }
+
+      return saeMetadatas;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
    public SAEVirtualDocument untypedVirtualDocumentToSaeVirtualDocument(
          UntypedVirtualDocument document) throws InvalidSAETypeException,
          MappingFromReferentialException {

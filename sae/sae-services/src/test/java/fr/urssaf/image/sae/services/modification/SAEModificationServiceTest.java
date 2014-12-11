@@ -297,7 +297,6 @@ public class SAEModificationServiceTest {
       metadatas.add(new UntypedMetadata("CodeOrganismeProprietaire", "CER69"));
       metadatas.add(new UntypedMetadata("CodeOrganismeGestionnaire", "UR750"));
       metadatas.add(new UntypedMetadata("FormatFichier", "fmt/354"));
-      metadatas.add(new UntypedMetadata("NbPages", "2"));
       metadatas.add(new UntypedMetadata("DateCreation", "2012-01-01"));
       metadatas.add(new UntypedMetadata("TypeHash", "SHA-1"));
       String hash = DigestUtils.shaHex(new FileInputStream(srcFile));
@@ -305,6 +304,7 @@ public class SAEModificationServiceTest {
       metadatas.add(new UntypedMetadata("CodeRND", "2.3.1.1.12"));
       metadatas.add(new UntypedMetadata("Titre", "Attestation de vigilance"));
       metadatas.add(new UntypedMetadata("CodeTraitementV2", "RD75.L02"));
+      metadatas.add(new UntypedMetadata("NbPages", "10"));
 
       // liste des métadonnées non obligatoires
       metadatas.add(new UntypedMetadata("DateReception", "1999-11-25"));
@@ -314,10 +314,15 @@ public class SAEModificationServiceTest {
 
       Assert.assertNotNull("le document doit être créé", uuid);
 
+      // List<UntypedMetadata> calledMetas = Arrays.asList(new UntypedMetadata(
+      // StorageTechnicalMetadatas.TITRE.getLongCode(), "Titre modifié"),
+      // new UntypedMetadata(StorageTechnicalMetadatas.TYPE.getLongCode(),
+      // "5.1.2.1.5"), new UntypedMetadata("CodeTraitementV2", null));
       List<UntypedMetadata> calledMetas = Arrays.asList(new UntypedMetadata(
             StorageTechnicalMetadatas.TITRE.getLongCode(), "Titre modifié"),
             new UntypedMetadata(StorageTechnicalMetadatas.TYPE.getLongCode(),
-                  "5.1.2.1.5"), new UntypedMetadata("CodeTraitementV2", null));
+                  "5.1.2.1.5"), new UntypedMetadata("CodeTraitementV2", null),
+            new UntypedMetadata("DateReception", ""));
 
       saeModificationService.modification(uuid, calledMetas);
 
@@ -330,6 +335,7 @@ public class SAEModificationServiceTest {
       String codeFonction = (String) document.getSingleCriterion("dom")
             .getWord();
       Criterion codeActiviteV2 = document.getSingleCriterion("ctr");
+      Criterion dateReception = document.getSingleCriterion("dre");
 
       String codeActivite = (String) document.getSingleCriterion("act")
             .getWord();
@@ -339,6 +345,8 @@ public class SAEModificationServiceTest {
             codeActivite);
       Assert.assertNull("le criterion CodeActiviteV2 doit etre null",
             codeActiviteV2);
+      Assert.assertNull("le criterion DateReception doit etre null",
+            dateReception);
 
    }
 }
