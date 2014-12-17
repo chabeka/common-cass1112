@@ -11,6 +11,7 @@ import me.prettyprint.hector.api.Serializer;
 import me.prettyprint.hector.api.beans.HColumn;
 import me.prettyprint.hector.api.factory.HFactory;
 import me.prettyprint.hector.api.mutation.Mutator;
+import me.prettyprint.hector.api.query.RangeSlicesQuery;
 
 /**
  * Classe abstraite pour les DAO CASSANDRA
@@ -23,11 +24,32 @@ import me.prettyprint.hector.api.mutation.Mutator;
  */
 public abstract class AbstractDao<CFT, CT> {
 
-   /** Nombre maximum de colonnes à retourner */
+   /** 
+    * Nombre maximum de colonnes à retourner 
+    * @deprecated : utiliser AbstactDao.DEFAULT_MAX_COLS
+    * */
    public static final int MAX_ATTRIBUTS = 100;
 
    private final Keyspace keyspace;
    private final ColumnFamilyTemplate<CFT, CT> cfTmpl;
+   
+   /**
+    * Taille maximum de la plage de la requête.
+    * Paramètre utilisé lors de la définition du SliceQuery
+    * des requêtes via Hector.
+    * 
+    * @see {@link RangeSlicesQuery}
+    */
+   public static final int DEFAULT_MAX_COLS = 10000;
+   
+   /**
+    * Nombre maximal de lignes retounées par
+    * la requêtes.
+    * 
+    * @see {@link RangeSlicesQuery}
+    */
+   public static final int DEFAULT_MAX_ROWS = 10000;
+   
 
    /**
     * Constructeur

@@ -34,6 +34,7 @@ import com.google.common.cache.CacheLoader.InvalidCacheLoadException;
 
 import fr.urssaf.image.commons.cassandra.helper.HectorIterator;
 import fr.urssaf.image.commons.cassandra.helper.QueryResultConverter;
+import fr.urssaf.image.sae.commons.dao.AbstractDao;
 import fr.urssaf.image.sae.trace.dao.TraceDestinataireDao;
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
 import fr.urssaf.image.sae.trace.dao.serializer.ListSerializer;
@@ -47,7 +48,6 @@ import fr.urssaf.image.sae.trace.exception.TraceRuntimeException;
 public class TraceDestinataireSupport {
 
    private static final int LIFE_DURATION = 10;
-   private static final int MAX_FIND_RESULT = 5000;
 
    private final TraceDestinataireDao dao;
 
@@ -211,10 +211,14 @@ public class TraceDestinataireSupport {
             .createRangeSlicesQuery(dao.getKeyspace(), StringSerializer.get(),
                   StringSerializer.get(), bytesSerializer);
       rangeSlicesQuery.setColumnFamily(dao.getColumnFamilyName());
-      rangeSlicesQuery.setRange(StringUtils.EMPTY, StringUtils.EMPTY, false,
-            MAX_FIND_RESULT);
-      QueryResult<OrderedRows<String, String, byte[]>> queryResult = rangeSlicesQuery
-            .execute();
+      rangeSlicesQuery.setRange(
+            StringUtils.EMPTY, 
+            StringUtils.EMPTY, 
+            false,
+            AbstractDao.DEFAULT_MAX_COLS);
+      rangeSlicesQuery.setRowCount(AbstractDao.DEFAULT_MAX_ROWS);
+      QueryResult<OrderedRows<String, String, byte[]>> queryResult;
+      queryResult = rangeSlicesQuery.execute();
 
       // On convertit le résultat en ColumnFamilyResultWrapper pour faciliter
       // son utilisation

@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.commons.cassandra.helper.HectorIterator;
 import fr.urssaf.image.commons.cassandra.helper.QueryResultConverter;
+import fr.urssaf.image.sae.commons.dao.AbstractDao;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.format.referentiel.dao.ReferentielFormatDao;
 import fr.urssaf.image.sae.format.referentiel.exceptions.ReferentielRuntimeException;
@@ -46,10 +47,6 @@ public class ReferentielFormatSupport {
    private static final String DEBUT_LOG = "{} - début";
    private static final Logger LOGGER = LoggerFactory
          .getLogger(ReferentielFormatSupport.class);
-
-   private static final int MAX_FIND_RESULT = 2000; // limite des résultats des
-
-   // recherches
 
    /**
     * Constructeur de la classe support
@@ -249,9 +246,9 @@ public class ReferentielFormatSupport {
                      StringSerializer.get(), StringSerializer.get(),
                      bytesSerializer);
 
-         rangeSlicesQuery.setColumnFamily(referentielFormatDao
-               .getColumnFamilyName());
-         rangeSlicesQuery.setRange("", "", false, MAX_FIND_RESULT);
+         rangeSlicesQuery.setColumnFamily(referentielFormatDao.getColumnFamilyName());
+         rangeSlicesQuery.setRange("", "", false, AbstractDao.DEFAULT_MAX_COLS);
+         rangeSlicesQuery.setRowCount(AbstractDao.DEFAULT_MAX_ROWS);
          QueryResult<OrderedRows<String, String, byte[]>> queryResult = rangeSlicesQuery
                .execute();
 

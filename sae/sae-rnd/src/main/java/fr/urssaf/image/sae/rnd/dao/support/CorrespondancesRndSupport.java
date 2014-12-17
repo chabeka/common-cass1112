@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.commons.cassandra.helper.HectorIterator;
 import fr.urssaf.image.commons.cassandra.helper.QueryResultConverter;
+import fr.urssaf.image.sae.commons.dao.AbstractDao;
 import fr.urssaf.image.sae.rnd.dao.CorrespondancesDao;
 import fr.urssaf.image.sae.rnd.modele.Correspondance;
 import fr.urssaf.image.sae.rnd.modele.EtatCorrespondance;
@@ -52,8 +53,9 @@ public class CorrespondancesRndSupport {
       this.correspondancesDao = correspondancesDao;
    }
 
-   private static final int MAX_FIND_RESULT = 5000;
-   // Séparateur entre le code temporaire et la version pour la clé
+   /**
+    * Séparateur entre le code temporaire et la version pour la clé
+    */
    private static final String SEPARATEUR = "@_@";
 
    /**
@@ -120,12 +122,10 @@ public class CorrespondancesRndSupport {
             .createRangeSlicesQuery(correspondancesDao.getKeyspace(),
                   StringSerializer.get(), StringSerializer.get(),
                   bytesSerializer);
-      rangeSlicesQuery
-            .setColumnFamily(correspondancesDao.getColumnFamilyName());
-      rangeSlicesQuery.setRange(StringUtils.EMPTY, StringUtils.EMPTY, false,
-            MAX_FIND_RESULT);
-      QueryResult<OrderedRows<String, String, byte[]>> queryResult = rangeSlicesQuery
-            .execute();
+      rangeSlicesQuery.setColumnFamily(correspondancesDao.getColumnFamilyName());
+      rangeSlicesQuery.setRange(StringUtils.EMPTY, StringUtils.EMPTY, false, AbstractDao.DEFAULT_MAX_COLS);
+      rangeSlicesQuery.setRowCount(AbstractDao.DEFAULT_MAX_ROWS);
+      QueryResult<OrderedRows<String, String, byte[]>> queryResult = rangeSlicesQuery.execute();
 
       // On convertit le résultat en ColumnFamilyResultWrapper pour faciliter
       // son utilisation

@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.commons.cassandra.helper.HectorIterator;
 import fr.urssaf.image.commons.cassandra.helper.QueryResultConverter;
+import fr.urssaf.image.sae.commons.dao.AbstractDao;
 import fr.urssaf.image.sae.droit.dao.PagmfDao;
 import fr.urssaf.image.sae.droit.dao.model.Pagmf;
 import fr.urssaf.image.sae.droit.exception.DroitRuntimeException;
@@ -47,7 +48,6 @@ public class PagmfSupport {
          .getLogger(PagmfSupport.class);
 
    private final PagmfDao pagmfDao;
-   private static final int MAX_FIND_RESULT = 2000; // limite des résultats des
 
    // recherches
 
@@ -197,7 +197,8 @@ public class PagmfSupport {
                      .get(), StringSerializer.get(), bytesSerializer);
 
          rangeSlicesQuery.setColumnFamily(pagmfDao.getColumnFamilyName());
-         rangeSlicesQuery.setRange("", "", false, MAX_FIND_RESULT);
+         rangeSlicesQuery.setRange("", "", false, AbstractDao.DEFAULT_MAX_COLS);
+         rangeSlicesQuery.setRowCount(AbstractDao.DEFAULT_MAX_ROWS);
          QueryResult<OrderedRows<String, String, byte[]>> queryResult = rangeSlicesQuery
                .execute();
 

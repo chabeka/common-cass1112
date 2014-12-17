@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.commons.cassandra.helper.HectorIterator;
 import fr.urssaf.image.commons.cassandra.helper.QueryResultConverter;
+import fr.urssaf.image.sae.commons.dao.AbstractDao;
 import fr.urssaf.image.sae.droit.dao.FormatControlProfilDao;
 import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
 import fr.urssaf.image.sae.droit.dao.model.FormatProfil;
@@ -48,7 +49,6 @@ public class FormatControlProfilSupport {
          .getLogger(FormatControlProfilSupport.class);
 
    private final FormatControlProfilDao formatControlDao;
-   private static final int MAX_FIND_RESULT = 2000; // limite des résultats des
 
    // recherches
 
@@ -193,7 +193,8 @@ public class FormatControlProfilSupport {
 
          rangeSlicesQuery.setColumnFamily(formatControlDao
                .getColumnFamilyName());
-         rangeSlicesQuery.setRange("", "", false, MAX_FIND_RESULT);
+         rangeSlicesQuery.setRange("", "", false, AbstractDao.DEFAULT_MAX_COLS);
+         rangeSlicesQuery.setRowCount(AbstractDao.DEFAULT_MAX_ROWS);
          QueryResult<OrderedRows<String, String, byte[]>> queryResult = rangeSlicesQuery
                .execute();
 
