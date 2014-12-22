@@ -23,6 +23,7 @@ import fr.cirtil.www.saeservice.PingResponse;
 import fr.cirtil.www.saeservice.PingSecureRequest;
 import fr.cirtil.www.saeservice.PingSecureResponse;
 import fr.cirtil.www.saeservice.Recherche;
+import fr.cirtil.www.saeservice.RechercheNbRes;
 import fr.cirtil.www.saeservice.RechercheNbResResponse;
 import fr.cirtil.www.saeservice.RechercheResponse;
 import fr.cirtil.www.saeservice.RecuperationMetadonnees;
@@ -219,5 +220,5 @@ public interface SaeServiceSkeletonInterface {
     * @throws AxisFault
     *            exception levée lors de la recherche
     */
-   RechercheNbResResponse rechercheNbResSecure(Recherche request) throws AxisFault;
+   RechercheNbResResponse rechercheNbResSecure(RechercheNbRes request) throws AxisFault;
 }

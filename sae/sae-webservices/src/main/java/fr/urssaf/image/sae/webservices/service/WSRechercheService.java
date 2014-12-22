@@ -1,6 +1,7 @@
 package fr.urssaf.image.sae.webservices.service;
 
 import fr.cirtil.www.saeservice.Recherche;
+import fr.cirtil.www.saeservice.RechercheNbRes;
 import fr.cirtil.www.saeservice.RechercheNbResResponse;
 import fr.cirtil.www.saeservice.RechercheResponse;
 import fr.cirtil.www.saeservice.ResultatRechercheType;
@@ -52,5 +53,5 @@ public interface WSRechercheService {
      * @return RechercheResponse
      *        objet retourné
      */
-    RechercheNbResResponse searchWithNbRes(Recherche request) throws RechercheAxis2Fault;
+    RechercheNbResResponse searchWithNbRes(RechercheNbRes request) throws RechercheAxis2Fault;
 }

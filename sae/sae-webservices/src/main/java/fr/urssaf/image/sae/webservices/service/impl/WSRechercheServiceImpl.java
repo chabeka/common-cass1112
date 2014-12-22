@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import fr.cirtil.www.saeservice.MetadonneeCodeType;
 import fr.cirtil.www.saeservice.Recherche;
+import fr.cirtil.www.saeservice.RechercheNbRes;
 import fr.cirtil.www.saeservice.RechercheNbResResponse;
 import fr.cirtil.www.saeservice.RechercheResponse;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
@@ -115,7 +116,7 @@ public class WSRechercheServiceImpl implements WSRechercheService {
     * 
     * */
    @Override
-   public RechercheNbResResponse searchWithNbRes(Recherche request) throws RechercheAxis2Fault {
+   public RechercheNbResResponse searchWithNbRes(RechercheNbRes request) throws RechercheAxis2Fault {
       
       //-- Traces debug - entrée méthode
       String prefixeTrc = "search()";
@@ -211,12 +212,26 @@ public class WSRechercheServiceImpl implements WSRechercheService {
    private String recupererReqLucene(Recherche request) {
       return request.getRecherche().getRequete().getRequeteRechercheType();
    }
+   
+   /**
+    * Récupérer la requête Lucene
+    */
+   private String recupererReqLucene(RechercheNbRes request) {
+      return request.getRechercheNbRes().getRequete().getRequeteRechercheNbResType();
+   }
 
    /**
     * Récupérer La liste métadonnées souhaitées.
     */
    private MetadonneeCodeType[] recupererListMDSearch(Recherche request) {
       return request.getRecherche().getMetadonnees().getMetadonneeCode();
+   }
+   
+   /**
+    * Récupérer La liste métadonnées souhaitées.
+    */
+   private MetadonneeCodeType[] recupererListMDSearch(RechercheNbRes request) {
+      return request.getRechercheNbRes().getMetadonnees().getMetadonneeCode();
    }
 
    /**

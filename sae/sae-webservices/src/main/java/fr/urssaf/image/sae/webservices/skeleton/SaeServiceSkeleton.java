@@ -44,6 +44,7 @@ import fr.cirtil.www.saeservice.PingResponse;
 import fr.cirtil.www.saeservice.PingSecureRequest;
 import fr.cirtil.www.saeservice.PingSecureResponse;
 import fr.cirtil.www.saeservice.Recherche;
+import fr.cirtil.www.saeservice.RechercheNbRes;
 import fr.cirtil.www.saeservice.RechercheNbResResponse;
 import fr.cirtil.www.saeservice.RechercheResponse;
 import fr.cirtil.www.saeservice.RecuperationMetadonnees;
@@ -681,7 +682,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
    }
 
    @Override
-   public RechercheNbResResponse rechercheNbResSecure(Recherche request)
+   public RechercheNbResResponse rechercheNbResSecure(RechercheNbRes request)
          throws AxisFault {
       try {
          //-- Traces debug - entrée méthode

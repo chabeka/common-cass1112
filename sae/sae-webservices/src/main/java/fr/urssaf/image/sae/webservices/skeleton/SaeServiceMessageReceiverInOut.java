@@ -326,9 +326,9 @@ public class SaeServiceMessageReceiverInOut extends
             if ("rechercheNbRes".equals(methodName)) {
 
                fr.cirtil.www.saeservice.RechercheNbResResponse rechercheResponse33 = null;
-               fr.cirtil.www.saeservice.Recherche wrappedParam = (fr.cirtil.www.saeservice.Recherche) fromOM(
+               fr.cirtil.www.saeservice.RechercheNbRes wrappedParam = (fr.cirtil.www.saeservice.RechercheNbRes) fromOM(
                      msgContext.getEnvelope().getBody().getFirstElement(),
-                     fr.cirtil.www.saeservice.Recherche.class,
+                     fr.cirtil.www.saeservice.RechercheNbRes.class,
                      getEnvelopeNamespaces(msgContext.getEnvelope()));
 
                rechercheResponse33 = skel.rechercheNbResSecure(wrappedParam);
