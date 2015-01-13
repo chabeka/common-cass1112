@@ -14,6 +14,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.sae.documents.executable.model.AddMetadatasParametres;
 import fr.urssaf.image.sae.documents.executable.model.FormatValidationParametres;
 import fr.urssaf.image.sae.documents.executable.model.FormatValidationParametres.MODE_VERIFICATION;
 import fr.urssaf.image.sae.documents.executable.service.TraitementService;
@@ -22,21 +23,79 @@ import fr.urssaf.image.sae.documents.executable.service.TraitementService;
 @ContextConfiguration(locations = { "/applicationContext-sae-documents-executable-test.xml" })
 public class DocumentsExecutableMainTest {
    
+   private final String contexteXml = "/applicationContext-sae-documents-executable-test.xml";
+   
    @Test
    public void verifierConfFichierParamAucunParametre() {
-      DocumentsExecutableMain main = new DocumentsExecutableMain(
-            "/applicationContext-sae-documents-executable-test.xml");
+      DocumentsExecutableMain main = new DocumentsExecutableMain(contexteXml);
       Properties properties = new Properties();
       FormatValidationParametres parametres = new FormatValidationParametres();
 
       Assert.assertFalse("La vérification aurait du renvoyé une erreur", main
             .verifierConfFichierParam(properties, parametres));
    }
+   
+   @Test
+   public void verifierConfFichierParamAddMetadonnees() {
+      DocumentsExecutableMain main = new DocumentsExecutableMain(contexteXml);
+      Properties properties = new Properties();
+      AddMetadatasParametres parametres = new AddMetadatasParametres();
+      
+      //-- Aucun Parametre
+      Boolean result = main.vefierConfFichierParamAddMeta(properties, parametres);
+      Assert.assertFalse("La vérification aurait du renvoyé une erreur", result);
+      
+      //-- RequeteLucene
+      properties.put("addMeta.requete.lucene", "SM_ARCHIVAGE_DATE :[20120101 TO 20150401]");
+      result = main.vefierConfFichierParamAddMeta(properties, parametres);
+      Assert.assertFalse("La vérification aurait du renvoyer une erreur", result);
+      
+      //-- Taille pool
+      properties.put("addMeta.taille.pool", "5");
+      properties.put("addMeta.requete.lucene", "SM_ARCHIVAGE_DATE :[20120101 TO 20150401]");
+      result = main.vefierConfFichierParamAddMeta(properties, parametres);
+      Assert.assertFalse("La vérification aurait du renvoyer une erreur", result);
+      
+      //-- Taille pas d'execution
+      properties.put("addMeta.taille.pool", "5");
+      properties.put("addMeta.taille.pas.execution", "10000");
+      properties.put("addMeta.requete.lucene", "SM_ARCHIVAGE_DATE :[20120101 TO 20150401]");
+      result = main.vefierConfFichierParamAddMeta(properties, parametres);
+      Assert.assertFalse("La vérification aurait du renvoyer une erreur", result);
+   }
+   
+   @Test
+   public void verifierConfFichierParamAddMetadonneesOK() {
+      
+      DocumentsExecutableMain main = new DocumentsExecutableMain(contexteXml);
+      Properties properties = new Properties();
+      AddMetadatasParametres parametres = new AddMetadatasParametres();
+      
+      Boolean result = main.vefierConfFichierParamAddMeta(properties, parametres);
+      
+      //-- Liste des métadonnées
+      properties.put("addMeta.taille.pool", "5");
+      properties.put("addMeta.taille.pas.execution", "10000");
+      properties.put("addMeta.metadonnees", "cot:1,cpt:0,drh:0");
+      properties.put("addMeta.requete.lucene", "SM_ARCHIVAGE_DATE :[20120101 TO 20150401]");
+      
+      result = main.vefierConfFichierParamAddMeta(properties, parametres);
+      
+      Assert.assertTrue("La vérification ne doit renvoyer aucune erreur", result);
+      
+      Assert.assertEquals("La requête lucène n'est pas correcte",
+            "SM_ARCHIVAGE_DATE :[20120101 TO 20150401]", parametres.getRequeteLucene());
+      Assert.assertEquals("La taille du pool de thread n'est pas correcte", 5,
+            parametres.getTaillePool());
+      Assert.assertEquals("La taille du pas d'exécution n'est pas correcte",
+            10000, parametres.getTaillePasExecution());
+      Assert.assertFalse("La liste des métadonnées ne doit pas être vide",
+            parametres.getMetadonnees().isEmpty());
+   }
 
    @Test
    public void verifierConfFichierParamModeVerification() {
-      DocumentsExecutableMain main = new DocumentsExecutableMain(
-            "/applicationContext-sae-documents-executable-test.xml");
+      DocumentsExecutableMain main = new DocumentsExecutableMain(contexteXml);
       Properties properties = new Properties();
       FormatValidationParametres parametres = new FormatValidationParametres();
 
@@ -49,8 +108,7 @@ public class DocumentsExecutableMainTest {
 
    @Test
    public void verifierConfFichierParamModeVerificationRequeteLucene() {
-      DocumentsExecutableMain main = new DocumentsExecutableMain(
-            "/applicationContext-sae-documents-executable-test.xml");
+      DocumentsExecutableMain main = new DocumentsExecutableMain(contexteXml);
       Properties properties = new Properties();
       FormatValidationParametres parametres = new FormatValidationParametres();
 
@@ -64,8 +122,7 @@ public class DocumentsExecutableMainTest {
 
    @Test
    public void verifierConfFichierParamModeVerificationRequeteLuceneTaillePool() {
-      DocumentsExecutableMain main = new DocumentsExecutableMain(
-            "/applicationContext-sae-documents-executable-test.xml");
+      DocumentsExecutableMain main = new DocumentsExecutableMain(contexteXml);
       Properties properties = new Properties();
       FormatValidationParametres parametres = new FormatValidationParametres();
 
@@ -80,8 +137,7 @@ public class DocumentsExecutableMainTest {
 
    @Test
    public void verifierConfFichierParamModeVerificationRequeteLuceneTaillePoolNbMaxDocs() {
-      DocumentsExecutableMain main = new DocumentsExecutableMain(
-            "/applicationContext-sae-documents-executable-test.xml");
+      DocumentsExecutableMain main = new DocumentsExecutableMain(contexteXml);
       Properties properties = new Properties();
       FormatValidationParametres parametres = new FormatValidationParametres();
 
@@ -97,8 +153,7 @@ public class DocumentsExecutableMainTest {
 
    @Test
    public void verifierConfFichierParamModeVerificationRequeteLuceneTaillePoolNbMaxDocsPasExecution() {
-      DocumentsExecutableMain main = new DocumentsExecutableMain(
-            "/applicationContext-sae-documents-executable-test.xml");
+      DocumentsExecutableMain main = new DocumentsExecutableMain(contexteXml);
       Properties properties = new Properties();
       FormatValidationParametres parametres = new FormatValidationParametres();
 
@@ -129,8 +184,7 @@ public class DocumentsExecutableMainTest {
 
    @Test
    public void verifierConfFichierParamToutParametreMaisRepertoireInexistant() {
-      DocumentsExecutableMain main = new DocumentsExecutableMain(
-            "/applicationContext-sae-documents-executable-test.xml");
+      DocumentsExecutableMain main = new DocumentsExecutableMain(contexteXml);
       Properties properties = new Properties();
       FormatValidationParametres parametres = new FormatValidationParametres();
 
@@ -149,8 +203,7 @@ public class DocumentsExecutableMainTest {
 
    @Test
    public void verifierConfFichierParamToutParametre() {
-      DocumentsExecutableMain main = new DocumentsExecutableMain(
-            "/applicationContext-sae-documents-executable-test.xml");
+      DocumentsExecutableMain main = new DocumentsExecutableMain(contexteXml);
       Properties properties = new Properties();
       FormatValidationParametres parametres = new FormatValidationParametres();
 
@@ -187,30 +240,26 @@ public class DocumentsExecutableMainTest {
 
    @Test
    public void executePasArgument() {
-      DocumentsExecutableMain main = new DocumentsExecutableMain(
-            "/applicationContext-sae-documents-executable-test.xml");
+      DocumentsExecutableMain main = new DocumentsExecutableMain(contexteXml);
       main.execute(new String[] {});
    }
 
    @Test
    public void executeServiceNonReconnu() {
-      DocumentsExecutableMain main = new DocumentsExecutableMain(
-            "/applicationContext-sae-documents-executable-test.xml");
+      DocumentsExecutableMain main = new DocumentsExecutableMain(contexteXml);
       main.execute(new String[] { "SERVICE_NON_RECONNU" });
    }
 
    @Test
    public void executeServiceOkPasConfSAE() {
-      DocumentsExecutableMain main = new DocumentsExecutableMain(
-            "/applicationContext-sae-documents-executable-test.xml");
+      DocumentsExecutableMain main = new DocumentsExecutableMain(contexteXml);
       main
             .execute(new String[] { DocumentsExecutableMain.VERIFICATION_FORMAT });
    }
 
    @Test
    public void executeServiceOkConfSAEOkPasConfFichierParam() {
-      DocumentsExecutableMain main = new DocumentsExecutableMain(
-            "/applicationContext-sae-documents-executable-test.xml");
+      DocumentsExecutableMain main = new DocumentsExecutableMain(contexteXml);
       ClassPathResource configSae = new ClassPathResource(
             "/config/sae-config-test.properties");
 
@@ -226,8 +275,7 @@ public class DocumentsExecutableMainTest {
 
    @Test
    public void executeServiceOkConfSAEOkPasFichierParam() {
-      DocumentsExecutableMain main = new DocumentsExecutableMain(
-            "/applicationContext-sae-documents-executable-test.xml");
+      DocumentsExecutableMain main = new DocumentsExecutableMain(contexteXml);
       ClassPathResource configSae = new ClassPathResource(
             "/config/sae-config-test.properties");
 
@@ -244,8 +292,9 @@ public class DocumentsExecutableMainTest {
 
    @Test
    @DirtiesContext
-   public void executeService() throws IOException {
-      DocumentsExecutableMain main = new DocumentsExecutableMain("/applicationContext-sae-documents-executable-test.xml");
+   public void executeServiceValidationFormat() throws IOException {
+      
+      DocumentsExecutableMain main = new DocumentsExecutableMain(contexteXml);
       ClassPathResource fichierParametrage = new ClassPathResource(
             "/config/formatValidation.properties");
       
@@ -259,12 +308,12 @@ public class DocumentsExecutableMainTest {
          Assert.fail("Le fichier de paramètrage n'est pas correct");
       }
       
-      // creation du mock
+      //-- creation du mock
       TraitementService traitementService = EasyMock.createNiceMock(TraitementService.class);
       EasyMock.expect(traitementService.identifierValiderFichiers(parametres)).andReturn(10);
       EasyMock.replay(traitementService);
       
-      // creation d'un contexte spring specifique
+      //-- creation d'un contexte spring specifique
       GenericApplicationContext genericContext = new GenericApplicationContext();
       BeanDefinitionBuilder beanDefinition = BeanDefinitionBuilder.genericBeanDefinition(TraitementService.class);
       genericContext.registerBeanDefinition("traitementService", beanDefinition.getBeanDefinition());
@@ -272,10 +321,49 @@ public class DocumentsExecutableMainTest {
       genericContext.refresh();
       
       try {
-         main.executeService(DocumentsExecutableMain.VERIFICATION_FORMAT, genericContext, parametres);
+         main.executeService(DocumentsExecutableMain.VERIFICATION_FORMAT, properties, genericContext);
       } catch (Throwable e) {
          Assert
                .fail("Une erreur non prévu s'est produite: " + e.getMessage());
+      }
+   }
+   
+   @Test
+   @DirtiesContext
+   public void executeServiceAddMeta() throws IOException {
+      
+      DocumentsExecutableMain main = new DocumentsExecutableMain(contexteXml);
+      ClassPathResource fichierParametrage = new ClassPathResource(
+      "/config/addMetadatas.properties");
+      
+      Properties properties = new Properties();
+      if (!main.chargerFichierParam(fichierParametrage.getFile().getAbsolutePath(), properties)) {
+         Assert.fail("Le fichier de paramètrage aurait du être trouvé");
+      }
+      
+      AddMetadatasParametres parametres = new AddMetadatasParametres();
+      if (!main.vefierConfFichierParamAddMeta(properties, parametres)) {
+         Assert.fail("Le fichier de paramètrage n'est pas correct");
+      }
+      
+      //-- creation du mock
+      TraitementService traitementService = EasyMock.createNiceMock(TraitementService.class);
+      traitementService.addMetadatasToDocuments(parametres);
+      EasyMock.expectLastCall();
+      EasyMock.replay(traitementService);
+      
+      //-- creation d'un contexte spring specifique
+      GenericApplicationContext genericContext = new GenericApplicationContext();
+      BeanDefinitionBuilder beanDefinition = BeanDefinitionBuilder.genericBeanDefinition(TraitementService.class);
+      genericContext.registerBeanDefinition("traitementService", beanDefinition.getBeanDefinition());
+      genericContext.getBeanFactory().registerSingleton("traitementService", traitementService);
+      genericContext.refresh();
+      
+      try {
+         main.executeService(DocumentsExecutableMain.ADD_METADATAS, properties, genericContext);
+      } catch (Throwable e) {
+         Assert
+         .fail("Une erreur non prévu s'est produite: " + e.getMessage());
       }
    }
 }

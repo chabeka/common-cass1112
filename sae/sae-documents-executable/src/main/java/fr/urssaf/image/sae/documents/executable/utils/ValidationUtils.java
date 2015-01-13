@@ -3,6 +3,8 @@ package fr.urssaf.image.sae.documents.executable.utils;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -11,6 +13,8 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.urssaf.image.sae.documents.executable.model.AbstractParametres;
+import fr.urssaf.image.sae.documents.executable.model.AddMetadatasParametres;
 import fr.urssaf.image.sae.documents.executable.model.FormatValidationParametres;
 import fr.urssaf.image.sae.documents.executable.model.FormatValidationParametres.MODE_VERIFICATION;
 
@@ -89,7 +93,7 @@ public final class ValidationUtils {
     * @return boolean
     */
    public static boolean verifParamRequeteLucene(final Properties properties,
-         final FormatValidationParametres parametres) {
+         final AbstractParametres parametres) {
       boolean erreurVerif = false;
       String requeteLucene = properties.getProperty("format.requete.lucene");
       if (StringUtils.isBlank(requeteLucene)) {
@@ -102,6 +106,33 @@ public final class ValidationUtils {
       }
       return erreurVerif;
    }
+   
+   /**
+    * Methode permettant de vérifier la saisie du paramètre requête lucène
+    * pour l'ajout de métadonnées.
+    * 
+    * @param properties
+    *           properties
+    * @param parametres
+    *           paramètres
+    * @return boolean
+    */
+   public static boolean verifAddMetaParamRequeteLucene(final Properties properties,
+         final AbstractParametres parametres) {
+      
+      final String paramName = "addMeta.requete.lucene";
+      final String reqLucene = properties.getProperty(paramName);
+      
+      if(isStringParam(paramName, reqLucene, new onVerifiedCallback() {
+         @Override
+         public void onVerified() {
+            parametres.setRequeteLucene(reqLucene);
+         }
+      }))
+         return false;
+      else
+         return true;
+   }
 
    /**
     * Methode permettant de vérifier la saisie du paramètre taille du pool.
@@ -113,7 +144,7 @@ public final class ValidationUtils {
     * @return boolean
     */
    public static boolean verifParamTaillePool(final Properties properties,
-         final FormatValidationParametres parametres) {
+         final AbstractParametres parametres) {
       boolean erreurVerif = false;
       String taillePool = properties.getProperty("format.taille.pool");
       if (NumberUtils.isDigits(taillePool)) {
@@ -138,25 +169,22 @@ public final class ValidationUtils {
     *           properties
     * @param parametres
     *           paramètres
-    * @return boolean
+    * @return boolean : false si validation réussie
     */
    public static boolean verifParamNbMaxDocuments(final Properties properties,
          final FormatValidationParametres parametres) {
-      boolean erreurVerif = false;
-      String nombreMaxDocs = properties
-            .getProperty("format.nombre.max.documents");
-      if (NumberUtils.isDigits(nombreMaxDocs)) {
-         int nbMaxDoc = Integer.valueOf(nombreMaxDocs);
-         LOGGER.info("Nombre maximum de documents : {}", nbMaxDoc);
-         parametres.setNombreMaxDocs(nbMaxDoc);
-      } else {
-         LOGGER
-               .warn(
-                     "Le paramètre {} ne doit pas être vide et doit contenir uniquement des chiffres",
-                     "format.nombre.max.documents");
-         erreurVerif = true;
-      }
-      return erreurVerif;
+      String paramName = "format.nombre.max.documents";
+      final String nombreMaxDocs = properties.getProperty(paramName);
+      if(isNumericParam(paramName, nombreMaxDocs, new onVerifiedCallback() {
+         @Override
+         public void onVerified() {
+            int nbMaxDoc = Integer.valueOf(nombreMaxDocs);
+            parametres.setNombreMaxDocs(nbMaxDoc);
+         }
+      }))
+         return false;
+      else
+         return true;
    }
 
    /**
@@ -166,27 +194,131 @@ public final class ValidationUtils {
     *           properties
     * @param parametres
     *           paramètres
-    * @return boolean
+    * @return boolean : false si validation réussie
     */
    public static boolean verifParamTaillePasExecution(
          final Properties properties,
-         final FormatValidationParametres parametres) {
-      boolean erreurVerif = false;
-      String taillePasExecution = properties
-            .getProperty("format.taille.pas.execution");
-      if (NumberUtils.isDigits(taillePasExecution)) {
-         int valeurTaillePasExecution = Integer.valueOf(taillePasExecution);
-         LOGGER
-               .info("Taille du pas d'exécution : {}", valeurTaillePasExecution);
-         parametres.setTaillePasExecution(valeurTaillePasExecution);
+         final AbstractParametres parametres) {
+      
+      final String paramName = "format.taille.pas.execution";
+      final String paramValue = properties.getProperty(paramName);
+      
+      if(isNumericParam(paramName, paramValue, new onVerifiedCallback() {
+         @Override
+         public void onVerified() {
+            int value = Integer.valueOf(paramValue);
+            parametres.setTaillePasExecution(value);
+         }
+      })) 
+         return false;
+      else
+         return true;
+   }
+
+   /**
+    * Methode permettant de vérifier la saisie 
+    * du paramètre 'addMeta.taille.pas.execution'
+    * 
+    * @param properties
+    *           properties
+    * @param parametres
+    *           paramètres
+    * @return boolean : false si validation réussie
+    */
+   public static boolean verifAddMetaParamTaillePasExecution(         
+         final Properties properties,
+         final AbstractParametres parametres) {  
+      final String paramName = "addMeta.taille.pas.execution";
+      return verifParamTaillePasExecution(properties, parametres, paramName);
+   }
+   
+   /**
+    * Vérification de la taille du Pool de Theards
+    */
+   public static boolean verifAddMetaParamTaillePool(
+         final Properties properties,
+         final AbstractParametres parametres) {  
+      final String paramName = "addMeta.taille.pool";
+      final String paramValue = properties.getProperty(paramName);
+      
+      if(isNumericParam(paramName, paramValue, new onVerifiedCallback() {
+         @Override
+         public void onVerified() {
+            int value = Integer.valueOf(paramValue);
+            parametres.setTaillePool(value);
+         }
+      })) 
+         return false;
+      else
+         return true;
+   }
+   
+   /**
+    * Méthode générique de vérifcation 
+    * du paramètre numérique taille du pas d'execution
+    * 
+    * @param properties
+    * @param parametres
+    * @param paramName
+    * @return boolean : false si validation réussie
+    */
+   public static boolean verifParamTaillePasExecution(
+         final Properties properties,
+         final AbstractParametres parametres, final String paramName) {
+      final String paramValue = properties.getProperty(paramName);
+      
+      if(isNumericParam(paramName, paramValue, new onVerifiedCallback() {
+         @Override
+         public void onVerified() {
+            int value = Integer.valueOf(paramValue);
+            parametres.setTaillePasExecution(value);
+         }
+      })) 
+         return false;
+      else
+         return true;
+   }
+   
+   private interface onVerifiedCallback{
+      public void onVerified(); 
+   }
+   
+   /**
+    * Vérifier un paramètre numérique
+    * @param paramName
+    * @param paramValue
+    * @param callback
+    * @return
+    */
+   private static boolean isNumericParam(String paramName, String paramValue, onVerifiedCallback callback){
+      if (NumberUtils.isDigits(paramValue)) {
+         LOGGER.info("Paramètere '{}' : {}", paramName, paramValue);
+         callback.onVerified();
+         return true;
       } else {
-         LOGGER
-               .warn(
-                     "Le paramètre {} ne doit pas être vide et doit contenir uniquement des chiffres",
-                     "format.taille.pas.execution");
-         erreurVerif = true;
+         String mssg = "Le paramètre {} ne doit pas être vide et doit contenir uniquement des chiffres";
+         LOGGER.warn(mssg, paramName);
+         return false;
       }
-      return erreurVerif;
+   }
+   
+   /**
+    * Vérifier un paramètre de type string
+    * @param paramName
+    * @param paramValue
+    * @param callback
+    * @return
+    */
+   private static boolean isStringParam(String paramName, String paramValue, onVerifiedCallback callback){
+      if (StringUtils.isNotBlank(paramValue)) {
+         LOGGER.info("Paramètere '{}' : {}", paramName, paramValue);
+         callback.onVerified();
+         return true;
+      } else {
+         String mssg = "Le paramètre {} ne doit pas être vide.";
+         LOGGER.warn(mssg, paramName);
+         return false;
+      }
    }
 
    /**
@@ -206,6 +338,45 @@ public final class ValidationUtils {
          parametres.setMetadonnees(new ArrayList<String>());
       }
       LOGGER.info("Métadonnées : {}", parametres.getMetadonnees());
+   }
+   
+   /**
+    * Methode permettant de vérifier la saisie de la taille du pas d'exécution.
+    * 
+    * @param properties
+    *           properties
+    * @param parametres
+    *           paramètres
+    * @return boolean
+    */
+   public static boolean verifAddMetaParamListeMetadonnes(final Properties properties,
+         final AddMetadatasParametres parametres) {
+      
+      boolean success = false;
+      
+      String parameter = "addMeta.metadonnees";
+      String metadonnees = properties.getProperty(parameter);
+      
+      if (StringUtils.isBlank(metadonnees)) {
+         success = true;
+         LOGGER.warn("Le paramètre {} ne doit pas être vide", parameter);
+      } else {
+         if(!metadonnees.contains(":")){
+            success = true;
+            String paramFormat = parameter +" 'cot:1,cpt:0,drh:0'";
+            LOGGER.warn("Le format du paramètre {} est invalide. ", parameter);
+            LOGGER.info("Exemple de format du paramètre {}.", paramFormat);
+         } else{
+            //-- Récupération de la liste des métadonnées
+            Map<String, String> metasMap = new HashMap<String, String>();
+            for (String meta : Arrays.asList(metadonnees.split(","))) {
+               String[] metaData = meta.split(":");
+               metasMap.put(metaData[0], metaData[1]);
+            }
+            parametres.setMetadonnees(metasMap);
+         }
+      }
+      return success;
    }
 
    /**

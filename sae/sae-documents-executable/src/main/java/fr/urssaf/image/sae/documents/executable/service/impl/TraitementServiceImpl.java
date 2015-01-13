@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import net.docubase.toolkit.model.document.Document;
 
@@ -17,8 +18,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import fr.urssaf.image.sae.documents.executable.model.AddMetadatasParametres;
 import fr.urssaf.image.sae.documents.executable.model.FormatValidationParametres;
 import fr.urssaf.image.sae.documents.executable.model.FormatValidationParametres.MODE_VERIFICATION;
+import fr.urssaf.image.sae.documents.executable.multithreading.AddMetadatasPoolThreadExecutor;
+import fr.urssaf.image.sae.documents.executable.multithreading.AddMetadatasRunnable;
 import fr.urssaf.image.sae.documents.executable.multithreading.FormatRunnable;
 import fr.urssaf.image.sae.documents.executable.multithreading.FormatValidationPoolThreadExecutor;
 import fr.urssaf.image.sae.documents.executable.service.DfceService;
@@ -345,6 +349,34 @@ public class TraitementServiceImpl implements TraitementService {
    public final void setFormatFichierService(
          final FormatFichierService formatFichierService) {
       this.formatFichierService = formatFichierService;
+   }
+
+   @Override
+   public void addMetadatasToDocuments(AddMetadatasParametres parametres) {
+      
+      //-- Overture connexion dfce
+      getDfceService().ouvrirConnexion();
+      
+      String requeteLucene = parametres.getRequeteLucene();
+      Map<String, String> metas = parametres.getMetadonnees();
+      
+      Iterator<Document> it = getDfceService().executerRequete(requeteLucene);
+      
+      AddMetadatasPoolThreadExecutor poolThead;
+      poolThead = new AddMetadatasPoolThreadExecutor(parametres);
+      
+      while (it.hasNext()) {
+         Document doc = (Document)it.next();
+         AddMetadatasRunnable addMetasRun;
+         addMetasRun = new AddMetadatasRunnable(getDfceService(), doc, metas);
+         poolThead.execute(addMetasRun);
+      }
+      
+      //-- On attend la fin de l'execution du poolThead
+      poolThead.waitFinishAddMetadata();
+      
+      //-- Fermeture connexion dfce
+      getDfceService().fermerConnexion();
    }
 
 }

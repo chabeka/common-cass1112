@@ -115,9 +115,7 @@ public class DfceServiceImpl implements DfceService {
    }
 
    /**
-    * Permet de récupérer le provider de service de DFCE.
-    * 
-    * @return ServiceProvider
+    * {@inheritDoc}
     */
    public final ServiceProvider getServiceProvider() {
       return serviceProvider;

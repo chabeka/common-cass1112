@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.util.Iterator;
 
 import net.docubase.toolkit.model.document.Document;
+import net.docubase.toolkit.service.ServiceProvider;
 
 /**
  * Service permettant de réaliser des opérations sur DFCE.
@@ -37,4 +38,11 @@ public interface DfceService {
     * @return Le contenu du document
     */
    InputStream recupererContenu(Document document);
+   
+   /**
+    * Permet de récupérer le provider de service de DFCE.
+    * 
+    * @return ServiceProvider 
+    */
+   ServiceProvider getServiceProvider();
 }

@@ -1,5 +1,6 @@
 package fr.urssaf.image.sae.documents.executable.service;
 
+import fr.urssaf.image.sae.documents.executable.model.AddMetadatasParametres;
 import fr.urssaf.image.sae.documents.executable.model.FormatValidationParametres;
 
 /**
@@ -15,4 +16,12 @@ public interface TraitementService {
     * @return int nombre de documents traités
     */
    int identifierValiderFichiers(FormatValidationParametres parametres);
+   
+   
+   /**
+    * Réalise l’ajout de métadonnées à un ensemble de documents
+    * 
+    * @param parametres : Les paramètres concernant le traitement
+    */
+   public void addMetadatasToDocuments(AddMetadatasParametres parametres);
 }
