@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -16,7 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.apache.commons.lang.StringUtils;
 
 import fr.urssaf.image.sae.metadata.exceptions.ReferentialException;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
@@ -100,6 +100,8 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
       LOG.debug("{} - début", trcPrefix);
       LOG.debug("{} - Début de transfert du document {}", new Object[] {
             trcPrefix, idArchive.toString() });
+      
+      String erreur = "Une erreur s'est produite lors du transfert. Transfert impossible.";
      
       try {
          //-- Ouverture des connections DFCE
@@ -134,9 +136,6 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
             }
          } else {
             
-            String mssgErreur = "Une erreur s'est produite lors du transfert. " +
-                                    "Transfert impossible.";
-            
             //-- On recherche le document sur la GNS
             StorageDocument documentGNS = storageTransfertService
                .searchStorageDocumentByUUIDCriteria(uuidCriteria);
@@ -151,7 +150,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
                try {
                   documentGNS = storageTransfertService.insertBinaryStorageDocument(document);
                } catch (InsertionServiceEx ex) {
-                  throw new TransfertException(mssgErreur, ex);
+                  throw new TransfertException(erreur, ex);
                }
             }
             
@@ -169,7 +168,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
                      throw new TransfertException(erreurSupprGNS);
                   }
                }
-               throw new TransfertException(mssgErreur, erreurSupprGNT);
+               throw new TransfertException(erreur, erreurSupprGNT);
             }
             
             //-- Fermeture des connections DFCE
@@ -181,11 +180,11 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
                   trcPrefix, idArchive.toString() });
          }
       } catch (ConnectionServiceEx ex) {
-         throw new TransfertException(ex);
+         throw new TransfertException(erreur,ex);
       } catch (SearchingServiceEx ex) {
-         throw new TransfertException(ex);
+         throw new TransfertException(erreur,ex);
       } catch (ReferentialException ex) {
-         throw new TransfertException(ex);
+         throw new TransfertException(erreur,ex);
       }
    }
    
