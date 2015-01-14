@@ -35,4 +35,16 @@ public interface PrmdControle {
     * @return la requête lucène
     */
    String createLucene(Map<String, String> parametres);
+   
+   
+   /**
+    * Permet d’ajouter le domaine métier dans la liste des métadonnées 
+    * si celui-ci n’est pas déjà présent
+    * 
+    * @param metadatas : Liste des métadonnées
+    * 
+    * @param values : Map des valeurs des métadonnées du périmètre de données
+    */
+   public void addDomaine(List<UntypedMetadata> metadatas, Map<String, String> values);
+   
 }

@@ -43,7 +43,11 @@ public class PrmdServiceImpl implements PrmdService {
 
    private static final String TRC_CHECK = "checkBean()";
    private static final String TRC_LUCENE = "createLucene()";
-
+   
+   private final static String DOMAINE_RH = "DomaineRH";
+   private final static String DOMAINE_COTISANT = "DomaineCotisant";
+   private final static String DOMAINE_COMPTABLE = "DomaineComptable";
+   
    /**
     * {@inheritDoc}
     */
@@ -330,5 +334,89 @@ public class PrmdServiceImpl implements PrmdService {
       }
 
       return requete;
+   }
+
+   /**
+    * Teste si une clé de mata correspond à l'un des trois domaines :
+    * {DomaineRH, DOMAIN_COTISANT,DOMAIN_COMPTABLE}
+    * 
+    * @param value : la valeur à tester
+    * @return
+    */
+   private boolean isDomaineRhCotiOrCompt(String value){
+      if(value.equals(DOMAINE_RH)|| value.equals(DOMAINE_COTISANT)
+            || value.equals(DOMAINE_COMPTABLE)){
+         return true;
+      }
+      return false;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void addDomaine(List<UntypedMetadata> metadatas, List<SaePrmd> prmds) {
+      
+      //-- On vérifie qu'aucune métadonnée « Domaine* » n’est présente
+      boolean isDomaineFound = false;
+      for (UntypedMetadata meta : metadatas) {
+         if(isDomaineRhCotiOrCompt(meta.getLongCode())){
+            isDomaineFound = true;
+            break;
+         }
+      }
+      
+      //-- Aucun domaine présent, 
+      if(!isDomaineFound){
+         
+         int addCount = 0;
+         
+         //-- On boucle sur la liste des prmds passée en paramètre
+         for (SaePrmd saePrmd : prmds) {
+            
+            PrmdControle controle;
+            Prmd prmd = saePrmd.getPrmd();
+            String prmdName = prmd.getBean();
+            Map<String, String> prmdValues = saePrmd.getValues();
+            Map<String, List<String>> prmdMetas = prmd.getMetadata();
+            
+            //-- Cas d'un prdm de type bean
+            if(!StringUtils.isEmpty(prmdName)){
+               try {
+                  controle = context.getBean(prmdName, PrmdControle.class);
+                  controle.addDomaine(metadatas, prmdValues);
+               } catch (BeansException e) {
+                  LOGGER.warn("{} - Aucune fonction {} n'existe pour le Prmd {}",
+                        new String[] { TRC_CHECK, prmd.getCode(), prmd.getBean() });
+               }
+            }
+            //-- Prmd dynamique
+            else if(!MapUtils.isEmpty(prmdValues)){
+               for (Map.Entry<String, List<String>> entry : prmdMetas.entrySet()) {
+                  if (isDomaineRhCotiOrCompt(entry.getKey()) && prmdValues.containsKey(entry.getKey())) {
+                     String valeur = prmdValues.get(entry.getKey());     
+                     metadatas.add(new UntypedMetadata(entry.getKey(), valeur));
+                     addCount++;
+                     break;
+                  }
+               }
+            }
+            //-- Prmd classique
+            else {
+               for (Map.Entry<String, List<String>> entry : prmdMetas.entrySet()) {
+                  if(isDomaineRhCotiOrCompt(entry.getKey())){
+                     String valeur = saePrmd.getValues().get(entry.getKey());
+                     metadatas.add(new UntypedMetadata(entry.getKey(), valeur));
+                     break;
+                  }
+               }
+            }
+         }
+         
+         //-- Aucun domaine n’a été ajouté à la liste des métadonnées
+         if(addCount == 0){
+            metadatas.add(new UntypedMetadata(DOMAINE_COTISANT, "1"));
+         }
+      }
    }
 }

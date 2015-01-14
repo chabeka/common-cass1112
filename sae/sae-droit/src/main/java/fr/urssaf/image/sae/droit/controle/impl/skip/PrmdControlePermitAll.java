@@ -32,4 +32,25 @@ public class PrmdControlePermitAll implements PrmdControle {
       return true;
    }
 
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void addDomaine(List<UntypedMetadata> metadatas,
+         Map<String, String> values) {
+      
+      //-- On vérifie que la métadonnée « DomaineCotisant » n’est pas présente
+      boolean isDomaineCotisantFound = false;
+      for (UntypedMetadata meta : metadatas) {
+         if(meta.getLongCode().equals("DomaineCotisant")){
+            isDomaineCotisantFound = true;
+            break;
+         }
+      }
+      
+      if(!isDomaineCotisantFound){
+         metadatas.add(new UntypedMetadata("DomaineCotisant", "1"));
+      }
+   }
+
 }

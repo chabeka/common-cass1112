@@ -36,5 +36,14 @@ public interface PrmdService {
     * @return Nouvelle requête Lucene
     */
    String createLucene(String lucene, List<SaePrmd> prmds);
-
+   
+   /**
+    * Permet d’ajouter le domaine métier dans la liste des métadonnées 
+    * si celui-ci n’est pas déjà présent
+    * 
+    * @param metadatas : Liste des métadonnées
+    * 
+    * @param prmds : Liste des périmètres de données
+    */
+   public void addDomaine(List<UntypedMetadata>  metadatas, List<SaePrmd> prmds);
 }

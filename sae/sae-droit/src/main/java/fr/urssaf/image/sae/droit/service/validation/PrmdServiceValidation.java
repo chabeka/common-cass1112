@@ -32,6 +32,9 @@ public class PrmdServiceValidation {
 
    private static final String CREATE = "execution(java.lang.String fr.urssaf.image.sae.droit.service.PrmdService.createLucene(*,*))"
          + "&& args(lucene, prmds)";
+   
+   private static final String ADD_DOMAINE = "execution(void fr.urssaf.image.sae.droit.service.PrmdService.addDomaine(*,*))"
+      + "&& args(metadatas, prmds)";
 
    /**
     * méthode de validation des arguments de la méthode isPermitted
@@ -70,6 +73,29 @@ public class PrmdServiceValidation {
                ARGUMENT_REQUIRED, "requete"));
       }
 
+      if (CollectionUtils.isEmpty(prmds)) {
+         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
+               ARGUMENT_REQUIRED, "liste des prmd"));
+      }
+   }
+   
+   /**
+    * méthode de validation des arguments de la méthode addDomaine
+    * 
+    * @param lucene
+    *           requete Lucene d'origine
+    * @param prmds
+    *           liste des prmds
+    */
+   @Before(ADD_DOMAINE)
+   public final void checkAddDomaine(List<UntypedMetadata> metadatas,
+         List<SaePrmd> prmds) {
+      
+      if (CollectionUtils.isEmpty(metadatas)) {
+         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
+               ARGUMENT_REQUIRED, "liste des métadonnées"));
+      }
+      
       if (CollectionUtils.isEmpty(prmds)) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
                ARGUMENT_REQUIRED, "liste des prmd"));

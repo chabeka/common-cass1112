@@ -75,4 +75,32 @@ public class PrmdServiceValidationTest {
                .getMessage().contains("liste des prmd"));
       }
    }
+   
+   @Test
+   public void checkAddDomaineMetasObligatoires() {
+      try {
+         prmdService.addDomaine(new ArrayList<UntypedMetadata>(),
+               new ArrayList<SaePrmd>());
+
+         Assert.fail("Exception attendue");
+      } catch (IllegalArgumentException e) {
+         Assert.assertTrue(
+               "le message doit concerner la liste des métadonnées", e
+                     .getMessage().contains("liste des métadonnées"));
+      }
+   }
+
+   @Test
+   public void checkAddDomainePrmdObligatoires() {
+      try {
+         List<UntypedMetadata> list = new ArrayList<UntypedMetadata>();
+         list.add(new UntypedMetadata("M", "V"));
+         prmdService.addDomaine(list, new ArrayList<SaePrmd>());
+
+         Assert.fail("Exception attendue");
+      } catch (IllegalArgumentException e) {
+         Assert.assertTrue("le message doit concerner la liste des prmd", e
+               .getMessage().contains("liste des prmd"));
+      }
+   }
 }

@@ -31,4 +31,12 @@ public class PrmdControleTestImpl implements PrmdControle {
       return true;
    }
 
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void addDomaine(List<UntypedMetadata> metadatas,
+         Map<String, String> values) {
+   }
+
 }
