@@ -160,6 +160,10 @@ public class SAECommonCaptureServiceImpl implements SAECommonCaptureService {
                .getAuthenticationToken();
 
          List<SaePrmd> prmds = token.getSaeDroits().get("archivage_unitaire");
+         
+         //-- Affectation du domaine en fonction du contrat de service
+         prmdService.addDomaine(untypedDocument.getUMetadatas(), prmds);
+         
          boolean isPermitted = prmdService.isPermitted(untypedDocument
                .getUMetadatas(), prmds);
 
