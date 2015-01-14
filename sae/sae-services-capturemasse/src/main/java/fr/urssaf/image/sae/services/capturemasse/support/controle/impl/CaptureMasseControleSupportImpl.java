@@ -318,6 +318,9 @@ public class CaptureMasseControleSupportImpl implements
       AuthenticationToken token = (AuthenticationToken) SecurityContextHolder
             .getContext().getAuthentication();
       List<SaePrmd> prmds = token.getSaeDroits().get("archivage_masse");
+      
+      //-- Affectation du domaine en fonction du contrat de service
+      prmdService.addDomaine(metadatas, prmds);
 
       LOGGER.debug("{} - vérification des droits", trcPrefix);
       boolean isPermitted = prmdService.isPermitted(metadatas, prmds);
