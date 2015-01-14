@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.commons.cassandra.helper.HectorIterator;
 import fr.urssaf.image.commons.cassandra.helper.QueryResultConverter;
+import fr.urssaf.image.sae.commons.dao.AbstractDao;
 import fr.urssaf.image.sae.metadata.exceptions.DictionaryNotFoundException;
 import fr.urssaf.image.sae.metadata.referential.dao.DictionaryDao;
 import fr.urssaf.image.sae.metadata.referential.model.Dictionary;
@@ -32,8 +33,6 @@ import fr.urssaf.image.sae.metadata.referential.model.Dictionary;
 public class DictionarySupport {
 
    private final DictionaryDao dictionaryDao;
-
-   private static final int MAX_FIND_RESULT = 2000;
 
    /**
     * Constructeur de la classe support
@@ -116,7 +115,8 @@ public class DictionarySupport {
                   StringSerializer.get(), StringSerializer.get(),
                   bytesSerializer);
       rangeSlicesQuery.setColumnFamily(dictionaryDao.getColumnFamilyName());
-      rangeSlicesQuery.setRange("", "", false, MAX_FIND_RESULT);
+      rangeSlicesQuery.setRange("", "", false, AbstractDao.DEFAULT_MAX_COLS);
+      rangeSlicesQuery.setRowCount(AbstractDao.DEFAULT_MAX_ROWS);
       QueryResult<OrderedRows<String, String, byte[]>> queryResult = rangeSlicesQuery
             .execute();
 

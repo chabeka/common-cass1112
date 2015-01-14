@@ -8,6 +8,7 @@ import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
 import me.prettyprint.cassandra.service.template.ColumnFamilyResultWrapper;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
+import me.prettyprint.hector.api.Keyspace;
 import me.prettyprint.hector.api.beans.OrderedRows;
 import me.prettyprint.hector.api.factory.HFactory;
 import me.prettyprint.hector.api.query.QueryResult;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.commons.cassandra.helper.HectorIterator;
 import fr.urssaf.image.commons.cassandra.helper.QueryResultConverter;
+import fr.urssaf.image.sae.commons.dao.AbstractDao;
 import fr.urssaf.image.sae.metadata.exceptions.MetadataRuntimeException;
 import fr.urssaf.image.sae.metadata.referential.dao.SaeMetadataDao;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
@@ -30,8 +32,6 @@ import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 @SuppressWarnings( { "PMD.CyclomaticComplexity", "PMD.NPathComplexity" })
 @Component
 public class SaeMetadataSupport {
-
-   private static final int MAX_FIND_RESULT = 5000;
 
    private final SaeMetadataDao saeMetadataDao;
 
@@ -212,23 +212,32 @@ public class SaeMetadataSupport {
    }
 
    private ColumnFamilyResultWrapper<String, String> getAllMetadatas() {
+      
+      Keyspace keySpace = saeMetadataDao.getKeyspace();
       BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
-      RangeSlicesQuery<String, String, byte[]> rangeSlicesQuery = HFactory
-            .createRangeSlicesQuery(saeMetadataDao.getKeyspace(),
-                  StringSerializer.get(), StringSerializer.get(),
-                  bytesSerializer);
+      StringSerializer stringSlzr = StringSerializer.get();
+      RangeSlicesQuery<String, String, byte[]> rangeSlicesQuery;
+      
+      //-- Creation plage de recherche
+      rangeSlicesQuery = HFactory.createRangeSlicesQuery(
+            keySpace, stringSlzr, stringSlzr, bytesSerializer);
+            
       rangeSlicesQuery.setColumnFamily(saeMetadataDao.getColumnFamilyName());
-      rangeSlicesQuery.setRange(StringUtils.EMPTY, StringUtils.EMPTY, false,
-            MAX_FIND_RESULT);
-      QueryResult<OrderedRows<String, String, byte[]>> queryResult = rangeSlicesQuery
-            .execute();
+      rangeSlicesQuery.setRange(StringUtils.EMPTY, StringUtils.EMPTY, false, AbstractDao.DEFAULT_MAX_ROWS);
+      rangeSlicesQuery.setRowCount(AbstractDao.DEFAULT_MAX_ROWS);
+      
+      //-- Execution de la requête
+      QueryResult<OrderedRows<String, String, byte[]>> queryResult = rangeSlicesQuery.execute();
 
-      // On convertit le résultat en ColumnFamilyResultWrapper pour faciliter
+      //-- On convertit le résultat en ColumnFamilyResultWrapper pour faciliter
       // son utilisation
-      QueryResultConverter<String, String, byte[]> converter = new QueryResultConverter<String, String, byte[]>();
-      ColumnFamilyResultWrapper<String, String> result = converter
-            .getColumnFamilyResultWrapper(queryResult, StringSerializer.get(),
-                  StringSerializer.get(), bytesSerializer);
+      QueryResultConverter<String, String, byte[]> converter;
+      converter = new QueryResultConverter<String, String, byte[]>();
+      
+      ColumnFamilyResultWrapper<String, String> result;
+      result = converter.getColumnFamilyResultWrapper(queryResult, StringSerializer.get(),
+         StringSerializer.get(), bytesSerializer);
+      
       return result;
    }
 
@@ -374,7 +383,7 @@ public class SaeMetadataSupport {
       }
 
       if (found) {
-         throw new MetadataRuntimeException("Code court déjà existant");
+         throw new MetadataRuntimeException("Code court déjà existant : '"+codeCourt+"'");
       }
    }
 
@@ -392,7 +401,7 @@ public class SaeMetadataSupport {
       }
 
       if (!found) {
-         throw new MetadataRuntimeException("Code court inexistant");
+         throw new MetadataRuntimeException("Code court inexistant : '"+codeCourt+"'");
       }
    }
 }
