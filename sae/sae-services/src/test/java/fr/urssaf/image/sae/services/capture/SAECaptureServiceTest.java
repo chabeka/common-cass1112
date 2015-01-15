@@ -230,6 +230,7 @@ public class SAECaptureServiceTest {
       List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
 
       // liste des métadonnées obligatoires
+      metadatas.add(new UntypedMetadata("DomaineCotisant", "true"));
       metadatas.add(new UntypedMetadata("ApplicationProductrice", "ADELAIDE"));
       metadatas.add(new UntypedMetadata("CodeOrganismeProprietaire", "CER69"));
       metadatas.add(new UntypedMetadata("CodeOrganismeGestionnaire", "UR750"));
@@ -474,7 +475,7 @@ public class SAECaptureServiceTest {
 
    private static <T extends Criterion> void assertCriterions(List<T> criterions) {
 
-      Assert.assertEquals("la nombre de métadonnées est inattendu", 11,
+      Assert.assertEquals("le nombre de métadonnées est inattendu", 12,
             criterions.size());
 
       // on trie les métadonnées non typés en fonction de leur code long
@@ -485,7 +486,6 @@ public class SAECaptureServiceTest {
 
             return criterion1.getCategoryName().compareTo(
                   criterion2.getCategoryName());
-
          }
       };
       Collections.sort(criterions, comparator);
@@ -502,36 +502,39 @@ public class SAECaptureServiceTest {
       // TEST sur métadonnée : CodeOrganismeProprietaire
       assertMetadata(criterions.get(3), "cop", "CER69");
 
+      // TEST sur métadonnée : DomaineCotisant
+      assertMetadata(criterions.get(4), "cot", true);
+      
       // TEST sur métadonnée : ContratDeService
-      assertMetadata(criterions.get(4), "cse", "TESTS_UNITAIRES");
+      assertMetadata(criterions.get(5), "cse", "TESTS_UNITAIRES");
 
       // TEST sur métadonnée : DateFinConservation
       Assert.assertEquals(
             "le code de la metadonnée est inattendue dans cet ordre", "dfc",
-            criterions.get(5).getCategoryName());
+            criterions.get(6).getCategoryName());
       Assert.assertEquals("la valeur de la metadonnée 'dfc'est inattendue",
             "2016-08-31 00:00:00", DateFormatUtils.format((Date) criterions
-                  .get(5).getWord(), DATE_FORMAT));
+                  .get(6).getWord(), DATE_FORMAT));
 
       // TEST sur métadonnée : CodeFonction
-      assertMetadata(criterions.get(6), "dom", "2");
+      assertMetadata(criterions.get(7), "dom", "2");
 
       // TEST sur métadonnée : DateReception
       Assert.assertEquals(
             "le code de la metadonnée est inattendue dans cet ordre", "dre",
-            criterions.get(7).getCategoryName());
+            criterions.get(8).getCategoryName());
       Assert.assertEquals("la valeur de la metadonnée 'dre'est inattendue",
             "1999-11-25 00:00:00", DateFormatUtils.format((Date) criterions
-                  .get(7).getWord(), DATE_FORMAT));
+                  .get(8).getWord(), DATE_FORMAT));
 
       // TEST sur métadonnée : FormatFichier
-      assertMetadata(criterions.get(8), "ffi", "fmt/354");
+      assertMetadata(criterions.get(9), "ffi", "fmt/354");
 
       // TEST sur métadonnée : NbPages
-      assertMetadata(criterions.get(9), "nbp", 2);
+      assertMetadata(criterions.get(10), "nbp", 2);
 
       // TEST sur métadonnée : VersionRND par défaut
-      assertMetadata(criterions.get(10), "vrn", "11.2");
+      assertMetadata(criterions.get(11), "vrn", "11.2");
 
    }
 
@@ -748,6 +751,7 @@ public class SAECaptureServiceTest {
       List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
 
       // liste des métadonnées obligatoires
+      metadatas.add(new UntypedMetadata("DomaineCotisant", "true"));
       metadatas.add(new UntypedMetadata("ApplicationProductrice", "ADELAIDE"));
       metadatas.add(new UntypedMetadata("CodeOrganismeProprietaire", "CER69"));
       metadatas.add(new UntypedMetadata("CodeOrganismeGestionnaire", "UR750"));
