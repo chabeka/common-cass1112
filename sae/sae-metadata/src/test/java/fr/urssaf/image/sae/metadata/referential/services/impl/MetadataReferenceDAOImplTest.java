@@ -1,4 +1,4 @@
-package fr.urssaf.image.sae.metadata.referential.services.impl;
+﻿package fr.urssaf.image.sae.metadata.referential.services.impl;
 
 import java.io.IOException;
 import java.util.Map;
@@ -614,7 +614,7 @@ public class MetadataReferenceDAOImplTest {
       Assert
             .assertEquals(
                   "Le nombre de métadonnées spécifiables à l'archivage attendues est incorrect",
-                  38, metadonnees.size());
+                  39, metadonnees.size());
 
       for (Map.Entry<String, MetadataReference> metadata : metadonnees
             .entrySet()) {
