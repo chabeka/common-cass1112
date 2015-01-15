@@ -4835,7 +4835,7 @@
             </column>
             <column>
                <name>arch</name>
-               <value>bytes(00)</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
