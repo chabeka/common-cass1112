@@ -366,57 +366,65 @@ public class PrmdServiceImpl implements PrmdService {
          }
       }
       
-      //-- Aucun domaine présent, 
-      if(!isDomaineFound){
+      //-- Le domaine est présent
+      if(isDomaineFound){
+         return;
+      }
+      
+      //-- Aucun domaine n'est présent
+      int addCount = 0;
+      
+      //-- On boucle sur la liste des prmds passée en paramètre
+      for (SaePrmd saePrmd : prmds) {
          
-         int addCount = 0;
+         PrmdControle controle;
+         Prmd prmd = saePrmd.getPrmd();
+         String prmdName = prmd.getBean();
+         Map<String, String> prmdValues = saePrmd.getValues();
+         Map<String, List<String>> prmdMetas = prmd.getMetadata();
          
-         //-- On boucle sur la liste des prmds passée en paramètre
-         for (SaePrmd saePrmd : prmds) {
-            
-            PrmdControle controle;
-            Prmd prmd = saePrmd.getPrmd();
-            String prmdName = prmd.getBean();
-            Map<String, String> prmdValues = saePrmd.getValues();
-            Map<String, List<String>> prmdMetas = prmd.getMetadata();
-            
-            //-- Cas d'un prdm de type bean
-            if(!StringUtils.isEmpty(prmdName)){
-               try {
-                  controle = context.getBean(prmdName, PrmdControle.class);
-                  controle.addDomaine(metadatas, prmdValues);
-               } catch (BeansException e) {
-                  LOGGER.warn("{} - Aucune fonction {} n'existe pour le Prmd {}",
-                        new String[] { TRC_CHECK, prmd.getCode(), prmd.getBean() });
+         //-- Cas d'un prdm de type bean
+         if(!StringUtils.isEmpty(prmdName)){
+            try {
+               controle = context.getBean(prmdName, PrmdControle.class);
+               controle.addDomaine(metadatas, prmdValues);
+               addCount++;
+            } catch (BeansException e) {
+               LOGGER.warn("{} - Aucune fonction {} n'existe pour le Prmd {}",
+                     new String[] { TRC_CHECK, prmd.getCode(), prmd.getBean() });
+            }
+         }
+         //-- Prmd dynamique
+         else if(!MapUtils.isEmpty(prmdValues)){
+            for (Map.Entry<String, List<String>> entry : prmdMetas.entrySet()) {
+               if (isDomaineRhCotiOrCompt(entry.getKey()) && prmdValues.containsKey(entry.getKey())) {
+                  String valeur = prmdValues.get(entry.getKey());     
+                  metadatas.add(new UntypedMetadata(entry.getKey(), valeur));
+                  addCount++;
+                  break;
                }
             }
-            //-- Prmd dynamique
-            else if(!MapUtils.isEmpty(prmdValues)){
-               for (Map.Entry<String, List<String>> entry : prmdMetas.entrySet()) {
-                  if (isDomaineRhCotiOrCompt(entry.getKey()) && prmdValues.containsKey(entry.getKey())) {
-                     String valeur = prmdValues.get(entry.getKey());     
-                     metadatas.add(new UntypedMetadata(entry.getKey(), valeur));
-                     addCount++;
-                     break;
-                  }
-               }
-            }
-            //-- Prmd classique
-            else {
-               for (Map.Entry<String, List<String>> entry : prmdMetas.entrySet()) {
-                  if(isDomaineRhCotiOrCompt(entry.getKey())){
-                     String valeur = saePrmd.getValues().get(entry.getKey());
-                     metadatas.add(new UntypedMetadata(entry.getKey(), valeur));
-                     break;
-                  }
+         }
+         //-- Prmd classique
+         else {
+            for (Map.Entry<String, List<String>> entry : prmdMetas.entrySet()) {
+               if(isDomaineRhCotiOrCompt(entry.getKey())){
+                  String valeur = saePrmd.getValues().get(entry.getKey());
+                  metadatas.add(new UntypedMetadata(entry.getKey(), valeur));
+                  addCount++;
+                  break;
                }
             }
          }
          
-         //-- Aucun domaine n’a été ajouté à la liste des métadonnées
-         if(addCount == 0){
-            metadatas.add(new UntypedMetadata(DOMAINE_COTISANT, "1"));
+         if (addCount > 0) {
+            break;
          }
+      }
+      
+      //-- Aucun domaine n’a été ajouté à la liste des métadonnées
+      if(addCount == 0){
+         metadatas.add(new UntypedMetadata(DOMAINE_COTISANT, "true"));
       }
    }
 }

@@ -49,7 +49,7 @@ public class PrmdControlePermitAll implements PrmdControle {
       }
       
       if(!isDomaineCotisantFound){
-         metadatas.add(new UntypedMetadata("DomaineCotisant", "1"));
+         metadatas.add(new UntypedMetadata("DomaineCotisant", "true"));
       }
    }
 
