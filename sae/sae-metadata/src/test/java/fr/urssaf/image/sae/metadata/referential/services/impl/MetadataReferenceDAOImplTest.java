@@ -1,4 +1,4 @@
-﻿package fr.urssaf.image.sae.metadata.referential.services.impl;
+package fr.urssaf.image.sae.metadata.referential.services.impl;
 
 import java.io.IOException;
 import java.util.Map;
