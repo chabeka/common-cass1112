@@ -122,9 +122,21 @@ public class SaeMetaDataServiceImpl implements SaeMetaDataService {
                   metadata.getShortCode(),
                   CategoryDataType.valueOf(StringUtils.upperCase(metadata
                         .getType())));
+      
+      BaseCategory baseCategory;
+      boolean ajout;
+      if (base.getBaseCategory(categoryDfce.getName()) == null) {
+         // ajout de la category a la base
+         baseCategory = toolkit.createBaseCategory(
+               categoryDfce, metadata.getIsIndexed());
+         ajout = true;
+      } else {
+         // modif de la category a la base
+         baseCategory = base.getBaseCategory(categoryDfce.getName());
+         baseCategory.setIndexed(metadata.getIsIndexed());
+         ajout = false;
+      }
 
-      final BaseCategory baseCategory = toolkit.createBaseCategory(
-            categoryDfce, metadata.getIsIndexed());
       baseCategory.setEnableDictionary(Boolean.FALSE);
       baseCategory.setMaximumValues(MAX_VALUES);
       // On met toujours la valeur min à 0 (même si la méta à ajouter est
@@ -134,8 +146,12 @@ public class SaeMetaDataServiceImpl implements SaeMetaDataService {
       // obligatoire est donc gérée uniquement par la surcouche SAE.
       baseCategory.setMinimumValues(0);
       baseCategory.setSingle(Boolean.FALSE);
-      base.addBaseCategory(baseCategory);
-      LOGGER.debug("Métadonné crééé dans DFCE");
+      if (ajout) {
+         base.addBaseCategory(baseCategory);
+         LOGGER.debug("Métadonnée créée dans DFCE");
+      } else {
+         LOGGER.debug("Métadonnée modifiée dans DFCE");
+      }
 
       return base;
    }
