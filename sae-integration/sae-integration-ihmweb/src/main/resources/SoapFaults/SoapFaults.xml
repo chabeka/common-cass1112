@@ -396,7 +396,7 @@
       <namespace>urn:sae:faultcodes</namespace>
       <prefixe>sae</prefixe>
       <localPart>ErreurInterneTransfert</localPart>
-      <message>Une erreur s'est produite lors du transfert. Transfert impossible.</message>
+      <message>Une erreur interne à l'application est survenue lors du transfert. Transfert impossible</message>
    </SoapFault>
       
 </SoapFaults>
