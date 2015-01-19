@@ -101,7 +101,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
       LOG.debug("{} - Début de transfert du document {}", new Object[] {
             trcPrefix, idArchive.toString() });
       
-      String erreur = "Une erreur s'est produite lors du transfert. Transfert impossible.";
+      String erreur = "Une erreur interne à l'application est survenue lors du transfert. Transfert impossible";
      
       try {
          //-- Ouverture des connections DFCE
