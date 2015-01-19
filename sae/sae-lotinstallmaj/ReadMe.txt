@@ -1,4 +1,4 @@
-// ----------------------------------------------------------------------------
+﻿// ----------------------------------------------------------------------------
 // UTILISATION DE sae-lotinstallmaj DANS L'INSTALLATION DES LOTS SAE
 // ----------------------------------------------------------------------------
 
@@ -221,5 +221,26 @@ Ajout évènements transfert DFCE_TRANSFERT_DOC|OK WS_TRANSFERT|KO
 Ajout de la CF TraceJournalEvtIndexDoc
 
 Positionne le paramètre versionBDD de la CF Parameters à la valeur "8"
+
+
+
+// ----------------------------------
+// Generation code modele xml meta
+// ----------------------------------
+mvn generate-sources -P genererCodeModeleMetas
+
+
+
+// ------------------------------------------
+// 8) Lot 150400SAE
+// ------------------------------------------
+sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_DFCE_150400
+
+Met la base Cassandra du SAE en version 9
+
+CREATION DES INDEXES COMPOSITES
+
+
+
 
 

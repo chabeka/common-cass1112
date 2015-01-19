@@ -2,10 +2,10 @@ package fr.urssaf.image.sae.lotinstallmaj.service.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.xml.bind.JAXBException;
 
 import me.prettyprint.hector.api.Keyspace;
 
@@ -15,12 +15,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
+import org.xml.sax.SAXException;
 
-import au.com.bytecode.opencsv.CSVReader;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockConfiguration;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.commons.cassandra.support.clock.impl.JobClockSupportImpl;
 import fr.urssaf.image.sae.lotinstallmaj.exception.MajLotRuntimeException;
+import fr.urssaf.image.sae.lotinstallmaj.modele.SaeCategory;
+import fr.urssaf.image.sae.lotinstallmaj.modele.metadata.IndexReference;
+import fr.urssaf.image.sae.lotinstallmaj.modele.metadata.IndexesComposites;
+import fr.urssaf.image.sae.lotinstallmaj.modele.metadata.MetaReference;
+import fr.urssaf.image.sae.lotinstallmaj.modele.metadata.ReferentielMeta;
+import fr.urssaf.image.sae.lotinstallmaj.service.utils.XmlUtils;
 import fr.urssaf.image.sae.metadata.referential.dao.SaeMetadataDao;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 import fr.urssaf.image.sae.metadata.referential.support.SaeMetadataSupport;
@@ -40,6 +46,56 @@ public final class RefMetaInitialisationService {
 
    private static final Logger LOG = LoggerFactory
          .getLogger(RefMetaInitialisationService.class);
+   
+   private List<MetadataReference> listMetas;
+   
+   private List<String[]> indexesComposites;
+   
+   /**
+    * Récupération après chargement du fichier,
+    * de la liste des métadonnées
+    * 
+    * @return : La liste des métadonnées
+    */
+   public List<MetadataReference> getListMetas(){
+      if(listMetas == null){
+         try {
+            //-- Lecture du fichier XML, et remplissage 
+            // d'une liste d'objets métadonnées
+            listMetas = chargeFichierMeta();
+         } catch (JAXBException e) {
+            throw new MajLotRuntimeException(e);
+         } catch (SAXException e) {
+            throw new MajLotRuntimeException(e);
+         } catch (IOException e) {
+            throw new MajLotRuntimeException(e);
+         }
+      }
+      return listMetas;
+   }
+   
+   /**
+    * Récupération après chargement du fichier,
+    * de la liste des métadonnées
+    * 
+    * @return : La liste des métadonnées
+    */
+   public List<String[]> getIndexesComposites(){
+      if(indexesComposites == null){
+         try {
+            //-- Lecture du fichier XML, et remplissage 
+            // d'une liste d'objets métadonnées
+            indexesComposites = chargerFichierIdxComposites();
+         } catch (JAXBException e) {
+            throw new MajLotRuntimeException(e);
+         } catch (SAXException e) {
+            throw new MajLotRuntimeException(e);
+         } catch (IOException e) {
+            throw new MajLotRuntimeException(e);
+         }
+      }
+      return indexesComposites;
+   }
 
    /**
     * Initialisation du référentiel des métadonnées en version 1.8 (sans les
@@ -50,258 +106,191 @@ public final class RefMetaInitialisationService {
     */
    public void initialiseRefMeta(Keyspace keyspace) {
 
-      // Trace
+      //-- Trace
       LOG.info("Initialisation du nouveau référentiel des métadonnées");
+      
+      //-- On récupère la liste des métas
+      List<MetadataReference> metadonnees = getListMetas();
 
-      // Lecture du fichier CSV en entier, et remplissage d'une liste d'objets
-      // métadonnées
-      List<MetadataReference> metadonnees = chargeFichierMeta();
       LOG.info("Nombre de métadonnées à créer : " + metadonnees.size());
 
-      // Vérification #1
-      // On compare les métadonnées chargées depuis le fichier CSV
-      // avec les métadonnées du dernier fichier XML qui stockait le
-      // référentiel des métadonnées avant le passage en bdd
-      // verification1(metadonnees);
-
-      // Vérification #2
-      // On compare les métadonnées chargées depuis le fichier CSV
-      // avec la définition de la structure de base DFCE stockée en
-      // fichier XML
-      // verification2(metadonnees);
-
-      // Enregistrement des métadonnées en base de données
+      //-- Enregistrement des métadonnées en base de données
       persisteMetadonnees(keyspace, metadonnees);
 
-      // Trace
-      LOG
-            .info("Fin de l'initialisation du nouveau référentiel des métadonnées");
-
+      //-- Trace
+      LOG.info("Fin de l'initialisation du nouveau référentiel des métadonnées");
    }
-
-   protected List<MetadataReference> chargeFichierMeta() {
+   
+   protected List<String[]> chargerFichierIdxComposites() throws IOException, JAXBException, SAXException  {
       
-      String nomFichierMetas = "Metadonnees.2.0.txt";
+      String cheminRessourceXml = "IndexesComposites1.0.xml";
+      String xsdResPath = "/xsd/metadata/IndexesComposites.xsd";
+      
+      ClassPathResource ressourceXml = new ClassPathResource(cheminRessourceXml);
+      InputStream xmlStream = ressourceXml.getInputStream();
 
-      LOG.info(String.format("Chargement du fichier de métadonnées: %s",nomFichierMetas));
-      // L'objet de résultat de la méthode
+      ClassPathResource ressourceXsd = new ClassPathResource(xsdResPath);
+      IndexesComposites ref = XmlUtils.unmarshalStream(IndexesComposites.class, xmlStream, ressourceXsd);
+      
+      List<IndexReference> indexes = ref.getIndexReference();
+      
+      List<String[]> indexesAcreer = new ArrayList<String[]>();
+      
+      for (int i = 0; i < indexes.size(); i++) {
+         IndexReference indexXml = indexes.get(i);
+         
+         //-- On ignore les indexes qui ne sont pas "aCreer"
+         if(!readBoolean(indexXml.getACreer())) {
+            continue;
+         }
+         
+         String composition = indexXml.getComposition();
+         String[] metasList = readString(composition).split(":");
+         indexesAcreer.add(metasList);
+      }
+      return indexesAcreer;
+   }
+   
+   protected List<MetadataReference> chargeFichierMeta() throws JAXBException, SAXException, IOException {
+      
+      String cheminRessourceXml = "Metadonnees2.1.xml";
+      String xsdResPath = "/xsd/metadata/Metadonnees.xsd";
+      
+      ClassPathResource ressourceXml = new ClassPathResource(cheminRessourceXml);
+      InputStream xmlStream = ressourceXml.getInputStream();
+
+      ClassPathResource ressourceXsd = new ClassPathResource(xsdResPath);
+      ReferentielMeta ref = XmlUtils.unmarshalStream(ReferentielMeta.class, xmlStream, ressourceXsd);
+      List<MetaReference> metas = ref.getMetaReference();
+      
       List<MetadataReference> metadonneesAcreer = new ArrayList<MetadataReference>();
-
-      // Chargement du fichier CSV du référentiel des métadonnées
-      ClassPathResource resource = new ClassPathResource(nomFichierMetas);
-      CSVReader reader;
       
-      try {
-         reader = new CSVReader(new InputStreamReader(
-               resource.getInputStream(), Charset.forName("UTF-8")), '\t');
-      } catch (IOException e) {
-         throw new MajLotRuntimeException(e);
-      }
-
-      // Gros try/catch des IOException levées par reader.readNext();
-      try {
-
-         // Saute les 2 premières lignes, qui sont des lignes d'en-tête
-         reader.readNext();
-         reader.readNext();
-
-         // Boucle sur la liste des lignes
-         String[] nextLine;
-
-         while ((nextLine = reader.readNext()) != null) {
-
-            // Saute les lignes vides (dues à l'export Excel)
-            if (StringUtils.isBlank(nextLine[0])) {
-               continue;
-            }
-
-            // Création de l'objet "Métadonnée"
-            MetadataReference metadonnee = new MetadataReference();
-            metadonneesAcreer.add(metadonnee);
-
-            // Affectation des propriétés de l'objet à partir du fichier CSV
-
-            // Code long
-            String longCode = readString(nextLine, "A");
-            metadonnee.setLongCode(longCode);
-            LOG.info("METADONNEE : " + longCode);
-
-            // Libellé
-            String label = readString(nextLine, "B");
-            metadonnee.setLabel(label);
-            // LOG.info("lib : " + label);
-
-            // Description
-            String description = readString(nextLine, "C");
-            metadonnee.setDescription(description);
-            // LOG.info("description : " + description);
-
-            // Spécifiable à l'archivage
-            boolean isArchivable = readBoolean(nextLine, "E");
-            metadonnee.setArchivable(isArchivable);
-            // LOG.info("isArchivable : " + isArchivable);
-
-            // Obligatoire à l'archivage
-            boolean requiredForArchival = readBoolean(nextLine, "F");
-            metadonnee.setRequiredForArchival(requiredForArchival);
-            // LOG.info("requiredForArchival : " + requiredForArchival);
-
-            // Consultée par défaut
-            boolean defaultConsultable = readBoolean(nextLine, "G");
-            metadonnee.setDefaultConsultable(defaultConsultable);
-            // LOG.info("defaultConsultable : " + defaultConsultable);
-
-            // Consultable
-            boolean consultable = readBoolean(nextLine, "H");
-            metadonnee.setConsultable(consultable);
-            // LOG.info("consultable : " + consultable);
-
-            // Critère de recherche
-            boolean isSearchable = readBoolean(nextLine, "I");
-            metadonnee.setSearchable(isSearchable);
-            // LOG.info("isSearchable : " + isSearchable);
-
-            // Indexée
-            boolean isIndexed = readBoolean(nextLine, "J");
-            metadonnee.setIsIndexed(isIndexed);
-            // LOG.info("isIndexed : " + isIndexed);
-
-            // Formatage
-            String pattern = ""; // TODO K
-            metadonnee.setPattern(pattern);
-
-            // Taille maximum autorisée en archivage
-            int length = readInt(nextLine, "L");
-            metadonnee.setLength(length);
-            // LOG.info("length : " + length);
-
-            // Nom du dictionnaire
-            String dictionaryName = readString(nextLine, "O");
-            metadonnee.setDictionaryName(dictionaryName);
-            // LOG.info("dictionaryName : " + dictionaryName);
-
-            // Possède un dictionnaire ?
-            boolean hasDictionary = StringUtils.isNotBlank(dictionaryName);
-            metadonnee.setHasDictionary(hasDictionary);
-            // LOG.info("hasDictionary : " + hasDictionary);
-
-            // Diffusable client
-            boolean dispo = readBoolean(nextLine, "Q");
-            // LOG.debug(longCode + " : " + dispo);
-            metadonnee.setClientAvailable(dispo);
-
-            // Code court
-            String shortCode = readString(nextLine, "T");
-            metadonnee.setShortCode(shortCode);
-            // LOG.info("shortCode : " + shortCode);
-
-            // Métadonnée gérée directement par DFCE
-            boolean isInternal = readBoolean(nextLine, "U");
-            metadonnee.setInternal(isInternal);
-            // LOG.info("isInternal : " + isInternal);
-
-            // Type DFCE
-            String typeDfce = readString(nextLine, "W");
-            metadonnee.setType(typeDfce);
-            // LOG.info("typeDfce : " + typeDfce);
-
-            // Obligatoire au stockage
-            boolean requiredForStorage = readBoolean(nextLine, "Y");
-            metadonnee.setRequiredForStorage(requiredForStorage);
-            // LOG.info("requiredForStorage : " + requiredForStorage);
-
-            // Modifiable par le client
-            boolean modifiableParClient = readBoolean(nextLine, "AA");
-            metadonnee.setModifiable(modifiableParClient);
-            // LOG.info("modifiableParClient : " + modifiableParClient);
-
-            // Trim à gauche
-            boolean trimGauche = readBoolean(nextLine, "AC");
-            metadonnee.setLeftTrimable(trimGauche);
-            // LOG.info("trimGauche : " + trimGauche);
-
-            // Trim à droite
-            boolean trimDroite = readBoolean(nextLine, "AD");
-            metadonnee.setRightTrimable(trimDroite);
-            // LOG.debug("trimDroite : " + trimDroite);
-            
-            // Transferable
-            boolean transferable = readBoolean(nextLine, "AE");
-            metadonnee.setTransferable(transferable);
-             LOG.debug("transferable : " + transferable);
-
+      for (int i = 0; i < metas.size(); i++) {
+         
+         MetaReference metaXml = metas.get(i);
+         
+         //-- On ignore les métas qui sont pas "aCreer" ou "aModifier"
+         if(!readBoolean(metaXml.getACreer()) && !readBoolean(metaXml.getAModifier())){
+            continue;
          }
+         
+         MetadataReference metadonnee = new MetadataReference();
+         metadonneesAcreer.add(metadonnee);
+         
+         //-- Code long
+         String longCode = readString(metaXml.getLongCode());
+         metadonnee.setLongCode(longCode);
 
-      } catch (IOException e) {
-         throw new MajLotRuntimeException(e);
+         //-- Code court
+         String shortCode = readString(metaXml.getShortCode());
+         metadonnee.setShortCode(shortCode);
+
+         //-- Type DFCE
+         String typeDfce = readString(metaXml.getType());
+         metadonnee.setType(typeDfce);
+         
+         //-- Libellé
+         String libelle = readString(metaXml.getLabel());
+         metadonnee.setLabel(libelle);
+
+         //-- Description
+         String description = readString(metaXml.getDescription());
+         metadonnee.setDescription(description);
+
+         //-- Spécifiable à l'archivage
+         boolean isArchivable = readBoolean(metaXml.getArchivable());
+         metadonnee.setArchivable(isArchivable);
+
+         //-- Obligatoire à l'archivage
+         boolean requiredForArchival = readBoolean(metaXml.getRequiredForArchival());
+         metadonnee.setRequiredForArchival(requiredForArchival);
+
+         //-- Consultée par défaut
+         boolean defaultConsultable = readBoolean(metaXml.getDefaultConsultable());
+         metadonnee.setDefaultConsultable(defaultConsultable);
+
+         //-- Consultable
+         boolean consultable = readBoolean(metaXml.getConsultable());
+         metadonnee.setConsultable(consultable);
+
+         //-- Critère de recherche
+         boolean isSearchable = readBoolean(metaXml.getSearchable());
+         metadonnee.setSearchable(isSearchable);
+
+         //-- Indexée
+         boolean isIndexed = readBoolean(metaXml.getIsIndexed());
+         metadonnee.setIsIndexed(isIndexed);
+
+         //-- Formatage
+         String pattern = "";
+         metadonnee.setPattern(pattern);
+
+         //-- Taille maximum autorisée en archivage
+         int length = readInt(metaXml.getLength());
+         metadonnee.setLength(length);
+
+         //-- Nom du dictionnaire
+         String dictionaryName = readString(metaXml.getDictionaryName());
+         metadonnee.setDictionaryName(dictionaryName);
+
+         //-- Possède un dictionnaire ?
+         boolean hasDictionary = readBoolean(metaXml.getHasDictionary());
+         metadonnee.setHasDictionary(hasDictionary);
+
+         //-- Diffusable client
+         boolean dispo = readBoolean(metaXml.getClientAvailable());
+         metadonnee.setClientAvailable(dispo);
+         
+         //-- Métadonnée gérée directement par DFCE
+         boolean isInternal = readBoolean(metaXml.getInternal());
+         metadonnee.setInternal(isInternal);
+
+         //-- Obligatoire au stockage
+         boolean requiredForStorage = readBoolean(metaXml.getRequiredForStorage());
+         metadonnee.setRequiredForStorage(requiredForStorage);
+
+         //-- Modifiable par le client
+         boolean modifiableParClient = readBoolean(metaXml.getModifiable());
+         metadonnee.setModifiable(modifiableParClient);
+
+         //-- Trim à gauche
+         boolean trimGauche = readBoolean(metaXml.getLeftTrimable());
+         metadonnee.setLeftTrimable(trimGauche);
+
+         //-- Trim à droite
+         boolean trimDroite = readBoolean(metaXml.getRightTrimable());
+         metadonnee.setRightTrimable(trimDroite);
+         
+         //-- Transferable
+         boolean transferable = readBoolean(metaXml.getTransferable());
+         metadonnee.setTransferable(transferable);
       }
-
-      // Renvoie du résultat
       return metadonneesAcreer;
-
    }
 
-   private int getIndiceColonne(String colonneExcel) {
-
-      // On fera commencer les indices à 0
-      // code Ascii de A = 65
-      // code Ascii de Z = 90
-
-      char colonne;
-      int codeAscii;
-
-      if (colonneExcel.length() == 1) {
-         colonne = colonneExcel.charAt(0);
-         codeAscii = (int) colonne;
-         if ((codeAscii < (int) ('A')) || (codeAscii > (int) ('Z'))) {
-            throw new MajLotRuntimeException(
-                  "Erreur de récupération de l'indice de colonne Excel");
-         }
-         return codeAscii - (int) ('A');
-      }
-
-      if (colonneExcel.length() == 2) {
-         colonne = colonneExcel.charAt(1);
-         codeAscii = (int) colonne;
-         return codeAscii - (int) ('A') + 26;
-      }
-
-      throw new MajLotRuntimeException(
-            "Erreur de récupération de l'indice de colonne Excel");
-
+   private String readString(String str) {
+      return StringUtils.trimToEmpty(str);
    }
-
-   private String readString(String[] nextLine, String colonneExcel) {
-
-      return StringUtils.trimToEmpty(nextLine[getIndiceColonne(colonneExcel)]);
-
-   }
-
-   private boolean readBoolean(String[] nextLine, String colonneExcel) {
-
-      String str = readString(nextLine, colonneExcel);
-
-      if ("oui".equals(str)) {
+   
+   private boolean readBoolean(String boolStr) {
+      String str = readString(boolStr);
+      if ("oui".equalsIgnoreCase(str)) {
          return true;
-      } else if ("non".equals(str)) {
+      } else if ("non".equalsIgnoreCase(str)) {
          return false;
       } else {
-         throw new MajLotRuntimeException("La valeur " + str
-               + " n'est pas convertible en boolean");
+         String msssg = "La valeur " + str + " n'est pas convertible en boolean";
+         throw new MajLotRuntimeException(msssg);
       }
-
    }
-
-   private int readInt(String[] nextLine, String colonneExcel) {
-
-      String str = readString(nextLine, colonneExcel);
-
+   
+   private int readInt(String intStr){
+      String str = readString(intStr);
       if (StringUtils.isBlank(str)) {
          return -1;
       } else {
          return Integer.parseInt(str);
       }
-
    }
 
    /**
@@ -363,21 +352,14 @@ public final class RefMetaInitialisationService {
                metadonnee.getDescription()));
          lines.add("   </metaDataReference>");
       }
-
       lines.add("</referentiel>");
-
+      
       return lines;
-
    }
 
    protected void verification1(List<MetadataReference> metadonnees) {
-
       List<String> lignesGenerees = genereFichierXmlAncienneVersionRefMeta(metadonnees);
-
-      compareDeuxListeLignes("1",
-            "refmeta/MetadataReferential_Lot150100_ameliore.xml",
-            lignesGenerees);
-
+      compareDeuxListeLignes("1", "refmeta/MetadataReferential_Lot150400_ameliore.xml", lignesGenerees);
    }
 
    @SuppressWarnings("unchecked")
@@ -391,7 +373,6 @@ public final class RefMetaInitialisationService {
       InputStream stream = null;
       try {
          stream = resource.getInputStream();
-
          lignesOriginales = (List<String>) IOUtils.readLines(stream, "UTF-8");
       } catch (IOException e) {
          throw new MajLotRuntimeException(e);
@@ -425,7 +406,6 @@ public final class RefMetaInitialisationService {
                   + ". Ligne regénérée : '" + lignesGenerees.get(i)  + "'");
          }
       }
-
    }
 
    /**
@@ -487,36 +467,52 @@ public final class RefMetaInitialisationService {
       return lines;
 
    }
-
-   protected void verification2(List<MetadataReference> metadonnees) {
-
-      List<String> lignesGenerees = genereFichierXmlAncienneVersionBaseDfce(metadonnees);
-
-      compareDeuxListeLignes("2", "refmeta/saeBase_Lot150100_ameliore.xml",
-            lignesGenerees);
-
+   protected List<SaeCategory> genereMetaBaseDfce(List<MetadataReference> metas) {
+      
+      List<SaeCategory> saeCategories = new ArrayList<SaeCategory>();
+      
+      for (MetadataReference meta : metas) {
+         
+         if (!meta.isInternal()) {     
+            SaeCategory saeCat = new SaeCategory();
+            saeCat.setDescriptif(meta.getLongCode());
+            saeCat.setName(meta.getShortCode());
+            saeCat.setDataType(meta.getType());
+            saeCat.setIndex(meta.getIsIndexed());
+            
+            int maxVals = 1;
+            int minVals = (meta.isRequiredForStorage()) ? 1 : 0;
+            saeCat.setMinimumValues(minVals);
+            saeCat.setMinimumValues(maxVals);
+            saeCat.setSingle(false);
+            saeCat.setEnableDictionary(false);      
+            
+            saeCategories.add(saeCat);
+         }
+      } 
+      return saeCategories;
    }
 
-   private void persisteMetadonnees(Keyspace keyspace,
-         List<MetadataReference> metadonnees) {
+   protected void verification2(List<MetadataReference> metadonnees) {
+      List<String> lignesGenerees = genereFichierXmlAncienneVersionBaseDfce(metadonnees);
+      compareDeuxListeLignes("2", "refmeta/saeBase_Lot150400_ameliore.xml", lignesGenerees);
+   }
+
+   private void persisteMetadonnees(Keyspace keyspace, List<MetadataReference> metadonnees) {
 
       LOG.info("Persistence des métadonnées");
-      // Instantiation de la DAO, de son support, et du support des clock
-      // Cassandra
-
+      
+      //-- Instantiation de la DAO, de son support, et du support des clock Cassandra
       SaeMetadataDao metaDao = new SaeMetadataDao(keyspace);
-
       SaeMetadataSupport metaSupport = new SaeMetadataSupport(metaDao);
 
       JobClockConfiguration clockConfiguration = new JobClockConfiguration();
       clockConfiguration.setMaxTimeSynchroError(10000000);
       clockConfiguration.setMaxTimeSynchroWarn(2000000);
 
-      JobClockSupport clockSupport = new JobClockSupportImpl(keyspace,
-            clockConfiguration);
+      JobClockSupport clockSupport = new JobClockSupportImpl(keyspace, clockConfiguration);
 
-      // Création des métadonnées en base Cassandra uniquement (pas dans DFCE)
-
+      //-- Création des métadonnées en base Cassandra uniquement (pas dans DFCE)
       for (MetadataReference metadonnee : metadonnees) {
          if (metaSupport.find(metadonnee.getLongCode()) != null) {
             metaSupport.modify(metadonnee, clockSupport.currentCLock());
@@ -524,7 +520,6 @@ public final class RefMetaInitialisationService {
             metaSupport.create(metadonnee, clockSupport.currentCLock());
          }
       }
-
    }
 
 }

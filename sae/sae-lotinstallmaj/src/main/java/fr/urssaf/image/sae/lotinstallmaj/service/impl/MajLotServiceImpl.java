@@ -12,6 +12,7 @@ import net.docubase.toolkit.model.ToolkitFactory;
 import net.docubase.toolkit.model.base.Base;
 import net.docubase.toolkit.model.base.BaseCategory;
 import net.docubase.toolkit.model.reference.Category;
+import net.docubase.toolkit.model.reference.CompositeIndex;
 import net.docubase.toolkit.model.reference.LifeCycleRule;
 import net.docubase.toolkit.service.ServiceProvider;
 import net.docubase.toolkit.service.administration.BaseAdministrationService;
@@ -31,6 +32,7 @@ import fr.urssaf.image.sae.lotinstallmaj.modele.CassandraConfig;
 import fr.urssaf.image.sae.lotinstallmaj.modele.DataBaseModel;
 import fr.urssaf.image.sae.lotinstallmaj.modele.SaeCategory;
 import fr.urssaf.image.sae.lotinstallmaj.service.MajLotService;
+import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 
 /**
  * Opérations de mise à jour du SAE.
@@ -47,6 +49,7 @@ public final class MajLotServiceImpl implements MajLotService {
    public static final String CASSANDRA_121110 = "CASSANDRA_121110";
    public static final String CASSANDRA_140700 = "CASSANDRA_140700";
    public static final String CASSANDRA_150100 = "CASSANDRA_150100";
+   public static final String CASSANDRA_DFCE_150400 = "CASSANDRA_DFCE_150400";
    public static final String META_SEPA = "META_SEPA";
    public static final String META_130400 = "META_130400";
    public static final String META_150100 = "META_150100";
@@ -148,6 +151,12 @@ public final class MajLotServiceImpl implements MajLotService {
          // CodePartenaire et DateArchivageGNT
          updateMeta("meta150100.xml", "META_150100");
 
+      } else if (CASSANDRA_DFCE_150400.equalsIgnoreCase(nomOperation)) {
+         //-- Mise à jour cassandra
+         updateCassandra150400();
+         //-- Mise à jour DFCE
+         updateMetaDfce("META_150400");
+
       } else if (DFCE_150400.equalsIgnoreCase(nomOperation)) {
 
          updateDFCE150400();
@@ -176,12 +185,17 @@ public final class MajLotServiceImpl implements MajLotService {
     * Connexion à DFCE
     */
    private void connectDfce() {
-
       serviceProvider.connect(dfceConfig.getLogin(), dfceConfig.getPassword(),
             dfceConfig.getUrlToolkit(), dfceConfig.getTimeout());
-
    }
 
+   /**
+    * Déconnexion à DFCE
+    */
+   private void disconnectDfce() {   
+      serviceProvider.disconnect();
+   }
+   
    /**
     * Mise à jour de la base métier pour la métadonnée CodeActivite à rendre non
     * obligatoire.
@@ -354,17 +368,26 @@ public final class MajLotServiceImpl implements MajLotService {
       updater.updateToVersion8();
       LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
    }
+   
+   /**
+    * Pour lot 150400 du SAE : mise à jour du keyspace "SAE" dans cassandra, en
+    * version 9
+    */
+   private void updateCassandra150400() {
+      LOG
+      .info("Début de l'opération : mise à jour du keyspace SAE pour le lot 150400");
+      // Récupération de la chaîne de connexion au cluster cassandra
+      updater.updateToVersion9();
+      LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
+   }
 
    /**
     * Ajout des droits GED
     */
    private void updateCassandraDroitsGed() {
-
-      LOG
-            .info("Début de l'opération : Lot 130700 - Mise à jour du keyspace SAE");
+      LOG.info("Début de l'opération : Lot 130700 - Mise à jour du keyspace SAE");
       gedUpdater.updateAuthorizationAccess();
       LOG.info("Fin de l'opération : Lot 130700 - Mise à jour du keyspace SAE");
-
    }
 
    /**
@@ -387,7 +410,7 @@ public final class MajLotServiceImpl implements MajLotService {
 
          LOG.info("- fin de récupération des catégories à ajouter");
 
-         // connexion a DFCE
+         //-- connexion a DFCE
          connectDfce();
 
          Base base = serviceProvider.getBaseAdministrationService().getBase(
@@ -443,6 +466,24 @@ public final class MajLotServiceImpl implements MajLotService {
 
       LOG.info("Fin de l'opération : ajout des métadonnées au document");
    }
+   
+   private void updateMetaDfce(String operation) {
+      
+      //-- Récupération de la liste des métadonnées
+      LOG.debug("Lecture du fichier XML contenant les métadonnées à ajouter - Début");
+      RefMetaInitialisationService service = updater.getRefMetaInitService();
+      List<MetadataReference> metadonnees = service.getListMetas();
+      
+      LOG.info("Début de l'opération : Création des nouvelles métadonnées ({})", operation);
+      
+      //-- Mise à jour des métas
+      updateBaseDfce(service.genereMetaBaseDfce(metadonnees));
+      
+      //-- Crétion des indexes composites
+      createIndexesComposite(service.getIndexesComposites());
+      
+      LOG.info("Fin de l'opération : Création des nouvelles métadonnées ({})", operation);
+   }
 
    /**
     * Ajout de métadonnées dans DFCE à partir d'un fichier xml contenant les
@@ -452,15 +493,20 @@ public final class MajLotServiceImpl implements MajLotService {
     *           le fichier contenant les métadonnées
     * @param nomOperation
     *           Nom de la commande pour affichage dans les traces
+    *           
+    * @deprecated : Utilier updateBaseDfce() à la place désormais
+    * 
     */
    private void updateMeta(String fichierlisteMeta, String nomOperation) {
-
-      LOG.info(
-            "Début de l'opération : Création des nouvelles métadonnées ({})",
+      
+      //-- connexion a DFCE
+      connectDfce();
+      
+      LOG.info("Début de l'opération : Création des nouvelles métadonnées ({})",
             nomOperation);
 
-      LOG
-            .debug("Lecture du fichier XML contenant les métadonnées à ajouter - Début");
+      LOG.debug("Lecture du fichier XML contenant les métadonnées à ajouter - Début");
+      
       XStream xStream = new XStream();
       xStream.processAnnotations(DataBaseModel.class);
       Reader reader = null;
@@ -469,59 +515,20 @@ public final class MajLotServiceImpl implements MajLotService {
       try {
          stream = context.getResource(fichierlisteMeta).getInputStream();
          reader = new InputStreamReader(stream, Charset.forName("UTF-8"));
-         DataBaseModel model = DataBaseModel.class
-               .cast(xStream.fromXML(reader));
+         DataBaseModel model = DataBaseModel.class.cast(xStream.fromXML(reader));
 
-         LOG
-               .debug("Lecture du fichier XML contenant les métadonnées à ajouter - Fin");
+         LOG.debug("Lecture du fichier XML contenant les métadonnées à ajouter - Fin");
 
-         // connexion a DFCE
-         connectDfce();
-
-         Base base = serviceProvider.getBaseAdministrationService().getBase(
-               dfceConfig.getBaseName());
-
-         final List<BaseCategory> baseCategories = new ArrayList<BaseCategory>();
-         final ToolkitFactory toolkit = ToolkitFactory.getInstance();
-
-         LOG.debug("Création des métadonnées dans DFCE - Début");
-
-         for (SaeCategory category : model.getDataBase().getSaeCategories()
-               .getCategories()) {
-
-            // Test de l'existence de la métadonnée dans DFCE
-            if (serviceProvider.getStorageAdministrationService().getCategory(
-                  category.getName()) == null) {
-               final Category categoryDfce = serviceProvider
-                     .getStorageAdministrationService().findOrCreateCategory(
-                           category.getName(), category.categoryDataType());
-               final BaseCategory baseCategory = toolkit.createBaseCategory(
-                     categoryDfce, category.isIndex());
-               baseCategory.setEnableDictionary(category.isEnableDictionary());
-               baseCategory.setMaximumValues(category.getMaximumValues());
-               baseCategory.setMinimumValues(category.getMinimumValues());
-               baseCategory.setSingle(category.isSingle());
-               baseCategories.add(baseCategory);
-               LOG.info("La métadonnée {} va être ajoutée.", category
-                     .getDescriptif());
-            } else {
-               LOG.info("La métadonnée {} existe déjà.", category
-                     .getDescriptif());
-            }
-         }
-
-         for (BaseCategory baseCategory : baseCategories) {
-            base.addBaseCategory(baseCategory);
-         }
-
-         serviceProvider.getBaseAdministrationService().updateBase(base);
-
-         LOG.debug("Création des métadonnées dans DFCE - Fin");
+         //-- MAJ des métadonnées dans DFCE 
+         List<SaeCategory> categories;
+         categories = model.getDataBase().getSaeCategories().getCategories();
+         updateBaseDfce(categories);
+         LOG.debug("MAJ des métadonnées dans DFCE - Fin");
 
       } catch (IOException e) {
          LOG.warn("impossible de récupérer le fichier contenant les données");
       } finally {
-         if (reader != null) {
+         if(reader != null) {
             try {
                reader.close();
             } catch (IOException e) {
@@ -529,20 +536,126 @@ public final class MajLotServiceImpl implements MajLotService {
             }
          }
 
-         if (stream != null) {
+         if(stream != null) {
             try {
                stream.close();
             } catch (IOException e) {
                LOG.debug("impossible de fermer le flux de données");
             }
-
          }
-
          serviceProvider.disconnect();
       }
 
       LOG
             .info("Fin de l'opération : Création des nouvelles métadonnées ({})", nomOperation);
+   }
+   
+   
+   private void updateBaseDfce(List<SaeCategory> categories){
+      
+      try{
+         //-- Ouverture connexion DFCE
+         connectDfce();
+            
+         String baseName = dfceConfig.getBaseName();
+         Base base = serviceProvider.getBaseAdministrationService().getBase(baseName);
+
+         final ToolkitFactory toolkit = ToolkitFactory.getInstance();
+   
+         LOG.debug("Création des métadonnées dans DFCE - Début");
+   
+         for (SaeCategory category : categories) {
+            
+            StorageAdministrationService service;
+            service = serviceProvider.getStorageAdministrationService();
+   
+            //-- Test de l'existence de la métadonnée dans DFCE
+            Category catFound = service.getCategory(category.getName());
+            
+            if(catFound == null){
+               
+               //-- Création de la catégory
+               
+               final Category categoryDfce = service.findOrCreateCategory(
+                  category.getName(), 
+                  category.categoryDataType());
+               
+               final BaseCategory baseCategory = toolkit.createBaseCategory(
+                  categoryDfce, category.isIndex());
+               
+               baseCategory.setEnableDictionary(category.isEnableDictionary());
+               baseCategory.setMaximumValues(category.getMaximumValues());
+               baseCategory.setMinimumValues(category.getMinimumValues());
+               baseCategory.setSingle(category.isSingle());             
+               base.addBaseCategory(baseCategory);
+               
+               LOG.info("La métadonnée {} ser ajoutee.", category.getDescriptif());
+            } else {
+               
+               //-- Mise à jour de la catégory
+               
+               final BaseCategory baseCategory = base.getBaseCategory(catFound.getName());
+               
+               baseCategory.setEnableDictionary(category.isEnableDictionary());
+               baseCategory.setMaximumValues(category.getMaximumValues());
+               baseCategory.setMinimumValues(category.getMinimumValues());
+               baseCategory.setSingle(category.isSingle());
+               baseCategory.setIndexed(category.isIndex());
+               
+               LOG.info("La métadonnée {} existe :elle sera mise a jour", category.getDescriptif());
+            }
+         }
+         serviceProvider.getBaseAdministrationService().updateBase(base);
+      } finally {
+         //-- Fermeture connexion DFCE
+         disconnectDfce();
+      }
+   }
+   
+   /**
+    * Création des indexes composites à partir d'une liste de nomn d'indexes.
+    * 
+    *
+    * @param indexes Liste contenant des tableau de code courts de méta 
+    *          Chaque tableau de codes meta correspond à la composition de 
+    *          l'indexe composite à créer.
+    */
+   private void createIndexesComposite(List<String[]> indexes){
+      
+      //-- dcfe connect
+      connectDfce();
+      
+      StorageAdministrationService storageAdminService;
+      storageAdminService = serviceProvider.getStorageAdministrationService();
+      
+      for(String[] metas : indexes) {
+         
+         StringBuffer nomIndex = new StringBuffer();
+         Category[] categories = new Category[metas.length] ;       
+         
+         for (int i=0; i<metas.length; i++) {
+            String meta = metas[i];
+            Category category = storageAdminService.getCategory(meta);
+            
+            if (category != null) {
+               LOG.info("Category {} récupérée", category.getName());
+            } else {
+               LOG.error("Impossible de récupérer la Category pour code {}", meta);
+               throw new MajLotRuntimeException("La category '" + meta + "' n'a pas ete trouvee");
+            }
+            categories[i] = category;
+            nomIndex.append(meta);
+            nomIndex.append('&');
+         }
+         
+         //-- creation de l'index composite
+         LOG.info("Creation de l'index composite {}", nomIndex);
+         CompositeIndex indexComposite = storageAdminService.findOrCreateCompositeIndex(categories);
+         if (indexComposite == null) {
+            String mssgErreur = "Impossible de créer l'index composite: "+ nomIndex;
+            throw new MajLotRuntimeException(mssgErreur);
+         }
+      }
    }
 
    /**
@@ -587,6 +700,7 @@ public final class MajLotServiceImpl implements MajLotService {
       updater.updateToVersion6();
       updater.updateToVersion7();
       updater.updateToVersion8();
+      updater.updateToVersion9();
    }
 
 }

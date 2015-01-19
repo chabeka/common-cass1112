@@ -1,20 +1,20 @@
 package fr.urssaf.image.sae.lotinstallmaj.service.impl;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.JAXBException;
+
 import junit.framework.Assert;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.xml.sax.SAXException;
 
-import fr.urssaf.image.sae.lotinstallmaj.exception.MajLotRuntimeException;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -25,72 +25,60 @@ public class RefMetaInitialisationServiceTest {
    private RefMetaInitialisationService refMetaService;
 
    @Test
-   public void chargeFichierMeta_test() {
+   public void chargeFichierMeta_test() throws JAXBException, SAXException, IOException {
 
       List<MetadataReference> metadonnees = refMetaService.chargeFichierMeta();
-
-      Assert.assertEquals("Le nombre de métadonnées attendu est incorrect", 57,
+      Assert.assertEquals("Le nombre de métadonnées attendu est incorrect", 98,
             metadonnees.size());
-
    }
 
    @Test
-   public void genereFichierXmlAncienneVersion_test() {
+   public void genereFichierXmlAncienneVersion_test() throws JAXBException, SAXException, IOException {
 
       List<MetadataReference> metadonnees = refMetaService.chargeFichierMeta();
 
       List<String> lignes = refMetaService
             .genereFichierXmlAncienneVersionRefMeta(metadonnees);
+       
+//       try {
+//          //-- Ecriture dans un fichier temporaire, pour mieux visualiser
+//          File fileTemp = new File("c:/divers/refmeta_verif1.xml");
+//          FileUtils.writeLines(fileTemp, lignes);
+//       } catch (IOException e) {
+//          throw new MajLotRuntimeException(e);
+//       }
 
-       //Ecriture dans un fichier temporaire, pour mieux visualiser
-       try {
-       File fileTemp = new File("c:/divers/refmeta_verif1.xml");
-       FileUtils.writeLines(fileTemp, lignes);
-       } catch (IOException e) {
-       throw new MajLotRuntimeException(e);
-       }
-
-      Assert.assertEquals("Le nombre de lignes attendu est incorrect", 915,
-            lignes.size());
-
+      Assert.assertEquals("Le nombre de lignes attendu est incorrect", 1571, lignes.size());
    }
 
    @Test
-   public void verification1_test() {
-
+   public void verification1_test() throws JAXBException, SAXException, IOException {
       List<MetadataReference> metadonnees = refMetaService.chargeFichierMeta();
-
       refMetaService.verification1(metadonnees);
    }
 
    @Test
-   public void genereFichierXmlAncienneVersionBaseDfce_test() {
+   public void genereFichierXmlAncienneVersionBaseDfce_test() throws JAXBException, SAXException, IOException {
 
       List<MetadataReference> metadonnees = refMetaService.chargeFichierMeta();
 
       List<String> lignes = refMetaService
             .genereFichierXmlAncienneVersionBaseDfce(metadonnees);
-
-       //Ecriture dans un fichier temporaire, pour mieux visualiser
+       
 //       try {
-//       File fileTemp = new File("c:/divers/refmeta_verif2.xml");
-//       FileUtils.writeLines(fileTemp, lignes);
+//          //-- Ecriture dans un fichier temporaire, pour mieux visualiser
+//          File fileTemp = new File("c:/divers/refmeta_verif2.xml");
+//          FileUtils.writeLines(fileTemp, lignes);
 //       } catch (IOException e) {
-//       throw new MajLotRuntimeException(e);
+//          throw new MajLotRuntimeException(e);
 //       }
-      
-     // int nbLignes = nb meta internal * 10 + 7;
 
-      Assert.assertEquals("Le nombre de lignes attendu est incorrect", 407,
-            lignes.size());
-
+      Assert.assertEquals("Le nombre de lignes attendu est incorrect", 817, lignes.size());
    }
 
    @Test
-   public void verification2_test() {
-
+   public void verification2_test() throws JAXBException, SAXException, IOException {
       List<MetadataReference> metadonnees = refMetaService.chargeFichierMeta();
-
       refMetaService.verification2(metadonnees);
    }
 
@@ -100,13 +88,15 @@ public class RefMetaInitialisationServiceTest {
     * Il s'agit de générer le dataset du Cassandra local à partir du fichier des
     * métadonnées utilisé par RefMetaInitialisationService. Et ceci afin
     * d'éviter les erreurs de saisie !
+    * @throws IOException 
+    * @throws SAXException 
+    * @throws JAXBException 
     */
    @Test
    //@Ignore("Ceci n'est pas un vrai TU")
-   public void genereDatasetCassandraLocal() {
+   public void genereDatasetCassandraLocal() throws JAXBException, SAXException, IOException {
 
       List<MetadataReference> metadonnees = refMetaService.chargeFichierMeta();
-
       List<String> dataSet = new ArrayList<String>();
 
       for (MetadataReference metadonnee : metadonnees) {
@@ -204,14 +194,25 @@ public class RefMetaInitialisationServiceTest {
          dataSet.add("");
       }
 
-      // Ecriture dans un fichier temporaire, pour mieux visualiser
-      try {
-         File fileTemp = new File("c:/divers/bout-de-dataset-metadata.xml");
-         FileUtils.writeLines(fileTemp, dataSet);
-      } catch (IOException e) {
-         throw new MajLotRuntimeException(e);
-      }
+//      // Ecriture dans un fichier temporaire, pour mieux visualiser
+//      try {
+//         File fileTemp = new File("c:/divers/bout-de-dataset-metadata.xml");
+//         FileUtils.writeLines(fileTemp, dataSet);
+//      } catch (IOException e) {
+//         throw new MajLotRuntimeException(e);
+//      }
 
+   }
+   
+   @Test
+   public void chargerFichierIdxCompositesTest() throws IOException, JAXBException, SAXException{
+      String message = "";
+      
+      List<String[]> indexes = refMetaService.chargerFichierIdxComposites();  
+      
+      //-- Test version 1.0 du fichiers des indexes composites
+      message = "Le nombre d'indexes attendu (fichier v1.0) est incorrect";
+      Assert.assertEquals(message, indexes.size(), 16);
    }
 
    private String boolToStringForDataset(boolean value) {
@@ -225,5 +226,4 @@ public class RefMetaInitialisationServiceTest {
    private String intToStringForDataset(int value) {
       return "integer(" + value + ")";
    }
-
 }

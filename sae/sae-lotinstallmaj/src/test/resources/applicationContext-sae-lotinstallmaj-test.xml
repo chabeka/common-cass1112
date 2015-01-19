@@ -19,6 +19,11 @@
       factory-method="load">
       <constructor-arg ref="saeConfigResource" />
    </bean>
+   
+   <bean id="dfceConnectionService "
+      class="fr.urssaf.image.commons.dfce.service.impl.DFCEConnectionServiceImpl">
+      <constructor-arg ref="dfceConfig" />
+   </bean>
 
    <!-- Création du bean de connexion à DFCE -->
    <bean id="dfceConfig"

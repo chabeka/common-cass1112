@@ -1,11 +1,6 @@
 package fr.urssaf.image.sae.lotinstallmaj.service.impl;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import me.prettyprint.cassandra.model.BasicColumnDefinition;
@@ -22,7 +17,6 @@ import me.prettyprint.hector.api.factory.HFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.lotinstallmaj.dao.SAECassandraDao;
@@ -41,9 +35,10 @@ public class SAECassandraUpdater {
    private static final int VERSION_6 = 6;
    private static final int VERSION_7 = 7;
    private static final int VERSION_8 = 8;
+   private static final int VERSION_9 = 9;
 
-   private static final String REFERENTIEL_FORMAT = "ReferentielFormat";
    private static final String DROIT_PAGMF = "DroitPagmf";
+   private static final String REFERENTIEL_FORMAT = "ReferentielFormat";
    private static final String DROIT_FORMAT_CONTROL_PROFIL = "DroitFormatControlProfil";
 
    private final String ksName;
@@ -58,9 +53,14 @@ public class SAECassandraUpdater {
 
    @Autowired
    private RefMetaInitialisationService refMetaInitService;
-
-   @Autowired
-   private ApplicationContext context;
+   
+   /**
+    * Getter sur le le service d'initialisatin des métas
+    * @return
+    */
+   public RefMetaInitialisationService getRefMetaInitService() {
+      return refMetaInitService;
+   }
 
    /**
     * Constructeur
@@ -73,7 +73,6 @@ public class SAECassandraUpdater {
       this.saeCassandraService = saeCassandraService;
       cluster = saeCassandraService.getCluster();
       ksName = saeCassandraService.getKeySpaceName();
-
    }
 
    /**
@@ -564,53 +563,27 @@ public class SAECassandraUpdater {
    }
    
    /**
-    * Methode permettant de lire le fichier passé en entrée et de retourner la
-    * liste des codes long des Metadata. Cette liste servira pour l'ajout d'une
-    * colonne pour ces metadonnées.
-    * 
-    * @param fichierlisteMeta
-    *           nom du fichier à lire
-    * @return List<String> : liste des code long des métadonnées
+    * Version 9 :
+    * <li>Création des metadonnées Sicomor</li>
     */
-   private List<String> getRowsToUpdateMetaForVersion7(String fichierlisteMeta) {
-      InputStream stream = null;
-      BufferedReader reader = null;
-      List<String> listeCodeLong = new ArrayList<String>();
+   public void updateToVersion9() {
 
-      try {
-         stream = context.getResource(fichierlisteMeta).getInputStream();
-         reader = new BufferedReader(new InputStreamReader(stream));
-
-         // on lit le fichier ligne à ligne
-         // (en principe, il n'y a qu'une ligne)
-         String ligne;
-         while ((ligne = reader.readLine()) != null) {
-            // pour chaque ligne, on recupere chaque code long
-            // (pour info, sur chaque ligne, les codes long sont séparés par des
-            // virgules)
-            Collections.addAll(listeCodeLong, ligne.split(","));
-         }
-      } catch (IOException e) {
-         LOG.warn("impossible de récupérer le fichier contenant les données");
-      } finally {
-         if (reader != null) {
-            try {
-               reader.close();
-            } catch (IOException e) {
-               LOG.debug("impossible de fermer le reader");
-            }
-         }
-
-         if (stream != null) {
-            try {
-               stream.close();
-            } catch (IOException e) {
-               LOG.debug("impossible de fermer le flux de données");
-            }
-
-         }
+      long version = saeDao.getDatabaseVersion();
+      if (version >= VERSION_9) {
+         LOG.info("La base de données est déja en version " + version);
+         return;
       }
-      return listeCodeLong;
-   }
 
+      LOG.info("Mise à jour du keyspace SAE en version 9");
+
+      //-- On se connecte au keyspace
+      saeDao.connectToKeySpace();
+
+      //-- Initialisation du référentiel des métadonnées
+      // suite au passage à un stockage du référentiel en bdd
+      refMetaInitService.initialiseRefMeta(saeDao.getKeyspace());
+      
+      // On positionne la version à 9
+      saeDao.setDatabaseVersion(VERSION_9);
+   }
 }

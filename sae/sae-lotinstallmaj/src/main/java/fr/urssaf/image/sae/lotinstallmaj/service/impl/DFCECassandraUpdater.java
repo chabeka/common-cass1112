@@ -62,8 +62,7 @@ public class DFCECassandraUpdater {
       credentials = new HashMap<String, String>();
       credentials.put("username", config.getLogin());
       credentials.put("password", config.getPassword());
-      CassandraHostConfigurator chc = new CassandraHostConfigurator(config
-            .getHosts());
+      CassandraHostConfigurator chc = new CassandraHostConfigurator(config.getHosts());
       cluster = HFactory.getOrCreateCluster("SAECluster", chc, credentials);
    }
 

@@ -151,14 +151,15 @@ public class MainValidation {
          return;
       if (MajLotServiceImpl.META_150100.equalsIgnoreCase(nomOperation))
          return;
+      if (MajLotServiceImpl.CASSANDRA_DFCE_150400.equalsIgnoreCase(nomOperation))
+         return;
       if (MajLotServiceImpl.DFCE_150400.equalsIgnoreCase(nomOperation))
          return;
       // TODO : Traiter le cas de la mise à jour de la durée de conservation de
       // 3.1.3.1.1 (en attente du JIRA CRTL-81)
 
       // Opération non trouvée
-      String message = String.format("Erreur : Opération inconnue : %s",
-            nomOperation);
+      String message = String.format("Erreur : Opération inconnue : %s", nomOperation);
       LOG.warn(message);
       throw new MajLotGeneralException(message);
    }
