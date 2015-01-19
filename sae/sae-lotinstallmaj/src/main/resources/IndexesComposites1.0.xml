@@ -56,11 +56,6 @@
 		<ns1:aCreer>oui</ns1:aCreer>
 	</ns1:indexReference>
 	<ns1:indexReference>
-		<ns1:nom>SiteAcquisition-CodeRnd-NumeroFactureFournisseur</ns1:nom>
-		<ns1:composition>sac:SM_DOCUMENT_TYPE:nff</ns1:composition>
-		<ns1:aCreer>oui</ns1:aCreer>
-	</ns1:indexReference>
-	<ns1:indexReference>
 		<ns1:nom>SiteAcquisition-CodeRnd-NumeroFournisseur</ns1:nom>
 		<ns1:composition>sac:SM_DOCUMENT_TYPE:nor</ns1:composition>
 		<ns1:aCreer>oui</ns1:aCreer>

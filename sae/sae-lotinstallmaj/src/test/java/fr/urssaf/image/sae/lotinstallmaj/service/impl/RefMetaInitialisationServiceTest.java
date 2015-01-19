@@ -212,7 +212,7 @@ public class RefMetaInitialisationServiceTest {
       
       //-- Test version 1.0 du fichiers des indexes composites
       message = "Le nombre d'indexes attendu (fichier v1.0) est incorrect";
-      Assert.assertEquals(message, indexes.size(), 16);
+      Assert.assertEquals(message, indexes.size(), 15);
    }
 
    private String boolToStringForDataset(boolean value) {
