@@ -483,7 +483,7 @@ public final class RefMetaInitialisationService {
             int maxVals = 1;
             int minVals = (meta.isRequiredForStorage()) ? 1 : 0;
             saeCat.setMinimumValues(minVals);
-            saeCat.setMinimumValues(maxVals);
+            saeCat.setMaximumValues(maxVals);
             saeCat.setSingle(false);
             saeCat.setEnableDictionary(false);      
             
