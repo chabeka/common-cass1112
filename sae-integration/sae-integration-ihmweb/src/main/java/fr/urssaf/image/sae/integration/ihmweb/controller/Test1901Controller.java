@@ -105,7 +105,7 @@ public class Test1901Controller extends
       viForm.setAudience(SaeIntegrationConstantes.VI_DEFAULT_AUDIENCE);
       PagmList pagmList = new PagmList();
       viForm.setPagms(pagmList);
-      pagmList.add("INT_PAGM_CS_TRANSFERT");
+      pagmList.add("INT_PAGM_CS_TRANSFERT_TRANSFERT");
 
       return formulaire;
    }
@@ -123,7 +123,7 @@ public class Test1901Controller extends
       else if ("2".equals(etape)) {
          transfert(formulaire.getUrlServiceWeb(), formulaire.getTransfert(), formulaire.getViFormulaire());
          PagmList pagmList = new PagmList();
-         pagmList.add("INT_PAGM_CS_RECHERCHE");
+         pagmList.add("INT_PAGM_CS_TRANSFERT_RECHERCHE");
          formulaire.getViFormulaire().setPagms(pagmList);
       } 
       else if ("3".equals(etape)) {

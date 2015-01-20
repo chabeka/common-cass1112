@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import fr.urssaf.image.sae.integration.ihmweb.config.TestConfig;
 import fr.urssaf.image.sae.integration.ihmweb.constantes.SaeIntegrationConstantes;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureUnitaireFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
@@ -36,13 +35,9 @@ import fr.urssaf.image.sae.integration.ihmweb.service.dfce.DfceService;
 @RequestMapping(value = "test1952")
 public class Test1952Controller extends
       AbstractTestWsController<TestWsTransfertFormulaire> {
-
    
    @Autowired
    DfceService dfceService;
-   
-   @Autowired
-   private TestConfig testConfig;
    
    /**
     * {@inheritDoc}
@@ -121,7 +116,7 @@ public class Test1952Controller extends
       viForm.setAudience(SaeIntegrationConstantes.VI_DEFAULT_AUDIENCE);
       PagmList pagmList = new PagmList();
       viForm.setPagms(pagmList);
-      pagmList.add("INT_PAGM_CS_TRANSFERT");
+      pagmList.add("INT_PAGM_CS_TRANSFERT_TRANSFERT");
 
       return formulaire;
    }
@@ -143,7 +138,7 @@ public class Test1952Controller extends
          //-- On transfert le document
          transfert(formulaire.getUrlServiceWeb(), formulaire.getTransfert(), formulaire.getViFormulaire());
          PagmList pagmList = new PagmList();
-         pagmList.add("INT_PAGM_CS_RECHERCHE");
+         pagmList.add("INT_PAGM_CS_TRANSFERT_RECHERCHE");
          formulaire.getViFormulaire().setPagms(pagmList);
       } 
       else if ("3".equals(etape)) {
@@ -249,7 +244,7 @@ public class Test1952Controller extends
       ServiceProvider serviceProvider = dfceService.getConnectedServiceProvider();
       
       try{
-         String baseDfce = testConfig.getDfceBase();
+         String baseDfce = getTestConfig().getDfceBase();
          final SearchService searchService = serviceProvider.getSearchService();
          final Base base = serviceProvider.getBaseAdministrationService().getBase(baseDfce);
          

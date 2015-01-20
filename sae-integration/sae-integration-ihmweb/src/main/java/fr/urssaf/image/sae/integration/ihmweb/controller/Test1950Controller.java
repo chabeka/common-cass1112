@@ -52,7 +52,7 @@ public class Test1950Controller extends
       viForm.setAudience(SaeIntegrationConstantes.VI_DEFAULT_AUDIENCE);
       PagmList pagmList = new PagmList();
       viForm.setPagms(pagmList);
-      pagmList.add("INT_PAGM_CS_TRANSFERT");
+      pagmList.add("INT_PAGM_CS_TRANSFERT_TRANSFERT");
 
       return formulaire;
    }

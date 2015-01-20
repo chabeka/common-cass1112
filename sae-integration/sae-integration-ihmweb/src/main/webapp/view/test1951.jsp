@@ -34,6 +34,14 @@
 				objetFormulaire="${formulaire.transfert}"
 				pathFormulaire="transfert" />
 				
+			<sae:recherche numeroEtape="3"
+				objetFormulaire="${formulaire.recherche}" pathFormulaire="recherche"
+				readonly="false" />
+				
+			<sae:recherche numeroEtape="4"
+				objetFormulaire="${formulaire.rechercheGns}" pathFormulaire="rechercheGns"
+				readonly="false" />
+								
 			<sae:soapMessages objetFormulaire="${formulaire.soapFormulaire}" />
 		   
 		</form:form>
