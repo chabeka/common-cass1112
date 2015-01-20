@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -74,6 +75,7 @@ public class SAESearchServiceImplDatasTest {
    private SAECaptureService service;
 
    @Autowired
+   @Qualifier("SAEServiceTestProvider")
    private SAEServiceTestProvider testProvider;
 
    private UUID uuid;
@@ -127,12 +129,12 @@ public class SAESearchServiceImplDatasTest {
 
       AuthenticationContext.setAuthenticationToken(null);
 
-      ecdeTestTools.cleanEcdeTestDocument(ecde);
-
+      if (ecde != null) {
+         ecdeTestTools.cleanEcdeTestDocument(ecde);
+      }
    }
 
    @Test
-   @Ignore
    public final void searchSuccessWithoutResult() throws SAESearchServiceEx,
          MetaDataUnauthorizedToSearchEx, MetaDataUnauthorizedToConsultEx,
          UnknownDesiredMetadataEx, UnknownLuceneMetadataEx, SyntaxLuceneEx,
@@ -211,5 +213,24 @@ public class SAESearchServiceImplDatasTest {
             "CodeOrganismeGestionnaire:UR750", new ArrayList<String>());
 
       Assert.assertEquals("1 document attendu", 1, documents.size());
+   }
+   
+   /**
+    * Cas de test: Appel du service de recherche avec une requête Lucene<br>
+    * dont la valeur commence par une étoile<br>
+    * Résultat attendu: La recherche se passe bien mais ne ramène aucun document
+    */
+   @Test
+   public final void searchSuccessWithoutResultReqEtoile() throws SAESearchServiceEx,
+         MetaDataUnauthorizedToSearchEx, MetaDataUnauthorizedToConsultEx,
+         UnknownDesiredMetadataEx, UnknownLuceneMetadataEx, SyntaxLuceneEx {
+
+      String requete = "Siret:*987654321";
+
+      List<String> listMetaDesiree = Arrays.asList("Titre");
+
+      List<UntypedDocument> documents = saeSearchService.search(requete, listMetaDesiree);
+
+      Assert.assertTrue("pas d'UntypedDocuments attendus", documents.isEmpty());
    }
 }

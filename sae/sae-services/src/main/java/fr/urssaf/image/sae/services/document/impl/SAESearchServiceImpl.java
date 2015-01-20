@@ -285,6 +285,7 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
       Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_CURRENT);
       QueryParser queryParser = new QueryParser(Version.LUCENE_CURRENT,
             StringUtils.EMPTY, analyzer);
+      queryParser.setAllowLeadingWildcard(true);
       try {
          queryParser.parse(requete);
       } catch (ParseException except) {
