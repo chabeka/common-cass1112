@@ -155,7 +155,7 @@ public class Test1951Controller extends
 
    private void transfert(String urlWebService, TransfertFormulaire formulaire, ViFormulaire viParams) {
       //-- Appel de la méthode de test
-      String refSoapFault = "sae_ArchiveNonTrouveeTransfert";
+      String refSoapFault = "sae_ErreurInterneTransfert";
       String[] args = new String[] {formulaire.getIdDocument().toString()};
       getTransfertTestService().appelWsOpTransfertSoapFault(urlWebService , formulaire, viParams, refSoapFault, args);
    }
