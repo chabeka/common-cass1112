@@ -8,7 +8,6 @@ import java.util.List;
 
 import junit.framework.Assert;
 import net.docubase.toolkit.model.ToolkitFactory;
-import net.docubase.toolkit.model.document.Document;
 import net.docubase.toolkit.model.search.SearchQuery;
 import net.docubase.toolkit.model.search.SearchResult;
 import net.docubase.toolkit.service.ged.SearchService;

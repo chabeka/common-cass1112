@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -19,9 +20,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import fr.urssaf.image.sae.bo.model.AbstractMetadata;
 import fr.urssaf.image.sae.bo.model.MetadataError;
 import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
+import fr.urssaf.image.sae.bo.model.untyped.PaginatedUntypedDocuments;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
+import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
+import fr.urssaf.image.sae.bo.model.untyped.UntypedRangeMetadata;
 import fr.urssaf.image.sae.building.services.BuildService;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.droit.service.PrmdService;
@@ -41,6 +46,7 @@ import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedT
 import fr.urssaf.image.sae.services.exception.search.MetaDataUnauthorizedToSearchEx;
 import fr.urssaf.image.sae.services.exception.search.SAESearchServiceEx;
 import fr.urssaf.image.sae.services.exception.search.SyntaxLuceneEx;
+import fr.urssaf.image.sae.services.exception.search.UnknownFiltresMetadataEx;
 import fr.urssaf.image.sae.services.exception.search.UnknownLuceneMetadataEx;
 import fr.urssaf.image.sae.services.messages.ServiceMessageHandler;
 import fr.urssaf.image.sae.services.util.FormatUtils;
@@ -50,9 +56,14 @@ import fr.urssaf.image.sae.storage.dfce.utils.Utils;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.QueryParseServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
+import fr.urssaf.image.sae.storage.model.storagedocument.PaginatedStorageDocuments;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocuments;
+import fr.urssaf.image.sae.storage.model.storagedocument.filters.AbstractFilter;
+import fr.urssaf.image.sae.storage.model.storagedocument.filters.RangeFilter;
+import fr.urssaf.image.sae.storage.model.storagedocument.filters.ValueFilter;
 import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.LuceneCriteria;
+import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.PaginatedLuceneCriteria;
 import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
@@ -80,6 +91,9 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
 
    @Autowired
    private MappingDocumentService mappingDocumentService;
+
+   @Autowired
+   private MetadataReferenceDAO mrdao;
 
    @Autowired
    private PrmdService prmdService;
@@ -223,6 +237,46 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
 
    /**
     * Vérifie de l’existence des métadonnées de la requête Lucene dans le
+    * référentiel.
+    * 
+    * @param longCodesReq
+    *           : Liste des métadonnées.
+    * @throws UnknownLuceneMetadataEx
+    *            : Une exception de type {@link UnknownLuceneMetadataEx}
+    */
+   private void checkExistingFiltresMetadata(List<String> longCodesReq)
+         throws UnknownFiltresMetadataEx {
+      // Traces debug - entrée méthode
+      String prefixeTrc = "checkExistingFiltresMetadata()";
+      LOG.debug("{} - Début", prefixeTrc);
+      // Fin des traces debug - entrée méthode
+      // Vérification de l'existance des codes dans le référentiel des
+      // métadonnées.
+      LOG
+            .debug(
+                  "{} - Début de la vérification : Les métadonnées utilisées dans les filtres existent dans le référentiel des métadonnées",
+                  prefixeTrc);
+      if (!metadataCS.checkExistingQueryTerms(longCodesReq).isEmpty()) {
+         List<String> filtresMetadataErrors = new ArrayList<String>();
+         for (MetadataError metadataError : metadataCS
+               .checkExistingQueryTerms(longCodesReq)) {
+            filtresMetadataErrors.add(metadataError.getLongCode());
+         }
+         LOG.debug("{} - {}", prefixeTrc, ResourceMessagesUtils.loadMessage(
+               "search.notexist.filtres.metadata.error", FormatUtils
+                     .formattingDisplayList(filtresMetadataErrors)));
+         throw new UnknownFiltresMetadataEx(ResourceMessagesUtils.loadMessage(
+               "search.notexist.filtres.metadata.error", FormatUtils
+                     .formattingDisplayList(filtresMetadataErrors)));
+      }
+      LOG
+            .debug(
+                  "{} - Fin de la vérification : Les métadonnées utilisées dans les filtres existent dans le référentiel des métadonnées",
+                  prefixeTrc);
+   }
+   
+   /**
+    * Vérifie de l’existence des métadonnées des filtres dans le
     * référentiel.
     * 
     * @param longCodesReq
@@ -451,7 +505,7 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
             prefixeTrc, requete);
       LOG
             .debug(
-                  "{} - Liste des métadonnées souhaiteés envoyée par l'application cliente : {}",
+                  "{} - Liste des métadonnées souhaitées envoyée par l'application cliente : {}",
                   prefixeTrc,
                   StringUtils.isEmpty(buildMessageFromList(listMetaDesired)) ? "Vide"
                         : buildMessageFromList(listMetaDesired));
@@ -553,6 +607,260 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
       LOG.debug("{} - Sortie", prefixeTrc);
       return listUntypedDocument;
 
+   }
+
+   /**
+    * {@inheritDoc}
+    * @throws UnknownFiltresMetadataEx 
+    * 
+    */
+   @Override
+   public PaginatedUntypedDocuments searchPaginated(
+         List<UntypedMetadata> fixedMetadatas,
+         UntypedRangeMetadata varyingMetadata, List<AbstractMetadata> filters,
+         int nbDocumentsParPage, UUID lastIdDoc,
+         List<String> listeDesiredMetadata)
+         throws MetaDataUnauthorizedToSearchEx,
+         MetaDataUnauthorizedToConsultEx, UnknownLuceneMetadataEx,
+         SAESearchServiceEx, SyntaxLuceneEx, UnknownDesiredMetadataEx, UnknownFiltresMetadataEx {
+
+      PaginatedUntypedDocuments pagUntypedDoc = new PaginatedUntypedDocuments();
+      try {
+
+         // Traces debug - entrée méthode
+         String prefixeTrc = "PaginatedUntypedDocuments()";
+         LOG.debug("{} - Début", prefixeTrc);
+         // Fin des traces debug - entrée méthode
+
+         LOG.debug(
+               "{} - Liste des métadonnées fixes d'un index composite : {}",
+               prefixeTrc, StringUtils
+                     .isEmpty(buildMessageFromList(fixedMetadatas)) ? "Vide"
+                     : buildMessageFromList(fixedMetadatas));
+         LOG
+               .debug(
+                     "{} - Métadonnée variable : {}",
+                     prefixeTrc, varyingMetadata.toString());
+         LOG
+               .debug(
+                     "{} - Filtres : {}",
+                     prefixeTrc, StringUtils
+                           .isEmpty(buildMessageFromList(filters)) ? "Vide"
+                           : buildMessageFromList(filters));
+         LOG.debug("{} - Nombre de document à récupérer : {}", prefixeTrc,
+               nbDocumentsParPage);
+         LOG
+               .debug(
+                     "{} - Identifiant du dernier document renvoyé par la recherche par iterateur précédente : {}",
+                     prefixeTrc, lastIdDoc);
+         LOG
+               .debug(
+                     "{} - Liste des métadonnées souhaitées envoyée par l'application cliente : {}",
+                     prefixeTrc,
+                     StringUtils
+                           .isEmpty(buildMessageFromList(listeDesiredMetadata)) ? "Vide"
+                           : buildMessageFromList(listeDesiredMetadata));
+
+         // Construction de la requête Lucène
+         String requeteLucene = constructionReqLucene(fixedMetadatas,
+               varyingMetadata);
+
+         // Vérification de la requête lucène
+         verifieSyntaxeLucene(requeteLucene);
+         
+         // Conversion de la requête avec les codes long en code court
+         SAESearchQueryParserResult parserResult = queryParseService
+               .convertFromLongToShortCode(requeteLucene);
+         String requeteFinal = parserResult.getRequeteCodeCourts();
+         LOG
+               .debug(
+                     "{} - Requête de recherche après remplacement des codes longs par les codes courts : {}",
+                     prefixeTrc, requeteFinal);
+
+         // Vérification que les métadonnées sont recherchables
+         List<String> longCodesReq = new ArrayList<String>(parserResult
+               .getMetaUtilisees().keySet());
+         checkExistingLuceneMetadata(longCodesReq);
+         List<SAEMetadata> listCodCourt = recupererListCodCourtByLongCode(longCodesReq);
+         checkSearchableLuceneMetadata(listCodCourt);
+
+         // Vérifie que les métadonnées demandées dans les résultats de
+         // recherche existent dans le référentiel des métadonnées
+         checkExistingMetadataDesired(listeDesiredMetadata);
+         boolean isFromRefrentiel = false;
+         List<SAEMetadata> listCodCourtConsult;
+         if (listeDesiredMetadata.isEmpty()) {
+            listCodCourtConsult = recupererListDefaultMetadatas();
+            isFromRefrentiel = true;
+         } else {
+            listCodCourtConsult = recupererListCodCourtByLongCode(listeDesiredMetadata);
+         }
+         checkConsultableDesiredMetadata(listCodCourtConsult, isFromRefrentiel);
+         
+         // Vérification existence des métadonnées des filtres
+         List<String> codeLongFiltres = new ArrayList<String>();
+         for (AbstractMetadata meta : filters) {
+            codeLongFiltres.add(meta.getLongCode());
+         }
+         checkExistingFiltresMetadata(codeLongFiltres);
+        
+         // Création de la liste des filtres
+         List<AbstractFilter> abstractFilter = creationListeFiltres(filters);
+
+         
+         String codeCourtVaryingMeta = metaRefD.getByLongCode(varyingMetadata.getLongCode()).getShortCode();
+         
+         PaginatedStorageDocuments psd = searchPaginatedStorageDocuments(
+               requeteFinal, nbDocumentsParPage, abstractFilter, lastIdDoc,
+               listCodCourtConsult, codeCourtVaryingMeta);
+
+         // liste de résultats à envoyer
+         List<UntypedDocument> listUntypedDocument = new ArrayList<UntypedDocument>();
+         List<StorageDocument> listStorageDocument = psd
+               .getAllStorageDocuments();
+         for (StorageDocument storageDocument : Utils
+               .nullSafeIterable(listStorageDocument)) {
+            listUntypedDocument.add(mappingDocumentService
+                  .storageDocumentToUntypedDocument(storageDocument));
+         }
+
+         pagUntypedDoc.setDocuments(listUntypedDocument);
+         pagUntypedDoc.setLastPage(psd.getLastPage());
+         pagUntypedDoc.setValeurMetaLastPage(psd.getValeurMetaLastPage());
+
+      } catch (SAESearchQueryParseException e) {
+         throw new SAESearchServiceEx(ResourceMessagesUtils
+               .loadMessage("search.parse.error"), e);
+      } catch (QueryParseServiceEx e) {
+         throw new SyntaxLuceneEx(ResourceMessagesUtils
+               .loadMessage("search.syntax.lucene.error"), e);
+      } catch (InvalidSAETypeException e) {
+         throw new SAESearchServiceEx(e.getMessage(), e);
+      } catch (MappingFromReferentialException e) {
+         throw new SAESearchServiceEx(ResourceMessagesUtils
+               .loadMessage("search.mapping.error"), e);
+      } catch (ReferentialException e) {
+         throw new SAESearchServiceEx(ResourceMessagesUtils
+               .loadMessage("search.referentiel.error"), e);
+      }
+
+      return pagUntypedDoc;
+   }
+
+   /**
+    * Création de la liste des filtres pour la recherche paginée
+    * 
+    * @param filters
+    *           Les filtres passés en paramètres
+    * @return La liste des filtres
+    * @throws ReferentialException
+    */
+   private List<AbstractFilter> creationListeFiltres(
+         List<AbstractMetadata> filters) throws ReferentialException {
+      List<AbstractFilter> abstractFilter = new ArrayList<AbstractFilter>();
+      for (AbstractMetadata filter : filters) {
+         String shortCode = mrdao.getByLongCode(filter.getLongCode())
+               .getShortCode();
+         if (filter instanceof UntypedMetadata) {
+            ValueFilter valueFilter = new ValueFilter(shortCode,
+                  ((UntypedMetadata) filter).getValue());
+            abstractFilter.add(valueFilter);
+         } else if (filter instanceof UntypedRangeMetadata) {
+            RangeFilter rangeFilter = new RangeFilter(shortCode,
+                  ((UntypedRangeMetadata) filter).getValeurMin(),
+                  ((UntypedRangeMetadata) filter).getValeurMax());
+            abstractFilter.add(rangeFilter);
+         }
+      }
+      return abstractFilter;
+   }
+
+   /**
+    * Construction de la requête Lucène pour les recherches paginées
+    * 
+    * @param fixedMetadatas
+    *           Métadonnées fixes (peut être null)
+    * @param varyingMetadata
+    *           Métadonnées variables
+    * @return
+    */
+   private String constructionReqLucene(List<UntypedMetadata> fixedMetadatas,
+         UntypedRangeMetadata varyingMetadata) {
+      String requeteLucene = "";
+      int nbMetaFixes = fixedMetadatas.size();
+      int compteur = 0;
+
+      if (fixedMetadatas != null) {
+         // On boucle sur les méta fixes et on sépare les couples code/valeur
+         // par des AND
+         for (UntypedMetadata metaFixe : fixedMetadatas) {
+            requeteLucene = metaFixe.getLongCode().concat(":").concat(
+                  metaFixe.getValue());
+            if (compteur < nbMetaFixes - 1) {
+               requeteLucene = requeteLucene.concat(" AND ");
+            }
+         }
+      }
+
+      if (varyingMetadata != null) {
+         // On ajoute la partie variable
+         if (!StringUtils.isEmpty(requeteLucene)) {
+            requeteLucene = requeteLucene.concat(" AND ");
+         }
+         requeteLucene = requeteLucene.concat(varyingMetadata.getLongCode())
+               .concat(":[").concat(varyingMetadata.getValeurMin()).concat(
+                     " TO ").concat(varyingMetadata.getValeurMax()).concat("]");
+      }
+      return requeteLucene;
+
+   }
+
+   /**
+    * Recherche Une liste de type {@link StorageDocument} à partir d'une requête
+    * Lucene,
+    * 
+    * @param luceneQuery
+    *           : Requête Lucene.
+    * @param maxResult
+    *           : le nombre max de résultat à retourner.
+    * @param listeDesiredMetadata
+    *           : Liste des métadonnées souhaitées.
+    * @return Une liste de type {@link StorageDocument}
+    * @throws SAESearchServiceEx
+    *            : Une exception de type {@link SAESearchServiceEx}
+    * @throws QueryParseServiceEx
+    *            : Une exception de type {@link QueryParseServiceEx}
+    * @throws QueryParseServiceEx
+    *            : Une exception de type {@link QueryParseServiceEx}
+    * @throws ConnectionServiceEx
+    *            : Une exception de type {@link ConnectionServiceEx}
+    */
+   private PaginatedStorageDocuments searchPaginatedStorageDocuments(
+         String requeteLucene, int nbDocumentsParPage,
+         List<AbstractFilter> abstractFilter, UUID lastIdDoc,
+         List<SAEMetadata> listeDesiredMetadata, String codeCourtVaryingMeta) throws SAESearchServiceEx,
+         QueryParseServiceEx {
+
+      PaginatedStorageDocuments paginatedStorageDocuments = null;
+      try {
+         PaginatedLuceneCriteria paginatedLuceneCriteria = buildService
+               .buildStoragePaginatedLuceneCriteria(requeteLucene,
+                     nbDocumentsParPage, listeDesiredMetadata, abstractFilter,
+                     lastIdDoc, codeCourtVaryingMeta);
+
+         getStorageServiceProvider().openConnexion();
+
+         paginatedStorageDocuments = getStorageServiceProvider()
+               .getStorageDocumentService().searchPaginatedStorageDocuments(
+                     paginatedLuceneCriteria);
+
+      } catch (ConnectionServiceEx except) {
+         throw new SAESearchServiceEx(ResourceMessagesUtils
+               .loadMessage("search.connection.error"), except);
+      } catch (SearchingServiceEx except) {
+         throw new SAESearchServiceEx(except.getMessage(), except);
+      }
+      return paginatedStorageDocuments;
    }
 
 }

@@ -8,7 +8,11 @@ import java.util.UUID;
 
 import org.apache.commons.lang.ArrayUtils;
 
+import fr.urssaf.image.sae.bo.model.AbstractMetadata;
+import fr.urssaf.image.sae.bo.model.untyped.PaginatedUntypedDocuments;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
+import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
+import fr.urssaf.image.sae.bo.model.untyped.UntypedRangeMetadata;
 import fr.urssaf.image.sae.services.consultation.model.ConsultParams;
 import fr.urssaf.image.sae.services.document.SAEDocumentService;
 import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
@@ -142,6 +146,23 @@ public class SAEDocumentTestImpl implements SAEDocumentService {
       }
 
       return (List<UntypedDocument>) object;
+   }
+   
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public PaginatedUntypedDocuments searchPaginated(
+         List<UntypedMetadata> fixedMetadatas,
+         UntypedRangeMetadata varyingMetadata, List<AbstractMetadata> filters,
+         int nbDocumentsParPage, UUID lastIdDoc,
+         List<String> listeDesiredMetadata)
+         throws MetaDataUnauthorizedToSearchEx,
+         MetaDataUnauthorizedToConsultEx, UnknownLuceneMetadataEx,
+         SAESearchServiceEx, SyntaxLuceneEx, UnknownDesiredMetadataEx {
+      
+
+      return null;
    }
    
    /**

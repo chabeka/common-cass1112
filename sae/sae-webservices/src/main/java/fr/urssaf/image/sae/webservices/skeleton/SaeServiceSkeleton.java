@@ -46,6 +46,8 @@ import fr.cirtil.www.saeservice.PingSecureResponse;
 import fr.cirtil.www.saeservice.Recherche;
 import fr.cirtil.www.saeservice.RechercheNbRes;
 import fr.cirtil.www.saeservice.RechercheNbResResponse;
+import fr.cirtil.www.saeservice.RechercheParIterateur;
+import fr.cirtil.www.saeservice.RechercheParIterateurResponse;
 import fr.cirtil.www.saeservice.RechercheResponse;
 import fr.cirtil.www.saeservice.RecuperationMetadonnees;
 import fr.cirtil.www.saeservice.RecuperationMetadonneesResponse;
@@ -109,7 +111,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
 
    @Autowired
    private WSSuppressionService suppressionService;
-   
+
    @Autowired
    private WSTransfertService transfertService;
 
@@ -124,7 +126,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
 
    private static final String STOCKAGE_INDISPO = "StockageIndisponible";
    private static final String MES_STOCKAGE = "ws.dfce.stockage";
-   
+
    /**
     * Instanciation du service {@link SaeService}
     * 
@@ -612,7 +614,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
          throw new ErreurInterneAxisFault(ex);
       }
    }
-   
+
    @Override
    public TransfertResponse transfertSecure(Transfert request) throws AxisFault {
 
@@ -621,7 +623,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
          String trcPrefix = "transfertSecure";
          LOG.debug("{} - début", trcPrefix);
 
-         //-- Transfert du document 
+         // -- Transfert du document
          TransfertResponse response = transfertService.transfert(request);
 
          LOG.debug("{} - fin", trcPrefix);
@@ -631,7 +633,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
       } catch (TransfertAxisFault e) {
          logSoapFault(e);
          throw e;
-      }  catch (AccessDeniedException ex) {
+      } catch (AccessDeniedException ex) {
          throw new SaeAccessDeniedAxisFault(ex);
       } catch (RuntimeException e) {
          logRuntimeException(e);
@@ -639,9 +641,10 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
          throw new TransfertAxisFault("ErreurInterneTransfert", erreur, e);
       }
    }
-   
+
    @Override
-   public final ConsultationAffichableResponse consultationAffichableSecure(ConsultationAffichable request) throws AxisFault {
+   public final ConsultationAffichableResponse consultationAffichableSecure(
+         ConsultationAffichable request) throws AxisFault {
       try {
 
          // Traces debug - entrée méthode
@@ -652,7 +655,8 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
          boolean dfceUp = dfceInfoService.isDfceUp();
          if (dfceUp) {
 
-            ConsultationAffichableResponse response = consultation.consultationAffichable(request);
+            ConsultationAffichableResponse response = consultation
+                  .consultationAffichable(request);
 
             // Traces debug - sortie méthode
             LOG.debug("{} - Sortie", prefixeTrc);
@@ -685,22 +689,63 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
    public RechercheNbResResponse rechercheNbResSecure(RechercheNbRes request)
          throws AxisFault {
       try {
-         //-- Traces debug - entrée méthode
+         // -- Traces debug - entrée méthode
          String prefixeTrc = "Opération rechercheNbResSecure()";
          LOG.debug("{} - Début", prefixeTrc);
-         
-         if(dfceInfoService.isDfceUp()){
+
+         if (dfceInfoService.isDfceUp()) {
             RechercheNbResResponse response = search.searchWithNbRes(request);
-            //-- Traces debug - sortie méthode
+            // -- Traces debug - sortie méthode
             LOG.debug("{} - Sortie", prefixeTrc);
-            
+
             return response;
          } else {
-   
+
             LOG.debug("{} - Sortie", prefixeTrc);
             setCodeHttp412();
             throw new RechercheAxis2Fault(STOCKAGE_INDISPO,
                   wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
+         }
+      } catch (RechercheAxis2Fault ex) {
+         logSoapFault(ex);
+         throw ex;
+      } catch (RuntimeException ex) {
+         logRuntimeException(ex);
+         throw new RechercheAxis2Fault(
+               "Une erreur interne à l'application est survenue lors de la recherche.",
+               "ErreurInterneRecherche", ex);
+      }
+   }
+
+   @Override
+   public RechercheParIterateurResponse rechercheParIterateurSecure(
+         RechercheParIterateur request) throws AxisFault {
+      try {
+
+         // Traces debug - entrée méthode
+         String prefixeTrc = "Opération rechercheParIterateurSecure()";
+         LOG.debug("{} - Début", prefixeTrc);
+         // Fin des traces debug - entrée méthode
+
+         boolean dfceUp = dfceInfoService.isDfceUp();
+         if (dfceUp) {
+
+            RechercheParIterateurResponse response = search
+                  .rechercheParIterateur(request);
+
+            // Traces debug - sortie méthode
+            LOG.debug("{} - Sortie", prefixeTrc);
+            // Fin des traces debug - sortie méthode
+
+            return response;
+
+         } else {
+
+            LOG.debug("{} - Sortie", prefixeTrc);
+            setCodeHttp412();
+            throw new RechercheAxis2Fault(STOCKAGE_INDISPO,
+                  wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
+
          }
       } catch (RechercheAxis2Fault ex) {
          logSoapFault(ex);

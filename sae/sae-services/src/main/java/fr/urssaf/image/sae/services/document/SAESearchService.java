@@ -1,15 +1,23 @@
 package fr.urssaf.image.sae.services.document;
 
 import java.util.List;
+import java.util.UUID;
 
+import org.antlr.grammar.v3.ANTLRv3Parser.throwsSpec_return;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import fr.urssaf.image.sae.bo.model.AbstractMetadata;
+import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
+import fr.urssaf.image.sae.bo.model.untyped.PaginatedUntypedDocuments;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
+import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
+import fr.urssaf.image.sae.bo.model.untyped.UntypedRangeMetadata;
 import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
 import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedToConsultEx;
 import fr.urssaf.image.sae.services.exception.search.MetaDataUnauthorizedToSearchEx;
 import fr.urssaf.image.sae.services.exception.search.SAESearchServiceEx;
 import fr.urssaf.image.sae.services.exception.search.SyntaxLuceneEx;
+import fr.urssaf.image.sae.services.exception.search.UnknownFiltresMetadataEx;
 import fr.urssaf.image.sae.services.exception.search.UnknownLuceneMetadataEx;
 
 /**
@@ -84,4 +92,38 @@ public interface SAESearchService {
          MetaDataUnauthorizedToConsultEx, UnknownDesiredMetadataEx,
          UnknownLuceneMetadataEx, SyntaxLuceneEx, SAESearchServiceEx;
 
+   /**
+    * Permet de faire une recherche paginée.
+    * 
+    * @param fixedMetadatas
+    *           Liste des métadonnées fixes d'un index composite
+    * @param varyingMetadata
+    *           Liste des métadonnées variables d'un index composite
+    * @param filters
+    *           Liste des filtres après exécution de la requête principale
+    * @param nbDocumentsParPage
+    *           Nombre de document à récupérer
+    * @param lastIdDoc
+    *           Identifiant du dernier document renvoyé par la recherche par
+    *           iterateur précédente
+    * @param listeDesiredMetadata
+    *           Liste des métadonnées souhaitées en retour de recherche
+    * @return La liste des documents trouvés
+    * @throws MetaDataUnauthorizedToSearchEx
+    * @throws MetaDataUnauthorizedToConsultEx
+    * @throws UnknownLuceneMetadataEx
+    * @throws SyntaxLuceneEx
+    * @throws SAESearchServiceEx
+    * @throws UnknownDesiredMetadataEx
+    * @throws UnknownFiltresMetadataEx 
+    */
+   @PreAuthorize("hasRole('recherche')")
+   PaginatedUntypedDocuments searchPaginated(
+         List<UntypedMetadata> fixedMetadatas,
+         UntypedRangeMetadata varyingMetadata, List<AbstractMetadata> filters,
+         int nbDocumentsParPage, UUID lastIdDoc,
+         List<String>  listeDesiredMetadata)
+         throws MetaDataUnauthorizedToSearchEx,
+         MetaDataUnauthorizedToConsultEx, UnknownLuceneMetadataEx,
+         SAESearchServiceEx, SyntaxLuceneEx,UnknownDesiredMetadataEx, UnknownFiltresMetadataEx;
 }

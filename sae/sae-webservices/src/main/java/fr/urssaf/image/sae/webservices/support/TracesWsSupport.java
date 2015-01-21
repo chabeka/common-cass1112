@@ -97,6 +97,8 @@ public class TracesWsSupport {
          result = TracesConstantes.CODE_EVT_WS_TRANSFERT_KO;
       } else if ("rechercheNbRes".equals(nomOperation)) {
          result = TracesConstantes.CODE_EVT_WS_RECHERCHE_KO;
+      } else if ("rechercheParIterateur".equals(nomOperation)) {
+         result = TracesConstantes.CODE_EVT_WS_RECHERCHE_KO;
       }
 
       return result;
@@ -212,7 +214,6 @@ public class TracesWsSupport {
 
    }
 
-
    /**
     * Trace l'événement du chargement des CRL
     * 
@@ -235,8 +236,7 @@ public class TracesWsSupport {
       }
 
    }
-   
-   
+
    private void traceChargementFichiers(String codeEvt, String contexte,
          List<String> fichiers) {
 

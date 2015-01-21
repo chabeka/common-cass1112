@@ -17,7 +17,9 @@ import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.building.services.BuildService;
 import fr.urssaf.image.sae.mapping.utils.Utils;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
+import fr.urssaf.image.sae.storage.model.storagedocument.filters.AbstractFilter;
 import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.LuceneCriteria;
+import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.PaginatedLuceneCriteria;
 import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.UUIDCriteria;
 
 /**
@@ -27,49 +29,62 @@ import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.UUIDCrit
 @Qualifier("buildService")
 public class BuildServiceImpl implements BuildService {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
-	public final LuceneCriteria buildStorageLuceneCriteria(
-			final String luceneQuery,final  int limit,
-			final List<SAEMetadata> metadatas) {
-	final	List<StorageMetadata> desiredMetadata = new ArrayList<StorageMetadata>();
-		for (SAEMetadata metadata : Utils.nullSafeIterable(metadatas)) {
-			desiredMetadata.add(new StorageMetadata(metadata.getShortCode()));
+   /**
+    * {@inheritDoc}
+    */
+   @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
+   public final LuceneCriteria buildStorageLuceneCriteria(
+         final String luceneQuery, final int limit,
+         final List<SAEMetadata> metadatas) {
+      final List<StorageMetadata> desiredMetadata = new ArrayList<StorageMetadata>();
+      for (SAEMetadata metadata : Utils.nullSafeIterable(metadatas)) {
+         desiredMetadata.add(new StorageMetadata(metadata.getShortCode()));
 
-		}
-		return new LuceneCriteria(luceneQuery, limit, desiredMetadata);
-	}
+      }
+      return new LuceneCriteria(luceneQuery, limit, desiredMetadata);
+   }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
-	public final UUIDCriteria buildStorageUuidCriteria(final UUID uuid,
-			final List<SAEMetadata> metadatas) {
-	final	List<StorageMetadata> desiredMetadata = new ArrayList<StorageMetadata>();
-		for (SAEMetadata metadata : Utils.nullSafeIterable(metadatas)) {
-			desiredMetadata.add(new StorageMetadata(metadata.getShortCode()));
+   @Override
+   public PaginatedLuceneCriteria buildStoragePaginatedLuceneCriteria(
+         String luceneQuery, int limit, List<SAEMetadata> metadatas,
+         List<AbstractFilter> filters, UUID lastIdDoc, String codeCourtVaryingMeta) {
+      final List<StorageMetadata> desiredMetadata = new ArrayList<StorageMetadata>();
+      for (SAEMetadata metadata : Utils.nullSafeIterable(metadatas)) {
+         desiredMetadata.add(new StorageMetadata(metadata.getShortCode()));
 
-		}
-		return new UUIDCriteria(uuid, desiredMetadata);
-	}
+      }
+      return new PaginatedLuceneCriteria(luceneQuery, limit, desiredMetadata,
+            filters, lastIdDoc, codeCourtVaryingMeta);
+   }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
-	public final UntypedDocument buildUntypedDocument(final DataHandler content,
-			final Map<String, String> metadatas) {
-		final List<UntypedMetadata> uMetadatas = new ArrayList<UntypedMetadata>();
-		for (Entry<String, String> uMetadata : Utils.nullSafeMap(metadatas)
-				.entrySet()) {
-			uMetadatas.add(new UntypedMetadata(uMetadata.getKey(), uMetadata
-					.getValue()));
-		}
-		return new UntypedDocument(content, uMetadatas);
+   /**
+    * {@inheritDoc}
+    */
+   @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
+   public final UUIDCriteria buildStorageUuidCriteria(final UUID uuid,
+         final List<SAEMetadata> metadatas) {
+      final List<StorageMetadata> desiredMetadata = new ArrayList<StorageMetadata>();
+      for (SAEMetadata metadata : Utils.nullSafeIterable(metadatas)) {
+         desiredMetadata.add(new StorageMetadata(metadata.getShortCode()));
 
-	}
+      }
+      return new UUIDCriteria(uuid, desiredMetadata);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
+   public final UntypedDocument buildUntypedDocument(final DataHandler content,
+         final Map<String, String> metadatas) {
+      final List<UntypedMetadata> uMetadatas = new ArrayList<UntypedMetadata>();
+      for (Entry<String, String> uMetadata : Utils.nullSafeMap(metadatas)
+            .entrySet()) {
+         uMetadatas.add(new UntypedMetadata(uMetadata.getKey(), uMetadata
+               .getValue()));
+      }
+      return new UntypedDocument(content, uMetadatas);
+
+   }
 
 }

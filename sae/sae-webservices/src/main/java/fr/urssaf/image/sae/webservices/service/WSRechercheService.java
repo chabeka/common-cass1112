@@ -3,10 +3,11 @@ package fr.urssaf.image.sae.webservices.service;
 import fr.cirtil.www.saeservice.Recherche;
 import fr.cirtil.www.saeservice.RechercheNbRes;
 import fr.cirtil.www.saeservice.RechercheNbResResponse;
+import fr.cirtil.www.saeservice.RechercheParIterateur;
+import fr.cirtil.www.saeservice.RechercheParIterateurResponse;
 import fr.cirtil.www.saeservice.RechercheResponse;
 import fr.cirtil.www.saeservice.ResultatRechercheType;
 import fr.urssaf.image.sae.webservices.exception.RechercheAxis2Fault;
-
 
 /**
  * Interface du service web de Recherche du SAE. 
@@ -17,8 +18,8 @@ public interface WSRechercheService {
    /**
     * Methode recherche du service Web du SAE
     * 
-    * Cette methode retourne un objet {@link RechercheResponse} contenant une liste 
-    * {@link ResultatRechercheType}. <br>
+    * Cette methode retourne un objet {@link RechercheResponse} contenant une
+    * liste {@link ResultatRechercheType}. <br>
     * 
     * Chaque objet ResultatRechercheType contient: 
     *    
@@ -54,4 +55,17 @@ public interface WSRechercheService {
      *        objet retourné
      */
     RechercheNbResResponse searchWithNbRes(RechercheNbRes request) throws RechercheAxis2Fault;
+
+   /**
+    * Service réalisant une recherche de documents par itérateur
+    * 
+    * @param request
+    *           Objet contenant les critères de recherche
+    * @return Instance de RechercheParIterateurResponse contenant le résultat de
+    *         la recherche
+    * @throws RechercheAxis2Fault
+    *            Une exception est levée lors de la recherche
+    */
+   RechercheParIterateurResponse rechercheParIterateur(
+         RechercheParIterateur request) throws RechercheAxis2Fault;
 }

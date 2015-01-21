@@ -2,12 +2,13 @@
 <wsdl:definitions targetNamespace="http://www.cirtil.fr/saeService" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://www.cirtil.fr/saeService" xmlns:sae="http://www.cirtil.fr/saeService" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap12/">
   <wsdl:types>
     <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-			<xsd:import namespace="http://www.cirtil.fr/saeService" schemaLocation="SaeService.xsd"/>
-		</xsd:schema>
+         <xsd:import namespace="http://www.cirtil.fr/saeService" schemaLocation="SaeService.xsd"/>
+      </xsd:schema>
   </wsdl:types>
   <wsdl:message name="recuperationMetadonneesResponseMessage">
-<wsdl:documentation>Message contenant la liste des 
-      métadonnées disponible pour le client</wsdl:documentation>
+<wsdl:documentation>Message contenant la liste des
+         métadonnées
+         disponible pour le client</wsdl:documentation>
     <wsdl:part name="output" element="tns:recuperationMetadonneesResponse">
     </wsdl:part>
   </wsdl:message>
@@ -80,7 +81,8 @@
   </wsdl:message>
   <wsdl:message name="archivageMasseAvecHashResponseMessage">
 <wsdl:documentation>Message de réponse à une demande d'archivage
-         de documents multiples avec le hash du sommaire.xml</wsdl:documentation>
+         de documents multiples avec le hash du sommaire.xml
+      </wsdl:documentation>
     <wsdl:part name="output" element="tns:archivageMasseAvecHashResponse">
     </wsdl:part>
   </wsdl:message>
@@ -104,7 +106,8 @@
   </wsdl:message>
   <wsdl:message name="consultationAffichableResponseMessage">
 <wsdl:documentation>Message contenant le résultat de la
-         consultation de documents au SAE dans un format affichable</wsdl:documentation>
+         consultation de documents au SAE dans un format affichable
+      </wsdl:documentation>
     <wsdl:part name="output" element="tns:consultationAffichableResponse">
     </wsdl:part>
   </wsdl:message>
@@ -120,9 +123,16 @@
     <wsdl:part name="input" element="tns:suppression">
     </wsdl:part>
   </wsdl:message>
+  <wsdl:message name="rechercheParIterateurRequestMessage">
+<wsdl:documentation>Message de demande d'une recherche
+         documentaire sur le SAE (par iterateur)</wsdl:documentation>
+    <wsdl:part name="input" element="tns:rechercheParIterateur">
+    </wsdl:part>
+  </wsdl:message>
   <wsdl:message name="transfertResponseMessage">
 <wsdl:documentation>Message contenant le résultat du
-         transfert de documents de la GNT vers la GNS</wsdl:documentation>
+         transfert de
+         documents de la GNT vers la GNS</wsdl:documentation>
     <wsdl:part name="output" element="tns:transfertResponse">
     </wsdl:part>
   </wsdl:message>
@@ -153,7 +163,8 @@
   </wsdl:message>
   <wsdl:message name="recuperationMetadonneesRequestMessage">
 <wsdl:documentation>Message contenant la demande
-      de récupération des métadonnées disponible pour le client
+         de récupération
+         des métadonnées disponible pour le client
       </wsdl:documentation>
     <wsdl:part name="input" element="tns:recuperationMetadonnees">
     </wsdl:part>
@@ -176,6 +187,12 @@
     <wsdl:part name="input" element="tns:PingRequest">
     </wsdl:part>
   </wsdl:message>
+  <wsdl:message name="rechercheParIterateurResponseMessage">
+<wsdl:documentation>Message contenant le résultat d'une recherche
+         documentaire sur le SAE (par iterateur)</wsdl:documentation>
+    <wsdl:part name="output" element="tns:rechercheParIterateurResponse">
+    </wsdl:part>
+  </wsdl:message>
   <wsdl:message name="archivageMasseResponseMessage">
 <wsdl:documentation>Message de réponse à une demande d'archivage
          de documents multiples</wsdl:documentation>
@@ -184,7 +201,8 @@
   </wsdl:message>
   <wsdl:message name="transfertRequestMessage">
 <wsdl:documentation>Message contenant la demande de transfert
-         de documents de la GNT vers la GNS</wsdl:documentation>
+         de
+         documents de la GNT vers la GNS</wsdl:documentation>
     <wsdl:part name="input" element="tns:transfert">
     </wsdl:part>
   </wsdl:message>
@@ -223,7 +241,8 @@
     </wsdl:operation>
     <wsdl:operation name="archivageMasseAvecHash" parameterOrder="input">
 <wsdl:documentation>Opération d'archivage de documents
-            multiples avec un hash pour le sommaire.xml</wsdl:documentation>
+            multiples avec un hash pour le sommaire.xml
+         </wsdl:documentation>
       <wsdl:input message="tns:archivageMasseAvecHashRequestMessage">
     </wsdl:input>
       <wsdl:output message="tns:archivageMasseAvecHashResponseMessage">
@@ -262,7 +281,8 @@
     </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="modification" parameterOrder="input">
-<wsdl:documentation>Opération de modifiaction d'un document unique
+<wsdl:documentation>Opération de modifiaction d'un document
+            unique
          </wsdl:documentation>
       <wsdl:input message="tns:modificationRequestMessage">
     </wsdl:input>
@@ -270,7 +290,8 @@
     </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="suppression" parameterOrder="input">
-<wsdl:documentation>Opération de suppression d'un document unique
+<wsdl:documentation>Opération de suppression d'un document
+            unique
          </wsdl:documentation>
       <wsdl:input message="tns:suppressionRequestMessage">
     </wsdl:input>
@@ -279,7 +300,7 @@
     </wsdl:operation>
     <wsdl:operation name="recuperationMetadonnees" parameterOrder="input">
 <wsdl:documentation>Opération de récuperation de la liste des
-         métadonnées disponible pour le client</wsdl:documentation>
+            métadonnées disponible pour le client</wsdl:documentation>
       <wsdl:input message="tns:recuperationMetadonneesRequestMessage">
     </wsdl:input>
       <wsdl:output message="tns:recuperationMetadonneesResponseMessage">
@@ -287,26 +308,36 @@
     </wsdl:operation>
     <wsdl:operation name="transfert" parameterOrder="input">
 <wsdl:documentation>Opération de transfert d'un document de la
-         GNT vers la GNS</wsdl:documentation>
+            GNT vers la GNS</wsdl:documentation>
       <wsdl:input message="tns:transfertRequestMessage">
     </wsdl:input>
       <wsdl:output message="tns:transfertResponseMessage">
     </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="consultationAffichable" parameterOrder="input">
-<wsdl:documentation>Opération de consultationAffichable d'un document
-         sur le SAE</wsdl:documentation>
+<wsdl:documentation>Opération de consultationAffichable d'un
+            document
+            sur le SAE</wsdl:documentation>
       <wsdl:input message="tns:consultationAffichableRequestMessage">
     </wsdl:input>
       <wsdl:output message="tns:consultationAffichableResponseMessage">
     </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="rechercheNbRes" parameterOrder="input">
-<wsdl:documentation>Opération de recherche documentaire sur le SAE
+<wsdl:documentation>Opération de recherche documentaire sur le
+            SAE
             (avec retour du nombre de résultats)</wsdl:documentation>
       <wsdl:input message="tns:rechercheNbResRequestMessage">
     </wsdl:input>
       <wsdl:output message="tns:rechercheNbResResponseMessage">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="rechercheParIterateur" parameterOrder="input">
+<wsdl:documentation>Opération de recherche documentaire sur le
+            SAE (par iterateur)</wsdl:documentation>
+      <wsdl:input message="tns:rechercheParIterateurRequestMessage">
+    </wsdl:input>
+      <wsdl:output message="tns:rechercheParIterateurResponseMessage">
     </wsdl:output>
     </wsdl:operation>
   </wsdl:portType>
@@ -354,7 +385,8 @@
     </wsdl:operation>
     <wsdl:operation name="archivageMasseAvecHash">
 <wsdl:documentation>Opération d'archivage de documents
-            multiples avec un hash fournit pour le sommaire.xml</wsdl:documentation>
+            multiples avec un hash fournit pour le sommaire.xml
+         </wsdl:documentation>
       <soap:operation soapAction="archivageMasseAvecHash"/>
       <wsdl:input>
         <soap:body use="literal"/>
@@ -408,7 +440,8 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="modification">
-<wsdl:documentation>Service de modification unitaire de document
+<wsdl:documentation>Service de modification unitaire de
+            document
          </wsdl:documentation>
       <soap:operation soapAction="modification"/>
       <wsdl:input>
@@ -431,7 +464,7 @@
     </wsdl:operation>
     <wsdl:operation name="recuperationMetadonnees">
 <wsdl:documentation>Service de récupération des métadonnées
-         disponible pour le client</wsdl:documentation>
+            disponible pour le client</wsdl:documentation>
       <soap:operation soapAction="recuperationMetadonnees"/>
       <wsdl:input>
         <soap:body use="literal"/>
@@ -463,9 +496,21 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="rechercheNbRes">
-<wsdl:documentation>Service de recherche documentaire sur le SAE
-            (avec retour du nombre de résultats)</wsdl:documentation>
+<wsdl:documentation>Service de recherche documentaire sur le
+            SAE (avec retour du nombre de résultats)
+         </wsdl:documentation>
       <soap:operation soapAction="rechercheNbRes"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="rechercheParIterateur">
+<wsdl:documentation>Service de recherche documentaire sur le
+            SAE (par iterateur)</wsdl:documentation>
+      <soap:operation soapAction="rechercheParIterateur"/>
       <wsdl:input>
         <soap:body use="literal"/>
       </wsdl:input>

@@ -9,6 +9,7 @@ import fr.urssaf.image.sae.storage.exception.QueryParseServiceEx;
 import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.storage.exception.UpdateServiceEx;
+import fr.urssaf.image.sae.storage.model.storagedocument.PaginatedStorageDocuments;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocuments;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
@@ -16,6 +17,7 @@ import fr.urssaf.image.sae.storage.model.storagedocument.StorageReferenceFile;
 import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageReference;
 import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.LuceneCriteria;
+import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.PaginatedLuceneCriteria;
 import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.UUIDCriteria;
 
 /**
@@ -235,15 +237,30 @@ public interface StorageDocumentService {
          List<StorageMetadata> deletedMetadatas) throws UpdateServiceEx;
 
    /**
-    * Réalise suppresion d'un StorageDocument, suite à un transfert,
-    * à partir du critère UUID. Idem {@link #deleteStorageDocument(UUID)} en rajoutant une 
+    * Réalise suppresion d'un StorageDocument, suite à un transfert, à partir du
+    * critère UUID. Idem {@link #deleteStorageDocument(UUID)} en rajoutant une
     * trace correspondant au transfert de document.
     * 
     * @param uuid
     *           identifiant unique du document
-    *           
+    * 
     * @throws DeletionServiceEx
     *            Exception levée en cas d'erreur de suppression de l'archive
     */
    void deleteStorageDocumentTraceTransfert(UUID uuid) throws DeletionServiceEx;
+
+   /**
+    * Permet de faire une recherche paginée.
+    * 
+    * @param paginatedLuceneCriteria
+    *           Objet contenant les critères de recherche
+    * @return La liste des documents trouvés
+    * @throws SearchingServiceEx
+    *            Une exception est levée lors de la recherche
+    * @throws QueryParseServiceEx
+    *            Une exception est levée lors de la recherche
+    */
+   PaginatedStorageDocuments searchPaginatedStorageDocuments(
+         PaginatedLuceneCriteria paginatedLuceneCriteria)
+         throws SearchingServiceEx, QueryParseServiceEx;
 }

@@ -7,7 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import fr.urssaf.image.sae.bo.model.AbstractMetadata;
+import fr.urssaf.image.sae.bo.model.untyped.PaginatedUntypedDocuments;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
+import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
+import fr.urssaf.image.sae.bo.model.untyped.UntypedRangeMetadata;
 import fr.urssaf.image.sae.services.capture.impl.SAECaptureServiceImpl;
 import fr.urssaf.image.sae.services.consultation.SAEConsultationService;
 import fr.urssaf.image.sae.services.consultation.impl.SAEConsultationServiceImpl;
@@ -21,15 +25,18 @@ import fr.urssaf.image.sae.services.exception.consultation.SAEConsultationServic
 import fr.urssaf.image.sae.services.exception.search.MetaDataUnauthorizedToSearchEx;
 import fr.urssaf.image.sae.services.exception.search.SAESearchServiceEx;
 import fr.urssaf.image.sae.services.exception.search.SyntaxLuceneEx;
+import fr.urssaf.image.sae.services.exception.search.UnknownFiltresMetadataEx;
 import fr.urssaf.image.sae.services.exception.search.UnknownLuceneMetadataEx;
 import fr.urssaf.image.sae.storage.dfce.annotations.FacadePattern;
 
 /**
  * Fournit la façade des implementations des services :<br>
- * <lu>
- * <li>{@link fr.urssaf.image.sae.services.capture.impl.SAECaptureServiceImpl}</li>
+ * <lu> <li>
+ * {@link fr.urssaf.image.sae.services.capture.impl.SAECaptureServiceImpl}</li>
  * <li>{@link fr.urssaf.image.sae.services.document.impl.SAESearchServiceImpl}</li>
- * <li>{@link fr.urssaf.image.sae.services.consultation.impl.SAEConsultationServiceImpl}</li>
+ * <li>
+ * {@link fr.urssaf.image.sae.services.consultation.impl.SAEConsultationServiceImpl}
+ * </li>
  * <ul>
  */
 @Service
@@ -94,10 +101,30 @@ public class SAEDocumentServiceImpl implements SAEDocumentService {
     * {@inheritDoc}
     */
    @Override
-   public final UntypedDocument consultationAffichable(ConsultParams consultParams)
-         throws SAEConsultationServiceException, UnknownDesiredMetadataEx,
-         MetaDataUnauthorizedToConsultEx,
+   public final UntypedDocument consultationAffichable(
+         ConsultParams consultParams) throws SAEConsultationServiceException,
+         UnknownDesiredMetadataEx, MetaDataUnauthorizedToConsultEx,
          SAEConsultationAffichableParametrageException {
       return saeConsultationService.consultationAffichable(consultParams);
    }
+
+   /**
+    * {@inheritDoc}
+    * 
+    * @throws UnknownFiltresMetadataEx
+    */
+   @Override
+   public PaginatedUntypedDocuments searchPaginated(
+         List<UntypedMetadata> fixedMetadatas,
+         UntypedRangeMetadata varyingMetadata, List<AbstractMetadata> filters,
+         int nbDocumentsParPage, UUID lastIdDoc,
+         List<String> listeDesiredMetadata)
+         throws MetaDataUnauthorizedToSearchEx,
+         MetaDataUnauthorizedToConsultEx, UnknownLuceneMetadataEx,
+         SAESearchServiceEx, SyntaxLuceneEx, UnknownDesiredMetadataEx,
+         UnknownFiltresMetadataEx {
+      return saeSearchService.searchPaginated(fixedMetadatas, varyingMetadata,
+            filters, nbDocumentsParPage, lastIdDoc, listeDesiredMetadata);
+   }
+
 }

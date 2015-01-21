@@ -17,5 +17,6 @@
 	</bean>
    
    <import resource="applicationContext-sae-trace.xml" />
+   <import resource="applicationContext-sae-mapping.xml" />
 
 </beans>

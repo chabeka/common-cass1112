@@ -17,6 +17,7 @@ import fr.urssaf.image.sae.storage.exception.QueryParseServiceEx;
 import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.storage.exception.UpdateServiceEx;
+import fr.urssaf.image.sae.storage.model.storagedocument.PaginatedStorageDocuments;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocuments;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
@@ -24,6 +25,7 @@ import fr.urssaf.image.sae.storage.model.storagedocument.StorageReferenceFile;
 import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageReference;
 import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.LuceneCriteria;
+import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.PaginatedLuceneCriteria;
 import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.UUIDCriteria;
 import fr.urssaf.image.sae.storage.services.storagedocument.DeletionService;
 import fr.urssaf.image.sae.storage.services.storagedocument.InsertionService;
@@ -268,9 +270,22 @@ public class StorageDocumentServiceImpl extends AbstractServiceProvider
     * {@inheritDoc}
     */
    @Override
-   public void deleteStorageDocumentTraceTransfert(final UUID uuid) throws DeletionServiceEx {
+   public void deleteStorageDocumentTraceTransfert(final UUID uuid)
+         throws DeletionServiceEx {
       deletionService.setDeletionServiceParameter(getDfceService());
       deletionService.deleteStorageDocForTransfert(uuid);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public PaginatedStorageDocuments searchPaginatedStorageDocuments(
+         PaginatedLuceneCriteria paginatedLuceneCriteria)
+         throws SearchingServiceEx, QueryParseServiceEx {
+      searchingService.setSearchingServiceParameter(getDfceService());
+      return searchingService
+            .searchPaginatedStorageDocuments(paginatedLuceneCriteria);
    }
 
 }

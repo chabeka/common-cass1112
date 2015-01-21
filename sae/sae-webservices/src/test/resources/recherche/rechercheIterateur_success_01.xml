@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ns1:rechercheParIterateur xmlns:ns1="http://www.cirtil.fr/saeService">
+   <ns1:requetePrincipale>
+      <ns1:fixedMetadatas>
+            <!--Zero or more repetitions:-->
+            <ns1:metadonnee>
+               <ns1:code>Siret</ns1:code>
+               <ns1:valeur>123</ns1:valeur>
+            </ns1:metadonnee>
+      </ns1:fixedMetadatas>
+      <ns1:varyingMetadata>
+            <ns1:code>DateCreation</ns1:code>
+            <ns1:valeurMin>20141201</ns1:valeurMin>
+            <ns1:valeurMax>20141231</ns1:valeurMax>
+      </ns1:varyingMetadata>
+   </ns1:requetePrincipale>
+   
+   <!--
+   <ns1:filtres>
+      <ns1:equalFilter>
+       
+            <ns1:metadonnee>
+               <ns1:code>tre</ns1:code>
+               <ns1:valeur>tert</ns1:valeur>
+            </ns1:metadonnee>
+      </ns1:equalFilter>
+      <ns1:rangeFilter>
+         <ns1:rangeMetadonnee>
+            <ns1:code>gfd</ns1:code>
+            <ns1:valeurMin>g</ns1:valeurMin>
+            <ns1:valeurMax>g</ns1:valeurMax>
+         </ns1:rangeMetadonnee>
+      </ns1:rangeFilter>
+   </ns1:filtres>
+   -->
+
+   <ns1:nbDocumentsParPage>10</ns1:nbDocumentsParPage>
+   
+   <!-- 
+   <ns1:identifiantPage>
+      <ns1:valeur></ns1:valeur>
+      <ns1:idArchive></ns1:idArchive>
+   </ns1:identifiantPage>
+    -->
+    
+   <ns1:metadonnees>
+      <!--Zero or more repetitions:-->
+      <ns1:metadonneeCode>CodeActivite</ns1:metadonneeCode>
+      <ns1:metadonneeCode>ContratDeService</ns1:metadonneeCode>
+      <ns1:metadonneeCode>DateCreation</ns1:metadonneeCode>
+   </ns1:metadonnees>
+</ns1:rechercheParIterateur>
+

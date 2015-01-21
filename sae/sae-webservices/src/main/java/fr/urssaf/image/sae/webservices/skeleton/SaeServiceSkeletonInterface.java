@@ -25,6 +25,8 @@ import fr.cirtil.www.saeservice.PingSecureResponse;
 import fr.cirtil.www.saeservice.Recherche;
 import fr.cirtil.www.saeservice.RechercheNbRes;
 import fr.cirtil.www.saeservice.RechercheNbResResponse;
+import fr.cirtil.www.saeservice.RechercheParIterateur;
+import fr.cirtil.www.saeservice.RechercheParIterateurResponse;
 import fr.cirtil.www.saeservice.RechercheResponse;
 import fr.cirtil.www.saeservice.RecuperationMetadonnees;
 import fr.cirtil.www.saeservice.RecuperationMetadonneesResponse;
@@ -221,4 +223,17 @@ public interface SaeServiceSkeletonInterface {
     *            exception levée lors de la recherche
     */
    RechercheNbResResponse rechercheNbResSecure(RechercheNbRes request) throws AxisFault;
+
+   /**
+    * Endpoint de la recherche de documents par iterateur
+    * 
+    * @param request
+    *           Objet contenant les paramètres de la recherche
+    * @return Instance de RechercheParIterateurResponse contenant le résultat de
+    *         la recherche
+    * @throws AxisFault
+    *            Une exception est levée lors de la recherche
+    */
+   RechercheParIterateurResponse rechercheParIterateurSecure(
+         RechercheParIterateur request) throws AxisFault;
 }

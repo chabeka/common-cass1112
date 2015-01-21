@@ -145,23 +145,26 @@ public class SAEConsultationServiceImpl extends AbstractSAEServices implements
                   .getIdArchive(), new ArrayList<String>(referenceDAO
                   .getAllMetadataReferences().keySet()));
 
+            // On récupère la liste de toutes les méta du référentiel
             List<StorageMetadata> allMeta = manageMetaData(params);
 
+            // Liste des métadonnées à consulter
             List<String> metadatas = manageMetaDataNames(consultParams);
 
             LOG.debug("{} - Liste des métadonnées consultable : \"{}\"",
                   prefixeTrc, buildMessageFromList(metadatas));
 
-            // UUIDCriteria uuidCriteria = new UUIDCriteria(idArchive,
-            // metadatas);
             UUIDCriteria uuidCriteria = new UUIDCriteria(idArchive, allMeta);
 
+            // On récupère le document à partir de l'UUID, avec toutes les
+            // métadonnées du référentiel
             StorageDocument storageDocument = this.getStorageServiceProvider()
                   .getStorageDocumentService().retrieveStorageDocumentByUUID(
                         uuidCriteria);
 
             UntypedDocument untypedDocument = null;
 
+            // Vérification des droits
             if (storageDocument != null) {
                untypedDocument = this.mappingService
                      .storageDocumentToUntypedDocument(storageDocument);
@@ -180,6 +183,8 @@ public class SAEConsultationServiceImpl extends AbstractSAEServices implements
                         "Le document est refusé à la consultation car les droits sont insuffisants");
                }
 
+               // On filtre uniquement sur les métadonnées souhaitées à la
+               // consultation
                List<UntypedMetadata> list = filterMetadatas(metadatas,
                      untypedDocument.getUMetadatas());
                untypedDocument.setUMetadatas(list);
@@ -217,9 +222,9 @@ public class SAEConsultationServiceImpl extends AbstractSAEServices implements
     * {@inheritDoc}
     */
    @Override
-   public final UntypedDocument consultationAffichable(ConsultParams consultParams)
-         throws SAEConsultationServiceException, UnknownDesiredMetadataEx,
-         MetaDataUnauthorizedToConsultEx,
+   public final UntypedDocument consultationAffichable(
+         ConsultParams consultParams) throws SAEConsultationServiceException,
+         UnknownDesiredMetadataEx, MetaDataUnauthorizedToConsultEx,
          SAEConsultationAffichableParametrageException {
 
       UUID idArchive = consultParams.getIdArchive();
@@ -284,16 +289,18 @@ public class SAEConsultationServiceImpl extends AbstractSAEServices implements
                // recupere le train de byte au format natif
                final InputStream inputContent = untypedDocument.getContent()
                      .getInputStream();
-               byte[] byteArray = org.apache.commons.io.IOUtils.toByteArray(inputContent);
+               byte[] byteArray = org.apache.commons.io.IOUtils
+                     .toByteArray(inputContent);
 
                // conversion du fichier
                byte[] fichierConverti = conversionService.convertirFichier(
                      idFormat, byteArray, consultParams.getNumeroPage(),
                      consultParams.getNombrePages());
-               
+
                // remplacement du fichier d'origine par le fichier converti
                // TODO : voir comment remplacer le application/pdf
-               ByteArrayDataSource dataSource = new ByteArrayDataSource(fichierConverti, "application/pdf");
+               ByteArrayDataSource dataSource = new ByteArrayDataSource(
+                     fichierConverti, "application/pdf");
                DataHandler dataHandler = new DataHandler(dataSource);
                untypedDocument.setContent(dataHandler);
             }
@@ -325,7 +332,8 @@ public class SAEConsultationServiceImpl extends AbstractSAEServices implements
          } catch (UnknownFormatException ex) {
             throw new SAEConsultationServiceException(ex);
          } catch (ConversionParametrageException ex) {
-            throw new SAEConsultationAffichableParametrageException(ex.getMessage(), ex);
+            throw new SAEConsultationAffichableParametrageException(ex
+                  .getMessage(), ex);
          }
       } catch (ConnectionServiceEx e) {
 

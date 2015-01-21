@@ -9,12 +9,17 @@ import org.apache.commons.lang.StringUtils;
 import fr.cirtil.www.saeservice.ListeMetadonneeType;
 import fr.cirtil.www.saeservice.ListeResultatRechercheNbResType;
 import fr.cirtil.www.saeservice.ListeResultatRechercheType;
+import fr.cirtil.www.saeservice.MetadonneeCodeType;
 import fr.cirtil.www.saeservice.MetadonneeType;
+import fr.cirtil.www.saeservice.MetadonneeValeurType;
 import fr.cirtil.www.saeservice.RechercheNbResResponse;
 import fr.cirtil.www.saeservice.RechercheNbResResponseType;
+import fr.cirtil.www.saeservice.RechercheParIterateurResponse;
+import fr.cirtil.www.saeservice.RechercheParIterateurResponseType;
 import fr.cirtil.www.saeservice.RechercheResponse;
 import fr.cirtil.www.saeservice.RechercheResponseType;
 import fr.cirtil.www.saeservice.ResultatRechercheType;
+import fr.cirtil.www.saeservice.UuidType;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.webservices.factory.ObjectTypeFactory;
@@ -96,6 +101,68 @@ public final class ObjectRechercheFactory {
       response.setRechercheResponse(responseType);
       return response;
    }
+   
+   /**
+    * instanciation de {@link RechercheResponse}.<br>
+    * Implementation de {@link RechercheResponseType}
+    * 
+    * <pre>
+    * &lt;xsd:complexType name="rechercheResponseType">
+    *    &lt;xsd:sequence>
+    *       &lt;xsd:element name="resultats" type="sae:listeResultatRechercheType">
+    *       ...       
+    *       &lt;/xsd:element>
+    *       &lt;xsd:element name="resultatTronque" type="xsd:boolean">
+    *       ...
+    *       &lt;/xsd:element>
+    *    &lt;/xsd:sequence>
+    * &lt;/xsd:complexType>
+    * </pre>
+    * 
+    * @param untypedDocuments
+    *           valeur de <code>listeResultatRechercheType</code>
+    * @param resultatTronque
+    *           valeur de <code>resultatTronque</code>
+    * @return instance de {@link RechercheResponse}
+    */
+   public static RechercheParIterateurResponse createRechercheResponse(
+         List<UntypedDocument> untypedDocuments) {
+
+      RechercheParIterateurResponse response = new RechercheParIterateurResponse();
+      RechercheParIterateurResponseType responseType = new RechercheParIterateurResponseType();
+      ListeResultatRechercheType resultatsType = new ListeResultatRechercheType();
+      
+      resultatsType.setResultat(new ResultatRechercheType[]{});
+      
+      if (CollectionUtils.isNotEmpty(untypedDocuments)) {
+         int taille = untypedDocuments.size();
+         for(int i = 0; i< taille ; i++) {            
+               UntypedDocument untypedDocument = untypedDocuments.get(i);
+               ResultatRechercheType resultatRecherche = ObjectTypeFactory
+                     .createResultatRechercheType();
+
+               resultatRecherche.setIdArchive(ObjectTypeFactory
+                     .createUuidType(untypedDocument.getUuid()));
+               ListeMetadonneeType listeMetadonnee = ObjectTypeFactory
+                     .createListeMetadonneeType();
+
+               List<MetadonneeType> metadonnees = createListMetadonneeType(untypedDocument);
+
+               if (CollectionUtils.isNotEmpty(metadonnees)) {
+                  for (MetadonneeType metaDonnee : metadonnees) {
+                     listeMetadonnee.addMetadonnee(metaDonnee);
+                  }
+               }
+               resultatRecherche.setMetadonnees(listeMetadonnee);
+               resultatsType.addResultat(resultatRecherche);
+            }
+      }
+      responseType.setResultats(resultatsType);
+      response.setRechercheParIterateurResponse(responseType);
+      
+      return response;
+   }
+   
    
    /**
     * instanciation de {@link RechercheNbResResponse}.<br>

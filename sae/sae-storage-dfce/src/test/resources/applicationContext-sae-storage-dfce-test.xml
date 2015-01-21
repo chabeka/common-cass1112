@@ -11,7 +11,7 @@
    <import resource="applicationContext-properties-test.xml"/>
    
    <import resource="applicationContext-sae-storage-dfce.xml"/>
-   
+   <import resource="applicationContext-sae-droit.xml" />
    <bean
       id="traceAssertUtils"
       class="fr.urssaf.image.sae.storage.dfce.utils.TraceAssertUtils" />
