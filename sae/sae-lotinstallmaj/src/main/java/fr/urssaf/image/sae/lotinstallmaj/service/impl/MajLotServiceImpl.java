@@ -6,7 +6,9 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.docubase.toolkit.model.ToolkitFactory;
 import net.docubase.toolkit.model.base.Base;
@@ -631,20 +633,30 @@ public final class MajLotServiceImpl implements MajLotService {
       for(String[] metas : indexes) {
          
          StringBuffer nomIndex = new StringBuffer();
-         Category[] categories = new Category[metas.length] ;       
+         Category[] categories = new Category[metas.length] ; 
+         
+         //-- Cache de catégories pour ne pas réinterroger la base
+         Map<String, Category> cacheCategories;
+         cacheCategories = new HashMap<String, Category>();
          
          for (int i=0; i<metas.length; i++) {
-            String meta = metas[i];
-            Category category = storageAdminService.getCategory(meta);
             
-            if (category != null) {
+            String codeCourt = metas[i];
+            
+            //-- On récupère la catégorie qui n'est pas encore dans le cache
+            if(!cacheCategories.containsKey(codeCourt)){
+               Category category;
+               category = storageAdminService.getCategory(codeCourt);            
+               if (category == null) {
+                  LOG.error("Impossible de récupérer la Category pour code {}", codeCourt);
+                  throw new MajLotRuntimeException("La category '" + codeCourt + "' n'a pas ete trouvee");
+               }
+               cacheCategories.put(codeCourt, category);
                LOG.info("Category {} récupérée", category.getName());
-            } else {
-               LOG.error("Impossible de récupérer la Category pour code {}", meta);
-               throw new MajLotRuntimeException("La category '" + meta + "' n'a pas ete trouvee");
             }
-            categories[i] = category;
-            nomIndex.append(meta);
+
+            categories[i] = cacheCategories.get(codeCourt);;
+            nomIndex.append(codeCourt);
             nomIndex.append('&');
          }
          
