@@ -381,6 +381,9 @@ public class PrmdServiceImpl implements PrmdService {
          Prmd prmd = saePrmd.getPrmd();
          String prmdName = prmd.getBean();
          Map<String, String> prmdValues = saePrmd.getValues();
+         if (prmdValues == null) {
+            prmdValues = new HashMap<String, String>();
+         }
          Map<String, List<String>> prmdMetas = prmd.getMetadata();
          
          //-- Cas d'un prdm de type bean
