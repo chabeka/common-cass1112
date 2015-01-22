@@ -7,33 +7,28 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib uri="/WEB-INF/tld/sae_integration.tld" prefix="sae" %>
 
-<p id="etape-${numeroEtape}" style="font-weight:bold;text-decoration:underline;">
+<h4 id="etape-${numeroEtape}" class="etape text-primary">
 Etape <c:out value="${numeroEtape}"/> : Comptages du nombre de documents pour le traitement de masse
-</p>
+</h4>
 
 
-<table border=0 cellspacing=3 cellpadding=3 style="width:100%;">
-   <tr style="vertical-align:top;">
-      <td style="width:50%;">
-         <table border=0 cellspacing=3 cellpadding=3 style="width:100%;">
-            <tr>
-               <td style="width:20%;">Identifiant du traitement de masse :</td>
-               <td style="width:80%;">
-                  <form:input path="${pathFormulaire}.idTdm" cssStyle="width:100%;" readonly="${readonly}" />
-               </td>
-            </tr>
-         </table>
-      </td>
-      <td style="width:50%;border-left-width:2px;border-left-color:black;border-left-style:solid;">
-         <sae:resultatTest
-            objetResultats="${objetFormulaire.resultats}"
+<div class="row">
+	<div class="col-md-6">
+		<div class="form-group">
+    		<label class="control-label">Identifiant du traitement de masse :</label>
+    		<form:input class="form-control" path="${pathFormulaire}.idTdm" cssStyle="width:100%;" readonly="${readonly}" />
+  		</div>		
+	</div>
+	<div class="col-md-6">
+		<div class="form-group">
+			<sae:resultatTest objetResultats="${objetFormulaire.resultats}"
             pathResultats="${pathFormulaire}.resultats" />
-      </td>
-   </tr>
-</table>
+		</div> 
+	</div>
+</div>
 
 <input
-   style="width:100%;"
+   class="btn btn-primary submit"
    type="submit"
    value="Comptages"
    onclick="javascript:document.getElementById('etape').value='<c:out value="${numeroEtape}"/>'"  />
