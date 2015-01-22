@@ -45,7 +45,7 @@ public class PrmdControleValidation {
    public final void checkIsPermitted(List<UntypedMetadata> metadatas,
          Map<String, String> parametres) {
 
-      if (CollectionUtils.isEmpty(metadatas)) {
+      if (metadatas == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
                ARGUMENT_REQUIRED, "métadonnées"));
       }

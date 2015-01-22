@@ -47,7 +47,7 @@ public class PrmdServiceValidation {
    @Before(CHECK)
    public final void checkIsPermitted(List<UntypedMetadata> metadatas,
          List<SaePrmd> prmds) {
-      if (CollectionUtils.isEmpty(metadatas)) {
+      if (metadatas == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
                ARGUMENT_REQUIRED, "liste des métadonnées"));
       }
