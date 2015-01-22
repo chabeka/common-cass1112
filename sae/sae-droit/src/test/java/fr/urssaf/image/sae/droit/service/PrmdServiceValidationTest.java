@@ -27,7 +27,7 @@ public class PrmdServiceValidationTest {
    @Test
    public void checkIsPermittedMetasObligatoires() {
       try {
-         prmdService.isPermitted(new ArrayList<UntypedMetadata>(),
+         prmdService.isPermitted(null,
                new ArrayList<SaePrmd>());
 
          Assert.fail("Exception attendue");
@@ -79,7 +79,7 @@ public class PrmdServiceValidationTest {
    @Test
    public void checkAddDomaineMetasObligatoires() {
       try {
-         prmdService.addDomaine(new ArrayList<UntypedMetadata>(),
+         prmdService.addDomaine(null,
                new ArrayList<SaePrmd>());
 
          Assert.fail("Exception attendue");

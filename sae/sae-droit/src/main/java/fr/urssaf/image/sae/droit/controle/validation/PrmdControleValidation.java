@@ -45,7 +45,7 @@ public class PrmdControleValidation {
    public final void checkIsPermitted(List<UntypedMetadata> metadatas,
          Map<String, String> parametres) {
 
-      if (metadatas == null) {
+      if (CollectionUtils.isEmpty(metadatas)) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
                ARGUMENT_REQUIRED, "métadonnées"));
       }
@@ -82,7 +82,7 @@ public class PrmdControleValidation {
    public final void checkAddDomaine(List<UntypedMetadata> metadatas,
          Map<String, String> values) {
 
-      if (CollectionUtils.isEmpty(metadatas)) {
+      if (metadatas == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
                ARGUMENT_REQUIRED, "métadonnées"));
       }
