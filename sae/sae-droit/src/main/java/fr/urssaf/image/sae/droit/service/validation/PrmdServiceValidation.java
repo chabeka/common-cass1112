@@ -47,7 +47,7 @@ public class PrmdServiceValidation {
    @Before(CHECK)
    public final void checkIsPermitted(List<UntypedMetadata> metadatas,
          List<SaePrmd> prmds) {
-      if (metadatas == null) {
+      if (CollectionUtils.isEmpty(metadatas)) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
                ARGUMENT_REQUIRED, "liste des métadonnées"));
       }
@@ -91,7 +91,7 @@ public class PrmdServiceValidation {
    public final void checkAddDomaine(List<UntypedMetadata> metadatas,
          List<SaePrmd> prmds) {
       
-      if (CollectionUtils.isEmpty(metadatas)) {
+      if (metadatas == null) {
          throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
                ARGUMENT_REQUIRED, "liste des métadonnées"));
       }
