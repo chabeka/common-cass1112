@@ -8,7 +8,7 @@
   
 
    <Environment name="SAE_Fichier_Configuration" type="java.lang.String"
-      value="c:/hawai/data/sae/sae-config.properties" />
+      value="C:/hawai/data/sae/sae-config.properties" />
      
    
       

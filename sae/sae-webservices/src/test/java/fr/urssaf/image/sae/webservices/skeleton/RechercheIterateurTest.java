@@ -116,6 +116,7 @@ public class RechercheIterateurTest {
       listeDoc.add(document2);
       documents.setDocuments(listeDoc);
       documents.setLastPage(true);
+      documents.setValeurMetaLastPage("20141231");
 
       List<String> listMetaDesired = new ArrayList<String>();
       listMetaDesired.add("CodeActivite");
