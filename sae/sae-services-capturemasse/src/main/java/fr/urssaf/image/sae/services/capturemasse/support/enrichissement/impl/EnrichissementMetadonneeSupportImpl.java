@@ -121,11 +121,14 @@ public class EnrichissementMetadonneeSupportImpl implements
       //-- Enrichissement des méta du document
       LOGGER.debug("enrichissementDomaine - Ajout du domaine aux métas du document");
       for (SAEMetadata newMeta : newSaeMetas) {
+         Boolean found = false;
          for (SAEMetadata docMetas : metas) {
             //-- Test si la newMeta n'est pas déjà présente sur le doc
             if(docMetas.getLongCode().equals(newMeta.getLongCode())){
-               continue;
+               found = true;
             }
+         }
+         if(!found){
             //-- Ajout de la méta si elle n'était pas déjà présente
             metas.add(newMeta);
          }
