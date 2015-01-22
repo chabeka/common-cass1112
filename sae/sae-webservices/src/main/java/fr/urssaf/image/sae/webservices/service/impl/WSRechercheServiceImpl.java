@@ -142,6 +142,7 @@ public class WSRechercheServiceImpl implements WSRechercheService {
       LOG.debug("{} - Début", prefixeTrc);
 
       int maxResult = RechercheConstantes.NB_MAX_RESULTATS_RECHERCHE;
+      int maxResultRechDfce = RechercheConstantes.NB_MAX_RESULTATS_RECH_DFCE;
       LOG.debug(
             "{} - Le nombre maximum de documents à renvoyer dans les résultats de "
                   + "recherche au niveau de la couche webservice est {}",
@@ -154,14 +155,14 @@ public class WSRechercheServiceImpl implements WSRechercheService {
          checkNotNull(requeteLucene);
          List<String> listMDDesired = recupererListMDDesired(recupererListMDSearch(request));
          List<UntypedDocument> untypedDocuments = documentService.search(
-               requeteLucene, listMDDesired);
+               requeteLucene, listMDDesired, maxResultRechDfce);
          if (untypedDocuments.size() > maxResult) {
             resultatTronque = true;
             String mssg = "{} - Les résultats de recherche sont tronqués à {} résultats";
             LOG.debug(mssg, prefixeTrc, maxResult);
          }
          response = createRechercheNbResResponse(untypedDocuments,
-               resultatTronque);
+               resultatTronque, maxResult);
 
       } catch (SAESearchServiceEx except) {
          throw new RechercheAxis2Fault(except.getMessage(),
@@ -267,24 +268,27 @@ public class WSRechercheServiceImpl implements WSRechercheService {
          }
 
          response = createRechercheResponse(listeUDoc);
-         //RechercheParIterateurResponseType rechParItRespType = new RechercheParIterateurResponseType();
+         // RechercheParIterateurResponseType rechParItRespType = new
+         // RechercheParIterateurResponseType();
 
          // Boolean pour indiquer s'il s'agit de la dernière page ou non
-         //rechParItRespType.setDernierePage(lastPage);
+         // rechParItRespType.setDernierePage(lastPage);
          response.getRechercheParIterateurResponse().setDernierePage(lastPage);
-         
+
          // Identifiant de la dernière page retournée par la recherche
          IdentifiantPageType idPage = recupererIdPage(paginatedUDoc, lastUuid);
 
          // recupererIdPage(requetePrincipale, lastDoc, lastUuid);
-         //rechParItRespType.setIdentifiantPageSuivante(idPage);
-         response.getRechercheParIterateurResponse().setIdentifiantPageSuivante(idPage);
-         
-         // Liste des résultats de la recherche par itérateur
-         //ListeResultatRechercheType listeRes = recupererListeResRechParIterateur(listeUDoc);
-         //rechParItRespType.setResultats(listeRes);
+         // rechParItRespType.setIdentifiantPageSuivante(idPage);
+         response.getRechercheParIterateurResponse()
+               .setIdentifiantPageSuivante(idPage);
 
-         //response.setRechercheParIterateurResponse(rechParItRespType);
+         // Liste des résultats de la recherche par itérateur
+         // ListeResultatRechercheType listeRes =
+         // recupererListeResRechParIterateur(listeUDoc);
+         // rechParItRespType.setResultats(listeRes);
+
+         // response.setRechercheParIterateurResponse(rechParItRespType);
 
       } catch (MetaDataUnauthorizedToSearchEx e) {
          throw new RechercheAxis2Fault(e.getMessage(),

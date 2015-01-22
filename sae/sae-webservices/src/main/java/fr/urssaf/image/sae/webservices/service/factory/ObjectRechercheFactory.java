@@ -188,7 +188,7 @@ public final class ObjectRechercheFactory {
     * @return instance de {@link RechercheResponse}
     */
    public static RechercheNbResResponse createRechercheNbResResponse(
-         List<UntypedDocument> untypedDocuments, boolean resultatTronque) {
+         List<UntypedDocument> untypedDocuments, boolean resultatTronque, int maxResult) {
       
       RechercheNbResResponse response = new RechercheNbResResponse();
       RechercheNbResResponseType responseType = new RechercheNbResResponseType();
@@ -198,8 +198,10 @@ public final class ObjectRechercheFactory {
       
       if (CollectionUtils.isNotEmpty(untypedDocuments)) {
          int taille = untypedDocuments.size();
+         // on sauvegarde le nombre de resultat avant de tronquer la liste
+         responseType.setNbResultats(taille);
          if (resultatTronque){
-            taille = untypedDocuments.size() - 1;
+            taille = maxResult;
          }
          for(int i = 0; i< taille ; i++) {            
             UntypedDocument storageDocument = untypedDocuments.get(i);
