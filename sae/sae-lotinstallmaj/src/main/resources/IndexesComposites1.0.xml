@@ -1,73 +1,73 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <ns1:indexesComposites xmlns:ns1="http://www.cirtil.fr/lotinstallmaj/metadata">
 	<ns1:indexReference>
-		<ns1:nom>SiteAcquisition-CodeRnd</ns1:nom>
-		<ns1:composition>sac:SM_DOCUMENT_TYPE</ns1:composition>
+		<ns1:nom>DomaineComptable-SiteAcquisition-CodeRnd</ns1:nom>
+		<ns1:composition>cpt:sac:SM_DOCUMENT_TYPE</ns1:composition>
 		<ns1:aCreer>oui</ns1:aCreer>
 	</ns1:indexReference>
 	<ns1:indexReference>
-		<ns1:nom>SiteAcquisition-CodeRnd-MontantRegle</ns1:nom>
-		<ns1:composition>sac:SM_DOCUMENT_TYPE:mre</ns1:composition>
+		<ns1:nom>DomaineComptable-SiteAcquisition-CodeRnd-MontantRegle</ns1:nom>
+		<ns1:composition>cpt:sac:SM_DOCUMENT_TYPE:mre</ns1:composition>
 		<ns1:aCreer>oui</ns1:aCreer>
 	</ns1:indexReference>
 	<ns1:indexReference>
-		<ns1:nom>SiteAcquisition-CodeRnd-MontantDevis</ns1:nom>
-		<ns1:composition>sac:SM_DOCUMENT_TYPE:mde</ns1:composition>
+		<ns1:nom>DomaineComptable-SiteAcquisition-CodeRnd-MontantDevis</ns1:nom>
+		<ns1:composition>cpt:sac:SM_DOCUMENT_TYPE:mde</ns1:composition>
 		<ns1:aCreer>oui</ns1:aCreer>
 	</ns1:indexReference>
 	<ns1:indexReference>
-		<ns1:nom>SiteAcquisition-CodeRnd-NomFournisseur</ns1:nom>
-		<ns1:composition>sac:SM_DOCUMENT_TYPE:nfo</ns1:composition>
+		<ns1:nom>DomaineComptable-SiteAcquisition-CodeRnd-NomFournisseur</ns1:nom>
+		<ns1:composition>cpt:sac:SM_DOCUMENT_TYPE:nfo</ns1:composition>
 		<ns1:aCreer>oui</ns1:aCreer>
 	</ns1:indexReference>
 	<ns1:indexReference>
-		<ns1:nom>SiteAcquisition-CodeRnd-DateReception</ns1:nom>
-		<ns1:composition>sac:SM_DOCUMENT_TYPE:dre</ns1:composition>
+		<ns1:nom>DomaineComptable-SiteAcquisition-CodeRnd-DateReception</ns1:nom>
+		<ns1:composition>cpt:sac:SM_DOCUMENT_TYPE:dre</ns1:composition>
 		<ns1:aCreer>oui</ns1:aCreer>
 	</ns1:indexReference>
 	<ns1:indexReference>
-		<ns1:nom>SiteAcquisition-CodeRnd-DateLivraison</ns1:nom>
-		<ns1:composition>sac:SM_DOCUMENT_TYPE:dli</ns1:composition>
+		<ns1:nom>DomaineComptable-SiteAcquisition-CodeRnd-DateLivraison</ns1:nom>
+		<ns1:composition>cpt:sac:SM_DOCUMENT_TYPE:dli</ns1:composition>
 		<ns1:aCreer>oui</ns1:aCreer>
 	</ns1:indexReference>
 	<ns1:indexReference>
-		<ns1:nom>SiteAcquisition-CodeRnd-NumeroFactureSicomor</ns1:nom>
-		<ns1:composition>sac:SM_DOCUMENT_TYPE:nfs</ns1:composition>
+		<ns1:nom>DomaineComptable-SiteAcquisition-CodeRnd-NumeroFactureSicomor</ns1:nom>
+		<ns1:composition>cpt:sac:SM_DOCUMENT_TYPE:nfs</ns1:composition>
 		<ns1:aCreer>oui</ns1:aCreer>
 	</ns1:indexReference>
 	<ns1:indexReference>
-		<ns1:nom>SiteAcquisition-CodeRnd-NumeroFactureFournisseur</ns1:nom>
-		<ns1:composition>sac:SM_DOCUMENT_TYPE:nff</ns1:composition>
+		<ns1:nom>DomaineComptable-SiteAcquisition-CodeRnd-NumeroFactureFournisseur</ns1:nom>
+		<ns1:composition>cpt:sac:SM_DOCUMENT_TYPE:nff</ns1:composition>
 		<ns1:aCreer>oui</ns1:aCreer>
 	</ns1:indexReference>
 	<ns1:indexReference>
-		<ns1:nom>SiteAcquisition-CodeRnd-NumeroDevisSicomor</ns1:nom>
-		<ns1:composition>sac:SM_DOCUMENT_TYPE:nds</ns1:composition>
+		<ns1:nom>DomaineComptable-SiteAcquisition-CodeRnd-NumeroDevisSicomor</ns1:nom>
+		<ns1:composition>cpt:sac:SM_DOCUMENT_TYPE:nds</ns1:composition>
 		<ns1:aCreer>oui</ns1:aCreer>
 	</ns1:indexReference>
 	<ns1:indexReference>
-		<ns1:nom>SiteAcquisition-CodeRnd-NumeroBonLivraison</ns1:nom>
-		<ns1:composition>sac:SM_DOCUMENT_TYPE:nbl</ns1:composition>
+		<ns1:nom>DomaineComptable-SiteAcquisition-CodeRnd-NumeroBonLivraison</ns1:nom>
+		<ns1:composition>cpt:sac:SM_DOCUMENT_TYPE:nbl</ns1:composition>
 		<ns1:aCreer>oui</ns1:aCreer>
 	</ns1:indexReference>
 	<ns1:indexReference>
-		<ns1:nom>SiteAcquisition:CodeRnd-NumeroOrdre</ns1:nom>
-		<ns1:composition>sac:SM_DOCUMENT_TYPE:nor</ns1:composition>
+		<ns1:nom>DomaineComptable-SiteAcquisition:CodeRnd-NumeroOrdre</ns1:nom>
+		<ns1:composition>cpt:sac:SM_DOCUMENT_TYPE:nor</ns1:composition>
 		<ns1:aCreer>oui</ns1:aCreer>
 	</ns1:indexReference>
 	<ns1:indexReference>
-		<ns1:nom>SiteAcquisition-CodeRnd-NumeroTiers</ns1:nom>
-		<ns1:composition>sac:SM_DOCUMENT_TYPE:nti</ns1:composition>
+		<ns1:nom>DomaineComptable-SiteAcquisition-CodeRnd-NumeroTiers</ns1:nom>
+		<ns1:composition>cpt:sac:SM_DOCUMENT_TYPE:nti</ns1:composition>
 		<ns1:aCreer>oui</ns1:aCreer>
 	</ns1:indexReference>
 	<ns1:indexReference>
-		<ns1:nom>SiteAcquisition-CodeRnd-NumeroDevisFournisseur</ns1:nom>
-		<ns1:composition>sac:SM_DOCUMENT_TYPE:ndf</ns1:composition>
+		<ns1:nom>DomaineComptable-SiteAcquisition-CodeRnd-NumeroDevisFournisseur</ns1:nom>
+		<ns1:composition>cpt:sac:SM_DOCUMENT_TYPE:ndf</ns1:composition>
 		<ns1:aCreer>oui</ns1:aCreer>
 	</ns1:indexReference>
 	<ns1:indexReference>
-		<ns1:nom>SiteAcquisition-CodeRnd-NumeroCommande</ns1:nom>
-		<ns1:composition>sac:SM_DOCUMENT_TYPE:nco</ns1:composition>
+		<ns1:nom>DomaineComptable-SiteAcquisition-CodeRnd-NumeroCommande</ns1:nom>
+		<ns1:composition>cpt:sac:SM_DOCUMENT_TYPE:nco</ns1:composition>
 		<ns1:aCreer>oui</ns1:aCreer>
 	</ns1:indexReference>
 	<ns1:indexReference>
