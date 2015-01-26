@@ -191,6 +191,8 @@ public class MetaDataCompletIntegrationTest {
       }
 
       Map<String, String> waited = waitedDatas();
+      
+      System.out.println(result.keySet());
 
       Assert
             .assertTrue(
@@ -255,6 +257,7 @@ public class MetaDataCompletIntegrationTest {
       datas.put("TypeHash", "SHA-1");
       datas.put("VersionRND", "11.2");
       datas.put("DocumentVirtuel", "false");
+      datas.put("DomaineCotisant", "true");
 
       return datas;
 
