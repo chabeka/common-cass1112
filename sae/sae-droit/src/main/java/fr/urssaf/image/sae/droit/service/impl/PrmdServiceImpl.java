@@ -412,10 +412,12 @@ public class PrmdServiceImpl implements PrmdService {
          else {
             for (Map.Entry<String, List<String>> entry : prmdMetas.entrySet()) {
                if(isDomaineRhCotiOrCompt(entry.getKey())){
-                  String valeur = saePrmd.getValues().get(entry.getKey());
-                  metadatas.add(new UntypedMetadata(entry.getKey(), valeur));
-                  addCount++;
-                  break;
+                  if(entry.getValue().size() == 1){
+                     String valeur = entry.getValue().get(0);
+                     metadatas.add(new UntypedMetadata(entry.getKey(), valeur));
+                     addCount++;
+                     break;
+                  }
                }
             }
          }
