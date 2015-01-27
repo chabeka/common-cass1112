@@ -33,7 +33,11 @@ public enum SAEArchivalMetadatas {
    //NomFichier
    NOM_FICHIER("NomFichier"),
    //DocumentVirtuel
-   DOCUMENT_VIRTUEL("DocumentVirtuel");
+   DOCUMENT_VIRTUEL("DocumentVirtuel"),
+   //NumeroIdArchivage
+   NUMERO_ID_ARCHIVAGE("NumeroIdArchivage"),
+   //DocumentArchivable
+   DOCUMENT_ARCHIVABLE("DocumentArchivable");
    
 
    // Le code long de la métadonnée.

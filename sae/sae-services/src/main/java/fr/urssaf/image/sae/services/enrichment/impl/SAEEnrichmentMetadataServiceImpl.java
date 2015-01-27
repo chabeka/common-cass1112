@@ -306,6 +306,28 @@ public class SAEEnrichmentMetadataServiceImpl implements
                         "{} - Enrichissement des métadonnées : ajout du nom de fichier valeur : {}",
                         prefixeTrc, name);
          }
+         else if (metadata.getLongCode().equals(SAEArchivalMetadatas.DOCUMENT_ARCHIVABLE.getLongCode())) {
+            
+            //-- Enrichissement meta DocumentArchivable
+            String longCode = SAEArchivalMetadatas.NUMERO_ID_ARCHIVAGE.getLongCode();
+            String idArchivage = SAEMetatadaFinderUtils.codeMetadataFinder(metadatas, longCode);
+            
+            if(!StringUtils.isEmpty(idArchivage)){
+               
+               //-- Short code
+               longCode = SAEArchivalMetadatas.DOCUMENT_ARCHIVABLE.getLongCode();
+               String shortCode = metadataReferenceDAO.getByLongCode(longCode).getShortCode();
+               saeMetadata.setShortCode(shortCode);
+               
+               //-- Value 
+               saeMetadata.setValue("true");
+               
+               metadatas.add(saeMetadata);
+               LOGGER.debug(
+                     "{} - Enrichissement des métadonnées : ajout flag DocumentArchivable valeur : {}",
+                     prefixeTrc, "true");
+            }
+         }
 
       }
 
