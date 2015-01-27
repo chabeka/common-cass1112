@@ -794,11 +794,12 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
          // On boucle sur les méta fixes et on sépare les couples code/valeur
          // par des AND
          for (UntypedMetadata metaFixe : fixedMetadatas) {
-            requeteLucene = metaFixe.getLongCode().concat(":").concat(
-                  metaFixe.getValue());
+            requeteLucene = requeteLucene.concat(metaFixe.getLongCode().concat(":").concat(
+                  metaFixe.getValue()));
             if (compteur < nbMetaFixes - 1) {
                requeteLucene = requeteLucene.concat(" AND ");
             }
+            compteur++;
          }
       }
 
