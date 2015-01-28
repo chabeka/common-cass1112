@@ -80,6 +80,7 @@ public class DfceServiceImpl implements DfceService {
             .getBase(getDfceConnection().getBaseName());
       final SearchQuery searchQuery = ToolkitFactory.getInstance()
             .createMonobaseQuery(requeteLucene, base);
+      searchQuery.setSearchLimit(1000);
       return searchService.createDocumentIterator(searchQuery);
    }
 
