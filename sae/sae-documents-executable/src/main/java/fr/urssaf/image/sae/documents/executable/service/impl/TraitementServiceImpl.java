@@ -372,8 +372,12 @@ public class TraitementServiceImpl implements TraitementService {
          poolThead.execute(addMetasRun);
       }
       
+      poolThead.shutdown();
+   
       //-- On attend la fin de l'execution du poolThead
       poolThead.waitFinishAddMetadata();
+      
+      LOGGER.info("{} documents traités au total", poolThead.getNombreTraites());
       
       //-- Fermeture connexion dfce
       getDfceService().fermerConnexion();
