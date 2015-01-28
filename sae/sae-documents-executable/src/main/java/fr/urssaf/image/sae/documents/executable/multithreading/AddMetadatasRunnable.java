@@ -38,13 +38,7 @@ public class AddMetadatasRunnable implements Runnable {
     */
    private DfceService dfceService;
 
-   public Map<String, String> getMetadonnees() {
-      return metadonnees;
-   }
 
-   public void setMetadonnees(Map<String, String> metadonnees) {
-      this.metadonnees = metadonnees;
-   }
 
    /**
     * Constructeur de la classe : Initialise le document et la liste des
@@ -109,4 +103,19 @@ public class AddMetadatasRunnable implements Runnable {
    public final void setDocument(final Document document) {
       this.document = document;
    }
+
+   /**
+    * @return the metadonnees
+    */
+   public final Map<String, String> getMetadonnees() {
+      return metadonnees;
+   }
+
+   /**
+    * @param metadonnees the metadonnees to set
+    */
+   public final void setMetadonnees(Map<String, String> metadonnees) {
+      this.metadonnees = metadonnees;
+   }
+   
 }

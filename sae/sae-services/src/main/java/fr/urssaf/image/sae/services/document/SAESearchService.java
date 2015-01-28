@@ -3,11 +3,9 @@ package fr.urssaf.image.sae.services.document;
 import java.util.List;
 import java.util.UUID;
 
-import org.antlr.grammar.v3.ANTLRv3Parser.throwsSpec_return;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import fr.urssaf.image.sae.bo.model.AbstractMetadata;
-import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
 import fr.urssaf.image.sae.bo.model.untyped.PaginatedUntypedDocuments;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
@@ -109,21 +107,37 @@ public interface SAESearchService {
     * @param listeDesiredMetadata
     *           Liste des métadonnées souhaitées en retour de recherche
     * @return La liste des documents trouvés
+    * @param fixedMetadatas
+    * @param varyingMetadata
+    * @param filters
+    * @param nbDocumentsParPage
+    * @param lastIdDoc
+    * @param listeDesiredMetadata
+    * @return
     * @throws MetaDataUnauthorizedToSearchEx
+    *            Erreur si une méta n'est pas autorisée à la recherche
     * @throws MetaDataUnauthorizedToConsultEx
+    *            Erreur si une méta n'est pas autorisée à la consultation
     * @throws UnknownLuceneMetadataEx
-    * @throws SyntaxLuceneEx
+    *            Erreur si métadonnée inexistante
     * @throws SAESearchServiceEx
+    *            Erreur lors de la recherche paginée
+    * @throws SyntaxLuceneEx
+    *            Erreur de syntaxe de la recherche lucène
     * @throws UnknownDesiredMetadataEx
-    * @throws UnknownFiltresMetadataEx 
+    *            Erreur si métas inconnues dans la liste des métas souhaitées en
+    *            résultat
+    * @throws UnknownFiltresMetadataEx
+    *            Erreur si métas inconnues dans les filtres
     */
    @PreAuthorize("hasRole('recherche')")
    PaginatedUntypedDocuments searchPaginated(
          List<UntypedMetadata> fixedMetadatas,
          UntypedRangeMetadata varyingMetadata, List<AbstractMetadata> filters,
          int nbDocumentsParPage, UUID lastIdDoc,
-         List<String>  listeDesiredMetadata)
+         List<String> listeDesiredMetadata)
          throws MetaDataUnauthorizedToSearchEx,
          MetaDataUnauthorizedToConsultEx, UnknownLuceneMetadataEx,
-         SAESearchServiceEx, SyntaxLuceneEx,UnknownDesiredMetadataEx, UnknownFiltresMetadataEx;
+         SAESearchServiceEx, SyntaxLuceneEx, UnknownDesiredMetadataEx,
+         UnknownFiltresMetadataEx;
 }

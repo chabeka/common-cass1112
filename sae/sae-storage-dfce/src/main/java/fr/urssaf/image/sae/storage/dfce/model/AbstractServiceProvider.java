@@ -25,7 +25,7 @@ public abstract class AbstractServiceProvider extends AbstractServices {
 	 * @param dfceServices
 	 *            : Les services DFCE
 	 */
-	public void setDfceServicesManager(final DFCEServicesManager dfceServices) {
+	public final void setDfceServicesManager(final DFCEServicesManager dfceServices) {
 		this.dfceServicesManager = dfceServices;
 	}
 

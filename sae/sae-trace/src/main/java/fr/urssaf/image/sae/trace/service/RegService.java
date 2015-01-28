@@ -15,6 +15,8 @@ import fr.urssaf.image.sae.trace.dao.model.TraceIndex;
  * 
  * @param <T>
  *           Type de trace contenue dans le registre
+ * @param <I>
+ *           Index des traces
  */
 public interface RegService<T extends Trace, I extends TraceIndex> {
 

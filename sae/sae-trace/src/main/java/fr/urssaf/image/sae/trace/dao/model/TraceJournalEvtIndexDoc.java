@@ -20,11 +20,11 @@ public class TraceJournalEvtIndexDoc extends TraceIndex {
     * Code du contrat de service
     */
    private String contratService;
-   
+
    /**
     * Informations supplémentaires de la trace
     */
-   private Map<String, Object> infos; 
+   private Map<String, Object> infos;
 
    /**
     * Constructeur par défaut
@@ -36,7 +36,7 @@ public class TraceJournalEvtIndexDoc extends TraceIndex {
    /**
     * Constructeur
     * 
-    * @param exploitation
+    * @param traceJournal
     *           trace du journal des événements
     */
    public TraceJournalEvtIndexDoc(TraceJournalEvt traceJournal) {
@@ -63,22 +63,30 @@ public class TraceJournalEvtIndexDoc extends TraceIndex {
    /**
     * @return the contratService
     */
-   public String getContratService() {
+   public final String getContratService() {
       return contratService;
    }
 
    /**
-    * @param contratService the contratService to set
+    * @param contratService
+    *           the contratService to set
     */
-   public void setContratService(String contratService) {
+   public final void setContratService(String contratService) {
       this.contratService = contratService;
    }
 
-   public Map<String, Object> getInfos() {
+   /**
+    * @return the infos
+    */
+   public final Map<String, Object> getInfos() {
       return infos;
    }
 
-   public void setInfos(Map<String, Object> infos) {
+   /**
+    * @param infos
+    *           the infos to set
+    */
+   public final void setInfos(Map<String, Object> infos) {
       this.infos = infos;
    }
 }

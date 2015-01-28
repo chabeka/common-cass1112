@@ -187,7 +187,15 @@ public class CommonsServices {
       return serviceProvider;
    }
 
-   public void initStorageDocumens() throws IOException, ParseException {
+   /**
+    * Initialisation du StorageDocument
+    * 
+    * @throws IOException
+    *            Exception IO
+    * @throws ParseException
+    *            Exception lors du parsing XML
+    */
+   public final void initStorageDocumens() throws IOException, ParseException {
       setStorageDocuments(getStorageDocumentsFromXml());
       setStorageDocument(getStorageDocumentFromXml());
    }
@@ -292,9 +300,10 @@ public class CommonsServices {
     * @param outputStream
     *           liste des outputstream
     * @throws IOException
+    *            Exception IO
     */
-   public void copyStream(InputStream inputStream, OutputStream... outputStreams)
-         throws IOException {
+   public final void copyStream(InputStream inputStream,
+         OutputStream... outputStreams) throws IOException {
       int val;
 
       while ((val = inputStream.read()) != -1) {

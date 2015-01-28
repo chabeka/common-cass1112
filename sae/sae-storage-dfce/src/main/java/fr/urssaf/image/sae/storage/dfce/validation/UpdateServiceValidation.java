@@ -26,6 +26,10 @@ public class UpdateServiceValidation {
     * 
     * @param uuid
     *           : le critère de recherche
+    * @param modifMetas
+    *           Liste des métas à modifier
+    * @param delMetas
+    *           Liste des métas à modifer
     */
    @Before(value = "execution(void fr.urssaf.image.sae.storage.services.storagedocument..UpdateService.updateStorageDocument(..)) && @annotation(fr.urssaf.image.sae.storage.dfce.annotations.ServiceChecked) && args(uuid, modifMetas, delMetas)")
    public final void deleteStorageDocumentValidation(final UUID uuid,

@@ -28,7 +28,13 @@ public class TracesDfceSupport {
          .getLogger(TracesDfceSupport.class);
 
    private DispatcheurService dispatcheurService;
-   
+
+   /**
+    * Constructeur
+    * 
+    * @param dispatcheurService
+    *           Service du dispatcheur de la trace
+    */
    @Autowired
    public TracesDfceSupport(DispatcheurService dispatcheurService) {
       this.dispatcheurService = dispatcheurService;
@@ -303,8 +309,7 @@ public class TracesDfceSupport {
          TraceToCreate traceToCreate = new TraceToCreate();
 
          // Code de l'événement
-         traceToCreate
-               .setCodeEvt(Constants.TRACE_CODE_EVT_TRANSFERT_DOC_DFCE);
+         traceToCreate.setCodeEvt(Constants.TRACE_CODE_EVT_TRANSFERT_DOC_DFCE);
 
          // Contexte
          traceToCreate.setContexte("TransfertDocumentDeDFCE");

@@ -52,7 +52,7 @@ public class UpdateServiceImpl extends AbstractServices implements
     */
    @Override
    @ServiceChecked
-   public void updateStorageDocument(UUID uuid,
+   public final void updateStorageDocument(UUID uuid,
          List<StorageMetadata> modifiedMetadatas,
          List<StorageMetadata> deletedMetadatas) throws UpdateServiceEx {
 

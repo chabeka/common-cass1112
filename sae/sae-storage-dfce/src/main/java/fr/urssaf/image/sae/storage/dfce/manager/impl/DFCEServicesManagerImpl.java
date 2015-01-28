@@ -28,7 +28,13 @@ public class DFCEServicesManagerImpl implements DFCEServicesManager {
    private DFCEConnection cnxParameters;
 
    private ServiceProvider dfceService;
-   
+
+   /**
+    * Constructeur
+    * 
+    * @param dfceConnection
+    *           Paramétrage DFCE
+    */
    @Autowired
    public DFCEServicesManagerImpl(DFCEConnection dfceConnection) {
       cnxParameters = dfceConnection;

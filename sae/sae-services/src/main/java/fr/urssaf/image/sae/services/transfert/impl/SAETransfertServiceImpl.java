@@ -92,7 +92,10 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
    @Autowired
    private JournalEvtServiceImpl journalEvtService; 
    
-   public void transfertDoc(UUID idArchive) throws TransfertException,
+   /**
+    * {@inheritDoc}
+    */
+   public final void transfertDoc(UUID idArchive) throws TransfertException,
       ArchiveAlreadyTransferedException, ArchiveInexistanteEx {
 
       //-- On trace le début du transfert

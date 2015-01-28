@@ -3,14 +3,16 @@ package fr.urssaf.image.sae.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.easymock.EasyMock;
-
 import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
 import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
-import fr.urssaf.image.sae.storage.services.storagedocument.StorageTransfertService;
 
+/**
+ * Fabrique pour les mocks
+ * 
+ *
+ */
 public class MockFactoryBean {
 
    public static final UntypedDocument getUntypedDocumentMockData() {

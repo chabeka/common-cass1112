@@ -12,10 +12,11 @@ import java.util.List;
 public interface TraceDestinaireService {
 
    /**
-    * Ajouter des traces dans le système de traçabilité du SAE
+    * Récupération des codes evenements par type de traces
     * 
-    * @param trace
+    * @param typeTrace
     *           Trace à créer
+    * @return Liste des codes Evenements
     */
    List<String> getCodeEvenementByTypeTrace(String typeTrace);
 

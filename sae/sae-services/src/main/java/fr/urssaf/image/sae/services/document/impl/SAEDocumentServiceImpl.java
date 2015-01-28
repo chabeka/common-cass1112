@@ -114,7 +114,7 @@ public class SAEDocumentServiceImpl implements SAEDocumentService {
     * @throws UnknownFiltresMetadataEx
     */
    @Override
-   public PaginatedUntypedDocuments searchPaginated(
+   public final PaginatedUntypedDocuments searchPaginated(
          List<UntypedMetadata> fixedMetadatas,
          UntypedRangeMetadata varyingMetadata, List<AbstractMetadata> filters,
          int nbDocumentsParPage, UUID lastIdDoc,

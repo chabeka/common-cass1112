@@ -64,7 +64,7 @@ public abstract class AbstractServices {
 	 * @param cnxParameters
 	 *            Les paramètres de connection
 	 */
-	public void setCnxParameters(
+	public final void setCnxParameters(
 			final DFCEConnection cnxParameters) {
 		this.cnxParameters = cnxParameters;
 	}

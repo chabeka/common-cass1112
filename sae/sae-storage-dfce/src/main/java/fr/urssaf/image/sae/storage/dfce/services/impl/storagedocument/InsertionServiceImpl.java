@@ -148,7 +148,7 @@ public class InsertionServiceImpl extends AbstractServices implements
    @Override
    @Loggable(LogLevel.TRACE)
    @ServiceChecked
-   public StorageReferenceFile insertStorageReference(
+   public final StorageReferenceFile insertStorageReference(
          VirtualStorageReference reference) throws InsertionServiceEx {
       String trcPrefix = "insertStorageReference";
       LOGGER.debug("{} - début", trcPrefix);
@@ -199,7 +199,7 @@ public class InsertionServiceImpl extends AbstractServices implements
    @Override
    @Loggable(LogLevel.TRACE)
    @ServiceChecked
-   public UUID insertVirtualStorageDocument(VirtualStorageDocument vDocument)
+   public final UUID insertVirtualStorageDocument(VirtualStorageDocument vDocument)
          throws InsertionServiceEx {
       String trcPrefix = "insertVirtualStorageDocument";
       LOGGER.debug("{} - début", trcPrefix);

@@ -31,6 +31,7 @@ public final class CheckDataUtils {
     * @throws NoSuchAlgorithmException
     *            Exception levé quand l'algorthme n'est pas supporter.
     * @throws IOException
+    *            Exception IO
     */
    public static boolean checkDocumentSha1(final InputStream firstSaeDocument,
          final InputStream secondSaeDocument) throws NoSuchAlgorithmException,

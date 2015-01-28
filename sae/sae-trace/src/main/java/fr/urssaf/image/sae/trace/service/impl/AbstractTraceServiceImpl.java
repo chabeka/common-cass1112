@@ -24,6 +24,10 @@ import fr.urssaf.image.sae.trace.utils.DateRegUtils;
 /**
  * Classe mère d'implémentation des support de trace
  * 
+ * @param <T>
+ *           Type de trace contenue dans le registre
+ * @param <I>
+ *           Index des traces
  */
 public abstract class AbstractTraceServiceImpl<T extends Trace, I extends TraceIndex>
       implements RegService<T, I> {

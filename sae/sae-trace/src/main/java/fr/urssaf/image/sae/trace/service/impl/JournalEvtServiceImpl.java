@@ -225,7 +225,7 @@ public class JournalEvtServiceImpl extends
     * {@inheritDoc}
     */
    @Override
-   public JobClockSupport getClockSupport() {
+   public final JobClockSupport getClockSupport() {
       return clockSupport;
    }
 
@@ -233,7 +233,7 @@ public class JournalEvtServiceImpl extends
     * {@inheritDoc}
     */
    @Override
-   public Logger getLogger() {
+   public final Logger getLogger() {
       return LOGGER;
    }
 
@@ -241,7 +241,7 @@ public class JournalEvtServiceImpl extends
     * {@inheritDoc}
     */
    @Override
-   public LoggerSupport getLoggerSupport() {
+   public final LoggerSupport getLoggerSupport() {
       return loggerSupport;
    }
 
@@ -249,16 +249,19 @@ public class JournalEvtServiceImpl extends
     * {@inheritDoc}
     */
    @Override
-   public AbstractTraceSupport<TraceJournalEvt, TraceJournalEvtIndex> getSupport() {
+   public final AbstractTraceSupport<TraceJournalEvt, TraceJournalEvtIndex> getSupport() {
       return support;
    }
-   
+
    /**
-    * Récupérartion de la listes des traces par identifiant unique du document.
+    * Récupération de la liste des traces par identifiant unique du document.
+    * 
     * @param idDoc
-    * @return
+    *           Identifiant du document
+    * @return Liste des traces
     */
-   public List<TraceJournalEvtIndexDoc> getTraceJournalEvtByIdDoc(UUID idDoc){
+   public final List<TraceJournalEvtIndexDoc> getTraceJournalEvtByIdDoc(
+         UUID idDoc) {
       return support.findByIdDoc(idDoc);
    }
 }

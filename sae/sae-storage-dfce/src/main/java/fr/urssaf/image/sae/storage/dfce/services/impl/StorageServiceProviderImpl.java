@@ -38,7 +38,7 @@ public class StorageServiceProviderImpl extends AbstractServiceProvider
     *           : la façade des services d'insertion ,de recherche,récupération
     */
    @SuppressWarnings("PMD.LongVariable")
-   public void setStorageDocumentService(
+   public final void setStorageDocumentService(
          final StorageDocumentService storageDocumentService) {
       this.storageDocumentService = storageDocumentService;
    }

@@ -76,15 +76,12 @@ public final class TraceAssertUtils {
    }
 
    /**
-    * Vérifie qu'il y a une et une seule trace de dépôt de document dans DFCE
-    * dans le journal des événements SAE
-    * 
     * @param idDoc
     *           l'identifiant unique du document dans DFCE
-    * @param hash
-    *           le hash du document
-    * @param typeHash
-    *           l'algo de hash
+    * @param modifMetas
+    *           Métas à mofier
+    * @param delMetas
+    *           Métas à supprimer
     */
    public void verifieTraceModifDfceDansJournalSae(UUID idDoc,
          List<String> modifMetas, List<String> delMetas) {
@@ -242,10 +239,10 @@ public final class TraceAssertUtils {
       assertTraceSupressionDocDfceDansJournalSae(traceJrnIndex, idDoc);
 
    }
-   
+
    /**
-    * Vérifie qu'il y a une trace de dépôt et une trace de suppression (transfert) dans le
-    * journal SAE
+    * Vérifie qu'il y a une trace de dépôt et une trace de suppression
+    * (transfert) dans le journal SAE
     * 
     * @param idDoc
     *           l'identifiant unique du document dans DFCE
@@ -254,21 +251,21 @@ public final class TraceAssertUtils {
     * @param typeHash
     *           l'algo de hash
     */
-   public void verifieTraceDepotEtSuppressionPourTransfertDfceDansJournalSae(UUID idDoc,
-         String hash, String typeHash) {
-      
+   public void verifieTraceDepotEtSuppressionPourTransfertDfceDansJournalSae(
+         UUID idDoc, String hash, String typeHash) {
+
       // Vérification sur le nombre de trace trouvées via l'index
       List<TraceJournalEvtIndex> tracesJrnIndex = verifieNombreTracesDansJournalSae(2);
-      
+
       // Vérifications sur la trace de dépôt dans DFCE
       TraceJournalEvtIndex traceJrnIndex = tracesJrnIndex.get(1);
       assertTraceDepotDocDfceDansJournalSae(traceJrnIndex, idDoc, hash,
             typeHash);
-      
+
       // Vérifications sur la trace de suppression de DFCE
       traceJrnIndex = tracesJrnIndex.get(0);
       assertTraceSupressionDocTransfertDfceDansJournalSae(traceJrnIndex, idDoc);
-      
+
    }
 
    private void assertTraceDepotDocDfceDansJournalSae(
@@ -472,55 +469,55 @@ public final class TraceAssertUtils {
       verifieInfo(trace.getInfos(), "idDoc", idDoc.toString());
 
    }
-   
+
    private void assertTraceSupressionDocTransfertDfceDansJournalSae(
          TraceJournalEvtIndex traceJrnIndex, UUID idDoc) {
-      
+
       // Le code événement
       Assert.assertEquals("Le code événement est incorrect",
             Constants.TRACE_CODE_EVT_TRANSFERT_DOC_DFCE, traceJrnIndex
-            .getCodeEvt());
-      
+                  .getCodeEvt());
+
       // Le contexte
       Assert.assertEquals("Le contexte est incorrect",
             "TransfertDocumentDeDFCE", traceJrnIndex.getContexte());
-      
+
       // Le CS
       Assert.assertEquals("Le contrat de service est incorrect",
             "TESTS_UNITAIRES", traceJrnIndex.getContratService());
-      
+
       // Les PAGM
       Assert.assertEquals("Les PAGM sont incorrects", Arrays.asList("TU_PAGM1",
-      "TU_PAGM2"), traceJrnIndex.getPagms());
-      
+            "TU_PAGM2"), traceJrnIndex.getPagms());
+
       // Le login
       Assert.assertEquals("Le login est incorrect", "UTILISATEUR TEST",
             traceJrnIndex.getLogin());
-      
+
       // Vérifications sur la trace en elle-même
       TraceJournalEvt trace = journalEvtService.lecture(traceJrnIndex
             .getIdentifiant());
-      
+
       // Le code événement
       Assert.assertEquals("Le code événement est incorrect",
             Constants.TRACE_CODE_EVT_TRANSFERT_DOC_DFCE, trace.getCodeEvt());
-      
+
       // Le contexte
       Assert.assertEquals("Le contexte est incorrect",
             "TransfertDocumentDeDFCE", trace.getContexte());
-      
+
       // Le CS
       Assert.assertEquals("Le contrat de service est incorrect",
             "TESTS_UNITAIRES", trace.getContratService());
-      
+
       // Les PAGM
       Assert.assertEquals("Les PAGM sont incorrects", Arrays.asList("TU_PAGM1",
-      "TU_PAGM2"), trace.getPagms());
-      
+            "TU_PAGM2"), trace.getPagms());
+
       // Le login
       Assert.assertEquals("Le login est incorrect", "UTILISATEUR TEST", trace
             .getLogin());
-      
+
       // Les infos supplémentaires
       Assert.assertNotNull("Les informations ne devraient pas être vide", trace
             .getInfos());
@@ -532,7 +529,7 @@ public final class TraceAssertUtils {
             .getHostname());
       verifieInfo(trace.getInfos(), "saeServeurIP", HostnameUtil.getIP());
       verifieInfo(trace.getInfos(), "idDoc", idDoc.toString());
-      
+
    }
 
 }

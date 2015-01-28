@@ -157,7 +157,7 @@ public class SearchingServiceImpl extends AbstractServices implements
    @Override
    @Loggable(LogLevel.TRACE)
    @ServiceChecked
-   public StorageDocument searchStorageDocumentByUUIDCriteria(
+   public final StorageDocument searchStorageDocumentByUUIDCriteria(
          UUIDCriteria uUIDCriteria) throws SearchingServiceEx {
 
       // -- Recherche du document
@@ -202,7 +202,7 @@ public class SearchingServiceImpl extends AbstractServices implements
     * {@inheritDoc}
     */
    @Override
-   public PaginatedStorageDocuments searchPaginatedStorageDocuments(
+   public final PaginatedStorageDocuments searchPaginatedStorageDocuments(
          PaginatedLuceneCriteria paginatedLuceneCriteria)
          throws SearchingServiceEx, QueryParseServiceEx {
       

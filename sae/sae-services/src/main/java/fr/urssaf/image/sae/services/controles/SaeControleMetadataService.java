@@ -78,6 +78,7 @@ public interface SaeControleMetadataService {
     * 
     * @param metadatas
     *           la liste des métadonnées à vérifier
+    * @return La liste des métadonnées trimées si besoin
     * @throws RequiredStorageMetadataEx
     *            exception levée lorsqu'une métadonnée obligatoire au stockage
     *            n'est pas présente

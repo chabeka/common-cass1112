@@ -41,76 +41,123 @@ import fr.urssaf.image.sae.storage.util.StorageMetadataUtils;
 
 /**
  * 
- * Classe utilitaire de mutualisation du code des implémentations des services DFCE.
- * Cette classe regroupe le code commeun au classes : 
+ * Classe utilitaire de mutualisation du code des implémentations des services
+ * DFCE. Cette classe regroupe le code commun au classes :
  * 
- * <li>DeletionServiceImpl</li>
- * <li>InsertionServiceImpl</li>
- * <li>SearchingServiceImpl</li>
- * <li>TransfertServiceImpl</li>
+ * <li>DeletionServiceImpl</li> <li>InsertionServiceImpl</li> <li>
+ * SearchingServiceImpl</li> <li>TransfertServiceImpl</li>
  * 
  * @since 22/10/2014
  * @author MPA
- *
+ * 
  */
 @Component
 public class StorageDocumentServiceSupport {
-   
-   private static final Logger LOGGER = LoggerFactory .getLogger(StorageDocumentServiceSupport.class);
-   
-   public StorageDocument insertBinaryStorageDocument(ServiceProvider dfceService, DFCEConnection cnxParams, 
-         DocumentsTypeList typeDocList, StorageDocument storageDocument, Logger LOG, 
-         TracesDfceSupport tracesSupport) throws InsertionServiceEx {
-      
-      Base base = StorageDocumentServiceSupport.getBaseDFCE(dfceService, cnxParams);
-      String TRC_INSERT = "insertStorageDocument()";
+
+   private static final Logger LOGGER = LoggerFactory
+         .getLogger(StorageDocumentServiceSupport.class);
+
+   /**
+    * Insertion de document
+    * 
+    * @param dfceService
+    *           Services de DFCE
+    * @param cnxParams
+    *           Paramétrage DFCE
+    * @param typeDocList
+    *           Liste de type de documents
+    * @param storageDocument
+    *           Document à inséré
+    * @param log
+    *           Logger
+    * @param tracesSupport
+    *           Support pour l'ecriture des traces
+    * @return Le document inséré
+    * @throws InsertionServiceEx
+    *            Exception levée si erreur lors de l'insertion
+    */
+   public final StorageDocument insertBinaryStorageDocument(
+         ServiceProvider dfceService, DFCEConnection cnxParams,
+         DocumentsTypeList typeDocList, StorageDocument storageDocument,
+         Logger log, TracesDfceSupport tracesSupport) throws InsertionServiceEx {
+
+      Base base = StorageDocumentServiceSupport.getBaseDFCE(dfceService,
+            cnxParams);
+      String trcInsert = "insertStorageDocument()";
       try {
-         //-- conversion du storageDoc en DFCE Document
-         Document docDfce = BeanMapper.storageDocumentToDfceDocument(base, storageDocument);
+         // -- conversion du storageDoc en DFCE Document
+         Document docDfce = BeanMapper.storageDocumentToDfceDocument(base,
+               storageDocument);
 
          docDfce.setUuid(storageDocument.getUuid());
 
-         //-- ici on récupère le contenu du fichier.
+         // -- ici on récupère le contenu du fichier.
          DataHandler docContent = storageDocument.getContent();
 
-         //-- ici on récupère le nom et l'extension du fichier
+         // -- ici on récupère le nom et l'extension du fichier
          String[] file = new String[] {
                FilenameUtils.getBaseName(storageDocument.getFileName()),
                FilenameUtils.getExtension(storageDocument.getFileName()) };
 
-         LOGGER.debug("{} - Enrichissement des métadonnées : "
+         log.debug("{} - Enrichissement des métadonnées : "
                + "ajout de la métadonnée NomFichier valeur : {}.{}",
-               new Object[] { TRC_INSERT, file[0], file[1] });
-         LOGGER.debug("{} - Début insertion du document dans DFCE", TRC_INSERT);
+               new Object[] { trcInsert, file[0], file[1] });
+         log.debug("{} - Début insertion du document dans DFCE", trcInsert);
 
          return insertDocumentInStorage(dfceService, cnxParams, typeDocList,
-                  docDfce, docContent, file, storageDocument.getMetadatas(), tracesSupport);
+               docDfce, docContent, file, storageDocument.getMetadatas(),
+               tracesSupport);
 
-      }
-      catch (InsertionServiceEx ex) {
-         String messg = StorageMessageHandler.getMessage(Constants.INS_CODE_ERROR);
+      } catch (InsertionServiceEx ex) {
+         String messg = StorageMessageHandler
+               .getMessage(Constants.INS_CODE_ERROR);
          throw new InsertionServiceEx(messg, ex.getMessage(), ex);
-      }
-      catch (Exception ex) {
-         String messg = StorageMessageHandler.getMessage(Constants.INS_CODE_ERROR);
+      } catch (Exception ex) {
+         String messg = StorageMessageHandler
+               .getMessage(Constants.INS_CODE_ERROR);
          throw new InsertionServiceEx(messg, ex.getMessage(), ex);
       }
    }
-   
-   public StorageDocument insertDocumentInStorage(ServiceProvider dfceService, 
-         DFCEConnection cxnParam, DocumentsTypeList typeDocList, Document docDfce,
-         DataHandler documentContent, String[] file, List<StorageMetadata> metadatas, TracesDfceSupport tracesSupport)
+
+   /**
+    * Insertion de document
+    * 
+    * @param dfceService
+    *           Services de DFCE
+    * @param cxnParam
+    *           Paramétrage DFCE
+    * @param typeDocList
+    *           Liste de type de documents
+    * @param docDfce
+    *           Document DFCE
+    * @param documentContent
+    *           Contenu du document
+    * @param file
+    *           fichier
+    * @param metadatas
+    *           Liste des métadonnées
+    * @param tracesSupport
+    *           Ecriture des traces
+    * @return Le document inséré
+    * @throws InsertionServiceEx
+    *            Exception levée si erreur lors de l'insertion
+    */
+   public final StorageDocument insertDocumentInStorage(
+         ServiceProvider dfceService, DFCEConnection cxnParam,
+         DocumentsTypeList typeDocList, Document docDfce,
+         DataHandler documentContent, String[] file,
+         List<StorageMetadata> metadatas, TracesDfceSupport tracesSupport)
          throws InsertionServiceEx {
-      
-      String TRC_INSERT = "insertStorageDocument()";
-      
-      //-- Traces debug - entrée méthode
-      LOGGER.debug("{} - Début", TRC_INSERT);
-      LOGGER.debug("{} - Début de vérification du type de document", TRC_INSERT);
-      
-      //-- Vérification du type de document
+
+      String trcInsert = "insertStorageDocument()";
+
+      // -- Traces debug - entrée méthode
+      LOGGER.debug("{} - Début", trcInsert);
+      LOGGER.debug("{} - Début de vérification du type de document", trcInsert);
+
+      // -- Vérification du type de document
       checkDocumentType(typeDocList, metadatas);
-      LOGGER.debug("{} - Fin de vérification du type de document", TRC_INSERT);
+      LOGGER.debug("{} - Fin de vérification du type de document", trcInsert);
 
       InputStream inputStream = null;
 
@@ -121,8 +168,8 @@ public class StorageDocumentServiceSupport {
          String hashMeta = StringUtils.trim(StorageMetadataUtils
                .valueMetadataFinder(metadatas, StorageTechnicalMetadatas.HASH
                      .getShortCode()));
-         String typeHashMeta = StorageMetadataUtils.valueMetadataFinder(metadatas,
-               StorageTechnicalMetadatas.TYPE_HASH.getShortCode());
+         String typeHashMeta = StorageMetadataUtils.valueMetadataFinder(
+               metadatas, StorageTechnicalMetadatas.TYPE_HASH.getShortCode());
 
          // Détermine le hash qu'il faut passer à DFCE pour qu'il le vérifie
          // lors de l'archivage
@@ -133,7 +180,7 @@ public class StorageDocumentServiceSupport {
             // documents dans DFCE
             String digestAlgo = cxnParam.getDigestAlgo();
             String message = "{} - Algo de hash requis par DFCE pour la vérification du hash à l'archivage : {}";
-            LOGGER.debug(message, TRC_INSERT, digestAlgo);
+            LOGGER.debug(message, trcInsert, digestAlgo);
 
             // Soit on utilise le hash présent dans les métadonnées, car l'algo
             // de hash
@@ -147,10 +194,10 @@ public class StorageDocumentServiceSupport {
                // on récupère la valeur du hash contenu dans les métadonnées
                digest = hashMeta;
                LOGGER.debug("{} - Hash récupéré des métadonnées : {}",
-                     TRC_INSERT, digest);
+                     trcInsert, digest);
 
             } else {
-               //-- on recalcule le hash
+               // -- on recalcule le hash
                digest = checkHash(documentContent, digestAlgo, file[0]);
             }
          }
@@ -158,18 +205,20 @@ public class StorageDocumentServiceSupport {
          inputStream = documentContent.getInputStream();
 
          // Appel de l'API DFCE pour l'archivage du document
-         Document docArchive = insertStorageDocument(dfceService, docDfce, file[0], file[1],
-               digest, inputStream, hashMeta, typeHashMeta, tracesSupport);
+         Document docArchive = insertStorageDocument(dfceService, docDfce,
+               file[0], file[1], digest, inputStream, hashMeta, typeHashMeta,
+               tracesSupport);
 
          // Trace
-         LOGGER.debug("{} - Document inséré dans DFCE (UUID: {})", TRC_INSERT,
+         LOGGER.debug("{} - Document inséré dans DFCE (UUID: {})", trcInsert,
                docArchive.getUuid());
-         LOGGER.debug("{} - Fin insertion du document dans DFCE", TRC_INSERT);
-         LOGGER.debug("{} - Sortie", TRC_INSERT);
+         LOGGER.debug("{} - Fin insertion du document dans DFCE", trcInsert);
+         LOGGER.debug("{} - Sortie", trcInsert);
 
          // Mapping d'objet pour passer l'objet Document de DFCE à l'objet
          // StorageDocument
-         return BeanMapper.dfceDocumentToStorageDocument(docArchive, null, dfceService, false);
+         return BeanMapper.dfceDocumentToStorageDocument(docArchive, null,
+               dfceService, false);
 
       } catch (TagControlException tagCtrlEx) {
 
@@ -187,12 +236,13 @@ public class StorageDocumentServiceSupport {
       }
 
    }
-   
+
    /**
     * 
-    * Archibage du document dans DFCE ((Api DFCE)
+    * Archivage du document dans DFCE ((Api DFCE)
     * 
     * @param dfceService
+    *           Services de DFCE
     * @param document
     * @param originalFilename
     * @param extension
@@ -206,9 +256,10 @@ public class StorageDocumentServiceSupport {
     * 
     * @throws TagControlException
     */
-   private Document insertStorageDocument(ServiceProvider dfceService, Document document,
-         String originalFilename, String extension, String digest,
-         InputStream inputStream, String hashPourTrace, String typeHashPourTrace, TracesDfceSupport tracesSupport)
+   private Document insertStorageDocument(ServiceProvider dfceService,
+         Document document, String originalFilename, String extension,
+         String digest, InputStream inputStream, String hashPourTrace,
+         String typeHashPourTrace, TracesDfceSupport tracesSupport)
          throws TagControlException {
 
       Document doc;
@@ -221,51 +272,69 @@ public class StorageDocumentServiceSupport {
          doc = dfceService.getStoreService().storeDocument(document,
                originalFilename, extension, digest, inputStream);
       }
-      
+
       // Trace l'événement "Dépôt d'un document dans DFCE"
       tracesSupport.traceDepotDocumentDansDFCE(doc.getUuid(), hashPourTrace,
             typeHashPourTrace, doc.getArchivageDate());
 
       return doc;
    }
-   
-   private void checkDocumentType(DocumentsTypeList typeDocList, List<StorageMetadata> metadatas)
-      throws DocumentTypeException {
-   
+
+   private void checkDocumentType(DocumentsTypeList typeDocList,
+         List<StorageMetadata> metadatas) {
+
       String docType = StorageMetadataUtils.valueMetadataFinder(metadatas,
             StorageTechnicalMetadatas.TYPE.getShortCode());
-      
+
       if (!typeDocList.getTypes().contains(docType)) {
-         String message = "Impossible d'insérer le document, " +
-         		"son type n'est pas valide : {} ne fait pas partie des type référencés";
-         throw new DocumentTypeException(StringUtils.replace(message, "{}", docType));
+         String message = "Impossible d'insérer le document, "
+               + "son type n'est pas valide : {} ne fait pas partie des type référencés";
+         throw new DocumentTypeException(StringUtils.replace(message, "{}",
+               docType));
       }
    }
-   
-   public StorageDocument searchStorageDocumentByUUIDCriteria(ServiceProvider dfceService,
-         DFCEConnection cnxParams, UUIDCriteria uUIDCriteria, Logger LOG) throws SearchingServiceEx {
-      
-      //-- Récupération base dfce
-      Base baseDfce = StorageDocumentServiceSupport.getBaseDFCE(dfceService, cnxParams);
-      
+
+   /**
+    * Recherche de document par UUID
+    * 
+    * @param dfceService
+    *           Services de DFCE
+    * @param cnxParams
+    *           Paramétrage DFCE
+    * @param uUIDCriteria
+    *           UUID du document recherché
+    * @param log
+    *           Logger
+    * @return Le document trouvé
+    * @throws SearchingServiceEx
+    *            Exception levée lors d'erreur pendant la recherche
+    */
+   public final StorageDocument searchStorageDocumentByUUIDCriteria(
+         ServiceProvider dfceService, DFCEConnection cnxParams,
+         UUIDCriteria uUIDCriteria, Logger log) throws SearchingServiceEx {
+
+      // -- Récupération base dfce
+      Base baseDfce = StorageDocumentServiceSupport.getBaseDFCE(dfceService,
+            cnxParams);
+
       try {
-         //-- Traces debug - entrée méthode
+         // -- Traces debug - entrée méthode
          String prefixeTrc = "searchStorageDocumentByUUIDCriteria()";
-         LOG.debug("{} - Début", prefixeTrc);
-         LOG.debug("{} - UUIDCriteria du document à consulter: {}", prefixeTrc,
+         log.debug("{} - Début", prefixeTrc);
+         log.debug("{} - UUIDCriteria du document à consulter: {}", prefixeTrc,
                uUIDCriteria.toString());
-         //-- Fin des traces debug - entrée méthode
-         LOG.debug("{} - Début de la recherche dans DFCE", prefixeTrc);
+         // -- Fin des traces debug - entrée méthode
+         log.debug("{} - Début de la recherche dans DFCE", prefixeTrc);
          final Document docDfce = dfceService.getSearchService()
                .getDocumentByUUID(baseDfce, uUIDCriteria.getUuid());
-         LOG.debug("{} - Fin de la recherche dans DFCE", prefixeTrc);
+         log.debug("{} - Fin de la recherche dans DFCE", prefixeTrc);
          StorageDocument storageDoc = null;
 
          if (docDfce != null) {
             storageDoc = BeanMapper.dfceDocumentToStorageDocument(docDfce,
                   uUIDCriteria.getDesiredStorageMetadatas(), dfceService, true);
          }
-         LOG.debug("{} - Sortie", prefixeTrc);
+         log.debug("{} - Sortie", prefixeTrc);
          return storageDoc;
 
       } catch (StorageException srcSerEx) {
@@ -282,45 +351,76 @@ public class StorageDocumentServiceSupport {
                except);
       }
    }
-   
+
+   /**
+    * Suppression de document
+    * 
+    * @param dfceService
+    *           Services de DFCE
+    * @param cnxParams
+    *           Paramétrage DFCE
+    * @param uuid
+    *           UUID du document à supprimer
+    * @param log
+    *           Logger
+    * @param tracesSupport
+    *           Support pour l'ecriture des traces
+    * @throws DeletionServiceEx
+    *            Exception levée si erreur lors de la suppression
+    */
    public final void deleteStorageDocument(ServiceProvider dfceService,
-         DFCEConnection cnxParams, final UUID uuid, Logger LOG, TracesDfceSupport tracesSupport)
-      throws DeletionServiceEx {
-      
-      //-- Traces debug - entrée méthode
+         DFCEConnection cnxParams, final UUID uuid, Logger log,
+         TracesDfceSupport tracesSupport) throws DeletionServiceEx {
+
+      // -- Traces debug - entrée méthode
       String prefixeTrc = "deleteStorageDocument()";
-      LOG.debug("{} - Début", prefixeTrc);
+      log.debug("{} - Début", prefixeTrc);
 
       try {
-         LOG.debug("{} - UUID à supprimer : {}", prefixeTrc, uuid);
+         log.debug("{} - UUID à supprimer : {}", prefixeTrc, uuid);
          dfceService.getStoreService().deleteDocument(uuid);
 
-         //-- Trace l'événement "Suppression d'un document de DFCE"
+         // -- Trace l'événement "Suppression d'un document de DFCE"
          tracesSupport.traceSuppressionDocumentDeDFCE(uuid);
 
-         LOG.debug("{} - Sortie", prefixeTrc);
+         log.debug("{} - Sortie", prefixeTrc);
 
       } catch (FrozenDocumentException frozenExcept) {
-         LOG
-         .debug(
-               "{} - Une exception a été levée lors de la suppression du document : {}",
-               prefixeTrc, frozenExcept.getMessage());
+         log
+               .debug(
+                     "{} - Une exception a été levée lors de la suppression du document : {}",
+                     prefixeTrc, frozenExcept.getMessage());
          throw new DeletionServiceEx(StorageMessageHandler
                .getMessage(Constants.DEL_CODE_ERROR),
                frozenExcept.getMessage(), frozenExcept);
       }
    }
-   
-   private String checkHash(DataHandler documentContent, String digestAlgo, String fileName) 
-      throws IOException, NoSuchAlgorithmException {
-      
+
+   /**
+    * Vérification du Hash
+    * 
+    * @param documentContent
+    *           Le document à vérifier
+    * @param digestAlgo
+    *           L'algo utilisé
+    * @param fileName
+    *           Le nom du fichier
+    * @return Le hash
+    * @throws IOException
+    *            Exception IO
+    * @throws NoSuchAlgorithmException
+    *            Erreur si algo de calcul inconnu
+    */
+   private String checkHash(DataHandler documentContent, String digestAlgo,
+         String fileName) throws IOException, NoSuchAlgorithmException {
+
       String digest;
       InputStream stream = null;
-      String TRC_INSERT = "insertStorageDocument()";
+      String trcInsert = "insertStorageDocument()";
       try {
          stream = documentContent.getInputStream();
          digest = HashUtils.hashHex(stream, digestAlgo);
-         LOGGER.debug("{} - Hash recalculé : {}", TRC_INSERT, digest);
+         LOGGER.debug("{} - Hash recalculé : {}", trcInsert, digest);
       } finally {
          close(stream, fileName);
       }
@@ -333,14 +433,25 @@ public class StorageDocumentServiceSupport {
          try {
             closeable.close();
          } catch (IOException e) {
-            LOGGER.info("{} - Erreur de fermeture du flux {}", new Object[]{trcPrefix, name});
+            LOGGER.info("{} - Erreur de fermeture du flux {}", new Object[] {
+                  trcPrefix, name });
          }
       }
    }
-   
-   public static Base getBaseDFCE(ServiceProvider dfceService, DFCEConnection cnxParameters){
+
+   /**
+    * Récupération de la base
+    * 
+    * @param dfceService
+    *           Services de DFCE
+    * @param cnxParameters
+    *           Paramétrage DFCE
+    * @return La base DFCE
+    */
+   public static Base getBaseDFCE(ServiceProvider dfceService,
+         DFCEConnection cnxParameters) {
       return dfceService.getBaseAdministrationService().getBase(
-           cnxParameters.getBaseName());
+            cnxParameters.getBaseName());
    }
 
 }

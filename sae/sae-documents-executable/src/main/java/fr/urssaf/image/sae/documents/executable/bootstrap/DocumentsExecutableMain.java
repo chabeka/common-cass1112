@@ -33,7 +33,8 @@ public class DocumentsExecutableMain {
    public static final String VERIFICATION_FORMAT = "VERIFICATION_FORMAT";
    public static final String ADD_METADATAS = "ADD_METADATAS";
 
-   protected static final String[] AVAIBLE_SERVICES = new String[] { ADD_METADATAS, VERIFICATION_FORMAT };
+   protected static final String[] AVAIBLE_SERVICES = new String[] {
+         ADD_METADATAS, VERIFICATION_FORMAT };
 
    private final String configLocation;
 
@@ -54,7 +55,7 @@ public class DocumentsExecutableMain {
     *           arguments passés en paramètres
     */
    public static void main(String[] args) {
-      
+
       LOGGER.info("Arguments de la ligne de commande : {}", StringUtils.join(
             args, ' '));
 
@@ -95,8 +96,9 @@ public class DocumentsExecutableMain {
 
       if (ValidationUtils.isArgumentsVide(args, 2)) {
          LOGGER
-               .warn("Le chemin complet du fichier de paramètrage du service {} doit être renseigné." 
-                     , service);
+               .warn(
+                     "Le chemin complet du fichier de paramètrage du service {} doit être renseigné.",
+                     service);
 
          return;
       }
@@ -105,37 +107,40 @@ public class DocumentsExecutableMain {
       if (!chargerFichierParam(args[2], properties)) {
          return;
       }
-      
-      //-- On charge le contexte TraitementService 
-      ApplicationContext context; 
+
+      // -- On charge le contexte TraitementService
+      ApplicationContext context;
       String saeConfig = args[1];
-      context = ContextFactory.createSAEApplicationContext(
-            this.configLocation, saeConfig);
-      
+      context = ContextFactory.createSAEApplicationContext(this.configLocation,
+            saeConfig);
+
       try {
-         
-         //-- Execution du service demandé
+
+         // -- Execution du service demandé
          executeService(service, properties, context);
-         
-      } catch (Throwable throwable) { 
-            // NOPMD Par Cédric le 10/02/2014 11:30 :
-            // On veut récupérer tous les types
-            // d'exceptions
-            String erreur = "Une erreur s'est produite lors du traitement "+ service;
-            LOGGER.error(erreur, throwable);
+
+      } catch (Throwable throwable) {
+         // NOPMD Par Cédric le 10/02/2014 11:30 :
+         // On veut récupérer tous les types
+         // d'exceptions
+         String erreur = "Une erreur s'est produite lors du traitement "
+               + service;
+         LOGGER.error(erreur, throwable);
       } finally {
          ((ClassPathXmlApplicationContext) context).close();
       }
    }
 
    /**
-    * Methode permettant de charger le fichier de paramètrage.
+    * Chargement du fichier de paramètre
     * 
     * @param pathFichierParam
-    *           chemin du fichier de paramètrage
-    * @return Properties
+    *           Chemin du fichier
+    * @param properties
+    *           propriétés
+    * @return Retourne true si chargement OK
     */
-   protected boolean chargerFichierParam(final String pathFichierParam,
+   protected final boolean chargerFichierParam(final String pathFichierParam,
          final Properties properties) {
       boolean chargementOk = true;
       InputStream stream = null;
@@ -223,32 +228,43 @@ public class DocumentsExecutableMain {
       }
       return confOk;
    }
-   
+
+   /**
+    * 
+    * @param properties
+    *           properties
+    * @param parametres
+    *           parametres
+    * @return true si vérif OK
+    */
    public boolean vefierConfFichierParamAddMeta(final Properties properties,
-         final AddMetadatasParametres parametres){
-      
+         final AddMetadatasParametres parametres) {
+
       boolean confOk = true;
-      
-      //-- verifie la requête lucène (obligatoire)
-      if(ValidationUtils.verifAddMetaParamRequeteLucene(properties, parametres)) {
+
+      // -- verifie la requête lucène (obligatoire)
+      if (ValidationUtils
+            .verifAddMetaParamRequeteLucene(properties, parametres)) {
          confOk = false;
       }
 
-      //-- verifie la taille du pool de thread (obligatoire)
-      if(ValidationUtils.verifAddMetaParamTaillePool(properties, parametres)) {
+      // -- verifie la taille du pool de thread (obligatoire)
+      if (ValidationUtils.verifAddMetaParamTaillePool(properties, parametres)) {
          confOk = false;
       }
 
-      //-- verifie la taille du pas d'execution (obligatoire)
-      if(ValidationUtils.verifAddMetaParamTaillePasExecution(properties, parametres)) {
+      // -- verifie la taille du pas d'execution (obligatoire)
+      if (ValidationUtils.verifAddMetaParamTaillePasExecution(properties,
+            parametres)) {
          confOk = false;
       }
 
-      //-- verifie la liste des metadonnées (obligatoire)
-      if(ValidationUtils.verifAddMetaParamListeMetadonnes(properties, parametres)){
+      // -- verifie la liste des metadonnées (obligatoire)
+      if (ValidationUtils.verifAddMetaParamListeMetadonnes(properties,
+            parametres)) {
          confOk = false;
       }
-      
+
       return confOk;
    }
 
@@ -256,35 +272,34 @@ public class DocumentsExecutableMain {
     * Methode de lancement des services
     * 
     * @param service
-    *             nom du service
-    * @param properties 
-    *             fichiers properties         
+    *           nom du service
+    * @param properties
+    *           fichiers properties
     * @param context
-    *             contexte spring
+    *           contexte spring
     */
-   protected final void executeService(
-         final String service, Properties properties,
-         final ApplicationContext context) {
+   protected final void executeService(final String service,
+         Properties properties, final ApplicationContext context) {
 
-      if(service.equals(VERIFICATION_FORMAT)){
+      if (service.equals(VERIFICATION_FORMAT)) {
          FormatValidationParametres parametres = new FormatValidationParametres();
          if (!verifierConfFichierParam(properties, parametres)) {
             return;
          }
-         
-         //-- Fichier param OK : On execute le service
+
+         // -- Fichier param OK : On execute le service
          execSceVerifierFormat(context, parametres);
-         //-------------------------------------------
-         
-      } else if(service.equals(ADD_METADATAS)){
+         // -------------------------------------------
+
+      } else if (service.equals(ADD_METADATAS)) {
          AddMetadatasParametres parametres = new AddMetadatasParametres();
          if (!vefierConfFichierParamAddMeta(properties, parametres)) {
             return;
          }
-         
-         //-- Fichier param OK : On execute le service
+
+         // -- Fichier param OK : On execute le service
          execSceAddMetadatas(context, parametres);
-         //-------------------------------------------
+         // -------------------------------------------
       }
    }
 
@@ -303,7 +318,7 @@ public class DocumentsExecutableMain {
             .getBean(TraitementService.class);
       traitementService.identifierValiderFichiers(parametres);
    }
-   
+
    /**
     * Methode permettant de lancer l'ajout de métadonnées sur des fichiers.
     * 

@@ -615,7 +615,7 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
     * 
     */
    @Override
-   public PaginatedUntypedDocuments searchPaginated(
+   public final PaginatedUntypedDocuments searchPaginated(
          List<UntypedMetadata> fixedMetadatas,
          UntypedRangeMetadata varyingMetadata, List<AbstractMetadata> filters,
          int nbDocumentsParPage, UUID lastIdDoc,

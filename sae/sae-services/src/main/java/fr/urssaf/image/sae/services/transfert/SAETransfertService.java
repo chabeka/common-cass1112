@@ -29,6 +29,6 @@ public interface SAETransfertService {
     *            Erreur levée lorsque l'archive n'a pas été trouvée
     */
    @PreAuthorize("hasRole('transfert')")
-   public void transfertDoc(UUID idArchive) throws TransfertException,
+   void transfertDoc(UUID idArchive) throws TransfertException,
       ArchiveAlreadyTransferedException, ArchiveInexistanteEx;
 }

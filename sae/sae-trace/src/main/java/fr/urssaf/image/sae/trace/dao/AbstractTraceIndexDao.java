@@ -17,6 +17,8 @@ import fr.urssaf.image.sae.commons.dao.AbstractDao;
 /**
  * Classe mère de traitement des données d'index
  * 
+ * @param <VT>
+ *           Classe abstraite pour les DAO CASSANDRA
  */
 public abstract class AbstractTraceIndexDao<VT> extends
       AbstractDao<String, UUID> {

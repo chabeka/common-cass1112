@@ -106,10 +106,10 @@ public final class ValidationUtils {
       }
       return erreurVerif;
    }
-   
+
    /**
-    * Methode permettant de vérifier la saisie du paramètre requête lucène
-    * pour l'ajout de métadonnées.
+    * Methode permettant de vérifier la saisie du paramètre requête lucène pour
+    * l'ajout de métadonnées.
     * 
     * @param properties
     *           properties
@@ -117,13 +117,13 @@ public final class ValidationUtils {
     *           paramètres
     * @return boolean
     */
-   public static boolean verifAddMetaParamRequeteLucene(final Properties properties,
-         final AbstractParametres parametres) {
-      
+   public static boolean verifAddMetaParamRequeteLucene(
+         final Properties properties, final AbstractParametres parametres) {
+
       final String paramName = "addMeta.requete.lucene";
       final String reqLucene = properties.getProperty(paramName);
-      
-      if(isStringParam(paramName, reqLucene, new onVerifiedCallback() {
+
+      if (isStringParam(paramName, reqLucene, new onVerifiedCallback() {
          @Override
          public void onVerified() {
             parametres.setRequeteLucene(reqLucene);
@@ -175,7 +175,7 @@ public final class ValidationUtils {
          final FormatValidationParametres parametres) {
       String paramName = "format.nombre.max.documents";
       final String nombreMaxDocs = properties.getProperty(paramName);
-      if(isNumericParam(paramName, nombreMaxDocs, new onVerifiedCallback() {
+      if (isNumericParam(paramName, nombreMaxDocs, new onVerifiedCallback() {
          @Override
          public void onVerified() {
             int nbMaxDoc = Integer.valueOf(nombreMaxDocs);
@@ -197,27 +197,26 @@ public final class ValidationUtils {
     * @return boolean : false si validation réussie
     */
    public static boolean verifParamTaillePasExecution(
-         final Properties properties,
-         final AbstractParametres parametres) {
-      
+         final Properties properties, final AbstractParametres parametres) {
+
       final String paramName = "format.taille.pas.execution";
       final String paramValue = properties.getProperty(paramName);
-      
-      if(isNumericParam(paramName, paramValue, new onVerifiedCallback() {
+
+      if (isNumericParam(paramName, paramValue, new onVerifiedCallback() {
          @Override
          public void onVerified() {
             int value = Integer.valueOf(paramValue);
             parametres.setTaillePasExecution(value);
          }
-      })) 
+      }))
          return false;
       else
          return true;
    }
 
    /**
-    * Methode permettant de vérifier la saisie 
-    * du paramètre 'addMeta.taille.pas.execution'
+    * Methode permettant de vérifier la saisie du paramètre
+    * 'addMeta.taille.pas.execution'
     * 
     * @param properties
     *           properties
@@ -225,37 +224,41 @@ public final class ValidationUtils {
     *           paramètres
     * @return boolean : false si validation réussie
     */
-   public static boolean verifAddMetaParamTaillePasExecution(         
-         final Properties properties,
-         final AbstractParametres parametres) {  
+   public static boolean verifAddMetaParamTaillePasExecution(
+         final Properties properties, final AbstractParametres parametres) {
       final String paramName = "addMeta.taille.pas.execution";
       return verifParamTaillePasExecution(properties, parametres, paramName);
    }
-   
+
    /**
     * Vérification de la taille du Pool de Theards
+    * 
+    * @param properties
+    *           properties
+    * @param parametres
+    *           parametres
+    * @return Renvoie vrai si taille OK
     */
    public static boolean verifAddMetaParamTaillePool(
-         final Properties properties,
-         final AbstractParametres parametres) {  
+         final Properties properties, final AbstractParametres parametres) {
       final String paramName = "addMeta.taille.pool";
       final String paramValue = properties.getProperty(paramName);
-      
-      if(isNumericParam(paramName, paramValue, new onVerifiedCallback() {
+
+      if (isNumericParam(paramName, paramValue, new onVerifiedCallback() {
          @Override
          public void onVerified() {
             int value = Integer.valueOf(paramValue);
             parametres.setTaillePool(value);
          }
-      })) 
+      }))
          return false;
       else
          return true;
    }
-   
+
    /**
-    * Méthode générique de vérifcation 
-    * du paramètre numérique taille du pas d'execution
+    * Méthode générique de vérifcation du paramètre numérique taille du pas
+    * d'execution
     * 
     * @param properties
     * @param parametres
@@ -263,34 +266,36 @@ public final class ValidationUtils {
     * @return boolean : false si validation réussie
     */
    public static boolean verifParamTaillePasExecution(
-         final Properties properties,
-         final AbstractParametres parametres, final String paramName) {
+         final Properties properties, final AbstractParametres parametres,
+         final String paramName) {
       final String paramValue = properties.getProperty(paramName);
-      
-      if(isNumericParam(paramName, paramValue, new onVerifiedCallback() {
+
+      if (isNumericParam(paramName, paramValue, new onVerifiedCallback() {
          @Override
          public void onVerified() {
             int value = Integer.valueOf(paramValue);
             parametres.setTaillePasExecution(value);
          }
-      })) 
+      }))
          return false;
       else
          return true;
    }
-   
-   private interface onVerifiedCallback{
-      public void onVerified(); 
+
+   private interface onVerifiedCallback {
+      public void onVerified();
    }
-   
+
    /**
     * Vérifier un paramètre numérique
+    * 
     * @param paramName
     * @param paramValue
     * @param callback
     * @return
     */
-   private static boolean isNumericParam(String paramName, String paramValue, onVerifiedCallback callback){
+   private static boolean isNumericParam(String paramName, String paramValue,
+         onVerifiedCallback callback) {
       if (NumberUtils.isDigits(paramValue)) {
          LOGGER.info("Paramètere '{}' : {}", paramName, paramValue);
          callback.onVerified();
@@ -301,15 +306,17 @@ public final class ValidationUtils {
          return false;
       }
    }
-   
+
    /**
     * Vérifier un paramètre de type string
+    * 
     * @param paramName
     * @param paramValue
     * @param callback
     * @return
     */
-   private static boolean isStringParam(String paramName, String paramValue, onVerifiedCallback callback){
+   private static boolean isStringParam(String paramName, String paramValue,
+         onVerifiedCallback callback) {
       if (StringUtils.isNotBlank(paramValue)) {
          LOGGER.info("Paramètere '{}' : {}", paramName, paramValue);
          callback.onVerified();
@@ -339,7 +346,7 @@ public final class ValidationUtils {
       }
       LOGGER.info("Métadonnées : {}", parametres.getMetadonnees());
    }
-   
+
    /**
     * Methode permettant de vérifier la saisie de la taille du pas d'exécution.
     * 
@@ -349,25 +356,25 @@ public final class ValidationUtils {
     *           paramètres
     * @return boolean
     */
-   public static boolean verifAddMetaParamListeMetadonnes(final Properties properties,
-         final AddMetadatasParametres parametres) {
-      
+   public static boolean verifAddMetaParamListeMetadonnes(
+         final Properties properties, final AddMetadatasParametres parametres) {
+
       boolean success = false;
-      
+
       String parameter = "addMeta.metadonnees";
       String metadonnees = properties.getProperty(parameter);
-      
+
       if (StringUtils.isBlank(metadonnees)) {
          success = true;
          LOGGER.warn("Le paramètre {} ne doit pas être vide", parameter);
       } else {
-         if(!metadonnees.contains(":")){
+         if (!metadonnees.contains(":")) {
             success = true;
-            String paramFormat = parameter +" 'cot:1,cpt:0,drh:0'";
+            String paramFormat = parameter + " 'cot:1,cpt:0,drh:0'";
             LOGGER.warn("Le format du paramètre {} est invalide. ", parameter);
             LOGGER.info("Exemple de format du paramètre {}.", paramFormat);
-         } else{
-            //-- Récupération de la liste des métadonnées
+         } else {
+            // -- Récupération de la liste des métadonnées
             Map<String, String> metasMap = new HashMap<String, String>();
             for (String meta : Arrays.asList(metadonnees.split(","))) {
                String[] metaData = meta.split(":");

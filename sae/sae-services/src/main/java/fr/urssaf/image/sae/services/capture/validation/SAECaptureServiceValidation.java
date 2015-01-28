@@ -68,7 +68,10 @@ public class SAECaptureServiceValidation {
     * @param fileName
     *           nom du fichier numérique à archiver doit non null
     * @throws EmptyDocumentEx
+    *            Exception levée si la taille du document est égale à 0 octet
     * @throws EmptyFileNameEx
+    *            Exception levée si le nom de fichier est vide ou rempli
+    *            d'espaces
     */
    @Before(CAPTURE_BINAIRE_METHOD)
    public final void captureBinaire(List<UntypedMetadata> metadatas,

@@ -25,7 +25,6 @@ import de.schlichtherle.io.FileInputStream;
 import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
 import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
-import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
 import fr.urssaf.image.sae.ecde.exception.EcdeBadURLException;
 import fr.urssaf.image.sae.ecde.exception.EcdeBadURLFormatException;
@@ -515,7 +514,7 @@ public class SAEControlesCaptureServiceImpl implements
     * {@inheritDoc}
     */
    @Override
-   public ControleFormatSucces checkFormat(String contexte,
+   public final ControleFormatSucces checkFormat(String contexte,
          SAEDocument saeDocument, List<FormatControlProfil> controlProfilSet)
          throws UnknownFormatException, ValidationExceptionInvalidFile {
 

@@ -99,11 +99,36 @@ public class DispatcheurServiceImpl implements DispatcheurService {
    private ServiceProviderSupport providerSupport;
 
    private TimeUUIDEtTimestampSupport timeUUIDSupport;
-   
+
+   /**
+    * Constructeur
+    * 
+    * @param clockSupport
+    *           Support pour le calcul de l'horloge sur Cassandra
+    * @param destSupport
+    *           Support de la classe DAO TraceDestinataireDao
+    * @param secuSupport
+    *           Support de la classe DAO TraceJournalEvtDao
+    * @param techSupport
+    *           Support de la classe DAO TraceRegTechniqueDao
+    * @param exploitSupport
+    *           Support de la classe DAO TraceRegExploitationDao
+    * @param evtSupport
+    *           Support de la classe DAO TraceJournalEvtDao
+    * @param providerSupport
+    *           Support pour la gestion de la connexion à DFCE
+    * @param timeUUIDSupport
+    *           Utilitaires pour créer des TimeUUID
+    */
    @Autowired
-   public DispatcheurServiceImpl(JobClockSupport clockSupport, TraceDestinataireSupport destSupport,
-         TraceRegSecuriteSupport secuSupport, TraceRegTechniqueSupport techSupport, TraceRegExploitationSupport exploitSupport,
-         TraceJournalEvtSupport evtSupport, ServiceProviderSupport providerSupport, TimeUUIDEtTimestampSupport timeUUIDSupport) {
+   public DispatcheurServiceImpl(JobClockSupport clockSupport,
+         TraceDestinataireSupport destSupport,
+         TraceRegSecuriteSupport secuSupport,
+         TraceRegTechniqueSupport techSupport,
+         TraceRegExploitationSupport exploitSupport,
+         TraceJournalEvtSupport evtSupport,
+         ServiceProviderSupport providerSupport,
+         TimeUUIDEtTimestampSupport timeUUIDSupport) {
 
       this.clockSupport = clockSupport;
       this.destSupport = destSupport;
@@ -248,14 +273,14 @@ public class DispatcheurServiceImpl implements DispatcheurService {
          LOGGER.debug("{} - ajout d'une trace journal des événements", prefix);
          TraceJournalEvt traceTechnique = new TraceJournalEvt(trace, list,
                idTrace, timestampTrace);
-         
+
          final String KEY_ID_DOC = "idDoc";
          long currentCLock = clockSupport.currentCLock();
          evtSupport.create(traceTechnique, currentCLock);
-         
+
          Map<String, Object> mapInfos = trace.getInfos();
-         if(MapUtils.isNotEmpty(mapInfos)){
-            if(mapInfos.containsKey(KEY_ID_DOC)){
+         if (MapUtils.isNotEmpty(mapInfos)) {
+            if (mapInfos.containsKey(KEY_ID_DOC)) {
                String idDoc = String.valueOf(mapInfos.get(KEY_ID_DOC));
                evtSupport.addIndexDoc(traceTechnique, idDoc, currentCLock);
             }

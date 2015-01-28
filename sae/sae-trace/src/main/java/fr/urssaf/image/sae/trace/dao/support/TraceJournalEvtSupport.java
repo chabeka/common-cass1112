@@ -39,7 +39,7 @@ public class TraceJournalEvtSupport extends
    private final TraceJournalEvtDao dao;
 
    private final TraceJournalEvtIndexDao indexDao;
-   
+
    private final TraceJournalEvtIndexDocDao indexDocDao;
 
    private final TimeUUIDEtTimestampSupport timeUUIDSupport;
@@ -52,12 +52,15 @@ public class TraceJournalEvtSupport extends
     *           Service DAO de la famille de colonnes "TraceJournalEvt"
     * @param indexDao
     *           Service DAO de la famille de colonnes "TraceJournalEvtIndex"
+    * @param indexDocDao
+    *           Service DAO de la famille de colonnes "TraceJournalEvtIndexDoc"
     * @param timeUUIDSupport
     *           Utilitaires pour créer des TimeUUID
     */
    @Autowired
    public TraceJournalEvtSupport(TraceJournalEvtDao dao,
-         TraceJournalEvtIndexDao indexDao, TraceJournalEvtIndexDocDao indexDocDao,
+         TraceJournalEvtIndexDao indexDao,
+         TraceJournalEvtIndexDocDao indexDocDao,
          TimeUUIDEtTimestampSupport timeUUIDSupport) {
       super();
       this.dao = dao;
@@ -70,7 +73,7 @@ public class TraceJournalEvtSupport extends
     * {@inheritDoc}
     */
    @Override
-   protected void completeCreateTrace(
+   protected final void completeCreateTrace(
          ColumnFamilyUpdater<UUID, String> updater, TraceJournalEvt trace,
          long clock) {
 
@@ -82,7 +85,7 @@ public class TraceJournalEvtSupport extends
     * {@inheritDoc}
     */
    @Override
-   protected TraceJournalEvtDao getDao() {
+   protected final TraceJournalEvtDao getDao() {
       return dao;
    }
 
@@ -90,7 +93,7 @@ public class TraceJournalEvtSupport extends
     * {@inheritDoc}
     */
    @Override
-   protected TraceJournalEvtIndexDao getIndexDao() {
+   protected final TraceJournalEvtIndexDao getIndexDao() {
       return indexDao;
    }
 
@@ -98,7 +101,7 @@ public class TraceJournalEvtSupport extends
     * {@inheritDoc}
     */
    @Override
-   protected TraceJournalEvtIndex getIndexFromTrace(TraceJournalEvt trace) {
+   protected final TraceJournalEvtIndex getIndexFromTrace(TraceJournalEvt trace) {
       return new TraceJournalEvtIndex(trace);
    }
 
@@ -106,7 +109,7 @@ public class TraceJournalEvtSupport extends
     * {@inheritDoc}
     */
    @Override
-   protected String getRegistreName() {
+   protected final String getRegistreName() {
       return JOURNAL_EVT_NAME;
    }
 
@@ -114,7 +117,7 @@ public class TraceJournalEvtSupport extends
     * {@inheritDoc}
     */
    @Override
-   protected Iterator<TraceJournalEvtIndex> getIterator(
+   protected final Iterator<TraceJournalEvtIndex> getIterator(
          SliceQuery<String, UUID, TraceJournalEvtIndex> sliceQuery) {
       return new TraceJournalEvtIndexIterator(sliceQuery);
    }
@@ -123,7 +126,7 @@ public class TraceJournalEvtSupport extends
     * {@inheritDoc}
     */
    @Override
-   protected Iterator<TraceJournalEvtIndex> getIterator(
+   protected final Iterator<TraceJournalEvtIndex> getIterator(
          SliceQuery<String, UUID, TraceJournalEvtIndex> sliceQuery,
          UUID startUuid, UUID endUuid, boolean reversed) {
       return new TraceJournalEvtIndexIterator(sliceQuery, startUuid, endUuid,
@@ -134,7 +137,7 @@ public class TraceJournalEvtSupport extends
     * {@inheritDoc}
     */
    @Override
-   protected void completeTraceFromResult(TraceJournalEvt trace,
+   protected final void completeTraceFromResult(TraceJournalEvt trace,
          ColumnFamilyResult<UUID, String> result) {
       trace.setContexte(result.getString(TraceJournalEvtDao.COL_CONTEXT));
    }
@@ -143,7 +146,8 @@ public class TraceJournalEvtSupport extends
     * {@inheritDoc}
     */
    @Override
-   protected TraceJournalEvt createNewInstance(UUID idTrace, Date timestamp) {
+   protected final TraceJournalEvt createNewInstance(UUID idTrace,
+         Date timestamp) {
       return new TraceJournalEvt(idTrace, timestamp);
    }
 
@@ -151,7 +155,7 @@ public class TraceJournalEvtSupport extends
     * {@inheritDoc}
     */
    @Override
-   protected TimeUUIDEtTimestampSupport getTimeUuidSupport() {
+   protected final TimeUUIDEtTimestampSupport getTimeUuidSupport() {
       return timeUUIDSupport;
    }
 
@@ -159,41 +163,49 @@ public class TraceJournalEvtSupport extends
     * {@inheritDoc}
     */
    @Override
-   protected Logger getLogger() {
+   protected final Logger getLogger() {
       return LOGGER;
    }
-   
+
    /**
     * 
     * Ajout d’un index sur l’identifiant de document
     * 
-    * @param trace Trace du journal des événements
-    * @param idDoc Identifiant du document
-    * @param clock Horloge de création
+    * @param trace
+    *           Trace du journal des événements
+    * @param idDoc
+    *           Identifiant du document
+    * @param clock
+    *           Horloge de création
     */
-   public void addIndexDoc(TraceJournalEvt trace, String idDoc, long clock){
+   public final void addIndexDoc(TraceJournalEvt trace, String idDoc, long clock) {
       TraceJournalEvtIndexDoc traceJournal = new TraceJournalEvtIndexDoc(trace);
-      ColumnFamilyUpdater<String, UUID> updater = indexDocDao.createUpdater(idDoc);
-      indexDocDao.writeColumn(updater, traceJournal.getIdentifiant(), traceJournal, clock);
+      ColumnFamilyUpdater<String, UUID> updater = indexDocDao
+            .createUpdater(idDoc);
+      indexDocDao.writeColumn(updater, traceJournal.getIdentifiant(),
+            traceJournal, clock);
       indexDocDao.update(updater);
    }
-   
+
    /**
     * Recherche des traces du journal des événements par identifiant du document
     * 
     * @param idDoc
+    *           Identifiant du document
     * 
-    * @return La liste des évènements trouvé
-    * La méthode renvoi "null" si aucun évènement trouvé.
+    * @return La liste des évènements trouvé La méthode renvoi "null" si aucun
+    *         évènement trouvé.
     */
-   public List<TraceJournalEvtIndexDoc> findByIdDoc(UUID idDoc){
-      SliceQuery<String, UUID, TraceJournalEvtIndexDoc>  sQuery = indexDocDao.createSliceQuery();
+   public final List<TraceJournalEvtIndexDoc> findByIdDoc(UUID idDoc) {
+      SliceQuery<String, UUID, TraceJournalEvtIndexDoc> sQuery = indexDocDao
+            .createSliceQuery();
       sQuery.setKey(idDoc.toString());
-      
+
       List<TraceJournalEvtIndexDoc> traces = null;
-      Iterator<TraceJournalEvtIndexDoc> iterator = new TraceJournalEvtIndexDocIterator(sQuery);
-      
-      if(iterator.hasNext()){
+      Iterator<TraceJournalEvtIndexDoc> iterator = new TraceJournalEvtIndexDocIterator(
+            sQuery);
+
+      if (iterator.hasNext()) {
          traces = new ArrayList<TraceJournalEvtIndexDoc>();
          while (iterator.hasNext()) {
             TraceJournalEvtIndexDoc trace = iterator.next();
@@ -202,8 +214,16 @@ public class TraceJournalEvtSupport extends
       }
       return traces;
    }
-   
-   public void deleteIndexDoc(UUID idDoc, long clock){
+
+   /**
+    * Suppression d'index du document
+    * 
+    * @param idDoc
+    *           Identifiant du document
+    * @param clock
+    *           Horloge de création
+    */
+   public final void deleteIndexDoc(UUID idDoc, long clock) {
       Mutator<String> mutator = indexDocDao.createMutator();
       indexDocDao.deleteIndex(mutator, idDoc.toString(), clock);
       mutator.execute();

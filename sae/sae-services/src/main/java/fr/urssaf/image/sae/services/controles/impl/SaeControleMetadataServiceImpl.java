@@ -3,6 +3,7 @@
  */
 package fr.urssaf.image.sae.services.controles.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -54,6 +55,8 @@ public class SaeControleMetadataServiceImpl implements
       String trcPrefix = "checkMetadataForStorage";
       LOG.debug("{} - début", trcPrefix);
 
+      List<SAEMetadata> trimMetadatas = new ArrayList<SAEMetadata>();
+      
       // Fin des traces debug - entrée méthode
       String listeCodeLong = null;
       LOG.debug("{} - Début de la vérification : "
@@ -74,11 +77,11 @@ public class SaeControleMetadataServiceImpl implements
 
       // Trim des métadonnées
       LOG.debug("{} - Début du trim des métadonnées concernées", trcPrefix);
-      metadatas = metadataCS.trimMetadata(metadatas);
+      trimMetadatas = metadataCS.trimMetadata(metadatas);
       LOG.debug("{} - Fin du trim des métadonnées concernées", trcPrefix);
 
       LOG.debug("{} - fin", trcPrefix);
-      return metadatas;
+      return trimMetadatas;
    }
 
    /**

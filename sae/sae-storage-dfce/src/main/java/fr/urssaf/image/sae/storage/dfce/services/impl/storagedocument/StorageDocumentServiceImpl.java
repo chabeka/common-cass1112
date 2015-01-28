@@ -240,14 +240,14 @@ public class StorageDocumentServiceImpl extends AbstractServiceProvider
    }
 
    @Override
-   public StorageReferenceFile insertStorageReference(
+   public final StorageReferenceFile insertStorageReference(
          VirtualStorageReference reference) throws InsertionServiceEx {
       insertionService.setInsertionServiceParameter(getDfceService());
       return insertionService.insertStorageReference(reference);
    }
 
    @Override
-   public UUID insertVirtualStorageDocument(VirtualStorageDocument document)
+   public final UUID insertVirtualStorageDocument(VirtualStorageDocument document)
          throws InsertionServiceEx {
       insertionService.setInsertionServiceParameter(getDfceService());
       return insertionService.insertVirtualStorageDocument(document);
@@ -257,7 +257,7 @@ public class StorageDocumentServiceImpl extends AbstractServiceProvider
     * {@inheritDoc}
     */
    @Override
-   public void updateStorageDocument(UUID uuid,
+   public final void updateStorageDocument(UUID uuid,
          List<StorageMetadata> modifiedMetadatas,
          List<StorageMetadata> deletedMetadatas) throws UpdateServiceEx {
       updateService.setUpdateServiceParameter(getDfceService());
@@ -270,7 +270,7 @@ public class StorageDocumentServiceImpl extends AbstractServiceProvider
     * {@inheritDoc}
     */
    @Override
-   public void deleteStorageDocumentTraceTransfert(final UUID uuid)
+   public final void deleteStorageDocumentTraceTransfert(final UUID uuid)
          throws DeletionServiceEx {
       deletionService.setDeletionServiceParameter(getDfceService());
       deletionService.deleteStorageDocForTransfert(uuid);
@@ -280,7 +280,7 @@ public class StorageDocumentServiceImpl extends AbstractServiceProvider
     * {@inheritDoc}
     */
    @Override
-   public PaginatedStorageDocuments searchPaginatedStorageDocuments(
+   public final PaginatedStorageDocuments searchPaginatedStorageDocuments(
          PaginatedLuceneCriteria paginatedLuceneCriteria)
          throws SearchingServiceEx, QueryParseServiceEx {
       searchingService.setSearchingServiceParameter(getDfceService());

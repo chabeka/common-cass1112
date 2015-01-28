@@ -120,7 +120,7 @@ public class DeletionServiceImpl extends AbstractServices implements
     * {@inheritDoc}
     */
    @Override
-   public void deleteStorageDocForTransfert(UUID uuid) throws DeletionServiceEx {
+   public final void deleteStorageDocForTransfert(UUID uuid) throws DeletionServiceEx {
 
       //-- Traces debug - entrée méthode
       String prefixeTrc = "deleteStorageDocForTransfert()";

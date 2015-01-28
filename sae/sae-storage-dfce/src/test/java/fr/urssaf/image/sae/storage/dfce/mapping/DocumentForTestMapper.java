@@ -1,7 +1,6 @@
 package fr.urssaf.image.sae.storage.dfce.mapping;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -12,7 +11,6 @@ import javax.activation.FileDataSource;
 
 import org.junit.Assert;
 
-import fr.urssaf.image.sae.commons.utils.InputStreamSource;
 import fr.urssaf.image.sae.storage.dfce.data.constants.Constants;
 import fr.urssaf.image.sae.storage.dfce.data.model.DesiredMetaData;
 import fr.urssaf.image.sae.storage.dfce.data.model.SaeCategory;

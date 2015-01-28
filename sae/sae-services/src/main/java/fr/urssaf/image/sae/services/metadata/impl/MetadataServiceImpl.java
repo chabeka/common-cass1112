@@ -57,7 +57,7 @@ public class MetadataServiceImpl implements MetadataService {
     * {@inheritDoc}
     */
    @Override
-   public List<MetadataReference> getClientAvailableMetadata() {
+   public final List<MetadataReference> getClientAvailableMetadata() {
       return clientAvailableMetadata;
    }
 
