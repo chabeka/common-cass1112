@@ -129,6 +129,10 @@
                <name>SM_DIGEST</name>
                <value>A2f93f1f121ebba0faef2c0596f2f126eacae77b</value>
             </category>
+			<category>
+               <name>cot</name>
+               <value>true</value>
+            </category>
 		</categories>
 	</base>
 </docuBase>
