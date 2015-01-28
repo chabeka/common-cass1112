@@ -52,7 +52,6 @@
             <somres:code>FormatFichier</somres:code>
             <somres:valeur>fmt/354</somres:valeur>
          </somres:metadonnee>
-         <somres:metadonnee>
             <somres:code>Siren</somres:code>
             <somres:valeur>3090000001</somres:valeur>
          </somres:metadonnee>
