@@ -16,13 +16,13 @@ import fr.urssaf.image.sae.documents.executable.service.DfceService;
  * Thread d’ajout de métadonnées à un document
  */
 public class AddMetadatasRunnable implements Runnable {
-   
+
    /**
     * Logger de la classe.
     */
    private static final Logger LOGGER = LoggerFactory
          .getLogger(AddMetadatasRunnable.class);
-   
+
    /**
     * Informations du document.
     */
@@ -38,14 +38,16 @@ public class AddMetadatasRunnable implements Runnable {
     */
    private DfceService dfceService;
 
-
-
    /**
     * Constructeur de la classe : Initialise le document et la liste des
     * métadonnées à ajouter
     * 
+    * @param dfceService
+    *           services DFCE
     * @param doc
+    *           document
     * @param metas
+    *           métadonnées
     */
    public AddMetadatasRunnable(DfceService dfceService, Document doc,
          Map<String, String> metas) {
@@ -67,21 +69,21 @@ public class AddMetadatasRunnable implements Runnable {
       for (Map.Entry<String, String> meta : metadonnees.entrySet()) {
          document.addCriterion(meta.getKey(), meta.getValue());
       }
-      
-      //-- Mise à jour du document en base
+
+      // -- Mise à jour du document en base
       try {
-         dfceService.getServiceProvider().getStoreService()
-            .updateDocument(document);
-      } 
-      catch (TagControlException e) {
+         dfceService.getServiceProvider().getStoreService().updateDocument(
+               document);
+      } catch (TagControlException e) {
          String error = e.getMessage();
-         LOGGER.warn("Erreur lors de la mise à jour du document {}:", 
-               document.getUuid() + "(" + error + ")" );
-      } 
-      catch (FrozenDocumentException e) {
+         LOGGER.warn("Erreur lors de la mise à jour du document {}:", document
+               .getUuid()
+               + "(" + error + ")");
+      } catch (FrozenDocumentException e) {
          String error = e.getMessage();
-         LOGGER.warn("Erreur lors de la mise à jour du document {}:", 
-               document.getUuid() + "(" + error + ")" );
+         LOGGER.warn("Erreur lors de la mise à jour du document {}:", document
+               .getUuid()
+               + "(" + error + ")");
       }
    }
 
@@ -112,10 +114,11 @@ public class AddMetadatasRunnable implements Runnable {
    }
 
    /**
-    * @param metadonnees the metadonnees to set
+    * @param metadonnees
+    *           the metadonnees to set
     */
    public final void setMetadonnees(Map<String, String> metadonnees) {
       this.metadonnees = metadonnees;
    }
-   
+
 }

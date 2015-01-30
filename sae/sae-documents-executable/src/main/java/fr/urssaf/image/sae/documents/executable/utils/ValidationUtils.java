@@ -257,12 +257,15 @@ public final class ValidationUtils {
    }
 
    /**
-    * Méthode générique de vérifcation du paramètre numérique taille du pas
+    * Méthode générique de vérification du paramètre numérique taille du pas
     * d'execution
     * 
     * @param properties
+    *           properties
     * @param parametres
+    *           parametres
     * @param paramName
+    *           nom paramètre
     * @return boolean : false si validation réussie
     */
    public static boolean verifParamTaillePasExecution(
