@@ -661,20 +661,20 @@
         <typeDfce>String</typeDfce>
     </Metadonnee>
     <Metadonnee>
-        <codeLong>NouvelleMetaDicoSAIOK</codeLong>
-        <codeCourt>newmetadicoSAIOK</codeCourt>
-        <archivablePossible>true</archivablePossible>
+        <codeLong>DateArchivageGNT</codeLong>
+        <codeCourt>dag</codeCourt>
+        <archivablePossible>false</archivablePossible>
         <archivableObligatoire>false</archivableObligatoire>
         <consulteeParDefaut>false</consulteeParDefaut>
         <consultable>true</consultable>
         <critereRecherche>true</critereRecherche>
-        <client>true</client>
+        <client>false</client>
         <obligatoireAuStockage>false</obligatoireAuStockage>
-        <typeDfce>String</typeDfce>
+        <typeDfce>Date</typeDfce>
     </Metadonnee>
     <Metadonnee>
-        <codeLong>NouvelleMetaTrimGauche</codeLong>
-        <codeCourt>newmetatrimgauche</codeCourt>
+        <codeLong>CodePartenaire</codeLong>
+        <codeCourt>cpa</codeCourt>
         <archivablePossible>true</archivablePossible>
         <archivableObligatoire>false</archivableObligatoire>
         <consulteeParDefaut>false</consulteeParDefaut>
