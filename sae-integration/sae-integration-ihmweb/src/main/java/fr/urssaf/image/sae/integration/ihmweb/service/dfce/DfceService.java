@@ -9,6 +9,7 @@ import net.docubase.toolkit.model.document.Document;
 import net.docubase.toolkit.model.search.SearchQuery;
 import net.docubase.toolkit.service.ServiceProvider;
 import net.docubase.toolkit.service.ged.SearchService;
+import net.docubase.toolkit.service.ged.StoreService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -105,6 +106,32 @@ public class DfceService {
          throw new IntegrationException(e);
       }
 
+   }
+   
+   /**
+    * Gel d'un document
+    * 
+    * @param UUID du document
+    */
+   public void freezeDocument(UUID uuidDoc, String baseDfce) {
+      
+      try{
+         //-- Ouverture de la connexion à DFCE"
+         ServiceProvider serviceProvider = getConnectedServiceProvider();
+         
+         final SearchService searchService = serviceProvider.getSearchService();
+         final Base base = serviceProvider.getBaseAdministrationService().getBase(baseDfce);
+         
+         //--Recuperation du document
+         final Document doc = searchService.getDocumentByUUID(base, uuidDoc);
+         
+         //--Gel le document 
+         final StoreService storeService = serviceProvider.getStoreService();
+         storeService.freezeDocument(doc);
+      } finally{
+         //-- Ferme la connexion à DFCE
+         //serviceProvider.disconnect();
+      }
    }
 
 }

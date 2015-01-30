@@ -2,12 +2,6 @@ package fr.urssaf.image.sae.integration.ihmweb.controller;
 
 import java.util.UUID;
 
-import net.docubase.toolkit.model.base.Base;
-import net.docubase.toolkit.model.document.Document;
-import net.docubase.toolkit.service.ServiceProvider;
-import net.docubase.toolkit.service.ged.SearchService;
-import net.docubase.toolkit.service.ged.StoreService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -133,7 +127,8 @@ public class Test1952Controller extends
       } 
       else if ("2".equals(etape)) {
          //-- On gel le documents
-         freezeDocument(formulaire.getTransfert().getIdDocument());
+         String base = getTestConfig().getDfceBase();
+         dfceService.freezeDocument(formulaire.getTransfert().getIdDocument(), base);
          
          //-- On transfert le document
          transfert(formulaire.getUrlServiceWeb(), formulaire.getTransfert(), formulaire.getViFormulaire());
@@ -180,26 +175,15 @@ public class Test1952Controller extends
 
       // Résultats attendus
       int nbResultatsAttendus = 1;
-
-      // Appel de la méthode de test
-      getRechercheTestService()
-            .appelWsOpRechercheReponseCorrecteAttendue(urlServiceWeb,
-                  formulaire, nbResultatsAttendus, false, null);
-   }
-   
-   private void rechercheGNS(String urlServiceWeb, RechercheFormulaire formulaire) {
-
+      
       // Initialise
       ResultatTest resultatTest = formulaire.getResultats();
-
-      // Résultats attendus
-      int nbResultatsAttendus = 0;
 
       // Appel de la méthode de test
       RechercheResponse response = getRechercheTestService()
             .appelWsOpRechercheReponseCorrecteAttendue(urlServiceWeb,
                   formulaire, nbResultatsAttendus, false, null);
-
+      
       // Vérifications en profondeur
       if ((response != null)
             && (!TestStatusEnum.Echec.equals(resultatTest.getStatus()))) {
@@ -211,19 +195,24 @@ public class Test1952Controller extends
          // Le vérifie
          verifieResultatN(1, resultatRecherche, resultatTest);
       }
+   }
+   
+   private void rechercheGNS(String urlServiceWeb, RechercheFormulaire formulaire) {
 
-      // Si le test n'est pas en échec, alors on peut le passer en succès,
-      // car tout a pu être vérifié
-      if (!TestStatusEnum.Echec.equals(resultatTest.getStatus())) {
-         resultatTest.setStatus(TestStatusEnum.AControler);
-      }
+      // Résultats attendus
+      int nbResultatsAttendus = 0;
+
+      // Appel de la méthode de test
+      getRechercheTestService()
+            .appelWsOpRechercheReponseCorrecteAttendue(urlServiceWeb,
+                  formulaire, nbResultatsAttendus, false, null);
    }
    
    private void verifieResultatN(int numeroResultatRecherche,
          ResultatRechercheType resultatRecherche, ResultatTest resultatTest) {
 
       MetadonneeValeurList valeursAttendues = new MetadonneeValeurList();
-      valeursAttendues.add("DateDebutConservation", "2011-09-23");
+      valeursAttendues.add("DateDebutConservation", "2011-09-01");
       valeursAttendues.add("DateFinConservation", "2014-08-31");
       valeursAttendues.add("Denomination", "Test 1952-Transfert-KO-Suppression-GNT-KO");
       valeursAttendues.add("DureeConservation", "1095");
@@ -233,29 +222,5 @@ public class Test1952Controller extends
             valeursAttendues);
    }
    
-   /**
-    * Gel d'un document
-    * 
-    * @param UUID du document
-    */
-   public void freezeDocument(UUID uuidDoc) {
-      
-      //-- Ouverture de la connexion à DFCE"
-      ServiceProvider serviceProvider = dfceService.getConnectedServiceProvider();
-      
-      try{
-         String baseDfce = getTestConfig().getDfceBase();
-         final SearchService searchService = serviceProvider.getSearchService();
-         final Base base = serviceProvider.getBaseAdministrationService().getBase(baseDfce);
-         
-         //--Recuperation du document
-         final Document doc = searchService.getDocumentByUUID(base, uuidDoc);
-         
-         //--Gel le document 
-         final StoreService storeService = serviceProvider.getStoreService();
-         storeService.freezeDocument(doc);
-      } finally {
-         serviceProvider.disconnect(); 
-      }
-   }
+
 }
