@@ -1,26 +1,26 @@
 #!/bin/sh
 #
-# description: Lance ou arrête l'ordonnanceur du SAE.
+# description: Lance ou arrï¿½te l'ordonnanceur du SAE.
 
 . /etc/rc.d/init.d/functions
 
 SCHEDULER_CMD_LINE="java -Dlogback.configurationFile=@@SAE_HOME@@/sae-ordonnanceur/logback-sae-ordonnanceur.xml -jar @@SAE_HOME@@/sae-ordonnanceur/sae-ordonnanceur.jar @@SAE_HOME@@/sae-config.properties"
 
-PROG_NAME=sae-ordonnanceur
+PROG_NAME=@@PROJECT_NAME@@-ordonnanceur
 
-# Les sorties sont redirigées dans ce fichier. 
-# Ce n'est pas un fichier de log à proprement parlé 
-# car les logs applicatifs sont gérés via logback.
+# Les sorties sont redirigï¿½es dans ce fichier. 
+# Ce n'est pas un fichier de log ï¿½ proprement parlï¿½ 
+# car les logs applicatifs sont gï¿½rï¿½s via logback.
 OUT_FILE="@@LOGS_PATH@@/$PROG_NAME.out"
 
 PID_FILE="/var/run/$PROG_NAME.pid"
 LOCK_FILE="/var/lock/subsys/$PROG_NAME"
 
 start() {
-    echo -n "Démarrage de l'ordonnanceur du SAE... "
+    echo -n "Dï¿½marrage de l'ordonnanceur du SAE... "
 
     if [ -e $PID_FILE ] && [ -e /proc/`cat "$PID_FILE"` ]; then
-        echo "L'ordonnanceur du SAE est déja démarré."
+        echo "L'ordonnanceur du SAE est dï¿½ja dï¿½marrï¿½."
         return 1
     fi
 
@@ -42,10 +42,10 @@ start() {
 }
 
 stop() {
-    echo -n "Arrêt de l'ordonnanceur du SAE... "
+    echo -n "Arrï¿½t de l'ordonnanceur du SAE... "
 
     if [ ! -e $LOCK_FILE ]; then
-        echo "L'ordonnanceur n'est pas démarré."
+        echo "L'ordonnanceur n'est pas dï¿½marrï¿½."
         return 1
     fi
 
