@@ -812,6 +812,16 @@
             <single>false</single>
             <enableDictionary>false</enableDictionary>
          </category>
+         <category>
+            <descriptif>SiteComptable</descriptif>
+            <name>sco</name>
+            <dataType>String</dataType>
+            <index>true</index>
+            <minimumValues>0</minimumValues>
+            <maximumValues>3</maximumValues>
+            <single>false</single>
+            <enableDictionary>false</enableDictionary>
+         </category>
       </categories>
    </base>
 </docuBase>

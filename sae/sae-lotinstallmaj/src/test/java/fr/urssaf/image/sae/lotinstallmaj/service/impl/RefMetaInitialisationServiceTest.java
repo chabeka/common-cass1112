@@ -28,7 +28,7 @@ public class RefMetaInitialisationServiceTest {
    public void chargeFichierMeta_test() throws JAXBException, SAXException, IOException {
 
       List<MetadataReference> metadonnees = refMetaService.chargeFichierMeta();
-      Assert.assertEquals("Le nombre de métadonnées attendu est incorrect", 98,
+      Assert.assertEquals("Le nombre de métadonnées attendu est incorrect", 99,
             metadonnees.size());
    }
 
@@ -48,7 +48,7 @@ public class RefMetaInitialisationServiceTest {
 //          throw new MajLotRuntimeException(e);
 //       }
 
-      Assert.assertEquals("Le nombre de lignes attendu est incorrect", 1571, lignes.size());
+      Assert.assertEquals("Le nombre de lignes attendu est incorrect", 1587, lignes.size());
    }
 
    @Test
@@ -73,7 +73,7 @@ public class RefMetaInitialisationServiceTest {
 //          throw new MajLotRuntimeException(e);
 //       }
 
-      Assert.assertEquals("Le nombre de lignes attendu est incorrect", 817, lignes.size());
+      Assert.assertEquals("Le nombre de lignes attendu est incorrect", 827, lignes.size());
    }
 
    @Test

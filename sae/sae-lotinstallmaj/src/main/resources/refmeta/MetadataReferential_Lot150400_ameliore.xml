@@ -1568,4 +1568,20 @@
       <label>Document archivable en AED</label>
       <description>Document archivable en AED</description>
    </metaDataReference>
+   <metaDataReference>
+      <shortCode>sco</shortCode>
+      <longCode>SiteComptable</longCode>
+      <type>String</type>
+      <requiredForArchival>false</requiredForArchival>
+      <requiredForStorage>false</requiredForStorage>
+      <length>3</length>
+      <pattern></pattern>
+      <consultable>true</consultable>
+      <defaultConsultable>false</defaultConsultable>
+      <searchable>true</searchable>
+      <internal>false</internal>
+      <archivable>true</archivable>
+      <label>Site comptable</label>
+      <description></description>
+   </metaDataReference>
 </referentiel>
