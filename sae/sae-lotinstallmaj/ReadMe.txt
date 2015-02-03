@@ -209,10 +209,12 @@ Positionne le paramètre versionBDD de la CF Parameters à la valeur "7"
 
 
 // ------------------------------------------
-// 7) Lot 141200SAE
+// 7) Lot 150100SAE
 // ------------------------------------------
 
-sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj-14.7.0.3-SNAPSHOT.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_141200
+7.1) CASSANDRA_150100
+
+sudo java -Dlogback.configurationFile=/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar /hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar /hawai/data/sae/sae-config.properties CASSANDRA_150100
 
 Met la base Cassandra du SAE en version 8
 
@@ -222,6 +224,13 @@ Ajout de la CF TraceJournalEvtIndexDoc
 
 Positionne le paramètre versionBDD de la CF Parameters à la valeur "8"
 
+7.2) META_150100
+
+sudo java -Dlogback.configurationFile=/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar /hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar /hawai/data/sae/sae-config.properties META_SEPA
+
+Création des métadonnées suivantes :
+   - CodePartenaire
+   - DateArchivageGNT
 
 
 // ----------------------------------
