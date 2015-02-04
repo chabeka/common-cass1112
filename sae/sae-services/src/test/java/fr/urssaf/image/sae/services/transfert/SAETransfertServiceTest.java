@@ -282,6 +282,10 @@ public class SAETransfertServiceTest {
       Document doc = testProviderGNS.searchDocument(uidDocGNT);
       Assert.assertNotNull("l'UUID '" + uidDocGNT + "' doit exister dans la GNS", doc);
       
+      // recupere l'identifiant du document que l'on a transfere en GNS
+      // pour pouvoir le supprimer a la fin du test
+      uidDocGNS = doc.getUuid();
+      
       // le doc à été supprimé par transferDoc()
       // ne pas le re-suppr. dans "@After" erreur dfce.
       uidDocGNT = null;
