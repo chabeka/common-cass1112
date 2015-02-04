@@ -132,6 +132,7 @@ public class SAEConsultationServiceTest {
       metadatas.put("cse", "ATT_PROD_001");
       metadatas.put("dre", DateUtils.parseDate("1999-12-30", parsePatterns));
       metadatas.put("dfc", DateUtils.parseDate("2012-01-01", parsePatterns));
+      metadatas.put("cot", Boolean.TRUE);
 
       Date creationDate = DateUtils.parseDate("2012-01-01", parsePatterns);
       Date dateDebutConservation = DateUtils.parseDate("2013-01-01",

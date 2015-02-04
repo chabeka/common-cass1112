@@ -12,7 +12,9 @@ import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.time.DateUtils;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,13 +53,26 @@ public class SAEConsultationServiceDroitsTest {
 
    private UUID uuid;
 
-   @Test
+   @Before
    public void before() {
 
       // initialisation de l'uuid de l'archive
       uuid = null;
 
       // initialisation du contexte de sécurité
+   }
+   
+   @After
+   public void after() throws ConnectionServiceEx {
+
+      // suppression de l'insertion
+      if (uuid != null) {
+
+         testProvider.deleteDocument(uuid);
+      }
+
+      // on vide le contexte de sécurité
+      
    }
 
    private UUID capture() throws IOException, ConnectionServiceEx,
@@ -81,6 +96,7 @@ public class SAEConsultationServiceDroitsTest {
       metadatas.put("cse", "ATT_PROD_001");
       metadatas.put("dre", DateUtils.parseDate("1999-12-30", parsePatterns));
       metadatas.put("dfc", DateUtils.parseDate("2012-01-01", parsePatterns));
+      metadatas.put("cot", Boolean.TRUE);
 
       Date creationDate = DateUtils.parseDate("2012-01-01", parsePatterns);
       Date dateDebutConservation = DateUtils.parseDate("2013-01-01",

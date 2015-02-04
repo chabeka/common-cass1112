@@ -17,7 +17,6 @@ import net.docubase.toolkit.model.document.Document;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
-import org.easymock.EasyMock;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -28,7 +27,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -62,10 +60,7 @@ import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.services.exception.format.validation.ValidationExceptionInvalidFile;
 import fr.urssaf.image.sae.services.exception.transfert.ArchiveAlreadyTransferedException;
 import fr.urssaf.image.sae.services.exception.transfert.TransfertException;
-import fr.urssaf.image.sae.services.transfert.impl.SAETransfertServiceImpl;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
-import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
-import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 import fr.urssaf.image.sae.storage.services.storagedocument.StorageTransfertService;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
@@ -217,6 +212,7 @@ public class SAETransfertServiceTest {
       metadatas.put("cse", "ATT_PROD_001");
       metadatas.put("dre", date);//date réception
       metadatas.put("dfc", date);//date fin conservation
+      metadatas.put("cot", Boolean.TRUE);
 
       String documentTitle = "attestation_transfert";
       String documentType = "pdf";
