@@ -81,6 +81,8 @@ public class SearchingServiceImpl extends AbstractServices implements
 
    private static final String SEPARATOR_STRING = ", ";
 
+   private static final int LIMITE = 1000;
+
    @Autowired
    private StorageDocumentServiceSupport storageServiceSupport;
    @Autowired
@@ -205,11 +207,11 @@ public class SearchingServiceImpl extends AbstractServices implements
    public final PaginatedStorageDocuments searchPaginatedStorageDocuments(
          PaginatedLuceneCriteria paginatedLuceneCriteria)
          throws SearchingServiceEx, QueryParseServiceEx {
-      
+
       PaginatedStorageDocuments paginatedStorageDocuments = new PaginatedStorageDocuments();
       try {
          String prefixeTrc = "searchPaginatedStorageDocuments()";
-         
+
          final List<StorageDocument> storageDocuments = new ArrayList<StorageDocument>();
 
          // Création de la SearchQuery
@@ -221,7 +223,7 @@ public class SearchingServiceImpl extends AbstractServices implements
          // On l'ajoute à la searchQuery
          searchQuery.setChainedFilter(chainedFilter);
          // On fixe le pas d'execution de l'itérateur
-         searchQuery.setSearchLimit(500);
+         searchQuery.setSearchLimit(LIMITE);
 
          // Recherche des documents par l'itérateur DFCE
          Iterator<Document> iterateur = getDfceService().getSearchService()
@@ -327,6 +329,9 @@ public class SearchingServiceImpl extends AbstractServices implements
                .getMessage(Constants.SRH_CODE_ERROR), e.getMessage(), e);
       } catch (MappingFromReferentialException e) {
          throw new SearchingServiceEx(StorageMessageHandler
+               .getMessage(Constants.SRH_CODE_ERROR), e.getMessage(), e);
+      } catch (SearchQueryParseException e) {
+         throw new QueryParseServiceEx(StorageMessageHandler
                .getMessage(Constants.SRH_CODE_ERROR), e.getMessage(), e);
       }
       return paginatedStorageDocuments;
