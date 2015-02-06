@@ -25,10 +25,10 @@
 	</script>
 </head>
 <body>
-<table width="100%">
+<table class="table">
 	<tr>
 		<td style="width: 75%;">
-		<p class="titre1">Jeux de test à injecter : Configuration</p>
+		<h3 class="text-primary">Jeux de test à injecter : Configuration</h3>
 		</td>
 		<td align="right" style="width: 25%;"><a href="index.do">&lt;&lt;&nbsp;Retour
 		à l&apos;accueil </a></td>
@@ -50,7 +50,7 @@
 	<input type="hidden" name="action" id="action" />
 	<input type="hidden" name="idSup" id="idSup" />
 
-	<table border="1px" width="100%">
+	<table class="table table-bordered">
 		<thead>
 			<tr>
 				<th>Sup.</th>
