@@ -21,8 +21,8 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.SoapFault;
 import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.comparator.ResultatRechercheComparator.TypeComparaison;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub;
-import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.Recherche;
-import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheResponse;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheNbRes;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheNbResResponse;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ResultatRechercheType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.security.ViStyle;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.utils.SaeServiceLogUtils;
@@ -39,11 +39,11 @@ import fr.urssaf.image.sae.integration.ihmweb.service.tests.utils.TestsMetadonne
 import fr.urssaf.image.sae.integration.ihmweb.utils.TestUtils;
 
 /**
- * Service de test de l'opération "recherche" du service web SaeService
+ * Service de test de l'opération "recherche avec nb de résultats" du service web SaeService
  */
 @Service
 @SuppressWarnings("PMD.ExcessiveImports")
-public class RechercheTestService {
+public class RechercheAvecNbResTestService {
 
    @Autowired
    private ReferentielSoapFaultService refSoapFault;
@@ -57,13 +57,13 @@ public class RechercheTestService {
    @Autowired
    private SaeServiceStubUtils saeServiceStubUtils;
 
-   private RechercheResponse appelWsOpRecherche(String urlServiceWeb,
+   private RechercheNbResResponse appelWsOpRechercheAvecNbResultats(String urlServiceWeb,
          ViStyle viStyle, ViFormulaire viParams,
          RechercheFormulaire formulaire, WsTestListener wsListener,
          TypeComparaison triDesResultatsDansAffichageLog) {
 
       // Initialise le résultat
-      RechercheResponse response = null;
+      RechercheNbResResponse response = null;
 
       // Vide le résultat du test précédent
       ResultatTest resultatTest = formulaire.getResultats();
@@ -72,7 +72,7 @@ public class RechercheTestService {
       wsListener.onSetStatusInitialResultatTest(resultatTest);
 
       // Ajout d'un log de résultat
-      SaeServiceLogUtils.logAppelRechercheSimple(log, formulaire);
+      SaeServiceLogUtils.logAppelRechercheAvecNbRes(log, formulaire);
 
       // Récupération du stub du service web
       SaeServiceStub service = saeServiceStubUtils.getServiceStub(
@@ -82,12 +82,12 @@ public class RechercheTestService {
       try {
 
          // Construction du paramètre d'entrée de l'opération
-         Recherche paramsService = SaeServiceObjectFactory
-               .buildRechercheRequest(formulaire.getRequeteLucene(), formulaire
+         RechercheNbRes paramsService = SaeServiceObjectFactory
+               .buildRechercheWithNbResRequest(formulaire.getRequeteLucene(), formulaire
                      .getCodeMetadonnees());
 
          // Appel du service web
-         response = service.recherche(paramsService);
+         response = service.rechercheNbRes(paramsService);
 
          // Appel du listener
          wsListener.onRetourWsSansErreur(resultatTest, service
@@ -97,9 +97,9 @@ public class RechercheTestService {
          // Log de la réponse obtenue
          log.appendLogNewLine();
          log
-               .appendLogLn("Détails de la réponse obtenue de l'opération \"recherche\" :");
-         SaeServiceLogUtils.logResultatRecherche(log, response
-               .getRechercheResponse(), triDesResultatsDansAffichageLog);
+               .appendLogLn("Détails de la réponse obtenue de l'opération \"recherche avec nombre de résultats\" :");
+         SaeServiceLogUtils.logResultatRechercheAvecNbRes(log, response
+               .getRechercheNbResResponse(), triDesResultatsDansAffichageLog);
 
       } catch (AxisFault fault) {
 
@@ -126,22 +126,21 @@ public class RechercheTestService {
    }
 
    /**
-    * Test libre de l'appel à l'opération "recherche" du service web SaeService.<br>
+    * Test libre de l'appel à l'opération "recherche avec nb de résultats" du service web SaeService.<br>
     * 
     * @param urlServiceWeb
     *           l'URL du service web SaeService
     * @param formulaire
     *           le formulaire
     */
-   public final void appelWsOpRechercheTestLibre(String urlServiceWeb,
+   public final void appelWsOpRechercheAvecNbResTestLibre(String urlServiceWeb,
          RechercheFormulaire formulaire) {
 
-      appelWsOpRechercheTestLibre(urlServiceWeb, formulaire, null);
-
+      appelWsOpRechercheAvecNbResTestLibre(urlServiceWeb, formulaire, null);
    }
 
    /**
-    * Test libre de l'appel à l'opération "recherche" du service web SaeService.<br>
+    * Test libre de l'appel à l'opération "recherche avec nb de résultats" du service web SaeService.<br>
     * 
     * @param urlServiceWeb
     *           l'URL du service web SaeService
@@ -150,7 +149,7 @@ public class RechercheTestService {
     * @param viParams
     *           les paramètres du VI
     */
-   public final void appelWsOpRechercheTestLibre(String urlServiceWeb,
+   public final void appelWsOpRechercheAvecNbResTestLibre(String urlServiceWeb,
          RechercheFormulaire formulaire, ViFormulaire viParams) {
 
       // Création de l'objet qui implémente l'interface WsTestListener
@@ -158,13 +157,12 @@ public class RechercheTestService {
       WsTestListener testLibre = new WsTestListenerImplLibre();
 
       // Appel de la méthode "générique" de test
-      appelWsOpRecherche(urlServiceWeb, ViStyle.VI_OK, viParams, formulaire,
+      appelWsOpRechercheAvecNbResultats(urlServiceWeb, ViStyle.VI_OK, viParams, formulaire,
             testLibre, null);
-
    }
 
    /**
-    * Test d'appel à l'opération "recherche" du service web SaeService.<br>
+    * Test d'appel à l'opération "recherche avec nb de résultats" du service web SaeService.<br>
     * On s'attend à récupérer une réponse correcte
     * 
     * @param urlServiceWeb
@@ -177,22 +175,21 @@ public class RechercheTestService {
     *           le flag attendu, ou null si pas de verif
     * @param triDesResultatsDansAffichageLog
     *           à effectuer sur la recherche
-    * @return la réponse de l'opération "recherche", ou null si une exception
+    * @return la réponse de l'opération "recherche avec nb de résultats", ou null si une exception
     *         s'est produite
     */
-   public final RechercheResponse appelWsOpRechercheReponseCorrecteAttendue(
+   public final RechercheNbResResponse appelWsOpRechercheAvecNbResReponseCorrecteAttendue(
          String urlServiceWeb, RechercheFormulaire formulaire,
          Integer nbResultatsAttendus, Boolean flagResultatsTronquesAttendu,
          TypeComparaison triDesResultatsDansAffichageLog) {
 
-      return appelWsOpRechercheReponseCorrecteAttendue(urlServiceWeb,
+      return appelWsOpRechercheAvecNbResReponseCorrecteAttendue(urlServiceWeb,
             formulaire, nbResultatsAttendus, flagResultatsTronquesAttendu,
             triDesResultatsDansAffichageLog, null);
-
    }
 
    /**
-    * Test d'appel à l'opération "recherche" du service web SaeService.<br>
+    * Test d'appel à l'opération "recherche avec nb de résultats" du service web SaeService.<br>
     * On s'attend à récupérer une réponse correcte
     * 
     * @param urlServiceWeb
@@ -207,10 +204,10 @@ public class RechercheTestService {
     *           à effectuer sur la recherche
     * @param viParams
     *           les paramètres du VI
-    * @return la réponse de l'opération "recherche", ou null si une exception
+    * @return la réponse de l'opération "recherche avec nb de résultats", ou null si une exception
     *         s'est produite
     */
-   public final RechercheResponse appelWsOpRechercheReponseCorrecteAttendue(
+   public final RechercheNbResResponse appelWsOpRechercheAvecNbResReponseCorrecteAttendue(
          String urlServiceWeb, RechercheFormulaire formulaire,
          Integer nbResultatsAttendus, Boolean flagResultatsTronquesAttendu,
          TypeComparaison triDesResultatsDansAffichageLog, ViFormulaire viParams) {
@@ -220,7 +217,7 @@ public class RechercheTestService {
       WsTestListener testAvecReponse = new WsTestListenerImplReponseAttendue();
 
       // Appel de la méthode "générique" de test
-      RechercheResponse response = appelWsOpRecherche(urlServiceWeb,
+      RechercheNbResResponse response = appelWsOpRechercheAvecNbResultats(urlServiceWeb,
             ViStyle.VI_OK, viParams, formulaire, testAvecReponse,
             triDesResultatsDansAffichageLog);
 
@@ -251,25 +248,24 @@ public class RechercheTestService {
 
       // Renvoie la réponse du service web
       return response;
-
    }
 
    private void wsVerifieRetour(ResultatTest resultatTest,
-         RechercheResponse response, Integer nbResultatsAttendus,
+         RechercheNbResResponse response, Integer nbResultatsAttendus,
          Boolean flagResultatsTronquesAttendu,
          CodeMetadonneeList codesMetaAttendues) {
 
       // Initialise
       ResultatTestLog log = resultatTest.getLog();
 
-      if ((response != null) && (response.getRechercheResponse() != null)) {
+      if ((response != null) && (response.getRechercheNbResResponse() != null)) {
 
          // Récupère le retour de la recherche
-         boolean resultatTronque = response.getRechercheResponse()
+         boolean resultatTronque = response.getRechercheNbResResponse()
                .getResultatTronque();
          ResultatRechercheType[] resultats = null;
-         if (response.getRechercheResponse().getResultats() != null) {
-            resultats = response.getRechercheResponse().getResultats()
+         if (response.getRechercheNbResResponse().getResultats() != null) {
+            resultats = response.getRechercheNbResResponse().getResultats()
                   .getResultat();
          }
 
@@ -334,9 +330,7 @@ public class RechercheTestService {
             log.appendLogLn("Aucun résultat attendu, aucun résultat retourné");
             resultatTest.setStatus(TestStatusEnum.Succes);
          }
-
       }
-
    }
 
    private void wsVerifieRetourMetaDemandees(ResultatTest resultatTest,
@@ -392,9 +386,7 @@ public class RechercheTestService {
             log.appendLogLn(messageErreurAll);
 
          }
-
       }
-
    }
 
    private void wsVerifieRetourMetaParDefaut(ResultatTest resultatTest,
@@ -417,15 +409,12 @@ public class RechercheTestService {
             log.appendLogLn("Erreur sur les métadonnées du résultat #"
                   + (i + 1));
             log.appendLogLn(messageErreur);
-
          }
-
       }
-
    }
 
    /**
-    * Test d'appel à l'opération "recherche" du service web SaeService.<br>
+    * Test d'appel à l'opération "recherche avec nb de résultats" du service web SaeService.<br>
     * <br>
     * On s'attend à obtenir une SoapFault.
     * 
@@ -442,7 +431,7 @@ public class RechercheTestService {
     *           les arguments pour le String.format du message de la SoapFault
     *           attendue
     */
-   public final void appelWsOpRechercheSoapFault(String urlServiceWeb,
+   public final void appelWsOpRechercheAvecNbResSoapFault(String urlServiceWeb,
          RechercheFormulaire formulaire, ViStyle viStyle,
          String idSoapFaultAttendu, final Object[] argsMsgSoapFault) {
 
@@ -453,14 +442,13 @@ public class RechercheTestService {
             argsMsgSoapFault);
 
       // Appel de la méthode "générique" de test
-      appelWsOpRecherche(urlServiceWeb, viStyle, null, formulaire, listener,
+      appelWsOpRechercheAvecNbResultats(urlServiceWeb, viStyle, null, formulaire, listener,
             null);
-
    }
    
    
    /**
-    * Test d'appel à l'opération "recherche" du service web SaeService.<br>
+    * Test d'appel à l'opération "recherche avec nb res" du service web SaeService.<br>
     * <br>
     * On s'attend à obtenir une SoapFault.
     * 
@@ -479,7 +467,7 @@ public class RechercheTestService {
     *           les arguments pour le String.format du message de la SoapFault
     *           attendue
     */
-   public final void appelWsOpRechercheSoapFault(String urlServiceWeb,
+   public final void appelWsOpRechercheAvecNbResSoapFault(String urlServiceWeb,
          RechercheFormulaire formulaire, ViStyle viStyle, ViFormulaire viParams,
          String idSoapFaultAttendu, final Object[] argsMsgSoapFault) {
 
@@ -490,9 +478,8 @@ public class RechercheTestService {
             argsMsgSoapFault);
 
       // Appel de la méthode "générique" de test
-      appelWsOpRecherche(urlServiceWeb, viStyle, viParams, formulaire, listener,
+      appelWsOpRechercheAvecNbResultats(urlServiceWeb, viStyle, viParams, formulaire, listener,
             null);
-
    }
 
    /**
@@ -508,7 +495,7 @@ public class RechercheTestService {
     * @param valeursAttendues
     *           la liste des métadonnées attendues (codes + valeurs)
     */
-   public final void verifieResultatRecherche(
+   public final void verifieResultatRechercheAvecNbRes(
          ResultatRechercheType resultatRecherche,
          String numeroResultatRecherche, ResultatTest resultatTest,
          MetadonneeValeurList valeursAttendues) {
@@ -528,7 +515,6 @@ public class RechercheTestService {
          resultatTest.setStatus(TestStatusEnum.Echec);
          resultatTest.getLog().appendLogLn(sbErreurs.toString());
       }
-
    }
 
    private void verifiePresenceEtValeur(ResultatTest resultatTest,
@@ -548,9 +534,7 @@ public class RechercheTestService {
 
          sbErreurs.append(messageErreur);
          sbErreurs.append("\r\n");
-
       }
-
    }
 
 }

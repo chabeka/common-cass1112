@@ -40,7 +40,10 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.M
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.Modification;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ModificationRequestType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.Recherche;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheNbRes;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheNbResRequestType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheRequestType;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RequeteRechercheNbResType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RequeteRechercheType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.Suppression;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.SuppressionRequestType;
@@ -149,9 +152,23 @@ public final class SaeServiceObjectFactory {
       requeteRechercheType.setRequeteRechercheType(requeteLucene);
 
       return requeteRechercheType;
-
    }
 
+   /**
+    * Construit un objet "Requete Lucune" pour la couche WebService
+    * 
+    * @param requeteLucene
+    *           la requête LUCENE sous forme de chaîne de caractères
+    * @return l'objet pour la couche WebService
+    */
+   public static RequeteRechercheNbResType buildRequeteLucene2(String requeteLucene) {
+
+      RequeteRechercheNbResType requeteRechercheType = new RequeteRechercheNbResType();
+
+      requeteRechercheType.setRequeteRechercheNbResType(requeteLucene);
+
+      return requeteRechercheType;
+   }
    /**
     * Construit un objet "Liste de codes de métadonnées" pour la couche
     * WebService
@@ -551,6 +568,38 @@ public final class SaeServiceObjectFactory {
 
    }
 
+   /**
+    * Construit un objet de requête pour le service web "recherche avec nb de resultats"
+    * 
+    * @param requeteLucene
+    *           la requête LUCENE
+    * @param codeMetadonnees
+    *           la liste des codes des métadonnées que l'on veut dans les
+    *           résultats de recherche
+    * @return l'objet pour la couche WebService
+    */
+   public static RechercheNbRes buildRechercheWithNbResRequest(String requeteLucene,
+         CodeMetadonneeList codeMetadonnees) {
+
+      RechercheNbRes recherche = new RechercheNbRes();
+
+      RechercheNbResRequestType rechercheReqType = new RechercheNbResRequestType();
+
+      recherche.setRechercheNbRes(rechercheReqType);
+
+      // La requête Lucene
+      RequeteRechercheNbResType requeteLuceneWs = SaeServiceObjectFactory
+            .buildRequeteLucene2(requeteLucene);
+      rechercheReqType.setRequete(requeteLuceneWs);
+
+      // Les codes des métadonnées souhaitées
+      ListeMetadonneeCodeType codesMetadonnees = SaeServiceObjectFactory
+            .buildListeCodesMetadonnes(codeMetadonnees);
+      rechercheReqType.setMetadonnees(codesMetadonnees);
+
+      // fin
+      return recherche;
+   }
    /**
     * Construit un objet de requête pour l'opération "modification"
     * 

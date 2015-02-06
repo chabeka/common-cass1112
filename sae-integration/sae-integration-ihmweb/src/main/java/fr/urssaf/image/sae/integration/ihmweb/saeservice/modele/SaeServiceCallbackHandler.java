@@ -79,6 +79,38 @@ public abstract class SaeServiceCallbackHandler{
             }
                 
            /**
+            * auto generated Axis2 call back method for rechercheParIterateur method
+            * override this method for handling normal response from rechercheParIterateur operation
+            */
+           public void receiveResultrechercheParIterateur(
+                    fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheParIterateurResponse result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from rechercheParIterateur operation
+           */
+            public void receiveErrorrechercheParIterateur(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for rechercheNbRes method
+            * override this method for handling normal response from rechercheNbRes operation
+            */
+           public void receiveResultrechercheNbRes(
+                    fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheNbResResponse result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from rechercheNbRes operation
+           */
+            public void receiveErrorrechercheNbRes(java.lang.Exception e) {
+            }
+                
+           /**
             * auto generated Axis2 call back method for recherche method
             * override this method for handling normal response from recherche operation
             */

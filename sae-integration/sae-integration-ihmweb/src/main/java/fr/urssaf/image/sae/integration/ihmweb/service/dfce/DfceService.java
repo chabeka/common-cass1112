@@ -98,7 +98,7 @@ public class DfceService {
          } finally {
 
             // Ferme la connexion à DFCE
-            serviceProvider.disconnect();
+            //serviceProvider.disconnect();
 
          }
 

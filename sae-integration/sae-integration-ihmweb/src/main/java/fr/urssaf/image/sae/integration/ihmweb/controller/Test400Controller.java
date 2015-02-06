@@ -34,7 +34,6 @@ public class Test400Controller extends AbstractTestWsController<TestWsConsultati
       
       TestWsConsultationFormulaire formulaire = new TestWsConsultationFormulaire();
       ConsultationFormulaire formConsult = formulaire.getConsultation();
-      formConsult.setIdArchivage(SaeServiceTestService.getIdArchivageExemple());
       formConsult.getResultats().setStatus(TestStatusEnum.SansStatus);
 
       return formulaire;
