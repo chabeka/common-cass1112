@@ -193,6 +193,7 @@ public class SAESearchServiceImplDatasTest {
       Assert.assertTrue("pas d'UntypedDocuments attendus", documents.isEmpty());
    }
 
+   @Ignore
    @Test
    public final void searchSuccessResult() throws SAESearchServiceEx,
          MetaDataUnauthorizedToSearchEx, MetaDataUnauthorizedToConsultEx,
@@ -284,6 +285,7 @@ public class SAESearchServiceImplDatasTest {
     * Test de la recherche par itérateur
     * 
     */
+   @Ignore
    @Test
    public final void rechercheParIterateurSucces() throws SAECaptureServiceEx,
          ReferentialRndException, UnknownCodeRndEx, RequiredStorageMetadataEx,
