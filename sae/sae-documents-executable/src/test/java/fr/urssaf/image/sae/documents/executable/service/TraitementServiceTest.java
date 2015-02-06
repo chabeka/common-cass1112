@@ -21,6 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.docubase.dfce.exception.SearchQueryParseException;
+
 import fr.urssaf.image.sae.documents.executable.model.FormatValidationParametres;
 import fr.urssaf.image.sae.documents.executable.model.FormatValidationParametres.MODE_VERIFICATION;
 import fr.urssaf.image.sae.documents.executable.service.impl.TraitementServiceImpl;
@@ -71,7 +73,7 @@ public class TraitementServiceTest {
 
    private void createMock(TraitementServiceImpl traitementService,
          String idFormat, String requeteLucene, final File fichier)
-         throws FileNotFoundException {
+         throws FileNotFoundException, SearchQueryParseException {
 
       Document document = createDocument(idFormat);
       // creation de la liste des documents
@@ -98,7 +100,7 @@ public class TraitementServiceTest {
 
    @Test
    public void identifierValiderFichiersIdentificationValide()
-         throws FileNotFoundException {
+         throws FileNotFoundException, SearchQueryParseException {
 
       FormatValidationParametres parametres = createParametres(
             "iti:73132b50-d404-11e2-9df1-005056c00008",
@@ -118,7 +120,7 @@ public class TraitementServiceTest {
 
    @Test
    public void identifierValiderFichiersIdentificationNonValide()
-         throws FileNotFoundException {
+         throws FileNotFoundException, SearchQueryParseException {
 
       FormatValidationParametres parametres = createParametres(
             "srt:41882050200023", MODE_VERIFICATION.IDENTIFICATION);
@@ -138,7 +140,7 @@ public class TraitementServiceTest {
 
    @Test
    public void identifierValiderFichiersValidationValide()
-         throws FileNotFoundException {
+         throws FileNotFoundException, SearchQueryParseException {
 
       FormatValidationParametres parametres = createParametres(
             "iti:73132b50-d404-11e2-9df1-005056c00008",
@@ -159,7 +161,7 @@ public class TraitementServiceTest {
 
    @Test
    public void identifierValiderFichiersValidationNonValide()
-         throws FileNotFoundException {
+         throws FileNotFoundException, SearchQueryParseException {
 
       FormatValidationParametres parametres = createParametres(
             "iti:73132b50-d404-11e2-9df1-005056c00008",
@@ -180,7 +182,7 @@ public class TraitementServiceTest {
 
    @Test
    public void identifierValiderFichiersValidationUnknownFormat()
-         throws FileNotFoundException {
+         throws FileNotFoundException, SearchQueryParseException {
 
       FormatValidationParametres parametres = createParametres(
             "srt:41882050200023", MODE_VERIFICATION.VALIDATION);
@@ -200,7 +202,7 @@ public class TraitementServiceTest {
 
    @Test
    public void identifierValiderFichiersIdentValidationValide()
-         throws FileNotFoundException {
+         throws FileNotFoundException, SearchQueryParseException {
 
       FormatValidationParametres parametres = createParametres(
             "iti:73132b50-d404-11e2-9df1-005056c00008",
@@ -221,7 +223,7 @@ public class TraitementServiceTest {
 
    @Test
    public void identifierValiderFichiersIdentValidationNonValide()
-         throws FileNotFoundException {
+         throws FileNotFoundException, SearchQueryParseException {
 
       FormatValidationParametres parametres = createParametres(
             "iti:73132b50-d404-11e2-9df1-005056c00008",
@@ -242,7 +244,7 @@ public class TraitementServiceTest {
 
    @Test
    public void identifierValiderFichiersIdentValidationUnknownFormat()
-         throws FileNotFoundException {
+         throws FileNotFoundException, SearchQueryParseException {
 
       FormatValidationParametres parametres = createParametres(
             "srt:41882050200023", MODE_VERIFICATION.IDENT_VALID);

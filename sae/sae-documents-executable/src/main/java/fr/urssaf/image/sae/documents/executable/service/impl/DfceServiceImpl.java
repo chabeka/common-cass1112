@@ -16,6 +16,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.docubase.dfce.exception.SearchQueryParseException;
+
 import fr.urssaf.image.commons.dfce.model.DFCEConnection;
 import fr.urssaf.image.commons.dfce.service.DFCEConnectionService;
 import fr.urssaf.image.sae.documents.executable.service.DfceService;
@@ -70,9 +72,12 @@ public class DfceServiceImpl implements DfceService {
 
    /**
     * {@inheritDoc}
+    * 
+    * @throws SearchQueryParseException
     */
    @Override
-   public final Iterator<Document> executerRequete(final String requeteLucene) {
+   public final Iterator<Document> executerRequete(final String requeteLucene)
+         throws SearchQueryParseException {
       LOGGER.debug("Exécution de la requête lunèce : {}", requeteLucene);
       final SearchService searchService = getServiceProvider()
             .getSearchService();

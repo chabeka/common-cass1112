@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.docubase.dfce.exception.SearchQueryParseException;
+
 import fr.urssaf.image.sae.documents.executable.exception.ParametreRuntimeException;
 import fr.urssaf.image.sae.documents.executable.service.DfceService;
 
@@ -19,7 +21,7 @@ public class ParamDfceTest {
    private DfceService dfceService;
 
    @Test
-   public void validExecuterRequeteRequeteLuceneNull() {
+   public void validExecuterRequeteRequeteLuceneNull() throws SearchQueryParseException {
       try {
          dfceService.executerRequete(null);
          Assert

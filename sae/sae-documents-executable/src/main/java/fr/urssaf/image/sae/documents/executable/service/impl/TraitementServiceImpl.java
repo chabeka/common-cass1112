@@ -18,6 +18,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.docubase.dfce.exception.SearchQueryParseException;
+
 import fr.urssaf.image.sae.documents.executable.model.AddMetadatasParametres;
 import fr.urssaf.image.sae.documents.executable.model.FormatValidationParametres;
 import fr.urssaf.image.sae.documents.executable.model.FormatValidationParametres.MODE_VERIFICATION;
@@ -67,71 +69,81 @@ public class TraitementServiceImpl implements TraitementService {
       getDfceService().ouvrirConnexion();
       final String requeteLucene = parametres.getRequeteLucene();
       final List<String> metadonnees = getMetadonnees(parametres);
-      // execution de la requete dfce
-      final Iterator<Document> iteratorDoc = getDfceService().executerRequete(
-            requeteLucene);
-
-      // initialise le pool de thread
-      final FormatValidationPoolThreadExecutor executor = new FormatValidationPoolThreadExecutor(
-            parametres);
 
       int nbDocTraites = 0;
-      int nbDocErreurIdent = 0;
-      while (isTraitementTermine(parametres, startTime, iteratorDoc,
-            nbDocTraites)) {
-         // recupereation du contenu du document
-         final Document document = iteratorDoc.next();
-         final InputStream stream = getDfceService().recupererContenu(document);
-         final String idFormat = MetadataUtils.getMetadataByCd(document,
-               Constantes.METADONNEES_FORMAT_FICHIER).toString();
+      try {
+         // execution de la requete dfce
+         final Iterator<Document> iteratorDoc = getDfceService()
+               .executerRequete(requeteLucene);
 
-         File file = null;
-         try {
-            // creation du fichier temporaire
-            file = createTmpFile(parametres, stream);
+         // initialise le pool de thread
+         final FormatValidationPoolThreadExecutor executor = new FormatValidationPoolThreadExecutor(
+               parametres);
 
-            if (!lancerIdentifierFichier(parametres, metadonnees, document,
-                  idFormat, file)) {
-               nbDocErreurIdent++;
-            }
+         int nbDocErreurIdent = 0;
+         while (isTraitementTermine(parametres, startTime, iteratorDoc,
+               nbDocTraites)) {
+            // recupereation du contenu du document
+            final Document document = iteratorDoc.next();
+            final InputStream stream = getDfceService().recupererContenu(
+                  document);
+            final String idFormat = MetadataUtils.getMetadataByCd(document,
+                  Constantes.METADONNEES_FORMAT_FICHIER).toString();
 
-            lancerValiderFichier(parametres, executor, document, file);
+            File file = null;
+            try {
+               // creation du fichier temporaire
+               file = createTmpFile(parametres, stream);
 
-            nbDocTraites++;
-
-            // trace l'avancement de l'identification
-            tracerIdentification(parametres, nbDocTraites);
-
-            if ((parametres.getModeVerification() == MODE_VERIFICATION.IDENTIFICATION)
-                  && (file != null)) {
-               LOGGER.debug("Suppression du fichier temporaire {}", file
-                     .getAbsolutePath());
-               if (!file.delete()) {
-                  LOGGER.error(
-                        "Impossible de supprimer le fichier temporaire {}",
-                        file.getAbsolutePath());
+               if (!lancerIdentifierFichier(parametres, metadonnees, document,
+                     idFormat, file)) {
+                  nbDocErreurIdent++;
                }
+
+               lancerValiderFichier(parametres, executor, document, file);
+
+               nbDocTraites++;
+
+               // trace l'avancement de l'identification
+               tracerIdentification(parametres, nbDocTraites);
+
+               if ((parametres.getModeVerification() == MODE_VERIFICATION.IDENTIFICATION)
+                     && (file != null)) {
+                  LOGGER.debug("Suppression du fichier temporaire {}", file
+                        .getAbsolutePath());
+                  if (!file.delete()) {
+                     LOGGER.error(
+                           "Impossible de supprimer le fichier temporaire {}",
+                           file.getAbsolutePath());
+                  }
+               }
+            } catch (IOException e) {
+               LOGGER
+                     .error(
+                           "Erreur de conversion du stream en fichier temporaire : {}",
+                           e.getMessage());
             }
-         } catch (IOException e) {
-            LOGGER.error(
-                  "Erreur de conversion du stream en fichier temporaire : {}",
-                  e.getMessage());
          }
-      }
 
-      if (parametres.getModeVerification() != MODE_VERIFICATION.IDENTIFICATION) {
-         executor.shutdown();
-         executor.waitFinishValidation();
-      }
+         if (parametres.getModeVerification() != MODE_VERIFICATION.IDENTIFICATION) {
+            executor.shutdown();
+            executor.waitFinishValidation();
+         }
 
-      LOGGER.info("{} documents analysés au total", nbDocTraites);
-      LOGGER.info("{} documents en erreur d'identification", nbDocErreurIdent);
-      LOGGER.info("{} documents en erreur de validation", executor
-            .getNombreDocsErreur());
+         LOGGER.info("{} documents analysés au total", nbDocTraites);
+         LOGGER.info("{} documents en erreur d'identification",
+               nbDocErreurIdent);
+         LOGGER.info("{} documents en erreur de validation", executor
+               .getNombreDocsErreur());
+
+      } catch (SearchQueryParseException ex) {
+         LOGGER.error("La syntaxe de la requête n'est pas valide : {}", ex
+               .getMessage());
+      }
 
       // ferme la connexion a dfce
       getDfceService().fermerConnexion();
-      
+
       return nbDocTraites;
    }
 
@@ -353,33 +365,40 @@ public class TraitementServiceImpl implements TraitementService {
 
    @Override
    public void addMetadatasToDocuments(AddMetadatasParametres parametres) {
-      
-      //-- Overture connexion dfce
+
+      // -- Overture connexion dfce
       getDfceService().ouvrirConnexion();
-      
+
       String requeteLucene = parametres.getRequeteLucene();
       Map<String, String> metas = parametres.getMetadonnees();
-      
-      Iterator<Document> it = getDfceService().executerRequete(requeteLucene);
-      
-      AddMetadatasPoolThreadExecutor poolThead;
-      poolThead = new AddMetadatasPoolThreadExecutor(parametres);
-      
-      while (it.hasNext()) {
-         Document doc = (Document)it.next();
-         AddMetadatasRunnable addMetasRun;
-         addMetasRun = new AddMetadatasRunnable(getDfceService(), doc, metas);
-         poolThead.execute(addMetasRun);
+
+      try {
+         Iterator<Document> it = getDfceService()
+               .executerRequete(requeteLucene);
+
+         AddMetadatasPoolThreadExecutor poolThead;
+         poolThead = new AddMetadatasPoolThreadExecutor(parametres);
+
+         while (it.hasNext()) {
+            Document doc = (Document) it.next();
+            AddMetadatasRunnable addMetasRun;
+            addMetasRun = new AddMetadatasRunnable(getDfceService(), doc, metas);
+            poolThead.execute(addMetasRun);
+         }
+
+         poolThead.shutdown();
+
+         // -- On attend la fin de l'execution du poolThead
+         poolThead.waitFinishAddMetadata();
+
+         LOGGER.info("{} documents traités au total", poolThead
+               .getNombreTraites());
+      } catch (SearchQueryParseException ex) {
+         LOGGER.error("La syntaxe de la requête n'est pas valide : {}", ex
+               .getMessage());
       }
-      
-      poolThead.shutdown();
-   
-      //-- On attend la fin de l'execution du poolThead
-      poolThead.waitFinishAddMetadata();
-      
-      LOGGER.info("{} documents traités au total", poolThead.getNombreTraites());
-      
-      //-- Fermeture connexion dfce
+
+      // -- Fermeture connexion dfce
       getDfceService().fermerConnexion();
    }
 

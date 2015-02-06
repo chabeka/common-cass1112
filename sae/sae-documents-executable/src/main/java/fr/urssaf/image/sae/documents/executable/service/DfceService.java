@@ -3,6 +3,8 @@ package fr.urssaf.image.sae.documents.executable.service;
 import java.io.InputStream;
 import java.util.Iterator;
 
+import com.docubase.dfce.exception.SearchQueryParseException;
+
 import net.docubase.toolkit.model.document.Document;
 import net.docubase.toolkit.service.ServiceProvider;
 
@@ -27,8 +29,10 @@ public interface DfceService {
     * @param requeteLucene
     *           La requête à exécuter
     * @return Liste des documents correspondants à la recherche
+    * @throws SearchQueryParseException
     */
-   Iterator<Document> executerRequete(String requeteLucene);
+   Iterator<Document> executerRequete(String requeteLucene)
+         throws SearchQueryParseException;
 
    /**
     * Retourne le contenu du document.
@@ -38,11 +42,11 @@ public interface DfceService {
     * @return Le contenu du document
     */
    InputStream recupererContenu(Document document);
-   
+
    /**
     * Permet de récupérer le provider de service de DFCE.
     * 
-    * @return ServiceProvider 
+    * @return ServiceProvider
     */
    ServiceProvider getServiceProvider();
 }
