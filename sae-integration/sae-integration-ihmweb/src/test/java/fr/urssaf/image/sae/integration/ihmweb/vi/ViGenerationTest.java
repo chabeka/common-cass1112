@@ -59,7 +59,7 @@ public class ViGenerationTest {
     * 
     */
    @Test
-   //@Ignore("Ce n'est pas un TU, mais un moyen de générer des VI")
+   @Ignore("Ce n'est pas un TU, mais un moyen de générer des VI")
    public void generationViAA() {
       
       try {
