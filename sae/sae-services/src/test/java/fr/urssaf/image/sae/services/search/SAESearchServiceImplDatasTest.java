@@ -20,6 +20,7 @@ import org.apache.commons.lang.StringUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -193,8 +194,9 @@ public class SAESearchServiceImplDatasTest {
       Assert.assertTrue("pas d'UntypedDocuments attendus", documents.isEmpty());
    }
 
-   @Ignore
+   
    @Test
+   @Ignore
    public final void searchSuccessResult() throws SAESearchServiceEx,
          MetaDataUnauthorizedToSearchEx, MetaDataUnauthorizedToConsultEx,
          UnknownDesiredMetadataEx, UnknownLuceneMetadataEx, SyntaxLuceneEx,
@@ -285,8 +287,8 @@ public class SAESearchServiceImplDatasTest {
     * Test de la recherche par itérateur
     * 
     */
-   @Ignore
    @Test
+   @Ignore
    public final void rechercheParIterateurSucces() throws SAECaptureServiceEx,
          ReferentialRndException, UnknownCodeRndEx, RequiredStorageMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
