@@ -36,7 +36,6 @@
       <Nom>Capture unitaire</Nom>
       <Id>1</Id>
       <CasTests>
-
          <CasTest>
             <id>100</id>
             <code>100-CaptureUnitaire-TestLibre</code>
@@ -1285,6 +1284,26 @@
 
       </CasTests>
 
+   </Categorie>
+   
+   <!-- ======================================================== -->
+   <!-- Recherche avec nombre de résultats -->
+   <!-- ======================================================== -->
+      <Categorie>
+
+      <Nom>Recherche avec nombre de résultats</Nom>
+      <Id>12</Id>
+      <CasTests>
+         <CasTest>
+            <id>2100</id>
+            <code>2100-Recherche-Avec-Nb-Resultats-TestLibre</code>
+            <description>
+               Test libre de la recherche avec nombre de résultats 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>CodeRND:2.3.1.1.12 AND DateArchivage:2011-09-01</luceneExemple>
+         </CasTest>
+      </CasTests>
    </Categorie>
 
 
