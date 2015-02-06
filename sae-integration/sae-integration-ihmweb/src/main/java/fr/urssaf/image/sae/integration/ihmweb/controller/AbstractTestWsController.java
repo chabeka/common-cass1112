@@ -23,6 +23,7 @@ import fr.urssaf.image.sae.integration.ihmweb.service.tests.CaptureUnitaireTestS
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.ConsultationAffichableTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.ConsultationTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.ModificationTestService;
+import fr.urssaf.image.sae.integration.ihmweb.service.tests.RechercheAvecNbResTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.RechercheTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.SuppressionTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.TransfertTestService;
@@ -77,6 +78,9 @@ public abstract class AbstractTestWsController<T extends TestWsParentFormulaire>
 
    @Autowired
    private RechercheTestService rechTestServ;
+   
+   @Autowired
+   private RechercheAvecNbResTestService rechWithNbResTestServ;
    
    @Autowired
    private ModificationTestService modifTestServ;
@@ -206,10 +210,20 @@ public abstract class AbstractTestWsController<T extends TestWsParentFormulaire>
    /**
     * Service des tests de la fonctionnalité "Transfert"
     * 
-    * @return Service des tests de la fonctionnalité "Suppression"
+    * @return Service des tests de la fonctionnalité "Recherche avec nombre de résultats"
     */
    public final TransfertTestService getTransfertTestService() {
       return this.transfertTestServ;
+   }
+   
+   
+   /**
+    * Service des tests de la fonctionnalité "Recherche avec nombre de résultats"
+    * 
+    * @return Service des tests de la fonctionnalité "Recherche avec nombre de résultats"
+    */
+   public final RechercheAvecNbResTestService getRechAvecNbResTestService() {
+      return this.rechWithNbResTestServ;
    }
    
    /**
