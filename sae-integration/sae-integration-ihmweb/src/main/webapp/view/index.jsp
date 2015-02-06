@@ -23,6 +23,7 @@
 					<tr><td><a href="calcTemp.do">Calculatrice temporelle</a></td></tr>
 					<tr><td><a href="cmcompare.do">Comparaison de resultats.xml</a></td></tr>
 					<tr><td><a href="escapeXml.do">Conversion de chaînes XML</a></td></tr>
+					<tr><td><a href="gelDocument.do">Gel de document</a></td></tr>
 				</tbody>
 			</table>
 		</div>
