@@ -814,13 +814,6 @@
                   voulues</xsd:documentation>
             </xsd:annotation>
          </xsd:element>
-         <xsd:element name="optimisationMTOM" type="xsd:boolean"
-            minOccurs="0">
-            <xsd:annotation>
-               <xsd:documentation>Activation de l'optimisation MTOM
-               </xsd:documentation>
-            </xsd:annotation>
-         </xsd:element>
          <xsd:element name="numeroPage" type="xsd:int"
             minOccurs="0">
             <xsd:annotation>

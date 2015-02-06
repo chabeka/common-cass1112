@@ -299,20 +299,6 @@ public class SaeServiceMessageReceiverInOut extends
                      fr.cirtil.www.saeservice.ConsultationAffichable.class,
                      getEnvelopeNamespaces(msgContext.getEnvelope()));
 
-               // NE PAS ENLEVER CE CODE :
-               // Gestion automatique du MTOM :
-               // Si le client ne specifie pas le flag MTOM, le MTOM sera actif
-               // Il faut que le client specifie qu'il ne veut pas utiliser le
-               // MTOM pour qu'il n'y ait pas d'optimisation MTOM
-               if (wrappedParam.getConsultationAffichable()
-                     .isOptimisationMTOMSpecified()
-                     && wrappedParam.getConsultationAffichable()
-                           .getOptimisationMTOM() == false) {
-                  msgContext.setDoingMTOM(false);
-               } else {
-                  msgContext.setDoingMTOM(true);
-               }
-
                consultationAffichableResponse32 =
 
                skel.consultationAffichableSecure(wrappedParam);
