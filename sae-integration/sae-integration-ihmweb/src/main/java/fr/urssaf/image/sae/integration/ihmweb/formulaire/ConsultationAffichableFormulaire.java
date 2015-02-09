@@ -1,7 +1,6 @@
 package fr.urssaf.image.sae.integration.ihmweb.formulaire;
 
 import fr.urssaf.image.sae.integration.ihmweb.modele.CodeMetadonneeList;
-import fr.urssaf.image.sae.integration.ihmweb.modele.ModeConsultationEnum;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTest;
 
 /**
@@ -19,27 +18,9 @@ public class ConsultationAffichableFormulaire extends GenericForm {
 
    private CodeMetadonneeList codeMetadonnees = new CodeMetadonneeList();
    
-   private String optimisationMTOM;
-   
-   /**
-    * @return the optimisationMTOM
-    */
-   public String getOptimisationMTOM() {
-      return optimisationMTOM;
-   }
-
-   /**
-    * @param optimisationMTOM the optimisationMTOM to set
-    */
-   public void setOptimisationMTOM(String optimisationMTOM) {
-      this.optimisationMTOM = optimisationMTOM;
-   }
-
    private Integer numeroPage;
    
    private Integer nombrePages;
-   
-
 
    /**
     * @return the numeroPage

@@ -17,31 +17,19 @@ Etape <c:out value="${numeroEtape}"/> : Appel du service web de consultation
       <td style="width:50%;">
          <table border=0 cellspacing=3 cellpadding=3 style="width:100%;">
             <tr>
-               <td style="width:20%;vertical-align:top;">optimisation MTOM</td>
-               <td style="width:80%;" >
-                  <form:radiobutton path="${pathFormulaire}.optimisationMTOM" value="" title="Non renseignÃ©" label="Non renseigné" />
-                  <br />
-                  <form:radiobutton path="${pathFormulaire}.optimisationMTOM" value="true" title="Oui" label="Oui"/>
-                  <br />
-                  <form:radiobutton path="${pathFormulaire}.optimisationMTOM" value="false" title="Non" label="Non" />
-                  
-               </td>
-            </tr>
-            
-            <tr>
                <td>Id archivage :</td> 
                <td>
                   <form:input path="${pathFormulaire}.idArchivage" cssStyle="width:100%;" readonly="${readonly}" />
                </td>
             </tr>
             <tr style="vertical-align:top;">
-               <td>Code des métadonnées souhaitées :</td>
+               <td>Code des mï¿½tadonnï¿½es souhaitï¿½es :</td>
                <td>
                   <form:textarea path="${pathFormulaire}.codeMetadonnees" cssStyle="width:100%;height:150pt;" readonly="${readonly}" />
                </td>
             </tr>
             <tr>
-               <td>Numéro de page :</td>
+               <td>Numï¿½ro de page :</td>
                <td>
                   <form:input path="${pathFormulaire}.numeroPage" cssStyle="width:100%;" readonly="${readonly}" />
                </td>

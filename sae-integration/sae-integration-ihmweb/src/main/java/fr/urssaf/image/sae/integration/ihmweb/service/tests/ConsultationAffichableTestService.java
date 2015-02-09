@@ -89,8 +89,7 @@ public class ConsultationAffichableTestService {
          // Construction du paramètre d'entrée de l'opération
          ConsultationAffichable paramsService = SaeServiceObjectFactory
                .buildConsultationAffichableRequest(formulaire.getIdArchivage(),
-                     formulaire.getCodeMetadonnees(), formulaire
-                           .getOptimisationMTOM(), formulaire.getNumeroPage(),
+                     formulaire.getCodeMetadonnees(), formulaire.getNumeroPage(),
                      formulaire.getNombrePages());
 
          // Appel du service web

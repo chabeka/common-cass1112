@@ -490,7 +490,7 @@ public final class SaeServiceObjectFactory {
     */
    public static ConsultationAffichable buildConsultationAffichableRequest(
          String idArchivage, CodeMetadonneeList codeMetadonnees,
-         String optimisationMTOM, Integer numeroPage, Integer nombrePages) {
+         Integer numeroPage, Integer nombrePages) {
 
       ConsultationAffichable consultation = new ConsultationAffichable();
 
@@ -509,14 +509,6 @@ public final class SaeServiceObjectFactory {
          ListeMetadonneeCodeType codesMetadonnees = SaeServiceObjectFactory
                .buildListeCodesMetadonnes(codeMetadonnees);
          consultationReqType.setMetadonnees(codesMetadonnees);
-      }
-
-      // Optimisation MTOM
-      
-      if (optimisationMTOM == "true") {
-         consultationReqType.setOptimisationMTOM(true);
-      } else if (optimisationMTOM == "false") {
-         consultationReqType.setOptimisationMTOM(false);
       }
       
       // Numero de page

@@ -420,7 +420,6 @@ public final class SaeServiceLogUtils {
          ConsultationAffichableFormulaire formulaire) {
       log.appendLogLn("Appel de l'opération consultationAffichable");
       log.appendLogLn("Paramètres : ");
-      log.appendLogLn("optimisation MTOM : " + formulaire.getOptimisationMTOM());
       log.appendLogLn("Id archivage : " + formulaire.getIdArchivage());
       log.appendLogLn("Métadonnées : ");
 

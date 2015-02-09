@@ -6138,51 +6138,6 @@ public class SaeServiceStub extends org.apache.axis2.client.Stub
                             
 
                         /**
-                        * field for OptimisationMTOM
-                        */
-
-                        
-                                    protected boolean localOptimisationMTOM ;
-                                
-                           /*  This tracker boolean wil be used to detect whether the user called the set method
-                          *   for this attribute. It will be used to determine whether to include this field
-                           *   in the serialized XML
-                           */
-                           protected boolean localOptimisationMTOMTracker = false ;
-
-                           public boolean isOptimisationMTOMSpecified(){
-                               return localOptimisationMTOMTracker;
-                           }
-
-                           
-
-                           /**
-                           * Auto generated getter method
-                           * @return boolean
-                           */
-                           public  boolean getOptimisationMTOM(){
-                               return localOptimisationMTOM;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param OptimisationMTOM
-                               */
-                               public void setOptimisationMTOM(boolean param){
-                            
-                                       // setting primitive attribute tracker to true
-                                       localOptimisationMTOMTracker =
-                                       true;
-                                   
-                                            this.localOptimisationMTOM=param;
-                                    
-
-                               }
-                            
-
-                        /**
                         * field for NumeroPage
                         */
 
@@ -6342,20 +6297,7 @@ public class SaeServiceStub extends org.apache.axis2.client.Stub
                                             }
                                            localMetadonnees.serialize(new javax.xml.namespace.QName("http://www.cirtil.fr/saeService","metadonnees"),
                                                xmlWriter);
-                                        } if (localOptimisationMTOMTracker){
-                                    namespace = "http://www.cirtil.fr/saeService";
-                                    writeStartElement(null, namespace, "optimisationMTOM", xmlWriter);
-                             
-                                               if (false) {
-                                           
-                                                         throw new org.apache.axis2.databinding.ADBException("optimisationMTOM cannot be null!!");
-                                                      
-                                               } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localOptimisationMTOM));
-                                               }
-                                    
-                                   xmlWriter.writeEndElement();
-                             } if (localNumeroPageTracker){
+                                        } if (localNumeroPageTracker){
                                     namespace = "http://www.cirtil.fr/saeService";
                                     writeStartElement(null, namespace, "numeroPage", xmlWriter);
                              
@@ -6584,13 +6526,7 @@ public class SaeServiceStub extends org.apache.axis2.client.Stub
                                          throw new org.apache.axis2.databinding.ADBException("metadonnees cannot be null!!");
                                     }
                                     elementList.add(localMetadonnees);
-                                } if (localOptimisationMTOMTracker){
-                                      elementList.add(new javax.xml.namespace.QName("http://www.cirtil.fr/saeService",
-                                                                      "optimisationMTOM"));
-                                 
-                                elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localOptimisationMTOM));
-                            } if (localNumeroPageTracker){
+                                } if (localNumeroPageTracker){
                                       elementList.add(new javax.xml.namespace.QName("http://www.cirtil.fr/saeService",
                                                                       "numeroPage"));
                                  
@@ -6700,30 +6636,6 @@ public class SaeServiceStub extends org.apache.axis2.client.Stub
                                     if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.cirtil.fr/saeService","metadonnees").equals(reader.getName())){
                                 
                                                 object.setMetadonnees(ListeMetadonneeCodeType.Factory.parse(reader));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                    else {
-                                        
-                                    }
-                                
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.cirtil.fr/saeService","optimisationMTOM").equals(reader.getName())){
-                                
-                                    nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
-                                    if ("true".equals(nillableValue) || "1".equals(nillableValue)){
-                                        throw new org.apache.axis2.databinding.ADBException("The element: "+"optimisationMTOM" +"  cannot be null");
-                                    }
-                                    
-
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setOptimisationMTOM(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
                                               
                                         reader.next();
                                     
