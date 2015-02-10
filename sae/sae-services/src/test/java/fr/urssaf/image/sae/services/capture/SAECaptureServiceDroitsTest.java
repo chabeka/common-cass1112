@@ -13,16 +13,11 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.SystemUtils;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -84,25 +79,9 @@ public class SAECaptureServiceDroitsTest {
 
    private UUID uuid;
 
-   private static File ecdeRepertory;
-
-   @BeforeClass
-   public static void beforeClass() throws IOException {
-
-      // mise en place du point dans le répertoire temporaire
-
-      ecdeRepertory = new File(FilenameUtils.concat(SystemUtils
-            .getJavaIoTmpDir().getAbsolutePath(), "ecde"));
-
-      FileUtils.forceMkdir(ecdeRepertory);
-      FileUtils.cleanDirectory(ecdeRepertory);
-   }
-
-   @AfterClass
-   public static void afterClass() throws IOException {
-
-      FileUtils.cleanDirectory(ecdeRepertory);
-   }
+   private EcdeTestDocument ecde;
+   
+   private File fileDoc;
 
    @Before
    public void before() {
@@ -137,13 +116,23 @@ public class SAECaptureServiceDroitsTest {
    }
 
    @After
-   public void after() throws ConnectionServiceEx, DeletionServiceEx {
+   public void after() throws ConnectionServiceEx, DeletionServiceEx, IOException {
       // suppression de l'insertion
       if (uuid != null) {
          testProvider.deleteDocument(uuid);
       }
 
       AuthenticationContext.setAuthenticationToken(null);
+      
+      if (fileDoc != null) {
+         // supprime le fichier attestation_consultation.pdf sur le repertoire de l'ecde
+         fileDoc.delete();
+      }
+      
+      if (ecde != null) {
+         // supprime le repertoire ecde
+         ecdeTestTools.cleanEcdeTestDocument(ecde);
+      }
    }
 
    @Test(expected = AccessDeniedException.class)
@@ -156,19 +145,23 @@ public class SAECaptureServiceDroitsTest {
          CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx,
          ValidationExceptionInvalidFile, UnknownFormatException {
 
-      EcdeTestDocument ecde = ecdeTestTools
+      ecde = ecdeTestTools
             .buildEcdeTestDocument("attestation_consultation.pdf");
 
       File repertoireEcde = ecde.getRepEcdeDocuments();
       URI urlEcdeDocument = ecde.getUrlEcdeDocument();
 
+      // copie le fichier attestation_consultation.pdf
+      // dans le repertoire de l'ecde
       LOG.debug("CAPTURE UNITAIRE ECDE TEMP: "
             + repertoireEcde.getAbsoluteFile());
-      File fileDoc = new File(repertoireEcde, "attestation_consultation.pdf");
+      fileDoc = new File(repertoireEcde, "attestation_consultation.pdf");
       ClassPathResource resDoc = new ClassPathResource(
             "doc/attestation_consultation.pdf");
       FileOutputStream fos = new FileOutputStream(fileDoc);
       IOUtils.copy(resDoc.getInputStream(), fos);
+      resDoc.getInputStream().close();
+      fos.close();
 
       File srcFile = new File(
             "src/test/resources/doc/attestation_consultation.pdf");

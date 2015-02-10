@@ -96,6 +96,8 @@ public class SAESuppressionServiceTest {
    private RndSupport rndSupport;
    @Autowired
    private JobClockSupport jobClockSupport;
+   
+   private EcdeTestDocument ecde;
 
    @After
    public void end() throws Exception {
@@ -104,6 +106,12 @@ public class SAESuppressionServiceTest {
       provider.closeConnexion();
 
       server.resetData();
+      
+      if (ecde != null) {
+         // supprime le repertoire ecde
+         ecdeTestTools.cleanEcdeTestDocument(ecde);
+         Thread.sleep(500);
+      }
    }
 
    @Before
@@ -199,17 +207,21 @@ public class SAESuppressionServiceTest {
          MetadataValueNotInDictionaryEx, SearchingServiceEx,
          SuppressionException, ArchiveInexistanteEx,
          ValidationExceptionInvalidFile, UnknownFormatException {
-      EcdeTestDocument ecde = ecdeTestTools
+      ecde = ecdeTestTools
             .buildEcdeTestDocument("attestation_consultation.pdf");
 
       File repertoireEcde = ecde.getRepEcdeDocuments();
       URI urlEcdeDocument = ecde.getUrlEcdeDocument();
 
+      // copie le fichier attestation_consultation.pdf
+      // dans le repertoire de l'ecde
       File fileDoc = new File(repertoireEcde, "attestation_consultation.pdf");
       ClassPathResource resDoc = new ClassPathResource(
             "doc/attestation_consultation.pdf");
       FileOutputStream fos = new FileOutputStream(fileDoc);
       IOUtils.copy(resDoc.getInputStream(), fos);
+      resDoc.getInputStream().close();
+      fos.close();
 
       File srcFile = new File(
             "src/test/resources/doc/attestation_consultation.pdf");
@@ -245,6 +257,9 @@ public class SAESuppressionServiceTest {
       Document storageDocument = testProvider.searchDocument(uuid);
 
       Assert.assertNull("le document ne doit pas exister", storageDocument);
+      
+      // supprime le fichier attestation_consultation.pdf sur le repertoire de l'ecde
+      fileDoc.delete();
    }
 
 }

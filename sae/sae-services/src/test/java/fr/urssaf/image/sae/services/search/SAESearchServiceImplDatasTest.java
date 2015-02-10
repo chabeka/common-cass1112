@@ -20,7 +20,6 @@ import org.apache.commons.lang.StringUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -196,7 +195,6 @@ public class SAESearchServiceImplDatasTest {
 
    
    @Test
-   @Ignore
    public final void searchSuccessResult() throws SAESearchServiceEx,
          MetaDataUnauthorizedToSearchEx, MetaDataUnauthorizedToConsultEx,
          UnknownDesiredMetadataEx, UnknownLuceneMetadataEx, SyntaxLuceneEx,
@@ -216,11 +214,15 @@ public class SAESearchServiceImplDatasTest {
       File repertoireEcde = ecde.getRepEcdeDocuments();
       URI urlEcdeDocument = ecde.getUrlEcdeDocument();
 
+      // copie le fichier attestation_consultation.pdf
+      // dans le repertoire de l'ecde
       File fileDoc = new File(repertoireEcde, "attestation_consultation.pdf");
       ClassPathResource resDoc = new ClassPathResource(
             "doc/attestation_consultation.pdf");
       FileOutputStream fos = new FileOutputStream(fileDoc);
       IOUtils.copy(resDoc.getInputStream(), fos);
+      resDoc.getInputStream().close();
+      fos.close();
 
       File srcFile = new File(
             "src/test/resources/doc/attestation_consultation.pdf");
@@ -260,6 +262,9 @@ public class SAESearchServiceImplDatasTest {
       Assert.assertEquals("1 document attendu", 1, documents.size());
 
       serviceSuppression.suppression(uuid);
+      
+      // supprime le fichier attestation_consultation.pdf sur le repertoire de l'ecde
+      fileDoc.delete();
    }
 
    /**
@@ -288,7 +293,6 @@ public class SAESearchServiceImplDatasTest {
     * 
     */
    @Test
-   @Ignore
    public final void rechercheParIterateurSucces() throws SAECaptureServiceEx,
          ReferentialRndException, UnknownCodeRndEx, RequiredStorageMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
@@ -308,11 +312,15 @@ public class SAESearchServiceImplDatasTest {
       File repertoireEcde = ecde.getRepEcdeDocuments();
       URI urlEcdeDocument = ecde.getUrlEcdeDocument();
 
+      // copie le fichier attestation_consultation.pdf
+      // dans le repertoire de l'ecde
       File fileDoc = new File(repertoireEcde, "attestation_consultation.pdf");
       ClassPathResource resDoc = new ClassPathResource(
             "doc/attestation_consultation.pdf");
       FileOutputStream fos = new FileOutputStream(fileDoc);
       IOUtils.copy(resDoc.getInputStream(), fos);
+      resDoc.getInputStream().close();
+      fos.close();
 
       File srcFile = new File(
             "src/test/resources/doc/attestation_consultation.pdf");
@@ -368,5 +376,8 @@ public class SAESearchServiceImplDatasTest {
       Assert.assertEquals("UUID attendu incorect", uuid, documents.getDocuments().get(0).getUuid());
 
       serviceSuppression.suppression(uuid);
+      
+      // supprime le fichier attestation_consultation.pdf sur le repertoire de l'ecde
+      fileDoc.delete();
    }
 }
