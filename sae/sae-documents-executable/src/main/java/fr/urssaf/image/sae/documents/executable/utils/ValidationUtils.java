@@ -285,8 +285,14 @@ public final class ValidationUtils {
          return true;
    }
 
+   /**
+    * Interface inline permettant la methode de verification.
+    */
    private interface onVerifiedCallback {
-      public void onVerified();
+      /**
+       * Methode de verification.
+       */
+      void onVerified();
    }
 
    /**
