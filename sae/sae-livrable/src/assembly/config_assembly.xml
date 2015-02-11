@@ -25,6 +25,22 @@
       <fileSet>
          <directory>src/config/</directory>
          <includes>
+            <include>addMetadatas.properties</include>
+         </includes>
+         <outputDirectory>sae-documents-executable</outputDirectory>
+      </fileSet>
+      
+      <fileSet>
+         <directory>src/config/</directory>
+         <includes>
+            <include>logback-sae-documents-executable.xml</include>
+         </includes>
+         <outputDirectory>sae-documents-executable</outputDirectory>
+      </fileSet>
+      
+      <fileSet>
+         <directory>src/config/</directory>
+         <includes>
             <include>logback-sae-lotinstallmaj.xml</include>
          </includes>
          <outputDirectory>sae-lotinstallmaj</outputDirectory>
@@ -113,6 +129,12 @@
    </fileSets>
       
    <files>
+   
+      <file>
+         <source>${project.parent.basedir}/sae-documents-executable/target/sae-documents-executable-${version}.jar</source>
+         <outputDirectory>sae-documents-executable</outputDirectory>
+         <destName>sae-documents-executable.jar</destName>
+       </file>
       
        <file>
          <source>${project.parent.basedir}/sae-ordonnanceur/target/sae-ordonnanceur-${version}.jar</source>
