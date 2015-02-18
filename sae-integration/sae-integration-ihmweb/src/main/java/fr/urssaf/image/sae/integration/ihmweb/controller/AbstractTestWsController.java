@@ -24,6 +24,7 @@ import fr.urssaf.image.sae.integration.ihmweb.service.tests.ConsultationAffichab
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.ConsultationTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.ModificationTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.RechercheAvecNbResTestService;
+import fr.urssaf.image.sae.integration.ihmweb.service.tests.RechercheParIterateurTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.RechercheTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.SuppressionTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.TransfertTestService;
@@ -81,6 +82,9 @@ public abstract class AbstractTestWsController<T extends TestWsParentFormulaire>
    
    @Autowired
    private RechercheAvecNbResTestService rechWithNbResTestServ;
+   
+   @Autowired
+   private RechercheParIterateurTestService rechParIterateurTestServ;
    
    @Autowired
    private ModificationTestService modifTestServ;
@@ -210,7 +214,7 @@ public abstract class AbstractTestWsController<T extends TestWsParentFormulaire>
    /**
     * Service des tests de la fonctionnalité "Transfert"
     * 
-    * @return Service des tests de la fonctionnalité "Recherche avec nombre de résultats"
+    * @return Service des tests de la fonctionnalité "Transfert"
     */
    public final TransfertTestService getTransfertTestService() {
       return this.transfertTestServ;
@@ -224,6 +228,15 @@ public abstract class AbstractTestWsController<T extends TestWsParentFormulaire>
     */
    public final RechercheAvecNbResTestService getRechAvecNbResTestService() {
       return this.rechWithNbResTestServ;
+   }
+   
+   /**
+    * Service des tests de la fonctionnalité "Recherche par itérateur"
+    * 
+    * @return Service des tests de la fonctionnalité "Recherche par itérateur"
+    */
+   public final RechercheParIterateurTestService getRechercheParIterateurTestService() {
+      return this.rechParIterateurTestServ;
    }
    
    /**

@@ -12,6 +12,9 @@ import org.springframework.util.CollectionUtils;
 
 import fr.urssaf.image.sae.integration.ihmweb.exception.IntegrationRuntimeException;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CodeMetadonneeList;
+import fr.urssaf.image.sae.integration.ihmweb.modele.IdentifiantPage;
+import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeRangeValeur;
+import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeRangeValeurList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeur;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeurList;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ArchivageMasse;
@@ -32,17 +35,24 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.C
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.DataFileType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.EcdeUrlSommaireType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.EcdeUrlType;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.FiltreType;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.IdentifiantPageType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ListeMetadonneeCodeType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ListeMetadonneeType;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ListeRangeMetadonneeType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.MetadonneeCodeType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.MetadonneeType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.MetadonneeValeurType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.Modification;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ModificationRequestType;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RangeMetadonneeType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.Recherche;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheNbRes;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheNbResRequestType;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheParIterateur;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheParIterateurRequestType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheRequestType;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RequetePrincipaleType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RequeteRechercheNbResType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RequeteRechercheType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.Suppression;
@@ -161,7 +171,8 @@ public final class SaeServiceObjectFactory {
     *           la requête LUCENE sous forme de chaîne de caractères
     * @return l'objet pour la couche WebService
     */
-   public static RequeteRechercheNbResType buildRequeteLucene2(String requeteLucene) {
+   public static RequeteRechercheNbResType buildRequeteLucene2(
+         String requeteLucene) {
 
       RequeteRechercheNbResType requeteRechercheType = new RequeteRechercheNbResType();
 
@@ -169,6 +180,7 @@ public final class SaeServiceObjectFactory {
 
       return requeteRechercheType;
    }
+
    /**
     * Construit un objet "Liste de codes de métadonnées" pour la couche
     * WebService
@@ -477,8 +489,7 @@ public final class SaeServiceObjectFactory {
       return consultation;
 
    }
-   
-  
+
    /**
     * Construit un objet de requête pour le service web "consultationAffichable"
     * 
@@ -510,17 +521,17 @@ public final class SaeServiceObjectFactory {
                .buildListeCodesMetadonnes(codeMetadonnees);
          consultationReqType.setMetadonnees(codesMetadonnees);
       }
-      
+
       // Numero de page
       if (numeroPage != null) {
          consultationReqType.setNumeroPage(numeroPage.intValue());
       }
-      
+
       // Nombre de pages
       if (nombrePages != null) {
          consultationReqType.setNombrePages(nombrePages.intValue());
       }
-      
+
       // fin
       return consultation;
 
@@ -561,7 +572,8 @@ public final class SaeServiceObjectFactory {
    }
 
    /**
-    * Construit un objet de requête pour le service web "recherche avec nb de resultats"
+    * Construit un objet de requête pour le service web
+    * "recherche avec nb de resultats"
     * 
     * @param requeteLucene
     *           la requête LUCENE
@@ -570,8 +582,8 @@ public final class SaeServiceObjectFactory {
     *           résultats de recherche
     * @return l'objet pour la couche WebService
     */
-   public static RechercheNbRes buildRechercheWithNbResRequest(String requeteLucene,
-         CodeMetadonneeList codeMetadonnees) {
+   public static RechercheNbRes buildRechercheWithNbResRequest(
+         String requeteLucene, CodeMetadonneeList codeMetadonnees) {
 
       RechercheNbRes recherche = new RechercheNbRes();
 
@@ -592,6 +604,160 @@ public final class SaeServiceObjectFactory {
       // fin
       return recherche;
    }
+
+   /**
+    * Construit un objet de requête pour le service web
+    * "recherche par itérateur"
+    * 
+    * @param metaFixes
+    *           les métadonnées fixes de la requête principale
+    * @param metaVariable
+    *           la métadonnée variable de la requête principale
+    * @param equalFilter
+    *           les filtres de type equal
+    * @param rangeFilter
+    *           les filtres de type range
+    * @param nbDocParPage
+    *           le nombre de document par page
+    * @param idPage
+    *           l'identifiant de la page
+    * @param codeMetadonnees
+    *           les métadonnées souhaitées en retour
+    * @return l'objet pour la couche WebService
+    */
+   public static RechercheParIterateur buildRechercheParIterateurRequest(
+         MetadonneeValeurList metaFixes, MetadonneeRangeValeur metaVariable,
+         MetadonneeValeurList equalFilter,
+         MetadonneeRangeValeurList rangeFilter, int nbDocParPage,
+         IdentifiantPage idPage, CodeMetadonneeList codeMetadonnees) {
+
+      RechercheParIterateur recherche = new RechercheParIterateur();
+
+      RechercheParIterateurRequestType rechercheReqType = new RechercheParIterateurRequestType();
+
+      recherche.setRechercheParIterateur(rechercheReqType);
+
+      // La requête principale
+      RequetePrincipaleType reqPrincipaleType = buildRequetePrincipale(
+            metaFixes, metaVariable);
+      rechercheReqType.setRequetePrincipale(reqPrincipaleType);
+
+      // Les filtres
+      FiltreType filtreType = buildFiltres(equalFilter, rangeFilter);
+      rechercheReqType.setFiltres(filtreType);
+
+      // Le nombre de documents par pages
+      rechercheReqType.setNbDocumentsParPage(nbDocParPage);
+
+      // L'identifiant de la page
+      IdentifiantPageType idPageType = buildIdPage(idPage);
+      if (idPageType != null) {
+         rechercheReqType.setIdentifiantPage(idPageType);
+      }
+
+      // Les codes des métadonnées souhaitées
+      ListeMetadonneeCodeType codesMetadonnees = SaeServiceObjectFactory
+            .buildListeCodesMetadonnes(codeMetadonnees);
+      rechercheReqType.setMetadonnees(codesMetadonnees);
+
+      recherche.setRechercheParIterateur(rechercheReqType);
+      // fin
+      return recherche;
+   }
+
+   private static RequetePrincipaleType buildRequetePrincipale(
+         MetadonneeValeurList metaFixes, MetadonneeRangeValeur metaVariable) {
+      // Les métadonnées fixes
+      RequetePrincipaleType reqPrincipaleType = new RequetePrincipaleType();
+      ListeMetadonneeType listeMetaType = new ListeMetadonneeType();
+      for (MetadonneeValeur metaValeur : metaFixes) {
+         MetadonneeType metaType = new MetadonneeType();
+         MetadonneeCodeType metaCodeType = new MetadonneeCodeType();
+         metaCodeType.setMetadonneeCodeType(metaValeur.getCode());
+         metaType.setCode(metaCodeType);
+         MetadonneeValeurType metaValType = new MetadonneeValeurType();
+         metaValType.setMetadonneeValeurType(metaValeur.getValeur());
+         metaType.setValeur(metaValType);
+         listeMetaType.addMetadonnee(metaType);
+      }
+      reqPrincipaleType.setFixedMetadatas(listeMetaType);
+
+      // La métadonnée variable
+      RangeMetadonneeType rangeMetaType = new RangeMetadonneeType();
+      MetadonneeCodeType rangeMetaCodeType = new MetadonneeCodeType();
+      rangeMetaCodeType.setMetadonneeCodeType(metaVariable.getCode());
+      rangeMetaType.setCode(rangeMetaCodeType);
+      MetadonneeValeurType rangeMetaValMinType = new MetadonneeValeurType();
+      rangeMetaValMinType.setMetadonneeValeurType(metaVariable.getValeurMin());
+      rangeMetaType.setValeurMin(rangeMetaValMinType);
+      MetadonneeValeurType rangeMetaValMaxType = new MetadonneeValeurType();
+      rangeMetaValMaxType.setMetadonneeValeurType(metaVariable.getValeurMax());
+      rangeMetaType.setValeurMax(rangeMetaValMaxType);
+      reqPrincipaleType.setVaryingMetadata(rangeMetaType);
+      return reqPrincipaleType;
+   }
+
+   private static IdentifiantPageType buildIdPage(IdentifiantPage idPage) {
+      IdentifiantPageType idPageType = null;
+      if (idPage.getIdArchive() != null && idPage.getValeur() != null) {
+         idPageType = new IdentifiantPageType();
+         UuidType uuidType = new UuidType();
+         uuidType.setUuidType(idPage.getIdArchive().toString());
+
+         idPageType.setIdArchive(uuidType);
+         MetadonneeValeurType metaValType = new MetadonneeValeurType();
+         metaValType.setMetadonneeValeurType(idPage.getValeur());
+         idPageType.setValeur(metaValType);
+      }
+      return idPageType;
+   }
+
+   /**
+    * Construit un objet FiltreType pour l'opération de rechercher par itérateur
+    * 
+    * @param equalFilter
+    *           Filtres de type equal
+    * @param rangeFilter
+    *           Filtres de type range
+    * @return l'objet de type FiltreType
+    */
+   private static FiltreType buildFiltres(MetadonneeValeurList equalFilter,
+         MetadonneeRangeValeurList rangeFilter) {
+      FiltreType filtreType = new FiltreType();
+      ListeMetadonneeType listeMeta = new ListeMetadonneeType();
+      for (MetadonneeValeur metaValeur : equalFilter) {
+         MetadonneeType metaType = new MetadonneeType();
+         MetadonneeCodeType metaCodeType = new MetadonneeCodeType();
+         metaCodeType.setMetadonneeCodeType(metaValeur.getCode());
+         metaType.setCode(metaCodeType);
+         MetadonneeValeurType metaValType = new MetadonneeValeurType();
+         metaValType.setMetadonneeValeurType(metaValeur.getValeur());
+         metaType.setValeur(metaValType);
+         listeMeta.addMetadonnee(metaType);
+      }
+      filtreType.setEqualFilter(listeMeta);
+
+      ListeRangeMetadonneeType listeRangeMeta = new ListeRangeMetadonneeType();
+      for (MetadonneeRangeValeur metaValeur : rangeFilter) {
+         RangeMetadonneeType rangeMetaType = new RangeMetadonneeType();
+
+         MetadonneeCodeType metaCodeType = new MetadonneeCodeType();
+         metaCodeType.setMetadonneeCodeType(metaValeur.getCode());
+         rangeMetaType.setCode(metaCodeType);
+         MetadonneeValeurType metaValTypeMin = new MetadonneeValeurType();
+         metaValTypeMin.setMetadonneeValeurType(metaValeur.getValeurMin());
+         rangeMetaType.setValeurMin(metaValTypeMin);
+         MetadonneeValeurType metaValTypeMax = new MetadonneeValeurType();
+         metaValTypeMax.setMetadonneeValeurType(metaValeur.getValeurMax());
+         rangeMetaType.setValeurMax(metaValTypeMax);
+         listeRangeMeta.addRangeMetadonnee(rangeMetaType);
+      }
+
+      filtreType.setRangeFilter(listeRangeMeta);
+
+      return filtreType;
+   }
+
    /**
     * Construit un objet de requête pour l'opération "modification"
     * 

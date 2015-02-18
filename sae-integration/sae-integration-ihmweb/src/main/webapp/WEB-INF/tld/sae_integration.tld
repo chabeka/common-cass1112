@@ -43,22 +43,29 @@
 
    <tag-file>
       <name>consultationAffichable</name>
-      <description>Appel du service web de consultationAffichable</description>
+      <description>Appel du service web de consultationAffichable
+      </description>
       <path>/WEB-INF/tags/consultationAffichable.tag</path>
    </tag-file>
-   
+
    <tag-file>
       <name>recherche</name>
       <description>Appel du service web de recherche</description>
       <path>/WEB-INF/tags/recherche.tag</path>
    </tag-file>
-   
+
+   <tag-file>
+      <name>rechercheParIterateur</name>
+      <description>Appel du service web de recherche par itérateur</description>
+      <path>/WEB-INF/tags/rechercheParIterateur.tag</path>
+   </tag-file>
+
    <tag-file>
       <name>modification</name>
       <description>Appel du service web de modification</description>
       <path>/WEB-INF/tags/modification.tag</path>
    </tag-file>
-   
+
    <tag-file>
       <name>suppression</name>
       <description>Appel du service web de suppression</description>
@@ -70,7 +77,7 @@
       <description>Appel du service web de transfert</description>
       <path>/WEB-INF/tags/transfert.tag</path>
    </tag-file>
-   
+
    <tag-file>
       <name>resultatTest</name>
       <description>Résultat d'un test</description>
@@ -95,53 +102,63 @@
       <description>Affichage des échanges SOAP</description>
       <path>/WEB-INF/tags/soapMessages.tag</path>
    </tag-file>
-   
+
    <tag-file>
       <name>envoiSoap</name>
       <description>Envoi d'un message SOAP brut</description>
       <path>/WEB-INF/tags/envoiSoap.tag</path>
    </tag-file>
-   
+
    <tag-file>
       <name>comptagesTdm</name>
-      <description>Comptage du nombre de documents pour un traitement de masse</description>
+      <description>Comptage du nombre de documents pour un traitement de
+         masse</description>
       <path>/WEB-INF/tags/comptagesTdm.tag</path>
    </tag-file>
-   
+
    <tag-file>
       <name>vi</name>
       <description>Paramètres du VI</description>
       <path>/WEB-INF/tags/vi.tag</path>
    </tag-file>
-   
+
    <tag-file>
       <name>lienRegistreSurvTec</name>
-      <description>Ajout d'un lien vers le registre de surveillance technique</description>
+      <description>Ajout d'un lien vers le registre de surveillance
+         technique</description>
       <path>/WEB-INF/tags/lienRegistreSurvTec.tag</path>
    </tag-file>
 
    <function>
       <name>booleanToOuiNon</name>
-      <function-class>fr.urssaf.image.sae.integration.ihmweb.jstl.Functions</function-class>
-      <function-signature>java.lang.String booleanToOuiNon(boolean)</function-signature>
+      <function-class>fr.urssaf.image.sae.integration.ihmweb.jstl.Functions
+      </function-class>
+      <function-signature>java.lang.String booleanToOuiNon(boolean)
+      </function-signature>
    </function>
-   
+
    <function>
       <name>formateDateTime</name>
-      <function-class>fr.urssaf.image.sae.integration.ihmweb.jstl.Functions</function-class>
-      <function-signature>java.lang.String formateDateTime(java.util.Date)</function-signature>
+      <function-class>fr.urssaf.image.sae.integration.ihmweb.jstl.Functions
+      </function-class>
+      <function-signature>java.lang.String
+         formateDateTime(java.util.Date)</function-signature>
    </function>
-   
+
    <function>
       <name>ajouteProprietaireDuPC</name>
-      <function-class>fr.urssaf.image.sae.integration.ihmweb.jstl.Functions</function-class>
-      <function-signature>java.lang.String ajouteProprietaireDuPC(java.lang.String)</function-signature>
+      <function-class>fr.urssaf.image.sae.integration.ihmweb.jstl.Functions
+      </function-class>
+      <function-signature>java.lang.String
+         ajouteProprietaireDuPC(java.lang.String)</function-signature>
    </function>
-   
+
    <function>
       <name>nl2br</name>
-      <function-class>fr.urssaf.image.sae.integration.ihmweb.jstl.Functions</function-class>
-      <function-signature>java.lang.String nl2br(java.lang.String)</function-signature>
+      <function-class>fr.urssaf.image.sae.integration.ihmweb.jstl.Functions
+      </function-class>
+      <function-signature>java.lang.String nl2br(java.lang.String)
+      </function-signature>
    </function>
 
 </taglib>

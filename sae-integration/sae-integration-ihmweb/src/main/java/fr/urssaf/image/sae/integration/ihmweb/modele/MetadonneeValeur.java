@@ -67,4 +67,7 @@ public class MetadonneeValeur {
       this.valeur = valeur;
    }
    
+   public String toString() {
+      return code + "(" + valeur + ")";
+   }
 }

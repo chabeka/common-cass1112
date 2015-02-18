@@ -1308,6 +1308,25 @@
 
 
    <!-- ======================================================== -->
+   <!-- Recherche par itérateur -->
+   <!-- ======================================================== -->
+      <Categorie>
+
+      <Nom>Recherche par itérateur</Nom>
+      <Id>13</Id>
+      <CasTests>
+         <CasTest>
+            <id>2300</id>
+            <code>2300-Recherche-Par-Iterateur-TestLibre</code>
+            <description>
+               Test libre de la recherche par itérateur 
+            </description>
+            <implemente>true</implemente>
+         </CasTest>
+      </CasTests>
+   </Categorie>
+
+   <!-- ======================================================== -->
    <!-- Consultation -->
    <!-- ======================================================== -->
 

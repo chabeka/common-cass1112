@@ -13,19 +13,19 @@ import org.apache.commons.collections.CollectionUtils;
  * Liste de métadonnées<br>
  * <br>
  * Un transtypage pour les classes de formulaire est réalisé dans
- * la classe MetadonneeListEditor
+ * la classe RangeMetadonneeListEditor
  */
 @SuppressWarnings("PMD.TooManyMethods")
-public class MetadonneeValeurList implements List<MetadonneeValeur> {
+public class MetadonneeRangeValeurList implements List<MetadonneeRangeValeur> {
 
-   private final List<MetadonneeValeur> liste = new ArrayList<MetadonneeValeur>();
+   private final List<MetadonneeRangeValeur> liste = new ArrayList<MetadonneeRangeValeur>();
    
       
    /**
     * {@inheritDoc}
     */
    @Override
-   public final boolean add(MetadonneeValeur element) {
+   public final boolean add(MetadonneeRangeValeur element) {
       return liste.add(element);
    }
 
@@ -33,7 +33,7 @@ public class MetadonneeValeurList implements List<MetadonneeValeur> {
     * {@inheritDoc}
     */
    @Override
-   public final void add(int index, MetadonneeValeur element) {
+   public final void add(int index, MetadonneeRangeValeur element) {
       liste.add(index,element);
    }
 
@@ -41,7 +41,7 @@ public class MetadonneeValeurList implements List<MetadonneeValeur> {
     * {@inheritDoc}
     */
    @Override
-   public final boolean addAll(Collection<? extends MetadonneeValeur> collection) {
+   public final boolean addAll(Collection<? extends MetadonneeRangeValeur> collection) {
       return liste.addAll(collection);
    }
 
@@ -49,7 +49,7 @@ public class MetadonneeValeurList implements List<MetadonneeValeur> {
     * {@inheritDoc}
     */
    @Override
-   public final boolean addAll(int index, Collection<? extends MetadonneeValeur> collection) {
+   public final boolean addAll(int index, Collection<? extends MetadonneeRangeValeur> collection) {
       return liste.addAll(index,collection);
    }
 
@@ -81,7 +81,7 @@ public class MetadonneeValeurList implements List<MetadonneeValeur> {
     * {@inheritDoc}
     */
    @Override
-   public final MetadonneeValeur get(int index) {
+   public final MetadonneeRangeValeur get(int index) {
       return liste.get(index);
    }
 
@@ -105,7 +105,7 @@ public class MetadonneeValeurList implements List<MetadonneeValeur> {
     * {@inheritDoc}
     */
    @Override
-   public final Iterator<MetadonneeValeur> iterator() {
+   public final Iterator<MetadonneeRangeValeur> iterator() {
       return liste.iterator();
    }
 
@@ -121,7 +121,7 @@ public class MetadonneeValeurList implements List<MetadonneeValeur> {
     * {@inheritDoc}
     */
    @Override
-   public final ListIterator<MetadonneeValeur> listIterator() {
+   public final ListIterator<MetadonneeRangeValeur> listIterator() {
       return liste.listIterator();
    }
 
@@ -129,7 +129,7 @@ public class MetadonneeValeurList implements List<MetadonneeValeur> {
     * {@inheritDoc}
     */
    @Override
-   public final ListIterator<MetadonneeValeur> listIterator(int index) {
+   public final ListIterator<MetadonneeRangeValeur> listIterator(int index) {
       return liste.listIterator(index);
    }
 
@@ -145,7 +145,7 @@ public class MetadonneeValeurList implements List<MetadonneeValeur> {
     * {@inheritDoc}
     */
    @Override
-   public final MetadonneeValeur remove(int index) {
+   public final MetadonneeRangeValeur remove(int index) {
       return liste.remove(index);
    }
 
@@ -169,7 +169,7 @@ public class MetadonneeValeurList implements List<MetadonneeValeur> {
     * {@inheritDoc}
     */
    @Override
-   public final MetadonneeValeur set(int index, MetadonneeValeur element) {
+   public final MetadonneeRangeValeur set(int index, MetadonneeRangeValeur element) {
       return liste.set(index,element);
    }
 
@@ -182,7 +182,7 @@ public class MetadonneeValeurList implements List<MetadonneeValeur> {
    }
 
    @Override
-   public final List<MetadonneeValeur> subList(int fromIndex, int toIndex) {
+   public final List<MetadonneeRangeValeur> subList(int fromIndex, int toIndex) {
       return liste.subList(fromIndex,toIndex);
    }
 
@@ -236,11 +236,12 @@ public class MetadonneeValeurList implements List<MetadonneeValeur> {
     */
    public final void modifieValeurMeta(
          String codeLong, 
-         String nouvelleValeur) {
+         String nouvelleValeurMin, String nouvelleValeurMax) {
       
       int idx = indexOf(codeLong);
       if (idx!=-1) {
-         liste.get(idx).setValeur(nouvelleValeur);
+         liste.get(idx).setValeurMin(nouvelleValeurMin);
+         liste.get(idx).setValeurMax(nouvelleValeurMax);
       }
       
    }
@@ -253,19 +254,15 @@ public class MetadonneeValeurList implements List<MetadonneeValeur> {
     * @param valeur la valeur de la métadonnée
     * @return true
     */
-   public final boolean add(String code, String valeur) {
-      return liste.add(new MetadonneeValeur(code,valeur));
+   public final boolean add(String code, String valeurMin, String valeurMax) {
+      return liste.add(new MetadonneeRangeValeur(code,valeurMin, valeurMax));
    }
 
-   /**
-    * Affichage des métas
-    */
    public final String toString() {
       String affichage = "";
-      for (MetadonneeValeur meta  : liste) {
-         affichage = affichage.concat(meta.toString() + ", ");
+      for (MetadonneeRangeValeur meta : liste) {
+         affichage.concat(meta.toString() + ", ");
       }
-      
       return affichage;
    }
 }

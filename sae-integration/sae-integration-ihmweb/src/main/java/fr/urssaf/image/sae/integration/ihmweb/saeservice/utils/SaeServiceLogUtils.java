@@ -26,6 +26,7 @@ import fr.urssaf.image.sae.integration.ihmweb.formulaire.ConsultationAffichableF
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ConsultationFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ModificationFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheParIterateurFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.SuppressionFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.TransfertFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CaptureMasseResultat;
@@ -38,9 +39,11 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.SoapFault;
 import fr.urssaf.image.sae.integration.ihmweb.modele.somres.resultats.ResultatsType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.comparator.ResultatRechercheComparator;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.comparator.ResultatRechercheComparator.TypeComparaison;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.IdentifiantPageType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ListeMetadonneeType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.MetadonneeType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheNbResResponseType;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheParIterateurResponseType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheResponseType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ResultatRechercheType;
 import fr.urssaf.image.sae.integration.ihmweb.utils.Base64Utils;
@@ -247,12 +250,12 @@ public final class SaeServiceLogUtils {
 
          ResultatRechercheType[] tabResRechTypes = rechercheResponse
                .getResultats().getResultat();
-         
-         //-- on log les résultat
+
+         // -- on log les résultat
          logRestultats(log, tabResRechTypes, triDesResultats);
       }
    }
-   
+
    /**
     * Ajoute, dans le log du résultat du test, une réponse de l'opération
     * "recherche"
@@ -275,65 +278,113 @@ public final class SaeServiceLogUtils {
 
       // Les résultats de la recherche
       if (rechercheResponse.getResultats() == null) {
-         log.appendLogLn("Les résultats de recherche avec de résultats sont null");
+         log
+               .appendLogLn("Les résultats de recherche avec nombre de résultats sont null");
       } else {
          ResultatRechercheType[] tabResRechTypes = rechercheResponse
-         .getResultats().getResultat();
-         
-         //-- on log les résultat
+               .getResultats().getResultat();
+
+         // -- on log les résultat
          logRestultats(log, tabResRechTypes, triDesResultats);
       }
    }
-   
+
    /**
-    * Méthode utilitaire, factorisation code des méthodes
-    * logResultatRecherche et logResultatRechercheAvecNbRes 
+    * Ajoute, dans le log du résultat du test, une réponse de l'opération
+    * "rechercheParIterateur"
     * 
-    * @param log : le log à mettre à jour
-    * 
-    * @param tabResRechTypes : la réponse de l'opération "recherche"
-    * 
-    * @param triDesResultats : ordre de tri des résultats de recherche. 
-    * Passer null pour ne pas trier
+    * @param log
+    *           le log à mettre à jour
+    * @param rechercheResponse
+    *           la réponse de l'opération "rechercheParIterateur"
+    * @param triDesResultats
+    *           ordre de tri des résultats de recherche. Passer null pour ne pas
+    *           trier
     */
-   private static void logRestultats(ResultatTestLog log, 
-         ResultatRechercheType[] tabResRechTypes, TypeComparaison triDesResultats){
+   public static void logResultatRechercheParIterateur(ResultatTestLog log,
+         RechercheParIterateurResponseType rechercheResponse,
+         TypeComparaison triDesResultats) {
+
+      // Le flage dernière page
+      log.appendLogLn("Flag dernière page : "
+            + Boolean.toString(rechercheResponse.getDernierePage()));
+
+      // L'identifiant de la page
+      IdentifiantPageType idPage = rechercheResponse
+            .getIdentifiantPageSuivante();
+      if (idPage == null) {
+         log.appendLogLn("L'identifiant de la page est null");
+      } else {
+         log.appendLogLn("Identifiant page : "
+               + idPage.getIdArchive().toString() + " / "
+               + idPage.getValeur().getMetadonneeValeurType());
+      }
+
+      // Les résultats de la recherche
+      if (rechercheResponse.getResultats() == null) {
+         log
+               .appendLogLn("Les résultats de recherche par itérateur sont null");
+      } else {
+         ResultatRechercheType[] tabResRechTypes = rechercheResponse
+               .getResultats().getResultat();
+
+         // -- on log les résultat
+         logRestultats(log, tabResRechTypes, triDesResultats);
+      }
+   }
+
+   /**
+    * Méthode utilitaire, factorisation code des méthodes logResultatRecherche
+    * et logResultatRechercheAvecNbRes
+    * 
+    * @param log
+    *           : le log à mettre à jour
+    * 
+    * @param tabResRechTypes
+    *           : la réponse de l'opération "recherche"
+    * 
+    * @param triDesResultats
+    *           : ordre de tri des résultats de recherche. Passer null pour ne
+    *           pas trier
+    */
+   private static void logRestultats(ResultatTestLog log,
+         ResultatRechercheType[] tabResRechTypes,
+         TypeComparaison triDesResultats) {
 
       if (tabResRechTypes == null) {
          log.appendLogLn("Les résultats de recherche sont null");
       } else {
-      
+
          log.appendLogLn("Nombre de résultats de recherche : "
                + tabResRechTypes.length);
          log.appendLogLn("Liste des résultats de recherche :");
          log.appendLogNewLine();
-      
+
          // Tri des résultats de recherche si demandé
          ResultatRechercheType[] tabResRechTypesOk;
          if (triDesResultats != null) {
-      
+
             List<ResultatRechercheType> resultatsTries = Arrays
                   .asList(tabResRechTypes);
-      
-            Collections.sort(resultatsTries,
-                  new ResultatRechercheComparator(triDesResultats));
-      
+
+            Collections.sort(resultatsTries, new ResultatRechercheComparator(
+                  triDesResultats));
+
             tabResRechTypesOk = (ResultatRechercheType[]) resultatsTries
                   .toArray();
-      
+
          } else {
             tabResRechTypesOk = tabResRechTypes;
          }
-      
+
          String uuid;
          ResultatRechercheType resRechType;
          for (int i = 0; i < tabResRechTypesOk.length; i++) {
-      
+
             log.appendLogLn("Résultat #" + (i + 1));
             resRechType = tabResRechTypesOk[i];
-            uuid = SaeServiceTypeUtils.extractUuid(resRechType
-                  .getIdArchive());
-      
+            uuid = SaeServiceTypeUtils.extractUuid(resRechType.getIdArchive());
+
             log.appendLogLn("IdArchive = " + uuid);
             logMetadonnees(log, resRechType.getMetadonnees());
             log.appendLogNewLine();
@@ -406,7 +457,7 @@ public final class SaeServiceLogUtils {
 
       log.appendLogNewLine();
    }
-   
+
    /**
     * Ajoute, dans le log du résultat du test, les paramètres d'appel à
     * l'opération "consultationAffichable"
@@ -450,7 +501,7 @@ public final class SaeServiceLogUtils {
       log.appendLogLn("Appel de l'opération recherche");
       logAppelRecherche(log, formulaire);
    }
-   
+
    /**
     * Ajoute, dans le log du résultat du test, les paramètres d'appel à
     * l'opération "recherche avec nombre de résultats"
@@ -462,21 +513,65 @@ public final class SaeServiceLogUtils {
     */
    public static void logAppelRechercheAvecNbRes(ResultatTestLog log,
          RechercheFormulaire formulaire) {
-      log.appendLogLn("Appel de l'opération recherche avec nombre de résultats");
+      log
+            .appendLogLn("Appel de l'opération recherche avec nombre de résultats");
       logAppelRecherche(log, formulaire);
    }
-   
+
    /**
-    * Méthode factrisant le code des méthodes : 
-    * logAppelRechercheSimple & logAppelRechercheAvecNbRes
+    * Méthode factrisant le code des méthodes : logAppelRechercheSimple &
+    * logAppelRechercheAvecNbRes
     * 
-    * @param log : le log
-    * @param formulaire : l'objet formulaire contenant les propriétés d'appel
+    * @param log
+    *           : le log
+    * @param formulaire
+    *           : l'objet formulaire contenant les propriétés d'appel
     */
    private static void logAppelRecherche(ResultatTestLog log,
          RechercheFormulaire formulaire) {
       log.appendLogLn("Paramètres :");
       log.appendLogLn("Requête LUCENE : " + formulaire.getRequeteLucene());
+      log.appendLog("Codes des métadonnées : ");
+      if (CollectionUtils.isEmpty(formulaire.getCodeMetadonnees())) {
+         log.appendLogLn("non spécifiés");
+      } else {
+         log
+               .appendLogLn(StringUtils.join(formulaire.getCodeMetadonnees(),
+                     ','));
+      }
+      log.appendLogNewLine();
+   }
+
+   /**
+    * Log recherche par itérateur
+    * 
+    * @param log
+    *           : le log
+    * @param formulaire
+    *           : l'objet formulaire contenant les propriétés d'appel
+    */
+   public static void logAppelRechercheParIterateur(ResultatTestLog log,
+         RechercheParIterateurFormulaire formulaire) {
+      log.appendLogLn("Paramètres :");
+      log.appendLogLn("Meta(s) fixe(s) : ");
+      if (CollectionUtils.isEmpty(formulaire.getMetaFixes())) {
+         log.appendLogLn("non spécifiés");
+      } else {
+         log.appendLogLn(formulaire.getMetaFixes().toString());
+      }
+
+      log.appendLogLn("Meta variable : ");
+      log.appendLogLn(formulaire.getMetaVariable().toString());
+
+      log.appendLogLn("Filtre de type equal : "
+            + formulaire.getEqualFilter().toString());
+      log.appendLogLn("Filtre de type range : "
+            + formulaire.getRangeFilter().toString());
+      log.appendLogLn("Nb docs par page : " + formulaire.getNbDocParPage());
+      log.appendLogLn("Identifiant page : "
+            + formulaire.getIdPage().getValeur() + "/"
+            + formulaire.getIdPage().getIdArchive());
+
       log.appendLog("Codes des métadonnées : ");
       if (CollectionUtils.isEmpty(formulaire.getCodeMetadonnees())) {
          log.appendLogLn("non spécifiés");
@@ -637,7 +732,7 @@ public final class SaeServiceLogUtils {
       }
 
    }
-   
+
    /**
     * Ajoute, dans le log du résultat du test, les paramètres d'appel à
     * l'opération "modification"
@@ -655,7 +750,7 @@ public final class SaeServiceLogUtils {
       logMetadonnees(log, formulaire.getMetadonnees());
       log.appendLogNewLine();
    }
-   
+
    /**
     * Ajoute, dans le log du résultat du test, les paramètres d'appel à
     * l'opération "suppression"
@@ -671,7 +766,7 @@ public final class SaeServiceLogUtils {
       log.appendLogLn("Id du document : " + formulaire.getIdDocument());
       log.appendLogNewLine();
    }
-   
+
    /**
     * Ajoute, dans le log du résultat du test, les paramètres d'appel à
     * l'opération "transfert"
