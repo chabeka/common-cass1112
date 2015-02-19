@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# description: Lance ou arr�te l'ordonnanceur du SAE.
+# description: Lance ou arrête l'ordonnanceur du SAE.
 
 . /etc/rc.d/init.d/functions
 
@@ -8,19 +8,19 @@ SCHEDULER_CMD_LINE="java -Dlogback.configurationFile=@@SAE_HOME@@/sae-ordonnance
 
 PROG_NAME=@@PROJECT_NAME@@-ordonnanceur
 
-# Les sorties sont redirig�es dans ce fichier. 
-# Ce n'est pas un fichier de log � proprement parl� 
-# car les logs applicatifs sont g�r�s via logback.
+# Les sorties sont redirigées dans ce fichier. 
+# Ce n'est pas un fichier de log à proprement parlé
+# car les logs applicatifs sont gérés via logback.
 OUT_FILE="@@LOGS_PATH@@/$PROG_NAME.out"
 
 PID_FILE="/var/run/$PROG_NAME.pid"
 LOCK_FILE="/var/lock/subsys/$PROG_NAME"
 
 start() {
-    echo -n "D�marrage de l'ordonnanceur du SAE... "
+    echo -n "Démarrage de l'ordonnanceur du SAE... "
 
     if [ -e $PID_FILE ] && [ -e /proc/`cat "$PID_FILE"` ]; then
-        echo "L'ordonnanceur du SAE est d�ja d�marr�."
+        echo "L'ordonnanceur du SAE est déja démarré."
         return 1
     fi
 
@@ -42,10 +42,10 @@ start() {
 }
 
 stop() {
-    echo -n "Arr�t de l'ordonnanceur du SAE... "
+    echo -n "Arrêt de l'ordonnanceur du SAE... "
 
     if [ ! -e $LOCK_FILE ]; then
-        echo "L'ordonnanceur n'est pas d�marr�."
+        echo "L'ordonnanceur n'est pas démarré."
         return 1
     fi
 
