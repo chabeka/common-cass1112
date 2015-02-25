@@ -1536,7 +1536,7 @@
 		<ns1:defaultConsultable>non</ns1:defaultConsultable>
 		<ns1:searchable>oui</ns1:searchable>
 		<ns1:internal>non</ns1:internal>
-		<ns1:archivable>non</ns1:archivable>
+		<ns1:archivable>oui</ns1:archivable>
 		<ns1:label>Numero facture SICOMOR</ns1:label>
 		<ns1:description>référence positionnée par Sicomor</ns1:description>
 		<ns1:hasDictionary>non</ns1:hasDictionary>
@@ -2326,7 +2326,7 @@
 	<ns1:metaReference>
 		<ns1:longCode>ControleComptable</ns1:longCode>
 		<ns1:shortCode>cco</ns1:shortCode>
-		<ns1:type>String</ns1:type>
+		<ns1:type>Boolean</ns1:type>
 		<ns1:requiredForArchival>non</ns1:requiredForArchival>
 		<ns1:requiredForStorage>non</ns1:requiredForStorage>
 		<ns1:consultable>oui</ns1:consultable>

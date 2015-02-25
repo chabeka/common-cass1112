@@ -940,7 +940,7 @@
       <defaultConsultable>false</defaultConsultable>
       <searchable>true</searchable>
       <internal>false</internal>
-      <archivable>false</archivable>
+      <archivable>true</archivable>
       <label>Numero facture SICOMOR</label>
       <description>référence positionnée par Sicomor</description>
    </metaDataReference>
@@ -1459,7 +1459,7 @@
    <metaDataReference>
       <shortCode>cco</shortCode>
       <longCode>ControleComptable</longCode>
-      <type>String</type>
+      <type>Boolean</type>
       <requiredForArchival>false</requiredForArchival>
       <requiredForStorage>false</requiredForStorage>
       <length>-1</length>

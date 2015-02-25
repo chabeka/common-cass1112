@@ -745,7 +745,7 @@
          <category>
             <descriptif>ControleComptable</descriptif>
             <name>cco</name>
-            <dataType>String</dataType>
+            <dataType>Boolean</dataType>
             <index>false</index>
             <minimumValues>0</minimumValues>
             <maximumValues>1</maximumValues>
