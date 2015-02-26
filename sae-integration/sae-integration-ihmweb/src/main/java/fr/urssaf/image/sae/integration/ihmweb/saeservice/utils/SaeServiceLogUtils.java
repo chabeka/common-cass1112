@@ -316,7 +316,7 @@ public final class SaeServiceLogUtils {
          log.appendLogLn("L'identifiant de la page est null");
       } else {
          log.appendLogLn("Identifiant page : "
-               + idPage.getIdArchive().toString() + " / "
+               + idPage.getIdArchive().toString() + "&"
                + idPage.getValeur().getMetadonneeValeurType());
       }
 
@@ -569,8 +569,8 @@ public final class SaeServiceLogUtils {
             + formulaire.getRangeFilter().toString());
       log.appendLogLn("Nb docs par page : " + formulaire.getNbDocParPage());
       log.appendLogLn("Identifiant page : "
-            + formulaire.getIdPage().getValeur() + "/"
-            + formulaire.getIdPage().getIdArchive());
+            + formulaire.getIdPage().getIdArchive() + "&"
+            + formulaire.getIdPage().getValeur());
 
       log.appendLog("Codes des métadonnées : ");
       if (CollectionUtils.isEmpty(formulaire.getCodeMetadonnees())) {
