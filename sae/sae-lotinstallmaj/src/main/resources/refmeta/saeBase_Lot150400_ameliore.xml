@@ -822,6 +822,16 @@
             <single>false</single>
             <enableDictionary>false</enableDictionary>
          </category>
+         <category>
+            <descriptif>DomaineTechnique</descriptif>
+            <name>dte</name>
+            <dataType>Boolean</dataType>
+            <index>false</index>
+            <minimumValues>0</minimumValues>
+            <maximumValues>1</maximumValues>
+            <single>false</single>
+            <enableDictionary>false</enableDictionary>
+         </category>         
       </categories>
    </base>
 </docuBase>

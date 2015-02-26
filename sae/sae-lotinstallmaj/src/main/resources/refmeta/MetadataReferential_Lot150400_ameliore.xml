@@ -1584,4 +1584,20 @@
       <label>Site comptable</label>
       <description></description>
    </metaDataReference>
+      <metaDataReference>
+      <shortCode>dte</shortCode>
+      <longCode>DomaineTechnique</longCode>
+      <type>Boolean</type>
+      <requiredForArchival>false</requiredForArchival>
+      <requiredForStorage>false</requiredForStorage>
+      <length>-1</length>
+      <pattern></pattern>
+      <consultable>true</consultable>
+      <defaultConsultable>false</defaultConsultable>
+      <searchable>true</searchable>
+      <internal>false</internal>
+      <archivable>true</archivable>
+      <label>Document du domaine technique</label>
+      <description>Flag indiquant que le document appartient au domaine technique</description>
+   </metaDataReference>
 </referentiel>
