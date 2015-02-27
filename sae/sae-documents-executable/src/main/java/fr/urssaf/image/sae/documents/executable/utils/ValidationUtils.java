@@ -387,7 +387,11 @@ public final class ValidationUtils {
             Map<String, String> metasMap = new HashMap<String, String>();
             for (String meta : Arrays.asList(metadonnees.split(","))) {
                String[] metaData = meta.split(":");
-               metasMap.put(metaData[0], metaData[1]);
+               if (metaData.length == 2) {
+                  metasMap.put(metaData[0], metaData[1]);
+               } else if (metaData.length == 1) {
+                  metasMap.put(metaData[0], null);
+               }
             }
             parametres.setMetadonnees(metasMap);
          }

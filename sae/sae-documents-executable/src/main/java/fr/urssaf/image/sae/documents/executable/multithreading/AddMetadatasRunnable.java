@@ -2,6 +2,7 @@ package fr.urssaf.image.sae.documents.executable.multithreading;
 
 import java.util.Map;
 
+import net.docubase.toolkit.model.document.Criterion;
 import net.docubase.toolkit.model.document.Document;
 
 import org.slf4j.Logger;
@@ -67,7 +68,15 @@ public class AddMetadatasRunnable implements Runnable {
    @Override
    public final void run() {
       for (Map.Entry<String, String> meta : metadonnees.entrySet()) {
-         document.addCriterion(meta.getKey(), meta.getValue());
+         if (document.getCriterions(meta.getKey()).isEmpty()) {
+            // ajout d'une nouvelle valeur de metadonnee
+            document.addCriterion(meta.getKey(), meta.getValue());
+         } else if (!document.getCriterions(meta.getKey()).isEmpty() && meta.getValue() == null) {
+            // gere la suppression d'un valeur de metadonnee
+            for (Criterion criterion : document.getCriterions(meta.getKey())) {
+               document.deleteCriterion(criterion);
+            }
+         } 
       }
 
       // -- Mise à jour du document en base
