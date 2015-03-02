@@ -33,6 +33,14 @@
       <fileSet>
          <directory>src/config/</directory>
          <includes>
+            <include>addMetadatasJournaux.properties</include>
+         </includes>
+         <outputDirectory>sae-documents-executable</outputDirectory>
+      </fileSet>
+      
+      <fileSet>
+         <directory>src/config/</directory>
+         <includes>
             <include>logback-sae-documents-executable.xml</include>
          </includes>
          <outputDirectory>sae-documents-executable</outputDirectory>
