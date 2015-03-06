@@ -291,9 +291,9 @@ public class SearchingServiceImpl extends AbstractServices implements
                break;
             }
          }
-         // Si on est sorti de la boucle avant d'avoir atteint la limte
-         // demandée, c'est qu'on est arrivé au dernier document
-         if (compteur < limite) {
+
+         // Si il ne reste plus de documents
+         if (paginatedStorageDocuments.getLastPage() == null) {
             paginatedStorageDocuments.setAllStorageDocuments(storageDocuments);
             paginatedStorageDocuments.setLastPage(true);
          }
