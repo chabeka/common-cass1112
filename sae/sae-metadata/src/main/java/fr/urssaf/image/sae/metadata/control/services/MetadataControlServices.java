@@ -221,14 +221,15 @@ public interface MetadataControlServices {
    List<MetadataError> checkSupprimableMetadatas(
          final List<UntypedMetadata> metadatas);
 
- 
    /**
     * Trim gauche et/ou droite des métadonnées dont le paramétrage le demande
-    * 
-    * @param metadatas
-    *           liste des métadonnées
-    * @return la liste des métadonnées trimées
-    */  
-   List<SAEMetadata> trimMetadata(List<SAEMetadata> metadatas);
+    * @param metadatas liste des métadonnées
+    * @param contratService le nom du contrat de service pour les traces
+    * @param listePagms la liste des PAGMs pour les traces
+    * @param login le login pour les traces
+    * @return
+    */
+   List<SAEMetadata> trimMetadata(List<SAEMetadata> metadatas,
+         String contratService, List<String> listePagms, String login);
 
 }

@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.sae.bo.model.MetadataError;
@@ -27,6 +28,7 @@ import fr.urssaf.image.sae.services.exception.capture.RequiredStorageMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.UnknownMetadataEx;
 import fr.urssaf.image.sae.services.util.MetadataErrorUtils;
 import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
+import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 
 /**
  * Classe d'implémentation de l'interface {@link SaeControleMetadataService}.
@@ -77,7 +79,31 @@ public class SaeControleMetadataServiceImpl implements
 
       // Trim des métadonnées
       LOG.debug("{} - Début du trim des métadonnées concernées", trcPrefix);
-      trimMetadatas = metadataCS.trimMetadata(metadatas);
+      // On récupère les données nécessaires à la traçabilité du trim
+      String contratService = "";
+      List<String> listePagms = new ArrayList<String>();
+      String login = "";
+      if ((SecurityContextHolder.getContext() != null)
+            && (SecurityContextHolder.getContext().getAuthentication() != null)
+            && (SecurityContextHolder.getContext().getAuthentication()
+                  .getPrincipal() != null)) {
+
+         VIContenuExtrait extrait = (VIContenuExtrait) SecurityContextHolder
+               .getContext().getAuthentication().getPrincipal();
+
+         // Le code du Contrat de Service
+         contratService = extrait.getCodeAppli();
+
+         // Le ou les PAGM
+         if (CollectionUtils.isNotEmpty(extrait.getPagms())) {
+            listePagms = extrait.getPagms();
+         }
+
+         // Le login utilisateur
+         login = extrait.getIdUtilisateur();
+
+      }
+      trimMetadatas = metadataCS.trimMetadata(metadatas, contratService, listePagms, login);
       LOG.debug("{} - Fin du trim des métadonnées concernées", trcPrefix);
 
       LOG.debug("{} - fin", trcPrefix);

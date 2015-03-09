@@ -5,11 +5,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.google.common.util.concurrent.UncheckedExecutionException;
@@ -636,7 +638,7 @@ public class MetadataControlServicesImpl implements MetadataControlServices {
     * {@inheritDoc}
     */
    @Override
-   public final List<SAEMetadata> trimMetadata(List<SAEMetadata> metadatas) {
+   public final List<SAEMetadata> trimMetadata(List<SAEMetadata> metadatas, String contratService, List<String> listePagms, String login) {
       final Map<String, MetadataReference> referenceLeft = referenceDAO
             .getLeftTrimableMetadataReference();
       final Map<String, MetadataReference> referenceRight = referenceDAO
@@ -665,7 +667,7 @@ public class MetadataControlServicesImpl implements MetadataControlServices {
 
          if (trim && !metadata.getValue().equals(trimMeta.getValue())) {
             ecrireTraces(metadata.getLongCode(), metadata.getValue().toString(), trimMeta
-                  .getValue().toString(), metadatas);
+                  .getValue().toString(), metadatas, contratService, listePagms, login);
          }
 
          metadatasTrim.add(trimMeta);
@@ -675,10 +677,20 @@ public class MetadataControlServicesImpl implements MetadataControlServices {
 
  
    private void ecrireTraces(String metaCode, String metaValeur,
-         String valeurTrim, List<SAEMetadata> listeMeta) {
+         String valeurTrim, List<SAEMetadata> listeMeta, String contratService, List<String> listePagms, String login) {
+      
       // Instantiation de l'objet TraceToCreate
       TraceToCreate traceToCreate = new TraceToCreate();
 
+      // Contrat de service
+      traceToCreate.setContrat(contratService);
+      
+      // PAGMs
+      traceToCreate.setPagms(listePagms);
+      
+      // Login
+      traceToCreate.setLogin(login);
+       
       // Code de l'événement
       traceToCreate.setCodeEvt(TRACE_CODE_EVT_TRIM_METADATA);
 

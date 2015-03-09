@@ -1,6 +1,7 @@
 package fr.urssaf.image.sae.metadata.control.services.impl;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
@@ -37,7 +38,10 @@ public class TrimMetaControlServicesImplTest {
          throws FileNotFoundException {
       
       List<SAEMetadata> metadatas = MetadataDataProviderUtils.getSAEMetadata(Constants.TRIM_FILE_1);
-      List<SAEMetadata> trimMetadatas = controlService.trimMetadata(metadatas);
+      String contratService = "";
+      List<String> listePagm = new ArrayList<String>();
+      String login = "";
+      List<SAEMetadata> trimMetadatas = controlService.trimMetadata(metadatas, contratService, listePagm, login);
       
       for (SAEMetadata saeMetadata : trimMetadatas) {
          if (saeMetadata.getLongCode().equals("Denomination")) {

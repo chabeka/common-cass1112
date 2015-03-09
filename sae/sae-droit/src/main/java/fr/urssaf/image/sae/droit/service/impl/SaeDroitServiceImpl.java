@@ -767,6 +767,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
          for (Pagm pagm : pagms) {
             if (pagm.getCode().equals(saePagm.getCode())) {
                pagmExist = true;
+               break;
             }
          }
 
@@ -787,6 +788,26 @@ public class SaeDroitServiceImpl implements SaeDroitService {
                      idContratService, saePagm.getCode());
       }
 
+      // Vérification que les actions unitaires souhaitées existent bien en bdd, sinon on ne peut pas créer le PAGM
+      SaePagma saePagma = saePagm.getPagma();
+      List<String> listeActionsUnitaires = saePagma.getActionUnitaires();
+      String actionInexistante = "";
+      for (String action : listeActionsUnitaires) {
+         if (pagmaSupport.find(action) == null) {
+            actionInexistante = action;
+            break;
+         }
+      }
+      if (!StringUtils.isEmpty(actionInexistante)) {
+         throw new PagmReferenceException(MESSAGE_PAGM + saePagm.getCode()
+               + " ne peut pas être créé : l'action unitaire " + actionInexistante + " n'existe pas !");
+      } else {
+         LOGGER
+         .debug(
+               "Toutes les actions unitaire du PAGM {} existent, on peut l'ajouter au contrat de service",
+               saePagm.getCode());
+      }
+      
       // Création du Mutator
       Mutator<String> mutator = createMutator();
 
