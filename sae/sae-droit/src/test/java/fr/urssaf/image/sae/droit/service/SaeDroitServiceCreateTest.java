@@ -67,7 +67,7 @@ public class SaeDroitServiceCreateTest {
 
    @Autowired
    private PagmfSupport pagmfSupport;
-
+   
    @Autowired
    private FormatControlProfilSupport formatControlProfilSupport;
 
@@ -165,7 +165,7 @@ public class SaeDroitServiceCreateTest {
       serviceContract.setVerifNommage(false);
 
       SaePagma pagma = new SaePagma();
-      pagma.setActionUnitaires(Arrays.asList(new String[] { "action1" }));
+      pagma.setActionUnitaires(Arrays.asList(new String[] { "consultation" }));
       pagma.setCode("pagma");
 
       SaePagmp pagmp = new SaePagmp();
@@ -240,7 +240,7 @@ public class SaeDroitServiceCreateTest {
       serviceContract.setVerifNommage(false);
 
       Pagma pagma = new Pagma();
-      pagma.setActionUnitaires(Arrays.asList(new String[] { "action1" }));
+      pagma.setActionUnitaires(Arrays.asList(new String[] { "consultation" }));
       pagma.setCode("pagma");
       pagmaSupport.create(pagma, clockSupport.currentCLock());
 

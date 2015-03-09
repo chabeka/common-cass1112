@@ -101,7 +101,7 @@ public class ActionUnitaireSupportTest {
 
       List<ActionUnitaire> list = support.findAll(10);
 
-      Assert.assertEquals("vérification du nombre d'enregistrements", 3, list
+      Assert.assertEquals("vérification du nombre d'enregistrements", 4, list
             .size());
 
       for (int i = 1; i < 4; i++) {

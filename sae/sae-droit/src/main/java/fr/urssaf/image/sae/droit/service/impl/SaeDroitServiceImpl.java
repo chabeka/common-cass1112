@@ -62,6 +62,7 @@ import fr.urssaf.image.sae.droit.model.SaePagma;
 import fr.urssaf.image.sae.droit.model.SaePagmf;
 import fr.urssaf.image.sae.droit.model.SaePagmp;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
+import fr.urssaf.image.sae.droit.service.SaeActionUnitaireService;
 import fr.urssaf.image.sae.droit.service.SaeDroitService;
 import fr.urssaf.image.sae.droit.utils.ResourceMessagesUtils;
 import fr.urssaf.image.sae.droit.utils.ZookeeperUtils;
@@ -104,7 +105,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
    private final PagmaSupport pagmaSupport;
    private final PagmpSupport pagmpSupport;
    private final PagmfSupport pagmfSupport;
-
+   
    private final CuratorFramework curatorClient;
 
    private final JobClockSupport clockSupport;
@@ -793,11 +794,16 @@ public class SaeDroitServiceImpl implements SaeDroitService {
       List<String> listeActionsUnitaires = saePagma.getActionUnitaires();
       String actionInexistante = "";
       for (String action : listeActionsUnitaires) {
-         if (pagmaSupport.find(action) == null) {
+         try {
+            actionsCache.getUnchecked(action);
             actionInexistante = action;
             break;
+         } catch (InvalidCacheLoadException e) {
+            
          }
       }
+      
+      
       if (!StringUtils.isEmpty(actionInexistante)) {
          throw new PagmReferenceException(MESSAGE_PAGM + saePagm.getCode()
                + " ne peut pas être créé : l'action unitaire " + actionInexistante + " n'existe pas !");
