@@ -15,17 +15,8 @@
       -->
       <columnFamily>
          <name>DroitActionUnitaire</name>
-         <keyType>UTF8Type</keyType>
-         <comparatorType>UTF8Type</comparatorType>
-         <row>
-            <key>consultation</key>
-            <column>
-               <name>description</name>
-               <value>consultation</value>
-            </column>
-         </row>
-      </columnFamily>
-      
+         <comparatorType>BytesType</comparatorType>
+      </columnFamily>     
       <columnFamily>
          <name>DroitContratService</name>
          <comparatorType>BytesType</comparatorType>
