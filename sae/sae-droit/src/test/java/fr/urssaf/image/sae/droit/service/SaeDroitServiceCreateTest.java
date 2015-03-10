@@ -5,6 +5,7 @@ package fr.urssaf.image.sae.droit.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -23,12 +24,14 @@ import com.google.common.cache.CacheLoader.InvalidCacheLoadException;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
+import fr.urssaf.image.sae.droit.dao.model.ActionUnitaire;
 import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
 import fr.urssaf.image.sae.droit.dao.model.FormatProfil;
 import fr.urssaf.image.sae.droit.dao.model.Pagm;
 import fr.urssaf.image.sae.droit.dao.model.Pagma;
 import fr.urssaf.image.sae.droit.dao.model.Pagmp;
 import fr.urssaf.image.sae.droit.dao.model.ServiceContract;
+import fr.urssaf.image.sae.droit.dao.support.ActionUnitaireSupport;
 import fr.urssaf.image.sae.droit.dao.support.ContratServiceSupport;
 import fr.urssaf.image.sae.droit.dao.support.FormatControlProfilSupport;
 import fr.urssaf.image.sae.droit.dao.support.PagmSupport;
@@ -67,12 +70,15 @@ public class SaeDroitServiceCreateTest {
 
    @Autowired
    private PagmfSupport pagmfSupport;
-   
+
    @Autowired
    private FormatControlProfilSupport formatControlProfilSupport;
 
    @Autowired
    private JobClockSupport clockSupport;
+
+   @Autowired
+   private ActionUnitaireSupport support;
 
    @After
    public void end() throws Exception {
@@ -201,6 +207,11 @@ public class SaeDroitServiceCreateTest {
       saePagm.setPagmf(pagmf);
       listeSaePagm.add(saePagm);
 
+      ActionUnitaire actionUnitaire = new ActionUnitaire();
+      actionUnitaire.setCode("consultation");
+      actionUnitaire.setDescription("consultation");
+      support.create(actionUnitaire, new Date().getTime());
+
       service.createContratService(serviceContract, listeSaePagm);
 
       ServiceContract storedContract = contratSupport.find("codeClient");
@@ -265,6 +276,11 @@ public class SaeDroitServiceCreateTest {
       saePagm.setPagmp(saePagmp);
       listeSaePagm.add(saePagm);
 
+      ActionUnitaire actionUnitaire = new ActionUnitaire();
+      actionUnitaire.setCode("consultation");
+      actionUnitaire.setDescription("consultation");
+      support.create(actionUnitaire, new Date().getTime());
+      
       service.createContratService(serviceContract, listeSaePagm);
 
       service.ajouterPagmContratService(serviceContract.getCodeClient(),
@@ -299,7 +315,12 @@ public class SaeDroitServiceCreateTest {
       saePagm.setDescription("description pagm");
       saePagm.setPagma(pagma);
       saePagm.setPagmp(pagmp);
-
+      
+      ActionUnitaire actionUnitaire = new ActionUnitaire();
+      actionUnitaire.setCode("archivage_unitaire");
+      actionUnitaire.setDescription("archivage_unitaire");
+      support.create(actionUnitaire, new Date().getTime());
+      
       service.ajouterPagmContratService("codeClient", saePagm);
 
       List<Pagm> storedPagm = pagmSupport.find("codeClient");
@@ -365,6 +386,11 @@ public class SaeDroitServiceCreateTest {
       saePagm.setPagmp(pagmp);
       saePagm.setPagmf(pagmf);
 
+      ActionUnitaire actionUnitaire = new ActionUnitaire();
+      actionUnitaire.setCode("archivage_unitaire");
+      actionUnitaire.setDescription("archivage_unitaire");
+      support.create(actionUnitaire, new Date().getTime());
+      
       service.ajouterPagmContratService("codeClient", saePagm);
 
       List<SaePagm> listeSaePagm = service.getListeSaePagm("codeClient");
@@ -462,6 +488,11 @@ public class SaeDroitServiceCreateTest {
       saePagm.setPagmp(pagmp);
       saePagm.setPagmf(pagmf);
 
+      ActionUnitaire actionUnitaire = new ActionUnitaire();
+      actionUnitaire.setCode("archivage_unitaire");
+      actionUnitaire.setDescription("archivage_unitaire");
+      support.create(actionUnitaire, new Date().getTime());
+      
       service.ajouterPagmContratService("codeClient", saePagm);
 
       List<SaePagm> listeSaePagm = service.getListeSaePagm("codeClient");
