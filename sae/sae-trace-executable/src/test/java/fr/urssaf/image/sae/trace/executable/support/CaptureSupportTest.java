@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +33,7 @@ import fr.urssaf.image.sae.rnd.dao.support.RndSupport;
 import fr.urssaf.image.sae.rnd.modele.TypeCode;
 import fr.urssaf.image.sae.rnd.modele.TypeDocument;
 import fr.urssaf.image.sae.services.consultation.SAEConsultationService;
+import fr.urssaf.image.sae.services.consultation.model.ConsultParams;
 import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
 import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedToConsultEx;
 import fr.urssaf.image.sae.services.exception.consultation.SAEConsultationServiceException;
@@ -233,26 +235,44 @@ public class CaptureSupportTest {
       File file = new File(resource.getURI());
 
       authentification();
-
+      
       UUID uuid = support.capture(file.getAbsolutePath(), new Date());
       Assert.assertNotNull("l'uuid doit etre non null", uuid);
-
-      UntypedDocument archive = consultationService.consultation(uuid);
+      
+      //-- Paramètres de consultation
+      String[] metadatas = {"Hash", "DomaineTechnique"};
+      ConsultParams consulparams = new ConsultParams(uuid, Arrays.asList(metadatas));
+      
+      UntypedDocument archive = consultationService.consultation(consulparams);
       Assert.assertNotNull("le document doit etre non null", archive);
-
+      
       List<UntypedMetadata> uMetadatas = archive.getUMetadatas();
-      int index = 0;
-      while (!"Hash".equals(uMetadatas.get(index).getLongCode())
-            && index < uMetadatas.size()) {
-         index++;
+      
+      //-- On recherche dans les métas du documents
+      String hashValue = null;
+      String dteValue = null;
+      for (int i = 0; i < uMetadatas.size(); i++) {
+         if(hashValue != null && uMetadatas.get(i).getLongCode().equals("Hash")){
+            hashValue = uMetadatas.get(i).getValue();
+         }
+         
+         if(dteValue != null && uMetadatas.get(i).getLongCode().equals("DomaineTechnique")){
+            dteValue = uMetadatas.get(i).getValue();
+         }
       }
-
-      if (index == uMetadatas.size()) {
+      
+      if (hashValue == null) {
          Assert.fail("la propriété hash n'est pas trouvée");
       } else {
          Assert.assertEquals("le hash contenu doit etre correct",
-               "bca50fcd3aa69f927df1a0775fe63e6882dc8913", uMetadatas
-                     .get(index).getValue());
+               "bca50fcd3aa69f927df1a0775fe63e6882dc8913", hashValue);
+      }
+
+      if (dteValue == null) {
+         Assert.fail("la propriété DomaineTechnique n'est pas trouvée");
+      } else {
+         Assert.assertEquals("le flag DomaineTechnique n'est pas correct",
+               true, dteValue);
       }
    }
 
@@ -267,7 +287,7 @@ public class CaptureSupportTest {
       SaePrmd saePrmd = new SaePrmd();
       saePrmd.setValues(new HashMap<String, String>());
       Prmd prmd = new Prmd();
-      prmd.setBean("permitAll");
+      prmd.setBean("permitDomaineTechnique");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
       String[] roles = new String[] { "archivage_unitaire", "consultation" };

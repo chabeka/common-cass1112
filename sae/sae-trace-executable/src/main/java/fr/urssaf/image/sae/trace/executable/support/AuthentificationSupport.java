@@ -39,7 +39,7 @@ public class AuthentificationSupport {
       SaePrmd saePrmd = new SaePrmd();
       saePrmd.setValues(new HashMap<String, String>());
       Prmd prmd = new Prmd();
-      prmd.setBean("permitAll");
+      prmd.setBean("permitDomaineTechnique");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
       String[] roles = new String[] { "archivage_unitaire" };
