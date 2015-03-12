@@ -34,8 +34,6 @@ public class SaePagmfServiceImpl implements SaePagmfService {
     *           la classe support
     * @param clockSupport
     *           l'horloge {@link JobClockSupport}
-    * @param value
-    *           durée du cache
     */
    @Autowired
    public SaePagmfServiceImpl(PagmfSupport pagmfSup,

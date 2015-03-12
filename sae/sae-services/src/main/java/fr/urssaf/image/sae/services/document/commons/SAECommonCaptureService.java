@@ -1,6 +1,8 @@
 package fr.urssaf.image.sae.services.document.commons;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
+import fr.urssaf.image.sae.droit.exception.InvalidPagmsCombinaisonException;
+import fr.urssaf.image.sae.droit.exception.UnexpectedDomainException;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.services.capture.model.CaptureResult;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
@@ -84,7 +86,8 @@ public interface SAECommonCaptureService {
          UnknownHashCodeEx, ReferentialRndException, UnknownCodeRndEx,
          NotSpecifiableMetadataEx, SAECaptureServiceEx,
          MetadataValueNotInDictionaryEx, UnknownFormatException,
-         ValidationExceptionInvalidFile;
+         ValidationExceptionInvalidFile, UnexpectedDomainException, 
+         InvalidPagmsCombinaisonException;
 
    /**
     * Cette méthode permet de construire un StorageDocument à partir d’un
@@ -147,6 +150,7 @@ public interface SAECommonCaptureService {
          RequiredArchivableMetadataEx, SAEEnrichmentEx, UnknownHashCodeEx,
          ReferentialRndException, UnknownCodeRndEx, NotSpecifiableMetadataEx,
          SAECaptureServiceEx, MetadataValueNotInDictionaryEx,
-         UnknownFormatException, ValidationExceptionInvalidFile;
+         UnknownFormatException, ValidationExceptionInvalidFile, UnexpectedDomainException, 
+         InvalidPagmsCombinaisonException;
 
 }

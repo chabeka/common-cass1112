@@ -82,8 +82,8 @@ public class PrmdServiceValidation {
    /**
     * méthode de validation des arguments de la méthode addDomaine
     * 
-    * @param lucene
-    *           requete Lucene d'origine
+    * @param metadatas
+    *           listes des métas
     * @param prmds
     *           liste des prmds
     */

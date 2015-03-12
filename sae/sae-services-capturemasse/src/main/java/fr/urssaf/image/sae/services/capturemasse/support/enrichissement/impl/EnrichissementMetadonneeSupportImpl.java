@@ -16,6 +16,8 @@ import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
 import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
 import fr.urssaf.image.sae.bo.model.bo.SAEVirtualDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
+import fr.urssaf.image.sae.droit.exception.InvalidPagmsCombinaisonException;
+import fr.urssaf.image.sae.droit.exception.UnexpectedDomainException;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.droit.service.PrmdService;
 import fr.urssaf.image.sae.mapping.exception.InvalidSAETypeException;
@@ -68,8 +70,11 @@ public class EnrichissementMetadonneeSupportImpl implements
          throw new CaptureMasseRuntimeException(e);
       } catch (MappingFromReferentialException e) {
          throw new CaptureMasseRuntimeException(e);
+      } catch (UnexpectedDomainException e) {
+         throw new CaptureMasseRuntimeException(e);
+      } catch (InvalidPagmsCombinaisonException e) {
+         throw new CaptureMasseRuntimeException(e);
       }
-
    }
 
    /**
@@ -92,6 +97,10 @@ public class EnrichissementMetadonneeSupportImpl implements
          throw new CaptureMasseRuntimeException(e);
       } catch (MappingFromReferentialException e) {
          throw new CaptureMasseRuntimeException(e);
+      } catch (UnexpectedDomainException e) {
+         throw new CaptureMasseRuntimeException(e);
+      } catch (InvalidPagmsCombinaisonException e) {
+         throw new CaptureMasseRuntimeException(e);
       }
    }
    
@@ -101,9 +110,10 @@ public class EnrichissementMetadonneeSupportImpl implements
     * @param metas
     * @throws InvalidSAETypeException
     * @throws MappingFromReferentialException
+    * @throws InvalidPagmsCombinaisonException 
     */
    private void enrichissementDomaine(List<SAEMetadata> metas) 
-      throws InvalidSAETypeException, MappingFromReferentialException{
+      throws InvalidSAETypeException, MappingFromReferentialException, UnexpectedDomainException, InvalidPagmsCombinaisonException {
       
       //-- Liste pour récupérer le domaine
       List<UntypedMetadata> newMetas = new ArrayList<UntypedMetadata>();

@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
+import fr.urssaf.image.sae.droit.exception.InvalidPagmsCombinaisonException;
+import fr.urssaf.image.sae.droit.exception.UnexpectedDomainException;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.droit.service.PrmdService;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
@@ -70,6 +72,8 @@ public class SAECommonCaptureServiceImpl implements SAECommonCaptureService {
 
    /**
     * {@inheritDoc}
+    * @throws InvalidPagmsCombinaisonException 
+    * @throws UnexpectedDomainException 
     */
    @Override
    public final StorageDocument buildStorageDocumentForCapture(
@@ -79,7 +83,8 @@ public class SAECommonCaptureServiceImpl implements SAECommonCaptureService {
          EmptyDocumentEx, RequiredArchivableMetadataEx, SAEEnrichmentEx,
          UnknownHashCodeEx, ReferentialRndException, UnknownCodeRndEx,
          SAECaptureServiceEx, MetadataValueNotInDictionaryEx,
-         UnknownFormatException, ValidationExceptionInvalidFile {
+         UnknownFormatException, ValidationExceptionInvalidFile, 
+         UnexpectedDomainException, InvalidPagmsCombinaisonException {
       // Traces debug - entrée méthode
       String prefixeTrc = "buildStorageDocumentForCapture()";
       LOGGER.debug("{} - Début", prefixeTrc);
@@ -104,6 +109,8 @@ public class SAECommonCaptureServiceImpl implements SAECommonCaptureService {
     * 
     * @throws ValidationExceptionInvalidFile
     * @throws UnknownFormatException
+    * @throws InvalidPagmsCombinaisonException 
+    * @throws UnexpectedDomainException 
     */
    @Override
    public final StorageDocument buildBinaryStorageDocumentForCapture(
@@ -114,7 +121,8 @@ public class SAECommonCaptureServiceImpl implements SAECommonCaptureService {
          RequiredArchivableMetadataEx, SAEEnrichmentEx, UnknownHashCodeEx,
          ReferentialRndException, UnknownCodeRndEx, NotSpecifiableMetadataEx,
          SAECaptureServiceEx, MetadataValueNotInDictionaryEx,
-         UnknownFormatException, ValidationExceptionInvalidFile {
+         UnknownFormatException, ValidationExceptionInvalidFile, 
+         UnexpectedDomainException, InvalidPagmsCombinaisonException {
 
       // Traces debug - entrée méthode
       String prefixeTrc = "buildBinaryStorageDocumentForCapture()";
@@ -140,7 +148,8 @@ public class SAECommonCaptureServiceImpl implements SAECommonCaptureService {
          ReferentialRndException, UnknownCodeRndEx, UnknownHashCodeEx,
          RequiredStorageMetadataEx, SAECaptureServiceEx,
          MetadataValueNotInDictionaryEx, UnknownFormatException,
-         ValidationExceptionInvalidFile {
+         ValidationExceptionInvalidFile, UnexpectedDomainException, 
+         InvalidPagmsCombinaisonException {
 
       SAEDocument saeDocument = null;
       StorageDocument storageDocument = null;

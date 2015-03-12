@@ -10,6 +10,8 @@ import fr.urssaf.image.sae.bo.model.bo.SAEVirtualDocument;
 import fr.urssaf.image.sae.bo.model.bo.VirtualReferenceFile;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedVirtualDocument;
+import fr.urssaf.image.sae.droit.exception.InvalidPagmsCombinaisonException;
+import fr.urssaf.image.sae.droit.exception.UnexpectedDomainException;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireDocumentNotFoundException;
 import fr.urssaf.image.sae.services.capturemasse.support.controle.model.CaptureMasseControlResult;
@@ -99,7 +101,7 @@ public interface CaptureMasseControleSupport {
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx, UnknownCodeRndEx,
          MetadataValueNotInDictionaryEx, UnknownFormatException,
-         ValidationExceptionInvalidFile;
+         ValidationExceptionInvalidFile, UnexpectedDomainException, InvalidPagmsCombinaisonException;
 
    /**
     * Service permettant de contrôler le fichier et les métadonnées d'un
@@ -160,7 +162,7 @@ public interface CaptureMasseControleSupport {
          throws UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx, UnknownCodeRndEx,
-         MetadataValueNotInDictionaryEx;
+         MetadataValueNotInDictionaryEx, UnexpectedDomainException, InvalidPagmsCombinaisonException;
 
    /**
     * Service permettant de réaliser les contrôles des métadonnées avant

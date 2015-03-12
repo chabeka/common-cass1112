@@ -34,6 +34,8 @@ import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.commons.service.ParametersService;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
+import fr.urssaf.image.sae.droit.exception.InvalidPagmsCombinaisonException;
+import fr.urssaf.image.sae.droit.exception.UnexpectedDomainException;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestDocument;
@@ -270,6 +272,8 @@ public class SAEModificationServiceTest {
     * </ul>
     * Donc pour que ce TU passe, il faut pour le moment s'assurer que la mise à
     * jour du code RND donne une date de fin de conservation dans le futur.
+    * @throws InvalidPagmsCombinaisonException 
+    * @throws UnexpectedDomainException 
     * 
     */
    @Test
@@ -281,7 +285,8 @@ public class SAEModificationServiceTest {
          UnknownHashCodeEx, CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx,
          MetadataValueNotInDictionaryEx, NotModifiableMetadataEx,
          ModificationException, ArchiveInexistanteEx,
-         ValidationExceptionInvalidFile, UnknownFormatException {
+         ValidationExceptionInvalidFile, UnknownFormatException, 
+         UnexpectedDomainException, InvalidPagmsCombinaisonException {
 
       ecde = ecdeTestTools
             .buildEcdeTestDocument("attestation_consultation.pdf");

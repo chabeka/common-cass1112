@@ -37,6 +37,8 @@ import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedRangeMetadata;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
+import fr.urssaf.image.sae.droit.exception.InvalidPagmsCombinaisonException;
+import fr.urssaf.image.sae.droit.exception.UnexpectedDomainException;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestDocument;
@@ -206,7 +208,8 @@ public class SAESearchServiceImplDatasTest {
          NotArchivableMetadataEx, UnknownHashCodeEx, CaptureBadEcdeUrlEx,
          CaptureEcdeUrlFileNotFoundEx, IOException,
          MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile,
-         UnknownFormatException, SuppressionException, ArchiveInexistanteEx {
+         UnknownFormatException, SuppressionException, ArchiveInexistanteEx, 
+         UnexpectedDomainException, InvalidPagmsCombinaisonException {
 
       // insertion d'un document
       ecde = ecdeTestTools
@@ -305,7 +308,8 @@ public class SAESearchServiceImplDatasTest {
          UnknownFormatException, IOException, MetaDataUnauthorizedToSearchEx,
          MetaDataUnauthorizedToConsultEx, UnknownLuceneMetadataEx,
          SAESearchServiceEx, SyntaxLuceneEx, UnknownDesiredMetadataEx,
-         UnknownFiltresMetadataEx, SuppressionException, ArchiveInexistanteEx {
+         UnknownFiltresMetadataEx, SuppressionException, ArchiveInexistanteEx,
+         UnexpectedDomainException, InvalidPagmsCombinaisonException {
 
       // insertion d'un document
       ecde = ecdeTestTools

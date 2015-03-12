@@ -31,6 +31,8 @@ import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedVirtualDocument;
 import fr.urssaf.image.sae.commons.service.ParametersService;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
+import fr.urssaf.image.sae.droit.exception.InvalidPagmsCombinaisonException;
+import fr.urssaf.image.sae.droit.exception.UnexpectedDomainException;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
@@ -137,7 +139,8 @@ public class CaptureMasseControleSupportTest {
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx,
          MetadataValueNotInDictionaryEx, UnknownFormatException,
-         ValidationExceptionInvalidFile {
+         ValidationExceptionInvalidFile, UnexpectedDomainException, 
+         InvalidPagmsCombinaisonException {
 
       File repertoireEcdeTraitement = ecdeTestSommaire.getRepEcde();
       File fileSommaire = new File(repertoireEcdeTraitement, "sommaire.xml");
@@ -165,7 +168,8 @@ public class CaptureMasseControleSupportTest {
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx,
          MetadataValueNotInDictionaryEx, UnknownFormatException,
-         ValidationExceptionInvalidFile {
+         ValidationExceptionInvalidFile, UnexpectedDomainException, 
+         InvalidPagmsCombinaisonException {
 
       File repEcde = ecdeTestSommaire.getRepEcde();
       File fileSommaire = new File(repEcde, "sommaire.xml");
@@ -197,7 +201,8 @@ public class CaptureMasseControleSupportTest {
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx,
          MetadataValueNotInDictionaryEx, UnknownFormatException,
-         ValidationExceptionInvalidFile {
+         ValidationExceptionInvalidFile, UnexpectedDomainException, 
+         InvalidPagmsCombinaisonException {
 
       File repEcde = ecdeTestSommaire.getRepEcde();
       File fileSommaire = new File(repEcde, "sommaire.xml");
@@ -229,7 +234,8 @@ public class CaptureMasseControleSupportTest {
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx,
          MetadataValueNotInDictionaryEx, UnknownFormatException,
-         ValidationExceptionInvalidFile {
+         ValidationExceptionInvalidFile, UnexpectedDomainException, 
+         InvalidPagmsCombinaisonException {
 
       File repertoireEcdeTraitement = ecdeTestSommaire.getRepEcde();
       File fileSommaire = new File(repertoireEcdeTraitement, "sommaire.xml");
@@ -262,7 +268,8 @@ public class CaptureMasseControleSupportTest {
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx,
          MetadataValueNotInDictionaryEx, UnknownFormatException,
-         ValidationExceptionInvalidFile {
+         ValidationExceptionInvalidFile, UnexpectedDomainException, 
+         InvalidPagmsCombinaisonException {
 
       File repertoireEcdeTraitement = ecdeTestSommaire.getRepEcde();
       File fileSommaire = new File(repertoireEcdeTraitement, "sommaire.xml");
@@ -296,7 +303,8 @@ public class CaptureMasseControleSupportTest {
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx,
          MetadataValueNotInDictionaryEx, UnknownFormatException,
-         ValidationExceptionInvalidFile {
+         ValidationExceptionInvalidFile, UnexpectedDomainException, 
+         InvalidPagmsCombinaisonException {
 
       File repertoireEcdeTraitement = ecdeTestSommaire.getRepEcde();
       File fileSommaire = new File(repertoireEcdeTraitement, "sommaire.xml");
@@ -330,7 +338,8 @@ public class CaptureMasseControleSupportTest {
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx,
          MetadataValueNotInDictionaryEx, UnknownFormatException,
-         ValidationExceptionInvalidFile {
+         ValidationExceptionInvalidFile, UnexpectedDomainException, 
+         InvalidPagmsCombinaisonException {
 
       File repertoireEcdeTraitement = ecdeTestSommaire.getRepEcde();
       File fileSommaire = new File(repertoireEcdeTraitement, "sommaire.xml");
@@ -364,7 +373,8 @@ public class CaptureMasseControleSupportTest {
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx,
          MetadataValueNotInDictionaryEx, UnknownFormatException,
-         ValidationExceptionInvalidFile {
+         ValidationExceptionInvalidFile, UnexpectedDomainException, 
+         InvalidPagmsCombinaisonException {
 
       File repertoireEcdeTraitement = ecdeTestSommaire.getRepEcde();
       File fileSommaire = new File(repertoireEcdeTraitement, "sommaire.xml");
@@ -397,7 +407,8 @@ public class CaptureMasseControleSupportTest {
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx,
          MetadataValueNotInDictionaryEx, UnknownFormatException,
-         ValidationExceptionInvalidFile {
+         ValidationExceptionInvalidFile, UnexpectedDomainException, 
+         InvalidPagmsCombinaisonException {
 
       File repertoireEcdeTraitement = ecdeTestSommaire.getRepEcde();
       File fileSommaire = new File(repertoireEcdeTraitement, "sommaire.xml");
@@ -472,6 +483,10 @@ public class CaptureMasseControleSupportTest {
          Assert.fail("traitement complet attendu sans erreur");
       } catch (UnknownHashCodeEx e) {
          Assert.fail("traitement complet attendu sans erreur");
+      } catch (UnexpectedDomainException e) {
+         Assert.fail("traitement complet attendu sans erreur");
+      } catch (InvalidPagmsCombinaisonException e) {
+         Assert.fail("traitement complet attendu sans erreur");
       }
 
    }
@@ -513,7 +528,8 @@ public class CaptureMasseControleSupportTest {
          UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx,
-         MetadataValueNotInDictionaryEx {
+         MetadataValueNotInDictionaryEx, UnexpectedDomainException
+         , InvalidPagmsCombinaisonException {
 
       File repEcde = ecdeTestSommaire.getRepEcde();
       File fileSommaire = new File(repEcde, "sommaire.xml");
@@ -546,7 +562,8 @@ public class CaptureMasseControleSupportTest {
          UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx,
-         MetadataValueNotInDictionaryEx {
+         MetadataValueNotInDictionaryEx, UnexpectedDomainException
+         , InvalidPagmsCombinaisonException {
 
       File repEcde = ecdeTestSommaire.getRepEcde();
       File fileSommaire = new File(repEcde, "sommaire.xml");
@@ -579,7 +596,8 @@ public class CaptureMasseControleSupportTest {
          UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx,
-         MetadataValueNotInDictionaryEx {
+         MetadataValueNotInDictionaryEx, UnexpectedDomainException
+         , InvalidPagmsCombinaisonException {
 
       File repertoireEcdeTraitement = ecdeTestSommaire.getRepEcde();
       File fileSommaire = new File(repertoireEcdeTraitement, "sommaire.xml");
@@ -613,7 +631,8 @@ public class CaptureMasseControleSupportTest {
          UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx,
-         MetadataValueNotInDictionaryEx {
+         MetadataValueNotInDictionaryEx, UnexpectedDomainException
+         , InvalidPagmsCombinaisonException {
 
       File repertoireEcdeTraitement = ecdeTestSommaire.getRepEcde();
       File fileSommaire = new File(repertoireEcdeTraitement, "sommaire.xml");
@@ -647,7 +666,8 @@ public class CaptureMasseControleSupportTest {
          UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx,
-         MetadataValueNotInDictionaryEx {
+         MetadataValueNotInDictionaryEx, UnexpectedDomainException
+         , InvalidPagmsCombinaisonException {
 
       File repertoireEcdeTraitement = ecdeTestSommaire.getRepEcde();
       File fileSommaire = new File(repertoireEcdeTraitement, "sommaire.xml");
@@ -682,7 +702,8 @@ public class CaptureMasseControleSupportTest {
          UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx,
-         MetadataValueNotInDictionaryEx {
+         MetadataValueNotInDictionaryEx, UnexpectedDomainException
+         , InvalidPagmsCombinaisonException {
 
       File repertoireEcdeTraitement = ecdeTestSommaire.getRepEcde();
       File fileSommaire = new File(repertoireEcdeTraitement, "sommaire.xml");
@@ -716,7 +737,8 @@ public class CaptureMasseControleSupportTest {
          UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx,
-         MetadataValueNotInDictionaryEx {
+         MetadataValueNotInDictionaryEx, UnexpectedDomainException
+         , InvalidPagmsCombinaisonException {
 
       File repertoireEcdeTraitement = ecdeTestSommaire.getRepEcde();
       File fileSommaire = new File(repertoireEcdeTraitement, "sommaire.xml");
@@ -787,6 +809,10 @@ public class CaptureMasseControleSupportTest {
       } catch (RequiredArchivableMetadataEx e) {
          Assert.fail("traitement complet attendu sans erreur");
       } catch (UnknownHashCodeEx e) {
+         Assert.fail("traitement complet attendu sans erreur");
+      } catch (UnexpectedDomainException e) {
+         Assert.fail("traitement complet attendu sans erreur");
+      } catch (InvalidPagmsCombinaisonException e) {
          Assert.fail("traitement complet attendu sans erreur");
       }
    }

@@ -6,6 +6,8 @@ package fr.urssaf.image.sae.droit.service;
 import java.util.List;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
+import fr.urssaf.image.sae.droit.exception.InvalidPagmsCombinaisonException;
+import fr.urssaf.image.sae.droit.exception.UnexpectedDomainException;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 
 /**
@@ -44,6 +46,7 @@ public interface PrmdService {
     * @param metadatas : Liste des métadonnées
     * 
     * @param prmds : Liste des périmètres de données
+    * @throws UnexpectedDomainException
     */
-   public void addDomaine(List<UntypedMetadata>  metadatas, List<SaePrmd> prmds);
+   public void addDomaine(List<UntypedMetadata>  metadatas, List<SaePrmd> prmds) throws UnexpectedDomainException, InvalidPagmsCombinaisonException;
 }

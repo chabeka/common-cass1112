@@ -75,7 +75,9 @@ public class PrmdControleValidation {
     * Méthode de vérification des arguments passés en entrée de l'implémentation
     * de la méthode createLucene de l'interface PrmdControle
     * 
-    * @param parametres
+    * @param metadatas
+    *           liste des métadonnées
+    * @param values
     *           valeurs des paramètres dynamiques
     */
    @Before(ADD_DOMAIN)

@@ -32,6 +32,8 @@ import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.commons.service.ParametersService;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
+import fr.urssaf.image.sae.droit.exception.InvalidPagmsCombinaisonException;
+import fr.urssaf.image.sae.droit.exception.UnexpectedDomainException;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestDocument;
@@ -206,7 +208,8 @@ public class SAESuppressionServiceTest {
          UnknownHashCodeEx, CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx,
          MetadataValueNotInDictionaryEx, SearchingServiceEx,
          SuppressionException, ArchiveInexistanteEx,
-         ValidationExceptionInvalidFile, UnknownFormatException {
+         ValidationExceptionInvalidFile, UnknownFormatException, 
+         UnexpectedDomainException, InvalidPagmsCombinaisonException {
       ecde = ecdeTestTools
             .buildEcdeTestDocument("attestation_consultation.pdf");
 

@@ -24,6 +24,8 @@ import fr.cirtil.www.saeservice.EcdeUrlType;
 import fr.cirtil.www.saeservice.ListeMetadonneeType;
 import fr.cirtil.www.saeservice.MetadonneeType;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
+import fr.urssaf.image.sae.droit.exception.InvalidPagmsCombinaisonException;
+import fr.urssaf.image.sae.droit.exception.UnexpectedDomainException;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.metadata.utils.Utils;
 import fr.urssaf.image.sae.services.capture.SAECaptureService;
@@ -250,88 +252,53 @@ public class WSCaptureServiceImpl implements WSCaptureService {
       try {
          return captureService.capture(metadatas, ecdeURL).getIdDoc();
       } catch (RequiredStorageMetadataEx e) {
-
          throw new CaptureAxisFault("ErreurInterneCapture", e.getMessage(), e);
-
       } catch (InvalidValueTypeAndFormatMetadataEx e) {
-
          throw new CaptureAxisFault("CaptureMetadonneesFormatTypeNonValide", e
                .getMessage(), e);
-
       } catch (UnknownMetadataEx e) {
-
-         throw new CaptureAxisFault("CaptureMetadonneesInconnu",
-               e.getMessage(), e);
-
+         throw new CaptureAxisFault("CaptureMetadonneesInconnu", e.getMessage(), e);
       } catch (DuplicatedMetadataEx e) {
-
-         throw new CaptureAxisFault("CaptureMetadonneesDoublon",
-               e.getMessage(), e);
-
+         throw new CaptureAxisFault("CaptureMetadonneesDoublon", e.getMessage(), e);
       } catch (NotSpecifiableMetadataEx e) {
-
-         throw new CaptureAxisFault("CaptureMetadonneesInterdites", e
-               .getMessage(), e);
-
+         throw new CaptureAxisFault("CaptureMetadonneesInterdites", e.getMessage(), e);
       } catch (EmptyDocumentEx e) {
-
          throw new CaptureAxisFault("CaptureFichierVide", e.getMessage(), e);
-
       } catch (RequiredArchivableMetadataEx e) {
-
          throw new CaptureAxisFault("CaptureMetadonneesArchivageObligatoire", e
                .getMessage(), e);
-
       } catch (ReferentialRndException e) {
-
          throw new CaptureAxisFault("ErreurInterne", wsMessageRessourcesUtils
                .recupererMessage("ws.capture.error", null), e);
-
       } catch (UnknownCodeRndEx e) {
-
          throw new CaptureAxisFault("CaptureCodeRndInterdit", e.getMessage(), e);
-
       } catch (UnknownHashCodeEx e) {
-
          throw new CaptureAxisFault("CaptureHashErreur", e.getMessage(), e);
-
       } catch (CaptureBadEcdeUrlEx e) {
-
-         throw new CaptureAxisFault("CaptureUrlEcdeIncorrecte", e.getMessage(),
-               e);
-
+         throw new CaptureAxisFault("CaptureUrlEcdeIncorrecte", e.getMessage(), e);
       } catch (CaptureEcdeUrlFileNotFoundEx e) {
-
          throw new CaptureAxisFault("CaptureUrlEcdeFichierIntrouvable", e
                .getMessage(), e);
-
       } catch (SAECaptureServiceEx e) {
-
          throw new CaptureAxisFault("ErreurInterneCapture",
                wsMessageRessourcesUtils.recupererMessage("ws.capture.error",
                      null), e);
-
       } catch (NotArchivableMetadataEx e) {
-
          throw new CaptureAxisFault("ErreurInterneCapture",
                wsMessageRessourcesUtils.recupererMessage("ws.capture.error",
                      null), e);
-
       } catch (MetadataValueNotInDictionaryEx e) {
-
          throw new CaptureAxisFault("CaptureMetadonneesValeurNonValide", e
                .getMessage(), e);
-
       } catch (UnknownFormatException e) {
-
          throw new CaptureAxisFault("FormatFichierInconnu", e.getMessage(), e);
-
       } catch (ValidationExceptionInvalidFile e) {
-
-         throw new CaptureAxisFault("FormatFichierNonConforme", e.getMessage(),
-               e);
+         throw new CaptureAxisFault("FormatFichierNonConforme", e.getMessage(), e);
+      } catch (UnexpectedDomainException e) {
+         throw new CaptureAxisFault("CaptureMetadonneesInterdites", e.getMessage(), e);
+      } catch (InvalidPagmsCombinaisonException e) {
+         throw new CaptureAxisFault("PagmIncompatibles", e.getMessage(), e);
       }
-
    }
 
    private UUID capturePJ(List<UntypedMetadata> metadatas, String fileName,
@@ -340,80 +307,53 @@ public class WSCaptureServiceImpl implements WSCaptureService {
          return captureService.captureBinaire(metadatas, content, fileName)
                .getIdDoc();
       } catch (RequiredStorageMetadataEx e) {
-
          throw new CaptureAxisFault("ErreurInterneCapture", e.getMessage(), e);
-
       } catch (InvalidValueTypeAndFormatMetadataEx e) {
-
          throw new CaptureAxisFault("CaptureMetadonneesFormatTypeNonValide", e
                .getMessage(), e);
-
       } catch (UnknownMetadataEx e) {
-
          throw new CaptureAxisFault("CaptureMetadonneesInconnu",
                e.getMessage(), e);
-
       } catch (DuplicatedMetadataEx e) {
-
          throw new CaptureAxisFault("CaptureMetadonneesDoublon",
                e.getMessage(), e);
-
       } catch (NotSpecifiableMetadataEx e) {
-
          throw new CaptureAxisFault("CaptureMetadonneesInterdites", e
                .getMessage(), e);
-
       } catch (EmptyDocumentEx e) {
-
          throw new CaptureAxisFault("CaptureFichierVide", e.getMessage(), e);
-
       } catch (RequiredArchivableMetadataEx e) {
-
          throw new CaptureAxisFault("CaptureMetadonneesArchivageObligatoire", e
                .getMessage(), e);
-
       } catch (ReferentialRndException e) {
-
          throw new CaptureAxisFault("ErreurInterne", wsMessageRessourcesUtils
                .recupererMessage("ws.capture.error", null), e);
-
       } catch (UnknownCodeRndEx e) {
-
          throw new CaptureAxisFault("CaptureCodeRndInterdit", e.getMessage(), e);
-
       } catch (UnknownHashCodeEx e) {
-
          throw new CaptureAxisFault("CaptureHashErreur", e.getMessage(), e);
-
       } catch (SAECaptureServiceEx e) {
-
          throw new CaptureAxisFault("ErreurInterneCapture",
                wsMessageRessourcesUtils.recupererMessage("ws.capture.error",
                      null), e);
-
       } catch (NotArchivableMetadataEx e) {
-
          throw new CaptureAxisFault("ErreurInterneCapture",
                wsMessageRessourcesUtils.recupererMessage("ws.capture.error",
                      null), e);
-
       } catch (EmptyFileNameEx e) {
-
          throw new CaptureAxisFault("NomFichierVide", wsMessageRessourcesUtils
                .recupererMessage("ws.capture.error", null), e);
-
       } catch (MetadataValueNotInDictionaryEx e) {
-
          throw new CaptureAxisFault("CaptureMetadonneesValeurNonValide", e
                .getMessage());
-
       } catch (UnknownFormatException e) {
-
          throw new CaptureAxisFault("FormatFichierInconnu", e.getMessage(), e);
-
       } catch (ValidationExceptionInvalidFile e) {
-
          throw new CaptureAxisFault("FormatFichierNonConforme", e.getMessage());
+      } catch (UnexpectedDomainException e) {
+         throw new CaptureAxisFault("CaptureMetadonneesInterdites", e.getMessage(), e);
+      } catch (InvalidPagmsCombinaisonException e) {
+         throw new CaptureAxisFault("PagmIncompatibles", e.getMessage(), e);
       }
    }
 

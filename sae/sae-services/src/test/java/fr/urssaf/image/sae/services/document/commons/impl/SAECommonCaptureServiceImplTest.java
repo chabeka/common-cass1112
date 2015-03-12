@@ -21,6 +21,8 @@ import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.commons.service.ParametersService;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
+import fr.urssaf.image.sae.droit.exception.InvalidPagmsCombinaisonException;
+import fr.urssaf.image.sae.droit.exception.UnexpectedDomainException;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
@@ -139,6 +141,8 @@ public class SAECommonCaptureServiceImplTest {
     * Test de la méthode
     * {@link fr.urssaf.image.sae.services.document.commons.SAECommonCaptureService#buildStorageDocumentForCapture(UntypedDocument)}
     * .
+    * @throws InvalidPagmsCombinaisonException 
+    * @throws UnexpectedDomainException 
     */
    @Test
    public final void buildStorageDocumentForCapture()
@@ -150,7 +154,8 @@ public class SAECommonCaptureServiceImplTest {
          RequiredArchivableMetadataEx, MappingFromReferentialException,
          InvalidSAETypeException, UnknownHashCodeEx, ReferentialRndException,
          UnknownCodeRndEx, MetadataValueNotInDictionaryEx,
-         UnknownFormatException, ValidationExceptionInvalidFile {
+         UnknownFormatException, ValidationExceptionInvalidFile, 
+         UnexpectedDomainException, InvalidPagmsCombinaisonException {
 
       UntypedDocument untypedDocument = MockFactoryBean
             .getUntypedDocumentMockData();

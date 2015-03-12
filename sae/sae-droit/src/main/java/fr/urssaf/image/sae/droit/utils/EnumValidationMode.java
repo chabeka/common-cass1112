@@ -2,6 +2,8 @@ package fr.urssaf.image.sae.droit.utils;
 
 import org.apache.commons.lang.StringUtils;
 
+import fr.urssaf.image.sae.droit.dao.model.FormatProfil;
+
 /**
  * 
  * Enumeration pour les différents mode de validation. Nécessaire pour le bean

@@ -21,6 +21,8 @@ import org.springframework.util.Assert;
 import fr.urssaf.image.commons.dfce.model.DFCEConnection;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
+import fr.urssaf.image.sae.droit.exception.InvalidPagmsCombinaisonException;
+import fr.urssaf.image.sae.droit.exception.UnexpectedDomainException;
 import fr.urssaf.image.sae.ecde.exception.EcdeBadURLException;
 import fr.urssaf.image.sae.ecde.exception.EcdeBadURLFormatException;
 import fr.urssaf.image.sae.ecde.service.EcdeServices;
@@ -111,7 +113,7 @@ public class SAECaptureServiceImpl implements SAECaptureService {
          ReferentialRndException, UnknownCodeRndEx, UnknownHashCodeEx,
          CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx,
          MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile,
-         UnknownFormatException {
+         UnknownFormatException, UnexpectedDomainException, InvalidPagmsCombinaisonException {
       // Traces debug - entrée méthode
       String prefixeTrc = "capture()";
       CaptureResult result = new CaptureResult();
@@ -147,6 +149,8 @@ public class SAECaptureServiceImpl implements SAECaptureService {
     * @throws MetadataValueNotInDictionaryEx
     * @throws ValidationExceptionInvalidFile
     * @throws UnknownFormatException
+    * @throws InvalidPagmsCombinaisonException 
+    * @throws UnexpectedDomainException 
     */
    @Override
    public final CaptureResult captureFichier(List<UntypedMetadata> metadatas,
@@ -156,7 +160,8 @@ public class SAECaptureServiceImpl implements SAECaptureService {
          NotArchivableMetadataEx, ReferentialRndException, UnknownCodeRndEx,
          EmptyDocumentEx, RequiredArchivableMetadataEx, UnknownHashCodeEx,
          FileNotFoundException, MetadataValueNotInDictionaryEx,
-         ValidationExceptionInvalidFile, UnknownFormatException {
+         ValidationExceptionInvalidFile, UnknownFormatException, 
+         UnexpectedDomainException, InvalidPagmsCombinaisonException {
       // Traces debug - entrée méthode
       String prefixeTrc = "capture()";
       CaptureResult result = new CaptureResult();
@@ -183,7 +188,10 @@ public class SAECaptureServiceImpl implements SAECaptureService {
       return result;
 
    }
-
+   
+   /**
+    * {@inheritDoc}
+    */
    @Override
    public final CaptureResult captureBinaire(List<UntypedMetadata> metadatas,
          DataHandler content, String fileName) throws SAECaptureServiceEx,
@@ -192,7 +200,8 @@ public class SAECaptureServiceImpl implements SAECaptureService {
          EmptyDocumentEx, RequiredArchivableMetadataEx,
          NotArchivableMetadataEx, ReferentialRndException, UnknownCodeRndEx,
          UnknownHashCodeEx, EmptyFileNameEx, MetadataValueNotInDictionaryEx,
-         UnknownFormatException, ValidationExceptionInvalidFile {
+         UnknownFormatException, ValidationExceptionInvalidFile, 
+         UnexpectedDomainException, InvalidPagmsCombinaisonException {
 
       // Traces debug - entrée méthode
       String prefixeTrc = "captureBinaire()";
@@ -372,6 +381,8 @@ public class SAECaptureServiceImpl implements SAECaptureService {
     * @throws MetadataValueNotInDictionaryEx
     * @throws ValidationExceptionInvalidFile
     * @throws UnknownFormatException
+    * @throws InvalidPagmsCombinaisonException 
+    * @throws UnexpectedDomainException 
     */
    private UUID insertDocument(List<UntypedMetadata> metadatas, File file,
          CaptureResult captureResult) throws SAECaptureServiceEx,
@@ -380,7 +391,8 @@ public class SAECaptureServiceImpl implements SAECaptureService {
          DuplicatedMetadataEx, NotArchivableMetadataEx, EmptyDocumentEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx,
          NotSpecifiableMetadataEx, MetadataValueNotInDictionaryEx,
-         UnknownFormatException, ValidationExceptionInvalidFile {
+         UnknownFormatException, ValidationExceptionInvalidFile, 
+         UnexpectedDomainException, InvalidPagmsCombinaisonException {
 
       // instanciation d'un UntypedDocument
       UntypedDocument untypedDocument = createUntypedDocument(metadatas, file);

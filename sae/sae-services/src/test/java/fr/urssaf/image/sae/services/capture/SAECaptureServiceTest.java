@@ -10,11 +10,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.activation.DataHandler;
@@ -50,6 +53,8 @@ import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.commons.service.ParametersService;
 import fr.urssaf.image.sae.commons.utils.InputStreamSource;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
+import fr.urssaf.image.sae.droit.exception.InvalidPagmsCombinaisonException;
+import fr.urssaf.image.sae.droit.exception.UnexpectedDomainException;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestDocument;
@@ -186,7 +191,216 @@ public class SAECaptureServiceTest {
          ecdeTestTools.cleanEcdeTestDocument(ecde);
       }
    }
+   
+   /**
+    * Teste le fait que le DomaineCotisant ne peut être renseigné par le client dans 
+    * les métadonnées du documents lors la capture.
+    */
+   @Test
+   public void captureErrorUnexpectedDomainCotisant() throws SAECaptureServiceEx, 
+      ReferentialRndException, UnknownCodeRndEx, RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx, 
+      UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx, RequiredArchivableMetadataEx, 
+      NotArchivableMetadataEx, UnknownHashCodeEx, IOException, CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx, 
+      MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile, UnknownFormatException, InvalidPagmsCombinaisonException {
+      
+      //-- Lance la capture du document
+      captureErrorUnexpectedDomain("DomaineCotisant");
+   }
+   /**
+    * Teste le fait que le DomaineRH ne peut être renseigné par le client dans 
+    * les métadonnées du documents lors la capture.
+    */
+   @Test
+   public void captureErrorUnexpectedDomainRh()throws SAECaptureServiceEx, 
+      ReferentialRndException, UnknownCodeRndEx, RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx, 
+      UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx, RequiredArchivableMetadataEx, 
+      NotArchivableMetadataEx, UnknownHashCodeEx, IOException, CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx, 
+      MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile, UnknownFormatException, InvalidPagmsCombinaisonException {
+      
+      //-- Lance la capture du document
+      captureErrorUnexpectedDomain("DomaineRH");
+   }
+   /**
+    * Teste le fait que le DomainComptable ne peut être renseigné par le client dans 
+    * les métadonnées du documents lors la capture.
+    */
+   @Test
+   public void captureErrorUnexpectedDomainComptable() throws SAECaptureServiceEx, 
+      ReferentialRndException, UnknownCodeRndEx, RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx, 
+      UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx, RequiredArchivableMetadataEx, 
+      NotArchivableMetadataEx, UnknownHashCodeEx, IOException, CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx, 
+      MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile, UnknownFormatException, InvalidPagmsCombinaisonException {
+      
+      //-- Lance la capture du document
+      captureErrorUnexpectedDomain("DomaineComptable");
+   }
+   
+   /**
+    * Teste le fait que le domaine ne peut être renseigné par le client dans 
+    * les métadonnées du documents lors la capture.
+    */
+   private void captureErrorUnexpectedDomain(String domaine) throws SAECaptureServiceEx,
+      ReferentialRndException, UnknownCodeRndEx, RequiredStorageMetadataEx,
+      InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
+      DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
+      RequiredArchivableMetadataEx, NotArchivableMetadataEx,
+      UnknownHashCodeEx, IOException, CaptureBadEcdeUrlEx,
+      CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx,
+      ValidationExceptionInvalidFile, UnknownFormatException, 
+      InvalidPagmsCombinaisonException {
+      
+      ecde = ecdeTestTools
+         .buildEcdeTestDocument("attestation_consultation.pdf");
 
+      File repertoireEcde = ecde.getRepEcdeDocuments();
+      URI urlEcdeDocument = ecde.getUrlEcdeDocument();
+      
+      // copie le fichier attestation_consultation.pdf
+      // dans le repertoire de l'ecde
+      LOG.debug("CAPTURE UNITAIRE ECDE TEMP: "
+            + repertoireEcde.getAbsoluteFile());
+      File fileDoc = new File(repertoireEcde, "attestation_consultation.pdf");
+      ClassPathResource resDoc = new ClassPathResource(
+            "doc/attestation_consultation.pdf");
+      FileOutputStream fos = new FileOutputStream(fileDoc);
+      IOUtils.copy(resDoc.getInputStream(), fos);
+      resDoc.getInputStream().close();
+      fos.close();
+      
+      File srcFile = new File(
+            "src/test/resources/doc/attestation_consultation.pdf");
+      
+      List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
+      
+      
+      //-- Cette méta ne doit pas être renseignée par le client
+      // on devrai si tout se passe bien lever l'exception UnexpectedDomainException
+      // lors de la capture.
+      metadatas.add(new UntypedMetadata(domaine, "true"));
+      
+      metadatas.add(new UntypedMetadata("ApplicationProductrice", "ADELAIDE"));
+      metadatas.add(new UntypedMetadata("CodeOrganismeProprietaire", "CER69"));
+      metadatas.add(new UntypedMetadata("CodeOrganismeGestionnaire", "UR750"));
+      metadatas.add(new UntypedMetadata("FormatFichier", "fmt/354"));
+      metadatas.add(new UntypedMetadata("NbPages", "2"));
+      metadatas.add(new UntypedMetadata("DateCreation", "2012-01-01"));
+      metadatas.add(new UntypedMetadata("TypeHash", "SHA-1"));
+      String hash = DigestUtils.shaHex(new FileInputStream(srcFile));
+      metadatas.add(new UntypedMetadata("Hash", StringUtils.upperCase(hash)));
+      metadatas.add(new UntypedMetadata("CodeRND", "2.3.1.1.12"));
+      metadatas.add(new UntypedMetadata("Titre", "Attestation de vigilance"));
+      metadatas.add(new UntypedMetadata("DateReception", "1999-11-25"));
+      metadatas.add(new UntypedMetadata("DateDebutConservation", "2011-09-02"));
+
+      try {
+         uuid = service.capture(metadatas, urlEcdeDocument).getIdDoc();
+         Assert.fail("Une UnexpectedDomainException aurait dû être levée");
+      } catch (UnexpectedDomainException e) {
+         //-- On a catché la bonne exception
+      } finally {
+         fileDoc.delete();
+      }
+   }
+   
+   
+   @Test
+   public void captureErrorIncompatiblesPagms()
+      throws SAECaptureServiceEx,
+      ReferentialRndException, UnknownCodeRndEx, RequiredStorageMetadataEx,
+      InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
+      DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
+      RequiredArchivableMetadataEx, NotArchivableMetadataEx,
+      UnknownHashCodeEx, IOException, CaptureBadEcdeUrlEx,
+      CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx,
+      ValidationExceptionInvalidFile, UnknownFormatException, 
+      UnexpectedDomainException {
+      
+      //-- on réinitialise le contexte de sécurité
+      //-----------------------------------------------------------
+      VIContenuExtrait viExtrait = new VIContenuExtrait();
+      viExtrait.setCodeAppli("TESTS_UNITAIRES");
+      viExtrait.setIdUtilisateur("UTILISATEUR TEST");
+
+      Prmd prmd1 = new Prmd();
+      Map<String, List<String>> prmdsMetas1 = new HashMap<String, List<String>>();
+      prmdsMetas1.put("DomaineCotisant", Arrays.asList("true"));
+      prmd1.setMetadata(prmdsMetas1);
+      prmd1.setCode("default");
+   
+      Prmd prmd2 = new Prmd();
+      Map<String, List<String>> prmdsMetas2 = new HashMap<String, List<String>>();
+      prmdsMetas2.put("DomaineComptable", Arrays.asList("true"));
+      prmd2.setMetadata(prmdsMetas2);
+      prmd2.setCode("default");
+      
+      SaePrmd saePrmd1 = new SaePrmd();
+      saePrmd1.setValues(new HashMap<String, String>());
+      saePrmd1.setPrmd(prmd1);
+      
+      SaePrmd saePrmd2 = new SaePrmd();
+      saePrmd2.setValues(new HashMap<String, String>());
+      saePrmd2.setPrmd(prmd2);
+      
+      SaeDroits saeDroits = new SaeDroits();
+      List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
+      saePrmds.add(saePrmd1);
+      saePrmds.add(saePrmd2);
+
+      saeDroits.put("archivage_unitaire", saePrmds);
+      viExtrait.setSaeDroits(saeDroits);
+      String[] roles = new String[] { "archivage_unitaire" };
+      AuthenticationToken token = AuthenticationFactory.createAuthentication(
+            viExtrait.getIdUtilisateur(), viExtrait, roles);
+      AuthenticationContext.setAuthenticationToken(token);
+      //- Fin init contexte de sécurité
+      //-----------------------------------------------------------
+      
+      ecde = ecdeTestTools
+         .buildEcdeTestDocument("attestation_consultation.pdf");
+   
+      File repertoireEcde = ecde.getRepEcdeDocuments();
+      URI urlEcdeDocument = ecde.getUrlEcdeDocument();
+      
+      // copie le fichier attestation_consultation.pdf
+      // dans le repertoire de l'ecde
+      LOG.debug("CAPTURE UNITAIRE ECDE TEMP: " + repertoireEcde.getAbsoluteFile());
+      File fileDoc = new File(repertoireEcde, "attestation_consultation.pdf");
+      ClassPathResource resDoc;
+      resDoc = new ClassPathResource("doc/attestation_consultation.pdf");
+      FileOutputStream fos = new FileOutputStream(fileDoc);
+      IOUtils.copy(resDoc.getInputStream(), fos);
+      resDoc.getInputStream().close();
+      fos.close();
+      
+      File srcFile;
+      srcFile = new File("src/test/resources/doc/attestation_consultation.pdf");
+      
+      List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
+      metadatas.add(new UntypedMetadata("ApplicationProductrice", "ADELAIDE"));
+      metadatas.add(new UntypedMetadata("CodeOrganismeProprietaire", "CER69"));
+      metadatas.add(new UntypedMetadata("CodeOrganismeGestionnaire", "UR750"));
+      metadatas.add(new UntypedMetadata("FormatFichier", "fmt/354"));
+      metadatas.add(new UntypedMetadata("NbPages", "2"));
+      metadatas.add(new UntypedMetadata("DateCreation", "2012-01-01"));
+      metadatas.add(new UntypedMetadata("TypeHash", "SHA-1"));
+      String hash = DigestUtils.shaHex(new FileInputStream(srcFile));
+      metadatas.add(new UntypedMetadata("Hash", StringUtils.upperCase(hash)));
+      metadatas.add(new UntypedMetadata("CodeRND", "2.3.1.1.12"));
+      metadatas.add(new UntypedMetadata("Titre", "Attestation de vigilance"));
+      metadatas.add(new UntypedMetadata("DateReception", "1999-11-25"));
+      metadatas.add(new UntypedMetadata("DateDebutConservation", "2011-09-02"));
+   
+      try {
+         uuid = service.capture(metadatas, urlEcdeDocument).getIdDoc();
+         Assert.fail("Une InvalidPagmsCombinaisonException aurait dû être levée");
+      } catch (InvalidPagmsCombinaisonException e) {
+         //-- On a catché la bonne exception
+      } finally {
+         fileDoc.delete();
+      }
+   }
+   
+   
    @Test
    public void captureSuccess() throws SAECaptureServiceEx,
          ReferentialRndException, UnknownCodeRndEx, RequiredStorageMetadataEx,
@@ -195,7 +409,8 @@ public class SAECaptureServiceTest {
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
          UnknownHashCodeEx, IOException, CaptureBadEcdeUrlEx,
          CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx,
-         ValidationExceptionInvalidFile, UnknownFormatException {
+         ValidationExceptionInvalidFile, UnknownFormatException, 
+         UnexpectedDomainException, InvalidPagmsCombinaisonException {
 
       ecde = ecdeTestTools
             .buildEcdeTestDocument("attestation_consultation.pdf");
@@ -221,7 +436,6 @@ public class SAECaptureServiceTest {
       List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
 
       // liste des métadonnées obligatoires
-      metadatas.add(new UntypedMetadata("DomaineCotisant", "true"));
       metadatas.add(new UntypedMetadata("ApplicationProductrice", "ADELAIDE"));
       metadatas.add(new UntypedMetadata("CodeOrganismeProprietaire", "CER69"));
       metadatas.add(new UntypedMetadata("CodeOrganismeGestionnaire", "UR750"));
@@ -242,8 +456,7 @@ public class SAECaptureServiceTest {
       LOG.debug("document archivé dans DFCE:" + uuid);
       Document doc = testProvider.searchDocument(uuid);
 
-      Assert.assertNotNull("l'UUID '" + uuid + "' doit exister dans le SAE",
-            doc);
+      Assert.assertNotNull("l'UUID '" + uuid + "' doit exister dans le SAE", doc);
 
       // test sur les métadonnées techniques
       assertDocument(doc, hash);
@@ -267,10 +480,13 @@ public class SAECaptureServiceTest {
     * FormatFichier un identifiant de format qui n'existe pas dans le
     * référentiel des formats.<br>
     * Résultat attendu : Exception de type UnknownFormatException
+    * @throws InvalidPagmsCombinaisonException 
+    * @throws UnexpectedDomainException 
     * 
     */
    @Test
-   public void captureErreurFormat() throws IOException {
+   public void captureErreurFormat() throws IOException, UnexpectedDomainException, 
+      InvalidPagmsCombinaisonException {
 
       ecde = ecdeTestTools
             .buildEcdeTestDocument("attestation_consultation.pdf");
@@ -417,7 +633,8 @@ public class SAECaptureServiceTest {
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
          UnknownHashCodeEx, IOException, CaptureBadEcdeUrlEx,
          CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx,
-         ValidationExceptionInvalidFile, UnknownFormatException {
+         ValidationExceptionInvalidFile, UnknownFormatException,
+         UnexpectedDomainException, InvalidPagmsCombinaisonException {
 
       ecde = ecdeTestTools
             .buildEcdeTestDocument("attestation_consultation.pdf");
@@ -591,7 +808,8 @@ public class SAECaptureServiceTest {
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
          UnknownHashCodeEx, IOException, EmptyFileNameEx,
          MetadataValueNotInDictionaryEx, UnknownFormatException,
-         ValidationExceptionInvalidFile {
+         ValidationExceptionInvalidFile, UnexpectedDomainException, 
+         InvalidPagmsCombinaisonException {
 
       File srcFile = new File(
             "src/test/resources/doc/attestation_consultation.pdf");
@@ -614,7 +832,8 @@ public class SAECaptureServiceTest {
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
          UnknownHashCodeEx, IOException, EmptyFileNameEx,
          MetadataValueNotInDictionaryEx, UnknownFormatException,
-         ValidationExceptionInvalidFile {
+         ValidationExceptionInvalidFile, UnexpectedDomainException, 
+         InvalidPagmsCombinaisonException {
 
       File srcFile = new File(
             "src/test/resources/doc/attestation_consultation.pdf");
@@ -640,7 +859,8 @@ public class SAECaptureServiceTest {
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
          UnknownHashCodeEx, IOException, EmptyFileNameEx,
          MetadataValueNotInDictionaryEx, UnknownFormatException,
-         ValidationExceptionInvalidFile {
+         ValidationExceptionInvalidFile, UnexpectedDomainException, 
+         InvalidPagmsCombinaisonException {
 
       File srcFile = new File(
             "src/test/resources/doc/attestation_consultation.pdf");
@@ -667,7 +887,8 @@ public class SAECaptureServiceTest {
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
          UnknownHashCodeEx, IOException, EmptyFileNameEx,
          MetadataValueNotInDictionaryEx, UnknownFormatException,
-         ValidationExceptionInvalidFile {
+         ValidationExceptionInvalidFile, UnexpectedDomainException, 
+         InvalidPagmsCombinaisonException {
 
       List<UntypedMetadata> metadatas = getListMetadata();
 
@@ -690,7 +911,8 @@ public class SAECaptureServiceTest {
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
          UnknownHashCodeEx, IOException, EmptyFileNameEx,
          MetadataValueNotInDictionaryEx, UnknownFormatException,
-         ValidationExceptionInvalidFile {
+         ValidationExceptionInvalidFile, UnexpectedDomainException, 
+         InvalidPagmsCombinaisonException {
 
       List<UntypedMetadata> metadatas = getListMetadata();
 
@@ -713,7 +935,8 @@ public class SAECaptureServiceTest {
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
          UnknownHashCodeEx, IOException, EmptyFileNameEx,
          MetadataValueNotInDictionaryEx, UnknownFormatException,
-         ValidationExceptionInvalidFile {
+         ValidationExceptionInvalidFile, UnexpectedDomainException, 
+         InvalidPagmsCombinaisonException {
 
       List<UntypedMetadata> metadatas = getListMetadata();
 
@@ -734,6 +957,8 @@ public class SAECaptureServiceTest {
     * 
     * @throws UnknownFormatException
     * @throws ValidationExceptionInvalidFile
+    * @throws InvalidPagmsCombinaisonException 
+    * @throws UnexpectedDomainException 
     */
 
    @Test
@@ -744,14 +969,14 @@ public class SAECaptureServiceTest {
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
          UnknownHashCodeEx, IOException, CaptureBadEcdeUrlEx,
          CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx,
-         ValidationExceptionInvalidFile, UnknownFormatException {
+         ValidationExceptionInvalidFile, UnknownFormatException, 
+         UnexpectedDomainException, InvalidPagmsCombinaisonException {
 
       File srcFile = new File(path);
 
       List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
 
       // liste des métadonnées obligatoires
-      metadatas.add(new UntypedMetadata("DomaineCotisant", "true"));
       metadatas.add(new UntypedMetadata("ApplicationProductrice", "ADELAIDE"));
       metadatas.add(new UntypedMetadata("CodeOrganismeProprietaire", "CER69"));
       metadatas.add(new UntypedMetadata("CodeOrganismeGestionnaire", "UR750"));
@@ -808,6 +1033,8 @@ public class SAECaptureServiceTest {
     * @throws MetadataValueNotInDictionaryEx
     * @throws UnknownFormatException
     * @throws ValidationExceptionInvalidFile
+    * @throws InvalidPagmsCombinaisonException 
+    * @throws UnexpectedDomainException 
     */
    @Test(expected = FileNotFoundException.class)
    public void fileNotFoundExceptionTest() throws SAECaptureServiceEx,
@@ -817,7 +1044,7 @@ public class SAECaptureServiceTest {
          NotArchivableMetadataEx, EmptyDocumentEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx,
          MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile,
-         UnknownFormatException {
+         UnknownFormatException, UnexpectedDomainException, InvalidPagmsCombinaisonException {
       String path = FileUtils.getTempDirectoryPath();
       List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
       uuid = service.captureFichier(metadatas,

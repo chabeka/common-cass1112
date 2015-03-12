@@ -9,6 +9,8 @@ import javax.activation.DataHandler;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
+import fr.urssaf.image.sae.droit.exception.InvalidPagmsCombinaisonException;
+import fr.urssaf.image.sae.droit.exception.UnexpectedDomainException;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.services.capture.model.CaptureResult;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
@@ -88,6 +90,10 @@ public interface SAECaptureService {
     *            {@link UnknownFormatException}
     * @throws ValidationExceptionInvalidFile
     *            {@link ValidationExceptionInvalidFile}
+    * @throws UnexpectedDomainException
+    *            {@link UnexpectedDomainException}
+    * @throws InvalidPagmsCombinaisonException
+    *            {@link InvalidPagmsCombinaisonException}
     * 
     */
    @PreAuthorize("hasRole('archivage_unitaire')")
@@ -99,7 +105,7 @@ public interface SAECaptureService {
          ReferentialRndException, UnknownCodeRndEx, UnknownHashCodeEx,
          CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx,
          MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile,
-         UnknownFormatException;
+         UnknownFormatException, UnexpectedDomainException, InvalidPagmsCombinaisonException ;
 
    /**
     * 
@@ -151,6 +157,10 @@ public interface SAECaptureService {
     *            {@link UnknownFormatException}
     * @throws ValidationExceptionInvalidFile
     *            {@link ValidationExceptionInvalidFile}
+    * @throws UnexpectedDomainException
+    *            {@link UnexpectedDomainException}
+    * @throws InvalidPagmsCombinaisonException
+    *            {@link InvalidPagmsCombinaisonException}
     */
    @PreAuthorize("hasRole('archivage_unitaire')")
    CaptureResult captureBinaire(List<UntypedMetadata> metadatas,
@@ -160,7 +170,8 @@ public interface SAECaptureService {
          EmptyDocumentEx, RequiredArchivableMetadataEx,
          NotArchivableMetadataEx, ReferentialRndException, UnknownCodeRndEx,
          UnknownHashCodeEx, EmptyFileNameEx, MetadataValueNotInDictionaryEx,
-         UnknownFormatException, ValidationExceptionInvalidFile;
+         UnknownFormatException, ValidationExceptionInvalidFile,
+         UnexpectedDomainException, InvalidPagmsCombinaisonException ;
 
    /**
     * 
@@ -207,6 +218,10 @@ public interface SAECaptureService {
     *            {@link UnknownFormatException}
     * @throws ValidationExceptionInvalidFile
     *            {@link ValidationExceptionInvalidFile}
+    * @throws UnexpectedDomainException
+    *            {@link UnexpectedDomainException}
+    * @throws InvalidPagmsCombinaisonException
+    *            {@link InvalidPagmsCombinaisonException}
     */
    @PreAuthorize("hasRole('archivage_unitaire')")
    CaptureResult captureFichier(List<UntypedMetadata> metadatas, String path)
@@ -216,6 +231,7 @@ public interface SAECaptureService {
          NotArchivableMetadataEx, ReferentialRndException, UnknownCodeRndEx,
          EmptyDocumentEx, RequiredArchivableMetadataEx, UnknownHashCodeEx,
          FileNotFoundException, MetadataValueNotInDictionaryEx,
-         ValidationExceptionInvalidFile, UnknownFormatException;
+         ValidationExceptionInvalidFile, UnknownFormatException, 
+         UnexpectedDomainException, InvalidPagmsCombinaisonException;
 
 }

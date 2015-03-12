@@ -23,6 +23,8 @@ import org.springframework.stereotype.Component;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.droit.controle.PrmdControle;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
+import fr.urssaf.image.sae.droit.exception.InvalidPagmsCombinaisonException;
+import fr.urssaf.image.sae.droit.exception.UnexpectedDomainException;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.droit.service.PrmdService;
 
@@ -47,6 +49,7 @@ public class PrmdServiceImpl implements PrmdService {
    private final static String DOMAINE_RH = "DomaineRH";
    private final static String DOMAINE_COTISANT = "DomaineCotisant";
    private final static String DOMAINE_COMPTABLE = "DomaineComptable";
+   private final static String DOMAINE_TECHNIQUE = "DomaineTechnique";
    
    /**
     * {@inheritDoc}
@@ -338,14 +341,14 @@ public class PrmdServiceImpl implements PrmdService {
 
    /**
     * Teste si une clé de mata correspond à l'un des trois domaines :
-    * {DomaineRH, DOMAIN_COTISANT,DOMAIN_COMPTABLE}
+    * {DOMAINE_RH, DOMAIN_COTISANT, DOMAIN_COMPTABLE, DOMAINE_TECHNIQUE}
     * 
     * @param value : la valeur à tester
     * @return
     */
-   private boolean isDomaineRhCotiOrCompt(String value){
+   private boolean isDomaineTechRhCotCpt(String value){
       if(value.equals(DOMAINE_RH)|| value.equals(DOMAINE_COTISANT)
-            || value.equals(DOMAINE_COMPTABLE)){
+          || value.equals(DOMAINE_COMPTABLE) || value.equals(DOMAINE_TECHNIQUE)){
          return true;
       }
       return false;
@@ -353,26 +356,26 @@ public class PrmdServiceImpl implements PrmdService {
 
    /**
     * {@inheritDoc}
+    * @throws UnexpectedDomainException 
+    * @throws InvalidPagmsCombinaisonException 
     */
    @Override
-   public void addDomaine(List<UntypedMetadata> metadatas, List<SaePrmd> prmds) {
+   public void addDomaine(List<UntypedMetadata> metadatas, List<SaePrmd> prmds) throws UnexpectedDomainException, InvalidPagmsCombinaisonException {
       
       //-- On vérifie qu'aucune métadonnée « Domaine* » n’est présente
-      boolean isDomaineFound = false;
       for (UntypedMetadata meta : metadatas) {
-         if(isDomaineRhCotiOrCompt(meta.getLongCode())){
-            isDomaineFound = true;
-            break;
+         if(isDomaineTechRhCotCpt(meta.getLongCode())){
+            //-- Le domaine est présent
+            String mssg = "La ou les métadonnées suivantes ne sont " +
+            		"pas autorisées à l'archivage : %s";
+            mssg = String.format(mssg, meta.getLongCode());
+            throw new UnexpectedDomainException(mssg);
          }
-      }
-      
-      //-- Le domaine est présent
-      if(isDomaineFound){
-         return;
       }
       
       //-- Aucun domaine n'est présent
       int addCount = 0;
+      String metadata = null;
       
       //-- On boucle sur la liste des prmds passée en paramètre
       for (SaePrmd saePrmd : prmds) {
@@ -385,50 +388,66 @@ public class PrmdServiceImpl implements PrmdService {
             prmdValues = new HashMap<String, String>();
          }
          Map<String, List<String>> prmdMetas = prmd.getMetadata();
-         
-         //-- Cas d'un prdm de type bean
-         if(!StringUtils.isEmpty(prmdName)){
-            try {
-               controle = context.getBean(prmdName, PrmdControle.class);
-               controle.addDomaine(metadatas, prmdValues);
-               addCount++;
-            } catch (BeansException e) {
-               LOGGER.warn("{} - Aucune fonction {} n'existe pour le Prmd {}",
-                     new String[] { TRC_CHECK, prmd.getCode(), prmd.getBean() });
-            }
-         }
-         //-- Prmd dynamique
-         else if(!MapUtils.isEmpty(prmdValues)){
-            for (Map.Entry<String, List<String>> entry : prmdMetas.entrySet()) {
-               if (isDomaineRhCotiOrCompt(entry.getKey()) && prmdValues.containsKey(entry.getKey())) {
-                  String valeur = prmdValues.get(entry.getKey());     
-                  metadatas.add(new UntypedMetadata(entry.getKey(), valeur));
+         if(addCount == 0){
+            //-- Cas d'un prdm de type bean
+            if(!StringUtils.isEmpty(prmdName)){
+               try {
+                  controle = context.getBean(prmdName, PrmdControle.class);
+                  controle.addDomaine(metadatas, prmdValues);
                   addCount++;
-                  break;
+               } catch (BeansException e) {
+                  LOGGER.warn("{} - Aucune fonction {} n'existe pour le Prmd {}",
+                        new String[] { TRC_CHECK, prmd.getCode(), prmd.getBean() });
                }
             }
-         }
-         //-- Prmd classique
-         else {
-            for (Map.Entry<String, List<String>> entry : prmdMetas.entrySet()) {
-               if(isDomaineRhCotiOrCompt(entry.getKey())){
-                  if(entry.getValue().size() == 1){
-                     String valeur = entry.getValue().get(0);
+            //-- Prmd dynamique
+            else if(!MapUtils.isEmpty(prmdValues)){
+               for (Map.Entry<String, List<String>> entry : prmdMetas.entrySet()) {
+                  if (isDomaineTechRhCotCpt(entry.getKey()) && prmdValues.containsKey(entry.getKey())) {
+                     String valeur = prmdValues.get(entry.getKey());     
                      metadatas.add(new UntypedMetadata(entry.getKey(), valeur));
                      addCount++;
                      break;
                   }
                }
             }
+            //-- Prmd classique
+            else {
+               for (Map.Entry<String, List<String>> entry : prmdMetas.entrySet()) {
+                  if(isDomaineTechRhCotCpt(entry.getKey())){
+                     if(entry.getValue().size() == 1){
+                        String valeur = entry.getValue().get(0);
+                        metadatas.add(new UntypedMetadata(entry.getKey(), valeur));
+                        addCount++;
+                        break;
+                     }
+                  }
+               }
+            }
          }
          
-         if (addCount > 0) {
-            break;
+         //-- On vérifie que le prmds  ne comporte qu'un et un seul domaine
+         if(prmdMetas != null){
+            for (Map.Entry<String, List<String>> entry : prmdMetas.entrySet()) {
+               if(isDomaineTechRhCotCpt(entry.getKey())){
+                  if(metadata == null){
+                     //-- Get first found domain metadata
+                     metadata = entry.getKey();
+                     continue;
+                  } 
+                  if(!metadata.equals(entry.getKey())){
+                     String mssg = "Les Pagms présents dans le VI sont incompatibles : " +
+                           "plusieurs domaines différents trouvés.";
+                     throw new InvalidPagmsCombinaisonException(mssg);
+                  }
+               }
+            }
          }
       }
       
       //-- Aucun domaine n’a été ajouté à la liste des métadonnées
       if(addCount == 0){
+         //-- Ajout du DomaineCotisant par défaut si aucun autre n'a pu être ajouté
          metadatas.add(new UntypedMetadata(DOMAINE_COTISANT, "true"));
       }
    }

@@ -15,6 +15,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
+import fr.urssaf.image.sae.droit.exception.InvalidPagmsCombinaisonException;
+import fr.urssaf.image.sae.droit.exception.UnexpectedDomainException;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -77,11 +79,9 @@ public class PrmdServiceValidationTest {
    }
    
    @Test
-   public void checkAddDomaineMetasObligatoires() {
+   public void checkAddDomaineMetasObligatoires() throws UnexpectedDomainException, InvalidPagmsCombinaisonException {
       try {
-         prmdService.addDomaine(null,
-               new ArrayList<SaePrmd>());
-
+         prmdService.addDomaine(null, new ArrayList<SaePrmd>());
          Assert.fail("Exception attendue");
       } catch (IllegalArgumentException e) {
          Assert.assertTrue(
@@ -91,7 +91,7 @@ public class PrmdServiceValidationTest {
    }
 
    @Test
-   public void checkAddDomainePrmdObligatoires() {
+   public void checkAddDomainePrmdObligatoires() throws UnexpectedDomainException, InvalidPagmsCombinaisonException {
       try {
          List<UntypedMetadata> list = new ArrayList<UntypedMetadata>();
          list.add(new UntypedMetadata("M", "V"));

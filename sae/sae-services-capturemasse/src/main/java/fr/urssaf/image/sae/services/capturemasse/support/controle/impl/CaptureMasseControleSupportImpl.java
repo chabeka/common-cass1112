@@ -21,6 +21,8 @@ import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedVirtualDocument;
 import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
+import fr.urssaf.image.sae.droit.exception.InvalidPagmsCombinaisonException;
+import fr.urssaf.image.sae.droit.exception.UnexpectedDomainException;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.droit.service.PrmdService;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
@@ -82,6 +84,7 @@ public class CaptureMasseControleSupportImpl implements
 
    /**
     * {@inheritDoc}
+    * @throws UnexpectedDomainException 
     */
    @Override
    public final CaptureMasseControlResult controleSAEDocument(
@@ -91,7 +94,8 @@ public class CaptureMasseControleSupportImpl implements
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx, UnknownCodeRndEx,
          MetadataValueNotInDictionaryEx, UnknownFormatException,
-         ValidationExceptionInvalidFile {
+         ValidationExceptionInvalidFile, UnexpectedDomainException,
+         InvalidPagmsCombinaisonException{
       String trcPrefix = "controleSAEDocument()";
       LOGGER.debug("{} - début", trcPrefix);
 
@@ -252,13 +256,15 @@ public class CaptureMasseControleSupportImpl implements
 
    /**
     * {@inheritDoc}
+    * @throws UnexpectedDomainException 
+    * @throws InvalidPagmsCombinaisonException 
     */
    @Override
    public final void controleSAEMetadatas(UntypedVirtualDocument document)
          throws UnknownMetadataEx, DuplicatedMetadataEx,
          InvalidValueTypeAndFormatMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx, UnknownCodeRndEx,
-         MetadataValueNotInDictionaryEx {
+         MetadataValueNotInDictionaryEx, UnexpectedDomainException, InvalidPagmsCombinaisonException {
       String trcPrefix = "controleSAEMetadatas";
       LOGGER.debug("{} - début", trcPrefix);
 
@@ -303,7 +309,7 @@ public class CaptureMasseControleSupportImpl implements
    }
 
    private void controleSAEMetadataList(List<UntypedMetadata> metadatas,
-         List<SAEMetadata> saeMetadatas) throws UnknownCodeRndEx {
+         List<SAEMetadata> saeMetadatas) throws UnknownCodeRndEx, UnexpectedDomainException, InvalidPagmsCombinaisonException {
       String trcPrefix = "controleSAEMetadataList()";
       final String valeurMetadata = SAEMetatadaFinderUtils.codeMetadataFinder(
             saeMetadatas, SAEArchivalMetadatas.CODE_RND.getLongCode());
