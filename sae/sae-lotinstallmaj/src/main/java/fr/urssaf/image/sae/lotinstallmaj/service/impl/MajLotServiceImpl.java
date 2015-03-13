@@ -60,6 +60,7 @@ public final class MajLotServiceImpl implements MajLotService {
    public static final String CASSANDRA_131100 = "CASSANDRA_131100";
    public static final String DFCE_130700 = "DFCE_130700";
    public static final String DFCE_150400 = "DFCE_150400";
+   public static final String DFCE_150400_P5 = "DFCE_150400_P5";
    public static final String CASSANDRA_DROITS_GED = "CASSANDRA_DROITS_GED";
    public static final String CREATION_GED = "CREATION_GED";
 
@@ -162,6 +163,10 @@ public final class MajLotServiceImpl implements MajLotService {
       } else if (DFCE_150400.equalsIgnoreCase(nomOperation)) {
 
          updateDFCE150400();
+
+      } else if (DFCE_150400_P5.equalsIgnoreCase(nomOperation)) {
+
+         updateDFCE150400_P5();
 
       } else if (CASSANDRA_DROITS_GED.equalsIgnoreCase(nomOperation)) {
 
@@ -698,6 +703,20 @@ public final class MajLotServiceImpl implements MajLotService {
             cassandraConfig);
       dfceUpdater.updateToVersion129_P2();
       LOG.info("Fin de l'opération : Lot 150400 - Mise à jour du schéma DFCE");
+   }
+   
+   /**
+    * Pour lot 150400_P5 du SAE : mise à jour du keyspace "Docubase" pour le
+    * passage à la version 1.2.9-P5 de DFCE pour la correction sur les méta de type float et double
+    */
+   private void updateDFCE150400_P5() {
+
+      LOG
+            .info("Début de l'opération : Lot 150400_P5 - Mise à jour du schéma DFCE");
+      DFCECassandraUpdater dfceUpdater = new DFCECassandraUpdater(
+            cassandraConfig);
+      dfceUpdater.updateToVersion129_P5();
+      LOG.info("Fin de l'opération : Lot 150400_P5 - Mise à jour du schéma DFCE");
    }
 
    /**

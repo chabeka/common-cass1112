@@ -342,6 +342,90 @@ public class DFCECassandraUpdater {
       }
 
    }
+   
+   /**
+    * Mise à jour vers la version 129-P5
+    */
+   public final void updateToVersion129_P5() {
+
+      LOG.info("Mise à jour du keyspace DFCE en version 1.2.9-P5");
+
+      // Si le KeySpace n'existe pas, on quitte
+      KeyspaceDefinition keyspaceDef = cluster
+            .describeKeyspace(DFCE_KEYSPACE_NAME);
+      if (keyspaceDef == null) {
+         throw new MajLotRuntimeException("Le Keyspace " + DFCE_KEYSPACE_NAME
+               + " n'existe pas !");
+      }
+
+      // On se connecte au keyspace
+      connectToKeyspace();
+      
+      // suppression des colonnes families
+      String cfASupprimer[] = { "TermInfoRangeDouble", "TermInfoRangeFloat" };
+      for (String cfName : cfASupprimer) {
+         if (cfExists(keyspaceDef, cfName)) {
+            LOG.info("Suppression de la famille de colonnes " + cfName);
+            cluster.dropColumnFamily(DFCE_KEYSPACE_NAME, cfName, true);
+         } else {
+            LOG.info("La famille de colonnes " + cfName
+                  + " n'existe pas");
+         }
+      }
+      
+      // recupere de nouveau la definition du keyspace dfce
+      keyspaceDef = cluster.describeKeyspace(DFCE_KEYSPACE_NAME);
+
+      // Liste contenant la définition des column families à créer
+      List<ColumnFamilyDefinition> cfDefs = new ArrayList<ColumnFamilyDefinition>();
+
+      // TermInfoRangeDouble
+
+      String comparatorAlias = "("
+            + "DoubleType, "
+            + ComparatorType.UUIDTYPE.getTypeName() + ", "
+            + ComparatorType.UTF8TYPE.getTypeName() + ")";
+
+      ColumnFamilyDefinition column0 = HFactory.createColumnFamilyDefinition(
+            DFCE_KEYSPACE_NAME, "TermInfoRangeDouble",
+            ComparatorType.COMPOSITETYPE);
+      column0.setComparatorTypeAlias(comparatorAlias);
+      column0.setRowCacheSize(0);
+      column0.setKeyCacheSize(0);
+      cfDefs.add(column0);
+      
+      // TermInfoRangeFloat
+
+      comparatorAlias = "("
+            + "FloatType, "
+            + ComparatorType.UUIDTYPE.getTypeName() + ", "
+            + ComparatorType.UTF8TYPE.getTypeName() + ")";
+
+      ColumnFamilyDefinition column1 = HFactory.createColumnFamilyDefinition(
+            DFCE_KEYSPACE_NAME, "TermInfoRangeFloat",
+            ComparatorType.COMPOSITETYPE);
+      column1.setComparatorTypeAlias(comparatorAlias);
+      column1.setRowCacheSize(0);
+      column1.setKeyCacheSize(0);
+      cfDefs.add(column1);
+
+      // Ajoute les options les plus courantes à chacune des CF
+      for (ColumnFamilyDefinition c : cfDefs) {
+         addDefaultCFAttributs(c);
+      }
+
+      // Création des CF
+      for (ColumnFamilyDefinition c : cfDefs) {
+         if (cfExists(keyspaceDef, c.getName())) {
+            LOG.info("La famille de colonnes " + c.getName()
+                  + " est déjà existante");
+         } else {
+            LOG.info("Création de la famille de colonnes " + c.getName());
+            cluster.addColumnFamily(c, true);
+         }
+      }
+
+   }
 
    private void connectToKeyspace() {
       if (keyspace != null)
