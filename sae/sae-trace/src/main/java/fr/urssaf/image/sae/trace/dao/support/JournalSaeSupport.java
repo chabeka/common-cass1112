@@ -98,7 +98,8 @@ public class JournalSaeSupport {
             Date dateDebutEvt = sdf.parse(dateTmp);
 
             Journal journal = new Journal(document.getCreationDate(), document
-                  .getUuid(), nomFichier, dateDebutEvt, dateDebutEvt, document.getSize());
+                  .getUuid(), nomFichier, dateDebutEvt, dateDebutEvt, document
+                  .getSize());
             listeJournal.add(journal);
          }
          return listeJournal;
@@ -107,6 +108,39 @@ public class JournalSaeSupport {
          throw new TraceRuntimeException(e);
       } catch (SearchQueryParseException e) {
          throw new TraceRuntimeException(e);
+      } catch (ParseException e) {
+         throw new TraceRuntimeException(e);
+      }
+   }
+
+   public final Journal findByUUID(UUID uuidJournal, String nomBase) {
+
+      try {
+         ToolkitFactory toolkitFactory = new ToolkitFactory();
+         Base base = toolkitFactory.createBase(nomBase);
+
+         Document document = serviceProvider.getSearchService()
+               .getDocumentByUUID(base, uuidJournal);
+
+         if (document != null) {
+            String nomFichier = document.getFilename() + "."
+                  + document.getExtension();
+            String dateTmp = (String) document.getSingleCriterion("itm")
+                  .getWord();
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd",
+                  Locale.FRENCH);
+            Date dateDebutEvt = sdf.parse(dateTmp);
+
+            Journal journal = new Journal(document.getCreationDate(), document
+                  .getUuid(), nomFichier, dateDebutEvt, dateDebutEvt, document
+                  .getSize());
+
+            return journal;
+         } else {
+            return null;
+         }
+
       } catch (ParseException e) {
          throw new TraceRuntimeException(e);
       }
@@ -135,5 +169,4 @@ public class JournalSaeSupport {
          throw new TraceRuntimeException(e);
       }
    }
-
 }

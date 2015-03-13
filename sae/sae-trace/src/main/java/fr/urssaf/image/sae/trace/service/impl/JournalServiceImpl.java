@@ -188,4 +188,29 @@ public class JournalServiceImpl implements JournalService {
       return journalDfceSupport.getNomJournal(uuidJournal);
    }
 
+   @Override
+   public Journal rechercherJournauxDfce(UUID uuidJournal) {
+      String trcPrefix = "rechercherJournauxEvenementDfce";
+      LOGGER.debug("{} - début", trcPrefix);
+      LOGGER.debug("{} - UUID journal : {}", new String[] { trcPrefix,
+            uuidJournal.toString() });
+
+      LOGGER.debug("{} - fin", trcPrefix);
+      return journalDfceSupport.getJournal(uuidJournal);
+   }
+
+   @Override
+   public Journal rechercherJournauxEvenementSae(UUID uuidJournal,
+         String nomBase) {
+      String trcPrefix = "rechercherJournauxEvenementSae";
+      LOGGER.debug("{} - début", trcPrefix);
+      LOGGER.debug("{} - UUID journal : {}", new String[] { trcPrefix,
+            uuidJournal.toString() });
+
+      LOGGER.debug("{} - fin", trcPrefix);
+      return journalSaeSupport.findByUUID(uuidJournal, nomBase);
+   }
+
+
+
 }

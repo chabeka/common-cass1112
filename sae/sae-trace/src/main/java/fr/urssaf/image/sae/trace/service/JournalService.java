@@ -80,6 +80,17 @@ public interface JournalService {
          String nomBase);
 
    /**
+    * Renvoie le journal des évènements SAE correspondant à un UUID
+    * 
+    * @param uuidJounal
+    *           l'UUID du journal
+    * @param nomBase
+    *           Nom de la base SAE dans DFCE
+    * @return Liste des journaux compris dans l'intervalle de dates
+    */
+   Journal rechercherJournauxEvenementSae(UUID uuidJournal, String nomBase);
+
+   /**
     * Renvoie le contenu du journal DFCE avec l'identifiant passé en paramètre
     * 
     * @param uuidJournal
@@ -107,5 +118,14 @@ public interface JournalService {
     * @return Nom du journal
     */
    String getNomJournalDfce(UUID uuidJournal);
+
+   /**
+    * Renvoie le journal des évènements DFCE correspondant à un UUID
+    * 
+    * @param uuidJournal
+    *           UUID du journal
+    * @return Le journal correspondant à l'UUID
+    */
+   Journal rechercherJournauxDfce(UUID uuidJournal);
 
 }

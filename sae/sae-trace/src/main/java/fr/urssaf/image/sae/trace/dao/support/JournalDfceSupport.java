@@ -148,13 +148,11 @@ public class JournalDfceSupport {
          // Lancement de la recherche
          String requete = sBuffer.toString();
          int nbMaxElements = Integer.MAX_VALUE;
-         
-         
-         SortedSearchQuery paramSearchQuery = new SortedQueryImpl(
-               requete, nbMaxElements, 0,
-               base);
-         SearchResult resultat = serviceProvider.getSearchService()
-               .search(paramSearchQuery);
+
+         SortedSearchQuery paramSearchQuery = new SortedQueryImpl(requete,
+               nbMaxElements, 0, base);
+         SearchResult resultat = serviceProvider.getSearchService().search(
+               paramSearchQuery);
 
          List<Journal> listeJournal = new ArrayList<Journal>();
 
@@ -167,9 +165,10 @@ public class JournalDfceSupport {
                   "LOG_ARCHIVE_BEGIN_DATE").getWord();
             Date dateFinEvt = (Date) document.getSingleCriterion(
                   "LOG_ARCHIVE_END_DATE").getWord();
-                        
+
             Journal journal = new Journal(document.getCreationDate(), document
-                  .getUuid(), nomFichier, dateDebutEvt, dateFinEvt, document.getSize());
+                  .getUuid(), nomFichier, dateDebutEvt, dateFinEvt, document
+                  .getSize());
 
             listeJournal.add(journal);
 
@@ -232,8 +231,8 @@ public class JournalDfceSupport {
       Document doc = serviceProvider.getSearchService().getDocumentByUUID(base,
             idJournal);
       if (doc != null) {
-         InputStream inStream = serviceProvider.getStoreService().getDocumentFile(
-            doc);
+         InputStream inStream = serviceProvider.getStoreService()
+               .getDocumentFile(doc);
          try {
             return IOUtils.toByteArray(inStream);
          } catch (IOException e) {
@@ -242,7 +241,7 @@ public class JournalDfceSupport {
       } else {
          return null;
       }
-     
+
    }
 
    /**
@@ -258,6 +257,38 @@ public class JournalDfceSupport {
             idJournal);
 
       return doc.getFilename() + "." + doc.getExtension();
+
+   }
+
+   /**
+    * Retourne le journal dont l'identifiant est passé en paramètre
+    * 
+    * @param idJournal
+    *           Identifiant du journal
+    * @return le journal
+    */
+   public final Journal getJournal(UUID idJournal) {
+      Base base = serviceProvider.getArchiveService().getLogsArchiveBase();
+      Document document = serviceProvider.getSearchService().getDocumentByUUID(
+            base, idJournal);
+
+      if (document != null) {
+         String nomFichier = document.getFilename() + "."
+               + document.getExtension();
+
+         Date dateDebutEvt = (Date) document.getSingleCriterion(
+               "LOG_ARCHIVE_BEGIN_DATE").getWord();
+         Date dateFinEvt = (Date) document.getSingleCriterion(
+               "LOG_ARCHIVE_END_DATE").getWord();
+
+         Journal journal = new Journal(document.getCreationDate(), document
+               .getUuid(), nomFichier, dateDebutEvt, dateFinEvt, document
+               .getSize());
+
+         return journal;
+      } else {
+         return null;
+      }
 
    }
 
