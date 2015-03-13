@@ -85,7 +85,7 @@ public final class RefMetaInitialisationService {
          try {
             //-- Lecture du fichier XML, et remplissage 
             // d'une liste d'objets métadonnées
-            indexesComposites = chargerFichierIdxComposites();
+            indexesComposites = chargerFichierIdxComposites(true);
          } catch (JAXBException e) {
             throw new MajLotRuntimeException(e);
          } catch (SAXException e) {
@@ -95,6 +95,28 @@ public final class RefMetaInitialisationService {
          }
       }
       return indexesComposites;
+   }
+   
+   /**
+    * Récupération après chargement du fichier,
+    * de la liste des métadonnées
+    * 
+    * @return : La liste des métadonnées
+    */
+   public List<String[]> getIndexesCompositesASupprimer() {
+      List<String[]> indexASupprimer;
+      try {
+         //-- Lecture du fichier XML, et remplissage 
+         // d'une liste d'objets métadonnées
+         indexASupprimer = chargerFichierIdxComposites(false);
+      } catch (JAXBException e) {
+         throw new MajLotRuntimeException(e);
+      } catch (SAXException e) {
+         throw new MajLotRuntimeException(e);
+      } catch (IOException e) {
+         throw new MajLotRuntimeException(e);
+      }
+      return indexASupprimer;
    }
 
    /**
@@ -121,7 +143,7 @@ public final class RefMetaInitialisationService {
       LOG.info("Fin de l'initialisation du nouveau référentiel des métadonnées");
    }
    
-   protected List<String[]> chargerFichierIdxComposites() throws IOException, JAXBException, SAXException  {
+   protected List<String[]> chargerFichierIdxComposites(boolean aCreer) throws IOException, JAXBException, SAXException  {
       
       String cheminRessourceXml = "IndexesComposites1.0.xml";
       String xsdResPath = "/xsd/metadata/IndexesComposites.xsd";
@@ -140,7 +162,7 @@ public final class RefMetaInitialisationService {
          IndexReference indexXml = indexes.get(i);
          
          //-- On ignore les indexes qui ne sont pas "aCreer"
-         if(!readBoolean(indexXml.getACreer())) {
+         if(readBoolean(indexXml.getACreer()) != aCreer) {
             continue;
          }
          

@@ -208,11 +208,22 @@ public class RefMetaInitialisationServiceTest {
    public void chargerFichierIdxCompositesTest() throws IOException, JAXBException, SAXException{
       String message = "";
       
-      List<String[]> indexes = refMetaService.chargerFichierIdxComposites();  
+      List<String[]> indexes = refMetaService.chargerFichierIdxComposites(true);  
       
       //-- Test version 1.0 du fichiers des indexes composites
       message = "Le nombre d'indexes attendu (fichier v1.0) est incorrect";
       Assert.assertEquals(message, 14, indexes.size());
+   }
+   
+   @Test
+   public void chargerFichierIdxCompositesASupprimerTest() throws IOException, JAXBException, SAXException{
+      String message = "";
+      
+      List<String[]> indexes = refMetaService.chargerFichierIdxComposites(false);  
+      
+      //-- Test version 1.0 du fichiers des indexes composites
+      message = "Le nombre d'indexes attendu (fichier v1.0) est incorrect";
+      Assert.assertEquals(message, 1, indexes.size());
    }
 
    private String boolToStringForDataset(boolean value) {

@@ -1584,7 +1584,7 @@
       <label>Site comptable</label>
       <description></description>
    </metaDataReference>
-      <metaDataReference>
+   <metaDataReference>
       <shortCode>dte</shortCode>
       <longCode>DomaineTechnique</longCode>
       <type>Boolean</type>

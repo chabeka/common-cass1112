@@ -63,6 +63,7 @@ public final class MajLotServiceImpl implements MajLotService {
    public static final String DFCE_150400_P5 = "DFCE_150400_P5";
    public static final String CASSANDRA_DROITS_GED = "CASSANDRA_DROITS_GED";
    public static final String CREATION_GED = "CREATION_GED";
+   public static final String DISABLE_COMPOSITE_INDEX = "DISABLE_COMPOSITE_INDEX";
 
    public static final int DUREE_1825 = 1825;
    public static final int DUREE_1643 = 1643;
@@ -167,6 +168,10 @@ public final class MajLotServiceImpl implements MajLotService {
       } else if (DFCE_150400_P5.equalsIgnoreCase(nomOperation)) {
 
          updateDFCE150400_P5();
+
+      } else if (DISABLE_COMPOSITE_INDEX.equalsIgnoreCase(nomOperation)) {
+
+         disableCompositeIndex();
 
       } else if (CASSANDRA_DROITS_GED.equalsIgnoreCase(nomOperation)) {
 
@@ -674,7 +679,7 @@ public final class MajLotServiceImpl implements MajLotService {
          }
       }
    }
-
+   
    /**
     * Pour lot 130700 du SAE : mise à jour du keyspace "Docubase" pour le
     * passage à la version 1.2.x de DFCE
@@ -717,6 +722,23 @@ public final class MajLotServiceImpl implements MajLotService {
             cassandraConfig);
       dfceUpdater.updateToVersion129_P5();
       LOG.info("Fin de l'opération : Lot 150400_P5 - Mise à jour du schéma DFCE");
+   }
+   
+   /**
+    * Pour le lot 150400, nous avons cree des index composite pour SICOMOR.
+    * Or, lorsqu'il utilise un des index composites, la requete lancee n'utilise pas le bon
+    * index composite (JIRA-154). Pour pallier temporaire ce probleme, nous allons supprimer
+    * cette index composite de docubase.
+    */
+   private void disableCompositeIndex() {
+
+      RefMetaInitialisationService service = updater.getRefMetaInitService();
+      LOG
+            .info("Début de l'opération : DISABLE_COMPOSITE_INDEX - Mise à jour de DFCE");
+      DFCEUpdater dfceUpdater = new DFCEUpdater(
+            cassandraConfig);
+      dfceUpdater.disableCompositeIndex(service.getIndexesCompositesASupprimer());
+      LOG.info("Fin de l'opération : DISABLE_COMPOSITE_INDEX - Mise à jour de DFCE");
    }
 
    /**
