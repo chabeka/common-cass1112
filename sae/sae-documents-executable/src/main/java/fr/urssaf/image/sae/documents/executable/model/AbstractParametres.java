@@ -1,11 +1,9 @@
 package fr.urssaf.image.sae.documents.executable.model;
 
-
 /**
  * Objet permettant de stocker les paramètres concernant un traitement
  */
 public abstract class AbstractParametres {
-
 
    /**
     * Requête permettant de sélectionner les documents à vérifier (réalisée à
@@ -19,10 +17,14 @@ public abstract class AbstractParametres {
    private int taillePool;
 
    /**
+    * Nombre d'élélemts maximum dans la queue du pool de thread.
+    */
+   private int tailleQueue;
+
+   /**
     * Taille de pas d'exécution ("x enregistrements traités" dans les logs)
     */
    private int taillePasExecution;
-
 
    /**
     * Permet de récupérer la requête permettant de sélectionner les documents à
@@ -64,6 +66,28 @@ public abstract class AbstractParametres {
     */
    public final void setTaillePool(final int taillePool) {
       this.taillePool = taillePool;
+   }
+
+   /**
+    * Permet de récupérer le nombre d'éléments maximum en attente dans la queue
+    * du pool de thread.
+    * 
+    * @return int
+    */
+   public final int getTailleQueue() {
+      return tailleQueue;
+   }
+
+   /**
+    * Permet de modifier le nombre d'éléments maximum en attente dans la queue
+    * du pool de thread.
+    * 
+    * @param tailleQueue
+    *           nombre maximum d'éléments en attente dans la queue du pool de
+    *           thread
+    */
+   public final void setTailleQueue(final int tailleQueue) {
+      this.tailleQueue = tailleQueue;
    }
 
    /**

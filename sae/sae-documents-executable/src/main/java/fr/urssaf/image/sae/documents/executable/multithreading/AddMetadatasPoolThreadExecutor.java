@@ -40,8 +40,8 @@ public class AddMetadatasPoolThreadExecutor extends ThreadPoolExecutor {
     */
    public AddMetadatasPoolThreadExecutor(final AddMetadatasParametres parametres) {
       super(parametres.getTaillePool(), parametres.getTaillePool(), 1,
-            TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(),
-            new DiscardPolicy());
+            TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(parametres
+                  .getTailleQueue()), new DiscardPolicy());
       setPasExecution(parametres.getTaillePasExecution());
    }
 
@@ -52,10 +52,10 @@ public class AddMetadatasPoolThreadExecutor extends ThreadPoolExecutor {
    protected final void afterExecute(final Runnable runnable,
          final Throwable throwable) {
       super.afterExecute(runnable, throwable);
-        
-      //-- On incrémenter le compteur d’éléments traités
+
+      // -- On incrémenter le compteur d’éléments traités
       nombreTraites++;
-      
+
       if (getNombreTraites() % getPasExecution() == 0) {
          LOGGER.info("{} éléments traités", getNombreTraites());
       }

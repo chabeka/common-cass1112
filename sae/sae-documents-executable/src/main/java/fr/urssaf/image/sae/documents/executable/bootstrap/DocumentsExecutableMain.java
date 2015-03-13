@@ -204,6 +204,11 @@ public class DocumentsExecutableMain {
          confOk = false;
       }
 
+      // verifie la taille de la queue en attente d'exécution (obligatoire)
+      if (ValidationUtils.verifParamTailleQueue(properties, parametres)) {
+         confOk = false;
+      }
+
       // verifie le nombre maximum de documents (obligatoire)
       if (ValidationUtils.verifParamNbMaxDocuments(properties, parametres)) {
          confOk = false;
@@ -250,6 +255,11 @@ public class DocumentsExecutableMain {
 
       // -- verifie la taille du pool de thread (obligatoire)
       if (ValidationUtils.verifAddMetaParamTaillePool(properties, parametres)) {
+         confOk = false;
+      }
+
+      // -- verifie la taille de la queue en attente d'exécution (obligatoire)
+      if (ValidationUtils.verifAddMetaParamTailleQueue(properties, parametres)) {
          confOk = false;
       }
 

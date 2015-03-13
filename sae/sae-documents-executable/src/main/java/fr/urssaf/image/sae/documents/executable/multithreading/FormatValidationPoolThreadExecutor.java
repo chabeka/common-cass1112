@@ -54,8 +54,8 @@ public class FormatValidationPoolThreadExecutor extends ThreadPoolExecutor {
    public FormatValidationPoolThreadExecutor(
          final FormatValidationParametres parametres) {
       super(parametres.getTaillePool(), parametres.getTaillePool(), 1,
-            TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(),
-            new DiscardPolicy());
+            TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(parametres
+                  .getTailleQueue()), new DiscardPolicy());
       setPasExecution(parametres.getTaillePasExecution());
       this.metadonnees = parametres.getMetadonnees();
    }

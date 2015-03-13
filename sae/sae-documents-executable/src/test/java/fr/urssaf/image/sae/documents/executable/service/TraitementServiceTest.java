@@ -54,6 +54,7 @@ public class TraitementServiceTest {
       parametres.setNombreMaxDocs(10);
       parametres.setTaillePasExecution(5);
       parametres.setTaillePool(1);
+      parametres.setTailleQueue(5);
       parametres.setTempsMaxTraitement(0);
       parametres.setMetadonnees(new ArrayList<String>());
       return parametres;

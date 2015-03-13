@@ -68,7 +68,7 @@ public class AddMetadatasRunnable implements Runnable {
    @Override
    public final void run() {
       for (Map.Entry<String, String> meta : metadonnees.entrySet()) {
-         if (document.getCriterions(meta.getKey()).isEmpty()) {
+         if (document.getCriterions(meta.getKey()).isEmpty() && meta.getValue() != null) {
             // ajout d'une nouvelle valeur de metadonnee
             document.addCriterion(meta.getKey(), meta.getValue());
          } else if (!document.getCriterions(meta.getKey()).isEmpty() && meta.getValue() == null) {

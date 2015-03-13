@@ -71,16 +71,17 @@ public class TraitementServiceImpl implements TraitementService {
       final List<String> metadonnees = getMetadonnees(parametres);
 
       int nbDocTraites = 0;
+      int nbDocErreurIdent = 0;
+      FormatValidationPoolThreadExecutor executor = null;
       try {
          // execution de la requete dfce
          final Iterator<Document> iteratorDoc = getDfceService()
                .executerRequete(requeteLucene);
 
          // initialise le pool de thread
-         final FormatValidationPoolThreadExecutor executor = new FormatValidationPoolThreadExecutor(
+         executor = new FormatValidationPoolThreadExecutor(
                parametres);
 
-         int nbDocErreurIdent = 0;
          while (isTraitementTermine(parametres, startTime, iteratorDoc,
                nbDocTraites)) {
             // recupereation du contenu du document
@@ -125,26 +126,63 @@ public class TraitementServiceImpl implements TraitementService {
             }
          }
 
-         if (parametres.getModeVerification() != MODE_VERIFICATION.IDENTIFICATION) {
-            executor.shutdown();
-            executor.waitFinishValidation();
-         }
-
-         LOGGER.info("{} documents analysés au total", nbDocTraites);
-         LOGGER.info("{} documents en erreur d'identification",
+         // attend la fin du traitement de validation des format
+         waitFinTraitementValidation(parametres, nbDocTraites, executor,
                nbDocErreurIdent);
-         LOGGER.info("{} documents en erreur de validation", executor
-               .getNombreDocsErreur());
 
       } catch (SearchQueryParseException ex) {
          LOGGER.error("La syntaxe de la requête n'est pas valide : {}", ex
                .getMessage());
+      } catch (Error ex) {
+         // gestion des erreurs grave de la jvm
+         // on essaie d'arrêter le pool et d'attendre la fin 
+         if (executor != null && !executor.isShutdown()) {
+            waitFinTraitementValidation(parametres, nbDocTraites, executor,
+                  nbDocErreurIdent);
+         }
+         // et on envoie l'erreur à l'appelant
+         throw ex;
+      } catch (RuntimeException ex) {
+         // gestion des runtime exception
+         // on essaie d'arrêter le pool et d'attendre la fin 
+         if (executor != null && !executor.isShutdown()) {
+            waitFinTraitementValidation(parametres, nbDocTraites, executor,
+                  nbDocErreurIdent);
+         }
+         // et on envoie l'erreur à l'appelant
+         throw ex;
       }
 
       // ferme la connexion a dfce
       getDfceService().fermerConnexion();
 
       return nbDocTraites;
+   }
+
+   /**
+    * Methode permettant d'attendre la fin de traitement de validation.
+    * 
+    * @param parametres
+    *           parametres
+    * @param nbDocTraites
+    *           nombre de docs traites
+    * @param executor
+    *           pool de thread
+    * @param nbDocErreurIdent
+    *           nombre d'erreur d'identification
+    */
+   private void waitFinTraitementValidation(
+         final FormatValidationParametres parametres, int nbDocTraites,
+         FormatValidationPoolThreadExecutor executor, int nbDocErreurIdent) {
+      if (parametres.getModeVerification() != MODE_VERIFICATION.IDENTIFICATION) {
+         executor.shutdown();
+         executor.waitFinishValidation();
+      }
+
+      LOGGER.info("{} documents analysés au total", nbDocTraites);
+      LOGGER.info("{} documents en erreur d'identification", nbDocErreurIdent);
+      LOGGER.info("{} documents en erreur de validation", executor
+            .getNombreDocsErreur());
    }
 
    /**
@@ -363,6 +401,9 @@ public class TraitementServiceImpl implements TraitementService {
       this.formatFichierService = formatFichierService;
    }
 
+   /**
+    * {@inheritDoc}
+    */
    @Override
    public void addMetadatasToDocuments(AddMetadatasParametres parametres) {
 
@@ -371,12 +412,12 @@ public class TraitementServiceImpl implements TraitementService {
 
       String requeteLucene = parametres.getRequeteLucene();
       Map<String, String> metas = parametres.getMetadonnees();
+      AddMetadatasPoolThreadExecutor poolThead = null;
 
       try {
          Iterator<Document> it = getDfceService()
                .executerRequete(requeteLucene);
 
-         AddMetadatasPoolThreadExecutor poolThead;
          poolThead = new AddMetadatasPoolThreadExecutor(parametres);
 
          while (it.hasNext()) {
@@ -386,20 +427,52 @@ public class TraitementServiceImpl implements TraitementService {
             poolThead.execute(addMetasRun);
          }
 
-         poolThead.shutdown();
-
-         // -- On attend la fin de l'execution du poolThead
-         poolThead.waitFinishAddMetadata();
-
-         LOGGER.info("{} documents traités au total", poolThead
-               .getNombreTraites());
+         // attend la fin du traitement
+         waitFinTraitementAddMetadatas(poolThead);
+         
       } catch (SearchQueryParseException ex) {
          LOGGER.error("La syntaxe de la requête n'est pas valide : {}", ex
                .getMessage());
-      }
+      } catch (Error ex) {
+         // gestion des erreurs grave de la jvm
+         // on essaie d'arrêter le pool et d'attendre la fin 
+         if (poolThead != null && !poolThead.isShutdown()) {
+            // attend la fin du traitement
+            waitFinTraitementAddMetadatas(poolThead);
+         }
+         // et on envoie l'erreur à l'appelant
+         throw ex;
+      } catch (RuntimeException ex) {
+         // gestion des erreurs de types runtime
+         // on essaie d'arrêter le pool et d'attendre la fin 
+         if (poolThead != null && !poolThead.isShutdown()) {
+            // attend la fin du traitement
+            waitFinTraitementAddMetadatas(poolThead);
+         }
+         // et on envoie l'erreur à l'appelant
+         throw ex;
+      } 
 
       // -- Fermeture connexion dfce
       getDfceService().fermerConnexion();
+   }
+
+   /**
+    * Methode permettant d'attendre la fin du traitement de l'ajout de
+    * metadonnees.
+    * 
+    * @param poolThead
+    *           pool de thread
+    */
+   private void waitFinTraitementAddMetadatas(
+         AddMetadatasPoolThreadExecutor poolThead) {
+      poolThead.shutdown();
+
+      // -- On attend la fin de l'execution du poolThead
+      poolThead.waitFinishAddMetadata();
+
+      LOGGER
+            .info("{} documents traités au total", poolThead.getNombreTraites());
    }
 
 }

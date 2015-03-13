@@ -162,6 +162,35 @@ public final class ValidationUtils {
    }
 
    /**
+    * Methode permettant de vérifier la saisie du paramètre taille de la queue
+    * en attente d'exécution.
+    * 
+    * @param properties
+    *           properties
+    * @param parametres
+    *           paramètres
+    * @return boolean
+    */
+   public static boolean verifParamTailleQueue(final Properties properties,
+         final AbstractParametres parametres) {
+      boolean erreurVerif = false;
+      String tailleQueue = properties.getProperty("format.taille.queue");
+      if (NumberUtils.isDigits(tailleQueue)) {
+         int valeurTailleQueue = Integer.valueOf(tailleQueue);
+         LOGGER.info("Taille de la queue du pool de thread : {}",
+               valeurTailleQueue);
+         parametres.setTailleQueue(valeurTailleQueue);
+      } else {
+         LOGGER
+               .warn(
+                     "Le paramètre {} ne doit pas être vide et doit contenir uniquement des chiffres",
+                     "format.taille.queue");
+         erreurVerif = true;
+      }
+      return erreurVerif;
+   }
+
+   /**
     * Methode permettant de vérifier la saisie du paramètre nombre maximum de
     * documents.
     * 
@@ -249,6 +278,32 @@ public final class ValidationUtils {
          public void onVerified() {
             int value = Integer.valueOf(paramValue);
             parametres.setTaillePool(value);
+         }
+      }))
+         return false;
+      else
+         return true;
+   }
+
+   /**
+    * Vérification de la taille de la queue en attente d'exécution.
+    * 
+    * @param properties
+    *           properties
+    * @param parametres
+    *           parametres
+    * @return Renvoie vrai si taille OK
+    */
+   public static boolean verifAddMetaParamTailleQueue(
+         final Properties properties, final AbstractParametres parametres) {
+      final String paramName = "addMeta.taille.queue";
+      final String paramValue = properties.getProperty(paramName);
+
+      if (isNumericParam(paramName, paramValue, new onVerifiedCallback() {
+         @Override
+         public void onVerified() {
+            int value = Integer.valueOf(paramValue);
+            parametres.setTailleQueue(value);
          }
       }))
          return false;

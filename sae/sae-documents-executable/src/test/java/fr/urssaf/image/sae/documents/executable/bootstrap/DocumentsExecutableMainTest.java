@@ -75,6 +75,7 @@ public class DocumentsExecutableMainTest {
       
       //-- Liste des métadonnées
       properties.put("addMeta.taille.pool", "5");
+      properties.put("addMeta.taille.queue", "20");
       properties.put("addMeta.taille.pas.execution", "10000");
       properties.put("addMeta.metadonnees", "cot:1,cpt:0,drh:0");
       properties.put("addMeta.requete.lucene", "SM_ARCHIVAGE_DATE :[20120101 TO 20150401]");
@@ -161,6 +162,7 @@ public class DocumentsExecutableMainTest {
             .name());
       properties.put("format.requete.lucene", "srt:41882050200023");
       properties.put("format.taille.pool", "5");
+      properties.put("format.taille.queue", "20");
       properties.put("format.nombre.max.documents", "100");
       properties.put("format.taille.pas.execution", "10");
 
@@ -211,6 +213,7 @@ public class DocumentsExecutableMainTest {
             .name());
       properties.put("format.requete.lucene", "srt:41882050200023");
       properties.put("format.taille.pool", "5");
+      properties.put("format.taille.queue", "20");
       properties.put("format.nombre.max.documents", "100");
       properties.put("format.taille.pas.execution", "10");
       properties.put("format.metadonnees", "srt,iti");
