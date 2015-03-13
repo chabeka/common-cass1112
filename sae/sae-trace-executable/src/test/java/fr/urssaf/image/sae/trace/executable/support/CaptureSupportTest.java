@@ -252,11 +252,11 @@ public class CaptureSupportTest {
       String hashValue = null;
       String dteValue = null;
       for (int i = 0; i < uMetadatas.size(); i++) {
-         if(hashValue != null && uMetadatas.get(i).getLongCode().equals("Hash")){
+         if(hashValue == null && uMetadatas.get(i).getLongCode().equals("Hash")){
             hashValue = uMetadatas.get(i).getValue();
          }
          
-         if(dteValue != null && uMetadatas.get(i).getLongCode().equals("DomaineTechnique")){
+         if(dteValue == null && uMetadatas.get(i).getLongCode().equals("DomaineTechnique")){
             dteValue = uMetadatas.get(i).getValue();
          }
       }
@@ -272,7 +272,7 @@ public class CaptureSupportTest {
          Assert.fail("la propriété DomaineTechnique n'est pas trouvée");
       } else {
          Assert.assertEquals("le flag DomaineTechnique n'est pas correct",
-               true, dteValue);
+               "true", dteValue);
       }
    }
 
