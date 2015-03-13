@@ -38,7 +38,7 @@
 	<ns1:indexReference>
 		<ns1:nom>DomaineComptable-SiteComptable-CodeRnd-NumeroFactureFournisseur</ns1:nom>
 		<ns1:composition>cpt:sco:SM_DOCUMENT_TYPE:nff</ns1:composition>
-		<ns1:aCreer>oui</ns1:aCreer>
+		<ns1:aCreer>non</ns1:aCreer>
 	</ns1:indexReference>
 	<ns1:indexReference>
 		<ns1:nom>DomaineComptable-SiteComptable-CodeRnd-NumeroDevisSicomor</ns1:nom>
