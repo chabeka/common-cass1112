@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- Documents zone obligatoire n'a pas de s -->
-<sae:archivageUnitaire xmlns:sae="http://www.cirtil.fr/saeService" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.cirtil.fr/saeService ..\SaeService.xsd">
-	<sae:ecdeUrl>ecde://ecde.cer69.recouvt/contrat_service/20110525/numTraitement/document/monFichier.txt"</sae:ecdeUrl>
-	<sae:metadonnees/>
-</sae:archivageUnitaire>
