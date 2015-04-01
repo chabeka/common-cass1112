@@ -13,10 +13,11 @@ public interface VIService {
     * 
     * @param auth
     *           le résultat de l'authentification dans ANAIS
+    * @param userLogin login de l'utilisateur          
     * @return le VI au format XML
     * @throws VIBuildException
     *            si un problème se produit lors de la génération du VI
     */
-   public String buildVI(SaeAnaisAuth auth) throws VIBuildException;
+   public String buildVI(SaeAnaisAuth auth, String userLogin) throws VIBuildException;
 
 }

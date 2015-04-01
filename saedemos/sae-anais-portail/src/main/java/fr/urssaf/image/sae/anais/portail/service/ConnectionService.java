@@ -77,7 +77,7 @@ public class ConnectionService {
       }
 
       // Génération du VI
-      String vi = viService.buildVI(auth);
+      String vi = viService.buildVI(auth, userLogin);
 
       // Renvoie le VI
       return vi;
