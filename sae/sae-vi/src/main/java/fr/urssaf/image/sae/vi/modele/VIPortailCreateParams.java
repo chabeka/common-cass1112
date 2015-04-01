@@ -11,6 +11,8 @@ public class VIPortailCreateParams {
    private String issuer;
 
    private String nameId;
+   
+   private String login;
 
    private String audience;
 
@@ -108,6 +110,20 @@ public class VIPortailCreateParams {
     */
    public final void setHabAnais(String habAnais) {
       this.habAnais = habAnais;
+   }
+
+   /**
+    * @return the login
+    */
+   public String getLogin() {
+      return login;
+   }
+
+   /**
+    * @param login the login to set
+    */
+   public void setLogin(String login) {
+      this.login = login;
    }
 
 }

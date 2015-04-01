@@ -88,6 +88,9 @@ public final class PortailVIServiceImpl implements PortailVIService {
 
       // issuer
       viType.setIssuer(viParams.getIssuer());
+      
+      // login
+      viType.setLogin(viParams.getLogin());
 
       // nameID
       viType.setNameID(viParams.getNameId());
@@ -171,6 +174,7 @@ public final class PortailVIServiceImpl implements PortailVIService {
       VIPortailContenuExtrait viData = new VIPortailContenuExtrait();
       viData.setAudience(viType.getAudience());
       viData.setIssuer(viType.getIssuer());
+      viData.setLogin(viType.getLogin());
       viData.setNameId(viType.getNameID());
       for (String pagm : viType.getPagms().getPagm()) {
          viData.getPagmList().add(pagm);

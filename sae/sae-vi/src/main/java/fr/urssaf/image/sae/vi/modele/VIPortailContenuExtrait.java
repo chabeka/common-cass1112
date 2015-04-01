@@ -12,6 +12,8 @@ public class VIPortailContenuExtrait {
 
    private String nameId;
 
+   private String login;
+   
    private String audience;
 
    private List<String> pagmList = new ArrayList<String>();
@@ -108,6 +110,20 @@ public class VIPortailContenuExtrait {
     */
    public final void setHabAnais(String habAnais) {
       this.habAnais = habAnais;
+   }
+
+   /**
+    * @return the login
+    */
+   public final String getLogin() {
+      return login;
+   }
+
+   /**
+    * @param login the login to set
+    */
+   public final void setLogin(String login) {
+      this.login = login;
    }
 
 }

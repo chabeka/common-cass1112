@@ -42,6 +42,7 @@ public class PortailVIServiceTest {
 
       VIPortailCreateParams viParams = new VIPortailCreateParams();
       viParams.setIssuer("id_du_contrat_de_service");
+      viParams.setLogin("LOGIN");
       viParams.setAudience("http://sae.urssaf.fr");
       viParams.setNameId("NOM PRENOM");
       viParams.getPagmList().add("PAGM1");
@@ -69,6 +70,7 @@ public class PortailVIServiceTest {
          viParams.setIssuer("id_du_contrat_de_service");
          viParams.setAudience("http://sae.urssaf.fr");
          viParams.setNameId("NOM PRENOM");
+         viParams.setLogin("LOGIN");
          viParams.setHabAnais("HAB ANAIS");
 
          service.creerVI(viParams);

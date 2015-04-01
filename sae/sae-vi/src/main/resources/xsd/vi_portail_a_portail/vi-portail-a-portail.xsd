@@ -11,6 +11,7 @@
          <xsd:element name="issuer" type="xsd:string" />
          <xsd:element name="audience" type="xsd:string" />
          <xsd:element name="nameID" type="xsd:string" />
+         <xsd:element name="login" type="xsd:string" />
          <xsd:element name="pagms" type="vi:pagmsType"/>
          <xsd:element name="habilitationAnais" type="xsd:string" />
       </xsd:sequence>
