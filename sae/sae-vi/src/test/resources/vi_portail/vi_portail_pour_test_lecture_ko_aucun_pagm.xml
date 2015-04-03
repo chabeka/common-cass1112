@@ -9,6 +9,8 @@
    
    <nameID>NOM PRENOM</nameID>
    
+   <login>LOGIN</login>
+   
    <!-- Liste vide, doit provoquer une erreur de validation XSD -->
    <pagms />
    
