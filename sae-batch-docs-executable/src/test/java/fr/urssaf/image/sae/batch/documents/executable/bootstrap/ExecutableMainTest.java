@@ -266,11 +266,11 @@ public class ExecutableMainTest {
    
    /**
     * Test REEL 
-    * Export d'un gros volume de documents
+    * Export de documents
     */
    @Test
    @Ignore
-   public void ImportValidationNationaleGns(){
+   public void ExportIntegrationNationaleGns(){
       String LUCENE = "SM_ARCHIVAGE_DATE:[20150301 TO 20150409] AND cpt:true";
       String[] args = {
          "EXPORT_DOCUMENTS", 
@@ -286,19 +286,4 @@ public class ExecutableMainTest {
       if(ExecutableMain.DEBUG_MODE)
          Assert.assertFalse("DEBUG_MODE : Doit passer à false", ExecutableMain.DEBUG_MODE);
    }
-   
-   @Test
-   public void pdf() throws IOException{
-      FileInputStream input = new FileInputStream ("C:/file.pdf");
-      ByteArrayOutputStream output = new ByteArrayOutputStream ();
-      byte [] buffer = new byte [65536];
-      int l;
-      while ((l = input.read(buffer)) > 0){
-          output.write (buffer, 0, l);
-          System.out.println(buffer.toString());
-      }
-      input.close ();
-   }
-   
-   
 }

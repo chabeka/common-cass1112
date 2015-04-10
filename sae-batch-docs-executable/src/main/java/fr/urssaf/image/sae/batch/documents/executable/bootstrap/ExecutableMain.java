@@ -2,6 +2,7 @@ package fr.urssaf.image.sae.batch.documents.executable.bootstrap;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Properties;
 
@@ -104,8 +105,9 @@ public class ExecutableMain {
     */
    public static void main(String[] args) {
       LOGGER.info("Arguments CMD : [{}]", StringUtils.join(args, ", "));
-      final String environments = "src/main/resources/config/environnements.xml";
-      ExecutableMain main = new ExecutableMain(environments);
+      final String environments = "config/environnements.xml";
+      URL url = Thread.currentThread().getContextClassLoader().getResource(environments);
+      ExecutableMain main = new ExecutableMain(url.getFile());
       main.execute(args);
    }
 
