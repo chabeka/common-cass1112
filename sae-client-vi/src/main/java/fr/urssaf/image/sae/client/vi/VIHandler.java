@@ -37,13 +37,16 @@ public class VIHandler extends AbstractHandler {
    public static final String KEYSPACE_GET_INSTANCE = "getInstance";
    public static final String KEY_KEYSTORE = "keystore";
    public static final String KEY_ISSUER = "issuer";
+   public static final String KEY_LOGIN = "login";
    public static final String KEY_PAGMS = "pagms";
    private static final String DEFAULT_ISSUER = "PNR";
+   private static final String DEFAULT_LOGIN = "NON_RENSEIGNE";
    private static final String DEFAUL_PAGM = "ROLE_TOUS;FULL";
 
    private KeyStoreInterface iKeyStore = null;
    private List<String> pagms = null;
    private String issuer = null;
+   private String login = null;
 
    /**
     * Constructeur utilisé lors de la déclaration dans les fichiers AXIS
@@ -64,15 +67,17 @@ public class VIHandler extends AbstractHandler {
     *           issuer
     */
    public VIHandler(KeyStoreInterface iKeyStore, List<String> pagms,
-         String issuer) {
+         String issuer, String login) {
       super();
       this.iKeyStore = iKeyStore;
       this.issuer = issuer;
       this.pagms = pagms;
+      this.login = login;
+      
       LOGGER
             .debug(
-                  "Instanciation d'un VIHandler avec les paramètres suivants : issuer={}, pagms={}, iKeyStore={}",
-                  new Object[] { issuer, pagms, iKeyStore });
+                  "Instanciation d'un VIHandler avec les paramètres suivants : issuer={}, login={}, pagms={}, iKeyStore={}",
+                  new Object[] { issuer, login, pagms, iKeyStore });
    }
 
    /**
@@ -126,7 +131,7 @@ public class VIHandler extends AbstractHandler {
       LOGGER.debug("Début génération en-tête wsse");
 
       KeyStore keystore;
-      String alias, password, mIssuer;
+      String alias, password, mIssuer, mLogin;
       List<String> mPagms;
 
       if (iKeyStore == null) {
@@ -140,12 +145,13 @@ public class VIHandler extends AbstractHandler {
             alias = DefaultKeystore.getInstance().getAlias();
             password = DefaultKeystore.getInstance().getPassword();
             mIssuer = DEFAULT_ISSUER;
+            mLogin = DEFAULT_LOGIN;
             mPagms = Arrays.asList(DEFAUL_PAGM);
 
             LOGGER
                   .debug(
-                        "Aucun KeyStore n'a été spécifié dans le MessageContext. On utilise le paramétrage par défaut: issuer={}, pagms={}, keystore={}",
-                        new Object[] { mIssuer, mPagms, keystore });
+                        "Aucun KeyStore n'a été spécifié dans le MessageContext. On utilise le paramétrage par défaut: issuer={}, login={}, pagms={}, keystore={}",
+                        new Object[] { mIssuer, mLogin, mPagms, keystore });
 
          } else {
             String className = (String) msgCtx.getParameter(KEY_KEYSTORE)
@@ -155,13 +161,14 @@ public class VIHandler extends AbstractHandler {
             alias = keyStoreInterface.getAlias();
             password = keyStoreInterface.getPassword();
             mIssuer = (String) msgCtx.getParameter(KEY_ISSUER).getValue();
+            mLogin = (String) msgCtx.getParameter(KEY_LOGIN).getValue();
             String sPagms = (String) msgCtx.getParameter(KEY_PAGMS).getValue();
             mPagms = Arrays.asList(sPagms.split(","));
 
             LOGGER
                   .debug(
-                        "Un KeyStore a été spécifié dans le MessageContext. On l'utilise, ainsi que les autres informations du MessageContext: issuer={}, pagms={}, keystore={}",
-                        new Object[] { mIssuer, mPagms, keystore });
+                        "Un KeyStore a été spécifié dans le MessageContext. On l'utilise, ainsi que les autres informations du MessageContext: issuer={}, login={}, pagms={}, keystore={}",
+                        new Object[] { mIssuer, mLogin, mPagms, keystore });
 
          }
 
@@ -174,6 +181,7 @@ public class VIHandler extends AbstractHandler {
          alias = iKeyStore.getAlias();
          password = iKeyStore.getPassword();
          mPagms = this.pagms;
+         mLogin = this.login;
          mIssuer = this.issuer;
       }
 
@@ -198,7 +206,7 @@ public class VIHandler extends AbstractHandler {
 
          SAML20Service assertionService = new SAML20Service();
 
-         assertion = assertionService.createAssertion20(mIssuer, mPagms,
+         assertion = assertionService.createAssertion20(mIssuer, mLogin, mPagms,
                notAfter, notBefore, systemDate, identifiant, keystore, alias,
                password);
 

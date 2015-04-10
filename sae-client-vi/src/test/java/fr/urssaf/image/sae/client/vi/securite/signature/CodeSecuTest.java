@@ -30,7 +30,8 @@ public class CodeSecuTest {
       KeyStoreInterface keystore = DefaultKeystore.getInstance();
       List<String> pagms = Arrays.asList("ROLE_TOUS;FULL");
       String issuer = "PNR";
-      VIHandler handler = new VIHandler(keystore, pagms, issuer);
+      String login = "LOGIN";
+      VIHandler handler = new VIHandler(keystore, pagms, issuer, login);
       MessageContext context = new MessageContext();
       Assert.assertNotNull("le message retourné doit être non null", handler
             .genererEnTeteWsse(context));

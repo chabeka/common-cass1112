@@ -49,14 +49,14 @@ public class SAML20Service {
     *           valeur de [AssertionID]
     * @return jeton SAML 2.0
     */
-   public final String createAssertion20(String issuer, List<String> roles,
+   public final String createAssertion20(String issuer, String login, List<String> roles,
          DateTime notAfter, DateTime notBefore, DateTime actual,
          UUID identifiant) {
 
       LOGGER
             .debug(
-                  "Génération d'une assertion SAML avec les paramètres suivants: issuer={}, roles={}, notAfter={}, notBefore={}, actual={}, identifiant={}",
-                  new Object[] { issuer, roles, notAfter, notBefore, actual,
+                  "Génération d'une assertion SAML avec les paramètres suivants: issuer={}, login={}, roles={}, notAfter={}, notBefore={}, actual={}, identifiant={}",
+                  new Object[] { issuer, login, roles, notAfter, notBefore, actual,
                         identifiant });
 
       String pagms = createPagm(roles);
@@ -64,10 +64,10 @@ public class SAML20Service {
 
       InputStream assertionStream = ResourceUtils.loadResource(this, SAML_20);
 
-      String[] searchList = new String[] { "[ISSUER]", "[PAGMS]",
+      String[] searchList = new String[] { "[ISSUER]", "[LOGIN]", "[PAGMS]",
             "[NotOnOrAfter]", "[NotBefore]", "[AssertionID]", "[AuthnInstant]" };
 
-      String[] replacementList = new String[] { issuer, pagms,
+      String[] replacementList = new String[] { issuer, login, pagms,
             notAfter.toString(), notBefore.toString(), identifiant.toString(),
             actual.toString() };
 
@@ -146,13 +146,13 @@ public class SAML20Service {
     * @throws XmlSignatureException
     *            exception lors de la signature
     */
-   public final String createAssertion20(String issuer, List<String> roles,
+   public final String createAssertion20(String issuer, String login, List<String> roles,
          DateTime notAfter, DateTime notBefore, DateTime actual,
          UUID identifiant, KeyStore keystore, String alias, String password)
          throws XmlSignatureException {
 
       LOGGER.debug("Création d'une assertion SAML (pas encore signée)");
-      String assertion = createAssertion20(issuer, roles, notAfter, notBefore,
+      String assertion = createAssertion20(issuer, login, roles, notAfter, notBefore,
             actual, identifiant);
 
       LOGGER.debug("Signature d'une assertion SAML");
