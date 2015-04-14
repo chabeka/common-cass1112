@@ -36,6 +36,7 @@ public class SAECassandraUpdater {
    private static final int VERSION_7 = 7;
    private static final int VERSION_8 = 8;
    private static final int VERSION_9 = 9;
+   private static final int VERSION_10 = 10;
 
    private static final String DROIT_PAGMF = "DroitPagmf";
    private static final String REFERENTIEL_FORMAT = "ReferentielFormat";
@@ -53,9 +54,10 @@ public class SAECassandraUpdater {
 
    @Autowired
    private RefMetaInitialisationService refMetaInitService;
-   
+
    /**
     * Getter sur le le service d'initialisatin des métas
+    * 
     * @return
     */
    public RefMetaInitialisationService getRefMetaInitService() {
@@ -491,15 +493,15 @@ public class SAECassandraUpdater {
       // Création des CF
       saeCassandraService.createColumnFamilyFromList(cfDefs, true);
 
-      // Insertion des données initiales 
+      // Insertion des données initiales
       InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
-      
+
       // Les formats reconnus dans le référentiel des formats
       donnees.addReferentielFormat();
-      
+
       // Profils de contrôle du fmt/354
       donnees.addFormatControleProfil();
-      
+
       // ???
       donnees.addDroits();
 
@@ -519,8 +521,7 @@ public class SAECassandraUpdater {
    }
 
    /**
-    * Version 8 :
-    * <li>MAJ du référentiel des événements</li>
+    * Version 8 : <li>MAJ du référentiel des événements</li>
     */
    public void updateToVersion8() {
 
@@ -532,39 +533,37 @@ public class SAECassandraUpdater {
 
       LOG.info("Mise à jour du keyspace SAE en version 8");
 
-      //-- On se connecte au keyspace
+      // -- On se connecte au keyspace
       saeDao.connectToKeySpace();
 
-      //-- Initialisation du référentiel des métadonnées
+      // -- Initialisation du référentiel des métadonnées
       // suite au passage à un stockage du référentiel en bdd
       refMetaInitService.initialiseRefMeta(saeDao.getKeyspace());
-      
-      
-      //-- Liste contenant la définition des column families à créer
+
+      // -- Liste contenant la définition des column families à créer
       List<ColumnFamilyDefinition> cfDefs = new ArrayList<ColumnFamilyDefinition>();
-      
-      //-- TraceJournalEvtIndexDoc
+
+      // -- TraceJournalEvtIndexDoc
       cfDefs.add(HFactory.createColumnFamilyDefinition(ksName,
             "TraceJournalEvtIndexDoc", ComparatorType.UUIDTYPE));
 
-      //-- Création des CF
+      // -- Création des CF
       saeCassandraService.createColumnFamilyFromList(cfDefs, true);
 
-      //-- Enrichissement du référentiel des événements
+      // -- Enrichissement du référentiel des événements
       InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
-      //donnees.addTracabiliteParameters();
+      // donnees.addTracabiliteParameters();
       donnees.addReferentielEvenementV5();
-      
+
       // Ajout du format fmt/353
       donnees.addReferentielFormatV2();
 
       // On positionne la version à 8
       saeDao.setDatabaseVersion(VERSION_8);
    }
-   
+
    /**
-    * Version 9 :
-    * <li>Création des metadonnées Sicomor</li>
+    * Version 9 : <li>Création des metadonnées Sicomor</li>
     */
    public void updateToVersion9() {
 
@@ -576,14 +575,40 @@ public class SAECassandraUpdater {
 
       LOG.info("Mise à jour du keyspace SAE en version 9");
 
-      //-- On se connecte au keyspace
+      // -- On se connecte au keyspace
       saeDao.connectToKeySpace();
 
-      //-- Initialisation du référentiel des métadonnées
+      // -- Initialisation du référentiel des métadonnées
       // suite au passage à un stockage du référentiel en bdd
       refMetaInitService.initialiseRefMeta(saeDao.getKeyspace());
-      
+
       // On positionne la version à 9
       saeDao.setDatabaseVersion(VERSION_9);
    }
+
+   /**
+    * Version 10 : <li>Création des metadonnées Groom et suppression des trim
+    * gauche et droite pour la méta boolean ControleComptable</li>
+    */
+   public void updateToVersion10() {
+
+      long version = saeDao.getDatabaseVersion();
+      if (version >= VERSION_10) {
+         LOG.info("La base de données est déja en version " + version);
+         return;
+      }
+
+      LOG.info("Mise à jour du keyspace SAE en version 10");
+
+      // -- On se connecte au keyspace
+      saeDao.connectToKeySpace();
+
+      // -- Initialisation du référentiel des métadonnées
+      // suite au passage à un stockage du référentiel en bdd
+      refMetaInitService.initialiseRefMeta(saeDao.getKeyspace());
+
+      // On positionne la version à 10
+      saeDao.setDatabaseVersion(VERSION_10);
+   }
+
 }

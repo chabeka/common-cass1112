@@ -243,20 +243,23 @@ mvn generate-sources -P genererCodeModeleMetas
 // ------------------------------------------
 // 8) Lot 150400SAE
 // ------------------------------------------
+
+Met la base Cassandra du SAE en version 9 et CREATION DES INDEXES COMPOSITES:
 sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_DFCE_150400
 
-Met la base Cassandra du SAE en version 9
-
-CREATION DES INDEXES COMPOSITES
-
+Création de la CF NotesIndex dans Docubase
 sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties DFCE_150400
 
-Création de la CF NotesIndex dans Docubase
-
+Re-création des CF TermInfoRangeDouble et TermInfoRangeFloat dans Docubase
 sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties DFCE_150400_P5
 
-Re-création des CF TermInfoRangeDouble et TermInfoRangeFloat dans Docubase
-
+Suppression des index composite (se base sur le fichier xml des index composites, et supprimer ceux qui existent et qui sont marqués à créer : non)
 sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties DISABLE_COMPOSITE_INDEX
 
-Suppression des index composite (se base sur le fichier xml des index composites, et supprimer ceux qui existe et qui sont marqué à créer : non)
+
+// ------------------------------------------
+// 9) Lot 150600SAE
+// ------------------------------------------
+
+Met la base Cassandra du SAE en version 10 :
+sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_DFCE_150600
