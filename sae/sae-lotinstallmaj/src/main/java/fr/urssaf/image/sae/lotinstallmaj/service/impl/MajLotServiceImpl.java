@@ -793,6 +793,7 @@ public final class MajLotServiceImpl implements MajLotService {
       updater.updateToVersion7();
       updater.updateToVersion8();
       updater.updateToVersion9();
+      updater.updateToVersion10();
    }
 
 }
