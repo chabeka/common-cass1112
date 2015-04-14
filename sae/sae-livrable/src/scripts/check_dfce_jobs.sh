@@ -6,10 +6,10 @@
 # Exit code : Nombre de traitements non terminés. 
 
 # Répertoire des logs SAE
-LOG_DIR="/hawai/logs/sae"
+LOG_DIR="/hawai/logs/@@PROJECT_NAME@@"
 
 # Cron qui lance l'agent SAE sur un seul serveur d'un seul CNP
-CRON_AGENT_FILE="/etc/cron.d/agents_sae"
+CRON_AGENT_FILE="/etc/cron.d/agents_@@PROJECT_NAME@@"
 
 
 # Exit code
