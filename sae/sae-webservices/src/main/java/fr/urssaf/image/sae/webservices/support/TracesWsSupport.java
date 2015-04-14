@@ -99,6 +99,12 @@ public class TracesWsSupport {
          result = TracesConstantes.CODE_EVT_WS_RECHERCHE_KO;
       } else if ("rechercheParIterateur".equals(nomOperation)) {
          result = TracesConstantes.CODE_EVT_WS_RECHERCHE_KO;
+      } else if ("suppression".equals(nomOperation)) {
+         result = TracesConstantes.CODE_EVT_WS_SUPPRESSION_KO;
+      } else if ("modification".equals(nomOperation)) {
+         result = TracesConstantes.CODE_EVT_WS_MODIFICATION_KO;
+      } else if ("recuperationMetadonnees".equals(nomOperation)) {
+         result = TracesConstantes.CODE_EVT_WS_RECUPERATION_METAS_KO;
       }
 
       return result;

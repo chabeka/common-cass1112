@@ -54,4 +54,18 @@ public final class TracesConstantes {
     */
    public static final String CODE_EVT_WS_TRANSFERT_KO = "WS_TRANSFERT|KO";
    
+   /**
+    * Le code de l'événement échec de suppression de document
+    */
+   public static final String CODE_EVT_WS_SUPPRESSION_KO = "WS_SUPPRESSION|KO";
+   
+   /**
+    * Le code de l'événement échec de modification de métadonnées
+    */
+   public static final String CODE_EVT_WS_MODIFICATION_KO = "WS_MODIFICATION|KO";
+   
+   /**
+    * Le code de l'événement échec de suppression de document
+    */
+   public static final String CODE_EVT_WS_RECUPERATION_METAS_KO = "WS_RECUPERATION_METAS|KO";
 }
