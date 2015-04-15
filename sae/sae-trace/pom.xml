@@ -3,14 +3,14 @@
 
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-trace</artifactId>
-   <version>15.4.0.4-SNAPSHOT</version>
+   <version>15.6.0.1</version>
    <packaging>jar</packaging>
    <description>Module de la traçabilité dans le SAE</description>
 
    <parent>
       <groupId>fr.urssaf.image.sae</groupId>
       <artifactId>sae</artifactId>
-      <version>15.4.0.4-SNAPSHOT</version>
+      <version>15.6.0.1</version>
    </parent>
 
    <name>sae-trace</name>
@@ -98,7 +98,7 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-commons</artifactId>
-         <version>15.4.0.4-SNAPSHOT</version>
+         <version>15.6.0.1</version>
       </dependency>
 
       <!-- Joda Time -->
