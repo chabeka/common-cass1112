@@ -1,4 +1,0 @@
-# Le role "monitorRole" n'a que l'acces en lecture seule
-# Le role "controleRole" a l'acces en lecture/ecriture
-monitorRole readonly
-controlRole readwrite
