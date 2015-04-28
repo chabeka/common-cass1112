@@ -53,6 +53,7 @@ public final class MajLotServiceImpl implements MajLotService {
    public static final String CASSANDRA_150100 = "CASSANDRA_150100";
    public static final String CASSANDRA_DFCE_150400 = "CASSANDRA_DFCE_150400";
    public static final String CASSANDRA_DFCE_150600 = "CASSANDRA_DFCE_150600";
+   public static final String CASSANDRA_150601 = "CASSANDRA_150601";
    public static final String META_SEPA = "META_SEPA";
    public static final String META_130400 = "META_130400";
    public static final String META_150100 = "META_150100";
@@ -180,6 +181,9 @@ public final class MajLotServiceImpl implements MajLotService {
          // -- Mise à jour DFCE
          updateMetaDfce("META_150600");
 
+      } else if (CASSANDRA_150601.equalsIgnoreCase(nomOperation)) {
+         // -- Mise à jour cassandra
+         updateCassandra150601();
       } else if (CASSANDRA_DROITS_GED.equalsIgnoreCase(nomOperation)) {
 
          updateCassandraDroitsGed();
@@ -411,7 +415,19 @@ public final class MajLotServiceImpl implements MajLotService {
       updater.updateToVersion10();
       LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
    }
-   
+
+   /**
+    * Pour lot 150601 du SAE : mise à jour du keyspace "SAE" dans cassandra, en
+    * version 11
+    */
+   private void updateCassandra150601() {
+      LOG
+            .info("Début de l'opération : mise à jour du keyspace SAE pour le lot 150600");
+      // Récupération de la chaîne de connexion au cluster cassandra
+      updater.updateToVersion11();
+      LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
+   }
+
    /**
     * Ajout des droits GED
     */
@@ -794,6 +810,7 @@ public final class MajLotServiceImpl implements MajLotService {
       updater.updateToVersion8();
       updater.updateToVersion9();
       updater.updateToVersion10();
+      updater.updateToVersion11();
    }
 
 }

@@ -37,6 +37,7 @@ public class SAECassandraUpdater {
    private static final int VERSION_8 = 8;
    private static final int VERSION_9 = 9;
    private static final int VERSION_10 = 10;
+   private static final int VERSION_11 = 11;
 
    private static final String DROIT_PAGMF = "DroitPagmf";
    private static final String REFERENTIEL_FORMAT = "ReferentielFormat";
@@ -607,12 +608,33 @@ public class SAECassandraUpdater {
       // suite au passage à un stockage du référentiel en bdd
       refMetaInitService.initialiseRefMeta(saeDao.getKeyspace());
       
-      // -- Enrichissement du référentiel des événements
-      InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
-      donnees.addReferentielEvenementV6();
-
       // On positionne la version à 10
       saeDao.setDatabaseVersion(VERSION_10);
    }
 
+   /**
+    * Version 11 : <li>Création des metadonnées Groom et suppression des trim
+    * gauche et droite pour la méta boolean ControleComptable</li>
+    */
+   public void updateToVersion11() {
+
+      long version = saeDao.getDatabaseVersion();
+      if (version >= VERSION_11) {
+         LOG.info("La base de données est déja en version " + version);
+         return;
+      }
+
+      LOG.info("Mise à jour du keyspace SAE en version 11");
+
+      // -- On se connecte au keyspace
+      saeDao.connectToKeySpace();
+ 
+      // -- Enrichissement du référentiel des événements
+      InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
+      donnees.addReferentielEvenementV6();
+
+      // On positionne la version à 11
+      saeDao.setDatabaseVersion(VERSION_11);
+   }
+   
 }

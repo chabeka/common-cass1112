@@ -261,5 +261,8 @@ sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logbac
 // 9) Lot 150600SAE
 // ------------------------------------------
 
-Met la base Cassandra du SAE en version 10 :
+Met la base Cassandra du SAE en version 10 + Mise à jour DFCE (Création des métas Groom) :
 sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_DFCE_150600
+
+Met la base Cassandra du SAE en version 11 (Mise à jour référentiel des évenements) :
+sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_150601
