@@ -26,16 +26,15 @@ Etape <c:out value="${numeroEtape}"/> : Appel du service web de consultation
 		</div>
         <div class="form-group">
            <label>ID ARCHIVAGE</label>
-           <form:input path="${pathFormulaire}.idArchivage" cssStyle="width:100%;" readonly="${readonly}" />
+           <form:input class="form-control" path="${pathFormulaire}.idArchivage" cssStyle="width:100%;" readonly="${readonly}" />
         </div>
         <div class="form-group">
            <label>CODES METAS SOUHAITEES</label>
-           <form:textarea path="${pathFormulaire}.codeMetadonnees" cssStyle="width:100%;height:150pt;" readonly="${readonly}" />
+           <form:textarea class="form-control" path="${pathFormulaire}.codeMetadonnees" cssStyle="width:100%;height:150pt;" readonly="${readonly}" />
         </div>
 	</div>	
 	<div class="col-md-6">
-		<sae:resultatTest objetResultats="${objetFormulaire.resultats}"
-			pathResultats="${pathFormulaire}.resultats" height="190pt" />
+		<sae:resultatTest objetResultats="${objetFormulaire.resultats}" pathResultats="${pathFormulaire}.resultats" height="190pt" />
 	</div>
 
 	<input class="btn btn-primary submit" type="submit"

@@ -53,7 +53,7 @@
                <td><form:select class="form-control" path="${pathFormulaire}.idCertif">
                   <form:option value="1">IGC AED (val), CN=PNR_Application_Test</form:option>
                   <form:option value="2">IGC AED (val), CN=ApplicationTestSAE</form:option>
-                  <form:option value="3">IGC cellule int�gration, CN=APPLICATION_TEST_1</form:option>
+                  <form:option value="3">IGC cellule int&eacute;gration, CN=APPLICATION_TEST_1</form:option>
                </form:select></td>
                <td>&nbsp;</td>
             </tr>

@@ -732,6 +732,18 @@
         <obligatoireAuStockage>false</obligatoireAuStockage>
         <typeDfce>Boolean</typeDfce>
     </Metadonnee>
+   <Metadonnee>
+        <codeLong>DomaineTechnique</codeLong>
+        <codeCourt>dte</codeCourt>
+        <archivablePossible>true</archivablePossible>
+        <archivableObligatoire>false</archivableObligatoire>
+        <consulteeParDefaut>false</consulteeParDefaut>
+        <consultable>true</consultable>
+        <critereRecherche>true</critereRecherche>
+        <client>false</client>
+        <obligatoireAuStockage>false</obligatoireAuStockage>
+        <typeDfce>Boolean</typeDfce>
+    </Metadonnee>    
     <Metadonnee>
         <codeLong>DocumentArchivable</codeLong>
         <codeCourt>dar</codeCourt>

@@ -199,16 +199,35 @@ public class ReferentielMetadonneesService {
     * @return une liste de métadonnées "exemple"
     */
    public static final CodeMetadonneeList getMetadonneesExemplePourRecherche() {
-      
       CodeMetadonneeList metadonnees = new CodeMetadonneeList();
-      
       metadonnees.add("Titre");
       metadonnees.add("DateCreation");
       metadonnees.add("CodeOrganismeProprietaire");
       metadonnees.add("CodeOrganismeGestionnaire");
       
       return metadonnees;
+   }
+   
+   /**
+    * Renvoie une liste de métadonnées "exemples" pour la recherche<br>
+    * sur l'isolatin des données
+    * <br>
+    * Cela permet par exemple d'initialiser les IHM avec
+    * un modèle de liste de métadonnées. On aide ainsi
+    * l'utilisateur à la saisie des métadonnées.
+    * 
+    * @return une liste de métadonnées "exemple"
+    */
+   public static final CodeMetadonneeList getMetadonneesExempleRechercheIsolation() {
+      CodeMetadonneeList metadonnees = new CodeMetadonneeList();
+      metadonnees.add("Titre");
+      metadonnees.add("DomaineRH");
+      metadonnees.add("DomaineCotisant");
+      metadonnees.add("DomaineTechnique");
+      metadonnees.add("DomaineComptable");
+      metadonnees.add("DateCreation");
       
+      return metadonnees;
    }
    
    

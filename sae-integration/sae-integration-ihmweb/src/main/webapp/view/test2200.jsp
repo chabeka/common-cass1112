@@ -13,20 +13,12 @@
 	<link rel="stylesheet" type="text/css" href="css/style.css"  />
 </head>
 <body>
-
-<form:form method="post" modelAttribute="formulaire">
-
-	<sae:casTest />
-
-	<sae:urlServiceWeb />
-
-	<sae:consultation numeroEtape="unique"
-		objetFormulaire="${formulaire.consultation}"
-		pathFormulaire="consultation" />
-
-	<sae:soapMessages objetFormulaire="${formulaire.soapFormulaire}" />
-
-</form:form>
-
+	<form:form method="post" modelAttribute="formulaire">	
+		<sae:casTest />	
+		<sae:urlServiceWeb />	
+		<sae:recherche numeroEtape="unique"
+			objetFormulaire="${formulaire.recherche}" pathFormulaire="recherche" />
+		<sae:soapMessages objetFormulaire="${formulaire.soapFormulaire}" />	
+	</form:form>
 </body>
 </html>

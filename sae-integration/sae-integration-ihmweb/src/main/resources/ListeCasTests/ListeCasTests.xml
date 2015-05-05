@@ -1289,8 +1289,7 @@
    <!-- ======================================================== -->
    <!-- Recherche avec nombre de résultats -->
    <!-- ======================================================== -->
-      <Categorie>
-
+   <Categorie>
       <Nom>Recherche avec nombre de résultats</Nom>
       <Id>12</Id>
       <CasTests>
@@ -1310,8 +1309,7 @@
    <!-- ======================================================== -->
    <!-- Recherche par itérateur -->
    <!-- ======================================================== -->
-      <Categorie>
-
+   <Categorie>
       <Nom>Recherche par itérateur</Nom>
       <Id>13</Id>
       <CasTests>
@@ -1325,7 +1323,124 @@
          </CasTest>
       </CasTests>
    </Categorie>
-
+   
+   <!-- ======================================================== -->
+   <!-- Isolation des données -->
+   <!-- ======================================================== -->
+   <Categorie>
+      <Nom>Isolation des données</Nom>
+      <Id>14</Id>
+      <CasTests>
+         <CasTest>
+            <id>2200</id>
+            <code>2200-IsolationDonnees-TestLibre</code>
+            <description>
+               Test libre de l'isolation de données
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>DateCreation:[201501010 201502010] AND DomaineCotisant:true</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>2201</id>
+            <code>2201-IsolationDonnees-CS-Sans-Domaine</code>
+            <description>
+               Test ajout automatique du domaine cotisant
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 2201-IsolationDonnees-CS-Sans-Domaine"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>2202</id>
+            <code>2202-IsolationDonnees-CS-Avec-Domaine-Cotisant</code>
+            <description>
+               Test isolation avec CS domaine cotisant
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 2202-IsolationDonnees-CS-Avec-Domaine-Cotisant"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>2203</id>
+            <code>2203-IsolationDonnees-CS-Avec-Domaine-Comptable</code>
+            <description>
+               Test isolation avec CS domaine comptable
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 2203-IsolationDonnees-CS-Avec-Domaine-Comptable"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>2204</id>
+            <code>2204-IsolationDonnees-CS-Domaine-RH</code>
+            <description>
+               Test isolation avec CS domaine RH
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 2204-IsolationDonnees-CS-Avec-Domaine-RH"</luceneExemple>
+         </CasTest>         
+         <CasTest>
+            <id>2205</id>
+            <code>2205-IsolationDonnees-CS-SAE</code>
+            <description>
+               Test isolation avec CS DomaineTechnique 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 2205-IsolationDonnees-CS-Avec-DomaineTechnique"</luceneExemple>
+         </CasTest>         
+         <CasTest>
+            <id>2206</id>
+            <code>2206-IsolationDonnees-CS-SAE-CodeRND-KO</code>
+            <description>
+               **Description à fournir**
+            </description>
+            <implemente>false</implemente>
+            <luceneExemple>Denomination:""</luceneExemple>
+         </CasTest>         
+         <CasTest>
+            <id>2250</id>
+            <code>2250-IsolationDonnees-CS-Plusieurs-Domaines</code>
+            <description>
+               Teste qu’il est impossible de stocker des documents pour plusieurs domaines définit dans un CS
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:""</luceneExemple>
+         </CasTest>         
+         <CasTest>
+            <id>2251</id>
+            <code>2251-IsolationDonnees-CS-Meta-DomaineCotisant</code>
+            <description>
+              Teste qu’il est impossible de stocker des documents si la métadonnée DomaineCotisant est renseignée dans la liste des métadonnées
+            </description>
+            <implemente>true</implemente>
+         </CasTest>         
+         <CasTest>
+            <id>2252</id>
+            <code>2252-IsolationDonnees-CS-Meta-DomaineComptable</code>
+            <description>
+               Teste qu’il est impossible de stocker des documents si la métadonnée DomaineComptable est renseignée dans la liste des métadonnées
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:""</luceneExemple>
+         </CasTest>         
+         <CasTest>
+            <id>2253</id>
+            <code>2253-IsolationDonnees-CS-Meta-DomaineRH</code>
+            <description>
+               Teste qu’il est impossible de stocker des documents si la métadonnée DomaineRH est renseignée dans la liste des métadonnées
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:""</luceneExemple>
+         </CasTest>         
+         <CasTest>
+            <id>2254</id>
+            <code>2254-IsolationDonnees-CS-Meta-DomaineTechnique</code>
+            <description>
+               Teste qu’il est impossible de stocker des documents si la métadonnée DomaineTechnique est renseignée dans la liste des métadonnées
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:""</luceneExemple>
+         </CasTest>         
+      </CasTests>
+   </Categorie>
+   
    <!-- ======================================================== -->
    <!-- Consultation -->
    <!-- ======================================================== -->

@@ -398,5 +398,13 @@
       <localPart>ErreurInterneTransfert</localPart>
       <message>Une erreur interne à l'application est survenue lors du transfert. Transfert impossible</message>
    </SoapFault>
+   
+   <SoapFault>
+      <id>sae_PagmIncompatibles</id>
+      <namespace>urn:sae:faultcodes</namespace>
+      <prefixe>sae</prefixe>
+      <localPart>PagmIncompatibles</localPart>
+      <message>Les Pagms présents dans le VI sont incompatibles : plusieurs domaines différents trouvés.</message>
+   </SoapFault>
       
 </SoapFaults>
