@@ -2,7 +2,10 @@ package fr.urssaf.image.sae.batch.documents.executable.bootstrap;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.net.URL;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Properties;
 
@@ -79,20 +82,19 @@ public class ExecutableMain {
     * @param ctxPath
     *           chemin de la configuration de l'exécutable
     *           
-    * @param envsConfPath
-    *           chemin de la configuration des environnements
+    * @param fileConf
+    *           fichier de configuration des environnements
     */
-   protected ExecutableMain(String envsConfPath) {
+   protected ExecutableMain(File fileConf) {
       
       ConfigurationServiceImpl configSce;
       configSce = new ConfigurationServiceImpl();
       
       try {
-         File fichierConfEnv = new File(envsConfPath);
-         envList = configSce.chargerConfiguration(fichierConfEnv);
+         envList = configSce.chargerConfiguration(fileConf);
       } catch (NullPointerException e) {
          throw new RuntimeException("Le chemin du fichier ne peut être null", e);
-      } catch (FileNotFoundException e) {
+      } catch (IOException e) {
          throw new RuntimeException("Echec du chargements des environnements", e);
       }
    }
@@ -106,9 +108,14 @@ public class ExecutableMain {
    public static void main(String[] args) {
       LOGGER.info("Arguments CMD : [{}]", StringUtils.join(args, ", "));
       final String environments = "config/environnements.xml";
-      URL url = Thread.currentThread().getContextClassLoader().getResource(environments);
-      ExecutableMain main = new ExecutableMain(url.getFile());
-      main.execute(args);
+      InputStream resource = Thread.currentThread().getContextClassLoader().getResourceAsStream(environments);
+      try {
+         File conf = inputStreamToTempFile(resource);
+         ExecutableMain main = new ExecutableMain(conf);
+         main.execute(args);
+      } catch (IOException e) {
+         LOGGER.error("Echec chargement fichier de configuration des environnements");
+      }
    }
 
    /**
@@ -426,7 +433,7 @@ public class ExecutableMain {
       traitementService.importDocuments(parametres);
    }   
    
-   public static boolean DEBUG_MODE = true;
+   public static boolean DEBUG_MODE = false;
    
    /**
     * Methode permettant de lancer l'export de documents
@@ -444,4 +451,42 @@ public class ExecutableMain {
       traitementService = new TraitementServiceImpl(dfceService);
       traitementService.exportDocuments(parametres);
    }   
+   
+   /**
+    * Méthode utilitaire : transforme un InputStream en fichier (temportaire)
+    * @param resource
+    * 
+    * @return Un objet {@link File} stocké dans les fichier temporaire du système
+    * 
+    * @throws IOException
+    */
+   private static File inputStreamToTempFile(InputStream resource) throws IOException{
+      OutputStream outputStream = null;
+      File tmpFile = null;
+      int read = 0;
+      byte[] bytes = new byte[1024]; 
+      try {
+         tmpFile = File.createTempFile("tmp_sae-docs-batch-exec_", ".xml");
+         outputStream = new FileOutputStream(tmpFile);
+         while ((read = resource.read(bytes)) != -1) {
+            outputStream.write(bytes, 0, read);
+         }
+      } finally {
+         if (resource != null) {
+            try {
+               resource.close();
+            } catch (IOException e) {
+               e.printStackTrace();
+            }
+         }
+         if (outputStream != null) {
+            try {
+               outputStream.close();
+            } catch (IOException e) {
+               e.printStackTrace();
+            }
+         }
+      }
+      return tmpFile;
+   }
 }

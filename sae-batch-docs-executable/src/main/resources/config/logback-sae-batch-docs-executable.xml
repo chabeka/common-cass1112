@@ -30,7 +30,7 @@
    
    <property name="LOGS_FOLDER" value="c:/hawai/logs/sae" />
    
-   <property name="LOGS_FILENAME_PREFIXE" value="sae_documents_executable" />
+   <property name="LOGS_FILENAME_PREFIXE" value="sae_documents_batch_import_export_suppression" />
    
    <timestamp key="byDay" datePattern="yyyyMMdd" />
    
@@ -87,30 +87,6 @@
       
    </appender>
    
-   <!-- 
-   L'appender fichier pour les traces de niveau ERROR
-   -->
-   <appender name="verifFormat-file"
-      class="ch.qos.logback.core.FileAppender">
-      
-      <file>${LOGS_FOLDER}/${LOGS_FILENAME_PREFIXE}.${byDay}-verifFormat.log</file>
-       
-      <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-         <level>WARN</level>
-      </filter>
-      
-      <encoder>
-         <pattern>%msg%n</pattern>
-      </encoder>
-      
-   </appender>
-   
-   
-   
-   <!-- 
-   Exemples d'activation des traces DEBUG pour le SAE
-   -->
-   
    
    <!-- Pour tout le SAE, ou plus precisement pour le package de plus haut niveau -->
    <!-- -->
@@ -119,13 +95,7 @@
       <appender-ref ref="debug-file" />
    </logger>
    <!-- -->
-   
-   <!-- Pour l'executable sae-documents-executable, on a un logger supplementaire -->
-   <logger name="fr.urssaf.image.sae" level="DEBUG" additivity="false">
-      <appender-ref ref="log-file" />
-      <appender-ref ref="debug-file" />
-	  <appender-ref ref="verifFormat-file" />
-   </logger>
+
    
    <!-- Niveau general pour l'application -->
    <root level="WARN">

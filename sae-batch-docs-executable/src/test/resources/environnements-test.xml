@@ -18,9 +18,9 @@
       <dfceTimeout>30000</dfceTimeout>
       <dfceSecure>false</dfceSecure>
    </configuration>
-   <configuration>
    
-   <nom>ENV_MOCK_PRODUCTION</nom>
+   <configuration>
+      <nom>ENV_MOCK_PRODUCTION</nom>
       <urlWs>http://localhost:8080/sae-webservices/services/SaeService</urlWs>
       <zookeeperHost>localhost:2181</zookeeperHost>
       <zookeeperNameSpace>SAE</zookeeperNameSpace>

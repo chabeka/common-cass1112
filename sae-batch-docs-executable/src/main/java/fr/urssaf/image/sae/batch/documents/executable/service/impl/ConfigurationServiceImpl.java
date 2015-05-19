@@ -2,7 +2,8 @@ package fr.urssaf.image.sae.batch.documents.executable.service.impl;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -29,14 +30,18 @@ public class ConfigurationServiceImpl {
     * 
     * @return Liste de toutes les configurations environnement 
     * 
-    * @throws FileNotFoundException
-    *            Exception générée si le fichier n'existe pas
+    * @throws IOException
+    *            Exception générée si le fichier n'est pas lisible
     * 
     */
    public final ConfigurationsEnvironnement chargerConfiguration(File fichier)
-         throws FileNotFoundException {
-
-      // Désérialisation des objets EcdeSource via Xstream
+         throws IOException {
+      return chargerConfiguration(new FileInputStream(fichier));
+   }
+   
+   public final ConfigurationsEnvironnement chargerConfiguration(InputStream fileStream)
+   throws IOException {
+      //-- Désérialisation des objets EcdeSource via Xstream
       StaxDriver staxDriver = new StaxDriver();
       XStream xstream = new XStream(staxDriver);
 
@@ -71,13 +76,10 @@ public class ConfigurationServiceImpl {
 
       xstream.alias("parametre", String.class);
       xstream.alias("configuration", ConfigurationEnvironnement.class);
-      xstream.alias("configurations", new ConfigurationEnvironnement[] {}
-            .getClass());
+      xstream.alias("configurations", new ConfigurationEnvironnement[] {}.getClass());
       ConfigurationsEnvironnement confs = new ConfigurationsEnvironnement();
-      confs.setConfigurations((ConfigurationEnvironnement[]) xstream
-            .fromXML(new FileInputStream(fichier)));
+      confs.setConfigurations((ConfigurationEnvironnement[]) xstream.fromXML(fileStream));
 
       return confs;
-
    }
 }

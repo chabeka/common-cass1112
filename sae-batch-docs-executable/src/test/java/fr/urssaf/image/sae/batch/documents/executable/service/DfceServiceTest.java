@@ -1,7 +1,7 @@
 package fr.urssaf.image.sae.batch.documents.executable.service;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -41,10 +41,11 @@ public class DfceServiceTest {
    private static DFCEConnection dfceConnection;
    
    @BeforeClass
-   public static void init() throws FileNotFoundException{
+   public static void init() throws IOException {
       ConfigurationServiceImpl configSce;
       configSce = new ConfigurationServiceImpl();
       File fichierConfEnv = new File("src/test/resources/environnements-test.xml");
+      //FileInputStream confEnvInput = new FileInputStream(fichierConfEnv);
       
       //-- Liste liste des envirennements
       

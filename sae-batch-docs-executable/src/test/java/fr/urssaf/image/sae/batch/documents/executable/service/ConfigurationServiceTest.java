@@ -1,7 +1,7 @@
 package fr.urssaf.image.sae.batch.documents.executable.service;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import junit.framework.Assert;
 
@@ -21,11 +21,12 @@ public class ConfigurationServiceTest {
    private String envsConfPath = "src/test/resources/environnements-test.xml";
 
    @Test
-   public void chargerConfigurationTest() throws FileNotFoundException{
+   public void chargerConfigurationTest() throws IOException {
       
       ConfigurationServiceImpl configSce;
       configSce = new ConfigurationServiceImpl();
       File fichierConfEnv = new File(envsConfPath);
+      //FileInputStream confEnvInput = new FileInputStream(new File(envsConfPath));
       
       Assert.assertEquals("Le fichier de configuration doit exister", true, fichierConfEnv.exists());
       

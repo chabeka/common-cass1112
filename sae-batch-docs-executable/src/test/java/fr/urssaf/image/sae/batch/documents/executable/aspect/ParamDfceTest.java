@@ -1,7 +1,7 @@
 package fr.urssaf.image.sae.batch.documents.executable.aspect;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Properties;
 
 import junit.framework.Assert;
@@ -9,7 +9,6 @@ import junit.framework.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -32,7 +31,7 @@ public class ParamDfceTest {
    private static DfceService dfceService;
    
    @BeforeClass
-   public static void init() throws FileNotFoundException{
+   public static void init() throws IOException {
       ConfigurationServiceImpl configSce;
       configSce = new ConfigurationServiceImpl();
       File fichierConfEnv = new File("src/test/resources/environnements-test.xml");
@@ -52,7 +51,7 @@ public class ParamDfceTest {
          .createDFCEConnectionByDFCEConfiguration(dfceConfigProp);
       
       dfceService = new DfceServiceImpl(dfceConnection);
-      dfceService.ouvrirConnexion();
+      //dfceService.ouvrirConnexion();
    }
 
    @Test

@@ -1,8 +1,6 @@
 package fr.urssaf.image.sae.batch.documents.executable.bootstrap;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
@@ -28,15 +26,16 @@ public class ExecutableMainTest {
    private final String BASE_PATH = "src/test/resources";
    private final String envsPath = BASE_PATH + "/environnements-test.xml";
    
+   private File confEnvFile = new File(envsPath);
+   
    //-- Liste liste des envirennements
    ConfigurationsEnvironnement envList; 
    
    @Before
-   public void init() throws FileNotFoundException{
+   public void init() throws IOException {
       ConfigurationServiceImpl configSce;
       configSce = new ConfigurationServiceImpl();
-      File fichierConfEnv = new File(envsPath);
-      envList = configSce.chargerConfiguration(fichierConfEnv);
+      envList = configSce.chargerConfiguration(confEnvFile);
    }
    
    @Test
@@ -80,7 +79,7 @@ public class ExecutableMainTest {
    @Test
    public void verifierConfParamsImportDocsOK() {
       
-      ExecutableMain main = new ExecutableMain(envsPath);
+      ExecutableMain main = new ExecutableMain(confEnvFile);
       Properties properties = new Properties();
       AbstractParametres parametres = new DeleteDocsParametres();
       
@@ -103,7 +102,7 @@ public class ExecutableMainTest {
    @Test
    public void verifierConfParamsExportDocsOK() {
       
-      ExecutableMain main = new ExecutableMain(envsPath);
+      ExecutableMain main = new ExecutableMain(confEnvFile);
       Properties properties = new Properties();
       AbstractParametres parametres = new DeleteDocsParametres();
 
@@ -127,7 +126,7 @@ public class ExecutableMainTest {
    @Test
    public void verifierConfParamsDeleteDocsOK() {
       
-      ExecutableMain main = new ExecutableMain(envsPath);
+      ExecutableMain main = new ExecutableMain(confEnvFile);
       Properties properties = new Properties();
       AbstractParametres parametres = new DeleteDocsParametres();
 
@@ -150,7 +149,7 @@ public class ExecutableMainTest {
    @Test
    public void verifierConfParamsImportDocsWorkDir() {
       
-      ExecutableMain main = new ExecutableMain(envsPath);
+      ExecutableMain main = new ExecutableMain(confEnvFile);
       Properties properties = new Properties();
       AbstractParametres parametres = new DeleteDocsParametres();
       
@@ -165,7 +164,7 @@ public class ExecutableMainTest {
    @Test
    public void verifierConfParamsExportDocsWorkDir() {
       
-      ExecutableMain main = new ExecutableMain(envsPath);
+      ExecutableMain main = new ExecutableMain(confEnvFile);
       Properties properties = new Properties();
       AbstractParametres parametres = new DeleteDocsParametres();
       
@@ -180,7 +179,7 @@ public class ExecutableMainTest {
    @Test
    public void verifierConfParamsDeleteDocsMissingLucene() {
       
-      ExecutableMain main = new ExecutableMain(envsPath);
+      ExecutableMain main = new ExecutableMain(confEnvFile);
       Properties properties = new Properties();
       AbstractParametres parametres = new DeleteDocsParametres();
       
@@ -218,32 +217,35 @@ public class ExecutableMainTest {
    }
 
    @Test
+   @Ignore
    public void executeServiceDeleteDocs() throws IOException {
       String req = "SM_ARCHIVAGE_DATE:20150407";
-      ExecutableMain main = new ExecutableMain(envsPath); 
+      ExecutableMain main = new ExecutableMain(confEnvFile); 
       main.executeService(envList, "DELETE_DOCUMENTS", "ENV_DEVELOPPEMENT", null, req);
    }
    
    @Test
+   @Ignore
    public void executeServiceImportDocs() throws IOException {
-      ExecutableMain main = new ExecutableMain(envsPath);
+      ExecutableMain main = new ExecutableMain(confEnvFile);
       String wkdir = BASE_PATH + File.separator + "TRANSFERTS" 
                   + File.separator + "EXPORT_20150401_151230";
       main.executeService(envList, "IMPORT_DOCUMENTS", "ENV_DEVELOPPEMENT", wkdir, null);
    }
    
    @Test
+   @Ignore
    public void executeServiceExportDocs() throws FileNotFoundException{
       String wkdir = BASE_PATH + File.separator + "TRANSFERTS";
       String req = "SM_ARCHIVAGE_DATE:[20150101 TO 20150320]";
-      ExecutableMain main = new ExecutableMain(envsPath);
+      ExecutableMain main = new ExecutableMain(confEnvFile);
       main.executeService(envList, "EXPORT_DOCUMENTS", "INTEGRATION_INTERNE_GNT", wkdir, req);
    }
    
    @Test
    public void KO_deleteDocsOnProduction() throws FileNotFoundException{
       String req = "SM_METADATAT:SAMPLE";
-      ExecutableMain main = new ExecutableMain(envsPath);    
+      ExecutableMain main = new ExecutableMain(confEnvFile);    
       try{
          main.executeService(envList, "DELETE_DOCUMENTS", "ENV_MOCK_PRODUCTION", null, req);
       } catch (RuntimeException e) {
@@ -255,7 +257,7 @@ public class ExecutableMainTest {
    @Test
    public void KO_importDocsOnProduction() throws FileNotFoundException{
       String wDir = "/tmp/EXPORT_20150403_105520";
-      ExecutableMain main = new ExecutableMain(envsPath);    
+      ExecutableMain main = new ExecutableMain(confEnvFile);    
       try{
          main.executeService(envList, "IMPORT_DOCUMENTS", "ENV_MOCK_PRODUCTION", wDir, null);
       } catch (RuntimeException e) {
