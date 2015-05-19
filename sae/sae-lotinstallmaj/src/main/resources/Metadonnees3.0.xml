@@ -2548,7 +2548,7 @@
 		<ns1:label>Numéro de matricule de l'agent dans GDP</ns1:label>
 		<ns1:description>Numéro de matricule de l'agent dans GDP</ns1:description>
 		<ns1:hasDictionary>non</ns1:hasDictionary>
-		<ns1:isIndexed>oui</ns1:isIndexed>
+		<ns1:isIndexed>non</ns1:isIndexed>
 		<ns1:modifiable>oui</ns1:modifiable>
 		<ns1:clientAvailable>oui</ns1:clientAvailable>
 		<ns1:leftTrimable>oui</ns1:leftTrimable>
@@ -2571,7 +2571,7 @@
 		<ns1:label>Nom patronymique de l'agent</ns1:label>
 		<ns1:description>Nom patronymique de l'agent</ns1:description>
 		<ns1:hasDictionary>non</ns1:hasDictionary>
-		<ns1:isIndexed>oui</ns1:isIndexed>
+		<ns1:isIndexed>non</ns1:isIndexed>
 		<ns1:modifiable>oui</ns1:modifiable>
 		<ns1:clientAvailable>oui</ns1:clientAvailable>
 		<ns1:leftTrimable>oui</ns1:leftTrimable>

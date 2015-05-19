@@ -53,7 +53,7 @@ public final class MajLotServiceImpl implements MajLotService {
    public static final String CASSANDRA_150100 = "CASSANDRA_150100";
    public static final String CASSANDRA_DFCE_150400 = "CASSANDRA_DFCE_150400";
    public static final String CASSANDRA_DFCE_150600 = "CASSANDRA_DFCE_150600";
-   public static final String CASSANDRA_150601 = "CASSANDRA_150601";
+   public static final String CASSANDRA_DFCE_150601 = "CASSANDRA_DFCE_150601";
    public static final String META_SEPA = "META_SEPA";
    public static final String META_130400 = "META_130400";
    public static final String META_150100 = "META_150100";
@@ -181,9 +181,11 @@ public final class MajLotServiceImpl implements MajLotService {
          // -- Mise à jour DFCE
          updateMetaDfce("META_150600");
 
-      } else if (CASSANDRA_150601.equalsIgnoreCase(nomOperation)) {
+      } else if (CASSANDRA_DFCE_150601.equalsIgnoreCase(nomOperation)) {
          // -- Mise à jour cassandra
          updateCassandra150601();
+         // -- Creation des index composite dans DFCE
+         addIndexesCompositeToDfce("DFCE_150601");
       } else if (CASSANDRA_DROITS_GED.equalsIgnoreCase(nomOperation)) {
 
          updateCassandraDroitsGed();
@@ -534,6 +536,23 @@ public final class MajLotServiceImpl implements MajLotService {
       createIndexesComposite(service.getIndexesComposites());
 
       LOG.info("Fin de l'opération : Création des nouvelles métadonnées ({})",
+            operation);
+   }
+   
+   private void addIndexesCompositeToDfce(String operation) {
+      // -- Récupération de la liste des métadonnées
+      LOG
+            .debug("Lecture du fichier XML contenant les index composites à ajouter - Début");
+      RefMetaInitialisationService service = updater.getRefMetaInitService();
+      
+      LOG.info(
+            "Début de l'opération : Création des nouveaux index composites ({})",
+            operation);
+
+      // -- Crétion des indexes composites
+      createIndexesComposite(service.getIndexesComposites());
+
+      LOG.info("Fin de l'opération : Création des nouveaux index composites ({})",
             operation);
    }
 

@@ -836,7 +836,7 @@
             <descriptif>NumeroMatriculeAgent</descriptif>
             <name>nma</name>
             <dataType>String</dataType>
-            <index>true</index>
+            <index>false</index>
             <minimumValues>0</minimumValues>
             <maximumValues>1</maximumValues>
             <single>false</single>
@@ -846,7 +846,7 @@
             <descriptif>NomPatronymiqueAgent</descriptif>
             <name>npa</name>
             <dataType>String</dataType>
-            <index>true</index>
+            <index>false</index>
             <minimumValues>0</minimumValues>
             <maximumValues>1</maximumValues>
             <single>false</single>

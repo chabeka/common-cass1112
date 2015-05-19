@@ -145,7 +145,7 @@ public final class RefMetaInitialisationService {
    
    protected List<String[]> chargerFichierIdxComposites(boolean aCreer) throws IOException, JAXBException, SAXException  {
       
-      String cheminRessourceXml = "IndexesComposites1.0.xml";
+      String cheminRessourceXml = "IndexesComposites2.0.xml";
       String xsdResPath = "/xsd/metadata/IndexesComposites.xsd";
       
       ClassPathResource ressourceXml = new ClassPathResource(cheminRessourceXml);
