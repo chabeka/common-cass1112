@@ -71,28 +71,28 @@
 		<ns1:aCreer>non</ns1:aCreer>
 	</ns1:indexReference>
 	<ns1:indexReference>
-		<ns1:nom>CodeOrganismeProprietaire-DateCreation</ns1:nom>
-		<ns1:composition>cop:SM_CREATION_DATE</ns1:composition>
+		<ns1:nom>DomaineRH-CodeOrganismeProprietaire-DateCreation</ns1:nom>
+		<ns1:composition>drh:cop:SM_CREATION_DATE</ns1:composition>
 		<ns1:aCreer>oui</ns1:aCreer>
 	</ns1:indexReference>
 	<ns1:indexReference>
-		<ns1:nom>CodeOrganismeProprietaire-NumeroMatriculeAgent</ns1:nom>
-		<ns1:composition>cop:nma</ns1:composition>
+		<ns1:nom>DomaineRH-CodeOrganismeProprietaire-NumeroMatriculeAgent</ns1:nom>
+		<ns1:composition>drh:cop:nma</ns1:composition>
 		<ns1:aCreer>oui</ns1:aCreer>
 	</ns1:indexReference>
 	<ns1:indexReference>
-		<ns1:nom>CodeOrganismeProprietaire-NumeroMatriculeAgent-FlagRattachementDossier</ns1:nom>
-		<ns1:composition>cop:nma:frd</ns1:composition>
+		<ns1:nom>DomaineRH-CodeOrganismeProprietaire-NumeroMatriculeAgent-FlagRattachementDossier</ns1:nom>
+		<ns1:composition>drh:cop:nma:frd</ns1:composition>
 		<ns1:aCreer>oui</ns1:aCreer>
 	</ns1:indexReference>
 	<ns1:indexReference>
-		<ns1:nom>CodeOrganismeProprietaire-NomPatronymiqueAgent-DateCreation</ns1:nom>
-		<ns1:composition>cop:npa:SM_CREATION_DATE</ns1:composition>
+		<ns1:nom>DomaineRH-CodeOrganismeProprietaire-NomPatronymiqueAgent-DateCreation</ns1:nom>
+		<ns1:composition>drh:cop:npa:SM_CREATION_DATE</ns1:composition>
 		<ns1:aCreer>oui</ns1:aCreer>
 	</ns1:indexReference>
 	<ns1:indexReference>
-		<ns1:nom>CodeOrganismeProprietaire-PrenomAgent-DateCreation</ns1:nom>
-		<ns1:composition>cop:pag:SM_CREATION_DATE</ns1:composition>
+		<ns1:nom>DomaineRH-CodeOrganismeProprietaire-PrenomAgent-DateCreation</ns1:nom>
+		<ns1:composition>drh:cop:pag:SM_CREATION_DATE</ns1:composition>
 		<ns1:aCreer>oui</ns1:aCreer>
 	</ns1:indexReference>
 </ns1:indexesComposites>
