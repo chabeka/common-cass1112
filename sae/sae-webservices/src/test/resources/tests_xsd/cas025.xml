@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- edited with XMLSpy v2010 (http://www.altova.com) by USER USER (CIRTIL) -->
-<!--Résultat de recherche sans résultat : c'est OK !-->
-<sae:rechercheResponse xmlns:sae="http://www.cirtil.fr/saeService" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.cirtil.fr/saeService ../SaeService.xsd">
-	<sae:resultats/>
-	<sae:resultatTronque>false</sae:resultatTronque>
-</sae:rechercheResponse>
