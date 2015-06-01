@@ -3,14 +3,14 @@
    <parent>
       <artifactId>sae</artifactId>
       <groupId>fr.urssaf.image.sae</groupId>
-      <version>15.4.0.2-SNAPSHOT</version>
+      <version>15.6.0.2</version>
    </parent>
    
    <modelVersion>4.0.0</modelVersion>
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-batch-docs-executable</artifactId>
    <name>sae-batch-docs-executable</name>
-   <version>15.4.0.2-SNAPSHOT</version>
+   <version>15.6.0.2-SNAPSHOT</version>
    <description>Traitement de masse: import, export, delete</description>
    
    <properties>
@@ -41,19 +41,19 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-commons</artifactId>
-         <version>15.4.0.2-SNAPSHOT</version>
+         <version>15.6.0.2-SNAPSHOT</version>
       </dependency>
       
 	  <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-storage</artifactId>
-         <version>15.4.0.4-SNAPSHOT</version>
+         <version>15.6.0.2-SNAPSHOT</version>
       </dependency>
       
 	  <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-bo</artifactId>
-         <version>15.4.0.4-SNAPSHOT</version>
+         <version>15.6.0.2-SNAPSHOT</version>
       </dependency>
       
       <!-- AspectJ -->
