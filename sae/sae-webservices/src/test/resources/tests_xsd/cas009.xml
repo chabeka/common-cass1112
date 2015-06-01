@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- UN Z s'est glissé dans l'uuID -->
-<sae:consultation xmlns:sae="http://www.cirtil.fr/saeService" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.cirtil.fr/saeService ..\SaeService.xsd">
-	<sae:idArchive>a1b1ff04-230a-26ff-0033-23490abzfcba</sae:idArchive>
-	<sae:urlConsultationDirecte>true</sae:urlConsultationDirecte>
-</sae:consultation>
