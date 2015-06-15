@@ -88,7 +88,7 @@
    </configuration>
    <configuration>
       <nom>PRODUCTION_GNT</nom>
-      <dfceAddress>http://hwi69gntweb.cer69.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
+      <dfceAddress>http://hwi69gntappli1.cer69.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
       <dfceBaseName>GNT-PROD</dfceBaseName>
       <dfceLogin>_ADMIN</dfceLogin>
       <dfcePwd>DOCUBASE</dfcePwd>
