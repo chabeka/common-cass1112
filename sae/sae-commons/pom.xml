@@ -11,7 +11,7 @@
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-commons</artifactId>
    <name>sae-commons</name>
-   <version>15.6.0.3-SNAPSHOT</version>
+   <version>15.10.0.1-SNAPSHOT</version>
 
    <dependencies>
       <!-- COMMONS-CASSANDRA -->
