@@ -25,6 +25,10 @@ import org.slf4j.LoggerFactory;
 
 import fr.urssaf.image.sae.lotinstallmaj.modele.CassandraConfig;
 
+/**
+ * Classe permettant la mise à jour des donnees du keyspace Docubase dans cassandra
+ * 
+ */
 public class DFCEUpdater {
 
    /**
