@@ -4,7 +4,7 @@
 
    <groupId>fr.urssaf.image.commons</groupId>
    <artifactId>commons-dfce</artifactId>
-   <version>1.2.9-CRTL-5-SNAPSHOT</version>
+   <version>1.6.1-CRTL-1-SNAPSHOT</version>
 
    <name>commons-dfce</name>
 
@@ -24,24 +24,26 @@
 
       <!-- numéro de version des dépendances de DFCE -->
       <dfce.serialization>1.2.0</dfce.serialization>
-      <dfce.toolkit.client>1.2.9-P5</dfce.toolkit.client>
-      <dfce.toolkit.pojo>1.2.9-P5</dfce.toolkit.pojo>
-      <dfce.pojo>1.2.9-P5</dfce.pojo>
-      <dfce.toolkit.service>1.2.9-P5</dfce.toolkit.service>
-      <dfce.commons>1.2.9-P5</dfce.commons>
+      <dfce.toolkit.client>1.6.1</dfce.toolkit.client>
+      <dfce.toolkit.pojo>1.6.1</dfce.toolkit.pojo>
+      <dfce.pojo>1.6.1</dfce.pojo>
+      <dfce.toolkit.service>1.6.1</dfce.toolkit.service>
+      <dfce.commons>1.6.1</dfce.commons>
 
       <!-- Autres versions -->
       <junit.version>4.8.2</junit.version>
       <apache.commons-io.version>1.4</apache.commons-io.version>
       <apache.commons-lang.version>2.5</apache.commons-lang.version>
-      <google.guava.version>12.0</google.guava.version>
+      <google.guava.version>13.0.1</google.guava.version>
       <lucene.version>2.9.1</lucene.version>
-      <hector.version>1.0-3</hector.version>
+      <hector.version>1.1-4</hector.version>
       <spring.framework.version>3.0.5.RELEASE</spring.framework.version>
       <spring.batch.version>2.1.8.RELEASE</spring.batch.version>
+      <cassandra-all.version>1.2.18</cassandra-all.version>
       
       <spring.security.version>3.0.5.RELEASE</spring.security.version>
       <dozer.version>5.3.1</dozer.version>
+      <jackson-annotations.version>2.4.5</jackson-annotations.version>
 
    </properties>
 
@@ -116,7 +118,7 @@
       <!-- HECTOR -->
 
       <dependency>
-         <groupId>me.prettyprint</groupId>
+         <groupId>org.hectorclient</groupId>
          <artifactId>hector-core</artifactId>
          <version>${hector.version}</version>
          <exclusions>
@@ -127,6 +129,22 @@
             <exclusion>
                <groupId>junit</groupId>
                <artifactId>junit</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.apache.cassandra</groupId>
+               <artifactId>cassandra-thrift</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+      
+      <dependency>
+         <groupId>org.apache.cassandra</groupId>
+         <artifactId>cassandra-thrift</artifactId>
+         <version>${cassandra-all.version}</version>
+         <exclusions>
+            <exclusion>
+               <groupId>org.slf4j</groupId>
+               <artifactId>slf4j-api</artifactId>
             </exclusion>
          </exclusions>
       </dependency>
@@ -249,20 +267,25 @@
          <artifactId>dozer</artifactId>
          <version>${dozer.version}</version>
       </dependency>
+      
+      <!-- JACKSON ANNOTATION -->
+      <!--
+         la dépendance à Jackson Annotation est uniquement utile pour l'utilisation
+         des nouveau pojo du toolkit DFCE 
+       -->
+      <dependency>
+         <groupId>com.fasterxml.jackson.core</groupId>
+         <artifactId>jackson-annotations</artifactId>
+         <version>${jackson-annotations.version}</version>
+      </dependency>
 
    </dependencies>
 
    <!-- Configuration SVN pour le plug-in maven-release -->
    <scm>
-      <url>
-        scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/commons/commons-dfce 
-      </url>
-      <developerConnection>
-         scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/commons/commons-dfce 
-      </developerConnection>
-      <connection>
-         scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/commons/commons-dfce 
-      </connection>
+      <url>scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/commons/commons-dfce</url>
+      <developerConnection>scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/commons/commons-dfce</developerConnection>
+      <connection>scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/commons/commons-dfce</connection>
    </scm>
 
    <build>
