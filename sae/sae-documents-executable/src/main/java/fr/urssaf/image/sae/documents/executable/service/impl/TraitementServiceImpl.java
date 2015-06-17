@@ -1,13 +1,19 @@
 package fr.urssaf.image.sae.documents.executable.service.impl;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.RejectedExecutionHandler;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import net.docubase.toolkit.model.document.Document;
 
@@ -17,6 +23,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import au.com.bytecode.opencsv.CSVReader;
 
 import com.docubase.dfce.exception.SearchQueryParseException;
 
@@ -51,7 +59,7 @@ public class TraitementServiceImpl implements TraitementService {
     */
    @Autowired
    private DfceService dfceService;
-
+   
    /**
     * Service permettant de réaliser des opérations sur les fichiers.
     */
@@ -81,6 +89,18 @@ public class TraitementServiceImpl implements TraitementService {
          // initialise le pool de thread
          executor = new FormatValidationPoolThreadExecutor(
                parametres);
+         
+         executor.setRejectedExecutionHandler(new RejectedExecutionHandler() {
+            @Override
+            public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
+               try {
+                  Thread.sleep(2000);
+               } catch (InterruptedException e) {
+                  LOGGER.error("Erreur : {}", e.getMessage());
+               }
+               executor.execute(r);
+            }
+         });
 
          while (isTraitementTermine(parametres, startTime, iteratorDoc,
                nbDocTraites)) {
@@ -419,6 +439,18 @@ public class TraitementServiceImpl implements TraitementService {
                .executerRequete(requeteLucene);
 
          poolThead = new AddMetadatasPoolThreadExecutor(parametres);
+         
+         poolThead.setRejectedExecutionHandler(new RejectedExecutionHandler() {
+            @Override
+            public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
+               try {
+                  Thread.sleep(2000);
+               } catch (InterruptedException e) {
+                  LOGGER.error("Erreur : {}", e.getMessage());
+               }
+               executor.execute(r);
+            }
+         });
 
          while (it.hasNext()) {
             Document doc = (Document) it.next();
@@ -473,6 +505,88 @@ public class TraitementServiceImpl implements TraitementService {
 
       LOGGER
             .info("{} documents traités au total", poolThead.getNombreTraites());
+   }
+   
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void addMetadatasToDocumentsFromCSV(AddMetadatasParametres parametres) {
+
+      // -- Overture connexion dfce
+      getDfceService().ouvrirConnexion();
+      
+      AddMetadatasPoolThreadExecutor poolThead = null;
+      
+      try {
+         
+         poolThead = new AddMetadatasPoolThreadExecutor(parametres);
+         
+         poolThead.setRejectedExecutionHandler(new RejectedExecutionHandler() {
+            @Override
+            public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
+               try {
+                  Thread.sleep(2000);
+               } catch (InterruptedException e) {
+                  LOGGER.error("Erreur : {}", e.getMessage());
+               }
+               executor.execute(r);
+            }
+         });
+         
+         CSVReader reader = new CSVReader(new FileReader(new File(parametres.getCheminFichier())), ';');
+         
+         String[] nextLine;
+         while ((nextLine = reader.readNext()) != null) {
+            
+            UUID idDoc = UUID.fromString(nextLine[0]);
+            Document doc = getDfceService().getDocumentById(idDoc);
+            String codeMeta = nextLine[1];
+            
+            if ((doc != null) && (doc.getCriterions(codeMeta).isEmpty())) {
+               
+               Map<String, String> metadonnees = new HashMap<String, String>();
+               metadonnees.put(codeMeta, "true");
+               
+               // execution en mode multi thread
+               AddMetadatasRunnable addMetasRun = new AddMetadatasRunnable(getDfceService(), doc, metadonnees);
+               poolThead.execute(addMetasRun);
+            }
+         }
+         
+         // attend la fin du traitement
+         waitFinTraitementAddMetadatas(poolThead);
+
+         reader.close();
+         
+      } catch (FileNotFoundException ex) {
+         LOGGER.error("Le fichier n'a pas été trouvé : {}", ex
+               .getMessage());
+      } catch (IOException ex) {
+         LOGGER.error("Une erreur s'est produite lors de la fermeture du fichier : {}", ex
+               .getMessage());
+      } catch (Error ex) {
+         // gestion des erreurs grave de la jvm
+         // on essaie d'arrêter le pool et d'attendre la fin 
+         if (poolThead != null && !poolThead.isShutdown()) {
+            // attend la fin du traitement
+            waitFinTraitementAddMetadatas(poolThead);
+         }
+         // et on envoie l'erreur à l'appelant
+         throw ex;
+      } catch (RuntimeException ex) {
+         // gestion des erreurs de types runtime
+         // on essaie d'arrêter le pool et d'attendre la fin 
+         if (poolThead != null && !poolThead.isShutdown()) {
+            // attend la fin du traitement
+            waitFinTraitementAddMetadatas(poolThead);
+         }
+         // et on envoie l'erreur à l'appelant
+         throw ex;
+      } 
+      
+      // -- Fermeture connexion dfce
+      getDfceService().fermerConnexion();
    }
 
 }

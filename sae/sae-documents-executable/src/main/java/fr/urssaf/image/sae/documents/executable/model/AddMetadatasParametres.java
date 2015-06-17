@@ -12,6 +12,11 @@ public class AddMetadatasParametres extends AbstractParametres{
     * Map de clés/valeurs des métadonnées à ajouter
     */
    private Map<String, String> metadonnees;
+   
+   /**
+    * Chemin du fichier csv.
+    */
+   private String cheminFichier;
 
    /**
     * Permet de récupérer la liste des métadonnées à consulter.
@@ -29,5 +34,23 @@ public class AddMetadatasParametres extends AbstractParametres{
     */
    public final void setMetadonnees(final Map<String, String> metadonnees) {
       this.metadonnees = metadonnees;
+   }
+
+   /**
+    * Permet de récupérer le chemin du fichier csv.
+    * 
+    * @return String
+    */
+   public final String getCheminFichier() {
+      return cheminFichier;
+   }
+
+   /**
+    * Permet de modifier le chemin du fichier cvs.
+    * 
+    * @param cheminFichier chemin du fichier cvs
+    */
+   public final void setCheminFichier(final String cheminFichier) {
+      this.cheminFichier = cheminFichier;
    }
 }

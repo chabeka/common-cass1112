@@ -2,6 +2,7 @@ package fr.urssaf.image.sae.documents.executable.service;
 
 import java.io.InputStream;
 import java.util.Iterator;
+import java.util.UUID;
 
 import com.docubase.dfce.exception.SearchQueryParseException;
 
@@ -49,4 +50,11 @@ public interface DfceService {
     * @return ServiceProvider
     */
    ServiceProvider getServiceProvider();
+   
+   /**
+    * Recupere un document par son identifiant.
+    * @param idDoc identifiant du doc.
+    * @return Document
+    */
+   Document getDocumentById(UUID idDoc);
 }

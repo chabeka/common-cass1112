@@ -24,4 +24,11 @@ public interface TraitementService {
     * @param parametres : Les paramètres concernant le traitement
     */
    public void addMetadatasToDocuments(AddMetadatasParametres parametres);
+   
+   /**
+    * Réalise l’ajout de métadonnées à un ensemble de documents
+    * 
+    * @param parametres : Les paramètres concernant le traitement
+    */
+   public void addMetadatasToDocumentsFromCSV(AddMetadatasParametres parametres);
 }

@@ -32,9 +32,10 @@ public class DocumentsExecutableMain {
 
    public static final String VERIFICATION_FORMAT = "VERIFICATION_FORMAT";
    public static final String ADD_METADATAS = "ADD_METADATAS";
+   public static final String ADD_METADATAS_FROM_CSV = "ADD_METADATAS_FROM_CSV";
 
    protected static final String[] AVAIBLE_SERVICES = new String[] {
-         ADD_METADATAS, VERIFICATION_FORMAT };
+         ADD_METADATAS, ADD_METADATAS_FROM_CSV, VERIFICATION_FORMAT };
 
    private final String configLocation;
 
@@ -277,6 +278,44 @@ public class DocumentsExecutableMain {
 
       return confOk;
    }
+   
+   /**
+    * 
+    * @param properties
+    *           properties
+    * @param parametres
+    *           parametres
+    * @return true si vérif OK
+    */
+   public boolean vefierConfFichierParamAddMetaFromCSV(final Properties properties,
+         final AddMetadatasParametres parametres) {
+
+      boolean confOk = true;
+      
+      // -- verifie la taille du pool de thread (obligatoire)
+      if (ValidationUtils.verifAddMetaParamTaillePool(properties, parametres)) {
+         confOk = false;
+      }
+
+      // -- verifie la taille de la queue en attente d'exécution (obligatoire)
+      if (ValidationUtils.verifAddMetaParamTailleQueue(properties, parametres)) {
+         confOk = false;
+      }
+
+      // -- verifie la taille du pas d'execution (obligatoire)
+      if (ValidationUtils.verifAddMetaParamTaillePasExecution(properties,
+            parametres)) {
+         confOk = false;
+      }
+      
+      // -- verifie le chemin du fichier csv (obligatoire)
+      if (ValidationUtils.verifAddMetaParamCheminCSV(properties,
+            parametres)) {
+         confOk = false;
+      }
+
+      return confOk;
+   }
 
    /**
     * Methode de lancement des services
@@ -310,6 +349,15 @@ public class DocumentsExecutableMain {
          // -- Fichier param OK : On execute le service
          execSceAddMetadatas(context, parametres);
          // -------------------------------------------
+      } else if (service.equals(ADD_METADATAS_FROM_CSV)) {
+         AddMetadatasParametres parametres = new AddMetadatasParametres();
+         if (!vefierConfFichierParamAddMetaFromCSV(properties, parametres)) {
+            return;
+         }
+
+         // -- Fichier param OK : On execute le service
+         execSceAddMetadatasFromCVS(context, parametres);
+         // -------------------------------------------
       }
    }
 
@@ -342,5 +390,20 @@ public class DocumentsExecutableMain {
       TraitementService traitementService = context
             .getBean(TraitementService.class);
       traitementService.addMetadatasToDocuments(parametres);
+   }
+   
+   /**
+    * Methode permettant de lancer l'ajout de métadonnées sur des fichiers.
+    * 
+    * @param context
+    *           contexte spring
+    * @param parametres
+    *           parametres du fichier de paramètrage
+    */
+   protected final void execSceAddMetadatasFromCVS(final ApplicationContext context,
+         final AddMetadatasParametres parametres) {
+      TraitementService traitementService = context
+            .getBean(TraitementService.class);
+      traitementService.addMetadatasToDocumentsFromCSV(parametres);
    }
 }

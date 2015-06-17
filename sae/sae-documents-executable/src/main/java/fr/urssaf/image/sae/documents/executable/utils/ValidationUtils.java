@@ -508,4 +508,42 @@ public final class ValidationUtils {
             .getCheminRepertoireTemporaire());
       return erreurVerif;
    }
+   
+   /**
+    * Methode permettant de vérifier la saisie du chemin du fichier csv.
+    * 
+    * @param properties
+    *           properties
+    * @param parametres
+    *           paramètres
+    * @return boolean
+    */
+   public static boolean verifAddMetaParamCheminCSV(
+         final Properties properties,
+         final AddMetadatasParametres parametres) {
+      boolean erreurVerif = false;
+      String cheminFichierCSV = properties
+            .getProperty("addMeta.chemin.fichier.csv");
+      if (StringUtils.isNotBlank(cheminFichierCSV)) {
+         File chemin = new File(cheminFichierCSV);
+         if (chemin.exists()) {
+            parametres
+                  .setCheminFichier(cheminFichierCSV);
+            LOGGER.info("Paramètere '{}' : {}", "addMeta.chemin.fichier.csv", cheminFichierCSV);
+         } else {
+            LOGGER
+               .warn(
+                  "Le paramètre {} doit contenir le chemin d'un fichier, et ce fichier doit exister",
+                  "addMeta.chemin.fichier.csv");
+            erreurVerif = true;
+         }
+      } else {
+         LOGGER
+            .warn(
+               "Le paramètre {} doit contenir le chemin d'un fichier, et ce fichier doit exister",
+               "addMeta.chemin.fichier.csv");
+         erreurVerif = true;
+      }
+      return erreurVerif;
+   }
 }

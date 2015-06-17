@@ -2,6 +2,7 @@ package fr.urssaf.image.sae.documents.executable.service.impl;
 
 import java.io.InputStream;
 import java.util.Iterator;
+import java.util.UUID;
 
 import net.docubase.toolkit.model.ToolkitFactory;
 import net.docubase.toolkit.model.base.Base;
@@ -98,6 +99,18 @@ public class DfceServiceImpl implements DfceService {
             .getUuid());
       final StoreService storeService = getServiceProvider().getStoreService();
       return storeService.getDocumentFile(document);
+   }
+   
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final Document getDocumentById(final UUID idDoc) {
+      final SearchService searchService = getServiceProvider()
+         .getSearchService();
+      final Base base = getServiceProvider().getBaseAdministrationService()
+         .getBase(getDfceConnection().getBaseName());
+      return searchService.getDocumentByUUID(base, idDoc);
    }
 
    /**
