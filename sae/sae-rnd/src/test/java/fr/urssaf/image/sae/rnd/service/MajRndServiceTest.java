@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import net.docubase.toolkit.model.reference.LifeCycleLengthUnit;
 import net.docubase.toolkit.model.reference.LifeCycleRule;
 import net.docubase.toolkit.service.ServiceProvider;
 import net.docubase.toolkit.service.administration.StorageAdministrationService;
@@ -273,15 +272,13 @@ public class MajRndServiceTest {
 
       EasyMock.expect(
             storageAdministrationService.createNewLifeCycleRule(
-                  EasyMock.anyObject(String.class), EasyMock.anyInt(),
-                  EasyMock.anyObject(LifeCycleLengthUnit.class))).andReturn(
+                  EasyMock.anyObject(LifeCycleRule.class))).andReturn(
             lifeCycleRule);
 
       EasyMock
             .expect(
                   storageAdministrationService.updateLifeCycleRule(
-                        EasyMock.anyObject(String.class), EasyMock.anyInt(),
-                        EasyMock.anyObject(LifeCycleLengthUnit.class)))
+                        EasyMock.anyObject(LifeCycleRule.class)))
             .andReturn(lifeCycleRule).anyTimes();
 
       EasyMock.replay(serviceProvider, dfceConnectionService,

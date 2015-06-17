@@ -3,7 +3,6 @@ package fr.urssaf.image.sae.rnd.support;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.docubase.toolkit.model.reference.LifeCycleLengthUnit;
 import net.docubase.toolkit.model.reference.LifeCycleRule;
 import net.docubase.toolkit.service.ServiceProvider;
 import net.docubase.toolkit.service.administration.StorageAdministrationService;
@@ -255,8 +254,7 @@ public class DfceSupportTest {
 
       EasyMock.expect(
             storageAdministrationService.createNewLifeCycleRule(
-                  EasyMock.anyObject(String.class), EasyMock.anyInt(),
-                  EasyMock.anyObject(LifeCycleLengthUnit.class))).andReturn(
+                  EasyMock.anyObject(LifeCycleRule.class))).andReturn(
             lifeCycleRule);
    }
 
@@ -267,11 +265,10 @@ public class DfceSupportTest {
                   storageAdministrationService.getLifeCycleRule(EasyMock
                         .anyObject(String.class))).andReturn(lifeCycleRule)
             .anyTimes();
-
+      
       EasyMock.expect(
             storageAdministrationService.updateLifeCycleRule(
-                  EasyMock.anyObject(String.class), EasyMock.anyInt(),
-                  EasyMock.anyObject(LifeCycleLengthUnit.class))).andReturn(
+                  EasyMock.anyObject(LifeCycleRule.class))).andReturn(
             lifeCycleRule);
    }
 
@@ -287,8 +284,7 @@ public class DfceSupportTest {
       EasyMock
             .expect(
                   storageAdministrationService.updateLifeCycleRule(
-                        EasyMock.anyObject(String.class), EasyMock.anyInt(),
-                        EasyMock.anyObject(LifeCycleLengthUnit.class)))
+                        EasyMock.anyObject(LifeCycleRule.class)))
             .andThrow(
                   new IllegalStateException(
                         "no life cycle rule update can be made as long as previous rule history was not handled"));

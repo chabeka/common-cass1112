@@ -63,6 +63,7 @@ public final class MajLotServiceImpl implements MajLotService {
    public static final String DFCE_130700 = "DFCE_130700";
    public static final String DFCE_150400 = "DFCE_150400";
    public static final String DFCE_150400_P5 = "DFCE_150400_P5";
+   public static final String DFCE_151000 = "DFCE_151000";
    public static final String CASSANDRA_DROITS_GED = "CASSANDRA_DROITS_GED";
    public static final String CREATION_GED = "CREATION_GED";
    public static final String DISABLE_COMPOSITE_INDEX = "DISABLE_COMPOSITE_INDEX";
@@ -186,6 +187,10 @@ public final class MajLotServiceImpl implements MajLotService {
          updateCassandra150601();
          // -- Creation des index composite dans DFCE
          addIndexesCompositeToDfce("DFCE_150601");
+      } else if (DFCE_151000.equalsIgnoreCase(nomOperation)) {
+
+         updateDFCE151000();
+
       } else if (CASSANDRA_DROITS_GED.equalsIgnoreCase(nomOperation)) {
 
          updateCassandraDroitsGed();
@@ -813,6 +818,21 @@ public final class MajLotServiceImpl implements MajLotService {
             .getIndexesCompositesASupprimer());
       LOG
             .info("Fin de l'opération : DISABLE_COMPOSITE_INDEX - Mise à jour de DFCE");
+   }
+   
+   /**
+    * Pour lot 151000 du SAE : mise à jour du keyspace "Docubase" pour le
+    * passage à la version 1.6.1 de DFCE
+    */
+   private void updateDFCE151000() {
+
+      LOG
+            .info("Début de l'opération : Lot 151000 - Mise à jour du schéma DFCE");
+      DFCECassandraUpdater dfceUpdater = new DFCECassandraUpdater(
+            cassandraConfig);
+      dfceUpdater.updateToVersion161();
+      LOG
+            .info("Fin de l'opération : Lot 151000 - Mise à jour du schéma DFCE");
    }
 
    /**

@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.Assert;
-import net.docubase.toolkit.model.document.impl.DocumentImpl;
+import net.docubase.toolkit.model.document.Document;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -66,7 +66,7 @@ public class ParamFormatFichierTest {
    @Test
    public void testValidIdentifierFichierIdFormatNullStreamNull() {
       try {
-         formatFichierService.identifierFichier(null, null, new DocumentImpl(),
+         formatFichierService.identifierFichier(null, null, new Document(),
                new ArrayList<String>());
          Assert
                .fail("Une exception ParametreRuntimeException aurait dû être levée");
@@ -83,7 +83,7 @@ public class ParamFormatFichierTest {
    public void testValidIdentifierFichierIdFormatNull()
          throws FileNotFoundException {
       try {
-         formatFichierService.identifierFichier(null, file, new DocumentImpl(),
+         formatFichierService.identifierFichier(null, file, new Document(),
                new ArrayList<String>());
          Assert
                .fail("Une exception ParametreRuntimeException aurait dû être levée");
@@ -104,7 +104,7 @@ public class ParamFormatFichierTest {
 
       try {
          formatFichierService.identifierFichier("fmt/354", file,
-               new DocumentImpl(), metadonnees);
+               new Document(), metadonnees);
          Assert
                .fail("Une exception ParametreRuntimeException aurait dû être levée");
       } catch (ParametreRuntimeException ex) {

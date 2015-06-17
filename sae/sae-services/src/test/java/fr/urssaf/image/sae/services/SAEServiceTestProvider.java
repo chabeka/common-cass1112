@@ -144,8 +144,8 @@ public class SAEServiceTestProvider {
          String codeRND, String title) {
 
       try {
-         Document document = ToolkitFactory.getInstance().createDocumentTag(
-               base);
+         Document document = ToolkitFactory.getInstance().createDocument(
+               base, documentTitle, documentType);
 
          document.setCreationDate(dateCreation);
          document.setTitle(title);
@@ -160,7 +160,7 @@ public class SAEServiceTestProvider {
 
          InputStream docContent = new ByteArrayInputStream(content);
          return serviceProvider.getStoreService().storeDocument(document,
-               documentTitle, documentType, docContent).getUuid();
+               docContent).getUuid();
 
       } catch (TagControlException e) {
          throw new NestableRuntimeException(e);

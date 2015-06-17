@@ -18,7 +18,6 @@ import net.docubase.toolkit.model.base.BaseCategory;
 import net.docubase.toolkit.model.document.Criterion;
 import net.docubase.toolkit.model.document.Document;
 import net.docubase.toolkit.model.reference.FileReference;
-import net.docubase.toolkit.model.reference.impl.FileReferenceImpl;
 import net.docubase.toolkit.service.ServiceProvider;
 
 import org.apache.commons.io.FilenameUtils;
@@ -239,6 +238,7 @@ public final class BeanMapper {
     *           : La base dfce
     * @param storageDocument
     *           : Un StorageDocment.
+    * @param file : tableau contenant le nom du fichier et l'extension
     * @return Un document DFCE à partir d'un storageDocment.
     * @throws ParseException
     *            Exception si le parsing de la date ne se passe pas bien.
@@ -247,11 +247,11 @@ public final class BeanMapper {
     */
    // CHECKSTYLE:OFF
    public static Document storageDocumentToDfceDocument(final Base baseDFCE,
-         final StorageDocument storageDocument) throws ParseException,
+         final StorageDocument storageDocument, String[] file) throws ParseException,
          MetadonneeInexistante {
 
       Document document = createDocument(storageDocument.getMetadatas(),
-            baseDFCE);
+            baseDFCE, file);
 
       return document;
    }
@@ -273,18 +273,23 @@ public final class BeanMapper {
          final Base baseDFCE, final VirtualStorageDocument storageDocument)
          throws ParseException, MetadonneeInexistante {
 
+	  String[] file = { 
+			  storageDocument.getReferenceFile().getName(),
+			  storageDocument.getReferenceFile().getExtension()
+	  };
+	   
       Document document = createDocument(storageDocument.getMetadatas(),
-            baseDFCE);
+            baseDFCE, file);
 
       return document;
    }
 
    private static Document createDocument(List<StorageMetadata> metadatas,
-         Base baseDFCE) throws MetadonneeInexistante {
+         Base baseDFCE, String[] file) throws MetadonneeInexistante {
       BaseCategory baseCategory = null;
       Date dateCreation = new Date();
-      final Document document = ToolkitFactory.getInstance().createDocumentTag(
-            baseDFCE);
+      final Document document = ToolkitFactory.getInstance().createDocument(
+            baseDFCE, file[0], file[1]);
 
       for (StorageMetadata storageMetadata : Utils.nullSafeIterable(metadatas)) {
 
@@ -461,7 +466,7 @@ public final class BeanMapper {
          FileReference fileReference) {
 
       StorageReferenceFile referenceFile = new StorageReferenceFile();
-      FileReferenceImpl impl = (FileReferenceImpl) fileReference;
+      FileReference impl = (FileReference) fileReference;
 
       referenceFile.setDigest(impl.getDigest());
       referenceFile.setDigestAlgorithm(impl.getDigestAlgorithm());
@@ -484,7 +489,7 @@ public final class BeanMapper {
    public static FileReference storageReferenceFileToFileReference(
          StorageReferenceFile referenceFile) {
 
-      FileReferenceImpl impl = new FileReferenceImpl();
+      FileReference impl = new FileReference();
       impl.setDigest(referenceFile.getDigest());
       impl.setDigestAlgorithm(referenceFile.getDigestAlgorithm());
       impl.setExtension(referenceFile.getExtension());

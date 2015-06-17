@@ -16,7 +16,6 @@ import net.docubase.toolkit.model.search.SearchQuery;
 import net.docubase.toolkit.model.search.SearchResult;
 import net.docubase.toolkit.model.search.SortedSearchQuery;
 import net.docubase.toolkit.model.search.ChainedFilter.ChainedFilterOperator;
-import net.docubase.toolkit.model.search.impl.SortedQueryImpl;
 import net.docubase.toolkit.service.ServiceProvider;
 
 import org.apache.commons.lang.StringUtils;
@@ -115,10 +114,14 @@ public class SearchingServiceImpl extends AbstractServices implements
 
          LOG.debug("{} - Requête Lucene envoyée à DFCE: \"{}\"", prefixTrace,
                luceneCriteria.getLuceneQuery());
+         
+         
 
-         SortedSearchQuery paramSearchQuery = new SortedQueryImpl(
-               luceneCriteria.getLuceneQuery(), luceneCriteria.getLimit(), 0,
-               getBaseDFCE());
+         SortedSearchQuery paramSearchQuery = ToolkitFactory.getInstance()
+               .createMonobaseSortedQuery(luceneCriteria.getLuceneQuery(),
+                       getBaseDFCE());
+         paramSearchQuery.setPageSize(luceneCriteria.getLimit());
+         paramSearchQuery.setOffset(0);
          SearchResult searchResult = getDfceService().getSearchService()
                .search(paramSearchQuery);
 

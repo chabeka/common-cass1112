@@ -4,7 +4,7 @@
 
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae</artifactId>
-   <version>15.6.0.3-SNAPSHOT</version>
+   <version>15.10.0.1-SNAPSHOT</version>
 
    <packaging>pom</packaging>
 
@@ -45,7 +45,7 @@
       commons-cassandra
       ==========================================
       -->
-      <commons.cassandra>0.0.8</commons.cassandra>
+      <commons.cassandra>0.0.9-SNAPSHOT</commons.cassandra>
 
       <!--
       Modèle de dépendance :
@@ -81,7 +81,7 @@
       commons-dfce
       ==========================================
       -->
-      <commons.dfce>1.2.9-CRTL-4</commons.dfce>
+      <commons.dfce>1.6.1-CRTL-1-SNAPSHOT</commons.dfce>
 
       <!--
       Modèle de dépendance :
@@ -548,7 +548,7 @@
       http://code.google.com/p/guava-libraries/
       ==========================================
       -->
-      <guava.version>12.0</guava.version>
+      <guava.version>13.0.1</guava.version>
 
       <!--
       Modèles de dépendance :

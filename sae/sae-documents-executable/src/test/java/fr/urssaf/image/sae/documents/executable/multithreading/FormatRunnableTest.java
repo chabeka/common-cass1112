@@ -8,7 +8,6 @@ import java.util.UUID;
 
 import junit.framework.Assert;
 import net.docubase.toolkit.model.document.Document;
-import net.docubase.toolkit.model.document.impl.DocumentImpl;
 
 import org.easymock.EasyMock;
 import org.junit.Test;
@@ -34,7 +33,7 @@ public class FormatRunnableTest {
    private FormatFichierService formatFichierService;
 
    private Document createDocument(String idFormat) {
-      DocumentImpl document = new DocumentImpl();
+      Document document = new Document();
       document.setUuid(UUID.fromString("00000000-0000-0000-0000-000000000000"));
       document.setArchivageDate(new Date());
       document.setType("2.3.1.1.12");

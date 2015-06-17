@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------
+﻿﻿// ----------------------------------------------------------------------------
 // UTILISATION DE sae-lotinstallmaj DANS L'INSTALLATION DES LOTS SAE
 // ----------------------------------------------------------------------------
 
@@ -266,3 +266,10 @@ sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logbac
 
 Met la base Cassandra du SAE en version 11 (Mise à jour référentiel des évenements et création des index composite Groom) :
 sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_DFCE_150601
+
+// ------------------------------------------
+// 10) Lot 151000SAE
+// ------------------------------------------
+
+Création des nouvelles CF de la version 1.6.1
+sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties DFCE_151000

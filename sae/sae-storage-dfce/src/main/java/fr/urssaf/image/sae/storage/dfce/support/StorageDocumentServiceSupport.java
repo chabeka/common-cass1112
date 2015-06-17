@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import com.docubase.dfce.commons.document.StoreOptions;
 import com.docubase.dfce.exception.FrozenDocumentException;
 import com.docubase.dfce.exception.TagControlException;
 
@@ -85,23 +86,24 @@ public class StorageDocumentServiceSupport {
             cnxParams);
       String trcInsert = "insertStorageDocument()";
       try {
+         // -- ici on récupère le nom et l'extension du fichier
+         String[] file = new String[] {
+                FilenameUtils.getBaseName(storageDocument.getFileName()),
+                FilenameUtils.getExtension(storageDocument.getFileName()) };
+
+         log.debug("{} - Enrichissement des métadonnées : "
+                + "ajout de la métadonnée NomFichier valeur : {}.{}",
+                new Object[] { trcInsert, file[0], file[1] });
+          
          // -- conversion du storageDoc en DFCE Document
          Document docDfce = BeanMapper.storageDocumentToDfceDocument(base,
-               storageDocument);
+               storageDocument, file);
 
          docDfce.setUuid(storageDocument.getUuid());
 
          // -- ici on récupère le contenu du fichier.
          DataHandler docContent = storageDocument.getContent();
 
-         // -- ici on récupère le nom et l'extension du fichier
-         String[] file = new String[] {
-               FilenameUtils.getBaseName(storageDocument.getFileName()),
-               FilenameUtils.getExtension(storageDocument.getFileName()) };
-
-         log.debug("{} - Enrichissement des métadonnées : "
-               + "ajout de la métadonnée NomFichier valeur : {}.{}",
-               new Object[] { trcInsert, file[0], file[1] });
          log.debug("{} - Début insertion du document dans DFCE", trcInsert);
 
          return insertDocumentInStorage(dfceService, cnxParams, typeDocList,
@@ -206,8 +208,7 @@ public class StorageDocumentServiceSupport {
 
          // Appel de l'API DFCE pour l'archivage du document
          Document docArchive = insertStorageDocument(dfceService, docDfce,
-               file[0], file[1], digest, inputStream, hashMeta, typeHashMeta,
-               tracesSupport);
+               digest, inputStream, hashMeta, typeHashMeta, tracesSupport);
 
          // Trace
          LOGGER.debug("{} - Document inséré dans DFCE (UUID: {})", trcInsert,
@@ -244,8 +245,6 @@ public class StorageDocumentServiceSupport {
     * @param dfceService
     *           Services de DFCE
     * @param document
-    * @param originalFilename
-    * @param extension
     * @param digest
     * @param inputStream
     * @param hashPourTrace
@@ -257,20 +256,20 @@ public class StorageDocumentServiceSupport {
     * @throws TagControlException
     */
    private Document insertStorageDocument(ServiceProvider dfceService,
-         Document document, String originalFilename, String extension,
-         String digest, InputStream inputStream, String hashPourTrace,
-         String typeHashPourTrace, TracesDfceSupport tracesSupport)
+         Document document, String digest, InputStream inputStream, 
+         String hashPourTrace, String typeHashPourTrace, 
+         TracesDfceSupport tracesSupport)
          throws TagControlException {
 
       Document doc;
 
       if (StringUtils.isEmpty(digest)) {
          doc = dfceService.getStoreService().storeDocument(document,
-               originalFilename, extension, inputStream);
+               inputStream);
 
       } else {
          doc = dfceService.getStoreService().storeDocument(document,
-               originalFilename, extension, digest, inputStream);
+               new StoreOptions.Builder().verifyDigest(digest).build(), null, inputStream);
       }
 
       // Trace l'événement "Dépôt d'un document dans DFCE"

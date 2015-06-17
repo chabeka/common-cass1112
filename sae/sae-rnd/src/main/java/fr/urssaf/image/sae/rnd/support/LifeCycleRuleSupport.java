@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import com.docubase.dfce.commons.LifeCycleEndAction;
 import com.docubase.dfce.exception.ObjectAlreadyExistsException;
 
 import fr.urssaf.image.sae.rnd.dao.support.ServiceProviderSupportRnd;
@@ -52,11 +53,16 @@ public class LifeCycleRuleSupport {
          if (lifeCycleRule == null) {
             LOGGER.info("{} - Ajout du code : {}", new String[] { trcPrefix,
                   typeDoc.getCode() });
+            
+            LifeCycleRule newRule = new LifeCycleRule();
+            newRule.setDocumentType(typeDoc.getCode());
+            newRule.setLifeCycleLength(typeDoc.getDureeConservation());
+            newRule.setLifeCycleLengthUnit(LifeCycleLengthUnit.DAY);
+            newRule.setLifeCycleEndAction(LifeCycleEndAction.DELETE);
 
             serviceProviderSupport
                   .getStorageAdministrationService()
-                  .createNewLifeCycleRule(typeDoc.getCode(),
-                        typeDoc.getDureeConservation(), LifeCycleLengthUnit.DAY);
+                  .createNewLifeCycleRule(newRule);
 
          } else {
             // Si le code existe déjà et que la durée de conservation est
@@ -71,10 +77,15 @@ public class LifeCycleRuleSupport {
                      "{} - La durée de conservation du code {} est inchangée",
                      new String[] { trcPrefix, typeDoc.getCode() });
             } else {
+            	
+            	LifeCycleRule ruleToUpdate = new LifeCycleRule();
+            	ruleToUpdate.setDocumentType(typeDoc.getCode());
+            	ruleToUpdate.setLifeCycleLength(dureeTypeDoc);
+            	ruleToUpdate.setLifeCycleLengthUnit(LifeCycleLengthUnit.DAY);
+            	ruleToUpdate.setLifeCycleEndAction(LifeCycleEndAction.DELETE);
 
                serviceProviderSupport.getStorageAdministrationService()
-                     .updateLifeCycleRule(typeDoc.getCode(), dureeTypeDoc,
-                           LifeCycleLengthUnit.DAY);
+                     .updateLifeCycleRule(ruleToUpdate);
                LOGGER
                      .info(
                            "{} - La durée de conservation du code {} a été modifiée ({} => {}) !",

@@ -15,7 +15,6 @@ import net.docubase.toolkit.model.base.Base;
 import net.docubase.toolkit.model.document.Document;
 import net.docubase.toolkit.model.search.SearchResult;
 import net.docubase.toolkit.model.search.SortedSearchQuery;
-import net.docubase.toolkit.model.search.impl.SortedQueryImpl;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,14 +72,16 @@ public class JournalSaeSupport {
          String requete = "SM_DOCUMENT_TYPE:7.7.8.8.1 AND itm:[" + dateDebut
                + " TO " + dateFin + "]";
 
-         ToolkitFactory toolkitFactory = new ToolkitFactory();
+         ToolkitFactory toolkitFactory = ToolkitFactory.getInstance();
          Base base = toolkitFactory.createBase(nomBase);
 
          // Lancement de la recherche
          int nbMaxElements = Integer.MAX_VALUE;
+         
+         SortedSearchQuery paramSearchQuery = toolkitFactory.createMonobaseSortedQuery(requete, base);
+         paramSearchQuery.setPageSize(nbMaxElements);
+         paramSearchQuery.setOffset(0);
 
-         SortedSearchQuery paramSearchQuery = new SortedQueryImpl(requete,
-               nbMaxElements, 0, base);
          SearchResult resultat = serviceProvider.getSearchService().search(
                paramSearchQuery);
 

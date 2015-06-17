@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import me.prettyprint.hector.api.Cluster;
 
-import org.apache.cassandra.config.ConfigurationException;
+import org.apache.cassandra.exceptions.ConfigurationException;
 import org.cassandraunit.utils.EmbeddedCassandraServerHelper;
 import org.easymock.EasyMock;
 import org.junit.After;

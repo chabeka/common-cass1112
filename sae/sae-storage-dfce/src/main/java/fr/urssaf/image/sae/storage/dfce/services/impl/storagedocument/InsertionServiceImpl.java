@@ -92,22 +92,23 @@ public class InsertionServiceImpl extends AbstractServices implements
          final StorageDocument storageDocument) throws InsertionServiceEx {
 
       try {
+    	 //-- ici on récupère le nom et l'extension du fichier
+         final String[] file = BeanMapper.findFileNameAndExtension(
+                storageDocument, StorageTechnicalMetadatas.NOM_FICHIER
+                      .getShortCode().toString());
+         LOGGER.debug("{} - Enrichissement des métadonnées : "
+                + "ajout de la métadonnée NomFichier valeur : {}.{}",
+                new Object[] { TRC_INSERT, file[0], file[1] });
+          
          //-- conversion du storageDocument en DFCE Document
          Document docDfce = BeanMapper.storageDocumentToDfceDocument(
-               getBaseDFCE(), storageDocument);
+               getBaseDFCE(), storageDocument, file);
 
          //-- ici on récupère le contenu du fichier.
          File fileContent = new File(storageDocument.getFilePath());
          final DataHandler docContent = new DataHandler(new FileDataSource(
                fileContent));
-
-         //-- ici on récupère le nom et l'extension du fichier
-         final String[] file = BeanMapper.findFileNameAndExtension(
-               storageDocument, StorageTechnicalMetadatas.NOM_FICHIER
-                     .getShortCode().toString());
-         LOGGER.debug("{} - Enrichissement des métadonnées : "
-               + "ajout de la métadonnée NomFichier valeur : {}.{}",
-               new Object[] { TRC_INSERT, file[0], file[1] });
+         
          LOGGER.debug("{} - Début insertion du document dans DFCE", TRC_INSERT);
          
          return storageDocumentServiceSupport.insertDocumentInStorage(getDfceService(), 

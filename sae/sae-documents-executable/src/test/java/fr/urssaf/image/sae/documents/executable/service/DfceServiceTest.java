@@ -14,7 +14,6 @@ import java.util.UUID;
 import net.docubase.toolkit.model.ToolkitFactory;
 import net.docubase.toolkit.model.base.Base;
 import net.docubase.toolkit.model.document.Document;
-import net.docubase.toolkit.model.document.impl.DocumentImpl;
 import net.docubase.toolkit.model.search.SearchQuery;
 import net.docubase.toolkit.service.ServiceProvider;
 import net.docubase.toolkit.service.administration.BaseAdministrationService;
@@ -74,7 +73,7 @@ public class DfceServiceTest {
       DFCEConnection dfceConnection = new DFCEConnection();
       dfceConnection.setBaseName(baseName);
       List<Document> listeDoc = new ArrayList<Document>();
-      listeDoc.add(new DocumentImpl());
+      listeDoc.add(new Document());
       // creation des mocks
       SearchService searchService = EasyMock
             .createNiceMock(SearchService.class);
@@ -125,7 +124,7 @@ public class DfceServiceTest {
    @Test
    public void recupererContenu() throws FileNotFoundException {
       DfceService dfceService = new DfceServiceImpl();
-      Document document = new DocumentImpl();
+      Document document = new Document();
       document.setUuid(UUID.fromString("00000000-0000-0000-0000-000000000000"));
       FileInputStream fileStream = new FileInputStream(file);
       // creation des mocks
