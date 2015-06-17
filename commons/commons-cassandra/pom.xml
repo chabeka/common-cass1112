@@ -31,14 +31,15 @@
       <xstream.version>1.3.1</xstream.version>
       <apache.commons-lang.version>2.6</apache.commons-lang.version>
       
-      <hector.version>1.0-3</hector.version>
+      <hector.version>1.1-4</hector.version>
       <curator.version>1.1.5</curator.version>
-      <cassandra-all.version>1.0.6</cassandra-all.version>
-      <cassandra-unit.version>1.0.3.1</cassandra-unit.version>
-      <libthrift.version>0.6.1</libthrift.version>
+      <cassandra-all.version>1.2.18</cassandra-all.version>
+      <cassandra-unit.version>1.1.2.1</cassandra-unit.version>
+      <libthrift.version>0.7.0</libthrift.version>
       <jettison.version>1.3.1</jettison.version>
-      <jackson-mapper-asl.version>1.4.0</jackson-mapper-asl.version>
+      <jackson-mapper-asl.version>1.9.2</jackson-mapper-asl.version>
       <zookeeper.version>3.3.3</zookeeper.version>
+      <guava.version>13.0.1</guava.version>
       
    </properties>
 
@@ -68,7 +69,7 @@
 
       <!--  Cassandra et Hector -->
       <dependency>
-         <groupId>me.prettyprint</groupId>
+         <groupId>org.hectorclient</groupId>
          <artifactId>hector-core</artifactId>
          <version>${hector.version}</version>
          <exclusions>
@@ -79,6 +80,10 @@
             <exclusion>
                <groupId>org.slf4j</groupId>
                <artifactId>slf4j-api</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.apache.cassandra</groupId>
+               <artifactId>cassandra-thrift</artifactId>
             </exclusion>
          </exclusions>
       </dependency>
@@ -106,6 +111,17 @@
             <exclusion>
                <groupId>org.mortbay.jetty</groupId>
                <artifactId>servlet-api</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+      <dependency>
+         <groupId>org.apache.cassandra</groupId>
+         <artifactId>cassandra-thrift</artifactId>
+         <version>${cassandra-all.version}</version>
+         <exclusions>
+            <exclusion>
+               <groupId>org.slf4j</groupId>
+               <artifactId>slf4j-api</artifactId>
             </exclusion>
          </exclusions>
       </dependency>
@@ -270,6 +286,13 @@
          <groupId>commons-lang</groupId>
          <artifactId>commons-lang</artifactId>
          <version>${apache.commons-lang.version}</version>
+      </dependency>
+      
+      <!-- Guava : version 13 minimum pour cassandra-all -->
+      <dependency>
+         <groupId>com.google.guava</groupId>
+         <artifactId>guava</artifactId>
+         <version>${guava.version}</version>
       </dependency>
 
    </dependencies>

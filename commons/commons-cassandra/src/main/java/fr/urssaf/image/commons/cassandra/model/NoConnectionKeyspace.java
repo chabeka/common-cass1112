@@ -35,4 +35,12 @@ public class NoConnectionKeyspace implements Keyspace {
       throw new CassandraConfigurationException("Connexion cassandra non configurée");
    }
 
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void setCqlVersion(String version) {
+      throw new CassandraConfigurationException("Connexion cassandra non configurée");
+   }
+
 }
