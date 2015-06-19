@@ -77,8 +77,9 @@ public class JournalSaeSupport {
 
          // Lancement de la recherche
          int nbMaxElements = Integer.MAX_VALUE;
-         
-         SortedSearchQuery paramSearchQuery = toolkitFactory.createMonobaseSortedQuery(requete, base);
+
+         SortedSearchQuery paramSearchQuery = toolkitFactory
+               .createMonobaseSortedQuery(requete, base);
          paramSearchQuery.setPageSize(nbMaxElements);
          paramSearchQuery.setOffset(0);
 
@@ -114,6 +115,15 @@ public class JournalSaeSupport {
       }
    }
 
+   /**
+    * Retourne un journal par son UUID
+    * 
+    * @param uuidJournal
+    *           UUID du journal
+    * @param nomBase
+    *           Nom de la base
+    * @return Le journal correspondant à l'UUID
+    */
    public final Journal findByUUID(UUID uuidJournal, String nomBase) {
 
       try {
