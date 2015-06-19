@@ -82,7 +82,7 @@ public interface JournalService {
    /**
     * Renvoie le journal des évènements SAE correspondant à un UUID
     * 
-    * @param uuidJounal
+    * @param uuidJournal
     *           l'UUID du journal
     * @param nomBase
     *           Nom de la base SAE dans DFCE
