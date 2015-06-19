@@ -739,7 +739,7 @@ public final class MajLotServiceImpl implements MajLotService {
             }
 
             categories[i] = cacheCategories.get(codeCourt);
-            ;
+            
             nomIndex.append(codeCourt);
             nomIndex.append('&');
          }

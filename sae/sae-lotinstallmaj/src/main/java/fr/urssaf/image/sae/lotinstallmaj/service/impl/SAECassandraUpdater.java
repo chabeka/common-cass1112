@@ -57,9 +57,9 @@ public class SAECassandraUpdater {
    private RefMetaInitialisationService refMetaInitService;
 
    /**
-    * Getter sur le le service d'initialisatin des métas
+    * Getter sur le service d'initialisation des métas
     * 
-    * @return
+    * @return Service d'initialisation du référentiel des métadonnée
     */
    public RefMetaInitialisationService getRefMetaInitService() {
       return refMetaInitService;
@@ -607,7 +607,7 @@ public class SAECassandraUpdater {
       // -- Initialisation du référentiel des métadonnées
       // suite au passage à un stockage du référentiel en bdd
       refMetaInitService.initialiseRefMeta(saeDao.getKeyspace());
-      
+
       // On positionne la version à 10
       saeDao.setDatabaseVersion(VERSION_10);
    }
@@ -628,7 +628,7 @@ public class SAECassandraUpdater {
 
       // -- On se connecte au keyspace
       saeDao.connectToKeySpace();
- 
+
       // -- Enrichissement du référentiel des événements
       InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
       donnees.addReferentielEvenementV6();
@@ -636,5 +636,5 @@ public class SAECassandraUpdater {
       // On positionne la version à 11
       saeDao.setDatabaseVersion(VERSION_11);
    }
-   
+
 }
