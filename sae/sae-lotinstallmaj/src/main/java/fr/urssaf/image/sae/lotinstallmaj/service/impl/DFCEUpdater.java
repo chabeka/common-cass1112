@@ -26,7 +26,8 @@ import org.slf4j.LoggerFactory;
 import fr.urssaf.image.sae.lotinstallmaj.modele.CassandraConfig;
 
 /**
- * Classe permettant la mise à jour des donnees du keyspace Docubase dans cassandra
+ * Classe permettant la mise à jour des donnees du keyspace Docubase dans
+ * cassandra
  * 
  */
 public class DFCEUpdater {
@@ -69,6 +70,9 @@ public class DFCEUpdater {
 
    /**
     * Mise à jour vers la version 129-P5
+    * 
+    * @param indexes
+    *           Liste des index composites à supprimer
     */
    public final void disableCompositeIndex(List<String[]> indexes) {
 
