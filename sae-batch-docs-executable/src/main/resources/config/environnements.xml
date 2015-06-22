@@ -50,7 +50,7 @@
    </configuration>
    <configuration>
       <nom>INTEGRATION_NATIONALE_GNT</nom>
-      <dfceAddress>http://hwi69gingntweb.cer69.recouv/dfce-webapp/toolkit/</dfceAddress>
+      <dfceAddress>http://hwi69gingntappli1.cer69.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
       <dfceBaseName>GNT-INT</dfceBaseName>
       <dfceLogin>_ADMIN</dfceLogin>
       <dfcePwd>DOCUBASE</dfcePwd>
