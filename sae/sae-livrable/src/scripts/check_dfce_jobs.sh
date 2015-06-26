@@ -61,6 +61,11 @@ if ! grep -q "Réindexation DFCE terminée" "$LOG_DIR/sae_dfce_admin_exploit-rei
     ERRNO+=1
 fi
 
+if ! grep -q "Mise à jour des statistiques DFCE terminée" "$LOG_DIR/sae_dfce_admin_exploit-updateDocsStats.log"; then
+    error "La mise à jour des statistiques DFCE n'est pas terminée"
+    ERRNO+=1
+fi
+
 #
 # ============ Analyses des logs sae-trace-executable.jar ============ 
 #
