@@ -18,6 +18,8 @@ import net.docubase.toolkit.model.base.BaseCategory;
 import net.docubase.toolkit.model.document.Criterion;
 import net.docubase.toolkit.model.document.Document;
 import net.docubase.toolkit.model.reference.FileReference;
+import net.docubase.toolkit.model.reference.ContentRepository;
+import net.docubase.toolkit.model.reference.ContentRepository.State;
 import net.docubase.toolkit.service.ServiceProvider;
 
 import org.apache.commons.io.FilenameUtils;
@@ -31,6 +33,7 @@ import fr.urssaf.image.sae.storage.exception.StorageException;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageReferenceFile;
+import fr.urssaf.image.sae.storage.model.storagedocument.StorageContentRepository;
 import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageDocument;
 
 /**
@@ -273,10 +276,10 @@ public final class BeanMapper {
          final Base baseDFCE, final VirtualStorageDocument storageDocument)
          throws ParseException, MetadonneeInexistante {
 
-	  String[] file = { 
-			  storageDocument.getReferenceFile().getName(),
-			  storageDocument.getReferenceFile().getExtension()
-	  };
+      String[] file = { 
+            storageDocument.getReferenceFile().getName(),
+            storageDocument.getReferenceFile().getExtension()
+      };
 	   
       Document document = createDocument(storageDocument.getMetadatas(),
             baseDFCE, file);
@@ -474,6 +477,12 @@ public final class BeanMapper {
       referenceFile.setName(impl.getName());
       referenceFile.setSize(impl.getSize());
       referenceFile.setUuid(impl.getUuid());
+      
+      StorageContentRepository contentRepo = new StorageContentRepository();
+      contentRepo.setName(impl.getContentRepository().getName());
+      contentRepo.setColumnFamily(impl.getContentRepository().getColumnFamily());
+      contentRepo.setState(impl.getContentRepository().getState().getState());
+      referenceFile.setContentRepository(contentRepo);
 
       return referenceFile;
 
@@ -496,7 +505,17 @@ public final class BeanMapper {
       impl.setName(referenceFile.getName());
       impl.setSize(referenceFile.getSize());
       impl.setUuid(referenceFile.getUuid());
-
+      
+      ContentRepository contentRepo = new ContentRepository();
+      contentRepo.setName(referenceFile.getContentRepository().getName());
+      contentRepo.setColumnFamily(referenceFile.getContentRepository().getColumnFamily());
+      if (referenceFile.getContentRepository().getState() == 0) {
+         contentRepo.setState(State.PENDING);
+      } else if (referenceFile.getContentRepository().getState() == 1) {
+         contentRepo.setState(State.MOUNTED);
+      }
+      impl.setContentRepository(contentRepo);
+      
       return (FileReference) impl;
    }
 }

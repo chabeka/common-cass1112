@@ -24,6 +24,8 @@ public class StorageReferenceFile {
    private Long size;
 
    private UUID uuid;
+   
+   private StorageContentRepository contentRepository;
 
    /**
     * @return le hash du fichier
@@ -114,6 +116,23 @@ public class StorageReferenceFile {
    public final void setUuid(UUID uuid) {
       this.uuid = uuid;
    }
+   
+   /**
+    * Getter sur le type de stockage.
+    * @return StorageContentRepository
+    */
+   public final StorageContentRepository getContentRepository() {
+      return contentRepository;
+   }
+
+   /**
+    * Setter sur le type de stockage.
+    * @param contentRepository type de stockage
+    */
+   public final void setContentRepository(
+         final StorageContentRepository contentRepository) {
+      this.contentRepository = contentRepository;
+   }
 
    /**
     * {@inheritDoc}
@@ -139,6 +158,9 @@ public class StorageReferenceFile {
       buffer.append(IOUtils.LINE_SEPARATOR);
       buffer.append("taille du fichier : ");
       buffer.append(size);
+      buffer.append(IOUtils.LINE_SEPARATOR);
+      buffer.append("type de stockage : ");
+      buffer.append(contentRepository);
 
       return buffer.toString();
    }
