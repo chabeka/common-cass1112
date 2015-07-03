@@ -4,7 +4,7 @@
 
    <groupId>fr.urssaf.image.commons</groupId>
    <artifactId>commons-dfce</artifactId>
-   <version>1.6.1-CRTL-1-SNAPSHOT</version>
+   <version>1.7.0-CRTL-1-SNAPSHOT</version>
 
    <name>commons-dfce</name>
 
@@ -23,12 +23,12 @@
       <maven-release-plugin.version>2.2.1</maven-release-plugin.version>
 
       <!-- numéro de version des dépendances de DFCE -->
-      <dfce.serialization>1.2.0</dfce.serialization>
-      <dfce.toolkit.client>1.6.1</dfce.toolkit.client>
-      <dfce.toolkit.pojo>1.6.1</dfce.toolkit.pojo>
-      <dfce.pojo>1.6.1</dfce.pojo>
-      <dfce.toolkit.service>1.6.1</dfce.toolkit.service>
-      <dfce.commons>1.6.1</dfce.commons>
+      <dfce.serialization>1.2.2</dfce.serialization>
+      <dfce.toolkit.client>1.7.0</dfce.toolkit.client>
+      <dfce.toolkit.pojo>1.7.0</dfce.toolkit.pojo>
+      <dfce.pojo>1.7.0</dfce.pojo>
+      <dfce.toolkit.service>1.7.0</dfce.toolkit.service>
+      <dfce.commons>1.7.0</dfce.commons>
 
       <!-- Autres versions -->
       <junit.version>4.8.2</junit.version>
