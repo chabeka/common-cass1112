@@ -5,7 +5,6 @@ import net.docubase.toolkit.model.base.Base;
 import net.docubase.toolkit.service.ServiceProvider;
 
 import org.junit.After;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +39,6 @@ public class DFCEConnectionServiceTest {
    }
 
    @Test
-   @Ignore("Ignore temporairement ce test le temps d'installer le serveur de dev")
    public void DFCEConnectionService_success() {
 
       serviceProvider = dfceConnectionService.openConnection();
