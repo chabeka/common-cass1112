@@ -39,8 +39,7 @@ public class SaeIndexComposite {
    public SaeIndexComposite(CompositeIndex indexComposite){
       categories = indexComposite.getCategories();
       name = getCompsiteIndexName(indexComposite);
-      // TODO : A DECOMMENTER QUAND VERSION 1.6.1 sera correcte
-      //isComputed = indexComposite.isComputed();
+      isComputed = indexComposite.isComputed();
    }
    
    /**

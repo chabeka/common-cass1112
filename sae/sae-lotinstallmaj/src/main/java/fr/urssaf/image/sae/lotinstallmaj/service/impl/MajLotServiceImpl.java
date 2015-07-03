@@ -286,7 +286,9 @@ public final class MajLotServiceImpl implements MajLotService {
       StorageAdministrationService storageAdmin = serviceProvider
             .getStorageAdministrationService();
       LifeCycleRule lifeCycleRule = storageAdmin.getLifeCycleRule("3.1.3.1.1");
-      int dureeConservation = lifeCycleRule.getLifeCycleLength();
+      // Depuis DFCe 1.7.0, le cycle de vie peut comporter des etapes
+      // Coté Ged Nationale, nous n'en aurons qu'une seule
+      int dureeConservation = lifeCycleRule.getSteps().get(0).getLength();
 
       // Vérifie que la mise à jour est à faire
       if (dureeConservation == DUREE_1825) {
@@ -830,7 +832,7 @@ public final class MajLotServiceImpl implements MajLotService {
             .info("Début de l'opération : Lot 151000 - Mise à jour du schéma DFCE");
       DFCECassandraUpdater dfceUpdater = new DFCECassandraUpdater(
             cassandraConfig);
-      dfceUpdater.updateToVersion161();
+      dfceUpdater.updateToVersion170();
       LOG
             .info("Fin de l'opération : Lot 151000 - Mise à jour du schéma DFCE");
    }

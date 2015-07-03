@@ -2,6 +2,7 @@ package fr.urssaf.image.sae.rnd.support;
 
 import net.docubase.toolkit.model.reference.LifeCycleLengthUnit;
 import net.docubase.toolkit.model.reference.LifeCycleRule;
+import net.docubase.toolkit.model.reference.LifeCycleStep;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,9 +57,13 @@ public class LifeCycleRuleSupport {
             
             LifeCycleRule newRule = new LifeCycleRule();
             newRule.setDocumentType(typeDoc.getCode());
-            newRule.setLifeCycleLength(typeDoc.getDureeConservation());
-            newRule.setLifeCycleLengthUnit(LifeCycleLengthUnit.DAY);
-            newRule.setLifeCycleEndAction(LifeCycleEndAction.DELETE);
+            // Depuis DFCe 1.7.0, le cycle de vie peut comporter des etapes
+            // Coté Ged Nationale, nous n'en aurons qu'une seule
+            LifeCycleStep etape = new LifeCycleStep();
+            etape.setLength(typeDoc.getDureeConservation());
+            etape.setUnit(LifeCycleLengthUnit.DAY);
+            etape.setEndAction(LifeCycleEndAction.DELETE);
+            newRule.addStep(etape);
 
             serviceProviderSupport
                   .getStorageAdministrationService()
@@ -69,7 +74,9 @@ public class LifeCycleRuleSupport {
             // différente
             LOGGER.debug("{} - Le code {} existe déjà", new String[] {
                   trcPrefix, typeDoc.getCode() });
-            int dureeLifeCycleRule = lifeCycleRule.getLifeCycleLength();
+            // Depuis DFCe 1.7.0, le cycle de vie peut comporter des etapes
+            // Coté Ged Nationale, nous n'en aurons qu'une seule
+            int dureeLifeCycleRule = lifeCycleRule.getSteps().get(0).getLength();
             int dureeTypeDoc = typeDoc.getDureeConservation();
             
             if (dureeTypeDoc == dureeLifeCycleRule) {
@@ -80,9 +87,13 @@ public class LifeCycleRuleSupport {
             	
             	LifeCycleRule ruleToUpdate = new LifeCycleRule();
             	ruleToUpdate.setDocumentType(typeDoc.getCode());
-            	ruleToUpdate.setLifeCycleLength(dureeTypeDoc);
-            	ruleToUpdate.setLifeCycleLengthUnit(LifeCycleLengthUnit.DAY);
-            	ruleToUpdate.setLifeCycleEndAction(LifeCycleEndAction.DELETE);
+            	// Depuis DFCe 1.7.0, le cycle de vie peut comporter des etapes
+               // Coté Ged Nationale, nous n'en aurons qu'une seule
+            	LifeCycleStep etape = new LifeCycleStep();
+            	etape.setLength(dureeTypeDoc);
+            	etape.setUnit(LifeCycleLengthUnit.DAY);
+            	etape.setEndAction(LifeCycleEndAction.DELETE);
+            	ruleToUpdate.addStep(etape);
 
                serviceProviderSupport.getStorageAdministrationService()
                      .updateLifeCycleRule(ruleToUpdate);

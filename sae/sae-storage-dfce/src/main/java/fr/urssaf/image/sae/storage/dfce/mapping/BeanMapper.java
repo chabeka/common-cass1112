@@ -401,9 +401,11 @@ public final class BeanMapper {
                .getLifeCycleReferenceDate());
       } else if (technical.getShortCode().equals(
             StorageTechnicalMetadatas.DUREE_CONSERVATION.getShortCode())) {
+         // Depuis DFCe 1.7.0, le cycle de vie peut comporter des etapes
+         // Coté Ged Nationale, nous n'en aurons qu'une seule
          metadataFound = new StorageMetadata(metadata.getShortCode(),
                serviceDFCE.getStorageAdministrationService().getLifeCycleRule(
-                     document.getType()).getLifeCycleLength());
+                     document.getType()).getSteps().get(0).getLength());
       } else if (technical.getShortCode().equals(
             StorageTechnicalMetadatas.TITRE.getShortCode())) {
 

@@ -428,11 +428,11 @@ public class DFCECassandraUpdater {
    }
    
    /**
-    * Mise à jour vers la version 161
+    * Mise à jour vers la version 170
     */
-   public final void updateToVersion161() {
+   public final void updateToVersion170() {
 
-      LOG.info("Mise à jour du keyspace DFCE en version 1.6.1");
+      LOG.info("Mise à jour du keyspace DFCE en version 1.7.0");
 
       // Si le KeySpace n'existe pas, on quitte
       KeyspaceDefinition keyspaceDef = cluster
@@ -444,7 +444,7 @@ public class DFCECassandraUpdater {
 
       // On se connecte au keyspace
       connectToKeyspace();
-      
+
       // recupere de nouveau la definition du keyspace dfce
       keyspaceDef = cluster.describeKeyspace(DFCE_KEYSPACE_NAME);
 
@@ -459,13 +459,13 @@ public class DFCECassandraUpdater {
       column0.setRowCacheSize(0);
       column0.setKeyCacheSize(0);
       cfDefs.add(column0);
-      
+
       // VersionsHistory
 
       String comparatorAlias = "("
-            + "DateType, "
-            + ComparatorType.UUIDTYPE.getTypeName() + ", "
-            + ComparatorType.UTF8TYPE.getTypeName() + ")";
+         + "DateType, "
+         + ComparatorType.UUIDTYPE.getTypeName() + ", "
+         + ComparatorType.UTF8TYPE.getTypeName() + ")";
 
       ColumnFamilyDefinition column1 = HFactory.createColumnFamilyDefinition(
             DFCE_KEYSPACE_NAME, "VersionsHistory",
@@ -474,8 +474,8 @@ public class DFCECassandraUpdater {
       column1.setRowCacheSize(0);
       column1.setKeyCacheSize(0);
       cfDefs.add(column1);
-	  
-	  // Tasks
+
+      // Tasks
 
       ColumnFamilyDefinition column2 = HFactory.createColumnFamilyDefinition(
             DFCE_KEYSPACE_NAME, "Tasks",
@@ -483,8 +483,8 @@ public class DFCECassandraUpdater {
       column2.setRowCacheSize(0);
       column2.setKeyCacheSize(0);
       cfDefs.add(column2);
-	  
-	  // Acl
+
+      // Acl
 
       ColumnFamilyDefinition column3 = HFactory.createColumnFamilyDefinition(
             DFCE_KEYSPACE_NAME, "Acl",
@@ -492,8 +492,8 @@ public class DFCECassandraUpdater {
       column3.setRowCacheSize(0);
       column3.setKeyCacheSize(0);
       cfDefs.add(column3);
-	  
-	  // Ace
+
+      // Ace
 
       ColumnFamilyDefinition column4 = HFactory.createColumnFamilyDefinition(
             DFCE_KEYSPACE_NAME, "Ace",
@@ -501,10 +501,10 @@ public class DFCECassandraUpdater {
       column4.setRowCacheSize(0);
       column4.setKeyCacheSize(0);
       cfDefs.add(column4);
-	  
-	  // KeyReference
-	  
-	  List<ColumnDefinition> columnMetadata5 = new ArrayList<ColumnDefinition>();
+
+      // KeyReference
+
+      List<ColumnDefinition> columnMetadata5 = new ArrayList<ColumnDefinition>();
 
       BasicColumnDefinition e50 = new BasicColumnDefinition();
       e50.setName(StringSerializer.get().toByteBuffer("active"));
@@ -516,12 +516,12 @@ public class DFCECassandraUpdater {
       ColumnFamilyDefinition column5 = HFactory.createColumnFamilyDefinition(
             DFCE_KEYSPACE_NAME, "KeyReference",
             ComparatorType.UTF8TYPE, 
-			columnMetadata5);
+            columnMetadata5);
       column5.setRowCacheSize(0);
       column5.setKeyCacheSize(0);
       cfDefs.add(column5);
-	  
-	  // TemporaryToken
+
+      // TemporaryToken
 
       ColumnFamilyDefinition column6 = HFactory.createColumnFamilyDefinition(
             DFCE_KEYSPACE_NAME, "TemporaryToken",
@@ -529,8 +529,8 @@ public class DFCECassandraUpdater {
       column6.setRowCacheSize(0);
       column6.setKeyCacheSize(0);
       cfDefs.add(column6);
-	  
-	  // Counters
+
+      // Counters
 
       ColumnFamilyDefinition column7 = HFactory.createColumnFamilyDefinition(
             DFCE_KEYSPACE_NAME, "Counters",
@@ -538,12 +538,12 @@ public class DFCECassandraUpdater {
       column7.setRowCacheSize(0);
       column7.setKeyCacheSize(0);
       cfDefs.add(column7);
-	  
-	  // DocTimeSeries
-	  
-	  comparatorAlias = "("
-            + ComparatorType.UTF8TYPE.getTypeName() + ", "
-            + ComparatorType.UUIDTYPE.getTypeName() + ")";
+
+      // DocTimeSeries
+
+      comparatorAlias = "("
+         + ComparatorType.UTF8TYPE.getTypeName() + ", "
+         + ComparatorType.UUIDTYPE.getTypeName() + ")";
 
       ColumnFamilyDefinition column8 = HFactory.createColumnFamilyDefinition(
             DFCE_KEYSPACE_NAME, "DocTimeSeries",
@@ -552,8 +552,8 @@ public class DFCECassandraUpdater {
       column8.setRowCacheSize(0);
       column8.setKeyCacheSize(0);
       cfDefs.add(column8);
-	  
-	  // DocStatistics
+
+      // DocStatistics
 
       ColumnFamilyDefinition column9 = HFactory.createColumnFamilyDefinition(
             DFCE_KEYSPACE_NAME, "DocStatistics",
@@ -561,8 +561,8 @@ public class DFCECassandraUpdater {
       column9.setRowCacheSize(0);
       column9.setKeyCacheSize(0);
       cfDefs.add(column9);
-	  
-	  // Thumbnails
+
+      // Thumbnails
 
       ColumnFamilyDefinition column10 = HFactory.createColumnFamilyDefinition(
             DFCE_KEYSPACE_NAME, "Thumbnails",
@@ -570,6 +570,20 @@ public class DFCECassandraUpdater {
       column10.setRowCacheSize(0);
       column10.setKeyCacheSize(0);
       cfDefs.add(column10);
+
+      // DocumentLifeCycle
+      
+      comparatorAlias = "("
+         + ComparatorType.DATETYPE.getTypeName() + ", "
+         + ComparatorType.UUIDTYPE.getTypeName() + ")";
+
+      ColumnFamilyDefinition column11 = HFactory.createColumnFamilyDefinition(
+            DFCE_KEYSPACE_NAME, "DocumentLifeCycle",
+            ComparatorType.COMPOSITETYPE);
+      column11.setComparatorTypeAlias(comparatorAlias);
+      column11.setRowCacheSize(0);
+      column11.setKeyCacheSize(0);
+      cfDefs.add(column11);
 
       // Ajoute les options les plus courantes à chacune des CF
       for (ColumnFamilyDefinition c : cfDefs) {

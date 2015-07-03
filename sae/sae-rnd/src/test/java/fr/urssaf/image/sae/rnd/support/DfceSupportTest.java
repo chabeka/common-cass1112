@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.docubase.toolkit.model.reference.LifeCycleRule;
+import net.docubase.toolkit.model.reference.LifeCycleStep;
 import net.docubase.toolkit.service.ServiceProvider;
 import net.docubase.toolkit.service.administration.StorageAdministrationService;
 
@@ -46,6 +47,9 @@ public class DfceSupportTest {
 
    @Autowired
    private LifeCycleRule lifeCycleRule;
+   
+   @Autowired
+   private LifeCycleStep lifeCycleStep;
 
    @Autowired
    private DfceSupport dfceSupport;
@@ -65,7 +69,7 @@ public class DfceSupportTest {
    @After
    public void after() throws Exception {
       EasyMock.reset(serviceProvider, dfceConnectionService,
-            storageAdministrationService, lifeCycleRule);
+            storageAdministrationService, lifeCycleRule, lifeCycleStep);
 
       logger.detachAppender(logAppender);
    }
@@ -93,7 +97,7 @@ public class DfceSupportTest {
       checkLogsNouveauCode();
 
       EasyMock.verify(serviceProvider, dfceConnectionService,
-            storageAdministrationService, lifeCycleRule);
+            storageAdministrationService, lifeCycleRule, lifeCycleStep);
 
    }
 
@@ -120,7 +124,7 @@ public class DfceSupportTest {
       checkLogsCodeExistantDureeIdentique();
 
       EasyMock.verify(serviceProvider, dfceConnectionService,
-            storageAdministrationService, lifeCycleRule);
+            storageAdministrationService, lifeCycleRule, lifeCycleStep);
 
    }
 
@@ -183,7 +187,7 @@ public class DfceSupportTest {
       checkLogsCodeExistantDureeDifferente();
 
       EasyMock.verify(serviceProvider, dfceConnectionService,
-            storageAdministrationService, lifeCycleRule);
+            storageAdministrationService, lifeCycleRule, lifeCycleStep);
 
    }
 
@@ -221,7 +225,7 @@ public class DfceSupportTest {
 
    private void replay() {
       EasyMock.replay(serviceProvider, dfceConnectionService,
-            storageAdministrationService, lifeCycleRule);
+            storageAdministrationService, lifeCycleRule, lifeCycleStep);
    }
 
    private void initDfce() {
@@ -239,8 +243,13 @@ public class DfceSupportTest {
    }
 
    private void initLifeCycleRule(int duree) {
+      // Réglage de lifeCycleStep
+      EasyMock.expect(lifeCycleStep.getLength()).andReturn(duree)
+            .anyTimes();
       // Réglage de lifeCycleRule
-      EasyMock.expect(lifeCycleRule.getLifeCycleLength()).andReturn(duree)
+      List<LifeCycleStep> steps = new ArrayList<LifeCycleStep>();
+      steps.add(lifeCycleStep);
+      EasyMock.expect(lifeCycleRule.getSteps()).andReturn(steps)
             .anyTimes();
    }
 

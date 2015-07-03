@@ -47,6 +47,10 @@
    <bean id="lifeCycleRule" factory-bean="mockFactory"
       factory-method="createLifeCycleRule" primary="true">
    </bean>
+   
+   <bean id="lifeCycleStep" factory-bean="mockFactory"
+      factory-method="createLifeCycleStep" primary="true">
+   </bean>
 
    <bean factory-bean="mockFactory" factory-method="createRndRecuperationService"
       primary="true" />

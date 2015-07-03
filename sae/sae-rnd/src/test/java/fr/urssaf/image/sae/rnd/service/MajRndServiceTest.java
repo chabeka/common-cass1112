@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import net.docubase.toolkit.model.reference.LifeCycleRule;
+import net.docubase.toolkit.model.reference.LifeCycleStep;
 import net.docubase.toolkit.service.ServiceProvider;
 import net.docubase.toolkit.service.administration.StorageAdministrationService;
 
@@ -79,6 +80,10 @@ public class MajRndServiceTest {
    // Mocks
    @Autowired
    private LifeCycleRule lifeCycleRule;
+   
+   // Mocks
+   @Autowired
+   private LifeCycleStep lifeCycleStep;
 
    private Logger logger;
 
@@ -100,7 +105,7 @@ public class MajRndServiceTest {
 
    @After
    public void after() throws Exception {
-      EasyMock.reset(rndRecuperationService);
+      EasyMock.reset(rndRecuperationService, lifeCycleRule, lifeCycleStep);
       server.resetData();
       logger.detachAppender(logAppender);
    }
@@ -236,17 +241,22 @@ public class MajRndServiceTest {
             .andReturn(storageAdministrationService).anyTimes();
       EasyMock.expect(dfceConnectionService.openConnection())
             .andReturn(serviceProvider).anyTimes();
-
+      
+      List<LifeCycleStep> steps = new ArrayList<LifeCycleStep>();
+      steps.add(lifeCycleStep);
+      EasyMock.expect(lifeCycleRule.getSteps()).andReturn(steps)
+            .anyTimes();
+      
       // 1er appel, on retourne une durée de conservation différente de celle du
       // type de doc 1 à mettre à jour donc la méthode updateLifeCycleRule doit
       // être appelée
-      EasyMock.expect(lifeCycleRule.getLifeCycleLength()).andReturn(3000)
-            .times(1);
+      EasyMock.expect(lifeCycleStep.getLength()).andReturn(3000)
+         .times(1);
 
       // 2ème appel, on retourne une durée de conservation égale à celle
       // du type de doc 2 à mettre à jour donc rien ne doit être fait
-      EasyMock.expect(lifeCycleRule.getLifeCycleLength()).andReturn(400)
-            .times(2);
+      EasyMock.expect(lifeCycleStep.getLength()).andReturn(400)
+         .times(2);
 
       // Il n'y aura pas de 3ème appel car le 3ème doc ne sera pas présent dans
       // la CF LifeCycleRule
@@ -282,7 +292,7 @@ public class MajRndServiceTest {
             .andReturn(lifeCycleRule).anyTimes();
 
       EasyMock.replay(serviceProvider, dfceConnectionService,
-            storageAdministrationService, lifeCycleRule);
+            storageAdministrationService, lifeCycleRule, lifeCycleStep);
    }
 
    private void checkLogs() {

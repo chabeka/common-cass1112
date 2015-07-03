@@ -4,6 +4,7 @@
 package fr.urssaf.image.sae.rnd.utils;
 
 import net.docubase.toolkit.model.reference.LifeCycleRule;
+import net.docubase.toolkit.model.reference.LifeCycleStep;
 import net.docubase.toolkit.service.ServiceProvider;
 import net.docubase.toolkit.service.administration.StorageAdministrationService;
 
@@ -52,6 +53,15 @@ public class MockFactoryBean {
     */
    public final LifeCycleRule createLifeCycleRule() {
       return EasyMock.createMock(LifeCycleRule.class);
+   }
+   
+   /**
+    * Création d'un mock de LifeCycleStep
+    * 
+    * @return un mock LifeCycleStep
+    */
+   public final LifeCycleStep createLifeCycleStep() {
+      return EasyMock.createMock(LifeCycleStep.class);
    }
 
    /**
