@@ -5130,7 +5130,7 @@
                <value>bytes(01)</value>
             </column>       
          </row>
-         
+         <!-- 
          <row>
             <key>Note</key>
             <column>
@@ -5214,7 +5214,7 @@
                <value>bytes(01)</value>
             </column>       
          </row>
-
+         -->
       </columnFamily>
 
       <columnFamily>

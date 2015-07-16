@@ -15,6 +15,8 @@ import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedRangeMetadata;
 import fr.urssaf.image.sae.services.consultation.model.ConsultParams;
 import fr.urssaf.image.sae.services.document.SAEDocumentService;
+import fr.urssaf.image.sae.services.exception.ArchiveInexistanteEx;
+import fr.urssaf.image.sae.services.exception.SAEDocumentNoteException;
 import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
 import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedToConsultEx;
 import fr.urssaf.image.sae.services.exception.consultation.SAEConsultationAffichableParametrageException;
@@ -23,6 +25,7 @@ import fr.urssaf.image.sae.services.exception.search.MetaDataUnauthorizedToSearc
 import fr.urssaf.image.sae.services.exception.search.SAESearchServiceEx;
 import fr.urssaf.image.sae.services.exception.search.SyntaxLuceneEx;
 import fr.urssaf.image.sae.services.exception.search.UnknownLuceneMetadataEx;
+import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentNote;
 
 /**
  * 
@@ -188,6 +191,26 @@ public class SAEDocumentTestImpl implements SAEDocumentService {
 
       return (UntypedDocument) object;
    }
+   
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void addDocumentNote(UUID docUuid, String contenu, String login)
+         throws SAEDocumentNoteException, ArchiveInexistanteEx {
+      // TODO Auto-generated method stub
+      
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public List<StorageDocumentNote> getDocumentNotes(UUID docUuid)
+         throws SAEDocumentNoteException {
+      // TODO Auto-generated method stub
+      return null;
+   }
 
    /**
     * @param searchMaxResult2
@@ -239,5 +262,7 @@ public class SAEDocumentTestImpl implements SAEDocumentService {
    public final void setSearchMaxResult(Object[] searchMaxResult) {
       this.searchMaxResult = searchMaxResult;
    }
+
+
 
 }
