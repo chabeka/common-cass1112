@@ -4,13 +4,19 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.UUID;
 
 import javax.activation.DataHandler;
 
 import net.docubase.toolkit.model.base.Base;
+import net.docubase.toolkit.model.document.Criterion;
 import net.docubase.toolkit.model.document.Document;
+import net.docubase.toolkit.model.note.Note;
 import net.docubase.toolkit.service.ServiceProvider;
 
 import org.apache.commons.io.FilenameUtils;
@@ -32,10 +38,12 @@ import fr.urssaf.image.sae.storage.dfce.messages.StorageMessageHandler;
 import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
 import fr.urssaf.image.sae.storage.dfce.utils.HashUtils;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
+import fr.urssaf.image.sae.storage.exception.DocumentNoteServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.storage.exception.StorageException;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
+import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentNote;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.UUIDCriteria;
 import fr.urssaf.image.sae.storage.util.StorageMetadataUtils;
@@ -88,13 +96,13 @@ public class StorageDocumentServiceSupport {
       try {
          // -- ici on récupère le nom et l'extension du fichier
          String[] file = new String[] {
-                FilenameUtils.getBaseName(storageDocument.getFileName()),
-                FilenameUtils.getExtension(storageDocument.getFileName()) };
+               FilenameUtils.getBaseName(storageDocument.getFileName()),
+               FilenameUtils.getExtension(storageDocument.getFileName()) };
 
          log.debug("{} - Enrichissement des métadonnées : "
-                + "ajout de la métadonnée NomFichier valeur : {}.{}",
-                new Object[] { trcInsert, file[0], file[1] });
-          
+               + "ajout de la métadonnée NomFichier valeur : {}.{}",
+               new Object[] { trcInsert, file[0], file[1] });
+
          // -- conversion du storageDoc en DFCE Document
          Document docDfce = BeanMapper.storageDocumentToDfceDocument(base,
                storageDocument, file);
@@ -256,10 +264,33 @@ public class StorageDocumentServiceSupport {
     * @throws TagControlException
     */
    private Document insertStorageDocument(ServiceProvider dfceService,
-         Document document, String digest, InputStream inputStream, 
-         String hashPourTrace, String typeHashPourTrace, 
-         TracesDfceSupport tracesSupport)
-         throws TagControlException {
+         Document document, String digest, InputStream inputStream,
+         String hashPourTrace, String typeHashPourTrace,
+         TracesDfceSupport tracesSupport) throws TagControlException,
+         FrozenDocumentException {
+
+      // On vérifie si le document contient une note à ajouter
+      List<Criterion> listeCriterions = document
+            .getCriterions(StorageTechnicalMetadatas.NOTE.getShortCode());
+      String note = "";
+      if (listeCriterions.size() > 0) {
+         // Le document à archiver possède une note
+         note = listeCriterions.get(0).getWordValue();
+      }
+      // Si le document possède une note, on supprime la métadonnée (qui sert
+      // uniquement de stockage temporaire de la note) avant de l'archiver. La
+      // note sera archivée dans DFCE.
+      if (!note.isEmpty()) {
+         int i = 0;
+         List<Criterion> listeCompleteCriterions = document.getAllCriterions();
+         for (Criterion criterion : listeCompleteCriterions) {
+            if (criterion.getCategoryName().equals(
+                  StorageTechnicalMetadatas.NOTE.getShortCode())) {
+               listeCompleteCriterions.remove(i);
+            }
+            i++;
+         }
+      }
 
       Document doc;
 
@@ -269,13 +300,18 @@ public class StorageDocumentServiceSupport {
 
       } else {
          doc = dfceService.getStoreService().storeDocument(document,
-               new StoreOptions.Builder().verifyDigest(digest).build(), null, inputStream);
+               new StoreOptions.Builder().verifyDigest(digest).build(), null,
+               inputStream);
       }
 
       // Trace l'événement "Dépôt d'un document dans DFCE"
       tracesSupport.traceDepotDocumentDansDFCE(doc.getUuid(), hashPourTrace,
             typeHashPourTrace, doc.getArchivageDate());
 
+      // Ajout de la note au document
+      if (!note.isEmpty()) {
+         dfceService.getNoteService().addNote(doc.getUuid(), note);
+      }
       return doc;
    }
 
@@ -453,4 +489,107 @@ public class StorageDocumentServiceSupport {
             cnxParameters.getBaseName());
    }
 
+   /**
+    * Ajout d’une note à un document
+    * 
+    * @param dfceService
+    *           Fournisseur de Services DFCE
+    * @param docUuid
+    *           UUID du document parent
+    * @param contenu
+    *           Contenu de la note
+    * @param login
+    *           Login utilisateur
+    * @param dateCreation
+    *           Date de création de la note
+    * @param noteUuid
+    *           UUID de la note
+    * @param log
+    *           Logger
+    * @throws DocumentNoteServiceEx
+    *            Une exception s'est produite lors de l'ajout d'une note à un
+    *            document
+    */
+   public void addDocumentNote(ServiceProvider dfceService, UUID docUuid,
+         String contenu, String login, Date dateCreation, UUID noteUuid,
+         Logger log) throws DocumentNoteServiceEx {
+
+      // -- Traces debug - entrée méthode
+      String prefixeTrc = "addDocumentNote()";
+      log.debug("{} - Début", prefixeTrc);
+
+      try {
+         log.debug("{} - UUID document : {}", prefixeTrc, docUuid);
+         log.debug("{} - Contenu note : {}", prefixeTrc, contenu);
+         log.debug("{} - Login : {}", prefixeTrc, login);
+         log.debug("{} - Date création : {}", prefixeTrc, dateCreation);
+         log.debug("{} - UUID note : {}", prefixeTrc, noteUuid);
+         
+         Note note = new Note();
+         // Ne fonctionne pas, DFCE reposissionne _ADMIN
+         note.setAuthor(login);
+         note.setContent(contenu);
+         note.setDocUUID(docUuid);
+         note.setCreationDate(dateCreation);
+         note.setUuid(noteUuid);
+
+         dfceService.getNoteService().storeNote(note);
+
+         // -- Trace l'événement "Suppression d'un document de DFCE"
+         // tracesSupport.traceSuppressionDocumentDeDFCE(uuid);
+
+         log.debug("{} - Sortie", prefixeTrc);
+
+      } catch (FrozenDocumentException frozenExcept) {
+         log
+               .debug(
+                     "{} - Une exception a été levée lors de l'ajout d'une note à un document : {}",
+                     prefixeTrc, frozenExcept.getMessage());
+         throw new DocumentNoteServiceEx(
+               "Erreur lors de l'ajout d'une note à un document", frozenExcept);
+      } catch (TagControlException e) {
+         log
+               .debug(
+                     "{} - Une exception a été levée lors de l'ajout d'une note à un document : {}",
+                     prefixeTrc, e.getMessage());
+         throw new DocumentNoteServiceEx(
+               "Erreur lors de l'ajout d'une note à un document", e
+                     .getMessage(), e);
+      }
+
+   }
+
+   /**
+    * Récupération de la liste des notes rattachées à un document
+    * 
+    * @param dfceService
+    *           Fournisseur de Services DFCE
+    * @param docUuid
+    *           Identifiant du document dont on souhaite récupérer les notes
+    * @param log
+    *           Logger
+    * @return La liste des notes rattachées au document
+    */
+   public List<StorageDocumentNote> getDocumentNotes(
+         ServiceProvider dfceService, UUID docUuid, Logger log) {
+      // -- Traces debug - entrée méthode
+      String prefixeTrc = "getDocumentNotes()";
+      log.debug("{} - Début", prefixeTrc);
+      List<StorageDocumentNote> listeStorageDocNotes = new ArrayList<StorageDocumentNote>();
+
+      log.debug("{} - UUID document : {}", prefixeTrc, docUuid);
+      List<Note> listeNote = dfceService.getNoteService().getNotes(docUuid);
+
+      for (Note note : listeNote) {
+         listeStorageDocNotes.add(BeanMapper
+               .dfceNoteToStorageDocumentNote(note));
+      }
+
+      // -- Trace l'événement "Suppression d'un document de DFCE"
+      // tracesSupport.traceSuppressionDocumentDeDFCE(uuid);
+
+      log.debug("{} - Sortie", prefixeTrc);
+      return listeStorageDocNotes;
+
+   }
 }

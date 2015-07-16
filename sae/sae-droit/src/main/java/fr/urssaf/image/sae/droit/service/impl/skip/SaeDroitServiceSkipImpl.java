@@ -149,4 +149,16 @@ public class SaeDroitServiceSkipImpl implements SaeDroitService {
       return null;
    }
 
+   @Override
+   public void modifierContratService(ServiceContract serviceContract) {
+      /* Rien à faire */
+      
+   }
+
+   @Override
+   public void refrechContratsCache(String cle) {
+      /* Rien à faire */
+      
+   }
+
 }

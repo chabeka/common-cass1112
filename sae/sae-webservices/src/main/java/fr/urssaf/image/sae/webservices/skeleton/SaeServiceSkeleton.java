@@ -23,6 +23,8 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
+import fr.cirtil.www.saeservice.AjoutNote;
+import fr.cirtil.www.saeservice.AjoutNoteResponse;
 import fr.cirtil.www.saeservice.ArchivageMasse;
 import fr.cirtil.www.saeservice.ArchivageMasseAvecHash;
 import fr.cirtil.www.saeservice.ArchivageMasseAvecHashResponse;
@@ -57,6 +59,7 @@ import fr.cirtil.www.saeservice.Transfert;
 import fr.cirtil.www.saeservice.TransfertResponse;
 import fr.urssaf.image.sae.exploitation.service.DfceInfoService;
 import fr.urssaf.image.sae.webservices.SaeService;
+import fr.urssaf.image.sae.webservices.exception.AjoutNoteAxisFault;
 import fr.urssaf.image.sae.webservices.exception.CaptureAxisFault;
 import fr.urssaf.image.sae.webservices.exception.ConsultationAxisFault;
 import fr.urssaf.image.sae.webservices.exception.ErreurInterneAxisFault;
@@ -70,6 +73,7 @@ import fr.urssaf.image.sae.webservices.service.WSCaptureService;
 import fr.urssaf.image.sae.webservices.service.WSConsultationService;
 import fr.urssaf.image.sae.webservices.service.WSMetadataService;
 import fr.urssaf.image.sae.webservices.service.WSModificationService;
+import fr.urssaf.image.sae.webservices.service.WSNoteService;
 import fr.urssaf.image.sae.webservices.service.WSRechercheService;
 import fr.urssaf.image.sae.webservices.service.WSSuppressionService;
 import fr.urssaf.image.sae.webservices.service.WSTransfertService;
@@ -117,6 +121,9 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
 
    @Autowired
    private WSMetadataService metadataService;
+
+   @Autowired
+   private WSNoteService noteService;
 
    @Autowired
    private DfceInfoService dfceInfoService;
@@ -756,5 +763,46 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
                "Une erreur interne à l'application est survenue lors de la recherche.",
                "ErreurInterneRecherche", ex);
       }
+   }
+
+   @Override
+   public AjoutNoteResponse ajoutNoteSecure(AjoutNote request) throws AxisFault {
+
+      try {
+         // Traces debug - entrée méthode
+         String prefixeTrc = "Opération ajoutNoteSecure()";
+         LOG.debug("{} - Début", prefixeTrc);
+         // Fin des traces debug - entrée méthode
+
+         boolean dfceUp = dfceInfoService.isDfceUp();
+         if (dfceUp) {
+
+            AjoutNoteResponse response = noteService.ajoutNote(request);
+
+            // Traces debug - sortie méthode
+            LOG.debug("{} - Sortie", prefixeTrc);
+            // Fin des traces debug - sortie méthode
+
+            return response;
+
+         } else {
+
+            LOG.debug("{} - Sortie", prefixeTrc);
+            setCodeHttp412();
+            throw new RechercheAxis2Fault(STOCKAGE_INDISPO,
+                  wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
+
+         }
+
+      } catch (AjoutNoteAxisFault ex) {
+         logSoapFault(ex);
+         throw ex;
+      } catch (RuntimeException ex) {
+         logRuntimeException(ex);
+         throw new RechercheAxis2Fault(
+               "Une erreur interne à l'application est survenue lors de l'ajout d'une note.",
+               "ErreurInterneAjoutNote", ex);
+      }
+
    }
 }

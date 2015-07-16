@@ -554,4 +554,24 @@ public class SAEConsultationServiceTest {
          fail("C'est l'exception MetaDataUnauthorizedToConsultEx qui est attendue");
       }
    }
+   
+   
+   @Test
+   public void consultationAvecNote_success_consultParam()
+         throws IOException, SAEConsultationServiceException,
+         ConnectionServiceEx, ParseException, UnknownDesiredMetadataEx,
+         MetaDataUnauthorizedToConsultEx,
+         SAEConsultationAffichableParametrageException {
+
+      uuid = captureTiff("fmt/353");
+      LOG.debug("document archivé dans DFCE:" + uuid);
+
+      
+      UntypedDocument untypedDocument = service
+            .consultation(new ConsultParams(uuid));
+      
+      
+      checkValuesTiff(untypedDocument, "fmt/353");
+   }
+   
 }

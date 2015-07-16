@@ -508,6 +508,16 @@ public class InsertionDonnees {
    }
 
    /**
+    * Ajout de l'action unitaire ajoutNote
+    */
+   public void addActionUnitaireNote() {
+      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+            keyspace, "DroitActionUnitaire", StringSerializer.get(),
+            StringSerializer.get());
+      addActionUnitaire("ajoutNote", "ajoutNote", cfTmpl);
+   }
+
+   /**
     * Référentiel des événements en V3 Ajout de l'évenement ORDO_ECDE_DISPO|KO
     */
    public void addReferentielEvenementV3() {
@@ -623,7 +633,7 @@ public class InsertionDonnees {
    }
 
    /**
-    * Référentiel des événements en V5 Ajout des évenements : <li>
+    * Référentiel des événements en V6 Ajout des évenements : <li>
     * WS_SUPPRESSION|KO</li> <li>WS_MODIFICATION|KO</li> <li>
     * WS_RECUPERATION_METAS|KO</li>
     */
@@ -659,6 +669,31 @@ public class InsertionDonnees {
       addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
             ListSerializer.get(), updater);
       cfTmpl.update(updater);
+   }
+
+   /**
+    * Référentiel des événements en V7 Ajout des évenements : <li>
+    * WS_AJOUT_NOTE|KO</li>
+    */
+   public void addReferentielEvenementV7() {
+
+      LOG.info("Mise à jour du référentiel des événements");
+
+      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+            keyspace, "TraceDestinataire", StringSerializer.get(),
+            StringSerializer.get());
+
+      ColumnFamilyUpdater<String, String> updater;
+
+      List<String> allInfos = Arrays.asList("all_infos");
+
+      // -- WS_AJOUT_NOTE|KO
+      // dans le registre de surveillance technique avec all_infos
+      updater = cfTmpl.createUpdater("WS_AJOUT_NOTE|KO");
+      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
+            ListSerializer.get(), updater);
+      cfTmpl.update(updater);
+
    }
 
    /**

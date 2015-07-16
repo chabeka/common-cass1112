@@ -105,8 +105,10 @@ public class TracesWsSupport {
          result = TracesConstantes.CODE_EVT_WS_MODIFICATION_KO;
       } else if ("recuperationMetadonnees".equals(nomOperation)) {
          result = TracesConstantes.CODE_EVT_WS_RECUPERATION_METAS_KO;
+      } else if ("ajoutNote".equals(nomOperation)) {
+         result = TracesConstantes.CODE_EVT_WS_AJOUT_NOTE_KO;
       }
-
+      
       return result;
    }
 

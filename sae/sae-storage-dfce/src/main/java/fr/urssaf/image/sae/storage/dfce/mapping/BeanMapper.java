@@ -17,6 +17,7 @@ import net.docubase.toolkit.model.base.Base;
 import net.docubase.toolkit.model.base.BaseCategory;
 import net.docubase.toolkit.model.document.Criterion;
 import net.docubase.toolkit.model.document.Document;
+import net.docubase.toolkit.model.note.Note;
 import net.docubase.toolkit.model.reference.FileReference;
 import net.docubase.toolkit.model.reference.ContentRepository;
 import net.docubase.toolkit.model.reference.ContentRepository.State;
@@ -31,6 +32,7 @@ import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
 import fr.urssaf.image.sae.storage.dfce.utils.Utils;
 import fr.urssaf.image.sae.storage.exception.StorageException;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
+import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentNote;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageReferenceFile;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageContentRepository;
@@ -224,7 +226,8 @@ public final class BeanMapper {
             InputStreamSource source = new InputStreamSource(docContent);
             storageDocument.setContent(new DataHandler(source));
          }
-         String filename = document.getFilename() + "." + document.getExtension();
+         String filename = document.getFilename() + "."
+               + document.getExtension();
          storageDocument.setCreationDate(document.getCreationDate());
          storageDocument.setTitle(document.getTitle());
          storageDocument.setUuid(document.getUuid());
@@ -241,7 +244,8 @@ public final class BeanMapper {
     *           : La base dfce
     * @param storageDocument
     *           : Un StorageDocment.
-    * @param file : tableau contenant le nom du fichier et l'extension
+    * @param file
+    *           : tableau contenant le nom du fichier et l'extension
     * @return Un document DFCE à partir d'un storageDocment.
     * @throws ParseException
     *            Exception si le parsing de la date ne se passe pas bien.
@@ -250,8 +254,8 @@ public final class BeanMapper {
     */
    // CHECKSTYLE:OFF
    public static Document storageDocumentToDfceDocument(final Base baseDFCE,
-         final StorageDocument storageDocument, String[] file) throws ParseException,
-         MetadonneeInexistante {
+         final StorageDocument storageDocument, String[] file)
+         throws ParseException, MetadonneeInexistante {
 
       Document document = createDocument(storageDocument.getMetadatas(),
             baseDFCE, file);
@@ -520,4 +524,20 @@ public final class BeanMapper {
       
       return (FileReference) impl;
    }
+
+   /**
+    * Transforme un objet {@link Note} en {@link StorageDocumentNote}
+    * 
+    * @param note
+    *           La note DFCE à convertir
+    * @return L'objet StorageDocumentNote correspondant à l'objet Note
+    */
+   public static StorageDocumentNote dfceNoteToStorageDocumentNote(Note note) {
+      StorageDocumentNote storageDocNote = new StorageDocumentNote(note
+            .getUuid(), note.getDocUUID(), note.getContent(), note
+            .getCreationDate(), note.getAuthor());
+
+      return storageDocNote;
+   }
+
 }

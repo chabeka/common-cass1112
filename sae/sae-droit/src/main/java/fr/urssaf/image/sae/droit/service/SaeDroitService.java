@@ -31,7 +31,7 @@ public interface SaeDroitService {
     *            exception levée si le contrat de service n'est pas trouvé
     * @throws FormatControlProfilNotFoundException
     *            formatControlProfil inexistant
-    * @throws PagmNotFoundException 
+    * @throws PagmNotFoundException
     *            exception levée si le pagm n'est pas trouvé
     */
    // SaeDroits loadSaeDroits(String idClient, List<String> pagms)
@@ -151,5 +151,20 @@ public interface SaeDroitService {
     *           PAGM à modifier
     */
    void modifierPagmContratService(String idContratService, SaePagm saePagm);
+
+   /**
+    * Modification d'un contrat de service (Modification du libellé,
+    * description, liste PKI, liste certificats, verif certificat, durée VI hors
+    * PAGM)
+    * 
+    * @param serviceContract
+    *           Le contrat de service à modifier
+    */
+   void modifierContratService(ServiceContract serviceContract);
+
+   /**
+    * Nettoyage du cache (utilisé pour les tests afin de vider le cache)
+    */
+   void refrechContratsCache(String cle);
 
 }

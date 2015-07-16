@@ -5130,6 +5130,90 @@
                <value>bytes(01)</value>
             </column>       
          </row>
+         
+         <row>
+            <key>Note</key>
+            <column>
+               <name>sCode</name>
+               <value>not</value>
+            </column>
+            <column>
+               <name>type</name>
+               <value>String</value>
+            </column>
+            <column>
+               <name>reqArch</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>reqStor</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>cons</name>
+               <value>bytes(01)</value>
+            </column>
+            <column>
+               <name>defCons</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>search</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>int</name>
+               <value>bytes(01)</value>
+            </column>
+            <column>
+               <name>arch</name>
+               <value>bytes(01)</value>
+            </column>
+            <column>
+               <name>label</name>
+               <value>Liste des notes d'un document</value>
+            </column>
+            <column>
+               <name>descr</name>
+               <value>Métadonnée permettant la récupération de la liste des notes d’un document ou l’ajout d’une nouvelle entrée à cette dernière.</value>
+            </column>
+            <column>
+               <name>pattern</name>
+               <value></value>
+            </column>
+            <column>
+               <name>hasDict</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>dictName</name>
+               <value></value>
+            </column>
+            <column>
+               <name>index</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>update</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>dispo</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>leftTrim</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>rightTrim</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
+            </column>       
+         </row>
 
       </columnFamily>
 

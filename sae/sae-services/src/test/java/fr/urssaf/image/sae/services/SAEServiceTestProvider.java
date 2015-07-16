@@ -3,6 +3,7 @@ package fr.urssaf.image.sae.services;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.Map.Entry;
@@ -11,6 +12,7 @@ import net.docubase.toolkit.model.ToolkitFactory;
 import net.docubase.toolkit.model.base.Base;
 import net.docubase.toolkit.model.base.BaseCategory;
 import net.docubase.toolkit.model.document.Document;
+import net.docubase.toolkit.model.note.Note;
 import net.docubase.toolkit.service.ServiceProvider;
 
 import org.apache.commons.lang.exception.NestableRuntimeException;
@@ -144,8 +146,8 @@ public class SAEServiceTestProvider {
          String codeRND, String title) {
 
       try {
-         Document document = ToolkitFactory.getInstance().createDocument(
-               base, documentTitle, documentType);
+         Document document = ToolkitFactory.getInstance().createDocument(base,
+               documentTitle, documentType);
 
          document.setCreationDate(dateCreation);
          document.setTitle(title);
@@ -168,4 +170,36 @@ public class SAEServiceTestProvider {
 
    }
 
+   /**
+    * Permet d'ajouter une note à un document
+    * 
+    * @param uuid
+    *           L'identifiant du document
+    * @param contenu
+    *           Le contenu de la note
+    */
+   public final void addNoteDocument(UUID uuid, String contenu) {
+
+      try {
+         serviceProvider.getNoteService().addNote(uuid, contenu);
+      } catch (FrozenDocumentException e) {
+         throw new NestableRuntimeException(e);
+      } catch (TagControlException e) {
+         throw new NestableRuntimeException(e);
+      }
+
+   }
+
+   
+   /**
+    * Permet de récupérer la liste des notes d'un document
+    * 
+    * @param uuid
+    *           L'identifiant du document
+    */
+   public List<Note> getNoteDocument(UUID uuid) {
+
+        return serviceProvider.getNoteService().getNotes(uuid);
+
+   }
 }

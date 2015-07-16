@@ -334,11 +334,30 @@ public class SaeServiceMessageReceiverInOut extends
                      fr.cirtil.www.saeservice.RechercheParIterateur.class,
                      getEnvelopeNamespaces(msgContext.getEnvelope()));
 
-               rechercheResponse34 = skel.rechercheParIterateurSecure(wrappedParam);
+               rechercheResponse34 = skel
+                     .rechercheParIterateurSecure(wrappedParam);
 
                envelope = toEnvelope(getSOAPFactory(msgContext),
                      rechercheResponse34, false, new javax.xml.namespace.QName(
-                           "http://www.cirtil.fr/saeService", "rechercheResponse34"));
+                           "http://www.cirtil.fr/saeService",
+                           "rechercheResponse34"));
+            } else
+
+            if ("ajoutNote".equals(methodName)) {
+
+               fr.cirtil.www.saeservice.AjoutNoteResponse ajoutNoteResponse35 = null;
+               fr.cirtil.www.saeservice.AjoutNote wrappedParam = (fr.cirtil.www.saeservice.AjoutNote) fromOM(
+                     msgContext.getEnvelope().getBody().getFirstElement(),
+                     fr.cirtil.www.saeservice.AjoutNote.class,
+                     getEnvelopeNamespaces(msgContext.getEnvelope()));
+
+               ajoutNoteResponse35 = skel.ajoutNoteSecure(wrappedParam);
+
+               envelope = toEnvelope(getSOAPFactory(msgContext),
+                     ajoutNoteResponse35, false, new javax.xml.namespace.QName(
+                           "http://www.cirtil.fr/saeService",
+                           "ajoutNoteResponse35"));
+
             } else {
                throw new java.lang.RuntimeException("method not found");
             }
@@ -932,7 +951,7 @@ public class SaeServiceMessageReceiverInOut extends
          throw org.apache.axis2.AxisFault.makeFault(e);
       }
    }
-   
+
    private org.apache.axiom.soap.SOAPEnvelope toEnvelope(
          org.apache.axiom.soap.SOAPFactory factory,
          fr.cirtil.www.saeservice.RechercheParIterateurResponse param,
@@ -942,10 +961,13 @@ public class SaeServiceMessageReceiverInOut extends
          org.apache.axiom.soap.SOAPEnvelope emptyEnvelope = factory
                .getDefaultEnvelope();
 
-         emptyEnvelope.getBody().addChild(
-               param.getOMElement(
-                     fr.cirtil.www.saeservice.RechercheParIterateurResponse.MY_QNAME,
-                     factory));
+         emptyEnvelope
+               .getBody()
+               .addChild(
+                     param
+                           .getOMElement(
+                                 fr.cirtil.www.saeservice.RechercheParIterateurResponse.MY_QNAME,
+                                 factory));
 
          return emptyEnvelope;
       } catch (org.apache.axis2.databinding.ADBException e) {
@@ -985,6 +1007,28 @@ public class SaeServiceMessageReceiverInOut extends
       fr.cirtil.www.saeservice.ConsultationAffichableResponse wrappedElement = new fr.cirtil.www.saeservice.ConsultationAffichableResponse();
       return wrappedElement;
    }
+   
+   
+   private org.apache.axiom.soap.SOAPEnvelope toEnvelope(
+         org.apache.axiom.soap.SOAPFactory factory,
+         fr.cirtil.www.saeservice.AjoutNoteResponse param,
+         boolean optimizeContent, javax.xml.namespace.QName methodQName)
+         throws org.apache.axis2.AxisFault {
+      try {
+         org.apache.axiom.soap.SOAPEnvelope emptyEnvelope = factory
+               .getDefaultEnvelope();
+
+         emptyEnvelope.getBody().addChild(
+               param.getOMElement(
+                     fr.cirtil.www.saeservice.AjoutNoteResponse.MY_QNAME,
+                     factory));
+
+         return emptyEnvelope;
+      } catch (org.apache.axis2.databinding.ADBException e) {
+         throw org.apache.axis2.AxisFault.makeFault(e);
+      }
+   }
+   
 
    /**
     * get the default envelope
@@ -1204,15 +1248,22 @@ public class SaeServiceMessageReceiverInOut extends
          }
          if (fr.cirtil.www.saeservice.RechercheParIterateur.class.equals(type)) {
 
-            return fr.cirtil.www.saeservice.RechercheParIterateur.Factory.parse(param
-                  .getXMLStreamReaderWithoutCaching());
+            return fr.cirtil.www.saeservice.RechercheParIterateur.Factory
+                  .parse(param.getXMLStreamReaderWithoutCaching());
 
          }
-         if (fr.cirtil.www.saeservice.RechercheParIterateurResponse.class.equals(type)) {
+         if (fr.cirtil.www.saeservice.RechercheParIterateurResponse.class
+               .equals(type)) {
 
             return fr.cirtil.www.saeservice.RechercheParIterateurResponse.Factory
                   .parse(param.getXMLStreamReaderWithoutCaching());
+         }
+         
+         if (fr.cirtil.www.saeservice.AjoutNoteResponse.class
+               .equals(type)) {
 
+            return fr.cirtil.www.saeservice.AjoutNoteResponse.Factory
+                  .parse(param.getXMLStreamReaderWithoutCaching());
          }
 
       } catch (java.lang.Exception e) {

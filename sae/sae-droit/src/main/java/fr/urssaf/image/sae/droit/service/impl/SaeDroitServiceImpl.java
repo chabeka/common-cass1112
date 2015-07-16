@@ -52,8 +52,8 @@ import fr.urssaf.image.sae.droit.exception.ContratServiceNotFoundException;
 import fr.urssaf.image.sae.droit.exception.ContratServiceReferenceException;
 import fr.urssaf.image.sae.droit.exception.DroitRuntimeException;
 import fr.urssaf.image.sae.droit.exception.FormatControlProfilNotFoundException;
-import fr.urssaf.image.sae.droit.exception.PagmReferenceException;
 import fr.urssaf.image.sae.droit.exception.PagmNotFoundException;
+import fr.urssaf.image.sae.droit.exception.PagmReferenceException;
 import fr.urssaf.image.sae.droit.model.SaeContratService;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaeDroitsEtFormat;
@@ -62,7 +62,6 @@ import fr.urssaf.image.sae.droit.model.SaePagma;
 import fr.urssaf.image.sae.droit.model.SaePagmf;
 import fr.urssaf.image.sae.droit.model.SaePagmp;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
-import fr.urssaf.image.sae.droit.service.SaeActionUnitaireService;
 import fr.urssaf.image.sae.droit.service.SaeDroitService;
 import fr.urssaf.image.sae.droit.utils.ResourceMessagesUtils;
 import fr.urssaf.image.sae.droit.utils.ZookeeperUtils;
@@ -458,6 +457,31 @@ public class SaeDroitServiceImpl implements SaeDroitService {
          }
       }
    }
+   
+   
+   /**
+    * @param mutex
+    */
+   private void checkLock(ZookeeperMutex mutex, ServiceContract contrat) {
+      if (!ZookeeperUtils.isLock(mutex)) {
+
+         String codeContrat = contrat.getCodeClient();
+
+         ServiceContract storedContract;
+         try {
+            storedContract = contratsCache.getUnchecked(codeContrat);
+
+         } catch (InvalidCacheLoadException e) {
+            throw new ContratServiceReferenceException(MESSAGE_CONTRAT
+                  + codeContrat + "n'a pas été créé", e);
+         }
+
+         if (!storedContract.equals(contrat)) {
+            throw new DroitRuntimeException(MESSAGE_CONTRAT + codeContrat
+                  + " a déjà été créé");
+         }
+      }
+   }
 
    private Pagm checkPagmExists(String codePagm, List<Pagm> listPagm,
          String idClient) throws PagmNotFoundException {
@@ -543,6 +567,32 @@ public class SaeDroitServiceImpl implements SaeDroitService {
 
    }
 
+   /**
+    * vérifie si le contrat de service est pré existant. Si ce n'est pas le cas, levée
+    * d'une {@link RuntimeException}
+    * 
+    * @param serviceContract
+    *           le contrat de service
+    */
+   private void checkContratServiceExistant(ServiceContract serviceContract) {
+
+      if (!contratServiceExists(serviceContract.getCodeClient())) {
+         LOGGER.warn("{} - Le contrat de service {} n'existe pas "
+               + "la famille de colonne DroitContratService", CHECK_CONTRAT,
+               serviceContract.getCodeClient());
+         throw new DroitRuntimeException(MESSAGE_CONTRAT
+               + serviceContract.getCodeClient()
+               + " n'existe pas dans la famille de colonne DroitContratService");
+      } else {
+         LOGGER.debug("{} - une référence au contrat de service {} "
+               + " trouvée dans la famille de colonne DroitContratService."
+               + " On continue le traitement", CHECK_CONTRAT, serviceContract
+               .getCodeClient());
+      }
+
+   }
+   
+   
    /**
     * {@inheritDoc}
     */
@@ -938,7 +988,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
 
             // Préparation de l'ajout du PAGM
             creerPagm(idContratService, saePagm, mutator);
-
+ 
             // Execution de la suppression
             mutator.execute();
 
@@ -1166,5 +1216,51 @@ public class SaeDroitServiceImpl implements SaeDroitService {
    // }
    // return setFormat;
    // }
+   
+   
+   /**
+    * {@inheritDoc}
+    * 
+    * @throws LockTimeoutException
+    */
+   @Override
+   public final void modifierContratService(ServiceContract serviceContract) {
+
+      LOGGER.debug("{} - Debut de la modification du contrat de service",
+            TRC_CREATE);
+
+      String lockName = PREFIXE_CONTRAT + serviceContract.getCodeClient();
+
+      ZookeeperMutex mutex = ZookeeperUtils
+            .createMutex(curatorClient, lockName);
+
+      try {
+
+         ZookeeperUtils.acquire(mutex, lockName);
+
+         LOGGER
+               .debug(
+                     "{} - Vérification que le contrat de service existe déjà",
+                     TRC_CREATE, serviceContract.getCodeClient());
+         checkContratServiceExistant(serviceContract);
+
+         contratSupport.create(serviceContract, clockSupport.currentCLock());
+
+         checkLock(mutex, serviceContract);
+
+         LOGGER.debug("{} - Fin de la création du contrat de service",
+               TRC_CREATE);
+      } finally {
+         mutex.release();
+      }
+
+   }
+
+   /**
+    * @return the contratsCache
+    */
+   public void refrechContratsCache(String cle) {
+      contratsCache.refresh(cle);
+   }
 
 }

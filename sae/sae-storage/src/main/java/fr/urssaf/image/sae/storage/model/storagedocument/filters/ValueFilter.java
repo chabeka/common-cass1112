@@ -1,6 +1,5 @@
 package fr.urssaf.image.sae.storage.model.storagedocument.filters;
 
-import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.AbstractCriteria;
 
 /**
  * Classe concrète qui permet d'effectuer un filtre avec une valeur

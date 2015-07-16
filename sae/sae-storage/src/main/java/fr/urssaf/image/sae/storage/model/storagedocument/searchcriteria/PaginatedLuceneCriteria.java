@@ -1,7 +1,6 @@
 package fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;

@@ -1,5 +1,7 @@
 package fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument;
 
+import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import net.docubase.toolkit.service.ServiceProvider;
@@ -15,9 +17,11 @@ import fr.urssaf.image.sae.storage.dfce.support.StorageDocumentServiceSupport;
 import fr.urssaf.image.sae.storage.dfce.support.TracesDfceSupport;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
+import fr.urssaf.image.sae.storage.exception.DocumentNoteServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
+import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentNote;
 import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.UUIDCriteria;
 import fr.urssaf.image.sae.storage.services.storagedocument.StorageTransfertService;
 
@@ -108,6 +112,33 @@ public class StorageTransfertServiceImpl implements StorageTransfertService {
     * {@inheritDoc}
     */
    @Override
+   public void addDocumentNote(UUID docUuid, String contenu, String login, Date dateCreation, UUID noteUuid)
+         throws DocumentNoteServiceEx {
+
+      ServiceProvider dfceService = dfceServiceManager.getDFCEService();
+
+      storageServiceSupport.addDocumentNote(dfceService, docUuid, contenu,
+            login, dateCreation, noteUuid, LOGGER);
+
+   }
+   
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public List<StorageDocumentNote> getDocumentNotes(UUID docUuid) {
+      ServiceProvider dfceService = dfceServiceManager.getDFCEService();
+
+      return storageServiceSupport.getDocumentNotes(dfceService, docUuid,
+            LOGGER);
+
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
    public final void openConnexion() throws ConnectionServiceEx {
       dfceServiceManager.getConnection();
    }
@@ -119,4 +150,7 @@ public class StorageTransfertServiceImpl implements StorageTransfertService {
    public final void closeConnexion() {
       dfceServiceManager.closeConnection();
    }
+
+
+
 }

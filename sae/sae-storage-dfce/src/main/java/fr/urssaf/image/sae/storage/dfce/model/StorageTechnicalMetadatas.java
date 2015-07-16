@@ -50,7 +50,9 @@ public enum StorageTechnicalMetadatas {
 	DATE_MODIFICATION("DateModification", SystemFieldName.SM_MODIFICATION_DATE
 			.toString()),
 	// Pas de valeur
-	NOVALUE("", "");
+	NOVALUE("", ""),
+	// Note sur le document
+	NOTE("Note","not");
 	// Le code court de la métadonnée.
 	private String shortCode;
 

@@ -64,6 +64,7 @@ public final class MajLotServiceImpl implements MajLotService {
    public static final String DFCE_150400 = "DFCE_150400";
    public static final String DFCE_150400_P5 = "DFCE_150400_P5";
    public static final String DFCE_151000 = "DFCE_151000";
+   public static final String CASSANDRA_151000 = "CASSANDRA_151000";
    public static final String CASSANDRA_DROITS_GED = "CASSANDRA_DROITS_GED";
    public static final String CREATION_GED = "CREATION_GED";
    public static final String DISABLE_COMPOSITE_INDEX = "DISABLE_COMPOSITE_INDEX";
@@ -188,9 +189,9 @@ public final class MajLotServiceImpl implements MajLotService {
          // -- Creation des index composite dans DFCE
          addIndexesCompositeToDfce("DFCE_150601");
       } else if (DFCE_151000.equalsIgnoreCase(nomOperation)) {
-
          updateDFCE151000();
-
+      } else if (CASSANDRA_151000.equalsIgnoreCase(nomOperation)) {
+         updateCassandra151000();
       } else if (CASSANDRA_DROITS_GED.equalsIgnoreCase(nomOperation)) {
 
          updateCassandraDroitsGed();
@@ -431,9 +432,21 @@ public final class MajLotServiceImpl implements MajLotService {
     */
    private void updateCassandra150601() {
       LOG
-            .info("Début de l'opération : mise à jour du keyspace SAE pour le lot 150600");
+            .info("Début de l'opération : mise à jour du keyspace SAE pour le lot 150601");
       // Récupération de la chaîne de connexion au cluster cassandra
       updater.updateToVersion11();
+      LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
+   }
+
+   /**
+    * Pour lot 151000 du SAE : mise à jour du keyspace "SAE" dans cassandra, en
+    * version 12
+    */
+   private void updateCassandra151000() {
+      LOG
+            .info("Début de l'opération : mise à jour du keyspace SAE pour le lot 151000");
+      // Récupération de la chaîne de connexion au cluster cassandra
+      updater.updateToVersion12();
       LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
    }
 
@@ -545,21 +558,23 @@ public final class MajLotServiceImpl implements MajLotService {
       LOG.info("Fin de l'opération : Création des nouvelles métadonnées ({})",
             operation);
    }
-   
+
    private void addIndexesCompositeToDfce(String operation) {
       // -- Récupération de la liste des métadonnées
       LOG
             .debug("Lecture du fichier XML contenant les index composites à ajouter - Début");
       RefMetaInitialisationService service = updater.getRefMetaInitService();
-      
-      LOG.info(
-            "Début de l'opération : Création des nouveaux index composites ({})",
-            operation);
+
+      LOG
+            .info(
+                  "Début de l'opération : Création des nouveaux index composites ({})",
+                  operation);
 
       // -- Crétion des indexes composites
       createIndexesComposite(service.getIndexesComposites());
 
-      LOG.info("Fin de l'opération : Création des nouveaux index composites ({})",
+      LOG.info(
+            "Fin de l'opération : Création des nouveaux index composites ({})",
             operation);
    }
 
@@ -741,7 +756,7 @@ public final class MajLotServiceImpl implements MajLotService {
             }
 
             categories[i] = cacheCategories.get(codeCourt);
-            
+
             nomIndex.append(codeCourt);
             nomIndex.append('&');
          }
@@ -821,7 +836,7 @@ public final class MajLotServiceImpl implements MajLotService {
       LOG
             .info("Fin de l'opération : DISABLE_COMPOSITE_INDEX - Mise à jour de DFCE");
    }
-   
+
    /**
     * Pour lot 151000 du SAE : mise à jour du keyspace "Docubase" pour le
     * passage à la version 1.6.1 de DFCE
@@ -833,8 +848,7 @@ public final class MajLotServiceImpl implements MajLotService {
       DFCECassandraUpdater dfceUpdater = new DFCECassandraUpdater(
             cassandraConfig);
       dfceUpdater.updateToVersion170();
-      LOG
-            .info("Fin de l'opération : Lot 151000 - Mise à jour du schéma DFCE");
+      LOG.info("Fin de l'opération : Lot 151000 - Mise à jour du schéma DFCE");
    }
 
    /**
@@ -852,6 +866,7 @@ public final class MajLotServiceImpl implements MajLotService {
       updater.updateToVersion9();
       updater.updateToVersion10();
       updater.updateToVersion11();
+      updater.updateToVersion12();
    }
 
 }

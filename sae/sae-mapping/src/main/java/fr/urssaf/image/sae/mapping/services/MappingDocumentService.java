@@ -169,6 +169,23 @@ public interface MappingDocumentService {
          MappingFromReferentialException;
 
    /**
+    * Service de conversion d'une liste d’objets de type {@link StorageMetadata}
+    * vers une liste d'objets de type{@link UntypedMetadata}.
+    * 
+    * @param storageMetas
+    *           La liste des métadonnées de type {@link StorageMetadata}
+    * @return une liste d'objets de type {@link UntypedMetadata}
+    * @throws InvalidSAETypeException
+    *            Exception levée lorsque la conversion ne se passe pas bien.
+    * @throws MappingFromReferentialException
+    *            Exception levée lorsque la récupération de la métadata du
+    *            référentiel n'abouti pas
+    */
+   List<UntypedMetadata> storageMetadataToUntypedMetadata(
+         List<StorageMetadata> storageMetas) throws InvalidSAETypeException,
+         MappingFromReferentialException;
+
+   /**
     * Service de conversion d’une liste d'objets de type {@link UntypedMetadata}
     * 
     * }vers une liste d'objets de type{@link SAEMetadata}.

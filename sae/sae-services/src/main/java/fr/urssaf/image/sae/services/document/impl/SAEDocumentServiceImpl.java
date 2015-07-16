@@ -17,7 +17,10 @@ import fr.urssaf.image.sae.services.consultation.SAEConsultationService;
 import fr.urssaf.image.sae.services.consultation.impl.SAEConsultationServiceImpl;
 import fr.urssaf.image.sae.services.consultation.model.ConsultParams;
 import fr.urssaf.image.sae.services.document.SAEDocumentService;
+import fr.urssaf.image.sae.services.document.SAENoteService;
 import fr.urssaf.image.sae.services.document.SAESearchService;
+import fr.urssaf.image.sae.services.exception.ArchiveInexistanteEx;
+import fr.urssaf.image.sae.services.exception.SAEDocumentNoteException;
 import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
 import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedToConsultEx;
 import fr.urssaf.image.sae.services.exception.consultation.SAEConsultationAffichableParametrageException;
@@ -28,6 +31,7 @@ import fr.urssaf.image.sae.services.exception.search.SyntaxLuceneEx;
 import fr.urssaf.image.sae.services.exception.search.UnknownFiltresMetadataEx;
 import fr.urssaf.image.sae.services.exception.search.UnknownLuceneMetadataEx;
 import fr.urssaf.image.sae.storage.dfce.annotations.FacadePattern;
+import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentNote;
 
 /**
  * Fournit la façade des implementations des services :<br>
@@ -54,6 +58,9 @@ public class SAEDocumentServiceImpl implements SAEDocumentService {
    @Autowired
    @Qualifier("saeSearchService")
    private SAESearchService saeSearchService;
+   @Autowired
+   @Qualifier("saeNoteService")
+   private SAENoteService saeNoteService;
 
    /**
     * {@inheritDoc}
@@ -125,6 +132,26 @@ public class SAEDocumentServiceImpl implements SAEDocumentService {
          UnknownFiltresMetadataEx {
       return saeSearchService.searchPaginated(fixedMetadatas, varyingMetadata,
             filters, nbDocumentsParPage, lastIdDoc, listeDesiredMetadata);
+   }
+
+   /**
+    * {@inheritDoc}
+    * 
+    * @throws ArchiveInexistanteEx
+    */
+   @Override
+   public final void addDocumentNote(UUID docUuid, String contenu, String login)
+         throws SAEDocumentNoteException, ArchiveInexistanteEx {
+      saeNoteService.addDocumentNote(docUuid, contenu, login);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final List<StorageDocumentNote> getDocumentNotes(UUID docUuid)
+         throws SAEDocumentNoteException {
+      return saeNoteService.getDocumentNotes(docUuid);
    }
 
 }

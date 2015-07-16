@@ -124,9 +124,29 @@
               
                   if (
                   "http://www.cirtil.fr/saeService".equals(namespaceURI) &&
+                  "noteTxtType".equals(typeName)){
+                   
+                            return  fr.cirtil.www.saeservice.NoteTxtType.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.cirtil.fr/saeService".equals(namespaceURI) &&
                   "archivageUnitairePJRequestType".equals(typeName)){
                    
                             return  fr.cirtil.www.saeservice.ArchivageUnitairePJRequestType.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.cirtil.fr/saeService".equals(namespaceURI) &&
+                  "ajoutNoteRequestType".equals(typeName)){
+                   
+                            return  fr.cirtil.www.saeservice.AjoutNoteRequestType.Factory.parse(reader);
                         
 
                   }
@@ -287,6 +307,16 @@
                   "filtreType".equals(typeName)){
                    
                             return  fr.cirtil.www.saeservice.FiltreType.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.cirtil.fr/saeService".equals(namespaceURI) &&
+                  "ajoutNoteResponseType".equals(typeName)){
+                   
+                            return  fr.cirtil.www.saeservice.AjoutNoteResponseType.Factory.parse(reader);
                         
 
                   }

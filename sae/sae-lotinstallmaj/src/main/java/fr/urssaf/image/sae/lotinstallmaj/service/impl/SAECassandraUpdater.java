@@ -38,6 +38,7 @@ public class SAECassandraUpdater {
    private static final int VERSION_9 = 9;
    private static final int VERSION_10 = 10;
    private static final int VERSION_11 = 11;
+   private static final int VERSION_12 = 12;
 
    private static final String DROIT_PAGMF = "DroitPagmf";
    private static final String REFERENTIEL_FORMAT = "ReferentielFormat";
@@ -632,9 +633,41 @@ public class SAECassandraUpdater {
       // -- Enrichissement du référentiel des événements
       InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
       donnees.addReferentielEvenementV6();
-
+      
+      // Ajout de l'action unitaire ajoutNote
+      donnees.addActionUnitaireNote();
+      
       // On positionne la version à 11
       saeDao.setDatabaseVersion(VERSION_11);
    }
+   
+   /**
+    * Version 12 : <li>Création de la métadonnée Note</li>
+    * <li>Ajout de WS_AJOUT_NOTE|KO dans le référentiel des évenements</li>
+    */
+   public void updateToVersion12() {
+
+      long version = saeDao.getDatabaseVersion();
+      if (version >= VERSION_12) {
+         LOG.info("La base de données est déja en version " + version);
+         return;
+      }
+
+      LOG.info("Mise à jour du keyspace SAE en version 12");
+
+      // -- On se connecte au keyspace
+      saeDao.connectToKeySpace();
+
+      // -- Enrichissement du référentiel des événements
+      InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
+      donnees.addReferentielEvenementV7();
+      
+      // Ajout de la métadonnée Note
+      refMetaInitService.initialiseRefMeta(saeDao.getKeyspace());
+
+      // On positionne la version à 12
+      saeDao.setDatabaseVersion(VERSION_12);
+   }
+
 
 }

@@ -14,9 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.sae.droit.dao.model.Pagm;
+import fr.urssaf.image.sae.droit.dao.model.ActionUnitaire;
 import fr.urssaf.image.sae.droit.dao.model.ServiceContract;
 import fr.urssaf.image.sae.droit.model.SaePagm;
+import fr.urssaf.image.sae.droit.model.SaePagma;
+import fr.urssaf.image.sae.droit.model.SaePagmp;
 import fr.urssaf.image.sae.droit.utils.ResourceMessagesUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -30,6 +32,9 @@ public class SaeDroitServiceTest {
 
    @Autowired
    private SaeDroitService service;
+
+   @Autowired
+   private SaeActionUnitaireService serviceAction;
 
    @Test
    public void testLoadIdObligatoire() {
@@ -281,6 +286,53 @@ public class SaeDroitServiceTest {
          Assert.assertTrue("message de l'exception contient code client", e
                .getMessage().contains("code client"));
       }
+
+   }
+
+   @Test
+   public void testModifierContratService() {
+
+      ServiceContract contract = new ServiceContract();
+      contract.setDescription("description");
+      contract.setLibelle("libellé");
+      contract.setCodeClient("code");
+      contract.setViDuree(Long.valueOf(12));
+      List<SaePagm> list = new ArrayList<SaePagm>();
+      SaePagm saePagm = new SaePagm();
+      saePagm.setCode("code");
+      saePagm.setDescription("description");
+      SaePagma pagma = new SaePagma();
+      List<String> listeAu = new ArrayList<String>();
+      listeAu.add("codeAction");
+      pagma.setActionUnitaires(listeAu);
+      pagma.setCode("code");
+      saePagm.setPagma(pagma);
+      SaePagmp pagmp = new SaePagmp();
+      pagmp.setCode("code");
+      pagmp.setDescription("description");
+      pagmp.setPrmd("prmd");
+      saePagm.setPagmp(pagmp);
+      list.add(saePagm);
+      List<String> listPki = new ArrayList<String>();
+      listPki.add("pki");
+      contract.setListPki(listPki);
+
+      ActionUnitaire actionUnitaire = new ActionUnitaire();
+      actionUnitaire.setCode("codeAction");
+      actionUnitaire.setDescription("description action");
+
+      serviceAction.createActionUnitaire(actionUnitaire);
+
+      service.createContratService(contract, list);
+
+      contract.setDescription("description 2");
+      
+      service.modifierContratService(contract);
+      
+      service.refrechContratsCache("code");
+
+      ServiceContract contractModifie = service.getServiceContract("code");
+      Assert.assertEquals("description 2", contractModifie.getDescription());
 
    }
 

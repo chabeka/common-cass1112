@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import fr.urssaf.image.sae.storage.dfce.annotations.FacadePattern;
 import fr.urssaf.image.sae.storage.dfce.model.AbstractServiceProvider;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
+import fr.urssaf.image.sae.storage.exception.DocumentNoteServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.exception.QueryParseServiceEx;
 import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
@@ -19,6 +20,7 @@ import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.storage.exception.UpdateServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.PaginatedStorageDocuments;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
+import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentNote;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocuments;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageReferenceFile;
@@ -28,6 +30,7 @@ import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.LuceneCr
 import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.PaginatedLuceneCriteria;
 import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.UUIDCriteria;
 import fr.urssaf.image.sae.storage.services.storagedocument.DeletionService;
+import fr.urssaf.image.sae.storage.services.storagedocument.DocumentNoteService;
 import fr.urssaf.image.sae.storage.services.storagedocument.InsertionService;
 import fr.urssaf.image.sae.storage.services.storagedocument.RetrievalService;
 import fr.urssaf.image.sae.storage.services.storagedocument.SearchingService;
@@ -64,6 +67,9 @@ public class StorageDocumentServiceImpl extends AbstractServiceProvider
    private DeletionService deletionService;
    @Autowired
    private UpdateService updateService;
+   @Autowired
+   @Qualifier("documentNoteService")
+   private DocumentNoteService documentNoteService;
 
    /**
     * @return les services de suppression
@@ -247,8 +253,8 @@ public class StorageDocumentServiceImpl extends AbstractServiceProvider
    }
 
    @Override
-   public final UUID insertVirtualStorageDocument(VirtualStorageDocument document)
-         throws InsertionServiceEx {
+   public final UUID insertVirtualStorageDocument(
+         VirtualStorageDocument document) throws InsertionServiceEx {
       insertionService.setInsertionServiceParameter(getDfceService());
       return insertionService.insertVirtualStorageDocument(document);
    }
@@ -286,6 +292,26 @@ public class StorageDocumentServiceImpl extends AbstractServiceProvider
       searchingService.setSearchingServiceParameter(getDfceService());
       return searchingService
             .searchPaginatedStorageDocuments(paginatedLuceneCriteria);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void addDocumentNote(UUID docUuid, String contenu, String login)
+         throws DocumentNoteServiceEx {
+      documentNoteService.setDeletionServiceParameter(getDfceService());
+      documentNoteService.addDocumentNote(docUuid, contenu, login, null, null);
+
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public List<StorageDocumentNote> getDocumentsNotes(UUID docUuid) {
+      documentNoteService.setDeletionServiceParameter(getDfceService());
+      return documentNoteService.getDocumentNotes(docUuid);
    }
 
 }

@@ -2,6 +2,8 @@ package fr.urssaf.image.sae.webservices.skeleton;
 
 import org.apache.axis2.AxisFault;
 
+import fr.cirtil.www.saeservice.AjoutNote;
+import fr.cirtil.www.saeservice.AjoutNoteResponse;
 import fr.cirtil.www.saeservice.ArchivageMasse;
 import fr.cirtil.www.saeservice.ArchivageMasseAvecHash;
 import fr.cirtil.www.saeservice.ArchivageMasseAvecHashResponse;
@@ -189,7 +191,7 @@ public interface SaeServiceSkeletonInterface {
     */
    RecuperationMetadonneesResponse recuperationMetadonneesSecure(
          RecuperationMetadonnees request) throws AxisFault;
-   
+
    /**
     * endpoint du transfert de document
     * 
@@ -200,7 +202,7 @@ public interface SaeServiceSkeletonInterface {
     *            exception levée dans la consommation du web service
     */
    TransfertResponse transfertSecure(Transfert request) throws AxisFault;
-   
+
    /**
     * endpoint de consultation dans un format affichable
     * 
@@ -210,19 +212,21 @@ public interface SaeServiceSkeletonInterface {
     * @throws AxisFault
     *            exception levée lors de la consultation
     */
-   ConsultationAffichableResponse consultationAffichableSecure(ConsultationAffichable request)
-         throws AxisFault;
-   
+   ConsultationAffichableResponse consultationAffichableSecure(
+         ConsultationAffichable request) throws AxisFault;
+
    /**
     * Endpoint de la recherche de documents avec retour du nombre de résultats
     * 
     * @param request
     *           request du web service
-    * @return Instance de RechercheNbResResponse contenant le résultat de la recherche
+    * @return Instance de RechercheNbResResponse contenant le résultat de la
+    *         recherche
     * @throws AxisFault
     *            exception levée lors de la recherche
     */
-   RechercheNbResResponse rechercheNbResSecure(RechercheNbRes request) throws AxisFault;
+   RechercheNbResResponse rechercheNbResSecure(RechercheNbRes request)
+         throws AxisFault;
 
    /**
     * Endpoint de la recherche de documents par iterateur
@@ -236,4 +240,14 @@ public interface SaeServiceSkeletonInterface {
     */
    RechercheParIterateurResponse rechercheParIterateurSecure(
          RechercheParIterateur request) throws AxisFault;
+
+   /**
+    * Endpoint de l'ajout d'une note à un document
+    * 
+    * @param request
+    *           Objet contenant les paramètres de l'ajout
+    * @return reponse du web service
+    * @throws AxisFault
+    */
+   AjoutNoteResponse ajoutNoteSecure(AjoutNote request) throws AxisFault;
 }

@@ -61,6 +61,14 @@
     <wsdl:part name="input" element="tns:consultation">
     </wsdl:part>
   </wsdl:message>
+  <wsdl:message name="ajoutNoteResponseMessage">
+<wsdl:documentation>
+         Message contenant le résultat de la création
+         d’une note
+   </wsdl:documentation>
+    <wsdl:part name="output" element="tns:ajoutNoteResponse">
+    </wsdl:part>
+  </wsdl:message>
   <wsdl:message name="PingSecureRequestMessage">
 <wsdl:documentation>Message d'interrogation du service de test
          serveur en mode sécurisé</wsdl:documentation>
@@ -77,6 +85,14 @@
 <wsdl:documentation>Message de réponse à l'archivage d'un document
          unique</wsdl:documentation>
     <wsdl:part name="output" element="tns:archivageUnitairePJResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="ajoutNoteRequestMessage">
+<wsdl:documentation>
+         Message contenant la demande d’ajout d’une
+         note sur un document
+      </wsdl:documentation>
+    <wsdl:part name="input" element="tns:ajoutNote">
     </wsdl:part>
   </wsdl:message>
   <wsdl:message name="archivageMasseAvecHashResponseMessage">
@@ -340,6 +356,14 @@
       <wsdl:output message="tns:rechercheParIterateurResponseMessage">
     </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="ajoutNote" parameterOrder="input">
+<wsdl:documentation>Opération d’ajout d’une note à un document
+         </wsdl:documentation>
+      <wsdl:input message="tns:ajoutNoteRequestMessage">
+    </wsdl:input>
+      <wsdl:output message="tns:ajoutNoteResponseMessage">
+    </wsdl:output>
+    </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="SaeServiceSoapBinding" type="tns:SaeServicePortType">
     <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
@@ -511,6 +535,17 @@
 <wsdl:documentation>Service de recherche documentaire sur le
             SAE (par iterateur)</wsdl:documentation>
       <soap:operation soapAction="rechercheParIterateur"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ajoutNote">
+<wsdl:documentation>Service d’ajout de note à un document
+         </wsdl:documentation>
+      <soap:operation soapAction="ajoutNote"/>
       <wsdl:input>
         <soap:body use="literal"/>
       </wsdl:input>

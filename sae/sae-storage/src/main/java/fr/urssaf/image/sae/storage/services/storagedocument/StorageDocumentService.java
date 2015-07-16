@@ -1,9 +1,11 @@
 package fr.urssaf.image.sae.storage.services.storagedocument;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
+import fr.urssaf.image.sae.storage.exception.DocumentNoteServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.exception.QueryParseServiceEx;
 import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
@@ -11,6 +13,7 @@ import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.storage.exception.UpdateServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.PaginatedStorageDocuments;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
+import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentNote;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocuments;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageReferenceFile;
@@ -263,4 +266,30 @@ public interface StorageDocumentService {
    PaginatedStorageDocuments searchPaginatedStorageDocuments(
          PaginatedLuceneCriteria paginatedLuceneCriteria)
          throws SearchingServiceEx, QueryParseServiceEx;
+
+   /**
+    * Ajout d'une note à un document
+    * 
+    * @param docUuid
+    *           Identifiant du document auquel on souhaite rattacher une note
+    * @param contenu
+    *           Contenu de la note
+    * @param login
+    *           login utilisateur
+    * @throws DocumentNoteServiceEx
+    *            Une erreur s'est produite lors de l'ajout d'une note à un
+    *            document
+    */
+   void addDocumentNote(UUID docUuid, String contenu, String login)
+         throws DocumentNoteServiceEx;
+
+   /**
+    * Récupération de la liste des notes associées à un document
+    * 
+    * @param docUuid
+    *           Identifiant du document dont on souhaite récupérer la liste des
+    *           notes qui lui sont rattachées
+    * @return La liste des notes rattachées au document
+    */
+   List<StorageDocumentNote> getDocumentsNotes(UUID docUuid);
 }

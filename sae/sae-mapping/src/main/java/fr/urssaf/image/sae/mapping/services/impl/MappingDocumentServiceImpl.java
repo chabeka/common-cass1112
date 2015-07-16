@@ -272,6 +272,9 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
       return virtualDocument;
    }
 
+   /**
+    * {@inheritDoc}
+    */
    @Override
    public List<StorageMetadata> saeMetadatasToStorageMetadatas(
          List<SAEMetadata> metadatas) {
@@ -283,6 +286,34 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
       }
 
       return sMetadata;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public List<UntypedMetadata> storageMetadataToUntypedMetadata(
+         List<StorageMetadata> storageMetas) throws InvalidSAETypeException,
+         MappingFromReferentialException {
+
+      final List<UntypedMetadata> untypedMetadatas = new ArrayList<UntypedMetadata>();
+      for (StorageMetadata metadata : Utils.nullSafeIterable(storageMetas)) {
+         try {
+            final MetadataReference reference = referenceDAO
+                  .getByShortCode(metadata.getShortCode());
+
+            untypedMetadatas.add(new UntypedMetadata(reference.getLongCode(),
+                  Utils.convertToString(metadata.getValue(), reference)));
+
+         } catch (ParseException parseExcept) {
+            throw new InvalidSAETypeException(parseExcept);
+         } catch (ReferentialException refExcpt) {
+            throw new MappingFromReferentialException(refExcpt);
+         }
+      }
+
+      return untypedMetadatas;
+
    }
 
 }

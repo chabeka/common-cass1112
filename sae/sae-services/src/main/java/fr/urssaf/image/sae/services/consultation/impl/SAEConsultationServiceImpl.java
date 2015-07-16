@@ -2,6 +2,7 @@ package fr.urssaf.image.sae.services.consultation.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -22,6 +23,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
@@ -53,6 +56,7 @@ import fr.urssaf.image.sae.services.util.UntypedMetadataFinderUtils;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
+import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentNote;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.UUIDCriteria;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
@@ -69,6 +73,9 @@ public class SAEConsultationServiceImpl extends AbstractSAEServices implements
     * 
     */
    private static final String SEPARATOR_STRING = ", ";
+   private static final String CODE_LONG_META_NOTE = "Note";
+   private static final String CODE_COURT_META_NOTE = "not";
+
    private static final Logger LOG = LoggerFactory
          .getLogger(SAEConsultationServiceImpl.class);
    private final MetadataReferenceDAO referenceDAO;
@@ -162,6 +169,12 @@ public class SAEConsultationServiceImpl extends AbstractSAEServices implements
                   .getStorageDocumentService().retrieveStorageDocumentByUUID(
                         uuidCriteria);
 
+            // Si la note fait parti des métadonnées souhaitées à la
+            // consultation, on récupère les notes liées au document et on les
+            // transforme en JSON, puis on ajoute la métadonnées note au
+            // document
+            recupererNote(idArchive, metadatas, storageDocument);
+
             UntypedDocument untypedDocument = null;
 
             // Vérification des droits
@@ -211,10 +224,44 @@ public class SAEConsultationServiceImpl extends AbstractSAEServices implements
 
             throw new SAEConsultationServiceException(e);
 
+         } catch (IOException e) {
+            throw new SAEConsultationServiceException(e);
          }
       } catch (ConnectionServiceEx e) {
 
          throw new SAEConsultationServiceException(e);
+      }
+   }
+
+   /**
+    * Récupération des éventuelles notes et ajout dans la liste des métadonnées
+    * du document
+    */
+   private void recupererNote(UUID idArchive, List<String> metadatas,
+         StorageDocument storageDocument) throws IOException {
+      if (metadatas.contains(CODE_LONG_META_NOTE)) {
+         // Récupération de la liste des notes du document
+         List<StorageDocumentNote> listeNotes = this
+               .getStorageServiceProvider().getStorageDocumentService()
+               .getDocumentsNotes(idArchive);
+         // Transformation de la liste des notes en JSON
+         ObjectMapper mapper = new ObjectMapper();
+         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+         mapper.setDateFormat(format);
+         // mapper.configure(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS,
+         // false);
+         String listeNotesJSON = mapper.writeValueAsString(listeNotes);
+         // Ajout des notes aux métadonnées du document
+         List<StorageMetadata> listeMetadata = storageDocument.getMetadatas();
+         int i = 0;
+         for (StorageMetadata storageMetadata : listeMetadata) {
+            if (storageMetadata.getShortCode().equals(CODE_COURT_META_NOTE)) {
+               listeMetadata.set(i, new StorageMetadata(CODE_COURT_META_NOTE,
+                     listeNotesJSON));
+            }
+            i++;
+         }
+         storageDocument.setMetadatas(listeMetadata);
       }
    }
 
@@ -253,9 +300,17 @@ public class SAEConsultationServiceImpl extends AbstractSAEServices implements
 
             UUIDCriteria uuidCriteria = new UUIDCriteria(idArchive, allMeta);
 
+            // On récupère le document à partir de l'UUID, avec toutes les
+            // métadonnées du référentiel
             StorageDocument storageDocument = this.getStorageServiceProvider()
                   .getStorageDocumentService().retrieveStorageDocumentByUUID(
                         uuidCriteria);
+
+            // Si la note fait parti des métadonnées souhaitées à la
+            // consultation, on récupère les notes liées au document et on les
+            // transforme en JSON, puis on ajoute la métadonnées note au
+            // document
+            recupererNote(idArchive, metadatas, storageDocument);
 
             UntypedDocument untypedDocument = null;
 
@@ -282,6 +337,8 @@ public class SAEConsultationServiceImpl extends AbstractSAEServices implements
                      .valueMetadataFinder(untypedDocument.getUMetadatas(),
                            "FormatFichier");
 
+               // On filtre uniquement sur les métadonnées souhaitées à la
+               // consultation
                List<UntypedMetadata> list = filterMetadatas(metadatas,
                      untypedDocument.getUMetadatas());
                untypedDocument.setUMetadatas(list);
