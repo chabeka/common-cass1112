@@ -37,7 +37,7 @@
       <dependency>
          <groupId>fr.urssaf.image.commons</groupId>
          <artifactId>commons-dfce</artifactId>
-         <version>1.2.9-CRTL-4</version>
+         <version>1.7.0-CRTL-1-SNAPSHOT</version>
          <exclusions>
             <exclusion>
                <groupId>org.aspectj</groupId>
@@ -54,19 +54,19 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-commons</artifactId>
-         <version>15.6.0.2</version>
+         <version>15.10.0.1-SNAPSHOT</version>
       </dependency>
       
 	  <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-storage</artifactId>
-         <version>15.6.0.2</version>
+         <version>15.10.0.1-SNAPSHOT</version>
       </dependency>
       
 	  <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-bo</artifactId>
-         <version>15.6.0.2</version>
+         <version>15.10.0.1-SNAPSHOT</version>
       </dependency>
       
       <!-- AspectJ -->

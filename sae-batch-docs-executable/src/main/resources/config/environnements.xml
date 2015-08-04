@@ -22,7 +22,7 @@
 
    <configuration>
       <nom>INTEGRATION_COMMUNE_GNS</nom>
-      <dfceAddress>http://cer69-saeint3.cer69.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
+      <dfceAddress>http://hwi69intgnsapp1.gidn.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
       <dfceBaseName>SAE-INT</dfceBaseName>
       <dfceLogin>_ADMIN</dfceLogin>
       <dfcePwd>DOCUBASE</dfcePwd>
