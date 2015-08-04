@@ -75,6 +75,7 @@ import fr.urssaf.image.sae.services.exception.consultation.SAEConsultationServic
 import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException;
 import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.services.exception.format.validation.ValidationExceptionInvalidFile;
+import fr.urssaf.image.sae.storage.exception.DocumentNoteServiceEx;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
@@ -380,7 +381,7 @@ public class SAENoteServiceImplTest {
          noteService.addDocumentNote(uuid, "", "login");
          fail("Une exception devrait être renvoyée car le contenu de la note ne doit pas être vide");
       } catch (IllegalArgumentException aExp) {
-         assert (aExp.getMessage().contains("Le contenu de la note est vide"));
+         assert (aExp.getMessage().contains("Le contenu de la note est null"));
       }
 
       try {
@@ -405,23 +406,18 @@ public class SAENoteServiceImplTest {
     * @throws ArchiveInexistanteEx
     */
    @Test
-   public void ajoutNoteUUIDNull() throws IOException, SAECaptureServiceEx,
-         ReferentialRndException, UnknownCodeRndEx, RequiredStorageMetadataEx,
-         InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
-         DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
-         RequiredArchivableMetadataEx, NotArchivableMetadataEx,
-         UnknownHashCodeEx, CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx,
-         MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile,
-         UnknownFormatException, UnexpectedDomainException,
-         InvalidPagmsCombinaisonException, SAEConsultationServiceException,
-         UnknownDesiredMetadataEx, MetaDataUnauthorizedToConsultEx,
-         SAEDocumentNoteException, ArchiveInexistanteEx {
+   public void ajoutNoteUUIDNull() throws DocumentNoteServiceEx {
 
       try {
-         noteService.addDocumentNote(null, "Contenu de la note", "login");
+         //noteService.addDocumentNote(null, "Contenu de la note", "login");
+         // Dans la couche service, on est trop haut pour faire le test d'id null 
+         // puisque dans cette couche, on va rechercher le document par id, et détecter
+         // que l'id est null. Dans ce cas, on remonte une erreur sur la recherche et non 
+         // sur l'ajout de note
+         provider.getStorageDocumentService().addDocumentNote(null, "Contenu de la note", "login");
          fail("Une exception devrait être renvoyée car l'UUID du document ne doit pas être null");
       } catch (IllegalArgumentException aExp) {
-         assert (aExp.getMessage().contains("L'UUID du document est null"));
+         assert (aExp.getMessage().contains("L'identifiant du document est null"));
       }
 
    }
