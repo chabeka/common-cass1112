@@ -10,7 +10,7 @@
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-batch-docs-executable</artifactId>
    <name>sae-batch-docs-executable</name>
-   <version>15.10.0.1</version>
+   <version>15.10.0.2-SNAPSHOT</version>
    <description>Traitement de masse: import, export, delete</description>
    
    <properties>
@@ -21,13 +21,13 @@
    <!-- Configuration SVN pour le plug-in maven-release -->
    <scm>
       <url>
-        scm:svn:svn://cer69-svn.cer69.recouv/image/java/tags/sae-batch-docs-executable-15.10.0.1
+        scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/sae-batch-docs-executable/
       </url>
       <developerConnection>
-         scm:svn:svn://cer69-svn.cer69.recouv/image/java/tags/sae-batch-docs-executable-15.10.0.1
+         scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/sae-batch-docs-executable/
       </developerConnection>
       <connection>
-         scm:svn:svn://cer69-svn.cer69.recouv/image/java/tags/sae-batch-docs-executable-15.10.0.1
+         scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/sae-batch-docs-executable/
       </connection>
    </scm>
    
