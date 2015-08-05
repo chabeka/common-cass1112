@@ -755,6 +755,18 @@
         <client>false</client>
         <obligatoireAuStockage>false</obligatoireAuStockage>
         <typeDfce>Boolean</typeDfce>
-    </Metadonnee>    
+    </Metadonnee>
+    <Metadonnee>
+        <codeLong>NouvelleMetaTrimGauche</codeLong>
+        <codeCourt>newmetatrimgauche</codeCourt>
+        <archivablePossible>true</archivablePossible>
+        <archivableObligatoire>false</archivableObligatoire>
+        <consulteeParDefaut>false</consulteeParDefaut>
+        <consultable>true</consultable>
+        <critereRecherche>true</critereRecherche>
+        <client>false</client>
+        <obligatoireAuStockage>false</obligatoireAuStockage>
+        <typeDfce>String</typeDfce>
+    </Metadonnee>
 
 </ReferentielMetadonnees>
