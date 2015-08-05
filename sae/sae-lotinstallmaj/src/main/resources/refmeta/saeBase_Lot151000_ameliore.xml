@@ -922,16 +922,6 @@
             <single>false</single>
             <enableDictionary>false</enableDictionary>
          </category>
-         <category>
-            <descriptif>Note</descriptif>
-            <name>not</name>
-            <dataType>String</dataType>
-            <index>false</index>
-            <minimumValues>0</minimumValues>
-            <maximumValues>1</maximumValues>
-            <single>false</single>
-            <enableDictionary>false</enableDictionary>
-         </category>
       </categories>
    </base>
 </docuBase>

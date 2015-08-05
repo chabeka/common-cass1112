@@ -2751,7 +2751,7 @@
 		<ns1:consultable>oui</ns1:consultable>
 		<ns1:defaultConsultable>non</ns1:defaultConsultable>
 		<ns1:searchable>non</ns1:searchable>
-		<ns1:internal>non</ns1:internal>
+		<ns1:internal>oui</ns1:internal>
 		<ns1:archivable>oui</ns1:archivable>
 		<ns1:label>Liste des notes d'un document</ns1:label>
 		<ns1:description>Métadonnée permettant la récupération de la liste des notes d’un document ou l’ajout d’une nouvelle entrée à cette dernière.</ns1:description>

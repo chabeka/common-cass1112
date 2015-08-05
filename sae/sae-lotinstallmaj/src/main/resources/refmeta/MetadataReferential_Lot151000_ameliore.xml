@@ -1744,20 +1744,4 @@
       <label>Site de l'agent</label>
       <description>Site d'appartenance de l'agent</description>
    </metaDataReference>
-   <metaDataReference>
-      <shortCode>not</shortCode>
-      <longCode>Note</longCode>
-      <type>String</type>
-      <requiredForArchival>false</requiredForArchival>
-      <requiredForStorage>false</requiredForStorage>
-      <length>-1</length>
-      <pattern></pattern>
-      <consultable>true</consultable>
-      <defaultConsultable>false</defaultConsultable>
-      <searchable>false</searchable>
-      <internal>false</internal>
-      <archivable>true</archivable>
-      <label>Liste des notes d'un document</label>
-      <description>Métadonnée permettant la récupération de la liste des notes d’un document ou l’ajout d’une nouvelle entrée à cette dernière.</description>
-   </metaDataReference>
 </referentiel>

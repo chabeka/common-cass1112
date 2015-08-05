@@ -951,6 +951,11 @@ public class SaeServiceMessageReceiverInOut extends
          throw org.apache.axis2.AxisFault.makeFault(e);
       }
    }
+   
+   private fr.cirtil.www.saeservice.RechercheNbResResponse wrapRechercheNbRes() {
+      fr.cirtil.www.saeservice.RechercheNbResResponse wrappedElement = new fr.cirtil.www.saeservice.RechercheNbResResponse();
+      return wrappedElement;
+   }
 
    private org.apache.axiom.soap.SOAPEnvelope toEnvelope(
          org.apache.axiom.soap.SOAPFactory factory,
@@ -975,8 +980,8 @@ public class SaeServiceMessageReceiverInOut extends
       }
    }
 
-   private fr.cirtil.www.saeservice.RechercheNbResResponse wrapRechercheNbRes() {
-      fr.cirtil.www.saeservice.RechercheNbResResponse wrappedElement = new fr.cirtil.www.saeservice.RechercheNbResResponse();
+   private fr.cirtil.www.saeservice.RechercheParIterateurResponse wrapRechercheParIterateur() {
+      fr.cirtil.www.saeservice.RechercheParIterateurResponse wrappedElement = new fr.cirtil.www.saeservice.RechercheParIterateurResponse();
       return wrappedElement;
    }
 
@@ -1027,6 +1032,11 @@ public class SaeServiceMessageReceiverInOut extends
       } catch (org.apache.axis2.databinding.ADBException e) {
          throw org.apache.axis2.AxisFault.makeFault(e);
       }
+   }
+   
+   private fr.cirtil.www.saeservice.AjoutNoteResponse wrapAjoutNote() {
+      fr.cirtil.www.saeservice.AjoutNoteResponse wrappedElement = new fr.cirtil.www.saeservice.AjoutNoteResponse();
+      return wrappedElement;
    }
    
 
@@ -1256,6 +1266,13 @@ public class SaeServiceMessageReceiverInOut extends
                .equals(type)) {
 
             return fr.cirtil.www.saeservice.RechercheParIterateurResponse.Factory
+                  .parse(param.getXMLStreamReaderWithoutCaching());
+         }
+         
+         if (fr.cirtil.www.saeservice.AjoutNote.class
+               .equals(type)) {
+
+            return fr.cirtil.www.saeservice.AjoutNote.Factory
                   .parse(param.getXMLStreamReaderWithoutCaching());
          }
          

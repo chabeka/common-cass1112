@@ -634,9 +634,6 @@ public class SAECassandraUpdater {
       InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
       donnees.addReferentielEvenementV6();
       
-      // Ajout de l'action unitaire ajoutNote
-      donnees.addActionUnitaireNote();
-      
       // On positionne la version à 11
       saeDao.setDatabaseVersion(VERSION_11);
    }
@@ -661,6 +658,9 @@ public class SAECassandraUpdater {
       // -- Enrichissement du référentiel des événements
       InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
       donnees.addReferentielEvenementV7();
+      
+      // Ajout de l'action unitaire ajoutNote
+      donnees.addActionUnitaireNote();
       
       // Ajout de la métadonnée Note
       refMetaInitService.initialiseRefMeta(saeDao.getKeyspace());

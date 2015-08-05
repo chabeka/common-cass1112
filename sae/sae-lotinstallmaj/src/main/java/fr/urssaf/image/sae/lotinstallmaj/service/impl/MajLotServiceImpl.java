@@ -192,6 +192,8 @@ public final class MajLotServiceImpl implements MajLotService {
          updateDFCE151000();
       } else if (CASSANDRA_151000.equalsIgnoreCase(nomOperation)) {
          updateCassandra151000();
+         // -- Mise à jour DFCE
+         updateMetaDfce("META_151000");
       } else if (CASSANDRA_DROITS_GED.equalsIgnoreCase(nomOperation)) {
 
          updateCassandraDroitsGed();

@@ -73,7 +73,7 @@ public class RefMetaInitialisationServiceTest {
 //          throw new MajLotRuntimeException(e);
 //       }
 
-      Assert.assertEquals("Le nombre de lignes attendu est incorrect", 937, lignes.size());
+      Assert.assertEquals("Le nombre de lignes attendu est incorrect", 927, lignes.size());
    }
 
    @Test
@@ -212,7 +212,7 @@ public class RefMetaInitialisationServiceTest {
       
       //-- Test version 2.0 du fichiers des indexes composites
       message = "Le nombre d'indexes attendu (fichier v2.0) est incorrect";
-      Assert.assertEquals(message, 5, indexes.size());
+      Assert.assertEquals(message, 17, indexes.size());
    }
    
    @Test
@@ -223,7 +223,7 @@ public class RefMetaInitialisationServiceTest {
       
       //-- Test version 1.0 du fichiers des indexes composites
       message = "Le nombre d'indexes attendu (fichier v2.0) est incorrect";
-      Assert.assertEquals(message, 14, indexes.size());
+      Assert.assertEquals(message, 2, indexes.size());
    }
 
    private String boolToStringForDataset(boolean value) {

@@ -797,6 +797,8 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
       } catch (AjoutNoteAxisFault ex) {
          logSoapFault(ex);
          throw ex;
+      } catch (AccessDeniedException exception) {
+         throw new SaeAccessDeniedAxisFault(exception);
       } catch (RuntimeException ex) {
          logRuntimeException(ex);
          throw new RechercheAxis2Fault(

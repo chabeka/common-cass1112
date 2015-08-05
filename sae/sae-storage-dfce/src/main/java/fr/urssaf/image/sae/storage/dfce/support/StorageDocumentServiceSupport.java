@@ -5,16 +5,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.UUID;
 
 import javax.activation.DataHandler;
 
 import net.docubase.toolkit.model.base.Base;
-import net.docubase.toolkit.model.document.Criterion;
 import net.docubase.toolkit.model.document.Document;
 import net.docubase.toolkit.model.note.Note;
 import net.docubase.toolkit.service.ServiceProvider;
@@ -213,10 +210,20 @@ public class StorageDocumentServiceSupport {
          }
 
          inputStream = documentContent.getInputStream();
+         
+         // recherche d'une note eventuelle
+         String note = "";
+         for (StorageMetadata metadata : metadatas) {
+            if (metadata.getShortCode().equals(
+                  StorageTechnicalMetadatas.NOTE.getShortCode())) {
+               note = (String) metadata.getValue();
+               break;
+            }
+         }
 
          // Appel de l'API DFCE pour l'archivage du document
          Document docArchive = insertStorageDocument(dfceService, docDfce,
-               digest, inputStream, hashMeta, typeHashMeta, tracesSupport);
+               digest, inputStream, hashMeta, typeHashMeta, tracesSupport, note);
 
          // Trace
          LOGGER.debug("{} - Document inséré dans DFCE (UUID: {})", trcInsert,
@@ -257,6 +264,7 @@ public class StorageDocumentServiceSupport {
     * @param inputStream
     * @param hashPourTrace
     * @param typeHashPourTrace
+    * @param note
     * 
     * @return Objet {{@link #Document} DFCE
     * 
@@ -266,31 +274,8 @@ public class StorageDocumentServiceSupport {
    private Document insertStorageDocument(ServiceProvider dfceService,
          Document document, String digest, InputStream inputStream,
          String hashPourTrace, String typeHashPourTrace,
-         TracesDfceSupport tracesSupport) throws TagControlException,
+         TracesDfceSupport tracesSupport, String note) throws TagControlException,
          FrozenDocumentException {
-
-      // On vérifie si le document contient une note à ajouter
-      List<Criterion> listeCriterions = document
-            .getCriterions(StorageTechnicalMetadatas.NOTE.getShortCode());
-      String note = "";
-      if (listeCriterions.size() > 0) {
-         // Le document à archiver possède une note
-         note = listeCriterions.get(0).getWordValue();
-      }
-      // Si le document possède une note, on supprime la métadonnée (qui sert
-      // uniquement de stockage temporaire de la note) avant de l'archiver. La
-      // note sera archivée dans DFCE.
-      if (!note.isEmpty()) {
-         int i = 0;
-         List<Criterion> listeCompleteCriterions = document.getAllCriterions();
-         for (Criterion criterion : listeCompleteCriterions) {
-            if (criterion.getCategoryName().equals(
-                  StorageTechnicalMetadatas.NOTE.getShortCode())) {
-               listeCompleteCriterions.remove(i);
-            }
-            i++;
-         }
-      }
 
       Document doc;
 
@@ -309,7 +294,7 @@ public class StorageDocumentServiceSupport {
             typeHashPourTrace, doc.getArchivageDate());
 
       // Ajout de la note au document
-      if (!note.isEmpty()) {
+      if (StringUtils.isNotEmpty(note)) {
          dfceService.getNoteService().addNote(doc.getUuid(), note);
       }
       return doc;

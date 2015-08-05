@@ -3,6 +3,8 @@ package fr.urssaf.image.sae.services.document;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+
 import fr.urssaf.image.sae.services.exception.ArchiveInexistanteEx;
 import fr.urssaf.image.sae.services.exception.SAEDocumentNoteException;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentNote;
@@ -28,6 +30,7 @@ public interface SAENoteService {
     * @throws ArchiveInexistanteEx
     *            La note ne peut pas être ajoutée car le document n'existe pas
     */
+   @PreAuthorize("hasRole('ajoutNote')")
    void addDocumentNote(UUID docUuid, String contenu, String login)
          throws SAEDocumentNoteException, ArchiveInexistanteEx;
 

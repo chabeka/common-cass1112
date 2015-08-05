@@ -18,8 +18,8 @@ import net.docubase.toolkit.model.base.BaseCategory;
 import net.docubase.toolkit.model.document.Criterion;
 import net.docubase.toolkit.model.document.Document;
 import net.docubase.toolkit.model.note.Note;
-import net.docubase.toolkit.model.reference.FileReference;
 import net.docubase.toolkit.model.reference.ContentRepository;
+import net.docubase.toolkit.model.reference.FileReference;
 import net.docubase.toolkit.model.reference.ContentRepository.State;
 import net.docubase.toolkit.service.ServiceProvider;
 
@@ -31,11 +31,11 @@ import fr.urssaf.image.sae.storage.dfce.exception.MetadonneeInexistante;
 import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
 import fr.urssaf.image.sae.storage.dfce.utils.Utils;
 import fr.urssaf.image.sae.storage.exception.StorageException;
+import fr.urssaf.image.sae.storage.model.storagedocument.StorageContentRepository;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentNote;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageReferenceFile;
-import fr.urssaf.image.sae.storage.model.storagedocument.StorageContentRepository;
 import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageDocument;
 
 /**
@@ -51,7 +51,8 @@ public final class BeanMapper {
          StorageTechnicalMetadatas.NOM_FICHIER.getShortCode(),
          StorageTechnicalMetadatas.TYPE_HASH.getShortCode(),
          StorageTechnicalMetadatas.DATE_ARCHIVE.getShortCode(),
-         StorageTechnicalMetadatas.DOCUMENT_VIRTUEL.getShortCode());
+         StorageTechnicalMetadatas.DOCUMENT_VIRTUEL.getShortCode(),
+         StorageTechnicalMetadatas.NOTE.getShortCode());
 
    /**
     * Permet de convertir un {@link Document} en {@link StorageDocument}.<br/>
