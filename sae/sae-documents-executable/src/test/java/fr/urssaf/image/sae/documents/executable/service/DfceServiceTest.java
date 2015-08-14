@@ -149,4 +149,43 @@ public class DfceServiceTest {
          Assert.fail(e.getMessage());
       }
    }
+   
+   @Test
+   public void getDocumentById() throws FileNotFoundException {
+      UUID idDoc = UUID.randomUUID();
+      String baseName = "TEST";
+      DfceService dfceService = new DfceServiceImpl();
+      DFCEConnection dfceConnection = new DFCEConnection();
+      dfceConnection.setBaseName(baseName);
+      //List<Document> listeDoc = new ArrayList<Document>();
+      //listeDoc.add(new Document());
+      // creation des mocks
+      SearchService searchService = EasyMock
+            .createNiceMock(SearchService.class);
+      BaseAdministrationService baseAdministrationService = EasyMock
+            .createNiceMock(BaseAdministrationService.class);
+      Base base = EasyMock.createNiceMock(Base.class);
+      ServiceProvider serviceProvider = EasyMock
+            .createNiceMock(ServiceProvider.class);
+      EasyMock.expect(serviceProvider.getSearchService()).andReturn(
+            searchService);
+      EasyMock.expect(serviceProvider.getBaseAdministrationService())
+            .andReturn(baseAdministrationService);
+      EasyMock.expect(baseAdministrationService.getBase(baseName)).andReturn(
+            base);
+
+      EasyMock.expect(searchService.getDocumentByUUID(base, idDoc))
+            .andReturn(new Document());
+      EasyMock.replay(searchService);
+      EasyMock.replay(baseAdministrationService);
+      EasyMock.replay(base);
+      EasyMock.replay(serviceProvider);
+      ((DfceServiceImpl) dfceService).setDfceConnection(dfceConnection);
+      ((DfceServiceImpl) dfceService).setServiceProvider(serviceProvider);
+
+      Document docTrouve = dfceService.getDocumentById(idDoc);
+
+      Assert.assertNotNull("Le document trouvé ne doit pas être null",
+            docTrouve);
+   }
 }

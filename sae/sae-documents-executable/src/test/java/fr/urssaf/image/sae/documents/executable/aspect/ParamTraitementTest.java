@@ -54,4 +54,34 @@ public class ParamTraitementTest {
                      ex.getMessage());
       }
    }
+   
+   @Test
+   public void validAddMetadatasToDocumentsParametresNull() {
+      try {
+         traitementService.addMetadatasToDocuments(null);
+         Assert
+               .fail("Une exception ParametreRuntimeException aurait dû être levée");
+      } catch (ParametreRuntimeException ex) {
+         Assert
+               .assertEquals(
+                     "Le message de l'exception est incorrect",
+                     "La valeur d'un ou plusieurs paramètres obligatoires est nulle ou vide : [parametres].",
+                     ex.getMessage());
+      }
+   }
+   
+   @Test
+   public void validAddMetadatasToDocumentsFromCSVParametresNull() {
+      try {
+         traitementService.addMetadatasToDocumentsFromCSV(null);
+         Assert
+               .fail("Une exception ParametreRuntimeException aurait dû être levée");
+      } catch (ParametreRuntimeException ex) {
+         Assert
+               .assertEquals(
+                     "Le message de l'exception est incorrect",
+                     "La valeur d'un ou plusieurs paramètres obligatoires est nulle ou vide : [parametres].",
+                     ex.getMessage());
+      }
+   }
 }

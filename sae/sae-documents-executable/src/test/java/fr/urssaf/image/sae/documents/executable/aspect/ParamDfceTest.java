@@ -49,4 +49,19 @@ public class ParamDfceTest {
                      ex.getMessage());
       }
    }
+   
+   @Test
+   public void validGetDocumentByIdIdDocNull() {
+      try {
+         dfceService.getDocumentById(null);
+         Assert
+               .fail("Une exception ParametreRuntimeException aurait dû être levée");
+      } catch (ParametreRuntimeException ex) {
+         Assert
+               .assertEquals(
+                     "Le message de l'exception est incorrect",
+                     "La valeur d'un ou plusieurs paramètres obligatoires est nulle ou vide : [idDoc].",
+                     ex.getMessage());
+      }
+   }
 }

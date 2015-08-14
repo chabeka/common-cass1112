@@ -6,11 +6,15 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import junit.framework.Assert;
 import net.docubase.toolkit.model.document.Document;
+import net.docubase.toolkit.service.ServiceProvider;
+import net.docubase.toolkit.service.ged.StoreService;
 
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
@@ -20,10 +24,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.docubase.dfce.exception.FrozenDocumentException;
 import com.docubase.dfce.exception.SearchQueryParseException;
+import com.docubase.dfce.exception.TagControlException;
 
+import fr.urssaf.image.sae.documents.executable.model.AddMetadatasParametres;
 import fr.urssaf.image.sae.documents.executable.model.FormatValidationParametres;
 import fr.urssaf.image.sae.documents.executable.model.FormatValidationParametres.MODE_VERIFICATION;
+import fr.urssaf.image.sae.documents.executable.service.impl.DfceServiceImpl;
 import fr.urssaf.image.sae.documents.executable.service.impl.TraitementServiceImpl;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -44,6 +52,10 @@ public class TraitementServiceTest {
 
    private final File doc = new File(
          "src/test/resources/identification/word.doc");
+   
+   private final int TYPE_RETOUR_OK = 0;
+   private final int TYPE_RETOUR_TAG_CONTROL_EXCEPTION = 1;
+   private final int TYPE_RETOUR_FROZEN_DOCUMENT_EXCEPTION = 2;
 
    private FormatValidationParametres createParametres(String requeteLucene,
          MODE_VERIFICATION mode) {
@@ -56,6 +68,23 @@ public class TraitementServiceTest {
       parametres.setTailleQueue(5);
       parametres.setTempsMaxTraitement(0);
       parametres.setMetadonnees(new ArrayList<String>());
+      return parametres;
+   }
+   
+   private AddMetadatasParametres createAddMetaParametres(String requeteLucene,
+         String cheminFichier) {
+      AddMetadatasParametres parametres = new AddMetadatasParametres();
+      parametres.setRequeteLucene(requeteLucene);
+      parametres.setTaillePasExecution(5);
+      parametres.setTaillePool(1);
+      parametres.setTailleQueue(5);
+      parametres.setCheminFichier(cheminFichier);
+      
+      Map<String, String> metas = new HashMap<String, String>();
+      metas.put("toDelete", null);
+      metas.put("toAdd", "true");
+      
+      parametres.setMetadonnees(metas);
       return parametres;
    }
 
@@ -95,6 +124,77 @@ public class TraitementServiceTest {
 
             }).anyTimes();
       EasyMock.replay(dfceService);
+      traitementService.setDfceService(dfceService);
+   }
+   
+   private void createAddMetaMock(TraitementServiceImpl traitementService,
+         String requeteLucene, int typeRetour) throws SearchQueryParseException,
+         TagControlException, FrozenDocumentException {
+
+      Document document = createDocument("fmt/354");
+      document.addCriterion("toDelete", "maValeur");
+      // creation de la liste des documents
+      List<Document> listeDoc = new ArrayList<Document>();
+      for (int index = 0; index < 10; index++) {
+         listeDoc.add(document);
+      }
+
+      // creation du mock
+      DfceService dfceService = EasyMock.createNiceMock(DfceService.class);
+      ServiceProvider serviceProvider = EasyMock.createNiceMock(ServiceProvider.class);
+      StoreService storeService = EasyMock.createNiceMock(StoreService.class);
+      EasyMock.expect(dfceService.executerRequete(requeteLucene)).andReturn(
+            listeDoc.iterator());
+      EasyMock.expect(dfceService.getServiceProvider()).andReturn(
+            serviceProvider).anyTimes();
+      EasyMock.expect(serviceProvider.getStoreService()).andReturn(
+            storeService).anyTimes();
+      if (typeRetour == TYPE_RETOUR_OK) {
+         EasyMock.expect(storeService.updateDocument(document)).andReturn(
+               document).anyTimes();
+      } else if (typeRetour == TYPE_RETOUR_TAG_CONTROL_EXCEPTION) {
+         EasyMock.expect(storeService.updateDocument(document)).andThrow(
+               new TagControlException("Erreur simulé par junit")).anyTimes();
+      } else if (typeRetour == TYPE_RETOUR_FROZEN_DOCUMENT_EXCEPTION) {
+         EasyMock.expect(storeService.updateDocument(document)).andThrow(
+               new FrozenDocumentException("Erreur simulé par junit")).anyTimes();
+      }
+      EasyMock.replay(dfceService);
+      EasyMock.replay(serviceProvider);
+      EasyMock.replay(storeService);
+      traitementService.setDfceService(dfceService);
+   }
+   
+   private void createAddMetaFromCsvMock(TraitementServiceImpl traitementService,
+         int typeRetour) throws SearchQueryParseException,
+         TagControlException, FrozenDocumentException {
+
+      Document document = createDocument("fmt/354");
+      document.addCriterion("toDelete", "maValeur");
+      
+      // creation du mock
+      DfceService dfceService = EasyMock.createNiceMock(DfceService.class);
+      ServiceProvider serviceProvider = EasyMock.createNiceMock(ServiceProvider.class);
+      StoreService storeService = EasyMock.createNiceMock(StoreService.class);
+      EasyMock.expect(dfceService.getDocumentById(EasyMock.anyObject(UUID.class))).andReturn(
+            document).anyTimes();
+      EasyMock.expect(dfceService.getServiceProvider()).andReturn(
+            serviceProvider).anyTimes();
+      EasyMock.expect(serviceProvider.getStoreService()).andReturn(
+            storeService).anyTimes();
+      if (typeRetour == TYPE_RETOUR_OK) {
+         EasyMock.expect(storeService.updateDocument(document)).andReturn(
+               document).anyTimes();
+      } else if (typeRetour == TYPE_RETOUR_TAG_CONTROL_EXCEPTION) {
+         EasyMock.expect(storeService.updateDocument(document)).andThrow(
+               new TagControlException("Erreur simulé par junit")).anyTimes();
+      } else if (typeRetour == TYPE_RETOUR_FROZEN_DOCUMENT_EXCEPTION) {
+         EasyMock.expect(storeService.updateDocument(document)).andThrow(
+               new FrozenDocumentException("Erreur simulé par junit")).anyTimes();
+      }
+      EasyMock.replay(dfceService);
+      EasyMock.replay(serviceProvider);
+      EasyMock.replay(storeService);
       traitementService.setDfceService(dfceService);
    }
 
@@ -258,6 +358,135 @@ public class TraitementServiceTest {
       Assert.assertEquals("Le nombre de documents traités n'est pas correct",
             10, nbTraites);
 
+      // remet a jour le context
+      ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
+   }
+   
+   @Test
+   public void addMetadatasToDocumentsOK()
+         throws SearchQueryParseException, TagControlException, FrozenDocumentException {
+
+      AddMetadatasParametres parametres = createAddMetaParametres(
+            "iti:73132b50-d404-11e2-9df1-005056c00008",
+            "");
+
+      createAddMetaMock((TraitementServiceImpl) traitementService,
+            parametres.getRequeteLucene(),
+            TYPE_RETOUR_OK);
+
+      // cas d'identification valide
+      traitementService.addMetadatasToDocuments(parametres);
+      
+      // remet a jour le context
+      ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
+   }
+   
+   @Test
+   public void addMetadatasToDocumentsTagControlException()
+         throws SearchQueryParseException, TagControlException, FrozenDocumentException {
+
+      AddMetadatasParametres parametres = createAddMetaParametres(
+            "iti:73132b50-d404-11e2-9df1-005056c00008",
+            "");
+
+      createAddMetaMock((TraitementServiceImpl) traitementService,
+            parametres.getRequeteLucene(),
+            TYPE_RETOUR_TAG_CONTROL_EXCEPTION);
+
+      // cas d'identification valide
+      traitementService.addMetadatasToDocuments(parametres);
+      
+      // remet a jour le context
+      ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
+   }
+   
+   @Test
+   public void addMetadatasToDocumentsFrozenDocumentException()
+         throws SearchQueryParseException, TagControlException, FrozenDocumentException {
+
+      AddMetadatasParametres parametres = createAddMetaParametres(
+            "iti:73132b50-d404-11e2-9df1-005056c00008",
+            "");
+
+      createAddMetaMock((TraitementServiceImpl) traitementService,
+            parametres.getRequeteLucene(),
+            TYPE_RETOUR_FROZEN_DOCUMENT_EXCEPTION);
+
+      // cas d'identification valide
+      traitementService.addMetadatasToDocuments(parametres);
+      
+      // remet a jour le context
+      ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
+   }
+   
+   @Test
+   public void addMetadatasToDocumentsFromCsvOK()
+         throws SearchQueryParseException, TagControlException, FrozenDocumentException {
+
+      AddMetadatasParametres parametres = createAddMetaParametres(
+            "",
+            "src/test/resources/add-meta/addMetadatas.csv");
+
+      createAddMetaFromCsvMock((TraitementServiceImpl) traitementService,
+            TYPE_RETOUR_OK);
+
+      // cas d'identification valide
+      traitementService.addMetadatasToDocumentsFromCSV(parametres);
+      
+      // remet a jour le context
+      ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
+   }
+   
+   @Test
+   public void addMetadatasToDocumentsFromCsvTagControlException()
+         throws SearchQueryParseException, TagControlException, FrozenDocumentException {
+
+      AddMetadatasParametres parametres = createAddMetaParametres(
+            "",
+            "src/test/resources/add-meta/addMetadatas.csv");
+
+      createAddMetaFromCsvMock((TraitementServiceImpl) traitementService,
+            TYPE_RETOUR_TAG_CONTROL_EXCEPTION);
+
+      // cas d'identification valide
+      traitementService.addMetadatasToDocumentsFromCSV(parametres);
+      
+      // remet a jour le context
+      ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
+   }
+   
+   @Test
+   public void addMetadatasToDocumentsFromCsvFrozenDocumentException()
+         throws SearchQueryParseException, TagControlException, FrozenDocumentException {
+
+      AddMetadatasParametres parametres = createAddMetaParametres(
+            "",
+            "src/test/resources/add-meta/addMetadatas.csv");
+
+      createAddMetaFromCsvMock((TraitementServiceImpl) traitementService,
+            TYPE_RETOUR_FROZEN_DOCUMENT_EXCEPTION);
+
+      // cas d'identification valide
+      traitementService.addMetadatasToDocumentsFromCSV(parametres);
+      
+      // remet a jour le context
+      ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
+   }
+   
+   @Test
+   public void addMetadatasToDocumentsFromCsvFileNotFoundException()
+         throws SearchQueryParseException, TagControlException, FrozenDocumentException {
+
+      AddMetadatasParametres parametres = createAddMetaParametres(
+            "",
+            "src/test/resources/add-meta/zorg");
+
+      createAddMetaFromCsvMock((TraitementServiceImpl) traitementService,
+            TYPE_RETOUR_OK);
+
+      // cas d'identification valide
+      traitementService.addMetadatasToDocumentsFromCSV(parametres);
+      
       // remet a jour le context
       ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
    }

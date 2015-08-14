@@ -2,6 +2,7 @@ package fr.urssaf.image.sae.documents.executable.aspect;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import net.docubase.toolkit.model.document.Document;
 
@@ -25,6 +26,9 @@ public class ParamDfce {
 
    private static final String DFCE_SERVICE_RECUPERERCONTENU = "execution(* fr.urssaf.image.sae.documents.executable.service.DfceService.recupererContenu(*))"
          + "&& args(document)";
+   
+   private static final String DFCE_SERVICE_GETDOCUMENTBYID = "execution(* fr.urssaf.image.sae.documents.executable.service.DfceService.getDocumentById(*))"
+      + "&& args(idDoc)";
 
    /**
     * Vérification des paramètres de la méthode "executerRequete" de la classe
@@ -61,6 +65,28 @@ public class ParamDfce {
 
       if (document == null) {
          param.add(Constantes.DOCUMENT);
+      }
+
+      if (!param.isEmpty()) {
+         throw new ParametreRuntimeException(
+               SaeDocumentsExecutableMessageHandler.getMessage(
+                     Constantes.PARAM_OBLIGATOIRE, param.toString()));
+      }
+   }
+   
+   /**
+    * Vérification des paramètres de la méthode "getDocumentById" de la classe
+    * DfceService. Vérification du Document document donné en paramètre<br>
+    * 
+    * @param document
+    *           Document Dfce
+    */
+   @Before(DFCE_SERVICE_GETDOCUMENTBYID)
+   public final void validGetDocumentByIdFromDfceService(UUID idDoc) {
+      List<String> param = new ArrayList<String>();
+
+      if (idDoc == null) {
+         param.add(Constantes.ID_DOC);
       }
 
       if (!param.isEmpty()) {

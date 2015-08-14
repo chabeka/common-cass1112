@@ -369,4 +369,104 @@ public class DocumentsExecutableMainTest {
          .fail("Une erreur non prévu s'est produite: " + e.getMessage());
       }
    }
+   
+   @Test
+   public void verifierConfFichierParamAddMetadonneesFromCSV() {
+      DocumentsExecutableMain main = new DocumentsExecutableMain(contexteXml);
+      Properties properties = new Properties();
+      AddMetadatasParametres parametres = new AddMetadatasParametres();
+      
+      //-- Aucun Parametre
+      Boolean result = main.vefierConfFichierParamAddMetaFromCSV(properties, parametres);
+      Assert.assertFalse("La vérification aurait du renvoyé une erreur", result);
+      
+      //-- Taille pool
+      properties.put("addMeta.taille.pool", "5");
+      result = main.vefierConfFichierParamAddMetaFromCSV(properties, parametres);
+      Assert.assertFalse("La vérification aurait du renvoyer une erreur", result);
+      
+      //-- Taille pas d'execution
+      properties.put("addMeta.taille.pool", "5");
+      properties.put("addMeta.taille.pas.execution", "10000");
+      result = main.vefierConfFichierParamAddMetaFromCSV(properties, parametres);
+      Assert.assertFalse("La vérification aurait du renvoyer une erreur", result);
+      
+      //-- Taille queue
+      properties.put("addMeta.taille.pool", "5");
+      properties.put("addMeta.taille.pas.execution", "10000");
+      properties.put("addMeta.taille.queue", "20");
+      result = main.vefierConfFichierParamAddMetaFromCSV(properties, parametres);
+      Assert.assertFalse("La vérification aurait du renvoyer une erreur", result);
+   }
+   
+   @Test
+   public void verifierConfFichierParamAddMetadonneesFromCSVOK() {
+      
+      DocumentsExecutableMain main = new DocumentsExecutableMain(contexteXml);
+      Properties properties = new Properties();
+      AddMetadatasParametres parametres = new AddMetadatasParametres();
+
+      Boolean result = main.vefierConfFichierParamAddMetaFromCSV(properties,
+            parametres);
+
+      // -- Liste des métadonnées
+      properties.put("addMeta.taille.pool", "5");
+      properties.put("addMeta.taille.queue", "20");
+      properties.put("addMeta.taille.pas.execution", "10000");
+      properties.put("addMeta.chemin.fichier.csv",
+            "src/test/resources/add-meta/addMetadatas.csv");
+
+      result = main
+            .vefierConfFichierParamAddMetaFromCSV(properties, parametres);
+
+      Assert.assertTrue("La vérification ne doit renvoyer aucune erreur",
+            result);
+
+      Assert.assertEquals("La taille du pool de thread n'est pas correcte", 5,
+            parametres.getTaillePool());
+      Assert.assertEquals("La taille du pas d'exécution n'est pas correcte",
+            10000, parametres.getTaillePasExecution());
+      Assert.assertEquals("Le chemin du fichier n'est pas correct",
+            "src/test/resources/add-meta/addMetadatas.csv", parametres
+                  .getCheminFichier());
+   }
+   
+   @Test
+   @DirtiesContext
+   public void executeServiceAddMetaFromCsv() throws IOException {
+      
+      DocumentsExecutableMain main = new DocumentsExecutableMain(contexteXml);
+      ClassPathResource fichierParametrage = new ClassPathResource(
+      "/config/addMetadatasFromCsv.properties");
+      
+      Properties properties = new Properties();
+      if (!main.chargerFichierParam(fichierParametrage.getFile().getAbsolutePath(), properties)) {
+         Assert.fail("Le fichier de paramètrage aurait du être trouvé");
+      }
+      
+      AddMetadatasParametres parametres = new AddMetadatasParametres();
+      if (!main.vefierConfFichierParamAddMetaFromCSV(properties, parametres)) {
+         Assert.fail("Le fichier de paramètrage n'est pas correct");
+      }
+      
+      //-- creation du mock
+      TraitementService traitementService = EasyMock.createNiceMock(TraitementService.class);
+      traitementService.addMetadatasToDocumentsFromCSV(parametres);
+      EasyMock.expectLastCall();
+      EasyMock.replay(traitementService);
+      
+      //-- creation d'un contexte spring specifique
+      GenericApplicationContext genericContext = new GenericApplicationContext();
+      BeanDefinitionBuilder beanDefinition = BeanDefinitionBuilder.genericBeanDefinition(TraitementService.class);
+      genericContext.registerBeanDefinition("traitementService", beanDefinition.getBeanDefinition());
+      genericContext.getBeanFactory().registerSingleton("traitementService", traitementService);
+      genericContext.refresh();
+      
+      try {
+         main.executeService(DocumentsExecutableMain.ADD_METADATAS_FROM_CSV, properties, genericContext);
+      } catch (Throwable e) {
+         Assert
+         .fail("Une erreur non prévu s'est produite: " + e.getMessage());
+      }
+   }
 }

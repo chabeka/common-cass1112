@@ -11,6 +11,7 @@ public final class Constantes {
 
    public static final String REQUETELUCENE = "requeteLucene";
    public static final String DOCUMENT = "document";
+   public static final String ID_DOC = "idDoc";
    public static final String IDFORMAT = "idFormat";
    public static final String FILE = "file";
    public static final String PARAMETRES = "parametres";
