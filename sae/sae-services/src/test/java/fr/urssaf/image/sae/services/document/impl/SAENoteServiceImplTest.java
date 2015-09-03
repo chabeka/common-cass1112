@@ -517,9 +517,9 @@ public class SAENoteServiceImplTest {
                "Contenu de la note invalide",
                "[{\"contenu\":\"Contenu de la note 1\",\"dateCreation\":\""
                      + "\",\"auteur\":\"_ADMIN\"},{\"contenu\":\"Contenu de la note 2\",\"dateCreation\":\""
-                     + "\",\"auteur\":\"_ADMIN\"}]\"", splitContenu[0]
+                     + "\",\"auteur\":\"_ADMIN\"}]", splitContenu[0]
                      + splitContenu[1].substring(9)
-                     + splitContenu[1].substring(9));
+                     + splitContenu[2].substring(9));
       } else {
          fail("Une note devrait être rattachée au document");
       }
