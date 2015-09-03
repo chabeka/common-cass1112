@@ -66,15 +66,15 @@ if ! grep -q "Mise à jour des statistiques DFCE terminée" "$LOG_DIR/sae_dfce_a
     ERRNO+=1
 fi
 
-if ! grep -q "Recherche des index DFCE trop gros terminée" "$LOG_DIR/sae_dfce_admin_exploit-getIndexesOverLimit.log"; then
-    error "La recherche des index DFCE trop gros n'est pas terminée"
-    ERRNO+=1
-fi
+#if ! grep -q "Recherche des index DFCE trop gros terminée" "$LOG_DIR/sae_dfce_admin_exploit-getIndexesOverLimit.log"; then
+#    error "La recherche des index DFCE trop gros n'est pas terminée"
+#    ERRNO+=1
+#fi
 
-if grep -q "a dépassé la limite" "$LOG_DIR/sae_dfce_admin_exploit-getIndexesOverLimit.log"; then
-    error "Certains index DFCE ont dépassés la limite. Une procédure de split doit être effectuée"
-    ERRNO+=1
-fi
+#if grep -q "a dépassé la limite" "$LOG_DIR/sae_dfce_admin_exploit-getIndexesOverLimit.log"; then
+#    error "Certains index DFCE ont dépassés la limite. Une procédure de split doit être effectuée"
+#    ERRNO+=1
+#fi
 
 #
 # ============ Analyses des logs sae-trace-executable.jar ============ 
