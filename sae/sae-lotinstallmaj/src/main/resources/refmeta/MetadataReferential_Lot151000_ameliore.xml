@@ -1744,4 +1744,36 @@
       <label>Site de l'agent</label>
       <description>Site d'appartenance de l'agent</description>
    </metaDataReference>
+   <metaDataReference>
+      <shortCode>not</shortCode>
+      <longCode>Note</longCode>
+      <type>String</type>
+      <requiredForArchival>false</requiredForArchival>
+      <requiredForStorage>false</requiredForStorage>
+      <length>-1</length>
+      <pattern></pattern>
+      <consultable>true</consultable>
+      <defaultConsultable>false</defaultConsultable>
+      <searchable>false</searchable>
+      <internal>true</internal>
+      <archivable>true</archivable>
+      <label>Liste des notes d'un document</label>
+      <description>Métadonnée permettant la récupération de la liste des notes d’un document ou l’ajout d’une nouvelle entrée à cette dernière.</description>
+   </metaDataReference>
+   <metaDataReference>
+      <shortCode>ame</shortCode>
+      <longCode>ApplicationMetier</longCode>
+      <type>String</type>
+      <requiredForArchival>false</requiredForArchival>
+      <requiredForStorage>false</requiredForStorage>
+      <length>-1</length>
+      <pattern></pattern>
+      <consultable>true</consultable>
+      <defaultConsultable>false</defaultConsultable>
+      <searchable>true</searchable>
+      <internal>false</internal>
+      <archivable>true</archivable>
+      <label>Application Métier</label>
+      <description>Application portant le besoin documentaire (Ancien index ApplicationSource), Par exemple : - un document produit par ALADIN, mis en GED par CIME pour les besoins de SICOMOR : SICOMOR - un document produit par SCRIBE mis en GED par WATT : WATT - pour un document issu du batch ATTESTATION, mis en GED par SATURNE : ATTESTATION - pour un document produit par la V2, versé en GED par SATURNE : SNV2</description>
+   </metaDataReference>
 </referentiel>
