@@ -4,7 +4,9 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 
 /**
  * Modèle de note d'un document
@@ -37,6 +39,7 @@ public class StorageDocumentNote implements Serializable {
    /**
     * Date de création de la note
     */
+   @JsonFormat(shape=Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
    private Date dateCreation;
 
    /**

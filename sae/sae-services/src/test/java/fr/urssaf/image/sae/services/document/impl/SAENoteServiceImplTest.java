@@ -273,13 +273,16 @@ public class SAENoteServiceImplTest {
       String dateString = dateFormat.format(dateCourante);
 
       if (uDoc.getUMetadatas().size() > 0) {
-         // rq : login n'est pas remplacé, DFCE écrase pas _ADMIN 
-         
-         assertEquals("Contenu de la note invalide",
-               "[{\"contenu\":\"Contenu de la note\",\"dateCreation\":\""
-                     + dateString + "\",\"auteur\":\"_ADMIN\"}]", uDoc
-                     .getUMetadatas().get(0).getValue());
-         
+         // rq : login n'est pas remplacé, DFCE écrase par _ADMIN
+
+         String contenu = uDoc.getUMetadatas().get(0).getValue();
+         String[] splitContenu = contenu.split(dateString);
+
+         assertEquals(
+               "Contenu de la note invalide",
+               "[{\"contenu\":\"Contenu de la note\",\"dateCreation\":\"\",\"auteur\":\"_ADMIN\"}]",
+               splitContenu[0] + splitContenu[1].substring(9));
+
       } else {
          fail("Une note devrait être rattachée au document");
       }
@@ -411,15 +414,20 @@ public class SAENoteServiceImplTest {
    public void ajoutNoteUUIDNull() throws DocumentNoteServiceEx {
 
       try {
-         //noteService.addDocumentNote(null, "Contenu de la note", "login");
-         // Dans la couche service, on est trop haut pour faire le test d'id null 
-         // puisque dans cette couche, on va rechercher le document par id, et détecter
-         // que l'id est null. Dans ce cas, on remonte une erreur sur la recherche et non 
+         // noteService.addDocumentNote(null, "Contenu de la note", "login");
+         // Dans la couche service, on est trop haut pour faire le test d'id
+         // null
+         // puisque dans cette couche, on va rechercher le document par id, et
+         // détecter
+         // que l'id est null. Dans ce cas, on remonte une erreur sur la
+         // recherche et non
          // sur l'ajout de note
-         provider.getStorageDocumentService().addDocumentNote(null, "Contenu de la note", "login");
+         provider.getStorageDocumentService().addDocumentNote(null,
+               "Contenu de la note", "login");
          fail("Une exception devrait être renvoyée car l'UUID du document ne doit pas être null");
       } catch (IllegalArgumentException aExp) {
-         assert (aExp.getMessage().contains("L'identifiant du document est null"));
+         assert (aExp.getMessage()
+               .contains("L'identifiant du document est null"));
       }
 
    }
@@ -494,13 +502,24 @@ public class SAENoteServiceImplTest {
       String dateString = dateFormat.format(dateCourante);
 
       if (uDoc.getUMetadatas().size() > 0) {
+         /*
+          * assertEquals( "Contenu de la note invalide",
+          * "[{\"contenu\":\"Contenu de la note 1\",\"dateCreation\":\"" +
+          * dateString +
+          * "\",\"auteur\":\"_ADMIN\"},{\"contenu\":\"Contenu de la note 2\",\"dateCreation\":\""
+          * + dateString + "\",\"auteur\":\"_ADMIN\"}]", uDoc
+          * .getUMetadatas().get(0).getValue());
+          */
+         String contenu = uDoc.getUMetadatas().get(0).getValue();
+         String[] splitContenu = contenu.split(dateString);
+
          assertEquals(
                "Contenu de la note invalide",
                "[{\"contenu\":\"Contenu de la note 1\",\"dateCreation\":\""
-                     + dateString
                      + "\",\"auteur\":\"_ADMIN\"},{\"contenu\":\"Contenu de la note 2\",\"dateCreation\":\""
-                     + dateString + "\",\"auteur\":\"_ADMIN\"}]", uDoc
-                     .getUMetadatas().get(0).getValue());
+                     + "\",\"auteur\":\"_ADMIN\"}]\"", splitContenu[0]
+                     + splitContenu[1].substring(9)
+                     + splitContenu[1].substring(9));
       } else {
          fail("Une note devrait être rattachée au document");
       }
@@ -510,7 +529,7 @@ public class SAENoteServiceImplTest {
       // l'ecde
       fileDoc.delete();
    }
-   
+
    @Test(expected = AccessDeniedException.class)
    public void addDocumentNote_accessDenied() throws IOException,
          SAECaptureServiceEx, ReferentialRndException, UnknownCodeRndEx,
@@ -545,9 +564,9 @@ public class SAENoteServiceImplTest {
       AuthenticationToken token = AuthenticationFactory.createAuthentication(
             viExtrait.getIdUtilisateur(), viExtrait, roles);
       AuthenticationContext.setAuthenticationToken(token);
-      
+
       ecde = ecdeTestTools
-      .buildEcdeTestDocument("attestation_consultation.pdf");
+            .buildEcdeTestDocument("attestation_consultation.pdf");
 
       File repertoireEcde = ecde.getRepEcdeDocuments();
       URI urlEcdeDocument = ecde.getUrlEcdeDocument();
@@ -590,7 +609,7 @@ public class SAENoteServiceImplTest {
       LOG.debug("document archivé dans DFCE:" + uuid);
 
       noteService.addDocumentNote(uuid, "Contenu de la note 1", "login");
-      
+
       Assert.fail("exception attendue");
    }
 }

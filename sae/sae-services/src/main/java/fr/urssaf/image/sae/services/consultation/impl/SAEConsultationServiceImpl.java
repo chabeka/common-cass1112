@@ -246,10 +246,6 @@ public class SAEConsultationServiceImpl extends AbstractSAEServices implements
                .getDocumentsNotes(idArchive);
          // Transformation de la liste des notes en JSON
          ObjectMapper mapper = new ObjectMapper();
-         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-         mapper.setDateFormat(format);
-         // mapper.configure(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS,
-         // false);
          String listeNotesJSON = mapper.writeValueAsString(listeNotes);
          // Ajout des notes aux métadonnées du document
          List<StorageMetadata> listeMetadata = storageDocument.getMetadatas();
