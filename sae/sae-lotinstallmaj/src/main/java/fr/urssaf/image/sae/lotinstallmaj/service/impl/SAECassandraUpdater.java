@@ -39,6 +39,7 @@ public class SAECassandraUpdater {
    private static final int VERSION_10 = 10;
    private static final int VERSION_11 = 11;
    private static final int VERSION_12 = 12;
+   private static final int VERSION_13 = 13;
 
    private static final String DROIT_PAGMF = "DroitPagmf";
    private static final String REFERENTIEL_FORMAT = "ReferentielFormat";
@@ -669,5 +670,26 @@ public class SAECassandraUpdater {
       saeDao.setDatabaseVersion(VERSION_12);
    }
 
+   /**
+    * Version 13 : <li>Création de la métadonnée ApplicationMetier</li>
+    */
+   public void updateToVersion13() {
 
+      long version = saeDao.getDatabaseVersion();
+      if (version >= VERSION_13) {
+         LOG.info("La base de données est déja en version " + version);
+         return;
+      }
+
+      LOG.info("Mise à jour du keyspace SAE en version 13");
+
+      // -- On se connecte au keyspace
+      saeDao.connectToKeySpace();
+
+      // Ajout de la métadonnée Note
+      refMetaInitService.initialiseRefMeta(saeDao.getKeyspace());
+
+      // On positionne la version à 13
+      saeDao.setDatabaseVersion(VERSION_13);
+   }
 }

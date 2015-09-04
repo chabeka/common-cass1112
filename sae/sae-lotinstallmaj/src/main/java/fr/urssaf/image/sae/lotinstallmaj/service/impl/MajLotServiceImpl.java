@@ -65,6 +65,7 @@ public final class MajLotServiceImpl implements MajLotService {
    public static final String DFCE_150400_P5 = "DFCE_150400_P5";
    public static final String DFCE_151000 = "DFCE_151000";
    public static final String CASSANDRA_151000 = "CASSANDRA_151000";
+   public static final String CASSANDRA_DFCE_151001 = "CASSANDRA_DFCE_151001";
    public static final String CASSANDRA_DROITS_GED = "CASSANDRA_DROITS_GED";
    public static final String CREATION_GED = "CREATION_GED";
    public static final String DISABLE_COMPOSITE_INDEX = "DISABLE_COMPOSITE_INDEX";
@@ -194,6 +195,10 @@ public final class MajLotServiceImpl implements MajLotService {
          updateCassandra151000();
          // -- Mise à jour DFCE
          updateMetaDfce("META_151000");
+      } else if (CASSANDRA_DFCE_151001.equalsIgnoreCase(nomOperation)) {
+         updateCassandra151001();
+         // -- Mise à jour DFCE
+         updateMetaDfce("META_151001");
       } else if (CASSANDRA_DROITS_GED.equalsIgnoreCase(nomOperation)) {
 
          updateCassandraDroitsGed();
@@ -449,6 +454,18 @@ public final class MajLotServiceImpl implements MajLotService {
             .info("Début de l'opération : mise à jour du keyspace SAE pour le lot 151000");
       // Récupération de la chaîne de connexion au cluster cassandra
       updater.updateToVersion12();
+      LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
+   }
+   
+   /**
+    * Pour lot 151001 du SAE : mise à jour du keyspace "SAE" dans cassandra, en
+    * version 13
+    */
+   private void updateCassandra151001() {
+      LOG
+            .info("Début de l'opération : mise à jour du keyspace SAE pour le lot 151001");
+      // Récupération de la chaîne de connexion au cluster cassandra
+      updater.updateToVersion13();
       LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
    }
 
@@ -869,6 +886,7 @@ public final class MajLotServiceImpl implements MajLotService {
       updater.updateToVersion10();
       updater.updateToVersion11();
       updater.updateToVersion12();
+      updater.updateToVersion13();
    }
 
 }
