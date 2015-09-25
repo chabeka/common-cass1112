@@ -40,6 +40,7 @@ public class SAECassandraUpdater {
    private static final int VERSION_11 = 11;
    private static final int VERSION_12 = 12;
    private static final int VERSION_13 = 13;
+   private static final int VERSION_14 = 14;
 
    private static final String DROIT_PAGMF = "DroitPagmf";
    private static final String REFERENTIEL_FORMAT = "ReferentielFormat";
