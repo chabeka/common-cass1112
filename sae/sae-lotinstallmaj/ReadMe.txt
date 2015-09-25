@@ -280,3 +280,9 @@ sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logbac
 Met la base Cassandra du SAE en version 13 (Ajout de la metadonnee ApplicationMetier)
 sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_DFCE_151001
 
+// ------------------------------------------
+// 11) Lot 151200SAE
+// ------------------------------------------
+
+Met la base Cassandra du SAE en version 14 (Ajout de nouvelles métadonnées scribe)
+sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_DFCE_151200

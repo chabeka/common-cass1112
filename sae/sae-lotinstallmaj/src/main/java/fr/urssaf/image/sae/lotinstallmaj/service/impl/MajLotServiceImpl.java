@@ -54,6 +54,7 @@ public final class MajLotServiceImpl implements MajLotService {
    public static final String CASSANDRA_DFCE_150400 = "CASSANDRA_DFCE_150400";
    public static final String CASSANDRA_DFCE_150600 = "CASSANDRA_DFCE_150600";
    public static final String CASSANDRA_DFCE_150601 = "CASSANDRA_DFCE_150601";
+   public static final String CASSANDRA_DFCE_151200 = "CASSANDRA_DFCE_151200";
    public static final String META_SEPA = "META_SEPA";
    public static final String META_130400 = "META_130400";
    public static final String META_150100 = "META_150100";
@@ -64,6 +65,7 @@ public final class MajLotServiceImpl implements MajLotService {
    public static final String DFCE_150400 = "DFCE_150400";
    public static final String DFCE_150400_P5 = "DFCE_150400_P5";
    public static final String DFCE_151000 = "DFCE_151000";
+   public static final String DFCE_151200 = "DFCE_151200";
    public static final String CASSANDRA_151000 = "CASSANDRA_151000";
    public static final String CASSANDRA_DFCE_151001 = "CASSANDRA_DFCE_151001";
    public static final String CASSANDRA_DROITS_GED = "CASSANDRA_DROITS_GED";
@@ -189,22 +191,26 @@ public final class MajLotServiceImpl implements MajLotService {
          updateCassandra150601();
          // -- Creation des index composite dans DFCE
          addIndexesCompositeToDfce("DFCE_150601");
+      
       } else if (DFCE_151000.equalsIgnoreCase(nomOperation)) {
          updateDFCE151000();
+      
       } else if (CASSANDRA_151000.equalsIgnoreCase(nomOperation)) {
          updateCassandra151000();
-         // -- Mise à jour DFCE
          updateMetaDfce("META_151000");
+
       } else if (CASSANDRA_DFCE_151001.equalsIgnoreCase(nomOperation)) {
          updateCassandra151001();
-         // -- Mise à jour DFCE
          updateMetaDfce("META_151001");
+
       } else if (CASSANDRA_DROITS_GED.equalsIgnoreCase(nomOperation)) {
-
          updateCassandraDroitsGed();
-
+         
+      } else if (CASSANDRA_DFCE_151200.equalsIgnoreCase(nomOperation)) {
+         updateCassandra151200();
+         updateMetaDfce("META_151200");
+      
       } else if (CREATION_GED.equalsIgnoreCase(nomOperation)) {
-
          createGedBase();
 
       } else {
@@ -214,7 +220,6 @@ public final class MajLotServiceImpl implements MajLotService {
                "Erreur technique : L'opération %s est inconnue", nomOperation);
          LOG.error(message);
          throw new MajLotRuntimeException(message);
-
       }
 
    }
@@ -456,7 +461,7 @@ public final class MajLotServiceImpl implements MajLotService {
       updater.updateToVersion12();
       LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
    }
-   
+
    /**
     * Pour lot 151001 du SAE : mise à jour du keyspace "SAE" dans cassandra, en
     * version 13
@@ -466,6 +471,18 @@ public final class MajLotServiceImpl implements MajLotService {
             .info("Début de l'opération : mise à jour du keyspace SAE pour le lot 151001");
       // Récupération de la chaîne de connexion au cluster cassandra
       updater.updateToVersion13();
+      LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
+   }
+   
+   /**
+    * Pour lot 151200 du SAE : mise à jour du keyspace "SAE" dans cassandra, en
+    * version 14
+    */
+   private void updateCassandra151200() {
+      LOG
+      .info("Début de l'opération : mise à jour du keyspace SAE pour le lot 151200");
+      // Récupération de la chaîne de connexion au cluster cassandra
+      updater.updateToVersion14();
       LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
    }
 
@@ -571,8 +588,8 @@ public final class MajLotServiceImpl implements MajLotService {
       // -- Mise à jour des métas
       updateBaseDfce(service.genereMetaBaseDfce(metadonnees));
 
-      // -- Crétion des indexes composites
-      createIndexesComposite(service.getIndexesComposites());
+      // -- Crétion des indexes composites (Si ils n'existent pas déjà)
+      createIndexesCompositeIfNotExist(service.getIndexesComposites());
 
       LOG.info("Fin de l'opération : Création des nouvelles métadonnées ({})",
             operation);
@@ -590,7 +607,7 @@ public final class MajLotServiceImpl implements MajLotService {
                   operation);
 
       // -- Crétion des indexes composites
-      createIndexesComposite(service.getIndexesComposites());
+      createIndexesCompositeIfNotExist(service.getIndexesComposites());
 
       LOG.info(
             "Fin de l'opération : Création des nouveaux index composites ({})",
@@ -731,15 +748,15 @@ public final class MajLotServiceImpl implements MajLotService {
    }
 
    /**
-    * Création des indexes composites à partir d'une liste de nomn d'indexes.
-    * 
+    * Création des indexes composites à partir d'une liste de noms d'indexes.
+    * Les indexes composites sont créés seulement si ils n'existent pas déjà.
     * 
     * @param indexes
     *           Liste contenant des tableau de code courts de méta Chaque
     *           tableau de codes meta correspond à la composition de l'indexe
     *           composite à créer.
     */
-   private void createIndexesComposite(List<String[]> indexes) {
+   private void createIndexesCompositeIfNotExist(List<String[]> indexes) {
 
       // -- dcfe connect
       connectDfce();
@@ -887,6 +904,7 @@ public final class MajLotServiceImpl implements MajLotService {
       updater.updateToVersion11();
       updater.updateToVersion12();
       updater.updateToVersion13();
+      updater.updateToVersion14();
    }
 
 }

@@ -692,4 +692,29 @@ public class SAECassandraUpdater {
       // On positionne la version à 13
       saeDao.setDatabaseVersion(VERSION_13);
    }
+   
+   /**
+    * Version 14 : 
+	* <li>Création des métadonnées Scribe</li>
+    * <li>Ajout de WS_AJOUT_NOTE|KO dans le référentiel des évenements</li>
+    */
+   public void updateToVersion14() {
+      
+      long version = saeDao.getDatabaseVersion();
+      if (version >= VERSION_14) {
+         LOG.info("La base de données est déja en version " + version);
+         return;
+      }
+      
+      LOG.info("Mise à jour du keyspace SAE en version 14");
+      
+      // -- On se connecte au keyspace
+      saeDao.connectToKeySpace();
+      
+      //-- Ajout des métadonnées
+      refMetaInitService.initialiseRefMeta(saeDao.getKeyspace());
+      
+      // On positionne la version à 14
+      saeDao.setDatabaseVersion(VERSION_14);
+   }
 }
