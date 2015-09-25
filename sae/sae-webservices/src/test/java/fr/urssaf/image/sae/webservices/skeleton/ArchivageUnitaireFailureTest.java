@@ -19,9 +19,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.cirtil.www.saeservice.ArchivageUnitaire;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
+import fr.urssaf.image.sae.droit.exception.InvalidPagmsCombinaisonException;
+import fr.urssaf.image.sae.droit.exception.UnexpectedDomainException;
 import fr.urssaf.image.sae.services.capture.SAECaptureService;
 import fr.urssaf.image.sae.services.exception.capture.CaptureBadEcdeUrlEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureEcdeUrlFileNotFoundEx;
+import fr.urssaf.image.sae.services.exception.capture.CaptureExistingUuuidException;
 import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.EmptyDocumentEx;
 import fr.urssaf.image.sae.services.exception.capture.InvalidValueTypeAndFormatMetadataEx;
@@ -360,6 +363,57 @@ public class ArchivageUnitaireFailureTest {
       } catch (AxisFault axisFault) {
 
          assertAxisFault(axisFault, "CaptureUrlEcdeFichierIntrouvable");
+      }
+   }
+   
+   @Test
+   public void archivageUnitaire_failure_UnexpectedDomainException() {
+      
+      mockThrowable(new UnexpectedDomainException(null));
+      
+      try {
+         
+         callService();
+         
+         Assert.fail(FAIL_MSG);
+         
+      } catch (AxisFault axisFault) {
+         
+         assertAxisFault(axisFault, "CaptureMetadonneesInterdites");
+      }
+   }
+   
+   @Test
+   public void archivageUnitaire_failure_InvalidPagmsCombinaisonException() {
+      
+      mockThrowable(new InvalidPagmsCombinaisonException(null));
+      
+      try {
+         
+         callService();
+         
+         Assert.fail(FAIL_MSG);
+         
+      } catch (AxisFault axisFault) {
+         
+         assertAxisFault(axisFault, "PagmIncompatibles");
+      }
+   }
+   
+   @Test
+   public void archivageUnitaire_failure_CaptureExistingUuuidException() {
+      
+      mockThrowable(new CaptureExistingUuuidException(null));
+      
+      try {
+         
+         callService();
+         
+         Assert.fail(FAIL_MSG);
+         
+      } catch (AxisFault axisFault) {
+         
+         assertAxisFault(axisFault, "CaptureErreurIdGedExistant");
       }
    }
 
