@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.activation.DataHandler;
 
@@ -304,8 +305,13 @@ public final class BeanMapper {
          // ici on exclut toutes les métadonnées techniques
          final StorageTechnicalMetadatas technical = Utils
                .technicalMetadataFinder(storageMetadata.getShortCode());
-
+         
          if (technical.getShortCode().equals(
+               StorageTechnicalMetadatas.IDGED.getShortCode())) {
+            //-- On définit l'uuid du document si fournit dans la liste des métadonnées
+            document.setUuid(UUID.fromString((String)storageMetadata.getValue()));
+            
+         } else if (technical.getShortCode().equals(
                StorageTechnicalMetadatas.TITRE.getShortCode())) {
 
             document.setTitle(String.valueOf(storageMetadata.getValue()));

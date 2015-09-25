@@ -52,7 +52,9 @@ public enum StorageTechnicalMetadatas {
 	// Pas de valeur
 	NOVALUE("", ""),
 	// Note sur le document
-	NOTE("Note","not");
+	NOTE("Note","not"),
+	// Identifiant unique du document
+   IDGED("IdGed", SystemFieldName.SM_UUID.toString());
 	// Le code court de la métadonnée.
 	private String shortCode;
 

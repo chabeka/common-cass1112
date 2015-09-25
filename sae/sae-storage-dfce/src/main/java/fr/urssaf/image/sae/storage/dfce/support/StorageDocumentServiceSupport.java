@@ -104,8 +104,6 @@ public class StorageDocumentServiceSupport {
          Document docDfce = BeanMapper.storageDocumentToDfceDocument(base,
                storageDocument, file);
 
-         docDfce.setUuid(storageDocument.getUuid());
-
          // -- ici on récupère le contenu du fichier.
          DataHandler docContent = storageDocument.getContent();
 
