@@ -16,6 +16,7 @@ import fr.urssaf.image.sae.services.capture.model.CaptureResult;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureBadEcdeUrlEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureEcdeUrlFileNotFoundEx;
+import fr.urssaf.image.sae.services.exception.capture.CaptureExistingUuuidException;
 import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.EmptyDocumentEx;
 import fr.urssaf.image.sae.services.exception.capture.EmptyFileNameEx;
@@ -94,7 +95,8 @@ public interface SAECaptureService {
     *            {@link UnexpectedDomainException}
     * @throws InvalidPagmsCombinaisonException
     *            {@link InvalidPagmsCombinaisonException}
-    * 
+    * @throws CaptureExistingUuuidException
+    *            {@link CaptureExistingUuuidException}
     */
    @PreAuthorize("hasRole('archivage_unitaire')")
    CaptureResult capture(List<UntypedMetadata> metadatas, URI ecdeURL)
@@ -105,7 +107,8 @@ public interface SAECaptureService {
          ReferentialRndException, UnknownCodeRndEx, UnknownHashCodeEx,
          CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx,
          MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile,
-         UnknownFormatException, UnexpectedDomainException, InvalidPagmsCombinaisonException ;
+         UnknownFormatException, UnexpectedDomainException, 
+         InvalidPagmsCombinaisonException, CaptureExistingUuuidException ;
 
    /**
     * 
@@ -161,6 +164,8 @@ public interface SAECaptureService {
     *            {@link UnexpectedDomainException}
     * @throws InvalidPagmsCombinaisonException
     *            {@link InvalidPagmsCombinaisonException}
+    * @throws CaptureExistingUuuidException
+    *            {@link CaptureExistingUuuidException}
     */
    @PreAuthorize("hasRole('archivage_unitaire')")
    CaptureResult captureBinaire(List<UntypedMetadata> metadatas,
@@ -171,7 +176,8 @@ public interface SAECaptureService {
          NotArchivableMetadataEx, ReferentialRndException, UnknownCodeRndEx,
          UnknownHashCodeEx, EmptyFileNameEx, MetadataValueNotInDictionaryEx,
          UnknownFormatException, ValidationExceptionInvalidFile,
-         UnexpectedDomainException, InvalidPagmsCombinaisonException ;
+         UnexpectedDomainException, InvalidPagmsCombinaisonException,
+         CaptureExistingUuuidException;
 
    /**
     * 
@@ -222,6 +228,8 @@ public interface SAECaptureService {
     *            {@link UnexpectedDomainException}
     * @throws InvalidPagmsCombinaisonException
     *            {@link InvalidPagmsCombinaisonException}
+    * @throws CaptureExistingUuuidException
+    *            {@link CaptureExistingUuuidException}
     */
    @PreAuthorize("hasRole('archivage_unitaire')")
    CaptureResult captureFichier(List<UntypedMetadata> metadatas, String path)
@@ -232,6 +240,7 @@ public interface SAECaptureService {
          EmptyDocumentEx, RequiredArchivableMetadataEx, UnknownHashCodeEx,
          FileNotFoundException, MetadataValueNotInDictionaryEx,
          ValidationExceptionInvalidFile, UnknownFormatException, 
-         UnexpectedDomainException, InvalidPagmsCombinaisonException;
+         UnexpectedDomainException, InvalidPagmsCombinaisonException,
+         CaptureExistingUuuidException;
 
 }

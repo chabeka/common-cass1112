@@ -25,6 +25,7 @@ import fr.urssaf.image.sae.services.capture.model.CaptureResult;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureBadEcdeUrlEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureEcdeUrlFileNotFoundEx;
+import fr.urssaf.image.sae.services.exception.capture.CaptureExistingUuuidException;
 import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.EmptyDocumentEx;
 import fr.urssaf.image.sae.services.exception.capture.InvalidValueTypeAndFormatMetadataEx;
@@ -95,7 +96,8 @@ public class SAECaptureServiceValidationTest {
          NotArchivableMetadataEx, ReferentialRndException, UnknownCodeRndEx,
          UnknownHashCodeEx, CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx,
          MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile,
-         UnknownFormatException, UnexpectedDomainException, InvalidPagmsCombinaisonException {
+         UnknownFormatException, UnexpectedDomainException, 
+         InvalidPagmsCombinaisonException, CaptureExistingUuuidException {
 
       try {
          service.capture(metadatas, ecdeURL);
@@ -114,7 +116,8 @@ public class SAECaptureServiceValidationTest {
          NotArchivableMetadataEx, ReferentialRndException, UnknownCodeRndEx,
          UnknownHashCodeEx, CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx,
          MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile,
-         UnknownFormatException, UnexpectedDomainException, InvalidPagmsCombinaisonException {
+         UnknownFormatException, UnexpectedDomainException, 
+         InvalidPagmsCombinaisonException, CaptureExistingUuuidException {
 
       assertCapture_failure_metadatas(service, null);
       assertCapture_failure_metadatas(service, new ArrayList<UntypedMetadata>());
@@ -130,7 +133,8 @@ public class SAECaptureServiceValidationTest {
          ReferentialRndException, UnknownCodeRndEx, UnknownHashCodeEx,
          CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx,
          MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile,
-         UnknownFormatException, UnexpectedDomainException, InvalidPagmsCombinaisonException {
+         UnknownFormatException, UnexpectedDomainException, 
+         InvalidPagmsCombinaisonException, CaptureExistingUuuidException {
 
       try {
 
@@ -153,7 +157,8 @@ public class SAECaptureServiceValidationTest {
          NotArchivableMetadataEx, ReferentialRndException, UnknownCodeRndEx,
          UnknownHashCodeEx, CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx,
          MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile,
-         UnknownFormatException, UnexpectedDomainException, InvalidPagmsCombinaisonException {
+         UnknownFormatException, UnexpectedDomainException, 
+         InvalidPagmsCombinaisonException, CaptureExistingUuuidException {
 
       try {
 

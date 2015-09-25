@@ -267,7 +267,13 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
             StorageTechnicalMetadatas.DATE_ARCHIVE_GNT.getShortCode(),
             dateArchivage);
       document.getMetadatas().add(dateArchivageGNT);
-
+      
+      //-- Ajout métadonnée IdGed (UUID), afin de conserver l'UUID 
+      // du document origal en GNS. Cf: BeanMapper.storageDocumentToDfceDocument()
+      String code  = StorageTechnicalMetadatas.IDGED.getShortCode();
+      String value = document.getUuid().toString();
+      document.getMetadatas().add(new StorageMetadata(code, value));
+      
       // -- Suppression des métadonnées vides (impératif api dfce)
       // Supprime aussi la métadonnée DateArchivage qui est non transférable
       List<StorageMetadata> metadata = document.getMetadatas();

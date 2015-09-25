@@ -62,6 +62,7 @@ import fr.urssaf.image.sae.services.exception.SAEDocumentNoteException;
 import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureBadEcdeUrlEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureEcdeUrlFileNotFoundEx;
+import fr.urssaf.image.sae.services.exception.capture.CaptureExistingUuuidException;
 import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.EmptyDocumentEx;
 import fr.urssaf.image.sae.services.exception.capture.InvalidValueTypeAndFormatMetadataEx;
@@ -217,7 +218,7 @@ public class SAENoteServiceImplTest {
          UnknownFormatException, UnexpectedDomainException,
          InvalidPagmsCombinaisonException, SAEDocumentNoteException,
          SAEConsultationServiceException, UnknownDesiredMetadataEx,
-         MetaDataUnauthorizedToConsultEx, ArchiveInexistanteEx {
+         MetaDataUnauthorizedToConsultEx, ArchiveInexistanteEx, CaptureExistingUuuidException {
 
       ecde = ecdeTestTools
             .buildEcdeTestDocument("attestation_consultation.pdf");
@@ -337,7 +338,7 @@ public class SAENoteServiceImplTest {
          UnknownFormatException, UnexpectedDomainException,
          InvalidPagmsCombinaisonException, SAEDocumentNoteException,
          SAEConsultationServiceException, UnknownDesiredMetadataEx,
-         MetaDataUnauthorizedToConsultEx, ArchiveInexistanteEx {
+         MetaDataUnauthorizedToConsultEx, ArchiveInexistanteEx, CaptureExistingUuuidException {
 
       ecde = ecdeTestTools
             .buildEcdeTestDocument("attestation_consultation.pdf");
@@ -444,7 +445,7 @@ public class SAENoteServiceImplTest {
          UnexpectedDomainException, InvalidPagmsCombinaisonException,
          SAEDocumentNoteException, SAEConsultationServiceException,
          UnknownDesiredMetadataEx, MetaDataUnauthorizedToConsultEx,
-         ArchiveInexistanteEx {
+         ArchiveInexistanteEx, CaptureExistingUuuidException {
 
       ecde = ecdeTestTools
             .buildEcdeTestDocument("attestation_consultation.pdf");
@@ -542,7 +543,7 @@ public class SAENoteServiceImplTest {
          UnexpectedDomainException, InvalidPagmsCombinaisonException,
          SAEDocumentNoteException, SAEConsultationServiceException,
          UnknownDesiredMetadataEx, MetaDataUnauthorizedToConsultEx,
-         ArchiveInexistanteEx {
+         ArchiveInexistanteEx, CaptureExistingUuuidException {
 
       VIContenuExtrait viExtrait = new VIContenuExtrait();
       viExtrait.setCodeAppli("TESTS_UNITAIRES");

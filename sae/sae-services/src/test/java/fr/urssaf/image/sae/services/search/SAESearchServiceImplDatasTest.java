@@ -57,6 +57,7 @@ import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureBadEcdeUrlEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureEcdeUrlFileNotFoundEx;
+import fr.urssaf.image.sae.services.exception.capture.CaptureExistingUuuidException;
 import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.EmptyDocumentEx;
 import fr.urssaf.image.sae.services.exception.capture.InvalidValueTypeAndFormatMetadataEx;
@@ -117,6 +118,7 @@ public class SAESearchServiceImplDatasTest {
    private CassandraServerBean bean;
 
    private EcdeTestDocument ecde;
+
 
    @Before
    public void createCaptureContexte() throws Exception {
@@ -209,7 +211,8 @@ public class SAESearchServiceImplDatasTest {
          CaptureEcdeUrlFileNotFoundEx, IOException,
          MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile,
          UnknownFormatException, SuppressionException, ArchiveInexistanteEx, 
-         UnexpectedDomainException, InvalidPagmsCombinaisonException {
+         UnexpectedDomainException, InvalidPagmsCombinaisonException, 
+         CaptureExistingUuuidException {
 
       // insertion d'un document
       ecde = ecdeTestTools
@@ -270,6 +273,84 @@ public class SAESearchServiceImplDatasTest {
       // supprime le fichier attestation_consultation.pdf sur le repertoire de l'ecde
       fileDoc.delete();
    }
+   
+   /**
+    * Cas de test: Appel du service de recherche avec une requête Lucene<br>
+    * contenant uniquement ll'identifiantged d'un document<br>
+    * Résultat attendu: La recherche ramène un unique document
+    */
+   @Test
+   public final void searchByIdGedSuccess() throws SAESearchServiceEx,
+      MetaDataUnauthorizedToSearchEx, MetaDataUnauthorizedToConsultEx,
+      UnknownDesiredMetadataEx, UnknownLuceneMetadataEx, SyntaxLuceneEx,
+      SAECaptureServiceEx, ReferentialRndException, UnknownCodeRndEx,
+      RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx,
+      UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
+      EmptyDocumentEx, RequiredArchivableMetadataEx,
+      NotArchivableMetadataEx, UnknownHashCodeEx, CaptureBadEcdeUrlEx,
+      CaptureEcdeUrlFileNotFoundEx, IOException,
+      MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile,
+      UnknownFormatException, SuppressionException, ArchiveInexistanteEx, 
+      UnexpectedDomainException, InvalidPagmsCombinaisonException, 
+      CaptureExistingUuuidException {
+      
+      // insertion d'un document
+      ecde = ecdeTestTools
+      .buildEcdeTestDocument("attestation_consultation.pdf");
+      
+      File repertoireEcde = ecde.getRepEcdeDocuments();
+      URI urlEcdeDocument = ecde.getUrlEcdeDocument();
+      
+      // copie le fichier attestation_consultation.pdf
+      // dans le repertoire de l'ecde
+      File fileDoc = new File(repertoireEcde, "attestation_consultation.pdf");
+      ClassPathResource resDoc = new ClassPathResource(
+      "doc/attestation_consultation.pdf");
+      FileOutputStream fos = new FileOutputStream(fileDoc);
+      IOUtils.copy(resDoc.getInputStream(), fos);
+      resDoc.getInputStream().close();
+      fos.close();
+      
+      File srcFile = new File(
+      "src/test/resources/doc/attestation_consultation.pdf");
+      
+      List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
+      
+      String titreUnique = "Titre " + UUID.randomUUID().toString();
+      
+      // liste des métadonnées obligatoires
+      metadatas.add(new UntypedMetadata("ApplicationProductrice", "ADELAIDE"));
+      metadatas.add(new UntypedMetadata("CodeOrganismeProprietaire", "CER69"));
+      metadatas.add(new UntypedMetadata("CodeOrganismeGestionnaire", "UR750"));
+      metadatas.add(new UntypedMetadata("FormatFichier", "fmt/354"));
+      metadatas.add(new UntypedMetadata("NbPages", "2"));
+      metadatas.add(new UntypedMetadata("DateCreation", "2012-01-01"));
+      metadatas.add(new UntypedMetadata("TypeHash", "SHA-1"));
+      String hash = DigestUtils.shaHex(new FileInputStream(srcFile));
+      metadatas.add(new UntypedMetadata("Hash", StringUtils.upperCase(hash)));
+      metadatas.add(new UntypedMetadata("CodeRND", "1.2.1.1.1"));
+      metadatas.add(new UntypedMetadata("Titre", titreUnique));
+      metadatas.add(new UntypedMetadata("Siret", "12345678901234"));
+      
+      // liste des métadonnées non obligatoires
+      metadatas.add(new UntypedMetadata("DateReception", "1999-11-25"));
+      metadatas.add(new UntypedMetadata("DateDebutConservation", "2011-09-02"));
+      
+      uuid = service.capture(metadatas, urlEcdeDocument).getIdDoc();
+      Document doc = testProvider.searchDocument(uuid);
+      
+      Assert.assertNotNull("l'UUID '" + uuid + "' doit exister dans le SAE", doc);
+      
+      List<UntypedDocument> documents = 
+         saeSearchService.search("IdGed:" + uuid, new ArrayList<String>());
+        
+      Assert.assertEquals("1 document attendu", 1, documents.size());
+      
+      serviceSuppression.suppression(uuid);
+      
+      // supprime le fichier attestation_consultation.pdf sur le repertoire de l'ecde
+      fileDoc.delete();
+   }
 
    /**
     * Cas de test: Appel du service de recherche avec une requête Lucene<br>
@@ -309,7 +390,8 @@ public class SAESearchServiceImplDatasTest {
          MetaDataUnauthorizedToConsultEx, UnknownLuceneMetadataEx,
          SAESearchServiceEx, SyntaxLuceneEx, UnknownDesiredMetadataEx,
          UnknownFiltresMetadataEx, SuppressionException, ArchiveInexistanteEx,
-         UnexpectedDomainException, InvalidPagmsCombinaisonException {
+         UnexpectedDomainException, InvalidPagmsCombinaisonException, 
+         CaptureExistingUuuidException {
 
       // insertion d'un document
       ecde = ecdeTestTools

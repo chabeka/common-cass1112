@@ -34,6 +34,7 @@ import fr.urssaf.image.sae.rnd.modele.TypeDocument;
 import fr.urssaf.image.sae.services.capture.model.CaptureResult;
 import fr.urssaf.image.sae.services.document.commons.SAECommonCaptureService;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
+import fr.urssaf.image.sae.services.exception.capture.CaptureExistingUuuidException;
 import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.EmptyDocumentEx;
 import fr.urssaf.image.sae.services.exception.capture.InvalidValueTypeAndFormatMetadataEx;
@@ -143,6 +144,7 @@ public class SAECommonCaptureServiceImplTest {
     * .
     * @throws InvalidPagmsCombinaisonException 
     * @throws UnexpectedDomainException 
+    * @throws CaptureExistingUuuidException 
     */
    @Test
    public final void buildStorageDocumentForCapture()
@@ -155,7 +157,8 @@ public class SAECommonCaptureServiceImplTest {
          InvalidSAETypeException, UnknownHashCodeEx, ReferentialRndException,
          UnknownCodeRndEx, MetadataValueNotInDictionaryEx,
          UnknownFormatException, ValidationExceptionInvalidFile, 
-         UnexpectedDomainException, InvalidPagmsCombinaisonException {
+         UnexpectedDomainException, InvalidPagmsCombinaisonException, 
+         CaptureExistingUuuidException {
 
       UntypedDocument untypedDocument = MockFactoryBean
             .getUntypedDocumentMockData();

@@ -50,6 +50,7 @@ import fr.urssaf.image.sae.services.exception.ArchiveInexistanteEx;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureBadEcdeUrlEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureEcdeUrlFileNotFoundEx;
+import fr.urssaf.image.sae.services.exception.capture.CaptureExistingUuuidException;
 import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.EmptyDocumentEx;
 import fr.urssaf.image.sae.services.exception.capture.InvalidValueTypeAndFormatMetadataEx;
@@ -274,6 +275,7 @@ public class SAEModificationServiceTest {
     * jour du code RND donne une date de fin de conservation dans le futur.
     * @throws InvalidPagmsCombinaisonException 
     * @throws UnexpectedDomainException 
+    * @throws CaptureExistingUuuidException 
     * 
     */
    @Test
@@ -286,7 +288,8 @@ public class SAEModificationServiceTest {
          MetadataValueNotInDictionaryEx, NotModifiableMetadataEx,
          ModificationException, ArchiveInexistanteEx,
          ValidationExceptionInvalidFile, UnknownFormatException, 
-         UnexpectedDomainException, InvalidPagmsCombinaisonException {
+         UnexpectedDomainException, InvalidPagmsCombinaisonException, 
+         CaptureExistingUuuidException {
 
       ecde = ecdeTestTools
             .buildEcdeTestDocument("attestation_consultation.pdf");
