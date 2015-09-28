@@ -274,7 +274,7 @@ public class SearchingServiceImpl extends AbstractServices implements
                LOG.debug("{} - Récupération des droits", prefixeTrc);
                AuthenticationToken token = (AuthenticationToken) AuthenticationContext
                      .getAuthenticationToken();
-               List<SaePrmd> saePrmds = token.getSaeDroits().get("recherche");
+               List<SaePrmd> saePrmds = token.getSaeDroits().get("recherche_iterateur");
                LOG.debug("{} - Vérification des droits", prefixeTrc);
                boolean isPermitted = prmdService.isPermitted(untypedDocument
                      .getUMetadatas(), saePrmds);

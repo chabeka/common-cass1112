@@ -130,7 +130,7 @@ public interface SAESearchService {
     * @throws UnknownFiltresMetadataEx
     *            Erreur si métas inconnues dans les filtres
     */
-   @PreAuthorize("hasRole('recherche')")
+   @PreAuthorize("hasRole('recherche_iterateur')")
    PaginatedUntypedDocuments searchPaginated(
          List<UntypedMetadata> fixedMetadatas,
          UntypedRangeMetadata varyingMetadata, List<AbstractMetadata> filters,
