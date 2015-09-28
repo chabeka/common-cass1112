@@ -518,6 +518,16 @@ public class InsertionDonnees {
    }
 
    /**
+    * Ajout de l'action unitaire ajoutNote
+    */
+   public void addActionUnitaireRechercheParIterateur() {
+      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+            keyspace, "DroitActionUnitaire", StringSerializer.get(),
+            StringSerializer.get());
+      addActionUnitaire("recherche_iterateur", "Recherche par iterateur", cfTmpl);
+   }
+   
+   /**
     * Référentiel des événements en V3 Ajout de l'évenement ORDO_ECDE_DISPO|KO
     */
    public void addReferentielEvenementV3() {

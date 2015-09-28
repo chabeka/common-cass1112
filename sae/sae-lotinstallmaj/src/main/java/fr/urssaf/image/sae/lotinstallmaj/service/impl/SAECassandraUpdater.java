@@ -635,14 +635,14 @@ public class SAECassandraUpdater {
       // -- Enrichissement du référentiel des événements
       InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
       donnees.addReferentielEvenementV6();
-      
+
       // On positionne la version à 11
       saeDao.setDatabaseVersion(VERSION_11);
    }
-   
+
    /**
-    * Version 12 : <li>Création de la métadonnée Note</li>
-    * <li>Ajout de WS_AJOUT_NOTE|KO dans le référentiel des évenements</li>
+    * Version 12 : <li>Création de la métadonnée Note</li> <li>Ajout de
+    * WS_AJOUT_NOTE|KO dans le référentiel des évenements</li>
     */
    public void updateToVersion12() {
 
@@ -660,10 +660,10 @@ public class SAECassandraUpdater {
       // -- Enrichissement du référentiel des événements
       InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
       donnees.addReferentielEvenementV7();
-      
+
       // Ajout de l'action unitaire ajoutNote
       donnees.addActionUnitaireNote();
-      
+
       // Ajout de la métadonnée Note
       refMetaInitService.initialiseRefMeta(saeDao.getKeyspace());
 
@@ -693,28 +693,31 @@ public class SAECassandraUpdater {
       // On positionne la version à 13
       saeDao.setDatabaseVersion(VERSION_13);
    }
-   
+
    /**
-    * Version 14 : 
-	* <li>Création des métadonnées Scribe</li>
-    * <li>Ajout de WS_AJOUT_NOTE|KO dans le référentiel des évenements</li>
+    * Version 14 : <li>Création des métadonnées Scribe</li> <li>Création de
+    * l'action unitaire recherche_iterateur</li>
     */
    public void updateToVersion14() {
-      
+
       long version = saeDao.getDatabaseVersion();
       if (version >= VERSION_14) {
          LOG.info("La base de données est déja en version " + version);
          return;
       }
-      
+
       LOG.info("Mise à jour du keyspace SAE en version 14");
-      
+
       // -- On se connecte au keyspace
       saeDao.connectToKeySpace();
-      
-      //-- Ajout des métadonnées
+
+      // -- Ajout des métadonnées
       refMetaInitService.initialiseRefMeta(saeDao.getKeyspace());
-      
+
+      // Ajout de l'action unitaire recherche_iterateur
+      InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
+      donnees.addActionUnitaireRechercheParIterateur();
+
       // On positionne la version à 14
       saeDao.setDatabaseVersion(VERSION_14);
    }

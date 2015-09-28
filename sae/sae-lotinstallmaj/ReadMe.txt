@@ -284,5 +284,5 @@ sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logbac
 // 11) Lot 151200SAE
 // ------------------------------------------
 
-Met la base Cassandra du SAE en version 14 (Ajout de nouvelles métadonnées scribe)
+Met la base Cassandra du SAE en version 14 (Ajout de nouvelles métadonnées scribe / Ajout action unitaire recherche_iterateur)
 sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_DFCE_151200
