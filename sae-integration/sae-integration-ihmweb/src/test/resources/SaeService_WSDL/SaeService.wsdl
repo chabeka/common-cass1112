@@ -178,6 +178,24 @@
          documentaire sur le SAE (par iterateur)</wsdl:documentation>
       <wsdl:part name="output" element="sae:rechercheParIterateurResponse" />
    </wsdl:message>
+   
+   <wsdl:message name="ajoutNoteRequestMessage">
+      <wsdl:documentation>
+         Message contenant la demande d’ajout d’une
+         note sur un document
+      </wsdl:documentation>
+      <wsdl:part name="input" element="sae:ajoutNote" />
+   </wsdl:message>
+   <wsdl:message name="ajoutNoteResponseMessage">
+      <wsdl:documentation>
+         Message contenant le résultat de la création
+         d’une note
+   </wsdl:documentation>
+      <wsdl:part name="output" element="sae:ajoutNoteResponse" />
+   </wsdl:message>
+   
+   
+   
    <wsdl:portType name="SaeServicePortType">
       <wsdl:operation name="Ping" parameterOrder="input">
          <wsdl:documentation>Opération de test de la disponibilité du
@@ -289,6 +307,13 @@
          <wsdl:input message="tns:rechercheParIterateurRequestMessage" />
          <wsdl:output message="tns:rechercheParIterateurResponseMessage" />
       </wsdl:operation>
+	  <wsdl:operation name="ajoutNote" parameterOrder="input">
+         <wsdl:documentation>Opération d’ajout d’une note à un document
+         </wsdl:documentation>
+         <wsdl:input message="tns:ajoutNoteRequestMessage" />
+         <wsdl:output message="tns:ajoutNoteResponseMessage" />
+      </wsdl:operation>
+	  
    </wsdl:portType>
    <wsdl:binding name="SaeServiceSoapBinding" type="sae:SaeServicePortType">
       <soap:binding style="document"
@@ -468,7 +493,17 @@
             <soap:body use="literal" />
          </wsdl:output>
       </wsdl:operation>
-
+      <wsdl:operation name="ajoutNote">
+         <wsdl:documentation>Service d’ajout de note à un document
+         </wsdl:documentation>
+         <soap:operation soapAction="ajoutNote" />
+         <wsdl:input>
+            <soap:body use="literal" />
+         </wsdl:input>
+         <wsdl:output>
+            <soap:body use="literal" />
+         </wsdl:output>
+      </wsdl:operation>
    </wsdl:binding>
    <wsdl:service name="SaeService">
       <wsdl:port name="SaeServicePort" binding="tns:SaeServiceSoapBinding">

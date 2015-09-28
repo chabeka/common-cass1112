@@ -47,6 +47,22 @@ public abstract class SaeServiceCallbackHandler{
 
         
            /**
+            * auto generated Axis2 call back method for ajoutNote method
+            * override this method for handling normal response from ajoutNote operation
+            */
+           public void receiveResultajoutNote(
+                    fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.AjoutNoteResponse result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from ajoutNote operation
+           */
+            public void receiveErrorajoutNote(java.lang.Exception e) {
+            }
+                
+           /**
             * auto generated Axis2 call back method for archivageMasseAvecHash method
             * override this method for handling normal response from archivageMasseAvecHash operation
             */

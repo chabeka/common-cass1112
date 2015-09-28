@@ -17,6 +17,8 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeRangeValeur;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeRangeValeurList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeur;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeurList;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.AjoutNote;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.AjoutNoteRequestType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ArchivageMasse;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ArchivageMasseAvecHash;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ArchivageMasseAvecHashRequestType;
@@ -45,6 +47,7 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.M
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.MetadonneeValeurType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.Modification;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ModificationRequestType;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.NoteTxtType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RangeMetadonneeType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.Recherche;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheNbRes;
@@ -848,5 +851,49 @@ public final class SaeServiceObjectFactory {
       return transfert;
 
    }
+   
+   /**
+    * Construit un objet "Note" pour la couche WebService
+    * 
+    * @param note
+    *           La note sous la forme d'une chaîne de caractères
+    * @return l'objet pour la couche WebService
+    */
+   public static NoteTxtType buildNote(String note) {
 
+      NoteTxtType noteType = new NoteTxtType();
+
+      noteType.setNoteTxtType(note);
+
+      return noteType;
+
+   }
+
+   /**
+    * Construit un objet de requête pour le service web "ajoutNote"
+    * 
+    * @param idArchivage
+    *           l'identifiant d'archivage
+    * @param contenuNote
+    *           le texte de la note
+    * @return l'objet pour la couche WebService
+    */
+   public static AjoutNote buildAjoutNoteRequest(String idArchivage,
+         String contenuNote) {
+
+      AjoutNote ajoutnote = new AjoutNote();
+
+      //-- UUID & NOTE
+      UuidType uuid = SaeServiceObjectFactory.buildUuid(idArchivage);
+      NoteTxtType texteNote = SaeServiceObjectFactory.buildNote(contenuNote);
+      
+      AjoutNoteRequestType ajoutnoteReqType = new AjoutNoteRequestType();
+      ajoutnoteReqType.setUuid(uuid);
+      ajoutnoteReqType.setNote(texteNote);
+      
+      ajoutnote.setAjoutNote(ajoutnoteReqType);
+
+      return ajoutnote;
+   }
+   
 }

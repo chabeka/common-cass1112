@@ -407,4 +407,21 @@
       <message>Les Pagms présents dans le VI sont incompatibles : plusieurs domaines différents trouvés.</message>
    </SoapFault>
       
+   <SoapFault>
+      <id>sae_PagmIncompatibles</id>
+      <namespace>urn:sae:faultcodes</namespace>
+      <prefixe>sae</prefixe>
+      <localPart>PagmIncompatibles</localPart>
+      <message>Les Pagms présents dans le VI sont incompatibles : plusieurs domaines différents trouvés.</message>
+   </SoapFault>
+      
+      
+   <SoapFault>
+      <id>sae_ErreurInterneAjoutNote</id>
+      <namespace>urn:sae:faultcodes</namespace>
+      <prefixe>sae</prefixe>
+      <localPart>ErreurInterneAjoutNote</localPart>
+      <message>Une erreur s'est produite lors de l'ajout d'une note</message>
+   </SoapFault>
+            
 </SoapFaults>

@@ -18,6 +18,7 @@ import fr.urssaf.image.sae.integration.ihmweb.service.ecde.EcdeService;
 import fr.urssaf.image.sae.integration.ihmweb.service.referentiels.ReferentielCasTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.referentiels.ReferentielMetadonneesService;
 import fr.urssaf.image.sae.integration.ihmweb.service.referentiels.ReferentielSoapFaultService;
+import fr.urssaf.image.sae.integration.ihmweb.service.tests.AjoutNoteTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.CaptureMasseTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.CaptureUnitaireTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.ConsultationAffichableTestService;
@@ -98,6 +99,8 @@ public abstract class AbstractTestWsController<T extends TestWsParentFormulaire>
    @Autowired
    private EcdeTests ecdeTests;
 
+   @Autowired
+   private AjoutNoteTestService ajoutNoteTestServ;
 
    /**
     * Service utilitaires pour les tests du service web SaeService
@@ -238,6 +241,17 @@ public abstract class AbstractTestWsController<T extends TestWsParentFormulaire>
    public final RechercheParIterateurTestService getRechercheParIterateurTestService() {
       return this.rechParIterateurTestServ;
    }
+   
+   /**
+    * Service des tests de l'opération "ajoutNote" du service web SaeService
+    * 
+    * @return Service des tests de l'opération "ajoutNote" du service web
+    *         SaeService
+    */
+   public final AjoutNoteTestService getAjoutNoteTestService() {
+      return this.ajoutNoteTestServ;
+   }
+
    
    /**
     * Renvoie le numéro du test

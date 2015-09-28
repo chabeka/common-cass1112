@@ -1006,6 +1006,51 @@
       </xsd:sequence>
    </xsd:complexType>
 
+   
+   <xsd:simpleType name="noteTxtType">
+      <xsd:annotation>
+         <xsd:documentation>
+            Contenu d’une note de document
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:restriction base="xsd:string">
+         <xsd:minLength value="1" />
+      </xsd:restriction>
+   </xsd:simpleType>
+
+   <xsd:complexType name="ajoutNoteRequestType">
+      <xsd:sequence>
+         <xsd:annotation>
+            <xsd:documentation>
+               Paramètre d'entrée de l'opération
+               ajoutNote
+            </xsd:documentation>
+         </xsd:annotation>
+         <xsd:element name="note" type="sae:noteTxtType">
+            <xsd:annotation>
+               <xsd:documentation>Le contenu de la note
+               </xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         <xsd:element name="uuid" type="sae:uuidType">
+            <xsd:annotation>
+               <xsd:documentation>
+                  Identifiant unique du document à
+                  annoter
+               </xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+      </xsd:sequence>
+   </xsd:complexType>
+
+   <xsd:complexType name="ajoutNoteResponseType">
+      <xsd:annotation>
+         <xsd:documentation>
+            Retour de l'opération 'ajoutNote'.
+         </xsd:documentation>
+      </xsd:annotation>
+   </xsd:complexType>
+
 
    <xsd:element name="archivageUnitaire" type="sae:archivageUnitaireRequestType" />
    <xsd:element name="archivageUnitaireResponse" type="sae:archivageUnitaireResponseType" />
@@ -1037,5 +1082,6 @@
    <xsd:element name="rechercheNbResResponse" type="sae:rechercheNbResResponseType" />
    <xsd:element name="rechercheParIterateur" type="sae:rechercheParIterateurRequestType" />
    <xsd:element name="rechercheParIterateurResponse" type="sae:rechercheParIterateurResponseType" />
-
+   <xsd:element name="ajoutNote" type="sae:ajoutNoteRequestType" />
+   <xsd:element name="ajoutNoteResponse" type="sae:ajoutNoteResponseType" />
 </xsd:schema>

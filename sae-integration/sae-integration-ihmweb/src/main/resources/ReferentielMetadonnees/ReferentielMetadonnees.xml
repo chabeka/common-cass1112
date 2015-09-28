@@ -768,5 +768,17 @@
         <obligatoireAuStockage>false</obligatoireAuStockage>
         <typeDfce>String</typeDfce>
     </Metadonnee>
+    <Metadonnee>
+        <codeLong>Note</codeLong>
+        <codeCourt>note</codeCourt>
+        <archivablePossible>true</archivablePossible>
+        <archivableObligatoire>false</archivableObligatoire>
+        <consulteeParDefaut>false</consulteeParDefaut>
+        <consultable>true</consultable>
+        <critereRecherche>false</critereRecherche>
+        <client>true</client>
+        <obligatoireAuStockage>false</obligatoireAuStockage>
+        <typeDfce>String</typeDfce>
+    </Metadonnee>
 
 </ReferentielMetadonnees>

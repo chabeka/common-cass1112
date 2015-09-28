@@ -989,7 +989,74 @@
 
    </Categorie>
 
+   <!-- ======================================================== -->
+   <!-- Notes -->
+   <!-- ======================================================== -->
 
+   <Categorie>
+      <Nom>Notes</Nom>
+      <Id>15</Id>
+      <CasTests>
+
+         <CasTest>
+            <id>2500</id>
+            <code>2500-Note-TestLibre</code>
+            <description>
+               Test libre de la gestion des notes => pas de résultat attendu 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 2500-Note-TestLibre"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>2501</id>
+            <code>2501-Note-OK-Standard</code>
+            <description>
+               Test standard de la gestion des notes  
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 2501-Note-OK-Standard"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>2502</id>
+            <code>2502-Note-Ajout-OK</code>
+            <description>
+               Test d'ajout d’une note à partir d’un uuid de document
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"2502-Note-Ajout-OK"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>2503</id>
+            <code>2503-Note-Ajout-En-Plus-OK</code>
+            <description>
+               Test d’ajout d’une note à partir d’un uuid pour un document qui a déjà une note
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 2503-Note-Ajout-En-Plus-OK"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>2504</id>
+            <code>2504-Note-Transfert-Une-Note-OK</code>
+            <description>
+               Test le transfert de la note d’un document de GNT vers GNS
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 2504-Note-Transfert-Une-Note-OK"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>2505</id>
+            <code>2505-Note-Transfert-Plusieurs-Notes-OK</code>
+            <description>
+               Test le transfert de plusieurs notes d’un document de GNT vers GNS
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 2505-Note-Transfert-Plusieurs-Notes-OK"</luceneExemple>
+         </CasTest>
+         
+      </CasTests>
+   </Categorie>
+   
+      
    <!-- ======================================================== -->
    <!-- Recherche -->
    <!-- ======================================================== -->

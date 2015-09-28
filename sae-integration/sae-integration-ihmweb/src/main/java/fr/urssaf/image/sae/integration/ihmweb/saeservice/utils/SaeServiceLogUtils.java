@@ -20,6 +20,7 @@ import org.springframework.util.CollectionUtils;
 
 import fr.urssaf.image.sae.integration.ihmweb.constantes.SaeIntegrationConstantes;
 import fr.urssaf.image.sae.integration.ihmweb.exception.IntegrationRuntimeException;
+import fr.urssaf.image.sae.integration.ihmweb.formulaire.AjoutNoteFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureUnitaireFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ConsultationAffichableFormulaire;
@@ -97,12 +98,14 @@ public final class SaeServiceLogUtils {
             for (MetadonneeType metaType : tabMetaTypes) {
                code = metaType.getCode().getMetadonneeCodeType();
                valeur = metaType.getValeur().getMetadonneeValeurType();
-               if (valeur.length() > 50) {
-                  listeMetas.add(code + "="
-                        + StringUtils.substring(valeur, 0, 50) + "...");
-               } else {
-                  listeMetas.add(code + "=" + valeur);
-               }
+               //CMO : Retrait de la limite de taille des métadonnées
+               listeMetas.add(code + "=" + valeur);
+               //if (valeur.length() > 50) {
+               //   listeMetas.add(code + "="
+               //         + StringUtils.substring(valeur, 0, 50) + "...");
+               //} else {
+               //   listeMetas.add(code + "=" + valeur);
+               //}
 
             }
             Collections.sort(listeMetas);
@@ -782,5 +785,19 @@ public final class SaeServiceLogUtils {
       log.appendLogLn("Id du document : " + formulaire.getIdDocument());
       log.appendLogNewLine();
    }
-
+   
+   /**
+    * Ajoute, dans le log du résultat du test, les paramètres d'appel à
+    * l'opération "ajoutNote"
+    * 
+    * @param log
+    *           le log
+    * @param formulaire
+    *           l'objet formulaire contenant les propriétés d'appel
+    */
+   public static void logAppelAjoutNote(ResultatTestLog log, AjoutNoteFormulaire formulaire) {
+      log.appendLogLn("Appel de l'opération ajoutNote");
+      log.appendLogLn("Id du document : " + formulaire.getIdArchivage());
+      log.appendLogNewLine();
+   }
 }
