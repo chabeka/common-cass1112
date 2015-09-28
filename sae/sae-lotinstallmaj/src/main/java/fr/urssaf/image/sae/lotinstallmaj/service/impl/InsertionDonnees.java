@@ -188,6 +188,11 @@ public class InsertionDonnees {
       cfTmpl.update(updater);
    }
 
+   private void deleteActionUnitaire(String identifiant,
+         ColumnFamilyTemplate<String, String> cfTmpl) {
+      cfTmpl.deleteRow(identifiant);
+   }
+
    /**
     * Ajoute les paramètres nécéssaires à la maj du RND
     */
@@ -518,15 +523,27 @@ public class InsertionDonnees {
    }
 
    /**
-    * Ajout de l'action unitaire ajoutNote
+    * Ajout de l'action unitaire recherche_iterateur
     */
    public void addActionUnitaireRechercheParIterateur() {
       ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
             keyspace, "DroitActionUnitaire", StringSerializer.get(),
             StringSerializer.get());
-      addActionUnitaire("recherche_iterateur", "Recherche par iterateur", cfTmpl);
+      addActionUnitaire("recherche_iterateur", "Recherche par iterateur",
+            cfTmpl);
    }
-   
+
+   /**
+    * On remplace l'action unitaire ajoutNote par ajout_note afin d'être
+    * homogène
+    */
+   public void modifyActionUnitaireAjoutNote() {
+      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+            keyspace, "DroitActionUnitaire", StringSerializer.get(),
+            StringSerializer.get());
+      deleteActionUnitaire("ajoutNote", cfTmpl);
+   }
+
    /**
     * Référentiel des événements en V3 Ajout de l'évenement ORDO_ECDE_DISPO|KO
     */

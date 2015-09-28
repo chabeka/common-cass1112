@@ -30,7 +30,7 @@ public interface SAENoteService {
     * @throws ArchiveInexistanteEx
     *            La note ne peut pas être ajoutée car le document n'existe pas
     */
-   @PreAuthorize("hasRole('ajoutNote')")
+   @PreAuthorize("hasRole('ajout_note')")
    void addDocumentNote(UUID docUuid, String contenu, String login)
          throws SAEDocumentNoteException, ArchiveInexistanteEx;
 

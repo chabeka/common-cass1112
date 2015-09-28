@@ -116,7 +116,7 @@ public class SAENoteServiceImpl extends AbstractSAEServices implements
          LOG.debug("{} - Récupération des droits", prefixeTrc);
          AuthenticationToken token = (AuthenticationToken) SecurityContextHolder
                .getContext().getAuthentication();
-         List<SaePrmd> saePrmds = token.getSaeDroits().get("ajoutNote");
+         List<SaePrmd> saePrmds = token.getSaeDroits().get("ajout_note");
          LOG.debug("{} - Vérification des droits", prefixeTrc);
          boolean isPermitted = prmdService.isPermitted(listeUMeta, saePrmds);
 

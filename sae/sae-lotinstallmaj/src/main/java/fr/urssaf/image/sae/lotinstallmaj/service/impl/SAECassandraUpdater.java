@@ -696,7 +696,8 @@ public class SAECassandraUpdater {
 
    /**
     * Version 14 : <li>Création des métadonnées Scribe</li> <li>Création de
-    * l'action unitaire recherche_iterateur</li>
+    * l'action unitaire recherche_iterateur</li> <li>Remplacement de l'action
+    * unitaire ajoutNote par ajout_note</li>
     */
    public void updateToVersion14() {
 
@@ -717,6 +718,7 @@ public class SAECassandraUpdater {
       // Ajout de l'action unitaire recherche_iterateur
       InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
       donnees.addActionUnitaireRechercheParIterateur();
+      donnees.modifyActionUnitaireAjoutNote();
 
       // On positionne la version à 14
       saeDao.setDatabaseVersion(VERSION_14);
