@@ -105,7 +105,7 @@ public class SAENoteServiceImpl extends AbstractSAEServices implements
          if (listeStorageMeta.size() == 0) {
             String message = StringUtils
                   .replace(
-                        "Il n'existe aucun document pour l'identifiant d'archivage {0}",
+                        "Il n'existe aucun document pour l'identifiant d'archivage '{0}'",
                         "{0}", docUuid.toString());
             throw new ArchiveInexistanteEx(message);
          }
