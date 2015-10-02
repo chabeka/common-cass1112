@@ -63,7 +63,7 @@ public final class WSNoteServiceImpl implements WSNoteService {
       } catch (SAEDocumentNoteException e) {
          throw new AjoutNoteAxisFault(e);
       } catch (ArchiveInexistanteEx e) {
-         throw new AjoutNoteAxisFault("ArchiveNonTrouvee", e.getMessage(), e);
+         throw new AjoutNoteAxisFault(e.getMessage(), "ArchiveNonTrouvee", e);
       }
 
       AjoutNoteResponse response = ObjectNoteFactory.createAjoutNoteResponse();
