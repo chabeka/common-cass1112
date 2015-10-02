@@ -16,7 +16,7 @@ public enum SAEMetadataType {
 	// Le type date
 	DATE("Date"),
 	// Le type dateTime
-	DATETIME("NotImplemended"),
+	DATETIME("Datetime"),
 	// Le type double
 	DOUBLE("Double"),
 	// Le type long

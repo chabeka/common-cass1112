@@ -88,6 +88,34 @@ public final class Utils {
       }
       return newDate;
    }
+   
+   /**
+    * Convertie une chaîne en Datetime UTC
+    * 
+    * @param date
+    *           : La chaîne à convertir.
+    * @return une date à partir d'une chaîne.
+    * @throws ParseException
+    *            Exception lorsque le parsing de la chaîne ne se déroule pas
+    *            bien.
+    */
+   @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
+   public static Date stringToDatetime(final String date) throws ParseException {
+      Date newDate = new Date();
+      if (date != null) {
+         SimpleDateFormat formatter = new SimpleDateFormat(
+               Constants.DATETIME_PATTERN, Constants.DEFAULT_LOCAL);
+         formatter.setLenient(false);
+         //formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+         newDate = formatter.parse(date);
+         if (formatter.parse(date, new ParsePosition(0)) == null) {
+            formatter = new SimpleDateFormat(Constants.DATETIME_PATTERN,
+                  Constants.DEFAULT_LOCAL);
+            newDate = formatter.parse(date);
+         }
+      }
+      return newDate;
+   }
 
    /**
     * Convertit une date en chaîne
@@ -105,6 +133,27 @@ public final class Utils {
       if (date != null) {
          final SimpleDateFormat formatter = new SimpleDateFormat(
                Constants.DATE_PATTERN, Constants.DEFAULT_LOCAL);
+         newDate = formatter.format(date);
+      }
+      return newDate;
+   }
+   
+   /**
+    * Convertit un datetime en chaîne
+    * 
+    * @param date
+    *           : La date à convertir
+    * @return chaîne à partir d'une date
+    * @throws ParseException
+    *            Exception lorsque le parsing de la chaîne ne se déroule pas
+    *            bien.
+    */
+   @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
+   public static String datetimeToString(final Date date) throws ParseException {
+      String newDate = Constants.BLANK;
+      if (date != null) {
+         final SimpleDateFormat formatter = new SimpleDateFormat(
+               Constants.DATETIME_PATTERN, Constants.DEFAULT_LOCAL);
          newDate = formatter.format(date);
       }
       return newDate;
@@ -132,6 +181,11 @@ public final class Utils {
       case DATE:
          if (!"".equals(metadataValue)) {
             target = dateToString((Date) metadataValue);
+         }
+         break;
+      case DATETIME:
+         if (!"".equals(metadataValue)) {
+            target = datetimeToString((Date) metadataValue);
          }
          break;
       case INTEGER:
@@ -182,6 +236,9 @@ public final class Utils {
       switch (saeType) {
       case DATE:
          value = Utils.stringToDate(untypedValue);
+         break;
+      case DATETIME:
+         value = Utils.stringToDatetime(untypedValue);
          break;
       case INTEGER:
          value = Integer.valueOf(untypedValue);

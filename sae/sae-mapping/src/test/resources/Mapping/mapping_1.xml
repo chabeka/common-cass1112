@@ -31,4 +31,22 @@
 		<value>120</value>
 		<type>INTEGER</type>
 	</metadata>
+	<metadata>
+		<longCode>TailleFichier</longCode>
+		<shortCode>sm_size</shortCode>
+		<value>14466</value>
+		<type>LONG</type>
+	</metadata>
+   <metadata>
+      <longCode>MontantRegle</longCode>
+      <shortCode>mre</shortCode>
+      <value>480.0</value>
+      <type>DOUBLE</type>
+   </metadata>
+	<metadata>
+		<longCode>DateEtHeureEnvoi</longCode>
+		<shortCode>dhe</shortCode>
+		<value>2015-09-28 16:35:24</value>
+		<type>DATETIME</type>
+	</metadata>
 </metadatas>

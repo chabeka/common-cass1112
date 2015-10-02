@@ -103,6 +103,19 @@ public class MappingDocumentServiceTest {
             Assert.assertEquals("String", metadata.getValue().getClass()
                   .getSimpleName());
          }
+         if (metadata.getLongCode().equals("TailleFichier")) {
+            Assert.assertEquals("Long", metadata.getValue().getClass()
+                  .getSimpleName());
+         }
+         if (metadata.getLongCode().equals("MontantRegle")) {
+            // TODO : voir s'il faut les convertir en double ou s'il faut les laisser en String
+            Assert.assertEquals("String", metadata.getValue().getClass()
+                  .getSimpleName());
+         }
+         if (metadata.getLongCode().equals("DateEtHeureEnvoi")) {
+            Assert.assertEquals("Date", metadata.getValue().getClass()
+                  .getSimpleName());
+         }
       }
 
    }
@@ -141,6 +154,15 @@ public class MappingDocumentServiceTest {
          if (metadata.getLongCode().equals("CodeRND")) {
             Assert.assertTrue(metadata.getValue().equals("3.1.3.1.1"));
          }
+         if (metadata.getLongCode().equals("TailleFichier")) {
+            Assert.assertTrue(metadata.getValue().equals("14466"));
+         }
+         if (metadata.getLongCode().equals("MontantRegle")) {
+            Assert.assertTrue(metadata.getValue().equals("480.0"));
+         }
+         if (metadata.getLongCode().equals("DateEtHeureEnvoi")) {
+            Assert.assertTrue(metadata.getValue().equals("2015-09-28 16:35:24"));
+         }
       }
 
    }
@@ -168,7 +190,7 @@ public class MappingDocumentServiceTest {
             .saeDocumentToStorageDocument(saeDoc);
       Assert.assertNotNull(storageDoc);
       Assert.assertNotNull(storageDoc.getMetadatas());
-      Assert.assertTrue(storageDoc.getMetadatas().size() == 5);
+      Assert.assertTrue(storageDoc.getMetadatas().size() == 8);
 
    }
 
@@ -206,7 +228,7 @@ public class MappingDocumentServiceTest {
             .saeVirtualDocumentToVirtualStorageDocument(saeDoc);
       Assert.assertNotNull(storageDoc);
       Assert.assertNotNull(storageDoc.getMetadatas());
-      Assert.assertTrue(storageDoc.getMetadatas().size() == 5);
+      Assert.assertTrue(storageDoc.getMetadatas().size() == 8);
 
    }
 
@@ -225,7 +247,7 @@ public class MappingDocumentServiceTest {
             .saeMetadatasToStorageMetadatas(saeMetas);
 
       Assert.assertNotNull(storageMetadatas);
-      Assert.assertTrue(storageMetadatas.size() == 5);
+      Assert.assertTrue(storageMetadatas.size() == 8);
 
    }
 
@@ -257,7 +279,7 @@ public class MappingDocumentServiceTest {
 
       Assert.assertNotNull(saeDoc);
       Assert.assertNotNull(saeDoc.getMetadatas());
-      Assert.assertTrue(saeDoc.getMetadatas().size() == 5);
+      Assert.assertTrue(saeDoc.getMetadatas().size() == 8);
 
       for (SAEMetadata metadata : Utils.nullSafeIterable(saeDoc.getMetadatas())) {
 
@@ -300,7 +322,7 @@ public class MappingDocumentServiceTest {
       untyped = mappingService.storageDocumentToUntypedDocument(storageDoc);
       Assert.assertNotNull(untyped);
       Assert.assertNotNull(untyped.getUMetadatas());
-      Assert.assertTrue(untyped.getUMetadatas().size() == 5);
+      Assert.assertTrue(untyped.getUMetadatas().size() == 8);
       for (UntypedMetadata metadata : Utils.nullSafeIterable(untyped
             .getUMetadatas())) {
          if (metadata.getLongCode().equals("DateArchivage")) {

@@ -109,7 +109,7 @@ public class SaeMetadataSupportTest {
    @Test
    public void findAllMetaTest(){
       List<MetadataReference> listeMeta = metaSupport.findAll();
-      Assert.assertEquals(61,listeMeta.size());
+      Assert.assertEquals(63,listeMeta.size());
    }
    
    @Test

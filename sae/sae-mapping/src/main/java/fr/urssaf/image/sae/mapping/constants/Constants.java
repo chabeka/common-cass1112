@@ -12,6 +12,8 @@ public final class Constants {
 	public static final String DATE_PATTERN_FR = "yyyy/MM/dd";
 	// format de date iso 8601
 	public static final String DATE_PATTERN = "yyyy-MM-dd";
+	// format de datetime iso 8601 (revoir le format, le format iso n'est pas celui mentionnait ci dessous)
+   public static final String DATETIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
 	// le local
 	public static final Locale DEFAULT_LOCAL = Locale.FRENCH;
 	/** encoding de lecture **/
