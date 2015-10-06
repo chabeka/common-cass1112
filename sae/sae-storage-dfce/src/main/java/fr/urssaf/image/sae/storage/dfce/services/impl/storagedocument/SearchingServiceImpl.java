@@ -37,6 +37,7 @@ import fr.urssaf.image.sae.mapping.exception.MappingFromReferentialException;
 import fr.urssaf.image.sae.mapping.services.MappingDocumentService;
 import fr.urssaf.image.sae.metadata.exceptions.LongCodeNotFoundException;
 import fr.urssaf.image.sae.metadata.exceptions.ReferentialException;
+import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 import fr.urssaf.image.sae.metadata.referential.services.MetadataReferenceDAO;
 import fr.urssaf.image.sae.metadata.referential.services.SAEConvertMetadataService;
 import fr.urssaf.image.sae.storage.dfce.annotations.Loggable;
@@ -57,6 +58,8 @@ import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocuments;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 import fr.urssaf.image.sae.storage.model.storagedocument.filters.AbstractFilter;
+import fr.urssaf.image.sae.storage.model.storagedocument.filters.NotRangeFilter;
+import fr.urssaf.image.sae.storage.model.storagedocument.filters.NotValueFilter;
 import fr.urssaf.image.sae.storage.model.storagedocument.filters.RangeFilter;
 import fr.urssaf.image.sae.storage.model.storagedocument.filters.ValueFilter;
 import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.LuceneCriteria;
@@ -114,12 +117,10 @@ public class SearchingServiceImpl extends AbstractServices implements
 
          LOG.debug("{} - Requête Lucene envoyée à DFCE: \"{}\"", prefixTrace,
                luceneCriteria.getLuceneQuery());
-         
-         
 
          SortedSearchQuery paramSearchQuery = ToolkitFactory.getInstance()
                .createMonobaseSortedQuery(luceneCriteria.getLuceneQuery(),
-                       getBaseDFCE());
+                     getBaseDFCE());
          paramSearchQuery.setPageSize(luceneCriteria.getLimit());
          paramSearchQuery.setOffset(0);
          SearchResult searchResult = getDfceService().getSearchService()
@@ -221,8 +222,14 @@ public class SearchingServiceImpl extends AbstractServices implements
          SearchQuery searchQuery = ToolkitFactory.getInstance()
                .createMonobaseQuery(paginatedLuceneCriteria.getLuceneQuery(),
                      getBaseDFCE());
+         // Récupération du référentiel des métadonnés pour les différentes
+         // vérifications
+         Map<String, MetadataReference> referentielMeta = referenceDAO
+               .getAllMetadataReferences();
+
          // Création de la chainedFilter
-         ChainedFilter chainedFilter = createChaineFilter(paginatedLuceneCriteria);
+         ChainedFilter chainedFilter = createChaineFilter(
+               paginatedLuceneCriteria, referentielMeta);
          // On l'ajoute à la searchQuery
          searchQuery.setChainedFilter(chainedFilter);
          // On fixe le pas d'execution de l'itérateur
@@ -237,8 +244,8 @@ public class SearchingServiceImpl extends AbstractServices implements
 
          // On récupère la liste complète des métadonnées du référentiel afin de
          // pouvoir tester les droits
-         List<String> metadonneesRef = new ArrayList<String>(referenceDAO
-               .getAllMetadataReferences().keySet());
+         List<String> metadonneesRef = new ArrayList<String>(referentielMeta
+               .keySet());
          List<StorageMetadata> allMeta = convertToStorageMeta(metadonneesRef);
 
          // Si appel au service de recherche avec passage de l'UUID du dernier
@@ -260,7 +267,7 @@ public class SearchingServiceImpl extends AbstractServices implements
             Document doc = iterateur.next();
             StorageDocument storageDocument = BeanMapper
                   .dfceDocumentToStorageDocument(doc, allMeta,
-                        getDfceService(), true);
+                        getDfceService(), false);
             UntypedDocument untypedDocument = null;
             // Vérification des droits
             if (storageDocument != null) {
@@ -274,7 +281,8 @@ public class SearchingServiceImpl extends AbstractServices implements
                LOG.debug("{} - Récupération des droits", prefixeTrc);
                AuthenticationToken token = (AuthenticationToken) AuthenticationContext
                      .getAuthenticationToken();
-               List<SaePrmd> saePrmds = token.getSaeDroits().get("recherche_iterateur");
+               List<SaePrmd> saePrmds = token.getSaeDroits().get(
+                     "recherche_iterateur");
                LOG.debug("{} - Vérification des droits", prefixeTrc);
                boolean isPermitted = prmdService.isPermitted(untypedDocument
                      .getUMetadatas(), saePrmds);
@@ -372,10 +380,12 @@ public class SearchingServiceImpl extends AbstractServices implements
     * Création de la chainedFilter à partir des filtres de la requête
     * 
     * @param paginatedLuceneCriteria
+    * @param referentielMeta
     * @return la chainedFilter
     */
    private ChainedFilter createChaineFilter(
-         PaginatedLuceneCriteria paginatedLuceneCriteria) {
+         PaginatedLuceneCriteria paginatedLuceneCriteria,
+         Map<String, MetadataReference> referentielMeta) {
       ChainedFilter chainedFilter = ToolkitFactory.getInstance()
             .createChainedFilter();
 
@@ -384,28 +394,48 @@ public class SearchingServiceImpl extends AbstractServices implements
       for (AbstractFilter filtre : listeFiltres) {
          if (filtre instanceof ValueFilter) {
             Object value = ((ValueFilter) filtre).getValue();
-            if (value instanceof String) {
-               chainedFilter.addTermFilter(filtre.getShortCode(),
-                     (String) value, ChainedFilterOperator.AND);
-            } else if (value instanceof Integer) {
-               chainedFilter.addTermFilter(filtre.getShortCode(), Integer
-                     .toString((Integer) value), ChainedFilterOperator.AND);
-            }
+            chainedFilter.addTermFilter(filtre.getShortCode(), (String) value,
+                  ChainedFilterOperator.AND);
          } else if (filtre instanceof RangeFilter) {
             Object minValue = ((RangeFilter) filtre).getMinValue();
             Object maxValue = ((RangeFilter) filtre).getMaxValue();
-
-            if (minValue instanceof String && maxValue instanceof String) {
+            String typeMeta = referentielMeta.get(
+                  ((RangeFilter) filtre).getLongCode()).getType();
+            if ("Integer".equals(typeMeta) || "Long".equals(typeMeta)) {
+               chainedFilter.addIntRangeFilter(filtre.getShortCode(), Integer
+                     .parseInt((String) minValue), Integer
+                     .parseInt((String) maxValue), true, true,
+                     ChainedFilterOperator.AND);
+            } else {
                chainedFilter.addTermRangeFilter(filtre.getShortCode(),
                      (String) minValue, (String) maxValue, true, true,
                      ChainedFilterOperator.AND);
-            } else if (minValue instanceof Integer
-                  && maxValue instanceof Integer) {
-               chainedFilter.addTermRangeFilter(filtre.getShortCode(), Integer
-                     .toString((Integer) minValue), Integer
-                     .toString((Integer) maxValue), true, true,
-                     ChainedFilterOperator.AND);
             }
+         } else if (filtre instanceof NotValueFilter) {
+            Object value = ((NotValueFilter) filtre).getValue();
+            if (value instanceof String) {
+               chainedFilter.addTermFilter(filtre.getShortCode(),
+                     (String) value, ChainedFilterOperator.ANDNOT);
+            } else if (value instanceof Integer) {
+               chainedFilter.addTermFilter(filtre.getShortCode(), Integer
+                     .toString((Integer) value), ChainedFilterOperator.ANDNOT);
+            }
+         } else if (filtre instanceof NotRangeFilter) {
+            Object minValue = ((NotRangeFilter) filtre).getMinValue();
+            Object maxValue = ((NotRangeFilter) filtre).getMaxValue();
+            String typeMeta = referentielMeta.get(
+                  ((NotRangeFilter) filtre).getLongCode()).getType();
+            if ("Integer".equals(typeMeta) || "Long".equals(typeMeta)) {
+               chainedFilter.addIntRangeFilter(filtre.getShortCode(), Integer
+                     .parseInt((String) minValue), Integer
+                     .parseInt((String) maxValue), true, true,
+                     ChainedFilterOperator.ANDNOT);
+            } else {
+               chainedFilter.addTermRangeFilter(filtre.getShortCode(),
+                     (String) minValue, (String) maxValue, true, true,
+                     ChainedFilterOperator.ANDNOT);
+            }
+
          }
       }
       return chainedFilter;

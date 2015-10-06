@@ -32,6 +32,17 @@
                         
                                     protected fr.cirtil.www.saeservice.ListeMetadonneeType localEqualFilter ;
                                 
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localEqualFilterTracker = false ;
+
+                           public boolean isEqualFilterSpecified(){
+                               return localEqualFilterTracker;
+                           }
+
+                           
 
                            /**
                            * Auto generated getter method
@@ -48,8 +59,51 @@
                                * @param param EqualFilter
                                */
                                public void setEqualFilter(fr.cirtil.www.saeservice.ListeMetadonneeType param){
-                            
+                            localEqualFilterTracker = param != null;
+                                   
                                             this.localEqualFilter=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for NotEqualFilter
+                        */
+
+                        
+                                    protected fr.cirtil.www.saeservice.ListeMetadonneeType localNotEqualFilter ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localNotEqualFilterTracker = false ;
+
+                           public boolean isNotEqualFilterSpecified(){
+                               return localNotEqualFilterTracker;
+                           }
+
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return fr.cirtil.www.saeservice.ListeMetadonneeType
+                           */
+                           public  fr.cirtil.www.saeservice.ListeMetadonneeType getNotEqualFilter(){
+                               return localNotEqualFilter;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param NotEqualFilter
+                               */
+                               public void setNotEqualFilter(fr.cirtil.www.saeservice.ListeMetadonneeType param){
+                            localNotEqualFilterTracker = param != null;
+                                   
+                                            this.localNotEqualFilter=param;
                                     
 
                                }
@@ -62,6 +116,17 @@
                         
                                     protected fr.cirtil.www.saeservice.ListeRangeMetadonneeType localRangeFilter ;
                                 
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localRangeFilterTracker = false ;
+
+                           public boolean isRangeFilterSpecified(){
+                               return localRangeFilterTracker;
+                           }
+
+                           
 
                            /**
                            * Auto generated getter method
@@ -78,8 +143,51 @@
                                * @param param RangeFilter
                                */
                                public void setRangeFilter(fr.cirtil.www.saeservice.ListeRangeMetadonneeType param){
-                            
+                            localRangeFilterTracker = param != null;
+                                   
                                             this.localRangeFilter=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for NotInRangeFilter
+                        */
+
+                        
+                                    protected fr.cirtil.www.saeservice.ListeRangeMetadonneeType localNotInRangeFilter ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localNotInRangeFilterTracker = false ;
+
+                           public boolean isNotInRangeFilterSpecified(){
+                               return localNotInRangeFilterTracker;
+                           }
+
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return fr.cirtil.www.saeservice.ListeRangeMetadonneeType
+                           */
+                           public  fr.cirtil.www.saeservice.ListeRangeMetadonneeType getNotInRangeFilter(){
+                               return localNotInRangeFilter;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param NotInRangeFilter
+                               */
+                               public void setNotInRangeFilter(fr.cirtil.www.saeservice.ListeRangeMetadonneeType param){
+                            localNotInRangeFilterTracker = param != null;
+                                   
+                                            this.localNotInRangeFilter=param;
                                     
 
                                }
@@ -143,19 +251,31 @@
 
                
                    }
-               
+                if (localEqualFilterTracker){
                                             if (localEqualFilter==null){
                                                  throw new org.apache.axis2.databinding.ADBException("equalFilter cannot be null!!");
                                             }
                                            localEqualFilter.serialize(new javax.xml.namespace.QName("http://www.cirtil.fr/saeService","equalFilter"),
                                                xmlWriter);
-                                        
+                                        } if (localNotEqualFilterTracker){
+                                            if (localNotEqualFilter==null){
+                                                 throw new org.apache.axis2.databinding.ADBException("notEqualFilter cannot be null!!");
+                                            }
+                                           localNotEqualFilter.serialize(new javax.xml.namespace.QName("http://www.cirtil.fr/saeService","notEqualFilter"),
+                                               xmlWriter);
+                                        } if (localRangeFilterTracker){
                                             if (localRangeFilter==null){
                                                  throw new org.apache.axis2.databinding.ADBException("rangeFilter cannot be null!!");
                                             }
                                            localRangeFilter.serialize(new javax.xml.namespace.QName("http://www.cirtil.fr/saeService","rangeFilter"),
                                                xmlWriter);
-                                        
+                                        } if (localNotInRangeFilterTracker){
+                                            if (localNotInRangeFilter==null){
+                                                 throw new org.apache.axis2.databinding.ADBException("notInRangeFilter cannot be null!!");
+                                            }
+                                           localNotInRangeFilter.serialize(new javax.xml.namespace.QName("http://www.cirtil.fr/saeService","notInRangeFilter"),
+                                               xmlWriter);
+                                        }
                     xmlWriter.writeEndElement();
                
 
@@ -340,7 +460,7 @@
                  java.util.ArrayList elementList = new java.util.ArrayList();
                  java.util.ArrayList attribList = new java.util.ArrayList();
 
-                
+                 if (localEqualFilterTracker){
                             elementList.add(new javax.xml.namespace.QName("http://www.cirtil.fr/saeService",
                                                                       "equalFilter"));
                             
@@ -349,7 +469,16 @@
                                          throw new org.apache.axis2.databinding.ADBException("equalFilter cannot be null!!");
                                     }
                                     elementList.add(localEqualFilter);
-                                
+                                } if (localNotEqualFilterTracker){
+                            elementList.add(new javax.xml.namespace.QName("http://www.cirtil.fr/saeService",
+                                                                      "notEqualFilter"));
+                            
+                            
+                                    if (localNotEqualFilter==null){
+                                         throw new org.apache.axis2.databinding.ADBException("notEqualFilter cannot be null!!");
+                                    }
+                                    elementList.add(localNotEqualFilter);
+                                } if (localRangeFilterTracker){
                             elementList.add(new javax.xml.namespace.QName("http://www.cirtil.fr/saeService",
                                                                       "rangeFilter"));
                             
@@ -358,7 +487,16 @@
                                          throw new org.apache.axis2.databinding.ADBException("rangeFilter cannot be null!!");
                                     }
                                     elementList.add(localRangeFilter);
-                                
+                                } if (localNotInRangeFilterTracker){
+                            elementList.add(new javax.xml.namespace.QName("http://www.cirtil.fr/saeService",
+                                                                      "notInRangeFilter"));
+                            
+                            
+                                    if (localNotInRangeFilter==null){
+                                         throw new org.apache.axis2.databinding.ADBException("notInRangeFilter cannot be null!!");
+                                    }
+                                    elementList.add(localNotInRangeFilter);
+                                }
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
             
@@ -445,11 +583,25 @@
                                     
                               }  // End of if for expected property start element
                                 
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getName());
-                                }
-                            
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.cirtil.fr/saeService","notEqualFilter").equals(reader.getName())){
+                                
+                                                object.setNotEqualFilter(fr.cirtil.www.saeservice.ListeMetadonneeType.Factory.parse(reader));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
@@ -461,11 +613,25 @@
                                     
                               }  // End of if for expected property start element
                                 
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getName());
-                                }
-                              
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.cirtil.fr/saeService","notInRangeFilter").equals(reader.getName())){
+                                
+                                                object.setNotInRangeFilter(fr.cirtil.www.saeservice.ListeRangeMetadonneeType.Factory.parse(reader));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                  
                             while (!reader.isStartElement() && !reader.isEndElement())
                                 reader.next();
                             

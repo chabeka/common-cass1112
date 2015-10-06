@@ -232,20 +232,33 @@
          </xsd:documentation>
       </xsd:annotation>
       <xsd:sequence>
-         <xsd:element name="equalFilter" type="sae:listeMetadonneeType">
+         <xsd:element name="equalFilter" type="sae:listeMetadonneeType" minOccurs="0">
             <xsd:annotation>
                <xsd:documentation>Liste des filtres sur une valeur fixe
                   de métadonnée
                </xsd:documentation>
             </xsd:annotation>
          </xsd:element>
-         <xsd:element name="rangeFilter" type="sae:listeRangeMetadonneeType">
+         <xsd:element name="notEqualFilter" type="sae:listeMetadonneeType" minOccurs="0">
+            <xsd:annotation>
+               <xsd:documentation>Liste des filtres sur une métadonnée dont la valeur est différente de la valeur fournie
+               </xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         <xsd:element name="rangeFilter" type="sae:listeRangeMetadonneeType" minOccurs="0">
             <xsd:annotation>
                <xsd:documentation>Liste de filtres sur un range de
                   valeurs de métadonnée 
                </xsd:documentation>
             </xsd:annotation>
          </xsd:element>
+         <xsd:element name="notInRangeFilter" type="sae:listeRangeMetadonneeType" minOccurs="0">
+            <xsd:annotation>
+               <xsd:documentation>Liste de filtres sur une métadonnée dont la valeur n'appartient pas à l'intervalle
+               </xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+
       </xsd:sequence>
    </xsd:complexType>
    <xsd:complexType name="identifiantPageType">

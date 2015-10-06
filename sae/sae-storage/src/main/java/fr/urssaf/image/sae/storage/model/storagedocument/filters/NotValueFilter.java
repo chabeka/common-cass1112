@@ -1,22 +1,25 @@
 package fr.urssaf.image.sae.storage.model.storagedocument.filters;
 
-
 /**
- * Classe concrète qui permet d'effectuer un filtre avec une valeur
+ * Classe concrète qui permet d'effectuer un filtre du type valeur métadonnées
+ * différente d'une valeur
  * 
  * 
  */
-public class ValueFilter extends AbstractFilter {
+public class NotValueFilter extends AbstractFilter {
 
    /**
-    * Construit un {@link ValueFilter }.
+    * Construit un {@link NotValueFilter }.
     * 
     * @param shortCode
     *           Code court de la métadonnée qui servira de filtre
+    * @param longCode
+    *           Code long de la métadonnée qui servira de filtre
     * @param value
     *           Valeur du filtre
     */
-   public ValueFilter(final String shortCode, final String longCode, final Object value) {
+   public NotValueFilter(final String shortCode, final String longCode,
+         final Object value) {
       super(shortCode, longCode);
       this.value = value;
    }

@@ -222,17 +222,29 @@
          </xsd:documentation>
         </xsd:annotation>
         <xsd:sequence>
-            <xsd:element name="equalFilter" type="sae:listeMetadonneeType">
+            <xsd:element minOccurs="0" name="equalFilter" type="sae:listeMetadonneeType">
                 <xsd:annotation>
                     <xsd:documentation>Liste des filtres sur une valeur fixe
                   de métadonnée
                </xsd:documentation>
                 </xsd:annotation>
             </xsd:element>
-            <xsd:element name="rangeFilter" type="sae:listeRangeMetadonneeType">
+            <xsd:element minOccurs="0" name="notEqualFilter" type="sae:listeMetadonneeType">
+                <xsd:annotation>
+                    <xsd:documentation>Liste des filtres sur une métadonnée dont la valeur est différente de la valeur fournie
+               </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="rangeFilter" type="sae:listeRangeMetadonneeType">
                 <xsd:annotation>
                     <xsd:documentation>Liste de filtres sur un range de
                   valeurs de métadonnée 
+               </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="notInRangeFilter" type="sae:listeRangeMetadonneeType">
+                <xsd:annotation>
+                    <xsd:documentation>Liste de filtres sur une métadonnée dont la valeur n'appartient pas à l'intervalle
                </xsd:documentation>
                 </xsd:annotation>
             </xsd:element>

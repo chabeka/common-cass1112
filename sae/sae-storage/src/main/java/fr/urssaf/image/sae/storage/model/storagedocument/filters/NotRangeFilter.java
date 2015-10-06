@@ -1,11 +1,12 @@
 package fr.urssaf.image.sae.storage.model.storagedocument.filters;
 
 /**
- * Classe concrète qui permet d'effectuer un filtre avec un range de valeur
+ * Classe concrète qui permet d'effectuer un filtre du type valeur métadonnée
+ * n'appartient pas à un intervalle
  * 
  * 
  */
-public class RangeFilter extends AbstractFilter {
+public class NotRangeFilter extends AbstractFilter {
 
    /**
     * Valeur minimum du filtre
@@ -18,7 +19,7 @@ public class RangeFilter extends AbstractFilter {
    private Object maxValue;
 
    /**
-    * Construit un {@link RangeFilter }.
+    * Construit un {@link NotRangeFilter }.
     * 
     * @param shortCode
     *           Code court de la métadonnée qui servira de filtre
@@ -29,7 +30,7 @@ public class RangeFilter extends AbstractFilter {
     * @param maxValue
     *           Valeur maximum du filtre
     */
-   public RangeFilter(final String shortCode, final String longCode,
+   public NotRangeFilter(final String shortCode, final String longCode,
          final Object minValue, final Object maxValue) {
       super(shortCode, longCode);
       this.minValue = minValue;

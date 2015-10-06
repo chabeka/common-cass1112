@@ -25,6 +25,7 @@ import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
 import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedToConsultEx;
 import fr.urssaf.image.sae.services.exception.consultation.SAEConsultationAffichableParametrageException;
 import fr.urssaf.image.sae.services.exception.consultation.SAEConsultationServiceException;
+import fr.urssaf.image.sae.services.exception.search.DoublonFiltresMetadataEx;
 import fr.urssaf.image.sae.services.exception.search.MetaDataUnauthorizedToSearchEx;
 import fr.urssaf.image.sae.services.exception.search.SAESearchServiceEx;
 import fr.urssaf.image.sae.services.exception.search.SyntaxLuceneEx;
@@ -119,19 +120,22 @@ public class SAEDocumentServiceImpl implements SAEDocumentService {
     * {@inheritDoc}
     * 
     * @throws UnknownFiltresMetadataEx
+    * @throws DoublonFiltresMetadataEx 
     */
    @Override
    public final PaginatedUntypedDocuments searchPaginated(
          List<UntypedMetadata> fixedMetadatas,
-         UntypedRangeMetadata varyingMetadata, List<AbstractMetadata> filters,
-         int nbDocumentsParPage, UUID lastIdDoc,
-         List<String> listeDesiredMetadata)
+         UntypedRangeMetadata varyingMetadata,
+         List<AbstractMetadata> listeFiltreEgalite,
+         List<AbstractMetadata> listeFiltreDifferent, int nbDocumentsParPage,
+         UUID lastIdDoc, List<String> listeDesiredMetadata)
          throws MetaDataUnauthorizedToSearchEx,
          MetaDataUnauthorizedToConsultEx, UnknownLuceneMetadataEx,
          SAESearchServiceEx, SyntaxLuceneEx, UnknownDesiredMetadataEx,
-         UnknownFiltresMetadataEx {
+         UnknownFiltresMetadataEx, DoublonFiltresMetadataEx {
       return saeSearchService.searchPaginated(fixedMetadatas, varyingMetadata,
-            filters, nbDocumentsParPage, lastIdDoc, listeDesiredMetadata);
+            listeFiltreEgalite, listeFiltreDifferent, nbDocumentsParPage,
+            lastIdDoc, listeDesiredMetadata);
    }
 
    /**

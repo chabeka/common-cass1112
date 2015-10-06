@@ -12,6 +12,7 @@ import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedRangeMetadata;
 import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
 import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedToConsultEx;
+import fr.urssaf.image.sae.services.exception.search.DoublonFiltresMetadataEx;
 import fr.urssaf.image.sae.services.exception.search.MetaDataUnauthorizedToSearchEx;
 import fr.urssaf.image.sae.services.exception.search.SAESearchServiceEx;
 import fr.urssaf.image.sae.services.exception.search.SyntaxLuceneEx;
@@ -97,8 +98,12 @@ public interface SAESearchService {
     *           Liste des métadonnées fixes d'un index composite
     * @param varyingMetadata
     *           Liste des métadonnées variables d'un index composite
-    * @param filters
-    *           Liste des filtres après exécution de la requête principale
+    * @param listeFiltreEgal
+    *           Liste des filtres de type "égal" après exécution de la requête
+    *           principale
+    * @param listeFiltreDifferent
+    *           Liste des filtres de type "différent" après exécution de la
+    *           requête principale
     * @param nbDocumentsParPage
     *           Nombre de document à récupérer
     * @param lastIdDoc
@@ -107,13 +112,6 @@ public interface SAESearchService {
     * @param listeDesiredMetadata
     *           Liste des métadonnées souhaitées en retour de recherche
     * @return La liste des documents trouvés
-    * @param fixedMetadatas
-    * @param varyingMetadata
-    * @param filters
-    * @param nbDocumentsParPage
-    * @param lastIdDoc
-    * @param listeDesiredMetadata
-    * @return
     * @throws MetaDataUnauthorizedToSearchEx
     *            Erreur si une méta n'est pas autorisée à la recherche
     * @throws MetaDataUnauthorizedToConsultEx
@@ -129,15 +127,18 @@ public interface SAESearchService {
     *            résultat
     * @throws UnknownFiltresMetadataEx
     *            Erreur si métas inconnues dans les filtres
+    * @throws DoublonFiltresMetadataEx
+    *            Erreur si métas en double dans les filtres
     */
    @PreAuthorize("hasRole('recherche_iterateur')")
    PaginatedUntypedDocuments searchPaginated(
          List<UntypedMetadata> fixedMetadatas,
-         UntypedRangeMetadata varyingMetadata, List<AbstractMetadata> filters,
-         int nbDocumentsParPage, UUID lastIdDoc,
-         List<String> listeDesiredMetadata)
+         UntypedRangeMetadata varyingMetadata,
+         List<AbstractMetadata> listeFiltreEgal,
+         List<AbstractMetadata> listeFiltreDifferent, int nbDocumentsParPage,
+         UUID lastIdDoc, List<String> listeDesiredMetadata)
          throws MetaDataUnauthorizedToSearchEx,
          MetaDataUnauthorizedToConsultEx, UnknownLuceneMetadataEx,
          SAESearchServiceEx, SyntaxLuceneEx, UnknownDesiredMetadataEx,
-         UnknownFiltresMetadataEx;
+         UnknownFiltresMetadataEx, DoublonFiltresMetadataEx;
 }

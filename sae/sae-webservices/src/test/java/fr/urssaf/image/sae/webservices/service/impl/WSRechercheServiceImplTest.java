@@ -35,6 +35,7 @@ import fr.urssaf.image.sae.bo.model.untyped.UntypedRangeMetadata;
 import fr.urssaf.image.sae.services.document.SAEDocumentService;
 import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
 import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedToConsultEx;
+import fr.urssaf.image.sae.services.exception.search.DoublonFiltresMetadataEx;
 import fr.urssaf.image.sae.services.exception.search.MetaDataUnauthorizedToSearchEx;
 import fr.urssaf.image.sae.services.exception.search.SAESearchServiceEx;
 import fr.urssaf.image.sae.services.exception.search.SyntaxLuceneEx;
@@ -79,13 +80,14 @@ public class WSRechercheServiceImplTest {
          throws RechercheAxis2Fault, MetaDataUnauthorizedToSearchEx,
          MetaDataUnauthorizedToConsultEx, UnknownLuceneMetadataEx,
          SAESearchServiceEx, SyntaxLuceneEx, UnknownDesiredMetadataEx,
-         UnknownFiltresMetadataEx {
+         UnknownFiltresMetadataEx, DoublonFiltresMetadataEx {
 
       RechercheParIterateur request = creationRequest();
 
       EasyMock.expect(
             saeService.searchPaginated((List<UntypedMetadata>) EasyMock
                   .anyObject(), (UntypedRangeMetadata) EasyMock.anyObject(),
+                  (List<AbstractMetadata>) EasyMock.anyObject(),
                   (List<AbstractMetadata>) EasyMock.anyObject(), EasyMock
                         .anyInt(), (UUID) EasyMock.anyObject(),
                   (List<String>) EasyMock.anyObject())).andThrow(
@@ -116,13 +118,14 @@ public class WSRechercheServiceImplTest {
          throws RechercheAxis2Fault, MetaDataUnauthorizedToSearchEx,
          MetaDataUnauthorizedToConsultEx, UnknownLuceneMetadataEx,
          SAESearchServiceEx, SyntaxLuceneEx, UnknownDesiredMetadataEx,
-         UnknownFiltresMetadataEx {
+         UnknownFiltresMetadataEx, DoublonFiltresMetadataEx {
 
       RechercheParIterateur request = creationRequest();
 
       EasyMock.expect(
             saeService.searchPaginated((List<UntypedMetadata>) EasyMock
                   .anyObject(), (UntypedRangeMetadata) EasyMock.anyObject(),
+                  (List<AbstractMetadata>) EasyMock.anyObject(),
                   (List<AbstractMetadata>) EasyMock.anyObject(), EasyMock
                         .anyInt(), (UUID) EasyMock.anyObject(),
                   (List<String>) EasyMock.anyObject())).andThrow(
@@ -152,13 +155,14 @@ public class WSRechercheServiceImplTest {
          throws RechercheAxis2Fault, MetaDataUnauthorizedToSearchEx,
          MetaDataUnauthorizedToConsultEx, UnknownLuceneMetadataEx,
          SAESearchServiceEx, SyntaxLuceneEx, UnknownDesiredMetadataEx,
-         UnknownFiltresMetadataEx {
+         UnknownFiltresMetadataEx, DoublonFiltresMetadataEx {
 
       RechercheParIterateur request = creationRequest();
 
       EasyMock.expect(
             saeService.searchPaginated((List<UntypedMetadata>) EasyMock
                   .anyObject(), (UntypedRangeMetadata) EasyMock.anyObject(),
+                  (List<AbstractMetadata>) EasyMock.anyObject(),
                   (List<AbstractMetadata>) EasyMock.anyObject(), EasyMock
                         .anyInt(), (UUID) EasyMock.anyObject(),
                   (List<String>) EasyMock.anyObject())).andThrow(
@@ -175,65 +179,29 @@ public class WSRechercheServiceImplTest {
          assertEquals("Le message d'erreur n'est pas celui attendu",
                "test-unitaire : meta non recherchable", ex.getMessage());
          assertEquals("La cause de l'exception n'est pas la bonne",
-               MetaDataUnauthorizedToSearchEx.class.getName(), ex.getCause().getClass()
-                     .getName());
+               MetaDataUnauthorizedToSearchEx.class.getName(), ex.getCause()
+                     .getClass().getName());
          assertEquals("La partie local du code de l'erreur n'est pas le bon",
-               "RechercheMetadonneesInterdite", ex.getFaultCode().getLocalPart());
+               "RechercheMetadonneesInterdite", ex.getFaultCode()
+                     .getLocalPart());
       }
 
       EasyMock.reset(saeService);
    }
 
-   @Test
-   public void rechercheParIterateur_erreur_meta_non_consultable()
-         throws RechercheAxis2Fault, MetaDataUnauthorizedToSearchEx,
-         MetaDataUnauthorizedToConsultEx, UnknownLuceneMetadataEx,
-         SAESearchServiceEx, SyntaxLuceneEx, UnknownDesiredMetadataEx,
-         UnknownFiltresMetadataEx {
-
-      RechercheParIterateur request = creationRequest();
-
-      EasyMock.expect(
-            saeService.searchPaginated((List<UntypedMetadata>) EasyMock
-                  .anyObject(), (UntypedRangeMetadata) EasyMock.anyObject(),
-                  (List<AbstractMetadata>) EasyMock.anyObject(), EasyMock
-                        .anyInt(), (UUID) EasyMock.anyObject(),
-                  (List<String>) EasyMock.anyObject())).andThrow(
-            new MetaDataUnauthorizedToConsultEx(
-                  "test-unitaire : meta non consultable"));
-
-      EasyMock.replay(saeService);
-
-      try {
-
-         rechercheService.rechercheParIterateur(request);
-         fail("C'est l'exception RechercheAxis2Fault qui est attendue");
-      } catch (RechercheAxis2Fault ex) {
-         assertEquals("Le message d'erreur n'est pas celui attendu",
-               "test-unitaire : meta non consultable", ex.getMessage());
-         assertEquals("La cause de l'exception n'est pas la bonne",
-               MetaDataUnauthorizedToConsultEx.class.getName(), ex.getCause().getClass()
-                     .getName());
-         assertEquals("La partie local du code de l'erreur n'est pas le bon",
-               "ConsultationMetadonneesInterdite", ex.getFaultCode().getLocalPart());
-      }
-
-      EasyMock.reset(saeService);
-   }
-   
-   
    @Test
    public void rechercheParIterateur_erreur_pendant_recherche()
          throws RechercheAxis2Fault, MetaDataUnauthorizedToSearchEx,
          MetaDataUnauthorizedToConsultEx, UnknownLuceneMetadataEx,
          SAESearchServiceEx, SyntaxLuceneEx, UnknownDesiredMetadataEx,
-         UnknownFiltresMetadataEx {
+         UnknownFiltresMetadataEx, DoublonFiltresMetadataEx {
 
       RechercheParIterateur request = creationRequest();
 
       EasyMock.expect(
             saeService.searchPaginated((List<UntypedMetadata>) EasyMock
                   .anyObject(), (UntypedRangeMetadata) EasyMock.anyObject(),
+                  (List<AbstractMetadata>) EasyMock.anyObject(),
                   (List<AbstractMetadata>) EasyMock.anyObject(), EasyMock
                         .anyInt(), (UUID) EasyMock.anyObject(),
                   (List<String>) EasyMock.anyObject())).andThrow(
@@ -259,19 +227,19 @@ public class WSRechercheServiceImplTest {
       EasyMock.reset(saeService);
    }
 
-   
    @Test
    public void rechercheParIterateur_meta_souhaitee()
          throws RechercheAxis2Fault, MetaDataUnauthorizedToSearchEx,
          MetaDataUnauthorizedToConsultEx, UnknownLuceneMetadataEx,
          SAESearchServiceEx, SyntaxLuceneEx, UnknownDesiredMetadataEx,
-         UnknownFiltresMetadataEx {
+         UnknownFiltresMetadataEx, DoublonFiltresMetadataEx {
 
       RechercheParIterateur request = creationRequest();
 
       EasyMock.expect(
             saeService.searchPaginated((List<UntypedMetadata>) EasyMock
                   .anyObject(), (UntypedRangeMetadata) EasyMock.anyObject(),
+                  (List<AbstractMetadata>) EasyMock.anyObject(),
                   (List<AbstractMetadata>) EasyMock.anyObject(), EasyMock
                         .anyInt(), (UUID) EasyMock.anyObject(),
                   (List<String>) EasyMock.anyObject())).andThrow(
@@ -288,15 +256,16 @@ public class WSRechercheServiceImplTest {
          assertEquals("Le message d'erreur n'est pas celui attendu",
                "test-unitaire : meta souhaitee inconnue", ex.getMessage());
          assertEquals("La cause de l'exception n'est pas la bonne",
-               UnknownDesiredMetadataEx.class.getName(), ex.getCause().getClass()
-                     .getName());
+               UnknownDesiredMetadataEx.class.getName(), ex.getCause()
+                     .getClass().getName());
          assertEquals("La partie local du code de l'erreur n'est pas le bon",
-               "ConsultationMetadonneesInconnues", ex.getFaultCode().getLocalPart());
+               "ConsultationMetadonneesInconnues", ex.getFaultCode()
+                     .getLocalPart());
       }
 
       EasyMock.reset(saeService);
    }
-   
+
    private RechercheParIterateur creationRequest() {
       RechercheParIterateur request = new RechercheParIterateur();
       request.setRechercheParIterateur(new RechercheParIterateurRequestType());
@@ -339,5 +308,83 @@ public class WSRechercheServiceImplTest {
       request.getRechercheParIterateur().getRequetePrincipale()
             .setVaryingMetadata(rangeMeta);
       return request;
+   }
+
+   @Test
+   public void rechercheParIterateur_erreur_meta_non_consultable()
+         throws RechercheAxis2Fault, MetaDataUnauthorizedToSearchEx,
+         MetaDataUnauthorizedToConsultEx, UnknownLuceneMetadataEx,
+         SAESearchServiceEx, SyntaxLuceneEx, UnknownDesiredMetadataEx,
+         UnknownFiltresMetadataEx, DoublonFiltresMetadataEx {
+   
+      RechercheParIterateur request = creationRequest();
+   
+      EasyMock.expect(
+            saeService.searchPaginated((List<UntypedMetadata>) EasyMock
+                  .anyObject(), (UntypedRangeMetadata) EasyMock.anyObject(),
+                  (List<AbstractMetadata>) EasyMock.anyObject(),
+                  (List<AbstractMetadata>) EasyMock.anyObject(), EasyMock
+                        .anyInt(), (UUID) EasyMock.anyObject(),
+                  (List<String>) EasyMock.anyObject())).andThrow(
+            new MetaDataUnauthorizedToConsultEx(
+                  "test-unitaire : meta non consultable"));
+   
+      EasyMock.replay(saeService);
+   
+      try {
+   
+         rechercheService.rechercheParIterateur(request);
+         fail("C'est l'exception RechercheAxis2Fault qui est attendue");
+      } catch (RechercheAxis2Fault ex) {
+         assertEquals("Le message d'erreur n'est pas celui attendu",
+               "test-unitaire : meta non consultable", ex.getMessage());
+         assertEquals("La cause de l'exception n'est pas la bonne",
+               MetaDataUnauthorizedToConsultEx.class.getName(), ex.getCause()
+                     .getClass().getName());
+         assertEquals("La partie local du code de l'erreur n'est pas le bon",
+               "ConsultationMetadonneesInterdite", ex.getFaultCode()
+                     .getLocalPart());
+      }
+   
+      EasyMock.reset(saeService);
+   }
+
+   @Test
+   public void rechercheParIterateur_erreur_meta_filtre_doublon()
+         throws RechercheAxis2Fault, MetaDataUnauthorizedToSearchEx,
+         MetaDataUnauthorizedToConsultEx, UnknownLuceneMetadataEx,
+         SAESearchServiceEx, SyntaxLuceneEx, UnknownDesiredMetadataEx,
+         UnknownFiltresMetadataEx, DoublonFiltresMetadataEx {
+   
+      RechercheParIterateur request = creationRequest();
+   
+      EasyMock.expect(
+            saeService.searchPaginated((List<UntypedMetadata>) EasyMock
+                  .anyObject(), (UntypedRangeMetadata) EasyMock.anyObject(),
+                  (List<AbstractMetadata>) EasyMock.anyObject(),
+                  (List<AbstractMetadata>) EasyMock.anyObject(), EasyMock
+                        .anyInt(), (UUID) EasyMock.anyObject(),
+                  (List<String>) EasyMock.anyObject())).andThrow(
+            new DoublonFiltresMetadataEx(
+                  "test-unitaire : meta filtre doublon"));
+   
+      EasyMock.replay(saeService);
+   
+      try {
+   
+         rechercheService.rechercheParIterateur(request);
+         fail("C'est l'exception RechercheAxis2Fault qui est attendue");
+      } catch (RechercheAxis2Fault ex) {
+         assertEquals("Le message d'erreur n'est pas celui attendu",
+               "test-unitaire : meta filtre doublon", ex.getMessage());
+         assertEquals("La cause de l'exception n'est pas la bonne",
+               DoublonFiltresMetadataEx.class.getName(), ex.getCause()
+                     .getClass().getName());
+         assertEquals("La partie local du code de l'erreur n'est pas le bon",
+               "RechercheMetadonneesDoublons", ex.getFaultCode()
+                     .getLocalPart());
+      }
+   
+      EasyMock.reset(saeService);
    }
 }

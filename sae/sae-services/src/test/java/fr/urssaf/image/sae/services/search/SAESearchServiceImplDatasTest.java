@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -72,6 +73,7 @@ import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedT
 import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException;
 import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.services.exception.format.validation.ValidationExceptionInvalidFile;
+import fr.urssaf.image.sae.services.exception.search.DoublonFiltresMetadataEx;
 import fr.urssaf.image.sae.services.exception.search.MetaDataUnauthorizedToSearchEx;
 import fr.urssaf.image.sae.services.exception.search.SAESearchServiceEx;
 import fr.urssaf.image.sae.services.exception.search.SyntaxLuceneEx;
@@ -119,7 +121,6 @@ public class SAESearchServiceImplDatasTest {
 
    private EcdeTestDocument ecde;
 
-
    @Before
    public void createCaptureContexte() throws Exception {
 
@@ -153,8 +154,8 @@ public class SAESearchServiceImplDatasTest {
       prmd.setCode("default");
       prmd.setLucene("Siret:12345678901234");
       saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "archivage_unitaire", "recherche",
-            "suppression" };
+      String[] roles = new String[] { "recherche_iterateur",
+            "archivage_unitaire", "recherche", "suppression" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("archivage_unitaire", saePrmds);
@@ -198,7 +199,6 @@ public class SAESearchServiceImplDatasTest {
       Assert.assertTrue("pas d'UntypedDocuments attendus", documents.isEmpty());
    }
 
-   
    @Test
    public final void searchSuccessResult() throws SAESearchServiceEx,
          MetaDataUnauthorizedToSearchEx, MetaDataUnauthorizedToConsultEx,
@@ -210,8 +210,8 @@ public class SAESearchServiceImplDatasTest {
          NotArchivableMetadataEx, UnknownHashCodeEx, CaptureBadEcdeUrlEx,
          CaptureEcdeUrlFileNotFoundEx, IOException,
          MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile,
-         UnknownFormatException, SuppressionException, ArchiveInexistanteEx, 
-         UnexpectedDomainException, InvalidPagmsCombinaisonException, 
+         UnknownFormatException, SuppressionException, ArchiveInexistanteEx,
+         UnexpectedDomainException, InvalidPagmsCombinaisonException,
          CaptureExistingUuuidException {
 
       // insertion d'un document
@@ -269,11 +269,12 @@ public class SAESearchServiceImplDatasTest {
       Assert.assertEquals("1 document attendu", 1, documents.size());
 
       serviceSuppression.suppression(uuid);
-      
-      // supprime le fichier attestation_consultation.pdf sur le repertoire de l'ecde
+
+      // supprime le fichier attestation_consultation.pdf sur le repertoire de
+      // l'ecde
       fileDoc.delete();
    }
-   
+
    /**
     * Cas de test: Appel du service de recherche avec une requête Lucene<br>
     * contenant uniquement ll'identifiantged d'un document<br>
@@ -281,79 +282,6 @@ public class SAESearchServiceImplDatasTest {
     */
    @Test
    public final void searchByIdGedSuccess() throws SAESearchServiceEx,
-      MetaDataUnauthorizedToSearchEx, MetaDataUnauthorizedToConsultEx,
-      UnknownDesiredMetadataEx, UnknownLuceneMetadataEx, SyntaxLuceneEx,
-      SAECaptureServiceEx, ReferentialRndException, UnknownCodeRndEx,
-      RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx,
-      UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
-      EmptyDocumentEx, RequiredArchivableMetadataEx,
-      NotArchivableMetadataEx, UnknownHashCodeEx, CaptureBadEcdeUrlEx,
-      CaptureEcdeUrlFileNotFoundEx, IOException,
-      MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile,
-      UnknownFormatException, SuppressionException, ArchiveInexistanteEx, 
-      UnexpectedDomainException, InvalidPagmsCombinaisonException, 
-      CaptureExistingUuuidException {
-      
-      // insertion d'un document
-      ecde = ecdeTestTools
-      .buildEcdeTestDocument("attestation_consultation.pdf");
-      
-      File repertoireEcde = ecde.getRepEcdeDocuments();
-      URI urlEcdeDocument = ecde.getUrlEcdeDocument();
-      
-      // copie le fichier attestation_consultation.pdf
-      // dans le repertoire de l'ecde
-      File fileDoc = new File(repertoireEcde, "attestation_consultation.pdf");
-      ClassPathResource resDoc = new ClassPathResource(
-      "doc/attestation_consultation.pdf");
-      FileOutputStream fos = new FileOutputStream(fileDoc);
-      IOUtils.copy(resDoc.getInputStream(), fos);
-      resDoc.getInputStream().close();
-      fos.close();
-      
-      File srcFile = new File(
-      "src/test/resources/doc/attestation_consultation.pdf");
-      
-      List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
-      
-      String titreUnique = "Titre " + UUID.randomUUID().toString();
-      
-      // liste des métadonnées obligatoires
-      metadatas.add(new UntypedMetadata("ApplicationProductrice", "ADELAIDE"));
-      metadatas.add(new UntypedMetadata("CodeOrganismeProprietaire", "CER69"));
-      metadatas.add(new UntypedMetadata("CodeOrganismeGestionnaire", "UR750"));
-      metadatas.add(new UntypedMetadata("FormatFichier", "fmt/354"));
-      metadatas.add(new UntypedMetadata("NbPages", "2"));
-      metadatas.add(new UntypedMetadata("DateCreation", "2012-01-01"));
-      metadatas.add(new UntypedMetadata("TypeHash", "SHA-1"));
-      String hash = DigestUtils.shaHex(new FileInputStream(srcFile));
-      metadatas.add(new UntypedMetadata("Hash", StringUtils.upperCase(hash)));
-      metadatas.add(new UntypedMetadata("CodeRND", "1.2.1.1.1"));
-      metadatas.add(new UntypedMetadata("Titre", titreUnique));
-      metadatas.add(new UntypedMetadata("Siret", "12345678901234"));
-      
-      // liste des métadonnées non obligatoires
-      metadatas.add(new UntypedMetadata("DateReception", "1999-11-25"));
-      metadatas.add(new UntypedMetadata("DateDebutConservation", "2011-09-02"));
-      
-      uuid = service.capture(metadatas, urlEcdeDocument).getIdDoc();
-      Document doc = testProvider.searchDocument(uuid);
-      
-      Assert.assertNotNull("l'UUID '" + uuid + "' doit exister dans le SAE", doc);
-      
-      List<UntypedDocument> documents = 
-         saeSearchService.search("IdGed:" + uuid, new ArrayList<String>());
-        
-      Assert.assertEquals("1 document attendu", 1, documents.size());
-      
-      serviceSuppression.suppression(uuid);
-      
-      // supprime le fichier attestation_consultation.pdf sur le repertoire de l'ecde
-      fileDoc.delete();
-   }
-   
-   @Test
-   public final void searchSuccessResultWithMetaRequestedTwice() throws SAESearchServiceEx,
          MetaDataUnauthorizedToSearchEx, MetaDataUnauthorizedToConsultEx,
          UnknownDesiredMetadataEx, UnknownLuceneMetadataEx, SyntaxLuceneEx,
          SAECaptureServiceEx, ReferentialRndException, UnknownCodeRndEx,
@@ -363,8 +291,8 @@ public class SAESearchServiceImplDatasTest {
          NotArchivableMetadataEx, UnknownHashCodeEx, CaptureBadEcdeUrlEx,
          CaptureEcdeUrlFileNotFoundEx, IOException,
          MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile,
-         UnknownFormatException, SuppressionException, ArchiveInexistanteEx, 
-         UnexpectedDomainException, InvalidPagmsCombinaisonException, 
+         UnknownFormatException, SuppressionException, ArchiveInexistanteEx,
+         UnexpectedDomainException, InvalidPagmsCombinaisonException,
          CaptureExistingUuuidException {
 
       // insertion d'un document
@@ -414,7 +342,83 @@ public class SAESearchServiceImplDatasTest {
 
       Assert.assertNotNull("l'UUID '" + uuid + "' doit exister dans le SAE",
             doc);
-      
+
+      List<UntypedDocument> documents = saeSearchService.search(
+            "IdGed:" + uuid, new ArrayList<String>());
+
+      Assert.assertEquals("1 document attendu", 1, documents.size());
+
+      serviceSuppression.suppression(uuid);
+
+      // supprime le fichier attestation_consultation.pdf sur le repertoire de
+      // l'ecde
+      fileDoc.delete();
+   }
+
+   @Test
+   public final void searchSuccessResultWithMetaRequestedTwice()
+         throws SAESearchServiceEx, MetaDataUnauthorizedToSearchEx,
+         MetaDataUnauthorizedToConsultEx, UnknownDesiredMetadataEx,
+         UnknownLuceneMetadataEx, SyntaxLuceneEx, SAECaptureServiceEx,
+         ReferentialRndException, UnknownCodeRndEx, RequiredStorageMetadataEx,
+         InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
+         DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
+         RequiredArchivableMetadataEx, NotArchivableMetadataEx,
+         UnknownHashCodeEx, CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx,
+         IOException, MetadataValueNotInDictionaryEx,
+         ValidationExceptionInvalidFile, UnknownFormatException,
+         SuppressionException, ArchiveInexistanteEx, UnexpectedDomainException,
+         InvalidPagmsCombinaisonException, CaptureExistingUuuidException,
+         UnknownFiltresMetadataEx, DoublonFiltresMetadataEx {
+
+      // insertion d'un document
+      ecde = ecdeTestTools
+            .buildEcdeTestDocument("attestation_consultation.pdf");
+
+      File repertoireEcde = ecde.getRepEcdeDocuments();
+      URI urlEcdeDocument = ecde.getUrlEcdeDocument();
+
+      // copie le fichier attestation_consultation.pdf
+      // dans le repertoire de l'ecde
+      File fileDoc = new File(repertoireEcde, "attestation_consultation.pdf");
+      ClassPathResource resDoc = new ClassPathResource(
+            "doc/attestation_consultation.pdf");
+      FileOutputStream fos = new FileOutputStream(fileDoc);
+      IOUtils.copy(resDoc.getInputStream(), fos);
+      resDoc.getInputStream().close();
+      fos.close();
+
+      File srcFile = new File(
+            "src/test/resources/doc/attestation_consultation.pdf");
+
+      List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
+
+      String titreUnique = "Titre " + UUID.randomUUID().toString();
+
+      // liste des métadonnées obligatoires
+      metadatas.add(new UntypedMetadata("ApplicationProductrice", "ADELAIDE"));
+      metadatas.add(new UntypedMetadata("CodeOrganismeProprietaire", "CER69"));
+      metadatas.add(new UntypedMetadata("CodeOrganismeGestionnaire", "UR750"));
+      metadatas.add(new UntypedMetadata("FormatFichier", "fmt/354"));
+      metadatas.add(new UntypedMetadata("NbPages", "2"));
+      metadatas.add(new UntypedMetadata("DateCreation", "2012-01-01"));
+      metadatas.add(new UntypedMetadata("TypeHash", "SHA-1"));
+      String hash = DigestUtils.shaHex(new FileInputStream(srcFile));
+      metadatas.add(new UntypedMetadata("Hash", StringUtils.upperCase(hash)));
+      metadatas.add(new UntypedMetadata("CodeRND", "1.2.1.1.1"));
+      metadatas.add(new UntypedMetadata("Titre", titreUnique));
+      metadatas.add(new UntypedMetadata("Siret", "12345678901234"));
+
+      // liste des métadonnées non obligatoires
+      metadatas.add(new UntypedMetadata("DateReception", "1999-11-25"));
+      metadatas.add(new UntypedMetadata("DateDebutConservation", "2011-09-02"));
+
+      uuid = service.capture(metadatas, urlEcdeDocument).getIdDoc();
+      Document doc = testProvider.searchDocument(uuid);
+
+      Assert.assertNotNull("l'UUID '" + uuid + "' doit exister dans le SAE",
+            doc);
+
       List<String> desiredMetadatas = new ArrayList<String>();
       desiredMetadatas.add("Titre");
       desiredMetadatas.add("Siret");
@@ -426,15 +430,45 @@ public class SAESearchServiceImplDatasTest {
       desiredMetadatas.add("Siret");
       desiredMetadatas.add("CodeRND");
 
+      // Test sur la recherche classique
       List<UntypedDocument> documents = saeSearchService
             .search("CodeOrganismeGestionnaire:UR750 AND Titre:\""
                   + titreUnique + "\"", desiredMetadatas);
 
       Assert.assertEquals("1 document attendu", 1, documents.size());
 
+      // Test sur la recherche paginée
+      List<UntypedMetadata> fixedMetadatas = new ArrayList<UntypedMetadata>();
+      UntypedMetadata uMeta = new UntypedMetadata("Titre", titreUnique);
+      fixedMetadatas.add(uMeta);
+
+      Calendar aujourdhui = Calendar.getInstance();
+      aujourdhui.add(Calendar.DATE, -1);
+      String dateMin = Integer.toString(aujourdhui.get(Calendar.YEAR))
+            + Integer.toString((aujourdhui.get(Calendar.MONTH) + 1))
+            + Integer.toString(aujourdhui.get(Calendar.DATE)) + "000000000";
+      aujourdhui.add(Calendar.DATE, 2);
+      String dateMax = Integer.toString(aujourdhui.get(Calendar.YEAR))
+            + Integer.toString((aujourdhui.get(Calendar.MONTH) + 1))
+            + Integer.toString(aujourdhui.get(Calendar.DATE)) + "000000000";
+      UntypedRangeMetadata varyingMetadata = new UntypedRangeMetadata(
+            "DateArchivage", dateMin, dateMax);
+
+      int nbDocumentsParPage = 10;
+      UUID lastIdDoc = null;
+
+      PaginatedUntypedDocuments documents2 = saeSearchService.searchPaginated(
+            fixedMetadatas, varyingMetadata, null,
+            new ArrayList<AbstractMetadata>(), nbDocumentsParPage, lastIdDoc,
+            desiredMetadatas);
+
+      Assert.assertEquals("1 document attendu", 1, documents2.getDocuments()
+            .size());
+
       serviceSuppression.suppression(uuid);
-      
-      // supprime le fichier attestation_consultation.pdf sur le repertoire de l'ecde
+
+      // supprime le fichier attestation_consultation.pdf sur le repertoire de
+      // l'ecde
       fileDoc.delete();
    }
 
@@ -463,6 +497,8 @@ public class SAESearchServiceImplDatasTest {
    /**
     * Test de la recherche par itérateur
     * 
+    * @throws DoublonFiltresMetadataEx
+    * 
     */
    @Test
    public final void rechercheParIterateurSucces() throws SAECaptureServiceEx,
@@ -476,8 +512,8 @@ public class SAESearchServiceImplDatasTest {
          MetaDataUnauthorizedToConsultEx, UnknownLuceneMetadataEx,
          SAESearchServiceEx, SyntaxLuceneEx, UnknownDesiredMetadataEx,
          UnknownFiltresMetadataEx, SuppressionException, ArchiveInexistanteEx,
-         UnexpectedDomainException, InvalidPagmsCombinaisonException, 
-         CaptureExistingUuuidException {
+         UnexpectedDomainException, InvalidPagmsCombinaisonException,
+         CaptureExistingUuuidException, DoublonFiltresMetadataEx {
 
       // insertion d'un document
       ecde = ecdeTestTools
@@ -541,17 +577,77 @@ public class SAESearchServiceImplDatasTest {
       List<String> listeDesiredMetadata = new ArrayList<String>();
 
       PaginatedUntypedDocuments documents = saeSearchService.searchPaginated(
-            fixedMetadatas, varyingMetadata, filters, nbDocumentsParPage,
-            lastIdDoc, listeDesiredMetadata);
+            fixedMetadatas, varyingMetadata, filters,
+            new ArrayList<AbstractMetadata>(), nbDocumentsParPage, lastIdDoc,
+            listeDesiredMetadata);
 
       Assert.assertEquals("1 document attendu", 1, documents.getDocuments()
             .size());
-      
-      Assert.assertEquals("UUID attendu incorect", uuid, documents.getDocuments().get(0).getUuid());
+
+      Assert.assertEquals("UUID attendu incorect", uuid, documents
+            .getDocuments().get(0).getUuid());
 
       serviceSuppression.suppression(uuid);
-      
-      // supprime le fichier attestation_consultation.pdf sur le repertoire de l'ecde
+
+      // supprime le fichier attestation_consultation.pdf sur le repertoire de
+      // l'ecde
       fileDoc.delete();
    }
+
+   /**
+    * Test de la recherche par itérateur
+    * 
+    * @throws DoublonFiltresMetadataEx
+    * 
+    */
+   @Test
+   public final void rechercheParIterateurErreurFiltreDoublon()
+         throws SAECaptureServiceEx, ReferentialRndException, UnknownCodeRndEx,
+         RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx,
+         UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
+         EmptyDocumentEx, RequiredArchivableMetadataEx,
+         NotArchivableMetadataEx, UnknownHashCodeEx, CaptureBadEcdeUrlEx,
+         CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx,
+         ValidationExceptionInvalidFile, UnknownFormatException, IOException,
+         MetaDataUnauthorizedToSearchEx, MetaDataUnauthorizedToConsultEx,
+         UnknownLuceneMetadataEx, SAESearchServiceEx, SyntaxLuceneEx,
+         UnknownDesiredMetadataEx, UnknownFiltresMetadataEx,
+         SuppressionException, ArchiveInexistanteEx, UnexpectedDomainException,
+         InvalidPagmsCombinaisonException, CaptureExistingUuuidException,
+         DoublonFiltresMetadataEx {
+
+      List<UntypedMetadata> fixedMetadatas = new ArrayList<UntypedMetadata>();
+      UntypedMetadata uMeta = new UntypedMetadata("Siret", "12345678901234");
+      fixedMetadatas.add(uMeta);
+      UntypedRangeMetadata varyingMetadata = new UntypedRangeMetadata(
+            "DateCreation", "20120101", "20120101");
+      List<AbstractMetadata> filters = new ArrayList<AbstractMetadata>();
+      UntypedMetadata metaFiltre = new UntypedMetadata("Titre",
+            "titre_a_chercher");
+
+      // Ajout du filtre en double
+      filters.add(metaFiltre);
+      filters.add(metaFiltre);
+
+      int nbDocumentsParPage = 10;
+      UUID lastIdDoc = null;
+      List<String> listeDesiredMetadata = new ArrayList<String>();
+
+      try {
+         PaginatedUntypedDocuments documents = saeSearchService
+               .searchPaginated(fixedMetadatas, varyingMetadata, filters,
+                     new ArrayList<AbstractMetadata>(), nbDocumentsParPage,
+                     lastIdDoc, listeDesiredMetadata);
+         Assert
+               .fail("L'exception de type DoublonFiltresMetadataEx est attendue");
+      } catch (DoublonFiltresMetadataEx e) {
+         Assert
+               .assertEquals(
+                     "Le message attendu est incorrect",
+                     "La ou les métadonnées suivantes, utilisées dans le filtre de la requête de recherche par itérateur, sont en doublon : Titre",
+                     e.getMessage());
+      }
+
+   }
+
 }

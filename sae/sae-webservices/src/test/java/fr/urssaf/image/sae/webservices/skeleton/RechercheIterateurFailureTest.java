@@ -24,6 +24,7 @@ import fr.urssaf.image.sae.bo.model.untyped.UntypedRangeMetadata;
 import fr.urssaf.image.sae.services.document.SAEDocumentService;
 import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
 import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedToConsultEx;
+import fr.urssaf.image.sae.services.exception.search.DoublonFiltresMetadataEx;
 import fr.urssaf.image.sae.services.exception.search.MetaDataUnauthorizedToSearchEx;
 import fr.urssaf.image.sae.services.exception.search.SAESearchServiceEx;
 import fr.urssaf.image.sae.services.exception.search.SyntaxLuceneEx;
@@ -86,12 +87,13 @@ public class RechercheIterateurFailureTest {
     * @throws MetaDataUnauthorizedToSearchEx
     * @throws SaeAccessDeniedAxisFault
     * @throws UnknownFiltresMetadataEx 
+    * @throws DoublonFiltresMetadataEx 
     */
    @Test
    public void searchFailureSAESearchServiceEx() throws SAESearchServiceEx,
          MetaDataUnauthorizedToSearchEx, MetaDataUnauthorizedToConsultEx,
          UnknownDesiredMetadataEx, UnknownLuceneMetadataEx, SyntaxLuceneEx,
-         SaeAccessDeniedAxisFault, UnknownFiltresMetadataEx {
+         SaeAccessDeniedAxisFault, UnknownFiltresMetadataEx, DoublonFiltresMetadataEx {
 
       List<String> listMetaDesired = new ArrayList<String>();
       listMetaDesired.add("TailleFichier");
@@ -103,6 +105,7 @@ public class RechercheIterateurFailureTest {
                      documentService.searchPaginated(
                            (List<UntypedMetadata>) EasyMock.anyObject(),
                            (UntypedRangeMetadata) EasyMock.anyObject(),
+                           (List<AbstractMetadata>) EasyMock.anyObject(),
                            (List<AbstractMetadata>) EasyMock.anyObject(),
                            EasyMock.anyInt(), (UUID) EasyMock.anyObject(),
                            (List<String>) EasyMock.anyObject()))
@@ -136,14 +139,14 @@ public class RechercheIterateurFailureTest {
    public void search_Failure_RuntimeException() throws SAESearchServiceEx,
          MetaDataUnauthorizedToSearchEx, MetaDataUnauthorizedToConsultEx,
          UnknownDesiredMetadataEx, UnknownLuceneMetadataEx, SyntaxLuceneEx,
-         SaeAccessDeniedAxisFault, UnknownFiltresMetadataEx {
+         SaeAccessDeniedAxisFault, UnknownFiltresMetadataEx, DoublonFiltresMetadataEx {
 
       try {
 
          EasyMock.expect(
                documentService.searchPaginated((List<UntypedMetadata>) EasyMock
                      .anyObject(), (UntypedRangeMetadata) EasyMock.anyObject(),
-                     (List<AbstractMetadata>) EasyMock.anyObject(), EasyMock
+                     (List<AbstractMetadata>) EasyMock.anyObject(), (List<AbstractMetadata>) EasyMock.anyObject(), EasyMock
                            .anyInt(), (UUID) EasyMock.anyObject(),
                      (List<String>) EasyMock.anyObject())).andThrow(
                new RuntimeException("une runtime exception est levée"));

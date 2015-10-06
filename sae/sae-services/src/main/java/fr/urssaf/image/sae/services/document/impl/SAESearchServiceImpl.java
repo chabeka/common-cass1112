@@ -3,6 +3,7 @@ package fr.urssaf.image.sae.services.document.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -45,6 +46,7 @@ import fr.urssaf.image.sae.services.document.model.SAESearchQueryParserResult;
 import fr.urssaf.image.sae.services.exception.SAESearchQueryParseException;
 import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
 import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedToConsultEx;
+import fr.urssaf.image.sae.services.exception.search.DoublonFiltresMetadataEx;
 import fr.urssaf.image.sae.services.exception.search.MetaDataUnauthorizedToSearchEx;
 import fr.urssaf.image.sae.services.exception.search.SAESearchServiceEx;
 import fr.urssaf.image.sae.services.exception.search.SyntaxLuceneEx;
@@ -62,6 +64,8 @@ import fr.urssaf.image.sae.storage.model.storagedocument.PaginatedStorageDocumen
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocuments;
 import fr.urssaf.image.sae.storage.model.storagedocument.filters.AbstractFilter;
+import fr.urssaf.image.sae.storage.model.storagedocument.filters.NotRangeFilter;
+import fr.urssaf.image.sae.storage.model.storagedocument.filters.NotValueFilter;
 import fr.urssaf.image.sae.storage.model.storagedocument.filters.RangeFilter;
 import fr.urssaf.image.sae.storage.model.storagedocument.filters.ValueFilter;
 import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.LuceneCriteria;
@@ -641,12 +645,14 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
    @Override
    public final PaginatedUntypedDocuments searchPaginated(
          List<UntypedMetadata> fixedMetadatas,
-         UntypedRangeMetadata varyingMetadata, List<AbstractMetadata> filters,
-         int nbDocumentsParPage, UUID lastIdDoc,
-         List<String> listeDesiredMetadata)
+         UntypedRangeMetadata varyingMetadata,
+         List<AbstractMetadata> listeFiltreEgal,
+         List<AbstractMetadata> listeFiltreDifferent, int nbDocumentsParPage,
+         UUID lastIdDoc, List<String> listeDesiredMetadata)
          throws MetaDataUnauthorizedToSearchEx,
          MetaDataUnauthorizedToConsultEx, UnknownLuceneMetadataEx,
-         SAESearchServiceEx, SyntaxLuceneEx, UnknownDesiredMetadataEx, UnknownFiltresMetadataEx {
+         SAESearchServiceEx, SyntaxLuceneEx, UnknownDesiredMetadataEx,
+         UnknownFiltresMetadataEx, DoublonFiltresMetadataEx {
 
       PaginatedUntypedDocuments pagUntypedDoc = new PaginatedUntypedDocuments();
       try {
@@ -661,16 +667,21 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
                prefixeTrc, StringUtils
                      .isEmpty(buildMessageFromList(fixedMetadatas)) ? "Vide"
                      : buildMessageFromList(fixedMetadatas));
+         LOG.debug("{} - Métadonnée variable : {}", prefixeTrc, varyingMetadata
+               .toString());
          LOG
                .debug(
-                     "{} - Métadonnée variable : {}",
-                     prefixeTrc, varyingMetadata.toString());
+                     "{} - Filtres de type \"égal à\" : {}",
+                     prefixeTrc,
+                     StringUtils.isEmpty(buildMessageFromList(listeFiltreEgal)) ? "Vide"
+                           : buildMessageFromList(listeFiltreEgal));
          LOG
                .debug(
-                     "{} - Filtres : {}",
-                     prefixeTrc, StringUtils
-                           .isEmpty(buildMessageFromList(filters)) ? "Vide"
-                           : buildMessageFromList(filters));
+                     "{} - Filtres de type \"différent de\" : {}",
+                     prefixeTrc,
+                     StringUtils
+                           .isEmpty(buildMessageFromList(listeFiltreDifferent)) ? "Vide"
+                           : buildMessageFromList(listeFiltreDifferent));
          LOG.debug("{} - Nombre de document à récupérer : {}", prefixeTrc,
                nbDocumentsParPage);
          LOG
@@ -708,31 +719,44 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
          List<SAEMetadata> listCodCourt = recupererListCodCourtByLongCode(longCodesReq);
          checkSearchableLuceneMetadata(listCodCourt);
 
+         
+         // On supprime les eventuels doublon de la liste des metadonnees demandees
+         List<String> listUniqueMetaDesired = getUniqueMetadata(listeDesiredMetadata);
+                 
          // Vérifie que les métadonnées demandées dans les résultats de
          // recherche existent dans le référentiel des métadonnées
-         checkExistingMetadataDesired(listeDesiredMetadata);
+         checkExistingMetadataDesired(listUniqueMetaDesired);
          boolean isFromRefrentiel = false;
          List<SAEMetadata> listCodCourtConsult;
-         if (listeDesiredMetadata.isEmpty()) {
+         if (listUniqueMetaDesired.isEmpty()) {
             listCodCourtConsult = recupererListDefaultMetadatas();
             isFromRefrentiel = true;
          } else {
-            listCodCourtConsult = recupererListCodCourtByLongCode(listeDesiredMetadata);
+            listCodCourtConsult = recupererListCodCourtByLongCode(listUniqueMetaDesired);
          }
          checkConsultableDesiredMetadata(listCodCourtConsult, isFromRefrentiel);
          
          // Vérification existence des métadonnées des filtres
-         List<String> codeLongFiltres = new ArrayList<String>();
-         for (AbstractMetadata meta : filters) {
-            codeLongFiltres.add(meta.getLongCode());
+         List<String> codeLongFiltresEgal = new ArrayList<String>();
+         for (AbstractMetadata meta : listeFiltreEgal) {
+            codeLongFiltresEgal.add(meta.getLongCode());
          }
-         checkExistingFiltresMetadata(codeLongFiltres);
+         checkExistingFiltresMetadata(codeLongFiltresEgal);
         
-         // Création de la liste des filtres
-         List<AbstractFilter> abstractFilter = creationListeFiltres(filters);
+         List<String> codeLongFiltresDifferent = new ArrayList<String>();
+         for (AbstractMetadata meta : listeFiltreDifferent) {
+            codeLongFiltresDifferent.add(meta.getLongCode());
+         }
+         checkExistingFiltresMetadata(codeLongFiltresDifferent);
 
+         checkMetadataDoublon(codeLongFiltresEgal, codeLongFiltresDifferent);
+
+         // Création de la liste des filtres
+         List<AbstractFilter> abstractFilter = creationListeFiltres(
+               listeFiltreEgal, listeFiltreDifferent);
          
-         String codeCourtVaryingMeta = metaRefD.getByLongCode(varyingMetadata.getLongCode()).getShortCode();
+         String codeCourtVaryingMeta = metaRefD.getByLongCode(
+               varyingMetadata.getLongCode()).getShortCode();
          
          PaginatedStorageDocuments psd = searchPaginatedStorageDocuments(
                requeteFinal, nbDocumentsParPage, abstractFilter, lastIdDoc,
@@ -772,28 +796,88 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
    }
 
    /**
+    * Vérification qu'il n'y a pas de doublon dans les métadonnées
+    * 
+    * @param codeLongFiltresEgal
+    * @param codeLongFiltresDifferent
+    * @throws DoublonFiltresMetadataEx
+    */
+   private void checkMetadataDoublon(List<String> codeLongFiltresEgal,
+         List<String> codeLongFiltresDifferent) throws DoublonFiltresMetadataEx {
+      List<String> codeLongFiltres = new ArrayList<String>();
+      codeLongFiltres.addAll(codeLongFiltresEgal);
+      codeLongFiltres.addAll(codeLongFiltresDifferent);
+
+      Map<String, Integer> comptage = new HashMap<String, Integer>();
+
+      for (String codeLong : Utils.nullSafeIterable(codeLongFiltres)) {
+
+         if (comptage.get(codeLong) == null) {
+            comptage.put(codeLong, 1);
+         } else {
+            comptage.put(codeLong, comptage.get(codeLong) + 1);
+         }
+
+      }
+
+      List<String> doublonMetadataErrors = new ArrayList<String>();
+      for (String cle : comptage.keySet()) {
+         if (comptage.get(cle) > 1) {
+            doublonMetadataErrors.add(cle);
+         }
+      }
+
+      if (!doublonMetadataErrors.isEmpty()) {
+         throw new DoublonFiltresMetadataEx(ResourceMessagesUtils.loadMessage(
+               "search.doublon.filtre.error", FormatUtils
+                     .formattingDisplayList(doublonMetadataErrors)));
+      }
+
+   }
+
+   /**
     * Création de la liste des filtres pour la recherche paginée
     * 
-    * @param filters
-    *           Les filtres passés en paramètres
+    * @param listeFiltreEgal
+    *           Les filtres de type "égal à" passés en paramètres
+    * @param listeFiltreDifferent
+    *           Les filtres de type "différent de" passés en paramètres
     * @return La liste des filtres
     * @throws ReferentialException
     */
    private List<AbstractFilter> creationListeFiltres(
-         List<AbstractMetadata> filters) throws ReferentialException {
+         List<AbstractMetadata> listeFiltreEgal,
+         List<AbstractMetadata> listeFiltreDifferent)
+         throws ReferentialException {
       List<AbstractFilter> abstractFilter = new ArrayList<AbstractFilter>();
-      for (AbstractMetadata filter : filters) {
+      for (AbstractMetadata filter : listeFiltreEgal) {
          String shortCode = mrdao.getByLongCode(filter.getLongCode())
                .getShortCode();
          if (filter instanceof UntypedMetadata) {
-            ValueFilter valueFilter = new ValueFilter(shortCode,
-                  ((UntypedMetadata) filter).getValue());
+            ValueFilter valueFilter = new ValueFilter(shortCode, filter
+                  .getLongCode(), ((UntypedMetadata) filter).getValue());
             abstractFilter.add(valueFilter);
          } else if (filter instanceof UntypedRangeMetadata) {
-            RangeFilter rangeFilter = new RangeFilter(shortCode,
-                  ((UntypedRangeMetadata) filter).getValeurMin(),
-                  ((UntypedRangeMetadata) filter).getValeurMax());
+            RangeFilter rangeFilter = new RangeFilter(shortCode, filter
+                  .getLongCode(), ((UntypedRangeMetadata) filter)
+                  .getValeurMin(), ((UntypedRangeMetadata) filter)
+                  .getValeurMax());
             abstractFilter.add(rangeFilter);
+         }
+      }
+      for (AbstractMetadata filter : listeFiltreDifferent) {
+         String shortCode = mrdao.getByLongCode(filter.getLongCode())
+               .getShortCode();
+         if (filter instanceof UntypedMetadata) {
+            NotValueFilter notValueFilter = new NotValueFilter(shortCode,
+                  filter.getLongCode(), ((UntypedMetadata) filter).getValue());
+            abstractFilter.add(notValueFilter);
+         } else if (filter instanceof UntypedRangeMetadata) {
+            NotRangeFilter notRangeFilter = new NotRangeFilter(shortCode,
+                  filter.getLongCode(), ((UntypedRangeMetadata) filter)
+                        .getValeurMin(), ((UntypedRangeMetadata) filter)
+                        .getValeurMax());
+            abstractFilter.add(notRangeFilter);
          }
       }
       return abstractFilter;

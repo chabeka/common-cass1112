@@ -150,24 +150,24 @@ public class SAEDocumentTestImpl implements SAEDocumentService {
 
       return (List<UntypedDocument>) object;
    }
-   
+
    /**
     * {@inheritDoc}
     */
    @Override
    public PaginatedUntypedDocuments searchPaginated(
          List<UntypedMetadata> fixedMetadatas,
-         UntypedRangeMetadata varyingMetadata, List<AbstractMetadata> filters,
-         int nbDocumentsParPage, UUID lastIdDoc,
-         List<String> listeDesiredMetadata)
+         UntypedRangeMetadata varyingMetadata,
+         List<AbstractMetadata> equalsFilters,
+         List<AbstractMetadata> notEqualsFilters, int nbDocumentsParPage,
+         UUID lastIdDoc, List<String> listeDesiredMetadata)
          throws MetaDataUnauthorizedToSearchEx,
          MetaDataUnauthorizedToConsultEx, UnknownLuceneMetadataEx,
          SAESearchServiceEx, SyntaxLuceneEx, UnknownDesiredMetadataEx {
-      
 
       return null;
    }
-   
+
    /**
     * {@inheritDoc}
     */
@@ -191,7 +191,7 @@ public class SAEDocumentTestImpl implements SAEDocumentService {
 
       return (UntypedDocument) object;
    }
-   
+
    /**
     * {@inheritDoc}
     */
@@ -199,7 +199,7 @@ public class SAEDocumentTestImpl implements SAEDocumentService {
    public void addDocumentNote(UUID docUuid, String contenu, String login)
          throws SAEDocumentNoteException, ArchiveInexistanteEx {
       // TODO Auto-generated method stub
-      
+
    }
 
    /**
@@ -262,7 +262,5 @@ public class SAEDocumentTestImpl implements SAEDocumentService {
    public final void setSearchMaxResult(Object[] searchMaxResult) {
       this.searchMaxResult = searchMaxResult;
    }
-
-
 
 }

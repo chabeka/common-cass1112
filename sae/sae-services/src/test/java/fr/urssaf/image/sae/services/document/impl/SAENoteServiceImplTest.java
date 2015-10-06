@@ -157,7 +157,7 @@ public class SAENoteServiceImplTest {
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "archivage_unitaire", "ajoutNote",
+      String[] roles = new String[] { "archivage_unitaire", "ajout_note",
             "consultation" };
       saePrmds.add(saePrmd);
 
@@ -320,8 +320,8 @@ public class SAENoteServiceImplTest {
          noteService.addDocumentNote(uuid, "Contenu de la note", "login");
          fail("Une exception devrait être renvoyée car le document n'existe pas");
       } catch (ArchiveInexistanteEx e) {
-         String message = "Il n'existe aucun document pour l'identifiant d'archivage "
-               + uuid;
+         String message = "Il n'existe aucun document pour l'identifiant d'archivage '"
+               + uuid + "'";
          assertEquals("Erreur message attendu", message, e.getMessage());
       }
 

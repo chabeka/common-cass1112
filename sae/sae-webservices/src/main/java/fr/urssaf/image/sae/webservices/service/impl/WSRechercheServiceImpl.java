@@ -37,6 +37,7 @@ import fr.urssaf.image.sae.bo.model.untyped.UntypedRangeMetadata;
 import fr.urssaf.image.sae.services.document.SAEDocumentService;
 import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
 import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedToConsultEx;
+import fr.urssaf.image.sae.services.exception.search.DoublonFiltresMetadataEx;
 import fr.urssaf.image.sae.services.exception.search.MetaDataUnauthorizedToSearchEx;
 import fr.urssaf.image.sae.services.exception.search.SAESearchServiceEx;
 import fr.urssaf.image.sae.services.exception.search.SyntaxLuceneEx;
@@ -231,9 +232,11 @@ public class WSRechercheServiceImpl implements WSRechercheService {
          idDoc = UUID.fromString(identifiantPage.getIdArchive().getUuidType());
       }
 
-      // Filtres
       FiltreType filtres = params.getFiltres();
-      List<AbstractMetadata> listeAbstractMeta = recupererFiltres(filtres);
+      // Filtres de type "égal à" ou "contenu dans" (pour les range)
+      List<AbstractMetadata> listeFiltreEgalite = recupererFiltresEgalite(filtres);
+      // Filtres de type "différent" ou "non contenu dans" (pour les range)
+      List<AbstractMetadata> listeFiltreDifferent = recupererFiltresDifferent(filtres);
 
       // Nombre de documents par page
       int nbDocsParPage = params.getNbDocumentsParPage();
@@ -245,7 +248,12 @@ public class WSRechercheServiceImpl implements WSRechercheService {
       // a forcément besoin de la récupérer pour pouvoir mettre la valeur dans
       // l'identifiant de la dernière page
       if (!listeMetaSouhaitees.contains(untypedRangeMeta.getLongCode())) {
+         if(listeMetaSouhaitees.isEmpty()) {
+          listeMetaSouhaitees = new ArrayList<String>();
+          listeMetaSouhaitees.add(untypedRangeMeta.getLongCode());
+         } else {
          listeMetaSouhaitees.add(untypedRangeMeta.getLongCode());
+         }
       }
 
       try {
@@ -253,8 +261,8 @@ public class WSRechercheServiceImpl implements WSRechercheService {
          // Lancement de la recherche paginée
          PaginatedUntypedDocuments paginatedUDoc = documentService
                .searchPaginated(listeFixedMeta, untypedRangeMeta,
-                     listeAbstractMeta, nbDocsParPage, idDoc,
-                     listeMetaSouhaitees);
+                     listeFiltreEgalite, listeFiltreDifferent, nbDocsParPage,
+                     idDoc, listeMetaSouhaitees);
 
          List<UntypedDocument> listeUDoc = paginatedUDoc.getDocuments();
          boolean lastPage = paginatedUDoc.getLastPage();
@@ -311,6 +319,9 @@ public class WSRechercheServiceImpl implements WSRechercheService {
       } catch (UnknownFiltresMetadataEx e) {
          throw new RechercheAxis2Fault(e.getMessage(),
                "RechercheMetadonneesInconnues", e);
+      } catch (DoublonFiltresMetadataEx e) {
+         throw new RechercheAxis2Fault(e.getMessage(),
+               "RechercheMetadonneesDoublons", e);
       }
       LOG.debug("{} - Sortie", prefixeTrc);
       return response;
@@ -335,38 +346,86 @@ public class WSRechercheServiceImpl implements WSRechercheService {
    }
 
    /**
-    * Récuperation de la liste des filtres et conversion en liste de métadonnées
+    * Récuperation de la liste des filtres de type "egal à" ou "contenu dans" et
+    * conversion en liste de métadonnées
     * 
     * @param filtres
     * @return la liste des métadonnées
     */
-   private List<AbstractMetadata> recupererFiltres(FiltreType filtres) {
+   private List<AbstractMetadata> recupererFiltresEgalite(FiltreType filtres) {
       List<AbstractMetadata> listeAbstractMeta = new ArrayList<AbstractMetadata>();
       if (filtres != null) {
+         if (filtres.getEqualFilter() != null) {
+            MetadonneeType[] listeEqualFilter = filtres.getEqualFilter()
+                  .getMetadonnee();
+            if (listeEqualFilter != null) {
+               for (MetadonneeType metadonneeType : listeEqualFilter) {
+                  UntypedMetadata abstractMeta = new UntypedMetadata(
+                        metadonneeType.getCode().getMetadonneeCodeType(),
+                        metadonneeType.getValeur().getMetadonneeValeurType());
 
-         MetadonneeType[] listeEqualFilter = filtres.getEqualFilter()
-               .getMetadonnee();
-         if (listeEqualFilter != null) {
-            for (MetadonneeType metadonneeType : listeEqualFilter) {
-               UntypedMetadata abstractMeta = new UntypedMetadata(
-                     metadonneeType.getCode().getMetadonneeCodeType(),
-                     metadonneeType.getValeur().getMetadonneeValeurType());
-
-               listeAbstractMeta.add(abstractMeta);
+                  listeAbstractMeta.add(abstractMeta);
+               }
             }
          }
 
-         RangeMetadonneeType[] listeRangeFilter = filtres.getRangeFilter()
-               .getRangeMetadonnee();
-         if (listeRangeFilter != null) {
-            for (RangeMetadonneeType rangeMetadonneeType : listeRangeFilter) {
-               UntypedRangeMetadata abstractMeta = new UntypedRangeMetadata(
-                     rangeMetadonneeType.getCode().getMetadonneeCodeType(),
-                     rangeMetadonneeType.getValeurMin()
-                           .getMetadonneeValeurType(), rangeMetadonneeType
-                           .getValeurMax().getMetadonneeValeurType());
+         if (filtres.getRangeFilter() != null) {
+            RangeMetadonneeType[] listeRangeFilter = filtres.getRangeFilter()
+                  .getRangeMetadonnee();
+            if (listeRangeFilter != null) {
+               for (RangeMetadonneeType rangeMetadonneeType : listeRangeFilter) {
+                  UntypedRangeMetadata abstractMeta = new UntypedRangeMetadata(
+                        rangeMetadonneeType.getCode().getMetadonneeCodeType(),
+                        rangeMetadonneeType.getValeurMin()
+                              .getMetadonneeValeurType(), rangeMetadonneeType
+                              .getValeurMax().getMetadonneeValeurType());
 
-               listeAbstractMeta.add(abstractMeta);
+                  listeAbstractMeta.add(abstractMeta);
+               }
+            }
+         }
+      }
+      return listeAbstractMeta;
+   }
+
+   /**
+    * Récuperation de la liste des filtres de type "different de" ou
+    * "non contenu dans" et conversion en liste de métadonnées
+    * 
+    * @param filtres
+    * @return la liste des métadonnées
+    */
+   private List<AbstractMetadata> recupererFiltresDifferent(FiltreType filtres) {
+      List<AbstractMetadata> listeAbstractMeta = new ArrayList<AbstractMetadata>();
+      if (filtres != null) {
+
+         if (filtres.getNotEqualFilter() != null) {
+            MetadonneeType[] listeNotEqualFilter = filtres.getNotEqualFilter()
+                  .getMetadonnee();
+            if (listeNotEqualFilter != null) {
+               for (MetadonneeType metadonneeType : listeNotEqualFilter) {
+                  UntypedMetadata abstractMeta = new UntypedMetadata(
+                        metadonneeType.getCode().getMetadonneeCodeType(),
+                        metadonneeType.getValeur().getMetadonneeValeurType());
+
+                  listeAbstractMeta.add(abstractMeta);
+               }
+            }
+         }
+
+         if (filtres.getNotInRangeFilter() != null) {
+            RangeMetadonneeType[] listeNotInRangeFilter = filtres
+                  .getNotInRangeFilter().getRangeMetadonnee();
+            if (listeNotInRangeFilter != null) {
+               for (RangeMetadonneeType rangeMetadonneeType : listeNotInRangeFilter) {
+                  UntypedRangeMetadata abstractMeta = new UntypedRangeMetadata(
+                        rangeMetadonneeType.getCode().getMetadonneeCodeType(),
+                        rangeMetadonneeType.getValeurMin()
+                              .getMetadonneeValeurType(), rangeMetadonneeType
+                              .getValeurMax().getMetadonneeValeurType());
+
+                  listeAbstractMeta.add(abstractMeta);
+               }
             }
          }
 

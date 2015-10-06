@@ -32,6 +32,7 @@ import fr.urssaf.image.sae.bo.model.untyped.UntypedRangeMetadata;
 import fr.urssaf.image.sae.services.document.SAEDocumentService;
 import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
 import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedToConsultEx;
+import fr.urssaf.image.sae.services.exception.search.DoublonFiltresMetadataEx;
 import fr.urssaf.image.sae.services.exception.search.MetaDataUnauthorizedToSearchEx;
 import fr.urssaf.image.sae.services.exception.search.SAESearchServiceEx;
 import fr.urssaf.image.sae.services.exception.search.SyntaxLuceneEx;
@@ -85,7 +86,8 @@ public class RechercheIterateurTest {
    @Test
    public void searchSuccess() throws IOException, SAESearchServiceEx,
          MetaDataUnauthorizedToSearchEx, MetaDataUnauthorizedToConsultEx,
-         UnknownDesiredMetadataEx, UnknownLuceneMetadataEx, SyntaxLuceneEx, UnknownFiltresMetadataEx {
+         UnknownDesiredMetadataEx, UnknownLuceneMetadataEx, SyntaxLuceneEx,
+         UnknownFiltresMetadataEx, DoublonFiltresMetadataEx {
 
       PaginatedUntypedDocuments documents = new PaginatedUntypedDocuments();
       UntypedDocument document1 = new UntypedDocument();
@@ -145,6 +147,7 @@ public class RechercheIterateurTest {
       EasyMock.expect(
             documentService.searchPaginated((List<UntypedMetadata>) EasyMock
                   .anyObject(), (UntypedRangeMetadata) EasyMock.anyObject(),
+                  (List<AbstractMetadata>) EasyMock.anyObject(),
                   (List<AbstractMetadata>) EasyMock.anyObject(), EasyMock
                         .anyInt(), (UUID) EasyMock.anyObject(),
                   (List<String>) EasyMock.anyObject())).andReturn(documents);
