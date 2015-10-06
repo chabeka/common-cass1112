@@ -6,6 +6,7 @@ package fr.urssaf.image.sae.metadata.referential.services.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -99,7 +100,8 @@ public class SAEControlMetadataServiceImpl implements SAEControlMetadataService 
          Collection<MetadataReference> values, List<String> listLongCode) {
 
       Collection<String> colRef = extractLongRefFromMetaDataRef(values);
-      Collection<String> colLongCode = listLongCode;
+      // le hashset permet de supprimer les eventuels doublon de la liste des code long demandes
+      Collection<String> colLongCode = new HashSet<String>(listLongCode);
 
       Collection<String> result = CollectionUtils.subtract(colLongCode, colRef);
 

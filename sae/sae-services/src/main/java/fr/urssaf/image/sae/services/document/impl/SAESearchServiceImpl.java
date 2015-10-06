@@ -2,8 +2,10 @@ package fr.urssaf.image.sae.services.document.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
@@ -418,6 +420,25 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
       }
       return listCodCourtConsult;
    }
+   
+   /**
+    * Recupere la liste des metadonnees demandees sans les doublons.
+    * @param listMetaDesired liste des metadonnees demandees
+    * @return List<String> liste des metadonnees sans doublon
+    */
+   private List<String> getUniqueMetadata(List<String> listMetaDesired) {
+      List<String> listUniqueMetaDesired;
+      // On supprime les eventuels doublon de la liste des metadonnees demandees
+      if (listMetaDesired != null && !listMetaDesired.isEmpty()) {
+         // let set supprime les doublons
+         Set<String> setUniqueMeta = new HashSet<String>(listMetaDesired);
+         // retransforme le set en liste
+         listUniqueMetaDesired = new ArrayList<String>(setUniqueMeta);
+      } else {
+         listUniqueMetaDesired = new ArrayList<String>();
+      }
+      return listUniqueMetaDesired;
+   }
 
    /**
     * Recherche Une liste de type {@link StorageDocument} à partir d'une requête
@@ -550,19 +571,22 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
          List<String> longCodesReq = new ArrayList<String>(parserResult
                .getMetaUtilisees().keySet());
          checkExistingLuceneMetadata(longCodesReq);
-
+         
+         // On supprime les eventuels doublon de la liste des metadonnees demandees
+         List<String> listUniqueMetaDesired = getUniqueMetadata(listMetaDesired);
+         
          // Vérifie que les métadonnées demandées dans les résultats de
          // recherche
          // existent dans le référentiel des métadonnées
-         checkExistingMetadataDesired(listMetaDesired);
+         checkExistingMetadataDesired(listUniqueMetaDesired);
 
          listCodCourt = recupererListCodCourtByLongCode(longCodesReq);
          checkSearchableLuceneMetadata(listCodCourt);
-         if (listMetaDesired.isEmpty()) {
+         if (listUniqueMetaDesired.isEmpty()) {
             listCodCourtConsult = recupererListDefaultMetadatas();
             isFromRefrentiel = true;
          } else {
-            listCodCourtConsult = recupererListCodCourtByLongCode(listMetaDesired);
+            listCodCourtConsult = recupererListCodCourtByLongCode(listUniqueMetaDesired);
          }
          checkConsultableDesiredMetadata(listCodCourtConsult, isFromRefrentiel);
          LOG
