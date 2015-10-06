@@ -143,7 +143,7 @@ public class SAEServiceTestProvider {
    public final UUID captureDocument(byte[] content,
          Map<String, Object> metadatas, String documentTitle,
          String documentType, Date dateCreation, Date dateDebutConservation,
-         String codeRND, String title) {
+         String codeRND, String title, String note) {
 
       try {
          Document document = ToolkitFactory.getInstance().createDocument(base,
@@ -161,12 +161,18 @@ public class SAEServiceTestProvider {
          }
 
          InputStream docContent = new ByteArrayInputStream(content);
-         return serviceProvider.getStoreService().storeDocument(document,
-               docContent).getUuid();
+         UUID uuidDoc = serviceProvider.getStoreService().storeDocument(
+               document, docContent).getUuid();
+         if (note != null) {
+            serviceProvider.getNoteService().addNote(uuidDoc, note);
+         }
 
+         return uuidDoc;
+         
       } catch (TagControlException e) {
          throw new NestableRuntimeException(e);
-      }
+      } catch (FrozenDocumentException e) {
+         throw new NestableRuntimeException(e);      }
 
    }
 
@@ -190,7 +196,6 @@ public class SAEServiceTestProvider {
 
    }
 
-   
    /**
     * Permet de récupérer la liste des notes d'un document
     * 
@@ -199,7 +204,7 @@ public class SAEServiceTestProvider {
     */
    public List<Note> getNoteDocument(UUID uuid) {
 
-        return serviceProvider.getNoteService().getNotes(uuid);
+      return serviceProvider.getNoteService().getNotes(uuid);
 
    }
 }

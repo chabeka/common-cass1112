@@ -7,7 +7,9 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -18,10 +20,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.cassandra.cli.CliParser.newColumnFamily_return;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -141,14 +145,15 @@ public class SAEConsultationServiceTest {
       String documentType = "pdf";
       String codeRND = "2.3.1.1.12";
       String title = "Attestation de vigilance";
+      String note = "note du document";
       return testProvider.captureDocument(content, metadatas, documentTitle,
-            documentType, creationDate, dateDebutConservation, codeRND, title);
+            documentType, creationDate, dateDebutConservation, codeRND, title,
+            note);
    }
-   
-   private UUID captureTiff(String idFormat) throws IOException, ConnectionServiceEx,
-         ParseException {
-      File srcFile = new File(
-            "src/test/resources/doc/fichier.TIF");
+
+   private UUID captureTiff(String idFormat) throws IOException,
+         ConnectionServiceEx, ParseException {
+      File srcFile = new File("src/test/resources/doc/fichier.TIF");
 
       byte[] content = FileUtils.readFileToByteArray(srcFile);
 
@@ -174,8 +179,10 @@ public class SAEConsultationServiceTest {
       String documentType = "tif";
       String codeRND = "2.3.1.1.12";
       String title = "Attestation de vigilance";
+      String note = "note du document";
       return testProvider.captureDocument(content, metadatas, documentTitle,
-            documentType, creationDate, dateDebutConservation, codeRND, title);
+            documentType, creationDate, dateDebutConservation, codeRND, title,
+            note);
    }
 
    @Test
@@ -339,8 +346,9 @@ public class SAEConsultationServiceTest {
             FileUtils.openInputStream(expectedContent), untypedDocument
                   .getContent().getInputStream()));
    }
-   
-   private void checkValuesTiff(UntypedDocument untypedDocument, String idFormat) throws IOException {
+
+   private void checkValuesTiff(UntypedDocument untypedDocument, String idFormat)
+         throws IOException {
       assertNotNull("idArchive '" + uuid + "' doit être consultable",
             untypedDocument);
 
@@ -382,12 +390,13 @@ public class SAEConsultationServiceTest {
       assertMetadata(metadatas.get(10), "TailleFichier", "2208480");
       assertMetadata(metadatas.get(11), "Titre", "Attestation de vigilance");
 
-      /*File expectedContent = new File(
-            "src/test/resources/doc/fichier.TIF");
-
-      assertTrue("le contenu n'est pas attendu", IOUtils.contentEquals(
-            FileUtils.openInputStream(expectedContent), untypedDocument
-                  .getContent().getInputStream()));*/
+      /*
+       * File expectedContent = new File( "src/test/resources/doc/fichier.TIF");
+       * 
+       * assertTrue("le contenu n'est pas attendu", IOUtils.contentEquals(
+       * FileUtils.openInputStream(expectedContent), untypedDocument
+       * .getContent().getInputStream()));
+       */
    }
 
    private static void assertMetadata(UntypedMetadata metadata,
@@ -416,7 +425,7 @@ public class SAEConsultationServiceTest {
             .consultationAffichable(new ConsultParams(uuid));
       checkValuesTiff(untypedDocument, "fmt/353");
    }
-   
+
    @Test
    public void consultationAffichable_doc_non_convertissable()
          throws IOException, ConnectionServiceEx, ParseException {
@@ -426,12 +435,17 @@ public class SAEConsultationServiceTest {
       LOG.debug("document archivé dans DFCE:" + uuid);
 
       try {
-         service
-            .consultationAffichable(new ConsultParams(uuid));
+         service.consultationAffichable(new ConsultParams(uuid));
          fail("C'est l'exception SAEConsultationServiceException qui est attendue");
       } catch (SAEConsultationServiceException ex) {
-         assertEquals("La cause de l'exception doit être une exception ConvertisseurInitialisationException", ConvertisseurInitialisationException.class.getName(), ex.getCause().getClass().getName());
-         assertEquals("Le message de l'exception n'est pas celui attendu", "Le nom du bean permettant de réaliser la conversion du format fmt/354 n'est pas renseigné dans le référentiel des formats", ex.getCause().getMessage());
+         assertEquals(
+               "La cause de l'exception doit être une exception ConvertisseurInitialisationException",
+               ConvertisseurInitialisationException.class.getName(), ex
+                     .getCause().getClass().getName());
+         assertEquals(
+               "Le message de l'exception n'est pas celui attendu",
+               "Le nom du bean permettant de réaliser la conversion du format fmt/354 n'est pas renseigné dans le référentiel des formats",
+               ex.getCause().getMessage());
       } catch (UnknownDesiredMetadataEx ex) {
          fail("C'est l'exception SAEConsultationServiceException qui est attendue");
       } catch (MetaDataUnauthorizedToConsultEx ex) {
@@ -440,22 +454,26 @@ public class SAEConsultationServiceTest {
          fail("C'est l'exception SAEConsultationServiceException qui est attendue");
       }
    }
-   
+
    @Test
-   public void consultationAffichable_format_inconnu()
-         throws IOException, ConnectionServiceEx, ParseException {
+   public void consultationAffichable_format_inconnu() throws IOException,
+         ConnectionServiceEx, ParseException {
 
       uuid = captureTiff("fmt/xxxx");
 
       LOG.debug("document archivé dans DFCE:" + uuid);
 
       try {
-         service
-            .consultationAffichable(new ConsultParams(uuid));
+         service.consultationAffichable(new ConsultParams(uuid));
          fail("C'est l'exception SAEConsultationServiceException qui est attendue");
       } catch (SAEConsultationServiceException ex) {
-         assertEquals("La cause de l'exception doit être une exception UnknownFormatException", UnknownFormatException.class.getName(), ex.getCause().getClass().getName());
-         assertEquals("Le message de l'exception n'est pas celui attendu", "Aucun format n'a été trouvé avec l'identifiant : fmt/xxxx.", ex.getCause().getMessage());
+         assertEquals(
+               "La cause de l'exception doit être une exception UnknownFormatException",
+               UnknownFormatException.class.getName(), ex.getCause().getClass()
+                     .getName());
+         assertEquals("Le message de l'exception n'est pas celui attendu",
+               "Aucun format n'a été trouvé avec l'identifiant : fmt/xxxx.", ex
+                     .getCause().getMessage());
       } catch (UnknownDesiredMetadataEx ex) {
          fail("C'est l'exception SAEConsultationServiceException qui est attendue");
       } catch (MetaDataUnauthorizedToConsultEx ex) {
@@ -464,7 +482,7 @@ public class SAEConsultationServiceTest {
          fail("C'est l'exception SAEConsultationServiceException qui est attendue");
       }
    }
-   
+
    @Test
    public void consultationAffichable_parametrage_incorrect()
          throws IOException, ConnectionServiceEx, ParseException {
@@ -474,8 +492,8 @@ public class SAEConsultationServiceTest {
       LOG.debug("document archivé dans DFCE:" + uuid);
 
       try {
-         service
-            .consultationAffichable(new ConsultParams(uuid, null, null, Integer.valueOf(0)));
+         service.consultationAffichable(new ConsultParams(uuid, null, null,
+               Integer.valueOf(0)));
          fail("C'est l'exception SAEConsultationAffichableParametrageException qui est attendue");
       } catch (SAEConsultationServiceException ex) {
          fail("C'est l'exception SAEConsultationAffichableParametrageException qui est attendue");
@@ -484,27 +502,32 @@ public class SAEConsultationServiceTest {
       } catch (MetaDataUnauthorizedToConsultEx ex) {
          fail("C'est l'exception SAEConsultationAffichableParametrageException qui est attendue");
       } catch (SAEConsultationAffichableParametrageException ex) {
-         assertEquals("Le message de l'exception n'est pas celui attendu", "Le nombre de pages doit être différent de 0.", ex.getMessage());
-         assertEquals("La cause de l'exception doit être une exception ConversionParametrageException", ConversionParametrageException.class.getName(), ex.getCause().getClass().getName());
-         assertEquals("Le message de l'exception n'est pas celui attendu", "Le nombre de pages doit être différent de 0.", ex.getCause().getMessage());
+         assertEquals("Le message de l'exception n'est pas celui attendu",
+               "Le nombre de pages doit être différent de 0.", ex.getMessage());
+         assertEquals(
+               "La cause de l'exception doit être une exception ConversionParametrageException",
+               ConversionParametrageException.class.getName(), ex.getCause()
+                     .getClass().getName());
+         assertEquals("Le message de l'exception n'est pas celui attendu",
+               "Le nombre de pages doit être différent de 0.", ex.getCause()
+                     .getMessage());
       }
    }
-   
+
    @Test
    public void consultationAffichable_failure_codeNotExists()
          throws IOException, ConnectionServiceEx, ParseException {
 
       uuid = captureTiff("fmt/353");
-      
+
       List<String> listCode = Arrays.asList(new String[] { "Siret",
-         "codeInexistant" });
+            "codeInexistant" });
       ConsultParams consultParams = new ConsultParams(uuid, listCode);
 
       LOG.debug("document archivé dans DFCE:" + uuid);
 
       try {
-         service
-            .consultationAffichable(consultParams);
+         service.consultationAffichable(consultParams);
          fail("C'est l'exception SAEConsultationServiceException qui est attendue");
       } catch (SAEConsultationServiceException ex) {
          fail("C'est l'exception UnknownDesiredMetadataEx qui est attendue");
@@ -528,7 +551,7 @@ public class SAEConsultationServiceTest {
          throws IOException, ConnectionServiceEx, ParseException {
 
       uuid = captureTiff("fmt/353");
-      
+
       List<String> listCode = Arrays
             .asList(new String[] { "Siret", "StartPage" });
       ConsultParams consultParams = new ConsultParams(uuid, listCode);
@@ -536,8 +559,7 @@ public class SAEConsultationServiceTest {
       LOG.debug("document archivé dans DFCE:" + uuid);
 
       try {
-         service
-            .consultationAffichable(consultParams);
+         service.consultationAffichable(consultParams);
          fail("C'est l'exception MetaDataUnauthorizedToConsultEx qui est attendue");
       } catch (SAEConsultationServiceException ex) {
          fail("C'est l'exception MetaDataUnauthorizedToConsultEx qui est attendue");
@@ -554,24 +576,37 @@ public class SAEConsultationServiceTest {
          fail("C'est l'exception MetaDataUnauthorizedToConsultEx qui est attendue");
       }
    }
-   
-   
+
    @Test
-   public void consultationAvecNote_success_consultParam()
-         throws IOException, SAEConsultationServiceException,
-         ConnectionServiceEx, ParseException, UnknownDesiredMetadataEx,
-         MetaDataUnauthorizedToConsultEx,
+   public void consultationAvecNote_success_consultParam() throws IOException,
+         SAEConsultationServiceException, ConnectionServiceEx, ParseException,
+         UnknownDesiredMetadataEx, MetaDataUnauthorizedToConsultEx,
          SAEConsultationAffichableParametrageException {
 
       uuid = captureTiff("fmt/353");
       LOG.debug("document archivé dans DFCE:" + uuid);
 
+      ConsultParams consultParam = new ConsultParams(uuid);
+      List<String> listeMeta = new ArrayList<String>();
+      listeMeta.add("Note");
+      consultParam.setMetadonnees(listeMeta);
+      UntypedDocument untypedDocument = service.consultation(consultParam);
+
+      Assert.assertEquals("Un seule métadonnée attendue : Note",
+            untypedDocument.getUMetadatas().size(), 1);
       
-      UntypedDocument untypedDocument = service
-            .consultation(new ConsultParams(uuid));
+      DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+      Date dateCourante = new Date();
+      String dateString = dateFormat.format(dateCourante);
       
-      
-      checkValuesTiff(untypedDocument, "fmt/353");
+      String contenu = untypedDocument.getUMetadatas().get(0).getValue();
+      String[] splitContenu = contenu.split(dateString);
+
+      assertEquals(
+            "Contenu de la note invalide",
+            "[{\"contenu\":\"note du document\",\"dateCreation\":\"\",\"auteur\":\"_ADMIN\"}]",
+            splitContenu[0] + splitContenu[1].substring(9));
+     
    }
-   
+
 }

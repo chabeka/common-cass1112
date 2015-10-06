@@ -226,7 +226,7 @@ public class SAETransfertServiceTest {
       String title = "Attestation de transfert";
 
       return testProvider.captureDocument(content, metadatas, documentTitle,
-            documentType, date, date, codeRND, title);
+            documentType, date, date, codeRND, title,null);
    }
 
    @Test

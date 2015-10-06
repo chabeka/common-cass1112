@@ -106,7 +106,7 @@ public class SAEConsultationServiceDroitsTest {
       String codeRND = "2.3.1.1.12";
       String title = "Attestation de vigilance";
       return testProvider.captureDocument(content, metadatas, documentTitle,
-            documentType, creationDate, dateDebutConservation, codeRND, title);
+            documentType, creationDate, dateDebutConservation, codeRND, title, null);
    }
 
    @Test(expected = AccessDeniedException.class)
