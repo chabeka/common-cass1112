@@ -89,19 +89,6 @@ public class ConversionServiceImplTest {
    }
    
    @Test(expected=ConvertisseurInitialisationException.class)
-   public void convertirFichierFile_format_sans_convertisseur()
-         throws ConversionParametrageException, UnknownFormatException, ConvertisseurInitialisationException, IOException {
-
-      // Récupération du fichier de test depuis les ressources
-      ClassPathResource ressource = new ClassPathResource(
-            "/conversion/fichier.TIF");
-
-      // Appel de la méthode à tester
-      conversionService.convertirFichier("fmt/354", ressource
-            .getFile(), null, null);
-   }
-   
-   @Test(expected=ConvertisseurInitialisationException.class)
    public void convertirFichierFile_format_bean_inexistant()
          throws ConversionParametrageException, UnknownFormatException, ConvertisseurInitialisationException, IOException {
 
@@ -170,21 +157,6 @@ public class ConversionServiceImplTest {
 
       // Appel de la méthode à tester
       conversionService.convertirFichier("inconnu", fichier, null, null);
-   }
-   
-   @Test(expected=ConvertisseurInitialisationException.class)
-   public void convertirFichierByte_format_sans_convertisseur()
-         throws ConversionParametrageException, UnknownFormatException, ConvertisseurInitialisationException, IOException {
-
-      // Récupération du fichier de test depuis les ressources
-      ClassPathResource ressource = new ClassPathResource(
-            "/conversion/fichier.TIF");
-      
-      byte[] fichier = IOUtils.toByteArray(new FileInputStream(ressource
-            .getFile()));
-
-      // Appel de la méthode à tester
-      conversionService.convertirFichier("fmt/354", fichier, null, null);
    }
    
    @Test(expected=ConvertisseurInitialisationException.class)

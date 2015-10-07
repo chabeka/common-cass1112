@@ -38,6 +38,10 @@
                <name>identifieur</name>
                <value>pdfaIdentifierImpl</value>
             </column>
+            <column>
+               <name>convertisseur</name>
+               <value>pdfSplitterImpl</value>
+            </column>
          </row>
          
          <row>

@@ -427,35 +427,6 @@ public class SAEConsultationServiceTest {
    }
 
    @Test
-   public void consultationAffichable_doc_non_convertissable()
-         throws IOException, ConnectionServiceEx, ParseException {
-
-      uuid = captureTiff("fmt/354");
-
-      LOG.debug("document archivé dans DFCE:" + uuid);
-
-      try {
-         service.consultationAffichable(new ConsultParams(uuid));
-         fail("C'est l'exception SAEConsultationServiceException qui est attendue");
-      } catch (SAEConsultationServiceException ex) {
-         assertEquals(
-               "La cause de l'exception doit être une exception ConvertisseurInitialisationException",
-               ConvertisseurInitialisationException.class.getName(), ex
-                     .getCause().getClass().getName());
-         assertEquals(
-               "Le message de l'exception n'est pas celui attendu",
-               "Le nom du bean permettant de réaliser la conversion du format fmt/354 n'est pas renseigné dans le référentiel des formats",
-               ex.getCause().getMessage());
-      } catch (UnknownDesiredMetadataEx ex) {
-         fail("C'est l'exception SAEConsultationServiceException qui est attendue");
-      } catch (MetaDataUnauthorizedToConsultEx ex) {
-         fail("C'est l'exception SAEConsultationServiceException qui est attendue");
-      } catch (SAEConsultationAffichableParametrageException ex) {
-         fail("C'est l'exception SAEConsultationServiceException qui est attendue");
-      }
-   }
-
-   @Test
    public void consultationAffichable_format_inconnu() throws IOException,
          ConnectionServiceEx, ParseException {
 

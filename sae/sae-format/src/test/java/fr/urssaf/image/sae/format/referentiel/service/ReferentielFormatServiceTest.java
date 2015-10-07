@@ -50,8 +50,8 @@ public class ReferentielFormatServiceTest {
             "pdfaValidatorImpl", refFormatTrouve.getValidator());
       Assert.assertEquals("FIND - Erreur dans l'identifieur.",
             "pdfaIdentifierImpl", refFormatTrouve.getIdentificateur());
-      Assert.assertNull("FIND - Erreur dans le convertisseur.", refFormatTrouve
-            .getConvertisseur());
+      Assert.assertEquals("FIND - Erreur dans le convertisseur.", 
+            "pdfSplitterImpl", refFormatTrouve.getConvertisseur());
 
       idFormat = "fmt/353";
 

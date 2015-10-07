@@ -65,7 +65,6 @@ public final class MajLotServiceImpl implements MajLotService {
    public static final String DFCE_150400 = "DFCE_150400";
    public static final String DFCE_150400_P5 = "DFCE_150400_P5";
    public static final String DFCE_151000 = "DFCE_151000";
-   public static final String DFCE_151200 = "DFCE_151200";
    public static final String CASSANDRA_151000 = "CASSANDRA_151000";
    public static final String CASSANDRA_DFCE_151001 = "CASSANDRA_DFCE_151001";
    public static final String CASSANDRA_DROITS_GED = "CASSANDRA_DROITS_GED";

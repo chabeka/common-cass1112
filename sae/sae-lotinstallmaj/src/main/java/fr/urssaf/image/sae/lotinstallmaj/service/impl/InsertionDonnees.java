@@ -811,6 +811,25 @@ public class InsertionDonnees {
       LOG.info("Format ajouté : fmt/353");
 
    }
+   
+   /**
+    * Modification des données dans le référentiel des formats : Ajout d'un convertisseur pour le format <li>fmt/354</li>
+    */
+   public void modifyReferentielFormatFmt354() {
+      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+            keyspace, "ReferentielFormat", StringSerializer.get(),
+            StringSerializer.get());
+
+      ColumnFamilyUpdater<String, String> updater;
+
+      LOG.info("Mise à jour du référentiel des formats");
+
+      updater = cfTmpl.createUpdater("fmt/354");
+      addColumn("convertisseur", "pdfSplitterImpl", StringSerializer
+            .get(), StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      LOG.info("Format modifié : fmt/354");
+   }
 
    /**
     * Les profils de controle pour les formats.<br/>

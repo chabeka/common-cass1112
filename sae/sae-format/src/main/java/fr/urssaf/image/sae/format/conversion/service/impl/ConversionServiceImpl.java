@@ -1,8 +1,11 @@
 package fr.urssaf.image.sae.format.conversion.service.impl;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +20,7 @@ import com.google.common.cache.LoadingCache;
 import com.google.common.cache.CacheLoader.InvalidCacheLoadException;
 import com.google.common.util.concurrent.UncheckedExecutionException;
 
+import de.schlichtherle.io.FileInputStream;
 import fr.urssaf.image.sae.format.conversion.convertisseurs.Convertisseur;
 import fr.urssaf.image.sae.format.conversion.exceptions.ConversionParametrageException;
 import fr.urssaf.image.sae.format.conversion.exceptions.ConversionRuntimeException;
@@ -109,16 +113,36 @@ public class ConversionServiceImpl implements ConversionService {
 
       // On récupère le nom du bean qui doit réaliser la conversion
       String nomBeanConvertisseur = lectureNomBeanConvertisseur(idFormat);
+      
+      byte[] fichierConverti = null;
+      // On vérifie que le nom du bean est renseigné
+      if (StringUtils.isBlank(nomBeanConvertisseur)) {
 
-      // On récupère le bean correspondant
-      Convertisseur convertisseur = recupereBeanConvertisseur(nomBeanConvertisseur);
+         // Trace applicative
+         LOGGER
+               .debug(
+                     "{} - Le format \"{}\" ne comporte aucun convertisseur. Le document va être renvoyé dans son format original",
+                     prefixeTrc, idFormat);
+         
+         // recupere le tableau de byte a partir du fichier
+         try {
+            fichierConverti = IOUtils.toByteArray(new FileInputStream(fichier));
+         } catch (FileNotFoundException e) {
+            LOGGER.error(LOG_FIN, "Erreur de lecture du fichier : " + e.getMessage());
+         } catch (IOException e) {
+            LOGGER.error(LOG_FIN, "Erreur de lecture du fichier : " + e.getMessage());
+         }
 
-      // On appel la méthode identifyFile en passant en paramètre le
-      // fichier et l'idFormat
-      LOGGER.debug("{} - Exécution de la conversion", prefixeTrc);
-      byte[] fichierConverti = convertisseur.convertirFichier(fichier,
-            numeroPage, nombrePages);
-
+      } else {
+      
+         // On récupère le bean correspondant
+         Convertisseur convertisseur = recupereBeanConvertisseur(nomBeanConvertisseur);
+         
+         LOGGER.debug("{} - Exécution de la conversion", prefixeTrc);
+         fichierConverti = convertisseur.convertirFichier(fichier,
+               numeroPage, nombrePages);
+      }
+      
       // Traces debug - sortie méthode
       LOGGER.debug(LOG_FIN, prefixeTrc);
 
@@ -142,15 +166,35 @@ public class ConversionServiceImpl implements ConversionService {
 
       // On récupère le nom du bean qui doit réaliser la conversion
       String nomBeanConvertisseur = lectureNomBeanConvertisseur(idFormat);
+      
+      byte[] fichierConverti;
+      // On vérifie que le nom du bean est renseigné
+      if (StringUtils.isBlank(nomBeanConvertisseur)) {
 
-      // On récupère le bean correspondant
-      Convertisseur convertisseur = recupereBeanConvertisseur(nomBeanConvertisseur);
+         // Trace applicative
+         LOGGER
+               .debug(
+                     "{} - Le format \"{}\" ne comporte aucun convertisseur. Le document va être renvoyé dans son format original",
+                     prefixeTrc, idFormat);
+         
+         // clone le tableau de byte
+         fichierConverti = fichier.clone();
 
-      // On appel la méthode identifyFile en passant en paramètre le
-      // fichier et l'idFormat
-      LOGGER.debug("{} - Exécution de la conversion", prefixeTrc);
-      byte[] fichierConverti = convertisseur.convertirFichier(fichier,
-            numeroPage, nombrePages);
+      } else {
+
+         // Trace applicative
+         LOGGER
+               .debug(
+                     "{} - Le nom du bean qui va réaliser la conversion est \"{}\"",
+                     prefixeTrc, nomBeanConvertisseur);
+
+         // On récupère le bean correspondant
+         Convertisseur convertisseur = recupereBeanConvertisseur(nomBeanConvertisseur);
+
+         LOGGER.debug("{} - Exécution de la conversion", prefixeTrc);
+         fichierConverti = convertisseur.convertirFichier(fichier,
+               numeroPage, nombrePages);
+      }
 
       // Traces debug - sortie méthode
       LOGGER.debug(LOG_FIN, prefixeTrc);
@@ -197,32 +241,12 @@ public class ConversionServiceImpl implements ConversionService {
 
          // On lit le nom du bean de l'objet de conversion
          String nomBean = formatFichier.getConvertisseur();
-
-         // On vérifie que le nom du bean est renseigné
-         if (StringUtils.isBlank(nomBean)) {
-
-            // Le nom du bean n'est pas renseigné => on lève une exception
-            throw new ConvertisseurInitialisationException(
-                  String
-                        .format(
-                              "Le nom du bean permettant de réaliser la conversion du format %s n'est pas renseigné dans le référentiel des formats",
-                              idFormat));
-
-         } else {
-
-            // Trace applicative
-            LOGGER
-                  .debug(
-                        "{} - Le nom du bean qui va réaliser la conversion est \"{}\"",
-                        prefixeTrc, nomBean);
-
-            // Traces debug - sortie méthode
-            LOGGER.debug(LOG_FIN, prefixeTrc);
-
-            // On renvoie le nom du bean
-            return nomBean;
-
-         }
+         
+         // Traces debug - sortie méthode
+         LOGGER.debug(LOG_FIN, prefixeTrc);
+         
+         // On renvoie le nom du bean
+         return nomBean;
       }
    }
 

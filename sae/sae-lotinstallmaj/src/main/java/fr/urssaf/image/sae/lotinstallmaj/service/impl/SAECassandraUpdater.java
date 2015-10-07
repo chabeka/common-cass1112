@@ -719,6 +719,9 @@ public class SAECassandraUpdater {
       InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
       donnees.addActionUnitaireRechercheParIterateur();
       donnees.modifyActionUnitaireAjoutNote();
+      
+      // Ajout d'un convertisseur au format fmt/354 (splitter de pdf)
+      donnees.modifyReferentielFormatFmt354();
 
       // On positionne la version à 14
       saeDao.setDatabaseVersion(VERSION_14);
