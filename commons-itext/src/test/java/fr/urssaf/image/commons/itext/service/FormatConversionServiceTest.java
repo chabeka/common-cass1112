@@ -102,4 +102,105 @@ public class FormatConversionServiceTest {
          Assert.fail("La conversion du fichier en byte n'aurait pas du echouee");
       }
    }
+   
+   @Test
+   public void splitPdf_file_success() throws FormatConversionException, FormatConversionParametrageException {
+      
+      File fichier = new File("src/test/resources/pdf/fichier.pdf");
+      
+      byte[] fichierConverti = conversionService.splitPdf(fichier, Integer.valueOf(1), Integer.valueOf(2));
+      Assert.assertNotNull("Le tableau de byte aurait du être non null", fichierConverti);
+      Assert.assertTrue("Le tableau de byte aurait du être non vide", fichierConverti.length > 0);
+   }
+   
+   @Test
+   public void splitPdf_file_success_complet() throws FormatConversionException, FormatConversionParametrageException {
+      
+      File fichier = new File("src/test/resources/pdf/fichier.pdf");
+      
+      byte[] fichierConverti = conversionService.splitPdf(fichier, null, null);
+      Assert.assertNotNull("Le tableau de byte aurait du être non null", fichierConverti);
+      Assert.assertTrue("Le tableau de byte aurait du être non vide", fichierConverti.length > 0);
+   }
+   
+   @Test
+   public void splitPdf_file_non_trouve()  {
+      
+      File fichier = new File("fichier-inexistant.pdf");
+      
+      try {
+         conversionService.splitPdf(fichier, Integer.valueOf(1), Integer.valueOf(2));
+         Assert.fail("Ce test aurait du renvoyer une exception");
+      } catch (FormatConversionException e) {
+         Assert.assertEquals("La cause de l'exception aurait du être de type FileNotFoundException", FileNotFoundException.class.getName() , e.getCause().getClass().getName());
+      } catch (FormatConversionParametrageException e) {
+         Assert.fail("Ce test aurait du renvoyer une exception de type FormatConversionException");
+      }
+   }
+   
+   @Test
+   public void splitPdf_file_runtime()  {
+      
+      File fichier = new File("src/test/resources/pdf/fichierCorrompu.pdf");
+      
+      try {
+         conversionService.splitPdf(fichier, Integer.valueOf(1), Integer.valueOf(2));
+         Assert.fail("Ce test aurait du renvoyer une exception");
+      } catch (FormatConversionException e) {
+         Assert.fail("Ce test aurait du renvoyer une exception de type FormatConversionRuntimeException");
+      } catch (FormatConversionParametrageException e) {
+         Assert.fail("Ce test aurait du renvoyer une exception de type FormatConversionRuntimeException");
+      } catch (FormatConversionRuntimeException e) {
+         Assert.assertEquals("La cause de la runtime aurait du être de type ExceptionConverter", NullPointerException.class.getName() , e.getCause().getClass().getName());
+      }
+   }
+   
+   @Test
+   public void splitPdf_byte_success() throws FormatConversionException, FormatConversionParametrageException {
+      byte[] fichier;
+      try {
+         fichier = IOUtils.toByteArray(new FileInputStream("src/test/resources/pdf/fichier.pdf"));
+         byte[] fichierConverti = conversionService.splitPdf(fichier, Integer.valueOf(1), Integer.valueOf(2));
+         Assert.assertNotNull("Le tableau de byte aurait du être non null", fichierConverti);
+         Assert.assertTrue("Le tableau de byte aurait du être non vide", fichierConverti.length > 0);
+
+      } catch (IOException e) {
+         Assert.fail("La conversion du fichier en byte n'aurait pas du echouee");
+      }
+   }
+   
+   @Test
+   public void splitPdf_byte_success_complet() throws FormatConversionException, FormatConversionParametrageException {
+      byte[] fichier;
+      try {
+         fichier = IOUtils.toByteArray(new FileInputStream("src/test/resources/pdf/fichier.pdf"));
+         byte[] fichierConverti = conversionService.splitPdf(fichier, null, null);
+         Assert.assertNotNull("Le tableau de byte aurait du être non null", fichierConverti);
+         Assert.assertTrue("Le tableau de byte aurait du être non vide", fichierConverti.length > 0);
+
+      } catch (IOException e) {
+         Assert.fail("La conversion du fichier en byte n'aurait pas du echouee");
+      }
+   }
+   
+   @Test
+   public void splitPdf_byte_runtime()  {
+      byte[] fichier;
+      try {
+         fichier = IOUtils.toByteArray(new FileInputStream("src/test/resources/pdf/fichierCorrompu.pdf"));
+      
+         try {
+            conversionService.splitPdf(fichier, Integer.valueOf(1), Integer.valueOf(2));
+            Assert.fail("Ce test aurait du renvoyer une exception");
+         } catch (FormatConversionException e) {
+            Assert.fail("Ce test aurait du renvoyer une exception de type FormatConversionRuntimeException");
+         } catch (FormatConversionParametrageException e) {
+            Assert.fail("Ce test aurait du renvoyer une exception de type FormatConversionRuntimeException");
+         } catch (FormatConversionRuntimeException e) {
+            Assert.assertEquals("La cause de la runtime aurait du être de type ExceptionConverter", NullPointerException.class.getName() , e.getCause().getClass().getName());
+         }
+      } catch (IOException e) {
+         Assert.fail("La conversion du fichier en byte n'aurait pas du echouee");
+      }
+   }
 }

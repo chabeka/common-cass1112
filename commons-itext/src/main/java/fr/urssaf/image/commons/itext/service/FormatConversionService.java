@@ -48,4 +48,42 @@ public interface FormatConversionService {
    byte[] conversionTiffToPdf(byte[] fichier, Integer numeroPage,
          Integer nombrePages) throws FormatConversionException,
          FormatConversionParametrageException;
+   
+   /**
+    * Split un fichier PDF (à partir d'un objet de type File)
+    * 
+    * @param fichier
+    *           le fichier à convertir
+    * @param numeroPage
+    *           le numéro de page de départ
+    * @param nombrePages
+    *           le nombre de pages souhaités
+    * @return le fichier converti
+    * @throws FormatConversionException
+    *            erreur de conversion
+    * @throws FormatConversionParametrageException
+    *            erreur de paramétrage
+    */
+   byte[] splitPdf(File fichier, Integer numeroPage,
+         Integer nombrePages) throws FormatConversionException,
+         FormatConversionParametrageException;
+
+   /**
+    * Split un fichier PDF (à partir d’un objet de type byte[])
+    * 
+    * @param fichier
+    *           le fichier à convertir
+    * @param numeroPage
+    *           le numéro de page de départ
+    * @param nombrePages
+    *           le nombre de pages souhaités
+    * @return le fichier converti
+    * @throws FormatConversionException
+    *            erreur de conversion
+    * @throws FormatConversionParametrageException
+    *            erreur de paramétrage
+    */
+   byte[] splitPdf(byte[] fichier, Integer numeroPage,
+         Integer nombrePages) throws FormatConversionException,
+         FormatConversionParametrageException;
 }
