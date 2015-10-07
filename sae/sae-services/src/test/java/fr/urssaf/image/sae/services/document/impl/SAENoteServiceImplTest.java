@@ -162,7 +162,7 @@ public class SAENoteServiceImplTest {
       saePrmds.add(saePrmd);
 
       saeDroits.put("archivage_unitaire", saePrmds);
-      saeDroits.put("ajoutNote", saePrmds);
+      saeDroits.put("ajout_note", saePrmds);
       saeDroits.put("consultation", saePrmds);
       viExtrait.setSaeDroits(saeDroits);
       AuthenticationToken token = AuthenticationFactory.createAuthentication(
