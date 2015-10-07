@@ -212,20 +212,22 @@ public class SearchingServiceImpl extends AbstractServices implements
          StorageDocument storageDocument) throws IOException,
          JsonGenerationException, JsonMappingException {
       List<StorageMetadata> listeMetaDemandee = uuidCriteria.getDesiredStorageMetadatas();
-      for (StorageMetadata storageMetadata : listeMetaDemandee) {
-         if (StorageTechnicalMetadatas.NOTE.getShortCode().equals(storageMetadata.getShortCode())) {
-            List<StorageDocumentNote> listeNotes = storageServiceSupport
-            .getDocumentNotes(getDfceService(), uuidCriteria.getUuid(), LOG);
-            
-            // Transformation de la liste des notes en JSON
-            ObjectMapper mapper = new ObjectMapper();
-            String listeNotesJSON = mapper.writeValueAsString(listeNotes);
-            // Ajout des notes aux métadonnées du document
-            List<StorageMetadata> listeMetadata = storageDocument.getMetadatas();
-            listeMetadata.add(new StorageMetadata(StorageTechnicalMetadatas.NOTE.getShortCode(),
-                  listeNotesJSON));
-           
-            storageDocument.setMetadatas(listeMetadata);
+      if (listeMetaDemandee != null) {
+         for (StorageMetadata storageMetadata : listeMetaDemandee) {
+            if (StorageTechnicalMetadatas.NOTE.getShortCode().equals(storageMetadata.getShortCode())) {
+               List<StorageDocumentNote> listeNotes = storageServiceSupport
+               .getDocumentNotes(getDfceService(), uuidCriteria.getUuid(), LOG);
+               
+               // Transformation de la liste des notes en JSON
+               ObjectMapper mapper = new ObjectMapper();
+               String listeNotesJSON = mapper.writeValueAsString(listeNotes);
+               // Ajout des notes aux métadonnées du document
+               List<StorageMetadata> listeMetadata = storageDocument.getMetadatas();
+               listeMetadata.add(new StorageMetadata(StorageTechnicalMetadatas.NOTE.getShortCode(),
+                     listeNotesJSON));
+              
+               storageDocument.setMetadatas(listeMetadata);
+            }
          }
       }
    }
