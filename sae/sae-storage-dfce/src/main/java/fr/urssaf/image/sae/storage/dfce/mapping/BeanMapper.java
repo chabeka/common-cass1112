@@ -27,8 +27,7 @@ import net.docubase.toolkit.service.ServiceProvider;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.urssaf.image.sae.commons.utils.InputStreamSource;
@@ -131,14 +130,12 @@ public final class BeanMapper {
     *           : La liste des métadonnées souhaitées.
     * @return La liste des {@link StorageMetadata} à partir de la liste des
     *         {@link Criterion}.
-    * @throws IOException 
-    * @throws JsonMappingException 
-    * @throws JsonGenerationException 
+    * @throws JsonProcessingException 
     */
    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
    private static List<StorageMetadata> storageMetaDatasFromCriterions(
          final Document document, final List<StorageMetadata> desiredMetaData,
-         final ServiceProvider serviceDFCE) throws JsonGenerationException, JsonMappingException, IOException {
+         final ServiceProvider serviceDFCE) throws JsonProcessingException {
       final Set<StorageMetadata> metadatas = new HashSet<StorageMetadata>();
       if (document != null) {
          final List<Criterion> criterions = document.getAllCriterions();
