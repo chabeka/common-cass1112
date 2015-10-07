@@ -280,10 +280,9 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
                   "{} - Fin de la vérification : Les métadonnées utilisées dans les filtres existent dans le référentiel des métadonnées",
                   prefixeTrc);
    }
-   
+
    /**
-    * Vérifie de l’existence des métadonnées des filtres dans le
-    * référentiel.
+    * Vérifie de l’existence des métadonnées des filtres dans le référentiel.
     * 
     * @param longCodesReq
     *           : Liste des métadonnées.
@@ -424,10 +423,12 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
       }
       return listCodCourtConsult;
    }
-   
+
    /**
     * Recupere la liste des metadonnees demandees sans les doublons.
-    * @param listMetaDesired liste des metadonnees demandees
+    * 
+    * @param listMetaDesired
+    *           liste des metadonnees demandees
     * @return List<String> liste des metadonnees sans doublon
     */
    private List<String> getUniqueMetadata(List<String> listMetaDesired) {
@@ -575,10 +576,11 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
          List<String> longCodesReq = new ArrayList<String>(parserResult
                .getMetaUtilisees().keySet());
          checkExistingLuceneMetadata(longCodesReq);
-         
-         // On supprime les eventuels doublon de la liste des metadonnees demandees
+
+         // On supprime les eventuels doublon de la liste des metadonnees
+         // demandees
          List<String> listUniqueMetaDesired = getUniqueMetadata(listMetaDesired);
-         
+
          // Vérifie que les métadonnées demandées dans les résultats de
          // recherche
          // existent dans le référentiel des métadonnées
@@ -639,7 +641,8 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
 
    /**
     * {@inheritDoc}
-    * @throws UnknownFiltresMetadataEx 
+    * 
+    * @throws UnknownFiltresMetadataEx
     * 
     */
    @Override
@@ -702,7 +705,7 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
 
          // Vérification de la requête lucène
          verifieSyntaxeLucene(requeteLucene);
-         
+
          // Conversion de la requête avec les codes long en code court
          SAESearchQueryParserResult parserResult = queryParseService
                .convertFromLongToShortCode(requeteLucene);
@@ -719,10 +722,10 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
          List<SAEMetadata> listCodCourt = recupererListCodCourtByLongCode(longCodesReq);
          checkSearchableLuceneMetadata(listCodCourt);
 
-         
-         // On supprime les eventuels doublon de la liste des metadonnees demandees
+         // On supprime les eventuels doublon de la liste des metadonnees
+         // demandees
          List<String> listUniqueMetaDesired = getUniqueMetadata(listeDesiredMetadata);
-                 
+
          // Vérifie que les métadonnées demandées dans les résultats de
          // recherche existent dans le référentiel des métadonnées
          checkExistingMetadataDesired(listUniqueMetaDesired);
@@ -735,14 +738,14 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
             listCodCourtConsult = recupererListCodCourtByLongCode(listUniqueMetaDesired);
          }
          checkConsultableDesiredMetadata(listCodCourtConsult, isFromRefrentiel);
-         
+
          // Vérification existence des métadonnées des filtres
          List<String> codeLongFiltresEgal = new ArrayList<String>();
          for (AbstractMetadata meta : listeFiltreEgal) {
             codeLongFiltresEgal.add(meta.getLongCode());
          }
          checkExistingFiltresMetadata(codeLongFiltresEgal);
-        
+
          List<String> codeLongFiltresDifferent = new ArrayList<String>();
          for (AbstractMetadata meta : listeFiltreDifferent) {
             codeLongFiltresDifferent.add(meta.getLongCode());
@@ -754,10 +757,10 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
          // Création de la liste des filtres
          List<AbstractFilter> abstractFilter = creationListeFiltres(
                listeFiltreEgal, listeFiltreDifferent);
-         
+
          String codeCourtVaryingMeta = metaRefD.getByLongCode(
                varyingMetadata.getLongCode()).getShortCode();
-         
+
          PaginatedStorageDocuments psd = searchPaginatedStorageDocuments(
                requeteFinal, nbDocumentsParPage, abstractFilter, lastIdDoc,
                listCodCourtConsult, codeCourtVaryingMeta);
@@ -902,8 +905,8 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
          // On boucle sur les méta fixes et on sépare les couples code/valeur
          // par des AND
          for (UntypedMetadata metaFixe : fixedMetadatas) {
-            requeteLucene = requeteLucene.concat(metaFixe.getLongCode().concat(":").concat(
-                  metaFixe.getValue()));
+            requeteLucene = requeteLucene.concat(metaFixe.getLongCode().concat(
+                  ":").concat("\"").concat(metaFixe.getValue()).concat("\""));
             if (compteur < nbMetaFixes - 1) {
                requeteLucene = requeteLucene.concat(" AND ");
             }
@@ -947,8 +950,8 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
    private PaginatedStorageDocuments searchPaginatedStorageDocuments(
          String requeteLucene, int nbDocumentsParPage,
          List<AbstractFilter> abstractFilter, UUID lastIdDoc,
-         List<SAEMetadata> listeDesiredMetadata, String codeCourtVaryingMeta) throws SAESearchServiceEx,
-         QueryParseServiceEx {
+         List<SAEMetadata> listeDesiredMetadata, String codeCourtVaryingMeta)
+         throws SAESearchServiceEx, QueryParseServiceEx {
 
       PaginatedStorageDocuments paginatedStorageDocuments = null;
       try {

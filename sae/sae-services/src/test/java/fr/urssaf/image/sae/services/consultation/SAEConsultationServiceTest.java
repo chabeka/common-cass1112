@@ -608,5 +608,37 @@ public class SAEConsultationServiceTest {
             splitContenu[0] + splitContenu[1].substring(9));
      
    }
+   
+   @Test
+   public void consultationAffichableAvecNote_success_consultParam() throws IOException,
+         SAEConsultationServiceException, ConnectionServiceEx, ParseException,
+         UnknownDesiredMetadataEx, MetaDataUnauthorizedToConsultEx,
+         SAEConsultationAffichableParametrageException {
+
+      uuid = captureTiff("fmt/353");
+      LOG.debug("document archivé dans DFCE:" + uuid);
+
+      ConsultParams consultParam = new ConsultParams(uuid);
+      List<String> listeMeta = new ArrayList<String>();
+      listeMeta.add("Note");
+      consultParam.setMetadonnees(listeMeta);
+      UntypedDocument untypedDocument = service.consultationAffichable(consultParam);
+
+      Assert.assertEquals("Un seule métadonnée attendue : Note",
+            untypedDocument.getUMetadatas().size(), 1);
+      
+      DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+      Date dateCourante = new Date();
+      String dateString = dateFormat.format(dateCourante);
+      
+      String contenu = untypedDocument.getUMetadatas().get(0).getValue();
+      String[] splitContenu = contenu.split(dateString);
+
+      assertEquals(
+            "Contenu de la note invalide",
+            "[{\"contenu\":\"note du document\",\"dateCreation\":\"\",\"auteur\":\"_ADMIN\"}]",
+            splitContenu[0] + splitContenu[1].substring(9));
+     
+   }
 
 }
