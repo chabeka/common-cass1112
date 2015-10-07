@@ -27,6 +27,10 @@ import net.docubase.toolkit.service.ServiceProvider;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import fr.urssaf.image.sae.commons.utils.InputStreamSource;
 import fr.urssaf.image.sae.storage.dfce.exception.MetadonneeInexistante;
 import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
@@ -127,11 +131,14 @@ public final class BeanMapper {
     *           : La liste des métadonnées souhaitées.
     * @return La liste des {@link StorageMetadata} à partir de la liste des
     *         {@link Criterion}.
+    * @throws IOException 
+    * @throws JsonMappingException 
+    * @throws JsonGenerationException 
     */
    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
    private static List<StorageMetadata> storageMetaDatasFromCriterions(
          final Document document, final List<StorageMetadata> desiredMetaData,
-         final ServiceProvider serviceDFCE) {
+         final ServiceProvider serviceDFCE) throws JsonGenerationException, JsonMappingException, IOException {
       final Set<StorageMetadata> metadatas = new HashSet<StorageMetadata>();
       if (document != null) {
          final List<Criterion> criterions = document.getAllCriterions();
@@ -156,6 +163,26 @@ public final class BeanMapper {
                      break;
                   }
                }
+
+               // Récupération éventuelle des notes du document
+               if (StorageTechnicalMetadatas.NOTE.getShortCode().equals(
+                     metadata.getShortCode())) {
+                  List<StorageDocumentNote> listeStorageDocNotes = new ArrayList<StorageDocumentNote>();
+                  List<Note> listeNote = serviceDFCE.getNoteService().getNotes(
+                        document.getUuid());
+                  for (Note note : listeNote) {
+                     listeStorageDocNotes.add(BeanMapper
+                           .dfceNoteToStorageDocumentNote(note));
+                  }
+                  // Transformation de la liste des notes en JSON
+                  ObjectMapper mapper = new ObjectMapper();
+                  String listeNotesJSON = mapper
+                        .writeValueAsString(listeStorageDocNotes);
+                  metadatas.add(new StorageMetadata(metadata.getShortCode(),
+                        listeNotesJSON));
+                  found = true;
+               }
+
                // si les métadonnées ne sont pas dans DFCE on vérifie si
                // ces
                // métadonnées sont des métadonnées techniques sinon on les
@@ -282,11 +309,9 @@ public final class BeanMapper {
          final Base baseDFCE, final VirtualStorageDocument storageDocument)
          throws ParseException, MetadonneeInexistante {
 
-      String[] file = { 
-            storageDocument.getReferenceFile().getName(),
-            storageDocument.getReferenceFile().getExtension()
-      };
-	   
+      String[] file = { storageDocument.getReferenceFile().getName(),
+            storageDocument.getReferenceFile().getExtension() };
+
       Document document = createDocument(storageDocument.getMetadatas(),
             baseDFCE, file);
 
@@ -305,12 +330,14 @@ public final class BeanMapper {
          // ici on exclut toutes les métadonnées techniques
          final StorageTechnicalMetadatas technical = Utils
                .technicalMetadataFinder(storageMetadata.getShortCode());
-         
+
          if (technical.getShortCode().equals(
                StorageTechnicalMetadatas.IDGED.getShortCode())) {
-            //-- On définit l'uuid du document si fournit dans la liste des métadonnées
-            document.setUuid(UUID.fromString((String)storageMetadata.getValue()));
-            
+            // -- On définit l'uuid du document si fournit dans la liste des
+            // métadonnées
+            document.setUuid(UUID.fromString((String) storageMetadata
+                  .getValue()));
+
          } else if (technical.getShortCode().equals(
                StorageTechnicalMetadatas.TITRE.getShortCode())) {
 
@@ -490,10 +517,11 @@ public final class BeanMapper {
       referenceFile.setName(impl.getName());
       referenceFile.setSize(impl.getSize());
       referenceFile.setUuid(impl.getUuid());
-      
+
       StorageContentRepository contentRepo = new StorageContentRepository();
       contentRepo.setName(impl.getContentRepository().getName());
-      contentRepo.setColumnFamily(impl.getContentRepository().getColumnFamily());
+      contentRepo
+            .setColumnFamily(impl.getContentRepository().getColumnFamily());
       contentRepo.setState(impl.getContentRepository().getState().getState());
       referenceFile.setContentRepository(contentRepo);
 
@@ -518,17 +546,18 @@ public final class BeanMapper {
       impl.setName(referenceFile.getName());
       impl.setSize(referenceFile.getSize());
       impl.setUuid(referenceFile.getUuid());
-      
+
       ContentRepository contentRepo = new ContentRepository();
       contentRepo.setName(referenceFile.getContentRepository().getName());
-      contentRepo.setColumnFamily(referenceFile.getContentRepository().getColumnFamily());
+      contentRepo.setColumnFamily(referenceFile.getContentRepository()
+            .getColumnFamily());
       if (referenceFile.getContentRepository().getState() == 0) {
          contentRepo.setState(State.PENDING);
       } else if (referenceFile.getContentRepository().getState() == 1) {
          contentRepo.setState(State.MOUNTED);
       }
       impl.setContentRepository(contentRepo);
-      
+
       return (FileReference) impl;
    }
 

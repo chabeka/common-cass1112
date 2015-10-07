@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
    <modelVersion>4.0.0</modelVersion>
 
@@ -17,6 +18,10 @@
    <description>Archive contenant les implementations des interfaces des
       services de l'artefact sae-storage </description>
 
+   <properties>
+      <jackson.version>2.4.5</jackson.version>
+   </properties>
+
    <!-- Ajout des dependances -->
    <dependencies>
 
@@ -27,25 +32,25 @@
          <artifactId>sae-storage</artifactId>
          <version>15.10.0.3-SNAPSHOT</version>
       </dependency>
-      
+
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-trace</artifactId>
          <version>15.10.0.3-SNAPSHOT</version>
       </dependency>
-      
+
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-vi</artifactId>
          <version>15.10.0.3-SNAPSHOT</version>
       </dependency>
-      
+
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-metadata</artifactId>
          <version>15.10.0.3-SNAPSHOT</version>
       </dependency>
-      
+
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-mapping</artifactId>
@@ -147,6 +152,13 @@
          <groupId>fr.urssaf.image.commons</groupId>
          <artifactId>commons-dfce</artifactId>
          <version>${commons.dfce}</version>
+      </dependency>
+
+      <!-- Jackson -->
+      <dependency>
+         <groupId>com.fasterxml.jackson.core</groupId>
+         <artifactId>jackson-databind</artifactId>
+         <version>${jackson.version}</version>
       </dependency>
 
    </dependencies>

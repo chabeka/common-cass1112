@@ -19,9 +19,6 @@ import net.docubase.toolkit.model.search.ChainedFilter.ChainedFilterOperator;
 import net.docubase.toolkit.service.ServiceProvider;
 
 import org.apache.commons.lang.StringUtils;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +48,6 @@ import fr.urssaf.image.sae.storage.dfce.mapping.BeanMapper;
 import fr.urssaf.image.sae.storage.dfce.messages.LogLevel;
 import fr.urssaf.image.sae.storage.dfce.messages.StorageMessageHandler;
 import fr.urssaf.image.sae.storage.dfce.model.AbstractServices;
-import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
 import fr.urssaf.image.sae.storage.dfce.support.StorageDocumentServiceSupport;
 import fr.urssaf.image.sae.storage.dfce.utils.Utils;
 import fr.urssaf.image.sae.storage.exception.QueryParseServiceEx;
@@ -59,7 +55,6 @@ import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.storage.exception.StorageException;
 import fr.urssaf.image.sae.storage.model.storagedocument.PaginatedStorageDocuments;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
-import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentNote;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocuments;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 import fr.urssaf.image.sae.storage.model.storagedocument.filters.AbstractFilter;
@@ -186,12 +181,8 @@ public class SearchingServiceImpl extends AbstractServices implements
          final Document docDfce = getDfceService().getSearchService()
                .getDocumentByUUID(getBaseDFCE(), uuidCriteria.getUuid());
 
-         StorageDocument storageDocument = BeanMapper.dfceMetaDataToStorageDocument(docDfce, uuidCriteria
+         return BeanMapper.dfceMetaDataToStorageDocument(docDfce, uuidCriteria
                .getDesiredStorageMetadatas(), getDfceService());
-         
-         recupereNotes(uuidCriteria, storageDocument);
-         
-         return storageDocument;
          
       } catch (StorageException srcSerEx) {
          throw new SearchingServiceEx(StorageMessageHandler
@@ -205,30 +196,6 @@ public class SearchingServiceImpl extends AbstractServices implements
          throw new SearchingServiceEx(StorageMessageHandler
                .getMessage(Constants.SRH_CODE_ERROR), except.getMessage(),
                except);
-      }
-   }
-
-   private void recupereNotes(final UUIDCriteria uuidCriteria,
-         StorageDocument storageDocument) throws IOException,
-         JsonGenerationException, JsonMappingException {
-      List<StorageMetadata> listeMetaDemandee = uuidCriteria.getDesiredStorageMetadatas();
-      if (listeMetaDemandee != null) {
-         for (StorageMetadata storageMetadata : listeMetaDemandee) {
-            if (StorageTechnicalMetadatas.NOTE.getShortCode().equals(storageMetadata.getShortCode())) {
-               List<StorageDocumentNote> listeNotes = storageServiceSupport
-               .getDocumentNotes(getDfceService(), uuidCriteria.getUuid(), LOG);
-               
-               // Transformation de la liste des notes en JSON
-               ObjectMapper mapper = new ObjectMapper();
-               String listeNotesJSON = mapper.writeValueAsString(listeNotes);
-               // Ajout des notes aux métadonnées du document
-               List<StorageMetadata> listeMetadata = storageDocument.getMetadatas();
-               listeMetadata.add(new StorageMetadata(StorageTechnicalMetadatas.NOTE.getShortCode(),
-                     listeNotesJSON));
-              
-               storageDocument.setMetadatas(listeMetadata);
-            }
-         }
       }
    }
 
