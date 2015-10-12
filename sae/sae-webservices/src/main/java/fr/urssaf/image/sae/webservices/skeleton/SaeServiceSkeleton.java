@@ -544,12 +544,23 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
          String trcPrefix = "modificationSecure";
          LOG.debug("{} - début", trcPrefix);
 
-         ModificationResponse response = modificationService
-               .modification(request);
+         boolean dfceUp = dfceInfoService.isDfceUp();
+         if (dfceUp) {
 
-         LOG.debug("{} - fin", trcPrefix);
+            ModificationResponse response = modificationService
+                  .modification(request);
 
-         return response;
+            LOG.debug("{} - fin", trcPrefix);
+
+            return response;
+
+         } else {
+
+            LOG.debug("{} - Sortie", trcPrefix);
+            setCodeHttp412();
+            throw new ModificationAxisFault(wsMessageRessourcesUtils
+                  .recupererMessage(MES_STOCKAGE, null), STOCKAGE_INDISPO);
+         }
 
       } catch (ModificationAxisFault ex) {
          logSoapFault(ex);
@@ -574,11 +585,23 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
          String trcPrefix = "suppressionSecure";
          LOG.debug("{} - début", trcPrefix);
 
-         SuppressionResponse response = suppressionService.suppression(request);
+         boolean dfceUp = dfceInfoService.isDfceUp();
+         if (dfceUp) {
 
-         LOG.debug("{} - fin", trcPrefix);
+            SuppressionResponse response = suppressionService
+                  .suppression(request);
 
-         return response;
+            LOG.debug("{} - fin", trcPrefix);
+
+            return response;
+
+         } else {
+
+            LOG.debug("{} - Sortie", trcPrefix);
+            setCodeHttp412();
+            throw new SuppressionAxisFault(wsMessageRessourcesUtils
+                  .recupererMessage(MES_STOCKAGE, null), STOCKAGE_INDISPO);
+         }
 
       } catch (SuppressionAxisFault ex) {
          logSoapFault(ex);
@@ -630,12 +653,23 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
          String trcPrefix = "transfertSecure";
          LOG.debug("{} - début", trcPrefix);
 
-         // -- Transfert du document
-         TransfertResponse response = transfertService.transfert(request);
+         boolean dfceUp = dfceInfoService.isDfceUp();
+         if (dfceUp) {
 
-         LOG.debug("{} - fin", trcPrefix);
+            // -- Transfert du document
+            TransfertResponse response = transfertService.transfert(request);
 
-         return response;
+            LOG.debug("{} - fin", trcPrefix);
+
+            return response;
+
+         } else {
+
+            LOG.debug("{} - Sortie", trcPrefix);
+            setCodeHttp412();
+            throw new TransfertAxisFault(wsMessageRessourcesUtils
+                  .recupererMessage(MES_STOCKAGE, null), STOCKAGE_INDISPO);
+         }
 
       } catch (TransfertAxisFault e) {
          logSoapFault(e);
